@@ -4,13 +4,12 @@ import { dataAttr, query, visuallyHiddenStyle } from "@zag-js/dom-query"
 import { getPlacementStyles } from "@zag-js/popper"
 import type { NormalizeProps, PropTypes, EventKeyMap } from "@zag-js/types"
 import { parts } from "./color-picker.anatomy"
-import { dom } from "./color-picker.dom"
+import * as dom from "./color-picker.dom"
 import type {
   AreaProps,
   ColorFormat,
-  MachineApi,
-  Send,
-  State,
+  ColorPickerService,
+  ColorPickerApi,
   SwatchTriggerProps,
   SwatchTriggerState,
 } from "./color-picker.types"
@@ -18,13 +17,20 @@ import { getChannelDisplayColor } from "./utils/get-channel-display-color"
 import { getChannelRange, getChannelValue } from "./utils/get-channel-input-value"
 import { getSliderBackground } from "./utils/get-slider-background"
 
-export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>): MachineApi<T> {
-  const value = state.context.value
-  const areaValue = state.context.areaValue
-  const valueAsString = state.context.valueAsString
+export function connect<T extends PropTypes>(
+  service: ColorPickerService,
+  normalize: NormalizeProps<T>,
+): ColorPickerApi<T> {
+  const { context, send, prop, computed, state, scope } = service
 
-  const disabled = state.context.isDisabled
-  const interactive = state.context.isInteractive
+  const value = context.get("value")
+  const format = context.get("format")
+
+  const areaValue = computed("areaValue")
+  const valueAsString = computed("valueAsString")
+
+  const disabled = computed("disabled")
+  const interactive = computed("interactive")
 
   const dragging = state.hasTag("dragging")
   const open = state.hasTag("open")
@@ -38,14 +44,14 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     }
   }
 
-  const currentPlacement = state.context.currentPlacement
+  const currentPlacement = context.get("currentPlacement")
   const popperStyles = getPlacementStyles({
-    ...state.context.positioning,
+    ...prop("positioning"),
     placement: currentPlacement,
   })
 
   function getSwatchTriggerState(props: SwatchTriggerProps): SwatchTriggerState {
-    const color = normalizeColor(props.value).toFormat(state.context.format)
+    const color = normalizeColor(props.value).toFormat(context.get("format"))
     return {
       value: color,
       valueAsString: color.toString("hex"),
@@ -76,7 +82,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       const color = value.withChannelValue(channel, channelValue)
       send({ type: "VALUE.SET", value: color, src: "set-channel" })
     },
-    format: state.context.format,
+    format: context.get("format"),
     setFormat(format) {
       const formatValue = value.toFormat(format)
       send({ type: "VALUE.SET", value: formatValue, src: "set-format" })
@@ -90,11 +96,11 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     getRootProps() {
       return normalize.element({
         ...parts.root.attrs,
-        dir: state.context.dir,
-        id: dom.getRootId(state.context),
+        dir: prop("dir"),
+        id: dom.getRootId(scope),
         "data-disabled": dataAttr(disabled),
-        "data-readonly": dataAttr(state.context.readOnly),
-        "data-invalid": dataAttr(state.context.invalid),
+        "data-readonly": dataAttr(prop("readOnly")),
+        "data-invalid": dataAttr(prop("invalid")),
         style: {
           "--value": value.toString("css"),
         },
@@ -104,16 +110,16 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     getLabelProps() {
       return normalize.element({
         ...parts.label.attrs,
-        dir: state.context.dir,
-        id: dom.getLabelId(state.context),
-        htmlFor: dom.getHiddenInputId(state.context),
+        dir: prop("dir"),
+        id: dom.getLabelId(scope),
+        htmlFor: dom.getHiddenInputId(scope),
         "data-disabled": dataAttr(disabled),
-        "data-readonly": dataAttr(state.context.readOnly),
-        "data-invalid": dataAttr(state.context.invalid),
+        "data-readonly": dataAttr(prop("readOnly")),
+        "data-invalid": dataAttr(prop("invalid")),
         "data-focus": dataAttr(focused),
         onClick(event) {
           event.preventDefault()
-          const inputEl = query(dom.getControlEl(state.context), "[data-channel=hex]")
+          const inputEl = query(dom.getControlEl(scope), "[data-channel=hex]")
           inputEl?.focus({ preventScroll: true })
         },
       })
@@ -122,11 +128,11 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     getControlProps() {
       return normalize.element({
         ...parts.control.attrs,
-        id: dom.getControlId(state.context),
-        dir: state.context.dir,
+        id: dom.getControlId(scope),
+        dir: prop("dir"),
         "data-disabled": dataAttr(disabled),
-        "data-readonly": dataAttr(state.context.readOnly),
-        "data-invalid": dataAttr(state.context.invalid),
+        "data-readonly": dataAttr(prop("readOnly")),
+        "data-invalid": dataAttr(prop("invalid")),
         "data-state": open ? "open" : "closed",
         "data-focus": dataAttr(focused),
       })
@@ -135,15 +141,15 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     getTriggerProps() {
       return normalize.button({
         ...parts.trigger.attrs,
-        id: dom.getTriggerId(state.context),
-        dir: state.context.dir,
+        id: dom.getTriggerId(scope),
+        dir: prop("dir"),
         disabled: disabled,
         "aria-label": `select color. current color is ${valueAsString}`,
-        "aria-controls": dom.getContentId(state.context),
-        "aria-labelledby": dom.getLabelId(state.context),
+        "aria-controls": dom.getContentId(scope),
+        "aria-labelledby": dom.getLabelId(scope),
         "data-disabled": dataAttr(disabled),
-        "data-readonly": dataAttr(state.context.readOnly),
-        "data-invalid": dataAttr(state.context.invalid),
+        "data-readonly": dataAttr(prop("readOnly")),
+        "data-invalid": dataAttr(prop("invalid")),
         "data-placement": currentPlacement,
         "aria-expanded": dataAttr(open),
         "data-state": open ? "open" : "closed",
@@ -166,8 +172,8 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     getPositionerProps() {
       return normalize.element({
         ...parts.positioner.attrs,
-        id: dom.getPositionerId(state.context),
-        dir: state.context.dir,
+        id: dom.getPositionerId(scope),
+        dir: prop("dir"),
         style: popperStyles.floating,
       })
     },
@@ -175,8 +181,8 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     getContentProps() {
       return normalize.element({
         ...parts.content.attrs,
-        id: dom.getContentId(state.context),
-        dir: state.context.dir,
+        id: dom.getContentId(scope),
+        dir: prop("dir"),
         "data-placement": currentPlacement,
         "data-state": open ? "open" : "closed",
         hidden: !open,
@@ -186,7 +192,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     getValueTextProps() {
       return normalize.element({
         ...parts.valueText.attrs,
-        dir: state.context.dir,
+        dir: prop("dir"),
         "data-disabled": dataAttr(disabled),
         "data-focus": dataAttr(focused),
       })
@@ -197,16 +203,16 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       const { areaStyles } = getColorAreaGradient(areaValue, {
         xChannel,
         yChannel,
-        dir: state.context.dir,
+        dir: prop("dir"),
       })
 
       return normalize.element({
         ...parts.area.attrs,
-        id: dom.getAreaId(state.context),
+        id: dom.getAreaId(scope),
         role: "group",
-        "data-invalid": dataAttr(state.context.invalid),
+        "data-invalid": dataAttr(prop("invalid")),
         "data-disabled": dataAttr(disabled),
-        "data-readonly": dataAttr(state.context.readOnly),
+        "data-readonly": dataAttr(prop("readOnly")),
         onPointerDown(event) {
           if (!interactive) return
           if (!isLeftClick(event)) return
@@ -232,15 +238,15 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       const { areaGradientStyles } = getColorAreaGradient(areaValue, {
         xChannel,
         yChannel,
-        dir: state.context.dir,
+        dir: prop("dir"),
       })
 
       return normalize.element({
         ...parts.areaBackground.attrs,
-        id: dom.getAreaGradientId(state.context),
-        "data-invalid": dataAttr(state.context.invalid),
+        id: dom.getAreaGradientId(scope),
+        "data-invalid": dataAttr(prop("invalid")),
         "data-disabled": dataAttr(disabled),
-        "data-readonly": dataAttr(state.context.readOnly),
+        "data-readonly": dataAttr(prop("readOnly")),
         style: {
           position: "relative",
           touchAction: "none",
@@ -264,12 +270,12 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
 
       return normalize.element({
         ...parts.areaThumb.attrs,
-        id: dom.getAreaThumbId(state.context),
-        dir: state.context.dir,
+        id: dom.getAreaThumbId(scope),
+        dir: prop("dir"),
         tabIndex: disabled ? undefined : 0,
         "data-disabled": dataAttr(disabled),
-        "data-invalid": dataAttr(state.context.invalid),
-        "data-readonly": dataAttr(state.context.readOnly),
+        "data-invalid": dataAttr(prop("invalid")),
+        "data-readonly": dataAttr(prop("readOnly")),
         role: "slider",
         "aria-valuemin": 0,
         "aria-valuemax": 100,
@@ -321,7 +327,12 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
             },
           }
 
-          const exec = keyMap[getEventKey(event, state.context)]
+          const exec =
+            keyMap[
+              getEventKey(event, {
+                dir: prop("dir"),
+              })
+            ]
 
           if (exec) {
             exec(event)
@@ -380,7 +391,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
 
       return normalize.element({
         ...parts.channelSliderTrack.attrs,
-        id: dom.getChannelSliderTrackId(state.context, channel),
+        id: dom.getChannelSliderTrackId(scope, channel),
         role: "group",
         "data-channel": channel,
         "data-orientation": orientation,
@@ -390,7 +401,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
           backgroundImage: getSliderBackground({
             orientation,
             channel,
-            dir: state.context.dir,
+            dir: prop("dir"),
             value: normalizedValue,
           }),
         },
@@ -405,8 +416,8 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         onClick(event) {
           if (!interactive) return
           event.preventDefault()
-          const thumbId = dom.getChannelSliderThumbId(state.context, channel)
-          dom.getById(state.context, thumbId)?.focus({ preventScroll: true })
+          const thumbId = dom.getChannelSliderThumbId(scope, channel)
+          scope.getById(thumbId)?.focus({ preventScroll: true })
         },
         style: {
           userSelect: "none",
@@ -438,7 +449,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
 
       return normalize.element({
         ...parts.channelSliderThumb.attrs,
-        id: dom.getChannelSliderThumbId(state.context, channel),
+        id: dom.getChannelSliderThumbId(scope, channel),
         role: "slider",
         "aria-label": channel,
         tabIndex: disabled ? undefined : 0,
@@ -497,7 +508,12 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
             },
           }
 
-          const exec = keyMap[getEventKey(event, state.context)]
+          const exec =
+            keyMap[
+              getEventKey(event, {
+                dir: prop("dir"),
+              })
+            ]
 
           if (exec) {
             exec(event)
@@ -515,7 +531,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
 
       return normalize.input({
         ...parts.channelInput.attrs,
-        dir: state.context.dir,
+        dir: prop("dir"),
         type: isTextField ? "text" : "number",
         "data-channel": channel,
         "aria-label": channel,
@@ -523,9 +539,9 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         autoComplete: "off",
         disabled: disabled,
         "data-disabled": dataAttr(disabled),
-        "data-invalid": dataAttr(state.context.invalid),
-        "data-readonly": dataAttr(state.context.readOnly),
-        readOnly: state.context.readOnly,
+        "data-invalid": dataAttr(prop("invalid")),
+        "data-readonly": dataAttr(prop("readOnly")),
+        readOnly: prop("readOnly"),
         defaultValue: getChannelValue(value, channel),
         min: channelRange?.minValue,
         max: channelRange?.maxValue,
@@ -568,11 +584,11 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       return normalize.input({
         type: "text",
         disabled,
-        name: state.context.name,
+        name: prop("name"),
         tabIndex: -1,
-        readOnly: state.context.readOnly,
-        required: state.context.required,
-        id: dom.getHiddenInputId(state.context),
+        readOnly: prop("readOnly"),
+        required: prop("required"),
+        id: dom.getHiddenInputId(scope),
         style: visuallyHiddenStyle,
         defaultValue: valueAsString,
       })
@@ -582,15 +598,15 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       return normalize.button({
         ...parts.eyeDropperTrigger.attrs,
         type: "button",
-        dir: state.context.dir,
+        dir: prop("dir"),
         disabled: disabled,
         "data-disabled": dataAttr(disabled),
-        "data-invalid": dataAttr(state.context.invalid),
-        "data-readonly": dataAttr(state.context.readOnly),
+        "data-invalid": dataAttr(prop("invalid")),
+        "data-readonly": dataAttr(prop("readOnly")),
         "aria-label": "Pick a color from the screen",
         onClick() {
           if (!interactive) return
-          send("EYEDROPPER.CLICK")
+          send({ type: "EYEDROPPER.CLICK" })
         },
       })
     },
@@ -609,7 +625,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       return normalize.button({
         ...parts.swatchTrigger.attrs,
         disabled: swatchState.disabled,
-        dir: state.context.dir,
+        dir: prop("dir"),
         type: "button",
         "aria-label": `select ${swatchState.valueAsString} as the color`,
         "data-state": swatchState.checked ? "checked" : "unchecked",
@@ -630,7 +646,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       const swatchState = getSwatchTriggerState(props)
       return normalize.element({
         ...parts.swatchIndicator.attrs,
-        dir: state.context.dir,
+        dir: prop("dir"),
         hidden: !swatchState.checked,
       })
     },
@@ -641,7 +657,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       const color = swatchState.value.toString(respectAlpha ? "css" : "hex")
       return normalize.element({
         ...parts.swatch.attrs,
-        dir: state.context.dir,
+        dir: prop("dir"),
         "data-state": swatchState.checked ? "checked" : "unchecked",
         "data-value": swatchState.valueAsString,
         style: {
@@ -655,12 +671,12 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     getFormatTriggerProps() {
       return normalize.button({
         ...parts.formatTrigger.attrs,
-        dir: state.context.dir,
+        dir: prop("dir"),
         type: "button",
-        "aria-label": `change color format to ${getNextFormat(state.context.format)}`,
+        "aria-label": `change color format to ${getNextFormat(format)}`,
         onClick(event) {
           if (event.currentTarget.disabled) return
-          const nextFormat = getNextFormat(state.context.format)
+          const nextFormat = getNextFormat(format)
           send({ type: "FORMAT.SET", format: nextFormat, src: "format-trigger" })
         },
       })
@@ -670,8 +686,8 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       return normalize.select({
         ...parts.formatSelect.attrs,
         "aria-label": "change color format",
-        dir: state.context.dir,
-        defaultValue: state.context.format,
+        dir: prop("dir"),
+        defaultValue: prop("format"),
         disabled: disabled,
         onChange(event) {
           const format = assertFormat(event.currentTarget.value)

@@ -27,7 +27,8 @@
   },
   "dependencies": {
     "@zag-js/core": "workspace:*",
-    "@zag-js/types": "workspace:*"
+    "@zag-js/types": "workspace:*",
+    "@zag-js/utils": "workspace:*"
   },
   "devDependencies": {
     "@sveltejs/package": "2.3.10",

@@ -10,11 +10,15 @@ import { useControls } from "~/hooks/use-controls"
 export default function Page() {
   const controls = useControls(sliderControls)
 
-  const [state, send] = useMachine(slider.machine({ id: createUniqueId(), value: [0] }), {
-    context: controls.context,
-  })
+  const service = useMachine(
+    slider.machine,
+    controls.mergeProps<slider.Props>({
+      id: createUniqueId(),
+      defaultValue: [0],
+    }),
+  )
 
-  const api = createMemo(() => slider.connect(state, send, normalizeProps))
+  const api = createMemo(() => slider.connect(service, normalizeProps))
 
   return (
     <>
@@ -58,8 +62,8 @@ export default function Page() {
         </form>
       </main>
 
-      <Toolbar controls={controls.ui}>
-        <StateVisualizer state={state} />
+      <Toolbar controls={controls}>
+        <StateVisualizer state={service} />
       </Toolbar>
     </>
   )

@@ -1,5 +1,5 @@
-import type { Machine, StateMachine as S } from "@zag-js/core"
 import type { CommonProperties, DirectionProperty, PropTypes, RequiredBy } from "@zag-js/types"
+import type { EventObject, Service } from "@zag-js/core"
 
 /* -----------------------------------------------------------------------------
  * Callback details
@@ -24,7 +24,7 @@ export type ElementIds = Partial<{
   itemTrigger(value: string): string
 }>
 
-interface PublicContext extends DirectionProperty, CommonProperties {
+export interface AccordionProps extends DirectionProperty, CommonProperties {
   /**
    * The ids of the elements in the accordion. Useful for composition.
    */
@@ -40,9 +40,14 @@ interface PublicContext extends DirectionProperty, CommonProperties {
    */
   collapsible?: boolean | undefined
   /**
-   * The `value` of the accordion items that are currently being expanded.
+   * The controlled value of the expanded accordion items.
    */
-  value: string[]
+  value?: string[] | undefined
+  /**
+   * The initial value of the expanded accordion items.
+   * Use when you don't need to control the value of the accordion.
+   */
+  defaultValue?: string[] | undefined
   /**
    * Whether the accordion items are disabled
    */
@@ -50,11 +55,11 @@ interface PublicContext extends DirectionProperty, CommonProperties {
   /**
    * The callback fired when the state of expanded/collapsed accordion items changes.
    */
-  onValueChange?(details: ValueChangeDetails): void
+  onValueChange?: ((details: ValueChangeDetails) => void) | undefined
   /**
    * The callback fired when the focused accordion item changes.
    */
-  onFocusChange?(details: FocusChangeDetails): void
+  onFocusChange?: ((details: FocusChangeDetails) => void) | undefined
   /**
    *  The orientation of the accordion items.
    *  @default "vertical"
@@ -62,35 +67,25 @@ interface PublicContext extends DirectionProperty, CommonProperties {
   orientation?: "horizontal" | "vertical" | undefined
 }
 
-export type UserDefinedContext = RequiredBy<PublicContext, "id">
+type PropsWithDefault = "multiple" | "collapsible" | "orientation"
 
-type ComputedContext = Readonly<{
-  /**
-   * @computed
-   * Whether the accordion items are horizontal.
-   */
-  isHorizontal: boolean
-}>
-
-interface PrivateContext {
-  /**
-   * @internal
-   * The `id` of the focused accordion item.
-   */
-  focusedValue: string | null
+export type AccordionSchema = {
+  state: "idle" | "focused"
+  props: RequiredBy<AccordionProps, PropsWithDefault>
+  context: {
+    value: string[]
+    focusedValue: string | null
+  }
+  computed: {
+    isHorizontal: boolean
+  }
+  action: string
+  guard: string
+  effect: string
+  event: EventObject
 }
 
-export interface MachineContext extends PublicContext, PrivateContext, ComputedContext {}
-
-export interface MachineState {
-  value: "idle" | "focused"
-}
-
-export type State = S.State<MachineContext, MachineState>
-
-export type Send = S.Send<S.AnyEventObject>
-
-export type Service = Machine<MachineContext, MachineState, S.AnyEventObject>
+export type AccordionService = Service<AccordionSchema>
 
 /* -----------------------------------------------------------------------------
  * Component API
@@ -122,7 +117,7 @@ export interface ItemState {
   disabled: boolean
 }
 
-export interface MachineApi<T extends PropTypes = PropTypes> {
+export interface AccordionApi<T extends PropTypes = PropTypes> {
   /**
    * The value of the focused accordion item.
    */

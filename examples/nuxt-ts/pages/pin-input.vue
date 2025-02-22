@@ -6,15 +6,12 @@ import serialize from "form-serialize"
 
 const controls = useControls(pinInputControls)
 
-const [state, send] = useMachine(
-  pinInput.machine({
-    id: "1",
-    name: "test",
-  }),
-  { context: controls.context },
-)
+const service = useMachine(pinInput.machine, {
+  id: useId(),
+  name: "test",
+})
 
-const api = computed(() => pinInput.connect(state.value, send, normalizeProps))
+const api = computed(() => pinInput.connect(service, normalizeProps))
 </script>
 
 <template>
@@ -42,7 +39,7 @@ const api = computed(() => pinInput.connect(state.value, send, normalizeProps))
   </main>
 
   <Toolbar>
-    <StateVisualizer :state="state" />
+    <StateVisualizer :state="service" />
     <template #controls>
       <Controls :control="controls" />
     </template>

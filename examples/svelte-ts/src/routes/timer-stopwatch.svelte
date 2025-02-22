@@ -4,14 +4,12 @@
   import { normalizeProps, useMachine } from "@zag-js/svelte"
   import * as timer from "@zag-js/timer"
 
-  const [snapshot, send] = useMachine(
-    timer.machine({
-      id: "s1",
-      autoStart: true,
-    }),
-  )
+  const service = useMachine(timer.machine, {
+    id: "s1",
+    autoStart: true,
+  })
 
-  const api = $derived(timer.connect(snapshot, send, normalizeProps))
+  const api = $derived(timer.connect(service, normalizeProps))
 </script>
 
 <main class="timer">
@@ -36,5 +34,5 @@
 </main>
 
 <Toolbar controls={null} viz>
-  <StateVisualizer state={snapshot} />
+  <StateVisualizer state={service} />
 </Toolbar>

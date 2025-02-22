@@ -3,14 +3,12 @@ import * as steps from "@zag-js/steps"
 import { stepsControls, stepsData } from "@zag-js/shared"
 import { normalizeProps, useMachine } from "@zag-js/vue"
 
-const [state, send] = useMachine(
-  steps.machine({
-    id: "1",
-    count: stepsData.length,
-  }),
-)
+const service = useMachine(steps.machine, {
+  id: useId(),
+  count: stepsData.length,
+})
 
-const api = computed(() => steps.connect(state.value, send, normalizeProps))
+const api = computed(() => steps.connect(service, normalizeProps))
 </script>
 
 <template>
@@ -42,6 +40,6 @@ const api = computed(() => steps.connect(state.value, send, normalizeProps))
   </main>
 
   <Toolbar>
-    <StateVisualizer :state="state" />
+    <StateVisualizer :state="service" />
   </Toolbar>
 </template>

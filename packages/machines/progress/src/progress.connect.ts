@@ -1,21 +1,22 @@
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import { parts } from "./progress.anatomy"
-import { dom } from "./progress.dom"
-import type { MachineApi, MachineContext, ProgressState, Send, State } from "./progress.types"
+import * as dom from "./progress.dom"
+import type { ProgressApi, ProgressService, ProgressState } from "./progress.types"
 
-export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>): MachineApi<T> {
-  const percent = state.context.percent
-  const percentAsString = state.context.isIndeterminate ? "" : `${percent}%`
+export function connect<T extends PropTypes>(service: ProgressService, normalize: NormalizeProps<T>): ProgressApi<T> {
+  const { context, computed, prop, send, scope } = service
+  const percent = computed("percent")
+  const percentAsString = computed("isIndeterminate") ? "" : `${percent}%`
 
-  const max = state.context.max
-  const min = state.context.min
+  const max = prop("max")
+  const min = prop("min")
 
-  const orientation = state.context.orientation
-  const translations = state.context.translations
-  const indeterminate = state.context.isIndeterminate
+  const orientation = prop("orientation")
+  const translations = prop("translations")
+  const indeterminate = computed("isIndeterminate")
 
-  const value = state.context.value
-  const valueAsString = translations.value({ value, max, percent, min })
+  const value = context.get("value")
+  const valueAsString = translations?.value({ value, max, percent, min }) ?? ""
   const progressState = getProgressState(value, max)
 
   const progressbarProps = {
@@ -29,7 +30,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     "data-state": progressState,
   }
 
-  const circleProps = getCircleProps(state.context)
+  const circleProps = getCircleProps(service)
 
   return {
     value,
@@ -51,9 +52,9 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
 
     getRootProps() {
       return normalize.element({
-        dir: state.context.dir,
+        dir: prop("dir"),
         ...parts.root.attrs,
-        id: dom.getRootId(state.context),
+        id: dom.getRootId(scope),
         "data-max": max,
         "data-value": value ?? undefined,
         "data-state": progressState,
@@ -66,8 +67,8 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
 
     getLabelProps() {
       return normalize.element({
-        dir: state.context.dir,
-        id: dom.getLabelId(state.context),
+        dir: prop("dir"),
+        id: dom.getLabelId(scope),
         ...parts.label.attrs,
         "data-orientation": orientation,
       })
@@ -75,7 +76,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
 
     getValueTextProps() {
       return normalize.element({
-        dir: state.context.dir,
+        dir: prop("dir"),
         "aria-live": "polite",
         ...parts.valueText.attrs,
       })
@@ -83,8 +84,8 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
 
     getTrackProps() {
       return normalize.element({
-        dir: state.context.dir,
-        id: dom.getTrackId(state.context),
+        dir: prop("dir"),
+        id: dom.getTrackId(scope),
         ...parts.track.attrs,
         ...progressbarProps,
       })
@@ -92,20 +93,20 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
 
     getRangeProps() {
       return normalize.element({
-        dir: state.context.dir,
+        dir: prop("dir"),
         ...parts.range.attrs,
         "data-orientation": orientation,
         "data-state": progressState,
         style: {
-          [state.context.isHorizontal ? "width" : "height"]: indeterminate ? undefined : `${percent}%`,
+          [computed("isHorizontal") ? "width" : "height"]: indeterminate ? undefined : `${percent}%`,
         },
       })
     },
 
     getCircleProps() {
       return normalize.element({
-        dir: state.context.dir,
-        id: dom.getCircleId(state.context),
+        dir: prop("dir"),
+        id: dom.getCircleId(scope),
         ...parts.circle.attrs,
         ...progressbarProps,
         ...circleProps.root,
@@ -114,7 +115,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
 
     getCircleTrackProps() {
       return normalize.element({
-        dir: state.context.dir,
+        dir: prop("dir"),
         "data-orientation": orientation,
         ...parts.circleTrack.attrs,
         ...circleProps.track,
@@ -123,7 +124,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
 
     getCircleRangeProps() {
       return normalize.element({
-        dir: state.context.dir,
+        dir: prop("dir"),
         ...parts.circleRange.attrs,
         ...circleProps.range,
         "data-state": progressState,
@@ -132,7 +133,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
 
     getViewProps(props) {
       return normalize.element({
-        dir: state.context.dir,
+        dir: prop("dir"),
         ...parts.view.attrs,
         "data-state": props.state,
         hidden: props.state !== progressState,
@@ -145,7 +146,8 @@ function getProgressState(value: number | null, maxValue: number): ProgressState
   return value == null ? "indeterminate" : value === maxValue ? "complete" : "loading"
 }
 
-function getCircleProps(ctx: MachineContext) {
+function getCircleProps(service: ProgressService) {
+  const { context, computed } = service
   const circleProps = {
     style: {
       "--radius": "calc(var(--size) / 2 - var(--thickness) / 2)",
@@ -165,14 +167,14 @@ function getCircleProps(ctx: MachineContext) {
     },
     track: circleProps,
     range: {
-      opacity: ctx.value === 0 ? 0 : undefined,
+      opacity: context.get("value") === 0 ? 0 : undefined,
       style: {
         ...circleProps.style,
-        "--percent": ctx.percent,
+        "--percent": computed("percent"),
         "--circumference": `calc(2 * 3.14159 * var(--radius))`,
         "--offset": `calc(var(--circumference) * (100 - var(--percent)) / 100)`,
         strokeDashoffset: `calc(var(--circumference) * ((100 - var(--percent)) / 100))`,
-        strokeDasharray: ctx.isIndeterminate ? undefined : `var(--circumference)`,
+        strokeDasharray: computed("isIndeterminate") ? undefined : `var(--circumference)`,
         transformOrigin: "center",
         transform: "rotate(-90deg)",
       },

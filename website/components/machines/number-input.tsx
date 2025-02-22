@@ -4,14 +4,12 @@ import { BiChevronDown, BiChevronUp } from "react-icons/bi"
 import { useId } from "react"
 
 export function NumberInput(props: any) {
-  const [state, send] = useMachine(
-    numberInput.machine({ id: useId(), ...props.defaultContext }),
-    {
-      context: props.controls,
-    },
-  )
+  const service = useMachine(numberInput.machine, {
+    id: useId(),
+    ...props.controls,
+  })
 
-  const api = numberInput.connect(state, send, normalizeProps)
+  const api = numberInput.connect(service, normalizeProps)
 
   return (
     <div {...api.getRootProps()}>

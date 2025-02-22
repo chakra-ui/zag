@@ -9,17 +9,15 @@ import { useControls } from "../hooks/use-controls"
 export default function Page() {
   const controls = useControls(stepsControls)
 
-  const [state, send] = useMachine(
-    steps.machine({
+  const service = useMachine(
+    steps.machine,
+    controls.mergeProps<steps.Props>({
       id: createUniqueId(),
       count: stepsData.length,
     }),
-    {
-      context: controls.context,
-    },
   )
 
-  const api = createMemo(() => steps.connect(state, send, normalizeProps))
+  const api = createMemo(() => steps.connect(service, normalizeProps))
 
   return (
     <>
@@ -58,8 +56,8 @@ export default function Page() {
         </div>
       </main>
 
-      <Toolbar controls={controls.ui}>
-        <StateVisualizer state={state} />
+      <Toolbar controls={controls}>
+        <StateVisualizer state={service} />
       </Toolbar>
     </>
   )

@@ -68,12 +68,10 @@ editable machine in your project 🔥
 To set the initial value of the editable, pass the `value` property to the
 machine's context.
 
-```jsx {3}
-const [state, send] = useMachine(
-  editable.machine({
-    value: "Hello World",
-  }),
-)
+```jsx {2}
+const service = useMachine(editable.machine, {
+  defaultValue: "Hello World",
+})
 ```
 
 ## Listening for value changes
@@ -83,17 +81,15 @@ The editable machine supports two ways of listening for value changes:
 - `onValueChange`: called when value changes.
 - `onValueCommit`: called when the value is committed.
 
-```jsx {3-4}
-const [state, send] = useMachine(
-  editable.machine({
-    onValueChange(details) {
-      console.log("Value changed", details.value)
-    },
-    onValueCommit(details) {
-      console.log("Value submitted", details.value)
-    },
-  }),
-)
+```jsx {2-4}
+const service = useMachine(editable.machine, {
+  onValueChange(details) {
+    console.log("Value changed", details.value)
+  },
+  onValueCommit(details) {
+    console.log("Value submitted", details.value)
+  },
+})
 ```
 
 ## Using custom controls
@@ -109,12 +105,10 @@ the component.
 To auto-grow the editable as the content changes, pass the `autoResize: true`
 property to the machine's context.
 
-```jsx {3}
-const [state, send] = useMachine(
-  editable.machine({
-    autoResize: true,
-  }),
-)
+```jsx {2}
+const service = useMachine(editable.machine, {
+  autoResize: true,
+})
 ```
 
 When using autoresize, the input and preview elements should not have any
@@ -127,13 +121,11 @@ It is a common pattern to set a maximum of the editable as it auto-grows. To
 achieve this, set the `maxWidth` property of the machine's context to the
 desired value.
 
-```jsx {3-4}
-const [state, send] = useMachine(
-  editable.machine({
-    autoResize: true,
-    maxWidth: "320px",
-  }),
-)
+```jsx {2-3}
+const service = useMachine(editable.machine, {
+  autoResize: true,
+  maxWidth: "320px",
+})
 ```
 
 When the editable reaches the specified max-width, it'll clip the preview text
@@ -149,12 +141,10 @@ The editable supports two modes of activating the "edit" state:
 To change the mode to "double-click", set the `activationMode: 'dblclick'`
 property in the machine's context.
 
-```jsx {3}
-const [state, send] = useMachine(
-  editable.machine({
-    activationMode: "dblclick",
-  }),
-)
+```jsx {2}
+const service = useMachine(editable.machine, {
+  activationMode: "dblclick",
+})
 ```
 
 ## Usage with Textarea
@@ -166,7 +156,7 @@ When a textarea is used, the editable will commit the value on `Cmd + Enter` or
 > Use the `api.inputProps` to spread the input props to the textarea element.
 > You might need to cast the input props to the correct type.
 
-```tsx {3}
+```tsx {2}
 <textarea {...(api.inputProps as HTMLTextareaProps<HTMLTextareaElement>)} />
 ```
 

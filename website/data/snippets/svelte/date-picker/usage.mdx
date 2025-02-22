@@ -3,8 +3,8 @@
   import * as datepicker from "@zag-js/date-picker"
   import { portal, useMachine, normalizeProps } from "@zag-js/svelte"
 
-  const [snapshot, send] = useMachine(datepicker.machine({ id: "1" }))
-  const api = $derived(datepicker.connect(snapshot, send, normalizeProps))
+  const service = useMachine(datepicker.machine, ({ id: "1" }))
+  const api = $derived(datepicker.connect(service, normalizeProps))
 </script>
 
 <div {...api.getControlProps()}>

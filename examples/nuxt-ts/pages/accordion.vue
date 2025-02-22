@@ -6,11 +6,9 @@ import { ChevronRight } from "lucide-vue-next"
 
 const controls = useControls(accordionControls)
 
-const [state, send] = useMachine(accordion.machine({ id: "1" }), {
-  context: controls.context,
-})
+const service = useMachine(accordion.machine, { id: useId() })
 
-const api = computed(() => accordion.connect(state.value, send, normalizeProps))
+const api = computed(() => accordion.connect(service, normalizeProps))
 </script>
 
 <template>
@@ -34,7 +32,7 @@ const api = computed(() => accordion.connect(state.value, send, normalizeProps))
   </main>
 
   <Toolbar>
-    <StateVisualizer :state="state" />
+    <StateVisualizer :state="service" />
     <template #controls>
       <Controls :control="controls" />
     </template>

@@ -161,9 +161,6 @@ export const splitterControls = defineControls({
 
 export const toastControls = defineControls({
   dir: { type: "select", options: ["ltr", "rtl"] as const, defaultValue: "ltr" },
-  pauseOnPageIdle: { type: "boolean", defaultValue: false },
-  max: { type: "number", defaultValue: 50 },
-  overlap: { type: "boolean", defaultValue: true },
 })
 
 export const selectControls = defineControls({

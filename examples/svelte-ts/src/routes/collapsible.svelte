@@ -8,11 +8,9 @@
 
   const controls = useControls(collapsibleControls)
 
-  const [snapshot, send] = useMachine(collapsible.machine({ id: "1" }), {
-    context: controls.context,
-  })
+  const service = useMachine(collapsible.machine, { id: "1" })
 
-  const api = $derived(collapsible.connect(snapshot, send, normalizeProps))
+  const api = $derived(collapsible.connect(service, normalizeProps))
 </script>
 
 <main class="collapsible">
@@ -37,5 +35,5 @@
 </main>
 
 <Toolbar {controls}>
-  <StateVisualizer state={snapshot} />
+  <StateVisualizer state={service} />
 </Toolbar>

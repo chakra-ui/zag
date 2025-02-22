@@ -23,7 +23,6 @@ export function useScrollSpy(selectors: string[]) {
       if (el) observer.current?.observe(el)
     })
     return () => observer.current?.disconnect()
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [str])
 
   return activeId

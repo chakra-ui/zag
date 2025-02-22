@@ -10,11 +10,9 @@ import { useControls } from "~/hooks/use-controls"
 export default function Page() {
   const controls = useControls(hoverCardControls)
 
-  const [state, send] = useMachine(hoverCard.machine({ id: createUniqueId() }), {
-    context: controls.context,
-  })
+  const service = useMachine(hoverCard.machine, { id: createUniqueId() })
 
-  const api = createMemo(() => hoverCard.connect(state, send, normalizeProps))
+  const api = createMemo(() => hoverCard.connect(service, normalizeProps))
 
   return (
     <>
@@ -42,8 +40,8 @@ export default function Page() {
         </div>
       </main>
 
-      <Toolbar controls={controls.ui}>
-        <StateVisualizer state={state} />
+      <Toolbar controls={controls}>
+        <StateVisualizer state={service} />
       </Toolbar>
     </>
   )

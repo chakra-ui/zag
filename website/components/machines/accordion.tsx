@@ -28,14 +28,13 @@ type AccordionProps = {
 }
 
 export function Accordion(props: AccordionProps) {
-  const [state, send] = useMachine(
-    accordion.machine({ id: useId(), value: ["Aircraft"] }),
-    {
-      context: props.controls,
-    },
-  )
+  const service = useMachine(accordion.machine, {
+    id: useId(),
+    defaultValue: ["Aircraft"],
+    ...props.controls,
+  })
 
-  const api = accordion.connect(state, send, normalizeProps)
+  const api = accordion.connect(service, normalizeProps)
 
   return (
     <div {...api.getRootProps()}>

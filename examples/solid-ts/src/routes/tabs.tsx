@@ -9,11 +9,15 @@ import { useControls } from "~/hooks/use-controls"
 export default function Page() {
   const controls = useControls(tabsControls)
 
-  const [state, send] = useMachine(tabs.machine({ id: createUniqueId(), value: "nils" }), {
-    context: controls.context,
-  })
+  const service = useMachine(
+    tabs.machine,
+    controls.mergeProps<tabs.Props>({
+      id: createUniqueId(),
+      defaultValue: "nils",
+    }),
+  )
 
-  const api = createMemo(() => tabs.connect(state, send, normalizeProps))
+  const api = createMemo(() => tabs.connect(service, normalizeProps))
 
   return (
     <>
@@ -42,8 +46,8 @@ export default function Page() {
         </div>
       </main>
 
-      <Toolbar controls={controls.ui}>
-        <StateVisualizer state={state} />
+      <Toolbar controls={controls}>
+        <StateVisualizer state={service} />
       </Toolbar>
     </>
   )

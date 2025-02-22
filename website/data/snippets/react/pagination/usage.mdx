@@ -4,11 +4,12 @@ import { useMachine, normalizeProps } from "@zag-js/react"
 import { data } from "./data"
 
 function Pagination() {
-  const [state, send] = useMachine(
-    pagination.machine({ id: "1", count: data.length }),
-  )
+  const service = useMachine(pagination.machine, {
+    id: "1",
+    count: data.length,
+  })
 
-  const api = pagination.connect(state, send, normalizeProps)
+  const api = pagination.connect(service, normalizeProps)
 
   return (
     <div>

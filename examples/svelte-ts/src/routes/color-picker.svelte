@@ -11,19 +11,14 @@
 
   const controls = useControls(colorPickerControls)
 
-  const [snapshot, send] = useMachine(
-    colorPicker.machine({
-      id: "1",
-      name: "color",
-      format: "hsla",
-      value: colorPicker.parse("hsl(0, 100%, 50%)"),
-    }),
-    {
-      context: controls.context,
-    },
-  )
+  const service = useMachine(colorPicker.machine, {
+    id: "1",
+    name: "color",
+    format: "hsla",
+    defaultValue: colorPicker.parse("hsl(0, 100%, 50%)"),
+  })
 
-  const api = $derived(colorPicker.connect(snapshot, send, normalizeProps))
+  const api = $derived(colorPicker.connect(service, normalizeProps))
 </script>
 
 <main class="color-picker">
@@ -40,6 +35,7 @@
       </label>
 
       <div {...api.getControlProps()}>
+        <!-- svelte-ignore a11y_consider_explicit_label -->
         <button {...api.getTriggerProps()}>
           <div {...api.getTransparencyGridProps({ size: "10px" })}></div>
           <div {...api.getSwatchProps({ value: api.value })}></div>
@@ -106,6 +102,7 @@
 
             <div {...api.getSwatchGroupProps()} style="display:flex;gap:10px;">
               {#each presets as preset}
+                <!-- svelte-ignore a11y_consider_explicit_label -->
                 <button {...api.getSwatchTriggerProps({ value: preset })}>
                   <div style="position:relative;">
                     <div {...api.getTransparencyGridProps({ size: "4px" })}></div>
@@ -128,7 +125,7 @@
 </main>
 
 <Toolbar {controls}>
-  <StateVisualizer state={snapshot} />
+  <StateVisualizer state={service} />
 </Toolbar>
 
 {#snippet EyeDropIcon()}

@@ -10,16 +10,14 @@ const selectData = [
 ]
 
 export function Select() {
-  const [state, send] = useMachine(
-    select.machine({
-      id: createUniqueId(),
-      collection: select.collection({
-        items: selectData,
-      }),
+  const service = useMachine(select.machine, {
+    id: createUniqueId(),
+    collection: select.collection({
+      items: selectData,
     }),
-  )
+  })
 
-  const api = createMemo(() => select.connect(state, send, normalizeProps))
+  const api = createMemo(() => select.connect(service, normalizeProps))
 
   return (
     <div>

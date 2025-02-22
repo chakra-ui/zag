@@ -9,11 +9,9 @@ import { useControls } from "~/hooks/use-controls"
 export default function Page() {
   const controls = useControls(numberInputControls)
 
-  const [state, send] = useMachine(numberInput.machine({ id: createUniqueId() }), {
-    context: controls.context,
-  })
+  const service = useMachine(numberInput.machine, controls.mergeProps({ id: createUniqueId() }))
 
-  const api = createMemo(() => numberInput.connect(state, send, normalizeProps))
+  const api = createMemo(() => numberInput.connect(service, normalizeProps))
 
   return (
     <>
@@ -35,8 +33,8 @@ export default function Page() {
         </div>
       </main>
 
-      <Toolbar controls={controls.ui}>
-        <StateVisualizer state={state} omit={["formatter", "parser"]} />
+      <Toolbar controls={controls}>
+        <StateVisualizer state={service} omit={["formatter", "parser"]} />
       </Toolbar>
     </>
   )

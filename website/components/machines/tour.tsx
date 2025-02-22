@@ -44,13 +44,13 @@ const steps: tour.StepDetails[] = [
 ]
 
 export function Tour(props: any) {
-  const context = props.controls
-
-  const [state, send] = useMachine(tour.machine({ id: useId(), steps }), {
-    context,
+  const service = useMachine(tour.machine, {
+    id: useId(),
+    steps,
+    ...props.controls,
   })
 
-  const api = tour.connect(state, send, normalizeProps)
+  const api = tour.connect(service, normalizeProps)
 
   return (
     <>

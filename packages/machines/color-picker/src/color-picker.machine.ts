@@ -1,647 +1,648 @@
 import { parseColor, type Color } from "@zag-js/color-utils"
-import { createMachine, guards } from "@zag-js/core"
+import { createGuards, createMachine, type Scope } from "@zag-js/core"
 import { trackDismissableElement } from "@zag-js/dismissable"
 import {
   disableTextSelection,
   dispatchInputValueEvent,
   getInitialFocus,
   raf,
+  setElementValue,
   trackFormControl,
   trackPointerMove,
 } from "@zag-js/dom-query"
-import { getPlacement } from "@zag-js/popper"
-import { compact, tryCatch } from "@zag-js/utils"
-import { dom } from "./color-picker.dom"
+import { getPlacement, type Placement } from "@zag-js/popper"
+import type { Orientation } from "@zag-js/types"
+import { tryCatch } from "@zag-js/utils"
+import * as dom from "./color-picker.dom"
 import { parse } from "./color-picker.parse"
-import type {
-  ColorFormat,
-  ColorType,
-  ExtendedColorChannel,
-  MachineContext,
-  MachineState,
-  UserDefinedContext,
-} from "./color-picker.types"
+import type { ColorFormat, ColorPickerSchema, ExtendedColorChannel } from "./color-picker.types"
 import { getChannelValue } from "./utils/get-channel-input-value"
 
-const { and } = guards
+const { and } = createGuards<ColorPickerSchema>()
 
-export function machine(userContext: UserDefinedContext) {
-  const ctx = compact(userContext)
-  return createMachine<MachineContext, MachineState>(
-    {
-      id: "color-picker",
-      initial: ctx.open ? "open" : "idle",
-      context: {
-        dir: "ltr",
-        value: parse("#000000"),
-        format: "rgba",
-        disabled: false,
-        closeOnSelect: false,
-        openAutoFocus: true,
-        ...ctx,
-        activeId: null,
-        activeChannel: null,
-        activeOrientation: null,
-        fieldsetDisabled: false,
-        restoreFocus: true,
-        positioning: {
-          ...ctx.positioning,
-          placement: "bottom",
+export const machine = createMachine<ColorPickerSchema>({
+  props({ props }) {
+    return {
+      dir: "ltr",
+      defaultValue: parse("#000000"),
+      defaultFormat: "rgba",
+      openAutoFocus: true,
+      ...props,
+      positioning: {
+        placement: "bottom",
+        ...props.positioning,
+      },
+    }
+  },
+
+  initialState({ prop }) {
+    const open = prop("open") || prop("defaultOpen")
+    return open ? "open" : "idle"
+  },
+
+  context({ prop, bindable, getContext, scope }) {
+    return {
+      value: bindable<Color>(() => ({
+        defaultValue: prop("defaultValue"),
+        value: prop("value"),
+        isEqual(a, b) {
+          return a.toString("css") === b?.toString("css")
         },
-      },
-
-      computed: {
-        isRtl: (ctx) => ctx.dir === "rtl",
-        isDisabled: (ctx) => !!ctx.disabled || ctx.fieldsetDisabled,
-        isInteractive: (ctx) => !(ctx.isDisabled || ctx.readOnly),
-        valueAsString: (ctx) => ctx.value.toString(ctx.format),
-        areaValue: (ctx) => {
-          const format = ctx.format.startsWith("hsl") ? "hsla" : "hsba"
-          return ctx.value.toFormat(format)
+        hash(a) {
+          return a.toString("css")
         },
-      },
+        onChange(value) {
+          const ctx = getContext()
+          const valueAsString = value.toString(ctx.get("format"))
+          prop("onValueChange")?.({ value, valueAsString })
+          dispatchInputValueEvent(dom.getHiddenInputEl(scope), { value: valueAsString })
+        },
+      })),
+      format: bindable<ColorFormat>(() => ({
+        defaultValue: prop("defaultFormat"),
+        value: prop("format"),
+        onChange(format) {
+          prop("onFormatChange")?.({ format })
+        },
+      })),
+      activeId: bindable<string | null>(() => ({ defaultValue: null })),
+      activeChannel: bindable<any>(() => ({ defaultValue: null })),
+      activeOrientation: bindable<Orientation | null>(() => ({ defaultValue: null })),
+      fieldsetDisabled: bindable<boolean>(() => ({ defaultValue: false })),
+      restoreFocus: bindable<boolean>(() => ({ defaultValue: true })),
+      currentPlacement: bindable<Placement | undefined>(() => ({
+        defaultValue: undefined,
+      })),
+    }
+  },
 
-      activities: ["trackFormControl"],
+  computed: {
+    rtl: ({ prop }) => prop("dir") === "rtl",
+    disabled: ({ prop, context }) => !!prop("disabled") || context.get("fieldsetDisabled"),
+    interactive: ({ prop }) => !(prop("disabled") || prop("readOnly")),
+    valueAsString: ({ context }) => context.get("value").toString(context.get("format")),
+    areaValue: ({ context }) => {
+      const format = context.get("format").startsWith("hsl") ? "hsla" : "hsba"
+      return context.get("value").toFormat(format)
+    },
+  },
 
-      watch: {
-        value: ["syncInputElements"],
-        format: ["syncFormatSelectElement"],
-        open: ["toggleVisibility"],
-      },
+  effects: ["trackFormControl"],
 
+  watch({ prop, context, action, track }) {
+    track([() => context.hash("value")], () => {
+      action(["syncInputElements"])
+    })
+
+    track([() => context.get("format")], () => {
+      action(["syncFormatSelectElement"])
+    })
+
+    track([() => prop("open")], () => {
+      action(["toggleVisibility"])
+    })
+  },
+
+  on: {
+    "VALUE.SET": {
+      actions: ["setValue"],
+    },
+    "FORMAT.SET": {
+      actions: ["setFormat"],
+    },
+    "CHANNEL_INPUT.CHANGE": {
+      actions: ["setChannelColorFromInput"],
+    },
+    "EYEDROPPER.CLICK": {
+      actions: ["openEyeDropper"],
+    },
+    "SWATCH_TRIGGER.CLICK": {
+      actions: ["setValue"],
+    },
+  },
+
+  states: {
+    idle: {
+      tags: ["closed"],
       on: {
-        "VALUE.SET": {
-          actions: ["setValue"],
+        "CONTROLLED.OPEN": {
+          target: "open",
+          actions: ["setInitialFocus"],
         },
-        "FORMAT.SET": {
-          actions: ["setFormat"],
+        OPEN: [
+          {
+            guard: "isOpenControlled",
+            actions: ["invokeOnOpen"],
+          },
+          {
+            target: "open",
+            actions: ["invokeOnOpen", "setInitialFocus"],
+          },
+        ],
+        "TRIGGER.CLICK": [
+          {
+            guard: "isOpenControlled",
+            actions: ["invokeOnOpen"],
+          },
+          {
+            target: "open",
+            actions: ["invokeOnOpen", "setInitialFocus"],
+          },
+        ],
+        "CHANNEL_INPUT.FOCUS": {
+          target: "focused",
+          actions: ["setActiveChannel"],
         },
-        "CHANNEL_INPUT.CHANGE": {
+      },
+    },
+
+    focused: {
+      tags: ["closed", "focused"],
+      on: {
+        "CONTROLLED.OPEN": {
+          target: "open",
+          actions: ["setInitialFocus"],
+        },
+        OPEN: [
+          {
+            guard: "isOpenControlled",
+            actions: ["invokeOnOpen"],
+          },
+          {
+            target: "open",
+            actions: ["invokeOnOpen", "setInitialFocus"],
+          },
+        ],
+        "TRIGGER.CLICK": [
+          {
+            guard: "isOpenControlled",
+            actions: ["invokeOnOpen"],
+          },
+          {
+            target: "open",
+            actions: ["invokeOnOpen", "setInitialFocus"],
+          },
+        ],
+        "CHANNEL_INPUT.FOCUS": {
+          actions: ["setActiveChannel"],
+        },
+        "CHANNEL_INPUT.BLUR": {
+          target: "idle",
           actions: ["setChannelColorFromInput"],
         },
-        "EYEDROPPER.CLICK": {
-          actions: ["openEyeDropper"],
-        },
-        "SWATCH_TRIGGER.CLICK": {
-          actions: ["setValue"],
-        },
-      },
-
-      states: {
-        idle: {
-          tags: ["closed"],
-          on: {
-            "CONTROLLED.OPEN": {
-              target: "open",
-              actions: ["setInitialFocus"],
-            },
-            OPEN: [
-              {
-                guard: "isOpenControlled",
-                actions: ["invokeOnOpen"],
-              },
-              {
-                target: "open",
-                actions: ["invokeOnOpen", "setInitialFocus"],
-              },
-            ],
-            "TRIGGER.CLICK": [
-              {
-                guard: "isOpenControlled",
-                actions: ["invokeOnOpen"],
-              },
-              {
-                target: "open",
-                actions: ["invokeOnOpen", "setInitialFocus"],
-              },
-            ],
-            "CHANNEL_INPUT.FOCUS": {
-              target: "focused",
-              actions: ["setActiveChannel"],
-            },
-          },
-        },
-
-        focused: {
-          tags: ["closed", "focused"],
-          on: {
-            "CONTROLLED.OPEN": {
-              target: "open",
-              actions: ["setInitialFocus"],
-            },
-            OPEN: [
-              {
-                guard: "isOpenControlled",
-                actions: ["invokeOnOpen"],
-              },
-              {
-                target: "open",
-                actions: ["invokeOnOpen", "setInitialFocus"],
-              },
-            ],
-            "TRIGGER.CLICK": [
-              {
-                guard: "isOpenControlled",
-                actions: ["invokeOnOpen"],
-              },
-              {
-                target: "open",
-                actions: ["invokeOnOpen", "setInitialFocus"],
-              },
-            ],
-            "CHANNEL_INPUT.FOCUS": {
-              actions: ["setActiveChannel"],
-            },
-            "CHANNEL_INPUT.BLUR": {
-              target: "idle",
-              actions: ["setChannelColorFromInput"],
-            },
-            "TRIGGER.BLUR": {
-              target: "idle",
-            },
-          },
-        },
-
-        open: {
-          tags: ["open"],
-          activities: ["trackPositioning", "trackDismissableElement"],
-          on: {
-            "CONTROLLED.CLOSE": [
-              {
-                guard: "shouldRestoreFocus",
-                target: "focused",
-                actions: ["setReturnFocus"],
-              },
-              {
-                target: "idle",
-              },
-            ],
-            "TRIGGER.CLICK": [
-              {
-                guard: "isOpenControlled",
-                actions: ["invokeOnClose"],
-              },
-              {
-                target: "idle",
-                actions: ["invokeOnClose"],
-              },
-            ],
-            "AREA.POINTER_DOWN": {
-              target: "open:dragging",
-              actions: ["setActiveChannel", "setAreaColorFromPoint", "focusAreaThumb"],
-            },
-            "AREA.FOCUS": {
-              actions: ["setActiveChannel"],
-            },
-            "CHANNEL_SLIDER.POINTER_DOWN": {
-              target: "open:dragging",
-              actions: ["setActiveChannel", "setChannelColorFromPoint", "focusChannelThumb"],
-            },
-            "CHANNEL_SLIDER.FOCUS": {
-              actions: ["setActiveChannel"],
-            },
-            "AREA.ARROW_LEFT": {
-              actions: ["decrementAreaXChannel"],
-            },
-            "AREA.ARROW_RIGHT": {
-              actions: ["incrementAreaXChannel"],
-            },
-            "AREA.ARROW_UP": {
-              actions: ["incrementAreaYChannel"],
-            },
-            "AREA.ARROW_DOWN": {
-              actions: ["decrementAreaYChannel"],
-            },
-            "AREA.PAGE_UP": {
-              actions: ["incrementAreaXChannel"],
-            },
-            "AREA.PAGE_DOWN": {
-              actions: ["decrementAreaXChannel"],
-            },
-            "CHANNEL_SLIDER.ARROW_LEFT": {
-              actions: ["decrementChannel"],
-            },
-            "CHANNEL_SLIDER.ARROW_RIGHT": {
-              actions: ["incrementChannel"],
-            },
-            "CHANNEL_SLIDER.ARROW_UP": {
-              actions: ["incrementChannel"],
-            },
-            "CHANNEL_SLIDER.ARROW_DOWN": {
-              actions: ["decrementChannel"],
-            },
-            "CHANNEL_SLIDER.PAGE_UP": {
-              actions: ["incrementChannel"],
-            },
-            "CHANNEL_SLIDER.PAGE_DOWN": {
-              actions: ["decrementChannel"],
-            },
-            "CHANNEL_SLIDER.HOME": {
-              actions: ["setChannelToMin"],
-            },
-            "CHANNEL_SLIDER.END": {
-              actions: ["setChannelToMax"],
-            },
-            "CHANNEL_INPUT.BLUR": {
-              actions: ["setChannelColorFromInput"],
-            },
-            INTERACT_OUTSIDE: [
-              {
-                guard: "isOpenControlled",
-                actions: ["invokeOnClose"],
-              },
-              {
-                guard: "shouldRestoreFocus",
-                target: "focused",
-                actions: ["invokeOnClose", "setReturnFocus"],
-              },
-              {
-                target: "idle",
-                actions: ["invokeOnClose"],
-              },
-            ],
-            CLOSE: [
-              {
-                guard: "isOpenControlled",
-                actions: ["invokeOnClose"],
-              },
-              {
-                target: "idle",
-                actions: ["invokeOnClose"],
-              },
-            ],
-            "SWATCH_TRIGGER.CLICK": [
-              {
-                guard: and("isOpenControlled", "closeOnSelect"),
-                actions: ["setValue", "invokeOnClose"],
-              },
-              {
-                guard: "closeOnSelect",
-                target: "focused",
-                actions: ["setValue", "invokeOnClose", "setReturnFocus"],
-              },
-              {
-                actions: ["setValue"],
-              },
-            ],
-          },
-        },
-
-        "open:dragging": {
-          tags: ["open"],
-          exit: ["clearActiveChannel"],
-          activities: ["trackPointerMove", "disableTextSelection", "trackPositioning", "trackDismissableElement"],
-          on: {
-            "CONTROLLED.CLOSE": [
-              {
-                guard: "shouldRestoreFocus",
-                target: "focused",
-                actions: ["setReturnFocus"],
-              },
-              {
-                target: "idle",
-              },
-            ],
-            "AREA.POINTER_MOVE": {
-              actions: ["setAreaColorFromPoint", "focusAreaThumb"],
-            },
-            "AREA.POINTER_UP": {
-              target: "open",
-              actions: ["invokeOnChangeEnd"],
-            },
-            "CHANNEL_SLIDER.POINTER_MOVE": {
-              actions: ["setChannelColorFromPoint", "focusChannelThumb"],
-            },
-            "CHANNEL_SLIDER.POINTER_UP": {
-              target: "open",
-              actions: ["invokeOnChangeEnd"],
-            },
-            INTERACT_OUTSIDE: [
-              {
-                guard: "isOpenControlled",
-                actions: ["invokeOnClose"],
-              },
-              {
-                guard: "shouldRestoreFocus",
-                target: "focused",
-                actions: ["invokeOnClose", "setReturnFocus"],
-              },
-              {
-                target: "idle",
-                actions: ["invokeOnClose"],
-              },
-            ],
-            CLOSE: [
-              {
-                guard: "isOpenControlled",
-                actions: ["invokeOnClose"],
-              },
-              {
-                target: "idle",
-                actions: ["invokeOnClose"],
-              },
-            ],
-          },
+        "TRIGGER.BLUR": {
+          target: "idle",
         },
       },
     },
-    {
-      guards: {
-        closeOnSelect: (ctx) => !!ctx.closeOnSelect,
-        isOpenControlled: (ctx) => !!ctx["open.controlled"],
-        shouldRestoreFocus: (ctx) => !!ctx.restoreFocus,
-      },
-      activities: {
-        trackPositioning(ctx) {
-          ctx.currentPlacement ||= ctx.positioning.placement
-          const anchorEl = dom.getTriggerEl(ctx)
-          const getPositionerEl = () => dom.getPositionerEl(ctx)
-          return getPlacement(anchorEl, getPositionerEl, {
-            ...ctx.positioning,
-            defer: true,
-            onComplete(data) {
-              ctx.currentPlacement = data.placement
-            },
-          })
-        },
-        trackDismissableElement(ctx, _evt, { send }) {
-          const getContentEl = () => dom.getContentEl(ctx)
-          return trackDismissableElement(getContentEl, {
-            exclude: dom.getTriggerEl(ctx),
-            defer: true,
-            onInteractOutside(event) {
-              ctx.onInteractOutside?.(event)
-              if (event.defaultPrevented) return
-              ctx.restoreFocus = !(event.detail.focusable || event.detail.contextmenu)
-            },
-            onPointerDownOutside: ctx.onPointerDownOutside,
-            onFocusOutside: ctx.onFocusOutside,
-            onDismiss() {
-              send({ type: "INTERACT_OUTSIDE" })
-            },
-          })
-        },
-        trackFormControl(ctx, _evt, { send, initialContext }) {
-          const inputEl = dom.getHiddenInputEl(ctx)
-          return trackFormControl(inputEl, {
-            onFieldsetDisabledChange(disabled) {
-              ctx.fieldsetDisabled = disabled
-            },
-            onFormReset() {
-              send({ type: "VALUE.SET", value: initialContext.value, src: "form.reset" })
-            },
-          })
-        },
-        trackPointerMove(ctx, evt, { send }) {
-          return trackPointerMove(dom.getDoc(ctx), {
-            onPointerMove({ point }) {
-              const type = ctx.activeId === "area" ? "AREA.POINTER_MOVE" : "CHANNEL_SLIDER.POINTER_MOVE"
-              send({ type, point, format: evt.format })
-            },
-            onPointerUp() {
-              const type = ctx.activeId === "area" ? "AREA.POINTER_UP" : "CHANNEL_SLIDER.POINTER_UP"
-              send({ type })
-            },
-          })
-        },
-        disableTextSelection(ctx) {
-          return disableTextSelection({ doc: dom.getDoc(ctx), target: dom.getContentEl(ctx) })
-        },
-      },
-      actions: {
-        openEyeDropper(ctx) {
-          const isSupported = "EyeDropper" in dom.getWin(ctx)
-          if (!isSupported) return
-          const win = dom.getWin(ctx)
-          const picker = new win.EyeDropper()
-          picker
-            .open()
-            .then(({ sRGBHex }) => {
-              const format = ctx.value.getFormat()
-              const color = parseColor(sRGBHex).toFormat(format) as Color
-              set.value(ctx, color)
-              ctx.onValueChangeEnd?.({ value: ctx.value, valueAsString: ctx.valueAsString })
-            })
-            .catch(() => void 0)
-        },
-        setActiveChannel(ctx, evt) {
-          ctx.activeId = evt.id
-          if (evt.channel) ctx.activeChannel = evt.channel
-          if (evt.orientation) ctx.activeOrientation = evt.orientation
-        },
-        clearActiveChannel(ctx) {
-          ctx.activeChannel = null
-          ctx.activeId = null
-          ctx.activeOrientation = null
-        },
-        setAreaColorFromPoint(ctx, evt) {
-          const normalizedValue = evt.format ? ctx.value.toFormat(evt.format) : ctx.areaValue
-          const { xChannel, yChannel } = evt.channel || ctx.activeChannel
 
-          const percent = dom.getAreaValueFromPoint(ctx, evt.point)
-          if (!percent) return
-
-          const xValue = normalizedValue.getChannelPercentValue(xChannel, percent.x)
-          const yValue = normalizedValue.getChannelPercentValue(yChannel, 1 - percent.y)
-
-          const color = normalizedValue.withChannelValue(xChannel, xValue).withChannelValue(yChannel, yValue)
-          set.value(ctx, color)
+    open: {
+      tags: ["open"],
+      effects: ["trackPositioning", "trackDismissableElement"],
+      on: {
+        "CONTROLLED.CLOSE": [
+          {
+            guard: "shouldRestoreFocus",
+            target: "focused",
+            actions: ["setReturnFocus"],
+          },
+          {
+            target: "idle",
+          },
+        ],
+        "TRIGGER.CLICK": [
+          {
+            guard: "isOpenControlled",
+            actions: ["invokeOnClose"],
+          },
+          {
+            target: "idle",
+            actions: ["invokeOnClose"],
+          },
+        ],
+        "AREA.POINTER_DOWN": {
+          target: "open:dragging",
+          actions: ["setActiveChannel", "setAreaColorFromPoint", "focusAreaThumb"],
         },
-        setChannelColorFromPoint(ctx, evt) {
-          const channel = evt.channel || ctx.activeId
-          const normalizedValue = evt.format ? ctx.value.toFormat(evt.format) : ctx.areaValue
-
-          const percent = dom.getChannelSliderValueFromPoint(ctx, evt.point, channel)
-          if (!percent) return
-
-          const orientation = ctx.activeOrientation || "horizontal"
-          const channelPercent = orientation === "horizontal" ? percent.x : percent.y
-
-          const value = normalizedValue.getChannelPercentValue(channel, channelPercent)
-          const color = normalizedValue.withChannelValue(channel, value)
-          set.value(ctx, color)
+        "AREA.FOCUS": {
+          actions: ["setActiveChannel"],
         },
-        setValue(ctx, evt) {
-          set.value(ctx, evt.value)
+        "CHANNEL_SLIDER.POINTER_DOWN": {
+          target: "open:dragging",
+          actions: ["setActiveChannel", "setChannelColorFromPoint", "focusChannelThumb"],
         },
-        setFormat(ctx, evt) {
-          set.format(ctx, evt.format)
+        "CHANNEL_SLIDER.FOCUS": {
+          actions: ["setActiveChannel"],
         },
-        syncInputElements(ctx) {
-          sync.inputs(ctx)
+        "AREA.ARROW_LEFT": {
+          actions: ["decrementAreaXChannel"],
         },
-        invokeOnChangeEnd(ctx) {
-          invoke.changeEnd(ctx)
+        "AREA.ARROW_RIGHT": {
+          actions: ["incrementAreaXChannel"],
         },
-        setChannelColorFromInput(ctx, evt) {
-          const { channel, isTextField, value } = evt
-          const currentAlpha = ctx.value.getChannelValue("alpha")
-
-          // handle other text channels
-          let color: Color
-
-          // handle alpha channel
-          if (channel === "alpha") {
-            //
-            let valueAsNumber = parseFloat(value)
-            valueAsNumber = Number.isNaN(valueAsNumber) ? currentAlpha : valueAsNumber
-            color = ctx.value.withChannelValue("alpha", valueAsNumber)
-            //
-          } else if (isTextField) {
-            //
-            color = tryCatch(
-              () => parse(value).withChannelValue("alpha", currentAlpha),
-              () => ctx.value,
-            )
-            //
-          } else {
-            //
-            const current = ctx.value.toFormat(ctx.format)
-            const valueAsNumber = Number.isNaN(value) ? current.getChannelValue(channel) : value
-            color = current.withChannelValue(channel, valueAsNumber)
-            //
-          }
-
-          // sync channel input value immediately (in event user types native css color, we need to convert it to the current channel format)
-          sync.inputs(ctx, color)
-
-          // set new color
-          set.value(ctx, color)
+        "AREA.ARROW_UP": {
+          actions: ["incrementAreaYChannel"],
         },
-        incrementChannel(ctx, evt) {
-          const color = ctx.value.incrementChannel(evt.channel, evt.step)
-          set.value(ctx, color)
+        "AREA.ARROW_DOWN": {
+          actions: ["decrementAreaYChannel"],
         },
-        decrementChannel(ctx, evt) {
-          const color = ctx.value.decrementChannel(evt.channel, evt.step)
-          set.value(ctx, color)
+        "AREA.PAGE_UP": {
+          actions: ["incrementAreaXChannel"],
         },
-        incrementAreaXChannel(ctx, evt) {
-          const { xChannel } = evt.channel
-          const color = ctx.areaValue.incrementChannel(xChannel, evt.step)
-          set.value(ctx, color)
+        "AREA.PAGE_DOWN": {
+          actions: ["decrementAreaXChannel"],
         },
-        decrementAreaXChannel(ctx, evt) {
-          const { xChannel } = evt.channel
-          const color = ctx.areaValue.decrementChannel(xChannel, evt.step)
-          set.value(ctx, color)
+        "CHANNEL_SLIDER.ARROW_LEFT": {
+          actions: ["decrementChannel"],
         },
-        incrementAreaYChannel(ctx, evt) {
-          const { yChannel } = evt.channel
-          const color = ctx.areaValue.incrementChannel(yChannel, evt.step)
-          set.value(ctx, color)
+        "CHANNEL_SLIDER.ARROW_RIGHT": {
+          actions: ["incrementChannel"],
         },
-        decrementAreaYChannel(ctx, evt) {
-          const { yChannel } = evt.channel
-          const color = ctx.areaValue.decrementChannel(yChannel, evt.step)
-          set.value(ctx, color)
+        "CHANNEL_SLIDER.ARROW_UP": {
+          actions: ["incrementChannel"],
         },
-        setChannelToMax(ctx, evt) {
-          const range = ctx.value.getChannelRange(evt.channel)
-          const color = ctx.value.withChannelValue(evt.channel, range.maxValue)
-          set.value(ctx, color)
+        "CHANNEL_SLIDER.ARROW_DOWN": {
+          actions: ["decrementChannel"],
         },
-        setChannelToMin(ctx, evt) {
-          const range = ctx.value.getChannelRange(evt.channel)
-          const color = ctx.value.withChannelValue(evt.channel, range.minValue)
-          set.value(ctx, color)
+        "CHANNEL_SLIDER.PAGE_UP": {
+          actions: ["incrementChannel"],
         },
-        focusAreaThumb(ctx) {
-          raf(() => {
-            dom.getAreaThumbEl(ctx)?.focus({ preventScroll: true })
-          })
+        "CHANNEL_SLIDER.PAGE_DOWN": {
+          actions: ["decrementChannel"],
         },
-        focusChannelThumb(ctx, evt) {
-          raf(() => {
-            dom.getChannelSliderThumbEl(ctx, evt.channel)?.focus({ preventScroll: true })
-          })
+        "CHANNEL_SLIDER.HOME": {
+          actions: ["setChannelToMin"],
         },
-        setInitialFocus(ctx) {
-          if (!ctx.openAutoFocus) return
-          raf(() => {
-            const element = getInitialFocus({
-              root: dom.getContentEl(ctx),
-              getInitialEl: ctx.initialFocusEl,
-            })
-            element?.focus({ preventScroll: true })
-          })
+        "CHANNEL_SLIDER.END": {
+          actions: ["setChannelToMax"],
         },
-        setReturnFocus(ctx) {
-          raf(() => {
-            dom.getTriggerEl(ctx)?.focus({ preventScroll: true })
-          })
+        "CHANNEL_INPUT.BLUR": {
+          actions: ["setChannelColorFromInput"],
         },
-        syncFormatSelectElement(ctx) {
-          sync.formatSelect(ctx)
-        },
-        invokeOnOpen(ctx) {
-          ctx.onOpenChange?.({ open: true })
-        },
-        invokeOnClose(ctx) {
-          ctx.onOpenChange?.({ open: false })
-        },
-        toggleVisibility(ctx, evt, { send }) {
-          send({ type: ctx.open ? "CONTROLLED.OPEN" : "CONTROLLED.CLOSE", previousEvent: evt })
-        },
-      },
-      compareFns: {
-        value: (a, b) => a.isEqual(b),
+        INTERACT_OUTSIDE: [
+          {
+            guard: "isOpenControlled",
+            actions: ["invokeOnClose"],
+          },
+          {
+            guard: "shouldRestoreFocus",
+            target: "focused",
+            actions: ["invokeOnClose", "setReturnFocus"],
+          },
+          {
+            target: "idle",
+            actions: ["invokeOnClose"],
+          },
+        ],
+        CLOSE: [
+          {
+            guard: "isOpenControlled",
+            actions: ["invokeOnClose"],
+          },
+          {
+            target: "idle",
+            actions: ["invokeOnClose"],
+          },
+        ],
+        "SWATCH_TRIGGER.CLICK": [
+          {
+            guard: and("isOpenControlled", "closeOnSelect"),
+            actions: ["setValue", "invokeOnClose"],
+          },
+          {
+            guard: "closeOnSelect",
+            target: "focused",
+            actions: ["setValue", "invokeOnClose", "setReturnFocus"],
+          },
+          {
+            actions: ["setValue"],
+          },
+        ],
       },
     },
-  )
+
+    "open:dragging": {
+      tags: ["open"],
+      exit: ["clearActiveChannel"],
+      effects: ["trackPointerMove", "disableTextSelection", "trackPositioning", "trackDismissableElement"],
+      on: {
+        "CONTROLLED.CLOSE": [
+          {
+            guard: "shouldRestoreFocus",
+            target: "focused",
+            actions: ["setReturnFocus"],
+          },
+          {
+            target: "idle",
+          },
+        ],
+        "AREA.POINTER_MOVE": {
+          actions: ["setAreaColorFromPoint", "focusAreaThumb"],
+        },
+        "AREA.POINTER_UP": {
+          target: "open",
+          actions: ["invokeOnChangeEnd"],
+        },
+        "CHANNEL_SLIDER.POINTER_MOVE": {
+          actions: ["setChannelColorFromPoint", "focusChannelThumb"],
+        },
+        "CHANNEL_SLIDER.POINTER_UP": {
+          target: "open",
+          actions: ["invokeOnChangeEnd"],
+        },
+        INTERACT_OUTSIDE: [
+          {
+            guard: "isOpenControlled",
+            actions: ["invokeOnClose"],
+          },
+          {
+            guard: "shouldRestoreFocus",
+            target: "focused",
+            actions: ["invokeOnClose", "setReturnFocus"],
+          },
+          {
+            target: "idle",
+            actions: ["invokeOnClose"],
+          },
+        ],
+        CLOSE: [
+          {
+            guard: "isOpenControlled",
+            actions: ["invokeOnClose"],
+          },
+          {
+            target: "idle",
+            actions: ["invokeOnClose"],
+          },
+        ],
+      },
+    },
+  },
+
+  implementations: {
+    guards: {
+      closeOnSelect: ({ prop }) => !!prop("closeOnSelect"),
+      isOpenControlled: ({ prop }) => prop("open") != null,
+      shouldRestoreFocus: ({ context }) => !!context.get("restoreFocus"),
+    },
+    effects: {
+      trackPositioning({ context, prop, scope }) {
+        if (!context.get("currentPlacement")) {
+          context.set("currentPlacement", prop("positioning")?.placement)
+        }
+
+        const anchorEl = dom.getTriggerEl(scope)
+        const getPositionerEl = () => dom.getPositionerEl(scope)
+        return getPlacement(anchorEl, getPositionerEl, {
+          ...prop("positioning"),
+          defer: true,
+          onComplete(data) {
+            context.set("currentPlacement", data.placement)
+          },
+        })
+      },
+      trackDismissableElement({ context, scope, prop, send }) {
+        const getContentEl = () => dom.getContentEl(scope)
+        return trackDismissableElement(getContentEl, {
+          exclude: dom.getTriggerEl(scope),
+          defer: true,
+          onInteractOutside(event) {
+            prop("onInteractOutside")?.(event)
+            if (event.defaultPrevented) return
+            context.set("restoreFocus", !(event.detail.focusable || event.detail.contextmenu))
+          },
+          onPointerDownOutside: prop("onPointerDownOutside"),
+          onFocusOutside: prop("onFocusOutside"),
+          onDismiss() {
+            send({ type: "INTERACT_OUTSIDE" })
+          },
+        })
+      },
+      trackFormControl({ context, scope, send }) {
+        const inputEl = dom.getHiddenInputEl(scope)
+        return trackFormControl(inputEl, {
+          onFieldsetDisabledChange(disabled) {
+            context.set("fieldsetDisabled", disabled)
+          },
+          onFormReset() {
+            send({ type: "VALUE.SET", value: context.initial("value"), src: "form.reset" })
+          },
+        })
+      },
+      trackPointerMove({ context, scope, event, send }) {
+        return trackPointerMove(scope.getDoc(), {
+          onPointerMove({ point }) {
+            const type = context.get("activeId") === "area" ? "AREA.POINTER_MOVE" : "CHANNEL_SLIDER.POINTER_MOVE"
+            send({ type, point, format: event.format })
+          },
+          onPointerUp() {
+            const type = context.get("activeId") === "area" ? "AREA.POINTER_UP" : "CHANNEL_SLIDER.POINTER_UP"
+            send({ type })
+          },
+        })
+      },
+      disableTextSelection({ scope }) {
+        return disableTextSelection({
+          doc: scope.getDoc(),
+          target: dom.getContentEl(scope),
+        })
+      },
+    },
+    actions: {
+      openEyeDropper({ scope, context }) {
+        const win = scope.getWin()
+        const isSupported = "EyeDropper" in win
+        if (!isSupported) return
+        const picker = new win.EyeDropper()
+        picker
+          .open()
+          .then(({ sRGBHex }) => {
+            const format = context.get("value").getFormat()
+            const color = parseColor(sRGBHex).toFormat(format) as Color
+            context.set("value", color)
+          })
+          .catch(() => void 0)
+      },
+      setActiveChannel({ context, event }) {
+        context.set("activeId", event.id)
+        if (event.channel) context.set("activeChannel", event.channel)
+        if (event.orientation) context.set("activeOrientation", event.orientation)
+      },
+      clearActiveChannel({ context }) {
+        context.set("activeChannel", null)
+        context.set("activeId", null)
+        context.set("activeOrientation", null)
+      },
+      setAreaColorFromPoint({ context, event, computed, scope }) {
+        const v = event.format ? context.get("value").toFormat(event.format) : computed("areaValue")
+        const { xChannel, yChannel } = event.channel || context.get("activeChannel")
+
+        const percent = dom.getAreaValueFromPoint(scope, event.point)
+        if (!percent) return
+
+        const xValue = v.getChannelPercentValue(xChannel, percent.x)
+        const yValue = v.getChannelPercentValue(yChannel, 1 - percent.y)
+
+        const color = v.withChannelValue(xChannel, xValue).withChannelValue(yChannel, yValue)
+        context.set("value", color)
+      },
+      setChannelColorFromPoint({ context, event, computed, scope }) {
+        const channel = event.channel || context.get("activeId")
+        const normalizedValue = event.format ? context.get("value").toFormat(event.format) : computed("areaValue")
+
+        const percent = dom.getChannelSliderValueFromPoint(scope, event.point, channel)
+        if (!percent) return
+
+        const orientation = context.get("activeOrientation") || "horizontal"
+        const channelPercent = orientation === "horizontal" ? percent.x : percent.y
+
+        const value = normalizedValue.getChannelPercentValue(channel, channelPercent)
+        const color = normalizedValue.withChannelValue(channel, value)
+        context.set("value", color)
+      },
+      setValue({ context, event }) {
+        context.set("value", event.value)
+      },
+      setFormat({ context, event }) {
+        context.set("format", event.format)
+      },
+      syncInputElements({ context, scope }) {
+        syncInputs(scope, context.get("value"))
+      },
+      invokeOnChangeEnd({ context, prop, computed }) {
+        prop("onValueChangeEnd")?.({
+          value: context.get("value"),
+          valueAsString: computed("valueAsString"),
+        })
+      },
+      setChannelColorFromInput({ context, event, scope }) {
+        const { channel, isTextField, value } = event
+        const currentAlpha = context.get("value").getChannelValue("alpha")
+
+        // handle other text channels
+        let color: Color
+
+        // handle alpha channel
+        if (channel === "alpha") {
+          //
+          let valueAsNumber = parseFloat(value)
+          valueAsNumber = Number.isNaN(valueAsNumber) ? currentAlpha : valueAsNumber
+          color = context.get("value").withChannelValue("alpha", valueAsNumber)
+          //
+        } else if (isTextField) {
+          //
+          color = tryCatch(
+            () => parse(value).withChannelValue("alpha", currentAlpha),
+            () => context.get("value"),
+          )
+          //
+        } else {
+          //
+          const current = context.get("value").toFormat(context.get("format"))
+          const valueAsNumber = Number.isNaN(value) ? current.getChannelValue(channel) : value
+          color = current.withChannelValue(channel, valueAsNumber)
+          //
+        }
+
+        // sync channel input value immediately (in event user types native css color, we need to convert it to the current channel format)
+        syncInputs(scope, context.get("value"), color)
+
+        // set new color
+        context.set("value", color)
+      },
+      incrementChannel({ context, event }) {
+        const color = context.get("value").incrementChannel(event.channel, event.step)
+        context.set("value", color)
+      },
+      decrementChannel({ context, event }) {
+        const color = context.get("value").decrementChannel(event.channel, event.step)
+        context.set("value", color)
+      },
+      incrementAreaXChannel({ context, event, computed }) {
+        const { xChannel } = event.channel
+        const color = computed("areaValue").incrementChannel(xChannel, event.step)
+        context.set("value", color)
+      },
+      decrementAreaXChannel({ context, event, computed }) {
+        const { xChannel } = event.channel
+        const color = computed("areaValue").decrementChannel(xChannel, event.step)
+        context.set("value", color)
+      },
+      incrementAreaYChannel({ context, event, computed }) {
+        const { yChannel } = event.channel
+        const color = computed("areaValue").incrementChannel(yChannel, event.step)
+        context.set("value", color)
+      },
+      decrementAreaYChannel({ context, event, computed }) {
+        const { yChannel } = event.channel
+        const color = computed("areaValue").decrementChannel(yChannel, event.step)
+        context.set("value", color)
+      },
+      setChannelToMax({ context, event }) {
+        const value = context.get("value")
+        const range = value.getChannelRange(event.channel)
+        const color = value.withChannelValue(event.channel, range.maxValue)
+        context.set("value", color)
+      },
+      setChannelToMin({ context, event }) {
+        const value = context.get("value")
+        const range = value.getChannelRange(event.channel)
+        const color = value.withChannelValue(event.channel, range.minValue)
+        context.set("value", color)
+      },
+      focusAreaThumb({ scope }) {
+        raf(() => {
+          dom.getAreaThumbEl(scope)?.focus({ preventScroll: true })
+        })
+      },
+      focusChannelThumb({ event, scope }) {
+        raf(() => {
+          dom.getChannelSliderThumbEl(scope, event.channel)?.focus({ preventScroll: true })
+        })
+      },
+      setInitialFocus({ prop, scope }) {
+        if (!prop("openAutoFocus")) return
+        raf(() => {
+          const element = getInitialFocus({
+            root: dom.getContentEl(scope),
+            getInitialEl: prop("initialFocusEl"),
+          })
+          element?.focus({ preventScroll: true })
+        })
+      },
+      setReturnFocus({ scope }) {
+        raf(() => {
+          dom.getTriggerEl(scope)?.focus({ preventScroll: true })
+        })
+      },
+      syncFormatSelectElement({ context, scope }) {
+        syncFormatSelect(scope, context.get("format"))
+      },
+      invokeOnOpen({ prop }) {
+        prop("onOpenChange")?.({ open: true })
+      },
+      invokeOnClose({ prop }) {
+        prop("onOpenChange")?.({ open: false })
+      },
+      toggleVisibility({ prop, event, send }) {
+        send({ type: prop("open") ? "CONTROLLED.OPEN" : "CONTROLLED.CLOSE", previousEvent: event })
+      },
+    },
+  },
+})
+
+function syncInputs(scope: Scope, currentValue: Color, nextValue?: Color) {
+  const channelInputEls = dom.getChannelInputEls(scope)
+  raf(() => {
+    channelInputEls.forEach((inputEl) => {
+      const channel = inputEl.dataset.channel as ExtendedColorChannel | null
+      setElementValue(inputEl, getChannelValue(nextValue || currentValue, channel))
+    })
+  })
 }
 
-const sync = {
-  // sync channel inputs
-  inputs(ctx: MachineContext, color?: Color) {
-    const channelInputs = dom.getChannelInputEls(ctx)
-    raf(() => {
-      channelInputs.forEach((inputEl) => {
-        const channel = inputEl.dataset.channel as ExtendedColorChannel | null
-        dom.setValue(inputEl, getChannelValue(color || ctx.value, channel))
-      })
-    })
-  },
-  // sync format select
-  formatSelect(ctx: MachineContext) {
-    const selectEl = dom.getFormatSelectEl(ctx)
-    raf(() => {
-      dom.setValue(selectEl, ctx.format)
-    })
-  },
-}
-
-const invoke = {
-  changeEnd(ctx: MachineContext) {
-    const value = ctx.value.toFormat(ctx.format)
-    ctx.onValueChangeEnd?.({
-      value,
-      valueAsString: ctx.valueAsString,
-    })
-  },
-  change(ctx: MachineContext) {
-    const value = ctx.value.toFormat(ctx.format)
-    ctx.onValueChange?.({
-      value,
-      valueAsString: ctx.valueAsString,
-    })
-
-    dispatchInputValueEvent(dom.getHiddenInputEl(ctx), { value: ctx.valueAsString })
-  },
-  formatChange(ctx: MachineContext) {
-    ctx.onFormatChange?.({ format: ctx.format })
-  },
-}
-
-const set = {
-  value(ctx: MachineContext, color: Color | ColorType | undefined) {
-    if (!color || ctx.value.isEqual(color)) return
-    ctx.value = color
-    invoke.change(ctx)
-  },
-  format(ctx: MachineContext, format: ColorFormat) {
-    if (ctx.format === format) return
-    ctx.format = format
-    invoke.formatChange(ctx)
-  },
+function syncFormatSelect(scope: Scope, format: ColorFormat) {
+  const selectEl = dom.getFormatSelectEl(scope)
+  if (!selectEl) return
+  raf(() => setElementValue(selectEl, format))
 }

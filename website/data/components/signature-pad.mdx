@@ -65,18 +65,16 @@ The signature pad component emits the following events:
 - `onDrawEnd`: Emitted when the user stops drawing the signature.
 
 ```jsx
-const [state, send] = useMachine(
-  signature.machine({
-    onDraw(details) {
-      // details => { path: string[] }
-      console.log("Drawing signature", details)
-    },
-    onDrawEnd(details) {
-      // details => { path: string[], toDataURL: () => string }
-      console.log("Signature drawn", details)
-    },
-  }),
-)
+const service = useMachine(signature.machine, {
+  onDraw(details) {
+    // details => { path: string[] }
+    console.log("Drawing signature", details)
+  },
+  onDrawEnd(details) {
+    // details => { path: string[], toDataURL: () => string }
+    console.log("Signature drawn", details)
+  },
+})
 ```
 
 ## Clearing the signature
@@ -96,16 +94,14 @@ it as an image.
 > You can also leverage the `onDrawEnd` event to get the signature data URL.
 
 ```jsx
-const [state, send] = useMachine(
-  signature.machine({
-    onDrawEnd(details) {
-      details.getDataUrl("image/png").then((url) => {
-        // set the image URL in local state
-        setImageURL(url)
-      })
-    },
-  }),
-)
+const service = useMachine(signature.machine, {
+  onDrawEnd(details) {
+    details.getDataUrl("image/png").then((url) => {
+      // set the image URL in local state
+      setImageURL(url)
+    })
+  },
+})
 ```
 
 Next, render the image preview using the URL.
@@ -121,13 +117,11 @@ To change the stroke color, set the `drawing.fill` option to a valid CSS color.
 > Note: You can't use a css variable as the stroke color.
 
 ```jsx
-const [state, send] = useMachine(
-  signature.machine({
-    drawing: {
-      fill: "red",
-    },
-  }),
-)
+const service = useMachine(signature.machine, {
+  drawing: {
+    fill: "red",
+  },
+})
 ```
 
 ## Changing the stroke width
@@ -135,13 +129,11 @@ const [state, send] = useMachine(
 To change the stroke width, set the `drawing.size` option to a number.
 
 ```jsx
-const [state, send] = useMachine(
-  signature.machine({
-    drawing: {
-      size: 5,
-    },
-  }),
-)
+const service = useMachine(signature.machine, {
+  drawing: {
+    size: 5,
+  },
+})
 ```
 
 ## Simulating pressure sensitivity
@@ -150,13 +142,11 @@ Pressure sensitivity is disabled by default. To enable it, set the
 `drawing.simulatePressure` option to `true`.
 
 ```jsx
-const [state, send] = useMachine(
-  signature.machine({
-    drawing: {
-      simulatePressure: true,
-    },
-  }),
-)
+const service = useMachine(signature.machine, {
+  drawing: {
+    simulatePressure: true,
+  },
+})
 ```
 
 ## Usage in forms
@@ -164,11 +154,9 @@ const [state, send] = useMachine(
 To use the signature pad in a form, set the `name` context property.
 
 ```jsx
-const [state, send] = useMachine(
-  signature.machine({
-    name: "signature",
-  }),
-)
+const service = useMachine(signature.machine, {
+  name: "signature",
+})
 ```
 
 Then, render the hidden input element using `api.getHiddenInputProps()`.
@@ -182,11 +170,9 @@ Then, render the hidden input element using `api.getHiddenInputProps()`.
 Set the `disabled` context property to `true` to disable the signature pad.
 
 ```jsx
-const [state, send] = useMachine(
-  signature.machine({
-    disabled: true,
-  }),
-)
+const service = useMachine(signature.machine, {
+  disabled: true,
+})
 ```
 
 ## Making the signature pad read-only
@@ -195,11 +181,9 @@ Set the `readOnly` context property to `true` to make the signature pad
 read-only.
 
 ```jsx
-const [state, send] = useMachine(
-  signature.machine({
-    readOnly: true,
-  }),
-)
+const service = useMachine(signature.machine, {
+  readOnly: true,
+})
 ```
 
 ## Methods and Properties

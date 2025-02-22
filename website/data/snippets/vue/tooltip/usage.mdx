@@ -1,11 +1,11 @@
-```md
+```html
 <script setup>
-import * as tooltip from "@zag-js/tooltip";
-import { normalizeProps, useMachine } from "@zag-js/vue";
-import { computed } from "vue";
+  import * as tooltip from "@zag-js/tooltip"
+  import { normalizeProps, useMachine } from "@zag-js/vue"
+  import { computed } from "vue"
 
-const [state, send] = useMachine(tooltip.machine({ id: "1" }));
-const api = computed(() => tooltip.connect(state.value, send, normalizeProps));
+  const service = useMachine(tooltip.machine, { id: "1" })
+  const api = computed(() => tooltip.connect(service, normalizeProps))
 </script>
 
 <template>

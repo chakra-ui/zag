@@ -10,9 +10,12 @@
     { id: "grape", label: "Grapes" },
   ]
 
-  const [snapshot, send] = useMachine(radio.machine({ id: "1", name: "fruit" }))
+  const service = useMachine(radio.machine, {
+    id: "1",
+    name: "fruit",
+  })
 
-  const api = $derived(radio.connect(snapshot, send, normalizeProps))
+  const api = $derived(radio.connect(service, normalizeProps))
 </script>
 
 <div {...api.getRootProps()}>

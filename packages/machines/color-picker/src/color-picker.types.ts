@@ -1,5 +1,5 @@
 import type { Color, ColorAxes, ColorChannel, ColorFormat, ColorType } from "@zag-js/color-utils"
-import type { Machine, StateMachine as S } from "@zag-js/core"
+import type { EventObject, Service } from "@zag-js/core"
 import type { InteractOutsideHandlers } from "@zag-js/dismissable"
 import type { PositioningOptions } from "@zag-js/popper"
 import type { CommonProperties, DirectionProperty, Orientation, PropTypes, RequiredBy } from "@zag-js/types"
@@ -57,16 +57,21 @@ export type ElementIds = Partial<{
   channelSliderThumb(id: ColorChannel): string
 }>
 
-interface PublicContext extends CommonProperties, DirectionProperty, InteractOutsideHandlers {
+export interface ColorPickerProps extends CommonProperties, DirectionProperty, InteractOutsideHandlers {
   /**
    * The ids of the elements in the color picker. Useful for composition.
    */
   ids?: ElementIds | undefined
   /**
-   * The current color value
+   * The controlled color value of the color picker
+   */
+  value?: Color | undefined
+  /**
+   * The initial color value when rendered.
+   * Use when you don't need to control the color value of the color picker.
    * @default #000000
    */
-  value: Color
+  defaultValue?: Color | undefined
   /**
    * Whether the color picker is disabled
    */
@@ -102,24 +107,30 @@ interface PublicContext extends CommonProperties, DirectionProperty, InteractOut
   /**
    * The positioning options for the color picker
    */
-  positioning: PositioningOptions
+  positioning?: PositioningOptions | undefined
   /**
    * The initial focus element when the color picker is opened.
    */
   initialFocusEl?: (() => HTMLElement | null) | undefined
   /**
-   * Whether the color picker is open
+   * The controlled open state of the color picker
    */
   open?: boolean | undefined
   /**
-   * Whether the color picker open state is controlled by the user
+   * The initial open state of the color picker when rendered.
+   * Use when you don't need to control the open state of the color picker.
    */
-  "open.controlled"?: boolean | undefined
+  defaultOpen?: boolean | undefined
   /**
-   * The color format to use
+   * The controlled color format to use
+   */
+  format?: ColorFormat | undefined
+  /**
+   * The initial color format when rendered.
+   * Use when you don't need to control the color format of the color picker.
    * @default "rgba"
    */
-  format: ColorFormat
+  defaultFormat?: ColorFormat | undefined
   /**
    * Function called when the color format changes
    */
@@ -136,81 +147,36 @@ interface PublicContext extends CommonProperties, DirectionProperty, InteractOut
   openAutoFocus?: boolean | undefined
 }
 
-interface PrivateContext {
-  /**
-   * @internal
-   * The id of the thumb that is currently being dragged
-   */
-  activeId: string | null
-  /**
-   * @internal
-   * The channel that is currently being interacted with
-   */
-  activeChannel: Partial<ColorAxes> | null
-  /**
-   * @internal
-   * The orientation of the channel that is currently being interacted with
-   */
-  activeOrientation: Orientation | null
-  /**
-   * @internal
-   * Whether the checkbox's fieldset is disabled
-   */
-  fieldsetDisabled: boolean
-  /**
-   * @internal
-   * The current placement of the color picker
-   */
-  currentPlacement?: PositioningOptions["placement"] | undefined
-  /**
-   *  @internal
-   * Whether the color picker should return focus to the trigger when closed
-   */
-  restoreFocus?: boolean | undefined
+type PropsWithDefault = "defaultFormat" | "defaultValue" | "openAutoFocus" | "dir" | "positioning"
+
+export type ColorPickerSchema = {
+  tag: "open" | "closed" | "dragging" | "focused"
+  state: "idle" | "focused" | "open" | "open:dragging"
+  props: RequiredBy<ColorPickerProps, PropsWithDefault>
+  computed: {
+    disabled: boolean
+    rtl: boolean
+    interactive: boolean
+    valueAsString: string
+    areaValue: Color
+  }
+  context: {
+    format: ColorFormat
+    value: Color
+    activeId: string | null
+    activeChannel: Partial<ColorAxes> | null
+    activeOrientation: Orientation | null
+    fieldsetDisabled: boolean
+    currentPlacement: PositioningOptions["placement"] | undefined
+    restoreFocus: boolean
+  }
+  event: EventObject
+  action: string
+  effect: string
+  guard: string
 }
 
-type ComputedContext = Readonly<{
-  /**
-   * @computed
-   * Whether the color picker is in RTL mode
-   */
-  isRtl: boolean
-  /**
-   * @computed
-   * Whether the color picker is interactive
-   */
-  isInteractive: boolean
-  /**
-   * @computed
-   * The color value as a Color object
-   */
-  valueAsString: string
-  /**
-   * @computed
-   * Whether the color picker is disabled
-   */
-  isDisabled: boolean
-  /**
-   * @computed
-   * The area value as a Color object
-   */
-  areaValue: Color
-}>
-
-export type UserDefinedContext = RequiredBy<PublicContext, "id">
-
-export interface MachineContext extends PublicContext, PrivateContext, ComputedContext {}
-
-export interface MachineState {
-  tags: "open" | "closed" | "dragging" | "focused"
-  value: "idle" | "focused" | "open" | "open:dragging"
-}
-
-export type State = S.State<MachineContext, MachineState>
-
-export type Send = S.Send<S.AnyEventObject>
-
-export type Service = Machine<MachineContext, MachineState, S.AnyEventObject>
+export type ColorPickerService = Service<ColorPickerSchema>
 
 /* -----------------------------------------------------------------------------
  * Component API
@@ -268,7 +234,7 @@ export interface TransparencyGridProps {
   size?: string | undefined
 }
 
-export interface MachineApi<T extends PropTypes = PropTypes> {
+export interface ColorPickerApi<T extends PropTypes = PropTypes> {
   /**
    * Whether the color picker is being dragged
    */

@@ -15,14 +15,14 @@ type SegmentedControlProps = {
 }
 
 export function SegmentedControl(props: SegmentedControlProps) {
-  const [state, send] = useMachine(
-    radio.machine({ id: useId(), value: "react", orientation: "horizontal" }),
-    {
-      context: props.controls,
-    },
-  )
+  const service = useMachine(radio.machine, {
+    id: useId(),
+    defaultValue: "react",
+    orientation: "horizontal",
+    ...props.controls,
+  })
 
-  const api = radio.connect(state, send, normalizeProps)
+  const api = radio.connect(service, normalizeProps)
 
   return (
     <div className="segmented-control">

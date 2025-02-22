@@ -1,14 +1,20 @@
 <script setup lang="ts">
 import { highlightState } from "@zag-js/stringify-state"
-import { isRef } from "vue"
+import type { Service } from "@zag-js/core"
 
 const props = defineProps<{
-  state: any
+  state: Service<any>
   label?: string
   omit?: string[]
 }>()
 
-const state = isRef(props.state) ? props.state.value : props.state
+const obj = computed(() => {
+  const service = props.state
+  return {
+    state: service.state.get(),
+    event: service.event.current(),
+  }
+})
 </script>
 
 <template>
@@ -16,7 +22,7 @@ const state = isRef(props.state) ? props.state.value : props.state
     <pre>
         <details open>
           <summary> {{props.label || "Visualizer"}} </summary>
-          <div v-html="highlightState(state, props.omit)"></div>
+          <div v-html="highlightState(obj, props.omit)"></div>
         </details>
       </pre>
   </div>

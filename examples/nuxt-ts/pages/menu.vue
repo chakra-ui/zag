@@ -5,16 +5,19 @@ import { normalizeProps, useMachine } from "@zag-js/vue"
 
 const controls = useControls(menuControls)
 
-const [state, send] = useMachine(menu.machine({ id: "1", onSelect: console.log }))
+const service = useMachine(menu.machine, {
+  id: useId(),
+  onSelect: console.log,
+})
 
-const api = computed(() => menu.connect(state.value, send, normalizeProps))
+const api = computed(() => menu.connect(service, normalizeProps))
 </script>
 
 <template>
   <main>
     <div>
       <button v-bind="api.getTriggerProps()">Actions <span v-bind="api.getIndicatorProps()">▾</span></button>
-      <Teleport to="body">
+      <Teleport to="#teleports">
         <div v-bind="api.getPositionerProps()">
           <ul v-bind="api.getContentProps()">
             <li v-bind="api.getItemProps({ value: 'edit' })">Edit</li>
@@ -28,7 +31,7 @@ const api = computed(() => menu.connect(state.value, send, normalizeProps))
   </main>
 
   <Toolbar>
-    <StateVisualizer :state="state" />
+    <StateVisualizer :state="service" />
     <template #controls>
       <Controls :control="controls" />
     </template>

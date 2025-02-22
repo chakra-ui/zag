@@ -14,11 +14,12 @@ type MenuProps = {
 }
 
 export function Menu(props: MenuProps) {
-  const [state, send] = useMachine(menu.machine({ id: useId() }), {
-    context: props.controls,
+  const service = useMachine(menu.machine, {
+    id: useId(),
+    ...props.controls,
   })
 
-  const api = menu.connect(state, send, normalizeProps)
+  const api = menu.connect(service, normalizeProps)
 
   return (
     <div>

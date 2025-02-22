@@ -3,9 +3,9 @@ import * as numberInput from "@zag-js/number-input"
 import { useMachine, normalizeProps } from "@zag-js/react"
 
 export function NumberInput() {
-  const [state, send] = useMachine(numberInput.machine({ id: "1" }))
+  const service = useMachine(numberInput.machine, { id: "1" })
 
-  const api = numberInput.connect(state, send, normalizeProps)
+  const api = numberInput.connect(service, normalizeProps)
 
   return (
     <div {...api.getRootProps()}>

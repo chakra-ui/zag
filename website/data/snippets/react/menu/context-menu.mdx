@@ -3,8 +3,8 @@ import * as menu from "@zag-js/menu"
 import { useMachine, normalizeProps } from "@zag-js/react"
 
 export function ContextMenu() {
-  const [state, send] = useMachine(menu.machine({ id: "1" }))
-  const api = menu.connect(state, send, normalizeProps)
+  const service = useMachine(menu.machine, { id: "1" })
+  const api = menu.connect(service, normalizeProps)
 
   return (
     <div>

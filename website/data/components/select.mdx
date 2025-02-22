@@ -74,7 +74,7 @@ machine's context.
 > The `value` property must be an array of strings. If selecting a single value,
 > pass an array with a single string.
 
-```jsx {14}
+```jsx {13}
 const collection = select.collection({
   items: [
     { label: "Nigeria", value: "ng" },
@@ -84,13 +84,11 @@ const collection = select.collection({
   ],
 })
 
-const [state, send] = useMachine(
-  select.machine({
-    id: useId(),
-    collection,
-    value: ["ng"],
-  }),
-)
+const service = useMachine(select.machine, {
+  id: useId(),
+  collection,
+  defaultValue: ["ng"],
+})
 ```
 
 ## Selecting multiple values
@@ -99,13 +97,11 @@ To allow selecting multiple values, set the `multiple` property in the machine's
 context to `true`.
 
 ```jsx {5}
-const [state, send] = useMachine(
-  select.machine({
-    id: useId(),
-    collection,
-    multiple: true,
-  }),
-)
+const service = useMachine(select.machine, {
+  id: useId(),
+  collection,
+  multiple: true,
+})
 ```
 
 ## Using a custom object format
@@ -143,12 +139,10 @@ const collection = select.collection({
 })
 
 // use the collection
-const [state, send] = useMachine(
-  select.machine({
-    id: useId(),
-    collection,
-  }),
-)
+const service = useMachine(select.machine, {
+  id: useId(),
+  collection,
+})
 ```
 
 ## Usage within a form
@@ -165,14 +159,12 @@ To use select within a form, you'll need to:
 To disable the select, set the `disabled` property in the machine's context to
 `true`.
 
-```jsx {5}
-const [state, send] = useMachine(
-  select.machine({
-    id: useId(),
-    collection,
-    disabled: true,
-  }),
-)
+```jsx {4}
+const service = useMachine(select.machine, {
+  id: useId(),
+  collection,
+  disabled: true,
+})
 ```
 
 ## Disabling an item
@@ -180,7 +172,7 @@ const [state, send] = useMachine(
 To make a combobox option disabled, pass the `isItemDisabled` property to the
 collection function.
 
-```jsx {3-5}
+```jsx {3-4}
 const collection = select.collection({
   items: countries,
   isItemDisabled(item) {
@@ -188,12 +180,10 @@ const collection = select.collection({
   },
 })
 
-const [state, send] = useMachine(
-  select.machine({
-    id: useId(),
-    collection,
-  }),
-)
+const service = useMachine(select.machine, {
+  id: useId(),
+  collection,
+})
 ```
 
 ## Close on select
@@ -203,14 +193,12 @@ This behaviour ensures that the menu is closed when an item is selected and is
 pointer, space key or enter key. To disable the behaviour, set the
 `closeOnSelect` property in the machine's context to `false`.
 
-```jsx {5}
-const [state, send] = useMachine(
-  select.machine({
-    id: useId(),
-    collection,
-    closeOnSelect: false,
-  }),
-)
+```jsx {4}
+const service = useMachine(select.machine, {
+  id: useId(),
+  collection,
+  closeOnSelect: false,
+})
 ```
 
 ## Looping the keyboard navigation
@@ -219,14 +207,12 @@ When navigating with the select using the arrow down and up keys, the select
 stops at the first and last options. If you need want the navigation to loop
 back to the first or last option, set the `loop: true` in the machine's context.
 
-```jsx {5}
-const [state, send] = useMachine(
-  select.machine({
-    id: useId(),
-    collection,
-    loop: true,
-  }),
-)
+```jsx {4}
+const service = useMachine(select.machine, {
+  id: useId(),
+  collection,
+  loop: true,
+})
 ```
 
 ## Listening for highlight changes
@@ -234,16 +220,14 @@ const [state, send] = useMachine(
 When an item is highlighted with the pointer or keyboard, use the
 `onHighlightChange` to listen for the change and do something with it.
 
-```jsx {4-7}
-const [state, send] = useMachine(
-  select.machine({
-    id: useId(),
-    onHighlightChange(details) {
-      // details => { highlightedValue: string | null, highlightedItem: CollectionItem | null }
-      console.log(details)
-    },
-  }),
-)
+```jsx {3-6}
+const service = useMachine(select.machine, {
+  id: useId(),
+  onHighlightChange(details) {
+    // details => { highlightedValue: string | null, highlightedItem: CollectionItem | null }
+    console.log(details)
+  },
+})
 ```
 
 ## Listening for selection changes
@@ -251,17 +235,15 @@ const [state, send] = useMachine(
 When an item is selected, use the `onValueChange` property to listen for the
 change and do something with it.
 
-```jsx {5-7}
-const [state, send] = useMachine(
-  select.machine({
-    id: useId(),
-    collection,
-    onValueChange(details) {
-      // details => { value: string[], items: Item[] }
-      console.log(details)
-    },
-  }),
-)
+```jsx {4-6}
+const service = useMachine(select.machine, {
+  id: useId(),
+  collection,
+  onValueChange(details) {
+    // details => { value: string[], items: Item[] }
+    console.log(details)
+  },
+})
 ```
 
 ## Listening for open and close events
@@ -269,17 +251,15 @@ const [state, send] = useMachine(
 When the select is opened or closed, the `onOpenChange` callback is called. You
 can listen for these events and do something with it.
 
-```jsx {5-8}
-const [state, send] = useMachine(
-  select.machine({
-    id: useId(),
-    collection,
-    onOpenChange(details) {
-      // details => { open: boolean }
-      console.log("Select opened")
-    },
-  }),
-)
+```jsx {4-7}
+const service = useMachine(select.machine, {
+  id: useId(),
+  collection,
+  onOpenChange(details) {
+    // details => { open: boolean }
+    console.log("Select opened")
+  },
+})
 ```
 
 ## Usage with large data
@@ -301,20 +281,18 @@ function Demo() {
     estimateSize: () => 32,
   })
 
-  const [state, send] = useMachine(
-    select.machine({
-      id: useId(),
-      collection,
-      scrollToIndexFn(details) {
-        rowVirtualizer.scrollToIndex(details.index, {
-          align: "center",
-          behavior: "auto",
-        })
-      },
-    }),
-  )
+  const service = useMachine(select.machine, {
+    id: useId(),
+    collection,
+    scrollToIndexFn(details) {
+      rowVirtualizer.scrollToIndex(details.index, {
+        align: "center",
+        behavior: "auto",
+      })
+    },
+  })
 
-  const api = select.connect(state, send, normalizeProps)
+  const api = select.connect(service, normalizeProps)
 
   return (
     <div {...api.getRootProps()}>

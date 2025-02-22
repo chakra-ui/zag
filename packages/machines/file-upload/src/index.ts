@@ -3,8 +3,8 @@ export { connect } from "./file-upload.connect"
 export { machine } from "./file-upload.machine"
 export * from "./file-upload.props"
 export type {
-  MachineApi as Api,
-  UserDefinedContext as Context,
+  FileUploadApi as Api,
+  FileUploadProps as Props,
   DropzoneProps,
   ElementIds,
   FileAcceptDetails,
@@ -17,5 +17,5 @@ export type {
   IntlTranslations,
   ItemPreviewImageProps,
   ItemProps,
-  Service,
+  FileUploadService as Service,
 } from "./file-upload.types"

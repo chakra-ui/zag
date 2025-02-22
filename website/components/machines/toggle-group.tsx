@@ -11,11 +11,12 @@ type Props = {
 }
 
 export function ToggleGroup(props: Props) {
-  const [state, send] = useMachine(toggle.machine({ id: useId() }), {
-    context: props.controls,
+  const service = useMachine(toggle.machine, {
+    id: useId(),
+    ...props.controls,
   })
 
-  const api = toggle.connect(state, send, normalizeProps)
+  const api = toggle.connect(service, normalizeProps)
 
   return (
     <div>

@@ -1,5 +1,5 @@
 import { Time } from "@internationalized/date"
-import type { MachineContext, TimePeriod } from "./time-picker.types"
+import type { TimePeriod } from "./time-picker.types"
 
 export function getCurrentTime() {
   const now = new Date()
@@ -8,25 +8,30 @@ export function getCurrentTime() {
 
 export const padStart = (value: number) => value.toString().padStart(2, "0")
 
-export function getStringifiedValue(ctx: MachineContext) {
-  if (!ctx.value) return ""
+export function getStringifiedValue(
+  value: Time | null,
+  hour12: boolean,
+  period: TimePeriod | null,
+  allowSeconds: boolean | undefined,
+) {
+  if (!value) return ""
 
-  let hourValue = ctx.value.hour
-  if (ctx.hour12 && hourValue === 0) {
+  let hourValue = value.hour
+  if (hour12 && hourValue === 0) {
     hourValue = 12
-  } else if (ctx.hour12 && hourValue > 12) {
+  } else if (hour12 && hourValue > 12) {
     hourValue -= 12
   }
 
-  let result = `${padStart(hourValue)}:${padStart(ctx.value.minute)}`
+  let result = `${padStart(hourValue)}:${padStart(value.minute)}`
 
-  if (ctx.allowSeconds) {
-    const second = padStart(ctx.value.second)
+  if (allowSeconds) {
+    const second = padStart(value.second)
     result += `:${second}`
   }
 
-  if (ctx.hour12 && ctx.period) {
-    result += ` ${ctx.period.toUpperCase()}`
+  if (hour12 && period) {
+    result += ` ${period.toUpperCase()}`
   }
 
   return result
@@ -34,7 +39,7 @@ export function getStringifiedValue(ctx: MachineContext) {
 
 const TIME_REX = /(\d{1,2}):(\d{1,2})(?::(\d{1,2}))?\s?(AM|PM|am|pm)?/
 
-export function getTimeValue(ctx: MachineContext, value: string) {
+export function getTimeValue(locale: string, periodProp: TimePeriod | null, value: string) {
   const match = value.match(TIME_REX)
   if (!match) return
   let [, hourString, minuteString, secondString, periodString] = match
@@ -43,8 +48,8 @@ export function getTimeValue(ctx: MachineContext, value: string) {
   const minute = parseInt(minuteString)
   const second = secondString ? parseInt(secondString) : undefined
 
-  if (!is12HourFormat(ctx.locale) && ctx.period) {
-    return { time: new Time(hour, minute, second), period: ctx.period }
+  if (!is12HourFormat(locale) && periodProp) {
+    return { time: new Time(hour, minute, second), period: periodProp }
   }
 
   let period = (periodString ? periodString.toLowerCase() : "am") as TimePeriod
@@ -81,10 +86,14 @@ export function ensureValidCharacters(value: string) {
   return value.split("").filter(isValidCharacter).join("")
 }
 
-export function getInputPlaceholder(ctx: MachineContext) {
-  if (ctx.placeholder) return ctx.placeholder
-  const secondsPart = ctx.allowSeconds ? ":ss" : ""
-  const periodPart = is12HourFormat(ctx.locale) ? " aa" : ""
+export function getInputPlaceholder(
+  placeholder: string | undefined,
+  allowSeconds: boolean | undefined,
+  locale: string,
+) {
+  if (placeholder) return placeholder
+  const secondsPart = allowSeconds ? ":ss" : ""
+  const periodPart = is12HourFormat(locale) ? " aa" : ""
   return `hh:mm${secondsPart}${periodPart}`
 }
 

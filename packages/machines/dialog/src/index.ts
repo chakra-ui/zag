@@ -4,9 +4,9 @@ export { connect } from "./dialog.connect"
 export { machine } from "./dialog.machine"
 export * from "./dialog.props"
 export type {
-  MachineApi as Api,
-  UserDefinedContext as Context,
+  DialogApi as Api,
+  DialogProps as Props,
   ElementIds,
   OpenChangeDetails,
-  Service,
+  DialogService as Service,
 } from "./dialog.types"

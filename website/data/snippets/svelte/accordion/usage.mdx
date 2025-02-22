@@ -9,8 +9,8 @@
     { title: "Aircraft", content: "Sample accordion content" },
   ]
 
-  const [snapshot, send] = useMachine(accordion.machine({ id: "1" }))
-  const api = $derived(accordion.connect(snapshot, send, normalizeProps))
+  const service = useMachine(accordion.machine, ({ id: "1" }))
+  const api = $derived(accordion.connect(service, normalizeProps))
 </script>
 
 <div {...api.getRootProps()}>

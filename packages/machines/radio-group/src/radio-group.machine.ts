@@ -1,173 +1,193 @@
-import { createMachine, guards } from "@zag-js/core"
+import { createGuards, createMachine } from "@zag-js/core"
 import { dispatchInputCheckedEvent, nextTick, trackFormControl } from "@zag-js/dom-query"
 import { trackElementRect } from "@zag-js/element-rect"
 import { trackFocusVisible } from "@zag-js/focus-visible"
-import { compact, isEqual, isString } from "@zag-js/utils"
-import { dom } from "./radio-group.dom"
-import type { MachineContext, MachineState, UserDefinedContext } from "./radio-group.types"
+import { isString } from "@zag-js/utils"
+import * as dom from "./radio-group.dom"
+import type { IndicatorRect, RadioGroupSchema } from "./radio-group.types"
 
-const { not } = guards
+const { not } = createGuards()
 
-export function machine(userContext: UserDefinedContext) {
-  const ctx = compact(userContext)
-  return createMachine<MachineContext, MachineState>(
-    {
-      id: "radio",
-      initial: "idle",
-      context: {
-        value: null,
-        activeValue: null,
-        focusedValue: null,
-        hoveredValue: null,
-        disabled: false,
-        orientation: "vertical",
-        ...ctx,
-        indicatorRect: {},
-        canIndicatorTransition: false,
-        fieldsetDisabled: false,
-        focusVisible: false,
-        ssr: true,
+export const machine = createMachine<RadioGroupSchema>({
+  props({ props }) {
+    return {
+      orientation: "vertical",
+      ...props,
+    }
+  },
+
+  initialState() {
+    return "idle"
+  },
+
+  context({ prop, bindable }) {
+    return {
+      value: bindable(() => ({
+        defaultValue: prop("defaultValue"),
+        value: prop("value"),
+        onChange(value) {
+          prop("onValueChange")?.({ value })
+        },
+      })),
+      activeValue: bindable<string | null>(() => ({
+        defaultValue: null,
+      })),
+      focusedValue: bindable<string | null>(() => ({
+        defaultValue: null,
+      })),
+      hoveredValue: bindable<string | null>(() => ({
+        defaultValue: null,
+      })),
+      indicatorRect: bindable<Partial<IndicatorRect>>(() => ({
+        defaultValue: {},
+      })),
+      canIndicatorTransition: bindable<boolean>(() => ({
+        defaultValue: false,
+      })),
+      fieldsetDisabled: bindable<boolean>(() => ({
+        defaultValue: false,
+      })),
+      focusVisible: bindable<boolean>(() => ({
+        defaultValue: false,
+      })),
+      ssr: bindable<boolean>(() => ({
+        defaultValue: true,
+      })),
+    }
+  },
+
+  refs() {
+    return {
+      indicatorCleanup: null,
+    }
+  },
+
+  computed: {
+    isDisabled: ({ prop, context }) => !!prop("disabled") || context.get("fieldsetDisabled"),
+  },
+
+  entry: ["syncIndicatorRect", "syncSsr"],
+
+  exit: ["cleanupObserver"],
+
+  effects: ["trackFormControlState", "trackFocusVisible"],
+
+  watch({ track, action, context }) {
+    track([() => context.get("value")], () => {
+      action(["setIndicatorTransition", "syncIndicatorRect", "syncInputElements"])
+    })
+  },
+
+  on: {
+    SET_VALUE: [
+      {
+        guard: not("isTrusted"),
+        actions: ["setValue", "dispatchChangeEvent"],
       },
-
-      computed: {
-        isDisabled: (ctx) => !!ctx.disabled || ctx.fieldsetDisabled,
+      {
+        actions: ["setValue"],
       },
+    ],
+    SET_HOVERED: {
+      actions: ["setHovered"],
+    },
+    SET_ACTIVE: {
+      actions: ["setActive"],
+    },
+    SET_FOCUSED: {
+      actions: ["setFocused"],
+    },
+  },
 
-      entry: ["syncIndicatorRect", "syncSsr"],
+  states: {
+    idle: {},
+  },
 
-      exit: ["cleanupObserver"],
+  implementations: {
+    guards: {
+      isTrusted: ({ event }) => !!event.isTrusted,
+    },
 
-      activities: ["trackFormControlState", "trackFocusVisible"],
-
-      watch: {
-        value: ["setIndicatorTransition", "syncIndicatorRect", "syncInputElements"],
-      },
-
-      on: {
-        SET_VALUE: [
-          {
-            guard: not("isTrusted"),
-            actions: ["setValue", "dispatchChangeEvent"],
+    effects: {
+      trackFormControlState({ context, scope }) {
+        return trackFormControl(dom.getRootEl(scope), {
+          onFieldsetDisabledChange(disabled) {
+            context.set("fieldsetDisabled", disabled)
           },
-          {
-            actions: ["setValue"],
+          onFormReset() {
+            context.set("value", context.initial("value"))
           },
-        ],
-        SET_HOVERED: {
-          actions: "setHovered",
-        },
-        SET_ACTIVE: {
-          actions: "setActive",
-        },
-        SET_FOCUSED: {
-          actions: "setFocused",
-        },
+        })
       },
-
-      states: {
-        idle: {},
+      trackFocusVisible({ scope }) {
+        return trackFocusVisible({ root: scope.getRootNode?.() })
       },
     },
 
-    {
-      guards: {
-        isTrusted: (_ctx, evt) => !!evt.isTrusted,
+    actions: {
+      setValue({ context, event }) {
+        context.set("value", event.value)
       },
-      activities: {
-        trackFormControlState(ctx, _evt, { send, initialContext }) {
-          return trackFormControl(dom.getRootEl(ctx), {
-            onFieldsetDisabledChange(disabled) {
-              ctx.fieldsetDisabled = disabled
-            },
-            onFormReset() {
-              send({ type: "SET_VALUE", value: initialContext.value })
-            },
-          })
-        },
-        trackFocusVisible(ctx) {
-          return trackFocusVisible({ root: dom.getRootNode(ctx) })
-        },
+      setHovered({ context, event }) {
+        context.set("hoveredValue", event.value)
       },
+      setActive({ context, event }) {
+        context.set("activeValue", event.value)
+      },
+      setFocused({ context, event }) {
+        context.set("focusedValue", event.value)
+        context.set("focusVisible", event.focusVisible)
+      },
+      syncInputElements({ context, scope }) {
+        const inputs = dom.getInputEls(scope)
+        inputs.forEach((input) => {
+          input.checked = input.value === context.get("value")
+        })
+      },
+      setIndicatorTransition({ context }) {
+        context.set("canIndicatorTransition", isString(context.get("value")))
+      },
+      cleanupObserver({ refs }) {
+        refs.get("indicatorCleanup")?.()
+      },
+      syncSsr({ context }) {
+        context.set("ssr", false)
+      },
+      syncIndicatorRect({ context, scope, refs }) {
+        refs.get("indicatorCleanup")?.()
 
-      actions: {
-        setValue(ctx, evt) {
-          set.value(ctx, evt.value)
-        },
-        setHovered(ctx, evt) {
-          ctx.hoveredValue = evt.value
-        },
-        setActive(ctx, evt) {
-          ctx.activeValue = evt.value
-        },
-        setFocused(ctx, evt) {
-          ctx.focusedValue = evt.value
-          ctx.focusVisible = evt.focusVisible
-        },
-        syncInputElements(ctx) {
-          const inputs = dom.getInputEls(ctx)
-          inputs.forEach((input) => {
-            input.checked = input.value === ctx.value
-          })
-        },
-        setIndicatorTransition(ctx) {
-          ctx.canIndicatorTransition = isString(ctx.value)
-        },
-        cleanupObserver(ctx) {
-          ctx.indicatorCleanup?.()
-        },
-        syncSsr(ctx) {
-          ctx.ssr = false
-        },
-        syncIndicatorRect(ctx) {
-          ctx.indicatorCleanup?.()
+        if (!dom.getIndicatorEl(scope)) return
 
-          if (!dom.getIndicatorEl(ctx)) return
+        const value = context.get("value")
+        const radioEl = dom.getRadioEl(scope, value)
 
-          const value = ctx.value
+        if (value == null || !radioEl) {
+          context.set("indicatorRect", {})
+          return
+        }
 
-          const radioEl = dom.getActiveRadioEl(ctx)
+        const indicatorCleanup = trackElementRect(radioEl, {
+          getRect(el) {
+            return dom.getOffsetRect(el)
+          },
+          onChange(rect) {
+            context.set("indicatorRect", dom.resolveRect(rect))
+            nextTick(() => {
+              context.set("canIndicatorTransition", false)
+            })
+          },
+        })
 
-          if (value == null || !radioEl) {
-            ctx.indicatorRect = {}
-            return
-          }
-
-          ctx.indicatorCleanup = trackElementRect(radioEl, {
-            getRect(el) {
-              return dom.getOffsetRect(el)
-            },
-            onChange(rect) {
-              ctx.indicatorRect = dom.resolveRect(rect)
-              nextTick(() => {
-                ctx.canIndicatorTransition = false
-              })
-            },
-          })
-        },
-        dispatchChangeEvent(ctx) {
-          const inputEls = dom.getInputEls(ctx)
-          inputEls.forEach((inputEl) => {
-            const checked = inputEl.value === ctx.value
-            if (checked === inputEl.checked) return
-            dispatchInputCheckedEvent(inputEl, { checked })
-          })
-        },
+        refs.set("indicatorCleanup", indicatorCleanup)
+      },
+      dispatchChangeEvent({ context, scope }) {
+        const inputEls = dom.getInputEls(scope)
+        inputEls.forEach((inputEl) => {
+          const checked = inputEl.value === context.get("value")
+          if (checked === inputEl.checked) return
+          dispatchInputCheckedEvent(inputEl, { checked })
+        })
       },
     },
-  )
-}
-
-const invoke = {
-  change: (ctx: MachineContext) => {
-    if (ctx.value == null) return
-    ctx.onValueChange?.({ value: ctx.value })
   },
-}
-
-const set = {
-  value: (ctx: MachineContext, value: string) => {
-    if (isEqual(ctx.value, value)) return
-    ctx.value = value
-    invoke.change(ctx)
-  },
-}
+})

@@ -21,13 +21,15 @@
   import FloatingPanel from "./routes/floating-panel.svelte"
   import HoverCard from "./routes/hover-card.svelte"
   import Index from "./routes/index.svelte"
+  import NestedMenu from "./routes/menu-nested.svelte"
   import MenuOptions from "./routes/menu-options.svelte"
   import Menu from "./routes/menu.svelte"
-  import NestedMenu from "./routes/nested-menu.svelte"
   import NumberInput from "./routes/number-input.svelte"
   import Pagination from "./routes/pagination.svelte"
   import PinInput from "./routes/pin-input.svelte"
   import Popover from "./routes/popover.svelte"
+  import Popper from "./routes/popper.svelte"
+  import Presence from "./routes/presence.svelte"
   import Progress from "./routes/progress.svelte"
   import QrCode from "./routes/qr-code.svelte"
   import RadioGroup from "./routes/radio-group.svelte"
@@ -38,13 +40,15 @@
   import SignaturePad from "./routes/signature-pad.svelte"
   import Slider from "./routes/slider.svelte"
   import Splitter from "./routes/splitter.svelte"
+  import Steps from "./routes/steps.svelte"
   import Switch from "./routes/switch.svelte"
   import Tabs from "./routes/tabs.svelte"
   import TagsInput from "./routes/tags-input.svelte"
   import TimePicker from "./routes/time-picker.svelte"
   import TimerCountdown from "./routes/timer-countdown.svelte"
   import TimerStopwatch from "./routes/timer-stopwatch.svelte"
-  import Toast from "./routes/toast.svelte"
+  import ToastOverlap from "./routes/toast-overlap.svelte"
+  import ToastStacked from "./routes/toast-stacked.svelte"
   import ToggleGroup from "./routes/toggle-group.svelte"
   import Tooltip from "./routes/tooltip.svelte"
   import Tour from "./routes/tour.svelte"
@@ -72,7 +76,7 @@
     { path: "/file-upload", component: FileUpload },
     { path: "/floating-panel", component: FloatingPanel },
     { path: "/hover-card", component: HoverCard },
-    { path: "/nested-menu", component: NestedMenu },
+    { path: "/menu-nested", component: NestedMenu },
     { path: "/menu", component: Menu },
     { path: "/menu-options", component: MenuOptions },
     { path: "/number-input", component: NumberInput },
@@ -92,7 +96,8 @@
     { path: "/tabs", component: Tabs },
     { path: "/tags-input", component: TagsInput },
     { path: "/time-picker", component: TimePicker },
-    { path: "/toast", component: Toast },
+    { path: "/toast-overlap", component: ToastOverlap },
+    { path: "/toast-stacked", component: ToastStacked },
     { path: "/toggle-group", component: ToggleGroup },
     { path: "/tooltip", component: Tooltip },
     { path: "/tour", component: Tour },
@@ -100,6 +105,9 @@
     { path: "/timer-countdown", component: TimerCountdown },
     { path: "/timer-stopwatch", component: TimerStopwatch },
     { path: "/qr-code", component: QrCode },
+    { path: "/presence", component: Presence },
+    { path: "/popper", component: Popper },
+    { path: "/steps", component: Steps },
   ]
 </script>
 

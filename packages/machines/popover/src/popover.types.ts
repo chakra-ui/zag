@@ -1,4 +1,4 @@
-import type { Machine, StateMachine as S } from "@zag-js/core"
+import type { EventObject, Service } from "@zag-js/core"
 import type { DismissableElementHandlers, PersistentElementOptions } from "@zag-js/dismissable"
 import type { Placement, PositioningOptions } from "@zag-js/popper"
 import type { CommonProperties, DirectionProperty, PropTypes, RequiredBy } from "@zag-js/types"
@@ -26,7 +26,7 @@ export type ElementIds = Partial<{
   arrow: string
 }>
 
-interface PublicContext
+export interface PopoverProps
   extends CommonProperties,
     DirectionProperty,
     DismissableElementHandlers,
@@ -80,22 +80,22 @@ interface PublicContext
   /**
    * The user provided options used to position the popover content
    */
-  positioning: PositioningOptions
+  positioning?: PositioningOptions | undefined
   /**
-   * Whether the popover is open
+   * The controlled open state of the popover
    */
   open?: boolean | undefined
   /**
-   * Whether the popover is controlled by the user
+   * The initial open state of the popover when rendered.
+   * Use when you don't need to control the open state of the popover.
    */
-  "open.controlled"?: boolean | undefined
+  defaultOpen?: boolean | undefined
 }
 
-export type UserDefinedContext = RequiredBy<PublicContext, "id">
+type PropsWithDefault = "closeOnInteractOutside" | "closeOnEscape" | "modal" | "portalled" | "autoFocus" | "positioning"
 
 type ComputedContext = Readonly<{
   /**
-   * @computed
    * The computed value of `portalled`
    */
   currentPortalled: boolean
@@ -103,7 +103,6 @@ type ComputedContext = Readonly<{
 
 interface PrivateContext {
   /**
-   * @internal
    * The elements that are rendered on mount
    */
   renderedElements: {
@@ -111,29 +110,29 @@ interface PrivateContext {
     description: boolean
   }
   /**
-   * @internal
    * The computed placement (maybe different from initial placement)
    */
   currentPlacement?: Placement | undefined
 }
 
-export interface MachineContext extends PublicContext, ComputedContext, PrivateContext {}
-
-export interface MachineState {
-  value: "open" | "closed"
+export interface PopoverSchema {
+  props: RequiredBy<PopoverProps, PropsWithDefault>
+  state: "open" | "closed"
+  context: PrivateContext
+  computed: ComputedContext
+  event: EventObject
+  action: string
+  effect: string
+  guard: string
 }
 
-export type State = S.State<MachineContext, MachineState>
-
-export type Send = S.Send<S.AnyEventObject>
-
-export type Service = Machine<MachineContext, MachineState, S.AnyEventObject>
+export type PopoverService = Service<PopoverSchema>
 
 /* -----------------------------------------------------------------------------
  * Component API
  * -----------------------------------------------------------------------------*/
 
-export interface MachineApi<T extends PropTypes = PropTypes> {
+export interface PopoverApi<T extends PropTypes = PropTypes> {
   /**
    * Whether the popover is portalled.
    */

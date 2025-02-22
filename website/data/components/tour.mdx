@@ -250,8 +250,8 @@ Use the `api.getProgressPercent()` to show the progress dots.
 
 ```tsx
 const ProgressBar = () => {
-  const [state, send] = useMachine(tour.machine({ steps: [] }))
-  const api = tour.connect(state, send, normalizeProps)
+  const service = useMachine(tour.machine, { steps: [] })
+  const api = tour.connect(service, normalizeProps)
   return <div>{api.getProgressPercent()}</div>
 }
 ```
@@ -266,21 +266,19 @@ the tour. Here's are the events you can listen to:
 
 ```tsx
 const Lifecycle = () => {
-  const [state, send] = useMachine(
-    tour.machine({
-      steps: [],
-      onStepChange(details) {
-        // => { stepId: "step-1", stepIndex: 0, totalSteps: 3, complete: false, progress: 0 }
-        console.log(details)
-      },
-      onStatusChange(status) {
-        // => { status: "started" | "skipped" | "completed" | "dismissed" | "not-found" }
-        console.log(status)
-      },
-    }),
-  )
+  const service = useMachine(tour.machine, {
+    steps: [],
+    onStepChange(details) {
+      // => { stepId: "step-1", stepIndex: 0, totalSteps: 3, complete: false, progress: 0 }
+      console.log(details)
+    },
+    onStatusChange(status) {
+      // => { status: "started" | "skipped" | "completed" | "dismissed" | "not-found" }
+      console.log(status)
+    },
+  })
 
-  const api = tour.connect(state, send, normalizeProps)
+  const api = tour.connect(service, normalizeProps)
   // ...
 }
 ```

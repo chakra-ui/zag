@@ -1,46 +1,48 @@
-import { createScope, dispatchInputValueEvent, getRelativePoint, queryAll } from "@zag-js/dom-query"
+import type { Params, Scope } from "@zag-js/core"
+import { dispatchInputValueEvent, getRelativePoint, queryAll } from "@zag-js/dom-query"
 import type { Point } from "@zag-js/types"
 import { getPercentValue } from "@zag-js/utils"
-import { styleGetterFns } from "./slider.style"
-import type { MachineContext as Ctx } from "./slider.types"
+import type { SliderSchema } from "./slider.types"
 
-export const dom = createScope({
-  ...styleGetterFns,
-  getRootId: (ctx: Ctx) => ctx.ids?.root ?? `slider:${ctx.id}`,
-  getThumbId: (ctx: Ctx, index: number) => ctx.ids?.thumb?.(index) ?? `slider:${ctx.id}:thumb:${index}`,
-  getHiddenInputId: (ctx: Ctx, index: number) => ctx.ids?.hiddenInput?.(index) ?? `slider:${ctx.id}:input:${index}`,
-  getControlId: (ctx: Ctx) => ctx.ids?.control ?? `slider:${ctx.id}:control`,
-  getTrackId: (ctx: Ctx) => ctx.ids?.track ?? `slider:${ctx.id}:track`,
-  getRangeId: (ctx: Ctx) => ctx.ids?.range ?? `slider:${ctx.id}:range`,
-  getLabelId: (ctx: Ctx) => ctx.ids?.label ?? `slider:${ctx.id}:label`,
-  getValueTextId: (ctx: Ctx) => ctx.ids?.valueText ?? `slider:${ctx.id}:value-text`,
-  getMarkerId: (ctx: Ctx, value: number) => ctx.ids?.marker?.(value) ?? `slider:${ctx.id}:marker:${value}`,
+export const getRootId = (ctx: Scope) => ctx.ids?.root ?? `slider:${ctx.id}`
+export const getThumbId = (ctx: Scope, index: number) => ctx.ids?.thumb?.(index) ?? `slider:${ctx.id}:thumb:${index}`
+export const getHiddenInputId = (ctx: Scope, index: number) =>
+  ctx.ids?.hiddenInput?.(index) ?? `slider:${ctx.id}:input:${index}`
+export const getControlId = (ctx: Scope) => ctx.ids?.control ?? `slider:${ctx.id}:control`
+export const getTrackId = (ctx: Scope) => ctx.ids?.track ?? `slider:${ctx.id}:track`
+export const getRangeId = (ctx: Scope) => ctx.ids?.range ?? `slider:${ctx.id}:range`
+export const getLabelId = (ctx: Scope) => ctx.ids?.label ?? `slider:${ctx.id}:label`
+export const getValueTextId = (ctx: Scope) => ctx.ids?.valueText ?? `slider:${ctx.id}:value-text`
+export const getMarkerId = (ctx: Scope, value: number) => ctx.ids?.marker?.(value) ?? `slider:${ctx.id}:marker:${value}`
 
-  getRootEl: (ctx: Ctx) => dom.getById(ctx, dom.getRootId(ctx)),
-  getThumbEl: (ctx: Ctx, index: number) => dom.getById(ctx, dom.getThumbId(ctx, index)),
-  getHiddenInputEl: (ctx: Ctx, index: number) => dom.getById<HTMLInputElement>(ctx, dom.getHiddenInputId(ctx, index)),
-  getControlEl: (ctx: Ctx) => dom.getById(ctx, dom.getControlId(ctx)),
-  getElements: (ctx: Ctx) => queryAll(dom.getControlEl(ctx), "[role=slider]"),
-  getFirstEl: (ctx: Ctx) => dom.getElements(ctx)[0],
-  getRangeEl: (ctx: Ctx) => dom.getById(ctx, dom.getRangeId(ctx)),
+export const getRootEl = (ctx: Scope) => ctx.getById(getRootId(ctx))
+export const getThumbEl = (ctx: Scope, index: number) => ctx.getById(getThumbId(ctx, index))
+export const getHiddenInputEl = (ctx: Scope, index: number) =>
+  ctx.getById<HTMLInputElement>(getHiddenInputId(ctx, index))
+export const getControlEl = (ctx: Scope) => ctx.getById(getControlId(ctx))
+export const getElements = (ctx: Scope) => queryAll(getControlEl(ctx), "[role=slider]")
+export const getFirstEl = (ctx: Scope) => getElements(ctx)[0]
+export const getRangeEl = (ctx: Scope) => ctx.getById(getRangeId(ctx))
 
-  getValueFromPoint(ctx: Ctx, point: Point) {
-    const controlEl = dom.getControlEl(ctx)
-    if (!controlEl) return
-    const relativePoint = getRelativePoint(point, controlEl)
-    const percent = relativePoint.getPercentValue({
-      orientation: ctx.orientation,
-      dir: ctx.dir,
-      inverted: { y: true },
-    })
-    return getPercentValue(percent, ctx.min, ctx.max, ctx.step)
-  },
-  dispatchChangeEvent(ctx: Ctx) {
-    const valueArray = Array.from(ctx.value)
-    valueArray.forEach((value, index) => {
-      const inputEl = dom.getHiddenInputEl(ctx, index)
-      if (!inputEl) return
-      dispatchInputValueEvent(inputEl, { value })
-    })
-  },
-})
+export const getValueFromPoint = (params: Params<SliderSchema>, point: Point) => {
+  const { prop, scope } = params
+  const controlEl = getControlEl(scope)
+  if (!controlEl) return
+  const relativePoint = getRelativePoint(point, controlEl)
+  const percent = relativePoint.getPercentValue({
+    orientation: prop("orientation"),
+    dir: prop("dir"),
+    inverted: { y: true },
+  })
+  return getPercentValue(percent, prop("min"), prop("max"), prop("step"))
+}
+
+export const dispatchChangeEvent = (params: Params<SliderSchema>) => {
+  const { context, scope } = params
+  const valueArray = Array.from(context.get("value"))
+  valueArray.forEach((value, index) => {
+    const inputEl = getHiddenInputEl(scope, index)
+    if (!inputEl) return
+    dispatchInputValueEvent(inputEl, { value })
+  })
+}

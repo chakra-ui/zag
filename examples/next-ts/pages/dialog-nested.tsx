@@ -8,20 +8,12 @@ export default function Page() {
   const inputRef = useRef<HTMLInputElement>(null)
 
   // Dialog 1
-  const [state, send] = useMachine(
-    dialog.machine({
-      id: useId(),
-    }),
-  )
-  const parentDialog = dialog.connect(state, send, normalizeProps)
+  const service = useMachine(dialog.machine, { id: useId() })
+  const parentDialog = dialog.connect(service, normalizeProps)
 
   // Dialog 2
-  const [state2, send2] = useMachine(
-    dialog.machine({
-      id: useId(),
-    }),
-  )
-  const childDialog = dialog.connect(state2, send2, normalizeProps)
+  const service2 = useMachine(dialog.machine, { id: useId() })
+  const childDialog = dialog.connect(service2, normalizeProps)
 
   return (
     <>
@@ -75,8 +67,8 @@ export default function Page() {
         </div>
       </main>
       <Toolbar controls={null}>
-        <StateVisualizer label="Dialog 1" state={state} />
-        <StateVisualizer label="Dialog 2" state={state2} />
+        <StateVisualizer label="Dialog 1" state={service} />
+        <StateVisualizer label="Dialog 2" state={service2} />
       </Toolbar>
     </>
   )

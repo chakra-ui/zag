@@ -10,11 +10,12 @@ const stepsData = [
 ]
 
 function Steps() {
-  const [state, send] = useMachine(
-    steps.machine({ id: useId(), count: stepsData.length }),
-  )
+  const service = useMachine(steps.machine, {
+    id: useId(),
+    count: stepsData.length,
+  })
 
-  const api = steps.connect(state, send, normalizeProps)
+  const api = steps.connect(service, normalizeProps)
 
   return (
     <div {...api.getRootProps()}>

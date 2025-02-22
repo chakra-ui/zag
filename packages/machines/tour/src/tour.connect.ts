@@ -3,27 +3,28 @@ import { dataAttr } from "@zag-js/dom-query"
 import { getPlacementStyles } from "@zag-js/popper"
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import { parts } from "./tour.anatomy"
-import { dom } from "./tour.dom"
-import type { MachineApi, Send, State, StepActionMap } from "./tour.types"
+import * as dom from "./tour.dom"
+import type { StepActionMap, TourApi, TourService } from "./tour.types"
 import { getClipPath } from "./utils/clip-path"
 import { findStepIndex, isTooltipPlacement, isTooltipStep } from "./utils/step"
 
-export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>): MachineApi<T> {
+export function connect<T extends PropTypes>(service: TourService, normalize: NormalizeProps<T>): TourApi<T> {
+  const { state, context, computed, send, prop, scope } = service
   const open = state.hasTag("open")
 
-  const steps = Array.from(state.context.steps)
-  const stepIndex = state.context.stepIndex
-  const step = state.context.step
+  const steps = Array.from(context.get("steps"))
+  const stepIndex = computed("stepIndex")
+  const step = computed("step")
   const hasTarget = typeof step?.target?.() !== "undefined"
 
-  const hasNextStep = state.context.hasNextStep
-  const hasPrevStep = state.context.hasPrevStep
+  const hasNextStep = computed("hasNextStep")
+  const hasPrevStep = computed("hasPrevStep")
 
-  const firstStep = state.context.isFirstStep
-  const lastStep = state.context.isLastStep
+  const firstStep = computed("isFirstStep")
+  const lastStep = computed("isLastStep")
 
-  const placement = state.context.currentPlacement
-  const targetRect = state.context.targetRect
+  const placement = context.get("currentPlacement")
+  const targetRect = context.get("targetRect")
 
   const popperStyles = getPlacementStyles({
     strategy: "absolute",
@@ -33,8 +34,8 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
   const clipPath = getClipPath({
     enabled: isTooltipStep(step),
     rect: targetRect,
-    rootSize: state.context.boundarySize,
-    radius: state.context.spotlightRadius,
+    rootSize: context.get("boundarySize"),
+    radius: prop("spotlightRadius"),
   })
 
   const actionMap: StepActionMap = {
@@ -101,14 +102,14 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       const effectiveSteps = steps.filter((step) => step.type !== "wait")
       const index = findStepIndex(effectiveSteps, step?.id)
       const details = { current: index, total: effectiveSteps.length }
-      return state.context.translations.progressText?.(details) ?? ""
+      return prop("translations").progressText?.(details) ?? ""
     },
 
     getBackdropProps() {
       return normalize.element({
         ...parts.backdrop.attrs,
-        id: dom.getBackdropId(state.context),
-        dir: state.context.dir,
+        id: dom.getBackdropId(scope),
+        dir: prop("dir"),
         hidden: !open,
         "data-state": open ? "open" : "closed",
         "data-type": step?.type,
@@ -133,7 +134,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
           height: `${targetRect.height}px`,
           left: `${targetRect.x}px`,
           top: `${targetRect.y}px`,
-          borderRadius: `${state.context.spotlightRadius}px`,
+          borderRadius: `${prop("spotlightRadius")}px`,
           pointerEvents: "none",
         },
       })
@@ -148,10 +149,10 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     getPositionerProps() {
       return normalize.element({
         ...parts.positioner.attrs,
-        dir: state.context.dir,
-        id: dom.getPositionerId(state.context),
+        dir: prop("dir"),
+        id: dom.getPositionerId(scope),
         "data-type": step?.type,
-        "data-placement": state.context.currentPlacement,
+        "data-placement": placement,
         style: {
           "--tour-layer": 2,
           ...(step?.type === "tooltip" && popperStyles.floating),
@@ -161,9 +162,9 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
 
     getArrowProps() {
       return normalize.element({
-        id: dom.getArrowId(state.context),
+        id: dom.getArrowId(scope),
         ...parts.arrow.attrs,
-        dir: state.context.dir,
+        dir: prop("dir"),
         hidden: step?.type !== "tooltip",
         style: step?.type === "tooltip" ? popperStyles.arrow : undefined,
         opacity: hasTarget ? undefined : 0,
@@ -173,7 +174,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     getArrowTipProps() {
       return normalize.element({
         ...parts.arrowTip.attrs,
-        dir: state.context.dir,
+        dir: prop("dir"),
         style: popperStyles.arrowTip,
       })
     },
@@ -181,8 +182,8 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     getContentProps() {
       return normalize.element({
         ...parts.content.attrs,
-        id: dom.getContentId(state.context),
-        dir: state.context.dir,
+        id: dom.getContentId(scope),
+        dir: prop("dir"),
         role: "alertdialog",
         "aria-modal": "true",
         "aria-live": "polite",
@@ -190,15 +191,15 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         hidden: !open,
         "data-state": open ? "open" : "closed",
         "data-type": step?.type,
-        "data-placement": state.context.currentPlacement,
+        "data-placement": placement,
         "data-step": step?.id,
-        "aria-labelledby": dom.getTitleId(state.context),
-        "aria-describedby": dom.getDescriptionId(state.context),
+        "aria-labelledby": dom.getTitleId(scope),
+        "aria-describedby": dom.getDescriptionId(scope),
         tabIndex: -1,
         onKeyDown(event) {
           if (event.defaultPrevented) return
-          if (!state.context.keyboardNavigation) return
-          const isRtl = state.context.dir === "rtl"
+          if (!prop("keyboardNavigation")) return
+          const isRtl = prop("dir") === "rtl"
           switch (event.key) {
             case "ArrowRight":
               if (!hasNextStep) return
@@ -218,16 +219,16 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     getTitleProps() {
       return normalize.element({
         ...parts.title.attrs,
-        id: dom.getTitleId(state.context),
-        "data-placement": hasTarget ? state.context.currentPlacement : "center",
+        id: dom.getTitleId(scope),
+        "data-placement": hasTarget ? placement : "center",
       })
     },
 
     getDescriptionProps() {
       return normalize.element({
         ...parts.description.attrs,
-        id: dom.getDescriptionId(state.context),
-        "data-placement": hasTarget ? state.context.currentPlacement : "center",
+        id: dom.getDescriptionId(scope),
+        "data-placement": hasTarget ? placement : "center",
       })
     },
 
@@ -235,7 +236,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       return normalize.element({
         ...parts.closeTrigger.attrs,
         "data-type": step?.type,
-        "aria-label": state.context.translations.close,
+        "aria-label": prop("translations").close,
         onClick: actionMap.dismiss,
       })
     },
@@ -251,7 +252,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
             "data-type": "next",
             disabled: !hasNextStep,
             "data-disabled": dataAttr(!hasNextStep),
-            "aria-label": state.context.translations.nextStep,
+            "aria-label": prop("translations").nextStep,
             onClick: actionMap.next,
           }
           break
@@ -261,7 +262,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
             "data-type": "prev",
             disabled: !hasPrevStep,
             "data-disabled": dataAttr(!hasPrevStep),
-            "aria-label": state.context.translations.prevStep,
+            "aria-label": prop("translations").prevStep,
             onClick: actionMap.prev,
           }
           break
@@ -269,7 +270,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         case "dismiss":
           actionProps = {
             "data-type": "close",
-            "aria-label": state.context.translations.close,
+            "aria-label": prop("translations").close,
             onClick: actionMap.dismiss,
           }
           break

@@ -6,14 +6,12 @@ import { StateVisualizer } from "~/components/state-visualizer"
 import { Toolbar } from "~/components/toolbar"
 
 export default function Page() {
-  const [state, send] = useMachine(
-    menu.machine({
-      id: createUniqueId(),
-      onSelect: console.log,
-    }),
-  )
+  const service = useMachine(menu.machine, {
+    id: createUniqueId(),
+    onSelect: console.log,
+  })
 
-  const api = createMemo(() => menu.connect(state, send, normalizeProps))
+  const api = createMemo(() => menu.connect(service, normalizeProps))
 
   return (
     <>
@@ -32,7 +30,7 @@ export default function Page() {
       </main>
 
       <Toolbar>
-        <StateVisualizer state={state} />
+        <StateVisualizer state={service} />
       </Toolbar>
     </>
   )

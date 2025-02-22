@@ -1,5 +1,6 @@
-import type { ContextRef, Machine, StateMachine as S } from "@zag-js/core"
-import type { CommonProperties, DirectionProperty, OrientationProperty, PropTypes, RequiredBy } from "@zag-js/types"
+import type { EventObject, Service } from "@zag-js/core"
+import type { RequiredBy } from "@zag-js/types"
+import type { CommonProperties, DirectionProperty, OrientationProperty, PropTypes } from "@zag-js/types"
 
 /* -----------------------------------------------------------------------------
  * Callback details
@@ -45,7 +46,7 @@ export type ElementIds = Partial<{
   indicator(index: number): string
 }>
 
-interface PublicContext extends DirectionProperty, CommonProperties, OrientationProperty {
+export interface CarouselProps extends DirectionProperty, CommonProperties, OrientationProperty {
   /**
    * The ids of the elements in the carousel. Useful for composition.
    */
@@ -53,12 +54,12 @@ interface PublicContext extends DirectionProperty, CommonProperties, Orientation
   /**
    * The localized messages to use.
    */
-  translations: IntlTranslations
+  translations?: IntlTranslations | undefined
   /**
    * The number of slides to show at a time.
    * @default 1
    */
-  slidesPerPage: number
+  slidesPerPage?: number | undefined
   /**
    * The number of slides to scroll at a time.
    *
@@ -67,7 +68,7 @@ interface PublicContext extends DirectionProperty, CommonProperties, Orientation
    *
    * @default "auto"
    */
-  slidesPerMove: number | "auto"
+  slidesPerMove?: number | "auto" | undefined
   /**
    * Whether to scroll automatically. The default delay is 4000ms.
    * @default false
@@ -77,26 +78,32 @@ interface PublicContext extends DirectionProperty, CommonProperties, Orientation
    * Whether to allow scrolling via dragging with mouse
    * @default false
    */
-  allowMouseDrag: boolean
+  allowMouseDrag?: boolean | undefined
   /**
    * Whether the carousel should loop around.
    * @default false
    */
-  loop: boolean
+  loop?: boolean | undefined
   /**
-   * The index of the active page.
+   * The controlled page of the carousel.
    */
-  page: number
+  page?: number | undefined
+  /**
+   * The initial page to scroll to when rendered.
+   * Use when you don't need to control the page of the carousel.
+   * @default 0
+   */
+  defaultPage?: number | undefined
   /**
    * The amount of space between items.
    * @default "0px"
    */
-  spacing: string
+  spacing?: string | undefined
   /**
    * Defines the extra space added around the scrollable area,
    * enabling nearby items to remain partially in view.
    */
-  padding?: string
+  padding?: string | undefined
   /**
    * Function called when the page changes.
    */
@@ -105,12 +112,12 @@ interface PublicContext extends DirectionProperty, CommonProperties, Orientation
    * The threshold for determining if an item is in view.
    * @default 0.6
    */
-  inViewThreshold: number | number[]
+  inViewThreshold?: number | number[] | undefined
   /**
    * The snap type of the item.
    * @default "mandatory"
    */
-  snapType: "proximity" | "mandatory"
+  snapType?: "proximity" | "mandatory" | undefined
   /**
    * The total number of slides.
    * Useful for SSR to render the initial ating the snap points.
@@ -126,33 +133,49 @@ interface PublicContext extends DirectionProperty, CommonProperties, Orientation
   onAutoplayStatusChange?: ((details: AutoplayStatusDetails) => void) | undefined
 }
 
+type PropsWithDefault =
+  | "dir"
+  | "defaultPage"
+  | "orientation"
+  | "snapType"
+  | "loop"
+  | "slidesPerPage"
+  | "slidesPerMove"
+  | "spacing"
+  | "autoplay"
+  | "allowMouseDrag"
+  | "inViewThreshold"
+  | "translations"
+
 interface PrivateContext {
   pageSnapPoints: number[]
   slidesInView: number[]
-  timeoutRef: ContextRef<ReturnType<typeof setTimeout>>
+  page: number
 }
 
-type ComputedContext = Readonly<{
+interface ComputedContext {
   isRtl: boolean
   isHorizontal: boolean
   canScrollNext: boolean
   canScrollPrev: boolean
   autoplayInterval: number
-}>
-
-export type UserDefinedContext = RequiredBy<PublicContext, "id">
-
-export interface MachineContext extends PublicContext, PrivateContext, ComputedContext {}
-
-export interface MachineState {
-  value: "idle" | "dragging" | "autoplay"
 }
 
-export type State = S.State<MachineContext, MachineState>
+export type CarouselService = Service<CarouselSchema>
 
-export type Send = S.Send<S.AnyEventObject>
-
-export type Service = Machine<MachineContext, MachineState, S.AnyEventObject>
+export interface CarouselSchema {
+  props: RequiredBy<CarouselProps, PropsWithDefault>
+  context: PrivateContext
+  computed: ComputedContext
+  refs: {
+    timeoutRef: any
+  }
+  state: "idle" | "dragging" | "autoplay" | "userScroll"
+  effect: string
+  action: string
+  guard: string
+  event: EventObject
+}
 
 /* -----------------------------------------------------------------------------
  * Component API
@@ -182,7 +205,7 @@ export interface IndicatorProps {
   readOnly?: boolean | undefined
 }
 
-export interface MachineApi<T extends PropTypes = PropTypes> {
+export interface CarouselApi<T extends PropTypes = PropTypes> {
   /**
    * The current index of the carousel
    */

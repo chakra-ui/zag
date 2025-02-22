@@ -1,12 +1,14 @@
 import { getDataUrl } from "@zag-js/dom-query"
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import { parts } from "./qr-code.anatomy"
-import { dom } from "./qr-code.dom"
-import type { MachineApi, Send, State } from "./qr-code.types"
+import * as dom from "./qr-code.dom"
+import type { QrCodeApi, QrCodeService } from "./qr-code.types"
 
-export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>): MachineApi<T> {
-  const encoded = state.context.encoded
-  const pixelSize = state.context.pixelSize
+export function connect<T extends PropTypes>(service: QrCodeService, normalize: NormalizeProps<T>): QrCodeApi<T> {
+  const { context, computed, send, scope, prop } = service
+
+  const encoded = computed("encoded")
+  const pixelSize = prop("pixelSize")
 
   const height = encoded.size * pixelSize
   const width = encoded.size * pixelSize
@@ -24,18 +26,18 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
   }
 
   return {
-    value: state.context.value,
+    value: context.get("value"),
     setValue(value) {
       send({ type: "VALUE.SET", value })
     },
     getDataUrl(type, quality) {
-      const svgEl = dom.getFrameEl(state.context)
+      const svgEl = dom.getFrameEl(scope)
       return getDataUrl(svgEl, { type, quality })
     },
 
     getRootProps() {
       return normalize.element({
-        id: dom.getRootId(state.context),
+        id: dom.getRootId(scope),
         ...parts.root.attrs,
         style: {
           "--qrcode-pixel-size": `${pixelSize}px`,
@@ -48,7 +50,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
 
     getFrameProps() {
       return normalize.svg({
-        id: dom.getFrameId(state.context),
+        id: dom.getFrameId(scope),
         ...parts.frame.attrs,
         xmlns: "http://www.w3.org/2000/svg",
         viewBox: `0 0 ${width} ${height}`,

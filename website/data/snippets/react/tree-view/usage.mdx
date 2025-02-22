@@ -65,8 +65,8 @@ const TreeNode = (props: TreeNodeProps): JSX.Element => {
 // 3. Create the tree view
 
 export function TreeView() {
-  const [state, send] = useMachine(tree.machine({ id: useId(), collection }))
-  const api = tree.connect(state, send, normalizeProps)
+  const service = useMachine(tree.machine, { id: useId(), collection })
+  const api = tree.connect(service, normalizeProps)
 
   return (
     <div {...api.getRootProps()}>

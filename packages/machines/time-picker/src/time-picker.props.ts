@@ -1,8 +1,8 @@
 import { createProps } from "@zag-js/types"
 import { createSplitProps } from "@zag-js/utils"
-import type { UserDefinedContext } from "./time-picker.types"
+import type { TimePickerProps } from "./time-picker.types"
 
-export const props = createProps<UserDefinedContext>()([
+export const props = createProps<TimePickerProps>()([
   "dir",
   "disabled",
   "disableLayer",
@@ -16,7 +16,6 @@ export const props = createProps<UserDefinedContext>()([
   "onFocusChange",
   "onOpenChange",
   "onValueChange",
-  "open.controlled",
   "open",
   "placeholder",
   "positioning",
@@ -24,6 +23,8 @@ export const props = createProps<UserDefinedContext>()([
   "steps",
   "value",
   "allowSeconds",
+  "defaultValue",
+  "defaultOpen",
 ])
 
-export const splitProps = createSplitProps<Partial<UserDefinedContext>>(props)
+export const splitProps = createSplitProps<TimePickerProps>(props)

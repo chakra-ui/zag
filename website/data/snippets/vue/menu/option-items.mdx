@@ -5,9 +5,9 @@
   import { computed } from "vue"
   import { data } from "./data"
 
-  const [state, send] = useMachine(menu.machine({ id: "1" }))
+  const service = useMachine(menu.machine, { id: "1" })
 
-  const api = computed(() => menu.connect(state.value, send, normalizeProps))
+  const api = computed(() => menu.connect(service, normalizeProps))
 
   const radios = computed(() =>
     menuOptionData.order.map((item) => ({

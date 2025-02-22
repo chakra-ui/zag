@@ -124,36 +124,30 @@ api.collapse() // collapse all nodes
 The tree view supports multiple selection. To enable this, set the
 `selectionMode` to `multiple`.
 
-```tsx {3}
-const [state, send] = useMachine(
-  tree.machine({
-    selectionMode: "multiple",
-  }),
-)
+```tsx {2}
+const service = useMachine(tree.machine, {
+  selectionMode: "multiple",
+})
 ```
 
 ## Setting the default expanded nodes
 
 To set the default expanded nodes, use the `expandedValue` context property.
 
-```tsx {3}
-const [state, send] = useMachine(
-  tree.machine({
-    expandedValue: ["node_modules/pandacss"],
-  }),
-)
+```tsx {2}
+const service = useMachine(tree.machine, {
+  defaultExpandedValue: ["node_modules/pandacss"],
+})
 ```
 
 ## Setting the default selected nodes
 
 To set the default selected nodes, use the `selectedValue` context property.
 
-```tsx {3}
-const [state, send] = useMachine(
-  tree.machine({
-    selectedValue: ["node_modules/pandacss"],
-  }),
-)
+```tsx {2}
+const service = useMachine(tree.machine, {
+  defaultSelectedValue: ["node_modules/pandacss"],
+})
 ```
 
 ## Indentation Guide
@@ -161,7 +155,7 @@ const [state, send] = useMachine(
 When rendering a branch node in the tree view, you can render the `indentGuide`
 element by using the `api.getBranchIndentGuideProps()` function.
 
-```tsx {10}
+```tsx {9}
 <div {...api.getBranchProps(nodeProps)}>
   <div {...api.getBranchControlProps(nodeProps)}>
     <FolderIcon />
@@ -189,14 +183,12 @@ element by using the `api.getBranchIndentGuideProps()` function.
 When a node is selected, the `onSelectionChange` callback is invoked with the
 selected nodes.
 
-```jsx {3-6}
-const [state, send] = useMachine(
-  tree.machine({
-    onSelectionChange(details) {
-      console.log("selected nodes:", details)
-    },
-  }),
-)
+```jsx {2-5}
+const service = useMachine(tree.machine, {
+  onSelectionChange(details) {
+    console.log("selected nodes:", details)
+  },
+})
 ```
 
 ## Listening for expanding and collapsing
@@ -204,14 +196,12 @@ const [state, send] = useMachine(
 When a node is expanded or collapsed, the `onExpandedChange` callback is invoked
 with the expanded nodes.
 
-```jsx {3-6}
-const [state, send] = useMachine(
-  tree.machine({
-    onExpandedChange(details) {
-      console.log("expanded nodes:", details)
-    },
-  }),
-)
+```jsx {2-5}
+const service = useMachine(tree.machine, {
+  onExpandedChange(details) {
+    console.log("expanded nodes:", details)
+  },
+})
 ```
 
 ## Methods and Properties

@@ -1,5 +1,5 @@
 import { Time } from "@internationalized/date"
-import type { Machine, StateMachine as S } from "@zag-js/core"
+import type { EventObject, Service } from "@zag-js/core"
 import type { Placement, PositioningOptions } from "@zag-js/popper"
 import type { CommonProperties, DirectionProperty, PropTypes, RequiredBy } from "@zag-js/types"
 
@@ -39,15 +39,20 @@ export type ElementIds = Partial<{
   column(unit: TimeUnit): string
 }>
 
-interface PublicContext extends DirectionProperty, CommonProperties {
+export interface TimePickerProps extends DirectionProperty, CommonProperties {
   /**
    * The locale (BCP 47 language tag) to use when formatting the time.
    */
-  locale: string
+  locale?: string | undefined
   /**
-   * The selected time.
+   * The controlled selected time.
    */
-  value: Time | null
+  value?: Time | null | undefined
+  /**
+   * The initial selected time when rendered.
+   * Use when you don't need to control the selected time.
+   */
+  defaultValue?: Time | null | undefined
   /**
    * Whether the timepicker is open
    */
@@ -55,7 +60,7 @@ interface PublicContext extends DirectionProperty, CommonProperties {
   /**
    * Whether the timepicker open state is controlled by the user
    */
-  "open.controlled"?: boolean | undefined
+  defaultOpen?: boolean | undefined
   /**
    * The ids of the elements in the date picker. Useful for composition.
    */
@@ -67,7 +72,7 @@ interface PublicContext extends DirectionProperty, CommonProperties {
   /**
    * The user provided options used to position the time picker content
    */
-  positioning: PositioningOptions
+  positioning?: PositioningOptions | undefined
   /**
    * The placeholder text of the input.
    */
@@ -114,14 +119,14 @@ interface PublicContext extends DirectionProperty, CommonProperties {
   disableLayer?: boolean | undefined
 }
 
+type PropsWithDefault = "positioning" | "locale"
+
 interface PrivateContext {
   /**
-   * @internal
    * The computed placement (maybe different from initial placement)
    */
   currentPlacement?: Placement | undefined
   /**
-   * @internal
    * Whether the calendar should restore focus to the input when it closes.
    */
   restoreFocus?: boolean | undefined
@@ -137,39 +142,40 @@ interface PrivateContext {
    * The current time
    */
   currentTime: Time | null
+  /**
+   * The selected time
+   */
+  value: Time | null
 }
 
 type ComputedContext = Readonly<{
   /**
-   * @computed
    * The selected time as a string
    */
   valueAsString: string
   /**
-   * @computed
    * Whether the time picker is in 12-hour format (based on the locale)
    */
   hour12: boolean
   /**
-   * @computed
    * The period of the time (AM/PM)
    */
   period: TimePeriod | null
 }>
 
-export type UserDefinedContext = RequiredBy<PublicContext, "id">
-
-export interface MachineContext extends PublicContext, PrivateContext, ComputedContext {}
-
-export interface MachineState {
-  value: "idle" | "focused" | "open"
+export interface TimePickerSchema {
+  state: "idle" | "focused" | "open"
+  context: PrivateContext
+  props: RequiredBy<TimePickerProps, PropsWithDefault>
+  computed: ComputedContext
+  private: PrivateContext
+  action: string
+  event: EventObject
+  effect: string
+  guard: string
 }
 
-export type State = S.State<MachineContext, MachineState>
-
-export type Send = S.Send<S.AnyEventObject>
-
-export type Service = Machine<MachineContext, MachineState, S.AnyEventObject>
+export type TimePickerService = Service<TimePickerSchema>
 
 /* -----------------------------------------------------------------------------
  * Component API
@@ -192,7 +198,7 @@ export interface Cell {
   value: number
 }
 
-export interface MachineApi<T extends PropTypes = PropTypes> {
+export interface TimePickerApi<T extends PropTypes = PropTypes> {
   /**
    * Whether the input is focused
    */

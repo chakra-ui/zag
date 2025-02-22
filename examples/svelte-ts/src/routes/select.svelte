@@ -9,18 +9,13 @@
 
   const controls = useControls(selectControls)
 
-  const [snapshot, send] = useMachine(
-    select.machine({
-      id: "1",
-      name: "select",
-      collection: select.collection({ items: selectData }),
-    }),
-    {
-      context: controls.context,
-    },
-  )
+  const service = useMachine(select.machine, {
+    id: "1",
+    name: "select",
+    collection: select.collection({ items: selectData }),
+  })
 
-  const api = $derived(select.connect(snapshot, send, normalizeProps))
+  const api = $derived(select.connect(service, normalizeProps))
 </script>
 
 <main class="select">
@@ -71,5 +66,5 @@
 </main>
 
 <Toolbar {controls}>
-  <StateVisualizer state={snapshot} omit={["collection"]} />
+  <StateVisualizer state={service} omit={["collection"]} />
 </Toolbar>

@@ -4,13 +4,11 @@ import * as signaturePad from "@zag-js/signature-pad"
 import { useId, useState } from "react"
 
 export function SignaturePad() {
-  const [state, send] = useMachine(
-    signaturePad.machine({
-      id: useId(),
-    }),
-  )
+  const service = useMachine(signaturePad.machine, {
+    id: useId(),
+  })
 
-  const api = signaturePad.connect(state, send, normalizeProps)
+  const api = signaturePad.connect(service, normalizeProps)
 
   return (
     <div {...api.getRootProps()}>

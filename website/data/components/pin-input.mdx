@@ -69,12 +69,10 @@ input machine in your project 🔥
 To set the initial value of the pin input, pass the `value` property to the
 machine's context.
 
-```jsx {3}
-const [state, send] = useMachine(
-  pinInput.machine({
-    value: ["1", "2", ""],
-  }),
-)
+```jsx {2}
+const service = useMachine(pinInput.machine, {
+  defaultValue: ["1", "2", ""],
+})
 ```
 
 ## Changing the placeholder
@@ -82,12 +80,10 @@ const [state, send] = useMachine(
 To customize the default pin input placeholder (○) for each input, pass the
 `placeholder` prop and set it to your desired value.
 
-```jsx {3}
-const [state, send] = useMachine(
-  pinInput.machine({
-    placeholder: "*",
-  }),
-)
+```jsx {2}
+const service = useMachine(pinInput.machine, {
+  placeholder: "*",
+})
 ```
 
 ## Blur on complete
@@ -96,12 +92,10 @@ By default, the last input maintains focus when filled and we invoke the
 `onComplete` callback. To blur the last input when the user completes the input,
 set the `blurOnComplete: true` in the machine's context.
 
-```jsx {3}
-const [state, send] = useMachine(
-  pinInput.machine({
-    blurOnComplete: true,
-  }),
-)
+```jsx {2}
+const service = useMachine(pinInput.machine, {
+  blurOnComplete: true,
+})
 ```
 
 ## Allowing alphanumeric values
@@ -110,12 +104,10 @@ By default, the pin input accepts only number values but you can choose between
 `numeric`, `alphanumeric` and `alphabetic` values. To change the input mode,
 pass the `type` context property and set its value to `alphanumeric`.
 
-```jsx {3}
-const [state, send] = useMachine(
-  pinInput.machine({
-    type: "alphanumeric",
-  }),
-)
+```jsx {2}
+const service = useMachine(pinInput.machine, {
+  type: "alphanumeric",
+})
 ```
 
 ## Using OTP mode
@@ -125,12 +117,10 @@ To trigger smartphone OTP auto-suggestion, it is recommended to set the
 support for this automatically when you set the `otp` context property to
 `true`.
 
-```jsx {3}
-const [state, send] = useMachine(
-  pinInput.machine({
-    otp: true,
-  }),
-)
+```jsx {2}
+const service = useMachine(pinInput.machine, {
+  otp: true,
+})
 ```
 
 ## Securing the text input
@@ -139,12 +129,10 @@ When collecting private or sensitive information using the pin input, you might
 need to mask the value entered, similar to `<input type="password"/>`. Pass the
 `mask` context property and set it to `true`.
 
-```jsx {3}
-const [state, send] = useMachine(
-  pinInput.machine({
-    mask: true,
-  }),
-)
+```jsx {2}
+const service = useMachine(pinInput.machine, {
+  mask: true,
+})
 ```
 
 ## Listening for changes
@@ -158,22 +146,20 @@ The pin input machine invokes several callback functions when the user enters:
   input. An invalid value is any value that doesn't match the specified "type".
 
 ```jsx
-const [state, send] = useMachine(
-  pinInput.machine({
-    onValueChange(value) {
-      // value => string[]
-      console.log("value changed to:", value)
-    },
-    onValueComplete(details) {
-      // details => { value: string[], valueAsString: string }
-      console.log("completed value:", details)
-    },
-    onValueInvalid(details) {
-      // details => { index: number, value: string }
-      console.log("invalid value:", details)
-    },
-  }),
-)
+const service = useMachine(pinInput.machine, {
+  onValueChange(value) {
+    // value => string[]
+    console.log("value changed to:", value)
+  },
+  onValueComplete(details) {
+    // details => { value: string[], valueAsString: string }
+    console.log("completed value:", details)
+  },
+  onValueInvalid(details) {
+    // details => { index: number, value: string }
+    console.log("invalid value:", details)
+  },
+})
 ```
 
 ## RTL support
@@ -183,12 +169,10 @@ in the machine's context.
 
 When this attribute is set, we attach a `dir` attribute to the root part.
 
-```jsx {3}
-const [state, send] = useMachine(
-  pinInput.machine({
-    dir: "rtl",
-  }),
-)
+```jsx {2}
+const service = useMachine(pinInput.machine, {
+  dir: "rtl",
+})
 ```
 
 ## Styling guide

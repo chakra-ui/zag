@@ -9,16 +9,17 @@ import {
 import type { EventKeyMap, NormalizeProps, PropTypes } from "@zag-js/types"
 import { add, isEqual, remove, uniq } from "@zag-js/utils"
 import { parts } from "./tree-view.anatomy"
-import { dom } from "./tree-view.dom"
-import type { MachineApi, NodeProps, NodeState, Send, State } from "./tree-view.types"
+import * as dom from "./tree-view.dom"
+import type { NodeProps, NodeState, TreeViewApi, TreeViewService } from "./tree-view.types"
 import { getVisibleNodes } from "./tree-view.utils"
 
-export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>): MachineApi<T> {
-  const collection = state.context.collection
-  const expandedValue = Array.from(state.context.expandedValue)
-  const selectedValue = Array.from(state.context.selectedValue)
-  const isTypingAhead = state.context.isTypingAhead
-  const focusedValue = state.context.focusedValue
+export function connect<T extends PropTypes>(service: TreeViewService, normalize: NormalizeProps<T>): TreeViewApi<T> {
+  const { context, scope, computed, prop, send } = service
+  const collection = prop("collection")
+  const expandedValue = Array.from(context.get("expandedValue"))
+  const selectedValue = Array.from(context.get("selectedValue"))
+  const isTypingAhead = computed("isTypingAhead")
+  const focusedValue = context.get("focusedValue")
 
   function getNodeState(props: NodeProps): NodeState {
     const { node, indexPath } = props
@@ -57,7 +58,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     select(value) {
       if (!value) return send({ type: "SELECTED.ALL" })
       const nextValue: string[] = []
-      if (state.context.selectionMode === "single") {
+      if (prop("selectionMode") === "single") {
         // For single selection, only add the last item
         if (value.length > 0) nextValue.push(value[value.length - 1])
       } else {
@@ -67,10 +68,10 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       send({ type: "SELECTED.SET", value: nextValue, src: "select" })
     },
     getVisibleNodes() {
-      return getVisibleNodes(state.context)
+      return getVisibleNodes(service)
     },
     focus(value) {
-      dom.focusNode(state.context, value)
+      dom.focusNode(scope, value)
     },
     selectParent(value) {
       const parentNode = collection.getParentNode(value)
@@ -96,28 +97,28 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     getRootProps() {
       return normalize.element({
         ...parts.root.attrs,
-        id: dom.getRootId(state.context),
-        dir: state.context.dir,
+        id: dom.getRootId(scope),
+        dir: prop("dir"),
       })
     },
 
     getLabelProps() {
       return normalize.element({
         ...parts.label.attrs,
-        id: dom.getLabelId(state.context),
-        dir: state.context.dir,
+        id: dom.getLabelId(scope),
+        dir: prop("dir"),
       })
     },
 
     getTreeProps() {
       return normalize.element({
         ...parts.tree.attrs,
-        id: dom.getTreeId(state.context),
-        dir: state.context.dir,
+        id: dom.getTreeId(scope),
+        dir: prop("dir"),
         role: "tree",
         "aria-label": "Tree View",
-        "aria-labelledby": dom.getLabelId(state.context),
-        "aria-multiselectable": state.context.selectionMode === "multiple" || undefined,
+        "aria-labelledby": dom.getLabelId(scope),
+        "aria-multiselectable": prop("selectionMode") === "multiple" || undefined,
         tabIndex: -1,
         onKeyDown(event) {
           if (event.defaultPrevented) return
@@ -199,7 +200,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
             },
           }
 
-          const key = getEventKey(event, state.context)
+          const key = getEventKey(event, { dir: prop("dir") })
           const exec = keyMap[key]
 
           if (exec) {
@@ -207,7 +208,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
             return
           }
 
-          if (!state.context.typeahead) return
+          if (!isTypingAhead) return
 
           const isValidTypeahead = event.key.length === 1 && !isModifierKey(event)
           if (!isValidTypeahead) return
@@ -224,9 +225,9 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       const itemState = getNodeState(props)
       return normalize.element({
         ...parts.item.attrs,
-        id: dom.getNodeId(state.context, itemState.value),
-        dir: state.context.dir,
-        "data-ownedby": dom.getTreeId(state.context),
+        id: dom.getNodeId(scope, itemState.value),
+        dir: prop("dir"),
+        "data-ownedby": dom.getTreeId(scope),
         "data-path": props.indexPath.join("/"),
         "data-value": itemState.value,
         tabIndex: itemState.focused ? 0 : -1,
@@ -285,10 +286,10 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       return normalize.element({
         ...parts.branch.attrs,
         "data-depth": nodeState.depth,
-        dir: state.context.dir,
+        dir: prop("dir"),
         "data-branch": nodeState.value,
         role: "treeitem",
-        "data-ownedby": dom.getTreeId(state.context),
+        "data-ownedby": dom.getTreeId(scope),
         "data-value": nodeState.value,
         "aria-level": nodeState.depth,
         "aria-selected": nodeState.disabled ? undefined : nodeState.selected,
@@ -321,7 +322,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       return normalize.element({
         ...parts.branchTrigger.attrs,
         role: "button",
-        dir: state.context.dir,
+        dir: prop("dir"),
         "data-disabled": dataAttr(nodeState.disabled),
         "data-state": nodeState.expanded ? "open" : "closed",
         "data-value": nodeState.value,
@@ -338,8 +339,8 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       return normalize.element({
         ...parts.branchControl.attrs,
         role: "button",
-        id: dom.getNodeId(state.context, nodeState.value),
-        dir: state.context.dir,
+        id: dom.getNodeId(scope, nodeState.value),
+        dir: prop("dir"),
         tabIndex: nodeState.focused ? 0 : -1,
         "data-path": props.indexPath.join("/"),
         "data-state": nodeState.expanded ? "open" : "closed",
@@ -365,7 +366,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       const nodeState = getNodeState(props)
       return normalize.element({
         ...parts.branchText.attrs,
-        dir: state.context.dir,
+        dir: prop("dir"),
         "data-disabled": dataAttr(nodeState.disabled),
         "data-state": nodeState.expanded ? "open" : "closed",
       })
@@ -376,7 +377,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       return normalize.element({
         ...parts.branchContent.attrs,
         role: "group",
-        dir: state.context.dir,
+        dir: prop("dir"),
         "data-state": nodeState.expanded ? "open" : "closed",
         "data-depth": nodeState.depth,
         "data-path": props.indexPath.join("/"),

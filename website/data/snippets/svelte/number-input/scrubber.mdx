@@ -4,9 +4,11 @@
   import * as numberInput from "@zag-js/number-input"
   import { normalizeProps, useMachine } from "@zag-js/svelte"
 
-  const [snapshot, send] = useMachine(numberInput.machine({ id: "1" }))
+  const service = useMachine(numberInput.machine, {
+    id: "1",
+  })
 
-  const api = $derived(numberInput.connect(snapshot, send, normalizeProps))
+  const api = $derived(numberInput.connect(service, normalizeProps))
 </script>
 
 <div {...api.getRootProps()}>

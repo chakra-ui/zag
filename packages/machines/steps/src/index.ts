@@ -3,11 +3,11 @@ export { connect } from "./steps.connect"
 export { machine } from "./steps.machine"
 export * from "./steps.props"
 export type {
-  MachineApi as Api,
-  UserDefinedContext as Context,
+  StepsApi as Api,
+  StepsProps as Props,
   ElementIds,
   ItemProps,
   ItemState,
-  Service,
+  StepsService as Service,
   StepChangeDetails,
 } from "./steps.types"

@@ -1,5 +1,5 @@
 import type { TreeCollection, TreeNode } from "@zag-js/collection"
-import type { Machine, StateMachine as S } from "@zag-js/core"
+import type { Service } from "@zag-js/core"
 import type { TypeaheadState } from "@zag-js/dom-query"
 import type { CommonProperties, DirectionProperty, PropTypes, RequiredBy } from "@zag-js/types"
 
@@ -30,27 +30,37 @@ export type ElementIds = Partial<{
  * Machine context
  * -----------------------------------------------------------------------------*/
 
-interface PublicContext<T = any> extends DirectionProperty, CommonProperties {
+export interface TreeViewProps<T = any> extends DirectionProperty, CommonProperties {
   /**
    * The tree collection data
    */
-  collection: TreeCollection<T>
+  collection?: TreeCollection<T> | undefined
   /**
    * The ids of the tree elements. Useful for composition.
    */
   ids?: ElementIds | undefined
   /**
-   * The id of the expanded nodes
+   * The controlled expanded node ids
    */
-  expandedValue: string[]
+  expandedValue?: string[] | undefined
   /**
-   * The id of the selected nodes
+   * The initial expanded node ids when rendered.
+   * Use when you don't need to control the expanded node ids.
    */
-  selectedValue: string[]
+  defaultExpandedValue?: string[] | undefined
+  /**
+   * The controlled selected node ids
+   */
+  selectedValue?: string[] | undefined
+  /**
+   * The initial selected node ids when rendered.
+   * Use when you don't need to control the selected node ids.
+   */
+  defaultSelectedValue?: string[] | undefined
   /**
    * The id of the focused node
    */
-  focusedValue: string | null
+  focusedValue?: string | null | undefined
   /**
    * Whether the tree supports multiple selection
    * - "single": only one node can be selected
@@ -58,7 +68,7 @@ interface PublicContext<T = any> extends DirectionProperty, CommonProperties {
    *
    * @default "single"
    */
-  selectionMode: "single" | "multiple"
+  selectionMode?: "single" | "multiple" | undefined
   /**
    * Called when the tree is opened or closed
    */
@@ -83,40 +93,35 @@ interface PublicContext<T = any> extends DirectionProperty, CommonProperties {
   typeahead?: boolean | undefined
 }
 
-interface PrivateContext {
-  /**
-   * @internal
-   * The typeahead state for faster keyboard navigation
-   */
-  typeaheadState: TypeaheadState
+type PropsWithDefault =
+  | "collection"
+  | "selectionMode"
+  | "expandOnClick"
+  | "typeahead"
+  | "defaultExpandedValue"
+  | "defaultSelectedValue"
+
+export type TreeViewService = Service<TreeViewSchema>
+
+export interface TreeViewSchema {
+  state: "idle"
+  props: RequiredBy<TreeViewProps, PropsWithDefault>
+  context: {
+    expandedValue: string[]
+    selectedValue: string[]
+    focusedValue: string | null
+  }
+  refs: {
+    typeaheadState: TypeaheadState
+  }
+  computed: {
+    isTypingAhead: boolean
+    isMultipleSelection: boolean
+  }
+  action: string
+  effect: string
+  guard: string
 }
-
-type ComputedContext = Readonly<{
-  /**
-   * @computed
-   * Whether a typeahead search is ongoing
-   */
-  isTypingAhead: boolean
-  /**
-   * @computed
-   * Whether the tree supports multiple selection
-   */
-  isMultipleSelection: boolean
-}>
-
-export type UserDefinedContext = RequiredBy<PublicContext, "id" | "collection">
-
-export interface MachineContext<T = any> extends PublicContext<T>, PrivateContext, ComputedContext {}
-
-export interface MachineState {
-  value: "idle"
-}
-
-export type State = S.State<MachineContext, MachineState>
-
-export type Send = S.Send<S.AnyEventObject>
-
-export type Service = Machine<MachineContext, MachineState, S.AnyEventObject>
 
 /* -----------------------------------------------------------------------------
  * Component API
@@ -168,7 +173,7 @@ export interface NodeState {
   isBranch: boolean
 }
 
-export interface MachineApi<T extends PropTypes = PropTypes, V = TreeNode> {
+export interface TreeViewApi<T extends PropTypes = PropTypes, V = TreeNode> {
   /**
    * The tree collection data
    */

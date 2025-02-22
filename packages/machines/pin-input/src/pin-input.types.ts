@@ -1,4 +1,4 @@
-import type { StateMachine as S } from "@zag-js/core"
+import type { EventObject, Service } from "@zag-js/core"
 import type { CommonProperties, DirectionProperty, PropTypes, RequiredBy } from "@zag-js/types"
 
 /* -----------------------------------------------------------------------------
@@ -31,7 +31,7 @@ export type ElementIds = Partial<{
   input(id: string): string
 }>
 
-interface PublicContext extends DirectionProperty, CommonProperties {
+export interface PinInputProps extends DirectionProperty, CommonProperties {
   /**
    * The name of the input element. Useful for form submission.
    */
@@ -79,9 +79,14 @@ interface PublicContext extends DirectionProperty, CommonProperties {
    */
   otp?: boolean | undefined
   /**
-   * The value of the the pin input.
+   * The controlled value of the the pin input.
    */
-  value: string[]
+  value?: string[] | undefined
+  /**
+   * The initial value of the the pin input when rendered.
+   * Use when you don't need to control the value of the pin input.
+   */
+  defaultValue?: string[] | undefined
   /**
    * The type of value the pin-input should allow
    * @default "numeric"
@@ -114,56 +119,32 @@ interface PublicContext extends DirectionProperty, CommonProperties {
   /**
    * Specifies the localized strings that identifies the accessibility elements and their states
    */
-  translations: IntlTranslations
+  translations?: IntlTranslations | undefined
 }
 
-export type UserDefinedContext = RequiredBy<PublicContext, "id">
+type PropsWithDefault = "placeholder" | "otp" | "type" | "defaultValue"
 
-type ComputedContext = Readonly<{
-  /**
-   * @computed
-   * The number of inputs
-   */
-  valueLength: number
-  /**
-   * @computed
-   * The number of inputs that are not empty
-   */
-  filledValueLength: number
-  /**
-   * @computed
-   * Whether all input values are valid
-   */
-  isValueComplete: boolean
-  /**
-   * @computed
-   * The string representation of the input values
-   */
-  valueAsString: string
-  /**
-   * @computed
-   * The value at focused index
-   */
-  focusedValue: string
-}>
-
-interface PrivateContext {
-  /**
-   * @internal
-   * The index of the input field that has focus
-   */
-  focusedIndex: number
+export interface PinInputSchema {
+  state: "idle" | "focused"
+  props: RequiredBy<PinInputProps, PropsWithDefault>
+  context: {
+    value: string[]
+    focusedIndex: number
+  }
+  computed: {
+    valueLength: number
+    filledValueLength: number
+    isValueComplete: boolean
+    valueAsString: string
+    focusedValue: string
+  }
+  event: EventObject
+  action: string
+  effect: string
+  guard: string
 }
 
-export interface MachineContext extends PublicContext, PrivateContext, ComputedContext {}
-
-export interface MachineState {
-  value: "idle" | "focused"
-}
-
-export type State = S.State<MachineContext, MachineState>
-
-export type Send = S.Send<S.AnyEventObject>
+export type PinInputService = Service<PinInputSchema>
 
 /* -----------------------------------------------------------------------------
  * Component API
@@ -173,7 +154,7 @@ export interface InputProps {
   index: number
 }
 
-export interface MachineApi<T extends PropTypes = PropTypes> {
+export interface PinInputApi<T extends PropTypes = PropTypes> {
   /**
    * The value of the input as an array of strings.
    */

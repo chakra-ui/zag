@@ -5,16 +5,14 @@ import { useId } from "react"
 
 const Button = ({ tooltip, children }) => {
   const id = useId()
-  const [state, send] = useMachine(
-    machine({
-      id,
-      closeOnScroll: false,
-    }),
-  )
-  const api = connect(state, send, normalizeProps)
+  const service = useMachine(machine, {
+    id,
+    closeOnScroll: false,
+  })
+  const api = connect(service, normalizeProps)
   return (
     <>
-      <pre dangerouslySetInnerHTML={{ __html: highlightState(state.event) }} />
+      <pre dangerouslySetInnerHTML={{ __html: highlightState(service.event) }} />
       <button {...api.getTriggerProps()}>{children}</button>
       <div {...api.getPositionerProps()}>
         <div {...api.getContentProps()}>{tooltip}</div>

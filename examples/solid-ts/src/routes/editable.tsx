@@ -9,15 +9,15 @@ import { useControls } from "~/hooks/use-controls"
 export default function Page() {
   const controls = useControls(editableControls)
 
-  const [state, send] = useMachine(
-    editable.machine({
+  const service = useMachine(
+    editable.machine,
+    controls.mergeProps<editable.Props>({
       id: createUniqueId(),
-      value: "Hello World",
+      defaultValue: "Hello World",
     }),
-    { context: controls.context },
   )
 
-  const api = createMemo(() => editable.connect(state, send, normalizeProps))
+  const api = createMemo(() => editable.connect(service, normalizeProps))
 
   return (
     <>
@@ -47,8 +47,8 @@ export default function Page() {
         </div>
       </main>
 
-      <Toolbar controls={controls.ui}>
-        <StateVisualizer state={state} />
+      <Toolbar controls={controls}>
+        <StateVisualizer state={service} />
       </Toolbar>
     </>
   )

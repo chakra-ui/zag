@@ -62,14 +62,12 @@ avatar machine in your project 🔥
 When the image has loaded or failed to load, the `onStatusChange` callback is
 invoked.
 
-```jsx {3}
-const [state, send] = useMachine(
-  avatar.machine({
-    onStatusChange(details) {
-      // details => { status: "error" | "loaded" }
-    },
-  }),
-)
+```jsx {2}
+const service = useMachine(avatar.machine, {
+  onStatusChange(details) {
+    // details => { status: "error" | "loaded" }
+  },
+})
 ```
 
 ## Styling guide

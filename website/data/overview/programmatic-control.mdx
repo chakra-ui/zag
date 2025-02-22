@@ -14,33 +14,32 @@ programmatically.
 
 ## Setting initial context
 
-All machines have an "internal" context value that is used to manage extended
-state (or data) within the machine. To extend the initial value of this context,
-we allow users pass it directly into the `machine` function.
+All machines support setting the controlled and uncontrolled values for context
+properties. For example:
 
-> This is used to set/override the **initial** context value of the machine. It
-> can't be updated later on. Keep reading to see how to update it.
+- `defaultOpen` and `open` for controlling the open state of disclosure
+  components
+- `defaultValue` and `value` for controlling the value of input machines
 
 For example, if you want an accordion to start with a specific selected value.
 Here's how to achieve that:
 
-```jsx
-const [state, send] = useMachine(
-  // set initial context value
-  accordion.machine({
-    value: "item-1",
-  }),
-)
+```tsx
+const service = useMachine(accordion.machine, {
+  defaultValue: ["item-1"],
+})
 ```
 
-## Transient updates
+## Controlled Usage
 
-You can pass the context value to the `useMachine` hook directly.
+You can pass the context value to the `useMachine` hook directly and provide the
+`onValueChange` callback to react to the changes.
 
 ```jsx
-const [state, send] = useMachine(accordion.machine, {
-  context: {
-    value: props.value,
+const service = useMachine(accordion.machine, {
+  value: props.value,
+  onValueChange(details) {
+    console.log(details)
   },
 })
 ```
@@ -59,75 +58,14 @@ Here's how to do that:
 ```jsx
 function Accordion() {
   // 1. Bind the machine in your framework
-  const [state, send] = useMachine(accordion.machine)
+  const service = useMachine(accordion.machine)
 
   // 2. Call the connect function
-  const api = accordion.connect(state, send)
+  const api = accordion.connect(service)
 
   // 3. Use exposed methods
   api.setValue("item-1")
 
   return (...)
-}
-```
-
-Now, let's say you'd like to update the selected accordion based on props passed
-to the `Accordion` component, here is how to do that in React:
-
-```jsx
-import useUpdateEffect from "use-update-effect"
-
-function Accordion(props) {
-  const [state, send] = useMachine(
-    accordion.machine({
-      value: props.value,
-    }),
-  )
-
-  const api = accordion.connect(state, send)
-
-  useUpdateEffect(() => {
-    api.setValue(props.value)
-  }, [props.value])
-
-  return (...)
-}
-```
-
-## Controlled Usage in React
-
-When using framework like React, you might want to fully control the value
-passed to a machine, and react to changes to that value (via a change handler).
-
-There are some key things to note:
-
-- Zag is "react" agnostic and doesn't follow the classic controlled "read-only"
-  behavior in React. We assume uncontrolled by default and re-sync the DOM as
-  needed.
-
-- Zag works like native DOM, you can set and get an element's value, but you
-  can't force it (except if you intercept the input native events and prevent it
-  from happening).
-
-To get this working in React, you can use the `flushSync` method from
-`react-dom` to ensure the changes are always in sync.
-
-```jsx {2,11-13}
-import { useState } from "react"
-import { flushSync } from "react-dom"
-
-const NumberInput = () => {
-  const [value, setValue] = useState("123")
-
-  const [state, send] = useMachine(machine({ id: "1" }), {
-    context: {
-      value,
-      onValueChange(details) {
-        flushSync(() => {
-          setValue(details.value)
-        })
-      },
-    },
-  })
 }
 ```

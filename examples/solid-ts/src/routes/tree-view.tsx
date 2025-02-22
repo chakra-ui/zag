@@ -93,11 +93,12 @@ const TreeNode = (props: TreeNodeProps): JSX.Element => {
 export default function Page() {
   const controls = useControls(treeviewControls)
 
-  const [state, send] = useMachine(tree.machine({ id: createUniqueId(), collection }), {
-    context: controls.context,
+  const service = useMachine(tree.machine, {
+    id: createUniqueId(),
+    collection,
   })
 
-  const api = createMemo(() => tree.connect(state, send, normalizeProps))
+  const api = createMemo(() => tree.connect(service, normalizeProps))
 
   return (
     <>
@@ -107,7 +108,7 @@ export default function Page() {
           <div style={{ display: "flex", gap: "10px" }}>
             <button onClick={() => api().collapse()}>Collapse All</button>
             <button onClick={() => api().expand()}>Expand All</button>
-            <Show when={controls.context().selectionMode === "multiple"}>
+            <Show when={controls.state().selectionMode === "multiple"}>
               <button onClick={() => api().select()}>Select All</button>
               <button onClick={() => api().deselect()}>Deselect All</button>
             </Show>
@@ -120,8 +121,8 @@ export default function Page() {
         </div>
       </main>
 
-      <Toolbar controls={controls.ui}>
-        <StateVisualizer state={state} omit={["collection"]} />
+      <Toolbar controls={controls}>
+        <StateVisualizer state={service} omit={["collection"]} />
       </Toolbar>
     </>
   )

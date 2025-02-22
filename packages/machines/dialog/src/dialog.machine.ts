@@ -1,186 +1,201 @@
 import { ariaHidden } from "@zag-js/aria-hidden"
 import { createMachine } from "@zag-js/core"
 import { trackDismissableElement } from "@zag-js/dismissable"
-import { raf, getComputedStyle } from "@zag-js/dom-query"
+import { getComputedStyle, raf } from "@zag-js/dom-query"
 import { trapFocus } from "@zag-js/focus-trap"
 import { preventBodyScroll } from "@zag-js/remove-scroll"
-import { compact } from "@zag-js/utils"
-import { dom } from "./dialog.dom"
-import type { MachineContext, MachineState, UserDefinedContext } from "./dialog.types"
+import * as dom from "./dialog.dom"
+import type { DialogSchema } from "./dialog.types"
 
-export function machine(userContext: UserDefinedContext) {
-  const ctx = compact(userContext)
-  return createMachine<MachineContext, MachineState>(
-    {
-      id: "dialog",
-      initial: ctx.open ? "open" : "closed",
+export const machine = createMachine<DialogSchema>({
+  props({ props, scope }) {
+    const alertDialog = props.role === "alertdialog"
+    const initialFocusEl: any = alertDialog ? () => dom.getCloseTriggerEl(scope) : undefined
+    return {
+      role: "dialog",
+      modal: true,
+      trapFocus: true,
+      preventScroll: true,
+      closeOnInteractOutside: !alertDialog,
+      closeOnEscape: true,
+      restoreFocus: true,
+      initialFocusEl,
+      ...props,
+    }
+  },
 
-      context: {
-        role: "dialog",
-        renderedElements: {
-          title: true,
-          description: true,
+  initialState({ prop }) {
+    const open = prop("open") || prop("defaultOpen")
+    return open ? "open" : "closed"
+  },
+
+  context({ bindable }) {
+    return {
+      rendered: bindable<{ title: boolean; description: boolean }>(() => ({
+        defaultValue: { title: true, description: true },
+      })),
+    }
+  },
+
+  watch({ track, action, prop }) {
+    track([() => prop("open")], () => {
+      action(["toggleVisibility"])
+    })
+  },
+
+  states: {
+    open: {
+      entry: ["checkRenderedElements", "syncZIndex"],
+      effects: ["trackDismissableElement", "trapFocus", "preventScroll", "hideContentBelow"],
+      on: {
+        "CONTROLLED.CLOSE": {
+          target: "closed",
         },
-        modal: true,
-        trapFocus: true,
-        preventScroll: true,
-        closeOnInteractOutside: true,
-        closeOnEscape: true,
-        restoreFocus: true,
-        ...ctx,
-      },
-
-      created: ["setAlertDialogProps"],
-
-      watch: {
-        open: ["toggleVisibility"],
-      },
-
-      states: {
-        open: {
-          entry: ["checkRenderedElements", "syncZIndex"],
-          activities: ["trackDismissableElement", "trapFocus", "preventScroll", "hideContentBelow"],
-          on: {
-            "CONTROLLED.CLOSE": {
-              target: "closed",
-            },
-            CLOSE: [
-              {
-                guard: "isOpenControlled",
-                actions: ["invokeOnClose"],
-              },
-              {
-                target: "closed",
-                actions: ["invokeOnClose"],
-              },
-            ],
-            TOGGLE: [
-              {
-                guard: "isOpenControlled",
-                actions: ["invokeOnClose"],
-              },
-              {
-                target: "closed",
-                actions: ["invokeOnClose"],
-              },
-            ],
+        CLOSE: [
+          {
+            guard: "isOpenControlled",
+            actions: ["invokeOnClose"],
           },
-        },
-        closed: {
-          on: {
-            "CONTROLLED.OPEN": {
-              target: "open",
-            },
-            OPEN: [
-              {
-                guard: "isOpenControlled",
-                actions: ["invokeOnOpen"],
-              },
-              {
-                target: "open",
-                actions: ["invokeOnOpen"],
-              },
-            ],
-            TOGGLE: [
-              {
-                guard: "isOpenControlled",
-                actions: ["invokeOnOpen"],
-              },
-              {
-                target: "open",
-                actions: ["invokeOnOpen"],
-              },
-            ],
+          {
+            target: "closed",
+            actions: ["invokeOnClose"],
           },
-        },
+        ],
+        TOGGLE: [
+          {
+            guard: "isOpenControlled",
+            actions: ["invokeOnClose"],
+          },
+          {
+            target: "closed",
+            actions: ["invokeOnClose"],
+          },
+        ],
       },
     },
-    {
-      guards: {
-        isOpenControlled: (ctx) => !!ctx["open.controlled"],
-      },
-      activities: {
-        trackDismissableElement(ctx, _evt, { send }) {
-          const getContentEl = () => dom.getContentEl(ctx)
-          return trackDismissableElement(getContentEl, {
-            defer: true,
-            pointerBlocking: ctx.modal,
-            exclude: [dom.getTriggerEl(ctx)],
-            onInteractOutside(event) {
-              ctx.onInteractOutside?.(event)
-              if (!ctx.closeOnInteractOutside) {
-                event.preventDefault()
-              }
-            },
-            persistentElements: ctx.persistentElements,
-            onFocusOutside: ctx.onFocusOutside,
-            onPointerDownOutside: ctx.onPointerDownOutside,
-            onEscapeKeyDown(event) {
-              ctx.onEscapeKeyDown?.(event)
-              if (!ctx.closeOnEscape) {
-                event.preventDefault()
-              }
-            },
-            onDismiss() {
-              send({ type: "CLOSE", src: "interact-outside" })
-            },
-          })
-        },
-        preventScroll(ctx) {
-          if (!ctx.preventScroll) return
-          return preventBodyScroll(dom.getDoc(ctx))
-        },
-        trapFocus(ctx) {
-          if (!ctx.trapFocus || !ctx.modal) return
-          const contentEl = () => dom.getContentEl(ctx)
-          return trapFocus(contentEl, {
-            preventScroll: true,
-            returnFocusOnDeactivate: !!ctx.restoreFocus,
-            initialFocus: ctx.initialFocusEl,
-            setReturnFocus: (el) => ctx.finalFocusEl?.() ?? el,
-          })
-        },
-        hideContentBelow(ctx) {
-          if (!ctx.modal) return
-          const getElements = () => [dom.getContentEl(ctx)]
-          return ariaHidden(getElements, { defer: true })
-        },
-      },
-      actions: {
-        setAlertDialogProps(ctx) {
-          if (ctx.role !== "alertdialog") return
-          ctx.initialFocusEl ||= () => dom.getCloseTriggerEl(ctx)
-          ctx.closeOnInteractOutside = false
-        },
-        checkRenderedElements(ctx) {
-          raf(() => {
-            ctx.renderedElements.title = !!dom.getTitleEl(ctx)
-            ctx.renderedElements.description = !!dom.getDescriptionEl(ctx)
-          })
-        },
-        syncZIndex(ctx) {
-          raf(() => {
-            // sync z-index of positioner with content
-            const contentEl = dom.getContentEl(ctx)
-            if (!contentEl) return
 
-            const styles = getComputedStyle(contentEl)
-            const elems = [dom.getPositionerEl(ctx), dom.getBackdropEl(ctx)]
-            elems.forEach((node) => {
-              node?.style.setProperty("--z-index", styles.zIndex)
-            })
-          })
+    closed: {
+      on: {
+        "CONTROLLED.OPEN": {
+          target: "open",
         },
-        invokeOnClose(ctx) {
-          ctx.onOpenChange?.({ open: false })
-        },
-        invokeOnOpen(ctx) {
-          ctx.onOpenChange?.({ open: true })
-        },
-        toggleVisibility(ctx, evt, { send }) {
-          send({ type: ctx.open ? "CONTROLLED.OPEN" : "CONTROLLED.CLOSE", previousEvent: evt })
-        },
+        OPEN: [
+          {
+            guard: "isOpenControlled",
+            actions: ["invokeOnOpen"],
+          },
+          {
+            target: "open",
+            actions: ["invokeOnOpen"],
+          },
+        ],
+        TOGGLE: [
+          {
+            guard: "isOpenControlled",
+            actions: ["invokeOnOpen"],
+          },
+          {
+            target: "open",
+            actions: ["invokeOnOpen"],
+          },
+        ],
       },
     },
-  )
-}
+  },
+
+  implementations: {
+    guards: {
+      isOpenControlled: ({ prop }) => prop("open") != undefined,
+    },
+
+    effects: {
+      trackDismissableElement({ scope, send, prop }) {
+        const getContentEl = () => dom.getContentEl(scope)
+        return trackDismissableElement(getContentEl, {
+          defer: true,
+          pointerBlocking: prop("modal"),
+          exclude: [dom.getTriggerEl(scope)],
+          onInteractOutside(event) {
+            prop("onInteractOutside")?.(event)
+            if (!prop("closeOnInteractOutside")) {
+              event.preventDefault()
+            }
+          },
+          persistentElements: prop("persistentElements"),
+          onFocusOutside: prop("onFocusOutside"),
+          onPointerDownOutside: prop("onPointerDownOutside"),
+          onEscapeKeyDown(event) {
+            prop("onEscapeKeyDown")?.(event)
+            if (!prop("closeOnEscape")) {
+              event.preventDefault()
+            }
+          },
+          onDismiss() {
+            send({ type: "CLOSE", src: "interact-outside" })
+          },
+        })
+      },
+
+      preventScroll({ scope, prop }) {
+        if (!prop("preventScroll")) return
+        return preventBodyScroll(scope.getDoc())
+      },
+
+      trapFocus({ scope, prop }) {
+        if (!prop("trapFocus") || !prop("modal")) return
+        const contentEl = () => dom.getContentEl(scope)
+        return trapFocus(contentEl, {
+          preventScroll: true,
+          returnFocusOnDeactivate: !!prop("restoreFocus"),
+          initialFocus: prop("initialFocusEl"),
+          setReturnFocus: (el) => prop("finalFocusEl")?.() ?? el,
+        })
+      },
+
+      hideContentBelow({ scope, prop }) {
+        if (!prop("modal")) return
+        const getElements = () => [dom.getContentEl(scope)]
+        return ariaHidden(getElements, { defer: true })
+      },
+    },
+
+    actions: {
+      checkRenderedElements({ context, scope }) {
+        raf(() => {
+          context.set("rendered", {
+            title: !!dom.getTitleEl(scope),
+            description: !!dom.getDescriptionEl(scope),
+          })
+        })
+      },
+
+      syncZIndex({ scope }) {
+        raf(() => {
+          const contentEl = dom.getContentEl(scope)
+          if (!contentEl) return
+
+          const styles = getComputedStyle(contentEl)
+          const elems = [dom.getPositionerEl(scope), dom.getBackdropEl(scope)]
+          elems.forEach((node) => {
+            node?.style.setProperty("--z-index", styles.zIndex)
+          })
+        })
+      },
+
+      invokeOnClose({ prop }) {
+        prop("onOpenChange")?.({ open: false })
+      },
+
+      invokeOnOpen({ prop }) {
+        prop("onOpenChange")?.({ open: true })
+      },
+
+      toggleVisibility({ prop, send, event }) {
+        send({
+          type: prop("open") ? "CONTROLLED.OPEN" : "CONTROLLED.CLOSE",
+          previousEvent: event,
+        })
+      },
+    },
+  },
+})

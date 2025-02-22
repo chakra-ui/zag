@@ -63,24 +63,20 @@ checkbox machine in your project 🔥
 To make a checkbox indeterminate, set the context's `indeterminate` property to
 true
 
-```jsx {3}
-const [state, send] = useMachine(
-  checkbox.machine({
-    indeterminate: true,
-  }),
-)
+```jsx {2}
+const service = useMachine(checkbox.machine, {
+  indeterminate: true,
+})
 ```
 
 ## Disabling the checkbox
 
 To make a checkbox disabled, set the context's `disabled` property to true
 
-```jsx {3}
-const [state, send] = useMachine(
-  checkbox.machine({
-    disabled: true,
-  }),
-)
+```jsx {2}
+const service = useMachine(checkbox.machine, {
+  disabled: true,
+})
 ```
 
 ## Making it checked by default
@@ -88,27 +84,23 @@ const [state, send] = useMachine(
 To make a checkbox checked by default, set the context's `checked` property to
 `true`
 
-```jsx {3}
-const [state, send] = useMachine(
-  checkbox.machine({
-    checked: true,
-  }),
-)
+```jsx {2}
+const service = useMachine(checkbox.machine, {
+  defaultChecked: true,
+})
 ```
 
 ## Listening for changes
 
 When the checkbox value changes, the `onCheckChange` callback is invoked.
 
-```jsx {3-6}
-const [state, send] = useMachine(
-  checkbox.machine({
-    onCheckChange(details) {
-      // details => { checked: boolean }
-      console.log("checkbox is:", details.checked)
-    },
-  }),
-)
+```jsx {2-5}
+const service = useMachine(checkbox.machine, {
+  onCheckChange(details) {
+    // details => { checked: boolean }
+    console.log("checkbox is:", details.checked)
+  },
+})
 ```
 
 ## Usage within forms
@@ -118,12 +110,10 @@ To use checkbox within forms, use the exposed `hiddenInputProps` from the
 will render a hidden input and ensure the value changes get propagated to the
 form correctly.
 
-```jsx {3}
-const [state, send] = useMachine(
-  checkbox.machine({
-    name: "fruits",
-  }),
-)
+```jsx {2}
+const service = useMachine(checkbox.machine, {
+  name: "fruits",
+})
 ```
 
 ## Styling guide

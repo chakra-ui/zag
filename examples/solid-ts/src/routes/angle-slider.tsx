@@ -9,11 +9,8 @@ import { useControls } from "../hooks/use-controls"
 export default function Page() {
   const controls = useControls(angleSliderControls)
 
-  const [state, send] = useMachine(angleSlider.machine({ id: createUniqueId() }), {
-    context: controls.context,
-  })
-
-  const api = createMemo(() => angleSlider.connect(state, send, normalizeProps))
+  const service = useMachine(angleSlider.machine, controls.mergeProps({ id: createUniqueId() }))
+  const api = createMemo(() => angleSlider.connect(service, normalizeProps))
 
   return (
     <>
@@ -34,8 +31,8 @@ export default function Page() {
         </div>
       </main>
 
-      <Toolbar controls={controls.ui}>
-        <StateVisualizer state={state} />
+      <Toolbar controls={controls}>
+        <StateVisualizer state={service} />
       </Toolbar>
     </>
   )

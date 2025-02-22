@@ -1,5 +1,5 @@
-import type { Machine, StateMachine as S } from "@zag-js/core"
 import type { CommonProperties, DirectionProperty, PropTypes, RequiredBy } from "@zag-js/types"
+import type { EventObject, Service } from "@zag-js/core"
 
 export interface ElementIds {
   root: string
@@ -14,74 +14,72 @@ export interface ValueChangeDetails {
   valueAsDegree: string
 }
 
-interface PublicContext extends DirectionProperty, CommonProperties {
+export interface AngleSliderProps extends DirectionProperty, CommonProperties {
   /**
    * The ids of the elements in the machine.
    * Useful for composition.
    */
-  ids?: Partial<ElementIds>
+  ids?: Partial<ElementIds> | undefined
   /**
    * The step value for the slider.
    * @default 1
    */
-  step: number
+  step?: number | undefined
   /**
    * The value of the slider.
+   */
+  value?: number | undefined
+  /**
+   * The initial value of the slider.
+   * Use when you don't need to control the value of the slider.
    * @default 0
    */
-  value: number
+  defaultValue?: number | undefined
   /**
    * The callback function for when the value changes.
    */
-  onValueChange?: (details: ValueChangeDetails) => void
+  onValueChange?: ((details: ValueChangeDetails) => void) | undefined
   /**
    * The callback function for when the value changes ends.
    */
-  onValueChangeEnd?: (details: ValueChangeDetails) => void
+  onValueChangeEnd?: ((details: ValueChangeDetails) => void) | undefined
   /**
    * Whether the slider is disabled.
    */
-  disabled?: boolean
+  disabled?: boolean | undefined
   /**
    * Whether the slider is read-only.
    */
-  readOnly?: boolean
+  readOnly?: boolean | undefined
   /**
    * Whether the slider is invalid.
    */
-  invalid?: boolean
+  invalid?: boolean | undefined
   /**
    * The name of the slider. Useful for form submission.
    */
-  name?: string
+  name?: string | undefined
 }
 
-interface PrivateContext {}
+type PropsWithDefault = "step" | "defaultValue"
 
-type ComputedContext = Readonly<{
-  /**
-   * Whether the slider is interactive.
-   */
-  interactive: boolean
-  /**
-   * The value of the slider as a degree string.
-   */
-  valueAsDegree: string
-}>
-
-export type UserDefinedContext = RequiredBy<PublicContext, "id">
-
-export interface MachineContext extends PublicContext, PrivateContext, ComputedContext {}
-
-export interface MachineState {
-  value: "idle" | "focused" | "dragging"
+export interface AngleSliderSchema {
+  state: "idle" | "focused" | "dragging"
+  props: RequiredBy<AngleSliderProps, PropsWithDefault>
+  computed: {
+    interactive: boolean
+    valueAsDegree: string
+  }
+  context: {
+    value: number
+  }
+  action: string
+  event: EventObject
+  effect: string
+  guard: string
 }
 
-export type State = S.State<MachineContext, MachineState>
-
-export type Send = S.Send<S.AnyEventObject>
-
-export type Service = Machine<MachineContext, MachineState, S.AnyEventObject>
+export type AngleSliderService = Service<AngleSliderSchema>
 
 export interface MarkerProps {
   /**
@@ -90,7 +88,7 @@ export interface MarkerProps {
   value: number
 }
 
-export interface MachineApi<T extends PropTypes = PropTypes> {
+export interface AngleSliderApi<T extends PropTypes = PropTypes> {
   /**
    * The current value of the angle slider
    */

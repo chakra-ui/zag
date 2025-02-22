@@ -9,14 +9,9 @@ function Wrapper(props: ParentProps) {
 }
 
 export function TimePicker() {
-  const [state, send] = useMachine(
-    timePicker.machine({ id: createUniqueId() }),
-    {
-      context: controls.context,
-    },
-  )
+  const service = useMachine(timePicker.machine, { id: createUniqueId() })
 
-  const api = createMemo(() => timePicker.connect(state, send, normalizeProps))
+  const api = createMemo(() => timePicker.connect(service, normalizeProps))
 
   return (
     <>

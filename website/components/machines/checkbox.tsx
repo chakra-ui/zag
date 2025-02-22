@@ -15,17 +15,16 @@ export function Checkbox(props: CheckboxProps) {
     indeterminate ? "indeterminate" : false,
   )
 
-  const [state, send] = useMachine(checkbox.machine({ id: useId() }), {
-    context: {
-      disabled,
-      checked: indeterminate ? "indeterminate" : checked,
-      onCheckedChange(details) {
-        setChecked(details.checked)
-      },
+  const service = useMachine(checkbox.machine, {
+    id: useId(),
+    disabled,
+    checked: indeterminate ? "indeterminate" : checked,
+    onCheckedChange(details) {
+      setChecked(details.checked)
     },
   })
 
-  const api = checkbox.connect(state, send, normalizeProps)
+  const api = checkbox.connect(service, normalizeProps)
 
   return (
     <div>

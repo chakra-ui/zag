@@ -8,20 +8,15 @@ import { Index, createMemo, createUniqueId } from "solid-js"
 
 export default function Page() {
   const controls = useControls(datePickerControls)
-  const [state, send] = useMachine(
-    datePicker.machine({
-      id: createUniqueId(),
-      name: "date[]",
-      locale: "en",
-      numOfMonths: 2,
-      selectionMode: "range",
-    }),
-    {
-      context: controls.context,
-    },
-  )
+  const service = useMachine(datePicker.machine, {
+    id: createUniqueId(),
+    name: "date[]",
+    locale: "en",
+    numOfMonths: 2,
+    selectionMode: "range",
+  })
 
-  const api = createMemo(() => datePicker.connect(state, send, normalizeProps))
+  const api = createMemo(() => datePicker.connect(service, normalizeProps))
   const offset = createMemo(() => api().getOffset({ months: 1 }))
 
   return (
@@ -166,8 +161,8 @@ export default function Page() {
         </div>
       </main>
 
-      <Toolbar viz controls={controls.ui}>
-        <StateVisualizer state={state} omit={["weeks"]} />
+      <Toolbar viz controls={controls}>
+        <StateVisualizer state={service} omit={["weeks"]} />
       </Toolbar>
     </>
   )

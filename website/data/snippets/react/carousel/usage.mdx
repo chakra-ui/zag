@@ -9,11 +9,12 @@ const items = [
 ]
 
 export function Carousel() {
-  const [state, send] = useMachine(
-    carousel.machine({ id: "1", slideCount: items.length }),
-  )
+  const service = useMachine(carousel.machine, {
+    id: "1",
+    slideCount: items.length,
+  })
 
-  const api = carousel.connect(state, send, normalizeProps)
+  const api = carousel.connect(service, normalizeProps)
 
   return (
     <div {...api.getRootProps()}>

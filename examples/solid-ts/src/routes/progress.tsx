@@ -9,11 +9,9 @@ import { useControls } from "~/hooks/use-controls"
 export default function Page() {
   const controls = useControls(progressControls)
 
-  const [state, send] = useMachine(progress.machine({ id: createUniqueId() }), {
-    context: controls.context,
-  })
+  const service = useMachine(progress.machine, { id: createUniqueId() })
 
-  const api = createMemo(() => progress.connect(state, send, normalizeProps))
+  const api = createMemo(() => progress.connect(service, normalizeProps))
 
   return (
     <>
@@ -38,8 +36,8 @@ export default function Page() {
         </div>
       </main>
 
-      <Toolbar controls={controls.ui}>
-        <StateVisualizer state={state} />
+      <Toolbar controls={controls}>
+        <StateVisualizer state={service} />
       </Toolbar>
     </>
   )

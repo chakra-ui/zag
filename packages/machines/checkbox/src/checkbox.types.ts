@@ -1,5 +1,5 @@
-import type { Machine, StateMachine as S } from "@zag-js/core"
 import type { CommonProperties, DirectionProperty, PropTypes, RequiredBy } from "@zag-js/types"
+import type { EventObject, Service } from "@zag-js/core"
 
 /* -----------------------------------------------------------------------------
  * Callback details
@@ -22,7 +22,7 @@ export type ElementIds = Partial<{
   label: string
 }>
 
-interface PublicContext extends DirectionProperty, CommonProperties {
+export interface CheckboxProps extends DirectionProperty, CommonProperties {
   /**
    * The ids of the elements in the checkbox. Useful for composition.
    */
@@ -40,9 +40,14 @@ interface PublicContext extends DirectionProperty, CommonProperties {
    */
   required?: boolean | undefined
   /**
-   * The checked state of the checkbox
+   * The controlled checked state of the checkbox
    */
-  checked: CheckedState
+  checked?: CheckedState | undefined
+  /**
+   * The initial checked state of the checkbox when rendered.
+   * Use when you don't need to control the checked state of the checkbox.
+   */
+  defaultChecked?: CheckedState | undefined
   /**
    * Whether the checkbox is read-only
    */
@@ -50,7 +55,7 @@ interface PublicContext extends DirectionProperty, CommonProperties {
   /**
    * The callback invoked when the checked state changes.
    */
-  onCheckedChange?(details: CheckedChangeDetails): void
+  onCheckedChange?: ((details: CheckedChangeDetails) => void) | undefined
   /**
    * The name of the input field in a checkbox.
    * Useful for form submission.
@@ -64,71 +69,40 @@ interface PublicContext extends DirectionProperty, CommonProperties {
    * The value of checkbox input. Useful for form submission.
    * @default "on"
    */
-  value: string
+  value?: string | undefined
 }
 
-export type UserDefinedContext = RequiredBy<PublicContext, "id">
+type PropsWithDefault = "value"
 
-type ComputedContext = Readonly<{
-  /**
-   * Whether the checkbox is checked
-   */
-  isIndeterminate: boolean
-  /**
-   * Whether the checkbox is checked
-   */
-  isChecked: boolean
-  /**
-   * Whether the checkbox is disabled
-   */
-  isDisabled: boolean
-}>
-
-interface PrivateContext {
-  /**
-   * @internal
-   * Whether the checkbox is pressed
-   */
-  active?: boolean | undefined
-  /**
-   * @internal
-   * Whether the checkbox has focus
-   */
-  focused?: boolean | undefined
-  /**
-   * @internal
-   * Whether the checkbox is focus visible
-   */
-  focusVisible?: boolean | undefined
-  /**
-   * @internal
-   * Whether the checkbox is hovered
-   */
-  hovered?: boolean | undefined
-  /**
-   * @internal
-   * Whether the checkbox's fieldset is disabled
-   */
-  fieldsetDisabled: boolean
+export interface CheckboxSchema {
+  state: "ready"
+  props: RequiredBy<CheckboxProps, PropsWithDefault>
+  context: {
+    checked: CheckedState
+    active: boolean
+    focused: boolean
+    focusVisible: boolean
+    hovered: boolean
+    fieldsetDisabled: boolean
+  }
+  computed: {
+    indeterminate: boolean
+    checked: boolean
+    disabled: boolean
+  }
+  event: EventObject
+  action: string
+  effect: string
+  guard: string
 }
 
-export interface MachineContext extends PublicContext, PrivateContext, ComputedContext {}
-
-export interface MachineState {
-  value: "ready"
-}
-
-export type State = S.State<MachineContext, MachineState>
-
-export type Send = S.Send<S.AnyEventObject>
-
-export type Service = Machine<MachineContext, MachineState, S.AnyEventObject>
+export type CheckboxService = Service<CheckboxSchema>
 
 /* -----------------------------------------------------------------------------
  * Component API
  * -----------------------------------------------------------------------------*/
 
-export interface MachineApi<T extends PropTypes = PropTypes> {
+export interface CheckboxApi<T extends PropTypes = PropTypes> {
   /**
    * Whether the checkbox is checked
    */

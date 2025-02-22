@@ -1,8 +1,8 @@
 import { createProps } from "@zag-js/types"
 import { createSplitProps } from "@zag-js/utils"
-import type { UserDefinedContext } from "./pin-input.types"
+import type { PinInputProps } from "./pin-input.types"
 
-export const props = createProps<UserDefinedContext>()([
+export const props = createProps<PinInputProps>()([
   "autoFocus",
   "blurOnComplete",
   "dir",
@@ -26,6 +26,7 @@ export const props = createProps<UserDefinedContext>()([
   "translations",
   "type",
   "value",
+  "defaultValue",
 ])
 
-export const splitProps = createSplitProps<Partial<UserDefinedContext>>(props)
+export const splitProps = createSplitProps<Partial<PinInputProps>>(props)

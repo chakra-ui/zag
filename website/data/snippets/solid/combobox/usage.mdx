@@ -20,28 +20,23 @@ export function Combobox() {
     }),
   )
 
-  const [state, send] = useMachine(
-    combobox.machine({
-      id: createUniqueId(),
-      collection: collection(),
-      onOpenChange() {
-        setOptions(comboboxData)
-      },
-      onInputValueChange({ inputValue }) {
-        const filtered = comboboxData.filter((item) =>
-          item.label.toLowerCase().includes(inputValue.toLowerCase()),
-        )
-        setOptions(filtered.length > 0 ? filtered : comboboxData)
-      },
-    }),
-    {
-      context: createMemo(() => ({
-        collection: collection(),
-      })),
+  const service = useMachine(combobox.machine, {
+    id: createUniqueId(),
+    get collection() {
+      return collection()
     },
-  )
+    onOpenChange() {
+      setOptions(comboboxData)
+    },
+    onInputValueChange({ inputValue }) {
+      const filtered = comboboxData.filter((item) =>
+        item.label.toLowerCase().includes(inputValue.toLowerCase()),
+      )
+      setOptions(filtered.length > 0 ? filtered : comboboxData)
+    },
+  })
 
-  const api = createMemo(() => combobox.connect(state, send, normalizeProps))
+  const api = createMemo(() => combobox.connect(service, normalizeProps))
 
   return (
     <div>

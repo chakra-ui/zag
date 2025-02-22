@@ -10,27 +10,23 @@ import { useControls } from "../hooks/use-controls"
 export default function Page() {
   const controls = useControls(selectControls)
 
-  const [state, send] = useMachine(
-    select.machine({
-      collection: select.collection({ items: selectData }),
-      id: useId(),
-      name: "country",
-      onHighlightChange(details) {
-        console.log("onHighlightChange", details)
-      },
-      onValueChange(details) {
-        console.log("onChange", details)
-      },
-      onOpenChange(details) {
-        console.log("onOpenChange", details)
-      },
-    }),
-    {
-      context: controls.context,
+  const service = useMachine(select.machine, {
+    collection: select.collection({ items: selectData }),
+    id: useId(),
+    name: "country",
+    onHighlightChange(details) {
+      console.log("onHighlightChange", details)
     },
-  )
+    onValueChange(details) {
+      console.log("onChange", details)
+    },
+    onOpenChange(details) {
+      console.log("onOpenChange", details)
+    },
+    ...controls.context,
+  })
 
-  const api = select.connect(state, send, normalizeProps)
+  const api = select.connect(service, normalizeProps)
 
   return (
     <>
@@ -80,7 +76,7 @@ export default function Page() {
       </main>
 
       <Toolbar controls={controls.ui}>
-        <StateVisualizer state={state} omit={["collection"]} />
+        <StateVisualizer state={service} omit={["collection"]} />
       </Toolbar>
     </>
   )

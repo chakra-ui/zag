@@ -8,11 +8,9 @@
 
   const controls = useControls(hoverCardControls)
 
-  const [snapshot, send] = useMachine(hoverCard.machine({ id: "1" }), {
-    context: controls.context,
-  })
+  const service = useMachine(hoverCard.machine, { id: "1" })
 
-  const api = $derived(hoverCard.connect(snapshot, send, normalizeProps))
+  const api = $derived(hoverCard.connect(service, normalizeProps))
 </script>
 
 <main class="hover-card">
@@ -36,5 +34,5 @@
 </main>
 
 <Toolbar {controls}>
-  <StateVisualizer state={snapshot} />
+  <StateVisualizer state={service} />
 </Toolbar>

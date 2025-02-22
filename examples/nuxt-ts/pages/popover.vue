@@ -5,11 +5,11 @@ import { normalizeProps, useMachine } from "@zag-js/vue"
 
 const controls = useControls(popoverControls)
 
-const [state, send] = useMachine(popover.machine({ id: "1" }), {
-  context: controls.context,
+const service = useMachine(popover.machine, {
+  id: useId(),
 })
 
-const api = computed(() => popover.connect(state.value, send, normalizeProps))
+const api = computed(() => popover.connect(service, normalizeProps))
 </script>
 
 <template>
@@ -20,7 +20,7 @@ const api = computed(() => popover.connect(state.value, send, normalizeProps))
         Click me
         <div v-bind="api.getIndicatorProps()">{{ ">" }}</div>
       </button>
-      <Teleport to="body" :disabled="!api.portalled">
+      <Teleport to="#teleports" :disabled="!api.portalled">
         <div v-bind="api.getPositionerProps()">
           <div data-testid="popover-content" class="popover-content" v-bind="api.getContentProps()">
             <div v-bind="api.getArrowProps()">
@@ -42,7 +42,7 @@ const api = computed(() => popover.connect(state.value, send, normalizeProps))
   </main>
 
   <Toolbar>
-    <StateVisualizer :state="state" />
+    <StateVisualizer :state="service" />
     <template #controls>
       <Controls :control="controls" />
     </template>

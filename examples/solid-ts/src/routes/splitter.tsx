@@ -9,20 +9,18 @@ import { useControls } from "~/hooks/use-controls"
 export default function Page() {
   const controls = useControls(splitterControls)
 
-  const [state, send] = useMachine(
-    splitter.machine({
+  const service = useMachine(
+    splitter.machine,
+    controls.mergeProps<splitter.Props>({
       id: createUniqueId(),
-      size: [
+      defaultSize: [
         { id: "a", size: 50 },
         { id: "b", size: 50 },
       ],
     }),
-    {
-      context: controls.context,
-    },
   )
 
-  const api = createMemo(() => splitter.connect(state, send, normalizeProps))
+  const api = createMemo(() => splitter.connect(service, normalizeProps))
 
   return (
     <>
@@ -38,8 +36,8 @@ export default function Page() {
         </div>
       </main>
 
-      <Toolbar controls={controls.ui}>
-        <StateVisualizer state={state} omit={["previousPanels", "initialSize"]} />
+      <Toolbar controls={controls}>
+        <StateVisualizer state={service} omit={["previousPanels", "initialSize"]} />
       </Toolbar>
     </>
   )

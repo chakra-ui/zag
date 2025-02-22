@@ -82,43 +82,37 @@ To set the element that receives focus when the dialog closes, pass the
 By default, the dialog closes when you click its overlay. You can set
 `closeOnInteractOutside` to `false` if you want the modal to stay visible.
 
-```jsx {3}
-const [state, send] = useMachine(
-  dialog.machine({
-    closeOnInteractOutside: false,
-  }),
-)
+```jsx {2}
+const service = useMachine(dialog.machine, {
+  closeOnInteractOutside: false,
+})
 ```
 
 You can also customize the behavior by passing a function to the
 `onInteractOutside` context and calling `event.preventDefault()`
 
-```jsx {3-8}
-const [state, send] = useMachine(
-  dialog.machine({
-    onInteractOutside(event) {
-      const target = event.target
-      if (target?.closest("<selector>")) {
-        return event.preventDefault()
-      }
-    },
-  }),
-)
+```jsx {2-7}
+const service = useMachine(dialog.machine, {
+  onInteractOutside(event) {
+    const target = event.target
+    if (target?.closest("<selector>")) {
+      return event.preventDefault()
+    }
+  },
+})
 ```
 
 ## Listening for open state changes
 
 When the dialog is opened or closed, the `onOpenChange` callback is invoked.
 
-```jsx {3-8}
-const [state, send] = useMachine(
-  dialog.machine({
-    onOpenChange(details) {
-      // details => { open: boolean }
-      console.log("open:", details.open)
-    },
-  }),
-)
+```jsx {2-7}
+const service = useMachine(dialog.machine, {
+  onOpenChange(details) {
+    // details => { open: boolean }
+    console.log("open:", details.open)
+  },
+})
 ```
 
 ## Controlling the scroll behavior
@@ -126,12 +120,10 @@ const [state, send] = useMachine(
 When the dialog is open, it prevents scrolling on the `body` element. To disable
 this behavior, set the `preventScroll` context to `false`.
 
-```jsx {3}
-const [state, send] = useMachine(
-  dialog.machine({
-    preventScroll: false,
-  }),
-)
+```jsx {2}
+const service = useMachine(dialog.machine, {
+  preventScroll: false,
+})
 ```
 
 ## Creating an alert dialog
@@ -142,12 +134,10 @@ machine's context.
 
 That's it! Now you have an alert dialog.
 
-```jsx {3}
-const [state, send] = useMachine(
-  dialog.machine({
-    role: "alertdialog",
-  }),
-)
+```jsx {2}
+const service = useMachine(dialog.machine, {
+  role: "alertdialog",
+})
 ```
 
 > By definition, an alert dialog will contain two or more action buttons. We

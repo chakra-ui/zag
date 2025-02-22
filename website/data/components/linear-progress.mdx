@@ -64,12 +64,10 @@ progress machine in your project 🔥
 
 Use the `api.setValue` method to set the value of the progress bar.
 
-```jsx {3}
-const [state, send] = useMachine(
-  progress.machine({
-    value: 50,
-  }),
-)
+```jsx {2}
+const service = useMachine(progress.machine, {
+  value: 50,
+})
 ```
 
 ## Setting the minimum and maximum values
@@ -78,13 +76,11 @@ By default, the progress bar has a minimum value of `0` and a maximum value of
 `100`. You can change these values by passing the `min` and `max` options to the
 machine.
 
-```jsx {3-4}
-const [state, send] = useMachine(
-  progress.machine({
-    min: 0,
-    max: 1000,
-  }),
-)
+```jsx {2-3}
+const service = useMachine(progress.machine, {
+  min: 0,
+  max: 1000,
+})
 ```
 
 ## Using the indeterminate state
@@ -95,12 +91,10 @@ The progress component is determinate by default, with the value and max set to
 Set `value` to `null` to indicate an indeterminate value for operations whose
 progress can't be determined (e.g., attempting to reconnect to a server).
 
-```jsx {3}
-const [state, send] = useMachine(
-  progress.machine({
-    value: null,
-  }),
-)
+```jsx {2}
+const service = useMachine(progress.machine, {
+  value: null,
+})
 ```
 
 ## Showing a value text
@@ -110,14 +104,12 @@ description to support assistive technologies like screen readers, use the
 `valueText` part.
 
 ```jsx
-const [state, send] = useMachine(
-  progress.machine({
-    translations: {
-      valueText: ({ value, max }) =>
-        value == null ? "Loading..." : `${value} of ${max} items loaded`,
-    },
-  }),
-)
+const service = useMachine(progress.machine, {
+  translations: {
+    valueText: ({ value, max }) =>
+      value == null ? "Loading..." : `${value} of ${max} items loaded`,
+  },
+})
 ```
 
 Then you need to render the `valueText` part in your component.

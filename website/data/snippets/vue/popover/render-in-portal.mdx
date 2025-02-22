@@ -1,12 +1,12 @@
-```md
+```html
 <script setup>
-import * as popover from "@zag-js/popover";
-import { normalizeProps, useMachine } from "@zag-js/vue";
-import { computed, Teleport } from "vue";
+  import * as popover from "@zag-js/popover"
+  import { normalizeProps, useMachine } from "@zag-js/vue"
+  import { computed, Teleport } from "vue"
 
-const [state, send] = useMachine(popover.machine({ id: "1" }));
+  const service = useMachine(popover.machine, { id: "1" })
 
-const api = computed(() => popover.connect(state.value, send, normalizeProps));
+  const api = computed(() => popover.connect(service, normalizeProps))
 </script>
 
 <template>

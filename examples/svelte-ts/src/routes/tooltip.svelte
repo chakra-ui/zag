@@ -7,11 +7,11 @@
   const id = "tip-1"
   const id2 = "tip-2"
 
-  const [snapshot, send] = useMachine(tooltip.machine({ id }))
-  const [snapshot2, send2] = useMachine(tooltip.machine({ id: id2 }))
+  const service = useMachine(tooltip.machine, { id })
+  const service2 = useMachine(tooltip.machine, { id: id2 })
 
-  const api = $derived(tooltip.connect(snapshot, send, normalizeProps))
-  const api2 = $derived(tooltip.connect(snapshot2, send2, normalizeProps))
+  const api = $derived(tooltip.connect(service, normalizeProps))
+  const api2 = $derived(tooltip.connect(service2, normalizeProps))
 </script>
 
 <main class="tooltip">
@@ -32,6 +32,6 @@
 </main>
 
 <Toolbar controls={null}>
-  <StateVisualizer state={snapshot} label="Tooltip 1" />
-  <StateVisualizer state={snapshot2} label="Tooltip 2" />
+  <StateVisualizer state={service} label="Tooltip 1" />
+  <StateVisualizer state={service2} label="Tooltip 2" />
 </Toolbar>

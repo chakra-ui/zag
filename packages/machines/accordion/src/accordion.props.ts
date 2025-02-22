@@ -1,8 +1,8 @@
 import { createProps } from "@zag-js/types"
-import type { ItemProps, UserDefinedContext } from "./accordion.types"
 import { createSplitProps } from "@zag-js/utils"
+import type { AccordionProps, ItemProps } from "./accordion.types"
 
-export const props = createProps<UserDefinedContext>()([
+export const props = createProps<AccordionProps>()([
   "collapsible",
   "dir",
   "disabled",
@@ -14,8 +14,9 @@ export const props = createProps<UserDefinedContext>()([
   "onValueChange",
   "orientation",
   "value",
+  "defaultValue",
 ])
-export const splitProps = createSplitProps<Partial<UserDefinedContext>>(props)
+export const splitProps = createSplitProps<Partial<AccordionProps>>(props)
 
 export const itemProps = createProps<ItemProps>()(["value", "disabled"])
 export const splitItemProps = createSplitProps<ItemProps>(itemProps)

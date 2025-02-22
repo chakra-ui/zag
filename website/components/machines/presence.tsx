@@ -3,19 +3,20 @@ import { normalizeProps, useMachine } from "@zag-js/react"
 import { useState } from "react"
 
 interface AnimatePresenceProps extends React.ComponentPropsWithoutRef<"div"> {
-  open: boolean
+  present: boolean
   keepMounted?: boolean
   onExitComplete?: () => void
 }
 
 function AnimatePresence(props: AnimatePresenceProps) {
-  const { keepMounted, open, onExitComplete, ...rest } = props
+  const { keepMounted, present, onExitComplete, ...rest } = props
 
-  const [state, send] = useMachine(presence.machine({ present: open }), {
-    context: { present: open, onExitComplete },
+  const service = useMachine(presence.machine, {
+    present,
+    onExitComplete,
   })
 
-  const api = presence.connect(state, send, normalizeProps)
+  const api = presence.connect(service, normalizeProps)
 
   if (!api.present && !keepMounted) return null
 
@@ -23,7 +24,7 @@ function AnimatePresence(props: AnimatePresenceProps) {
     <div
       hidden={!api.present}
       data-presence
-      data-state={api.skip ? undefined : open ? "open" : "closed"}
+      data-state={api.skip ? undefined : present ? "open" : "closed"}
       ref={api.setNode}
       {...rest}
     />
@@ -50,7 +51,7 @@ export const Presence = () => {
         Toggle
       </button>
       <AnimatePresence
-        open={open}
+        present={open}
         keepMounted
         onExitComplete={() => setUnmounted(true)}
       >

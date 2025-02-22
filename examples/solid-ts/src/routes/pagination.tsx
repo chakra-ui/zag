@@ -9,18 +9,13 @@ import { useControls } from "~/hooks/use-controls"
 export default function Page() {
   const controls = useControls(paginationControls)
 
-  const [state, send] = useMachine(
-    pagination.machine({
-      id: createUniqueId(),
-      count: paginationData.length,
-      onPageChange: console.log,
-    }),
-    {
-      context: controls.context,
-    },
-  )
+  const service = useMachine(pagination.machine, {
+    id: createUniqueId(),
+    count: paginationData.length,
+    onPageChange: console.log,
+  })
 
-  const api = createMemo(() => pagination.connect(state, send, normalizeProps))
+  const api = createMemo(() => pagination.connect(service, normalizeProps))
 
   const data = () => api().slice(paginationData)
 
@@ -82,8 +77,8 @@ export default function Page() {
         )}
       </main>
 
-      <Toolbar controls={controls.ui}>
-        <StateVisualizer state={state} />
+      <Toolbar controls={controls}>
+        <StateVisualizer state={service} />
       </Toolbar>
     </>
   )

@@ -10,16 +10,16 @@ import { useControls } from "~/hooks/use-controls"
 export default function Page() {
   const controls = useControls(sliderControls)
 
-  const [state, send] = useMachine(
-    slider.machine({
+  const service = useMachine(
+    slider.machine,
+    controls.mergeProps<slider.Props>({
       id: createUniqueId(),
       name: "quantity",
-      value: [10, 60],
+      defaultValue: [10, 60],
     }),
-    { context: controls.context as any },
   )
 
-  const api = createMemo(() => slider.connect(state, send, normalizeProps))
+  const api = createMemo(() => slider.connect(service, normalizeProps))
 
   return (
     <>
@@ -55,7 +55,7 @@ export default function Page() {
       </main>
 
       <Toolbar>
-        <StateVisualizer state={state} />
+        <StateVisualizer state={service} />
       </Toolbar>
     </>
   )

@@ -11,36 +11,30 @@
 
   let options = $state.raw(comboboxData)
 
-  const collection = combobox.collection({
-    items: comboboxData,
-    itemToValue: (item) => item.code,
-    itemToString: (item) => item.label,
-  })
-
-  controls.setContext("collection", collection)
-
-  const [snapshot, send] = useMachine(
-    combobox.machine({
-      id: "1",
-      collection,
-      onOpenChange() {
-        options = comboboxData
-      },
-      onInputValueChange({ inputValue }) {
-        const filtered = matchSorter(comboboxData, inputValue, { keys: ["label"] })
-        const newOptions = filtered.length > 0 ? filtered : comboboxData
-
-        collection.setItems(newOptions)
-        options = newOptions
-      },
+  const collection = $derived(
+    combobox.collection({
+      items: options,
+      itemToValue: (item) => item.code,
+      itemToString: (item) => item.label,
     }),
-    {
-      context: controls.context,
-    },
   )
 
-  const api = $derived(combobox.connect(snapshot, send, normalizeProps))
-  $inspect(api.inputValue)
+  const service = useMachine(combobox.machine, {
+    id: "1",
+    get collection() {
+      return collection
+    },
+    onOpenChange() {
+      options = comboboxData
+    },
+    onInputValueChange({ inputValue }) {
+      const filtered = matchSorter(comboboxData, inputValue, { keys: ["label"] })
+      const newOptions = filtered.length > 0 ? filtered : comboboxData
+      options = newOptions
+    },
+  })
+
+  const api = $derived(combobox.connect(service, normalizeProps))
 </script>
 
 <main class="combobox">
@@ -71,5 +65,5 @@
 </main>
 
 <Toolbar {controls}>
-  <StateVisualizer state={snapshot} />
+  <StateVisualizer state={service} />
 </Toolbar>

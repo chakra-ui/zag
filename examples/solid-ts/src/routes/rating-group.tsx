@@ -39,17 +39,15 @@ function Star() {
 export default function Page() {
   const controls = useControls(ratingControls)
 
-  const [state, send] = useMachine(
-    rating.machine({
+  const service = useMachine(
+    rating.machine,
+    controls.mergeProps<rating.Props>({
       id: createUniqueId(),
-      value: 2.5,
+      defaultValue: 2.5,
     }),
-    {
-      context: controls.context,
-    },
   )
 
-  const api = createMemo(() => rating.connect(state, send, normalizeProps))
+  const api = createMemo(() => rating.connect(service, normalizeProps))
 
   return (
     <>
@@ -72,8 +70,8 @@ export default function Page() {
         </div>
       </main>
 
-      <Toolbar controls={controls.ui}>
-        <StateVisualizer state={state} />
+      <Toolbar controls={controls}>
+        <StateVisualizer state={service} />
       </Toolbar>
     </>
   )

@@ -10,17 +10,15 @@ import { useControls } from "~/hooks/use-controls"
 export default function Page() {
   const controls = useControls(clipboardControls)
 
-  const [state, send] = useMachine(
-    clipboard.machine({
+  const service = useMachine(
+    clipboard.machine,
+    controls.mergeProps({
       id: createUniqueId(),
       value: "https://github.com/chakra-ui/zag",
     }),
-    {
-      context: controls.context,
-    },
   )
 
-  const api = createMemo(() => clipboard.connect(state, send, normalizeProps))
+  const api = createMemo(() => clipboard.connect(service, normalizeProps))
 
   return (
     <>
@@ -40,8 +38,8 @@ export default function Page() {
         </div>
       </main>
 
-      <Toolbar controls={controls.ui}>
-        <StateVisualizer state={state} />
+      <Toolbar controls={controls}>
+        <StateVisualizer state={service} />
       </Toolbar>
     </>
   )

@@ -1,4 +1,4 @@
-import type { Machine, StateMachine as S } from "@zag-js/core"
+import type { EventObject, Service } from "@zag-js/core"
 import type { CommonProperties, PropTypes, RequiredBy } from "@zag-js/types"
 
 export interface Time<T = number> {
@@ -32,81 +32,78 @@ export interface TickDetails {
  * Machine context
  * -----------------------------------------------------------------------------*/
 
-interface PublicContext extends CommonProperties {
+export interface TimerProps extends CommonProperties {
   /**
    * The ids of the timer parts
    */
-  ids?: ElementIds
+  ids?: ElementIds | undefined
   /**
    * Whether the timer should countdown, decrementing the timer on each tick.
    */
-  countdown?: boolean
+  countdown?: boolean | undefined
   /**
    * The total duration of the timer in milliseconds.
    */
-  startMs?: number
+  startMs?: number | undefined
   /**
    * The minimum count of the timer in milliseconds.
    */
-  targetMs?: number
+  targetMs?: number | undefined
   /**
    * Whether the timer should start automatically
    */
-  autoStart?: boolean
+  autoStart?: boolean | undefined
   /**
    * The interval in milliseconds to update the timer count.
    * @default 250
    */
-  interval: number
+  interval?: number | undefined
   /**
    * Function invoked when the timer ticks
    */
-  onTick?: (details: TickDetails) => void
+  onTick?: ((details: TickDetails) => void) | undefined
   /**
    * Function invoked when the timer is completed
    */
-  onComplete?: () => void
+  onComplete?: (() => void) | undefined
 }
 
-interface PrivateContext {
+type PropsWithDefault = "interval"
+
+interface Context {
   /**
-   * @internal
    * The timer count in milliseconds.
    */
   currentMs: number
 }
 
-type ComputedContext = Readonly<{
+interface Computed {
   /**
-   * @computed
    * The time parts of the timer count.
    */
   time: Time
   /**
-   * @computed
    * The formatted time parts of the timer count.
    */
   formattedTime: Time<string>
   /**
-   * @computed
    * The progress percentage of the timer.
    */
   progressPercent: number
-}>
-
-export type UserDefinedContext = RequiredBy<PublicContext, "id">
-
-export interface MachineContext extends PublicContext, PrivateContext, ComputedContext {}
-
-export interface MachineState {
-  value: "idle" | "running" | "paused"
 }
 
-export type State = S.State<MachineContext, MachineState>
+export interface TimerSchema {
+  state: "idle" | "running" | "paused"
+  props: RequiredBy<TimerProps, PropsWithDefault>
+  context: Context
+  computed: Computed
+  event: EventObject
+  action: string
+  effect: string
+  guard: string
+}
 
-export type Send = S.Send<S.AnyEventObject>
-
-export type Service = Machine<MachineContext, MachineState, S.AnyEventObject>
+export type TimerService = Service<TimerSchema>
 
 /* -----------------------------------------------------------------------------
  * Component API
@@ -120,7 +117,7 @@ export interface ActionTriggerProps {
   action: TimerAction
 }
 
-export interface MachineApi<T extends PropTypes = PropTypes> {
+export interface TimerApi<T extends PropTypes = PropTypes> {
   /**
    * Whether the timer is running.
    */

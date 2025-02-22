@@ -1,4 +1,4 @@
-import type { Machine, StateMachine as S } from "@zag-js/core"
+import type { EventObject, Service } from "@zag-js/core"
 import type { Placement, PositioningOptions } from "@zag-js/popper"
 import type { CommonProperties, DirectionProperty, PropTypes, RequiredBy } from "@zag-js/types"
 
@@ -21,30 +21,26 @@ export type ElementIds = Partial<{
   positioner: string
 }>
 
-interface PublicContext extends DirectionProperty, CommonProperties {
+export interface TooltipProps extends DirectionProperty, CommonProperties {
   /**
    * The ids of the elements in the tooltip. Useful for composition.
    */
   ids?: ElementIds | undefined
   /**
-   * The `id` of the tooltip.
-   */
-  id: string
-  /**
    * The open delay of the tooltip.
    * @default 1000
    */
-  openDelay: number
+  openDelay?: number | undefined
   /**
    * The close delay of the tooltip.
    * @default 500
    */
-  closeDelay: number
+  closeDelay?: number | undefined
   /**
    * Whether to close the tooltip on pointerdown.
    * @default true
    */
-  closeOnPointerDown: boolean
+  closeOnPointerDown?: boolean | undefined
   /**
    * Whether to close the tooltip when the Escape key is pressed.
    * @default true
@@ -67,11 +63,11 @@ interface PublicContext extends DirectionProperty, CommonProperties {
    *
    * @default false
    */
-  interactive: boolean
+  interactive?: boolean | undefined
   /**
    * Function called when the tooltip is opened.
    */
-  onOpenChange?(details: OpenChangeDetails): void
+  onOpenChange?: ((details: OpenChangeDetails) => void) | undefined
   /**
    * Custom label for the tooltip.
    */
@@ -79,61 +75,52 @@ interface PublicContext extends DirectionProperty, CommonProperties {
   /**
    * The user provided options used to position the popover content
    */
-  positioning: PositioningOptions
+  positioning?: PositioningOptions | undefined
   /**
    * Whether the tooltip is disabled
    */
   disabled?: boolean | undefined
   /**
-   * Whether the tooltip is open
+   * The controlled open state of the tooltip
    */
   open?: boolean | undefined
   /**
-   * Whether the tooltip is controlled by the user
+   * The initial open state of the tooltip when rendered.
+   * Use when you don't need to control the open state of the tooltip.
    */
-  "open.controlled"?: boolean | undefined
+  defaultOpen?: boolean | undefined
 }
 
-export type UserDefinedContext = RequiredBy<PublicContext, "id">
+type PropsWithDefault =
+  | "openDelay"
+  | "closeDelay"
+  | "closeOnPointerDown"
+  | "closeOnEscape"
+  | "closeOnScroll"
+  | "closeOnClick"
+  | "interactive"
+  | "id"
 
-type ComputedContext = Readonly<{
-  /**
-   * @computed Whether an `aria-label` is set.
-   */
-  hasAriaLabel: boolean
-}>
-
-interface PrivateContext {
-  /**
-   * @internal
-   * The computed placement of the tooltip.
-   */
-  currentPlacement?: Placement | undefined
-  /**
-   * @internal
-   * Whether the pointermove already opened the tooltip.
-   */
-  hasPointerMoveOpened?: boolean | undefined
+export interface TooltipSchema {
+  state: "open" | "closed" | "opening" | "closing"
+  props: RequiredBy<TooltipProps, PropsWithDefault>
+  context: {
+    currentPlacement: Placement | undefined
+    hasPointerMoveOpened: boolean
+  }
+  event: EventObject
+  action: string
+  effect: string
+  guard: string
 }
 
-export interface MachineContext extends PublicContext, ComputedContext, PrivateContext {}
-
-export interface MachineState {
-  value: "opening" | "open" | "closing" | "closed"
-  tags: "open" | "closed"
-}
-
-export type State = S.State<MachineContext, MachineState>
-
-export type Send = S.Send<S.AnyEventObject>
-
-export type Service = Machine<MachineContext, MachineState, S.AnyEventObject>
+export type TooltipService = Service<TooltipSchema>
 
 /* -----------------------------------------------------------------------------
  * Component API
  * -----------------------------------------------------------------------------*/
 
-export interface MachineApi<T extends PropTypes = PropTypes> {
+export interface TooltipApi<T extends PropTypes = PropTypes> {
   /**
    * Whether the tooltip is open.
    */

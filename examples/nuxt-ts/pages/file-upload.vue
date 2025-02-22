@@ -5,11 +5,11 @@ import { normalizeProps, useMachine } from "@zag-js/vue"
 
 const controls = useControls(fileUploadControls)
 
-const [state, send] = useMachine(fileUpload.machine({ id: "1" }), {
-  context: controls.context,
+const service = useMachine(fileUpload.machine, {
+  id: useId(),
 })
 
-const api = computed(() => fileUpload.connect(state.value, send, normalizeProps))
+const api = computed(() => fileUpload.connect(service, normalizeProps))
 </script>
 
 <template>
@@ -36,7 +36,7 @@ const api = computed(() => fileUpload.connect(state.value, send, normalizeProps)
   </main>
 
   <Toolbar>
-    <StateVisualizer :state="state" />
+    <StateVisualizer :state="service" />
     <template #controls>
       <Controls :control="controls" />
     </template>

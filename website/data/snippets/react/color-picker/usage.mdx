@@ -4,14 +4,12 @@ import { normalizeProps, useMachine } from "@zag-js/react"
 import { useId } from "react"
 
 function ColorPicker() {
-  const [state, send] = useMachine(
-    colorPicker.machine({
-      id: useId(),
-      value: colorPicker.parse("hsl(0, 100%, 50%)"),
-    }),
-  )
+  const service = useMachine(colorPicker.machine, {
+    id: useId(),
+    defaultValue: colorPicker.parse("hsl(0, 100%, 50%)"),
+  })
 
-  const api = colorPicker.connect(state, send, normalizeProps)
+  const api = colorPicker.connect(service, normalizeProps)
 
   return (
     <div {...api.getRootProps()}>

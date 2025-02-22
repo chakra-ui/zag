@@ -5,11 +5,11 @@ import { normalizeProps, useMachine } from "@zag-js/vue"
 
 const controls = useControls(hoverCardControls)
 
-const [state, send] = useMachine(hoverCard.machine({ id: "1" }), {
-  context: controls.context,
+const service = useMachine(hoverCard.machine, {
+  id: useId(),
 })
 
-const api = computed(() => hoverCard.connect(state.value, send, normalizeProps))
+const api = computed(() => hoverCard.connect(service, normalizeProps))
 </script>
 
 <template>
@@ -17,7 +17,7 @@ const api = computed(() => hoverCard.connect(state.value, send, normalizeProps))
     <div style="display: flex; gap: 50px">
       <a href="https://twitter.com/zag_js" target="_blank" v-bind="api.getTriggerProps()"> Twitter </a>
 
-      <Teleport to="body" v-if="api.open">
+      <Teleport to="#teleports" v-if="api.open">
         <div v-bind="api.getPositionerProps()">
           <div v-bind="api.getContentProps()">
             <div v-bind="api.getArrowProps()">
@@ -34,7 +34,7 @@ const api = computed(() => hoverCard.connect(state.value, send, normalizeProps))
   </main>
 
   <Toolbar>
-    <StateVisualizer :state="state" />
+    <StateVisualizer :state="service" />
     <template #controls>
       <Controls :control="controls" />
     </template>

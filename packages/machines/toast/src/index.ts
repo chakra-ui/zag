@@ -1,28 +1,27 @@
 import { groupConnect } from "./toast-group.connect"
 import { groupMachine } from "./toast-group.machine"
-import { createToastMachine as createMachine } from "./toast.machine"
 
 export { anatomy } from "./toast.anatomy"
 export { connect } from "./toast.connect"
+export { machine } from "./toast.machine"
+export { createToastStore as createStore } from "./toast.store"
 export type {
   ActionOptions,
-  MachineApi as Api,
-  GenericOptions,
-  GroupMachineApi as GroupApi,
-  UserDefinedGroupContext as GroupMachineContext,
-  GroupProps,
-  GroupService,
-  GroupState,
-  MachineContext,
+  ToastApi as Api,
+  ToastGroupApi as GroupApi,
+  ToastGroupProps as GroupProps,
+  ToastGroupService as GroupService,
   Options,
   Placement,
   PromiseOptions,
-  Service,
+  ToastProps as Props,
+  ToastService as Service,
   Status,
   StatusChangeDetails,
+  ToastStore as Store,
+  ToastStoreProps as StoreProps,
   Type,
 } from "./toast.types"
-export { createMachine }
 
 export const group = {
   connect: groupConnect,

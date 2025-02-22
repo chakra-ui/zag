@@ -1,29 +1,34 @@
 import { dataAttr, getEventTarget, visuallyHiddenStyle } from "@zag-js/dom-query"
-import type { NormalizeProps, PropTypes } from "@zag-js/types"
-import { parts } from "./checkbox.anatomy"
-import { dom } from "./checkbox.dom"
-import type { MachineApi, Send, State } from "./checkbox.types"
 import { isFocusVisible } from "@zag-js/focus-visible"
+import type { NormalizeProps, PropTypes } from "@zag-js/types"
+import type { Service } from "@zag-js/core"
+import { parts } from "./checkbox.anatomy"
+import * as dom from "./checkbox.dom"
+import type { CheckboxApi, CheckboxSchema } from "./checkbox.types"
 
-export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>): MachineApi<T> {
-  const disabled = state.context.isDisabled
-  const readOnly = state.context.readOnly
+export function connect<T extends PropTypes>(
+  service: Service<CheckboxSchema>,
+  normalize: NormalizeProps<T>,
+): CheckboxApi<T> {
+  const { send, context, prop, computed, scope } = service
+  const disabled = prop("disabled")
+  const readOnly = prop("readOnly")
 
-  const focused = !disabled && state.context.focused
-  const focusVisible = !disabled && state.context.focusVisible
+  const focused = !disabled && context.get("focused")
+  const focusVisible = !disabled && context.get("focusVisible")
 
-  const checked = state.context.isChecked
-  const indeterminate = state.context.isIndeterminate
+  const checked = computed("checked")
+  const indeterminate = computed("indeterminate")
 
   const dataAttrs = {
-    "data-active": dataAttr(state.context.active),
+    "data-active": dataAttr(context.get("active")),
     "data-focus": dataAttr(focused),
     "data-focus-visible": dataAttr(focusVisible),
     "data-readonly": dataAttr(readOnly),
-    "data-hover": dataAttr(state.context.hovered),
+    "data-hover": dataAttr(context.get("hovered")),
     "data-disabled": dataAttr(disabled),
-    "data-state": indeterminate ? "indeterminate" : state.context.checked ? "checked" : "unchecked",
-    "data-invalid": dataAttr(state.context.invalid),
+    "data-state": indeterminate ? "indeterminate" : checked ? "checked" : "unchecked",
+    "data-invalid": prop("invalid"),
   }
 
   return {
@@ -31,7 +36,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     disabled,
     indeterminate,
     focused,
-    checkedState: state.context.checked,
+    checkedState: checked,
 
     setChecked(checked) {
       send({ type: "CHECKED.SET", checked, isTrusted: false })
@@ -45,9 +50,9 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       return normalize.label({
         ...parts.root.attrs,
         ...dataAttrs,
-        dir: state.context.dir,
-        id: dom.getRootId(state.context),
-        htmlFor: dom.getHiddenInputId(state.context),
+        dir: prop("dir"),
+        id: dom.getRootId(scope),
+        htmlFor: dom.getHiddenInputId(scope),
         onPointerMove() {
           if (disabled) return
           send({ type: "CONTEXT.SET", context: { hovered: true } })
@@ -58,7 +63,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         },
         onClick(event) {
           const target = getEventTarget<Element>(event)
-          if (target === dom.getHiddenInputEl(state.context)) {
+          if (target === dom.getHiddenInputEl(scope)) {
             event.stopPropagation()
           }
         },
@@ -69,8 +74,8 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       return normalize.element({
         ...parts.label.attrs,
         ...dataAttrs,
-        dir: state.context.dir,
-        id: dom.getLabelId(state.context),
+        dir: prop("dir"),
+        id: dom.getLabelId(scope),
       })
     },
 
@@ -78,8 +83,8 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       return normalize.element({
         ...parts.control.attrs,
         ...dataAttrs,
-        dir: state.context.dir,
-        id: dom.getControlId(state.context),
+        dir: prop("dir"),
+        id: dom.getControlId(scope),
         "aria-hidden": true,
       })
     },
@@ -88,23 +93,23 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       return normalize.element({
         ...parts.indicator.attrs,
         ...dataAttrs,
-        dir: state.context.dir,
-        hidden: !indeterminate && !state.context.checked,
+        dir: prop("dir"),
+        hidden: !indeterminate && !checked,
       })
     },
 
     getHiddenInputProps() {
       return normalize.input({
-        id: dom.getHiddenInputId(state.context),
+        id: dom.getHiddenInputId(scope),
         type: "checkbox",
-        required: state.context.required,
+        required: prop("required"),
         defaultChecked: checked,
         disabled: disabled,
-        "aria-labelledby": dom.getLabelId(state.context),
-        "aria-invalid": state.context.invalid,
-        name: state.context.name,
-        form: state.context.form,
-        value: state.context.value,
+        "aria-labelledby": dom.getLabelId(scope),
+        "aria-invalid": prop("invalid"),
+        name: prop("name"),
+        form: prop("form"),
+        value: prop("value"),
         style: visuallyHiddenStyle,
         onFocus() {
           const focusVisible = isFocusVisible()
@@ -118,6 +123,8 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
             event.preventDefault()
             return
           }
+
+          if (!event.isTrusted) return
 
           const checked = event.currentTarget.checked
           send({ type: "CHECKED.SET", checked, isTrusted: true })

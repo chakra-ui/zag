@@ -8,20 +8,15 @@
 
   const controls = useControls(carouselControls)
 
-  const [snapshot, send] = useMachine(
-    carousel.machine({
-      id: "1",
-      spacing: "20px",
-      slidesPerPage: 2,
-      slideCount: carouselData.length,
-      allowMouseDrag: true,
-    }),
-    {
-      context: controls.context,
-    },
-  )
+  const service = useMachine(carousel.machine, {
+    id: "1",
+    spacing: "20px",
+    slidesPerPage: 2,
+    slideCount: carouselData.length,
+    allowMouseDrag: true,
+  })
 
-  const api = $derived(carousel.connect(snapshot, send, normalizeProps))
+  const api = $derived(carousel.connect(service, normalizeProps))
 </script>
 
 <main class="carousel">
@@ -51,5 +46,5 @@
 </main>
 
 <Toolbar {controls}>
-  <StateVisualizer state={snapshot} />
+  <StateVisualizer state={service} />
 </Toolbar>

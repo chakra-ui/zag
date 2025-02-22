@@ -8,11 +8,9 @@
 
   const controls = useControls(popoverControls)
 
-  const [snapshot, send] = useMachine(popover.machine({ id: "1" }), {
-    context: controls.context,
-  })
+  const service = useMachine(popover.machine, { id: "1" })
 
-  const api = $derived(popover.connect(snapshot, send, normalizeProps))
+  const api = $derived(popover.connect(service, normalizeProps))
 </script>
 
 <main class="popover">
@@ -48,5 +46,5 @@
 </main>
 
 <Toolbar {controls}>
-  <StateVisualizer state={snapshot} />
+  <StateVisualizer state={service} />
 </Toolbar>

@@ -1,6 +1,12 @@
 import type { JSX } from "preact"
-import { Children, createPortal, useReducer, type PropsWithChildren, type RefObject } from "preact/compat"
-import { useSafeLayoutEffect } from "./use-layout-effect"
+import {
+  Children,
+  createPortal,
+  useLayoutEffect,
+  useReducer,
+  type PropsWithChildren,
+  type RefObject,
+} from "preact/compat"
 
 export interface PortalProps {
   disabled?: boolean
@@ -13,7 +19,7 @@ export const Portal = (props: PropsWithChildren<PortalProps>): JSX.Element => {
 
   const [, forceUpdate] = useReducer((c) => c + 1, 0)
 
-  useSafeLayoutEffect(() => {
+  useLayoutEffect(() => {
     forceUpdate({})
   }, [])
 

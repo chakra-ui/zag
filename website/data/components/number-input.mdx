@@ -73,12 +73,10 @@ property.
 
 > **Note:** The value must be a string
 
-```jsx {3}
-const [state, send] = useMachine(
-  numberInput.machine({
-    value: "13",
-  }),
-)
+```jsx {2}
+const service = useMachine(numberInput.machine, {
+  defaultValue: "13",
+})
 ```
 
 ## Setting a minimum and maximum value
@@ -87,13 +85,11 @@ Pass the `min` prop or `max` prop to set an upper and lower limit for the input.
 By default, the input will restrict the value to stay within the specified
 range.
 
-```jsx {3,4}
-const [state, send] = useMachine(
-  numberInput.machine({
-    min: 10,
-    max: 200,
-  }),
-)
+```jsx {2,3}
+const service = useMachine(numberInput.machine, {
+  min: 10,
+  max: 200,
+})
 ```
 
 > To allow the value overflow the specified min or max, set the
@@ -115,12 +111,10 @@ The number input machine exposes a way to increment/decrement the value using
 the mouse wheel event. To activate this, pass the `allowMouseWheel` property to
 the machine's context.
 
-```jsx {3}
-const [state, send] = useMachine(
-  numberInput.machine({
-    allowMouseWheel: true,
-  }),
-)
+```jsx {2}
+const service = useMachine(numberInput.machine, {
+  allowMouseWheel: true,
+})
 ```
 
 ## Clamp value when user blurs the input
@@ -131,27 +125,23 @@ of the input.
 
 To disable this behavior, pass `clampValueOnBlur` and set to `false`.
 
-```jsx {3}
-const [state, send] = useMachine(
-  numberInput.machine({
-    clampValueOnBlur: false,
-  }),
-)
+```jsx {2}
+const service = useMachine(numberInput.machine, {
+  clampValueOnBlur: false,
+})
 ```
 
 ## Listening for value changes
 
 When the value changes, the `onValueChange` callback is invoked.
 
-```jsx {3-8}
-const [state, send] = useMachine(
-  numberInput.machine({
-    onValueChange(details) {
-      // details => { value: string, valueAsNumber: number }
-      console.log("value is:", details.value)
-    },
-  }),
-)
+```jsx {2-7}
+const service = useMachine(numberInput.machine, {
+  onValueChange(details) {
+    // details => { value: string, valueAsNumber: number }
+    console.log("value is:", details.value)
+  },
+})
 ```
 
 ## Usage within forms
@@ -159,12 +149,10 @@ const [state, send] = useMachine(
 To use the number input within forms, set the `name` property in the machine's
 context.
 
-```jsx {3}
-const [state, send] = useMachine(
-  numberInput.machine({
-    name: "quantity",
-  }),
-)
+```jsx {2}
+const service = useMachine(numberInput.machine, {
+  name: "quantity",
+})
 ```
 
 ## Adjusting the precision of the value
@@ -173,27 +161,23 @@ To format the input value to be rounded to specific decimal points, set the
 `formatOptions` and provide `Intl.NumberFormatOptions` such as
 `maximumFractionDigits` or `minimumFractionDigits`
 
-```jsx {3-6}
-const [state, send] = useMachine(
-  numberInput.machine({
-    formatOptions: {
-      maximumFractionDigits: 4,
-      minimumFractionDigits: 2,
-    },
-  }),
-)
+```jsx {2-5}
+const service = useMachine(numberInput.machine, {
+  formatOptions: {
+    maximumFractionDigits: 4,
+    minimumFractionDigits: 2,
+  },
+})
 ```
 
 ## Disabling long press spin
 
 To disable the long press spin, set the `spinOnPress` to `false`.
 
-```jsx {3}
-const [state, send] = useMachine(
-  numberInput.machine({
-    spinOnPress: false,
-  }),
-)
+```jsx {2}
+const service = useMachine(numberInput.machine, {
+  spinOnPress: false,
+})
 ```
 
 ## Format and parse value
@@ -201,15 +185,13 @@ const [state, send] = useMachine(
 To apply custom formatting to the input's value, set the `formatOptions` and
 provide `Intl.NumberFormatOptions` such as `style` and `currency`
 
-```jsx {3-6}
-const [state, send] = useMachine(
-  numberInput.machine({
-    formatOptions: {
-      style: "currency",
-      currency: "USD",
-    },
-  }),
-)
+```jsx {2-5}
+const service = useMachine(numberInput.machine, {
+  formatOptions: {
+    style: "currency",
+    currency: "USD",
+  },
+})
 ```
 
 ## Styling guide

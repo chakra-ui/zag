@@ -1,6 +1,6 @@
-import type { Machine, StateMachine as S } from "@zag-js/core"
+import type { Service } from "@zag-js/core"
 import type { DismissableElementHandlers, PersistentElementOptions } from "@zag-js/dismissable"
-import type { CommonProperties, DirectionProperty, PropTypes, RequiredBy } from "@zag-js/types"
+import type { CommonProperties, DirectionProperty, MaybeElement, PropTypes, RequiredBy } from "@zag-js/types"
 
 /* -----------------------------------------------------------------------------
  * Callback details
@@ -24,7 +24,7 @@ export type ElementIds = Partial<{
   description: string
 }>
 
-interface PublicContext
+export interface DialogProps
   extends DirectionProperty,
     CommonProperties,
     DismissableElementHandlers,
@@ -37,12 +37,12 @@ interface PublicContext
    * Whether to trap focus inside the dialog when it's opened
    * @default true
    */
-  trapFocus: boolean
+  trapFocus?: boolean | undefined
   /**
    * Whether to prevent scrolling behind the dialog when it's opened
    * @default true
    */
-  preventScroll: boolean
+  preventScroll?: boolean | undefined
   /**
    * Whether to prevent pointer interaction outside the element and hide all content below it
    * @default true
@@ -51,29 +51,25 @@ interface PublicContext
   /**
    * Element to receive focus when the dialog is opened
    */
-  initialFocusEl?: (() => HTMLElement | null) | undefined
+  initialFocusEl?: (() => MaybeElement) | undefined
   /**
    * Element to receive focus when the dialog is closed
    */
-  finalFocusEl?: (() => HTMLElement | null) | undefined
+  finalFocusEl?: (() => MaybeElement) | undefined
   /**
    * Whether to restore focus to the element that had focus before the dialog was opened
    */
   restoreFocus?: boolean | undefined
   /**
-   * Callback to be invoked when the dialog is opened or closed
-   */
-  onOpenChange?: ((details: OpenChangeDetails) => void) | undefined
-  /**
    * Whether to close the dialog when the outside is clicked
    * @default true
    */
-  closeOnInteractOutside: boolean
+  closeOnInteractOutside?: boolean | undefined
   /**
    * Whether to close the dialog when the escape key is pressed
    * @default true
    */
-  closeOnEscape: boolean
+  closeOnEscape?: boolean | undefined
   /**
    * Human readable label for the dialog, in event the dialog title is not rendered
    */
@@ -82,49 +78,54 @@ interface PublicContext
    * The dialog's role
    * @default "dialog"
    */
-  role: "dialog" | "alertdialog"
+  role?: "dialog" | "alertdialog" | undefined
   /**
-   * Whether the dialog is open
+   * The controlled open state of the dialog
    */
   open?: boolean | undefined
   /**
-   * Whether the dialog is controlled by the user
+   * The initial open state of the dialog when rendered.
+   * Use when you don't need to control the open state of the dialog.
+   * @default false
    */
-  "open.controlled"?: boolean | undefined
+  defaultOpen?: boolean | undefined
+  /**
+   * Function to call when the dialog's open state changes
+   */
+  onOpenChange?: ((details: OpenChangeDetails) => void) | undefined
 }
 
-export type UserDefinedContext = RequiredBy<PublicContext, "id">
+type PropsWithDefault =
+  | "closeOnInteractOutside"
+  | "closeOnEscape"
+  | "role"
+  | "modal"
+  | "trapFocus"
+  | "restoreFocus"
+  | "preventScroll"
+  | "initialFocusEl"
 
-type ComputedContext = Readonly<{}>
-
-interface PrivateContext {
-  /**
-   * @internal
-   * Whether some elements are rendered
-   */
-  renderedElements: {
-    title: boolean
-    description: boolean
+export interface DialogSchema {
+  props: RequiredBy<DialogProps, PropsWithDefault>
+  state: "open" | "closed"
+  context: {
+    rendered: { title: boolean; description: boolean }
+  }
+  guard: "isOpenControlled"
+  effect: "trackDismissableElement" | "preventScroll" | "trapFocus" | "hideContentBelow"
+  action: "checkRenderedElements" | "syncZIndex" | "invokeOnClose" | "invokeOnOpen" | "toggleVisibility"
+  event: {
+    type: "CONTROLLED.OPEN" | "CONTROLLED.CLOSE" | "OPEN" | "CLOSE" | "TOGGLE"
   }
 }
 
-export interface MachineContext extends PublicContext, PrivateContext, ComputedContext {}
-
-export interface MachineState {
-  value: "open" | "closed"
-}
-
-export type State = S.State<MachineContext, MachineState>
-
-export type Send = S.Send<S.AnyEventObject>
-
-export type Service = Machine<MachineContext, MachineState, S.AnyEventObject>
+export type DialogService = Service<DialogSchema>
 
 /* -----------------------------------------------------------------------------
  * Component props
  * -----------------------------------------------------------------------------*/
 
-export interface MachineApi<T extends PropTypes = PropTypes> {
+export interface DialogApi<T extends PropTypes = PropTypes> {
   /**
    * Whether the dialog is open
    */

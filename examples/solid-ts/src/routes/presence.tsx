@@ -4,10 +4,8 @@ import { Accessor, Show, createMemo, createSignal } from "solid-js"
 
 function usePresence(present: Accessor<boolean>) {
   const context = createMemo(() => ({ present: present() }))
-  const [state, send] = useMachine(presence.machine({ present: present() }), {
-    context,
-  })
-  return createMemo(() => presence.connect(state, send, normalizeProps))
+  const service = useMachine(presence.machine, context)
+  return createMemo(() => presence.connect(service, normalizeProps))
 }
 
 export default function Page() {

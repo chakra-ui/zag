@@ -4,18 +4,18 @@ import { normalizeProps, useMachine } from "@zag-js/solid"
 import { createMemo, createUniqueId } from "solid-js"
 
 function ColorPicker() {
-  const [state, send] = useMachine(
-    colorPicker.machine({
-      id: createUniqueId(),
-      value: colorPicker.parse("hsl(0, 100%, 50%)"),
-    }),
-  )
+  const service = useMachine(colorPicker.machine, {
+    id: createUniqueId(),
+    defaultValue: colorPicker.parse("hsl(0, 100%, 50%)"),
+  })
 
-  const api = createMemo(() => colorPicker.connect(state, send, normalizeProps))
+  const api = createMemo(() => colorPicker.connect(service, normalizeProps))
 
   return (
     <div {...api().getRootProps()}>
-      <label {...api().getLabelProps()}>Select Color: {api.valueAsString}</label>
+      <label {...api().getLabelProps()}>
+        Select Color: {api.valueAsString}
+      </label>
 
       <input {...api().getHiddenInputProps()} />
 

@@ -3,10 +3,10 @@ export { connect } from "./avatar.connect"
 export { machine } from "./avatar.machine"
 export * from "./avatar.props"
 export type {
-  MachineApi as Api,
-  UserDefinedContext as Context,
+  AvatarApi as Api,
   ElementIds,
   LoadStatus,
+  AvatarProps as Props,
+  AvatarService as Service,
   StatusChangeDetails,
-  Service,
 } from "./avatar.types"

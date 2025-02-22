@@ -1,4 +1,4 @@
-import type { Machine, StateMachine as S } from "@zag-js/core"
+import type { EventObject, Service } from "@zag-js/core"
 import type { DismissableElementHandlers } from "@zag-js/dismissable"
 import type { TypeaheadState } from "@zag-js/dom-query"
 import type { Placement, PositioningOptions } from "@zag-js/popper"
@@ -35,11 +35,7 @@ export interface NavigateDetails {
   node: HTMLAnchorElement
 }
 
-/* -----------------------------------------------------------------------------
- * Machine context
- * -----------------------------------------------------------------------------*/
-
-type ElementIds = Partial<{
+export type ElementIds = Partial<{
   trigger: string
   contextTrigger: string
   content: string
@@ -49,15 +45,24 @@ type ElementIds = Partial<{
   arrow: string
 }>
 
-interface PublicContext extends DirectionProperty, CommonProperties, DismissableElementHandlers {
+/* -----------------------------------------------------------------------------
+ * Machine context
+ * -----------------------------------------------------------------------------*/
+
+export interface MenuProps extends DirectionProperty, CommonProperties, DismissableElementHandlers {
   /**
    * The ids of the elements in the menu. Useful for composition.
    */
   ids?: ElementIds | undefined
   /**
-   * The value of the highlighted menu item.
+   * The initial highlighted value of the menu item when rendered.
+   * Use when you don't need to control the highlighted value of the menu item.
    */
-  highlightedValue: string | null
+  defaultHighlightedValue?: string | null | undefined
+  /**
+   * The controlled highlighted value of the menu item.
+   */
+  highlightedValue?: string | null | undefined
   /**
    * Function called when the highlighted menu item changes.
    */
@@ -69,27 +74,27 @@ interface PublicContext extends DirectionProperty, CommonProperties, Dismissable
   /**
    * The positioning point for the menu. Can be set by the context menu trigger or the button trigger.
    */
-  anchorPoint: Point | null
+  anchorPoint?: Point | null | undefined
   /**
    * Whether to loop the keyboard navigation.
    * @default false
    */
-  loopFocus: boolean
+  loopFocus?: boolean | undefined
   /**
    * The options used to dynamically position the menu
    */
-  positioning: PositioningOptions
+  positioning?: PositioningOptions | undefined
   /**
    * Whether to close the menu when an option is selected
    * @default true
    */
-  closeOnSelect: boolean
+  closeOnSelect?: boolean | undefined
   /**
    * The accessibility label for the menu
    */
   "aria-label"?: string | undefined
   /**
-   * Whether the menu is open
+   * The controlled open state of the menu
    */
   open?: boolean | undefined
   /**
@@ -97,96 +102,61 @@ interface PublicContext extends DirectionProperty, CommonProperties, Dismissable
    */
   onOpenChange?: ((details: OpenChangeDetails) => void) | undefined
   /**
-   *  Whether the menu's open state is controlled by the user
+   * The initial open state of the menu when rendered.
+   * Use when you don't need to control the open state of the menu.
    */
-  "open.controlled"?: boolean | undefined
+  defaultOpen?: boolean | undefined
   /**
    * Whether the pressing printable characters should trigger typeahead navigation
    * @default true
    */
-  typeahead: boolean
+  typeahead?: boolean | undefined
   /**
    * Whether the menu is a composed with other composite widgets like a combobox or tabs
    * @default true
    */
-  composite: boolean
+  composite?: boolean | undefined
   /**
    * Function to navigate to the selected item if it's an anchor element
    */
-  navigate: (details: NavigateDetails) => void
+  navigate?: ((details: NavigateDetails) => void) | undefined
 }
 
-export type UserDefinedContext = RequiredBy<PublicContext, "id">
+type PropsWithDefault = "closeOnSelect" | "typeahead" | "composite" | "positioning" | "navigate" | "loopFocus"
 
-type ComputedContext = Readonly<{
-  /**
-   * @computed
-   * Whether the menu is a submenu (has a parent menu)
-   */
-  isSubmenu: boolean
-  /**
-   * @computed
-   * Whether the writing direction is rtl
-   */
-  isRtl: boolean
-  /**
-   * @computed
-   * Whether a typeahead search is ongoing
-   */
-  isTypingAhead: boolean
-}>
+export interface MenuSchema {
+  props: RequiredBy<MenuProps, PropsWithDefault>
+  context: {
+    highlightedValue: string | null
+    lastHighlightedValue: string | null
+    currentPlacement: Placement | undefined
+    intentPolygon: Point[] | null
+    anchorPoint: Point | null
+    suspendPointer: boolean
+  }
+  computed: {
+    isSubmenu: boolean
+    isRtl: boolean
+    isTypingAhead: boolean
+  }
+  refs: {
+    parent: Service<MenuSchema> | null
+    children: Record<string, Service<MenuSchema>>
+    typeaheadState: TypeaheadState
+    positioningOverride: Partial<PositioningOptions>
+  }
 
-interface PrivateContext {
-  /**
-   * @internal
-   * The menu's parent. Used for submenus.
-   */
-  parent: Service | null
-  /**
-   * @internal
-   * The child menus. Used for submenus.
-   */
-  children: Record<string, Service>
-  /**
-   * @internal
-   * The polygon tells us if the pointer is moving toward the submenu
-   */
-  intentPolygon: Point[] | null
-  /**
-   * @internal
-   * Whether to suspend listening to pointer-over events on a submenu.
-   * This is used to prevent the menu from closing when the user is hovering to a submenu.
-   */
-  suspendPointer: boolean
-  /**
-   * @internal
-   * The `id` of the menu item that is currently being highlighted.
-   */
-  lastHighlightedValue: string | null
-  /**
-   * @internal
-   * The computed placement (maybe different from initial placement)
-   */
-  currentPlacement?: Placement | undefined
-  /**
-   * @internal
-   * The typeahead state for faster keyboard navigation
-   */
-  typeaheadState: TypeaheadState
+  action: string
+  effect: string
+  guard: string
+  event: EventObject
+
+  state: "idle" | "open" | "closed" | "opening" | "closing" | "opening:contextmenu"
+
+  tag: "open" | "closed"
 }
 
-export interface MachineContext extends PublicContext, PrivateContext, ComputedContext {}
-
-export interface MachineState {
-  value: "idle" | "open" | "closed" | "opening" | "closing" | "opening:contextmenu"
-  tags: "open" | "closed"
-}
-
-export type State = S.State<MachineContext, MachineState>
-
-export type Send = S.Send<S.AnyEventObject>
-
-export type Service = Machine<MachineContext, MachineState, S.AnyEventObject>
+export type MenuService = Service<MenuSchema>
 
 /* -----------------------------------------------------------------------------
  * Component API
@@ -268,7 +238,7 @@ export interface ItemGroupLabelProps {
   htmlFor: string
 }
 
-export interface MachineApi<T extends PropTypes = PropTypes> {
+export interface MenuApi<T extends PropTypes = PropTypes> {
   /**
    * Whether the menu is open
    */
@@ -288,11 +258,11 @@ export interface MachineApi<T extends PropTypes = PropTypes> {
   /**
    * Function to register a parent menu. This is used for submenus
    */
-  setParent(parent: Service): void
+  setParent(parent: MenuService): void
   /**
    * Function to register a child menu. This is used for submenus
    */
-  setChild(child: Service): void
+  setChild(child: MenuService): void
   /**
    * Function to reposition the popover
    */

@@ -9,11 +9,11 @@ import { useControls } from "../hooks/use-controls"
 export default function Page() {
   const controls = useControls({{camelCase machine}}Controls)
 
-  const [state, send] = useMachine({{camelCase machine}}.machine({ id: createUniqueId() }), {
-    context: controls.context,
-  })
+  const service = useMachine({{camelCase machine}}.machine, controls.mergeProps({
+    id: createUniqueId(),
+  }))
 
-  const api = createMemo(() => {{camelCase machine}}.connect(state, send, normalizeProps))
+  const api = createMemo(() => {{camelCase machine}}.connect(service, normalizeProps))
 
   return (
     <>
@@ -24,7 +24,7 @@ export default function Page() {
       </main>
 
       <Toolbar controls={controls.ui}>
-        <StateVisualizer state={state} />
+        <StateVisualizer state={service} />
       </Toolbar>
     </>
   )

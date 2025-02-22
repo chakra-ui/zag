@@ -5,20 +5,15 @@ import { normalizeProps, useMachine } from "@zag-js/vue"
 
 const controls = useControls(carouselControls)
 
-const [state, send] = useMachine(
-  carousel.machine({
-    id: "1",
-    spacing: "20px",
-    slidesPerPage: 2,
-    slideCount: carouselData.length,
-    allowMouseDrag: true,
-  }),
-  {
-    context: controls.context,
-  },
-)
+const service = useMachine(carousel.machine, {
+  id: useId(),
+  spacing: "20px",
+  slidesPerPage: 2,
+  slideCount: carouselData.length,
+  allowMouseDrag: true,
+})
 
-const api = computed(() => carousel.connect(state.value, send, normalizeProps))
+const api = computed(() => carousel.connect(service, normalizeProps))
 </script>
 
 <template>
@@ -49,7 +44,7 @@ const api = computed(() => carousel.connect(state.value, send, normalizeProps))
   </main>
 
   <Toolbar>
-    <StateVisualizer :state="state" />
+    <StateVisualizer :state="service" />
     <template #controls>
       <Controls :control="controls" />
     </template>

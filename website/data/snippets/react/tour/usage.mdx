@@ -4,8 +4,8 @@ import { useMachine, normalizeProps, Portal } from "@zag-js/react"
 import { useId } from "react"
 
 function Tour() {
-  const [state, send] = useMachine(tour.machine({ id: useId(), steps }))
-  const api = tour.connect(state, send, normalizeProps)
+  const service = useMachine(tour.machine, { id: useId(), steps })
+  const api = tour.connect(service, normalizeProps)
   return (
     <div>
       <div>

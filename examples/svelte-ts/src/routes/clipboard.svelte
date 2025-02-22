@@ -9,17 +9,12 @@
 
   const controls = useControls(clipboardControls)
 
-  const [snapshot, send] = useMachine(
-    clipboard.machine({
-      id: "1",
-      value: "https://github/com/chakra-ui/zag",
-    }),
-    {
-      context: controls.context,
-    },
-  )
+  const service = useMachine(clipboard.machine, {
+    id: "1",
+    defaultValue: "https://github/com/chakra-ui/zag",
+  })
 
-  const api = $derived(clipboard.connect(snapshot, send, normalizeProps))
+  const api = $derived(clipboard.connect(service, normalizeProps))
 </script>
 
 <main class="clipboard">
@@ -42,5 +37,5 @@
 </main>
 
 <Toolbar {controls}>
-  <StateVisualizer state={snapshot} />
+  <StateVisualizer state={service} />
 </Toolbar>

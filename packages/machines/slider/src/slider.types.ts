@@ -1,4 +1,4 @@
-import type { Machine, StateMachine as S } from "@zag-js/core"
+import type { EventObject, Service } from "@zag-js/core"
 import type { CommonProperties, DirectionProperty, PropTypes, RequiredBy } from "@zag-js/types"
 
 /* -----------------------------------------------------------------------------
@@ -35,9 +35,9 @@ export type ElementIds = Partial<{
   marker(index: number): string
 }>
 
-interface PublicContext extends DirectionProperty, CommonProperties {
+export interface SliderProps extends DirectionProperty, CommonProperties {
   /**
-   * The ids of the elements in the range slider. Useful for composition.
+   * The ids of the elements in the slider. Useful for composition.
    */
   ids?: ElementIds | undefined
   /**
@@ -57,9 +57,14 @@ interface PublicContext extends DirectionProperty, CommonProperties {
    */
   form?: string | undefined
   /**
-   * The value of the range slider
+   * The controlled value of the slider
    */
-  value: number[]
+  value?: number[] | undefined
+  /**
+   * The initial value of the slider when rendered.
+   * Use when you don't need to control the value of the slider.
+   */
+  defaultValue?: number[] | undefined
   /**
    * Whether the slider is disabled
    */
@@ -92,27 +97,27 @@ interface PublicContext extends DirectionProperty, CommonProperties {
    * The minimum value of the slider
    * @default 0
    */
-  min: number
+  min?: number | undefined
   /**
    * The maximum value of the slider
    * @default 100
    */
-  max: number
+  max?: number | undefined
   /**
    * The step value of the slider
    * @default 1
    */
-  step: number
+  step?: number | undefined
   /**
    * The minimum permitted steps between multiple thumbs.
    * @default 0
    */
-  minStepsBetweenThumbs: number
+  minStepsBetweenThumbs?: number | undefined
   /**
    * The orientation of the slider
    * @default "horizontal"
    */
-  orientation: "vertical" | "horizontal"
+  orientation?: "vertical" | "horizontal" | undefined
   /**
    * The origin of the slider range
    * - "start": Useful when the value represents an absolute value
@@ -132,12 +137,21 @@ interface PublicContext extends DirectionProperty, CommonProperties {
   /**
    * The slider thumbs dimensions
    */
-  thumbSize: { width: number; height: number } | null
+  thumbSize?: { width: number; height: number } | undefined
 }
 
-export type UserDefinedContext = RequiredBy<PublicContext, "id">
+type PropsWithDefault =
+  | "dir"
+  | "min"
+  | "max"
+  | "step"
+  | "orientation"
+  | "defaultValue"
+  | "origin"
+  | "thumbAlignment"
+  | "minStepsBetweenThumbs"
 
-type ComputedContext = Readonly<{
+type Computed = Readonly<{
   /**
    * @computed
    * Whether the slider thumb has been measured
@@ -175,9 +189,8 @@ type ComputedContext = Readonly<{
   isDisabled: boolean
 }>
 
-interface PrivateContext {
+interface Context {
   /**
-   * @internal
    * The active index of the range slider. This represents
    * the currently dragged/focused thumb.
    */
@@ -187,19 +200,28 @@ interface PrivateContext {
    * Whether the slider fieldset is disabled
    */
   fieldsetDisabled: boolean
+  /**
+   * The value of the range slider
+   */
+  value: number[]
+  /**
+   * The size of the slider thumbs
+   */
+  thumbSize: Size | null
 }
 
-export interface MachineContext extends PublicContext, ComputedContext, PrivateContext {}
-
-export interface MachineState {
-  value: "idle" | "dragging" | "focus"
+export interface SliderSchema {
+  state: "idle" | "dragging" | "focus"
+  props: RequiredBy<SliderProps, PropsWithDefault>
+  context: Context
+  computed: Computed
+  event: EventObject
+  action: string
+  effect: string
+  guard: string
 }
 
-export type State = S.State<MachineContext, MachineState>
-
-export type Send = S.Send<S.AnyEventObject>
-
-export type Service = Machine<MachineContext, MachineState, S.AnyEventObject>
+export type SliderService = Service<SliderSchema>
 
 /* -----------------------------------------------------------------------------
  * Component API
@@ -223,7 +245,7 @@ export interface DraggingIndicatorProps {
   index: number
 }
 
-export interface MachineApi<T extends PropTypes = PropTypes> {
+export interface SliderApi<T extends PropTypes = PropTypes> {
   /**
    * The value of the slider.
    */

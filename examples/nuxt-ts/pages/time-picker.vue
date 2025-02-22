@@ -5,13 +5,15 @@ import { normalizeProps, useMachine } from "@zag-js/vue"
 
 const controls = useControls(timePickerControls)
 
-const [state, send] = useMachine(timePicker.machine({ id: "1" }))
+const service = useMachine(timePicker.machine, {
+  id: useId(),
+})
 
-const api = computed(() => timePicker.connect(state.value, send, normalizeProps))
+const api = computed(() => timePicker.connect(service, normalizeProps))
 </script>
 
 <template>
-  <main className="time-picker">
+  <main class="time-picker">
     <div v-bind="api.getRootProps()">
       <div v-bind="api.getControlProps()" :style="{ display: 'flex', gap: '10px' }">
         <input v-bind="api.getInputProps()" />
@@ -19,7 +21,7 @@ const api = computed(() => timePicker.connect(state.value, send, normalizeProps)
         <button v-bind="api.getClearTriggerProps()">❌</button>
       </div>
 
-      <Teleport to="body">
+      <Teleport to="#teleports">
         <div v-bind="api.getPositionerProps()">
           <div v-bind="api.getContentProps()">
             <div v-bind="api.getColumnProps({ unit: 'hour' })">
@@ -48,7 +50,7 @@ const api = computed(() => timePicker.connect(state.value, send, normalizeProps)
   </main>
 
   <Toolbar>
-    <StateVisualizer :state="state" />
+    <StateVisualizer :state="service" />
     <template #controls>
       <Controls :control="controls" />
     </template>

@@ -9,17 +9,15 @@ import { useControls } from "../hooks/use-controls"
 export default function Page() {
   const controls = useControls(qrCodeControls)
 
-  const [state, send] = useMachine(
-    qrCode.machine({
+  const service = useMachine(
+    qrCode.machine,
+    controls.mergeProps<qrCode.Props>({
       id: createUniqueId(),
       encoding: { ecc: "H" },
     }),
-    {
-      context: controls.context,
-    },
   )
 
-  const api = createMemo(() => qrCode.connect(state, send, normalizeProps))
+  const api = createMemo(() => qrCode.connect(service, normalizeProps))
 
   return (
     <>
@@ -34,8 +32,8 @@ export default function Page() {
         </div>
       </main>
 
-      <Toolbar controls={controls.ui}>
-        <StateVisualizer state={state} omit={["encoded"]} />
+      <Toolbar controls={controls}>
+        <StateVisualizer state={service} omit={["encoded"]} />
       </Toolbar>
     </>
   )

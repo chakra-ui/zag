@@ -5,9 +5,9 @@ import { createMemo, createUniqueId } from "solid-js"
 import { HalfStar, Star } from "./icons"
 
 function Rating() {
-  const [state, send] = useMachine(rating.machine({ id: createUniqueId() }))
+  const service = useMachine(rating.machine, { id: createUniqueId() })
 
-  const api = createMemo(() => rating.connect(state, send, normalizeProps))
+  const api = createMemo(() => rating.connect(service, normalizeProps))
 
   return (
     <div {...api().getRootProps()}>

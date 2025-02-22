@@ -11,17 +11,15 @@ import { useControls } from "~/hooks/use-controls"
 export default function Page() {
   const controls = useControls(selectControls)
 
-  const [state, send] = useMachine(
-    select.machine({
+  const service = useMachine(
+    select.machine,
+    controls.mergeProps<select.Props>(() => ({
       collection: select.collection({ items: selectData }),
       id: createUniqueId(),
-    }),
-    {
-      context: controls.context,
-    },
+    })),
   )
 
-  const api = createMemo(() => select.connect(state, send, normalizeProps))
+  const api = createMemo(() => select.connect(service, normalizeProps))
 
   return (
     <>
@@ -67,8 +65,8 @@ export default function Page() {
         </div>
       </main>
 
-      <Toolbar controls={controls.ui}>
-        <StateVisualizer state={state} omit={["collection"]} />
+      <Toolbar controls={controls}>
+        <StateVisualizer state={service} omit={["collection"]} />
       </Toolbar>
     </>
   )

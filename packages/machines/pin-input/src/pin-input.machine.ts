@@ -1,281 +1,305 @@
-import { choose, createMachine } from "@zag-js/core"
-import { dispatchInputValueEvent, raf } from "@zag-js/dom-query"
-import { compact, isEqual } from "@zag-js/utils"
-import { dom } from "./pin-input.dom"
-import type { MachineContext, MachineState, UserDefinedContext } from "./pin-input.types"
+import { createMachine } from "@zag-js/core"
+import { dispatchInputValueEvent, raf, setElementValue } from "@zag-js/dom-query"
+import { isEqual } from "@zag-js/utils"
+import * as dom from "./pin-input.dom"
+import type { PinInputSchema } from "./pin-input.types"
 
-export function machine(userContext: UserDefinedContext) {
-  const ctx = compact(userContext)
-  return createMachine<MachineContext, MachineState>(
-    {
-      id: "pin-input",
-      initial: "idle",
-      context: {
-        value: [],
-        placeholder: "○",
-        otp: false,
-        type: "numeric",
-        ...ctx,
-        focusedIndex: -1,
-        translations: {
-          inputLabel: (index, length) => `pin code ${index + 1} of ${length}`,
-          ...ctx.translations,
+export const machine = createMachine<PinInputSchema>({
+  props({ props }) {
+    return {
+      placeholder: "○",
+      otp: false,
+      type: "numeric",
+      defaultValue: [],
+      ...props,
+      translations: {
+        inputLabel: (index, length) => `pin code ${index + 1} of ${length}`,
+        ...props.translations,
+      },
+    }
+  },
+
+  initialState() {
+    return "idle"
+  },
+
+  context({ prop, bindable }) {
+    return {
+      value: bindable(() => ({
+        sync: true,
+        value: prop("value"),
+        defaultValue: prop("defaultValue"),
+        isEqual: isEqual,
+        onChange(value) {
+          prop("onValueChange")?.({ value, valueAsString: value.join("") })
         },
+      })),
+      focusedIndex: bindable(() => ({
+        sync: true,
+        defaultValue: -1,
+      })),
+    }
+  },
+
+  computed: {
+    valueLength: ({ context }) => context.get("value").length,
+    filledValueLength: ({ context }) => context.get("value").filter((v) => v?.trim() !== "").length,
+    isValueComplete: ({ context }) => {
+      const value = context.get("value")
+      const filledValueLength = value.filter((v) => v?.trim() !== "").length
+      return value.length === filledValueLength
+    },
+    valueAsString: ({ context }) => context.get("value").join(""),
+    focusedValue: ({ context }) => context.get("value")[context.get("focusedIndex")] || "",
+  },
+
+  entry: ["raiseInitEvent"],
+
+  watch({ action, track, context, computed }) {
+    track([() => context.get("focusedIndex")], () => {
+      action(["focusInput", "selectInputIfNeeded"])
+    })
+    track([() => context.get("value").toString()], () => {
+      action(["syncInputElements", "dispatchInputEvent"])
+    })
+    track([() => computed("isValueComplete")], () => {
+      action(["invokeOnComplete", "blurFocusedInputIfNeeded"])
+    })
+  },
+
+  on: {
+    "VALUE.SET": [
+      {
+        guard: "hasIndex",
+        actions: ["setValueAtIndex"],
       },
+      { actions: ["setValue"] },
+    ],
+    "VALUE.CLEAR": {
+      actions: ["clearValue", "setFocusIndexToFirst"],
+    },
+  },
 
-      computed: {
-        valueLength: (ctx) => ctx.value.length,
-        filledValueLength: (ctx) => ctx.value.filter((v) => v?.trim() !== "").length,
-        isValueComplete: (ctx) => ctx.valueLength === ctx.filledValueLength,
-        valueAsString: (ctx) => ctx.value.join(""),
-        focusedValue: (ctx) => ctx.value[ctx.focusedIndex] || "",
-      },
-
-      entry: choose([
-        {
-          guard: "autoFocus",
-          actions: ["setupValue", "setFocusIndexToFirst"],
-        },
-        { actions: ["setupValue"] },
-      ]),
-
-      watch: {
-        focusedIndex: ["focusInput", "selectInputIfNeeded"],
-        value: ["syncInputElements"],
-        isValueComplete: ["invokeOnComplete", "blurFocusedInputIfNeeded"],
-      },
-
+  states: {
+    idle: {
       on: {
-        "VALUE.SET": [
+        "INPUT.FOCUS": {
+          target: "focused",
+          actions: ["setFocusedIndex"],
+        },
+        INIT: [
           {
-            guard: "hasIndex",
-            actions: ["setValueAtIndex"],
+            guard: "autoFocus",
+            actions: ["setupValue", "setFocusIndexToFirst"],
           },
-          { actions: ["setValue"] },
+          { actions: ["setupValue"] },
         ],
-        "VALUE.CLEAR": {
-          actions: ["clearValue", "setFocusIndexToFirst"],
-        },
       },
-
-      states: {
-        idle: {
-          on: {
-            "INPUT.FOCUS": {
-              target: "focused",
-              actions: "setFocusedIndex",
-            },
+    },
+    focused: {
+      on: {
+        "INPUT.CHANGE": [
+          {
+            guard: "isFinalValue",
+            actions: ["setFocusedValue", "syncInputValue"],
           },
+          {
+            actions: ["setFocusedValue", "setNextFocusedIndex", "syncInputValue"],
+          },
+        ],
+        "INPUT.PASTE": {
+          actions: ["setPastedValue", "setLastValueFocusIndex"],
         },
-        focused: {
-          on: {
-            "INPUT.CHANGE": [
-              {
-                guard: "isFinalValue",
-                actions: ["setFocusedValue", "syncInputValue"],
-              },
-              {
-                actions: ["setFocusedValue", "setNextFocusedIndex", "syncInputValue"],
-              },
-            ],
-            "INPUT.PASTE": {
-              actions: ["setPastedValue", "setLastValueFocusIndex"],
-            },
-            "INPUT.BLUR": {
-              target: "idle",
-              actions: "clearFocusedIndex",
-            },
-            "INPUT.DELETE": {
-              guard: "hasValue",
-              actions: "clearFocusedValue",
-            },
-            "INPUT.ARROW_LEFT": {
-              actions: "setPrevFocusedIndex",
-            },
-            "INPUT.ARROW_RIGHT": {
-              actions: "setNextFocusedIndex",
-            },
-            "INPUT.BACKSPACE": [
-              {
-                guard: "hasValue",
-                actions: ["clearFocusedValue"],
-              },
-              {
-                actions: ["setPrevFocusedIndex", "clearFocusedValue"],
-              },
-            ],
-            "INPUT.ENTER": {
-              guard: "isValueComplete",
-              actions: "requestFormSubmit",
-            },
-            "VALUE.INVALID": {
-              actions: "invokeOnInvalid",
-            },
+        "INPUT.BLUR": {
+          target: "idle",
+          actions: ["clearFocusedIndex"],
+        },
+        "INPUT.DELETE": {
+          guard: "hasValue",
+          actions: ["clearFocusedValue"],
+        },
+        "INPUT.ARROW_LEFT": {
+          actions: ["setPrevFocusedIndex"],
+        },
+        "INPUT.ARROW_RIGHT": {
+          actions: ["setNextFocusedIndex"],
+        },
+        "INPUT.BACKSPACE": [
+          {
+            guard: "hasValue",
+            actions: ["clearFocusedValue"],
           },
+          {
+            actions: ["setPrevFocusedIndex", "clearFocusedValue"],
+          },
+        ],
+        "INPUT.ENTER": {
+          guard: "isValueComplete",
+          actions: ["requestFormSubmit"],
+        },
+        "VALUE.INVALID": {
+          actions: ["invokeOnInvalid"],
         },
       },
     },
-    {
-      guards: {
-        autoFocus: (ctx) => !!ctx.autoFocus,
-        isValueEmpty: (_ctx, evt) => evt.value === "",
-        hasValue: (ctx) => ctx.value[ctx.focusedIndex] !== "",
-        isValueComplete: (ctx) => ctx.isValueComplete,
-        isFinalValue: (ctx) =>
-          ctx.filledValueLength + 1 === ctx.valueLength &&
-          ctx.value.findIndex((v) => v.trim() === "") === ctx.focusedIndex,
-        hasIndex: (_ctx, evt) => evt.index !== undefined,
-        isDisabled: (ctx) => !!ctx.disabled,
+  },
+
+  implementations: {
+    guards: {
+      autoFocus: ({ prop }) => !!prop("autoFocus"),
+      isValueEmpty: ({ event }) => event.value === "",
+      hasValue: ({ context }) => context.get("value")[context.get("focusedIndex")] !== "",
+      isValueComplete: ({ computed }) => computed("isValueComplete"),
+      isFinalValue: ({ context, computed }) =>
+        computed("filledValueLength") + 1 === computed("valueLength") &&
+        context.get("value").findIndex((v) => v.trim() === "") === context.get("focusedIndex"),
+      hasIndex: ({ event }) => event.index !== undefined,
+      isDisabled: ({ prop }) => !!prop("disabled"),
+    },
+
+    actions: {
+      raiseInitEvent({ send }) {
+        send({ type: "INIT" })
       },
-      actions: {
-        setupValue(ctx) {
-          if (ctx.value.length) return
-          const inputEls = dom.getInputEls(ctx)
-          const emptyValues = Array.from<string>({ length: inputEls.length }).fill("")
-          assignValue(ctx, emptyValues)
-        },
-        focusInput(ctx) {
-          if (ctx.focusedIndex === -1) return
-          dom.getFocusedInputEl(ctx)?.focus({ preventScroll: true })
-        },
-        selectInputIfNeeded(ctx) {
-          if (!ctx.selectOnFocus || ctx.focusedIndex === -1) return
-          raf(() => {
-            dom.getFocusedInputEl(ctx)?.select()
-          })
-        },
-        invokeOnComplete(ctx) {
-          if (!ctx.isValueComplete) return
-          ctx.onValueComplete?.({
-            value: Array.from(ctx.value),
-            valueAsString: ctx.valueAsString,
-          })
-        },
-        invokeOnInvalid(ctx, evt) {
-          ctx.onValueInvalid?.({
-            value: evt.value,
-            index: ctx.focusedIndex,
-          })
-        },
-        clearFocusedIndex(ctx) {
-          ctx.focusedIndex = -1
-        },
-        setFocusedIndex(ctx, evt) {
-          ctx.focusedIndex = evt.index
-        },
-        setValue(ctx, evt) {
-          set.value(ctx, evt.value)
-        },
-        setFocusedValue(ctx, evt) {
-          const nextValue = getNextValue(ctx.focusedValue, evt.value)
-          set.valueAtIndex(ctx, ctx.focusedIndex, nextValue)
-        },
-        revertInputValue(ctx) {
-          const inputEl = dom.getFocusedInputEl(ctx)
-          dom.setValue(inputEl, ctx.focusedValue)
-        },
-        syncInputValue(ctx, evt) {
-          const inputEl = dom.getInputEl(ctx, evt.index.toString())
-          dom.setValue(inputEl, ctx.value[evt.index])
-        },
-        syncInputElements(ctx) {
-          const inputEls = dom.getInputEls(ctx)
-          inputEls.forEach((inputEl, index) => {
-            dom.setValue(inputEl, ctx.value[index])
-          })
-        },
-        setPastedValue(ctx, evt) {
-          raf(() => {
-            const startIndex = Math.min(ctx.focusedIndex, ctx.filledValueLength)
+      dispatchInputEvent({ computed, scope }) {
+        const inputEl = dom.getHiddenInputEl(scope)
+        dispatchInputValueEvent(inputEl, { value: computed("valueAsString") })
+      },
+      setupValue({ context, scope }) {
+        if (context.get("value").length) return
+        const inputEls = dom.getInputEls(scope)
+        const emptyValues = Array.from<string>({ length: inputEls.length }).fill("")
+        context.set("value", emptyValues)
+      },
+      focusInput({ context, scope }) {
+        const focusedIndex = context.get("focusedIndex")
+        if (focusedIndex === -1) return
+        dom.getInputElAtIndex(scope, focusedIndex)?.focus({ preventScroll: true })
+      },
+      selectInputIfNeeded({ context, prop, scope }) {
+        const focusedIndex = context.get("focusedIndex")
+        if (!prop("selectOnFocus") || focusedIndex === -1) return
+        raf(() => {
+          dom.getInputElAtIndex(scope, focusedIndex)?.select()
+        })
+      },
+      invokeOnComplete({ context, computed, prop }) {
+        if (!computed("isValueComplete")) return
+        prop("onValueComplete")?.({
+          value: Array.from(context.get("value")),
+          valueAsString: computed("valueAsString"),
+        })
+      },
+      invokeOnInvalid({ context, event, prop }) {
+        prop("onValueInvalid")?.({
+          value: event.value,
+          index: context.get("focusedIndex"),
+        })
+      },
+      clearFocusedIndex({ context }) {
+        context.set("focusedIndex", -1)
+      },
+      setFocusedIndex({ context, event }) {
+        context.set("focusedIndex", event.index)
+      },
+      setValue({ context, event }) {
+        context.set("value", event.value)
+      },
+      setFocusedValue({ context, event, computed }) {
+        const focusedValue = computed("focusedValue")
+        const nextValue = getNextValue(focusedValue, event.value)
+        context.set("value", (prev) => {
+          const next = [...prev]
+          next[context.get("focusedIndex")] = nextValue
+          return next
+        })
+      },
+      revertInputValue({ context, computed, scope }) {
+        const inputEl = dom.getInputElAtIndex(scope, context.get("focusedIndex"))
+        setElementValue(inputEl, computed("focusedValue"))
+      },
+      syncInputValue({ context, event, scope }) {
+        const value = context.get("value")
+        const inputEl = dom.getInputElAtIndex(scope, event.index)
+        setElementValue(inputEl, value[event.index])
+      },
+      syncInputElements({ context, scope }) {
+        const inputEls = dom.getInputEls(scope)
+        inputEls.forEach((inputEl, index) => {
+          setElementValue(inputEl, context.get("value")[index])
+        })
+      },
+      setPastedValue({ context, event, computed }) {
+        raf(() => {
+          const valueAsString = computed("valueAsString")
+          const focusedIndex = context.get("focusedIndex")
+          const filledValueLength = computed("filledValueLength")
 
-            // keep value left of cursor
-            // replace value from cursor to end with pasted text
-            const left = startIndex > 0 ? ctx.valueAsString.substring(0, ctx.focusedIndex) : ""
-            const right = evt.value.substring(0, ctx.valueLength - startIndex)
+          const startIndex = Math.min(focusedIndex, filledValueLength)
 
-            const value = left + right
+          // keep value left of cursor
+          // replace value from cursor to end with pasted text
+          const left = startIndex > 0 ? valueAsString.substring(0, focusedIndex) : ""
+          const right = event.value.substring(0, computed("valueLength") - startIndex)
 
-            set.value(ctx, value.split(""))
-          })
-        },
-        setValueAtIndex(ctx, evt) {
-          const nextValue = getNextValue(ctx.focusedValue, evt.value)
-          set.valueAtIndex(ctx, evt.index, nextValue)
-        },
-        clearValue(ctx) {
-          const nextValue = Array.from<string>({ length: ctx.valueLength }).fill("")
-          set.value(ctx, nextValue)
-        },
-        clearFocusedValue(ctx) {
-          set.valueAtIndex(ctx, ctx.focusedIndex, "")
-        },
-        setFocusIndexToFirst(ctx) {
-          ctx.focusedIndex = 0
-        },
-        setNextFocusedIndex(ctx) {
-          ctx.focusedIndex = Math.min(ctx.focusedIndex + 1, ctx.valueLength - 1)
-        },
-        setPrevFocusedIndex(ctx) {
-          ctx.focusedIndex = Math.max(ctx.focusedIndex - 1, 0)
-        },
-        setLastValueFocusIndex(ctx) {
-          raf(() => {
-            ctx.focusedIndex = Math.min(ctx.filledValueLength, ctx.valueLength - 1)
-          })
-        },
-        blurFocusedInputIfNeeded(ctx) {
-          if (!ctx.blurOnComplete) return
-          raf(() => {
-            dom.getFocusedInputEl(ctx)?.blur()
-          })
-        },
-        requestFormSubmit(ctx) {
-          if (!ctx.name || !ctx.isValueComplete) return
-          const inputEl = dom.getHiddenInputEl(ctx)
-          inputEl?.form?.requestSubmit()
-        },
+          const value = left + right
+
+          context.set("value", value.split(""))
+        })
+      },
+      setValueAtIndex({ context, event, computed }) {
+        const nextValue = getNextValue(computed("focusedValue"), event.value)
+        context.set("value", (prev) => {
+          const next = [...prev]
+          next[event.index] = nextValue
+          return next
+        })
+      },
+      clearValue({ context, computed }) {
+        const nextValue = Array.from<string>({ length: computed("valueLength") }).fill("")
+        context.set("value", nextValue)
+      },
+      clearFocusedValue({ context }) {
+        const focusedIndex = context.get("focusedIndex")
+        if (focusedIndex === -1) return
+        context.set("value", (prev) => {
+          const next = [...prev]
+          next[focusedIndex] = ""
+          return next
+        })
+      },
+      setFocusIndexToFirst({ context }) {
+        context.set("focusedIndex", 0)
+      },
+      setNextFocusedIndex({ context, computed }) {
+        context.set("focusedIndex", Math.min(context.get("focusedIndex") + 1, computed("valueLength") - 1))
+      },
+      setPrevFocusedIndex({ context }) {
+        context.set("focusedIndex", Math.max(context.get("focusedIndex") - 1, 0))
+      },
+      setLastValueFocusIndex({ context, computed }) {
+        raf(() => {
+          context.set("focusedIndex", Math.min(computed("filledValueLength"), computed("valueLength") - 1))
+        })
+      },
+      blurFocusedInputIfNeeded({ context, prop, scope }) {
+        if (!prop("blurOnComplete")) return
+        raf(() => {
+          dom.getInputElAtIndex(scope, context.get("focusedIndex"))?.blur()
+        })
+      },
+      requestFormSubmit({ computed, prop, scope }) {
+        if (!prop("name") || !computed("isValueComplete")) return
+        const inputEl = dom.getHiddenInputEl(scope)
+        inputEl?.form?.requestSubmit()
       },
     },
-  )
-}
-
-function assignValue(ctx: MachineContext, value: string | string[]) {
-  const arr = Array.isArray(value) ? value : value.split("").filter(Boolean)
-  arr.forEach((value, index) => {
-    ctx.value[index] = value
-  })
-}
+  },
+})
 
 function getNextValue(current: string, next: string) {
   let nextValue = next
   if (current[0] === next[0]) nextValue = next[1]
   else if (current[0] === next[1]) nextValue = next[0]
   return nextValue.split("")[nextValue.length - 1]
-}
-
-const invoke = {
-  change(ctx: MachineContext) {
-    // callback
-    ctx.onValueChange?.({
-      value: Array.from(ctx.value),
-      valueAsString: ctx.valueAsString,
-    })
-
-    // form event
-    const inputEl = dom.getHiddenInputEl(ctx)
-    dispatchInputValueEvent(inputEl, { value: ctx.valueAsString })
-  },
-}
-
-const set = {
-  value(ctx: MachineContext, value: string[]) {
-    if (isEqual(ctx.value, value)) return
-    assignValue(ctx, value)
-    invoke.change(ctx)
-  },
-  valueAtIndex(ctx: MachineContext, index: number, value: string) {
-    if (isEqual(ctx.value[index], value)) return
-    ctx.value[index] = value
-    invoke.change(ctx)
-  },
 }

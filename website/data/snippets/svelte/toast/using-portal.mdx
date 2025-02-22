@@ -1,24 +1,19 @@
-```svelte {3,14}
-<!-- 2. Create the toast provider -->
+```svelte {2,13}
 <script lang="ts">
   import { portal } from "@zag-js/svelte"
 
   // ...
 
-  const [initialSnapshot, send] = useMachine(toast.group.machine({ id: "1" }))
+  const service = useMachine(toast.group.machine, ({ id: "1", store: toaster }))
 
-  const api = $derived(toast.group.connect(snapshot, send, normalizeProps))
+  const api = $derived(toast.group.connect(service, normalizeProps))
 
   // ...
 </script>
 
-<div use:portal>
-  {#each api.getPlacements() as placement}
-    <div {...api.getGroupProps({ placement })}>
-      {#each api.getToastsByPlacement(placement) as toast (toast.id)}
-        <Toast actor={toast} />
-      {/each}
-    </div>
+<div use:portal {...api.getGroupProps()}>
+  {#each api.getToasts() as toast, index (toast.id)}
+    <Toast toast={toast} index={index} parent={service} />
   {/each}
 </div>
 ```

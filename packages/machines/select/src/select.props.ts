@@ -1,8 +1,8 @@
 import { createProps } from "@zag-js/types"
 import { createSplitProps } from "@zag-js/utils"
-import type { ItemGroupLabelProps, ItemGroupProps, ItemProps, UserDefinedContext } from "./select.types"
+import type { ItemGroupLabelProps, ItemGroupProps, ItemProps, SelectProps } from "./select.types"
 
-export const props = createProps<UserDefinedContext>()([
+export const props = createProps<SelectProps>()([
   "closeOnSelect",
   "collection",
   "dir",
@@ -23,7 +23,7 @@ export const props = createProps<UserDefinedContext>()([
   "onOpenChange",
   "onPointerDownOutside",
   "onValueChange",
-  "open.controlled",
+  "defaultOpen",
   "open",
   "composite",
   "positioning",
@@ -31,8 +31,10 @@ export const props = createProps<UserDefinedContext>()([
   "readOnly",
   "scrollToIndexFn",
   "value",
+  "defaultValue",
+  "defaultHighlightedValue",
 ])
-export const splitProps = createSplitProps<Partial<UserDefinedContext>>(props)
+export const splitProps = createSplitProps<Partial<SelectProps>>(props)
 
 export const itemProps = createProps<ItemProps>()(["item", "persistFocus"])
 export const splitItemProps = createSplitProps<ItemProps>(itemProps)

@@ -5,11 +5,11 @@ import { normalizeProps, useMachine } from "@zag-js/vue"
 
 const controls = useControls(numberInputControls)
 
-const [state, send] = useMachine(numberInput.machine({ id: "1" }), {
-  context: controls.context,
+const service = useMachine(numberInput.machine, {
+  id: useId(),
 })
 
-const api = computed(() => numberInput.connect(state.value, send, normalizeProps))
+const api = computed(() => numberInput.connect(service, normalizeProps))
 </script>
 
 <template>
@@ -26,7 +26,7 @@ const api = computed(() => numberInput.connect(state.value, send, normalizeProps
   </main>
 
   <Toolbar>
-    <StateVisualizer :state="state" :omit="['formatter', 'parser']" />
+    <StateVisualizer :state="service" :omit="['formatter', 'parser']" />
     <template #controls>
       <Controls :control="controls" />
     </template>

@@ -1,12 +1,14 @@
 import { createProps } from "@zag-js/types"
 import { createSplitProps } from "@zag-js/utils"
-import type { ItemGroupLabelProps, ItemGroupProps, ItemProps, OptionItemProps, UserDefinedContext } from "./menu.types"
+import type { ItemGroupLabelProps, ItemGroupProps, ItemProps, OptionItemProps, MenuProps } from "./menu.types"
 
-export const props = createProps<UserDefinedContext>()([
+export const props = createProps<MenuProps>()([
   "anchorPoint",
   "aria-label",
   "closeOnSelect",
   "composite",
+  "defaultHighlightedValue",
+  "defaultOpen",
   "dir",
   "getRootNode",
   "highlightedValue",
@@ -21,13 +23,12 @@ export const props = createProps<UserDefinedContext>()([
   "onOpenChange",
   "onPointerDownOutside",
   "onSelect",
-  "open.controlled",
   "open",
   "positioning",
   "typeahead",
 ])
 
-export const splitProps = createSplitProps<Partial<UserDefinedContext>>(props)
+export const splitProps = createSplitProps<Partial<MenuProps>>(props)
 
 export const itemProps = createProps<ItemProps>()(["closeOnSelect", "disabled", "value", "valueText"])
 export const splitItemProps = createSplitProps<ItemProps>(itemProps)
@@ -39,13 +40,13 @@ export const itemGroupProps = createProps<ItemGroupProps>()(["id"])
 export const splitItemGroupProps = createSplitProps<ItemGroupProps>(itemGroupProps)
 
 export const optionItemProps = createProps<OptionItemProps>()([
-  "disabled",
-  "valueText",
+  "checked",
   "closeOnSelect",
+  "disabled",
+  "onCheckedChange",
   "type",
   "value",
-  "checked",
-  "onCheckedChange",
+  "valueText",
 ])
 
 export const splitOptionItemProps = createSplitProps<OptionItemProps>(optionItemProps)

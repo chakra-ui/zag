@@ -3,13 +3,11 @@
   import * as signaturePad from "@zag-js/signature-pad"
   import { normalizeProps, useMachine } from "@zag-js/svelte"
 
-  const [snapshot, send] = useMachine(
-    signaturePad.machine({
-      id: "1",
-    }),
-  )
+  const service = useMachine(signaturePad.machine, {
+    id: "1",
+  })
 
-  const api = $derived(signaturePad.connect(snapshot, send, normalizeProps))
+  const api = $derived(signaturePad.connect(service, normalizeProps))
 </script>
 
 <div {...api.getRootProps()}>

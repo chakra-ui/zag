@@ -1,15 +1,15 @@
 ```html
 <script setup>
-import * as colorPicker from "@zag-js/color-picker";
-import { normalizeProps, useMachine } from "@zag-js/vue";
-import { computed } from "vue";
+  import * as colorPicker from "@zag-js/color-picker"
+  import { normalizeProps, useMachine } from "@zag-js/vue"
+  import { computed } from "vue"
 
-const [state, send] = useMachine(colorPicker.machine({
-  id: "1",
-  value: colorPicker.parse("hsl(0, 100%, 50%)")
-}))
+  const service = useMachine(colorPicker.machine, {
+    id: "1",
+    defaultValue: colorPicker.parse("hsl(0, 100%, 50%)"),
+  })
 
-const api = computed(() => colorPicker.connect(state.value, send, normalizeProps));
+  const api = computed(() => colorPicker.connect(service, normalizeProps))
 </script>
 
 <template>

@@ -1,17 +1,27 @@
 ```svelte
-<!-- 1. Create the single toast -->
 <script lang="ts">
-  import { normalizeProps, useActor } from "@zag-js/svelte"
+  import { normalizeProps, useMachine } from "@zag-js/svelte"
   import * as toast from "@zag-js/toast"
 
-  interface Props {
-    actor: toast.Service
+  // 1. Create the single toast
+  const toaster = toast.createStore({
+    placement: "top-end",
+    overlap: true,
+  })
+
+  // 2. Design the toast component
+  interface ToastProps {
+    toast: toast.Options
+    index: number
+    parent: toast.GroupService
   }
 
-  const { actor }: Props = $props()
+  const { toast, index, parent }: ToastProps = $props()
 
-  const [snapshot, send] = useActor(actor)
-  const api = $derived(toast.connect(snapshot, send, normalizeProps))
+  const machineProps = $derived({ ...toast, parent, index })
+  const service = useMachine(toast.machine, () => machineProps)
+
+  const api = $derived(toast.connect(service, normalizeProps))
 </script>
 
 <div {...api.getRootProps()}>
@@ -20,68 +30,44 @@
   <button onclick={api.dismiss}>Close</button>
 </div>
 
-<!-- 2. Create the toast group provider -->
+<!-- 3. Design the toaster -->
 <script lang="ts">
-  import { setContext } from "svelte"
   import { normalizeProps, useMachine } from "@zag-js/svelte"
   import * as toast from "@zag-js/toast"
-  // Single toast created above
-  import ToastItem from "$lib/components/toast-item.svelte"
+  import Toast from "./toast-item.svelte"
 
-  const [snapshot, send] = useMachine(toast.group.machine({ id: "1" }))
+  const service = useMachine(toast.group.machine, {
+    id: "1",
+    store: toaster,
+  })
 
-  const api = $derived(toast.group.connect(snapshot, send, normalizeProps))
-
-  // Set the context
-  setContext("toast", api)
-
-  const { children }: any = $props()
+  const api = $derived(toast.group.connect(service, normalizeProps))
 </script>
 
-{@render children()}
+<div {...api.getGroupProps()}>
+  {#each api.getToasts() as toast, index (toast.id)}
+  <Toast toast={toast} index={index} parent={service} />
+  {/each}
+</div>
 
-{#each api.getPlacements() as placement}
-  <div {...api.getGroupProps({ placement })}>
-    {#each api.getToastsByPlacement(placement) as toast (toast.id)}
-      <ToastItem actor={toast} />
-    {/each}
-  </div>
-{/each}
-
-<!-- 3. Wrap your app with the toast group provider -->
+<!-- 4. Wrap your app with the toaster -->
 <script lang="ts">
-  import ToastProvider from "./toast-provider.svelte"
+  import Toaster from "./toaster.svelte"
 </script>
 
-<ToastProvider>
-  <div>
-    <h1>App Root</h1>
-  </div>
-</ToastProvider>
+<Toaster />
 
-<!-- 4. Within your app -->
-<script lang="ts">
-  const toast = getContext("toast")
-</script>
-
+<!-- 5. Within your app -->
 <div>
-  <button
-    onclick={() => {
-      toast.create({ title: "Hello", placement: "top-end" })
-    }}
-  >
+  <button onclick={() => {
+    toaster.create({ title: "Hello" })
+  }}>
     Add top-right toast
   </button>
-  <button
-    onclick={() => {
-      toast.create({
-        title: "Data submitted!",
-        type: "success",
-        placement: "bottom-end",
-      })
-    }}
-  >
-    Add bottom-right toast
+  <button onclick={() => {
+    toaster.create({ title: "Data submitted!", type: "success" })
+  }}>
+    Success toast
   </button>
 </div>
 ```

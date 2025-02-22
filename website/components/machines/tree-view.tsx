@@ -97,11 +97,13 @@ interface TreeViewProps {
 }
 
 export function TreeView(props: TreeViewProps) {
-  const [state, send] = useMachine(tree.machine({ id: useId(), collection }), {
-    context: props.controls,
+  const service = useMachine(tree.machine, {
+    id: useId(),
+    collection,
+    ...props.controls,
   })
 
-  const api = tree.connect(state, send, normalizeProps)
+  const api = tree.connect(service, normalizeProps)
 
   return (
     <div {...api.getRootProps()}>

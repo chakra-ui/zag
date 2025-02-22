@@ -3,9 +3,11 @@
   import { normalizeProps, useMachine } from "@zag-js/svelte"
   import * as toggle from "@zag-js/toggle-group"
 
-  const [snapshot, send] = useMachine(toggle.machine({ id: "1" }))
+  const service = useMachine(toggle.machine, {
+    id: "1",
+  })
 
-  const api = $derived(toggle.connect(snapshot, send, normalizeProps))
+  const api = $derived(toggle.connect(service, normalizeProps))
 </script>
 
 <div {...api.getRootProps()}>

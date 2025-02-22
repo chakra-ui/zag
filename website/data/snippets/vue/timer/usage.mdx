@@ -4,16 +4,14 @@
   import { normalizeProps, useMachine } from "@zag-js/vue"
   import { computed } from "vue"
 
-  const [state, send] = useMachine(
-    timer.machine({
-      id: "v1",
-      countdown: true,
-      autoStart: true,
-      startMs: timer.parse({ days: 2, seconds: 10 }),
-    }),
-  )
+  const service = useMachine(timer.machine, {
+    id: "v1",
+    countdown: true,
+    autoStart: true,
+    startMs: timer.parse({ days: 2, seconds: 10 }),
+  })
 
-  const api = computed(() => timer.connect(state.value, send, normalizeProps))
+  const api = computed(() => timer.connect(service, normalizeProps))
 </script>
 
 <template>

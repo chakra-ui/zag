@@ -1,4 +1,3 @@
-/* eslint-disable react-hooks/exhaustive-deps */
 "use client"
 
 import { usePathname, useRouter, useSearchParams } from "next/navigation"

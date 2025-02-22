@@ -1,12 +1,12 @@
-```md
+```html
 <script setup>
-import * as editable from "@zag-js/editable";
-import { normalizeProps, useMachine } from "@zag-js/vue";
-import { computed } from "vue";
+  import * as editable from "@zag-js/editable"
+  import { normalizeProps, useMachine } from "@zag-js/vue"
+  import { computed } from "vue"
 
-const [state, send] = useMachine(editable.machine({ id: "1" }));
+  const service = useMachine(editable.machine, { id: "1" })
 
-const api = computed(() => editable.connect(state.value, send, normalizeProps));
+  const api = computed(() => editable.connect(service, normalizeProps))
 </script>
 
 <template>

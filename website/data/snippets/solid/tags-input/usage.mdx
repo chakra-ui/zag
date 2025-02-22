@@ -4,14 +4,12 @@ import { normalizeProps, useMachine } from "@zag-js/solid"
 import { createMemo, createUniqueId, For } from "solid-js"
 
 export function TagsInput() {
-  const [state, send] = useMachine(
-    tagsInput.machine({
-      id: createUniqueId(),
-      value: ["React", "Vue"],
-    }),
-  )
+  const service = useMachine(tagsInput.machine, {
+    id: createUniqueId(),
+    defaultValue: ["React", "Vue"],
+  })
 
-  const api = createMemo(() => tagsInput.connect(state, send, normalizeProps))
+  const api = createMemo(() => tagsInput.connect(service, normalizeProps))
 
   return (
     <div {...api().getRootProps()}>

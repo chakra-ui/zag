@@ -3,8 +3,11 @@
   import * as qrCode from "@zag-js/qr-code"
   import { useMachine, normalizeProps } from "@zag-js/svelte"
 
-  const [snapshot, send] = useMachine(qrCode.machine({ id: "1", value: "https://github.com/chakra-ui", }))
-  const api = $derived(accordion.connect(snapshot, send, normalizeProps))
+  const service = useMachine(qrCode.machine, {
+    id: "1",
+    value: "https://github.com/chakra-ui",
+  })
+  const api = $derived(qrCode.connect(service, normalizeProps))
 </script>
 
 <div {...api.getRootProps()}>

@@ -2,21 +2,30 @@
 import { signaturePadControls } from "@zag-js/shared"
 import * as signaturePad from "@zag-js/signature-pad"
 import { normalizeProps, useMachine } from "@zag-js/vue"
+import { RotateCcw } from "lucide-vue-next"
 
 const url = ref("")
 const setUrl = (v: string) => (url.value = v)
 
 const controls = useControls(signaturePadControls)
 
-const [state, send] = useMachine(signaturePad.machine({ id: "1" }), {
-  context: controls.context,
+const service = useMachine(signaturePad.machine, {
+  id: useId(),
+  onDrawEnd(details) {
+    details.getDataUrl("image/png").then(setUrl)
+  },
+  drawing: {
+    fill: "red",
+    size: 4,
+    simulatePressure: true,
+  },
 })
 
-const api = computed(() => signaturePad.connect(state.value, send, normalizeProps))
+const api = computed(() => signaturePad.connect(service, normalizeProps))
 </script>
 
 <template>
-  <main className="signature-pad">
+  <main class="signature-pad">
     <div v-bind="api.getRootProps()">
       <label v-bind="api.getLabelProps()">Signature Pad</label>
 
@@ -46,7 +55,7 @@ const api = computed(() => signaturePad.connect(state.value, send, normalizeProp
   </main>
 
   <Toolbar>
-    <StateVisualizer :state="state" :omit="['currentPoints', 'currentPath', 'paths']" />
+    <StateVisualizer :state="service" :omit="['currentPoints', 'currentPath', 'paths']" />
     <template #controls>
       <Controls :control="controls" />
     </template>

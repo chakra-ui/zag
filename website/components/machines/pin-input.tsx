@@ -3,11 +3,12 @@ import { normalizeProps, useMachine } from "@zag-js/react"
 import { useId } from "react"
 
 export function PinInput(props: any) {
-  const [state, send] = useMachine(pinInput.machine({ id: useId() }), {
-    context: props.controls,
+  const service = useMachine(pinInput.machine, {
+    id: useId(),
+    ...props.controls,
   })
 
-  const api = pinInput.connect(state, send, normalizeProps)
+  const api = pinInput.connect(service, normalizeProps)
 
   return (
     <div>

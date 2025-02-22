@@ -4,14 +4,12 @@ import { useMachine, normalizeProps } from "@zag-js/react"
 import { useId } from "react"
 
 export function QRCode() {
-  const [state, send] = useMachine(
-    qrCode.machine({
-      id: useId(),
-      value: "https://github.com/chakra-ui",
-    }),
-  )
+  const service = useMachine(qrCode.machine, {
+    id: useId(),
+    value: "https://github.com/chakra-ui",
+  })
 
-  const api = qrCode.connect(state, send, normalizeProps)
+  const api = qrCode.connect(service, normalizeProps)
 
   return (
     <div {...api.getRootProps()}>

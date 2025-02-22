@@ -10,14 +10,12 @@ const stepsData = [
 ]
 
 function Steps() {
-  const [state, send] = useMachine(
-    steps.machine({
-      id: createUniqueId(),
-      count: stepsData.length,
-    }),
-  )
+  const service = useMachine(steps.machine, {
+    id: createUniqueId(),
+    count: stepsData.length,
+  })
 
-  const api = createMemo(() => steps.connect(state, send, normalizeProps))
+  const api = createMemo(() => steps.connect(service, normalizeProps))
 
   return (
     <div {...api().getRootProps()}>

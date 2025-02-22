@@ -2,8 +2,7 @@ import * as menu from "@zag-js/menu"
 import { normalizeProps, Portal, useMachine } from "@zag-js/react"
 import { cloneElement, isValidElement, useId } from "react"
 
-interface Props extends Omit<menu.Context, "id" | "open.controlled"> {
-  defaultOpen?: boolean
+interface Props extends Omit<menu.Props, "id"> {
   children: React.ReactNode
   items: Array<{ value: string; label: React.ReactNode }>
 }
@@ -11,21 +10,14 @@ interface Props extends Omit<menu.Context, "id" | "open.controlled"> {
 export function Menu(props: Props) {
   const { defaultOpen, open, items, children, ...context } = props
 
-  const [state, send] = useMachine(
-    menu.machine({
-      id: useId(),
-      open: open ?? defaultOpen,
-    }),
-    {
-      context: {
-        ...context,
-        open,
-        "open.controlled": open !== undefined,
-      },
-    },
-  )
+  const service = useMachine(menu.machine, {
+    id: useId(),
+    defaultOpen,
+    open,
+    ...context,
+  })
 
-  const api = menu.connect(state, send, normalizeProps)
+  const api = menu.connect(service, normalizeProps)
 
   return (
     <div>

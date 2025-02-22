@@ -19,12 +19,10 @@ import { useMachine, mergeProps } from "@zag-js/react"
 import * as hoverCard from "@zag-js/hover-card"
 
 export function Toggle() {
-  const [state, send] = useMachine(
-    hoverCard.machine({
-      id: "1",
-    }),
-  )
-  const api = hoverCard.connect(state, send)
+  const service = useMachine(hoverCard.machine, {
+    id: "1",
+  })
+  const api = hoverCard.connect(service)
 
   // 2. write your custom event handlers
   const handleHover = () => {
@@ -59,7 +57,7 @@ purpose.
 
 ```js
 /// ...                                          👇 must be unique
-const [state, send] = useMachine(toggle.machine({ id: useId() }))
+const service = useMachine(toggle.machine, { id: useId() })
 /// ...
 ```
 
@@ -74,25 +72,22 @@ To achieve this, you will need to pass custom `ids` to the machine's context.
 This will ensure that calling `document.getElementById(...)` within the tooltip
 and/or popover will return the same element.
 
-```js {7,12}
+```tsx {7,12}
 import * as tooltip from "@zag-js/tooltip"
 import * as popover from "@zag-js/popover"
 
 function Example() {
-  const [tooltipState, tooltipSend] = useMachine(
-    tooltip.machine({
-      ids: { trigger: "id-1" },
-    }),
-  )
-  const [popoverState, popoverSend] = useMachine(
-    popover.machine({
-      ids: { trigger: "id-1" },
-    }),
-  )
+  const tooltipService = useMachine(tooltip.machine, {
+    ids: { trigger: "id-1" },
+  })
+
+  const popoverService = useMachine(popover.machine, {
+    ids: { trigger: "id-1" },
+  })
 }
 
 // render UI
-return </>
+return null
 ```
 
 In the example above, you will notice that the popover and tooltip trigger share
@@ -126,11 +121,12 @@ const data = [
 function Accordion({ id }) {
   const { document } = useFrame()
 
-  const [state, send] = useMachine(
-    accordion.machine({ id, getRootNode: () => document }),
-  )
+  const service = useMachine(accordion.machine, {
+    id,
+    getRootNode: () => document,
+  })
 
-  const api = accordion.connect(state, send, normalizeProps)
+  const api = accordion.connect(service, normalizeProps)
 
   return (
     <div {...api.getRootProps()}>

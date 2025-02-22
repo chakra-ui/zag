@@ -4,11 +4,12 @@ import { useId } from "react"
 import { BiRotateRight } from "react-icons/bi"
 
 export function SignaturePad(props: any) {
-  const [state, send] = useMachine(signaturePad.machine({ id: useId() }), {
-    context: props.controls,
+  const service = useMachine(signaturePad.machine, {
+    id: useId(),
+    ...props.controls,
   })
 
-  const api = signaturePad.connect(state, send, normalizeProps)
+  const api = signaturePad.connect(service, normalizeProps)
 
   return (
     <div {...api.getRootProps()}>

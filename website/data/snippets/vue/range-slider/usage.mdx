@@ -4,14 +4,12 @@
   import { normalizeProps, useMachine } from "@zag-js/vue"
   import { computed } from "vue"
 
-  const [state, send] = useMachine(
-    slider.machine({
-      id: "1",
-      name: "quantity",
-      value: [10, 60],
-    }),
-  )
-  const api = computed(() => slider.connect(state.value, send, normalizeProps))
+  const service = useMachine(slider.machine, {
+    id: "1",
+    name: "quantity",
+    defaultValue: [10, 60],
+  })
+  const api = computed(() => slider.connect(service, normalizeProps))
 </script>
 
 <template>

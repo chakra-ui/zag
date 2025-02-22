@@ -14,8 +14,8 @@ A switch allows users to turn an individual option on or off.
 
 **Features**
 
-- Syncs with `disabled` state of fieldset
-- Syncs with form `reset` events
+- Sync with `disabled` state of fieldset
+- Sync with form `reset` events
 - Can be toggled programmatically
 
 ## Installation
@@ -61,11 +61,9 @@ switch machine in your project 🔥
 To make a switch disabled, set the context's `disabled` property to true
 
 ```jsx {3}
-const [state, send] = useMachine(
-  zagSwitch.machine({
-    disabled: true,
-  }),
-)
+const service = useMachine(zagSwitch.machine, {
+  disabled: true,
+})
 ```
 
 ## Making it checked by default
@@ -74,11 +72,9 @@ To make a switch checked by default, set the context's `checked` property to
 `true`
 
 ```jsx {3}
-const [state, send] = useMachine(
-  zagSwitch.machine({
-    checked: true,
-  }),
-)
+const service = useMachine(zagSwitch.machine, {
+  defaultChecked: true,
+})
 ```
 
 ## Listening for changes
@@ -86,14 +82,12 @@ const [state, send] = useMachine(
 When the switch value changes, the `onCheckedChange` callback is invoked.
 
 ```jsx {3-5}
-const [state, send] = useMachine(
-  zagSwitch.machine({
-    onCheckedChange(details) {
-      // details => { checked: boolean }
-      console.log("switch is:", details.checked ? "On" : "Off")
-    },
-  }),
-)
+const service = useMachine(zagSwitch.machine, {
+  onCheckedChange(details) {
+    // details => { checked: boolean }
+    console.log("switch is:", details.checked ? "On" : "Off")
+  },
+})
 ```
 
 ## Usage within forms
@@ -104,11 +98,9 @@ render a hidden input and ensure the value changes get propagated to the form
 correctly.
 
 ```jsx {3}
-const [state, send] = useMachine(
-  zagSwitch.machine({
-    name: "feature",
-  }),
-)
+const service = useMachine(zagSwitch.machine, {
+  name: "feature",
+})
 ```
 
 ## Styling guide

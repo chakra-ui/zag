@@ -10,11 +10,12 @@ type HoverCardProps = {
 }
 
 export function HoverCard(props: HoverCardProps) {
-  const [state, send] = useMachine(hoverCard.machine({ id: useId() }), {
-    context: props.controls,
+  const service = useMachine(hoverCard.machine, {
+    id: useId(),
+    ...props.controls,
   })
 
-  const api = hoverCard.connect(state, send, normalizeProps)
+  const api = hoverCard.connect(service, normalizeProps)
 
   return (
     <div>

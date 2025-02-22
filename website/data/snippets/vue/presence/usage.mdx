@@ -4,7 +4,7 @@
   import { useMachine, normalizeProps } from "@zag-js/vue"
   import { computed, watch, ref } from "vue"
 
-  const {present, unmountOnExit } = defineProps<{
+  const props = defineProps<{
     present: boolean
     unmountOnExit?: boolean
   }>()
@@ -13,13 +13,14 @@
     (e: "exit-complete"): void
   }>()
 
-  const [state, send] = useMachine(presence.machine({ present }), {
-    context: { present, onExitComplete: () => emit("exit-complete") },
+  const service = useMachine(presence.machine, {
+    get present() {
+      return props.present
+    },
+    onExitComplete: () => emit("exit-complete"),
   })
 
-  const api = computed(() =>
-    presence.connect(state.value, send, normalizeProps),
-  )
+  const api = computed(() => presence.connect(service, normalizeProps))
 
   const nodeRef = ref<HTMLElement | null>(null)
 

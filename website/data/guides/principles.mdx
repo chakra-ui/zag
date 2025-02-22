@@ -17,23 +17,6 @@ provide a lot of utilities to help to achieve this. See the `package/utilities`
 packages, it provides utilities like `getEventPoint`, `getElementRect`,
 `alignRects`, etc.
 
-## Storing large objects in context
-
-We use the `valtio` library under the hood. Based on its design, it doesn't
-track large objects like DOM elements (`window` or `document`) and even machine
-instances (aka services).
-
-You'll notice that it'll throw an `Illegal Invocation Error` when assigning
-large objects to context. To fix this, you'll need to wrap them in a `ref`
-function exported by `valtio`
-
-```jsx
-ctx.doc = document // ❌ Illegal Invocation Error
-
-import { ref } from "@zag-js/core"
-ctx.doc = ref(document) // ✅ Works
-```
-
 ## Use pointer events
 
 The Pointer event API is supported is most browsers by default

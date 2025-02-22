@@ -5,11 +5,12 @@ import { normalizeProps, useMachine } from "@zag-js/vue"
 
 const controls = useControls(tabsControls)
 
-const [state, send] = useMachine(tabs.machine({ id: "1", value: "nils" }), {
-  context: controls.context,
+const service = useMachine(tabs.machine, {
+  id: useId(),
+  defaultValue: "nils",
 })
 
-const api = computed(() => tabs.connect(state.value, send, normalizeProps))
+const api = computed(() => tabs.connect(service, normalizeProps))
 </script>
 
 <template>
@@ -40,7 +41,7 @@ const api = computed(() => tabs.connect(state.value, send, normalizeProps))
   </main>
 
   <Toolbar>
-    <StateVisualizer :state="state" />
+    <StateVisualizer :state="service" />
     <template #controls>
       <Controls :control="controls" />
     </template>

@@ -65,30 +65,26 @@ menu machine in your project 🔥
 
 When a menu item is clicked, the `onSelect` callback is invoked.
 
-```jsx {4-7}
-const [state, send] = useMachine(
-  menu.machine({
-    onSelect(details) {
-      // details => { value: string }
-      console.log("selected value is ", details.value)
-    },
-  }),
-)
+```jsx {3-6}
+const service = useMachine(menu.machine, {
+  onSelect(details) {
+    // details => { value: string }
+    console.log("selected value is ", details.value)
+  },
+})
 ```
 
 ## Listening for open state changes
 
 When a menu is opened or closed, the `onOpenChange` callback is invoked.
 
-```jsx {4-7}
-const [state, send] = useMachine(
-  menu.machine({
-    onOpenChange(details) {
-      // details => { open: boolean }
-      console.log("open state is ", details.open)
-    },
-  }),
-)
+```jsx {3-6}
+const service = useMachine(menu.machine, {
+  onOpenChange(details) {
+    // details => { open: boolean }
+    console.log("open state is ", details.open)
+  },
+})
 ```
 
 ## Grouping menu items
@@ -97,8 +93,8 @@ When the number of menu items gets much, it might be useful to group related
 menu items. To achieve this:
 
 - Wrap the menu items within an element.
-- Spread the `api.getGroupProps(...)` JSX properties unto the element, providing an
-  `id`.
+- Spread the `api.getGroupProps(...)` JSX properties unto the element, providing
+  an `id`.
 - Render a label for the menu group, providing the `id` of the group element.
 
 ```jsx

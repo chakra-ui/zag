@@ -3,11 +3,12 @@ export { anatomy } from "./combobox.anatomy"
 export { collection } from "./combobox.collection"
 export { connect } from "./combobox.connect"
 export { machine } from "./combobox.machine"
+export * from "./combobox.props"
 export type {
-  MachineApi as Api,
+  ComboboxApi as Api,
   CollectionItem,
   CollectionOptions,
-  UserDefinedContext as Context,
+  ComboboxProps as Props,
   ElementIds,
   HighlightChangeDetails,
   InputValueChangeDetails,
@@ -21,7 +22,7 @@ export type {
   Placement,
   PositioningOptions,
   ScrollToIndexDetails,
-  Service,
+  ComboboxService as Service,
   TriggerProps,
   ValueChangeDetails,
 } from "./combobox.types"

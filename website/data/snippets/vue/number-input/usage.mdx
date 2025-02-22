@@ -1,13 +1,11 @@
-```md
+```html
 <script setup>
-import * as numberInput from "@zag-js/number-input";
-import { normalizeProps, useMachine } from "@zag-js/vue";
-import { computed } from "vue";
+  import * as numberInput from "@zag-js/number-input"
+  import { normalizeProps, useMachine } from "@zag-js/vue"
+  import { computed } from "vue"
 
-const [state, send] = useMachine(numberInput.machine({ id: "1" }));
-const api = computed(() =>
-  numberInput.connect(state.value, send, normalizeProps)
-);
+  const service = useMachine(numberInput.machine, { id: "1" })
+  const api = computed(() => numberInput.connect(service, normalizeProps))
 </script>
 
 <template>

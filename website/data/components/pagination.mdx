@@ -57,7 +57,7 @@ The pagination package exports two key functions:
 <CodeSnippet id="pagination/usage.mdx" />
 
 ```jsx
-const api = connect(state, send)
+const api = connect(service)
 
 // You can slice the data, to get data for current page
 const currentPageData = data.slice(api.pageRange.start, api.pageRange.end)

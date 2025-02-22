@@ -5,21 +5,13 @@ import { useMachine, normalizeProps, Portal } from "@zag-js/react"
 export default function Page() {
   const [open, setOpen] = useState(false)
 
-  const initialContext = {
+  const service = useMachine(popover.machine, {
     id: useId(),
-    open: false,
-    "open.controlled": true,
-  }
-
-  const [state, send] = useMachine(popover.machine(initialContext), {
-    context: {
-      ...initialContext,
-      onOpenChange: (details) => setOpen(details.open),
-      open: open,
-    },
+    onOpenChange: (details) => setOpen(details.open),
+    open: open,
   })
 
-  const api = popover.connect(state, send, normalizeProps)
+  const api = popover.connect(service, normalizeProps)
 
   const Wrapper = api.portalled ? Portal : Fragment
 

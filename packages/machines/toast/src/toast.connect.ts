@@ -1,71 +1,80 @@
+import type { Service } from "@zag-js/core"
 import { dataAttr } from "@zag-js/dom-query"
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import { parts } from "./toast.anatomy"
-import { dom } from "./toast.dom"
-import type { MachineApi, Send, State } from "./toast.types"
+import * as dom from "./toast.dom"
+import type { ToastApi, ToastSchema } from "./toast.types"
 import { getGhostAfterStyle, getGhostBeforeStyle, getPlacementStyle } from "./toast.utils"
 
 export function connect<T extends PropTypes, O>(
-  state: State<O>,
-  send: Send,
+  service: Service<ToastSchema<O>>,
   normalize: NormalizeProps<T>,
-): MachineApi<T, O> {
+): ToastApi<T, O> {
+  const { state, send, prop, scope, context, computed } = service
+
   const visible = state.hasTag("visible")
   const paused = state.hasTag("paused")
 
-  const placement = state.context.placement!
-  const type = state.context.type!
+  const mounted = context.get("mounted")
+  const frontmost = computed("frontmost")
+
+  const placement = prop("parent").computed("placement")
+  const type = prop("type")!
+  const stacked = prop("stacked")
+  const title = prop("title")!
+  const description = prop("description")!
+  const action = prop("action")
 
   const [side, align = "center"] = placement.split("-")
 
   return {
-    type: type,
-    title: state.context.title,
-    description: state.context.description,
+    type,
+    title,
+    description,
     placement,
-    visible: visible,
-    paused: paused,
-
+    visible,
+    paused,
+    closable: !!prop("closable"),
     pause() {
-      send("PAUSE")
+      send({ type: "PAUSE" })
     },
 
     resume() {
-      send("RESUME")
+      send({ type: "RESUME" })
     },
 
     dismiss() {
-      send("DISMISS")
+      send({ type: "DISMISS", src: "programmatic" })
     },
 
     getRootProps() {
       return normalize.element({
         ...parts.root.attrs,
-        dir: state.context.dir,
-        id: dom.getRootId(state.context),
+        dir: prop("dir"),
+        id: dom.getRootId(scope),
         "data-state": visible ? "open" : "closed",
         "data-type": type,
         "data-placement": placement,
         "data-align": align,
         "data-side": side,
-        "data-mounted": dataAttr(state.context.mounted),
+        "data-mounted": dataAttr(mounted),
         "data-paused": dataAttr(paused),
 
-        "data-first": dataAttr(state.context.frontmost),
-        "data-sibling": dataAttr(!state.context.frontmost),
-        "data-stack": dataAttr(state.context.stacked),
-        "data-overlap": dataAttr(!state.context.stacked),
+        "data-first": dataAttr(frontmost),
+        "data-sibling": dataAttr(!frontmost),
+        "data-stack": dataAttr(stacked),
+        "data-overlap": dataAttr(!stacked),
 
         role: "status",
         "aria-atomic": "true",
-        "aria-describedby": state.context.description ? dom.getDescriptionId(state.context) : undefined,
-        "aria-labelledby": state.context.title ? dom.getTitleId(state.context) : undefined,
+        "aria-describedby": description ? dom.getDescriptionId(scope) : undefined,
+        "aria-labelledby": title ? dom.getTitleId(scope) : undefined,
         tabIndex: 0,
-        style: getPlacementStyle(state.context, visible),
+        style: getPlacementStyle(service, visible),
         onKeyDown(event) {
           if (event.defaultPrevented) return
           if (event.key == "Escape") {
-            send("DISMISS")
+            send({ type: "DISMISS", src: "keyboard" })
             event.preventDefault()
           }
         },
@@ -76,7 +85,7 @@ export function connect<T extends PropTypes, O>(
     getGhostBeforeProps() {
       return normalize.element({
         "data-ghost": "before",
-        style: getGhostBeforeStyle(state.context, visible),
+        style: getGhostBeforeStyle(service, visible),
       })
     },
 
@@ -84,21 +93,21 @@ export function connect<T extends PropTypes, O>(
     getGhostAfterProps() {
       return normalize.element({
         "data-ghost": "after",
-        style: getGhostAfterStyle(state.context, visible),
+        style: getGhostAfterStyle(),
       })
     },
 
     getTitleProps() {
       return normalize.element({
         ...parts.title.attrs,
-        id: dom.getTitleId(state.context),
+        id: dom.getTitleId(scope),
       })
     },
 
     getDescriptionProps() {
       return normalize.element({
         ...parts.description.attrs,
-        id: dom.getDescriptionId(state.context),
+        id: dom.getDescriptionId(scope),
       })
     },
 
@@ -108,21 +117,21 @@ export function connect<T extends PropTypes, O>(
         type: "button",
         onClick(event) {
           if (event.defaultPrevented) return
-          state.context.action?.onClick?.()
-          send("DISMISS")
+          action?.onClick?.()
+          send({ type: "DISMISS", src: "user" })
         },
       })
     },
 
     getCloseTriggerProps() {
       return normalize.button({
-        id: dom.getCloseTriggerId(state.context),
+        id: dom.getCloseTriggerId(scope),
         ...parts.closeTrigger.attrs,
         type: "button",
         "aria-label": "Dismiss notification",
         onClick(event) {
           if (event.defaultPrevented) return
-          send("DISMISS")
+          send({ type: "DISMISS", src: "user" })
         },
       })
     },

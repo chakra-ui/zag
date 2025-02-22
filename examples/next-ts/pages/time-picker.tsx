@@ -9,11 +9,11 @@ import { useControls } from "../hooks/use-controls"
 export default function Page() {
   const controls = useControls(timePickerControls)
 
-  const [state, send] = useMachine(timePicker.machine({ id: useId() }), {
-    context: controls.context,
+  const service = useMachine(timePicker.machine, {
+    id: useId(),
+    ...controls.context,
   })
-
-  const api = timePicker.connect(state, send, normalizeProps)
+  const api = timePicker.connect(service, normalizeProps)
 
   return (
     <>
@@ -67,7 +67,7 @@ export default function Page() {
       </main>
 
       <Toolbar controls={controls.ui} viz>
-        <StateVisualizer state={state} />
+        <StateVisualizer state={service} />
       </Toolbar>
     </>
   )

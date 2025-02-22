@@ -3,9 +3,9 @@
   import * as hoverCard from "@zag-js/hover-card"
   import { portal, useMachine, normalizeProps } from "@zag-js/svelte"
 
-  const [snapshot, send] = useMachine(hoverCard.machine({ id: "1" }))
+  const service = useMachine(hoverCard.machine, ({ id: "1" }))
 
-  const api = $derived(hoverCard.connect(snapshot, send, normalizeProps))
+  const api = $derived(hoverCard.connect(service, normalizeProps))
 </script>
 
 <a href="https://twitter.com/zag_js" target="_blank" {...api.getTriggerProps()}> Twitter </a>

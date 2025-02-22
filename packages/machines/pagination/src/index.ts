@@ -3,8 +3,9 @@ export { connect } from "./pagination.connect"
 export { machine } from "./pagination.machine"
 export * from "./pagination.props"
 export type {
-  MachineApi as Api,
-  UserDefinedContext as Context,
+  PaginationApi as Api,
+  PaginationProps as Props,
+  PaginationService as Service,
   ElementIds,
   EllipsisProps,
   IntlTranslations,
@@ -12,5 +13,4 @@ export type {
   ItemProps,
   PageChangeDetails,
   PageSizeChangeDetails,
-  Service,
 } from "./pagination.types"

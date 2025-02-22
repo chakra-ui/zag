@@ -68,7 +68,11 @@ export type NormalizeProps<T extends PropTypes> = {
 
 export function createNormalizer<T extends PropTypes>(fn: (props: Dict) => Dict): NormalizeProps<T> {
   return new Proxy({} as any, {
-    get() {
+    get(_target, key: string) {
+      if (key === "style")
+        return (props: Dict) => {
+          return fn({ style: props }).style
+        }
       return fn
     },
   })

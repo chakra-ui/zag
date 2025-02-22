@@ -3,9 +3,9 @@
   import * as colorPicker from "@zag-js/color-picker"
   import { normalizeProps, useMachine } from "@zag-js/svelte"
 
-  const [snapshot, send] = useMachine(colorPicker.machine({ id: "1" }))
+  const service = useMachine(colorPicker.machine, ({ id: "1" }))
 
-  const api = $derived(colorPicker.connect(snapshot, send, normalizeProps))
+  const api = $derived(colorPicker.connect(service, normalizeProps))
 </script>
 
 <div {...api.getRootProps()}>

@@ -3,9 +3,11 @@
   import * as progress from "@zag-js/progress"
   import { normalizeProps, useMachine } from "@zag-js/svelte"
 
-  const [snapshot, send] = useMachine(progress.machine({ id: "1" }))
+  const service = useMachine(progress.machine, {
+    id: "1",
+  })
 
-  const api = $derived(progress.connect(snapshot, send, normalizeProps))
+  const api = $derived(progress.connect(service, normalizeProps))
 </script>
 
 <div {...api.getRootProps()}>

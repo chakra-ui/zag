@@ -10,11 +10,9 @@ import { useControls } from "~/hooks/use-controls"
 export default function Page() {
   const controls = useControls(floatingPanelControls)
 
-  const [state, send] = useMachine(floatingPanel.machine({ id: createUniqueId() }), {
-    context: controls.context,
-  })
+  const service = useMachine(floatingPanel.machine, { id: createUniqueId() })
 
-  const api = createMemo(() => floatingPanel.connect(state, send, normalizeProps))
+  const api = createMemo(() => floatingPanel.connect(service, normalizeProps))
 
   return (
     <>
@@ -59,8 +57,8 @@ export default function Page() {
         </div>
       </main>
 
-      <Toolbar controls={controls.ui}>
-        <StateVisualizer state={state} />
+      <Toolbar controls={controls}>
+        <StateVisualizer state={service} />
       </Toolbar>
     </>
   )

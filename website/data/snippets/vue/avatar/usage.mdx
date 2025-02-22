@@ -4,9 +4,9 @@
   import { normalizeProps, useMachine } from "@zag-js/vue"
   import { computed } from "vue"
 
-  const [state, send] = useMachine(avatar.machine({ id: "1" }))
+  const service = useMachine(avatar.machine, { id: "1" })
 
-  const api = computed(() => avatar.connect(state.value, send, normalizeProps))
+  const api = computed(() => avatar.connect(service, normalizeProps))
 </script>
 
 <template>

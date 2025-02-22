@@ -8,11 +8,12 @@
 
   const controls = useControls(switchControls)
 
-  const [snapshot, send] = useMachine(zagSwitch.machine({ id: "1", name: "switch" }), {
-    context: controls.context,
+  const service = useMachine(zagSwitch.machine, {
+    id: "1",
+    name: "switch",
   })
 
-  const api = $derived(zagSwitch.connect(snapshot, send, normalizeProps))
+  const api = $derived(zagSwitch.connect(service, normalizeProps))
 </script>
 
 <main class="switch">
@@ -27,5 +28,5 @@
 </main>
 
 <Toolbar {controls}>
-  <StateVisualizer state={snapshot} />
+  <StateVisualizer state={service} />
 </Toolbar>

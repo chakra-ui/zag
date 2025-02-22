@@ -3,16 +3,15 @@ import { normalizeProps, useMachine } from "@zag-js/react"
 import { useId } from "react"
 import { BiCalendar, BiChevronLeft, BiChevronRight } from "react-icons/bi"
 
-export function DatePicker() {
-  const [state, send] = useMachine(
-    datePicker.machine({
-      id: useId(),
-      locale: "en-US",
-      selectionMode: "single",
-    }),
-  )
+export function DatePicker(props: any) {
+  const service = useMachine(datePicker.machine, {
+    id: useId(),
+    locale: "en-US",
+    selectionMode: "single",
+    ...props.controls,
+  })
 
-  const api = datePicker.connect(state, send, normalizeProps)
+  const api = datePicker.connect(service, normalizeProps)
 
   return (
     <>

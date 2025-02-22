@@ -1,8 +1,8 @@
 import { createProps } from "@zag-js/types"
 import { createSplitProps } from "@zag-js/utils"
-import type { UserDefinedContext } from "./collapsible.types"
+import type { CollapsibleProps } from "./collapsible.types"
 
-export const props = createProps<UserDefinedContext>()([
+export const props = createProps<CollapsibleProps>()([
   "dir",
   "disabled",
   "getRootNode",
@@ -10,7 +10,7 @@ export const props = createProps<UserDefinedContext>()([
   "ids",
   "onExitComplete",
   "onOpenChange",
-  "open.controlled",
+  "defaultOpen",
   "open",
 ])
-export const splitProps = createSplitProps<Partial<UserDefinedContext>>(props)
+export const splitProps = createSplitProps<Partial<CollapsibleProps>>(props)

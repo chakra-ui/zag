@@ -5,11 +5,12 @@ import { HiX } from "react-icons/hi"
 import { useId } from "react"
 
 export function Popover(props: any) {
-  const [state, send] = useMachine(popover.machine({ id: useId() }), {
-    context: props.controls,
+  const service = useMachine(popover.machine, {
+    id: useId(),
+    ...props.controls,
   })
 
-  const api = popover.connect(state, send, normalizeProps)
+  const api = popover.connect(service, normalizeProps)
 
   const Wrapper = api.portalled ? Portal : React.Fragment
 

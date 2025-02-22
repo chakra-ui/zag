@@ -5,14 +5,14 @@
   import { ClipboardCheck, ClipboardCopyIcon } from "lucide-svelte"
   import { useId } from "react"
 
-  const [snapshot, send] = useMachine(
-    clipboard.machine({
+  const service = useMachine(
+    clipboard.machine, ({
       id: "1",
       value: "https://github/com/chakra-ui/zag",
     }),
   )
 
-  const api = $derived(clipboard.connect(snapshot, send, normalizeProps))
+  const api = $derived(clipboard.connect(service, normalizeProps))
 </script>
 
 <div {...api.getRootProps()}>

@@ -1,4 +1,4 @@
-import type { Machine, StateMachine as S } from "@zag-js/core"
+import type { EventObject, Service } from "@zag-js/core"
 import type { CommonProperties, DirectionProperty, PropTypes, RequiredBy } from "@zag-js/types"
 
 /* -----------------------------------------------------------------------------
@@ -34,7 +34,7 @@ export type ElementIds = Partial<{
   indicator: string
 }>
 
-interface PublicContext extends DirectionProperty, CommonProperties {
+export interface TabsProps extends DirectionProperty, CommonProperties {
   /**
    * The ids of the elements in the tabs. Useful for composition.
    */
@@ -47,11 +47,16 @@ interface PublicContext extends DirectionProperty, CommonProperties {
    * Whether the keyboard navigation will loop from last tab to first, and vice versa.
    * @default true
    */
-  loopFocus: boolean
+  loopFocus?: boolean | undefined
   /**
-   * The selected tab id
+   * The controlled selected tab value
    */
-  value: string | null
+  value?: string | null | undefined
+  /**
+   * The initial selected tab value when rendered.
+   * Use when you don't need to control the selected tab value.
+   */
+  defaultValue?: string | null | undefined
   /**
    * The orientation of the tabs. Can be `horizontal` or `vertical`
    * - `horizontal`: only left and right arrow key navigation will work.
@@ -79,7 +84,7 @@ interface PublicContext extends DirectionProperty, CommonProperties {
   /**
    * Whether the tab is composite
    */
-  composite: boolean
+  composite?: boolean | undefined
   /**
    * Whether the active tab can be deselected when clicking on it.
    */
@@ -88,53 +93,34 @@ interface PublicContext extends DirectionProperty, CommonProperties {
    * Function to navigate to the selected tab when clicking on it.
    * Useful if tab triggers are anchor elements.
    */
-  navigate: (details: NavigateDetails) => void
+  navigate?: ((details: NavigateDetails) => void) | undefined
 }
 
-export type UserDefinedContext = RequiredBy<PublicContext, "id">
+type PropsWithDefault = "orientation" | "activationMode" | "loopFocus"
 
-type ComputedContext = Readonly<{}>
-
-interface IndicatorState {
-  rendered: boolean
-  rect: Partial<{ left: string; top: string; width: string; height: string }>
-  transition: boolean
+export type TabsSchema = {
+  state: "idle" | "focused"
+  props: RequiredBy<TabsProps, PropsWithDefault>
+  context: {
+    ssr: boolean
+    value: string | null
+    focusedValue: string | null
+    indicatorTransition: boolean
+    indicatorRect: { left: string; top: string; width: string; height: string }
+  }
+  refs: {
+    indicatorCleanup: VoidFunction | null | undefined
+  }
+  computed: {
+    focused: boolean
+  }
+  action: string
+  guard: string
+  effect: string
+  event: EventObject
 }
 
-interface PrivateContext {
-  /**
-   * @internal
-   * The focused tab id
-   */
-  focusedValue: string | null
-  /**
-   * @internal
-   * The active tab indicator details
-   */
-  indicatorState: IndicatorState
-  /**
-   * @internal
-   * Function to clean up the observer for the active tab's rect
-   */
-  indicatorCleanup?: VoidFunction | null | undefined
-  /**
-   * @internal
-   * Whether the radio group is in server-side rendering
-   */
-  ssr: boolean
-}
-
-export interface MachineContext extends PublicContext, ComputedContext, PrivateContext {}
-
-export interface MachineState {
-  value: "idle" | "focused"
-}
-
-export type State = S.State<MachineContext, MachineState>
-
-export type Send = S.Send<S.AnyEventObject>
-
-export type Service = Machine<MachineContext, MachineState, S.AnyEventObject>
+export type TabsService = Service<TabsSchema>
 
 /* -----------------------------------------------------------------------------
  * Component API
@@ -173,7 +159,7 @@ export interface ContentProps {
   value: string
 }
 
-export interface MachineApi<T extends PropTypes = PropTypes> {
+export interface TabsApi<T extends PropTypes = PropTypes> {
   /**
    * The current value of the tabs.
    */

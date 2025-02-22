@@ -2,19 +2,16 @@ import * as collapsible from "@zag-js/collapsible"
 import { normalizeProps, useMachine } from "@zag-js/react"
 import { memo, useId, useRef, useState } from "react"
 
-const Collapse = memo((props: { value: number; open: boolean }) => {
+const Collapse = memo(function Collapse(props: { value: number; open: boolean }) {
   const { open, value } = props
   const ref = useRef(0)
 
-  const [state, send] = useMachine(
-    collapsible.machine({
-      id: useId(),
-      open,
-    }),
-    { context: { open } },
-  )
+  const service = useMachine(collapsible.machine, {
+    id: useId(),
+    open,
+  })
 
-  const api = collapsible.connect(state, send, normalizeProps)
+  const api = collapsible.connect(service, normalizeProps)
 
   ref.current++
 
@@ -34,7 +31,7 @@ const Collapse = memo((props: { value: number; open: boolean }) => {
           {value} {ref.current}
         </div>
       </div>
-      <div>{state.context.initial.toString()}</div>
+      <div>{service.context.get("initial").toString()}</div>
     </div>
   )
 })

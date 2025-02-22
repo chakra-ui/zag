@@ -1,5 +1,5 @@
 import type { NumberFormatter, NumberParser } from "@internationalized/number"
-import type { Machine, StateMachine as S } from "@zag-js/core"
+import type { EventObject, Service } from "@zag-js/core"
 import type { CommonProperties, LocaleProperties, PropTypes, RequiredBy } from "@zag-js/types"
 
 /* -----------------------------------------------------------------------------
@@ -36,23 +36,23 @@ export type ElementIds = Partial<{
   scrubber: string
 }>
 
-export type IntlTranslations = {
+export interface IntlTranslations {
   /**
    * Function that returns the human-readable value.
    * It is used to set the `aria-valuetext` property of the input
    */
-  valueText?: (value: string) => string
+  valueText?: ((value: string) => string) | undefined
   /**
    * The label foe the increment button
    */
-  incrementLabel: string
+  incrementLabel?: string | undefined
   /**
    * The label for the decrement button
    */
-  decrementLabel: string
+  decrementLabel?: string | undefined
 }
 
-interface PublicContext extends LocaleProperties, CommonProperties {
+export interface NumberInputProps extends LocaleProperties, CommonProperties {
   /**
    * The ids of the elements in the number input. Useful for composition.
    */
@@ -86,26 +86,31 @@ interface PublicContext extends LocaleProperties, CommonProperties {
    *
    * @default "[0-9]*(.[0-9]+)?"
    */
-  pattern: string
+  pattern?: string | undefined
   /**
-   * The value of the input
+   * The controlled value of the input
    */
-  value: string
+  value?: string | undefined
+  /**
+   * The initial value of the input when rendered.
+   * Use when you don't need to control the value of the input.
+   */
+  defaultValue?: string | undefined
   /**
    * The minimum value of the number input
    * @default Number.MIN_SAFE_INTEGER
    */
-  min: number
+  min?: number | undefined
   /**
    * The maximum value of the number input
    * @default Number.MAX_SAFE_INTEGER
    */
-  max: number
+  max?: number | undefined
   /**
    * The amount to increment or decrement the value by
    * @default 1
    */
-  step: number
+  step?: number | undefined
   /**
    * Whether to allow mouse wheel to change the value
    */
@@ -114,21 +119,21 @@ interface PublicContext extends LocaleProperties, CommonProperties {
    * Whether to allow the value overflow the min/max range
    * @default true
    */
-  allowOverflow: boolean
+  allowOverflow?: boolean | undefined
   /**
    * Whether to clamp the value when the input loses focus (blur)
    * @default true
    */
-  clampValueOnBlur: boolean
+  clampValueOnBlur?: boolean | undefined
   /**
    * Whether to focus input when the value changes
    * @default true
    */
-  focusInputOnChange: boolean
+  focusInputOnChange?: boolean | undefined
   /**
    * Specifies the localized strings that identifies the accessibility elements and their states
    */
-  translations: IntlTranslations
+  translations?: IntlTranslations | undefined
   /**
    * The options to pass to the `Intl.NumberFormat` constructor
    */
@@ -138,7 +143,7 @@ interface PublicContext extends LocaleProperties, CommonProperties {
    * the type of keyboard shown to the user on mobile devices
    * @default "decimal"
    */
-  inputMode: InputMode
+  inputMode?: InputMode | undefined
   /**
    * Function invoked when the value changes
    */
@@ -158,112 +163,117 @@ interface PublicContext extends LocaleProperties, CommonProperties {
   spinOnPress?: boolean | undefined
 }
 
-export type UserDefinedContext = RequiredBy<PublicContext, "id">
+type PropsWithDefault =
+  | "dir"
+  | "locale"
+  | "focusInputOnChange"
+  | "clampValueOnBlur"
+  | "allowOverflow"
+  | "inputMode"
+  | "pattern"
+  | "translations"
+  | "step"
+  | "spinOnPress"
+  | "min"
+  | "max"
+  | "step"
+  | "translations"
 
 type ComputedContext = Readonly<{
   /**
-   * @computed
    * The value of the input as a number
    */
   valueAsNumber: number
   /**
-   * @computed
    * Whether the value is at the min
    */
   isAtMin: boolean
   /**
-   * @computed
    * Whether the value is at the max
    */
   isAtMax: boolean
   /**
-   * @computed
    * Whether the value is out of the min/max range
    */
   isOutOfRange: boolean
   /**
-   * @computed
    * Whether the value is empty
    */
   isValueEmpty: boolean
   /**
-   * @computed
    * Whether the color picker is disabled
    */
   isDisabled: boolean
   /**
-   * @computed
    * Whether the increment button is enabled
    */
   canIncrement: boolean
   /**
-   * @computed
    * Whether the decrement button is enabled
    */
   canDecrement: boolean
   /**
-   * @computed
    * The `aria-valuetext` attribute of the input
    */
   valueText: string | undefined
   /**
-   * @computed
    * The formatted value of the input
    */
   formattedValue: string
   /**
-   * @computed
    * Whether the writing direction is RTL
    */
   isRtl: boolean
-}>
-
-interface PrivateContext {
   /**
-   * @internal
-   * The hint that determines if we're incrementing or decrementing
-   */
-  hint: "increment" | "decrement" | "set" | null
-  /**
-   * @internal
-   * The scrubber cursor position
-   */
-  scrubberCursorPoint: { x: number; y: number } | null
-  /**
-   * @internal
    * The number i18n formatter
    */
   formatter: NumberFormatter
   /**
-   * @internal
    * The number i18n parser
    */
   parser: NumberParser
+}>
+
+export type HintValue = "increment" | "decrement" | "set"
+
+interface PrivateContext {
   /**
-   * @internal
+   * The hint that determines if we're incrementing or decrementing
+   */
+  hint: HintValue | null
+  /**
+   * The scrubber cursor position
+   */
+  scrubberCursorPoint: { x: number; y: number } | null
+  /**
    * Whether the checkbox's fieldset is disabled
    */
   fieldsetDisabled: boolean
+  /**
+   * The value of the input
+   */
+  value: string
 }
 
-export interface MachineContext extends PublicContext, PrivateContext, ComputedContext {}
-
-export interface MachineState {
-  value: "idle" | "focused" | "spinning" | "before:spin" | "scrubbing"
-  tags: "focus"
+export interface NumberInputSchema {
+  state: "idle" | "focused" | "spinning" | "before:spin" | "scrubbing"
+  tag: "focus"
+  props: RequiredBy<NumberInputProps, PropsWithDefault>
+  context: PrivateContext
+  computed: ComputedContext
+  action: string
+  event: EventObject
+  guard: string
+  effect: string
 }
 
-export type State = S.State<MachineContext, MachineState>
-
-export type Send = S.Send<S.AnyEventObject>
-
-export type Service = Machine<MachineContext, MachineState, S.AnyEventObject>
+export type NumberInputService = Service<NumberInputSchema>
 
 /* -----------------------------------------------------------------------------
  * Component API
  * -----------------------------------------------------------------------------*/
 
-export interface MachineApi<T extends PropTypes = PropTypes> {
+export interface NumberInputApi<T extends PropTypes = PropTypes> {
   /**
    * Whether the input is focused.
    */

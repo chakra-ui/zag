@@ -77,7 +77,7 @@ specification for the switch component.
 We'll write a function called `connect` to do this.
 
 ```jsx
-function connect(state, send) {
+function connect(service) {
   const active = state.matches("active")
   return {
     active,
@@ -96,12 +96,12 @@ function connect(state, send) {
 Here's how to consume the toggle machine logic and connect in React.js.
 
 ```jsx
-import { useMachine } from "@zag-js/react"
+import { useMachine, normalizeProps } from "@zag-js/react"
 import { machine, connect } from "./toggle"
 
 function Toggle() {
-  const [state, send] = useMachine(machine)
-  const api = connect(state, send)
+  const service = useMachine(machine)
+  const api = connect(service, normalizeProps)
 
   return (
     <button

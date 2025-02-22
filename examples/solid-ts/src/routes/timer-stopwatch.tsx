@@ -5,14 +5,12 @@ import { StateVisualizer } from "~/components/state-visualizer"
 import { Toolbar } from "~/components/toolbar"
 
 export default function Page() {
-  const [state, send] = useMachine(
-    timer.machine({
-      id: createUniqueId(),
-      autoStart: true,
-    }),
-  )
+  const service = useMachine(timer.machine, {
+    id: createUniqueId(),
+    autoStart: true,
+  })
 
-  const api = createMemo(() => timer.connect(state, send, normalizeProps))
+  const api = createMemo(() => timer.connect(service, normalizeProps))
 
   return (
     <>
@@ -30,15 +28,15 @@ export default function Page() {
         </div>
 
         <div {...api().getControlProps()}>
-          <button onClick={api().start}>START</button>
-          <button onClick={api().pause}>PAUSE</button>
-          <button onClick={api().resume}>RESUME</button>
-          <button onClick={api().reset}>RESET</button>
+          <button {...api().getActionTriggerProps({ action: "start" })}>START</button>
+          <button {...api().getActionTriggerProps({ action: "pause" })}>PAUSE</button>
+          <button {...api().getActionTriggerProps({ action: "resume" })}>RESUME</button>
+          <button {...api().getActionTriggerProps({ action: "reset" })}>RESET</button>
         </div>
       </main>
 
-      <Toolbar controls={null} viz>
-        <StateVisualizer state={state} />
+      <Toolbar viz>
+        <StateVisualizer state={service} />
       </Toolbar>
     </>
   )

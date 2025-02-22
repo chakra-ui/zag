@@ -30,19 +30,15 @@ type SelectProps = {
 }
 
 export function Select(props: SelectProps) {
-  const [state, send] = useMachine(
-    select.machine({
-      id: useId(),
-      collection: select.collection({
-        items: data,
-      }),
+  const service = useMachine(select.machine, {
+    id: useId(),
+    collection: select.collection({
+      items: data,
     }),
-    {
-      context: props.controls,
-    },
-  )
+    ...props.controls,
+  })
 
-  const api = select.connect(state, send, normalizeProps)
+  const api = select.connect(service, normalizeProps)
 
   return (
     <div {...api.getRootProps()}>

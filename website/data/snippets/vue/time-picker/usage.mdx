@@ -4,9 +4,9 @@ import * as timePicker from "@zag-js/time-picker"
 import { normalizeProps, useMachine } from "@zag-js/vue"
 import { computed, Teleport } from "vue"
 
-const [state, send] = useMachine(timePicker.machine({ id: "1" }))
+const service = useMachine(timePicker.machine, ({ id: "1" }))
 
-const api = computed(() => timePicker.connect(state.value, send, normalizeProps))
+const api = computed(() => timePicker.connect(service, normalizeProps))
 </script>
 
 <template>

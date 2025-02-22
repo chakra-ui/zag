@@ -1,9 +1,10 @@
 import { createProps } from "@zag-js/types"
 import { createSplitProps } from "@zag-js/utils"
-import type { UserDefinedContext } from "./switch.types"
+import type { SwitchProps } from "./switch.types"
 
-export const props = createProps<UserDefinedContext>()([
+export const props = createProps<SwitchProps>()([
   "checked",
+  "defaultChecked",
   "dir",
   "disabled",
   "form",
@@ -19,4 +20,4 @@ export const props = createProps<UserDefinedContext>()([
   "value",
 ])
 
-export const splitProps = createSplitProps<Partial<UserDefinedContext>>(props)
+export const splitProps = createSplitProps<Partial<SwitchProps>>(props)

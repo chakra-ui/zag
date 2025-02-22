@@ -1,4 +1,4 @@
-import type { Machine, StateMachine as S } from "@zag-js/core"
+import type { EventObject, Service } from "@zag-js/core"
 import type { CommonProperties, DirectionProperty, PropTypes, RequiredBy } from "@zag-js/types"
 
 /* -----------------------------------------------------------------------------
@@ -21,7 +21,7 @@ export type ElementIds = Partial<{
   thumb: string
 }>
 
-interface PublicContext extends DirectionProperty, CommonProperties {
+export interface SwitchProps extends DirectionProperty, CommonProperties {
   /**
    * The ids of the elements in the switch. Useful for composition.
    */
@@ -29,7 +29,7 @@ interface PublicContext extends DirectionProperty, CommonProperties {
   /**
    * Specifies the localized strings that identifies the accessibility elements and their states
    */
-  label: string
+  label?: string | undefined
   /**
    * Whether the switch is disabled.
    */
@@ -51,9 +51,14 @@ interface PublicContext extends DirectionProperty, CommonProperties {
    */
   onCheckedChange?: ((details: CheckedChangeDetails) => void) | undefined
   /**
-   * Whether the switch is checked.
+   * The controlled checked state of the switch
    */
-  checked: boolean
+  checked?: boolean | undefined
+  /**
+   * The initial checked state of the switch when rendered.
+   * Use when you don't need to control the checked state of the switch.
+   */
+  defaultChecked?: boolean | undefined
   /**
    * The name of the input field in a switch
    * (Useful for form submission).
@@ -70,7 +75,7 @@ interface PublicContext extends DirectionProperty, CommonProperties {
   value?: string | number | undefined
 }
 
-export type UserDefinedContext = RequiredBy<PublicContext, "id">
+type PropsWithDefault = "value"
 
 type ComputedContext = Readonly<{
   /**
@@ -81,49 +86,49 @@ type ComputedContext = Readonly<{
 
 interface PrivateContext {
   /**
-   * @internal
    * Whether the checkbox is pressed
    */
-  active?: boolean | undefined
+  active: boolean
   /**
-   * @internal
    * Whether the checkbox has focus
    */
-  focused?: boolean | undefined
+  focused: boolean
   /**
-   * @internal
    * Whether the checkbox has focus visible
    */
-  focusVisible?: boolean | undefined
+  focusVisible: boolean
   /**
-   * @internal
    * Whether the checkbox is hovered
    */
-  hovered?: boolean | undefined
+  hovered: boolean
   /**
-   * @internal
    * Whether the checkbox fieldset is disabled
    */
   fieldsetDisabled: boolean
+  /**
+   * The checked state of the switch
+   */
+  checked: boolean
 }
 
-export interface MachineContext extends PublicContext, PrivateContext, ComputedContext {}
-
-export interface MachineState {
-  value: "ready"
+export interface SwitchSchema {
+  props: RequiredBy<SwitchProps, PropsWithDefault>
+  context: PrivateContext
+  state: "ready"
+  computed: ComputedContext
+  event: EventObject
+  action: string
+  effect: string
+  guard: string
 }
 
-export type State = S.State<MachineContext, MachineState>
-
-export type Send = S.Send<S.AnyEventObject>
-
-export type Service = Machine<MachineContext, MachineState, S.AnyEventObject>
+export type SwitchService = Service<SwitchSchema>
 
 /* -----------------------------------------------------------------------------
  * Component API
  * -----------------------------------------------------------------------------*/
 
-export interface MachineApi<T extends PropTypes = PropTypes> {
+export interface SwitchApi<T extends PropTypes = PropTypes> {
   /**
    * Whether the checkbox is checked
    */

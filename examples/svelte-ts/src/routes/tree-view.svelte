@@ -60,11 +60,12 @@
     },
   })
 
-  const [snapshot, send] = useMachine(tree.machine({ id: "1", collection }), {
-    context: controls.context,
+  const service = useMachine(tree.machine, {
+    id: "1",
+    collection,
   })
 
-  const api = $derived(tree.connect(snapshot, send, normalizeProps))
+  const api = $derived(tree.connect(service, normalizeProps))
 </script>
 
 {#snippet treeNode(nodeProps: TreeNodeProps)}
@@ -115,5 +116,5 @@
 </main>
 
 <Toolbar {controls}>
-  <StateVisualizer state={snapshot} />
+  <StateVisualizer state={service} />
 </Toolbar>

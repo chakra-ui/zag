@@ -21,11 +21,9 @@
     "nuxt-ts",
     "solid-ts",
     "nuxt-ts",
-    "react-19",
     "preact-ts",
     "svelte-ts",
     "vanilla-ts",
-    "lit-ts",
     "website"
   ]
 }

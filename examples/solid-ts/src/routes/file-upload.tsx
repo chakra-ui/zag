@@ -9,11 +9,9 @@ import { useControls } from "~/hooks/use-controls"
 export default function Page() {
   const controls = useControls(fileUploadControls)
 
-  const [state, send] = useMachine(fileUpload.machine({ id: createUniqueId() }), {
-    context: controls.context,
-  })
+  const service = useMachine(fileUpload.machine, { id: createUniqueId() })
 
-  const api = createMemo(() => fileUpload.connect(state, send, normalizeProps))
+  const api = createMemo(() => fileUpload.connect(service, normalizeProps))
 
   return (
     <>
@@ -45,8 +43,8 @@ export default function Page() {
         </div>
       </main>
 
-      <Toolbar controls={controls.ui}>
-        <StateVisualizer state={state} />
+      <Toolbar controls={controls}>
+        <StateVisualizer state={service} />
       </Toolbar>
     </>
   )

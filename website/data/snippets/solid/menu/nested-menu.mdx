@@ -6,25 +6,25 @@ import { Portal } from "solid-js/web"
 
 export default function Page() {
   // Level 1 - File Menu
-  const [fileMenuState, fileMenuSend, fileMenuMachine] = useMachine(
-    menu.machine({ "aria-label": "File", value: createUniqueId() }),
-  )
+  const fileService = useMachine(menu.machine, {
+    "aria-label": "File",
+    id: createUniqueId(),
+  })
 
-  const fileMenu = createMemo(() => menu.connect(state, send, normalizeProps))
+  const fileMenu = createMemo(() => menu.connect(fileService, normalizeProps))
 
   // Level 2 - Share Menu
-  const [shareMenuState, shareMenuSend, shareMenuMachine] = useMachine(
-    menu.machine({ "aria-label": "Share", value: createUniqueId() }),
-  )
+  const shareService = useMachine(menu.machine, {
+    "aria-label": "Share",
+    id: createUniqueId(),
+  })
 
-  const shareMenu = createMemo(() =>
-    menu.connect(subState, subSend, normalizeProps),
-  )
+  const shareMenu = createMemo(() => menu.connect(shareService, normalizeProps))
 
   onMount(() => {
     setTimeout(() => {
-      fileMenu().setChild(shareMenuMachine)
-      shareMenu().setParent(fileMenuMachine)
+      fileMenu().setChild(shareService)
+      shareMenu().setParent(fileService)
     })
   })
 

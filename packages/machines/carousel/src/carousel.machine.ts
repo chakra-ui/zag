@@ -1,374 +1,413 @@
-import { createMachine, ref } from "@zag-js/core"
+import { createMachine } from "@zag-js/core"
 import { addDomEvent, raf, trackPointerMove } from "@zag-js/dom-query"
 import { findSnapPoint, getScrollSnapPositions } from "@zag-js/scroll-snap"
-import { add, compact, isEqual, isObject, nextIndex, prevIndex, remove, uniq } from "@zag-js/utils"
-import { dom } from "./carousel.dom"
-import type { MachineContext, MachineState, UserDefinedContext } from "./carousel.types"
+import { add, clampValue, isObject, nextIndex, prevIndex, remove, uniq } from "@zag-js/utils"
+import * as dom from "./carousel.dom"
+import type { CarouselSchema } from "./carousel.types"
 
-const DEFAULT_SLIDES_PER_PAGE = 1
-const DEFAULT_SLIDES_PER_MOVE = "auto"
-
-export function machine(userContext: UserDefinedContext) {
-  const ctx = compact(userContext)
-  return createMachine<MachineContext, MachineState>(
-    {
-      id: "carousel",
-      initial: ctx.autoplay ? "autoplay" : "idle",
-      context: {
-        dir: "ltr",
-        page: 0,
-        orientation: "horizontal",
-        snapType: "mandatory",
-        loop: false,
-        slidesPerPage: DEFAULT_SLIDES_PER_PAGE,
-        slidesPerMove: DEFAULT_SLIDES_PER_MOVE,
-        spacing: "0px",
-        autoplay: false,
-        allowMouseDrag: false,
-        inViewThreshold: 0.6,
-        ...ctx,
-        timeoutRef: ref({ current: undefined }),
-        translations: {
-          nextTrigger: "Next slide",
-          prevTrigger: "Previous slide",
-          indicator: (index) => `Go to slide ${index + 1}`,
-          item: (index, count) => `${index + 1} of ${count}`,
-          autoplayStart: "Start slide rotation",
-          autoplayStop: "Stop slide rotation",
-          ...ctx.translations,
-        },
-        pageSnapPoints: getPageSnapPoints(
-          ctx.slideCount,
-          ctx.slidesPerMove ?? DEFAULT_SLIDES_PER_MOVE,
-          ctx.slidesPerPage ?? DEFAULT_SLIDES_PER_PAGE,
-        ),
-        slidesInView: [],
+export const machine = createMachine<CarouselSchema>({
+  props({ props }) {
+    return {
+      dir: "ltr",
+      defaultPage: 0,
+      orientation: "horizontal",
+      snapType: "mandatory",
+      loop: !!props.autoplay,
+      slidesPerPage: 1,
+      slidesPerMove: "auto",
+      spacing: "0px",
+      autoplay: false,
+      allowMouseDrag: false,
+      inViewThreshold: 0.6,
+      ...props,
+      translations: {
+        nextTrigger: "Next slide",
+        prevTrigger: "Previous slide",
+        indicator: (index) => `Go to slide ${index + 1}`,
+        item: (index, count) => `${index + 1} of ${count}`,
+        autoplayStart: "Start slide rotation",
+        autoplayStop: "Stop slide rotation",
+        ...props.translations,
       },
+    }
+  },
 
-      computed: {
-        isRtl: (ctx) => ctx.dir === "rtl",
-        isHorizontal: (ctx) => ctx.orientation === "horizontal",
-        canScrollNext: (ctx) => ctx.loop || ctx.page < ctx.pageSnapPoints.length - 1,
-        canScrollPrev: (ctx) => ctx.loop || ctx.page > 0,
-        autoplayInterval: (ctx) => (isObject(ctx.autoplay) ? ctx.autoplay.delay : 4000),
-      },
+  refs() {
+    return {
+      timeoutRef: undefined,
+    }
+  },
 
-      watch: {
-        slidesPerPage: ["setSnapPoints"],
-        slidesPerMove: ["setSnapPoints"],
-        page: ["scrollToPage", "focusIndicatorEl"],
-        orientation: ["setSnapPoints", "scrollToPage"],
-      },
+  initialState({ prop }) {
+    return prop("autoplay") ? "autoplay" : "idle"
+  },
 
-      on: {
-        "PAGE.NEXT": {
-          target: "idle",
-          actions: ["clearScrollEndTimer", "setNextPage"],
+  context({ prop, bindable, getContext }) {
+    return {
+      page: bindable<number>(() => ({
+        defaultValue: prop("defaultPage"),
+        page: prop("page"),
+        onChange(page) {
+          const ctx = getContext()
+          const pageSnapPoints = ctx.get("pageSnapPoints")
+          prop("onPageChange")?.({ page: page, pageSnapPoint: pageSnapPoints[page] })
         },
-        "PAGE.PREV": {
-          target: "idle",
-          actions: ["clearScrollEndTimer", "setPrevPage"],
-        },
-        "PAGE.SET": {
-          target: "idle",
-          actions: ["clearScrollEndTimer", "setPage"],
-        },
-        "INDEX.SET": {
-          target: "idle",
-          actions: ["clearScrollEndTimer", "setMatchingPage"],
-        },
-        "SNAP.REFRESH": {
-          actions: ["setSnapPoints", "clampPage"],
-        },
-      },
+      })),
+      pageSnapPoints: bindable(() => {
+        return {
+          defaultValue: getPageSnapPoints(prop("slideCount"), prop("slidesPerMove"), prop("slidesPerPage")),
+        }
+      }),
+      slidesInView: bindable<number[]>(() => ({
+        defaultValue: [],
+      })),
+    }
+  },
 
-      activities: ["trackSlideMutation", "trackSlideIntersections", "trackSlideResize"],
-
-      entry: ["resetScrollPosition", "setSnapPoints", "setPage"],
-
-      exit: ["clearScrollEndTimer"],
-
-      states: {
-        idle: {
-          activities: ["trackScroll"],
-          on: {
-            "DRAGGING.START": {
-              target: "dragging",
-              actions: ["invokeDragStart"],
-            },
-            "AUTOPLAY.START": {
-              target: "autoplay",
-              actions: ["invokeAutoplayStart"],
-            },
-          },
-        },
-
-        dragging: {
-          activities: ["trackPointerMove"],
-          entry: ["disableScrollSnap"],
-          on: {
-            DRAGGING: {
-              actions: ["scrollSlides", "invokeDragging"],
-            },
-            "DRAGGING.END": {
-              target: "idle",
-              actions: ["endDragging", "invokeDraggingEnd"],
-            },
-          },
-        },
-
-        autoplay: {
-          activities: ["trackDocumentVisibility", "trackScroll"],
-          exit: ["invokeAutoplayEnd"],
-          every: {
-            AUTOPLAY_INTERVAL: ["setNextPage", "invokeAutoplay"],
-          },
-          on: {
-            "DRAGGING.START": {
-              target: "dragging",
-              actions: ["invokeDragStart"],
-            },
-            "AUTOPLAY.PAUSE": "idle",
-          },
-        },
-      },
+  computed: {
+    isRtl: ({ prop }) => prop("dir") === "rtl",
+    isHorizontal: ({ prop }) => prop("orientation") === "horizontal",
+    canScrollNext: ({ prop, context }) =>
+      prop("loop") || context.get("page") < context.get("pageSnapPoints").length - 1,
+    canScrollPrev: ({ prop, context }) => prop("loop") || context.get("page") > 0,
+    autoplayInterval: ({ prop }) => {
+      const autoplay = prop("autoplay")
+      return isObject(autoplay) ? autoplay.delay : 4000
     },
-    {
-      activities: {
-        trackSlideMutation(ctx, _evt, { send }) {
-          const el = dom.getItemGroupEl(ctx)
-          if (!el) return
-          const win = dom.getWin(ctx)
-          const observer = new win.MutationObserver(() => {
-            send({ type: "SNAP.REFRESH", src: "slide.mutation" })
-            dom.syncTabIndex(ctx)
-          })
-          dom.syncTabIndex(ctx)
-          observer.observe(el, { childList: true, subtree: true })
-          return () => observer.disconnect()
-        },
+  },
 
-        trackSlideResize(ctx, _evt, { send }) {
-          const el = dom.getItemGroupEl(ctx)
-          if (!el) return
-          const win = dom.getWin(ctx)
-          const observer = new win.ResizeObserver(() => {
-            send({ type: "SNAP.REFRESH", src: "slide.resize" })
-          })
-          dom.getItemEls(ctx).forEach((slide) => observer.observe(slide))
-          return () => observer.disconnect()
-        },
-
-        trackSlideIntersections(ctx) {
-          const el = dom.getItemGroupEl(ctx)
-          const win = dom.getWin(ctx)
-
-          const observer = new win.IntersectionObserver(
-            (entries) => {
-              const slidesInView = entries.reduce((acc, entry) => {
-                const target = entry.target as HTMLElement
-                const index = Number(target.dataset.index ?? "-1")
-                if (index == null || Number.isNaN(index) || index === -1) return acc
-                return entry.isIntersecting ? add(acc, index) : remove(acc, index)
-              }, ctx.slidesInView)
-
-              ctx.slidesInView = uniq(slidesInView)
-            },
-            {
-              root: el,
-              threshold: ctx.inViewThreshold,
-            },
-          )
-
-          dom.getItemEls(ctx).forEach((slide) => observer.observe(slide))
-          return () => observer.disconnect()
-        },
-
-        trackScroll(ctx) {
-          const el = dom.getItemGroupEl(ctx)
-          if (!el) return
-
-          const onScrollEnd = () => {
-            if (ctx.slidesInView.length === 0) return
-            const scrollPosition = ctx.isHorizontal ? el.scrollLeft : el.scrollTop
-            const page = ctx.pageSnapPoints.findIndex((point) => Math.abs(point - scrollPosition) < 1)
-            if (page === -1) return
-            set.page(ctx, page)
-          }
-
-          // Not using `scrollend` as some browsers trigger it before snapping finishes
-          const onScroll = () => {
-            clearTimeout(ctx.timeoutRef.current)
-            ctx.timeoutRef.current = setTimeout(() => {
-              onScrollEnd?.()
-            }, 150)
-          }
-
-          return addDomEvent(el, "scroll", onScroll, { passive: true })
-        },
-
-        trackDocumentVisibility(ctx, _evt, { send }) {
-          const doc = dom.getDoc(ctx)
-          const onVisibilityChange = () => {
-            if (doc.visibilityState === "visible") return
-            send({ type: "AUTOPLAY.PAUSE", src: "doc.hidden" })
-          }
-          return addDomEvent(doc, "visibilitychange", onVisibilityChange)
-        },
-
-        trackPointerMove(ctx, _evt, { send }) {
-          const doc = dom.getDoc(ctx)
-          return trackPointerMove(doc, {
-            onPointerMove({ event }) {
-              send({ type: "DRAGGING", left: -event.movementX, top: -event.movementY })
-            },
-            onPointerUp() {
-              send({ type: "DRAGGING.END" })
-            },
-          })
-        },
-      },
-
-      actions: {
-        resetScrollPosition(ctx) {
-          const el = dom.getItemGroupEl(ctx)
-          el.scrollTo(0, 0)
-        },
-        clearScrollEndTimer(ctx) {
-          if (ctx.timeoutRef.current == null) return
-          clearTimeout(ctx.timeoutRef.current)
-          ctx.timeoutRef.current = undefined
-        },
-        scrollToPage(ctx, evt) {
-          const behavior = evt.instant ? "instant" : "smooth"
-          const index = clamp(evt.index ?? ctx.page, 0, ctx.pageSnapPoints.length - 1)
-          const el = dom.getItemGroupEl(ctx)
-          const axis = ctx.isHorizontal ? "left" : "top"
-          el.scrollTo({ [axis]: ctx.pageSnapPoints[index], behavior })
-        },
-        setNextPage(ctx) {
-          const page = nextIndex(ctx.pageSnapPoints, ctx.page, { loop: ctx.loop })
-          set.page(ctx, page)
-        },
-        setPrevPage(ctx) {
-          const page = prevIndex(ctx.pageSnapPoints, ctx.page, { loop: ctx.loop })
-          set.page(ctx, page)
-        },
-        setMatchingPage(ctx, evt) {
-          const snapPoint = findSnapPoint(
-            dom.getItemGroupEl(ctx),
-            ctx.isHorizontal ? "x" : "y",
-            (node) => node.dataset.index === evt.index.toString(),
-          )
-          if (snapPoint == null) return
-
-          const page = ctx.pageSnapPoints.indexOf(snapPoint)
-          set.page(ctx, page)
-        },
-        setPage(ctx, evt) {
-          set.page(ctx, evt.index ?? ctx.page)
-        },
-        clampPage(ctx) {
-          const index = clamp(ctx.page, 0, ctx.pageSnapPoints.length - 1)
-          set.page(ctx, index)
-        },
-        setSnapPoints(ctx) {
-          queueMicrotask(() => {
-            const el = dom.getItemGroupEl(ctx)
-            const scrollSnapPoints = getScrollSnapPositions(el)
-            ctx.pageSnapPoints = ctx.isHorizontal ? scrollSnapPoints.x : scrollSnapPoints.y
-          })
-        },
-        disableScrollSnap(ctx) {
-          const el = dom.getItemGroupEl(ctx)
-          const styles = getComputedStyle(el)
-          el.dataset.scrollSnapType = styles.getPropertyValue("scroll-snap-type")
-          el.style.setProperty("scroll-snap-type", "none")
-        },
-        scrollSlides(ctx, evt) {
-          const el = dom.getItemGroupEl(ctx)
-          el.scrollBy({ left: evt.left, top: evt.top, behavior: "instant" })
-        },
-        endDragging(ctx) {
-          const el = dom.getItemGroupEl(ctx)
-          const startX = el.scrollLeft
-          const startY = el.scrollTop
-
-          const snapPositions = getScrollSnapPositions(el)
-
-          // Find closest x snap point
-          const closestX = snapPositions.x.reduce((closest, curr) => {
-            return Math.abs(curr - startX) < Math.abs(closest - startX) ? curr : closest
-          }, snapPositions.x[0])
-
-          // Find closest y snap point
-          const closestY = snapPositions.y.reduce((closest, curr) => {
-            return Math.abs(curr - startY) < Math.abs(closest - startY) ? curr : closest
-          }, snapPositions.y[0])
-
-          raf(() => {
-            // Scroll to closest snap points
-            el.scrollTo({ left: closestX, top: closestY, behavior: "smooth" })
-            const scrollSnapType = el.dataset.scrollSnapType
-            if (scrollSnapType) {
-              el.style.removeProperty("scroll-snap-type")
-              delete el.dataset.scrollSnapType
-            }
-          })
-        },
-        focusIndicatorEl(ctx, evt) {
-          if (evt.src !== "indicator") return
-          const el = dom.getActiveIndicatorEl(ctx)
-          raf(() => el.focus({ preventScroll: true }))
-        },
-        invokeDragStart(ctx) {
-          ctx.onDragStatusChange?.({ type: "dragging.start", isDragging: true, page: ctx.page })
-        },
-        invokeDragging(ctx) {
-          ctx.onDragStatusChange?.({ type: "dragging", isDragging: true, page: ctx.page })
-        },
-        invokeDraggingEnd(ctx) {
-          ctx.onDragStatusChange?.({ type: "dragging.end", isDragging: false, page: ctx.page })
-        },
-        invokeAutoplay(ctx) {
-          ctx.onAutoplayStatusChange?.({ type: "autoplay", isPlaying: true, page: ctx.page })
-        },
-        invokeAutoplayStart(ctx) {
-          ctx.onAutoplayStatusChange?.({ type: "autoplay.start", isPlaying: true, page: ctx.page })
-        },
-        invokeAutoplayEnd(ctx) {
-          ctx.onAutoplayStatusChange?.({ type: "autoplay.stop", isPlaying: false, page: ctx.page })
-        },
-      },
-
-      delays: {
-        AUTOPLAY_INTERVAL: (ctx) => ctx.autoplayInterval,
-      },
-    },
-  )
-}
-
-const invoke = {
-  pageChange: (ctx: MachineContext) => {
-    ctx.onPageChange?.({
-      page: ctx.page,
-      pageSnapPoint: ctx.pageSnapPoints[ctx.page],
+  watch({ track, action, context, prop }) {
+    track([() => prop("slidesPerPage"), () => prop("slidesPerMove")], () => {
+      action(["setSnapPoints"])
+    })
+    track([() => context.get("page")], () => {
+      action(["scrollToPage", "focusIndicatorEl"])
+    })
+    track([() => prop("orientation")], () => {
+      action(["setSnapPoints", "scrollToPage"])
     })
   },
-}
 
-const set = {
-  page: (ctx: MachineContext, value: number) => {
-    const page = clamp(value, 0, ctx.pageSnapPoints.length - 1)
-    if (isEqual(ctx.page, page)) return
-    ctx.page = page
-    invoke.pageChange(ctx)
+  on: {
+    "PAGE.NEXT": {
+      target: "idle",
+      actions: ["clearScrollEndTimer", "setNextPage"],
+    },
+    "PAGE.PREV": {
+      target: "idle",
+      actions: ["clearScrollEndTimer", "setPrevPage"],
+    },
+    "PAGE.SET": {
+      target: "idle",
+      actions: ["clearScrollEndTimer", "setPage"],
+    },
+    "INDEX.SET": {
+      target: "idle",
+      actions: ["clearScrollEndTimer", "setMatchingPage"],
+    },
+    "SNAP.REFRESH": {
+      actions: ["setSnapPoints", "clampPage"],
+    },
+    "PAGE.SCROLL": {
+      actions: ["scrollToPage"],
+    },
   },
-}
 
-function clamp(value: number, min: number, max: number) {
-  return Math.min(Math.max(value, min), max)
-}
+  effects: ["trackSlideMutation", "trackSlideIntersections", "trackSlideResize"],
+
+  entry: ["setSnapPoints", "setPage"],
+
+  exit: ["clearScrollEndTimer"],
+
+  states: {
+    idle: {
+      on: {
+        "DRAGGING.START": {
+          target: "dragging",
+          actions: ["invokeDragStart"],
+        },
+        "AUTOPLAY.START": {
+          target: "autoplay",
+          actions: ["invokeAutoplayStart"],
+        },
+        "USER.SCROLL": {
+          target: "userScroll",
+        },
+      },
+    },
+
+    dragging: {
+      effects: ["trackPointerMove"],
+      entry: ["disableScrollSnap"],
+      on: {
+        DRAGGING: {
+          actions: ["scrollSlides", "invokeDragging"],
+        },
+        "DRAGGING.END": {
+          target: "idle",
+          actions: ["endDragging", "invokeDraggingEnd"],
+        },
+      },
+    },
+
+    userScroll: {
+      effects: ["trackScroll"],
+      on: {
+        "SCROLL.END": {
+          target: "idle",
+          actions: ["setClosestPage"],
+        },
+      },
+    },
+
+    autoplay: {
+      effects: ["trackDocumentVisibility", "trackScroll", "autoUpdateSlide"],
+      exit: ["invokeAutoplayEnd"],
+      on: {
+        "AUTOPLAY.TICK": {
+          actions: ["setNextPage", "invokeAutoplay"],
+        },
+        "DRAGGING.START": {
+          target: "dragging",
+          actions: ["invokeDragStart"],
+        },
+        "AUTOPLAY.PAUSE": {
+          target: "idle",
+        },
+      },
+    },
+  },
+
+  implementations: {
+    effects: {
+      autoUpdateSlide({ computed, send }) {
+        const id = setInterval(() => {
+          send({ type: "AUTOPLAY.TICK", src: "autoplay.interval" })
+        }, computed("autoplayInterval"))
+        return () => clearInterval(id)
+      },
+      trackSlideMutation({ scope, send }) {
+        const el = dom.getItemGroupEl(scope)
+        if (!el) return
+        const win = scope.getWin()
+        const observer = new win.MutationObserver(() => {
+          send({ type: "SNAP.REFRESH", src: "slide.mutation" })
+          dom.syncTabIndex(scope)
+        })
+        dom.syncTabIndex(scope)
+        observer.observe(el, { childList: true, subtree: true })
+        return () => observer.disconnect()
+      },
+
+      trackSlideResize({ scope, send }) {
+        const el = dom.getItemGroupEl(scope)
+        if (!el) return
+        const win = scope.getWin()
+        const exec = () => {
+          send({ type: "SNAP.REFRESH", src: "slide.resize" })
+        }
+        raf(() => {
+          exec()
+          // sync initial scroll position
+          raf(() => {
+            send({ type: "PAGE.SCROLL", instant: true })
+          })
+        })
+        const observer = new win.ResizeObserver(exec)
+        dom.getItemEls(scope).forEach((slide) => observer.observe(slide))
+        return () => observer.disconnect()
+      },
+
+      trackSlideIntersections({ scope, prop, context }) {
+        const el = dom.getItemGroupEl(scope)
+        const win = scope.getWin()
+
+        const observer = new win.IntersectionObserver(
+          (entries) => {
+            const slidesInView = entries.reduce((acc, entry) => {
+              const target = entry.target as HTMLElement
+              const index = Number(target.dataset.index ?? "-1")
+              if (index == null || Number.isNaN(index) || index === -1) return acc
+              return entry.isIntersecting ? add(acc, index) : remove(acc, index)
+            }, context.get("slidesInView"))
+
+            context.set("slidesInView", uniq(slidesInView))
+          },
+          {
+            root: el,
+            threshold: prop("inViewThreshold"),
+          },
+        )
+
+        dom.getItemEls(scope).forEach((slide) => observer.observe(slide))
+        return () => observer.disconnect()
+      },
+
+      trackScroll({ send, refs, scope }) {
+        const el = dom.getItemGroupEl(scope)
+        if (!el) return
+
+        const onScroll = () => {
+          clearTimeout(refs.get("timeoutRef"))
+          refs.set("timeoutRef", undefined)
+
+          refs.set(
+            "timeoutRef",
+            setTimeout(() => {
+              send({ type: "SCROLL.END" })
+            }, 150),
+          )
+        }
+
+        return addDomEvent(el, "scroll", onScroll, { passive: true })
+      },
+
+      trackDocumentVisibility({ scope, send }) {
+        const doc = scope.getDoc()
+        const onVisibilityChange = () => {
+          if (doc.visibilityState === "visible") return
+          send({ type: "AUTOPLAY.PAUSE", src: "doc.hidden" })
+        }
+        return addDomEvent(doc, "visibilitychange", onVisibilityChange)
+      },
+
+      trackPointerMove({ scope, send }) {
+        const doc = scope.getDoc()
+        return trackPointerMove(doc, {
+          onPointerMove({ event }) {
+            send({ type: "DRAGGING", left: -event.movementX, top: -event.movementY })
+          },
+          onPointerUp() {
+            send({ type: "DRAGGING.END" })
+          },
+        })
+      },
+    },
+
+    actions: {
+      clearScrollEndTimer({ refs }) {
+        if (refs.get("timeoutRef") == null) return
+        clearTimeout(refs.get("timeoutRef"))
+        refs.set("timeoutRef", undefined)
+      },
+      scrollToPage({ context, event, scope, computed }) {
+        const behavior = event.instant ? "instant" : "smooth"
+        const index = clampValue(event.index ?? context.get("page"), 0, context.get("pageSnapPoints").length - 1)
+        const el = dom.getItemGroupEl(scope)
+        const axis = computed("isHorizontal") ? "left" : "top"
+        el.scrollTo({ [axis]: context.get("pageSnapPoints")[index], behavior })
+      },
+      setClosestPage({ context, scope, computed }) {
+        const el = dom.getItemGroupEl(scope)
+        if (!el) return
+        const scrollPosition = computed("isHorizontal") ? el.scrollLeft : el.scrollTop
+        const page = context.get("pageSnapPoints").findIndex((point) => Math.abs(point - scrollPosition) < 1)
+        if (page === -1) return
+        context.set("page", page)
+      },
+      setNextPage({ context, prop, state }) {
+        const loop = state.matches("autoplay") || prop("loop")
+        const page = nextIndex(context.get("pageSnapPoints"), context.get("page"), { loop })
+        context.set("page", page)
+      },
+      setPrevPage({ context, prop, state }) {
+        const loop = state.matches("autoplay") || prop("loop")
+        const page = prevIndex(context.get("pageSnapPoints"), context.get("page"), { loop })
+        context.set("page", page)
+      },
+      setMatchingPage({ context, event, computed, scope }) {
+        const snapPoint = findSnapPoint(
+          dom.getItemGroupEl(scope),
+          computed("isHorizontal") ? "x" : "y",
+          (node) => node.dataset.index === event.index.toString(),
+        )
+        if (snapPoint == null) return
+
+        const page = context.get("pageSnapPoints").findIndex((point) => Math.abs(point - snapPoint) < 1)
+        context.set("page", page)
+      },
+      setPage({ context, event }) {
+        const page = event.index ?? context.get("page")
+        context.set("page", page)
+      },
+      clampPage({ context }) {
+        const index = clampValue(context.get("page"), 0, context.get("pageSnapPoints").length - 1)
+        context.set("page", index)
+      },
+      setSnapPoints({ context, computed, scope }) {
+        queueMicrotask(() => {
+          const el = dom.getItemGroupEl(scope)
+          const scrollSnapPoints = getScrollSnapPositions(el)
+          context.set("pageSnapPoints", computed("isHorizontal") ? scrollSnapPoints.x : scrollSnapPoints.y)
+        })
+      },
+      disableScrollSnap({ scope }) {
+        const el = dom.getItemGroupEl(scope)
+        const styles = getComputedStyle(el)
+        el.dataset.scrollSnapType = styles.getPropertyValue("scroll-snap-type")
+        el.style.setProperty("scroll-snap-type", "none")
+      },
+      scrollSlides({ scope, event }) {
+        const el = dom.getItemGroupEl(scope)
+        el.scrollBy({ left: event.left, top: event.top, behavior: "instant" })
+      },
+      endDragging({ scope, context, computed }) {
+        const el = dom.getItemGroupEl(scope)
+        const startX = el.scrollLeft
+        const startY = el.scrollTop
+
+        const snapPositions = getScrollSnapPositions(el)
+
+        // Find closest x snap point
+        const closestX = snapPositions.x.reduce((closest, curr) => {
+          return Math.abs(curr - startX) < Math.abs(closest - startX) ? curr : closest
+        }, snapPositions.x[0])
+
+        // Find closest y snap point
+        const closestY = snapPositions.y.reduce((closest, curr) => {
+          return Math.abs(curr - startY) < Math.abs(closest - startY) ? curr : closest
+        }, snapPositions.y[0])
+
+        raf(() => {
+          // Scroll to closest snap points
+          el.scrollTo({ left: closestX, top: closestY, behavior: "smooth" })
+
+          const closest = computed("isHorizontal") ? closestX : closestY
+          context.set("page", context.get("pageSnapPoints").indexOf(closest))
+
+          const scrollSnapType = el.dataset.scrollSnapType
+          if (scrollSnapType) {
+            el.style.removeProperty("scroll-snap-type")
+            delete el.dataset.scrollSnapType
+          }
+        })
+      },
+      focusIndicatorEl({ context, event, scope }) {
+        if (event.src !== "indicator") return
+        const el = dom.getIndicatorEl(scope, context.get("page"))
+        raf(() => el.focus({ preventScroll: true }))
+      },
+      invokeDragStart({ context, prop }) {
+        prop("onDragStatusChange")?.({ type: "dragging.start", isDragging: true, page: context.get("page") })
+      },
+      invokeDragging({ context, prop }) {
+        prop("onDragStatusChange")?.({ type: "dragging", isDragging: true, page: context.get("page") })
+      },
+      invokeDraggingEnd({ context, prop }) {
+        prop("onDragStatusChange")?.({ type: "dragging.end", isDragging: false, page: context.get("page") })
+      },
+      invokeAutoplay({ context, prop }) {
+        prop("onAutoplayStatusChange")?.({ type: "autoplay", isPlaying: true, page: context.get("page") })
+      },
+      invokeAutoplayStart({ context, prop }) {
+        prop("onAutoplayStatusChange")?.({ type: "autoplay.start", isPlaying: true, page: context.get("page") })
+      },
+      invokeAutoplayEnd({ context, prop }) {
+        prop("onAutoplayStatusChange")?.({ type: "autoplay.stop", isPlaying: false, page: context.get("page") })
+      },
+    },
+  },
+})
 
 function getPageSnapPoints(totalSlides: number | undefined, slidesPerMove: number | "auto", slidesPerPage: number) {
   if (totalSlides == null) return []

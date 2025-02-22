@@ -4,8 +4,8 @@ export { connect } from "./tags-input.connect"
 export { machine } from "./tags-input.machine"
 export * from "./tags-input.props"
 export type {
-  MachineApi as Api,
-  UserDefinedContext as Context,
+  TagsInputApi as Api,
+  TagsInputProps as Props,
   ElementIds,
   HighlightChangeDetails,
   InputValueChangeDetails,

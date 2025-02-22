@@ -13,15 +13,13 @@
     { label: "Uganda", value: "UG" },
   ]
 
-  const [snapshot, send] = useMachine(
-    select.machine({
-      id: "1",
-      collection: select.collection({ items: selectData }),
-      name: "country",
-    }),
-  )
+  const service = useMachine(select.machine, {
+    id: "1",
+    collection: select.collection({ items: selectData }),
+    name: "country",
+  })
 
-  const api = $derived(select.connect(snapshot, send, normalizeProps))
+  const api = $derived(select.connect(service, normalizeProps))
 </script>
 
 <form>
@@ -36,7 +34,6 @@
 
   <!-- Custom Select -->
 
-{" "}
 <div {...api.getControlProps()}>
   <label {...api.getLabelProps()}>Label</label>
   <button type="button" {...api.getTriggerProps()}>

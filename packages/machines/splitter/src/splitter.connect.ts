@@ -1,25 +1,28 @@
 import { dataAttr, getEventKey, getEventStep } from "@zag-js/dom-query"
 import type { EventKeyMap, NormalizeProps, PropTypes } from "@zag-js/types"
 import { parts } from "./splitter.anatomy"
-import { dom } from "./splitter.dom"
-import type { MachineApi, ResizeTriggerProps, ResizeTriggerState, Send, State } from "./splitter.types"
+import * as dom from "./splitter.dom"
+import type { ResizeTriggerProps, ResizeTriggerState, SplitterApi, SplitterService } from "./splitter.types"
 import { getHandleBounds } from "./splitter.utils"
 
-export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>): MachineApi<T> {
-  const horizontal = state.context.isHorizontal
+export function connect<T extends PropTypes>(service: SplitterService, normalize: NormalizeProps<T>): SplitterApi<T> {
+  const { state, send, prop, computed, context, scope } = service
+
+  const horizontal = computed("isHorizontal")
   const focused = state.hasTag("focus")
   const dragging = state.matches("dragging")
-  const panels = state.context.panels
+  const panels = computed("panels")
+  const activeResizeId = context.get("activeResizeId")
 
   function getResizeTriggerState(props: ResizeTriggerProps): ResizeTriggerState {
     const { id, disabled } = props
     const ids = id.split(":")
-    const panelIds = ids.map((id) => dom.getPanelId(state.context, id))
-    const panels = getHandleBounds(state.context, id)
+    const panelIds = ids.map((id) => dom.getPanelId(scope, id))
+    const panels = getHandleBounds(computed("panels"), id)
 
     return {
       disabled: !!disabled,
-      focused: state.context.activeResizeId === id && focused,
+      focused: activeResizeId === id && focused,
       panelIds,
       min: panels?.min,
       max: panels?.max,
@@ -31,7 +34,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     focused: focused,
     dragging: dragging,
     getResizeTriggerState,
-    bounds: getHandleBounds(state.context),
+    bounds: getHandleBounds(computed("panels"), activeResizeId),
     setToMinSize(id) {
       const panel = panels.find((panel) => panel.id === id)
       send({ type: "SET_PANEL_SIZE", id, size: panel?.minSize, src: "setToMinSize" })
@@ -47,9 +50,9 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     getRootProps() {
       return normalize.element({
         ...parts.root.attrs,
-        "data-orientation": state.context.orientation,
-        id: dom.getRootId(state.context),
-        dir: state.context.dir,
+        "data-orientation": prop("orientation"),
+        id: dom.getRootId(scope),
+        dir: prop("dir"),
         style: {
           display: "flex",
           flexDirection: horizontal ? "row" : "column",
@@ -64,11 +67,11 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       const { id } = props
       return normalize.element({
         ...parts.panel.attrs,
-        "data-orientation": state.context.orientation,
-        dir: state.context.dir,
-        id: dom.getPanelId(state.context, id),
-        "data-ownedby": dom.getRootId(state.context),
-        style: dom.getPanelStyle(state.context, id),
+        "data-orientation": prop("orientation"),
+        dir: prop("dir"),
+        id: dom.getPanelId(scope, id),
+        "data-ownedby": dom.getRootId(scope),
+        style: dom.getPanelStyle(panels, id),
       })
     },
 
@@ -78,16 +81,16 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
 
       return normalize.element({
         ...parts.resizeTrigger.attrs,
-        dir: state.context.dir,
-        id: dom.getResizeTriggerId(state.context, id),
+        dir: prop("dir"),
+        id: dom.getResizeTriggerId(scope, id),
         role: "separator",
-        "data-ownedby": dom.getRootId(state.context),
+        "data-ownedby": dom.getRootId(scope),
         tabIndex: disabled ? undefined : 0,
         "aria-valuenow": triggerState.value,
         "aria-valuemin": triggerState.min,
         "aria-valuemax": triggerState.max,
-        "data-orientation": state.context.orientation,
-        "aria-orientation": state.context.orientation,
+        "data-orientation": prop("orientation"),
+        "aria-orientation": prop("orientation"),
         "aria-controls": triggerState.panelIds.join(" "),
         "data-focus": dataAttr(triggerState.focused),
         "data-disabled": dataAttr(disabled),
@@ -125,7 +128,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
           send({ type: "POINTER_LEAVE", id })
         },
         onBlur() {
-          send("BLUR")
+          send({ type: "BLUR" })
         },
         onFocus() {
           send({ type: "FOCUS", id })
@@ -142,7 +145,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
 
           const keyMap: EventKeyMap = {
             Enter() {
-              send("ENTER")
+              send({ type: "ENTER" })
             },
             ArrowUp() {
               send({ type: "ARROW_UP", step: moveStep })
@@ -157,14 +160,17 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
               send({ type: "ARROW_RIGHT", step: moveStep })
             },
             Home() {
-              send("HOME")
+              send({ type: "HOME" })
             },
             End() {
-              send("END")
+              send({ type: "END" })
             },
           }
 
-          const key = getEventKey(event, state.context)
+          const key = getEventKey(event, {
+            dir: prop("dir"),
+            orientation: prop("orientation"),
+          })
           const exec = keyMap[key]
 
           if (exec) {

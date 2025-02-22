@@ -9,16 +9,12 @@ import { useControls } from "../hooks/use-controls"
 export default function Page() {
   const controls = useControls(popoverControls)
 
-  const [state, send] = useMachine(
-    popover.machine({
-      id: useId(),
-    }),
-    {
-      context: controls.context,
-    },
-  )
+  const service = useMachine(popover.machine, {
+    id: useId(),
+    ...controls.context,
+  })
 
-  const api = popover.connect(state, send, normalizeProps)
+  const api = popover.connect(service, normalizeProps)
 
   const Wrapper = api.portalled ? Portal : Fragment
 
@@ -63,7 +59,7 @@ export default function Page() {
       </main>
 
       <Toolbar controls={controls.ui}>
-        <StateVisualizer state={state} />
+        <StateVisualizer state={service} />
       </Toolbar>
     </>
   )

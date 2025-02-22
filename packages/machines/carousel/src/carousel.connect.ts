@@ -1,23 +1,26 @@
 import { ariaAttr, dataAttr, getEventKey, getEventTarget, isFocusable } from "@zag-js/dom-query"
 import type { EventKeyMap, NormalizeProps, PropTypes } from "@zag-js/types"
+import { throttle } from "@zag-js/utils"
 import { parts } from "./carousel.anatomy"
-import { dom } from "./carousel.dom"
-import type { ItemProps, MachineApi, MachineContext, Send, State } from "./carousel.types"
+import * as dom from "./carousel.dom"
+import type { CarouselApi, CarouselService } from "./carousel.types"
 
-export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>): MachineApi<T> {
+export function connect<T extends PropTypes>(service: CarouselService, normalize: NormalizeProps<T>): CarouselApi<T> {
+  const { state, context, computed, send, scope, prop } = service
+
   const isPlaying = state.matches("autoplay")
   const isDragging = state.matches("dragging")
 
-  const canScrollNext = state.context.canScrollNext
-  const canScrollPrev = state.context.canScrollPrev
-  const horizontal = state.context.isHorizontal
+  const canScrollNext = computed("canScrollNext")
+  const canScrollPrev = computed("canScrollPrev")
+  const horizontal = computed("isHorizontal")
 
-  const pageSnapPoints = Array.from(state.context.pageSnapPoints)
-  const page = state.context.page
-  const slidesPerPage = state.context.slidesPerPage
+  const pageSnapPoints = Array.from(context.get("pageSnapPoints"))
+  const page = context.get("page")
+  const slidesPerPage = prop("slidesPerPage")
 
-  const padding = state.context.padding
-  const translations = state.context.translations
+  const padding = prop("padding")
+  const translations = prop("translations")
 
   return {
     isPlaying,
@@ -42,13 +45,13 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       send({ type: "PAGE.PREV", instant })
     },
     play() {
-      send("AUTOPLAY.START")
+      send({ type: "AUTOPLAY.START" })
     },
     pause() {
-      send("AUTOPLAY.PAUSE")
+      send({ type: "AUTOPLAY.PAUSE" })
     },
     isInView(index) {
-      return Array.from(state.context.slidesInView).includes(index)
+      return Array.from(context.get("slidesInView")).includes(index)
     },
     refresh() {
       send({ type: "SNAP.REFRESH" })
@@ -57,14 +60,14 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     getRootProps() {
       return normalize.element({
         ...parts.root.attrs,
-        id: dom.getRootId(state.context),
+        id: dom.getRootId(scope),
         role: "region",
         "aria-roledescription": "carousel",
-        "data-orientation": state.context.orientation,
-        dir: state.context.dir,
+        "data-orientation": prop("orientation"),
+        dir: prop("dir"),
         style: {
           "--slides-per-page": slidesPerPage,
-          "--slide-spacing": state.context.spacing,
+          "--slide-spacing": prop("spacing"),
           "--slide-item-size":
             "calc(100% / var(--slides-per-page) - var(--slide-spacing) * (var(--slides-per-page) - 1) / var(--slides-per-page))",
         },
@@ -74,13 +77,13 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     getItemGroupProps() {
       return normalize.element({
         ...parts.itemGroup.attrs,
-        id: dom.getItemGroupId(state.context),
-        "data-orientation": state.context.orientation,
+        id: dom.getItemGroupId(scope),
+        "data-orientation": prop("orientation"),
         "data-dragging": dataAttr(isDragging),
-        dir: state.context.dir,
+        dir: prop("dir"),
         "aria-live": isPlaying ? "off" : "polite",
         onMouseDown(event) {
-          if (!state.context.allowMouseDrag) return
+          if (!prop("allowMouseDrag")) return
           if (event.button !== 0) return
           if (event.defaultPrevented) return
 
@@ -90,11 +93,16 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
           event.preventDefault()
           send({ type: "DRAGGING.START" })
         },
-
+        onWheel: throttle(() => {
+          send({ type: "USER.SCROLL" })
+        }, 150),
+        onTouchStart() {
+          send({ type: "USER.SCROLL" })
+        },
         style: {
           display: "grid",
           gap: "var(--slide-spacing)",
-          scrollSnapType: [horizontal ? "x" : "y", state.context.snapType].join(" "),
+          scrollSnapType: [horizontal ? "x" : "y", prop("snapType")].join(" "),
           gridAutoFlow: horizontal ? "column" : "row",
           scrollbarWidth: "none",
           overscrollBehavior: "contain",
@@ -107,20 +115,26 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     },
 
     getItemProps(props) {
-      const isInView = state.context.slidesInView.includes(props.index)
+      const isInView = context.get("slidesInView").includes(props.index)
       return normalize.element({
         ...parts.item.attrs,
-        id: dom.getItemId(state.context, props.index),
-        dir: state.context.dir,
+        id: dom.getItemId(scope, props.index),
+        dir: prop("dir"),
         role: "group",
         "data-index": props.index,
         "data-inview": dataAttr(isInView),
         "aria-roledescription": "slide",
-        "data-orientation": state.context.orientation,
-        "aria-label": state.context.slideCount ? translations.item(props.index, state.context.slideCount) : undefined,
+        "data-orientation": prop("orientation"),
+        "aria-label": prop("slideCount") ? translations.item(props.index, prop("slideCount")!) : undefined,
         "aria-hidden": ariaAttr(!isInView),
         style: {
-          scrollSnapAlign: getSnapAlign(state.context, props),
+          scrollSnapAlign: (() => {
+            const snapAlign = props.snapAlign ?? "start"
+            const slidesPerMove = prop("slidesPerMove")
+            const perMove = slidesPerMove === "auto" ? Math.floor(prop("slidesPerPage")) : slidesPerMove
+            const shouldSnap = (props.index + perMove) % perMove === 0
+            return shouldSnap ? snapAlign : undefined
+          })(),
         },
       })
     },
@@ -128,20 +142,20 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     getControlProps() {
       return normalize.element({
         ...parts.control.attrs,
-        "data-orientation": state.context.orientation,
+        "data-orientation": prop("orientation"),
       })
     },
 
     getPrevTriggerProps() {
       return normalize.button({
         ...parts.prevTrigger.attrs,
-        id: dom.getPrevTriggerId(state.context),
+        id: dom.getPrevTriggerId(scope),
         type: "button",
         disabled: !canScrollPrev,
-        dir: state.context.dir,
+        dir: prop("dir"),
         "aria-label": translations.prevTrigger,
-        "data-orientation": state.context.orientation,
-        "aria-controls": dom.getItemGroupId(state.context),
+        "data-orientation": prop("orientation"),
+        "aria-controls": dom.getItemGroupId(scope),
         onClick(event) {
           if (event.defaultPrevented) return
           send({ type: "PAGE.PREV", src: "trigger" })
@@ -152,12 +166,12 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     getNextTriggerProps() {
       return normalize.button({
         ...parts.nextTrigger.attrs,
-        dir: state.context.dir,
-        id: dom.getNextTriggerId(state.context),
+        dir: prop("dir"),
+        id: dom.getNextTriggerId(scope),
         type: "button",
         "aria-label": translations.nextTrigger,
-        "data-orientation": state.context.orientation,
-        "aria-controls": dom.getItemGroupId(state.context),
+        "data-orientation": prop("orientation"),
+        "aria-controls": dom.getItemGroupId(scope),
         disabled: !canScrollNext,
         onClick(event) {
           if (event.defaultPrevented) return
@@ -169,9 +183,9 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     getIndicatorGroupProps() {
       return normalize.element({
         ...parts.indicatorGroup.attrs,
-        dir: state.context.dir,
-        id: dom.getIndicatorGroupId(state.context),
-        "data-orientation": state.context.orientation,
+        dir: prop("dir"),
+        id: dom.getIndicatorGroupId(scope),
+        "data-orientation": prop("orientation"),
         onKeyDown(event) {
           if (event.defaultPrevented) return
           const src = "indicator"
@@ -207,8 +221,8 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
           }
 
           const key = getEventKey(event, {
-            dir: state.context.dir,
-            orientation: state.context.orientation,
+            dir: prop("dir"),
+            orientation: prop("orientation"),
           })
 
           const exec = keyMap[key]
@@ -220,13 +234,13 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     getIndicatorProps(props) {
       return normalize.button({
         ...parts.indicator.attrs,
-        dir: state.context.dir,
-        id: dom.getIndicatorId(state.context, props.index),
+        dir: prop("dir"),
+        id: dom.getIndicatorId(scope, props.index),
         type: "button",
-        "data-orientation": state.context.orientation,
+        "data-orientation": prop("orientation"),
         "data-index": props.index,
         "data-readonly": dataAttr(props.readOnly),
-        "data-current": dataAttr(props.index === state.context.page),
+        "data-current": dataAttr(props.index === page),
         "aria-label": translations.indicator(props.index),
         onClick(event) {
           if (event.defaultPrevented) return
@@ -240,7 +254,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       return normalize.button({
         ...parts.autoplayTrigger.attrs,
         type: "button",
-        "data-orientation": state.context.orientation,
+        "data-orientation": prop("orientation"),
         "data-pressed": dataAttr(isPlaying),
         "aria-label": isPlaying ? translations.autoplayStop : translations.autoplayStart,
         onClick(event) {
@@ -250,11 +264,4 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       })
     },
   }
-}
-
-function getSnapAlign(ctx: MachineContext, props: ItemProps) {
-  const { snapAlign = "start", index } = props
-  const perMove = ctx.slidesPerMove === "auto" ? Math.floor(ctx.slidesPerPage) : ctx.slidesPerMove
-  const shouldSnap = (index + perMove) % perMove === 0
-  return shouldSnap ? snapAlign : undefined
 }

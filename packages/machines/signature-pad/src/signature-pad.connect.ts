@@ -1,45 +1,46 @@
 import { dataAttr, getEventTarget, getRelativePoint, isLeftClick, isModifierKey } from "@zag-js/dom-query"
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import { parts } from "./signature-pad.anatomy"
-import { dom } from "./signature-pad.dom"
-import type { IntlTranslations, MachineApi, Send, State } from "./signature-pad.types"
+import * as dom from "./signature-pad.dom"
+import type { SignaturePadApi, SignaturePadService } from "./signature-pad.types"
 
-const defaultTranslations: IntlTranslations = {
-  control: "signature pad",
-  clearTrigger: "clear signature",
-}
+export function connect<T extends PropTypes>(
+  service: SignaturePadService,
+  normalize: NormalizeProps<T>,
+): SignaturePadApi<T> {
+  const { state, send, prop, computed, context, scope } = service
 
-export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>): MachineApi<T> {
   const drawing = state.matches("drawing")
-  const empty = state.context.isEmpty
-  const interactive = state.context.isInteractive
-  const disabled = !!state.context.disabled
+  const empty = computed("isEmpty")
+  const interactive = computed("isInteractive")
+  const disabled = prop("disabled")
 
-  const translations = state.context.translations || defaultTranslations
+  const translations = prop("translations")
 
   return {
     empty: empty,
     drawing: drawing,
-    currentPath: state.context.currentPath,
-    paths: state.context.paths,
+    currentPath: context.get("currentPath"),
+    paths: context.get("paths"),
     clear() {
       send({ type: "CLEAR" })
     },
 
     getDataUrl(type, quality) {
-      return dom.getDataUrl(state.context, { type, quality })
+      if (computed("isEmpty")) return Promise.resolve("")
+      return dom.getDataUrl(scope, { type, quality })
     },
 
     getLabelProps() {
       return normalize.label({
         ...parts.label.attrs,
-        id: dom.getLabelId(state.context),
+        id: dom.getLabelId(scope),
         "data-disabled": dataAttr(disabled),
-        htmlFor: dom.getHiddenInputId(state.context),
+        htmlFor: dom.getHiddenInputId(scope),
         onClick(event) {
           if (!interactive) return
           if (event.defaultPrevented) return
-          const controlEl = dom.getControlEl(state.context)
+          const controlEl = dom.getControlEl(scope)
           controlEl?.focus({ preventScroll: true })
         },
       })
@@ -49,7 +50,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       return normalize.element({
         ...parts.root.attrs,
         "data-disabled": dataAttr(disabled),
-        id: dom.getRootId(state.context),
+        id: dom.getRootId(scope),
       })
     },
 
@@ -57,7 +58,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       return normalize.element({
         ...parts.control.attrs,
         tabIndex: disabled ? undefined : 0,
-        id: dom.getControlId(state.context),
+        id: dom.getControlId(scope),
         role: "application",
         "aria-roledescription": "signature pad",
         "aria-label": translations.control,
@@ -74,7 +75,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
           event.currentTarget.setPointerCapture(event.pointerId)
 
           const point = { x: event.clientX, y: event.clientY }
-          const { offset } = getRelativePoint(point, dom.getControlEl(state.context)!)
+          const { offset } = getRelativePoint(point, dom.getControlEl(scope)!)
           send({ type: "POINTER_DOWN", point: offset, pressure: event.pressure })
         },
         onPointerUp(event) {
@@ -102,7 +103,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
           width: "100%",
           height: "100%",
           pointerEvents: "none",
-          fill: state.context.drawing.fill,
+          fill: prop("drawing").fill,
         },
       })
     },
@@ -126,7 +127,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         ...parts.clearTrigger.attrs,
         type: "button",
         "aria-label": translations.clearTrigger,
-        hidden: !state.context.paths.length || drawing,
+        hidden: !context.get("paths").length || drawing,
         disabled,
         onClick() {
           send({ type: "CLEAR" })
@@ -136,13 +137,13 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
 
     getHiddenInputProps(props) {
       return normalize.input({
-        id: dom.getHiddenInputId(state.context),
+        id: dom.getHiddenInputId(scope),
         type: "text",
         hidden: true,
         disabled,
-        required: state.context.required,
-        readOnly: state.context.readOnly,
-        name: state.context.name,
+        required: prop("required"),
+        readOnly: prop("readOnly"),
+        name: prop("name"),
         value: props.value,
       })
     },

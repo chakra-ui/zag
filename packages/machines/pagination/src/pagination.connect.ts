@@ -1,31 +1,40 @@
 import { dataAttr } from "@zag-js/dom-query"
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import { parts } from "./pagination.anatomy"
-import { dom } from "./pagination.dom"
-import type { MachineApi, Send, State } from "./pagination.types"
+import * as dom from "./pagination.dom"
+import type { PaginationService, PaginationApi } from "./pagination.types"
 import { getTransformedRange } from "./pagination.utils"
 
-export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>): MachineApi<T> {
-  const totalPages = state.context.totalPages
-  const page = state.context.page
-  const translations = state.context.translations
-  const count = state.context.count
+export function connect<T extends PropTypes>(
+  service: PaginationService,
+  normalize: NormalizeProps<T>,
+): PaginationApi<T> {
+  const { send, scope, prop, computed, context } = service
 
-  const previousPage = state.context.previousPage
-  const nextPage = state.context.nextPage
-  const pageRange = state.context.pageRange
+  const totalPages = computed("totalPages")
+  const page = context.get("page")
+  const translations = prop("translations")
+  const count = prop("count")
 
-  const type = state.context.type
+  const previousPage = computed("previousPage")
+  const nextPage = computed("nextPage")
+  const pageRange = computed("pageRange")
+
+  const type = prop("type")
   const isButton = type === "button"
 
   const isFirstPage = page === 1
   const isLastPage = page === totalPages
-  const pages = getTransformedRange(state.context)
+  const pages = getTransformedRange({
+    page,
+    totalPages,
+    siblingCount: prop("siblingCount"),
+  })
 
   return {
     count,
     page,
-    pageSize: state.context.pageSize,
+    pageSize: context.get("pageSize"),
     totalPages,
     pages,
     previousPage,
@@ -33,9 +42,6 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     pageRange,
     slice(data) {
       return data.slice(pageRange.start, pageRange.end)
-    },
-    setCount(count) {
-      send({ type: "SET_COUNT", count })
     },
     setPageSize(size) {
       send({ type: "SET_PAGE_SIZE", size })
@@ -58,29 +64,29 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
 
     getRootProps() {
       return normalize.element({
-        id: dom.getRootId(state.context),
+        id: dom.getRootId(scope),
         ...parts.root.attrs,
-        dir: state.context.dir,
+        dir: prop("dir"),
         "aria-label": translations.rootLabel,
       })
     },
 
     getEllipsisProps(props) {
       return normalize.element({
-        id: dom.getEllipsisId(state.context, props.index),
+        id: dom.getEllipsisId(scope, props.index),
         ...parts.ellipsis.attrs,
-        dir: state.context.dir,
+        dir: prop("dir"),
       })
     },
 
     getItemProps(props) {
       const index = props.value
-      const isCurrentPage = index === state.context.page
+      const isCurrentPage = index === page
 
       return normalize.element({
-        id: dom.getItemId(state.context, index),
+        id: dom.getItemId(scope, index),
         ...parts.item.attrs,
-        dir: state.context.dir,
+        dir: prop("dir"),
         "data-index": index,
         "data-selected": dataAttr(isCurrentPage),
         "aria-current": isCurrentPage ? "page" : undefined,
@@ -94,9 +100,9 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
 
     getPrevTriggerProps() {
       return normalize.element({
-        id: dom.getPrevTriggerId(state.context),
+        id: dom.getPrevTriggerId(scope),
         ...parts.prevTrigger.attrs,
-        dir: state.context.dir,
+        dir: prop("dir"),
         "data-disabled": dataAttr(isFirstPage),
         "aria-label": translations.prevTriggerLabel,
         onClick() {
@@ -108,9 +114,9 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
 
     getNextTriggerProps() {
       return normalize.element({
-        id: dom.getNextTriggerId(state.context),
+        id: dom.getNextTriggerId(scope),
         ...parts.nextTrigger.attrs,
-        dir: state.context.dir,
+        dir: prop("dir"),
         "data-disabled": dataAttr(isLastPage),
         "aria-label": translations.nextTriggerLabel,
         onClick() {

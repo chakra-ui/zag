@@ -4,9 +4,9 @@ import { menuControls, menuOptionData } from "@zag-js/shared"
 import { normalizeProps, useMachine } from "@zag-js/vue"
 
 const controls = useControls(menuControls)
-const [state, send] = useMachine(menu.machine({ id: "1" }))
+const service = useMachine(menu.machine, { id: useId() })
 
-const api = computed(() => menu.connect(state.value, send, normalizeProps))
+const api = computed(() => menu.connect(service, normalizeProps))
 
 const orderRef = ref("")
 const typeRef = ref<string[]>([])
@@ -42,7 +42,7 @@ const checkboxes = computed(() =>
   <main>
     <div>
       <button v-bind="api.getTriggerProps()">Actions <span v-bind="api.getIndicatorProps()">▾</span></button>
-      <Teleport to="body">
+      <Teleport to="#teleports">
         <div v-bind="api.getPositionerProps()">
           <div v-bind="api.getContentProps()">
             <div v-for="item in radios" :key="item.value" v-bind="api.getOptionItemProps(item)">
@@ -61,7 +61,7 @@ const checkboxes = computed(() =>
   </main>
 
   <Toolbar>
-    <StateVisualizer :state="state" />
+    <StateVisualizer :state="service" />
     <template #controls>
       <Controls :control="controls" />
     </template>

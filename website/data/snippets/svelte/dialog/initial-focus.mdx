@@ -3,8 +3,8 @@
   // initial focused element ref
   let inputRef: HTMLInputElement | null = null
 
-  const [snapshot, send] = useMachine(
-    dialog.machine({
+  const service = useMachine(
+    dialog.machine, ({
       initialFocusEl: () => inputRef,
     }),
   )

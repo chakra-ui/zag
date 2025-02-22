@@ -1,5 +1,5 @@
-import type { Machine, StateMachine as S } from "@zag-js/core"
-import type { CommonProperties, DirectionProperty, PropTypes, RequiredBy } from "@zag-js/types"
+import type { Service } from "@zag-js/core"
+import type { CommonProperties, DirectionProperty, PropTypes } from "@zag-js/types"
 
 /* -----------------------------------------------------------------------------
  * Callback details
@@ -21,7 +21,7 @@ export type ElementIds = Partial<{
  * Machine context
  * -----------------------------------------------------------------------------*/
 
-interface PublicContext extends CommonProperties, DirectionProperty {
+export interface AvatarProps extends CommonProperties, DirectionProperty {
   /**
    * Functional called when the image loading status changes.
    */
@@ -32,29 +32,27 @@ interface PublicContext extends CommonProperties, DirectionProperty {
   ids?: ElementIds | undefined
 }
 
-interface PrivateContext {}
-
-type ComputedContext = Readonly<{}>
-
-export type UserDefinedContext = RequiredBy<PublicContext, "id">
-
-export interface MachineContext extends PublicContext, PrivateContext, ComputedContext {}
-
-export interface MachineState {
-  value: "loading" | "error" | "loaded"
+export interface AvatarSchema {
+  props: AvatarProps
+  context: any
+  initial: "loading"
+  effect: "trackImageRemoval" | "trackSrcChange"
+  action: "invokeOnLoad" | "invokeOnError" | "checkImageStatus"
+  event:
+    | { type: "img.loaded"; src?: string }
+    | { type: "img.error"; src?: string }
+    | { type: "img.unmount" }
+    | { type: "src.change" }
+  state: "loading" | "error" | "loaded"
 }
 
-export type State = S.State<MachineContext, MachineState>
-
-export type Send = S.Send<S.AnyEventObject>
-
-export type Service = Machine<MachineContext, MachineState, S.AnyEventObject>
+export type AvatarService = Service<AvatarSchema>
 
 /* -----------------------------------------------------------------------------
  * Component API
  * -----------------------------------------------------------------------------*/
 
-export interface MachineApi<T extends PropTypes = PropTypes> {
+export interface AvatarApi<T extends PropTypes = PropTypes> {
   /**
    * Whether the image is loaded.
    */

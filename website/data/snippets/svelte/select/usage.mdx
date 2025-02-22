@@ -19,14 +19,12 @@
     itemToValue: (item) => item.value,
   })
 
-  const [snapshot, send] = useMachine(
-    select.machine({
-      id: "1",
-      collection,
-    }),
-  )
+  const service = useMachine(select.machine, {
+    id: "1",
+    collection,
+  })
 
-  const api = $derived(select.connect(snapshot, send, normalizeProps))
+  const api = $derived(select.connect(service, normalizeProps))
 </script>
 
 <div {...api.getRootProps()}>

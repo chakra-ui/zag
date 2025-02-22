@@ -1,29 +1,28 @@
-import { createScope, getTabbables, queryAll } from "@zag-js/dom-query"
-import type { MachineContext as Ctx } from "./carousel.types"
+import type { Scope } from "@zag-js/core"
+import { getTabbables, queryAll } from "@zag-js/dom-query"
 
-export const dom = createScope({
-  getRootId: (ctx: Ctx) => ctx.ids?.root ?? `carousel:${ctx.id}`,
-  getItemId: (ctx: Ctx, index: number) => ctx.ids?.item?.(index) ?? `carousel:${ctx.id}:item:${index}`,
-  getItemGroupId: (ctx: Ctx) => ctx.ids?.itemGroup ?? `carousel:${ctx.id}:item-group`,
-  getNextTriggerId: (ctx: Ctx) => ctx.ids?.nextTrigger ?? `carousel:${ctx.id}:next-trigger`,
-  getPrevTriggerId: (ctx: Ctx) => ctx.ids?.prevTrigger ?? `carousel:${ctx.id}:prev-trigger`,
-  getIndicatorGroupId: (ctx: Ctx) => ctx.ids?.indicatorGroup ?? `carousel:${ctx.id}:indicator-group`,
-  getIndicatorId: (ctx: Ctx, index: number) => ctx.ids?.indicator?.(index) ?? `carousel:${ctx.id}:indicator:${index}`,
+export const getRootId = (ctx: Scope) => ctx.ids?.root ?? `carousel:${ctx.id}`
+export const getItemId = (ctx: Scope, index: number) => ctx.ids?.item?.(index) ?? `carousel:${ctx.id}:item:${index}`
+export const getItemGroupId = (ctx: Scope) => ctx.ids?.itemGroup ?? `carousel:${ctx.id}:item-group`
+export const getNextTriggerId = (ctx: Scope) => ctx.ids?.nextTrigger ?? `carousel:${ctx.id}:next-trigger`
+export const getPrevTriggerId = (ctx: Scope) => ctx.ids?.prevTrigger ?? `carousel:${ctx.id}:prev-trigger`
+export const getIndicatorGroupId = (ctx: Scope) => ctx.ids?.indicatorGroup ?? `carousel:${ctx.id}:indicator-group`
+export const getIndicatorId = (ctx: Scope, index: number) =>
+  ctx.ids?.indicator?.(index) ?? `carousel:${ctx.id}:indicator:${index}`
 
-  getRootEl: (ctx: Ctx) => dom.getById(ctx, dom.getRootId(ctx)),
-  getItemGroupEl: (ctx: Ctx) => dom.getById(ctx, dom.getItemGroupId(ctx))!,
-  getItemEl: (ctx: Ctx, index: number) => dom.getById(ctx, dom.getItemId(ctx, index)),
-  getItemEls: (ctx: Ctx) => queryAll(dom.getItemGroupEl(ctx), `[data-part=item]`),
-  getActiveIndicatorEl: (ctx: Ctx) => dom.getById(ctx, dom.getIndicatorId(ctx, ctx.page))!,
+export const getRootEl = (ctx: Scope) => ctx.getById(getRootId(ctx))
+export const getItemGroupEl = (ctx: Scope) => ctx.getById(getItemGroupId(ctx))!
+export const getItemEl = (ctx: Scope, index: number) => ctx.getById(getItemId(ctx, index))
+export const getItemEls = (ctx: Scope) => queryAll(getItemGroupEl(ctx), `[data-part=item]`)
+export const getIndicatorEl = (ctx: Scope, page: number) => ctx.getById(getIndicatorId(ctx, page))!
 
-  syncTabIndex(ctx: Ctx) {
-    const el = dom.getItemGroupEl(ctx)
-    if (!el) return
-    const tabbables = getTabbables(el)
-    if (tabbables.length > 0) {
-      el.removeAttribute("tabindex")
-    } else {
-      el.setAttribute("tabindex", "0")
-    }
-  },
-})
+export const syncTabIndex = (ctx: Scope) => {
+  const el = getItemGroupEl(ctx)
+  if (!el) return
+  const tabbables = getTabbables(el)
+  if (tabbables.length > 0) {
+    el.removeAttribute("tabindex")
+  } else {
+    el.setAttribute("tabindex", "0")
+  }
+}

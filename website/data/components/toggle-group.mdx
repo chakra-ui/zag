@@ -66,12 +66,10 @@ By default, the toggle group is assumed to be horizontal. To change the
 orientation to vertical, set the `orientation` property in the machine's context
 to `vertical`.
 
-```jsx {3}
-const [state, send] = useMachine(
-  toggle.machine({
-    orientation: "vertical",
-  }),
-)
+```jsx {2}
+const service = useMachine(toggle.machine, {
+  orientation: "vertical",
+})
 ```
 
 ## Listening for value changes
@@ -79,15 +77,13 @@ const [state, send] = useMachine(
 When the pressed toggle in the group changes, `onValueChange` callback is
 invoked.
 
-```jsx {3-5}
-const [state, send] = useMachine(
-  toggle.machine({
-    onValueChange(details) {
-      // details => { value: string[] }
-      console.log(details.value)
-    },
-  }),
-)
+```jsx {2-4}
+const service = useMachine(toggle.machine, {
+  onValueChange(details) {
+    // details => { value: string[] }
+    console.log(details.value)
+  },
+})
 ```
 
 ## Allowing multiple selection
@@ -95,12 +91,10 @@ const [state, send] = useMachine(
 Set the `multiple` property in the machine's context to `true` to allow multiple
 options to be toggled.
 
-```jsx {3}
-const [state, send] = useMachine(
-  toggle.machine({
-    multiple: true,
-  }),
-)
+```jsx {2}
+const service = useMachine(toggle.machine, {
+  multiple: true,
+})
 ```
 
 ## Disabling the toggle group
@@ -108,12 +102,10 @@ const [state, send] = useMachine(
 Set the `disabled` property in the machine's context to `true` to disable the
 toggle group.
 
-```jsx {3}
-const [state, send] = useMachine(
-  toggle.machine({
-    disabled: true,
-  }),
-)
+```jsx {2}
+const service = useMachine(toggle.machine, {
+  disabled: true,
+})
 ```
 
 ## Disabling a toggle
@@ -134,12 +126,10 @@ disable a toggle.
 The toggle group loops keyboard navigation by default. To disable this, set the
 `loop` property in the machine's context to `false`.
 
-```jsx {3}
-const [state, send] = useMachine(
-  toggle.machine({
-    loop: false,
-  }),
-)
+```jsx {2}
+const service = useMachine(toggle.machine, {
+  loop: false,
+})
 ```
 
 ## Disabling roving focus management
@@ -147,12 +137,10 @@ const [state, send] = useMachine(
 The toggle group uses roving focus management by default. To disable this, set
 the `rovingFocus` property in the machine's context to `false`.
 
-```jsx {3}
-const [state, send] = useMachine(
-  toggle.machine({
-    rovingFocus: false,
-  }),
-)
+```jsx {2}
+const service = useMachine(toggle.machine, {
+  rovingFocus: false,
+})
 ```
 
 ## Styling Guide

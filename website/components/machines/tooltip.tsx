@@ -6,11 +6,12 @@ type TooltipProps = {
   controls: {}
 }
 export function Tooltip(props: TooltipProps) {
-  const [state, send] = useMachine(tooltip.machine({ id: useId() }), {
-    context: props.controls,
+  const service = useMachine(tooltip.machine, {
+    id: useId(),
+    ...props.controls,
   })
 
-  const api = tooltip.connect(state, send, normalizeProps)
+  const api = tooltip.connect(service, normalizeProps)
 
   return (
     <>

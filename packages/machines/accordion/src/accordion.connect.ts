@@ -1,13 +1,19 @@
-import { dataAttr, isSafari, getEventKey } from "@zag-js/dom-query"
-import type { NormalizeProps, PropTypes, EventKeyMap } from "@zag-js/types"
+import { dataAttr, getEventKey, isSafari } from "@zag-js/dom-query"
+import type { EventKeyMap, NormalizeProps, PropTypes } from "@zag-js/types"
+import type { Service } from "@zag-js/core"
 import { parts } from "./accordion.anatomy"
-import { dom } from "./accordion.dom"
-import type { ItemProps, ItemState, MachineApi, Send, State } from "./accordion.types"
+import * as dom from "./accordion.dom"
+import type { AccordionApi, AccordionSchema, ItemProps, ItemState } from "./accordion.types"
 
-export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>): MachineApi<T> {
-  const focusedValue = state.context.focusedValue
-  const value = state.context.value
-  const multiple = state.context.multiple
+export function connect<T extends PropTypes>(
+  service: Service<AccordionSchema>,
+  normalize: NormalizeProps<T>,
+): AccordionApi<T> {
+  const { send, context, prop, scope, computed } = service
+
+  const focusedValue = context.get("focusedValue")
+  const value = context.get("value")
+  const multiple = prop("multiple")
 
   function setValue(value: string[]) {
     let nextValue = value
@@ -21,7 +27,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     return {
       expanded: value.includes(props.value),
       focused: focusedValue === props.value,
-      disabled: Boolean(props.disabled ?? state.context.disabled),
+      disabled: Boolean(props.disabled ?? prop("disabled")),
     }
   }
 
@@ -34,9 +40,9 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     getRootProps() {
       return normalize.element({
         ...parts.root.attrs,
-        dir: state.context.dir,
-        id: dom.getRootId(state.context),
-        "data-orientation": state.context.orientation,
+        dir: prop("dir"),
+        id: dom.getRootId(scope),
+        "data-orientation": prop("orientation"),
       })
     },
 
@@ -44,12 +50,12 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       const itemState = getItemState(props)
       return normalize.element({
         ...parts.item.attrs,
-        dir: state.context.dir,
-        id: dom.getItemId(state.context, props.value),
+        dir: prop("dir"),
+        id: dom.getItemId(scope, props.value),
         "data-state": itemState.expanded ? "open" : "closed",
         "data-focus": dataAttr(itemState.focused),
         "data-disabled": dataAttr(itemState.disabled),
-        "data-orientation": state.context.orientation,
+        "data-orientation": prop("orientation"),
       })
     },
 
@@ -57,15 +63,15 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       const itemState = getItemState(props)
       return normalize.element({
         ...parts.itemContent.attrs,
-        dir: state.context.dir,
+        dir: prop("dir"),
         role: "region",
-        id: dom.getItemContentId(state.context, props.value),
-        "aria-labelledby": dom.getItemTriggerId(state.context, props.value),
+        id: dom.getItemContentId(scope, props.value),
+        "aria-labelledby": dom.getItemTriggerId(scope, props.value),
         hidden: !itemState.expanded,
         "data-state": itemState.expanded ? "open" : "closed",
         "data-disabled": dataAttr(itemState.disabled),
         "data-focus": dataAttr(itemState.focused),
-        "data-orientation": state.context.orientation,
+        "data-orientation": prop("orientation"),
       })
     },
 
@@ -73,12 +79,12 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       const itemState = getItemState(props)
       return normalize.element({
         ...parts.itemIndicator.attrs,
-        dir: state.context.dir,
+        dir: prop("dir"),
         "aria-hidden": true,
         "data-state": itemState.expanded ? "open" : "closed",
         "data-disabled": dataAttr(itemState.disabled),
         "data-focus": dataAttr(itemState.focused),
-        "data-orientation": state.context.orientation,
+        "data-orientation": prop("orientation"),
       })
     },
 
@@ -89,22 +95,24 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       return normalize.button({
         ...parts.itemTrigger.attrs,
         type: "button",
-        dir: state.context.dir,
-        id: dom.getItemTriggerId(state.context, value),
-        "aria-controls": dom.getItemContentId(state.context, value),
+        dir: prop("dir"),
+        id: dom.getItemTriggerId(scope, value),
+        "aria-controls": dom.getItemContentId(scope, value),
         "aria-expanded": itemState.expanded,
         disabled: itemState.disabled,
-        "data-orientation": state.context.orientation,
+        "data-orientation": prop("orientation"),
         "aria-disabled": itemState.disabled,
         "data-state": itemState.expanded ? "open" : "closed",
-        "data-ownedby": dom.getRootId(state.context),
+        "data-ownedby": dom.getRootId(scope),
         onFocus() {
-          if (itemState.disabled) return
-          send({ type: "TRIGGER.FOCUS", value })
+          queueMicrotask(() => {
+            if (itemState.disabled) return
+            send({ type: "TRIGGER.FOCUS", value })
+          })
         },
         onBlur() {
           if (itemState.disabled) return
-          send("TRIGGER.BLUR")
+          send({ type: "TRIGGER.BLUR" })
         },
         onClick(event) {
           if (itemState.disabled) return
@@ -119,19 +127,19 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
 
           const keyMap: EventKeyMap = {
             ArrowDown() {
-              if (state.context.isHorizontal) return
+              if (computed("isHorizontal")) return
               send({ type: "GOTO.NEXT", value })
             },
             ArrowUp() {
-              if (state.context.isHorizontal) return
+              if (computed("isHorizontal")) return
               send({ type: "GOTO.PREV", value })
             },
             ArrowRight() {
-              if (!state.context.isHorizontal) return
+              if (!computed("isHorizontal")) return
               send({ type: "GOTO.NEXT", value })
             },
             ArrowLeft() {
-              if (!state.context.isHorizontal) return
+              if (!computed("isHorizontal")) return
               send({ type: "GOTO.PREV", value })
             },
             Home() {
@@ -143,8 +151,8 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
           }
 
           const key = getEventKey(event, {
-            dir: state.context.dir,
-            orientation: state.context.orientation,
+            dir: prop("dir"),
+            orientation: prop("orientation"),
           })
 
           const exec = keyMap[key]

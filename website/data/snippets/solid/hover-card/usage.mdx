@@ -5,9 +5,9 @@ import { createMemo, createUniqueId, Show } from "solid-js"
 import { Portal } from "solid-js/web"
 
 function Checkbox() {
-  const [state, send] = useMachine(hoverCard.machine({ id: "1" }))
+  const service = useMachine(hoverCard.machine, { id: "1" })
 
-  const api = hoverCard.connect(state, send, normalizeProps)
+  const api = hoverCard.connect(service, normalizeProps)
 
   return (
     <>

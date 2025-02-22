@@ -10,14 +10,12 @@
     { title: "Step 3" },
   ]
 
-  const [state, send] = useMachine(
-    steps.machine({
-      id: "1",
-      count: stepsData.length,
-    }),
-  )
+  const service = useMachine(steps.machine, {
+    id: "1",
+    count: stepsData.length,
+  })
 
-  const api = computed(() => steps.connect(state.value, send, normalizeProps))
+  const api = computed(() => steps.connect(service, normalizeProps))
 </script>
 
 <template>

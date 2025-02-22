@@ -10,21 +10,20 @@ import { useControls } from "~/hooks/use-controls"
 export default function Page() {
   const controls = useControls(checkboxControls)
 
-  const [state, send] = useMachine(
-    checkbox.machine({
-      name: "checkbox",
+  const service = useMachine(
+    checkbox.machine,
+    controls.mergeProps({
       id: createUniqueId(),
+      name: "checkbox",
     }),
-    {
-      context: controls.context,
-    },
   )
 
-  const api = createMemo(() => checkbox.connect(state, send, normalizeProps))
+  const api = createMemo(() => checkbox.connect(service, normalizeProps))
 
   return (
     <>
       <main class="checkbox">
+        <pre>{JSON.stringify(service.prop("id"), null, 2)}</pre>
         <form
           onChange={(e) => {
             const result = serialize(e.currentTarget, { hash: true })
@@ -54,8 +53,8 @@ export default function Page() {
         </form>
       </main>
 
-      <Toolbar controls={controls.ui}>
-        <StateVisualizer state={state} />
+      <Toolbar controls={controls}>
+        <StateVisualizer state={service} />
       </Toolbar>
     </>
   )

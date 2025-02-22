@@ -5,15 +5,15 @@ import { normalizeProps, useMachine } from "@zag-js/vue"
 
 const controls = useControls(progressControls)
 
-const [state, send] = useMachine(progress.machine({ id: "1" }), {
-  context: controls.context,
+const service = useMachine(progress.machine, {
+  id: useId(),
 })
 
-const api = computed(() => progress.connect(state.value, send, normalizeProps))
+const api = computed(() => progress.connect(service, normalizeProps))
 </script>
 
 <template>
-  <main className="progress">
+  <main class="progress">
     <div v-bind="api.getRootProps()">
       <div v-bind="api.getLabelProps()">Upload progress</div>
       <svg v-bind="api.getCircleProps()">
@@ -33,7 +33,7 @@ const api = computed(() => progress.connect(state.value, send, normalizeProps))
   </main>
 
   <Toolbar>
-    <StateVisualizer :state="state" />
+    <StateVisualizer :state="service" />
     <template #controls>
       <Controls :control="controls" />
     </template>

@@ -19,9 +19,11 @@
   let order = $state("")
   let type = $state<string[]>([])
 
-  const [snapshot, send] = useMachine(menu.machine({ id: "1" }))
+  const service = useMachine(menu.machine, {
+    id: "1",
+  })
 
-  const api = $derived(menu.connect(snapshot, send, normalizeProps))
+  const api = $derived(menu.connect(service, normalizeProps))
 
   const radios = $derived(
     data.order.map((item) => ({

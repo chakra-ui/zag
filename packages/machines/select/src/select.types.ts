@@ -1,5 +1,5 @@
 import type { CollectionItem, CollectionOptions, ListCollection } from "@zag-js/collection"
-import type { Machine, StateMachine as S } from "@zag-js/core"
+import type { EventObject, Service } from "@zag-js/core"
 import type { InteractOutsideHandlers } from "@zag-js/dismissable"
 import type { TypeaheadState } from "@zag-js/dom-query"
 import type { Placement, PositioningOptions } from "@zag-js/popper"
@@ -47,7 +47,7 @@ export type ElementIds = Partial<{
   itemGroupLabel(id: string | number): string
 }>
 
-interface PublicContext<T extends CollectionItem = CollectionItem>
+export interface SelectProps<T extends CollectionItem = CollectionItem>
   extends DirectionProperty,
     CommonProperties,
     InteractOutsideHandlers {
@@ -103,15 +103,25 @@ interface PublicContext<T extends CollectionItem = CollectionItem>
   /**
    * The positioning options of the menu.
    */
-  positioning: PositioningOptions
+  positioning?: PositioningOptions | undefined
   /**
-   * The keys of the selected items
+   * The controlled keys of the selected items
    */
-  value: string[]
+  value?: string[] | undefined
   /**
-   * The key of the highlighted item
+   * The initial default value of the select when rendered.
+   * Use when you don't need to control the value of the select.
    */
-  highlightedValue: string | null
+  defaultValue?: string[] | undefined
+  /**
+   * The controlled key of the highlighted item
+   */
+  highlightedValue?: string | null
+  /**
+   * The initial value of the highlighted item when opened.
+   * Use when you don't need to control the highlighted value of the select.
+   */
+  defaultHighlightedValue?: string | null | undefined
   /**
    * Whether to loop the keyboard navigation through the options
    * @default false
@@ -128,7 +138,7 @@ interface PublicContext<T extends CollectionItem = CollectionItem>
   /**
    * Whether the select's open state is controlled by the user
    */
-  "open.controlled"?: boolean | undefined
+  defaultOpen?: boolean | undefined
   /**
    * Function to scroll to a specific index
    */
@@ -137,7 +147,7 @@ interface PublicContext<T extends CollectionItem = CollectionItem>
    * Whether the select is a composed with other composite widgets like tabs or combobox
    * @default true
    */
-  composite: boolean
+  composite?: boolean | undefined
   /**
    * Whether the value can be cleared by clicking the selected item.
    *
@@ -146,77 +156,36 @@ interface PublicContext<T extends CollectionItem = CollectionItem>
   deselectable?: boolean | undefined
 }
 
-interface PrivateContext<T extends CollectionItem = CollectionItem> {
-  /**
-   * @internal
-   * Internal state of the typeahead
-   */
-  typeahead: TypeaheadState
-  /**
-   * @internal
-   * The current placement of the menu
-   */
-  currentPlacement?: Placement | undefined
-  /**
-   * @internal
-   * Whether the fieldset is disabled
-   */
-  fieldsetDisabled: boolean
-  /**
-   * The highlighted item
-   */
-  highlightedItem: T | null
-  /**
-   * @computed
-   * The selected items
-   */
-  selectedItems: T[]
-  /**
-   * @computed
-   * The display value of the select (based on the selected items)
-   */
-  valueAsString: string
+type PropsWithDefault = "positioning" | "closeOnSelect" | "loopFocus" | "composite" | "collection"
+
+export interface SelectSchema<T extends CollectionItem = CollectionItem> {
+  state: "idle" | "focused" | "open"
+  props: RequiredBy<SelectProps<T>, PropsWithDefault>
+  context: {
+    currentPlacement: Placement | undefined
+    value: string[]
+    highlightedValue: string | null
+    fieldsetDisabled: boolean
+    highlightedItem: T | null
+    selectedItems: T[]
+    valueAsString: string
+  }
+  computed: {
+    hasSelectedItems: boolean
+    isTypingAhead: boolean
+    isInteractive: boolean
+    isDisabled: boolean
+  }
+  refs: {
+    typeahead: TypeaheadState
+  }
+  action: string
+  guard: string
+  effect: string
+  event: EventObject
 }
 
-type ComputedContext = Readonly<{
-  /**
-   * @computed
-   * Whether there's a selected option
-   */
-  hasSelectedItems: boolean
-  /**
-   * @computed
-   * Whether a typeahead is currently active
-   */
-  isTypingAhead: boolean
-  /**
-   * @computed
-   * Whether the select is interactive
-   */
-  isInteractive: boolean
-  /**
-   * @computed
-   * Whether the select is disabled
-   */
-  isDisabled: boolean
-}>
-
-export type UserDefinedContext<T extends CollectionItem = CollectionItem> = RequiredBy<
-  PublicContext<T>,
-  "id" | "collection"
->
-
-export interface MachineContext extends PublicContext, PrivateContext, ComputedContext {}
-
-export interface MachineState {
-  value: "idle" | "focused" | "open"
-}
-
-export type State = S.State<MachineContext, MachineState>
-
-export type Send = S.Send<S.AnyEventObject>
-
-export type Service = Machine<MachineContext, MachineState, S.AnyEventObject>
+export type SelectService = Service<SelectSchema>
 
 /* -----------------------------------------------------------------------------
  * Component API
@@ -260,7 +229,7 @@ export interface ItemGroupLabelProps {
   htmlFor: string
 }
 
-export interface MachineApi<T extends PropTypes = PropTypes, V extends CollectionItem = CollectionItem> {
+export interface SelectApi<T extends PropTypes = PropTypes, V extends CollectionItem = CollectionItem> {
   /**
    * Whether the select is focused
    */
@@ -334,10 +303,6 @@ export interface MachineApi<T extends PropTypes = PropTypes, V extends Collectio
    * Function to toggle the select
    */
   collection: ListCollection<V>
-  /**
-   * Function to set the collection of items
-   */
-  setCollection(collection: ListCollection<V>): void
   /**
    * Function to set the positioning options of the select
    */

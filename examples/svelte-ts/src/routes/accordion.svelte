@@ -9,11 +9,9 @@
 
   const controls = useControls(accordionControls)
 
-  const [snapshot, send] = useMachine(accordion.machine({ id: "1" }), {
-    context: controls.context,
-  })
+  const service = useMachine(accordion.machine, { id: "1" })
 
-  const api = $derived(accordion.connect(snapshot, send, normalizeProps))
+  const api = $derived(accordion.connect(service, normalizeProps))
 </script>
 
 <main class="accordion">
@@ -38,5 +36,5 @@
 </main>
 
 <Toolbar {controls}>
-  <StateVisualizer state={snapshot} />
+  <StateVisualizer state={service} />
 </Toolbar>

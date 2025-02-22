@@ -1,112 +1,133 @@
 import { createMachine } from "@zag-js/core"
-import { compact } from "@zag-js/utils"
-import type { MachineContext, MachineState, Time, UserDefinedContext } from "./timer.types"
+import { setRafInterval } from "@zag-js/utils"
+import type { Time, TimerSchema } from "./timer.types"
 
-export function machine(userContext: UserDefinedContext) {
-  const ctx = compact(userContext)
-  return createMachine<MachineContext, MachineState>(
-    {
-      id: "timer",
-      initial: ctx.autoStart ? "running" : "idle",
-      context: {
-        interval: 250,
-        ...ctx,
-        currentMs: ctx.startMs ?? 0,
-      },
+export const machine = createMachine<TimerSchema>({
+  props({ props }) {
+    return {
+      interval: 250,
+      ...props,
+    }
+  },
 
+  initialState({ prop }) {
+    return prop("autoStart") ? "running" : "idle"
+  },
+
+  context({ prop, bindable }) {
+    return {
+      currentMs: bindable(() => ({
+        defaultValue: prop("startMs") ?? 0,
+      })),
+    }
+  },
+
+  on: {
+    RESTART: {
+      target: "running",
+      actions: ["resetTime"],
+    },
+  },
+
+  computed: {
+    time: ({ context }) => msToTime(context.get("currentMs")),
+    formattedTime: ({ computed }) => formatTime(computed("time")),
+    progressPercent: ({ context, prop }) => {
+      const targetMs = prop("targetMs")
+      if (targetMs == null) return 0
+      return toPercent(context.get("currentMs"), prop("startMs") ?? 0, targetMs)
+    },
+  },
+
+  states: {
+    idle: {
       on: {
-        RESTART: {
+        START: {
           target: "running",
-          actions: "resetTime",
         },
-      },
-
-      computed: {
-        time: (ctx) => msToTime(ctx.currentMs),
-        formattedTime: (ctx) => formatTime(ctx.time),
-        progressPercent: (ctx) => {
-          const targetMs = ctx.targetMs
-          if (targetMs == null) return 0
-          return toPercent(ctx.currentMs, ctx.startMs ?? 0, targetMs)
-        },
-      },
-
-      states: {
-        idle: {
-          on: {
-            START: "running",
-            RESET: { actions: "resetTime" },
-          },
-        },
-        running: {
-          every: {
-            TICK_INTERVAL: ["sendTickEvent"],
-          },
-          on: {
-            PAUSE: "paused",
-            TICK: [
-              {
-                target: "idle",
-                guard: "hasReachedTarget",
-                actions: ["invokeOnComplete"],
-              },
-              {
-                actions: ["updateTime", "invokeOnTick"],
-              },
-            ],
-            RESET: { actions: "resetTime" },
-          },
-        },
-        paused: {
-          on: {
-            RESUME: "running",
-            RESET: {
-              target: "idle",
-              actions: "resetTime",
-            },
-          },
+        RESET: {
+          actions: ["resetTime"],
         },
       },
     },
-    {
-      delays: {
-        TICK_INTERVAL: (ctx) => ctx.interval,
-      },
-      actions: {
-        updateTime(ctx) {
-          const sign = ctx.countdown ? -1 : 1
-          ctx.currentMs = ctx.currentMs + sign * ctx.interval
+    running: {
+      effects: ["keepTicking"],
+      on: {
+        PAUSE: {
+          target: "paused",
         },
-        sendTickEvent(_ctx, _evt, { send }) {
+        TICK: [
+          {
+            target: "idle",
+            guard: "hasReachedTarget",
+            actions: ["invokeOnComplete"],
+          },
+          {
+            actions: ["updateTime", "invokeOnTick"],
+          },
+        ],
+        RESET: {
+          actions: ["resetTime"],
+        },
+      },
+    },
+    paused: {
+      on: {
+        RESUME: {
+          target: "running",
+        },
+        RESET: {
+          target: "idle",
+          actions: ["resetTime"],
+        },
+      },
+    },
+  },
+
+  implementations: {
+    effects: {
+      keepTicking({ prop, send }) {
+        return setRafInterval(() => {
           send({ type: "TICK" })
-        },
-        resetTime(ctx) {
-          let targetMs = ctx.targetMs
-          if (targetMs == null && ctx.countdown) targetMs = 0
-          ctx.currentMs = ctx.startMs ?? 0
-        },
-        invokeOnTick(ctx) {
-          ctx.onTick?.({
-            value: ctx.currentMs,
-            time: ctx.time,
-            formattedTime: ctx.formattedTime,
-          })
-        },
-        invokeOnComplete(ctx) {
-          ctx.onComplete?.()
-        },
-      },
-      guards: {
-        hasReachedTarget: (ctx) => {
-          let targetMs = ctx.targetMs
-          if (targetMs == null && ctx.countdown) targetMs = 0
-          if (targetMs == null) return false
-          return ctx.currentMs === targetMs
-        },
+        }, prop("interval")!)
       },
     },
-  )
-}
+
+    actions: {
+      updateTime({ context, prop }) {
+        const sign = prop("countdown") ? -1 : 1
+        context.set("currentMs", (prev) => prev + sign * 1000)
+      },
+      sendTickEvent({ send }) {
+        send({ type: "TICK" })
+      },
+      resetTime({ context, prop }) {
+        let targetMs = prop("targetMs")
+        if (targetMs == null && prop("countdown")) targetMs = 0
+        context.set("currentMs", prop("startMs") ?? 0)
+      },
+      invokeOnTick({ context, prop, computed }) {
+        prop("onTick")?.({
+          value: context.get("currentMs"),
+          time: computed("time"),
+          formattedTime: computed("formattedTime"),
+        })
+      },
+      invokeOnComplete({ prop }) {
+        prop("onComplete")?.()
+      },
+    },
+
+    guards: {
+      hasReachedTarget: ({ context, prop }) => {
+        let targetMs = prop("targetMs")
+        if (targetMs == null && prop("countdown")) targetMs = 0
+        if (targetMs == null) return false
+        return context.get("currentMs") === targetMs
+      },
+    },
+  },
+})
 
 function msToTime(ms: number): Time {
   const milliseconds = ms % 1000

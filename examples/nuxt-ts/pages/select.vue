@@ -6,17 +6,12 @@ import { normalizeProps, useMachine } from "@zag-js/vue"
 
 const controls = useControls(selectControls)
 
-const [state, send] = useMachine(
-  select.machine({
-    collection: select.collection({ items: selectData }),
-    id: "1",
-  }),
-  {
-    context: controls.context,
-  },
-)
+const service = useMachine(select.machine, {
+  collection: select.collection({ items: selectData }),
+  id: useId(),
+})
 
-const api = computed(() => select.connect(state.value, send, normalizeProps))
+const api = computed(() => select.connect(service, normalizeProps))
 </script>
 
 <template>
@@ -42,7 +37,7 @@ const api = computed(() => select.connect(state.value, send, normalizeProps))
           <option v-for="option in selectData" :key="option.value" :value="option.value">{{ option.label }}</option>
         </select>
       </form>
-      <Teleport to="body">
+      <Teleport to="#teleports">
         <div v-bind="api.getPositionerProps()">
           <ul v-bind="api.getContentProps()">
             <li v-for="item in selectData" :key="item.value" v-bind="api.getItemProps({ item })">
@@ -56,7 +51,7 @@ const api = computed(() => select.connect(state.value, send, normalizeProps))
   </main>
 
   <Toolbar>
-    <StateVisualizer :state="state" :omit="['collection']" />
+    <StateVisualizer :state="service" :omit="['collection']" />
     <template #controls>
       <Controls :control="controls" />
     </template>

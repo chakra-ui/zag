@@ -4,14 +4,10 @@
   import { normalizeProps, useMachine } from "@zag-js/vue"
   import { computed, Fragment, Teleport } from "vue"
 
-  const [state, send] = useMachine(
-    datepicker.machine({
-      id: "1",
-    })
-  )
-  const api = computed(() =>
-    datepicker.connect(state.value, send, normalizeProps),
-  )
+  const service = useMachine(datepicker.machine, {
+    id: "1",
+  })
+  const api = computed(() => datepicker.connect(service, normalizeProps))
 </script>
 
 <template>

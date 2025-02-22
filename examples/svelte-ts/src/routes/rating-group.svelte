@@ -8,11 +8,9 @@
 
   const controls = useControls(ratingControls)
 
-  const [snapshot, send] = useMachine(rating.machine({ id: "1", value: 2.5 }), {
-    context: controls.context,
-  })
+  const service = useMachine(rating.machine, { id: "1", defaultValue: 2.5 })
 
-  const api = $derived(rating.connect(snapshot, send, normalizeProps))
+  const api = $derived(rating.connect(service, normalizeProps))
 </script>
 
 {#snippet HalfStar()}
@@ -65,5 +63,5 @@
 </main>
 
 <Toolbar {controls}>
-  <StateVisualizer state={snapshot} />
+  <StateVisualizer state={service} />
 </Toolbar>
