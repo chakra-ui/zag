@@ -10,7 +10,7 @@ export function createToastStore<V = any>(props: ToastStoreProps): ToastStore<V>
   const attrs = withDefaults(props, {
     placement: "bottom",
     overlap: false,
-    max: 10,
+    max: 24,
     gap: 16,
     offsets: "1rem",
     hotkey: ["altKey", "KeyT"],

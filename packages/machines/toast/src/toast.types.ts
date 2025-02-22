@@ -180,7 +180,7 @@ export interface ToastStoreProps {
   placement?: Placement | undefined
   /**
    * The maximum number of toasts
-   * @default 10
+   * @default 24
    */
   max?: number | undefined
   /**
