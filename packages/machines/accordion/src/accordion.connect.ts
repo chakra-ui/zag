@@ -46,7 +46,7 @@ export function connect<T extends PropTypes>(
       })
     },
 
-    getItemProps(props: ItemProps) {
+    getItemProps(props) {
       const itemState = getItemState(props)
       return normalize.element({
         ...parts.item.attrs,
@@ -59,7 +59,7 @@ export function connect<T extends PropTypes>(
       })
     },
 
-    getItemContentProps(props: ItemProps) {
+    getItemContentProps(props) {
       const itemState = getItemState(props)
       return normalize.element({
         ...parts.itemContent.attrs,
@@ -88,7 +88,7 @@ export function connect<T extends PropTypes>(
       })
     },
 
-    getItemTriggerProps(props: ItemProps) {
+    getItemTriggerProps(props) {
       const { value } = props
       const itemState = getItemState(props)
 

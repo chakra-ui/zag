@@ -92,22 +92,17 @@ export const machine = createMachine<AccordionSchema>({
   implementations: {
     guards: {
       canToggle: ({ prop }) => !!prop("collapsible") || !!prop("multiple"),
-      isExpanded: ({ context }) => {
-        const focusedValue = context.get("focusedValue")
-        const value = context.get("value")
-        return focusedValue ? value.includes(focusedValue) : false
-      },
+      isExpanded: ({ context, event }) => context.get("value").includes(event.value),
     },
 
     actions: {
-      collapse({ context, prop }) {
-        const next = prop("multiple") ? remove(context.get("value"), context.get("focusedValue")) : []
-        context.set("value", next as string[])
+      collapse({ context, prop, event }) {
+        const next = prop("multiple") ? remove<string>(context.get("value"), event.value) : []
+        context.set("value", next)
       },
-      expand({ context, prop }) {
-        const focusedValue = context.get("focusedValue")
-        const next = prop("multiple") ? add(context.get("value"), focusedValue) : [focusedValue]
-        context.set("value", next as string[])
+      expand({ context, prop, event }) {
+        const next = prop("multiple") ? add<string>(context.get("value"), event.value) : [event.value]
+        context.set("value", next)
       },
       focusFirstTrigger({ scope }) {
         dom.getFirstTriggerEl(scope)?.focus()
