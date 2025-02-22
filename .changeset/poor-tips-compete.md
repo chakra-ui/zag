@@ -1,7 +1,12 @@
 ---
 "@zag-js/core": major
+"@zag-js/toast": major
 ---
 
-Rewrite machines for increased performance and initial mount time.
+- **Core**: Rewrite machines for increased performance and initial mount time. The results show roughly 1.5x - 4x
+  performance improvements across components.
 
-This is done by relying on native framework primitives and a reducer rather than an external store.
+- **[Breaking] Toast**
+
+  - Require the creation of a toast store using `createStore`
+  - Solid.js: Require the usage of `<Key>` component to render toasts
