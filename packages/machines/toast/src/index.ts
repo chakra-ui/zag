@@ -18,8 +18,8 @@ export type {
   ToastService as Service,
   Status,
   StatusChangeDetails,
-  ToastStore,
-  ToastStoreProps,
+  ToastStore as Store,
+  ToastStoreProps as StoreProps,
   Type,
 } from "./toast.types"
 
