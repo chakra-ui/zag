@@ -120,7 +120,6 @@ export const machine = createMachine<AngleSliderSchema>({
     actions: {
       syncInputElement({ scope, context }) {
         const inputEl = dom.getHiddenInputEl(scope)
-        if (!inputEl) return
         setElementValue(inputEl, context.get("value").toString())
       },
       invokeOnChangeEnd({ context, prop, computed }) {
@@ -133,7 +132,7 @@ export const machine = createMachine<AngleSliderSchema>({
         const controlEl = dom.getControlEl(scope)!
         if (!controlEl) return
         const deg = getAngle(controlEl, event.point)
-        context.set("value", constrainAngle(deg, prop("step")!))
+        context.set("value", constrainAngle(deg, prop("step")))
       },
       setValueToMin({ context }) {
         context.set("value", MIN_VALUE)

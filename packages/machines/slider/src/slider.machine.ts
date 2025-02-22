@@ -30,7 +30,7 @@ export const machine = createMachine<SliderSchema>({
     return "idle"
   },
 
-  context({ prop, bindable, getContext }) {
+  context({ prop, bindable, getContext, scope }) {
     return {
       thumbSize: bindable(() => ({
         defaultValue: prop("thumbSize") || null,
@@ -40,6 +40,7 @@ export const machine = createMachine<SliderSchema>({
         value: prop("value"),
         onChange(value) {
           prop("onValueChange")?.({ value })
+          dom.dispatchChangeEvent(scope, value)
         },
       })),
       focusedIndex: bindable(() => ({

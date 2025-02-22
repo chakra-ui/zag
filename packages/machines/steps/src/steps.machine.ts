@@ -1,5 +1,5 @@
 import { createMachine } from "@zag-js/core"
-// import { isEqual, isValueWithinRange } from "@zag-js/utils"
+import { isValueWithinRange } from "@zag-js/utils"
 import type { StepsSchema } from "./steps.types"
 
 export const machine = createMachine<StepsSchema>({
@@ -40,6 +40,8 @@ export const machine = createMachine<StepsSchema>({
     return "idle"
   },
 
+  entry: ["validateStep"],
+
   states: {
     idle: {
       on: {
@@ -75,12 +77,15 @@ export const machine = createMachine<StepsSchema>({
       setStep({ context, event }) {
         context.set("step", event.value)
       },
+      validateStep({ context, prop }) {
+        validateStep(prop("count"), context.get("step"))
+      },
     },
   },
 })
 
-// const validateStep = (ctx: MachineContext, step: number) => {
-//   if (!isValueWithinRange(step, 0, ctx.count)) {
-//     throw new RangeError(`[zag-js/steps] step index ${step} is out of bounds`)
-//   }
-// }
+const validateStep = (count: number, step: number) => {
+  if (!isValueWithinRange(step, 0, count)) {
+    throw new RangeError(`[zag-js/steps] step index ${step} is out of bounds`)
+  }
+}

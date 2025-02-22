@@ -67,6 +67,7 @@ export const machine = createMachine<AvatarSchema>({
         send({ type, src: "ssr" })
       },
     },
+
     effects: {
       trackImageRemoval({ send, scope }) {
         const rootEl = dom.getRootEl(scope)

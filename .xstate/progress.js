@@ -32,6 +32,7 @@ const fetchMachine = createMachine({
   initialState() {
     return "idle";
   },
+  entry: ["validateContext"],
   context({
     bindable,
     prop

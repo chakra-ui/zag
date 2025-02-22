@@ -51,13 +51,18 @@ const fetchMachine = createMachine({
       }))
     };
   },
-  entry: ["raiseInitEvent"],
+  entry: choose([{
+    cond: "autoFocus",
+    actions: ["setupValue", "setFocusIndexToFirst"]
+  }, {
+    actions: ["setupValue"]
+  }]),
   watch({
     action,
     track,
     context: {
-      "hasIndex": false,
       "autoFocus": false,
+      "hasIndex": false,
       "isFinalValue": false,
       "hasValue": false,
       "hasValue": false,
@@ -67,7 +72,7 @@ const fetchMachine = createMachine({
     track([() => context.get("focusedIndex")], () => {
       action(["focusInput", "selectInputIfNeeded"]);
     });
-    track([() => context.get("value").toString()], () => {
+    track([() => context.get("value").join(",")], () => {
       action(["syncInputElements", "dispatchInputEvent"]);
     });
     track([() => computed("isValueComplete")], () => {
@@ -96,13 +101,7 @@ const fetchMachine = createMachine({
         "INPUT.FOCUS": {
           target: "focused",
           actions: ["setFocusedIndex"]
-        },
-        INIT: [{
-          cond: "autoFocus",
-          actions: ["setupValue", "setFocusIndexToFirst"]
-        }, {
-          actions: ["setupValue"]
-        }]
+        }
       }
     },
     focused: {
@@ -151,9 +150,6 @@ const fetchMachine = createMachine({
       autoFocus: ({
         prop
       }) => !!prop("autoFocus"),
-      isValueEmpty: ({
-        event
-      }) => event.value === "",
       hasValue: ({
         context
       }) => context.get("value")[context.get("focusedIndex")] !== "",
@@ -163,19 +159,9 @@ const fetchMachine = createMachine({
       }) => computed("filledValueLength") + 1 === computed("valueLength") && context.get("value").findIndex(v => v.trim() === "") === context.get("focusedIndex"),
       hasIndex: ({
         event
-      }) => event.index !== undefined,
-      isDisabled: ({
-        prop
-      }) => !!prop("disabled")
+      }) => event.index !== undefined
     },
     actions: {
-      raiseInitEvent({
-        send
-      }) {
-        send({
-          type: "INIT"
-        });
-      },
       dispatchInputEvent({
         scope
       }) {
@@ -188,12 +174,14 @@ const fetchMachine = createMachine({
         context,
         scope
       }) {
-        if (context.get("value").length) return;
-        const inputEls = dom.getInputEls(scope);
-        const emptyValues = Array.from < string > {
-          length: inputEls.length
-        }.fill("");
-        context.set("value", emptyValues);
+        queueMicrotask(() => {
+          if (context.get("value").length) return;
+          const inputEls = dom.getInputEls(scope);
+          const emptyValues = Array.from < string > {
+            length: inputEls.length
+          }.fill("");
+          context.set("value", emptyValues);
+        });
       },
       focusInput({
         context,
@@ -389,8 +377,8 @@ const fetchMachine = createMachine({
     })
   },
   guards: {
-    "hasIndex": ctx => ctx["hasIndex"],
     "autoFocus": ctx => ctx["autoFocus"],
+    "hasIndex": ctx => ctx["hasIndex"],
     "isFinalValue": ctx => ctx["isFinalValue"],
     "hasValue": ctx => ctx["hasValue"],
     "isValueComplete": ctx => ctx["isValueComplete"]

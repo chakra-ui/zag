@@ -19,8 +19,20 @@ const fetchMachine = createMachine({
       defaultPage: 1,
       type: "button",
       count: 1,
-      translations: defaultTranslations,
-      ...props
+      ...props,
+      translations: {
+        rootLabel: "pagination",
+        prevTriggerLabel: "previous page",
+        nextTriggerLabel: "next page",
+        itemLabel({
+          page,
+          totalPages
+        }) {
+          const isLastPage = totalPages > 1 && page === totalPages;
+          return `${isLastPage ? "last page, " : ""}page ${page}`;
+        },
+        ...props.translations
+      }
     };
   },
   initialState() {
@@ -63,7 +75,7 @@ const fetchMachine = createMachine({
     },
     action
   }) {
-    track([() => context.get("page")], () => {
+    track([() => context.get("pageSize")], () => {
       action(["setPageIfNeeded"]);
     });
   },
@@ -141,16 +153,12 @@ const fetchMachine = createMachine({
       goToPrevPage({
         context
       }) {
-        context.set("page", prev => {
-          return clampPage(prev - 1, computed("totalPages"));
-        });
+        context.set("page", prev => clampPage(prev - 1, computed("totalPages")));
       },
       goToNextPage({
         context
       }) {
-        context.set("page", prev => {
-          return clampPage(prev + 1, computed("totalPages"));
-        });
+        context.set("page", prev => clampPage(prev + 1, computed("totalPages")));
       },
       setPageIfNeeded({
         context

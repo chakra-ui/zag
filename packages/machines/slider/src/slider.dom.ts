@@ -37,11 +37,9 @@ export const getValueFromPoint = (params: Params<SliderSchema>, point: Point) =>
   return getPercentValue(percent, prop("min"), prop("max"), prop("step"))
 }
 
-export const dispatchChangeEvent = (params: Params<SliderSchema>) => {
-  const { context, scope } = params
-  const valueArray = Array.from(context.get("value"))
-  valueArray.forEach((value, index) => {
-    const inputEl = getHiddenInputEl(scope, index)
+export const dispatchChangeEvent = (ctx: Scope, value: number[]) => {
+  value.forEach((value, index) => {
+    const inputEl = getHiddenInputEl(ctx, index)
     if (!inputEl) return
     dispatchInputValueEvent(inputEl, { value })
   })

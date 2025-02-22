@@ -112,6 +112,7 @@ export const machine = createMachine<ToggleGroupSchema>({
       isClickFocus: ({ context }) => context.get("isClickFocus"),
       isTabbingBackward: ({ context }) => context.get("isTabbingBackward"),
     },
+
     actions: {
       setIsTabbingBackward({ context }) {
         context.set("isTabbingBackward", true)

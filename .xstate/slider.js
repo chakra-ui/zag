@@ -32,7 +32,8 @@ const fetchMachine = createMachine({
   context({
     prop,
     bindable,
-    getContext
+    getContext,
+    scope
   }) {
     return {
       thumbSize: bindable(() => ({
@@ -45,6 +46,7 @@ const fetchMachine = createMachine({
           prop("onValueChange")?.({
             value
           });
+          dom.dispatchChangeEvent(scope, value);
         }
       })),
       focusedIndex: bindable(() => ({

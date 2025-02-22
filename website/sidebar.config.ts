@@ -66,7 +66,7 @@ const sidebar: Record<"docs", SidebarItem[]> = {
       id: "components",
       items: [
         { type: "doc", label: "Accordion", id: "accordion" },
-        { type: "doc", label: "Angle Slider", id: "angle-slider", beta: true },
+        { type: "doc", label: "Angle Slider", id: "angle-slider" },
         { type: "doc", label: "Avatar", id: "avatar" },
         { type: "doc", label: "Carousel", id: "carousel", beta: true },
         { type: "doc", label: "Checkbox", id: "checkbox" },
@@ -105,7 +105,7 @@ const sidebar: Record<"docs", SidebarItem[]> = {
         { type: "doc", label: "Select", id: "select" },
         { type: "doc", label: "Signature Pad", id: "signature-pad" },
         { type: "doc", label: "Slider", id: "slider" },
-        { type: "doc", label: "Splitter", id: "splitter" },
+        { type: "doc", label: "Splitter", id: "splitter", beta: true },
         { type: "doc", label: "Steps", id: "steps" },
         { type: "doc", label: "Switch", id: "switch" },
         { type: "doc", label: "Tabs", id: "tabs" },

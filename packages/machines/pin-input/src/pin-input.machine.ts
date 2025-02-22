@@ -1,10 +1,12 @@
-import { createMachine } from "@zag-js/core"
+import { setup } from "@zag-js/core"
 import { dispatchInputValueEvent, raf, setElementValue } from "@zag-js/dom-query"
 import { isEqual } from "@zag-js/utils"
 import * as dom from "./pin-input.dom"
 import type { PinInputSchema } from "./pin-input.types"
 
-export const machine = createMachine<PinInputSchema>({
+const { choose, createMachine } = setup<PinInputSchema>()
+
+export const machine = createMachine({
   props({ props }) {
     return {
       placeholder: "○",
@@ -53,13 +55,19 @@ export const machine = createMachine<PinInputSchema>({
     focusedValue: ({ context }) => context.get("value")[context.get("focusedIndex")] || "",
   },
 
-  entry: ["raiseInitEvent"],
+  entry: choose([
+    {
+      guard: "autoFocus",
+      actions: ["setupValue", "setFocusIndexToFirst"],
+    },
+    { actions: ["setupValue"] },
+  ]),
 
   watch({ action, track, context, computed }) {
     track([() => context.get("focusedIndex")], () => {
       action(["focusInput", "selectInputIfNeeded"])
     })
-    track([() => context.get("value").toString()], () => {
+    track([() => context.get("value").join(",")], () => {
       action(["syncInputElements", "dispatchInputEvent"])
     })
     track([() => computed("isValueComplete")], () => {
@@ -87,13 +95,6 @@ export const machine = createMachine<PinInputSchema>({
           target: "focused",
           actions: ["setFocusedIndex"],
         },
-        INIT: [
-          {
-            guard: "autoFocus",
-            actions: ["setupValue", "setFocusIndexToFirst"],
-          },
-          { actions: ["setupValue"] },
-        ],
       },
     },
     focused: {
@@ -147,29 +148,26 @@ export const machine = createMachine<PinInputSchema>({
   implementations: {
     guards: {
       autoFocus: ({ prop }) => !!prop("autoFocus"),
-      isValueEmpty: ({ event }) => event.value === "",
       hasValue: ({ context }) => context.get("value")[context.get("focusedIndex")] !== "",
       isValueComplete: ({ computed }) => computed("isValueComplete"),
       isFinalValue: ({ context, computed }) =>
         computed("filledValueLength") + 1 === computed("valueLength") &&
         context.get("value").findIndex((v) => v.trim() === "") === context.get("focusedIndex"),
       hasIndex: ({ event }) => event.index !== undefined,
-      isDisabled: ({ prop }) => !!prop("disabled"),
     },
 
     actions: {
-      raiseInitEvent({ send }) {
-        send({ type: "INIT" })
-      },
       dispatchInputEvent({ computed, scope }) {
         const inputEl = dom.getHiddenInputEl(scope)
         dispatchInputValueEvent(inputEl, { value: computed("valueAsString") })
       },
       setupValue({ context, scope }) {
-        if (context.get("value").length) return
-        const inputEls = dom.getInputEls(scope)
-        const emptyValues = Array.from<string>({ length: inputEls.length }).fill("")
-        context.set("value", emptyValues)
+        queueMicrotask(() => {
+          if (context.get("value").length) return
+          const inputEls = dom.getInputEls(scope)
+          const emptyValues = Array.from<string>({ length: inputEls.length }).fill("")
+          context.set("value", emptyValues)
+        })
       },
       focusInput({ context, scope }) {
         const focusedIndex = context.get("focusedIndex")

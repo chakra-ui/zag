@@ -1,15 +1,5 @@
 import { createMachine } from "@zag-js/core"
-import type { IntlTranslations, PaginationSchema } from "./pagination.types"
-
-const defaultTranslations: IntlTranslations = {
-  rootLabel: "pagination",
-  prevTriggerLabel: "previous page",
-  nextTriggerLabel: "next page",
-  itemLabel({ page, totalPages }) {
-    const isLastPage = totalPages > 1 && page === totalPages
-    return `${isLastPage ? "last page, " : ""}page ${page}`
-  },
-}
+import type { PaginationSchema } from "./pagination.types"
 
 export const machine = createMachine<PaginationSchema>({
   props({ props }) {
@@ -19,8 +9,17 @@ export const machine = createMachine<PaginationSchema>({
       defaultPage: 1,
       type: "button",
       count: 1,
-      translations: defaultTranslations,
       ...props,
+      translations: {
+        rootLabel: "pagination",
+        prevTriggerLabel: "previous page",
+        nextTriggerLabel: "next page",
+        itemLabel({ page, totalPages }) {
+          const isLastPage = totalPages > 1 && page === totalPages
+          return `${isLastPage ? "last page, " : ""}page ${page}`
+        },
+        ...props.translations,
+      },
     }
   },
 
@@ -49,7 +48,7 @@ export const machine = createMachine<PaginationSchema>({
   },
 
   watch({ track, context, action }) {
-    track([() => context.get("page")], () => {
+    track([() => context.get("pageSize")], () => {
       action(["setPageIfNeeded"])
     })
   },
@@ -118,14 +117,10 @@ export const machine = createMachine<PaginationSchema>({
         context.set("page", computed("totalPages"))
       },
       goToPrevPage({ context, computed }) {
-        context.set("page", (prev) => {
-          return clampPage(prev - 1, computed("totalPages"))
-        })
+        context.set("page", (prev) => clampPage(prev - 1, computed("totalPages")))
       },
       goToNextPage({ context, computed }) {
-        context.set("page", (prev) => {
-          return clampPage(prev + 1, computed("totalPages"))
-        })
+        context.set("page", (prev) => clampPage(prev + 1, computed("totalPages")))
       },
       setPageIfNeeded({ context, computed }) {
         if (computed("isValidPage")) return

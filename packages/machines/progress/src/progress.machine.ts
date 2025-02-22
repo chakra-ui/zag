@@ -2,10 +2,6 @@ import { isNumber } from "@zag-js/utils"
 import { createMachine } from "@zag-js/core"
 import type { ProgressSchema } from "./progress.types"
 
-function midValue(min: number, max: number) {
-  return min + (max - min) / 2
-}
-
 export const machine = createMachine<ProgressSchema>({
   props({ props }) {
     const min = props.min ?? 0
@@ -26,6 +22,8 @@ export const machine = createMachine<ProgressSchema>({
   initialState() {
     return "idle"
   },
+
+  entry: ["validateContext"],
 
   context({ bindable, prop }) {
     return {
@@ -90,14 +88,8 @@ export const machine = createMachine<ProgressSchema>({
   },
 })
 
-function isValidNumber(max: any) {
-  return isNumber(max) && !isNaN(max)
-}
+const isValidNumber = (max: any) => isNumber(max) && !isNaN(max)
+const isValidMax = (value: number, max: number) => isValidNumber(value) && value <= max
+const isValidMin = (value: number, min: number) => isValidNumber(value) && value >= min
 
-function isValidMax(value: number, max: number) {
-  return isValidNumber(value) && value <= max
-}
-
-function isValidMin(value: number, min: number) {
-  return isValidNumber(value) && value >= min
-}
+const midValue = (min: number, max: number) => min + (max - min) / 2

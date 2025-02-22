@@ -113,6 +113,10 @@ export const machine = createMachine<CollapsibleSchema>({
   },
 
   implementations: {
+    guards: {
+      isOpenControlled: ({ prop }) => prop("open") != undefined,
+    },
+
     effects: {
       trackEnterAnimation: ({ send, scope }) => {
         let cleanup: VoidFunction | undefined
@@ -257,12 +261,6 @@ export const machine = createMachine<CollapsibleSchema>({
 
       toggleVisibility: ({ prop, send }) => {
         send({ type: prop("open") ? "controlled.open" : "controlled.close" })
-      },
-    },
-
-    guards: {
-      isOpenControlled: ({ prop }) => {
-        return prop("open") != undefined
       },
     },
   },

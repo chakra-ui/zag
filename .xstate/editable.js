@@ -245,15 +245,13 @@ const fetchMachine = createMachine({
         event
       }) {
         const max = prop("maxLength");
-        const current = event.value;
-        const value = max != null ? current.slice(0, max) : current;
+        const value = max != null ? event.value.slice(0, max) : event.value;
         context.set("value", value);
       },
       setPreviousValue({
         context
       }) {
-        const value = context.get("value");
-        context.set("previousValue", value);
+        context.set("previousValue", context.get("value"));
       },
       revertValue({
         context

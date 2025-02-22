@@ -9,9 +9,9 @@ const { not } = createGuards<CheckboxSchema>()
 export const machine = createMachine<CheckboxSchema>({
   props({ props }) {
     return {
+      value: "on",
       ...props,
       defaultChecked: !!props.defaultChecked,
-      value: props.value ?? "on",
     }
   },
 

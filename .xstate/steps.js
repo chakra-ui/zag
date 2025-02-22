@@ -45,6 +45,7 @@ const fetchMachine = createMachine({
   initialState() {
     return "idle";
   },
+  entry: ["validateStep"],
   on: {
     UPDATE_CONTEXT: {
       actions: "updateContext"
@@ -93,6 +94,12 @@ const fetchMachine = createMachine({
         event
       }) {
         context.set("step", event.value);
+      },
+      validateStep({
+        context,
+        prop
+      }) {
+        validateStep(prop("count"), context.get("step"));
       }
     }
   }
