@@ -9,6 +9,7 @@ import {
   trackFormControl,
 } from "@zag-js/dom-query"
 import { getPlacement, type Placement } from "@zag-js/popper"
+import { addOrRemove } from "@zag-js/utils"
 import { collection } from "./select.collection"
 import * as dom from "./select.dom"
 import type { CollectionItem, SelectSchema } from "./select.types"
@@ -538,7 +539,11 @@ export const machine = createMachine<SelectSchema>({
 
         const nullable = prop("deselectable") && !prop("multiple") && context.get("value").includes(value)
         value = nullable ? null : value
-        context.set("value", [value])
+        context.set("value", (prev) => {
+          if (value == null) return []
+          if (prop("multiple")) return addOrRemove(prev, value)
+          return [value]
+        })
       },
 
       highlightComputedFirstItem({ context, prop, computed }) {
@@ -584,7 +589,11 @@ export const machine = createMachine<SelectSchema>({
       selectItem({ context, prop, event }) {
         const nullable = prop("deselectable") && !prop("multiple") && context.get("value").includes(event.value)
         const value = nullable ? null : event.value
-        context.set("value", [value])
+        context.set("value", (prev) => {
+          if (value == null) return []
+          if (prop("multiple")) return addOrRemove(prev, value)
+          return [value]
+        })
       },
 
       clearItem({ context, event }) {

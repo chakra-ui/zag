@@ -249,3 +249,16 @@ test.describe("closed state + keyboard selection", () => {
     await I.seeItemIsChecked("Kenya")
   })
 })
+
+test.describe("multiple", () => {
+  test("should select multiple items", async () => {
+    await I.controls.bool("multiple", true)
+    await I.controls.bool("closeOnSelect", false)
+
+    await I.clickTrigger()
+    await I.clickItem("Andorra")
+    await I.clickItem("Algeria")
+
+    await I.seeTriggerHasText("Andorra (AD), Algeria (DZ)")
+  })
+})
