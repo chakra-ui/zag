@@ -252,16 +252,16 @@ export const machine = createMachine<TreeViewSchema>({
       focusTreeNextNode(params) {
         const { event, prop, scope } = params
         const collection = prop("collection")
-        let nextNode = collection.getNextNode(event.id, { skip: skipFn(params) })
-        nextNode = nextNode ?? collection.getFirstNode()
+        const nextNode = collection.getNextNode(event.id, { skip: skipFn(params) })
+        if (!nextNode) return
         const nextValue = collection.getNodeValue(nextNode)
         dom.focusNode(scope, nextValue)
       },
       focusTreePrevNode(params) {
         const { event, prop, scope } = params
         const collection = prop("collection")
-        let prevNode = collection.getPreviousNode(event.id, { skip: skipFn(params) })
-        prevNode = prevNode ?? collection.getLastNode()
+        const prevNode = collection.getPreviousNode(event.id, { skip: skipFn(params) })
+        if (!prevNode) return
         const prevValue = collection.getNodeValue(prevNode)
         dom.focusNode(scope, prevValue)
       },
