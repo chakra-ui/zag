@@ -49,11 +49,9 @@ export function groupConnect<T extends PropTypes, O = any>(
           send({ type: "REGION.FOCUS", target: event.relatedTarget })
         },
         onBlur(event) {
-          queueMicrotask(() => {
-            if (refs.get("isFocusWithin") && !contains(event.currentTarget, event.relatedTarget)) {
-              send({ type: "REGION.BLUR" })
-            }
-          })
+          if (refs.get("isFocusWithin") && !contains(event.currentTarget, event.relatedTarget)) {
+            queueMicrotask(() => send({ type: "REGION.BLUR" }))
+          }
         },
       })
     },
