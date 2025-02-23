@@ -54,7 +54,7 @@ export interface SelectProps<T extends CollectionItem = CollectionItem>
   /**
    * The item collection
    */
-  collection: ListCollection<CollectionItem>
+  collection: ListCollection<T>
   /**
    * The ids of the elements in the select. Useful for composition.
    */
