@@ -1,5 +1,5 @@
 import { createMachine } from "@zag-js/core"
-import { setRafInterval } from "@zag-js/utils"
+import { setRafInterval, setRafTimeout } from "@zag-js/utils"
 import type { Time, TimerSchema } from "./timer.types"
 
 export const machine = createMachine<TimerSchema>({
@@ -22,9 +22,15 @@ export const machine = createMachine<TimerSchema>({
     }
   },
 
+  watch({ track, send, prop }) {
+    track([() => prop("startMs")], () => {
+      send({ type: "RESTART" })
+    })
+  },
+
   on: {
     RESTART: {
-      target: "running",
+      target: "running:temp",
       actions: ["resetTime"],
     },
   },
@@ -50,6 +56,16 @@ export const machine = createMachine<TimerSchema>({
         },
       },
     },
+
+    "running:temp": {
+      effects: ["waitForNextTick"],
+      on: {
+        CONTINUE: {
+          target: "running",
+        },
+      },
+    },
+
     running: {
       effects: ["keepTicking"],
       on: {
@@ -90,6 +106,11 @@ export const machine = createMachine<TimerSchema>({
         return setRafInterval(() => {
           send({ type: "TICK" })
         }, prop("interval")!)
+      },
+      waitForNextTick({ send }) {
+        return setRafTimeout(() => {
+          send({ type: "CONTINUE" })
+        }, 0)
       },
     },
 

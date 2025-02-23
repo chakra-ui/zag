@@ -93,7 +93,7 @@ interface Computed {
 }
 
 export interface TimerSchema {
-  state: "idle" | "running" | "paused"
+  state: "idle" | "running" | "paused" | "running:temp"
   props: RequiredBy<TimerProps, PropsWithDefault>
   context: Context
   computed: Computed
