@@ -15,6 +15,7 @@ export function StateVisualizer(props: StateVisualizerProps) {
   const obj = {
     state: service.state.get(),
     event: service.event.current(),
+    previousEvent: service.event.previous(),
     context: context ? Object.fromEntries(context.map((key) => [key, service.context.get(key)])) : undefined,
     computed: computed ? Object.fromEntries(computed.map((key) => [key, service.computed(key)])) : undefined,
   }

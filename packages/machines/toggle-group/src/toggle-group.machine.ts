@@ -82,7 +82,7 @@ export const machine = createMachine<ToggleGroupSchema>({
       on: {
         "ROOT.BLUR": {
           target: "idle",
-          actions: ["clearIsTabbingBackward"],
+          actions: ["clearIsTabbingBackward", "clearFocusedId"],
         },
         "TOGGLE.FOCUS": {
           actions: ["setFocusedId"],
@@ -99,10 +99,16 @@ export const machine = createMachine<ToggleGroupSchema>({
         "TOGGLE.FOCUS_LAST": {
           actions: ["focusLastToggle"],
         },
-        "TOGGLE.SHIFT_TAB": {
-          target: "idle",
-          actions: ["setIsTabbingBackward"],
-        },
+        "TOGGLE.SHIFT_TAB": [
+          {
+            guard: not("isFirstToggleFocused"),
+            target: "idle",
+            actions: ["setIsTabbingBackward"],
+          },
+          {
+            actions: ["setIsTabbingBackward"],
+          },
+        ],
       },
     },
   },
@@ -111,6 +117,7 @@ export const machine = createMachine<ToggleGroupSchema>({
     guards: {
       isClickFocus: ({ context }) => context.get("isClickFocus"),
       isTabbingBackward: ({ context }) => context.get("isTabbingBackward"),
+      isFirstToggleFocused: ({ context, scope }) => context.get("focusedId") === dom.getFirstEl(scope)?.id,
     },
 
     actions: {

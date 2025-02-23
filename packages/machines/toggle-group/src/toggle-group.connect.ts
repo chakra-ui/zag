@@ -1,4 +1,4 @@
-import { dataAttr, getEventKey, isSafari, isSelfTarget } from "@zag-js/dom-query"
+import { dataAttr, getEventKey, getEventTarget, isSafari, isSelfTarget } from "@zag-js/dom-query"
 import type { EventKeyMap, NormalizeProps, PropTypes } from "@zag-js/types"
 import { parts } from "./toggle-group.anatomy"
 import * as dom from "./toggle-group.dom"
@@ -49,8 +49,9 @@ export function connect<T extends PropTypes>(
         },
         onFocus(event) {
           if (disabled) return
-          const evt = event.nativeEvent || event
-          if (!isSelfTarget(evt) || !!context.get("isClickFocus") || context.get("isTabbingBackward")) return
+          if (event.currentTarget !== getEventTarget(event)) return
+          if (context.get("isClickFocus")) return
+          if (context.get("isTabbingBackward")) return
           send({ type: "ROOT.FOCUS" })
         },
         onBlur() {

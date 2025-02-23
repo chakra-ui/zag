@@ -51,4 +51,48 @@ test.describe("toggle-group", () => {
     await I.seeItemIsNotFocused("bold")
     await I.seeOutsideButtonIsFocused()
   })
+
+  test("[keyboard] in and out tab press", async () => {
+    // focus on outside button
+    await I.clickOutsideButton()
+    await I.pressKey("Tab")
+    await I.seeItemIsFocused("bold")
+
+    // shift tab back to outside button
+    await I.pressKey("Shift+Tab")
+    await I.seeItemIsNotFocused("bold")
+    await I.seeOutsideButtonIsFocused()
+
+    // tab back to toggle
+    await I.pressKey("Tab")
+    await I.seeItemIsFocused("bold")
+
+    // go right once
+    await I.pressKey("ArrowRight")
+    await I.seeItemIsFocused("italic")
+
+    // shift tab back to outside button
+    await I.pressKey("Shift+Tab")
+    await I.seeItemIsNotFocused("italic")
+    await I.seeOutsideButtonIsFocused()
+
+    // tab back to toggle
+    await I.pressKey("Tab")
+    await I.seeItemIsFocused("italic")
+  })
+
+  test("[keyboard] focus loop", async () => {
+    // focus on outside button
+    await I.clickOutsideButton()
+    await I.pressKey("Tab")
+
+    await I.pressKey("ArrowRight")
+    await I.seeItemIsFocused("italic")
+
+    await I.pressKey("ArrowRight")
+    await I.seeItemIsFocused("underline")
+
+    await I.pressKey("ArrowRight")
+    await I.seeItemIsFocused("bold")
+  })
 })
