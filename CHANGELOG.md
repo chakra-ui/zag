@@ -8,6 +8,23 @@ All notable changes to this project will be documented in this file.
 
 See the [Changesets](./.changeset) for the latest changes.
 
+## [1.0.1](./#1.0.1) - 2025-02-23
+
+### Fixed
+
+- **Select**: Fix regression where `multiple: true` doesn't work.
+
+- **Timer**: Fix issue where timer doesn't restart when `startMs` changes.
+
+- **Toggle Group**: Fix issue where `data-focus` doesn't get removed after blurring the toggle group.
+
+- **Toast**: Fix keyboard navigation issue where toast group skips the close button within the toast item and moves to
+  the next focusable element in the document.
+
+### Added
+
+- Added `<component>.Machine` type to help when typecasting generic components like combobox and select.
+
 ## [1.0.0](./#1.0.0) - 2025-02-22
 
 ### Changed
