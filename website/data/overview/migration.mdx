@@ -49,6 +49,19 @@ const service = useMachine(avatar.machine, { id: useId() })
 > Notice that `avatar.machine` is no longer a function, it is passed directly to
 > `useMachine`.
 
+#### Caveats
+
+Due to the switch from `<component>.machine()` as a function to
+`<component>.machine` as an object, the TS inference is limited for generic
+components like combobox and select.
+
+To help with this, we've exported an equivalent `<component>.Machine` type to
+help with the casting.
+
+```ts
+useMachine(combobox.machine as combobox.Machine<Item>)
+```
+
 ### Controlled vs Uncontrolled value
 
 Managing controlled and uncontrolled values is a fairly common need in most
