@@ -368,7 +368,7 @@ export class TreeCollection<T = TreeNode> {
     return this._move(this.rootNode, fromIndexPaths, toIndexPath)
   }
 
-  json = () => {
+  toJSON = () => {
     return this.getValues(this.rootNode)
   }
 }
