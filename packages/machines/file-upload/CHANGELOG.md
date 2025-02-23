@@ -1,5 +1,36 @@
 # @zag-js/file-upload
 
+## 1.0.1
+
+### Patch Changes
+
+- [`9883753`](https://github.com/chakra-ui/zag/commit/98837532c3b9c3f3698eee4e158e4318194361f6) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Expose `<component>.Machine` type to help when typecasting generic
+  components like combobox and select.
+
+  Here's an example of the combobox component:
+
+  ```ts
+  interface Item {
+    code: string
+    label: string
+  }
+
+  const service = useMachine(combobox.machine as combobox.Machine<Item>, {
+    id: useId(),
+    collection,
+  })
+  ```
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.0.1
+  - @zag-js/core@1.0.1
+  - @zag-js/types@1.0.1
+  - @zag-js/utils@1.0.1
+  - @zag-js/dom-query@1.0.1
+  - @zag-js/file-utils@1.0.1
+  - @zag-js/i18n-utils@1.0.1
+
 ## 1.0.0
 
 ### Patch Changes

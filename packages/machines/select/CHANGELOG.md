@@ -1,5 +1,40 @@
 # @zag-js/select
 
+## 1.0.1
+
+### Patch Changes
+
+- [`0eeec8c`](https://github.com/chakra-ui/zag/commit/0eeec8cee82a5eaae790b6aacac2ec727a960650) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix regression where `multiple: true` doesn't work
+
+- [`9883753`](https://github.com/chakra-ui/zag/commit/98837532c3b9c3f3698eee4e158e4318194361f6) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Expose `<component>.Machine` type to help when typecasting generic
+  components like combobox and select.
+
+  Here's an example of the combobox component:
+
+  ```ts
+  interface Item {
+    code: string
+    label: string
+  }
+
+  const service = useMachine(combobox.machine as combobox.Machine<Item>, {
+    id: useId(),
+    collection,
+  })
+  ```
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.0.1
+  - @zag-js/core@1.0.1
+  - @zag-js/types@1.0.1
+  - @zag-js/collection@1.0.1
+  - @zag-js/utils@1.0.1
+  - @zag-js/dismissable@1.0.1
+  - @zag-js/dom-query@1.0.1
+  - @zag-js/popper@1.0.1
+
 ## 1.0.0
 
 ### Patch Changes

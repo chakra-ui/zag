@@ -1,5 +1,38 @@
 # @zag-js/toast
 
+## 1.0.1
+
+### Patch Changes
+
+- [`9883753`](https://github.com/chakra-ui/zag/commit/98837532c3b9c3f3698eee4e158e4318194361f6) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Expose `<component>.Machine` type to help when typecasting generic
+  components like combobox and select.
+
+  Here's an example of the combobox component:
+
+  ```ts
+  interface Item {
+    code: string
+    label: string
+  }
+
+  const service = useMachine(combobox.machine as combobox.Machine<Item>, {
+    id: useId(),
+    collection,
+  })
+  ```
+
+- [`8cb7ca7`](https://github.com/chakra-ui/zag/commit/8cb7ca7de9546382e9b1635429a9bab58bcbe546) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix keyboard navigation issue where toast group skips the close
+  button within the toast item and moves to the next focusable element in the document
+- Updated dependencies []:
+  - @zag-js/anatomy@1.0.1
+  - @zag-js/core@1.0.1
+  - @zag-js/types@1.0.1
+  - @zag-js/utils@1.0.1
+  - @zag-js/dismissable@1.0.1
+  - @zag-js/dom-query@1.0.1
+
 ## 1.0.0
 
 ### Major Changes
