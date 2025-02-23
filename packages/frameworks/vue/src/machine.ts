@@ -1,15 +1,15 @@
-import {
-  createScope,
-  type ActionsOrFn,
-  type BaseSchema,
-  type BindableContext,
-  type ChooseFn,
-  type ComputedFn,
-  type EffectsOrFn,
-  type GuardFn,
-  type MachineConfig,
-  type Service,
+import type {
+  ActionsOrFn,
+  BindableContext,
+  ChooseFn,
+  ComputedFn,
+  EffectsOrFn,
+  GuardFn,
+  Machine,
+  MachineSchema,
+  Service,
 } from "@zag-js/core"
+import { createScope } from "@zag-js/core"
 import { isFunction, isString, toArray, warn } from "@zag-js/utils"
 import { computed as __computed, nextTick, onBeforeUnmount, onMounted, toValue, type ComputedRef, type Ref } from "vue"
 import { bindable } from "./bindable"
@@ -18,8 +18,8 @@ import { useTrack } from "./track"
 
 type MaybeRef<T> = T | Ref<T> | ComputedRef<T>
 
-export function useMachine<T extends BaseSchema>(
-  machine: MachineConfig<T>,
+export function useMachine<T extends MachineSchema>(
+  machine: Machine<T>,
   userProps: MaybeRef<Partial<T["props"]>> = {},
 ): Service<T> {
   const scope = __computed(() => {

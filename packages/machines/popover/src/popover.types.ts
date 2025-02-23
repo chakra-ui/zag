@@ -1,4 +1,4 @@
-import type { EventObject, Service } from "@zag-js/core"
+import type { EventObject, Machine, Service } from "@zag-js/core"
 import type { DismissableElementHandlers, PersistentElementOptions } from "@zag-js/dismissable"
 import type { Placement, PositioningOptions } from "@zag-js/popper"
 import type { CommonProperties, DirectionProperty, PropTypes, RequiredBy } from "@zag-js/types"
@@ -127,6 +127,8 @@ export interface PopoverSchema {
 }
 
 export type PopoverService = Service<PopoverSchema>
+
+export type PopoverMachine = Machine<PopoverSchema>
 
 /* -----------------------------------------------------------------------------
  * Component API

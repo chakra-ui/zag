@@ -13,5 +13,6 @@ export type {
   NodeState,
   SelectionChangeDetails,
   TreeViewService as Service,
+  TreeViewMachine as Machine,
   TreeNode,
 } from "./tree-view.types"

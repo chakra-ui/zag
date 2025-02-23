@@ -1,6 +1,6 @@
-import type { BaseSchema, GuardFn, MachineConfig, Params, Transition } from "./types"
+import type { MachineSchema, GuardFn, Machine, Params, Transition } from "./types"
 
-export function createGuards<T extends BaseSchema>() {
+export function createGuards<T extends MachineSchema>() {
   return {
     and: (...guards: Array<GuardFn<T> | T["guard"]>) => {
       return function andGuard(params: any) {
@@ -20,14 +20,14 @@ export function createGuards<T extends BaseSchema>() {
   }
 }
 
-export function createMachine<T extends BaseSchema>(config: MachineConfig<T>) {
+export function createMachine<T extends MachineSchema>(config: Machine<T>) {
   return config
 }
 
-export function setup<T extends BaseSchema>() {
+export function setup<T extends MachineSchema>() {
   return {
     guards: createGuards<T>(),
-    createMachine: (config: MachineConfig<T>) => {
+    createMachine: (config: Machine<T>) => {
       return createMachine(config)
     },
     choose: (transitions: Transition<T> | Transition<T>[]) => {

@@ -1,5 +1,5 @@
 import type { CommonProperties, DirectionProperty, PropTypes, RequiredBy } from "@zag-js/types"
-import type { EventObject, Service } from "@zag-js/core"
+import type { EventObject, Machine, Service } from "@zag-js/core"
 
 /* -----------------------------------------------------------------------------
  * Callback details
@@ -86,6 +86,8 @@ export type AccordionSchema = {
 }
 
 export type AccordionService = Service<AccordionSchema>
+
+export type AccordionMachine = Machine<AccordionSchema>
 
 /* -----------------------------------------------------------------------------
  * Component API

@@ -1,5 +1,5 @@
 import type { TreeCollection, TreeNode } from "@zag-js/collection"
-import type { Service } from "@zag-js/core"
+import type { Machine, Service } from "@zag-js/core"
 import type { TypeaheadState } from "@zag-js/dom-query"
 import type { CommonProperties, DirectionProperty, PropTypes, RequiredBy } from "@zag-js/types"
 
@@ -101,11 +101,9 @@ type PropsWithDefault =
   | "defaultExpandedValue"
   | "defaultSelectedValue"
 
-export type TreeViewService = Service<TreeViewSchema>
-
-export interface TreeViewSchema {
+export interface TreeViewSchema<T extends TreeNode = TreeNode> {
   state: "idle"
-  props: RequiredBy<TreeViewProps, PropsWithDefault>
+  props: RequiredBy<TreeViewProps<T>, PropsWithDefault>
   context: {
     expandedValue: string[]
     selectedValue: string[]
@@ -122,6 +120,10 @@ export interface TreeViewSchema {
   effect: string
   guard: string
 }
+
+export type TreeViewService<T extends TreeNode = TreeNode> = Service<TreeViewSchema<T>>
+
+export type TreeViewMachine<T extends TreeNode = TreeNode> = Machine<TreeViewSchema<T>>
 
 /* -----------------------------------------------------------------------------
  * Component API

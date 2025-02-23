@@ -9,6 +9,7 @@ export type {
   ElementIds,
   FocusChangeDetails,
   MarkerProps,
+  SliderMachine as Machine,
   SliderService as Service,
   ThumbProps,
   ValueChangeDetails,

@@ -30,6 +30,7 @@ export type {
   PresetTriggerProps,
   SelectionMode,
   DatePickerService as Service,
+  DatePickerMachine as Machine,
   TableCellProps,
   TableCellState,
   TableProps,

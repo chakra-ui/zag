@@ -23,6 +23,7 @@ export type {
   PositioningOptions,
   ScrollToIndexDetails,
   ComboboxService as Service,
+  ComboboxMachine as Machine,
   TriggerProps,
   ValueChangeDetails,
 } from "./combobox.types"

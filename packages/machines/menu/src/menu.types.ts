@@ -1,4 +1,4 @@
-import type { EventObject, Service } from "@zag-js/core"
+import type { EventObject, Machine, Service } from "@zag-js/core"
 import type { DismissableElementHandlers } from "@zag-js/dismissable"
 import type { TypeaheadState } from "@zag-js/dom-query"
 import type { Placement, PositioningOptions } from "@zag-js/popper"
@@ -157,6 +157,8 @@ export interface MenuSchema {
 }
 
 export type MenuService = Service<MenuSchema>
+
+export type MenuMachine = Machine<MenuSchema>
 
 /* -----------------------------------------------------------------------------
  * Component API

@@ -1,6 +1,5 @@
 import type {
   ActionsOrFn,
-  BaseSchema,
   Bindable,
   BindableContext,
   BindableRefs,
@@ -8,7 +7,8 @@ import type {
   ComputedFn,
   EffectsOrFn,
   GuardFn,
-  MachineConfig,
+  Machine,
+  MachineSchema,
   Params,
   Service,
 } from "@zag-js/core"
@@ -20,8 +20,8 @@ import { useBindable } from "./bindable"
 import { useRefs } from "./refs"
 import { useTrack } from "./track"
 
-export function useMachine<T extends BaseSchema>(
-  machine: MachineConfig<T>,
+export function useMachine<T extends MachineSchema>(
+  machine: Machine<T>,
   userProps: Partial<T["props"]> = {},
 ): Service<T> {
   const scope = useMemo(() => {

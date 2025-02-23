@@ -6,6 +6,7 @@ export * from "./popover.props"
 export type {
   PopoverApi as Api,
   ElementIds,
+  PopoverMachine as Machine,
   OpenChangeDetails,
   Placement,
   PositioningOptions,

@@ -1,5 +1,5 @@
 import type { CollectionItem, CollectionOptions, ListCollection } from "@zag-js/collection"
-import type { EventObject, Service } from "@zag-js/core"
+import type { EventObject, Machine, Service } from "@zag-js/core"
 import type { InteractOutsideHandlers } from "@zag-js/dismissable"
 import type { TypeaheadState } from "@zag-js/dom-query"
 import type { Placement, PositioningOptions } from "@zag-js/popper"
@@ -185,7 +185,9 @@ export interface SelectSchema<T extends CollectionItem = CollectionItem> {
   event: EventObject
 }
 
-export type SelectService = Service<SelectSchema>
+export type SelectService<T extends CollectionItem = CollectionItem> = Service<SelectSchema<T>>
+
+export type SelectMachine<T extends CollectionItem = CollectionItem> = Machine<SelectSchema<T>>
 
 /* -----------------------------------------------------------------------------
  * Component API

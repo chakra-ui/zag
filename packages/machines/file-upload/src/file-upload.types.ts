@@ -1,4 +1,4 @@
-import type { EventObject, Service } from "@zag-js/core"
+import type { EventObject, Machine, Service } from "@zag-js/core"
 import type { FileError, FileMimeType } from "@zag-js/file-utils"
 import type { CommonProperties, LocaleProperties, PropTypes, RequiredBy } from "@zag-js/types"
 
@@ -171,6 +171,8 @@ export interface FileUploadSchema {
 }
 
 export type FileUploadService = Service<FileUploadSchema>
+
+export type FileUploadMachine = Machine<FileUploadSchema>
 
 /* -----------------------------------------------------------------------------
  * Component API

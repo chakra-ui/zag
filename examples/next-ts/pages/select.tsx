@@ -7,10 +7,15 @@ import { StateVisualizer } from "../components/state-visualizer"
 import { Toolbar } from "../components/toolbar"
 import { useControls } from "../hooks/use-controls"
 
+interface Item {
+  label: string
+  value: string
+}
+
 export default function Page() {
   const controls = useControls(selectControls)
 
-  const service = useMachine(select.machine, {
+  const service = useMachine(select.machine as select.Machine<Item>, {
     collection: select.collection({ items: selectData }),
     id: useId(),
     name: "country",

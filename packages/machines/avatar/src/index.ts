@@ -6,6 +6,7 @@ export type {
   AvatarApi as Api,
   ElementIds,
   LoadStatus,
+  AvatarMachine as Machine,
   AvatarProps as Props,
   AvatarService as Service,
   StatusChangeDetails,

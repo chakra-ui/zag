@@ -1,4 +1,4 @@
-import type { EventObject, Service } from "@zag-js/core"
+import type { EventObject, Machine, Service } from "@zag-js/core"
 import type {
   CommonProperties,
   DirectionProperty,
@@ -114,6 +114,8 @@ export interface ProgressSchema {
 }
 
 export type ProgressService = Service<ProgressSchema>
+
+export type ProgressMachine = Machine<ProgressSchema>
 
 /* -----------------------------------------------------------------------------
  * Component API

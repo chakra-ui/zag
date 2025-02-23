@@ -6,6 +6,7 @@ export type {
   ProgressApi as Api,
   ProgressService as Service,
   ProgressProps as Props,
+  ProgressMachine as Machine,
   ElementIds,
   IntlTranslations,
   Orientation,

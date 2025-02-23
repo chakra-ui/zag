@@ -1,4 +1,4 @@
-import type { EventObject, Service } from "@zag-js/core"
+import type { EventObject, Machine, Service } from "@zag-js/core"
 import type { CommonProperties, DirectionProperty, PropTypes, RequiredBy } from "@zag-js/types"
 
 /* -----------------------------------------------------------------------------
@@ -133,6 +133,8 @@ export interface PaginationSchema {
 }
 
 export type PaginationService = Service<PaginationSchema>
+
+export type PaginationMachine = Machine<PaginationSchema>
 
 /* -----------------------------------------------------------------------------
  * Component API

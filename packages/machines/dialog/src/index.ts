@@ -5,6 +5,7 @@ export { machine } from "./dialog.machine"
 export * from "./dialog.props"
 export type {
   DialogApi as Api,
+  DialogMachine as Machine,
   DialogProps as Props,
   ElementIds,
   OpenChangeDetails,

@@ -1,5 +1,5 @@
 import type { CollectionItem, CollectionOptions, ListCollection } from "@zag-js/collection"
-import type { EventObject, Service } from "@zag-js/core"
+import type { EventObject, Machine, Service } from "@zag-js/core"
 import type { InteractOutsideHandlers } from "@zag-js/dismissable"
 import type { Placement, PositioningOptions } from "@zag-js/popper"
 import type { CommonProperties, DirectionProperty, PropTypes, RequiredBy } from "@zag-js/types"
@@ -205,7 +205,7 @@ export interface ComboboxProps<T extends CollectionItem = CollectionItem>
   /**
    * The collection of items
    */
-  collection?: ListCollection<any> | undefined
+  collection?: ListCollection<T> | undefined
   /**
    * Whether to allow multiple selection.
    *
@@ -257,8 +257,6 @@ type PropsWithDefault =
   | "translations"
   | "positioning"
 
-export type ComboboxService<T extends CollectionItem = CollectionItem> = Service<ComboboxSchema<T>>
-
 export interface ComboboxSchema<T extends CollectionItem = CollectionItem> {
   props: RequiredBy<ComboboxProps<T>, PropsWithDefault>
   state: "idle" | "focused" | "suggesting" | "interacting"
@@ -284,6 +282,10 @@ export interface ComboboxSchema<T extends CollectionItem = CollectionItem> {
   effect: string
   guard: string
 }
+
+export type ComboboxService<T extends CollectionItem = CollectionItem> = Service<ComboboxSchema<T>>
+
+export type ComboboxMachine<T extends CollectionItem = CollectionItem> = Machine<ComboboxSchema<T>>
 
 /* -----------------------------------------------------------------------------
  * Component API

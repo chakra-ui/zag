@@ -135,7 +135,7 @@ export type ActionsOrFn<T extends Dict> = T["action"][] | ((params: Params<T>) =
 
 export type EffectsOrFn<T extends Dict> = T["effect"][] | ((params: Params<T>) => T["effect"][] | undefined)
 
-export interface MachineConfig<T extends Dict> {
+export interface Machine<T extends Dict> {
   debug?: boolean
   props?: (params: PropsParams<T>) => T["props"]
   context?: (params: ContextParams<T>) => {
@@ -177,15 +177,15 @@ export interface MachineConfig<T extends Dict> {
   }
 }
 
-interface BaseProps {
+interface MachineBaseProps {
   id?: string | undefined
   ids?: Record<string, any> | undefined
   getRootNode?: (() => ShadowRoot | Document | Node) | undefined
   [key: string]: any
 }
 
-export interface BaseSchema {
-  props?: BaseProps
+export interface MachineSchema {
+  props?: MachineBaseProps
   context?: Record<string, any>
   refs?: Record<string, any>
   computed?: Record<string, any>
@@ -197,12 +197,12 @@ export interface BaseSchema {
   event?: { type: string } & Dict
 }
 
-type State<T extends BaseSchema> = Bindable<T["state"]> & {
+type State<T extends MachineSchema> = Bindable<T["state"]> & {
   hasTag: (tag: T["tag"]) => boolean
   matches: (...values: T["state"][]) => boolean
 }
 
-export type Service<T extends BaseSchema> = {
+export type Service<T extends MachineSchema> = {
   state: State<T> & {
     matches: (...values: T["state"][]) => boolean
     hasTag: (tag: T["tag"]) => boolean

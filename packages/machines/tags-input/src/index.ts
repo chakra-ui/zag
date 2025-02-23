@@ -5,7 +5,9 @@ export { machine } from "./tags-input.machine"
 export * from "./tags-input.props"
 export type {
   TagsInputApi as Api,
+  TagsInputMachine as Machine,
   TagsInputProps as Props,
+  TagsInputService as Service,
   ElementIds,
   HighlightChangeDetails,
   InputValueChangeDetails,

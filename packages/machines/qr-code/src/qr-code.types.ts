@@ -1,16 +1,24 @@
-import type { EventObject, Service } from "@zag-js/core"
+import type { EventObject, Machine, Service } from "@zag-js/core"
 import type { DataUrlType } from "@zag-js/dom-query"
 import type { CommonProperties, DirectionProperty, PropTypes, RequiredBy } from "@zag-js/types"
 import type { QrCodeGenerateOptions, QrCodeGenerateResult } from "uqr"
+
+/* -----------------------------------------------------------------------------
+ * Callback details
+ * -----------------------------------------------------------------------------*/
+
+export interface ValueChangeDetails {
+  value: string
+}
 
 export type ElementIds = Partial<{
   root: string
   frame: string
 }>
 
-export interface ValueChangeDetails {
-  value: string
-}
+/* -----------------------------------------------------------------------------
+ * Machine context
+ * -----------------------------------------------------------------------------*/
 
 export interface QrCodeProps extends DirectionProperty, CommonProperties {
   /**
@@ -60,6 +68,8 @@ export interface QrCodeSchema {
 }
 
 export type QrCodeService = Service<QrCodeSchema>
+
+export type QrCodeMachine = Machine<QrCodeSchema>
 
 /* -----------------------------------------------------------------------------
  * Component API

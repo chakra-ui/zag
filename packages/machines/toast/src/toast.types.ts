@@ -1,5 +1,5 @@
 import type { CommonProperties, Direction, DirectionProperty, PropTypes, Required, RequiredBy } from "@zag-js/types"
-import type { EventObject, Service } from "@zag-js/core"
+import type { EventObject, Machine, Service } from "@zag-js/core"
 
 /* -----------------------------------------------------------------------------
  * Base types
@@ -168,6 +168,8 @@ export type ToastSchema<O = any> = {
 
 export type ToastService = Service<ToastSchema>
 
+export type ToastMachine = Machine<ToastSchema>
+
 /* -----------------------------------------------------------------------------
  * Toast Group API
  * -----------------------------------------------------------------------------*/
@@ -252,6 +254,8 @@ export type ToastGroupSchema = {
 }
 
 export type ToastGroupService = Service<ToastGroupSchema>
+
+export type ToastGroupMachine = Machine<ToastGroupSchema>
 
 /* -----------------------------------------------------------------------------
  * Toaster API

@@ -18,4 +18,5 @@ export type {
   ItemPreviewImageProps,
   ItemProps,
   FileUploadService as Service,
+  FileUploadMachine as Machine,
 } from "./file-upload.types"

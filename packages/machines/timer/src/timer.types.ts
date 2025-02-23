@@ -1,4 +1,4 @@
-import type { EventObject, Service } from "@zag-js/core"
+import type { EventObject, Machine, Service } from "@zag-js/core"
 import type { CommonProperties, PropTypes, RequiredBy } from "@zag-js/types"
 
 export interface Time<T = number> {
@@ -104,6 +104,8 @@ export interface TimerSchema {
 }
 
 export type TimerService = Service<TimerSchema>
+
+export type TimerMachine = Machine<TimerSchema>
 
 /* -----------------------------------------------------------------------------
  * Component API

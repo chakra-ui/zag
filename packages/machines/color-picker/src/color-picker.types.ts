@@ -1,5 +1,5 @@
 import type { Color, ColorAxes, ColorChannel, ColorFormat, ColorType } from "@zag-js/color-utils"
-import type { EventObject, Service } from "@zag-js/core"
+import type { EventObject, Machine, Service } from "@zag-js/core"
 import type { InteractOutsideHandlers } from "@zag-js/dismissable"
 import type { PositioningOptions } from "@zag-js/popper"
 import type { CommonProperties, DirectionProperty, Orientation, PropTypes, RequiredBy } from "@zag-js/types"
@@ -177,6 +177,8 @@ export type ColorPickerSchema = {
 }
 
 export type ColorPickerService = Service<ColorPickerSchema>
+
+export type ColorPickerMachine = Machine<ColorPickerSchema>
 
 /* -----------------------------------------------------------------------------
  * Component API

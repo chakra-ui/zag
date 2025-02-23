@@ -13,5 +13,6 @@ export type {
   ItemProps,
   PageChangeDetails,
   CarouselService as Service,
+  CarouselMachine as Machine,
   Orientation,
 } from "./carousel.types"

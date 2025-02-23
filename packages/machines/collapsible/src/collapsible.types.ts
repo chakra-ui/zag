@@ -1,4 +1,4 @@
-import type { Service } from "@zag-js/core"
+import type { Machine, Service } from "@zag-js/core"
 import type { CommonProperties, DirectionProperty, PropTypes } from "@zag-js/types"
 
 /* -----------------------------------------------------------------------------
@@ -84,6 +84,8 @@ export interface CollapsibleSchema {
 }
 
 export type CollapsibleService = Service<CollapsibleSchema>
+
+export type CollapsibleMachine = Machine<CollapsibleSchema>
 
 /* -----------------------------------------------------------------------------
  * Component API

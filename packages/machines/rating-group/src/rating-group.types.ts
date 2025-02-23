@@ -1,4 +1,4 @@
-import type { EventObject, Service } from "@zag-js/core"
+import type { EventObject, Machine, Service } from "@zag-js/core"
 import type { CommonProperties, DirectionProperty, PropTypes, RequiredBy } from "@zag-js/types"
 
 /* -----------------------------------------------------------------------------
@@ -135,6 +135,8 @@ export interface RatingGroupSchema {
 }
 
 export type RatingGroupService = Service<RatingGroupSchema>
+
+export type RatingGroupMachine = Machine<RatingGroupSchema>
 
 /* -----------------------------------------------------------------------------
  * Component API

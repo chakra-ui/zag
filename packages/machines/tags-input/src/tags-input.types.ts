@@ -1,4 +1,4 @@
-import type { EventObject } from "@zag-js/core"
+import type { EventObject, Machine, Service } from "@zag-js/core"
 import type { InteractOutsideHandlers } from "@zag-js/interact-outside"
 import type { LiveRegion } from "@zag-js/live-region"
 import type { CommonProperties, DirectionProperty, PropTypes, RequiredBy } from "@zag-js/types"
@@ -225,15 +225,9 @@ export interface TagsInputSchema {
   guard: string
 }
 
-// interface PrivateContext {
-//   log: { current: Log | null; prev: Log | null }
-//   liveRegion: LiveRegion | null
-//   highlightedTagId: string | null
-//   idx?: number | undefined
-//   editedTagId: string | null
-//   editedTagValue: string
-//   fieldsetDisabled: boolean
-// }
+export type TagsInputService = Service<TagsInputSchema>
+
+export type TagsInputMachine = Machine<TagsInputSchema>
 
 /* -----------------------------------------------------------------------------
  * Component API

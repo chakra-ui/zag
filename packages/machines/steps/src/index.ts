@@ -8,6 +8,7 @@ export type {
   ElementIds,
   ItemProps,
   ItemState,
+  StepsMachine as Machine,
   StepsService as Service,
   StepChangeDetails,
 } from "./steps.types"

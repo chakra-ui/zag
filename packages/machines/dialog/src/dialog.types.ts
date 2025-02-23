@@ -1,4 +1,4 @@
-import type { Service } from "@zag-js/core"
+import type { Machine, Service } from "@zag-js/core"
 import type { DismissableElementHandlers, PersistentElementOptions } from "@zag-js/dismissable"
 import type { CommonProperties, DirectionProperty, MaybeElement, PropTypes, RequiredBy } from "@zag-js/types"
 
@@ -120,6 +120,8 @@ export interface DialogSchema {
 }
 
 export type DialogService = Service<DialogSchema>
+
+export type DialogMachine = Machine<DialogSchema>
 
 /* -----------------------------------------------------------------------------
  * Component props

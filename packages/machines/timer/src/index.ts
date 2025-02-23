@@ -10,6 +10,7 @@ export type {
   ItemProps,
   ElementIds,
   TimerService as Service,
+  TimerMachine as Machine,
   TickDetails,
   Time,
   TimePart,

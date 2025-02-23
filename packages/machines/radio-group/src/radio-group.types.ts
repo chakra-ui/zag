@@ -1,4 +1,4 @@
-import type { EventObject, Service } from "@zag-js/core"
+import type { EventObject, Machine, Service } from "@zag-js/core"
 import type { CommonProperties, DirectionProperty, PropTypes, RequiredBy } from "@zag-js/types"
 
 export interface ValueChangeDetails {
@@ -135,6 +135,8 @@ export interface RadioGroupSchema {
 }
 
 export type RadioGroupService = Service<RadioGroupSchema>
+
+export type RadioGroupMachine = Machine<RadioGroupSchema>
 
 /* -----------------------------------------------------------------------------
  * Component API

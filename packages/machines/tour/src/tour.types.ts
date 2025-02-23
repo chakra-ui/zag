@@ -1,4 +1,4 @@
-import type { EventObject, Service } from "@zag-js/core"
+import type { EventObject, Machine, Service } from "@zag-js/core"
 import type { InteractOutsideHandlers } from "@zag-js/dismissable"
 import type { Placement } from "@zag-js/popper"
 import type { CommonProperties, DirectionProperty, PropTypes, RequiredBy } from "@zag-js/types"
@@ -301,6 +301,8 @@ export interface TourSchema {
 }
 
 export type TourService = Service<TourSchema>
+
+export type TourMachine = Machine<TourSchema>
 
 /* -----------------------------------------------------------------------------
  * Component API

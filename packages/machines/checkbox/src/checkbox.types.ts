@@ -1,5 +1,5 @@
 import type { CommonProperties, DirectionProperty, PropTypes, RequiredBy } from "@zag-js/types"
-import type { EventObject, Service } from "@zag-js/core"
+import type { EventObject, Machine, Service } from "@zag-js/core"
 
 /* -----------------------------------------------------------------------------
  * Callback details
@@ -97,6 +97,8 @@ export interface CheckboxSchema {
 }
 
 export type CheckboxService = Service<CheckboxSchema>
+
+export type CheckboxMachine = Machine<CheckboxSchema>
 
 /* -----------------------------------------------------------------------------
  * Component API

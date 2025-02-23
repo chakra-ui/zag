@@ -5,6 +5,7 @@ export * from "./collapsible.props"
 export type {
   CollapsibleApi as Api,
   ElementIds,
+  CollapsibleMachine as Machine,
   OpenChangeDetails,
   CollapsibleProps as Props,
   CollapsibleService as Service,

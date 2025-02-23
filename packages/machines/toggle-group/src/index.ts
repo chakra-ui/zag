@@ -6,6 +6,7 @@ export type {
   ToggleGroupApi as Api,
   ToggleGroupService as Service,
   ToggleGroupProps as Props,
+  ToggleGroupMachine as Machine,
   ElementIds,
   ItemProps,
   ItemState,

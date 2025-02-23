@@ -10,5 +10,6 @@ export type {
   ItemProps,
   ItemState,
   RatingGroupService as Service,
+  RatingGroupMachine as Machine,
   ValueChangeDetails,
 } from "./rating-group.types"

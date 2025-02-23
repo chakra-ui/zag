@@ -9,5 +9,6 @@ export type {
   ItemState,
   RadioGroupProps as Props,
   RadioGroupService as Service,
+  RadioGroupMachine as Machine,
   ValueChangeDetails,
 } from "./radio-group.types"

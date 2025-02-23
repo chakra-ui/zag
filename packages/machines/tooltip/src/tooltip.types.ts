@@ -1,4 +1,4 @@
-import type { EventObject, Service } from "@zag-js/core"
+import type { EventObject, Machine, Service } from "@zag-js/core"
 import type { Placement, PositioningOptions } from "@zag-js/popper"
 import type { CommonProperties, DirectionProperty, PropTypes, RequiredBy } from "@zag-js/types"
 
@@ -115,6 +115,8 @@ export interface TooltipSchema {
 }
 
 export type TooltipService = Service<TooltipSchema>
+
+export type TooltipMachine = Machine<TooltipSchema>
 
 /* -----------------------------------------------------------------------------
  * Component API

@@ -6,6 +6,7 @@ export type {
   HoverCardApi as Api,
   HoverCardProps as Props,
   HoverCardService as Service,
+  HoverCardMachine as Machine,
   ElementIds,
   OpenChangeDetails,
   Placement,

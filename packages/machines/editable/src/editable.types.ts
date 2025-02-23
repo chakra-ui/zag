@@ -1,4 +1,4 @@
-import type { EventObject, Service } from "@zag-js/core"
+import type { EventObject, Machine, Service } from "@zag-js/core"
 import type { InteractOutsideHandlers } from "@zag-js/interact-outside"
 import type { CommonProperties, DirectionProperty, PropTypes, RequiredBy } from "@zag-js/types"
 
@@ -172,6 +172,12 @@ export interface EditableSchema {
 }
 
 export type EditableService = Service<EditableSchema>
+
+export type EditableMachine = Machine<EditableSchema>
+
+/* -----------------------------------------------------------------------------
+ * Component API
+ * -----------------------------------------------------------------------------*/
 
 export interface EditableApi<T extends PropTypes = PropTypes> {
   /**

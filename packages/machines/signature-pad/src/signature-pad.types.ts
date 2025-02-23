@@ -1,4 +1,4 @@
-import type { EventObject, Service } from "@zag-js/core"
+import type { EventObject, Machine, Service } from "@zag-js/core"
 import type { CommonProperties, DirectionProperty, PropTypes, RequiredBy } from "@zag-js/types"
 import type { StrokeOptions } from "perfect-freehand"
 
@@ -128,6 +128,8 @@ export interface SignaturePadSchema {
 }
 
 export type SignaturePadService = Service<SignaturePadSchema>
+
+export type SignaturePadMachine = Machine<SignaturePadSchema>
 
 /* -----------------------------------------------------------------------------
  * Component API

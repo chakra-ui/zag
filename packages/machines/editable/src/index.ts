@@ -10,6 +10,7 @@ export type {
   ElementIds,
   IntlTranslations,
   EditableService as Service,
+  EditableMachine as Machine,
   SubmitMode,
   EditChangeDetails,
   ValueChangeDetails,

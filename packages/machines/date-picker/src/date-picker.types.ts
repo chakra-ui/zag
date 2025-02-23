@@ -7,7 +7,7 @@ import type {
   DateValue,
   ZonedDateTime,
 } from "@internationalized/date"
-import type { Service } from "@zag-js/core"
+import type { Machine, Service } from "@zag-js/core"
 import type { DateRangePreset } from "@zag-js/date-utils"
 import type { LiveRegion } from "@zag-js/live-region"
 import type { Placement, PositioningOptions } from "@zag-js/popper"
@@ -355,6 +355,8 @@ export interface DatePickerSchema {
 }
 
 export type DatePickerService = Service<DatePickerSchema>
+
+export type DatePickerMachine = Machine<DatePickerSchema>
 
 /* -----------------------------------------------------------------------------
  * Component API

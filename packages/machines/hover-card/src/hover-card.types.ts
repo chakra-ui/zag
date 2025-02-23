@@ -1,4 +1,4 @@
-import type { EventObject, Service } from "@zag-js/core"
+import type { EventObject, Machine, Service } from "@zag-js/core"
 import type { Placement, PositioningOptions } from "@zag-js/popper"
 import type { CommonProperties, DirectionProperty, PropTypes, RequiredBy } from "@zag-js/types"
 
@@ -84,6 +84,8 @@ export interface HoverCardSchema {
 }
 
 export type HoverCardService = Service<HoverCardSchema>
+
+export type HoverCardMachine = Machine<HoverCardSchema>
 
 /* -----------------------------------------------------------------------------
  * Component API

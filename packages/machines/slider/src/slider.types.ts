@@ -1,4 +1,4 @@
-import type { EventObject, Service } from "@zag-js/core"
+import type { EventObject, Machine, Service } from "@zag-js/core"
 import type { CommonProperties, DirectionProperty, PropTypes, RequiredBy } from "@zag-js/types"
 
 /* -----------------------------------------------------------------------------
@@ -222,6 +222,8 @@ export interface SliderSchema {
 }
 
 export type SliderService = Service<SliderSchema>
+
+export type SliderMachine = Machine<SliderSchema>
 
 /* -----------------------------------------------------------------------------
  * Component API

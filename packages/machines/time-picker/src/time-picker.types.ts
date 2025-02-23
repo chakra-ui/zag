@@ -1,5 +1,5 @@
 import { Time } from "@internationalized/date"
-import type { EventObject, Service } from "@zag-js/core"
+import type { EventObject, Machine, Service } from "@zag-js/core"
 import type { Placement, PositioningOptions } from "@zag-js/popper"
 import type { CommonProperties, DirectionProperty, PropTypes, RequiredBy } from "@zag-js/types"
 
@@ -176,6 +176,8 @@ export interface TimePickerSchema {
 }
 
 export type TimePickerService = Service<TimePickerSchema>
+
+export type TimePickerMachine = Machine<TimePickerSchema>
 
 /* -----------------------------------------------------------------------------
  * Component API

@@ -10,6 +10,7 @@ export type {
   FocusChangeDetails,
   IntlTranslations,
   NavigateDetails,
+  TabsMachine as Machine,
   TabsService as Service,
   TriggerProps,
   ValueChangeDetails,

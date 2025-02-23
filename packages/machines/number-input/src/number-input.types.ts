@@ -1,5 +1,5 @@
 import type { NumberFormatter, NumberParser } from "@internationalized/number"
-import type { EventObject, Service } from "@zag-js/core"
+import type { EventObject, Machine, Service } from "@zag-js/core"
 import type { CommonProperties, LocaleProperties, PropTypes, RequiredBy } from "@zag-js/types"
 
 /* -----------------------------------------------------------------------------
@@ -268,6 +268,8 @@ export interface NumberInputSchema {
 }
 
 export type NumberInputService = Service<NumberInputSchema>
+
+export type NumberInputMachine = Machine<NumberInputSchema>
 
 /* -----------------------------------------------------------------------------
  * Component API

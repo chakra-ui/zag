@@ -10,6 +10,7 @@ export type {
   IntlTranslations,
   Point,
   ProgressTextDetails,
+  TourMachine as Machine,
   TourService as Service,
   StatusChangeDetails,
   StepAction,

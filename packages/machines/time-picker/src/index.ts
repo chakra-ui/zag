@@ -14,6 +14,7 @@ export type {
   PositioningOptions,
   TimePickerProps as Props,
   TimePickerService as Service,
+  TimePickerMachine as Machine,
   Time,
   TimePeriod,
   TimeUnit,

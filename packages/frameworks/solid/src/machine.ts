@@ -1,8 +1,8 @@
 import type {
   ActionsOrFn,
-  BaseSchema,
   GuardFn,
-  MachineConfig,
+  Machine,
+  MachineSchema,
   Service,
   ChooseFn,
   ComputedFn,
@@ -17,8 +17,8 @@ import { createBindable } from "./bindable"
 import { createRefs } from "./refs"
 import { createTrack } from "./track"
 
-export function useMachine<T extends BaseSchema>(
-  machine: MachineConfig<T>,
+export function useMachine<T extends MachineSchema>(
+  machine: Machine<T>,
   userProps: Partial<T["props"]> | Accessor<Partial<T["props"]>> = {},
 ): Service<T> {
   const scope = createMemo(() => {

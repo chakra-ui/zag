@@ -1,4 +1,4 @@
-import type { EventObject, Service } from "@zag-js/core"
+import type { EventObject, Machine, Service } from "@zag-js/core"
 import type { CommonProperties, DirectionProperty, PropTypes, RequiredBy } from "@zag-js/types"
 
 /* -----------------------------------------------------------------------------
@@ -145,6 +145,8 @@ export interface PinInputSchema {
 }
 
 export type PinInputService = Service<PinInputSchema>
+
+export type PinInputMachine = Machine<PinInputSchema>
 
 /* -----------------------------------------------------------------------------
  * Component API

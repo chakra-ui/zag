@@ -1,4 +1,4 @@
-import type { EventObject, Service } from "@zag-js/core"
+import type { EventObject, Machine, Service } from "@zag-js/core"
 import type { Point, Size } from "@zag-js/rect-utils"
 import type { CommonProperties, DirectionProperty, PropTypes, RequiredBy } from "@zag-js/types"
 
@@ -219,6 +219,8 @@ export interface FloatingPanelSchema {
 }
 
 export type FloatingPanelService = Service<FloatingPanelSchema>
+
+export type FloatingPanelMachine = Machine<FloatingPanelSchema>
 
 /* -----------------------------------------------------------------------------
  * Component props

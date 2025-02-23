@@ -1,4 +1,4 @@
-import type { EventObject, Service } from "@zag-js/core"
+import type { EventObject, Machine, Service } from "@zag-js/core"
 import type { CommonProperties, DirectionProperty, Orientation, PropTypes, RequiredBy } from "@zag-js/types"
 
 /* -----------------------------------------------------------------------------
@@ -103,6 +103,8 @@ export interface ToggleGroupSchema {
 }
 
 export type ToggleGroupService = Service<ToggleGroupSchema>
+
+export type ToggleGroupMachine = Machine<ToggleGroupSchema>
 
 /* -----------------------------------------------------------------------------
  * Component API

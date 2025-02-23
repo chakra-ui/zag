@@ -1,4 +1,4 @@
-import type { EventObject, Service } from "@zag-js/core"
+import type { EventObject, Machine, Service } from "@zag-js/core"
 import type { CommonProperties, DirectionProperty, PropTypes, Required, RequiredBy } from "@zag-js/types"
 
 /* -----------------------------------------------------------------------------
@@ -107,6 +107,8 @@ export interface SplitterSchema {
 }
 
 export type SplitterService = Service<SplitterSchema>
+
+export type SplitterMachine = Machine<SplitterSchema>
 
 /* -----------------------------------------------------------------------------
  * Component API

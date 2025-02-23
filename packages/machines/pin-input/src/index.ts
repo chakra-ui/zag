@@ -6,6 +6,7 @@ export type {
   PinInputApi as Api,
   PinInputProps as Props,
   PinInputService as Service,
+  PinInputMachine as Machine,
   ElementIds,
   InputProps,
   IntlTranslations,

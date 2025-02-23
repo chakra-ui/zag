@@ -1,25 +1,33 @@
 import type { CommonProperties, DirectionProperty, PropTypes, RequiredBy } from "@zag-js/types"
-import type { EventObject, Service } from "@zag-js/core"
+import type { EventObject, Machine, Service } from "@zag-js/core"
 
-export interface ElementIds {
-  root: string
-  thumb: string
-  hiddenInput: string
-  control: string
-  valueText: string
-}
+/* -----------------------------------------------------------------------------
+ * Callback details
+ * -----------------------------------------------------------------------------*/
 
 export interface ValueChangeDetails {
   value: number
   valueAsDegree: string
 }
 
+/* -----------------------------------------------------------------------------
+ * Machine context
+ * -----------------------------------------------------------------------------*/
+
+export type ElementIds = Partial<{
+  root: string
+  thumb: string
+  hiddenInput: string
+  control: string
+  valueText: string
+}>
+
 export interface AngleSliderProps extends DirectionProperty, CommonProperties {
   /**
    * The ids of the elements in the machine.
    * Useful for composition.
    */
-  ids?: Partial<ElementIds> | undefined
+  ids?: ElementIds | undefined
   /**
    * The step value for the slider.
    * @default 1
@@ -80,6 +88,12 @@ export interface AngleSliderSchema {
 }
 
 export type AngleSliderService = Service<AngleSliderSchema>
+
+export type AngleSliderMachine = Machine<AngleSliderSchema>
+
+/* -----------------------------------------------------------------------------
+ * Component API
+ * -----------------------------------------------------------------------------*/
 
 export interface MarkerProps {
   /**

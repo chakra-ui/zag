@@ -6,6 +6,7 @@ export type {
   SignaturePadApi as Api,
   SignaturePadProps as Props,
   SignaturePadService as Service,
+  SignaturePadMachine as Machine,
   DataUrlType,
   DrawDetails,
   DrawEndDetails,

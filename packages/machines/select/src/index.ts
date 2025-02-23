@@ -10,6 +10,7 @@ export type {
   CollectionOptions,
   SelectProps as Props,
   SelectService as Service,
+  SelectMachine as Machine,
   ElementIds,
   HighlightChangeDetails,
   ItemGroupLabelProps,

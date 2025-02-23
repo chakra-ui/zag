@@ -1,5 +1,9 @@
-import type { Service } from "@zag-js/core"
+import type { Machine, Service } from "@zag-js/core"
 import type { CommonProperties, PropTypes, RequiredBy } from "@zag-js/types"
+
+/* -----------------------------------------------------------------------------
+ * Callback details
+ * -----------------------------------------------------------------------------*/
 
 export interface CopyStatusDetails {
   copied: boolean
@@ -8,6 +12,10 @@ export interface CopyStatusDetails {
 export interface ValueChangeDetails {
   value: string
 }
+
+/* -----------------------------------------------------------------------------
+ * Machine context
+ * -----------------------------------------------------------------------------*/
 
 export type ElementIds = Partial<{
   root: string
@@ -56,6 +64,8 @@ export interface ClipboardSchema {
 }
 
 export type ClipboardService = Service<ClipboardSchema>
+
+export type ClipboardMachine = Machine<ClipboardSchema>
 
 /* -----------------------------------------------------------------------------
  * Component API

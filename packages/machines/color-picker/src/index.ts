@@ -21,6 +21,7 @@ export type {
   PositioningOptions,
   ColorPickerProps as Props,
   ColorPickerService as Service,
+  ColorPickerMachine as Machine,
   SwatchProps,
   SwatchTriggerProps,
   SwatchTriggerState,

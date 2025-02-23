@@ -8,6 +8,7 @@ export type {
   OpenChangeDetails,
   Placement,
   PositioningOptions,
+  TooltipMachine as Machine,
   TooltipProps as Props,
   TooltipService as Service,
 } from "./tooltip.types"

@@ -10,5 +10,6 @@ export type {
   QrCodeGenerateOptions,
   QrCodeGenerateResult,
   QrCodeService as Service,
+  QrCodeMachine as Machine,
   ValueChangeDetails,
 } from "./qr-code.types"

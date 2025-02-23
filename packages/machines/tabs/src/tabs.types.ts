@@ -1,4 +1,4 @@
-import type { EventObject, Service } from "@zag-js/core"
+import type { EventObject, Machine, Service } from "@zag-js/core"
 import type { CommonProperties, DirectionProperty, PropTypes, RequiredBy } from "@zag-js/types"
 
 /* -----------------------------------------------------------------------------
@@ -121,6 +121,8 @@ export type TabsSchema = {
 }
 
 export type TabsService = Service<TabsSchema>
+
+export type TabsMachine = Machine<TabsSchema>
 
 /* -----------------------------------------------------------------------------
  * Component API

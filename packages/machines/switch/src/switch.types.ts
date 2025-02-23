@@ -1,4 +1,4 @@
-import type { EventObject, Service } from "@zag-js/core"
+import type { EventObject, Machine, Service } from "@zag-js/core"
 import type { CommonProperties, DirectionProperty, PropTypes, RequiredBy } from "@zag-js/types"
 
 /* -----------------------------------------------------------------------------
@@ -123,6 +123,8 @@ export interface SwitchSchema {
 }
 
 export type SwitchService = Service<SwitchSchema>
+
+export type SwitchMachine = Machine<SwitchSchema>
 
 /* -----------------------------------------------------------------------------
  * Component API

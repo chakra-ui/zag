@@ -8,6 +8,11 @@ import { StateVisualizer } from "../components/state-visualizer"
 import { Toolbar } from "../components/toolbar"
 import { useControls } from "../hooks/use-controls"
 
+interface Item {
+  code: string
+  label: string
+}
+
 export default function Page() {
   const controls = useControls(comboboxControls)
 
@@ -19,7 +24,7 @@ export default function Page() {
     itemToString: (item) => item.label,
   })
 
-  const service = useMachine(combobox.machine, {
+  const service = useMachine(combobox.machine as combobox.Machine<Item>, {
     id: useId(),
     collection,
     onOpenChange() {

@@ -1,4 +1,4 @@
-import type { EventObject, Service } from "@zag-js/core"
+import type { EventObject, Machine, Service } from "@zag-js/core"
 
 /* -----------------------------------------------------------------------------
  * Machine context
@@ -37,6 +37,8 @@ export interface PresenceSchema {
 }
 
 export type PresenceService = Service<PresenceSchema>
+
+export type PresenceMachine = Machine<PresenceSchema>
 
 /* -----------------------------------------------------------------------------
  * Component API
