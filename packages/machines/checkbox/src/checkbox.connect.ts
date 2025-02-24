@@ -124,8 +124,6 @@ export function connect<T extends PropTypes>(
             return
           }
 
-          if (!event.isTrusted) return
-
           const checked = event.currentTarget.checked
           send({ type: "CHECKED.SET", checked, isTrusted: true })
         },

@@ -5,10 +5,6 @@ import { createEffect, createMemo, createSignal, type Accessor } from "solid-js"
 export function createBindable<T>(props: Accessor<BindableParams<T>>): Bindable<T> {
   const initial = props().value ?? props().defaultValue
 
-  if (props().debug) {
-    console.log(`[bindable > ${props().debug}] initial`, initial)
-  }
-
   const eq = props().isEqual ?? isEqual
 
   const [value, setValue] = createSignal(initial as T)

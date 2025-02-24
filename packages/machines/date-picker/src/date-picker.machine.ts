@@ -101,7 +101,7 @@ export const machine = createMachine<DatePickerSchema>({
     }
   },
 
-  context({ prop, bindable, getContext }) {
+  context({ prop, bindable, getContext, getComputed }) {
     return {
       focusedValue: bindable<DateValue>(() => ({
         defaultValue: prop("focusedValue"),
@@ -110,9 +110,10 @@ export const machine = createMachine<DatePickerSchema>({
         sync: true,
         onChange(focusedValue) {
           const context = getContext()
+          const computed = getComputed()
           prop("onFocusChange")?.({
             value: context.get("value"),
-            valueAsString: [],
+            valueAsString: computed("valueAsString"),
             view: context.get("view"),
             focusedValue,
           })
@@ -125,7 +126,10 @@ export const machine = createMachine<DatePickerSchema>({
         hash: (v) => v.map((date) => date.toString()).join(","),
         onChange(value) {
           const context = getContext()
-          prop("onValueChange")?.({ value, valueAsString: [], view: context.get("view") })
+          const valueAsString = value.map((date) =>
+            prop("format")(date, { locale: prop("locale"), timeZone: prop("timeZone") }),
+          )
+          prop("onValueChange")?.({ value, valueAsString, view: context.get("view") })
         },
       })),
       inputValue: bindable(() => ({
@@ -180,8 +184,7 @@ export const machine = createMachine<DatePickerSchema>({
       !isNextVisibleRangeInvalid(computed("endValue"), prop("min"), prop("max")),
     valueAsString({ context, prop }) {
       const value = context.get("value")
-      const format = prop("format")
-      return value.map((date) => format(date, { locale: prop("locale"), timeZone: prop("timeZone") }))
+      return value.map((date) => prop("format")(date, { locale: prop("locale"), timeZone: prop("timeZone") }))
     },
   },
 

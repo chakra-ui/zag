@@ -18,10 +18,14 @@ export function bindable<T>(props: () => BindableParams<T>): Bindable<T> {
     },
     set(val: T | ((prev: T) => T)) {
       const prev = controlled.value ? props().value : v.value
-      const nextValue = isFunction(val) ? val(prev as T) : val
-      if (!controlled.value) v.value = nextValue
-      if (!eq(nextValue, prev)) {
-        props().onChange?.(nextValue, prev)
+      const next = isFunction(val) ? val(prev as T) : val
+      if (props().debug) {
+        console.log(`[bindable > ${props().debug}] setValue`, { next, prev })
+      }
+
+      if (!controlled.value) v.value = next
+      if (!eq(next, prev)) {
+        props().onChange?.(next, prev)
       }
     },
     invoke(nextValue: T, prevValue: T) {

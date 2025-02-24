@@ -30,7 +30,7 @@ export const machine = createMachine<SliderSchema>({
     return "idle"
   },
 
-  context({ prop, bindable, getContext, scope }) {
+  context({ prop, bindable, getContext }) {
     return {
       thumbSize: bindable(() => ({
         defaultValue: prop("thumbSize") || null,
@@ -38,9 +38,11 @@ export const machine = createMachine<SliderSchema>({
       value: bindable(() => ({
         defaultValue: prop("defaultValue"),
         value: prop("value"),
+        hash(a) {
+          return a.join(",")
+        },
         onChange(value) {
           prop("onValueChange")?.({ value })
-          dom.dispatchChangeEvent(scope, value)
         },
       })),
       focusedIndex: bindable(() => ({
@@ -69,8 +71,8 @@ export const machine = createMachine<SliderSchema>({
   },
 
   watch({ track, action, context }) {
-    track([() => context.get("value").join(",")], () => {
-      action(["syncInputElements"])
+    track([() => context.hash("value")], () => {
+      action(["syncInputElements", "dispatchChangeEvent"])
     })
   },
 
@@ -198,6 +200,9 @@ export const machine = createMachine<SliderSchema>({
       },
     },
     actions: {
+      dispatchChangeEvent({ context, scope }) {
+        dom.dispatchChangeEvent(scope, context.get("value"))
+      },
       syncInputElements({ context, scope }) {
         context.get("value").forEach((value, index) => {
           const inputEl = dom.getHiddenInputEl(scope, index)
