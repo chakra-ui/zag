@@ -127,7 +127,7 @@ export function connect<T extends PropTypes>(
         onBeforeInput(event) {
           try {
             const value = getBeforeInputValue(event)
-            const isValid = isValidValue(value, prop("type")!, prop("pattern")!)
+            const isValid = isValidValue(value, prop("type"), prop("pattern"))
             if (!isValid) {
               send({ type: "VALUE.INVALID", value })
               event.preventDefault()

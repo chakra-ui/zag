@@ -18,7 +18,7 @@ const fetchMachine = createMachine({
       count: 5,
       dir: "ltr",
       defaultValue: -1,
-      ...compact(props),
+      ...props,
       translations: {
         ratingValueText: index => `${index} stars`,
         ...props.translations
@@ -30,8 +30,7 @@ const fetchMachine = createMachine({
   },
   context({
     prop,
-    bindable,
-    scope
+    bindable
   }) {
     return {
       value: bindable(() => ({
@@ -41,7 +40,6 @@ const fetchMachine = createMachine({
           prop("onValueChange")?.({
             value
           });
-          dom.dispatchChangeEvent(scope, value);
         }
       })),
       hoveredValue: bindable(() => ({
@@ -60,10 +58,17 @@ const fetchMachine = createMachine({
   watch({
     track,
     action,
-    prop
+    prop,
+    context: {
+      "isValueEmpty": false,
+      "isRadioFocused": false
+    }
   }) {
     track([() => prop("allowHalf")], () => {
       action(["roundValueIfNeeded"]);
+    });
+    track([() => context.get("value")], () => {
+      action(["dispatchChangeEvent"]);
     });
   },
   effects: ["trackFormControlState"],
@@ -73,7 +78,9 @@ const fetchMachine = createMachine({
     },
     CLEAR_VALUE: {
       actions: ["clearValue"]
-    },
+    }
+  },
+  on: {
     UPDATE_CONTEXT: {
       actions: "updateContext"
     }
@@ -150,10 +157,7 @@ const fetchMachine = createMachine({
         prop
       }) => !(prop("disabled") || prop("readOnly")),
       isHoveredValueEmpty: ({
-        context: {
-          "isValueEmpty": false,
-          "isRadioFocused": false
-        }
+        context
       }) => context.get("hoveredValue") === -1,
       isValueEmpty: ({
         context
@@ -243,6 +247,12 @@ const fetchMachine = createMachine({
       }) {
         if (prop("allowHalf")) return;
         context.set("value", Math.round(context.get("value")));
+      },
+      dispatchChangeEvent({
+        context,
+        scope
+      }) {
+        dom.dispatchChangeEvent(scope, context.get("value"));
       }
     }
   }

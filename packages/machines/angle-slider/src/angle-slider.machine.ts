@@ -129,7 +129,7 @@ export const machine = createMachine<AngleSliderSchema>({
         })
       },
       setPointerValue({ scope, event, context, prop }) {
-        const controlEl = dom.getControlEl(scope)!
+        const controlEl = dom.getControlEl(scope)
         if (!controlEl) return
         const deg = getAngle(controlEl, event.point)
         context.set("value", constrainAngle(deg, prop("step")))

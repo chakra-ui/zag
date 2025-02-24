@@ -1,5 +1,16 @@
 # @zag-js/collection
 
+## 1.0.2
+
+### Patch Changes
+
+- [`2fdf79c`](https://github.com/chakra-ui/zag/commit/2fdf79c82a5cbfa876adc858886ce22b8b52d8fb) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Widen `items` type to allow `Iterable` instead of just `Array`
+  since we internally convert iterables to an array.
+
+- Updated dependencies []:
+  - @zag-js/utils@1.0.2
+
 ## 1.0.1
 
 ### Patch Changes

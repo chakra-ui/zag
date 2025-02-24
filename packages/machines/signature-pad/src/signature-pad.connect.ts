@@ -71,11 +71,14 @@ export function connect<T extends PropTypes>(
 
           const target = getEventTarget<HTMLElement>(event)
           if (target?.closest("[data-part=clear-trigger]")) return
-
           event.currentTarget.setPointerCapture(event.pointerId)
 
           const point = { x: event.clientX, y: event.clientY }
-          const { offset } = getRelativePoint(point, dom.getControlEl(scope)!)
+
+          const controlEl = dom.getControlEl(scope)
+          if (!controlEl) return
+
+          const { offset } = getRelativePoint(point, controlEl)
           send({ type: "POINTER_DOWN", point: offset, pressure: event.pressure })
         },
         onPointerUp(event) {

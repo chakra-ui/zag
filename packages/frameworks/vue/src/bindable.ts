@@ -1,10 +1,10 @@
 import type { Bindable, BindableParams } from "@zag-js/core"
-import { isFunction } from "@zag-js/utils"
+import { isFunction, isEqual } from "@zag-js/utils"
 import { shallowRef, computed as __computed } from "vue"
 
 export function bindable<T>(props: () => BindableParams<T>): Bindable<T> {
   const initial = props().defaultValue ?? props().value
-  const eq = props().isEqual ?? Object.is
+  const eq = props().isEqual ?? isEqual
 
   const v = shallowRef(initial)
   const controlled = __computed(() => props().value !== undefined)
@@ -18,10 +18,14 @@ export function bindable<T>(props: () => BindableParams<T>): Bindable<T> {
     },
     set(val: T | ((prev: T) => T)) {
       const prev = controlled.value ? props().value : v.value
-      const nextValue = isFunction(val) ? val(prev as T) : val
-      if (!controlled.value) v.value = nextValue
-      if (!eq(nextValue, prev)) {
-        props().onChange?.(nextValue, prev)
+      const next = isFunction(val) ? val(prev as T) : val
+      if (props().debug) {
+        console.log(`[bindable > ${props().debug}] setValue`, { next, prev })
+      }
+
+      if (!controlled.value) v.value = next
+      if (!eq(next, prev)) {
+        props().onChange?.(next, prev)
       }
     },
     invoke(nextValue: T, prevValue: T) {

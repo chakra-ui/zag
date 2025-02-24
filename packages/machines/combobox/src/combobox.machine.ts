@@ -3,7 +3,7 @@ import { createGuards, createMachine, type Params } from "@zag-js/core"
 import { trackDismissableElement } from "@zag-js/dismissable"
 import { clickIfLink, observeAttributes, observeChildren, raf, scrollIntoView } from "@zag-js/dom-query"
 import { getPlacement } from "@zag-js/popper"
-import { addOrRemove, compact, isBoolean, match, remove } from "@zag-js/utils"
+import { addOrRemove, isBoolean, match, remove } from "@zag-js/utils"
 import { collection } from "./combobox.collection"
 import * as dom from "./combobox.dom"
 import type { ComboboxSchema, Placement } from "./combobox.types"
@@ -27,7 +27,7 @@ export const machine = createMachine<ComboboxSchema>({
         clickIfLink(node)
       },
       collection: collection.empty(),
-      ...compact(props),
+      ...props,
       positioning: {
         placement: "bottom",
         sameWidth: true,
@@ -894,21 +894,20 @@ export const machine = createMachine<ComboboxSchema>({
       invokeOnClose({ prop }) {
         prop("onOpenChange")?.({ open: false })
       },
-      highlightFirstItem({ context, prop }) {
-        raf(() => {
-          const value = prop("collection").firstValue
-          context.set("highlightedValue", value)
-        })
-      },
-      highlightFirstItemIfNeeded({ context, prop, computed }) {
-        if (!computed("autoHighlight")) return
-        raf(() => {
+      highlightFirstItem({ context, prop, scope }) {
+        const exec = dom.getContentEl(scope) ? queueMicrotask : raf
+        exec(() => {
           const value = prop("collection").firstValue
           if (value) context.set("highlightedValue", value)
         })
       },
-      highlightLastItem({ context, prop }) {
-        raf(() => {
+      highlightFirstItemIfNeeded({ computed, action }) {
+        if (!computed("autoHighlight")) return
+        action(["highlightFirstItem"])
+      },
+      highlightLastItem({ context, prop, scope }) {
+        const exec = dom.getContentEl(scope) ? queueMicrotask : raf
+        exec(() => {
           const value = prop("collection").lastValue
           if (value) context.set("highlightedValue", value)
         })

@@ -40,7 +40,7 @@ export const machine = createMachine<ColorPickerSchema>({
     return open ? "open" : "idle"
   },
 
-  context({ prop, bindable, getContext, scope }) {
+  context({ prop, bindable, getContext }) {
     return {
       value: bindable<Color>(() => ({
         defaultValue: prop("defaultValue"),
@@ -55,7 +55,6 @@ export const machine = createMachine<ColorPickerSchema>({
           const ctx = getContext()
           const valueAsString = value.toString(ctx.get("format"))
           prop("onValueChange")?.({ value, valueAsString })
-          dispatchInputValueEvent(dom.getHiddenInputEl(scope), { value: valueAsString })
         },
       })),
       format: bindable<ColorFormat>(() => ({
@@ -91,7 +90,7 @@ export const machine = createMachine<ColorPickerSchema>({
 
   watch({ prop, context, action, track }) {
     track([() => context.hash("value")], () => {
-      action(["syncInputElements"])
+      action(["syncInputElements", "dispatchChangeEvent"])
     })
 
     track([() => context.get("format")], () => {
@@ -506,8 +505,11 @@ export const machine = createMachine<ColorPickerSchema>({
       setFormat({ context, event }) {
         context.set("format", event.format)
       },
+      dispatchChangeEvent({ scope, computed }) {
+        dispatchInputValueEvent(dom.getHiddenInputEl(scope), { value: computed("valueAsString") })
+      },
       syncInputElements({ context, scope }) {
-        syncInputs(scope, context.get("value"))
+        syncChannelInputs(scope, context.get("value"))
       },
       invokeOnChangeEnd({ context, prop, computed }) {
         prop("onValueChangeEnd")?.({
@@ -545,7 +547,7 @@ export const machine = createMachine<ColorPickerSchema>({
         }
 
         // sync channel input value immediately (in event user types native css color, we need to convert it to the current channel format)
-        syncInputs(scope, context.get("value"), color)
+        syncChannelInputs(scope, context.get("value"), color)
 
         // set new color
         context.set("value", color)
@@ -631,7 +633,7 @@ export const machine = createMachine<ColorPickerSchema>({
   },
 })
 
-function syncInputs(scope: Scope, currentValue: Color, nextValue?: Color) {
+function syncChannelInputs(scope: Scope, currentValue: Color, nextValue?: Color) {
   const channelInputEls = dom.getChannelInputEls(scope)
   raf(() => {
     channelInputEls.forEach((inputEl) => {

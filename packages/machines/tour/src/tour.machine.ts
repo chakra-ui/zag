@@ -347,7 +347,10 @@ export const machine = createMachine<TourSchema>({
       },
 
       waitForTarget({ scope, computed, send }) {
-        const targetEl = computed("step")!.target
+        const step = computed("step")
+        if (!step) return
+
+        const targetEl = step.target
 
         const win = scope.getWin()
         const rootNode = scope.getRootNode()

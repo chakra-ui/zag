@@ -19,10 +19,10 @@ export function connect<T extends PropTypes, O>(
   const frontmost = computed("frontmost")
 
   const placement = prop("parent").computed("placement")
-  const type = prop("type")!
+  const type = prop("type")
   const stacked = prop("stacked")
-  const title = prop("title")!
-  const description = prop("description")!
+  const title = prop("title")
+  const description = prop("description")
   const action = prop("action")
 
   const [side, align = "center"] = placement.split("-")

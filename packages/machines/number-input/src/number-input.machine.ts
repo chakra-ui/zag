@@ -12,7 +12,6 @@ import type { Point } from "@zag-js/types"
 import {
   callAll,
   clampValue,
-  compact,
   decrementValue,
   incrementValue,
   isValueAtMax,
@@ -43,7 +42,7 @@ export const machine = createMachine({
       min: Number.MIN_SAFE_INTEGER,
       max: Number.MAX_SAFE_INTEGER,
       spinOnPress: true,
-      ...compact(props),
+      ...props,
       translations: {
         incrementLabel: "increment value",
         decrementLabel: "decrease value",

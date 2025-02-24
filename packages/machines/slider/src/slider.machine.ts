@@ -1,7 +1,7 @@
 import { createMachine } from "@zag-js/core"
 import { raf, setElementValue, trackFormControl, trackPointerMove } from "@zag-js/dom-query"
 import { trackElementsSize, type ElementSize } from "@zag-js/element-size"
-import { compact, getValuePercent, setValueAtIndex } from "@zag-js/utils"
+import { getValuePercent, setValueAtIndex } from "@zag-js/utils"
 import * as dom from "./slider.dom"
 import type { SliderSchema } from "./slider.types"
 import { constrainValue, decrement, getClosestIndex, getRangeAtIndex, increment, normalizeValues } from "./slider.utils"
@@ -22,7 +22,7 @@ export const machine = createMachine<SliderSchema>({
       origin: "start",
       orientation: "horizontal",
       minStepsBetweenThumbs: 0,
-      ...compact(props),
+      ...props,
     }
   },
 
@@ -30,7 +30,7 @@ export const machine = createMachine<SliderSchema>({
     return "idle"
   },
 
-  context({ prop, bindable, getContext, scope }) {
+  context({ prop, bindable, getContext }) {
     return {
       thumbSize: bindable(() => ({
         defaultValue: prop("thumbSize") || null,
@@ -38,9 +38,11 @@ export const machine = createMachine<SliderSchema>({
       value: bindable(() => ({
         defaultValue: prop("defaultValue"),
         value: prop("value"),
+        hash(a) {
+          return a.join(",")
+        },
         onChange(value) {
           prop("onValueChange")?.({ value })
-          dom.dispatchChangeEvent(scope, value)
         },
       })),
       focusedIndex: bindable(() => ({
@@ -69,12 +71,10 @@ export const machine = createMachine<SliderSchema>({
   },
 
   watch({ track, action, context }) {
-    track([() => context.get("value").join(",")], () => {
-      action(["syncInputElements"])
+    track([() => context.hash("value")], () => {
+      action(["syncInputElements", "dispatchChangeEvent"])
     })
   },
-
-  entry: ["coarseValue"],
 
   effects: ["trackFormControlState", "trackThumbsSize"],
 
@@ -200,6 +200,9 @@ export const machine = createMachine<SliderSchema>({
       },
     },
     actions: {
+      dispatchChangeEvent({ context, scope }) {
+        dom.dispatchChangeEvent(scope, context.get("value"))
+      },
       syncInputElements({ context, scope }) {
         context.get("value").forEach((value, index) => {
           const inputEl = dom.getHiddenInputEl(scope, index)
@@ -262,11 +265,6 @@ export const machine = createMachine<SliderSchema>({
         const index = context.get("focusedIndex")
         const { max } = getRangeAtIndex(params, index)
         context.set("value", (prev) => setValueAtIndex(prev, index, max))
-      },
-      coarseValue(params) {
-        const { context } = params
-        const value = normalizeValues(params, context.get("value"))
-        context.set("value", value)
       },
       setValueAtIndex(params) {
         const { context, event } = params

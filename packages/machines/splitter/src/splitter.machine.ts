@@ -1,6 +1,6 @@
 import { createMachine } from "@zag-js/core"
 import { getRelativePoint, raf, trackPointerMove } from "@zag-js/dom-query"
-import { compact } from "@zag-js/utils"
+import { setRafTimeout } from "@zag-js/utils"
 import * as dom from "./splitter.dom"
 import type { PanelSizeData, ResizeState, SplitterSchema } from "./splitter.types"
 import { clamp, getHandleBounds, getHandlePanels, getNormalizedPanels, getPanelBounds } from "./splitter.utils"
@@ -10,7 +10,7 @@ export const machine = createMachine<SplitterSchema>({
     return {
       orientation: "horizontal",
       defaultSize: [],
-      ...compact(props),
+      ...props,
     }
   },
 
@@ -75,6 +75,10 @@ export const machine = createMachine<SplitterSchema>({
         },
         FOCUS: {
           target: "focused",
+          actions: ["setActiveHandleId"],
+        },
+        POINTER_DOWN: {
+          target: "dragging",
           actions: ["setActiveHandleId"],
         },
         DOUBLE_CLICK: {
@@ -172,10 +176,9 @@ export const machine = createMachine<SplitterSchema>({
   implementations: {
     effects: {
       waitForHoverDelay: ({ send }) => {
-        const id = setTimeout(() => {
+        return setRafTimeout(() => {
           send({ type: "HOVER_DELAY" })
         }, 250)
-        return () => clearTimeout(id)
       },
       trackPointerMove: ({ scope, send }) => {
         const doc = scope.getDoc()

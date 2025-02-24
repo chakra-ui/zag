@@ -1,5 +1,17 @@
 # @zag-js/tree-view
 
+## 1.0.2
+
+### Patch Changes
+
+- Updated dependencies [[`2fdf79c`](https://github.com/chakra-ui/zag/commit/2fdf79c82a5cbfa876adc858886ce22b8b52d8fb)]:
+  - @zag-js/collection@1.0.2
+  - @zag-js/anatomy@1.0.2
+  - @zag-js/core@1.0.2
+  - @zag-js/types@1.0.2
+  - @zag-js/utils@1.0.2
+  - @zag-js/dom-query@1.0.2
+
 ## 1.0.1
 
 ### Patch Changes

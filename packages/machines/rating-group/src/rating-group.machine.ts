@@ -1,6 +1,5 @@
 import { createMachine } from "@zag-js/core"
 import { raf, trackFormControl } from "@zag-js/dom-query"
-import { compact } from "@zag-js/utils"
 import * as dom from "./rating-group.dom"
 import type { RatingGroupSchema } from "./rating-group.types"
 
@@ -11,7 +10,7 @@ export const machine = createMachine<RatingGroupSchema>({
       count: 5,
       dir: "ltr",
       defaultValue: -1,
-      ...compact(props),
+      ...props,
       translations: {
         ratingValueText: (index) => `${index} stars`,
         ...props.translations,
@@ -23,14 +22,13 @@ export const machine = createMachine<RatingGroupSchema>({
     return "idle"
   },
 
-  context({ prop, bindable, scope }) {
+  context({ prop, bindable }) {
     return {
       value: bindable(() => ({
         defaultValue: prop("defaultValue"),
         value: prop("value"),
         onChange(value) {
           prop("onValueChange")?.({ value })
-          dom.dispatchChangeEvent(scope, value)
         },
       })),
       hoveredValue: bindable(() => ({
@@ -45,9 +43,13 @@ export const machine = createMachine<RatingGroupSchema>({
     }
   },
 
-  watch({ track, action, prop }) {
+  watch({ track, action, prop, context }) {
     track([() => prop("allowHalf")], () => {
       action(["roundValueIfNeeded"])
+    })
+
+    track([() => context.get("value")], () => {
+      action(["dispatchChangeEvent"])
     })
   },
 
@@ -199,6 +201,9 @@ export const machine = createMachine<RatingGroupSchema>({
       roundValueIfNeeded({ context, prop }) {
         if (prop("allowHalf")) return
         context.set("value", Math.round(context.get("value")))
+      },
+      dispatchChangeEvent({ context, scope }) {
+        dom.dispatchChangeEvent(scope, context.get("value"))
       },
     },
   },

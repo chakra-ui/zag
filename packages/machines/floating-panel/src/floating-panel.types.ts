@@ -151,7 +151,7 @@ export interface FloatingPanelProps extends DirectionProperty, CommonProperties 
    * The snap grid for the panel
    * @default 1
    */
-  gridSize: number
+  gridSize?: number | undefined
   /**
    * Function called when the stage of the panel changes
    */
@@ -166,6 +166,7 @@ type PropWithDefault =
   | "allowOverflow"
   | "draggable"
   | "resizable"
+  | "id"
 
 interface PrivateContext {
   /**

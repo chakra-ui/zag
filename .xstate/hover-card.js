@@ -16,7 +16,7 @@ const fetchMachine = createMachine({
     return {
       openDelay: 700,
       closeDelay: 300,
-      ...compact(props),
+      ...props,
       positioning: {
         placement: "bottom",
         ...props.positioning

@@ -1,7 +1,7 @@
 import { createMachine } from "@zag-js/core"
 import { addDomEvent, contains, getEventTarget, raf } from "@zag-js/dom-query"
 import { getAcceptAttrString, isFileEqual } from "@zag-js/file-utils"
-import { callAll, compact } from "@zag-js/utils"
+import { callAll } from "@zag-js/utils"
 import * as dom from "./file-upload.dom"
 import type { FileRejection, FileUploadSchema } from "./file-upload.types"
 import { getFilesFromEvent } from "./file-upload.utils"
@@ -14,7 +14,7 @@ export const machine = createMachine<FileUploadSchema>({
       maxFiles: 1,
       allowDrop: true,
       preventDocumentDrop: true,
-      ...compact(props),
+      ...props,
       translations: {
         dropzone: "dropzone",
         itemPreview: (file) => `preview of ${file.name}`,

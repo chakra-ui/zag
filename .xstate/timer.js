@@ -10,18 +10,45 @@ const {
   choose
 } = actions;
 const fetchMachine = createMachine({
-  id: "timer",
-  initial: ctx.autoStart ? "running" : "idle",
-  context: {
-    "hasReachedTarget": false
+  props({
+    props
+  }) {
+    return {
+      interval: 250,
+      ...props
+    };
+  },
+  initialState({
+    prop
+  }) {
+    return prop("autoStart") ? "running" : "idle";
+  },
+  context({
+    prop,
+    bindable
+  }) {
+    return {
+      currentMs: bindable(() => ({
+        defaultValue: prop("startMs") ?? 0
+      }))
+    };
+  },
+  watch({
+    track,
+    send,
+    prop
+  }) {
+    track([() => prop("startMs")], () => {
+      send({
+        type: "RESTART"
+      });
+    });
   },
   on: {
     RESTART: {
-      target: "running",
-      actions: "resetTime"
-    }
-  },
-  on: {
+      target: "running:temp",
+      actions: ["resetTime"]
+    },
     UPDATE_CONTEXT: {
       actions: "updateContext"
     }
@@ -29,19 +56,28 @@ const fetchMachine = createMachine({
   states: {
     idle: {
       on: {
-        START: "running",
+        START: {
+          target: "running"
+        },
         RESET: {
-          actions: "resetTime"
+          actions: ["resetTime"]
+        }
+      }
+    },
+    "running:temp": {
+      effects: ["waitForNextTick"],
+      on: {
+        CONTINUE: {
+          target: "running"
         }
       }
     },
     running: {
-      invoke: {
-        src: "interval",
-        id: "interval"
-      },
+      effects: ["keepTicking"],
       on: {
-        PAUSE: "paused",
+        PAUSE: {
+          target: "paused"
+        },
         TICK: [{
           target: "idle",
           cond: "hasReachedTarget",
@@ -50,17 +86,94 @@ const fetchMachine = createMachine({
           actions: ["updateTime", "invokeOnTick"]
         }],
         RESET: {
-          actions: "resetTime"
+          actions: ["resetTime"]
         }
       }
     },
     paused: {
       on: {
-        RESUME: "running",
+        RESUME: {
+          target: "running"
+        },
         RESET: {
           target: "idle",
-          actions: "resetTime"
+          actions: ["resetTime"]
         }
+      }
+    }
+  },
+  implementations: {
+    effects: {
+      keepTicking({
+        prop,
+        send
+      }) {
+        return setRafInterval(() => {
+          send({
+            type: "TICK"
+          });
+        }, prop("interval"));
+      },
+      waitForNextTick({
+        send
+      }) {
+        return setRafTimeout(() => {
+          send({
+            type: "CONTINUE"
+          });
+        }, 0);
+      }
+    },
+    actions: {
+      updateTime({
+        context: {
+          "hasReachedTarget": false
+        },
+        prop
+      }) {
+        const sign = prop("countdown") ? -1 : 1;
+        context.set("currentMs", prev => prev + sign * 1000);
+      },
+      sendTickEvent({
+        send
+      }) {
+        send({
+          type: "TICK"
+        });
+      },
+      resetTime({
+        context,
+        prop
+      }) {
+        let targetMs = prop("targetMs");
+        if (targetMs == null && prop("countdown")) targetMs = 0;
+        context.set("currentMs", prop("startMs") ?? 0);
+      },
+      invokeOnTick({
+        context,
+        prop
+      }) {
+        prop("onTick")?.({
+          value: context.get("currentMs"),
+          time: computed("time"),
+          formattedTime: computed("formattedTime")
+        });
+      },
+      invokeOnComplete({
+        prop
+      }) {
+        prop("onComplete")?.();
+      }
+    },
+    guards: {
+      hasReachedTarget: ({
+        context,
+        prop
+      }) => {
+        let targetMs = prop("targetMs");
+        if (targetMs == null && prop("countdown")) targetMs = 0;
+        if (targetMs == null) return false;
+        return context.get("currentMs") === targetMs;
       }
     }
   }

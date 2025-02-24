@@ -137,7 +137,7 @@ export interface ToastProps<T = any> extends Omit<CommonProperties, "id">, Optio
   dismiss?: boolean
 }
 
-type ToastPropsWithDefault = "type" | "parent" | "duration" | "id"
+type ToastPropsWithDefault = "type" | "parent" | "duration" | "id" | "removeDelay"
 
 export type ToastSchema<O = any> = {
   props: RequiredBy<ToastProps<O>, ToastPropsWithDefault>
@@ -391,11 +391,11 @@ export interface ToastApi<T extends PropTypes = PropTypes, O = any> {
   /**
    * The title of the toast.
    */
-  title: O
+  title?: O | undefined
   /**
    * The description of the toast.
    */
-  description: O
+  description?: O | undefined
   /**
    * The type of the toast.
    */

@@ -36,6 +36,7 @@ export const machine = createMachine<TabsSchema>({
       })),
       focusedValue: bindable(() => ({
         defaultValue: prop("value") || prop("defaultValue"),
+        sync: true,
         onChange(value) {
           prop("onFocusChange")?.({ focusedValue: value! })
         },

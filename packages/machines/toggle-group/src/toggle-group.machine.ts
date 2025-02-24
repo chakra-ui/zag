@@ -1,6 +1,6 @@
-import { createMachine, createGuards } from "@zag-js/core"
+import { createGuards, createMachine } from "@zag-js/core"
 import { raf } from "@zag-js/dom-query"
-import { add, compact, isEqual, remove } from "@zag-js/utils"
+import { add, isEqual, remove } from "@zag-js/utils"
 import * as dom from "./toggle-group.dom"
 import type { ToggleGroupSchema } from "./toggle-group.types"
 
@@ -13,7 +13,7 @@ export const machine = createMachine<ToggleGroupSchema>({
       orientation: "horizontal",
       rovingFocus: true,
       loopFocus: true,
-      ...compact(props),
+      ...props,
     }
   },
 

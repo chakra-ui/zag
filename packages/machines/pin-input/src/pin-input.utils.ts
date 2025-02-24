@@ -11,7 +11,7 @@ export function isValidType(type: string, value: string) {
   return !!REGEX[type as keyof typeof REGEX]?.test(value)
 }
 
-export function isValidValue(value: string, type: PinInputType, pattern: string) {
+export function isValidValue(value: string, type: PinInputType, pattern?: string) {
   if (!pattern) return isValidType(type, value)
   const regex = new RegExp(pattern, "g")
   return regex.test(value)

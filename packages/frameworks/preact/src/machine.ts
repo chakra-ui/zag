@@ -13,7 +13,7 @@ import type {
   Service,
 } from "@zag-js/core"
 import { createScope } from "@zag-js/core"
-import { isFunction, isString, toArray, warn } from "@zag-js/utils"
+import { ensure, isFunction, isString, toArray, warn } from "@zag-js/utils"
 import { useLayoutEffect, useMemo, useRef } from "preact/hooks"
 import { flushSync } from "react-dom"
 import { useBindable } from "./bindable"
@@ -152,16 +152,16 @@ export function useMachine<T extends MachineSchema>(
   }
 
   const computed: ComputedFn<T> = (key) => {
-    return (
-      machine.computed?.[key]({
-        context: ctx as any,
-        event: getEvent(),
-        prop,
-        refs,
-        scope,
-        computed: computed as any,
-      }) ?? ({} as any)
-    )
+    ensure(machine.computed, `[zag-js] No computed object found on machine`)
+    const fn = machine.computed[key]
+    return fn({
+      context: ctx as any,
+      event: getEvent(),
+      prop,
+      refs,
+      scope,
+      computed: computed as any,
+    })
   }
 
   const state = useBindable(() => ({
