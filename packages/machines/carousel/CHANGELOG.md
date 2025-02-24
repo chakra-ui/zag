@@ -1,5 +1,20 @@
 # @zag-js/carousel
 
+## 1.0.2
+
+### Patch Changes
+
+- [`0a42ea8`](https://github.com/chakra-ui/zag/commit/0a42ea853edcbfdddf60d6b2e90b204a7e7d4419) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Enforce required `slideCount` to ensure machine works as expected
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.0.2
+  - @zag-js/core@1.0.2
+  - @zag-js/types@1.0.2
+  - @zag-js/utils@1.0.2
+  - @zag-js/dom-query@1.0.2
+  - @zag-js/scroll-snap@1.0.2
+
 ## 1.0.1
 
 ### Patch Changes
