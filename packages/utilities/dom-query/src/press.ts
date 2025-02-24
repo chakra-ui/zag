@@ -85,8 +85,11 @@ export function trackPress(options: TrackPressOptions) {
       }
     }
 
-    const removePointerUpListener = addDomEvent(win, "pointerup", endPointerPress, { passive: !onPress })
-    const removePointerCancelListener = addDomEvent(win, "pointercancel", cancelPress, { passive: !onPressEnd })
+    const removePointerUpListener = addDomEvent(win, "pointerup", endPointerPress, { passive: !onPress, once: true })
+    const removePointerCancelListener = addDomEvent(win, "pointercancel", cancelPress, {
+      passive: !onPressEnd,
+      once: true,
+    })
 
     removeEndListeners = pipe(removePointerUpListener, removePointerCancelListener)
 
