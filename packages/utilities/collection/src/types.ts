@@ -34,7 +34,7 @@ export interface CollectionOptions<T extends CollectionItem = CollectionItem> ex
   /**
    * The options of the select
    */
-  items: T[] | readonly T[]
+  items: Iterable<T> | Readonly<Iterable<T>>
 }
 
 // ==============================
