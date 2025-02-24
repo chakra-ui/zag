@@ -10,7 +10,7 @@ import type {
   Service,
 } from "@zag-js/core"
 import { createScope } from "@zag-js/core"
-import { compact, isFunction, isString, toArray, warn } from "@zag-js/utils"
+import { compact, ensure, isFunction, isString, toArray, warn } from "@zag-js/utils"
 import { computed as __computed, nextTick, onBeforeUnmount, onMounted, toValue, type ComputedRef, type Ref } from "vue"
 import { bindable } from "./bindable"
 import { useRefs } from "./refs"
@@ -163,18 +163,18 @@ export function useMachine<T extends MachineSchema>(
   }
 
   const computed: ComputedFn<T> = (key) => {
-    return (
-      machine.computed?.[key]({
-        context: ctx as any,
-        event: getEvent(),
-        prop,
-        refs,
-        get scope() {
-          return scope.value
-        },
-        computed: computed as any,
-      }) ?? ({} as any)
-    )
+    ensure(machine.computed, `[zag-js] No computed object found on machine`)
+    const fn = machine.computed[key]
+    return fn({
+      context: ctx as any,
+      event: getEvent(),
+      prop,
+      refs,
+      get scope() {
+        return scope.value
+      },
+      computed: computed as any,
+    })
   }
 
   const state = bindable(() => ({

@@ -17,3 +17,7 @@ export function invariant(...a: any[]): void {
     throw new Error(m)
   }
 }
+
+export function ensure<T>(c: T | null | undefined, m: string): asserts c is T {
+  if (c == null) throw new Error(m)
+}

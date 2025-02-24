@@ -11,7 +11,7 @@ import type {
   Params,
 } from "@zag-js/core"
 import { createScope } from "@zag-js/core"
-import { compact, isFunction, isString, toArray, warn } from "@zag-js/utils"
+import { compact, isFunction, isString, toArray, warn, ensure } from "@zag-js/utils"
 import { type Accessor, createMemo, mergeProps, onCleanup, onMount } from "solid-js"
 import { createBindable } from "./bindable"
 import { createRefs } from "./refs"
@@ -162,17 +162,17 @@ export function useMachine<T extends MachineSchema>(
     })
   }
 
-  const computed: ComputedFn<T> = (key: keyof T["computed"]) => {
-    return (
-      machine.computed?.[key]({
-        context: ctx,
-        event: eventRef.current,
-        prop,
-        refs,
-        scope: scope(),
-        computed: computed,
-      }) ?? ({} as any)
-    )
+  const computed: ComputedFn<T> = (key) => {
+    ensure(machine.computed, `[zag-js] No computed object found on machine`)
+    const fn = machine.computed[key]
+    return fn({
+      context: ctx,
+      event: eventRef.current,
+      prop,
+      refs,
+      scope: scope(),
+      computed: computed,
+    })
   }
 
   const state = createBindable(() => ({
