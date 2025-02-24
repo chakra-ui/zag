@@ -1,5 +1,19 @@
 # @zag-js/vue
 
+## 1.0.2
+
+### Patch Changes
+
+- [`08d4b92`](https://github.com/chakra-ui/zag/commit/08d4b926a136d0098f04d631c8be0f66579bfb20) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix issue where `undefined` values were not filtered out before
+  resolving props
+
+- Updated dependencies []:
+  - @zag-js/core@1.0.2
+  - @zag-js/store@1.0.2
+  - @zag-js/types@1.0.2
+  - @zag-js/utils@1.0.2
+
 ## 1.0.1
 
 ### Patch Changes
