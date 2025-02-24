@@ -1,24 +1,30 @@
-import { createMachine, ref } from "@zag-js/core"
-import { compact } from "@zag-js/utils"
-import type { MachineContext, MachineState, UserDefinedContext } from "./{{dashCase machine}}.types"
+import { createMachine } from "@zag-js/core"
+import type { {{machine}}Schema } from "./{{dashCase machine}}.types"
 
-export function machine(userContext: UserDefinedContext){ 
-  const ctx = compact(userContext)
-  return createMachine<MachineContext, MachineState>(
-    {
-      id: "{{machine}}",
-      initial: "idle",
-      context: {
-        ...ctx
-      },
-      states: {
-      },
-    },
-    {
-      guards: {
-      },
-      actions: {
-      },
-    },
-  )
-}
+export const machine = createMachine<{{machine}}Schema>({
+  props({ props }) {
+    return props
+  },
+
+  context({ props, bindable }) {
+    return {}
+  },
+
+  initialState() {
+    return "idle"
+  },
+
+  context({ props }) {
+    return props
+  },
+
+  states: {},
+
+  implementations: {
+    guards: {},
+
+    actions: {},
+    
+    effects: {},
+  }
+})
