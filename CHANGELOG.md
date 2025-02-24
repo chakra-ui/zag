@@ -8,6 +8,19 @@ All notable changes to this project will be documented in this file.
 
 See the [Changesets](./.changeset) for the latest changes.
 
+## [1.0.2](./#1.0.2) - 2025-02-24
+
+### Fixed
+
+- **Collection**: Widen `items` type to allow `Iterable` instead of just `Array` since we internally convert iterables
+  to an array.
+
+- **Carousel**: Enforce required `slideCount` to ensure machine works as expected.
+
+- **Framework Bindings**: Fix issue where `undefined` values were not filtered out before resolving props.
+
+- **React**: Fix issue where `flushSync` warnings could be shown when unmounting a component.
+
 ## [1.0.1](./#1.0.1) - 2025-02-23
 
 ### Fixed
