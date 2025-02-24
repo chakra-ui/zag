@@ -103,7 +103,7 @@ export function connect<T extends PropTypes>(
         onKeyDown(event) {
           if (!interactive) return
 
-          const step = getEventStep(event) * prop("step")!
+          const step = getEventStep(event) * prop("step")
 
           switch (event.key) {
             case "ArrowLeft":

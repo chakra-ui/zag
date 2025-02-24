@@ -18,7 +18,7 @@ const fetchMachine = createMachine({
       count: 5,
       dir: "ltr",
       defaultValue: -1,
-      ...compact(props),
+      ...props,
       translations: {
         ratingValueText: index => `${index} stars`,
         ...props.translations

@@ -62,8 +62,8 @@ export class ListCollection<T extends CollectionItem = CollectionItem> {
    */
   findMany = (values: string[]): T[] => {
     return Array.from(values)
-      .map((value) => this.find(value)!)
-      .filter(Boolean)
+      .map((value) => this.find(value))
+      .filter((item) => item != null)
   }
 
   /**

@@ -93,7 +93,7 @@ export const machine = createMachine<TagsInputSchema>({
     isOverflowing: ({ context, prop }) => context.get("value").length > prop("max"),
   },
 
-  watch({ track, context, action, computed }) {
+  watch({ track, context, action, computed, refs }) {
     track([() => context.get("editedTagValue")], () => {
       action(["syncEditedTagInputValue"])
     })
@@ -106,9 +106,9 @@ export const machine = createMachine<TagsInputSchema>({
     track([() => computed("isOverflowing")], () => {
       action(["invokeOnInvalid"])
     })
-    // track([() => context.get("log")], () => {
-    //   action(["announceLog"])
-    // })
+    track([() => JSON.stringify(refs.get("log"))], () => {
+      action(["announceLog"])
+    })
   },
 
   effects: ["trackLiveRegion", "trackFormControlState"],
@@ -557,7 +557,8 @@ export const machine = createMachine<TagsInputSchema>({
 
       focusEditedTagInput({ context, scope }) {
         raf(() => {
-          const editedTagId = context.get("editedTagId")!
+          const editedTagId = context.get("editedTagId")
+          if (!editedTagId) return
           const editTagInputEl = dom.getEditInputEl(scope, editedTagId)
           editTagInputEl?.select()
         })
@@ -689,7 +690,7 @@ export const machine = createMachine<TagsInputSchema>({
       // queue logs with screen reader and get it announced
       announceLog({ refs, prop }) {
         const liveRegion = refs.get("liveRegion")
-        const translations = prop("translations")!
+        const translations = prop("translations")
 
         const log = refs.get("log")
         if (!log.current || liveRegion == null) return

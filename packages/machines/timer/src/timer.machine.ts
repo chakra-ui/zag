@@ -105,7 +105,7 @@ export const machine = createMachine<TimerSchema>({
       keepTicking({ prop, send }) {
         return setRafInterval(() => {
           send({ type: "TICK" })
-        }, prop("interval")!)
+        }, prop("interval"))
       },
       waitForNextTick({ send }) {
         return setRafTimeout(() => {

@@ -1,7 +1,6 @@
 import { createGuards, createMachine } from "@zag-js/core"
 import { dispatchInputCheckedEvent, setElementChecked, trackFormControl, trackPress } from "@zag-js/dom-query"
 import { trackFocusVisible } from "@zag-js/focus-visible"
-import { compact } from "@zag-js/utils"
 import * as dom from "./switch.dom"
 import type { SwitchSchema } from "./switch.types"
 
@@ -13,7 +12,7 @@ export const machine = createMachine<SwitchSchema>({
       defaultChecked: false,
       label: "switch",
       value: "on",
-      ...compact(props),
+      ...props,
     }
   },
 

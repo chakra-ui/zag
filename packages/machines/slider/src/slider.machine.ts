@@ -1,7 +1,7 @@
 import { createMachine } from "@zag-js/core"
 import { raf, setElementValue, trackFormControl, trackPointerMove } from "@zag-js/dom-query"
 import { trackElementsSize, type ElementSize } from "@zag-js/element-size"
-import { compact, getValuePercent, setValueAtIndex } from "@zag-js/utils"
+import { getValuePercent, setValueAtIndex } from "@zag-js/utils"
 import * as dom from "./slider.dom"
 import type { SliderSchema } from "./slider.types"
 import { constrainValue, decrement, getClosestIndex, getRangeAtIndex, increment, normalizeValues } from "./slider.utils"
@@ -22,7 +22,7 @@ export const machine = createMachine<SliderSchema>({
       origin: "start",
       orientation: "horizontal",
       minStepsBetweenThumbs: 0,
-      ...compact(props),
+      ...props,
     }
   },
 
@@ -73,8 +73,6 @@ export const machine = createMachine<SliderSchema>({
       action(["syncInputElements"])
     })
   },
-
-  entry: ["coarseValue"],
 
   effects: ["trackFormControlState", "trackThumbsSize"],
 
@@ -262,11 +260,6 @@ export const machine = createMachine<SliderSchema>({
         const index = context.get("focusedIndex")
         const { max } = getRangeAtIndex(params, index)
         context.set("value", (prev) => setValueAtIndex(prev, index, max))
-      },
-      coarseValue(params) {
-        const { context } = params
-        const value = normalizeValues(params, context.get("value"))
-        context.set("value", value)
       },
       setValueAtIndex(params) {
         const { context, event } = params

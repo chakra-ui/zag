@@ -56,10 +56,10 @@ export const machine = createMachine<EditableSchema>({
 
   computed: {
     submitOnEnter({ prop }) {
-      return ["both", "enter"].includes(prop("submitMode")!)
+      return ["both", "enter"].includes(prop("submitMode"))
     },
     submitOnBlur({ prop }) {
-      return ["both", "blur"].includes(prop("submitMode")!)
+      return ["both", "blur"].includes(prop("submitMode"))
     },
     isInteractive({ prop }) {
       return !(prop("disabled") || prop("readOnly"))

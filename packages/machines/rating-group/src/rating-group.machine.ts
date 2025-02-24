@@ -1,6 +1,5 @@
 import { createMachine } from "@zag-js/core"
 import { raf, trackFormControl } from "@zag-js/dom-query"
-import { compact } from "@zag-js/utils"
 import * as dom from "./rating-group.dom"
 import type { RatingGroupSchema } from "./rating-group.types"
 
@@ -11,7 +10,7 @@ export const machine = createMachine<RatingGroupSchema>({
       count: 5,
       dir: "ltr",
       defaultValue: -1,
-      ...compact(props),
+      ...props,
       translations: {
         ratingValueText: (index) => `${index} stars`,
         ...props.translations,

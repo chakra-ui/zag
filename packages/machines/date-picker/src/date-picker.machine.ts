@@ -720,10 +720,10 @@ export const machine = createMachine<DatePickerSchema>({
         refs.get("announcer")?.announce(formatted)
       },
       disableTextSelection({ scope }) {
-        disableTextSelection({ target: dom.getContentEl(scope)!, doc: scope.getDoc() })
+        disableTextSelection({ target: dom.getContentEl(scope), doc: scope.getDoc() })
       },
       enableTextSelection({ scope }) {
-        restoreTextSelection({ doc: scope.getDoc(), target: dom.getContentEl(scope)! })
+        restoreTextSelection({ doc: scope.getDoc(), target: dom.getContentEl(scope) })
       },
       focusFirstSelectedDate(params) {
         const { context } = params

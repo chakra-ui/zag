@@ -23,7 +23,7 @@ const fetchMachine = createMachine({
       origin: "start",
       orientation: "horizontal",
       minStepsBetweenThumbs: 0,
-      ...compact(props)
+      ...props
     };
   },
   initialState() {
@@ -75,7 +75,6 @@ const fetchMachine = createMachine({
       action(["syncInputElements"]);
     });
   },
-  entry: ["coarseValue"],
   effects: ["trackFormControlState", "trackThumbsSize"],
   on: {
     SET_VALUE: [{
@@ -308,13 +307,6 @@ const fetchMachine = createMachine({
           max
         } = getRangeAtIndex(params, index);
         context.set("value", prev => setValueAtIndex(prev, index, max));
-      },
-      coarseValue(params) {
-        const {
-          context
-        } = params;
-        const value = normalizeValues(params, context.get("value"));
-        context.set("value", value);
       },
       setValueAtIndex(params) {
         const {

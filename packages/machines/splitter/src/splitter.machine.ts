@@ -1,6 +1,5 @@
 import { createMachine } from "@zag-js/core"
 import { getRelativePoint, raf, trackPointerMove } from "@zag-js/dom-query"
-import { compact } from "@zag-js/utils"
 import * as dom from "./splitter.dom"
 import type { PanelSizeData, ResizeState, SplitterSchema } from "./splitter.types"
 import { clamp, getHandleBounds, getHandlePanels, getNormalizedPanels, getPanelBounds } from "./splitter.utils"
@@ -10,7 +9,7 @@ export const machine = createMachine<SplitterSchema>({
     return {
       orientation: "horizontal",
       defaultSize: [],
-      ...compact(props),
+      ...props,
     }
   },
 

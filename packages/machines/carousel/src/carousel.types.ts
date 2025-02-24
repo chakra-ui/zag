@@ -122,7 +122,7 @@ export interface CarouselProps extends DirectionProperty, CommonProperties, Orie
    * The total number of slides.
    * Useful for SSR to render the initial ating the snap points.
    */
-  slideCount?: number | undefined
+  slideCount: number
   /**
    * Function called when the drag status changes.
    */
@@ -146,6 +146,7 @@ type PropsWithDefault =
   | "allowMouseDrag"
   | "inViewThreshold"
   | "translations"
+  | "slideCount"
 
 interface PrivateContext {
   pageSnapPoints: number[]

@@ -100,6 +100,7 @@ type PropsWithDefault =
   | "closeOnClick"
   | "interactive"
   | "id"
+  | "positioning"
 
 export interface TooltipSchema {
   state: "open" | "closed" | "opening" | "closing"

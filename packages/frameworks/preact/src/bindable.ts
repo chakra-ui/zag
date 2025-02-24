@@ -1,5 +1,5 @@
-import { isFunction } from "@zag-js/utils"
 import type { Bindable, BindableParams } from "@zag-js/core"
+import { isEqual, isFunction } from "@zag-js/utils"
 import { useLayoutEffect, useRef, useState } from "preact/hooks"
 import { flushSync } from "react-dom"
 
@@ -12,7 +12,7 @@ export function useBindable<T>(props: () => BindableParams<T>): Bindable<T> {
     console.log(`[bindable > ${props().debug}] initial`, initial)
   }
 
-  const eq = props().isEqual ?? Object.is
+  const eq = props().isEqual ?? isEqual
 
   const [initialValue] = useState(initial)
   const [value, setValue] = useState(initialValue)

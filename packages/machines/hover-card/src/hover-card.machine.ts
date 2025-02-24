@@ -1,7 +1,6 @@
 import { createGuards, createMachine } from "@zag-js/core"
 import { trackDismissableElement } from "@zag-js/dismissable"
 import { getPlacement } from "@zag-js/popper"
-import { compact } from "@zag-js/utils"
 import * as dom from "./hover-card.dom"
 import type { HoverCardSchema, Placement } from "./hover-card.types"
 
@@ -12,7 +11,7 @@ export const machine = createMachine<HoverCardSchema>({
     return {
       openDelay: 700,
       closeDelay: 300,
-      ...compact(props),
+      ...props,
       positioning: {
         placement: "bottom",
         ...props.positioning,

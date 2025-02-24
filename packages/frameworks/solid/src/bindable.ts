@@ -1,5 +1,5 @@
 import type { Bindable, BindableParams } from "@zag-js/core"
-import { isFunction } from "@zag-js/utils"
+import { isEqual, isFunction } from "@zag-js/utils"
 import { createEffect, createMemo, createSignal, type Accessor } from "solid-js"
 
 export function createBindable<T>(props: Accessor<BindableParams<T>>): Bindable<T> {
@@ -9,7 +9,7 @@ export function createBindable<T>(props: Accessor<BindableParams<T>>): Bindable<
     console.log(`[bindable > ${props().debug}] initial`, initial)
   }
 
-  const eq = props().isEqual ?? Object.is
+  const eq = props().isEqual ?? isEqual
 
   const [value, setValue] = createSignal(initial as T)
   const controlled = createMemo(() => props().value != undefined)

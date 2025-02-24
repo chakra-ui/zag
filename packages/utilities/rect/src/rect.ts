@@ -6,7 +6,11 @@ import type { Point, Rect, RectEdge, RectInit } from "./types"
 
 export const createPoint = (x: number, y: number) => ({ x, y })
 
-export const subtractPoints = (a: Point, b: Point) => createPoint(a.x - b.x, a.y - b.y)
+export const subtractPoints = (a: Point, b: Point | null) => {
+  if (!b) return a
+  return createPoint(a.x - b.x, a.y - b.y)
+}
+
 export const addPoints = (a: Point, b: Point) => createPoint(a.x + b.x, a.y + b.y)
 
 export function isPoint(v: any): v is Point {

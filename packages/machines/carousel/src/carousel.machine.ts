@@ -1,12 +1,13 @@
 import { createMachine } from "@zag-js/core"
 import { addDomEvent, raf, trackPointerMove } from "@zag-js/dom-query"
 import { findSnapPoint, getScrollSnapPositions } from "@zag-js/scroll-snap"
-import { add, clampValue, isObject, nextIndex, prevIndex, remove, uniq } from "@zag-js/utils"
+import { add, clampValue, ensureProps, isObject, nextIndex, prevIndex, remove, uniq } from "@zag-js/utils"
 import * as dom from "./carousel.dom"
 import type { CarouselSchema } from "./carousel.types"
 
 export const machine = createMachine<CarouselSchema>({
   props({ props }) {
+    ensureProps(props, ["slideCount"], "carousel")
     return {
       dir: "ltr",
       defaultPage: 0,
@@ -294,6 +295,7 @@ export const machine = createMachine<CarouselSchema>({
         const behavior = event.instant ? "instant" : "smooth"
         const index = clampValue(event.index ?? context.get("page"), 0, context.get("pageSnapPoints").length - 1)
         const el = dom.getItemGroupEl(scope)
+        if (!el) return
         const axis = computed("isHorizontal") ? "left" : "top"
         el.scrollTo({ [axis]: context.get("pageSnapPoints")[index], behavior })
       },
@@ -316,8 +318,10 @@ export const machine = createMachine<CarouselSchema>({
         context.set("page", page)
       },
       setMatchingPage({ context, event, computed, scope }) {
+        const el = dom.getItemGroupEl(scope)
+        if (!el) return
         const snapPoint = findSnapPoint(
-          dom.getItemGroupEl(scope),
+          el,
           computed("isHorizontal") ? "x" : "y",
           (node) => node.dataset.index === event.index.toString(),
         )
@@ -337,22 +341,26 @@ export const machine = createMachine<CarouselSchema>({
       setSnapPoints({ context, computed, scope }) {
         queueMicrotask(() => {
           const el = dom.getItemGroupEl(scope)
+          if (!el) return
           const scrollSnapPoints = getScrollSnapPositions(el)
           context.set("pageSnapPoints", computed("isHorizontal") ? scrollSnapPoints.x : scrollSnapPoints.y)
         })
       },
       disableScrollSnap({ scope }) {
         const el = dom.getItemGroupEl(scope)
+        if (!el) return
         const styles = getComputedStyle(el)
         el.dataset.scrollSnapType = styles.getPropertyValue("scroll-snap-type")
         el.style.setProperty("scroll-snap-type", "none")
       },
       scrollSlides({ scope, event }) {
         const el = dom.getItemGroupEl(scope)
-        el.scrollBy({ left: event.left, top: event.top, behavior: "instant" })
+        el?.scrollBy({ left: event.left, top: event.top, behavior: "instant" })
       },
       endDragging({ scope, context, computed }) {
         const el = dom.getItemGroupEl(scope)
+        if (!el) return
+
         const startX = el.scrollLeft
         const startY = el.scrollTop
 
@@ -385,6 +393,7 @@ export const machine = createMachine<CarouselSchema>({
       focusIndicatorEl({ context, event, scope }) {
         if (event.src !== "indicator") return
         const el = dom.getIndicatorEl(scope, context.get("page"))
+        if (!el) return
         raf(() => el.focus({ preventScroll: true }))
       },
       invokeDragStart({ context, prop }) {

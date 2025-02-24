@@ -125,7 +125,7 @@ export function connect<T extends PropTypes>(service: CarouselService, normalize
         "data-inview": dataAttr(isInView),
         "aria-roledescription": "slide",
         "data-orientation": prop("orientation"),
-        "aria-label": prop("slideCount") ? translations.item(props.index, prop("slideCount")!) : undefined,
+        "aria-label": translations.item(props.index, prop("slideCount")),
         "aria-hidden": ariaAttr(!isInView),
         style: {
           scrollSnapAlign: (() => {

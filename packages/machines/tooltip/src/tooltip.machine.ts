@@ -302,10 +302,9 @@ export const machine = createMachine<TooltipSchema>({
         return trackFocusVisibleFn({ root: scope.getRootNode?.() })
       },
 
-      trackPositioning: ({ flush, context, prop, scope }) => {
+      trackPositioning: ({ context, prop, scope }) => {
         if (!context.get("currentPlacement")) {
-          const positioning = prop("positioning")!
-          context.set("currentPlacement", positioning.placement)
+          context.set("currentPlacement", prop("positioning").placement)
         }
 
         const getPositionerEl = () => dom.getPositionerEl(scope)
@@ -313,9 +312,7 @@ export const machine = createMachine<TooltipSchema>({
           ...prop("positioning"),
           defer: true,
           onComplete(data) {
-            flush(() => {
-              context.set("currentPlacement", data.placement)
-            })
+            context.set("currentPlacement", data.placement)
           },
         })
       },

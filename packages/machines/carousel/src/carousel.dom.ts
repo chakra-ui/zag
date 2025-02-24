@@ -11,10 +11,10 @@ export const getIndicatorId = (ctx: Scope, index: number) =>
   ctx.ids?.indicator?.(index) ?? `carousel:${ctx.id}:indicator:${index}`
 
 export const getRootEl = (ctx: Scope) => ctx.getById(getRootId(ctx))
-export const getItemGroupEl = (ctx: Scope) => ctx.getById(getItemGroupId(ctx))!
+export const getItemGroupEl = (ctx: Scope) => ctx.getById(getItemGroupId(ctx))
 export const getItemEl = (ctx: Scope, index: number) => ctx.getById(getItemId(ctx, index))
 export const getItemEls = (ctx: Scope) => queryAll(getItemGroupEl(ctx), `[data-part=item]`)
-export const getIndicatorEl = (ctx: Scope, page: number) => ctx.getById(getIndicatorId(ctx, page))!
+export const getIndicatorEl = (ctx: Scope, page: number) => ctx.getById(getIndicatorId(ctx, page))
 
 export const syncTabIndex = (ctx: Scope) => {
   const el = getItemGroupEl(ctx)

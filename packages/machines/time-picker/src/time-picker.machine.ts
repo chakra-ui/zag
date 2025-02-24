@@ -3,7 +3,7 @@ import { createGuards, createMachine } from "@zag-js/core"
 import { trackDismissableElement } from "@zag-js/dismissable"
 import { raf } from "@zag-js/dom-query"
 import { getPlacement, type Placement } from "@zag-js/popper"
-import { compact, match, next, prev } from "@zag-js/utils"
+import { match, next, prev } from "@zag-js/utils"
 import * as dom from "./time-picker.dom"
 import type { TimePickerSchema, TimeUnit } from "./time-picker.types"
 import {
@@ -21,7 +21,7 @@ export const machine = createMachine<TimePickerSchema>({
   props({ props }) {
     return {
       locale: "en-US",
-      ...compact(props),
+      ...props,
       positioning: {
         placement: "bottom-start",
         gutter: 8,

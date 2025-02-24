@@ -1,6 +1,6 @@
 import { createGuards, createMachine, type Service } from "@zag-js/core"
 import { raf } from "@zag-js/dom-query"
-import { setRafTimeout } from "@zag-js/utils"
+import { ensureProps, setRafTimeout } from "@zag-js/utils"
 import * as dom from "./toast.dom"
 import type { ToastGroupSchema, ToastHeight, ToastSchema } from "./toast.types"
 import { getToastDuration } from "./toast.utils"
@@ -9,12 +9,10 @@ const { not } = createGuards<ToastSchema>()
 
 export const machine = createMachine<ToastSchema>({
   props({ props }) {
+    ensureProps(props, ["id", "type", "parent", "removeDelay"], "toast")
     return {
+      closable: true,
       ...props,
-      id: props.id!,
-      type: props.type!,
-      parent: props.parent!,
-      closable: props.closable ?? true,
       duration: getToastDuration(props.duration, props.type!),
     }
   },
@@ -167,14 +165,14 @@ export const machine = createMachine<ToastSchema>({
       waitForRemoveDelay({ prop, send }) {
         return setRafTimeout(() => {
           send({ type: "REMOVE", src: "timer" })
-        }, prop("removeDelay")!)
+        }, prop("removeDelay"))
       },
 
       waitForDuration({ send, context, computed }) {
         if (computed("shouldPersist")) return
         return setRafTimeout(() => {
           send({ type: "DISMISS", src: "timer" })
-        }, context.get("remainingTime")!)
+        }, context.get("remainingTime"))
       },
 
       waitForNextTick({ send }) {

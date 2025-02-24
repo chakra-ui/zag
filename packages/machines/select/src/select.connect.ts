@@ -1,3 +1,4 @@
+import type { Service } from "@zag-js/core"
 import {
   ariaAttr,
   dataAttr,
@@ -11,7 +12,7 @@ import {
 } from "@zag-js/dom-query"
 import { getPlacementStyles } from "@zag-js/popper"
 import type { EventKeyMap, NormalizeProps, PropTypes } from "@zag-js/types"
-import type { Service } from "@zag-js/core"
+import { ensure } from "@zag-js/utils"
 import { parts } from "./select.anatomy"
 import * as dom from "./select.dom"
 import type { CollectionItem, ItemProps, ItemState, SelectApi, SelectSchema } from "./select.types"
@@ -43,7 +44,8 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
 
   function getItemState(props: ItemProps): ItemState {
     const _disabled = collection.getItemDisabled(props.item)
-    const value = collection.getItemValue(props.item)!
+    const value = collection.getItemValue(props.item)
+    ensure(value, `[zag-js] No value found for item ${JSON.stringify(props.item)}`)
     return {
       value,
       disabled: Boolean(disabled || _disabled),

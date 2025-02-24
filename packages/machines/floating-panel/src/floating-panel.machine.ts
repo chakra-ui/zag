@@ -1,4 +1,4 @@
-import { createMachine, createGuards } from "@zag-js/core"
+import { createGuards, createMachine } from "@zag-js/core"
 import { addDomEvent, isHTMLElement, raf, trackPointerMove } from "@zag-js/dom-query"
 import {
   addPoints,
@@ -14,16 +14,17 @@ import {
   type Point,
   type Size,
 } from "@zag-js/rect-utils"
-import { compact, invariant, match, pick } from "@zag-js/utils"
+import { subscribe } from "@zag-js/store"
+import { ensureProps, invariant, match, pick } from "@zag-js/utils"
 import * as dom from "./floating-panel.dom"
 import { panelStack } from "./floating-panel.store"
 import type { FloatingPanelSchema, Stage } from "./floating-panel.types"
-import { subscribe } from "@zag-js/store"
 
 const { not } = createGuards<FloatingPanelSchema>()
 
 export const machine = createMachine<FloatingPanelSchema>({
   props({ props }) {
+    ensureProps(props, ["id"], "floating-panel")
     return {
       strategy: "absolute",
       gridSize: 1,
@@ -32,7 +33,7 @@ export const machine = createMachine<FloatingPanelSchema>({
       allowOverflow: true,
       resizable: true,
       draggable: true,
-      ...compact(props),
+      ...props,
     }
   },
 
@@ -299,13 +300,15 @@ export const machine = createMachine<FloatingPanelSchema>({
       },
 
       setPosition({ context, event, prop, scope }) {
-        let diff = subtractPoints(event.position, context.get("lastEventPosition")!)
+        let diff = subtractPoints(event.position, context.get("lastEventPosition"))
 
         diff.x = Math.round(diff.x / prop("gridSize")) * prop("gridSize")
         diff.y = Math.round(diff.y / prop("gridSize")) * prop("gridSize")
 
-        let position = addPoints(context.get("prevPosition")!, diff)
+        const prevPosition = context.get("prevPosition")
+        if (!prevPosition) return
 
+        let position = addPoints(prevPosition, diff)
         const boundaryEl = prop("getBoundaryEl")?.()
         const boundaryRect = dom.getBoundaryRect(scope, boundaryEl, prop("allowOverflow"))
         position = clampPoint(position, context.get("size"), boundaryRect)
@@ -458,10 +461,10 @@ export const machine = createMachine<FloatingPanelSchema>({
         context.set("position", nextPosition)
       },
       addToPanelStack({ prop }) {
-        panelStack.add(prop("id")!)
+        panelStack.add(prop("id"))
       },
       bringToFrontOfPanelStack({ prop }) {
-        panelStack.bringToFront(prop("id")!)
+        panelStack.bringToFront(prop("id"))
       },
       invokeOnOpen({ prop }) {
         prop("onOpenChange")?.({ open: true })
