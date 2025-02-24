@@ -10,7 +10,7 @@ import type {
   Service,
 } from "@zag-js/core"
 import { createScope } from "@zag-js/core"
-import { isFunction, isString, toArray, warn } from "@zag-js/utils"
+import { compact, isFunction, isString, toArray, warn } from "@zag-js/utils"
 import { computed as __computed, nextTick, onBeforeUnmount, onMounted, toValue, type ComputedRef, type Ref } from "vue"
 import { bindable } from "./bindable"
 import { useRefs } from "./refs"
@@ -34,7 +34,7 @@ export function useMachine<T extends MachineSchema>(
   const props: any = __computed(
     () =>
       machine.props?.({
-        props: toValue(userProps),
+        props: compact(toValue(userProps)),
         get scope() {
           return scope.value
         },

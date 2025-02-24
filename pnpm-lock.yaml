@@ -1744,6 +1744,9 @@ importers:
       '@zag-js/types':
         specifier: workspace:*
         version: link:../../types
+      '@zag-js/utils':
+        specifier: workspace:*
+        version: link:../../utilities/core
     devDependencies:
       '@testing-library/jest-dom':
         specifier: ^6.6.3
@@ -1763,9 +1766,6 @@ importers:
       '@vitejs/plugin-react':
         specifier: ^4.3.4
         version: 4.3.4(vite@6.1.0(@types/node@22.13.4)(jiti@2.4.2)(terser@5.36.0)(tsx@4.19.2)(yaml@2.7.0))
-      '@zag-js/utils':
-        specifier: workspace:*
-        version: link:../../utilities/core
       clean-package:
         specifier: 2.2.0
         version: 2.2.0
@@ -1849,10 +1849,10 @@ importers:
       '@zag-js/types':
         specifier: workspace:*
         version: link:../../types
-    devDependencies:
       '@zag-js/utils':
         specifier: workspace:*
         version: link:../../utilities/core
+    devDependencies:
       clean-package:
         specifier: 2.2.0
         version: 2.2.0

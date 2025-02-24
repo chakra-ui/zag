@@ -13,7 +13,7 @@ import type {
   Service,
 } from "@zag-js/core"
 import { createScope } from "@zag-js/core"
-import { isFunction, isString, toArray, warn } from "@zag-js/utils"
+import { compact, isFunction, isString, toArray, warn } from "@zag-js/utils"
 import { useMemo, useRef } from "react"
 import { flushSync } from "react-dom"
 import { useBindable } from "./bindable"
@@ -34,7 +34,7 @@ export function useMachine<T extends MachineSchema>(
     if (machine.debug) console.log(...args)
   }
 
-  const props: any = machine.props?.({ props: userProps, scope }) ?? userProps
+  const props: any = machine.props?.({ props: compact(userProps), scope }) ?? userProps
   const prop = useProp(props)
 
   const context = machine.context?.({
@@ -210,10 +210,12 @@ export function useMachine<T extends MachineSchema>(
     state.invoke(state.initial!, "__init__")
     const fns = effects.current
     return () => {
-      fns.forEach((fn) => fn?.())
-      effects.current = new Map()
-      transitionRef.current = null
-      action(machine.exit)
+      queueMicrotask(() => {
+        fns.forEach((fn) => fn?.())
+        effects.current = new Map()
+        transitionRef.current = null
+        action(machine.exit)
+      })
     }
   }, [])
 

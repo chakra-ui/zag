@@ -11,7 +11,7 @@ import type {
   Params,
 } from "@zag-js/core"
 import { createScope } from "@zag-js/core"
-import { isFunction, isString, toArray, warn } from "@zag-js/utils"
+import { compact, isFunction, isString, toArray, warn } from "@zag-js/utils"
 import { type Accessor, createMemo, mergeProps, onCleanup, onMount } from "solid-js"
 import { createBindable } from "./bindable"
 import { createRefs } from "./refs"
@@ -33,7 +33,7 @@ export function useMachine<T extends MachineSchema>(
   const props = createMemo(
     () =>
       machine.props?.({
-        props: access(userProps),
+        props: compact(access(userProps)),
         scope: scope(),
       }) ?? access(userProps),
   )

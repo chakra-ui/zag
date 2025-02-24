@@ -27,13 +27,13 @@
   "dependencies": {
     "@zag-js/core": "workspace:*",
     "@zag-js/store": "workspace:*",
-    "@zag-js/types": "workspace:*"
+    "@zag-js/types": "workspace:*",
+    "@zag-js/utils": "workspace:*"
   },
   "devDependencies": {
     "@types/react": "^18",
     "@types/react-dom": "^18",
     "@types/jsdom": "^21.1.7",
-    "@zag-js/utils": "workspace:*",
     "react": "18.3.1",
     "react-dom": "18.3.1",
     "clean-package": "2.2.0",
