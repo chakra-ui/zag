@@ -1,5 +1,23 @@
 # @zag-js/hover-card
 
+## 1.1.0
+
+### Minor Changes
+
+- [`939f25d`](https://github.com/chakra-ui/zag/commit/939f25d5b256a12834708a0c22d52777d20b87e0) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Expose interaction outside handlers to hover card
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.1.0
+  - @zag-js/core@1.1.0
+  - @zag-js/types@1.1.0
+  - @zag-js/utils@1.1.0
+  - @zag-js/dismissable@1.1.0
+  - @zag-js/dom-query@1.1.0
+  - @zag-js/popper@1.1.0
+
 ## 1.0.2
 
 ### Patch Changes
