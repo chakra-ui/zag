@@ -10,24 +10,59 @@ const {
   choose
 } = actions;
 const fetchMachine = createMachine({
-  id: "toggle",
-  initial: "ready",
-  context: {},
-  on: {
-    "PRESSED.SET": {
-      actions: ["setPressed"]
-    },
-    "PRESSED.TOGGLE": {
-      actions: ["togglePressed"]
-    }
+  props({
+    props
+  }) {
+    return {
+      defaultPressed: false,
+      ...props
+    };
+  },
+  context({
+    prop,
+    bindable
+  }) {
+    return {
+      pressed: bindable < boolean > (() => ({
+        value: prop("pressed"),
+        defaultValue: prop("defaultPressed"),
+        onChange(value) {
+          prop("onPressedChange")?.(value);
+        }
+      }))
+    };
+  },
+  initialState() {
+    return "idle";
   },
   on: {
+    "PRESS.TOGGLE": {
+      actions: ["togglePressed"]
+    },
+    "PRESS.SET": {
+      actions: ["setPressed"]
+    },
     UPDATE_CONTEXT: {
       actions: "updateContext"
     }
   },
   states: {
-    ready: {}
+    idle: {}
+  },
+  implementations: {
+    actions: {
+      togglePressed({
+        context: {}
+      }) {
+        context.set("pressed", !context.get("pressed"));
+      },
+      setPressed({
+        context,
+        event
+      }) {
+        context.set("pressed", event.value);
+      }
+    }
   }
 }, {
   actions: {
