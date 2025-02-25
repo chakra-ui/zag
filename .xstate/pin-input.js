@@ -242,15 +242,16 @@ const fetchMachine = createMachine({
         event
       }) {
         const focusedValue = computed("focusedValue");
+        const focusedIndex = context.get("focusedIndex");
         const nextValue = getNextValue(focusedValue, event.value);
-        context.set("value", prev => setValueAtIndex(prev, context.get("focusedIndex"), nextValue));
+        context.set("value", prev => setValueAtIndex(prev, focusedIndex, nextValue));
       },
       revertInputValue({
         context,
         scope
       }) {
         const inputEl = dom.getInputElAtIndex(scope, context.get("focusedIndex"));
-        inputEl.value = computed("focusedValue");
+        setElementValue(inputEl, computed("focusedValue"));
       },
       syncInputValue({
         context,
@@ -259,7 +260,7 @@ const fetchMachine = createMachine({
       }) {
         const value = context.get("value");
         const inputEl = dom.getInputElAtIndex(scope, event.index);
-        inputEl.value = value[event.index];
+        setElementValue(inputEl, value[event.index]);
       },
       syncInputElements({
         context,
@@ -268,7 +269,7 @@ const fetchMachine = createMachine({
         const inputEls = dom.getInputEls(scope);
         const value = context.get("value");
         inputEls.forEach((inputEl, index) => {
-          inputEl.value = value[index];
+          setElementValue(inputEl, value[index]);
         });
       },
       setPastedValue({
