@@ -248,7 +248,8 @@ const fetchMachine = createMachine({
       },
       trackDismissableElement({
         send,
-        scope
+        scope,
+        prop
       }) {
         const getContentEl = () => dom.getContentEl(scope);
         return trackDismissableElement(getContentEl, {
@@ -260,8 +261,11 @@ const fetchMachine = createMachine({
               src: "interact-outside"
             });
           },
+          onInteractOutside: prop("onInteractOutside"),
+          onPointerDownOutside: prop("onPointerDownOutside"),
           onFocusOutside(event) {
             event.preventDefault();
+            prop("onFocusOutside")?.(event);
           }
         });
       }

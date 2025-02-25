@@ -232,7 +232,7 @@ export const machine = createMachine<HoverCardSchema>({
         })
       },
 
-      trackDismissableElement({ send, scope }) {
+      trackDismissableElement({ send, scope, prop }) {
         const getContentEl = () => dom.getContentEl(scope)
         return trackDismissableElement(getContentEl, {
           defer: true,
@@ -240,8 +240,11 @@ export const machine = createMachine<HoverCardSchema>({
           onDismiss() {
             send({ type: "CLOSE", src: "interact-outside" })
           },
+          onInteractOutside: prop("onInteractOutside"),
+          onPointerDownOutside: prop("onPointerDownOutside"),
           onFocusOutside(event) {
             event.preventDefault()
+            prop("onFocusOutside")?.(event)
           },
         })
       },

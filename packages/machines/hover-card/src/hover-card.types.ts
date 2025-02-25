@@ -1,4 +1,5 @@
 import type { EventObject, Machine, Service } from "@zag-js/core"
+import type { InteractOutsideHandlers } from "@zag-js/dismissable"
 import type { Placement, PositioningOptions } from "@zag-js/popper"
 import type { CommonProperties, DirectionProperty, PropTypes, RequiredBy } from "@zag-js/types"
 
@@ -21,7 +22,7 @@ export type ElementIds = Partial<{
   arrow: string
 }>
 
-export interface HoverCardProps extends DirectionProperty, CommonProperties {
+export interface HoverCardProps extends DirectionProperty, CommonProperties, InteractOutsideHandlers {
   /**
    * The ids of the elements in the popover. Useful for composition.
    */
