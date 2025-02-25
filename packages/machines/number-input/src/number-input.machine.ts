@@ -57,9 +57,9 @@ export const machine = createMachine({
 
   context({ prop, bindable, getComputed }) {
     return {
-      value: bindable(() => ({
+      value: bindable<string>(() => ({
         defaultValue: prop("defaultValue"),
-        prop: prop("value"),
+        value: prop("value"),
         onChange(value) {
           const computed = getComputed()
           prop("onValueChange")?.({ value, valueAsNumber: computed("valueAsNumber") })

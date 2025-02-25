@@ -63,7 +63,6 @@ const fetchMachine = createMachine({
     context: {
       "autoFocus": false,
       "hasIndex": false,
-      "isFinalValue": false,
       "hasValue": false,
       "hasValue": false,
       "isValueComplete": false
@@ -106,14 +105,14 @@ const fetchMachine = createMachine({
     },
     focused: {
       on: {
-        "INPUT.CHANGE": [{
-          cond: "isFinalValue",
-          actions: ["setFocusedValue", "syncInputValue"]
-        }, {
-          actions: ["setFocusedValue", "setNextFocusedIndex", "syncInputValue"]
-        }],
+        "INPUT.CHANGE": {
+          actions: ["setFocusedValue", "syncInputValue", "setNextFocusedIndex"]
+        },
         "INPUT.PASTE": {
           actions: ["setPastedValue", "setLastValueFocusIndex"]
+        },
+        "INPUT.FOCUS": {
+          actions: ["setFocusedIndex"]
         },
         "INPUT.BLUR": {
           target: "idle",
@@ -154,9 +153,6 @@ const fetchMachine = createMachine({
         context
       }) => context.get("value")[context.get("focusedIndex")] !== "",
       isValueComplete: ({}) => computed("isValueComplete"),
-      isFinalValue: ({
-        context
-      }) => computed("filledValueLength") + 1 === computed("valueLength") && context.get("value").findIndex(v => v.trim() === "") === context.get("focusedIndex"),
       hasIndex: ({
         event
       }) => event.index !== undefined
@@ -247,18 +243,14 @@ const fetchMachine = createMachine({
       }) {
         const focusedValue = computed("focusedValue");
         const nextValue = getNextValue(focusedValue, event.value);
-        context.set("value", prev => {
-          const next = [...prev];
-          next[context.get("focusedIndex")] = nextValue;
-          return next;
-        });
+        context.set("value", prev => setValueAtIndex(prev, context.get("focusedIndex"), nextValue));
       },
       revertInputValue({
         context,
         scope
       }) {
         const inputEl = dom.getInputElAtIndex(scope, context.get("focusedIndex"));
-        setElementValue(inputEl, computed("focusedValue"));
+        inputEl.value = computed("focusedValue");
       },
       syncInputValue({
         context,
@@ -267,15 +259,16 @@ const fetchMachine = createMachine({
       }) {
         const value = context.get("value");
         const inputEl = dom.getInputElAtIndex(scope, event.index);
-        setElementValue(inputEl, value[event.index]);
+        inputEl.value = value[event.index];
       },
       syncInputElements({
         context,
         scope
       }) {
         const inputEls = dom.getInputEls(scope);
+        const value = context.get("value");
         inputEls.forEach((inputEl, index) => {
-          setElementValue(inputEl, context.get("value")[index]);
+          inputEl.value = value[index];
         });
       },
       setPastedValue({
@@ -379,7 +372,6 @@ const fetchMachine = createMachine({
   guards: {
     "autoFocus": ctx => ctx["autoFocus"],
     "hasIndex": ctx => ctx["hasIndex"],
-    "isFinalValue": ctx => ctx["isFinalValue"],
     "hasValue": ctx => ctx["hasValue"],
     "isValueComplete": ctx => ctx["isValueComplete"]
   }
