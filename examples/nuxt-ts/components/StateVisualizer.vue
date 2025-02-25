@@ -1,11 +1,12 @@
-<script setup lang="ts">
+<script setup lang="ts" generic="T extends MachineSchema">
 import { highlightState } from "@zag-js/stringify-state"
-import type { Service } from "@zag-js/core"
+import type { MachineSchema, Service } from "@zag-js/core"
 
 const props = defineProps<{
-  state: Service<any>
+  state: Service<T>
   label?: string
   omit?: string[]
+  context?: Array<keyof T["context"]>
 }>()
 
 const obj = computed(() => {
@@ -13,6 +14,9 @@ const obj = computed(() => {
   return {
     state: service.state.get(),
     event: service.event.current(),
+    context: props.context
+      ? Object.fromEntries(props.context.map((key) => [key, service.context.get(key)]))
+      : undefined,
   }
 })
 </script>

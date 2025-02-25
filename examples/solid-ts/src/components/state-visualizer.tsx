@@ -1,22 +1,20 @@
-import type { Service } from "@zag-js/core"
+import type { MachineSchema, Service } from "@zag-js/core"
 import { highlightState } from "@zag-js/stringify-state"
 import { createMemo } from "solid-js"
 
-type StateVisualizerProps = {
-  state: Service<any>
+interface StateVisualizerProps<T extends MachineSchema> {
+  state: Service<T>
   label?: string
   omit?: string[]
-  context?: string[]
-  computed?: string[]
+  context?: Array<keyof T["context"]>
 }
 
-export function StateVisualizer(props: StateVisualizerProps) {
-  const { state: service, label, omit, context, computed } = props
+export function StateVisualizer<T extends MachineSchema>(props: StateVisualizerProps<T>) {
+  const { state: service, label, omit, context } = props
   const finalObject = createMemo(() => ({
     state: service.state.get(),
     event: service.event.current(),
     context: context ? Object.fromEntries(context.map((key) => [key, service.context.get(key)])) : undefined,
-    computed: computed ? Object.fromEntries(computed.map((key) => [key, service.computed(key)])) : undefined,
   }))
 
   return (
