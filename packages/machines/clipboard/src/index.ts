@@ -5,6 +5,7 @@ export * from "./clipboard.props"
 export type {
   ClipboardApi as Api,
   CopyStatusDetails,
+  ValueChangeDetails,
   ElementIds,
   IndicatorProps,
   ClipboardMachine as Machine,
