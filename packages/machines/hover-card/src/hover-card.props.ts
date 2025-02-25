@@ -13,6 +13,9 @@ export const props = createProps<HoverCardProps>()([
   "open",
   "openDelay",
   "positioning",
+  "onInteractOutside",
+  "onPointerDownOutside",
+  "onFocusOutside",
 ])
 
 export const splitProps = createSplitProps<Partial<HoverCardProps>>(props)
