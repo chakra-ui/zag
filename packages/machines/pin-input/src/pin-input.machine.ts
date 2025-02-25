@@ -1,6 +1,6 @@
 import { setup } from "@zag-js/core"
-import { dispatchInputValueEvent, raf, setElementValue } from "@zag-js/dom-query"
-import { isEqual } from "@zag-js/utils"
+import { dispatchInputValueEvent, raf } from "@zag-js/dom-query"
+import { setValueAtIndex } from "@zag-js/utils"
 import * as dom from "./pin-input.dom"
 import type { PinInputSchema } from "./pin-input.types"
 
@@ -31,7 +31,6 @@ export const machine = createMachine({
         sync: true,
         value: prop("value"),
         defaultValue: prop("defaultValue"),
-        isEqual: isEqual,
         onChange(value) {
           prop("onValueChange")?.({ value, valueAsString: value.join("") })
         },
@@ -43,24 +42,27 @@ export const machine = createMachine({
     }
   },
 
+  refs() {
+    return {
+      count: 0,
+    }
+  },
+
   computed: {
-    valueLength: ({ context }) => context.get("value").length,
-    filledValueLength: ({ context }) => context.get("value").filter((v) => v?.trim() !== "").length,
-    isValueComplete: ({ context }) => {
-      const value = context.get("value")
-      const filledValueLength = value.filter((v) => v?.trim() !== "").length
-      return value.length === filledValueLength
-    },
-    valueAsString: ({ context }) => context.get("value").join(""),
-    focusedValue: ({ context }) => context.get("value")[context.get("focusedIndex")] || "",
+    _value: ({ context, refs }) => fill(context.get("value"), refs.get("count")),
+    valueLength: ({ computed }) => computed("_value").length,
+    filledValueLength: ({ computed }) => computed("_value").filter((v) => v?.trim() !== "").length,
+    isValueComplete: ({ computed }) => computed("valueLength") === computed("filledValueLength"),
+    valueAsString: ({ computed }) => computed("_value").join(""),
+    focusedValue: ({ computed, context }) => computed("_value")[context.get("focusedIndex")] || "",
   },
 
   entry: choose([
     {
       guard: "autoFocus",
-      actions: ["setupValue", "setFocusIndexToFirst"],
+      actions: ["setInputCount", "setFocusIndexToFirst"],
     },
-    { actions: ["setupValue"] },
+    { actions: ["setInputCount"] },
   ]),
 
   watch({ action, track, context, computed }) {
@@ -99,17 +101,15 @@ export const machine = createMachine({
     },
     focused: {
       on: {
-        "INPUT.CHANGE": [
-          {
-            guard: "isFinalValue",
-            actions: ["setFocusedValue", "syncInputValue"],
-          },
-          {
-            actions: ["setFocusedValue", "setNextFocusedIndex", "syncInputValue"],
-          },
-        ],
+        "INPUT.CHANGE": {
+          actions: ["setFocusedValue", "syncInputValue", "setNextFocusedIndex"],
+        },
+
         "INPUT.PASTE": {
           actions: ["setPastedValue", "setLastValueFocusIndex"],
+        },
+        "INPUT.FOCUS": {
+          actions: ["setFocusedIndex"],
         },
         "INPUT.BLUR": {
           target: "idle",
@@ -150,9 +150,6 @@ export const machine = createMachine({
       autoFocus: ({ prop }) => !!prop("autoFocus"),
       hasValue: ({ context }) => context.get("value")[context.get("focusedIndex")] !== "",
       isValueComplete: ({ computed }) => computed("isValueComplete"),
-      isFinalValue: ({ context, computed }) =>
-        computed("filledValueLength") + 1 === computed("valueLength") &&
-        context.get("value").findIndex((v) => v.trim() === "") === context.get("focusedIndex"),
       hasIndex: ({ event }) => event.index !== undefined,
     },
 
@@ -161,13 +158,9 @@ export const machine = createMachine({
         const inputEl = dom.getHiddenInputEl(scope)
         dispatchInputValueEvent(inputEl, { value: computed("valueAsString") })
       },
-      setupValue({ context, scope }) {
-        queueMicrotask(() => {
-          if (context.get("value").length) return
-          const inputEls = dom.getInputEls(scope)
-          const emptyValues = Array.from<string>({ length: inputEls.length }).fill("")
-          context.set("value", emptyValues)
-        })
+      setInputCount({ scope, refs }) {
+        const inputEls = dom.getInputEls(scope)
+        refs.set("count", inputEls.length)
       },
       focusInput({ context, scope }) {
         const focusedIndex = context.get("focusedIndex")
@@ -181,10 +174,10 @@ export const machine = createMachine({
           dom.getInputElAtIndex(scope, focusedIndex)?.select()
         })
       },
-      invokeOnComplete({ context, computed, prop }) {
+      invokeOnComplete({ computed, prop }) {
         if (!computed("isValueComplete")) return
         prop("onValueComplete")?.({
-          value: Array.from(context.get("value")),
+          value: computed("_value"),
           valueAsString: computed("valueAsString"),
         })
       },
@@ -200,31 +193,30 @@ export const machine = createMachine({
       setFocusedIndex({ context, event }) {
         context.set("focusedIndex", event.index)
       },
-      setValue({ context, event }) {
-        context.set("value", event.value)
+      setValue({ context, event, refs }) {
+        const value = fill(event.value, refs.get("count"))
+        context.set("value", value)
       },
       setFocusedValue({ context, event, computed }) {
         const focusedValue = computed("focusedValue")
-        const nextValue = getNextValue(focusedValue, event.value)
-        context.set("value", (prev) => {
-          const next = [...prev]
-          next[context.get("focusedIndex")] = nextValue
-          return next
-        })
+        const focusedIndex = context.get("focusedIndex")
+        const value = getNextValue(focusedValue, event.value)
+        context.set("value", setValueAtIndex(computed("_value"), focusedIndex, value))
       },
       revertInputValue({ context, computed, scope }) {
         const inputEl = dom.getInputElAtIndex(scope, context.get("focusedIndex"))
-        setElementValue(inputEl, computed("focusedValue"))
+        inputEl.value = computed("focusedValue")
       },
       syncInputValue({ context, event, scope }) {
         const value = context.get("value")
         const inputEl = dom.getInputElAtIndex(scope, event.index)
-        setElementValue(inputEl, value[event.index])
+        inputEl.value = value[event.index]
       },
       syncInputElements({ context, scope }) {
         const inputEls = dom.getInputEls(scope)
+        const value = context.get("value")
         inputEls.forEach((inputEl, index) => {
-          setElementValue(inputEl, context.get("value")[index])
+          inputEl.value = value[index]
         })
       },
       setPastedValue({ context, event, computed }) {
@@ -240,31 +232,23 @@ export const machine = createMachine({
           const left = startIndex > 0 ? valueAsString.substring(0, focusedIndex) : ""
           const right = event.value.substring(0, computed("valueLength") - startIndex)
 
-          const value = left + right
+          const value = fill(`${left}${right}`.split(""), computed("valueLength"))
 
-          context.set("value", value.split(""))
+          context.set("value", value)
         })
       },
       setValueAtIndex({ context, event, computed }) {
         const nextValue = getNextValue(computed("focusedValue"), event.value)
-        context.set("value", (prev) => {
-          const next = [...prev]
-          next[event.index] = nextValue
-          return next
-        })
+        context.set("value", setValueAtIndex(computed("_value"), event.index, nextValue))
       },
-      clearValue({ context, computed }) {
-        const nextValue = Array.from<string>({ length: computed("valueLength") }).fill("")
+      clearValue({ context, refs }) {
+        const nextValue = Array.from<string>({ length: refs.get("count") }).fill("")
         context.set("value", nextValue)
       },
-      clearFocusedValue({ context }) {
+      clearFocusedValue({ context, computed }) {
         const focusedIndex = context.get("focusedIndex")
         if (focusedIndex === -1) return
-        context.set("value", (prev) => {
-          const next = [...prev]
-          next[focusedIndex] = ""
-          return next
-        })
+        context.set("value", setValueAtIndex(computed("_value"), focusedIndex, ""))
       },
       setFocusIndexToFirst({ context }) {
         context.set("focusedIndex", 0)
@@ -300,4 +284,10 @@ function getNextValue(current: string, next: string) {
   if (current[0] === next[0]) nextValue = next[1]
   else if (current[0] === next[1]) nextValue = next[0]
   return nextValue.split("")[nextValue.length - 1]
+}
+
+function fill(value: string[], count: number) {
+  return Array.from<string>({ length: count })
+    .fill("")
+    .map((v, i) => value[i] || v)
 }

@@ -37,7 +37,6 @@ const fetchMachine = createMachine({
         sync: true,
         value: prop("value"),
         defaultValue: prop("defaultValue"),
-        isEqual: isEqual,
         onChange(value) {
           prop("onValueChange")?.({
             value,
@@ -51,11 +50,16 @@ const fetchMachine = createMachine({
       }))
     };
   },
+  refs() {
+    return {
+      count: 0
+    };
+  },
   entry: choose([{
     cond: "autoFocus",
-    actions: ["setupValue", "setFocusIndexToFirst"]
+    actions: ["setInputCount", "setFocusIndexToFirst"]
   }, {
-    actions: ["setupValue"]
+    actions: ["setInputCount"]
   }]),
   watch({
     action,
@@ -166,18 +170,12 @@ const fetchMachine = createMachine({
           value: computed("valueAsString")
         });
       },
-      setupValue({
-        context,
-        scope
+      setInputCount({
+        scope,
+        refs
       }) {
-        queueMicrotask(() => {
-          if (context.get("value").length) return;
-          const inputEls = dom.getInputEls(scope);
-          const emptyValues = Array.from < string > {
-            length: inputEls.length
-          }.fill("");
-          context.set("value", emptyValues);
-        });
+        const inputEls = dom.getInputEls(scope);
+        refs.set("count", inputEls.length);
       },
       focusInput({
         context,
@@ -201,12 +199,11 @@ const fetchMachine = createMachine({
         });
       },
       invokeOnComplete({
-        context,
         prop
       }) {
         if (!computed("isValueComplete")) return;
         prop("onValueComplete")?.({
-          value: Array.from(context.get("value")),
+          value: computed("_value"),
           valueAsString: computed("valueAsString")
         });
       },
@@ -233,9 +230,11 @@ const fetchMachine = createMachine({
       },
       setValue({
         context,
-        event
+        event,
+        refs
       }) {
-        context.set("value", event.value);
+        const value = fill(event.value, refs.get("count"));
+        context.set("value", value);
       },
       setFocusedValue({
         context,
@@ -243,8 +242,8 @@ const fetchMachine = createMachine({
       }) {
         const focusedValue = computed("focusedValue");
         const focusedIndex = context.get("focusedIndex");
-        const nextValue = getNextValue(focusedValue, event.value);
-        context.set("value", prev => setValueAtIndex(prev, focusedIndex, nextValue));
+        const value = getNextValue(focusedValue, event.value);
+        context.set("value", setValueAtIndex(computed("_value"), focusedIndex, value));
       },
       revertInputValue({
         context,
@@ -286,8 +285,8 @@ const fetchMachine = createMachine({
           // replace value from cursor to end with pasted text
           const left = startIndex > 0 ? valueAsString.substring(0, focusedIndex) : "";
           const right = event.value.substring(0, computed("valueLength") - startIndex);
-          const value = left + right;
-          context.set("value", value.split(""));
+          const value = fill(`${left}${right}`.split(""), computed("valueLength"));
+          context.set("value", value);
         });
       },
       setValueAtIndex({
@@ -295,17 +294,14 @@ const fetchMachine = createMachine({
         event
       }) {
         const nextValue = getNextValue(computed("focusedValue"), event.value);
-        context.set("value", prev => {
-          const next = [...prev];
-          next[event.index] = nextValue;
-          return next;
-        });
+        context.set("value", setValueAtIndex(computed("_value"), event.index, nextValue));
       },
       clearValue({
-        context
+        context,
+        refs
       }) {
         const nextValue = Array.from < string > {
-          length: computed("valueLength")
+          length: refs.get("count")
         }.fill("");
         context.set("value", nextValue);
       },
@@ -314,11 +310,7 @@ const fetchMachine = createMachine({
       }) {
         const focusedIndex = context.get("focusedIndex");
         if (focusedIndex === -1) return;
-        context.set("value", prev => {
-          const next = [...prev];
-          next[focusedIndex] = "";
-          return next;
-        });
+        context.set("value", setValueAtIndex(computed("_value"), focusedIndex, ""));
       },
       setFocusIndexToFirst({
         context

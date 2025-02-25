@@ -132,11 +132,16 @@ export interface PinInputSchema {
     focusedIndex: number
   }
   computed: {
+    // normalized value
+    _value: string[]
     valueLength: number
     filledValueLength: number
     isValueComplete: boolean
     valueAsString: string
     focusedValue: string
+  }
+  refs: {
+    count: number
   }
   event: EventObject
   action: string
