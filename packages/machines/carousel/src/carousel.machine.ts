@@ -47,7 +47,7 @@ export const machine = createMachine<CarouselSchema>({
     return {
       page: bindable<number>(() => ({
         defaultValue: prop("defaultPage"),
-        page: prop("page"),
+        value: prop("page"),
         onChange(page) {
           const ctx = getContext()
           const pageSnapPoints = ctx.get("pageSnapPoints")
