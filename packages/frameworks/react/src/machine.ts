@@ -206,10 +206,17 @@ export function useMachine<T extends MachineSchema>(
     },
   }))
 
+  // improve HMR (to restart effects)
+  const hydratedStateRef = useRef<string | undefined>()
+
   useSafeLayoutEffect(() => {
-    state.invoke(state.initial!, "__init__")
+    queueMicrotask(() => {
+      const initialState = hydratedStateRef.current ?? state.initial!
+      state.invoke(initialState, "__init__")
+    })
     const fns = effects.current
     return () => {
+      hydratedStateRef.current = state.ref.current
       queueMicrotask(() => {
         fns.forEach((fn) => fn?.())
         effects.current = new Map()
