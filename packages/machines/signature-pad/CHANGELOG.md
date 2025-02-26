@@ -1,5 +1,21 @@
 # @zag-js/signature-pad
 
+## 1.2.0
+
+### Patch Changes
+
+- [`6ef9950`](https://github.com/chakra-ui/zag/commit/6ef9950530a65ae9925cd6174992304be2d8d191) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - - Fix issue where hidden input throws a controlled warning in
+  React due to the absence of `readOnly` or `onChange`
+  - Fix issue where calling `getDataUrl` in the `onDrawEnd` callback after clearing the signature pad does not return an
+    empty string
+- Updated dependencies []:
+  - @zag-js/anatomy@1.2.0
+  - @zag-js/core@1.2.0
+  - @zag-js/types@1.2.0
+  - @zag-js/utils@1.2.0
+  - @zag-js/dom-query@1.2.0
+
 ## 1.1.0
 
 ### Patch Changes

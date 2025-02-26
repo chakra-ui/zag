@@ -1,5 +1,20 @@
 # @zag-js/toggle-group
 
+## 1.2.0
+
+### Patch Changes
+
+- [`2b20352`](https://github.com/chakra-ui/zag/commit/2b20352bf31dee7e0e755ffd5126b3d95d60d491) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix issue where calling `api.setValue` with an array doesn't work
+  as expected.
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.2.0
+  - @zag-js/core@1.2.0
+  - @zag-js/types@1.2.0
+  - @zag-js/utils@1.2.0
+  - @zag-js/dom-query@1.2.0
+
 ## 1.1.0
 
 ### Patch Changes

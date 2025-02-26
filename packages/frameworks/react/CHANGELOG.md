@@ -1,5 +1,18 @@
 # @zag-js/react
 
+## 1.2.0
+
+### Patch Changes
+
+- [`2bf95b9`](https://github.com/chakra-ui/zag/commit/2bf95b9e419dc2c7b8901d9c11496237107067c9) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Improve Hot Module Replacement such that effects are replayed
+  correctly. This removes the need to refresh the page for changes to take effect.
+- Updated dependencies []:
+  - @zag-js/core@1.2.0
+  - @zag-js/store@1.2.0
+  - @zag-js/types@1.2.0
+  - @zag-js/utils@1.2.0
+
 ## 1.1.0
 
 ### Patch Changes
