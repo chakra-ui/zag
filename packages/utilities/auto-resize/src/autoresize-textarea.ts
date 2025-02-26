@@ -9,10 +9,12 @@ export const autoresizeTextarea = (el: HTMLTextAreaElement | null) => {
   const doc = getDocument(el)
 
   const resize = () => {
-    el.style.height = "auto"
-    const borderTopWidth = parseInt(style.borderTopWidth, 10)
-    const borderBottomWidth = parseInt(style.borderBottomWidth, 10)
-    el.style.height = `${el.scrollHeight + borderTopWidth + borderBottomWidth}px`
+    requestAnimationFrame(() => {
+      el.style.height = "auto"
+      const borderTopWidth = parseInt(style.borderTopWidth, 10)
+      const borderBottomWidth = parseInt(style.borderBottomWidth, 10)
+      el.style.height = `${el.scrollHeight + borderTopWidth + borderBottomWidth}px`
+    })
   }
 
   el.addEventListener("input", resize)
@@ -28,7 +30,9 @@ export const autoresizeTextarea = (el: HTMLTextAreaElement | null) => {
     },
   })
 
-  const resizeObserver = new win.ResizeObserver(() => resize())
+  const resizeObserver = new win.ResizeObserver(() => {
+    requestAnimationFrame(() => resize())
+  })
   resizeObserver.observe(el)
 
   const attrObserver = new win.MutationObserver(() => resize())

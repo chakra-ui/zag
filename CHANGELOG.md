@@ -18,6 +18,8 @@ See the [Changesets](./.changeset) for the latest changes.
 
 - **Carousel**: Fix issue where `page` was not consumed in the machine.
 
+- **Textarea**: Fix issue where `ResizeObserver` loop could throw undelivered notifications warning.
+
 ### Added
 
 - **Toggle**: Bring back toggle machine.
