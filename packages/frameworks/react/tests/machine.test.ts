@@ -34,7 +34,7 @@ describe("basic", () => {
     expect(result.current.state.get()).toBe("foo")
   })
 
-  test("initial entry action", () => {
+  test("initial entry action", async () => {
     const fooEntry = vi.fn()
     const rootEntry = vi.fn()
 
@@ -57,6 +57,7 @@ describe("basic", () => {
     })
 
     renderMachine(machine)
+    await Promise.resolve()
 
     expect(fooEntry).toHaveBeenCalledOnce()
     expect(rootEntry).toHaveBeenCalledOnce()
