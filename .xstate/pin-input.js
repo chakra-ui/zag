@@ -17,7 +17,7 @@ const fetchMachine = createMachine({
       placeholder: "○",
       otp: false,
       type: "numeric",
-      defaultValue: [],
+      defaultValue: props.count ? fill([], props.count) : [],
       ...props,
       translations: {
         inputLabel: (index, length) => `pin code ${index + 1} of ${length}`,
@@ -49,7 +49,7 @@ const fetchMachine = createMachine({
       })),
       // TODO: Move this to `props` in next major version
       count: bindable(() => ({
-        defaultValue: 0
+        defaultValue: prop("count")
       }))
     };
   },
@@ -170,8 +170,10 @@ const fetchMachine = createMachine({
       },
       setInputCount({
         scope,
-        context
+        context,
+        prop
       }) {
+        if (prop("count")) return;
         const inputEls = dom.getInputEls(scope);
         context.set("count", inputEls.length);
       },

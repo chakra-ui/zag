@@ -33,6 +33,7 @@ export const machine = createMachine<SignaturePadSchema>({
     return {
       paths: bindable<string[]>(() => ({
         defaultValue: [],
+        sync: true,
         onChange(value) {
           prop("onDraw")?.({ paths: value })
         },
@@ -123,10 +124,11 @@ export const machine = createMachine<SignaturePadSchema>({
           paths: [...context.get("paths"), context.get("currentPath")!],
         })
       },
-      invokeOnDrawEnd({ context, prop, scope }) {
+      invokeOnDrawEnd({ context, prop, scope, computed }) {
         prop("onDrawEnd")?.({
           paths: [...context.get("paths")],
           getDataUrl(type, quality = 0.92) {
+            if (computed("isEmpty")) return Promise.resolve("")
             return dom.getDataUrl(scope, { type, quality })
           },
         })

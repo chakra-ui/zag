@@ -145,7 +145,7 @@ export function connect<T extends PropTypes>(
         hidden: true,
         disabled,
         required: prop("required"),
-        readOnly: prop("readOnly"),
+        readOnly: true,
         name: prop("name"),
         value: props.value,
       })
