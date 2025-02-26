@@ -1,5 +1,20 @@
 # @zag-js/carousel
 
+## 1.1.0
+
+### Patch Changes
+
+- [`b42e35e`](https://github.com/chakra-ui/zag/commit/b42e35e745e805bbb9ad2f18cdfd624dc55d06f5) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix issue where `page` was not consumed in the machine
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.1.0
+  - @zag-js/core@1.1.0
+  - @zag-js/types@1.1.0
+  - @zag-js/utils@1.1.0
+  - @zag-js/dom-query@1.1.0
+  - @zag-js/scroll-snap@1.1.0
+
 ## 1.0.2
 
 ### Patch Changes

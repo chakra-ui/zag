@@ -1,5 +1,12 @@
 # @zag-js/focus-trap
 
+## 1.1.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/dom-query@1.1.0
+
 ## 1.0.2
 
 ### Patch Changes
