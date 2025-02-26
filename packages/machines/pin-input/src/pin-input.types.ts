@@ -130,6 +130,8 @@ export interface PinInputSchema {
   context: {
     value: string[]
     focusedIndex: number
+    // TODO: Move this to `props` in next major version
+    count: number
   }
   computed: {
     // normalized value
@@ -139,9 +141,6 @@ export interface PinInputSchema {
     isValueComplete: boolean
     valueAsString: string
     focusedValue: string
-  }
-  refs: {
-    count: number
   }
   event: EventObject
   action: string

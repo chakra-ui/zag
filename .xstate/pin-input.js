@@ -46,13 +46,11 @@ const fetchMachine = createMachine({
       focusedIndex: bindable(() => ({
         sync: true,
         defaultValue: -1
-      }))
-    };
-  },
-  refs() {
-    return {
+      })),
       // TODO: Move this to `props` in next major version
-      count: 0
+      count: bindable(() => ({
+        defaultValue: 0
+      }))
     };
   },
   entry: choose([{
@@ -172,10 +170,10 @@ const fetchMachine = createMachine({
       },
       setInputCount({
         scope,
-        refs
+        context
       }) {
         const inputEls = dom.getInputEls(scope);
-        refs.set("count", inputEls.length);
+        context.set("count", inputEls.length);
       },
       focusInput({
         context,
@@ -230,10 +228,9 @@ const fetchMachine = createMachine({
       },
       setValue({
         context,
-        event,
-        refs
+        event
       }) {
-        const value = fill(event.value, refs.get("count"));
+        const value = fill(event.value, context.get("count"));
         context.set("value", value);
       },
       setFocusedValue({
@@ -301,11 +298,10 @@ const fetchMachine = createMachine({
         context.set("value", setValueAtIndex(computed("_value"), event.index, nextValue));
       },
       clearValue({
-        context,
-        refs
+        context
       }) {
         const nextValue = Array.from < string > {
-          length: refs.get("count")
+          length: context.get("count")
         }.fill("");
         context.set("value", nextValue);
       },

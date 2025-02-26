@@ -38,18 +38,15 @@ export const machine = createMachine({
         sync: true,
         defaultValue: -1,
       })),
-    }
-  },
-
-  refs() {
-    return {
       // TODO: Move this to `props` in next major version
-      count: 0,
+      count: bindable(() => ({
+        defaultValue: 0,
+      })),
     }
   },
 
   computed: {
-    _value: ({ context, refs }) => fill(context.get("value"), refs.get("count")),
+    _value: ({ context }) => fill(context.get("value"), context.get("count")),
     valueLength: ({ computed }) => computed("_value").length,
     filledValueLength: ({ computed }) => computed("_value").filter((v) => v?.trim() !== "").length,
     isValueComplete: ({ computed }) => computed("valueLength") === computed("filledValueLength"),
@@ -158,9 +155,9 @@ export const machine = createMachine({
         const inputEl = dom.getHiddenInputEl(scope)
         dispatchInputValueEvent(inputEl, { value: computed("valueAsString") })
       },
-      setInputCount({ scope, refs }) {
+      setInputCount({ scope, context }) {
         const inputEls = dom.getInputEls(scope)
-        refs.set("count", inputEls.length)
+        context.set("count", inputEls.length)
       },
       focusInput({ context, scope }) {
         const focusedIndex = context.get("focusedIndex")
@@ -193,8 +190,8 @@ export const machine = createMachine({
       setFocusedIndex({ context, event }) {
         context.set("focusedIndex", event.index)
       },
-      setValue({ context, event, refs }) {
-        const value = fill(event.value, refs.get("count"))
+      setValue({ context, event }) {
+        const value = fill(event.value, context.get("count"))
         context.set("value", value)
       },
       setFocusedValue({ context, event, computed }) {
@@ -244,8 +241,8 @@ export const machine = createMachine({
         const nextValue = getNextValue(computed("focusedValue"), event.value)
         context.set("value", setValueAtIndex(computed("_value"), event.index, nextValue))
       },
-      clearValue({ context, refs }) {
-        const nextValue = Array.from<string>({ length: refs.get("count") }).fill("")
+      clearValue({ context }) {
+        const nextValue = Array.from<string>({ length: context.get("count") }).fill("")
         context.set("value", nextValue)
       },
       clearFocusedValue({ context, computed }) {
