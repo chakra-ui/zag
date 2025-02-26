@@ -8,6 +8,33 @@ All notable changes to this project will be documented in this file.
 
 See the [Changesets](./.changeset) for the latest changes.
 
+## [1.2.0](./#1.2.0) - 2025-02-26
+
+### Fixed
+
+- **Signature Pad**
+
+  - Fix issue where hidden input throws a controlled warning in React due to the absence of `readOnly` or `onChange`.
+  - Fix issue where calling `getDataUrl` in the `onDrawEnd` callback after clearing the signature pad does not return an
+    empty string.
+
+- **React**: Improve Hot Module Replacement such that effects are replayed correctly. This removes the need to refresh
+  the page for changes to take effect.
+
+- **Toggle Group**: Fix issue where calling `api.setValue` with an array doesn't work as expected.
+
+- **Pin Input**: Fix `flushSync was called from inside a lifecycle method` warning.
+
+- **Vue**: Fix issue where `choose is not a function` error could be thrown for some machines.
+
+- **File Upload**: Fix issue where `win.DataTransfer` could throw in testing environments.
+
+- **Time Picker**: Fix `[@zag-js/dismissable] node is null or undefined` warning when lazy mounting the content.
+
+### Added
+
+- **Pin Input**: Add support for `count` prop to improve SSR `aria-label` attribute.
+
 ## [1.1.0](./#1.1.0) - 2025-02-26
 
 ### Fixed

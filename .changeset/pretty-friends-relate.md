@@ -1,5 +1,5 @@
 ---
-"@zag-js/pin-input": patch
+"@zag-js/pin-input": minor
 ---
 
 - Fix `flushSync was called from inside a lifecycle method` warning
