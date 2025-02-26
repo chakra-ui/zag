@@ -24,7 +24,7 @@ function getScrollPadding(element: HTMLElement): Record<ScrollAxis, { before: nu
       n /= 100
       n *= size
     }
-    return n
+    return Number.isNaN(n) ? 0 : n
   }
 
   let xBefore = convert(xBeforeRaw, rect.width)
