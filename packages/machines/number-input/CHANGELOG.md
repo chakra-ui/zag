@@ -1,5 +1,19 @@
 # @zag-js/number-input
 
+## 1.1.0
+
+### Patch Changes
+
+- [`b768660`](https://github.com/chakra-ui/zag/commit/b768660e78a8a400a290b7508a0434e8d4a22a1a) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix issue where `value` prop wasn't consumed in the machine.
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.1.0
+  - @zag-js/core@1.1.0
+  - @zag-js/types@1.1.0
+  - @zag-js/utils@1.1.0
+  - @zag-js/dom-query@1.1.0
+
 ## 1.0.2
 
 ### Patch Changes

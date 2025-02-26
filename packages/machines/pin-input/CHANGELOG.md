@@ -1,5 +1,19 @@
 # @zag-js/pin-input
 
+## 1.1.0
+
+### Patch Changes
+
+- [`2ff622d`](https://github.com/chakra-ui/zag/commit/2ff622d1470f45cac0b359265212811402a0af3e) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix issue where editing existing values don't work as expected.
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.1.0
+  - @zag-js/core@1.1.0
+  - @zag-js/types@1.1.0
+  - @zag-js/utils@1.1.0
+  - @zag-js/dom-query@1.1.0
+
 ## 1.0.2
 
 ### Patch Changes
