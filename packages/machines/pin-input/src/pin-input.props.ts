@@ -5,6 +5,8 @@ import type { PinInputProps } from "./pin-input.types"
 export const props = createProps<PinInputProps>()([
   "autoFocus",
   "blurOnComplete",
+  "count",
+  "defaultValue",
   "dir",
   "disabled",
   "form",
@@ -18,15 +20,14 @@ export const props = createProps<PinInputProps>()([
   "onValueComplete",
   "onValueInvalid",
   "otp",
-  "readOnly",
   "pattern",
   "placeholder",
+  "readOnly",
   "required",
   "selectOnFocus",
   "translations",
   "type",
   "value",
-  "defaultValue",
 ])
 
 export const splitProps = createSplitProps<Partial<PinInputProps>>(props)

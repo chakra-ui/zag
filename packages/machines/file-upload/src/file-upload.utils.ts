@@ -1,5 +1,5 @@
 import type { Params } from "@zag-js/core"
-import { getEventTarget } from "@zag-js/dom-query"
+import { getEventTarget, getWindow } from "@zag-js/dom-query"
 import { isValidFileSize, isValidFileType, type FileError } from "@zag-js/file-utils"
 import type { FileRejection, FileUploadSchema } from "./file-upload.types"
 
@@ -54,5 +54,20 @@ export function getFilesFromEvent(ctx: Params<FileUploadSchema>, files: File[]) 
   return {
     acceptedFiles,
     rejectedFiles,
+  }
+}
+
+export function setInputFiles(inputEl: HTMLInputElement, files: File[]) {
+  const win = getWindow(inputEl)
+  try {
+    if ("DataTransfer" in win) {
+      const dataTransfer = new win.DataTransfer()
+      files.forEach((file) => {
+        dataTransfer.items.add(file)
+      })
+      inputEl.files = dataTransfer.files
+    }
+  } catch {
+    // do nothing
   }
 }

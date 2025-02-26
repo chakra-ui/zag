@@ -339,12 +339,10 @@ export const machine = createMachine<CarouselSchema>({
         context.set("page", index)
       },
       setSnapPoints({ context, computed, scope }) {
-        queueMicrotask(() => {
-          const el = dom.getItemGroupEl(scope)
-          if (!el) return
-          const scrollSnapPoints = getScrollSnapPositions(el)
-          context.set("pageSnapPoints", computed("isHorizontal") ? scrollSnapPoints.x : scrollSnapPoints.y)
-        })
+        const el = dom.getItemGroupEl(scope)
+        if (!el) return
+        const scrollSnapPoints = getScrollSnapPositions(el)
+        context.set("pageSnapPoints", computed("isHorizontal") ? scrollSnapPoints.x : scrollSnapPoints.y)
       },
       disableScrollSnap({ scope }) {
         const el = dom.getItemGroupEl(scope)

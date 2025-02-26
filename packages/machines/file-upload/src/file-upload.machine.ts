@@ -4,7 +4,7 @@ import { getAcceptAttrString, isFileEqual } from "@zag-js/file-utils"
 import { callAll } from "@zag-js/utils"
 import * as dom from "./file-upload.dom"
 import type { FileRejection, FileUploadSchema } from "./file-upload.types"
-import { getFilesFromEvent } from "./file-upload.utils"
+import { getFilesFromEvent, setInputFiles } from "./file-upload.utils"
 
 export const machine = createMachine<FileUploadSchema>({
   props({ props }) {
@@ -151,15 +151,8 @@ export const machine = createMachine<FileUploadSchema>({
         queueMicrotask(() => {
           const inputEl = dom.getHiddenInputEl(scope)
           if (!inputEl) return
-
+          setInputFiles(inputEl, context.get("acceptedFiles"))
           const win = scope.getWin()
-          const dataTransfer = new win.DataTransfer()
-
-          context.get("acceptedFiles").forEach((v) => {
-            dataTransfer.items.add(v)
-          })
-
-          inputEl.files = dataTransfer.files
           inputEl.dispatchEvent(new win.Event("change", { bubbles: true }))
         })
       },
