@@ -117,7 +117,10 @@ export function useMachine<T extends MachineSchema>(
     refs,
     computed,
     flush,
-    scope: scope.value,
+    get scope() {
+      return scope.value
+    },
+    choose,
   })
 
   const action = (keys: ActionsOrFn<T> | undefined) => {
@@ -262,7 +265,9 @@ export function useMachine<T extends MachineSchema>(
     send,
     context: ctx,
     prop,
-    scope: scope.value,
+    get scope() {
+      return scope.value
+    },
     refs,
     computed,
     event: getEvent(),

@@ -34,7 +34,6 @@ const fetchMachine = createMachine({
   }) {
     return {
       value: bindable(() => ({
-        sync: true,
         value: prop("value"),
         defaultValue: prop("defaultValue"),
         onChange(value) {
@@ -52,6 +51,7 @@ const fetchMachine = createMachine({
   },
   refs() {
     return {
+      // TODO: Move this to `props` in next major version
       count: 0
     };
   },
@@ -273,20 +273,24 @@ const fetchMachine = createMachine({
       },
       setPastedValue({
         context,
-        event
+        event,
+        flush
       }) {
         raf(() => {
           const valueAsString = computed("valueAsString");
           const focusedIndex = context.get("focusedIndex");
+          const valueLength = computed("valueLength");
           const filledValueLength = computed("filledValueLength");
           const startIndex = Math.min(focusedIndex, filledValueLength);
 
           // keep value left of cursor
           // replace value from cursor to end with pasted text
           const left = startIndex > 0 ? valueAsString.substring(0, focusedIndex) : "";
-          const right = event.value.substring(0, computed("valueLength") - startIndex);
-          const value = fill(`${left}${right}`.split(""), computed("valueLength"));
-          context.set("value", value);
+          const right = event.value.substring(0, valueLength - startIndex);
+          const value = fill(`${left}${right}`.split(""), valueLength);
+          flush(() => {
+            context.set("value", value);
+          });
         });
       },
       setValueAtIndex({
