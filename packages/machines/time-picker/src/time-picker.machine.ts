@@ -279,7 +279,8 @@ export const machine = createMachine<TimePickerSchema>({
 
       trackDismissableElement({ context, prop, scope, send }) {
         if (prop("disableLayer")) return
-        return trackDismissableElement(dom.getContentEl(scope), {
+        const contentEl = () => dom.getContentEl(scope)
+        return trackDismissableElement(contentEl, {
           defer: true,
           exclude: [dom.getTriggerEl(scope), dom.getClearTriggerEl(scope)],
           onEscapeKeyDown(event) {

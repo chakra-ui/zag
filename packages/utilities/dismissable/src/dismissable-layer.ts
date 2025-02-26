@@ -51,11 +51,21 @@ export interface DismissableElementOptions extends DismissableElementHandlers, P
    * Defer the interact outside event to the next frame
    */
   defer?: boolean | undefined
+  /**
+   * Whether to warn when the node is `null` or `undefined`
+   */
+  warnOnMissingNode?: boolean | undefined
 }
 
 function trackDismissableElementImpl(node: MaybeElement, options: DismissableElementOptions) {
-  if (!node) {
+  const { warnOnMissingNode = true } = options
+
+  if (warnOnMissingNode && !node) {
     warn("[@zag-js/dismissable] node is `null` or `undefined`")
+    return
+  }
+
+  if (!node) {
     return
   }
 
