@@ -2,7 +2,7 @@ import * as pinInput from "@zag-js/pin-input"
 import { pinInputControls } from "@zag-js/shared"
 import { normalizeProps, useMachine } from "@zag-js/solid"
 import serialize from "form-serialize"
-import { createMemo, createUniqueId } from "solid-js"
+import { createMemo, createUniqueId, For } from "solid-js"
 import { StateVisualizer } from "~/components/state-visualizer"
 import { Toolbar } from "~/components/toolbar"
 import { useControls } from "~/hooks/use-controls"
@@ -10,10 +10,14 @@ import { useControls } from "~/hooks/use-controls"
 export default function Page() {
   const controls = useControls(pinInputControls)
 
-  const service = useMachine(pinInput.machine, {
-    id: createUniqueId(),
-    name: "test",
-  })
+  const service = useMachine(
+    pinInput.machine,
+    controls.mergeProps({
+      id: createUniqueId(),
+      name: "test",
+      count: 3,
+    }),
+  )
 
   const api = createMemo(() => pinInput.connect(service, normalizeProps))
 
@@ -30,9 +34,9 @@ export default function Page() {
           <div {...api().getRootProps()}>
             <label {...api().getLabelProps()}>Enter code:</label>
             <div {...api().getControlProps()}>
-              <input data-testid="input-1" {...api().getInputProps({ index: 0 })} />
-              <input data-testid="input-2" {...api().getInputProps({ index: 1 })} />
-              <input data-testid="input-3" {...api().getInputProps({ index: 2 })} />
+              <For each={api().items}>
+                {(index) => <input data-testid={`input-${index + 1}`} {...api().getInputProps({ index })} />}
+              </For>
             </div>
             <input {...api().getHiddenInputProps()} />
           </div>

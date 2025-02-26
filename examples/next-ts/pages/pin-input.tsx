@@ -13,6 +13,7 @@ export default function Page() {
   const service = useMachine(pinInput.machine, {
     name: "test",
     id: useId(),
+    count: 3,
     ...controls.context,
   })
 
@@ -31,9 +32,9 @@ export default function Page() {
           <div {...api.getRootProps()}>
             <label {...api.getLabelProps()}>Enter code:</label>
             <div {...api.getControlProps()}>
-              <input data-testid="input-1" {...api.getInputProps({ index: 0 })} />
-              <input data-testid="input-2" {...api.getInputProps({ index: 1 })} />
-              <input data-testid="input-3" {...api.getInputProps({ index: 2 })} />
+              {api.items.map((index) => (
+                <input key={index} data-testid={`input-${index + 1}`} {...api.getInputProps({ index })} />
+              ))}
             </div>
             <input {...api.getHiddenInputProps()} />
           </div>

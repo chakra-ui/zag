@@ -31,6 +31,7 @@ export default function Page() {
     <>
       <main className="signature-pad">
         <div {...api.getRootProps()}>
+          <input {...api.getHiddenInputProps({ value: url })} />
           <label {...api.getLabelProps()}>Signature Pad</label>
 
           <div {...api.getControlProps()}>

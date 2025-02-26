@@ -12,6 +12,7 @@
   const service = useMachine(pinInput.machine, {
     name: "test",
     id: "1",
+    count: 3,
   })
 
   const api = $derived(pinInput.connect(service, normalizeProps))
@@ -29,9 +30,9 @@
       <!-- svelte-ignore a11y_label_has_associated_control -->
       <label {...api.getLabelProps()}>Enter code:</label>
       <div {...api.getControlProps()}>
-        <input data-testid="input-1" {...api.getInputProps({ index: 0 })} />
-        <input data-testid="input-2" {...api.getInputProps({ index: 1 })} />
-        <input data-testid="input-3" {...api.getInputProps({ index: 2 })} />
+        {#each api.items as index}
+          <input data-testid={`input-${index + 1}`} {...api.getInputProps({ index })} />
+        {/each}
       </div>
       <input {...api.getHiddenInputProps()} />
     </div>

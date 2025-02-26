@@ -33,6 +33,8 @@ export function connect<T extends PropTypes>(
 
   return {
     focus,
+    count: context.get("count"),
+    items: Array.from({ length: context.get("count") }).map((_, i) => i),
     value: context.get("value"),
     valueAsString: computed("valueAsString"),
     complete: complete,

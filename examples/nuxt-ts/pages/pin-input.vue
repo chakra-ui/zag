@@ -9,6 +9,7 @@ const controls = useControls(pinInputControls)
 const service = useMachine(pinInput.machine, {
   id: useId(),
   name: "test",
+  count: 3,
 })
 
 const api = computed(() => pinInput.connect(service, normalizeProps))
@@ -28,9 +29,7 @@ const api = computed(() => pinInput.connect(service, normalizeProps))
       <div v-bind="api.getRootProps()">
         <label v-bind="api.getLabelProps()">Enter code:</label>
         <div v-bind="api.getControlProps()">
-          <input data-testid="input-1" v-bind="api.getInputProps({ index: 0 })" />
-          <input data-testid="input-2" v-bind="api.getInputProps({ index: 1 })" />
-          <input data-testid="input-3" v-bind="api.getInputProps({ index: 2 })" />
+          <input v-for="index in api.items" :data-testid="`input-${index + 1}`" v-bind="api.getInputProps({ index })" />
         </div>
         <input v-bind="api.getHiddenInputProps()" />
       </div>

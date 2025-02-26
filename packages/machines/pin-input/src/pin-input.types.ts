@@ -120,6 +120,11 @@ export interface PinInputProps extends DirectionProperty, CommonProperties {
    * Specifies the localized strings that identifies the accessibility elements and their states
    */
   translations?: IntlTranslations | undefined
+  /**
+   * The number of inputs to render to improve SSR aria attributes.
+   * This will be required in next major version.
+   */
+  count?: number | undefined
 }
 
 type PropsWithDefault = "placeholder" | "otp" | "type" | "defaultValue"
@@ -173,6 +178,14 @@ export interface PinInputApi<T extends PropTypes = PropTypes> {
    * Whether all inputs are filled.
    */
   complete: boolean
+  /**
+   * The number of inputs to render
+   */
+  count: number
+  /**
+   * The array of input values.
+   */
+  items: number[]
   /**
    * Function to set the value of the inputs.
    */

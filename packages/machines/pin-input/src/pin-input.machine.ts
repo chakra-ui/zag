@@ -12,7 +12,7 @@ export const machine = createMachine({
       placeholder: "○",
       otp: false,
       type: "numeric",
-      defaultValue: [],
+      defaultValue: props.count ? fill([], props.count) : [],
       ...props,
       translations: {
         inputLabel: (index, length) => `pin code ${index + 1} of ${length}`,
@@ -40,7 +40,7 @@ export const machine = createMachine({
       })),
       // TODO: Move this to `props` in next major version
       count: bindable(() => ({
-        defaultValue: 0,
+        defaultValue: prop("count"),
       })),
     }
   },
@@ -155,7 +155,8 @@ export const machine = createMachine({
         const inputEl = dom.getHiddenInputEl(scope)
         dispatchInputValueEvent(inputEl, { value: computed("valueAsString") })
       },
-      setInputCount({ scope, context }) {
+      setInputCount({ scope, context, prop }) {
+        if (prop("count")) return
         const inputEls = dom.getInputEls(scope)
         context.set("count", inputEls.length)
       },
