@@ -1,5 +1,19 @@
 # @zag-js/vue
 
+## 1.2.0
+
+### Patch Changes
+
+- [`7119b04`](https://github.com/chakra-ui/zag/commit/7119b0413371bd84dbcfe04eb0211c0b2d73e723) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix issue where `choose is not a function` error could be thrown
+  for some machines
+
+- Updated dependencies []:
+  - @zag-js/core@1.2.0
+  - @zag-js/store@1.2.0
+  - @zag-js/types@1.2.0
+  - @zag-js/utils@1.2.0
+
 ## 1.1.0
 
 ### Patch Changes

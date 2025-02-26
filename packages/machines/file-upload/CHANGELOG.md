@@ -1,5 +1,22 @@
 # @zag-js/file-upload
 
+## 1.2.0
+
+### Patch Changes
+
+- [`d598cce`](https://github.com/chakra-ui/zag/commit/d598cce3e8b1bffa4c6f351c5a351bf703f80168) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix issue where `win.DataTransfer` could throw in testing
+  environments
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.2.0
+  - @zag-js/core@1.2.0
+  - @zag-js/types@1.2.0
+  - @zag-js/utils@1.2.0
+  - @zag-js/dom-query@1.2.0
+  - @zag-js/file-utils@1.2.0
+  - @zag-js/i18n-utils@1.2.0
+
 ## 1.1.0
 
 ### Patch Changes

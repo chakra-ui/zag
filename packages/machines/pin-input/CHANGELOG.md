@@ -1,5 +1,23 @@
 # @zag-js/pin-input
 
+## 1.2.0
+
+### Minor Changes
+
+- [`7119b04`](https://github.com/chakra-ui/zag/commit/7119b0413371bd84dbcfe04eb0211c0b2d73e723) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - - Fix `flushSync was called from inside a lifecycle method`
+  warning
+  - Add support for `count` prop to improve SSR `aria-label` attribute
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.2.0
+  - @zag-js/core@1.2.0
+  - @zag-js/types@1.2.0
+  - @zag-js/utils@1.2.0
+  - @zag-js/dom-query@1.2.0
+
 ## 1.1.0
 
 ### Patch Changes

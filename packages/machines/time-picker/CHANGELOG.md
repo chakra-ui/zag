@@ -1,5 +1,22 @@
 # @zag-js/time-picker
 
+## 1.2.0
+
+### Patch Changes
+
+- [`bf6a2a7`](https://github.com/chakra-ui/zag/commit/bf6a2a7efcd12777bea3fc3533debf22564658ac) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - - Fix `[@zag-js/dismissable] node is null or undefined` warning
+  when lazy mounting the content
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.2.0
+  - @zag-js/core@1.2.0
+  - @zag-js/types@1.2.0
+  - @zag-js/utils@1.2.0
+  - @zag-js/dismissable@1.2.0
+  - @zag-js/dom-query@1.2.0
+  - @zag-js/popper@1.2.0
+
 ## 1.1.0
 
 ### Patch Changes
