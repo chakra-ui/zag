@@ -1,6 +1,6 @@
 import { createGuards, createMachine } from "@zag-js/core"
 import { raf } from "@zag-js/dom-query"
-import { add, isEqual, remove } from "@zag-js/utils"
+import { addOrRemove, ensureProps, isArray, isEqual } from "@zag-js/utils"
 import * as dom from "./toggle-group.dom"
 import type { ToggleGroupSchema } from "./toggle-group.types"
 
@@ -144,13 +144,14 @@ export const machine = createMachine<ToggleGroupSchema>({
         context.set("focusedId", null)
       },
       setValue({ context, event, prop }) {
-        if (!event.value) return
-        const value = context.get("value")
-        let next = Array.from(value)
-        if (prop("multiple")) {
-          next = next.includes(event.value) ? remove(next, event.value) : add(next, event.value)
+        ensureProps(event, ["value"])
+        let next = context.get("value")
+        if (isArray(event.value)) {
+          next = event.value
+        } else if (prop("multiple")) {
+          next = addOrRemove(next, event.value)
         } else {
-          next = isEqual(value, [event.value]) ? [] : [event.value]
+          next = isEqual(next, [event.value]) ? [] : [event.value]
         }
         context.set("value", next)
       },
