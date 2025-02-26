@@ -8,6 +8,22 @@ All notable changes to this project will be documented in this file.
 
 See the [Changesets](./.changeset) for the latest changes.
 
+## [1.1.0](./#1.1.0) - 2025-02-26
+
+### Fixed
+
+- **Pin Input**: Fix issue where editing existing values don't work as expected.
+
+- **Number Input**: Fix issue where `value` prop wasn't consumed in the machine.
+
+- **Carousel**: Fix issue where `page` was not consumed in the machine.
+
+### Added
+
+- **Toggle**: Bring back toggle machine.
+
+- **Hover Card**: Expose interaction outside handlers to hover card.
+
 ## [1.0.2](./#1.0.2) - 2025-02-24
 
 ### Fixed
