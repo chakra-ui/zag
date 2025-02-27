@@ -1,5 +1,24 @@
 # @zag-js/date-picker
 
+## 1.2.1
+
+### Patch Changes
+
+- [`870743f`](https://github.com/chakra-ui/zag/commit/870743f808f907bff36efc686b70412d9b69f500) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix issue where `onValueChange` doesn't get called when value is
+  cleared
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.2.1
+  - @zag-js/core@1.2.1
+  - @zag-js/types@1.2.1
+  - @zag-js/utils@1.2.1
+  - @zag-js/date-utils@1.2.1
+  - @zag-js/dismissable@1.2.1
+  - @zag-js/dom-query@1.2.1
+  - @zag-js/live-region@1.2.1
+  - @zag-js/popper@1.2.1
+
 ## 1.2.0
 
 ### Patch Changes

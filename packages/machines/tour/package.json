@@ -1,6 +1,6 @@
 {
   "name": "@zag-js/tour",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "description": "Core logic for the tour widget implemented as a state machine",
   "keywords": [
     "js",

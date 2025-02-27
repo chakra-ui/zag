@@ -1,5 +1,17 @@
 # @zag-js/carousel
 
+## 1.2.1
+
+### Patch Changes
+
+- Updated dependencies [[`55620d5`](https://github.com/chakra-ui/zag/commit/55620d5b37a5504cb77d8d81bf05b1615be1a016)]:
+  - @zag-js/scroll-snap@1.2.1
+  - @zag-js/anatomy@1.2.1
+  - @zag-js/core@1.2.1
+  - @zag-js/types@1.2.1
+  - @zag-js/utils@1.2.1
+  - @zag-js/dom-query@1.2.1
+
 ## 1.2.0
 
 ### Patch Changes
