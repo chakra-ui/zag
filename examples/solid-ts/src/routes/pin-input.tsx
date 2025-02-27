@@ -47,7 +47,7 @@ export default function Page() {
       </main>
 
       <Toolbar controls={controls}>
-        <StateVisualizer state={service} />
+        <StateVisualizer state={service} context={["value", "focusedIndex"]} />
       </Toolbar>
     </>
   )

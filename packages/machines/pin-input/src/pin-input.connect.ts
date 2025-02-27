@@ -6,6 +6,7 @@ import {
   getEventKey,
   getNativeEvent,
   isComposingEvent,
+  isHTMLElement,
   isModifierKey,
   visuallyHiddenStyle,
 } from "@zag-js/dom-query"
@@ -203,11 +204,11 @@ export function connect<T extends PropTypes>(
           }
         },
         onFocus() {
-          queueMicrotask(() => {
-            send({ type: "INPUT.FOCUS", index })
-          })
+          send({ type: "INPUT.FOCUS", index })
         },
-        onBlur() {
+        onBlur(event) {
+          const target = event.relatedTarget as HTMLElement
+          if (isHTMLElement(target) && target.dataset.ownedby === dom.getRootId(scope)) return
           send({ type: "INPUT.BLUR", index })
         },
       })

@@ -17,3 +17,8 @@ export const getInputEl = (ctx: Scope, id: string) => ctx.getById<HTMLInputEleme
 export const getInputElAtIndex = (ctx: Scope, index: number) => getInputEls(ctx)[index]
 export const getFirstInputEl = (ctx: Scope) => getInputEls(ctx)[0]
 export const getHiddenInputEl = (ctx: Scope) => ctx.getById<HTMLInputElement>(getHiddenInputId(ctx))
+
+export const setInputValue = (inputEl: HTMLInputElement, value: string) => {
+  inputEl.value = value
+  inputEl.setAttribute("value", value)
+}
