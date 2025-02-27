@@ -33,7 +33,7 @@ export const machine = createMachine({
       dir: "ltr",
       locale: "en-US",
       focusInputOnChange: true,
-      clampValueOnBlur: true,
+      clampValueOnBlur: !props.allowOverflow,
       allowOverflow: false,
       inputMode: "decimal",
       pattern: "[0-9]*(.[0-9]+)?",
@@ -116,7 +116,7 @@ export const machine = createMachine({
 
   on: {
     "VALUE.SET": {
-      actions: ["setRawValue", "setHintToSet"],
+      actions: ["setRawValue"],
     },
     "VALUE.CLEAR": {
       actions: ["clearValue"],
@@ -184,6 +184,11 @@ export const machine = createMachine({
             actions: ["setClampedValue", "clearHint", "invokeOnBlur"],
           },
           {
+            guard: not("isInRange"),
+            target: "idle",
+            actions: ["setFormattedValue", "clearHint", "invokeOnBlur", "invokeOnInvalid"],
+          },
+          {
             target: "idle",
             actions: ["setFormattedValue", "clearHint", "invokeOnBlur"],
           },
@@ -219,11 +224,11 @@ export const machine = createMachine({
       on: {
         SPIN: [
           {
-            guard: and(not("isAtMin"), "isIncrementHint"),
+            guard: "isIncrementHint",
             actions: ["increment"],
           },
           {
-            guard: and(not("isAtMax"), "isDecrementHint"),
+            guard: "isDecrementHint",
             actions: ["decrement"],
           },
         ],
@@ -259,9 +264,7 @@ export const machine = createMachine({
   implementations: {
     guards: {
       clampValueOnBlur: ({ prop }) => prop("clampValueOnBlur"),
-      isAtMin: ({ computed }) => computed("isAtMin"),
       spinOnPress: ({ prop }) => !!prop("spinOnPress"),
-      isAtMax: ({ computed }) => computed("isAtMax"),
       isInRange: ({ computed }) => !computed("isOutOfRange"),
       isDecrementHint: ({ context, event }) => (event.hint ?? context.get("hint")) === "decrement",
       isIncrementHint: ({ context, event }) => (event.hint ?? context.get("hint")) === "increment",
@@ -362,23 +365,23 @@ export const machine = createMachine({
         raf(() => inputEl?.focus({ preventScroll: true }))
       },
       increment({ context, event, prop, computed }) {
-        const nextValue = incrementValue(computed("valueAsNumber"), event.step ?? prop("step"))
-        const value = formatValue(clampValue(nextValue, prop("min"), prop("max")), { computed, prop })
-        context.set("value", value)
+        let nextValue = incrementValue(computed("valueAsNumber"), event.step ?? prop("step"))
+        if (!prop("allowOverflow")) nextValue = clampValue(nextValue, prop("min"), prop("max"))
+        context.set("value", formatValue(nextValue, { computed, prop }))
       },
       decrement({ context, event, prop, computed }) {
-        const nextValue = decrementValue(computed("valueAsNumber"), event.step ?? prop("step"))
-        const value = formatValue(clampValue(nextValue, prop("min"), prop("max")), { computed, prop })
-        context.set("value", value)
+        let nextValue = decrementValue(computed("valueAsNumber"), event.step ?? prop("step"))
+        if (!prop("allowOverflow")) nextValue = clampValue(nextValue, prop("min"), prop("max"))
+        context.set("value", formatValue(nextValue, { computed, prop }))
       },
       setClampedValue({ context, prop, computed }) {
         const nextValue = clampValue(computed("valueAsNumber"), prop("min"), prop("max"))
         context.set("value", formatValue(nextValue, { computed, prop }))
       },
       setRawValue({ context, event, prop, computed }) {
-        const parsedValue = parseValue(event.value, { computed, prop })
-        const value = formatValue(clampValue(parsedValue, prop("min"), prop("max")), { computed, prop })
-        context.set("value", value)
+        let nextValue = parseValue(event.value, { computed, prop })
+        if (!prop("allowOverflow")) nextValue = clampValue(nextValue, prop("min"), prop("max"))
+        context.set("value", formatValue(nextValue, { computed, prop }))
       },
       setValue({ context, event }) {
         const value = event.target?.value ?? event.value
@@ -401,9 +404,6 @@ export const machine = createMachine({
       clearHint({ context }) {
         context.set("hint", null)
       },
-      setHintToSet({ context }) {
-        context.set("hint", "set")
-      },
       invokeOnFocus({ computed, prop }) {
         prop("onFocusChange")?.({
           focused: true,
@@ -418,8 +418,8 @@ export const machine = createMachine({
           valueAsNumber: computed("valueAsNumber"),
         })
       },
-      invokeOnInvalid({ computed, prop }) {
-        if (!computed("isOutOfRange")) return
+      invokeOnInvalid({ computed, prop, event }) {
+        if (event.type === "INPUT.CHANGE") return
         const reason = computed("valueAsNumber") > prop("max") ? "rangeOverflow" : "rangeUnderflow"
         prop("onValueInvalid")?.({
           reason,

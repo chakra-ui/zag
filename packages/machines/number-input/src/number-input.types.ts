@@ -234,7 +234,7 @@ type ComputedContext = Readonly<{
   parser: NumberParser
 }>
 
-export type HintValue = "increment" | "decrement" | "set"
+export type HintValue = "increment" | "decrement"
 
 interface PrivateContext {
   /**
