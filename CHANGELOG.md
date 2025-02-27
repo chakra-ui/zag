@@ -8,6 +8,18 @@ All notable changes to this project will be documented in this file.
 
 See the [Changesets](./.changeset) for the latest changes.
 
+## [1.2.1](./#1.2.1) - 2025-02-27
+
+### Fixed
+
+- **Progress**: Allow for more precise (decimal) values.
+
+- **Scroll Snap**: Fix issue where `getScrollPadding` could return `NaN` in test environments.
+
+- **Date Picker**: Fix issue where `onValueChange` doesn't get called when value is cleared.
+
+- **Number Input**: Fix issue where `allowOverflow` was not implemented.
+
 ## [1.2.0](./#1.2.0) - 2025-02-26
 
 ### Fixed
