@@ -39,6 +39,15 @@ import {
 
 const { and } = createGuards<DatePickerSchema>()
 
+function isDateArrayEqual(a: DateValue[], b: DateValue[] | undefined) {
+  if (a?.length !== b?.length) return false
+  const len = Math.max(a.length, b.length)
+  for (let i = 0; i < len; i++) {
+    if (!isDateEqual(a[i], b[i])) return false
+  }
+  return true
+}
+
 export const machine = createMachine<DatePickerSchema>({
   props({ props }) {
     const locale = props.locale || "en-US"
@@ -105,7 +114,7 @@ export const machine = createMachine<DatePickerSchema>({
     return {
       focusedValue: bindable<DateValue>(() => ({
         defaultValue: prop("focusedValue"),
-        isEqual: (a, b) => b !== null && a !== null && isDateEqual(a, b),
+        isEqual: isDateEqual,
         hash: (v) => v.toString(),
         sync: true,
         onChange(focusedValue) {
@@ -122,9 +131,10 @@ export const machine = createMachine<DatePickerSchema>({
       value: bindable(() => ({
         defaultValue: prop("defaultValue"),
         value: prop("value"),
-        isEqual: (a, b) => b != null && a != null && a.every((date, index) => isDateEqual(date, b[index])),
+        isEqual: isDateArrayEqual,
         hash: (v) => v.map((date) => date.toString()).join(","),
         onChange(value) {
+          console.log("onChange", value)
           const context = getContext()
           const valueAsString = value.map((date) =>
             prop("format")(date, { locale: prop("locale"), timeZone: prop("timeZone") }),
