@@ -1,5 +1,5 @@
-import { isNumber } from "@zag-js/utils"
 import { createMachine } from "@zag-js/core"
+import { getValuePercent, isNumber } from "@zag-js/utils"
 import type { ProgressSchema } from "./progress.types"
 
 export const machine = createMachine<ProgressSchema>({
@@ -42,7 +42,7 @@ export const machine = createMachine<ProgressSchema>({
     percent({ context, prop }) {
       const value = context.get("value")
       if (!isNumber(value)) return -1
-      return ((value - prop("min")) / (prop("max") - prop("min"))) * 100
+      return getValuePercent(value, prop("min"), prop("max")) * 100
     },
     isAtMax: ({ context, prop }) => context.get("value") === prop("max"),
     isHorizontal: ({ prop }) => prop("orientation") === "horizontal",
