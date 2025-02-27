@@ -1,5 +1,20 @@
 # @zag-js/progress
 
+## 1.2.1
+
+### Patch Changes
+
+- [#2286](https://github.com/chakra-ui/zag/pull/2286)
+  [`3861aa9`](https://github.com/chakra-ui/zag/commit/3861aa9b060456078dec805de0830d886c2bd456) Thanks
+  [@Hugos68](https://github.com/Hugos68)! - Allow for more precise (decimal) values
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.2.1
+  - @zag-js/core@1.2.1
+  - @zag-js/types@1.2.1
+  - @zag-js/utils@1.2.1
+  - @zag-js/dom-query@1.2.1
+
 ## 1.2.0
 
 ### Patch Changes

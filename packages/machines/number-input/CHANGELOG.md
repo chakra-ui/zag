@@ -1,5 +1,19 @@
 # @zag-js/number-input
 
+## 1.2.1
+
+### Patch Changes
+
+- [`a4bb85b`](https://github.com/chakra-ui/zag/commit/a4bb85bc1c6914465cf99fa6098bb46d2217442b) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix issue where `allowOverflow` was not implemented.
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.2.1
+  - @zag-js/core@1.2.1
+  - @zag-js/types@1.2.1
+  - @zag-js/utils@1.2.1
+  - @zag-js/dom-query@1.2.1
+
 ## 1.2.0
 
 ### Patch Changes
