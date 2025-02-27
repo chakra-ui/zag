@@ -42,7 +42,7 @@ export const machine = createMachine<ProgressSchema>({
     percent({ context, prop }) {
       const value = context.get("value")
       if (!isNumber(value)) return -1
-      return Math.round(((value - prop("min")) / (prop("max") - prop("min"))) * 100)
+      return ((value - prop("min")) / (prop("max") - prop("min"))) * 100
     },
     isAtMax: ({ context, prop }) => context.get("value") === prop("max"),
     isHorizontal: ({ prop }) => prop("orientation") === "horizontal",
