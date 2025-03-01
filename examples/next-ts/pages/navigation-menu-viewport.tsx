@@ -79,18 +79,18 @@ export default function Page() {
                   {renderLinks({
                     value: "products",
                     items: [
-                      "Fusce pellentesque",
-                      "Aliquam porttitor",
-                      "Pellentesque",
-                      "Fusce pellentesque",
-                      "Aliquam porttitor",
-                      "Pellentesque",
+                      "Analytics Platform",
+                      "Customer Engagement",
+                      "Marketing Automation",
+                      "Data Integration",
+                      "Enterprise Solutions",
+                      "API Documentation",
                     ],
                   })}
 
                   {renderLinks({
                     value: "products",
-                    items: ["Fusce pellentesque", "Aliquam porttitor", "Pellentesque"],
+                    items: ["Case Studies", "Success Stories", "Integration Partners", "Security & Compliance"],
                   })}
                 </Presence>
 
@@ -103,12 +103,12 @@ export default function Page() {
                 >
                   {renderLinks({
                     value: "company",
-                    items: ["Fusce pellentesque", "Aliquam porttitor", "Pellentesque", "Aliquam porttitor"],
+                    items: ["About Us", "Leadership Team", "Careers", "Press Releases"],
                   })}
 
                   {renderLinks({
                     value: "company",
-                    items: ["Fusce pellentesque", "Aliquam porttitor", "Pellentesque"],
+                    items: ["Investors", "Partners", "Corporate Responsibility"],
                   })}
                 </Presence>
 
@@ -121,11 +121,18 @@ export default function Page() {
                 >
                   {renderLinks({
                     value: "developers",
-                    items: ["Donec quis dui", "Vestibulum", "Fusce pellentesque", "Aliquam porttitor"],
+                    items: [
+                      "API Documentation",
+                      "SDKs & Libraries",
+                      "Developer Guides",
+                      "Code Samples",
+                      "Webhooks",
+                      "GraphQL Explorer",
+                    ],
                   })}
                   {renderLinks({
                     value: "developers",
-                    items: ["Fusce pellentesque", "Aliquam porttitor"],
+                    items: ["Developer Community", "Changelog", "Status Page", "Rate Limits"],
                   })}
                 </Presence>
               </Presence>
@@ -135,7 +142,10 @@ export default function Page() {
       </main>
 
       <Toolbar controls={controls.ui} viz>
-        <StateVisualizer state={service} context={["value", "previousValue"]} />
+        <StateVisualizer
+          state={service}
+          context={["value", "previousValue", "triggerRect", "viewportSize", "hasPointerMoveOpened"]}
+        />
       </Toolbar>
     </>
   )

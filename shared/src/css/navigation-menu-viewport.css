@@ -26,7 +26,7 @@
     font-size: inherit;
     gap: 4px;
 
-    & > svg {
+    & svg {
       transition: rotate 200ms ease;
       width: 14px;
       height: 14px;

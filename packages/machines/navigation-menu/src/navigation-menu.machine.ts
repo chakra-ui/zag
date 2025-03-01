@@ -115,14 +115,19 @@ export const machine = createMachine({
     },
     "TRIGGER.CLICK": [
       {
+        target: "closed",
         guard: and("isItemOpen", "isRootMenu"),
         actions: ["clearValue", "setClickCloseRef"],
       },
       {
+        reenter: true,
         target: "open",
-        actions: ["setValue", "setClickCloseRef"],
+        actions: ["setValue"],
       },
     ],
+    "TRIGGER.POINTERDOWN": {
+      actions: ["clearPreviousValue"],
+    },
     "TRIGGER.FOCUS": {
       actions: ["focusTopLevelEl"],
     },
@@ -136,7 +141,7 @@ export const machine = createMachine({
       entry: ["cleanupObservers", "propagateClose"],
       on: {
         "TRIGGER.ENTER": {
-          actions: ["clearCloseRefs"],
+          actions: ["clearCloseRefs", "clearPreviousValue"],
         },
         "TRIGGER.MOVE": [
           {
@@ -149,19 +154,22 @@ export const machine = createMachine({
             actions: ["setPointerMoveRef"],
           },
         ],
+        "TRIGGER.LEAVE": {
+          actions: ["clearPointerMoveRef"],
+        },
       },
     },
 
     opening: {
       effects: ["waitForOpenDelay"],
       on: {
-        OPEN_DELAY: {
+        "OPEN.DELAY": {
           target: "open",
           actions: ["setValue"],
         },
         "TRIGGER.LEAVE": {
           target: "closed",
-          actions: ["clearValue", "clearPointerMoveRef"],
+          actions: ["clearValue", "clearPreviousValue", "clearPointerMoveRef"],
         },
         "CONTENT.FOCUS": {
           actions: ["focusContent", "restoreTabOrder"],
@@ -191,7 +199,7 @@ export const machine = createMachine({
         },
         "CONTENT.DISMISS": {
           target: "closed",
-          actions: ["focusTriggerIfNeeded", "clearValue", "clearPointerMoveRef"],
+          actions: ["focusTriggerIfNeeded", "clearValue", "clearPreviousValue", "clearPointerMoveRef"],
         },
         "CONTENT.ENTER": {
           actions: ["restoreTabOrder"],
@@ -211,13 +219,13 @@ export const machine = createMachine({
       tags: ["open"],
       effects: ["trackInteractionOutside", "waitForCloseDelay"],
       on: {
-        CLOSE_DELAY: {
+        "CLOSE.DELAY": {
           target: "closed",
-          actions: ["clearValue"],
+          actions: ["clearValue", "clearPreviousValue"],
         },
         "CONTENT.DISMISS": {
           target: "closed",
-          actions: ["focusTriggerIfNeeded", "clearValue", "clearPointerMoveRef"],
+          actions: ["focusTriggerIfNeeded", "clearValue", "clearPreviousValue", "clearPointerMoveRef"],
         },
         "CONTENT.ENTER": {
           target: "open",
@@ -252,12 +260,12 @@ export const machine = createMachine({
     effects: {
       waitForOpenDelay: ({ send, prop, event }) => {
         return setRafTimeout(() => {
-          send({ type: "OPEN_DELAY", value: event.value })
+          send({ type: "OPEN.DELAY", value: event.value })
         }, prop("openDelay"))
       },
       waitForCloseDelay: ({ send, prop, event }) => {
         return setRafTimeout(() => {
-          send({ type: "CLOSE_DELAY", value: event.value })
+          send({ type: "CLOSE.DELAY", value: event.value })
         }, prop("closeDelay"))
       },
       preserveTabOrder({ context, scope, refs }) {

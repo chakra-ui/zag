@@ -60,6 +60,14 @@ export interface NavigationMenuProps extends DirectionProperty, CommonProperties
    * @default 300
    */
   closeDelay?: number | undefined
+  /**
+   * Whether to disable the click trigger
+   */
+  disableClickTrigger?: boolean | undefined
+  /**
+   * Whether to disable the hover trigger
+   */
+  disableHoverTrigger?: boolean | undefined
 }
 
 type PropsWithDefault = "openDelay" | "closeDelay" | "dir" | "id"
@@ -130,7 +138,7 @@ export interface LinkProps {
   /**
    * Whether the link is the current link
    */
-  current?: boolean | undefined
+  active?: boolean | undefined
   /**
    * Function called when the link is selected
    */

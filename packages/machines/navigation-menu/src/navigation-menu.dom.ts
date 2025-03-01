@@ -105,9 +105,9 @@ export function setMotionAttr(scope: Scope, value: string | null, previousValue:
 
   const contentEls = getContentEls(scope)
   contentEls.forEach((contentEl) => {
-    const value = contentEl.dataset.value!
-    const selected = value === value
-    const prevSelected = prevIndex === values.indexOf(value)
+    const itemValue = contentEl.dataset.value!
+    const selected = value === itemValue
+    const prevSelected = prevIndex === values.indexOf(itemValue)
 
     if (!selected && !prevSelected) {
       delete contentEl.dataset.motion
@@ -124,7 +124,7 @@ export function setMotionAttr(scope: Scope, value: string | null, previousValue:
       }
       // Otherwise we're entering from closed or leaving the list
       // entirely and should not animate in any direction
-      return undefined
+      return null
     })()
 
     if (attribute) {

@@ -10,13 +10,13 @@ export function connect<T extends PropTypes>(
 ): NavigationMenuApi<T> {
   const { context, send, prop, scope, computed } = service
 
-  const activeTriggerRect = context.get("triggerRect")
+  const triggerRect = context.get("triggerRect")
   const viewportSize = context.get("viewportSize")
 
   const value = context.get("value")
+  const previousValue = context.get("previousValue")
   const open = Boolean(value)
 
-  const previousValue = context.get("previousValue")
   const isViewportRendered = context.get("isViewportRendered")
   const preventTransition = value && !previousValue
 
@@ -44,7 +44,7 @@ export function connect<T extends PropTypes>(
       send({ type: "PARENT.SET", parent })
     },
     setChild(child) {
-      send({ type: "CHILD.SET", value: child, id: child.prop("id")! })
+      send({ type: "CHILD.SET", value: child, id: child.prop("id") })
     },
 
     getRootProps() {
@@ -56,10 +56,10 @@ export function connect<T extends PropTypes>(
         "data-type": computed("isSubmenu") ? "submenu" : "root",
         dir: prop("dir"),
         style: {
-          "--trigger-width": activeTriggerRect != null ? activeTriggerRect.width + "px" : undefined,
-          "--trigger-height": activeTriggerRect != null ? activeTriggerRect.height + "px" : undefined,
-          "--trigger-x": activeTriggerRect != null ? activeTriggerRect.x + "px" : undefined,
-          "--trigger-y": activeTriggerRect != null ? activeTriggerRect.y + "px" : undefined,
+          "--trigger-width": triggerRect != null ? triggerRect.width + "px" : undefined,
+          "--trigger-height": triggerRect != null ? triggerRect.height + "px" : undefined,
+          "--trigger-x": triggerRect != null ? triggerRect.x + "px" : undefined,
+          "--trigger-y": triggerRect != null ? triggerRect.y + "px" : undefined,
           "--viewport-width": viewportSize != null ? viewportSize.width + "px" : undefined,
           "--viewport-height": viewportSize != null ? viewportSize.height + "px" : undefined,
         },
@@ -128,7 +128,7 @@ export function connect<T extends PropTypes>(
       return normalize.button({
         ...parts.trigger.attrs,
         id: itemState.triggerId,
-        "data-uid": prop("id")!,
+        "data-uid": prop("id"),
         dir: prop("dir"),
         disabled: props.disabled,
         "data-value": props.value,
@@ -137,10 +137,15 @@ export function connect<T extends PropTypes>(
         "data-disabled": dataAttr(props.disabled),
         "aria-controls": itemState.contentId,
         "aria-expanded": itemState.selected,
+        onPointerDown() {
+          send({ type: "TRIGGER.POINTERDOWN" })
+        },
         onPointerEnter() {
+          if (prop("disableHoverTrigger")) return
           send({ type: "TRIGGER.ENTER", value: props.value })
         },
         onPointerMove(event) {
+          if (prop("disableHoverTrigger")) return
           if (event.pointerType !== "mouse") return
           if (itemState.disabled) return
           if (context.get("hasPointerMoveOpened") === props.value) return
@@ -149,12 +154,14 @@ export function connect<T extends PropTypes>(
           send({ type: "TRIGGER.MOVE", value: props.value })
         },
         onPointerLeave(event) {
+          if (prop("disableHoverTrigger")) return
           if (event.pointerType !== "mouse") return
           if (props.disabled) return
           if (computed("isSubmenu")) return
           send({ type: "TRIGGER.LEAVE", value: props.value })
         },
         onClick() {
+          if (prop("disableClickTrigger")) return
           send({ type: "TRIGGER.CLICK", value: props.value })
         },
         onKeyDown(event) {
@@ -195,8 +202,8 @@ export function connect<T extends PropTypes>(
         ...parts.link.attrs,
         dir: prop("dir"),
         "data-value": props.value,
-        "data-current": dataAttr(props.current),
-        "aria-current": props.current ? "page" : undefined,
+        "data-current": dataAttr(props.active),
+        "aria-current": props.active ? "page" : undefined,
         "data-ownedby": dom.getContentId(scope, props.value),
         onClick(event) {
           const { currentTarget } = event
@@ -275,7 +282,7 @@ export function connect<T extends PropTypes>(
         dir: prop("dir"),
         hidden: !selected,
         "aria-labelledby": itemState.triggerId,
-        "data-uid": prop("id")!,
+        "data-uid": prop("id"),
         "data-state": selected ? "open" : "closed",
         "data-type": computed("isSubmenu") ? "submenu" : "root",
         "data-value": props.value,
