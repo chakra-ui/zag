@@ -82,6 +82,16 @@ export interface Point {
   y: number
 }
 
+export interface Size {
+  width: number
+  height: number
+}
+
+export interface Rect extends Size {
+  y: number
+  x: number
+}
+
 export * from "./prop-types"
 
 export * from "./create-props"

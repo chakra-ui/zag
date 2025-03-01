@@ -4,6 +4,8 @@ type RouteData = {
 }
 
 export const routesData: RouteData[] = [
+  { label: "Navigation Menu", path: "/navigation-menu" },
+  { label: "Navigation Menu (Viewport)", path: "/navigation-menu-viewport" },
   { label: "Toggle", path: "/toggle" },
   { label: "Angle Slider", path: "/angle-slider" },
   { label: "Steps", path: "/steps" },

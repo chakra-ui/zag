@@ -17,7 +17,7 @@ export const identity = (v: VoidFunction) => v()
 export const noop = () => {}
 
 export const callAll =
-  <T extends (...a: any[]) => void>(...fns: (T | undefined)[]) =>
+  <T extends (...a: any[]) => void>(...fns: (T | null | undefined)[]) =>
   (...a: Parameters<T>) => {
     fns.forEach(function (fn) {
       fn?.(...a)
