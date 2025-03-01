@@ -113,6 +113,7 @@ export interface Transition<T extends Dict> {
   target?: T["state"]
   actions?: T["action"][]
   guard?: T["guard"] | GuardFn<T>
+  reenter?: boolean
 }
 
 type MaybeArray<T> = T | T[]

@@ -253,6 +253,9 @@ export function useMachine<T extends MachineSchema>(
     if (changed) {
       // state change is high priority
       state.set(target)
+    } else if (transition.reenter && !changed) {
+      // reenter will re-invoke the current state
+      state.invoke(currentState, currentState)
     } else {
       // call transition actions
       action(transition.actions ?? [])
