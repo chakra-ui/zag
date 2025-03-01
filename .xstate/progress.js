@@ -21,6 +21,10 @@ const fetchMachine = createMachine({
       min,
       defaultValue: props.defaultValue ?? midValue(min, max),
       orientation: "horizontal",
+      formatOptions: {
+        style: "percent",
+        ...props.formatOptions
+      },
       translations: {
         value: ({
           percent

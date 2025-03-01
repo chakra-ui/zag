@@ -1,4 +1,4 @@
-import { createMachine } from "@zag-js/core"
+import { createMachine, memo } from "@zag-js/core"
 import { getValuePercent, isNumber } from "@zag-js/utils"
 import type { ProgressSchema } from "./progress.types"
 
@@ -12,6 +12,10 @@ export const machine = createMachine<ProgressSchema>({
       min,
       defaultValue: props.defaultValue ?? midValue(min, max),
       orientation: "horizontal",
+      formatOptions: {
+        style: "percent",
+        ...props.formatOptions,
+      },
       translations: {
         value: ({ percent }) => (percent === -1 ? "loading..." : `${percent} percent`),
         ...props.translations,
@@ -44,9 +48,11 @@ export const machine = createMachine<ProgressSchema>({
       if (!isNumber(value)) return -1
       return getValuePercent(value, prop("min"), prop("max")) * 100
     },
-    isAtMax: ({ context, prop }) => context.get("value") === prop("max"),
+    formatter: memo(
+      ({ prop }) => [prop("locale"), prop("formatOptions")],
+      (locale, formatOptions) => new Intl.NumberFormat(locale, formatOptions),
+    ),
     isHorizontal: ({ prop }) => prop("orientation") === "horizontal",
-    isRtl: ({ prop }) => prop("dir") === "rtl",
   },
 
   states: {

@@ -73,31 +73,25 @@ export interface ProgressProps extends DirectionProperty, CommonProperties, Orie
    * Callback fired when the value changes.
    */
   onValueChange?: ((details: ValueChangeDetails) => void) | undefined
+  /**
+   * The options to use for formatting the value.
+   * @default { style: "percent" }
+   */
+  formatOptions?: Intl.NumberFormatOptions | undefined
+  /**
+   * The locale to use for formatting the value.
+   * @default "en-US"
+   */
+  locale?: string | undefined
 }
 
-type PropsWithDefault = "orientation" | "translations" | "min" | "max"
+type PropsWithDefault = "orientation" | "translations" | "min" | "max" | "formatOptions"
 
 type Computed = Readonly<{
-  /**
-   * Whether the progress bar is indeterminate.
-   */
   isIndeterminate: boolean
-  /**
-   * The percentage of the progress bar's value.
-   */
   percent: number
-  /**
-   * Whether the progress bar is at its minimum value.
-   */
-  isAtMax: boolean
-  /**
-   *  Whether the progress bar is horizontal.
-   */
   isHorizontal: boolean
-  /**
-   * Whether the progress bar is in RTL mode.
-   */
-  isRtl: boolean
+  formatter: Intl.NumberFormat
 }>
 
 export interface ProgressSchema {
