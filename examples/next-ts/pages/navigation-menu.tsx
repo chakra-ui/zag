@@ -44,12 +44,12 @@ export default function Page() {
                 {renderLinks({
                   value: "products",
                   items: [
-                    "Fusce pellentesque",
-                    "Aliquam porttitor",
-                    "Pellentesque",
-                    "Fusce pellentesque",
-                    "Aliquam porttitor",
-                    "Pellentesque",
+                    "Analytics Platform",
+                    "Customer Engagement",
+                    "Marketing Automation",
+                    "Data Integration",
+                    "Enterprise Solutions",
+                    "API Documentation",
                   ],
                 })}
               </Presence>
@@ -66,7 +66,7 @@ export default function Page() {
                 </Presence>
                 {renderLinks({
                   value: "company",
-                  items: ["Fusce pellentesque", "Aliquam porttitor", "Pellentesque"],
+                  items: ["About Us", "Leadership Team", "Careers", "Press Releases"],
                 })}
               </Presence>
             </div>
@@ -82,7 +82,7 @@ export default function Page() {
                 </Presence>
                 {renderLinks({
                   value: "developers",
-                  items: ["Donec quis dui", "Vestibulum", "Fusce pellentesque", "Aliquam porttitor"],
+                  items: ["Investors", "Partners", "Corporate Responsibility"],
                 })}
               </Presence>
             </div>

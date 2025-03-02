@@ -27,7 +27,11 @@ export class NavigationMenuModel extends Model {
     return this.page.locator(`[data-scope="navigation-menu"][data-part="viewport"]`)
   }
 
-  getLink(value: string, text: string) {
+  getLink(value: string) {
+    return this.page.locator(`[data-scope="navigation-menu"][data-part="link"][data-value="${value}"]`)
+  }
+
+  getContentLink(value: string, text: string) {
     return this.getContent(value).locator("a", { hasText: text })
   }
 
@@ -52,6 +56,14 @@ export class NavigationMenuModel extends Model {
   }
 
   async dontSeeContent(value: string) {
-    await expect(this.getContent(value)).not.toBeVisible()
+    await expect(this.getContent(value)).toBeHidden()
+  }
+
+  async seeContentLinkIsFocused(value: string, text: string) {
+    await expect(this.getContentLink(value, text)).toBeFocused()
+  }
+
+  async seeLinkIsFocused(value: string) {
+    await expect(this.getLink(value)).toBeFocused()
   }
 }
