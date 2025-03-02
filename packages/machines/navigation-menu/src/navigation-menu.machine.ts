@@ -169,7 +169,7 @@ export const machine = createMachine({
         },
         "TRIGGER.LEAVE": {
           target: "closed",
-          actions: ["clearValue", "clearPreviousValue", "clearPointerMoveRef"],
+          actions: ["clearValue", "clearPointerMoveRef"],
         },
         "CONTENT.FOCUS": {
           actions: ["focusContent", "restoreTabOrder"],
@@ -199,7 +199,7 @@ export const machine = createMachine({
         },
         "CONTENT.DISMISS": {
           target: "closed",
-          actions: ["focusTriggerIfNeeded", "clearValue", "clearPreviousValue", "clearPointerMoveRef"],
+          actions: ["focusTriggerIfNeeded", "clearValue", "clearPointerMoveRef"],
         },
         "CONTENT.ENTER": {
           actions: ["restoreTabOrder"],
@@ -225,7 +225,7 @@ export const machine = createMachine({
         },
         "CONTENT.DISMISS": {
           target: "closed",
-          actions: ["focusTriggerIfNeeded", "clearValue", "clearPreviousValue", "clearPointerMoveRef"],
+          actions: ["focusTriggerIfNeeded", "clearValue", "clearPointerMoveRef"],
         },
         "CONTENT.ENTER": {
           target: "open",
@@ -398,7 +398,7 @@ export const machine = createMachine({
         context.set("previousValue", null)
       },
       clearValue({ context }) {
-        context.set("previousValue", context.get("value"))
+        context.set("previousValue", null)
         context.set("value", null)
       },
       setValue({ context, event }) {
