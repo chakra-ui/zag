@@ -1,5 +1,20 @@
 # @zag-js/solid
 
+## 1.3.0
+
+### Minor Changes
+
+- [`c92f847`](https://github.com/chakra-ui/zag/commit/c92f84728ae473ac4c437009cbd79125747e5dd0) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Support `reenter:true` in machine transitions
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/core@1.3.0
+  - @zag-js/store@1.3.0
+  - @zag-js/types@1.3.0
+  - @zag-js/utils@1.3.0
+
 ## 1.2.1
 
 ### Patch Changes

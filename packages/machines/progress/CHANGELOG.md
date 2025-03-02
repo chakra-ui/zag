@@ -1,5 +1,22 @@
 # @zag-js/progress
 
+## 1.3.0
+
+### Minor Changes
+
+- [`c387633`](https://github.com/chakra-ui/zag/commit/c3876338bba699346c75dfa1bfbbda1b8a922de0) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Add support for `locale` and `formatOptions` to properly format
+  the `api.percentAsString` result
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.3.0
+  - @zag-js/core@1.3.0
+  - @zag-js/types@1.3.0
+  - @zag-js/utils@1.3.0
+  - @zag-js/dom-query@1.3.0
+
 ## 1.2.1
 
 ### Patch Changes
