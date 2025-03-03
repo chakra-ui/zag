@@ -1,5 +1,23 @@
 # @zag-js/date-picker
 
+## 1.3.0
+
+### Patch Changes
+
+- [`4aae066`](https://github.com/chakra-ui/zag/commit/4aae066082dd5495493273583e7316d512740cde) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - - Add support for `api.getViewProps`.
+  - Add `visibleRangeText` property to `api.offset()` return value.
+- Updated dependencies [[`4aae066`](https://github.com/chakra-ui/zag/commit/4aae066082dd5495493273583e7316d512740cde)]:
+  - @zag-js/date-utils@1.3.0
+  - @zag-js/anatomy@1.3.0
+  - @zag-js/core@1.3.0
+  - @zag-js/types@1.3.0
+  - @zag-js/utils@1.3.0
+  - @zag-js/dismissable@1.3.0
+  - @zag-js/dom-query@1.3.0
+  - @zag-js/live-region@1.3.0
+  - @zag-js/popper@1.3.0
+
 ## 1.2.1
 
 ### Patch Changes
