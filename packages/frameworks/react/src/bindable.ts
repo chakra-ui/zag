@@ -1,5 +1,5 @@
 import type { Bindable, BindableParams } from "@zag-js/core"
-import { identity, isEqual, isFunction } from "@zag-js/utils"
+import { identity, isFunction } from "@zag-js/utils"
 import { useRef, useState } from "react"
 import { flushSync } from "react-dom"
 import { useSafeLayoutEffect } from "./use-layout-effect"
@@ -7,7 +7,7 @@ import { useSafeLayoutEffect } from "./use-layout-effect"
 export function useBindable<T>(props: () => BindableParams<T>): Bindable<T> {
   const initial = props().value ?? props().defaultValue
 
-  const eq = props().isEqual ?? isEqual
+  const eq = props().isEqual ?? Object.is
 
   const [initialValue] = useState(initial)
   const [value, setValue] = useState(initialValue)

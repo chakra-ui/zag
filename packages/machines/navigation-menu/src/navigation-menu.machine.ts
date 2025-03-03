@@ -63,24 +63,20 @@ export const machine = createMachine({
       // nodes
       contentNode: bindable<HTMLElement | null>(() => ({
         defaultValue: null,
-        isEqual: Object.is,
       })),
       triggerRect: bindable<Rect | null>(() => ({
         defaultValue: null,
         sync: true,
       })),
       triggerNode: bindable<HTMLElement | null>(() => ({
-        isEqual: Object.is,
         defaultValue: null,
       })),
 
       // nesting
       parent: bindable<NavigationMenuService | null>(() => ({
-        isEqual: Object.is,
         defaultValue: null,
       })),
       children: bindable<Record<string, NavigationMenuService | null>>(() => ({
-        isEqual: Object.is,
         defaultValue: {},
       })),
     }

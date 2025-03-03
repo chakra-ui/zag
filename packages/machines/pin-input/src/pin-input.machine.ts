@@ -1,6 +1,6 @@
 import { setup } from "@zag-js/core"
 import { dispatchInputValueEvent, raf } from "@zag-js/dom-query"
-import { setValueAtIndex } from "@zag-js/utils"
+import { isEqual, setValueAtIndex } from "@zag-js/utils"
 import * as dom from "./pin-input.dom"
 import type { PinInputSchema } from "./pin-input.types"
 
@@ -30,6 +30,7 @@ export const machine = createMachine({
       value: bindable(() => ({
         value: prop("value"),
         defaultValue: prop("defaultValue"),
+        isEqual,
         onChange(value) {
           prop("onValueChange")?.({ value, valueAsString: value.join("") })
         },

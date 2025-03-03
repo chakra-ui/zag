@@ -41,6 +41,7 @@ const fetchMachine = createMachine({
       value: bindable(() => ({
         defaultValue: prop("defaultValue"),
         value: prop("value"),
+        isEqual,
         hash(a) {
           return a.join(",");
         },

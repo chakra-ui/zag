@@ -3,7 +3,7 @@ import { createGuards, createMachine } from "@zag-js/core"
 import { contains, raf, setElementValue, trackFormControl } from "@zag-js/dom-query"
 import { trackInteractOutside } from "@zag-js/interact-outside"
 import { createLiveRegion } from "@zag-js/live-region"
-import { removeAt, uniq, warn } from "@zag-js/utils"
+import { isEqual, removeAt, uniq, warn } from "@zag-js/utils"
 import * as dom from "./tags-input.dom"
 import type { TagsInputSchema } from "./tags-input.types"
 
@@ -51,6 +51,7 @@ export const machine = createMachine<TagsInputSchema>({
       value: bindable(() => ({
         defaultValue: prop("defaultValue"),
         value: prop("value"),
+        isEqual,
         hash(value) {
           return value.join(", ")
         },

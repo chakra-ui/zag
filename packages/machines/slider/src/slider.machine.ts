@@ -1,7 +1,7 @@
 import { createMachine } from "@zag-js/core"
 import { raf, setElementValue, trackFormControl, trackPointerMove } from "@zag-js/dom-query"
 import { trackElementsSize, type ElementSize } from "@zag-js/element-size"
-import { getValuePercent, setValueAtIndex } from "@zag-js/utils"
+import { getValuePercent, isEqual, setValueAtIndex } from "@zag-js/utils"
 import * as dom from "./slider.dom"
 import type { SliderSchema } from "./slider.types"
 import { constrainValue, decrement, getClosestIndex, getRangeAtIndex, increment, normalizeValues } from "./slider.utils"
@@ -38,6 +38,7 @@ export const machine = createMachine<SliderSchema>({
       value: bindable(() => ({
         defaultValue: prop("defaultValue"),
         value: prop("value"),
+        isEqual,
         hash(a) {
           return a.join(",")
         },

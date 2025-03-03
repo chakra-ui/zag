@@ -3,7 +3,7 @@ import { createGuards, createMachine, type Params } from "@zag-js/core"
 import { trackDismissableElement } from "@zag-js/dismissable"
 import { clickIfLink, observeAttributes, observeChildren, raf, scrollIntoView } from "@zag-js/dom-query"
 import { getPlacement } from "@zag-js/popper"
-import { addOrRemove, isBoolean, match, remove } from "@zag-js/utils"
+import { addOrRemove, isBoolean, isEqual, match, remove } from "@zag-js/utils"
 import { collection } from "./combobox.collection"
 import * as dom from "./combobox.dom"
 import type { ComboboxSchema, Placement } from "./combobox.types"
@@ -54,6 +54,7 @@ export const machine = createMachine<ComboboxSchema>({
       value: bindable(() => ({
         defaultValue: prop("defaultValue"),
         value: prop("value"),
+        isEqual,
         hash(value) {
           return value.join(",")
         },

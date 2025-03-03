@@ -9,7 +9,7 @@ import {
   trackFormControl,
 } from "@zag-js/dom-query"
 import { getPlacement, type Placement } from "@zag-js/popper"
-import { addOrRemove } from "@zag-js/utils"
+import { addOrRemove, isEqual } from "@zag-js/utils"
 import { collection } from "./select.collection"
 import * as dom from "./select.dom"
 import type { CollectionItem, SelectSchema } from "./select.types"
@@ -38,6 +38,7 @@ export const machine = createMachine<SelectSchema>({
       value: bindable(() => ({
         defaultValue: prop("defaultValue"),
         value: prop("value"),
+        isEqual,
         onChange(value) {
           const items = prop("collection").findMany(value)
           return prop("onValueChange")?.({ value, items })

@@ -106,3 +106,8 @@ export function clampTime(value: Time, min: Time | undefined, max: Time | undefi
   }
   return time
 }
+
+export function isTimeEqual(a: Time | null, b: Time | undefined | null) {
+  if (!a || !b) return false
+  return a.hour === b.hour && a.minute === b.minute && a.second === b.second
+}

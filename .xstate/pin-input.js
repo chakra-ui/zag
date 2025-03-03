@@ -36,6 +36,7 @@ const fetchMachine = createMachine({
       value: bindable(() => ({
         value: prop("value"),
         defaultValue: prop("defaultValue"),
+        isEqual,
         onChange(value) {
           prop("onValueChange")?.({
             value,
