@@ -372,6 +372,7 @@ export type VisibleRange = Range<DateValue>
 export interface DateValueOffset {
   visibleRange: VisibleRange
   weeks: DateValue[][]
+  visibleRangeText: { start: string; end: string }
 }
 
 export interface TableCellProps {
@@ -656,6 +657,8 @@ export interface DatePickerApi<T extends PropTypes = PropTypes> {
   getClearTriggerProps(): T["button"]
   getTriggerProps(): T["button"]
   getPresetTriggerProps(props: PresetTriggerProps): T["button"]
+
+  getViewProps(props?: ViewProps): T["element"]
   getViewTriggerProps(props?: ViewProps): T["button"]
   getViewControlProps(props?: ViewProps): T["element"]
   getInputProps(props?: InputProps): T["input"]
