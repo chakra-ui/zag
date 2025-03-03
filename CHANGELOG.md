@@ -8,6 +8,23 @@ All notable changes to this project will be documented in this file.
 
 See the [Changesets](./.changeset) for the latest changes.
 
+## [1.3.0](./#1.3.0) - 2025-03-03
+
+### Fixed
+
+- **General**: Fix issue where machines that hold complex objects could cause issues.
+
+### Added
+
+- **Date Picker**:
+
+  - Add support for `api.getViewProps`.
+  - Add `visibleRangeText` property to `api.offset()` return value.
+
+- **Progress**: Add support for `locale` and `formatOptions` to properly format the `api.percentAsString` result.
+
+- **Framework Adapters (React, Svelte, Solid, Vue)**: Support `reenter:true` in machine transitions.
+
 ## [1.2.1](./#1.2.1) - 2025-02-27
 
 ### Fixed
