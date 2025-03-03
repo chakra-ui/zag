@@ -33,7 +33,7 @@
   "devDependencies": {
     "@sveltejs/package": "2.3.10",
     "clean-package": "2.2.0",
-    "svelte": "5.20.2"
+    "svelte": "5.21.0"
   },
   "peerDependencies": {
     "svelte": "^5.0.0-next.1"

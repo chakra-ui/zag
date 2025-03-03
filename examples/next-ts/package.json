@@ -12,7 +12,7 @@
   },
   "dependencies": {
     "@internationalized/date": "3.7.0",
-    "@tanstack/react-virtual": "3.13.0",
+    "@tanstack/react-virtual": "3.13.2",
     "@types/textarea-caret": "3.0.3",
     "@zag-js/accordion": "workspace:*",
     "@zag-js/anatomy": "workspace:*",
@@ -87,9 +87,9 @@
     "@zag-js/types": "workspace:*",
     "@zag-js/utils": "workspace:*",
     "form-serialize": "0.7.2",
-    "lucide-react": "0.475.0",
+    "lucide-react": "0.477.0",
     "match-sorter": "8.0.0",
-    "next": "15.1.2",
+    "next": "15.2.0",
     "next-cloudinary": "6.13.0",
     "react": "18.3.1",
     "react-dom": "18.3.1",
@@ -99,7 +99,7 @@
   },
   "devDependencies": {
     "@types/form-serialize": "0.7.4",
-    "@types/node": "22.13.5",
+    "@types/node": "22.13.9",
     "@types/react": "^18",
     "@types/react-dom": "^18",
     "@next/eslint-plugin-next": "15.1.7",
@@ -109,7 +109,7 @@
     "@atlaskit/pragmatic-drag-and-drop-flourish": "1.1.2",
     "@atlaskit/pragmatic-drag-and-drop-hitbox": "1.0.3",
     "@atlaskit/pragmatic-drag-and-drop-auto-scroll": "1.4.0",
-    "typescript": "5.7.3"
+    "typescript": "5.8.2"
   },
   "license": "MIT"
 }
