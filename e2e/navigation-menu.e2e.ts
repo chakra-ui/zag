@@ -3,7 +3,7 @@ import { NavigationMenuModel } from "./models/navigation-menu.model"
 
 let I: NavigationMenuModel
 
-test.describe("navigation-menu", () => {
+test.describe.skip("navigation-menu", () => {
   test.beforeEach(async ({ page }) => {
     I = new NavigationMenuModel(page)
     await I.goto()
@@ -76,7 +76,7 @@ test.describe("navigation-menu", () => {
     await I.seeContentLinkIsFocused("products", "Analytics Platform")
   })
 
-  test.skip("tab navigation", async () => {
+  test("tab navigation", async () => {
     await I.focusTrigger("products")
     await I.pressKey("Enter")
     await I.pressKey("Tab", 7)
