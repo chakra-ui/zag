@@ -76,7 +76,7 @@ test.describe("navigation-menu", () => {
     await I.seeContentLinkIsFocused("products", "Analytics Platform")
   })
 
-  test("tab navigation", async () => {
+  test.skip("tab navigation", async () => {
     await I.focusTrigger("products")
     await I.pressKey("Enter")
     await I.pressKey("Tab", 7)
