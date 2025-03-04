@@ -5,7 +5,7 @@ import type { Rect, Size } from "@zag-js/types"
 import { callAll, ensureProps, setRafTimeout } from "@zag-js/utils"
 import { autoReset } from "./auto-reset"
 import * as dom from "./navigation-menu.dom"
-import type { NavigationMenuSchema, NavigationMenuService } from "./navigation-menu.types"
+import type { NavigationMenuSchema } from "./navigation-menu.types"
 
 const { createMachine, guards } = setup<NavigationMenuSchema>()
 
@@ -62,18 +62,12 @@ export const machine = createMachine({
       })),
 
       // nesting
-      parent: bindable<NavigationMenuService | null>(() => ({
-        defaultValue: null,
-      })),
-      children: bindable<Record<string, NavigationMenuService | null>>(() => ({
-        defaultValue: {},
-      })),
     }
   },
 
   computed: {
-    isRootMenu: ({ context }) => context.get("parent") == null,
-    isSubmenu: ({ context }) => context.get("parent") != null,
+    isRootMenu: ({ refs }) => refs.get("parent") == null,
+    isSubmenu: ({ refs }) => refs.get("parent") != null,
   },
 
   watch({ track, action, context }) {
@@ -90,6 +84,8 @@ export const machine = createMachine({
       tabOrderCleanup: null,
       contentCleanup: null,
       triggerCleanup: null,
+      parent: null,
+      children: {},
     }
   },
 
@@ -238,8 +234,8 @@ export const machine = createMachine({
     guards: {
       isItemOpen: ({ context, event }) => context.get("value") === event.value,
       wasItemOpen: ({ context, event }) => context.get("previousValue") === event.value,
-      isRootMenu: ({ context }) => context.get("parent") == null,
-      isSubmenu: ({ context }) => context.get("parent") != null,
+      isRootMenu: ({ refs }) => refs.get("parent") == null,
+      isSubmenu: ({ refs }) => refs.get("parent") != null,
     },
 
     effects: {
@@ -430,14 +426,14 @@ export const machine = createMachine({
       restoreTabOrder({ refs }) {
         refs.get("tabOrderCleanup")?.()
       },
-      setParentMenu({ context, event }) {
-        context.set("parent", event.parent)
+      setParentMenu({ refs, event }) {
+        refs.set("parent", event.parent)
       },
-      setChildMenu({ context, event }) {
-        context.set("children", (prev) => ({ ...prev, [event.id]: event.value }))
+      setChildMenu({ refs, event }) {
+        refs.set("children", { ...refs.get("children"), [event.id]: event.value })
       },
-      propagateClose({ context, prop }) {
-        const menus = Object.values(context.get("children"))
+      propagateClose({ refs, prop }) {
+        const menus = Object.values(refs.get("children"))
         menus.forEach((child) => {
           child?.send({ type: "ROOT.CLOSE", src: prop("id")! })
         })

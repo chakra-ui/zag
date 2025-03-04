@@ -11,6 +11,7 @@ const pick = (obj: Dict, keys: string[]) =>
 const hasProp = (v: any, prop: string) => Object.prototype.hasOwnProperty.call(v, prop)
 
 const isTimeObject = (v: any) => hasProp(v, "hour") && hasProp(v, "minute") && hasProp(v, "second")
+const isMachine = (v: any) => ["state", "context", "scope"].every((prop) => hasProp(v, prop))
 
 export function stringifyState(state: Dict, omit?: string[]) {
   const code = JSON.stringify(
@@ -48,8 +49,12 @@ export function stringifyState(state: Dict, omit?: string[]) {
           return Array.from(value)
         }
 
+        if (isMachine(value)) {
+          return `Machine: ${value.scope.id}`
+        }
+
         switch (value?.toString()) {
-          case "[object Machine]":
+          case "[object ShadowRoot]":
             const id = value.state.context.id ?? value.id
             return `Machine: ${id}`
 

@@ -87,6 +87,8 @@ export interface NavigationMenuSchema {
     pointerMoveOpenedRef: AutoReset<string | null>
     clickCloseRef: string | null
     wasEscapeClose: boolean
+    parent: NavigationMenuService | null
+    children: Record<string, NavigationMenuService | null>
   }
   context: {
     value: string | null
@@ -96,8 +98,6 @@ export interface NavigationMenuSchema {
     contentNode: HTMLElement | null
     triggerRect: Rect | null
     triggerNode: HTMLElement | null
-    parent: NavigationMenuService | null
-    children: Record<string, NavigationMenuService | null>
   }
   action: string
   effect: string
