@@ -11,10 +11,10 @@ export default function Page() {
   const rootService = useMachine(navigationMenu.machine, { id: useId() })
   const rootMenu = navigationMenu.connect(rootService, normalizeProps)
 
-  const productService = useMachine(navigationMenu.machine, { id: useId(), value: "extensibility" })
+  const productService = useMachine(navigationMenu.machine, { id: useId(), defaultValue: "extensibility" })
   const productSubmenu = navigationMenu.connect(productService, normalizeProps)
 
-  const companyService = useMachine(navigationMenu.machine, { id: useId(), value: "customers" })
+  const companyService = useMachine(navigationMenu.machine, { id: useId(), defaultValue: "customers" })
   const companySubmenu = navigationMenu.connect(companyService, normalizeProps)
 
   const renderLinks = (menu: typeof rootMenu, opts: { value: string; items: string[] }) => {

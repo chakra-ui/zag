@@ -33,6 +33,9 @@
   }
 
   [data-scope="navigation-menu"][data-part="trigger"] {
+    display: flex;
+    align-items: center;
+    justify-content: center;
     border: 0;
     background: transparent;
     font-size: inherit;
@@ -40,13 +43,13 @@
     padding: 10px 16px;
     font-weight: bold;
 
-    & > svg {
+    & svg {
       transition: rotate 200ms ease;
       width: 14px;
       height: 14px;
     }
 
-    &[data-state="open"] > svg {
+    &[data-state="open"] svg {
       rotate: -180deg;
     }
 

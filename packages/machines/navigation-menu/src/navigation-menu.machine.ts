@@ -60,8 +60,6 @@ export const machine = createMachine({
       triggerNode: bindable<HTMLElement | null>(() => ({
         defaultValue: null,
       })),
-
-      // nesting
     }
   },
 
@@ -93,9 +91,8 @@ export const machine = createMachine({
 
   exit: ["cleanupObservers", "cleanupAutoResetRef"],
 
-  initialState({ prop }) {
-    const value = prop("value") || prop("defaultValue")
-    return value ? "open" : "closed"
+  initialState() {
+    return "closed"
   },
 
   on: {
