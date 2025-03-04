@@ -71,8 +71,8 @@ export default function Page() {
               </Presence>
             </div>
 
-            <div {...api.getItemProps({ value: "developers", disabled: true })}>
-              <button {...api.getTriggerProps({ value: "developers", disabled: true })}>
+            <div {...api.getItemProps({ value: "developers" })}>
+              <button {...api.getTriggerProps({ value: "developers" })}>
                 Developers
                 <ChevronDown />
               </button>

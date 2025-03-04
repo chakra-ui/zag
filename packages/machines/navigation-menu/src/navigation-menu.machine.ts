@@ -97,8 +97,9 @@ export const machine = createMachine({
 
   exit: ["cleanupObservers", "cleanupAutoResetRef"],
 
-  initialState() {
-    return "closed"
+  initialState({ prop }) {
+    const value = prop("value") || prop("defaultValue")
+    return value ? "open" : "closed"
   },
 
   on: {
@@ -113,13 +114,18 @@ export const machine = createMachine({
       actions: ["focusTopLevelEl"],
     },
     "TRIGGER.ENTER": {
-      actions: ["clearCloseRefs"],
+      actions: ["clearPreviousValue", "clearCloseRefs"],
     },
     "TRIGGER.CLICK": [
       {
-        target: "closed",
         guard: and("isItemOpen", "isRootMenu"),
+        target: "closed",
         actions: ["setPreviousValue", "clearValue", "setClickCloseRef"],
+      },
+      {
+        guard: and("wasItemOpen", "isRootMenu"),
+        target: "open",
+        actions: ["setPreviousValue", "setValueOnNextTick"],
       },
       {
         reenter: true,
@@ -128,6 +134,10 @@ export const machine = createMachine({
       },
     ],
     "TRIGGER.MOVE": [
+      {
+        guard: "isItemOpen",
+        actions: ["setPreviousValue", "setValue", "setPointerMoveOpenedRef"],
+      },
       {
         guard: "isSubmenu",
         target: "open",
@@ -145,7 +155,7 @@ export const machine = createMachine({
 
   states: {
     closed: {
-      entry: ["cleanupObservers", "propagateClose", "clearPreviousValue"],
+      entry: ["cleanupObservers", "propagateClose"],
       on: {
         "TRIGGER.LEAVE": {
           actions: ["clearPointerMoveRef"],
@@ -192,14 +202,10 @@ export const machine = createMachine({
         },
         "CONTENT.DISMISS": {
           target: "closed",
-          actions: ["focusTriggerIfNeeded", "clearValue", "clearPointerMoveRef"],
+          actions: ["focusTrigger", "clearValue", "clearPointerMoveRef"],
         },
         "CONTENT.ENTER": {
           actions: ["restoreTabOrder"],
-        },
-        "TRIGGER.MOVE": {
-          guard: "isSubmenu",
-          actions: ["setValue"],
         },
         "ROOT.CLOSE": {
           // clear the previous value so indicator doesn't animate
@@ -214,11 +220,11 @@ export const machine = createMachine({
       on: {
         "CLOSE.DELAY": {
           target: "closed",
-          actions: ["setPreviousValue", "clearValue"],
+          actions: ["clearValue"],
         },
         "CONTENT.DISMISS": {
           target: "closed",
-          actions: ["focusTriggerIfNeeded", "clearValue", "clearPointerMoveRef"],
+          actions: ["focusTrigger", "clearValue", "clearPointerMoveRef"],
         },
         "CONTENT.ENTER": {
           target: "open",
@@ -230,8 +236,8 @@ export const machine = createMachine({
 
   implementations: {
     guards: {
-      isOpen: ({ context }) => context.get("value") !== null,
       isItemOpen: ({ context, event }) => context.get("value") === event.value,
+      wasItemOpen: ({ context, event }) => context.get("previousValue") === event.value,
       isRootMenu: ({ context }) => context.get("parent") == null,
       isSubmenu: ({ context }) => context.get("parent") != null,
     },
@@ -386,6 +392,11 @@ export const machine = createMachine({
       setValue({ context, event }) {
         context.set("value", event.value)
       },
+      setValueOnNextTick({ context, event }) {
+        raf(() => {
+          context.set("value", event.value)
+        })
+      },
       clearValue({ context }) {
         context.set("value", null)
       },
@@ -410,7 +421,7 @@ export const machine = createMachine({
           tabbableEls[0]?.focus()
         })
       },
-      focusTriggerIfNeeded({ context, scope }) {
+      focusTrigger({ context, scope }) {
         if (context.get("value") == null) return
         const contentEl = dom.getContentEl(scope, context.get("value")!)
         if (!contains(contentEl, scope.getActiveElement())) return
