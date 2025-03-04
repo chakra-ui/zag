@@ -8,7 +8,7 @@ export function connect<T extends PropTypes>(
   service: NavigationMenuService,
   normalize: NormalizeProps<T>,
 ): NavigationMenuApi<T> {
-  const { context, send, prop, scope, computed } = service
+  const { context, send, prop, scope, computed, refs } = service
 
   const triggerRect = context.get("triggerRect")
   const viewportSize = context.get("viewportSize")
@@ -19,6 +19,7 @@ export function connect<T extends PropTypes>(
 
   const isViewportRendered = context.get("isViewportRendered")
   const preventTransition = value && !previousValue
+  const pointerMoveOpenedRef = refs.get("pointerMoveOpenedRef")
 
   function getItemState(props: ItemProps) {
     const selected = value === props.value
@@ -141,16 +142,18 @@ export function connect<T extends PropTypes>(
           send({ type: "TRIGGER.POINTERDOWN" })
         },
         onPointerEnter() {
-          if (prop("disableHoverTrigger")) return
-          send({ type: "TRIGGER.ENTER", value: props.value })
+          queueMicrotask(() => {
+            if (prop("disableHoverTrigger")) return
+            send({ type: "TRIGGER.ENTER", value: props.value })
+          })
         },
         onPointerMove(event) {
           if (prop("disableHoverTrigger")) return
           if (event.pointerType !== "mouse") return
           if (itemState.disabled) return
-          if (context.get("hasPointerMoveOpened") === props.value) return
-          if (context.get("wasClickClose") === props.value) return
-          if (context.get("wasEscapeClose")) return
+          if (pointerMoveOpenedRef.get() === props.value) return
+          if (refs.get("clickCloseRef") === props.value) return
+          if (refs.get("wasEscapeClose")) return
           send({ type: "TRIGGER.MOVE", value: props.value })
         },
         onPointerLeave(event) {
@@ -162,6 +165,7 @@ export function connect<T extends PropTypes>(
         },
         onClick() {
           if (prop("disableClickTrigger")) return
+          if (pointerMoveOpenedRef.get() === props.value) return
           send({ type: "TRIGGER.CLICK", value: props.value })
         },
         onKeyDown(event) {
@@ -202,19 +206,26 @@ export function connect<T extends PropTypes>(
         ...parts.link.attrs,
         dir: prop("dir"),
         "data-value": props.value,
-        "data-current": dataAttr(props.active),
-        "aria-current": props.active ? "page" : undefined,
+        "data-current": dataAttr(props.current),
+        "aria-current": props.current ? "page" : undefined,
         "data-ownedby": dom.getContentId(scope, props.value),
         onClick(event) {
           const { currentTarget } = event
 
           const win = getWindow(currentTarget)
-          currentTarget.addEventListener("link.select", (event: any) => props.onSelect?.(event), { once: true })
+          currentTarget.addEventListener("navigationMenu.linkSelect", (event: any) => props.onSelect?.(event), {
+            once: true,
+          })
 
-          const selectEvent = new win.CustomEvent("link.select", { bubbles: true, cancelable: true })
-          currentTarget.dispatchEvent(selectEvent)
+          const linkSelectEvent = new win.CustomEvent("link.select", {
+            bubbles: true,
+            cancelable: true,
+            detail: { originalEvent: event },
+          })
 
-          if (!selectEvent.defaultPrevented && !event.metaKey) {
+          currentTarget.dispatchEvent(linkSelectEvent)
+
+          if (!linkSelectEvent.defaultPrevented && !event.metaKey) {
             send({ type: "CONTENT.DISMISS" })
           }
         },

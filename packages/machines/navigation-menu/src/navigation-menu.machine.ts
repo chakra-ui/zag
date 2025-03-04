@@ -1,9 +1,9 @@
 import { setup } from "@zag-js/core"
-import { contains, proxyTabFocus, raf } from "@zag-js/dom-query"
+import { addDomEvent, contains, proxyTabFocus, raf } from "@zag-js/dom-query"
 import { trackInteractOutside } from "@zag-js/interact-outside"
 import type { Rect, Size } from "@zag-js/types"
-import { addDomEvent } from "@zag-js/dom-query"
 import { callAll, ensureProps, setRafTimeout } from "@zag-js/utils"
+import { autoReset } from "./auto-reset"
 import * as dom from "./navigation-menu.dom"
 import type { NavigationMenuSchema, NavigationMenuService } from "./navigation-menu.types"
 
@@ -38,17 +38,6 @@ export const machine = createMachine({
       previousValue: bindable<string | null>(() => ({
         defaultValue: null,
         sync: true,
-      })),
-
-      // interations
-      hasPointerMoveOpened: bindable<string | null>(() => ({
-        defaultValue: null,
-      })),
-      wasClickClose: bindable<string | null>(() => ({
-        defaultValue: null,
-      })),
-      wasEscapeClose: bindable<boolean>(() => ({
-        defaultValue: false,
       })),
 
       // viewport
@@ -93,9 +82,20 @@ export const machine = createMachine({
     })
   },
 
+  refs() {
+    return {
+      pointerMoveOpenedRef: autoReset(null, 300),
+      clickCloseRef: null,
+      wasEscapeClose: false,
+      tabOrderCleanup: null,
+      contentCleanup: null,
+      triggerCleanup: null,
+    }
+  },
+
   entry: ["checkViewportNode"],
 
-  exit: ["cleanupObservers"],
+  exit: ["cleanupObservers", "cleanupAutoResetRef"],
 
   initialState() {
     return "closed"
@@ -109,24 +109,35 @@ export const machine = createMachine({
     "CHILD.SET": {
       actions: ["setChildMenu"],
     },
+    "TRIGGER.FOCUS": {
+      actions: ["focusTopLevelEl"],
+    },
+    "TRIGGER.ENTER": {
+      actions: ["clearCloseRefs"],
+    },
     "TRIGGER.CLICK": [
       {
         target: "closed",
         guard: and("isItemOpen", "isRootMenu"),
-        actions: ["clearValue", "setClickCloseRef"],
+        actions: ["setPreviousValue", "clearValue", "setClickCloseRef"],
       },
       {
         reenter: true,
         target: "open",
-        actions: ["setValue"],
+        actions: ["setPreviousValue", "setValue"],
       },
     ],
-    "TRIGGER.POINTERDOWN": {
-      actions: ["clearPreviousValue"],
-    },
-    "TRIGGER.FOCUS": {
-      actions: ["focusTopLevelEl"],
-    },
+    "TRIGGER.MOVE": [
+      {
+        guard: "isSubmenu",
+        target: "open",
+        actions: ["setValue", "setPointerMoveOpenedRef"],
+      },
+      {
+        target: "opening",
+        actions: ["setPointerMoveOpenedRef"],
+      },
+    ],
     "VALUE.SET": {
       actions: ["setValue"],
     },
@@ -134,22 +145,8 @@ export const machine = createMachine({
 
   states: {
     closed: {
-      entry: ["cleanupObservers", "propagateClose"],
+      entry: ["cleanupObservers", "propagateClose", "clearPreviousValue"],
       on: {
-        "TRIGGER.ENTER": {
-          actions: ["clearCloseRefs", "clearPreviousValue"],
-        },
-        "TRIGGER.MOVE": [
-          {
-            guard: "isSubmenu",
-            target: "open",
-            actions: ["setValue"],
-          },
-          {
-            target: "opening",
-            actions: ["setPointerMoveRef"],
-          },
-        ],
         "TRIGGER.LEAVE": {
           actions: ["clearPointerMoveRef"],
         },
@@ -161,11 +158,11 @@ export const machine = createMachine({
       on: {
         "OPEN.DELAY": {
           target: "open",
-          actions: ["setValue"],
+          actions: ["setPreviousValue", "setValue"],
         },
         "TRIGGER.LEAVE": {
           target: "closed",
-          actions: ["clearValue", "clearPointerMoveRef"],
+          actions: ["setPreviousValue", "clearValue", "clearPointerMoveRef"],
         },
         "CONTENT.FOCUS": {
           actions: ["focusContent", "restoreTabOrder"],
@@ -217,7 +214,7 @@ export const machine = createMachine({
       on: {
         "CLOSE.DELAY": {
           target: "closed",
-          actions: ["clearValue", "clearPreviousValue"],
+          actions: ["setPreviousValue", "clearValue"],
         },
         "CONTENT.DISMISS": {
           target: "closed",
@@ -227,20 +224,6 @@ export const machine = createMachine({
           target: "open",
           actions: ["restoreTabOrder"],
         },
-        "TRIGGER.ENTER": {
-          actions: ["clearCloseRefs"],
-        },
-        "TRIGGER.MOVE": [
-          {
-            guard: "isOpen",
-            target: "open",
-            actions: ["setValue", "setPointerMoveRef"],
-          },
-          {
-            target: "opening",
-            actions: ["setPointerMoveRef"],
-          },
-        ],
       },
     },
   },
@@ -266,10 +249,11 @@ export const machine = createMachine({
       },
       preserveTabOrder({ context, scope, refs }) {
         if (!context.get("isViewportRendered")) return
-        if (context.get("value") == null) return
-        const contentEl = () => dom.getContentEl(scope, context.get("value")!)
+        const value = context.get("value")
+        if (value == null) return
+        const contentEl = () => dom.getContentEl(scope, value)
         return proxyTabFocus(contentEl, {
-          triggerElement: dom.getTriggerEl(scope, context.get("value")!),
+          triggerElement: dom.getTriggerEl(scope, value),
           onFocusEnter() {
             refs.get("tabOrderCleanup")?.()
           },
@@ -310,12 +294,12 @@ export const machine = createMachine({
         })
       },
 
-      trackEscapeKey({ computed, context, send, scope }) {
+      trackEscapeKey({ computed, refs, send, scope }) {
         if (computed("isSubmenu")) return
         const onKeyDown = (evt: KeyboardEvent) => {
           if (evt.isComposing) return
           if (evt.key !== "Escape") return
-          context.set("wasEscapeClose", true)
+          refs.set("wasEscapeClose", true)
           send({ type: "CONTENT.DISMISS", src: "key.esc" })
         }
         return addDomEvent(scope.getDoc(), "keydown", onKeyDown)
@@ -323,20 +307,23 @@ export const machine = createMachine({
     },
 
     actions: {
-      clearCloseRefs({ context }) {
-        context.set("wasClickClose", null)
-        context.set("wasEscapeClose", false)
+      clearCloseRefs({ refs }) {
+        refs.set("clickCloseRef", null)
+        refs.set("wasEscapeClose", false)
       },
-      setPointerMoveRef({ context, event }) {
-        context.set("hasPointerMoveOpened", event.value)
+      setPointerMoveOpenedRef({ refs, event }) {
+        refs.get("pointerMoveOpenedRef").set(event.value)
       },
-      clearPointerMoveRef({ context }) {
-        context.set("hasPointerMoveOpened", null)
+      clearPointerMoveRef({ refs }) {
+        refs.get("pointerMoveOpenedRef").set(null)
       },
       cleanupObservers({ refs }) {
         refs.get("contentCleanup")?.()
         refs.get("triggerCleanup")?.()
         refs.get("tabOrderCleanup")?.()
+      },
+      cleanupAutoResetRef({ refs }) {
+        refs.get("pointerMoveOpenedRef").cleanup()
       },
 
       setContentNode({ context, scope, refs }) {
@@ -384,22 +371,23 @@ export const machine = createMachine({
         if (computed("isSubmenu")) return
         dom.setMotionAttr(scope, context.get("value"), context.get("previousValue"))
       },
-      setClickCloseRef({ event, context }) {
-        context.set("wasClickClose", event.value)
+      setClickCloseRef({ refs, event }) {
+        refs.set("clickCloseRef", event.value)
       },
       checkViewportNode({ context, scope }) {
         context.set("isViewportRendered", !!dom.getViewportEl(scope))
       },
+      setPreviousValue({ context }) {
+        context.set("previousValue", context.get("value"))
+      },
       clearPreviousValue({ context }) {
         context.set("previousValue", null)
       },
-      clearValue({ context }) {
-        context.set("previousValue", null)
-        context.set("value", null)
-      },
       setValue({ context, event }) {
-        context.set("previousValue", context.get("value"))
         context.set("value", event.value)
+      },
+      clearValue({ context }) {
+        context.set("value", null)
       },
       focusTopLevelEl({ event, scope }) {
         const value = event.value

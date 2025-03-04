@@ -142,10 +142,7 @@ export default function Page() {
       </main>
 
       <Toolbar controls={controls.ui} viz>
-        <StateVisualizer
-          state={service}
-          context={["value", "previousValue", "triggerRect", "viewportSize", "hasPointerMoveOpened"]}
-        />
+        <StateVisualizer state={service} context={["value", "previousValue", "triggerRect", "viewportSize"]} />
       </Toolbar>
     </>
   )

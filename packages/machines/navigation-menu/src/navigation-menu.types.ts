@@ -9,6 +9,7 @@ import type {
   RequiredBy,
   Size,
 } from "@zag-js/types"
+import type { AutoReset } from "./auto-reset"
 
 /* -----------------------------------------------------------------------------
  * Callback details
@@ -83,6 +84,9 @@ export interface NavigationMenuSchema {
     contentCleanup: VoidFunction | null
     triggerCleanup: VoidFunction | null
     tabOrderCleanup: VoidFunction | null
+    pointerMoveOpenedRef: AutoReset<string | null>
+    clickCloseRef: string | null
+    wasEscapeClose: boolean
   }
   context: {
     value: string | null
@@ -90,9 +94,6 @@ export interface NavigationMenuSchema {
     viewportSize: Size | null
     isViewportRendered: boolean
     contentNode: HTMLElement | null
-    hasPointerMoveOpened: string | null
-    wasEscapeClose: boolean
-    wasClickClose: string | null
     triggerRect: Rect | null
     triggerNode: HTMLElement | null
     parent: NavigationMenuService | null
@@ -138,7 +139,7 @@ export interface LinkProps {
   /**
    * Whether the link is the current link
    */
-  active?: boolean | undefined
+  current?: boolean | undefined
   /**
    * Function called when the link is selected
    */
