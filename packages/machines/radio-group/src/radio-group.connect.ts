@@ -1,4 +1,4 @@
-import { dataAttr, visuallyHiddenStyle } from "@zag-js/dom-query"
+import { dataAttr, isSafari, visuallyHiddenStyle } from "@zag-js/dom-query"
 import { isFocusVisible } from "@zag-js/focus-visible"
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import { parts } from "./radio-group.anatomy"
@@ -120,6 +120,11 @@ export function connect<T extends PropTypes>(
         onPointerUp() {
           if (itemState.disabled) return
           send({ type: "SET_ACTIVE", value: null })
+        },
+        onClick() {
+          if (!itemState.disabled && isSafari()) {
+            dom.getItemHiddenInputEl(scope, props.value)?.focus()
+          }
         },
       })
     },
