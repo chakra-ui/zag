@@ -1,5 +1,20 @@
 # @zag-js/accordion
 
+## 1.3.1
+
+### Patch Changes
+
+- [`8443a9c`](https://github.com/chakra-ui/zag/commit/8443a9cf0e1f76ea0b7391dc6bdd3b9ef4593322) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix issue in Safari where clicking triggers doesn't show the
+  content as expected.
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.3.1
+  - @zag-js/core@1.3.1
+  - @zag-js/types@1.3.1
+  - @zag-js/utils@1.3.1
+  - @zag-js/dom-query@1.3.1
+
 ## 1.3.0
 
 ### Patch Changes
