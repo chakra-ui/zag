@@ -8,6 +8,19 @@ All notable changes to this project will be documented in this file.
 
 See the [Changesets](./.changeset) for the latest changes.
 
+## [1.3.1](./#1.3.1) - 2025-03-05
+
+### Fixed
+
+- **Radio Group, Switch**: Improve focus behavior in Safari browser.
+
+- **Accordion**: Fix issue in Safari where clicking triggers doesn't show the content as expected.
+
+- **Auto Resize**:
+  - Fix issue where height calculations could be incorrect in high DPI scenarios.
+  - Account for `maxHeight`, `overflowY`, and `boxSizing` CSS properties.
+  - Calculate height when its form owner resets.
+
 ## [1.3.0](./#1.3.0) - 2025-03-03
 
 ### Fixed
