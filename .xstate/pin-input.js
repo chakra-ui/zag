@@ -238,12 +238,15 @@ const fetchMachine = createMachine({
       },
       setFocusedValue({
         context,
-        event
+        event,
+        flush
       }) {
         const focusedValue = computed("focusedValue");
         const focusedIndex = context.get("focusedIndex");
         const value = getNextValue(focusedValue, event.value);
-        context.set("value", setValueAtIndex(computed("_value"), focusedIndex, value));
+        flush(() => {
+          context.set("value", setValueAtIndex(computed("_value"), focusedIndex, value));
+        });
       },
       revertInputValue({
         context,

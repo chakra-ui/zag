@@ -196,11 +196,13 @@ export const machine = createMachine({
         const value = fill(event.value, context.get("count"))
         context.set("value", value)
       },
-      setFocusedValue({ context, event, computed }) {
+      setFocusedValue({ context, event, computed, flush }) {
         const focusedValue = computed("focusedValue")
         const focusedIndex = context.get("focusedIndex")
         const value = getNextValue(focusedValue, event.value)
-        context.set("value", setValueAtIndex(computed("_value"), focusedIndex, value))
+        flush(() => {
+          context.set("value", setValueAtIndex(computed("_value"), focusedIndex, value))
+        })
       },
       revertInputValue({ context, computed, scope }) {
         const inputEl = dom.getInputElAtIndex(scope, context.get("focusedIndex"))
