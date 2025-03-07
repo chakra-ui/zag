@@ -6,7 +6,6 @@ export const GraphBounds = (props: { rootNode: DirectedGraphNode; edges: Directe
   const { rootNode, edges } = props
   const { zoomToElement } = useZoomControls()
   useEffect(() => {
-    // if (!isElkGraphReady) return;
     setTimeout(() => {
       zoomToElement("graph-bounds")
     }, 10)
