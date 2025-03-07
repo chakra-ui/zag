@@ -1,0 +1,29 @@
+{
+  "root": true,
+  "extends": "../tsconfig.json",
+  "compilerOptions": {
+    "target": "es6",
+    "allowJs": true,
+    "baseUrl": ".",
+    "jsx": "preserve",
+    "exactOptionalPropertyTypes": false,
+    "paths": {
+      "@/*": ["./*"]
+    },
+    "verbatimModuleSyntax": false,
+    "isolatedModules": true,
+    "plugins": [
+      {
+        "name": "next"
+      }
+    ],
+    "strictNullChecks": true
+  },
+  "plugins": [
+    {
+      "name": "next"
+    }
+  ],
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", "env.d.ts", ".next/types/**/*.ts"],
+  "exclude": ["node_modules"]
+}

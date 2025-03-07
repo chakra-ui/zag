@@ -24,6 +24,7 @@
     "start-solid": "pnpm solid dev",
     "start-svelte": "pnpm svelte dev",
     "start-website": "pnpm website dev",
+    "start-visualizer": "pnpm visualizer dev",
     "pw-report": "playwright show-report e2e/report",
     "pw-test": "cross-env FRAMEWORK=react playwright test",
     "pw-test-debug": "cross-env FRAMEWORK=react playwright test --debug",
@@ -46,19 +47,15 @@
     "test-solid": "cd packages/frameworks/solid && pnpm exec vitest --passWithNoTests",
     "test-vue": "cd packages/frameworks/vue && pnpm exec vitest --passWithNoTests",
     "test": "pnpm test-js --run && pnpm test-react --run && pnpm test-svelte --run && pnpm test-solid --run && pnpm test-vue --run",
-    "visualize": "tsx scripts/visualize.ts --all",
     "slack": "tsx scripts/slack.ts",
     "play": "tsx scripts/play.ts",
     "document-types": "tsx scripts/typedocs.ts",
     "document-attr": "tsx scripts/data-attr.ts",
-    "website": "pnpm --filter=./website"
+    "website": "pnpm --filter=./website",
+    "visualizer": "pnpm --filter=./visualizer"
   },
   "lint-staged": {
-    "**/*.{ts,tsx,js,jsx}": "prettier --write",
-    "**/*.machine.ts": [
-      "pnpm visualize",
-      "git add .xstate/*.js"
-    ]
+    "**/*.{ts,tsx,js,jsx}": "prettier --write"
   },
   "commitlint": {
     "extends": [
