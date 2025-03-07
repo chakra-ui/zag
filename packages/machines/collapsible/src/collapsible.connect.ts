@@ -27,8 +27,9 @@ export function connect<T extends PropTypes>(
       send({ type: "size.measure" })
     },
     setOpen(nextOpen) {
-      if (nextOpen === open) return
-      send(nextOpen ? { type: "open" } : { type: "close" })
+      const open = state.matches("open")
+      if (open === nextOpen) return
+      send({ type: nextOpen ? "open" : "close" })
     },
 
     getRootProps() {

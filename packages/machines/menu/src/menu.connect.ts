@@ -112,7 +112,8 @@ export function connect<T extends PropTypes>(service: Service<MenuSchema>, norma
     highlightedValue,
     open,
     setOpen(nextOpen) {
-      if (nextOpen === open) return
+      const open = state.hasTag("open")
+      if (open === nextOpen) return
       send({ type: nextOpen ? "OPEN" : "CLOSE" })
     },
     setHighlightedValue(value) {

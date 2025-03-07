@@ -17,7 +17,8 @@ export function connect<T extends PropTypes>(service: HoverCardService, normaliz
   return {
     open: open,
     setOpen(nextOpen) {
-      if (nextOpen === open) return
+      const open = state.hasTag("open")
+      if (open === nextOpen) return
       send({ type: nextOpen ? "OPEN" : "CLOSE" })
     },
     reposition(options = {}) {
