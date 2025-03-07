@@ -143,18 +143,29 @@ const service = useMachine(slider.machine, {
 
 ## Changing the start position
 
-By default, the slider's "zero position" is usually at the start position (left
-in LTR and right in RTL).
+By default, the slider's origin is at the `start` position (left
+in LTR and right in RTL). Change it by setting the `origin` property to these values:
 
-In scenarios where the value represents an offset (or relative value), it might
-be useful to change the "zero position" to center. To do this, pass the `origin`
-context property to `center`.
+- `start`: the track will be filled from start to the thumb (default).
+- `center`: the track will be filled from the center (50%) to the thumb.
+- `end`: the track will be filled from the thumb to the end.
+
+This applies to sliders with single values.
+
+In scenarios where the value represents an offset (or relative value) on a
+diverging scale, it might be useful to change the origin to center. To do this, 
+set the `origin` context property to `center`.
 
 ```jsx {2}
 const service = useMachine(slider.machine, {
   origin: "center",
 })
 ```
+
+In scenarios where the slider value is used as a threshold to include values above it, 
+it might make more sense to set the `origin` to `end` to have the track filled from the 
+thumb to the end.
+
 
 ## Changing the thumb alignment
 
