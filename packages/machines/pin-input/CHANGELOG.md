@@ -1,5 +1,19 @@
 # @zag-js/pin-input
 
+## 1.3.2
+
+### Patch Changes
+
+- [`a1b9584`](https://github.com/chakra-ui/zag/commit/a1b958422e3fb3726dac1a1a5d878e8e6248724f) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix issue where OTP SMS autofill doesn't work as expected.
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.3.2
+  - @zag-js/core@1.3.2
+  - @zag-js/types@1.3.2
+  - @zag-js/utils@1.3.2
+  - @zag-js/dom-query@1.3.2
+
 ## 1.3.1
 
 ### Patch Changes

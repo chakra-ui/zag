@@ -1,5 +1,19 @@
 # @zag-js/collapsible
 
+## 1.3.2
+
+### Patch Changes
+
+- [`db63d0b`](https://github.com/chakra-ui/zag/commit/db63d0b6e8eb030f60b2578e88cfcd226bfa2ccc) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Prevent stale closure in `api.setOpen(...)` methods
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.3.2
+  - @zag-js/core@1.3.2
+  - @zag-js/types@1.3.2
+  - @zag-js/utils@1.3.2
+  - @zag-js/dom-query@1.3.2
+
 ## 1.3.1
 
 ### Patch Changes

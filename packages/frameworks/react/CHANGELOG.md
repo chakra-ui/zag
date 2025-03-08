@@ -1,5 +1,18 @@
 # @zag-js/react
 
+## 1.3.2
+
+### Patch Changes
+
+- [`f8ac71e`](https://github.com/chakra-ui/zag/commit/f8ac71ed72e6d53c4d498ea451eabd95345802c4) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Flush effects synchronously rather than within a microtask
+
+- Updated dependencies []:
+  - @zag-js/core@1.3.2
+  - @zag-js/store@1.3.2
+  - @zag-js/types@1.3.2
+  - @zag-js/utils@1.3.2
+
 ## 1.3.1
 
 ### Patch Changes
