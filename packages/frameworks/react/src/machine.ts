@@ -217,10 +217,10 @@ export function useMachine<T extends MachineSchema>(
     const fns = effects.current
     return () => {
       hydratedStateRef.current = state.ref.current
+      fns.forEach((fn) => fn?.())
+      effects.current = new Map()
+      transitionRef.current = null
       queueMicrotask(() => {
-        fns.forEach((fn) => fn?.())
-        effects.current = new Map()
-        transitionRef.current = null
         action(machine.exit)
       })
     }
