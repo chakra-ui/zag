@@ -46,7 +46,6 @@
     "test-solid": "cd packages/frameworks/solid && pnpm exec vitest --passWithNoTests",
     "test-vue": "cd packages/frameworks/vue && pnpm exec vitest --passWithNoTests",
     "test": "pnpm test-js --run && pnpm test-react --run && pnpm test-svelte --run && pnpm test-solid --run && pnpm test-vue --run",
-    "visualize": "tsx scripts/visualize.ts --all",
     "slack": "tsx scripts/slack.ts",
     "play": "tsx scripts/play.ts",
     "document-types": "tsx scripts/typedocs.ts",
@@ -54,11 +53,7 @@
     "website": "pnpm --filter=./website"
   },
   "lint-staged": {
-    "**/*.{ts,tsx,js,jsx}": "prettier --write",
-    "**/*.machine.ts": [
-      "pnpm visualize",
-      "git add .xstate/*.js"
-    ]
+    "**/*.{ts,tsx,js,jsx}": "prettier --write"
   },
   "commitlint": {
     "extends": [
