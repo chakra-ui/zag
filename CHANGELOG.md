@@ -8,6 +8,21 @@ All notable changes to this project will be documented in this file.
 
 See the [Changesets](./.changeset) for the latest changes.
 
+## [1.3.2](./#1.3.2) - 2025-03-08
+
+### Fixed
+
+- **Pin Input**: Fix issue where OTP SMS autofill doesn't work as expected.
+
+- **Date Picker**: Fix issue where Svelte throws a `state_unsafe_mutation` error when controlling the datepicker range
+  mode.
+
+- **Rating Group**: Fix issue where rating group label places focus incorrectly.
+
+- **React**: Flush effects synchronously rather than within a microtask.
+
+- **Checkbox**: Fix issue where checkbox incorrectly sets `data-invalid` when `invalid` is `false`.
+
 ## [1.3.1](./#1.3.1) - 2025-03-05
 
 ### Fixed
