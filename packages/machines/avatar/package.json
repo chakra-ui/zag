@@ -1,6 +1,6 @@
 {
   "name": "@zag-js/avatar",
-  "version": "1.3.1",
+  "version": "1.3.2",
   "description": "Core logic for the avatar widget implemented as a state machine",
   "keywords": [
     "js",

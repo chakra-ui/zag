@@ -1,5 +1,27 @@
 # @zag-js/date-picker
 
+## 1.3.2
+
+### Patch Changes
+
+- [`f988feb`](https://github.com/chakra-ui/zag/commit/f988febe09246dbb7c8a1e8d33e83b29c258b574) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix issue where Svelte throws a `state_unsafe_mutation` error when
+  controlling the datepicker range mode.
+
+- [`db63d0b`](https://github.com/chakra-ui/zag/commit/db63d0b6e8eb030f60b2578e88cfcd226bfa2ccc) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Prevent stale closure in `api.setOpen(...)` methods
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.3.2
+  - @zag-js/core@1.3.2
+  - @zag-js/types@1.3.2
+  - @zag-js/utils@1.3.2
+  - @zag-js/date-utils@1.3.2
+  - @zag-js/dismissable@1.3.2
+  - @zag-js/dom-query@1.3.2
+  - @zag-js/live-region@1.3.2
+  - @zag-js/popper@1.3.2
+
 ## 1.3.1
 
 ### Patch Changes

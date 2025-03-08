@@ -1,5 +1,19 @@
 # @zag-js/rating-group
 
+## 1.3.2
+
+### Patch Changes
+
+- [`23bf36e`](https://github.com/chakra-ui/zag/commit/23bf36e4716c982bea66b9a2e968fa8a6ce46698) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix issue where rating group label places focus incorrectly
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.3.2
+  - @zag-js/core@1.3.2
+  - @zag-js/types@1.3.2
+  - @zag-js/utils@1.3.2
+  - @zag-js/dom-query@1.3.2
+
 ## 1.3.1
 
 ### Patch Changes
