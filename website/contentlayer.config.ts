@@ -101,7 +101,7 @@ const Component = defineDocumentType(() => ({
     visualizeUrl: {
       type: "string",
       resolve: (doc) =>
-        `https://state-machine-viz.vercel.app/${doc.slugAlias ?? getSlug(doc)}`,
+        `https://zag-visualizer.vercel.app/${doc.slugAlias ?? getSlug(doc)}`,
     },
     version: {
       type: "string",
