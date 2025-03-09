@@ -3,11 +3,8 @@
   import * as menu from "@zag-js/menu"
   import { normalizeProps, useMachine } from "@zag-js/svelte"
 
-  const service = useMachine(menu.machine, {
-      id: "1",
-    }
-  )
-
+  const id = $props.id()
+  const service = useMachine(menu.machine, { id })
   const api = $derived(menu.connect(service, normalizeProps))
 </script>
 

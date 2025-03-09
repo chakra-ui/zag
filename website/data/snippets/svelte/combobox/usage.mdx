@@ -17,8 +17,9 @@
     itemToString: (item) => item.label,
   })
 
+  const id = $props.id()
   const service = useMachine(combobox.machine, {
-    id: "1",
+    id,
     collection,
     onOpenChange() {
       options = comboboxData
@@ -33,7 +34,6 @@
       options = newOptions
     },
   })
-
   const api = $derived(combobox.connect(service, normalizeProps))
 </script>
 

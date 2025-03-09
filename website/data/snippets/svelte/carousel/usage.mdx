@@ -9,10 +9,10 @@
   "https://tinyurl.com/59jxz9uu",
  ]
 
+  const id = $props.id()
   const service = useMachine(
-    carousel.machine, ({ id: "1", slideCount: items.length }),
+    carousel.machine, ({ id: id, slideCount: items.length }),
   )
-
   const api = $derived(carousel.connect(service, normalizeProps))
 </script>
 

@@ -3,10 +3,8 @@
   import * as pinInput from "@zag-js/pin-input"
   import { useMachine, normalizeProps } from "@zag-js/svelte"
 
-  const service = useMachine(pinInput.machine, {
-    id: "1",
-  })
-
+  const id = $props.id()
+  const service = useMachine(pinInput.machine, { id })
   const api = $derived(pinInput.connect(service, normalizeProps))
 </script>
 

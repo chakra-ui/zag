@@ -5,9 +5,10 @@
   import { ClipboardCheck, ClipboardCopyIcon } from "lucide-svelte"
   import { useId } from "react"
 
+  const id = $props.id()
   const service = useMachine(
     clipboard.machine, ({
-      id: "1",
+      id: id,
       value: "https://github/com/chakra-ui/zag",
     }),
   )

@@ -19,11 +19,11 @@
     itemToValue: (item) => item.value,
   })
 
+  const id = $props.id()
   const service = useMachine(select.machine, {
-    id: "1",
+    id,
     collection,
   })
-
   const api = $derived(select.connect(service, normalizeProps))
 </script>
 

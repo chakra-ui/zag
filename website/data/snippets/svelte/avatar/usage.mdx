@@ -3,7 +3,8 @@
   import * as avatar from "@zag-js/avatar"
   import { useMachine, normalizeProps } from "@zag-js/svelte"
 
-  const service = useMachine(avatar.machine, ({ id: "1" }))
+  const id = $props.id()
+  const service = useMachine(avatar.machine, ({ id }))
   const api = $derived(avatar.connect(service, normalizeProps))
 </script>
 

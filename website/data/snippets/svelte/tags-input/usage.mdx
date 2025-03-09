@@ -3,11 +3,11 @@
   import * as tagsInput from "@zag-js/tags-input"
   import { useMachine, normalizeProps } from "@zag-js/svelte"
 
+  const id = $props.id()
   const service = useMachine(tagsInput.machine, {
-    id: "1",
+    id,
     defaultValue: ["React", "Vue"],
   })
-
   const api = $derived(tagsInput.connect(service, normalizeProps))
 </script>
 

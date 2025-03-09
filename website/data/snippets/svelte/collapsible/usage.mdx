@@ -3,8 +3,8 @@
   import * as collapsible from "@zag-js/collapsible"
   import { normalizeProps, useMachine } from "@zag-js/svelte"
 
-  const service = useMachine(collapsible.machine, ({ id: "1" }))
-
+  const id = $props.id()
+  const service = useMachine(collapsible.machine, ({ id }))
   const api = $derived(collapsible.connect(service, normalizeProps))
 </script>
 

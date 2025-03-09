@@ -3,7 +3,8 @@
   import * as qrCode from "@zag-js/qr-code"
   import { portal, useMachine, normalizeProps } from "@zag-js/svelte"
 
-  const service = useMachine(qrCode.machine, { id: "1", steps })
+  const id = $props.id()
+  const service = useMachine(qrCode.machine, { id, steps })
   const api = $derived(qrCode.connect(service, normalizeProps))
 </script>
 
