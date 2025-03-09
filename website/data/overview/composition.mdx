@@ -55,7 +55,7 @@ In most cases, you can rely on the framework providing unique a unique id for ea
 
 ### React
 
-```tsx
+```jsx
 import * as accordion from "@zag-js/accordion"
 import { useMachine, normalizeProps } from "@zag-js/framework"
 import { useId } from "react"
@@ -63,6 +63,7 @@ import { useId } from "react"
 function Component() {
   const service = useMachine(accordion.machine, { id: useId() })
   const api = machine.connect(service, normalizeProps)
+
   // ...
 }
 ```
@@ -71,7 +72,7 @@ See [useId](https://react.dev/reference/react/useId).
 
 ### Solid
 
-```tsx
+```jsx
 import * as accordion from "@zag-js/accordion"
 import { useMachine, normalizeProps } from "@zag-js/solid"
 import { createUniqueId } from "solid-js"
@@ -79,6 +80,7 @@ import { createUniqueId } from "solid-js"
 function Component() {
   const service = useMachine(accordion.machine, { id: createUniqueId() })
   const api = machine.connect(service, normalizeProps)
+
   // ...
 }
 ```
@@ -107,7 +109,7 @@ See [useId](https://vuejs.org/api/composition-api-helpers#useid).
 ### Svelte
 
 ```html
-<script setup>
+<script>
   import * as accordion from "@zag-js/accordion"
   import { useMachine, normalizeProps } from "@zag-js/svelte"
 
@@ -120,7 +122,7 @@ See [useId](https://vuejs.org/api/composition-api-helpers#useid).
 <!-- ... -->
 ```
 
-See [useId](https://svelte.dev/docs/svelte/$props#$props.id()).
+See [$props.id](https://svelte.dev/docs/svelte/$props#$props.id()).
 
 Internally, Zag maps the unique id provided to each component parts needed for
 the widget to work.
@@ -133,7 +135,7 @@ To achieve this, you will need to pass custom `ids` to the machine's context.
 This will ensure that calling `document.getElementById(...)` within the tooltip
 and/or popover will return the same element.
 
-```tsx {7,12}
+```tsx {6,10}
 import * as tooltip from "@zag-js/tooltip"
 import * as popover from "@zag-js/popover"
 
@@ -145,10 +147,9 @@ function Example() {
   const popoverService = useMachine(popover.machine, {
     ids: { trigger: "id-1" },
   })
+  
+  // ...
 }
-
-// render UI
-return null
 ```
 
 In the example above, you will notice that the popover and tooltip trigger share
@@ -168,7 +169,7 @@ To provide the correct reference to root node or document, you can pass
 > In shadow DOM, the root node can be derived from calling
 > `element.getRootNode()` method on any element.
 
-```jsx {12,15,42}
+```jsx {12,16,42}
 import * as accordion from "@zag-js/accordion"
 import { useMachine, normalizeProps } from "@zag-js/react"
 import Frame, { useFrame } from "react-frame-component"
