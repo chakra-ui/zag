@@ -1,4 +1,4 @@
-import { dataAttr, getEventTarget, visuallyHiddenStyle } from "@zag-js/dom-query"
+import { dataAttr, getEventTarget, isSafari, visuallyHiddenStyle } from "@zag-js/dom-query"
 import { isFocusVisible } from "@zag-js/focus-visible"
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import { parts } from "./switch.anatomy"
@@ -57,6 +57,9 @@ export function connect<T extends PropTypes>(service: SwitchService, normalize: 
           const target = getEventTarget<Element>(event)
           if (target === dom.getHiddenInputEl(scope)) {
             event.stopPropagation()
+          }
+          if (isSafari()) {
+            dom.getHiddenInputEl(scope)?.focus()
           }
         },
       })

@@ -1,5 +1,57 @@
 # @zag-js/checkbox
 
+## 1.3.2
+
+### Patch Changes
+
+- [#2322](https://github.com/chakra-ui/zag/pull/2322)
+  [`faf1613`](https://github.com/chakra-ui/zag/commit/faf161376db63aef288a9c933aae7d91a0a33294) Thanks
+  [@Jonas-C](https://github.com/Jonas-C)! - Checkbox should not set `data-invalid` when invalid is false
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.3.2
+  - @zag-js/core@1.3.2
+  - @zag-js/types@1.3.2
+  - @zag-js/utils@1.3.2
+  - @zag-js/dom-query@1.3.2
+  - @zag-js/focus-visible@1.3.2
+
+## 1.3.1
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.3.1
+  - @zag-js/core@1.3.1
+  - @zag-js/types@1.3.1
+  - @zag-js/utils@1.3.1
+  - @zag-js/dom-query@1.3.1
+  - @zag-js/focus-visible@1.3.1
+
+## 1.3.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.3.0
+  - @zag-js/core@1.3.0
+  - @zag-js/types@1.3.0
+  - @zag-js/utils@1.3.0
+  - @zag-js/dom-query@1.3.0
+  - @zag-js/focus-visible@1.3.0
+
+## 1.2.1
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.2.1
+  - @zag-js/core@1.2.1
+  - @zag-js/types@1.2.1
+  - @zag-js/utils@1.2.1
+  - @zag-js/dom-query@1.2.1
+  - @zag-js/focus-visible@1.2.1
+
 ## 1.2.0
 
 ### Patch Changes

@@ -91,7 +91,9 @@ export const machine = createMachine<TourSchema>({
 
   watch({ track, context, action }) {
     track([() => context.get("stepId")], () => {
-      action(["setResolvedTarget", "raiseStepChange", "syncTargetAttrs"])
+      queueMicrotask(() => {
+        action(["setResolvedTarget", "raiseStepChange", "syncTargetAttrs"])
+      })
     })
   },
 

@@ -1,3 +1,5 @@
+import { isFunction } from "./guard"
+
 export type MaybeFunction<T> = T | (() => T)
 
 export type Nullable<T> = T | null | undefined
@@ -17,7 +19,7 @@ export const identity = (v: VoidFunction) => v()
 export const noop = () => {}
 
 export const callAll =
-  <T extends (...a: any[]) => void>(...fns: (T | undefined)[]) =>
+  <T extends (...a: any[]) => void>(...fns: (T | null | undefined)[]) =>
   (...a: Parameters<T>) => {
     fns.forEach(function (fn) {
       fn?.(...a)
@@ -39,7 +41,7 @@ export function match<V extends string | number = string, R = unknown>(
 ): R {
   if (key in record) {
     const fn = record[key]
-    return typeof fn === "function" ? fn(...args) : fn
+    return isFunction(fn) ? fn(...args) : (fn as any)
   }
 
   const error = new Error(`No matching key: ${JSON.stringify(key)} in ${JSON.stringify(Object.keys(record))}`)

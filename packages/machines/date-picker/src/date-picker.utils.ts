@@ -15,7 +15,7 @@ export function isDateWithinRange(date: DateValue, value: (DateValue | null)[]) 
 }
 
 export function sortDates(values: DateValue[]) {
-  return values.sort((a, b) => a.compare(b))
+  return values.slice().sort((a, b) => a.compare(b))
 }
 
 export function getRoleDescription(view: DateView) {

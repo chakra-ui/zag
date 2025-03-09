@@ -217,10 +217,10 @@ export function useMachine<T extends MachineSchema>(
     const fns = effects.current
     return () => {
       hydratedStateRef.current = state.ref.current
+      fns.forEach((fn) => fn?.())
+      effects.current = new Map()
+      transitionRef.current = null
       queueMicrotask(() => {
-        fns.forEach((fn) => fn?.())
-        effects.current = new Map()
-        transitionRef.current = null
         action(machine.exit)
       })
     }
@@ -259,6 +259,9 @@ export function useMachine<T extends MachineSchema>(
       if (changed) {
         // state change is high priority
         flushSync(() => state.set(target))
+      } else if (transition.reenter && !changed) {
+        // reenter will re-invoke the current state
+        state.invoke(currentState, currentState)
       } else {
         // call transition actions
         action(transition.actions ?? [])

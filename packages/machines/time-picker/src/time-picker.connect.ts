@@ -52,7 +52,8 @@ export function connect<T extends PropTypes>(
       send({ type: "POSITIONING.SET", options })
     },
     setOpen(nextOpen) {
-      if (nextOpen === open) return
+      const open = state.hasTag("open")
+      if (open === nextOpen) return
       send({ type: nextOpen ? "OPEN" : "CLOSE" })
     },
     setUnitValue(unit, value) {

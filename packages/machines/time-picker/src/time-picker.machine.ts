@@ -13,6 +13,7 @@ import {
   getStringifiedValue,
   getTimeValue,
   is12HourFormat,
+  isTimeEqual,
 } from "./time-picker.utils"
 
 const { and } = createGuards<TimePickerSchema>()
@@ -43,6 +44,7 @@ export const machine = createMachine<TimePickerSchema>({
         hash(a) {
           return a?.toString() ?? ""
         },
+        isEqual: isTimeEqual,
         onChange(value) {
           const computed = getComputed()
           prop("onValueChange")?.({

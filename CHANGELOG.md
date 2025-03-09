@@ -8,6 +8,63 @@ All notable changes to this project will be documented in this file.
 
 See the [Changesets](./.changeset) for the latest changes.
 
+## [1.3.2](./#1.3.2) - 2025-03-08
+
+### Fixed
+
+- **Pin Input**: Fix issue where OTP SMS autofill doesn't work as expected.
+
+- **Date Picker**: Fix issue where Svelte throws a `state_unsafe_mutation` error when controlling the datepicker range
+  mode.
+
+- **Rating Group**: Fix issue where rating group label places focus incorrectly.
+
+- **React**: Flush effects synchronously rather than within a microtask.
+
+- **Checkbox**: Fix issue where checkbox incorrectly sets `data-invalid` when `invalid` is `false`.
+
+## [1.3.1](./#1.3.1) - 2025-03-05
+
+### Fixed
+
+- **Radio Group, Switch**: Improve focus behavior in Safari browser.
+
+- **Accordion**: Fix issue in Safari where clicking triggers doesn't show the content as expected.
+
+- **Auto Resize**:
+  - Fix issue where height calculations could be incorrect in high DPI scenarios.
+  - Account for `maxHeight`, `overflowY`, and `boxSizing` CSS properties.
+  - Calculate height when its form owner resets.
+
+## [1.3.0](./#1.3.0) - 2025-03-03
+
+### Fixed
+
+- **General**: Fix issue where machines that hold complex objects could cause issues.
+
+### Added
+
+- **Date Picker**:
+
+  - Add support for `api.getViewProps`.
+  - Add `visibleRangeText` property to `api.offset()` return value.
+
+- **Progress**: Add support for `locale` and `formatOptions` to properly format the `api.percentAsString` result.
+
+- **Framework Adapters (React, Svelte, Solid, Vue)**: Support `reenter:true` in machine transitions.
+
+## [1.2.1](./#1.2.1) - 2025-02-27
+
+### Fixed
+
+- **Progress**: Allow for more precise (decimal) values.
+
+- **Scroll Snap**: Fix issue where `getScrollPadding` could return `NaN` in test environments.
+
+- **Date Picker**: Fix issue where `onValueChange` doesn't get called when value is cleared.
+
+- **Number Input**: Fix issue where `allowOverflow` was not implemented.
+
 ## [1.2.0](./#1.2.0) - 2025-02-26
 
 ### Fixed

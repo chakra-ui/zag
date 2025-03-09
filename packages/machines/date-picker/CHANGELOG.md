@@ -1,5 +1,79 @@
 # @zag-js/date-picker
 
+## 1.3.2
+
+### Patch Changes
+
+- [`f988feb`](https://github.com/chakra-ui/zag/commit/f988febe09246dbb7c8a1e8d33e83b29c258b574) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix issue where Svelte throws a `state_unsafe_mutation` error when
+  controlling the datepicker range mode.
+
+- [`db63d0b`](https://github.com/chakra-ui/zag/commit/db63d0b6e8eb030f60b2578e88cfcd226bfa2ccc) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Prevent stale closure in `api.setOpen(...)` methods
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.3.2
+  - @zag-js/core@1.3.2
+  - @zag-js/types@1.3.2
+  - @zag-js/utils@1.3.2
+  - @zag-js/date-utils@1.3.2
+  - @zag-js/dismissable@1.3.2
+  - @zag-js/dom-query@1.3.2
+  - @zag-js/live-region@1.3.2
+  - @zag-js/popper@1.3.2
+
+## 1.3.1
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.3.1
+  - @zag-js/core@1.3.1
+  - @zag-js/types@1.3.1
+  - @zag-js/utils@1.3.1
+  - @zag-js/date-utils@1.3.1
+  - @zag-js/dismissable@1.3.1
+  - @zag-js/dom-query@1.3.1
+  - @zag-js/live-region@1.3.1
+  - @zag-js/popper@1.3.1
+
+## 1.3.0
+
+### Patch Changes
+
+- [`4aae066`](https://github.com/chakra-ui/zag/commit/4aae066082dd5495493273583e7316d512740cde) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - - Add support for `api.getViewProps`.
+  - Add `visibleRangeText` property to `api.offset()` return value.
+- Updated dependencies [[`4aae066`](https://github.com/chakra-ui/zag/commit/4aae066082dd5495493273583e7316d512740cde)]:
+  - @zag-js/date-utils@1.3.0
+  - @zag-js/anatomy@1.3.0
+  - @zag-js/core@1.3.0
+  - @zag-js/types@1.3.0
+  - @zag-js/utils@1.3.0
+  - @zag-js/dismissable@1.3.0
+  - @zag-js/dom-query@1.3.0
+  - @zag-js/live-region@1.3.0
+  - @zag-js/popper@1.3.0
+
+## 1.2.1
+
+### Patch Changes
+
+- [`870743f`](https://github.com/chakra-ui/zag/commit/870743f808f907bff36efc686b70412d9b69f500) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix issue where `onValueChange` doesn't get called when value is
+  cleared
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.2.1
+  - @zag-js/core@1.2.1
+  - @zag-js/types@1.2.1
+  - @zag-js/utils@1.2.1
+  - @zag-js/date-utils@1.2.1
+  - @zag-js/dismissable@1.2.1
+  - @zag-js/dom-query@1.2.1
+  - @zag-js/live-region@1.2.1
+  - @zag-js/popper@1.2.1
+
 ## 1.2.0
 
 ### Patch Changes

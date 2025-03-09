@@ -77,7 +77,7 @@ export function connect<T extends PropTypes>(
           if (event.defaultPrevented) return
           if (!interactive) return
           event.preventDefault()
-          const radioEl = dom.getRadioEl(scope, 1)
+          const radioEl = dom.getRadioEl(scope, Math.max(1, context.get("value")))
           radioEl?.focus({ preventScroll: true })
         },
       })

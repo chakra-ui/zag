@@ -1,5 +1,37 @@
 # @zag-js/scroll-snap
 
+## 1.3.2
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/dom-query@1.3.2
+
+## 1.3.1
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/dom-query@1.3.1
+
+## 1.3.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/dom-query@1.3.0
+
+## 1.2.1
+
+### Patch Changes
+
+- [`55620d5`](https://github.com/chakra-ui/zag/commit/55620d5b37a5504cb77d8d81bf05b1615be1a016) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix issue where `getScrollPadding` could return `NaN` in test
+  environments
+
+- Updated dependencies []:
+  - @zag-js/dom-query@1.2.1
+
 ## 1.2.0
 
 ### Patch Changes

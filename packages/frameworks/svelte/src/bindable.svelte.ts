@@ -1,10 +1,10 @@
 import { type Bindable, type BindableParams } from "@zag-js/core"
-import { identity, isEqual, isFunction } from "@zag-js/utils"
+import { identity, isFunction } from "@zag-js/utils"
 import { flushSync } from "svelte"
 
 export function bindable<T>(props: () => BindableParams<T>): Bindable<T> {
   const initial = props().defaultValue ?? props().value
-  const eq = props().isEqual ?? isEqual
+  const eq = props().isEqual ?? Object.is
 
   let value = $state(initial)
   const controlled = $derived(props().value !== undefined)

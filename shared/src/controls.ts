@@ -285,3 +285,9 @@ export const angleSliderControls = defineControls({
   readOnly: { type: "boolean", defaultValue: false },
   step: { type: "number", defaultValue: 1 },
 })
+
+export const navigationMenuControls = defineControls({
+  dir: { type: "select", options: ["ltr", "rtl"] as const, defaultValue: "ltr" },
+  openDelay: { type: "number", defaultValue: 200 },
+  closeDelay: { type: "number", defaultValue: 300 },
+})

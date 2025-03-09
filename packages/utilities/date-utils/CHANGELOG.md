@@ -1,5 +1,19 @@
 # @zag-js/date-utils
 
+## 1.3.2
+
+## 1.3.1
+
+## 1.3.0
+
+### Patch Changes
+
+- [`4aae066`](https://github.com/chakra-ui/zag/commit/4aae066082dd5495493273583e7316d512740cde) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - - Add support for `api.getViewProps`.
+  - Add `visibleRangeText` property to `api.offset()` return value.
+
+## 1.2.1
+
 ## 1.2.0
 
 ## 1.1.0
