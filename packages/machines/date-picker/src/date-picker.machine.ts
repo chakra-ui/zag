@@ -13,9 +13,9 @@ import {
   getPreviousSection,
   getTodayDate,
   isDateEqual,
-  isDateOutsideVisibleRange,
-  isNextVisibleRangeInvalid,
-  isPreviousVisibleRangeInvalid,
+  isDateOutsideRange,
+  isNextRangeInvalid,
+  isPreviousRangeInvalid,
   parseDateString,
   type AdjustDateReturn,
 } from "@zag-js/date-utils"
@@ -189,9 +189,9 @@ export const machine = createMachine<DatePickerSchema>({
       return { start, end, formatted }
     },
     isPrevVisibleRangeValid: ({ context, prop }) =>
-      !isPreviousVisibleRangeInvalid(context.get("startValue"), prop("min"), prop("max")),
+      !isPreviousRangeInvalid(context.get("startValue"), prop("min"), prop("max")),
     isNextVisibleRangeValid: ({ prop, computed }) =>
-      !isNextVisibleRangeInvalid(computed("endValue"), prop("min"), prop("max")),
+      !isNextRangeInvalid(computed("endValue"), prop("min"), prop("max")),
     valueAsString({ context, prop }) {
       const value = context.get("value")
       return value.map((date) => prop("format")(date, { locale: prop("locale"), timeZone: prop("timeZone") }))
@@ -1085,7 +1085,7 @@ export const machine = createMachine<DatePickerSchema>({
       setStartValue({ context, computed, prop }) {
         const focusedValue = context.get("focusedValue")
 
-        const outside = isDateOutsideVisibleRange(focusedValue, context.get("startValue"), computed("endValue"))
+        const outside = isDateOutsideRange(focusedValue, context.get("startValue"), computed("endValue"))
         if (!outside) return
 
         const startValue = alignDate(focusedValue, "start", { months: prop("numOfMonths") }, prop("locale"))

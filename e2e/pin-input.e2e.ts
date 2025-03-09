@@ -105,4 +105,15 @@ test.describe("pin input", () => {
     await page.locator(first).fill("1")
     await expect(page.locator(first)).toHaveValue("1")
   })
+
+  test("[on edit] should allow to edit the existing value", async ({ page }) => {
+    await page.locator(first).fill("1")
+    await page.locator(second).fill("2")
+    await page.locator(third).fill("3")
+    await page.locator(second).focus()
+    await page.locator(second).fill("4")
+    await expect(page.locator(second)).toHaveValue("4")
+    await expect(page.locator(third)).toHaveValue("3")
+    await expect(page.locator(third)).toBeFocused()
+  })
 })

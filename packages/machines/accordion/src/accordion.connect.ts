@@ -105,10 +105,8 @@ export function connect<T extends PropTypes>(
         "data-state": itemState.expanded ? "open" : "closed",
         "data-ownedby": dom.getRootId(scope),
         onFocus() {
-          queueMicrotask(() => {
-            if (itemState.disabled) return
-            send({ type: "TRIGGER.FOCUS", value })
-          })
+          if (itemState.disabled) return
+          send({ type: "TRIGGER.FOCUS", value })
         },
         onBlur() {
           if (itemState.disabled) return

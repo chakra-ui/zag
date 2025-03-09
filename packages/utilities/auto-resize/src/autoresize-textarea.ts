@@ -11,13 +11,29 @@ export const autoresizeTextarea = (el: HTMLTextAreaElement | null) => {
   const resize = () => {
     requestAnimationFrame(() => {
       el.style.height = "auto"
-      const borderTopWidth = parseInt(style.borderTopWidth, 10)
-      const borderBottomWidth = parseInt(style.borderBottomWidth, 10)
-      el.style.height = `${el.scrollHeight + borderTopWidth + borderBottomWidth}px`
+      let newHeight: number
+
+      if (style.boxSizing === "content-box") {
+        newHeight = el.scrollHeight - (parseFloat(style.paddingTop) + parseFloat(style.paddingBottom))
+      } else {
+        newHeight = el.scrollHeight + parseFloat(style.borderTopWidth) + parseFloat(style.borderBottomWidth)
+      }
+
+      if (style.maxHeight !== "none" && newHeight > parseFloat(style.maxHeight)) {
+        if (style.overflowY === "hidden") {
+          el.style.overflowY = "scroll"
+        }
+        newHeight = parseFloat(style.maxHeight)
+      } else if (style.overflowY !== "hidden") {
+        el.style.overflowY = "hidden"
+      }
+
+      el.style.height = `${newHeight}px`
     })
   }
 
   el.addEventListener("input", resize)
+  el.form?.addEventListener("reset", resize)
 
   const elementPrototype = Object.getPrototypeOf(el)
   const descriptor = Object.getOwnPropertyDescriptor(elementPrototype, "value")
@@ -42,6 +58,7 @@ export const autoresizeTextarea = (el: HTMLTextAreaElement | null) => {
 
   return () => {
     el.removeEventListener("input", resize)
+    el.form?.removeEventListener("reset", resize)
     doc.fonts?.removeEventListener("loadingdone", resize)
     resizeObserver.disconnect()
     attrObserver.disconnect()

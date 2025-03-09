@@ -79,7 +79,8 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
       dom.getTriggerEl(scope)?.focus({ preventScroll: true })
     },
     setOpen(nextOpen) {
-      if (nextOpen === open) return
+      const open = state.hasTag("open")
+      if (open === nextOpen) return
       send({ type: nextOpen ? "OPEN" : "CLOSE" })
     },
     selectValue(value) {

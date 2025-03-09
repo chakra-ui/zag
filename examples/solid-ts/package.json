@@ -49,6 +49,7 @@
     "@zag-js/interact-outside": "workspace:*",
     "@zag-js/live-region": "workspace:*",
     "@zag-js/menu": "workspace:*",
+    "@zag-js/navigation-menu": "workspace:*",
     "@zag-js/number-input": "workspace:*",
     "@zag-js/pagination": "workspace:*",
     "@zag-js/pin-input": "workspace:*",
@@ -85,7 +86,7 @@
     "@zag-js/types": "workspace:*",
     "@zag-js/utils": "workspace:*",
     "form-serialize": "0.7.2",
-    "lucide-solid": "0.475.0",
+    "lucide-solid": "0.477.0",
     "match-sorter": "8.0.0",
     "solid-js": "1.9.5",
     "vinxi": "0.5.3"

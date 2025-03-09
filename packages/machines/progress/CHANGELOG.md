@@ -1,5 +1,59 @@
 # @zag-js/progress
 
+## 1.3.2
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.3.2
+  - @zag-js/core@1.3.2
+  - @zag-js/types@1.3.2
+  - @zag-js/utils@1.3.2
+  - @zag-js/dom-query@1.3.2
+
+## 1.3.1
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.3.1
+  - @zag-js/core@1.3.1
+  - @zag-js/types@1.3.1
+  - @zag-js/utils@1.3.1
+  - @zag-js/dom-query@1.3.1
+
+## 1.3.0
+
+### Minor Changes
+
+- [`c387633`](https://github.com/chakra-ui/zag/commit/c3876338bba699346c75dfa1bfbbda1b8a922de0) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Add support for `locale` and `formatOptions` to properly format
+  the `api.percentAsString` result
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.3.0
+  - @zag-js/core@1.3.0
+  - @zag-js/types@1.3.0
+  - @zag-js/utils@1.3.0
+  - @zag-js/dom-query@1.3.0
+
+## 1.2.1
+
+### Patch Changes
+
+- [#2286](https://github.com/chakra-ui/zag/pull/2286)
+  [`3861aa9`](https://github.com/chakra-ui/zag/commit/3861aa9b060456078dec805de0830d886c2bd456) Thanks
+  [@Hugos68](https://github.com/Hugos68)! - Allow for more precise (decimal) values
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.2.1
+  - @zag-js/core@1.2.1
+  - @zag-js/types@1.2.1
+  - @zag-js/utils@1.2.1
+  - @zag-js/dom-query@1.2.1
+
 ## 1.2.0
 
 ### Patch Changes

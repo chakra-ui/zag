@@ -116,6 +116,7 @@ export function connect<T extends PropTypes>(
         "data-disabled": dataAttr(prop("disabled")),
         "data-complete": dataAttr(complete),
         id: dom.getInputId(scope, index.toString()),
+        "data-index": index,
         "data-ownedby": dom.getRootId(scope),
         "aria-label": translations?.inputLabel?.(index, computed("valueLength")),
         inputMode: prop("otp") || prop("type") === "numeric" ? "numeric" : "text",

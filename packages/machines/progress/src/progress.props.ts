@@ -14,6 +14,8 @@ export const props = createProps<ProgressProps>()([
   "value",
   "onValueChange",
   "defaultValue",
+  "formatOptions",
+  "locale",
 ])
 
 export const splitProps = createSplitProps<Partial<ProgressProps>>(props)

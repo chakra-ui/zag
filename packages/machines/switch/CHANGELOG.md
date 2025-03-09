@@ -1,5 +1,56 @@
 # @zag-js/switch
 
+## 1.3.2
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.3.2
+  - @zag-js/core@1.3.2
+  - @zag-js/types@1.3.2
+  - @zag-js/utils@1.3.2
+  - @zag-js/dom-query@1.3.2
+  - @zag-js/focus-visible@1.3.2
+
+## 1.3.1
+
+### Patch Changes
+
+- [`c9f19ce`](https://github.com/chakra-ui/zag/commit/c9f19ce9fbc01d1b8935948d3d8e2f6059463e83) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Improve focus behavior in Safari browser
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.3.1
+  - @zag-js/core@1.3.1
+  - @zag-js/types@1.3.1
+  - @zag-js/utils@1.3.1
+  - @zag-js/dom-query@1.3.1
+  - @zag-js/focus-visible@1.3.1
+
+## 1.3.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.3.0
+  - @zag-js/core@1.3.0
+  - @zag-js/types@1.3.0
+  - @zag-js/utils@1.3.0
+  - @zag-js/dom-query@1.3.0
+  - @zag-js/focus-visible@1.3.0
+
+## 1.2.1
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.2.1
+  - @zag-js/core@1.2.1
+  - @zag-js/types@1.2.1
+  - @zag-js/utils@1.2.1
+  - @zag-js/dom-query@1.2.1
+  - @zag-js/focus-visible@1.2.1
+
 ## 1.2.0
 
 ### Patch Changes

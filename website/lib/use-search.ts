@@ -2,6 +2,7 @@ import * as combobox from "@zag-js/combobox"
 import * as dialog from "@zag-js/dialog"
 import { normalizeProps, useMachine } from "@zag-js/react"
 import { matchSorter } from "match-sorter"
+import { useRouter } from "next/router"
 import { useEffect, useId, useMemo, useState } from "react"
 import {
   searchData,
@@ -39,6 +40,8 @@ export function useSearch(): UseSearchReturn {
     [results],
   )
 
+  const router = useRouter()
+
   const combobox_service = useMachine(combobox.machine, {
     id: useId(),
     placeholder: "Search the docs",
@@ -47,6 +50,9 @@ export function useSearch(): UseSearchReturn {
     collection,
     openOnChange({ inputValue }) {
       return inputValue.length > 2
+    },
+    navigate({ value }) {
+      if (value) router.push(value)
     },
     onValueChange() {
       dialog_api.setOpen(false)

@@ -24,6 +24,7 @@ export const machine = createMachine<AccordionSchema>({
     return {
       focusedValue: bindable<string | null>(() => ({
         defaultValue: null,
+        sync: true,
         onChange(value) {
           prop("onFocusChange")?.({ value })
         },

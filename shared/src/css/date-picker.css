@@ -76,3 +76,7 @@
   align-items: center;
   margin-block: 10px;
 }
+
+[data-scope="date-picker"][data-part="view"] {
+  width: 100%;
+}

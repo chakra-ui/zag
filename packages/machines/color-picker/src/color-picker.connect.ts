@@ -66,7 +66,8 @@ export function connect<T extends PropTypes>(
     valueAsString,
     value,
     setOpen(nextOpen) {
-      if (nextOpen === open) return
+      const open = state.hasTag("open")
+      if (open === nextOpen) return
       send({ type: nextOpen ? "OPEN" : "CLOSE" })
     },
     setValue(value) {

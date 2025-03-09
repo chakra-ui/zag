@@ -13,6 +13,7 @@ export function connect<T extends PropTypes>(
   const { send, context, prop, computed, scope } = service
   const disabled = prop("disabled")
   const readOnly = prop("readOnly")
+  const invalid = prop("invalid")
 
   const focused = !disabled && context.get("focused")
   const focusVisible = !disabled && context.get("focusVisible")
@@ -28,7 +29,7 @@ export function connect<T extends PropTypes>(
     "data-hover": dataAttr(context.get("hovered")),
     "data-disabled": dataAttr(disabled),
     "data-state": indeterminate ? "indeterminate" : checked ? "checked" : "unchecked",
-    "data-invalid": prop("invalid"),
+    "data-invalid": dataAttr(invalid),
   }
 
   return {
@@ -106,7 +107,7 @@ export function connect<T extends PropTypes>(
         defaultChecked: checked,
         disabled: disabled,
         "aria-labelledby": dom.getLabelId(scope),
-        "aria-invalid": prop("invalid"),
+        "aria-invalid": invalid,
         name: prop("name"),
         form: prop("form"),
         value: prop("value"),

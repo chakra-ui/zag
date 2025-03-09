@@ -12,10 +12,8 @@ import {
   getUnitDuration,
   getWeekDays,
   getYearsRange,
-  isDateDisabled,
   isDateEqual,
-  isDateInvalid,
-  isDateOutsideVisibleRange,
+  isDateOutsideRange,
   isDateUnavailable,
 } from "@zag-js/date-utils"
 import { ariaAttr, dataAttr, getEventKey, getNativeEvent, isComposingEvent } from "@zag-js/dom-query"
@@ -81,6 +79,7 @@ export function connect<T extends PropTypes>(
   })
 
   const separator = getLocaleSeparator(locale)
+  const translations = { ...defaultTranslations, ...prop("translations") }
 
   function getMonthWeeks(from = startValue) {
     const numOfWeeks = prop("fixedWeeks") ? 6 : undefined
@@ -136,7 +135,7 @@ export function connect<T extends PropTypes>(
     const formatter = getMonthFormatter(locale, timeZone)
     const cellState = {
       focused: focusedValue.month === props.value,
-      selectable: !isDateInvalid(normalized, min, max),
+      selectable: !isDateOutsideRange(normalized, min, max),
       selected: !!selectedValue.find((date) => date.month === value && date.year === focusedValue.year),
       valueText: formatter.format(normalized.toDate(timeZone)),
       get disabled() {
@@ -145,8 +144,6 @@ export function connect<T extends PropTypes>(
     }
     return cellState
   }
-
-  const translations = prop("translations") || defaultTranslations
 
   function getDayTableCellState(props: DayTableCellProps): DayTableCellState {
     const { value, disabled, visibleRange = computed("visibleRange") } = props
@@ -157,11 +154,11 @@ export function connect<T extends PropTypes>(
     const end = visibleRange.start.add(unitDuration).subtract({ days: 1 })
 
     const cellState = {
-      invalid: isDateInvalid(value, min, max),
-      disabled: disabled || isDateDisabled(value, visibleRange.start, end, min, max),
+      invalid: isDateOutsideRange(value, min, max),
+      disabled: disabled || isDateOutsideRange(value, visibleRange.start, end) || isDateOutsideRange(value, min, max),
       selected: selectedValue.some((date) => isDateEqual(value, date)),
       unavailable: isDateUnavailable(value, isDateUnavailableFn, locale, min, max) && !disabled,
-      outsideRange: isDateOutsideVisibleRange(value, visibleRange.start, end),
+      outsideRange: isDateOutsideRange(value, visibleRange.start, end),
       inRange:
         isRangePicker && (isDateWithinRange(value, selectedValue) || isDateWithinRange(value, hoveredRangeValue)),
       firstInRange: isRangePicker && isDateEqual(value, selectedValue[0]),
@@ -199,9 +196,15 @@ export function connect<T extends PropTypes>(
     },
     getOffset(duration) {
       const from = startValue.add(duration)
+      const end = endValue.add(duration)
+      const formatter = getMonthFormatter(locale, timeZone)
       return {
-        visibleRange: { start: from, end: endValue.add(duration) },
+        visibleRange: { start: from, end },
         weeks: getMonthWeeks(from),
+        visibleRangeText: {
+          start: formatter.format(from.toDate(timeZone)),
+          end: formatter.format(end.toDate(timeZone)),
+        },
       }
     },
     getMonthWeeks,
@@ -231,7 +234,8 @@ export function connect<T extends PropTypes>(
       send({ type: "FOCUS.SET", value })
     },
     setOpen(nextOpen) {
-      if (nextOpen === open) return
+      const open = state.matches("open")
+      if (open === nextOpen) return
       send({ type: nextOpen ? "OPEN" : "CLOSE" })
     },
     focusMonth,
@@ -638,6 +642,15 @@ export function connect<T extends PropTypes>(
           if (!interactive) return
           send({ type: "TRIGGER.CLICK" })
         },
+      })
+    },
+
+    getViewProps(props = {}) {
+      const { view = "day" } = props
+      return normalize.element({
+        ...parts.view.attrs,
+        "data-view": view,
+        hidden: context.get("view") !== view,
       })
     },
 

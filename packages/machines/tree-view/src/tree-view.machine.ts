@@ -1,6 +1,6 @@
 import { createGuards, createMachine } from "@zag-js/core"
 import { getByTypeahead } from "@zag-js/dom-query"
-import { add, addOrRemove, first, remove, uniq } from "@zag-js/utils"
+import { add, addOrRemove, first, isEqual, remove, uniq } from "@zag-js/utils"
 import { collection } from "./tree-view.collection"
 import * as dom from "./tree-view.dom"
 import type { TreeViewSchema } from "./tree-view.types"
@@ -30,6 +30,7 @@ export const machine = createMachine<TreeViewSchema>({
       expandedValue: bindable(() => ({
         defaultValue: prop("defaultExpandedValue"),
         value: prop("expandedValue"),
+        isEqual,
         onChange(value) {
           const focusedValue = getContext().get("focusedValue")
           prop("onExpandedChange")?.({ expandedValue: value, focusedValue })
@@ -38,6 +39,7 @@ export const machine = createMachine<TreeViewSchema>({
       selectedValue: bindable(() => ({
         defaultValue: prop("defaultSelectedValue"),
         value: prop("selectedValue"),
+        isEqual,
         onChange(value) {
           const focusedValue = getContext().get("focusedValue")
           prop("onSelectionChange")?.({ selectedValue: value, focusedValue })

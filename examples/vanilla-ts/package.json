@@ -9,8 +9,8 @@
     "preview": "vite preview"
   },
   "devDependencies": {
-    "typescript": "^5.7.3",
-    "vite": "^6.1.1"
+    "typescript": "^5.8.2",
+    "vite": "^6.2.0"
   },
   "dependencies": {
     "@internationalized/date": "3.7.0",
@@ -50,6 +50,7 @@
     "@zag-js/interact-outside": "workspace:*",
     "@zag-js/live-region": "workspace:*",
     "@zag-js/menu": "workspace:*",
+    "@zag-js/navigation-menu": "workspace:*",
     "@zag-js/number-input": "workspace:*",
     "@zag-js/pagination": "workspace:*",
     "@zag-js/pin-input": "workspace:*",

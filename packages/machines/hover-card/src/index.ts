@@ -1,3 +1,4 @@
+export type { FocusOutsideEvent, InteractOutsideEvent, PointerDownOutsideEvent } from "@zag-js/dismissable"
 export { anatomy } from "./hover-card.anatomy"
 export { connect } from "./hover-card.connect"
 export { machine } from "./hover-card.machine"

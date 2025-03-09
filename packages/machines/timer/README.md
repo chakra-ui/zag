@@ -1,6 +1,6 @@
-# @zag-js/checkbox
+# @zag-js/timer
 
-Core logic for the checkbox widget implemented as a state machine
+Core logic for the timer widget implemented as a state machine
 
 ## **Installation**
 

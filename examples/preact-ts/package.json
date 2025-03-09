@@ -80,9 +80,9 @@
     "@zag-js/tree-view": "workspace:*",
     "@zag-js/types": "workspace:*",
     "@zag-js/utils": "workspace:*",
-    "lucide-preact": "0.475.0",
+    "lucide-preact": "0.477.0",
     "match-sorter": "8.0.0",
-    "preact": "10.26.2",
+    "preact": "10.26.4",
     "preact-iso": "2.9.0",
     "preact-render-to-string": "6.5.13"
   },
@@ -90,7 +90,7 @@
     "@preact/preset-vite": "2.9.2",
     "eslint": "9.20.1",
     "eslint-config-preact": "1.5.0",
-    "typescript": "5.7.3",
-    "vite": "6.1.1"
+    "typescript": "5.8.2",
+    "vite": "6.2.0"
   }
 }

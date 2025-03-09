@@ -80,7 +80,13 @@ export const rect = async (el: Locator) => {
     throw new Error("Element not found")
   }
 
-  return { ...bbox, midX: bbox.x + bbox.width / 2, midY: bbox.y + bbox.height / 2 }
+  return {
+    ...bbox,
+    midX: bbox.x + bbox.width / 2,
+    midY: bbox.y + bbox.height / 2,
+    maxX: bbox.x + bbox.width,
+    maxY: bbox.y + bbox.height,
+  }
 }
 
 export async function isInViewport(viewport: Locator, el: Locator) {
