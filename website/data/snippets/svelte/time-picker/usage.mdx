@@ -3,10 +3,8 @@
   import * as timePicker from "@zag-js/time-picker"
   import { portal, useMachine, normalizeProps } from "@zag-js/svelte"
 
-  const service = useMachine(timePicker.machine, {
-    id: "1",
-  })
-
+  const id = $props.id()
+  const service = useMachine(timePicker.machine, { id })
   const api = $derived(timePicker.connect(service, normalizeProps))
 </script>
 

@@ -3,9 +3,8 @@
   import { portal } from "@zag-js/svelte"
 
   // ...
-
-  const service = useMachine(toast.group.machine, ({ id: "1", store: toaster }))
-
+  const id = $props.id()
+  const service = useMachine(toast.group.machine, ({ id, store: toaster }))
   const api = $derived(toast.group.connect(service, normalizeProps))
 
   // ...

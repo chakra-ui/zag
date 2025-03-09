@@ -3,11 +3,11 @@
   import * as rating from "@zag-js/rating-group"
   import { normalizeProps, useMachine } from "@zag-js/svelte"
 
+  const id = $props.id()
   const service = useMachine(rating.machine, {
-    id: "1",
+    id,
     defaultValue: 2.5,
   })
-
   const api = $derived(rating.connect(service, normalizeProps))
 </script>
 
