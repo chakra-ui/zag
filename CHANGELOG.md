@@ -8,6 +8,19 @@ All notable changes to this project will be documented in this file.
 
 See the [Changesets](./.changeset) for the latest changes.
 
+## [1.3.3](./#1.3.3) - 2025-03-10
+
+### Fixed
+
+- **Combobox**: Fix issue where cursor moves unexpected when editing input value
+
+- **Tags Input**: Improve caret detection logic to prevent unwanted tag removal
+
+- **Timer**
+
+  - Fix issue where timer slows down when switching tabs/windows
+  - Change default `interval` value from `250` to `1000`
+
 ## [1.3.2](./#1.3.2) - 2025-03-08
 
 ### Fixed
