@@ -207,7 +207,7 @@ export function useMachine<T extends MachineSchema>(
   }))
 
   // improve HMR (to restart effects)
-  const hydratedStateRef = useRef<string | undefined>()
+  const hydratedStateRef = useRef<string | undefined>(undefined)
 
   useSafeLayoutEffect(() => {
     queueMicrotask(() => {
