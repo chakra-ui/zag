@@ -1,7 +1,7 @@
 import { Box, Flex, HStack, Stack } from "@chakra-ui/layout"
 import { chakra } from "@chakra-ui/system"
 import { openInStackblitz } from "lib/open-in-stackblitz"
-import { useState } from "react"
+import { JSX, useState } from "react"
 import { SiStackblitz } from "react-icons/si"
 
 const Header = (props: any) => (
@@ -164,7 +164,7 @@ export function Playground(props: PlaygroundProps) {
                     type="text"
                     defaultValue={value as any}
                     bg="bg-subtle"
-                    onChange={(e) => {
+                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                       setState({ ...state, [key]: e.target.value })
                     }}
                   />
@@ -184,7 +184,7 @@ export function Playground(props: PlaygroundProps) {
                     px="2"
                     bg="bg-subtle"
                     defaultValue={state[key] as number}
-                    onChange={(e) => {
+                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                       const val = e.currentTarget.valueAsNumber
                       setState((s) => ({ ...s, [key]: isNaN(val) ? 0 : val }))
                     }}
@@ -205,7 +205,7 @@ export function Playground(props: PlaygroundProps) {
                   px="1"
                   bg="bg-subtle"
                   defaultValue={state[key] as any}
-                  onChange={(e) => {
+                  onChange={(e: React.ChangeEvent<HTMLSelectElement>) => {
                     setState((s) => ({ ...s, [key]: e.target.value }))
                   }}
                 >

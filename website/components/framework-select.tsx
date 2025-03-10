@@ -23,7 +23,7 @@ export function FrameworkSelect() {
         fontWeight="semibold"
         color="text-primary-bold"
         defaultValue={framework}
-        onChange={(event) => {
+        onChange={(event: React.ChangeEvent<HTMLSelectElement>) => {
           const newFramework = event.currentTarget.value as Framework
           setFramework?.(newFramework)
           if (asPath.includes(framework) && newFramework !== framework) {
