@@ -4,13 +4,15 @@
   import { portal, normalizeProps, useMachine } from "@zag-js/svelte"
   import { onMount } from "svelte"
 
+  const id = $props.id()
+
   // Level 1 - File Menu
-  const fileService = useMachine(menu.machine, ({ id: "1", "aria-label": "File" }))
+  const fileService = useMachine(menu.machine, ({ id: `${id}-1`, "aria-label": "File" }))
 
   const fileMenu = $derived(menu.connect(fileService, normalizeProps))
 
   // Level 2 - Share Menu
-  const shareService = useMachine(menu.machine, ({ id: "2", "aria-label": "Share" }))
+  const shareService = useMachine(menu.machine, ({ id: `${id}-2`, "aria-label": "Share" }))
 
   const shareMenu = $derived(menu.connect(shareService, normalizeProps))
 

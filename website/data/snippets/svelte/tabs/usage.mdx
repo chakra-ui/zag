@@ -9,8 +9,9 @@
     { value: "item-3", label: "Item three", content: "Item three content" },
   ]
 
+  const id = $props.id()
   const service = useMachine(tabs.machine, {
-    id: "1",
+    id,
     defaultValue: "item-1",
   })
 

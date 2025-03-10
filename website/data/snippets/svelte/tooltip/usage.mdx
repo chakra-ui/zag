@@ -3,10 +3,8 @@
   import * as tooltip from "@zag-js/tooltip"
   import { useMachine, normalizeProps } from "@zag-js/svelte"
 
-  const service = useMachine(tooltip.machine, {
-    id: "1",
-  })
-
+  const id = $props.id()
+  const service = useMachine(tooltip.machine, { id })
   const api = $derived(tooltip.connect(service, normalizeProps))
 </script>
 

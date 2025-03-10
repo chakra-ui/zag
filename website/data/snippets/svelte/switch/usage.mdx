@@ -3,11 +3,11 @@
   import { normalizeProps, useMachine } from "@zag-js/svelte"
   import * as zagSwitch from "@zag-js/switch"
 
+  const id = $props.id()
   const service = useMachine(zagSwitch.machine, {
-    id: "1",
+    id,
     name: "switch",
   })
-
   const api = $derived(zagSwitch.connect(service, normalizeProps))
 </script>
 
