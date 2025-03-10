@@ -1,3 +1,4 @@
+export * from "./caret"
 export * from "./computed-style"
 export * from "./data-url"
 export * from "./event"
