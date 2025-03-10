@@ -1,5 +1,22 @@
 # @zag-js/tags-input
 
+## 1.3.4
+
+### Patch Changes
+
+- [`f3cec52`](https://github.com/chakra-ui/zag/commit/f3cec5211dd51b7c7d90bfeb99840ed1f81d47f6) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Improve caret detection logic to prevent unwanted tag removal
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.3.4
+  - @zag-js/core@1.3.4
+  - @zag-js/types@1.3.4
+  - @zag-js/auto-resize@1.3.4
+  - @zag-js/utils@1.3.4
+  - @zag-js/dom-query@1.3.4
+  - @zag-js/interact-outside@1.3.4
+  - @zag-js/live-region@1.3.4
+
 ## 1.3.3
 
 ### Patch Changes
