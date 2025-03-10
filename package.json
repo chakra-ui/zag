@@ -68,7 +68,7 @@
     "@commitlint/config-conventional": "19.7.1",
     "@eslint/eslintrc": "3.2.0",
     "@octokit/rest": "21.1.1",
-    "@playwright/test": "1.50.1",
+    "@playwright/test": "1.51.0",
     "@swc/core": "1.11.5",
     "@types/jsdom": "^21.1.7",
     "@types/node": "22.13.9",
