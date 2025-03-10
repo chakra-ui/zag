@@ -103,8 +103,8 @@ export const machine = createMachine<TimerSchema>({
   implementations: {
     effects: {
       keepTicking({ prop, send }) {
-        return setRafInterval(() => {
-          send({ type: "TICK" })
+        return setRafInterval(({ deltaMs }) => {
+          send({ type: "TICK", deltaMs })
         }, prop("interval"))
       },
       waitForNextTick({ send }) {
@@ -115,12 +115,10 @@ export const machine = createMachine<TimerSchema>({
     },
 
     actions: {
-      updateTime({ context, prop }) {
+      updateTime({ context, prop, event }) {
         const sign = prop("countdown") ? -1 : 1
-        context.set("currentMs", (prev) => prev + sign * 1000)
-      },
-      sendTickEvent({ send }) {
-        send({ type: "TICK" })
+        const deltaMs = roundToInterval(event.deltaMs, prop("interval"))
+        context.set("currentMs", (prev) => prev + sign * deltaMs)
       },
       resetTime({ context, prop }) {
         let targetMs = prop("targetMs")
@@ -171,6 +169,10 @@ function toPercent(value: number, minValue: number, maxValue: number) {
 
 function padStart(num: number, size = 2) {
   return num.toString().padStart(size, "0")
+}
+
+function roundToInterval(value: number, interval: number) {
+  return Math.round(value / interval) * interval
 }
 
 function formatTime(time: Time): Time<string> {

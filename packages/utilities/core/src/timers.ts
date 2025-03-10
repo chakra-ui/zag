@@ -1,4 +1,9 @@
-export function setRafInterval(callback: () => void, interval: number) {
+export interface RafIntervalOptions {
+  startMs: number
+  deltaMs: number
+}
+
+export function setRafInterval(callback: (options: RafIntervalOptions) => void, interval: number) {
   let start = performance.now()
   let handle: number
 
@@ -8,7 +13,7 @@ export function setRafInterval(callback: () => void, interval: number) {
 
     if (delta >= interval) {
       start = now - (delta % interval)
-      callback()
+      callback({ startMs: start, deltaMs: delta })
     }
   }
 
