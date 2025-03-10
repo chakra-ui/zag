@@ -47,7 +47,7 @@ export function ToastGroup(props: { controls: any }) {
   })
 
   const api = toast.group.connect(service, normalizeProps)
-  const id = useRef<string>()
+  const id = useRef<string | undefined>(undefined)
 
   return (
     <>

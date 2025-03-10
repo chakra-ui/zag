@@ -216,4 +216,17 @@ test.describe("tags-input", () => {
     await I.paste("Github")
     await I.seeTag("Github")
   })
+
+  test("should unselect highlighted tag when clicking in the input", async () => {
+    await I.focusInput()
+    await I.type("Type any text")
+    await I.pressKey("ArrowLeft", 12)
+    await I.pressKey("Backspace", 2)
+
+    await I.seeTagIsHighlighted("Vue")
+    await I.clickControl()
+    await I.pressKey("Backspace", 1)
+
+    await I.expectNoTagToBeHighlighted()
+  })
 })

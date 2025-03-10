@@ -1,7 +1,7 @@
 import { ariaHidden } from "@zag-js/aria-hidden"
 import { createGuards, createMachine, type Params } from "@zag-js/core"
 import { trackDismissableElement } from "@zag-js/dismissable"
-import { clickIfLink, observeAttributes, observeChildren, raf, scrollIntoView } from "@zag-js/dom-query"
+import { clickIfLink, observeAttributes, observeChildren, raf, scrollIntoView, setCaretToEnd } from "@zag-js/dom-query"
 import { getPlacement } from "@zag-js/popper"
 import { addOrRemove, isBoolean, isEqual, match, remove } from "@zag-js/utils"
 import { collection } from "./combobox.collection"
@@ -835,19 +835,15 @@ export const machine = createMachine<ComboboxSchema>({
           }
         })
       },
-      syncInputValue({ context, scope }) {
+      syncInputValue({ context, scope, event }) {
         const inputEl = dom.getInputEl(scope)
-        if (!inputEl) return
 
+        if (!inputEl) return
         inputEl.value = context.get("inputValue")
 
         queueMicrotask(() => {
-          const { selectionStart, selectionEnd } = inputEl
-
-          if (Math.abs((selectionEnd ?? 0) - (selectionStart ?? 0)) !== 0) return
-          if (selectionStart !== 0) return
-
-          inputEl.setSelectionRange(inputEl.value.length, inputEl.value.length)
+          if (event.current().type === "INPUT.CHANGE") return
+          setCaretToEnd(inputEl)
         })
       },
       setInputValue({ context, event }) {

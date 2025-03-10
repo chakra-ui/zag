@@ -26,6 +26,10 @@ export class TagsInputModel extends Model {
     return this.page.locator(`[data-testid=${value.toLowerCase()}-input]`)
   }
 
+  getControl() {
+    return this.page.locator(`[data-scope=tags-input][data-part=control]`)
+  }
+
   async paste(value: string) {
     await this.input.focus()
     await this.page.evaluate((value) => navigator.clipboard.writeText(value), value)
@@ -40,6 +44,10 @@ export class TagsInputModel extends Model {
   async editTag(value: string) {
     await this.type(value)
     await this.page.keyboard.press("Enter")
+  }
+
+  async clickControl() {
+    await this.getControl().click()
   }
 
   clickTag(value: string) {

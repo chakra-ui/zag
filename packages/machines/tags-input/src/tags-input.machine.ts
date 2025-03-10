@@ -1,6 +1,6 @@
 import { autoResizeInput } from "@zag-js/auto-resize"
 import { createGuards, createMachine } from "@zag-js/core"
-import { contains, raf, setElementValue, trackFormControl } from "@zag-js/dom-query"
+import { contains, isCaretAtStart, raf, setElementValue, trackFormControl } from "@zag-js/dom-query"
 import { trackInteractOutside } from "@zag-js/interact-outside"
 import { createLiveRegion } from "@zag-js/live-region"
 import { isEqual, removeAt, uniq, warn } from "@zag-js/utils"
@@ -202,13 +202,13 @@ export const machine = createMachine<TagsInputSchema>({
           actions: ["raiseInsertTagEvent"],
         },
         ARROW_LEFT: {
-          guard: and("hasTags", "isInputCaretAtStart"),
+          guard: and("hasTags", "isCaretAtStart"),
           target: "navigating:tag",
           actions: ["highlightLastTag"],
         },
         BACKSPACE: {
           target: "navigating:tag",
-          guard: and("hasTags", "isInputCaretAtStart"),
+          guard: and("hasTags", "isCaretAtStart"),
           actions: ["highlightLastTag"],
         },
         DELETE: {
@@ -233,14 +233,20 @@ export const machine = createMachine<TagsInputSchema>({
       on: {
         ARROW_RIGHT: [
           {
-            guard: and("hasTags", "isInputCaretAtStart", not("isLastTagHighlighted")),
+            guard: and("hasTags", "isCaretAtStart", not("isLastTagHighlighted")),
             actions: ["highlightNextTag"],
           },
           { target: "focused:input" },
         ],
-        ARROW_LEFT: {
-          actions: ["highlightPrevTag"],
-        },
+        ARROW_LEFT: [
+          {
+            guard: not("isCaretAtStart"),
+            target: "focused:input",
+          },
+          {
+            actions: ["highlightPrevTag"],
+          },
+        ],
         BLUR: {
           target: "idle",
           actions: ["clearHighlightedId"],
@@ -262,6 +268,10 @@ export const machine = createMachine<TagsInputSchema>({
         },
         BACKSPACE: [
           {
+            guard: not("isCaretAtStart"),
+            target: "focused:input",
+          },
+          {
             guard: "isFirstTagHighlighted",
             actions: ["deleteHighlightedTag", "highlightFirstTag"],
           },
@@ -273,10 +283,16 @@ export const machine = createMachine<TagsInputSchema>({
             actions: ["highlightLastTag"],
           },
         ],
-        DELETE: {
-          target: "focused:input",
-          actions: ["deleteHighlightedTag", "highlightTagAtIndex"],
-        },
+        DELETE: [
+          {
+            guard: not("isCaretAtStart"),
+            target: "focused:input",
+          },
+          {
+            target: "focused:input",
+            actions: ["deleteHighlightedTag", "highlightTagAtIndex"],
+          },
+        ],
         PASTE: [
           {
             guard: "addOnPaste",
@@ -354,15 +370,7 @@ export const machine = createMachine<TagsInputSchema>({
       clearOnBlur: ({ prop }) => prop("blurBehavior") === "clear",
       addOnPaste: ({ prop }) => !!prop("addOnPaste"),
       isTagEditable: ({ prop }) => !!prop("editable"),
-      isInputCaretAtStart({ scope }) {
-        const input = dom.getInputEl(scope)
-        if (!input) return false
-        try {
-          return input.selectionStart === 0 && input.selectionEnd === 0
-        } catch {
-          return input.value === ""
-        }
-      },
+      isCaretAtStart: ({ scope }) => isCaretAtStart(dom.getInputEl(scope)),
     },
 
     effects: {

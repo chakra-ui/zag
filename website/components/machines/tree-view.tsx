@@ -1,7 +1,7 @@
 import { normalizeProps, useMachine } from "@zag-js/react"
 import * as tree from "@zag-js/tree-view"
 import { LuFile, LuFolder, LuChevronRight } from "react-icons/lu"
-import { useId } from "react"
+import { JSX, useId } from "react"
 
 interface Node {
   id: string
