@@ -5,7 +5,7 @@ import type { Time, TimerSchema } from "./timer.types"
 export const machine = createMachine<TimerSchema>({
   props({ props }) {
     return {
-      interval: 250,
+      interval: 1000,
       ...props,
     }
   },

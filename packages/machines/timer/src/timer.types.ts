@@ -55,7 +55,7 @@ export interface TimerProps extends CommonProperties {
   autoStart?: boolean | undefined
   /**
    * The interval in milliseconds to update the timer count.
-   * @default 250
+   * @default 1000
    */
   interval?: number | undefined
   /**
