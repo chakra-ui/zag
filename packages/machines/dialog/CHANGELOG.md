@@ -1,5 +1,20 @@
 # @zag-js/dialog
 
+## 1.3.4
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.3.4
+  - @zag-js/core@1.3.4
+  - @zag-js/types@1.3.4
+  - @zag-js/aria-hidden@1.3.4
+  - @zag-js/utils@1.3.4
+  - @zag-js/dismissable@1.3.4
+  - @zag-js/dom-query@1.3.4
+  - @zag-js/focus-trap@1.3.4
+  - @zag-js/remove-scroll@1.3.4
+
 ## 1.3.3
 
 ### Patch Changes
