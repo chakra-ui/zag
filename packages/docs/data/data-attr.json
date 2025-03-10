@@ -549,6 +549,11 @@
       "data-placement": "The placement of the trigger",
       "data-state": "\"open\" | \"closed\""
     },
+    "View": {
+      "data-scope": "date-picker",
+      "data-part": "view",
+      "data-view": "The view of the view"
+    },
     "ViewTrigger": {
       "data-scope": "date-picker",
       "data-part": "view-trigger",
@@ -784,6 +789,78 @@
       "data-state": "\"checked\" | \"unchecked\""
     }
   },
+  "navigation-menu": {
+    "Root": {
+      "data-scope": "navigation-menu",
+      "data-part": "root",
+      "data-orientation": "The orientation of the navigation-menu",
+      "data-type": "The type of the item"
+    },
+    "List": {
+      "data-scope": "navigation-menu",
+      "data-part": "list",
+      "data-orientation": "The orientation of the list",
+      "data-type": "The type of the item"
+    },
+    "Item": {
+      "data-scope": "navigation-menu",
+      "data-part": "item",
+      "data-value": "The value of the item",
+      "data-state": "\"open\" | \"closed\"",
+      "data-orientation": "The orientation of the item",
+      "data-disabled": "Present when disabled"
+    },
+    "IndicatorTrack": {
+      "data-scope": "navigation-menu",
+      "data-part": "indicator-track",
+      "data-orientation": "The orientation of the indicatortrack"
+    },
+    "Indicator": {
+      "data-scope": "navigation-menu",
+      "data-part": "indicator",
+      "data-state": "\"open\" | \"closed\"",
+      "data-orientation": "The orientation of the indicator",
+      "data-type": "The type of the item"
+    },
+    "Arrow": {
+      "data-scope": "navigation-menu",
+      "data-part": "arrow",
+      "data-orientation": "The orientation of the arrow"
+    },
+    "Trigger": {
+      "data-scope": "navigation-menu",
+      "data-part": "trigger",
+      "data-value": "The value of the item",
+      "data-state": "\"open\" | \"closed\"",
+      "data-type": "The type of the item",
+      "data-disabled": "Present when disabled"
+    },
+    "Link": {
+      "data-scope": "navigation-menu",
+      "data-part": "link",
+      "data-value": "The value of the item",
+      "data-current": "Present when current"
+    },
+    "Content": {
+      "data-scope": "navigation-menu",
+      "data-part": "content",
+      "data-state": "\"open\" | \"closed\"",
+      "data-type": "The type of the item",
+      "data-value": "The value of the item"
+    },
+    "ViewportPositioner": {
+      "data-scope": "navigation-menu",
+      "data-part": "viewport-positioner",
+      "data-orientation": "The orientation of the viewportpositioner"
+    },
+    "Viewport": {
+      "data-scope": "navigation-menu",
+      "data-part": "viewport",
+      "data-state": "\"open\" | \"closed\"",
+      "data-orientation": "The orientation of the viewport",
+      "data-type": "The type of the item"
+    }
+  },
   "number-input": {
     "Root": {
       "data-scope": "number-input",
@@ -875,6 +952,7 @@
       "data-part": "input",
       "data-disabled": "Present when disabled",
       "data-complete": "Present when the input value is complete",
+      "data-index": "The index of the item",
       "data-invalid": "Present when invalid"
     }
   },
@@ -1504,6 +1582,22 @@
       "data-scope": "toast",
       "data-part": "ghost-after",
       "data-ghost": ""
+    }
+  },
+  "toggle": {
+    "Root": {
+      "data-scope": "toggle",
+      "data-part": "root",
+      "data-state": "\"on\" | \"off\"",
+      "data-pressed": "Present when pressed",
+      "data-disabled": "Present when disabled"
+    },
+    "Indicator": {
+      "data-scope": "toggle",
+      "data-part": "indicator",
+      "data-disabled": "Present when disabled",
+      "data-pressed": "Present when pressed",
+      "data-state": "\"on\" | \"off\""
     }
   },
   "toggle-group": {

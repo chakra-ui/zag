@@ -94,7 +94,7 @@
     },
     "context": {
       "ids": {
-        "type": "Partial<ElementIds>",
+        "type": "Partial<{ root: string; thumb: string; hiddenInput: string; control: string; valueText: string; }>",
         "description": "The ids of the elements in the machine.\nUseful for composition."
       },
       "step": {
@@ -948,7 +948,7 @@
         "description": "Specifies the localized strings that identifies the accessibility elements and their states"
       },
       "collection": {
-        "type": "ListCollection<any>",
+        "type": "ListCollection<T>",
         "description": "The collection of items"
       },
       "multiple": {
@@ -1942,6 +1942,18 @@
       "getRootNode": {
         "type": "() => ShadowRoot | Node | Document",
         "description": "A root node to correctly resolve document in custom environments. E.x.: Iframes, Electron."
+      },
+      "onPointerDownOutside": {
+        "type": "(event: PointerDownOutsideEvent) => void",
+        "description": "Function called when the pointer is pressed down outside the component"
+      },
+      "onFocusOutside": {
+        "type": "(event: FocusOutsideEvent) => void",
+        "description": "Function called when the focus is moved outside the component"
+      },
+      "onInteractOutside": {
+        "type": "(event: InteractOutsideEvent) => void",
+        "description": "Function called when an interaction happens outside the component"
       }
     }
   },
@@ -2081,6 +2093,88 @@
       "onInteractOutside": {
         "type": "(event: InteractOutsideEvent) => void",
         "description": "Function called when an interaction happens outside the component"
+      }
+    }
+  },
+  "navigation-menu": {
+    "api": {
+      "value": {
+        "type": "string",
+        "description": "The current value of the menu"
+      },
+      "setValue": {
+        "type": "(value: string) => void",
+        "description": "Sets the value of the menu"
+      },
+      "open": {
+        "type": "boolean",
+        "description": "Whether the menu is open"
+      },
+      "setParent": {
+        "type": "(parent: NavigationMenuService) => void",
+        "description": "Sets the parent of the menu"
+      },
+      "setChild": {
+        "type": "(child: NavigationMenuService) => void",
+        "description": "Sets the child of the menu"
+      },
+      "orientation": {
+        "type": "Orientation",
+        "description": "The orientation of the menu"
+      }
+    },
+    "context": {
+      "ids": {
+        "type": "Partial<{ root: string; list: string; item: string; indicator: string; trigger: string; content: string; viewport: string; }>",
+        "description": "The ids of the elements in the machine."
+      },
+      "value": {
+        "type": "string",
+        "description": "The controlled value of the navigation menu"
+      },
+      "defaultValue": {
+        "type": "string",
+        "description": "The default value of the navigation menu.\nUse when you don't want to control the value of the menu."
+      },
+      "onValueChange": {
+        "type": "(details: ValueChangeDetails) => void",
+        "description": "Function called when the value of the menu changes"
+      },
+      "openDelay": {
+        "type": "number",
+        "description": "The delay before the menu opens",
+        "defaultValue": "200"
+      },
+      "closeDelay": {
+        "type": "number",
+        "description": "The delay before the menu closes",
+        "defaultValue": "300"
+      },
+      "disableClickTrigger": {
+        "type": "boolean",
+        "description": "Whether to disable the click trigger"
+      },
+      "disableHoverTrigger": {
+        "type": "boolean",
+        "description": "Whether to disable the hover trigger"
+      },
+      "dir": {
+        "type": "\"ltr\" | \"rtl\"",
+        "description": "The document's text/writing direction.",
+        "defaultValue": "\"ltr\""
+      },
+      "id": {
+        "type": "string",
+        "description": "The unique identifier of the machine."
+      },
+      "getRootNode": {
+        "type": "() => ShadowRoot | Node | Document",
+        "description": "A root node to correctly resolve document in custom environments. E.x.: Iframes, Electron."
+      },
+      "orientation": {
+        "type": "\"horizontal\" | \"vertical\"",
+        "description": "The orientation of the element.",
+        "defaultValue": "\"horizontal\""
       }
     }
   },
@@ -2402,6 +2496,14 @@
         "type": "boolean",
         "description": "Whether all inputs are filled."
       },
+      "count": {
+        "type": "number",
+        "description": "The number of inputs to render"
+      },
+      "items": {
+        "type": "number[]",
+        "description": "The array of input values."
+      },
       "setValue": {
         "type": "(value: string[]) => void",
         "description": "Function to set the value of the inputs."
@@ -2505,6 +2607,10 @@
       "translations": {
         "type": "IntlTranslations",
         "description": "Specifies the localized strings that identifies the accessibility elements and their states"
+      },
+      "count": {
+        "type": "number",
+        "description": "The number of inputs to render to improve SSR aria attributes.\nThis will be required in next major version."
       },
       "dir": {
         "type": "\"ltr\" | \"rtl\"",
@@ -2733,6 +2839,16 @@
       "onValueChange": {
         "type": "(details: ValueChangeDetails) => void",
         "description": "Callback fired when the value changes."
+      },
+      "formatOptions": {
+        "type": "Intl.NumberFormatOptions",
+        "description": "The options to use for formatting the value.",
+        "defaultValue": "{ style: \"percent\" }"
+      },
+      "locale": {
+        "type": "string",
+        "description": "The locale to use for formatting the value.",
+        "defaultValue": "\"en-US\""
       },
       "dir": {
         "type": "\"ltr\" | \"rtl\"",
@@ -3081,7 +3197,7 @@
     },
     "context": {
       "collection": {
-        "type": "ListCollection<any>",
+        "type": "ListCollection<T>",
         "description": "The item collection"
       },
       "ids": {
@@ -4231,7 +4347,7 @@
       "interval": {
         "type": "number",
         "description": "The interval in milliseconds to update the timer count.",
-        "defaultValue": "250"
+        "defaultValue": "1000"
       },
       "onTick": {
         "type": "(details: TickDetails) => void",
@@ -4338,6 +4454,40 @@
       "isDismissed": {
         "type": "(id: string) => boolean",
         "description": "Check if a toast with the given ID has been dismissed"
+      }
+    }
+  },
+  "toggle": {
+    "api": {
+      "pressed": {
+        "type": "boolean",
+        "description": "Whether the toggle is pressed."
+      },
+      "disabled": {
+        "type": "boolean",
+        "description": "Whether the toggle is disabled."
+      },
+      "setPressed": {
+        "type": "(pressed: boolean) => void",
+        "description": "Sets the pressed state of the toggle."
+      }
+    },
+    "context": {
+      "disabled": {
+        "type": "boolean",
+        "description": "Whether the toggle is disabled."
+      },
+      "defaultPressed": {
+        "type": "boolean",
+        "description": "The default pressed state of the toggle."
+      },
+      "pressed": {
+        "type": "boolean",
+        "description": "The pressed state of the toggle."
+      },
+      "onPressedChange": {
+        "type": "(pressed: boolean) => void",
+        "description": "Event handler called when the pressed state of the toggle changes."
       }
     }
   },
