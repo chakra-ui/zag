@@ -1,5 +1,19 @@
 # @zag-js/checkbox
 
+## 1.3.3
+
+### Patch Changes
+
+- [`66ba41b`](https://github.com/chakra-ui/zag/commit/66ba41bb10b232ff08e3cfbfc6cbf2a1c7449e21) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - - Fix issue where timer slows down when switching tabs/windows
+  - Set default interval value from `250` to `1000`
+- Updated dependencies [[`66ba41b`](https://github.com/chakra-ui/zag/commit/66ba41bb10b232ff08e3cfbfc6cbf2a1c7449e21)]:
+  - @zag-js/utils@1.3.3
+  - @zag-js/core@1.3.3
+  - @zag-js/anatomy@1.3.3
+  - @zag-js/types@1.3.3
+  - @zag-js/dom-query@1.3.3
+
 ## 1.3.2
 
 ### Patch Changes
