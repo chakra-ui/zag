@@ -69,7 +69,7 @@
     "@eslint/eslintrc": "3.2.0",
     "@octokit/rest": "21.1.1",
     "@playwright/test": "1.50.1",
-    "@swc/core": "1.11.5",
+    "@swc/core": "1.11.8",
     "@types/jsdom": "^21.1.7",
     "@types/node": "22.13.9",
     "@types/signale": "1.4.7",
