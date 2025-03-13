@@ -134,7 +134,6 @@ export const machine = createMachine<DatePickerSchema>({
         isEqual: isDateArrayEqual,
         hash: (v) => v.map((date) => date.toString()).join(","),
         onChange(value) {
-          console.log("onChange", value)
           const context = getContext()
           const valueAsString = value.map((date) =>
             prop("format")(date, { locale: prop("locale"), timeZone: prop("timeZone") }),

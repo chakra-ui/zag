@@ -32,7 +32,8 @@ export const machine = createMachine<TreeViewSchema>({
         value: prop("expandedValue"),
         isEqual,
         onChange(value) {
-          const focusedValue = getContext().get("focusedValue")
+          const ctx = getContext()
+          const focusedValue = ctx.get("focusedValue")
           prop("onExpandedChange")?.({ expandedValue: value, focusedValue })
         },
       })),
@@ -41,7 +42,8 @@ export const machine = createMachine<TreeViewSchema>({
         value: prop("selectedValue"),
         isEqual,
         onChange(value) {
-          const focusedValue = getContext().get("focusedValue")
+          const ctx = getContext()
+          const focusedValue = ctx.get("focusedValue")
           prop("onSelectionChange")?.({ selectedValue: value, focusedValue })
         },
       })),

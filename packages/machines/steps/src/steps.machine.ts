@@ -13,17 +13,15 @@ export const machine = createMachine<StepsSchema>({
     }
   },
 
-  context({ prop, bindable, getComputed }) {
+  context({ prop, bindable }) {
     return {
       step: bindable<number>(() => ({
         defaultValue: prop("defaultStep"),
         value: prop("step"),
         onChange(value) {
-          const computed = getComputed()
           prop("onStepChange")?.({ step: value })
-          if (computed("completed")) {
-            prop("onStepComplete")?.()
-          }
+          const completed = value == prop("count")
+          if (completed) prop("onStepComplete")?.()
         },
       })),
     }

@@ -10,7 +10,7 @@ import {
   clampTime,
   getCurrentTime,
   getHourPeriod,
-  getStringifiedValue,
+  getValueString,
   getTimeValue,
   is12HourFormat,
   isTimeEqual,
@@ -47,10 +47,8 @@ export const machine = createMachine<TimePickerSchema>({
         isEqual: isTimeEqual,
         onChange(value) {
           const computed = getComputed()
-          prop("onValueChange")?.({
-            value,
-            valueAsString: computed("valueAsString"),
-          })
+          const valueAsString = getValueString(value, computed("hour12"), computed("period"), prop("allowSeconds"))
+          prop("onValueChange")?.({ value, valueAsString })
         },
       })),
       focusedColumn: bindable<TimeUnit>(() => ({ defaultValue: "hour" })),
@@ -63,7 +61,7 @@ export const machine = createMachine<TimePickerSchema>({
 
   computed: {
     valueAsString: ({ context, prop, computed }) =>
-      getStringifiedValue(context.get("value"), computed("hour12"), computed("period"), prop("allowSeconds")),
+      getValueString(context.get("value"), computed("hour12"), computed("period"), prop("allowSeconds")),
     hour12: ({ prop }) => is12HourFormat(prop("locale")),
     period: ({ context, prop }) => getHourPeriod(context.get("value")?.hour, prop("locale")),
   },

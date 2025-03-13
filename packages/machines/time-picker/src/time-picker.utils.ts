@@ -8,7 +8,7 @@ export function getCurrentTime() {
 
 export const padStart = (value: number) => value.toString().padStart(2, "0")
 
-export function getStringifiedValue(
+export function getValueString(
   value: Time | null,
   hour12: boolean,
   period: TimePeriod | null,

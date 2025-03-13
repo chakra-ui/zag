@@ -62,7 +62,8 @@ export const machine = createMachine({
         value: prop("value"),
         onChange(value) {
           const computed = getComputed()
-          prop("onValueChange")?.({ value, valueAsNumber: computed("valueAsNumber") })
+          const valueAsNumber = parseValue(value, { computed, prop })
+          prop("onValueChange")?.({ value, valueAsNumber })
         },
       })),
       hint: bindable<HintValue | null>(() => ({ defaultValue: null })),

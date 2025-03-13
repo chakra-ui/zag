@@ -12,6 +12,12 @@ import { findStep, findStepIndex, isDialogStep, isTooltipStep } from "./utils/st
 
 const { and } = createGuards<TourSchema>()
 
+const getEffectiveSteps = (steps: StepDetails[]) => steps.filter((step) => step.type !== "wait")
+const getProgress = (steps: StepDetails[], stepIndex: number) => {
+  const effectiveLength = getEffectiveSteps(steps).length
+  return (stepIndex + 1) / effectiveLength
+}
+
 export const machine = createMachine<TourSchema>({
   props({ props }) {
     return {
@@ -37,7 +43,7 @@ export const machine = createMachine<TourSchema>({
     return "tour.inactive"
   },
 
-  context({ prop, bindable, getComputed, getContext }) {
+  context({ prop, bindable, getContext }) {
     return {
       steps: bindable<StepDetails[]>(() => ({
         defaultValue: prop("steps") ?? [],
@@ -49,15 +55,12 @@ export const machine = createMachine<TourSchema>({
         defaultValue: prop("stepId"),
         sync: true,
         onChange(value) {
-          const computed = getComputed()
           const context = getContext()
-          prop("onStepChange")?.({
-            stepId: value,
-            stepIndex: computed("stepIndex"),
-            totalSteps: context.get("steps").length,
-            complete: computed("isLastStep"),
-            progress: computed("progress"),
-          })
+          const steps = context.get("steps")
+          const stepIndex = findStepIndex(steps, value)
+          const progress = getProgress(steps, stepIndex)
+          const complete = stepIndex == steps.length - 1
+          prop("onStepChange")?.({ stepId: value, stepIndex, totalSteps: steps.length, complete, progress })
         },
       })),
       resolvedTarget: bindable<HTMLElement | null>(() => ({
@@ -84,7 +87,7 @@ export const machine = createMachine<TourSchema>({
     isFirstStep: ({ computed }) => computed("stepIndex") === 0,
     isLastStep: ({ context, computed }) => computed("stepIndex") === context.get("steps").length - 1,
     progress: ({ context, computed }) => {
-      const effectiveLength = context.get("steps").filter((step) => step.type !== "wait").length
+      const effectiveLength = getEffectiveSteps(context.get("steps")).length
       return (computed("stepIndex") + 1) / effectiveLength
     },
   },

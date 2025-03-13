@@ -1,7 +1,7 @@
 import { createMachine } from "@zag-js/core"
 import { raf, setElementValue, trackFormControl, trackPointerMove } from "@zag-js/dom-query"
 import { trackElementsSize, type ElementSize } from "@zag-js/element-size"
-import { getValuePercent, isEqual, setValueAtIndex } from "@zag-js/utils"
+import { clampValue, getValuePercent, getValueRanges, isEqual, setValueAtIndex, snapValueToStep } from "@zag-js/utils"
 import * as dom from "./slider.dom"
 import type { SliderSchema } from "./slider.types"
 import { constrainValue, decrement, getClosestIndex, getRangeAtIndex, increment, normalizeValues } from "./slider.utils"
@@ -10,19 +10,32 @@ const isEqualSize = (a: ElementSize | null, b: ElementSize | null) => {
   return a?.width === b?.width && a?.height === b?.height
 }
 
+const normalize = (value: number[], min: number, max: number, step: number) => {
+  const ranges = getValueRanges(value, min, max, step)
+  return ranges.map((range) => {
+    const snapValue = snapValueToStep(range.value, range.min, range.max, step)
+    return clampValue(snapValue, range.min, range.max)
+  })
+}
+
 export const machine = createMachine<SliderSchema>({
   props({ props }) {
+    const min = props.min ?? 0
+    const max = props.max ?? 100
+    const step = props.step ?? 1
+    const defaultValue = props.defaultValue ?? [min]
     return {
       dir: "ltr",
       thumbAlignment: "contain",
-      min: 0,
-      max: 100,
-      step: 1,
-      defaultValue: [0],
       origin: "start",
       orientation: "horizontal",
       minStepsBetweenThumbs: 0,
       ...props,
+      defaultValue: normalize(defaultValue, min, max, step),
+      value: props.value ? normalize(props.value, min, max, step) : undefined,
+      max,
+      step,
+      min,
     }
   },
 
