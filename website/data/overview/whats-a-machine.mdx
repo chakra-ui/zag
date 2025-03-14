@@ -32,7 +32,9 @@ import { createMachine } from "@zag-js/core"
 
 const machine = createMachine({
   // initial state
-  initial: "active",
+  initialState() {
+    return "active"
+  },
   // the finite states
   states: {
     active: {

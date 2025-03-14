@@ -38,7 +38,9 @@ import { createMachine } from "@zag-js/core"
 
 const toggleMachine = createMachine({
   id: "toggle",
-  initial: "inactive",
+  initialState() {
+    return "inactive"
+  },
   states: {
     inactive: { on: { TOGGLE: "active" } },
     active: { on: { TOGGLE: "inactive" } },
