@@ -1,5 +1,6 @@
 import { dataAttr, getEventKey, getEventStep } from "@zag-js/dom-query"
 import type { EventKeyMap, NormalizeProps, PropTypes } from "@zag-js/types"
+import { ensure } from "@zag-js/utils"
 import { parts } from "./splitter.anatomy"
 import * as dom from "./splitter.dom"
 import type { ResizeTriggerProps, ResizeTriggerState, SplitterApi, SplitterService } from "./splitter.types"
@@ -37,14 +38,22 @@ export function connect<T extends PropTypes>(service: SplitterService, normalize
     bounds: getHandleBounds(computed("panels"), activeResizeId),
     setToMinSize(id) {
       const panel = panels.find((panel) => panel.id === id)
-      send({ type: "SET_PANEL_SIZE", id, size: panel?.minSize, src: "setToMinSize" })
+      send({ type: "SIZE.SET", id, size: panel?.minSize, src: "setToMinSize" })
     },
     setToMaxSize(id) {
       const panel = panels.find((panel) => panel.id === id)
-      send({ type: "SET_PANEL_SIZE", id, size: panel?.maxSize, src: "setToMaxSize" })
+      send({ type: "SIZE.SET", id, size: panel?.maxSize, src: "setToMaxSize" })
     },
     setSize(id, size) {
-      send({ type: "SET_PANEL_SIZE", id, size })
+      send({ type: "SIZE.SET", id, size })
+    },
+    setSizes(sizes) {
+      send({ type: "SIZES.SET", sizes })
+    },
+    getSize(id) {
+      const panel = panels.find((panel) => panel.id === id)
+      ensure(panel, `Panel with id ${id} not found`)
+      return panel.size
     },
 
     getRootProps() {

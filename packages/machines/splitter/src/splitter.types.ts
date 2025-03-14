@@ -165,9 +165,18 @@ export interface SplitterApi<T extends PropTypes = PropTypes> {
    */
   setSize(id: PanelId, size: number): void
   /**
+   * Function to set the size of multiple panels.
+   */
+  setSizes(sizes: PanelSizeData[]): void
+  /**
+   * Returns the size of a panel.
+   */
+  getSize(id: PanelId): number
+  /**
    * Returns the state details for a resize trigger.
    */
   getResizeTriggerState(props: ResizeTriggerProps): ResizeTriggerState
+
   getRootProps(): T["element"]
   getPanelProps(props: PanelProps): T["element"]
   getResizeTriggerProps(props: ResizeTriggerProps): T["element"]

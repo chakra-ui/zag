@@ -61,8 +61,11 @@ export const machine = createMachine<SplitterSchema>({
   },
 
   on: {
-    SET_PANEL_SIZE: {
+    "SIZE.SET": {
       actions: ["setPanelSize"],
+    },
+    "SIZES.SET": {
+      actions: ["setPanelSizes"],
     },
   },
   states: {
@@ -235,6 +238,9 @@ export const machine = createMachine<SplitterSchema>({
             return panel.id === id ? { ...panel, size: panelSize } : panel
           }),
         )
+      },
+      setPanelSizes({ context, event }) {
+        context.set("size", event.sizes)
       },
       setStartPanelToMin({ context, computed }) {
         const bounds = getPanelBounds(computed("panels"), context.get("activeResizeId"))
