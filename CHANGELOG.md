@@ -8,7 +8,7 @@ All notable changes to this project will be documented in this file.
 
 See the [Changesets](./.changeset) for the latest changes.
 
-## [1.3.4](./#1.3.4) - 2025-03-14
+## [1.4.0](./#1.4.0) - 2025-03-14
 
 ### Added
 
