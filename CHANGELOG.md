@@ -8,6 +8,20 @@ All notable changes to this project will be documented in this file.
 
 See the [Changesets](./.changeset) for the latest changes.
 
+## [1.3.4](./#1.3.4) - 2025-03-14
+
+### Added
+
+- **Splitter**
+  - Add `api.setSizes` to set the size of multiple panels
+  - Add `api.getSize` to get the size of a panel
+
+### Fixed
+
+- **Number Input**: Fix issue where number input `onValueChange` is called with incorrect `valueAsNumber`
+
+- **Slider**: Fix issue where setting `min` to value other than `0` causes incorrect initial placement of thumbs
+
 ## [1.3.3](./#1.3.3) - 2025-03-10
 
 ### Fixed
