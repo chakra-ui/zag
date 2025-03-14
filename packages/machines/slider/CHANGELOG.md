@@ -1,5 +1,21 @@
 # @zag-js/slider
 
+## 1.4.0
+
+### Patch Changes
+
+- [`54e75bc`](https://github.com/chakra-ui/zag/commit/54e75bcccc27e7997e32cbf0b6c7bc4bb63c7f2b) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix issue where setting `min` to value other than `0` causes
+  incorrect initial placement of thumbs.
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.4.0
+  - @zag-js/core@1.4.0
+  - @zag-js/types@1.4.0
+  - @zag-js/utils@1.4.0
+  - @zag-js/dom-query@1.4.0
+  - @zag-js/element-size@1.4.0
+
 ## 1.3.3
 
 ### Patch Changes

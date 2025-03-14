@@ -1,5 +1,22 @@
 # @zag-js/splitter
 
+## 1.4.0
+
+### Minor Changes
+
+- [`52be3b5`](https://github.com/chakra-ui/zag/commit/52be3b526c5c4b3d4836abd0c69aac4442953f4c) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - - Add `api.setSizes` to set the size of multiple panels
+  - Add `api.getSize` to get the size of a panel
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.4.0
+  - @zag-js/core@1.4.0
+  - @zag-js/types@1.4.0
+  - @zag-js/utils@1.4.0
+  - @zag-js/dom-query@1.4.0
+
 ## 1.3.3
 
 ### Patch Changes
