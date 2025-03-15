@@ -79,12 +79,12 @@
     "react-spinners": "0.15.0"
   },
   "devDependencies": {
-    "@next/eslint-plugin-next": "15.2.1",
+    "@next/eslint-plugin-next": "15.2.2",
     "@types/node": "22.13.10",
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "eslint": "9.22.0",
-    "eslint-config-next": "15.2.1",
+    "eslint-config-next": "15.2.2",
     "typescript": "5.8.2"
   }
 }

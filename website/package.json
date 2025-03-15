@@ -85,11 +85,11 @@
     "use-match-media-hook": "1.0.1"
   },
   "devDependencies": {
-    "@next/eslint-plugin-next": "15.2.1",
+    "@next/eslint-plugin-next": "15.2.2",
     "@types/react": "^19",
     "all-contributors-cli": "6.26.1",
     "eslint": "^9",
-    "eslint-config-next": "15.2.1",
+    "eslint-config-next": "15.2.2",
     "prettier": "3.5.3",
     "rehype": "13.0.2",
     "rehype-autolink-headings": "7.1.0",
