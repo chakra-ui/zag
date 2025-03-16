@@ -4,11 +4,12 @@ export { machine } from "./splitter.machine"
 export * from "./splitter.props"
 export type {
   SplitterApi as Api,
+  ExpandCollapseDetails,
+  ResizeEndDetails,
   SplitterMachine as Machine,
   PanelProps,
-  PanelSizeData,
   SplitterProps as Props,
   ResizeTriggerProps,
   SplitterService as Service,
-  SizeChangeDetails,
+  ResizeDetails,
 } from "./splitter.types"

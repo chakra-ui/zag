@@ -7,17 +7,22 @@ export const props = createProps<SplitterProps>()([
   "getRootNode",
   "id",
   "ids",
-  "onSizeChange",
-  "onSizeChangeEnd",
+  "onResize",
+  "onResizeEnd",
+  "onCollapse",
+  "onExpand",
   "orientation",
   "size",
   "defaultSize",
+  "panels",
+  "keyboardResizeBy",
+  "nonce",
 ])
 
 export const splitProps = createSplitProps<Partial<SplitterProps>>(props)
 
-export const panelProps = createProps<PanelProps>()(["id", "snapSize"])
+export const panelProps = createProps<PanelProps>()(["id"])
 export const splitPanelProps = createSplitProps<PanelProps>(panelProps)
 
-export const resizeTriggerProps = createProps<ResizeTriggerProps>()(["disabled", "id", "step"])
+export const resizeTriggerProps = createProps<ResizeTriggerProps>()(["disabled", "id"])
 export const splitResizeTriggerProps = createSplitProps<ResizeTriggerProps>(resizeTriggerProps)

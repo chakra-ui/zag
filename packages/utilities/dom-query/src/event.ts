@@ -131,7 +131,7 @@ export function getEventStep(event: Pick<KeyboardEvent, "ctrlKey" | "metaKey" | 
   }
 }
 
-export function getEventPoint(event: any, type: "page" | "client" = "client") {
+export function getEventPoint(event: any, type: "page" | "client" = "client"): { x: number; y: number } {
   const point = isTouchEvent(event) ? event.touches[0] || event.changedTouches[0] : event
   return { x: point[`${type}X`], y: point[`${type}Y`] }
 }

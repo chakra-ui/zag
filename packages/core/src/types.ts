@@ -15,6 +15,7 @@ interface ContextParams<T extends Dict> {
   scope: Scope
   getContext: () => BindableContext<T>
   getComputed: () => ComputedFn<T>
+  getRefs: () => BindableRefs<T>
   flush: (fn: VoidFunction) => void
 }
 
