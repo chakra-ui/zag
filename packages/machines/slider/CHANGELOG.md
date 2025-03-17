@@ -1,5 +1,20 @@
 # @zag-js/slider
 
+## 1.4.1
+
+### Patch Changes
+
+- [`483f3b4`](https://github.com/chakra-ui/zag/commit/483f3b4a4aa5c510364ab879a64a3b9ad3c88caf) Thanks
+  [@cschroeter](https://github.com/cschroeter)! - - Fix issue where value normalization doesn't work as expected
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.4.1
+  - @zag-js/core@1.4.1
+  - @zag-js/types@1.4.1
+  - @zag-js/utils@1.4.1
+  - @zag-js/dom-query@1.4.1
+  - @zag-js/element-size@1.4.1
+
 ## 1.4.0
 
 ### Patch Changes
