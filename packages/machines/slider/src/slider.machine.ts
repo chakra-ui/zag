@@ -10,8 +10,8 @@ const isEqualSize = (a: ElementSize | null, b: ElementSize | null) => {
   return a?.width === b?.width && a?.height === b?.height
 }
 
-const normalize = (value: number[], min: number, max: number, step: number) => {
-  const ranges = getValueRanges(value, min, max, step)
+const normalize = (value: number[], min: number, max: number, step: number, minStepsBetweenThumbs: number) => {
+  const ranges = getValueRanges(value, min, max, minStepsBetweenThumbs * step)
   return ranges.map((range) => {
     const snapValue = snapValueToStep(range.value, range.min, range.max, step)
     return clampValue(snapValue, range.min, range.max)
@@ -24,15 +24,16 @@ export const machine = createMachine<SliderSchema>({
     const max = props.max ?? 100
     const step = props.step ?? 1
     const defaultValue = props.defaultValue ?? [min]
+    const minStepsBetweenThumbs = props.minStepsBetweenThumbs ?? 0
     return {
       dir: "ltr",
       thumbAlignment: "contain",
       origin: "start",
       orientation: "horizontal",
-      minStepsBetweenThumbs: 0,
+      minStepsBetweenThumbs,
       ...props,
-      defaultValue: normalize(defaultValue, min, max, step),
-      value: props.value ? normalize(props.value, min, max, step) : undefined,
+      defaultValue: normalize(defaultValue, min, max, step, minStepsBetweenThumbs),
+      value: props.value ? normalize(props.value, min, max, step, minStepsBetweenThumbs) : undefined,
       max,
       step,
       min,
