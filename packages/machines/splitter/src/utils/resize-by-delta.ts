@@ -1,7 +1,12 @@
+/**
+ * This code was modified from react-resizable-panels by Brian Vaughn
+ * @see https://github.com/bvaughn/react-resizable-panels
+ */
+
 import { ensure } from "@zag-js/utils"
 import type { PanelData } from "../splitter.types"
 import { fuzzyCompareNumbers, fuzzySizeEqual, fuzzyNumbersEqual } from "./fuzzy"
-import { resizePanel } from "./resize"
+import { resizePanel } from "./resize-panel"
 
 interface Layout {
   delta: number
@@ -12,7 +17,7 @@ interface Layout {
   trigger: "imperative-api" | "keyboard" | "mouse-or-touch"
 }
 
-export function adjustLayoutByDelta(props: Layout): number[] {
+export function resizeByDelta(props: Layout): number[] {
   let { delta, initialSize, panels, pivotIndices, prevSize, trigger } = props
 
   if (fuzzyNumbersEqual(delta, 0)) {

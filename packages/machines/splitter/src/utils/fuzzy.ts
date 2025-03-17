@@ -1,3 +1,8 @@
+/**
+ * This code was modified from react-resizable-panels by Brian Vaughn
+ * @see https://github.com/bvaughn/react-resizable-panels
+ */
+
 export const PRECISION = 10
 
 export function fuzzyCompareNumbers(actual: number, expected: number, fractionDigits: number = PRECISION): number {

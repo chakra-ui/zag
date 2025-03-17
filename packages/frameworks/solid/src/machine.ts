@@ -53,6 +53,9 @@ export function useMachine<T extends MachineSchema>(
     getComputed() {
       return computed as any
     },
+    getRefs() {
+      return refs as any
+    },
   })
 
   const ctx: BindableContext<T> = {

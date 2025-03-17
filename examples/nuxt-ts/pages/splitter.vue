@@ -7,10 +7,7 @@ const controls = useControls(splitterControls)
 
 const service = useMachine(splitter.machine, {
   id: useId(),
-  defaultSize: [
-    { id: "a", size: 50 },
-    { id: "b", size: 50 },
-  ],
+  panels: [{ id: "a" }, { id: "b" }],
 })
 
 const api = computed(() => splitter.connect(service, normalizeProps))

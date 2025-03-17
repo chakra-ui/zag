@@ -1,3 +1,8 @@
+/**
+ * This code was modified from react-resizable-panels by Brian Vaughn
+ * @see https://github.com/bvaughn/react-resizable-panels
+ */
+
 import { ensure } from "@zag-js/utils"
 import type { PanelData } from "../splitter.types"
 

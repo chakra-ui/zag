@@ -5,10 +5,8 @@ import { useId } from "react"
 export function Splitter(props: any) {
   const service = useMachine(splitter.machine, {
     id: useId(),
-    defaultSize: [
-      { id: "a", size: 50 },
-      { id: "b", size: 50 },
-    ],
+    panels: [{ id: "a" }, { id: "b" }],
+    defaultSize: [50, 50],
     ...props.controls,
   })
 

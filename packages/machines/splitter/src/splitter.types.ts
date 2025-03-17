@@ -75,6 +75,10 @@ export interface SplitterProps extends DirectionProperty, CommonProperties {
    */
   onResize?: ((details: ResizeDetails) => void) | undefined
   /**
+   * Function called when the splitter resize starts.
+   */
+  onResizeStart?: (() => void) | undefined
+  /**
    * Function called when the splitter resize ends.
    */
   onResizeEnd?: ((details: ResizeEndDetails) => void) | undefined

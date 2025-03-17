@@ -8,6 +8,7 @@ export const props = createProps<SplitterProps>()([
   "id",
   "ids",
   "onResize",
+  "onResizeStart",
   "onResizeEnd",
   "onCollapse",
   "onExpand",

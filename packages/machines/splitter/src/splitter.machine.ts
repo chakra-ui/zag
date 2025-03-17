@@ -5,9 +5,9 @@ import * as dom from "./splitter.dom"
 import type { CursorState, DragHandleId, DragState, KeyboardState, PanelData, SplitterSchema } from "./splitter.types"
 import { getAriaValue } from "./utils/aria"
 import { fuzzyNumbersEqual, fuzzySizeEqual } from "./utils/fuzzy"
-import { adjustLayoutByDelta } from "./utils/layout"
 import { findPanelDataIndex, getPanelById, getUnsafeDefaultSize, panelDataHelper, sortPanels } from "./utils/panel"
-import { validateSizes } from "./utils/validate"
+import { resizeByDelta } from "./utils/resize-by-delta"
+import { validateSizes } from "./utils/validate-sizes"
 
 export const machine = createMachine<SplitterSchema>({
   props({ props }) {
@@ -57,6 +57,12 @@ export const machine = createMachine<SplitterSchema>({
         defaultValue: null,
       })),
     }
+  },
+
+  watch({ track, action, prop }) {
+    track([() => serializePanels(prop("panels"))], () => {
+      action(["syncSize"])
+    })
   },
 
   refs() {
@@ -163,6 +169,7 @@ export const machine = createMachine<SplitterSchema>({
     dragging: {
       tags: ["focus"],
       effects: ["trackPointerMove"],
+      entry: ["invokeOnResizeStart"],
       on: {
         POINTER_MOVE: {
           actions: ["setPointerValue", "setGlobalCursor"],
@@ -291,7 +298,7 @@ export const machine = createMachine<SplitterSchema>({
             const isLastPanel = findPanelDataIndex(panels, panel) === panels.length - 1
             const delta = isLastPanel ? panelSize - collapsedSize : collapsedSize - panelSize
 
-            const nextSize = adjustLayoutByDelta({
+            const nextSize = resizeByDelta({
               delta,
               initialSize: prevSize,
               panels,
@@ -335,7 +342,7 @@ export const machine = createMachine<SplitterSchema>({
             const isLastPanel = findPanelDataIndex(panels, panel) === panels.length - 1
             const delta = isLastPanel ? panelSize - baseSize : baseSize - panelSize
 
-            const nextSize = adjustLayoutByDelta({
+            const nextSize = resizeByDelta({
               delta,
               initialSize: prevSize,
               panels,
@@ -366,7 +373,7 @@ export const machine = createMachine<SplitterSchema>({
         const isLastPanel = findPanelDataIndex(panels, panel) === panels.length - 1
         const delta = isLastPanel ? panelSize - unsafePanelSize : unsafePanelSize - panelSize
 
-        const nextSize = adjustLayoutByDelta({
+        const nextSize = resizeByDelta({
           delta,
           initialSize: prevSize,
           panels: panels,
@@ -405,7 +412,7 @@ export const machine = createMachine<SplitterSchema>({
 
         const prevSize = context.get("size")
 
-        const nextSize = adjustLayoutByDelta({
+        const nextSize = resizeByDelta({
           delta: offsetPercentage,
           initialSize: initialSize ?? prevSize,
           panels,
@@ -433,7 +440,7 @@ export const machine = createMachine<SplitterSchema>({
 
         const prevSize = context.get("size")
 
-        const nextSize = adjustLayoutByDelta({
+        const nextSize = resizeByDelta({
           delta,
           initialSize: prevSize,
           panels: panelDataArray,
@@ -454,6 +461,12 @@ export const machine = createMachine<SplitterSchema>({
             size: context.get("size"),
             dragHandleId: dragState?.dragHandleId ?? null,
           })
+        })
+      },
+
+      invokeOnResizeStart({ prop }) {
+        queueMicrotask(() => {
+          prop("onResizeStart")?.()
         })
       },
 
@@ -481,7 +494,7 @@ export const machine = createMachine<SplitterSchema>({
             panelDataArray.findIndex((panelData) => panelData.id === id),
           )
 
-          const nextSize = adjustLayoutByDelta({
+          const nextSize = resizeByDelta({
             delta: fuzzyNumbersEqual(size, collapsedSize) ? minSize - collapsedSize : collapsedSize - size,
             initialSize: context.initial("size"),
             panels: panelDataArray,
@@ -537,6 +550,16 @@ function getPanelKey(panels: PanelData[]) {
     .map((panel) => panel.id)
     .sort()
     .join(",")
+}
+
+function serializePanels(panels: PanelData[]) {
+  const keys = panels.map((panel) => panel.id)
+  const sortedKeys = keys.sort()
+  const serialized = sortedKeys.map((key) => {
+    const panel = panels.find((panel) => panel.id === key)
+    return JSON.stringify(panel)
+  })
+  return serialized.join(",")
 }
 
 function setSize(params: Params<SplitterSchema>, sizes: number[]) {

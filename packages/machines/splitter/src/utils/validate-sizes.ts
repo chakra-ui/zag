@@ -1,7 +1,12 @@
+/**
+ * This code was modified from react-resizable-panels by Brian Vaughn
+ * @see https://github.com/bvaughn/react-resizable-panels
+ */
+
 import { ensure, warn } from "@zag-js/utils"
 import type { PanelData } from "../splitter.types"
 import { fuzzyNumbersEqual } from "./fuzzy"
-import { resizePanel } from "./resize"
+import { resizePanel } from "./resize-panel"
 
 export function validateSizes({ size: prevSize, panels }: { size: number[]; panels: PanelData[] }): number[] {
   const nextSize = [...prevSize]

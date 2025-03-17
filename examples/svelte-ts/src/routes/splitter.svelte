@@ -10,10 +10,7 @@
 
   const service = useMachine(splitter.machine, {
     id: "1",
-    defaultSize: [
-      { id: "a", size: 50 },
-      { id: "b", size: 50 },
-    ],
+    panels: [{ id: "a" }, { id: "b" }],
   })
 
   const api = $derived(splitter.connect(service, normalizeProps))
