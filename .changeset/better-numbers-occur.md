@@ -2,4 +2,4 @@
 "@zag-js/slider": patch
 ---
 
-Resolve an issue with normalize step values
+- Fix issue where value normalization doesn't work as expected

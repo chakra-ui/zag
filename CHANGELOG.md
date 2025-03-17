@@ -8,6 +8,12 @@ All notable changes to this project will be documented in this file.
 
 See the [Changesets](./.changeset) for the latest changes.
 
+## [1.4.1](./#1.4.1) - 2025-03-17
+
+### Fixed
+
+- **Slider**: Fix issue where value normalization doesn't work as expected
+
 ## [1.4.0](./#1.4.0) - 2025-03-14
 
 ### Added
