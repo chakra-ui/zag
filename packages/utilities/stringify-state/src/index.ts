@@ -54,24 +54,21 @@ export function stringifyState(state: Dict, omit?: string[]) {
         }
 
         switch (value?.toString()) {
-          case "[object ShadowRoot]":
-            const id = value.state.context.id ?? value.id
-            return `Machine: ${id}`
-
-          case "[object ShadowRoot]":
+          case "[object ShadowRoot]": {
             return "#shadow-root"
-
-          case "[object HTMLDocument]":
+          }
+          case "[object HTMLDocument]": {
             return "#document"
-
-          case "[object Window]":
+          }
+          case "[object Window]": {
             return "#window"
-
-          case "[object AbortController]":
+          }
+          case "[object AbortController]": {
             return "#abort-controller"
-
-          default:
+          }
+          default: {
             return value !== null && typeof value === "object" && value.nodeType === 1 ? value.tagName : value
+          }
         }
       } catch {
         return value
