@@ -1,9 +1,9 @@
 import type { Required } from "@zag-js/types"
-import { runIfFn, uuid } from "@zag-js/utils"
+import { compact, runIfFn, uuid } from "@zag-js/utils"
 import type { Options, PromiseOptions, ToastProps, ToastStore, ToastStoreProps } from "./toast.types"
 
 const withDefaults = <T extends object, D extends Partial<T>>(options: T, defaults: D): T & Required<D> => {
-  return { ...defaults, ...options } as any
+  return { ...defaults, ...compact(options as any) }
 }
 
 export function createToastStore<V = any>(props: ToastStoreProps): ToastStore<V> {
