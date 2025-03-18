@@ -1,5 +1,18 @@
 # @zag-js/radio-group
 
+## 1.4.2
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.4.2
+  - @zag-js/core@1.4.2
+  - @zag-js/types@1.4.2
+  - @zag-js/utils@1.4.2
+  - @zag-js/dom-query@1.4.2
+  - @zag-js/element-rect@1.4.2
+  - @zag-js/focus-visible@1.4.2
+
 ## 1.4.1
 
 ### Patch Changes
