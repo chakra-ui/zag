@@ -273,6 +273,18 @@ export class ListCollection<T extends CollectionItem = CollectionItem> {
     this.items.splice(toIndex, 0, removed)
   }
 
+  toString = () => {
+    let result = ""
+    for (const item of this.items) {
+      const value = this.getItemValue(item)
+      const label = this.stringifyItem(item)
+      const disabled = this.getItemDisabled(item)
+      const itemString = [value, label, disabled].filter(Boolean).join(":")
+      result += itemString + ","
+    }
+    return result
+  }
+
   toJSON = () => {
     return {
       size: this.size,

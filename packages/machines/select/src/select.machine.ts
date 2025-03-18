@@ -106,7 +106,7 @@ export const machine = createMachine<SelectSchema>({
     track([() => context.get("highlightedValue")], () => {
       action(["syncHighlightedItem"])
     })
-    track([() => prop("collection").getValues().toString()], () => {
+    track([() => prop("collection").toString()], () => {
       action(["syncCollection"])
     })
   },
