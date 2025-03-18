@@ -8,6 +8,14 @@ All notable changes to this project will be documented in this file.
 
 See the [Changesets](./.changeset) for the latest changes.
 
+## [1.4.2](./#1.4.2) - 2025-03-18
+
+### Fixed
+
+- **Toast**: Fix issue where setting `offsets` to `undefined` causes machine to throw
+
+- **Select**: Fix issue where select `valueAsString` loses reactivity
+
 ## [1.4.1](./#1.4.1) - 2025-03-17
 
 ### Fixed
