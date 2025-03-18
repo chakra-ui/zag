@@ -11,11 +11,7 @@ export default function Page() {
 
   const service = useMachine(splitter.machine, {
     id: useId(),
-    panels: [
-      { id: "a", order: 0 },
-      { id: "b", order: 1 },
-      { id: "c", order: 2 },
-    ],
+    panels: [{ id: "a" }, { id: "b" }, { id: "c" }],
   })
 
   const api = splitter.connect(service, normalizeProps)

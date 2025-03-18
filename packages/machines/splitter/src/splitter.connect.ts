@@ -3,12 +3,12 @@ import type { EventKeyMap, NormalizeProps, PropTypes } from "@zag-js/types"
 import { ensure } from "@zag-js/utils"
 import { parts } from "./splitter.anatomy"
 import * as dom from "./splitter.dom"
-import type { PanelProps, ResizeTriggerProps, SplitterService } from "./splitter.types"
+import type { PanelData, PanelProps, ResizeTriggerProps, SplitterApi, SplitterService } from "./splitter.types"
 import { getAriaValue } from "./utils/aria"
 import { fuzzyCompareNumbers, fuzzyNumbersEqual } from "./utils/fuzzy"
-import { findPanelIndex, getPanelById, getPanelFlexBoxStyle, panelDataHelper } from "./utils/panel"
+import { findPanelIndex, getPanelById, getPanelFlexBoxStyle, getPanelLayout, panelDataHelper } from "./utils/panel"
 
-export function connect<T extends PropTypes>(service: SplitterService, normalize: NormalizeProps<T>) {
+export function connect<T extends PropTypes>(service: SplitterService, normalize: NormalizeProps<T>): SplitterApi<T> {
   const { state, send, prop, computed, context, scope } = service
 
   const horizontal = computed("horizontal")
@@ -30,6 +30,18 @@ export function connect<T extends PropTypes>(service: SplitterService, normalize
 
   return {
     dragging,
+    getItems() {
+      return prop("panels").flatMap((panel, index, arr) => {
+        const nextPanel = arr[index + 1]
+        if (panel && nextPanel) {
+          return [
+            { type: "panel", id: panel.id },
+            { type: "handle", id: `${panel.id}:${nextPanel.id}` },
+          ]
+        }
+        return [{ type: "panel", id: panel.id }]
+      })
+    },
     getSizes() {
       return context.get("size")
     },
@@ -73,6 +85,9 @@ export function connect<T extends PropTypes>(service: SplitterService, normalize
       ensure(panelSize, `Panel size not found for panel "${panelData.id}"`)
 
       return !collapsible || fuzzyCompareNumbers(panelSize, collapsedSize) > 0
+    },
+    getLayout(panels?: PanelData[]) {
+      return getPanelLayout(panels ?? prop("panels"))
     },
 
     getRootProps() {

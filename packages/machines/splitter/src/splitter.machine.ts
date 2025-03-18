@@ -2,10 +2,18 @@ import { createMachine, type Params } from "@zag-js/core"
 import { trackPointerMove } from "@zag-js/dom-query"
 import { ensure, ensureProps, isEqual, next, prev, setRafTimeout } from "@zag-js/utils"
 import * as dom from "./splitter.dom"
-import type { CursorState, DragHandleId, DragState, KeyboardState, PanelData, SplitterSchema } from "./splitter.types"
+import type { CursorState, DragHandleId, DragState, KeyboardState, SplitterSchema } from "./splitter.types"
 import { getAriaValue } from "./utils/aria"
 import { fuzzyNumbersEqual, fuzzySizeEqual } from "./utils/fuzzy"
-import { findPanelDataIndex, getPanelById, getUnsafeDefaultSize, panelDataHelper, sortPanels } from "./utils/panel"
+import {
+  findPanelDataIndex,
+  getPanelById,
+  getPanelLayout,
+  getUnsafeDefaultSize,
+  panelDataHelper,
+  serializePanels,
+  sortPanels,
+} from "./utils/panel"
 import { resizeByDelta } from "./utils/resize-by-delta"
 import { validateSizes } from "./utils/validate-sizes"
 
@@ -40,12 +48,12 @@ export const machine = createMachine<SplitterSchema>({
           const sizesBeforeCollapse = refs.get("panelSizeBeforeCollapse")
           const expandToSizes = Object.fromEntries(sizesBeforeCollapse.entries())
           const dragHandleId = ctx.get("dragState")?.dragHandleId ?? null
-          const panelKey = getPanelKey(prop("panels"))
+          const layout = getPanelLayout(prop("panels"))
 
           prop("onResize")?.({
             size: value,
+            layout,
             dragHandleId,
-            panelKey,
             expandToSizes,
           })
         },
@@ -544,23 +552,6 @@ export const machine = createMachine<SplitterSchema>({
     },
   },
 })
-
-function getPanelKey(panels: PanelData[]) {
-  return panels
-    .map((panel) => panel.id)
-    .sort()
-    .join(",")
-}
-
-function serializePanels(panels: PanelData[]) {
-  const keys = panels.map((panel) => panel.id)
-  const sortedKeys = keys.sort()
-  const serialized = sortedKeys.map((key) => {
-    const panel = panels.find((panel) => panel.id === key)
-    return JSON.stringify(panel)
-  })
-  return serialized.join(",")
-}
 
 function setSize(params: Params<SplitterSchema>, sizes: number[]) {
   const { refs, prop, context } = params

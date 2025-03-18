@@ -44,6 +44,23 @@ export function sortPanels(panels: PanelData[]) {
   })
 }
 
+export function getPanelLayout(panels: PanelData[]) {
+  return panels
+    .map((panel) => panel.id)
+    .sort()
+    .join(":")
+}
+
+export function serializePanels(panels: PanelData[]) {
+  const keys = panels.map((panel) => panel.id)
+  const sortedKeys = keys.sort()
+  const serialized = sortedKeys.map((key) => {
+    const panel = panels.find((panel) => panel.id === key)
+    return JSON.stringify(panel)
+  })
+  return serialized.join(",")
+}
+
 // the % of the group's overall space this panel should occupy.
 export function getPanelFlexBoxStyle({
   defaultSize,

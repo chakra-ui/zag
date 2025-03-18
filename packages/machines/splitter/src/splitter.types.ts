@@ -26,7 +26,7 @@ export interface CursorState {
 export interface ResizeDetails {
   size: number[]
   dragHandleId: string | null
-  panelKey: string
+  layout: string
   expandToSizes: Record<string, number>
 }
 
@@ -177,9 +177,61 @@ export interface PanelBounds {
   max: number
 }
 
+export interface PanelItem {
+  type: "panel"
+  id: PanelId
+}
+
+export interface ResizeTriggerItem {
+  type: "handle"
+  id: DragHandleId
+}
+
 export interface SplitterApi<T extends PropTypes = PropTypes> {
+  /**
+   * Whether the splitter is currently being resized.
+   */
+  dragging: boolean
+  /**
+   * The current sizes of the panels.
+   */
   getSizes(): number[]
+  /**
+   * Set the sizes of the panels.
+   */
   setSizes(size: number[]): void
+  /**
+   * Get the items of the splitter.
+   */
+  getItems(): Array<PanelItem | ResizeTriggerItem>
+  /**
+   * Get the size of a panel.
+   */
+  getPanelSize(id: PanelId): number
+  /**
+   * Whether a panel is collapsed.
+   */
+  isPanelCollapsed(id: PanelId): boolean
+  /**
+   * Whether a panel is expanded.
+   */
+  isPanelExpanded(id: PanelId): boolean
+  /**
+   * Collapse a panel.
+   */
+  collapsePanel(id: PanelId): void
+  /**
+   * Expand a panel.
+   */
+  expandPanel(id: PanelId, minSize?: number): void
+  /**
+   * Resize a panel.
+   */
+  resizePanel(id: PanelId, unsafePanelSize: number): void
+  /**
+   * Get the layout of the splitter.
+   */
+  getLayout(panels?: PanelData[]): string
 
   getRootProps(): T["element"]
   getPanelProps(props: PanelProps): T["element"]
