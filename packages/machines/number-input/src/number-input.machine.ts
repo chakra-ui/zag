@@ -21,7 +21,7 @@ import {
 import { recordCursor, restoreCursor } from "./cursor"
 import * as dom from "./number-input.dom"
 import type { HintValue, NumberInputSchema } from "./number-input.types"
-import { createFormatter, createParser, formatValue, parseValue } from "./number-input.utils"
+import { createFormatter, createParser, formatValue, getDefaultStep, parseValue } from "./number-input.utils"
 
 const { choose, guards, createMachine } = setup<NumberInputSchema>()
 
@@ -29,6 +29,7 @@ const { not, and } = guards
 
 export const machine = createMachine({
   props({ props }) {
+    const step = getDefaultStep(props.step, props.formatOptions)
     return {
       dir: "ltr",
       locale: "en-US",
@@ -38,7 +39,7 @@ export const machine = createMachine({
       inputMode: "decimal",
       pattern: "[0-9]*(.[0-9]+)?",
       defaultValue: "",
-      step: 1,
+      step,
       min: Number.MIN_SAFE_INTEGER,
       max: Number.MAX_SAFE_INTEGER,
       spinOnPress: true,

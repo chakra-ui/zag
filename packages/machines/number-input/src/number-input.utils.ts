@@ -24,3 +24,11 @@ export const formatValue = (value: number, params: Ctx): string => {
   if (!prop("formatOptions")) return value.toString()
   return computed("formatter").format(value)
 }
+
+export const getDefaultStep = (step: number | undefined, formatOptions: Intl.NumberFormatOptions | undefined) => {
+  let defaultStep = step !== undefined && !Number.isNaN(step) ? step : 1
+  if (formatOptions?.style === "percent" && (step === undefined || Number.isNaN(step))) {
+    defaultStep = 0.01
+  }
+  return defaultStep
+}
