@@ -28,7 +28,7 @@ export function downloadFile(options: DownloadFileOptions) {
   const doc = win.document
 
   const obj = typeof file === "string" ? new Blob([file], { type }) : file
-  const fileName = typeof file === "string" ? name : file instanceof File ? file.name : undefined
+  const fileName = file instanceof File ? name || file.name : name
 
   if (isMSEdge(win)) {
     win.navigator.msSaveOrOpenBlob(obj, fileName || "file-download")
