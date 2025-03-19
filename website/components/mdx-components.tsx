@@ -64,6 +64,15 @@ export function ResourceLink({
 }
 
 const components: Record<string, FC<any>> = {
+  LLMsTxtLink(props) {
+    return (
+      <chakra.a textStyle="link" target="_blank" rel="noopener" {...props}>
+        <chakra.code className="prose" layerStyle="inlineCode">
+          {props.href}
+        </chakra.code>
+      </chakra.a>
+    )
+  },
   Showcase,
   Admonition(props) {
     return <div {...props} />
