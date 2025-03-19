@@ -1,5 +1,21 @@
 # @zag-js/toast
 
+## 1.4.2
+
+### Patch Changes
+
+- [`ce7c12c`](https://github.com/chakra-ui/zag/commit/ce7c12c3576ba4dd8473193ae6e010e4c52975cd) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix issue where setting `offsets` to `undefined` causes machine to
+  throw
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.4.2
+  - @zag-js/core@1.4.2
+  - @zag-js/types@1.4.2
+  - @zag-js/utils@1.4.2
+  - @zag-js/dismissable@1.4.2
+  - @zag-js/dom-query@1.4.2
+
 ## 1.4.1
 
 ### Patch Changes
