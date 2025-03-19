@@ -49,6 +49,7 @@ const sidebar: Record<"docs", SidebarItem[]> = {
           label: "Programmatic Control",
           id: "programmatic-control",
         },
+        { type: "doc", label: "LLMs.txt", id: "llms-txt" },
         { type: "doc", label: "FAQ", id: "faq" },
         { type: "doc", label: "Migration", id: "migration" },
         {
