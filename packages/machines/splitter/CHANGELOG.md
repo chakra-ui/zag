@@ -1,5 +1,53 @@
 # @zag-js/splitter
 
+## 1.5.0
+
+### Minor Changes
+
+- [#2355](https://github.com/chakra-ui/zag/pull/2355)
+  [`86f94d9`](https://github.com/chakra-ui/zag/commit/86f94d99aa744b69e8e62292e1ffb0f1de98e98a) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - [Breaking] Redesign splitter machine to support more use cases and
+  improve DX.
+
+  The key breaking change is:
+
+  Before:
+
+  ```ts
+  const service = useMachine(splitter.machine, {
+    id: useId(),
+    defaultSize: [
+      { id: "a", size: 50 },
+      { id: "b", size: 50 },
+    ],
+  })
+  ```
+
+  After:
+
+  ```ts
+  const service = useMachine(splitter.machine, {
+    id: useId(),
+    panels: [{ id: "a" }, { id: "b" }],
+    defaultSize: [50, 50],
+  })
+  ```
+
+  The also comes with new features such as:
+
+  - Support for collapsible panels
+  - Support for collapse and expand events
+  - New `api` methods for resizing the panels programmatically
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.5.0
+  - @zag-js/core@1.5.0
+  - @zag-js/types@1.5.0
+  - @zag-js/utils@1.5.0
+  - @zag-js/dom-query@1.5.0
+
 ## 1.4.2
 
 ### Patch Changes

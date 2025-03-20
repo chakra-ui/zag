@@ -1,5 +1,16 @@
 # @zag-js/file-utils
 
+## 1.5.0
+
+### Patch Changes
+
+- [`5db0d3f`](https://github.com/chakra-ui/zag/commit/5db0d3fc1827b8e6000c156466d40d3d66a44e21) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix issue in `downloadFile` where `name` is not considered in some
+  cases.
+
+- Updated dependencies []:
+  - @zag-js/i18n-utils@1.5.0
+
 ## 1.4.2
 
 ### Patch Changes
