@@ -12,7 +12,7 @@ export interface FilterOptions extends Intl.CollatorOptions {
 
 const collatorCache = i18nCache(Intl.Collator)
 
-export function filter(options?: FilterOptions): FilterReturn {
+export function createFilter(options?: FilterOptions): FilterReturn {
   const { locale, ...rest } = options || {}
   const collator = collatorCache(locale || "en-US", { usage: "search", ...rest })
 

@@ -67,14 +67,31 @@ splitter machine in your project 🔥
 
 <CodeSnippet id="splitter/usage.mdx" />
 
-## Listening for resize events
+## Setting the initial size
 
-When the resize trigger of splitter changes, the `onResizeStart` and
-`onResizeEnd` callback is invoked.
+To set the initial size of the splitter panels, use the `defaultSize` property.
+Ensure the `defaultSize` totals to `100`.
 
-```jsx {3-8}
+> Note: The splitter only supports setting percentage values.
+
+```jsx {3}
 const service = useMachine(splitter.machine, {
   // ...
+  defaultSize: [40, 60],
+})
+```
+
+## Listening for resize events
+
+When the resize trigger is dragged, the `onResize`, `onResizeStart` and
+`onResizeEnd` callback is invoked.
+
+```jsx {3-10}
+const service = useMachine(splitter.machine, {
+  // ...
+  onResize(detail) {
+    console.log("resize", detail)
+  },
   onResizeStart(detail) {
     console.log("change start", detail)
   },
@@ -183,4 +200,20 @@ on the item and content elements.
 
 ## Methods and Properties
 
+The splitter's `api` exposes the following methods and properties:
+
+### Machine Context
+
+The splitter machine exposes the following context properties:
+
+<ContextTable name="splitter" />
+
+### Machine API
+
+The splitter `api` exposes the following methods:
+
 <ApiTable name="splitter" />
+
+### Data Attributes
+
+<DataAttrTable name="splitter" />
