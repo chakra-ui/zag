@@ -16,8 +16,15 @@ resize or expand/collapse them.
 
 **Features**
 
-- Double click a splitter to maximize pane
-- Programmatic control of width or height
+- Built with flexbox for flexible layout and SSR
+- Support both dynamic horizontal and vertical panels
+- Support multiple panels and splitters
+- Support for collapsible panels
+- Support for panel constraints like min and max sizes
+- Programmatic control of panel sizes
+- Implements the
+  [Window Splitter pattern](https://www.w3.org/WAI/ARIA/apg/patterns/windowsplitter/)
+  for accessibility and keyboard controls
 
 ## Installation
 
@@ -60,22 +67,35 @@ splitter machine in your project 🔥
 
 <CodeSnippet id="splitter/usage.mdx" />
 
-## Listening for events
+## Setting the initial size
 
-When the resize trigger of splitter changes, the `onSizeChangeStart` and
-`onSizeChangeEnd` callback is invoked.
+To set the initial size of the splitter panels, use the `defaultSize` property.
+Ensure the `defaultSize` totals to `100`.
 
-```jsx {7-12}
+> Note: The splitter only supports setting percentage values.
+
+```jsx {3}
 const service = useMachine(splitter.machine, {
-  id: useId(),
-  defaultSize: [
-    { id: "a", size: 50 },
-    { id: "b", size: 50 },
-  ],
-  onSizeChangeStart(detail) {
+  // ...
+  defaultSize: [40, 60],
+})
+```
+
+## Listening for resize events
+
+When the resize trigger is dragged, the `onResize`, `onResizeStart` and
+`onResizeEnd` callback is invoked.
+
+```jsx {3-10}
+const service = useMachine(splitter.machine, {
+  // ...
+  onResize(detail) {
+    console.log("resize", detail)
+  },
+  onResizeStart(detail) {
     console.log("change start", detail)
   },
-  onSizeChangeEnd(detail) {
+  onResizeEnd(detail) {
     console.log("change end", detail)
   },
 })
@@ -87,14 +107,62 @@ By default, the splitter is assumed to be horizontal. To change the orientation
 to vertical, set the `orientation` property in the machine's context to
 `vertical`.
 
-```jsx {7}
+```jsx {3}
 const service = useMachine(splitter.machine, {
-  id: useId(),
-  defaultSize: [
-    { id: "a", size: 50 },
-    { id: "b", size: 50 },
-  ],
+  // ...
   orientation: "vertical",
+})
+```
+
+## Specifying constraints
+
+Use the `panels` property to specify constraints like `minSize` and `maxSize`
+for the splitter panels.
+
+```jsx {3-6}
+const service = useMachine(splitter.machine, {
+  // ...
+  panels: [
+    { id: "a", minSize: 100, maxSize: 300 },
+    { id: "b", minSize: 100, maxSize: 300 },
+  ],
+})
+```
+
+## Setting the collapsed size
+
+Set the `collapsedSize` and `collapsible` of a panel to specify the collapsed
+size of the panel.
+
+> For best results, ensure you also set the `minSize` of the panel
+
+```jsx {4}
+const service = useMachine(splitter.machine, {
+  // ...
+  panels: [
+    { id: "a", collapsible: true, collapsedSize: 5, minSize: 10, maxSize: 20 },
+    { id: "b", minSize: 50 },
+  ],
+})
+```
+
+This allows the user to drag the splitter to collapse the panel to the
+`collapsedSize`.
+
+## Listening for collapse events
+
+When the splitter panel is collapsed, the `onCollapse` callback is invoked.
+Alternatively, the `onExpand` callback is invoked when the panel is expanded.
+
+```jsx {3-8}
+const service = useMachine(splitter.machine, {
+  // ...
+  onCollapse(detail) {
+    console.log("collapse", detail)
+  },
+  onExpand(detail) {
+    console.log("expand", detail)
+  },
 })
 ```
 
@@ -136,4 +204,20 @@ on the item and content elements.
 
 ## Methods and Properties
 
+The splitter's `api` exposes the following methods and properties:
+
+### Machine Context
+
+The splitter machine exposes the following context properties:
+
+<ContextTable name="splitter" />
+
+### Machine API
+
+The splitter `api` exposes the following methods:
+
 <ApiTable name="splitter" />
+
+### Data Attributes
+
+<DataAttrTable name="splitter" />

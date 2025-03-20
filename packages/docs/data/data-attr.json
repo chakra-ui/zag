@@ -1261,11 +1261,14 @@
     "Panel": {
       "data-scope": "splitter",
       "data-part": "panel",
-      "data-orientation": "The orientation of the panel"
+      "data-orientation": "The orientation of the panel",
+      "data-id": "",
+      "data-index": "The index of the item"
     },
     "ResizeTrigger": {
       "data-scope": "splitter",
       "data-part": "resize-trigger",
+      "data-id": "",
       "data-orientation": "The orientation of the resizetrigger",
       "data-focus": "Present when focused",
       "data-disabled": "Present when disabled"

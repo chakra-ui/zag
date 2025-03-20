@@ -3578,33 +3578,49 @@
   },
   "splitter": {
     "api": {
-      "focused": {
-        "type": "boolean",
-        "description": "Whether the splitter is focused."
-      },
       "dragging": {
         "type": "boolean",
-        "description": "Whether the splitter is being dragged."
+        "description": "Whether the splitter is currently being resized."
       },
-      "bounds": {
-        "type": "PanelBounds",
-        "description": "The bounds of the currently dragged splitter handle."
+      "getSizes": {
+        "type": "() => number[]",
+        "description": "The current sizes of the panels."
       },
-      "setToMinSize": {
-        "type": "(id: PanelId) => void",
-        "description": "Function to set a panel to its minimum size."
+      "setSizes": {
+        "type": "(size: number[]) => void",
+        "description": "Set the sizes of the panels."
       },
-      "setToMaxSize": {
-        "type": "(id: PanelId) => void",
-        "description": "Function to set a panel to its maximum size."
+      "getItems": {
+        "type": "() => SplitterItem[]",
+        "description": "Get the items of the splitter."
       },
-      "setSize": {
-        "type": "(id: PanelId, size: number) => void",
-        "description": "Function to set the size of a panel."
+      "getPanelSize": {
+        "type": "(id: string) => number",
+        "description": "Get the size of a panel."
       },
-      "getResizeTriggerState": {
-        "type": "(props: ResizeTriggerProps) => ResizeTriggerState",
-        "description": "Returns the state details for a resize trigger."
+      "isPanelCollapsed": {
+        "type": "(id: string) => boolean",
+        "description": "Whether a panel is collapsed."
+      },
+      "isPanelExpanded": {
+        "type": "(id: string) => boolean",
+        "description": "Whether a panel is expanded."
+      },
+      "collapsePanel": {
+        "type": "(id: string) => void",
+        "description": "Collapse a panel."
+      },
+      "expandPanel": {
+        "type": "(id: string, minSize?: number) => void",
+        "description": "Expand a panel."
+      },
+      "resizePanel": {
+        "type": "(id: string, unsafePanelSize: number) => void",
+        "description": "Resize a panel."
+      },
+      "getLayout": {
+        "type": "() => string",
+        "description": "Get the layout of the splitter."
       }
     },
     "context": {
@@ -3614,24 +3630,48 @@
         "defaultValue": "\"horizontal\""
       },
       "size": {
-        "type": "PanelSizeData[]",
+        "type": "number[]",
         "description": "The controlled size data of the panels"
       },
       "defaultSize": {
-        "type": "PanelSizeData[]",
+        "type": "number[]",
         "description": "The initial size of the panels when rendered.\nUse when you don't need to control the size of the panels."
       },
-      "onSizeChange": {
-        "type": "(details: SizeChangeDetails) => void",
+      "panels": {
+        "type": "PanelData[]",
+        "description": "The size constraints of the panels."
+      },
+      "onResize": {
+        "type": "(details: ResizeDetails) => void",
         "description": "Function called when the splitter is resized."
       },
-      "onSizeChangeEnd": {
-        "type": "(details: SizeChangeDetails) => void",
+      "onResizeStart": {
+        "type": "() => void",
+        "description": "Function called when the splitter resize starts."
+      },
+      "onResizeEnd": {
+        "type": "(details: ResizeEndDetails) => void",
         "description": "Function called when the splitter resize ends."
       },
       "ids": {
         "type": "Partial<{ root: string; resizeTrigger(id: string): string; label(id: string): string; panel(id: string | number): string; }>",
         "description": "The ids of the elements in the splitter. Useful for composition."
+      },
+      "keyboardResizeBy": {
+        "type": "number",
+        "description": "The number of pixels to resize the panel by when the keyboard is used."
+      },
+      "nonce": {
+        "type": "string",
+        "description": "The nonce for the injected splitter cursor stylesheet."
+      },
+      "onCollapse": {
+        "type": "(details: ExpandCollapseDetails) => void",
+        "description": "Function called when a panel is collapsed."
+      },
+      "onExpand": {
+        "type": "(details: ExpandCollapseDetails) => void",
+        "description": "Function called when a panel is expanded."
       },
       "dir": {
         "type": "\"ltr\" | \"rtl\"",

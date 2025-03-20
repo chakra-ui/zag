@@ -43,21 +43,23 @@ export function useMachine<T extends MachineSchema>(
 
   const prop = useProp<any>(props)
 
-  const context: any =
-    machine.context?.({
-      prop,
-      bindable,
-      get scope() {
-        return scope.value
-      },
-      flush,
-      getContext() {
-        return ctx as any
-      },
-      getComputed() {
-        return computed as any
-      },
-    }) ?? {}
+  const context: any = machine.context?.({
+    prop,
+    bindable,
+    get scope() {
+      return scope.value
+    },
+    flush,
+    getContext() {
+      return ctx as any
+    },
+    getComputed() {
+      return computed as any
+    },
+    getRefs() {
+      return refs as any
+    },
+  })
 
   const ctx: BindableContext<T> = {
     get(key) {

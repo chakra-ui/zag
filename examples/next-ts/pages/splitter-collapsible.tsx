@@ -11,7 +11,17 @@ export default function Page() {
 
   const service = useMachine(splitter.machine, {
     id: useId(),
-    panels: [{ id: "a" }, { id: "b" }, { id: "c" }],
+    panels: [
+      { id: "a", collapsible: true, collapsedSize: 5, minSize: 10, maxSize: 20 },
+      { id: "b", minSize: 50 },
+    ],
+    defaultSize: [15, 85],
+    onCollapse: (details) => {
+      console.log("onCollapse", details)
+    },
+    onExpand: (details) => {
+      console.log("onExpand", details)
+    },
   })
 
   const api = splitter.connect(service, normalizeProps)
@@ -19,18 +29,13 @@ export default function Page() {
   return (
     <>
       <main className="splitter">
-        <pre>{JSON.stringify(api.getSizes(), null, 2)}</pre>
         <div {...api.getRootProps()}>
           <div {...api.getPanelProps({ id: "a" })}>
-            <p>Left</p>
+            <p>A</p>
           </div>
           <div {...api.getResizeTriggerProps({ id: "a:b" })} />
           <div {...api.getPanelProps({ id: "b" })}>
-            <p>Middle</p>
-          </div>
-          <div {...api.getResizeTriggerProps({ id: "b:c" })} />
-          <div {...api.getPanelProps({ id: "c" })}>
-            <p>Right</p>
+            <p>B</p>
           </div>
         </div>
       </main>
