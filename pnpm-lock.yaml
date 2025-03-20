@@ -1590,6 +1590,9 @@ importers:
       '@zag-js/select':
         specifier: workspace:*
         version: link:../../packages/machines/select
+      '@zag-js/shared':
+        specifier: workspace:*
+        version: link:../../shared
       '@zag-js/signature-pad':
         specifier: workspace:*
         version: link:../../packages/machines/signature-pad

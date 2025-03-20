@@ -2,14 +2,15 @@ import * as popover from "@zag-js/popover"
 import { normalizeProps } from "./normalize-props"
 import { spreadProps } from "./spread-props"
 import { Component } from "./component"
+import { VanillaMachine } from "./lib/machine"
 
-export class Popover extends Component<popover.Context, popover.Api> {
-  initService(context: popover.Context) {
-    return popover.machine(context)
+export class Popover extends Component<popover.Props, popover.Api> {
+  initMachine(props: popover.Props) {
+    return new VanillaMachine(popover.machine, props)
   }
 
   initApi() {
-    return popover.connect(this.service.state, this.service.send, normalizeProps)
+    return popover.connect(this.machine.service, normalizeProps)
   }
 
   render = () => {

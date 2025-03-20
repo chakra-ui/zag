@@ -1,8 +1,8 @@
-import { Machine } from "@zag-js/core"
+import { VanillaMachine } from "./lib/machine"
 
 interface ComponentInterface<Api> {
   rootEl: HTMLElement
-  service: ReturnType<any>
+  machine: VanillaMachine<any>
   api: Api
 
   init(): void
@@ -10,32 +10,32 @@ interface ComponentInterface<Api> {
   render(): void
 }
 
-export abstract class Component<Context, Api> implements ComponentInterface<Api> {
+export abstract class Component<Props, Api> implements ComponentInterface<Api> {
   rootEl: HTMLElement
-  service: ReturnType<any>
+  machine: VanillaMachine<any>
   api: Api
 
-  constructor(rootEl: HTMLElement | null, context: Context) {
+  constructor(rootEl: HTMLElement | null, props: Props) {
     if (!rootEl) throw new Error("Root element not found")
     this.rootEl = rootEl
-    this.service = this.initService(context)
+    this.machine = this.initMachine(props)
     this.api = this.initApi()
   }
 
-  abstract initService(context: Context): Machine<any, any, any>
+  abstract initMachine(props: Props): VanillaMachine<any>
   abstract initApi(): Api
 
   init = () => {
     this.render()
-    this.service.subscribe(() => {
+    this.machine.subscribe(() => {
       this.api = this.initApi()
       this.render()
     })
-    this.service.start()
+    this.machine.start()
   }
 
   destroy = () => {
-    this.service.stop()
+    this.machine.stop()
   }
 
   abstract render(): void

@@ -2,14 +2,15 @@ import * as accordion from "@zag-js/accordion"
 import { normalizeProps } from "./normalize-props"
 import { spreadProps } from "./spread-props"
 import { Component } from "./component"
+import { VanillaMachine } from "./lib/machine"
 
-export class Accordion extends Component<accordion.Context, accordion.Api> {
-  initService(context: accordion.Context) {
-    return accordion.machine(context)
+export class Accordion extends Component<accordion.Props, accordion.Api> {
+  initMachine(props: accordion.Props) {
+    return new VanillaMachine(accordion.machine, props)
   }
 
   initApi() {
-    return accordion.connect(this.service.state, this.service.send, normalizeProps)
+    return accordion.connect(this.machine.service, normalizeProps)
   }
 
   render = () => {

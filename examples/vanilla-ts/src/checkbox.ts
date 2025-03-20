@@ -2,14 +2,15 @@ import * as checkbox from "@zag-js/checkbox"
 import { normalizeProps } from "./normalize-props"
 import { spreadProps } from "./spread-props"
 import { Component } from "./component"
+import { VanillaMachine } from "./lib/machine"
 
-export class Checkbox extends Component<checkbox.Context, checkbox.Api> {
-  initService(context: checkbox.Context) {
-    return checkbox.machine(context)
+export class Checkbox extends Component<checkbox.Props, checkbox.Api> {
+  initMachine(props: checkbox.Props) {
+    return new VanillaMachine(checkbox.machine, props)
   }
 
   initApi() {
-    return checkbox.connect(this.service.state, this.service.send, normalizeProps)
+    return checkbox.connect(this.machine.service, normalizeProps)
   }
 
   render = () => {
