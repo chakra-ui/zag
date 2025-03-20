@@ -8,6 +8,46 @@ All notable changes to this project will be documented in this file.
 
 See the [Changesets](./.changeset) for the latest changes.
 
+## [1.5.0](./#1.5.0) - 2025-03-20
+
+### Fixed
+
+- **File Utils**: Fix issue in `downloadFile` where `name` is not considered in some cases
+
+### Changed
+
+- **Number Input**: Set the default step to `0.01` when `formatOptions.style` is set to `percent`
+
+- **[Breaking] Splitter**: Redesign splitter machine to support more use cases and improve DX.
+
+  Before:
+
+  ```ts
+  const service = useMachine(splitter.machine, {
+    id: useId(),
+    defaultSize: [
+      { id: "a", size: 50 },
+      { id: "b", size: 50 },
+    ],
+  })
+  ```
+
+  After:
+
+  ```ts
+  const service = useMachine(splitter.machine, {
+    id: useId(),
+    panels: [{ id: "a" }, { id: "b" }],
+    defaultSize: [50, 50],
+  })
+  ```
+
+  The also comes with new features such as:
+
+  - Support for collapsible panels
+  - Support for collapse and expand events
+  - Methods for resizing the panels programmatically
+
 ## [1.4.2](./#1.4.2) - 2025-03-18
 
 ### Fixed
