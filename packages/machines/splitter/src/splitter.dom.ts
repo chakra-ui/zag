@@ -23,17 +23,17 @@ export const getCursor = (state: CursorState, x: boolean) => {
 }
 
 export const getResizeTriggerEls = (ctx: Scope) => {
-  const ownerId = CSS.escape(getRootId(ctx))
-  return queryAll(getRootEl(ctx), `[role=separator][data-ownedby='${ownerId}']`)
+  return queryAll(getRootEl(ctx), `[role=separator][data-ownedby='${CSS.escape(getRootId(ctx))}']`)
 }
 
-export const setupGlobalCursor = (ctx: Scope, state: CursorState, x: boolean) => {
+export const setupGlobalCursor = (ctx: Scope, state: CursorState, x: boolean, nonce?: string) => {
   const styleEl = ctx.getById(getGlobalCursorId(ctx))
   const textContent = `* { cursor: ${getCursor(state, x)} !important; }`
   if (styleEl) {
     styleEl.textContent = textContent
   } else {
     const style = ctx.getDoc().createElement("style")
+    if (nonce) style.nonce = nonce
     style.id = getGlobalCursorId(ctx)
     style.textContent = textContent
     ctx.getDoc().head.appendChild(style)

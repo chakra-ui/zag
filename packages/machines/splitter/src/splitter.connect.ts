@@ -3,7 +3,7 @@ import type { EventKeyMap, NormalizeProps, PropTypes } from "@zag-js/types"
 import { ensure } from "@zag-js/utils"
 import { parts } from "./splitter.anatomy"
 import * as dom from "./splitter.dom"
-import type { PanelData, PanelProps, ResizeTriggerProps, SplitterApi, SplitterService } from "./splitter.types"
+import type { PanelProps, ResizeTriggerProps, SplitterApi, SplitterService } from "./splitter.types"
 import { getAriaValue } from "./utils/aria"
 import { fuzzyCompareNumbers, fuzzyNumbersEqual } from "./utils/fuzzy"
 import { findPanelIndex, getPanelById, getPanelFlexBoxStyle, getPanelLayout, panelDataHelper } from "./utils/panel"
@@ -45,19 +45,19 @@ export function connect<T extends PropTypes>(service: SplitterService, normalize
     getSizes() {
       return context.get("size")
     },
-    setSizes(size: number[]) {
+    setSizes(size) {
       send({ type: "SIZE.SET", size })
     },
-    collapsePanel(id: string) {
+    collapsePanel(id) {
       send({ type: "PANEL.COLLAPSE", id })
     },
-    expandPanel(id: string, minSize?: number) {
+    expandPanel(id, minSize) {
       send({ type: "PANEL.EXPAND", id, minSize })
     },
-    resizePanel(id: string, unsafePanelSize: number) {
+    resizePanel(id, unsafePanelSize) {
       send({ type: "PANEL.RESIZE", id, size: unsafePanelSize })
     },
-    getPanelSize(id: string) {
+    getPanelSize(id) {
       const panels = prop("panels")
       const size = context.get("size")
       const panelData = getPanelById(panels, id)
@@ -67,7 +67,7 @@ export function connect<T extends PropTypes>(service: SplitterService, normalize
 
       return panelSize
     },
-    isPanelCollapsed(id: string) {
+    isPanelCollapsed(id) {
       const panels = prop("panels")
       const size = context.get("size")
       const panelData = getPanelById(panels, id)
@@ -76,7 +76,7 @@ export function connect<T extends PropTypes>(service: SplitterService, normalize
       ensure(panelSize, `Panel size not found for panel "${panelData.id}"`)
       return collapsible === true && fuzzyNumbersEqual(panelSize, collapsedSize)
     },
-    isPanelExpanded(id: string) {
+    isPanelExpanded(id) {
       const panels = prop("panels")
       const size = context.get("size")
       const panelData = getPanelById(panels, id)
@@ -86,8 +86,8 @@ export function connect<T extends PropTypes>(service: SplitterService, normalize
 
       return !collapsible || fuzzyCompareNumbers(panelSize, collapsedSize) > 0
     },
-    getLayout(panels?: PanelData[]) {
-      return getPanelLayout(panels ?? prop("panels"))
+    getLayout() {
+      return getPanelLayout(prop("panels"))
     },
 
     getRootProps() {
@@ -123,8 +123,8 @@ export function connect<T extends PropTypes>(service: SplitterService, normalize
     getResizeTriggerProps(props: ResizeTriggerProps) {
       const { id, disabled } = props
       const aria = getAriaValue(context.get("size"), prop("panels"), id)
-      const dragging = context.get("dragState")?.dragHandleId === id
-      const focused = dragging || context.get("keyboardState")?.dragHandleId === id
+      const dragging = context.get("dragState")?.resizeTriggerId === id
+      const focused = dragging || context.get("keyboardState")?.resizeTriggerId === id
 
       return normalize.element({
         ...parts.resizeTrigger.attrs,
@@ -152,6 +152,7 @@ export function connect<T extends PropTypes>(service: SplitterService, normalize
           [horizontal ? "minHeight" : "minWidth"]: "0",
         },
         onPointerDown(event) {
+          if (event.button !== 0) return
           if (disabled) {
             event.preventDefault()
             return
@@ -178,9 +179,11 @@ export function connect<T extends PropTypes>(service: SplitterService, normalize
           send({ type: "POINTER_LEAVE", id })
         },
         onBlur() {
+          if (disabled) return
           send({ type: "BLUR" })
         },
         onFocus() {
+          if (disabled) return
           send({ type: "FOCUS", id })
         },
         onDoubleClick() {

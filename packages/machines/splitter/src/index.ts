@@ -1,16 +1,19 @@
 export { anatomy } from "./splitter.anatomy"
 export { connect } from "./splitter.connect"
 export { machine } from "./splitter.machine"
-export { getPanelLayout as layout } from "./utils/panel"
 export * from "./splitter.props"
 export type {
   SplitterApi as Api,
+  ElementIds,
   ExpandCollapseDetails,
-  ResizeEndDetails,
   SplitterMachine as Machine,
+  PanelData,
   PanelProps,
   SplitterProps as Props,
+  ResizeDetails,
+  ResizeEndDetails,
   ResizeTriggerProps,
   SplitterService as Service,
-  ResizeDetails,
+  SplitterItem as Item,
 } from "./splitter.types"
+export { getPanelLayout as layout } from "./utils/panel"

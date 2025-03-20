@@ -2,7 +2,7 @@ import { createMachine, type Params } from "@zag-js/core"
 import { trackPointerMove } from "@zag-js/dom-query"
 import { ensure, ensureProps, isEqual, next, prev, setRafTimeout } from "@zag-js/utils"
 import * as dom from "./splitter.dom"
-import type { CursorState, DragHandleId, DragState, KeyboardState, SplitterSchema } from "./splitter.types"
+import type { CursorState, ResizeTriggerId, DragState, KeyboardState, SplitterSchema } from "./splitter.types"
 import { getAriaValue } from "./utils/aria"
 import { fuzzyNumbersEqual, fuzzySizeEqual } from "./utils/fuzzy"
 import {
@@ -47,13 +47,13 @@ export const machine = createMachine<SplitterSchema>({
 
           const sizesBeforeCollapse = refs.get("panelSizeBeforeCollapse")
           const expandToSizes = Object.fromEntries(sizesBeforeCollapse.entries())
-          const dragHandleId = ctx.get("dragState")?.dragHandleId ?? null
+          const resizeTriggerId = ctx.get("dragState")?.resizeTriggerId ?? null
           const layout = getPanelLayout(prop("panels"))
 
           prop("onResize")?.({
             size: value,
             layout,
-            dragHandleId,
+            resizeTriggerId,
             expandToSizes,
           })
         },
@@ -169,7 +169,7 @@ export const machine = createMachine<SplitterSchema>({
           actions: ["setKeyboardValue"],
         },
         "FOCUS.CYCLE": {
-          actions: ["focusNextHandleEl"],
+          actions: ["focusNextResizeTrigger"],
         },
       },
     },
@@ -254,19 +254,19 @@ export const machine = createMachine<SplitterSchema>({
       setDraggingState({ context, event, prop, scope }) {
         const orientation = prop("orientation")
         const size = context.get("size")
-        const dragHandleId = event.id
+        const resizeTriggerId = event.id
 
         const panelGroupEl = dom.getRootEl(scope)
         if (!panelGroupEl) return
 
-        const handleElement = dom.getResizeTriggerEl(scope, dragHandleId)
-        ensure(handleElement, `Drag handle element not found for id "${dragHandleId}"`)
+        const handleElement = dom.getResizeTriggerEl(scope, resizeTriggerId)
+        ensure(handleElement, `Drag handle element not found for id "${resizeTriggerId}"`)
 
         const initialCursorPosition = orientation === "horizontal" ? event.point.x : event.point.y
 
         context.set("dragState", {
-          dragHandleId: event.id,
-          dragHandleRect: handleElement.getBoundingClientRect(),
+          resizeTriggerId: event.id,
+          resizeTriggerRect: handleElement.getBoundingClientRect(),
           initialCursorPosition,
           initialSize: size,
         })
@@ -278,7 +278,7 @@ export const machine = createMachine<SplitterSchema>({
 
       setKeyboardState({ context, event }) {
         context.set("keyboardState", {
-          dragHandleId: event.id,
+          resizeTriggerId: event.id,
         })
       },
 
@@ -401,13 +401,13 @@ export const machine = createMachine<SplitterSchema>({
         const dragState = context.get("dragState")
         if (!dragState) return
 
-        const { dragHandleId, initialSize, initialCursorPosition } = dragState
+        const { resizeTriggerId, initialSize, initialCursorPosition } = dragState
         const panels = prop("panels")
 
         const panelGroupElement = dom.getRootEl(scope)
         ensure(panelGroupElement, `Panel group element not found`)
 
-        const pivotIndices = dragHandleId.split(":").map((id) => panels.findIndex((panel) => panel.id === id))
+        const pivotIndices = resizeTriggerId.split(":").map((id) => panels.findIndex((panel) => panel.id === id))
 
         const horizontal = prop("orientation") === "horizontal"
 
@@ -439,10 +439,10 @@ export const machine = createMachine<SplitterSchema>({
 
         const panelDataArray = prop("panels")
 
-        const dragHandleId = event.id as DragHandleId
+        const resizeTriggerId = event.id as ResizeTriggerId
         const delta = event.delta
 
-        const pivotIndices = dragHandleId
+        const pivotIndices = resizeTriggerId
           .split(":")
           .map((id) => panelDataArray.findIndex((panelData) => panelData.id === id))
 
@@ -467,7 +467,7 @@ export const machine = createMachine<SplitterSchema>({
           const dragState = context.get("dragState")
           prop("onResizeEnd")?.({
             size: context.get("size"),
-            dragHandleId: dragState?.dragHandleId ?? null,
+            resizeTriggerId: dragState?.resizeTriggerId ?? null,
           })
         })
       },
@@ -484,8 +484,8 @@ export const machine = createMachine<SplitterSchema>({
         const panelDataArray = prop("panels")
         const sizes = context.get("size")
 
-        const dragHandleId = context.get("keyboardState")?.dragHandleId
-        const [idBefore, idAfter] = dragHandleId?.split(":") ?? []
+        const resizeTriggerId = context.get("keyboardState")?.resizeTriggerId
+        const [idBefore, idAfter] = resizeTriggerId?.split(":") ?? []
 
         const index = panelDataArray.findIndex((panelData) => panelData.id === idBefore)
         if (index === -1) return
@@ -524,29 +524,29 @@ export const machine = createMachine<SplitterSchema>({
         const panels = prop("panels")
         const horizontal = prop("orientation") === "horizontal"
 
-        const [idBefore] = dragState.dragHandleId.split(":")
+        const [idBefore] = dragState.resizeTriggerId.split(":")
         const indexBefore = panels.findIndex((panel) => panel.id === idBefore)
         const panel = panels[indexBefore]
 
         const size = context.get("size")
-        const aria = getAriaValue(size, panels, dragState.dragHandleId)
+        const aria = getAriaValue(size, panels, dragState.resizeTriggerId)
 
         const isAtMin =
           fuzzyNumbersEqual(aria.valueNow, aria.valueMin) || fuzzyNumbersEqual(aria.valueNow, panel.collapsedSize)
 
         const isAtMax = fuzzyNumbersEqual(aria.valueNow, aria.valueMax)
         const cursorState: CursorState = { isAtMin, isAtMax }
-        dom.setupGlobalCursor(scope, cursorState, horizontal)
+        dom.setupGlobalCursor(scope, cursorState, horizontal, prop("nonce"))
       },
 
       clearGlobalCursor({ scope }) {
         dom.removeGlobalCursor(scope)
       },
 
-      focusNextHandleEl({ event, scope }) {
-        const dragHandles = dom.getResizeTriggerEls(scope)
-        const index = dragHandles.findIndex((el) => el.dataset.id === event.id)
-        const handleEl = event.shiftKey ? prev(dragHandles, index) : next(dragHandles, index)
+      focusNextResizeTrigger({ event, scope }) {
+        const resizeTriggers = dom.getResizeTriggerEls(scope)
+        const index = resizeTriggers.findIndex((el) => el.dataset.id === event.id)
+        const handleEl = event.shiftKey ? prev(resizeTriggers, index) : next(resizeTriggers, index)
         handleEl?.focus()
       },
     },

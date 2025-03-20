@@ -8,13 +8,32 @@ import type { CommonProperties, DirectionProperty, PropTypes, RequiredBy } from 
 export type ResizeEvent = PointerEvent | KeyboardEvent
 
 export type PanelId = string
+export type ResizeTriggerId = `${PanelId}:${PanelId}`
 
 export interface PanelData {
+  /**
+   * The id of the panel.
+   */
   id: PanelId
+  /**
+   * The order of the panel. useful of you intend to conditionally render the panel.
+   */
   order?: number | undefined
+  /**
+   * The minimum size of the panel.
+   */
   minSize?: number | undefined
+  /**
+   * The maximum size of the panel.
+   */
   maxSize?: number | undefined
+  /**
+   * Whether the panel is collapsible.
+   */
   collapsible?: boolean | undefined
+  /**
+   * The size of the panel when collapsed.
+   */
   collapsedSize?: number | undefined
 }
 
@@ -25,14 +44,14 @@ export interface CursorState {
 
 export interface ResizeDetails {
   size: number[]
-  dragHandleId: string | null
+  resizeTriggerId: string | null
   layout: string
   expandToSizes: Record<string, number>
 }
 
 export interface ResizeEndDetails {
   size: number[]
-  dragHandleId: string | null
+  resizeTriggerId: string | null
 }
 
 export interface ExpandCollapseDetails {
@@ -44,7 +63,7 @@ export interface ExpandCollapseDetails {
  * Machine context
  * -----------------------------------------------------------------------------*/
 
-type ElementIds = Partial<{
+export type ElementIds = Partial<{
   root: string
   resizeTrigger(id: string): string
   label(id: string): string
@@ -107,14 +126,14 @@ export interface SplitterProps extends DirectionProperty, CommonProperties {
 export type PropWithDefault = "orientation" | "panels"
 
 export interface DragState {
-  dragHandleId: string
-  dragHandleRect: DOMRect
+  resizeTriggerId: string
+  resizeTriggerRect: DOMRect
   initialCursorPosition: number
   initialSize: number[]
 }
 
 export interface KeyboardState {
-  dragHandleId: string
+  resizeTriggerId: string
 }
 
 interface Context {
@@ -156,25 +175,9 @@ export interface PanelProps {
   id: PanelId
 }
 
-export type DragHandleId = `${PanelId}:${PanelId}`
-
 export interface ResizeTriggerProps {
-  id: DragHandleId
+  id: ResizeTriggerId
   disabled?: boolean | undefined
-}
-
-export interface ResizeTriggerState {
-  disabled: boolean
-  focused: boolean
-  panelIds: string[]
-  min: number | undefined
-  max: number | undefined
-  value: number
-}
-
-export interface PanelBounds {
-  min: number
-  max: number
 }
 
 export interface PanelItem {
@@ -184,8 +187,10 @@ export interface PanelItem {
 
 export interface ResizeTriggerItem {
   type: "handle"
-  id: DragHandleId
+  id: ResizeTriggerId
 }
+
+export type SplitterItem = PanelItem | ResizeTriggerItem
 
 export interface SplitterApi<T extends PropTypes = PropTypes> {
   /**
@@ -203,7 +208,7 @@ export interface SplitterApi<T extends PropTypes = PropTypes> {
   /**
    * Get the items of the splitter.
    */
-  getItems(): Array<PanelItem | ResizeTriggerItem>
+  getItems(): SplitterItem[]
   /**
    * Get the size of a panel.
    */
@@ -231,7 +236,7 @@ export interface SplitterApi<T extends PropTypes = PropTypes> {
   /**
    * Get the layout of the splitter.
    */
-  getLayout(panels?: PanelData[]): string
+  getLayout(): string
 
   getRootProps(): T["element"]
   getPanelProps(props: PanelProps): T["element"]

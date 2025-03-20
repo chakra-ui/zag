@@ -3,7 +3,7 @@
  * @see https://github.com/bvaughn/react-resizable-panels
  */
 
-import { ensure, warn } from "@zag-js/utils"
+import { ensure } from "@zag-js/utils"
 import type { PanelData } from "../splitter.types"
 import { fuzzyNumbersEqual } from "./fuzzy"
 import { resizePanel } from "./resize-panel"
@@ -16,14 +16,6 @@ export function validateSizes({ size: prevSize, panels }: { size: number[]; pane
   if (nextSize.length !== panels.length) {
     throw Error(`Invalid ${panels.length} panel size: ${nextSize.map((size) => `${size}%`).join(", ")}`)
   } else if (!fuzzyNumbersEqual(nextSizeTotalSize, 100) && nextSize.length > 0) {
-    // This is not ideal so we should warn about it, but it may be recoverable in some cases
-    // (especially if the amount is small)
-    warn(
-      `WARNING: Invalid size total size: ${nextSize
-        .map((size) => `${size}%`)
-        .join(", ")}. Size normalization will be applied.`,
-    )
-
     for (let index = 0; index < panels.length; index++) {
       const unsafeSize = nextSize[index]
       ensure(unsafeSize, `No size data found for index ${index}`)
@@ -38,12 +30,9 @@ export function validateSizes({ size: prevSize, panels }: { size: number[]; pane
   for (let index = 0; index < panels.length; index++) {
     const unsafeSize = nextSize[index]
     ensure(unsafeSize, `No size data found for index ${index}`)
-
     const safeSize = resizePanel({ panels, index, size: unsafeSize })
-
     if (unsafeSize != safeSize) {
       remainingSize += unsafeSize - safeSize
-
       nextSize[index] = safeSize
     }
   }
