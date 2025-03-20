@@ -1,6 +1,7 @@
 import * as combobox from "@zag-js/combobox"
-import { Portal, normalizeProps, useMachine } from "@zag-js/react"
+import { Portal, mergeProps, normalizeProps, useMachine } from "@zag-js/react"
 import { useId, useMemo, useState } from "react"
+import { createFilter } from "@zag-js/i18n-utils"
 
 interface ComboboxProps {
   controls: {
@@ -60,6 +61,8 @@ const CaretIcon = () => (
 export function Combobox(props: ComboboxProps) {
   const [options, setOptions] = useState(comboboxData)
 
+  const filter = createFilter({ sensitivity: "base" })
+
   const collection = useMemo(
     () =>
       combobox.collection({
@@ -73,12 +76,9 @@ export function Combobox(props: ComboboxProps) {
   const service = useMachine(combobox.machine, {
     id: useId(),
     collection,
-    onOpenChange() {
-      setOptions(comboboxData)
-    },
     onInputValueChange({ inputValue }) {
       const filtered = comboboxData.filter((item) =>
-        item.label.toLowerCase().includes(inputValue.toLowerCase()),
+        filter.contains(item.label, inputValue),
       )
       setOptions(filtered.length > 0 ? filtered : comboboxData)
     },
@@ -86,9 +86,13 @@ export function Combobox(props: ComboboxProps) {
     ...props.controls,
   })
 
-  // { context: { ...props.controls, collection } },
-
   const api = combobox.connect(service, normalizeProps)
+
+  const triggerProps = mergeProps(api.getTriggerProps(), {
+    onClick() {
+      setOptions(comboboxData)
+    },
+  })
 
   return (
     <div>
@@ -96,7 +100,7 @@ export function Combobox(props: ComboboxProps) {
         <label {...api.getLabelProps()}>Nationality</label>
         <div {...api.getControlProps()}>
           <input {...api.getInputProps()} />
-          <button {...api.getTriggerProps()}>
+          <button {...triggerProps}>
             <CaretIcon />
           </button>
         </div>

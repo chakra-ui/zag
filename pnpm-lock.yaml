@@ -3529,6 +3529,9 @@ importers:
       '@zag-js/hover-card':
         specifier: workspace:*
         version: link:../packages/machines/hover-card
+      '@zag-js/i18n-utils':
+        specifier: workspace:*
+        version: link:../packages/utilities/i18n-utils
       '@zag-js/menu':
         specifier: workspace:*
         version: link:../packages/machines/menu
