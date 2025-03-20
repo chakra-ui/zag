@@ -1,5 +1,22 @@
 # @zag-js/number-input
 
+## 1.5.0
+
+### Minor Changes
+
+- [`5ea05c2`](https://github.com/chakra-ui/zag/commit/5ea05c2f1a158dcf7c432030b4999336b47660bd) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Set the default step to `0.01` when `formatOptions.style` is set
+  to `percent`
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.5.0
+  - @zag-js/core@1.5.0
+  - @zag-js/types@1.5.0
+  - @zag-js/utils@1.5.0
+  - @zag-js/dom-query@1.5.0
+
 ## 1.4.2
 
 ### Patch Changes
