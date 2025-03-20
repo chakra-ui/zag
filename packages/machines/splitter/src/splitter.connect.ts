@@ -3,7 +3,7 @@ import type { EventKeyMap, NormalizeProps, PropTypes } from "@zag-js/types"
 import { ensure } from "@zag-js/utils"
 import { parts } from "./splitter.anatomy"
 import * as dom from "./splitter.dom"
-import type { PanelProps, ResizeTriggerProps, SplitterApi, SplitterService } from "./splitter.types"
+import type { SplitterApi, SplitterService } from "./splitter.types"
 import { getAriaValue } from "./utils/aria"
 import { fuzzyCompareNumbers, fuzzyNumbersEqual } from "./utils/fuzzy"
 import { findPanelIndex, getPanelById, getPanelFlexBoxStyle, getPanelLayout, panelDataHelper } from "./utils/panel"
@@ -106,7 +106,7 @@ export function connect<T extends PropTypes>(service: SplitterService, normalize
       })
     },
 
-    getPanelProps(props: PanelProps) {
+    getPanelProps(props) {
       const { id } = props
       return normalize.element({
         ...parts.panel.attrs,
@@ -120,7 +120,7 @@ export function connect<T extends PropTypes>(service: SplitterService, normalize
       })
     },
 
-    getResizeTriggerProps(props: ResizeTriggerProps) {
+    getResizeTriggerProps(props) {
       const { id, disabled } = props
       const aria = getAriaValue(context.get("size"), prop("panels"), id)
       const dragging = context.get("dragState")?.resizeTriggerId === id
