@@ -131,14 +131,18 @@ const service = useMachine(splitter.machine, {
 
 ## Setting the collapsed size
 
-Use the `collapsedSize` and `collapsible` property to specify the collapsed size
-of the splitter panels.
+Set the `collapsedSize` and `collapsible` of a panel to specify the collapsed
+size of the panel.
 
-```jsx {3-4}
+> For best results, ensure you also set the `minSize` of the panel
+
+```jsx {4}
 const service = useMachine(splitter.machine, {
   // ...
-  collapsedSize: 100,
-  collapsible: true,
+  panels: [
+    { id: "a", collapsible: true, collapsedSize: 5, minSize: 10, maxSize: 20 },
+    { id: "b", minSize: 50 },
+  ],
 })
 ```
 
