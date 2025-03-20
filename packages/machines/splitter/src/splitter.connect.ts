@@ -186,10 +186,6 @@ export function connect<T extends PropTypes>(service: SplitterService, normalize
           if (disabled) return
           send({ type: "FOCUS", id })
         },
-        onDoubleClick() {
-          if (disabled) return
-          send({ type: "DOUBLE_CLICK", id })
-        },
         onKeyDown(event) {
           if (event.defaultPrevented) return
           if (disabled) return
