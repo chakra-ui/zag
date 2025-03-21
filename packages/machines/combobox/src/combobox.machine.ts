@@ -400,11 +400,11 @@ export const machine = createMachine<ComboboxSchema>({
           {
             guard: "autoComplete",
             target: "suggesting",
-            actions: ["setInputValue", "invokeOnOpen"],
+            actions: ["setInputValue"],
           },
           {
             target: "suggesting",
-            actions: ["clearHighlightedItem", "setInputValue", "invokeOnOpen"],
+            actions: ["clearHighlightedItem", "setInputValue"],
           },
         ],
         "ITEM.POINTER_MOVE": {
