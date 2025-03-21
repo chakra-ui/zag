@@ -3415,8 +3415,8 @@ importers:
         specifier: 8.0.0
         version: 8.0.0
       next:
-        specifier: 15.2.1
-        version: 15.2.1(@opentelemetry/api@1.9.0)(@playwright/test@1.51.0)(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
+        specifier: 15.2.3
+        version: 15.2.3(@opentelemetry/api@1.9.0)(@playwright/test@1.51.0)(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
       react:
         specifier: 19.0.0
         version: 19.0.0
@@ -3626,14 +3626,14 @@ importers:
         specifier: 8.0.0
         version: 8.0.0
       next:
-        specifier: 15.2.1
-        version: 15.2.1(@opentelemetry/api@1.9.0)(@playwright/test@1.51.0)(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
+        specifier: 15.2.3
+        version: 15.2.3(@opentelemetry/api@1.9.0)(@playwright/test@1.51.0)(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
       next-contentlayer:
         specifier: 0.3.4
-        version: 0.3.4(contentlayer@0.3.4(esbuild@0.25.0))(esbuild@0.25.0)(next@15.2.1(@opentelemetry/api@1.9.0)(@playwright/test@1.51.0)(react-dom@19.0.0(react@19.0.0))(react@19.0.0))(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
+        version: 0.3.4(contentlayer@0.3.4(esbuild@0.25.0))(esbuild@0.25.0)(next@15.2.3(@opentelemetry/api@1.9.0)(@playwright/test@1.51.0)(react-dom@19.0.0(react@19.0.0))(react@19.0.0))(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
       next-seo:
         specifier: 6.6.0
-        version: 6.6.0(next@15.2.1(@opentelemetry/api@1.9.0)(@playwright/test@1.51.0)(react-dom@19.0.0(react@19.0.0))(react@19.0.0))(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
+        version: 6.6.0(next@15.2.3(@opentelemetry/api@1.9.0)(@playwright/test@1.51.0)(react-dom@19.0.0(react@19.0.0))(react@19.0.0))(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
       plop:
         specifier: 4.0.1
         version: 4.0.1
@@ -5227,11 +5227,20 @@ packages:
   '@next/env@15.2.1':
     resolution: {integrity: sha512-JmY0qvnPuS2NCWOz2bbby3Pe0VzdAQ7XpEB6uLIHmtXNfAsAO0KLQLkuAoc42Bxbo3/jMC3dcn9cdf+piCcG2Q==}
 
+  '@next/env@15.2.3':
+    resolution: {integrity: sha512-a26KnbW9DFEUsSxAxKBORR/uD9THoYoKbkpFywMN/AFvboTt94b8+g/07T8J6ACsdLag8/PDU60ov4rPxRAixw==}
+
   '@next/eslint-plugin-next@15.2.1':
     resolution: {integrity: sha512-6ppeToFd02z38SllzWxayLxjjNfzvc7Wm07gQOKSLjyASvKcXjNStZrLXMHuaWkhjqxe+cnhb2uzfWXm1VEj/Q==}
 
   '@next/swc-darwin-arm64@15.2.1':
     resolution: {integrity: sha512-aWXT+5KEREoy3K5AKtiKwioeblmOvFFjd+F3dVleLvvLiQ/mD//jOOuUcx5hzcO9ISSw4lrqtUPntTpK32uXXQ==}
+    engines: {node: '>= 10'}
+    cpu: [arm64]
+    os: [darwin]
+
+  '@next/swc-darwin-arm64@15.2.3':
+    resolution: {integrity: sha512-uaBhA8aLbXLqwjnsHSkxs353WrRgQgiFjduDpc7YXEU0B54IKx3vU+cxQlYwPCyC8uYEEX7THhtQQsfHnvv8dw==}
     engines: {node: '>= 10'}
     cpu: [arm64]
     os: [darwin]
@@ -5242,8 +5251,20 @@ packages:
     cpu: [x64]
     os: [darwin]
 
+  '@next/swc-darwin-x64@15.2.3':
+    resolution: {integrity: sha512-pVwKvJ4Zk7h+4hwhqOUuMx7Ib02u3gDX3HXPKIShBi9JlYllI0nU6TWLbPT94dt7FSi6mSBhfc2JrHViwqbOdw==}
+    engines: {node: '>= 10'}
+    cpu: [x64]
+    os: [darwin]
+
   '@next/swc-linux-arm64-gnu@15.2.1':
     resolution: {integrity: sha512-gXDX5lIboebbjhiMT6kFgu4svQyjoSed6dHyjx5uZsjlvTwOAnZpn13w9XDaIMFFHw7K8CpBK7HfDKw0VZvUXQ==}
+    engines: {node: '>= 10'}
+    cpu: [arm64]
+    os: [linux]
+
+  '@next/swc-linux-arm64-gnu@15.2.3':
+    resolution: {integrity: sha512-50ibWdn2RuFFkOEUmo9NCcQbbV9ViQOrUfG48zHBCONciHjaUKtHcYFiCwBVuzD08fzvzkWuuZkd4AqbvKO7UQ==}
     engines: {node: '>= 10'}
     cpu: [arm64]
     os: [linux]
@@ -5254,8 +5275,20 @@ packages:
     cpu: [arm64]
     os: [linux]
 
+  '@next/swc-linux-arm64-musl@15.2.3':
+    resolution: {integrity: sha512-2gAPA7P652D3HzR4cLyAuVYwYqjG0mt/3pHSWTCyKZq/N/dJcUAEoNQMyUmwTZWCJRKofB+JPuDVP2aD8w2J6Q==}
+    engines: {node: '>= 10'}
+    cpu: [arm64]
+    os: [linux]
+
   '@next/swc-linux-x64-gnu@15.2.1':
     resolution: {integrity: sha512-RbsVq2iB6KFJRZ2cHrU67jLVLKeuOIhnQB05ygu5fCNgg8oTewxweJE8XlLV+Ii6Y6u4EHwETdUiRNXIAfpBww==}
+    engines: {node: '>= 10'}
+    cpu: [x64]
+    os: [linux]
+
+  '@next/swc-linux-x64-gnu@15.2.3':
+    resolution: {integrity: sha512-ODSKvrdMgAJOVU4qElflYy1KSZRM3M45JVbeZu42TINCMG3anp7YCBn80RkISV6bhzKwcUqLBAmOiWkaGtBA9w==}
     engines: {node: '>= 10'}
     cpu: [x64]
     os: [linux]
@@ -5266,14 +5299,32 @@ packages:
     cpu: [x64]
     os: [linux]
 
+  '@next/swc-linux-x64-musl@15.2.3':
+    resolution: {integrity: sha512-ZR9kLwCWrlYxwEoytqPi1jhPd1TlsSJWAc+H/CJHmHkf2nD92MQpSRIURR1iNgA/kuFSdxB8xIPt4p/T78kwsg==}
+    engines: {node: '>= 10'}
+    cpu: [x64]
+    os: [linux]
+
   '@next/swc-win32-arm64-msvc@15.2.1':
     resolution: {integrity: sha512-Gk42XZXo1cE89i3hPLa/9KZ8OuupTjkDmhLaMKFohjf9brOeZVEa3BQy1J9s9TWUqPhgAEbwv6B2+ciGfe54Vw==}
     engines: {node: '>= 10'}
     cpu: [arm64]
     os: [win32]
 
+  '@next/swc-win32-arm64-msvc@15.2.3':
+    resolution: {integrity: sha512-+G2FrDcfm2YDbhDiObDU/qPriWeiz/9cRR0yMWJeTLGGX6/x8oryO3tt7HhodA1vZ8r2ddJPCjtLcpaVl7TE2Q==}
+    engines: {node: '>= 10'}
+    cpu: [arm64]
+    os: [win32]
+
   '@next/swc-win32-x64-msvc@15.2.1':
     resolution: {integrity: sha512-YjqXCl8QGhVlMR8uBftWk0iTmvtntr41PhG1kvzGp0sUP/5ehTM+cwx25hKE54J0CRnHYjSGjSH3gkHEaHIN9g==}
+    engines: {node: '>= 10'}
+    cpu: [x64]
+    os: [win32]
+
+  '@next/swc-win32-x64-msvc@15.2.3':
+    resolution: {integrity: sha512-gHYS9tc+G2W0ZC8rBL+H6RdtXIyk40uLiaos0yj5US85FNhbFEndMA2nW3z47nzOWiSvXTZ5kBClc3rD0zJg0w==}
     engines: {node: '>= 10'}
     cpu: [x64]
     os: [win32]
@@ -10204,6 +10255,27 @@ packages:
       sass:
         optional: true
 
+  next@15.2.3:
+    resolution: {integrity: sha512-x6eDkZxk2rPpu46E1ZVUWIBhYCLszmUY6fvHBFcbzJ9dD+qRX6vcHusaqqDlnY+VngKzKbAiG2iRCkPbmi8f7w==}
+    engines: {node: ^18.18.0 || ^19.8.0 || >= 20.0.0}
+    hasBin: true
+    peerDependencies:
+      '@opentelemetry/api': ^1.1.0
+      '@playwright/test': ^1.41.2
+      babel-plugin-react-compiler: '*'
+      react: ^18.2.0 || 19.0.0-rc-de68d2f4-20241204 || ^19.0.0
+      react-dom: ^18.2.0 || 19.0.0-rc-de68d2f4-20241204 || ^19.0.0
+      sass: ^1.3.0
+    peerDependenciesMeta:
+      '@opentelemetry/api':
+        optional: true
+      '@playwright/test':
+        optional: true
+      babel-plugin-react-compiler:
+        optional: true
+      sass:
+        optional: true
+
   nitropack@2.10.4:
     resolution: {integrity: sha512-sJiG/MIQlZCVSw2cQrFG1H6mLeSqHlYfFerRjLKz69vUfdu0EL2l0WdOxlQbzJr3mMv/l4cOlCCLzVRzjzzF/g==}
     engines: {node: ^16.11.0 || >=17.0.0}
@@ -14557,6 +14629,8 @@ snapshots:
 
   '@next/env@15.2.1': {}
 
+  '@next/env@15.2.3': {}
+
   '@next/eslint-plugin-next@15.2.1':
     dependencies:
       fast-glob: 3.3.1
@@ -14564,25 +14638,49 @@ snapshots:
   '@next/swc-darwin-arm64@15.2.1':
     optional: true
 
+  '@next/swc-darwin-arm64@15.2.3':
+    optional: true
+
   '@next/swc-darwin-x64@15.2.1':
+    optional: true
+
+  '@next/swc-darwin-x64@15.2.3':
     optional: true
 
   '@next/swc-linux-arm64-gnu@15.2.1':
     optional: true
 
+  '@next/swc-linux-arm64-gnu@15.2.3':
+    optional: true
+
   '@next/swc-linux-arm64-musl@15.2.1':
+    optional: true
+
+  '@next/swc-linux-arm64-musl@15.2.3':
     optional: true
 
   '@next/swc-linux-x64-gnu@15.2.1':
     optional: true
 
+  '@next/swc-linux-x64-gnu@15.2.3':
+    optional: true
+
   '@next/swc-linux-x64-musl@15.2.1':
+    optional: true
+
+  '@next/swc-linux-x64-musl@15.2.3':
     optional: true
 
   '@next/swc-win32-arm64-msvc@15.2.1':
     optional: true
 
+  '@next/swc-win32-arm64-msvc@15.2.3':
+    optional: true
+
   '@next/swc-win32-x64-msvc@15.2.1':
+    optional: true
+
+  '@next/swc-win32-x64-msvc@15.2.3':
     optional: true
 
   '@nicolo-ribaudo/eslint-scope-5-internals@5.1.1-v1':
@@ -20819,12 +20917,12 @@ snapshots:
       next: 15.2.1(@opentelemetry/api@1.9.0)(@playwright/test@1.51.0)(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
       react: 19.0.0
 
-  next-contentlayer@0.3.4(contentlayer@0.3.4(esbuild@0.25.0))(esbuild@0.25.0)(next@15.2.1(@opentelemetry/api@1.9.0)(@playwright/test@1.51.0)(react-dom@19.0.0(react@19.0.0))(react@19.0.0))(react-dom@19.0.0(react@19.0.0))(react@19.0.0):
+  next-contentlayer@0.3.4(contentlayer@0.3.4(esbuild@0.25.0))(esbuild@0.25.0)(next@15.2.3(@opentelemetry/api@1.9.0)(@playwright/test@1.51.0)(react-dom@19.0.0(react@19.0.0))(react@19.0.0))(react-dom@19.0.0(react@19.0.0))(react@19.0.0):
     dependencies:
       '@contentlayer/core': 0.3.4(esbuild@0.25.0)
       '@contentlayer/utils': 0.3.4
       contentlayer: 0.3.4(esbuild@0.25.0)
-      next: 15.2.1(@opentelemetry/api@1.9.0)(@playwright/test@1.51.0)(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
+      next: 15.2.3(@opentelemetry/api@1.9.0)(@playwright/test@1.51.0)(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
       react: 19.0.0
       react-dom: 19.0.0(react@19.0.0)
     transitivePeerDependencies:
@@ -20833,9 +20931,9 @@ snapshots:
       - markdown-wasm
       - supports-color
 
-  next-seo@6.6.0(next@15.2.1(@opentelemetry/api@1.9.0)(@playwright/test@1.51.0)(react-dom@19.0.0(react@19.0.0))(react@19.0.0))(react-dom@19.0.0(react@19.0.0))(react@19.0.0):
+  next-seo@6.6.0(next@15.2.3(@opentelemetry/api@1.9.0)(@playwright/test@1.51.0)(react-dom@19.0.0(react@19.0.0))(react@19.0.0))(react-dom@19.0.0(react@19.0.0))(react@19.0.0):
     dependencies:
-      next: 15.2.1(@opentelemetry/api@1.9.0)(@playwright/test@1.51.0)(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
+      next: 15.2.3(@opentelemetry/api@1.9.0)(@playwright/test@1.51.0)(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
       react: 19.0.0
       react-dom: 19.0.0(react@19.0.0)
 
@@ -20859,6 +20957,33 @@ snapshots:
       '@next/swc-linux-x64-musl': 15.2.1
       '@next/swc-win32-arm64-msvc': 15.2.1
       '@next/swc-win32-x64-msvc': 15.2.1
+      '@opentelemetry/api': 1.9.0
+      '@playwright/test': 1.51.0
+      sharp: 0.33.5
+    transitivePeerDependencies:
+      - '@babel/core'
+      - babel-plugin-macros
+
+  next@15.2.3(@opentelemetry/api@1.9.0)(@playwright/test@1.51.0)(react-dom@19.0.0(react@19.0.0))(react@19.0.0):
+    dependencies:
+      '@next/env': 15.2.3
+      '@swc/counter': 0.1.3
+      '@swc/helpers': 0.5.15
+      busboy: 1.6.0
+      caniuse-lite: 1.0.30001701
+      postcss: 8.4.31
+      react: 19.0.0
+      react-dom: 19.0.0(react@19.0.0)
+      styled-jsx: 5.1.6(react@19.0.0)
+    optionalDependencies:
+      '@next/swc-darwin-arm64': 15.2.3
+      '@next/swc-darwin-x64': 15.2.3
+      '@next/swc-linux-arm64-gnu': 15.2.3
+      '@next/swc-linux-arm64-musl': 15.2.3
+      '@next/swc-linux-x64-gnu': 15.2.3
+      '@next/swc-linux-x64-musl': 15.2.3
+      '@next/swc-win32-arm64-msvc': 15.2.3
+      '@next/swc-win32-x64-msvc': 15.2.3
       '@opentelemetry/api': 1.9.0
       '@playwright/test': 1.51.0
       sharp: 0.33.5
