@@ -8,6 +8,22 @@ All notable changes to this project will be documented in this file.
 
 See the [Changesets](./.changeset) for the latest changes.
 
+## [1.6.0](./#1.6.0) - 2025-03-24
+
+### Added
+
+- **Collapsible**: Add collapsible indicator part
+
+### Fixed
+
+- **Splitter**: Fix issue where `onResizeStart` and `onResizeEnd` callbacks are not called when using keyboard
+
+- **Combobox**: Fix issue where `onOpenChange` with the same `open` value
+
+### Changed
+
+- **Color Utils**: Export `ColorStringFormat` type
+
 ## [1.5.0](./#1.5.0) - 2025-03-20
 
 ### Fixed
