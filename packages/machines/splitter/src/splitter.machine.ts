@@ -166,7 +166,7 @@ export const machine = createMachine<SplitterSchema>({
           actions: ["setDraggingState"],
         },
         KEYBOARD_MOVE: {
-          actions: ["setKeyboardValue"],
+          actions: ["invokeOnResizeStart", "setKeyboardValue", "invokeOnResizeEnd"],
         },
         "FOCUS.CYCLE": {
           actions: ["focusNextResizeTrigger"],
