@@ -1,35 +1,19 @@
-import { normalizeProps, useMachine } from "@zag-js/react"
-import { highlightState } from "@zag-js/stringify-state"
-import { connect, machine } from "@zag-js/tooltip"
-import { useId } from "react"
-
-const Button = ({ tooltip, children }) => {
-  const id = useId()
-  const service = useMachine(machine, {
-    id,
-    closeOnScroll: false,
-  })
-  const api = connect(service, normalizeProps)
-  return (
-    <>
-      <pre dangerouslySetInnerHTML={{ __html: highlightState(service.event) }} />
-      <button {...api.getTriggerProps()}>{children}</button>
-      <div {...api.getPositionerProps()}>
-        <div {...api.getContentProps()}>{tooltip}</div>
-      </div>
-    </>
-  )
-}
+import { useScrollView } from "../hooks/use-scroll-view"
 
 export default function Page() {
+  const ref = useScrollView({
+    offset: { bottom: 40 },
+    onScrollStart: () => console.log("scroll start"),
+    onScrollEnd: () => console.log("scroll end"),
+    onScrollChange: (scrolling) => console.log("scroll change", scrolling),
+    onSideReached(sides) {
+      console.log("side reached", sides)
+    },
+  })
   return (
     <main>
-      <div>
-        <Button tooltip="Hello world">Works</Button>
-      </div>
-      <div style={{ height: "100vh" }} />
-      <div>
-        <Button tooltip="Hello world">Does not Work</Button>
+      <div ref={ref} style={{ width: "400px", height: "400px", overflow: "scroll" }}>
+        <div style={{ width: "600px", height: "600px", background: "gray" }} />
       </div>
     </main>
   )
