@@ -19,6 +19,10 @@ export class MenuModel extends Model {
     return this.page.locator("[data-scope=menu][data-part=trigger]")
   }
 
+  private get contextTrigger() {
+    return this.page.locator("[data-scope=menu][data-part=context-trigger]")
+  }
+
   private get content() {
     return this.page.locator("[data-scope=menu][data-part=content]")
   }
@@ -43,6 +47,10 @@ export class MenuModel extends Model {
     await this.trigger.click()
   }
 
+  clickContextTrigger = async () => {
+    await this.contextTrigger.click({ button: "right" })
+  }
+
   clickItem = async (text: string) => {
     await this.getItem(text).click()
   }
@@ -53,6 +61,10 @@ export class MenuModel extends Model {
 
   hoverOut = async () => {
     await this.page.mouse.move(0, 0)
+  }
+
+  seeDropdownIsFocused = async () => {
+    await expect(this.content).toBeFocused()
   }
 
   seeDropdown = async () => {

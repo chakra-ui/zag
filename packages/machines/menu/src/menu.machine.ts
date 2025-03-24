@@ -1,4 +1,4 @@
-import { createGuards, createMachine, type Service } from "@zag-js/core"
+import { createGuards, createMachine, type Service, type Scope } from "@zag-js/core"
 import { trackDismissableElement } from "@zag-js/dismissable"
 import {
   addDomEvent,
@@ -15,7 +15,7 @@ import {
 import { getPlacement, getPlacementSide, type Placement } from "@zag-js/popper"
 import { getElementPolygon, isPointInPolygon, type Point } from "@zag-js/rect-utils"
 import * as dom from "./menu.dom"
-import type { MenuSchema } from "./menu.types"
+import type { MenuSchema, MenuService } from "./menu.types"
 
 const { not, and, or } = createGuards<MenuSchema>()
 
@@ -85,6 +85,8 @@ export const machine = createMachine<MenuSchema>({
     isSubmenu: ({ refs }) => refs.get("parent") != null,
     isRtl: ({ prop }) => prop("dir") === "rtl",
     isTypingAhead: ({ refs }) => refs.get("typeaheadState").keysSoFar !== "",
+    highlightedId: ({ context, scope, refs }) =>
+      resolveItemId(refs.get("children"), context.get("highlightedValue"), scope),
   },
 
   watch({ track, action, context, computed, prop }) {
@@ -502,14 +504,13 @@ export const machine = createMachine<MenuSchema>({
       // whether the trigger is also a menu item
       isTriggerItem: ({ event }) => dom.isTriggerItem(event.target),
       // whether the trigger item is the active item
-      isTriggerItemHighlighted: ({ event, scope, context }) => {
-        const target = (event.target ?? dom.getItemEl(scope, context.get("highlightedValue"))) as HTMLElement | null
+      isTriggerItemHighlighted: ({ event, scope, computed }) => {
+        const target = (event.target ?? scope.getById(computed("highlightedId")!)) as HTMLElement | null
         return !!target?.hasAttribute("aria-controls")
       },
       isSubmenu: ({ computed }) => computed("isSubmenu"),
       isPointerSuspended: ({ context }) => context.get("suspendPointer"),
-      isHighlightedItemEditable: ({ context, scope }) =>
-        isEditableElement(dom.getItemEl(scope, context.get("highlightedValue"))),
+      isHighlightedItemEditable: ({ scope, computed }) => isEditableElement(scope.getById(computed("highlightedId")!)),
       // guard assertions (for controlled mode)
       isOpenControlled: ({ prop }) => prop("open") !== undefined,
       isArrowLeftEvent: ({ event }) => event.previousEvent?.type === "ARROW_LEFT",
@@ -603,11 +604,11 @@ export const machine = createMachine<MenuSchema>({
           }
         })
       },
-      scrollToHighlightedItem({ event, scope, context }) {
+      scrollToHighlightedItem({ event, scope, computed }) {
         const exec = () => {
           if (event.type.startsWith("ITEM_POINTER")) return
 
-          const itemEl = dom.getItemEl(scope, context.get("highlightedValue"))
+          const itemEl = scope.getById(computed("highlightedId")!)
           const contentEl = dom.getContentEl(scope)
 
           scrollIntoView(itemEl, { rootEl: contentEl, block: "nearest" })
@@ -656,15 +657,14 @@ export const machine = createMachine<MenuSchema>({
       setOptionState({ event }) {
         if (!event.option) return
         const { checked, onCheckedChange, type } = event.option
-
         if (type === "radio") {
           onCheckedChange?.(true)
         } else if (type === "checkbox") {
           onCheckedChange?.(!checked)
         }
       },
-      clickHighlightedItem({ scope, context }) {
-        const itemEl = dom.getItemEl(scope, context.get("highlightedValue"))
+      clickHighlightedItem({ scope, computed }) {
+        const itemEl = scope.getById(computed("highlightedId")!)
         if (!itemEl || itemEl.dataset.disabled) return
         queueMicrotask(() => itemEl.click())
       },
@@ -694,7 +694,8 @@ export const machine = createMachine<MenuSchema>({
         })
       },
       setHighlightedItem({ context, event }) {
-        context.set("highlightedValue", event.id)
+        const value = event.value || dom.getItemValue(event.target)
+        context.set("highlightedValue", value)
       },
       clearHighlightedItem({ context }) {
         context.set("highlightedValue", null)
@@ -718,7 +719,7 @@ export const machine = createMachine<MenuSchema>({
         fn(() => {
           const first = dom.getFirstEl(scope)
           if (!first) return
-          context.set("highlightedValue", first.id)
+          context.set("highlightedValue", dom.getItemValue(first))
         })
       },
       highlightLastItem({ context, scope }) {
@@ -727,7 +728,7 @@ export const machine = createMachine<MenuSchema>({
         fn(() => {
           const last = dom.getLastEl(scope)
           if (!last) return
-          context.set("highlightedValue", last.id)
+          context.set("highlightedValue", dom.getItemValue(last))
         })
       },
       highlightNextItem({ context, scope, event, prop }) {
@@ -736,7 +737,7 @@ export const machine = createMachine<MenuSchema>({
           value: context.get("highlightedValue"),
           loopFocus: prop("loopFocus"),
         })
-        context.set("highlightedValue", next.id ?? null)
+        context.set("highlightedValue", dom.getItemValue(next))
       },
       highlightPrevItem({ context, scope, event, prop }) {
         const prev = dom.getPrevEl(scope, {
@@ -744,11 +745,15 @@ export const machine = createMachine<MenuSchema>({
           value: context.get("highlightedValue"),
           loopFocus: prop("loopFocus"),
         })
-        context.set("highlightedValue", prev?.id ?? null)
+        context.set("highlightedValue", dom.getItemValue(prev))
       },
-      invokeOnSelect({ context, prop }) {
+      invokeOnSelect({ context, prop, scope }) {
         const value = context.get("highlightedValue")
         if (value == null) return
+
+        const node = dom.getItemEl(scope, value)
+        dom.dispatchSelectionEvent(node, value)
+
         prop("onSelect")?.({ value })
       },
       focusTrigger({ scope, context, event, computed }) {
@@ -762,7 +767,7 @@ export const machine = createMachine<MenuSchema>({
           typeaheadState: refs.get("typeaheadState"),
         })
         if (!node) return
-        context.set("highlightedValue", node.id)
+        context.set("highlightedValue", dom.getItemValue(node))
       },
       setParentMenu({ refs, event }) {
         refs.set("parent", event.value)
@@ -775,8 +780,8 @@ export const machine = createMachine<MenuSchema>({
       closeRootMenu({ refs }) {
         closeRootMenu({ parent: refs.get("parent") })
       },
-      openSubmenu({ refs, scope, context }) {
-        const item = dom.getItemEl(scope, context.get("highlightedValue"))
+      openSubmenu({ refs, scope, computed }) {
+        const item = scope.getById(computed("highlightedId")!)
         const id = item?.getAttribute("data-uid")
         const children = refs.get("children")
         const child = id ? children[id] : null
@@ -786,7 +791,7 @@ export const machine = createMachine<MenuSchema>({
         refs.get("parent")?.send({ type: "FOCUS_MENU" })
       },
       setLastHighlightedItem({ context, event }) {
-        context.set("lastHighlightedValue", event.id)
+        context.set("lastHighlightedValue", dom.getItemValue(event.target))
       },
       restoreHighlightedItem({ context }) {
         if (!context.get("lastHighlightedValue")) return
@@ -823,4 +828,20 @@ function closeRootMenu(ctx: { parent: Service<MenuSchema> | null }) {
 function isWithinPolygon(polygon: Point[] | null, point: Point) {
   if (!polygon) return false
   return isPointInPolygon(polygon, point)
+}
+
+function resolveItemId(children: Record<string, MenuService>, value: string | null, scope: Scope) {
+  const hasChildren = Object.keys(children).length > 0
+  if (!value) return null
+  if (!hasChildren) {
+    return dom.getItemId(scope, value)
+  }
+  for (const id in children) {
+    const childMenu = children[id]
+    const childTriggerId = dom.getTriggerId(childMenu.scope)
+    if (childTriggerId === value) {
+      return childTriggerId
+    }
+  }
+  return dom.getItemId(scope, value)
 }

@@ -1,6 +1,7 @@
 import type { Service } from "@zag-js/core"
 import { mergeProps } from "@zag-js/core"
 import {
+  ariaAttr,
   dataAttr,
   getEventKey,
   getEventPoint,
@@ -41,6 +42,7 @@ export function connect<T extends PropTypes>(service: Service<MenuSchema>, norma
 
   function getItemState(props: ItemProps): ItemState {
     return {
+      id: dom.getItemId(scope, props.value),
       disabled: !!props.disabled,
       highlighted: highlightedValue === props.value,
     }
@@ -60,16 +62,18 @@ export function connect<T extends PropTypes>(service: Service<MenuSchema>, norma
   }
 
   function getItemProps(props: ItemProps) {
-    const { value: id, closeOnSelect, valueText } = props
+    const { closeOnSelect, valueText, value } = props
     const itemState = getItemState(props)
+    const id = dom.getItemId(scope, value)
     return normalize.element({
       ...parts.item.attrs,
       id,
       role: "menuitem",
-      "aria-disabled": itemState.disabled,
+      "aria-disabled": ariaAttr(itemState.disabled),
       "data-disabled": dataAttr(itemState.disabled),
       "data-ownedby": dom.getContentId(scope),
       "data-highlighted": dataAttr(itemState.highlighted),
+      "data-value": value,
       "data-valuetext": valueText,
       onDragStart(event) {
         const isLink = event.currentTarget.matches("a[href]")
@@ -117,7 +121,7 @@ export function connect<T extends PropTypes>(service: Service<MenuSchema>, norma
       send({ type: nextOpen ? "OPEN" : "CLOSE" })
     },
     setHighlightedValue(value) {
-      send({ type: "HIGHLIGHTED.SET", id: value })
+      send({ type: "HIGHLIGHTED.SET", value })
     },
     setParent(parent) {
       send({ type: "PARENT.SET", value: parent, id: parent.prop("id") })
@@ -165,10 +169,8 @@ export function connect<T extends PropTypes>(service: Service<MenuSchema>, norma
     },
 
     getTriggerItemProps(childApi) {
-      return mergeProps(
-        getItemProps({ value: childApi.getTriggerProps().id }),
-        childApi.getTriggerProps(),
-      ) as T["element"]
+      const triggerProps = childApi.getTriggerProps()
+      return mergeProps(getItemProps({ value: triggerProps.id }), triggerProps) as T["element"]
     },
 
     getTriggerProps() {
@@ -292,7 +294,7 @@ export function connect<T extends PropTypes>(service: Service<MenuSchema>, norma
         role: composite ? "menu" : "dialog",
         tabIndex: 0,
         dir: prop("dir"),
-        "aria-activedescendant": highlightedValue ?? undefined,
+        "aria-activedescendant": computed("highlightedId") || undefined,
         "aria-labelledby": dom.getTriggerId(scope),
         "data-placement": currentPlacement,
         onPointerEnter(event) {
