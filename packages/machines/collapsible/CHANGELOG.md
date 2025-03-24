@@ -1,5 +1,21 @@
 # @zag-js/collapsible
 
+## 1.6.0
+
+### Minor Changes
+
+- [`48de4e7`](https://github.com/chakra-ui/zag/commit/48de4e7adcd3e293daf65d742e0c76c8f7b1cd0a) Thanks
+  [@cschroeter](https://github.com/cschroeter)! - Add collapsible indicator
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.6.0
+  - @zag-js/core@1.6.0
+  - @zag-js/types@1.6.0
+  - @zag-js/utils@1.6.0
+  - @zag-js/dom-query@1.6.0
+
 ## 1.5.0
 
 ### Patch Changes
