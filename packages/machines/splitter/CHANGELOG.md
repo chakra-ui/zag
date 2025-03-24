@@ -1,5 +1,19 @@
 # @zag-js/splitter
 
+## 1.6.0
+
+### Patch Changes
+
+- [`625a859`](https://github.com/chakra-ui/zag/commit/625a8597648a74e10e91d261d56c2d8bf08e769c) Thanks
+  [@cschroeter](https://github.com/cschroeter)! - Invoke callbacks on keyboard move
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.6.0
+  - @zag-js/core@1.6.0
+  - @zag-js/types@1.6.0
+  - @zag-js/utils@1.6.0
+  - @zag-js/dom-query@1.6.0
+
 ## 1.5.0
 
 ### Minor Changes

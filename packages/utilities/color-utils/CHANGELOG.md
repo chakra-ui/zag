@@ -1,5 +1,15 @@
 # @zag-js/color-utils
 
+## 1.6.0
+
+### Patch Changes
+
+- [`38ad45a`](https://github.com/chakra-ui/zag/commit/38ad45a73474d0c7cc537dc769421e383ffbc55c) Thanks
+  [@cschroeter](https://github.com/cschroeter)! - Export ColorStringFormat
+
+- Updated dependencies []:
+  - @zag-js/utils@1.6.0
+
 ## 1.5.0
 
 ### Patch Changes

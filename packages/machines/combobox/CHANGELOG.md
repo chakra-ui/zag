@@ -1,5 +1,23 @@
 # @zag-js/combobox
 
+## 1.6.0
+
+### Patch Changes
+
+- [`7ede4db`](https://github.com/chakra-ui/zag/commit/7ede4dbd0634a085a20205d73a3a1e0f9c3c2469) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix issue where `onOpenChange` with the same `open` value
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.6.0
+  - @zag-js/core@1.6.0
+  - @zag-js/types@1.6.0
+  - @zag-js/aria-hidden@1.6.0
+  - @zag-js/collection@1.6.0
+  - @zag-js/utils@1.6.0
+  - @zag-js/dismissable@1.6.0
+  - @zag-js/dom-query@1.6.0
+  - @zag-js/popper@1.6.0
+
 ## 1.5.0
 
 ### Patch Changes
