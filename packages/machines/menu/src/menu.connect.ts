@@ -170,9 +170,7 @@ export function connect<T extends PropTypes>(service: Service<MenuSchema>, norma
 
     getTriggerItemProps(childApi) {
       const triggerProps = childApi.getTriggerProps()
-      return mergeProps(getItemProps({ value: triggerProps.id }), triggerProps, {
-        id: triggerProps.id,
-      }) as T["element"]
+      return mergeProps(getItemProps({ value: triggerProps.id }), triggerProps) as T["element"]
     },
 
     getTriggerProps() {
