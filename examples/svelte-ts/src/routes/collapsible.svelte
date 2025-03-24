@@ -5,6 +5,7 @@
   import * as collapsible from "@zag-js/collapsible"
   import { collapsibleControls } from "@zag-js/shared"
   import { normalizeProps, useMachine } from "@zag-js/svelte"
+  import { ChevronDownIcon } from "lucide-svelte"
 
   const controls = useControls(collapsibleControls)
 
@@ -15,7 +16,12 @@
 
 <main class="collapsible">
   <div {...api.getRootProps()}>
-    <button {...api.getTriggerProps()}>Collapsible Trigger</button>
+    <button {...api.getTriggerProps()}
+      >Collapsible Trigger
+      <div {...api.getIndicatorProps()}>
+        <ChevronDownIcon />
+      </div>
+    </button>
     <div {...api.getContentProps()}>
       <p>
         Lorem dfd dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore

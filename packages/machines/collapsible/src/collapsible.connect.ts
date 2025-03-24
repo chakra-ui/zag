@@ -73,5 +73,14 @@ export function connect<T extends PropTypes>(
         },
       })
     },
+
+    getIndicatorProps() {
+      return normalize.element({
+        ...parts.indicator.attrs,
+        dir: dir,
+        "data-state": open ? "open" : "closed",
+        "data-disabled": dataAttr(disabled),
+      })
+    },
   }
 }

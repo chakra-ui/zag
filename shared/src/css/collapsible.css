@@ -11,6 +11,17 @@
   animation: slideUp 200ms ease;
 }
 
+
+[data-scope="collapsible"][data-part="trigger"] {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+[data-scope="collapsible"][data-part="indicator"][data-state="open"] {
+  transform: rotate(180deg);
+}
+
 @keyframes slideDown {
   from {
     opacity: 0.01;

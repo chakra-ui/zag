@@ -1,6 +1,7 @@
 import * as collapsible from "@zag-js/collapsible"
 import { normalizeProps, useMachine } from "@zag-js/react"
 import { collapsibleControls } from "@zag-js/shared"
+import { ChevronDownIcon } from "lucide-react"
 import { useId } from "react"
 import { StateVisualizer } from "../components/state-visualizer"
 import { Toolbar } from "../components/toolbar"
@@ -20,7 +21,12 @@ export default function Page() {
     <>
       <main className="collapsible">
         <div {...api.getRootProps()}>
-          <button {...api.getTriggerProps()}>Collapsible Trigger</button>
+          <button {...api.getTriggerProps()}>
+            Collapsible Trigger
+            <div {...api.getIndicatorProps()}>
+              <ChevronDownIcon />
+            </div>
+          </button>
           <div {...api.getContentProps()}>
             <p>
               Lorem dfd dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et

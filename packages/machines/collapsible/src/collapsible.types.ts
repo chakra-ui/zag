@@ -116,4 +116,5 @@ export interface CollapsibleApi<T extends PropTypes = PropTypes> {
   getRootProps(): T["element"]
   getTriggerProps(): T["button"]
   getContentProps(): T["element"]
+  getIndicatorProps(): T["element"]
 }

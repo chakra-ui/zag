@@ -2,6 +2,7 @@
 import * as collapsible from "@zag-js/collapsible"
 import { collapsibleControls } from "@zag-js/shared"
 import { normalizeProps, useMachine } from "@zag-js/vue"
+import { ChevronDownIcon } from 'lucide-vue-next'
 
 const controls = useControls(collapsibleControls)
 
@@ -15,7 +16,12 @@ const api = computed(() => collapsible.connect(service, normalizeProps))
 <template>
   <main class="collapsible">
     <div v-bind="api.getRootProps()">
-      <button v-bind="api.getTriggerProps()">Collapsible Trigger</button>
+      <button v-bind="api.getTriggerProps()">
+        Collapsible Trigger
+        <div v-bind="api.getIndicatorProps()">
+          <ChevronDownIcon />
+        </div>
+      </button>
       <div v-bind="api.getContentProps()">
         <p>
           Lorem dfd dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore
