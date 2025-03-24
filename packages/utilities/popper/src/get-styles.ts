@@ -46,6 +46,7 @@ export function getPlacementStyles(
       width: sameWidth ? "var(--reference-width)" : undefined,
       maxWidth: fitViewport ? "var(--available-width)" : undefined,
       maxHeight: fitViewport ? "var(--available-height)" : undefined,
+      pointerEvents: !placement ? "none" : undefined,
       top: "0px",
       left: "0px",
       // move off-screen if placement is not defined

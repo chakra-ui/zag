@@ -47,6 +47,8 @@ test.describe("menu", () => {
 
   test("with keyboard, can select item", async () => {
     await I.clickTrigger()
+    await I.seeDropdown()
+    await I.seeDropdownIsFocused()
     await I.pressKey("ArrowDown")
     await I.pressKey("Enter")
     await I.dontSeeDropdown()

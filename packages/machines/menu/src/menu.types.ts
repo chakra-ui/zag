@@ -138,6 +138,7 @@ export interface MenuSchema {
     isSubmenu: boolean
     isRtl: boolean
     isTypingAhead: boolean
+    highlightedId: string | null
   }
   refs: {
     parent: Service<MenuSchema> | null
@@ -209,6 +210,10 @@ export interface OptionItemProps extends Partial<ItemProps> {
 }
 
 export interface ItemState {
+  /**
+   * The unique id of the item
+   */
+  id: string
   /**
    * Whether the item is disabled
    */
