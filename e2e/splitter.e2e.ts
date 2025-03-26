@@ -39,7 +39,7 @@ test.describe("splitter", () => {
     expect(page.locator(part("resize-trigger")).nth(1)).toHaveAttribute("aria-valuenow", "30")
   })
 
-  test("should manage splitter panels when vertical horizontal", async ({ page }) => {
+  test("should manage splitter panels when vertical orientation", async ({ page }) => {
     await controls(page).select("orientation", "vertical")
 
     expect(page.locator(part("root"))).toHaveAttribute("data-orientation", "vertical")
