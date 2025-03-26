@@ -8,6 +8,15 @@ All notable changes to this project will be documented in this file.
 
 See the [Changesets](./.changeset) for the latest changes.
 
+## [1.6.1](./#1.6.1) - 2025-03-26
+
+### Fixed
+
+- **HoverCard, ColorPicker**: Add missing `tabIndex` to improve usage within dialogs
+- **Menu**
+  - Fix issue where menu items don't have a unique id leading to accessibility and HTML validation issues
+  - Dispatch `menu:select` event on the menu item when it is selected
+
 ## [1.6.0](./#1.6.0) - 2025-03-24
 
 ### Added

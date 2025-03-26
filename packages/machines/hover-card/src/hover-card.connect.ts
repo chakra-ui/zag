@@ -81,6 +81,7 @@ export function connect<T extends PropTypes>(service: HoverCardService, normaliz
         dir: prop("dir"),
         id: dom.getContentId(scope),
         hidden: !open,
+        tabIndex: -1,
         "data-state": open ? "open" : "closed",
         "data-placement": context.get("currentPlacement"),
         onPointerEnter(event) {
