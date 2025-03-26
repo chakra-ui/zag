@@ -1,5 +1,23 @@
 # @zag-js/color-picker
 
+## 1.6.1
+
+### Patch Changes
+
+- [`39dc799`](https://github.com/chakra-ui/zag/commit/39dc7991504666c542ddc164154d5c4237f97e63) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix issue where clicking whitespace around content could cause it
+  to close
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.6.1
+  - @zag-js/core@1.6.1
+  - @zag-js/types@1.6.1
+  - @zag-js/color-utils@1.6.1
+  - @zag-js/utils@1.6.1
+  - @zag-js/dismissable@1.6.1
+  - @zag-js/dom-query@1.6.1
+  - @zag-js/popper@1.6.1
+
 ## 1.6.0
 
 ### Patch Changes

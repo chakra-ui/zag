@@ -1,5 +1,21 @@
 # @zag-js/hover-card
 
+## 1.6.1
+
+### Patch Changes
+
+- [`0b0e537`](https://github.com/chakra-ui/zag/commit/0b0e537af573b299126ffab6c22bf0e441c2797f) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Add missing `tabIndex` to improve usage within dialogs
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.6.1
+  - @zag-js/core@1.6.1
+  - @zag-js/types@1.6.1
+  - @zag-js/utils@1.6.1
+  - @zag-js/dismissable@1.6.1
+  - @zag-js/dom-query@1.6.1
+  - @zag-js/popper@1.6.1
+
 ## 1.6.0
 
 ### Patch Changes

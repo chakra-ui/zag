@@ -1,5 +1,24 @@
 # @zag-js/menu
 
+## 1.6.1
+
+### Patch Changes
+
+- [#2372](https://github.com/chakra-ui/zag/pull/2372)
+  [`9dbbd84`](https://github.com/chakra-ui/zag/commit/9dbbd8464ac888729819b2725143bd0c71f36b67) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - - Fix issue where menu items don't have a unique id leading to
+  accessibility and HTML validation issues
+  - Dispatch new `menu:select` event on the menu item when it is selected.
+- Updated dependencies []:
+  - @zag-js/anatomy@1.6.1
+  - @zag-js/core@1.6.1
+  - @zag-js/types@1.6.1
+  - @zag-js/utils@1.6.1
+  - @zag-js/dismissable@1.6.1
+  - @zag-js/dom-query@1.6.1
+  - @zag-js/popper@1.6.1
+  - @zag-js/rect-utils@1.6.1
+
 ## 1.6.0
 
 ### Patch Changes
