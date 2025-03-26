@@ -12,6 +12,7 @@ export default function Page() {
   const service = useMachine(splitter.machine, {
     id: useId(),
     panels: [{ id: "a" }, { id: "b" }, { id: "c" }],
+    ...controls.context,
   })
 
   const api = splitter.connect(service, normalizeProps)
@@ -24,11 +25,11 @@ export default function Page() {
           <div {...api.getPanelProps({ id: "a" })}>
             <p>Left</p>
           </div>
-          <div {...api.getResizeTriggerProps({ id: "a:b" })} />
+          <div data-testid="trigger-a:b" {...api.getResizeTriggerProps({ id: "a:b" })} />
           <div {...api.getPanelProps({ id: "b" })}>
             <p>Middle</p>
           </div>
-          <div {...api.getResizeTriggerProps({ id: "b:c" })} />
+          <div data-testid="trigger-b:c" {...api.getResizeTriggerProps({ id: "b:c" })} />
           <div {...api.getPanelProps({ id: "c" })}>
             <p>Right</p>
           </div>
