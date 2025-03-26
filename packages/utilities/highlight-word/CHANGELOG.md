@@ -1,5 +1,7 @@
 # @zag-js/highlight-word
 
+## 1.6.1
+
 ## 1.6.0
 
 ## 1.5.0
