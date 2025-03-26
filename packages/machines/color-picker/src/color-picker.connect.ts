@@ -184,6 +184,7 @@ export function connect<T extends PropTypes>(
         ...parts.content.attrs,
         id: dom.getContentId(scope),
         dir: prop("dir"),
+        tabIndex: -1,
         "data-placement": currentPlacement,
         "data-state": open ? "open" : "closed",
         hidden: !open,

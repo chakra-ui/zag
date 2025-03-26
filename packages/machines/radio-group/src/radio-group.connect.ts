@@ -15,6 +15,7 @@ export function connect<T extends PropTypes>(
 
   function getItemState(props: ItemProps): ItemState {
     return {
+      value: props.value,
       invalid: !!props.invalid,
       disabled: !!props.disabled || groupDisabled,
       checked: context.get("value") === props.value,
@@ -25,30 +26,23 @@ export function connect<T extends PropTypes>(
   }
 
   function getItemDataAttrs<T extends ItemProps>(props: T) {
-    const radioState = getItemState(props)
+    const itemState = getItemState(props)
     return {
-      "data-focus": dataAttr(radioState.focused),
-      "data-focus-visible": dataAttr(radioState.focused && context.get("focusVisible")),
-      "data-disabled": dataAttr(radioState.disabled),
+      "data-focus": dataAttr(itemState.focused),
+      "data-focus-visible": dataAttr(itemState.focused && context.get("focusVisible")),
+      "data-disabled": dataAttr(itemState.disabled),
       "data-readonly": dataAttr(readOnly),
-      "data-state": radioState.checked ? "checked" : "unchecked",
-      "data-hover": dataAttr(radioState.hovered),
-      "data-invalid": dataAttr(radioState.invalid),
+      "data-state": itemState.checked ? "checked" : "unchecked",
+      "data-hover": dataAttr(itemState.hovered),
+      "data-invalid": dataAttr(itemState.invalid),
       "data-orientation": prop("orientation"),
       "data-ssr": dataAttr(context.get("ssr")),
     }
   }
 
   const focus = () => {
-    const firstEnabledAndCheckedInput = dom.getFirstEnabledAndCheckedInputEl(scope)
-
-    if (firstEnabledAndCheckedInput) {
-      firstEnabledAndCheckedInput.focus()
-      return
-    }
-
-    const firstEnabledInput = dom.getFirstEnabledInputEl(scope)
-    firstEnabledInput?.focus()
+    const nodeToFocus = dom.getFirstEnabledAndCheckedInputEl(scope) ?? dom.getFirstEnabledInputEl(scope)
+    nodeToFocus?.focus()
   }
 
   return {
@@ -139,20 +133,20 @@ export function connect<T extends PropTypes>(
     },
 
     getItemControlProps(props) {
-      const controlState = getItemState(props)
+      const itemState = getItemState(props)
 
       return normalize.element({
         ...parts.itemControl.attrs,
         dir: prop("dir"),
         id: dom.getItemControlId(scope, props.value),
-        "data-active": dataAttr(controlState.active),
+        "data-active": dataAttr(itemState.active),
         "aria-hidden": true,
         ...getItemDataAttrs(props),
       })
     },
 
     getItemHiddenInputProps(props) {
-      const inputState = getItemState(props)
+      const itemState = getItemState(props)
 
       return normalize.input({
         "data-ownedby": dom.getRootId(scope),
@@ -190,8 +184,8 @@ export function connect<T extends PropTypes>(
             send({ type: "SET_ACTIVE", value: null })
           }
         },
-        disabled: inputState.disabled,
-        defaultChecked: inputState.checked,
+        disabled: itemState.disabled,
+        defaultChecked: itemState.checked,
         style: visuallyHiddenStyle,
       })
     },
