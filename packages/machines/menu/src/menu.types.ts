@@ -190,6 +190,17 @@ export interface ItemProps {
   closeOnSelect?: boolean | undefined
 }
 
+export interface ItemListenerProps {
+  /**
+   * The id of the item. Can be obtained from the `getItemState` function.
+   */
+  id: string
+  /**
+   * Function called when the item is selected
+   */
+  onSelect?: VoidFunction
+}
+
 export interface OptionItemProps extends Partial<ItemProps> {
   /**
    * Whether the option is checked
@@ -282,6 +293,11 @@ export interface MenuApi<T extends PropTypes = PropTypes> {
    * Returns the state of the menu item
    */
   getItemState(props: ItemProps): ItemState
+  /**
+   * Setup the custom event listener for item selection event
+   */
+  addItemListener(props: ItemListenerProps): VoidFunction | undefined
+
   getContextTriggerProps(): T["element"]
   getTriggerItemProps<A extends Api>(childApi: A): T["element"]
   getTriggerProps(): T["button"]

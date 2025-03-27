@@ -132,6 +132,13 @@ export function connect<T extends PropTypes>(service: Service<MenuSchema>, norma
     reposition(options = {}) {
       send({ type: "POSITIONING.SET", options })
     },
+    addItemListener(props) {
+      const node = dom.getItemEl(scope, props.id)
+      if (!node) return
+      const listener = () => props.onSelect?.()
+      node.addEventListener(dom.itemSelectEvent, listener)
+      return () => node.removeEventListener(dom.itemSelectEvent, listener)
+    },
 
     getContextTriggerProps() {
       return normalize.element({

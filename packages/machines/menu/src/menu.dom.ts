@@ -75,9 +75,11 @@ export const getOptionFromItemEl = (el: HTMLElement) => {
   }
 }
 
+export const itemSelectEvent = "menu:select"
+
 export function dispatchSelectionEvent(el: HTMLElement | null, value: string) {
   if (!el) return
   const win = getWindow(el)
-  const event = new win.CustomEvent("menu:select", { detail: { value } })
+  const event = new win.CustomEvent(itemSelectEvent, { detail: { value } })
   el.dispatchEvent(event)
 }

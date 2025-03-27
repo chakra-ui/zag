@@ -8,6 +8,7 @@ export type {
   HighlightChangeDetails,
   ItemGroupLabelProps,
   ItemGroupProps,
+  ItemListenerProps,
   ItemProps,
   ItemState,
   MenuMachine as Machine,
