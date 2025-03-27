@@ -1,5 +1,23 @@
 # @zag-js/menu
 
+## 1.6.2
+
+### Patch Changes
+
+- [`dd2ab25`](https://github.com/chakra-ui/zag/commit/dd2ab25cc86a51bf795317d234b6a740030edd9b) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Add `addItemListener` function to allow listening for dispatched
+  custom event
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.6.2
+  - @zag-js/core@1.6.2
+  - @zag-js/types@1.6.2
+  - @zag-js/utils@1.6.2
+  - @zag-js/dismissable@1.6.2
+  - @zag-js/dom-query@1.6.2
+  - @zag-js/popper@1.6.2
+  - @zag-js/rect-utils@1.6.2
+
 ## 1.6.1
 
 ### Patch Changes
