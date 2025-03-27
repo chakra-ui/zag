@@ -1,82 +1,56 @@
-const cleanups = new WeakMap<Element, Map<string, () => void>>()
-
-function set(element: Element, key: string, setup: () => () => void) {
-  if (!cleanups.has(element)) {
-    cleanups.set(element, new Map())
-  }
-
-  const elementCleanups = cleanups.get(element)!
-  const prevCleanup = elementCleanups.get(key)
-
-  if (!prevCleanup) {
-    elementCleanups.set(key, setup())
-    return () => {
-      elementCleanups.get(key)?.()
-      elementCleanups.delete(key)
-    }
-  }
-
-  const cleanup = setup()
-
-  const nextCleanup = () => {
-    cleanup()
-    prevCleanup()
-    elementCleanups.delete(key)
-  }
-
-  elementCleanups.set(key, nextCleanup)
-
+export function setAttribute(el: Element, attr: string, v: string) {
+  const prev = el.getAttribute(attr)
+  const exists = prev != null
+  el.setAttribute(attr, v)
   return () => {
-    const isCurrent = elementCleanups.get(key) === nextCleanup
-    if (!isCurrent) return
-    cleanup()
-    elementCleanups.set(key, prevCleanup)
+    if (!exists) {
+      el.removeAttribute(attr)
+    } else {
+      el.setAttribute(attr, prev)
+    }
   }
 }
 
-export function setAttribute(element: Element, attr: string, value: string) {
-  const setup = () => {
-    const previousValue = element.getAttribute(attr)
-    element.setAttribute(attr, value)
-    return () => {
-      if (previousValue == null) {
-        element.removeAttribute(attr)
-      } else {
-        element.setAttribute(attr, previousValue)
-      }
+export function setProperty<T extends Element, K extends keyof T & string>(el: T, prop: K, v: T[K]) {
+  const exists = prop in el
+  const prev = el[prop]
+  el[prop] = v
+  return () => {
+    if (!exists) {
+      delete el[prop]
+    } else {
+      el[prop] = prev
     }
   }
-
-  return set(element, attr, setup)
 }
 
-export function setProperty<T extends Element, K extends keyof T & string>(element: T, property: K, value: T[K]) {
-  const setup = () => {
-    const exists = property in element
-    const previousValue = element[property]
-    element[property] = value
-    return () => {
-      if (!exists) {
-        delete element[property]
-      } else {
-        element[property] = previousValue
-      }
+export function setStyle(el: HTMLElement | null | undefined, style: Partial<CSSStyleDeclaration>) {
+  if (!el) return
+  const prev = Object.keys(style).reduce<Record<string, string>>((acc, key) => {
+    acc[key] = el.style.getPropertyValue(key)
+    return acc
+  }, {})
+  const exists = Object.keys(prev).length > 0
+  Object.assign(el.style, style)
+  return () => {
+    if (!exists) {
+      el.removeAttribute("style")
+    } else {
+      Object.assign(el.style, prev)
     }
   }
-
-  return set(element, property, setup)
 }
 
-export function setStyle(element: HTMLElement | null | undefined, style: Partial<CSSStyleDeclaration>) {
-  if (!element) return () => {}
-
-  const setup = () => {
-    const prevStyle = element.style.cssText
-    Object.assign(element.style, style)
-    return () => {
-      element.style.cssText = prevStyle
+export function setStyleProperty(el: HTMLElement | null | undefined, prop: string, value: string) {
+  if (!el) return
+  const prev = el.style.getPropertyValue(prop)
+  const exists = prev != null
+  el.style.setProperty(prop, value)
+  return () => {
+    if (!exists) {
+      el.style.removeProperty(prop)
+    } else {
+      el.style.setProperty(prop, prev)
     }
   }
-
-  return set(element, "style", setup)
 }

@@ -109,6 +109,7 @@ describe("basic", () => {
     })
 
     const { send } = renderMachine(machine)
+    await Promise.resolve()
 
     await send({ type: "CHANGE" })
     expect(done).toHaveBeenCalledOnce()
@@ -143,6 +144,7 @@ describe("basic", () => {
     })
 
     const { result, send } = renderMachine(machine)
+    await Promise.resolve()
 
     expect(result.current.state.hasTag("go")).toBeTruthy()
 
@@ -183,6 +185,7 @@ describe("basic", () => {
     })
 
     const { send } = renderMachine(machine)
+    await Promise.resolve()
 
     await send({ type: "NEXT" })
     expect([...order]).toEqual(["exit1", "transition", "entry2"])
@@ -216,6 +219,8 @@ describe("basic", () => {
     })
 
     const { result, send } = renderMachine(machine)
+    await Promise.resolve()
+
     expect(result.current.computed("length")).toEqual(3)
 
     await send({ type: "UPDATE" })
@@ -296,6 +301,7 @@ describe("basic", () => {
     })
 
     const { result, send } = renderMachine(machine)
+    await Promise.resolve()
 
     await send({ type: "INCREMENT" })
     expect(result.current.context.get("count")).toEqual(1)

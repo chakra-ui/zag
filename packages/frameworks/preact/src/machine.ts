@@ -12,7 +12,7 @@ import type {
   Params,
   Service,
 } from "@zag-js/core"
-import { createScope } from "@zag-js/core"
+import { createScope, INIT_STATE, MachineStatus } from "@zag-js/core"
 import { ensure, isFunction, isString, toArray, warn } from "@zag-js/utils"
 import { useLayoutEffect, useMemo, useRef } from "preact/hooks"
 import { flushSync } from "react-dom"
@@ -28,6 +28,10 @@ export function useMachine<T extends MachineSchema>(
     const { id, ids, getRootNode } = userProps as any
     return createScope({ id, ids, getRootNode })
   }, [userProps])
+
+  const debug = (...args: any[]) => {
+    if (machine.debug) console.log(...args)
+  }
 
   const props: any = machine.props?.({ props: userProps, scope }) ?? userProps
   const prop = useProp(props)
@@ -194,10 +198,10 @@ export function useMachine<T extends MachineSchema>(
       if (cleanup) effects.current.set(nextState as string, cleanup)
 
       // root entry actions
-      if (prevState === "__init__") {
+      if (prevState === INIT_STATE) {
         action(machine.entry)
         const cleanup = effect(machine.effects)
-        if (cleanup) effects.current.set("__init__", cleanup)
+        if (cleanup) effects.current.set(INIT_STATE, cleanup)
       }
 
       // enter actions
@@ -206,13 +210,30 @@ export function useMachine<T extends MachineSchema>(
     },
   }))
 
+  // improve HMR (to restart effects)
+  const hydratedStateRef = useRef<string | undefined>(undefined)
+  const statusRef = useRef(MachineStatus.NotStarted)
+
   useLayoutEffect(() => {
-    state.invoke(state.initial!, "__init__")
+    const started = statusRef.current === MachineStatus.Started
+    statusRef.current = MachineStatus.Started
+    debug(started ? "rehydrating..." : "initializing...")
+
+    // start the transition
+    const initialState = hydratedStateRef.current ?? state.initial!
+    state.invoke(initialState, started ? state.get() : INIT_STATE)
+
     const fns = effects.current
+    const currentState = state.ref.current
     return () => {
+      debug("unmounting...")
+      hydratedStateRef.current = currentState
+      statusRef.current = MachineStatus.Stopped
+
       fns.forEach((fn) => fn?.())
       effects.current = new Map()
       transitionRef.current = null
+
       action(machine.exit)
     }
   }, [])
@@ -223,6 +244,8 @@ export function useMachine<T extends MachineSchema>(
   }
 
   const send = (event: any) => {
+    if (statusRef.current !== MachineStatus.Started) return
+
     queueMicrotask(() => {
       previousEventRef.current = eventRef.current
       eventRef.current = event
@@ -264,6 +287,7 @@ export function useMachine<T extends MachineSchema>(
     refs,
     computed,
     event: getEvent(),
+    getStatus: () => statusRef.current,
   } as Service<T>
 }
 

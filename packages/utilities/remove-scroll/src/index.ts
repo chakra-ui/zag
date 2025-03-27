@@ -1,35 +1,6 @@
-import { isIos } from "@zag-js/dom-query"
+import { isIos, setStyleProperty, setStyle } from "@zag-js/dom-query"
 
 const LOCK_CLASSNAME = "data-scroll-lock"
-
-function assignStyle(el: HTMLElement | null | undefined, style: Partial<CSSStyleDeclaration>) {
-  if (!el) return
-  const previousStyle = Object.keys(style).reduce(
-    (acc, key) => {
-      acc[key] = el.style.getPropertyValue(key)
-      return acc
-    },
-    {} as Record<string, string>,
-  )
-
-  Object.assign(el.style, style)
-  return () => {
-    Object.assign(el.style, previousStyle)
-  }
-}
-
-function setCSSProperty(el: HTMLElement | null | undefined, property: string, value: string) {
-  if (!el) return
-  const previousValue = el.style.getPropertyValue(property)
-  el.style.setProperty(property, value)
-  return () => {
-    if (previousValue) {
-      el.style.setProperty(property, previousValue)
-    } else {
-      el.style.removeProperty(property)
-    }
-  }
-}
 
 function getPaddingProperty(documentElement: HTMLElement) {
   // RTL <body> scrollbar
@@ -50,24 +21,24 @@ export function preventBodyScroll(_document?: Document) {
   body.setAttribute(LOCK_CLASSNAME, "")
 
   const scrollbarWidth = win.innerWidth - documentElement.clientWidth
-  const setScrollbarWidthProperty = () => setCSSProperty(documentElement, "--scrollbar-width", `${scrollbarWidth}px`)
+  const setScrollbarWidthProperty = () => setStyleProperty(documentElement, "--scrollbar-width", `${scrollbarWidth}px`)
   const paddingProperty = getPaddingProperty(documentElement)
 
-  const setStyle = () =>
-    assignStyle(body, {
+  const setBodyStyle = () =>
+    setStyle(body, {
       overflow: "hidden",
       [paddingProperty]: `${scrollbarWidth}px`,
     })
 
   // Only iOS doesn't respect `overflow: hidden` on document.body
-  const setIOSStyle = () => {
+  const setBodyStyleIOS = () => {
     const { scrollX, scrollY, visualViewport } = win
 
     // iOS 12 does not support `visualViewport`.
     const offsetLeft = visualViewport?.offsetLeft ?? 0
     const offsetTop = visualViewport?.offsetTop ?? 0
 
-    const restoreStyle = assignStyle(body, {
+    const restoreStyle = setStyle(body, {
       position: "fixed",
       overflow: "hidden",
       top: `${-(scrollY - Math.floor(offsetTop))}px`,
@@ -82,7 +53,7 @@ export function preventBodyScroll(_document?: Document) {
     }
   }
 
-  const cleanups = [setScrollbarWidthProperty(), isIos() ? setIOSStyle() : setStyle()]
+  const cleanups = [setScrollbarWidthProperty(), isIos() ? setBodyStyleIOS() : setBodyStyle()]
 
   return () => {
     cleanups.forEach((fn) => fn?.())

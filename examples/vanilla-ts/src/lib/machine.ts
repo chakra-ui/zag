@@ -14,7 +14,7 @@ import type {
   Scope,
   Service,
 } from "@zag-js/core"
-import { createScope } from "@zag-js/core"
+import { createScope, INIT_STATE, MachineStatus } from "@zag-js/core"
 import { subscribe } from "@zag-js/store"
 import { compact, identity, isEqual, isFunction, isString, toArray, warn } from "@zag-js/utils"
 import { bindable } from "./bindable"
@@ -161,10 +161,10 @@ export class VanillaMachine<T extends MachineSchema> {
         if (cleanup) this.effects.set(nextState as string, cleanup)
 
         // root entry actions
-        if (prevState === "__init__") {
+        if (prevState === INIT_STATE) {
           this.action(machine.entry)
           const cleanup = this.effect(machine.effects)
-          if (cleanup) this.effects.set("__init__", cleanup)
+          if (cleanup) this.effects.set(INIT_STATE, cleanup)
         }
 
         // enter actions
@@ -177,6 +177,8 @@ export class VanillaMachine<T extends MachineSchema> {
   }
 
   send = (event: any) => {
+    if (this.status !== MachineStatus.Started) return
+
     queueMicrotask(() => {
       this.previousEvent = this.event
       this.event = event
@@ -206,7 +208,7 @@ export class VanillaMachine<T extends MachineSchema> {
         this.state.set(target)
       } else {
         // call transition actions
-        this.action(transition.actions ?? [])
+        this.action(transition.actions)
       }
     })
   }
@@ -255,7 +257,9 @@ export class VanillaMachine<T extends MachineSchema> {
   }
 
   start() {
-    this.state.invoke(this.state.initial!, "__init__")
+    this.status = MachineStatus.Started
+    this.debug("initializing...")
+    this.state.invoke(this.state.initial!, INIT_STATE)
     this.setupTrackers()
   }
 
@@ -269,11 +273,16 @@ export class VanillaMachine<T extends MachineSchema> {
     // unsubscribe from all subscriptions
     this.cleanups.forEach((unsub) => unsub())
     this.cleanups = []
+
+    this.status = MachineStatus.Stopped
+    this.debug("unmounting...")
   }
 
   subscribe = (fn: (service: Service<T>) => void) => {
     this.subscriptions.push(fn)
   }
+
+  private status = MachineStatus.NotStarted
 
   get service(): Service<T> {
     return {
@@ -285,6 +294,7 @@ export class VanillaMachine<T extends MachineSchema> {
       refs: this.refs,
       computed: this.computed,
       event: this.getEvent(),
+      getStatus: () => this.status,
     }
   }
 

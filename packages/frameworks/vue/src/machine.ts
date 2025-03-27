@@ -9,7 +9,7 @@ import type {
   MachineSchema,
   Service,
 } from "@zag-js/core"
-import { createScope } from "@zag-js/core"
+import { createScope, INIT_STATE, MachineStatus } from "@zag-js/core"
 import { compact, ensure, isFunction, isString, toArray, warn } from "@zag-js/utils"
 import { computed as __computed, nextTick, onBeforeUnmount, onMounted, toValue, type ComputedRef, type Ref } from "vue"
 import { bindable } from "./bindable"
@@ -80,8 +80,8 @@ export function useMachine<T extends MachineSchema>(
   let effects = new Map<string, VoidFunction>()
   let transitionRef: any = null
 
-  let previousEventRef: any = { current: null }
-  let eventRef = { current: { type: "__init__" } }
+  let previousEventRef: { current: any } = { current: null }
+  let eventRef: { current: any } = { current: { type: "" } }
 
   const getEvent = () => ({
     ...eventRef.current,
@@ -207,10 +207,10 @@ export function useMachine<T extends MachineSchema>(
       if (cleanup) effects.set(nextState as string, cleanup)
 
       // root entry actions
-      if (prevState === "__init__") {
+      if (prevState === INIT_STATE) {
         action(machine.entry)
         const cleanup = effect(machine.effects)
-        if (cleanup) effects.set("__init__", cleanup)
+        if (cleanup) effects.set(INIT_STATE, cleanup)
       }
 
       // enter actions
@@ -218,19 +218,28 @@ export function useMachine<T extends MachineSchema>(
     },
   }))
 
+  let status = MachineStatus.NotStarted
+
   onMounted(() => {
-    state.invoke(state.initial!, "__init__")
+    const started = status === MachineStatus.Started
+    status = MachineStatus.Started
+    debug(started ? "rehydrating..." : "initializing...")
+    state.invoke(state.initial!, INIT_STATE)
   })
 
   onBeforeUnmount(() => {
+    status = MachineStatus.Stopped
+    debug("unmounting...")
+
     const fns = effects.values()
     for (const fn of fns) fn?.()
     effects = new Map()
-    // root exit actions
     action(machine.exit)
   })
 
   const send = (event: any) => {
+    if (status !== MachineStatus.Started) return
+
     previousEventRef.current = eventRef.current
     eventRef.current = event
 
@@ -277,6 +286,7 @@ export function useMachine<T extends MachineSchema>(
     refs,
     computed,
     event: getEvent(),
+    getStatus: () => status,
   } as Service<T>
 }
 
