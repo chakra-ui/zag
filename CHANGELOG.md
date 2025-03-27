@@ -8,6 +8,13 @@ All notable changes to this project will be documented in this file.
 
 See the [Changesets](./.changeset) for the latest changes.
 
+## [1.6.2](./#1.6.2) - 2025-03-27
+
+### Fixed
+
+- **Frameworks**: Ensure machine has started before processing events.
+- **Menu**: Add `addItemListener` function to allow listening for dispatched custom event on menu item.
+
 ## [1.6.1](./#1.6.1) - 2025-03-26
 
 ### Fixed
