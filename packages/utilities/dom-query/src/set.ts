@@ -1,3 +1,5 @@
+import { noop } from "./shared"
+
 export function setAttribute(el: Element, attr: string, v: string) {
   const prev = el.getAttribute(attr)
   const exists = prev != null
@@ -25,7 +27,7 @@ export function setProperty<T extends Element, K extends keyof T & string>(el: T
 }
 
 export function setStyle(el: HTMLElement | null | undefined, style: Partial<CSSStyleDeclaration>) {
-  if (!el) return
+  if (!el) return noop
   const prev = Object.keys(style).reduce<Record<string, string>>((acc, key) => {
     acc[key] = el.style.getPropertyValue(key)
     return acc
@@ -42,7 +44,7 @@ export function setStyle(el: HTMLElement | null | undefined, style: Partial<CSSS
 }
 
 export function setStyleProperty(el: HTMLElement | null | undefined, prop: string, value: string) {
-  if (!el) return
+  if (!el) return noop
   const prev = el.style.getPropertyValue(prop)
   const exists = prev != null
   el.style.setProperty(prop, value)
