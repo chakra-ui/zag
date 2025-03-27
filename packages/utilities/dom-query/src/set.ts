@@ -32,13 +32,11 @@ export function setStyle(el: HTMLElement | null | undefined, style: Partial<CSSS
     acc[key] = el.style.getPropertyValue(key)
     return acc
   }, {})
-  const exists = Object.keys(prev).length > 0
   Object.assign(el.style, style)
   return () => {
-    if (!exists) {
+    Object.assign(el.style, prev)
+    if (el.style.length === 0) {
       el.removeAttribute("style")
-    } else {
-      Object.assign(el.style, prev)
     }
   }
 }
@@ -46,13 +44,11 @@ export function setStyle(el: HTMLElement | null | undefined, style: Partial<CSSS
 export function setStyleProperty(el: HTMLElement | null | undefined, prop: string, value: string) {
   if (!el) return noop
   const prev = el.style.getPropertyValue(prop)
-  const exists = prev != null
   el.style.setProperty(prop, value)
   return () => {
-    if (!exists) {
-      el.style.removeProperty(prop)
-    } else {
-      el.style.setProperty(prop, prev)
+    el.style.setProperty(prop, prev)
+    if (el.style.length === 0) {
+      el.removeAttribute("style")
     }
   }
 }

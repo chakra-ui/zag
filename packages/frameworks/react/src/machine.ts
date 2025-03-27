@@ -244,9 +244,9 @@ export function useMachine<T extends MachineSchema>(
   }
 
   const send = (event: any) => {
-    if (statusRef.current !== MachineStatus.Started) return
-
     queueMicrotask(() => {
+      if (statusRef.current !== MachineStatus.Started) return
+
       previousEventRef.current = eventRef.current
       eventRef.current = event
 
