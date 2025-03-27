@@ -205,6 +205,7 @@ type State<T extends MachineSchema> = Bindable<T["state"]> & {
 }
 
 export type Service<T extends MachineSchema> = {
+  getStatus: () => MachineStatus
   state: State<T> & {
     matches: (...values: T["state"][]) => boolean
     hasTag: (tag: T["tag"]) => boolean
@@ -220,3 +221,11 @@ export type Service<T extends MachineSchema> = {
     previous: () => EventType<T["event"]>
   }
 }
+
+export enum MachineStatus {
+  NotStarted = "Not Started",
+  Started = "Started",
+  Stopped = "Stopped",
+}
+
+export const INIT_STATE = "__init__"

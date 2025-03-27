@@ -10,7 +10,7 @@ import type {
   BindableContext,
   Params,
 } from "@zag-js/core"
-import { createScope } from "@zag-js/core"
+import { createScope, INIT_STATE, MachineStatus } from "@zag-js/core"
 import { compact, isFunction, isString, toArray, warn, ensure } from "@zag-js/utils"
 import { type Accessor, createMemo, mergeProps, onCleanup, onMount } from "solid-js"
 import { createBindable } from "./bindable"
@@ -75,10 +75,10 @@ export function useMachine<T extends MachineSchema>(
   }
 
   const effects = { current: new Map<string, VoidFunction>() }
-  const transitionRef: any = { current: null }
+  const transitionRef: { current: any } = { current: null }
 
-  const previousEventRef: any = { current: null }
-  const eventRef: any = { current: { type: "" } }
+  const previousEventRef: { current: any } = { current: null }
+  const eventRef: { current: any } = { current: { type: "" } }
 
   const getEvent = (): any =>
     mergeProps(eventRef.current, {
@@ -192,7 +192,6 @@ export function useMachine<T extends MachineSchema>(
 
       // exit actions
       if (prevState) {
-        // @ts-ignore
         action(machine.states[prevState]?.exit)
       }
 
@@ -200,36 +199,45 @@ export function useMachine<T extends MachineSchema>(
       action(transitionRef.current?.actions)
 
       // enter effect
-      // @ts-ignore
       const cleanup = effect(machine.states[nextState]?.effects)
       if (cleanup) effects.current.set(nextState as string, cleanup)
 
       // root entry actions
-      if (prevState === "__init__") {
+      if (prevState === INIT_STATE) {
         action(machine.entry)
         const cleanup = effect(machine.effects)
-        if (cleanup) effects.current.set("__init__", cleanup)
+        if (cleanup) effects.current.set(INIT_STATE, cleanup)
       }
 
       // enter actions
-      // @ts-ignore
       action(machine.states[nextState]?.entry)
     },
   }))
 
+  let status = MachineStatus.NotStarted
+
   onMount(() => {
-    state.invoke(state.initial!, "__init__")
+    const started = status === MachineStatus.Started
+    status = MachineStatus.Started
+    debug(started ? "rehydrating..." : "initializing...")
+    state.invoke(state.initial!, INIT_STATE)
   })
 
   onCleanup(() => {
+    debug("unmounting...")
+    status = MachineStatus.Stopped
+
     const fns = effects.current
     fns.forEach((fn) => fn?.())
     effects.current = new Map()
-    // root exit actions
-    action(machine.exit ?? [])
+    transitionRef.current = null
+
+    action(machine.exit)
   })
 
   const send = (event: any) => {
+    if (status !== MachineStatus.Started) return
+
     previousEventRef.current = eventRef.current
     eventRef.current = event
 
@@ -261,7 +269,7 @@ export function useMachine<T extends MachineSchema>(
       state.invoke(currentState, currentState)
     } else {
       // call transition actions
-      action(transition.actions ?? [])
+      action(transition.actions)
     }
   }
 
@@ -278,6 +286,7 @@ export function useMachine<T extends MachineSchema>(
     refs,
     computed,
     event: getEvent(),
+    getStatus: () => status,
   } as unknown as Service<T>
 }
 
