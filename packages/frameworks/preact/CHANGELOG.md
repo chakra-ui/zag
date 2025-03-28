@@ -1,5 +1,18 @@
 # @zag-js/preact
 
+## 1.8.0
+
+### Patch Changes
+
+- [`66f7828`](https://github.com/chakra-ui/zag/commit/66f7828541102fcf4f0fba05bb241e20a5ed45cb) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - [Internal] Support `ref` and `cleanup` on bindable function to
+  help create using state compositions
+
+- Updated dependencies [[`66f7828`](https://github.com/chakra-ui/zag/commit/66f7828541102fcf4f0fba05bb241e20a5ed45cb)]:
+  - @zag-js/core@1.8.0
+  - @zag-js/store@1.8.0
+  - @zag-js/types@1.8.0
+
 ## 1.7.0
 
 ### Patch Changes
