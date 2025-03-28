@@ -1,5 +1,16 @@
 # @zag-js/splitter
 
+## 1.8.0
+
+### Patch Changes
+
+- Updated dependencies [[`66f7828`](https://github.com/chakra-ui/zag/commit/66f7828541102fcf4f0fba05bb241e20a5ed45cb)]:
+  - @zag-js/core@1.8.0
+  - @zag-js/anatomy@1.8.0
+  - @zag-js/types@1.8.0
+  - @zag-js/utils@1.8.0
+  - @zag-js/dom-query@1.8.0
+
 ## 1.7.0
 
 ### Patch Changes
