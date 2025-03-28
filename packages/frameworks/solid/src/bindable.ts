@@ -1,6 +1,6 @@
 import type { Bindable, BindableParams } from "@zag-js/core"
 import { isFunction } from "@zag-js/utils"
-import { createEffect, createMemo, createSignal, type Accessor } from "solid-js"
+import { createEffect, createMemo, createSignal, type Accessor, onCleanup } from "solid-js"
 
 export function createBindable<T>(props: Accessor<BindableParams<T>>): Bindable<T> {
   const initial = props().value ?? props().defaultValue
@@ -48,6 +48,20 @@ export function createBindable<T>(props: Accessor<BindableParams<T>>): Bindable<
     },
     hash(value: T) {
       return props().hash?.(value) ?? String(value)
+    },
+  }
+}
+
+createBindable.cleanup = (fn: VoidFunction) => {
+  onCleanup(() => fn())
+}
+
+createBindable.ref = <T>(defaultValue: T) => {
+  let value = defaultValue
+  return {
+    get: () => value,
+    set: (next: T) => {
+      value = next
     },
   }
 }

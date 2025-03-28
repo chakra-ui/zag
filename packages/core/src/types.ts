@@ -63,8 +63,15 @@ export interface BindableContext<T extends Dict> {
   hash<K extends keyof T["context"]>(key: K): string
 }
 
-interface BindableFn {
+interface BindableRef<T> {
+  get: () => T
+  set: (next: T) => void
+}
+
+export interface BindableFn {
   <K>(params: () => BindableParams<K>): Bindable<K>
+  cleanup: (fn: VoidFunction) => void
+  ref: <T>(defaultValue: T) => BindableRef<T>
 }
 
 export interface Scope {

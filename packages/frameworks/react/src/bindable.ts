@@ -1,6 +1,6 @@
 import type { Bindable, BindableParams } from "@zag-js/core"
 import { identity, isFunction } from "@zag-js/utils"
-import { useRef, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import { flushSync } from "react-dom"
 import { useSafeLayoutEffect } from "./use-layout-effect"
 
@@ -53,6 +53,20 @@ export function useBindable<T>(props: () => BindableParams<T>): Bindable<T> {
     },
     hash(value: T) {
       return props().hash?.(value) ?? String(value)
+    },
+  }
+}
+
+useBindable.cleanup = (fn: VoidFunction) => {
+  useEffect(() => fn, [])
+}
+
+useBindable.ref = <T>(defaultValue: T) => {
+  const value = useRef(defaultValue)
+  return {
+    get: () => value.current,
+    set: (next: T) => {
+      value.current = next
     },
   }
 }

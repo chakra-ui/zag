@@ -1,6 +1,6 @@
 import type { Bindable, BindableParams } from "@zag-js/core"
 import { isFunction } from "@zag-js/utils"
-import { computed as __computed, shallowRef } from "vue"
+import { computed as __computed, onUnmounted, shallowRef } from "vue"
 
 export function bindable<T>(props: () => BindableParams<T>): Bindable<T> {
   const initial = props().defaultValue ?? props().value
@@ -33,6 +33,20 @@ export function bindable<T>(props: () => BindableParams<T>): Bindable<T> {
     },
     hash(value: T) {
       return props().hash?.(value) ?? String(value)
+    },
+  }
+}
+
+bindable.cleanup = (fn: VoidFunction) => {
+  onUnmounted(() => fn())
+}
+
+bindable.ref = <T>(defaultValue: T) => {
+  let value = defaultValue
+  return {
+    get: () => value,
+    set: (next: T) => {
+      value = next
     },
   }
 }

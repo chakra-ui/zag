@@ -57,3 +57,17 @@ export function useBindable<T>(props: () => BindableParams<T>): Bindable<T> {
     },
   }
 }
+
+useBindable.cleanup = (fn: VoidFunction) => {
+  useLayoutEffect(() => fn, [])
+}
+
+useBindable.ref = <T>(defaultValue: T) => {
+  const value = useRef(defaultValue)
+  return {
+    get: () => value.current,
+    set: (next: T) => {
+      value.current = next
+    },
+  }
+}

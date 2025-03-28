@@ -1,6 +1,6 @@
 import { type Bindable, type BindableParams } from "@zag-js/core"
 import { identity, isFunction } from "@zag-js/utils"
-import { flushSync } from "svelte"
+import { flushSync, onDestroy } from "svelte"
 
 export function bindable<T>(props: () => BindableParams<T>): Bindable<T> {
   const initial = props().defaultValue ?? props().value
@@ -48,6 +48,20 @@ export function bindable<T>(props: () => BindableParams<T>): Bindable<T> {
     },
     hash(value: T) {
       return props().hash?.(value) ?? String(value)
+    },
+  }
+}
+
+bindable.cleanup = (fn: VoidFunction) => {
+  onDestroy(() => fn())
+}
+
+bindable.ref = <T>(defaultValue: T) => {
+  let value = defaultValue
+  return {
+    get: () => value,
+    set: (next: T) => {
+      value = next
     },
   }
 }
