@@ -36,6 +36,11 @@ export interface NavigateDetails {
   node: HTMLAnchorElement
 }
 
+export interface SelectionDetails {
+  value: string[]
+  itemValue: string
+}
+
 /* -----------------------------------------------------------------------------
  * Machine context
  * -----------------------------------------------------------------------------*/
@@ -194,6 +199,10 @@ export interface ComboboxProps<T extends CollectionItem = CollectionItem>
    * or keyboard navigation.
    */
   onHighlightChange?: ((details: HighlightChangeDetails<T>) => void) | undefined
+  /**
+   * Function called when an item is selected
+   */
+  onSelect?: ((details: SelectionDetails) => void) | undefined
   /**
    * Function called when the popup is opened
    */

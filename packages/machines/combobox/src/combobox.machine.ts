@@ -799,6 +799,7 @@ export const machine = createMachine<ComboboxSchema>({
 
         const nextValue = prop("multiple") ? addOrRemove(context.get("value"), highlightedValue) : [highlightedValue]
 
+        prop("onSelect")?.({ value: nextValue, itemValue: highlightedValue })
         context.set("value", nextValue)
         context.set("inputValue", getInputValue(params))
       },
@@ -807,6 +808,7 @@ export const machine = createMachine<ComboboxSchema>({
         if (event.value == null) return
         flush(() => {
           const nextValue = prop("multiple") ? addOrRemove(context.get("value"), event.value) : [event.value]
+          prop("onSelect")?.({ value: nextValue, itemValue: event.value })
           context.set("value", nextValue)
           context.set("inputValue", getInputValue(params))
         })
