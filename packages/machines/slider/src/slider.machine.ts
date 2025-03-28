@@ -202,7 +202,7 @@ export const machine = createMachine<SliderSchema>({
         })
       },
       trackThumbsSize({ context, scope, prop }) {
-        if (prop("thumbAlignment") !== "contain" || context.get("thumbSize")) return
+        if (prop("thumbAlignment") !== "contain" || prop("thumbSize")) return
 
         return trackElementsSize({
           getNodes: () => dom.getElements(scope),

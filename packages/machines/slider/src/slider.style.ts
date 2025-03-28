@@ -1,6 +1,6 @@
 import type { Params } from "@zag-js/core"
 import type { Style } from "@zag-js/types"
-import { getValuePercent, getValueTransformer } from "@zag-js/utils"
+import { getValuePercent, getValueTransformer, toPx } from "@zag-js/utils"
 import type { SliderSchema } from "./slider.types"
 
 type Ctx = Params<SliderSchema>
@@ -139,6 +139,7 @@ export function getRootStyle(params: Pick<Ctx, "context" | "computed" | "prop">)
   const isVertical = computed("isVertical")
   const isRtl = computed("isRtl")
   const range = getRangeOffsets(params)
+  const thumbSize = context.get("thumbSize")
 
   const offsetStyles = context.get("value").reduce<Style>((styles, value, index) => {
     const offset = getThumbOffset(params, value)
@@ -147,6 +148,8 @@ export function getRootStyle(params: Pick<Ctx, "context" | "computed" | "prop">)
 
   return {
     ...offsetStyles,
+    "--slider-thumb-width": toPx(thumbSize?.width),
+    "--slider-thumb-height": toPx(thumbSize?.height),
     "--slider-thumb-transform": isVertical ? "translateY(50%)" : isRtl ? "translateX(50%)" : "translateX(-50%)",
     "--slider-range-start": range.start,
     "--slider-range-end": range.end,
