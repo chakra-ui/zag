@@ -8,6 +8,21 @@ All notable changes to this project will be documented in this file.
 
 See the [Changesets](./.changeset) for the latest changes.
 
+## [1.7.0](./#1.7.0) - 2025-03-28
+
+### Added
+
+- **Slider**
+
+  - Add support for `origin: end` to align the thumb to the end of the track.
+  - Expose `thumbSize` as CSS variables in the root element. Can be useful for styling the slider.
+
+- **Menu**: Fix issue where `addItemListener` doesn't work as expected.
+
+### Fixed
+
+- **Slider**: Fix issue where `thumbSize` CSS variable is not applied.
+
 ## [1.6.2](./#1.6.2) - 2025-03-27
 
 ### Fixed
