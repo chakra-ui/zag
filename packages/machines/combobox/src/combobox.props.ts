@@ -34,6 +34,7 @@ export const props = createProps<ComboboxProps>()([
   "onOpenChange",
   "onOpenChange",
   "onPointerDownOutside",
+  "onSelect",
   "onValueChange",
   "open",
   "openOnChange",
