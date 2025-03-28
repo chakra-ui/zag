@@ -1,5 +1,18 @@
 # @zag-js/preact
 
+## 1.6.2
+
+### Patch Changes
+
+- [#2377](https://github.com/chakra-ui/zag/pull/2377)
+  [`e5ba28a`](https://github.com/chakra-ui/zag/commit/e5ba28a01ccab8afa2f11a82b67031a82e2675f5) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Ensure machine has started before processing events.
+
+- Updated dependencies []:
+  - @zag-js/core@1.6.2
+  - @zag-js/store@1.6.2
+  - @zag-js/types@1.6.2
+
 ## 1.6.1
 
 ### Patch Changes
