@@ -27,6 +27,9 @@ export function getRangeOffsets(params: Pick<Ctx, "prop" | "computed">) {
       const end = isNegative ? "50%" : `${100 - valuePercent[0]}%`
       return { start, end }
     }
+    if (prop("origin") === "end") {
+      return { start: `${lastPercent}%`, end: "0%" }
+    }
 
     return { start: "0%", end: `${100 - lastPercent}%` }
   }
