@@ -6,9 +6,10 @@ import { createMemo, createUniqueId } from "solid-js"
 export function Splitter() {
   const service = useMachine(splitter.machine, {
     id: createUniqueId(),
-    defaultSize: [
-      { id: "a", size: 50 },
-      { id: "b", size: 50 },
+    defaultSize: [80, 20],
+    panels: [
+      { id: "a", minSize: 10 },
+      { id: "b", minSize: 10 },
     ],
   })
 
