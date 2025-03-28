@@ -133,7 +133,7 @@ export function connect<T extends PropTypes>(service: Service<MenuSchema>, norma
       send({ type: "POSITIONING.SET", options })
     },
     addItemListener(props) {
-      const node = dom.getItemEl(scope, props.id)
+      const node = scope.getById(props.id)
       if (!node) return
       const listener = () => props.onSelect?.()
       node.addEventListener(dom.itemSelectEvent, listener)
