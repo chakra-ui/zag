@@ -1,4 +1,4 @@
-import { addDomEvent, isContextMenuEvent } from "@zag-js/dom-query"
+import { addDomEvent, isContextMenuEvent, isTouchDevice } from "@zag-js/dom-query"
 import {
   contains,
   getDocument,
@@ -145,9 +145,10 @@ function trackInteractOutsideImpl(node: MaybeElement, options: InteractOutsideOp
 
   function onPointerDown(event: PointerEvent) {
     //
-    function handler() {
-      const func = defer ? raf : (v: any) => v()
-      const composedPath = event.composedPath?.() ?? [event.target]
+    function handler(clickEvent?: MouseEvent) {
+      const func = defer && !isTouchDevice() ? raf : (v: any) => v()
+      const evt = clickEvent ?? event
+      const composedPath = evt?.composedPath?.() ?? [evt?.target]
       func(() => {
         if (!node || !isEventOutside(event)) return
 
@@ -160,7 +161,7 @@ function trackInteractOutsideImpl(node: MaybeElement, options: InteractOutsideOp
           bubbles: false,
           cancelable: true,
           detail: {
-            originalEvent: event,
+            originalEvent: evt,
             contextmenu: isContextMenuEvent(event),
             focusable: isComposedPathFocusable(composedPath),
           },

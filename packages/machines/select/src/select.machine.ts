@@ -488,8 +488,8 @@ export const machine = createMachine<SelectSchema>({
         })
       },
 
-      toggleVisibility({ send, prop }) {
-        send({ type: prop("open") ? "CONTROLLED.OPEN" : "CONTROLLED.CLOSE" })
+      toggleVisibility({ send, prop, event }) {
+        send({ type: prop("open") ? "CONTROLLED.OPEN" : "CONTROLLED.CLOSE", previousEvent: event })
       },
 
       highlightPreviousItem({ context, prop }) {
