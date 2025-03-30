@@ -252,8 +252,14 @@ export const machine = createMachine<TabsSchema>({
       },
       setIndicatorRect({ context, event, scope }) {
         const value = event.id ?? context.get("value")
+
         const indicatorEl = dom.getIndicatorEl(scope)
-        if (!indicatorEl || !value) return
+        if (!indicatorEl) return
+
+        if (!value) {
+          context.set("indicatorTransition", false)
+          return
+        }
 
         const triggerEl = dom.getTriggerEl(scope, value)
         if (!triggerEl) return
@@ -272,7 +278,10 @@ export const machine = createMachine<TabsSchema>({
         if (cleanup) cleanup()
 
         const value = context.get("value")
-        if (!value) return
+        if (!value) {
+          context.set("indicatorTransition", false)
+          return
+        }
 
         const triggerEl = dom.getTriggerEl(scope, value)
         const indicatorEl = dom.getIndicatorEl(scope)
@@ -281,9 +290,6 @@ export const machine = createMachine<TabsSchema>({
         const exec = () => {
           const rect = dom.getOffsetRect(triggerEl)
           context.set("indicatorRect", dom.resolveRect(rect))
-          nextTick(() => {
-            context.set("indicatorTransition", false)
-          })
         }
 
         exec()
