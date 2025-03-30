@@ -139,6 +139,7 @@ export function connect<T extends PropTypes>(service: PopoverService, normalize:
         "aria-label": "close",
         onClick(event) {
           if (event.defaultPrevented) return
+          event.stopPropagation()
           send({ type: "CLOSE" })
         },
       })

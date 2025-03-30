@@ -162,7 +162,7 @@ function trackInteractOutsideImpl(node: MaybeElement, options: InteractOutsideOp
           cancelable: true,
           detail: {
             originalEvent: evt,
-            contextmenu: isContextMenuEvent(event),
+            contextmenu: isContextMenuEvent(evt),
             focusable: isComposedPathFocusable(composedPath),
           },
         })
@@ -211,9 +211,11 @@ function trackInteractOutsideImpl(node: MaybeElement, options: InteractOutsideOp
     })
   }
 
-  cleanups.add(addDomEvent(doc, "focusin", onFocusin, true))
-  cleanups.add(parentWin.addEventListener("focusin", onFocusin, true))
-  cleanups.add(frames.addEventListener("focusin", onFocusin, true))
+  if (!isTouchDevice()) {
+    cleanups.add(addDomEvent(doc, "focusin", onFocusin, true))
+    cleanups.add(parentWin.addEventListener("focusin", onFocusin, true))
+    cleanups.add(frames.addEventListener("focusin", onFocusin, true))
+  }
 
   return () => {
     clearTimeout(timer)
