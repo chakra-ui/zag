@@ -1,4 +1,4 @@
-import { addDomEvent, isContextMenuEvent, isTouchDevice } from "@zag-js/dom-query"
+import { addDomEvent, isContextMenuEvent, isShadowRoot, isTouchDevice } from "@zag-js/dom-query"
 import {
   contains,
   getDocument,
@@ -36,6 +36,7 @@ export interface EventDetails<T> {
   originalEvent: T
   contextmenu: boolean
   focusable: boolean
+  target: EventTarget
 }
 
 const POINTER_OUTSIDE_EVENT = "pointerdown.outside"
@@ -113,8 +114,7 @@ function trackInteractOutsideImpl(node: MaybeElement, options: InteractOutsideOp
   const frames = getWindowFrames(win)
   const parentWin = getParentWindow(win)
 
-  function isEventOutside(event: Event): boolean {
-    const target = getEventTarget(event)
+  function isEventOutside(event: Event, target: EventTarget | null): boolean {
     if (!isHTMLElement(target)) return false
 
     // ignore disconnected nodes (removed from DOM)
@@ -143,6 +143,8 @@ function trackInteractOutsideImpl(node: MaybeElement, options: InteractOutsideOp
 
   const pointerdownCleanups: Set<VoidFunction> = new Set()
 
+  const isInShadowRoot = isShadowRoot(node?.getRootNode())
+
   function onPointerDown(event: PointerEvent) {
     //
     function handler(clickEvent?: MouseEvent) {
@@ -150,7 +152,8 @@ function trackInteractOutsideImpl(node: MaybeElement, options: InteractOutsideOp
       const evt = clickEvent ?? event
       const composedPath = evt?.composedPath?.() ?? [evt?.target]
       func(() => {
-        if (!node || !isEventOutside(event)) return
+        const target = isInShadowRoot ? composedPath[0] : getEventTarget<HTMLElement>(event)
+        if (!node || !isEventOutside(event, target)) return
 
         if (onPointerDownOutside || onInteractOutside) {
           const handler = callAll(onPointerDownOutside, onInteractOutside) as EventListener
@@ -164,6 +167,7 @@ function trackInteractOutsideImpl(node: MaybeElement, options: InteractOutsideOp
             originalEvent: evt,
             contextmenu: isContextMenuEvent(evt),
             focusable: isComposedPathFocusable(composedPath),
+            target,
           },
         })
       })
@@ -192,7 +196,8 @@ function trackInteractOutsideImpl(node: MaybeElement, options: InteractOutsideOp
     //
     const func = defer ? raf : (v: any) => v()
     func(() => {
-      if (!node || !isEventOutside(event)) return
+      const target = getEventTarget<HTMLElement>(event)
+      if (!node || !isEventOutside(event, target)) return
 
       if (onFocusOutside || onInteractOutside) {
         const handler = callAll(onFocusOutside, onInteractOutside) as EventListener
@@ -205,7 +210,8 @@ function trackInteractOutsideImpl(node: MaybeElement, options: InteractOutsideOp
         detail: {
           originalEvent: event,
           contextmenu: false,
-          focusable: isFocusable(getEventTarget(event)),
+          focusable: isFocusable(target),
+          target,
         },
       })
     })
