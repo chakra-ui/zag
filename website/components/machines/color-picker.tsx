@@ -35,8 +35,9 @@ const EyeDropIcon = () => (
 export function ColorPicker(props: Props) {
   const service = useMachine(colorPicker.machine, {
     id: useId(),
-    defaultValue: colorPicker.parse("#38a169"),
+    defaultValue: colorPicker.parse("#38a169").toFormat("hsla"),
     ...props.controls,
+    format: "hsla",
   })
 
   const api = colorPicker.connect(service, normalizeProps)
@@ -44,7 +45,7 @@ export function ColorPicker(props: Props) {
   return (
     <div {...api.getRootProps()}>
       <label {...api.getLabelProps()}>
-        <span>Color</span>: {api.valueAsString}
+        <span>Color</span>: {api.value.toString("hex")}
       </label>
 
       <div {...api.getControlProps()}>
