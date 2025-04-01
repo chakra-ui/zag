@@ -9,7 +9,6 @@ import {
   isCtrlOrMetaKey,
   isEditableElement,
   isSelfTarget,
-  setStyle,
 } from "@zag-js/dom-query"
 import type { EventKeyMap, NormalizeProps, PropTypes } from "@zag-js/types"
 import { ensure } from "@zag-js/utils"
@@ -130,15 +129,19 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
           if (itemState.highlighted) return
           send({ type: "ITEM.POINTER_MOVE", value: itemState.value })
         },
-        onPointerDown(event) {
-          const doc = event.currentTarget.ownerDocument
-          const restore = setStyle(doc.body, { userSelect: "none" })
-          requestAnimationFrame(() => restore())
+        onMouseDown(event) {
+          event.preventDefault()
         },
         onClick(event) {
           if (event.defaultPrevented) return
           if (itemState.disabled) return
-          send({ type: "ITEM.CLICK", value: itemState.value, shiftKey: event.shiftKey, anchorValue: highlightedValue })
+          send({
+            type: "ITEM.CLICK",
+            value: itemState.value,
+            shiftKey: event.shiftKey,
+            anchorValue: highlightedValue,
+            metaKey: isCtrlOrMetaKey(event),
+          })
         },
       })
     },
@@ -238,7 +241,7 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
             },
 
             ArrowLeft() {
-              if (!isGridCollection(collection) || prop("orientation") === "vertical") return
+              if (!isGridCollection(collection) && prop("orientation") === "vertical") return
               let nextValue = highlightedValue ? collection.getPreviousValue(highlightedValue) : null
               if (!nextValue && prop("loopFocus")) {
                 nextValue = collection.lastValue
@@ -249,7 +252,7 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
             },
 
             ArrowRight() {
-              if (!isGridCollection(collection) || prop("orientation") === "vertical") return
+              if (!isGridCollection(collection) && prop("orientation") === "vertical") return
               let nextValue = highlightedValue ? collection.getNextValue(highlightedValue) : null
               if (!nextValue && prop("loopFocus")) {
                 nextValue = collection.firstValue

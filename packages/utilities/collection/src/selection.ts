@@ -156,7 +156,7 @@ export class Selection extends Set<string> {
     return selection
   }
 
-  select = (collection: ListCollection, key: string): Selection => {
+  select = (collection: ListCollection, key: string, metaKey?: boolean): Selection => {
     if (this.selectionMode === "none") {
       return this
     }
@@ -167,7 +167,7 @@ export class Selection extends Set<string> {
       } else {
         return this.replaceSelection(collection, key)
       }
-    } else if (this.selectionBehavior === "toggle") {
+    } else if (this.selectionBehavior === "toggle" || metaKey) {
       return this.toggleSelection(collection, key)
     } else {
       return this.replaceSelection(collection, key)

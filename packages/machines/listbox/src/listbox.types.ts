@@ -114,6 +114,10 @@ export interface ListboxProps<T extends CollectionItem = CollectionItem>
    * Whether to select the item when it is highlighted
    */
   selectOnHighlight?: boolean | undefined
+  /**
+   * Whether to disallow empty selection
+   */
+  disallowEmptySelection?: boolean | undefined
 }
 
 type PropsWithDefault = "collection" | "selectionBehavior" | "selectionMode"

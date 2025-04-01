@@ -226,7 +226,7 @@ export const machine = createMachine<ListboxSchema>({
           const next = selection.extendSelection(collection, event.anchorValue, value)
           context.set("value", Array.from(next))
         } else {
-          const next = selection.select(collection, value)
+          const next = selection.select(collection, value, event.metaKey)
           context.set("value", Array.from(next))
         }
       },
