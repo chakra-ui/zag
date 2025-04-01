@@ -4,6 +4,8 @@ type RouteData = {
 }
 
 export const routesData: RouteData[] = [
+  { label: "Listbox", path: "/listbox" },
+  { label: "Listbox (Grid)", path: "/listbox-grid" },
   { label: "Navigation Menu", path: "/navigation-menu" },
   { label: "Navigation Menu (Viewport)", path: "/navigation-menu-viewport" },
   { label: "Navigation Menu (Nested)", path: "/navigation-menu-nested" },

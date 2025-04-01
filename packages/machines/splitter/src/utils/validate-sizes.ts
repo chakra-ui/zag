@@ -18,7 +18,7 @@ export function validateSizes({ size: prevSize, panels }: { size: number[]; pane
   } else if (!fuzzyNumbersEqual(nextSizeTotalSize, 100) && nextSize.length > 0) {
     for (let index = 0; index < panels.length; index++) {
       const unsafeSize = nextSize[index]
-      ensure(unsafeSize, `No size data found for index ${index}`)
+      ensure(unsafeSize, () => `No size data found for index ${index}`)
       const safeSize = (100 / nextSizeTotalSize) * unsafeSize
       nextSize[index] = safeSize
     }
@@ -29,7 +29,7 @@ export function validateSizes({ size: prevSize, panels }: { size: number[]; pane
   // First pass: Validate the proposed size given each panel's constraints
   for (let index = 0; index < panels.length; index++) {
     const unsafeSize = nextSize[index]
-    ensure(unsafeSize, `No size data found for index ${index}`)
+    ensure(unsafeSize, () => `No size data found for index ${index}`)
     const safeSize = resizePanel({ panels, index, size: unsafeSize })
     if (unsafeSize != safeSize) {
       remainingSize += unsafeSize - safeSize
@@ -42,7 +42,7 @@ export function validateSizes({ size: prevSize, panels }: { size: number[]; pane
   if (!fuzzyNumbersEqual(remainingSize, 0)) {
     for (let index = 0; index < panels.length; index++) {
       const prevSize = nextSize[index]
-      ensure(prevSize, `No size data found for index ${index}`)
+      ensure(prevSize, () => `No size data found for index ${index}`)
       const unsafeSize = prevSize + remainingSize
       const safeSize = resizePanel({ panels, index, size: unsafeSize })
 

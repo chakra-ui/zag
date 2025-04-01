@@ -273,6 +273,36 @@ export class ListCollection<T extends CollectionItem = CollectionItem> {
     this.items.splice(toIndex, 0, removed)
   }
 
+  compareValueOrder = (a: string, b: string) => {
+    const indexA = this.indexOf(a)
+    const indexB = this.indexOf(b)
+    if (indexA < indexB) return -1
+    if (indexA > indexB) return 1
+    return 0
+  }
+
+  private range = (from: string | null, to: string | null) => {
+    let keys: string[] = []
+    let key: string | null = from
+    while (key != null) {
+      let item = this.find(key)
+      if (item) keys.push(key)
+      if (key === to) return keys
+      key = this.getNextValue(key)
+    }
+    return []
+  }
+
+  getValueRange = (from: string | null, to: string | null) => {
+    if (from && to) {
+      if (this.compareValueOrder(from, to) <= 0) {
+        return this.range(from, to)
+      }
+      return this.range(to, from)
+    }
+    return []
+  }
+
   toString = () => {
     let result = ""
     for (const item of this.items) {
@@ -300,4 +330,8 @@ const match = (label: string | null, query: string) => {
 
 const wrap = <T>(v: T[] | readonly T[], idx: number) => {
   return v.map((_, index) => v[(Math.max(idx, 0) + index) % v.length])
+}
+
+export function isListCollection(v: unknown): v is ListCollection<any> {
+  return v instanceof ListCollection
 }

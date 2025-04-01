@@ -260,7 +260,7 @@ export const machine = createMachine<SplitterSchema>({
         if (!panelGroupEl) return
 
         const handleElement = dom.getResizeTriggerEl(scope, resizeTriggerId)
-        ensure(handleElement, `Drag handle element not found for id "${resizeTriggerId}"`)
+        ensure(handleElement, () => `Drag handle element not found for id "${resizeTriggerId}"`)
 
         const initialCursorPosition = orientation === "horizontal" ? event.point.x : event.point.y
 
@@ -293,12 +293,12 @@ export const machine = createMachine<SplitterSchema>({
         const panels = prop("panels")
 
         const panel = panels.find((panel) => panel.id === event.id)
-        ensure(panel, `Panel data not found for id "${event.id}"`)
+        ensure(panel, () => `Panel data not found for id "${event.id}"`)
 
         if (panel.collapsible) {
           const { collapsedSize = 0, panelSize, pivotIndices } = panelDataHelper(panels, panel, prevSize)
 
-          ensure(panelSize, `Panel size not found for panel "${panel.id}"`)
+          ensure(panelSize, () => `Panel size not found for panel "${panel.id}"`)
 
           if (!fuzzyNumbersEqual(panelSize, collapsedSize)) {
             refs.get("panelSizeBeforeCollapse").set(panel.id, panelSize)
@@ -329,7 +329,7 @@ export const machine = createMachine<SplitterSchema>({
         const prevSize = context.get("size")
 
         const panel = panels.find((panel) => panel.id === event.id)
-        ensure(panel, `Panel data not found for id "${event.id}"`)
+        ensure(panel, () => `Panel data not found for id "${event.id}"`)
 
         if (panel.collapsible) {
           const {
@@ -376,7 +376,7 @@ export const machine = createMachine<SplitterSchema>({
         const unsafePanelSize = event.size
 
         const { panelSize, pivotIndices } = panelDataHelper(panels, panel, prevSize)
-        ensure(panelSize, `Panel size not found for panel "${panel.id}"`)
+        ensure(panelSize, () => `Panel size not found for panel "${panel.id}"`)
 
         const isLastPanel = findPanelDataIndex(panels, panel) === panels.length - 1
         const delta = isLastPanel ? panelSize - unsafePanelSize : unsafePanelSize - panelSize
@@ -405,7 +405,7 @@ export const machine = createMachine<SplitterSchema>({
         const panels = prop("panels")
 
         const panelGroupElement = dom.getRootEl(scope)
-        ensure(panelGroupElement, `Panel group element not found`)
+        ensure(panelGroupElement, () => `Panel group element not found`)
 
         const pivotIndices = resizeTriggerId.split(":").map((id) => panels.findIndex((panel) => panel.id === id))
 
@@ -491,7 +491,7 @@ export const machine = createMachine<SplitterSchema>({
         if (index === -1) return
 
         const panelData = panelDataArray[index]
-        ensure(panelData, `No panel data found for index ${index}`)
+        ensure(panelData, () => `No panel data found for index ${index}`)
 
         const size = sizes[index]
 
@@ -566,7 +566,7 @@ function setSize(params: Params<SplitterSchema>, sizes: number[]) {
 
   sizes.forEach((size, index) => {
     const panelData = panelsArray[index]
-    ensure(panelData, `Panel data not found for index ${index}`)
+    ensure(panelData, () => `Panel data not found for index ${index}`)
 
     const { collapsedSize = 0, collapsible, id: panelId } = panelData
 

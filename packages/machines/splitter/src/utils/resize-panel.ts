@@ -9,7 +9,7 @@ import { fuzzyCompareNumbers, PRECISION } from "./fuzzy"
 
 export function resizePanel({ panels, index, size }: { panels: PanelData[]; index: number; size: number }) {
   const panel = panels[index]
-  ensure(panel, `Panel data not found for index ${index}`)
+  ensure(panel, () => `Panel data not found for index ${index}`)
 
   let { collapsedSize = 0, collapsible, maxSize = 100, minSize = 0 } = panel
 

@@ -1,24 +1,21 @@
-export type { FocusOutsideEvent, InteractOutsideEvent, PointerDownOutsideEvent } from "@zag-js/dismissable"
 export { anatomy } from "./listbox.anatomy"
-export { collection } from "./listbox.collection"
+export { collection, gridCollection } from "./listbox.collection"
 export { connect } from "./listbox.connect"
 export { machine } from "./listbox.machine"
 export * from "./listbox.props"
 export type {
-  SelectApi as Api,
-  CollectionItem,
-  CollectionOptions,
-  SelectProps as Props,
-  SelectService as Service,
-  SelectMachine as Machine,
+  ListboxApi as Api,
   ElementIds,
   HighlightChangeDetails,
   ItemGroupLabelProps,
   ItemGroupProps,
   ItemProps,
   ItemState,
-  OpenChangeDetails,
-  PositioningOptions,
+  ListboxMachine as Machine,
+  ListboxProps as Props,
   ScrollToIndexDetails,
+  ListboxService as Service,
   ValueChangeDetails,
 } from "./listbox.types"
+
+export type { CollectionItem, CollectionOptions, GridCollection, ListCollection } from "@zag-js/collection"

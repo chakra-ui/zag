@@ -1,33 +1,31 @@
 import { createProps } from "@zag-js/types"
 import { createSplitProps } from "@zag-js/utils"
-import type { ItemGroupLabelProps, ItemGroupProps, ItemProps, SelectProps } from "./listbox.types"
+import type { ItemGroupLabelProps, ItemGroupProps, ItemProps, ListboxProps } from "./listbox.types"
 
-export const props = createProps<SelectProps>()([
+export const props = createProps<ListboxProps>()([
   "collection",
   "dir",
   "disabled",
-  "deselectable",
-  "form",
   "getRootNode",
   "highlightedValue",
   "id",
   "ids",
-  "invalid",
   "loopFocus",
-  "multiple",
-  "name",
+  "selectionBehavior",
+  "selectionMode",
   "onHighlightChange",
   "onValueChange",
-  "required",
-  "readOnly",
+  "selectOnHighlight",
   "scrollToIndexFn",
   "value",
   "defaultValue",
+  "disallowSelectAll",
   "defaultHighlightedValue",
+  "orientation",
 ])
-export const splitProps = createSplitProps<Partial<SelectProps>>(props)
+export const splitProps = createSplitProps<Partial<ListboxProps>>(props)
 
-export const itemProps = createProps<ItemProps>()(["item", "persistFocus"])
+export const itemProps = createProps<ItemProps>()(["item", "highlightOnHover"])
 export const splitItemProps = createSplitProps<ItemProps>(itemProps)
 
 export const itemGroupProps = createProps<ItemGroupProps>()(["id"])

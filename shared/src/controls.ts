@@ -173,6 +173,13 @@ export const selectControls = defineControls({
   dir: { type: "select", options: ["ltr", "rtl"] as const, defaultValue: "ltr" },
 })
 
+export const listboxControls = defineControls({
+  selectionMode: { type: "select", options: ["single", "multiple"] as const, defaultValue: "single" },
+  selectionBehavior: { type: "select", options: ["toggle", "replace"] as const, defaultValue: "toggle" },
+  disabled: { type: "boolean", defaultValue: false },
+  loopFocus: { type: "boolean", defaultValue: false },
+})
+
 export const datePickerControls = defineControls({
   readOnly: { type: "boolean", defaultValue: false },
   disabled: { type: "boolean", defaultValue: false },

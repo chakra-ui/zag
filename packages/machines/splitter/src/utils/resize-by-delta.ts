@@ -28,8 +28,8 @@ export function resizeByDelta(props: Layout): number[] {
 
   const [firstPivotIndex, secondPivotIndex] = pivotIndices
 
-  ensure(firstPivotIndex, "Invalid first pivot index")
-  ensure(secondPivotIndex, "Invalid second pivot index")
+  ensure(firstPivotIndex, () => "Invalid first pivot index")
+  ensure(secondPivotIndex, () => "Invalid second pivot index")
 
   let deltaApplied = 0
 
@@ -49,13 +49,13 @@ export function resizeByDelta(props: Layout): number[] {
         // Check if we should expand a collapsed panel
         const index = delta < 0 ? secondPivotIndex : firstPivotIndex
         const panel = panels[index]
-        ensure(panel, `Panel data not found for index ${index}`)
+        ensure(panel, () => `Panel data not found for index ${index}`)
 
         const { collapsedSize = 0, collapsible, minSize = 0 } = panel
 
         if (collapsible) {
           const prevSize = initialSize[index]
-          ensure(prevSize, `Previous size not found for panel index ${index}`)
+          ensure(prevSize, () => `Previous size not found for panel index ${index}`)
 
           if (fuzzyNumbersEqual(prevSize, collapsedSize)) {
             const localDelta = minSize - prevSize
@@ -70,13 +70,13 @@ export function resizeByDelta(props: Layout): number[] {
         // Check if we should collapse a panel at its minimum size
         const index = delta < 0 ? firstPivotIndex : secondPivotIndex
         const panel = panels[index]
-        ensure(panel, `No panel data found for index ${index}`)
+        ensure(panel, () => `No panel data found for index ${index}`)
 
         const { collapsedSize = 0, collapsible, minSize = 0 } = panel
 
         if (collapsible) {
           const prevSize = initialSize[index]
-          ensure(prevSize, `Previous size not found for panel index ${index}`)
+          ensure(prevSize, () => `Previous size not found for panel index ${index}`)
 
           if (fuzzyNumbersEqual(prevSize, minSize)) {
             const localDelta = prevSize - collapsedSize
@@ -103,7 +103,7 @@ export function resizeByDelta(props: Layout): number[] {
 
     while (true) {
       const prevSize = initialSize[index]
-      ensure(prevSize, `Previous size not found for panel index ${index}`)
+      ensure(prevSize, () => `Previous size not found for panel index ${index}`)
 
       const maxSafeSize = resizePanel({
         panels,
@@ -133,7 +133,7 @@ export function resizeByDelta(props: Layout): number[] {
       const deltaRemaining = Math.abs(delta) - Math.abs(deltaApplied)
 
       const prevSize = initialSize[index]
-      ensure(prevSize, `Previous size not found for panel index ${index}`)
+      ensure(prevSize, () => `Previous size not found for panel index ${index}`)
 
       const unsafeSize = prevSize - deltaRemaining
       const safeSize = resizePanel({ panels, index, size: unsafeSize })
@@ -171,7 +171,7 @@ export function resizeByDelta(props: Layout): number[] {
     const pivotIndex = delta < 0 ? secondPivotIndex : firstPivotIndex
 
     const prevSize = initialSize[pivotIndex]
-    ensure(prevSize, `Previous size not found for panel index ${pivotIndex}`)
+    ensure(prevSize, () => `Previous size not found for panel index ${pivotIndex}`)
 
     const unsafeSize = prevSize + deltaApplied
     const safeSize = resizePanel({ panels, index: pivotIndex, size: unsafeSize })
@@ -187,7 +187,7 @@ export function resizeByDelta(props: Layout): number[] {
       let index = pivotIndex
       while (index >= 0 && index < panels.length) {
         const prevSize = nextSize[index]
-        ensure(prevSize, `Previous size not found for panel index ${index}`)
+        ensure(prevSize, () => `Previous size not found for panel index ${index}`)
 
         const unsafeSize = prevSize + deltaRemaining
         const safeSize = resizePanel({ panels, index, size: unsafeSize })

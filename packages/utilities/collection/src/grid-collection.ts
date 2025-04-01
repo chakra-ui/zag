@@ -57,3 +57,7 @@ export class GridCollection<T extends CollectionItem = CollectionItem> extends L
     return this.getNextValue(value, this.columnCount, clamp)
   }
 }
+
+export function isGridCollection(v: unknown): v is GridCollection<any> {
+  return v instanceof GridCollection
+}

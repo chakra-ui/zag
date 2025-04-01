@@ -1,35 +1,24 @@
-import { createGuards, createMachine } from "@zag-js/core"
-import { trackDismissableElement } from "@zag-js/dismissable"
-import {
-  getByTypeahead,
-  getInitialFocus,
-  observeAttributes,
-  raf,
-  scrollIntoView,
-  trackFormControl,
-} from "@zag-js/dom-query"
-import { getPlacement, type Placement } from "@zag-js/popper"
-import { addOrRemove, isEqual } from "@zag-js/utils"
+import type { CollectionItem } from "@zag-js/collection"
+import { Selection } from "@zag-js/collection"
+import { createMachine } from "@zag-js/core"
+import { getByTypeahead, observeAttributes, raf, scrollIntoView } from "@zag-js/dom-query"
+import { getInteractionModality, trackFocusVisible as trackFocusVisibleFn } from "@zag-js/focus-visible"
+import { isEqual } from "@zag-js/utils"
 import { collection } from "./listbox.collection"
 import * as dom from "./listbox.dom"
-import type { CollectionItem, SelectSchema } from "./listbox.types"
+import type { ListboxSchema } from "./listbox.types"
 
-const { and, not, or } = createGuards<SelectSchema>()
-
-export const machine = createMachine<SelectSchema>({
+export const machine = createMachine<ListboxSchema>({
   props({ props }) {
     return {
       loopFocus: false,
-      closeOnSelect: !props.multiple,
       composite: true,
       defaultValue: [],
+      selectionBehavior: "toggle",
+      selectionMode: "single",
+      collection: collection.empty(),
+      orientation: "vertical",
       ...props,
-      collection: props.collection ?? collection.empty(),
-      positioning: {
-        placement: "bottom-start",
-        gutter: 8,
-        ...props.positioning,
-      },
     }
   },
 
@@ -44,9 +33,11 @@ export const machine = createMachine<SelectSchema>({
           return prop("onValueChange")?.({ value, items })
         },
       })),
+
       highlightedValue: bindable<string | null>(() => ({
         defaultValue: prop("defaultHighlightedValue") || null,
         value: prop("highlightedValue"),
+        sync: true,
         onChange(value) {
           prop("onHighlightChange")?.({
             highlightedValue: value,
@@ -55,20 +46,17 @@ export const machine = createMachine<SelectSchema>({
           })
         },
       })),
-      currentPlacement: bindable<Placement | undefined>(() => ({
-        defaultValue: undefined,
-      })),
-      fieldsetDisabled: bindable(() => ({
-        defaultValue: false,
-      })),
+
       highlightedItem: bindable<CollectionItem | null>(() => ({
         defaultValue: null,
       })),
+
       selectedItems: bindable<CollectionItem[]>(() => {
         const value = prop("value") ?? prop("defaultValue") ?? []
         const items = prop("collection").findMany(value)
         return { defaultValue: items }
       }),
+
       valueAsString: bindable(() => {
         const value = prop("value") ?? prop("defaultValue") ?? []
         return { defaultValue: prop("collection").stringifyMany(value) }
@@ -85,23 +73,23 @@ export const machine = createMachine<SelectSchema>({
   computed: {
     hasSelectedItems: ({ context }) => context.get("value").length > 0,
     isTypingAhead: ({ refs }) => refs.get("typeahead").keysSoFar !== "",
-    isDisabled: ({ prop, context }) => !!prop("disabled") || !!context.get("fieldsetDisabled"),
-    isInteractive: ({ prop }) => !(prop("disabled") || prop("readOnly")),
+    isInteractive: ({ prop }) => !prop("disabled"),
+    multiple: ({ prop }) => prop("selectionMode") === "multiple",
+    selection: ({ context, prop }) => {
+      const selection = new Selection(context.get("value"))
+      selection.selectionMode = prop("selectionMode")
+      selection.selectionBehavior = prop("selectionBehavior")
+      return selection
+    },
   },
 
-  initialState({ prop }) {
-    const open = prop("open") || prop("defaultOpen")
-    return open ? "open" : "idle"
+  initialState() {
+    return "idle"
   },
-
-  entry: ["syncSelectElement"],
 
   watch({ context, prop, track, action }) {
     track([() => context.get("value").toString()], () => {
-      action(["syncSelectedItems", "syncSelectElement", "dispatchChangeEvent"])
-    })
-    track([() => prop("open")], () => {
-      action(["toggleVisibility"])
+      action(["syncSelectedItems"])
     })
     track([() => context.get("highlightedValue")], () => {
       action(["syncHighlightedItem"])
@@ -110,6 +98,8 @@ export const machine = createMachine<SelectSchema>({
       action(["syncCollection"])
     })
   },
+
+  effects: ["trackFocusVisible"],
 
   on: {
     "HIGHLIGHTED_VALUE.SET": {
@@ -128,240 +118,20 @@ export const machine = createMachine<SelectSchema>({
       actions: ["clearSelectedItems"],
     },
     "CLEAR.CLICK": {
-      actions: ["clearSelectedItems", "focusTriggerEl"],
+      actions: ["clearSelectedItems"],
     },
   },
 
-  effects: ["trackFormControlState"],
-
   states: {
     idle: {
-      tags: ["closed"],
+      effects: ["scrollToHighlightedItem"],
       on: {
-        "CONTROLLED.OPEN": [
-          {
-            guard: "isTriggerClickEvent",
-            target: "open",
-            actions: ["setInitialFocus", "highlightFirstSelectedItem"],
-          },
-          {
-            target: "open",
-            actions: ["setInitialFocus"],
-          },
-        ],
-        "TRIGGER.CLICK": [
-          {
-            guard: "isOpenControlled",
-            actions: ["invokeOnOpen"],
-          },
-          {
-            target: "open",
-            actions: ["invokeOnOpen", "setInitialFocus", "highlightFirstSelectedItem"],
-          },
-        ],
-        "TRIGGER.FOCUS": {
-          target: "focused",
+        "CONTENT.FOCUS": {
+          actions: ["scrollIntoView"],
         },
-        OPEN: [
-          {
-            guard: "isOpenControlled",
-            actions: ["invokeOnOpen"],
-          },
-          {
-            target: "open",
-            actions: ["setInitialFocus", "invokeOnOpen"],
-          },
-        ],
-      },
-    },
-
-    focused: {
-      tags: ["closed"],
-      on: {
-        "CONTROLLED.OPEN": [
-          {
-            guard: "isTriggerClickEvent",
-            target: "open",
-            actions: ["setInitialFocus", "highlightFirstSelectedItem"],
-          },
-          {
-            guard: "isTriggerArrowUpEvent",
-            target: "open",
-            actions: ["setInitialFocus", "highlightComputedLastItem"],
-          },
-          {
-            guard: or("isTriggerArrowDownEvent", "isTriggerEnterEvent"),
-            target: "open",
-            actions: ["setInitialFocus", "highlightComputedFirstItem"],
-          },
-          {
-            target: "open",
-            actions: ["setInitialFocus"],
-          },
-        ],
-        OPEN: [
-          {
-            guard: "isOpenControlled",
-            actions: ["invokeOnOpen"],
-          },
-          {
-            target: "open",
-            actions: ["setInitialFocus", "invokeOnOpen"],
-          },
-        ],
-        "TRIGGER.BLUR": {
-          target: "idle",
+        "ITEM.CLICK": {
+          actions: ["setHighlightedItem", "selectHighlightedItem"],
         },
-        "TRIGGER.CLICK": [
-          {
-            guard: "isOpenControlled",
-            actions: ["invokeOnOpen"],
-          },
-          {
-            target: "open",
-            actions: ["setInitialFocus", "invokeOnOpen", "highlightFirstSelectedItem"],
-          },
-        ],
-        "TRIGGER.ENTER": [
-          {
-            guard: "isOpenControlled",
-            actions: ["invokeOnOpen"],
-          },
-          {
-            target: "open",
-            actions: ["setInitialFocus", "invokeOnOpen", "highlightComputedFirstItem"],
-          },
-        ],
-        "TRIGGER.ARROW_UP": [
-          {
-            guard: "isOpenControlled",
-            actions: ["invokeOnOpen"],
-          },
-          {
-            target: "open",
-            actions: ["setInitialFocus", "invokeOnOpen", "highlightComputedLastItem"],
-          },
-        ],
-        "TRIGGER.ARROW_DOWN": [
-          {
-            guard: "isOpenControlled",
-            actions: ["invokeOnOpen"],
-          },
-          {
-            target: "open",
-            actions: ["setInitialFocus", "invokeOnOpen", "highlightComputedFirstItem"],
-          },
-        ],
-        "TRIGGER.ARROW_LEFT": [
-          {
-            guard: and(not("multiple"), "hasSelectedItems"),
-            actions: ["selectPreviousItem"],
-          },
-          {
-            guard: not("multiple"),
-            actions: ["selectLastItem"],
-          },
-        ],
-        "TRIGGER.ARROW_RIGHT": [
-          {
-            guard: and(not("multiple"), "hasSelectedItems"),
-            actions: ["selectNextItem"],
-          },
-          {
-            guard: not("multiple"),
-            actions: ["selectFirstItem"],
-          },
-        ],
-        "TRIGGER.HOME": {
-          guard: not("multiple"),
-          actions: ["selectFirstItem"],
-        },
-        "TRIGGER.END": {
-          guard: not("multiple"),
-          actions: ["selectLastItem"],
-        },
-        "TRIGGER.TYPEAHEAD": {
-          guard: not("multiple"),
-          actions: ["selectMatchingItem"],
-        },
-      },
-    },
-
-    open: {
-      tags: ["open"],
-      exit: ["scrollContentToTop"],
-      effects: ["trackDismissableElement", "computePlacement", "scrollToHighlightedItem"],
-      on: {
-        "CONTROLLED.CLOSE": {
-          target: "focused",
-          actions: ["focusTriggerEl", "clearHighlightedItem"],
-        },
-        CLOSE: [
-          {
-            guard: "isOpenControlled",
-            actions: ["invokeOnClose"],
-          },
-          {
-            target: "focused",
-            actions: ["invokeOnClose", "focusTriggerEl", "clearHighlightedItem"],
-          },
-        ],
-        "TRIGGER.CLICK": [
-          {
-            guard: "isOpenControlled",
-            actions: ["invokeOnClose"],
-          },
-          {
-            target: "focused",
-            actions: ["invokeOnClose", "clearHighlightedItem"],
-          },
-        ],
-        "ITEM.CLICK": [
-          {
-            guard: and("closeOnSelect", "isOpenControlled"),
-            actions: ["selectHighlightedItem", "invokeOnClose"],
-          },
-          {
-            guard: "closeOnSelect",
-            target: "focused",
-            actions: ["selectHighlightedItem", "invokeOnClose", "focusTriggerEl", "clearHighlightedItem"],
-          },
-          {
-            actions: ["selectHighlightedItem"],
-          },
-        ],
-        "CONTENT.HOME": {
-          actions: ["highlightFirstItem"],
-        },
-        "CONTENT.END": {
-          actions: ["highlightLastItem"],
-        },
-        "CONTENT.ARROW_DOWN": [
-          {
-            guard: and("hasHighlightedItem", "loop", "isLastItemHighlighted"),
-            actions: ["highlightFirstItem"],
-          },
-          {
-            guard: "hasHighlightedItem",
-            actions: ["highlightNextItem"],
-          },
-          {
-            actions: ["highlightFirstItem"],
-          },
-        ],
-        "CONTENT.ARROW_UP": [
-          {
-            guard: and("hasHighlightedItem", "loop", "isFirstItemHighlighted"),
-            actions: ["highlightLastItem"],
-          },
-          {
-            guard: "hasHighlightedItem",
-            actions: ["highlightPreviousItem"],
-          },
-          {
-            actions: ["highlightLastItem"],
-          },
-        ],
         "CONTENT.TYPEAHEAD": {
           actions: ["highlightMatchingItem"],
         },
@@ -371,84 +141,30 @@ export const machine = createMachine<SelectSchema>({
         "ITEM.POINTER_LEAVE": {
           actions: ["clearHighlightedItem"],
         },
-        "POSITIONING.SET": {
-          actions: ["reposition"],
+        NAVIGATE: {
+          actions: ["setHighlightedItem", "extendOrReplaceSelection"],
         },
       },
     },
   },
 
   implementations: {
-    guards: {
-      loop: ({ prop }) => !!prop("loopFocus"),
-      multiple: ({ prop }) => !!prop("multiple"),
-      hasSelectedItems: ({ computed }) => !!computed("hasSelectedItems"),
-      hasHighlightedItem: ({ context }) => context.get("highlightedValue") != null,
-      isFirstItemHighlighted: ({ context, prop }) => context.get("highlightedValue") === prop("collection").firstValue,
-      isLastItemHighlighted: ({ context, prop }) => context.get("highlightedValue") === prop("collection").lastValue,
-      closeOnSelect: ({ prop, event }) => !!(event.closeOnSelect ?? prop("closeOnSelect")),
-      // guard assertions (for controlled mode)
-      isOpenControlled: ({ prop }) => prop("open") !== undefined,
-      isTriggerClickEvent: ({ event }) => event.previousEvent?.type === "TRIGGER.CLICK",
-      isTriggerEnterEvent: ({ event }) => event.previousEvent?.type === "TRIGGER.ENTER",
-      isTriggerArrowUpEvent: ({ event }) => event.previousEvent?.type === "TRIGGER.ARROW_UP",
-      isTriggerArrowDownEvent: ({ event }) => event.previousEvent?.type === "TRIGGER.ARROW_DOWN",
-    },
-
     effects: {
-      trackFormControlState({ context, scope }) {
-        return trackFormControl(dom.getHiddenSelectEl(scope), {
-          onFieldsetDisabledChange(disabled) {
-            context.set("fieldsetDisabled", disabled)
-          },
-          onFormReset() {
-            const value = context.initial("value")
-            context.set("value", value)
-          },
-        })
+      trackFocusVisible: ({ scope }) => {
+        return trackFocusVisibleFn({ root: scope.getRootNode?.() })
       },
 
-      trackDismissableElement({ scope, send, prop }) {
-        const contentEl = () => dom.getContentEl(scope)
-        let restoreFocus = true
-        return trackDismissableElement(contentEl, {
-          defer: true,
-          exclude: [dom.getTriggerEl(scope), dom.getClearTriggerEl(scope)],
-          onFocusOutside: prop("onFocusOutside"),
-          onPointerDownOutside: prop("onPointerDownOutside"),
-          onInteractOutside(event) {
-            prop("onInteractOutside")?.(event)
-            restoreFocus = !(event.detail.focusable || event.detail.contextmenu)
-          },
-          onDismiss() {
-            send({ type: "CLOSE", src: "interact-outside", restoreFocus })
-          },
-        })
-      },
-
-      computePlacement({ context, prop, scope }) {
-        const positioning = prop("positioning")
-        context.set("currentPlacement", positioning.placement)
-        const triggerEl = () => dom.getTriggerEl(scope)
-        const positionerEl = () => dom.getPositionerEl(scope)
-        return getPlacement(triggerEl, positionerEl, {
-          defer: true,
-          ...positioning,
-          onComplete(data) {
-            context.set("currentPlacement", data.placement)
-          },
-        })
-      },
-
-      scrollToHighlightedItem({ context, prop, scope, event }) {
+      scrollToHighlightedItem({ context, prop, scope }) {
         const exec = (immediate: boolean) => {
           const highlightedValue = context.get("highlightedValue")
           if (highlightedValue == null) return
 
-          // don't scroll into view if we're using the pointer
-          if (event.current().type.includes("POINTER")) return
+          const modality = getInteractionModality()
 
-          const optionEl = dom.getItemEl(scope, highlightedValue)
+          // don't scroll into view if we're using the pointer
+          if (modality !== "keyboard") return
+
+          const itemEl = dom.getItemEl(scope, highlightedValue)
           const contentEl = dom.getContentEl(scope)
 
           const scrollToIndexFn = prop("scrollToIndexFn")
@@ -458,7 +174,7 @@ export const machine = createMachine<SelectSchema>({
             return
           }
 
-          scrollIntoView(optionEl, { rootEl: contentEl, block: "nearest" })
+          scrollIntoView(itemEl, { rootEl: contentEl, block: "nearest" })
         }
 
         raf(() => exec(true))
@@ -475,23 +191,6 @@ export const machine = createMachine<SelectSchema>({
     },
 
     actions: {
-      reposition({ context, prop, scope, event }) {
-        const positionerEl = () => dom.getPositionerEl(scope)
-        getPlacement(dom.getTriggerEl(scope), positionerEl, {
-          ...prop("positioning"),
-          ...event.options,
-          defer: true,
-          listeners: false,
-          onComplete(data) {
-            context.set("currentPlacement", data.placement)
-          },
-        })
-      },
-
-      toggleVisibility({ send, prop, event }) {
-        send({ type: prop("open") ? "CONTROLLED.OPEN" : "CONTROLLED.CLOSE", previousEvent: event })
-      },
-
       highlightPreviousItem({ context, prop }) {
         const highlightedValue = context.get("highlightedValue")
         if (highlightedValue == null) return
@@ -516,53 +215,36 @@ export const machine = createMachine<SelectSchema>({
         context.set("highlightedValue", value)
       },
 
-      setInitialFocus({ scope }) {
-        raf(() => {
-          const element = getInitialFocus({
-            root: dom.getContentEl(scope),
-          })
-          element?.focus({ preventScroll: true })
-        })
-      },
-
-      focusTriggerEl({ event, scope }) {
-        const restoreFocus = event.restoreFocus ?? event.previousEvent?.restoreFocus
-        if (restoreFocus != null && !restoreFocus) return
-        raf(() => {
-          const element = dom.getTriggerEl(scope)
-          element?.focus({ preventScroll: true })
-        })
-      },
-
-      selectHighlightedItem({ context, prop, event }) {
-        let value = event.value ?? context.get("highlightedValue")
+      selectHighlightedItem({ context, prop, event, computed }) {
+        const value = event.value ?? context.get("highlightedValue")
         if (value == null) return
 
-        const nullable = prop("deselectable") && !prop("multiple") && context.get("value").includes(value)
-        value = nullable ? null : value
-        context.set("value", (prev) => {
-          if (value == null) return []
-          if (prop("multiple")) return addOrRemove(prev, value)
-          return [value]
-        })
-      },
-
-      highlightComputedFirstItem({ context, prop, computed }) {
+        const selection = computed("selection")
         const collection = prop("collection")
-        const value = computed("hasSelectedItems") ? collection.sort(context.get("value"))[0] : collection.firstValue
-        context.set("highlightedValue", value)
+
+        if (event.shiftKey && computed("multiple") && event.anchorValue) {
+          const next = selection.extendSelection(collection, event.anchorValue, value)
+          context.set("value", Array.from(next))
+        } else {
+          const next = selection.select(collection, value)
+          context.set("value", Array.from(next))
+        }
       },
 
-      highlightComputedLastItem({ context, prop, computed }) {
+      extendOrReplaceSelection({ context, prop, event, computed }) {
+        const selection = computed("selection")
         const collection = prop("collection")
-        const value = computed("hasSelectedItems") ? collection.sort(context.get("value"))[0] : collection.lastValue
-        context.set("highlightedValue", value)
-      },
 
-      highlightFirstSelectedItem({ context, prop, computed }) {
-        if (!computed("hasSelectedItems")) return
-        const value = prop("collection").sort(context.get("value"))[0]
-        context.set("highlightedValue", value)
+        if (event.shiftKey && computed("multiple") && event.anchorValue) {
+          const next = selection.extendSelection(collection, event.anchorValue, event.value)
+          context.set("value", Array.from(next))
+          return
+        }
+
+        if (prop("selectOnHighlight")) {
+          const next = selection.replaceSelection(collection, event.value)
+          context.set("value", Array.from(next))
+        }
       },
 
       highlightItem({ context, event }) {
@@ -587,18 +269,17 @@ export const machine = createMachine<SelectSchema>({
         context.set("highlightedValue", null)
       },
 
-      selectItem({ context, prop, event }) {
-        const nullable = prop("deselectable") && !prop("multiple") && context.get("value").includes(event.value)
-        const value = nullable ? null : event.value
-        context.set("value", (prev) => {
-          if (value == null) return []
-          if (prop("multiple")) return addOrRemove(prev, value)
-          return [value]
-        })
+      selectItem({ context, prop, event, computed }) {
+        const collection = prop("collection")
+        const selection = computed("selection")
+        const value = selection.select(collection, event.value)
+        context.set("value", Array.from(value))
       },
 
-      clearItem({ context, event }) {
-        context.set("value", (prev) => prev.filter((v) => v !== event.value))
+      clearItem({ context, event, computed }) {
+        const selection = computed("selection")
+        const value = selection.deselect(event.value)
+        context.set("value", Array.from(value))
       },
 
       setSelectedItems({ context, event }) {
@@ -607,67 +288,6 @@ export const machine = createMachine<SelectSchema>({
 
       clearSelectedItems({ context }) {
         context.set("value", [])
-      },
-
-      selectPreviousItem({ context, prop }) {
-        const [firstItem] = context.get("value")
-        const value = prop("collection").getPreviousValue(firstItem)
-        if (value) context.set("value", [value])
-      },
-
-      selectNextItem({ context, prop }) {
-        const [firstItem] = context.get("value")
-        const value = prop("collection").getNextValue(firstItem)
-        if (value) context.set("value", [value])
-      },
-
-      selectFirstItem({ context, prop }) {
-        const value = prop("collection").firstValue
-        if (value) context.set("value", [value])
-      },
-
-      selectLastItem({ context, prop }) {
-        const value = prop("collection").lastValue
-        if (value) context.set("value", [value])
-      },
-
-      selectMatchingItem({ context, prop, event, refs }) {
-        const value = prop("collection").search(event.key, {
-          state: refs.get("typeahead"),
-          currentValue: context.get("value")[0],
-        })
-        if (value == null) return
-        context.set("value", [value])
-      },
-
-      scrollContentToTop({ prop, scope }) {
-        if (prop("scrollToIndexFn")) {
-          prop("scrollToIndexFn")?.({ index: 0, immediate: true })
-        } else {
-          dom.getContentEl(scope)?.scrollTo(0, 0)
-        }
-      },
-
-      invokeOnOpen({ prop }) {
-        prop("onOpenChange")?.({ open: true })
-      },
-
-      invokeOnClose({ prop }) {
-        prop("onOpenChange")?.({ open: false })
-      },
-
-      syncSelectElement({ context, prop, scope }) {
-        const selectEl = dom.getHiddenSelectEl(scope)
-        if (!selectEl) return
-
-        if (context.get("value").length === 0 && !prop("multiple")) {
-          selectEl.selectedIndex = -1
-          return
-        }
-
-        for (const option of selectEl.options) {
-          option.selected = context.get("value").includes(option.value)
-        }
       },
 
       syncCollection({ context, prop }) {
@@ -704,14 +324,24 @@ export const machine = createMachine<SelectSchema>({
         context.set("highlightedItem", highlightedItem)
       },
 
-      dispatchChangeEvent({ scope }) {
-        queueMicrotask(() => {
-          const node = dom.getHiddenSelectEl(scope)
-          if (!node) return
-          const win = scope.getWin()
-          const changeEvent = new win.Event("change", { bubbles: true, composed: true })
-          node.dispatchEvent(changeEvent)
-        })
+      scrollIntoView({ context, prop, scope }) {
+        const highlightedValue = context.get("highlightedValue")
+        if (highlightedValue == null) return
+
+        const modality = getInteractionModality()
+        if (modality !== "keyboard") return
+
+        const itemEl = dom.getItemEl(scope, highlightedValue)
+        const contentEl = dom.getContentEl(scope)
+
+        const scrollToIndexFn = prop("scrollToIndexFn")
+        if (scrollToIndexFn) {
+          const highlightedIndex = prop("collection").indexOf(highlightedValue)
+          scrollToIndexFn?.({ index: highlightedIndex, immediate: false })
+          return
+        }
+
+        scrollIntoView(itemEl, { rootEl: contentEl, block: "nearest" })
       },
     },
   },

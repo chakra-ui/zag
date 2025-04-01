@@ -45,7 +45,7 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
   function getItemState(props: ItemProps): ItemState {
     const _disabled = collection.getItemDisabled(props.item)
     const value = collection.getItemValue(props.item)
-    ensure(value, `[zag-js] No value found for item ${JSON.stringify(props.item)}`)
+    ensure(value, () => `[zag-js] No value found for item ${JSON.stringify(props.item)}`)
     return {
       value,
       disabled: Boolean(disabled || _disabled),
