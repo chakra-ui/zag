@@ -131,6 +131,7 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
         },
         onMouseDown(event) {
           event.preventDefault()
+          dom.getContentEl(scope)?.focus()
         },
         onClick(event) {
           if (event.defaultPrevented) return
