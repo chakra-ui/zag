@@ -198,7 +198,7 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
         "data-activedescendant": ariaActiveDescendant,
         "aria-activedescendant": ariaActiveDescendant,
         "data-orientation": prop("orientation"),
-        "aria-multiselectable": prop("selectionMode") === "multiple" ? true : undefined,
+        "aria-multiselectable": prop("multiple") ? true : undefined,
         "aria-labelledby": dom.getLabelId(scope),
         tabIndex: 0,
         "data-layout": layout,
@@ -277,13 +277,13 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
               send({ type: "ITEM.CLICK", value: highlightedValue })
             },
             a(event) {
-              if (isCtrlOrMetaKey(event) && prop("selectionMode") === "multiple" && !prop("disallowSelectAll")) {
+              if (isCtrlOrMetaKey(event) && prop("multiple") && !prop("disallowSelectAll")) {
                 event.preventDefault()
                 send({ type: "VALUE.SET", value: collection.getValues() })
               }
             },
             Space(event) {
-              if (isTypingAhead) {
+              if (isTypingAhead && prop("typeahead")) {
                 send({ type: "CONTENT.TYPEAHEAD", key: event.key })
               } else {
                 keyMap.Enter?.(event)
@@ -304,7 +304,7 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
             return
           }
 
-          if (getByTypeahead.isValidEvent(event)) {
+          if (getByTypeahead.isValidEvent(event) && prop("typeahead")) {
             send({ type: "CONTENT.TYPEAHEAD", key: event.key })
             event.preventDefault()
           }

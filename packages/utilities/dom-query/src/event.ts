@@ -52,7 +52,7 @@ export function isDownloadingEvent(event: Pick<MouseEvent, "altKey" | "currentTa
 }
 
 export function isComposingEvent(event: any) {
-  return getNativeEvent(event).isComposing
+  return getNativeEvent(event).isComposing || event.keyCode === 229
 }
 
 export function isKeyboardClick(e: Pick<MouseEvent, "detail" | "clientX" | "clientY">) {

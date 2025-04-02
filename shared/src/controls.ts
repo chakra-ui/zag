@@ -174,9 +174,9 @@ export const selectControls = defineControls({
 })
 
 export const listboxControls = defineControls({
-  selectionMode: { type: "select", options: ["single", "multiple"] as const, defaultValue: "single" },
   selectionBehavior: { type: "select", options: ["toggle", "replace"] as const, defaultValue: "toggle" },
   disabled: { type: "boolean", defaultValue: false },
+  multiple: { type: "boolean", defaultValue: false },
   loopFocus: { type: "boolean", defaultValue: false },
 })
 

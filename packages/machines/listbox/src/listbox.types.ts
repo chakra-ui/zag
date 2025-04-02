@@ -1,11 +1,4 @@
-import type {
-  CollectionItem,
-  GridCollection,
-  ListCollection,
-  Selection,
-  SelectionBehavior,
-  SelectionMode,
-} from "@zag-js/collection"
+import type { CollectionItem, GridCollection, ListCollection, Selection, SelectionBehavior } from "@zag-js/collection"
 import type { EventObject, Machine, Service } from "@zag-js/core"
 import type { TypeaheadState } from "@zag-js/dom-query"
 import type { CommonProperties, DirectionProperty, OrientationProperty, PropTypes, RequiredBy } from "@zag-js/types"
@@ -102,10 +95,9 @@ export interface ListboxProps<T extends CollectionItem = CollectionItem>
    */
   selectionBehavior?: SelectionBehavior | undefined
   /**
-   * The type of selection that is allowed in the listbox.
-   * @default "single"
+   * Whether the listbox allows multiple selection
    */
-  selectionMode?: SelectionMode | undefined
+  multiple?: boolean | undefined
   /**
    * Function to scroll to a specific index
    */
@@ -118,9 +110,13 @@ export interface ListboxProps<T extends CollectionItem = CollectionItem>
    * Whether to disallow empty selection
    */
   disallowEmptySelection?: boolean | undefined
+  /**
+   * Whether to enable typeahead on the listbox
+   */
+  typeahead?: boolean | undefined
 }
 
-type PropsWithDefault = "collection" | "selectionBehavior" | "selectionMode"
+type PropsWithDefault = "collection" | "selectionBehavior" | "multiple"
 
 export interface ListboxSchema<T extends CollectionItem = CollectionItem> {
   state: "idle"
@@ -137,7 +133,6 @@ export interface ListboxSchema<T extends CollectionItem = CollectionItem> {
     isTypingAhead: boolean
     isInteractive: boolean
     selection: Selection
-    multiple: boolean
   }
   refs: {
     typeahead: TypeaheadState

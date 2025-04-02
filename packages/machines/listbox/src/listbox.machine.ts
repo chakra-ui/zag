@@ -15,7 +15,8 @@ export const machine = createMachine<ListboxSchema>({
       composite: true,
       defaultValue: [],
       selectionBehavior: "toggle",
-      selectionMode: "single",
+      multiple: false,
+      typeahead: true,
       collection: collection.empty(),
       orientation: "vertical",
       ...props,
@@ -74,10 +75,9 @@ export const machine = createMachine<ListboxSchema>({
     hasSelectedItems: ({ context }) => context.get("value").length > 0,
     isTypingAhead: ({ refs }) => refs.get("typeahead").keysSoFar !== "",
     isInteractive: ({ prop }) => !prop("disabled"),
-    multiple: ({ prop }) => prop("selectionMode") === "multiple",
     selection: ({ context, prop }) => {
       const selection = new Selection(context.get("value"))
-      selection.selectionMode = prop("selectionMode")
+      selection.selectionMode = prop("multiple") ? "multiple" : "single"
       selection.selectionBehavior = prop("selectionBehavior")
       return selection
     },
@@ -222,7 +222,7 @@ export const machine = createMachine<ListboxSchema>({
         const selection = computed("selection")
         const collection = prop("collection")
 
-        if (event.shiftKey && computed("multiple") && event.anchorValue) {
+        if (event.shiftKey && prop("multiple") && event.anchorValue) {
           const next = selection.extendSelection(collection, event.anchorValue, value)
           context.set("value", Array.from(next))
         } else {
@@ -235,7 +235,7 @@ export const machine = createMachine<ListboxSchema>({
         const selection = computed("selection")
         const collection = prop("collection")
 
-        if (event.shiftKey && computed("multiple") && event.anchorValue) {
+        if (event.shiftKey && prop("multiple") && event.anchorValue) {
           const next = selection.extendSelection(collection, event.anchorValue, event.value)
           context.set("value", Array.from(next))
           return
