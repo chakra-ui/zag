@@ -2,6 +2,7 @@ import { createAnatomy } from "@zag-js/anatomy"
 
 export const anatomy = createAnatomy("listbox").parts(
   "label",
+  "input",
   "item",
   "itemText",
   "itemIndicator",

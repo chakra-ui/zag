@@ -16,6 +16,7 @@ export type {
   ScrollToIndexDetails,
   ListboxService as Service,
   ValueChangeDetails,
+  SelectionDetails,
 } from "./listbox.types"
 
 export type { CollectionItem, CollectionOptions, GridCollection, ListCollection } from "@zag-js/collection"

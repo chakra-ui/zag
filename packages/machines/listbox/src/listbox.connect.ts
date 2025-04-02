@@ -6,6 +6,8 @@ import {
   getByTypeahead,
   getEventKey,
   getEventTarget,
+  getNativeEvent,
+  isComposingEvent,
   isCtrlOrMetaKey,
   isEditableElement,
   isSelfTarget,
@@ -65,6 +67,9 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
       send({ type: "VALUE.SET", value })
     },
     selectAll() {
+      if (!computed("multiple")) {
+        throw new Error("[zag-js] Cannot select all items in a single-select listbox")
+      }
       send({ type: "VALUE.SET", value: collection.getValues() })
     },
     highlightValue(value) {
@@ -87,6 +92,60 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
         id: dom.getRootId(scope),
         "data-orientation": prop("orientation"),
         "data-disabled": dataAttr(disabled),
+      })
+    },
+
+    getInputProps(props = {}) {
+      return normalize.input({
+        ...parts.input.attrs,
+        dir: prop("dir"),
+        disabled,
+        "data-disabled": dataAttr(disabled),
+        autoComplete: "off",
+        autoCorrect: "off",
+        "aria-haspopup": "listbox",
+        "aria-controls": dom.getContentId(scope),
+        "aria-autocomplete": "list",
+        "aria-activedescendant": ariaActiveDescendant,
+        spellCheck: false,
+        enterKeyHint: "go",
+        onBlur(event) {
+          if (event.defaultPrevented) return
+          send({ type: "HIGHLIGHTED_VALUE.SET", value: null })
+        },
+        onInput(event) {
+          if (!props.autoHighlight) return
+          const node = event.currentTarget
+          queueMicrotask(() => {
+            if (!node.isConnected) return
+            send({
+              type: "HIGHLIGHTED_VALUE.SET",
+              value: node.value ? prop("collection").firstValue : null,
+            })
+          })
+        },
+        onKeyDown(event) {
+          if (event.defaultPrevented) return
+          if (isComposingEvent(event)) return
+          const nativeEvent = getNativeEvent(event)
+          switch (nativeEvent.key) {
+            case "ArrowDown":
+            case "ArrowUp":
+            case "Home":
+            case "End":
+              event.preventDefault()
+              const win = scope.getWin()
+              const keyboardEvent = new win.KeyboardEvent(nativeEvent.type, nativeEvent)
+              dom.getContentEl(scope)?.dispatchEvent(keyboardEvent)
+              break
+            case "Enter":
+              event.preventDefault()
+              send({ type: "ITEM.CLICK", value: highlightedValue })
+              break
+            default:
+              break
+          }
+        },
       })
     },
 
@@ -198,7 +257,7 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
         "data-activedescendant": ariaActiveDescendant,
         "aria-activedescendant": ariaActiveDescendant,
         "data-orientation": prop("orientation"),
-        "aria-multiselectable": prop("multiple") ? true : undefined,
+        "aria-multiselectable": computed("multiple") ? true : undefined,
         "aria-labelledby": dom.getLabelId(scope),
         tabIndex: 0,
         "data-layout": layout,
@@ -277,7 +336,7 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
               send({ type: "ITEM.CLICK", value: highlightedValue })
             },
             a(event) {
-              if (isCtrlOrMetaKey(event) && prop("multiple") && !prop("disallowSelectAll")) {
+              if (isCtrlOrMetaKey(event) && computed("multiple") && !prop("disallowSelectAll")) {
                 event.preventDefault()
                 send({ type: "VALUE.SET", value: collection.getValues() })
               }

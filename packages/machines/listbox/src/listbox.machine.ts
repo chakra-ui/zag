@@ -6,7 +6,7 @@ import { getInteractionModality, trackFocusVisible as trackFocusVisibleFn } from
 import { isEqual } from "@zag-js/utils"
 import { collection } from "./listbox.collection"
 import * as dom from "./listbox.dom"
-import type { ListboxSchema } from "./listbox.types"
+import type { ListboxSchema, SelectionDetails } from "./listbox.types"
 
 export const machine = createMachine<ListboxSchema>({
   props({ props }) {
@@ -14,11 +14,11 @@ export const machine = createMachine<ListboxSchema>({
       loopFocus: false,
       composite: true,
       defaultValue: [],
-      selectionBehavior: "toggle",
       multiple: false,
       typeahead: true,
       collection: collection.empty(),
       orientation: "vertical",
+      selectionMode: "single",
       ...props,
     }
   },
@@ -77,10 +77,11 @@ export const machine = createMachine<ListboxSchema>({
     isInteractive: ({ prop }) => !prop("disabled"),
     selection: ({ context, prop }) => {
       const selection = new Selection(context.get("value"))
-      selection.selectionMode = prop("multiple") ? "multiple" : "single"
-      selection.selectionBehavior = prop("selectionBehavior")
+      selection.selectionMode = prop("selectionMode")
+      selection.deselectable = !!prop("deselectable")
       return selection
     },
+    multiple: ({ prop }) => prop("selectionMode") === "multiple" || prop("selectionMode") === "extended",
   },
 
   initialState() {
@@ -142,7 +143,7 @@ export const machine = createMachine<ListboxSchema>({
           actions: ["clearHighlightedItem"],
         },
         NAVIGATE: {
-          actions: ["setHighlightedItem", "extendOrReplaceSelection"],
+          actions: ["setHighlightedItem", "selectWithKeyboard"],
         },
       },
     },
@@ -191,30 +192,6 @@ export const machine = createMachine<ListboxSchema>({
     },
 
     actions: {
-      highlightPreviousItem({ context, prop }) {
-        const highlightedValue = context.get("highlightedValue")
-        if (highlightedValue == null) return
-        const value = prop("collection").getPreviousValue(highlightedValue, 1, prop("loopFocus"))
-        context.set("highlightedValue", value)
-      },
-
-      highlightNextItem({ context, prop }) {
-        const highlightedValue = context.get("highlightedValue")
-        if (highlightedValue == null) return
-        const value = prop("collection").getNextValue(highlightedValue, 1, prop("loopFocus"))
-        context.set("highlightedValue", value)
-      },
-
-      highlightFirstItem({ context, prop }) {
-        const value = prop("collection").firstValue
-        context.set("highlightedValue", value)
-      },
-
-      highlightLastItem({ context, prop }) {
-        const value = prop("collection").lastValue
-        context.set("highlightedValue", value)
-      },
-
       selectHighlightedItem({ context, prop, event, computed }) {
         const value = event.value ?? context.get("highlightedValue")
         if (value == null) return
@@ -222,27 +199,31 @@ export const machine = createMachine<ListboxSchema>({
         const selection = computed("selection")
         const collection = prop("collection")
 
-        if (event.shiftKey && prop("multiple") && event.anchorValue) {
+        if (event.shiftKey && computed("multiple") && event.anchorValue) {
           const next = selection.extendSelection(collection, event.anchorValue, value)
+          invokeOnSelect(selection, next, prop("onSelect"))
           context.set("value", Array.from(next))
         } else {
           const next = selection.select(collection, value, event.metaKey)
+          invokeOnSelect(selection, next, prop("onSelect"))
           context.set("value", Array.from(next))
         }
       },
 
-      extendOrReplaceSelection({ context, prop, event, computed }) {
+      selectWithKeyboard({ context, prop, event, computed }) {
         const selection = computed("selection")
         const collection = prop("collection")
 
-        if (event.shiftKey && prop("multiple") && event.anchorValue) {
+        if (event.shiftKey && computed("multiple") && event.anchorValue) {
           const next = selection.extendSelection(collection, event.anchorValue, event.value)
+          invokeOnSelect(selection, next, prop("onSelect"))
           context.set("value", Array.from(next))
           return
         }
 
         if (prop("selectOnHighlight")) {
           const next = selection.replaceSelection(collection, event.value)
+          invokeOnSelect(selection, next, prop("onSelect"))
           context.set("value", Array.from(next))
         }
       },
@@ -272,8 +253,11 @@ export const machine = createMachine<ListboxSchema>({
       selectItem({ context, prop, event, computed }) {
         const collection = prop("collection")
         const selection = computed("selection")
-        const value = selection.select(collection, event.value)
-        context.set("value", Array.from(value))
+
+        const next = selection.select(collection, event.value)
+        invokeOnSelect(selection, next, prop("onSelect"))
+
+        context.set("value", Array.from(next))
       },
 
       clearItem({ context, event, computed }) {
@@ -346,3 +330,10 @@ export const machine = createMachine<ListboxSchema>({
     },
   },
 })
+
+function invokeOnSelect(current: Set<string>, next: Set<string>, onSelect?: (details: SelectionDetails) => void) {
+  const added = next.difference(current)
+  for (const item of added) {
+    onSelect?.({ value: item })
+  }
+}

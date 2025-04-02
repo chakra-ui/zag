@@ -1,14 +1,19 @@
 import { isEqual } from "@zag-js/utils"
 import type { ListCollection } from "./list-collection"
 
-export type SelectionMode = "single" | "multiple" | "none"
-
-export type SelectionBehavior = "toggle" | "replace"
+/**
+ * The mode of the selection.
+ *
+ * - `none`: A user can't select items.
+ * - `single`: A user can select a single item.
+ * - `multiple`: The user can select multiple items without using modifier keys.
+ * - `extended`: The user can select multiple items by using modifier keys.
+ */
+export type SelectionMode = "single" | "multiple" | "none" | "extended"
 
 export class Selection extends Set<string> {
   selectionMode: SelectionMode = "single"
-  disallowEmptySelection = false
-  selectionBehavior: SelectionBehavior = "toggle"
+  deselectable = true
 
   constructor(keys: Iterable<string> = []) {
     super(keys)
@@ -21,8 +26,7 @@ export class Selection extends Set<string> {
 
   private sync = (other: Selection): Selection => {
     other.selectionMode = this.selectionMode
-    other.disallowEmptySelection = this.disallowEmptySelection
-    other.selectionBehavior = this.selectionBehavior
+    other.deselectable = this.deselectable
     return other
   }
 
@@ -150,7 +154,7 @@ export class Selection extends Set<string> {
 
   clearSelection = (): Selection => {
     const selection = this.copy()
-    if (!selection.disallowEmptySelection && selection.size > 0) {
+    if (selection.deselectable && selection.size > 0) {
       selection.clear()
     }
     return selection
@@ -162,12 +166,12 @@ export class Selection extends Set<string> {
     }
 
     if (this.selectionMode === "single") {
-      if (this.isSelected(key) && !this.disallowEmptySelection) {
+      if (this.isSelected(key) && this.deselectable) {
         return this.toggleSelection(collection, key)
       } else {
         return this.replaceSelection(collection, key)
       }
-    } else if (this.selectionBehavior === "toggle" || metaKey) {
+    } else if (this.selectionMode === "multiple" || metaKey) {
       return this.toggleSelection(collection, key)
     } else {
       return this.replaceSelection(collection, key)

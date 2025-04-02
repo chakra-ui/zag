@@ -1,4 +1,4 @@
-import type { CollectionItem, GridCollection, ListCollection, Selection, SelectionBehavior } from "@zag-js/collection"
+import type { CollectionItem, GridCollection, ListCollection, Selection, SelectionMode } from "@zag-js/collection"
 import type { EventObject, Machine, Service } from "@zag-js/core"
 import type { TypeaheadState } from "@zag-js/dom-query"
 import type { CommonProperties, DirectionProperty, OrientationProperty, PropTypes, RequiredBy } from "@zag-js/types"
@@ -21,6 +21,10 @@ export interface HighlightChangeDetails<T extends CollectionItem = CollectionIte
 export interface ScrollToIndexDetails {
   index: number
   immediate?: boolean | undefined
+}
+
+export interface SelectionDetails {
+  value: string
 }
 
 /* -----------------------------------------------------------------------------
@@ -91,13 +95,14 @@ export interface ListboxProps<T extends CollectionItem = CollectionItem>
   loopFocus?: boolean | undefined
   /**
    * How multiple selection should behave in the listbox.
-   * @default "toggle"
+   *
+   * - `single`: The user can select a single item.
+   * - `multiple`: The user can select multiple items without using modifier keys.
+   * - `extended`: The user can select multiple items by using modifier keys.
+   *
+   * @default "single"
    */
-  selectionBehavior?: SelectionBehavior | undefined
-  /**
-   * Whether the listbox allows multiple selection
-   */
-  multiple?: boolean | undefined
+  selectionMode?: SelectionMode | undefined
   /**
    * Function to scroll to a specific index
    */
@@ -109,14 +114,18 @@ export interface ListboxProps<T extends CollectionItem = CollectionItem>
   /**
    * Whether to disallow empty selection
    */
-  disallowEmptySelection?: boolean | undefined
+  deselectable?: boolean | undefined
   /**
    * Whether to enable typeahead on the listbox
    */
   typeahead?: boolean | undefined
+  /**
+   * Function called when an item is selected
+   */
+  onSelect?: ((details: SelectionDetails) => void) | undefined
 }
 
-type PropsWithDefault = "collection" | "selectionBehavior" | "multiple"
+type PropsWithDefault = "collection" | "selectionMode"
 
 export interface ListboxSchema<T extends CollectionItem = CollectionItem> {
   state: "idle"
@@ -133,6 +142,7 @@ export interface ListboxSchema<T extends CollectionItem = CollectionItem> {
     isTypingAhead: boolean
     isInteractive: boolean
     selection: Selection
+    multiple: boolean
   }
   refs: {
     typeahead: TypeaheadState
@@ -189,6 +199,14 @@ export interface ItemGroupLabelProps {
   htmlFor: string
 }
 
+export interface InputProps {
+  /**
+   * Whether to automatically highlight the item when typing
+   * @default false
+   */
+  autoHighlight?: boolean | undefined
+}
+
 export interface ListboxApi<T extends PropTypes = PropTypes, V extends CollectionItem = CollectionItem> {
   /**
    * Whether the select value is empty
@@ -227,7 +245,10 @@ export interface ListboxApi<T extends PropTypes = PropTypes, V extends Collectio
    */
   selectValue(value: string): void
   /**
-   * Function to select all values
+   * Function to select all values.
+   *
+   * **Note**: This should only be called when the selectionMode is `multiple` or `extended`.
+   * Otherwise, an exception will be thrown.
    */
   selectAll(): void
   /**
@@ -252,6 +273,7 @@ export interface ListboxApi<T extends PropTypes = PropTypes, V extends Collectio
    */
   disabled: boolean
 
+  getInputProps(props?: InputProps): T["input"]
   getRootProps(): T["element"]
   getLabelProps(): T["label"]
   getValueTextProps(): T["element"]

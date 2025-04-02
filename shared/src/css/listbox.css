@@ -23,6 +23,7 @@
   overflow-y: auto;
   position: relative;
   overscroll-behavior: contain;
+  scroll-padding: 4px;
 
   &[data-layout="grid"] {
     display: grid;

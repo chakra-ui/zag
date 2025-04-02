@@ -14,4 +14,4 @@ export type {
   FilePathTreeNode,
   TreeSkipFn,
 } from "./types"
-export { Selection, type SelectionMode, type SelectionBehavior } from "./selection"
+export { Selection, type SelectionMode } from "./selection"
