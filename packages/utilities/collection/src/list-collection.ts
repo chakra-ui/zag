@@ -28,6 +28,10 @@ export class ListCollection<T extends CollectionItem = CollectionItem> {
     this.items = [...options.items] as T[]
   }
 
+  copy = (items?: T[]) => {
+    return new ListCollection({ ...this.options, items: items ?? [...this.items] })
+  }
+
   isEqual = (other: ListCollection<T>) => {
     return isEqual(this.items, other.items)
   }
@@ -35,8 +39,8 @@ export class ListCollection<T extends CollectionItem = CollectionItem> {
   /**
    * Function to update the collection items
    */
-  setItems = (items: T[] | readonly T[]) => {
-    this.items = Array.from(items) as T[]
+  setItems = (items: T[]) => {
+    return this.copy(items)
   }
 
   /**
@@ -254,23 +258,61 @@ export class ListCollection<T extends CollectionItem = CollectionItem> {
     yield* this.items
   }
 
-  insertBefore = (value: string, item: T) => {
-    const index = this.indexOf(value)
-    if (index === -1) return
-    this.items.splice(index, 0, item)
+  update = (value: string, item: T) => {
+    let index = this.items.findIndex((item) => this.getItemValue(item) === value)
+    if (index === -1) return this
+    return this.copy([...this.items.slice(0, index), item, ...this.items.slice(index + 1)])
   }
 
-  insertAfter = (value: string, item: T) => {
-    const index = this.indexOf(value)
-    if (index === -1) return
-    this.items.splice(index + 1, 0, item)
+  insert = (index: number, ...items: T[]) => {
+    return this.copy(insert(this.items, index, ...items))
+  }
+
+  insertBefore = (value: string, ...items: T[]) => {
+    let toIndex = this.indexOf(value)
+    if (toIndex === -1) {
+      if (this.items.length === 0) toIndex = 0
+      else return this
+    }
+    return this.copy(insert(this.items, toIndex, ...items))
+  }
+
+  insertAfter = (value: string, ...items: T[]) => {
+    let toIndex = this.indexOf(value)
+    if (toIndex === -1) {
+      if (this.items.length === 0) toIndex = 0
+      else return this
+    }
+    return this.copy(insert(this.items, toIndex + 1, ...items))
+  }
+
+  prepend = (...items: T[]) => {
+    return this.copy(insert(this.items, 0, ...items))
+  }
+
+  append = (...items: T[]) => {
+    return this.copy(insert(this.items, this.items.length, ...items))
+  }
+
+  remove = (...items: T[]) => {
+    const values = items.map((item) => this.getItemValue(item)!)
+    return this.copy(
+      this.items.filter((item) => {
+        const value = this.getItemValue(item)
+        if (value == null) return false
+        return !values.includes(value)
+      }),
+    )
+  }
+
+  move = (value: string, toIndex: number) => {
+    const fromIndex = this.indexOf(value)
+    if (fromIndex === -1) return this
+    return this.copy(move(this.items, [fromIndex], toIndex))
   }
 
   reorder = (fromIndex: number, toIndex: number) => {
-    if (fromIndex === -1 || toIndex === -1) return
-    if (fromIndex === toIndex) return
-    const [removed] = this.items.splice(fromIndex, 1)
-    this.items.splice(toIndex, 0, removed)
+    return this.copy(move(this.items, [fromIndex], toIndex))
   }
 
   compareValueOrder = (a: string, b: string) => {
@@ -334,4 +376,18 @@ const wrap = <T>(v: T[] | readonly T[], idx: number) => {
 
 export function isListCollection(v: unknown): v is ListCollection<any> {
   return v instanceof ListCollection
+}
+
+function insert<T>(items: T[], index: number, ...values: T[]): T[] {
+  return [...items.slice(0, index), ...values, ...items.slice(index)]
+}
+
+function move<T>(items: T[], indices: number[], toIndex: number): T[] {
+  indices = [...indices].sort((a, b) => a - b)
+  const itemsToMove = indices.map((i) => items[i])
+  for (let i = indices.length - 1; i >= 0; i--) {
+    items = [...items.slice(0, indices[i]), ...items.slice(indices[i] + 1)]
+  }
+  toIndex = Math.max(0, toIndex - indices.filter((i) => i < toIndex).length)
+  return [...items.slice(0, toIndex), ...itemsToMove, ...items.slice(toIndex)]
 }
