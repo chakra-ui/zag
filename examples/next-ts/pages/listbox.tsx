@@ -14,8 +14,10 @@ interface Item {
 export default function Page() {
   const controls = useControls(listboxControls)
 
+  const collection = listbox.collection({ items: selectData })
+
   const service = useMachine(listbox.machine as listbox.Machine<Item>, {
-    collection: listbox.collection({ items: selectData }),
+    collection,
     id: useId(),
     ...controls.context,
   })

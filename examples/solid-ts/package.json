@@ -47,6 +47,7 @@
     "@zag-js/hover-card": "workspace:*",
     "@zag-js/i18n-utils": "workspace:*",
     "@zag-js/interact-outside": "workspace:*",
+    "@zag-js/listbox": "workspace:*",
     "@zag-js/live-region": "workspace:*",
     "@zag-js/menu": "workspace:*",
     "@zag-js/navigation-menu": "workspace:*",
