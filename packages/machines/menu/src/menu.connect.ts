@@ -450,9 +450,9 @@ export function connect<T extends PropTypes>(service: Service<MenuSchema>, norma
 
     getItemGroupLabelProps(props) {
       return normalize.element({
+        ...parts.itemGroupLabel.attrs,
         id: dom.getGroupLabelId(scope, props.htmlFor),
         dir: prop("dir"),
-        ...parts.itemGroupLabel.attrs,
       })
     },
 

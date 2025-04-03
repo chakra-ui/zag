@@ -315,8 +315,8 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
       return normalize.element({
         ...parts.itemGroupLabel.attrs,
         id: dom.getItemGroupLabelId(scope, htmlFor),
-        role: "group",
         dir: prop("dir"),
+        role: "presentation",
       })
     },
 
@@ -327,6 +327,7 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
         "data-disabled": dataAttr(disabled),
         id: dom.getItemGroupId(scope, id),
         "aria-labelledby": dom.getItemGroupLabelId(scope, id),
+        role: "group",
         dir: prop("dir"),
       })
     },

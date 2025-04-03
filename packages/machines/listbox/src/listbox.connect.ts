@@ -219,8 +219,8 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
     getItemIndicatorProps(props) {
       const itemState = getItemState(props)
       return normalize.element({
-        "aria-hidden": true,
         ...parts.itemIndicator.attrs,
+        "aria-hidden": true,
         "data-state": itemState.selected ? "checked" : "unchecked",
         hidden: !itemState.selected,
       })
@@ -231,8 +231,8 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
       return normalize.element({
         ...parts.itemGroupLabel.attrs,
         id: dom.getItemGroupLabelId(scope, htmlFor),
-        role: "group",
         dir: prop("dir"),
+        role: "presentation",
       })
     },
 
@@ -244,6 +244,7 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
         "data-orientation": prop("orientation"),
         id: dom.getItemGroupId(scope, id),
         "aria-labelledby": dom.getItemGroupLabelId(scope, id),
+        role: "group",
         dir: prop("dir"),
       })
     },
