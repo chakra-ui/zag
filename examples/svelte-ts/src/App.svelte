@@ -53,6 +53,8 @@
   import Tooltip from "./routes/tooltip.svelte"
   import Tour from "./routes/tour.svelte"
   import TreeView from "./routes/tree-view.svelte"
+  import Listbox from "./routes/listbox.svelte"
+  import ListboxGrid from "./routes/listbox-grid.svelte"
 
   const sortedRoutes = routesData.sort((a, b) => a.label.localeCompare(b.label))
 
@@ -108,6 +110,8 @@
     { path: "/presence", component: Presence },
     { path: "/popper", component: Popper },
     { path: "/steps", component: Steps },
+    { path: "/listbox", component: Listbox },
+    { path: "/listbox-grid", component: ListboxGrid },
   ]
 </script>
 

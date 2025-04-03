@@ -1286,6 +1286,9 @@ importers:
       '@zag-js/interact-outside':
         specifier: workspace:*
         version: link:../../packages/utilities/interact-outside
+      '@zag-js/listbox':
+        specifier: workspace:*
+        version: link:../../packages/machines/listbox
       '@zag-js/live-region':
         specifier: workspace:*
         version: link:../../packages/utilities/live-region
