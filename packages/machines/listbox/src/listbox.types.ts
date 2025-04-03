@@ -49,11 +49,11 @@ export interface ListboxProps<T extends CollectionItem = CollectionItem>
    */
   collection: ListCollection<T> | GridCollection<T>
   /**
-   * The ids of the elements in the select. Useful for composition.
+   * The ids of the elements in the listbox. Useful for composition.
    */
   ids?: ElementIds | undefined
   /**
-   * Whether the select is disabled
+   * Whether the listbox is disabled
    */
   disabled?: boolean | undefined
   /**
@@ -73,8 +73,8 @@ export interface ListboxProps<T extends CollectionItem = CollectionItem>
    */
   value?: string[] | undefined
   /**
-   * The initial default value of the select when rendered.
-   * Use when you don't need to control the value of the select.
+   * The initial default value of the listbox when rendered.
+   * Use when you don't need to control the value of the listbox.
    *
    * @default []
    */
@@ -85,7 +85,7 @@ export interface ListboxProps<T extends CollectionItem = CollectionItem>
   highlightedValue?: string | null
   /**
    * The initial value of the highlighted item when opened.
-   * Use when you don't need to control the highlighted value of the select.
+   * Use when you don't need to control the highlighted value of the listbox.
    */
   defaultHighlightedValue?: string | null | undefined
   /**

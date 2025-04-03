@@ -15,8 +15,8 @@ export class Selection extends Set<string> {
   selectionMode: SelectionMode = "single"
   deselectable = true
 
-  constructor(keys: Iterable<string> = []) {
-    super(keys)
+  constructor(values: Iterable<string> = []) {
+    super(values)
   }
 
   copy = (): Selection => {
@@ -34,50 +34,49 @@ export class Selection extends Set<string> {
     return this.size === 0
   }
 
-  isSelected = (key: string | null): boolean => {
-    if (this.selectionMode === "none" || key == null) {
+  isSelected = (value: string | null): boolean => {
+    if (this.selectionMode === "none" || value == null) {
       return false
     }
-    return this.has(key)
+    return this.has(value)
   }
 
-  canSelect = (collection: ListCollection, key: string): boolean => {
-    return this.selectionMode !== "none" || !collection.getItemDisabled(collection.find(key))
+  canSelect = (collection: ListCollection, value: string): boolean => {
+    return this.selectionMode !== "none" || !collection.getItemDisabled(collection.find(value))
   }
 
-  firstSelectedKey = (collection: ListCollection): string | null => {
-    let firstKey: string | null = null
-    for (let key of this) {
-      if (!firstKey || collection.compareValueOrder(key, firstKey) < 0) {
-        firstKey = key
+  firstSelectedValue = (collection: ListCollection): string | null => {
+    let firstValue: string | null = null
+    for (let value of this) {
+      if (!firstValue || collection.compareValue(value, firstValue) < 0) {
+        firstValue = value
       }
     }
-
-    return firstKey
+    return firstValue
   }
 
-  lastSelectedKey = (collection: ListCollection): string | null => {
-    let lastKey: string | null = null
-    for (let key of this) {
-      if (!lastKey || collection.compareValueOrder(key, lastKey) > 0) {
-        lastKey = key
+  lastSelectedValue = (collection: ListCollection): string | null => {
+    let lastValue: string | null = null
+    for (let value of this) {
+      if (!lastValue || collection.compareValue(value, lastValue) > 0) {
+        lastValue = value
       }
     }
-    return lastKey
+    return lastValue
   }
 
-  extendSelection = (collection: ListCollection, anchorKey: string, targetKey: string): Selection => {
+  extendSelection = (collection: ListCollection, anchorValue: string, targetValue: string): Selection => {
     if (this.selectionMode === "none") {
       return this
     }
 
     if (this.selectionMode === "single") {
-      return this.replaceSelection(collection, targetKey)
+      return this.replaceSelection(collection, targetValue)
     }
 
     const selection = this.copy()
-    const range = collection.getValueRange(anchorKey, targetKey)
-    const forwards = collection.compareValueOrder(targetKey, anchorKey) >= 0
+    const range = collection.getValueRange(anchorValue, targetValue)
+    const forwards = collection.compareValue(targetValue, anchorValue) >= 0
 
     range.forEach((value) => {
       if (!this.canSelect(collection, value)) return
@@ -87,7 +86,7 @@ export class Selection extends Set<string> {
         selection.add(value)
       } else {
         // When extending backward, keep only values up to and including target
-        if (collection.compareValueOrder(value, targetKey) <= 0) {
+        if (collection.compareValue(value, targetValue) <= 0) {
           selection.add(value)
         } else {
           selection.delete(value)
@@ -98,51 +97,51 @@ export class Selection extends Set<string> {
     return selection
   }
 
-  toggleSelection = (collection: ListCollection, key: string): Selection => {
+  toggleSelection = (collection: ListCollection, value: string): Selection => {
     if (this.selectionMode === "none") {
       return this
     }
 
-    if (this.selectionMode === "single" && !this.isSelected(key)) {
-      return this.replaceSelection(collection, key)
+    if (this.selectionMode === "single" && !this.isSelected(value)) {
+      return this.replaceSelection(collection, value)
     }
 
     const selection = this.copy()
-    if (selection.has(key)) {
-      selection.delete(key)
-    } else if (selection.canSelect(collection, key)) {
-      selection.add(key)
+    if (selection.has(value)) {
+      selection.delete(value)
+    } else if (selection.canSelect(collection, value)) {
+      selection.add(value)
     }
 
     return selection
   }
 
-  replaceSelection = (collection: ListCollection, key: string | null): Selection => {
+  replaceSelection = (collection: ListCollection, value: string | null): Selection => {
     if (this.selectionMode === "none") {
       return this
     }
 
-    if (key == null) {
+    if (value == null) {
       return this
     }
 
-    if (!this.canSelect(collection, key)) {
+    if (!this.canSelect(collection, value)) {
       return this
     }
 
-    const selection = new Selection([key])
+    const selection = new Selection([value])
     return this.sync(selection)
   }
 
-  setSelection = (keys: Iterable<string>): Selection => {
+  setSelection = (values: Iterable<string>): Selection => {
     if (this.selectionMode === "none") {
       return this
     }
 
     let selection = new Selection()
-    for (let key of keys) {
-      if (key != null) {
-        selection.add(key)
+    for (let value of values) {
+      if (value != null) {
+        selection.add(value)
         if (this.selectionMode === "single") {
           break
         }
@@ -160,27 +159,27 @@ export class Selection extends Set<string> {
     return selection
   }
 
-  select = (collection: ListCollection, key: string, metaKey?: boolean): Selection => {
+  select = (collection: ListCollection, value: string, forceToggle?: boolean): Selection => {
     if (this.selectionMode === "none") {
       return this
     }
 
     if (this.selectionMode === "single") {
-      if (this.isSelected(key) && this.deselectable) {
-        return this.toggleSelection(collection, key)
+      if (this.isSelected(value) && this.deselectable) {
+        return this.toggleSelection(collection, value)
       } else {
-        return this.replaceSelection(collection, key)
+        return this.replaceSelection(collection, value)
       }
-    } else if (this.selectionMode === "multiple" || metaKey) {
-      return this.toggleSelection(collection, key)
+    } else if (this.selectionMode === "multiple" || forceToggle) {
+      return this.toggleSelection(collection, value)
     } else {
-      return this.replaceSelection(collection, key)
+      return this.replaceSelection(collection, value)
     }
   }
 
-  deselect = (key: string): Selection => {
+  deselect = (value: string): Selection => {
     const selection = this.copy()
-    selection.delete(key)
+    selection.delete(value)
     return selection
   }
 

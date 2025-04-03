@@ -19,4 +19,10 @@ export type {
   SelectionDetails,
 } from "./listbox.types"
 
-export type { CollectionItem, CollectionOptions, GridCollection, ListCollection } from "@zag-js/collection"
+export type {
+  CollectionItem,
+  CollectionOptions,
+  GridCollection,
+  GridCollectionOptions,
+  ListCollection,
+} from "@zag-js/collection"

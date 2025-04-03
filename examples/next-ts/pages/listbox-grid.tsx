@@ -14,11 +14,13 @@ interface Item {
 export default function Page() {
   const controls = useControls(listboxControls)
 
+  const collection = listbox.gridCollection({
+    items: selectData,
+    columnCount: 3,
+  })
+
   const service = useMachine(listbox.machine as listbox.Machine<Item>, {
-    collection: listbox.gridCollection({
-      items: selectData,
-      columnCount: 3,
-    }),
+    collection,
     id: useId(),
     ...controls.context,
   })
@@ -31,7 +33,7 @@ export default function Page() {
         <div {...api.getRootProps()}>
           <label {...api.getLabelProps()}>Label</label>
           <ul {...api.getContentProps()}>
-            {selectData.map((item) => (
+            {collection.items.map((item) => (
               <li key={item.value} {...api.getItemProps({ item })}>
                 {item.label}
                 <span {...api.getItemIndicatorProps({ item })}>✓</span>

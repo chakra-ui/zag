@@ -317,7 +317,7 @@ export class ListCollection<T extends CollectionItem = CollectionItem> {
     return this.copy(move(this.items, [fromIndex], toIndex))
   }
 
-  compareValueOrder = (a: string, b: string) => {
+  compareValue = (a: string, b: string) => {
     const indexA = this.indexOf(a)
     const indexB = this.indexOf(b)
     if (indexA < indexB) return -1
@@ -339,7 +339,7 @@ export class ListCollection<T extends CollectionItem = CollectionItem> {
 
   getValueRange = (from: string | null, to: string | null) => {
     if (from && to) {
-      if (this.compareValueOrder(from, to) <= 0) {
+      if (this.compareValue(from, to) <= 0) {
         return this.range(from, to)
       }
       return this.range(to, from)
