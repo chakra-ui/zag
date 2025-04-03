@@ -136,6 +136,7 @@ export interface ListboxSchema<T extends CollectionItem = CollectionItem> {
     highlightedItem: T | null
     selectedItems: T[]
     valueAsString: string
+    focused: boolean
   }
   computed: {
     hasSelectedItems: boolean

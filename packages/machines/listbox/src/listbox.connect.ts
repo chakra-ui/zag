@@ -45,7 +45,7 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
     return {
       value,
       disabled: Boolean(disabled || itemDisabled),
-      highlighted: highlightedValue === value,
+      highlighted: highlightedValue === value && context.get("focused"),
       selected: context.get("value").includes(value),
     }
   }
@@ -263,6 +263,12 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
         "data-layout": layout,
         style: {
           "--column-count": isGridCollection(collection) ? collection.columnCount : 1,
+        },
+        onFocus() {
+          send({ type: "CONTENT.FOCUS" })
+        },
+        onBlur() {
+          send({ type: "CONTENT.BLUR" })
         },
         onKeyDown(event) {
           if (!interactive) return

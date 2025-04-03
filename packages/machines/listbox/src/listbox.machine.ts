@@ -62,6 +62,10 @@ export const machine = createMachine<ListboxSchema>({
         const value = prop("value") ?? prop("defaultValue") ?? []
         return { defaultValue: prop("collection").stringifyMany(value) }
       }),
+
+      focused: bindable(() => ({
+        defaultValue: false,
+      })),
     }
   },
 
@@ -129,7 +133,10 @@ export const machine = createMachine<ListboxSchema>({
       effects: ["scrollToHighlightedItem"],
       on: {
         "CONTENT.FOCUS": {
-          actions: ["scrollIntoView"],
+          actions: ["setFocused"],
+        },
+        "CONTENT.BLUR": {
+          actions: ["clearFocused"],
         },
         "ITEM.CLICK": {
           actions: ["setHighlightedItem", "selectHighlightedItem"],
@@ -320,24 +327,12 @@ export const machine = createMachine<ListboxSchema>({
         context.set("highlightedItem", highlightedItem)
       },
 
-      scrollIntoView({ context, prop, scope }) {
-        const highlightedValue = context.get("highlightedValue")
-        if (highlightedValue == null) return
+      setFocused({ context }) {
+        context.set("focused", true)
+      },
 
-        const modality = getInteractionModality()
-        if (modality !== "keyboard") return
-
-        const itemEl = dom.getItemEl(scope, highlightedValue)
-        const contentEl = dom.getContentEl(scope)
-
-        const scrollToIndexFn = prop("scrollToIndexFn")
-        if (scrollToIndexFn) {
-          const highlightedIndex = prop("collection").indexOf(highlightedValue)
-          scrollToIndexFn?.({ index: highlightedIndex, immediate: false })
-          return
-        }
-
-        scrollIntoView(itemEl, { rootEl: contentEl, block: "nearest" })
+      clearFocused({ context }) {
+        context.set("focused", false)
       },
     },
   },
