@@ -294,8 +294,10 @@ export class ListCollection<T extends CollectionItem = CollectionItem> {
     return this.copy(insert(this.items, this.items.length, ...items))
   }
 
-  remove = (...items: T[]) => {
-    const values = items.map((item) => this.getItemValue(item)!)
+  remove = (...itemsOrValues: Array<T | string>) => {
+    const values = itemsOrValues.map((itemOrValue) =>
+      typeof itemOrValue === "string" ? itemOrValue : this.getItemValue(itemOrValue),
+    )
     return this.copy(
       this.items.filter((item) => {
         const value = this.getItemValue(item)

@@ -146,6 +146,7 @@ export interface ListboxSchema<T extends CollectionItem = CollectionItem> {
   }
   refs: {
     typeahead: TypeaheadState
+    prevCollection: ListCollection<T> | null
   }
   action: string
   guard: string

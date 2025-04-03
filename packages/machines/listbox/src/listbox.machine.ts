@@ -1,4 +1,4 @@
-import type { CollectionItem } from "@zag-js/collection"
+import type { CollectionItem, ListCollection } from "@zag-js/collection"
 import { Selection } from "@zag-js/collection"
 import { createMachine } from "@zag-js/core"
 import { getByTypeahead, observeAttributes, raf, scrollIntoView } from "@zag-js/dom-query"
@@ -65,9 +65,10 @@ export const machine = createMachine<ListboxSchema>({
     }
   },
 
-  refs() {
+  refs({ prop }) {
     return {
       typeahead: { ...getByTypeahead.defaultOptions },
+      prevCollection: prop("collection"),
     }
   },
 
@@ -274,7 +275,7 @@ export const machine = createMachine<ListboxSchema>({
         context.set("value", [])
       },
 
-      syncCollection({ context, prop }) {
+      syncCollection({ context, prop, refs }) {
         const collection = prop("collection")
 
         const highlightedItem = collection.find(context.get("highlightedValue"))
@@ -285,6 +286,17 @@ export const machine = createMachine<ListboxSchema>({
 
         const valueAsString = collection.stringifyItems(selectedItems)
         context.set("valueAsString", valueAsString)
+
+        const highlightedValue = syncHighlightedValue(
+          collection,
+          refs.get("prevCollection"),
+          context.get("highlightedValue"),
+        )
+
+        queueMicrotask(() => {
+          context.set("highlightedValue", highlightedValue)
+          refs.set("prevCollection", collection)
+        })
       },
 
       syncSelectedItems({ context, prop }) {
@@ -336,4 +348,48 @@ function invokeOnSelect(current: Set<string>, next: Set<string>, onSelect?: (det
   for (const item of added) {
     onSelect?.({ value: item })
   }
+}
+
+function syncHighlightedValue<T>(
+  collection: ListCollection<T>,
+  prevCollection: ListCollection<T> | null,
+  highlightedValue: string | null,
+) {
+  if (highlightedValue != null && !collection.find(highlightedValue) && prevCollection) {
+    const startIndex = prevCollection.indexOf(highlightedValue)
+
+    const prevItems = [...prevCollection.items]
+    const items = [...collection.items]
+
+    const diff: number = (prevItems?.length ?? 0) - (items?.length ?? 0)
+    let index = Math.min(
+      diff > 1 ? Math.max((startIndex ?? 0) - diff + 1, 0) : (startIndex ?? 0),
+      (items?.length ?? 0) - 1,
+    )
+
+    let newValue: string | null = null
+    let isReverseSearching = false
+
+    while (index >= 0) {
+      if (!collection.getItemDisabled(items[index])) {
+        newValue = collection.getItemValue(items[index])
+        break
+      }
+      // Find next, not disabled item.
+      if (index < items.length - 1 && !isReverseSearching) {
+        index++
+        // Otherwise, find previous, not disabled item.
+      } else {
+        isReverseSearching = true
+        if (index > (startIndex ?? 0)) {
+          index = startIndex ?? 0
+        }
+        index--
+      }
+    }
+
+    return newValue
+  }
+
+  return null
 }
