@@ -24,13 +24,14 @@ const ua = (v: RegExp) => isDom() && v.test(getUserAgent())
 const vn = (v: RegExp) => isDom() && v.test(navigator.vendor)
 
 export const isTouchDevice = () => isDom() && !!navigator.maxTouchPoints
-export const isMac = () => pt(/^Mac/)
+export const isIPhone = () => pt(/^iPhone/i)
+export const isIPad = () => pt(/^iPad/i) || (isMac() && navigator.maxTouchPoints > 1)
+export const isIos = () => isIPhone() || isIPad()
+export const isApple = () => isMac() || isIos()
+
+export const isMac = () => pt(/^Mac/i)
 export const isSafari = () => isApple() && vn(/apple/i)
-export const isFirefox = () => ua(/firefox\//i)
-export const isApple = () => pt(/mac|iphone|ipad|ipod/i)
-export const isIos = () => pt(/iP(hone|ad|od)|iOS/)
-export const isWebKit = () => ua(/AppleWebKit/)
-export const isAndroid = () => {
-  const re = /android/i
-  return pt(re) || ua(re)
-}
+export const isFirefox = () => ua(/Firefox/i)
+export const isChrome = () => ua(/Chrome/i)
+export const isWebKit = () => ua(/AppleWebKit/i) && !isChrome()
+export const isAndroid = () => ua(/Android/i)

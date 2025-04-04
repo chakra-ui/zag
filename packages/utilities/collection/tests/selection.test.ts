@@ -23,6 +23,18 @@ describe("Selection", () => {
     `)
   })
 
+  it("extend / include / reverse", () => {
+    let sel = new Selection([])
+    sel.selectionMode = "multiple"
+    expect(sel.extendSelection(collection, "5", "3")).toMatchInlineSnapshot(`
+      Set {
+        "3",
+        "4",
+        "5",
+      }
+    `)
+  })
+
   it("extend / toggle", () => {
     let sel = new Selection(["1", "2", "3"])
     sel.selectionMode = "multiple"
@@ -30,6 +42,7 @@ describe("Selection", () => {
       Set {
         "1",
         "2",
+        "3",
       }
     `)
   })

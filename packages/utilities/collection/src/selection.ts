@@ -75,24 +75,17 @@ export class Selection extends Set<string> {
     }
 
     const selection = this.copy()
-    const range = collection.getValueRange(anchorValue, targetValue)
-    const forwards = collection.compareValue(targetValue, anchorValue) >= 0
 
-    range.forEach((value) => {
-      if (!this.canSelect(collection, value)) return
+    const lastSelected = Array.from(this).pop()
+    for (let key of collection.getValueRange(anchorValue, lastSelected ?? targetValue)) {
+      selection.delete(key)
+    }
 
-      if (forwards) {
-        // When extending forward, keep anchor and add everything up to target
-        selection.add(value)
-      } else {
-        // When extending backward, keep only values up to and including target
-        if (collection.compareValue(value, targetValue) <= 0) {
-          selection.add(value)
-        } else {
-          selection.delete(value)
-        }
+    for (let key of collection.getValueRange(targetValue, anchorValue)) {
+      if (this.canSelect(collection, key)) {
+        selection.add(key)
       }
-    })
+    }
 
     return selection
   }
