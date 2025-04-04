@@ -8,6 +8,32 @@ All notable changes to this project will be documented in this file.
 
 See the [Changesets](./.changeset) for the latest changes.
 
+## [1.8.0](./#1.8.0) - 2025-04-04
+
+### Added
+
+- **[New] Listbox**: Add listbox machine for displaying a list of selectable options, supporting both single and
+  multiple selection modes.
+
+### Changed
+
+- **ListCollection**: Fix staleness issues in mutation methods by returning a new `ListCollection` instead of mutating
+  the internal `items`
+
+### Fixed
+
+- **Tabs**: Fix issue where tabs indicator animation behaves inconsistently.
+
+- **Date Picker**
+
+  - Fix issue where datepicker throws error when navigating month view.
+  - Fix issue where range selection doesn't reset correctly when clicking the same start date.
+
+- **Interact Outside**
+
+  - Fix issue where pointerdown outside doesn't work consistently on mobile devices.
+  - Improve pointerdown outside click detection in shadow DOM environments.
+
 ## [1.7.0](./#1.7.0) - 2025-03-28
 
 ### Added
