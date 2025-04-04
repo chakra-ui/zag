@@ -1,5 +1,24 @@
 # @zag-js/date-picker
 
+## 1.8.0
+
+### Patch Changes
+
+- [`5753030`](https://github.com/chakra-ui/zag/commit/5753030c79be340dbd77294e29eb3a10a1cb7eca) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - - Fix issue where datepicker throws error when navigating month
+  view.
+  - Fix issue where range selection doesn't reset correctly when clicking the same start date.
+- Updated dependencies [[`66f7828`](https://github.com/chakra-ui/zag/commit/66f7828541102fcf4f0fba05bb241e20a5ed45cb)]:
+  - @zag-js/core@1.8.0
+  - @zag-js/dismissable@1.8.0
+  - @zag-js/anatomy@1.8.0
+  - @zag-js/types@1.8.0
+  - @zag-js/utils@1.8.0
+  - @zag-js/date-utils@1.8.0
+  - @zag-js/dom-query@1.8.0
+  - @zag-js/live-region@1.8.0
+  - @zag-js/popper@1.8.0
+
 ## 1.7.0
 
 ### Patch Changes

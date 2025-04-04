@@ -1,5 +1,17 @@
 # @zag-js/interact-outside
 
+## 1.8.0
+
+### Patch Changes
+
+- [`860a36d`](https://github.com/chakra-ui/zag/commit/860a36df9122aa892138e2439af2398c01e07442) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - - Fix issue where pointerdown outside doesn't work consistently on
+  mobile devices
+  - Improve pointerdown outside click detection in shadow DOM environments
+- Updated dependencies []:
+  - @zag-js/utils@1.8.0
+  - @zag-js/dom-query@1.8.0
+
 ## 1.7.0
 
 ### Patch Changes
