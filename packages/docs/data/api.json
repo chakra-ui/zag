@@ -939,6 +939,10 @@
         "type": "(details: HighlightChangeDetails<T>) => void",
         "description": "Function called when an item is highlighted using the pointer\nor keyboard navigation."
       },
+      "onSelect": {
+        "type": "(details: SelectionDetails) => void",
+        "description": "Function called when an item is selected"
+      },
       "onOpenChange": {
         "type": "(details: OpenChangeDetails) => void",
         "description": "Function called when the popup is opened"
@@ -1957,6 +1961,161 @@
       }
     }
   },
+  "listbox": {
+    "api": {
+      "empty": {
+        "type": "boolean",
+        "description": "Whether the select value is empty"
+      },
+      "highlightedValue": {
+        "type": "string",
+        "description": "The value of the highlighted item"
+      },
+      "highlightedItem": {
+        "type": "V",
+        "description": "The highlighted item"
+      },
+      "highlightValue": {
+        "type": "(value: string) => void",
+        "description": "Function to highlight a value"
+      },
+      "selectedItems": {
+        "type": "V[]",
+        "description": "The selected items"
+      },
+      "hasSelectedItems": {
+        "type": "boolean",
+        "description": "Whether there's a selected option"
+      },
+      "value": {
+        "type": "string[]",
+        "description": "The selected item keys"
+      },
+      "valueAsString": {
+        "type": "string",
+        "description": "The string representation of the selected items"
+      },
+      "selectValue": {
+        "type": "(value: string) => void",
+        "description": "Function to select a value"
+      },
+      "selectAll": {
+        "type": "() => void",
+        "description": "Function to select all values.\n\n**Note**: This should only be called when the selectionMode is `multiple` or `extended`.\nOtherwise, an exception will be thrown."
+      },
+      "setValue": {
+        "type": "(value: string[]) => void",
+        "description": "Function to set the value of the select"
+      },
+      "clearValue": {
+        "type": "(value?: string) => void",
+        "description": "Function to clear the value of the select.\nIf a value is provided, it will only clear that value, otherwise, it will clear all values."
+      },
+      "getItemState": {
+        "type": "(props: ItemProps<any>) => ItemState",
+        "description": "Returns the state of a select item"
+      },
+      "collection": {
+        "type": "ListCollection<V>",
+        "description": "Function to toggle the select"
+      },
+      "disabled": {
+        "type": "boolean",
+        "description": "Whether the select is disabled"
+      }
+    },
+    "context": {
+      "collection": {
+        "type": "GridCollection<T>",
+        "description": "The item collection"
+      },
+      "ids": {
+        "type": "Partial<{ root: string; content: string; label: string; item(id: string | number): string; itemGroup(id: string | number): string; itemGroupLabel(id: string | number): string; }>",
+        "description": "The ids of the elements in the listbox. Useful for composition."
+      },
+      "disabled": {
+        "type": "boolean",
+        "description": "Whether the listbox is disabled"
+      },
+      "disallowSelectAll": {
+        "type": "boolean",
+        "description": "Whether to disallow selecting all items when `meta+a` is pressed"
+      },
+      "onHighlightChange": {
+        "type": "(details: HighlightChangeDetails<T>) => void",
+        "description": "The callback fired when the highlighted item changes."
+      },
+      "onValueChange": {
+        "type": "(details: ValueChangeDetails<T>) => void",
+        "description": "The callback fired when the selected item changes."
+      },
+      "value": {
+        "type": "string[]",
+        "description": "The controlled keys of the selected items"
+      },
+      "defaultValue": {
+        "type": "string[]",
+        "description": "The initial default value of the listbox when rendered.\nUse when you don't need to control the value of the listbox.",
+        "defaultValue": "[]"
+      },
+      "highlightedValue": {
+        "type": "string",
+        "description": "The controlled key of the highlighted item"
+      },
+      "defaultHighlightedValue": {
+        "type": "string",
+        "description": "The initial value of the highlighted item when opened.\nUse when you don't need to control the highlighted value of the listbox."
+      },
+      "loopFocus": {
+        "type": "boolean",
+        "description": "Whether to loop the keyboard navigation through the options",
+        "defaultValue": "false"
+      },
+      "selectionMode": {
+        "type": "SelectionMode",
+        "description": "How multiple selection should behave in the listbox.\n\n- `single`: The user can select a single item.\n- `multiple`: The user can select multiple items without using modifier keys.\n- `extended`: The user can select multiple items by using modifier keys.",
+        "defaultValue": "\"single\""
+      },
+      "scrollToIndexFn": {
+        "type": "(details: ScrollToIndexDetails) => void",
+        "description": "Function to scroll to a specific index"
+      },
+      "selectOnHighlight": {
+        "type": "boolean",
+        "description": "Whether to select the item when it is highlighted"
+      },
+      "deselectable": {
+        "type": "boolean",
+        "description": "Whether to disallow empty selection"
+      },
+      "typeahead": {
+        "type": "boolean",
+        "description": "Whether to enable typeahead on the listbox"
+      },
+      "onSelect": {
+        "type": "(details: SelectionDetails) => void",
+        "description": "Function called when an item is selected"
+      },
+      "dir": {
+        "type": "\"ltr\" | \"rtl\"",
+        "description": "The document's text/writing direction.",
+        "defaultValue": "\"ltr\""
+      },
+      "id": {
+        "type": "string",
+        "description": "The unique identifier of the machine."
+      },
+      "getRootNode": {
+        "type": "() => ShadowRoot | Node | Document",
+        "description": "A root node to correctly resolve document in custom environments. E.x.: Iframes, Electron."
+      },
+      "orientation": {
+        "type": "\"horizontal\" | \"vertical\"",
+        "description": "The orientation of the element.",
+        "defaultValue": "\"horizontal\""
+      }
+    }
+  },
   "menu": {
     "api": {
       "open": {
@@ -1994,6 +2153,10 @@
       "getItemState": {
         "type": "(props: ItemProps) => ItemState",
         "description": "Returns the state of the menu item"
+      },
+      "addItemListener": {
+        "type": "(props: ItemListenerProps) => VoidFunction",
+        "description": "Setup the custom event listener for item selection event"
       }
     },
     "context": {
@@ -3548,8 +3711,8 @@
         "defaultValue": "\"horizontal\""
       },
       "origin": {
-        "type": "\"start\" | \"center\"",
-        "description": "The origin of the slider range\n- \"start\": Useful when the value represents an absolute value\n- \"center\": Useful when the value represents an offset (relative)",
+        "type": "\"start\" | \"center\" | \"end\"",
+        "description": "The origin of the slider range. The track is filled from the origin\nto the thumb for single values.\n- \"start\": Useful when the value represents an absolute value\n- \"center\": Useful when the value represents an offset (relative)\n- \"end\": Useful when the value represents an offset from the end",
         "defaultValue": "\"start\""
       },
       "thumbAlignment": {

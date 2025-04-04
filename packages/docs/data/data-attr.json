@@ -227,6 +227,12 @@
       "data-part": "trigger",
       "data-state": "\"open\" | \"closed\"",
       "data-disabled": "Present when disabled"
+    },
+    "Indicator": {
+      "data-scope": "collapsible",
+      "data-part": "indicator",
+      "data-state": "\"open\" | \"closed\"",
+      "data-disabled": "Present when disabled"
     }
   },
   "color-picker": {
@@ -739,6 +745,65 @@
       "data-placement": "The placement of the content"
     }
   },
+  "listbox": {
+    "Root": {
+      "data-scope": "listbox",
+      "data-part": "root",
+      "data-orientation": "The orientation of the listbox",
+      "data-disabled": "Present when disabled"
+    },
+    "Input": {
+      "data-scope": "listbox",
+      "data-part": "input",
+      "data-disabled": "Present when disabled"
+    },
+    "Label": {
+      "data-scope": "listbox",
+      "data-part": "label",
+      "data-disabled": "Present when disabled"
+    },
+    "ValueText": {
+      "data-scope": "listbox",
+      "data-part": "value-text",
+      "data-disabled": "Present when disabled"
+    },
+    "Item": {
+      "data-scope": "listbox",
+      "data-part": "item",
+      "data-value": "The value of the item",
+      "data-selected": "Present when selected",
+      "data-layout": "",
+      "data-state": "\"checked\" | \"unchecked\"",
+      "data-orientation": "The orientation of the item",
+      "data-highlighted": "Present when highlighted",
+      "data-disabled": "Present when disabled"
+    },
+    "ItemText": {
+      "data-scope": "listbox",
+      "data-part": "item-text",
+      "data-state": "\"checked\" | \"unchecked\"",
+      "data-disabled": "Present when disabled",
+      "data-highlighted": "Present when highlighted"
+    },
+    "ItemIndicator": {
+      "data-scope": "listbox",
+      "data-part": "item-indicator",
+      "data-state": "\"checked\" | \"unchecked\""
+    },
+    "ItemGroup": {
+      "data-scope": "listbox",
+      "data-part": "item-group",
+      "data-disabled": "Present when disabled",
+      "data-orientation": "The orientation of the item"
+    },
+    "Content": {
+      "data-scope": "listbox",
+      "data-part": "content",
+      "data-activedescendant": "",
+      "data-orientation": "The orientation of the content",
+      "data-layout": ""
+    }
+  },
   "menu": {
     "Trigger": {
       "data-scope": "menu",
@@ -762,6 +827,7 @@
       "data-part": "item",
       "data-disabled": "Present when disabled",
       "data-highlighted": "Present when highlighted",
+      "data-value": "The value of the item",
       "data-valuetext": "The human-readable value"
     },
     "OptionItem": {
