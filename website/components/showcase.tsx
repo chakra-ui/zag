@@ -42,6 +42,7 @@ import { ToggleGroup } from "./machines/toggle-group"
 import { Tooltip } from "./machines/tooltip"
 import { Tour } from "./machines/tour"
 import { TreeView } from "./machines/tree-view"
+import { Listbox } from "./machines/listbox"
 import { Playground } from "./playground"
 
 const components = {
@@ -488,6 +489,19 @@ const components = {
         selectionMode: {
           default: "single",
           options: ["multiple", "single"],
+        },
+      }}
+    />
+  ),
+  Listbox: () => (
+    <Playground
+      name="listbox"
+      component={Listbox}
+      defaultProps={{
+        disabled: false,
+        selectionMode: {
+          default: "single",
+          options: ["single", "multiple", "extended"],
         },
       }}
     />

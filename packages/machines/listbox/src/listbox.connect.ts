@@ -176,6 +176,7 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
         dir: prop("dir"),
         "data-value": itemState.value,
         "aria-selected": itemState.selected,
+        "data-selected": dataAttr(itemState.selected),
         "data-layout": layout,
         "data-state": itemState.selected ? "checked" : "unchecked",
         "data-orientation": prop("orientation"),
@@ -285,7 +286,10 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
                 nextValue = collection.getPreviousValue(highlightedValue)
               }
 
-              nextValue ||= collection.lastValue
+              if (!nextValue && prop("loopFocus")) {
+                nextValue = collection.lastValue
+              }
+
               if (!nextValue) return
 
               event.preventDefault()
@@ -300,7 +304,10 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
                 nextValue = collection.getNextValue(highlightedValue)
               }
 
-              nextValue ||= collection.firstValue
+              if (!nextValue && prop("loopFocus")) {
+                nextValue = collection.firstValue
+              }
+
               if (!nextValue) return
 
               event.preventDefault()
