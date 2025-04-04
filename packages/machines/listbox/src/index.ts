@@ -7,6 +7,7 @@ export type {
   ListboxApi as Api,
   ElementIds,
   HighlightChangeDetails,
+  InputProps,
   ItemGroupLabelProps,
   ItemGroupProps,
   ItemProps,
@@ -14,9 +15,9 @@ export type {
   ListboxMachine as Machine,
   ListboxProps as Props,
   ScrollToIndexDetails,
+  SelectionDetails,
   ListboxService as Service,
   ValueChangeDetails,
-  SelectionDetails,
 } from "./listbox.types"
 
 export type {

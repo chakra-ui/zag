@@ -8,6 +8,13 @@ All notable changes to this project will be documented in this file.
 
 See the [Changesets](./.changeset) for the latest changes.
 
+## [1.8.2](./#1.8.2) - 2025-04-04
+
+### Fixed
+
+- **Tabs, Radio Group**: Fix Next.js issue where indicator size might not be mentioned when conditionally rendering the
+  component and `defaultValue` is set.
+
 ## [1.8.1](./#1.8.1) - 2025-04-04
 
 ### Fixed
