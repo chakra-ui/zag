@@ -72,6 +72,7 @@ To set the initial selection, you can use the `defaultValue` property.
 
 ```tsx
 const service = useMachine(listbox.machine, {
+  // ...
   defaultValue: ["item-1", "item-2"],
 })
 ```
@@ -100,6 +101,13 @@ Here's an example of how to support searching through a list of items.
 To enable multiple selection, set the `selectionMode` property to `multiple` or
 `extended`.
 
+```tsx
+const service = useMachine(listbox.machine, {
+  // ...
+  selectionMode: "multiple",
+})
+```
+
 ## Selection Modes
 
 By default, a user can select a single item in a listbox. You can set the
@@ -116,7 +124,8 @@ multi-selection. Here are the selection mode values.
 
 ```tsx
 const service = useMachine(listbox.machine, {
-  selectionMode: "multiple",
+  // ...
+  selectionMode: "extended",
 })
 ```
 
@@ -151,6 +160,8 @@ const service = useMachine(listbox.machine, {
   }),
 })
 ```
+
+<CodeSnippet id="listbox/grid-usage.mdx" />
 
 ## Styling guide
 

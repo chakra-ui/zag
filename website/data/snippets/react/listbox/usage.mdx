@@ -3,14 +3,34 @@ import * as listbox from "@zag-js/listbox"
 import { useMachine, normalizeProps } from "@zag-js/react"
 import { useId } from "react"
 
+const data = [
+  { label: "Nigeria", value: "NG" },
+  { label: "United States", value: "US" },
+  { label: "Canada", value: "CA" },
+  { label: "Japan", value: "JP" },
+]
+
 function Listbox() {
-  const service = useMachine(listbox.machine, { id: useId() })
+  const collection = listbox.collection({ items: data })
+
+  const service = useMachine(listbox.machine, {
+    id: useId(),
+    collection,
+  })
 
   const api = listbox.connect(service, normalizeProps)
 
   return (
     <div {...api.getRootProps()}>
-      <div {...api.getContentProps()}>...</div>
+      <label {...api.getLabelProps()}>Select country</label>
+      <ul {...api.getContentProps()}>
+        {data.map((item) => (
+          <li key={item.value} {...api.getItemProps({ item })}>
+            <span {...api.getItemTextProps({ item })}>{item.label}</span>
+            <span {...api.getItemIndicatorProps({ item })}>✓</span>
+          </li>
+        ))}
+      </ul>
     </div>
   )
 }
