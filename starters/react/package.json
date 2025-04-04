@@ -33,8 +33,6 @@
     "@zag-js/docs": "workspace:*",
     "@zag-js/dom-query": "workspace:*",
     "@zag-js/editable": "workspace:*",
-    "@zag-js/element-rect": "workspace:*",
-    "@zag-js/element-size": "workspace:*",
     "@zag-js/file-upload": "workspace:*",
     "@zag-js/file-utils": "workspace:*",
     "@zag-js/focus-visible": "workspace:*",

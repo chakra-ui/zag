@@ -1,5 +1,5 @@
 import { createGuards, createMachine } from "@zag-js/core"
-import { clickIfLink, getFocusables, isAnchorElement, nextTick, raf } from "@zag-js/dom-query"
+import { clickIfLink, getFocusables, isAnchorElement, nextTick, raf, trackElementRect } from "@zag-js/dom-query"
 import * as dom from "./tabs.dom"
 import type { TabsSchema } from "./tabs.types"
 
@@ -287,17 +287,17 @@ export const machine = createMachine<TabsSchema>({
         const indicatorEl = dom.getIndicatorEl(scope)
         if (!triggerEl || !indicatorEl) return
 
-        const exec = () => {
-          const rect = dom.getOffsetRect(triggerEl)
-          context.set("indicatorRect", dom.resolveRect(rect))
-        }
+        const indicatorCleanup = trackElementRect([triggerEl], {
+          measure(el) {
+            return dom.getOffsetRect(el)
+          },
+          onEntry({ rects }) {
+            const [rect] = rects
+            context.set("indicatorRect", dom.resolveRect(rect))
+          },
+        })
 
-        exec()
-        const win = scope.getWin()
-        const obs = new win.ResizeObserver(exec)
-        obs.observe(triggerEl)
-
-        refs.set("indicatorCleanup", () => obs.disconnect())
+        refs.set("indicatorCleanup", indicatorCleanup)
       },
       navigateIfNeeded({ context, prop, scope }) {
         const value = context.get("value")

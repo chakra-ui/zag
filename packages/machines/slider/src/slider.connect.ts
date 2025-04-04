@@ -102,7 +102,7 @@ export function connect<T extends PropTypes>(service: SliderService, normalize: 
         onClick(event) {
           if (!interactive) return
           event.preventDefault()
-          dom.getFirstEl(scope)?.focus()
+          dom.getFirstThumbEl(scope)?.focus()
         },
         style: {
           userSelect: "none",

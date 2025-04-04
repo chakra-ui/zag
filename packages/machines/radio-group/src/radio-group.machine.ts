@@ -1,6 +1,5 @@
 import { createGuards, createMachine } from "@zag-js/core"
-import { dispatchInputCheckedEvent, nextTick, trackFormControl } from "@zag-js/dom-query"
-import { trackElementRect } from "@zag-js/element-rect"
+import { dispatchInputCheckedEvent, trackElementRect, trackFormControl } from "@zag-js/dom-query"
 import { trackFocusVisible } from "@zag-js/focus-visible"
 import { isString } from "@zag-js/utils"
 import * as dom from "./radio-group.dom"
@@ -45,9 +44,6 @@ export const machine = createMachine<RadioGroupSchema>({
         defaultValue: false,
       })),
       fieldsetDisabled: bindable<boolean>(() => ({
-        defaultValue: false,
-      })),
-      focusVisible: bindable<boolean>(() => ({
         defaultValue: false,
       })),
       ssr: bindable<boolean>(() => ({
@@ -136,7 +132,6 @@ export const machine = createMachine<RadioGroupSchema>({
       },
       setFocused({ context, event }) {
         context.set("focusedValue", event.value)
-        context.set("focusVisible", event.focusVisible)
       },
       syncInputElements({ context, scope }) {
         const inputs = dom.getInputEls(scope)
@@ -162,19 +157,17 @@ export const machine = createMachine<RadioGroupSchema>({
         const radioEl = dom.getRadioEl(scope, value)
 
         if (value == null || !radioEl) {
+          context.set("canIndicatorTransition", false)
           context.set("indicatorRect", {})
           return
         }
 
-        const indicatorCleanup = trackElementRect(radioEl, {
-          getRect(el) {
+        const indicatorCleanup = trackElementRect([radioEl], {
+          measure(el) {
             return dom.getOffsetRect(el)
           },
-          onChange(rect) {
-            context.set("indicatorRect", dom.resolveRect(rect))
-            nextTick(() => {
-              context.set("canIndicatorTransition", false)
-            })
+          onEntry({ rects }) {
+            context.set("indicatorRect", dom.resolveRect(rects[0]))
           },
         })
 

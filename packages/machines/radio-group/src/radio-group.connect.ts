@@ -10,16 +10,20 @@ export function connect<T extends PropTypes>(
   normalize: NormalizeProps<T>,
 ): RadioGroupApi<T> {
   const { context, send, computed, prop, scope } = service
+
   const groupDisabled = computed("isDisabled")
   const readOnly = prop("readOnly")
 
   function getItemState(props: ItemProps): ItemState {
+    const focused = context.get("focusedValue") === props.value
+    const focusVisible = focused && isFocusVisible()
     return {
       value: props.value,
       invalid: !!props.invalid,
       disabled: !!props.disabled || groupDisabled,
       checked: context.get("value") === props.value,
-      focused: context.get("focusedValue") === props.value,
+      focused,
+      focusVisible,
       hovered: context.get("hoveredValue") === props.value,
       active: context.get("activeValue") === props.value,
     }
@@ -29,7 +33,7 @@ export function connect<T extends PropTypes>(
     const itemState = getItemState(props)
     return {
       "data-focus": dataAttr(itemState.focused),
-      "data-focus-visible": dataAttr(itemState.focused && context.get("focusVisible")),
+      "data-focus-visible": dataAttr(itemState.focusVisible),
       "data-disabled": dataAttr(itemState.disabled),
       "data-readonly": dataAttr(readOnly),
       "data-state": itemState.checked ? "checked" : "unchecked",
@@ -166,11 +170,10 @@ export function connect<T extends PropTypes>(
           }
         },
         onBlur() {
-          send({ type: "SET_FOCUSED", value: null, focused: false, focusVisible: false })
+          send({ type: "SET_FOCUSED", value: null, focused: false })
         },
         onFocus() {
-          const focusVisible = isFocusVisible()
-          send({ type: "SET_FOCUSED", value: props.value, focused: true, focusVisible })
+          send({ type: "SET_FOCUSED", value: props.value, focused: true })
         },
         onKeyDown(event) {
           if (event.defaultPrevented) return

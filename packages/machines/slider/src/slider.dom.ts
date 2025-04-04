@@ -17,14 +17,14 @@ export const getMarkerId = (ctx: Scope, value: number) => ctx.ids?.marker?.(valu
 
 export const getRootEl = (ctx: Scope) => ctx.getById(getRootId(ctx))
 export const getThumbEl = (ctx: Scope, index: number) => ctx.getById(getThumbId(ctx, index))
+export const getThumbEls = (ctx: Scope) => queryAll(getControlEl(ctx), "[role=slider]")
+export const getFirstThumbEl = (ctx: Scope) => getThumbEls(ctx)[0]
 export const getHiddenInputEl = (ctx: Scope, index: number) =>
   ctx.getById<HTMLInputElement>(getHiddenInputId(ctx, index))
 export const getControlEl = (ctx: Scope) => ctx.getById(getControlId(ctx))
-export const getElements = (ctx: Scope) => queryAll(getControlEl(ctx), "[role=slider]")
-export const getFirstEl = (ctx: Scope) => getElements(ctx)[0]
 export const getRangeEl = (ctx: Scope) => ctx.getById(getRangeId(ctx))
 
-export const getValueFromPoint = (params: Params<SliderSchema>, point: Point) => {
+export const getPointValue = (params: Params<SliderSchema>, point: Point) => {
   const { prop, scope } = params
   const controlEl = getControlEl(scope)
   if (!controlEl) return
@@ -44,3 +44,10 @@ export const dispatchChangeEvent = (ctx: Scope, value: number[]) => {
     dispatchInputValueEvent(inputEl, { value })
   })
 }
+
+export const getOffsetRect = (el: HTMLElement | undefined) => ({
+  left: el?.offsetLeft ?? 0,
+  top: el?.offsetTop ?? 0,
+  width: el?.offsetWidth ?? 0,
+  height: el?.offsetHeight ?? 0,
+})

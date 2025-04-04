@@ -37,8 +37,6 @@
     "@zag-js/docs": "workspace:*",
     "@zag-js/dom-query": "workspace:*",
     "@zag-js/editable": "workspace:*",
-    "@zag-js/element-rect": "workspace:*",
-    "@zag-js/element-size": "workspace:*",
     "@zag-js/file-upload": "workspace:*",
     "@zag-js/file-utils": "workspace:*",
     "@zag-js/floating-panel": "workspace:*",
@@ -106,10 +104,6 @@
     "@next/eslint-plugin-next": "15.2.4",
     "eslint-plugin-react": "7.37.5",
     "eslint-plugin-react-hooks": "5.2.0",
-    "@atlaskit/pragmatic-drag-and-drop": "1.5.2",
-    "@atlaskit/pragmatic-drag-and-drop-flourish": "2.0.2",
-    "@atlaskit/pragmatic-drag-and-drop-hitbox": "1.0.3",
-    "@atlaskit/pragmatic-drag-and-drop-auto-scroll": "2.1.0",
     "typescript": "5.8.2"
   },
   "license": "MIT"

@@ -1,12 +1,20 @@
 import { createMachine } from "@zag-js/core"
-import { raf, setElementValue, trackFormControl, trackPointerMove } from "@zag-js/dom-query"
-import { trackElementsSize, type ElementSize } from "@zag-js/element-size"
-import { clampValue, getValuePercent, getValueRanges, isEqual, setValueAtIndex, snapValueToStep } from "@zag-js/utils"
+import { raf, setElementValue, trackFormControl, trackPointerMove, trackElementRect } from "@zag-js/dom-query"
+import type { Size } from "@zag-js/types"
+import {
+  clampValue,
+  getValuePercent,
+  getValueRanges,
+  isEqual,
+  pick,
+  setValueAtIndex,
+  snapValueToStep,
+} from "@zag-js/utils"
 import * as dom from "./slider.dom"
 import type { SliderSchema } from "./slider.types"
 import { constrainValue, decrement, getClosestIndex, getRangeAtIndex, increment, normalizeValues } from "./slider.utils"
 
-const isEqualSize = (a: ElementSize | null, b: ElementSize | null) => {
+const isEqualSize = (a: Size | null, b: Size | null) => {
   return a?.width === b?.width && a?.height === b?.height
 }
 
@@ -91,7 +99,7 @@ export const machine = createMachine<SliderSchema>({
     })
   },
 
-  effects: ["trackFormControlState", "trackThumbsSize"],
+  effects: ["trackFormControlState", "trackThumbSize"],
 
   on: {
     SET_VALUE: [
@@ -201,19 +209,24 @@ export const machine = createMachine<SliderSchema>({
           },
         })
       },
-      trackThumbsSize({ context, scope, prop }) {
+
+      trackThumbSize({ context, scope, prop }) {
         if (prop("thumbAlignment") !== "contain" || prop("thumbSize")) return
 
-        return trackElementsSize({
-          getNodes: () => dom.getElements(scope),
-          observeMutation: true,
-          callback(size) {
-            if (!size || isEqualSize(context.get("thumbSize"), size)) return
+        return trackElementRect(dom.getThumbEls(scope), {
+          box: "border-box",
+          measure(el) {
+            return dom.getOffsetRect(el)
+          },
+          onEntry({ rects }) {
+            const size = pick(rects[0], ["width", "height"])
+            if (isEqualSize(context.get("thumbSize"), size)) return
             context.set("thumbSize", size)
           },
         })
       },
     },
+
     actions: {
       dispatchChangeEvent({ context, scope }) {
         dom.dispatchChangeEvent(scope, context.get("value"))
@@ -230,7 +243,7 @@ export const machine = createMachine<SliderSchema>({
       setClosestThumbIndex(params) {
         const { context, event } = params
 
-        const pointValue = dom.getValueFromPoint(params, event.point)
+        const pointValue = dom.getPointValue(params, event.point)
         if (pointValue == null) return
 
         const focusedIndex = getClosestIndex(params, pointValue)
@@ -245,7 +258,7 @@ export const machine = createMachine<SliderSchema>({
       setPointerValue(params) {
         queueMicrotask(() => {
           const { context, event } = params
-          const pointValue = dom.getValueFromPoint(params, event.point)
+          const pointValue = dom.getPointValue(params, event.point)
           if (pointValue == null) return
 
           const focusedIndex = context.get("focusedIndex")

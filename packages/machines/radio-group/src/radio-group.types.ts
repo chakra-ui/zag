@@ -97,10 +97,6 @@ interface PrivateContext {
    */
   fieldsetDisabled: boolean
   /**
-   * Whether the radio group is in focus
-   */
-  focusVisible: boolean
-  /**
    * Whether the radio group is in server-side rendering
    */
   ssr: boolean
@@ -169,6 +165,10 @@ export interface ItemState {
    *  Whether the item is focused
    */
   focused: boolean
+  /**
+   * Whether the item is focused and the focus is visible
+   */
+  focusVisible: boolean
   /**
    * Whether the item is hovered
    */

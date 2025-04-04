@@ -28,7 +28,6 @@
   "dependencies": {
     "@zag-js/anatomy": "workspace:*",
     "@zag-js/dom-query": "workspace:*",
-    "@zag-js/element-rect": "workspace:*",
     "@zag-js/utils": "workspace:*",
     "@zag-js/core": "workspace:*",
     "@zag-js/types": "workspace:*"

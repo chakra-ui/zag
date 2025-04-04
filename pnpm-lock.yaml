@@ -209,12 +209,6 @@ importers:
       '@zag-js/editable':
         specifier: workspace:*
         version: link:../../packages/machines/editable
-      '@zag-js/element-rect':
-        specifier: workspace:*
-        version: link:../../packages/utilities/element-rect
-      '@zag-js/element-size':
-        specifier: workspace:*
-        version: link:../../packages/utilities/element-size
       '@zag-js/file-upload':
         specifier: workspace:*
         version: link:../../packages/machines/file-upload
@@ -390,18 +384,6 @@ importers:
         specifier: ^3.1.0
         version: 3.1.0
     devDependencies:
-      '@atlaskit/pragmatic-drag-and-drop':
-        specifier: 1.5.2
-        version: 1.5.2
-      '@atlaskit/pragmatic-drag-and-drop-auto-scroll':
-        specifier: 2.1.0
-        version: 2.1.0
-      '@atlaskit/pragmatic-drag-and-drop-flourish':
-        specifier: 2.0.2
-        version: 2.0.2(@types/react@19.0.12)(react@19.1.0)
-      '@atlaskit/pragmatic-drag-and-drop-hitbox':
-        specifier: 1.0.3
-        version: 1.0.3
       '@next/eslint-plugin-next':
         specifier: 15.2.4
         version: 15.2.4
@@ -501,12 +483,6 @@ importers:
       '@zag-js/editable':
         specifier: workspace:*
         version: link:../../packages/machines/editable
-      '@zag-js/element-rect':
-        specifier: workspace:*
-        version: link:../../packages/utilities/element-rect
-      '@zag-js/element-size':
-        specifier: workspace:*
-        version: link:../../packages/utilities/element-size
       '@zag-js/file-upload':
         specifier: workspace:*
         version: link:../../packages/machines/file-upload
@@ -754,12 +730,6 @@ importers:
       '@zag-js/editable':
         specifier: workspace:*
         version: link:../../packages/machines/editable
-      '@zag-js/element-rect':
-        specifier: workspace:*
-        version: link:../../packages/utilities/element-rect
-      '@zag-js/element-size':
-        specifier: workspace:*
-        version: link:../../packages/utilities/element-size
       '@zag-js/file-upload':
         specifier: workspace:*
         version: link:../../packages/machines/file-upload
@@ -1013,12 +983,6 @@ importers:
       '@zag-js/editable':
         specifier: workspace:*
         version: link:../../packages/machines/editable
-      '@zag-js/element-rect':
-        specifier: workspace:*
-        version: link:../../packages/utilities/element-rect
-      '@zag-js/element-size':
-        specifier: workspace:*
-        version: link:../../packages/utilities/element-size
       '@zag-js/file-upload':
         specifier: workspace:*
         version: link:../../packages/machines/file-upload
@@ -1253,12 +1217,6 @@ importers:
       '@zag-js/editable':
         specifier: workspace:*
         version: link:../../packages/machines/editable
-      '@zag-js/element-rect':
-        specifier: workspace:*
-        version: link:../../packages/utilities/element-rect
-      '@zag-js/element-size':
-        specifier: workspace:*
-        version: link:../../packages/utilities/element-size
       '@zag-js/file-upload':
         specifier: workspace:*
         version: link:../../packages/machines/file-upload
@@ -1518,12 +1476,6 @@ importers:
       '@zag-js/editable':
         specifier: workspace:*
         version: link:../../packages/machines/editable
-      '@zag-js/element-rect':
-        specifier: workspace:*
-        version: link:../../packages/utilities/element-rect
-      '@zag-js/element-size':
-        specifier: workspace:*
-        version: link:../../packages/utilities/element-size
       '@zag-js/file-upload':
         specifier: workspace:*
         version: link:../../packages/machines/file-upload
@@ -2568,9 +2520,6 @@ importers:
       '@zag-js/dom-query':
         specifier: workspace:*
         version: link:../../utilities/dom-query
-      '@zag-js/element-rect':
-        specifier: workspace:*
-        version: link:../../utilities/element-rect
       '@zag-js/focus-visible':
         specifier: workspace:*
         version: link:../../utilities/focus-visible
@@ -2674,9 +2623,6 @@ importers:
       '@zag-js/dom-query':
         specifier: workspace:*
         version: link:../../utilities/dom-query
-      '@zag-js/element-size':
-        specifier: workspace:*
-        version: link:../../utilities/element-size
       '@zag-js/types':
         specifier: workspace:*
         version: link:../../types
@@ -2768,9 +2714,6 @@ importers:
       '@zag-js/dom-query':
         specifier: workspace:*
         version: link:../../utilities/dom-query
-      '@zag-js/element-rect':
-        specifier: workspace:*
-        version: link:../../utilities/element-rect
       '@zag-js/types':
         specifier: workspace:*
         version: link:../../types
@@ -3122,18 +3065,6 @@ importers:
         specifier: 2.2.0
         version: 2.2.0
 
-  packages/utilities/element-rect:
-    devDependencies:
-      clean-package:
-        specifier: 2.2.0
-        version: 2.2.0
-
-  packages/utilities/element-size:
-    devDependencies:
-      clean-package:
-        specifier: 2.2.0
-        version: 2.2.0
-
   packages/utilities/file-utils:
     dependencies:
       '@zag-js/i18n-utils':
@@ -3334,12 +3265,6 @@ importers:
       '@zag-js/editable':
         specifier: workspace:*
         version: link:../../packages/machines/editable
-      '@zag-js/element-rect':
-        specifier: workspace:*
-        version: link:../../packages/utilities/element-rect
-      '@zag-js/element-size':
-        specifier: workspace:*
-        version: link:../../packages/utilities/element-size
       '@zag-js/file-upload':
         specifier: workspace:*
         version: link:../../packages/machines/file-upload
@@ -3750,49 +3675,6 @@ packages:
 
   '@asamuzakjp/css-color@3.1.1':
     resolution: {integrity: sha512-hpRD68SV2OMcZCsrbdkccTw5FXjNDLo5OuqSHyHZfwweGsDWZwDJ2+gONyNAbazZclobMirACLw0lk8WVxIqxA==}
-
-  '@atlaskit/atlassian-context@0.2.0':
-    resolution: {integrity: sha512-msLRSp0qck6eflkShplgyIoOogNKxKRc6QIWGQlSvKGxHQNEbLEkRGcDzdh8PuBxSs1gda7OqYrdtQYQiPbpTQ==}
-    peerDependencies:
-      react: ^18.2.0
-
-  '@atlaskit/css@0.10.2':
-    resolution: {integrity: sha512-vKDH6+BkqC015l1Y8mi+Atncr7ghpH+h6qAIPqeJxYC9eXrk8N3TOEwxgFcEtI9il6dwEjuWzVznQvBsc2nX0w==}
-    peerDependencies:
-      react: ^18.2.0
-
-  '@atlaskit/ds-lib@4.0.0':
-    resolution: {integrity: sha512-nM0wAo8bm7FyAYuId6Ba2MFnLSVzlsZpyfRxPJ7dMFqEhJ4R53/CoT8v18mvi2Hu1Y4+d1t97lOyybHfgFyb+A==}
-    peerDependencies:
-      react: ^18.2.0
-
-  '@atlaskit/feature-gate-js-client@5.0.0':
-    resolution: {integrity: sha512-ZK/1HqPIL9/cNfbZDGr4bf+etgva2XJK9UJSyhwHcTlCaWw4XmFu2BIpswS21y0izHk2ePqmo66VXl90XKHaUw==}
-
-  '@atlaskit/motion@5.1.2':
-    resolution: {integrity: sha512-gl76l/3gYLi7l1CHhIMIy6VcP0W9yTmUtJfI/+c0WCESQ1SGApnwoT5mpHTxGeQr46Rh6h+QDIWFZ3mhsbSeig==}
-    peerDependencies:
-      react: ^18.2.0
-
-  '@atlaskit/platform-feature-flags@1.1.1':
-    resolution: {integrity: sha512-YKuy3RsqCEoNALiMHVma0GGHkzZMSIBsEgZlV/2TPw65QRzOWJvKA3ZIKucmXzr3m7AUqg1XHwXvVlUuNZhUgg==}
-
-  '@atlaskit/pragmatic-drag-and-drop-auto-scroll@2.1.0':
-    resolution: {integrity: sha512-E52y8/0BTTf4ai6BJyFYgdVHFgQ1AES33KvAVQpZ41jMkoukLIq6UoCudOXku7xs3qoPygQdpC+vitVUuEFJXw==}
-
-  '@atlaskit/pragmatic-drag-and-drop-flourish@2.0.2':
-    resolution: {integrity: sha512-BcekPRucovhxJN7K11MHOwR83nshNnEH8PeSoNkMG+aX0obTa4IOV5ChE5RE5tUFKxej5eSIF9s/ZEh6vwWhJA==}
-
-  '@atlaskit/pragmatic-drag-and-drop-hitbox@1.0.3':
-    resolution: {integrity: sha512-/Sbu/HqN2VGLYBhnsG7SbRNg98XKkbF6L7XDdBi+izRybfaK1FeMfodPpm/xnBHPJzwYMdkE0qtLyv6afhgMUA==}
-
-  '@atlaskit/pragmatic-drag-and-drop@1.5.2':
-    resolution: {integrity: sha512-fDuTwlDD11r3ev5tLJ6JnzQUiG9v77c8zGcNdO7RRNtZZbOHam8CFhmyFGY4E/mLjvgYng0UkcyCrSBc4FXYZw==}
-
-  '@atlaskit/tokens@4.5.1':
-    resolution: {integrity: sha512-lq4bFgXQuY95S/MJt+HZvMaqhKiQT3UukxDGCQav5YABtT142wyXaJfljv9tALrx+xhwaLpv9tQh3cjEzviZ6w==}
-    peerDependencies:
-      react: ^18.2.0
 
   '@axe-core/playwright@4.10.1':
     resolution: {integrity: sha512-EV5t39VV68kuAfMKqb/RL+YjYKhfuGim9rgIaQ6Vntb2HgaCaau0h98Y3WEUqW1+PbdzxDtDNjFAipbtZuBmEA==}
@@ -4211,11 +4093,6 @@ packages:
   '@commitlint/types@19.8.0':
     resolution: {integrity: sha512-LRjP623jPyf3Poyfb0ohMj8I3ORyBDOwXAgxxVPbSD0unJuW2mJWeiRfaQinjtccMqC5Wy1HOMfa4btKjbNxbg==}
     engines: {node: '>=v18'}
-
-  '@compiled/react@0.18.3':
-    resolution: {integrity: sha512-dejX23L8JwqbgOzpGWfmk8dB3ygozY1vBJCsDsdyMkeD8cSPD4e1CQZNcz67X0dVdj/rkgJGM5cLKlumP9W/Hg==}
-    peerDependencies:
-      react: '>= 16.12.0'
 
   '@contentlayer/cli@0.3.4':
     resolution: {integrity: sha512-vNDwgLuhYNu+m70NZ3XK9kexKNguuxPXg7Yvzj3B34cEilQjjzSrcTY/i+AIQm9V7uT5GGshx9ukzPf+SmoszQ==}
@@ -6236,12 +6113,6 @@ packages:
   '@stackblitz/sdk@1.11.0':
     resolution: {integrity: sha512-DFQGANNkEZRzFk1/rDP6TcFdM82ycHE+zfl9C/M/jXlH68jiqHWHFMQURLELoD8koxvu/eW5uhg94NSAZlYrUQ==}
 
-  '@statsig/client-core@3.15.0':
-    resolution: {integrity: sha512-T6bMUlYtHjUw3nkrIpVozHZKMdWfDN+n9Ahf3F1UQAVlX1DCOICZ5dyc0g9cn3bCVLYgUGDcPjJF7Lt+IbeSKA==}
-
-  '@statsig/js-client@3.15.0':
-    resolution: {integrity: sha512-rUAwgBtzbP4G37HnktkmbYL4bwADYx6cJmmTAhZSY9nVKqEK71A2WbnOPA9Qwlip34H2ZBkO4QdWsNsCFJWI0w==}
-
   '@sveltejs/acorn-typescript@1.0.5':
     resolution: {integrity: sha512-IwQk4yfwLdibDlrXVE04jTZYlLnwsTT2PIOQQGNLWfjavGifnk1JD1LcZjZaBTRcxZu2FfPfNLOE04DSu9lqtQ==}
     peerDependencies:
@@ -7222,9 +7093,6 @@ packages:
   binary-extensions@2.3.0:
     resolution: {integrity: sha512-Ceh+7ox5qe7LJuLHoY0feh3pHuUDHAcRUeyL2VYghZwfpkNIy/+8Ocg0a3UuSoYzavmylwuLWQOf3hl0jjMMIw==}
     engines: {node: '>=8'}
-
-  bind-event-listener@3.0.0:
-    resolution: {integrity: sha512-PJvH288AWQhKs2v9zyfYdPzlPqf5bXbGMmhmUIY9x4dAUGIWgomO771oBQNwJnMQSnUIXhKu6sgzpBRXTlvb8Q==}
 
   bindings@1.5.0:
     resolution: {integrity: sha512-p2q/t/mhvuOj/UeLlV6566GD/guowlr0hHxClI0W9m7MWYkL1F0hLo+0Aexs9HSPCtR1SXQ0TD3MMKrXZajbiQ==}
@@ -8398,9 +8266,6 @@ packages:
   event-target-shim@5.0.1:
     resolution: {integrity: sha512-i/2XbnSz/uxRCU6+NdVJgKWDTM427+MqYbkQzD321DuCQJUqOuJKIA0IM2+W2xtYHdKOmZ4dR6fExsd4SXL+WQ==}
     engines: {node: '>=6'}
-
-  eventemitter2@4.1.2:
-    resolution: {integrity: sha512-erx0niBaTi8B7ywjGAcg8ilGNRl/xs/o4MO2ZMpRlpZ62mYzjGTBlOpxxRIrPQqBs9mbXkEux6aR+Sc5vQ/wUw==}
 
   eventemitter3@4.0.7:
     resolution: {integrity: sha512-8guHBZCwKnFhYdHr2ysuRWErTwhoN2X8XELRlrRwpmfeY2jjuUN4taQMsULKUVo1K4DvZl+0pgfyoysHxvmvEw==}
@@ -11025,9 +10890,6 @@ packages:
   radix3@1.1.2:
     resolution: {integrity: sha512-b484I/7b8rDEdSDKckSSBA8knMpcdsXudlE/LNL639wFoHKwLbEkQFZHWEYwDC0wa0FKUcCY+GAF73Z7wxNVFA==}
 
-  raf-schd@4.0.3:
-    resolution: {integrity: sha512-tQkJl2GRWh83ui2DiPTJz9wEiMN20syf+5oKfB03yYP7ioZcJwsIK8FjrtLwH1m7C7e+Tt2yYBlrOpdT+dyeIQ==}
-
   randomatic@3.1.1:
     resolution: {integrity: sha512-TuDE5KxZ0J461RVjrJZCJc+J+zCkTb1MbH9AQUq68sMhOMcy9jLcb3BrZKgp9q9Ncltdg4QVqWrH02W2EFFVYw==}
     engines: {node: '>= 0.10.0'}
@@ -11081,16 +10943,6 @@ packages:
     peerDependencies:
       react: ^16.0.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
       react-dom: ^16.0.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
-
-  react-uid@2.4.0:
-    resolution: {integrity: sha512-+MVs/25NrcZuGrmlVRWPOSsbS8y72GJOBsR7d68j3/wqOrRBF52U29XAw4+XSelw0Vm6s5VmGH5mCbTCPGVCVg==}
-    engines: {node: '>=10'}
-    peerDependencies:
-      '@types/react': ^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
-      react: ^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
-    peerDependenciesMeta:
-      '@types/react':
-        optional: true
 
   react@19.0.0:
     resolution: {integrity: sha512-V8AVnmPIICiWpGfm6GLzCR/W5FXLchHop40W4nXBmdlEceh16rCN8O8LNWm5bh5XUX91fh7KpA+W0TgMKmgTpQ==}
@@ -12903,100 +12755,6 @@ snapshots:
       '@csstools/css-tokenizer': 3.0.3
       lru-cache: 10.4.3
 
-  '@atlaskit/atlassian-context@0.2.0(react@19.1.0)':
-    dependencies:
-      '@babel/runtime': 7.26.10
-      react: 19.1.0
-
-  '@atlaskit/css@0.10.2(@types/react@19.0.12)(react@19.1.0)':
-    dependencies:
-      '@atlaskit/tokens': 4.5.1(@types/react@19.0.12)(react@19.1.0)
-      '@babel/runtime': 7.26.10
-      '@compiled/react': 0.18.3(react@19.1.0)
-      react: 19.1.0
-    transitivePeerDependencies:
-      - '@types/react'
-      - supports-color
-
-  '@atlaskit/ds-lib@4.0.0(@types/react@19.0.12)(react@19.1.0)':
-    dependencies:
-      '@atlaskit/platform-feature-flags': 1.1.1(react@19.1.0)
-      '@babel/runtime': 7.26.10
-      bind-event-listener: 3.0.0
-      react: 19.1.0
-      react-uid: 2.4.0(@types/react@19.0.12)(react@19.1.0)
-    transitivePeerDependencies:
-      - '@types/react'
-
-  '@atlaskit/feature-gate-js-client@5.0.0(react@19.1.0)':
-    dependencies:
-      '@atlaskit/atlassian-context': 0.2.0(react@19.1.0)
-      '@babel/runtime': 7.26.10
-      '@statsig/client-core': 3.15.0
-      '@statsig/js-client': 3.15.0
-      eventemitter2: 4.1.2
-    transitivePeerDependencies:
-      - react
-
-  '@atlaskit/motion@5.1.2(@types/react@19.0.12)(react@19.1.0)':
-    dependencies:
-      '@atlaskit/css': 0.10.2(@types/react@19.0.12)(react@19.1.0)
-      '@atlaskit/ds-lib': 4.0.0(@types/react@19.0.12)(react@19.1.0)
-      '@atlaskit/platform-feature-flags': 1.1.1(react@19.1.0)
-      '@babel/runtime': 7.26.10
-      '@compiled/react': 0.18.3(react@19.1.0)
-      bind-event-listener: 3.0.0
-      react: 19.1.0
-    transitivePeerDependencies:
-      - '@types/react'
-      - supports-color
-
-  '@atlaskit/platform-feature-flags@1.1.1(react@19.1.0)':
-    dependencies:
-      '@atlaskit/feature-gate-js-client': 5.0.0(react@19.1.0)
-      '@babel/runtime': 7.26.10
-    transitivePeerDependencies:
-      - react
-
-  '@atlaskit/pragmatic-drag-and-drop-auto-scroll@2.1.0':
-    dependencies:
-      '@atlaskit/pragmatic-drag-and-drop': 1.5.2
-      '@babel/runtime': 7.26.10
-
-  '@atlaskit/pragmatic-drag-and-drop-flourish@2.0.2(@types/react@19.0.12)(react@19.1.0)':
-    dependencies:
-      '@atlaskit/motion': 5.1.2(@types/react@19.0.12)(react@19.1.0)
-      '@atlaskit/tokens': 4.5.1(@types/react@19.0.12)(react@19.1.0)
-      '@babel/runtime': 7.26.10
-    transitivePeerDependencies:
-      - '@types/react'
-      - react
-      - supports-color
-
-  '@atlaskit/pragmatic-drag-and-drop-hitbox@1.0.3':
-    dependencies:
-      '@atlaskit/pragmatic-drag-and-drop': 1.5.2
-      '@babel/runtime': 7.26.10
-
-  '@atlaskit/pragmatic-drag-and-drop@1.5.2':
-    dependencies:
-      '@babel/runtime': 7.26.10
-      bind-event-listener: 3.0.0
-      raf-schd: 4.0.3
-
-  '@atlaskit/tokens@4.5.1(@types/react@19.0.12)(react@19.1.0)':
-    dependencies:
-      '@atlaskit/ds-lib': 4.0.0(@types/react@19.0.12)(react@19.1.0)
-      '@atlaskit/platform-feature-flags': 1.1.1(react@19.1.0)
-      '@babel/runtime': 7.26.10
-      '@babel/traverse': 7.26.10
-      '@babel/types': 7.26.10
-      bind-event-listener: 3.0.0
-      react: 19.1.0
-    transitivePeerDependencies:
-      - '@types/react'
-      - supports-color
-
   '@axe-core/playwright@4.10.1(playwright-core@1.51.1)':
     dependencies:
       axe-core: 4.10.3
@@ -13646,11 +13404,6 @@ snapshots:
     dependencies:
       '@types/conventional-commits-parser': 5.0.1
       chalk: 5.4.1
-
-  '@compiled/react@0.18.3(react@19.1.0)':
-    dependencies:
-      csstype: 3.1.3
-      react: 19.1.0
 
   '@contentlayer/cli@0.3.4(esbuild@0.25.2)':
     dependencies:
@@ -15590,12 +15343,6 @@ snapshots:
 
   '@stackblitz/sdk@1.11.0': {}
 
-  '@statsig/client-core@3.15.0': {}
-
-  '@statsig/js-client@3.15.0':
-    dependencies:
-      '@statsig/client-core': 3.15.0
-
   '@sveltejs/acorn-typescript@1.0.5(acorn@8.14.1)':
     dependencies:
       acorn: 8.14.1
@@ -16803,8 +16550,6 @@ snapshots:
       is-windows: 1.0.2
 
   binary-extensions@2.3.0: {}
-
-  bind-event-listener@3.0.0: {}
 
   bindings@1.5.0:
     dependencies:
@@ -18249,8 +17994,6 @@ snapshots:
       through: 2.3.8
 
   event-target-shim@5.0.1: {}
-
-  eventemitter2@4.1.2: {}
 
   eventemitter3@4.0.7: {}
 
@@ -21644,8 +21387,6 @@ snapshots:
 
   radix3@1.1.2: {}
 
-  raf-schd@4.0.3: {}
-
   randomatic@3.1.1:
     dependencies:
       is-number: 4.0.0
@@ -21693,13 +21434,6 @@ snapshots:
     dependencies:
       react: 19.1.0
       react-dom: 19.1.0(react@19.1.0)
-
-  react-uid@2.4.0(@types/react@19.0.12)(react@19.1.0):
-    dependencies:
-      react: 19.1.0
-      tslib: 2.8.1
-    optionalDependencies:
-      '@types/react': 19.0.12
 
   react@19.0.0: {}
 
