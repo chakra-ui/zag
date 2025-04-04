@@ -80,7 +80,7 @@ const sidebar: Record<"docs", SidebarItem[]> = {
         { type: "doc", label: "Editable", id: "editable" },
         { type: "doc", label: "File Upload", id: "file-upload" },
         { type: "doc", label: "Hover Card", id: "hover-card" },
-        // { type: "doc", label: "Listbox", id: "listbox", beta: true },
+        { type: "doc", label: "Listbox", id: "listbox", beta: true },
         { type: "doc", label: "Menu", id: "menu" },
         { type: "doc", label: "Context Menu", id: "context-menu" },
         { type: "doc", label: "Nested Menu", id: "nested-menu" },
