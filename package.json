@@ -69,12 +69,12 @@
     "@eslint/eslintrc": "3.3.1",
     "@octokit/rest": "21.1.1",
     "@playwright/test": "1.51.1",
-    "@swc/core": "1.11.13",
+    "@swc/core": "1.11.16",
     "@types/jsdom": "^21.1.7",
-    "@types/node": "22.13.13",
+    "@types/node": "22.14.0",
     "@types/signale": "1.4.7",
-    "@typescript-eslint/eslint-plugin": "8.27.0",
-    "@typescript-eslint/parser": "8.27.0",
+    "@typescript-eslint/eslint-plugin": "8.29.0",
+    "@typescript-eslint/parser": "8.29.0",
     "axe-core": "4.10.3",
     "commitlint": "19.8.0",
     "cross-env": "^7.0.3",
@@ -82,7 +82,7 @@
     "eslint": "9.23.0",
     "eslint-config-prettier": "10.1.1",
     "eslint-plugin-import": "2.31.0",
-    "eslint-plugin-prettier": "5.2.4",
+    "eslint-plugin-prettier": "5.2.6",
     "fast-glob": "3.3.3",
     "find-packages": "10.0.4",
     "husky": "9.1.7",
@@ -98,12 +98,12 @@
     "tsx": "4.19.3",
     "typescript": "5.8.2",
     "vercel-submodules": "1.0.10",
-    "vite": "6.2.4",
+    "vite": "6.2.5",
     "vite-plugin-dts": "4.5.3",
-    "vitest": "3.0.9"
+    "vitest": "3.1.1"
   },
   "engines": {
     "node": ">=18.0.0"
   },
-  "packageManager": "pnpm@10.6.5"
+  "packageManager": "pnpm@10.7.1"
 }
