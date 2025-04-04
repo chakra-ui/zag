@@ -39,11 +39,14 @@ export class TagsInputModel extends Model {
   async addTag(value: string) {
     await this.input.pressSequentially(value)
     await this.page.keyboard.press("Enter")
+    await this.seeInputHasValue("")
+    await this.seeInputIsFocused()
   }
 
   async editTag(value: string) {
     await this.type(value)
     await this.page.keyboard.press("Enter")
+    await this.seeInputIsFocused()
   }
 
   async clickControl() {

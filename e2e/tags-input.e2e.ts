@@ -39,6 +39,7 @@ test.describe("tags-input", () => {
     await I.focusInput()
     await I.pressKey("ArrowLeft")
     await I.pressKey("Enter")
+    await I.seeTagInputIsFocused("Vue")
 
     await I.pressKey("Backspace")
     await I.pressKey("Enter")
@@ -86,7 +87,10 @@ test.describe("tags-input", () => {
 
   test("should navigate tags with arrow keys", async () => {
     await I.addTag("Svelte")
+    await I.seeTag("Svelte")
+
     await I.addTag("Solid")
+    await I.seeTag("Solid")
 
     await I.pressKey("ArrowLeft")
     await I.seeTagIsHighlighted("Solid")
@@ -117,10 +121,11 @@ test.describe("tags-input", () => {
   test("edit tag with enter key", async () => {
     await I.addTag("Svelte")
     await I.addTag("Solid")
+
     await I.pressKey("ArrowLeft", 2)
+    await I.seeTagIsHighlighted("Svelte")
 
     await I.pressKey("Enter")
-
     await I.seeTagInputIsFocused("Svelte")
     await I.editTag("Jenkins")
 
