@@ -1,5 +1,27 @@
 # @zag-js/combobox
 
+## 1.8.0
+
+### Minor Changes
+
+- [`deaad3d`](https://github.com/chakra-ui/zag/commit/deaad3d6b0b78a5b25845a319dc97439ed01ef53) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Add support for `onSelect` callback that fires when an item has
+  been selected, regardless of whether the value has actually changed.
+
+### Patch Changes
+
+- Updated dependencies [[`0cb6c0e`](https://github.com/chakra-ui/zag/commit/0cb6c0e70193b8a30c17c96f2b739be215f266ed),
+  [`66f7828`](https://github.com/chakra-ui/zag/commit/66f7828541102fcf4f0fba05bb241e20a5ed45cb)]:
+  - @zag-js/collection@1.8.0
+  - @zag-js/core@1.8.0
+  - @zag-js/dismissable@1.8.0
+  - @zag-js/anatomy@1.8.0
+  - @zag-js/types@1.8.0
+  - @zag-js/aria-hidden@1.8.0
+  - @zag-js/utils@1.8.0
+  - @zag-js/dom-query@1.8.0
+  - @zag-js/popper@1.8.0
+
 ## 1.7.0
 
 ### Patch Changes
