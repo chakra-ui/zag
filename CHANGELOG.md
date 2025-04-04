@@ -8,6 +8,17 @@ All notable changes to this project will be documented in this file.
 
 See the [Changesets](./.changeset) for the latest changes.
 
+## [1.8.1](./#1.8.1) - 2025-04-04
+
+### Fixed
+
+- **Listbox**
+
+  - Fix issue where keyboard focus loops when `loopFocus` was not set.
+  - Fix issue where `extended` selection mode was not working as expected.
+
+- **Dom Query**: Improve platform detection logic to detect `macOS` and `iOS` correctly.
+
 ## [1.8.0](./#1.8.0) - 2025-04-04
 
 ### Added
