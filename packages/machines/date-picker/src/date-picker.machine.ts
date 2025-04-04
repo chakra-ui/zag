@@ -524,11 +524,11 @@ export const machine = createMachine<DatePickerSchema>({
         "TABLE.ARROW_RIGHT": [
           {
             guard: "isMonthView",
-            actions: "focusNextMonth",
+            actions: ["focusNextMonth"],
           },
           {
             guard: "isYearView",
-            actions: "focusNextYear",
+            actions: ["focusNextYear"],
           },
           {
             actions: ["focusNextDay", "setHoveredDate"],
@@ -537,11 +537,11 @@ export const machine = createMachine<DatePickerSchema>({
         "TABLE.ARROW_LEFT": [
           {
             guard: "isMonthView",
-            actions: "focusPreviousMonth",
+            actions: ["focusPreviousMonth"],
           },
           {
             guard: "isYearView",
-            actions: "focusPreviousYear",
+            actions: ["focusPreviousYear"],
           },
           {
             actions: ["focusPreviousDay"],
@@ -550,11 +550,11 @@ export const machine = createMachine<DatePickerSchema>({
         "TABLE.ARROW_UP": [
           {
             guard: "isMonthView",
-            actions: "focusPreviousMonthColumn",
+            actions: ["focusPreviousMonthColumn"],
           },
           {
             guard: "isYearView",
-            actions: "focusPreviousYearColumn",
+            actions: ["focusPreviousYearColumn"],
           },
           {
             actions: ["focusPreviousWeek"],
@@ -563,11 +563,11 @@ export const machine = createMachine<DatePickerSchema>({
         "TABLE.ARROW_DOWN": [
           {
             guard: "isMonthView",
-            actions: "focusNextMonthColumn",
+            actions: ["focusNextMonthColumn"],
           },
           {
             guard: "isYearView",
-            actions: "focusNextYearColumn",
+            actions: ["focusNextYearColumn"],
           },
           {
             actions: ["focusNextWeek"],
