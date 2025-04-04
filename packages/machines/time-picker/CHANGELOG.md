@@ -1,5 +1,18 @@
 # @zag-js/time-picker
 
+## 1.8.2
+
+### Patch Changes
+
+- Updated dependencies [[`25d93b8`](https://github.com/chakra-ui/zag/commit/25d93b8be12e8df26ed04c5d298c66f54910fe85)]:
+  - @zag-js/dom-query@1.8.2
+  - @zag-js/core@1.8.2
+  - @zag-js/dismissable@1.8.2
+  - @zag-js/popper@1.8.2
+  - @zag-js/anatomy@1.8.2
+  - @zag-js/types@1.8.2
+  - @zag-js/utils@1.8.2
+
 ## 1.8.1
 
 ### Patch Changes

@@ -1,5 +1,15 @@
 # @zag-js/dom-query
 
+## 1.8.2
+
+### Patch Changes
+
+- [`25d93b8`](https://github.com/chakra-ui/zag/commit/25d93b8be12e8df26ed04c5d298c66f54910fe85) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix resize observe for radio group and tabs indicator
+
+- Updated dependencies []:
+  - @zag-js/types@1.8.2
+
 ## 1.8.1
 
 ### Patch Changes
