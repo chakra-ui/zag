@@ -5,10 +5,13 @@ import { normalizeProps, useMachine } from "@zag-js/vue"
 
 const controls = useControls(editableControls)
 
-const service = useMachine(editable.machine, {
-  id: useId(),
-  defaultValue: "Hello World",
-})
+const service = useMachine(
+  editable.machine,
+  controls.mergeProps<editable.Props>({
+    id: useId(),
+    defaultValue: "Hello World",
+  }),
+)
 
 const api = computed(() => editable.connect(service, normalizeProps))
 </script>

@@ -5,9 +5,12 @@ import { normalizeProps, useMachine } from "@zag-js/vue"
 
 const controls = useControls(hoverCardControls)
 
-const service = useMachine(hoverCard.machine, {
-  id: useId(),
-})
+const service = useMachine(
+  hoverCard.machine,
+  controls.mergeProps<hoverCard.Props>({
+    id: useId(),
+  }),
+)
 
 const api = computed(() => hoverCard.connect(service, normalizeProps))
 </script>

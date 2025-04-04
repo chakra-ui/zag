@@ -5,9 +5,12 @@ import { normalizeProps, useMachine } from "@zag-js/vue"
 
 const controls = useControls(toggleGroupControls)
 
-const service = useMachine(toggle.machine, {
-  id: useId(),
-})
+const service = useMachine(
+  toggle.machine,
+  controls.mergeProps<toggle.Props>({
+    id: useId(),
+  }),
+)
 const api = computed(() => toggle.connect(service, normalizeProps))
 </script>
 
@@ -23,5 +26,8 @@ const api = computed(() => toggle.connect(service, normalizeProps))
 
   <Toolbar>
     <StateVisualizer :state="service" />
+    <template #controls>
+      <Controls :control="controls" />
+    </template>
   </Toolbar>
 </template>

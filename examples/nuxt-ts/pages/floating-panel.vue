@@ -5,9 +5,12 @@ import { normalizeProps, useMachine } from "@zag-js/vue"
 
 const controls = useControls(floatingPanelControls)
 
-const service = useMachine(floatingPanel.machine, {
-  id: useId(),
-})
+const service = useMachine(
+  floatingPanel.machine,
+  controls.mergeProps<floatingPanel.Props>({
+    id: useId(),
+  }),
+)
 
 const api = computed(() => floatingPanel.connect(service, normalizeProps))
 </script>

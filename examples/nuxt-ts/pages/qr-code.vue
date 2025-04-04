@@ -5,10 +5,13 @@ import { normalizeProps, useMachine } from "@zag-js/vue"
 
 const controls = useControls(qrCodeControls)
 
-const service = useMachine(qrCode.machine, {
-  id: useId(),
-  encoding: { ecc: "H" },
-})
+const service = useMachine(
+  qrCode.machine,
+  controls.mergeProps<qrCode.Props>({
+    id: useId(),
+    encoding: { ecc: "H" },
+  }),
+)
 
 const api = computed(() => qrCode.connect(service, normalizeProps))
 </script>

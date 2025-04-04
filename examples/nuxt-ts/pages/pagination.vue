@@ -6,13 +6,16 @@ import * as pagination from "@zag-js/pagination"
 const controls = useControls(paginationControls)
 const details = ref({})
 
-const service = useMachine(pagination.machine, {
-  id: useId(),
-  count: paginationData.length,
-  onPageChange(v) {
-    details.value = v
-  },
-})
+const service = useMachine(
+  pagination.machine,
+  controls.mergeProps<pagination.Props>({
+    id: useId(),
+    count: paginationData.length,
+    onPageChange(v) {
+      details.value = v
+    },
+  }),
+)
 
 const api = computed(() => pagination.connect(service, normalizeProps))
 const data = computed(() => api.value.slice(paginationData))

@@ -5,13 +5,16 @@ import { normalizeProps, useMachine } from "@zag-js/vue"
 
 const controls = useControls(carouselControls)
 
-const service = useMachine(carousel.machine, {
-  id: useId(),
-  spacing: "20px",
-  slidesPerPage: 2,
-  slideCount: carouselData.length,
-  allowMouseDrag: true,
-})
+const service = useMachine(
+  carousel.machine,
+  controls.mergeProps<carousel.Props>({
+    id: useId(),
+    spacing: "20px",
+    slidesPerPage: 2,
+    slideCount: carouselData.length,
+    allowMouseDrag: true,
+  }),
+)
 
 const api = computed(() => carousel.connect(service, normalizeProps))
 </script>

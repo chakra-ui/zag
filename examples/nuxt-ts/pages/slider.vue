@@ -6,11 +6,14 @@ import { normalizeProps, useMachine } from "@zag-js/vue"
 
 const controls = useControls(sliderControls)
 
-const service = useMachine(slider.machine, {
-  id: useId(),
-  name: "quantity",
-  defaultValue: [0],
-})
+const service = useMachine(
+  slider.machine,
+  controls.mergeProps<slider.Props>({
+    id: useId(),
+    name: "quantity",
+    defaultValue: [0],
+  }),
+)
 
 const api = computed(() => slider.connect(service, normalizeProps))
 </script>

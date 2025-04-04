@@ -5,9 +5,12 @@ import { normalizeProps, useMachine } from "@zag-js/vue"
 
 const controls = useControls(timePickerControls)
 
-const service = useMachine(timePicker.machine, {
-  id: useId(),
-})
+const service = useMachine(
+  timePicker.machine,
+  controls.mergeProps<timePicker.Props>({
+    id: useId(),
+  }),
+)
 
 const api = computed(() => timePicker.connect(service, normalizeProps))
 </script>

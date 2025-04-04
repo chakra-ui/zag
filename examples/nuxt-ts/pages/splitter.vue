@@ -5,10 +5,13 @@ import * as splitter from "@zag-js/splitter"
 
 const controls = useControls(splitterControls)
 
-const service = useMachine(splitter.machine, {
-  id: useId(),
-  panels: [{ id: "a" }, { id: "b" }],
-})
+const service = useMachine(
+  splitter.machine,
+  controls.mergeProps<splitter.Props>({
+    id: useId(),
+    panels: [{ id: "a" }, { id: "b" }],
+  }),
+)
 
 const api = computed(() => splitter.connect(service, normalizeProps))
 </script>

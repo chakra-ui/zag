@@ -5,9 +5,12 @@ import { normalizeProps, useMachine } from "@zag-js/vue"
 
 const controls = useControls(progressControls)
 
-const service = useMachine(progress.machine, {
-  id: useId(),
-})
+const service = useMachine(
+  progress.machine,
+  controls.mergeProps<progress.Props>({
+    id: useId(),
+  }),
+)
 
 const api = computed(() => progress.connect(service, normalizeProps))
 </script>

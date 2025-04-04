@@ -6,11 +6,14 @@ import { computed } from "vue"
 
 const controls = useControls(datePickerControls)
 
-const service = useMachine(datePicker.machine, {
-  id: "1",
-  locale: "en",
-  selectionMode: "single",
-})
+const service = useMachine(
+  datePicker.machine,
+  controls.mergeProps<datePicker.Props>({
+    id: useId(),
+    locale: "en",
+    selectionMode: "single",
+  }),
+)
 
 const api = computed(() => datePicker.connect(service, normalizeProps))
 </script>

@@ -6,10 +6,13 @@ import serialize from "form-serialize"
 
 const controls = useControls(radioControls)
 
-const service = useMachine(radio.machine, {
-  id: useId(),
-  name: "fruit",
-})
+const service = useMachine(
+  radio.machine,
+  controls.mergeProps<radio.Props>({
+    id: useId(),
+    name: "fruit",
+  }),
+)
 
 const api = computed(() => radio.connect(service, normalizeProps))
 </script>

@@ -50,10 +50,13 @@ const collection = tree.collection<Node>({
   },
 })
 
-const service = useMachine(tree.machine, {
-  id: useId(),
-  collection,
-})
+const service = useMachine(
+  tree.machine,
+  controls.mergeProps<tree.Props>({
+    id: useId(),
+    collection,
+  }),
+)
 
 const api = computed(() => tree.connect(service, normalizeProps))
 </script>

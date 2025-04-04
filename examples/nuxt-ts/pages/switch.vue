@@ -5,10 +5,13 @@ import { normalizeProps, useMachine } from "@zag-js/vue"
 
 const controls = useControls(switchControls)
 
-const service = useMachine(zagSwitch.machine, {
-  name: "switch",
-  id: useId(),
-})
+const service = useMachine(
+  zagSwitch.machine,
+  controls.mergeProps<zagSwitch.Props>({
+    name: "switch",
+    id: useId(),
+  }),
+)
 
 const api = computed(() => zagSwitch.connect(service, normalizeProps))
 </script>

@@ -6,13 +6,16 @@ import { computed } from "vue"
 
 const controls = useControls(datePickerControls)
 
-const service = useMachine(datePicker.machine, {
-  id: useId(),
-  name: "date[]",
-  locale: "en",
-  numOfMonths: 2,
-  selectionMode: "range",
-})
+const service = useMachine(
+  datePicker.machine,
+  controls.mergeProps<datePicker.Props>({
+    id: useId(),
+    name: "date[]",
+    locale: "en",
+    numOfMonths: 2,
+    selectionMode: "range",
+  }),
+)
 
 const api = computed(() => datePicker.connect(service, normalizeProps))
 const offset = computed(() => api.value.getOffset({ months: 1 }))

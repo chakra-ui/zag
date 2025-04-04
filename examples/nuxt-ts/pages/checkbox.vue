@@ -6,10 +6,13 @@ import serialize from "form-serialize"
 
 const controls = useControls(checkboxControls)
 
-const service = useMachine(checkbox.machine, {
-  name: "checkbox",
-  id: useId(),
-})
+const service = useMachine(
+  checkbox.machine,
+  controls.mergeProps<checkbox.Props>({
+    name: "checkbox",
+    id: useId(),
+  }),
+)
 
 const api = computed(() => checkbox.connect(service, normalizeProps))
 </script>

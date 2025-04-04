@@ -5,7 +5,12 @@ import { normalizeProps, useMachine } from "@zag-js/vue"
 
 const controls = useControls(angleSliderControls)
 
-const service = useMachine(angleSlider.machine, { id: useId() })
+const service = useMachine(
+  angleSlider.machine,
+  controls.mergeProps<angleSlider.Props>({
+    id: useId(),
+  }),
+)
 
 const api = computed(() => angleSlider.connect(service, normalizeProps))
 </script>
