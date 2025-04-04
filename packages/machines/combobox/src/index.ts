@@ -26,4 +26,5 @@ export type {
   ComboboxMachine as Machine,
   TriggerProps,
   ValueChangeDetails,
+  SelectionDetails,
 } from "./combobox.types"
