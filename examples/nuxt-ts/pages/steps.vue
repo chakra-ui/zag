@@ -3,10 +3,15 @@ import * as steps from "@zag-js/steps"
 import { stepsControls, stepsData } from "@zag-js/shared"
 import { normalizeProps, useMachine } from "@zag-js/vue"
 
-const service = useMachine(steps.machine, {
-  id: useId(),
-  count: stepsData.length,
-})
+const controls = useControls(stepsControls)
+
+const service = useMachine(
+  steps.machine,
+  controls.mergeProps<steps.Props>({
+    id: useId(),
+    count: stepsData.length,
+  }),
+)
 
 const api = computed(() => steps.connect(service, normalizeProps))
 </script>

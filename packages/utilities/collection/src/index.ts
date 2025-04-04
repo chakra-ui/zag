@@ -1,6 +1,6 @@
-export { GridCollection, type GridCollectionOptions } from "./grid-collection"
+export { GridCollection, type GridCollectionOptions, isGridCollection } from "./grid-collection"
 export { TreeCollection, filePathToTree, flattenedToTree } from "./tree-collection"
-export { ListCollection } from "./list-collection"
+export { ListCollection, isListCollection } from "./list-collection"
 export type {
   CollectionItem,
   CollectionMethods,
@@ -14,3 +14,4 @@ export type {
   FilePathTreeNode,
   TreeSkipFn,
 } from "./types"
+export { Selection, type SelectionMode } from "./selection"

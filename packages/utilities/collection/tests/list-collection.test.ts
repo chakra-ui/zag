@@ -51,11 +51,11 @@ describe("list collection", () => {
   })
 
   test("set items", () => {
-    list.setItems([
+    const next = list.setItems([
       { label: "Svelte", value: "svelte" },
       { label: "Node.js", value: "node" },
     ])
-    expect(list.getValues()).toMatchInlineSnapshot(`
+    expect(next.getValues()).toMatchInlineSnapshot(`
       [
         "svelte",
         "node",
@@ -116,8 +116,8 @@ describe("list collection", () => {
   })
 
   test("insert before / valid", () => {
-    list.insertBefore("react", { label: "Svelte", value: "svelte" })
-    expect(list.getValues()).toMatchInlineSnapshot(`
+    const next = list.insertBefore("react", { label: "Svelte", value: "svelte" })
+    expect(next.getValues()).toMatchInlineSnapshot(`
       [
         "svelte",
         "react",
@@ -129,8 +129,8 @@ describe("list collection", () => {
   })
 
   test("insert before / invalid", () => {
-    list.insertBefore("<random>", { label: "Svelte", value: "svelte" })
-    expect(list.getValues()).toMatchInlineSnapshot(`
+    const next = list.insertBefore("<random>", { label: "Svelte", value: "svelte" })
+    expect(next.getValues()).toMatchInlineSnapshot(`
       [
         "react",
         "vue",
@@ -141,8 +141,8 @@ describe("list collection", () => {
   })
 
   test("insert after / valid", () => {
-    list.insertAfter("solid", { label: "Svelte", value: "svelte" })
-    expect(list.getValues()).toMatchInlineSnapshot(`
+    const next = list.insertAfter("solid", { label: "Svelte", value: "svelte" })
+    expect(next.getValues()).toMatchInlineSnapshot(`
       [
         "react",
         "vue",
@@ -154,8 +154,8 @@ describe("list collection", () => {
   })
 
   test("insert after / invalid", () => {
-    list.insertAfter("<random>", { label: "Svelte", value: "svelte" })
-    expect(list.getValues()).toMatchInlineSnapshot(`
+    const next = list.insertAfter("<random>", { label: "Svelte", value: "svelte" })
+    expect(next.getValues()).toMatchInlineSnapshot(`
       [
         "react",
         "vue",
@@ -166,8 +166,8 @@ describe("list collection", () => {
   })
 
   test("reorder / valid", () => {
-    list.reorder(2, 1)
-    expect(list.getValues()).toMatchInlineSnapshot(`
+    const next = list.reorder(2, 1)
+    expect(next.getValues()).toMatchInlineSnapshot(`
       [
         "react",
         "solid",
@@ -178,8 +178,8 @@ describe("list collection", () => {
   })
 
   test("reorder / invalid", () => {
-    list.reorder(2, 5)
-    expect(list.getValues()).toMatchInlineSnapshot(`
+    const next = list.reorder(2, 5)
+    expect(next.getValues()).toMatchInlineSnapshot(`
       [
         "react",
         "vue",

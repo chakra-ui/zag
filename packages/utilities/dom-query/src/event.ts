@@ -52,11 +52,16 @@ export function isDownloadingEvent(event: Pick<MouseEvent, "altKey" | "currentTa
 }
 
 export function isComposingEvent(event: any) {
-  return getNativeEvent(event).isComposing
+  return getNativeEvent(event).isComposing || event.keyCode === 229
 }
 
 export function isKeyboardClick(e: Pick<MouseEvent, "detail" | "clientX" | "clientY">) {
   return e.detail === 0 || (e.clientX === 0 && e.clientY === 0)
+}
+
+export function isCtrlOrMetaKey(e: Pick<KeyboardEvent, "ctrlKey" | "metaKey">) {
+  if (isMac()) return e.metaKey
+  return e.ctrlKey
 }
 
 export function isPrintableKey(e: Pick<KeyboardEvent, "key" | "ctrlKey" | "metaKey">): boolean {

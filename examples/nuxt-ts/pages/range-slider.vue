@@ -6,11 +6,14 @@ import serialize from "form-serialize"
 
 const controls = useControls(sliderControls)
 
-const service = useMachine(slider.machine, {
-  id: useId(),
-  name: "quantity",
-  defaultValue: [10, 60],
-})
+const service = useMachine(
+  slider.machine,
+  controls.mergeProps<slider.Props>({
+    id: useId(),
+    name: "quantity",
+    defaultValue: [10, 60],
+  }),
+)
 
 const api = computed(() => slider.connect(service, normalizeProps))
 </script>

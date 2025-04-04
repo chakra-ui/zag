@@ -166,7 +166,7 @@ export function useMachine<T extends MachineSchema>(
   }
 
   const computed: ComputedFn<T> = (key) => {
-    ensure(machine.computed, `[zag-js] No computed object found on machine`)
+    ensure(machine.computed, () => `[zag-js] No computed object found on machine`)
     const fn = machine.computed[key]
     return fn({
       context: ctx,

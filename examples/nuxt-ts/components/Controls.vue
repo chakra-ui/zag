@@ -53,7 +53,12 @@ defineProps<{ control: any }>()
             "
           >
             <option>-----</option>
-            <option v-for="option in value.options" :key="option" :value="option">
+            <option
+              v-for="option in value.options"
+              :key="option"
+              :value="option"
+              :selected="control.getState(key) === option"
+            >
               {{ option }}
             </option>
           </select>

@@ -5,10 +5,13 @@ import { normalizeProps, useMachine } from "@zag-js/vue"
 
 const controls = useControls(tabsControls)
 
-const service = useMachine(tabs.machine, {
-  id: useId(),
-  defaultValue: "nils",
-})
+const service = useMachine(
+  tabs.machine,
+  controls.mergeProps<tabs.Props>({
+    id: useId(),
+    defaultValue: "nils",
+  }),
+)
 
 const api = computed(() => tabs.connect(service, normalizeProps))
 </script>

@@ -5,9 +5,12 @@ import { normalizeProps, useMachine } from "@zag-js/vue"
 
 const controls = useControls(popoverControls)
 
-const service = useMachine(popover.machine, {
-  id: useId(),
-})
+const service = useMachine(
+  popover.machine,
+  controls.mergeProps<popover.Props>({
+    id: useId(),
+  }),
+)
 
 const api = computed(() => popover.connect(service, normalizeProps))
 </script>

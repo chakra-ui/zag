@@ -1,0 +1,17 @@
+```jsx
+import * as listbox from "@zag-js/listbox"
+import { useMachine, normalizeProps } from "@zag-js/react"
+import { useId } from "react"
+
+function Listbox() {
+  const service = useMachine(listbox.machine, { id: useId() })
+
+  const api = listbox.connect(service, normalizeProps)
+
+  return (
+    <div {...api.getRootProps()}>
+      <div {...api.getContentProps()}>...</div>
+    </div>
+  )
+}
+```

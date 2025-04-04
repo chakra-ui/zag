@@ -1,7 +1,7 @@
 <script setup>
 import * as tooltip from "@zag-js/tooltip"
 import { normalizeProps, useMachine } from "@zag-js/vue"
-import { computed, Teleport } from "vue"
+import { computed } from "vue"
 
 const service = useMachine(tooltip.machine, {
   id: useId(),

@@ -1,0 +1,17 @@
+```jsx
+import * as listbox from "@zag-js/listbox"
+import { useMachine, normalizeProps } from "@zag-js/solid"
+import { createMemo, createUniqueId } from "solid-js"
+
+function Listbox() {
+  const service = useMachine(listbox.machine, { id: createUniqueId() })
+
+  const api = createMemo(() => listbox.connect(service, normalizeProps))
+
+  return (
+    <div {...api().getRootProps()}>
+      <div {...api().getContentProps()}>...</div>
+    </div>
+  )
+}
+```

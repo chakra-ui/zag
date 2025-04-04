@@ -2,13 +2,16 @@
 import * as collapsible from "@zag-js/collapsible"
 import { collapsibleControls } from "@zag-js/shared"
 import { normalizeProps, useMachine } from "@zag-js/vue"
-import { ChevronDownIcon } from 'lucide-vue-next'
+import { ChevronDownIcon } from "lucide-vue-next"
 
 const controls = useControls(collapsibleControls)
 
-const service = useMachine(collapsible.machine, {
-  id: useId(),
-})
+const service = useMachine(
+  collapsible.machine,
+  controls.mergeProps<collapsible.Props>({
+    id: useId(),
+  }),
+)
 
 const api = computed(() => collapsible.connect(service, normalizeProps))
 </script>

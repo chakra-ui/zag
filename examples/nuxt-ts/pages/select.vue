@@ -6,10 +6,13 @@ import { normalizeProps, useMachine } from "@zag-js/vue"
 
 const controls = useControls(selectControls)
 
-const service = useMachine(select.machine, {
-  collection: select.collection({ items: selectData }),
-  id: useId(),
-})
+const service = useMachine(
+  select.machine,
+  controls.mergeProps<select.Props>({
+    collection: select.collection({ items: selectData }),
+    id: useId(),
+  }),
+)
 
 const api = computed(() => select.connect(service, normalizeProps))
 </script>

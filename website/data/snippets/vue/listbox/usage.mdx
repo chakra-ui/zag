@@ -1,0 +1,17 @@
+```html
+<script setup>
+  import * as listbox from "@zag-js/listbox"
+  import { useMachine, normalizeProps } from "@zag-js/vue"
+  import { computed, useId } from "vue"
+
+  const service = useMachine(listbox.machine, { id: useId() })
+
+  const api = computed(() => listbox.connect(service, normalizeProps))
+</script>
+
+<template>
+  <div ref="ref" v-bind="api.getRootProps()">
+    <div v-bind="api.getContentProps()">...</div>
+  </div>
+</template>
+```

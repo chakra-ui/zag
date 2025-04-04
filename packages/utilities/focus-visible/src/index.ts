@@ -2,12 +2,7 @@
  * Credit: Huge props to the team at Adobe for inspiring this implementation.
  * https://github.com/adobe/react-spectrum/blob/main/packages/%40react-aria/interactions/src/useFocusVisible.ts
  */
-import { getDocument, getEventTarget, getWindow, isMac } from "@zag-js/dom-query"
-
-function isVirtualClick(event: MouseEvent | PointerEvent): boolean {
-  if ((event as any).mozInputSource === 0 && event.isTrusted) return true
-  return event.detail === 0 && !(event as PointerEvent).pointerType
-}
+import { getDocument, getEventTarget, getWindow, isMac, isVirtualClick } from "@zag-js/dom-query"
 
 function isValidKey(e: KeyboardEvent) {
   return !(

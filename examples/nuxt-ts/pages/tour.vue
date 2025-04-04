@@ -7,10 +7,13 @@ import { useId } from "vue"
 
 const controls = useControls(tourControls)
 
-const service = useMachine(tour.machine, {
-  id: useId(),
-  steps: tourData,
-})
+const service = useMachine(
+  tour.machine,
+  controls.mergeProps<tour.Props>({
+    id: useId(),
+    steps: tourData,
+  }),
+)
 
 const api = computed(() => tour.connect(service, normalizeProps))
 const open = computed(() => api.value.open && api.value.step)

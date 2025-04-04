@@ -16,19 +16,22 @@ const collectionRef = computed(() =>
   }),
 )
 
-const service = useMachine(combobox.machine, {
-  id: useId(),
-  get collection() {
-    return collectionRef.value
-  },
-  onOpenChange() {
-    options.value = comboboxData
-  },
-  onInputValueChange({ inputValue }) {
-    const filtered = matchSorter(comboboxData, inputValue, { keys: ["label"] })
-    options.value = filtered.length > 0 ? filtered : comboboxData
-  },
-})
+const service = useMachine(
+  combobox.machine,
+  controls.mergeProps<combobox.Props>({
+    id: useId(),
+    get collection() {
+      return collectionRef.value
+    },
+    onOpenChange() {
+      options.value = comboboxData
+    },
+    onInputValueChange({ inputValue }) {
+      const filtered = matchSorter(comboboxData, inputValue, { keys: ["label"] })
+      options.value = filtered.length > 0 ? filtered : comboboxData
+    },
+  }),
+)
 
 const api = computed(() => combobox.connect(service, normalizeProps))
 </script>

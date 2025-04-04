@@ -6,11 +6,14 @@ import serialize from "form-serialize"
 
 const controls = useControls(pinInputControls)
 
-const service = useMachine(pinInput.machine, {
-  id: useId(),
-  name: "test",
-  count: 3,
-})
+const service = useMachine(
+  pinInput.machine,
+  controls.mergeProps<pinInput.Props>({
+    id: useId(),
+    name: "test",
+    count: 3,
+  }),
+)
 
 const api = computed(() => pinInput.connect(service, normalizeProps))
 </script>

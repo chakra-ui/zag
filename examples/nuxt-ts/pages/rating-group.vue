@@ -5,10 +5,13 @@ import { normalizeProps, useMachine } from "@zag-js/vue"
 
 const controls = useControls(ratingControls)
 
-const service = useMachine(rating.machine, {
-  id: useId(),
-  defaultValue: 2.5,
-})
+const service = useMachine(
+  rating.machine,
+  controls.mergeProps<rating.Props>({
+    id: useId(),
+    defaultValue: 2.5,
+  }),
+)
 
 const api = computed(() => rating.connect(service, normalizeProps))
 

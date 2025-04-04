@@ -6,12 +6,15 @@ import serialize from "form-serialize"
 
 const controls = useControls(colorPickerControls)
 
-const service = useMachine(colorPicker.machine, {
-  id: useId(),
-  name: "color",
-  defaultFormat: "hsla",
-  defaultValue: colorPicker.parse("hsl(0, 100%, 50%)"),
-})
+const service = useMachine(
+  colorPicker.machine,
+  controls.mergeProps<colorPicker.Props>({
+    id: useId(),
+    name: "color",
+    defaultFormat: "hsla",
+    defaultValue: colorPicker.parse("hsl(0, 100%, 50%)"),
+  }),
+)
 
 const api = computed(() => colorPicker.connect(service, normalizeProps))
 

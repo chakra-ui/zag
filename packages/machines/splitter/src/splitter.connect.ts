@@ -63,7 +63,7 @@ export function connect<T extends PropTypes>(service: SplitterService, normalize
       const panelData = getPanelById(panels, id)
 
       const { panelSize } = panelDataHelper(panels, panelData, size)
-      ensure(panelSize, `Panel size not found for panel "${panelData.id}"`)
+      ensure(panelSize, () => `Panel size not found for panel "${panelData.id}"`)
 
       return panelSize
     },
@@ -73,7 +73,7 @@ export function connect<T extends PropTypes>(service: SplitterService, normalize
       const panelData = getPanelById(panels, id)
 
       const { collapsedSize = 0, collapsible, panelSize } = panelDataHelper(panels, panelData, size)
-      ensure(panelSize, `Panel size not found for panel "${panelData.id}"`)
+      ensure(panelSize, () => `Panel size not found for panel "${panelData.id}"`)
       return collapsible === true && fuzzyNumbersEqual(panelSize, collapsedSize)
     },
     isPanelExpanded(id) {
@@ -82,7 +82,7 @@ export function connect<T extends PropTypes>(service: SplitterService, normalize
       const panelData = getPanelById(panels, id)
 
       const { collapsedSize = 0, collapsible, panelSize } = panelDataHelper(panels, panelData, size)
-      ensure(panelSize, `Panel size not found for panel "${panelData.id}"`)
+      ensure(panelSize, () => `Panel size not found for panel "${panelData.id}"`)
 
       return !collapsible || fuzzyCompareNumbers(panelSize, collapsedSize) > 0
     },

@@ -5,11 +5,14 @@ import { normalizeProps, useMachine } from "@zag-js/vue"
 
 const controls = useControls(datePickerControls)
 
-const service = useMachine(datePicker.machine, {
-  id: useId(),
-  locale: "en",
-  selectionMode: "multiple",
-})
+const service = useMachine(
+  datePicker.machine,
+  controls.mergeProps<datePicker.Props>({
+    id: useId(),
+    locale: "en",
+    selectionMode: "multiple",
+  }),
+)
 
 const api = computed(() => datePicker.connect(service, normalizeProps))
 </script>

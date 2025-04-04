@@ -4,7 +4,12 @@ import { menuControls, menuOptionData } from "@zag-js/shared"
 import { normalizeProps, useMachine } from "@zag-js/vue"
 
 const controls = useControls(menuControls)
-const service = useMachine(menu.machine, { id: useId() })
+const service = useMachine(
+  menu.machine,
+  controls.mergeProps<menu.Props>({
+    id: useId(),
+  }),
+)
 
 const api = computed(() => menu.connect(service, normalizeProps))
 

@@ -5,9 +5,12 @@ import { normalizeProps, useMachine } from "@zag-js/vue"
 
 const controls = useControls(fileUploadControls)
 
-const service = useMachine(fileUpload.machine, {
-  id: useId(),
-})
+const service = useMachine(
+  fileUpload.machine,
+  controls.mergeProps<fileUpload.Props>({
+    id: useId(),
+  }),
+)
 
 const api = computed(() => fileUpload.connect(service, normalizeProps))
 </script>

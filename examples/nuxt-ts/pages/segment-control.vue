@@ -5,11 +5,14 @@ import { normalizeProps, useMachine } from "@zag-js/vue"
 
 const controls = useControls(radioControls)
 
-const service = useMachine(radio.machine, {
-  id: useId(),
-  name: "fruit",
-  orientation: "horizontal",
-})
+const service = useMachine(
+  radio.machine,
+  controls.mergeProps<radio.Props>({
+    id: useId(),
+    name: "fruit",
+    orientation: "horizontal",
+  }),
+)
 
 const api = computed(() => radio.connect(service, normalizeProps))
 </script>
@@ -36,7 +39,7 @@ const api = computed(() => radio.connect(service, normalizeProps))
   </main>
 
   <Toolbar>
-      <StateVisualizer :state="service" />
+    <StateVisualizer :state="service" />
     <template #controls>
       <Controls :control="controls" />
     </template>

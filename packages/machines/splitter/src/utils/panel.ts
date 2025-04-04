@@ -9,7 +9,7 @@ import type { DragState, PanelData } from "../splitter.types"
 
 export function getPanelById(panels: PanelData[], id: string) {
   const panel = panels.find((panel) => panel.id === id)
-  ensure(panel, `Panel data not found for id "${id}"`)
+  ensure(panel, () => `Panel data not found for id "${id}"`)
   return panel
 }
 
@@ -114,7 +114,7 @@ export function getUnsafeDefaultSize({ panels, size: sizes }: { panels: PanelDat
   // Distribute default sizes first
   for (let index = 0; index < panels.length; index++) {
     const panel = panels[index]
-    ensure(panel, `Panel data not found for index ${index}`)
+    ensure(panel, () => `Panel data not found for index ${index}`)
     const defaultSize = sizes[index]
 
     if (defaultSize != null) {
@@ -127,7 +127,7 @@ export function getUnsafeDefaultSize({ panels, size: sizes }: { panels: PanelDat
   // Remaining size should be distributed evenly between panels without default sizes
   for (let index = 0; index < panels.length; index++) {
     const panel = panels[index]
-    ensure(panel, `Panel data not found for index ${index}`)
+    ensure(panel, () => `Panel data not found for index ${index}`)
     const defaultSize = sizes[index]
 
     if (defaultSize != null) {

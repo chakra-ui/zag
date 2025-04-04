@@ -6,7 +6,12 @@ import { ChevronRight } from "lucide-vue-next"
 
 const controls = useControls(accordionControls)
 
-const service = useMachine(accordion.machine, { id: useId() })
+const service = useMachine(
+  accordion.machine,
+  controls.mergeProps<accordion.Props>({
+    id: useId(),
+  }),
+)
 
 const api = computed(() => accordion.connect(service, normalizeProps))
 </script>

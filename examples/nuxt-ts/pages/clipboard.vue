@@ -6,10 +6,13 @@ import { ClipboardCheck, ClipboardCopyIcon } from "lucide-vue-next"
 
 const controls = useControls(clipboardControls)
 
-const service = useMachine(clipboard.machine, {
-  id: useId(),
-  defaultValue: "https://github.com/chakra-ui/zag",
-})
+const service = useMachine(
+  clipboard.machine,
+  controls.mergeProps<clipboard.Props>({
+    id: useId(),
+    defaultValue: "https://github.com/chakra-ui/zag",
+  }),
+)
 
 const api = computed(() => clipboard.connect(service, normalizeProps))
 </script>

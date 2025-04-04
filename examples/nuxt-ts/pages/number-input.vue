@@ -5,9 +5,12 @@ import { normalizeProps, useMachine } from "@zag-js/vue"
 
 const controls = useControls(numberInputControls)
 
-const service = useMachine(numberInput.machine, {
-  id: useId(),
-})
+const service = useMachine(
+  numberInput.machine,
+  controls.mergeProps<numberInput.Props>({
+    id: useId(),
+  }),
+)
 
 const api = computed(() => numberInput.connect(service, normalizeProps))
 </script>

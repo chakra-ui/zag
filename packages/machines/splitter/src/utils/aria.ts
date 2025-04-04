@@ -21,7 +21,7 @@ export function calculateAriaValues({
   let totalMaxSize = 0
 
   const firstIndex = pivotIndices[0]
-  ensure(firstIndex, "No pivot index found")
+  ensure(firstIndex, () => "No pivot index found")
 
   panels.forEach((panel, index) => {
     const { maxSize = 100, minSize = 0 } = panel

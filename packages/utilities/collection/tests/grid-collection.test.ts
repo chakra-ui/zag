@@ -43,15 +43,16 @@ beforeEach(() => {
 describe("grid collection", () => {
   test("get next row", () => {
     expect(grid.getNextRowValue("ts")).toMatchInlineSnapshot(`"go"`)
-    expect(grid.getNextRowValue("js")).toMatchInlineSnapshot(`null`)
+    expect(grid.getNextRowValue("js")).toMatchInlineSnapshot(`"go"`)
     expect(grid.getNextRowValue("deno")).toMatchInlineSnapshot(`"rust"`)
+    expect(grid.getNextRowValue("vue")).toMatchInlineSnapshot(`"ts"`)
   })
 
   test("get prev row", () => {
-    expect(grid.getPreviousRowValue("ts")).toMatchInlineSnapshot(`"angular"`)
+    expect(grid.getPreviousRowValue("ts")).toMatchInlineSnapshot(`"vue"`)
     expect(grid.getPreviousRowValue("js")).toMatchInlineSnapshot(`"node"`)
     expect(grid.getPreviousRowValue("deno")).toMatchInlineSnapshot(`"angular"`)
-    expect(grid.getPreviousRowValue("vue")).toMatchInlineSnapshot(`null`)
+    expect(grid.getPreviousRowValue("vue")).toMatchInlineSnapshot(`"vue"`)
   })
 
   test("get rows", () => {

@@ -18,8 +18,8 @@ export function invariant(...a: any[]): void {
   }
 }
 
-export function ensure<T>(c: T | null | undefined, m: string): asserts c is T {
-  if (c == null) throw new Error(m)
+export function ensure<T>(c: T | null | undefined, m: () => string): asserts c is T {
+  if (c == null) throw new Error(m())
 }
 
 type RequiredBy<T, K extends keyof T> = Omit<T, K> & Required<Pick<T, K>>

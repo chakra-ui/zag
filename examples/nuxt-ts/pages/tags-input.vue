@@ -9,10 +9,13 @@ function toDashCase(str: string) {
   return str.replace(/\s+/g, "-").toLowerCase()
 }
 
-const service = useMachine(tagsInput.machine, {
-  id: useId(),
-  defaultValue: ["React", "Vue"],
-})
+const service = useMachine(
+  tagsInput.machine,
+  controls.mergeProps<tagsInput.Props>({
+    id: useId(),
+    defaultValue: ["React", "Vue"],
+  }),
+)
 
 const api = computed(() => tagsInput.connect(service, normalizeProps))
 </script>
