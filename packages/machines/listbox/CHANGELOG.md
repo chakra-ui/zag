@@ -1,5 +1,22 @@
 # @zag-js/listbox
 
+## 1.8.1
+
+### Patch Changes
+
+- [`1278daa`](https://github.com/chakra-ui/zag/commit/1278daa09006ddbaadf936f69206da4f77c3fa8d) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - - Fix issue where keyboard focus loops when `loopFocus` was not
+  set.
+  - Fix issue where `extended` selection mode was not working as expected.
+- Updated dependencies [[`c3c1642`](https://github.com/chakra-ui/zag/commit/c3c164296cd643f2fb7c12c0d1fe9c406eba352f)]:
+  - @zag-js/dom-query@1.8.1
+  - @zag-js/core@1.8.1
+  - @zag-js/focus-visible@1.8.1
+  - @zag-js/anatomy@1.8.1
+  - @zag-js/types@1.8.1
+  - @zag-js/collection@1.8.1
+  - @zag-js/utils@1.8.1
+
 ## 1.8.0
 
 ### Minor Changes
