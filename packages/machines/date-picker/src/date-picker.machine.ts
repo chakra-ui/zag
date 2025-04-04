@@ -398,13 +398,7 @@ export const machine = createMachine<DatePickerSchema>({
           },
           {
             guard: and("isRangePicker", "hasSelectedRange"),
-            actions: [
-              "setActiveIndexToStart",
-              "clearDateValue",
-              "setFocusedDate",
-              "setSelectedDate",
-              "setActiveIndexToEnd",
-            ],
+            actions: ["setActiveIndexToStart", "resetSelection", "setActiveIndexToEnd"],
           },
           // === Grouped transitions (based on `closeOnSelect` and `isOpenControlled`) ===
           {
@@ -780,6 +774,10 @@ export const machine = createMachine<DatePickerSchema>({
         const values = Array.from(context.get("value"))
         values[context.get("activeIndex")] = normalizeValue(params, event.value ?? context.get("focusedValue"))
         context.set("value", adjustStartAndEndDate(values))
+      },
+      resetSelection(params) {
+        const { context, event } = params
+        context.set("value", [event.value ?? context.get("focusedValue")])
       },
       toggleSelectedDate(params) {
         const { context, event } = params
