@@ -227,6 +227,10 @@ export interface ListboxApi<T extends PropTypes = PropTypes, V extends Collectio
    */
   highlightValue(value: string): void
   /**
+   * Function to clear the highlighted value
+   */
+  clearHighlightedValue(): void
+  /**
    * The selected items
    */
   selectedItems: V[]

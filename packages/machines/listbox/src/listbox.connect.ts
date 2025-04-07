@@ -7,6 +7,7 @@ import {
   getEventKey,
   getEventTarget,
   getNativeEvent,
+  getWindow,
   isComposingEvent,
   isCtrlOrMetaKey,
   isEditableElement,
@@ -54,6 +55,9 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
     empty: value.length === 0,
     highlightedItem,
     highlightedValue,
+    clearHighlightedValue() {
+      send({ type: "HIGHLIGHTED_VALUE.SET", value: null })
+    },
     selectedItems,
     hasSelectedItems: computed("hasSelectedItems"),
     value,
@@ -109,9 +113,20 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
         "aria-activedescendant": ariaActiveDescendant,
         spellCheck: false,
         enterKeyHint: "go",
+        onFocus() {
+          queueMicrotask(() => {
+            const contentEl = dom.getContentEl(scope)
+            const win = getWindow(contentEl)
+            const focusInEvt = new win.FocusEvent("focusin", { bubbles: true, cancelable: true })
+            contentEl?.dispatchEvent(focusInEvt)
+          })
+        },
         onBlur(event) {
           if (event.defaultPrevented) return
-          send({ type: "HIGHLIGHTED_VALUE.SET", value: null })
+          const contentEl = dom.getContentEl(scope)
+          const win = getWindow(contentEl)
+          const focusOutEvt = new win.FocusEvent("focusout", { bubbles: true, cancelable: true })
+          contentEl?.dispatchEvent(focusOutEvt)
         },
         onInput(event) {
           if (!props.autoHighlight) return
@@ -132,12 +147,17 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
             case "ArrowDown":
             case "ArrowUp":
             case "Home":
-            case "End":
+            case "End": {
+              if ((event.key === "Home" || event.key === "End") && !highlightedValue && event.shiftKey) {
+                return
+              }
+
               event.preventDefault()
               const win = scope.getWin()
               const keyboardEvent = new win.KeyboardEvent(nativeEvent.type, nativeEvent)
               dom.getContentEl(scope)?.dispatchEvent(keyboardEvent)
               break
+            }
             case "Enter":
               event.preventDefault()
               send({ type: "ITEM.CLICK", value: highlightedValue })
@@ -275,6 +295,7 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
         onKeyDown(event) {
           if (!interactive) return
           if (!isSelfTarget(event)) return
+
           const shiftKey = event.shiftKey
 
           const keyMap: EventKeyMap = {
@@ -286,7 +307,7 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
                 nextValue = collection.getPreviousValue(highlightedValue)
               }
 
-              if (!nextValue && prop("loopFocus")) {
+              if (!nextValue && (prop("loopFocus") || !highlightedValue)) {
                 nextValue = collection.lastValue
               }
 
@@ -304,7 +325,7 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
                 nextValue = collection.getNextValue(highlightedValue)
               }
 
-              if (!nextValue && prop("loopFocus")) {
+              if (!nextValue && (prop("loopFocus") || !highlightedValue)) {
                 nextValue = collection.firstValue
               }
 
@@ -360,6 +381,13 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
                 send({ type: "CONTENT.TYPEAHEAD", key: event.key })
               } else {
                 keyMap.Enter?.(event)
+              }
+            },
+            Escape(event) {
+              if (prop("deselectable") && value.length > 0) {
+                event.preventDefault()
+                event.stopPropagation()
+                send({ type: "VALUE.CLEAR" })
               }
             },
           }
