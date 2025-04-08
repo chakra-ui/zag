@@ -1,7 +1,7 @@
 import { Box, Flex, HStack, Stack } from "@chakra-ui/layout"
 import { chakra } from "@chakra-ui/system"
 import { openInStackblitz } from "lib/open-in-stackblitz"
-import { JSX, useState } from "react"
+import { ComponentType, useState } from "react"
 import { SiStackblitz } from "react-icons/si"
 
 const Header = (props: any) => (
@@ -17,17 +17,14 @@ const Header = (props: any) => (
   />
 )
 
-type PlaygroundProps = {
+type PlaygroundProps<TProps> = {
   name: string
-  component: (props: any) => JSX.Element
-  defaultContext?: Record<string, any>
-  defaultProps?: Record<
-    string,
-    | string
-    | number
-    | boolean
-    | { options: string[]; default: string; required?: boolean }
-  >
+  component: ComponentType<TProps>
+  defaultProps?: Partial<{
+    [K in keyof TProps]:
+      | TProps[K]
+      | { default: TProps[K]; options: Array<TProps[K]>; required?: boolean }
+  }>
   hideControls?: boolean
   debug?: boolean
 }
@@ -64,23 +61,26 @@ const OpenInStackblitz = (props: { name: string; defaultProps: any }) => {
   )
 }
 
-export function Playground(props: PlaygroundProps) {
+export function Playground<TProps extends Record<string, any>>(
+  props: PlaygroundProps<TProps>,
+) {
   const {
     name: componentName,
     component: Comp,
     defaultProps = {},
     debug,
     hideControls,
-    defaultContext,
   } = props
 
-  const [state, setState] = useState(
+  const [state, setState] = useState<Partial<TProps>>(
     Object.fromEntries(
       Object.entries(defaultProps).map(([key, value]) => [
         key,
-        typeof value === "object" ? value.default : value,
+        typeof value === "object" && value !== null && "default" in value
+          ? value.default
+          : value,
       ]),
-    ),
+    ) as Partial<TProps>,
   )
 
   const isEmpty = Object.keys(state).length === 0 || hideControls
@@ -112,7 +112,7 @@ export function Playground(props: PlaygroundProps) {
             "radial-gradient(circle,var(--colors-gray-700) 1px, transparent 1px);",
         }}
       >
-        <Comp controls={state} defaultContext={defaultContext} />
+        <Comp {...(state as TProps)} />
       </Flex>
 
       <Box flexBasis="1px" alignSelf="stretch" bg="bg-bold" />
@@ -127,7 +127,7 @@ export function Playground(props: PlaygroundProps) {
         <Stack pos="relative" direction="column" spacing="4" px="5" py="4">
           {Object.keys(state).map((key) => {
             const value = state[key]
-            const type = defaultProps[key]
+            const type = (defaultProps as Partial<TProps>)[key]
 
             if (typeof type === "boolean") {
               return (
@@ -143,7 +143,7 @@ export function Playground(props: PlaygroundProps) {
                   <chakra.input
                     id={key}
                     type="checkbox"
-                    defaultChecked={value as any}
+                    defaultChecked={value as boolean}
                     bg="bg-subtle"
                     onChange={() => setState({ ...state, [key]: !value })}
                   />
@@ -162,7 +162,7 @@ export function Playground(props: PlaygroundProps) {
                     px="2"
                     id={key}
                     type="text"
-                    defaultValue={value as any}
+                    defaultValue={value as string}
                     bg="bg-subtle"
                     onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                       setState({ ...state, [key]: e.target.value })
@@ -183,7 +183,7 @@ export function Playground(props: PlaygroundProps) {
                     borderWidth="1px"
                     px="2"
                     bg="bg-subtle"
-                    defaultValue={state[key] as number}
+                    defaultValue={value as number}
                     onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                       const val = e.currentTarget.valueAsNumber
                       setState((s) => ({ ...s, [key]: isNaN(val) ? 0 : val }))
@@ -193,31 +193,33 @@ export function Playground(props: PlaygroundProps) {
               )
             }
 
-            if (!value) return null
+            if (typeof type === "object" && "options" in type) {
+              return (
+                <Flex justify="space-between" key={key}>
+                  <label htmlFor={key}>{key}</label>
+                  <chakra.select
+                    id={key}
+                    borderWidth="1px"
+                    fontSize="xs"
+                    px="1"
+                    bg="bg-subtle"
+                    defaultValue={value as string}
+                    onChange={(e: React.ChangeEvent<HTMLSelectElement>) => {
+                      setState((s) => ({ ...s, [key]: e.target.value }))
+                    }}
+                  >
+                    {type.required && <option>-----</option>}
+                    {type.options.map((option: string) => (
+                      <option key={option} value={option}>
+                        {option}
+                      </option>
+                    ))}
+                  </chakra.select>
+                </Flex>
+              )
+            }
 
-            return (
-              <Flex justify="space-between" key={key}>
-                <label htmlFor={key}>{key}</label>
-                <chakra.select
-                  id={key}
-                  borderWidth="1px"
-                  fontSize="xs"
-                  px="1"
-                  bg="bg-subtle"
-                  defaultValue={state[key] as any}
-                  onChange={(e: React.ChangeEvent<HTMLSelectElement>) => {
-                    setState((s) => ({ ...s, [key]: e.target.value }))
-                  }}
-                >
-                  {!type.required && <option>-----</option>}
-                  {type.options.map((option) => (
-                    <option key={option} value={option}>
-                      {option}
-                    </option>
-                  ))}
-                </chakra.select>
-              </Flex>
-            )
+            return null
           })}
 
           {debug && (
