@@ -8,18 +8,11 @@ const items = [
   { id: "mango", label: "Mangoes" },
 ]
 
-type RadioProps = {
-  controls: {
-    name: string
-    disabled: boolean
-  }
-}
-
-export function Radio(props: RadioProps) {
+export function Radio(props: Omit<radio.Props, "id">) {
   const service = useMachine(radio.machine, {
     id: useId(),
-    ...props.controls,
     name: "fruits",
+    ...props,
   })
 
   const api = radio.connect(service, normalizeProps)

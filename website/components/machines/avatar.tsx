@@ -2,12 +2,14 @@ import * as avatar from "@zag-js/avatar"
 import { normalizeProps, useMachine } from "@zag-js/react"
 import { useId } from "react"
 
-export function Avatar(props: { controls: { src: string; name: string } }) {
-  const { src, name } = props.controls
+export function Avatar(
+  props: Omit<avatar.Props, "id"> & { src: string; name: string },
+) {
+  const { src, name } = props
 
   const service = useMachine(avatar.machine, {
     id: useId(),
-    ...props.controls,
+    ...props,
   })
 
   const api = avatar.connect(service, normalizeProps)

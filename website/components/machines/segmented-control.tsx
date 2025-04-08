@@ -8,18 +8,11 @@ const items = [
   { label: "Vue", value: "vue" },
 ]
 
-type SegmentedControlProps = {
-  controls: {
-    disabled: boolean
-  }
-}
-
-export function SegmentedControl(props: SegmentedControlProps) {
+export function SegmentedControl(props: Omit<radio.Props, "id">) {
   const service = useMachine(radio.machine, {
     id: useId(),
     defaultValue: "react",
-    orientation: "horizontal",
-    ...props.controls,
+    ...props,
   })
 
   const api = radio.connect(service, normalizeProps)

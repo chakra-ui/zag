@@ -9,14 +9,10 @@ const data = [
   { label: "Duplicate", value: "duplicate" },
 ]
 
-type ContextMenuProps = {
-  controls: {}
-}
-
-export function ContextMenu(props: ContextMenuProps) {
+export function ContextMenu(props: Omit<menu.Props, "id">) {
   const service = useMachine(menu.machine, {
     id: useId(),
-    ...props.controls,
+    ...props,
   })
 
   const api = menu.connect(service, normalizeProps)

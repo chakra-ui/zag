@@ -118,7 +118,7 @@ const components = {
         readOnly: false,
         closeOnSelect: false,
         format: {
-          default: "rgba",
+          default: "hsla",
           options: ["rgba", "hsla", "hsba"],
           required: true,
         },
@@ -165,7 +165,7 @@ const components = {
         selectOnFocus: true,
         placeholder: "Enter text...",
         activationMode: {
-          options: ["focus", "click", "dblclick", "none"],
+          options: ["focus", "click", "dblclick"],
           default: "focus",
         },
         submitMode: {
@@ -286,7 +286,10 @@ const components = {
       component={SegmentedControl}
       defaultProps={{
         disabled: false,
-        name: "",
+        orientation: {
+          default: "horizontal",
+          options: ["horizontal", "vertical"],
+        },
       }}
     />
   ),
@@ -298,6 +301,8 @@ const components = {
         disabled: false,
         readOnly: false,
         dir: { default: "ltr", options: ["ltr", "rtl"] },
+        min: -5,
+        max: 70,
       }}
     />
   ),
@@ -309,7 +314,7 @@ const components = {
         allowHalf: true,
         disabled: false,
         readOnly: false,
-        max: 5,
+        count: 5,
         dir: {
           options: ["ltr", "rtl"],
           default: "ltr",
@@ -337,6 +342,8 @@ const components = {
         readOnly: false,
         origin: { default: "start", options: ["start", "center"] },
         dir: { default: "ltr", options: ["ltr", "rtl"] },
+        min: -50,
+        max: 50,
       }}
     />
   ),
@@ -382,7 +389,7 @@ const components = {
       defaultProps={{
         disabled: false,
         dir: { default: "ltr", options: ["ltr", "rtl"] },
-        blurBehavior: { default: "--", options: ["add", "clear"] },
+        blurBehavior: { default: undefined, options: ["add", "clear"] },
         addOnPaste: false,
       }}
     />
@@ -407,7 +414,7 @@ const components = {
         },
         disabled: false,
         readOnly: false,
-        withSeconds: false,
+        allowSeconds: false,
       }}
     />
   ),

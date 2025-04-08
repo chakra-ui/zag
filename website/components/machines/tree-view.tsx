@@ -92,15 +92,11 @@ const TreeNode = (props: TreeNodeProps): JSX.Element => {
   )
 }
 
-interface TreeViewProps {
-  controls: {}
-}
-
-export function TreeView(props: TreeViewProps) {
+export function TreeView(props: Omit<tree.Props, "id">) {
   const service = useMachine(tree.machine, {
     id: useId(),
     collection,
-    ...props.controls,
+    ...props,
   })
 
   const api = tree.connect(service, normalizeProps)

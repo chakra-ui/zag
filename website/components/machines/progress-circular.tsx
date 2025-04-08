@@ -2,10 +2,10 @@ import * as progress from "@zag-js/progress"
 import { normalizeProps, useMachine } from "@zag-js/react"
 import { useId } from "react"
 
-export function ProgressCircular(props: any) {
+export function ProgressCircular(props: Omit<progress.Props, "id">) {
   const service = useMachine(progress.machine, {
     id: useId(),
-    ...props.controls,
+    ...props,
   })
 
   const api = progress.connect(service, normalizeProps)
@@ -14,9 +14,9 @@ export function ProgressCircular(props: any) {
     <div>
       <div className="centre" {...api.getRootProps()}>
         <div {...api.getLabelProps()}>Upload progress</div>
-        <svg {...(api.getCircleProps() as any)}>
-          <circle {...(api.getCircleTrackProps() as any)} />
-          <circle {...(api.getCircleRangeProps() as any)} />
+        <svg {...api.getCircleProps()}>
+          <circle {...api.getCircleTrackProps()} />
+          <circle {...api.getCircleRangeProps()} />
         </svg>
         <div {...api.getValueTextProps()}>{api.valueAsString}</div>
       </div>

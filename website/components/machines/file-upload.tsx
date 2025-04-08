@@ -3,10 +3,10 @@ import { normalizeProps, useMachine } from "@zag-js/react"
 import { useId } from "react"
 import { HiX } from "react-icons/hi"
 
-export function FileUpload(props: { controls: any }) {
+export function FileUpload(props: Omit<fileUpload.Props, "id">) {
   const service = useMachine(fileUpload.machine, {
     id: useId(),
-    ...props.controls,
+    ...props,
   })
 
   const api = fileUpload.connect(service, normalizeProps)

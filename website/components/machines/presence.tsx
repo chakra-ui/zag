@@ -2,13 +2,10 @@ import * as presence from "@zag-js/presence"
 import { normalizeProps, useMachine } from "@zag-js/react"
 import { useState } from "react"
 
-interface AnimatePresenceProps extends React.ComponentPropsWithoutRef<"div"> {
-  present: boolean
-  keepMounted?: boolean
-  onExitComplete?: () => void
-}
-
-function AnimatePresence(props: AnimatePresenceProps) {
+function AnimatePresence(
+  props: React.ComponentPropsWithoutRef<"div"> &
+    presence.Props & { keepMounted?: boolean },
+) {
   const { keepMounted, present, onExitComplete, ...rest } = props
 
   const service = useMachine(presence.machine, {

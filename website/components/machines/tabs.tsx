@@ -8,11 +8,11 @@ const data = [
   { value: "item-3", label: "Item three", content: "Item three content" },
 ]
 
-export function Tabs(props: any) {
+export function Tabs(props: Omit<tabs.Props, "id">) {
   const service = useMachine(tabs.machine, {
     id: useId(),
     defaultValue: "item-1",
-    ...props.controls,
+    ...props,
   })
 
   const api = tabs.connect(service, normalizeProps)

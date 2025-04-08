@@ -2,13 +2,11 @@ import * as slider from "@zag-js/slider"
 import { normalizeProps, useMachine } from "@zag-js/react"
 import { useId } from "react"
 
-export function Slider(props: any) {
+export function Slider(props: Omit<slider.Props, "id">) {
   const service = useMachine(slider.machine, {
     id: useId(),
-    min: -50,
-    max: 50,
     defaultValue: [20],
-    ...props.controls,
+    ...props,
   })
 
   const api = slider.connect(service, normalizeProps)
