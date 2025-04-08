@@ -12,6 +12,10 @@
     flex-direction: row;
   }
 
+  [data-scope="radio-group"][data-part="root"][data-orientation="vertical"] {
+    flex-direction: column;
+  }
+
   [data-scope="radio-group"][data-part="indicator"] {
     background: var(--colors-bg-subtle);
     z-index: 1;
