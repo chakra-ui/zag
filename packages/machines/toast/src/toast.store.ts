@@ -21,6 +21,7 @@ export function createToastStore<V = any>(props: ToastStoreProps): ToastStore<V>
   let subscribers: Array<(...args: any[]) => void> = []
   let toasts: Partial<ToastProps<V>>[] = []
   let dismissedToasts = new Set<string>()
+  let toastQueue: Partial<ToastProps<V>>[] = []
 
   const subscribe = (subscriber: (...args: any[]) => void) => {
     subscribers.push(subscriber)
@@ -36,9 +37,22 @@ export function createToastStore<V = any>(props: ToastStoreProps): ToastStore<V>
   }
 
   const addToast = (data: Partial<ToastProps<V>>) => {
-    if (toasts.length >= attrs.max) return
+    if (toasts.length >= attrs.max) {
+      toastQueue.push(data)
+      return
+    }
     publish(data)
     toasts.unshift(data)
+  }
+
+  const processQueue = () => {
+    while (toastQueue.length > 0 && toasts.length < attrs.max) {
+      const nextToast = toastQueue.shift()
+      if (nextToast) {
+        publish(nextToast)
+        toasts.unshift(nextToast)
+      }
+    }
   }
 
   const create = (data: Options<V>) => {
@@ -78,9 +92,11 @@ export function createToastStore<V = any>(props: ToastStoreProps): ToastStore<V>
         subscribers.forEach((subscriber) => subscriber({ id: toast.id, dismiss: true }))
       })
       toasts = []
+      toastQueue = []
     } else {
       subscribers.forEach((subscriber) => subscriber({ id, dismiss: true }))
       toasts = toasts.filter((toast) => toast.id !== id)
+      processQueue()
     }
     return id
   }
