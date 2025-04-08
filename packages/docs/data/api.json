@@ -1979,6 +1979,10 @@
         "type": "(value: string) => void",
         "description": "Function to highlight a value"
       },
+      "clearHighlightedValue": {
+        "type": "() => void",
+        "description": "Function to clear the highlighted value"
+      },
       "selectedItems": {
         "type": "V[]",
         "description": "The selected items"
