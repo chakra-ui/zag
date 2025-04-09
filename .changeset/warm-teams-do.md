@@ -2,4 +2,4 @@
 "@zag-js/collection": patch
 ---
 
-Add filter function to collection method
+- Add `filter` function to collection methods
