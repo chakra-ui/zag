@@ -403,7 +403,13 @@
       "data-scope": "combobox",
       "data-part": "content",
       "data-state": "\"open\" | \"closed\"",
-      "data-placement": "The placement of the content"
+      "data-placement": "The placement of the content",
+      "data-empty": ""
+    },
+    "List": {
+      "data-scope": "combobox",
+      "data-part": "list",
+      "data-empty": ""
     },
     "ClearTrigger": {
       "data-scope": "combobox",
@@ -429,6 +435,11 @@
       "data-scope": "combobox",
       "data-part": "item-indicator",
       "data-state": "\"checked\" | \"unchecked\""
+    },
+    "ItemGroup": {
+      "data-scope": "combobox",
+      "data-part": "item-group",
+      "data-empty": ""
     }
   },
   "date-picker": {
@@ -794,14 +805,16 @@
       "data-scope": "listbox",
       "data-part": "item-group",
       "data-disabled": "Present when disabled",
-      "data-orientation": "The orientation of the item"
+      "data-orientation": "The orientation of the item",
+      "data-empty": ""
     },
     "Content": {
       "data-scope": "listbox",
       "data-part": "content",
       "data-activedescendant": "",
       "data-orientation": "The orientation of the content",
-      "data-layout": ""
+      "data-layout": "",
+      "data-empty": ""
     }
   },
   "menu": {
