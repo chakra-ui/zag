@@ -6,7 +6,32 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
-See the [Changesets](./.changeset) for the latest changes.
+## [1.9.0](./#1.9.0) - 2025-04-09
+
+### Added
+
+- **Toast**: Add support for queuing toasts that exceed the maximum limit. When the maximum number of toasts is reached:
+
+  - New toasts are added to a queue instead of being dropped
+  - Queued toasts are automatically displayed when space becomes available
+  - Queue is cleared when all toasts are removed
+
+- **Listbox**
+
+  - Add support for clearing selection on Escape press
+  - Add `api.clearHighlightedValue` function to clear the highlighted value
+  - Add `data-empty` attribute to indicate when the listbox is empty
+
+- **Collection**: Add `filter` function to collection methods
+
+### Fixed
+
+- **Listbox**: Fix keyboard navigation when no item is highlighted
+- **Combobox**: Fallback to trigger element as the positioning anchor
+
+### Changed
+
+- **Combobox**: Add `data-empty` attribute to the listbox and content to indicate when the listbox is empty
 
 ## [1.8.2](./#1.8.2) - 2025-04-04
 
