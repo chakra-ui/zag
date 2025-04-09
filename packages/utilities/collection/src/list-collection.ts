@@ -294,6 +294,11 @@ export class ListCollection<T extends CollectionItem = CollectionItem> {
     return this.copy(insert(this.items, this.items.length, ...items))
   }
 
+  filter = (fn: (itemString: string, index: number) => boolean) => {
+    const filteredItems = this.items.filter((item, index) => fn(this.stringifyItem(item)!, index))
+    return this.copy(filteredItems)
+  }
+
   remove = (...itemsOrValues: Array<T | string>) => {
     const values = itemsOrValues.map((itemOrValue) =>
       typeof itemOrValue === "string" ? itemOrValue : this.getItemValue(itemOrValue),

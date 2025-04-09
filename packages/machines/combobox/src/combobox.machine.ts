@@ -705,11 +705,11 @@ export const machine = createMachine<ComboboxSchema>({
         ])
       },
       trackPlacement({ context, prop, scope }) {
-        const controlEl = () => dom.getControlEl(scope)
+        const anchorEl = () => dom.getControlEl(scope) || dom.getTriggerEl(scope)
         const positionerEl = () => dom.getPositionerEl(scope)
 
         context.set("currentPlacement", prop("positioning").placement)
-        return getPlacement(controlEl, positionerEl, {
+        return getPlacement(anchorEl, positionerEl, {
           ...prop("positioning"),
           defer: true,
           onComplete(data) {
