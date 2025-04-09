@@ -1,5 +1,15 @@
 # @zag-js/collection
 
+## 1.9.0
+
+### Patch Changes
+
+- [`490dd9f`](https://github.com/chakra-ui/zag/commit/490dd9fa6355eb25c6bbb77406cae24835453af5) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - - Add `filter` function to collection methods
+
+- Updated dependencies []:
+  - @zag-js/utils@1.9.0
+
 ## 1.8.2
 
 ### Patch Changes
