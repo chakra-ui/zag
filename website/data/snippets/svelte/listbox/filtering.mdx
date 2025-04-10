@@ -1,0 +1,55 @@
+```svelte
+<script lang="ts">
+  import * as listbox from "@zag-js/listbox"
+  import { createFilter } from "@zag-js/i18n-utils"
+  import { normalizeProps, useMachine } from "@zag-js/svelte"
+
+  interface Item {
+    label: string
+    value: string
+  }
+
+  const data: Item[] = [
+    { label: "Nigeria", value: "NG" },
+    { label: "United States", value: "US" },
+    { label: "Canada", value: "CA" },
+    { label: "Japan", value: "JP" },
+  ]
+
+  const filter = createFilter({ sensitivity: "base" })
+
+  let search = $state("")
+
+  const collection = $derived.by(() => {
+    const items = data.filter((item) => filter.startsWith(item.label, search))
+    return listbox.collection({ items })
+  })
+
+  const id = $props.id()
+
+  const service = useMachine(listbox.machine as listbox.Machine<Item>, {
+    id,
+    get collection() {
+      return collection
+    },
+    typeahead: false,
+  })
+
+  const api = $derived(listbox.connect(service, normalizeProps))
+</script>
+
+<div {...api.getRootProps()}>
+  <input
+    {...api.getInputProps({ autoHighlight: true })}
+    bind:value={search}
+  />
+  <ul {...api.getContentProps()}>
+    {#each collection.items as item (item.value)}
+      <li {...api.getItemProps({ item })}>
+        <span {...api.getItemTextProps({ item })}>{item.label}</span>
+        <span {...api.getItemIndicatorProps({ item })}>✓</span>
+      </li>
+    {/each}
+  </ul>
+</div>
+```
