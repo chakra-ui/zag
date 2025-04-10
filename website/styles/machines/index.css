@@ -39,6 +39,7 @@
 @import url(./steps.css);
 @import url(./tour.css);
 @import url(./tree-view.css);
+@import url(./floating-panel.css);
 
 * {
   border-color: var(--colors-border-bold);

@@ -37,8 +37,10 @@ import { ToggleGroupAnatomy } from "./toggle-group"
 import { TooltipAnatomy } from "./tooltip"
 import { TreeViewAnatomy } from "./tree-view"
 import { TourAnatomy } from "./tour"
+import { FloatingPanelAnatomy } from "./floating-panel"
 
 export const allComponents = {
+  "floating-panel": FloatingPanelAnatomy,
   tour: TourAnatomy,
   fieldset: FieldsetAnatomy,
   field: FieldAnatomy,

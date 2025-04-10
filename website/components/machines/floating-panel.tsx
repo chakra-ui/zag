@@ -1,47 +1,60 @@
 import * as floating from "@zag-js/floating-panel"
-import { normalizeProps, useMachine } from "@zag-js/react"
-import { floatingPanelControls } from "@zag-js/shared"
-import { ArrowDownLeft, Maximize2, Minus, XIcon } from "lucide-react"
+import { normalizeProps, useMachine, Portal } from "@zag-js/react"
+import { LuArrowDownLeft, LuMaximize2, LuMinus, LuX } from "react-icons/lu"
 import { useId } from "react"
-import { StateVisualizer } from "../components/state-visualizer"
-import { Toolbar } from "../components/toolbar"
-import { useControls } from "../hooks/use-controls"
 
-export default function Page() {
-  const controls = useControls(floatingPanelControls)
-
-  const service = useMachine(floating.machine, { id: useId() })
+export function FloatingPanel(props: { controls: any }) {
+  const service = useMachine(floating.machine, {
+    id: useId(),
+    ...props.controls,
+  })
 
   const api = floating.connect(service, normalizeProps)
 
   return (
     <>
-      <main className="floating-panel">
-        <div>
-          <button {...api.getTriggerProps()}>Toggle Panel</button>
+      <button {...api.getTriggerProps()}>Open Panel</button>
+      {api.open && (
+        <Portal>
           <div {...api.getPositionerProps()}>
             <div {...api.getContentProps()}>
               <div {...api.getDragTriggerProps()}>
                 <div {...api.getHeaderProps()}>
-                  <p {...api.getTitleProps()}>Floating Panel</p>
+                  <p {...api.getTitleProps()}>Variables</p>
                   <div {...api.getControlProps()}>
-                    <button {...api.getStageTriggerProps({ stage: "minimized" })}>
-                      <Minus />
+                    <button
+                      {...api.getStageTriggerProps({ stage: "minimized" })}
+                    >
+                      <LuMinus />
                     </button>
-                    <button {...api.getStageTriggerProps({ stage: "maximized" })}>
-                      <Maximize2 />
+                    <button
+                      {...api.getStageTriggerProps({ stage: "maximized" })}
+                    >
+                      <LuMaximize2 />
                     </button>
                     <button {...api.getStageTriggerProps({ stage: "default" })}>
-                      <ArrowDownLeft />
+                      <LuArrowDownLeft />
                     </button>
                     <button {...api.getCloseTriggerProps()}>
-                      <XIcon />
+                      <LuX />
                     </button>
                   </div>
                 </div>
               </div>
               <div {...api.getBodyProps()}>
-                <p>Some content</p>
+                <label>
+                  <span>Font Family</span>
+                  <select defaultValue="sans-serif">
+                    <option value="sans-serif">Sans Serif</option>
+                    <option value="serif">Serif</option>
+                    <option value="monospace">Monospace</option>
+                  </select>
+                </label>
+
+                <label>
+                  <span>Font Size</span>
+                  <input type="number" defaultValue={16} />
+                </label>
               </div>
 
               <div {...api.getResizeTriggerProps({ axis: "n" })} />
@@ -54,12 +67,8 @@ export default function Page() {
               <div {...api.getResizeTriggerProps({ axis: "nw" })} />
             </div>
           </div>
-        </div>
-      </main>
-
-      <Toolbar controls={controls.ui}>
-        <StateVisualizer state={service} />
-      </Toolbar>
+        </Portal>
+      )}
     </>
   )
 }

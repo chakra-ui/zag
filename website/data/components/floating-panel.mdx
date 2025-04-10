@@ -1,0 +1,355 @@
+---
+title: Floating Panel
+description: A floating window that contains one or more panes.
+---
+
+# Floating Panel
+
+A floating panel is a detachable window that floats above the main interface,
+typically used for displaying and editing properties. The panel can be dragged,
+resized, and positioned anywhere on the screen for optimal workflow.
+
+> Think of the panel that pops up in Figma when you click `variables` or try set
+> a color.
+
+<Resources pkg="@zag-js/floating-panel" />
+
+<Showcase id="FloatingPanel" />
+
+**Features**
+
+- Allows interaction with the main content.
+- Supports dragging and resizing.
+- Support for minimizing and maximizing the panel.
+- Controlled and uncontrolled size and position.
+- Support for snapping to a grid.
+- Support for locking the aspect ratio.
+- Support for closing on escape key.
+- Support for persisting the size and position when closed.
+
+## Installation
+
+To use the hover card machine in your project, run the following command in your
+command line:
+
+<CodeSnippet id="floating-panel/installation.mdx" />
+
+## Anatomy
+
+To set up the editable correctly, you'll need to understand its anatomy and how
+we name its parts.
+
+> Each part includes a `data-part` attribute to help identify them in the DOM.
+
+<Anatomy id="floating-panel" />
+
+## Usage
+
+First, import the floating panel package into your project
+
+```jsx
+import * as floatingPanel from "@zag-js/floating-panel"
+```
+
+The floating panel package exports two key functions:
+
+- `machine` — The state machine logic for the floating panel widget.
+- `connect` — The function that translates the machine's state to JSX attributes
+  and event handlers.
+
+Next, import the required hooks and functions for your framework and use the
+floating panel machine in your project 🔥
+
+<CodeSnippet id="floating-panel/usage.mdx" />
+
+## Resizing
+
+### Setting the initial size
+
+To set the initial size of the floating panel, you can pass the `defaultSize`
+prop to the machine.
+
+```tsx {2}
+const service = useMachine(floatingPanel.machine, {
+  defaultSize: { width: 300, height: 300 },
+})
+```
+
+### Controlling the size
+
+To control the size of the floating panel programmatically, you can pass the
+`size` `onResize` prop to the machine.
+
+```tsx {2}
+const service = useMachine(floatingPanel.machine, {
+  size: { width: 300, height: 300 },
+  onResize(details) {
+    // details => { width: number, height: number }
+    console.log("floating panel is:", details.width, details.height)
+  },
+})
+```
+
+### Disable resizing
+
+By default, the panel can be resized by dragging its edges (resize handles). To
+disable this behavior, set the `resizable` prop to `false`.
+
+```tsx {2}
+const service = useMachine(floatingPanel.machine, {
+  resizable: false,
+})
+```
+
+### Setting size constraints
+
+You can also control the minimum allowed dimensions of the panel by using the
+`minSize` and `maxSize` props.
+
+```tsx {2,3}
+const service = useMachine(floatingPanel.machine, {
+  minSize: { width: 100, height: 100 },
+  maxSize: { width: 500, height: 500 },
+})
+```
+
+### Aspect ratio
+
+To lock the aspect ratio of the floating panel, set the `lockAspectRatio` prop.
+This will ensure the panel maintains a consistent aspect ratio while being
+resized.
+
+```tsx {2}
+const service = useMachine(floatingPanel.machine, {
+  lockAspectRatio: true,
+})
+```
+
+## Positioning
+
+### Setting the initial position
+
+To specify the initial position of the floating panel, use the `defaultPosition`
+prop. If `defaultPosition` is not provided, the floating panel will be initially
+positioned at the center of the viewport.
+
+```tsx {2}
+const service = useMachine(floatingPanel.machine, {
+  defaultPosition: { x: 500, y: 200 },
+})
+```
+
+### Anchor position
+
+An alternative to setting the initial position is to provide a function that
+returns the anchor position. This function is called when the panel is opened
+and receives the `triggerRect` and `boundaryRect`.
+
+```tsx {2}
+const service = useMachine(floatingPanel.machine, {
+  getAnchorPosition({ triggerRect, boundaryRect }) {
+    return {
+      x: boundaryRect.x + (boundaryRect.width - triggerRect.width) / 2,
+      y: boundaryRect.y + (boundaryRect.height - triggerRect.height) / 2,
+    }
+  },
+})
+```
+
+### Controlling the position
+
+To control the position of the floating panel programmatically, you can pass the
+`position` and `onPositionChange` prop to the machine.
+
+```tsx {2}
+const service = useMachine(floatingPanel.machine, {
+  position: { x: 500, y: 200 },
+  onPositionChange(details) {
+    // details => { x: number, y: number }
+    console.log("floating panel is:", details.x, details.y)
+  },
+})
+```
+
+### Disable dragging
+
+The floating panel enables you to set its position and move it by dragging. To
+disable this behavior, set the `draggable` prop to `false`.
+
+## Events
+
+The KendoReact Window generates a variety of events that you can handle. This
+allows you to tailor the behavior of the Window to your specific requirements.
+
+### Open State
+
+When the floating panel is `opened` or `closed`, the `onOpenChange` callback is
+invoked.
+
+```tsx {2-5}
+const service = useMachine(floatingPanel.machine, {
+  onOpenChange(details) {
+    // details => { open: boolean }
+    console.log("floating panel is:", details.open ? "opened" : "closed")
+  },
+})
+```
+
+### Position Change
+
+When the position of the floating panel changes, these callbacks are invoked:
+
+- `onPositionChange` — When the position of the floating panel changes.
+- `onPositionChangeEnd` — When the position of the floating panel changes ends.
+
+```tsx {2-5}
+const service = useMachine(floatingPanel.machine, {
+  onPositionChange(details) {
+    // details => { position: { x: number, y: number } }
+    console.log("floating panel is:", details.position.x, details.position.y)
+  },
+  onPositionChangeEnd(details) {
+    // details => { position: { x: number, y: number } }
+    console.log("floating panel is:", details.position.x, details.position.y)
+  },
+})
+```
+
+### Resize
+
+When the size of the floating panel changes, these callbacks are invoked:
+
+- `onResize` — When the size of the floating panel changes.
+- `onResizeEnd` — When the size of the floating panel changes ends.
+
+```tsx {2-5}
+const service = useMachine(floatingPanel.machine, {
+  onResize(details) {
+    // details => { size: { width: number, height: number } }
+    console.log("floating panel is:", details.size.width, details.size.height)
+  },
+  onResizeEnd(details) {
+    // details => { size: { width: number, height: number } }
+    console.log("floating panel is:", details.size.width, details.size.height)
+  },
+})
+```
+
+## Minimizing and Maximizing
+
+The floating panel can be minimized, default, and maximized by clicking the
+respective buttons in the header. We refer to this as the panel's `stage`.
+
+- When the panel is minimized, the body is hidden and the panel is resized to a
+  minimum size.
+
+- When the panel is maximized, the panel scales to the match the size of the
+  defined boundary rect (via `getBoundaryEl` prop).
+
+- When the panel is restored, the panel is resized back to the previously known
+  size.
+
+When the stage changes, the `onStageChange` callback is invoked.
+
+```tsx {2-5}
+const service = useMachine(floatingPanel.machine, {
+  onStageChange(details) {
+    // details => { stage: "minimized" | "maximized" | "default" }
+    console.log("floating panel is:", details.stage)
+  },
+})
+```
+
+## Styling guide
+
+The floating panel component uses data attributes to style its various parts.
+Each part has a `data-scope="floating-panel"` and `data-part` attribute that you
+can use to target specific elements.
+
+```css
+[data-scope="floating-panel"][data-part="content"] {
+  /* Add styles for the main panel container */
+}
+
+[data-scope="floating-panel"][data-part="body"] {
+  /* Add styles for the panel's content area */
+}
+
+[data-scope="floating-panel"][data-part="header"] {
+  /* Add styles for the panel's header */
+}
+
+[data-scope="floating-panel"][data-part="stage-trigger"] {
+  /* Add styles for state buttons in the header */
+}
+
+[data-scope="floating-panel"][data-part="resize-trigger"] {
+  /* Add styles for resize handles */
+}
+
+/* North and south resize handles */
+[data-scope="floating-panel"][data-part="resize-trigger"][data-axis="n"],
+[data-scope="floating-panel"][data-part="resize-trigger"][data-axis="s"] {
+  /* Add styles for north and south resize handles */
+}
+
+/* East and west resize handles */
+[data-scope="floating-panel"][data-part="resize-trigger"][data-axis="e"],
+[data-scope="floating-panel"][data-part="resize-trigger"][data-axis="w"] {
+  /* Add styles for east and west resize handles */
+}
+
+/* Corner resize handles */
+[data-scope="floating-panel"][data-part="resize-trigger"][data-axis="ne"],
+[data-scope="floating-panel"][data-part="resize-trigger"][data-axis="nw"],
+[data-scope="floating-panel"][data-part="resize-trigger"][data-axis="se"],
+[data-scope="floating-panel"][data-part="resize-trigger"][data-axis="sw"] {
+  /* Add styles for corner resize handles */
+}
+```
+
+### Dragging
+
+When dragging the panel, the `[data-dragging]` attribute is applied to the
+panel.
+
+```css
+[data-scope="floating-panel"][data-part="content"][data-dragging] {
+  /* Add styles for dragging state */
+}
+```
+
+### Stacking
+
+The floating panel has several states that can be targeted using data
+attributes:
+
+```css
+/* When the panel is the topmost element */
+[data-scope="floating-panel"][data-part="content"][data-topmost] {
+  /* Add styles for topmost state */
+}
+
+/* When the panel is behind another panel */
+[data-scope="floating-panel"][data-part="content"][data-behind] {
+  /* Add styles for behind state */
+}
+```
+
+## Methods and Properties
+
+### Machine Context
+
+The floating panel machine exposes the following context properties:
+
+<ContextTable name="floating-panel" />
+
+### Machine API
+
+The floating panel `api` exposes the following methods:
+
+<ApiTable name="floating-panel" />
+
+### Data Attributes
+
+<DataAttrTable name="floating-panel" />

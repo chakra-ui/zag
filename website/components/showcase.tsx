@@ -44,6 +44,7 @@ import { Tour } from "./machines/tour"
 import { TreeView } from "./machines/tree-view"
 import { Listbox } from "./machines/listbox"
 import { Playground } from "./playground"
+import { FloatingPanel } from "./machines/floating-panel"
 
 const components = {
   Accordion: () => (
@@ -503,6 +504,18 @@ const components = {
           default: "single",
           options: ["single", "multiple", "extended"],
         },
+      }}
+    />
+  ),
+  FloatingPanel: () => (
+    <Playground
+      name="floating-panel"
+      component={FloatingPanel}
+      defaultProps={{
+        resizable: true,
+        draggable: true,
+        disabled: false,
+        lockAspectRatio: false,
       }}
     />
   ),

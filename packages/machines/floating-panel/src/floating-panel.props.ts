@@ -1,10 +1,13 @@
 import { createProps } from "@zag-js/types"
 import { createSplitProps } from "@zag-js/utils"
-import type { FloatingPanelProps } from "./floating-panel.types"
+import type { FloatingPanelProps, ResizeTriggerProps } from "./floating-panel.types"
 
 export const props = createProps<FloatingPanelProps>()([
   "allowOverflow",
   "closeOnEscape",
+  "defaultOpen",
+  "defaultPosition",
+  "defaultSize",
   "dir",
   "disabled",
   "draggable",
@@ -27,11 +30,11 @@ export const props = createProps<FloatingPanelProps>()([
   "persistRect",
   "position",
   "resizable",
-  "strategy",
   "size",
-  "defaultSize",
-  "defaultPosition",
-  "defaultOpen",
+  "strategy",
+  "translations",
 ])
-
 export const splitProps = createSplitProps<Partial<FloatingPanelProps>>(props)
+
+export const resizeTriggerProps = createProps<ResizeTriggerProps>()(["axis"])
+export const splitResizeTriggerProps = createSplitProps<Partial<ResizeTriggerProps>>(resizeTriggerProps)

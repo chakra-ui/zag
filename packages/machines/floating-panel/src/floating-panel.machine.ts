@@ -18,9 +18,15 @@ import { subscribe } from "@zag-js/store"
 import { ensureProps, invariant, match, pick } from "@zag-js/utils"
 import * as dom from "./floating-panel.dom"
 import { panelStack } from "./floating-panel.store"
-import type { FloatingPanelSchema, Stage } from "./floating-panel.types"
+import type { FloatingPanelSchema, IntlTranslations, Stage } from "./floating-panel.types"
 
 const { not } = createGuards<FloatingPanelSchema>()
+
+const defaultTranslations: IntlTranslations = {
+  minimize: "Minimize window",
+  maximize: "Maximize window",
+  restore: "Restore window",
+}
 
 export const machine = createMachine<FloatingPanelSchema>({
   props({ props }) {
@@ -34,6 +40,11 @@ export const machine = createMachine<FloatingPanelSchema>({
       resizable: true,
       draggable: true,
       ...props,
+      hasSpecifiedPosition: !!props.defaultPosition || !!props.position,
+      translations: {
+        ...defaultTranslations,
+        ...props.translations,
+      },
     }
   },
 
@@ -48,6 +59,7 @@ export const machine = createMachine<FloatingPanelSchema>({
         defaultValue: prop("defaultSize"),
         value: prop("size"),
         isEqual: isSizeEqual,
+        sync: true,
         hash(v) {
           return `W:${v.width} H:${v.height}`
         },
@@ -59,6 +71,7 @@ export const machine = createMachine<FloatingPanelSchema>({
         defaultValue: prop("defaultPosition"),
         value: prop("position"),
         isEqual: isPointEqual,
+        sync: true,
         hash(v) {
           return `X:${v.x} Y:${v.y}`
         },
@@ -66,8 +79,11 @@ export const machine = createMachine<FloatingPanelSchema>({
           prop("onPositionChange")?.({ position: value })
         },
       })),
-      stage: bindable<Stage | undefined>(() => ({
-        defaultValue: undefined,
+      stage: bindable<Stage>(() => ({
+        defaultValue: "default",
+        onChange(value) {
+          prop("onStageChange")?.({ stage: value })
+        },
       })),
       lastEventPosition: bindable<Point | null>(() => ({
         defaultValue: null,
@@ -87,12 +103,12 @@ export const machine = createMachine<FloatingPanelSchema>({
   computed: {
     isMaximized: ({ context }) => context.get("stage") === "maximized",
     isMinimized: ({ context }) => context.get("stage") === "minimized",
-    isStaged: ({ context }) => !!context.get("stage"),
-    canResize: ({ context, prop }) => (prop("resizable") || !prop("disabled")) && !context.get("stage"),
+    isStaged: ({ context }) => context.get("stage") !== "default",
+    canResize: ({ context, prop }) => (prop("resizable") || !prop("disabled")) && context.get("stage") === "default",
     canDrag: ({ prop, computed }) => (prop("draggable") || !prop("disabled")) && !computed("isMaximized"),
   },
 
-  watch({ track, context, action }) {
+  watch({ track, context, action, prop }) {
     track([() => context.hash("position")], () => {
       action(["setPositionStyle"])
     })
@@ -100,13 +116,23 @@ export const machine = createMachine<FloatingPanelSchema>({
     track([() => context.hash("size")], () => {
       action(["setSizeStyle"])
     })
+
+    track([() => prop("open")], () => {
+      action(["toggleVisibility"])
+    })
   },
 
   effects: ["trackPanelStack"],
 
   on: {
-    WINDOW_FOCUS: {
+    CONTENT_FOCUS: {
       actions: ["bringToFrontOfPanelStack"],
+    },
+    SET_POSITION: {
+      actions: ["setPosition"],
+    },
+    SET_SIZE: {
+      actions: ["setSize"],
     },
   },
 
@@ -116,7 +142,7 @@ export const machine = createMachine<FloatingPanelSchema>({
       on: {
         OPEN: {
           target: "open",
-          actions: ["invokeOnOpen", "setAnchorPosition", "setPositionStyle", "setSizeStyle"],
+          actions: ["invokeOnOpen", "setAnchorPosition", "setPositionStyle", "setSizeStyle", "focusContentEl"],
         },
       },
     },
@@ -138,18 +164,18 @@ export const machine = createMachine<FloatingPanelSchema>({
         },
         CLOSE: {
           target: "closed",
-          actions: ["invokeOnClose", "resetRect"],
+          actions: ["invokeOnClose", "resetRect", "focusTriggerEl"],
         },
         ESCAPE: {
           guard: "closeOnEsc",
           target: "closed",
-          actions: ["invokeOnClose", "resetRect"],
+          actions: ["invokeOnClose", "resetRect", "focusTriggerEl"],
         },
         MINIMIZE: {
-          actions: ["setMinimized", "invokeOnMinimize"],
+          actions: ["setMinimized"],
         },
         MAXIMIZE: {
-          actions: ["setMaximized", "invokeOnMaximize"],
+          actions: ["setMaximized"],
         },
         RESTORE: {
           actions: ["setRestored"],
@@ -264,6 +290,13 @@ export const machine = createMachine<FloatingPanelSchema>({
       trackPanelStack({ context, scope }) {
         const unsub = subscribe(panelStack, () => {
           context.set("isTopmost", panelStack.isTopmost(scope.id!))
+          const contentEl = dom.getContentEl(scope)
+          if (!contentEl) return
+
+          const index = panelStack.indexOf(scope.id!)
+          if (index === -1) return
+
+          contentEl.style.setProperty("--z-index", `${index + 1}`)
         })
 
         return () => {
@@ -275,15 +308,31 @@ export const machine = createMachine<FloatingPanelSchema>({
 
     actions: {
       setAnchorPosition({ context, prop, scope }) {
+        // If no anchor position specified, center in boundary
+        if (prop("hasSpecifiedPosition")) return
+
         // if we persisted the rect, we don't need to set the anchor position
-        if (prop("persistRect") && (context.get("prevPosition") || context.get("prevSize"))) return
+        const hasPrevRect = context.get("prevPosition") || context.get("prevSize")
+        if (prop("persistRect") && hasPrevRect) return
+
         raf(() => {
           const triggerRect = dom.getTriggerEl(scope)
           const boundaryRect = dom.getBoundaryRect(scope, prop("getBoundaryEl")?.(), false)
-          const anchorPosition = prop("getAnchorPosition")?.({
+
+          let anchorPosition = prop("getAnchorPosition")?.({
             triggerRect: triggerRect ? DOMRect.fromRect(getElementRect(triggerRect)) : null,
             boundaryRect: DOMRect.fromRect(boundaryRect),
           })
+
+          // If no anchor position specified, center in boundary
+          if (!anchorPosition) {
+            const size = context.get("size")
+            anchorPosition = {
+              x: boundaryRect.x + (boundaryRect.width - size.width) / 2,
+              y: boundaryRect.y + (boundaryRect.height - size.height) / 2,
+            }
+          }
+
           if (!anchorPosition) return
           context.set("position", anchorPosition)
         })
@@ -324,7 +373,7 @@ export const machine = createMachine<FloatingPanelSchema>({
       },
 
       resetRect({ context, prop }) {
-        context.set("stage", undefined)
+        context.set("stage", "default")
         if (!prop("persistRect")) {
           context.set("position", context.initial("position"))
           context.set("size", context.initial("size"))
@@ -375,10 +424,12 @@ export const machine = createMachine<FloatingPanelSchema>({
       },
 
       setSizeStyle({ scope, context }) {
-        const el = dom.getPositionerEl(scope)
-        const size = context.get("size")
-        el?.style.setProperty("--width", `${size.width}px`)
-        el?.style.setProperty("--height", `${size.height}px`)
+        queueMicrotask(() => {
+          const el = dom.getPositionerEl(scope)
+          const size = context.get("size")
+          el?.style.setProperty("--width", `${size.width}px`)
+          el?.style.setProperty("--height", `${size.height}px`)
+        })
       },
 
       setMaximized({ context, prop, scope }) {
@@ -419,7 +470,7 @@ export const machine = createMachine<FloatingPanelSchema>({
         const boundaryRect = dom.getBoundaryRect(scope, prop("getBoundaryEl")?.(), false)
 
         // remove stage
-        context.set("stage", undefined)
+        context.set("stage", "default")
 
         // restore size
         const prevSize = context.get("prevSize")
@@ -460,9 +511,7 @@ export const machine = createMachine<FloatingPanelSchema>({
         nextPosition = clampPoint(nextPosition, context.get("size"), boundaryRect)
         context.set("position", nextPosition)
       },
-      addToPanelStack({ prop }) {
-        panelStack.add(prop("id"))
-      },
+
       bringToFrontOfPanelStack({ prop }) {
         panelStack.bringToFront(prop("id"))
       },
@@ -478,11 +527,21 @@ export const machine = createMachine<FloatingPanelSchema>({
       invokeOnResizeEnd({ context, prop }) {
         prop("onSizeChangeEnd")?.({ size: context.get("size") })
       },
-      invokeOnMinimize({ prop }) {
-        prop("onStageChange")?.({ stage: "minimized" })
+
+      focusTriggerEl({ scope }) {
+        raf(() => {
+          dom.getTriggerEl(scope)?.focus()
+        })
       },
-      invokeOnMaximize({ prop }) {
-        prop("onStageChange")?.({ stage: "maximized" })
+
+      focusContentEl({ scope }) {
+        raf(() => {
+          dom.getContentEl(scope)?.focus()
+        })
+      },
+
+      toggleVisibility({ send, prop, event }) {
+        send({ type: prop("open") ? "CONTROLLED.OPEN" : "CONTROLLED.CLOSE", previousEvent: event })
       },
     },
   },

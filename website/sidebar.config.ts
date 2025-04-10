@@ -79,6 +79,12 @@ const sidebar: Record<"docs", SidebarItem[]> = {
         { type: "doc", label: "Dialog", id: "dialog" },
         { type: "doc", label: "Editable", id: "editable" },
         { type: "doc", label: "File Upload", id: "file-upload" },
+        {
+          type: "doc",
+          label: "Floating Panel",
+          id: "floating-panel",
+          beta: true,
+        },
         { type: "doc", label: "Hover Card", id: "hover-card" },
         { type: "doc", label: "Listbox", id: "listbox", beta: true },
         { type: "doc", label: "Menu", id: "menu" },

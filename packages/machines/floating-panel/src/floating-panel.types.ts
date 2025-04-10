@@ -18,10 +18,10 @@ export interface OpenChangeDetails {
   open: boolean
 }
 
-export type Stage = "minimized" | "maximized"
+export type Stage = "minimized" | "maximized" | "default"
 
 export interface StageChangeDetails {
-  stage: Stage | undefined
+  stage: Stage
 }
 
 export interface AnchorPositionDetails {
@@ -37,6 +37,12 @@ export type ElementIds = Partial<{
   header: string
 }>
 
+export interface IntlTranslations {
+  minimize: string
+  maximize: string
+  restore: string
+}
+
 /* -----------------------------------------------------------------------------
  * Machine context
  * -----------------------------------------------------------------------------*/
@@ -46,6 +52,10 @@ export interface FloatingPanelProps extends DirectionProperty, CommonProperties 
    * The ids of the elements in the floating panel. Useful for composition.
    */
   ids?: ElementIds | undefined
+  /**
+   * The translations for the floating panel.
+   */
+  translations?: IntlTranslations | undefined
   /**
    * The strategy to use for positioning
    * @default "absolute"
@@ -167,6 +177,7 @@ type PropWithDefault =
   | "draggable"
   | "resizable"
   | "id"
+  | "translations"
 
 interface PrivateContext {
   /**
@@ -184,7 +195,7 @@ interface PrivateContext {
   /**
    * The stage of the panel
    */
-  stage?: Stage | undefined
+  stage: Stage
   /**
    * Whether the panel is topmost in the panel stack
    */
@@ -208,7 +219,9 @@ type ComputedContext = Readonly<{
 }>
 
 export interface FloatingPanelSchema {
-  props: RequiredBy<FloatingPanelProps, PropWithDefault>
+  props: RequiredBy<FloatingPanelProps, PropWithDefault> & {
+    hasSpecifiedPosition: boolean
+  }
   context: PrivateContext
   computed: ComputedContext
   tag: "open" | "closed"
@@ -230,7 +243,17 @@ export type FloatingPanelMachine = Machine<FloatingPanelSchema>
 export type ResizeTriggerAxis = "s" | "w" | "e" | "n" | "sw" | "nw" | "se" | "ne"
 
 export interface ResizeTriggerProps {
+  /**
+   * The axis of the resize handle
+   */
   axis: ResizeTriggerAxis
+}
+
+export interface StageTriggerProps {
+  /**
+   * The stage of the panel
+   */
+  stage: Stage
 }
 
 /* -----------------------------------------------------------------------------
@@ -254,6 +277,42 @@ export interface FloatingPanelApi<T extends PropTypes = PropTypes> {
    * Whether the panel is being resized
    */
   resizing: boolean
+  /**
+   * The position of the panel
+   */
+  position: Point
+  /**
+   * Function to set the position of the panel
+   */
+  setPosition(position: Point): void
+  /**
+   * The size of the panel
+   */
+  size: Size
+  /**
+   * Function to set the size of the panel
+   */
+  setSize(size: Size): void
+  /**
+   * Function to minimize the panel
+   */
+  minimize(): void
+  /**
+   * Function to maximize the panel
+   */
+  maximize(): void
+  /**
+   * Function to restore the panel before it was minimized or maximized
+   */
+  restore(): void
+  /**
+   * Whether the panel is resizable
+   */
+  resizable: boolean
+  /**
+   * Whether the panel is draggable
+   */
+  draggable: boolean
 
   getDragTriggerProps(): T["element"]
   getResizeTriggerProps(props: ResizeTriggerProps): T["element"]
@@ -264,7 +323,6 @@ export interface FloatingPanelApi<T extends PropTypes = PropTypes> {
   getHeaderProps(): T["element"]
   getBodyProps(): T["element"]
   getCloseTriggerProps(): T["button"]
-  getMinimizeTriggerProps(): T["button"]
-  getMaximizeTriggerProps(): T["button"]
-  getRestoreTriggerProps(): T["button"]
+  getControlProps(): T["element"]
+  getStageTriggerProps(props: StageTriggerProps): T["button"]
 }
