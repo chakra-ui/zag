@@ -15,12 +15,12 @@ import {
   type Size,
 } from "@zag-js/rect-utils"
 import { subscribe } from "@zag-js/store"
-import { ensureProps, invariant, match, pick } from "@zag-js/utils"
+import { clampValue, ensureProps, invariant, match, pick } from "@zag-js/utils"
 import * as dom from "./floating-panel.dom"
 import { panelStack } from "./floating-panel.store"
 import type { FloatingPanelSchema, IntlTranslations, Stage } from "./floating-panel.types"
 
-const { not } = createGuards<FloatingPanelSchema>()
+const { not, and } = createGuards<FloatingPanelSchema>()
 
 const defaultTranslations: IntlTranslations = {
   minimize: "Minimize window",
@@ -32,7 +32,7 @@ export const machine = createMachine<FloatingPanelSchema>({
   props({ props }) {
     ensureProps(props, ["id"], "floating-panel")
     return {
-      strategy: "absolute",
+      strategy: "fixed",
       gridSize: 1,
       defaultSize: { width: 320, height: 240 },
       defaultPosition: { x: 300, y: 100 },
@@ -140,10 +140,20 @@ export const machine = createMachine<FloatingPanelSchema>({
     closed: {
       tags: ["closed"],
       on: {
-        OPEN: {
+        "CONTROLLED.OPEN": {
           target: "open",
-          actions: ["invokeOnOpen", "setAnchorPosition", "setPositionStyle", "setSizeStyle", "focusContentEl"],
+          actions: ["setAnchorPosition", "setPositionStyle", "setSizeStyle", "focusContentEl"],
         },
+        OPEN: [
+          {
+            guard: "isOpenControlled",
+            actions: ["invokeOnOpen"],
+          },
+          {
+            target: "open",
+            actions: ["invokeOnOpen", "setAnchorPosition", "setPositionStyle", "setSizeStyle", "focusContentEl"],
+          },
+        ],
       },
     },
 
@@ -162,15 +172,32 @@ export const machine = createMachine<FloatingPanelSchema>({
           target: "open.resizing",
           actions: ["setPrevSize"],
         },
-        CLOSE: {
+        "CONTROLLED.CLOSE": {
           target: "closed",
-          actions: ["invokeOnClose", "resetRect", "focusTriggerEl"],
+          actions: ["resetRect", "focusTriggerEl"],
         },
-        ESCAPE: {
-          guard: "closeOnEsc",
-          target: "closed",
-          actions: ["invokeOnClose", "resetRect", "focusTriggerEl"],
-        },
+        CLOSE: [
+          {
+            guard: "isOpenControlled",
+            target: "closed",
+            actions: ["invokeOnClose"],
+          },
+          {
+            target: "closed",
+            actions: ["invokeOnClose", "resetRect", "focusTriggerEl"],
+          },
+        ],
+        ESCAPE: [
+          {
+            guard: and("isOpenControlled", "closeOnEsc"),
+            actions: ["invokeOnClose"],
+          },
+          {
+            guard: "closeOnEsc",
+            target: "closed",
+            actions: ["invokeOnClose", "resetRect", "focusTriggerEl"],
+          },
+        ],
         MINIMIZE: {
           actions: ["setMinimized"],
         },
@@ -198,10 +225,21 @@ export const machine = createMachine<FloatingPanelSchema>({
           target: "open",
           actions: ["invokeOnDragEnd"],
         },
-        CLOSE: {
+        "CONTROLLED.CLOSE": {
           target: "closed",
-          actions: ["invokeOnClose", "resetRect"],
+          actions: ["resetRect"],
         },
+        CLOSE: [
+          {
+            guard: "isOpenControlled",
+            target: "closed",
+            actions: ["invokeOnClose"],
+          },
+          {
+            target: "closed",
+            actions: ["invokeOnClose", "resetRect"],
+          },
+        ],
         ESCAPE: {
           target: "open",
         },
@@ -220,10 +258,21 @@ export const machine = createMachine<FloatingPanelSchema>({
           target: "open",
           actions: ["invokeOnResizeEnd"],
         },
-        CLOSE: {
+        "CONTROLLED.CLOSE": {
           target: "closed",
-          actions: ["invokeOnClose", "resetRect"],
+          actions: ["resetRect"],
         },
+        CLOSE: [
+          {
+            guard: "isOpenControlled",
+            target: "closed",
+            actions: ["invokeOnClose"],
+          },
+          {
+            target: "closed",
+            actions: ["invokeOnClose", "resetRect"],
+          },
+        ],
         ESCAPE: {
           target: "open",
         },
@@ -236,15 +285,20 @@ export const machine = createMachine<FloatingPanelSchema>({
       closeOnEsc: ({ prop }) => !!prop("closeOnEscape"),
       isMaximized: ({ context }) => context.get("stage") === "maximized",
       isMinimized: ({ context }) => context.get("stage") === "minimized",
+      isOpenControlled: ({ prop }) => prop("open") != undefined,
     },
 
     effects: {
-      trackPointerMove({ scope, send, event: evt }) {
+      trackPointerMove({ scope, send, event: evt, prop }) {
         const doc = scope.getDoc()
+        const boundaryEl = prop("getBoundaryEl")?.()
+        const boundaryRect = dom.getBoundaryRect(scope, boundaryEl, false)
         return trackPointerMove(doc, {
           onPointerMove({ point, event }) {
             const { altKey, shiftKey } = event
-            send({ type: "DRAG", position: point, axis: evt.axis, altKey, shiftKey })
+            let x = clampValue(point.x, boundaryRect.x, boundaryRect.x + boundaryRect.width)
+            let y = clampValue(point.y, boundaryRect.y, boundaryRect.y + boundaryRect.height)
+            send({ type: "DRAG", position: { x, y }, axis: evt.axis, altKey, shiftKey })
           },
           onPointerUp() {
             send({ type: "DRAG_END" })

@@ -6,6 +6,16 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+## [1.9.3](./#1.9.3) - 2025-04-10
+
+### Fixed
+
+- **Floating Panel**
+
+  - Change default strategy from `absolute` to `fixed` to improve positioning consistency
+  - Implement controlled open/close state
+  - Constraint the mouse movement to the boundary rect to prevent content from being moved outside completely
+
 ## [1.9.2](./#1.9.2) - 2025-04-10
 
 ### Fixed

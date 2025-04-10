@@ -58,7 +58,7 @@ export interface FloatingPanelProps extends DirectionProperty, CommonProperties 
   translations?: IntlTranslations | undefined
   /**
    * The strategy to use for positioning
-   * @default "absolute"
+   * @default "fixed"
    */
   strategy?: "absolute" | "fixed" | undefined
   /**

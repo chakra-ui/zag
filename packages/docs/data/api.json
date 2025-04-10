@@ -1810,7 +1810,7 @@
       "strategy": {
         "type": "\"absolute\" | \"fixed\"",
         "description": "The strategy to use for positioning",
-        "defaultValue": "\"absolute\""
+        "defaultValue": "\"fixed\""
       },
       "allowOverflow": {
         "type": "boolean",
