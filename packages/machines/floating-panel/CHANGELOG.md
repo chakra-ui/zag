@@ -1,5 +1,23 @@
 # @zag-js/floating-panel
 
+## 1.9.1
+
+### Patch Changes
+
+- [`ce12bbd`](https://github.com/chakra-ui/zag/commit/ce12bbd7466bfe4f724634898e1b84c003ce91ce) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - - Update floating panel APIs
+  - Fix issue where position and size were not synchronized correctly
+- Updated dependencies []:
+  - @zag-js/anatomy@1.9.1
+  - @zag-js/core@1.9.1
+  - @zag-js/store@1.9.1
+  - @zag-js/types@1.9.1
+  - @zag-js/utils@1.9.1
+  - @zag-js/dismissable@1.9.1
+  - @zag-js/dom-query@1.9.1
+  - @zag-js/popper@1.9.1
+  - @zag-js/rect-utils@1.9.1
+
 ## 1.9.0
 
 ### Patch Changes
