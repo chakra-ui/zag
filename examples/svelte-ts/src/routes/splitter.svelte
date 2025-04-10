@@ -8,8 +8,9 @@
 
   const controls = useControls(splitterControls)
 
+  const id = $props.id()
   const service = useMachine(splitter.machine, {
-    id: "1",
+    id,
     panels: [{ id: "a" }, { id: "b" }],
   })
 

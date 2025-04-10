@@ -12,8 +12,9 @@
   let url = $state("")
   const setUrl = (value: string) => (url = value)
 
+  const id = $props.id()
   const service = useMachine(signaturePad.machine, {
-    id: "1",
+    id,
     onDrawEnd(details) {
       details.getDataUrl("image/png").then(setUrl)
     },

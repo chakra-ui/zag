@@ -9,9 +9,10 @@
 
   const controls = useControls(pinInputControls)
 
+  const id = $props.id()
   const service = useMachine(pinInput.machine, {
     name: "test",
-    id: "1",
+    id,
     count: 3,
   })
 

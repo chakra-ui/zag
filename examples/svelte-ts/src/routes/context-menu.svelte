@@ -4,8 +4,9 @@
   import * as menu from "@zag-js/menu"
   import { normalizeProps, portal, useMachine } from "@zag-js/svelte"
 
+  const id = $props.id()
   const service = useMachine(menu.machine, {
-    id: "1",
+    id,
     onSelect: console.log,
   })
 

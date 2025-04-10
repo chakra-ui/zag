@@ -8,7 +8,8 @@
 
   const controls = useControls(menuControls)
 
-  const service = useMachine(menu.machine, { id: "1", onSelect: console.log })
+  const id = $props.id()
+  const service = useMachine(menu.machine, { id, onSelect: console.log })
 
   const api = $derived(menu.connect(service, normalizeProps))
 </script>

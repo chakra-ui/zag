@@ -11,8 +11,9 @@
 
   const controls = useControls(colorPickerControls)
 
+  const id = $props.id()
   const service = useMachine(colorPicker.machine, {
-    id: "1",
+    id,
     name: "color",
     format: "hsla",
     defaultValue: colorPicker.parse("hsl(0, 100%, 50%)"),

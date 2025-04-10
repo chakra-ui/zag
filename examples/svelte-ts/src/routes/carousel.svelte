@@ -8,8 +8,9 @@
 
   const controls = useControls(carouselControls)
 
+  const id = $props.id()
   const service = useMachine(carousel.machine, {
-    id: "1",
+    id,
     spacing: "20px",
     slidesPerPage: 2,
     slideCount: carouselData.length,

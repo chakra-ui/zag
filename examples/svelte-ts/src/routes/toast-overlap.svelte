@@ -14,8 +14,9 @@
     overlap: true,
   })
 
+  const uid = $props.id()
   const service = useMachine(toast.group.machine, {
-    id: "1",
+    id: uid,
     store: toaster,
   })
 

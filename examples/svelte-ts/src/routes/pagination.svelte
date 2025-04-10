@@ -9,8 +9,9 @@
   const controls = useControls(paginationControls)
   let details = $state<any>({})
 
+  const id = $props.id()
   const service = useMachine(pagination.machine, {
-    id: "1",
+    id,
     count: paginationData.length,
     onPageChange(v) {
       details = v

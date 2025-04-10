@@ -11,7 +11,8 @@
   let order = $state("")
   let type = $state<string[]>([])
 
-  const service = useMachine(menu.machine, { id: "1" })
+  const id = $props.id()
+  const service = useMachine(menu.machine, { id })
 
   const api = $derived(menu.connect(service, normalizeProps))
 

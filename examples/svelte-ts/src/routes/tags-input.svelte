@@ -12,8 +12,9 @@
 
   const controls = useControls(tagsInputControls)
 
+  const id = $props.id()
   const service = useMachine(tagsInput.machine, {
-    id: "1",
+    id,
     defaultValue: ["React", "Vue"],
   })
 

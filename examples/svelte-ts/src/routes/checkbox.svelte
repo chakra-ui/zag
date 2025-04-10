@@ -9,7 +9,8 @@
 
   const controls = useControls(checkboxControls)
 
-  const service = useMachine(checkbox.machine, { id: "1" })
+  const id = $props.id()
+  const service = useMachine(checkbox.machine, { id })
 
   const api = $derived(checkbox.connect(service, normalizeProps))
 </script>

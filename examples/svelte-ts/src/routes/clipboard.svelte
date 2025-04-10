@@ -9,8 +9,9 @@
 
   const controls = useControls(clipboardControls)
 
+  const id = $props.id()
   const service = useMachine(clipboard.machine, {
-    id: "1",
+    id,
     defaultValue: "https://github/com/chakra-ui/zag",
   })
 

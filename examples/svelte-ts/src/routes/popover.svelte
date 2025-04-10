@@ -8,7 +8,8 @@
 
   const controls = useControls(popoverControls)
 
-  const service = useMachine(popover.machine, { id: "1" })
+  const id = $props.id()
+  const service = useMachine(popover.machine, { id })
 
   const api = $derived(popover.connect(service, normalizeProps))
 </script>

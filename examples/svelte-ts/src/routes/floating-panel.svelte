@@ -9,7 +9,8 @@
 
   const controls = useControls(floatingPanelControls)
 
-  const service = useMachine(floatingPanel.machine, { id: "1" })
+  const id = $props.id()
+  const service = useMachine(floatingPanel.machine, { id })
 
   const api = $derived(floatingPanel.connect(service, normalizeProps))
 </script>

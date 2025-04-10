@@ -8,7 +8,8 @@
 
   const controls = useControls(ratingControls)
 
-  const service = useMachine(rating.machine, { id: "1", defaultValue: 2.5 })
+  const id = $props.id()
+  const service = useMachine(rating.machine, { id, defaultValue: 2.5 })
 
   const api = $derived(rating.connect(service, normalizeProps))
 </script>
