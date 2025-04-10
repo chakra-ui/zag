@@ -6,6 +6,15 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+## [1.9.1](./#1.9.1) - 2025-04-10
+
+### Changed
+
+- **Floating Panel**
+
+  - Update props and APIs to be consistent with other components
+  - Fix issue where position and size were not synchronized correctly
+
 ## [1.9.0](./#1.9.0) - 2025-04-09
 
 ### Added
