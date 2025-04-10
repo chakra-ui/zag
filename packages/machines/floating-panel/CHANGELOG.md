@@ -1,5 +1,24 @@
 # @zag-js/floating-panel
 
+## 1.9.3
+
+### Patch Changes
+
+- [`d70fd3f`](https://github.com/chakra-ui/zag/commit/d70fd3f9c66a217a6a4cae44f5adaf6d10c5a393) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - - Set default strategy to `fixed`
+  - Implement controlled open/close state
+  - Constraint the mouse movement to the boundary rect
+- Updated dependencies []:
+  - @zag-js/anatomy@1.9.3
+  - @zag-js/core@1.9.3
+  - @zag-js/store@1.9.3
+  - @zag-js/types@1.9.3
+  - @zag-js/utils@1.9.3
+  - @zag-js/dismissable@1.9.3
+  - @zag-js/dom-query@1.9.3
+  - @zag-js/popper@1.9.3
+  - @zag-js/rect-utils@1.9.3
+
 ## 1.9.2
 
 ### Patch Changes
