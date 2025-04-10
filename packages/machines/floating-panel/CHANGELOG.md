@@ -1,5 +1,23 @@
 # @zag-js/floating-panel
 
+## 1.9.2
+
+### Patch Changes
+
+- [`dbf331c`](https://github.com/chakra-ui/zag/commit/dbf331c8f2bed95218d88a20cad1ab9137ad5b0b) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Export missing types from floating panel
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.9.2
+  - @zag-js/core@1.9.2
+  - @zag-js/store@1.9.2
+  - @zag-js/types@1.9.2
+  - @zag-js/utils@1.9.2
+  - @zag-js/dismissable@1.9.2
+  - @zag-js/dom-query@1.9.2
+  - @zag-js/popper@1.9.2
+  - @zag-js/rect-utils@1.9.2
+
 ## 1.9.1
 
 ### Patch Changes
