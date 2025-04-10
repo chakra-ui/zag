@@ -6,6 +6,12 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+## [1.9.2](./#1.9.2) - 2025-04-10
+
+### Fixed
+
+- **Floating Panel**: Fix issue where `StageTriggerProps` and `AnchorPositionDetails` was not exported
+
 ## [1.9.1](./#1.9.1) - 2025-04-10
 
 ### Changed
