@@ -43,11 +43,11 @@ const steps: tour.StepDetails[] = [
   },
 ]
 
-export function Tour(props: any) {
+export function Tour(props: Omit<tour.Props, "id">) {
   const service = useMachine(tour.machine, {
     id: useId(),
     steps,
-    ...props.controls,
+    ...props,
   })
 
   const api = tour.connect(service, normalizeProps)

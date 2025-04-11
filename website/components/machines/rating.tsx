@@ -32,21 +32,12 @@ function Star() {
   )
 }
 
-type RadioProps = {
-  controls: {
-    allowHalf: boolean
-    disabled: boolean
-    readOnly: boolean
-    max: number
-  }
-}
-
-export function Rating(props: RadioProps) {
+export function Rating(props: Omit<rating.Props, "id">) {
   const service = useMachine(rating.machine, {
     id: useId(),
     name: "service",
     defaultValue: 2.5,
-    ...props.controls,
+    ...props,
   })
 
   const api = rating.connect(service, normalizeProps)

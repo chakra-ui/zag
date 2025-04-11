@@ -2,17 +2,10 @@ import * as hoverCard from "@zag-js/hover-card"
 import { normalizeProps, useMachine, Portal } from "@zag-js/react"
 import { useId } from "react"
 
-type HoverCardProps = {
-  controls: {
-    openDelay: number
-    closeDelay: number
-  }
-}
-
-export function HoverCard(props: HoverCardProps) {
+export function HoverCard(props: Omit<hoverCard.Props, "id">) {
   const service = useMachine(hoverCard.machine, {
     id: useId(),
-    ...props.controls,
+    ...props,
   })
 
   const api = hoverCard.connect(service, normalizeProps)

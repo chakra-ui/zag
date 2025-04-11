@@ -2,16 +2,10 @@ import * as timePicker from "@zag-js/time-picker"
 import { Portal, normalizeProps, useMachine } from "@zag-js/react"
 import { useId } from "react"
 
-type TimePickerProps = {
-  controls: {
-    disabled: boolean
-  }
-}
-
-export function TimePicker(props: TimePickerProps) {
+export function TimePicker(props: Omit<timePicker.Props, "id">) {
   const service = useMachine(timePicker.machine, {
     id: useId(),
-    ...props.controls,
+    ...props,
   })
 
   const api = timePicker.connect(service, normalizeProps)

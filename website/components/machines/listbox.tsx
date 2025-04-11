@@ -17,7 +17,7 @@ interface Item {
   favorite?: boolean
 }
 
-export function Listbox(props: ListboxProps) {
+export function Listbox(props: Omit<listbox.Props<Item>, "id" | "collection">) {
   const collection = listbox.collection({
     items: people,
     itemToValue: (item) => item.username,
@@ -25,9 +25,9 @@ export function Listbox(props: ListboxProps) {
   })
 
   const service = useMachine(listbox.machine as listbox.Machine<Item>, {
-    collection,
     id: useId(),
-    ...props.controls,
+    collection,
+    ...props,
   })
 
   const api = listbox.connect(service, normalizeProps)
