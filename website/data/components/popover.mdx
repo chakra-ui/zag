@@ -135,10 +135,12 @@ const api = popover.connect(service, normalizeProps)
 //...
 return (
   <div {...api.getPositionerProps()}>
-    <div {...api.getArrowProps()}>
-      <div {...api.getArrowTipProps()} />
+    <div {...api.getContentProps()}>
+      <div {...api.getArrowProps()}>
+        <div {...api.getArrowTipProps()} />
+      </div>
+      //...
     </div>
-    <div {...api.getContentProps()}>{/* ... */}</div>
   </div>
 )
 //...
