@@ -18,6 +18,7 @@ import { createScope, INIT_STATE, MachineStatus } from "@zag-js/core"
 import { subscribe } from "@zag-js/store"
 import { compact, identity, isEqual, isFunction, isString, toArray, warn } from "@zag-js/utils"
 import { bindable } from "./bindable"
+import { createRefs } from "./refs"
 
 export class VanillaMachine<T extends MachineSchema> {
   scope: Scope
@@ -337,16 +338,4 @@ export class VanillaMachine<T extends MachineSchema> {
     scope: this.scope,
     choose: this.choose,
   })
-}
-
-function createRefs<T>(refs: T) {
-  const ref = { current: refs }
-  return {
-    get<K extends keyof T>(key: K): T[K] {
-      return ref.current[key]
-    },
-    set<K extends keyof T>(key: K, value: T[K]) {
-      ref.current[key] = value
-    },
-  }
 }
