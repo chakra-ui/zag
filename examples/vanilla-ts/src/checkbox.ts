@@ -1,8 +1,6 @@
 import * as checkbox from "@zag-js/checkbox"
-import { normalizeProps } from "./normalize-props"
-import { spreadProps } from "./spread-props"
+import { normalizeProps, spreadProps, VanillaMachine } from "./lib"
 import { Component } from "./component"
-import { VanillaMachine } from "./lib/machine"
 
 export class Checkbox extends Component<checkbox.Props, checkbox.Api> {
   initMachine(props: checkbox.Props) {
