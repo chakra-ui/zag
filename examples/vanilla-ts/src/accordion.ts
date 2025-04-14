@@ -1,8 +1,6 @@
 import * as accordion from "@zag-js/accordion"
-import { normalizeProps } from "./normalize-props"
-import { spreadProps } from "./spread-props"
+import { normalizeProps, spreadProps, VanillaMachine } from "./lib"
 import { Component } from "./component"
-import { VanillaMachine } from "./lib/machine"
 
 export class Accordion extends Component<accordion.Props, accordion.Api> {
   initMachine(props: accordion.Props) {

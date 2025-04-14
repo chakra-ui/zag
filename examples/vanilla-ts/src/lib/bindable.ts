@@ -42,3 +42,17 @@ export function bindable<T>(props: () => BindableParams<T>): Bindable<T> {
     },
   }
 }
+
+bindable.cleanup = (_fn: VoidFunction) => {
+  // No-op in vanilla implementation
+}
+
+bindable.ref = <T>(defaultValue: T) => {
+  let value = defaultValue
+  return {
+    get: () => value,
+    set: (next: T) => {
+      value = next
+    },
+  }
+}
