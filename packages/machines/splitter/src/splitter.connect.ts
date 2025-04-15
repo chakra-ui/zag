@@ -48,6 +48,9 @@ export function connect<T extends PropTypes>(service: SplitterService, normalize
     setSizes(size) {
       send({ type: "SIZE.SET", size })
     },
+    resetSizes() {
+      send({ type: "SIZE.SET", size: context.initial("size") })
+    },
     collapsePanel(id) {
       send({ type: "PANEL.COLLAPSE", id })
     },

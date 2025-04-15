@@ -237,6 +237,10 @@ export interface SplitterApi<T extends PropTypes = PropTypes> {
    * Get the layout of the splitter.
    */
   getLayout(): string
+  /**
+   * Reset the splitter to its initial state.
+   */
+  resetSizes(): void
 
   getRootProps(): T["element"]
   getPanelProps(props: PanelProps): T["element"]
