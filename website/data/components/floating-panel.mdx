@@ -83,7 +83,7 @@ To control the size of the floating panel programmatically, you can pass the
 ```tsx {2}
 const service = useMachine(floatingPanel.machine, {
   size: { width: 300, height: 300 },
-  onResize(details) {
+  onSizeChange(details) {
     // details => { width: number, height: number }
     console.log("floating panel is:", details.width, details.height)
   },
@@ -223,11 +223,11 @@ When the size of the floating panel changes, these callbacks are invoked:
 
 ```tsx {2-5}
 const service = useMachine(floatingPanel.machine, {
-  onResize(details) {
+  onSizeChange(details) {
     // details => { size: { width: number, height: number } }
     console.log("floating panel is:", details.size.width, details.size.height)
   },
-  onResizeEnd(details) {
+  onSizeChangeEnd(details) {
     // details => { size: { width: number, height: number } }
     console.log("floating panel is:", details.size.width, details.size.height)
   },
