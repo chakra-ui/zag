@@ -4,7 +4,23 @@ All notable changes to this project will be documented in this file.
 
 > For v0.x changelog, see the [v0 branch](https://github.com/chakra-ui/zag/blob/v0/CHANGELOG.md)
 
-## [Unreleased]
+## [1.10.0](./#1.10.0) - 2025-04-15
+
+### Added
+
+- **Toggle Group**: Add support for `deselectable` prop to ensure one or more toggle is selected at any time.
+
+- **Splitter**:
+
+  - Expose `api.resetSizes()` to reset the size to the initial specified size
+  - Fix issue in vertical orientation where arrow up doesn't work as expected.
+
+### Fixed
+
+- **Select**: Fix issue where machine doesn't leave focus state when interacting outside with another editable element.
+  This leads to the `data-focus` attribute not being removed from the trigger element.
+
+- **Floating Panel**: Fix issue where clicking the trigger when panel is open, doesn't close the panel
 
 ## [1.9.3](./#1.9.3) - 2025-04-10
 
