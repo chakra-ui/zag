@@ -83,7 +83,7 @@ export const machine = createMachine<ToggleGroupSchema>({
       on: {
         "ROOT.BLUR": {
           target: "idle",
-          actions: ["clearIsTabbingBackward", "clearFocusedId"],
+          actions: ["clearIsTabbingBackward", "clearFocusedId", "clearClickFocus"],
         },
         "TOGGLE.FOCUS": {
           actions: ["setFocusedId"],
