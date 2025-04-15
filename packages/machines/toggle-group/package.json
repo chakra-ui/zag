@@ -1,6 +1,6 @@
 {
   "name": "@zag-js/toggle-group",
-  "version": "1.9.3",
+  "version": "1.10.0",
   "description": "Core logic for the toggle widget implemented as a state machine",
   "keywords": [
     "js",

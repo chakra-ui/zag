@@ -1,5 +1,24 @@
 # @zag-js/floating-panel
 
+## 1.10.0
+
+### Patch Changes
+
+- [`2c9784e`](https://github.com/chakra-ui/zag/commit/2c9784e6c095686f91f7c326cbbc99ae71e0cb20) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix issue where clicking the trigger when panel is open, doesn't
+  close the panel
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.10.0
+  - @zag-js/core@1.10.0
+  - @zag-js/store@1.10.0
+  - @zag-js/types@1.10.0
+  - @zag-js/utils@1.10.0
+  - @zag-js/dismissable@1.10.0
+  - @zag-js/dom-query@1.10.0
+  - @zag-js/popper@1.10.0
+  - @zag-js/rect-utils@1.10.0
+
 ## 1.9.3
 
 ### Patch Changes

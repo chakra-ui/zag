@@ -1,5 +1,23 @@
 # @zag-js/select
 
+## 1.10.0
+
+### Patch Changes
+
+- [`d6c55d8`](https://github.com/chakra-ui/zag/commit/d6c55d8362214986adec8832744804541810fcfc) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - - Fix issue where machine doesn't leave focus state with
+  interacting outside with another editable element. This leads to the `data-focus` attribute not being removed from the
+  trigger element.
+- Updated dependencies []:
+  - @zag-js/anatomy@1.10.0
+  - @zag-js/core@1.10.0
+  - @zag-js/types@1.10.0
+  - @zag-js/collection@1.10.0
+  - @zag-js/utils@1.10.0
+  - @zag-js/dismissable@1.10.0
+  - @zag-js/dom-query@1.10.0
+  - @zag-js/popper@1.10.0
+
 ## 1.9.3
 
 ### Patch Changes
