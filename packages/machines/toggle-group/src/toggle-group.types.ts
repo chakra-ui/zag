@@ -46,7 +46,7 @@ export interface ToggleGroupProps extends DirectionProperty, CommonProperties {
    */
   loopFocus?: boolean | undefined
   /**
-   *  Whether to use roving tab index to manage focus.
+   * Whether to use roving tab index to manage focus.
    * @default true
    */
   rovingFocus?: boolean | undefined
@@ -59,6 +59,13 @@ export interface ToggleGroupProps extends DirectionProperty, CommonProperties {
    * Whether to allow multiple toggles to be selected.
    */
   multiple?: boolean | undefined
+  /**
+   * Whether the toggle group allows empty selection.
+   * **Note:** This is ignored if `multiple` is `true`.
+   *
+   * @default true
+   */
+  deselectable?: boolean | undefined
 }
 
 type PropsWithDefault = "loopFocus" | "rovingFocus" | "orientation"
