@@ -16,13 +16,13 @@
     "contributors:gen": "all-contributors generate"
   },
   "dependencies": {
-    "@internationalized/date": "3.7.0",
-    "@chakra-ui/cli": "2.4.1",
+    "@internationalized/date": "3.8.0",
+    "@chakra-ui/cli": "2.5.8",
     "@chakra-ui/icon": "3.2.0",
     "@chakra-ui/layout": "2.3.1",
     "@chakra-ui/provider": "2.4.2",
     "@chakra-ui/system": "2.6.2",
-    "@chakra-ui/theme": "3.3.1",
+    "@chakra-ui/theme": "3.4.6",
     "@emotion/react": "11.14.0",
     "@emotion/styled": "11.14.0",
     "@stackblitz/sdk": "^1.11.0",
@@ -76,7 +76,7 @@
     "hastscript": "9.0.1",
     "markdown-toc": "1.2.0",
     "match-sorter": "8.0.0",
-    "next": "15.2.4",
+    "next": "15.3.0",
     "next-contentlayer": "0.3.4",
     "next-seo": "6.6.0",
     "plop": "4.0.1",
@@ -88,18 +88,18 @@
     "use-match-media-hook": "1.0.1"
   },
   "devDependencies": {
-    "@next/eslint-plugin-next": "15.2.4",
+    "@next/eslint-plugin-next": "15.3.0",
     "@types/react": "^19",
     "all-contributors-cli": "6.26.1",
     "eslint": "^9",
-    "eslint-config-next": "15.2.4",
+    "eslint-config-next": "15.3.0",
     "prettier": "3.5.3",
     "rehype": "13.0.2",
     "rehype-autolink-headings": "7.1.0",
     "rehype-code-titles": "1.2.0",
-    "rehype-prism-plus": "2.0.0",
+    "rehype-prism-plus": "2.0.1",
     "rehype-slug": "6.0.0",
     "remark-directive": "4.0.0",
-    "typescript": "5.8.2"
+    "typescript": "5.8.3"
   }
 }

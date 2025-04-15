@@ -34,7 +34,7 @@
     "@internationalized/date": ">=3.0.0"
   },
   "devDependencies": {
-    "@internationalized/date": "3.7.0",
+    "@internationalized/date": "3.8.0",
     "clean-package": "2.2.0"
   }
 }
