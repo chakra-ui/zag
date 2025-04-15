@@ -1,5 +1,26 @@
 # @zag-js/splitter
 
+## 1.10.0
+
+### Minor Changes
+
+- [`9508ed3`](https://github.com/chakra-ui/zag/commit/9508ed3e50840556b3aed483c52c19b2bc8ed487) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Expose `api.resetSizes()` to reset the size to the initial
+  specified size
+
+### Patch Changes
+
+- [`dcfce2c`](https://github.com/chakra-ui/zag/commit/dcfce2cb92c5bc4239827b9d21f1012a18abfb22) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix issue in vertical orientation where arrow up doens't work as
+  expected.
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.10.0
+  - @zag-js/core@1.10.0
+  - @zag-js/types@1.10.0
+  - @zag-js/utils@1.10.0
+  - @zag-js/dom-query@1.10.0
+
 ## 1.9.3
 
 ### Patch Changes

@@ -1,6 +1,6 @@
 {
   "name": "@zag-js/auto-resize",
-  "version": "1.9.3",
+  "version": "1.10.0",
   "description": "Autoresize utilities for the web",
   "keywords": [
     "js",
