@@ -70,7 +70,8 @@ export function connect<T extends PropTypes>(
         onClick(event) {
           if (event.defaultPrevented) return
           if (prop("disabled")) return
-          send({ type: "OPEN" })
+          const open = state.hasTag("open")
+          send({ type: open ? "CLOSE" : "OPEN", src: "trigger" })
         },
       })
     },
