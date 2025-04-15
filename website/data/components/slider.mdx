@@ -17,12 +17,12 @@ accessibility.
 **Features**
 
 - Supports centered origin (slider starting at center, instead of start
-  position).
-- Fully managed keyboard navigation.
-- Supports touch or click on track to update value.
-- Supports Right-to-Left directionality.
-- Support for horizontal and vertical orientations.
-- Prevents text selection while dragging.
+  position)
+- Fully managed keyboard navigation
+- Supports touch or click on track to update value
+- Supports Right-to-Left directionality
+- Support for horizontal and vertical orientations
+- Prevents text selection while dragging
 
 ## Installation
 
@@ -30,9 +30,6 @@ To use the slider machine in your project, run the following command in your
 command line:
 
 <CodeSnippet id="slider/installation.mdx" />
-
-This command will install the framework agnostic slider logic and the reactive
-utilities for your framework of choice.
 
 ## Anatomy
 
@@ -143,8 +140,8 @@ const service = useMachine(slider.machine, {
 
 ## Changing the start position
 
-By default, the slider's origin is at the `start` position (left
-in LTR and right in RTL). Change it by setting the `origin` property to these values:
+By default, the slider's origin is at the `start` position (left in LTR and
+right in RTL). Change it by setting the `origin` property to these values:
 
 - `start`: the track will be filled from start to the thumb (default).
 - `center`: the track will be filled from the center (50%) to the thumb.
@@ -153,7 +150,7 @@ in LTR and right in RTL). Change it by setting the `origin` property to these va
 This applies to sliders with single values.
 
 In scenarios where the value represents an offset (or relative value) on a
-diverging scale, it might be useful to change the origin to center. To do this, 
+diverging scale, it might be useful to change the origin to center. To do this,
 set the `origin` context property to `center`.
 
 ```jsx {2}
@@ -162,10 +159,9 @@ const service = useMachine(slider.machine, {
 })
 ```
 
-In scenarios where the slider value is used as a threshold to include values above it, 
-it might make more sense to set the `origin` to `end` to have the track filled from the 
-thumb to the end.
-
+In scenarios where the slider value is used as a threshold to include values
+above it, it might make more sense to set the `origin` to `end` to have the
+track filled from the thumb to the end.
 
 ## Changing the thumb alignment
 
