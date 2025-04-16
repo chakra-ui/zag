@@ -9,11 +9,11 @@
     "preview": "vite preview"
   },
   "devDependencies": {
-    "typescript": "^5.8.2",
-    "vite": "^6.2.5"
+    "typescript": "^5.8.3",
+    "vite": "^6.3.0"
   },
   "dependencies": {
-    "@internationalized/date": "3.7.0",
+    "@internationalized/date": "3.8.0",
     "@zag-js/accordion": "workspace:*",
     "@zag-js/anatomy": "workspace:*",
     "@zag-js/anatomy-icons": "workspace:*",

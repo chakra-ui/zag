@@ -31,9 +31,9 @@
     "proxy-compare": "3.0.1"
   },
   "devDependencies": {
-    "@types/react-dom": "19.1.1",
+    "@types/react-dom": "19.1.2",
     "@zag-js/utils": "workspace:*",
-    "preact": "10.26.4",
+    "preact": "10.26.5",
     "clean-package": "2.2.0"
   },
   "peerDependencies": {
