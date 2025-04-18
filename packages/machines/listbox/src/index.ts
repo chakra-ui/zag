@@ -26,4 +26,5 @@ export type {
   GridCollection,
   GridCollectionOptions,
   ListCollection,
+  SelectionMode,
 } from "@zag-js/collection"
