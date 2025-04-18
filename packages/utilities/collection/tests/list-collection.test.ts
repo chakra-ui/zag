@@ -6,6 +6,10 @@ interface Item {
   disabled?: boolean
 }
 
+interface GroupItem extends Item {
+  type: "framework" | "runtime"
+}
+
 const items: Item[] = [
   { label: "React", value: "react" },
   { label: "Vue", value: "vue" },
@@ -185,6 +189,166 @@ describe("list collection", () => {
         "vue",
         "angular",
         "solid",
+      ]
+    `)
+  })
+
+  test("group entries", () => {
+    const collection = new ListCollection<{ label: string; value: string; type: string; disabled?: boolean }>({
+      items: [
+        { label: "React", value: "react", type: "framework" },
+        { label: "Vue", value: "vue", type: "framework" },
+        { label: "Solid", value: "solid", type: "framework", disabled: true },
+        { label: "Node.js", value: "node", type: "runtime" },
+        { label: "Deno", value: "deno", type: "runtime" },
+      ],
+      groupBy: (item) => item.type,
+    })
+
+    const groups = collection.group()
+    expect(groups).toMatchInlineSnapshot(`
+      [
+        [
+          "framework",
+          [
+            {
+              "label": "React",
+              "type": "framework",
+              "value": "react",
+            },
+            {
+              "label": "Vue",
+              "type": "framework",
+              "value": "vue",
+            },
+            {
+              "disabled": true,
+              "label": "Solid",
+              "type": "framework",
+              "value": "solid",
+            },
+          ],
+        ],
+        [
+          "runtime",
+          [
+            {
+              "label": "Node.js",
+              "type": "runtime",
+              "value": "node",
+            },
+            {
+              "label": "Deno",
+              "type": "runtime",
+              "value": "deno",
+            },
+          ],
+        ],
+      ]
+    `)
+  })
+
+  const groupItems: GroupItem[] = [
+    { label: "React", value: "react", type: "framework" },
+    { label: "Node.js", value: "node", type: "runtime" },
+    { label: "Vue", value: "vue", type: "framework" },
+    { label: "Deno", value: "deno", type: "runtime" },
+    { label: "Solid", value: "solid", type: "framework", disabled: true },
+  ]
+
+  test("group by", () => {
+    const listGroup = new ListCollection({
+      items: groupItems,
+      groupBy: (item) => item.type,
+    })
+
+    expect(listGroup.group()).toMatchInlineSnapshot(`
+      [
+        [
+          "framework",
+          [
+            {
+              "label": "React",
+              "type": "framework",
+              "value": "react",
+            },
+            {
+              "label": "Vue",
+              "type": "framework",
+              "value": "vue",
+            },
+            {
+              "disabled": true,
+              "label": "Solid",
+              "type": "framework",
+              "value": "solid",
+            },
+          ],
+        ],
+        [
+          "runtime",
+          [
+            {
+              "label": "Node.js",
+              "type": "runtime",
+              "value": "node",
+            },
+            {
+              "label": "Deno",
+              "type": "runtime",
+              "value": "deno",
+            },
+          ],
+        ],
+      ]
+    `)
+  })
+
+  test("group by / sort groups", () => {
+    const listGroup = new ListCollection({
+      items: groupItems,
+      groupBy: (item) => item.type,
+      groupSort: ["runtime", "framework"],
+    })
+
+    expect(listGroup.group()).toMatchInlineSnapshot(`
+      [
+        [
+          "runtime",
+          [
+            {
+              "label": "Node.js",
+              "type": "runtime",
+              "value": "node",
+            },
+            {
+              "label": "Deno",
+              "type": "runtime",
+              "value": "deno",
+            },
+          ],
+        ],
+        [
+          "framework",
+          [
+            {
+              "label": "React",
+              "type": "framework",
+              "value": "react",
+            },
+            {
+              "label": "Vue",
+              "type": "framework",
+              "value": "vue",
+            },
+            {
+              "disabled": true,
+              "label": "Solid",
+              "type": "framework",
+              "value": "solid",
+            },
+          ],
+        ],
       ]
     `)
   })

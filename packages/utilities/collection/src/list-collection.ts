@@ -162,6 +162,46 @@ export class ListCollection<T extends CollectionItem = CollectionItem> {
   }
 
   /**
+   * Group items by the groupBy function provided in options
+   * Returns an array of [groupKey, items] tuples
+   */
+  group = (): [string, T[]][] => {
+    const { groupBy, groupSort } = this.options
+    if (!groupBy) return [["", [...this.items]]]
+
+    const groups = new Map<string, T[]>()
+
+    this.items.forEach((item, index) => {
+      const groupKey = groupBy(item, index)
+      if (!groups.has(groupKey)) {
+        groups.set(groupKey, [])
+      }
+      groups.get(groupKey)!.push(item)
+    })
+
+    let entries = Array.from(groups.entries())
+
+    // Handle group sorting
+    if (groupSort) {
+      entries.sort(([a], [b]) => {
+        if (typeof groupSort === "function") return groupSort(a, b)
+        if (Array.isArray(groupSort)) {
+          const indexA = groupSort.indexOf(a)
+          const indexB = groupSort.indexOf(b)
+          if (indexA === -1) return 1
+          if (indexB === -1) return -1
+          return indexA - indexB
+        }
+        if (groupSort === "asc") return a.localeCompare(b)
+        if (groupSort === "desc") return b.localeCompare(a)
+        return 0
+      })
+    }
+
+    return entries
+  }
+
+  /**
    * Returns the first value in the collection
    */
   get firstValue(): string | null {

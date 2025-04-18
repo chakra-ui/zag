@@ -35,6 +35,14 @@ export interface CollectionOptions<T extends CollectionItem = CollectionItem> ex
    * The options of the select
    */
   items: Iterable<T> | Readonly<Iterable<T>>
+  /**
+   * Function to group items
+   */
+  groupBy?: (item: T, index: number) => string
+  /**
+   * Function to sort items
+   */
+  groupSort?: ((a: string, b: string) => number) | string[] | "asc" | "desc"
 }
 
 // ==============================
