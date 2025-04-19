@@ -25,17 +25,13 @@ const CaretIcon = () => (
   </svg>
 )
 
-type SelectProps = {
-  controls: {}
-}
-
-export function Select(props: SelectProps) {
+export function Select(props: Omit<select.Props, "id" | "collection">) {
   const service = useMachine(select.machine, {
     id: useId(),
     collection: select.collection({
       items: data,
     }),
-    ...props.controls,
+    ...props,
   })
 
   const api = select.connect(service, normalizeProps)

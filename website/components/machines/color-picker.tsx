@@ -2,15 +2,6 @@ import * as colorPicker from "@zag-js/color-picker"
 import { Portal, normalizeProps, useMachine } from "@zag-js/react"
 import { useId } from "react"
 
-type Props = {
-  controls: {
-    disabled: boolean
-    readOnly: boolean
-    closeOnSelect: boolean
-    format: "rgba" | "hsla" | "hsba"
-  }
-}
-
 const presets = ["#f47373", "#697689", "#38a169", "#3182ce"]
 
 const Show = (props: { when: boolean; children: React.ReactNode }) => {
@@ -32,12 +23,11 @@ const EyeDropIcon = () => (
   </svg>
 )
 
-export function ColorPicker(props: Props) {
+export function ColorPicker(props: Omit<colorPicker.Props, "id">) {
   const service = useMachine(colorPicker.machine, {
     id: useId(),
     defaultValue: colorPicker.parse("#38a169").toFormat("hsla"),
-    ...props.controls,
-    format: "hsla",
+    ...props,
   })
 
   const api = colorPicker.connect(service, normalizeProps)

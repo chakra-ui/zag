@@ -15,11 +15,12 @@ const shareMenuData = [
   { label: "WhatsApp", value: "whatsapp" },
 ]
 
-export function NestedMenu() {
+export function NestedMenu(props: Omit<menu.Props, "id">) {
   // Level 1 - File Menu
   const fileMenuService = useMachine(menu.machine, {
     id: "1",
     "aria-label": "File",
+    ...props,
   })
 
   const fileMenu = menu.connect(fileMenuService, normalizeProps)

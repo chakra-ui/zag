@@ -49,7 +49,7 @@
   background: var(--colors-bg-subtle);
 }
 
-[data-scope="time-picker"][data-part="content-column"] {
+[data-scope="time-picker"][data-part="column"] {
   display: flex;
   gap: 4px;
   flex-direction: column;
@@ -57,10 +57,7 @@
   padding: 4px;
 }
 
-[data-scope="time-picker"][data-part="hour-cell"],
-[data-scope="time-picker"][data-part="minute-cell"],
-[data-scope="time-picker"][data-part="second-cell"],
-[data-scope="time-picker"][data-part="period-cell"] {
+[data-scope="time-picker"][data-part="cell"] {
   background: none;
   border: none;
   width: 2.5rem;

@@ -3,15 +3,6 @@ import { Portal, mergeProps, normalizeProps, useMachine } from "@zag-js/react"
 import { useId, useMemo, useState } from "react"
 import { createFilter } from "@zag-js/i18n-utils"
 
-interface ComboboxProps {
-  controls: {
-    disabled: boolean
-    readOnly: boolean
-    blurOnSelect: boolean
-    loop: boolean
-  }
-}
-
 const comboboxData = [
   { label: "Zambia", code: "ZA" },
   { label: "Benin", code: "BN" },
@@ -58,7 +49,7 @@ const CaretIcon = () => (
   </svg>
 )
 
-export function Combobox(props: ComboboxProps) {
+export function Combobox(props: Omit<combobox.Props, "id">) {
   const [options, setOptions] = useState(comboboxData)
 
   const filter = createFilter({ sensitivity: "base" })
@@ -83,7 +74,7 @@ export function Combobox(props: ComboboxProps) {
       setOptions(filtered.length > 0 ? filtered : comboboxData)
     },
     placeholder: "Type or select country",
-    ...props.controls,
+    ...props,
   })
 
   const api = combobox.connect(service, normalizeProps)

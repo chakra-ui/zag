@@ -4,10 +4,10 @@ import * as React from "react"
 import { HiX } from "react-icons/hi"
 import { useId } from "react"
 
-export function Popover(props: any) {
+export function Popover(props: Omit<popover.Props, "id">) {
   const service = useMachine(popover.machine, {
     id: useId(),
-    ...props.controls,
+    ...props,
   })
 
   const api = popover.connect(service, normalizeProps)
