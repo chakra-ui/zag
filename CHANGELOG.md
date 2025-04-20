@@ -4,6 +4,16 @@ All notable changes to this project will be documented in this file.
 
 > For v0.x changelog, see the [v0 branch](https://github.com/chakra-ui/zag/blob/v0/CHANGELOG.md)
 
+## [1.11.0](./#1.11.0) - 2025-04-20
+
+### Added
+
+- **ListCollection**: Add support for grouping collection items
+
+### Fixed
+
+- **Listbox**: Export missing `SelectionMode` interface
+
 ## [1.10.0](./#1.10.0) - 2025-04-15
 
 ### Added
