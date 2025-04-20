@@ -1,5 +1,17 @@
 # @zag-js/collection
 
+## 1.11.0
+
+### Minor Changes
+
+- [`a2ee03f`](https://github.com/chakra-ui/zag/commit/a2ee03f8a6fd7bd7baf4143ecda2efe5cff5a860) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - - **ListCollection**: Add support for grouping collection items
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/utils@1.11.0
+
 ## 1.10.0
 
 ### Patch Changes
