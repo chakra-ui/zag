@@ -8,8 +8,9 @@
 
   const controls = useControls(switchControls)
 
+  const id = $props.id()
   const service = useMachine(zagSwitch.machine, {
-    id: "1",
+    id,
     name: "switch",
   })
 

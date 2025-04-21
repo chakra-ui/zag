@@ -22,6 +22,8 @@ export function Listbox(props: Omit<listbox.Props<Item>, "id" | "collection">) {
     items: people,
     itemToValue: (item) => item.username,
     itemToString: (item) => item.name,
+    groupBy: (item) => (item.favorite ? "Favorites" : "Others"),
+    groupSort: ["Favorites", "Others"],
   })
 
   const service = useMachine(listbox.machine as listbox.Machine<Item>, {
@@ -32,48 +34,28 @@ export function Listbox(props: Omit<listbox.Props<Item>, "id" | "collection">) {
 
   const api = listbox.connect(service, normalizeProps)
 
-  const [favoritesPeople, otherPeople] = useMemo(
-    () =>
-      collection.items.reduce(
-        ([favorites, others], item) => [
-          item.favorite ? [...favorites, item] : favorites,
-          item.favorite ? others : [...others, item],
-        ],
-        [[], []] as Item[][],
-      ),
-    [collection.items],
-  )
+  const groups = useMemo(() => collection.group(), [])
 
   return (
     <div {...api.getRootProps()}>
       <ul {...api.getContentProps()}>
-        <div {...api.getItemGroupProps({ id: "favorites" })}>
-          <p {...api.getItemGroupLabelProps({ htmlFor: "favorites" })}>
-            Favorites
-          </p>
-          {favoritesPeople.map((item) => (
-            <div key={item.id} {...api.getItemProps({ item })}>
-              <img src={item.image_url} alt={item.name} />
-              {item.name}
-            </div>
-          ))}
-        </div>
-
-        <div {...api.getItemGroupProps({ id: "others" })}>
-          <p {...api.getItemGroupLabelProps({ htmlFor: "others" })}>Others</p>
-          {otherPeople.map((item) => (
-            <div key={item.id} {...api.getItemProps({ item })}>
-              <img src={item.image_url} alt={item.name} />
-              {item.name}
-            </div>
-          ))}
-        </div>
+        {groups.map(([group, items]) => (
+          <div {...api.getItemGroupProps({ id: group })}>
+            <p {...api.getItemGroupLabelProps({ htmlFor: group })}>{group}</p>
+            {items.map((item) => (
+              <div key={item.id} {...api.getItemProps({ item })}>
+                <img src={item.image_url} alt={item.name} />
+                {item.name}
+              </div>
+            ))}
+          </div>
+        ))}
       </ul>
     </div>
   )
 }
 
-const people = [
+const people: Item[] = [
   {
     id: 1,
     image_url:

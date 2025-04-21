@@ -8,7 +8,8 @@
 
   const controls = useControls(hoverCardControls)
 
-  const service = useMachine(hoverCard.machine, { id: "1" })
+  const id = $props.id()
+  const service = useMachine(hoverCard.machine, { id })
 
   const api = $derived(hoverCard.connect(service, normalizeProps))
 </script>

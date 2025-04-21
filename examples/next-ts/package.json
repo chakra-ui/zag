@@ -11,7 +11,7 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@internationalized/date": "3.7.0",
+    "@internationalized/date": "3.8.0",
     "@tanstack/react-virtual": "3.13.6",
     "@types/textarea-caret": "3.0.3",
     "@zag-js/accordion": "workspace:*",
@@ -86,25 +86,25 @@
     "@zag-js/types": "workspace:*",
     "@zag-js/utils": "workspace:*",
     "form-serialize": "0.7.2",
-    "lucide-react": "0.487.0",
+    "lucide-react": "0.488.0",
     "match-sorter": "8.0.0",
-    "next": "15.2.4",
+    "next": "15.3.0",
     "next-cloudinary": "6.16.0",
     "react": "19.1.0",
     "react-dom": "19.1.0",
     "react-hook-form": "7.55.0",
-    "react-spinners": "0.15.0",
+    "react-spinners": "0.16.1",
     "textarea-caret": "^3.1.0"
   },
   "devDependencies": {
     "@types/form-serialize": "0.7.4",
-    "@types/node": "22.14.0",
+    "@types/node": "22.14.1",
     "@types/react": "^19",
     "@types/react-dom": "^19",
-    "@next/eslint-plugin-next": "15.2.4",
+    "@next/eslint-plugin-next": "15.3.0",
     "eslint-plugin-react": "7.37.5",
     "eslint-plugin-react-hooks": "5.2.0",
-    "typescript": "5.8.2"
+    "typescript": "5.8.3"
   },
   "license": "MIT"
 }

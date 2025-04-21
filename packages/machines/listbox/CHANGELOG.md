@@ -1,5 +1,91 @@
 # @zag-js/listbox
 
+## 1.11.0
+
+### Patch Changes
+
+- [`b070133`](https://github.com/chakra-ui/zag/commit/b070133f2df8fc1ea7bc6a1e23e73b600488991e) Thanks
+  [@cschroeter](https://github.com/cschroeter)! - Export missing SelectionMode interface
+
+- Updated dependencies [[`a2ee03f`](https://github.com/chakra-ui/zag/commit/a2ee03f8a6fd7bd7baf4143ecda2efe5cff5a860)]:
+  - @zag-js/collection@1.11.0
+  - @zag-js/anatomy@1.11.0
+  - @zag-js/core@1.11.0
+  - @zag-js/types@1.11.0
+  - @zag-js/utils@1.11.0
+  - @zag-js/dom-query@1.11.0
+  - @zag-js/focus-visible@1.11.0
+
+## 1.10.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.10.0
+  - @zag-js/core@1.10.0
+  - @zag-js/types@1.10.0
+  - @zag-js/collection@1.10.0
+  - @zag-js/utils@1.10.0
+  - @zag-js/dom-query@1.10.0
+  - @zag-js/focus-visible@1.10.0
+
+## 1.9.3
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.9.3
+  - @zag-js/core@1.9.3
+  - @zag-js/types@1.9.3
+  - @zag-js/collection@1.9.3
+  - @zag-js/utils@1.9.3
+  - @zag-js/dom-query@1.9.3
+  - @zag-js/focus-visible@1.9.3
+
+## 1.9.2
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.9.2
+  - @zag-js/core@1.9.2
+  - @zag-js/types@1.9.2
+  - @zag-js/collection@1.9.2
+  - @zag-js/utils@1.9.2
+  - @zag-js/dom-query@1.9.2
+  - @zag-js/focus-visible@1.9.2
+
+## 1.9.1
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.9.1
+  - @zag-js/core@1.9.1
+  - @zag-js/types@1.9.1
+  - @zag-js/collection@1.9.1
+  - @zag-js/utils@1.9.1
+  - @zag-js/dom-query@1.9.1
+  - @zag-js/focus-visible@1.9.1
+
+## 1.9.0
+
+### Patch Changes
+
+- [`ca4e545`](https://github.com/chakra-ui/zag/commit/ca4e54549ad04472c974ea4814c85a577f2eb3da) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - - Add support for clearing selection on Escape press.
+  - Fix keyboard navigation when no item is highlighted.
+  - Add `api.clearHighlightedValue` function to clear the highlighted value.
+  - Add `data-empty` attribute to the listbox to indicate that the listbox is empty.
+- Updated dependencies [[`490dd9f`](https://github.com/chakra-ui/zag/commit/490dd9fa6355eb25c6bbb77406cae24835453af5)]:
+  - @zag-js/collection@1.9.0
+  - @zag-js/anatomy@1.9.0
+  - @zag-js/core@1.9.0
+  - @zag-js/types@1.9.0
+  - @zag-js/utils@1.9.0
+  - @zag-js/dom-query@1.9.0
+  - @zag-js/focus-visible@1.9.0
+
 ## 1.8.2
 
 ### Patch Changes

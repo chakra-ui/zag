@@ -1,5 +1,93 @@
 # @zag-js/select
 
+## 1.11.0
+
+### Patch Changes
+
+- Updated dependencies [[`a2ee03f`](https://github.com/chakra-ui/zag/commit/a2ee03f8a6fd7bd7baf4143ecda2efe5cff5a860)]:
+  - @zag-js/collection@1.11.0
+  - @zag-js/anatomy@1.11.0
+  - @zag-js/core@1.11.0
+  - @zag-js/types@1.11.0
+  - @zag-js/utils@1.11.0
+  - @zag-js/dismissable@1.11.0
+  - @zag-js/dom-query@1.11.0
+  - @zag-js/popper@1.11.0
+
+## 1.10.0
+
+### Patch Changes
+
+- [`d6c55d8`](https://github.com/chakra-ui/zag/commit/d6c55d8362214986adec8832744804541810fcfc) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - - Fix issue where machine doesn't leave focus state with
+  interacting outside with another editable element. This leads to the `data-focus` attribute not being removed from the
+  trigger element.
+- Updated dependencies []:
+  - @zag-js/anatomy@1.10.0
+  - @zag-js/core@1.10.0
+  - @zag-js/types@1.10.0
+  - @zag-js/collection@1.10.0
+  - @zag-js/utils@1.10.0
+  - @zag-js/dismissable@1.10.0
+  - @zag-js/dom-query@1.10.0
+  - @zag-js/popper@1.10.0
+
+## 1.9.3
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.9.3
+  - @zag-js/core@1.9.3
+  - @zag-js/types@1.9.3
+  - @zag-js/collection@1.9.3
+  - @zag-js/utils@1.9.3
+  - @zag-js/dismissable@1.9.3
+  - @zag-js/dom-query@1.9.3
+  - @zag-js/popper@1.9.3
+
+## 1.9.2
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.9.2
+  - @zag-js/core@1.9.2
+  - @zag-js/types@1.9.2
+  - @zag-js/collection@1.9.2
+  - @zag-js/utils@1.9.2
+  - @zag-js/dismissable@1.9.2
+  - @zag-js/dom-query@1.9.2
+  - @zag-js/popper@1.9.2
+
+## 1.9.1
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.9.1
+  - @zag-js/core@1.9.1
+  - @zag-js/types@1.9.1
+  - @zag-js/collection@1.9.1
+  - @zag-js/utils@1.9.1
+  - @zag-js/dismissable@1.9.1
+  - @zag-js/dom-query@1.9.1
+  - @zag-js/popper@1.9.1
+
+## 1.9.0
+
+### Patch Changes
+
+- Updated dependencies [[`490dd9f`](https://github.com/chakra-ui/zag/commit/490dd9fa6355eb25c6bbb77406cae24835453af5)]:
+  - @zag-js/collection@1.9.0
+  - @zag-js/anatomy@1.9.0
+  - @zag-js/core@1.9.0
+  - @zag-js/types@1.9.0
+  - @zag-js/utils@1.9.0
+  - @zag-js/dismissable@1.9.0
+  - @zag-js/dom-query@1.9.0
+  - @zag-js/popper@1.9.0
+
 ## 1.8.2
 
 ### Patch Changes

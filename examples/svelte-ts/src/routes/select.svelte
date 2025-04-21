@@ -9,8 +9,9 @@
 
   const controls = useControls(selectControls)
 
+  const id = $props.id()
   const service = useMachine(select.machine, {
-    id: "1",
+    id,
     name: "select",
     collection: select.collection({ items: selectData }),
   })

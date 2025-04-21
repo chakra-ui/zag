@@ -8,7 +8,8 @@
 
   const controls = useControls(progressControls)
 
-  const service = useMachine(progress.machine, { id: "1" })
+  const id = $props.id()
+  const service = useMachine(progress.machine, { id })
 
   const api = $derived(progress.connect(service, normalizeProps))
 </script>

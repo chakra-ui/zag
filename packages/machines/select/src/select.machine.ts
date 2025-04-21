@@ -292,18 +292,30 @@ export const machine = createMachine<SelectSchema>({
       exit: ["scrollContentToTop"],
       effects: ["trackDismissableElement", "computePlacement", "scrollToHighlightedItem"],
       on: {
-        "CONTROLLED.CLOSE": {
-          target: "focused",
-          actions: ["focusTriggerEl", "clearHighlightedItem"],
-        },
+        "CONTROLLED.CLOSE": [
+          {
+            guard: "restoreFocus",
+            target: "focused",
+            actions: ["focusTriggerEl", "clearHighlightedItem"],
+          },
+          {
+            target: "idle",
+            actions: ["clearHighlightedItem"],
+          },
+        ],
         CLOSE: [
           {
             guard: "isOpenControlled",
             actions: ["invokeOnClose"],
           },
           {
+            guard: "restoreFocus",
             target: "focused",
             actions: ["invokeOnClose", "focusTriggerEl", "clearHighlightedItem"],
+          },
+          {
+            target: "idle",
+            actions: ["invokeOnClose", "clearHighlightedItem"],
           },
         ],
         "TRIGGER.CLICK": [
@@ -387,6 +399,7 @@ export const machine = createMachine<SelectSchema>({
       isFirstItemHighlighted: ({ context, prop }) => context.get("highlightedValue") === prop("collection").firstValue,
       isLastItemHighlighted: ({ context, prop }) => context.get("highlightedValue") === prop("collection").lastValue,
       closeOnSelect: ({ prop, event }) => !!(event.closeOnSelect ?? prop("closeOnSelect")),
+      restoreFocus: ({ event }) => restoreFocusFn(event),
       // guard assertions (for controlled mode)
       isOpenControlled: ({ prop }) => prop("open") !== undefined,
       isTriggerClickEvent: ({ event }) => event.previousEvent?.type === "TRIGGER.CLICK",
@@ -526,8 +539,7 @@ export const machine = createMachine<SelectSchema>({
       },
 
       focusTriggerEl({ event, scope }) {
-        const restoreFocus = event.restoreFocus ?? event.previousEvent?.restoreFocus
-        if (restoreFocus != null && !restoreFocus) return
+        if (!restoreFocusFn(event)) return
         raf(() => {
           const element = dom.getTriggerEl(scope)
           element?.focus({ preventScroll: true })
@@ -716,3 +728,8 @@ export const machine = createMachine<SelectSchema>({
     },
   },
 })
+
+function restoreFocusFn(event: Record<string, any>) {
+  const v = event.restoreFocus ?? event.previousEvent?.restoreFocus
+  return v == null || !!v
+}

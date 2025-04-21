@@ -11,7 +11,8 @@
   let src = $state(images[0])
   let showImage = $state(true)
 
-  const service = useMachine(avatar.machine, { id: "1" })
+  const id = $props.id()
+  const service = useMachine(avatar.machine, { id })
   const api = $derived(avatar.connect(service, normalizeProps))
 </script>
 

@@ -24,14 +24,14 @@ export default function Page() {
               <div {...api.getDragTriggerProps()}>
                 <div {...api.getHeaderProps()}>
                   <p {...api.getTitleProps()}>Floating Panel</p>
-                  <div data-scope="floating-panel" data-part="trigger-group">
-                    <button {...api.getMinimizeTriggerProps()}>
+                  <div {...api.getControlProps()}>
+                    <button {...api.getStageTriggerProps({ stage: "minimized" })}>
                       <Minus />
                     </button>
-                    <button {...api.getMaximizeTriggerProps()}>
+                    <button {...api.getStageTriggerProps({ stage: "maximized" })}>
                       <Maximize2 />
                     </button>
-                    <button {...api.getRestoreTriggerProps()}>
+                    <button {...api.getStageTriggerProps({ stage: "default" })}>
                       <ArrowDownLeft />
                     </button>
                     <button {...api.getCloseTriggerProps()}>

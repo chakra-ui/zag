@@ -9,11 +9,9 @@ export const anatomy = createAnatomy("floating-panel").parts(
   "title",
   "resizeTrigger",
   "dragTrigger",
-  "minimizeTrigger",
-  "maximizeTrigger",
+  "stageTrigger",
   "closeTrigger",
-  "restoreTrigger",
-  "dock",
+  "control",
 )
 
 export const parts = anatomy.build()

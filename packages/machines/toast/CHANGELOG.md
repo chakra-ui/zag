@@ -1,5 +1,87 @@
 # @zag-js/toast
 
+## 1.11.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.11.0
+  - @zag-js/core@1.11.0
+  - @zag-js/types@1.11.0
+  - @zag-js/utils@1.11.0
+  - @zag-js/dismissable@1.11.0
+  - @zag-js/dom-query@1.11.0
+
+## 1.10.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.10.0
+  - @zag-js/core@1.10.0
+  - @zag-js/types@1.10.0
+  - @zag-js/utils@1.10.0
+  - @zag-js/dismissable@1.10.0
+  - @zag-js/dom-query@1.10.0
+
+## 1.9.3
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.9.3
+  - @zag-js/core@1.9.3
+  - @zag-js/types@1.9.3
+  - @zag-js/utils@1.9.3
+  - @zag-js/dismissable@1.9.3
+  - @zag-js/dom-query@1.9.3
+
+## 1.9.2
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.9.2
+  - @zag-js/core@1.9.2
+  - @zag-js/types@1.9.2
+  - @zag-js/utils@1.9.2
+  - @zag-js/dismissable@1.9.2
+  - @zag-js/dom-query@1.9.2
+
+## 1.9.1
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.9.1
+  - @zag-js/core@1.9.1
+  - @zag-js/types@1.9.1
+  - @zag-js/utils@1.9.1
+  - @zag-js/dismissable@1.9.1
+  - @zag-js/dom-query@1.9.1
+
+## 1.9.0
+
+### Minor Changes
+
+- [`c5af55d`](https://github.com/chakra-ui/zag/commit/c5af55d8c2dc591574386bbc2635d20d465d5460) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Add support for queuing toasts that exceed the maximum limit. When
+  the maximum number of toasts is reached:
+
+  - New toasts are added to a queue instead of being dropped
+  - Queued toasts are automatically displayed when space becomes available (after existing toasts are removed)
+  - Queue is cleared when all toasts are removed
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.9.0
+  - @zag-js/core@1.9.0
+  - @zag-js/types@1.9.0
+  - @zag-js/utils@1.9.0
+  - @zag-js/dismissable@1.9.0
+  - @zag-js/dom-query@1.9.0
+
 ## 1.8.2
 
 ### Patch Changes

@@ -1,8 +1,6 @@
 import * as popover from "@zag-js/popover"
-import { normalizeProps } from "./normalize-props"
-import { spreadProps } from "./spread-props"
+import { normalizeProps, spreadProps, VanillaMachine } from "./lib"
 import { Component } from "./component"
-import { VanillaMachine } from "./lib/machine"
 
 export class Popover extends Component<popover.Props, popover.Api> {
   initMachine(props: popover.Props) {

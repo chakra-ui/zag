@@ -1,4 +1,4 @@
-import { VanillaMachine } from "./lib/machine"
+import { VanillaMachine } from "./lib"
 
 interface ComponentInterface<Api> {
   rootEl: HTMLElement

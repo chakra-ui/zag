@@ -8,8 +8,9 @@
 
   const controls = useControls(toggleGroupControls)
 
+  const id = $props.id()
   const service = useMachine(toggle.machine, {
-    id: "1",
+    id,
   })
 
   const api = $derived(toggle.connect(service, normalizeProps))

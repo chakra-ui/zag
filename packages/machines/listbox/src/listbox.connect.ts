@@ -263,6 +263,7 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
         ...parts.itemGroup.attrs,
         "data-disabled": dataAttr(disabled),
         "data-orientation": prop("orientation"),
+        "data-empty": dataAttr(collection.size === 0),
         id: dom.getItemGroupId(scope, id),
         "aria-labelledby": dom.getItemGroupLabelId(scope, id),
         role: "group",
@@ -283,6 +284,7 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
         "aria-labelledby": dom.getLabelId(scope),
         tabIndex: 0,
         "data-layout": layout,
+        "data-empty": dataAttr(collection.size === 0),
         style: {
           "--column-count": isGridCollection(collection) ? collection.columnCount : 1,
         },

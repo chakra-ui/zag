@@ -48,6 +48,9 @@ export function connect<T extends PropTypes>(service: SplitterService, normalize
     setSizes(size) {
       send({ type: "SIZE.SET", size })
     },
+    resetSizes() {
+      send({ type: "SIZE.SET", size: context.initial("size") })
+    },
     collapsePanel(id) {
       send({ type: "PANEL.COLLAPSE", id })
     },
@@ -206,7 +209,7 @@ export function connect<T extends PropTypes>(service: SplitterService, normalize
               send({ type: "ENTER", id })
             },
             ArrowUp() {
-              send({ type: "KEYBOARD_MOVE", id, delta: horizontal ? 0 : delta })
+              send({ type: "KEYBOARD_MOVE", id, delta: horizontal ? 0 : -delta })
             },
             ArrowDown() {
               send({ type: "KEYBOARD_MOVE", id, delta: horizontal ? 0 : delta })

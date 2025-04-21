@@ -1,5 +1,55 @@
 # @zag-js/collection
 
+## 1.11.0
+
+### Minor Changes
+
+- [`a2ee03f`](https://github.com/chakra-ui/zag/commit/a2ee03f8a6fd7bd7baf4143ecda2efe5cff5a860) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - - **ListCollection**: Add support for grouping collection items
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/utils@1.11.0
+
+## 1.10.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/utils@1.10.0
+
+## 1.9.3
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/utils@1.9.3
+
+## 1.9.2
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/utils@1.9.2
+
+## 1.9.1
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/utils@1.9.1
+
+## 1.9.0
+
+### Patch Changes
+
+- [`490dd9f`](https://github.com/chakra-ui/zag/commit/490dd9fa6355eb25c6bbb77406cae24835453af5) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - - Add `filter` function to collection methods
+
+- Updated dependencies []:
+  - @zag-js/utils@1.9.0
+
 ## 1.8.2
 
 ### Patch Changes

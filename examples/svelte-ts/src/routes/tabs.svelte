@@ -8,8 +8,9 @@
 
   const controls = useControls(tabsControls)
 
+  const id = $props.id()
   const service = useMachine(tabs.machine, {
-    id: "1",
+    id,
     defaultValue: "nils",
   })
 

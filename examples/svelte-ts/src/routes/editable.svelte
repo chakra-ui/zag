@@ -6,8 +6,9 @@
 
   const controls = useControls(editableControls)
 
+  const id = $props.id()
   const service = useMachine(editable.machine, {
-    id: "1",
+    id,
     defaultValue: "Hello World",
   })
 

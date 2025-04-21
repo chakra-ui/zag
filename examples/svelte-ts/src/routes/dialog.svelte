@@ -2,8 +2,10 @@
   import * as dialog from "@zag-js/dialog"
   import { portal, normalizeProps, useMachine } from "@zag-js/svelte"
 
-  const service = useMachine(dialog.machine, { id: "1" })
-  const api = $derived(dialog.connect(service, normalizeProps))
+  const id = $props.id()
+  const service = useMachine(dialog.machine, { id })
+ 
+ const api = $derived(dialog.connect(service, normalizeProps))
 </script>
 
 <main>

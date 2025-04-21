@@ -1,6 +1,6 @@
 {
   "name": "@zag-js/solid",
-  "version": "1.8.2",
+  "version": "1.11.0",
   "description": "The solid.js wrapper for zag",
   "keywords": [
     "ui-machines",
@@ -37,7 +37,7 @@
     "clean-package": "2.2.0",
     "@solidjs/testing-library": "^0.8.10",
     "@testing-library/jest-dom": "^6.6.3",
-    "jsdom": "^26.0.0"
+    "jsdom": "^26.1.0"
   },
   "peerDependencies": {
     "solid-js": ">=1.1.3"

@@ -1,5 +1,77 @@
 # @zag-js/toggle-group
 
+## 1.11.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.11.0
+  - @zag-js/core@1.11.0
+  - @zag-js/types@1.11.0
+  - @zag-js/utils@1.11.0
+  - @zag-js/dom-query@1.11.0
+
+## 1.10.0
+
+### Minor Changes
+
+- [`ee14aff`](https://github.com/chakra-ui/zag/commit/ee14aff2f225618719cb6cd23b2c1f9edff97323) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Add support for `deselectable` prop to ensure one or more toggle
+  is selected at any time.
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.10.0
+  - @zag-js/core@1.10.0
+  - @zag-js/types@1.10.0
+  - @zag-js/utils@1.10.0
+  - @zag-js/dom-query@1.10.0
+
+## 1.9.3
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.9.3
+  - @zag-js/core@1.9.3
+  - @zag-js/types@1.9.3
+  - @zag-js/utils@1.9.3
+  - @zag-js/dom-query@1.9.3
+
+## 1.9.2
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.9.2
+  - @zag-js/core@1.9.2
+  - @zag-js/types@1.9.2
+  - @zag-js/utils@1.9.2
+  - @zag-js/dom-query@1.9.2
+
+## 1.9.1
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.9.1
+  - @zag-js/core@1.9.1
+  - @zag-js/types@1.9.1
+  - @zag-js/utils@1.9.1
+  - @zag-js/dom-query@1.9.1
+
+## 1.9.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.9.0
+  - @zag-js/core@1.9.0
+  - @zag-js/types@1.9.0
+  - @zag-js/utils@1.9.0
+  - @zag-js/dom-query@1.9.0
+
 ## 1.8.2
 
 ### Patch Changes

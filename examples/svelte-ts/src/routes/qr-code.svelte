@@ -8,8 +8,9 @@
 
   const controls = useControls(qrCodeControls)
 
+  const id = $props.id()
   const service = useMachine(qrCode.machine, {
-    id: crypto.randomUUID(),
+    id,
     encoding: { ecc: "H" },
   })
 

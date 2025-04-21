@@ -19,8 +19,9 @@
     }),
   )
 
+  const id = $props.id()
   const service = useMachine(combobox.machine, {
-    id: "1",
+    id,
     get collection() {
       return collection
     },

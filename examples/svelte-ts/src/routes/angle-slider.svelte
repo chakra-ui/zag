@@ -8,7 +8,8 @@
 
   const controls = useControls(angleSliderControls)
 
-  const service = useMachine(angleSlider.machine, { id: "1" })
+  const id = $props.id()
+  const service = useMachine(angleSlider.machine, { id })
 
   const api = $derived(angleSlider.connect(service, normalizeProps))
 </script>

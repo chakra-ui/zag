@@ -1,5 +1,109 @@
 # @zag-js/floating-panel
 
+## 1.11.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.11.0
+  - @zag-js/core@1.11.0
+  - @zag-js/store@1.11.0
+  - @zag-js/types@1.11.0
+  - @zag-js/utils@1.11.0
+  - @zag-js/dismissable@1.11.0
+  - @zag-js/dom-query@1.11.0
+  - @zag-js/popper@1.11.0
+  - @zag-js/rect-utils@1.11.0
+
+## 1.10.0
+
+### Patch Changes
+
+- [`2c9784e`](https://github.com/chakra-ui/zag/commit/2c9784e6c095686f91f7c326cbbc99ae71e0cb20) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix issue where clicking the trigger when panel is open, doesn't
+  close the panel
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.10.0
+  - @zag-js/core@1.10.0
+  - @zag-js/store@1.10.0
+  - @zag-js/types@1.10.0
+  - @zag-js/utils@1.10.0
+  - @zag-js/dismissable@1.10.0
+  - @zag-js/dom-query@1.10.0
+  - @zag-js/popper@1.10.0
+  - @zag-js/rect-utils@1.10.0
+
+## 1.9.3
+
+### Patch Changes
+
+- [`d70fd3f`](https://github.com/chakra-ui/zag/commit/d70fd3f9c66a217a6a4cae44f5adaf6d10c5a393) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - - Set default strategy to `fixed`
+  - Implement controlled open/close state
+  - Constraint the mouse movement to the boundary rect
+- Updated dependencies []:
+  - @zag-js/anatomy@1.9.3
+  - @zag-js/core@1.9.3
+  - @zag-js/store@1.9.3
+  - @zag-js/types@1.9.3
+  - @zag-js/utils@1.9.3
+  - @zag-js/dismissable@1.9.3
+  - @zag-js/dom-query@1.9.3
+  - @zag-js/popper@1.9.3
+  - @zag-js/rect-utils@1.9.3
+
+## 1.9.2
+
+### Patch Changes
+
+- [`dbf331c`](https://github.com/chakra-ui/zag/commit/dbf331c8f2bed95218d88a20cad1ab9137ad5b0b) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Export missing types from floating panel
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.9.2
+  - @zag-js/core@1.9.2
+  - @zag-js/store@1.9.2
+  - @zag-js/types@1.9.2
+  - @zag-js/utils@1.9.2
+  - @zag-js/dismissable@1.9.2
+  - @zag-js/dom-query@1.9.2
+  - @zag-js/popper@1.9.2
+  - @zag-js/rect-utils@1.9.2
+
+## 1.9.1
+
+### Patch Changes
+
+- [`ce12bbd`](https://github.com/chakra-ui/zag/commit/ce12bbd7466bfe4f724634898e1b84c003ce91ce) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - - Update floating panel APIs
+  - Fix issue where position and size were not synchronized correctly
+- Updated dependencies []:
+  - @zag-js/anatomy@1.9.1
+  - @zag-js/core@1.9.1
+  - @zag-js/store@1.9.1
+  - @zag-js/types@1.9.1
+  - @zag-js/utils@1.9.1
+  - @zag-js/dismissable@1.9.1
+  - @zag-js/dom-query@1.9.1
+  - @zag-js/popper@1.9.1
+  - @zag-js/rect-utils@1.9.1
+
+## 1.9.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.9.0
+  - @zag-js/core@1.9.0
+  - @zag-js/store@1.9.0
+  - @zag-js/types@1.9.0
+  - @zag-js/utils@1.9.0
+  - @zag-js/dismissable@1.9.0
+  - @zag-js/dom-query@1.9.0
+  - @zag-js/popper@1.9.0
+  - @zag-js/rect-utils@1.9.0
+
 ## 1.8.2
 
 ### Patch Changes

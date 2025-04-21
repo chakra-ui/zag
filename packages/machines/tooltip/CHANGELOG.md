@@ -1,5 +1,89 @@
 # @zag-js/tooltip
 
+## 1.11.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.11.0
+  - @zag-js/core@1.11.0
+  - @zag-js/store@1.11.0
+  - @zag-js/types@1.11.0
+  - @zag-js/utils@1.11.0
+  - @zag-js/dom-query@1.11.0
+  - @zag-js/focus-visible@1.11.0
+  - @zag-js/popper@1.11.0
+
+## 1.10.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.10.0
+  - @zag-js/core@1.10.0
+  - @zag-js/store@1.10.0
+  - @zag-js/types@1.10.0
+  - @zag-js/utils@1.10.0
+  - @zag-js/dom-query@1.10.0
+  - @zag-js/focus-visible@1.10.0
+  - @zag-js/popper@1.10.0
+
+## 1.9.3
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.9.3
+  - @zag-js/core@1.9.3
+  - @zag-js/store@1.9.3
+  - @zag-js/types@1.9.3
+  - @zag-js/utils@1.9.3
+  - @zag-js/dom-query@1.9.3
+  - @zag-js/focus-visible@1.9.3
+  - @zag-js/popper@1.9.3
+
+## 1.9.2
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.9.2
+  - @zag-js/core@1.9.2
+  - @zag-js/store@1.9.2
+  - @zag-js/types@1.9.2
+  - @zag-js/utils@1.9.2
+  - @zag-js/dom-query@1.9.2
+  - @zag-js/focus-visible@1.9.2
+  - @zag-js/popper@1.9.2
+
+## 1.9.1
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.9.1
+  - @zag-js/core@1.9.1
+  - @zag-js/store@1.9.1
+  - @zag-js/types@1.9.1
+  - @zag-js/utils@1.9.1
+  - @zag-js/dom-query@1.9.1
+  - @zag-js/focus-visible@1.9.1
+  - @zag-js/popper@1.9.1
+
+## 1.9.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.9.0
+  - @zag-js/core@1.9.0
+  - @zag-js/store@1.9.0
+  - @zag-js/types@1.9.0
+  - @zag-js/utils@1.9.0
+  - @zag-js/dom-query@1.9.0
+  - @zag-js/focus-visible@1.9.0
+  - @zag-js/popper@1.9.0
+
 ## 1.8.2
 
 ### Patch Changes

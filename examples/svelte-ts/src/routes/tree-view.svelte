@@ -60,8 +60,9 @@
     },
   })
 
+  const id = $props.id()
   const service = useMachine(tree.machine, {
-    id: "1",
+    id,
     collection,
   })
 

@@ -8,7 +8,8 @@
 
   const controls = useControls(fileUploadControls)
 
-  const service = useMachine(fileUpload.machine, { id: "1", accept: "image/*" })
+  const id = $props.id()
+  const service = useMachine(fileUpload.machine, { id, accept: "image/*" })
 
   const api = $derived(fileUpload.connect(service, normalizeProps))
 </script>

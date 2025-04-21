@@ -9,7 +9,7 @@
     "version": "vinxi version"
   },
   "dependencies": {
-    "@internationalized/date": "3.7.0",
+    "@internationalized/date": "3.8.0",
     "@solidjs/meta": "0.29.4",
     "@solidjs/router": "0.15.3",
     "@solidjs/start": "1.1.3",
@@ -85,10 +85,10 @@
     "@zag-js/types": "workspace:*",
     "@zag-js/utils": "workspace:*",
     "form-serialize": "0.7.2",
-    "lucide-solid": "0.487.0",
+    "lucide-solid": "0.488.0",
     "match-sorter": "8.0.0",
     "solid-js": "1.9.5",
-    "vinxi": "0.5.3"
+    "vinxi": "0.5.4"
   },
   "engines": {
     "node": ">=18"

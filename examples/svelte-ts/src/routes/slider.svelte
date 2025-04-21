@@ -9,8 +9,9 @@
 
   const controls = useControls(sliderControls)
 
+  const id = $props.id()
   const service = useMachine(slider.machine, {
-    id: "1",
+    id,
     name: "quantity",
     defaultValue: [0],
   })

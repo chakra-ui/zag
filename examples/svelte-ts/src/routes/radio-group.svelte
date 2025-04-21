@@ -9,7 +9,8 @@
 
   const controls = useControls(radioControls)
 
-  const service = useMachine(radio.machine, { id: "1", name: "fruit" })
+  const id = $props.id()
+  const service = useMachine(radio.machine, { id, name: "fruit" })
 
   const api = $derived(radio.connect(service, normalizeProps))
 </script>

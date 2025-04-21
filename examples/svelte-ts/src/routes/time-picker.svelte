@@ -9,8 +9,9 @@
 
   const controls = useControls(timePickerControls)
 
+  const id = $props.id()
   const service = useMachine(timePicker.machine, {
-    id: "1",
+    id,
   })
 
   const api = $derived(timePicker.connect(service, normalizeProps))

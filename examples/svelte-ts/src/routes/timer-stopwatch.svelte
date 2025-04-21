@@ -4,8 +4,9 @@
   import { normalizeProps, useMachine } from "@zag-js/svelte"
   import * as timer from "@zag-js/timer"
 
+  const id = $props.id()
   const service = useMachine(timer.machine, {
-    id: "s1",
+    id,
     autoStart: true,
   })
 

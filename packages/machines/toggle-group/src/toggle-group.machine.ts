@@ -13,6 +13,7 @@ export const machine = createMachine<ToggleGroupSchema>({
       orientation: "horizontal",
       rovingFocus: true,
       loopFocus: true,
+      deselectable: true,
       ...props,
     }
   },
@@ -82,7 +83,7 @@ export const machine = createMachine<ToggleGroupSchema>({
       on: {
         "ROOT.BLUR": {
           target: "idle",
-          actions: ["clearIsTabbingBackward", "clearFocusedId"],
+          actions: ["clearIsTabbingBackward", "clearFocusedId", "clearClickFocus"],
         },
         "TOGGLE.FOCUS": {
           actions: ["setFocusedId"],
@@ -151,7 +152,8 @@ export const machine = createMachine<ToggleGroupSchema>({
         } else if (prop("multiple")) {
           next = addOrRemove(next, event.value)
         } else {
-          next = isEqual(next, [event.value]) ? [] : [event.value]
+          const isSelected = isEqual(next, [event.value])
+          next = isSelected && prop("deselectable") ? [] : [event.value]
         }
         context.set("value", next)
       },

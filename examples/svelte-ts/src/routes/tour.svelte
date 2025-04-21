@@ -8,8 +8,9 @@
 
   const controls = useControls(tourControls)
 
+  const id = $props.id()
   const service = useMachine(tour.machine, {
-    id: "1",
+    id,
     steps: tourData,
   })
 

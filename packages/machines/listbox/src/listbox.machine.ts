@@ -338,8 +338,14 @@ export const machine = createMachine<ListboxSchema>({
   },
 })
 
+const diff = (a: Set<string>, b: Set<string>) => {
+  const result = new Set(a)
+  for (const item of b) result.delete(item)
+  return result
+}
+
 function invokeOnSelect(current: Set<string>, next: Set<string>, onSelect?: (details: SelectionDetails) => void) {
-  const added = next.difference(current)
+  const added = diff(next, current)
   for (const item of added) {
     onSelect?.({ value: item })
   }

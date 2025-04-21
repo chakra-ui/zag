@@ -8,8 +8,9 @@
 
   const controls = useControls(datePickerControls)
 
+  const id = $props.id()
   const service = useMachine(datePicker.machine, {
-    id: "1",
+    id,
     name: "date[]",
     locale: "en",
     numOfMonths: 2,

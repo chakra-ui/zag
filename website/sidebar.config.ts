@@ -1,4 +1,4 @@
-import { AiOutlineCompass } from "react-icons/ai"
+import { AiOutlineCompass, AiOutlineBook } from "react-icons/ai"
 import { HiOutlineViewGrid } from "react-icons/hi"
 import { IconType } from "react-icons/lib"
 
@@ -41,6 +41,22 @@ const sidebar: Record<"docs", SidebarItem[]> = {
         { type: "doc", label: "Introduction", id: "introduction" },
         { type: "doc", label: "Installation", id: "installation" },
         { type: "doc", label: "State machine", id: "whats-a-machine" },
+        { type: "doc", label: "FAQ", id: "faq" },
+        {
+          type: "doc",
+          label: "Changelog",
+          id: "changelogs",
+          href: "https://github.com/chakra-ui/zag/blob/main/CHANGELOG.md",
+        },
+        { type: "doc", label: "LLMs.txt", id: "llms-txt" },
+      ],
+    },
+    {
+      type: "category",
+      label: "Guides",
+      icon: AiOutlineBook,
+      id: "guides",
+      items: [
         { type: "doc", label: "Styling", id: "styling" },
         { type: "doc", label: "Composition", id: "composition" },
         { type: "doc", label: "Collection", id: "collection" },
@@ -49,15 +65,7 @@ const sidebar: Record<"docs", SidebarItem[]> = {
           label: "Programmatic Control",
           id: "programmatic-control",
         },
-        { type: "doc", label: "LLMs.txt", id: "llms-txt" },
-        { type: "doc", label: "FAQ", id: "faq" },
         { type: "doc", label: "Migration", id: "migration" },
-        {
-          type: "doc",
-          label: "Changelog",
-          id: "changelogs",
-          href: "https://github.com/chakra-ui/zag/blob/main/CHANGELOG.md",
-        },
       ],
     },
     {
@@ -79,6 +87,12 @@ const sidebar: Record<"docs", SidebarItem[]> = {
         { type: "doc", label: "Dialog", id: "dialog" },
         { type: "doc", label: "Editable", id: "editable" },
         { type: "doc", label: "File Upload", id: "file-upload" },
+        {
+          type: "doc",
+          label: "Floating Panel",
+          id: "floating-panel",
+          beta: true,
+        },
         { type: "doc", label: "Hover Card", id: "hover-card" },
         { type: "doc", label: "Listbox", id: "listbox", beta: true },
         { type: "doc", label: "Menu", id: "menu" },

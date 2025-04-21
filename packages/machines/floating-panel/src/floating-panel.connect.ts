@@ -4,6 +4,9 @@ import { parts } from "./floating-panel.anatomy"
 import * as dom from "./floating-panel.dom"
 import type { FloatingPanelService, FloatingPanelApi, ResizeTriggerProps } from "./floating-panel.types"
 import { getResizeAxisStyle } from "./get-resize-axis-style"
+import { match, toPx } from "@zag-js/utils"
+
+const validStages = new Set(["minimized", "maximized", "default"])
 
 export function connect<T extends PropTypes>(
   service: FloatingPanelService,
@@ -12,9 +15,14 @@ export function connect<T extends PropTypes>(
   const { state, send, scope, prop, computed, context } = service
 
   const open = state.hasTag("open")
+
   const dragging = state.matches("open.dragging")
   const resizing = state.matches("open.resizing")
+
   const isTopmost = context.get("isTopmost")
+  const size = context.get("size")
+  const position = context.get("position")
+
   const isMaximized = computed("isMaximized")
   const isMinimized = computed("isMinimized")
   const isStaged = computed("isStaged")
@@ -22,14 +30,33 @@ export function connect<T extends PropTypes>(
   const canDrag = computed("canDrag")
 
   return {
-    open: open,
+    open,
+    resizable: prop("resizable"),
+    draggable: prop("draggable"),
     setOpen(nextOpen) {
       const open = state.hasTag("open")
       if (open === nextOpen) return
       send({ type: nextOpen ? "OPEN" : "CLOSE" })
     },
-    dragging: dragging,
-    resizing: resizing,
+    dragging,
+    resizing,
+    position,
+    size,
+    setPosition(position) {
+      send({ type: "SET_POSITION", position })
+    },
+    setSize(size) {
+      send({ type: "SET_SIZE", size })
+    },
+    minimize() {
+      send({ type: "MINIMIZE" })
+    },
+    maximize() {
+      send({ type: "MAXIMIZE" })
+    },
+    restore() {
+      send({ type: "RESTORE" })
+    },
 
     getTriggerProps() {
       return normalize.button({
@@ -43,7 +70,8 @@ export function connect<T extends PropTypes>(
         onClick(event) {
           if (event.defaultPrevented) return
           if (prop("disabled")) return
-          send({ type: "OPEN" })
+          const open = state.hasTag("open")
+          send({ type: open ? "CLOSE" : "OPEN", src: "trigger" })
         },
       })
     },
@@ -53,7 +81,11 @@ export function connect<T extends PropTypes>(
         ...parts.positioner.attrs,
         id: dom.getPositionerId(scope),
         style: {
-          position: "absolute",
+          "--width": toPx(size?.width),
+          "--height": toPx(size?.height),
+          "--x": toPx(position?.x),
+          "--y": toPx(position?.y),
+          position: prop("strategy"),
           top: "var(--y)",
           left: "var(--x)",
         },
@@ -73,13 +105,12 @@ export function connect<T extends PropTypes>(
         "data-topmost": dataAttr(isTopmost),
         "data-behind": dataAttr(!isTopmost),
         style: {
-          position: prop("strategy"),
           width: "var(--width)",
           height: "var(--height)",
           overflow: isMinimized ? "hidden" : undefined,
         },
         onFocus() {
-          send({ type: "WINDOW_FOCUS" })
+          send({ type: "CONTENT_FOCUS" })
         },
         onKeyDown(event) {
           if (event.defaultPrevented) return
@@ -128,44 +159,41 @@ export function connect<T extends PropTypes>(
       })
     },
 
-    getMinimizeTriggerProps() {
-      return normalize.button({
-        ...parts.minimizeTrigger.attrs,
-        disabled: prop("disabled"),
-        "aria-label": "Minimize Window",
-        hidden: isStaged,
-        type: "button",
-        onClick(event) {
-          if (event.defaultPrevented) return
-          send({ type: "MINIMIZE" })
-        },
-      })
-    },
+    getStageTriggerProps(props) {
+      if (!validStages.has(props.stage)) {
+        throw new Error(`[zag-js] Invalid stage: ${props.stage}. Must be one of: ${Array.from(validStages).join(", ")}`)
+      }
 
-    getMaximizeTriggerProps() {
-      return normalize.button({
-        ...parts.maximizeTrigger.attrs,
-        disabled: prop("disabled"),
-        "aria-label": "Maximize Window",
-        hidden: isStaged,
-        type: "button",
-        onClick(event) {
-          if (event.defaultPrevented) return
-          send({ type: "MAXIMIZE" })
-        },
-      })
-    },
+      const translations = prop("translations")
 
-    getRestoreTriggerProps() {
+      const actionProps = match(props.stage, {
+        minimized: () => ({
+          "aria-label": translations.minimize,
+          hidden: isStaged,
+        }),
+        maximized: () => ({
+          "aria-label": translations.maximize,
+          hidden: isStaged,
+        }),
+        default: () => ({
+          "aria-label": translations.restore,
+          hidden: !isStaged,
+        }),
+      })
+
       return normalize.button({
-        ...parts.restoreTrigger.attrs,
+        ...parts.stageTrigger.attrs,
         disabled: prop("disabled"),
-        "aria-label": "Restore Window",
-        hidden: !isStaged,
+        ...actionProps,
         type: "button",
         onClick(event) {
           if (event.defaultPrevented) return
-          send({ type: "RESTORE" })
+          const type = match(props.stage, {
+            minimized: () => "MINIMIZE",
+            maximized: () => "MAXIMIZE",
+            default: () => "RESTORE",
+          })
+          send({ type: type.toUpperCase() })
         },
       })
     },
@@ -239,6 +267,14 @@ export function connect<T extends PropTypes>(
           touchAction: "none",
           cursor: "move",
         },
+      })
+    },
+
+    getControlProps() {
+      return normalize.element({
+        ...parts.control.attrs,
+        "data-disabled": dataAttr(prop("disabled")),
+        "data-stage": context.get("stage"),
       })
     },
 

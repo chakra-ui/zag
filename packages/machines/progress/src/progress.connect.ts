@@ -146,25 +146,28 @@ function getProgressState(value: number | null, maxValue: number): ProgressState
   return value == null ? "indeterminate" : value === maxValue ? "complete" : "loading"
 }
 
+const circleProps = {
+  style: {
+    "--radius": "calc(var(--size) / 2 - var(--thickness) / 2)",
+    cx: "calc(var(--size) / 2)",
+    cy: "calc(var(--size) / 2)",
+    r: "var(--radius)",
+    fill: "transparent",
+    strokeWidth: "var(--thickness)",
+  },
+}
+
+const rootProps = {
+  style: {
+    width: "var(--size)",
+    height: "var(--size)",
+  },
+}
+
 function getCircleProps(service: ProgressService) {
   const { context, computed } = service
-  const circleProps = {
-    style: {
-      "--radius": "calc(var(--size) / 2 - var(--thickness) / 2)",
-      cx: "calc(var(--size) / 2)",
-      cy: "calc(var(--size) / 2)",
-      r: "var(--radius)",
-      fill: "transparent",
-      strokeWidth: "var(--thickness)",
-    },
-  }
   return {
-    root: {
-      style: {
-        width: "var(--size)",
-        height: "var(--size)",
-      },
-    },
+    root: rootProps,
     track: circleProps,
     range: {
       opacity: context.get("value") === 0 ? 0 : undefined,

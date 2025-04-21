@@ -15,6 +15,7 @@ export const props = createProps<ToggleGroupProps>()([
   "rovingFocus",
   "value",
   "defaultValue",
+  "deselectable",
 ])
 
 export const splitProps = createSplitProps<Partial<ToggleGroupProps>>(props)

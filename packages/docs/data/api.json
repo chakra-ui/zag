@@ -1760,6 +1760,42 @@
       "resizing": {
         "type": "boolean",
         "description": "Whether the panel is being resized"
+      },
+      "position": {
+        "type": "Point",
+        "description": "The position of the panel"
+      },
+      "setPosition": {
+        "type": "(position: Point) => void",
+        "description": "Function to set the position of the panel"
+      },
+      "size": {
+        "type": "Size",
+        "description": "The size of the panel"
+      },
+      "setSize": {
+        "type": "(size: Size) => void",
+        "description": "Function to set the size of the panel"
+      },
+      "minimize": {
+        "type": "() => void",
+        "description": "Function to minimize the panel"
+      },
+      "maximize": {
+        "type": "() => void",
+        "description": "Function to maximize the panel"
+      },
+      "restore": {
+        "type": "() => void",
+        "description": "Function to restore the panel before it was minimized or maximized"
+      },
+      "resizable": {
+        "type": "boolean",
+        "description": "Whether the panel is resizable"
+      },
+      "draggable": {
+        "type": "boolean",
+        "description": "Whether the panel is draggable"
       }
     },
     "context": {
@@ -1767,10 +1803,14 @@
         "type": "Partial<{ trigger: string; positioner: string; content: string; title: string; header: string; }>",
         "description": "The ids of the elements in the floating panel. Useful for composition."
       },
+      "translations": {
+        "type": "IntlTranslations",
+        "description": "The translations for the floating panel."
+      },
       "strategy": {
         "type": "\"absolute\" | \"fixed\"",
         "description": "The strategy to use for positioning",
-        "defaultValue": "\"absolute\""
+        "defaultValue": "\"fixed\""
       },
       "allowOverflow": {
         "type": "boolean",

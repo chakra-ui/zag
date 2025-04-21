@@ -322,6 +322,7 @@ export function connect<T extends PropTypes, V extends CollectionItem>(
         "data-placement": context.get("currentPlacement"),
         "aria-labelledby": dom.getLabelId(scope),
         "aria-multiselectable": prop("multiple") && composite ? true : undefined,
+        "data-empty": dataAttr(collection.size === 0),
         onPointerDown(event) {
           // prevent options or elements within listbox from taking focus
           event.preventDefault()
@@ -333,6 +334,7 @@ export function connect<T extends PropTypes, V extends CollectionItem>(
       return normalize.element({
         ...parts.list.attrs,
         role: !composite ? "listbox" : undefined,
+        "data-empty": dataAttr(collection.size === 0),
         "aria-labelledby": dom.getLabelId(scope),
         "aria-multiselectable": prop("multiple") && !composite ? true : undefined,
       })
@@ -430,6 +432,7 @@ export function connect<T extends PropTypes, V extends CollectionItem>(
         dir: prop("dir"),
         id: dom.getItemGroupId(scope, id),
         "aria-labelledby": dom.getItemGroupLabelId(scope, id),
+        "data-empty": dataAttr(collection.size === 0),
         role: "group",
       })
     },

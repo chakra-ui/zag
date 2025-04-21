@@ -2,6 +2,7 @@
 import * as floatingPanel from "@zag-js/floating-panel"
 import { floatingPanelControls } from "@zag-js/shared"
 import { normalizeProps, useMachine } from "@zag-js/vue"
+import { Minus, Maximize2, ArrowDownLeft, XIcon } from "lucide-vue-next"
 
 const controls = useControls(floatingPanelControls)
 
@@ -24,14 +25,14 @@ const api = computed(() => floatingPanel.connect(service, normalizeProps))
           <div v-bind="api.getDragTriggerProps()">
             <div v-bind="api.getHeaderProps()">
               <p v-bind="api.getTitleProps()">Floating Panel</p>
-              <div data-scope="floating-panel" data-part="trigger-group">
-                <button v-bind="api.getMinimizeTriggerProps()">
+              <div v-bind="api.getControlProps()">
+                <button v-bind="api.getStageTriggerProps({ stage: 'minimized' })">
                   <Minus />
                 </button>
-                <button v-bind="api.getMaximizeTriggerProps()">
+                <button v-bind="api.getStageTriggerProps({ stage: 'maximized' })">
                   <Maximize2 />
                 </button>
-                <button v-bind="api.getRestoreTriggerProps()">
+                <button v-bind="api.getStageTriggerProps({ stage: 'default' })">
                   <ArrowDownLeft />
                 </button>
                 <button v-bind="api.getCloseTriggerProps()">
