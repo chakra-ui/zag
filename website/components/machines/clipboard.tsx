@@ -3,17 +3,10 @@ import { normalizeProps, useMachine } from "@zag-js/react"
 import { useId } from "react"
 import { HiCheck, HiOutlineClipboard } from "react-icons/hi"
 
-type Props = {
-  controls: {
-    value: string
-    timeout: number
-  }
-}
-
-export function Clipboard(props: Props) {
+export function Clipboard(props: Omit<clipboard.Props, "id">) {
   const service = useMachine(clipboard.machine, {
     id: useId(),
-    ...props.controls,
+    ...props,
   })
 
   const api = clipboard.connect(service, normalizeProps)

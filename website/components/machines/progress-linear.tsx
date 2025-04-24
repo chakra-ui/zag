@@ -2,10 +2,10 @@ import * as progress from "@zag-js/progress"
 import { normalizeProps, useMachine } from "@zag-js/react"
 import { useId } from "react"
 
-export function ProgressLinear(props: any) {
+export function ProgressLinear(props: Omit<progress.Props, "id">) {
   const service = useMachine(progress.machine, {
     id: useId(),
-    ...props.controls,
+    ...props,
   })
 
   const api = progress.connect(service, normalizeProps)
