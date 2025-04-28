@@ -4,7 +4,7 @@ import { normalizeProps, useMachine } from "@zag-js/react"
 import * as tabs from "@zag-js/tabs"
 import { CodeArea } from "./code-area"
 import { ReactIcon, SolidIcon, VueIcon } from "./icons"
-import { NumberInput } from "./machines/number-input"
+import { NumberInput } from "../demos/number-input"
 import { Playground } from "./playground"
 
 export function MultiframeworkTabs() {

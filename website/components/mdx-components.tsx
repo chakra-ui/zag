@@ -19,7 +19,7 @@ import { DataAttrTable } from "./data-attr-table"
 import { useFramework } from "./framework"
 import { KeyboardTable } from "./keyboard-table"
 import { PropTable } from "./prop-table"
-import { Showcase } from "./showcase"
+import { Showcase } from "../demos"
 
 function SnippetItem({ body, id }: { body: MDX; id: string }) {
   const content = useMDX(body.code)

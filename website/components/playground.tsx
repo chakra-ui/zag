@@ -19,7 +19,7 @@ const Header = (props: any) => (
 
 type PlaygroundProps = {
   name: string
-  component: (props: any) => JSX.Element
+  component: React.ComponentType<any>
   defaultContext?: Record<string, any>
   defaultProps?: Record<
     string,
