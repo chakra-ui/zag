@@ -15,6 +15,10 @@ export abstract class Component<Props, Api> implements ComponentInterface<Api> {
   machine: VanillaMachine<any>
   api: Api
 
+  get doc(): Document {
+    return this.rootEl.ownerDocument
+  }
+
   constructor(rootEl: HTMLElement | null, props: Props) {
     if (!rootEl) throw new Error("Root element not found")
     this.rootEl = rootEl

@@ -16,7 +16,7 @@ import type {
 } from "@zag-js/core"
 import { createScope, INIT_STATE, MachineStatus } from "@zag-js/core"
 import { subscribe } from "@zag-js/store"
-import { compact, identity, isEqual, isFunction, isString, toArray, warn } from "@zag-js/utils"
+import { compact, identity, isEqual, isFunction, isString, runIfFn, toArray, warn } from "@zag-js/utils"
 import { bindable } from "./bindable"
 import { createRefs } from "./refs"
 
@@ -59,15 +59,16 @@ export class VanillaMachine<T extends MachineSchema> {
 
   constructor(
     private machine: Machine<T>,
-    userProps: Partial<T["props"]> = {},
+    userProps: Partial<T["props"]> | (() => Partial<T["props"]>) = {},
   ) {
     // create scope
-    const { id, ids, getRootNode } = userProps as any
+    const { id, ids, getRootNode } = runIfFn(userProps) as any
     this.scope = createScope({ id, ids, getRootNode })
 
     // create prop
-    const props: any = machine.props?.({ props: compact(userProps), scope: this.scope }) ?? userProps
     const prop: PropFn<T> = (key) => {
+      const __props = runIfFn(userProps)
+      const props: any = machine.props?.({ props: compact(__props), scope: this.scope }) ?? __props
       return props[key] as any
     }
     this.prop = prop

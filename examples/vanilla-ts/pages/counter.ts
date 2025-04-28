@@ -1,6 +1,6 @@
 import type { EventObject, Service } from "@zag-js/core"
 import { VanillaMachine } from "../src/lib/machine"
-import { spreadProps } from "../src/spread-props"
+import { spreadProps } from "../src/lib/spread-props"
 
 interface Counter {
   context: { value: number }
