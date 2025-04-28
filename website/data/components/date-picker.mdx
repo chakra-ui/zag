@@ -66,7 +66,7 @@ date-picker machine in your project 🔥
 
 <CodeSnippet id="date-picker/usage.mdx" />
 
-## Setting the initial date
+### Setting the initial date
 
 To set the initial value that is rendered by the date picker, set the `value`
 property in the machine context.
@@ -77,7 +77,7 @@ const service = useMachine(datepicker.machine, {
 })
 ```
 
-## Controlling the selected date
+### Controlling the selected date
 
 Use the `api.setValue` method to control the selected date in the DatePicker
 component.
@@ -93,7 +93,7 @@ api.setValue(nextValue)
 > Alternatively, you can also use the `value` and `onValueChange` callbacks to
 > programmatically control the selected date.
 
-## Controlling the open state
+### Controlling the open state
 
 To manage the open state of the datepicker's dialog, we recommended using
 `api.setOpen` method.
@@ -109,7 +109,7 @@ api.setOpen(false)
 > Alternatively, you can also use the `open` and `onOpenChange` callbacks to
 > programmatically control the open state.
 
-## Setting the min and max dates
+### Setting the min and max dates
 
 To constrain the date range that can be selected by the user, set the `min` and
 `max` properties in the machine context.
@@ -124,7 +124,7 @@ const service = useMachine(datepicker.machine, {
 When the min or max date value is reached, the next and prev triggers will be
 disabled.
 
-## Changing the start of the week
+### Changing the start of the week
 
 Set the `startOfWeek` property in the machine context to change the start of the
 week. The property accepts a number from `0` to `6`, where `0` is Sunday and `6`
@@ -136,7 +136,7 @@ const service = useMachine(datepicker.machine, {
 })
 ```
 
-## Disabling the date picker
+### Disabling the date picker
 
 To disable the date picker, set the `disabled` property in the machine context
 to `true`.
@@ -147,7 +147,7 @@ const service = useMachine(datepicker.machine, {
 })
 ```
 
-## Rendering month and year pickers
+### Rendering month and year pickers
 
 To render the month and year pickers, use the `api.getMonthSelectProps` and
 `api.getYearSelectProps` prop getters.
@@ -172,7 +172,7 @@ To render the month and year pickers, use the `api.getMonthSelectProps` and
 </div>
 ```
 
-## Marking unavailable dates
+### Marking unavailable dates
 
 To mark specific dates as unavailable, set the `isDateUnavailable` function in
 the machine context. This function should return `true` for dates that are
@@ -202,7 +202,7 @@ const service = useMachine(datepicker.machine, {
 })
 ```
 
-## Setting the calendar starting view
+### Setting the calendar starting view
 
 The calendar view is set to `day` by default. To change the starting view of the
 calendar, set the `view` property in the machine context to either `day`,
@@ -214,7 +214,7 @@ const service = useMachine(datepicker.machine, {
 })
 ```
 
-## Setting the read-only mode
+### Setting the read-only mode
 
 Set the `readOnly` property in the machine context to `true` to make the date
 picker read-only. This means that users can't change the selected date.
@@ -225,7 +225,7 @@ const service = useMachine(datepicker.machine, {
 })
 ```
 
-## Setting the focused date
+### Setting the focused date
 
 The datepicker's focused date is set to either the first selected date or
 today's date by default.
@@ -239,7 +239,7 @@ const service = useMachine(datepicker.machine, {
 })
 ```
 
-## Rendering the calendar inline
+### Rendering the calendar inline
 
 To render the calendar inline, we recommended setting the `open` property to
 `true` and `closeOnSelect` to `false`.
@@ -251,7 +251,7 @@ const service = useMachine(datepicker.machine, {
 })
 ```
 
-## Usage within a form
+### Usage within a form
 
 To use the date picker within a form, set the `name` property in the machine
 context. This property is used to identify the date picker in the form data.
@@ -262,7 +262,7 @@ const service = useMachine(datepicker.machine, {
 })
 ```
 
-## Rendering fixed number of weeks
+### Rendering fixed number of weeks
 
 The datepicker's calendar will render the weeks needed to display all of the
 days in the month. Sometimes this can result in a jump in the UI when navigating
@@ -277,7 +277,7 @@ const service = useMachine(datepicker.machine, {
 })
 ```
 
-## Listening to date changes
+### Listening to date changes
 
 To listen to date changes, use the `onValueChange` callback in the machine
 context.
@@ -291,7 +291,7 @@ const service = useMachine(datepicker.machine, {
 })
 ```
 
-## Listening to view changes
+### Listening to view changes
 
 When the calendar view changes by click on the view controls, the `onViewChange`
 callback is invoked.
@@ -303,6 +303,51 @@ const service = useMachine(datepicker.machine, {
     console.log("view changed to:", details.view)
   },
 })
+```
+
+### Rendering multiple months
+
+To display multiple months in the calendar
+
+- set the `numOfMonths` prop to the desired number of months
+- generate the weeks for the offset months using `api.getOffset({ months: 1 })`
+
+```tsx
+const service = useMachine(datepicker.machine, {
+  // ...
+  numOfMonths: 2,
+})
+
+const offset = api.getOffset({ months: 1 })
+```
+
+Next, render the calendar for the offset months.
+
+```tsx
+<tbody {...api.getTableBodyProps({ view: "day" })}>
+  {offset.weeks.map((week, i) => (
+    <tr key={i} {...api.getTableRowProps({ view: "day" })}>
+      {week.map((value, i) => (
+        <td
+          key={i}
+          {...api.getDayTableCellProps({
+            value,
+            visibleRange: offset.visibleRange,
+          })}
+        >
+          <div
+            {...api.getDayTableCellTriggerProps({
+              value,
+              visibleRange: offset.visibleRange,
+            })}
+          >
+            {value.day}
+          </div>
+        </td>
+      ))}
+    </tr>
+  ))}
+</tbody>
 ```
 
 ## Styling guide
