@@ -47,11 +47,25 @@ export class Combobox extends Component<combobox.Props, combobox.Api> {
 
   renderItems = () => {
     const contentEl = this.getOrCreateContentEl()
-    while (contentEl?.firstChild) {
-      contentEl.removeChild(contentEl.firstChild)
+    const existingItems = Array.from(contentEl.children)
+
+    // Remove excess items
+    while (existingItems.length > this.options.length) {
+      contentEl.removeChild(existingItems.pop()!)
     }
-    this.items.forEach((item) => {
-      contentEl?.appendChild(item)
+
+    // Update or create items
+    this.options.forEach((item, index) => {
+      let itemEl = existingItems[index] as HTMLElement
+
+      if (!itemEl) {
+        itemEl = this.doc.createElement("div")
+        itemEl.classList.add("combobox-item")
+        contentEl.appendChild(itemEl)
+      }
+
+      itemEl.innerText = item.label
+      spreadProps(itemEl, this.api.getItemProps({ item }))
     })
   }
 
@@ -73,7 +87,6 @@ export class Combobox extends Component<combobox.Props, combobox.Api> {
     const contentEl = this.getOrCreateContentEl()
     spreadProps(contentEl, this.api.getContentProps())
 
-    // TODO: sync item props instead of re-rendering
     this.renderItems()
   }
 
@@ -85,17 +98,5 @@ export class Combobox extends Component<combobox.Props, combobox.Api> {
       this.rootEl?.appendChild(contentEl)
     }
     return contentEl
-  }
-
-  private get items() {
-    return Array.from(
-      this.options.map((item) => {
-        const itemEl = this.doc.createElement("div")
-        itemEl.innerText = item.label
-        itemEl.classList.add("combobox-item")
-        spreadProps(itemEl, this.api.getItemProps({ item }))
-        return itemEl
-      }),
-    )
   }
 }
