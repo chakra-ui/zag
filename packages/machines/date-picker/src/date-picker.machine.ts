@@ -75,14 +75,12 @@ export const machine = createMachine<DatePickerSchema>({
     return {
       locale,
       numOfMonths,
-      focusedValue,
       timeZone,
-      defaultValue: defaultValue ?? [],
-      value,
       selectionMode,
       defaultView,
       minView,
       maxView,
+      outsideDaySelectable: false,
       closeOnSelect: true,
       format(date, { locale, timeZone }) {
         const formatter = new DateFormatter(locale, { timeZone, day: "2-digit", month: "2-digit", year: "numeric" })
@@ -92,6 +90,9 @@ export const machine = createMachine<DatePickerSchema>({
         return parseDateString(value, locale, timeZone)
       },
       ...props,
+      focusedValue,
+      value,
+      defaultValue: defaultValue ?? [],
       positioning: {
         placement: "bottom",
         ...props.positioning,

@@ -116,6 +116,11 @@ export interface DatePickerProps extends DirectionProperty, CommonProperties {
    */
   readOnly?: boolean | undefined
   /**
+   * Whether day outside the visible range can be selected.
+   * @default false
+   */
+  outsideDaySelectable?: boolean | undefined
+  /**
    * The minimum date that can be selected.
    */
   min?: DateValue | undefined
@@ -255,6 +260,7 @@ type PropsWithDefault =
   | "format"
   | "parse"
   | "focusedValue"
+  | "outsideDaySelectable"
 
 interface PrivateContext {
   /**

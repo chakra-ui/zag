@@ -1194,6 +1194,11 @@
         "type": "boolean",
         "description": "Whether the calendar is read-only."
       },
+      "outsideDaySelectable": {
+        "type": "boolean",
+        "description": "Whether day outside the visible range can be selected.",
+        "defaultValue": "false"
+      },
       "min": {
         "type": "DateValue",
         "description": "The minimum date that can be selected."
@@ -3828,6 +3833,10 @@
       "getLayout": {
         "type": "() => string",
         "description": "Get the layout of the splitter."
+      },
+      "resetSizes": {
+        "type": "() => void",
+        "description": "Reset the splitter to its initial state."
       }
     },
     "context": {
@@ -4792,6 +4801,11 @@
       "multiple": {
         "type": "boolean",
         "description": "Whether to allow multiple toggles to be selected."
+      },
+      "deselectable": {
+        "type": "boolean",
+        "description": "Whether the toggle group allows empty selection.\n**Note:** This is ignored if `multiple` is `true`.",
+        "defaultValue": "true"
       },
       "dir": {
         "type": "\"ltr\" | \"rtl\"",

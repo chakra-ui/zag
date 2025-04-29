@@ -150,15 +150,17 @@ export function connect<T extends PropTypes>(
 
     const formatter = getDayFormatter(locale, timeZone)
     const unitDuration = getUnitDuration(computed("visibleDuration"))
+    const outsideDaySelectable = prop("outsideDaySelectable")
 
     const end = visibleRange.start.add(unitDuration).subtract({ days: 1 })
+    const isOutsideRange = isDateOutsideRange(value, visibleRange.start, end)
 
     const cellState = {
       invalid: isDateOutsideRange(value, min, max),
-      disabled: disabled || isDateOutsideRange(value, visibleRange.start, end) || isDateOutsideRange(value, min, max),
+      disabled: disabled || (!outsideDaySelectable && isOutsideRange) || isDateOutsideRange(value, min, max),
       selected: selectedValue.some((date) => isDateEqual(value, date)),
       unavailable: isDateUnavailable(value, isDateUnavailableFn, locale, min, max) && !disabled,
-      outsideRange: isDateOutsideRange(value, visibleRange.start, end),
+      outsideRange: isOutsideRange,
       inRange:
         isRangePicker && (isDateWithinRange(value, selectedValue) || isDateWithinRange(value, hoveredRangeValue)),
       firstInRange: isRangePicker && isDateEqual(value, selectedValue[0]),
@@ -167,7 +169,7 @@ export function connect<T extends PropTypes>(
       weekend: isWeekend(value, locale),
       formattedDate: formatter.format(value.toDate(timeZone)),
       get focused() {
-        return isDateEqual(value, focusedValue) && !cellState.outsideRange
+        return isDateEqual(value, focusedValue) && (!cellState.outsideRange || outsideDaySelectable)
       },
       get ariaLabel(): string {
         return translations.dayCell(cellState)
