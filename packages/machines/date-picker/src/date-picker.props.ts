@@ -44,6 +44,7 @@ export const props = createProps<DatePickerProps>()([
   "defaultValue",
   "view",
   "defaultFocusedValue",
+  "outsideDaySelectable",
   "minView",
   "maxView",
 ])
