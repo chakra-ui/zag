@@ -195,8 +195,10 @@ export const machine = createMachine<CollapsibleSchema>({
     },
 
     actions: {
-      setInitial: ({ context }) => {
-        context.set("initial", true)
+      setInitial: ({ context, flush }) => {
+        flush(() => {
+          context.set("initial", true)
+        })
       },
 
       clearInitial: ({ context }) => {
