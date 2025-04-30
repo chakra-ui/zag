@@ -1,5 +1,26 @@
 # @zag-js/date-picker
 
+## 1.12.0
+
+### Minor Changes
+
+- [`0447904`](https://github.com/chakra-ui/zag/commit/044790437e88dd07183881396e64de75b590f9a3) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Add support for `outsideDaySelectable` prop to allow selecting
+  days outside the current month (on the same visible date range)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.12.0
+  - @zag-js/core@1.12.0
+  - @zag-js/types@1.12.0
+  - @zag-js/utils@1.12.0
+  - @zag-js/date-utils@1.12.0
+  - @zag-js/dismissable@1.12.0
+  - @zag-js/dom-query@1.12.0
+  - @zag-js/live-region@1.12.0
+  - @zag-js/popper@1.12.0
+
 ## 1.11.0
 
 ### Patch Changes

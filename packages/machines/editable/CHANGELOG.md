@@ -1,5 +1,17 @@
 # @zag-js/editable
 
+## 1.12.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.12.0
+  - @zag-js/core@1.12.0
+  - @zag-js/types@1.12.0
+  - @zag-js/utils@1.12.0
+  - @zag-js/dom-query@1.12.0
+  - @zag-js/interact-outside@1.12.0
+
 ## 1.11.0
 
 ### Patch Changes

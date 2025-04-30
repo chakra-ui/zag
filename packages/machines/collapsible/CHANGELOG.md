@@ -1,5 +1,20 @@
 # @zag-js/collapsible
 
+## 1.12.0
+
+### Patch Changes
+
+- [`637fc60`](https://github.com/chakra-ui/zag/commit/637fc60f16b31e74a36570f8bfe3e008e14c825b) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix issue in React.js <= v18.x where collapse animation might not
+  work as expected.
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.12.0
+  - @zag-js/core@1.12.0
+  - @zag-js/types@1.12.0
+  - @zag-js/utils@1.12.0
+  - @zag-js/dom-query@1.12.0
+
 ## 1.11.0
 
 ### Patch Changes
