@@ -76,7 +76,7 @@ focus in on any tag:
 
 ## Setting the initial tags
 
-To set the initial tag values, pass the `value` property in the machine's
+To set the initial tag values, pass the `defaultValue` property in the machine's
 context.
 
 ```jsx {2}
@@ -84,6 +84,13 @@ const service = useMachine(tagsInput.machine, {
   defaultValue: ["React", "Redux", "TypeScript"],
 })
 ```
+
+## Controlled tags input
+
+To control the tags input programmatically, pass the `value` and `onValueChange`
+properties to the machine function.
+
+<CodeSnippet id="tags-input/controlled.mdx" />
 
 ## Removing all tags
 

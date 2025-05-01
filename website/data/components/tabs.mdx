@@ -60,10 +60,10 @@ tabs machine in your project 🔥
 
 <CodeSnippet id="tabs/usage.mdx" />
 
-## Setting the selected tab
+## Setting the initially selected tab
 
-To set the initially selected tab, pass the `value` property to the machine's
-context.
+To set the initially selected tab, pass the `defaultValue` property to the
+machine's context.
 
 ```jsx {2}
 const service = useMachine(tabs.machine, {
@@ -71,7 +71,15 @@ const service = useMachine(tabs.machine, {
 })
 ```
 
-Subsequently, you can use the `api.setValue` function to set the selected tab.
+Subsequently, you can use the `api.setValue` function to programatically set the
+selected tab.
+
+## Controlled tabs
+
+To control the selected tab programmatically, pass the `value` and
+`onValueChange` properties to the machine function.
+
+<CodeSnippet id="tabs/controlled.mdx" />
 
 ## Changing the orientation
 

@@ -76,16 +76,23 @@ const service = useMachine(checkbox.machine, {
 })
 ```
 
-## Making it checked by default
+## Setting the initial checked state
 
-To make a checkbox checked by default, set the context's `checked` property to
-`true`
+To make a checkbox checked by default, set the context's `defaultChecked`
+property to `true`
 
 ```jsx {2}
 const service = useMachine(checkbox.machine, {
   defaultChecked: true,
 })
 ```
+
+## Controlled checkbox
+
+To control the checked state programmatically, pass the `checked` and
+`onCheckedChange` properties to the machine function.
+
+<CodeSnippet id="checkbox/controlled.mdx" />
 
 ## Listening for changes
 

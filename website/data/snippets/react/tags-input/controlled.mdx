@@ -1,0 +1,16 @@
+```tsx
+import { useState } from "react"
+
+export function ControlledTagsInput() {
+  const [value, setValue] = useState(["React", "Vue"])
+
+  const service = useMachine(tagsInput.machine, {
+    value,
+    onValueChange(details) {
+      setValue(details.value)
+    },
+  })
+
+  return ( // ... )
+}
+```

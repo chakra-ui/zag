@@ -1,0 +1,14 @@
+```svelte
+<script lang="ts">
+  let value = $state(["React", "Vue"])
+
+  const service = useMachine(tagsInput.machine, {
+    get value() {
+      return value
+    },
+    onValueChange(details) {
+      value = details.value
+    },
+  })
+</script>
+```
