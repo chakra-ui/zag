@@ -1,0 +1,14 @@
+```svelte
+<script lang="ts">
+  let value = $state([30])
+
+  const service = useMachine(slider.machine, {
+    get value() {
+      return value
+    },
+    onValueChange(details) {
+      value = details.value
+    },
+  })
+</script>
+```

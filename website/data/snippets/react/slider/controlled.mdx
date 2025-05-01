@@ -1,0 +1,19 @@
+```tsx
+import { useState } from "react"
+
+export function ControlledSlider() {
+  const [value, setValue] = useState([30])
+
+  const service = useMachine(slider.machine, {
+    value,
+    onValueChange(details) {
+      setValue(details.value)
+    },
+  })
+
+  return (
+    // ...
+  )
+}
+
+```
