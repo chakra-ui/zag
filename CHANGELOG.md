@@ -4,6 +4,17 @@ All notable changes to this project will be documented in this file.
 
 > For v0.x changelog, see the [v0 branch](https://github.com/chakra-ui/zag/blob/v0/CHANGELOG.md)
 
+## [1.12.0](./#1.12.0) - 2025-05-01
+
+### Added
+
+- **Date Picker**: Add support for `outsideDaySelectable` prop to allow selecting days outside the current month (on the
+  same visible date range)
+
+### Fixed
+
+- **Collapsible**: Fix issue in React.js <= v18.x where collapse animation might not work as expected
+
 ## [1.11.0](./#1.11.0) - 2025-04-20
 
 ### Added
