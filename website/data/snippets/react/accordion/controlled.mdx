@@ -1,0 +1,18 @@
+```tsx
+import { useState } from "react"
+
+export function ControlledAccordion() {
+  const [value, setValue] = useState(["home"])
+
+  const service = useMachine(accordion.machine, {
+    value,
+    onValueChange(details) {
+      setValue(details.value)
+    },
+  })
+
+  return (
+    // ...
+  )
+}
+```

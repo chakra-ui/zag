@@ -67,6 +67,13 @@ const service = useMachine(angleSlider.machine, {
 })
 ```
 
+## Controlled angle slider
+
+To control the angle slider's value, pass the `value` and `onValueChange`
+properties to the machine function.
+
+<CodeSnippet id="angle-slider/controlled.mdx" />
+
 ## Setting the value's granularity
 
 By default, the granularity, is `1`, meaning that the value is always an

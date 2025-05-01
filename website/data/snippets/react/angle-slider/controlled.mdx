@@ -1,0 +1,18 @@
+```tsx
+import { useState } from "react"
+
+export function ControlledAngleSlider() {
+  const [value, setValue] = useState(45)
+
+  const service = useMachine(angleSlider.machine, {
+    value,
+    onValueChange(details) {
+      setValue(details.value)
+    },
+  })
+
+  return (
+    // ...
+  )
+}
+```

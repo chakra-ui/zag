@@ -75,7 +75,7 @@ const service = useMachine(accordion.machine, {
 })
 ```
 
-## Opening specific accordions
+## Opening accordions by default
 
 To set the value of the accordion(s) that should be opened initially, pass the
 `value` property to the machine function.
@@ -92,6 +92,13 @@ const service = useMachine(accordion.machine, {
   defaultValue: ["home"],
 })
 ```
+
+## Controlled accordions
+
+To control the accordion's value, pass the `value` and `onValueChange`
+properties to the machine function.
+
+<CodeSnippet id="accordion/controlled.mdx" />
 
 ## Toggle each accordion item
 
