@@ -1,0 +1,18 @@
+```tsx
+import { useState } from "react"
+
+export function ControlledCollapsible() {
+  const [open, setOpen] = useState(false)
+
+const service = useMachine(collapsible.machine, {
+    open,
+    onOpenChange(details) {
+      setOpen(details.open)
+    }
+ })
+
+  return (
+    // ...
+    )
+}
+```

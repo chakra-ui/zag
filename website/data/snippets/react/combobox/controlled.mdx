@@ -1,0 +1,18 @@
+```tsx
+import { useState } from "react"
+
+export function ControlledCombobox() {
+  const [value, setValue] = useState(["ng"])
+
+  const service = useMachine(combobox.machine, {
+      value,
+      onValueChange(details) {
+        setValue(details.value)
+      }
+  })
+
+  return (
+    // ...
+    )
+}
+```

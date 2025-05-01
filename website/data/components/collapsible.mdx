@@ -46,6 +46,24 @@ collapsible machine in your project 🔥
 
 <CodeSnippet id="collapsible/usage.mdx" />
 
+## Setting the initial state
+
+Pass the `defaultOpen` machine context property to the machine function to set
+the initial state.
+
+```jsx
+const service = useMachine(collapsible.machine, {
+  defaultOpen: true,
+})
+```
+
+## Controlled collapsible
+
+To control the open state programmatically, pass the `open` and `onOpenChange`
+properties to the machine function.
+
+<CodeSnippet id="collapsible/controlled.mdx" />
+
 ## Listening for changes
 
 When the collapsible state changes, the `onOpenChange` callback is invoked.

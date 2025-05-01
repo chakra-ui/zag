@@ -1,0 +1,20 @@
+```tsx
+import { createSignal } from "solid-js"
+
+export function ControlledCollapsible() {
+  const [open, setOpen] = createSignal(false)
+
+  const service = useMachine(collapsible.machine, {
+    get open() {
+      return open()
+    },
+    onOpenChange(details) {
+      setOpen(details.open)
+    },
+  })
+
+  return (
+    // ...
+  )
+}
+```

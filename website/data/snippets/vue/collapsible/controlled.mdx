@@ -1,0 +1,16 @@
+```html
+<script setup lang="ts">
+  import { ref } from "vue"
+
+  const openRef = ref(false)
+
+  const service = useMachine(collapsible.machine, {
+    get open() {
+      return openRef.value
+    },
+    onOpenChange(details) {
+      openRef.value = details.open
+    },
+  })
+</script>
+```

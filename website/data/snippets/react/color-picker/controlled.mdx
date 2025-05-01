@@ -1,0 +1,19 @@
+```tsx
+import { useState } from "react"
+import * as colorPicker from "@zag-js/color-picker"
+
+export function ControlledColorPicker() {
+  const [value, setValue] = useState(colorPicker.parse("#ff0000"))
+
+  const service = useMachine(colorPicker.machine, {
+      value,
+      onValueChange(details) {
+        setValue(details.value)
+      }
+  })
+
+  return (
+    // ...
+  )
+}
+```

@@ -1,0 +1,15 @@
+```svelte
+<script lang="ts">
+  import * as colorPicker from "@zag-js/color-picker"
+  let value = $state(colorPicker.parse("#ff0000"))
+
+  const service = useMachine(colorPicker.machine, {
+    get value() {
+      return value
+    },
+    onValueChange(details) {
+      value = details.value
+    },
+  })
+</script>
+```

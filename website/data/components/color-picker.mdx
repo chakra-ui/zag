@@ -61,15 +61,23 @@ color picker machine in your project 🔥
 
 <CodeSnippet id="color-picker/usage.mdx" />
 
-## Setting the initial value
+## Setting the initial color
 
-To set the initial value of the color picker, use the `value` context property.
+To set the initial color of the color picker, use the `defaultValue` context
+property.
 
 ```jsx
 const [current, send] = useMachine(colorPicker.machine, {
   defaultValue: colorPicker.parse("#ff0000"),
 })
 ```
+
+## Controlled color picker
+
+To control the color value programmatically, pass the `value` and
+`onValueChange` properties to the machine function.
+
+<CodeSnippet id="color-picker/controlled.mdx" />
 
 ## Listening for change events
 

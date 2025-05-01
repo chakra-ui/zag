@@ -1,0 +1,14 @@
+```svelte
+<script lang="ts">
+  let value = $state(["ng"])
+
+  const service = useMachine(combobox.machine, {
+    get value() {
+      return value
+    },
+    onValueChange(details) {
+      value = details.value
+    },
+  })
+</script>
+```

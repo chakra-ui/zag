@@ -1,0 +1,14 @@
+```svelte
+<script lang="ts">
+  let open = $state(false)
+
+  const service = useMachine(collapsible.machine, {
+    get open() {
+      return open
+    },
+    onOpenChange(details) {
+      open = details.open
+    },
+  })
+</script>
+```

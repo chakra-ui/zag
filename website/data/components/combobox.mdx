@@ -61,11 +61,8 @@ combobox machine in your project 🔥
 
 ## Setting the initial value
 
-To set the initial value of the combobox, pass the `value` property to the
-machine's context.
-
-> The `value` property must be an array of strings. If selecting a single value,
-> pass an array with a single string.
+To set the initial value of the combobox, pass the `defaultValue` property to
+the machine's context.
 
 ```jsx {13}
 const collection = combobox.collection({
@@ -83,6 +80,13 @@ const service = useMachine(combobox.machine, {
   defaultValue: ["ng"],
 })
 ```
+
+## Controlled combobox
+
+To control the value programmatically, pass the `value` and `onValueChange`
+properties to the machine function.
+
+<CodeSnippet id="combobox/controlled.mdx" />
 
 ## Selecting multiple values
 
