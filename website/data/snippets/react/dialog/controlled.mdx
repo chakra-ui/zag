@@ -1,0 +1,18 @@
+```tsx
+import { useState } from "react"
+
+export function ControlledDialog() {
+  const [open, setOpen] = useState(false)
+
+  const service = useMachine(dialog.machine, {
+    open,
+    onOpenChange(details) {
+      setOpen(details.open)
+    },
+  })
+
+  return (
+    // ...
+  )
+}
+```

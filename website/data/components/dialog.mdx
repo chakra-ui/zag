@@ -112,6 +112,13 @@ const service = useMachine(dialog.machine, {
 })
 ```
 
+## Controlled dialog
+
+To control the dialog's open state, pass the `open` and `onOpenChange`
+properties.
+
+<CodeSnippet id="dialog/controlled.mdx" />
+
 ## Controlling the scroll behavior
 
 When the dialog is open, it prevents scrolling on the `body` element. To disable
