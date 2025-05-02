@@ -59,7 +59,7 @@ combobox machine in your project 🔥
 
 <CodeSnippet id="combobox/usage.mdx" />
 
-## Setting the initial value
+### Setting the initial value
 
 To set the initial value of the combobox, pass the `defaultValue` property to
 the machine's context.
@@ -81,14 +81,14 @@ const service = useMachine(combobox.machine, {
 })
 ```
 
-## Controlled combobox
+### Controlled combobox
 
 To control the value programmatically, pass the `value` and `onValueChange`
 properties to the machine function.
 
 <CodeSnippet id="combobox/controlled.mdx" />
 
-## Selecting multiple values
+### Selecting multiple values
 
 To allow selecting multiple values, set the `multiple` property in the machine's
 context to `true`.
@@ -101,7 +101,7 @@ const service = useMachine(combobox.machine, {
 })
 ```
 
-## Using a custom object format
+### Using a custom object format
 
 By default, the combobox collection expects an array of items with `label` and
 `value` properties. To use a custom object format, pass the `itemToString` and
@@ -142,7 +142,7 @@ const service = useMachine(combobox.machine, {
 })
 ```
 
-## Rendering the selected values outside the combobox
+### Rendering the selected values outside the combobox
 
 By default, the selected values of a combobox are displayed in the input
 element, when selecting multiple items, it is a better UX to render the selected
@@ -164,7 +164,7 @@ const service = useMachine(combobox.machine, {
 })
 ```
 
-## Disabling the combobox
+### Disabling the combobox
 
 To make a combobox disabled, set the context's `disabled` property to `true`
 
@@ -174,7 +174,7 @@ const service = useMachine(combobox.machine, {
 })
 ```
 
-## Disabling an option
+### Disabling an option
 
 To make a combobox option disabled, pass the `isItemDisabled` property to the
 collection function.
@@ -191,7 +191,7 @@ const service = useMachine(combobox.machine, {
 })
 ```
 
-## Close on select
+### Close on select
 
 This behaviour ensures that the menu is closed when an option is selected and is
 `true` by default. It's only concerned with when an option is selected with
@@ -204,7 +204,7 @@ const service = useMachine(combobox.machine, {
 })
 ```
 
-## Making the combobox readonly
+### Making the combobox readonly
 
 To make a combobox readonly, set the context's `readOnly` property to `true`
 
@@ -214,7 +214,7 @@ const service = useMachine(combobox.machine, {
 })
 ```
 
-## Listening for highlight changes
+### Listening for highlight changes
 
 When an option is highlighted with the pointer or keyboard, use the
 `onHighlightChange` property to listen for this change and do something with it.
@@ -229,7 +229,7 @@ const service = useMachine(combobox.machine, {
 })
 ```
 
-## Listening for value changes
+### Listening for value changes
 
 When an item is selected, use `onValueChange` property to listen for this change
 and do something with it.
@@ -243,7 +243,7 @@ const service = useMachine(combobox.machine, {
 })
 ```
 
-## Usage within forms
+### Usage within forms
 
 The combobox works when placed within a form and the form is submitted. We
 achieve this by:
@@ -260,7 +260,7 @@ const service = useMachine(combobox.machine, {
 })
 ```
 
-## Allowing custom values
+### Allowing custom values
 
 By default, the combobox only allows selecting values from the collection. To
 allow custom values, set the `allowCustomValue` property in the machine's

@@ -59,7 +59,7 @@ radio machine in your project 🔥
 
 <CodeSnippet id="segmented-control/usage.mdx" />
 
-## Disabling the segmented control
+### Disabling the segmented control
 
 To make a segmented control disabled, set the context's `disabled` property to
 true
@@ -70,7 +70,7 @@ const service = useMachine(radio.machine, {
 })
 ```
 
-## Making the segmented control readonly
+### Making the segmented control readonly
 
 To make a segmented control readonly, set the context's `readOnly` property to
 true
@@ -81,18 +81,17 @@ const service = useMachine(radio.machine, {
 })
 ```
 
-## Setting the initial value
+### Setting the initial value
 
-To set the segmented control's initial value, set the context's `value` property
-to the value of the radio item to be selected by default
+Use the `defaultValue` property to set the segmented control's initial value.
 
 ```jsx {2}
 const service = useMachine(radio.machine, {
-  value: "apple",
+  defaultValue: "apple",
 })
 ```
 
-## Listening for changes
+### Listening for changes
 
 When the segmented control value changes, the `onValueChange` callback is
 invoked.
@@ -106,7 +105,7 @@ const service = useMachine(radio.machine, {
 })
 ```
 
-## Usage within forms
+### Usage within forms
 
 To use segmented control within forms, use the exposed `inputProps` from the
 `connect` function and ensure you pass `name` value to the machine's context. It

@@ -61,7 +61,7 @@ file upload machine in your project 🔥
 
 <CodeSnippet id="file-upload/usage.mdx" />
 
-## Setting the accepted file types
+### Setting the accepted file types
 
 Use the `accept` attribute to set the accepted file types.
 
@@ -83,7 +83,7 @@ const service = useMachine(fileUpload.machine, {
 })
 ```
 
-## Setting the maximum number of files
+### Setting the maximum number of files
 
 Use the `maxFiles` attribute to set the maximum number of files that can be
 uploaded. This will set the `multiple` attribute on the underlying input
@@ -95,7 +95,7 @@ const service = useMachine(fileUpload.machine, {
 })
 ```
 
-## Setting the maximum size per file
+### Setting the maximum size per file
 
 Use the `maxFileSize` attribute to set the maximum size per file that can be
 uploaded.
@@ -106,7 +106,7 @@ const service = useMachine(fileUpload.machine, {
 })
 ```
 
-## Listening to file changes
+### Listening to file changes
 
 When files are uploaded, the `onFileChange` callback is invoked with the details
 of the accepted and rejected files.
@@ -121,7 +121,7 @@ const service = useMachine(fileUpload.machine, {
 })
 ```
 
-## Usage within a form
+### Usage within a form
 
 To use the file upload within a form, set the `name` attribute in the machine's
 context, and ensure you render the input element `api.getHiddenInputProps()`
@@ -132,7 +132,7 @@ const service = useMachine(fileUpload.machine, {
 })
 ```
 
-## Displaying image preview
+### Displaying image preview
 
 To display a preview of the uploaded image, use the built-in FileReader API to
 read the file and set the `src` attribute of an image element.
@@ -150,7 +150,7 @@ const service = useMachine(fileUpload.machine, {
 })
 ```
 
-## Applying custom validation
+### Applying custom validation
 
 To apply custom validation, set the `validate` attribute to a function that
 returns an **array of error strings**.
@@ -204,7 +204,7 @@ const service = useMachine(fileUpload.machine, {
 })
 ```
 
-## Disabling drag and drop
+### Disabling drag and drop
 
 To disable the drag and drop functionality, set the `allowDrop` context property
 to `false`.
@@ -215,7 +215,7 @@ const service = useMachine(fileUpload.machine, {
 })
 ```
 
-## Allowing directory selection
+### Allowing directory selection
 
 Set the `directory` property to `true` to enable selecting directories instead
 of files.
@@ -231,7 +231,7 @@ const service = useMachine(fileUpload.machine, {
 })
 ```
 
-## Supporting media capture on mobile devices
+### Supporting media capture on mobile devices
 
 Set the `capture` property to specify the media capture mechanism to capture
 media on the spot. The value can be:
@@ -248,7 +248,7 @@ const service = useMachine(fileUpload.machine, {
 })
 ```
 
-## Pasting files from clipboard
+### Pasting files from clipboard
 
 After a user copies an image, to allow pasting the files from the clipboard, you
 can listen for the paste event and use the `api.setFiles` method to set the

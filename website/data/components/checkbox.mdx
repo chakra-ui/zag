@@ -55,28 +55,7 @@ checkbox machine in your project 🔥
 
 <CodeSnippet id="checkbox/usage.mdx" />
 
-## Indeterminate checkboxes
-
-To make a checkbox indeterminate, set the context's `indeterminate` property to
-true
-
-```jsx {2}
-const service = useMachine(checkbox.machine, {
-  indeterminate: true,
-})
-```
-
-## Disabling the checkbox
-
-To make a checkbox disabled, set the context's `disabled` property to true
-
-```jsx {2}
-const service = useMachine(checkbox.machine, {
-  disabled: true,
-})
-```
-
-## Setting the initial checked state
+### Setting the initial checked state
 
 To make a checkbox checked by default, set the context's `defaultChecked`
 property to `true`
@@ -87,14 +66,35 @@ const service = useMachine(checkbox.machine, {
 })
 ```
 
-## Controlled checkbox
+### Indeterminate checkboxes
+
+To make a checkbox indeterminate, set the `defaultChecked` or `checked` property
+to `"indeterminate"`
+
+```jsx {2}
+const service = useMachine(checkbox.machine, {
+  defaultChecked: "indeterminate",
+})
+```
+
+### Controlled checkbox
 
 To control the checked state programmatically, pass the `checked` and
 `onCheckedChange` properties to the machine function.
 
 <CodeSnippet id="checkbox/controlled.mdx" />
 
-## Listening for changes
+### Disabling the checkbox
+
+To make a checkbox disabled, set the context's `disabled` property to true
+
+```jsx {2}
+const service = useMachine(checkbox.machine, {
+  disabled: true,
+})
+```
+
+### Listening for changes
 
 When the checkbox value changes, the `onCheckChange` callback is invoked.
 
@@ -107,17 +107,23 @@ const service = useMachine(checkbox.machine, {
 })
 ```
 
-## Usage within forms
+### Usage within forms
 
-To use checkbox within forms, use the exposed `hiddenInputProps` from the
-`connect` function and ensure you pass `name` value to the machine's context. It
-will render a hidden input and ensure the value changes get propagated to the
-form correctly.
+To use checkbox within forms, use the exposed `api.getHiddenInputProps()` from
+the `connect` function and ensure you pass `name` value to the machine's
+context.
 
 ```jsx {2}
 const service = useMachine(checkbox.machine, {
   name: "fruits",
 })
+```
+
+Next, render the hidden input and ensure the value changes get propagated to the
+form correctly.
+
+```jsx
+<input {...api.getHiddenInputProps()} />
 ```
 
 ## Styling guide

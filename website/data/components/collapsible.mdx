@@ -46,7 +46,7 @@ collapsible machine in your project 🔥
 
 <CodeSnippet id="collapsible/usage.mdx" />
 
-## Setting the initial state
+### Setting the initial state
 
 Pass the `defaultOpen` machine context property to the machine function to set
 the initial state.
@@ -57,14 +57,14 @@ const service = useMachine(collapsible.machine, {
 })
 ```
 
-## Controlled collapsible
+### Controlled collapsible
 
 To control the open state programmatically, pass the `open` and `onOpenChange`
 properties to the machine function.
 
 <CodeSnippet id="collapsible/controlled.mdx" />
 
-## Listening for changes
+### Listening for changes
 
 When the collapsible state changes, the `onOpenChange` callback is invoked.
 
@@ -77,7 +77,7 @@ const service = useMachine(collapsible.machine, {
 })
 ```
 
-## Disabling the collapsible
+### Disabling the collapsible
 
 Set the `disabled` machine context property to `true` to disable the
 collapsible.
@@ -88,7 +88,7 @@ const service = useMachine(collapsible.machine, {
 })
 ```
 
-## Animating the collapsible
+### Animating the collapsible
 
 Use CSS animations to animate the collapsible when it expands and collapses. The
 `--height` and `--width` custom properties are attached to the content part.

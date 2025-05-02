@@ -63,7 +63,7 @@ number input machine in your project 🔥
 
 <CodeSnippet id="number-input/usage.mdx" />
 
-## Setting the initial value
+### Setting the initial value
 
 To set the initial value of the number input, you can set the `value` context
 property.
@@ -76,7 +76,7 @@ const service = useMachine(numberInput.machine, {
 })
 ```
 
-## Setting a minimum and maximum value
+### Setting a minimum and maximum value
 
 Pass the `min` prop or `max` prop to set an upper and lower limit for the input.
 By default, the input will restrict the value to stay within the specified
@@ -92,7 +92,7 @@ const service = useMachine(numberInput.machine, {
 > To allow the value overflow the specified min or max, set the
 > `allowOverflow: true` in the context.
 
-## Scrubbing the input value
+### Scrubbing the input value
 
 The number input machine supports the scrubber interaction pattern. The use this
 pattern, spread the `scrubberProps` from the `api` on to the scrubbing element.
@@ -102,7 +102,7 @@ virtual cursor which mimics the real cursor's pointer.
 
 <CodeSnippet id="number-input/scrubber.mdx" />
 
-## Using the mousewheel to change value
+### Using the mousewheel to change value
 
 The number input machine exposes a way to increment/decrement the value using
 the mouse wheel event. To activate this, pass the `allowMouseWheel` property to
@@ -114,7 +114,7 @@ const service = useMachine(numberInput.machine, {
 })
 ```
 
-## Clamp value when user blurs the input
+### Clamp value when user blurs the input
 
 In most cases, users can type custom values in the input field. If the typed
 value is greater than the max, the value is reset to max when the user blur out
@@ -128,7 +128,7 @@ const service = useMachine(numberInput.machine, {
 })
 ```
 
-## Listening for value changes
+### Listening for value changes
 
 When the value changes, the `onValueChange` callback is invoked.
 
@@ -141,7 +141,7 @@ const service = useMachine(numberInput.machine, {
 })
 ```
 
-## Usage within forms
+### Usage within forms
 
 To use the number input within forms, set the `name` property in the machine's
 context.
@@ -152,7 +152,7 @@ const service = useMachine(numberInput.machine, {
 })
 ```
 
-## Adjusting the precision of the value
+### Adjusting the precision of the value
 
 To format the input value to be rounded to specific decimal points, set the
 `formatOptions` and provide `Intl.NumberFormatOptions` such as
@@ -167,7 +167,7 @@ const service = useMachine(numberInput.machine, {
 })
 ```
 
-## Disabling long press spin
+### Disabling long press spin
 
 To disable the long press spin, set the `spinOnPress` to `false`.
 
@@ -177,7 +177,7 @@ const service = useMachine(numberInput.machine, {
 })
 ```
 
-## Format and parse value
+### Format and parse value
 
 To apply custom formatting to the input's value, set the `formatOptions` and
 provide `Intl.NumberFormatOptions` such as `style` and `currency`

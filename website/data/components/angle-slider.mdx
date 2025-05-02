@@ -59,7 +59,9 @@ angle slider machine in your project 🔥
 
 <CodeSnippet id="angle-slider/usage.mdx" />
 
-## Setting the initial value
+### Setting the initial value
+
+Use the `defaultValue` property to set the initial value of the angle slider.
 
 ```jsx {2}
 const service = useMachine(angleSlider.machine, {
@@ -67,14 +69,14 @@ const service = useMachine(angleSlider.machine, {
 })
 ```
 
-## Controlled angle slider
+### Controlled angle slider
 
 To control the angle slider's value, pass the `value` and `onValueChange`
 properties to the machine function.
 
 <CodeSnippet id="angle-slider/controlled.mdx" />
 
-## Setting the value's granularity
+### Setting the value's granularity
 
 By default, the granularity, is `1`, meaning that the value is always an
 integer. You can change the step attribute to control the granularity.
@@ -88,7 +90,7 @@ const service = useMachine(angleSlider.machine, {
 })
 ```
 
-## Listening for changes
+### Listening for changes
 
 When the angle slider value changes, the `onValueChange` and `onValueChangeEnd`
 callbacks are invoked. You can use this to setup custom behaviors in your app.
@@ -104,7 +106,7 @@ const service = useMachine(angleSlider.machine, {
 })
 ```
 
-## Usage within forms
+### Usage within forms
 
 To use angle slider within forms, use the exposed `hiddenInputProps` from the
 `connect` function and ensure you pass `name` value to the machine's context. It
@@ -117,7 +119,7 @@ const service = useMachine(angleSlider.machine, {
 })
 ```
 
-## Using angle slider marks
+### Using angle slider marks
 
 To show marks or ticks along the angle slider track, use the exposed
 `api.getMarkerProps()` method to position the angle slider marks at desired

@@ -57,7 +57,7 @@ toggle group machine in your project 🔥
 
 <CodeSnippet id="toggle-group/usage.mdx" />
 
-## Changing the orientation
+### Changing the orientation
 
 By default, the toggle group is assumed to be horizontal. To change the
 orientation to vertical, set the `orientation` property in the machine's context
@@ -69,7 +69,7 @@ const service = useMachine(toggle.machine, {
 })
 ```
 
-## Listening for value changes
+### Listening for value changes
 
 When the pressed toggle in the group changes, `onValueChange` callback is
 invoked.
@@ -83,7 +83,7 @@ const service = useMachine(toggle.machine, {
 })
 ```
 
-## Allowing multiple selection
+### Allowing multiple selection
 
 Set the `multiple` property in the machine's context to `true` to allow multiple
 options to be toggled.
@@ -94,7 +94,7 @@ const service = useMachine(toggle.machine, {
 })
 ```
 
-## Disabling the toggle group
+### Disabling the toggle group
 
 Set the `disabled` property in the machine's context to `true` to disable the
 toggle group.
@@ -105,7 +105,7 @@ const service = useMachine(toggle.machine, {
 })
 ```
 
-## Disabling a toggle
+### Disabling a toggle
 
 Set the `disabled` property in the `getToggleProps` function to `true` to
 disable a toggle.
@@ -118,7 +118,7 @@ disable a toggle.
 //...
 ```
 
-## Disabling focus loop
+### Disabling focus loop
 
 The toggle group loops keyboard navigation by default. To disable this, set the
 `loop` property in the machine's context to `false`.
@@ -129,7 +129,7 @@ const service = useMachine(toggle.machine, {
 })
 ```
 
-## Disabling roving focus management
+### Disabling roving focus management
 
 The toggle group uses roving focus management by default. To disable this, set
 the `rovingFocus` property in the machine's context to `false`.

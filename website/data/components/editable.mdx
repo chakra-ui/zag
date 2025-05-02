@@ -60,10 +60,10 @@ editable machine in your project 🔥
 
 <CodeSnippet id="editable/usage.mdx" />
 
-## Setting the initial value
+### Setting the initial value
 
-To set the initial value of the editable, pass the `value` property to the
-machine's context.
+To set the initial value of the editable, pass the `defaultValue` property to
+the machine's context.
 
 ```jsx {2}
 const service = useMachine(editable.machine, {
@@ -71,7 +71,7 @@ const service = useMachine(editable.machine, {
 })
 ```
 
-## Listening for value changes
+### Listening for value changes
 
 The editable machine supports two ways of listening for value changes:
 
@@ -89,7 +89,7 @@ const service = useMachine(editable.machine, {
 })
 ```
 
-## Using custom controls
+### Using custom controls
 
 In some cases, you might need to use custom controls to toggle the edit and read
 mode. We use the render prop pattern to provide access to the internal state of
@@ -97,7 +97,7 @@ the component.
 
 <CodeSnippet id="editable/custom-controls.mdx" />
 
-## Auto-resizing the editable
+### Auto-resizing
 
 To auto-grow the editable as the content changes, pass the `autoResize: true`
 property to the machine's context.
@@ -128,7 +128,7 @@ const service = useMachine(editable.machine, {
 When the editable reaches the specified max-width, it'll clip the preview text
 with an ellipsis.
 
-## Editing with double click
+### Editing with double click
 
 The editable supports two modes of activating the "edit" state:
 
@@ -144,7 +144,7 @@ const service = useMachine(editable.machine, {
 })
 ```
 
-## Usage with Textarea
+### Usage with Textarea
 
 The editable machine supports using a `textarea` instead of an `input` field.
 When a textarea is used, the editable will commit the value on `Cmd + Enter` or

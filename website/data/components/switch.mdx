@@ -53,9 +53,9 @@ switch machine in your project 🔥
 
 <CodeSnippet id="switch/usage.mdx" />
 
-## Disabling the switch
+### Disabling the switch
 
-To make a switch disabled, set the context's `disabled` property to true
+To make a switch disabled, set the `disabled` property to `true`.
 
 ```jsx {3}
 const service = useMachine(zagSwitch.machine, {
@@ -63,10 +63,9 @@ const service = useMachine(zagSwitch.machine, {
 })
 ```
 
-## Making it checked by default
+### Making it checked by default
 
-To make a switch checked by default, set the context's `checked` property to
-`true`
+Use the `defaultChecked` property to make a switch checked by default.
 
 ```jsx {3}
 const service = useMachine(zagSwitch.machine, {
@@ -74,7 +73,7 @@ const service = useMachine(zagSwitch.machine, {
 })
 ```
 
-## Listening for changes
+### Listening for changes
 
 When the switch value changes, the `onCheckedChange` callback is invoked.
 
@@ -87,7 +86,7 @@ const service = useMachine(zagSwitch.machine, {
 })
 ```
 
-## Usage within forms
+### Usage within forms
 
 To use switch within forms, use the exposed `inputProps` from the `connect`
 function and ensure you pass `name` value to the machine's context. It will

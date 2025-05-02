@@ -60,7 +60,7 @@ Time Picker machine in your project 🔥
 
 <CodeSnippet id="timer/usage.mdx" />
 
-## Setting the start value
+### Setting the start value
 
 Set the `startMs` property to the timer machine's context to set the start time
 in milliseconds.
@@ -81,7 +81,7 @@ const service = useMachine(timer.machine, {
 })
 ```
 
-## Auto starting the timer
+### Auto starting the timer
 
 Set the `autoStart` property to `true` in the timer machine's context to start
 the timer automatically when the component mounts.
@@ -92,7 +92,7 @@ const service = useMachine(timer.machine, {
 })
 ```
 
-## Usage as countdown timer
+### Usage as countdown timer
 
 To use the timer as a countdown timer, set the `countdown` property to `true` in
 the timer machine's context.
@@ -103,7 +103,7 @@ const service = useMachine(timer.machine, {
 })
 ```
 
-## Setting the target value
+### Setting the target value
 
 To set the target value of the countdown timer, pass the `targetMs` property in
 the timer machine's context. The timer stops automatically when the `targetMs`
@@ -128,7 +128,7 @@ const service = useMachine(timer.machine, {
 })
 ```
 
-## Setting the tick interval
+### Setting the tick interval
 
 Set the `interval` property to the timer machine's context to set the tick
 interval in milliseconds.
@@ -139,7 +139,7 @@ const service = useMachine(timer.machine, {
 })
 ```
 
-## Listening to tick events
+### Listening to tick events
 
 When the timer ticks, the `onTick` callback is invoke. You can listen to this
 event and update your UI accordingly.
@@ -153,7 +153,7 @@ const service = useMachine(timer.machine, {
 })
 ```
 
-## Listening for completion events
+### Listening for completion events
 
 When the timer reaches the target time, the `onComplete` callback is invoked.
 
@@ -167,7 +167,7 @@ const service = useMachine(timer.machine, {
 })
 ```
 
-## Starting and Stopping the timer
+### Starting and Stopping the timer
 
 To start the timer, send the `api.start()` callback
 
@@ -181,7 +181,7 @@ To stop the timer, send the `api.stop()` callback
 api.stop()
 ```
 
-## Pausing and Resuming the timer
+### Pausing and Resuming the timer
 
 To pause the timer, send the `api.pause()` callback
 

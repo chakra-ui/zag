@@ -67,7 +67,7 @@ tooltip machine in your project 🔥
 
 <CodeSnippet id="tooltip/usage.mdx" />
 
-## Customizing the timings
+### Customizing the timings
 
 By default, the tooltip is designed to open after `1000ms` and close after
 `500ms`. You can customize this by passing the `openDelay` and `closeDelay`
@@ -80,7 +80,7 @@ const service = useMachine(tooltip.machine, {
 })
 ```
 
-## Changing the placement
+### Changing the placement
 
 The tooltip uses [floating-ui](https://floating-ui.com/) for dynamic
 positioning. You can change the placement of the tooltip by passing the
@@ -134,7 +134,7 @@ export type PositioningOptions = {
 }
 ```
 
-## Adding an arrow
+### Adding an arrow
 
 To render an arrow within the tooltip, use the `api.getArrowProps()` and
 `api.getArrowTipProps()`.
@@ -154,7 +154,7 @@ return (
 //...
 ```
 
-## Pointerdown behavior
+### Pointerdown behavior
 
 By default, the tooltip will close when the pointer is down on its trigger. To
 prevent this behavior, pass the `closeOnPointerDown` context property and set it
@@ -166,7 +166,7 @@ const service = useMachine(tooltip.machine, {
 })
 ```
 
-## Closing on Esc
+### Closing on Esc
 
 The tooltip is designed to close when the escape key is pressed. To prevent
 this, pass the `closeOnEscape` context property and set it to `false`.
@@ -177,7 +177,7 @@ const service = useMachine(tooltip.machine, {
 })
 ```
 
-## Making the tooltip interactive
+### Making the tooltip interactive
 
 Set the `interactive` context property to `true` to make them interactive.
 
@@ -190,7 +190,7 @@ const service = useMachine(tooltip.machine, {
 })
 ```
 
-## Listening for open state changes
+### Listening for open state changes
 
 When the tooltip is opened or closed, the `onOpenChange` callback is invoked.
 

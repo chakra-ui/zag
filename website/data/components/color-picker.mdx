@@ -61,7 +61,7 @@ color picker machine in your project 🔥
 
 <CodeSnippet id="color-picker/usage.mdx" />
 
-## Setting the initial color
+### Setting the initial color
 
 To set the initial color of the color picker, use the `defaultValue` context
 property.
@@ -72,14 +72,14 @@ const [current, send] = useMachine(colorPicker.machine, {
 })
 ```
 
-## Controlled color picker
+### Controlled color picker
 
 To control the color value programmatically, pass the `value` and
 `onValueChange` properties to the machine function.
 
 <CodeSnippet id="color-picker/controlled.mdx" />
 
-## Listening for change events
+### Listening for change events
 
 When the user selects a color using the color picker, the `onValueChange` and
 `onValueChangeEnd` events will be fired.
@@ -102,7 +102,7 @@ const [current, send] = useMachine(colorPicker.machine, {
 > When using the `onValueChange` method in React.js, you might need to use the
 > `flushSync` method from `react-dom` to ensure the value is updated in sync
 
-## Using a custom color format
+### Using a custom color format
 
 By default, the color picker's output format is `rgba`. You can change this
 format to either `hsla` or `hsba` by using the `format` context property.
@@ -119,7 +119,7 @@ const [current, send] = useMachine(colorPicker.machine, {
 })
 ```
 
-## Showing color presets
+### Showing color presets
 
 Adding color presets in form of swatches can help users pick colors faster. To
 support this, use the `getSwatchTriggerProps(...)` and `getSwatchProps(...)` to
@@ -127,7 +127,7 @@ get the props needed to show the swatches buttons.
 
 <CodeSnippet id="color-picker/with-swatches.mdx" />
 
-## Disabling the color picker
+### Disabling the color picker
 
 To disable user interactions with the color picker, set the `disabled` context
 property to `true`.
@@ -138,7 +138,7 @@ const [current, send] = useMachine(colorPicker.machine, {
 })
 ```
 
-## Controlling the open and closed state
+### Controlling the open and closed state
 
 To control the open and closed state of the color picker, use the `open` and
 `onOpenChange` context properties.
@@ -155,7 +155,7 @@ const [current, send] = useMachine(colorPicker.machine, {
 You can also leverage the `api.setOpen(...)` method to control the open and
 closed state of the color picker.
 
-## Controlling individual color channel
+### Controlling individual color channel
 
 In some cases, you may want to allow users to control the values of each color
 channel individually. You can do this using an input element or a slider
@@ -168,7 +168,7 @@ To support this, use the `getChannelInputProps(...)` to show the channel inputs.
 
 <CodeSnippet id="color-picker/with-channel-inputs.mdx" />
 
-## Showing a color preview
+### Showing a color preview
 
 To display the value of a color, use the `getSwatchProps(...)` and pass the
 color value. To show the current color value, use the `api.value`
@@ -178,7 +178,7 @@ color value. To show the current color value, use the `api.value`
 > You can pass `respectAlpha: false` to show the color value without the alpha
 > channel
 
-## Adding an eyedropper
+### Adding an eyedropper
 
 The eye dropper tool is a native browser feature that allows a user pick a color
 from a current page's canvas. To support this, use the
@@ -188,7 +188,7 @@ from a current page's canvas. To support this, use the
 
 <CodeSnippet id="color-picker/with-eye-dropper.mdx" />
 
-## Usage within forms
+### Usage within forms
 
 To use the color picker within a form, add the `name` context property to the
 machine and render the visually hidden input using the `hiddenInputProps`.

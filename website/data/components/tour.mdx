@@ -59,7 +59,7 @@ tour machine in your project 🔥
 
 <CodeSnippet id="tour/usage.mdx" />
 
-## Using step types
+### Using step types
 
 The tour machine supports different types of steps, allowing you to create a
 diverse and interactive tour experience. The available step types are defined in
@@ -121,7 +121,7 @@ const steps: tour.StepDetails[] = [
 ]
 ```
 
-## Configuring actions
+### Configuring actions
 
 Every step supports a list of actions that are rendered in the step footer.Use
 the `actions` property to define each action.
@@ -138,7 +138,7 @@ const steps: tour.StepDetails[] = [
 ]
 ```
 
-## Changing tooltip placement
+### Changing tooltip placement
 
 Use the `placement` property to define the placement of the tooltip.
 
@@ -153,7 +153,7 @@ const steps: tour.StepDetails[] = [
 ]
 ```
 
-## Hiding the arrow
+### Hiding the arrow
 
 Set `arrow: false` in the step property to hide the tooltip arrow. This is only
 useful for tooltip steps.
@@ -168,7 +168,7 @@ const steps: tour.StepDetails[] = [
 ]
 ```
 
-## Hiding the backdrop
+### Hiding the backdrop
 
 Set `backdrop: false` in the step property to hide the backdrop. This applies to
 all step types except the `wait` step.
@@ -183,7 +183,7 @@ const steps: tour.StepDetails[] = [
 ]
 ```
 
-## Step Effects
+### Step Effects
 
 Step effects are functions that are called before a step is opened. They are
 useful for adding custom logic to a step.
@@ -216,7 +216,7 @@ const steps: tour.StepDetails[] = [
 ]
 ```
 
-## Wait Steps
+### Wait Steps
 
 Wait steps are useful when you need to wait for a specific condition before
 proceeding to the next step.
@@ -241,7 +241,7 @@ const steps: tour.StepDetails[] = [
 ]
 ```
 
-## Showing progress dots
+### Showing progress dots
 
 Use the `api.getProgressPercent()` to show the progress dots.
 
@@ -253,7 +253,7 @@ const ProgressBar = () => {
 }
 ```
 
-## Tracking the lifecycle
+### Tracking the lifecycle
 
 As the tour is progressed, events are fired and you can track the lifecycle of
 the tour. Here's are the events you can listen to:

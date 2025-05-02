@@ -64,7 +64,7 @@ splitter machine in your project 🔥
 
 <CodeSnippet id="splitter/usage.mdx" />
 
-## Setting the initial size
+### Setting the initial size
 
 To set the initial size of the splitter panels, use the `defaultSize` property.
 Ensure the `defaultSize` totals to `100`.
@@ -78,7 +78,7 @@ const service = useMachine(splitter.machine, {
 })
 ```
 
-## Listening for resize events
+### Listening for resize events
 
 When the resize trigger is dragged, the `onResize`, `onResizeStart` and
 `onResizeEnd` callback is invoked.
@@ -98,7 +98,7 @@ const service = useMachine(splitter.machine, {
 })
 ```
 
-## Changing the orientation
+### Changing the orientation
 
 By default, the splitter is assumed to be horizontal. To change the orientation
 to vertical, set the `orientation` property in the machine's context to
@@ -126,7 +126,7 @@ const service = useMachine(splitter.machine, {
 })
 ```
 
-## Setting the collapsed size
+### Setting the collapsed size
 
 Set the `collapsedSize` and `collapsible` of a panel to specify the collapsed
 size of the panel.
@@ -146,7 +146,7 @@ const service = useMachine(splitter.machine, {
 This allows the user to drag the splitter to collapse the panel to the
 `collapsedSize`.
 
-## Listening for collapse events
+### Listening for collapse events
 
 When the splitter panel is collapsed, the `onCollapse` callback is invoked.
 Alternatively, the `onExpand` callback is invoked when the panel is expanded.

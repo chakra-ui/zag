@@ -102,7 +102,7 @@ Pass the tree collection to the machine to create the tree view.
 
 <CodeSnippet id="tree-view/usage.mdx" />
 
-## Expanding and Collapsing Nodes
+### Expanding and Collapsing Nodes
 
 By default, the tree view will expand or collapse when clicking the branch
 control. To control the expanded state of the tree view, use the `api.expand`
@@ -116,7 +116,7 @@ api.collapse(["node_modules/pandacss"]) // collapse a single node
 api.collapse() // collapse all nodes
 ```
 
-## Multiple selection
+### Multiple selection
 
 The tree view supports multiple selection. To enable this, set the
 `selectionMode` to `multiple`.
@@ -127,7 +127,7 @@ const service = useMachine(tree.machine, {
 })
 ```
 
-## Setting the default expanded nodes
+### Setting the default expanded nodes
 
 To set the default expanded nodes, use the `expandedValue` context property.
 
@@ -137,7 +137,7 @@ const service = useMachine(tree.machine, {
 })
 ```
 
-## Setting the default selected nodes
+### Setting the default selected nodes
 
 To set the default selected nodes, use the `selectedValue` context property.
 
@@ -147,7 +147,7 @@ const service = useMachine(tree.machine, {
 })
 ```
 
-## Indentation Guide
+### Indentation Guide
 
 When rendering a branch node in the tree view, you can render the `indentGuide`
 element by using the `api.getBranchIndentGuideProps()` function.
@@ -175,7 +175,7 @@ element by using the `api.getBranchIndentGuideProps()` function.
 </div>
 ```
 
-## Listening for selection
+### Listening for selection
 
 When a node is selected, the `onSelectionChange` callback is invoked with the
 selected nodes.
@@ -188,7 +188,7 @@ const service = useMachine(tree.machine, {
 })
 ```
 
-## Listening for expanding and collapsing
+### Listening for expanding and collapsing
 
 When a node is expanded or collapsed, the `onExpandedChange` callback is invoked
 with the expanded nodes.

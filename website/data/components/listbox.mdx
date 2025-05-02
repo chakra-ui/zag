@@ -63,7 +63,7 @@ listbox machine in your project 🔥
 
 <CodeSnippet id="listbox/usage.mdx" />
 
-## Setting the initial selection
+### Setting the initial selection
 
 To set the initial selection, you can use the `defaultValue` property.
 
@@ -74,7 +74,7 @@ const service = useMachine(listbox.machine, {
 })
 ```
 
-## Controlling the selection
+### Controlling the selection
 
 To control the selection programmatically, you can use the `value` and
 `onValueChange` properties.
@@ -88,14 +88,14 @@ const service = useMachine(listbox.machine, {
 })
 ```
 
-## Filtering
+### Filtering
 
 The listbox component supports filtering of items via `api.getInputProps`.
 Here's an example of how to support searching through a list of items.
 
 <CodeSnippet id="listbox/filtering.mdx" />
 
-## Selecting multiple items
+### Selecting multiple items
 
 To enable multiple selection, set the `selectionMode` property to `multiple` or
 `extended`.
@@ -107,7 +107,7 @@ const service = useMachine(listbox.machine, {
 })
 ```
 
-## Selection Modes
+### Selection Modes
 
 By default, a user can select a single item in a listbox. You can set the
 `selectionMode` property to a SelectionMode enumeration value to enable
@@ -128,7 +128,7 @@ const service = useMachine(listbox.machine, {
 })
 ```
 
-## Disabling items
+### Disabling items
 
 To disable an item, you can use the `disabled` property.
 
@@ -147,7 +147,7 @@ const service = useMachine(listbox.machine, {
 })
 ```
 
-## Grid layout
+### Grid layout
 
 To enable a grid layout, provide a grid collection to the `collection` property.
 

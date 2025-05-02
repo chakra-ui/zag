@@ -64,7 +64,7 @@ tags input machine in your project 🔥
 
 <CodeSnippet id="tags-input/usage.mdx" />
 
-## Navigating and Editing tags
+### Navigating and Editing tags
 
 When the input has an empty value or the caret is at the start position, the
 tags can be selected by using the arrow left and arrow right keys. When "visual"
@@ -74,7 +74,7 @@ focus in on any tag:
   allowing the user change its value and press `Enter` to commit the changes.
 - Pressing `Delete` or `Backspace` will delete the tag that has "visual" focus.
 
-## Setting the initial tags
+### Setting the initial tags
 
 To set the initial tag values, pass the `defaultValue` property in the machine's
 context.
@@ -85,14 +85,14 @@ const service = useMachine(tagsInput.machine, {
 })
 ```
 
-## Controlled tags input
+### Controlled tags input
 
 To control the tags input programmatically, pass the `value` and `onValueChange`
 properties to the machine function.
 
 <CodeSnippet id="tags-input/controlled.mdx" />
 
-## Removing all tags
+### Removing all tags
 
 The tags input will remove all tags when the clear button is clicked. To remove
 all tags, use the provided `clearButtonProps` function from the `api`.
@@ -109,7 +109,7 @@ all tags, use the provided `clearButtonProps` function from the `api`.
 To programmatically remove all tags, use the `api.clearAll()` method that's
 available in the `connect`.
 
-## Usage within forms
+### Usage within forms
 
 The tags input works when placed within a form and the form is submitted. We
 achieve this by:
@@ -128,7 +128,7 @@ const service = useMachine(tagsInput.machine, {
 })
 ```
 
-## Limiting the number of tags
+### Limiting the number of tags
 
 To limit the number of tags within the component, you can set the `max` property
 to the limit you want. The default value is `Infinity`.
@@ -143,7 +143,7 @@ const service = useMachine(tagsInput.machine, {
 })
 ```
 
-## Validating Tags
+### Validating Tags
 
 Before a tag is added, the machine provides a `validate` function you can use to
 determine whether to accept or reject a tag.
@@ -159,7 +159,7 @@ const service = useMachine(tagsInput.machine, {
 })
 ```
 
-## Blur behavior
+### Blur behavior
 
 When the tags input is blurred, you can configure the action the machine should
 take by passing the `blurBehavior` option to the context.
@@ -173,7 +173,7 @@ const service = useMachine(tagsInput.machine, {
 })
 ```
 
-## Paste behavior
+### Paste behavior
 
 To add a tag when a arbitrary value is pasted in the input element, pass the
 `addOnPaste` option.
@@ -189,7 +189,7 @@ const service = useMachine(tagsInput.machine, {
 })
 ```
 
-## Disable tag editing
+### Disable tag editing
 
 by default the tags can be edited by double clicking on the tag or focusing on
 them and pressing `Enter`. To disable this behavior, pass the
@@ -201,7 +201,7 @@ const service = useMachine(tagsInput.machine, {
 })
 ```
 
-## Listening for events
+### Listening for events
 
 During the lifetime of the tags input interaction, here's a list of events we
 emit:

@@ -59,7 +59,7 @@ popover machine in your project 🔥
 
 <CodeSnippet id="popover/usage.mdx" />
 
-## Rendering the popover in a portal
+### Rendering the popover in a portal
 
 By default, the popover is rendered in the same DOM hierarchy as the trigger. To
 render the popover within a portal, pass `portalled: true` property to the
@@ -70,7 +70,7 @@ machine's context.
 
 <CodeSnippet id="popover/render-in-portal.mdx" />
 
-## Managing focus within popover
+### Managing focus within popover
 
 When the popover open, focus is automatically set to the first focusable element
 within the popover. To customize the element that should get focus, set the
@@ -78,7 +78,7 @@ within the popover. To customize the element that should get focus, set the
 
 <CodeSnippet id="popover/initial-focus.mdx" />
 
-## Changing the modality
+### Changing the modality
 
 In some cases, you might want the popover to be **modal**. This means that
 it'll:
@@ -99,7 +99,7 @@ const service = useMachine(popover.machine, {
 })
 ```
 
-## Close behavior
+### Close behavior
 
 The popover is designed to close on blur and when the `esc` key is pressed.
 
@@ -121,7 +121,7 @@ const service = useMachine(popover.machine, {
 })
 ```
 
-## Adding an arrow
+### Adding an arrow
 
 To render an arrow within the popover, use the `api.getArrowProps()` and
 `api.getArrowTipProps()`.
@@ -143,7 +143,7 @@ return (
 //...
 ```
 
-## Changing the placement
+### Changing the placement
 
 To change the placement of the popover, set the `positioning.placement` property
 in the machine's context.
@@ -156,7 +156,7 @@ const service = useMachine(popover.machine, {
 })
 ```
 
-## Listening for open state changes
+### Listening for open state changes
 
 When the popover is opened or closed, the `onOpenChange` callback is invoked.
 
@@ -169,7 +169,7 @@ const service = useMachine(popover.machine, {
 })
 ```
 
-## Usage within dialog
+### Usage within dialog
 
 When using the popover within a dialog, avoid rendering the popover in a
 `Portal` or `Teleport`. This is because the dialog will trap focus within it,

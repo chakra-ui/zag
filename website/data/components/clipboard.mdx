@@ -50,7 +50,7 @@ clipboard machine in your project 🔥
 
 <CodeSnippet id="clipboard/usage.mdx" />
 
-## Setting the value to copy
+### Setting the clipboard value
 
 You can set the value to copy by passing a `value` prop to the `machine`
 context.
@@ -61,7 +61,7 @@ const service = useMachine(clipboard.machine, {
 })
 ```
 
-## Listening to copy events
+### Listening to copy events
 
 When the value is copied to the clipboard, the `onStatusChange` event is fired.
 You can listen to this event and perform any action you want.
@@ -74,7 +74,7 @@ const service = useMachine(clipboard.machine, {
 })
 ```
 
-## Checking if the value is copied
+### Checking if the value is copied
 
 Use the `api.copied` property to check if the value is copied to the clipboard.
 
@@ -86,7 +86,7 @@ if (api.copied) {
 }
 ```
 
-## Changing the timeout
+### Changing the timeout
 
 By default, the clipboard machine will automatically reset the state to `idle`
 after `3000ms`. You can change this timeout by passing a `timeout` option to the

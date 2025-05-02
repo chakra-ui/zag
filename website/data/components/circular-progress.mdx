@@ -57,9 +57,10 @@ progress machine in your project 🔥
 
 <CodeSnippet id="progress/circular.mdx" />
 
-## Setting the value
+### Setting the value
 
-Use the `api.setValue` method to set the value of the progress bar.
+Pass the `defaultValue` or `value` property to the machine function to set the
+initial value of the progress bar.
 
 ```jsx {2}
 const service = useMachine(progress.machine, {
@@ -67,7 +68,14 @@ const service = useMachine(progress.machine, {
 })
 ```
 
-## Setting the minimum and maximum values
+Subsequently, you can use the `api.setValue` method to set the value of the
+progress bar.
+
+```jsx
+api.setValue(50)
+```
+
+### Setting the minimum and maximum values
 
 By default, the progress bar has a minimum value of `0` and a maximum value of
 `100`. You can change these values by passing the `min` and `max` options to the
@@ -80,7 +88,7 @@ const service = useMachine(progress.machine, {
 })
 ```
 
-## Using the indeterminate state
+### Using the indeterminate state
 
 The progress component is determinate by default, with the value and max set to
 `50` and `100` respectively.
@@ -94,7 +102,7 @@ const service = useMachine(progress.machine, {
 })
 ```
 
-## Showing a value text
+### Showing a value text
 
 Progress bars can only be interpreted by sighted users. To include a text
 description to support assistive technologies like screen readers, use the
@@ -109,7 +117,7 @@ const service = useMachine(progress.machine, {
 })
 ```
 
-## Setting the size of the progress bar
+### Setting the size of the progress bar
 
 Use the `--size` CSS variable to set the size of the progress bar.
 
@@ -119,7 +127,7 @@ Use the `--size` CSS variable to set the size of the progress bar.
 }
 ```
 
-## Setting the thickness of the progress bar
+### Setting the thickness of the progress bar
 
 Use the `--thickness` CSS variable to set the size of the progress bar.
 

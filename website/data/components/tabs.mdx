@@ -60,7 +60,7 @@ tabs machine in your project 🔥
 
 <CodeSnippet id="tabs/usage.mdx" />
 
-## Setting the initially selected tab
+### Setting the initially selected tab
 
 To set the initially selected tab, pass the `defaultValue` property to the
 machine's context.
@@ -74,14 +74,18 @@ const service = useMachine(tabs.machine, {
 Subsequently, you can use the `api.setValue` function to programatically set the
 selected tab.
 
-## Controlled tabs
+```jsx
+api.setValue("tab-2")
+```
+
+### Controlled tabs
 
 To control the selected tab programmatically, pass the `value` and
 `onValueChange` properties to the machine function.
 
 <CodeSnippet id="tabs/controlled.mdx" />
 
-## Changing the orientation
+### Changing the orientation
 
 The default orientation of the tabs is horizontal. To change the orientation,
 set the `orientation` property in the machine's context to `"vertical"`.
@@ -92,14 +96,14 @@ const service = useMachine(tabs.machine, {
 })
 ```
 
-## Showing an indicator
+### Showing an indicator
 
 To show an active indicator when a tab is selected, you add the
 `tabIndicatorProps` object provided by the `connect` function.
 
 <CodeSnippet id="tabs/with-indicator.mdx" />
 
-## Disabling a tab
+### Disabling a tab
 
 To disable a tab, set the `disabled` property in the `getTriggerProps` to
 `true`.
@@ -113,7 +117,7 @@ clickable.
 //...
 ```
 
-## Listening for events
+### Listening for events
 
 - `onValueChange` — Callback invoked when the selected tab changes.
 - `onFocusChange` — Callback invoked when the focused tab changes.
@@ -131,7 +135,7 @@ const service = useMachine(tabs.machine, {
 })
 ```
 
-## Manual tab activation
+### Manual tab activation
 
 By default, the tab can be selected when the receive focus from either the
 keyboard or pointer interaction. This is called "automatic tab activation".
@@ -145,7 +149,7 @@ const service = useMachine(tabs.machine, {
 })
 ```
 
-## RTL Support
+### RTL Support
 
 The tabs machine provides support right to left writing directions. In this
 mode, the layout and keyboard interaction is flipped.

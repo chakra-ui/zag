@@ -62,9 +62,9 @@ floating panel machine in your project 🔥
 
 <CodeSnippet id="floating-panel/usage.mdx" />
 
-## Resizing
+### Resizing
 
-### Setting the initial size
+#### Setting the initial size
 
 To set the initial size of the floating panel, you can pass the `defaultSize`
 prop to the machine.
@@ -75,7 +75,7 @@ const service = useMachine(floatingPanel.machine, {
 })
 ```
 
-### Controlling the size
+#### Controlling the size
 
 To control the size of the floating panel programmatically, you can pass the
 `size` `onResize` prop to the machine.
@@ -90,7 +90,7 @@ const service = useMachine(floatingPanel.machine, {
 })
 ```
 
-### Disable resizing
+#### Disable resizing
 
 By default, the panel can be resized by dragging its edges (resize handles). To
 disable this behavior, set the `resizable` prop to `false`.
@@ -101,7 +101,7 @@ const service = useMachine(floatingPanel.machine, {
 })
 ```
 
-### Setting size constraints
+#### Setting size constraints
 
 You can also control the minimum allowed dimensions of the panel by using the
 `minSize` and `maxSize` props.
@@ -125,9 +125,9 @@ const service = useMachine(floatingPanel.machine, {
 })
 ```
 
-## Positioning
+### Positioning
 
-### Setting the initial position
+#### Setting the initial position
 
 To specify the initial position of the floating panel, use the `defaultPosition`
 prop. If `defaultPosition` is not provided, the floating panel will be initially
@@ -139,7 +139,7 @@ const service = useMachine(floatingPanel.machine, {
 })
 ```
 
-### Anchor position
+#### Anchor position
 
 An alternative to setting the initial position is to provide a function that
 returns the anchor position. This function is called when the panel is opened
@@ -156,7 +156,7 @@ const service = useMachine(floatingPanel.machine, {
 })
 ```
 
-### Controlling the position
+#### Controlling the position
 
 To control the position of the floating panel programmatically, you can pass the
 `position` and `onPositionChange` prop to the machine.
@@ -171,16 +171,16 @@ const service = useMachine(floatingPanel.machine, {
 })
 ```
 
-### Disable dragging
+#### Disable dragging
 
 The floating panel enables you to set its position and move it by dragging. To
 disable this behavior, set the `draggable` prop to `false`.
 
-## Events
+### Events
 
 The floating panel generates a variety of events that you can handle.
 
-### Open State
+#### Open State
 
 When the floating panel is `opened` or `closed`, the `onOpenChange` callback is
 invoked.
@@ -194,7 +194,7 @@ const service = useMachine(floatingPanel.machine, {
 })
 ```
 
-### Position Change
+#### Position Change
 
 When the position of the floating panel changes, these callbacks are invoked:
 
@@ -214,7 +214,7 @@ const service = useMachine(floatingPanel.machine, {
 })
 ```
 
-### Resize
+#### Resize
 
 When the size of the floating panel changes, these callbacks are invoked:
 
@@ -234,7 +234,7 @@ const service = useMachine(floatingPanel.machine, {
 })
 ```
 
-## Minimizing and Maximizing
+#### Minimizing and Maximizing
 
 The floating panel can be minimized, default, and maximized by clicking the
 respective buttons in the header. We refer to this as the panel's `stage`.

@@ -63,10 +63,9 @@ select machine in your project 🔥
 
 <CodeSnippet id="select/usage.mdx" />
 
-## Setting the initial value
+### Setting the initial value
 
-To set the initial value of the select, pass the `value` property to the select
-machine's context.
+Use the `defaultValue` property to set the initial value of the select.
 
 > The `value` property must be an array of strings. If selecting a single value,
 > pass an array with a single string.
@@ -88,10 +87,9 @@ const service = useMachine(select.machine, {
 })
 ```
 
-## Selecting multiple values
+### Selecting multiple values
 
-To allow selecting multiple values, set the `multiple` property in the machine's
-context to `true`.
+To allow selecting multiple values, set the `multiple` property to `true`.
 
 ```jsx {5}
 const service = useMachine(select.machine, {
@@ -101,7 +99,7 @@ const service = useMachine(select.machine, {
 })
 ```
 
-## Using a custom object format
+### Using a custom object format
 
 By default, the select collection expects an array of items with `label` and
 `value` properties. To use a custom object format, pass the `itemToString` and
@@ -142,7 +140,7 @@ const service = useMachine(select.machine, {
 })
 ```
 
-## Usage within a form
+### Usage within a form
 
 To use select within a form, you'll need to:
 
@@ -151,7 +149,7 @@ To use select within a form, you'll need to:
 
 <CodeSnippet id="select/usage-with-form.mdx" />
 
-## Disabling the select
+### Disabling the select
 
 To disable the select, set the `disabled` property in the machine's context to
 `true`.
@@ -164,7 +162,7 @@ const service = useMachine(select.machine, {
 })
 ```
 
-## Disabling an item
+### Disabling an item
 
 To make a combobox option disabled, pass the `isItemDisabled` property to the
 collection function.
@@ -183,12 +181,14 @@ const service = useMachine(select.machine, {
 })
 ```
 
-## Close on select
+### Close on select
 
 This behaviour ensures that the menu is closed when an item is selected and is
 `true` by default. It's only concerned with when an item is selected with
-pointer, space key or enter key. To disable the behaviour, set the
-`closeOnSelect` property in the machine's context to `false`.
+pointer, space key or enter key.
+
+To disable the behaviour, set the `closeOnSelect` property in the machine's
+context to `false`.
 
 ```jsx {4}
 const service = useMachine(select.machine, {
@@ -198,7 +198,7 @@ const service = useMachine(select.machine, {
 })
 ```
 
-## Looping the keyboard navigation
+### Looping the keyboard navigation
 
 When navigating with the select using the arrow down and up keys, the select
 stops at the first and last options. If you need want the navigation to loop
@@ -212,7 +212,7 @@ const service = useMachine(select.machine, {
 })
 ```
 
-## Listening for highlight changes
+### Listening for highlight changes
 
 When an item is highlighted with the pointer or keyboard, use the
 `onHighlightChange` to listen for the change and do something with it.
@@ -227,7 +227,7 @@ const service = useMachine(select.machine, {
 })
 ```
 
-## Listening for selection changes
+### Listening for selection changes
 
 When an item is selected, use the `onValueChange` property to listen for the
 change and do something with it.
@@ -243,7 +243,7 @@ const service = useMachine(select.machine, {
 })
 ```
 
-## Listening for open and close events
+### Listening for open and close events
 
 When the select is opened or closed, the `onOpenChange` callback is called. You
 can listen for these events and do something with it.
@@ -259,7 +259,7 @@ const service = useMachine(select.machine, {
 })
 ```
 
-## Usage with large data
+### Usage with large data
 
 Combine the select machine with the virtualization library like `react-window`
 or `@tanstack/react-virtual` to handle large data.
@@ -336,7 +336,7 @@ function Demo() {
 }
 ```
 
-## Usage within dialog
+### Usage within dialog
 
 When using the select within a dialog, avoid rendering the select in a `Portal`
 or `Teleport`. This is because the dialog will trap focus within it, and the

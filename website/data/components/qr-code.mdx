@@ -69,7 +69,7 @@ const service = useMachine(qrCode.machine, {
 })
 ```
 
-## Setting the correction level
+### Setting the correction level
 
 Error correction allows for the QR code to be blocked or resized while still
 recognizable. In some cases where the link is too long or the logo overlay
@@ -95,7 +95,7 @@ const service = useMachine(qrCode.machine, {
 > The alternative is to enlarge the QRCode by increasing the size of the `svg`
 > element.
 
-## Adding an overlay logo
+### Adding an overlay logo
 
 To add a logo overlay to the QR code, render the image part. The logo will be
 automatically centered within the QR code.
@@ -109,7 +109,7 @@ automatically centered within the QR code.
 </div>
 ```
 
-## Changing the color
+### Changing the color
 
 To change the color of the QR code, set the `fill` attribute on the `path` part.
 
@@ -127,7 +127,7 @@ To change the background color of the QR code, set the `background-color`
 }
 ```
 
-## Exporting the QR code
+### Exporting the QR code
 
 To export the QR code as an image, you can use the `api.getDataURL` method.
 

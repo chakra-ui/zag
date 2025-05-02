@@ -63,7 +63,7 @@ carousel machine in your project 🔥
 
 <CodeSnippet id="carousel/usage.mdx" />
 
-## Vertical carousel
+### Vertical carousel
 
 To create a vertical carousel, set the `orientation` property in the machine's
 context to `vertical`.
@@ -74,13 +74,14 @@ const service = useMachine(carousel.machine, {
 })
 ```
 
-## Setting the initial slide
+### Setting the initial slide
 
-To set the initial slide of the carousel, pass the `page` property to the
+To set the initial slide of the carousel, pass the `defaultPage` property to the
 machine's context.
 
-The `page` corresponds to the scroll snap position index based on the layout. It
-does not necessarily correspond to the index of the slide in the carousel.
+> The `defaultPage` corresponds to the scroll snap position index based on the
+> layout. It does not necessarily correspond to the index of the slide in the
+> carousel.
 
 ```jsx {2}
 const service = useMachine(carousel.machine, {
@@ -88,7 +89,7 @@ const service = useMachine(carousel.machine, {
 })
 ```
 
-## Setting the number of slides to show at a time
+### Setting the number of slides to show at a time
 
 To customize number of slides to show at a time, set the `slidesPerPage`
 property in the machine's context. The value must be an integer.
@@ -99,7 +100,7 @@ const service = useMachine(carousel.machine, {
 })
 ```
 
-## Setting the number of slides to move at a time
+### Setting the number of slides to move at a time
 
 To customize number of slides to move at a time, set the `slidesPerMove`
 property in the machine's context. The value must be an integer or `auto`.
@@ -116,7 +117,7 @@ const service = useMachine(carousel.machine, {
 > Ensure the `slidesPerMove` is less than or equal to the `slidesPerPage` to
 > avoid skipping slides.
 
-## Setting the carousel should loop around
+### Setting the carousel should loop around
 
 To allow looping of slides, set the `loop` property in the machine's context to
 `true`.
@@ -127,7 +128,7 @@ const service = useMachine(carousel.machine, {
 })
 ```
 
-## Setting the gap between slides
+### Setting the gap between slides
 
 To customize spacing between slides, set the `spacing` property in the machine's
 context to a valid CSS unit.
@@ -138,7 +139,7 @@ const service = useMachine(carousel.machine, {
 })
 ```
 
-## Listening for page changes
+### Listening for page changes
 
 When the carousel page changes, the `onPageChange` callback is invoked.
 
@@ -151,7 +152,7 @@ const service = useMachine(carousel.machine, {
 })
 ```
 
-## Dragging the carousel
+### Dragging the carousel
 
 To allow dragging the carousel with the mouse, set the `allowMouseDrag` property
 in the machine's context to `true`.
@@ -162,7 +163,7 @@ const service = useMachine(carousel.machine, {
 })
 ```
 
-## Autoplaying the carousel
+### Autoplaying the carousel
 
 To allow the carousel to autoplay, set the `autoplay` property in the machine's
 context to `true`.
