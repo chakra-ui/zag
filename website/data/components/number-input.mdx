@@ -65,16 +65,24 @@ number input machine in your project 🔥
 
 ### Setting the initial value
 
-To set the initial value of the number input, you can set the `value` context
-property.
-
-> **Note:** The value must be a string
+Use the `defaultValue` context property to set the initial value of the number
+input. The value must be a `string` not a `number`.
 
 ```jsx {2}
 const service = useMachine(numberInput.machine, {
   defaultValue: "13",
 })
 ```
+
+### Controlled value
+
+Use the `value` and `onValueChange` context properties to control the value of
+the number input.
+
+> **Note:** Due the fact that value can be formatted, it's important to preserve
+> the value as a string.
+
+<CodeSnippet id="number-input/controlled.mdx" />
 
 ### Setting a minimum and maximum value
 

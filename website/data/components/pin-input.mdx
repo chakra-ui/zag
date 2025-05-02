@@ -63,14 +63,21 @@ input machine in your project 🔥
 
 ### Setting a default value
 
-To set the initial value of the pin input, pass the `defaultValue` property to
-the machine's context.
+Use the `defaultValue` context property to set the initial value of the pin
+input. The value must be an array of strings.
 
 ```jsx {2}
 const service = useMachine(pinInput.machine, {
   defaultValue: ["1", "2", ""],
 })
 ```
+
+### Controlled value
+
+Use the `value` and `onValueChange` properties to programmatically control the
+value of the pin input.
+
+<CodeSnippet id="pin-input/controlled.mdx" />
 
 ### Changing the placeholder
 

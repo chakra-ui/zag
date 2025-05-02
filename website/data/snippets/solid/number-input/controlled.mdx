@@ -1,0 +1,20 @@
+```tsx
+import { createSignal } from "solid-js"
+
+export function ControlledNumberInput() {
+  const [value, setValue] = createSignal("")
+
+  const service = useMachine(numberInput.machine, {
+    get value() {
+      return value()
+    },
+    onValueChange(details) {
+      setValue(details.value)
+    },
+  })
+
+  return (
+    // ...
+  )
+}
+```
