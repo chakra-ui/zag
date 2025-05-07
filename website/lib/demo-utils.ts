@@ -63,12 +63,7 @@ export async function getComponentStyle(component: string) {
 }
 
 export async function getComponentCode(component: string) {
-  const filePath = join(
-    process.cwd(),
-    "components",
-    "machines",
-    `${component}.tsx`,
-  )
+  const filePath = join(process.cwd(), "demos", `${component}.tsx`)
   return readFileSync(filePath, "utf-8").replace(
     "export function",
     "export default function",
