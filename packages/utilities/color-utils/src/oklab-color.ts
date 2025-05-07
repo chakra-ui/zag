@@ -1,8 +1,17 @@
-import { toFixedNumber, roundValue } from "@zag-js/utils"
-import { convertOklabToRgb, clampChroma, modeRgb, modeLrgb, modeOklab, useMode as bootstrapMode } from "culori/fn"
+import { toFixedNumber, roundValue, clampValue } from "@zag-js/utils"
+import {
+  convertOklabToRgb,
+  clampChroma,
+  modeRgb,
+  modeLrgb,
+  modeOklab,
+  useMode as bootstrapMode,
+  convertLabToLch,
+} from "culori/fn"
 import { Color } from "./color"
 import { RGBColor } from "./rgb-color"
 import type { ColorChannel, ColorChannelRange, ColorFormat, ColorStringFormat, ColorType } from "./types"
+import { OklchColor } from "./oklch-color"
 
 bootstrapMode(modeRgb)
 export const oklab = bootstrapMode(modeOklab)
@@ -25,11 +34,13 @@ export class OklabColor extends Color {
     return new OklabColor(l, a, b, alpha ?? 1)
   }
 
-  toString(format: ColorStringFormat) {
+  toString(format: ColorStringFormat): string {
     switch (format) {
       case "oklab":
       case "css":
         return `oklab(${this.lightness} ${this.a} ${this.b}${this.alpha < 1 ? ` / ${this.alpha}` : ""})`
+      case "oklch":
+        return this.toOklch().toString("oklch")
       default:
         return this.toRGB().toString(format)
     }
@@ -39,6 +50,8 @@ export class OklabColor extends Color {
     switch (format) {
       case "oklab":
         return this
+      case "oklch":
+        return this.toOklch()
       case "rgba":
       case "hsla":
       case "hsba":
@@ -61,6 +74,16 @@ export class OklabColor extends Color {
       roundValue(inRGb.g * 255, 0, 1),
       roundValue(inRGb.b * 255, 0, 1),
       toFixedNumber(inRGb.alpha ?? 1, 2),
+    )
+  }
+
+  private toOklch(): OklchColor {
+    const { l, c, h, alpha } = convertLabToLch({ l: this.lightness, a: this.a, b: this.b, alpha: this.alpha })
+    return new OklchColor(
+      toFixedNumber(l, 2),
+      clampValue(toFixedNumber(c, 2), 0, 0.5),
+      toFixedNumber(h ?? 0, 2),
+      alpha ?? 1,
     )
   }
 

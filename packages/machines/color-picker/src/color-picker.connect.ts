@@ -700,7 +700,7 @@ export function connect<T extends PropTypes>(
   }
 }
 
-const formats: ColorFormat[] = ["hsba", "hsla", "rgba", "oklab"]
+const formats: ColorFormat[] = ["hsba", "hsla", "rgba", "oklab", "oklch"]
 const formatRegex = new RegExp(`^(${formats.join("|")})$`)
 
 function getNextFormat(format: ColorFormat) {

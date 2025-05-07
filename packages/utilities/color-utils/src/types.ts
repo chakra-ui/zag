@@ -1,6 +1,6 @@
 export type ColorHexFormat = "hex" | "hexa"
 
-export type ColorFormat = "rgba" | "hsla" | "hsba" | "oklab"
+export type ColorFormat = "rgba" | "hsla" | "hsba" | "oklab" | "oklch"
 
 export type ColorStringFormat = ColorHexFormat | ColorFormat | "rgb" | "hsl" | "hsb" | "css"
 
@@ -15,6 +15,7 @@ export type ColorChannel =
   | "alpha"
   | "a"
   | "b"
+  | "chroma"
 
 export interface Color2DAxes {
   xChannel: ColorChannel

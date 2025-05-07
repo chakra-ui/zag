@@ -88,7 +88,8 @@ export class RGBColor extends Color {
       case "hsla":
         return this.toHSL()
       case "oklab":
-        return this.toOklab()
+      case "oklch":
+        return this.toOklab().toFormat(format)
       default:
         throw new Error("Unsupported color conversion: rgb -> " + format)
     }

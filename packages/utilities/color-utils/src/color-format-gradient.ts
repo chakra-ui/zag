@@ -74,6 +74,20 @@ export const generateOKLAB_L = (orientation: [string, string], dir: boolean, zVa
   }
   return result
 }
+export const generateOKLCH_H = (orientation: [string, string], dir: boolean, zValue: number) => {
+  const maskImage = "linear-gradient(to bottom, transparent, black)"
+  const result = {
+    areaStyles: {
+      background: `linear-gradient(to ${orientation[1]} in oklch, oklch(1 0% ${zValue}), oklch(1 100% ${zValue}))`,
+    },
+    areaGradientStyles: {
+      background: `linear-gradient(to ${orientation[1]} in oklch, oklch(0 0% ${zValue}), oklch(0 100% ${zValue}))`,
+      maskImage,
+      WebkitMaskImage: maskImage,
+    },
+  }
+  return result
+}
 
 export const generateHSL_S = (orientation: [string, string], dir: boolean, alphaValue: number) => {
   const result = {

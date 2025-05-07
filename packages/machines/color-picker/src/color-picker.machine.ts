@@ -88,11 +88,8 @@ export const machine = createMachine<ColorPickerSchema>({
     interactive: ({ prop }) => !(prop("disabled") || prop("readOnly")),
     valueAsString: ({ context }) => context.get("value").toString(context.get("format")),
     areaValue: ({ context }) => {
-      const formatId = context.get("format")
-      let format: ColorFormat = "hsba"
-      if (formatId.startsWith("hsl")) format = "hsla"
-      else if (formatId === "oklab") format = "oklab"
-      return context.get("value").toFormat(format)
+      const fmt = context.get("format")
+      return context.get("value").toFormat(fmt.startsWith("r") ? "hsba" : fmt)
     },
   },
 

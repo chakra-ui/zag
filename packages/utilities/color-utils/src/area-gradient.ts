@@ -10,6 +10,7 @@ import {
   generateHSB_B,
   generateHSL_L,
   generateOKLAB_L,
+  generateOKLCH_H,
 } from "./color-format-gradient"
 import type { ColorChannel } from "./types"
 
@@ -34,8 +35,6 @@ export function getColorAreaGradient(color: Color, options: GradientOptions): Gr
 
   let dir = false
 
-  let background = { areaStyles: {}, areaGradientStyles: {} }
-
   let alphaValue = (zValue - zMin) / (zMax - zMin)
   let isHSL = color.getFormat() === "hsla"
 
@@ -57,6 +56,9 @@ export function getColorAreaGradient(color: Color, options: GradientOptions): Gr
 
     case "hue": {
       dir = xChannel !== "saturation"
+      if (color.getFormat() === "oklch") {
+        return generateOKLCH_H(orientation, dir, zValue)
+      }
       if (isHSL) {
         return generateHSL_H(orientation, dir, zValue)
       }
@@ -83,6 +85,7 @@ export function getColorAreaGradient(color: Color, options: GradientOptions): Gr
       dir = xChannel === "hue"
       return generateHSL_L(orientation, dir, zValue)
     }
+    default:
+      return { areaStyles: {}, areaGradientStyles: {} }
   }
-  return background
 }

@@ -25,11 +25,14 @@ export const getSliderBackground = (props: SliderBackgroundProps) => {
 
   switch (channel) {
     case "hue":
+      if (value.getFormat() === "oklch") {
+        return `linear-gradient(to ${bgDirection} in oklch increasing hue, ${value.withChannelValue(channel, minValue).toString("css")}, ${value.withChannelValue(channel, maxValue - 0.01).toString("css")})`
+      }
       return `linear-gradient(to ${bgDirection}, rgb(255, 0, 0) 0%, rgb(255, 255, 0) 17%, rgb(0, 255, 0) 33%, rgb(0, 255, 255) 50%, rgb(0, 0, 255) 67%, rgb(255, 0, 255) 83%, rgb(255, 0, 0) 100%)`
     case "lightness": {
-      let start = value.withChannelValue(channel, minValue).toString("css")
-      let middle = value.withChannelValue(channel, (maxValue - minValue) / 2).toString("css")
-      let end = value.withChannelValue(channel, maxValue).toString("css")
+      const start = value.withChannelValue(channel, minValue).toString("css")
+      const middle = value.withChannelValue(channel, (maxValue - minValue) / 2).toString("css")
+      const end = value.withChannelValue(channel, maxValue).toString("css")
       return `linear-gradient(to ${bgDirection}, ${start}, ${middle}, ${end})`
     }
     case "saturation":
@@ -38,9 +41,17 @@ export const getSliderBackground = (props: SliderBackgroundProps) => {
     case "green":
     case "blue":
     case "alpha": {
+      const start = value.withChannelValue(channel, minValue).toString("css")
+      const end = value.withChannelValue(channel, maxValue).toString("css")
+      return `linear-gradient(to ${bgDirection}, ${start}, ${end})`
+    }
+    case "a":
+    case "b":
+    case "chroma": {
+      const interpolationMethod = `in ${value.getFormat()}`
       let start = value.withChannelValue(channel, minValue).toString("css")
       let end = value.withChannelValue(channel, maxValue).toString("css")
-      return `linear-gradient(to ${bgDirection}, ${start}, ${end})`
+      return `linear-gradient(to ${bgDirection} ${interpolationMethod}, ${start}, ${end})`
     }
     default:
       throw new Error("Unknown color channel: " + channel)
