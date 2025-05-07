@@ -216,6 +216,12 @@ export const colorPickerControls = defineControls({
   disabled: { type: "boolean", defaultValue: false },
   readOnly: { type: "boolean", defaultValue: false },
   dir: { type: "select", options: ["ltr", "rtl"] as const, defaultValue: "ltr" },
+  format: {
+    type: "select",
+    options: ["hsla", "hsba", "rgba", "oklab"] as const,
+    defaultValue: "hsla",
+    forceValue: true,
+  },
 })
 
 export const fileUploadControls = defineControls({

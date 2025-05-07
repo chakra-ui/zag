@@ -47,6 +47,9 @@
     black 0px 0px 0px 1px inset;
   width: 16px;
   height: 16px;
+  [dir="rtl"] & {
+    transform: translate(50%, -50%);
+  }
 }
 
 [data-scope="color-picker"][data-part="channel-slider-track"] {

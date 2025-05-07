@@ -23,8 +23,8 @@ export function connect<T extends PropTypes>(
 ): ColorPickerApi<T> {
   const { context, send, prop, computed, state, scope } = service
 
-  const value = context.get("value")
   const format = context.get("format")
+  const value = context.get("value").toFormat(format)
 
   const areaValue = computed("areaValue")
   const valueAsString = computed("valueAsString")
@@ -262,6 +262,7 @@ export function connect<T extends PropTypes>(
       const { xChannel, yChannel } = getAreaChannels(props)
       const channel = { xChannel, yChannel }
 
+      const dir = prop("dir") === "rtl" ? "right" : "left"
       const xPercent = areaValue.getChannelValuePercent(xChannel)
       const yPercent = 1 - areaValue.getChannelValuePercent(yChannel)
 
@@ -287,9 +288,8 @@ export function connect<T extends PropTypes>(
         "aria-valuetext": `${xChannel} ${xValue}, ${yChannel} ${yValue}`,
         style: {
           position: "absolute",
-          left: `${xPercent * 100}%`,
+          [dir]: `${xPercent * 100}%`,
           top: `${yPercent * 100}%`,
-          transform: "translate(-50%, -50%)",
           touchAction: "none",
           forcedColorAdjust: "none",
           "--color": color,
@@ -443,11 +443,11 @@ export function connect<T extends PropTypes>(
       const channelValue = normalizedValue.getChannelValue(channel)
 
       const offset = (channelValue - channelRange.minValue) / (channelRange.maxValue - channelRange.minValue)
-
+      const dir = prop("dir") === "rtl" ? "right" : "left"
       const placementStyles =
         orientation === "horizontal"
-          ? { left: `${offset * 100}%`, top: "50%" }
-          : { top: `${offset * 100}%`, left: "50%" }
+          ? { [dir]: `${offset * 100}%`, top: "50%" }
+          : { top: `${offset * 100}%`, [dir]: "50%" }
 
       return normalize.element({
         ...parts.channelSliderThumb.attrs,
@@ -700,7 +700,7 @@ export function connect<T extends PropTypes>(
   }
 }
 
-const formats: ColorFormat[] = ["hsba", "hsla", "rgba"]
+const formats: ColorFormat[] = ["hsba", "hsla", "rgba", "oklab"]
 const formatRegex = new RegExp(`^(${formats.join("|")})$`)
 
 function getNextFormat(format: ColorFormat) {

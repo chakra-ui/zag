@@ -28,21 +28,18 @@ export class HSBColor extends Color {
   toString(format: ColorStringFormat) {
     switch (format) {
       case "css":
-        return this.toHSL().toString("css")
-      case "hex":
-        return this.toRGB().toString("hex")
-      case "hexa":
-        return this.toRGB().toString("hexa")
+      case "hsl":
+        return this.toHSL().toString(format)
       case "hsb":
         return `hsb(${this.hue}, ${toFixedNumber(this.saturation, 2)}%, ${toFixedNumber(this.brightness, 2)}%)`
       case "hsba":
         return `hsba(${this.hue}, ${toFixedNumber(this.saturation, 2)}%, ${toFixedNumber(this.brightness, 2)}%, ${
           this.alpha
         })`
-      case "hsl":
-        return this.toHSL().toString("hsl")
+      case "hex":
+      case "hexa":
       case "rgb":
-        return this.toRGB().toString("rgb")
+        return this.toRGB().toString(format)
       default:
         return this.toFormat(format).toString(format)
     }
@@ -56,6 +53,8 @@ export class HSBColor extends Color {
         return this.toHSL()
       case "rgba":
         return this.toRGB()
+      case "oklab":
+        return this.toRGB().toFormat(format)
       default:
         throw new Error("Unsupported color conversion: hsb -> " + format)
     }
