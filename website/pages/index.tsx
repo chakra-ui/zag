@@ -83,7 +83,7 @@ export default function Home() {
       <Box as="header" position="relative">
         <Box layerStyle="contain">
           <Box pos="relative" maxW="4xl" pt={{ base: "16", md: "24" }}>
-            <Link href="/overview/migration">
+            <Link href="/guides/migration">
               <Annoucement alignSelf="flex-start">
                 <LuPartyPopper />
                 Celebrating the launch of Zag 1.0
