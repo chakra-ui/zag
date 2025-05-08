@@ -11,6 +11,10 @@ import {
   generateHSL_L,
   generateOKLAB_L,
   generateOKLCH_H,
+  generateOKLCH_L,
+  generateOKLCH_C,
+  generateOKLAB_A,
+  generateOKLAB_B,
 } from "./color-format-gradient"
 import type { ColorChannel } from "./types"
 
@@ -33,32 +37,27 @@ export function getColorAreaGradient(color: Color, options: GradientOptions): Gr
   const { minValue: zMin, maxValue: zMax } = color.getChannelRange(zChannel)
   const orientation: [string, string] = ["top", dirProp === "rtl" ? "left" : "right"]
 
-  let dir = false
-
   let alphaValue = (zValue - zMin) / (zMax - zMin)
   let isHSL = color.getFormat() === "hsla"
 
   switch (zChannel) {
     case "red": {
-      dir = xChannel === "green"
-      return generateRGB_R(orientation, dir, zValue)
+      return generateRGB_R(orientation, xChannel === "green", zValue)
     }
 
     case "green": {
-      dir = xChannel === "red"
-      return generateRGB_G(orientation, dir, zValue)
+      return generateRGB_G(orientation, xChannel === "red", zValue)
     }
 
     case "blue": {
-      dir = xChannel === "red"
-      return generateRGB_B(orientation, dir, zValue)
+      return generateRGB_B(orientation, xChannel === "red", zValue)
     }
 
     case "hue": {
-      dir = xChannel !== "saturation"
       if (color.getFormat() === "oklch") {
-        return generateOKLCH_H(orientation, dir, zValue)
+        return generateOKLCH_H(orientation, xChannel === "chroma", zValue)
       }
+      const dir = xChannel !== "saturation"
       if (isHSL) {
         return generateHSL_H(orientation, dir, zValue)
       }
@@ -66,24 +65,30 @@ export function getColorAreaGradient(color: Color, options: GradientOptions): Gr
     }
 
     case "saturation": {
-      dir = xChannel === "hue"
+      const dir = xChannel === "hue"
       if (isHSL) {
         return generateHSL_S(orientation, dir, alphaValue)
       }
       return generateHSB_S(orientation, dir, alphaValue)
     }
 
-    case "brightness": {
-      dir = xChannel === "hue"
-      return generateHSB_B(orientation, dir, alphaValue)
-    }
+    case "a":
+      return generateOKLAB_A(orientation, xChannel === "lightness", zValue)
+    case "b":
+      return generateOKLAB_B(orientation, xChannel === "lightness", zValue)
+    case "brightness":
+      return generateHSB_B(orientation, xChannel === "hue", alphaValue)
+    case "chroma":
+      return generateOKLCH_C(orientation, xChannel === "lightness", zValue)
 
     case "lightness": {
       if (color.getFormat() === "oklab") {
-        return generateOKLAB_L(orientation, dir, zValue)
+        return generateOKLAB_L(orientation, xChannel === "a", zValue)
       }
-      dir = xChannel === "hue"
-      return generateHSL_L(orientation, dir, zValue)
+      if (color.getFormat() === "oklch") {
+        return generateOKLCH_L(orientation, xChannel === "chroma", zValue)
+      }
+      return generateHSL_L(orientation, xChannel === "hue", zValue)
     }
     default:
       return { areaStyles: {}, areaGradientStyles: {} }
