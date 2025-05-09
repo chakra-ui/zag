@@ -24,7 +24,7 @@
   "dependencies": {
     "@zag-js/dom-query": "workspace:*",
     "@zag-js/utils": "workspace:*",
-    "@floating-ui/dom": "1.6.13"
+    "@floating-ui/dom": "1.7.0"
   },
   "devDependencies": {
     "clean-package": "2.2.0"
