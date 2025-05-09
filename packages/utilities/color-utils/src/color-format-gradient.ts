@@ -100,10 +100,10 @@ export const generateOKLCH_H = (orientation: [string, string], isChromaX: boolea
   const maskImage = `linear-gradient(to ${orientation[Number(!isChromaX)]}, black, transparent)`
   return {
     areaStyles: {
-      background: `linear-gradient(to ${orientation[Number(isChromaX)]} in oklch, oklch(1 0% ${zValue}), oklch(1 100% ${zValue}))`,
+      background: `linear-gradient(to ${orientation[Number(isChromaX)]} in oklch, oklch(1 0.001 ${zValue}), oklch(1 0.5 ${zValue}))`,
     },
     areaGradientStyles: {
-      background: `linear-gradient(to ${orientation[Number(isChromaX)]} in oklch, oklch(0 0% ${zValue}), oklch(0 100% ${zValue}))`,
+      background: `linear-gradient(to ${orientation[Number(isChromaX)]} in oklch, oklch(0 0.001 ${zValue}), oklch(0 0.5 ${zValue}))`,
       maskImage,
       WebkitMaskImage: maskImage,
     },

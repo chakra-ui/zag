@@ -389,7 +389,7 @@ export function connect<T extends PropTypes>(
 
     getChannelSliderTrackProps(props) {
       const { orientation = "horizontal", channel, format } = props
-      const normalizedValue = format ? value.toFormat(format) : areaValue
+      const normalizedValue = format ? value.toFormat(format) : value
 
       return normalize.element({
         ...parts.channelSliderTrack.attrs,
@@ -438,7 +438,7 @@ export function connect<T extends PropTypes>(
     getChannelSliderThumbProps(props) {
       const { orientation = "horizontal", channel, format } = props
 
-      const normalizedValue = format ? value.toFormat(format) : areaValue
+      const normalizedValue = format ? value.toFormat(format) : value
       const channelRange = normalizedValue.getChannelRange(channel)
       const channelValue = normalizedValue.getChannelValue(channel)
 
@@ -467,12 +467,12 @@ export function connect<T extends PropTypes>(
         style: {
           forcedColorAdjust: "none",
           position: "absolute",
-          background: getChannelDisplayColor(areaValue, channel).toString("css"),
+          background: getChannelDisplayColor(value, channel).toString("css"),
           ...placementStyles,
         },
         onFocus() {
           if (!interactive) return
-          send({ type: "CHANNEL_SLIDER.FOCUS", channel })
+          send({ type: "CHANNEL_SLIDER.FOCUS", channel, format })
         },
         onKeyDown(event) {
           if (event.defaultPrevented) return

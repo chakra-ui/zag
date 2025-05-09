@@ -494,9 +494,11 @@ export const machine = createMachine<ColorPickerSchema>({
         const color = v.withChannelValue(xChannel, xValue).withChannelValue(yChannel, yValue)
         context.set("value", color)
       },
-      setChannelColorFromPoint({ context, event, computed, scope, prop }) {
+      setChannelColorFromPoint({ context, event, scope, prop }) {
         const channel = event.channel || context.get("activeId")
-        const normalizedValue = event.format ? context.get("value").toFormat(event.format) : computed("areaValue")
+        const normalizedValue = event.format
+          ? context.get("value").toFormat(event.format)
+          : context.get("value").toFormat(context.get("format"))
 
         const percent = dom.getChannelSliderValueFromPoint(scope, event.point, channel)
         if (!percent) return
