@@ -119,7 +119,7 @@ export interface ViewProps {
   state: ProgressState
 }
 
-export interface ProgressApi<T extends PropTypes> {
+export interface ProgressApi<T extends PropTypes = PropTypes> {
   /**
    * The current value of the progress bar.
    */
