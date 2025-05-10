@@ -7,7 +7,7 @@
 
 <div class="controls-container">
   {#each Object.keys(controls.config) as key}
-    {@const { type, label = key, options, placeholder, min, max } = (controls.config[key] ?? {}) as any}
+    {@const { type, label = key, options, placeholder, min, max, forceValue } = (controls.config[key] ?? {}) as any}
     {@const value = deepGet(controls.context, key)}
     {#if type === "boolean"}
       <div class="checkbox">
@@ -51,7 +51,7 @@
             controls.setContext(key, (e.target as HTMLInputElement).value)
           }}
         >
-          <option>-----</option>
+          {#if !forceValue}<option>-----</option>{/if}
           {#each options as option}
             <option value={option}>
               {option}
@@ -72,11 +72,11 @@
           {max}
           {value}
           onkeydown={(e) => {
-          if (e.key === "Enter") {
-            const val = parseFloat((e.target as HTMLInputElement).value)
-            controls.setContext(key, isNaN(val) ? 0 : val)
-          }
-        }}
+            if (e.key === "Enter") {
+              const val = parseFloat((e.target as HTMLInputElement).value)
+              controls.setContext(key, isNaN(val) ? 0 : val)
+            }
+          }}
         />
       </div>
     {:else if type === "number"}{/if}

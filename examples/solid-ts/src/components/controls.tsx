@@ -1,5 +1,5 @@
 import { deepGet } from "@zag-js/shared"
-import { For, createMemo } from "solid-js"
+import { For, Show, createMemo } from "solid-js"
 import type { UseControlsReturn } from "~/hooks/use-controls"
 
 export function Controls({ store }: { store: UseControlsReturn }) {
@@ -7,9 +7,9 @@ export function Controls({ store }: { store: UseControlsReturn }) {
   const items = createMemo(() => {
     const keys = Object.keys(store.config)
     return keys.map((key) => {
-      const { type, label = key, options, placeholder, min, max } = (config[key] ?? {}) as any
+      const { type, label = key, options, placeholder, min, max, forceValue } = (config[key] ?? {}) as any
       const value = createMemo(() => deepGet(state(), key))
-      return { key, type, label, options, placeholder, min, max, value }
+      return { key, type, label, options, placeholder, min, max, value, forceValue }
     })
   })
 
@@ -64,7 +64,9 @@ export function Controls({ store }: { store: UseControlsReturn }) {
                       setState(item.key, e.currentTarget.value)
                     }}
                   >
-                    <option>-----</option>
+                    <Show when={!item.forceValue}>
+                      <option>-----</option>
+                    </Show>
                     <For each={item.options as any[]}>{(option) => <option value={option}>{option}</option>}</For>
                   </select>
                 </div>
