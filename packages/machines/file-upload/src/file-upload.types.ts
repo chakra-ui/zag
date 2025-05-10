@@ -193,7 +193,7 @@ export interface DropzoneProps {
   disableClick?: boolean
 }
 
-export interface FileUploadApi<T extends PropTypes> {
+export interface FileUploadApi<T extends PropTypes = PropTypes> {
   /**
    * Whether the user is dragging something over the root element
    */
