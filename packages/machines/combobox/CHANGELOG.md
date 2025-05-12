@@ -1,5 +1,27 @@
 # @zag-js/combobox
 
+## 1.12.1
+
+### Patch Changes
+
+- [`eaf7306`](https://github.com/chakra-ui/zag/commit/eaf73066fa946617660d48fefe4f3040f084de95) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix issue in Vue.js where combobox doesn't work for items rendered
+  as link
+
+- [`556adde`](https://github.com/chakra-ui/zag/commit/556adde4dd5439552c587c4366160a1156bdcba4) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Add `href` to params in `navigate` context property.
+
+- Updated dependencies [[`eb31845`](https://github.com/chakra-ui/zag/commit/eb318457bea7f7a2dc3a219f463dcd74f8acd49e)]:
+  - @zag-js/collection@1.12.1
+  - @zag-js/anatomy@1.12.1
+  - @zag-js/core@1.12.1
+  - @zag-js/types@1.12.1
+  - @zag-js/aria-hidden@1.12.1
+  - @zag-js/utils@1.12.1
+  - @zag-js/dismissable@1.12.1
+  - @zag-js/dom-query@1.12.1
+  - @zag-js/popper@1.12.1
+
 ## 1.12.0
 
 ### Patch Changes
