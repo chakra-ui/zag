@@ -123,7 +123,7 @@ export interface MenuProps extends DirectionProperty, CommonProperties, Dismissa
   navigate?: ((details: NavigateDetails) => void) | null | undefined
 }
 
-type PropsWithDefault = "closeOnSelect" | "typeahead" | "composite" | "positioning" | "navigate" | "loopFocus"
+type PropsWithDefault = "closeOnSelect" | "typeahead" | "composite" | "positioning" | "loopFocus"
 
 export interface MenuSchema {
   props: RequiredBy<MenuProps, PropsWithDefault>

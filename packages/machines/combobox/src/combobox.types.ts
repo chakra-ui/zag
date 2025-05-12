@@ -255,7 +255,6 @@ type PropsWithDefault =
   | "openOnChange"
   | "openOnKeyPress"
   | "composite"
-  | "navigate"
   | "loopFocus"
   | "positioning"
   | "openOnClick"
