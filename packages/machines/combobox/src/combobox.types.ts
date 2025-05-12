@@ -32,8 +32,9 @@ export interface ScrollToIndexDetails {
 }
 
 export interface NavigateDetails {
-  value: string | null
+  value: string
   node: HTMLAnchorElement
+  href: string
 }
 
 export interface SelectionDetails {
@@ -247,7 +248,7 @@ export interface ComboboxProps<T extends CollectionItem = CollectionItem>
   /**
    * Function to navigate to the selected item
    */
-  navigate?: ((details: NavigateDetails) => void) | undefined
+  navigate?: ((details: NavigateDetails) => void) | null | undefined
 }
 
 type PropsWithDefault =

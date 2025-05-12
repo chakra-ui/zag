@@ -304,8 +304,9 @@ export const machine = createMachine<TabsSchema>({
         if (!value) return
 
         const triggerEl = dom.getTriggerEl(scope, value)
-        if (!isAnchorElement(triggerEl)) return
-        prop("navigate")?.({ value, node: triggerEl })
+        if (isAnchorElement(triggerEl)) {
+          prop("navigate")?.({ value, node: triggerEl, href: triggerEl.href })
+        }
       },
     },
   },

@@ -14,8 +14,9 @@ export interface FocusChangeDetails {
 }
 
 export interface NavigateDetails {
-  value: string | null
+  value: string
   node: HTMLAnchorElement
+  href: string
 }
 
 /* -----------------------------------------------------------------------------
@@ -93,7 +94,7 @@ export interface TabsProps extends DirectionProperty, CommonProperties {
    * Function to navigate to the selected tab when clicking on it.
    * Useful if tab triggers are anchor elements.
    */
-  navigate?: ((details: NavigateDetails) => void) | undefined
+  navigate?: ((details: NavigateDetails) => void) | null | undefined
 }
 
 type PropsWithDefault = "orientation" | "activationMode" | "loopFocus"

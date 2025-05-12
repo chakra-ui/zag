@@ -31,8 +31,9 @@ export interface HighlightChangeDetails {
 }
 
 export interface NavigateDetails {
-  value: string | null
+  value: string
   node: HTMLAnchorElement
+  href: string
 }
 
 export type ElementIds = Partial<{
@@ -119,7 +120,7 @@ export interface MenuProps extends DirectionProperty, CommonProperties, Dismissa
   /**
    * Function to navigate to the selected item if it's an anchor element
    */
-  navigate?: ((details: NavigateDetails) => void) | undefined
+  navigate?: ((details: NavigateDetails) => void) | null | undefined
 }
 
 type PropsWithDefault = "closeOnSelect" | "typeahead" | "composite" | "positioning" | "navigate" | "loopFocus"
