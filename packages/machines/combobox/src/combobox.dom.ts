@@ -23,7 +23,7 @@ export const getTriggerEl = (ctx: Scope) => ctx.getById(getTriggerId(ctx))
 export const getClearTriggerEl = (ctx: Scope) => ctx.getById(getClearTriggerId(ctx))
 export const getItemEl = (ctx: Scope, value: string | null) => {
   if (value == null) return
-  const selector = `[role=option][data-value="${CSS.escape(value)}"`
+  const selector = `[role=option][data-value="${CSS.escape(value)}"]`
   return query(getContentEl(ctx), selector)
 }
 
