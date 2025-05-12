@@ -1,6 +1,6 @@
 {
   "name": "@zag-js/switch",
-  "version": "1.12.1",
+  "version": "1.12.2",
   "description": "Core logic for the switch widget implemented as a state machine",
   "keywords": [
     "js",
