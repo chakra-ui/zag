@@ -257,12 +257,12 @@ describe("list collection", () => {
   ]
 
   test("group by", () => {
-    const listGroup = new ListCollection({
+    const list = new ListCollection({
       items: groupItems,
       groupBy: (item) => item.type,
     })
 
-    expect(listGroup.group()).toMatchInlineSnapshot(`
+    expect(list.group()).toMatchInlineSnapshot(`
       [
         [
           "framework",
@@ -305,13 +305,13 @@ describe("list collection", () => {
   })
 
   test("group by / sort groups", () => {
-    const listGroup = new ListCollection({
+    const list = new ListCollection({
       items: groupItems,
       groupBy: (item) => item.type,
       groupSort: ["runtime", "framework"],
     })
 
-    expect(listGroup.group()).toMatchInlineSnapshot(`
+    expect(list.group()).toMatchInlineSnapshot(`
       [
         [
           "runtime",
@@ -350,6 +350,66 @@ describe("list collection", () => {
           ],
         ],
       ]
+    `)
+  })
+
+  test("indexOf with grouped collection", () => {
+    const list = new ListCollection({
+      items: groupItems,
+      groupBy: (item) => item.type,
+      groupSort: ["runtime", "framework"],
+    })
+
+    expect(list.indexOf("node")).toMatchInlineSnapshot(`0`)
+    expect(list.indexOf("deno")).toMatchInlineSnapshot(`1`)
+    expect(list.indexOf("react")).toMatchInlineSnapshot(`2`)
+    expect(list.indexOf("vue")).toMatchInlineSnapshot(`3`)
+    expect(list.indexOf("solid")).toMatchInlineSnapshot(`4`)
+    expect(list.indexOf("invalid")).toMatchInlineSnapshot(`-1`)
+  })
+
+  test("at with grouped collection", () => {
+    const list = new ListCollection({
+      items: groupItems,
+      groupBy: (item) => item.type,
+      groupSort: ["runtime", "framework"],
+    })
+
+    expect(list.at(0)).toMatchInlineSnapshot(`
+      {
+        "label": "Node.js",
+        "type": "runtime",
+        "value": "node",
+      }
+    `)
+    expect(list.at(1)).toMatchInlineSnapshot(`
+      {
+        "label": "Deno",
+        "type": "runtime",
+        "value": "deno",
+      }
+    `)
+    expect(list.at(2)).toMatchInlineSnapshot(`
+      {
+        "label": "React",
+        "type": "framework",
+        "value": "react",
+      }
+    `)
+    expect(list.at(3)).toMatchInlineSnapshot(`
+      {
+        "label": "Vue",
+        "type": "framework",
+        "value": "vue",
+      }
+    `)
+    expect(list.at(4)).toMatchInlineSnapshot(`
+      {
+        "disabled": true,
+        "label": "Solid",
+        "type": "framework",
+        "value": "solid",
+      }
     `)
   })
 })

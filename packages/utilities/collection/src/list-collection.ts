@@ -28,10 +28,16 @@ export class ListCollection<T extends CollectionItem = CollectionItem> {
     this.items = [...options.items] as T[]
   }
 
+  /**
+   * Copy the collection
+   */
   copy = (items?: T[]) => {
     return new ListCollection({ ...this.options, items: items ?? [...this.items] })
   }
 
+  /**
+   * Check if the collection is equal to another collection
+   */
   isEqual = (other: ListCollection<T>) => {
     return isEqual(this.items, other.items)
   }
@@ -57,8 +63,8 @@ export class ListCollection<T extends CollectionItem = CollectionItem> {
    */
   find = (value: string | null | undefined): T | null => {
     if (value == null) return null
-    const index = this.items.findIndex((item) => this.getItemValue(item) === value)
-    return index != null ? this.items[index] : null
+    const index = this.indexOf(value)
+    return index != null ? this.at(index) : null
   }
 
   /**
@@ -74,7 +80,23 @@ export class ListCollection<T extends CollectionItem = CollectionItem> {
    * Get the item based on its index
    */
   at = (index: number): T | null => {
-    return this.items[index] ?? null
+    // If no grouping is used, use the simple array access
+    if (!this.options.groupBy && !this.options.groupSort) {
+      return this.items[index] ?? null
+    }
+
+    // When grouping is used, get item based on grouped structure
+    let idx = 0
+    const groups = this.group()
+
+    for (const [, items] of groups) {
+      for (const item of items) {
+        if (idx === index) return item
+        idx++
+      }
+    }
+
+    return null
   }
 
   private sortFn = (valueA: string, valueB: string): number => {
@@ -246,7 +268,24 @@ export class ListCollection<T extends CollectionItem = CollectionItem> {
    */
   indexOf = (value: string | null): number => {
     if (value == null) return -1
-    return this.items.findIndex((item) => this.getItemValue(item) === value)
+
+    // If no grouping is used, use the simple findIndex
+    if (!this.options.groupBy && !this.options.groupSort) {
+      return this.items.findIndex((item) => this.getItemValue(item) === value)
+    }
+
+    // When grouping is used, calculate index based on grouped structure
+    let idx = 0
+    const groups = this.group()
+
+    for (const [, items] of groups) {
+      for (const item of items) {
+        if (this.getItemValue(item) === value) return idx
+        idx++
+      }
+    }
+
+    return -1
   }
 
   private getByText = (text: string, current: string | null): T | undefined => {
@@ -298,16 +337,25 @@ export class ListCollection<T extends CollectionItem = CollectionItem> {
     yield* this.items
   }
 
+  /**
+   * Update an item in the collection
+   */
   update = (value: string, item: T) => {
     let index = this.items.findIndex((item) => this.getItemValue(item) === value)
     if (index === -1) return this
     return this.copy([...this.items.slice(0, index), item, ...this.items.slice(index + 1)])
   }
 
+  /**
+   * Insert items at a specific index
+   */
   insert = (index: number, ...items: T[]) => {
     return this.copy(insert(this.items, index, ...items))
   }
 
+  /**
+   * Insert items before a specific value
+   */
   insertBefore = (value: string, ...items: T[]) => {
     let toIndex = this.indexOf(value)
     if (toIndex === -1) {
@@ -317,6 +365,9 @@ export class ListCollection<T extends CollectionItem = CollectionItem> {
     return this.copy(insert(this.items, toIndex, ...items))
   }
 
+  /**
+   * Insert items after a specific value
+   */
   insertAfter = (value: string, ...items: T[]) => {
     let toIndex = this.indexOf(value)
     if (toIndex === -1) {
@@ -326,19 +377,31 @@ export class ListCollection<T extends CollectionItem = CollectionItem> {
     return this.copy(insert(this.items, toIndex + 1, ...items))
   }
 
+  /**
+   * Prepend items to the collection
+   */
   prepend = (...items: T[]) => {
     return this.copy(insert(this.items, 0, ...items))
   }
 
+  /**
+   * Append items to the collection
+   */
   append = (...items: T[]) => {
     return this.copy(insert(this.items, this.items.length, ...items))
   }
 
+  /**
+   * Filter the collection
+   */
   filter = (fn: (itemString: string, index: number) => boolean) => {
     const filteredItems = this.items.filter((item, index) => fn(this.stringifyItem(item)!, index))
     return this.copy(filteredItems)
   }
 
+  /**
+   * Remove items from the collection
+   */
   remove = (...itemsOrValues: Array<T | string>) => {
     const values = itemsOrValues.map((itemOrValue) =>
       typeof itemOrValue === "string" ? itemOrValue : this.getItemValue(itemOrValue),
@@ -352,16 +415,49 @@ export class ListCollection<T extends CollectionItem = CollectionItem> {
     )
   }
 
+  /**
+   * Move an item to a specific index
+   */
   move = (value: string, toIndex: number) => {
     const fromIndex = this.indexOf(value)
     if (fromIndex === -1) return this
     return this.copy(move(this.items, [fromIndex], toIndex))
   }
 
+  /**
+   * Move items before a specific value
+   */
+  moveBefore = (value: string, ...values: string[]) => {
+    let toIndex = this.items.findIndex((item) => this.getItemValue(item) === value)
+    if (toIndex === -1) return this
+    let indices = values
+      .map((value) => this.items.findIndex((item) => this.getItemValue(item) === value))
+      .sort((a, b) => a - b)
+    return this.copy(move(this.items, indices, toIndex))
+  }
+
+  /**
+   * Move items after a specific value
+   */
+  moveAfter = (value: string, ...values: string[]) => {
+    let toIndex = this.items.findIndex((item) => this.getItemValue(item) === value)
+    if (toIndex === -1) return this
+    let indices = values
+      .map((value) => this.items.findIndex((item) => this.getItemValue(item) === value))
+      .sort((a, b) => a - b)
+    return this.copy(move(this.items, indices, toIndex + 1))
+  }
+
+  /**
+   * Reorder items
+   */
   reorder = (fromIndex: number, toIndex: number) => {
     return this.copy(move(this.items, [fromIndex], toIndex))
   }
 
+  /**
+   * Compare two values
+   */
   compareValue = (a: string, b: string) => {
     const indexA = this.indexOf(a)
     const indexB = this.indexOf(b)
@@ -370,6 +466,9 @@ export class ListCollection<T extends CollectionItem = CollectionItem> {
     return 0
   }
 
+  /**
+   * Get the range of values between two values
+   */
   private range = (from: string | null, to: string | null) => {
     let keys: string[] = []
     let key: string | null = from
@@ -382,6 +481,9 @@ export class ListCollection<T extends CollectionItem = CollectionItem> {
     return []
   }
 
+  /**
+   * Get the range of values between two values
+   */
   getValueRange = (from: string | null, to: string | null) => {
     if (from && to) {
       if (this.compareValue(from, to) <= 0) {
@@ -392,6 +494,9 @@ export class ListCollection<T extends CollectionItem = CollectionItem> {
     return []
   }
 
+  /**
+   * Convert the collection to a string
+   */
   toString = () => {
     let result = ""
     for (const item of this.items) {
@@ -404,6 +509,9 @@ export class ListCollection<T extends CollectionItem = CollectionItem> {
     return result
   }
 
+  /**
+   * Convert the collection to a JSON object
+   */
   toJSON = () => {
     return {
       size: this.size,

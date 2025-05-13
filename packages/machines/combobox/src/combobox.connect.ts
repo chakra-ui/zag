@@ -232,10 +232,11 @@ export function connect<T extends PropTypes, V extends CollectionItem>(
                 event.preventDefault()
               }
 
-              const highlightedValue = context.get("highlightedValue")
+              if (highlightedValue == null) return
+
               const itemEl = dom.getItemEl(scope, highlightedValue)
               if (isAnchorElement(itemEl)) {
-                prop("navigate")({ value: highlightedValue, node: itemEl })
+                prop("navigate")?.({ value: highlightedValue, node: itemEl, href: itemEl.href })
               }
             },
             Escape() {

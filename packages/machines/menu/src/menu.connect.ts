@@ -341,8 +341,11 @@ export function connect<T extends PropTypes>(service: Service<MenuSchema>, norma
             },
             Enter() {
               send({ type: "ENTER" })
+
+              if (highlightedValue == null) return
+
               if (isAnchorElement(item)) {
-                prop("navigate")?.({ value: highlightedValue, node: item })
+                prop("navigate")?.({ value: highlightedValue, node: item, href: item.href })
               }
             },
             Space(event) {

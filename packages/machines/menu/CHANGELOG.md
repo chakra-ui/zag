@@ -1,5 +1,39 @@
 # @zag-js/menu
 
+## 1.12.2
+
+### Patch Changes
+
+- [`edf1b5f`](https://github.com/chakra-ui/zag/commit/edf1b5fe03396a34b07b856a369b6c2bd7947524) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix type issue with the `navigate` prop
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.12.2
+  - @zag-js/core@1.12.2
+  - @zag-js/types@1.12.2
+  - @zag-js/utils@1.12.2
+  - @zag-js/dismissable@1.12.2
+  - @zag-js/dom-query@1.12.2
+  - @zag-js/popper@1.12.2
+  - @zag-js/rect-utils@1.12.2
+
+## 1.12.1
+
+### Patch Changes
+
+- [`556adde`](https://github.com/chakra-ui/zag/commit/556adde4dd5439552c587c4366160a1156bdcba4) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Add `href` to params in `navigate` context property.
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.12.1
+  - @zag-js/core@1.12.1
+  - @zag-js/types@1.12.1
+  - @zag-js/utils@1.12.1
+  - @zag-js/dismissable@1.12.1
+  - @zag-js/dom-query@1.12.1
+  - @zag-js/popper@1.12.1
+  - @zag-js/rect-utils@1.12.1
+
 ## 1.12.0
 
 ### Patch Changes

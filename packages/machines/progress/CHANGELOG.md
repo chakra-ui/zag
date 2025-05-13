@@ -1,5 +1,31 @@
 # @zag-js/progress
 
+## 1.12.2
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.12.2
+  - @zag-js/core@1.12.2
+  - @zag-js/types@1.12.2
+  - @zag-js/utils@1.12.2
+  - @zag-js/dom-query@1.12.2
+
+## 1.12.1
+
+### Patch Changes
+
+- [#2447](https://github.com/chakra-ui/zag/pull/2447)
+  [`33b85ed`](https://github.com/chakra-ui/zag/commit/33b85ed5bd9d38ea8953cf983b138d4c944fbb25) Thanks
+  [@YusukeSano](https://github.com/YusukeSano)! - Add default `PropTypes` type parameter to `Api` interface
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.12.1
+  - @zag-js/core@1.12.1
+  - @zag-js/types@1.12.1
+  - @zag-js/utils@1.12.1
+  - @zag-js/dom-query@1.12.1
+
 ## 1.12.0
 
 ### Patch Changes

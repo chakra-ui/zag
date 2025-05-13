@@ -4,6 +4,19 @@ All notable changes to this project will be documented in this file.
 
 > For v0.x changelog, see the [v0 branch](https://github.com/chakra-ui/zag/blob/v0/CHANGELOG.md)
 
+## [1.12.1](./#1.12.1) - 2025-05-12
+
+### Fixed
+
+- **Collection**: Fix issue where `getNextValue` and `getPreviousValue` doesn't work as expected when `groupBy` is used.
+
+- **Combobox**:
+
+  - Fix issue in Vue.js where combobox doesn't work for items rendered as link
+  - Add `href` to params in `navigate` context property
+
+- **Menu, Tabs**: Add `href` to params in `navigate` context property
+
 ## [1.12.0](./#1.12.0) - 2025-05-01
 
 ### Added

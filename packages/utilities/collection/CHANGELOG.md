@@ -1,5 +1,23 @@
 # @zag-js/collection
 
+## 1.12.2
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/utils@1.12.2
+
+## 1.12.1
+
+### Patch Changes
+
+- [`eb31845`](https://github.com/chakra-ui/zag/commit/eb318457bea7f7a2dc3a219f463dcd74f8acd49e) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix issue where `getNextValue` and `getPreviousValue` doesn't work
+  as expected when `groupBy` is used.
+
+- Updated dependencies []:
+  - @zag-js/utils@1.12.1
+
 ## 1.12.0
 
 ### Patch Changes
