@@ -55,8 +55,8 @@ export const machine = createMachine<ColorPickerSchema>({
           },
           onChange(value) {
             const ctx = getContext()
-            const valueAsString = value.toString(ctx.get("format"))
-            prop("onValueChange")?.({ value, valueAsString })
+            const v = value.toFormat(ctx.get("format"))
+            prop("onValueChange")?.({ value: v, valueAsString: v.toString() })
           },
         }
       }),

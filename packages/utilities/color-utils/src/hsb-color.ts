@@ -25,7 +25,7 @@ export class HSBColor extends Color {
     }
   }
 
-  toString(format: ColorStringFormat) {
+  toString(format: ColorStringFormat = "hsba") {
     switch (format) {
       case "css":
       case "hsl":

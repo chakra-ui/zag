@@ -29,7 +29,7 @@ export class OklabColor extends Color {
     return new OklabColor(lValue, aValue, bValue, alphaValue ?? 1)
   }
 
-  toString(format: ColorStringFormat): string {
+  toString(format: ColorStringFormat = "oklab"): string {
     switch (format) {
       case "oklab":
       case "css":

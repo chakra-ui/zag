@@ -42,7 +42,7 @@ export class RGBColor extends Color {
     return colors.length < 3 ? undefined : new RGBColor(colors[0], colors[1], colors[2], colors[3] ?? 1)
   }
 
-  toString(format: ColorStringFormat) {
+  toString(format: ColorStringFormat = "rgba") {
     switch (format) {
       case "hex":
         return (

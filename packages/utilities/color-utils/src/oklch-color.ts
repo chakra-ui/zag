@@ -33,7 +33,7 @@ export class OklchColor extends Color {
     )
   }
 
-  toString(format: ColorStringFormat) {
+  toString(format: ColorStringFormat = "oklch") {
     switch (format) {
       case "oklch":
       case "css":
