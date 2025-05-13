@@ -1,10 +1,8 @@
-import { modeOklch, useMode as bootstrapMode, convertLchToLab } from "culori/fn"
-import { Color } from "./color"
+import { convertLchToLab } from "culori/fn"
+import { Color, parseOkl } from "./color"
 import type { ColorChannel, ColorChannelRange, ColorFormat, ColorStringFormat, ColorType } from "./types"
 import { OklabColor } from "./oklab-color"
-import { toFixedNumber } from "@zag-js/utils"
-
-export const oklch = bootstrapMode(modeOklch)
+import { clampValue, toFixedNumber } from "@zag-js/utils"
 
 export class OklchColor extends Color {
   constructor(
@@ -17,10 +15,22 @@ export class OklchColor extends Color {
   }
 
   static parse(value: string): OklchColor | void {
-    const parsed = oklch(value)
+    const parsed = parseOkl(value, "oklab")
+
     if (!parsed) return
-    const { l, c, h, alpha } = parsed
-    return new OklchColor(toFixedNumber(l, 2), toFixedNumber(c, 2), toFixedNumber(h ?? 0, 2), alpha ?? 1)
+    const [l, c, h, alpha] = parsed
+    const lValue = clampValue(l.type === "percentage" ? l.value * 0.01 : l.value, 0, 1)
+    const cValue = clampValue(c.type === "percentage" ? c.value * 0.005 : c.value, 0, 0.5)
+    const hValue = clampValue(h.type === "percentage" ? h.value * 3.6 : h.value, 0, 360)
+    const alphaValue = alpha
+      ? clampValue(alpha.type === "percentage" ? alpha.value * 0.01 : alpha.value, 0, 1)
+      : undefined
+    return new OklchColor(
+      toFixedNumber(lValue, 2),
+      toFixedNumber(cValue, 2),
+      toFixedNumber(hValue ?? 0, 2),
+      alphaValue ?? 1,
+    )
   }
 
   toString(format: ColorStringFormat) {

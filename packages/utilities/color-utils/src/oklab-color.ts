@@ -1,21 +1,9 @@
 import { toFixedNumber, roundValue, clampValue } from "@zag-js/utils"
-import {
-  convertOklabToRgb,
-  clampChroma,
-  modeRgb,
-  modeLrgb,
-  modeOklab,
-  useMode as bootstrapMode,
-  convertLabToLch,
-} from "culori/fn"
-import { Color } from "./color"
+import { convertOklabToRgb, convertLabToLch } from "culori/fn"
+import { Color, parseOkl } from "./color"
 import { RGBColor } from "./rgb-color"
 import type { ColorChannel, ColorChannelRange, ColorFormat, ColorStringFormat, ColorType } from "./types"
 import { OklchColor } from "./oklch-color"
-
-bootstrapMode(modeRgb)
-export const oklab = bootstrapMode(modeOklab)
-bootstrapMode(modeLrgb)
 
 export class OklabColor extends Color {
   constructor(
@@ -28,10 +16,17 @@ export class OklabColor extends Color {
   }
 
   static parse(value: string): OklabColor | void {
-    const parsed = oklab(value)
+    const parsed = parseOkl(value, "oklab")
+
     if (!parsed) return
-    const { l, a, b, alpha } = parsed
-    return new OklabColor(l, a, b, alpha ?? 1)
+    const [l, a, b, alpha] = parsed
+    const lValue = clampValue(l.type === "percentage" ? l.value * 0.01 : l.value, 0, 1)
+    const aValue = clampValue(a.type === "percentage" ? a.value * 0.004 : a.value, -0.4, 0.4)
+    const bValue = clampValue(b.type === "percentage" ? b.value * 0.004 : b.value, -0.4, 0.4)
+    const alphaValue = alpha
+      ? clampValue(alpha.type === "percentage" ? alpha.value * 0.01 : alpha.value, 0, 1)
+      : undefined
+    return new OklabColor(lValue, aValue, bValue, alphaValue ?? 1)
   }
 
   toString(format: ColorStringFormat): string {
@@ -67,12 +62,11 @@ export class OklabColor extends Color {
    * @returns RGBColor
    */
   private toRGB(): RGBColor {
-    const clamped = clampChroma({ mode: "oklab", l: this.lightness, a: this.a, b: this.b }, "oklab")
-    const inRGb = convertOklabToRgb(clamped)
+    const inRGb = convertOklabToRgb({ l: this.lightness, a: this.a, b: this.b, alpha: this.alpha })
     return new RGBColor(
-      roundValue(inRGb.r * 255, 0, 1),
-      roundValue(inRGb.g * 255, 0, 1),
-      roundValue(inRGb.b * 255, 0, 1),
+      clampValue(roundValue(inRGb.r * 255, 0, 1), 0, 255),
+      clampValue(roundValue(inRGb.g * 255, 0, 1), 0, 255),
+      clampValue(roundValue(inRGb.b * 255, 0, 1), 0, 255),
       toFixedNumber(inRGb.alpha ?? 1, 2),
     )
   }
