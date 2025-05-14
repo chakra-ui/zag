@@ -25,7 +25,7 @@
     "url": "https://github.com/chakra-ui/zag/issues"
   },
   "dependencies": {
-    "@solid-primitives/keyed": "^1.5.0",
+    "@solid-primitives/keyed": "^1.5.1",
     "@zag-js/utils": "workspace:*",
     "@zag-js/core": "workspace:*",
     "@zag-js/store": "workspace:*",
@@ -33,7 +33,7 @@
   },
   "devDependencies": {
     "@types/jsdom": "^21.1.7",
-    "solid-js": "1.9.5",
+    "solid-js": "1.9.6",
     "clean-package": "2.2.0",
     "@solidjs/testing-library": "^0.8.10",
     "@testing-library/jest-dom": "^6.6.3",
