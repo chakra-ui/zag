@@ -219,6 +219,7 @@ export const machine = createMachine<SliderSchema>({
             return dom.getOffsetRect(el)
           },
           onEntry({ rects }) {
+            if (rects.length === 0) return
             const size = pick(rects[0], ["width", "height"])
             if (isEqualSize(context.get("thumbSize"), size)) return
             context.set("thumbSize", size)
