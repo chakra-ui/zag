@@ -25,12 +25,8 @@ export class HSLColor extends Color {
     }
   }
 
-  toString(format: ColorStringFormat) {
+  toString(format: ColorStringFormat = "hsla") {
     switch (format) {
-      case "hex":
-        return this.toRGB().toString("hex")
-      case "hexa":
-        return this.toRGB().toString("hexa")
       case "hsl":
         return `hsl(${this.hue}, ${toFixedNumber(this.saturation, 2)}%, ${toFixedNumber(this.lightness, 2)}%)`
       case "css":
@@ -40,8 +36,10 @@ export class HSLColor extends Color {
         })`
       case "hsb":
         return this.toHSB().toString("hsb")
+      case "hex":
+      case "hexa":
       case "rgb":
-        return this.toRGB().toString("rgb")
+        return this.toRGB().toString(format)
       default:
         return this.toFormat(format).toString(format)
     }
@@ -55,6 +53,9 @@ export class HSLColor extends Color {
         return this.toHSB()
       case "rgba":
         return this.toRGB()
+      case "oklab":
+      case "oklch":
+        return this.toRGB().toFormat(format)
       default:
         throw new Error("Unsupported color conversion: hsl -> " + format)
     }

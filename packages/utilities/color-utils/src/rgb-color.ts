@@ -1,8 +1,10 @@
 import { clampValue, toFixedNumber } from "@zag-js/utils"
+import { convertRgbToOklab } from "culori/fn"
 import { Color } from "./color"
 import { HSBColor } from "./hsb-color"
 import { HSLColor } from "./hsl-color"
 import type { ColorChannel, ColorChannelRange, ColorFormat, ColorStringFormat, ColorType } from "./types"
+import { OklabColor } from "./oklab-color"
 
 export class RGBColor extends Color {
   constructor(
@@ -40,7 +42,7 @@ export class RGBColor extends Color {
     return colors.length < 3 ? undefined : new RGBColor(colors[0], colors[1], colors[2], colors[3] ?? 1)
   }
 
-  toString(format: ColorStringFormat) {
+  toString(format: ColorStringFormat = "rgba") {
     switch (format) {
       case "hex":
         return (
@@ -85,6 +87,9 @@ export class RGBColor extends Color {
         return this.toHSB()
       case "hsla":
         return this.toHSL()
+      case "oklab":
+      case "oklch":
+        return this.toOklab().toFormat(format)
       default:
         throw new Error("Unsupported color conversion: rgb -> " + format)
     }
@@ -175,6 +180,21 @@ export class RGBColor extends Color {
       toFixedNumber(saturation * 100, 2),
       toFixedNumber(lightness * 100, 2),
       toFixedNumber(this.alpha, 2),
+    )
+  }
+
+  private toOklab(): ColorType {
+    const inOklab = convertRgbToOklab({
+      r: this.red / 255,
+      g: this.green / 255,
+      b: this.blue / 255,
+      alpha: this.alpha,
+    })
+    return new OklabColor(
+      toFixedNumber(inOklab.l, 3),
+      toFixedNumber(inOklab.a, 3),
+      toFixedNumber(inOklab.b, 3),
+      inOklab.alpha ?? 1,
     )
   }
 

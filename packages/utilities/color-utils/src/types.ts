@@ -1,10 +1,21 @@
 export type ColorHexFormat = "hex" | "hexa"
 
-export type ColorFormat = "rgba" | "hsla" | "hsba"
+export type ColorFormat = "rgba" | "hsla" | "hsba" | "oklab" | "oklch"
 
 export type ColorStringFormat = ColorHexFormat | ColorFormat | "rgb" | "hsl" | "hsb" | "css"
 
-export type ColorChannel = "hue" | "saturation" | "brightness" | "lightness" | "red" | "green" | "blue" | "alpha"
+export type ColorChannel =
+  | "hue"
+  | "saturation"
+  | "brightness"
+  | "lightness"
+  | "red"
+  | "green"
+  | "blue"
+  | "alpha"
+  | "a"
+  | "b"
+  | "chroma"
 
 export interface Color2DAxes {
   xChannel: ColorChannel
@@ -32,7 +43,7 @@ export interface ColorType {
   /** Converts the color to a JSON object. */
   toJSON(): Record<string, number>
   /** Converts the color to a string in the given format. */
-  toString(format: ColorStringFormat): string
+  toString(format?: ColorStringFormat): string
   /** Converts the color to hex, and returns an integer representation. */
   toHexInt(): number
 

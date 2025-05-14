@@ -42,26 +42,33 @@ export const machine = createMachine<ColorPickerSchema>({
 
   context({ prop, bindable, getContext }) {
     return {
-      value: bindable<Color>(() => ({
-        defaultValue: prop("defaultValue"),
-        value: prop("value"),
-        isEqual(a, b) {
-          return a.toString("css") === b?.toString("css")
-        },
-        hash(a) {
-          return a.toString("css")
-        },
-        onChange(value) {
-          const ctx = getContext()
-          const valueAsString = value.toString(ctx.get("format"))
-          prop("onValueChange")?.({ value, valueAsString })
-        },
-      })),
+      value: bindable<Color>(() => {
+        const fmt = prop("format") ?? prop("defaultFormat")
+        return {
+          defaultValue: prop("defaultValue").toFormat(fmt),
+          value: prop("value")?.toFormat(fmt),
+          isEqual(a, b) {
+            return a.toString("css") === b?.toString("css")
+          },
+          hash(a) {
+            return a.toString("css")
+          },
+          onChange(value) {
+            const ctx = getContext()
+            const v = value.toFormat(ctx.get("format"))
+            prop("onValueChange")?.({ value: v, valueAsString: v.toString() })
+          },
+        }
+      }),
       format: bindable<ColorFormat>(() => ({
         defaultValue: prop("defaultFormat"),
         value: prop("format"),
         onChange(format) {
           prop("onFormatChange")?.({ format })
+          const ctx = getContext()
+          const newValue = ctx.get("value").toFormat(ctx.get("format"))
+          if (newValue.isEqual(ctx.get("value"))) return
+          ctx.set("value", newValue)
         },
       })),
       activeId: bindable<string | null>(() => ({ defaultValue: null })),
@@ -81,8 +88,8 @@ export const machine = createMachine<ColorPickerSchema>({
     interactive: ({ prop }) => !(prop("disabled") || prop("readOnly")),
     valueAsString: ({ context }) => context.get("value").toString(context.get("format")),
     areaValue: ({ context }) => {
-      const format = context.get("format").startsWith("hsl") ? "hsla" : "hsba"
-      return context.get("value").toFormat(format)
+      const fmt = context.get("format")
+      return context.get("value").toFormat(fmt.startsWith("r") ? "hsba" : fmt)
     },
   },
 
@@ -472,29 +479,36 @@ export const machine = createMachine<ColorPickerSchema>({
         context.set("activeId", null)
         context.set("activeOrientation", null)
       },
-      setAreaColorFromPoint({ context, event, computed, scope }) {
+      setAreaColorFromPoint({ context, event, computed, scope, prop }) {
         const v = event.format ? context.get("value").toFormat(event.format) : computed("areaValue")
         const { xChannel, yChannel } = event.channel || context.get("activeChannel")
 
         const percent = dom.getAreaValueFromPoint(scope, event.point)
         if (!percent) return
-
+        if (prop("dir") === "rtl") {
+          percent.x = 1 - percent.x
+        }
         const xValue = v.getChannelPercentValue(xChannel, percent.x)
         const yValue = v.getChannelPercentValue(yChannel, 1 - percent.y)
 
         const color = v.withChannelValue(xChannel, xValue).withChannelValue(yChannel, yValue)
         context.set("value", color)
       },
-      setChannelColorFromPoint({ context, event, computed, scope }) {
+      setChannelColorFromPoint({ context, event, scope, prop }) {
         const channel = event.channel || context.get("activeId")
-        const normalizedValue = event.format ? context.get("value").toFormat(event.format) : computed("areaValue")
+        const normalizedValue = event.format
+          ? context.get("value").toFormat(event.format)
+          : context.get("value").toFormat(context.get("format"))
 
         const percent = dom.getChannelSliderValueFromPoint(scope, event.point, channel)
         if (!percent) return
 
         const orientation = context.get("activeOrientation") || "horizontal"
-        const channelPercent = orientation === "horizontal" ? percent.x : percent.y
+        let channelPercent = orientation === "horizontal" ? percent.x : percent.y
 
+        if (prop("dir") === "rtl") {
+          channelPercent = 1 - channelPercent
+        }
         const value = normalizedValue.getChannelPercentValue(channel, channelPercent)
         const color = normalizedValue.withChannelValue(channel, value)
         context.set("value", color)
@@ -534,7 +548,7 @@ export const machine = createMachine<ColorPickerSchema>({
         } else if (isTextField) {
           //
           color = tryCatch(
-            () => parse(value).withChannelValue("alpha", currentAlpha),
+            () => parse(value).withChannelValue("alpha", currentAlpha).toFormat(context.get("format")),
             () => context.get("value"),
           )
           //

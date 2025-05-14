@@ -19,7 +19,7 @@ provides a more customizable and consistent user experience.
 **Features**
 
 - Support for custom color area
-- Support for RGBA, HSLA, HEX, and HSBA formats
+- Support for RGBA, HSLA, HEX, HSBA, OKLAB and OKLCH formats
 - Support for channel inputs and sliders
 - Support for mouse, touch, and keyboard interactions
 - Support for form submission and reset events
@@ -105,7 +105,7 @@ const [current, send] = useMachine(colorPicker.machine, {
 ### Using a custom color format
 
 By default, the color picker's output format is `rgba`. You can change this
-format to either `hsla` or `hsba` by using the `format` context property.
+format to `hsla`, `hsba`, `oklab` or `oklch` by using the `format` context property.
 
 When this property is set, the `value` and `valueAsString` properties of the
 `onValueChange` event will be updated to reflect the new format.
@@ -271,6 +271,18 @@ When a swatch's color value matches the color picker's value, the
   /* styles for swatch's checked state */
 }
 ```
+
+#### Swatch thumb in relation to direction state
+
+As swatch's thumb position is dependent on direction, you might want to style it differently based on `dir` attribute of the swatch
+
+```css
+transform: translate(-50%, -50%);
+[dir="rtl"] & {
+  transform: translate(50%, -50%);
+}
+```
+
 
 ## Methods and Properties
 

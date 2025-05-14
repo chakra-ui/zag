@@ -3,8 +3,8 @@ import { deepExpand } from "./deep-get-set"
 export type ControlProp =
   | { type: "boolean"; label?: string; defaultValue?: boolean }
   | { type: "string"; label?: string; defaultValue?: string; placeholder?: string }
-  | { type: "select"; options: readonly string[]; defaultValue?: string; label?: string }
-  | { type: "multiselect"; options: readonly string[]; defaultValue?: string[]; label?: string }
+  | { type: "select"; options: readonly string[]; defaultValue?: string; label?: string; forceValue?: boolean }
+  | { type: "multiselect"; options: readonly string[]; defaultValue?: string[]; label?: string; forceValue?: boolean }
   | { type: "number"; label?: string; defaultValue?: number; min?: number; max?: number }
 
 export type ControlRecord = Record<string, ControlProp>
