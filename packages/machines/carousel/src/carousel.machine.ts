@@ -231,8 +231,9 @@ export const machine = createMachine<CarouselSchema>({
         const win = scope.getWin()
         const observer = new win.MutationObserver(() => {
           send({ type: "SNAP.REFRESH", src: "slide.mutation" })
+          dom.syncTabIndex(scope)
         })
-
+        dom.syncTabIndex(scope)
         observer.observe(el, { childList: true, subtree: true })
         return () => observer.disconnect()
       },

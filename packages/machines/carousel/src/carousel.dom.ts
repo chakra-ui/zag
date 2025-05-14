@@ -1,5 +1,5 @@
 import type { Scope } from "@zag-js/core"
-import { queryAll } from "@zag-js/dom-query"
+import { getTabbables, queryAll } from "@zag-js/dom-query"
 
 export const getRootId = (ctx: Scope) => ctx.ids?.root ?? `carousel:${ctx.id}`
 export const getItemId = (ctx: Scope, index: number) => ctx.ids?.item?.(index) ?? `carousel:${ctx.id}:item:${index}`
@@ -15,3 +15,10 @@ export const getItemGroupEl = (ctx: Scope) => ctx.getById(getItemGroupId(ctx))
 export const getItemEl = (ctx: Scope, index: number) => ctx.getById(getItemId(ctx, index))
 export const getItemEls = (ctx: Scope) => queryAll(getItemGroupEl(ctx), `[data-part=item]`)
 export const getIndicatorEl = (ctx: Scope, page: number) => ctx.getById(getIndicatorId(ctx, page))
+
+export const syncTabIndex = (ctx: Scope) => {
+  const el = getItemGroupEl(ctx)
+  if (!el) return
+  const tabbables = getTabbables(el)
+  el.setAttribute("tabindex", tabbables.length > 0 ? "-1" : "0")
+}
