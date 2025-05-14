@@ -1,4 +1,4 @@
-import { ariaAttr, dataAttr, getEventKey, getEventTarget, isFocusable } from "@zag-js/dom-query"
+import { ariaAttr, contains, dataAttr, getEventKey, getEventTarget, isFocusable, isSelfTarget } from "@zag-js/dom-query"
 import type { EventKeyMap, NormalizeProps, PropTypes } from "@zag-js/types"
 import { throttle } from "@zag-js/utils"
 import { parts } from "./carousel.anatomy"
@@ -82,6 +82,14 @@ export function connect<T extends PropTypes>(service: CarouselService, normalize
         "data-dragging": dataAttr(isDragging),
         dir: prop("dir"),
         "aria-live": isPlaying ? "off" : "polite",
+        onFocus(event) {
+          if (!isSelfTarget(event)) return
+          send({ type: "VIEWPORT.FOCUS" })
+        },
+        onBlur(event) {
+          if (contains(event.currentTarget, event.relatedTarget)) return
+          send({ type: "VIEWPORT.BLUR" })
+        },
         onMouseDown(event) {
           if (!prop("allowMouseDrag")) return
           if (event.button !== 0) return
@@ -93,7 +101,15 @@ export function connect<T extends PropTypes>(service: CarouselService, normalize
           event.preventDefault()
           send({ type: "DRAGGING.START" })
         },
-        onWheel: throttle(() => {
+        onWheel: throttle<any>((event: WheelEvent) => {
+          const axis = prop("orientation") === "horizontal" ? "deltaX" : "deltaY"
+
+          const isScrollingLeft = event[axis] < 0
+          if (isScrollingLeft && !computed("canScrollPrev")) return
+
+          const isScrollingRight = event[axis] > 0
+          if (isScrollingRight && !computed("canScrollNext")) return
+
           send({ type: "USER.SCROLL" })
         }, 150),
         onTouchStart() {

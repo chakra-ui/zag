@@ -134,6 +134,33 @@ export const machine = createMachine<CarouselSchema>({
         "USER.SCROLL": {
           target: "userScroll",
         },
+        "VIEWPORT.FOCUS": {
+          target: "focus",
+        },
+      },
+    },
+
+    focus: {
+      effects: ["trackKeyboardScroll"],
+      on: {
+        "VIEWPORT.BLUR": {
+          target: "idle",
+        },
+        "PAGE.NEXT": {
+          actions: ["clearScrollEndTimer", "setNextPage"],
+        },
+        "PAGE.PREV": {
+          actions: ["clearScrollEndTimer", "setPrevPage"],
+        },
+        "PAGE.SET": {
+          actions: ["clearScrollEndTimer", "setPage"],
+        },
+        "INDEX.SET": {
+          actions: ["clearScrollEndTimer", "setMatchingPage"],
+        },
+        "USER.SCROLL": {
+          target: "userScroll",
+        },
       },
     },
 
@@ -154,10 +181,17 @@ export const machine = createMachine<CarouselSchema>({
     userScroll: {
       effects: ["trackScroll"],
       on: {
-        "SCROLL.END": {
-          target: "idle",
-          actions: ["setClosestPage"],
-        },
+        "SCROLL.END": [
+          {
+            guard: "isFocused",
+            target: "focus",
+            actions: ["setClosestPage"],
+          },
+          {
+            target: "idle",
+            actions: ["setClosestPage"],
+          },
+        ],
       },
     },
 
@@ -180,6 +214,10 @@ export const machine = createMachine<CarouselSchema>({
   },
 
   implementations: {
+    guards: {
+      isFocused: ({ scope }) => scope.isActiveElement(dom.getItemGroupEl(scope)),
+    },
+
     effects: {
       autoUpdateSlide({ computed, send }) {
         const id = setInterval(() => {
@@ -193,9 +231,8 @@ export const machine = createMachine<CarouselSchema>({
         const win = scope.getWin()
         const observer = new win.MutationObserver(() => {
           send({ type: "SNAP.REFRESH", src: "slide.mutation" })
-          dom.syncTabIndex(scope)
         })
-        dom.syncTabIndex(scope)
+
         observer.observe(el, { childList: true, subtree: true })
         return () => observer.disconnect()
       },
@@ -283,6 +320,30 @@ export const machine = createMachine<CarouselSchema>({
           },
         })
       },
+
+      trackKeyboardScroll({ scope, send, context }) {
+        const win = scope.getWin()
+        const onKeyDown = (event: KeyboardEvent) => {
+          switch (event.key) {
+            case "ArrowRight":
+              event.preventDefault()
+              send({ type: "PAGE.NEXT" })
+              break
+            case "ArrowLeft":
+              event.preventDefault()
+              send({ type: "PAGE.PREV" })
+              break
+            case "Home":
+              event.preventDefault()
+              send({ type: "PAGE.SET", index: 0 })
+              break
+            case "End":
+              event.preventDefault()
+              send({ type: "PAGE.SET", index: context.get("pageSnapPoints").length - 1 })
+          }
+        }
+        return addDomEvent(win, "keydown", onKeyDown, { capture: true })
+      },
     },
 
     actions: {
@@ -291,13 +352,15 @@ export const machine = createMachine<CarouselSchema>({
         clearTimeout(refs.get("timeoutRef"))
         refs.set("timeoutRef", undefined)
       },
-      scrollToPage({ context, event, scope, computed }) {
+      scrollToPage({ context, event, scope, computed, flush }) {
         const behavior = event.instant ? "instant" : "smooth"
         const index = clampValue(event.index ?? context.get("page"), 0, context.get("pageSnapPoints").length - 1)
         const el = dom.getItemGroupEl(scope)
         if (!el) return
         const axis = computed("isHorizontal") ? "left" : "top"
-        el.scrollTo({ [axis]: context.get("pageSnapPoints")[index], behavior })
+        flush(() => {
+          el.scrollTo({ [axis]: context.get("pageSnapPoints")[index], behavior })
+        })
       },
       setClosestPage({ context, scope, computed }) {
         const el = dom.getItemGroupEl(scope)
@@ -383,7 +446,7 @@ export const machine = createMachine<CarouselSchema>({
 
           const scrollSnapType = el.dataset.scrollSnapType
           if (scrollSnapType) {
-            el.style.removeProperty("scroll-snap-type")
+            el.style.setProperty("scroll-snap-type", scrollSnapType)
             delete el.dataset.scrollSnapType
           }
         })
