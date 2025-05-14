@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 
 > For v0.x changelog, see the [v0 branch](https://github.com/chakra-ui/zag/blob/v0/CHANGELOG.md)
 
+## [1.12.2](./#1.12.2) - 2025-05-12
+
+### Fixed
+
+- **Select, Menu, Tabs**: Fix type issue with the `navigate` prop
+
 ## [1.12.1](./#1.12.1) - 2025-05-12
 
 ### Fixed
