@@ -135,7 +135,7 @@ function setupGlobalFocusEvents(root?: RootNode) {
   const doc = getDocument(root)
 
   let focus = win.HTMLElement.prototype.focus
-  win.HTMLElement.prototype.focus = function () {
+  function patchedFocus(this: HTMLElement) {
     // For programmatic focus, we remove the focus visible state to prevent showing focus rings
     // When `options.focusVisible` is supported in most browsers, we can remove this
     // @see https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement/focus#focusvisible
@@ -145,6 +145,13 @@ function setupGlobalFocusEvents(root?: RootNode) {
     hasEventBeforeFocus = true
     focus.apply(this, arguments as unknown as [options?: FocusOptions | undefined])
   }
+
+  // Overwrite via assignment does not work in happy dom:
+  // https://github.com/capricorn86/happy-dom/issues/1214
+  Object.defineProperty(win.HTMLElement.prototype, "focus", {
+    configurable: true,
+    value: patchedFocus,
+  })
 
   doc.addEventListener("keydown", handleKeyboardEvent, true)
   doc.addEventListener("keyup", handleKeyboardEvent, true)
