@@ -1,5 +1,5 @@
 import { ariaHidden } from "@zag-js/aria-hidden"
-import { createGuards, createMachine, type Params } from "@zag-js/core"
+import { setup, type Params } from "@zag-js/core"
 import { trackDismissableElement } from "@zag-js/dismissable"
 import { clickIfLink, observeAttributes, observeChildren, raf, scrollIntoView, setCaretToEnd } from "@zag-js/dom-query"
 import { getPlacement } from "@zag-js/popper"
@@ -8,9 +8,11 @@ import { collection } from "./combobox.collection"
 import * as dom from "./combobox.dom"
 import type { ComboboxSchema, Placement } from "./combobox.types"
 
-const { and, not } = createGuards<ComboboxSchema>()
+const { guards, createMachine, choose } = setup<ComboboxSchema>()
 
-export const machine = createMachine<ComboboxSchema>({
+const { and, not } = guards
+
+export const machine = createMachine({
   props({ props }) {
     return {
       loopFocus: true,
@@ -167,6 +169,13 @@ export const machine = createMachine<ComboboxSchema>({
       actions: ["reposition"],
     },
   },
+
+  entry: choose([
+    {
+      guard: "autoFocus",
+      actions: ["setInitialFocus"],
+    },
+  ]),
 
   states: {
     idle: {
@@ -674,6 +683,7 @@ export const machine = createMachine<ComboboxSchema>({
       },
       restoreFocus: ({ event }) => (event.restoreFocus == null ? true : !!event.restoreFocus),
       isChangeEvent: ({ event }) => event.previousEvent?.type === "INPUT.CHANGE",
+      autoFocus: ({ prop }) => !!prop("autoFocus"),
     },
 
     effects: {
