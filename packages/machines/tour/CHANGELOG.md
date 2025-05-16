@@ -1,5 +1,24 @@
 # @zag-js/tour
 
+## 1.12.3
+
+### Patch Changes
+
+- [`3572061`](https://github.com/chakra-ui/zag/commit/35720612e65bd58b7dd0cbcda0ffbce17d754641) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix issue where calling `api.start(<id>)` with a step id doesn't
+  work as expected
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.12.3
+  - @zag-js/core@1.12.3
+  - @zag-js/types@1.12.3
+  - @zag-js/utils@1.12.3
+  - @zag-js/dismissable@1.12.3
+  - @zag-js/dom-query@1.12.3
+  - @zag-js/focus-trap@1.12.3
+  - @zag-js/interact-outside@1.12.3
+  - @zag-js/popper@1.12.3
+
 ## 1.12.2
 
 ### Patch Changes

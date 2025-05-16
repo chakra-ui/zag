@@ -1,5 +1,17 @@
 # @zag-js/checkbox
 
+## 1.12.3
+
+### Patch Changes
+
+- Updated dependencies [[`0311b53`](https://github.com/chakra-ui/zag/commit/0311b538ecebfd644af99901069c94de3d8d104d)]:
+  - @zag-js/focus-visible@1.12.3
+  - @zag-js/anatomy@1.12.3
+  - @zag-js/core@1.12.3
+  - @zag-js/types@1.12.3
+  - @zag-js/utils@1.12.3
+  - @zag-js/dom-query@1.12.3
+
 ## 1.12.2
 
 ### Patch Changes

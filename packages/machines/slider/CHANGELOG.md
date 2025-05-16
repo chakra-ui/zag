@@ -1,5 +1,20 @@
 # @zag-js/slider
 
+## 1.12.3
+
+### Patch Changes
+
+- [`9e65d95`](https://github.com/chakra-ui/zag/commit/9e65d95c99cdd6aa54c7076759badbb07a15eaa8) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix issue where slider could throw a error when rendered in an
+  popover or dialog.
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.12.3
+  - @zag-js/core@1.12.3
+  - @zag-js/types@1.12.3
+  - @zag-js/utils@1.12.3
+  - @zag-js/dom-query@1.12.3
+
 ## 1.12.2
 
 ### Patch Changes

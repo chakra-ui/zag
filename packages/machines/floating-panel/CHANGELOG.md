@@ -1,5 +1,20 @@
 # @zag-js/floating-panel
 
+## 1.12.3
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.12.3
+  - @zag-js/core@1.12.3
+  - @zag-js/store@1.12.3
+  - @zag-js/types@1.12.3
+  - @zag-js/utils@1.12.3
+  - @zag-js/dismissable@1.12.3
+  - @zag-js/dom-query@1.12.3
+  - @zag-js/popper@1.12.3
+  - @zag-js/rect-utils@1.12.3
+
 ## 1.12.2
 
 ### Patch Changes

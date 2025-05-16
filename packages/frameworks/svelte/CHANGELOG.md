@@ -1,5 +1,17 @@
 # @zag-js/svelte
 
+## 1.12.3
+
+### Patch Changes
+
+- [`ffec6a7`](https://github.com/chakra-ui/zag/commit/ffec6a7723abf5ecf1356bb48712f38ca8ac1b2f) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Improve reactivity when events don't trigger a state transition
+
+- Updated dependencies []:
+  - @zag-js/core@1.12.3
+  - @zag-js/types@1.12.3
+  - @zag-js/utils@1.12.3
+
 ## 1.12.2
 
 ### Patch Changes
