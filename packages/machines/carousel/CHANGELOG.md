@@ -1,5 +1,21 @@
 # @zag-js/carousel
 
+## 1.12.3
+
+### Patch Changes
+
+- [`1eef624`](https://github.com/chakra-ui/zag/commit/1eef6244c3c496205d1c2d40129738dfbb980091) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - - Fix issue where focusing on carousel region and navigating with
+  keyboard doesn't work as expected.
+  - Fix issue when `allowMouseDrag` is set where carousel no longer snaps after mouse interaction.
+- Updated dependencies []:
+  - @zag-js/anatomy@1.12.3
+  - @zag-js/core@1.12.3
+  - @zag-js/types@1.12.3
+  - @zag-js/utils@1.12.3
+  - @zag-js/dom-query@1.12.3
+  - @zag-js/scroll-snap@1.12.3
+
 ## 1.12.2
 
 ### Patch Changes

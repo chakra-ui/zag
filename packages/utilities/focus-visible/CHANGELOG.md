@@ -1,5 +1,17 @@
 # @zag-js/focus-visible
 
+## 1.12.3
+
+### Patch Changes
+
+- [#2461](https://github.com/chakra-ui/zag/pull/2461)
+  [`0311b53`](https://github.com/chakra-ui/zag/commit/0311b538ecebfd644af99901069c94de3d8d104d) Thanks
+  [@mbeckem](https://github.com/mbeckem)! - Fix an issue where an assignment to the browser's HTMLElement prototype is
+  not supported (e.g. happy-dom).
+
+- Updated dependencies []:
+  - @zag-js/dom-query@1.12.3
+
 ## 1.12.2
 
 ### Patch Changes

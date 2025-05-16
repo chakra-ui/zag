@@ -1,5 +1,17 @@
 # @zag-js/preact
 
+## 1.12.3
+
+### Patch Changes
+
+- [`1442580`](https://github.com/chakra-ui/zag/commit/1442580a57113cd35f39feba89eebf2b9d0837fd) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Remove `react` and `react-dom` from peerDeps.
+
+- Updated dependencies []:
+  - @zag-js/core@1.12.3
+  - @zag-js/store@1.12.3
+  - @zag-js/types@1.12.3
+
 ## 1.12.2
 
 ### Patch Changes
