@@ -81,7 +81,7 @@ export function connect<T extends PropTypes>(service: TourService, normalize: No
       send({ type: "STEP.SET", value: id })
     },
     start(id) {
-      send({ type: "START", id })
+      send({ type: "START", value: id })
     },
     isValidStep(id) {
       return steps.some((step) => step.id === id)
