@@ -85,3 +85,17 @@ export function throttle<T extends (...args: any[]) => void>(fn: T, wait = 0): T
     }
   }) as T
 }
+
+export function debounce<T extends (...args: any[]) => void>(fn: T, wait = 0): T {
+  let timeout: ReturnType<typeof setTimeout> | null = null
+
+  return ((...args: Parameters<T>) => {
+    if (timeout) {
+      clearTimeout(timeout)
+      timeout = null
+    }
+    timeout = setTimeout(() => {
+      fn(...args)
+    }, wait)
+  }) as T
+}

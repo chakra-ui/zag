@@ -4,6 +4,28 @@ All notable changes to this project will be documented in this file.
 
 > For v0.x changelog, see the [v0 branch](https://github.com/chakra-ui/zag/blob/v0/CHANGELOG.md)
 
+## [1.12.3](./#1.12.3) - 2025-05-16
+
+### Fixed
+
+- **Carousel**:
+
+  - Fix issue where focusing on carousel region and navigating with keyboard doesn't work as expected
+  - Fix issue when `allowMouseDrag` is set where carousel no longer snaps after mouse interaction
+
+- **Combobox**: Fix issue where `onInputValueChange` doesn't get called when `autoFocus` is set to `true`
+
+- **Focus Visible**: Fix an issue where an assignment to the browser's `HTMLElement` prototype is not supported (e.g.
+  happy-dom)
+
+- **Preact**: Remove `react` and `react-dom` from peerDependencies
+
+- **Slider**: Fix issue where slider could throw a error when rendered in an popover or dialog
+
+- **Svelte**: Improve reactivity when events don't trigger a state transition
+
+- **Tour**: Fix issue where calling `api.start(<id>)` with a step id doesn't work as expected
+
 ## [1.12.2](./#1.12.2) - 2025-05-12
 
 ### Fixed
