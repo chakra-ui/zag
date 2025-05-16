@@ -15,6 +15,7 @@
     return {
       state: currentState.state.get(),
       event: currentState.event.current(),
+      previousEvent: currentState.event.previous(),
       context: context ? Object.fromEntries(context.map((key) => [key, currentState.context.get(key)])) : undefined,
     }
   })
