@@ -24,7 +24,7 @@ export default function ToastGroup() {
   })
 
   const api = toast.group.connect(service, normalizeProps)
-  const id = useRef<string>()
+  const id = useRef<string | undefined>(undefined)
 
   return (
     <>
