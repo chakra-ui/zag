@@ -1,5 +1,15 @@
 # @zag-js/solid
 
+## 1.12.4
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/core@1.12.4
+  - @zag-js/store@1.12.4
+  - @zag-js/types@1.12.4
+  - @zag-js/utils@1.12.4
+
 ## 1.12.3
 
 ### Patch Changes
