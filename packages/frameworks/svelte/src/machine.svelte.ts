@@ -264,14 +264,18 @@ export function useMachine<T extends MachineSchema>(
   machine.watch?.(getParams())
 
   return {
-    state: getState(),
+    get state() {
+      return getState()
+    },
     send,
     context: ctx,
     prop,
     scope,
     refs,
     computed,
-    event: getEvent(),
+    get event() {
+      return getEvent()
+    },
     getStatus: () => status,
   } as Service<T>
 }
@@ -283,5 +287,7 @@ function useProp<T>(value: () => T) {
 }
 
 function flush(fn: VoidFunction) {
-  flushSync(() => fn())
+  queueMicrotask(() => {
+    flushSync(() => fn())
+  })
 }
