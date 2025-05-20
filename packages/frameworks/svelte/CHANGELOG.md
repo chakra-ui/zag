@@ -1,5 +1,17 @@
 # @zag-js/svelte
 
+## 1.12.4
+
+### Patch Changes
+
+- [`9f76aca`](https://github.com/chakra-ui/zag/commit/9f76aca63d9e0ec20c5e57ca28c6ece9ae158904) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Improve reactivity of synchronous state updates.
+
+- Updated dependencies []:
+  - @zag-js/core@1.12.4
+  - @zag-js/types@1.12.4
+  - @zag-js/utils@1.12.4
+
 ## 1.12.3
 
 ### Patch Changes
