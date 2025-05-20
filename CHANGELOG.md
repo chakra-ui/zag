@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 
 > For v0.x changelog, see the [v0 branch](https://github.com/chakra-ui/zag/blob/v0/CHANGELOG.md)
 
+## [1.12.4](./#1.12.4) - 2025-05-20
+
+### Fixed
+
+- **Svelte**: Improve reactivity of synchronous state updates.
+
 ## [1.12.3](./#1.12.3) - 2025-05-16
 
 ### Fixed
