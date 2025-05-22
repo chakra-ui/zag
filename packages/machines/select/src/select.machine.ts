@@ -550,6 +550,8 @@ export const machine = createMachine<SelectSchema>({
         let value = event.value ?? context.get("highlightedValue")
         if (value == null) return
 
+        prop("onSelect")?.({ value })
+
         const nullable = prop("deselectable") && !prop("multiple") && context.get("value").includes(value)
         value = nullable ? null : value
         context.set("value", (prev) => {
@@ -600,6 +602,8 @@ export const machine = createMachine<SelectSchema>({
       },
 
       selectItem({ context, prop, event }) {
+        prop("onSelect")?.({ value: event.value })
+
         const nullable = prop("deselectable") && !prop("multiple") && context.get("value").includes(event.value)
         const value = nullable ? null : event.value
         context.set("value", (prev) => {

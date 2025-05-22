@@ -29,6 +29,10 @@ export interface ScrollToIndexDetails {
   immediate?: boolean | undefined
 }
 
+export interface SelectionDetails {
+  value: string
+}
+
 /* -----------------------------------------------------------------------------
  * Machine context
  * -----------------------------------------------------------------------------*/
@@ -88,6 +92,10 @@ export interface SelectProps<T extends CollectionItem = CollectionItem>
    * @default true
    */
   closeOnSelect?: boolean | undefined
+  /**
+   * Function called when an item is selected
+   */
+  onSelect?: ((details: SelectionDetails) => void) | undefined
   /**
    * The callback fired when the highlighted item changes.
    */

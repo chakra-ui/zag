@@ -21,4 +21,5 @@ export type {
   PositioningOptions,
   ScrollToIndexDetails,
   ValueChangeDetails,
+  SelectionDetails,
 } from "./select.types"
