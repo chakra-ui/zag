@@ -281,7 +281,7 @@ export interface ToastStore<V = any> {
   /**
    * Remove a toast by its ID
    */
-  remove: (id: string) => void
+  remove: (id?: string) => void
   /**
    * Dismiss a toast by its ID. If no ID is provided, dismisses all toasts
    */
