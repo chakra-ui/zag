@@ -517,7 +517,7 @@ export const machine = createMachine<ColorPickerSchema>({
           valueAsString: computed("valueAsString"),
         })
       },
-      setChannelColorFromInput({ context, event, scope }) {
+      setChannelColorFromInput({ context, event, scope, prop }) {
         const { channel, isTextField, value } = event
         const currentAlpha = context.get("value").getChannelValue("alpha")
 
@@ -551,6 +551,12 @@ export const machine = createMachine<ColorPickerSchema>({
 
         // set new color
         context.set("value", color)
+
+        // invoke change end
+        prop("onValueChangeEnd")?.({
+          value: color,
+          valueAsString: color.toString(context.get("format")),
+        })
       },
       incrementChannel({ context, event }) {
         const color = context.get("value").incrementChannel(event.channel, event.step)
