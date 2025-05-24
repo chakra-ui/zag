@@ -1,5 +1,21 @@
 # @zag-js/toast
 
+## 1.13.0
+
+### Patch Changes
+
+- [`b78bbce`](https://github.com/chakra-ui/zag/commit/b78bbce06396db61759b482845ddf43fc3032ef1) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix issue where calling `toast.remove()` without an id show a TS
+  Error.
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.13.0
+  - @zag-js/core@1.13.0
+  - @zag-js/types@1.13.0
+  - @zag-js/utils@1.13.0
+  - @zag-js/dismissable@1.13.0
+  - @zag-js/dom-query@1.13.0
+
 ## 1.12.4
 
 ### Patch Changes
