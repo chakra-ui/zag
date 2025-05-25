@@ -302,3 +302,8 @@ export const navigationMenuControls = defineControls({
   openDelay: { type: "number", defaultValue: 200 },
   closeDelay: { type: "number", defaultValue: 300 },
 })
+
+export const passwordInputControls = defineControls({
+  disabled: { type: "boolean", defaultValue: false },
+  readOnly: { type: "boolean", defaultValue: false },
+})
