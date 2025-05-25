@@ -287,7 +287,7 @@ function useProp<T>(value: () => T) {
 }
 
 function flush(fn: VoidFunction) {
-  queueMicrotask(() => {
-    flushSync(() => fn())
+  flushSync(() => {
+    queueMicrotask(() => fn())
   })
 }
