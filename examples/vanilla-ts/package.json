@@ -13,7 +13,7 @@
     "vite": "^6.3.5"
   },
   "dependencies": {
-    "@internationalized/date": "3.8.0",
+    "@internationalized/date": "3.8.1",
     "@zag-js/accordion": "workspace:*",
     "@zag-js/anatomy": "workspace:*",
     "@zag-js/anatomy-icons": "workspace:*",
@@ -84,7 +84,7 @@
     "@zag-js/types": "workspace:*",
     "@zag-js/utils": "workspace:*",
     "form-serialize": "0.7.2",
-    "match-sorter": "8.0.1",
+    "match-sorter": "8.0.2",
     "nanoid": "^5.1.5"
   }
 }
