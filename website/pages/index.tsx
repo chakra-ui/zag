@@ -86,7 +86,7 @@ export default function Home() {
             <Link href="/components/react/password-input">
               <Annoucement alignSelf="flex-start">
                 <LuPartyPopper />
-                [New] Password Input
+                [New] Password Input component
                 <HiArrowRight />
               </Annoucement>
             </Link>
