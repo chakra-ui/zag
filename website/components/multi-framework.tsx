@@ -3,7 +3,7 @@ import { chakra } from "@chakra-ui/system"
 import { normalizeProps, useMachine } from "@zag-js/react"
 import * as tabs from "@zag-js/tabs"
 import { CodeArea } from "./code-area"
-import { ReactIcon, SolidIcon, VueIcon } from "./icons"
+import { ReactIcon, SolidIcon, VueIcon, SvelteIcon } from "./icons"
 import { NumberInput } from "../demos/number-input"
 import { Playground } from "./playground"
 
@@ -54,12 +54,12 @@ export function MultiframeworkTabs() {
             <Text>Vue</Text>
           </VStack>
         </FrameworkButton>
-        {/* <FrameworkButton {...api.getTriggerProps({ value: "svelte" })}>
+        <FrameworkButton {...api.getTriggerProps({ value: "svelte" })}>
           <VStack>
             <SvelteIcon />
             <Text>Svelte</Text>
           </VStack>
-        </FrameworkButton> */}
+        </FrameworkButton>
       </HStack>
 
       <Stack direction={{ base: "column", lg: "row" }} spacing="56px" mt="8">
