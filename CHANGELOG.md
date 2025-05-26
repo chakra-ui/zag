@@ -4,6 +4,21 @@ All notable changes to this project will be documented in this file.
 
 > For v0.x changelog, see the [v0 branch](https://github.com/chakra-ui/zag/blob/v0/CHANGELOG.md)
 
+## [1.13.0](./#1.13.0) - 2025-05-26
+
+### Added
+
+- **[New] Password Input**: Add password input machine for displaying a password input field.
+- **Select**: Add `onSelect` callback that gets fired when an item is selected via keyboard/mouse.
+
+### Fixed
+
+- **Color Picker**: Fix issue where value change end event is invoked when committing via an input.
+
+- **Svelte**: Fix issue with microtask timing in svelte `5.28.3+`.
+
+- **Toast**: Fix issue where calling `toast.remove()` without an id shows a TypeScript error.
+
 ## [1.12.4](./#1.12.4) - 2025-05-20
 
 ### Fixed
