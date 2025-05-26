@@ -1,5 +1,22 @@
 # @zag-js/color-picker
 
+## 1.13.0
+
+### Patch Changes
+
+- [`e13f867`](https://github.com/chakra-ui/zag/commit/e13f867b1869f4c98b2041ef8e8e864a1dabeef3) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Invoke value change end when commiting via an input
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.13.0
+  - @zag-js/core@1.13.0
+  - @zag-js/types@1.13.0
+  - @zag-js/color-utils@1.13.0
+  - @zag-js/utils@1.13.0
+  - @zag-js/dismissable@1.13.0
+  - @zag-js/dom-query@1.13.0
+  - @zag-js/popper@1.13.0
+
 ## 1.12.4
 
 ### Patch Changes
