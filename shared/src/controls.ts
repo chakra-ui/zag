@@ -306,4 +306,5 @@ export const navigationMenuControls = defineControls({
 export const passwordInputControls = defineControls({
   disabled: { type: "boolean", defaultValue: false },
   readOnly: { type: "boolean", defaultValue: false },
+  ignorePasswordManagers: { type: "boolean", defaultValue: false },
 })

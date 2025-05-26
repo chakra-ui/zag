@@ -47,13 +47,14 @@ export function connect<T extends PropTypes>(
       })
     },
 
-    getInputProps(props = {}) {
-      const { autoComplete = "current-password", ignorePasswordManagers } = props
+    getInputProps() {
       return normalize.input({
         ...parts.input.attrs,
         id: dom.getInputId(scope),
         autoCapitalize: "off",
-        autoComplete: autoComplete,
+        name: prop("name"),
+        required: prop("required"),
+        autoComplete: prop("autoComplete"),
         spellCheck: false,
         readOnly,
         disabled,
@@ -62,7 +63,7 @@ export function connect<T extends PropTypes>(
         "data-disabled": dataAttr(disabled),
         "data-invalid": dataAttr(invalid),
         "data-readonly": dataAttr(readOnly),
-        ...(ignorePasswordManagers ? passwordManagerProps : {}),
+        ...(prop("ignorePasswordManagers") ? passwordManagerProps : {}),
       })
     },
 

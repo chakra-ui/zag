@@ -18,7 +18,7 @@ const api = computed(() => passwordInput.connect(service, normalizeProps))
       <label v-bind="api.getLabelProps()">Password</label>
 
       <div v-bind="api.getControlProps()">
-        <input v-bind="api.getInputProps({ ignorePasswordManagers: true })" />
+        <input v-bind="api.getInputProps()" />
         <button v-bind="api.getVisibilityTriggerProps()">
           <span v-bind="api.getIndicatorProps()">
             <EyeIcon v-if="api.visible" />

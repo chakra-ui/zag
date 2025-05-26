@@ -12,7 +12,12 @@ export const props = createProps<PasswordInputProps>()([
   "getRootNode",
   "disabled",
   "invalid",
+  "required",
   "readOnly",
+  "translations",
+  "ignorePasswordManagers",
+  "autoComplete",
+  "name",
 ])
 
 export const splitProps = createSplitProps<Partial<PasswordInputProps>>(props)

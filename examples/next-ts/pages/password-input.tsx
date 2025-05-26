@@ -22,7 +22,7 @@ export default function Page() {
         <div {...api.getRootProps()}>
           <label {...api.getLabelProps()}>Password</label>
           <div {...api.getControlProps()}>
-            <input {...api.getInputProps({ ignorePasswordManagers: true })} />
+            <input {...api.getInputProps()} />
             <button {...api.getVisibilityTriggerProps()}>
               <span {...api.getIndicatorProps()}>{api.visible ? <EyeIcon /> : <EyeOffIcon />}</span>
             </button>

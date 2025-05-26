@@ -8,6 +8,8 @@ export const machine = createMachine<PasswordInputSchema>({
     return {
       id: uuid(),
       defaultVisible: false,
+      autoComplete: "current-password",
+      ignorePasswordManagers: false,
       ...props,
     }
   },

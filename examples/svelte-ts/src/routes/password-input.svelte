@@ -19,7 +19,7 @@
   <div {...api.getRootProps()}>
     <label {...api.getLabelProps()}>Password</label>
     <div {...api.getControlProps()}>
-      <input {...api.getInputProps({ ignorePasswordManagers: true })} />
+      <input {...api.getInputProps()} />
       <button {...api.getVisibilityTriggerProps()}>
         <span {...api.getIndicatorProps()}>
           {#if api.visible}

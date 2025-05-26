@@ -4,7 +4,6 @@ export { machine } from "./password-input.machine"
 export * from "./password-input.props"
 export type {
   ElementIds,
-  InputProps,
   PasswordInputMachine as Machine,
   PasswordInputSchema,
   PasswordInputService,

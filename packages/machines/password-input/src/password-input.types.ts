@@ -5,40 +5,68 @@ export interface VisibilityChangeDetails {
   visible: boolean
 }
 
-export interface ElementIds {
-  input?: string
-  visibilityTrigger?: string
-}
+export type ElementIds = Partial<{
+  input: string
+  visibilityTrigger: string
+}>
+
+export type IntlTranslations = Partial<{
+  visibilityTrigger: ((visible: boolean) => string) | undefined
+}>
 
 export interface PasswordInputProps extends DirectionProperty, CommonProperties {
   /**
    * The default visibility of the password input.
    */
-  defaultVisible?: boolean
+  defaultVisible?: boolean | undefined
   /**
    * Whether the password input is visible.
    */
-  visible?: boolean
+  visible?: boolean | undefined
   /**
    * Function called when the visibility changes.
    */
-  onVisibilityChange?: (details: VisibilityChangeDetails) => void
+  onVisibilityChange?: ((details: VisibilityChangeDetails) => void) | undefined
   /**
    * The ids of the password input parts
    */
-  ids?: ElementIds
+  ids?: ElementIds | undefined
   /**
    * Whether the password input is disabled.
    */
-  disabled?: boolean
+  disabled?: boolean | undefined
   /**
    * The invalid state of the password input.
    */
-  invalid?: boolean
+  invalid?: boolean | undefined
   /**
    * Whether the password input is read only.
    */
-  readOnly?: boolean
+  readOnly?: boolean | undefined
+  /**
+   * Whether the password input is required.
+   */
+  required?: boolean | undefined
+  /**
+   * The localized messages to use.
+   */
+  translations?: IntlTranslations | undefined
+  /**
+   * When `true`, the input will ignore password managers.
+   *
+   * **Only works for the following password managers**
+   * - 1Password, LastPass, Bitwarden, Dashlane, Proton Pass
+   */
+  ignorePasswordManagers?: boolean | undefined
+  /**
+   * The autocomplete attribute for the password input.
+   * @default "current-password"
+   */
+  autoComplete?: "current-password" | "new-password" | undefined
+  /**
+   * The name of the password input.
+   */
+  name?: string | undefined
 }
 
 export interface PasswordInputSchema {
@@ -56,20 +84,6 @@ export interface PasswordInputSchema {
 export type PasswordInputService = Service<PasswordInputSchema>
 
 export type PasswordInputMachine = Machine<PasswordInputSchema>
-
-export interface InputProps {
-  /**
-   * When `true`, the input will ignore password managers.
-   *
-   * **Only works for the following password managers**
-   * - 1Password, LastPass, Bitwarden, Dashlane, Proton Pass
-   */
-  ignorePasswordManagers?: boolean
-  /**
-   * The autocomplete attribute for the password input.
-   */
-  autoComplete?: "current-password" | "new-password"
-}
 
 export interface PasswordInputApi<T extends PropTypes = PropTypes> {
   /**
@@ -95,7 +109,7 @@ export interface PasswordInputApi<T extends PropTypes = PropTypes> {
 
   getRootProps(): T["element"]
   getLabelProps(): T["label"]
-  getInputProps(props?: InputProps): T["input"]
+  getInputProps(): T["input"]
   getVisibilityTriggerProps(): T["button"]
   getIndicatorProps(): T["element"]
   getControlProps(): T["element"]
