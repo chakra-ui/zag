@@ -83,10 +83,10 @@ export default function Home() {
       <Box as="header" position="relative">
         <Box layerStyle="contain">
           <Box pos="relative" maxW="4xl" pt={{ base: "16", md: "24" }}>
-            <Link href="/guides/migration">
+            <Link href="/components/react/password-input">
               <Annoucement alignSelf="flex-start">
                 <LuPartyPopper />
-                Celebrating the launch of Zag 1.0
+                [New] Password Input
                 <HiArrowRight />
               </Annoucement>
             </Link>
