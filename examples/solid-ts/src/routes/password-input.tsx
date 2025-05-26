@@ -2,7 +2,7 @@ import * as passwordInput from "@zag-js/password-input"
 import { passwordInputControls } from "@zag-js/shared"
 import { normalizeProps, useMachine } from "@zag-js/solid"
 import { EyeIcon, EyeOffIcon } from "lucide-solid"
-import { createMemo, createUniqueId } from "solid-js"
+import { createMemo, createUniqueId, Show } from "solid-js"
 import { StateVisualizer } from "../components/state-visualizer"
 import { Toolbar } from "../components/toolbar"
 import { useControls } from "../hooks/use-controls"
@@ -27,7 +27,11 @@ export default function Page() {
           <div {...api().getControlProps()}>
             <input {...api().getInputProps()} />
             <button {...api().getVisibilityTriggerProps()}>
-              <span {...api().getIndicatorProps()}>{api().visible ? <EyeIcon /> : <EyeOffIcon />}</span>
+              <span {...api().getIndicatorProps()}>
+                <Show when={api().visible} fallback={<EyeOffIcon />}>
+                  <EyeIcon />
+                </Show>
+              </span>
             </button>
           </div>
         </div>

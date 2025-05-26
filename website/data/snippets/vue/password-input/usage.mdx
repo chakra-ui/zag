@@ -1,0 +1,30 @@
+```html
+<script setup>
+  import * as passwordInput from "@zag-js/password-input"
+  import { useMachine, normalizeProps } from "@zag-js/vue"
+  import { computed, useId } from "vue"
+  import { EyeIcon, EyeOffIcon } from "lucide-vue-next"
+
+  const [state, send] = useMachine(passwordInput.machine({ id: useId() }))
+
+  const api = computed(() =>
+    passwordInput.connect(state.value, send, normalizeProps),
+  )
+</script>
+
+<template>
+  <div v-bind="api.getRootProps()">
+    <label v-bind="api.getLabelProps()">Password</label>
+
+    <div v-bind="api.getControlProps()">
+      <input v-bind="api.getInputProps()" />
+      <button v-bind="api.getVisibilityTriggerProps()">
+        <span v-bind="api.getIndicatorProps()">
+          <EyeIcon v-if="api.visible" />
+          <EyeOffIcon v-else />
+        </span>
+      </button>
+    </div>
+  </div>
+</template>
+```

@@ -1,0 +1,31 @@
+```jsx
+import * as passwordInput from "@zag-js/password-input"
+import { useMachine, normalizeProps } from "@zag-js/solid"
+import { createMemo, createUniqueId } from "solid-js"
+
+function PasswordInput() {
+  const [state, send] = useMachine(
+    passwordInput.machine({ id: createUniqueId() }),
+  )
+
+  const api = createMemo(() =>
+    passwordInput.connect(state, send, normalizeProps),
+  )
+
+  return (
+    <div {...api().getRootProps()}>
+      <label {...api().getLabelProps()}>Password</label>
+      <div {...api().getControlProps()}>
+        <input {...api().getInputProps()} />
+        <button {...api().getVisibilityTriggerProps()}>
+          <span {...api().getIndicatorProps()}>
+            <Show when={api().visible} fallback={<EyeOffIcon />}>
+              <EyeIcon />
+            </Show>
+          </span>
+        </button>
+      </div>
+    </div>
+  )
+}
+```

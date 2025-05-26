@@ -2694,6 +2694,94 @@
       }
     }
   },
+  "password-input": {
+    "api": {
+      "visible": {
+        "type": "boolean",
+        "description": "Whether the password input is visible."
+      },
+      "disabled": {
+        "type": "boolean",
+        "description": "Whether the password input is disabled."
+      },
+      "invalid": {
+        "type": "boolean",
+        "description": "Whether the password input is invalid."
+      },
+      "focus": {
+        "type": "() => void",
+        "description": "Focus the password input."
+      },
+      "setVisible": {
+        "type": "(value: boolean) => void",
+        "description": "Set the visibility of the password input."
+      }
+    },
+    "context": {
+      "defaultVisible": {
+        "type": "boolean",
+        "description": "The default visibility of the password input."
+      },
+      "visible": {
+        "type": "boolean",
+        "description": "Whether the password input is visible."
+      },
+      "onVisibilityChange": {
+        "type": "(details: VisibilityChangeDetails) => void",
+        "description": "Function called when the visibility changes."
+      },
+      "ids": {
+        "type": "Partial<{ input: string; visibilityTrigger: string; }>",
+        "description": "The ids of the password input parts"
+      },
+      "disabled": {
+        "type": "boolean",
+        "description": "Whether the password input is disabled."
+      },
+      "invalid": {
+        "type": "boolean",
+        "description": "The invalid state of the password input."
+      },
+      "readOnly": {
+        "type": "boolean",
+        "description": "Whether the password input is read only."
+      },
+      "required": {
+        "type": "boolean",
+        "description": "Whether the password input is required."
+      },
+      "translations": {
+        "type": "Partial<{ visibilityTrigger: (visible: boolean) => string; }>",
+        "description": "The localized messages to use."
+      },
+      "ignorePasswordManagers": {
+        "type": "boolean",
+        "description": "When `true`, the input will ignore password managers.\n\n**Only works for the following password managers**\n- 1Password, LastPass, Bitwarden, Dashlane, Proton Pass"
+      },
+      "autoComplete": {
+        "type": "\"current-password\" | \"new-password\"",
+        "description": "The autocomplete attribute for the password input.",
+        "defaultValue": "\"current-password\""
+      },
+      "name": {
+        "type": "string",
+        "description": "The name of the password input."
+      },
+      "dir": {
+        "type": "\"ltr\" | \"rtl\"",
+        "description": "The document's text/writing direction.",
+        "defaultValue": "\"ltr\""
+      },
+      "id": {
+        "type": "string",
+        "description": "The unique identifier of the machine."
+      },
+      "getRootNode": {
+        "type": "() => ShadowRoot | Node | Document",
+        "description": "A root node to correctly resolve document in custom environments. E.x.: Iframes, Electron."
+      }
+    }
+  },
   "pin-input": {
     "api": {
       "value": {
@@ -3444,6 +3532,10 @@
         "type": "boolean",
         "description": "Whether the select should close after an item is selected",
         "defaultValue": "true"
+      },
+      "onSelect": {
+        "type": "(details: SelectionDetails) => void",
+        "description": "Function called when an item is selected"
       },
       "onHighlightChange": {
         "type": "(details: HighlightChangeDetails<T>) => void",
@@ -4656,7 +4748,7 @@
         "description": "Update an existing toast with new properties"
       },
       "remove": {
-        "type": "(id: string) => void",
+        "type": "(id?: string) => void",
         "description": "Remove a toast by its ID"
       },
       "dismiss": {

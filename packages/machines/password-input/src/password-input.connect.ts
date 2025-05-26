@@ -59,6 +59,7 @@ export function connect<T extends PropTypes>(
         readOnly,
         disabled,
         type: visible ? "text" : "password",
+        "data-state": visible ? "visible" : "hidden",
         "aria-invalid": ariaAttr(invalid),
         "data-disabled": dataAttr(disabled),
         "data-invalid": dataAttr(invalid),
