@@ -288,7 +288,10 @@ const components = {
       component={SegmentedControl}
       defaultProps={{
         disabled: false,
-        name: "",
+        orientation: {
+          default: "horizontal",
+          options: ["horizontal", "vertical"],
+        },
       }}
     />
   ),
@@ -311,7 +314,7 @@ const components = {
         allowHalf: true,
         disabled: false,
         readOnly: false,
-        max: 5,
+        count: 5,
         dir: {
           options: ["ltr", "rtl"],
           default: "ltr",
@@ -409,7 +412,7 @@ const components = {
         },
         disabled: false,
         readOnly: false,
-        withSeconds: false,
+        allowSeconds: false,
       }}
     />
   ),
