@@ -2,6 +2,7 @@ import { Icon } from "@chakra-ui/icon"
 import { Badge, Box, HStack, Stack } from "@chakra-ui/layout"
 import * as menu from "@zag-js/menu"
 import { normalizeProps, Portal, useMachine } from "@zag-js/react"
+import packageJson from "@zag-js/react/package.json"
 import Link from "next/link"
 import { useId } from "react"
 import { HiChevronDown } from "react-icons/hi"
@@ -65,7 +66,7 @@ export const VersionSelector = () => {
 
 const items = [
   {
-    label: "1.0",
+    label: packageJson.version,
     value: "https://zagjs.com",
     tag: "v1",
   },
