@@ -12,11 +12,13 @@ import { EditableAnatomy } from "./editable"
 import { FieldAnatomy } from "./field"
 import { FieldsetAnatomy } from "./fieldset"
 import { FileUploadAnatomy } from "./file-upload"
+import { FloatingPanelAnatomy } from "./floating-panel"
 import { HoverCardAnatomy } from "./hover-card"
 import { LinearProgressAnatomy } from "./linear-progress"
 import { MenuAnatomy } from "./menu"
 import { NumberInputAnatomy } from "./number-input"
 import { PaginationAnatomy } from "./pagination"
+import { PasswordInputAnatomy } from "./password-input"
 import { PinInputAnatomy } from "./pin-input"
 import { PopoverAnatomy } from "./popover"
 import { QRCodeAnatomy } from "./qr-code"
@@ -35,11 +37,11 @@ import { TimePickerAnatomy } from "./time-picker"
 import { ToastAnatomy } from "./toast"
 import { ToggleGroupAnatomy } from "./toggle-group"
 import { TooltipAnatomy } from "./tooltip"
-import { TreeViewAnatomy } from "./tree-view"
 import { TourAnatomy } from "./tour"
-import { FloatingPanelAnatomy } from "./floating-panel"
+import { TreeViewAnatomy } from "./tree-view"
 
 export const allComponents = {
+  "password-input": PasswordInputAnatomy,
   "floating-panel": FloatingPanelAnatomy,
   tour: TourAnatomy,
   fieldset: FieldsetAnatomy,
