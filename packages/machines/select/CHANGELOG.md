@@ -1,5 +1,25 @@
 # @zag-js/select
 
+## 1.13.0
+
+### Minor Changes
+
+- [`7366236`](https://github.com/chakra-ui/zag/commit/7366236f35058c8b2ffe52a6939a770158bda62f) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Add `onSelect` callback that gets fired when an item is selected
+  via keyboard/mouse
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.13.0
+  - @zag-js/core@1.13.0
+  - @zag-js/types@1.13.0
+  - @zag-js/collection@1.13.0
+  - @zag-js/utils@1.13.0
+  - @zag-js/dismissable@1.13.0
+  - @zag-js/dom-query@1.13.0
+  - @zag-js/popper@1.13.0
+
 ## 1.12.4
 
 ### Patch Changes

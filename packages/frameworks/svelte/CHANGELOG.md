@@ -1,5 +1,17 @@
 # @zag-js/svelte
 
+## 1.13.0
+
+### Patch Changes
+
+- [`2fedd29`](https://github.com/chakra-ui/zag/commit/2fedd2996dedb8f6ffa5afe75d0aa0f60b181752) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix issue with microtask timing in svelte `5.28.3+`
+
+- Updated dependencies []:
+  - @zag-js/core@1.13.0
+  - @zag-js/types@1.13.0
+  - @zag-js/utils@1.13.0
+
 ## 1.12.4
 
 ### Patch Changes
