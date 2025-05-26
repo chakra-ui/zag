@@ -45,6 +45,7 @@ import { TreeView } from "./tree-view"
 import { Listbox } from "./listbox"
 import { Playground } from "../components/playground"
 import { FloatingPanel } from "./floating-panel"
+import { PasswordInput } from "./password-input"
 
 const components = {
   Accordion: () => (
@@ -516,6 +517,16 @@ const components = {
         draggable: true,
         disabled: false,
         lockAspectRatio: false,
+      }}
+    />
+  ),
+  PasswordInput: () => (
+    <Playground
+      name="password-input"
+      component={PasswordInput}
+      defaultProps={{
+        disabled: false,
+        ignorePasswordManagers: true,
       }}
     />
   ),

@@ -167,3 +167,26 @@ export async function swipe(
   await page.mouse.move(endX, endY, { steps: Math.max(duration / 10, 1) }) // Smoothness based on duration
   await page.mouse.up()
 }
+
+export function moveCaret(input: Locator, start: number, end = start) {
+  return input.evaluate((el) => {
+    if (el instanceof HTMLInputElement || el instanceof HTMLTextAreaElement) {
+      el.setSelectionRange(start, end)
+    }
+
+    throw new Error("Element is not an input or textarea")
+  })
+}
+
+export function getCaret(input: Locator) {
+  return input.evaluate((el) => {
+    if (el instanceof HTMLInputElement || el instanceof HTMLTextAreaElement) {
+      return {
+        start: el.selectionStart,
+        end: el.selectionEnd,
+      }
+    }
+
+    throw new Error("Element is not an input or textarea")
+  })
+}

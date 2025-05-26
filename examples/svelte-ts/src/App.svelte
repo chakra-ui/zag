@@ -21,11 +21,14 @@
   import FloatingPanel from "./routes/floating-panel.svelte"
   import HoverCard from "./routes/hover-card.svelte"
   import Index from "./routes/index.svelte"
+  import ListboxGrid from "./routes/listbox-grid.svelte"
+  import Listbox from "./routes/listbox.svelte"
   import NestedMenu from "./routes/menu-nested.svelte"
   import MenuOptions from "./routes/menu-options.svelte"
   import Menu from "./routes/menu.svelte"
   import NumberInput from "./routes/number-input.svelte"
   import Pagination from "./routes/pagination.svelte"
+  import PasswordInput from "./routes/password-input.svelte"
   import PinInput from "./routes/pin-input.svelte"
   import Popover from "./routes/popover.svelte"
   import Popper from "./routes/popper.svelte"
@@ -53,8 +56,6 @@
   import Tooltip from "./routes/tooltip.svelte"
   import Tour from "./routes/tour.svelte"
   import TreeView from "./routes/tree-view.svelte"
-  import Listbox from "./routes/listbox.svelte"
-  import ListboxGrid from "./routes/listbox-grid.svelte"
 
   const sortedRoutes = routesData.sort((a, b) => a.label.localeCompare(b.label))
 
@@ -112,6 +113,7 @@
     { path: "/steps", component: Steps },
     { path: "/listbox", component: Listbox },
     { path: "/listbox-grid", component: ListboxGrid },
+    { path: "/password-input", component: PasswordInput },
   ]
 </script>
 

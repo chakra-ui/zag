@@ -2,16 +2,15 @@
 <script setup>
 import * as {{component}} from "@zag-js/{{component}}"
 import { useMachine, normalizeProps } from "@zag-js/vue"
-import { computed } from "vue"
+import { computed, useId } from "vue"
 
-const [state, send] = useMachine({{component}}.machine({ id: "1" }))
+const service = useMachine({{component}}.machine({ id: useId() }))
 
-const api = computed(() => {{component}}.connect(state.value, send, normalizeProps))
+const api = computed(() => {{component}}.connect(service, normalizeProps))
 </script>
 
 <template>
-  <div ref="ref" v-bind="api.getRootProps()">
-    <div v-bind="api.getControlProps()">...</div>
+  <div v-bind="api.getRootProps()">
   </div>
 </template>
 ```

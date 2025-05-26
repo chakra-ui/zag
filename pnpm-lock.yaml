@@ -254,6 +254,9 @@ importers:
       '@zag-js/pagination':
         specifier: workspace:*
         version: link:../../packages/machines/pagination
+      '@zag-js/password-input':
+        specifier: workspace:*
+        version: link:../../packages/machines/password-input
       '@zag-js/pin-input':
         specifier: workspace:*
         version: link:../../packages/machines/pin-input
@@ -519,12 +522,18 @@ importers:
       '@zag-js/menu':
         specifier: workspace:*
         version: link:../../packages/machines/menu
+      '@zag-js/navigation-menu':
+        specifier: workspace:*
+        version: link:../../packages/machines/navigation-menu
       '@zag-js/number-input':
         specifier: workspace:*
         version: link:../../packages/machines/number-input
       '@zag-js/pagination':
         specifier: workspace:*
         version: link:../../packages/machines/pagination
+      '@zag-js/password-input':
+        specifier: workspace:*
+        version: link:../../packages/machines/password-input
       '@zag-js/pin-input':
         specifier: workspace:*
         version: link:../../packages/machines/pin-input
@@ -757,18 +766,27 @@ importers:
       '@zag-js/interact-outside':
         specifier: workspace:*
         version: link:../../packages/utilities/interact-outside
+      '@zag-js/listbox':
+        specifier: workspace:*
+        version: link:../../packages/machines/listbox
       '@zag-js/live-region':
         specifier: workspace:*
         version: link:../../packages/utilities/live-region
       '@zag-js/menu':
         specifier: workspace:*
         version: link:../../packages/machines/menu
+      '@zag-js/navigation-menu':
+        specifier: workspace:*
+        version: link:../../packages/machines/navigation-menu
       '@zag-js/number-input':
         specifier: workspace:*
         version: link:../../packages/machines/number-input
       '@zag-js/pagination':
         specifier: workspace:*
         version: link:../../packages/machines/pagination
+      '@zag-js/password-input':
+        specifier: workspace:*
+        version: link:../../packages/machines/password-input
       '@zag-js/pin-input':
         specifier: workspace:*
         version: link:../../packages/machines/pin-input
@@ -1028,6 +1046,9 @@ importers:
       '@zag-js/pagination':
         specifier: workspace:*
         version: link:../../packages/machines/pagination
+      '@zag-js/password-input':
+        specifier: workspace:*
+        version: link:../../packages/machines/password-input
       '@zag-js/pin-input':
         specifier: workspace:*
         version: link:../../packages/machines/pin-input
@@ -1262,6 +1283,9 @@ importers:
       '@zag-js/pagination':
         specifier: workspace:*
         version: link:../../packages/machines/pagination
+      '@zag-js/password-input':
+        specifier: workspace:*
+        version: link:../../packages/machines/password-input
       '@zag-js/pin-input':
         specifier: workspace:*
         version: link:../../packages/machines/pin-input
@@ -1503,6 +1527,9 @@ importers:
       '@zag-js/interact-outside':
         specifier: workspace:*
         version: link:../../packages/utilities/interact-outside
+      '@zag-js/listbox':
+        specifier: workspace:*
+        version: link:../../packages/machines/listbox
       '@zag-js/live-region':
         specifier: workspace:*
         version: link:../../packages/utilities/live-region
@@ -1518,6 +1545,9 @@ importers:
       '@zag-js/pagination':
         specifier: workspace:*
         version: link:../../packages/machines/pagination
+      '@zag-js/password-input':
+        specifier: workspace:*
+        version: link:../../packages/machines/password-input
       '@zag-js/pin-input':
         specifier: workspace:*
         version: link:../../packages/machines/pin-input
@@ -2357,6 +2387,28 @@ importers:
         version: 2.2.0
 
   packages/machines/pagination:
+    dependencies:
+      '@zag-js/anatomy':
+        specifier: workspace:*
+        version: link:../../anatomy
+      '@zag-js/core':
+        specifier: workspace:*
+        version: link:../../core
+      '@zag-js/dom-query':
+        specifier: workspace:*
+        version: link:../../utilities/dom-query
+      '@zag-js/types':
+        specifier: workspace:*
+        version: link:../../types
+      '@zag-js/utils':
+        specifier: workspace:*
+        version: link:../../utilities/core
+    devDependencies:
+      clean-package:
+        specifier: 2.2.0
+        version: 2.2.0
+
+  packages/machines/password-input:
     dependencies:
       '@zag-js/anatomy':
         specifier: workspace:*
@@ -3509,6 +3561,9 @@ importers:
       '@zag-js/pagination':
         specifier: workspace:*
         version: link:../packages/machines/pagination
+      '@zag-js/password-input':
+        specifier: workspace:*
+        version: link:../packages/machines/password-input
       '@zag-js/pin-input':
         specifier: workspace:*
         version: link:../packages/machines/pin-input
