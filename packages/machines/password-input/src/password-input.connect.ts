@@ -77,6 +77,7 @@ export function connect<T extends PropTypes>(
         "aria-expanded": visible,
         "data-readonly": dataAttr(readOnly),
         disabled,
+        "data-disabled": dataAttr(disabled),
         "data-state": visible ? "visible" : "hidden",
         "aria-label": visible ? "Hide password" : "Show password",
         onPointerDown(event) {
