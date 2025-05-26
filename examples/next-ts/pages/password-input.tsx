@@ -21,7 +21,7 @@ export default function Page() {
       <main className="password-input">
         <div {...api.getRootProps()}>
           <label {...api.getLabelProps()}>Password</label>
-          <div>
+          <div {...api.getControlProps()}>
             <input {...api.getInputProps({ ignorePasswordManagers: true })} />
             <button {...api.getVisibilityTriggerProps()}>
               <span {...api.getIndicatorProps()}>{api.visible ? <EyeIcon /> : <EyeOffIcon />}</span>

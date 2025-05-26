@@ -270,7 +270,9 @@ export function useMachine<T extends MachineSchema>(
     send,
     context: ctx,
     prop,
-    scope,
+    get scope() {
+      return scope
+    },
     refs,
     computed,
     get event() {

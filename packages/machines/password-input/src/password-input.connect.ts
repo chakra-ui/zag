@@ -1,4 +1,4 @@
-import { ariaAttr, dataAttr } from "@zag-js/dom-query"
+import { ariaAttr, dataAttr, isLeftClick } from "@zag-js/dom-query"
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import { parts } from "./password-input.anatomy"
 import * as dom from "./password-input.dom"
@@ -70,15 +70,17 @@ export function connect<T extends PropTypes>(
       return normalize.button({
         ...parts.visibilityTrigger.attrs,
         type: "button",
+        tabIndex: -1,
         "aria-controls": dom.getInputId(scope),
         "aria-expanded": visible,
         "data-readonly": dataAttr(readOnly),
         disabled,
         "data-state": visible ? "visible" : "hidden",
         "aria-label": visible ? "Hide password" : "Show password",
-        onClick(event) {
+        onPointerDown(event) {
+          if (!isLeftClick(event)) return
           if (!interactive) return
-          if (event.defaultPrevented) return
+          event.preventDefault()
           service.send({ type: "TRIGGER.CLICK" })
         },
       })
@@ -89,6 +91,15 @@ export function connect<T extends PropTypes>(
         ...parts.indicator.attrs,
         "aria-hidden": true,
         "data-state": visible ? "visible" : "hidden",
+        "data-disabled": dataAttr(disabled),
+        "data-invalid": dataAttr(invalid),
+        "data-readonly": dataAttr(readOnly),
+      })
+    },
+
+    getControlProps() {
+      return normalize.element({
+        ...parts.control.attrs,
         "data-disabled": dataAttr(disabled),
         "data-invalid": dataAttr(invalid),
         "data-readonly": dataAttr(readOnly),

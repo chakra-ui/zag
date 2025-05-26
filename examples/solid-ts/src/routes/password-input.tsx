@@ -23,10 +23,13 @@ export default function Page() {
     <>
       <main class="password-input">
         <div {...api().getRootProps()}>
-          <input {...api().getInputProps()} />
-          <button {...api().getVisibilityTriggerProps()}>
-            <span {...api().getIndicatorProps()}>{api().visible ? <EyeIcon /> : <EyeOffIcon />}</span>
-          </button>
+          <label {...api().getLabelProps()}>Password</label>
+          <div {...api().getControlProps()}>
+            <input {...api().getInputProps()} />
+            <button {...api().getVisibilityTriggerProps()}>
+              <span {...api().getIndicatorProps()}>{api().visible ? <EyeIcon /> : <EyeOffIcon />}</span>
+            </button>
+          </div>
         </div>
       </main>
 

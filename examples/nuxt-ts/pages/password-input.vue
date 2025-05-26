@@ -15,13 +15,17 @@ const api = computed(() => passwordInput.connect(service, normalizeProps))
 <template>
   <main class="password-input">
     <div v-bind="api.getRootProps()">
-      <input v-bind="api.getInputProps()" />
-      <button v-bind="api.getVisibilityTriggerProps()">
-        <span v-bind="api.getIndicatorProps()">
-          <EyeIcon v-if="api.visible" />
-          <EyeOffIcon v-else />
-        </span>
-      </button>
+      <label v-bind="api.getLabelProps()">Password</label>
+
+      <div v-bind="api.getControlProps()">
+        <input v-bind="api.getInputProps({ ignorePasswordManagers: true })" />
+        <button v-bind="api.getVisibilityTriggerProps()">
+          <span v-bind="api.getIndicatorProps()">
+            <EyeIcon v-if="api.visible" />
+            <EyeOffIcon v-else />
+          </span>
+        </button>
+      </div>
     </div>
   </main>
 

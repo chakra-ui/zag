@@ -59,15 +59,10 @@ export type PasswordInputMachine = Machine<PasswordInputSchema>
 
 export interface InputProps {
   /**
-   * When true, the password input will be ignored by password managers.
+   * When `true`, the input will ignore password managers.
    *
-   * Only works for the following password managers:
-   *
-   * - 1Password
-   * - LastPass
-   * - Bitwarden
-   * - Dashlane
-   * - Proton Pass
+   * **Only works for the following password managers**
+   * - 1Password, LastPass, Bitwarden, Dashlane, Proton Pass
    */
   ignorePasswordManagers?: boolean
   /**
@@ -103,4 +98,5 @@ export interface PasswordInputApi<T extends PropTypes = PropTypes> {
   getInputProps(props?: InputProps): T["input"]
   getVisibilityTriggerProps(): T["button"]
   getIndicatorProps(): T["element"]
+  getControlProps(): T["element"]
 }
