@@ -15,6 +15,7 @@ export function connect<T extends PropTypes>(
   const invalid = !!prop("invalid")
   const readOnly = !!prop("readOnly")
   const interactive = !(readOnly || disabled)
+  const translations = prop("translations")
 
   return {
     visible,
@@ -25,6 +26,9 @@ export function connect<T extends PropTypes>(
     },
     setVisible(value) {
       service.send({ type: "VISIBILITY.SET", value })
+    },
+    toggleVisible() {
+      service.send({ type: "VISIBILITY.SET", value: !visible })
     },
 
     getRootProps() {
@@ -79,7 +83,7 @@ export function connect<T extends PropTypes>(
         disabled,
         "data-disabled": dataAttr(disabled),
         "data-state": visible ? "visible" : "hidden",
-        "aria-label": visible ? "Hide password" : "Show password",
+        "aria-label": translations?.visibilityTrigger?.(visible),
         onPointerDown(event) {
           if (!isLeftClick(event)) return
           if (!interactive) return

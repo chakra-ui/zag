@@ -11,6 +11,12 @@ export const machine = createMachine<PasswordInputSchema>({
       autoComplete: "current-password",
       ignorePasswordManagers: false,
       ...props,
+      translations: {
+        visibilityTrigger(visible) {
+          return visible ? "Hide password" : "Show password"
+        },
+        ...props.translations,
+      },
     }
   },
 

@@ -106,6 +106,10 @@ export interface PasswordInputApi<T extends PropTypes = PropTypes> {
    * Set the visibility of the password input.
    */
   setVisible(value: boolean): void
+  /**
+   * Toggle the visibility of the password input.
+   */
+  toggleVisible(): void
 
   getRootProps(): T["element"]
   getLabelProps(): T["label"]
