@@ -26,7 +26,7 @@ function ListboxFiltering() {
     return listbox.collection({ items })
   })
 
-  const [state, send] = useMachine(listbox.machine as listbox.Machine<Item>, {
+  const service = useMachine(listbox.machine as listbox.Machine<Item>, {
     get collection() {
       return collection()
     },
@@ -34,7 +34,7 @@ function ListboxFiltering() {
     typeahead: false,
   })
 
-  const api = createMemo(() => listbox.connect(state, send, normalizeProps))
+  const api = createMemo(() => listbox.connect(service, normalizeProps))
 
   return (
     <div {...api().getRootProps()}>

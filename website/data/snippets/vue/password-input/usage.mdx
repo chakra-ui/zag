@@ -5,11 +5,9 @@
   import { computed, useId } from "vue"
   import { EyeIcon, EyeOffIcon } from "lucide-vue-next"
 
-  const [state, send] = useMachine(passwordInput.machine({ id: useId() }))
+  const service = useMachine(passwordInput.machine({ id: useId() }))
 
-  const api = computed(() =>
-    passwordInput.connect(state.value, send, normalizeProps),
-  )
+  const api = computed(() => passwordInput.connect(service, normalizeProps))
 </script>
 
 <template>

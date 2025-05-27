@@ -12,8 +12,6 @@
   </a>
 </p>
 
-
-
 Finite state machines for accessible JavaScript components
 
 - **Write once, use everywhere 🦄**: The component interactions are modelled in a framework agnostic way. We provide
@@ -76,8 +74,8 @@ import * as toggle from "@zag-js/toggle-group"
 import { useId } from "react"
 
 export function ToggleGroup() {
-  const [state, send] = useMachine(toggle.machine({ id: useId() }))
-  const api = toggle.connect(state, send, normalizeProps)
+  const service = useMachine(toggle.machine({ id: useId() }))
+  const api = toggle.connect(service, normalizeProps)
 
   return (
     <div {...api.getRootProps()}>

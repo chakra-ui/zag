@@ -29,7 +29,7 @@
     return listbox.collection({ items })
   })
 
-  const [state, send] = useMachine(listbox.machine as listbox.Machine<Item>, {
+  const service = useMachine(listbox.machine as listbox.Machine<Item>, {
     id: useId(),
     get collection() {
       return collection.value
@@ -37,7 +37,7 @@
     typeahead: false,
   })
 
-  const api = computed(() => listbox.connect(state.value, send, normalizeProps))
+  const api = computed(() => listbox.connect(service, normalizeProps))
 </script>
 
 <template>
