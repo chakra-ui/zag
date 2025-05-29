@@ -110,6 +110,12 @@ export interface SliderProps extends DirectionProperty, CommonProperties {
   step?: number | undefined
   /**
    * The minimum permitted steps between multiple thumbs.
+   *
+   * `minStepsBetweenThumbs` * `step` should reflect the gap between the thumbs.
+   *
+   * - `step: 1` and `minStepsBetweenThumbs: 10` => gap is `10`
+   * - `step: 10` and `minStepsBetweenThumbs: 2` => gap is `20`
+   *
    * @default 0
    */
   minStepsBetweenThumbs?: number | undefined
