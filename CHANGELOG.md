@@ -4,6 +4,27 @@ All notable changes to this project will be documented in this file.
 
 > For v0.x changelog, see the [v0 branch](https://github.com/chakra-ui/zag/blob/v0/CHANGELOG.md)
 
+## [1.14.0](./#1.14.0) - 2025-05-29
+
+### Added
+
+- **File Upload**: Add support for transforming uploaded files via `transformFiles` context property.
+
+```tsx
+const service = useMachine(fileUpload.machine, {
+  id: useId(),
+  accept: ["image/jpeg", "image/png"],
+  transformFiles: async (files) => {
+    return Promise.all(files.map((file) => compress(file, { size: 200 })))
+  },
+})
+```
+
+### Fixed
+
+- **Slider**: Fix issue where `minStepsBetweenThumbs` isn't computed correctly when interacting with pointer or
+  keyboard.
+
 ## [1.13.1](./#1.13.1) - 2025-05-27
 
 ### Fixed
