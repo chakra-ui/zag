@@ -19,7 +19,7 @@ export function isFilesWithinRange(ctx: Params<FileUploadSchema>, incomingCount:
   return true
 }
 
-export function getFilesFromEvent(ctx: Params<FileUploadSchema>, files: File[]) {
+export function getEventFiles(ctx: Params<FileUploadSchema>, files: File[]) {
   const { context, prop, computed } = ctx
   const acceptedFiles: File[] = []
   const rejectedFiles: FileRejection[] = []

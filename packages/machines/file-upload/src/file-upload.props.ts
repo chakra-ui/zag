@@ -24,6 +24,7 @@ export const props = createProps<FileUploadProps>()([
   "preventDocumentDrop",
   "required",
   "translations",
+  "transformFiles",
   "validate",
 ])
 export const splitProps = createSplitProps<Partial<FileUploadProps>>(props)

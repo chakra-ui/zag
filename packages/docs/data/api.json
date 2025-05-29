@@ -1728,6 +1728,10 @@
         "type": "boolean",
         "description": "Whether the file input is invalid"
       },
+      "transformFiles": {
+        "type": "(files: File[]) => Promise<File[]>",
+        "description": "Function to transform the accepted files to apply transformations"
+      },
       "locale": {
         "type": "string",
         "description": "The current locale. Based on the BCP 47 definition.",
@@ -2715,6 +2719,10 @@
       "setVisible": {
         "type": "(value: boolean) => void",
         "description": "Set the visibility of the password input."
+      },
+      "toggleVisible": {
+        "type": "() => void",
+        "description": "Toggle the visibility of the password input."
       }
     },
     "context": {
@@ -3843,7 +3851,7 @@
       },
       "minStepsBetweenThumbs": {
         "type": "number",
-        "description": "The minimum permitted steps between multiple thumbs.",
+        "description": "The minimum permitted steps between multiple thumbs.\n\n`minStepsBetweenThumbs` * `step` should reflect the gap between the thumbs.\n\n- `step: 1` and `minStepsBetweenThumbs: 10` => gap is `10`\n- `step: 10` and `minStepsBetweenThumbs: 2` => gap is `20`",
         "defaultValue": "0"
       },
       "orientation": {

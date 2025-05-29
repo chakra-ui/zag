@@ -133,6 +133,10 @@ export interface FileUploadProps extends LocaleProperties, CommonProperties {
    * Whether the file input is invalid
    */
   invalid?: boolean | undefined
+  /**
+   * Function to transform the accepted files to apply transformations
+   */
+  transformFiles?: ((files: File[]) => Promise<File[]>) | undefined
 }
 
 type PropWithDefault = "minFileSize" | "maxFileSize" | "maxFiles" | "preventDocumentDrop" | "allowDrop" | "translations"

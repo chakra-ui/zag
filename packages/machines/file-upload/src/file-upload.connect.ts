@@ -34,8 +34,7 @@ export function connect<T extends PropTypes>(
     acceptedFiles: context.get("acceptedFiles"),
     rejectedFiles: context.get("rejectedFiles"),
     setFiles(files) {
-      const count = files.length
-      send({ type: "FILES.SET", files, count })
+      send({ type: "FILES.SET", files, count: files.length })
     },
     clearRejectedFiles() {
       send({ type: "REJECTED_FILES.CLEAR" })
@@ -194,7 +193,7 @@ export function connect<T extends PropTypes>(
         onInput(event) {
           if (disabled) return
           const { files } = event.currentTarget
-          send({ type: "FILES.SET", files: files ? Array.from(files) : [] })
+          send({ type: "FILE.SELECT", files: files ? Array.from(files) : [] })
         },
         style: visuallyHiddenStyle,
       })
