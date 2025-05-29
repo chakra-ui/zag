@@ -18,9 +18,10 @@ export function preventBodyScroll(_document?: Document) {
   const locked = body.hasAttribute(LOCK_CLASSNAME)
   if (locked) return
 
+  const scrollbarWidth = win.innerWidth - documentElement.clientWidth
+
   body.setAttribute(LOCK_CLASSNAME, "")
 
-  const scrollbarWidth = win.innerWidth - documentElement.clientWidth
   const setScrollbarWidthProperty = () => setStyleProperty(documentElement, "--scrollbar-width", `${scrollbarWidth}px`)
   const paddingProperty = getPaddingProperty(documentElement)
 
