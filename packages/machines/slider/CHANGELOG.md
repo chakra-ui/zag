@@ -1,5 +1,20 @@
 # @zag-js/slider
 
+## 1.14.0
+
+### Patch Changes
+
+- [`5a067a6`](https://github.com/chakra-ui/zag/commit/5a067a6c2529a8a8a39ae72bfcb5b931b7ce5b34) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix issue where `minStepsBetweenThumbs` isn't computed correctly
+  when interacting with pointer or keyboard.
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.14.0
+  - @zag-js/core@1.14.0
+  - @zag-js/types@1.14.0
+  - @zag-js/utils@1.14.0
+  - @zag-js/dom-query@1.14.0
+
 ## 1.13.1
 
 ### Patch Changes

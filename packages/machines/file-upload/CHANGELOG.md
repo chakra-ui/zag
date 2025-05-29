@@ -1,5 +1,34 @@
 # @zag-js/file-upload
 
+## 1.14.0
+
+### Minor Changes
+
+- [`7976c82`](https://github.com/chakra-ui/zag/commit/7976c82deb7ceb5c361d7ddc085c750b74fe86ce) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Add support for transforming uploaded files via `transformFiles`
+  context property.
+
+  ```tsx
+  const service = useMachine(fileUpload.machine, {
+    id: useId(),
+    accept: ["image/jpeg", "image/png"],
+    transformFiles: async (files) => {
+      return Promise.all(files.map((file) => compress(file, { size: 200 })))
+    },
+  })
+  ```
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.14.0
+  - @zag-js/core@1.14.0
+  - @zag-js/types@1.14.0
+  - @zag-js/utils@1.14.0
+  - @zag-js/dom-query@1.14.0
+  - @zag-js/file-utils@1.14.0
+  - @zag-js/i18n-utils@1.14.0
+
 ## 1.13.1
 
 ### Patch Changes
