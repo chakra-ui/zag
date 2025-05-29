@@ -1,11 +1,12 @@
 import { createMachine } from "@zag-js/core"
-import { raf, setElementValue, trackFormControl, trackPointerMove, trackElementRect } from "@zag-js/dom-query"
+import { raf, setElementValue, trackElementRect, trackFormControl, trackPointerMove } from "@zag-js/dom-query"
 import type { Size } from "@zag-js/types"
 import {
   clampValue,
   getValuePercent,
   getValueRanges,
   isEqual,
+  isValueWithinRange,
   pick,
   setValueAtIndex,
   snapValueToStep,
@@ -22,7 +23,13 @@ const normalize = (value: number[], min: number, max: number, step: number, minS
   const ranges = getValueRanges(value, min, max, minStepsBetweenThumbs * step)
   return ranges.map((range) => {
     const snapValue = snapValueToStep(range.value, range.min, range.max, step)
-    return clampValue(snapValue, range.min, range.max)
+    const rangeValue = clampValue(snapValue, range.min, range.max)
+    if (!isValueWithinRange(rangeValue, min, max)) {
+      throw new Error(
+        "[zag-js/slider] The configured `min`, `max`, `step` or `minStepsBetweenThumbs` values are invalid",
+      )
+    }
+    return rangeValue
   })
 }
 

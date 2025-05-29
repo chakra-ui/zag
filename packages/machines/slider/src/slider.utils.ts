@@ -19,7 +19,8 @@ export function normalizeValues(params: Ctx, nextValues: number[]) {
 
 export function getRangeAtIndex(params: Pick<Ctx, "context" | "prop">, index: number) {
   const { context, prop } = params
-  return getValueRanges(context.get("value"), prop("min"), prop("max"), prop("minStepsBetweenThumbs"))[index]
+  const step = prop("step") * prop("minStepsBetweenThumbs")
+  return getValueRanges(context.get("value"), prop("min"), prop("max"), step)[index]
 }
 
 export function constrainValue(params: Pick<Ctx, "context" | "prop">, value: number, index: number) {
