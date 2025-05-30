@@ -1,5 +1,17 @@
 # @zag-js/toast
 
+## 1.14.1
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.14.1
+  - @zag-js/core@1.14.1
+  - @zag-js/types@1.14.1
+  - @zag-js/utils@1.14.1
+  - @zag-js/dismissable@1.14.1
+  - @zag-js/dom-query@1.14.1
+
 ## 1.14.0
 
 ### Patch Changes
