@@ -53,8 +53,6 @@ function toSvelteProp(key: string) {
 
 function toSveltePropValue(key: string, value: Dict[string]) {
   if (key === "style" && typeof value === "object") return toStyleString(value)
-  if (value === false) return
-
   return value
 }
 
