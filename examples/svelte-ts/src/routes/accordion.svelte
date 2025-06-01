@@ -10,7 +10,7 @@
   const controls = useControls(accordionControls)
 
   const id = $props.id()
-  const service = useMachine(accordion.machine, { id })
+  const service = useMachine(accordion.machine, controls.mergeProps<accordion.Props>({ id }))
 
   const api = $derived(accordion.connect(service, normalizeProps))
 </script>

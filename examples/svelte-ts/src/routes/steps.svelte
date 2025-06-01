@@ -9,7 +9,13 @@
   const controls = useControls(stepsControls)
 
   const id = $props.id()
-  const service = useMachine(steps.machine, { id, count: stepsData.length })
+  const service = useMachine(
+    steps.machine,
+    controls.mergeProps<steps.Props>({
+      id,
+      count: stepsData.length,
+    }),
+  )
 
   const api = $derived(steps.connect(service, normalizeProps))
 </script>

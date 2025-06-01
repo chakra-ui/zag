@@ -9,11 +9,14 @@
   const controls = useControls(datePickerControls)
 
   const id = $props.id()
-  const service = useMachine(datePicker.machine, {
-    id,
-    locale: "en",
-    selectionMode: "multiple",
-  })
+  const service = useMachine(
+    datePicker.machine,
+    controls.mergeProps<datePicker.Props>({
+      id,
+      locale: "en",
+      selectionMode: "multiple",
+    }),
+  )
 
   const api = $derived(datePicker.connect(service, normalizeProps))
 </script>

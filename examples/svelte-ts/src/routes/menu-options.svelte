@@ -12,7 +12,7 @@
   let type = $state<string[]>([])
 
   const id = $props.id()
-  const service = useMachine(menu.machine, { id })
+  const service = useMachine(menu.machine, controls.mergeProps<menu.Props>({ id }))
 
   const api = $derived(menu.connect(service, normalizeProps))
 

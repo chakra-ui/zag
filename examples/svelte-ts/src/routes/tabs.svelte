@@ -9,10 +9,13 @@
   const controls = useControls(tabsControls)
 
   const id = $props.id()
-  const service = useMachine(tabs.machine, {
-    id,
-    defaultValue: "nils",
-  })
+  const service = useMachine(
+    tabs.machine,
+    controls.mergeProps<tabs.Props>({
+      id,
+      defaultValue: "nils",
+    }),
+  )
 
   const api = $derived(tabs.connect(service, normalizeProps))
 </script>

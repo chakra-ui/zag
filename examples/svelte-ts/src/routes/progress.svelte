@@ -9,7 +9,7 @@
   const controls = useControls(progressControls)
 
   const id = $props.id()
-  const service = useMachine(progress.machine, { id })
+  const service = useMachine(progress.machine, controls.mergeProps<progress.Props>({ id }))
 
   const api = $derived(progress.connect(service, normalizeProps))
 </script>

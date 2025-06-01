@@ -10,7 +10,7 @@
   const controls = useControls(passwordInputControls)
 
   const id = $props.id()
-  const service = useMachine(passwordInput.machine, { id })
+  const service = useMachine(passwordInput.machine, controls.mergeProps<passwordInput.Props>({ id }))
 
   const api = $derived(passwordInput.connect(service, normalizeProps))
 </script>

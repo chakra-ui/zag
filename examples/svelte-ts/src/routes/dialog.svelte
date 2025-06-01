@@ -4,8 +4,8 @@
 
   const id = $props.id()
   const service = useMachine(dialog.machine, { id })
- 
- const api = $derived(dialog.connect(service, normalizeProps))
+
+  const api = $derived(dialog.connect(service, normalizeProps))
 </script>
 
 <main>

@@ -6,6 +6,7 @@
   import { comboboxControls, comboboxData } from "@zag-js/shared"
   import { normalizeProps, useMachine } from "@zag-js/svelte"
   import { matchSorter } from "match-sorter"
+  import { XIcon } from "lucide-svelte"
 
   const controls = useControls(comboboxControls)
 
@@ -20,20 +21,23 @@
   )
 
   const id = $props.id()
-  const service = useMachine(combobox.machine, {
-    id,
-    get collection() {
-      return collection
-    },
-    onOpenChange() {
-      options = comboboxData
-    },
-    onInputValueChange({ inputValue }) {
-      const filtered = matchSorter(comboboxData, inputValue, { keys: ["label"] })
-      const newOptions = filtered.length > 0 ? filtered : comboboxData
-      options = newOptions
-    },
-  })
+  const service = useMachine(
+    combobox.machine,
+    controls.mergeProps<combobox.Props>({
+      id,
+      get collection() {
+        return collection
+      },
+      onOpenChange() {
+        options = comboboxData
+      },
+      onInputValueChange({ inputValue }) {
+        const filtered = matchSorter(comboboxData, inputValue, { keys: ["label"] })
+        const newOptions = filtered.length > 0 ? filtered : comboboxData
+        options = newOptions
+      },
+    }),
+  )
 
   const api = $derived(combobox.connect(service, normalizeProps))
 </script>
@@ -49,6 +53,9 @@
       <div {...api.getControlProps()}>
         <input data-testid="input" {...api.getInputProps()} />
         <button data-testid="trigger" {...api.getTriggerProps()}> ▼ </button>
+        <button {...api.getClearTriggerProps()}>
+          <XIcon />
+        </button>
       </div>
     </div>
     <div {...api.getPositionerProps()}>

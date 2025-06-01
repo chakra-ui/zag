@@ -9,10 +9,13 @@
   const controls = useControls(switchControls)
 
   const id = $props.id()
-  const service = useMachine(zagSwitch.machine, {
-    id,
-    name: "switch",
-  })
+  const service = useMachine(
+    zagSwitch.machine,
+    controls.mergeProps<zagSwitch.Props>({
+      id,
+      name: "switch",
+    }),
+  )
 
   const api = $derived(zagSwitch.connect(service, normalizeProps))
 </script>

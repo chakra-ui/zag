@@ -9,10 +9,13 @@
   const controls = useControls(tourControls)
 
   const id = $props.id()
-  const service = useMachine(tour.machine, {
-    id,
-    steps: tourData,
-  })
+  const service = useMachine(
+    tour.machine,
+    controls.mergeProps<tour.Props>({
+      id,
+      steps: tourData,
+    }),
+  )
 
   const api = $derived(tour.connect(service, normalizeProps))
 </script>

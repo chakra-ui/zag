@@ -12,12 +12,15 @@
   const controls = useControls(colorPickerControls)
 
   const id = $props.id()
-  const service = useMachine(colorPicker.machine, {
-    id,
-    name: "color",
-    format: "hsla",
-    defaultValue: colorPicker.parse("hsl(0, 100%, 50%)"),
-  })
+  const service = useMachine(
+    colorPicker.machine,
+    controls.mergeProps<colorPicker.Props>({
+      id,
+      name: "color",
+      format: "hsla",
+      defaultValue: colorPicker.parse("hsl(0, 100%, 50%)"),
+    }),
+  )
 
   const api = $derived(colorPicker.connect(service, normalizeProps))
 </script>

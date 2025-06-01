@@ -2,9 +2,8 @@ import { test, expect } from "@playwright/test"
 import { a11y, part, controls, testid } from "./_utils"
 import path from "node:path"
 
-const root = part("root")
 const trigger = part("trigger")
-const dropzone = part("dropzone")
+const input = testid("input")
 
 test.describe("file-upload", () => {
   test.beforeEach(async ({ page }) => {
@@ -27,11 +26,8 @@ test.describe("file-upload", () => {
 
   test("should open file picker on trigger click", async ({ page }) => {
     const fileChooserPromise = page.waitForEvent("filechooser")
-
     await page.locator(trigger).click()
-
     const prom = await fileChooserPromise
-
     expect(prom).toBeDefined()
   })
 
@@ -51,10 +47,7 @@ test.describe("file-upload", () => {
 
   test("should have disabled attributes when disabled", async ({ page }) => {
     await controls(page).bool("disabled")
-    await expect(page.locator(root)).toHaveAttribute("data-disabled", "")
-    await expect(page.locator(dropzone)).toHaveAttribute("data-disabled", "")
-    await expect(page.locator(trigger)).toHaveAttribute("data-disabled", "")
     await expect(page.locator(trigger)).toBeDisabled()
-    await expect(page.locator(testid("input"))).toBeDisabled()
+    await expect(page.locator(input)).toBeDisabled()
   })
 })

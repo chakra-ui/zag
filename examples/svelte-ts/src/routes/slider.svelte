@@ -10,11 +10,14 @@
   const controls = useControls(sliderControls)
 
   const id = $props.id()
-  const service = useMachine(slider.machine, {
-    id,
-    name: "quantity",
-    defaultValue: [0],
-  })
+  const service = useMachine(
+    slider.machine,
+    controls.mergeProps<slider.Props>({
+      id,
+      name: "quantity",
+      defaultValue: [0],
+    }),
+  )
 
   const api = $derived(slider.connect(service, normalizeProps))
 </script>

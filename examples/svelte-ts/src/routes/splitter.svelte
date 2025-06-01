@@ -9,10 +9,13 @@
   const controls = useControls(splitterControls)
 
   const id = $props.id()
-  const service = useMachine(splitter.machine, {
-    id,
-    panels: [{ id: "a" }, { id: "b" }],
-  })
+  const service = useMachine(
+    splitter.machine,
+    controls.mergeProps<splitter.Props>({
+      id,
+      panels: [{ id: "a" }, { id: "b" }],
+    }),
+  )
 
   const api = $derived(splitter.connect(service, normalizeProps))
 </script>

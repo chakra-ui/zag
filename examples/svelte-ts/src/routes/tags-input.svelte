@@ -13,10 +13,13 @@
   const controls = useControls(tagsInputControls)
 
   const id = $props.id()
-  const service = useMachine(tagsInput.machine, {
-    id,
-    defaultValue: ["React", "Vue"],
-  })
+  const service = useMachine(
+    tagsInput.machine,
+    controls.mergeProps<tagsInput.Props>({
+      id,
+      defaultValue: ["React", "Vue"],
+    }),
+  )
 
   const api = $derived(tagsInput.connect(service, normalizeProps))
 </script>

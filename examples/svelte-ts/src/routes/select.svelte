@@ -10,11 +10,14 @@
   const controls = useControls(selectControls)
 
   const id = $props.id()
-  const service = useMachine(select.machine, {
-    id,
-    name: "select",
-    collection: select.collection({ items: selectData }),
-  })
+  const service = useMachine(
+    select.machine,
+    controls.mergeProps<select.Props>({
+      id,
+      name: "select",
+      collection: select.collection({ items: selectData }),
+    }),
+  )
 
   const api = $derived(select.connect(service, normalizeProps))
 </script>

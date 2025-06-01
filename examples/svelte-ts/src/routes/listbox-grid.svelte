@@ -19,10 +19,13 @@
   })
 
   const id = $props.id()
-  const service = useMachine(listbox.machine, {
-    collection,
-    id,
-  })
+  const service = useMachine(
+    listbox.machine,
+    controls.mergeProps<listbox.Props>({
+      collection,
+      id,
+    }),
+  )
 
   const api = $derived(listbox.connect(service, normalizeProps))
 </script>

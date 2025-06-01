@@ -10,11 +10,14 @@
   const controls = useControls(pinInputControls)
 
   const id = $props.id()
-  const service = useMachine(pinInput.machine, {
-    name: "test",
-    id,
-    count: 3,
-  })
+  const service = useMachine(
+    pinInput.machine,
+    controls.mergeProps<pinInput.Props>({
+      name: "test",
+      id,
+      count: 3,
+    }),
+  )
 
   const api = $derived(pinInput.connect(service, normalizeProps))
 </script>

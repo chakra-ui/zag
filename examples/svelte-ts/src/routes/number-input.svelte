@@ -9,7 +9,7 @@
   const controls = useControls(numberInputControls)
 
   const id = $props.id()
-  const service = useMachine(numberInput.machine, { id })
+  const service = useMachine(numberInput.machine, controls.mergeProps<numberInput.Props>({ id }))
 
   const api = $derived(numberInput.connect(service, normalizeProps))
 </script>

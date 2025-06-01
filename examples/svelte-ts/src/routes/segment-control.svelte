@@ -9,7 +9,14 @@
   const controls = useControls(radioControls)
 
   const id = $props.id()
-  const service = useMachine(radio.machine, { id, name: "fruit", orientation: "horizontal" })
+  const service = useMachine(
+    radio.machine,
+    controls.mergeProps<radio.Props>({
+      id,
+      name: "fruit",
+      orientation: "horizontal",
+    }),
+  )
 
   const api = $derived(radio.connect(service, normalizeProps))
 </script>

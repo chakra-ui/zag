@@ -9,7 +9,13 @@
   const controls = useControls(ratingControls)
 
   const id = $props.id()
-  const service = useMachine(rating.machine, { id, defaultValue: 2.5 })
+  const service = useMachine(
+    rating.machine,
+    controls.mergeProps<rating.Props>({
+      id,
+      defaultValue: 2.5,
+    }),
+  )
 
   const api = $derived(rating.connect(service, normalizeProps))
 </script>

@@ -9,7 +9,7 @@
   const controls = useControls(fileUploadControls)
 
   const id = $props.id()
-  const service = useMachine(fileUpload.machine, { id, accept: "image/*" })
+  const service = useMachine(fileUpload.machine, controls.mergeProps<fileUpload.Props>({ id }))
 
   const api = $derived(fileUpload.connect(service, normalizeProps))
 </script>
@@ -17,7 +17,7 @@
 <main class="file-upload">
   <div {...api.getRootProps()}>
     <div {...api.getDropzoneProps()}>
-      <input {...api.getHiddenInputProps()} />
+      <input {...api.getHiddenInputProps()} data-testid="input" />
       Drag your files here
     </div>
 

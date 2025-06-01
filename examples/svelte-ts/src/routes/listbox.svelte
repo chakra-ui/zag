@@ -15,10 +15,13 @@
   const collection = listbox.collection({ items: selectData })
 
   const id = $props.id()
-  const service = useMachine(listbox.machine, {
-    collection,
-    id,
-  })
+  const service = useMachine(
+    listbox.machine,
+    controls.mergeProps<listbox.Props<Item>>({
+      id,
+      collection,
+    }),
+  )
 
   const api = $derived(listbox.connect(service, normalizeProps))
 </script>

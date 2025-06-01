@@ -10,7 +10,12 @@
   const controls = useControls(collapsibleControls)
 
   const id = $props.id()
-  const service = useMachine(collapsible.machine, { id })
+  const service = useMachine(
+    collapsible.machine,
+    controls.mergeProps<collapsible.Props>({
+      id,
+    }),
+  )
 
   const api = $derived(collapsible.connect(service, normalizeProps))
 </script>

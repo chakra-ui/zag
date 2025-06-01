@@ -7,10 +7,13 @@
   const controls = useControls(editableControls)
 
   const id = $props.id()
-  const service = useMachine(editable.machine, {
-    id,
-    defaultValue: "Hello World",
-  })
+  const service = useMachine(
+    editable.machine,
+    controls.mergeProps<editable.Props>({
+      id,
+      defaultValue: "Hello World",
+    }),
+  )
 
   const api = $derived(editable.connect(service, normalizeProps))
 </script>

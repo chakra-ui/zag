@@ -10,9 +10,7 @@
   const controls = useControls(timePickerControls)
 
   const id = $props.id()
-  const service = useMachine(timePicker.machine, {
-    id,
-  })
+  const service = useMachine(timePicker.machine, controls.mergeProps<timePicker.Props>({ id }))
 
   const api = $derived(timePicker.connect(service, normalizeProps))
 </script>

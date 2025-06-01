@@ -9,9 +9,7 @@
   const controls = useControls(toggleGroupControls)
 
   const id = $props.id()
-  const service = useMachine(toggle.machine, {
-    id,
-  })
+  const service = useMachine(toggle.machine, controls.mergeProps<toggle.Props>({ id }))
 
   const api = $derived(toggle.connect(service, normalizeProps))
 </script>

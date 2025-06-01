@@ -10,7 +10,7 @@
   const controls = useControls(floatingPanelControls)
 
   const id = $props.id()
-  const service = useMachine(floatingPanel.machine, { id })
+  const service = useMachine(floatingPanel.machine, controls.mergeProps<floatingPanel.Props>({ id }))
 
   const api = $derived(floatingPanel.connect(service, normalizeProps))
 </script>

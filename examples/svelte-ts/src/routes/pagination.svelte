@@ -10,13 +10,16 @@
   let details = $state<any>({})
 
   const id = $props.id()
-  const service = useMachine(pagination.machine, {
-    id,
-    count: paginationData.length,
-    onPageChange(v) {
-      details = v
-    },
-  })
+  const service = useMachine(
+    pagination.machine,
+    controls.mergeProps<pagination.Props>({
+      id,
+      count: paginationData.length,
+      onPageChange(v) {
+        details = v
+      },
+    }),
+  )
 
   const api = $derived(pagination.connect(service, normalizeProps))
 

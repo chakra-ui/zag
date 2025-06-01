@@ -9,13 +9,16 @@
   const controls = useControls(datePickerControls)
 
   const id = $props.id()
-  const service = useMachine(datePicker.machine, {
-    id,
-    name: "date[]",
-    locale: "en",
-    numOfMonths: 2,
-    selectionMode: "range",
-  })
+  const service = useMachine(
+    datePicker.machine,
+    controls.mergeProps<datePicker.Props>({
+      id,
+      name: "date[]",
+      locale: "en",
+      numOfMonths: 2,
+      selectionMode: "range",
+    }),
+  )
 
   const api = $derived(datePicker.connect(service, normalizeProps))
   const offset = $derived(api.getOffset({ months: 1 }))

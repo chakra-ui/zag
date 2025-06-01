@@ -9,10 +9,13 @@
   const controls = useControls(qrCodeControls)
 
   const id = $props.id()
-  const service = useMachine(qrCode.machine, {
-    id,
-    encoding: { ecc: "H" },
-  })
+  const service = useMachine(
+    qrCode.machine,
+    controls.mergeProps<qrCode.Props>({
+      id,
+      encoding: { ecc: "H" },
+    }),
+  )
 
   const api = $derived(qrCode.connect(service, normalizeProps))
 </script>
