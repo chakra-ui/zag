@@ -11,8 +11,13 @@ export const machine = createMachine<CollapsibleSchema>({
 
   context({ bindable }) {
     return {
-      size: bindable(() => ({ defaultValue: { height: 0, width: 0 } })),
-      initial: bindable(() => ({ defaultValue: false })),
+      size: bindable(() => ({
+        defaultValue: { height: 0, width: 0 },
+        sync: true,
+      })),
+      initial: bindable(() => ({
+        defaultValue: false,
+      })),
     }
   },
 
@@ -209,16 +214,14 @@ export const machine = createMachine<CollapsibleSchema>({
         refs.set("stylesRef", null)
       },
 
-      measureSize: ({ context, flush, scope }) => {
+      measureSize: ({ context, scope }) => {
         const contentEl = dom.getContentEl(scope)
         if (!contentEl) return
         const { height, width } = contentEl.getBoundingClientRect()
-        flush(() => {
-          context.set("size", { height, width })
-        })
+        context.set("size", { height, width })
       },
 
-      computeSize: ({ refs, scope, flush, context }) => {
+      computeSize: ({ refs, scope, context }) => {
         refs.get("cleanup")?.()
 
         const rafCleanup = raf(() => {
@@ -234,9 +237,7 @@ export const machine = createMachine<CollapsibleSchema>({
 
           const rect = contentEl.getBoundingClientRect()
 
-          flush(() => {
-            context.set("size", { height: rect.height, width: rect.width })
-          })
+          context.set("size", { height: rect.height, width: rect.width })
 
           // kick off any animations/transitions that were originally set up if it isn't the initial mount
           if (context.get("initial")) {
