@@ -93,7 +93,6 @@ export const machine = createMachine<TabsSchema>({
     focused: {
       on: {
         TAB_CLICK: {
-          target: "focused",
           actions: ["setFocusedValue", "setValue"],
         },
         ARROW_PREV: [
