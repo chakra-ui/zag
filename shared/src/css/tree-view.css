@@ -60,4 +60,27 @@
   &[data-state="open"] svg {
     transform: rotate(90deg);
   }
+
+  &[data-loading] svg {
+    animation: spin 1s linear infinite;
+  }
+}
+
+[data-scope="tree-view"][data-part="branch-control"][data-loading],
+[data-scope="tree-view"][data-part="branch-trigger"][data-loading] {
+  opacity: 0.6;
+  cursor: wait;
+}
+
+[data-scope="tree-view"][data-part="branch-control"][data-loading]:hover {
+  background: rgb(243, 243, 243);
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
 }

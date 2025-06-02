@@ -3,7 +3,7 @@ import { getByTypeahead } from "@zag-js/dom-query"
 import { add, addOrRemove, first, isEqual, remove, uniq } from "@zag-js/utils"
 import { collection } from "./tree-view.collection"
 import * as dom from "./tree-view.dom"
-import type { TreeViewSchema } from "./tree-view.types"
+import type { TreeLoadingStatusMap, TreeViewSchema } from "./tree-view.types"
 import { getVisibleNodes, skipFn } from "./tree-view.utils"
 
 const { and } = createGuards<TreeViewSchema>()
@@ -53,12 +53,16 @@ export const machine = createMachine<TreeViewSchema>({
           prop("onFocusChange")?.({ focusedValue: value })
         },
       })),
+      loadingStatus: bindable<TreeLoadingStatusMap>(() => ({
+        defaultValue: {},
+      })),
     }
   },
 
   refs() {
     return {
       typeaheadState: { ...getByTypeahead.defaultOptions },
+      pendingAborts: new Map<string, AbortController>(),
     }
   },
 
@@ -87,7 +91,24 @@ export const machine = createMachine<TreeViewSchema>({
     "EXPANDED.ALL": {
       actions: ["expandAllBranches"],
     },
+    "LOADING.START": {
+      actions: ["setNodeLoading"],
+    },
+    "LOADING.END": {
+      actions: ["clearNodeStatus"],
+    },
+    "LOADING.SUCCESS": {
+      actions: ["setNodeLoaded"],
+    },
+    "LOADING.ERROR": {
+      actions: ["clearNodeStatus"],
+    },
+    EXPAND_WITH_LOADING: {
+      actions: ["startAsyncExpand"],
+    },
   },
+
+  exit: ["clearPendingAborts"],
 
   states: {
     idle: {
@@ -129,6 +150,10 @@ export const machine = createMachine<TreeViewSchema>({
           {
             guard: and("isBranchFocused", "isBranchExpanded"),
             actions: ["focusBranchFirstNode"],
+          },
+          {
+            guard: "hasAsyncLoading",
+            actions: ["expandBranchWithLoading"],
           },
           {
             actions: ["expandBranch"],
@@ -178,6 +203,10 @@ export const machine = createMachine<TreeViewSchema>({
             actions: ["extendSelectionToNode"],
           },
           {
+            guard: and("openOnClick", "hasAsyncLoading"),
+            actions: ["selectNode", "toggleBranchNodeWithLoading"],
+          },
+          {
             guard: "openOnClick",
             actions: ["selectNode", "toggleBranchNode"],
           },
@@ -185,9 +214,15 @@ export const machine = createMachine<TreeViewSchema>({
             actions: ["selectNode"],
           },
         ],
-        "BRANCH_TOGGLE.CLICK": {
-          actions: ["toggleBranchNode"],
-        },
+        "BRANCH_TOGGLE.CLICK": [
+          {
+            guard: "hasAsyncLoading",
+            actions: ["toggleBranchNodeWithLoading"],
+          },
+          {
+            actions: ["toggleBranchNode"],
+          },
+        ],
         "TREE.TYPEAHEAD": {
           actions: ["focusMatchedNode"],
         },
@@ -205,6 +240,8 @@ export const machine = createMachine<TreeViewSchema>({
       isMultipleSelection: ({ prop }) => prop("selectionMode") === "multiple",
       moveFocus: ({ event }) => !!event.moveFocus,
       openOnClick: ({ prop }) => !!prop("expandOnClick"),
+      // rename to node.lazy (+ node.childrenCount)
+      hasAsyncLoading: ({ prop }) => !!prop("loadChildren"),
     },
     actions: {
       selectNode({ context, event }) {
@@ -222,8 +259,93 @@ export const machine = createMachine<TreeViewSchema>({
       toggleBranchNode({ context, event }) {
         context.set("expandedValue", (prev) => addOrRemove(prev, event.id))
       },
+      toggleBranchNodeWithLoading({ context, event, send }) {
+        const isExpanded = context.get("expandedValue").includes(event.id)
+        if (isExpanded) {
+          context.set("expandedValue", (prev) => remove(prev, event.id))
+        } else {
+          send({ type: "EXPAND_WITH_LOADING", id: event.id })
+        }
+      },
       expandBranch({ context, event }) {
         context.set("expandedValue", (prev) => add(prev, event.id))
+      },
+      expandBranchWithLoading({ send, event }) {
+        send({ type: "EXPAND_WITH_LOADING", id: event.id })
+      },
+      startAsyncExpand({ context, event, prop, send, refs }) {
+        const loadChildren = prop("loadChildren")
+        if (!loadChildren) {
+          // Fallback to regular expand
+          context.set("expandedValue", (prev) => add(prev, event.id))
+          return
+        }
+
+        // Check if we can load this node
+        const loadingStatus = context.get("loadingStatus")
+        const isLoading = loadingStatus[event.id] === "loading"
+        const isLoaded = loadingStatus[event.id] === "loaded"
+
+        if (isLoading || isLoaded) {
+          // If already loaded, just expand
+          if (isLoaded) {
+            context.set("expandedValue", (prev) => add(prev, event.id))
+          }
+          return
+        }
+
+        const collection = prop("collection")
+        const node = collection.findNode(event.id)
+        if (!node) return
+
+        // Check if node already has children (skip loading)
+        if (collection.isBranchNode(node)) {
+          context.set("expandedValue", (prev) => add(prev, event.id))
+          return
+        }
+
+        // Cancel any existing load for this node
+        const pendingAborts = refs.get("pendingAborts")
+        const existingAbort = pendingAborts.get(event.id)
+        if (existingAbort) {
+          existingAbort.abort()
+          pendingAborts.delete(event.id)
+        }
+
+        // Create new AbortController for this load
+        const abortController = new AbortController()
+        pendingAborts.set(event.id, abortController)
+
+        // Start loading
+        send({ type: "LOADING.START", id: event.id })
+
+        // Execute async loading
+        loadChildren({ value: event.id, node, signal: abortController.signal })
+          .then((children) => {
+            // Clean up abort controller
+            pendingAborts.delete(event.id)
+
+            // After loading completes, mark as loaded and expand
+            send({ type: "LOADING.SUCCESS", id: event.id })
+            context.set("expandedValue", (prev) => add(prev, event.id))
+
+            const collection = prop("collection")
+            const indexPath = collection.getIndexPath(event.id)
+            if (!indexPath) return
+
+            prop("onLoadStatusChange")?.({
+              node,
+              collection: collection.replace(indexPath, { ...node, children }),
+            })
+          })
+          .catch((error) => {
+            // Clean up abort controller
+            pendingAborts.delete(event.id)
+
+            // Don't send error if request was aborted
+            if (error instanceof Error && error.name === "AbortError") return
+            send({ type: "LOADING.ERROR", id: event.id })
+          })
       },
       collapseBranch({ context, event }) {
         context.set("expandedValue", (prev) => remove(prev, event.id))
@@ -402,6 +524,23 @@ export const machine = createMachine<TreeViewSchema>({
         })
 
         context.set("selectedValue", values)
+      },
+      setNodeLoading({ context, event }) {
+        context.set("loadingStatus", (prev) => ({ ...prev, [event.id]: "loading" }))
+      },
+      clearNodeStatus({ context, event }) {
+        context.set("loadingStatus", (prev) => {
+          const { [event.id]: _, ...rest } = prev
+          return rest
+        })
+      },
+      setNodeLoaded({ context, event }) {
+        context.set("loadingStatus", (prev) => ({ ...prev, [event.id]: "loaded" }))
+      },
+      clearPendingAborts({ refs }) {
+        const aborts = refs.get("pendingAborts")
+        aborts.forEach((abort) => abort.abort())
+        aborts.clear()
       },
     },
   },

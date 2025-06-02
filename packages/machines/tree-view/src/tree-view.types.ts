@@ -19,6 +19,32 @@ export interface SelectionChangeDetails extends FocusChangeDetails {
   selectedValue: string[]
 }
 
+export interface LoadChildrenDetails<T = any> {
+  /**
+   * The value of the node whose children are being loaded
+   */
+  value: string
+  /**
+   * The node whose children are being loaded
+   */
+  node: T
+  /**
+   * AbortSignal to cancel the loading operation
+   */
+  signal: AbortSignal
+}
+
+export interface LoadStatusChangeDetails<T = any> {
+  /**
+   * The node that was loaded with children
+   */
+  node: T
+  /**
+   * The updated tree collection with the loaded children
+   */
+  collection: TreeCollection<T>
+}
+
 export type ElementIds = Partial<{
   root: string
   tree: string
@@ -82,6 +108,10 @@ export interface TreeViewProps<T = any> extends DirectionProperty, CommonPropert
    */
   onFocusChange?: ((details: FocusChangeDetails) => void) | undefined
   /**
+   * Called when a node finishes loading children
+   */
+  onLoadStatusChange?: ((details: LoadStatusChangeDetails) => void) | undefined
+  /**
    * Whether clicking on a branch should open it or not
    * @default true
    */
@@ -91,6 +121,11 @@ export interface TreeViewProps<T = any> extends DirectionProperty, CommonPropert
    * @default true
    */
   typeahead?: boolean | undefined
+  /**
+   * Function to load children for a node asynchronously.
+   * When provided, branches will wait for this promise to resolve before expanding.
+   */
+  loadChildren?: ((details: LoadChildrenDetails<T>) => Promise<T[]>) | undefined
 }
 
 type PropsWithDefault =
@@ -101,6 +136,10 @@ type PropsWithDefault =
   | "defaultExpandedValue"
   | "defaultSelectedValue"
 
+export type TreeLoadingStatus = "loading" | "loaded"
+
+export type TreeLoadingStatusMap = Record<string, TreeLoadingStatus>
+
 export interface TreeViewSchema<T extends TreeNode = TreeNode> {
   state: "idle"
   props: RequiredBy<TreeViewProps<T>, PropsWithDefault>
@@ -108,9 +147,11 @@ export interface TreeViewSchema<T extends TreeNode = TreeNode> {
     expandedValue: string[]
     selectedValue: string[]
     focusedValue: string | null
+    loadingStatus: TreeLoadingStatusMap
   }
   refs: {
     typeaheadState: TypeaheadState
+    pendingAborts: Map<string, AbortController>
   }
   computed: {
     isTypingAhead: boolean
@@ -173,6 +214,10 @@ export interface NodeState {
    * Whether the tree item is a branch
    */
   isBranch: boolean
+  /**
+   * Whether the tree item is currently loading children
+   */
+  loading: boolean
 }
 
 export interface TreeViewApi<T extends PropTypes = PropTypes, V = TreeNode> {
@@ -196,6 +241,14 @@ export interface TreeViewApi<T extends PropTypes = PropTypes, V = TreeNode> {
    * Function to set the selected value
    */
   setSelectedValue(value: string[]): void
+  /**
+   * The id of the loading nodes
+   */
+  loadingValue: string[]
+  /**
+   * The id of the loaded nodes
+   */
+  loadedValue: string[]
   /**
    * Function to get the visible nodes
    */
