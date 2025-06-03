@@ -37,6 +37,10 @@ export class TreeCollection<T = TreeNode> {
     return this.options.nodeToChildren?.(node) ?? fallback.nodeToChildren(node) ?? []
   }
 
+  getNodeChildrenCount = (node: T): number | undefined => {
+    return this.options.nodeToChildrenCount?.(node) ?? fallback.nodeToChildrenCount(node)
+  }
+
   getNodeValue = (node: T): string => {
     return this.options.nodeToValue?.(node) ?? fallback.nodeToValue(node)
   }
@@ -286,7 +290,7 @@ export class TreeCollection<T = TreeNode> {
   }
 
   isBranchNode = (node: T): boolean => {
-    return this.getNodeChildren(node).length > 0
+    return this.getNodeChildren(node).length > 0 || this.getNodeChildrenCount(node) != null
   }
 
   getBranchValues = (rootNode = this.rootNode, opts: TreeSkipOptions<T> & { depth?: number } = {}): string[] => {
@@ -445,5 +449,8 @@ const fallback: TreeCollectionMethods<TreeNode> = {
   },
   nodeToChildren(node) {
     return node.children
+  },
+  nodeToChildrenCount(node) {
+    if (isObject(node) && hasProp(node, "childrenCount")) return node.childrenCount
   },
 }
