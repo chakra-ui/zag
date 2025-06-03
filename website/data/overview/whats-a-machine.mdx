@@ -84,12 +84,14 @@ function connect(service) {
   return {
     active,
     getButtonProps() {
-      type: "button",
-      role: "switch",
-      "aria-checked": active,
-      onClick() {
-        send("CLICK")
-      },
+      return {
+        type: "button",
+        role: "switch",
+        "aria-checked": active,
+        onClick() {
+          send("CLICK")
+        },
+      }
     },
   }
 }
