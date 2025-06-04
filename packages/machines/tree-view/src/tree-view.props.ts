@@ -19,7 +19,7 @@ export const props = createProps<TreeViewProps>()([
   "typeahead",
   "defaultExpandedValue",
   "defaultSelectedValue",
-  "onLoadStatusChange",
+  "onLoadChildrenComplete",
   "loadChildren",
 ])
 

@@ -39,11 +39,7 @@ export interface LoadChildrenDetails<T = any> {
   signal: AbortSignal
 }
 
-export interface LoadStatusChangeDetails<T = any> {
-  /**
-   * The node that was loaded with children
-   */
-  node: T
+export interface LoadChildrenCompleteDetails<T = any> {
   /**
    * The updated tree collection with the loaded children
    */
@@ -115,7 +111,7 @@ export interface TreeViewProps<T = any> extends DirectionProperty, CommonPropert
   /**
    * Called when a node finishes loading children
    */
-  onLoadStatusChange?: ((details: LoadStatusChangeDetails) => void) | undefined
+  onLoadChildrenComplete?: ((details: LoadChildrenCompleteDetails) => void) | undefined
   /**
    * Whether clicking on a branch should open it or not
    * @default true

@@ -16,7 +16,7 @@ export type {
   TreeViewMachine as Machine,
   TreeNode,
   LoadChildrenDetails,
-  LoadStatusChangeDetails,
+  LoadChildrenCompleteDetails,
   TreeLoadingStatus,
   TreeLoadingStatusMap,
 } from "./tree-view.types"

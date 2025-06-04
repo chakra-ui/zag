@@ -300,7 +300,7 @@ export class TreeCollection<T = TreeNode> {
       onEnter: (node, indexPath) => {
         const nodeValue = this.getNodeValue(node)
         if (opts.skip?.({ value: nodeValue, node, indexPath })) return "skip"
-        if (this.getNodeChildren(node).length > 0 && this.isSameDepth(indexPath, opts.depth)) {
+        if (this.isBranchNode(node) && this.isSameDepth(indexPath, opts.depth)) {
           values.push(this.getNodeValue(node))
         }
       },
