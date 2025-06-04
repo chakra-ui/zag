@@ -1,5 +1,18 @@
 # @zag-js/collection
 
+## 1.15.0
+
+### Minor Changes
+
+- [#2498](https://github.com/chakra-ui/zag/pull/2498)
+  [`ce98b54`](https://github.com/chakra-ui/zag/commit/ce98b54a9cf6c241bc15ce5bbb017797438ecdc6) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Add support lazy loading node children
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/utils@1.15.0
+
 ## 1.14.0
 
 ### Patch Changes
