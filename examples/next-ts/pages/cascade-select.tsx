@@ -1,6 +1,6 @@
 import { normalizeProps, useMachine } from "@zag-js/react"
-import { cascaderControls } from "@zag-js/shared"
-import * as cascader from "@zag-js/cascader"
+import { cascadeSelectControls } from "@zag-js/shared"
+import * as cascadeSelect from "@zag-js/cascade-select"
 import { ChevronDownIcon, ChevronRightIcon, XIcon } from "lucide-react"
 import { useId } from "react"
 import { StateVisualizer } from "../components/state-visualizer"
@@ -13,7 +13,7 @@ interface Node {
   children?: Node[]
 }
 
-const collection = cascader.collection<Node>({
+const collection = cascadeSelect.collection<Node>({
   nodeToValue: (node) => node.value,
   nodeToString: (node) => node.label,
   rootNode: {
@@ -86,9 +86,9 @@ const collection = cascader.collection<Node>({
 })
 
 export default function Page() {
-  const controls = useControls(cascaderControls)
+  const controls = useControls(cascadeSelectControls)
 
-  const service = useMachine(cascader.machine, {
+  const service = useMachine(cascadeSelect.machine, {
     id: useId(),
     collection,
     placeholder: "Select food category",
@@ -104,7 +104,7 @@ export default function Page() {
     ...controls.context,
   })
 
-  const api = cascader.connect(service, normalizeProps)
+  const api = cascadeSelect.connect(service, normalizeProps)
 
   const renderLevel = (level: number) => {
     const levelValues = api.getLevelValues(level)
@@ -135,7 +135,7 @@ export default function Page() {
 
   return (
     <>
-      <main className="cascader">
+      <main className="cascade-select">
         <div {...api.getRootProps()}>
           <label {...api.getLabelProps()}>Food Categories</label>
 

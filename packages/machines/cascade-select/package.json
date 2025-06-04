@@ -1,7 +1,7 @@
 {
-    "name": "@zag-js/cascader",
+    "name": "@zag-js/cascade-select",
     "version": "0.74.2",
-    "description": "Core logic for the cascader widget implemented as a state machine",
+    "description": "Core logic for the cascade-select widget implemented as a state machine",
     "keywords": [
         "js",
         "machine",
@@ -9,13 +9,13 @@
         "statechart",
         "component",
         "chakra ui",
-        "cascader"
+        "cascade-select"
     ],
     "author": "Abraham Aremu <anubra266@gmail.com>",
     "homepage": "https://github.com/chakra-ui/zag#readme",
     "license": "MIT",
     "main": "src/index.ts",
-    "repository": "https://github.com/chakra-ui/zag/tree/main/packages/machines/cascader",
+    "repository": "https://github.com/chakra-ui/zag/tree/main/packages/machines/cascade-select",
     "sideEffects": false,
     "files": [
         "dist"

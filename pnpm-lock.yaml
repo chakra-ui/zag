@@ -164,9 +164,9 @@ importers:
       '@zag-js/carousel':
         specifier: workspace:*
         version: link:../../packages/machines/carousel
-      '@zag-js/cascader':
+      '@zag-js/cascade-select':
         specifier: workspace:*
-        version: link:../../packages/machines/cascader
+        version: link:../../packages/machines/cascade-select
       '@zag-js/checkbox':
         specifier: workspace:*
         version: link:../../packages/machines/checkbox
@@ -1963,7 +1963,7 @@ importers:
         specifier: 2.2.0
         version: 2.2.0
 
-  packages/machines/cascader:
+  packages/machines/cascade-select:
     dependencies:
       '@zag-js/anatomy':
         specifier: workspace:*

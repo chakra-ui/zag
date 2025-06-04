@@ -41,21 +41,21 @@ export type ElementIds = Partial<{
  * Machine context
  * -----------------------------------------------------------------------------*/
 
-export interface CascaderProps<T = any> extends DirectionProperty, CommonProperties {
+export interface CascadeSelectProps<T = any> extends DirectionProperty, CommonProperties {
   /**
    * The tree collection data
    */
   collection?: TreeCollection<T> | undefined
   /**
-   * The ids of the cascader elements. Useful for composition.
+   * The ids of the cascade-select elements. Useful for composition.
    */
   ids?: ElementIds | undefined
   /**
-   * The controlled value of the cascader
+   * The controlled value of the cascade-select
    */
   value?: string[][] | undefined
   /**
-   * The initial value of the cascader when rendered.
+   * The initial value of the cascade-select when rendered.
    * Use when you don't need to control the value.
    */
   defaultValue?: string[][] | undefined
@@ -65,50 +65,50 @@ export interface CascaderProps<T = any> extends DirectionProperty, CommonPropert
    */
   multiple?: boolean | undefined
   /**
-   * The controlled open state of the cascader
+   * The controlled open state of the cascade-select
    */
   open?: boolean | undefined
   /**
-   * The initial open state of the cascader when rendered.
+   * The initial open state of the cascade-select when rendered.
    * Use when you don't need to control the open state.
    */
   defaultOpen?: boolean | undefined
   /**
-   * The controlled highlighted value of the cascader
+   * The controlled highlighted value of the cascade-select
    */
   highlightedPath?: string[] | null | undefined
   /**
-   * The placeholder text for the cascader
+   * The placeholder text for the cascade-select
    */
   placeholder?: string | undefined
   /**
-   * Whether the cascader should close when an item is selected
+   * Whether the cascade-select should close when an item is selected
    * @default true
    */
   closeOnSelect?: boolean | undefined
   /**
-   * Whether the cascader should loop focus when navigating with keyboard
+   * Whether the cascade-select should loop focus when navigating with keyboard
    * @default false
    */
   loop?: boolean | undefined
   /**
-   * Whether the cascader is disabled
+   * Whether the cascade-select is disabled
    */
   disabled?: boolean | undefined
   /**
-   * Whether the cascader is read-only
+   * Whether the cascade-select is read-only
    */
   readOnly?: boolean | undefined
   /**
-   * Whether the cascader is required
+   * Whether the cascade-select is required
    */
   required?: boolean | undefined
   /**
-   * Whether the cascader is invalid
+   * Whether the cascade-select is invalid
    */
   invalid?: boolean | undefined
   /**
-   * The positioning options for the cascader content
+   * The positioning options for the cascade-select content
    */
   positioning?: PositioningOptions | undefined
   /**
@@ -146,9 +146,9 @@ export interface CascaderProps<T = any> extends DirectionProperty, CommonPropert
 
 type PropsWithDefault = "collection" | "closeOnSelect" | "loop" | "defaultValue" | "defaultOpen" | "multiple"
 
-export interface CascaderSchema<T extends TreeNode = TreeNode> {
+export interface CascadeSelectSchema<T extends TreeNode = TreeNode> {
   state: "idle" | "focused" | "open"
-  props: RequiredBy<CascaderProps<T>, PropsWithDefault>
+  props: RequiredBy<CascadeSelectProps<T>, PropsWithDefault>
   context: {
     value: string[][]
     highlightedPath: string[] | null
@@ -171,9 +171,9 @@ export interface CascaderSchema<T extends TreeNode = TreeNode> {
   guard: string
 }
 
-export type CascaderService<T extends TreeNode = TreeNode> = Service<CascaderSchema<T>>
+export type CascadeSelectService<T extends TreeNode = TreeNode> = Service<CascadeSelectSchema<T>>
 
-export type CascaderMachine<T extends TreeNode = TreeNode> = Machine<CascaderSchema<T>>
+export type CascadeSelectMachine<T extends TreeNode = TreeNode> = Machine<CascadeSelectSchema<T>>
 
 /* -----------------------------------------------------------------------------
  * Component API
@@ -220,13 +220,13 @@ export interface LevelProps {
   level: number
 }
 
-export interface CascaderApi<T extends PropTypes = PropTypes, V = TreeNode> {
+export interface CascadeSelectApi<T extends PropTypes = PropTypes, V = TreeNode> {
   /**
    * The tree collection data
    */
   collection: TreeCollection<V>
   /**
-   * The current value of the cascader
+   * The current value of the cascade-select
    */
   value: string[][]
   /**
@@ -242,15 +242,15 @@ export interface CascaderApi<T extends PropTypes = PropTypes, V = TreeNode> {
    */
   highlightedPath: string[] | null
   /**
-   * Whether the cascader is open
+   * Whether the cascade-select is open
    */
   open: boolean
   /**
-   * Whether the cascader is focused
+   * Whether the cascade-select is focused
    */
   focused: boolean
   /**
-   * Function to open the cascader
+   * Function to open the cascade-select
    */
   setOpen(open: boolean): void
   /**

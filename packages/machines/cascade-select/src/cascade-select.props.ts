@@ -1,8 +1,8 @@
 import { createProps } from "@zag-js/types"
 import { createSplitProps } from "@zag-js/utils"
-import type { CascaderProps } from "./cascader.types"
+import type { CascadeSelectProps } from "./cascade-select.types"
 
-export const props = createProps<CascaderProps>()([
+export const props = createProps<CascadeSelectProps>()([
   "allowParentSelection",
   "closeOnSelect",
   "collection",
@@ -31,4 +31,4 @@ export const props = createProps<CascaderProps>()([
   "value",
 ])
 
-export const splitProps = createSplitProps<Partial<CascaderProps>>(props)
+export const splitProps = createSplitProps<Partial<CascadeSelectProps>>(props)

@@ -1,5 +1,5 @@
 ---
-"@zag-js/cascader": patch
+"@zag-js/cascade-select": patch
 ---
 
-Add cascader machine
+Add cascade select machine

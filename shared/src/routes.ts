@@ -4,7 +4,7 @@ type RouteData = {
 }
 
 export const routesData: RouteData[] = [
-  { label: "Cascader", path: "/cascader" },
+  { label: "Cascade Select", path: "/cascade-select" },
   { label: "Password Input", path: "/password-input" },
   { label: "Listbox", path: "/listbox" },
   { label: "Listbox (Grid)", path: "/listbox-grid" },

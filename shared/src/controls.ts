@@ -6,7 +6,7 @@ export const accordionControls = defineControls({
   orientation: { type: "select", options: ["horizontal", "vertical"] as const, defaultValue: "vertical" },
 })
 
-export const cascaderControls = defineControls({
+export const cascadeSelectControls = defineControls({
   disabled: { type: "boolean", defaultValue: false },
   readOnly: { type: "boolean", defaultValue: false },
   loop: { type: "boolean", defaultValue: false },

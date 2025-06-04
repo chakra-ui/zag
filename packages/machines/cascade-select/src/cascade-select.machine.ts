@@ -2,13 +2,13 @@ import { createGuards, createMachine } from "@zag-js/core"
 import { trackDismissableElement } from "@zag-js/dismissable"
 import { raf, trackFormControl } from "@zag-js/dom-query"
 import { getPlacement, type Placement } from "@zag-js/popper"
-import { collection } from "./cascader.collection"
-import { dom } from "./cascader.dom"
-import type { CascaderSchema } from "./cascader.types"
+import { collection } from "./cascade-select.collection"
+import { dom } from "./cascade-select.dom"
+import type { CascadeSelectSchema } from "./cascade-select.types"
 
-const { or, and } = createGuards<CascaderSchema>()
+const { or, and } = createGuards<CascadeSelectSchema>()
 
-export const machine = createMachine<CascaderSchema>({
+export const machine = createMachine<CascadeSelectSchema>({
   props({ props }) {
     // Force "click highlighting mode" when parent selection is allowed
     const highlightTrigger = props.allowParentSelection ? "click" : (props.highlightTrigger ?? "hover")
@@ -889,11 +889,11 @@ export const machine = createMachine<CascaderSchema>({
           existingTimer()
         }
 
-        // Set up new timer with shorter delay for cascader (100ms vs menu's longer delays)
+        // Set up new timer with shorter delay for cascade-select (100ms vs menu's longer delays)
         const timer = setTimeout(() => {
           context.set("clearFocusTimer", null)
           send({ type: "DELAY.CLEAR_FOCUS" })
-        }, 100) // Shorter delay for cascader UX
+        }, 100) // Shorter delay for cascade-select UX
 
         // Store cancel function
         const cancelTimer = () => clearTimeout(timer)

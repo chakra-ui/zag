@@ -2,14 +2,14 @@ import { dataAttr, getEventKey, isLeftClick } from "@zag-js/dom-query"
 import { getPlacementStyles } from "@zag-js/popper"
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import type { Service } from "@zag-js/core"
-import { parts } from "./cascader.anatomy"
-import { dom } from "./cascader.dom"
-import type { CascaderApi, CascaderSchema, ItemProps, ItemState, LevelProps } from "./cascader.types"
+import { parts } from "./cascade-select.anatomy"
+import { dom } from "./cascade-select.dom"
+import type { CascadeSelectApi, CascadeSelectSchema, ItemProps, ItemState, LevelProps } from "./cascade-select.types"
 
 export function connect<T extends PropTypes>(
-  service: Service<CascaderSchema>,
+  service: Service<CascadeSelectSchema>,
   normalize: NormalizeProps<T>,
-): CascaderApi<T> {
+): CascadeSelectApi<T> {
   const { send, context, prop, scope, computed, state } = service
 
   const collection = prop("collection")

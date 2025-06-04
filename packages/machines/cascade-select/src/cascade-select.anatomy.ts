@@ -1,6 +1,6 @@
 import { createAnatomy } from "@zag-js/anatomy"
 
-export const anatomy = createAnatomy("cascader").parts(
+export const anatomy = createAnatomy("cascade-select").parts(
   "root",
   "label",
   "control",
