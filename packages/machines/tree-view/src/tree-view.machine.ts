@@ -1,6 +1,6 @@
 import { createGuards, createMachine } from "@zag-js/core"
 import { getByTypeahead } from "@zag-js/dom-query"
-import { add, addOrRemove, first, isEqual, remove, uniq } from "@zag-js/utils"
+import { add, addOrRemove, first, isEqual, omit, remove, uniq } from "@zag-js/utils"
 import { collection } from "./tree-view.collection"
 import * as dom from "./tree-view.dom"
 import type { TreeLoadingStatusMap, TreeViewSchema } from "./tree-view.types"
@@ -90,18 +90,6 @@ export const machine = createMachine<TreeViewSchema>({
     ],
     "EXPANDED.ALL": {
       actions: ["expandAllBranches"],
-    },
-    "LOADING.START": {
-      actions: ["setNodeLoading"],
-    },
-    "LOADING.END": {
-      actions: ["clearNodeStatus"],
-    },
-    "LOADING.SUCCESS": {
-      actions: ["setNodeLoaded"],
-    },
-    "LOADING.ERROR": {
-      actions: ["clearNodeStatus"],
     },
     EXPAND_WITH_LOADING: {
       actions: ["startAsyncExpand"],
@@ -273,7 +261,7 @@ export const machine = createMachine<TreeViewSchema>({
       expandBranchWithLoading({ send, event }) {
         send({ type: "EXPAND_WITH_LOADING", id: event.id })
       },
-      startAsyncExpand({ context, event, prop, send, refs }) {
+      startAsyncExpand({ context, event, prop, refs }) {
         const loadChildren = prop("loadChildren")
         if (!loadChildren) {
           // Fallback to regular expand
@@ -299,7 +287,7 @@ export const machine = createMachine<TreeViewSchema>({
         if (!node) return
 
         // Check if node already has children (skip loading)
-        if (collection.isBranchNode(node)) {
+        if (collection.getNodeChildren(node).length > 0) {
           context.set("expandedValue", (prev) => add(prev, event.id))
           return
         }
@@ -317,26 +305,24 @@ export const machine = createMachine<TreeViewSchema>({
         pendingAborts.set(event.id, abortController)
 
         // Start loading
-        send({ type: "LOADING.START", id: event.id })
+        context.set("loadingStatus", (prev) => ({ ...prev, [event.id]: "loading" }))
 
         // Execute async loading
-        loadChildren({ value: event.id, node, signal: abortController.signal })
+        const indexPath = collection.getIndexPath(event.id)
+        const valuePath = collection.getValuePath(indexPath)
+        if (!indexPath || !valuePath) return
+
+        loadChildren({ valuePath, indexPath, node, signal: abortController.signal })
           .then((children) => {
             // Clean up abort controller
             pendingAborts.delete(event.id)
 
             // After loading completes, mark as loaded and expand
-            send({ type: "LOADING.SUCCESS", id: event.id })
+            context.set("loadingStatus", (prev) => ({ ...prev, [event.id]: "loaded" }))
             context.set("expandedValue", (prev) => add(prev, event.id))
 
-            const collection = prop("collection")
-            const indexPath = collection.getIndexPath(event.id)
-            if (!indexPath) return
-
-            prop("onLoadStatusChange")?.({
-              node,
-              collection: collection.replace(indexPath, { ...node, children }),
-            })
+            const newCollection = prop("collection").replace(indexPath, { ...node, children })
+            prop("onLoadStatusChange")?.({ node, collection: newCollection })
           })
           .catch((error) => {
             // Clean up abort controller
@@ -344,7 +330,7 @@ export const machine = createMachine<TreeViewSchema>({
 
             // Don't send error if request was aborted
             if (error instanceof Error && error.name === "AbortError") return
-            send({ type: "LOADING.ERROR", id: event.id })
+            context.set("loadingStatus", (prev) => omit(prev, event.id))
           })
       },
       collapseBranch({ context, event }) {
@@ -524,18 +510,6 @@ export const machine = createMachine<TreeViewSchema>({
         })
 
         context.set("selectedValue", values)
-      },
-      setNodeLoading({ context, event }) {
-        context.set("loadingStatus", (prev) => ({ ...prev, [event.id]: "loading" }))
-      },
-      clearNodeStatus({ context, event }) {
-        context.set("loadingStatus", (prev) => {
-          const { [event.id]: _, ...rest } = prev
-          return rest
-        })
-      },
-      setNodeLoaded({ context, event }) {
-        context.set("loadingStatus", (prev) => ({ ...prev, [event.id]: "loaded" }))
       },
       clearPendingAborts({ refs }) {
         const aborts = refs.get("pendingAborts")

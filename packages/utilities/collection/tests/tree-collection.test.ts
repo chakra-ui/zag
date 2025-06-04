@@ -423,7 +423,7 @@ describe("tree / traversal", () => {
 
 describe("tree / remove", () => {
   const remove = (indexPath: number[][]) => {
-    return draw(tree.remove(indexPath))
+    return draw(tree.remove(indexPath).rootNode)
   }
 
   it("remove branch", () => {
@@ -480,7 +480,7 @@ describe("tree / remove", () => {
 
 describe("tree / replace", () => {
   const replace = (indexPath: number[], node: Node) => {
-    return draw(tree.replace(indexPath, node))
+    return draw(tree.replace(indexPath, node).rootNode)
   }
 
   it("replace child", () => {
@@ -552,7 +552,7 @@ describe("tree / replace", () => {
 
 describe("tree / move", () => {
   const move = (fromPath: number[][], toPath: number[]) => {
-    return draw(tree.move(fromPath, toPath))
+    return draw(tree.move(fromPath, toPath).rootNode)
   }
 
   it("moves node to different parent", () => {

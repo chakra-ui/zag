@@ -324,6 +324,7 @@ export class TreeCollection<T = TreeNode> {
         ]
       },
     })
+
     // remove the root node
     return nodes.slice(1)
   }
@@ -332,43 +333,51 @@ export class TreeCollection<T = TreeNode> {
     return compact({ ...node, children: children })
   }
 
-  private _insert = (rootNode: T, indexPath: IndexPath, nodes: T[]): T => {
-    return insert(rootNode, { at: indexPath, nodes, getChildren: this.getNodeChildren, create: this._create })
+  private _insert = (rootNode: T, indexPath: IndexPath, nodes: T[]): TreeCollection<T> => {
+    return this._set(
+      insert(rootNode, { at: indexPath, nodes, getChildren: this.getNodeChildren, create: this._create }),
+    )
   }
 
-  private _replace = (rootNode: T, indexPath: IndexPath, node: T): T => {
-    return replace(rootNode, { at: indexPath, node, getChildren: this.getNodeChildren, create: this._create })
+  private _set = (rootNode: T): TreeCollection<T> => {
+    return new TreeCollection({ ...this.options, rootNode })
   }
 
-  private _move = (rootNode: T, indexPaths: IndexPath[], to: IndexPath): T => {
-    return move(rootNode, { indexPaths, to, getChildren: this.getNodeChildren, create: this._create })
+  private _replace = (rootNode: T, indexPath: IndexPath, node: T): TreeCollection<T> => {
+    return this._set(
+      replace(rootNode, { at: indexPath, node, getChildren: this.getNodeChildren, create: this._create }),
+    )
   }
 
-  private _remove = (rootNode: T, indexPaths: IndexPath[]): T => {
-    return remove(rootNode, { indexPaths, getChildren: this.getNodeChildren, create: this._create })
+  private _move = (rootNode: T, indexPaths: IndexPath[], to: IndexPath): TreeCollection<T> => {
+    return this._set(move(rootNode, { indexPaths, to, getChildren: this.getNodeChildren, create: this._create }))
   }
 
-  replace = (indexPath: IndexPath, node: T): T => {
+  private _remove = (rootNode: T, indexPaths: IndexPath[]): TreeCollection<T> => {
+    return this._set(remove(rootNode, { indexPaths, getChildren: this.getNodeChildren, create: this._create }))
+  }
+
+  replace = (indexPath: IndexPath, node: T): TreeCollection<T> => {
     return this._replace(this.rootNode, indexPath, node)
   }
 
-  remove = (indexPaths: IndexPath[]): T => {
+  remove = (indexPaths: IndexPath[]): TreeCollection<T> => {
     return this._remove(this.rootNode, indexPaths)
   }
 
-  insertBefore = (indexPath: IndexPath, nodes: T[]): T | undefined => {
+  insertBefore = (indexPath: IndexPath, nodes: T[]): TreeCollection<T> | undefined => {
     const parentNode = this.getParentNode(indexPath)
     return parentNode ? this._insert(this.rootNode, indexPath, nodes) : undefined
   }
 
-  insertAfter = (indexPath: IndexPath, nodes: T[]): T | undefined => {
+  insertAfter = (indexPath: IndexPath, nodes: T[]): TreeCollection<T> | undefined => {
     const parentNode = this.getParentNode(indexPath)
     if (!parentNode) return
     const nextIndex = [...indexPath.slice(0, -1), indexPath[indexPath.length - 1] + 1]
     return this._insert(this.rootNode, nextIndex, nodes)
   }
 
-  move = (fromIndexPaths: IndexPath[], toIndexPath: IndexPath): T => {
+  move = (fromIndexPaths: IndexPath[], toIndexPath: IndexPath): TreeCollection<T> => {
     return this._move(this.rootNode, fromIndexPaths, toIndexPath)
   }
 

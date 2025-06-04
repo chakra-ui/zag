@@ -1,4 +1,5 @@
 import type { TreeCollection, TreeNode } from "@zag-js/collection"
+import type { IndexPath } from "@zag-js/collection/src/tree-visit"
 import type { Machine, Service } from "@zag-js/core"
 import type { TypeaheadState } from "@zag-js/dom-query"
 import type { CommonProperties, DirectionProperty, PropTypes, RequiredBy } from "@zag-js/types"
@@ -21,9 +22,13 @@ export interface SelectionChangeDetails extends FocusChangeDetails {
 
 export interface LoadChildrenDetails<T = any> {
   /**
-   * The value of the node whose children are being loaded
+   * The value path of the node whose children are being loaded
    */
-  value: string
+  valuePath: string[]
+  /**
+   * The index path of the node whose children are being loaded
+   */
+  indexPath: IndexPath
   /**
    * The node whose children are being loaded
    */
@@ -241,14 +246,6 @@ export interface TreeViewApi<T extends PropTypes = PropTypes, V = TreeNode> {
    * Function to set the selected value
    */
   setSelectedValue(value: string[]): void
-  /**
-   * The id of the loading nodes
-   */
-  loadingValue: string[]
-  /**
-   * The id of the loaded nodes
-   */
-  loadedValue: string[]
   /**
    * Function to get the visible nodes
    */

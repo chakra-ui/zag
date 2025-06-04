@@ -18,11 +18,9 @@ export function connect<T extends PropTypes>(service: TreeViewService, normalize
   const collection = prop("collection")
   const expandedValue = Array.from(context.get("expandedValue"))
   const selectedValue = Array.from(context.get("selectedValue"))
-  const loadingStatus = context.get("loadingStatus")
-  const loadingValue = Object.keys(loadingStatus).filter((key) => loadingStatus[key] === "loading")
-  const loadedValue = Object.keys(loadingStatus).filter((key) => loadingStatus[key] === "loaded")
   const isTypingAhead = computed("isTypingAhead")
   const focusedValue = context.get("focusedValue")
+  const loadingStatus = context.get("loadingStatus")
 
   function getNodeState(props: NodeProps): NodeState {
     const { node, indexPath } = props
@@ -44,8 +42,6 @@ export function connect<T extends PropTypes>(service: TreeViewService, normalize
     collection,
     expandedValue,
     selectedValue,
-    loadingValue,
-    loadedValue,
     expand(value) {
       if (!value) return send({ type: "EXPANDED.ALL" })
       const _expandedValue = uniq(expandedValue.concat(...value))
