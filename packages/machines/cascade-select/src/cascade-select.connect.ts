@@ -173,13 +173,14 @@ export function connect<T extends PropTypes>(
               event.preventDefault()
               send({ type: "TRIGGER.ARROW_UP" })
               break
+            case "ArrowRight":
+              event.preventDefault()
+              send({ type: "TRIGGER.ARROW_RIGHT" })
+              break
             case "Enter":
             case " ":
               event.preventDefault()
               send({ type: "TRIGGER.ENTER" })
-              break
-            case "Escape":
-              send({ type: "TRIGGER.ESCAPE" })
               break
           }
         },
@@ -317,21 +318,6 @@ export function connect<T extends PropTypes>(
           if (!isLeftClick(event)) return
           if (itemState.disabled) return
           send({ type: "ITEM.CLICK", value: itemValue })
-        },
-        onPointerMove(event) {
-          if (itemState.disabled) return
-          if (event.pointerType !== "mouse") return
-          send({ type: "ITEM.POINTER_MOVE", value: itemValue })
-        },
-        onPointerLeave(event) {
-          if (itemState.disabled) return
-          if (event.pointerType !== "mouse") return
-          send({
-            type: "ITEM.POINTER_LEAVE",
-            value: itemValue,
-            clientX: event.clientX,
-            clientY: event.clientY,
-          })
         },
       })
     },

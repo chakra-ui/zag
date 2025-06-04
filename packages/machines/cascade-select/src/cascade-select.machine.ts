@@ -10,9 +10,6 @@ const { or, and } = createGuards<CascadeSelectSchema>()
 
 export const machine = createMachine<CascadeSelectSchema>({
   props({ props }) {
-    // Force "click highlighting mode" when parent selection is allowed
-    const highlightTrigger = props.allowParentSelection ? "click" : (props.highlightTrigger ?? "hover")
-
     return {
       closeOnSelect: true,
       loop: false,
@@ -28,7 +25,6 @@ export const machine = createMachine<CascadeSelectSchema>({
       },
       ...props,
       collection: props.collection ?? collection.empty(),
-      highlightTrigger,
     }
   },
 
@@ -65,20 +61,8 @@ export const machine = createMachine<CascadeSelectSchema>({
   },
 
   computed: {
-    hasValue: ({ context }) => context.get("value").length > 0,
     isDisabled: ({ prop, context }) => !!prop("disabled") || !!context.get("fieldsetDisabled"),
     isInteractive: ({ prop }) => !(prop("disabled") || prop("readOnly")),
-    selectedItems: ({ context, prop }) => {
-      const value = context.get("value")
-      const collection = prop("collection")
-      return value.flatMap((path) => path.map((v) => collection.findNode(v)).filter(Boolean))
-    },
-    highlightedItem: ({ context, prop }) => {
-      const highlightedPath = context.get("highlightedPath")
-      return highlightedPath && highlightedPath.length > 0
-        ? prop("collection").findNode(highlightedPath[highlightedPath.length - 1])
-        : null
-    },
     levelDepth: ({ context }) => {
       return Math.max(1, context.get("levelValues").length)
     },
@@ -185,7 +169,7 @@ export const machine = createMachine<CascadeSelectSchema>({
             actions: ["highlightLastItem"],
           },
           {
-            guard: or("isTriggerArrowDownEvent", "isTriggerEnterEvent"),
+            guard: or("isTriggerArrowDownEvent", "isTriggerEnterEvent", ""),
             target: "open",
             actions: ["highlightFirstItem"],
           },
@@ -224,6 +208,16 @@ export const machine = createMachine<CascadeSelectSchema>({
           },
         ],
         "TRIGGER.ENTER": [
+          {
+            guard: "isOpenControlled",
+            actions: ["invokeOnOpen"],
+          },
+          {
+            target: "open",
+            actions: ["invokeOnOpen", "highlightFirstItem"],
+          },
+        ],
+        "TRIGGER.ARROW_RIGHT": [
           {
             guard: "isOpenControlled",
             actions: ["invokeOnOpen"],
@@ -284,18 +278,6 @@ export const machine = createMachine<CascadeSelectSchema>({
             actions: ["setHighlightedPathFromValue"],
           },
         ],
-        "ITEM.POINTER_MOVE": [
-          {
-            guard: "isHoverHighlighting",
-            actions: ["setHighlightedPathFromValue"],
-          },
-        ],
-        "ITEM.POINTER_LEAVE": [
-          {
-            guard: "isHoverHighlighting",
-            actions: ["clearHighlightedPath"],
-          },
-        ],
         "CONTENT.ARROW_DOWN": [
           {
             guard: "hasHighlightedPath",
@@ -321,6 +303,20 @@ export const machine = createMachine<CascadeSelectSchema>({
           },
         ],
         "CONTENT.ARROW_LEFT": [
+          {
+            guard: and("isAtRootLevel", "isOpenControlled"),
+            actions: ["invokeOnClose", "focusTriggerEl"],
+          },
+          {
+            guard: and("isAtRootLevel", "restoreFocus"),
+            target: "focused",
+            actions: ["invokeOnClose", "focusTriggerEl"],
+          },
+          {
+            guard: "isAtRootLevel",
+            target: "idle",
+            actions: ["invokeOnClose"],
+          },
           {
             guard: "canNavigateToParent",
             actions: ["highlightParent"],
@@ -389,9 +385,8 @@ export const machine = createMachine<CascadeSelectSchema>({
       isTriggerArrowUpEvent: ({ event }) => event.previousEvent?.type === "TRIGGER.ARROW_UP",
       isTriggerArrowDownEvent: ({ event }) => event.previousEvent?.type === "TRIGGER.ARROW_DOWN",
       isTriggerEnterEvent: ({ event }) => event.previousEvent?.type === "TRIGGER.ENTER",
+      isTriggerArrowRightEvent: ({ event }) => event.previousEvent?.type === "TRIGGER.ARROW_RIGHT",
       hasHighlightedPath: ({ context }) => context.get("highlightedPath") != null,
-      loop: ({ prop }) => !!prop("loop"),
-      isHoverHighlighting: ({ prop }) => prop("highlightTrigger") === "hover",
       shouldCloseOnSelect: ({ prop, event }) => {
         if (!prop("closeOnSelect")) return false
 
@@ -462,6 +457,11 @@ export const machine = createMachine<CascadeSelectSchema>({
 
         // We can navigate to parent if the path has more than one item
         return highlightedPath.length > 1
+      },
+      isAtRootLevel: ({ context }) => {
+        const highlightedPath = context.get("highlightedPath")
+        // We're at root level if there's no highlighted path or the path has only one item (root child)
+        return !highlightedPath || highlightedPath.length <= 1
       },
     },
 

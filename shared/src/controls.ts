@@ -13,11 +13,6 @@ export const cascadeSelectControls = defineControls({
   multiple: { type: "boolean", defaultValue: false },
   dir: { type: "select", options: ["ltr", "rtl"] as const, defaultValue: "ltr" },
   closeOnSelect: { type: "boolean", defaultValue: true },
-  highlightTrigger: {
-    type: "select",
-    options: ["hover", "click"] as const,
-    defaultValue: "hover",
-  },
   allowParentSelection: {
     type: "boolean",
     defaultValue: false,

@@ -131,14 +131,7 @@ export interface CascadeSelectProps<T = any> extends DirectionProperty, CommonPr
    */
   isItemDisabled?: ((value: string) => boolean) | undefined
   /**
-   * How highlighting is triggered
-   * - "hover": Items are highlighted on hover (default)
-   * - "click": Items are highlighted only on click
-   */
-  highlightTrigger?: "hover" | "click"
-  /**
    * Whether parent (branch) items can be selected
-   * When true, highlightTrigger is forced to "click"
    */
   allowParentSelection?: boolean
 }
@@ -156,11 +149,8 @@ export interface CascadeSelectSchema<T extends TreeNode = TreeNode> {
     levelValues: string[][]
   }
   computed: {
-    hasValue: boolean
     isDisabled: boolean
     isInteractive: boolean
-    selectedItems: T[]
-    highlightedItem: T | null
     levelDepth: number
     valueText: string
   }

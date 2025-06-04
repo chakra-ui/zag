@@ -13,7 +13,6 @@ export const props = createProps<CascadeSelectProps>()([
   "formatValue",
   "getRootNode",
   "highlightedPath",
-  "highlightTrigger",
   "id",
   "ids",
   "invalid",
