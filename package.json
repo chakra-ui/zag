@@ -71,7 +71,7 @@
     "@playwright/test": "1.52.0",
     "@swc/core": "1.11.29",
     "@types/jsdom": "^21.1.7",
-    "@types/node": "22.15.21",
+    "@types/node": "22.15.29",
     "@types/signale": "1.4.7",
     "@typescript-eslint/eslint-plugin": "8.32.1",
     "@typescript-eslint/parser": "8.32.1",
@@ -79,10 +79,10 @@
     "commitlint": "19.8.1",
     "cross-env": "^7.0.3",
     "dotenv": "16.5.0",
-    "eslint": "9.27.0",
+    "eslint": "9.28.0",
     "eslint-config-prettier": "10.1.5",
     "eslint-plugin-import": "2.31.0",
-    "eslint-plugin-prettier": "5.4.0",
+    "eslint-plugin-prettier": "5.4.1",
     "fast-glob": "3.3.3",
     "find-packages": "10.0.4",
     "husky": "9.1.7",
@@ -105,5 +105,5 @@
   "engines": {
     "node": ">=18.0.0"
   },
-  "packageManager": "pnpm@10.11.0"
+  "packageManager": "pnpm@10.11.1"
 }

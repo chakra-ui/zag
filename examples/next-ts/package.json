@@ -87,7 +87,7 @@
     "@zag-js/types": "workspace:*",
     "@zag-js/utils": "workspace:*",
     "form-serialize": "0.7.2",
-    "lucide-react": "0.511.0",
+    "lucide-react": "0.513.0",
     "image-conversion": "2.1.1",
     "match-sorter": "8.0.2",
     "next": "15.3.2",
@@ -100,7 +100,7 @@
   },
   "devDependencies": {
     "@types/form-serialize": "0.7.4",
-    "@types/node": "22.15.21",
+    "@types/node": "22.15.29",
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "@next/eslint-plugin-next": "15.3.2",
