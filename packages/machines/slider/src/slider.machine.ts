@@ -246,7 +246,9 @@ export const machine = createMachine<SliderSchema>({
         })
       },
       invokeOnChangeEnd({ prop, context }) {
-        prop("onValueChangeEnd")?.({ value: context.get("value") })
+        queueMicrotask(() => {
+          prop("onValueChangeEnd")?.({ value: context.get("value") })
+        })
       },
       setClosestThumbIndex(params) {
         const { context, event } = params
