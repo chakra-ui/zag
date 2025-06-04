@@ -11,7 +11,6 @@ export const anatomy = createAnatomy("cascade-select").parts(
   "positioner",
   "content",
   "level",
-  "levelContent",
   "item",
   "itemText",
   "itemIndicator",

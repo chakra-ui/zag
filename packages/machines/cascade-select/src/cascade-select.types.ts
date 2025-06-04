@@ -33,7 +33,6 @@ export type ElementIds = Partial<{
   positioner: string
   content: string
   level(level: number): string
-  levelContent(level: number): string
   item(value: string): string
 }>
 
@@ -155,7 +154,6 @@ export interface CascadeSelectSchema<T extends TreeNode = TreeNode> {
     currentPlacement: Placement | undefined
     fieldsetDisabled: boolean
     levelValues: string[][]
-    clearFocusTimer: (() => void) | null
   }
   computed: {
     hasValue: boolean
@@ -288,7 +286,6 @@ export interface CascadeSelectApi<T extends PropTypes = PropTypes, V = TreeNode>
   getPositionerProps(): T["element"]
   getContentProps(): T["element"]
   getLevelProps(props: LevelProps): T["element"]
-  getLevelContentProps(props: LevelProps): T["element"]
   getItemState(props: ItemProps): ItemState
   getItemProps(props: ItemProps): T["element"]
   getItemTextProps(props: ItemProps): T["element"]

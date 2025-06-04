@@ -112,23 +112,21 @@ export default function Page() {
 
     return (
       <div key={level} {...api.getLevelProps({ level })}>
-        <div {...api.getLevelContentProps({ level })}>
-          {levelValues.map((value) => {
-            const itemState = api.getItemState({ value })
-            const node = collection.findNode(value)
+        {levelValues.map((value) => {
+          const itemState = api.getItemState({ value })
+          const node = collection.findNode(value)
 
-            return (
-              <div key={value} {...api.getItemProps({ value })}>
-                <span {...api.getItemTextProps({ value })}>{node?.label}</span>
-                {itemState.hasChildren && (
-                  <span {...api.getItemIndicatorProps({ value })}>
-                    <ChevronRightIcon size={16} />
-                  </span>
-                )}
-              </div>
-            )
-          })}
-        </div>
+          return (
+            <div key={value} {...api.getItemProps({ value })}>
+              <span {...api.getItemTextProps({ value })}>{node?.label}</span>
+              {itemState.hasChildren && (
+                <span {...api.getItemIndicatorProps({ value })}>
+                  <ChevronRightIcon size={16} />
+                </span>
+              )}
+            </div>
+          )
+        })}
       </div>
     )
   }

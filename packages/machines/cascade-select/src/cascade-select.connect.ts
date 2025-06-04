@@ -296,15 +296,6 @@ export function connect<T extends PropTypes>(
       })
     },
 
-    getLevelContentProps(props: LevelProps) {
-      const { level } = props
-      return normalize.element({
-        ...parts.levelContent.attrs,
-        id: dom.getLevelContentId(scope, level),
-        "data-level": level,
-      })
-    },
-
     getItemProps(props: ItemProps) {
       const { value: itemValue } = props
       const itemState = this.getItemState(props)
@@ -327,12 +318,20 @@ export function connect<T extends PropTypes>(
           if (itemState.disabled) return
           send({ type: "ITEM.CLICK", value: itemValue })
         },
-        onPointerMove() {
+        onPointerMove(event) {
           if (itemState.disabled) return
+          if (event.pointerType !== "mouse") return
           send({ type: "ITEM.POINTER_MOVE", value: itemValue })
         },
-        onPointerLeave() {
-          send({ type: "ITEM.POINTER_LEAVE", value: itemValue })
+        onPointerLeave(event) {
+          if (itemState.disabled) return
+          if (event.pointerType !== "mouse") return
+          send({
+            type: "ITEM.POINTER_LEAVE",
+            value: itemValue,
+            clientX: event.clientX,
+            clientY: event.clientY,
+          })
         },
       })
     },

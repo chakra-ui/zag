@@ -1983,6 +1983,9 @@ importers:
       '@zag-js/popper':
         specifier: workspace:*
         version: link:../../utilities/popper
+      '@zag-js/rect-utils':
+        specifier: workspace:*
+        version: link:../../utilities/rect
       '@zag-js/types':
         specifier: workspace:*
         version: link:../../types

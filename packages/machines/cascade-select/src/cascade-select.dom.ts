@@ -12,8 +12,6 @@ export const dom = createScope({
   getPositionerId: (ctx: Scope) => ctx.ids?.positioner ?? `cascade-select:${ctx.id}:positioner`,
   getContentId: (ctx: Scope) => ctx.ids?.content ?? `cascade-select:${ctx.id}:content`,
   getLevelId: (ctx: Scope, level: number) => ctx.ids?.level?.(level) ?? `cascade-select:${ctx.id}:level:${level}`,
-  getLevelContentId: (ctx: Scope, level: number) =>
-    ctx.ids?.levelContent?.(level) ?? `cascade-select:${ctx.id}:level:${level}:content`,
   getItemId: (ctx: Scope, value: string) => ctx.ids?.item?.(value) ?? `cascade-select:${ctx.id}:item:${value}`,
 
   getRootEl: (ctx: Scope) => dom.getById(ctx, dom.getRootId(ctx)),
@@ -26,7 +24,6 @@ export const dom = createScope({
   getPositionerEl: (ctx: Scope) => dom.getById(ctx, dom.getPositionerId(ctx)),
   getContentEl: (ctx: Scope) => dom.getById(ctx, dom.getContentId(ctx)),
   getLevelEl: (ctx: Scope, level: number) => dom.getById(ctx, dom.getLevelId(ctx, level)),
-  getLevelContentEl: (ctx: Scope, level: number) => dom.getById(ctx, dom.getLevelContentId(ctx, level)),
   getItemEl: (ctx: Scope, value: string) => dom.getById(ctx, dom.getItemId(ctx, value)),
 })
 

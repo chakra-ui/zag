@@ -61,9 +61,6 @@ export const machine = createMachine<CascadeSelectSchema>({
       levelValues: bindable<string[][]>(() => ({
         defaultValue: [],
       })),
-      clearFocusTimer: bindable<(() => void) | null>(() => ({
-        defaultValue: null,
-      })),
     }
   },
 
@@ -296,7 +293,7 @@ export const machine = createMachine<CascadeSelectSchema>({
         "ITEM.POINTER_LEAVE": [
           {
             guard: "isHoverHighlighting",
-            actions: ["scheduleDelayedClear"],
+            actions: ["clearHighlightedPath"],
           },
         ],
         "CONTENT.ARROW_DOWN": [
@@ -365,9 +362,6 @@ export const machine = createMachine<CascadeSelectSchema>({
             actions: ["invokeOnClose"],
           },
         ],
-        "DELAY.CLEAR_FOCUS": {
-          actions: ["clearHighlightedPath"],
-        },
         CLOSE: [
           {
             guard: "isOpenControlled",
@@ -514,14 +508,8 @@ export const machine = createMachine<CascadeSelectSchema>({
       },
       setHighlightedPath({ context, event, prop }) {
         const { value } = event
-        const collection = prop("collection")
 
-        // Cancel any existing clear focus timer
-        const existingTimer = context.get("clearFocusTimer")
-        if (existingTimer) {
-          existingTimer()
-          context.set("clearFocusTimer", null)
-        }
+        const collection = prop("collection")
 
         context.set("highlightedPath", value)
 
@@ -565,13 +553,6 @@ export const machine = createMachine<CascadeSelectSchema>({
         }
       },
       clearHighlightedPath({ context, action }) {
-        // Cancel any existing clear focus timer
-        const existingTimer = context.get("clearFocusTimer")
-        if (existingTimer) {
-          existingTimer()
-          context.set("clearFocusTimer", null)
-        }
-
         // Clear the highlighted path
         context.set("highlightedPath", null)
 
@@ -881,25 +862,6 @@ export const machine = createMachine<CascadeSelectSchema>({
           // No selections - start with no highlight so user sees all options
           send({ type: "HIGHLIGHTED_PATH.SET", value: null })
         }
-      },
-      scheduleDelayedClear({ context, send }) {
-        // Cancel any existing timer first
-        const existingTimer = context.get("clearFocusTimer")
-        if (existingTimer) {
-          existingTimer()
-        }
-
-        // Set up new timer with shorter delay for cascade-select (100ms vs menu's longer delays)
-        const timer = setTimeout(() => {
-          context.set("clearFocusTimer", null)
-          send({ type: "DELAY.CLEAR_FOCUS" })
-        }, 100) // Shorter delay for cascade-select UX
-
-        // Store cancel function
-        const cancelTimer = () => clearTimeout(timer)
-        context.set("clearFocusTimer", cancelTimer)
-
-        return cancelTimer
       },
     },
   },
