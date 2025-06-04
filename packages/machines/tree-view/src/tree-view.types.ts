@@ -1,4 +1,5 @@
 import type { TreeCollection, TreeNode } from "@zag-js/collection"
+import type { IndexPath } from "@zag-js/collection/src/tree-visit"
 import type { Machine, Service } from "@zag-js/core"
 import type { TypeaheadState } from "@zag-js/dom-query"
 import type { CommonProperties, DirectionProperty, PropTypes, RequiredBy } from "@zag-js/types"
@@ -17,6 +18,32 @@ export interface ExpandedChangeDetails extends FocusChangeDetails {
 
 export interface SelectionChangeDetails extends FocusChangeDetails {
   selectedValue: string[]
+}
+
+export interface LoadChildrenDetails<T = any> {
+  /**
+   * The value path of the node whose children are being loaded
+   */
+  valuePath: string[]
+  /**
+   * The index path of the node whose children are being loaded
+   */
+  indexPath: IndexPath
+  /**
+   * The node whose children are being loaded
+   */
+  node: T
+  /**
+   * AbortSignal to cancel the loading operation
+   */
+  signal: AbortSignal
+}
+
+export interface LoadChildrenCompleteDetails<T = any> {
+  /**
+   * The updated tree collection with the loaded children
+   */
+  collection: TreeCollection<T>
 }
 
 export type ElementIds = Partial<{
@@ -82,6 +109,10 @@ export interface TreeViewProps<T = any> extends DirectionProperty, CommonPropert
    */
   onFocusChange?: ((details: FocusChangeDetails) => void) | undefined
   /**
+   * Called when a node finishes loading children
+   */
+  onLoadChildrenComplete?: ((details: LoadChildrenCompleteDetails) => void) | undefined
+  /**
    * Whether clicking on a branch should open it or not
    * @default true
    */
@@ -91,6 +122,11 @@ export interface TreeViewProps<T = any> extends DirectionProperty, CommonPropert
    * @default true
    */
   typeahead?: boolean | undefined
+  /**
+   * Function to load children for a node asynchronously.
+   * When provided, branches will wait for this promise to resolve before expanding.
+   */
+  loadChildren?: ((details: LoadChildrenDetails<T>) => Promise<T[]>) | undefined
 }
 
 type PropsWithDefault =
@@ -101,6 +137,10 @@ type PropsWithDefault =
   | "defaultExpandedValue"
   | "defaultSelectedValue"
 
+export type TreeLoadingStatus = "loading" | "loaded"
+
+export type TreeLoadingStatusMap = Record<string, TreeLoadingStatus>
+
 export interface TreeViewSchema<T extends TreeNode = TreeNode> {
   state: "idle"
   props: RequiredBy<TreeViewProps<T>, PropsWithDefault>
@@ -108,9 +148,11 @@ export interface TreeViewSchema<T extends TreeNode = TreeNode> {
     expandedValue: string[]
     selectedValue: string[]
     focusedValue: string | null
+    loadingStatus: TreeLoadingStatusMap
   }
   refs: {
     typeaheadState: TypeaheadState
+    pendingAborts: Map<string, AbortController>
   }
   computed: {
     isTypingAhead: boolean
@@ -173,6 +215,10 @@ export interface NodeState {
    * Whether the tree item is a branch
    */
   isBranch: boolean
+  /**
+   * Whether the tree item is currently loading children
+   */
+  loading: boolean
 }
 
 export interface TreeViewApi<T extends PropTypes = PropTypes, V = TreeNode> {

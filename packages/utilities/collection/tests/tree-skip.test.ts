@@ -84,8 +84,8 @@ describe("tree traversal / skip", () => {
 
 describe("tree / operations", () => {
   it("replace", () => {
-    const rootNode = tree.replace([0, 1], { id: "---------> test", name: "test" })
-    expect(tree.getValues(rootNode)).toMatchInlineSnapshot(`
+    const newTree = tree.replace([0, 1], { id: "---------> test", name: "test" })
+    expect(tree.getValues(newTree.rootNode)).toMatchInlineSnapshot(`
       [
         "node_modules",
         "node_modules/zag-js",
@@ -105,8 +105,8 @@ describe("tree / operations", () => {
   })
 
   it("insert before", () => {
-    const rootNode = tree.insertBefore([0, 0], [{ id: "---------> test", name: "test" }])
-    expect(tree.getValues(rootNode!)).toMatchInlineSnapshot(`
+    const newTree = tree.insertBefore([0, 0], [{ id: "---------> test", name: "test" }])
+    expect(tree.getValues(newTree!.rootNode)).toMatchInlineSnapshot(`
       [
         "node_modules",
         "---------> test",
@@ -127,8 +127,8 @@ describe("tree / operations", () => {
   })
 
   it("insert after", () => {
-    const rootNode = tree.insertAfter([0, 2], [{ id: "---------> test", name: "test" }])
-    expect(tree.getValues(rootNode!)).toMatchInlineSnapshot(`
+    const newTree = tree.insertAfter([0, 2], [{ id: "---------> test", name: "test" }])
+    expect(tree.getValues(newTree!.rootNode)).toMatchInlineSnapshot(`
       [
         "node_modules",
         "node_modules/zag-js",

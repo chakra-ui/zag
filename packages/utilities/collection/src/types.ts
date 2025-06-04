@@ -54,6 +54,7 @@ export interface TreeCollectionMethods<T> {
   nodeToValue: (node: T) => string
   nodeToString: (node: T) => string
   nodeToChildren: (node: T) => any[]
+  nodeToChildrenCount: (node: T) => number | undefined
 }
 
 export interface TreeCollectionOptions<T> extends Partial<TreeCollectionMethods<T>> {
