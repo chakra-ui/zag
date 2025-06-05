@@ -10,10 +10,10 @@ All notable changes to this project will be documented in this file.
 
 - **Tree View**: Add support for lazy loading node children. To use this, you need to provide:
 
-- `loadChildren` is a function that is used to load the children of a node.
-- `onLoadChildrenComplete` is a callback that is called when the children of a node are loaded. Used to update the tree
-  collection.
-- Add `childrenCount` to the node object to indicate the number of children.
+  - `loadChildren` is a function that is used to load the children of a node.
+  - `onLoadChildrenComplete` is a callback that is called when the children of a node are loaded. Used to update the
+    tree collection.
+  - Add `childrenCount` to the node object to indicate the number of children.
 
 ```tsx
 function TreeAsync() {
