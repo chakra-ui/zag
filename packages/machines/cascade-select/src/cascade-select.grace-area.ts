@@ -1,4 +1,11 @@
-import { isPointInPolygon, type Point } from "@zag-js/rect-utils"
+import {
+  isPointInPolygon,
+  type Point,
+  createPoint,
+  createRect,
+  getRectCorners,
+  closestSideToPoint,
+} from "@zag-js/rect-utils"
 
 export interface GraceAreaOptions {
   padding?: number
@@ -13,13 +20,19 @@ export function createGraceArea(
   const { padding = 5 } = options
 
   // Determine the exit side based on the exit point relative to the trigger
-  const exitSide = getExitSide(exitPoint, triggerRect)
+  const triggerRectObj = createRect({
+    x: triggerRect.left,
+    y: triggerRect.top,
+    width: triggerRect.width,
+    height: triggerRect.height,
+  })
+  const exitSide = closestSideToPoint(triggerRectObj, exitPoint)
 
   // Create padded exit points
   const paddedExitPoints = getPaddedExitPoints(exitPoint, exitSide, padding)
 
   // Get target rect corners
-  const targetPoints = getRectCorners(targetRect)
+  const targetPoints = domRectToPoints(targetRect)
 
   // Create convex hull from padded exit points and target points
   return getConvexHull([...paddedExitPoints, ...targetPoints])
@@ -29,60 +42,35 @@ export function isPointerInGraceArea(point: Point, graceArea: Point[]): boolean 
   return isPointInPolygon(graceArea, point)
 }
 
-function getExitSide(point: Point, rect: DOMRect): "top" | "right" | "bottom" | "left" {
-  const { x, y } = point
-  const { top, right, bottom, left } = rect
-
-  const distanceToTop = Math.abs(top - y)
-  const distanceToRight = Math.abs(right - x)
-  const distanceToBottom = Math.abs(bottom - y)
-  const distanceToLeft = Math.abs(left - x)
-
-  const minDistance = Math.min(distanceToTop, distanceToRight, distanceToBottom, distanceToLeft)
-
-  if (minDistance === distanceToLeft) return "left"
-  if (minDistance === distanceToRight) return "right"
-  if (minDistance === distanceToTop) return "top"
-  return "bottom"
-}
-
 function getPaddedExitPoints(exitPoint: Point, exitSide: string, padding: number): Point[] {
   const { x, y } = exitPoint
 
   switch (exitSide) {
     case "top":
-      return [
-        { x: x - padding, y: y + padding },
-        { x: x + padding, y: y + padding },
-      ]
+      return [createPoint(x - padding, y + padding), createPoint(x + padding, y + padding)]
     case "bottom":
-      return [
-        { x: x - padding, y: y - padding },
-        { x: x + padding, y: y - padding },
-      ]
+      return [createPoint(x - padding, y - padding), createPoint(x + padding, y - padding)]
     case "left":
-      return [
-        { x: x + padding, y: y - padding },
-        { x: x + padding, y: y + padding },
-      ]
+      return [createPoint(x + padding, y - padding), createPoint(x + padding, y + padding)]
     case "right":
-      return [
-        { x: x - padding, y: y - padding },
-        { x: x - padding, y: y + padding },
-      ]
+      return [createPoint(x - padding, y - padding), createPoint(x - padding, y + padding)]
     default:
       return []
   }
 }
 
-function getRectCorners(rect: DOMRect): Point[] {
-  const { top, right, bottom, left } = rect
-  return [
-    { x: left, y: top },
-    { x: right, y: top },
-    { x: right, y: bottom },
-    { x: left, y: bottom },
-  ]
+function domRectToPoints(rect: DOMRect): Point[] {
+  // Convert DOMRect to our Rect type and use the utility function
+  const rectObj = createRect({
+    x: rect.left,
+    y: rect.top,
+    width: rect.width,
+    height: rect.height,
+  })
+
+  const corners = getRectCorners(rectObj)
+  // Convert the corner object to an array in the order we need
+  return [corners.top, corners.right, corners.bottom, corners.left]
 }
 
 // Simplified convex hull algorithm (Andrew's algorithm)
