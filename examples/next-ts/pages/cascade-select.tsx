@@ -1,5 +1,5 @@
 import { normalizeProps, useMachine } from "@zag-js/react"
-import { cascadeSelectControls } from "@zag-js/shared"
+import { cascadeSelectControls, cascadeSelectData } from "@zag-js/shared"
 import * as cascadeSelect from "@zag-js/cascade-select"
 import { ChevronDownIcon, ChevronRightIcon, XIcon } from "lucide-react"
 import { useId } from "react"
@@ -8,82 +8,19 @@ import { Toolbar } from "../components/toolbar"
 import { useControls } from "../hooks/use-controls"
 
 interface Node {
-  value: string
   label: string
-  children?: Node[]
+  value: string
+  continents?: Node[]
+  countries?: Node[]
+  code?: string
+  states?: Node[]
 }
 
 const collection = cascadeSelect.collection<Node>({
   nodeToValue: (node) => node.value,
   nodeToString: (node) => node.label,
-  rootNode: {
-    value: "ROOT",
-    label: "",
-    children: [
-      {
-        value: "fruits",
-        label: "Fruits",
-        children: [
-          {
-            value: "citrus",
-            label: "Citrus",
-            children: [
-              { value: "orange", label: "Orange" },
-              { value: "lemon", label: "Lemon" },
-              { value: "lime", label: "Lime" },
-            ],
-          },
-          {
-            value: "berries",
-            label: "Berries",
-            children: [
-              { value: "strawberry", label: "Strawberry" },
-              { value: "blueberry", label: "Blueberry" },
-              { value: "raspberry", label: "Raspberry" },
-            ],
-          },
-          { value: "apple", label: "Apple" },
-          { value: "banana", label: "Banana" },
-        ],
-      },
-      {
-        value: "vegetables",
-        label: "Vegetables",
-        children: [
-          {
-            value: "leafy",
-            label: "Leafy Greens",
-            children: [
-              { value: "spinach", label: "Spinach" },
-              { value: "lettuce", label: "Lettuce" },
-              { value: "kale", label: "Kale" },
-            ],
-          },
-          {
-            value: "root",
-            label: "Root Vegetables",
-            children: [
-              { value: "carrot", label: "Carrot" },
-              { value: "potato", label: "Potato" },
-              { value: "onion", label: "Onion" },
-            ],
-          },
-          { value: "tomato", label: "Tomato" },
-          { value: "cucumber", label: "Cucumber" },
-        ],
-      },
-      {
-        value: "grains",
-        label: "Grains",
-        children: [
-          { value: "rice", label: "Rice" },
-          { value: "wheat", label: "Wheat" },
-          { value: "oats", label: "Oats" },
-        ],
-      },
-      { value: "dairy", label: "Dairy" },
-    ],
-  },
+  nodeToChildren: (node) => node.continents ?? node.countries ?? node.states,
+  rootNode: cascadeSelectData,
 })
 
 export default function Page() {
@@ -92,7 +29,7 @@ export default function Page() {
   const service = useMachine(cascadeSelect.machine, {
     id: useId(),
     collection,
-    placeholder: "Select food category",
+    placeholder: "Select a location",
     onHighlightChange(details) {
       console.log("onHighlightChange", details)
     },
@@ -115,14 +52,16 @@ export default function Page() {
     return (
       <div key={level} {...api.getLevelProps({ level })}>
         {levelValues.map((value) => {
-          const itemState = api.getItemState({ value })
           const node = collection.findNode(value)
+          if (!node) return null
+
+          const itemState = api.getItemState({ item: node })
 
           return (
-            <div key={value} {...api.getItemProps({ value })}>
-              <span {...api.getItemTextProps({ value })}>{node?.label}</span>
+            <div key={value} {...api.getItemProps({ item: node })}>
+              <span {...api.getItemTextProps({ item: node })}>{node.label}</span>
               {itemState.hasChildren && (
-                <span {...api.getItemIndicatorProps({ value })}>
+                <span {...api.getItemIndicatorProps({ item: node })}>
                   <ChevronRightIcon size={16} />
                 </span>
               )}
@@ -137,7 +76,7 @@ export default function Page() {
     <>
       <main className="cascade-select">
         <div {...api.getRootProps()}>
-          <label {...api.getLabelProps()}>Food Categories</label>
+          <label {...api.getLabelProps()}>Select a location</label>
 
           <div {...api.getControlProps()}>
             <button {...api.getTriggerProps()}>

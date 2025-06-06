@@ -4,12 +4,19 @@ import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import type { Service } from "@zag-js/core"
 import { parts } from "./cascade-select.anatomy"
 import { dom } from "./cascade-select.dom"
-import type { CascadeSelectApi, CascadeSelectSchema, ItemProps, ItemState, LevelProps } from "./cascade-select.types"
+import type {
+  CascadeSelectApi,
+  CascadeSelectSchema,
+  ItemProps,
+  ItemState,
+  LevelProps,
+  TreeNode,
+} from "./cascade-select.types"
 
-export function connect<T extends PropTypes>(
+export function connect<T extends PropTypes, V = TreeNode>(
   service: Service<CascadeSelectSchema>,
   normalize: NormalizeProps<T>,
-): CascadeSelectApi<T> {
+): CascadeSelectApi<T, V> {
   const { send, context, prop, scope, computed, state } = service
 
   const collection = prop("collection")
@@ -77,9 +84,9 @@ export function connect<T extends PropTypes>(
       return mostRecentValue[level] || null
     },
 
-    getItemState(props: ItemProps): ItemState {
-      const { value: itemValue } = props
-      const node = collection.findNode(itemValue)
+    getItemState(props: ItemProps<V>): ItemState {
+      const { item } = props
+      const itemValue = collection.getNodeValue(item)
       const indexPath = collection.getIndexPath(itemValue)
       const depth = indexPath ? indexPath.length : 0
 
@@ -91,10 +98,10 @@ export function connect<T extends PropTypes>(
 
       return {
         value: itemValue,
-        disabled: !!prop("isItemDisabled")?.(itemValue),
+        disabled: collection.getNodeDisabled(item),
         highlighted: isHighlighted,
         selected: isSelected,
-        hasChildren: node ? collection.isBranchNode(node) : false,
+        hasChildren: collection.isBranchNode(item),
         depth,
       }
     },
@@ -243,11 +250,18 @@ export function connect<T extends PropTypes>(
     },
 
     getContentProps() {
+      const highlightedPath = context.get("highlightedPath")
+      const highlightedValue =
+        highlightedPath && highlightedPath.length > 0 ? highlightedPath[highlightedPath.length - 1] : null
+      const highlightedItemId = highlightedValue ? dom.getItemId(scope, highlightedValue) : undefined
+
       return normalize.element({
         ...parts.content.attrs,
         id: dom.getContentId(scope),
         role: "listbox",
         "aria-labelledby": dom.getLabelId(scope),
+        "aria-activedescendant": highlightedItemId,
+        "data-activedescendant": highlightedItemId,
         "data-state": open ? "open" : "closed",
         hidden: !open,
         tabIndex: 0,
@@ -307,8 +321,9 @@ export function connect<T extends PropTypes>(
       })
     },
 
-    getItemProps(props: ItemProps) {
-      const { value: itemValue } = props
+    getItemProps(props: ItemProps<V>) {
+      const { item } = props
+      const itemValue = collection.getNodeValue(item)
       const itemState = this.getItemState(props)
 
       return normalize.element({
@@ -337,13 +352,20 @@ export function connect<T extends PropTypes>(
         onPointerLeave(event) {
           if (!isInteractive) return
           if (itemState.disabled) return
+          if (props.persistFocus) return
+          if (event.pointerType !== "mouse") return
+
+          const pointerMoved = service.event.previous()?.type.includes("POINTER")
+          if (!pointerMoved) return
+
           send({ type: "ITEM.POINTER_LEAVE", value: itemValue, clientX: event.clientX, clientY: event.clientY })
         },
       })
     },
 
-    getItemTextProps(props: ItemProps) {
-      const { value: itemValue } = props
+    getItemTextProps(props: ItemProps<V>) {
+      const { item } = props
+      const itemValue = collection.getNodeValue(item)
       const itemState = this.getItemState(props)
       return normalize.element({
         ...parts.itemText.attrs,
@@ -354,8 +376,9 @@ export function connect<T extends PropTypes>(
       })
     },
 
-    getItemIndicatorProps(props: ItemProps) {
-      const { value: itemValue } = props
+    getItemIndicatorProps(props: ItemProps<V>) {
+      const { item } = props
+      const itemValue = collection.getNodeValue(item)
       const itemState = this.getItemState(props)
 
       return normalize.element({

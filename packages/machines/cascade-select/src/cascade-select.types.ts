@@ -142,11 +142,7 @@ export interface CascadeSelectProps<T = any> extends DirectionProperty, CommonPr
    */
   onOpenChange?: ((details: OpenChangeDetails) => void) | undefined
   /**
-   * Function to determine if a node should be selectable
-   */
-  isItemDisabled?: ((value: string) => boolean) | undefined
-  /**
-   * Whether parent (branch) items can be selected
+   * Whether parent (branch) items can be selectable
    */
   allowParentSelection?: boolean
   /**
@@ -197,11 +193,15 @@ export type CascadeSelectMachine<T extends TreeNode = TreeNode> = Machine<Cascad
  * Component API
  * -----------------------------------------------------------------------------*/
 
-export interface ItemProps {
+export interface ItemProps<T = TreeNode> {
   /**
-   * The value of the item
+   * The item to render
    */
-  value: string
+  item: T
+  /**
+   * Whether hovering outside should clear the highlighted state
+   */
+  persistFocus?: boolean | undefined
 }
 
 export interface ItemState {
@@ -306,9 +306,9 @@ export interface CascadeSelectApi<T extends PropTypes = PropTypes, V = TreeNode>
   getPositionerProps(): T["element"]
   getContentProps(): T["element"]
   getLevelProps(props: LevelProps): T["element"]
-  getItemState(props: ItemProps): ItemState
-  getItemProps(props: ItemProps): T["element"]
-  getItemTextProps(props: ItemProps): T["element"]
-  getItemIndicatorProps(props: ItemProps): T["element"]
+  getItemState(props: ItemProps<V>): ItemState
+  getItemProps(props: ItemProps<V>): T["element"]
+  getItemTextProps(props: ItemProps<V>): T["element"]
+  getItemIndicatorProps(props: ItemProps<V>): T["element"]
   getHiddenSelectProps(): T["select"]
 }

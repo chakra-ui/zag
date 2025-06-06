@@ -1,9 +1,9 @@
 import { createGuards, createMachine } from "@zag-js/core"
 import { trackDismissableElement } from "@zag-js/dismissable"
-import { raf, trackFormControl } from "@zag-js/dom-query"
+import { raf, trackFormControl, observeAttributes, scrollIntoView } from "@zag-js/dom-query"
 import { getPlacement, type Placement } from "@zag-js/popper"
 import type { Point } from "@zag-js/rect-utils"
-import { last, isEmpty, nextIndex, prevIndex, isEqual } from "@zag-js/utils"
+import { last, isEmpty, isEqual } from "@zag-js/utils"
 import { collection } from "./cascade-select.collection"
 import { dom } from "./cascade-select.dom"
 import { createGraceArea, isPointerInGraceArea } from "./cascade-select.utils"
@@ -258,9 +258,9 @@ export const machine = createMachine<CascadeSelectSchema>({
 
     open: {
       tags: ["open"],
-      effects: ["trackDismissableElement", "computePlacement"],
+      effects: ["trackDismissableElement", "computePlacement", "scrollToHighlightedItem"],
       entry: ["setInitialFocus", "highlightLastSelectedValue"],
-      exit: ["clearHighlightedPath"],
+      exit: ["clearHighlightedPath", "scrollContentToTop"],
       on: {
         "CONTROLLED.CLOSE": [
           {
@@ -451,7 +451,7 @@ export const machine = createMachine<CascadeSelectSchema>({
         const collection = prop("collection")
         const node = collection.findNode(event.value)
 
-        if (!node) return false
+        if (!node || collection.getNodeDisabled(node)) return false
 
         // If parent selection is not allowed, only allow leaf nodes
         if (!prop("allowParentSelection")) {
@@ -470,7 +470,7 @@ export const machine = createMachine<CascadeSelectSchema>({
         if (!leafValue) return false
         const node = collection.findNode(leafValue)
 
-        if (!node) return false
+        if (!node || collection.getNodeDisabled(node)) return false
 
         // If parent selection is not allowed, only allow leaf nodes
         if (!prop("allowParentSelection")) {
@@ -639,6 +639,50 @@ export const machine = createMachine<CascadeSelectSchema>({
           },
         })
       },
+      scrollToHighlightedItem({ context, prop: _prop, scope, event }) {
+        const exec = (_immediate: boolean) => {
+          const highlightedPath = context.get("highlightedPath")
+          if (!highlightedPath || isEmpty(highlightedPath)) return
+
+          // Don't scroll into view if we're using the pointer
+          if (event.current().type.includes("POINTER")) return
+
+          const leafValue = last(highlightedPath)
+          if (!leafValue) return
+
+          // Get the item element for the highlighted leaf
+          const itemEl = dom.getItemEl(scope, leafValue)
+          if (!itemEl) return
+
+          // Find which level contains this item and scroll within that level
+          const levelIndex = highlightedPath.length - 1
+          const levelEl = dom.getLevelEl(scope, levelIndex)
+
+          // Use scrollIntoView to scroll the item into view within its level
+          scrollIntoView(itemEl, { rootEl: levelEl, block: "nearest" })
+        }
+
+        raf(() => exec(true))
+
+        const contentEl = () => dom.getContentEl(scope)
+        return observeAttributes(contentEl, {
+          defer: true,
+          attributes: ["data-activedescendant"],
+          callback() {
+            exec(false)
+          },
+        })
+      },
+      scrollContentToTop({ scope }) {
+        // Scroll all levels to the top when closing
+        raf(() => {
+          const contentEl = dom.getContentEl(scope)
+          const levelEls = contentEl?.querySelectorAll('[data-part="level"]')
+          levelEls?.forEach((levelEl) => {
+            ;(levelEl as HTMLElement).scrollTop = 0
+          })
+        })
+      },
     },
 
     actions: {
@@ -706,7 +750,7 @@ export const machine = createMachine<CascadeSelectSchema>({
         const collection = prop("collection")
         const node = collection.findNode(event.value)
 
-        if (!node || prop("isItemDisabled")?.(event.value)) return
+        if (!node || collection.getNodeDisabled(node)) return
 
         const hasChildren = collection.isBranchNode(node)
         const indexPath = collection.getIndexPath(event.value)
@@ -820,29 +864,89 @@ export const machine = createMachine<CascadeSelectSchema>({
 
         context.set("levelValues", levelValues)
       },
-      highlightFirstItem({ context, send }) {
-        const levelValues = context.get("levelValues")
+      highlightFirstItem({ context, prop, send }) {
+        const highlightedPath = context.get("highlightedPath")
         const value = context.get("value")
-        // Use the current active level (value.length) or first level if empty
-        const currentLevelIndex = Math.max(0, value.length)
-        const currentLevel = levelValues[currentLevelIndex]
+        const collection = prop("collection")
 
-        if (currentLevel && currentLevel.length > 0) {
-          const firstValue = currentLevel[0]
-          send({ type: "HIGHLIGHTED_PATH.SET", value: [firstValue] })
+        // Determine which level we're currently navigating based on highlighted path
+        let currentLevelDepth: number
+        let pathToParent: string[] = []
+
+        if (highlightedPath && highlightedPath.length > 0) {
+          // We're navigating at the level of the highlighted path
+          currentLevelDepth = highlightedPath.length - 1
+          pathToParent = highlightedPath.slice(0, -1)
+        } else {
+          // No highlighted path, default to root level
+          currentLevelDepth = value.length
+          if (currentLevelDepth > 0 && value.length > 0) {
+            const mostRecentPath = last(value) || []
+            pathToParent = mostRecentPath.slice(0, currentLevelDepth)
+          }
+        }
+
+        let parentNode: any = collection.rootNode
+
+        // Navigate to the current level's parent node
+        for (const nodeValue of pathToParent) {
+          const node = collection.findNode(nodeValue)
+          if (node && collection.isBranchNode(node)) {
+            parentNode = node
+          }
+        }
+
+        // Get the first child of the parent node
+        const firstChild = collection.getFirstNode(parentNode)
+        if (firstChild) {
+          const firstValue = collection.getNodeValue(firstChild)
+          if (pathToParent.length === 0) {
+            send({ type: "HIGHLIGHTED_PATH.SET", value: [firstValue] })
+          } else {
+            send({ type: "HIGHLIGHTED_PATH.SET", value: [...pathToParent, firstValue] })
+          }
         }
       },
-      highlightLastItem({ context, send }) {
-        const levelValues = context.get("levelValues")
+      highlightLastItem({ context, prop, send }) {
+        const highlightedPath = context.get("highlightedPath")
         const value = context.get("value")
-        // Use the current active level (value.length) or first level if empty
-        const currentLevelIndex = Math.max(0, value.length)
-        const currentLevel = levelValues[currentLevelIndex]
+        const collection = prop("collection")
 
-        if (currentLevel && !isEmpty(currentLevel)) {
-          const lastValue = last(currentLevel)
-          if (lastValue) {
+        // Determine which level we're currently navigating based on highlighted path
+        let currentLevelDepth: number
+        let pathToParent: string[] = []
+
+        if (highlightedPath && highlightedPath.length > 0) {
+          // We're navigating at the level of the highlighted path
+          currentLevelDepth = highlightedPath.length - 1
+          pathToParent = highlightedPath.slice(0, -1)
+        } else {
+          // No highlighted path, default to root level
+          currentLevelDepth = value.length
+          if (currentLevelDepth > 0 && value.length > 0) {
+            const mostRecentPath = last(value) || []
+            pathToParent = mostRecentPath.slice(0, currentLevelDepth)
+          }
+        }
+
+        let parentNode: any = collection.rootNode
+
+        // Navigate to the current level's parent node
+        for (const nodeValue of pathToParent) {
+          const node = collection.findNode(nodeValue)
+          if (node && collection.isBranchNode(node)) {
+            parentNode = node
+          }
+        }
+
+        // Get the last child of the parent node
+        const lastChild = collection.getLastNode(parentNode)
+        if (lastChild) {
+          const lastValue = collection.getNodeValue(lastChild)
+          if (pathToParent.length === 0) {
             send({ type: "HIGHLIGHTED_PATH.SET", value: [lastValue] })
+          } else {
+            send({ type: "HIGHLIGHTED_PATH.SET", value: [...pathToParent, lastValue] })
           }
         }
       },
@@ -850,96 +954,104 @@ export const machine = createMachine<CascadeSelectSchema>({
         const highlightedPath = context.get("highlightedPath")
         const levelValues = context.get("levelValues")
         const value = context.get("value")
+        const collection = prop("collection")
 
         if (!highlightedPath) {
-          // If nothing highlighted, highlight first item
+          // If nothing highlighted, highlight first non-disabled item
           const currentLevelIndex = Math.max(0, value.length)
           const currentLevel = levelValues[currentLevelIndex]
           if (currentLevel && currentLevel.length > 0) {
-            send({ type: "HIGHLIGHTED_PATH.SET", value: [currentLevel[0]] })
+            const firstValue = currentLevel.find((itemValue) => {
+              const node = collection.findNode(itemValue)
+              return node && !collection.getNodeDisabled(node)
+            })
+            if (firstValue) {
+              send({ type: "HIGHLIGHTED_PATH.SET", value: [firstValue] })
+            }
           }
           return
         }
 
-        // Find which level contains the last item in the highlighted path
+        // Get the leaf value and try to use tree collection methods
         const leafValue = last(highlightedPath)
         if (!leafValue) return
 
-        let targetLevel: string[] | undefined
-        let levelIndex = -1
+        const indexPath = collection.getIndexPath(leafValue)
+        if (!indexPath) return
 
-        for (let i = 0; i < levelValues.length; i++) {
-          if (levelValues[i]?.includes(leafValue)) {
-            targetLevel = levelValues[i]
-            levelIndex = i
-            break
-          }
+        // Try to get the next sibling using tree collection
+        const nextSibling = collection.getNextSibling(indexPath)
+        if (nextSibling) {
+          const nextValue = collection.getNodeValue(nextSibling)
+          // Build the correct path: parent path + next value
+          const parentPath = highlightedPath.slice(0, -1)
+          send({ type: "HIGHLIGHTED_PATH.SET", value: [...parentPath, nextValue] })
+          return
         }
 
-        if (!targetLevel || isEmpty(targetLevel)) return
-
-        const currentIndex = targetLevel.indexOf(leafValue)
-        if (currentIndex === -1) return
-
-        const nextIdx = nextIndex(targetLevel, currentIndex, { loop: prop("loop") })
-        const nextValue = targetLevel[nextIdx]
-
-        // Build the correct path: parent path + next value
-        if (levelIndex === 0) {
-          // First level - just the value
-          send({ type: "HIGHLIGHTED_PATH.SET", value: [nextValue] })
-        } else {
-          // Deeper level - parent path + next value
-          const parentPath = highlightedPath.slice(0, levelIndex)
-          send({ type: "HIGHLIGHTED_PATH.SET", value: [...parentPath, nextValue] })
+        // If no next sibling and looping is enabled, get first sibling
+        if (prop("loop")) {
+          const parentNode = collection.getParentNode(indexPath)
+          if (parentNode) {
+            const firstChild = collection.getFirstNode(parentNode)
+            if (firstChild) {
+              const firstValue = collection.getNodeValue(firstChild)
+              const parentPath = highlightedPath.slice(0, -1)
+              send({ type: "HIGHLIGHTED_PATH.SET", value: [...parentPath, firstValue] })
+            }
+          }
         }
       },
       highlightPreviousItem({ context, prop, send }) {
         const highlightedPath = context.get("highlightedPath")
         const levelValues = context.get("levelValues")
         const value = context.get("value")
+        const collection = prop("collection")
 
         if (!highlightedPath) {
-          // If nothing highlighted, highlight first item
+          // If nothing highlighted, highlight first non-disabled item
           const currentLevelIndex = Math.max(0, value.length)
           const currentLevel = levelValues[currentLevelIndex]
           if (currentLevel && currentLevel.length > 0) {
-            send({ type: "HIGHLIGHTED_PATH.SET", value: [currentLevel[0]] })
+            const firstValue = currentLevel.find((itemValue) => {
+              const node = collection.findNode(itemValue)
+              return node && !collection.getNodeDisabled(node)
+            })
+            if (firstValue) {
+              send({ type: "HIGHLIGHTED_PATH.SET", value: [firstValue] })
+            }
           }
           return
         }
 
-        // Find which level contains the last item in the highlighted path
+        // Get the leaf value and try to use tree collection methods
         const leafValue = last(highlightedPath)
         if (!leafValue) return
 
-        let targetLevel: string[] | undefined
-        let levelIndex = -1
+        const indexPath = collection.getIndexPath(leafValue)
+        if (!indexPath) return
 
-        for (let i = 0; i < levelValues.length; i++) {
-          if (levelValues[i]?.includes(leafValue)) {
-            targetLevel = levelValues[i]
-            levelIndex = i
-            break
-          }
+        // Try to get the previous sibling using tree collection
+        const prevSibling = collection.getPreviousSibling(indexPath)
+        if (prevSibling) {
+          const prevValue = collection.getNodeValue(prevSibling)
+          // Build the correct path: parent path + prev value
+          const parentPath = highlightedPath.slice(0, -1)
+          send({ type: "HIGHLIGHTED_PATH.SET", value: [...parentPath, prevValue] })
+          return
         }
 
-        if (!targetLevel || isEmpty(targetLevel)) return
-
-        const currentIndex = targetLevel.indexOf(leafValue)
-        if (currentIndex === -1) return
-
-        const prevIdx = prevIndex(targetLevel, currentIndex, { loop: prop("loop") })
-        const prevValue = targetLevel[prevIdx]
-
-        // Build the correct path: parent path + prev value
-        if (levelIndex === 0) {
-          // First level - just the value
-          send({ type: "HIGHLIGHTED_PATH.SET", value: [prevValue] })
-        } else {
-          // Deeper level - parent path + prev value
-          const parentPath = highlightedPath.slice(0, levelIndex)
-          send({ type: "HIGHLIGHTED_PATH.SET", value: [...parentPath, prevValue] })
+        // If no previous sibling and looping is enabled, get last sibling
+        if (prop("loop")) {
+          const parentNode = collection.getParentNode(indexPath)
+          if (parentNode) {
+            const lastChild = collection.getLastNode(parentNode)
+            if (lastChild) {
+              const lastValue = collection.getNodeValue(lastChild)
+              const parentPath = highlightedPath.slice(0, -1)
+              send({ type: "HIGHLIGHTED_PATH.SET", value: [...parentPath, lastValue] })
+            }
+          }
         }
       },
       highlightFirstChild({ context, prop, send }) {
@@ -953,9 +1065,10 @@ export const machine = createMachine<CascadeSelectSchema>({
 
         if (!node || !collection.isBranchNode(node)) return
 
-        const children = collection.getNodeChildren(node)
-        if (children.length > 0) {
-          const firstChildValue = collection.getNodeValue(children[0])
+        // Use getFirstNode to automatically handle disabled children
+        const firstChild = collection.getFirstNode(node)
+        if (firstChild) {
+          const firstChildValue = collection.getNodeValue(firstChild)
           // Build the new path by extending the current path
           const newPath = [...highlightedPath, firstChildValue]
           send({ type: "HIGHLIGHTED_PATH.SET", value: newPath })

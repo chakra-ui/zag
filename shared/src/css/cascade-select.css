@@ -59,7 +59,7 @@
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   padding: 6px;
   max-height: 300px;
-  overflow: auto;
+  overflow: hidden;
   display: flex;
   gap: 8px;
 }
@@ -71,6 +71,30 @@
   flex-direction: column;
   gap: 0px;
   position: relative;
+  max-height: 288px;
+  overflow-y: auto;
+  overflow-x: hidden;
+  scrollbar-width: thin;
+  scrollbar-color: #cbd5e1 #f1f5f9;
+}
+
+/* Custom scrollbar styling for levels */
+[data-scope="cascade-select"][data-part="level"]::-webkit-scrollbar {
+  width: 6px;
+}
+
+[data-scope="cascade-select"][data-part="level"]::-webkit-scrollbar-track {
+  background: #f1f5f9;
+  border-radius: 3px;
+}
+
+[data-scope="cascade-select"][data-part="level"]::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 3px;
+}
+
+[data-scope="cascade-select"][data-part="level"]::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
 }
 
 /* Add a subtle separator line between levels */
