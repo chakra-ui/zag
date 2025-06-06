@@ -1,61 +1,91 @@
-# Cascade Select Machine
+# @zag-js/cascade-select
 
-A machine for building cascade select (cascading dropdowns) components.
+Core logic for the cascade select widget implemented as a state machine
+
+A comprehensive state machine for building cascade select (cascading dropdowns) components with hierarchical data
+navigation.
 
 ## Features
 
-- Support for hierarchical data structures
-- Keyboard navigation
-- Multiple selection mode
-- Parent item selection (optional)
-- **Safe Triangle Navigation** - Prevents premature submenu closure when moving mouse from parent items to their
-  children
+### 🌳 **Hierarchical Data Support**
 
-## Safe Triangle Feature
+- Navigate through nested data structures (continents → countries → states)
+- Support for unlimited depth levels
+- Dynamic level generation based on data structure
+- Efficient tree collection management
 
-The safe triangle is a user experience enhancement that solves a common problem in cascading menus: when you move your
-mouse from a parent item toward its submenu, the mouse briefly leaves the parent item, which would normally cause the
-submenu to close before you can reach it.
+### ⌨️ **Full Keyboard Navigation**
 
-The safe triangle creates an invisible triangular area between the parent item and its submenu. As long as the mouse
-stays within this triangle, the submenu remains open, allowing users to smoothly navigate to child items.
+- **Arrow keys**: Navigate between items and levels
+- **Home/End**: Jump to first/last item at any level
+- **Enter/Space**: Select items or navigate into children
+- **Escape**: Close dropdown and return focus
+- **Arrow Left/Right**: Navigate between parent and child levels
 
-### How it works
+### 🎯 **Flexible Selection Modes**
 
-1. When `highlightTrigger` is set to `"hover"` (default)
-2. And a user moves their mouse away from a parent item that has children
-3. A safe triangle is calculated from the mouse position to the submenu area
-4. The submenu stays open as long as the mouse is within this triangle
-5. If the mouse moves outside the triangle, the submenu closes
-6. The triangle automatically expires after 300ms to prevent indefinite hovering
+- **Single selection**: Choose one complete path
+- **Multiple selection**: Select multiple paths simultaneously
+- **Parent selection**: Allow selection of non-leaf items (optional)
+- **Leaf-only selection**: Restrict selection to final items only
 
-### Key improvements for cascade-select layout
+### 🎨 **Interaction Models**
 
-- **Bidirectional navigation**: Works when moving from parent to child AND child to parent
-- **Straight-line optimized**: Designed for the cascade-select's horizontal level layout
-- **Simple corridor**: Creates a rectangular "corridor" between adjacent levels rather than complex triangular areas
+- **Click highlighting**: Navigate by clicking items
+- **Hover highlighting**: Navigate by mouse hover with grace areas
+- **Mixed interaction**: Combine click and hover behaviors
+- **Touch-friendly**: Optimized for mobile interactions
 
-### Debugging the safe triangle
+### ♿ **Accessibility Built-in**
 
-To help debug safe triangle behavior, you can temporarily add this to your CSS to visualize the polygon:
+- **ARIA compliance**: Proper roles, states, and properties
+- **Screen reader support**: Descriptive labels and live regions
+- **Focus management**: Logical tab order and focus restoration
+- **Keyboard-only operation**: Complete functionality without mouse
 
-```css
-/* Add this temporarily to see the safe triangle area */
-.safe-triangle-debug {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  pointer-events: none;
-  z-index: 9999;
-}
-```
+### 🎛️ **Customizable Behavior**
 
-The safe triangle is automatically enabled for hover-based highlighting and requires no additional configuration.
+- **Auto-close options**: Control when dropdown closes after selection
+- **Custom separators**: Configure path display formatting
+- **Disabled items**: Mark items as non-selectable
+- **Read-only mode**: Display-only state
+- **Loop navigation**: Circular navigation within levels
+
+### 📱 **UI Integration**
+
+- **Positioning system**: Intelligent dropdown placement with collision detection
+- **Scroll management**: Auto-scroll highlighted items into view
+- **Level indicators**: Visual representation of navigation depth
+- **Loading states**: Handle async data loading
+- **Empty states**: Graceful handling of empty data sets
+
+### 🔧 **Developer Experience**
+
+- **Event callbacks**: onChange, onHighlight, onOpen/Close events
+- **Custom formatting**: Control display text and value representation
+- **Form integration**: Works with native form elements and validation
+- **TypeScript support**: Full type safety for data structures
+
+## Common Use Cases
+
+- **Geographic selection**: Country → State → City
+- **Category browsing**: Department → Category → Subcategory → Product
+- **Organizational hierarchy**: Company → Division → Team → Employee
+- **File system navigation**: Folder → Subfolder → File
+- **Menu systems**: Main Menu → Submenu → Action
 
 ## Installation
 
-```bash
-npm install @zag-js/cascade-select
+```sh
+yarn add @zag-js/cascade-select
+# or
+npm i @zag-js/cascade-select
 ```
+
+## Contribution
+
+Yes please! See the [contributing guidelines](https://github.com/chakra-ui/zag/blob/main/CONTRIBUTING.md) for details.
+
+## Licence
+
+This project is licensed under the terms of the [MIT license](https://github.com/chakra-ui/zag/blob/main/LICENSE).
