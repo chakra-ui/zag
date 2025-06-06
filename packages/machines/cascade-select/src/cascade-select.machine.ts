@@ -22,6 +22,7 @@ export const machine = createMachine<CascadeSelectSchema>({
       highlightTrigger: "click",
       placeholder: "Select an option",
       allowParentSelection: false,
+      separator: " / ",
       positioning: {
         placement: "bottom-start",
         gutter: 8,
@@ -39,9 +40,10 @@ export const machine = createMachine<CascadeSelectSchema>({
         value: prop("value"),
         onChange(value) {
           const collection = prop("collection")
+          const separator = prop("separator")
           const valueText =
             prop("formatValue")?.(value) ??
-            value.map((path) => path.map((v) => collection.stringify(v) || v).join(" / ")).join(", ")
+            value.map((path) => path.map((v) => collection.stringify(v) || v).join(separator)).join(", ")
           prop("onValueChange")?.({ value, valueText })
         },
       })),
@@ -80,9 +82,10 @@ export const machine = createMachine<CascadeSelectSchema>({
       const value = context.get("value")
       if (isEmpty(value)) return prop("placeholder") ?? ""
       const collection = prop("collection")
+      const separator = prop("separator")
       return (
         prop("formatValue")?.(value) ??
-        value.map((path) => path.map((v) => collection.stringify(v) || v).join(" / ")).join(", ")
+        value.map((path) => path.map((v) => collection.stringify(v) || v).join(separator)).join(", ")
       )
     },
   },
@@ -92,11 +95,11 @@ export const machine = createMachine<CascadeSelectSchema>({
     return open ? "open" : "idle"
   },
 
-  entry: ["syncLevelValues"],
+  entry: ["syncLevelValues", "syncSelectElement"],
 
   watch({ context, prop, track, action }) {
     track([() => context.get("value").toString()], () => {
-      action(["syncLevelValues"])
+      action(["syncLevelValues", "syncSelectElement", "dispatchChangeEvent"])
     })
     track([() => prop("open")], () => {
       action(["toggleVisibility"])
@@ -1104,6 +1107,35 @@ export const machine = createMachine<CascadeSelectSchema>({
           // No highlighting, sync with selected values
           action(["syncLevelValues"])
         }
+      },
+      syncSelectElement({ context, prop, scope }) {
+        const selectEl = dom.getHiddenSelectEl(scope) as HTMLSelectElement
+        if (!selectEl) return
+
+        const value = context.get("value")
+        const separator = prop("separator")
+
+        if (value.length === 0 && !prop("multiple")) {
+          selectEl.selectedIndex = -1
+          return
+        }
+
+        // For cascade-select, we need to handle the nested structure differently
+        // We'll represent each path as a joined string value
+        const flatValues = value.map((path) => path.join(separator))
+
+        for (const option of selectEl.options) {
+          option.selected = flatValues.includes(option.value)
+        }
+      },
+      dispatchChangeEvent({ scope }) {
+        queueMicrotask(() => {
+          const node = dom.getHiddenSelectEl(scope)
+          if (!node) return
+          const win = scope.getWin()
+          const changeEvent = new win.Event("change", { bubbles: true, composed: true })
+          node.dispatchEvent(changeEvent)
+        })
       },
     },
   },

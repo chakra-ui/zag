@@ -1,4 +1,4 @@
-import { dataAttr, getEventKey, isLeftClick } from "@zag-js/dom-query"
+import { dataAttr, getEventKey, isLeftClick, visuallyHiddenStyle } from "@zag-js/dom-query"
 import { getPlacementStyles } from "@zag-js/popper"
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import type { Service } from "@zag-js/core"
@@ -114,10 +114,16 @@ export function connect<T extends PropTypes>(
       return normalize.label({
         ...parts.label.attrs,
         id: dom.getLabelId(scope),
-        htmlFor: dom.getTriggerId(scope),
+        htmlFor: dom.getHiddenSelectId(scope),
         "data-disabled": dataAttr(isDisabled),
         "data-readonly": dataAttr(prop("readOnly")),
         "data-invalid": dataAttr(prop("invalid")),
+        onClick(event) {
+          if (event.defaultPrevented) return
+          if (isDisabled) return
+          const triggerEl = dom.getTriggerEl(scope)
+          triggerEl?.focus({ preventScroll: true })
+        },
       })
     },
 
@@ -358,6 +364,36 @@ export function connect<T extends PropTypes>(
         "data-highlighted": dataAttr(itemState.highlighted),
         "data-has-children": dataAttr(itemState.hasChildren),
         hidden: !itemState.hasChildren,
+      })
+    },
+
+    getHiddenSelectProps() {
+      // Create option values from the current selected paths
+      const separator = prop("separator")
+      const defaultValue = prop("multiple")
+        ? value.map((path) => path.join(separator))
+        : value[0]
+          ? value[0].join(separator)
+          : ""
+
+      return normalize.select({
+        name: prop("name"),
+        form: prop("form"),
+        disabled: isDisabled,
+        multiple: prop("multiple"),
+        required: prop("required"),
+        "aria-hidden": true,
+        id: dom.getHiddenSelectId(scope),
+        defaultValue,
+        style: visuallyHiddenStyle,
+        tabIndex: -1,
+        // Some browser extensions will focus the hidden select.
+        // Let's forward the focus to the trigger.
+        onFocus() {
+          const triggerEl = dom.getTriggerEl(scope)
+          triggerEl?.focus({ preventScroll: true })
+        },
+        "aria-labelledby": dom.getLabelId(scope),
       })
     },
   }

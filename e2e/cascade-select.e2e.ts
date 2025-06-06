@@ -331,3 +331,71 @@ test.describe("focus management", () => {
     await I.seeItemIsHighlighted("Fruits")
   })
 })
+
+test.describe("separator configuration", () => {
+  test("should use default separator in trigger text", async () => {
+    await I.clickTrigger()
+    await I.clickItem("Fruits")
+    await I.clickItem("Apple")
+
+    await I.seeTriggerHasText("Fruits / Apple")
+  })
+
+  test("should use custom separator in trigger text", async () => {
+    await I.controls.num("separator", " → ")
+
+    await I.clickTrigger()
+    await I.clickItem("Fruits")
+    await I.clickItem("Apple")
+
+    await I.seeTriggerHasText("Fruits → Apple")
+  })
+
+  test("should use custom separator in multiple selection", async () => {
+    await I.controls.bool("multiple", true)
+    await I.controls.bool("closeOnSelect", false)
+    await I.controls.num("separator", " | ")
+
+    await I.clickTrigger()
+
+    // Select first item
+    await I.clickItem("Dairy")
+    await I.seeTriggerHasText("Dairy")
+
+    // Select second item - a path
+    await I.clickItem("Fruits")
+    await I.clickItem("Apple")
+    await I.seeTriggerHasText("Dairy, Fruits | Apple")
+  })
+
+  test("should use custom separator in nested paths", async () => {
+    await I.controls.num("separator", " > ")
+
+    await I.clickTrigger()
+    await I.clickItem("Fruits")
+    await I.clickItem("Citrus")
+    await I.clickItem("Orange")
+
+    await I.seeTriggerHasText("Fruits > Citrus > Orange")
+  })
+
+  test("should handle special characters in separator", async () => {
+    await I.controls.num("separator", " 🍎 ")
+
+    await I.clickTrigger()
+    await I.clickItem("Fruits")
+    await I.clickItem("Apple")
+
+    await I.seeTriggerHasText("Fruits 🍎 Apple")
+  })
+
+  test("should handle empty separator", async () => {
+    await I.controls.num("separator", "")
+
+    await I.clickTrigger()
+    await I.clickItem("Fruits")
+    await I.clickItem("Apple")
+
+    await I.seeTriggerHasText("FruitsApple")
+  })
+})

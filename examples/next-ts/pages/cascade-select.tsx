@@ -106,6 +106,7 @@ export default function Page() {
   })
 
   const api = cascadeSelect.connect(service, normalizeProps)
+  const separator = service.prop("separator")
 
   const renderLevel = (level: number) => {
     const levelValues = api.getLevelValues(level)
@@ -152,6 +153,14 @@ export default function Page() {
               </button>
             )}
           </div>
+
+          <select {...api.getHiddenSelectProps()}>
+            {api.value.map((path, index) => (
+              <option key={index} value={path.join(separator)}>
+                {path.map((value) => collection.findNode(value)?.label || value).join(separator)}
+              </option>
+            ))}
+          </select>
 
           <div {...api.getPositionerProps()}>
             <div {...api.getContentProps()}>

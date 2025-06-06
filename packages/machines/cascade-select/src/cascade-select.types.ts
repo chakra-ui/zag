@@ -33,6 +33,7 @@ export type ElementIds = Partial<{
   clearTrigger: string
   positioner: string
   content: string
+  hiddenSelect: string
   level(level: number): string
   item(value: string): string
 }>
@@ -50,6 +51,14 @@ export interface CascadeSelectProps<T = any> extends DirectionProperty, CommonPr
    * The ids of the cascade-select elements. Useful for composition.
    */
   ids?: ElementIds | undefined
+  /**
+   * The name attribute of the underlying select element
+   */
+  name?: string | undefined
+  /**
+   * The form attribute of the underlying select element
+   */
+  form?: string | undefined
   /**
    * The controlled value of the cascade-select
    */
@@ -140,6 +149,11 @@ export interface CascadeSelectProps<T = any> extends DirectionProperty, CommonPr
    * Whether parent (branch) items can be selected
    */
   allowParentSelection?: boolean
+  /**
+   * The separator used to join path segments in the display value
+   * @default " / "
+   */
+  separator?: string | undefined
 }
 
 type PropsWithDefault =
@@ -150,6 +164,7 @@ type PropsWithDefault =
   | "defaultOpen"
   | "multiple"
   | "highlightTrigger"
+  | "separator"
 
 export interface CascadeSelectSchema<T extends TreeNode = TreeNode> {
   state: "idle" | "focused" | "open"
@@ -295,4 +310,5 @@ export interface CascadeSelectApi<T extends PropTypes = PropTypes, V = TreeNode>
   getItemProps(props: ItemProps): T["element"]
   getItemTextProps(props: ItemProps): T["element"]
   getItemIndicatorProps(props: ItemProps): T["element"]
+  getHiddenSelectProps(): T["select"]
 }

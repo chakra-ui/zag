@@ -11,6 +11,7 @@ export const dom = createScope({
   getClearTriggerId: (ctx: Scope) => ctx.ids?.clearTrigger ?? `cascade-select:${ctx.id}:clear-trigger`,
   getPositionerId: (ctx: Scope) => ctx.ids?.positioner ?? `cascade-select:${ctx.id}:positioner`,
   getContentId: (ctx: Scope) => ctx.ids?.content ?? `cascade-select:${ctx.id}:content`,
+  getHiddenSelectId: (ctx: Scope) => ctx.ids?.hiddenSelect ?? `cascade-select:${ctx.id}:hidden-select`,
   getLevelId: (ctx: Scope, level: number) => ctx.ids?.level?.(level) ?? `cascade-select:${ctx.id}:level:${level}`,
   getItemId: (ctx: Scope, value: string) => ctx.ids?.item?.(value) ?? `cascade-select:${ctx.id}:item:${value}`,
 
@@ -23,6 +24,7 @@ export const dom = createScope({
   getClearTriggerEl: (ctx: Scope) => dom.getById(ctx, dom.getClearTriggerId(ctx)),
   getPositionerEl: (ctx: Scope) => dom.getById(ctx, dom.getPositionerId(ctx)),
   getContentEl: (ctx: Scope) => dom.getById(ctx, dom.getContentId(ctx)),
+  getHiddenSelectEl: (ctx: Scope) => dom.getById(ctx, dom.getHiddenSelectId(ctx)),
   getLevelEl: (ctx: Scope, level: number) => dom.getById(ctx, dom.getLevelId(ctx, level)),
   getItemEl: (ctx: Scope, value: string) => dom.getById(ctx, dom.getItemId(ctx, value)),
 })
