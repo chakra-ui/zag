@@ -1,6 +1,7 @@
 import type { StepDetails } from "@zag-js/tour"
 
 import { countryList } from "./country-list"
+export { cascadeSelectData } from "./cascade-select-data"
 export { paginationData } from "./pagination-data"
 
 export const selectData = countryList.map((country) => ({

@@ -1,0 +1,423 @@
+import { dataAttr, getEventKey, isLeftClick, visuallyHiddenStyle } from "@zag-js/dom-query"
+import { getPlacementStyles } from "@zag-js/popper"
+import type { NormalizeProps, PropTypes } from "@zag-js/types"
+import type { Service } from "@zag-js/core"
+import { parts } from "./cascade-select.anatomy"
+import { dom } from "./cascade-select.dom"
+import type {
+  CascadeSelectApi,
+  CascadeSelectSchema,
+  ItemProps,
+  ItemState,
+  LevelProps,
+  TreeNode,
+} from "./cascade-select.types"
+
+export function connect<T extends PropTypes, V = TreeNode>(
+  service: Service<CascadeSelectSchema>,
+  normalize: NormalizeProps<T>,
+): CascadeSelectApi<T, V> {
+  const { send, context, prop, scope, computed, state } = service
+
+  const collection = prop("collection")
+  const value = context.get("value")
+  const open = state.hasTag("open")
+  const focused = state.matches("focused")
+  const highlightedPath = context.get("highlightedPath")
+  const currentPlacement = context.get("currentPlacement")
+  const isDisabled = computed("isDisabled")
+  const isInteractive = computed("isInteractive")
+  const valueText = computed("valueText")
+  const levelDepth = computed("levelDepth")
+
+  const popperStyles = getPlacementStyles({
+    ...prop("positioning"),
+    placement: currentPlacement,
+  })
+
+  return {
+    collection,
+    value,
+    valueText,
+    highlightedPath,
+    open,
+    focused,
+
+    setValue(value: string[][]) {
+      send({ type: "VALUE.SET", value })
+    },
+
+    setOpen(open: boolean) {
+      if (open) {
+        send({ type: "OPEN" })
+      } else {
+        send({ type: "CLOSE" })
+      }
+    },
+
+    highlight(path: string[] | null) {
+      send({ type: "HIGHLIGHTED_PATH.SET", value: path })
+    },
+
+    selectItem(value: string) {
+      send({ type: "ITEM.SELECT", value })
+    },
+
+    clearValue() {
+      send({ type: "VALUE.CLEAR" })
+    },
+
+    getLevelValues(level: number): string[] {
+      return context.get("levelValues")[level] || []
+    },
+
+    getLevelDepth(): number {
+      return levelDepth
+    },
+
+    getParentValue(level: number): string | null {
+      const values = context.get("value")
+      if (values.length === 0) return null
+
+      // Use the most recent value path
+      const mostRecentValue = values[values.length - 1]
+      return mostRecentValue[level] || null
+    },
+
+    getItemState(props: ItemProps<V>): ItemState {
+      const { item } = props
+      const itemValue = collection.getNodeValue(item)
+      const indexPath = collection.getIndexPath(itemValue)
+      const depth = indexPath ? indexPath.length : 0
+
+      // Check if this item is highlighted (part of the highlighted path)
+      const isHighlighted = highlightedPath ? highlightedPath.includes(itemValue) : false
+
+      // Check if item is selected (part of any selected path)
+      const isSelected = value.some((path) => path.includes(itemValue))
+
+      return {
+        value: itemValue,
+        disabled: collection.getNodeDisabled(item),
+        highlighted: isHighlighted,
+        selected: isSelected,
+        hasChildren: collection.isBranchNode(item),
+        depth,
+      }
+    },
+
+    getRootProps() {
+      return normalize.element({
+        ...parts.root.attrs,
+        id: dom.getRootId(scope),
+        "data-disabled": dataAttr(isDisabled),
+        "data-readonly": dataAttr(prop("readOnly")),
+        "data-invalid": dataAttr(prop("invalid")),
+        "data-state": open ? "open" : "closed",
+      })
+    },
+
+    getLabelProps() {
+      return normalize.label({
+        ...parts.label.attrs,
+        id: dom.getLabelId(scope),
+        htmlFor: dom.getHiddenSelectId(scope),
+        "data-disabled": dataAttr(isDisabled),
+        "data-readonly": dataAttr(prop("readOnly")),
+        "data-invalid": dataAttr(prop("invalid")),
+        onClick(event) {
+          if (event.defaultPrevented) return
+          if (isDisabled) return
+          const triggerEl = dom.getTriggerEl(scope)
+          triggerEl?.focus({ preventScroll: true })
+        },
+      })
+    },
+
+    getControlProps() {
+      return normalize.element({
+        ...parts.control.attrs,
+        id: dom.getControlId(scope),
+        "data-disabled": dataAttr(isDisabled),
+        "data-readonly": dataAttr(prop("readOnly")),
+        "data-invalid": dataAttr(prop("invalid")),
+        "data-state": open ? "open" : "closed",
+      })
+    },
+
+    getTriggerProps() {
+      return normalize.button({
+        ...parts.trigger.attrs,
+        id: dom.getTriggerId(scope),
+        type: "button",
+        role: "combobox",
+        "aria-controls": dom.getContentId(scope),
+        "aria-expanded": open,
+        "aria-haspopup": "listbox",
+        "aria-labelledby": dom.getLabelId(scope),
+        "aria-describedby": dom.getValueTextId(scope),
+        "data-state": open ? "open" : "closed",
+        "data-disabled": dataAttr(isDisabled),
+        "data-readonly": dataAttr(prop("readOnly")),
+        "data-invalid": dataAttr(prop("invalid")),
+        disabled: isDisabled,
+        onFocus() {
+          if (!isInteractive) return
+          send({ type: "TRIGGER.FOCUS" })
+        },
+        onBlur() {
+          send({ type: "TRIGGER.BLUR" })
+        },
+        onClick(event) {
+          if (!isInteractive) return
+          if (!isLeftClick(event)) return
+          send({ type: "TRIGGER.CLICK" })
+        },
+        onKeyDown(event) {
+          if (!isInteractive) return
+          const key = getEventKey(event)
+
+          switch (key) {
+            case "ArrowDown":
+              event.preventDefault()
+              send({ type: "TRIGGER.ARROW_DOWN" })
+              break
+            case "ArrowUp":
+              event.preventDefault()
+              send({ type: "TRIGGER.ARROW_UP" })
+              break
+            case "ArrowRight":
+              event.preventDefault()
+              send({ type: "TRIGGER.ARROW_RIGHT" })
+              break
+            case "Enter":
+            case " ":
+              event.preventDefault()
+              send({ type: "TRIGGER.ENTER" })
+              break
+          }
+        },
+      })
+    },
+
+    getIndicatorProps() {
+      return normalize.element({
+        ...parts.indicator.attrs,
+        id: dom.getIndicatorId(scope),
+        "data-state": open ? "open" : "closed",
+        "data-disabled": dataAttr(isDisabled),
+        "data-readonly": dataAttr(prop("readOnly")),
+        "data-invalid": dataAttr(prop("invalid")),
+      })
+    },
+
+    getValueTextProps() {
+      return normalize.element({
+        ...parts.valueText.attrs,
+        id: dom.getValueTextId(scope),
+        "data-disabled": dataAttr(isDisabled),
+        "data-readonly": dataAttr(prop("readOnly")),
+        "data-invalid": dataAttr(prop("invalid")),
+        "data-placeholder": dataAttr(!value.length),
+      })
+    },
+
+    getClearTriggerProps() {
+      return normalize.button({
+        ...parts.clearTrigger.attrs,
+        id: dom.getClearTriggerId(scope),
+        type: "button",
+        "aria-label": "Clear value",
+        hidden: !value.length,
+        "data-disabled": dataAttr(isDisabled),
+        "data-readonly": dataAttr(prop("readOnly")),
+        "data-invalid": dataAttr(prop("invalid")),
+        disabled: isDisabled,
+        onClick(event) {
+          if (!isInteractive) return
+          if (!isLeftClick(event)) return
+          send({ type: "VALUE.CLEAR" })
+        },
+      })
+    },
+
+    getPositionerProps() {
+      return normalize.element({
+        ...parts.positioner.attrs,
+        id: dom.getPositionerId(scope),
+        style: popperStyles.floating,
+      })
+    },
+
+    getContentProps() {
+      const highlightedPath = context.get("highlightedPath")
+      const highlightedValue =
+        highlightedPath && highlightedPath.length > 0 ? highlightedPath[highlightedPath.length - 1] : null
+      const highlightedItemId = highlightedValue ? dom.getItemId(scope, highlightedValue) : undefined
+
+      return normalize.element({
+        ...parts.content.attrs,
+        id: dom.getContentId(scope),
+        role: "listbox",
+        "aria-labelledby": dom.getLabelId(scope),
+        "aria-activedescendant": highlightedItemId,
+        "data-activedescendant": highlightedItemId,
+        "data-state": open ? "open" : "closed",
+        hidden: !open,
+        tabIndex: 0,
+        onKeyDown(event) {
+          if (!isInteractive) return
+          const key = getEventKey(event)
+
+          const keyMap: Record<string, () => void> = {
+            ArrowDown() {
+              send({ type: "CONTENT.ARROW_DOWN" })
+            },
+            ArrowUp() {
+              send({ type: "CONTENT.ARROW_UP" })
+            },
+            ArrowRight() {
+              send({ type: "CONTENT.ARROW_RIGHT" })
+            },
+            ArrowLeft() {
+              send({ type: "CONTENT.ARROW_LEFT" })
+            },
+            Home() {
+              send({ type: "CONTENT.HOME" })
+            },
+            End() {
+              send({ type: "CONTENT.END" })
+            },
+            Enter() {
+              send({ type: "CONTENT.ENTER" })
+            },
+            " "() {
+              send({ type: "CONTENT.ENTER" })
+            },
+            Escape() {
+              send({ type: "CONTENT.ESCAPE" })
+            },
+          }
+
+          const exec = keyMap[key]
+          if (exec) {
+            exec()
+            event.preventDefault()
+          }
+        },
+        onPointerMove(event) {
+          if (!isInteractive) return
+          send({ type: "POINTER_MOVE", clientX: event.clientX, clientY: event.clientY, target: event.target })
+        },
+      })
+    },
+
+    getLevelProps(props: LevelProps) {
+      const { level } = props
+      return normalize.element({
+        ...parts.level.attrs,
+        id: dom.getLevelId(scope, level),
+        "data-level": level,
+      })
+    },
+
+    getItemProps(props: ItemProps<V>) {
+      const { item } = props
+      const itemValue = collection.getNodeValue(item)
+      const itemState = this.getItemState(props)
+
+      return normalize.element({
+        ...parts.item.attrs,
+        id: dom.getItemId(scope, itemValue),
+        role: "option",
+        "data-value": itemValue,
+        "data-disabled": dataAttr(itemState.disabled),
+        "data-highlighted": dataAttr(itemState.highlighted),
+        "data-selected": dataAttr(itemState.selected),
+        "data-has-children": dataAttr(itemState.hasChildren),
+        "data-depth": itemState.depth,
+        "aria-selected": itemState.selected,
+        "aria-disabled": itemState.disabled,
+        onClick(event) {
+          if (!isInteractive) return
+          if (!isLeftClick(event)) return
+          if (itemState.disabled) return
+          send({ type: "ITEM.CLICK", value: itemValue })
+        },
+        onPointerEnter(event) {
+          if (!isInteractive) return
+          if (itemState.disabled) return
+          send({ type: "ITEM.POINTER_ENTER", value: itemValue, clientX: event.clientX, clientY: event.clientY })
+        },
+        onPointerLeave(event) {
+          if (!isInteractive) return
+          if (itemState.disabled) return
+          if (props.persistFocus) return
+          if (event.pointerType !== "mouse") return
+
+          const pointerMoved = service.event.previous()?.type.includes("POINTER")
+          if (!pointerMoved) return
+
+          send({ type: "ITEM.POINTER_LEAVE", value: itemValue, clientX: event.clientX, clientY: event.clientY })
+        },
+      })
+    },
+
+    getItemTextProps(props: ItemProps<V>) {
+      const { item } = props
+      const itemValue = collection.getNodeValue(item)
+      const itemState = this.getItemState(props)
+      return normalize.element({
+        ...parts.itemText.attrs,
+        "data-value": itemValue,
+        "data-highlighted": dataAttr(itemState.highlighted),
+        "data-selected": dataAttr(itemState.selected),
+        "data-disabled": dataAttr(itemState.disabled),
+      })
+    },
+
+    getItemIndicatorProps(props: ItemProps<V>) {
+      const { item } = props
+      const itemValue = collection.getNodeValue(item)
+      const itemState = this.getItemState(props)
+
+      return normalize.element({
+        ...parts.itemIndicator.attrs,
+        "data-value": itemValue,
+        "data-highlighted": dataAttr(itemState.highlighted),
+        "data-has-children": dataAttr(itemState.hasChildren),
+        hidden: !itemState.hasChildren,
+      })
+    },
+
+    getHiddenSelectProps() {
+      // Create option values from the current selected paths
+      const separator = prop("separator")
+      const defaultValue = prop("multiple")
+        ? value.map((path) => path.join(separator))
+        : value[0]
+          ? value[0].join(separator)
+          : ""
+
+      return normalize.select({
+        name: prop("name"),
+        form: prop("form"),
+        disabled: isDisabled,
+        multiple: prop("multiple"),
+        required: prop("required"),
+        "aria-hidden": true,
+        id: dom.getHiddenSelectId(scope),
+        defaultValue,
+        style: visuallyHiddenStyle,
+        tabIndex: -1,
+        // Some browser extensions will focus the hidden select.
+        // Let's forward the focus to the trigger.
+        onFocus() {
+          const triggerEl = dom.getTriggerEl(scope)
+          triggerEl?.focus({ preventScroll: true })
+        },
+        "aria-labelledby": dom.getLabelId(scope),
+      })
+    },
+  }
+}
