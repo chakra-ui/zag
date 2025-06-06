@@ -201,6 +201,56 @@ const service = useMachine(tree.machine, {
 })
 ```
 
+### Lazy Loading
+
+> **Added in v1.15.0**
+
+Lazy loading is a feature that allows the tree view to load children of a node
+on demand. This helps to improve the initial load time and memory usage.
+
+To use this, you need to provide the following:
+
+- `loadChildren` — A function that is used to load the children of a node.
+- `onLoadChildrenComplete` — A callback that is called when the children of a
+  node are loaded. Used to update the tree collection.
+- `childrenCount` — A number that indicates the number of children of a branch
+  node.
+
+```tsx
+function TreeAsync() {
+  const [collection, setCollection] = useState(
+    tree.collection({
+      nodeToValue: (node) => node.id,
+      nodeToString: (node) => node.name,
+      rootNode: {
+        id: "ROOT",
+        name: "",
+        children: [
+          { id: "node_modules", name: "node_modules", childrenCount: 3 },
+          { id: "src", name: "src", childrenCount: 2 },
+        ],
+      },
+    }),
+  )
+
+  const service = useMachine(tree.machine, {
+    id: useId(),
+    collection,
+    async loadChildren({ valuePath, signal }) {
+      const url = `/api/file-system/${valuePath.join("/")}`
+      const response = await fetch(url, { signal })
+      const data = await response.json()
+      return data.children
+    },
+    onLoadChildrenComplete({ collection }) {
+      setCollection(collection)
+    },
+  })
+
+  // ...
+}
+```
+
 ## Methods and Properties
 
 ### Machine Context

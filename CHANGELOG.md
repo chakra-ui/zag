@@ -4,6 +4,47 @@ All notable changes to this project will be documented in this file.
 
 > For v0.x changelog, see the [v0 branch](https://github.com/chakra-ui/zag/blob/v0/CHANGELOG.md)
 
+## [1.15.0](./#1.15.0) - 2025-06-05
+
+### Added
+
+- **Tree View**: Add support for lazy loading node children. To use this, you need to provide:
+
+  - `loadChildren` is a function that is used to load the children of a node.
+  - `onLoadChildrenComplete` is a callback that is called when the children of a node are loaded. Used to update the
+    tree collection.
+  - Add `childrenCount` to the node object to indicate the number of children.
+
+```tsx
+function TreeAsync() {
+  const [collection, setCollection] = useState(initCollection)
+
+  const service = useMachine(tree.machine, {
+    id: useId(),
+    collection,
+    async loadChildren({ valuePath, signal }) {
+      const url = `/api/file-system/${valuePath.join("/")}`
+      const response = await fetch(url, { signal })
+      const data = await response.json()
+      return data.children
+    },
+    onLoadChildrenComplete({ collection }) {
+      setCollection(collection)
+    },
+  })
+
+  // ...
+}
+```
+
+### Fixed
+
+- **Collapsible**: Fix rect measurement timing issue in Svelte
+- **Remove Scroll**: Fix scrollbar width calculation before DOM change for scroll-lock workaround compatibility
+- **Slider**:
+  - Fix issue where `Shift` + `ArrowRight` set value to `0` instead of `max` when step is too large (e.g. `20`)
+  - Fix issue where `onValueChangeEnd` doesn't return the latest value when dragging very fast
+
 ## [1.14.0](./#1.14.0) - 2025-05-29
 
 ### Added

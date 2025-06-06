@@ -1,5 +1,17 @@
 # @zag-js/remove-scroll
 
+## 1.15.0
+
+### Patch Changes
+
+- [#2490](https://github.com/chakra-ui/zag/pull/2490)
+  [`5c760a7`](https://github.com/chakra-ui/zag/commit/5c760a769085232a096789c002ea6ab96608ffb6) Thanks
+  [@jramke](https://github.com/jramke)! - Fix scrollbar width calculation before DOM change for scroll-lock workaround
+  compatibility
+
+- Updated dependencies []:
+  - @zag-js/dom-query@1.15.0
+
 ## 1.14.0
 
 ### Patch Changes

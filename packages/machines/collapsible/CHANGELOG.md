@@ -1,5 +1,19 @@
 # @zag-js/collapsible
 
+## 1.15.0
+
+### Patch Changes
+
+- [`cffe1d2`](https://github.com/chakra-ui/zag/commit/cffe1d249990b73084f1cda656c76179cde3c432) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix rect measurement timing issue in Svelte
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.15.0
+  - @zag-js/core@1.15.0
+  - @zag-js/types@1.15.0
+  - @zag-js/utils@1.15.0
+  - @zag-js/dom-query@1.15.0
+
 ## 1.14.0
 
 ### Patch Changes

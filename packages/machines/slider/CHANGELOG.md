@@ -1,5 +1,20 @@
 # @zag-js/slider
 
+## 1.15.0
+
+### Patch Changes
+
+- [`4ca20a4`](https://github.com/chakra-ui/zag/commit/4ca20a495556cd824c3dd28d0cc9210fa3c3854c) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - - Fix issue where `Shift` + `ArrowRight` set value to `0` instead
+  of `max` when step is too large (e.g. `20`)
+  - Fix issue where `onValueChangeEnd` doesn't return the latest value when dragging very fast
+- Updated dependencies []:
+  - @zag-js/anatomy@1.15.0
+  - @zag-js/core@1.15.0
+  - @zag-js/types@1.15.0
+  - @zag-js/utils@1.15.0
+  - @zag-js/dom-query@1.15.0
+
 ## 1.14.0
 
 ### Patch Changes

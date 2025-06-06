@@ -77,6 +77,9 @@ const [current, send] = useMachine(colorPicker.machine, {
 To control the color value programmatically, pass the `value` and
 `onValueChange` properties to the machine function.
 
+> **Note:** We recommend preserving the value as a `Color` object rather than a
+> string to prevent calculation errors by converting back and forth.
+
 <CodeSnippet id="color-picker/controlled.mdx" />
 
 ### Listening for change events
@@ -98,9 +101,6 @@ const [current, send] = useMachine(colorPicker.machine, {
   },
 })
 ```
-
-> When using the `onValueChange` method in React.js, you might need to use the
-> `flushSync` method from `react-dom` to ensure the value is updated in sync
 
 ### Using a custom color format
 

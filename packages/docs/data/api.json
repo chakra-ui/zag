@@ -5286,6 +5286,10 @@
         "type": "(details: FocusChangeDetails) => void",
         "description": "Called when the focused node changes"
       },
+      "onLoadChildrenComplete": {
+        "type": "(details: LoadChildrenCompleteDetails<any>) => void",
+        "description": "Called when a node finishes loading children"
+      },
       "expandOnClick": {
         "type": "boolean",
         "description": "Whether clicking on a branch should open it or not",
@@ -5295,6 +5299,10 @@
         "type": "boolean",
         "description": "Whether the tree supports typeahead search",
         "defaultValue": "true"
+      },
+      "loadChildren": {
+        "type": "(details: LoadChildrenDetails<T>) => Promise<T[]>",
+        "description": "Function to load children for a node asynchronously.\nWhen provided, branches will wait for this promise to resolve before expanding."
       },
       "dir": {
         "type": "\"ltr\" | \"rtl\"",

@@ -20,6 +20,7 @@ export function connect<T extends PropTypes>(service: TreeViewService, normalize
   const selectedValue = Array.from(context.get("selectedValue"))
   const isTypingAhead = computed("isTypingAhead")
   const focusedValue = context.get("focusedValue")
+  const loadingStatus = context.get("loadingStatus")
 
   function getNodeState(props: NodeProps): NodeState {
     const { node, indexPath } = props
@@ -31,6 +32,7 @@ export function connect<T extends PropTypes>(service: TreeViewService, normalize
       focused: focusedValue == null ? isEqual(indexPath, [0]) : focusedValue === value,
       selected: selectedValue.includes(value),
       expanded: expandedValue.includes(value),
+      loading: loadingStatus[value] === "loading",
       depth: indexPath.length,
       isBranch: collection.isBranchNode(node),
     }
@@ -299,6 +301,8 @@ export function connect<T extends PropTypes>(service: TreeViewService, normalize
         "data-state": nodeState.expanded ? "open" : "closed",
         "aria-disabled": nodeState.disabled,
         "data-disabled": dataAttr(nodeState.disabled),
+        "data-loading": dataAttr(nodeState.loading),
+        "aria-busy": nodeState.loading,
         style: {
           "--depth": nodeState.depth,
         },
@@ -314,6 +318,7 @@ export function connect<T extends PropTypes>(service: TreeViewService, normalize
         "data-disabled": dataAttr(nodeState.disabled),
         "data-selected": dataAttr(nodeState.selected),
         "data-focus": dataAttr(nodeState.focused),
+        "data-loading": dataAttr(nodeState.loading),
       })
     },
 
@@ -326,8 +331,10 @@ export function connect<T extends PropTypes>(service: TreeViewService, normalize
         "data-disabled": dataAttr(nodeState.disabled),
         "data-state": nodeState.expanded ? "open" : "closed",
         "data-value": nodeState.value,
+        "data-loading": dataAttr(nodeState.loading),
+        disabled: nodeState.loading,
         onClick(event) {
-          if (nodeState.disabled) return
+          if (nodeState.disabled || nodeState.loading) return
           send({ type: "BRANCH_TOGGLE.CLICK", id: nodeState.value })
           event.stopPropagation()
         },
@@ -349,12 +356,14 @@ export function connect<T extends PropTypes>(service: TreeViewService, normalize
         "data-focus": dataAttr(nodeState.focused),
         "data-value": nodeState.value,
         "data-depth": nodeState.depth,
+        "data-loading": dataAttr(nodeState.loading),
+        "aria-busy": nodeState.loading,
         onFocus(event) {
           send({ type: "NODE.FOCUS", id: nodeState.value })
           event.stopPropagation()
         },
         onClick(event) {
-          if (nodeState.disabled) return
+          if (nodeState.disabled || nodeState.loading) return
           const isMetaKey = event.metaKey || event.ctrlKey
           send({ type: "BRANCH_NODE.CLICK", id: nodeState.value, shiftKey: event.shiftKey, ctrlKey: isMetaKey })
           event.stopPropagation()
@@ -369,6 +378,7 @@ export function connect<T extends PropTypes>(service: TreeViewService, normalize
         dir: prop("dir"),
         "data-disabled": dataAttr(nodeState.disabled),
         "data-state": nodeState.expanded ? "open" : "closed",
+        "data-loading": dataAttr(nodeState.loading),
       })
     },
 

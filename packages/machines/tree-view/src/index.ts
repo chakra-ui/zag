@@ -15,4 +15,8 @@ export type {
   TreeViewService as Service,
   TreeViewMachine as Machine,
   TreeNode,
+  LoadChildrenDetails,
+  LoadChildrenCompleteDetails,
+  TreeLoadingStatus,
+  TreeLoadingStatusMap,
 } from "./tree-view.types"

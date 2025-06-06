@@ -19,6 +19,8 @@ export const props = createProps<TreeViewProps>()([
   "typeahead",
   "defaultExpandedValue",
   "defaultSelectedValue",
+  "onLoadChildrenComplete",
+  "loadChildren",
 ])
 
 export const splitProps = createSplitProps<Partial<TreeViewProps>>(props)

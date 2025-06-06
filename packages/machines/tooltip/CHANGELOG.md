@@ -1,5 +1,19 @@
 # @zag-js/tooltip
 
+## 1.15.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.15.0
+  - @zag-js/core@1.15.0
+  - @zag-js/store@1.15.0
+  - @zag-js/types@1.15.0
+  - @zag-js/utils@1.15.0
+  - @zag-js/dom-query@1.15.0
+  - @zag-js/focus-visible@1.15.0
+  - @zag-js/popper@1.15.0
+
 ## 1.14.0
 
 ### Patch Changes
