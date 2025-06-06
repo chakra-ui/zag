@@ -130,7 +130,7 @@ test.describe("keyboard navigation", () => {
   test("should select item with Enter", async () => {
     await I.focusTrigger()
     await I.pressKey("Enter")
-    await I.pressKey("ArrowDown") // Navigate to Africa (skip disabled Antarctica)
+    await I.pressKey("ArrowDown") // Navigate to Africa
     await I.pressKey("ArrowRight") // Navigate into Africa
     // Now we're in Algeria (first country alphabetically)
     await I.pressKey("ArrowRight") // Navigate into Algeria states
