@@ -3,9 +3,10 @@ import { trackDismissableElement } from "@zag-js/dismissable"
 import { raf, trackFormControl } from "@zag-js/dom-query"
 import { getPlacement, type Placement } from "@zag-js/popper"
 import type { Point } from "@zag-js/rect-utils"
+import { last, isEmpty, nextIndex, prevIndex, isEqual } from "@zag-js/utils"
 import { collection } from "./cascade-select.collection"
 import { dom } from "./cascade-select.dom"
-import { createGraceArea, isPointerInGraceArea } from "./cascade-select.grace-area"
+import { createGraceArea, isPointerInGraceArea } from "./cascade-select.utils"
 import type { CascadeSelectSchema } from "./cascade-select.types"
 
 const { or, and } = createGuards<CascadeSelectSchema>()
@@ -77,7 +78,7 @@ export const machine = createMachine<CascadeSelectSchema>({
     },
     valueText: ({ context, prop }) => {
       const value = context.get("value")
-      if (value.length === 0) return prop("placeholder") ?? ""
+      if (isEmpty(value)) return prop("placeholder") ?? ""
       const collection = prop("collection")
       return (
         prop("formatValue")?.(value) ??
@@ -433,10 +434,11 @@ export const machine = createMachine<CascadeSelectSchema>({
         if (!prop("closeOnSelect")) return false
 
         const highlightedPath = context.get("highlightedPath")
-        if (!highlightedPath || highlightedPath.length === 0) return false
+        if (!highlightedPath || isEmpty(highlightedPath)) return false
 
         const collection = prop("collection")
-        const leafValue = highlightedPath[highlightedPath.length - 1]
+        const leafValue = last(highlightedPath)
+        if (!leafValue) return false
         const node = collection.findNode(leafValue)
 
         // Only close if selecting a leaf node (no children)
@@ -458,10 +460,11 @@ export const machine = createMachine<CascadeSelectSchema>({
       },
       canSelectHighlightedItem: ({ prop, context }) => {
         const highlightedPath = context.get("highlightedPath")
-        if (!highlightedPath || highlightedPath.length === 0) return false
+        if (!highlightedPath || isEmpty(highlightedPath)) return false
 
         const collection = prop("collection")
-        const leafValue = highlightedPath[highlightedPath.length - 1]
+        const leafValue = last(highlightedPath)
+        if (!leafValue) return false
         const node = collection.findNode(leafValue)
 
         if (!node) return false
@@ -476,17 +479,18 @@ export const machine = createMachine<CascadeSelectSchema>({
       },
       canNavigateToChild: ({ prop, context }) => {
         const highlightedPath = context.get("highlightedPath")
-        if (!highlightedPath || highlightedPath.length === 0) return false
+        if (!highlightedPath || isEmpty(highlightedPath)) return false
 
         const collection = prop("collection")
-        const leafValue = highlightedPath[highlightedPath.length - 1]
+        const leafValue = last(highlightedPath)
+        if (!leafValue) return false
         const node = collection.findNode(leafValue)
 
         return node && collection.isBranchNode(node)
       },
       canNavigateToParent: ({ context }) => {
         const highlightedPath = context.get("highlightedPath")
-        if (!highlightedPath || highlightedPath.length === 0) return false
+        if (!highlightedPath || isEmpty(highlightedPath)) return false
 
         // We can navigate to parent if the path has more than one item
         return highlightedPath.length > 1
@@ -648,7 +652,7 @@ export const machine = createMachine<CascadeSelectSchema>({
 
         context.set("highlightedPath", value)
 
-        if (value && value.length > 0) {
+        if (value && !isEmpty(value)) {
           // Build level values to show the path to the highlighted item and its children
           const levelValues: string[][] = []
 
@@ -723,8 +727,7 @@ export const machine = createMachine<CascadeSelectSchema>({
               const isChildOfNew =
                 existingPath.length > valuePath.length && valuePath.every((val, idx) => val === existingPath[idx])
               // Remove if this is the exact same path
-              const isSamePath =
-                existingPath.length === valuePath.length && existingPath.every((val, idx) => val === valuePath[idx])
+              const isSamePath = isEqual(existingPath, valuePath)
 
               return !isParentOfNew && !isChildOfNew && !isSamePath
             })
@@ -747,7 +750,7 @@ export const machine = createMachine<CascadeSelectSchema>({
           // When parent selection is not allowed, only leaf items update the value
           if (hasChildren) {
             // For branch nodes, just navigate into them (update value path but don't "select")
-            if (multiple && currentValues.length > 0) {
+            if (multiple && !isEmpty(currentValues)) {
               // Use the most recent selection as base for navigation
               context.set("value", [...currentValues.slice(0, -1), valuePath])
             } else {
@@ -758,9 +761,7 @@ export const machine = createMachine<CascadeSelectSchema>({
             // For leaf nodes, actually select them
             if (multiple) {
               // Check if this path already exists
-              const existingIndex = currentValues.findIndex(
-                (path) => path.length === valuePath.length && path.every((val, idx) => val === valuePath[idx]),
-              )
+              const existingIndex = currentValues.findIndex((path) => isEqual(path, valuePath))
 
               if (existingIndex >= 0) {
                 // Remove existing selection (toggle off)
@@ -781,9 +782,11 @@ export const machine = createMachine<CascadeSelectSchema>({
       },
       selectHighlightedItem({ context, send }) {
         const highlightedPath = context.get("highlightedPath")
-        if (highlightedPath && highlightedPath.length > 0) {
-          const leafValue = highlightedPath[highlightedPath.length - 1]
-          send({ type: "ITEM.SELECT", value: leafValue })
+        if (highlightedPath && !isEmpty(highlightedPath)) {
+          const leafValue = last(highlightedPath)
+          if (leafValue) {
+            send({ type: "ITEM.SELECT", value: leafValue })
+          }
         }
       },
       syncLevelValues({ context, prop }) {
@@ -798,15 +801,17 @@ export const machine = createMachine<CascadeSelectSchema>({
         }
 
         // Use the most recent selection for building levels
-        const mostRecentValue = values.length > 0 ? values[values.length - 1] : []
+        const mostRecentValue = !isEmpty(values) ? last(values) : []
 
         // Build subsequent levels based on most recent value path
-        for (let i = 0; i < mostRecentValue.length; i++) {
-          const nodeValue = mostRecentValue[i]
-          const node = collection.findNode(nodeValue)
-          if (node && collection.isBranchNode(node)) {
-            const children = collection.getNodeChildren(node)
-            levelValues[i + 1] = children.map((child) => collection.getNodeValue(child))
+        if (mostRecentValue) {
+          for (let i = 0; i < mostRecentValue.length; i++) {
+            const nodeValue = mostRecentValue[i]
+            const node = collection.findNode(nodeValue)
+            if (node && collection.isBranchNode(node)) {
+              const children = collection.getNodeChildren(node)
+              levelValues[i + 1] = children.map((child) => collection.getNodeValue(child))
+            }
           }
         }
 
@@ -831,9 +836,11 @@ export const machine = createMachine<CascadeSelectSchema>({
         const currentLevelIndex = Math.max(0, value.length)
         const currentLevel = levelValues[currentLevelIndex]
 
-        if (currentLevel && currentLevel.length > 0) {
-          const lastValue = currentLevel[currentLevel.length - 1]
-          send({ type: "HIGHLIGHTED_PATH.SET", value: [lastValue] })
+        if (currentLevel && !isEmpty(currentLevel)) {
+          const lastValue = last(currentLevel)
+          if (lastValue) {
+            send({ type: "HIGHLIGHTED_PATH.SET", value: [lastValue] })
+          }
         }
       },
       highlightNextItem({ context, prop, send }) {
@@ -852,7 +859,9 @@ export const machine = createMachine<CascadeSelectSchema>({
         }
 
         // Find which level contains the last item in the highlighted path
-        const leafValue = highlightedPath[highlightedPath.length - 1]
+        const leafValue = last(highlightedPath)
+        if (!leafValue) return
+
         let targetLevel: string[] | undefined
         let levelIndex = -1
 
@@ -864,17 +873,13 @@ export const machine = createMachine<CascadeSelectSchema>({
           }
         }
 
-        if (!targetLevel || targetLevel.length === 0) return
+        if (!targetLevel || isEmpty(targetLevel)) return
 
         const currentIndex = targetLevel.indexOf(leafValue)
         if (currentIndex === -1) return
 
-        let nextIndex = currentIndex + 1
-        if (nextIndex >= targetLevel.length) {
-          nextIndex = prop("loop") ? 0 : currentIndex
-        }
-
-        const nextValue = targetLevel[nextIndex]
+        const nextIdx = nextIndex(targetLevel, currentIndex, { loop: prop("loop") })
+        const nextValue = targetLevel[nextIdx]
 
         // Build the correct path: parent path + next value
         if (levelIndex === 0) {
@@ -902,7 +907,9 @@ export const machine = createMachine<CascadeSelectSchema>({
         }
 
         // Find which level contains the last item in the highlighted path
-        const leafValue = highlightedPath[highlightedPath.length - 1]
+        const leafValue = last(highlightedPath)
+        if (!leafValue) return
+
         let targetLevel: string[] | undefined
         let levelIndex = -1
 
@@ -914,17 +921,13 @@ export const machine = createMachine<CascadeSelectSchema>({
           }
         }
 
-        if (!targetLevel || targetLevel.length === 0) return
+        if (!targetLevel || isEmpty(targetLevel)) return
 
         const currentIndex = targetLevel.indexOf(leafValue)
         if (currentIndex === -1) return
 
-        let prevIndex = currentIndex - 1
-        if (prevIndex < 0) {
-          prevIndex = prop("loop") ? targetLevel.length - 1 : 0
-        }
-
-        const prevValue = targetLevel[prevIndex]
+        const prevIdx = prevIndex(targetLevel, currentIndex, { loop: prop("loop") })
+        const prevValue = targetLevel[prevIdx]
 
         // Build the correct path: parent path + prev value
         if (levelIndex === 0) {
@@ -938,10 +941,11 @@ export const machine = createMachine<CascadeSelectSchema>({
       },
       highlightFirstChild({ context, prop, send }) {
         const highlightedPath = context.get("highlightedPath")
-        if (!highlightedPath || highlightedPath.length === 0) return
+        if (!highlightedPath || isEmpty(highlightedPath)) return
 
         const collection = prop("collection")
-        const leafValue = highlightedPath[highlightedPath.length - 1]
+        const leafValue = last(highlightedPath)
+        if (!leafValue) return
         const node = collection.findNode(leafValue)
 
         if (!node || !collection.isBranchNode(node)) return
@@ -989,10 +993,12 @@ export const machine = createMachine<CascadeSelectSchema>({
         const values = context.get("value")
 
         // Always start fresh - clear any existing highlighted path first
-        if (values.length > 0) {
+        if (!isEmpty(values)) {
           // Use the most recent selection and highlight its full path
-          const mostRecentSelection = values[values.length - 1]
-          send({ type: "HIGHLIGHTED_PATH.SET", value: mostRecentSelection })
+          const mostRecentSelection = last(values)
+          if (mostRecentSelection) {
+            send({ type: "HIGHLIGHTED_PATH.SET", value: mostRecentSelection })
+          }
         } else {
           // No selections - start with no highlight so user sees all options
           send({ type: "HIGHLIGHTED_PATH.SET", value: null })
@@ -1071,10 +1077,10 @@ export const machine = createMachine<CascadeSelectSchema>({
           newHighlightedPath = hoveredItemPath.slice(0, -1)
         }
 
-        context.set("highlightedPath", newHighlightedPath.length > 0 ? newHighlightedPath : null)
+        context.set("highlightedPath", !isEmpty(newHighlightedPath) ? newHighlightedPath : null)
 
         // Update level values based on the new highlighted path
-        if (newHighlightedPath.length > 0) {
+        if (!isEmpty(newHighlightedPath)) {
           const levelValues: string[][] = []
 
           // First level is always root children
