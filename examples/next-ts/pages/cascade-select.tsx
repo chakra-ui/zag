@@ -81,6 +81,7 @@ const collection = cascadeSelect.collection<Node>({
           { value: "oats", label: "Oats" },
         ],
       },
+      { value: "dairy", label: "Dairy" },
     ],
   },
 })

@@ -2,8 +2,10 @@ import { createGuards, createMachine } from "@zag-js/core"
 import { trackDismissableElement } from "@zag-js/dismissable"
 import { raf, trackFormControl } from "@zag-js/dom-query"
 import { getPlacement, type Placement } from "@zag-js/popper"
+import type { Point } from "@zag-js/rect-utils"
 import { collection } from "./cascade-select.collection"
 import { dom } from "./cascade-select.dom"
+import { createGraceArea, isPointerInGraceArea } from "./cascade-select.grace-area"
 import type { CascadeSelectSchema } from "./cascade-select.types"
 
 const { or, and } = createGuards<CascadeSelectSchema>()
@@ -16,6 +18,7 @@ export const machine = createMachine<CascadeSelectSchema>({
       defaultValue: [],
       defaultOpen: false,
       multiple: false,
+      highlightTrigger: "click",
       placeholder: "Select an option",
       allowParentSelection: false,
       positioning: {
@@ -56,6 +59,12 @@ export const machine = createMachine<CascadeSelectSchema>({
       })),
       levelValues: bindable<string[][]>(() => ({
         defaultValue: [],
+      })),
+      graceArea: bindable<Point[] | null>(() => ({
+        defaultValue: null,
+      })),
+      isPointerInTransit: bindable<boolean>(() => ({
+        defaultValue: false,
       })),
     }
   },
@@ -278,6 +287,30 @@ export const machine = createMachine<CascadeSelectSchema>({
             actions: ["setHighlightedPathFromValue"],
           },
         ],
+        "ITEM.POINTER_ENTER": [
+          {
+            guard: "isHoverHighlight",
+            actions: ["setHighlightingForHoveredItem"],
+          },
+        ],
+        "ITEM.POINTER_LEAVE": [
+          {
+            guard: and("isHoverHighlight", "shouldHighlightOnHover"),
+            actions: ["createGraceArea"],
+          },
+        ],
+        POINTER_MOVE: [
+          {
+            guard: and("isHoverHighlight", "hasGraceArea", "isPointerOutsideGraceArea", "isPointerNotInAnyItem"),
+            actions: ["clearHighlightAndGraceArea"],
+          },
+        ],
+        "GRACE_AREA.CLEAR": [
+          {
+            guard: "isHoverHighlight",
+            actions: ["clearHighlightAndGraceArea"],
+          },
+        ],
         "CONTENT.ARROW_DOWN": [
           {
             guard: "hasHighlightedPath",
@@ -462,6 +495,108 @@ export const machine = createMachine<CascadeSelectSchema>({
         const highlightedPath = context.get("highlightedPath")
         // We're at root level if there's no highlighted path or the path has only one item (root child)
         return !highlightedPath || highlightedPath.length <= 1
+      },
+      isHoverHighlight: ({ prop }) => {
+        return prop("highlightTrigger") === "hover"
+      },
+      shouldHighlightOnHover: ({ prop, event }) => {
+        const collection = prop("collection")
+        const node = collection.findNode(event.value)
+        // Only highlight on hover if the item has children (is a parent)
+        return node && collection.isBranchNode(node)
+      },
+      shouldUpdateHighlightedPath: ({ prop, context, event }) => {
+        const collection = prop("collection")
+        const currentHighlightedPath = context.get("highlightedPath")
+
+        if (!currentHighlightedPath || currentHighlightedPath.length === 0) {
+          return false // No current highlighting
+        }
+
+        const hoveredValue = event.value
+        const node = collection.findNode(hoveredValue)
+
+        // Only for leaf items (non-parent items)
+        if (!node || collection.isBranchNode(node)) {
+          return false
+        }
+
+        // Get the full path to the hovered item
+        const indexPath = collection.getIndexPath(hoveredValue)
+        if (!indexPath) return false
+
+        const hoveredItemPath = collection.getValuePath(indexPath)
+
+        // Check if paths share a common prefix but diverge
+        const minLength = Math.min(hoveredItemPath.length, currentHighlightedPath.length)
+        let commonPrefixLength = 0
+
+        for (let i = 0; i < minLength; i++) {
+          if (hoveredItemPath[i] === currentHighlightedPath[i]) {
+            commonPrefixLength = i + 1
+          } else {
+            break
+          }
+        }
+
+        // If we have a common prefix and the paths diverge, we should update
+        return (
+          commonPrefixLength > 0 &&
+          (commonPrefixLength < currentHighlightedPath.length || commonPrefixLength < hoveredItemPath.length)
+        )
+      },
+      isItemOutsideHighlightedPath: ({ prop, context, event }) => {
+        const collection = prop("collection")
+        const currentHighlightedPath = context.get("highlightedPath")
+
+        if (!currentHighlightedPath || currentHighlightedPath.length === 0) {
+          return false // No current highlighting, so don't clear
+        }
+
+        const hoveredValue = event.value
+
+        // Get the full path to the hovered item
+        const indexPath = collection.getIndexPath(hoveredValue)
+        if (!indexPath) return true // Invalid item, clear highlighting
+
+        const hoveredItemPath = collection.getValuePath(indexPath)
+
+        // Check if the hovered item path is compatible with current highlighted path
+        // Two cases:
+        // 1. Hovered item is part of the highlighted path (child/descendant)
+        // 2. Highlighted path is part of the hovered item path (parent/ancestor)
+
+        const minLength = Math.min(hoveredItemPath.length, currentHighlightedPath.length)
+
+        // Check if the paths share a common prefix
+        for (let i = 0; i < minLength; i++) {
+          if (hoveredItemPath[i] !== currentHighlightedPath[i]) {
+            return true // Paths diverge, clear highlighting
+          }
+        }
+
+        return false // Paths are compatible, don't clear
+      },
+      hasGraceArea: ({ context }) => {
+        return context.get("graceArea") != null
+      },
+      isPointerOutsideGraceArea: ({ context, event }) => {
+        const graceArea = context.get("graceArea")
+        if (!graceArea) return false
+
+        const point = { x: event.clientX, y: event.clientY }
+        return !isPointerInGraceArea(point, graceArea)
+      },
+      isPointerInTargetElement: ({ event, scope }) => {
+        const target = event.target as HTMLElement
+        const contentEl = dom.getContentEl(scope)
+        return contentEl?.contains(target) ?? false
+      },
+      isPointerNotInAnyItem: ({ event }) => {
+        const target = event.target as HTMLElement
+        // Check if the pointer is over any item element
+        const itemElement = target.closest('[role="option"]')
+        return !itemElement
       },
     },
 
@@ -861,6 +996,107 @@ export const machine = createMachine<CascadeSelectSchema>({
         } else {
           // No selections - start with no highlight so user sees all options
           send({ type: "HIGHLIGHTED_PATH.SET", value: null })
+        }
+      },
+      createGraceArea({ context, event, scope }) {
+        const { value } = event
+        const triggerElement = dom.getItemEl(scope, value)
+
+        if (!triggerElement) return
+
+        const exitPoint = { x: event.clientX, y: event.clientY }
+        const triggerRect = triggerElement.getBoundingClientRect()
+
+        // Find the next level that would contain children of this item
+        const highlightedPath = context.get("highlightedPath")
+        if (!highlightedPath) return
+
+        const currentLevel = highlightedPath.length - 1
+        const nextLevelEl = dom.getLevelEl(scope, currentLevel + 1)
+
+        if (!nextLevelEl) {
+          // No next level, no grace area needed
+          return
+        }
+
+        const targetRect = nextLevelEl.getBoundingClientRect()
+        const graceArea = createGraceArea(exitPoint, triggerRect, targetRect)
+
+        context.set("graceArea", graceArea)
+        context.set("isPointerInTransit", true)
+
+        // Set a timer to clear the grace area after a short delay
+        setTimeout(() => {
+          context.set("graceArea", null)
+          context.set("isPointerInTransit", false)
+        }, 300)
+      },
+      clearGraceArea({ context }) {
+        context.set("graceArea", null)
+        context.set("isPointerInTransit", false)
+      },
+      clearHighlightAndGraceArea({ context, action }) {
+        // Clear highlighted path
+        context.set("highlightedPath", null)
+
+        // Clear grace area
+        context.set("graceArea", null)
+        context.set("isPointerInTransit", false)
+
+        // Restore level values to match the actual selected values
+        action(["syncLevelValues"])
+      },
+      setHighlightingForHoveredItem({ context, prop, event, action }) {
+        const collection = prop("collection")
+        const hoveredValue = event.value
+
+        // Get the full path to the hovered item
+        const indexPath = collection.getIndexPath(hoveredValue)
+        if (!indexPath) {
+          // Invalid item, clear highlighting
+          context.set("highlightedPath", null)
+          return
+        }
+
+        const hoveredItemPath = collection.getValuePath(indexPath)
+        const node = collection.findNode(hoveredValue)
+
+        let newHighlightedPath: string[]
+
+        if (node && collection.isBranchNode(node)) {
+          // Item has children - highlight the full path including this item
+          newHighlightedPath = hoveredItemPath
+        } else {
+          // Item is a leaf - highlight path up to (but not including) this item
+          newHighlightedPath = hoveredItemPath.slice(0, -1)
+        }
+
+        context.set("highlightedPath", newHighlightedPath.length > 0 ? newHighlightedPath : null)
+
+        // Update level values based on the new highlighted path
+        if (newHighlightedPath.length > 0) {
+          const levelValues: string[][] = []
+
+          // First level is always root children
+          const rootNode = collection.rootNode
+          if (rootNode && collection.isBranchNode(rootNode)) {
+            levelValues[0] = collection.getNodeChildren(rootNode).map((child) => collection.getNodeValue(child))
+          }
+
+          // Build levels for the highlighted path
+          for (let i = 0; i < newHighlightedPath.length; i++) {
+            const nodeValue = newHighlightedPath[i]
+            const pathNode = collection.findNode(nodeValue)
+            if (pathNode && collection.isBranchNode(pathNode)) {
+              const children = collection.getNodeChildren(pathNode)
+              levelValues[i + 1] = children.map((child) => collection.getNodeValue(child))
+            }
+          }
+
+          context.set("levelValues", levelValues)
+        } else {
+          // No highlighting, sync with selected values
+          action(["syncLevelValues"])
         }
       },
     },

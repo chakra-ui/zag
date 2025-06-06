@@ -285,6 +285,10 @@ export function connect<T extends PropTypes>(
             event.preventDefault()
           }
         },
+        onPointerMove(event) {
+          if (!isInteractive) return
+          send({ type: "POINTER_MOVE", clientX: event.clientX, clientY: event.clientY, target: event.target })
+        },
       })
     },
 
@@ -318,6 +322,16 @@ export function connect<T extends PropTypes>(
           if (!isLeftClick(event)) return
           if (itemState.disabled) return
           send({ type: "ITEM.CLICK", value: itemValue })
+        },
+        onPointerEnter(event) {
+          if (!isInteractive) return
+          if (itemState.disabled) return
+          send({ type: "ITEM.POINTER_ENTER", value: itemValue, clientX: event.clientX, clientY: event.clientY })
+        },
+        onPointerLeave(event) {
+          if (!isInteractive) return
+          if (itemState.disabled) return
+          send({ type: "ITEM.POINTER_LEAVE", value: itemValue, clientX: event.clientX, clientY: event.clientY })
         },
       })
     },

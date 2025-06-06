@@ -17,6 +17,11 @@ export const cascadeSelectControls = defineControls({
     type: "boolean",
     defaultValue: false,
   },
+  highlightTrigger: {
+    type: "select",
+    options: ["click", "hover"] as const,
+    defaultValue: "hover",
+  },
 })
 
 export const checkboxControls = defineControls({

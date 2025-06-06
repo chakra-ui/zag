@@ -57,43 +57,68 @@
   border: 1px solid #ccc;
   border-radius: 6px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  padding: 8px;
+  padding: 6px;
   max-height: 300px;
   overflow: auto;
   display: flex;
-  gap: 1px;
+  gap: 8px;
 }
 
 [data-scope="cascade-select"][data-part="level"] {
-  min-width: 150px;
-  border-right: 1px solid #eee;
+  min-width: 140px;
+  padding: 2px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0px;
+  position: relative;
+}
+
+/* Add a subtle separator line between levels */
+[data-scope="cascade-select"][data-part="level"]:not(:last-child)::after {
+  content: "";
+  position: absolute;
+  right: -4px;
+  top: 6px;
+  bottom: 6px;
+  width: 1px;
+  background: #e5e7eb;
+  opacity: 0.6;
 }
 
 [data-scope="cascade-select"][data-part="level"]:last-child {
-  border-right: none;
+  /* No additional styling needed */
 }
 
 [data-scope="cascade-select"][data-part="item"] {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 8px 12px;
+  padding: 6px 10px;
   cursor: pointer;
   border-radius: 4px;
   font-size: 14px;
   transition: all 0.15s ease;
   position: relative;
   border: 1px solid transparent;
+  min-height: 32px;
+  gap: 6px;
 }
 
 [data-scope="cascade-select"][data-part="item"]:hover {
-  background: #f8fafc;
+  background: #e2e8f0;
+  border-color: #cbd5e1;
 }
 
 [data-scope="cascade-select"][data-part="item"][data-highlighted] {
-  background: #f0f9ff;
-  color: #0369a1;
-  border: 1px solid #bfdbfe;
+  background: #dbeafe;
+  color: #1e40af;
+  border: 1px solid #93c5fd;
+  box-shadow: 0 1px 3px rgba(59, 130, 246, 0.1);
+}
+
+[data-scope="cascade-select"][data-part="item"][data-highlighted]:hover {
+  background: #bfdbfe;
+  border-color: #60a5fa;
 }
 
 [data-scope="cascade-select"][data-part="item"][data-disabled] {
@@ -103,29 +128,53 @@
 
 [data-scope="cascade-select"][data-part="item"][data-disabled]:hover {
   background: transparent;
+  border-color: transparent;
 }
 
 /* Item text styling */
 [data-scope="cascade-select"][data-part="item-text"] {
   flex: 1;
   transition: all 0.15s ease;
+  text-align: left;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
-/* Item indicator (chevron for branches) */
+/* Item indicator (chevron for branches) - reserve space even when not present */
 [data-scope="cascade-select"][data-part="item-indicator"] {
   color: #6b7280;
   display: flex;
   align-items: center;
+  justify-content: center;
   transition: color 0.15s ease;
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
 }
 
-[data-scope="cascade-select"][data-part="item-indicator"][data-highlighted] {
-  color: #0369a1;
+/* Add consistent right padding area for all items, even those without indicators */
+[data-scope="cascade-select"][data-part="item"]::after {
+  content: "";
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+  visibility: hidden;
 }
 
-[data-scope="cascade-select"][data-part="item"][data-has-children][data-highlighted]
+/* Hide the pseudo-element when there's an actual indicator */
+[data-scope="cascade-select"][data-part="item"]:has([data-scope="cascade-select"][data-part="item-indicator"])::after {
+  display: none;
+}
+
+/* Indicator hover and state styles */
+[data-scope="cascade-select"][data-part="item"]:hover [data-scope="cascade-select"][data-part="item-indicator"] {
+  color: #475569;
+}
+
+[data-scope="cascade-select"][data-part="item"][data-highlighted]
   [data-scope="cascade-select"][data-part="item-indicator"] {
-  color: #0369a1;
+  color: #1e40af;
 }
 
 /* Placeholder text */

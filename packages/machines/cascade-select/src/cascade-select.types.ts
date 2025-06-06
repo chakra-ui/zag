@@ -1,6 +1,7 @@
 import type { TreeCollection, TreeNode } from "@zag-js/collection"
 import type { Machine, Service } from "@zag-js/core"
 import type { Placement, PositioningOptions } from "@zag-js/popper"
+import type { Point } from "@zag-js/rect-utils"
 import type { CommonProperties, DirectionProperty, PropTypes, RequiredBy } from "@zag-js/types"
 
 /* -----------------------------------------------------------------------------
@@ -77,6 +78,11 @@ export interface CascadeSelectProps<T = any> extends DirectionProperty, CommonPr
    */
   highlightedPath?: string[] | null | undefined
   /**
+   * What triggers highlighting of items
+   * @default "click"
+   */
+  highlightTrigger?: "click" | "hover" | undefined
+  /**
    * The placeholder text for the cascade-select
    */
   placeholder?: string | undefined
@@ -136,7 +142,14 @@ export interface CascadeSelectProps<T = any> extends DirectionProperty, CommonPr
   allowParentSelection?: boolean
 }
 
-type PropsWithDefault = "collection" | "closeOnSelect" | "loop" | "defaultValue" | "defaultOpen" | "multiple"
+type PropsWithDefault =
+  | "collection"
+  | "closeOnSelect"
+  | "loop"
+  | "defaultValue"
+  | "defaultOpen"
+  | "multiple"
+  | "highlightTrigger"
 
 export interface CascadeSelectSchema<T extends TreeNode = TreeNode> {
   state: "idle" | "focused" | "open"
@@ -147,6 +160,8 @@ export interface CascadeSelectSchema<T extends TreeNode = TreeNode> {
     currentPlacement: Placement | undefined
     fieldsetDisabled: boolean
     levelValues: string[][]
+    graceArea: Point[] | null
+    isPointerInTransit: boolean
   }
   computed: {
     isDisabled: boolean
