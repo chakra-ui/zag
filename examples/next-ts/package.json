@@ -11,7 +11,7 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@internationalized/date": "3.8.1",
+    "@internationalized/date": "3.8.2",
     "@tanstack/react-virtual": "3.13.9",
     "@types/textarea-caret": "3.0.4",
     "@zag-js/accordion": "workspace:*",
@@ -19,6 +19,7 @@
     "@zag-js/anatomy-icons": "workspace:*",
     "@zag-js/angle-slider": "workspace:*",
     "@zag-js/aria-hidden": "workspace:*",
+    "@zag-js/async-list": "workspace:*",
     "@zag-js/auto-resize": "workspace:*",
     "@zag-js/avatar": "workspace:*",
     "@zag-js/carousel": "workspace:*",
@@ -87,10 +88,10 @@
     "@zag-js/types": "workspace:*",
     "@zag-js/utils": "workspace:*",
     "form-serialize": "0.7.2",
-    "lucide-react": "0.513.0",
     "image-conversion": "2.1.1",
+    "lucide-react": "0.513.0",
     "match-sorter": "8.0.2",
-    "next": "15.3.2",
+    "next": "15.3.3",
     "next-cloudinary": "6.16.0",
     "react": "19.1.0",
     "react-dom": "19.1.0",
@@ -100,7 +101,7 @@
   },
   "devDependencies": {
     "@types/form-serialize": "0.7.4",
-    "@types/node": "22.15.29",
+    "@types/node": "22.15.30",
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "@next/eslint-plugin-next": "15.3.2",

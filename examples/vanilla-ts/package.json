@@ -13,12 +13,13 @@
     "vite": "^6.3.5"
   },
   "dependencies": {
-    "@internationalized/date": "3.8.1",
+    "@internationalized/date": "3.8.2",
     "@zag-js/accordion": "workspace:*",
     "@zag-js/anatomy": "workspace:*",
     "@zag-js/anatomy-icons": "workspace:*",
     "@zag-js/angle-slider": "workspace:*",
     "@zag-js/aria-hidden": "workspace:*",
+    "@zag-js/async-list": "workspace:*",
     "@zag-js/auto-resize": "workspace:*",
     "@zag-js/avatar": "workspace:*",
     "@zag-js/carousel": "workspace:*",

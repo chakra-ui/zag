@@ -1,7 +1,7 @@
 {
-  "name": "@zag-js/date-picker",
-  "version": "1.15.0",
-  "description": "Core logic for the date-picker widget implemented as a state machine",
+  "name": "@zag-js/async-list",
+  "version": "0.0.0",
+  "description": "Core logic for the async-list widget implemented as a state machine",
   "keywords": [
     "js",
     "machine",
@@ -9,16 +9,17 @@
     "statechart",
     "component",
     "chakra-ui",
-    "date-picker"
+    "async-list"
   ],
   "author": "Segun Adebayo <sage@adebayosegun.com>",
   "homepage": "https://github.com/chakra-ui/zag#readme",
   "license": "MIT",
   "main": "src/index.ts",
-  "repository": "https://github.com/chakra-ui/zag/tree/main/packages/date-picker",
+  "repository": "https://github.com/chakra-ui/zag/tree/main/packages/async-list",
   "sideEffects": false,
   "files": [
-    "dist"
+    "dist",
+    "src"
   ],
   "scripts": {
     "build": "tsup",
@@ -34,21 +35,10 @@
     "url": "https://github.com/chakra-ui/zag/issues"
   },
   "dependencies": {
-    "@zag-js/anatomy": "workspace:*",
     "@zag-js/core": "workspace:*",
-    "@zag-js/live-region": "workspace:*",
-    "@zag-js/dismissable": "workspace:*",
-    "@zag-js/types": "workspace:*",
-    "@zag-js/date-utils": "workspace:*",
-    "@zag-js/dom-query": "workspace:*",
-    "@zag-js/popper": "workspace:*",
     "@zag-js/utils": "workspace:*"
   },
-  "peerDependencies": {
-    "@internationalized/date": ">=3.0.0"
-  },
   "devDependencies": {
-    "@internationalized/date": "3.8.2",
     "clean-package": "2.2.0"
   },
   "clean-package": "../../../clean-package.config.json"

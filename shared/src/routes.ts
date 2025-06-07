@@ -4,6 +4,7 @@ type RouteData = {
 }
 
 export const routesData: RouteData[] = [
+  { label: "Async List", path: "/async-list" },
   { label: "Password Input", path: "/password-input" },
   { label: "Listbox", path: "/listbox" },
   { label: "Listbox (Grid)", path: "/listbox-grid" },
