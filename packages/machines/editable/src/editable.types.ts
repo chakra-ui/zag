@@ -18,7 +18,7 @@ export interface EditChangeDetails {
  * Machine context
  * -----------------------------------------------------------------------------*/
 
-export type ActivationMode = "focus" | "dblclick" | "click"
+export type ActivationMode = "focus" | "dblclick" | "click" | "none"
 
 export type SubmitMode = "enter" | "blur" | "both" | "none"
 
@@ -68,6 +68,7 @@ export interface EditableProps extends DirectionProperty, CommonProperties, Inte
    * - "focus" - Enter edit mode when the preview is focused
    * - "dblclick" - Enter edit mode when the preview is double-clicked
    * - "click" - Enter edit mode when the preview is clicked
+   * - "none" - Edit can be triggered programmatically only
    *
    * @default "focus"
    */

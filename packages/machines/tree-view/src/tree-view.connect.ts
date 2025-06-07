@@ -27,6 +27,7 @@ export function connect<T extends PropTypes>(service: TreeViewService, normalize
     const value = collection.getNodeValue(node)
     return {
       value,
+      indexPath,
       valuePath: collection.getValuePath(indexPath),
       disabled: Boolean(node.disabled),
       focused: focusedValue == null ? isEqual(indexPath, [0]) : focusedValue === value,

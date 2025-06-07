@@ -188,6 +188,10 @@ export interface NodeState {
    */
   value: string
   /**
+   * The index path of the tree item
+   */
+  indexPath: IndexPath
+  /**
    * The value path of the tree item
    */
   valuePath: string[]

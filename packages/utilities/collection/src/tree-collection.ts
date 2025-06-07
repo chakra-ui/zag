@@ -37,6 +37,10 @@ export class TreeCollection<T = TreeNode> {
     return this.options.nodeToChildren?.(node) ?? fallback.nodeToChildren(node) ?? []
   }
 
+  private _indexPath = (valueOrIndexPath: string | IndexPath): IndexPath | undefined => {
+    return typeof valueOrIndexPath === "string" ? this.getIndexPath(valueOrIndexPath) : valueOrIndexPath
+  }
+
   getNodeChildrenCount = (node: T): number | undefined => {
     return this.options.nodeToChildrenCount?.(node) ?? fallback.nodeToChildrenCount(node)
   }
@@ -104,14 +108,11 @@ export class TreeCollection<T = TreeNode> {
 
   sort = (values: string[]): string[] => {
     return values
-      .reduce(
-        (acc, value) => {
-          const indexPath = this.getIndexPath(value)
-          if (indexPath != null) acc.push({ value, indexPath })
-          return acc
-        },
-        [] as { value: string; indexPath: IndexPath }[],
-      )
+      .reduce<Array<{ value: string; indexPath: IndexPath }>>((acc, value) => {
+        const indexPath = this.getIndexPath(value)
+        if (indexPath) acc.push({ value, indexPath })
+        return acc
+      }, [])
       .sort((a, b) => compareIndexPaths(a.indexPath, b.indexPath))
       .map(({ value }) => value)
   }
@@ -211,9 +212,9 @@ export class TreeCollection<T = TreeNode> {
     return found ? previousNode : undefined
   }
 
-  getParentNodes = (values: string): T[] => {
+  getParentNodes = (valueOrIndexPath: string | IndexPath): T[] => {
+    const indexPath = this._indexPath(valueOrIndexPath)
     const result: T[] = []
-    let indexPath = this.getIndexPath(values)
     while (indexPath && indexPath.length > 0) {
       indexPath.pop()
       const parentNode = this.at(indexPath)
@@ -229,7 +230,7 @@ export class TreeCollection<T = TreeNode> {
   }
 
   getParentNode = (valueOrIndexPath: string | IndexPath): T | undefined => {
-    const indexPath = typeof valueOrIndexPath === "string" ? this.getIndexPath(valueOrIndexPath) : valueOrIndexPath
+    const indexPath = this._indexPath(valueOrIndexPath)
     return indexPath ? this.at(this.getParentIndexPath(indexPath)) : undefined
   }
 
@@ -334,27 +335,27 @@ export class TreeCollection<T = TreeNode> {
   }
 
   private _insert = (rootNode: T, indexPath: IndexPath, nodes: T[]): TreeCollection<T> => {
-    return this._set(
+    return this.copy(
       insert(rootNode, { at: indexPath, nodes, getChildren: this.getNodeChildren, create: this._create }),
     )
   }
 
-  private _set = (rootNode: T): TreeCollection<T> => {
+  copy = (rootNode: T): TreeCollection<T> => {
     return new TreeCollection({ ...this.options, rootNode })
   }
 
   private _replace = (rootNode: T, indexPath: IndexPath, node: T): TreeCollection<T> => {
-    return this._set(
+    return this.copy(
       replace(rootNode, { at: indexPath, node, getChildren: this.getNodeChildren, create: this._create }),
     )
   }
 
   private _move = (rootNode: T, indexPaths: IndexPath[], to: IndexPath): TreeCollection<T> => {
-    return this._set(move(rootNode, { indexPaths, to, getChildren: this.getNodeChildren, create: this._create }))
+    return this.copy(move(rootNode, { indexPaths, to, getChildren: this.getNodeChildren, create: this._create }))
   }
 
   private _remove = (rootNode: T, indexPaths: IndexPath[]): TreeCollection<T> => {
-    return this._set(remove(rootNode, { indexPaths, getChildren: this.getNodeChildren, create: this._create }))
+    return this.copy(remove(rootNode, { indexPaths, getChildren: this.getNodeChildren, create: this._create }))
   }
 
   replace = (indexPath: IndexPath, node: T): TreeCollection<T> => {
