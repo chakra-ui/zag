@@ -6,7 +6,9 @@ export function getCurrentTime() {
   return new Time(now.getHours(), now.getMinutes(), now.getSeconds())
 }
 
-export const padStart = (value: number) => value.toString().padStart(2, "0")
+export function padTime(value: number) {
+  return value < 10 ? `0${value}` : `${value}`
+}
 
 export function getValueString(
   value: Time | null,
@@ -23,10 +25,10 @@ export function getValueString(
     hourValue -= 12
   }
 
-  let result = `${padStart(hourValue)}:${padStart(value.minute)}`
+  let result = `${padTime(hourValue)}:${padTime(value.minute)}`
 
   if (allowSeconds) {
-    const second = padStart(value.second)
+    const second = padTime(value.second)
     result += `:${second}`
   }
 
@@ -37,9 +39,56 @@ export function getValueString(
   return result
 }
 
+/////////////////////////////////////////////////////////////////////////
+
 const TIME_REX = /(\d{1,2}):(\d{1,2})(?::(\d{1,2}))?\s?(AM|PM|am|pm)?/
 
-export function getTimeValue(locale: string, periodProp: TimePeriod | null, value: string) {
+export function parseTime(value: string) {
+  const match = value.match(TIME_REX)
+  if (!match) return
+
+  let [, hourString, minuteString, secondString, periodString] = match
+
+  let hour = parseInt(hourString)
+  const minute = parseInt(minuteString)
+  const second = secondString ? parseInt(secondString) : 0
+
+  let period = (periodString ? periodString.toLowerCase() : "am") as TimePeriod
+  if (period === "pm" || (period === "am" && hour > 11)) {
+    hour += 12
+  }
+
+  return new Time(hour, minute, second)
+}
+
+/////////////////////////////////////////////////////////////////////////
+
+interface TimeRangeOptions {
+  from: string
+  to: string
+  interval: string
+}
+
+export function getTimeRange(options: TimeRangeOptions) {
+  const { from, to, interval } = options
+
+  let fromTime = parseTime(from)
+  const toTime = parseTime(to)
+  const intervalTime = parseTime(interval)
+
+  const range: Time[] = []
+  if (!fromTime || !toTime || !intervalTime) return range
+
+  while (fromTime.compare(toTime) <= 0) {
+    range.push(fromTime.copy())
+    fromTime = fromTime.add({ hours: intervalTime.hour, minutes: intervalTime.minute, seconds: intervalTime.second })
+  }
+  return range
+}
+
+/////////////////////////////////////////////////////////////////////////
+
+export function getTimeValue(value: string, locale: string, periodProp: TimePeriod | null) {
   const match = value.match(TIME_REX)
   if (!match) return
   let [, hourString, minuteString, secondString, periodString] = match

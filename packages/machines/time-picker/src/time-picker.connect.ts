@@ -9,7 +9,7 @@ import {
   getHourPeriod,
   getInputPlaceholder,
   is12HourFormat,
-  padStart,
+  padTime,
 } from "./time-picker.utils"
 
 export function connect<T extends PropTypes>(
@@ -70,19 +70,19 @@ export function connect<T extends PropTypes>(
       const arr = Array.from({ length }, (_, i) => i)
       const step = steps?.hour
       const hours = step != null ? arr.filter((hour) => hour % step === 0) : arr
-      return hours.map((value) => ({ label: hour12 && value === 0 ? "12" : padStart(value), value }))
+      return hours.map((value) => ({ label: hour12 && value === 0 ? "12" : padTime(value), value }))
     },
     getMinutes() {
       const arr = Array.from({ length: 60 }, (_, i) => i)
       const step = steps?.minute
       const minutes = step != null ? arr.filter((minute) => minute % step === 0) : arr
-      return minutes.map((value) => ({ label: padStart(value), value }))
+      return minutes.map((value) => ({ label: padTime(value), value }))
     },
     getSeconds() {
       const arr = Array.from({ length: 60 }, (_, i) => i)
       const step = steps?.second
       const seconds = step != null ? arr.filter((second) => second % step === 0) : arr
-      return seconds.map((value) => ({ label: padStart(value), value }))
+      return seconds.map((value) => ({ label: padTime(value), value }))
     },
 
     getRootProps() {

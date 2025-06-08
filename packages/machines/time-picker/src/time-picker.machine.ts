@@ -325,7 +325,7 @@ export const machine = createMachine<TimePickerSchema>({
       },
 
       setInputValue({ context, event, prop, computed }) {
-        const timeValue = getTimeValue(prop("locale"), computed("period"), event.value)
+        const timeValue = getTimeValue(event.value, prop("locale"), computed("period"))
         if (!timeValue) return
         context.set("value", timeValue.time)
       },
@@ -341,7 +341,15 @@ export const machine = createMachine<TimePickerSchema>({
         const _value = context.get("value")
         const current = _value ?? context.get("currentTime") ?? new Time(0)
         const nextTime = match(unit, {
-          hour: () => current.set({ hour: computed("hour12") ? value + 12 : value }),
+          hour: () => {
+            if (computed("hour12")) {
+              // Preserve the current period (AM/PM) when changing hour in 12-hour format
+              const currentPeriod = computed("period")
+              const periodOffset = currentPeriod === "pm" ? 12 : 0
+              return current.set({ hour: (value % 12) + periodOffset })
+            }
+            return current.set({ hour: value })
+          },
           minute: () => current.set({ minute: value }),
           second: () => current.set({ second: value }),
           period: () => {
@@ -446,7 +454,10 @@ export const machine = createMachine<TimePickerSchema>({
         let column = context.get("focusedColumn")
 
         if (column === "hour" && computed("hour12")) {
-          value = computed("hour12") ? value + 12 : value
+          // Preserve the current period (AM/PM) when changing hour in 12-hour format
+          const currentPeriod = computed("period")
+          const periodOffset = currentPeriod === "pm" ? 12 : 0
+          value = (value % 12) + periodOffset
         } else if (context.get("focusedColumn") === "period") {
           column = "hour"
           const diff = value === "pm" ? 12 : 0
