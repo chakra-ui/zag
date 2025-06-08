@@ -490,7 +490,7 @@ function getPageSnapPoints(totalSlides: number | undefined, slidesPerMove: numbe
   const perMove = slidesPerMove === "auto" ? Math.floor(slidesPerPage) : slidesPerMove
 
   // An additional safety check in case perMove becomes 0 through other means
-  if (perMove === 0) {
+  if (perMove <= 0) {
     return []
   }
 
