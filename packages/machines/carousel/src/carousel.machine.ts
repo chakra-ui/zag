@@ -481,9 +481,21 @@ export const machine = createMachine<CarouselSchema>({
 })
 
 function getPageSnapPoints(totalSlides: number | undefined, slidesPerMove: number | "auto", slidesPerPage: number) {
-  if (totalSlides == null) return []
+  // If there are no total slides or if slidesPerPage is 0, do nothing.
+  if (totalSlides == null || slidesPerPage === 0) {
+    return []
+  }
+
   const snapPoints: number[] = []
   const perMove = slidesPerMove === "auto" ? Math.floor(slidesPerPage) : slidesPerMove
-  for (let i = 0; i < totalSlides - 1; i += perMove) snapPoints.push(i)
+
+  // An additional safety check in case perMove becomes 0 through other means
+  if (perMove === 0) {
+    return []
+  }
+
+  for (let i = 0; i < totalSlides - 1; i += perMove) {
+    snapPoints.push(i)
+  }
   return snapPoints
 }
