@@ -2,6 +2,7 @@ import { Time } from "@internationalized/date"
 import type { EventObject, Machine, Service } from "@zag-js/core"
 import type { Placement, PositioningOptions } from "@zag-js/popper"
 import type { CommonProperties, DirectionProperty, PropTypes, RequiredBy } from "@zag-js/types"
+import type { HourFormat } from "./utils/hour-format"
 
 /* -----------------------------------------------------------------------------
  * Callback details
@@ -44,6 +45,10 @@ export interface TimePickerProps extends DirectionProperty, CommonProperties {
    * The locale (BCP 47 language tag) to use when formatting the time.
    */
   locale?: string | undefined
+  /**
+   * The format of the time. By default it will be determined by the locale.
+   */
+  hourFormat?: "12h" | "24h" | undefined
   /**
    * The controlled selected time.
    */
@@ -122,51 +127,25 @@ export interface TimePickerProps extends DirectionProperty, CommonProperties {
 type PropsWithDefault = "positioning" | "locale"
 
 interface PrivateContext {
-  /**
-   * The computed placement (maybe different from initial placement)
-   */
   currentPlacement?: Placement | undefined
-  /**
-   * Whether the calendar should restore focus to the input when it closes.
-   */
-  restoreFocus?: boolean | undefined
-  /**
-   * The focused unit column
-   */
   focusedColumn: TimeUnit
-  /**
-   * The focused cell value
-   */
   focusedValue: any
-  /**
-   * The current time
-   */
   currentTime: Time | null
-  /**
-   * The selected time
-   */
   value: Time | null
 }
 
 type ComputedContext = Readonly<{
-  /**
-   * The selected time as a string
-   */
   valueAsString: string
-  /**
-   * Whether the time picker is in 12-hour format (based on the locale)
-   */
-  hour12: boolean
-  /**
-   * The period of the time (AM/PM)
-   */
-  period: TimePeriod | null
+  hourFormat: HourFormat
 }>
 
 export interface TimePickerSchema {
   state: "idle" | "focused" | "open"
   context: PrivateContext
   props: RequiredBy<TimePickerProps, PropsWithDefault>
+  refs: {
+    restoreFocus?: boolean | undefined
+  }
   computed: ComputedContext
   private: PrivateContext
   action: string
@@ -189,6 +168,13 @@ export interface ColumnProps {
 
 export interface CellProps {
   value: number
+}
+
+export interface CellState {
+  selectable: boolean
+  selected: boolean
+  current: boolean
+  focused: boolean
 }
 
 export interface PeriodCellProps {
@@ -257,6 +243,11 @@ export interface TimePickerApi<T extends PropTypes = PropTypes> {
    * Get the available seconds that will be displayed in the time picker
    */
   getSeconds(): Cell[]
+
+  getHourCellState(props: CellProps): CellState
+  getMinuteCellState(props: CellProps): CellState
+  getSecondCellState(props: CellProps): CellState
+  getPeriodCellState(props: PeriodCellProps): CellState
 
   getRootProps(): T["element"]
   getLabelProps(): T["element"]

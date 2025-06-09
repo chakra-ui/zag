@@ -1,24 +1,21 @@
 import { Time } from "@internationalized/date"
-import { createGuards, createMachine } from "@zag-js/core"
+import { setup } from "@zag-js/core"
 import { trackDismissableElement } from "@zag-js/dismissable"
 import { raf } from "@zag-js/dom-query"
 import { getPlacement, type Placement } from "@zag-js/popper"
 import { match, next, prev } from "@zag-js/utils"
 import * as dom from "./time-picker.dom"
 import type { TimePickerSchema, TimeUnit } from "./time-picker.types"
-import {
-  clampTime,
-  getCurrentTime,
-  getHourPeriod,
-  getValueString,
-  getTimeValue,
-  is12HourFormat,
-  isTimeEqual,
-} from "./time-picker.utils"
+import { isTimeEqual } from "./utils/assertion"
+import { clampTime, stringToTime, timeToString } from "./utils/conversion"
+import { getHourFormat } from "./utils/hour-format"
 
-const { and } = createGuards<TimePickerSchema>()
+const {
+  guards: { and },
+  createMachine,
+} = setup<TimePickerSchema>()
 
-export const machine = createMachine<TimePickerSchema>({
+export const machine = createMachine({
   props({ props }) {
     return {
       locale: "en-US",
@@ -47,30 +44,42 @@ export const machine = createMachine<TimePickerSchema>({
         isEqual: isTimeEqual,
         onChange(value) {
           const computed = getComputed()
-          const valueAsString = getValueString(value, computed("hour12"), computed("period"), prop("allowSeconds"))
+          const valueAsString = timeToString(value, prop("locale"), computed("hourFormat").is12Hour)
           prop("onValueChange")?.({ value, valueAsString })
         },
       })),
-      focusedColumn: bindable<TimeUnit>(() => ({ defaultValue: "hour" })),
-      focusedValue: bindable(() => ({ defaultValue: null })),
-      currentTime: bindable<Time | null>(() => ({ defaultValue: null })),
-      currentPlacement: bindable<Placement | undefined>(() => ({ defaultValue: undefined })),
-      restoreFocus: bindable<boolean | undefined>(() => ({ defaultValue: undefined })),
+      focusedColumn: bindable<TimeUnit>(() => ({
+        defaultValue: "hour",
+      })),
+      focusedValue: bindable(() => ({
+        defaultValue: null,
+      })),
+      currentTime: bindable<Time | null>(() => ({
+        defaultValue: null,
+      })),
+      currentPlacement: bindable<Placement | undefined>(() => ({
+        defaultValue: undefined,
+      })),
+      restoreFocus: bindable<boolean | undefined>(() => ({
+        defaultValue: undefined,
+      })),
     }
   },
 
   computed: {
-    valueAsString: ({ context, prop, computed }) =>
-      getValueString(context.get("value"), computed("hour12"), computed("period"), prop("allowSeconds")),
-    hour12: ({ prop }) => is12HourFormat(prop("locale")),
-    period: ({ context, prop }) => getHourPeriod(context.get("value")?.hour, prop("locale")),
+    valueAsString: ({ context, prop }) => {
+      return timeToString(context.get("value"), prop("locale"), prop("allowSeconds"))
+    },
+    hourFormat: ({ prop }) => {
+      return getHourFormat(prop("locale"))
+    },
   },
 
-  watch({ track, action, prop, context, computed }) {
+  watch({ track, action, prop, context }) {
     track([() => prop("open")], () => {
       action(["toggleVisibility"])
     })
-    track([() => context.hash("value"), () => computed("period")], () => {
+    track([() => context.hash("value")], () => {
       action(["syncInputElement"])
     })
     track([() => context.get("focusedColumn")], () => {
@@ -83,7 +92,7 @@ export const machine = createMachine<TimePickerSchema>({
 
   on: {
     "VALUE.CLEAR": {
-      actions: ["clearValue"],
+      actions: ["clearValue", "focusInputEl"],
     },
     "VALUE.SET": {
       actions: ["setValue"],
@@ -91,6 +100,13 @@ export const machine = createMachine<TimePickerSchema>({
     "UNIT.SET": {
       actions: ["setUnitValue"],
     },
+    "INPUT.ENTER": {
+      actions: ["selectParsedTime"],
+    },
+    // "INPUT.BLUR": {
+    //   target: "idle",
+    //   actions: ["selectParsedTime"],
+    // },
   },
 
   states: {
@@ -149,13 +165,6 @@ export const machine = createMachine<TimePickerSchema>({
             actions: ["invokeOnOpen"],
           },
         ],
-        "INPUT.ENTER": {
-          actions: ["setInputValue", "clampTimeValue"],
-        },
-        "INPUT.BLUR": {
-          target: "idle",
-          actions: ["setInputValue", "clampTimeValue"],
-        },
         "CONTROLLED.OPEN": {
           target: "open",
           actions: ["invokeOnOpen"],
@@ -179,7 +188,7 @@ export const machine = createMachine<TimePickerSchema>({
           },
         ],
         "INPUT.ENTER": {
-          actions: ["setInputValue", "clampTimeValue"],
+          actions: ["selectParsedTime"],
         },
         CLOSE: [
           {
@@ -258,7 +267,7 @@ export const machine = createMachine<TimePickerSchema>({
 
   implementations: {
     guards: {
-      shouldRestoreFocus: ({ context }) => !!context.get("restoreFocus"),
+      shouldRestoreFocus: ({ refs }) => !!refs.get("restoreFocus"),
       isOpenControlled: ({ prop }) => prop("open") != null,
       isInteractOutsideEvent: ({ event }) => event.previousEvent?.type === "INTERACT_OUTSIDE",
     },
@@ -277,19 +286,19 @@ export const machine = createMachine<TimePickerSchema>({
         })
       },
 
-      trackDismissableElement({ context, prop, scope, send }) {
+      trackDismissableElement({ prop, scope, send, refs }) {
         if (prop("disableLayer")) return
         const contentEl = () => dom.getContentEl(scope)
         return trackDismissableElement(contentEl, {
           defer: true,
-          exclude: [dom.getTriggerEl(scope), dom.getClearTriggerEl(scope)],
+          exclude: [dom.getTriggerEl(scope), dom.getClearTriggerEl(scope), dom.getInputEl(scope)],
           onEscapeKeyDown(event) {
             event.preventDefault()
-            context.set("restoreFocus", true)
+            refs.set("restoreFocus", true)
             send({ type: "CONTENT.ESCAPE" })
           },
           onInteractOutside(event) {
-            context.set("restoreFocus", !event.detail.focusable)
+            refs.set("restoreFocus", !event.detail.focusable)
           },
           onDismiss() {
             send({ type: "INTERACT_OUTSIDE" })
@@ -324,10 +333,11 @@ export const machine = createMachine<TimePickerSchema>({
         prop("onOpenChange")?.({ open: false })
       },
 
-      setInputValue({ context, event, prop, computed }) {
-        const timeValue = getTimeValue(event.value, prop("locale"), computed("period"))
-        if (!timeValue) return
-        context.set("value", timeValue.time)
+      selectParsedTime({ context, event, prop }) {
+        let parsedTime = stringToTime(event.value, prop("locale"))
+        if (!parsedTime) return
+        const nextTime = clampTime(parsedTime, prop("min"), prop("max"))
+        context.set("value", nextTime)
       },
 
       syncInputElement({ scope, computed }) {
@@ -336,26 +346,32 @@ export const machine = createMachine<TimePickerSchema>({
         inputEl.value = computed("valueAsString")
       },
 
+      focusInputEl({ scope }) {
+        raf(() => {
+          dom.getInputEl(scope)?.focus()
+        })
+      },
+
       setUnitValue({ context, event, computed }) {
         const { unit, value } = event
-        const _value = context.get("value")
-        const current = _value ?? context.get("currentTime") ?? new Time(0)
+        const current = context.get("value") ?? context.get("currentTime")
+        if (!current) return
+
+        const hourFormat = computed("hourFormat")
+
         const nextTime = match(unit, {
           hour: () => {
-            if (computed("hour12")) {
-              // Preserve the current period (AM/PM) when changing hour in 12-hour format
-              const currentPeriod = computed("period")
-              const periodOffset = currentPeriod === "pm" ? 12 : 0
-              return current.set({ hour: (value % 12) + periodOffset })
-            }
-            return current.set({ hour: value })
+            // Use centralized hour format logic
+            const hour24 = hourFormat.preservePeriodHour(value, current.hour)
+            return current.set({ hour: hour24 })
           },
           minute: () => current.set({ minute: value }),
           second: () => current.set({ second: value }),
           period: () => {
-            if (!_value) return
-            const diff = value === "pm" ? 12 : 0
-            return _value.set({ hour: (_value.hour % 12) + diff })
+            // Convert current hour to 12-hour format, then back to 24-hour with new period
+            const hour12 = hourFormat.to12Hour(current.hour)
+            const newHour24 = hourFormat.to24Hour(hour12, value)
+            return current.set({ hour: newHour24 })
           },
         })
 
@@ -385,15 +401,10 @@ export const machine = createMachine<TimePickerSchema>({
         context.set("focusedValue", null)
       },
 
-      clampTimeValue({ context, prop }) {
-        const value = context.get("value")
-        if (!value) return
-        const nextTime = clampTime(value, prop("min"), prop("max"))
-        context.set("value", nextTime)
-      },
-
       setCurrentTime({ context }) {
-        context.set("currentTime", getCurrentTime())
+        const date = new Date()
+        const currentTime = new Time(date.getHours(), date.getMinutes(), date.getSeconds())
+        context.set("currentTime", currentTime)
       },
 
       scrollColumnsToTop({ scope }) {
@@ -449,19 +460,19 @@ export const machine = createMachine<TimePickerSchema>({
 
       selectFocusedCell({ context, computed }) {
         const current = context.get("value") ?? context.get("currentTime") ?? new Time(0)
+        const hourFormat = computed("hourFormat")
 
         let value = context.get("focusedValue")
         let column = context.get("focusedColumn")
 
-        if (column === "hour" && computed("hour12")) {
-          // Preserve the current period (AM/PM) when changing hour in 12-hour format
-          const currentPeriod = computed("period")
-          const periodOffset = currentPeriod === "pm" ? 12 : 0
-          value = (value % 12) + periodOffset
+        if (column === "hour" && hourFormat.is12Hour) {
+          // Use centralized hour format logic to preserve period
+          value = hourFormat.preservePeriodHour(value, current.hour)
         } else if (context.get("focusedColumn") === "period") {
           column = "hour"
-          const diff = value === "pm" ? 12 : 0
-          value = (current.hour % 12) + diff
+          // Convert current hour to 12-hour format, then back to 24-hour with new period
+          const hour12 = hourFormat.to12Hour(current.hour)
+          value = hourFormat.to24Hour(hour12, value)
         }
 
         const nextTime = current.set({ [column]: value })

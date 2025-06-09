@@ -3,6 +3,7 @@ import { createSplitProps } from "@zag-js/utils"
 import type { TimePickerProps } from "./time-picker.types"
 
 export const props = createProps<TimePickerProps>()([
+  "hourFormat",
   "dir",
   "disabled",
   "disableLayer",

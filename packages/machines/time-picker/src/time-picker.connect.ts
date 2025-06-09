@@ -3,14 +3,11 @@ import { getPlacementStyles } from "@zag-js/popper"
 import type { EventKeyMap, NormalizeProps, PropTypes } from "@zag-js/types"
 import { parts } from "./time-picker.anatomy"
 import * as dom from "./time-picker.dom"
-import type { TimePickerApi, TimePickerService } from "./time-picker.types"
-import {
-  get12HourFormatPeriodHour,
-  getHourPeriod,
-  getInputPlaceholder,
-  is12HourFormat,
-  padTime,
-} from "./time-picker.utils"
+import type { CellProps, PeriodCellProps, TimePickerApi, TimePickerService } from "./time-picker.types"
+import { getPlaceholder, isInRange } from "./utils/assertion"
+import { valueToCell } from "./utils/conversion"
+import { getHourFormat } from "./utils/hour-format"
+import { getHours, getMinutes, getSeconds } from "./utils/range"
 
 export function connect<T extends PropTypes>(
   service: TimePickerService,
@@ -22,7 +19,8 @@ export function connect<T extends PropTypes>(
   const readOnly = prop("readOnly")
 
   const locale = prop("locale")
-  const hour12 = is12HourFormat(locale)
+  const hourFormat = getHourFormat(locale)
+  const hour12 = hourFormat.is12Hour
 
   const min = prop("min")
   const max = prop("max")
@@ -41,6 +39,49 @@ export function connect<T extends PropTypes>(
     ...prop("positioning"),
     placement: currentPlacement,
   })
+
+  function getHourCellState(props: CellProps) {
+    const hour = props.value
+    const period = hourFormat.getPeriod(value?.hour ?? currentTime?.hour)
+    const hour24 = hourFormat.to24Hour(hour, period)
+    return {
+      selectable: isInRange(hour24, min?.hour, max?.hour),
+      selected: value?.hour === hour24,
+      current: currentTime?.hour === hour24,
+      focused: focusedColumn === "hour" && context.get("focusedValue") === hour,
+    }
+  }
+
+  function getMinuteCellState(props: CellProps) {
+    const minute = props.value
+    return {
+      selectable: isInRange(minute, min?.minute, max?.minute),
+      selected: value?.minute === minute,
+      current: currentTime?.minute === minute,
+      focused: focusedColumn === "minute" && context.get("focusedValue") === minute,
+    }
+  }
+
+  function getSecondCellState(props: CellProps) {
+    const second = props.value
+    return {
+      selectable: isInRange(second, min?.second, max?.second),
+      selected: value?.second === second,
+      current: currentTime?.second === second,
+      focused: focusedColumn === "second" && context.get("focusedValue") === second,
+    }
+  }
+
+  function getPeriodCellState(props: PeriodCellProps) {
+    const period = props.value
+    const currentPeriod = hourFormat.getPeriod(currentTime?.hour)
+    return {
+      selectable: true,
+      selected: hourFormat.is12Hour ? hourFormat.getPeriod(value?.hour) === period : false,
+      current: currentPeriod === period,
+      focused: focusedColumn === "period" && context.get("focusedValue") === period,
+    }
+  }
 
   return {
     focused,
@@ -66,23 +107,13 @@ export function connect<T extends PropTypes>(
       send({ type: "VALUE.CLEAR" })
     },
     getHours() {
-      const length = hour12 ? 12 : 24
-      const arr = Array.from({ length }, (_, i) => i)
-      const step = steps?.hour
-      const hours = step != null ? arr.filter((hour) => hour % step === 0) : arr
-      return hours.map((value) => ({ label: hour12 && value === 0 ? "12" : padTime(value), value }))
+      return getHours(locale, steps?.hour).map(valueToCell)
     },
     getMinutes() {
-      const arr = Array.from({ length: 60 }, (_, i) => i)
-      const step = steps?.minute
-      const minutes = step != null ? arr.filter((minute) => minute % step === 0) : arr
-      return minutes.map((value) => ({ label: padTime(value), value }))
+      return getMinutes(steps?.minute).map(valueToCell)
     },
     getSeconds() {
-      const arr = Array.from({ length: 60 }, (_, i) => i)
-      const step = steps?.second
-      const seconds = step != null ? arr.filter((second) => second % step === 0) : arr
-      return seconds.map((value) => ({ label: padTime(value), value }))
+      return getSeconds(steps?.second).map(valueToCell)
     },
 
     getRootProps() {
@@ -124,7 +155,7 @@ export function connect<T extends PropTypes>(
         id: dom.getInputId(scope),
         name: prop("name"),
         defaultValue: valueAsString,
-        placeholder: getInputPlaceholder(prop("placeholder"), prop("allowSeconds"), locale),
+        placeholder: prop("placeholder") ?? getPlaceholder(prop("allowSeconds"), locale),
         disabled,
         readOnly,
         onFocus() {
@@ -252,106 +283,101 @@ export function connect<T extends PropTypes>(
       })
     },
 
+    getHourCellState,
     getHourCellProps(props) {
       const hour = props.value
-      const isSelectable = !(
-        (min && get12HourFormatPeriodHour(hour, computed("period")) < min.hour) ||
-        (max && get12HourFormatPeriodHour(hour, computed("period")) > max.hour)
-      )
-      const isSelected = value?.hour === get12HourFormatPeriodHour(hour, computed("period"))
-      const isFocused = focusedColumn === "hour" && context.get("focusedValue") === hour
 
-      const currentHour = hour12 && currentTime ? currentTime?.hour % 12 : currentTime?.hour
-      const isCurrent = currentHour === hour || (hour === 12 && currentHour === 0)
+      const period = hourFormat.getPeriod(value?.hour ?? currentTime?.hour)
+      const hour24 = hourFormat.to24Hour(hour, period)
+
+      const selectable = isInRange(hour24, min?.hour, max?.hour)
+      const selected = value?.hour === hour24
+      const current = currentTime?.hour === hour24
+      const focused = focusedColumn === "hour" && context.get("focusedValue") === hour
 
       return normalize.button({
         ...parts.cell.attrs,
         type: "button",
-        "aria-disabled": ariaAttr(!isSelectable),
-        "data-disabled": dataAttr(!isSelectable),
-        "aria-current": ariaAttr(isSelected),
-        "data-selected": dataAttr(isSelected),
-        "data-now": dataAttr(isCurrent),
-        "data-focus": dataAttr(isFocused),
+        "aria-disabled": ariaAttr(!selectable),
+        "data-disabled": dataAttr(!selectable),
+        "aria-current": ariaAttr(selected),
+        "data-selected": dataAttr(selected),
+        "data-now": dataAttr(current),
+        "data-focus": dataAttr(focused),
         "aria-label": `${hour} hours`,
         "data-value": hour,
         "data-unit": "hour",
         onClick(event) {
           if (event.defaultPrevented) return
-          if (!isSelectable) return
+          if (!selectable) return
           send({ type: "UNIT.CLICK", unit: "hour", value: hour })
         },
       })
     },
 
+    getMinuteCellState,
     getMinuteCellProps(props) {
       const minute = props.value
       const value = context.get("value")
-      const minMinute = min?.set({ second: 0 })
-      const maxMinute = max?.set({ second: 0 })
 
-      const isSelectable = !(
-        (minMinute && value && minMinute.compare(value.set({ minute })) > 0) ||
-        (maxMinute && value && maxMinute.compare(value.set({ minute })) < 0)
-      )
-      const isSelected = value?.minute === minute
-      const isCurrent = currentTime?.minute === minute
-      const isFocused = focusedColumn === "minute" && context.get("focusedValue") === minute
+      const selectable = isInRange(minute, min?.minute, max?.minute)
+      const selected = value?.minute === minute
+      const current = currentTime?.minute === minute
+      const focused = focusedColumn === "minute" && context.get("focusedValue") === minute
 
       return normalize.button({
         ...parts.cell.attrs,
         type: "button",
-        "aria-disabled": ariaAttr(!isSelectable),
-        "data-disabled": dataAttr(!isSelectable),
-        "aria-current": ariaAttr(isSelected),
-        "data-selected": dataAttr(isSelected),
+        "aria-disabled": ariaAttr(!selectable),
+        "data-disabled": dataAttr(!selectable),
+        "aria-current": ariaAttr(selected),
+        "data-selected": dataAttr(selected),
         "aria-label": `${minute} minutes`,
         "data-value": minute,
-        "data-now": dataAttr(isCurrent),
-        "data-focus": dataAttr(isFocused),
+        "data-now": dataAttr(current),
+        "data-focus": dataAttr(focused),
         "data-unit": "minute",
         onClick(event) {
           if (event.defaultPrevented) return
-          if (!isSelectable) return
+          if (!selectable) return
           send({ type: "UNIT.CLICK", unit: "minute", value: minute })
         },
       })
     },
 
+    getSecondCellState,
     getSecondCellProps(props) {
       const second = props.value
 
-      const isSelectable = !(
-        (min && value?.minute && min.compare(value.set({ second })) > 0) ||
-        (max && value?.minute && max.compare(value.set({ second })) < 0)
-      )
-      const isSelected = value?.second === second
-      const isCurrent = currentTime?.second === second
-      const isFocused = focusedColumn === "second" && context.get("focusedValue") === second
+      const selectable = isInRange(second, min?.second, max?.second)
+      const selected = value?.second === second
+      const current = currentTime?.second === second
+      const focused = focusedColumn === "second" && context.get("focusedValue") === second
 
       return normalize.button({
         ...parts.cell.attrs,
         type: "button",
-        "aria-disabled": ariaAttr(!isSelectable),
-        "data-disabled": dataAttr(!isSelectable),
-        "aria-current": ariaAttr(isSelected),
-        "data-selected": dataAttr(isSelected),
+        "aria-disabled": ariaAttr(!selectable),
+        "data-disabled": dataAttr(!selectable),
+        "aria-current": ariaAttr(selected),
+        "data-selected": dataAttr(selected),
         "aria-label": `${second} seconds`,
         "data-value": second,
         "data-unit": "second",
-        "data-focus": dataAttr(isFocused),
-        "data-now": dataAttr(isCurrent),
+        "data-focus": dataAttr(focused),
+        "data-now": dataAttr(current),
         onClick(event) {
           if (event.defaultPrevented) return
-          if (!isSelectable) return
+          if (!selectable) return
           send({ type: "UNIT.CLICK", unit: "second", value: second })
         },
       })
     },
 
+    getPeriodCellState,
     getPeriodCellProps(props) {
-      const isSelected = computed("period") === props.value
-      const currentPeriod = getHourPeriod(currentTime?.hour, locale)
+      const isSelected = hourFormat.is12Hour ? hourFormat.getPeriod(value?.hour) === props.value : false
+      const currentPeriod = hourFormat.getPeriod(currentTime?.hour)
       const isCurrent = currentPeriod === props.value
       const isFocused = focusedColumn === "period" && context.get("focusedValue") === props.value
 
