@@ -1,5 +1,5 @@
 export function toArray<T>(v: T | T[] | undefined | null): T[] {
-  if (!v) return []
+  if (v == null) return []
   return Array.isArray(v) ? v : [v]
 }
 
@@ -22,6 +22,11 @@ export const removeAt = <T>(v: T[], i: number): T[] => v.filter((_, idx) => idx 
 export const insertAt = <T>(v: T[], i: number, ...items: T[]): T[] => [...v.slice(0, i), ...items, ...v.slice(i)]
 
 export const uniq = <T>(v: T[]): T[] => Array.from(new Set(v))
+
+export const diff = <T>(a: T[], b: T[]): T[] => {
+  const set = new Set(b)
+  return a.filter((t) => !set.has(t))
+}
 
 export const addOrRemove = <T>(v: T[], item: T): T[] => {
   if (has(v, item)) return remove(v, item)

@@ -157,6 +157,7 @@ export interface TreeViewSchema<T extends TreeNode = TreeNode> {
   computed: {
     isTypingAhead: boolean
     isMultipleSelection: boolean
+    visibleNodes: { node: T; indexPath: number[] }[]
   }
   action: string
   effect: string

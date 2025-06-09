@@ -1,10 +1,10 @@
+import type { TreeNode, TreeSkipFn } from "@zag-js/collection"
 import { createGuards, createMachine, type Params } from "@zag-js/core"
 import { getByTypeahead } from "@zag-js/dom-query"
-import { add, addOrRemove, ensure, first, isEqual, remove, uniq } from "@zag-js/utils"
+import { add, addOrRemove, diff, ensure, first, isEqual, last, remove, toArray, uniq } from "@zag-js/utils"
 import { collection } from "./tree-view.collection"
 import * as dom from "./tree-view.dom"
 import type { TreeLoadingStatusMap, TreeViewSchema } from "./tree-view.types"
-import { getVisibleNodes, skipFn } from "./tree-view.utils"
 
 const { and } = createGuards<TreeViewSchema>()
 
@@ -69,11 +69,30 @@ export const machine = createMachine<TreeViewSchema>({
   computed: {
     isMultipleSelection: ({ prop }) => prop("selectionMode") === "multiple",
     isTypingAhead: ({ refs }) => refs.get("typeaheadState").keysSoFar.length > 0,
+    visibleNodes: ({ prop, context }) => {
+      const nodes: { node: TreeNode; indexPath: number[] }[] = []
+      prop("collection").visit({
+        skip: skipFn({ prop, context }),
+        onEnter: (node, indexPath) => {
+          nodes.push({ node, indexPath })
+        },
+      })
+      return nodes
+    },
   },
 
   on: {
     "EXPANDED.SET": {
       actions: ["setExpanded"],
+    },
+    "EXPANDED.ALL": {
+      actions: ["expandAllBranches"],
+    },
+    "BRANCH.EXPAND": {
+      actions: ["expandBranches"],
+    },
+    "BRANCH.COLLAPSE": {
+      actions: ["collapseBranches"],
     },
     "SELECTED.SET": {
       actions: ["setSelected"],
@@ -88,8 +107,11 @@ export const machine = createMachine<TreeViewSchema>({
         actions: ["selectAllNodes"],
       },
     ],
-    "EXPANDED.ALL": {
-      actions: ["expandAllBranches"],
+    "NODE.SELECT": {
+      actions: ["selectNode"],
+    },
+    "NODE.DESELECT": {
+      actions: ["deselectNode"],
     },
   },
 
@@ -213,8 +235,19 @@ export const machine = createMachine<TreeViewSchema>({
       openOnClick: ({ prop }) => !!prop("expandOnClick"),
     },
     actions: {
-      selectNode({ context, event }) {
-        context.set("selectedValue", [event.id])
+      selectNode({ context, event, prop }) {
+        const value = toArray(event.id || event.value)
+        context.set("selectedValue", (prev) => {
+          if (prop("selectionMode") === "single") {
+            return [last(value)].filter(Boolean)
+          } else {
+            return uniq([...prev, ...value])
+          }
+        })
+      },
+      deselectNode({ context, event }) {
+        const value = toArray(event.id || event.value)
+        context.set("selectedValue", (prev) => remove(prev, ...value))
       },
       setFocusedNode({ context, event }) {
         context.set("focusedValue", event.id)
@@ -233,8 +266,18 @@ export const machine = createMachine<TreeViewSchema>({
         const { event } = params
         expandBranches(params, [event.id])
       },
+      expandBranches(params) {
+        const { context, event } = params
+        const valuesToExpand = toArray(event.value)
+        expandBranches(params, diff(valuesToExpand, context.get("expandedValue")))
+      },
       collapseBranch({ context, event }) {
         context.set("expandedValue", (prev) => remove(prev, event.id))
+      },
+      collapseBranches(params) {
+        const { context, event } = params
+        const value = toArray(event.value)
+        context.set("expandedValue", (prev) => remove(prev, ...value))
       },
       setExpanded({ context, event }) {
         context.set("expandedValue", event.value)
@@ -287,8 +330,8 @@ export const machine = createMachine<TreeViewSchema>({
         context.set("selectedValue", prop("collection").getValues())
       },
       focusMatchedNode(params) {
-        const { context, prop, refs, event, scope } = params
-        const nodes = getVisibleNodes(params)
+        const { context, prop, refs, event, scope, computed } = params
+        const nodes = computed("visibleNodes")
         const elements = nodes.map(({ node }) => ({
           textContent: prop("collection").stringifyNode(node),
           id: prop("collection").getNodeValue(node),
@@ -308,9 +351,7 @@ export const machine = createMachine<TreeViewSchema>({
       expandAllBranches(params) {
         const { context, prop } = params
         const branchValues = prop("collection").getBranchValues()
-
-        const expandedValue = context.get("expandedValue")
-        const valuesToExpand = diff(branchValues, expandedValue)
+        const valuesToExpand = diff(branchValues, context.get("expandedValue"))
         expandBranches(params, valuesToExpand)
       },
       expandSiblingBranches(params) {
@@ -323,12 +364,11 @@ export const machine = createMachine<TreeViewSchema>({
         const nodes = collection.getSiblingNodes(indexPath)
         const values = nodes.map((node) => collection.getNodeValue(node))
 
-        const expandedValue = context.get("expandedValue")
-        const valuesToExpand = diff(values, expandedValue)
+        const valuesToExpand = diff(values, context.get("expandedValue"))
         expandBranches(params, valuesToExpand)
       },
       extendSelectionToNode(params) {
-        const { context, event, prop } = params
+        const { context, event, prop, computed } = params
         const collection = prop("collection")
         const anchorValue = first(context.get("selectedValue")) || collection.getNodeValue(collection.getFirstNode())
         const targetValue = event.id
@@ -336,7 +376,7 @@ export const machine = createMachine<TreeViewSchema>({
         let values: string[] = [anchorValue, targetValue]
 
         let hits = 0
-        const visibleNodes = getVisibleNodes(params)
+        const visibleNodes = computed("visibleNodes")
         visibleNodes.forEach(({ node }) => {
           const nodeValue = collection.getNodeValue(node)
           if (hits === 1) values.push(nodeValue)
@@ -430,8 +470,12 @@ export const machine = createMachine<TreeViewSchema>({
   },
 })
 
-function diff(a: string[], b: string[]) {
-  return a.filter((value) => !b.includes(value))
+function skipFn(params: Pick<Params<TreeViewSchema>, "prop" | "context">): TreeSkipFn<any> {
+  const { prop, context } = params
+  return function skip({ indexPath }) {
+    const paths = prop("collection").getValuePath(indexPath).slice(0, -1)
+    return paths.some((value) => !context.get("expandedValue").includes(value))
+  }
 }
 
 function partition<T>(array: T[], predicate: (value: T) => boolean) {
@@ -448,14 +492,14 @@ function expandBranches(params: Params<TreeViewSchema>, ids: string[]) {
   const { context, prop, refs } = params
 
   if (!prop("loadChildren")) {
-    context.set("expandedValue", (prev) => add(prev, ...ids))
+    context.set("expandedValue", (prev) => uniq(add(prev, ...ids)))
     return
   }
 
   const [loadedValues, loadingValues] = partition(ids, (id) => context.get("loadingStatus")[id] === "loaded")
 
   if (loadedValues.length > 0) {
-    context.set("expandedValue", (prev) => add(prev, ...loadedValues))
+    context.set("expandedValue", (prev) => uniq(add(prev, ...loadedValues)))
   }
 
   if (loadingValues.length === 0) return
@@ -468,7 +512,7 @@ function expandBranches(params: Params<TreeViewSchema>, ids: string[]) {
 
   // Check if node already has children (skip loading)
   if (nodeWithChildren.length > 0) {
-    context.set("expandedValue", (prev) => add(prev, ...nodeWithChildren))
+    context.set("expandedValue", (prev) => uniq(add(prev, ...nodeWithChildren)))
   }
 
   if (nodeWithoutChildren.length === 0) return
@@ -528,7 +572,7 @@ function expandBranches(params: Params<TreeViewSchema>, ids: string[]) {
     context.set("loadingStatus", nextLoadingStatus)
 
     if (loadedValues.length) {
-      context.set("expandedValue", (prev) => add(prev, ...loadedValues))
+      context.set("expandedValue", (prev) => uniq(add(prev, ...loadedValues)))
       prop("onLoadChildrenComplete")?.({ collection })
     }
   })
