@@ -1,13 +1,5 @@
 import type { Service } from "@zag-js/core"
-import {
-  dataAttr,
-  getEventKey,
-  getEventTarget,
-  isComposingEvent,
-  isOpeningInNewTab,
-  isSafari,
-  isSelfTarget,
-} from "@zag-js/dom-query"
+import { dataAttr, getEventKey, isComposingEvent, isOpeningInNewTab, isSafari, isSelfTarget } from "@zag-js/dom-query"
 import type { EventKeyMap, NormalizeProps, PropTypes } from "@zag-js/types"
 import { parts } from "./tabs.anatomy"
 import * as dom from "./tabs.dom"
@@ -123,14 +115,6 @@ export function connect<T extends PropTypes>(service: Service<TabsSchema>, norma
             event.preventDefault()
             exec(event)
             return
-          }
-
-          if (key === "Enter") {
-            const { ctrlKey, metaKey } = event
-            const target = getEventTarget(event)
-            // opening in a new tab with keyboard
-            if (isOpeningInNewTab({ currentTarget: target, button: 0, ctrlKey, metaKey })) return
-            send({ type: "ENTER" })
           }
         },
       })
