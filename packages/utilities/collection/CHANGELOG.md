@@ -1,5 +1,15 @@
 # @zag-js/collection
 
+## 1.15.1
+
+### Patch Changes
+
+- [`af01eeb`](https://github.com/chakra-ui/zag/commit/af01eebf013dd9c16821474a26d846f502530feb) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - - Expose `copy` method
+  - Allow `getParentNodes` to accept a value or index path
+- Updated dependencies []:
+  - @zag-js/utils@1.15.1
+
 ## 1.15.0
 
 ### Minor Changes
