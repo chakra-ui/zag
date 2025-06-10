@@ -1,5 +1,20 @@
 # @zag-js/tabs
 
+## 1.15.1
+
+### Patch Changes
+
+- [`5e2cc43`](https://github.com/chakra-ui/zag/commit/5e2cc43b94b4c1aa863e6513c953e16492328381) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix issue where tabs with links should not trigger tab change upon
+  cmd/middle click
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.15.1
+  - @zag-js/core@1.15.1
+  - @zag-js/types@1.15.1
+  - @zag-js/utils@1.15.1
+  - @zag-js/dom-query@1.15.1
+
 ## 1.15.0
 
 ### Patch Changes
