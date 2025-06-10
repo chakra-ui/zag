@@ -10,6 +10,7 @@ export type {
   ItemGroupProps,
   ItemListenerProps,
   ItemProps,
+  ItemBaseProps,
   ItemState,
   MenuMachine as Machine,
   NavigateDetails,
