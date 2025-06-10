@@ -4,7 +4,7 @@ All notable changes to this project will be documented in this file.
 
 > For v0.x changelog, see the [v0 branch](https://github.com/chakra-ui/zag/blob/v0/CHANGELOG.md)
 
-## [1.16.0](./#1.16.0) - 2025-06-10
+## [1.15.1](./#1.15.1) - 2025-06-10
 
 ### Added
 
