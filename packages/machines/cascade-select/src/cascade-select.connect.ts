@@ -1,17 +1,10 @@
-import { dataAttr, getEventKey, isLeftClick, visuallyHiddenStyle } from "@zag-js/dom-query"
+import { ariaAttr, dataAttr, getEventKey, isLeftClick, visuallyHiddenStyle } from "@zag-js/dom-query"
 import { getPlacementStyles } from "@zag-js/popper"
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import type { Service } from "@zag-js/core"
 import { parts } from "./cascade-select.anatomy"
 import { dom } from "./cascade-select.dom"
-import type {
-  CascadeSelectApi,
-  CascadeSelectSchema,
-  ItemProps,
-  ItemState,
-  LevelProps,
-  TreeNode,
-} from "./cascade-select.types"
+import type { CascadeSelectApi, CascadeSelectSchema, ItemProps, ItemState, TreeNode } from "./cascade-select.types"
 
 export function connect<T extends PropTypes, V = TreeNode>(
   service: Service<CascadeSelectSchema>,
@@ -20,32 +13,64 @@ export function connect<T extends PropTypes, V = TreeNode>(
   const { send, context, prop, scope, computed, state } = service
 
   const collection = prop("collection")
-  const value = context.get("value")
+  // const value = context.get("value")
+  const value = computed("value")
   const open = state.hasTag("open")
   const focused = state.matches("focused")
-  const highlightedPath = context.get("highlightedPath")
+  const highlightedIndexPath = context.get("highlightedIndexPath") ?? []
   const currentPlacement = context.get("currentPlacement")
   const isDisabled = computed("isDisabled")
   const isInteractive = computed("isInteractive")
   const valueText = computed("valueText")
-  const levelDepth = computed("levelDepth")
+
+  const separator = prop("separator")
 
   const popperStyles = getPlacementStyles({
     ...prop("positioning"),
     placement: currentPlacement,
   })
 
+  function isPrefixOfHighlight(indexPath: number[]) {
+    // If indexPath is longer, it can't be a prefix.
+    if (indexPath.length > highlightedIndexPath.length) return false
+
+    // Check each element in indexPath against the corresponding element
+    return indexPath.every((val, idx) => val === highlightedIndexPath[idx])
+  }
+
+  const getItemState = (props: ItemProps<V>): ItemState => {
+    const { item, indexPath } = props
+    const itemValue = collection.getNodeValue(item)
+    const depth = indexPath ? indexPath.length : 0
+
+    const highlighted = isPrefixOfHighlight(indexPath)
+
+    // Check if item is selected (part of any selected path)
+    // const isSelected = value.some((path) => path.includes(itemValue))
+
+    return {
+      value: itemValue,
+      disabled: collection.getNodeDisabled(item),
+      highlighted,
+      selected: false,
+      // selected: isSelected,
+      hasChildren: collection.isBranchNode(item),
+      depth,
+    }
+  }
+
   return {
     collection,
     value,
     valueText,
-    highlightedPath,
+    highlightedIndexPath,
     open,
     focused,
+    separator,
 
-    setValue(value: string[][]) {
-      send({ type: "VALUE.SET", value })
-    },
+    // setValue(value: string[][]) {
+    //   send({ type: "VALUE.SET", value })
+    // },
 
     setOpen(open: boolean) {
       if (open) {
@@ -59,52 +84,15 @@ export function connect<T extends PropTypes, V = TreeNode>(
       send({ type: "HIGHLIGHTED_PATH.SET", value: path })
     },
 
-    selectItem(value: string) {
-      send({ type: "ITEM.SELECT", value })
-    },
+    // selectItem(value: string) {
+    //   send({ type: "ITEM.SELECT", value })
+    // },
 
     clearValue() {
       send({ type: "VALUE.CLEAR" })
     },
 
-    getLevelValues(level: number): string[] {
-      return context.get("levelValues")[level] || []
-    },
-
-    getLevelDepth(): number {
-      return levelDepth
-    },
-
-    getParentValue(level: number): string | null {
-      const values = context.get("value")
-      if (values.length === 0) return null
-
-      // Use the most recent value path
-      const mostRecentValue = values[values.length - 1]
-      return mostRecentValue[level] || null
-    },
-
-    getItemState(props: ItemProps<V>): ItemState {
-      const { item } = props
-      const itemValue = collection.getNodeValue(item)
-      const indexPath = collection.getIndexPath(itemValue)
-      const depth = indexPath ? indexPath.length : 0
-
-      // Check if this item is highlighted (part of the highlighted path)
-      const isHighlighted = highlightedPath ? highlightedPath.includes(itemValue) : false
-
-      // Check if item is selected (part of any selected path)
-      const isSelected = value.some((path) => path.includes(itemValue))
-
-      return {
-        value: itemValue,
-        disabled: collection.getNodeDisabled(item),
-        highlighted: isHighlighted,
-        selected: isSelected,
-        hasChildren: collection.isBranchNode(item),
-        depth,
-      }
-    },
+    getItemState,
 
     getRootProps() {
       return normalize.element({
@@ -121,7 +109,7 @@ export function connect<T extends PropTypes, V = TreeNode>(
       return normalize.label({
         ...parts.label.attrs,
         id: dom.getLabelId(scope),
-        htmlFor: dom.getHiddenSelectId(scope),
+        htmlFor: dom.getHiddenInputId(scope),
         "data-disabled": dataAttr(isDisabled),
         "data-readonly": dataAttr(prop("readOnly")),
         "data-invalid": dataAttr(prop("invalid")),
@@ -161,19 +149,19 @@ export function connect<T extends PropTypes, V = TreeNode>(
         "data-readonly": dataAttr(prop("readOnly")),
         "data-invalid": dataAttr(prop("invalid")),
         disabled: isDisabled,
-        onFocus() {
+        onClick(event) {
           if (!isInteractive) return
+          if (event.defaultPrevented) return
+          send({ type: "TRIGGER.CLICK" })
+        },
+        onFocus() {
           send({ type: "TRIGGER.FOCUS" })
         },
         onBlur() {
           send({ type: "TRIGGER.BLUR" })
         },
-        onClick(event) {
-          if (!isInteractive) return
-          if (!isLeftClick(event)) return
-          send({ type: "TRIGGER.CLICK" })
-        },
         onKeyDown(event) {
+          if (event.defaultPrevented) return
           if (!isInteractive) return
           const key = getEventKey(event)
 
@@ -250,9 +238,9 @@ export function connect<T extends PropTypes, V = TreeNode>(
     },
 
     getContentProps() {
-      const highlightedPath = context.get("highlightedPath")
-      const highlightedValue =
-        highlightedPath && highlightedPath.length > 0 ? highlightedPath[highlightedPath.length - 1] : null
+      const highlightedValue = highlightedIndexPath.length
+        ? collection.getNodeValue(collection.at(highlightedIndexPath))
+        : undefined
       const highlightedItemId = highlightedValue ? dom.getItemId(scope, highlightedValue) : undefined
 
       return normalize.element({
@@ -312,24 +300,38 @@ export function connect<T extends PropTypes, V = TreeNode>(
       })
     },
 
-    getLevelProps(props: LevelProps) {
-      const { level } = props
+    getListProps(props: ItemProps<V>) {
+      const itemState = getItemState(props)
+
       return normalize.element({
-        ...parts.level.attrs,
-        id: dom.getLevelId(scope, level),
-        "data-level": level,
+        ...parts.list.attrs,
+        id: dom.getListId(scope, itemState.value),
+        dir: prop("dir"),
+        "data-depth": itemState.depth,
+        "aria-depth": itemState.depth,
+        role: "group",
       })
     },
 
     getItemProps(props: ItemProps<V>) {
-      const { item } = props
+      const {
+        item,
+        indexPath,
+        valuePath,
+        // TODO closeOnSelect
+      } = props
       const itemValue = collection.getNodeValue(item)
-      const itemState = this.getItemState(props)
+      const itemState = getItemState(props)
 
       return normalize.element({
         ...parts.item.attrs,
         id: dom.getItemId(scope, itemValue),
-        role: "option",
+        role: "treeitem",
+        "aria-haspopup": itemState.hasChildren ? "menu" : undefined,
+        "aria-expanded": itemState.hasChildren ? itemState.highlighted : false,
+        "aria-controls": itemState.hasChildren ? dom.getListId(scope, itemState.value) : undefined,
+        "aria-owns": itemState.hasChildren ? dom.getListId(scope, itemState.value) : undefined,
+        "aria-disabled": ariaAttr(itemState.disabled),
         "data-value": itemValue,
         "data-disabled": dataAttr(itemState.disabled),
         "data-highlighted": dataAttr(itemState.highlighted),
@@ -337,17 +339,19 @@ export function connect<T extends PropTypes, V = TreeNode>(
         "data-has-children": dataAttr(itemState.hasChildren),
         "data-depth": itemState.depth,
         "aria-selected": itemState.selected,
-        "aria-disabled": itemState.disabled,
+        "data-type": itemState.hasChildren ? "branch" : "leaf",
+        "data-index-path": indexPath.join(separator),
+        "data-value-path": valuePath.join(separator),
         onClick(event) {
           if (!isInteractive) return
           if (!isLeftClick(event)) return
           if (itemState.disabled) return
-          send({ type: "ITEM.CLICK", value: itemValue })
+          send({ type: "ITEM.CLICK", indexPath })
         },
         onPointerEnter(event) {
           if (!isInteractive) return
           if (itemState.disabled) return
-          send({ type: "ITEM.POINTER_ENTER", value: itemValue, clientX: event.clientX, clientY: event.clientY })
+          send({ type: "ITEM.POINTER_ENTER", indexPath, clientX: event.clientX, clientY: event.clientY })
         },
         onPointerLeave(event) {
           if (!isInteractive) return
@@ -358,7 +362,7 @@ export function connect<T extends PropTypes, V = TreeNode>(
           const pointerMoved = service.event.previous()?.type.includes("POINTER")
           if (!pointerMoved) return
 
-          send({ type: "ITEM.POINTER_LEAVE", value: itemValue, clientX: event.clientX, clientY: event.clientY })
+          send({ type: "ITEM.POINTER_LEAVE", indexPath, clientX: event.clientX, clientY: event.clientY })
         },
       })
     },
@@ -366,7 +370,7 @@ export function connect<T extends PropTypes, V = TreeNode>(
     getItemTextProps(props: ItemProps<V>) {
       const { item } = props
       const itemValue = collection.getNodeValue(item)
-      const itemState = this.getItemState(props)
+      const itemState = getItemState(props)
       return normalize.element({
         ...parts.itemText.attrs,
         "data-value": itemValue,
@@ -379,7 +383,7 @@ export function connect<T extends PropTypes, V = TreeNode>(
     getItemIndicatorProps(props: ItemProps<V>) {
       const { item } = props
       const itemValue = collection.getNodeValue(item)
-      const itemState = this.getItemState(props)
+      const itemState = getItemState(props)
 
       return normalize.element({
         ...parts.itemIndicator.attrs,
@@ -390,32 +394,23 @@ export function connect<T extends PropTypes, V = TreeNode>(
       })
     },
 
-    getHiddenSelectProps() {
+    getHiddenInputProps() {
       // Create option values from the current selected paths
-      const separator = prop("separator")
-      const defaultValue = prop("multiple")
-        ? value.map((path) => path.join(separator))
-        : value[0]
-          ? value[0].join(separator)
-          : ""
+      // TODO: fix this
+      const defaultValue = prop("multiple") ? value.map((path) => path.join(separator)) : value[0]?.join(separator)
 
-      return normalize.select({
+      return normalize.input({
         name: prop("name"),
         form: prop("form"),
         disabled: isDisabled,
         multiple: prop("multiple"),
         required: prop("required"),
+        readOnly: prop("readOnly"),
+        hidden: true,
         "aria-hidden": true,
-        id: dom.getHiddenSelectId(scope),
+        id: dom.getHiddenInputId(scope),
+
         defaultValue,
-        style: visuallyHiddenStyle,
-        tabIndex: -1,
-        // Some browser extensions will focus the hidden select.
-        // Let's forward the focus to the trigger.
-        onFocus() {
-          const triggerEl = dom.getTriggerEl(scope)
-          triggerEl?.focus({ preventScroll: true })
-        },
         "aria-labelledby": dom.getLabelId(scope),
       })
     },

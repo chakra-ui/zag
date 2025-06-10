@@ -23,7 +23,7 @@ test.describe("basic functionality", () => {
   test("should toggle dropdown on trigger click", async () => {
     await I.clickTrigger()
     await I.seeDropdown()
-    await I.seeLevel(0)
+    await I.seeList(0)
 
     await I.clickTrigger()
     await I.dontSeeDropdown()
@@ -51,23 +51,23 @@ test.describe("basic functionality", () => {
   })
 })
 
-test.describe("navigation and levels", () => {
-  test("should show multiple levels when navigating into parent items", async () => {
+test.describe("navigation and lists", () => {
+  test("should show multiple lists when navigating into parent items", async () => {
     await I.clickTrigger()
-    await I.seeLevel(0)
-    await I.dontSeeLevel(1)
+    await I.seeList(0)
+    await I.dontSeeList(1)
 
     // Click on Africa (continent)
     await I.clickItem("Africa")
-    await I.seeLevel(0)
-    await I.seeLevel(1)
-    await I.dontSeeLevel(2)
+    await I.seeList(0)
+    await I.seeList(1)
+    await I.dontSeeList(2)
 
     // Click on Algeria (country)
     await I.clickItem("Algeria")
-    await I.seeLevel(0)
-    await I.seeLevel(1)
-    await I.seeLevel(2)
+    await I.seeList(0)
+    await I.seeList(1)
+    await I.seeList(2)
   })
 
   test("should show item indicators for parent items", async () => {
@@ -89,33 +89,33 @@ test.describe("keyboard navigation", () => {
     await I.seeDropdown()
 
     await I.pressKey("ArrowDown")
-    await I.seeItemIsHighlighted("Africa")
-
-    await I.pressKey("ArrowDown")
     await I.seeItemIsHighlighted("Asia")
 
+    await I.pressKey("ArrowDown")
+    await I.seeItemIsHighlighted("Europe")
+
     await I.pressKey("ArrowUp")
-    await I.seeItemIsHighlighted("Africa")
+    await I.seeItemIsHighlighted("Asia")
   })
 
-  test("should navigate into child level with ArrowRight", async () => {
+  test("should navigate into child list with ArrowRight", async () => {
     await I.focusTrigger()
     await I.pressKey("Enter")
-    await I.pressKey("ArrowDown") // Highlight Africa
-    await I.pressKey("ArrowRight") // Navigate into Africa
+    await I.pressKey("ArrowDown") // Highlight Asia
+    await I.pressKey("ArrowRight") // Navigate into Asia
 
-    await I.seeLevel(1)
-    await I.seeItemIsHighlighted("Algeria")
+    await I.seeList(1)
+    await I.seeItemIsHighlighted("Afghanistan")
   })
 
-  test("should navigate back to parent level with ArrowLeft", async () => {
+  test("should navigate back to parent list with ArrowLeft", async () => {
     await I.focusTrigger()
     await I.pressKey("Enter")
-    await I.pressKey("ArrowDown") // Highlight Africa
-    await I.pressKey("ArrowRight") // Navigate into Africa
+    await I.pressKey("ArrowDown") // Highlight Asia
+    await I.pressKey("ArrowRight") // Navigate into Asia
     await I.pressKey("ArrowLeft") // Navigate back
 
-    await I.seeItemIsHighlighted("Africa")
+    await I.seeItemIsHighlighted("Asia")
   })
 
   test("should close dropdown with Escape", async () => {
@@ -130,21 +130,21 @@ test.describe("keyboard navigation", () => {
   test("should select item with Enter", async () => {
     await I.focusTrigger()
     await I.pressKey("Enter")
-    await I.pressKey("ArrowDown") // Navigate to Africa
-    await I.pressKey("ArrowRight") // Navigate into Africa
-    // Now we're in Algeria (first country alphabetically)
-    await I.pressKey("ArrowRight") // Navigate into Algeria states
-    await I.pressKey("Enter") // Select first state (Adrar)
+    await I.pressKey("ArrowDown") // Navigate to Asia
+    await I.pressKey("ArrowRight") // Navigate into Asia
+    // Now we're in Afghanistan (first country alphabetically)
+    await I.pressKey("ArrowRight") // Navigate into Afghanistan states
+    await I.pressKey("Enter") // Select first state (Badakhshān)
 
-    await I.seeTriggerHasText("Africa / Algeria / Adrar")
+    await I.seeTriggerHasText("Asia / Afghanistan / Badakhshān")
     await I.dontSeeDropdown() // Should close when selecting leaf item
   })
 
   test("should navigate with Home and End keys", async () => {
-    await I.clickTrigger()
+    await I.focusTrigger()
+    await I.pressKey("Enter")
 
-    // Test Home/End at continent level (first level)
-    await I.pressKey("ArrowDown") // This should highlight Africa (first non-disabled item)
+    // Test Home/End at continent list (first list)
     await I.seeItemIsHighlighted("Africa")
 
     await I.pressKey("End")
@@ -153,7 +153,7 @@ test.describe("keyboard navigation", () => {
     await I.pressKey("Home")
     await I.seeItemIsHighlighted("Africa") // Should go back to first item
 
-    // Now test Home/End at country level (second level)
+    // Now test Home/End at country list (second list)
     await I.pressKey("ArrowRight") // Enter Africa (should highlight Algeria - first country)
     await I.seeItemIsHighlighted("Algeria")
 
@@ -165,25 +165,26 @@ test.describe("keyboard navigation", () => {
   })
 
   test("should scroll highlighted items into view during keyboard navigation", async () => {
-    await I.clickTrigger()
+    await I.focusTrigger()
+    await I.pressKey("Enter")
 
     // Navigate to Africa and enter it
-    await I.pressKey("ArrowDown") // Highlight Africa
-    await I.pressKey("ArrowRight") // Enter Africa (Algeria should be highlighted)
+    await I.pressKey("ArrowDown") // Highlight Asia
+    await I.pressKey("ArrowRight") // Enter Asia (Afghanistan should be highlighted)
 
-    // Use End key to navigate to the last country (Zimbabwe)
+    // Use End key to navigate to the last country (Yemen)
     await I.pressKey("End")
-    await I.seeItemIsHighlighted("Zimbabwe")
+    await I.seeItemIsHighlighted("Yemen")
 
-    // Zimbabwe should be scrolled into view
-    await I.seeItemInViewport("Zimbabwe")
+    // Yemen should be scrolled into view
+    await I.seeItemInViewport("Yemen")
 
-    // Use Home key to go back to first country (Algeria)
+    // Use Home key to go back to first country (Afghanistan)
     await I.pressKey("Home")
-    await I.seeItemIsHighlighted("Algeria")
+    await I.seeItemIsHighlighted("Afghanistan")
 
-    // Algeria should also be in viewport
-    await I.seeItemInViewport("Algeria")
+    // Afghanistan should also be in viewport
+    await I.seeItemInViewport("Afghanistan")
   })
 })
 
@@ -194,12 +195,12 @@ test.describe("click highlighting (default)", () => {
     // Click on Africa should highlight it
     await I.clickItem("Africa")
     await I.seeItemIsHighlighted("Africa")
-    await I.seeLevel(1)
+    await I.seeList(1)
 
-    // Click on Algeria should highlight it and show next level
+    // Click on Algeria should highlight it and show next list
     await I.clickItem("Algeria")
     await I.seeItemIsHighlighted("Algeria")
-    await I.seeLevel(2)
+    await I.seeList(2)
   })
 
   test("should not highlight on hover with click trigger", async () => {
@@ -227,18 +228,18 @@ test.describe("hover highlighting", () => {
     // Hovering over continent should highlight path
     await I.hoverItem("Africa")
     await I.seeItemIsHighlighted("Africa")
-    await I.seeLevel(1)
+    await I.seeList(1)
 
     // Hovering over country should highlight full path
     await I.hoverItem("Algeria")
     await I.seeHighlightedItemsCount(2) // Africa and Algeria
-    await I.seeLevel(2)
+    await I.seeList(2)
   })
 
   test("should not highlight full path for leaf items", async () => {
     await I.clickTrigger()
 
-    // Navigate to states level
+    // Navigate to states list
     await I.hoverItem("Africa")
     await I.hoverItem("Algeria")
 
@@ -254,7 +255,7 @@ test.describe("hover highlighting", () => {
     await I.seeItemIsHighlighted("Africa")
 
     // Moving mouse outside should keep highlighting due to grace area
-    await I.clickOutside()
+    await I.hoverOut()
     await I.seeItemIsHighlighted("Africa")
   })
 })
@@ -292,7 +293,7 @@ test.describe("selection behavior", () => {
     await I.seeDropdown() // Should remain open when selecting parent items
   })
 
-  test("should navigate to state level without parent selection", async () => {
+  test("should navigate to state list without parent selection", async () => {
     await I.clickTrigger()
     await I.clickItem("Africa")
     await I.clickItem("Algeria")
@@ -341,7 +342,7 @@ test.describe("focus management", () => {
 
     // Content should be focused for keyboard navigation
     await I.pressKey("ArrowDown")
-    await I.seeItemIsHighlighted("Africa")
+    await I.seeItemIsHighlighted("Asia")
   })
 })
 
@@ -417,8 +418,8 @@ test.describe("separator configuration", () => {
     await I.clickItem("Adrar")
 
     // Verify the hidden select element has the correct value
-    const hiddenSelect = await I.page.locator("select").first()
-    const value = await hiddenSelect.inputValue()
+    const hiddenInput = await I.page.locator("input").first()
+    const value = await hiddenInput.inputValue()
     expect(value).toContain("africa >> algeria >> adrar")
   })
 })

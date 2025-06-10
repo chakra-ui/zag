@@ -10,7 +10,7 @@ export const anatomy = createAnatomy("cascade-select").parts(
   "clearTrigger",
   "positioner",
   "content",
-  "level",
+  "list",
   "item",
   "itemText",
   "itemIndicator",

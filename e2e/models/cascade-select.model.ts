@@ -39,8 +39,8 @@ export class CascadeSelectModel extends Model {
     return this.page.locator(`[data-part=item]`).filter({ hasText: new RegExp(`^${text}$`) })
   }
 
-  getLevel = (level: number) => {
-    return this.page.locator(`[data-part=level][data-level="${level}"]`)
+  getList = (depth: number) => {
+    return this.page.locator(`[data-part=list][data-depth="${depth}"]`)
   }
 
   get highlightedItems() {
@@ -79,6 +79,10 @@ export class CascadeSelectModel extends Model {
     await this.getItem(text).hover()
   }
 
+  hoverOut = async () => {
+    await this.content.hover({ position: { x: 0, y: 0 } })
+  }
+
   seeTriggerIsFocused = async () => {
     await expect(this.trigger).toBeFocused()
   }
@@ -109,12 +113,12 @@ export class CascadeSelectModel extends Model {
     expect(await isInViewport(this.content, item)).toBe(true)
   }
 
-  seeLevel = async (level: number) => {
-    await expect(this.getLevel(level)).toBeVisible()
+  seeList = async (depth: number) => {
+    await expect(this.getList(depth)).toBeVisible()
   }
 
-  dontSeeLevel = async (level: number) => {
-    await expect(this.getLevel(level)).not.toBeVisible()
+  dontSeeList = async (depth: number) => {
+    await expect(this.getList(depth)).not.toBeVisible()
   }
 
   seeItemHasIndicator = async (text: string) => {

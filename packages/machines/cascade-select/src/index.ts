@@ -4,11 +4,11 @@ export { connect } from "./cascade-select.connect"
 export { machine } from "./cascade-select.machine"
 export { props, splitProps } from "./cascade-select.props"
 export type {
-  CascadeSelectApi,
-  CascadeSelectMachine,
-  CascadeSelectProps,
+  CascadeSelectApi as Api,
+  CascadeSelectMachine as Machine,
+  CascadeSelectProps as Props,
   CascadeSelectSchema,
-  CascadeSelectService,
+  CascadeSelectService as Service,
   ElementIds,
   HighlightChangeDetails,
   ItemProps,

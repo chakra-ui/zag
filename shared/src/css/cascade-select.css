@@ -64,7 +64,7 @@
   gap: 8px;
 }
 
-[data-scope="cascade-select"][data-part="level"] {
+[data-scope="cascade-select"][data-part="list"] {
   min-width: 140px;
   padding: 2px 0;
   display: flex;
@@ -79,26 +79,26 @@
 }
 
 /* Custom scrollbar styling for levels */
-[data-scope="cascade-select"][data-part="level"]::-webkit-scrollbar {
+[data-scope="cascade-select"][data-part="list"]::-webkit-scrollbar {
   width: 6px;
 }
 
-[data-scope="cascade-select"][data-part="level"]::-webkit-scrollbar-track {
+[data-scope="cascade-select"][data-part="list"]::-webkit-scrollbar-track {
   background: #f1f5f9;
   border-radius: 3px;
 }
 
-[data-scope="cascade-select"][data-part="level"]::-webkit-scrollbar-thumb {
+[data-scope="cascade-select"][data-part="list"]::-webkit-scrollbar-thumb {
   background: #cbd5e1;
   border-radius: 3px;
 }
 
-[data-scope="cascade-select"][data-part="level"]::-webkit-scrollbar-thumb:hover {
+[data-scope="cascade-select"][data-part="list"]::-webkit-scrollbar-thumb:hover {
   background: #94a3b8;
 }
 
 /* Add a subtle separator line between levels */
-[data-scope="cascade-select"][data-part="level"]:not(:last-child)::after {
+[data-scope="cascade-select"][data-part="list"]:not(:last-child)::after {
   content: "";
   position: absolute;
   right: -4px;
@@ -109,7 +109,7 @@
   opacity: 0.6;
 }
 
-[data-scope="cascade-select"][data-part="level"]:last-child {
+[data-scope="cascade-select"][data-part="list"]:last-child {
   /* No additional styling needed */
 }
 

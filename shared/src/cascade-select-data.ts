@@ -14966,6 +14966,7 @@ export const cascadeSelectData = {
           value: "american-samoa",
           code: "AS",
           states: [],
+          disabled: true,
         },
         {
           label: "Australia",
