@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 
 > For v0.x changelog, see the [v0 branch](https://github.com/chakra-ui/zag/blob/v0/CHANGELOG.md)
 
+## [1.15.2](./#1.15.2) - 2025-06-10
+
+### Fixed
+
+- **Menu**: Refactor `getItemTextProps` and `getItemIndicatorProps` to accept a partial interface of option item.
+
 ## [1.15.1](./#1.15.1) - 2025-06-10
 
 ### Added
