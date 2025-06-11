@@ -4,7 +4,6 @@ import { IoLogoLinkedin, IoLogoTwitter } from "react-icons/io"
 import { MdEmail } from "react-icons/md"
 import siteConfig from "site.config"
 import { FooterLink, type FooterLinkProps } from "./footer-link"
-import { NigeriaFlag } from "./nigeria-flag"
 
 const links: FooterLinkProps[] = [
   {
@@ -40,13 +39,7 @@ export const Footer = () => (
       my="20"
     >
       <Text dangerouslySetInnerHTML={{ __html: siteConfig.copyright }} />
-      <Text>
-        <span>
-          Proudly made in
-          <NigeriaFlag />
-        </span>
-        <span>by Segun Adebayo</span>
-      </Text>
+      <Text>A project by Chakra Systems</Text>
       <Stack mt={4} direction="row" spacing="12px" justify="center">
         {links.map((link) => (
           <FooterLink key={link.href} {...link} />

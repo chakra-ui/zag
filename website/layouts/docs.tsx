@@ -6,6 +6,7 @@ import { MdxFooter } from "components/mdx-footer"
 import { Search } from "components/search-dialog"
 import { Sidebar } from "components/sidebar"
 import { SkipNavLink } from "components/skip-nav"
+import { SupportAd } from "components/support-ad"
 import { TableOfContents } from "components/toc"
 import { TopNavigation } from "components/top-navigation"
 import React from "react"
@@ -98,6 +99,7 @@ export default function DocsLayout(props: DocsLayoutProps) {
               data={tableOfContent}
               getSlug={toc?.getSlug}
             />
+            <SupportAd />
           </Box>
         </Box>
       </chakra.div>
