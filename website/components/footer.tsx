@@ -39,7 +39,16 @@ export const Footer = () => (
       my="20"
     >
       <Text dangerouslySetInnerHTML={{ __html: siteConfig.copyright }} />
-      <Text>A project by Chakra Systems</Text>
+      <Text>
+        A project by{" "}
+        <a
+          href="https://chakra-ui.com"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          Chakra Systems
+        </a>
+      </Text>
       <Stack mt={4} direction="row" spacing="12px" justify="center">
         {links.map((link) => (
           <FooterLink key={link.href} {...link} />
