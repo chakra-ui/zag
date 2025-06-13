@@ -1,6 +1,6 @@
 import type { MaybeFn } from "@zag-js/types"
 import { contains } from "./node"
-import { isAndroid, isApple, isMac } from "./platform"
+import { isAndroid, isMac } from "./platform"
 import type { AnyPointerEvent, EventKeyOptions, NativeEvent } from "./types"
 
 export function getBeforeInputValue(event: Pick<InputEvent, "currentTarget">) {
@@ -23,21 +23,17 @@ export const isSelfTarget = (event: Partial<Pick<UIEvent, "currentTarget" | "tar
   return contains(event.currentTarget as Node, getEventTarget(event))
 }
 
-export function isOpeningInNewTab(event: Pick<MouseEvent, "currentTarget" | "metaKey" | "ctrlKey">) {
+export function isOpeningInNewTab(event: Pick<MouseEvent, "currentTarget" | "metaKey" | "ctrlKey" | "button">) {
   const element = event.currentTarget as HTMLAnchorElement | HTMLButtonElement | HTMLInputElement | null
   if (!element) return false
 
-  const isAppleDevice = isApple()
-  if (isAppleDevice && !event.metaKey) return false
-  if (!isAppleDevice && !event.ctrlKey) return false
+  const validElement = element.matches("a[href], button[type='submit'], input[type='submit']")
+  if (!validElement) return false
 
-  const localName = element.localName
+  const isMiddleClick = event.button === 1
+  const isModKeyClick = isCtrlOrMetaKey(event)
 
-  if (localName === "a") return true
-  if (localName === "button" && element.type === "submit") return true
-  if (localName === "input" && element.type === "submit") return true
-
-  return false
+  return isMiddleClick || isModKeyClick
 }
 
 export function isDownloadingEvent(event: Pick<MouseEvent, "altKey" | "currentTarget">) {

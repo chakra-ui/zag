@@ -18,6 +18,7 @@ import {
 } from "@zag-js/dom-query"
 import { getPlacementStyles } from "@zag-js/popper"
 import type { EventKeyMap, NormalizeProps, PropTypes } from "@zag-js/types"
+import { cast, hasProp } from "@zag-js/utils"
 import { parts } from "./menu.anatomy"
 import * as dom from "./menu.dom"
 import type { ItemProps, ItemState, MenuApi, MenuSchema, OptionItemProps, OptionItemState } from "./menu.types"
@@ -429,25 +430,27 @@ export function connect<T extends PropTypes>(service: Service<MenuSchema>, norma
     },
 
     getItemIndicatorProps(props) {
-      const itemState = getOptionItemState(props)
+      const itemState = getOptionItemState(cast(props))
+      const dataState = itemState.checked ? "checked" : "unchecked"
       return normalize.element({
         ...parts.itemIndicator.attrs,
         dir: prop("dir"),
         "data-disabled": dataAttr(itemState.disabled),
         "data-highlighted": dataAttr(itemState.highlighted),
-        "data-state": itemState.checked ? "checked" : "unchecked",
-        hidden: !itemState.checked,
+        "data-state": hasProp(props, "checked") ? dataState : undefined,
+        hidden: hasProp(props, "checked") ? !itemState.checked : undefined,
       })
     },
 
     getItemTextProps(props) {
-      const itemState = getOptionItemState(props)
+      const itemState = getOptionItemState(cast(props))
+      const dataState = itemState.checked ? "checked" : "unchecked"
       return normalize.element({
         ...parts.itemText.attrs,
         dir: prop("dir"),
         "data-disabled": dataAttr(itemState.disabled),
         "data-highlighted": dataAttr(itemState.highlighted),
-        "data-state": itemState.checked ? "checked" : "unchecked",
+        "data-state": hasProp(props, "checked") ? dataState : undefined,
       })
     },
 

@@ -1,6 +1,6 @@
 {
   "name": "@zag-js/svelte",
-  "version": "1.15.0",
+  "version": "1.15.3",
   "description": "The svelte wrapper for zag",
   "keywords": [
     "ui-machines",
@@ -33,8 +33,8 @@
   "devDependencies": {
     "@sveltejs/package": "2.3.11",
     "clean-package": "2.2.0",
-    "svelte": "5.33.14",
-    "vitest": "3.1.4"
+    "svelte": "5.33.17",
+    "vitest": "3.2.2"
   },
   "peerDependencies": {
     "svelte": "^5.0.0-next.1"

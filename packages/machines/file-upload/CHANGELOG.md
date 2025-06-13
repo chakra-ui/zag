@@ -1,5 +1,48 @@
 # @zag-js/file-upload
 
+## 1.15.3
+
+### Patch Changes
+
+- Updated dependencies [[`ff4c244`](https://github.com/chakra-ui/zag/commit/ff4c244549019680ada2afc073102c523a428524)]:
+  - @zag-js/file-utils@1.15.3
+  - @zag-js/anatomy@1.15.3
+  - @zag-js/core@1.15.3
+  - @zag-js/types@1.15.3
+  - @zag-js/utils@1.15.3
+  - @zag-js/dom-query@1.15.3
+  - @zag-js/i18n-utils@1.15.3
+
+## 1.15.2
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.15.2
+  - @zag-js/core@1.15.2
+  - @zag-js/types@1.15.2
+  - @zag-js/utils@1.15.2
+  - @zag-js/dom-query@1.15.2
+  - @zag-js/file-utils@1.15.2
+  - @zag-js/i18n-utils@1.15.2
+
+## 1.15.1
+
+### Patch Changes
+
+- [#2514](https://github.com/chakra-ui/zag/pull/2514)
+  [`f272a23`](https://github.com/chakra-ui/zag/commit/f272a235e08a7eebff476e557f42443765057b6c) Thanks
+  [@ichizero](https://github.com/ichizero)! - Prevent `undefined` in `acceptedFiles` when no files accepted
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.15.1
+  - @zag-js/core@1.15.1
+  - @zag-js/types@1.15.1
+  - @zag-js/utils@1.15.1
+  - @zag-js/dom-query@1.15.1
+  - @zag-js/file-utils@1.15.1
+  - @zag-js/i18n-utils@1.15.1
+
 ## 1.15.0
 
 ### Patch Changes

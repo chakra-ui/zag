@@ -1,5 +1,5 @@
 import type { Service } from "@zag-js/core"
-import { dataAttr, getEventKey, isComposingEvent, isSafari, isSelfTarget } from "@zag-js/dom-query"
+import { dataAttr, getEventKey, isComposingEvent, isOpeningInNewTab, isSafari, isSelfTarget } from "@zag-js/dom-query"
 import type { EventKeyMap, NormalizeProps, PropTypes } from "@zag-js/types"
 import { parts } from "./tabs.anatomy"
 import * as dom from "./tabs.dom"
@@ -102,9 +102,6 @@ export function connect<T extends PropTypes>(service: Service<TabsSchema>, norma
             End() {
               send({ type: "END" })
             },
-            Enter() {
-              send({ type: "ENTER" })
-            },
           }
 
           let key = getEventKey(event, {
@@ -117,6 +114,7 @@ export function connect<T extends PropTypes>(service: Service<TabsSchema>, norma
           if (exec) {
             event.preventDefault()
             exec(event)
+            return
           }
         },
       })
@@ -157,6 +155,7 @@ export function connect<T extends PropTypes>(service: Service<TabsSchema>, norma
         },
         onClick(event) {
           if (event.defaultPrevented) return
+          if (isOpeningInNewTab(event)) return
           if (disabled) return
           if (isSafari()) {
             event.currentTarget.focus()

@@ -1,5 +1,51 @@
 # @zag-js/menu
 
+## 1.15.3
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.15.3
+  - @zag-js/core@1.15.3
+  - @zag-js/types@1.15.3
+  - @zag-js/utils@1.15.3
+  - @zag-js/dismissable@1.15.3
+  - @zag-js/dom-query@1.15.3
+  - @zag-js/popper@1.15.3
+  - @zag-js/rect-utils@1.15.3
+
+## 1.15.2
+
+### Patch Changes
+
+- [`ded9750`](https://github.com/chakra-ui/zag/commit/ded97508619821da62e62edc733a71da1d02f551) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Reduce required interface for `getItemTextProps` and
+  `getItemIndicatorProps`
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.15.2
+  - @zag-js/core@1.15.2
+  - @zag-js/types@1.15.2
+  - @zag-js/utils@1.15.2
+  - @zag-js/dismissable@1.15.2
+  - @zag-js/dom-query@1.15.2
+  - @zag-js/popper@1.15.2
+  - @zag-js/rect-utils@1.15.2
+
+## 1.15.1
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.15.1
+  - @zag-js/core@1.15.1
+  - @zag-js/types@1.15.1
+  - @zag-js/utils@1.15.1
+  - @zag-js/dismissable@1.15.1
+  - @zag-js/dom-query@1.15.1
+  - @zag-js/popper@1.15.1
+  - @zag-js/rect-utils@1.15.1
+
 ## 1.15.0
 
 ### Patch Changes

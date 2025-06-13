@@ -509,6 +509,7 @@ export const machine = createMachine<SelectSchema>({
         const highlightedValue = context.get("highlightedValue")
         if (highlightedValue == null) return
         const value = prop("collection").getPreviousValue(highlightedValue, 1, prop("loopFocus"))
+        if (value == null) return
         context.set("highlightedValue", value)
       },
 
@@ -516,6 +517,7 @@ export const machine = createMachine<SelectSchema>({
         const highlightedValue = context.get("highlightedValue")
         if (highlightedValue == null) return
         const value = prop("collection").getNextValue(highlightedValue, 1, prop("loopFocus"))
+        if (value == null) return
         context.set("highlightedValue", value)
       },
 

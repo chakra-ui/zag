@@ -252,11 +252,15 @@ export const machine = createMachine<PopoverSchema>({
           element?.focus({ preventScroll: true })
         })
       },
-      invokeOnOpen({ prop }) {
-        prop("onOpenChange")?.({ open: true })
+      invokeOnOpen({ prop, flush }) {
+        flush(() => {
+          prop("onOpenChange")?.({ open: true })
+        })
       },
-      invokeOnClose({ prop }) {
-        prop("onOpenChange")?.({ open: false })
+      invokeOnClose({ prop, flush }) {
+        flush(() => {
+          prop("onOpenChange")?.({ open: false })
+        })
       },
       toggleVisibility({ event, send, prop }) {
         send({ type: prop("open") ? "CONTROLLED.OPEN" : "CONTROLLED.CLOSE", previousEvent: event })

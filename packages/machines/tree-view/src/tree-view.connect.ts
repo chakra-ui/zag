@@ -7,11 +7,10 @@ import {
   isModifierKey,
 } from "@zag-js/dom-query"
 import type { EventKeyMap, NormalizeProps, PropTypes } from "@zag-js/types"
-import { add, isEqual, remove, uniq } from "@zag-js/utils"
+import { add, isEqual, uniq } from "@zag-js/utils"
 import { parts } from "./tree-view.anatomy"
 import * as dom from "./tree-view.dom"
 import type { NodeProps, NodeState, TreeViewApi, TreeViewService } from "./tree-view.types"
-import { getVisibleNodes } from "./tree-view.utils"
 
 export function connect<T extends PropTypes>(service: TreeViewService, normalize: NormalizeProps<T>): TreeViewApi<T> {
   const { context, scope, computed, prop, send } = service
@@ -27,6 +26,7 @@ export function connect<T extends PropTypes>(service: TreeViewService, normalize
     const value = collection.getNodeValue(node)
     return {
       value,
+      indexPath,
       valuePath: collection.getValuePath(indexPath),
       disabled: Boolean(node.disabled),
       focused: focusedValue == null ? isEqual(indexPath, [0]) : focusedValue === value,
@@ -43,34 +43,19 @@ export function connect<T extends PropTypes>(service: TreeViewService, normalize
     expandedValue,
     selectedValue,
     expand(value) {
-      if (!value) return send({ type: "EXPANDED.ALL" })
-      const _expandedValue = uniq(expandedValue.concat(...value))
-      send({ type: "EXPANDED.SET", value: _expandedValue, src: "expand" })
+      send({ type: value ? "BRANCH.EXPAND" : "EXPANDED.ALL", value })
     },
     collapse(value) {
-      if (!value) return send({ type: "EXPANDED.SET", value: [], src: "collapseAll" })
-      const _expandedValue = uniq(remove(expandedValue, ...value))
-      send({ type: "EXPANDED.SET", value: _expandedValue, src: "collapse" })
+      send({ type: value ? "BRANCH.COLLAPSE" : "EXPANDED.SET", value })
     },
     deselect(value) {
-      if (!value) return send({ type: "SELECTED.SET", value: [], src: "deselectAll" })
-      const _selectedValue = uniq(remove(selectedValue, ...value))
-      send({ type: "SELECTED.SET", value: _selectedValue, src: "deselect" })
+      send({ type: value ? "NODE.DESELECT" : "SELECTED.SET", value })
     },
     select(value) {
-      if (!value) return send({ type: "SELECTED.ALL" })
-      const nextValue: string[] = []
-      if (prop("selectionMode") === "single") {
-        // For single selection, only add the last item
-        if (value.length > 0) nextValue.push(value[value.length - 1])
-      } else {
-        // For multiple selection, add all items
-        nextValue.push(...selectedValue, ...value)
-      }
-      send({ type: "SELECTED.SET", value: nextValue, src: "select" })
+      send({ type: value ? "NODE.SELECT" : "SELECTED.ALL", value })
     },
     getVisibleNodes() {
-      return getVisibleNodes(service)
+      return computed("visibleNodes").map(({ node }) => node)
     },
     focus(value) {
       dom.focusNode(scope, value)

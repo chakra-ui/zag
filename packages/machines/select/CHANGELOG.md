@@ -1,5 +1,51 @@
 # @zag-js/select
 
+## 1.15.3
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.15.3
+  - @zag-js/core@1.15.3
+  - @zag-js/types@1.15.3
+  - @zag-js/collection@1.15.3
+  - @zag-js/utils@1.15.3
+  - @zag-js/dismissable@1.15.3
+  - @zag-js/dom-query@1.15.3
+  - @zag-js/popper@1.15.3
+
+## 1.15.2
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.15.2
+  - @zag-js/core@1.15.2
+  - @zag-js/types@1.15.2
+  - @zag-js/collection@1.15.2
+  - @zag-js/utils@1.15.2
+  - @zag-js/dismissable@1.15.2
+  - @zag-js/dom-query@1.15.2
+  - @zag-js/popper@1.15.2
+
+## 1.15.1
+
+### Patch Changes
+
+- [`aaf33ad`](https://github.com/chakra-ui/zag/commit/aaf33ad95098e40c1b8d1f715a40b0eb213641f9) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix issue where highlighted item could be cleared when navigating
+  up/down the list with keyboard.
+
+- Updated dependencies [[`af01eeb`](https://github.com/chakra-ui/zag/commit/af01eebf013dd9c16821474a26d846f502530feb)]:
+  - @zag-js/collection@1.15.1
+  - @zag-js/anatomy@1.15.1
+  - @zag-js/core@1.15.1
+  - @zag-js/types@1.15.1
+  - @zag-js/utils@1.15.1
+  - @zag-js/dismissable@1.15.1
+  - @zag-js/dom-query@1.15.1
+  - @zag-js/popper@1.15.1
+
 ## 1.15.0
 
 ### Patch Changes

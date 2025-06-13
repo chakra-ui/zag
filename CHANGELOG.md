@@ -4,6 +4,37 @@ All notable changes to this project will be documented in this file.
 
 > For v0.x changelog, see the [v0 branch](https://github.com/chakra-ui/zag/blob/v0/CHANGELOG.md)
 
+## [1.15.3](./#1.15.3) - 2025-06-13
+
+### Fixed
+
+- **Popover**: Fix issue where `onOpenChange` could be called twice when controlled
+- **File Utils**: Improve `downloadFile` function to handle webview scenarios
+- **Combobox**: Fix issue where `onInputValueChange` could be called twice when selecting an item
+
+## [1.15.2](./#1.15.2) - 2025-06-10
+
+### Fixed
+
+- **Menu**: Refactor `getItemTextProps` and `getItemIndicatorProps` to accept a partial interface of option item.
+
+## [1.15.1](./#1.15.1) - 2025-06-10
+
+### Added
+
+- **[NEW]Async List**: Initial release of async list controller
+- **Editable**: Add support for `activationMode=none`
+- **Collection**:
+  - Expose `copy` method
+  - Allow `getParentNodes` to accept a value or index path
+
+### Fixed
+
+- **Carousel**: Fix issue where carousel crashes when `slidesPerPage` is 0
+- **File Upload**: Prevent `undefined` in `acceptedFiles` when no files accepted
+- **Select**: Fix issue where highlighted item could be cleared when navigating up/down the list with keyboard
+- **Tabs**: Fix issue where tabs with links should not trigger tab change upon cmd/middle click
+
 ## [1.15.0](./#1.15.0) - 2025-06-05
 
 ### Added

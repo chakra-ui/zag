@@ -257,6 +257,13 @@ export interface ItemGroupLabelProps {
   htmlFor: string
 }
 
+export interface ItemBaseProps {
+  value: string
+  disabled?: boolean
+  checked?: boolean
+  valueText?: string
+}
+
 export interface MenuApi<T extends PropTypes = PropTypes> {
   /**
    * Whether the menu is open
@@ -310,8 +317,8 @@ export interface MenuApi<T extends PropTypes = PropTypes> {
   getSeparatorProps(): T["element"]
   getItemProps(options: ItemProps): T["element"]
   getOptionItemProps(option: OptionItemProps): T["element"]
-  getItemIndicatorProps(option: OptionItemProps): T["element"]
-  getItemTextProps(option: OptionItemProps): T["element"]
+  getItemIndicatorProps(option: ItemBaseProps): T["element"]
+  getItemTextProps(option: ItemBaseProps): T["element"]
   getItemGroupLabelProps(options: ItemGroupLabelProps): T["element"]
   getItemGroupProps(options: ItemGroupProps): T["element"]
 }

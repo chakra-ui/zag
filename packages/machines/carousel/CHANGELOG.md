@@ -1,5 +1,45 @@
 # @zag-js/carousel
 
+## 1.15.3
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.15.3
+  - @zag-js/core@1.15.3
+  - @zag-js/types@1.15.3
+  - @zag-js/utils@1.15.3
+  - @zag-js/dom-query@1.15.3
+  - @zag-js/scroll-snap@1.15.3
+
+## 1.15.2
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.15.2
+  - @zag-js/core@1.15.2
+  - @zag-js/types@1.15.2
+  - @zag-js/utils@1.15.2
+  - @zag-js/dom-query@1.15.2
+  - @zag-js/scroll-snap@1.15.2
+
+## 1.15.1
+
+### Patch Changes
+
+- [#2509](https://github.com/chakra-ui/zag/pull/2509)
+  [`698f70b`](https://github.com/chakra-ui/zag/commit/698f70bba6c5a20995c089ea9126959e6202e323) Thanks
+  [@miladbn](https://github.com/miladbn)! - Fix issue where carousel crashes when `slidesPerPage` is 0
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.15.1
+  - @zag-js/core@1.15.1
+  - @zag-js/types@1.15.1
+  - @zag-js/utils@1.15.1
+  - @zag-js/dom-query@1.15.1
+  - @zag-js/scroll-snap@1.15.1
+
 ## 1.15.0
 
 ### Patch Changes

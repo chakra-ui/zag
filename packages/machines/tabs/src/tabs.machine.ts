@@ -1,11 +1,11 @@
-import { createGuards, createMachine } from "@zag-js/core"
+import { setup } from "@zag-js/core"
 import { clickIfLink, getFocusables, isAnchorElement, nextTick, raf, trackElementRect } from "@zag-js/dom-query"
 import * as dom from "./tabs.dom"
 import type { TabsSchema } from "./tabs.types"
 
-const { not } = createGuards<TabsSchema>()
+const { createMachine } = setup<TabsSchema>()
 
-export const machine = createMachine<TabsSchema>({
+export const machine = createMachine({
   props({ props }) {
     return {
       dir: "ltr",
@@ -131,10 +131,6 @@ export const machine = createMachine<TabsSchema>({
             actions: ["focusLastTab"],
           },
         ],
-        ENTER: {
-          guard: not("selectOnFocus"),
-          actions: ["selectFocusedTab"],
-        },
         TAB_FOCUS: {
           actions: ["setFocusedValue"],
         },

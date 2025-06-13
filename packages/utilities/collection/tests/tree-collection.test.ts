@@ -85,6 +85,17 @@ describe("tree / traversal", () => {
       ]
     `)
 
+    const branch1 = tree.findNode("branch1")
+    expect(tree.getValues(branch1)).toMatchInlineSnapshot(`
+      [
+        "child1-1",
+        "child1-2",
+        "child1-3",
+        "branch1-1",
+        "child2-1",
+      ]
+    `)
+
     expect(tree.getNextNode("branch1")).toMatchInlineSnapshot(`
       {
         "value": "child1-1",

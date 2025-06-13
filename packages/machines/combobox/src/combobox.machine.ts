@@ -984,14 +984,16 @@ export const machine = createMachine({
         })
       },
       syncSelectedItems(params) {
-        const { context, prop } = params
-        const inputValue = match(prop("selectionBehavior"), {
-          preserve: context.get("inputValue"),
-          replace: prop("collection").stringifyMany(context.get("value")),
-          clear: "",
+        queueMicrotask(() => {
+          const { context, prop } = params
+          const inputValue = match(prop("selectionBehavior"), {
+            preserve: context.get("inputValue"),
+            replace: prop("collection").stringifyMany(context.get("value")),
+            clear: "",
+          })
+          context.set("selectedItems", getSelectedItems(params))
+          context.set("inputValue", inputValue)
         })
-        context.set("selectedItems", getSelectedItems(params))
-        context.set("inputValue", inputValue)
       },
       syncHighlightedItem({ context, prop }) {
         const item = prop("collection").find(context.get("highlightedValue"))

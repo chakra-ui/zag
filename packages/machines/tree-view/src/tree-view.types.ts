@@ -157,6 +157,7 @@ export interface TreeViewSchema<T extends TreeNode = TreeNode> {
   computed: {
     isTypingAhead: boolean
     isMultipleSelection: boolean
+    visibleNodes: { node: T; indexPath: number[] }[]
   }
   action: string
   effect: string
@@ -187,6 +188,10 @@ export interface NodeState {
    * The value of the tree item
    */
   value: string
+  /**
+   * The index path of the tree item
+   */
+  indexPath: IndexPath
   /**
    * The value path of the tree item
    */

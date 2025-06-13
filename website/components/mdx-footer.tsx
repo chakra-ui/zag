@@ -14,13 +14,14 @@ export function MdxFooter() {
         justifyContent="space-between"
       >
         <Box fontSize="sm" mb={{ base: "6", sm: "0" }}>
-          <p>
-            Proudly made in
-            <chakra.span role="img" aria-label="Nigeria" mx="2">
-              🇳🇬
-            </chakra.span>
-            by Segun Adebayo
-          </p>
+          A project by{" "}
+          <a
+            href="https://chakra-ui.com"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Chakra Systems
+          </a>
         </Box>
       </Box>
 
