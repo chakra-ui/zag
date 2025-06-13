@@ -4,6 +4,14 @@ All notable changes to this project will be documented in this file.
 
 > For v0.x changelog, see the [v0 branch](https://github.com/chakra-ui/zag/blob/v0/CHANGELOG.md)
 
+## [1.15.3](./#1.15.3) - 2025-06-13
+
+### Fixed
+
+- **Popover**: Fix issue where `onOpenChange` could be called twice when controlled
+- **File Utils**: Improve `downloadFile` function to handle webview scenarios
+- **Combobox**: Fix issue where `onInputValueChange` could be called twice when selecting an item
+
 ## [1.15.2](./#1.15.2) - 2025-06-10
 
 ### Fixed
