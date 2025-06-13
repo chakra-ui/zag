@@ -1,7 +1,7 @@
 import { normalizeProps, Portal, useMachine } from "@zag-js/react"
 import { cascadeSelectControls, cascadeSelectData } from "@zag-js/shared"
 import * as cascadeSelect from "@zag-js/cascade-select"
-import { ChevronDownIcon, ChevronRightIcon, XIcon } from "lucide-react"
+import { ChevronRightIcon, XIcon } from "lucide-react"
 import serialize from "form-serialize"
 import { JSX, useId } from "react"
 import { StateVisualizer } from "../components/state-visualizer"
@@ -40,7 +40,7 @@ const TreeNode = (props: TreeNodeProps): JSX.Element => {
 
   return (
     <>
-      <div {...api.getListProps(nodeProps)}>
+      <ul {...api.getListProps(nodeProps)}>
         {children.map((item, index) => {
           const itemProps = {
             indexPath: [...indexPath, index],
@@ -51,17 +51,18 @@ const TreeNode = (props: TreeNodeProps): JSX.Element => {
           const itemState = api.getItemState(itemProps)
 
           return (
-            <div key={item.label} {...api.getItemProps(itemProps)}>
+            <li key={item.label} {...api.getItemProps(itemProps)}>
               <span {...api.getItemTextProps(itemProps)}>{item.label}</span>
+              <span {...api.getItemIndicatorProps(itemProps)}>✓</span>
               {itemState.hasChildren && (
-                <span {...api.getItemIndicatorProps(itemProps)}>
+                <span>
                   <ChevronRightIcon size={16} />
                 </span>
               )}
-            </div>
+            </li>
           )
         })}
-      </div>
+      </ul>
       {nodeState.highlightedChild && collection.isBranchNode(nodeState.highlightedChild) && (
         <TreeNode
           node={nodeState.highlightedChild}
@@ -107,9 +108,7 @@ export default function Page() {
           <div {...api.getControlProps()}>
             <button {...api.getTriggerProps()}>
               <span>{api.valueAsString || "Select a location"}</span>
-              <span {...api.getIndicatorProps()}>
-                <ChevronDownIcon size={16} />
-              </span>
+              <span {...api.getIndicatorProps()}>▼</span>
             </button>
             <button {...api.getClearTriggerProps()}>
               <XIcon size={16} />

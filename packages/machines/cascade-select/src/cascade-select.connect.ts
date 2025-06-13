@@ -366,7 +366,7 @@ export function connect<T extends PropTypes, V = TreeNode>(
         "data-highlighted": dataAttr(itemState.highlighted),
         "data-selected": dataAttr(itemState.selected),
         "data-depth": itemState.depth,
-        "aria-selected": itemState.selected,
+        "data-state": itemState.selected ? "checked" : "unchecked",
         "data-type": itemState.hasChildren ? "branch" : "leaf",
         "data-index-path": indexPath.toString(),
         onDoubleClick() {
@@ -424,7 +424,7 @@ export function connect<T extends PropTypes, V = TreeNode>(
         ...parts.itemText.attrs,
         "data-value": itemValue,
         "data-highlighted": dataAttr(itemState.highlighted),
-        "data-selected": dataAttr(itemState.selected),
+        "data-state": itemState.selected ? "checked" : "unchecked",
         "data-disabled": dataAttr(itemState.disabled),
       })
     },
@@ -440,7 +440,8 @@ export function connect<T extends PropTypes, V = TreeNode>(
         "data-value": itemValue,
         "data-highlighted": dataAttr(itemState.highlighted),
         "data-type": itemState.hasChildren ? "branch" : "leaf",
-        hidden: !itemState.hasChildren,
+        "data-state": itemState.selected ? "checked" : "unchecked",
+        hidden: !itemState.selected,
       })
     },
 
