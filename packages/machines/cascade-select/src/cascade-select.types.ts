@@ -60,11 +60,11 @@ export interface CascadeSelectProps<T = any> extends DirectionProperty, CommonPr
    */
   ids?: ElementIds | undefined
   /**
-   * The name attribute of the underlying select element
+   * The name attribute of the underlying input element
    */
   name?: string | undefined
   /**
-   * The form attribute of the underlying select element
+   * The form attribute of the underlying input element
    */
   form?: string | undefined
   /**
@@ -134,7 +134,7 @@ export interface CascadeSelectProps<T = any> extends DirectionProperty, CommonPr
    */
   positioning?: PositioningOptions | undefined
   /**
-   * Function to scroll to a specific index
+   * Function to scroll to a specific index in a list
    */
   scrollToIndexFn?: ((details: ScrollToIndexDetails) => void) | undefined
   /**
@@ -206,10 +206,6 @@ export interface ItemProps<T = TreeNode> {
    * The value path of the item
    */
   value: string[]
-  /**
-   * Whether hovering outside should clear the highlighted state
-   */
-  persistFocus?: boolean | undefined
 }
 
 export interface ItemState<T = TreeNode> {

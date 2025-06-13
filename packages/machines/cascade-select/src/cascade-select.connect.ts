@@ -393,7 +393,6 @@ export function connect<T extends PropTypes, V = TreeNode>(
         onPointerLeave(event) {
           if (!interactive) return
           if (itemState.disabled) return
-          if (props.persistFocus) return
           if (event.pointerType !== "mouse") return
 
           const pointerMoved = service.event.previous()?.type.includes("POINTER")
