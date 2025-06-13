@@ -82,8 +82,8 @@ export default function Page() {
     id: useId(),
     collection,
     name: "location",
-    // value: ["asia / india / haryana:HR"],
-    // highlightedValue: "asia / india / haryana:HR",
+    // value: [["asia", "india", "haryana:HR"]],
+    // highlightedValue: ["asia", "india", "haryana:HR"],
     onHighlightChange(details) {
       console.log("onHighlightChange", details)
     },
