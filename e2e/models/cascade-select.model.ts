@@ -44,7 +44,7 @@ export class CascadeSelectModel extends Model {
   }
 
   get selectedItems() {
-    return this.page.locator("[data-part=item][data-selected]")
+    return this.page.locator("[data-part=item][data-state='checked']")
   }
 
   focusTrigger = async () => {
