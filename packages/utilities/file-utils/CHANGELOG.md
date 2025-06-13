@@ -1,5 +1,15 @@
 # @zag-js/file-utils
 
+## 1.15.3
+
+### Patch Changes
+
+- [`ff4c244`](https://github.com/chakra-ui/zag/commit/ff4c244549019680ada2afc073102c523a428524) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Improve download file function to handle webview scenarios
+
+- Updated dependencies []:
+  - @zag-js/i18n-utils@1.15.3
+
 ## 1.15.2
 
 ### Patch Changes
