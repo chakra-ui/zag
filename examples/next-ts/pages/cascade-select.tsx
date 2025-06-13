@@ -2,6 +2,7 @@ import { normalizeProps, Portal, useMachine } from "@zag-js/react"
 import { cascadeSelectControls, cascadeSelectData } from "@zag-js/shared"
 import * as cascadeSelect from "@zag-js/cascade-select"
 import { ChevronDownIcon, ChevronRightIcon, XIcon } from "lucide-react"
+import serialize from "form-serialize"
 import { JSX, useId } from "react"
 import { StateVisualizer } from "../components/state-visualizer"
 import { Toolbar } from "../components/toolbar"
@@ -26,19 +27,16 @@ const collection = cascadeSelect.collection<Node>({
 interface TreeNodeProps {
   node: Node
   indexPath?: number[]
-  valuePath?: string[]
+  value?: string[]
   api: cascadeSelect.Api
 }
 
 const TreeNode = (props: TreeNodeProps): JSX.Element => {
-  const { node, indexPath = [], valuePath = [], api } = props
+  const { node, indexPath = [], value = [], api } = props
 
-  const nodeProps = { indexPath, valuePath, item: node }
+  const nodeProps = { indexPath, value, item: node }
   const nodeState = api.getItemState(nodeProps)
   const children = collection.getNodeChildren(node)
-  //
-  const highlightedIndex = api.highlightedIndexPath?.[nodeState.depth]
-  const highlightedNode = children[highlightedIndex]
 
   return (
     <>
@@ -46,7 +44,7 @@ const TreeNode = (props: TreeNodeProps): JSX.Element => {
         {children.map((item, index) => {
           const itemProps = {
             indexPath: [...indexPath, index],
-            valuePath: [...valuePath, collection.getNodeValue(item)],
+            value: [...value, collection.getNodeValue(item)],
             item,
           }
 
@@ -64,12 +62,12 @@ const TreeNode = (props: TreeNodeProps): JSX.Element => {
           )
         })}
       </div>
-      {highlightedNode && collection.isBranchNode(highlightedNode) && (
+      {nodeState.highlightedChild && collection.isBranchNode(nodeState.highlightedChild) && (
         <TreeNode
-          node={highlightedNode}
+          node={nodeState.highlightedChild}
           api={api}
-          indexPath={[...indexPath, highlightedIndex]}
-          valuePath={[...valuePath, collection.getNodeValue(highlightedNode)]}
+          indexPath={[...indexPath, nodeState.highlightedIndex]}
+          value={[...value, collection.getNodeValue(nodeState.highlightedChild)]}
         />
       )}
     </>
@@ -82,7 +80,9 @@ export default function Page() {
   const service = useMachine(cascadeSelect.machine, {
     id: useId(),
     collection,
-    placeholder: "Select a location",
+    name: "location",
+    // value: ["asia / india / haryana:HR"],
+    // highlightedValue: "asia / india / haryana:HR",
     onHighlightChange(details) {
       console.log("onHighlightChange", details)
     },
@@ -103,22 +103,28 @@ export default function Page() {
         <div {...api.getRootProps()}>
           <label {...api.getLabelProps()}>Select a location</label>
 
+          {/* control */}
           <div {...api.getControlProps()}>
             <button {...api.getTriggerProps()}>
-              <span {...api.getValueTextProps()}>{api.valueText}</span>
+              <span>{api.valueAsString || "Select a location"}</span>
               <span {...api.getIndicatorProps()}>
                 <ChevronDownIcon size={16} />
               </span>
             </button>
-
-            {api.value.length > 0 && (
-              <button {...api.getClearTriggerProps()}>
-                <XIcon size={16} />
-              </button>
-            )}
+            <button {...api.getClearTriggerProps()}>
+              <XIcon size={16} />
+            </button>
           </div>
 
-          <input {...api.getHiddenInputProps()} />
+          <form
+            onChange={(e) => {
+              const formData = serialize(e.currentTarget, { hash: true })
+              console.log(formData)
+            }}
+          >
+            {/* Hidden input */}
+            <input {...api.getHiddenInputProps()} />
+          </form>
 
           {/* UI select */}
           <Portal>
@@ -131,8 +137,8 @@ export default function Page() {
         </div>
 
         <div style={{ marginTop: "350px" }}>
-          <h3>Highlighted Path:</h3>
-          <pre>{JSON.stringify(api.highlightedIndexPath, null, 2)}</pre>
+          <h3>Highlighted Value:</h3>
+          <pre>{JSON.stringify(api.highlightedValue, null, 2)}</pre>
         </div>
         <div style={{ marginTop: "20px" }}>
           <h3>Selected Value:</h3>

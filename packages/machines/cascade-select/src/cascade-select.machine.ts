@@ -1,4 +1,4 @@
-import { createGuards, createMachine } from "@zag-js/core"
+import { createGuards, createMachine, type Params } from "@zag-js/core"
 import { trackDismissableElement } from "@zag-js/dismissable"
 import {
   raf,
@@ -13,25 +13,22 @@ import type { Point } from "@zag-js/rect-utils"
 import { last, isEmpty, isEqual } from "@zag-js/utils"
 import { dom } from "./cascade-select.dom"
 import { createGraceArea, isPointerInGraceArea } from "./cascade-select.utils"
-import type { CascadeSelectSchema, IndexPath } from "./cascade-select.types"
+import type { CascadeSelectSchema, IndexPath, TreeNode } from "./cascade-select.types"
 import { collection as cascadeSelectCollection } from "./cascade-select.collection"
 
-const { or, and } = createGuards<CascadeSelectSchema>()
+const { or, and, not } = createGuards<CascadeSelectSchema>()
 
 export const machine = createMachine<CascadeSelectSchema>({
   props({ props }) {
     return {
       closeOnSelect: true,
-      loop: false,
+      loopFocus: false,
       defaultValue: [],
-      valueIndexPath: [],
-      highlightedIndexPath: [],
+      defaultHighlightedValue: [],
       defaultOpen: false,
       multiple: false,
       highlightTrigger: "click",
-      placeholder: "Select an option",
       allowParentSelection: false,
-      separator: " / ",
       positioning: {
         placement: "bottom-start",
         gutter: 8,
@@ -44,21 +41,37 @@ export const machine = createMachine<CascadeSelectSchema>({
 
   context({ prop, bindable }) {
     return {
-      valueIndexPath: bindable<IndexPath[]>(() => ({
-        defaultValue: [],
-        // value: prop("value"),
+      value: bindable<string[][]>(() => ({
+        defaultValue: prop("defaultValue"),
+        value: prop("value"),
         isEqual: isEqual,
-        onChange(indexPaths) {
-          prop("onValueChange")?.({ indexPath: indexPaths })
+        hash(value) {
+          return value.join(", ")
         },
       })),
-      highlightedIndexPath: bindable<IndexPath>(() => ({
-        defaultValue: [],
-        // value: prop("highlightedIndexPath"),
+      highlightedValue: bindable<string[]>(() => ({
+        defaultValue: prop("defaultHighlightedValue"),
+        value: prop("highlightedValue"),
         isEqual: isEqual,
-        onChange(indexPath) {
-          prop("onHighlightChange")?.({ indexPath })
-        },
+      })),
+      valueIndexPath: bindable(() => {
+        const value = prop("value") ?? prop("defaultValue") ?? []
+        const paths = value.map((v) => prop("collection").getIndexPath(v))
+        return {
+          defaultValue: paths,
+        }
+      }),
+      highlightedIndexPath: bindable(() => {
+        const value = prop("highlightedValue") ?? prop("defaultHighlightedValue") ?? null
+        return {
+          defaultValue: value ? prop("collection").getIndexPath(value) : [],
+        }
+      }),
+      highlightedItem: bindable<TreeNode[] | null>(() => ({
+        defaultValue: null,
+      })),
+      selectedItems: bindable<TreeNode[][]>(() => ({
+        defaultValue: [],
       })),
       currentPlacement: bindable<Placement | undefined>(() => ({
         defaultValue: undefined,
@@ -76,34 +89,28 @@ export const machine = createMachine<CascadeSelectSchema>({
   },
 
   computed: {
-    isDisabled: ({ prop, context }) => !!prop("disabled") || !!context.get("fieldsetDisabled"),
     isInteractive: ({ prop }) => !(prop("disabled") || prop("readOnly")),
-    value: ({ context, prop }) => {
-      const valueIndexPath = context.get("valueIndexPath")
+
+    valueAsString: ({ prop, context }) => {
       const collection = prop("collection")
+      const items = context.get("selectedItems")
+      const multiple = prop("multiple")
 
-      return valueIndexPath.map((indexPath) => {
-        return collection.getValuePath(indexPath)
-      })
-    },
-    valueText: ({ context, prop }) => {
-      const valueIndexPath = context.get("valueIndexPath")
-      if (!valueIndexPath.length) return prop("placeholder") ?? ""
+      const formatMultipleMode = (items: TreeNode[]) =>
+        collection.stringifyNode(items.at(-1)) ?? collection.getNodeValue(items.at(-1))
 
-      const collection = prop("collection")
-      const separator = prop("separator")
+      const formatSingleMode = (items: TreeNode[]) => {
+        return items
+          .map((item) => {
+            return collection.stringifyNode(item) ?? collection.getNodeValue(item)
+          })
+          .join(" / ")
+      }
+      const defaultFormatValue = (items: TreeNode[][]) =>
+        items.map(multiple ? formatMultipleMode : formatSingleMode).join(", ")
 
-      return valueIndexPath
-        .map((indexPath) => {
-          return indexPath
-            .map((_, depth) => {
-              const partialPath = indexPath.slice(0, depth + 1)
-              const node = collection.at(partialPath)
-              return collection.stringifyNode(node) ?? collection.getNodeValue(node)
-            })
-            .join(separator)
-        })
-        .join(", ")
+      const formatValue = prop("formatValue") ?? defaultFormatValue
+      return formatValue(items)
     },
   },
 
@@ -113,7 +120,7 @@ export const machine = createMachine<CascadeSelectSchema>({
   },
 
   watch({ context, prop, track, action }) {
-    track([() => context.get("valueIndexPath")?.toString()], () => {
+    track([() => context.get("value")?.toString()], () => {
       action(["syncInputValue", "dispatchChangeEvent"])
     })
     track([() => prop("open")], () => {
@@ -128,11 +135,17 @@ export const machine = createMachine<CascadeSelectSchema>({
     "VALUE.CLEAR": {
       actions: ["clearValue"],
     },
-    "HIGHLIGHTED_PATH.SET": {
-      actions: ["setHighlightedIndexPath"],
+    "CLEAR_TRIGGER.CLICK": {
+      actions: ["clearValue", "focusTriggerEl"],
+    },
+    "HIGHLIGHTED_VALUE.SET": {
+      actions: ["setHighlightedValue"],
     },
     "ITEM.SELECT": {
       actions: ["selectItem"],
+    },
+    "ITEM.CLEAR": {
+      actions: ["clearItem"],
     },
   },
 
@@ -146,9 +159,11 @@ export const machine = createMachine<CascadeSelectSchema>({
           {
             guard: "isTriggerClickEvent",
             target: "open",
+            actions: ["setInitialFocus", "highlightFirstSelectedItem"],
           },
           {
             target: "open",
+            actions: ["setInitialFocus"],
           },
         ],
         "TRIGGER.CLICK": [
@@ -158,7 +173,7 @@ export const machine = createMachine<CascadeSelectSchema>({
           },
           {
             target: "open",
-            actions: ["invokeOnOpen"],
+            actions: ["invokeOnOpen", "setInitialFocus", "highlightFirstSelectedItem"],
           },
         ],
         "TRIGGER.FOCUS": {
@@ -171,7 +186,7 @@ export const machine = createMachine<CascadeSelectSchema>({
           },
           {
             target: "open",
-            actions: ["invokeOnOpen"],
+            actions: ["setInitialFocus", "invokeOnOpen"],
           },
         ],
       },
@@ -184,21 +199,36 @@ export const machine = createMachine<CascadeSelectSchema>({
           {
             guard: "isTriggerClickEvent",
             target: "open",
+            actions: ["setInitialFocus", "highlightFirstSelectedItem"],
           },
           {
             guard: "isTriggerArrowUpEvent",
             target: "open",
-            actions: ["highlightLastItem"],
+            actions: ["setInitialFocus", "highlightLastItem"],
           },
           {
             guard: or("isTriggerArrowDownEvent", "isTriggerEnterEvent", ""),
             target: "open",
-            actions: ["highlightFirstItem"],
+            actions: ["setInitialFocus", "highlightFirstItem"],
           },
           {
             target: "open",
+            actions: ["setInitialFocus"],
           },
         ],
+        OPEN: [
+          {
+            guard: "isOpenControlled",
+            actions: ["invokeOnOpen"],
+          },
+          {
+            target: "open",
+            actions: ["setInitialFocus", "invokeOnOpen"],
+          },
+        ],
+        "TRIGGER.BLUR": {
+          target: "idle",
+        },
         "TRIGGER.CLICK": [
           {
             guard: "isOpenControlled",
@@ -206,27 +236,7 @@ export const machine = createMachine<CascadeSelectSchema>({
           },
           {
             target: "open",
-            actions: ["invokeOnOpen"],
-          },
-        ],
-        "TRIGGER.ARROW_UP": [
-          {
-            guard: "isOpenControlled",
-            actions: ["invokeOnOpen"],
-          },
-          {
-            target: "open",
-            actions: ["invokeOnOpen", "highlightLastItem"],
-          },
-        ],
-        "TRIGGER.ARROW_DOWN": [
-          {
-            guard: "isOpenControlled",
-            actions: ["invokeOnOpen"],
-          },
-          {
-            target: "open",
-            actions: ["invokeOnOpen", "highlightFirstItem"],
+            actions: ["setInitialFocus", "invokeOnOpen", "highlightFirstSelectedItem"],
           },
         ],
         "TRIGGER.ENTER": [
@@ -236,7 +246,37 @@ export const machine = createMachine<CascadeSelectSchema>({
           },
           {
             target: "open",
-            actions: ["invokeOnOpen", "highlightFirstItem"],
+            actions: ["setInitialFocus", "invokeOnOpen", "highlightFirstItem"],
+          },
+        ],
+        "TRIGGER.ARROW_UP": [
+          {
+            guard: "isOpenControlled",
+            actions: ["invokeOnOpen"],
+          },
+          {
+            target: "open",
+            actions: ["setInitialFocus", "invokeOnOpen", "highlightLastItem"],
+          },
+        ],
+        "TRIGGER.ARROW_DOWN": [
+          {
+            guard: "isOpenControlled",
+            actions: ["invokeOnOpen"],
+          },
+          {
+            target: "open",
+            actions: ["setInitialFocus", "invokeOnOpen", "highlightFirstItem"],
+          },
+        ],
+        "TRIGGER.ARROW_LEFT": [
+          {
+            guard: "isOpenControlled",
+            actions: ["invokeOnOpen"],
+          },
+          {
+            target: "open",
+            actions: ["invokeOnOpen"],
           },
         ],
         "TRIGGER.ARROW_RIGHT": [
@@ -249,27 +289,13 @@ export const machine = createMachine<CascadeSelectSchema>({
             actions: ["invokeOnOpen", "highlightFirstItem"],
           },
         ],
-        "TRIGGER.BLUR": {
-          target: "idle",
-        },
-        OPEN: [
-          {
-            guard: "isOpenControlled",
-            actions: ["invokeOnOpen"],
-          },
-          {
-            target: "open",
-            actions: ["invokeOnOpen"],
-          },
-        ],
       },
     },
 
     open: {
       tags: ["open"],
+      exit: ["clearHighlightedValue", "scrollContentToTop"],
       effects: ["trackDismissableElement", "computePlacement", "scrollToHighlightedItems"],
-      entry: ["setInitialFocus", "highlightLastSelectedValue"],
-      exit: ["clearHighlightedIndexPath", "scrollContentToTop"],
       on: {
         "CONTROLLED.CLOSE": [
           {
@@ -281,13 +307,38 @@ export const machine = createMachine<CascadeSelectSchema>({
             target: "idle",
           },
         ],
+        CLOSE: [
+          {
+            guard: "isOpenControlled",
+            actions: ["invokeOnClose"],
+          },
+          {
+            guard: "restoreFocus",
+            target: "focused",
+            actions: ["invokeOnClose", "focusTriggerEl"],
+          },
+          {
+            target: "idle",
+            actions: ["invokeOnClose"],
+          },
+        ],
+        "TRIGGER.CLICK": [
+          {
+            guard: "isOpenControlled",
+            actions: ["invokeOnClose"],
+          },
+          {
+            target: "focused",
+            actions: ["invokeOnClose", "focusTriggerEl"],
+          },
+        ],
         "ITEM.CLICK": [
           {
-            guard: and("canSelectItem", "shouldCloseOnSelect", "isOpenControlled"),
+            guard: and("canSelectItem", and("shouldCloseOnSelect", not("multiple")), "isOpenControlled"),
             actions: ["selectItem", "invokeOnClose"],
           },
           {
-            guard: and("canSelectItem", "shouldCloseOnSelect"),
+            guard: and("canSelectItem", and("shouldCloseOnSelect", not("multiple"))),
             target: "focused",
             actions: ["selectItem", "invokeOnClose", "focusTriggerEl"],
           },
@@ -297,7 +348,7 @@ export const machine = createMachine<CascadeSelectSchema>({
           },
           {
             // If can't select, at least highlight for click-based highlighting
-            actions: ["setHighlightedIndexPath"],
+            actions: ["setHighlightedValue"],
           },
         ],
         "ITEM.POINTER_ENTER": [
@@ -319,33 +370,39 @@ export const machine = createMachine<CascadeSelectSchema>({
               "hasGraceArea",
               "isPointerOutsideGraceArea",
               "isPointerNotInAnyItem",
-              "hasHighlightedIndexPath",
+              "hasHighlightedValue",
             ),
-            actions: ["clearHighlightAndGraceArea"],
+            actions: ["clearGraceArea"],
           },
         ],
         "GRACE_AREA.CLEAR": [
           {
             guard: "isHoverHighlight",
-            actions: ["clearHighlightAndGraceArea"],
+            actions: ["clearGraceArea"],
           },
         ],
+        "CONTENT.HOME": {
+          actions: ["highlightFirstItem"],
+        },
+        "CONTENT.END": {
+          actions: ["highlightLastItem"],
+        },
         "CONTENT.ARROW_DOWN": [
           {
-            guard: "hasHighlightedIndexPath",
-            actions: ["highlightNextItem"],
+            guard: or(not("hasHighlightedValue"), and("loop", "isHighlightedLastItem")),
+            actions: ["highlightFirstItem"],
           },
           {
-            actions: ["highlightFirstItem"],
+            actions: ["highlightNextItem"],
           },
         ],
         "CONTENT.ARROW_UP": [
           {
-            guard: "hasHighlightedIndexPath",
-            actions: ["highlightPreviousItem"],
+            guard: or(not("hasHighlightedValue"), and("loop", "isHighlightedFirstItem")),
+            actions: ["highlightLastItem"],
           },
           {
-            actions: ["highlightLastItem"],
+            actions: ["highlightPreviousItem"],
           },
         ],
         "CONTENT.ARROW_RIGHT": [
@@ -374,19 +431,17 @@ export const machine = createMachine<CascadeSelectSchema>({
             actions: ["highlightParent"],
           },
         ],
-        "CONTENT.HOME": {
-          actions: ["highlightFirstItem"],
-        },
-        "CONTENT.END": {
-          actions: ["highlightLastItem"],
-        },
         "CONTENT.ENTER": [
           {
-            guard: and("canSelectHighlightedItem", "shouldCloseOnSelectHighlighted", "isOpenControlled"),
+            guard: and(
+              "canSelectHighlightedItem",
+              and("shouldCloseOnSelectHighlighted", not("multiple")),
+              "isOpenControlled",
+            ),
             actions: ["selectHighlightedItem", "invokeOnClose"],
           },
           {
-            guard: and("canSelectHighlightedItem", "shouldCloseOnSelectHighlighted"),
+            guard: and("canSelectHighlightedItem", and("shouldCloseOnSelectHighlighted", not("multiple"))),
             target: "focused",
             actions: ["selectHighlightedItem", "invokeOnClose", "focusTriggerEl"],
           },
@@ -395,101 +450,59 @@ export const machine = createMachine<CascadeSelectSchema>({
             actions: ["selectHighlightedItem"],
           },
         ],
-        "CONTENT.ESCAPE": [
-          {
-            guard: "isOpenControlled",
-            actions: ["invokeOnClose", "focusTriggerEl"],
-          },
-          {
-            guard: "restoreFocus",
-            target: "focused",
-            actions: ["invokeOnClose", "focusTriggerEl"],
-          },
-          {
-            target: "idle",
-            actions: ["invokeOnClose"],
-          },
-        ],
-        CLOSE: [
-          {
-            guard: "isOpenControlled",
-            actions: ["invokeOnClose"],
-          },
-          {
-            guard: "restoreFocus",
-            target: "focused",
-            actions: ["invokeOnClose", "focusTriggerEl"],
-          },
-          {
-            target: "idle",
-            actions: ["invokeOnClose"],
-          },
-        ],
+        "POSITIONING.SET": {
+          actions: ["reposition"],
+        },
       },
     },
   },
 
   implementations: {
     guards: {
-      restoreFocus: () => true,
+      restoreFocus: ({ event }) => restoreFocusFn(event),
+      multiple: ({ prop }) => !!prop("multiple"),
+      loop: ({ prop }) => !!prop("loopFocus"),
       isOpenControlled: ({ prop }) => !!prop("open"),
       isTriggerClickEvent: ({ event }) => event.previousEvent?.type === "TRIGGER.CLICK",
       isTriggerArrowUpEvent: ({ event }) => event.previousEvent?.type === "TRIGGER.ARROW_UP",
       isTriggerArrowDownEvent: ({ event }) => event.previousEvent?.type === "TRIGGER.ARROW_DOWN",
       isTriggerEnterEvent: ({ event }) => event.previousEvent?.type === "TRIGGER.ENTER",
       isTriggerArrowRightEvent: ({ event }) => event.previousEvent?.type === "TRIGGER.ARROW_RIGHT",
-      hasHighlightedIndexPath: ({ context }) => !!context.get("highlightedIndexPath").length,
-      shouldCloseOnSelect: ({ prop, event }) => {
-        if (!prop("closeOnSelect")) return false
+      hasHighlightedValue: ({ context }) => context.get("highlightedValue").length > 0,
+      isHighlightedFirstItem: ({ context }) => context.get("highlightedIndexPath").at(-1) === 0,
+      isHighlightedLastItem: ({ prop, context }) => {
+        const path = context.get("highlightedIndexPath")
+        const itemIndex = path.at(-1)
+        if (!itemIndex && itemIndex !== 0) return false
 
+        const parentIndexPath = path.slice(0, -1)
+        const collection = prop("collection")
+        const nextSibling = collection.at([...parentIndexPath, itemIndex + 1])
+
+        return !nextSibling
+      },
+      shouldCloseOnSelect: ({ prop, event }) => {
         const collection = prop("collection")
         const node = collection.at(event.indexPath)
-
-        // Only close if selecting a leaf node (no children)
-        return node && !collection.isBranchNode(node)
+        return prop("closeOnSelect") && node && !collection.isBranchNode(node)
       },
       shouldCloseOnSelectHighlighted: ({ prop, context }) => {
-        if (!prop("closeOnSelect")) return false
-
-        const highlightedIndexPath = context.get("highlightedIndexPath")
-        if (!highlightedIndexPath.length) return false
-
         const collection = prop("collection")
-        const node = collection.at(highlightedIndexPath)
-
-        // Only close if selecting a leaf node (no children)
-        return node && !collection.isBranchNode(node)
+        const node = context.get("highlightedItem")
+        return prop("closeOnSelect") && !collection.isBranchNode(node)
       },
+
       canSelectItem: ({ prop, event }) => {
         const collection = prop("collection")
         const node = collection.at(event.indexPath)
-
         if (!node) return false
-
-        // If parent selection is not allowed, only allow leaf nodes
-        if (!prop("allowParentSelection")) {
-          return !collection.isBranchNode(node)
-        }
-
-        // Otherwise, allow any node
-        return true
+        return prop("allowParentSelection") || !collection.isBranchNode(node)
       },
       canSelectHighlightedItem: ({ prop, context }) => {
-        const highlightedIndexPath = context.get("highlightedIndexPath")
-        if (!highlightedIndexPath.length) return false
-
         const collection = prop("collection")
-        const node = collection.at(highlightedIndexPath)
-
-        if (!node || collection.getNodeDisabled(node)) return false
-
-        // If parent selection is not allowed, only allow leaf nodes
-        if (!prop("allowParentSelection")) {
-          return !collection.isBranchNode(node)
-        }
-
-        // Otherwise, allow any node
-        return true
+        const node = collection.at(context.get("highlightedIndexPath"))
+        if (!node) return false
+        return prop("allowParentSelection") || !collection.isBranchNode(node)
       },
       canNavigateToChild: ({ prop, context }) => {
         const highlightedIndexPath = context.get("highlightedIndexPath")
@@ -546,33 +559,6 @@ export const machine = createMachine<CascadeSelectSchema>({
           (commonPrefixLength < currentHighlightedIndexPath.length || commonPrefixLength < indexPath.length)
         )
       },
-      isItemOutsideHighlightedIndexPath: ({ context, event }) => {
-        const currentHighlightedIndexPath = context.get("highlightedIndexPath")
-
-        if (!currentHighlightedIndexPath || currentHighlightedIndexPath.length === 0) {
-          return false // No current highlighting, so don't clear
-        }
-
-        // Get the full path to the hovered item
-        const indexPath = event.indexPath
-        if (!indexPath) return true // Invalid item, clear highlighting
-
-        // Check if the hovered item path is compatible with current highlighted path
-        // Two cases:
-        // 1. Hovered item is part of the highlighted path (child/descendant)
-        // 2. Highlighted path is part of the hovered item path (parent/ancestor)
-
-        const minLength = Math.min(indexPath.length, currentHighlightedIndexPath.length)
-
-        // Check if the paths share a common prefix
-        for (let i = 0; i < minLength; i++) {
-          if (indexPath[i] !== currentHighlightedIndexPath[i]) {
-            return true // Paths diverge, clear highlighting
-          }
-        }
-
-        return false // Paths are compatible, don't clear
-      },
       hasGraceArea: ({ context }) => {
         return context.get("graceArea") != null
       },
@@ -596,24 +582,30 @@ export const machine = createMachine<CascadeSelectSchema>({
     },
 
     effects: {
-      trackFormControlState({ context, scope, prop: _prop }) {
+      trackFormControlState({ context, scope, prop }) {
         return trackFormControl(dom.getTriggerEl(scope), {
           onFieldsetDisabledChange(disabled: boolean) {
             context.set("fieldsetDisabled", disabled)
           },
           onFormReset() {
-            // TODO: reset valueIndexPath
-            // context.set("valueIndexPath", prop("defaultValue") ?? [])
+            context.set("value", prop("defaultValue") ?? [])
           },
         })
       },
-      trackDismissableElement({ scope, send }) {
+      trackDismissableElement({ scope, send, prop }) {
         const contentEl = () => dom.getContentEl(scope)
-
+        let restoreFocus = true
         return trackDismissableElement(contentEl, {
           defer: true,
+          exclude: [dom.getTriggerEl(scope), dom.getClearTriggerEl(scope)],
+          onFocusOutside: prop("onFocusOutside"),
+          onPointerDownOutside: prop("onPointerDownOutside"),
+          onInteractOutside(event) {
+            prop("onInteractOutside")?.(event)
+            restoreFocus = !(event.detail.focusable || event.detail.contextmenu)
+          },
           onDismiss() {
-            send({ type: "CLOSE" })
+            send({ type: "CLOSE", src: "interact-outside", restoreFocus })
           },
         })
       },
@@ -628,14 +620,13 @@ export const machine = createMachine<CascadeSelectSchema>({
           },
         })
       },
-      scrollToHighlightedItems({ context, prop: _prop, scope, event }) {
-        // let cleanups: VoidFunction[] = []
+      scrollToHighlightedItems({ context, prop, scope, event }) {
+        let cleanups: VoidFunction[] = []
 
-        const exec = (_immediate: boolean) => {
+        const exec = (immediate: boolean) => {
+          const highlightedValue = context.get("highlightedValue")
           const highlightedIndexPath = context.get("highlightedIndexPath")
           if (!highlightedIndexPath.length) return
-
-          const collection = _prop("collection")
 
           // Don't scroll into view if we're using the pointer
           if (event.current().type.includes("POINTER")) return
@@ -643,300 +634,271 @@ export const machine = createMachine<CascadeSelectSchema>({
           const listEls = dom.getListEls(scope)
           listEls.forEach((listEl, index) => {
             const itemPath = highlightedIndexPath.slice(0, index + 1)
-            const node = collection.at(itemPath)
-            if (!node) return
 
-            const itemEl = dom.getItemEl(scope, collection.getNodeValue(node))
+            const itemEl = dom.getItemEl(scope, highlightedValue.toString())
 
-            scrollIntoView(itemEl, { rootEl: listEl, block: "nearest" })
+            const scrollToIndexFn = prop("scrollToIndexFn")
+            if (scrollToIndexFn) {
+              const itemIndexInList = itemPath[itemPath.length - 1]
+              scrollToIndexFn({ index: itemIndexInList, immediate, depth: index })
+              return
+            }
+
+            const raf_cleanup = raf(() => {
+              scrollIntoView(itemEl, { rootEl: listEl, block: "nearest" })
+            })
+            cleanups.push(raf_cleanup)
           })
         }
 
         raf(() => exec(true))
 
+        const rafCleanup = raf(() => exec(true))
+        cleanups.push(rafCleanup)
+
         const contentEl = dom.getContentEl(scope)
 
-        return observeAttributes(contentEl, {
-          defer: true,
+        const observerCleanup = observeAttributes(contentEl, {
           attributes: ["data-activedescendant"],
-          callback() {
-            exec(false)
-          },
+          callback: () => exec(false),
         })
+        cleanups.push(observerCleanup)
+
+        return () => {
+          cleanups.forEach((cleanup) => cleanup())
+        }
       },
     },
 
     actions: {
-      // setValue({ context, event }) {
-      //   context.set("value", event.indexPath)
-      // },
-      clearValue({ context }) {
-        context.set("valueIndexPath", [])
+      setValue(params) {
+        set.value(params, params.event.value)
       },
-      setHighlightedIndexPath({ context, event }) {
-        context.set("highlightedIndexPath", event.indexPath)
+      clearValue(params) {
+        set.value(params, [])
       },
-      clearHighlightedIndexPath({ context }) {
-        context.set("highlightedIndexPath", [])
+      setHighlightedValue(params) {
+        const { event } = params
+        set.highlightedValue(params, event.value)
       },
-      selectItem({ context, prop, event }) {
+      clearHighlightedValue(params) {
+        set.highlightedValue(params, [])
+      },
+      reposition({ context, prop, scope, event }) {
+        const positionerEl = () => dom.getPositionerEl(scope)
+        getPlacement(dom.getTriggerEl(scope), positionerEl, {
+          ...prop("positioning"),
+          ...event.options,
+          defer: true,
+          listeners: false,
+          onComplete(data) {
+            context.set("currentPlacement", data.placement)
+          },
+        })
+      },
+
+      selectItem(params) {
+        const { context, prop, event } = params
         const collection = prop("collection")
-        const indexPath = event.indexPath as IndexPath
-        const node = collection.at(indexPath)
-
-        const hasChildren = collection.isBranchNode(node)
-
-        const currentValues = context.get("valueIndexPath") || []
         const multiple = prop("multiple")
+        const value = context.get("value")
+
+        const itemValue = event.value as string[]
+        const indexPath = (event.indexPath as IndexPath) ?? collection.getIndexPath(itemValue)
+
+        const node = collection.at(indexPath)
+        const hasChildren = collection.isBranchNode(node)
 
         if (prop("allowParentSelection")) {
           // When parent selection is allowed, always update the value to the selected item
-
           if (multiple) {
             // Remove any conflicting selections (parent/child conflicts)
-            const filteredValues = currentValues.filter((existingPath: IndexPath) => {
-              // Remove if this path is a parent of the new selection
-              const isParentOfNew =
-                indexPath.length > existingPath.length && existingPath.every((val, idx) => val === indexPath[idx])
-              // Remove if this path is a child of the new selection
-              const isChildOfNew =
-                existingPath.length > indexPath.length && indexPath.every((val, idx) => val === existingPath[idx])
-              // Remove if this is the exact same path
-              const isSamePath = isEqual(existingPath, indexPath)
+            const filteredValue = value.filter((v) => {
+              // Check if paths share any parent/child relationship
+              const shortPath = v.length < itemValue.length ? v : itemValue
+              const longPath = v.length < itemValue.length ? itemValue : v
+              const hasRelation = longPath.slice(0, shortPath.length).every((val, i) => val === shortPath[i])
 
-              return !isParentOfNew && !isChildOfNew && !isSamePath
+              // Keep only paths that have no relation and aren't identical
+              return !hasRelation && !isEqual(v, itemValue)
             })
 
-            // Add the new selection
-            context.set("valueIndexPath", [...filteredValues, indexPath])
+            set.value(params, [...filteredValue, itemValue])
           } else {
             // Single selection mode
-            context.set("valueIndexPath", [indexPath])
+            set.value(params, [itemValue])
           }
-
           // Keep the selected item highlighted if it has children
-          if (hasChildren) {
-            context.set("highlightedIndexPath", indexPath)
-          } else {
-            // Clear highlight for leaf items since they're now selected
-            context.set("highlightedIndexPath", [])
-          }
+          if (hasChildren) set.highlightedValue(params, itemValue)
         } else {
           // When parent selection is not allowed, only leaf items update the value
           if (hasChildren) {
             // For branch nodes, just navigate into them (update value path but don't "select")
-            if (multiple && currentValues.length > 0) {
+            if (multiple && value.length > 0) {
               // Use the most recent selection as base for navigation
-              context.set("valueIndexPath", [...currentValues.slice(0, -1), indexPath])
+              set.value(params, [...value.slice(0, -1), itemValue])
             } else {
-              context.set("valueIndexPath", [indexPath])
+              set.value(params, [itemValue])
             }
-            context.set("highlightedIndexPath", indexPath)
+            set.highlightedValue(params, itemValue)
           } else {
             // For leaf nodes, actually select them
             if (multiple) {
               // Check if this path already exists
-              const existingIndex = currentValues.findIndex((path: IndexPath) => isEqual(path, indexPath))
-
+              const existingIndex = value.findIndex((path) => isEqual(path, itemValue))
               if (existingIndex >= 0) {
                 // Remove existing selection (toggle off)
-                const newValues = [...currentValues]
+                const newValues = [...value]
                 newValues.splice(existingIndex, 1)
-                context.set("valueIndexPath", newValues)
+                set.value(params, newValues)
               } else {
                 // Add new selection
-                context.set("valueIndexPath", [...currentValues, indexPath])
+                set.value(params, [...value, itemValue])
               }
             } else {
               // Single selection mode
-              context.set("valueIndexPath", [indexPath])
+              set.value(params, [itemValue])
             }
-            context.set("highlightedIndexPath", [])
           }
         }
+      },
+      clearItem(params) {
+        const { context, event } = params
+        const value = context.get("value")
+
+        const newValue = value.filter((v) => !isEqual(v, event.value))
+        set.value(params, newValue)
       },
       selectHighlightedItem({ context, send }) {
-        const highlightedIndexPath = context.get("highlightedIndexPath")
-        if (highlightedIndexPath && highlightedIndexPath.length > 0) {
-          send({ type: "ITEM.SELECT", indexPath: highlightedIndexPath })
+        const indexPath = context.get("highlightedIndexPath")
+        const value = context.get("highlightedValue")
+        if (value) {
+          send({ type: "ITEM.SELECT", value, indexPath })
         }
       },
 
-      highlightFirstItem({ context, prop }) {
+      highlightFirstItem(params) {
+        const { context, prop } = params
+        const collection = prop("collection")
+        const highlightedValue = context.get("highlightedValue")
+
+        // Determine the parent node - if no highlight, use root; otherwise use current level's parent
+        let parentNode
+        if (!highlightedValue.length) {
+          parentNode = collection.rootNode
+        } else {
+          const indexPath = context.get("highlightedIndexPath")
+          parentNode = collection.getParentNode(indexPath) ?? collection.rootNode
+        }
+
+        const firstChild = collection.getFirstNode(parentNode)
+        if (!firstChild) return
+
+        const firstValue = collection.getNodeValue(firstChild)
+
+        // Build the new highlighted value
+        if (!highlightedValue.length) {
+          // No current highlight - highlight first root item
+          set.highlightedValue(params, [firstValue])
+        } else {
+          // Current highlight exists - replace last segment
+          const parentPath = highlightedValue.slice(0, -1)
+          set.highlightedValue(params, [...parentPath, firstValue])
+        }
+      },
+      highlightLastItem(params) {
+        const { context, prop } = params
+        const collection = prop("collection")
+        const highlightedValue = context.get("highlightedValue")
+
+        // Determine the parent node - if no highlight, use root; otherwise use current level's parent
+        let parentNode
+        if (!highlightedValue.length) {
+          parentNode = collection.rootNode
+        } else {
+          const indexPath = context.get("highlightedIndexPath")
+          parentNode = collection.getParentNode(indexPath) ?? collection.rootNode
+        }
+
+        const lastChild = collection.getLastNode(parentNode)
+        if (!lastChild) return
+
+        const lastValue = collection.getNodeValue(lastChild)
+
+        // Build the new highlighted value
+        if (!highlightedValue.length) {
+          // No current highlight - highlight last root item
+          set.highlightedValue(params, [lastValue])
+        } else {
+          // Current highlight exists - replace last segment
+          const parentPath = highlightedValue.slice(0, -1)
+          set.highlightedValue(params, [...parentPath, lastValue])
+        }
+      },
+      highlightNextItem(params) {
+        const { context, prop } = params
+        const collection = prop("collection")
+        const highlightedValue = context.get("highlightedValue")
+        if (!highlightedValue.length) return
+
+        const indexPath = context.get("highlightedIndexPath")
+        const nextSibling = collection.getNextSibling(indexPath)
+        if (!nextSibling) return
+
+        const nextValue = collection.getNodeValue(nextSibling)
+
+        if (highlightedValue.length === 1) {
+          // Root level - just use the next value
+          set.highlightedValue(params, [nextValue])
+        } else {
+          // Nested level - replace last segment
+          const parentPath = highlightedValue.slice(0, -1)
+          set.highlightedValue(params, [...parentPath, nextValue])
+        }
+      },
+      highlightPreviousItem(params) {
+        const { context, prop } = params
         const collection = prop("collection")
 
-        let path = context.get("highlightedIndexPath")
-        const node = !path || path.length <= 1 ? collection.rootNode : collection.getParentNode(path)
+        const highlightedValue = context.get("highlightedValue")
+        if (!highlightedValue.length) return
 
-        // Use native JavaScript findIndex() to find first non-disabled child
-        const children = collection.getNodeChildren(node)
-        const firstEnabledIndex = children.findIndex((child) => !collection.getNodeDisabled(child))
+        const indexPath = context.get("highlightedIndexPath")
+        const previousSibling = collection.getPreviousSibling(indexPath)
+        if (!previousSibling) return
 
-        if (firstEnabledIndex !== -1) {
-          let newPath: number[]
-          if (!path || path.length === 0) {
-            // No existing path, start at root level
-            newPath = [firstEnabledIndex]
-          } else if (path.length === 1) {
-            // At root level, replace the single index
-            newPath = [firstEnabledIndex]
-          } else {
-            // At deeper level, replace the last index
-            newPath = [...path.slice(0, -1), firstEnabledIndex]
-          }
-          context.set("highlightedIndexPath", newPath)
+        const prevValue = collection.getNodeValue(previousSibling)
+
+        if (highlightedValue.length === 1) {
+          // Root level - just use the previous value
+          set.highlightedValue(params, [prevValue])
+        } else {
+          // Nested level - replace last segment
+          const parentPath = highlightedValue.slice(0, -1)
+          set.highlightedValue(params, [...parentPath, prevValue])
         }
       },
-      highlightLastItem({ context, prop }) {
+      highlightFirstChild(params) {
+        const { context, prop } = params
         const collection = prop("collection")
 
-        let path = context.get("highlightedIndexPath")
-        const node = !path || path.length <= 1 ? collection.rootNode : collection.getParentNode(path)
+        const highlightedValue = context.get("highlightedValue")
+        if (!highlightedValue.length) return
 
-        const children = collection.getNodeChildren(node)
-        let lastEnabledIndex = -1
-        for (let i = children.length - 1; i >= 0; i--) {
-          if (!collection.getNodeDisabled(children[i])) {
-            lastEnabledIndex = i
-            break
-          }
-        }
+        const indexPath = context.get("highlightedIndexPath")
+        const node = collection.getFirstNode(collection.at(indexPath))
+        if (!node) return
 
-        if (lastEnabledIndex !== -1) {
-          let newPath: number[]
-          if (!path || path.length === 0) {
-            // No existing path, start at root level
-            newPath = [lastEnabledIndex]
-          } else if (path.length === 1) {
-            // At root level, replace the single index
-            newPath = [lastEnabledIndex]
-          } else {
-            // At deeper level, replace the last index
-            newPath = [...path.slice(0, -1), lastEnabledIndex]
-          }
-          context.set("highlightedIndexPath", newPath)
-        }
+        const childValue = collection.getNodeValue(node)
+        set.highlightedValue(params, [...highlightedValue, childValue])
       },
-      highlightNextItem({ context, prop }) {
-        const collection = prop("collection")
+      highlightParent(params) {
+        const { context } = params
+        const highlightedValue = context.get("highlightedValue")
+        if (!highlightedValue.length) return
 
-        let path = context.get("highlightedIndexPath")
-        if (!path || path.length === 0) {
-          // No current highlight, highlight first item
-          const children = collection.getNodeChildren(collection.rootNode)
-          const firstEnabledIndex = children.findIndex((child) => !collection.getNodeDisabled(child))
-          if (firstEnabledIndex !== -1) {
-            context.set("highlightedIndexPath", [firstEnabledIndex])
-          }
-          return
-        }
-
-        const currentIndex = path[path.length - 1]
-        const parentNode = path.length === 1 ? collection.rootNode : collection.getParentNode(path)
-        const children = collection.getNodeChildren(parentNode)
-
-        // Find next non-disabled child after current index
-        let nextEnabledIndex = -1
-        for (let i = currentIndex + 1; i < children.length; i++) {
-          if (!collection.getNodeDisabled(children[i])) {
-            nextEnabledIndex = i
-            break
-          }
-        }
-
-        // If loop is enabled and no next sibling found, wrap to first
-        if (nextEnabledIndex === -1 && prop("loop")) {
-          nextEnabledIndex = children.findIndex((child) => !collection.getNodeDisabled(child))
-        }
-
-        if (nextEnabledIndex !== -1) {
-          let newPath: number[]
-          if (path.length === 1) {
-            // At root level, replace the single index
-            newPath = [nextEnabledIndex]
-          } else {
-            // At deeper level, replace the last index
-            newPath = [...path.slice(0, -1), nextEnabledIndex]
-          }
-          context.set("highlightedIndexPath", newPath)
-        }
-      },
-      highlightPreviousItem({ context, prop }) {
-        const collection = prop("collection")
-
-        let path = context.get("highlightedIndexPath")
-        if (!path || path.length === 0) {
-          // No current highlight, highlight first item
-          const children = collection.getNodeChildren(collection.rootNode)
-          const firstEnabledIndex = children.findIndex((child) => !collection.getNodeDisabled(child))
-          if (firstEnabledIndex !== -1) {
-            context.set("highlightedIndexPath", [firstEnabledIndex])
-          }
-          return
-        }
-
-        const currentIndex = path[path.length - 1]
-        const parentNode = path.length === 1 ? collection.rootNode : collection.getParentNode(path)
-        const children = collection.getNodeChildren(parentNode)
-
-        // Find previous non-disabled child before current index
-        let previousEnabledIndex = -1
-        for (let i = currentIndex - 1; i >= 0; i--) {
-          if (!collection.getNodeDisabled(children[i])) {
-            previousEnabledIndex = i
-            break
-          }
-        }
-
-        // If loop is enabled and no previous sibling found, wrap to last
-        if (previousEnabledIndex === -1 && prop("loop")) {
-          for (let i = children.length - 1; i >= 0; i--) {
-            if (!collection.getNodeDisabled(children[i])) {
-              previousEnabledIndex = i
-              break
-            }
-          }
-        }
-
-        if (previousEnabledIndex !== -1) {
-          let newPath: number[]
-          if (path.length === 1) {
-            // At root level, replace the single index
-            newPath = [previousEnabledIndex]
-          } else {
-            // At deeper level, replace the last index
-            newPath = [...path.slice(0, -1), previousEnabledIndex]
-          }
-          context.set("highlightedIndexPath", newPath)
-        }
-      },
-      highlightFirstChild({ context, prop }) {
-        const collection = prop("collection")
-
-        const path = context.get("highlightedIndexPath")
-        if (!path || path.length === 0) return
-
-        // Get the currently highlighted node
-        const currentNode = collection.at(path)
-        if (!currentNode || !collection.isBranchNode(currentNode)) return
-
-        // Find first non-disabled child
-        const children = collection.getNodeChildren(currentNode)
-        const firstEnabledIndex = children.findIndex((child) => !collection.getNodeDisabled(child))
-
-        if (firstEnabledIndex !== -1) {
-          // Extend the current path with the first child index
-          const newPath = [...path, firstEnabledIndex]
-          context.set("highlightedIndexPath", newPath)
-        }
-      },
-      highlightParent({ context }) {
-        const path = context.get("highlightedIndexPath")
-        if (!path || path.length <= 1) return
-
-        // Get the parent path by removing the last item
-        const parentPath = path.slice(0, -1)
-        context.set("highlightedIndexPath", parentPath)
+        const parentPath = highlightedValue.slice(0, -1)
+        set.highlightedValue(params, parentPath)
       },
 
       setInitialFocus({ scope }) {
@@ -945,7 +907,8 @@ export const machine = createMachine<CascadeSelectSchema>({
           contentEl?.focus({ preventScroll: true })
         })
       },
-      focusTriggerEl({ scope }) {
+      focusTriggerEl({ event, scope }) {
+        if (!restoreFocusFn(event)) return
         raf(() => {
           const triggerEl = dom.getTriggerEl(scope)
           triggerEl?.focus({ preventScroll: true })
@@ -962,30 +925,20 @@ export const machine = createMachine<CascadeSelectSchema>({
           send({ type: prop("open") ? "CONTROLLED.OPEN" : "CONTROLLED.CLOSE" })
         }
       },
-      highlightLastSelectedValue({ context, send }) {
-        const valueIndexPath = context.get("valueIndexPath")
+      highlightFirstSelectedItem(params) {
+        const { context } = params
+        const value = context.get("value")
 
-        if (!valueIndexPath) return
-
-        // Always start fresh - clear any existing highlighted path first
-        if (!isEmpty(valueIndexPath)) {
-          // Use the most recent selection and highlight its full path
-          const mostRecentSelection = last(valueIndexPath)
-          if (mostRecentSelection) {
-            send({ type: "HIGHLIGHTED_PATH.SET", indexPath: mostRecentSelection })
-          }
-        } else {
-          // No selections - start with no highlight so user sees all options
-          send({ type: "HIGHLIGHTED_PATH.SET", indexPath: [] })
+        if (isEmpty(value)) return
+        // Use the most recent selection and highlight its full path
+        const mostRecentSelection = last(value)
+        if (mostRecentSelection) {
+          set.highlightedValue(params, mostRecentSelection)
         }
       },
 
-      createGraceArea({ context, event, scope, prop }) {
-        const indexPath = event.indexPath as IndexPath
-        const collection = prop("collection")
-
-        const node = collection.at(indexPath)
-        const value = collection.getNodeValue(node)
+      createGraceArea({ context, event, scope }) {
+        const value = event.value.toString()
         const triggerElement = dom.getItemEl(scope, value)
 
         if (!triggerElement) return
@@ -1014,56 +967,102 @@ export const machine = createMachine<CascadeSelectSchema>({
       clearGraceArea({ context }) {
         context.set("graceArea", null)
       },
-      clearHighlightAndGraceArea({ context }) {
-        // Clear highlighted path
-        context.set("highlightedIndexPath", [])
-
-        // Clear grace area
-        context.set("graceArea", null)
-      },
-      setHighlightingForHoveredItem({ context, prop, event }) {
+      setHighlightingForHoveredItem(params) {
+        const { prop, event } = params
         const collection = prop("collection")
 
-        // Get the full path to the hovered item
-        const indexPath = event.indexPath
-        if (!indexPath) {
-          // Invalid item, clear highlighting
-          context.set("highlightedIndexPath", [])
-          return
-        }
+        const node = collection.at(event.indexPath)
 
-        const node = collection.at(indexPath)
-
-        let newHighlightedIndexPath: IndexPath
+        let newHighlightedValue: string[]
 
         if (node && collection.isBranchNode(node)) {
           // Item has children - highlight the full path including this item
-          newHighlightedIndexPath = indexPath
+          newHighlightedValue = event.value
         } else {
           // Item is a leaf - highlight path up to (but not including) this item
-          newHighlightedIndexPath = indexPath.slice(0, -1)
+          newHighlightedValue = event.value.slice(0, -1)
         }
 
-        context.set("highlightedIndexPath", !isEmpty(newHighlightedIndexPath) ? newHighlightedIndexPath : [])
+        set.highlightedValue(params, newHighlightedValue)
       },
       syncInputValue({ context, scope }) {
         const inputEl = dom.getHiddenInputEl(scope)
         if (!inputEl) return
-        // TODO: dispatch sync input
-        // setElementValue(inputEl, context.get("valueAsString"))
+        setElementValue(inputEl, context.hash("value"))
       },
-      dispatchChangeEvent({ scope }) {
-        // TODO: dispatch change event
-        // dispatchInputValueEvent(dom.getHiddenInputEl(scope), { value: computed("valueAsString") })
+      dispatchChangeEvent({ scope, context }) {
+        dispatchInputValueEvent(dom.getHiddenInputEl(scope), { value: context.hash("value") })
       },
-      scrollContentToTop({ scope }) {
+      scrollContentToTop({ scope, prop }) {
+        const scrollToIndexFn = prop("scrollToIndexFn")
         // Scroll all lists to the top when closing
         raf(() => {
           const contentEl = dom.getContentEl(scope)
           const listEls = contentEl?.querySelectorAll('[data-part="list"]')
-          listEls?.forEach((listEl) => ((listEl as HTMLElement).scrollTop = 0))
+          listEls?.forEach((listEl, index) => {
+            if (scrollToIndexFn) {
+              scrollToIndexFn({ index: 0, immediate: true, depth: index })
+            } else {
+              listEl.scrollTop = 0
+            }
+          })
         })
       },
     },
   },
 })
+
+const set = {
+  value({ context, prop }: Params<CascadeSelectSchema>, value: CascadeSelectSchema["context"]["value"]) {
+    const collection = prop("collection")
+
+    // Set Value
+    context.set("value", value)
+
+    // Set Index Path
+    const valueIndexPath = value.map((v) => collection.getIndexPath(v))
+    context.set("valueIndexPath", valueIndexPath)
+
+    // Set Items
+    const selectedItems = valueIndexPath.map((indexPath) => {
+      // For each selected path, return all nodes that make up that path
+      return indexPath.map((_, index) => {
+        const partialPath = indexPath.slice(0, index + 1)
+        return collection.at(partialPath)
+      })
+    })
+    context.set("selectedItems", selectedItems)
+
+    // Invoke onValueChange
+    prop("onValueChange")?.({ value, items: selectedItems })
+  },
+
+  highlightedValue(
+    { context, prop }: Params<CascadeSelectSchema>,
+    value: CascadeSelectSchema["context"]["highlightedValue"],
+  ) {
+    const collection = prop("collection")
+
+    // Set Value
+    context.set("highlightedValue", value)
+
+    // Set Index Path
+    const highlightedIndexPath = value == null ? [] : collection.getIndexPath(value)
+    context.set("highlightedIndexPath", highlightedIndexPath)
+
+    // Set Items
+    const highlightedItem = highlightedIndexPath.map((_, index) => {
+      const partialPath = highlightedIndexPath.slice(0, index + 1)
+      return collection.at(partialPath)
+    })
+    context.set("highlightedItem", highlightedItem)
+
+    // Invoke onHighlightChange
+    prop("onHighlightChange")?.({ value, items: highlightedItem })
+  },
+}
+
+function restoreFocusFn(event: Record<string, any>) {
+  const v = event.restoreFocus ?? event.previousEvent?.restoreFocus
+  return v == null || !!v
+}

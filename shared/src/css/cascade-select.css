@@ -58,24 +58,25 @@
   border-radius: 6px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   padding: 6px;
-  max-height: 300px;
-  overflow: hidden;
+  max-height: 320px;
+  overflow-x: auto;
   display: flex;
   gap: 8px;
 }
 
 [data-scope="cascade-select"][data-part="list"] {
-  min-width: 140px;
+  width: 200px;
+  height: 300px;
   padding: 2px 0;
   display: flex;
   flex-direction: column;
   gap: 0px;
   position: relative;
-  max-height: 288px;
   overflow-y: auto;
   overflow-x: hidden;
   scrollbar-width: thin;
   scrollbar-color: #cbd5e1 #f1f5f9;
+  flex-shrink: 0;
 }
 
 /* Custom scrollbar styling for levels */
@@ -109,10 +110,6 @@
   opacity: 0.6;
 }
 
-[data-scope="cascade-select"][data-part="list"]:last-child {
-  /* No additional styling needed */
-}
-
 [data-scope="cascade-select"][data-part="item"] {
   display: flex;
   align-items: center;
@@ -131,6 +128,10 @@
 [data-scope="cascade-select"][data-part="item"]:hover {
   background: #e2e8f0;
   border-color: #cbd5e1;
+}
+
+[data-scope="cascade-select"][data-part="item"][data-selected] {
+  font-weight: 600;
 }
 
 [data-scope="cascade-select"][data-part="item"][data-highlighted] {

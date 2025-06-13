@@ -1,7 +1,16 @@
-import { ariaAttr, dataAttr, getEventKey, isLeftClick, visuallyHiddenStyle } from "@zag-js/dom-query"
+import {
+  ariaAttr,
+  dataAttr,
+  getEventKey,
+  isEditableElement,
+  isLeftClick,
+  isSelfTarget,
+  isValidTabEvent,
+} from "@zag-js/dom-query"
 import { getPlacementStyles } from "@zag-js/popper"
-import type { NormalizeProps, PropTypes } from "@zag-js/types"
+import type { EventKeyMap, NormalizeProps, PropTypes } from "@zag-js/types"
 import type { Service } from "@zag-js/core"
+import { isEqual } from "@zag-js/utils"
 import { parts } from "./cascade-select.anatomy"
 import { dom } from "./cascade-select.dom"
 import type { CascadeSelectApi, CascadeSelectSchema, ItemProps, ItemState, TreeNode } from "./cascade-select.types"
@@ -13,83 +22,92 @@ export function connect<T extends PropTypes, V = TreeNode>(
   const { send, context, prop, scope, computed, state } = service
 
   const collection = prop("collection")
-  // const value = context.get("value")
-  const value = computed("value")
+  const value = context.get("value")
   const open = state.hasTag("open")
   const focused = state.matches("focused")
-  const highlightedIndexPath = context.get("highlightedIndexPath") ?? []
+  const highlightedIndexPath = context.get("highlightedIndexPath")
+  const highlightedValue = context.get("highlightedValue")
   const currentPlacement = context.get("currentPlacement")
-  const isDisabled = computed("isDisabled")
-  const isInteractive = computed("isInteractive")
-  const valueText = computed("valueText")
+  const disabled = prop("disabled") || context.get("fieldsetDisabled")
+  const interactive = computed("isInteractive")
+  const valueAsString = computed("valueAsString")
 
-  const separator = prop("separator")
+  const highlightedItem = context.get("highlightedItem")
+  const selectedItems = context.get("selectedItems")
 
   const popperStyles = getPlacementStyles({
     ...prop("positioning"),
     placement: currentPlacement,
   })
 
-  function isPrefixOfHighlight(indexPath: number[]) {
-    // If indexPath is longer, it can't be a prefix.
-    if (indexPath.length > highlightedIndexPath.length) return false
-
-    // Check each element in indexPath against the corresponding element
-    return indexPath.every((val, idx) => val === highlightedIndexPath[idx])
-  }
-
   const getItemState = (props: ItemProps<V>): ItemState => {
-    const { item, indexPath } = props
-    const itemValue = collection.getNodeValue(item)
+    const { item, indexPath, value: itemValue } = props
     const depth = indexPath ? indexPath.length : 0
 
-    const highlighted = isPrefixOfHighlight(indexPath)
-
-    // Check if item is selected (part of any selected path)
-    // const isSelected = value.some((path) => path.includes(itemValue))
+    const highlighted = itemValue.every((v, i) => v === highlightedValue[i])
+    const selected = value.some((v) => isEqual(v, itemValue))
+    const children = collection.getNodeChildren(collection.at(indexPath))
+    const highlightedChild = children[highlightedIndexPath[depth]] as V | undefined
+    const highlightedIndex = highlightedIndexPath[depth]
 
     return {
       value: itemValue,
       disabled: collection.getNodeDisabled(item),
       highlighted,
-      selected: false,
-      // selected: isSelected,
+      selected,
       hasChildren: collection.isBranchNode(item),
       depth,
+      highlightedChild,
+      highlightedIndex,
     }
   }
 
+  const hasSelectedItems = value.length > 0
+
   return {
     collection,
-    value,
-    valueText,
-    highlightedIndexPath,
     open,
     focused,
-    separator,
+    multiple: !!prop("multiple"),
+    disabled,
+    value,
+    highlightedValue,
+    highlightedItem,
+    selectedItems,
+    hasSelectedItems,
+    valueAsString,
 
-    // setValue(value: string[][]) {
-    //   send({ type: "VALUE.SET", value })
-    // },
+    reposition(options = {}) {
+      send({ type: "POSITIONING.SET", options })
+    },
 
-    setOpen(open: boolean) {
-      if (open) {
-        send({ type: "OPEN" })
+    focus() {
+      dom.getTriggerEl(scope)?.focus({ preventScroll: true })
+    },
+
+    setOpen(nextOpen) {
+      if (nextOpen === open) return
+      send({ type: nextOpen ? "OPEN" : "CLOSE" })
+    },
+
+    highlightValue(value) {
+      send({ type: "HIGHLIGHTED_VALUE.SET", value })
+    },
+
+    setValue(value) {
+      send({ type: "VALUE.SET", value })
+    },
+
+    selectValue(value) {
+      send({ type: "ITEM.SELECT", value })
+    },
+
+    clearValue(value) {
+      if (value) {
+        send({ type: "ITEM.CLEAR", value })
       } else {
-        send({ type: "CLOSE" })
+        send({ type: "VALUE.CLEAR" })
       }
-    },
-
-    highlight(path: string[] | null) {
-      send({ type: "HIGHLIGHTED_PATH.SET", value: path })
-    },
-
-    // selectItem(value: string) {
-    //   send({ type: "ITEM.SELECT", value })
-    // },
-
-    clearValue() {
-      send({ type: "VALUE.CLEAR" })
     },
 
     getItemState,
@@ -98,7 +116,8 @@ export function connect<T extends PropTypes, V = TreeNode>(
       return normalize.element({
         ...parts.root.attrs,
         id: dom.getRootId(scope),
-        "data-disabled": dataAttr(isDisabled),
+        dir: prop("dir"),
+        "data-disabled": dataAttr(disabled),
         "data-readonly": dataAttr(prop("readOnly")),
         "data-invalid": dataAttr(prop("invalid")),
         "data-state": open ? "open" : "closed",
@@ -109,13 +128,14 @@ export function connect<T extends PropTypes, V = TreeNode>(
       return normalize.label({
         ...parts.label.attrs,
         id: dom.getLabelId(scope),
+        dir: prop("dir"),
         htmlFor: dom.getHiddenInputId(scope),
-        "data-disabled": dataAttr(isDisabled),
+        "data-disabled": dataAttr(disabled),
         "data-readonly": dataAttr(prop("readOnly")),
         "data-invalid": dataAttr(prop("invalid")),
         onClick(event) {
           if (event.defaultPrevented) return
-          if (isDisabled) return
+          if (disabled) return
           const triggerEl = dom.getTriggerEl(scope)
           triggerEl?.focus({ preventScroll: true })
         },
@@ -125,8 +145,10 @@ export function connect<T extends PropTypes, V = TreeNode>(
     getControlProps() {
       return normalize.element({
         ...parts.control.attrs,
+        dir: prop("dir"),
         id: dom.getControlId(scope),
-        "data-disabled": dataAttr(isDisabled),
+        "data-disabled": dataAttr(disabled),
+        "data-focused": dataAttr(focused),
         "data-readonly": dataAttr(prop("readOnly")),
         "data-invalid": dataAttr(prop("invalid")),
         "data-state": open ? "open" : "closed",
@@ -136,6 +158,7 @@ export function connect<T extends PropTypes, V = TreeNode>(
     getTriggerProps() {
       return normalize.button({
         ...parts.trigger.attrs,
+        dir: prop("dir"),
         id: dom.getTriggerId(scope),
         type: "button",
         role: "combobox",
@@ -143,15 +166,16 @@ export function connect<T extends PropTypes, V = TreeNode>(
         "aria-expanded": open,
         "aria-haspopup": "listbox",
         "aria-labelledby": dom.getLabelId(scope),
-        "aria-describedby": dom.getValueTextId(scope),
         "data-state": open ? "open" : "closed",
-        "data-disabled": dataAttr(isDisabled),
+        "data-disabled": dataAttr(disabled),
         "data-readonly": dataAttr(prop("readOnly")),
         "data-invalid": dataAttr(prop("invalid")),
-        disabled: isDisabled,
+        "data-focused": dataAttr(focused),
+        "data-placement": currentPlacement,
+        disabled,
         onClick(event) {
-          if (!isInteractive) return
           if (event.defaultPrevented) return
+          if (!interactive) return
           send({ type: "TRIGGER.CLICK" })
         },
         onFocus() {
@@ -162,69 +186,53 @@ export function connect<T extends PropTypes, V = TreeNode>(
         },
         onKeyDown(event) {
           if (event.defaultPrevented) return
-          if (!isInteractive) return
-          const key = getEventKey(event)
+          if (!interactive) return
 
-          switch (key) {
-            case "ArrowDown":
-              event.preventDefault()
-              send({ type: "TRIGGER.ARROW_DOWN" })
-              break
-            case "ArrowUp":
-              event.preventDefault()
+          const keyMap: EventKeyMap = {
+            ArrowUp() {
               send({ type: "TRIGGER.ARROW_UP" })
-              break
-            case "ArrowRight":
-              event.preventDefault()
+            },
+            ArrowDown(event) {
+              send({ type: event.altKey ? "OPEN" : "TRIGGER.ARROW_DOWN" })
+            },
+            ArrowLeft() {
+              send({ type: "TRIGGER.ARROW_LEFT" })
+            },
+            ArrowRight() {
               send({ type: "TRIGGER.ARROW_RIGHT" })
-              break
-            case "Enter":
-            case " ":
-              event.preventDefault()
+            },
+            Enter() {
               send({ type: "TRIGGER.ENTER" })
-              break
+            },
+            Space() {
+              send({ type: "TRIGGER.ENTER" })
+            },
+          }
+
+          const exec = keyMap[getEventKey(event, { dir: prop("dir") })]
+          if (exec) {
+            exec(event)
+            event.preventDefault()
           }
         },
-      })
-    },
-
-    getIndicatorProps() {
-      return normalize.element({
-        ...parts.indicator.attrs,
-        id: dom.getIndicatorId(scope),
-        "data-state": open ? "open" : "closed",
-        "data-disabled": dataAttr(isDisabled),
-        "data-readonly": dataAttr(prop("readOnly")),
-        "data-invalid": dataAttr(prop("invalid")),
-      })
-    },
-
-    getValueTextProps() {
-      return normalize.element({
-        ...parts.valueText.attrs,
-        id: dom.getValueTextId(scope),
-        "data-disabled": dataAttr(isDisabled),
-        "data-readonly": dataAttr(prop("readOnly")),
-        "data-invalid": dataAttr(prop("invalid")),
-        "data-placeholder": dataAttr(!value.length),
       })
     },
 
     getClearTriggerProps() {
       return normalize.button({
         ...parts.clearTrigger.attrs,
+        dir: prop("dir"),
         id: dom.getClearTriggerId(scope),
         type: "button",
         "aria-label": "Clear value",
-        hidden: !value.length,
-        "data-disabled": dataAttr(isDisabled),
+        hidden: !hasSelectedItems,
+        "data-disabled": dataAttr(disabled),
         "data-readonly": dataAttr(prop("readOnly")),
         "data-invalid": dataAttr(prop("invalid")),
-        disabled: isDisabled,
+        disabled,
         onClick(event) {
-          if (!isInteractive) return
-          if (!isLeftClick(event)) return
-          send({ type: "VALUE.CLEAR" })
+          if (event.defaultPrevented) return
+          send({ type: "CLEAR_TRIGGER.CLICK" })
         },
       })
     },
@@ -232,16 +240,14 @@ export function connect<T extends PropTypes, V = TreeNode>(
     getPositionerProps() {
       return normalize.element({
         ...parts.positioner.attrs,
+        dir: prop("dir"),
         id: dom.getPositionerId(scope),
         style: popperStyles.floating,
       })
     },
 
     getContentProps() {
-      const highlightedValue = highlightedIndexPath.length
-        ? collection.getNodeValue(collection.at(highlightedIndexPath))
-        : undefined
-      const highlightedItemId = highlightedValue ? dom.getItemId(scope, highlightedValue) : undefined
+      const highlightedItemId = highlightedValue ? dom.getItemId(scope, highlightedValue.toString()) : undefined
 
       return normalize.element({
         ...parts.content.attrs,
@@ -251,11 +257,24 @@ export function connect<T extends PropTypes, V = TreeNode>(
         "aria-activedescendant": highlightedItemId,
         "data-activedescendant": highlightedItemId,
         "data-state": open ? "open" : "closed",
+        "aria-multiselectable": prop("multiple"),
+        "aria-required": prop("required"),
+        "aria-readonly": prop("readOnly"),
+
         hidden: !open,
         tabIndex: 0,
         onKeyDown(event) {
-          if (!isInteractive) return
-          const key = getEventKey(event)
+          if (!interactive) return
+          if (!isSelfTarget(event)) return
+
+          // cascader should not be navigated using tab key so we prevent it
+          if (event.key === "Tab") {
+            const valid = isValidTabEvent(event)
+            if (!valid) {
+              event.preventDefault()
+              return
+            }
+          }
 
           const keyMap: Record<string, () => void> = {
             ArrowDown() {
@@ -282,19 +301,21 @@ export function connect<T extends PropTypes, V = TreeNode>(
             " "() {
               send({ type: "CONTENT.ENTER" })
             },
-            Escape() {
-              send({ type: "CONTENT.ESCAPE" })
-            },
           }
 
-          const exec = keyMap[key]
+          const exec = keyMap[getEventKey(event, { dir: prop("dir") })]
           if (exec) {
             exec()
             event.preventDefault()
+            return
+          }
+
+          if (isEditableElement(event.target)) {
+            return
           }
         },
         onPointerMove(event) {
-          if (!isInteractive) return
+          if (!interactive) return
           send({ type: "POINTER_MOVE", clientX: event.clientX, clientY: event.clientY, target: event.target })
         },
       })
@@ -305,56 +326,72 @@ export function connect<T extends PropTypes, V = TreeNode>(
 
       return normalize.element({
         ...parts.list.attrs,
-        id: dom.getListId(scope, itemState.value),
+        id: dom.getListId(scope, itemState.value.toString()),
         dir: prop("dir"),
         "data-depth": itemState.depth,
-        "aria-depth": itemState.depth,
+        "aria-level": itemState.depth,
         role: "group",
       })
     },
 
+    getIndicatorProps() {
+      return normalize.element({
+        ...parts.indicator.attrs,
+        id: dom.getIndicatorId(scope),
+        dir: prop("dir"),
+        "aria-hidden": true,
+        "data-state": open ? "open" : "closed",
+        "data-disabled": dataAttr(disabled),
+        "data-readonly": dataAttr(prop("readOnly")),
+        "data-invalid": dataAttr(prop("invalid")),
+      })
+    },
+
     getItemProps(props: ItemProps<V>) {
-      const {
-        item,
-        indexPath,
-        valuePath,
-        // TODO closeOnSelect
-      } = props
-      const itemValue = collection.getNodeValue(item)
+      const { indexPath } = props
       const itemState = getItemState(props)
 
       return normalize.element({
         ...parts.item.attrs,
-        id: dom.getItemId(scope, itemValue),
+        id: dom.getItemId(scope, itemState.value.toString()),
+        dir: prop("dir"),
         role: "treeitem",
         "aria-haspopup": itemState.hasChildren ? "menu" : undefined,
         "aria-expanded": itemState.hasChildren ? itemState.highlighted : false,
-        "aria-controls": itemState.hasChildren ? dom.getListId(scope, itemState.value) : undefined,
-        "aria-owns": itemState.hasChildren ? dom.getListId(scope, itemState.value) : undefined,
+        "aria-controls": itemState.hasChildren ? dom.getListId(scope, itemState.value.toString()) : undefined,
+        "aria-owns": itemState.hasChildren ? dom.getListId(scope, itemState.value.toString()) : undefined,
         "aria-disabled": ariaAttr(itemState.disabled),
-        "data-value": itemValue,
+        "data-value": itemState.value.toString(),
         "data-disabled": dataAttr(itemState.disabled),
         "data-highlighted": dataAttr(itemState.highlighted),
         "data-selected": dataAttr(itemState.selected),
-        "data-has-children": dataAttr(itemState.hasChildren),
         "data-depth": itemState.depth,
         "aria-selected": itemState.selected,
         "data-type": itemState.hasChildren ? "branch" : "leaf",
-        "data-index-path": indexPath.join(separator),
-        "data-value-path": valuePath.join(separator),
+        "data-index-path": indexPath.toString(),
+        onDoubleClick() {
+          if (itemState.disabled) return
+          send({ type: "CLOSE" })
+        },
         onClick(event) {
-          if (!isInteractive) return
+          if (!interactive) return
           if (!isLeftClick(event)) return
           if (itemState.disabled) return
-          send({ type: "ITEM.CLICK", indexPath })
+          send({ type: "ITEM.CLICK", value: itemState.value, indexPath })
         },
         onPointerEnter(event) {
-          if (!isInteractive) return
+          if (!interactive) return
           if (itemState.disabled) return
-          send({ type: "ITEM.POINTER_ENTER", indexPath, clientX: event.clientX, clientY: event.clientY })
+          send({
+            type: "ITEM.POINTER_ENTER",
+            value: itemState.value,
+            indexPath,
+            clientX: event.clientX,
+            clientY: event.clientY,
+          })
         },
         onPointerLeave(event) {
-          if (!isInteractive) return
+          if (!interactive) return
           if (itemState.disabled) return
           if (props.persistFocus) return
           if (event.pointerType !== "mouse") return
@@ -362,7 +399,18 @@ export function connect<T extends PropTypes, V = TreeNode>(
           const pointerMoved = service.event.previous()?.type.includes("POINTER")
           if (!pointerMoved) return
 
-          send({ type: "ITEM.POINTER_LEAVE", indexPath, clientX: event.clientX, clientY: event.clientY })
+          send({
+            type: "ITEM.POINTER_LEAVE",
+            value: itemState.value,
+            indexPath,
+            clientX: event.clientX,
+            clientY: event.clientY,
+          })
+        },
+        onTouchEnd(event) {
+          // prevent clicking elements behind content
+          event.preventDefault()
+          event.stopPropagation()
         },
       })
     },
@@ -372,6 +420,7 @@ export function connect<T extends PropTypes, V = TreeNode>(
       const itemValue = collection.getNodeValue(item)
       const itemState = getItemState(props)
       return normalize.element({
+        dir: prop("dir"),
         ...parts.itemText.attrs,
         "data-value": itemValue,
         "data-highlighted": dataAttr(itemState.highlighted),
@@ -387,22 +436,21 @@ export function connect<T extends PropTypes, V = TreeNode>(
 
       return normalize.element({
         ...parts.itemIndicator.attrs,
+        dir: prop("dir"),
         "data-value": itemValue,
         "data-highlighted": dataAttr(itemState.highlighted),
-        "data-has-children": dataAttr(itemState.hasChildren),
+        "data-type": itemState.hasChildren ? "branch" : "leaf",
         hidden: !itemState.hasChildren,
       })
     },
 
     getHiddenInputProps() {
-      // Create option values from the current selected paths
-      // TODO: fix this
-      const defaultValue = prop("multiple") ? value.map((path) => path.join(separator)) : value[0]?.join(separator)
+      const defaultValue = context.hash("value")
 
       return normalize.input({
         name: prop("name"),
         form: prop("form"),
-        disabled: isDisabled,
+        disabled,
         multiple: prop("multiple"),
         required: prop("required"),
         readOnly: prop("readOnly"),

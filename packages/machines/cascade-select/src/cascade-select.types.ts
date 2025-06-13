@@ -3,24 +3,31 @@ import type { TreeCollection, TreeNode } from "@zag-js/collection"
 import type { IndexPath } from "@zag-js/collection/src/tree-visit"
 import type { Point } from "@zag-js/rect-utils"
 import type { CommonProperties, DirectionProperty, PropTypes, RequiredBy } from "@zag-js/types"
-import type { Machine, Service } from "@zag-js/core"
+import type { EventObject, Machine, Service } from "@zag-js/core"
+import type { InteractOutsideHandlers } from "@zag-js/dismissable"
 
 /* -----------------------------------------------------------------------------
  * Callback details
  * -----------------------------------------------------------------------------*/
 
-export interface ValueChangeDetails {
-  indexPath: IndexPath[]
-  // value: string[][]
-  // valueText: string
+export interface ValueChangeDetails<T = TreeNode> {
+  value: string[][]
+  items: T[][]
 }
 
-export interface HighlightChangeDetails {
-  indexPath: IndexPath
+export interface HighlightChangeDetails<T = TreeNode> {
+  value: string[]
+  items: T[]
 }
 
 export interface OpenChangeDetails {
   open: boolean
+}
+
+export interface ScrollToIndexDetails {
+  index: number
+  immediate?: boolean | undefined
+  depth: number
 }
 
 export type { TreeNode }
@@ -31,7 +38,6 @@ export type ElementIds = Partial<{
   control: string
   trigger: string
   indicator: string
-  valueText: string
   clearTrigger: string
   positioner: string
   content: string
@@ -44,7 +50,7 @@ export type ElementIds = Partial<{
  * Machine context
  * -----------------------------------------------------------------------------*/
 
-export interface CascadeSelectProps<T = any> extends DirectionProperty, CommonProperties {
+export interface CascadeSelectProps<T = any> extends DirectionProperty, CommonProperties, InteractOutsideHandlers {
   /**
    * The tree collection data
    */
@@ -61,15 +67,23 @@ export interface CascadeSelectProps<T = any> extends DirectionProperty, CommonPr
    * The form attribute of the underlying select element
    */
   form?: string | undefined
-  // /**
-  //  * The controlled value of the cascade-select
-  //  */
-  // value?: string[][] | undefined
-  // /**
-  //  * The initial value of the cascade-select when rendered.
-  //  * Use when you don't need to control the value.
-  //  */
-  // defaultValue?: string[][] | undefined
+  /**
+   * The controlled value of the cascade-select
+   */
+  value?: string[][] | undefined
+  /**
+   * The initial value of the cascade-select when rendered.
+   * Use when you don't need to control the value.
+   */
+  defaultValue?: string[][] | undefined
+  /**
+   * The controlled highlighted value of the cascade-select
+   */
+  highlightedValue?: string[] | undefined
+  /**
+   * The initial highlighted value of the cascade-select when rendered.
+   */
+  defaultHighlightedValue?: string[] | undefined
   /**
    * Whether to allow multiple selections
    * @default false
@@ -90,10 +104,6 @@ export interface CascadeSelectProps<T = any> extends DirectionProperty, CommonPr
    */
   highlightTrigger?: "click" | "hover" | undefined
   /**
-   * The placeholder text for the cascade-select
-   */
-  placeholder?: string | undefined
-  /**
    * Whether the cascade-select should close when an item is selected
    * @default true
    */
@@ -102,7 +112,7 @@ export interface CascadeSelectProps<T = any> extends DirectionProperty, CommonPr
    * Whether the cascade-select should loop focus when navigating with keyboard
    * @default false
    */
-  loop?: boolean | undefined
+  loopFocus?: boolean | undefined
   /**
    * Whether the cascade-select is disabled
    */
@@ -124,17 +134,21 @@ export interface CascadeSelectProps<T = any> extends DirectionProperty, CommonPr
    */
   positioning?: PositioningOptions | undefined
   /**
+   * Function to scroll to a specific index
+   */
+  scrollToIndexFn?: ((details: ScrollToIndexDetails) => void) | undefined
+  /**
    * Function to format the display value
    */
-  // formatValue?: ((value: string[][]) => string) | undefined
+  formatValue?: ((selectedItems: T[][]) => string) | undefined
   /**
    * Called when the value changes
    */
-  onValueChange?: ((details: ValueChangeDetails) => void) | undefined
+  onValueChange?: ((details: ValueChangeDetails<T>) => void) | undefined
   /**
    * Called when the highlighted value changes
    */
-  onHighlightChange?: ((details: HighlightChangeDetails) => void) | undefined
+  onHighlightChange?: ((details: HighlightChangeDetails<T>) => void) | undefined
   /**
    * Called when the open state changes
    */
@@ -143,43 +157,32 @@ export interface CascadeSelectProps<T = any> extends DirectionProperty, CommonPr
    * Whether parent (branch) items can be selectable
    */
   allowParentSelection?: boolean
-  /**
-   * The separator used to join path segments in the cascade select
-   * @default " / "
-   */
-  separator?: string | undefined
 }
 
-type PropsWithDefault =
-  | "collection"
-  | "closeOnSelect"
-  | "loop"
-  // | "defaultValue"
-  | "defaultOpen"
-  | "multiple"
-  | "highlightTrigger"
-  | "separator"
+type PropsWithDefault = "collection" | "closeOnSelect" | "loopFocus" | "highlightTrigger"
 
 export interface CascadeSelectSchema<T extends TreeNode = TreeNode> {
   state: "idle" | "focused" | "open"
   props: RequiredBy<CascadeSelectProps<T>, PropsWithDefault>
   context: {
-    // value: string[][]
-    valueIndexPath: IndexPath[]
-    highlightedIndexPath: IndexPath
+    value: string[][]
+    highlightedValue: string[]
     currentPlacement: Placement | undefined
     fieldsetDisabled: boolean
     graceArea: Point[] | null
+    valueIndexPath: IndexPath[]
+    highlightedIndexPath: IndexPath
+    highlightedItem: T[] | null
+    selectedItems: T[][]
   }
   computed: {
-    isDisabled: boolean
     isInteractive: boolean
-    value: string[][]
-    valueText: string
+    valueAsString: string
   }
   action: string
   effect: string
   guard: string
+  event: EventObject
 }
 
 export type CascadeSelectService<T extends TreeNode = TreeNode> = Service<CascadeSelectSchema<T>>
@@ -202,18 +205,18 @@ export interface ItemProps<T = TreeNode> {
   /**
    * The value path of the item
    */
-  valuePath: string[]
+  value: string[]
   /**
    * Whether hovering outside should clear the highlighted state
    */
   persistFocus?: boolean | undefined
 }
 
-export interface ItemState {
+export interface ItemState<T = TreeNode> {
   /**
    * The value of the item
    */
-  value: string
+  value: string[]
   /**
    * Whether the item is disabled
    */
@@ -234,33 +237,21 @@ export interface ItemState {
    * The depth of the item in the tree
    */
   depth: number
+  /**
+   * The highlighted child of the item
+   */
+  highlightedChild: T | undefined
+  /**
+   * The index of the highlighted child
+   */
+  highlightedIndex: number
 }
 
 export interface CascadeSelectApi<T extends PropTypes = PropTypes, V = TreeNode> {
   /**
-   * The separator used to join path segments in the display value
-   */
-  separator: string
-  /**
    * The tree collection data
    */
   collection: TreeCollection<V>
-  /**
-   * The current value of the cascade-select
-   */
-  value: string[][]
-  /**
-   * Function to set the value
-   */
-  // setValue(value: string[][]): void
-  /**
-   * The current value as text
-   */
-  valueText: string
-  /**
-   * The current highlighted value
-   */
-  highlightedIndexPath: IndexPath
   /**
    * Whether the cascade-select is open
    */
@@ -270,33 +261,83 @@ export interface CascadeSelectApi<T extends PropTypes = PropTypes, V = TreeNode>
    */
   focused: boolean
   /**
+   * Whether the cascade-select allows multiple selections
+   */
+  multiple: boolean
+  /**
+   * Whether the cascade-select is disabled
+   */
+  disabled: boolean
+  /**
+   * The value of the highlighted item
+   */
+  highlightedValue: string[]
+  /**
+   * The highlighted item
+   */
+  highlightedItem: V[] | null
+  /**
+   * The selected items
+   */
+  selectedItems: V[][]
+  /**
+   * Whether there's a selected option
+   */
+  hasSelectedItems: boolean
+  /**
+   * The current value of the cascade-select
+   */
+  value: string[][]
+  /**
+   * The current value as text
+   */
+  valueAsString: string
+  /**
+   * Function to focus on the select input
+   */
+  focus(): void
+  /**
+   * Function to focus on the select input
+   */
+  focus(): void
+  /**
+   * Function to set the positioning options of the cascade-select
+   */
+  reposition(options?: Partial<PositioningOptions>): void
+  /**
    * Function to open the cascade-select
    */
   setOpen(open: boolean): void
   /**
-   * Function to highlight an item
+   * Function to highlight a value
    */
-  highlight(path: string[]): void
+  highlightValue(value: string): void
   /**
-   * Function to select an item
+   * Function to select a value
    */
-  // selectItem(value: string): void
+  selectValue(value: string[]): void
+  /**
+   * Function to set the value
+   */
+  setValue(value: string[][]): void
   /**
    * Function to clear the value
    */
-  clearValue(): void
+  clearValue(value?: string[]): void
+  /**
+   * Returns the state of a cascade-select item
+   */
+  getItemState(props: ItemProps<V>): ItemState<V>
 
   getRootProps(): T["element"]
   getLabelProps(): T["element"]
   getControlProps(): T["element"]
   getTriggerProps(): T["element"]
   getIndicatorProps(): T["element"]
-  getValueTextProps(): T["element"]
   getClearTriggerProps(): T["element"]
   getPositionerProps(): T["element"]
   getContentProps(): T["element"]
   getListProps(props: ItemProps<V>): T["element"]
-  getItemState(props: ItemProps<V>): ItemState
   getItemProps(props: ItemProps<V>): T["element"]
   getItemTextProps(props: ItemProps<V>): T["element"]
   getItemIndicatorProps(props: ItemProps<V>): T["element"]

@@ -261,17 +261,6 @@ test.describe("hover highlighting", () => {
 })
 
 test.describe("selection behavior", () => {
-  test("should not allow selection of disabled items", async () => {
-    await I.clickTrigger()
-
-    // Antarctica is disabled - force clicking should not select it
-    await I.page.locator('[data-part="item"][data-value="antarctica"]').click({ force: true })
-
-    // Should remain at placeholder text since Antarctica can't be selected
-    await I.seeTriggerHasText("Select a location")
-    await I.seeDropdown() // Should remain open since no selection happened
-  })
-
   test("should select valid continent when parent selection is allowed", async () => {
     await I.controls.bool("allowParentSelection", true)
 
@@ -316,8 +305,465 @@ test.describe("selection behavior", () => {
     await I.clickItem("Afghanistan")
     await I.clickItem("Badakhshān") // Select another leaf item
 
-    await I.seeTriggerHasText("Africa / Algeria / Adrar, Asia / Afghanistan / Badakhshān")
+    await I.seeTriggerHasText("Adrar, Badakhshān")
     await I.seeDropdown() // Should remain open because closeOnSelect is false
+  })
+})
+
+test.describe("advanced selection behavior", () => {
+  test.describe("parent selection allowed", () => {
+    test.beforeEach(async () => {
+      await I.controls.bool("allowParentSelection", true)
+    })
+
+    test("should allow selecting parent items and keep them highlighted", async () => {
+      await I.clickTrigger()
+
+      // Select continent
+      await I.clickItem("Africa")
+      await I.seeTriggerHasText("Africa")
+      await I.seeItemIsHighlighted("Africa") // Should remain highlighted since it has children
+      await I.seeList(1) // Should show countries list
+
+      // Select country
+      await I.clickItem("Algeria")
+      await I.seeTriggerHasText("Africa / Algeria")
+      await I.seeItemIsHighlighted("Algeria") // Should remain highlighted since it has children
+      await I.seeList(2) // Should show states list
+    })
+
+    test("should clear highlighting when selecting leaf items", async () => {
+      await I.clickTrigger()
+      await I.clickItem("Africa")
+      await I.clickItem("Algeria")
+
+      // Select leaf item (state)
+      await I.clickItem("Adrar")
+      await I.seeTriggerHasText("Africa / Algeria / Adrar")
+      await I.dontSeeHighlightedItems() // Should clear highlighting for leaf items
+    })
+
+    test("should resolve parent/child conflicts in multiple mode", async () => {
+      await I.controls.bool("multiple", true)
+      await I.controls.bool("closeOnSelect", false)
+      await I.clickTrigger()
+
+      // First select a parent (continent)
+      await I.clickItem("Africa")
+      await I.seeTriggerHasText("Africa")
+
+      // Then select a child (country in that continent)
+      await I.clickItem("Algeria")
+
+      // Should only show the child, parent should be removed due to conflict
+      await I.seeTriggerHasText("Algeria")
+    })
+
+    test("should remove child when parent is selected in multiple mode", async () => {
+      await I.controls.bool("multiple", true)
+      await I.controls.bool("closeOnSelect", false)
+      await I.clickTrigger()
+
+      // First select a child (country)
+      await I.clickItem("Africa")
+      await I.clickItem("Algeria")
+      await I.seeTriggerHasText("Algeria")
+
+      // Go back and select the parent (continent)
+      await I.clickItem("Africa") // Navigate back to continent level
+      await I.clickItem("Africa") // Select the continent
+
+      // Should only show the parent, child should be removed due to conflict
+      await I.seeTriggerHasText("Africa")
+    })
+
+    test("should handle multiple non-conflicting selections", async () => {
+      await I.controls.bool("multiple", true)
+      await I.controls.bool("closeOnSelect", false)
+      await I.clickTrigger()
+
+      // Select from Africa
+      await I.clickItem("Africa")
+      await I.clickItem("Algeria")
+      await I.seeTriggerHasText("Algeria")
+
+      // Select from Asia (different continent, no conflict)
+      await I.clickItem("Asia")
+      await I.clickItem("Afghanistan")
+
+      // Should show both selections
+      await I.seeTriggerHasText("Algeria, Afghanistan")
+    })
+  })
+
+  test.describe("parent selection not allowed (default)", () => {
+    test("should navigate through parents without selecting them", async () => {
+      await I.clickTrigger()
+
+      // Click continent - should navigate, not select
+      await I.clickItem("Africa")
+      await I.seeTriggerHasText("Select a location") // Should not change trigger text
+      await I.seeList(1) // Should show countries list
+      await I.seeItemIsHighlighted("Africa") // Should highlight for navigation
+
+      // Click country - should navigate, not select
+      await I.clickItem("Algeria")
+      await I.seeTriggerHasText("Select a location") // Should still not change trigger text
+      await I.seeList(2) // Should show states list
+      await I.seeItemIsHighlighted("Algeria") // Should highlight for navigation
+    })
+
+    test("should only select leaf items", async () => {
+      await I.clickTrigger()
+      await I.clickItem("Africa")
+      await I.clickItem("Algeria")
+
+      // Click state (leaf item) - should select
+      await I.clickItem("Adrar")
+      await I.seeTriggerHasText("Africa / Algeria / Adrar") // Should update trigger text
+      await I.dontSeeDropdown() // Should close dropdown
+    })
+
+    test("should support multiple leaf selections with toggle", async () => {
+      await I.controls.bool("multiple", true)
+      await I.controls.bool("closeOnSelect", false)
+      await I.clickTrigger()
+
+      // Select first leaf
+      await I.clickItem("Africa")
+      await I.clickItem("Algeria")
+      await I.clickItem("Adrar")
+      await I.seeTriggerHasText("Adrar")
+
+      // Select second leaf from different path
+      await I.clickItem("Asia")
+      await I.clickItem("Afghanistan")
+      await I.clickItem("Badakhshān")
+      await I.seeTriggerHasText("Adrar, Badakhshān")
+
+      // Toggle off first selection
+      await I.clickItem("Africa")
+      await I.clickItem("Algeria")
+      await I.clickItem("Adrar") // Click again to deselect
+      await I.seeTriggerHasText("Badakhshān") // Should only show second selection
+    })
+
+    test("should use most recent selection as base for navigation in multiple mode", async () => {
+      await I.controls.bool("multiple", true)
+      await I.controls.bool("closeOnSelect", false)
+      await I.clickTrigger()
+
+      // Make first selection
+      await I.clickItem("Africa")
+      await I.clickItem("Algeria")
+      await I.clickItem("Adrar")
+      await I.seeTriggerHasText("Adrar")
+
+      // Navigate to different continent - should use most recent path as base
+      await I.clickItem("Asia") // Should navigate from current position
+      await I.seeList(1) // Should show Asian countries
+    })
+  })
+
+  test.describe("close on select behavior", () => {
+    test("should not close when selecting parent items", async () => {
+      await I.controls.bool("allowParentSelection", true)
+      await I.controls.bool("closeOnSelect", true)
+      await I.clickTrigger()
+
+      // Select parent item
+      await I.clickItem("Africa")
+      await I.seeDropdown() // Should remain open for parent items
+    })
+
+    test("should close when selecting leaf items", async () => {
+      await I.controls.bool("closeOnSelect", true)
+      await I.clickTrigger()
+
+      // Navigate to and select leaf item
+      await I.clickItem("Africa")
+      await I.clickItem("Algeria")
+      await I.clickItem("Adrar") // Leaf item
+      await I.dontSeeDropdown() // Should close for leaf items
+    })
+
+    test("should respect closeOnSelect false for leaf items", async () => {
+      await I.controls.bool("closeOnSelect", false)
+      await I.clickTrigger()
+
+      // Select leaf item
+      await I.clickItem("Africa")
+      await I.clickItem("Algeria")
+      await I.clickItem("Adrar")
+      await I.seeDropdown() // Should remain open when closeOnSelect is false
+    })
+  })
+
+  test.describe("value formatting", () => {
+    test("should format single selection as full path", async () => {
+      await I.clickTrigger()
+      await I.clickItem("Africa")
+      await I.clickItem("Algeria")
+      await I.clickItem("Adrar")
+
+      await I.seeTriggerHasText("Africa / Algeria / Adrar")
+    })
+
+    test("should format multiple selections as comma-separated leaf names", async () => {
+      await I.controls.bool("multiple", true)
+      await I.controls.bool("closeOnSelect", false)
+      await I.clickTrigger()
+
+      // Select first item
+      await I.clickItem("Africa")
+      await I.clickItem("Algeria")
+      await I.clickItem("Adrar")
+
+      // Select second item
+      await I.clickItem("Asia")
+      await I.clickItem("Afghanistan")
+      await I.clickItem("Badakhshān")
+
+      // In multiple mode, should show only leaf names
+      await I.seeTriggerHasText("Adrar, Badakhshān")
+    })
+
+    test("should format parent selections correctly when allowed", async () => {
+      await I.controls.bool("allowParentSelection", true)
+      await I.controls.bool("multiple", true)
+      await I.controls.bool("closeOnSelect", false)
+      await I.clickTrigger()
+
+      // Select a parent item
+      await I.clickItem("Africa")
+      await I.seeTriggerHasText("Africa") // Should show full path for parent
+
+      // Select another parent from different continent
+      await I.clickItem("Asia")
+      await I.seeTriggerHasText("Africa, Asia") // Should show both in multiple mode
+    })
+  })
+
+  test.describe("edge cases", () => {
+    test("should handle rapid selections correctly", async () => {
+      await I.controls.bool("multiple", true)
+      await I.controls.bool("closeOnSelect", false)
+      await I.clickTrigger()
+
+      // Rapid selections
+      await I.clickItem("Africa")
+      await I.clickItem("Algeria")
+      await I.clickItem("Adrar")
+
+      await I.clickItem("Asia")
+      await I.clickItem("Afghanistan")
+      await I.clickItem("Badakhshān")
+
+      await I.clickItem("Europe")
+      await I.clickItem("France")
+      await I.clickItem("Auvergne")
+
+      // Should handle all selections correctly
+      await I.seeTriggerHasText("Adrar, Badakhshān, Auvergne")
+    })
+
+    test("should maintain correct highlighting during complex navigation", async () => {
+      await I.controls.bool("allowParentSelection", true)
+      await I.clickTrigger()
+
+      // Select parent, then navigate deeper
+      await I.clickItem("Africa")
+      await I.seeItemIsHighlighted("Africa")
+
+      await I.clickItem("Algeria")
+      await I.seeItemIsHighlighted("Algeria")
+
+      // Navigate to leaf
+      await I.clickItem("Adrar")
+      await I.dontSeeHighlightedItems() // Should clear highlighting for leaf
+    })
+
+    test("should handle conflicting paths correctly in complex scenarios", async () => {
+      await I.controls.bool("allowParentSelection", true)
+      await I.controls.bool("multiple", true)
+      await I.controls.bool("closeOnSelect", false)
+      await I.clickTrigger()
+
+      // Create a complex scenario with nested conflicts
+      await I.clickItem("Africa") // Select continent
+      await I.seeTriggerHasText("Africa")
+
+      await I.clickItem("Algeria") // Select country (should remove continent)
+      await I.seeTriggerHasText("Algeria")
+
+      await I.clickItem("Adrar") // Select state (should remove country)
+      await I.seeTriggerHasText("Adrar")
+
+      // Now select a different continent
+      await I.clickItem("Asia")
+      await I.seeTriggerHasText("Adrar, Asia") // Should have both
+    })
+
+    test("should handle same-level selections in multiple mode", async () => {
+      await I.controls.bool("allowParentSelection", true)
+      await I.controls.bool("multiple", true)
+      await I.controls.bool("closeOnSelect", false)
+      await I.clickTrigger()
+
+      // Select multiple countries from the same continent
+      await I.clickItem("Africa")
+      await I.clickItem("Algeria")
+      await I.seeTriggerHasText("Algeria")
+
+      // Select another country
+      await I.clickItem("Egypt")
+      await I.seeTriggerHasText("Algeria, Egypt") // Should have both countries
+    })
+  })
+
+  test.describe("keyboard selection behavior", () => {
+    test("should select items with Enter key respecting parent selection rules", async () => {
+      await I.focusTrigger()
+      await I.pressKey("Enter")
+
+      // Navigate to item and select with Enter
+      await I.pressKey("ArrowDown") // Asia
+      await I.pressKey("Enter") // Should not select (parent item, allowParentSelection false)
+      await I.seeTriggerHasText("Select a location")
+
+      // Navigate deeper and select leaf
+      await I.pressKey("ArrowRight") // Enter Asia
+      await I.pressKey("ArrowRight") // Enter Afghanistan
+      await I.pressKey("Enter") // Select leaf item
+      await I.seeTriggerHasText("Asia / Afghanistan / Badakhshān")
+      await I.dontSeeDropdown() // Should close
+    })
+
+    test("should allow keyboard selection of parents when enabled", async () => {
+      await I.controls.bool("allowParentSelection", true)
+      await I.focusTrigger()
+      await I.pressKey("Enter")
+
+      // Select parent with Enter
+      await I.pressKey("ArrowDown") // Asia
+      await I.pressKey("Enter") // Should select parent
+      await I.seeTriggerHasText("Asia")
+    })
+
+    test("should support keyboard multiple selection toggle", async () => {
+      await I.controls.bool("multiple", true)
+      await I.focusTrigger()
+      await I.pressKey("Enter")
+
+      // Select first item
+      await I.pressKey("ArrowDown") // Asia
+      await I.pressKey("ArrowRight") // Enter Asia
+      await I.pressKey("ArrowRight") // Enter Afghanistan
+      await I.pressKey("Enter") // Select Badakhshān
+      await I.seeTriggerHasText("Badakhshān")
+
+      // Navigate to second item
+      await I.pressKey("ArrowLeft") // Back to Afghanistan
+      await I.pressKey("ArrowDown")
+      await I.pressKey("ArrowDown")
+      await I.pressKey("ArrowDown")
+      await I.pressKey("ArrowDown")
+      await I.pressKey("ArrowDown")
+      await I.pressKey("ArrowDown")
+      await I.pressKey("ArrowDown")
+      await I.pressKey("ArrowDown") // China
+      await I.pressKey("ArrowRight") // Enter China
+      await I.pressKey("Enter") // Select Guangxi
+      await I.seeTriggerHasText("Badakhshān, Guangxi")
+
+      // Toggle off first selection
+      await I.pressKey("ArrowLeft") // Back to China level
+      await I.pressKey("ArrowUp")
+      await I.pressKey("ArrowUp")
+      await I.pressKey("ArrowUp")
+      await I.pressKey("ArrowUp")
+      await I.pressKey("ArrowUp")
+      await I.pressKey("ArrowUp")
+      await I.pressKey("ArrowUp")
+      await I.pressKey("ArrowUp") // Afghanistan
+      await I.pressKey("ArrowRight") // Enter Afghanistan
+      await I.pressKey("Enter") // Deselect Badakhshān
+      await I.seeTriggerHasText("Guangxi")
+    })
+  })
+
+  test.describe("interaction with other features", () => {
+    test("should clear value and maintain consistency", async () => {
+      await I.controls.bool("multiple", true)
+      await I.clickTrigger()
+
+      // Make multiple selections
+      await I.clickItem("Africa")
+      await I.clickItem("Algeria")
+      await I.clickItem("Adrar")
+
+      await I.clickItem("Asia")
+      await I.clickItem("Afghanistan")
+      await I.clickItem("Badakhshān")
+
+      await I.seeTriggerHasText("Adrar, Badakhshān")
+
+      // Clear all values
+      await I.clickClearTrigger()
+      await I.seeTriggerHasText("Select a location")
+      await I.dontSeeClearTrigger()
+    })
+
+    test("should handle disabled items during selection attempts", async () => {
+      await I.controls.bool("allowParentSelection", true)
+      await I.clickTrigger()
+
+      // Try to select disabled item (should not work)
+      await I.getItem("Antarctica").click({ force: true })
+      await I.seeTriggerHasText("Select a location") // Should not change
+
+      // Select valid item to confirm selection still works
+      await I.clickItem("Africa")
+      await I.seeTriggerHasText("Africa")
+    })
+
+    test("should maintain selection state when reopening dropdown", async () => {
+      await I.controls.bool("allowParentSelection", true)
+      await I.clickTrigger()
+      await I.clickItem("Africa")
+      await I.seeTriggerHasText("Africa")
+
+      // Close and reopen
+      await I.clickTrigger() // Close
+      await I.dontSeeDropdown()
+
+      await I.clickTrigger() // Reopen
+      await I.seeDropdown()
+      await I.seeItemIsHighlighted("Africa") // Should restore highlighting
+      await I.seeList(1) // Should show the countries list
+    })
+
+    test("should handle complex selection with hover highlighting", async () => {
+      await I.controls.select("highlightTrigger", "hover")
+      await I.controls.bool("allowParentSelection", true)
+      await I.controls.bool("multiple", true)
+      await I.controls.bool("closeOnSelect", false)
+      await I.clickTrigger()
+
+      // Hover should highlight, click should select
+      await I.hoverItem("Africa")
+      await I.seeItemIsHighlighted("Africa")
+
+      await I.clickItem("Africa") // Select
+      await I.seeTriggerHasText("Africa")
+
+      // Hover different item
+      await I.hoverItem("Asia")
+      await I.seeItemIsHighlighted("Asia")
+
+      await I.clickItem("Asia") // Select second
+      await I.seeTriggerHasText("Africa, Asia")
+    })
   })
 })
 
@@ -346,90 +792,12 @@ test.describe("focus management", () => {
   })
 })
 
-test.describe("separator configuration", () => {
-  test("should use default separator in trigger text", async () => {
-    await I.clickTrigger()
-    await I.clickItem("Africa")
-    await I.clickItem("Algeria")
-    await I.clickItem("Adrar")
-
-    await I.seeTriggerHasText("Africa / Algeria / Adrar")
-  })
-
-  test("should use custom separator in trigger text", async () => {
-    await I.controls.num("separator", " → ")
-
-    await I.clickTrigger()
-    await I.clickItem("Africa")
-    await I.clickItem("Algeria")
-    await I.clickItem("Adrar")
-
-    await I.seeTriggerHasText("Africa → Algeria → Adrar")
-  })
-
-  test("should use custom separator in multiple selection", async () => {
-    await I.controls.bool("multiple", true)
-    await I.controls.bool("closeOnSelect", false)
-    await I.controls.num("separator", " | ")
-
-    await I.clickTrigger()
-    await I.clickItem("Africa")
-    await I.clickItem("Algeria")
-    await I.clickItem("Adrar")
-
-    await I.clickItem("Asia")
-    await I.clickItem("Afghanistan")
-    await I.clickItem("Badakhshān")
-
-    await I.seeTriggerHasText("Africa | Algeria | Adrar, Asia | Afghanistan | Badakhshān")
-  })
-
-  test("should use custom separator in nested paths", async () => {
-    await I.controls.num("separator", " :: ")
-
-    await I.clickTrigger()
-    await I.clickItem("Africa")
-    await I.clickItem("Algeria")
-    await I.clickItem("Adrar")
-
-    await I.seeTriggerHasText("Africa :: Algeria :: Adrar")
-  })
-
-  test("should use separator in clear functionality", async () => {
-    await I.controls.num("separator", " > ")
-
-    await I.clickTrigger()
-    await I.clickItem("Africa")
-    await I.clickItem("Algeria")
-    await I.clickItem("Adrar")
-
-    await I.seeTriggerHasText("Africa > Algeria > Adrar")
-
-    await I.clickClearTrigger()
-    await I.seeTriggerHasText("Select a location")
-  })
-
-  test("should preserve separator in form values", async () => {
-    await I.controls.num("separator", " >> ")
-
-    await I.clickTrigger()
-    await I.clickItem("Africa")
-    await I.clickItem("Algeria")
-    await I.clickItem("Adrar")
-
-    // Verify the hidden select element has the correct value
-    const hiddenInput = await I.page.locator("input").first()
-    const value = await hiddenInput.inputValue()
-    expect(value).toContain("africa >> algeria >> adrar")
-  })
-})
-
 test.describe("disabled items", () => {
   test("should visually indicate disabled items", async () => {
     await I.clickTrigger()
 
     // Antarctica should have disabled styling
-    const antarcticaItem = I.page.locator('[data-part="item"][data-value="antarctica"]')
+    const antarcticaItem = I.getItem("Antarctica")
     await expect(antarcticaItem).toHaveAttribute("data-disabled")
     await expect(antarcticaItem).toHaveAttribute("aria-disabled", "true")
   })
@@ -439,7 +807,7 @@ test.describe("disabled items", () => {
     await I.seeTriggerHasText("Select a location")
 
     // Try to force click Antarctica (disabled) - using force to bypass Playwright protection
-    await I.page.locator('[data-part="item"][data-value="antarctica"]').click({ force: true })
+    await I.getItem("Antarctica").click({ force: true })
 
     // Should not change the trigger text or close dropdown
     await I.seeTriggerHasText("Select a location")

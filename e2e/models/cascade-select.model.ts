@@ -31,10 +31,6 @@ export class CascadeSelectModel extends Model {
     return this.page.locator("[data-scope=cascade-select][data-part=clear-trigger]")
   }
 
-  private get valueText() {
-    return this.page.locator("[data-scope=cascade-select][data-part=value-text]")
-  }
-
   getItem = (text: string) => {
     return this.page.locator(`[data-part=item]`).filter({ hasText: new RegExp(`^${text}$`) })
   }
@@ -88,7 +84,7 @@ export class CascadeSelectModel extends Model {
   }
 
   seeTriggerHasText = async (text: string) => {
-    await expect(this.valueText).toContainText(text)
+    await expect(this.trigger).toContainText(text)
   }
 
   seeDropdown = async () => {

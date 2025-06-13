@@ -22,7 +22,6 @@ export const cascadeSelectControls = defineControls({
     options: ["click", "hover"] as const,
     defaultValue: "click",
   },
-  separator: { type: "string", defaultValue: " / " },
 })
 
 export const checkboxControls = defineControls({
