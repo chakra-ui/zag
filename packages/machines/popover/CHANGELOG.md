@@ -1,5 +1,25 @@
 # @zag-js/popover
 
+## 1.15.3
+
+### Patch Changes
+
+- [`7efdbd0`](https://github.com/chakra-ui/zag/commit/7efdbd0d9076ef1c41e4bef7ebcaeddaf08c896d) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix issue where popover `onOpenChange` could be called twice when
+  controlled
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.15.3
+  - @zag-js/core@1.15.3
+  - @zag-js/types@1.15.3
+  - @zag-js/aria-hidden@1.15.3
+  - @zag-js/utils@1.15.3
+  - @zag-js/dismissable@1.15.3
+  - @zag-js/dom-query@1.15.3
+  - @zag-js/focus-trap@1.15.3
+  - @zag-js/popper@1.15.3
+  - @zag-js/remove-scroll@1.15.3
+
 ## 1.15.2
 
 ### Patch Changes

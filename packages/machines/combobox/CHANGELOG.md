@@ -1,5 +1,24 @@
 # @zag-js/combobox
 
+## 1.15.3
+
+### Patch Changes
+
+- [`256869b`](https://github.com/chakra-ui/zag/commit/256869bbc729a92f88218a590f014e02cef78c35) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix issue where `onInputValueChange` could be called twice when
+  selecting an item
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.15.3
+  - @zag-js/core@1.15.3
+  - @zag-js/types@1.15.3
+  - @zag-js/aria-hidden@1.15.3
+  - @zag-js/collection@1.15.3
+  - @zag-js/utils@1.15.3
+  - @zag-js/dismissable@1.15.3
+  - @zag-js/dom-query@1.15.3
+  - @zag-js/popper@1.15.3
+
 ## 1.15.2
 
 ### Patch Changes
