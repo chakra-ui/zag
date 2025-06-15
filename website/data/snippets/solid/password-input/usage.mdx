@@ -4,7 +4,7 @@ import { useMachine, normalizeProps } from "@zag-js/solid"
 import { createMemo, createUniqueId } from "solid-js"
 
 function PasswordInput() {
-  const service = useMachine(passwordInput.machine({ id: createUniqueId() }))
+  const service = useMachine(passwordInput.machine, { id: createUniqueId() })
 
   const api = createMemo(() => passwordInput.connect(service, normalizeProps))
 
