@@ -1,5 +1,16 @@
 # @zag-js/dom-query
 
+## 1.15.4
+
+### Patch Changes
+
+- [`e5f698d`](https://github.com/chakra-ui/zag/commit/e5f698d082ea8ae7f9f45958c4e319de7c7b6107) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix issue in Svelte where menu and combobox items rendered as
+  links don't work.
+
+- Updated dependencies []:
+  - @zag-js/types@1.15.4
+
 ## 1.15.3
 
 ### Patch Changes
