@@ -1,5 +1,19 @@
 # @zag-js/toggle-group
 
+## 1.15.4
+
+### Patch Changes
+
+- [`f7a7d9f`](https://github.com/chakra-ui/zag/commit/f7a7d9f8ca2ed77e940f12d1f974843e45d4fa15) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix issue in Svelte where toggle group doesn't due to blur timing
+
+- Updated dependencies [[`e5f698d`](https://github.com/chakra-ui/zag/commit/e5f698d082ea8ae7f9f45958c4e319de7c7b6107)]:
+  - @zag-js/dom-query@1.15.4
+  - @zag-js/core@1.15.4
+  - @zag-js/anatomy@1.15.4
+  - @zag-js/types@1.15.4
+  - @zag-js/utils@1.15.4
+
 ## 1.15.3
 
 ### Patch Changes
