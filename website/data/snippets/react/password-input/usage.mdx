@@ -5,7 +5,7 @@ import { EyeIcon, EyeOffIcon } from "lucide-react"
 import { useId } from "react"
 
 function PasswordInput() {
-  const service = useMachine(passwordInput.machine({ id: useId() }))
+  const service = useMachine(passwordInput.machine, { id: useId() })
 
   const api = passwordInput.connect(service, normalizeProps)
 
