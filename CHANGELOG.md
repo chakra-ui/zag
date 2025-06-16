@@ -4,6 +4,13 @@ All notable changes to this project will be documented in this file.
 
 > For v0.x changelog, see the [v0 branch](https://github.com/chakra-ui/zag/blob/v0/CHANGELOG.md)
 
+## [1.15.4](./#1.15.4) - 2025-06-16
+
+### Fixed
+
+- **Menu, Combobox**: Fix issue in Svelte where menu and combobox items rendered as links don't work
+- **Toggle Group**: Fix issue in Svelte where toggle group doesn't work due to blur timing
+
 ## [1.15.3](./#1.15.3) - 2025-06-13
 
 ### Fixed
