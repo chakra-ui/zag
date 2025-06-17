@@ -2,13 +2,12 @@ import { normalizeProps, useMachine, Portal } from "@zag-js/react"
 import * as tooltip from "@zag-js/tooltip"
 import { useId } from "react"
 
-type TooltipProps = {
-  controls: {}
-}
+interface TooltipProps extends Omit<tooltip.Props, "id"> {}
+
 export function Tooltip(props: TooltipProps) {
   const service = useMachine(tooltip.machine, {
     id: useId(),
-    ...props.controls,
+    ...props,
   })
 
   const api = tooltip.connect(service, normalizeProps)

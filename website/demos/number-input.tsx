@@ -3,10 +3,12 @@ import { normalizeProps, useMachine } from "@zag-js/react"
 import { BiChevronDown, BiChevronUp } from "react-icons/bi"
 import { useId } from "react"
 
-export function NumberInput(props: any) {
+interface NumberInputProps extends Omit<numberInput.Props, "id"> {}
+
+export function NumberInput(props: NumberInputProps) {
   const service = useMachine(numberInput.machine, {
     id: useId(),
-    ...props.controls,
+    ...props,
   })
 
   const api = numberInput.connect(service, normalizeProps)

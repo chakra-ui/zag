@@ -3,17 +3,12 @@ import { normalizeProps, useMachine } from "@zag-js/react"
 import { LuEye, LuEyeOff } from "react-icons/lu"
 import { useId } from "react"
 
-type PasswordInputProps = {
-  controls: {
-    ignorePasswordManagers: boolean
-    disabled: boolean
-  }
-}
+interface PasswordInputProps extends Omit<passwordInput.Props, "id"> {}
 
 export function PasswordInput(props: PasswordInputProps) {
   const service = useMachine(passwordInput.machine, {
     id: useId(),
-    ...props.controls,
+    ...props,
   })
 
   const api = passwordInput.connect(service, normalizeProps)

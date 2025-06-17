@@ -8,17 +8,12 @@ const items = [
   { id: "mango", label: "Mangoes" },
 ]
 
-type RadioProps = {
-  controls: {
-    name: string
-    disabled: boolean
-  }
-}
+interface RadioProps extends Omit<radio.Props, "id"> {}
 
 export function Radio(props: RadioProps) {
   const service = useMachine(radio.machine, {
     id: useId(),
-    ...props.controls,
+    ...props,
     name: "fruits",
   })
 

@@ -1,27 +1,13 @@
 import * as checkbox from "@zag-js/checkbox"
 import { normalizeProps, useMachine } from "@zag-js/react"
-import { useId, useState } from "react"
+import { useId } from "react"
 
-type CheckboxProps = {
-  controls: {
-    disabled: boolean
-    indeterminate: boolean
-  }
-}
+interface CheckboxProps extends Omit<checkbox.Props, "id"> {}
 
 export function Checkbox(props: CheckboxProps) {
-  const { disabled, indeterminate } = props.controls
-  const [checked, setChecked] = useState<boolean | "indeterminate">(
-    indeterminate ? "indeterminate" : false,
-  )
-
   const service = useMachine(checkbox.machine, {
     id: useId(),
-    disabled,
-    checked: indeterminate ? "indeterminate" : checked,
-    onCheckedChange(details) {
-      setChecked(details.checked)
-    },
+    ...props,
   })
 
   const api = checkbox.connect(service, normalizeProps)

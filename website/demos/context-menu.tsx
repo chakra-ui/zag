@@ -2,21 +2,12 @@ import * as menu from "@zag-js/menu"
 import { normalizeProps, useMachine } from "@zag-js/react"
 import { useId } from "react"
 
-const data = [
-  { label: "Edit", value: "edit" },
-  { label: "Delete", value: "delete" },
-  { label: "Export", value: "export" },
-  { label: "Duplicate", value: "duplicate" },
-]
-
-type ContextMenuProps = {
-  controls: {}
-}
+interface ContextMenuProps extends Omit<menu.Props, "id"> {}
 
 export function ContextMenu(props: ContextMenuProps) {
   const service = useMachine(menu.machine, {
     id: useId(),
-    ...props.controls,
+    ...props,
   })
 
   const api = menu.connect(service, normalizeProps)
@@ -38,3 +29,10 @@ export function ContextMenu(props: ContextMenuProps) {
     </div>
   )
 }
+
+const data = [
+  { label: "Edit", value: "edit" },
+  { label: "Delete", value: "delete" },
+  { label: "Export", value: "export" },
+  { label: "Duplicate", value: "duplicate" },
+]

@@ -2,16 +2,12 @@ import * as zagSwitch from "@zag-js/switch"
 import { normalizeProps, useMachine } from "@zag-js/react"
 import { useId } from "react"
 
-type SwitchProps = {
-  controls: {
-    disabled: boolean
-  }
-}
+interface SwitchProps extends Omit<zagSwitch.Props, "id"> {}
 
 export function Switch(props: SwitchProps) {
   const service = useMachine(zagSwitch.machine, {
     id: useId(),
-    ...props.controls,
+    ...props,
   })
 
   const api = zagSwitch.connect(service, normalizeProps)

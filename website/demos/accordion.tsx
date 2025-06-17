@@ -20,18 +20,13 @@ const items = [
   },
 ]
 
-type AccordionProps = {
-  controls: {
-    collapsible: boolean
-    multiple: boolean
-  }
-}
+type AccordionProps = Omit<accordion.Props, "id">
 
 export function Accordion(props: AccordionProps) {
   const service = useMachine(accordion.machine, {
     id: useId(),
     defaultValue: ["Aircraft"],
-    ...props.controls,
+    ...props,
   })
 
   const api = accordion.connect(service, normalizeProps)

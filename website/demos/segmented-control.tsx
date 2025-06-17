@@ -2,24 +2,14 @@ import * as radio from "@zag-js/radio-group"
 import { normalizeProps, useMachine } from "@zag-js/react"
 import { useId } from "react"
 
-const items = [
-  { label: "React", value: "react" },
-  { label: "Angular", value: "ng" },
-  { label: "Vue", value: "vue" },
-]
-
-type SegmentedControlProps = {
-  controls: {
-    disabled: boolean
-  }
-}
+interface SegmentedControlProps extends Omit<radio.Props, "id"> {}
 
 export function SegmentedControl(props: SegmentedControlProps) {
   const service = useMachine(radio.machine, {
     id: useId(),
     defaultValue: "react",
     orientation: "horizontal",
-    ...props.controls,
+    ...props,
   })
 
   const api = radio.connect(service, normalizeProps)
@@ -40,3 +30,9 @@ export function SegmentedControl(props: SegmentedControlProps) {
     </div>
   )
 }
+
+const items = [
+  { label: "React", value: "react" },
+  { label: "Angular", value: "ng" },
+  { label: "Vue", value: "vue" },
+]

@@ -3,10 +3,12 @@ import * as signaturePad from "@zag-js/signature-pad"
 import { useId } from "react"
 import { BiRotateRight } from "react-icons/bi"
 
-export function SignaturePad(props: any) {
+interface SignaturePadProps extends Omit<signaturePad.Props, "id"> {}
+
+export function SignaturePad(props: SignaturePadProps) {
   const service = useMachine(signaturePad.machine, {
     id: useId(),
-    ...props.controls,
+    ...props,
   })
 
   const api = signaturePad.connect(service, normalizeProps)

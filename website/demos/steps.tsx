@@ -8,13 +8,13 @@ const stepsData = [
   { title: "Step 3" },
 ]
 
-export function Steps(props: any) {
-  const context = props.controls
+interface StepsProps extends Omit<steps.Props, "id" | "count"> {}
 
+export function Steps(props: StepsProps) {
   const service = useMachine(steps.machine, {
     id: useId(),
     count: stepsData.length,
-    ...props.controls,
+    ...props,
   })
 
   const api = steps.connect(service, normalizeProps)

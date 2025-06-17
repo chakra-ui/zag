@@ -3,10 +3,12 @@ import { normalizeProps, useMachine, Portal } from "@zag-js/react"
 import { LuArrowDownLeft, LuMaximize2, LuMinus, LuX } from "react-icons/lu"
 import { useId } from "react"
 
-export function FloatingPanel(props: { controls: any }) {
+interface FloatingPanelProps extends Omit<floating.Props, "id"> {}
+
+export function FloatingPanel(props: FloatingPanelProps) {
   const service = useMachine(floating.machine, {
     id: useId(),
-    ...props.controls,
+    ...props,
   })
 
   const api = floating.connect(service, normalizeProps)

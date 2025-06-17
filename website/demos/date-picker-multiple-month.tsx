@@ -3,12 +3,15 @@ import { normalizeProps, useMachine } from "@zag-js/react"
 import { useId } from "react"
 import { BiCalendar, BiChevronLeft, BiChevronRight } from "react-icons/bi"
 
-export function DatePickerMultipleMonths() {
+interface DatePickerMultipleMonthsProps extends Omit<datePicker.Props, "id"> {}
+
+export function DatePickerMultipleMonths(props: DatePickerMultipleMonthsProps) {
   const service = useMachine(datePicker.machine, {
     id: useId(),
     locale: "en-US",
     selectionMode: "range",
     numOfMonths: 2,
+    ...props,
   })
 
   const api = datePicker.connect(service, normalizeProps)

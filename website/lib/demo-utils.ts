@@ -78,9 +78,12 @@ const upperFirst = (str: string) => str.charAt(0).toUpperCase() + str.slice(1)
 const toComponentName = (str: string) => upperFirst(toCamelCase(str))
 
 export async function getComponentDemo(component: string, defaultProps: any) {
+  const propString = Object.entries(defaultProps)
+    .map(([key, value]) => `${key}={${JSON.stringify(value)}}`)
+    .join(" ")
   const jsxName = toComponentName(component)
   const usage = `
-      <${jsxName} controls={${JSON.stringify(defaultProps, null, 2)}} />
+      <${jsxName} ${propString} />
     `
 
   return {

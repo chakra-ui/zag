@@ -2,11 +2,13 @@ import * as qrCode from "@zag-js/qr-code"
 import { normalizeProps, useMachine } from "@zag-js/react"
 import { useId } from "react"
 
-export function QrCode(props: any) {
+interface QrCodeProps extends Omit<qrCode.Props, "id"> {}
+
+export function QrCode(props: QrCodeProps) {
   const service = useMachine(qrCode.machine, {
     id: useId(),
-    encoding: { ecc: "H" },
-    ...props.controls,
+    ...props,
+    encoding: { ecc: "H", ...props.encoding },
   })
 
   const api = qrCode.connect(service, normalizeProps)

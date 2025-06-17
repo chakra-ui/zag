@@ -99,7 +99,6 @@ export function MultiframeworkTabs() {
             name="number-input"
             component={NumberInput}
             hideControls
-            defaultContext={{ value: 0 }}
             defaultProps={{
               min: -10,
               max: 20,

@@ -2,18 +2,13 @@ import * as pagination from "@zag-js/pagination"
 import { normalizeProps, useMachine } from "@zag-js/react"
 import { useId } from "react"
 
-type PaginationProps = {
-  controls: {
-    pageSize: number
-    siblingCount: number
-  }
-}
+interface PaginationProps extends Omit<pagination.Props, "id"> {}
 
 export function Pagination(props: PaginationProps) {
   const service = useMachine(pagination.machine, {
     id: useId(),
     count: 1000,
-    ...props.controls,
+    ...props,
   })
 
   const api = pagination.connect(service, normalizeProps)

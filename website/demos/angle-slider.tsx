@@ -2,10 +2,12 @@ import * as angleSlider from "@zag-js/angle-slider"
 import { normalizeProps, useMachine } from "@zag-js/react"
 import { useId } from "react"
 
-export function AngleSlider(props: any) {
+type AngleSliderProps = Omit<angleSlider.Props, "id">
+
+export function AngleSlider(props: AngleSliderProps) {
   const service = useMachine(angleSlider.machine, {
     id: useId(),
-    ...props.controls,
+    ...props,
   })
 
   const api = angleSlider.connect(service, normalizeProps)

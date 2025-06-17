@@ -3,6 +3,37 @@ import * as tree from "@zag-js/tree-view"
 import { LuFile, LuFolder, LuChevronRight } from "react-icons/lu"
 import { JSX, useId } from "react"
 
+interface TreeViewProps extends Omit<tree.Props, "id" | "collection"> {}
+
+export function TreeView(props: TreeViewProps) {
+  const service = useMachine(tree.machine as tree.Machine<Node>, {
+    id: useId(),
+    collection,
+    ...props,
+  })
+
+  const api = tree.connect(service, normalizeProps)
+
+  return (
+    <div {...api.getRootProps()}>
+      <h3 {...api.getLabelProps()}>My Documents</h3>
+      <div style={{ display: "flex", gap: "10px" }}>
+        <button className="treeview-trigger" onClick={() => api.collapse()}>
+          Collapse All
+        </button>
+        <button className="treeview-trigger" onClick={() => api.expand()}>
+          Expand All
+        </button>
+      </div>
+      <div {...api.getTreeProps()}>
+        {collection.rootNode.children?.map((node, index) => (
+          <TreeNode key={node.id} node={node} indexPath={[index]} api={api} />
+        ))}
+      </div>
+    </div>
+  )
+}
+
 interface Node {
   id: string
   name: string
@@ -88,39 +119,6 @@ const TreeNode = (props: TreeNodeProps): JSX.Element => {
   return (
     <div {...api.getItemProps(nodeProps)}>
       <LuFile /> {node.name}
-    </div>
-  )
-}
-
-interface TreeViewProps {
-  controls: {}
-}
-
-export function TreeView(props: TreeViewProps) {
-  const service = useMachine(tree.machine, {
-    id: useId(),
-    collection,
-    ...props.controls,
-  })
-
-  const api = tree.connect(service, normalizeProps)
-
-  return (
-    <div {...api.getRootProps()}>
-      <h3 {...api.getLabelProps()}>My Documents</h3>
-      <div style={{ display: "flex", gap: "10px" }}>
-        <button className="treeview-trigger" onClick={() => api.collapse()}>
-          Collapse All
-        </button>
-        <button className="treeview-trigger" onClick={() => api.expand()}>
-          Expand All
-        </button>
-      </div>
-      <div {...api.getTreeProps()}>
-        {collection.rootNode.children?.map((node, index) => (
-          <TreeNode key={node.id} node={node} indexPath={[index]} api={api} />
-        ))}
-      </div>
     </div>
   )
 }

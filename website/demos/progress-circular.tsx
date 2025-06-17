@@ -2,10 +2,12 @@ import * as progress from "@zag-js/progress"
 import { normalizeProps, useMachine } from "@zag-js/react"
 import { useId } from "react"
 
-export function ProgressCircular(props: any) {
+interface ProgressCircularProps extends Omit<progress.Props, "id"> {}
+
+export function ProgressCircular(props: ProgressCircularProps) {
   const service = useMachine(progress.machine, {
     id: useId(),
-    ...props.controls,
+    ...props,
   })
 
   const api = progress.connect(service, normalizeProps)

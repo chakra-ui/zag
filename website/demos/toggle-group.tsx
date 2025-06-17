@@ -3,17 +3,12 @@ import * as toggle from "@zag-js/toggle-group"
 import { useId } from "react"
 import { RxFontBold, RxFontItalic, RxUnderline } from "react-icons/rx"
 
-type Props = {
-  controls: {
-    disabled: boolean
-    multiple: boolean
-  }
-}
+interface ToggleGroupProps extends Omit<toggle.Props, "id"> {}
 
-export function ToggleGroup(props: Props) {
+export function ToggleGroup(props: ToggleGroupProps) {
   const service = useMachine(toggle.machine, {
     id: useId(),
-    ...props.controls,
+    ...props,
   })
 
   const api = toggle.connect(service, normalizeProps)

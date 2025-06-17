@@ -2,20 +2,7 @@ import * as listbox from "@zag-js/listbox"
 import { normalizeProps, useMachine } from "@zag-js/react"
 import { useId, useMemo } from "react"
 
-interface ListboxProps {
-  controls: {
-    disabled: boolean
-    selectionMode: "single" | "multiple" | "extended"
-  }
-}
-
-interface Item {
-  id: number
-  image_url: string
-  name: string
-  username: string
-  favorite?: boolean
-}
+interface ListboxProps extends Omit<listbox.Props, "id" | "collection"> {}
 
 export function Listbox(props: ListboxProps) {
   const collection = listbox.collection({
@@ -29,7 +16,7 @@ export function Listbox(props: ListboxProps) {
   const service = useMachine(listbox.machine as listbox.Machine<Item>, {
     collection,
     id: useId(),
-    ...props.controls,
+    ...props,
   })
 
   const api = listbox.connect(service, normalizeProps)
@@ -53,6 +40,14 @@ export function Listbox(props: ListboxProps) {
       </ul>
     </div>
   )
+}
+
+interface Item {
+  id: number
+  image_url: string
+  name: string
+  username: string
+  favorite?: boolean
 }
 
 const people: Item[] = [

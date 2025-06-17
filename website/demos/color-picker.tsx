@@ -2,42 +2,14 @@ import * as colorPicker from "@zag-js/color-picker"
 import { Portal, normalizeProps, useMachine } from "@zag-js/react"
 import { useId } from "react"
 
-type Props = {
-  controls: {
-    disabled: boolean
-    readOnly: boolean
-    closeOnSelect: boolean
-    format: "rgba" | "hsla" | "hsba"
-  }
-}
+interface ColorPickerProps extends Omit<colorPicker.Props, "id"> {}
 
-const presets = ["#f47373", "#697689", "#38a169", "#3182ce"]
-
-const Show = (props: { when: boolean; children: React.ReactNode }) => {
-  const { when, children } = props
-  return when ? <>{children}</> : null
-}
-
-const EyeDropIcon = () => (
-  <svg
-    stroke="currentColor"
-    fill="currentColor"
-    strokeWidth="0"
-    viewBox="0 0 24 24"
-    height="1em"
-    width="1em"
-    xmlns="http://www.w3.org/2000/svg"
-  >
-    <path d="m4 15.76-1 4A1 1 0 0 0 3.75 21a1 1 0 0 0 .49 0l4-1a1 1 0 0 0 .47-.26L17 11.41l1.29 1.3 1.42-1.42-1.3-1.29L21 7.41a2 2 0 0 0 0-2.82L19.41 3a2 2 0 0 0-2.82 0L14 5.59l-1.3-1.3-1.42 1.42L12.58 7l-8.29 8.29a1 1 0 0 0-.29.47zm1.87.75L14 8.42 15.58 10l-8.09 8.1-2.12.53z"></path>
-  </svg>
-)
-
-export function ColorPicker(props: Props) {
+export function ColorPicker(props: ColorPickerProps) {
   const service = useMachine(colorPicker.machine, {
     id: useId(),
     defaultValue: colorPicker.parse("#38a169").toFormat("hsla"),
-    ...props.controls,
     format: "hsla",
+    ...props,
   })
 
   const api = colorPicker.connect(service, normalizeProps)
@@ -196,3 +168,24 @@ export function ColorPicker(props: Props) {
     </div>
   )
 }
+
+const presets = ["#f47373", "#697689", "#38a169", "#3182ce"]
+
+const Show = (props: { when: boolean; children: React.ReactNode }) => {
+  const { when, children } = props
+  return when ? <>{children}</> : null
+}
+
+const EyeDropIcon = () => (
+  <svg
+    stroke="currentColor"
+    fill="currentColor"
+    strokeWidth="0"
+    viewBox="0 0 24 24"
+    height="1em"
+    width="1em"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <path d="m4 15.76-1 4A1 1 0 0 0 3.75 21a1 1 0 0 0 .49 0l4-1a1 1 0 0 0 .47-.26L17 11.41l1.29 1.3 1.42-1.42-1.3-1.29L21 7.41a2 2 0 0 0 0-2.82L19.41 3a2 2 0 0 0-2.82 0L14 5.59l-1.3-1.3-1.42 1.42L12.58 7l-8.29 8.29a1 1 0 0 0-.29.47zm1.87.75L14 8.42 15.58 10l-8.09 8.1-2.12.53z"></path>
+  </svg>
+)

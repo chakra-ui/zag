@@ -2,10 +2,12 @@ import * as editable from "@zag-js/editable"
 import { normalizeProps, useMachine } from "@zag-js/react"
 import { useId } from "react"
 
-export function Editable(props: any) {
+interface EditableProps extends Omit<editable.Props, "id"> {}
+
+export function Editable(props: EditableProps) {
   const service = useMachine(editable.machine, {
     id: useId(),
-    ...props.controls,
+    ...props,
   })
 
   const api = editable.connect(service, normalizeProps)

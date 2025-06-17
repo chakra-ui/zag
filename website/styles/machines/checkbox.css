@@ -34,6 +34,10 @@
   border-color: #a0aec0 !important;
 }
 
+[data-scope="checkbox"][data-part="control"][data-invalid] {
+  border-color: #e53e3e;
+}
+
 [data-scope="checkbox"][data-part="control"][data-state="indeterminate"] {
   background: #ffffff;
   border-color: grey;

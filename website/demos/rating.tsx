@@ -2,6 +2,38 @@ import * as rating from "@zag-js/rating-group"
 import { normalizeProps, useMachine } from "@zag-js/react"
 import { useId } from "react"
 
+interface RatingProps extends Omit<rating.Props, "id"> {}
+
+export function Rating(props: RatingProps) {
+  const service = useMachine(rating.machine, {
+    id: useId(),
+    name: "service",
+    defaultValue: 2.5,
+    ...props,
+  })
+
+  const api = rating.connect(service, normalizeProps)
+
+  return (
+    <div>
+      <div {...api.getRootProps()}>
+        <label {...api.getLabelProps()}>Rate Us:</label>
+        <div {...api.getControlProps()}>
+          {api.items.map((index) => {
+            const state = api.getItemState({ index })
+            return (
+              <span key={index} {...api.getItemProps({ index })}>
+                {state.half ? <HalfStar /> : <Star />}
+              </span>
+            )
+          })}
+        </div>
+        <input {...api.getHiddenInputProps()} />
+      </div>
+    </div>
+  )
+}
+
 function HalfStar() {
   return (
     <svg viewBox="0 0 273 260" data-part="star">
@@ -29,44 +61,5 @@ function Star() {
         fill="currentColor"
       />
     </svg>
-  )
-}
-
-type RadioProps = {
-  controls: {
-    allowHalf: boolean
-    disabled: boolean
-    readOnly: boolean
-    max: number
-  }
-}
-
-export function Rating(props: RadioProps) {
-  const service = useMachine(rating.machine, {
-    id: useId(),
-    name: "service",
-    defaultValue: 2.5,
-    ...props.controls,
-  })
-
-  const api = rating.connect(service, normalizeProps)
-
-  return (
-    <div>
-      <div {...api.getRootProps()}>
-        <label {...api.getLabelProps()}>Rate Us:</label>
-        <div {...api.getControlProps()}>
-          {api.items.map((index) => {
-            const state = api.getItemState({ index })
-            return (
-              <span key={index} {...api.getItemProps({ index })}>
-                {state.half ? <HalfStar /> : <Star />}
-              </span>
-            )
-          })}
-        </div>
-        <input {...api.getHiddenInputProps()} />
-      </div>
-    </div>
   )
 }

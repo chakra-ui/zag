@@ -97,7 +97,7 @@ const components = {
       component={Checkbox}
       defaultProps={{
         disabled: false,
-        indeterminate: false,
+        invalid: false,
       }}
     />
   ),
@@ -120,7 +120,7 @@ const components = {
         readOnly: false,
         closeOnSelect: false,
         format: {
-          default: "rgba",
+          default: "hsla",
           options: ["rgba", "hsla", "hsba"],
           required: true,
         },
@@ -387,7 +387,7 @@ const components = {
       defaultProps={{
         disabled: false,
         dir: { default: "ltr", options: ["ltr", "rtl"] },
-        blurBehavior: { default: "--", options: ["add", "clear"] },
+        blurBehavior: { default: undefined, options: ["add", "clear"] },
         addOnPaste: false,
       }}
     />
@@ -416,16 +416,7 @@ const components = {
       }}
     />
   ),
-  Toast: () => (
-    <Playground
-      name="toast"
-      component={ToastGroup}
-      defaultProps={{
-        pauseOnPageIdle: false,
-        gap: 16,
-      }}
-    />
-  ),
+  Toast: () => <Playground name="toast" component={ToastGroup} />,
   ToggleGroup: () => (
     <Playground
       name="toggle-group"

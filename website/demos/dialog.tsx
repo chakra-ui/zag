@@ -3,10 +3,12 @@ import { normalizeProps, useMachine, Portal } from "@zag-js/react"
 import { HiX } from "react-icons/hi"
 import { useId } from "react"
 
-export function Dialog(props: { controls: any }) {
+interface DialogProps extends Omit<dialog.Props, "id"> {}
+
+export function Dialog(props: DialogProps) {
   const service = useMachine(dialog.machine, {
     id: useId(),
-    ...props.controls,
+    ...props,
   })
 
   const api = dialog.connect(service, normalizeProps)

@@ -2,10 +2,12 @@ import * as pinInput from "@zag-js/pin-input"
 import { normalizeProps, useMachine } from "@zag-js/react"
 import { useId } from "react"
 
-export function PinInput(props: any) {
+interface PinInputProps extends Omit<pinInput.Props, "id"> {}
+
+export function PinInput(props: PinInputProps) {
   const service = useMachine(pinInput.machine, {
     id: useId(),
-    ...props.controls,
+    ...props,
   })
 
   const api = pinInput.connect(service, normalizeProps)

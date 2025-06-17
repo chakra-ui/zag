@@ -2,13 +2,15 @@ import { normalizeProps, useMachine } from "@zag-js/react"
 import * as timer from "@zag-js/timer"
 import { useId } from "react"
 
-export function TimerCountdown(props: any) {
+interface TimerCountdownProps extends Omit<timer.Props, "id"> {}
+
+export function TimerCountdown(props: TimerCountdownProps) {
   const service = useMachine(timer.machine, {
     id: useId(),
     countdown: true,
     autoStart: true,
     startMs: timer.parse({ days: 2, seconds: 10 }),
-    ...props.controls,
+    ...props,
     interval: 1000,
   })
 

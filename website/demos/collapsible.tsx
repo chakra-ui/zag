@@ -2,17 +2,12 @@ import * as collapsible from "@zag-js/collapsible"
 import { normalizeProps, useMachine } from "@zag-js/react"
 import { useId } from "react"
 
-type CollapsibleProps = {
-  controls: {
-    disabled: boolean
-    dir: "ltr" | "rtl"
-  }
-}
+interface CollapsibleProps extends Omit<collapsible.Props, "id"> {}
 
 export function Collapsible(props: CollapsibleProps) {
   const service = useMachine(collapsible.machine, {
     id: useId(),
-    ...props.controls,
+    ...props,
   })
 
   const api = collapsible.connect(service, normalizeProps)
