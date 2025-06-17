@@ -87,10 +87,10 @@
     "@zag-js/types": "workspace:*",
     "@zag-js/utils": "workspace:*",
     "form-serialize": "0.7.2",
-    "lucide-solid": "0.513.0",
-    "match-sorter": "8.0.2",
+    "lucide-solid": "0.516.0",
+    "match-sorter": "8.0.3",
     "solid-js": "1.9.7",
-    "vinxi": "0.5.6"
+    "vinxi": "0.5.7"
   },
   "engines": {
     "node": ">=18"

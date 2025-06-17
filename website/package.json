@@ -76,7 +76,7 @@
     "contentlayer": "0.3.4",
     "hastscript": "9.0.1",
     "markdown-toc": "1.2.0",
-    "match-sorter": "8.0.2",
+    "match-sorter": "8.0.3",
     "next": "15.3.3",
     "next-contentlayer": "0.3.4",
     "next-seo": "6.8.0",
@@ -89,7 +89,7 @@
     "use-match-media-hook": "1.0.1"
   },
   "devDependencies": {
-    "@next/eslint-plugin-next": "15.3.2",
+    "@next/eslint-plugin-next": "15.3.3",
     "@types/react": "^19",
     "all-contributors-cli": "6.26.1",
     "eslint": "^9",

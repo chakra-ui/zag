@@ -87,7 +87,7 @@
     "@zag-js/types": "workspace:*",
     "@zag-js/utils": "workspace:*",
     "form-serialize": "0.7.2",
-    "match-sorter": "8.0.2",
+    "match-sorter": "8.0.3",
     "nanoid": "^5.1.5"
   }
 }
