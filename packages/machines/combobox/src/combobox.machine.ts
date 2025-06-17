@@ -129,6 +129,7 @@ export const machine = createMachine({
     autoComplete: ({ prop }) => prop("inputBehavior") === "autocomplete",
     autoHighlight: ({ prop }) => prop("inputBehavior") === "autohighlight",
     hasSelectedItems: ({ context }) => context.get("value").length > 0,
+    isCustomValue: ({ context }) => context.get("inputValue") !== context.get("valueAsString"),
   },
 
   watch({ context, prop, track, action }) {
@@ -671,7 +672,7 @@ export const machine = createMachine({
       autoHighlight: ({ computed }) => computed("autoHighlight"),
       isFirstItemHighlighted: ({ prop, context }) => prop("collection").firstValue === context.get("highlightedValue"),
       isLastItemHighlighted: ({ prop, context }) => prop("collection").lastValue === context.get("highlightedValue"),
-      isCustomValue: ({ context }) => context.get("inputValue") !== context.get("valueAsString"),
+      isCustomValue: ({ computed }) => computed("isCustomValue"),
       allowCustomValue: ({ prop }) => !!prop("allowCustomValue"),
       hasHighlightedItem: ({ context }) => context.get("highlightedValue") != null,
       closeOnSelect: ({ prop }) => !!prop("closeOnSelect"),

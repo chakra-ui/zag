@@ -228,7 +228,10 @@ export function connect<T extends PropTypes, V extends CollectionItem>(
             },
             Enter(event) {
               send({ type: "INPUT.ENTER", keypress })
-              if (open) {
+
+              // when there's a form owner, allow submitting custom value if `allowCustomValue` is true
+              const submittable = computed("isCustomValue") && prop("allowCustomValue")
+              if (open && !submittable) {
                 event.preventDefault()
               }
 

@@ -280,6 +280,7 @@ export interface ComboboxSchema<T extends CollectionItem = CollectionItem> {
     valueAsString: string
   }
   computed: {
+    isCustomValue: boolean
     isInputValueEmpty: boolean
     isInteractive: boolean
     autoComplete: boolean
