@@ -1,5 +1,24 @@
 # @zag-js/combobox
 
+## 1.15.5
+
+### Patch Changes
+
+- [`dc69d06`](https://github.com/chakra-ui/zag/commit/dc69d0643d4361ebd94bc32c8ac0c56c96eeb3d8) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix issue where combobox with `allowCustomValue: true` used within
+  in a form requires two enter keypress to submit.
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.15.5
+  - @zag-js/core@1.15.5
+  - @zag-js/types@1.15.5
+  - @zag-js/aria-hidden@1.15.5
+  - @zag-js/collection@1.15.5
+  - @zag-js/utils@1.15.5
+  - @zag-js/dismissable@1.15.5
+  - @zag-js/dom-query@1.15.5
+  - @zag-js/popper@1.15.5
+
 ## 1.15.4
 
 ### Patch Changes
