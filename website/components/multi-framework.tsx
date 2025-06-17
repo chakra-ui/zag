@@ -7,29 +7,29 @@ import { ReactIcon, SolidIcon, VueIcon, SvelteIcon } from "./icons"
 import { NumberInput } from "../demos/number-input"
 import { Playground } from "./playground"
 
+const FrameworkButton = chakra("button", {
+  baseStyle: {
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    width: "120px",
+    height: "120px",
+    rounded: "md",
+    borderWidth: "1px",
+    borderColor: "border-bold",
+    bg: "bg-subtle",
+    _selected: {
+      bg: "bg-tertiary-subtle",
+      borderBottomWidth: "4px",
+      borderBottomColor: "border-primary-subtle",
+    },
+  },
+})
+
 export function MultiframeworkTabs() {
   const service = useMachine(tabs.machine, {
     id: "m2",
     defaultValue: "react",
-  })
-
-  const FrameworkButton = chakra("button", {
-    baseStyle: {
-      display: "flex",
-      alignItems: "center",
-      justifyContent: "center",
-      width: "120px",
-      height: "120px",
-      rounded: "md",
-      borderWidth: "1px",
-      borderColor: "border-bold",
-      bg: "bg-subtle",
-      _selected: {
-        bg: "bg-tertiary-subtle",
-        borderBottomWidth: "4px",
-        borderBottomColor: "border-primary-subtle",
-      },
-    },
   })
 
   const api = tabs.connect(service, normalizeProps)
