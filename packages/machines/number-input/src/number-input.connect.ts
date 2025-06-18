@@ -263,6 +263,9 @@ export function connect<T extends PropTypes>(
         onMouseDown(event) {
           if (disabled) return
 
+          // activate scrubber only when main button is clicked
+          if (event.button !== 1) return
+
           const point = getEventPoint(event)
           const win = getWindow(event.currentTarget)
 
