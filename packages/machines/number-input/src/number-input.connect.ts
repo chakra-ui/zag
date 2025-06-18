@@ -204,7 +204,8 @@ export function connect<T extends PropTypes>(
         tabIndex: -1,
         "aria-controls": dom.getInputId(scope),
         onPointerDown(event) {
-          if (isDecrementDisabled || !isLeftClick(event)) return
+          if (isDecrementDisabled) return
+          if (!isLeftClick(event)) return
           send({ type: "TRIGGER.PRESS_DOWN", hint: "decrement", pointerType: event.pointerType })
           if (event.pointerType === "mouse") {
             event.preventDefault()
@@ -262,6 +263,7 @@ export function connect<T extends PropTypes>(
         role: "presentation",
         onMouseDown(event) {
           if (disabled) return
+          if (!isLeftClick(event)) return
 
           const point = getEventPoint(event)
           const win = getWindow(event.currentTarget)

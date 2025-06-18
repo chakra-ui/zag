@@ -1,5 +1,5 @@
 import type { Service } from "@zag-js/core"
-import { dataAttr } from "@zag-js/dom-query"
+import { dataAttr, isLeftClick } from "@zag-js/dom-query"
 import { isFocusVisible } from "@zag-js/focus-visible"
 import { getPlacementStyles } from "@zag-js/popper"
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
@@ -72,6 +72,7 @@ export function connect<P extends PropTypes>(
         onPointerDown(event) {
           if (event.defaultPrevented) return
           if (disabled) return
+          if (!isLeftClick(event)) return
           if (!prop("closeOnPointerDown")) return
           if (id === store.id) {
             send({ type: "close", src: "trigger.pointerdown" })

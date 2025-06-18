@@ -184,6 +184,7 @@ export function connect<T extends PropTypes>(service: SliderService, normalize: 
         style: getThumbStyle(service, index),
         onPointerDown(event) {
           if (!interactive) return
+          if (!isLeftClick(event)) return
           send({ type: "THUMB_POINTER_DOWN", index })
           event.stopPropagation()
         },

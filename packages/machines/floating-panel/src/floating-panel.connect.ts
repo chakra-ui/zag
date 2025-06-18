@@ -1,4 +1,4 @@
-import { dataAttr, getEventKey, getEventStep, getEventTarget, isSelfTarget } from "@zag-js/dom-query"
+import { dataAttr, getEventKey, getEventStep, getEventTarget, isLeftClick, isSelfTarget } from "@zag-js/dom-query"
 import type { EventKeyMap, NormalizeProps, PropTypes } from "@zag-js/types"
 import { parts } from "./floating-panel.anatomy"
 import * as dom from "./floating-panel.dom"
@@ -204,7 +204,8 @@ export function connect<T extends PropTypes>(
         "data-disabled": dataAttr(!canResize),
         "data-axis": props.axis,
         onPointerDown(event) {
-          if (!canResize || event.button == 2) return
+          if (!canResize) return
+          if (!isLeftClick(event)) return
 
           event.currentTarget.setPointerCapture(event.pointerId)
           event.stopPropagation()
@@ -235,7 +236,8 @@ export function connect<T extends PropTypes>(
         ...parts.dragTrigger.attrs,
         "data-disabled": dataAttr(!canDrag),
         onPointerDown(event) {
-          if (!canDrag || event.button == 2) return
+          if (!canDrag) return
+          if (!isLeftClick(event)) return
 
           const target = getEventTarget<HTMLElement>(event)
           if (target?.closest("button") || target?.closest("[data-no-drag]")) {

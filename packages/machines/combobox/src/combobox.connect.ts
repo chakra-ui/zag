@@ -285,6 +285,7 @@ export function connect<T extends PropTypes, V extends CollectionItem>(
         onPointerDown(event) {
           if (!interactive) return
           if (event.pointerType === "touch") return
+          if (!isLeftClick(event)) return
           event.preventDefault()
           queueMicrotask(() => {
             dom.getInputEl(scope)?.focus({ preventScroll: true })
@@ -328,6 +329,7 @@ export function connect<T extends PropTypes, V extends CollectionItem>(
         "aria-multiselectable": prop("multiple") && composite ? true : undefined,
         "data-empty": dataAttr(collection.size === 0),
         onPointerDown(event) {
+          if (!isLeftClick(event)) return
           // prevent options or elements within listbox from taking focus
           event.preventDefault()
         },
@@ -357,6 +359,7 @@ export function connect<T extends PropTypes, V extends CollectionItem>(
         "aria-controls": dom.getInputId(scope),
         hidden: !context.get("value").length,
         onPointerDown(event) {
+          if (!isLeftClick(event)) return
           event.preventDefault()
         },
         onClick(event) {

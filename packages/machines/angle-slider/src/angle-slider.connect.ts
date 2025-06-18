@@ -1,4 +1,4 @@
-import { dataAttr, getEventPoint, getEventStep } from "@zag-js/dom-query"
+import { dataAttr, getEventPoint, getEventStep, isLeftClick } from "@zag-js/dom-query"
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import { parts } from "./angle-slider.anatomy"
 import * as dom from "./angle-slider.dom"
@@ -76,6 +76,7 @@ export function connect<T extends PropTypes>(
         "data-readonly": dataAttr(readOnly),
         onPointerDown(event) {
           if (!interactive) return
+          if (!isLeftClick(event)) return
           const point = getEventPoint(event)
           send({ type: "CONTROL.POINTER_DOWN", point })
         },

@@ -1,4 +1,4 @@
-import { dataAttr, isSafari } from "@zag-js/dom-query"
+import { dataAttr, isLeftClick, isSafari } from "@zag-js/dom-query"
 import { getPlacementStyles } from "@zag-js/popper"
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import { parts } from "./popover.anatomy"
@@ -67,6 +67,7 @@ export function connect<T extends PropTypes>(service: PopoverService, normalize:
         "data-state": open ? "open" : "closed",
         "aria-controls": dom.getContentId(scope),
         onPointerDown(event) {
+          if (!isLeftClick(event)) return
           if (isSafari()) {
             event.currentTarget.focus()
           }

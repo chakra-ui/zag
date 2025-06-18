@@ -1,4 +1,4 @@
-import { dataAttr, isSafari, visuallyHiddenStyle } from "@zag-js/dom-query"
+import { dataAttr, isLeftClick, isSafari, visuallyHiddenStyle } from "@zag-js/dom-query"
 import { isFocusVisible } from "@zag-js/focus-visible"
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import { parts } from "./radio-group.anatomy"
@@ -108,6 +108,7 @@ export function connect<T extends PropTypes>(
         },
         onPointerDown(event) {
           if (itemState.disabled) return
+          if (!isLeftClick(event)) return
           // On pointerdown, the input blurs and returns focus to the `body`,
           // we need to prevent this.
           if (itemState.focused && event.pointerType === "mouse") {

@@ -1,4 +1,13 @@
-import { ariaAttr, contains, dataAttr, getEventKey, getEventTarget, isFocusable, isSelfTarget } from "@zag-js/dom-query"
+import {
+  ariaAttr,
+  contains,
+  dataAttr,
+  getEventKey,
+  getEventTarget,
+  isFocusable,
+  isLeftClick,
+  isSelfTarget,
+} from "@zag-js/dom-query"
 import type { EventKeyMap, NormalizeProps, PropTypes } from "@zag-js/types"
 import { throttle } from "@zag-js/utils"
 import { parts } from "./carousel.anatomy"
@@ -91,9 +100,9 @@ export function connect<T extends PropTypes>(service: CarouselService, normalize
           send({ type: "VIEWPORT.BLUR" })
         },
         onMouseDown(event) {
-          if (!prop("allowMouseDrag")) return
-          if (event.button !== 0) return
           if (event.defaultPrevented) return
+          if (!prop("allowMouseDrag")) return
+          if (!isLeftClick(event)) return
 
           const target = getEventTarget<HTMLElement>(event)
           if (isFocusable(target) && target !== event.currentTarget) return

@@ -1,4 +1,4 @@
-import { dataAttr, getEventKey, getEventPoint } from "@zag-js/dom-query"
+import { dataAttr, getEventKey, getEventPoint, isLeftClick } from "@zag-js/dom-query"
 import type { EventKeyMap, NormalizeProps, PropTypes } from "@zag-js/types"
 import { ensure } from "@zag-js/utils"
 import { parts } from "./splitter.anatomy"
@@ -155,7 +155,7 @@ export function connect<T extends PropTypes>(service: SplitterService, normalize
           [horizontal ? "minHeight" : "minWidth"]: "0",
         },
         onPointerDown(event) {
-          if (event.button !== 0) return
+          if (!isLeftClick(event)) return
           if (disabled) {
             event.preventDefault()
             return

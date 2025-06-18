@@ -1,5 +1,5 @@
 import type { Service } from "@zag-js/core"
-import { ariaAttr, dataAttr, getEventKey, getNativeEvent, isComposingEvent } from "@zag-js/dom-query"
+import { ariaAttr, dataAttr, getEventKey, getNativeEvent, isComposingEvent, isLeftClick } from "@zag-js/dom-query"
 import type { EventKeyMap, NormalizeProps, PropTypes } from "@zag-js/types"
 import { parts } from "./tags-input.anatomy"
 import * as dom from "./tags-input.dom"
@@ -232,6 +232,7 @@ export function connect<T extends PropTypes>(
         "data-highlighted": dataAttr(itemState.highlighted),
         onPointerDown(event) {
           if (!interactive || itemState.disabled) return
+          if (!isLeftClick(event)) return
           event.preventDefault()
           send({ type: "POINTER_DOWN_TAG", id: itemState.id })
         },
@@ -305,6 +306,7 @@ export function connect<T extends PropTypes>(
         "aria-label": translations?.deleteTagTriggerLabel?.(props.value),
         tabIndex: -1,
         onPointerDown(event) {
+          if (!isLeftClick(event)) return
           if (!interactive) {
             event.preventDefault()
           }
@@ -317,7 +319,8 @@ export function connect<T extends PropTypes>(
           if (!interactive) return
           dom.clearHoverIntent(event.currentTarget)
         },
-        onClick() {
+        onClick(event) {
+          if (event.defaultPrevented) return
           if (!interactive) return
           send({ type: "CLICK_DELETE_TAG", id })
         },
