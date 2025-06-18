@@ -10,6 +10,7 @@ export type {
   TreeCollectionOptions,
   TreeCollectionMethods,
   TreeNode,
+  FlatTreeNodeMeta,
   FlatTreeNode,
   FilePathTreeNode,
   TreeSkipFn,

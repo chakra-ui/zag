@@ -1,6 +1,8 @@
 // Modified from https://github.com/dabbott/tree-visit
 // MIT License
 
+import type { FlatTreeNode } from "./types"
+
 // Accessors
 
 export function access<T>(node: T, indexPath: IndexPath, options: BaseOptions<T>): T {
@@ -133,6 +135,73 @@ export function flatMap<T, R>(node: T, options: FlatMapOptions<T, R>): R[] {
       return result
     },
   })
+}
+
+export function filter<T>(node: T, options: FilterOptions<T>): T {
+  const { predicate, create, getChildren } = options
+
+  const filterRecursive = (node: T, indexPath: IndexPath): T | null => {
+    const children = getChildren(node, indexPath)
+    const filteredChildren: T[] = []
+
+    // Recursively filter children
+    children.forEach((child, index) => {
+      const childIndexPath = [...indexPath, index]
+      const filteredChild = filterRecursive(child, childIndexPath)
+      if (filteredChild) filteredChildren.push(filteredChild)
+    })
+
+    // Keep node if: root, matches predicate, or has filtered children (preserve structure)
+    const isRoot = indexPath.length === 0
+    const nodeMatches = predicate(node, indexPath)
+    const hasFilteredChildren = filteredChildren.length > 0
+
+    if (isRoot || nodeMatches || hasFilteredChildren) {
+      return create(node, filteredChildren, indexPath)
+    }
+
+    return null
+  }
+
+  return filterRecursive(node, []) || options.create(node, [], [])
+}
+
+export function flatten<T>(rootNode: T, options: BaseOptions<T>): Array<FlatTreeNode<T>> {
+  const nodes: Array<FlatTreeNode<T>> = []
+  let idx = 0
+  const idxMap = new Map<T, number>()
+  const parentMap = new Map<T, T>()
+
+  visit(rootNode, {
+    getChildren: options.getChildren,
+    onEnter: (node, indexPath) => {
+      // Assign index if not already assigned
+      if (!idxMap.has(node)) {
+        idxMap.set(node, idx++)
+      }
+
+      const children = options.getChildren(node, indexPath)
+
+      // Set parent-child relationships and assign indices to children
+      children.forEach((child) => {
+        if (!parentMap.has(child)) {
+          parentMap.set(child, node)
+        }
+        if (!idxMap.has(child)) {
+          idxMap.set(child, idx++)
+        }
+      })
+
+      const _children = children.length > 0 ? children.map((child) => idxMap.get(child)!) : undefined
+      const parent = parentMap.get(node)
+      const _parent = parent ? idxMap.get(parent) : undefined
+      const _index = idxMap.get(node)!
+
+      nodes.push({ ...node, _children, _parent, _index })
+    },
+  })
+
+  return nodes
 }
 
 // Mutations
@@ -413,6 +482,10 @@ export interface ReduceOptions<T, R> extends BaseOptions<T> {
 
 export interface FlatMapOptions<T, R> extends BaseOptions<T> {
   transform: (node: T, indexPath: IndexPath) => R[]
+}
+
+export interface FilterOptions<T> extends MutationBaseOptions<T> {
+  predicate: (node: T, indexPath: IndexPath) => boolean
 }
 
 export interface MutationBaseOptions<T> extends BaseOptions<T> {

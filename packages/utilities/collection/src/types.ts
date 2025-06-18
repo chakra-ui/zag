@@ -63,18 +63,17 @@ export interface TreeCollectionOptions<T> extends Partial<TreeCollectionMethods<
 
 export type TreeNode = any
 
-export interface FilePathTreeNode {
-  label: string
-  value: string
-  children?: FilePathTreeNode[]
+export type FilePathTreeNode<T = TreeNode> = T & {
+  children?: FilePathTreeNode<T>[]
 }
 
-export interface FlatTreeNode {
-  label?: string | undefined
-  value: string
-  indexPath: number[]
-  children?: string[] | undefined
+export interface FlatTreeNodeMeta {
+  _children: number[] | undefined
+  _parent: number | undefined
+  _index: number
 }
+
+export type FlatTreeNode<T = TreeNode> = T & FlatTreeNodeMeta
 
 export interface TreeSkipFnArgs<T> {
   value: string

@@ -2,9 +2,11 @@ import { compact, hasProp, isEqual, isObject } from "@zag-js/utils"
 import {
   access,
   compareIndexPaths,
+  filter,
   find,
   findIndexPath,
   flatMap,
+  flatten,
   insert,
   move,
   remove,
@@ -34,7 +36,7 @@ export class TreeCollection<T = TreeNode> {
   }
 
   getNodeChildren = (node: T): T[] => {
-    return this.options.nodeToChildren?.(node) ?? fallback.nodeToChildren(node) ?? []
+    return this.options.nodeToChildren?.(node) ?? fallbackMethods.nodeToChildren(node) ?? []
   }
 
   private _indexPath = (valueOrIndexPath: string | IndexPath): IndexPath | undefined => {
@@ -42,15 +44,15 @@ export class TreeCollection<T = TreeNode> {
   }
 
   getNodeChildrenCount = (node: T): number | undefined => {
-    return this.options.nodeToChildrenCount?.(node) ?? fallback.nodeToChildrenCount(node)
+    return this.options.nodeToChildrenCount?.(node) ?? fallbackMethods.nodeToChildrenCount(node)
   }
 
   getNodeValue = (node: T): string => {
-    return this.options.nodeToValue?.(node) ?? fallback.nodeToValue(node)
+    return this.options.nodeToValue?.(node) ?? fallbackMethods.nodeToValue(node)
   }
 
   getNodeDisabled = (node: T): boolean => {
-    return this.options.isNodeDisabled?.(node) ?? fallback.isNodeDisabled(node)
+    return this.options.isNodeDisabled?.(node) ?? fallbackMethods.isNodeDisabled(node)
   }
 
   stringify = (value: string): string | null => {
@@ -60,7 +62,7 @@ export class TreeCollection<T = TreeNode> {
   }
 
   stringifyNode = (node: T): string => {
-    return this.options.nodeToString?.(node) ?? fallback.nodeToString(node)
+    return this.options.nodeToString?.(node) ?? fallbackMethods.nodeToString(node)
   }
 
   getFirstNode = (rootNode = this.rootNode): T | undefined => {
@@ -310,28 +312,12 @@ export class TreeCollection<T = TreeNode> {
     return values.slice(1)
   }
 
-  flatten = (rootNode = this.rootNode): FlatTreeNode[] => {
-    const nodes = flatMap(rootNode, {
-      getChildren: this.getNodeChildren,
-      transform: (node, indexPath): FlatTreeNode[] => {
-        const children = this.getNodeChildren(node).map((child) => this.getNodeValue(child))
-        return [
-          compact({
-            label: this.stringifyNode(node),
-            value: this.getNodeValue(node),
-            indexPath,
-            children: children.length > 0 ? children : undefined,
-          }),
-        ]
-      },
-    })
-
-    // remove the root node
-    return nodes.slice(1)
+  flatten = (rootNode = this.rootNode): Array<FlatTreeNode<T>> => {
+    return flatten(rootNode, { getChildren: this.getNodeChildren })
   }
 
   private _create = (node: T, children: T[]) => {
-    return compact({ ...node, children: children })
+    return compact({ ...node, children })
   }
 
   private _insert = (rootNode: T, indexPath: IndexPath, nodes: T[]): TreeCollection<T> => {
@@ -382,34 +368,63 @@ export class TreeCollection<T = TreeNode> {
     return this._move(this.rootNode, fromIndexPaths, toIndexPath)
   }
 
+  filter = (predicate: (node: T, indexPath: IndexPath) => boolean): TreeCollection<T> => {
+    const filteredRoot = filter(this.rootNode, {
+      predicate,
+      getChildren: this.getNodeChildren,
+      create: this._create,
+    })
+    return this.copy(filteredRoot)
+  }
+
   toJSON = () => {
     return this.getValues(this.rootNode)
   }
 }
 
-export function flattenedToTree(nodes: FlatTreeNode[]) {
-  let rootNode = {
-    value: "ROOT",
+export function flattenedToTree<T>(
+  nodes: Array<FlatTreeNode<T>>,
+  options: TreeCollectionMethods<T> = fallbackMethods,
+): TreeCollection<T> {
+  if (nodes.length === 0) {
+    throw new Error("[zag-js/tree] Cannot create tree from empty flattened array")
   }
 
-  nodes.map((node) => {
-    const { indexPath, label, value } = node
-    if (!indexPath.length) {
-      Object.assign(rootNode, { label, value, children: [] })
-      return
-    }
+  // Find the actual root node (the one with _parent === undefined)
+  const rootFlatNode = nodes.find((node) => node._parent === undefined)
+  if (!rootFlatNode) {
+    throw new Error("[zag-js/tree] No root node found in flattened data")
+  }
 
-    rootNode = insert(rootNode, {
-      at: indexPath,
-      nodes: [compact({ label, value }) as any],
-      getChildren: (node) => node.children ?? [],
-      create: (node, children) => {
-        return compact({ ...node, children })
-      },
-    })
+  // Create node map for quick lookup
+  const nodeMap = new Map<number, FlatTreeNode<T>>()
+  nodes.forEach((node) => {
+    nodeMap.set(node._index, node)
   })
 
-  return new TreeCollection({ rootNode })
+  // Build the tree recursively
+  const buildNode = (idx: number): T => {
+    const flatNode = nodeMap.get(idx)
+    if (!flatNode) return {} as T
+
+    const { _children, _parent, _index, ...cleanNode } = flatNode
+
+    // Recursively build children
+    const children: T[] = []
+    _children?.forEach((childIndex) => {
+      children.push(buildNode(childIndex))
+    })
+
+    return {
+      ...cleanNode,
+      ...(children.length > 0 && { children }),
+    } as T
+  }
+
+  // Use the actual root node from flattened data
+  const rootNode = buildNode(rootFlatNode._index)
+
+  return new TreeCollection({ ...options, rootNode })
 }
 
 export function filePathToTree(paths: string[]): TreeCollection<FilePathTreeNode> {
@@ -442,7 +457,7 @@ export function filePathToTree(paths: string[]): TreeCollection<FilePathTreeNode
   return new TreeCollection({ rootNode })
 }
 
-const fallback: TreeCollectionMethods<TreeNode> = {
+const fallbackMethods: TreeCollectionMethods<TreeNode> = {
   nodeToValue(node) {
     if (typeof node === "string") return node
     if (isObject(node) && hasProp(node, "value")) return node.value
@@ -451,7 +466,7 @@ const fallback: TreeCollectionMethods<TreeNode> = {
   nodeToString(node) {
     if (typeof node === "string") return node
     if (isObject(node) && hasProp(node, "label")) return node.label
-    return fallback.nodeToValue(node)
+    return fallbackMethods.nodeToValue(node)
   },
   isNodeDisabled(node) {
     if (isObject(node) && hasProp(node, "disabled")) return !!node.disabled
