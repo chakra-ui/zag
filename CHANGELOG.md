@@ -4,6 +4,39 @@ All notable changes to this project will be documented in this file.
 
 > For v0.x changelog, see the [v0 branch](https://github.com/chakra-ui/zag/blob/v0/CHANGELOG.md)
 
+## [1.15.6](./#1.15.6) - 2025-06-18
+
+### Fixed
+
+- **General**: Ensure pointerdown or click event handlers only execute when the main button is clicked
+
+### Changed
+
+- **Collection**: Improve the APIs around `tree.flatten(...)` and `flattenedToTree` to ensure the original node
+  properties are preserved.
+
+  > Previously, `tree.flatten()` would return an array of objects with `value` and `label` stripping out the original
+  > node properties.
+
+  ```ts
+  const tree = new TreeCollection({
+    rootNode: {
+      value: "ROOT",
+      children: [{ value: "child1" }, { value: "child2" }],
+    },
+  })
+
+  const flattened = tree.flatten()
+  const reconstructed = flattenedToTree(flattened)
+
+  console.log(reconstructed.rootNode)
+
+  // {
+  //   value: "ROOT",
+  //   children: [{ value: "child1" }, { value: "child2" }],
+  // }
+  ```
+
 ## [1.15.5](./#1.15.5) - 2025-06-17
 
 ### Fixed
