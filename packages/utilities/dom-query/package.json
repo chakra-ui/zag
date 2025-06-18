@@ -1,6 +1,6 @@
 {
   "name": "@zag-js/dom-query",
-  "version": "1.15.5",
+  "version": "1.15.6",
   "description": "The dom helper library for zag.js machines",
   "keywords": [
     "js",
