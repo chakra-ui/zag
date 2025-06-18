@@ -1,5 +1,24 @@
 # @zag-js/floating-panel
 
+## 1.15.6
+
+### Patch Changes
+
+- [`96adb68`](https://github.com/chakra-ui/zag/commit/96adb68ab9e07828ca4686461eaff487b4e899b0) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Ensure pointerdown or click event handlers only execute when the
+  main button is clicked
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.15.6
+  - @zag-js/core@1.15.6
+  - @zag-js/store@1.15.6
+  - @zag-js/types@1.15.6
+  - @zag-js/utils@1.15.6
+  - @zag-js/dismissable@1.15.6
+  - @zag-js/dom-query@1.15.6
+  - @zag-js/popper@1.15.6
+  - @zag-js/rect-utils@1.15.6
+
 ## 1.15.5
 
 ### Patch Changes

@@ -1,5 +1,19 @@
 # @zag-js/select
 
+## 1.15.6
+
+### Patch Changes
+
+- Updated dependencies [[`bb9b1e1`](https://github.com/chakra-ui/zag/commit/bb9b1e128ee9ff6318bbbbb2505c192435f05d1e)]:
+  - @zag-js/collection@1.15.6
+  - @zag-js/anatomy@1.15.6
+  - @zag-js/core@1.15.6
+  - @zag-js/types@1.15.6
+  - @zag-js/utils@1.15.6
+  - @zag-js/dismissable@1.15.6
+  - @zag-js/dom-query@1.15.6
+  - @zag-js/popper@1.15.6
+
 ## 1.15.5
 
 ### Patch Changes
