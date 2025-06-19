@@ -1,5 +1,16 @@
 # @zag-js/collection
 
+## 1.15.7
+
+### Patch Changes
+
+- [`3de5dd0`](https://github.com/chakra-ui/zag/commit/3de5dd059f847bd68cafaae230e706783ff43dc6) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix issue where tree collection filter method returns empty
+  children for leaf item.
+
+- Updated dependencies []:
+  - @zag-js/utils@1.15.7
+
 ## 1.15.6
 
 ### Patch Changes

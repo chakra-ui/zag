@@ -1,5 +1,20 @@
 # @zag-js/combobox
 
+## 1.15.7
+
+### Patch Changes
+
+- Updated dependencies [[`3de5dd0`](https://github.com/chakra-ui/zag/commit/3de5dd059f847bd68cafaae230e706783ff43dc6)]:
+  - @zag-js/collection@1.15.7
+  - @zag-js/anatomy@1.15.7
+  - @zag-js/core@1.15.7
+  - @zag-js/types@1.15.7
+  - @zag-js/aria-hidden@1.15.7
+  - @zag-js/utils@1.15.7
+  - @zag-js/dismissable@1.15.7
+  - @zag-js/dom-query@1.15.7
+  - @zag-js/popper@1.15.7
+
 ## 1.15.6
 
 ### Patch Changes
