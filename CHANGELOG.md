@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 
 > For v0.x changelog, see the [v0 branch](https://github.com/chakra-ui/zag/blob/v0/CHANGELOG.md)
 
+## [1.15.7](./#1.15.7) - 2025-06-19
+
+### Fixed
+
+- **Collection**: Fix issue where tree collection filter method returns empty children for leaf item.
+
 ## [1.15.6](./#1.15.6) - 2025-06-18
 
 ### Fixed
