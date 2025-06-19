@@ -1,7 +1,7 @@
 import type { TreeNode, TreeSkipFn } from "@zag-js/collection"
 import { createGuards, createMachine, type Params } from "@zag-js/core"
 import { getByTypeahead } from "@zag-js/dom-query"
-import { add, addOrRemove, diff, ensure, first, isEqual, last, remove, toArray, uniq } from "@zag-js/utils"
+import { add, addOrRemove, diff, ensure, first, isArray, isEqual, last, remove, toArray, uniq } from "@zag-js/utils"
 import { collection } from "./tree-view.collection"
 import * as dom from "./tree-view.dom"
 import type { TreeLoadingStatusMap, TreeViewSchema } from "./tree-view.types"
@@ -85,6 +85,9 @@ export const machine = createMachine<TreeViewSchema>({
     "EXPANDED.SET": {
       actions: ["setExpanded"],
     },
+    "EXPANDED.CLEAR": {
+      actions: ["clearExpanded"],
+    },
     "EXPANDED.ALL": {
       actions: ["expandAllBranches"],
     },
@@ -107,6 +110,9 @@ export const machine = createMachine<TreeViewSchema>({
         actions: ["selectAllNodes"],
       },
     ],
+    "SELECTED.CLEAR": {
+      actions: ["clearSelected"],
+    },
     "NODE.SELECT": {
       actions: ["selectNode"],
     },
@@ -280,10 +286,18 @@ export const machine = createMachine<TreeViewSchema>({
         context.set("expandedValue", (prev) => remove(prev, ...value))
       },
       setExpanded({ context, event }) {
+        if (!isArray(event.value)) return
         context.set("expandedValue", event.value)
       },
+      clearExpanded({ context }) {
+        context.set("expandedValue", [])
+      },
       setSelected({ context, event }) {
+        if (!isArray(event.value)) return
         context.set("selectedValue", event.value)
+      },
+      clearSelected({ context }) {
+        context.set("selectedValue", [])
       },
       focusTreeFirstNode({ prop, scope }) {
         const collection = prop("collection")

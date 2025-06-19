@@ -46,10 +46,10 @@ export function connect<T extends PropTypes>(service: TreeViewService, normalize
       send({ type: value ? "BRANCH.EXPAND" : "EXPANDED.ALL", value })
     },
     collapse(value) {
-      send({ type: value ? "BRANCH.COLLAPSE" : "EXPANDED.SET", value })
+      send({ type: value ? "BRANCH.COLLAPSE" : "EXPANDED.CLEAR", value })
     },
     deselect(value) {
-      send({ type: value ? "NODE.DESELECT" : "SELECTED.SET", value })
+      send({ type: value ? "NODE.DESELECT" : "SELECTED.CLEAR", value })
     },
     select(value) {
       send({ type: value ? "NODE.SELECT" : "SELECTED.ALL", value })
