@@ -1,5 +1,23 @@
 # @zag-js/tree-view
 
+## 1.16.0
+
+### Minor Changes
+
+- [`075404e`](https://github.com/chakra-ui/zag/commit/075404e6f3722522fc50f790f9498601b94e2e15) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix issue where `api.collapse` and `api.deselect` throws error
+  when called without arguments
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.16.0
+  - @zag-js/core@1.16.0
+  - @zag-js/types@1.16.0
+  - @zag-js/collection@1.16.0
+  - @zag-js/utils@1.16.0
+  - @zag-js/dom-query@1.16.0
+
 ## 1.15.7
 
 ### Patch Changes

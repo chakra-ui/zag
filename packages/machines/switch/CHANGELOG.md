@@ -1,5 +1,17 @@
 # @zag-js/switch
 
+## 1.16.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.16.0
+  - @zag-js/core@1.16.0
+  - @zag-js/types@1.16.0
+  - @zag-js/utils@1.16.0
+  - @zag-js/dom-query@1.16.0
+  - @zag-js/focus-visible@1.16.0
+
 ## 1.15.7
 
 ### Patch Changes
