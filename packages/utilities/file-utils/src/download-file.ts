@@ -14,19 +14,19 @@ export interface DownloadFileOptions {
   /**
    * The window environment
    */
-  win?: typeof window
+  win?: typeof window | undefined
   /**
    * Whether to add a BOM (Byte Order Mark) to the file.
    * Useful for CSV files.
    */
-  appendBOM?: boolean
+  appendBOM?: boolean | undefined
   /**
    * The timeout in milliseconds to revoke the object URL.
    * This is a safeguard for when the browser has not finished reading the
    * file data from memory before the URL is revoked.
    * @default 0
    */
-  revokeTimeout?: number
+  revokeTimeout?: number | undefined
 }
 
 const BOM_REGEX = /^\s*(?:text\/\S*|application\/xml|\S*\/\S*\+xml)\s*;.*charset\s*=\s*utf-8/i

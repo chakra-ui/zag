@@ -297,7 +297,10 @@ export class TreeCollection<T = TreeNode> {
     return this.getNodeChildren(node).length > 0 || this.getNodeChildrenCount(node) != null
   }
 
-  getBranchValues = (rootNode = this.rootNode, opts: TreeSkipOptions<T> & { depth?: number } = {}): string[] => {
+  getBranchValues = (
+    rootNode = this.rootNode,
+    opts: TreeSkipOptions<T> & { depth?: number | undefined } = {},
+  ): string[] => {
     let values: string[] = []
     visit(rootNode, {
       getChildren: this.getNodeChildren,

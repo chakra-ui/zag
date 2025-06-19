@@ -1,7 +1,7 @@
 export interface PortalActionProps {
-  disabled?: boolean
-  container?: HTMLElement
-  getRootNode?: () => ShadowRoot | Document | Node
+  disabled?: boolean | undefined
+  container?: HTMLElement | undefined
+  getRootNode?: (() => ShadowRoot | Document | Node) | undefined
 }
 
 export function portal(node: HTMLElement, props: PortalActionProps = {}) {

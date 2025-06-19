@@ -110,21 +110,21 @@ export interface ToastProps<T = any> extends Omit<CommonProperties, "id">, Optio
    * @internal
    * The index of the toast
    */
-  index?: number
+  index?: number | undefined
   /**
    * @internal
    * Whether the toast is stacked
    */
-  stacked?: boolean
+  stacked?: boolean | undefined
   /**
    * @internal
    * The event to be dispatched
    */
-  message?: any
+  message?: any | undefined
   /**
    * The gap of the toast
    */
-  gap?: number
+  gap?: number | undefined
   /**
    * @internal
    * The parent of the toast
@@ -134,7 +134,7 @@ export interface ToastProps<T = any> extends Omit<CommonProperties, "id">, Optio
    * @internal
    * Whether to dismiss the toast
    */
-  dismiss?: boolean
+  dismiss?: boolean | undefined
 }
 
 type ToastPropsWithDefault = "type" | "parent" | "duration" | "id" | "removeDelay"
@@ -357,9 +357,9 @@ export interface ToastStore<V = any> {
 type MaybeFunction<Value, Args> = Value | ((arg: Args) => Value)
 
 export interface PromiseOptions<V, O = any> {
-  loading?: Omit<Options<O>, "type">
-  success?: MaybeFunction<Omit<Options<O>, "type">, V>
-  error?: MaybeFunction<Omit<Options<O>, "type">, unknown>
+  loading?: Omit<Options<O>, "type"> | undefined
+  success?: MaybeFunction<Omit<Options<O>, "type">, V> | undefined
+  error?: MaybeFunction<Omit<Options<O>, "type">, unknown> | undefined
   finally?: (() => void | Promise<void>) | undefined
 }
 

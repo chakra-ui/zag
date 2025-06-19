@@ -4,7 +4,7 @@ import { diagram } from "./tree-diagram"
 
 interface Node {
   value: string
-  children?: Array<Node>
+  children?: Array<Node> | undefined
 }
 
 let tree: TreeCollection<Node>
@@ -576,10 +576,10 @@ describe("tree / siblings", () => {
 describe("tree / flatten", () => {
   interface TestNode {
     value: string
-    label?: string
-    disabled?: boolean
-    customProp?: string
-    children?: TestNode[]
+    label?: string | undefined
+    disabled?: boolean | undefined
+    customProp?: string | undefined
+    children?: TestNode[] | undefined
   }
 
   const complexTree: TestNode = {

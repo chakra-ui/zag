@@ -199,7 +199,7 @@ export interface ItemListenerProps {
   /**
    * Function called when the item is selected
    */
-  onSelect?: VoidFunction
+  onSelect?: VoidFunction | undefined
 }
 
 export interface OptionItemProps extends Partial<ItemProps> {
@@ -259,9 +259,9 @@ export interface ItemGroupLabelProps {
 
 export interface ItemBaseProps {
   value: string
-  disabled?: boolean
-  checked?: boolean
-  valueText?: string
+  disabled?: boolean | undefined
+  checked?: boolean | undefined
+  valueText?: string | undefined
 }
 
 export interface MenuApi<T extends PropTypes = PropTypes> {

@@ -8,7 +8,7 @@ export type ExtendedColorChannel = ColorChannel | "hex" | "css"
 
 interface EyeDropper {
   new (): EyeDropper
-  open: (options?: { signal?: AbortSignal }) => Promise<{ sRGBHex: string }>
+  open: (options?: { signal?: AbortSignal | undefined }) => Promise<{ sRGBHex: string }>
   [Symbol.toStringTag]: "EyeDropper"
 }
 

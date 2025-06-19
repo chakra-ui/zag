@@ -16,7 +16,7 @@ export interface LoadDetails<C> {
 
 export interface LoadResult<T, C> {
   items: T[]
-  cursor?: C
+  cursor?: C | undefined
 }
 
 export interface SortDetails<T> {
@@ -34,7 +34,7 @@ export interface AsyncListProps<T, C> {
   /**
    * The function to call when the list is sorted
    */
-  sort?: (args: SortDetails<T>) => Promise<{ items: T[] }> | { items: T[] } | undefined
+  sort?: ((args: SortDetails<T>) => Promise<{ items: T[] }> | { items: T[] } | undefined) | undefined
   /**
    * The initial items to display
    */
@@ -58,11 +58,11 @@ export interface AsyncListProps<T, C> {
   /**
    * The function to call when the list is loaded successfully
    */
-  onSuccess?: (details: { items: T[] }) => void | undefined
+  onSuccess?: ((details: { items: T[] }) => void | undefined) | undefined
   /**
    * The function to call when the list fails to load
    */
-  onError?: (details: { error: Error }) => void | undefined
+  onError?: ((details: { error: Error }) => void | undefined) | undefined
 }
 
 export interface AsyncListSchema<T, C> {
@@ -71,9 +71,9 @@ export interface AsyncListSchema<T, C> {
   context: {
     items: T[]
     filterText: string
-    cursor?: C
-    sortDescriptor?: SortDescriptor
-    error?: any
+    cursor?: C | undefined
+    sortDescriptor?: SortDescriptor | undefined
+    error?: any | undefined
   }
   refs: {
     abort: AbortController | null

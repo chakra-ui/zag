@@ -50,7 +50,7 @@ export function getAccessibilityDoc(key: AccessibilityDocKey): AccessibilityDoc 
 interface Prop {
   type: string
   description: string
-  defaultValue?: string
+  defaultValue?: string | undefined
 }
 
 export interface ApiDoc {

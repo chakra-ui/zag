@@ -75,7 +75,7 @@ export function getPanelFlexBoxStyle({
   dragState: DragState | null
   panels: PanelData[]
   panelIndex: number
-  precision?: number
+  precision?: number | undefined
 }): Style {
   const size = sizes[panelIndex]
 

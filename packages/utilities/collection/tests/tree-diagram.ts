@@ -15,7 +15,7 @@ interface Line {
 interface DiagramOptions<T> {
   getLabel: (node: T, indexPath: number[]) => string
   getChildren: (node: T, indexPath: number[]) => T[]
-  flattenSingleChildNodes?: boolean
+  flattenSingleChildNodes?: boolean | undefined
 }
 
 function nodeDiagram<T>(node: T | null, indexPath: number[], options: DiagramOptions<T>): Line[] {

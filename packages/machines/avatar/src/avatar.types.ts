@@ -39,8 +39,8 @@ export interface AvatarSchema {
   effect: "trackImageRemoval" | "trackSrcChange"
   action: "invokeOnLoad" | "invokeOnError" | "checkImageStatus"
   event:
-    | { type: "img.loaded"; src?: string }
-    | { type: "img.error"; src?: string }
+    | { type: "img.loaded"; src?: string | undefined }
+    | { type: "img.error"; src?: string | undefined }
     | { type: "img.unmount" }
     | { type: "src.change" }
   state: "loading" | "error" | "loaded"

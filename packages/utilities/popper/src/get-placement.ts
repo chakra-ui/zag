@@ -217,7 +217,7 @@ function getPlacementImpl(referenceOrVirtual: MaybeRectElement, floating: MaybeE
 export function getPlacement(
   referenceOrFn: MaybeFn<MaybeRectElement>,
   floatingOrFn: MaybeFn<MaybeElement>,
-  opts: PositioningOptions & { defer?: boolean } = {},
+  opts: PositioningOptions & { defer?: boolean | undefined } = {},
 ) {
   const { defer, ...options } = opts
   const func = defer ? raf : (v: any) => v()

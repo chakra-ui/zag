@@ -83,7 +83,7 @@ export interface DownloadTriggerProps {
   /**
    * The quality of the image.
    */
-  quality?: number
+  quality?: number | undefined
   /**
    * The name of the file.
    */

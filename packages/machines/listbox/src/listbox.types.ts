@@ -82,7 +82,7 @@ export interface ListboxProps<T extends CollectionItem = CollectionItem>
   /**
    * The controlled key of the highlighted item
    */
-  highlightedValue?: string | null
+  highlightedValue?: string | null | undefined
   /**
    * The initial value of the highlighted item when opened.
    * Use when you don't need to control the highlighted value of the listbox.
