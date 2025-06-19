@@ -215,9 +215,10 @@ export class TreeCollection<T = TreeNode> {
   }
 
   getParentNodes = (valueOrIndexPath: string | IndexPath): T[] => {
-    const indexPath = this._indexPath(valueOrIndexPath)
+    const indexPath = this._indexPath(valueOrIndexPath)?.slice()
+    if (!indexPath) return []
     const result: T[] = []
-    while (indexPath && indexPath.length > 0) {
+    while (indexPath.length > 0) {
       indexPath.pop()
       const parentNode = this.at(indexPath)
       if (parentNode && !this.isRootNode(parentNode)) {
@@ -317,7 +318,7 @@ export class TreeCollection<T = TreeNode> {
   }
 
   private _create = (node: T, children: T[]) => {
-    return compact({ ...node, children })
+    return compact({ ...node, children: children.length > 0 ? children : undefined })
   }
 
   private _insert = (rootNode: T, indexPath: IndexPath, nodes: T[]): TreeCollection<T> => {
@@ -438,12 +439,12 @@ export function filePathToTree(paths: string[]): TreeCollection<FilePathTreeNode
     const parts = path.split("/")
     let currentNode = rootNode
 
-    parts.forEach((part) => {
+    parts.forEach((part, index) => {
       let childNode = currentNode.children?.find((child: any) => child.label === part)
 
       if (!childNode) {
         childNode = {
-          value: parts.slice(0, parts.indexOf(part) + 1).join("/"),
+          value: parts.slice(0, index + 1).join("/"),
           label: part,
         }
         currentNode.children ||= []

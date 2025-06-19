@@ -206,7 +206,7 @@ export const machine = createMachine<TreeViewSchema>({
             actions: ["extendSelectionToNode"],
           },
           {
-            guard: "openOnClick",
+            guard: "expandOnClick",
             actions: ["selectNode", "toggleBranchNode"],
           },
           {
@@ -232,7 +232,7 @@ export const machine = createMachine<TreeViewSchema>({
       hasSelectedItems: ({ context }) => context.get("selectedValue").length > 0,
       isMultipleSelection: ({ prop }) => prop("selectionMode") === "multiple",
       moveFocus: ({ event }) => !!event.moveFocus,
-      openOnClick: ({ prop }) => !!prop("expandOnClick"),
+      expandOnClick: ({ prop }) => !!prop("expandOnClick"),
     },
     actions: {
       selectNode({ context, event, prop }) {

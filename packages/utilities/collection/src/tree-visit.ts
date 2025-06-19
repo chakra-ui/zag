@@ -163,7 +163,7 @@ export function filter<T>(node: T, options: FilterOptions<T>): T {
     return null
   }
 
-  return filterRecursive(node, []) || options.create(node, [], [])
+  return filterRecursive(node, []) || create(node, [], [])
 }
 
 export function flatten<T>(rootNode: T, options: BaseOptions<T>): Array<FlatTreeNode<T>> {

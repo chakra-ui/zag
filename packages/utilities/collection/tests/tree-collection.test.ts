@@ -829,6 +829,23 @@ describe("tree / filter", () => {
 
   it("filters branch nodes only", () => {
     // Filter only branch nodes (nodes with children)
+    const newTree = tree.filter((node) => node.value === "branch1-1").rootNode
+    expect(newTree).toMatchInlineSnapshot(`
+      {
+        "children": [
+          {
+            "children": [
+              {
+                "value": "branch1-1",
+              },
+            ],
+            "value": "branch1",
+          },
+        ],
+        "value": "ROOT",
+      }
+    `)
+
     expect(filter((node) => (node.children?.length ?? 0) > 0)).toMatchInlineSnapshot(`
       "ROOT
       └── branch1
