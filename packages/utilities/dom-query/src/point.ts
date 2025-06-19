@@ -2,7 +2,7 @@ import { clamp } from "./shared"
 import type { Point } from "./types"
 
 export interface PercentValueOptions {
-  inverted?: boolean | { x?: boolean; y?: boolean } | undefined
+  inverted?: boolean | { x?: boolean | undefined; y?: boolean | undefined } | undefined
   dir?: "ltr" | "rtl" | undefined
   orientation?: "vertical" | "horizontal" | undefined
 }

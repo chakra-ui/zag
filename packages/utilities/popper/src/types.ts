@@ -32,7 +32,7 @@ export interface PositioningOptions {
   /**
    * The offset of the floating element
    */
-  offset?: { mainAxis?: number; crossAxis?: number } | undefined
+  offset?: { mainAxis?: number | undefined; crossAxis?: number | undefined } | undefined
   /**
    * The main axis offset or gap between the reference and floating elements
    */

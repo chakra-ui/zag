@@ -38,11 +38,11 @@ export interface CollectionOptions<T extends CollectionItem = CollectionItem> ex
   /**
    * Function to group items
    */
-  groupBy?: (item: T, index: number) => string
+  groupBy?: ((item: T, index: number) => string) | undefined
   /**
    * Function to sort items
    */
-  groupSort?: ((a: string, b: string) => number) | string[] | "asc" | "desc"
+  groupSort?: ((a: string, b: string) => number) | string[] | "asc" | "desc" | undefined
 }
 
 // ==============================
@@ -64,7 +64,7 @@ export interface TreeCollectionOptions<T> extends Partial<TreeCollectionMethods<
 export type TreeNode = any
 
 export type FilePathTreeNode<T = TreeNode> = T & {
-  children?: FilePathTreeNode<T>[]
+  children?: FilePathTreeNode<T>[] | undefined
 }
 
 export interface FlatTreeNodeMeta {
@@ -84,5 +84,5 @@ export interface TreeSkipFnArgs<T> {
 export type TreeSkipFn<T> = (args: TreeSkipFnArgs<T>) => boolean | void
 
 export interface TreeSkipOptions<T> {
-  skip?: TreeSkipFn<T>
+  skip?: TreeSkipFn<T> | undefined
 }

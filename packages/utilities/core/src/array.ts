@@ -39,8 +39,8 @@ export function clear<T>(v: T[]): T[] {
 }
 
 export type IndexOptions = {
-  step?: number
-  loop?: boolean
+  step?: number | undefined
+  loop?: boolean | undefined
 }
 
 export function nextIndex<T>(v: T[], idx: number, opts: IndexOptions = {}): number {

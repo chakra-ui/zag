@@ -456,7 +456,7 @@ export type IndexPath = number[]
 
 export interface BaseOptions<T> {
   getChildren: (node: T, indexPath: IndexPath) => T[]
-  reuseIndexPath?: boolean
+  reuseIndexPath?: boolean | undefined
 }
 
 export interface FindOptions<T> extends BaseOptions<T> {
@@ -517,12 +517,12 @@ interface TreeVisitStack<T> {
    * -1        => skipped
    * n         => nth child
    */
-  state?: number
+  state?: number | undefined
 
   /**
    * Cached children, so we only call getChildren once per node
    */
-  children?: T[]
+  children?: T[] | undefined
 }
 
 export type TreeVisitEnterReturnValue = void | "skip" | "stop"

@@ -599,7 +599,7 @@ export class FocusTrap {
 
   private getNodeForOption = (
     optionName: keyof FocusTrapOptions,
-    { hasFallback = false, params = [] }: { hasFallback?: boolean; params?: any[] } = {},
+    { hasFallback = false, params = [] }: { hasFallback?: boolean | undefined; params?: any[] | undefined } = {},
   ) => {
     let optionValue: any = this.config[optionName]
     if (typeof optionValue === "function") optionValue = optionValue(...params)

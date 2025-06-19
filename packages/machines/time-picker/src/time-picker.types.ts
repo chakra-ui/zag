@@ -96,7 +96,7 @@ export interface TimePickerProps extends DirectionProperty, CommonProperties {
   /**
    * The steps of each time unit.
    */
-  steps?: { hour?: number; minute?: number; second?: number } | undefined
+  steps?: { hour?: number | undefined; minute?: number | undefined; second?: number | undefined } | undefined
   /**
    * Whether to show the seconds.
    */

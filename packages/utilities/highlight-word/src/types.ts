@@ -2,11 +2,11 @@ export interface HighlightRegexOptions {
   /**
    * Whether to ignore case while matching
    */
-  ignoreCase?: boolean
+  ignoreCase?: boolean | undefined
   /**
    * Whether to match multiple instances of the query
    */
-  matchAll?: boolean
+  matchAll?: boolean | undefined
 }
 
 export interface HighlightWordProps extends HighlightRegexOptions {
@@ -43,5 +43,5 @@ export interface HighlightSpan {
   /**
    * Whether the span is a match
    */
-  match?: boolean
+  match?: boolean | undefined
 }

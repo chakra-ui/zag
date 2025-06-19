@@ -143,7 +143,7 @@ export interface LinkProps {
   /**
    * Function called when the link is selected
    */
-  onSelect?: (event: CustomEvent) => void
+  onSelect?: ((event: CustomEvent) => void) | undefined
 }
 
 export interface NavigationMenuApi<T extends PropTypes = PropTypes> {

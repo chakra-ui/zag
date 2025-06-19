@@ -3,7 +3,7 @@ import { TreeCollection } from "../src/tree-collection"
 interface Item {
   id: string
   name: string
-  children?: Item[]
+  children?: Item[] | undefined
 }
 
 let tree: TreeCollection<Item>

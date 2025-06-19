@@ -149,7 +149,7 @@ export function trackDismissableElement(nodeOrFn: NodeOrFn, options: Dismissable
   }
 }
 
-export function trackDismissableBranch(nodeOrFn: NodeOrFn, options: { defer?: boolean } = {}) {
+export function trackDismissableBranch(nodeOrFn: NodeOrFn, options: { defer?: boolean | undefined } = {}) {
   const { defer } = options
   const func = defer ? raf : (v: any) => v()
   const cleanups: (VoidFunction | undefined)[] = []

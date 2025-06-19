@@ -6,7 +6,7 @@ export function memo<TDeps extends any[], TDepArgs, TResult>(
   getDeps: (depArgs: TDepArgs) => [...TDeps],
   fn: (...args: NoInfer<[...TDeps]>) => TResult,
   opts?: {
-    onChange?: (result: TResult) => void
+    onChange?: ((result: TResult) => void) | undefined
   },
 ): (depArgs: TDepArgs) => TResult {
   let deps: any[] = []

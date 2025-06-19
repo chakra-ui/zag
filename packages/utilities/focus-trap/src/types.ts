@@ -26,37 +26,37 @@ export interface FocusTrapOptions {
    * A function that will be called **before** sending focus to the
    * target element upon activation.
    */
-  onActivate?: VoidFunction
+  onActivate?: VoidFunction | undefined
 
   /**
    * A function that will be called **after** focus has been sent to the
    * target element upon activation.
    */
-  onPostActivate?: VoidFunction
+  onPostActivate?: VoidFunction | undefined
 
   /**
    * A function that will be called immediately after the trap's state is updated to be paused.
    */
-  onPause?: VoidFunction
+  onPause?: VoidFunction | undefined
 
   /**
    * A function that will be called after the trap has been completely paused and is no longer
    *  managing/trapping focus.
    */
-  onPostPause?: VoidFunction
+  onPostPause?: VoidFunction | undefined
 
   /**
    * A function that will be called immediately after the trap's state is updated to be active
    *  again, but prior to updating its knowledge of what nodes are tabbable within its containers,
    *  and prior to actively managing/trapping focus.
    */
-  onUnpause?: VoidFunction
+  onUnpause?: VoidFunction | undefined
 
   /**
    * A function that will be called after the trap has been completely unpaused and is once
    *  again managing/trapping focus.
    */
-  onPostUnpause?: VoidFunction
+  onPostUnpause?: VoidFunction | undefined
 
   /**
    * A function for determining if it is safe to send focus to the focus trap
@@ -69,20 +69,20 @@ export interface FocusTrapOptions {
    * dialogs that fade in and out. When a dialog fades in, there is a brief delay
    * between the activation of the trap and the trap element being focusable.
    */
-  checkCanFocusTrap?: (containers: Array<HTMLElement | SVGElement>) => Promise<void>
+  checkCanFocusTrap?: ((containers: Array<HTMLElement | SVGElement>) => Promise<void>) | undefined
 
   /**
    * A function that will be called **before** sending focus to the
    * trigger element upon deactivation.
    */
-  onDeactivate?: VoidFunction
+  onDeactivate?: VoidFunction | undefined
 
   /**
    * A function that will be called after the trap is deactivated, after `onDeactivate`.
    * If `returnFocus` was set, it will be called **after** focus has been sent to the trigger
    * element upon deactivation; otherwise, it will be called after deactivation completes.
    */
-  onPostDeactivate?: VoidFunction
+  onPostDeactivate?: VoidFunction | undefined
   /**
    * A function for determining if it is safe to send focus back to the `trigger` element.
    *
@@ -98,7 +98,7 @@ export interface FocusTrapOptions {
    * This handler is **not** called if the `returnFocusOnDeactivate` configuration option
    * (or the `returnFocus` deactivation option) is falsy.
    */
-  checkCanReturnFocus?: (trigger: HTMLElement | SVGElement) => Promise<void>
+  checkCanReturnFocus?: ((trigger: HTMLElement | SVGElement) => Promise<void>) | undefined
 
   /**
    * By default, when a focus trap is activated the first element in the
@@ -128,12 +128,12 @@ export interface FocusTrapOptions {
    * is active if things change such that there are no longer any tabbable nodes
    * in the trap.
    */
-  fallbackFocus?: FocusTarget
+  fallbackFocus?: FocusTarget | undefined
   /**
    * Default: `true`. If `false`, when the trap is deactivated,
    * focus will *not* return to the element that had focus before activation.
    */
-  returnFocusOnDeactivate?: boolean
+  returnFocusOnDeactivate?: boolean | undefined
   /**
    * By default, focus trap on deactivation will return to the element
    * that was focused before activation.
@@ -141,6 +141,7 @@ export interface FocusTrapOptions {
   setReturnFocus?:
     | FocusTargetValueOrFalse
     | ((nodeFocusedBeforeActivation: HTMLElement | SVGElement) => FocusTargetValueOrFalse)
+    | undefined
   /**
    * Default: `true`. If `false` or returns `false`, the `Escape` key will not trigger
    * deactivation of the focus trap. This can be useful if you want
@@ -148,7 +149,7 @@ export interface FocusTrapOptions {
    * way out. Note that if a function is given, it's only called if the ESC key
    * was pressed.
    */
-  escapeDeactivates?: boolean | KeyboardEventToBoolean
+  escapeDeactivates?: boolean | KeyboardEventToBoolean | undefined
   /**
    * If `true` or returns `true`, a click outside the focus trap will
    * deactivate the focus trap and allow the click event to do its thing (i.e.
@@ -156,7 +157,7 @@ export interface FocusTrapOptions {
    * precedence** over `allowOutsideClick` when it's set to `true`, causing
    * that option to be ignored. Default: `false`.
    */
-  clickOutsideDeactivates?: boolean | MouseEventToBoolean
+  clickOutsideDeactivates?: boolean | MouseEventToBoolean | undefined
   /**
    * If set and is or returns `true`, a click outside the focus trap will not
    * be prevented, even when `clickOutsideDeactivates` is `false`. When
@@ -165,31 +166,31 @@ export interface FocusTrapOptions {
    * if (and even which) clicks are allowed outside the trap in conjunction
    * with `clickOutsideDeactivates: false`. Default: `false`.
    */
-  allowOutsideClick?: boolean | MouseEventToBoolean
+  allowOutsideClick?: boolean | MouseEventToBoolean | undefined
   /**
    * By default, focus() will scroll to the element if not in viewport.
    * It can produce unintended effects like scrolling back to the top of a modal.
    * If set to `true`, no scroll will happen.
    */
-  preventScroll?: boolean
+  preventScroll?: boolean | undefined
   /**
    * Default: `true`. Delays the autofocus when the focus trap is activated.
    * This prevents elements within the focusable element from capturing
    * the event that triggered the focus trap activation.
    */
-  delayInitialFocus?: boolean
+  delayInitialFocus?: boolean | undefined
   /**
    * Default: `window.document`. Document where the focus trap will be active.
    * This allows to use FocusTrap in an iFrame context.
    */
-  document?: Document
+  document?: Document | undefined
   /**
    * Determines if the given keyboard event is a "tab forward" event that will move
    * the focus to the next trapped element in tab order. Defaults to the `TAB` key.
    * Use this to override the trap's behavior if you want to use arrow keys to control
    * keyboard navigation within the trap, for example. Also see `isKeyBackward()` option.
    */
-  isKeyForward?: KeyboardEventToBoolean
+  isKeyForward?: KeyboardEventToBoolean | undefined
 
   /**
    * Determines if the given keyboard event is a "tab backward" event that will move
@@ -197,11 +198,11 @@ export interface FocusTrapOptions {
    * Use this to override the trap's behavior if you want to use arrow keys to control
    * keyboard navigation within the trap, for example. Also see `isKeyForward()` option.
    */
-  isKeyBackward?: KeyboardEventToBoolean
+  isKeyBackward?: KeyboardEventToBoolean | undefined
   /**
    * Default: `[]`. An array of FocusTrap instances that will be managed by this FocusTrap.
    */
-  trapStack?: any[]
+  trapStack?: any[] | undefined
 }
 
 interface ContainerGroup {
@@ -217,9 +218,9 @@ interface ContainerGroup {
 }
 
 export interface FindNextNodeOptions {
-  target?: HTMLElement | null
-  event?: FocusEvent | KeyboardEvent
-  isBackward?: boolean
+  target?: HTMLElement | null | undefined
+  event?: FocusEvent | KeyboardEvent | undefined
+  isBackward?: boolean | undefined
 }
 
 export interface FocusTrapState {
