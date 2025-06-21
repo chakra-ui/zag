@@ -810,6 +810,148 @@ describe("tree / flatten", () => {
   })
 })
 
+describe("tree / descendants", () => {
+  it("getDescendantNodes - gets all descendants of root", () => {
+    const descendants = tree.getDescendantNodes("ROOT")
+    expect(descendants.map((node) => node.value)).toMatchInlineSnapshot(`
+      [
+        "child1-1",
+        "child1-2",
+        "child1-3",
+        "child2-1",
+        "child1",
+        "child2",
+      ]
+    `)
+  })
+
+  it("getDescendantNodes - gets all descendants of branch node", () => {
+    const descendants = tree.getDescendantNodes("branch1")
+    expect(descendants.map((node) => node.value)).toMatchInlineSnapshot(`
+      [
+        "child1-1",
+        "child1-2",
+        "child1-3",
+        "child2-1",
+      ]
+    `)
+  })
+
+  it("getDescendantNodes - gets all descendants of nested branch", () => {
+    const descendants = tree.getDescendantNodes("branch1-1")
+    expect(descendants.map((node) => node.value)).toMatchInlineSnapshot(`
+      [
+        "child2-1",
+      ]
+    `)
+  })
+
+  it("getDescendantNodes - returns empty array for leaf nodes", () => {
+    const descendants = tree.getDescendantNodes("child1-1")
+    expect(descendants).toEqual([])
+  })
+
+  it("getDescendantNodes - returns empty array for non-existent nodes", () => {
+    const descendants = tree.getDescendantNodes("non-existent")
+    expect(descendants).toEqual([])
+  })
+
+  it("getDescendantNodes - with withBranch option", () => {
+    const descendants = tree.getDescendantNodes("branch1", { withBranch: true })
+    expect(descendants.map((node) => node.value)).toMatchInlineSnapshot(`
+      [
+        "child1-1",
+        "child1-2",
+        "child1-3",
+        "branch1-1",
+        "child2-1",
+      ]
+    `)
+  })
+
+  it("getDescendantNodes - without withBranch option (excludes branch nodes)", () => {
+    const descendants = tree.getDescendantNodes("branch1", { withBranch: false })
+    expect(descendants.map((node) => node.value)).toMatchInlineSnapshot(`
+      [
+        "child1-1",
+        "child1-2",
+        "child1-3",
+        "child2-1",
+      ]
+    `)
+  })
+
+  it("getDescendantNodes - using index path", () => {
+    const indexPath = tree.getIndexPath("branch1")!
+    const descendants = tree.getDescendantNodes(indexPath)
+    expect(descendants.map((node) => node.value)).toMatchInlineSnapshot(`
+      [
+        "child1-1",
+        "child1-2",
+        "child1-3",
+        "child2-1",
+      ]
+    `)
+  })
+
+  it("getDescendantValues - gets all descendant values", () => {
+    const values = tree.getDescendantValues("branch1")
+    expect(values).toMatchInlineSnapshot(`
+      [
+        "child1-1",
+        "child1-2",
+        "child1-3",
+        "child2-1",
+      ]
+    `)
+  })
+
+  it("getDescendantValues - with withBranch option", () => {
+    const values = tree.getDescendantValues("branch1", { withBranch: true })
+    expect(values).toMatchInlineSnapshot(`
+      [
+        "child1-1",
+        "child1-2",
+        "child1-3",
+        "branch1-1",
+        "child2-1",
+      ]
+    `)
+  })
+
+  it("getDescendantValues - without withBranch option", () => {
+    const values = tree.getDescendantValues("branch1", { withBranch: false })
+    expect(values).toMatchInlineSnapshot(`
+      [
+        "child1-1",
+        "child1-2",
+        "child1-3",
+        "child2-1",
+      ]
+    `)
+  })
+
+  it("getDescendantValues - returns empty array for leaf nodes", () => {
+    const values = tree.getDescendantValues("child1-1")
+    expect(values).toEqual([])
+  })
+
+  it("getDescendantValues - returns empty array for non-existent nodes", () => {
+    const values = tree.getDescendantValues("non-existent")
+    expect(values).toEqual([])
+  })
+
+  it("getDescendantValues - using index path", () => {
+    const indexPath = tree.getIndexPath("branch1-1")!
+    const values = tree.getDescendantValues(indexPath)
+    expect(values).toMatchInlineSnapshot(`
+      [
+        "child2-1",
+      ]
+    `)
+  })
+})
+
 describe("tree / filter", () => {
   const filter = (predicate: (node: Node, indexPath: number[]) => boolean) => {
     return draw(tree.filter(predicate).rootNode)

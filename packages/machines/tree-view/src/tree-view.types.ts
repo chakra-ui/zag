@@ -1,5 +1,5 @@
 import type { TreeCollection, TreeNode } from "@zag-js/collection"
-import type { IndexPath } from "@zag-js/collection/src/tree-visit"
+import type { IndexPath, ValuePath } from "@zag-js/collection"
 import type { Machine, Service } from "@zag-js/core"
 import type { TypeaheadState } from "@zag-js/dom-query"
 import type { CommonProperties, DirectionProperty, PropTypes, RequiredBy } from "@zag-js/types"
@@ -20,11 +20,15 @@ export interface SelectionChangeDetails extends FocusChangeDetails {
   selectedValue: string[]
 }
 
+export interface CheckedChangeDetails {
+  checkedValue: string[]
+}
+
 export interface LoadChildrenDetails<T = any> {
   /**
    * The value path of the node whose children are being loaded
    */
-  valuePath: string[]
+  valuePath: ValuePath
   /**
    * The index path of the node whose children are being loaded
    */
@@ -44,6 +48,20 @@ export interface LoadChildrenCompleteDetails<T = any> {
    * The updated tree collection with the loaded children
    */
   collection: TreeCollection<T>
+}
+
+export interface NodeWithError<T = any> {
+  node: T
+  error: Error
+  indexPath: IndexPath
+  valuePath: ValuePath
+}
+
+export interface LoadChildrenErrorDetails<T = any> {
+  /**
+   * Array of nodes that failed to load children
+   */
+  nodes: NodeWithError<T>[]
 }
 
 export type ElementIds = Partial<{
@@ -72,20 +90,29 @@ export interface TreeViewProps<T = any> extends DirectionProperty, CommonPropert
   expandedValue?: string[] | undefined
   /**
    * The initial expanded node ids when rendered.
-   * Use when you don't need to control the expanded node ids.
+   * Use when you don't need to control the expanded node value.
    */
   defaultExpandedValue?: string[] | undefined
   /**
-   * The controlled selected node ids
+   * The controlled selected node value
    */
   selectedValue?: string[] | undefined
   /**
-   * The initial selected node ids when rendered.
-   * Use when you don't need to control the selected node ids.
+   * The initial selected node value when rendered.
+   * Use when you don't need to control the selected node value.
    */
   defaultSelectedValue?: string[] | undefined
   /**
-   * The id of the focused node
+   * The initial checked node value when rendered.
+   * Use when you don't need to control the checked node value.
+   */
+  defaultCheckedValue?: string[] | undefined
+  /**
+   * The controlled checked node value
+   */
+  checkedValue?: string[] | undefined
+  /**
+   * The value of the focused node
    */
   focusedValue?: string | null | undefined
   /**
@@ -109,9 +136,17 @@ export interface TreeViewProps<T = any> extends DirectionProperty, CommonPropert
    */
   onFocusChange?: ((details: FocusChangeDetails) => void) | undefined
   /**
+   * Called when the checked value changes
+   */
+  onCheckedChange?: ((details: CheckedChangeDetails) => void) | undefined
+  /**
    * Called when a node finishes loading children
    */
-  onLoadChildrenComplete?: ((details: LoadChildrenCompleteDetails) => void) | undefined
+  onLoadChildrenComplete?: ((details: LoadChildrenCompleteDetails<T>) => void) | undefined
+  /**
+   * Called when loading children fails for one or more nodes
+   */
+  onLoadChildrenError?: ((details: LoadChildrenErrorDetails<T>) => void) | undefined
   /**
    * Whether clicking on a branch should open it or not
    * @default true
@@ -147,6 +182,7 @@ export interface TreeViewSchema<T extends TreeNode = TreeNode> {
   context: {
     expandedValue: string[]
     selectedValue: string[]
+    checkedValue: string[]
     focusedValue: string | null
     loadingStatus: TreeLoadingStatusMap
   }
@@ -183,6 +219,8 @@ export interface NodeProps {
   indexPath: number[]
 }
 
+export type CheckedState = boolean | "indeterminate"
+
 export interface NodeState {
   /**
    * The value of the tree item
@@ -195,7 +233,7 @@ export interface NodeState {
   /**
    * The value path of the tree item
    */
-  valuePath: string[]
+  valuePath: ValuePath
   /**
    * Whether the tree item is disabled
    */
@@ -224,15 +262,21 @@ export interface NodeState {
    * Whether the tree item is currently loading children
    */
   loading: boolean
+  /**
+   * Whether the tree item is checked
+   */
+  checked: CheckedState
 }
 
-export interface TreeViewApi<T extends PropTypes = PropTypes, V = TreeNode> {
+export type CheckedValueMap = Map<string, { type: "leaf" | "branch"; checked: CheckedState }>
+
+export interface TreeViewApi<T extends PropTypes = PropTypes, V extends TreeNode = TreeNode> {
   /**
    * The tree collection data
    */
   collection: TreeCollection<V>
   /**
-   * The id of the expanded nodes
+   * The value of the expanded nodes
    */
   expandedValue: string[]
   /**
@@ -240,13 +284,33 @@ export interface TreeViewApi<T extends PropTypes = PropTypes, V = TreeNode> {
    */
   setExpandedValue(value: string[]): void
   /**
-   * The id of the selected nodes
+   * The value of the selected nodes
    */
   selectedValue: string[]
   /**
    * Function to set the selected value
    */
   setSelectedValue(value: string[]): void
+  /**
+   * The value of the checked nodes
+   */
+  checkedValue: string[]
+  /**
+   * Function to toggle the checked value of a node
+   */
+  toggleChecked(value: string, isBranch: boolean): void
+  /**
+   * Function to set the checked value of a node
+   */
+  setChecked(value: string[]): void
+  /**
+   * Function to clear the checked value of a node
+   */
+  clearChecked(): void
+  /**
+   * Function to get the checked details of branch and leaf nodes
+   */
+  getCheckedMap(): CheckedValueMap
   /**
    * Function to get the visible nodes
    */
@@ -272,7 +336,7 @@ export interface TreeViewApi<T extends PropTypes = PropTypes, V = TreeNode> {
    */
   deselect(value?: string[]): void
   /**
-   * Function to focus an item node
+   * Function to focus a node by value
    */
   focus(value: string): void
   /**
@@ -289,6 +353,7 @@ export interface TreeViewApi<T extends PropTypes = PropTypes, V = TreeNode> {
   getTreeProps(): T["element"]
   getNodeState(props: NodeProps): NodeState
   getItemProps(props: NodeProps): T["element"]
+  getItemCheckboxProps(props: NodeProps): T["element"]
   getItemIndicatorProps(props: NodeProps): T["element"]
   getItemTextProps(props: NodeProps): T["element"]
   getBranchProps(props: NodeProps): T["element"]

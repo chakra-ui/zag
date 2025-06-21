@@ -14,12 +14,16 @@ export const props = createProps<TreeViewProps>()([
   "onExpandedChange",
   "onFocusChange",
   "onSelectionChange",
+  "checkedValue",
   "selectedValue",
   "selectionMode",
   "typeahead",
   "defaultExpandedValue",
   "defaultSelectedValue",
+  "defaultCheckedValue",
+  "onCheckedChange",
   "onLoadChildrenComplete",
+  "onLoadChildrenError",
   "loadChildren",
 ])
 
