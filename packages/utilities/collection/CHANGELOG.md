@@ -1,5 +1,15 @@
 # @zag-js/collection
 
+## 1.16.0
+
+### Patch Changes
+
+- [`f0545c6`](https://github.com/chakra-ui/zag/commit/f0545c61ef151e5e4480b0cc1d7401dda4653094) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Add support for `getDescendantNodes` and `getDescendantValues`
+
+- Updated dependencies []:
+  - @zag-js/utils@1.16.0
+
 ## 1.15.7
 
 ### Patch Changes

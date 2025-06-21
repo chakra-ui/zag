@@ -1,5 +1,13 @@
 # @zag-js/types
 
+## 1.16.0
+
+### Patch Changes
+
+- [#2531](https://github.com/chakra-ui/zag/pull/2531)
+  [`6f6c8f3`](https://github.com/chakra-ui/zag/commit/6f6c8f329d9eb9d9889eff4317c84a4f41d4bfb2) Thanks
+  [@isBatak](https://github.com/isBatak)! - Add better support for TS exactOptionalPropertyTypes setting.
+
 ## 1.15.7
 
 ## 1.15.6
