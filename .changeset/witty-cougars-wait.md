@@ -2,7 +2,6 @@
 "@zag-js/interact-outside": patch
 "@zag-js/stringify-state": patch
 "@zag-js/highlight-word": patch
-"@zag-js/text-selection": patch
 "@zag-js/floating-panel": patch
 "@zag-js/focus-visible": patch
 "@zag-js/signature-pad": patch
@@ -66,8 +65,6 @@
 "@zag-js/tour": patch
 "@zag-js/store": patch
 "@zag-js/types": patch
-"@zag-js/core": patch
-"@zag-js/docs": patch
 ---
 
 Add better support for TS exactOptionalPropertyTypes setting.
