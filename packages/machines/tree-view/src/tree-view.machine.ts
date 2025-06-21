@@ -51,7 +51,8 @@ export const machine = createMachine<TreeViewSchema>({
         },
       })),
       focusedValue: bindable(() => ({
-        defaultValue: prop("focusedValue"),
+        defaultValue: prop("defaultFocusedValue") || null,
+        value: prop("focusedValue"),
         onChange(value) {
           prop("onFocusChange")?.({ focusedValue: value })
         },

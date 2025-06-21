@@ -8,6 +8,7 @@ export const props = createProps<TreeViewProps>()([
   "dir",
   "expandedValue",
   "expandOnClick",
+  "defaultFocusedValue",
   "focusedValue",
   "getRootNode",
   "id",

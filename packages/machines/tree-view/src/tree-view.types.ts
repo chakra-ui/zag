@@ -112,6 +112,11 @@ export interface TreeViewProps<T = any> extends DirectionProperty, CommonPropert
    */
   checkedValue?: string[] | undefined
   /**
+   * The initial focused node value when rendered.
+   * Use when you don't need to control the focused node value.
+   */
+  defaultFocusedValue?: string | null | undefined
+  /**
    * The value of the focused node
    */
   focusedValue?: string | null | undefined
