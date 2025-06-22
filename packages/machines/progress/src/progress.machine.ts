@@ -10,7 +10,7 @@ export const machine = createMachine<ProgressSchema>({
       ...props,
       max,
       min,
-      defaultValue: props.defaultValue ?? midValue(min, max),
+      defaultValue: props.defaultValue !== undefined ? props.defaultValue : midValue(min, max),
       orientation: "horizontal",
       formatOptions: {
         style: "percent",
