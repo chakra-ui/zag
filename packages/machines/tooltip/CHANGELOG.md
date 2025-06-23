@@ -1,5 +1,19 @@
 # @zag-js/tooltip
 
+## 1.17.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.17.0
+  - @zag-js/core@1.17.0
+  - @zag-js/store@1.17.0
+  - @zag-js/types@1.17.0
+  - @zag-js/utils@1.17.0
+  - @zag-js/dom-query@1.17.0
+  - @zag-js/focus-visible@1.17.0
+  - @zag-js/popper@1.17.0
+
 ## 1.16.0
 
 ### Patch Changes
@@ -1035,7 +1049,6 @@
 
 - [`bf57d7b`](https://github.com/chakra-ui/zag/commit/bf57d7b3933daf9974eaefc443da6f3c37706bb4) Thanks
   [@segunadebayo](https://github.com/segunadebayo)! - Improve support for focus visible across components.
-
   - **Switch, Checkbox, Radio Group:** The `data-focus-visible` attribute to the selected radio button when it is
     interacted with the keyboard.
   - **Tooltip:** Focus behavior only opens when the tooltip trigger is focused with keyboard.
@@ -2218,7 +2231,6 @@
   **Potential breaking change:**
 
   We replaced `data-expanded` or `data-checked` to `data-state` attribute
-
   - `data-expanded` maps to `data-state="open"` or `data-state="closed"`
   - `data-checked` maps to `data-state="checked"` or `data-state="unchecked"`
   - `data-indeterminate` maps to `data-state="indeterminate"`

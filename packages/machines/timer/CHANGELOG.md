@@ -1,5 +1,16 @@
 # @zag-js/checkbox
 
+## 1.17.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.17.0
+  - @zag-js/core@1.17.0
+  - @zag-js/types@1.17.0
+  - @zag-js/utils@1.17.0
+  - @zag-js/dom-query@1.17.0
+
 ## 1.16.0
 
 ### Patch Changes
@@ -840,7 +851,6 @@
 - [`f079c60`](https://github.com/chakra-ui/zag/commit/f079c603d71bb6bbd4b63f750343c6fe2f668d4f) Thanks
   [@segunadebayo](https://github.com/segunadebayo)! - - Introduces new area and control parts for better anatomy and
   structure.
-
   - [BREAKING] Move `role"timer` to new area part.
   - Automatically hide the action triggers based on the action prop passed.
 
@@ -1103,7 +1113,6 @@
 
 - [`621b0a8`](https://github.com/chakra-ui/zag/commit/621b0a8688afa6b602af0a8b36106d8ce18a7ab0) Thanks
   [@segunadebayo](https://github.com/segunadebayo)! - Refactor anatomy for timer machine.
-
   - Before: `root`, `segment`, `control`, `separator`
   - After: `root`, `item`, `itemValue`, `itemLabel`, `actionTrigger`, `separator`,
 

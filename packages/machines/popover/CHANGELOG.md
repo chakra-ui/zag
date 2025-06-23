@@ -1,5 +1,21 @@
 # @zag-js/popover
 
+## 1.17.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.17.0
+  - @zag-js/core@1.17.0
+  - @zag-js/types@1.17.0
+  - @zag-js/aria-hidden@1.17.0
+  - @zag-js/utils@1.17.0
+  - @zag-js/dismissable@1.17.0
+  - @zag-js/dom-query@1.17.0
+  - @zag-js/focus-trap@1.17.0
+  - @zag-js/popper@1.17.0
+  - @zag-js/remove-scroll@1.17.0
+
 ## 1.16.0
 
 ### Patch Changes
@@ -1577,7 +1593,6 @@
 - [`e4a50e6`](https://github.com/chakra-ui/zag/commit/e4a50e62f5770affc5a169a5916abe6428e7053c) Thanks
   [@segunadebayo](https://github.com/segunadebayo)! - Fix issue where `autoFocus` was not implemented. Now, it
   determines whether the popover should autofocus on open
-
   - when `true`, the first focusable element or the content is focused
   - when `false`, the content is focused
 
@@ -2359,14 +2374,11 @@
   [`fd71ad98`](https://github.com/chakra-ui/zag/commit/fd71ad98660fce3dd06c6dc2fa01e913ae7c3992) Thanks
   [@segunadebayo](https://github.com/segunadebayo)! - - Refactor component anatomy to use consistent naming convention
   across all machines.
-
   - **Accordion**
-
     - `getTriggerProps` => `getItemTriggerProps`
     - `getContentProps` => `getItemContentProps`
 
   - **Radio**
-
     - `getRadioProps` => `getItemProps`
     - `getRadioControlProps` => `getItemControlProps`
     - `getRadioLabelProps` => `getItemTextProps`
@@ -2374,7 +2386,6 @@
     - `getRatingProps` => `getItemProps`
 
   - **TagsInput**
-
     - `getTagProps` => `getItemProps`
     - `getTagDeleteTriggerProps` => `getItemDeleteTriggerProps`
     - `getTagInputProps` => `getItemInputProps`
@@ -2580,7 +2591,6 @@
   **Potential breaking change:**
 
   We replaced `data-expanded` or `data-checked` to `data-state` attribute
-
   - `data-expanded` maps to `data-state="open"` or `data-state="closed"`
   - `data-checked` maps to `data-state="checked"` or `data-state="unchecked"`
   - `data-indeterminate` maps to `data-state="indeterminate"`
@@ -2877,7 +2887,6 @@
 - [`fa2ecc8e`](https://github.com/chakra-ui/zag/commit/fa2ecc8ea235b824f45deda10070c321f896886c) Thanks
   [@segunadebayo](https://github.com/segunadebayo)! - - Refactor machine to use the `proxyTabFocus` helper for better
   keyboard accessibility when portalled.
-
   - Add `api.setPositioning` to allow for programmatic re-positioning of the popover. This API supports all the
     positioning options.
 

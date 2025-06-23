@@ -1,5 +1,17 @@
 # @zag-js/toast
 
+## 1.17.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.17.0
+  - @zag-js/core@1.17.0
+  - @zag-js/types@1.17.0
+  - @zag-js/utils@1.17.0
+  - @zag-js/dismissable@1.17.0
+  - @zag-js/dom-query@1.17.0
+
 ## 1.16.0
 
 ### Patch Changes
@@ -275,7 +287,6 @@
 - [`c5af55d`](https://github.com/chakra-ui/zag/commit/c5af55d8c2dc591574386bbc2635d20d465d5460) Thanks
   [@segunadebayo](https://github.com/segunadebayo)! - Add support for queuing toasts that exceed the maximum limit. When
   the maximum number of toasts is reached:
-
   - New toasts are added to a queue instead of being dropped
   - Queued toasts are automatically displayed when space becomes available (after existing toasts are removed)
   - Queue is cleared when all toasts are removed
@@ -563,9 +574,7 @@
   [`b1caa44`](https://github.com/chakra-ui/zag/commit/b1caa44085e7f1da0ad24fc7b25178081811646c) Thanks
   [@segunadebayo](https://github.com/segunadebayo)! - - **Core**: Rewrite machines for increased performance and initial
   mount time. The results show roughly 1.5x - 4x performance improvements across components.
-
   - **[Breaking] Toast**
-
     - Require the creation of a toast store using `createStore`
     - Solid.js: Require the usage of `<Key>` component to render toasts
 
@@ -1885,7 +1894,6 @@
   [@segunadebayo](https://github.com/segunadebayo)! - Redesign toast render apis to allow for framework control.
 
   **Some breaking changes:**
-
   - `defaultOptions` can now be passed directly to the `toast.group` machine context.
   - You can now pass the default `render` function to the `toast.group` machine context.
   - Removed `api.render` in favor of userland control. This eliminates the bug in Solid.js for custom toasts.
@@ -2086,7 +2094,6 @@
   **Potential breaking change:**
 
   We replaced `data-expanded` or `data-checked` to `data-state` attribute
-
   - `data-expanded` maps to `data-state="open"` or `data-state="closed"`
   - `data-checked` maps to `data-state="checked"` or `data-state="unchecked"`
   - `data-indeterminate` maps to `data-state="indeterminate"`

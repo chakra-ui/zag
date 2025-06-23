@@ -1,5 +1,15 @@
 # @zag-js/react
 
+## 1.17.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/core@1.17.0
+  - @zag-js/store@1.17.0
+  - @zag-js/types@1.17.0
+  - @zag-js/utils@1.17.0
+
 ## 1.16.0
 
 ### Patch Changes
@@ -574,7 +584,6 @@
 - [`5584a83`](https://github.com/chakra-ui/zag/commit/5584a833151ee9f2c2ef9c07b6d699addfbca18e) Thanks
   [@segunadebayo](https://github.com/segunadebayo)! - - Fix issue where react elements could not be passed to tree view.
   In general, we've improved the entire machine to better support complex objects like react and vue elements.
-
   - Remove support for promises in store and snapshot. Prefer to use framework-specific hooks to manage async
     operations.
 

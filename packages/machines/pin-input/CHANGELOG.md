@@ -1,5 +1,16 @@
 # @zag-js/pin-input
 
+## 1.17.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.17.0
+  - @zag-js/core@1.17.0
+  - @zag-js/types@1.17.0
+  - @zag-js/utils@1.17.0
+  - @zag-js/dom-query@1.17.0
+
 ## 1.16.0
 
 ### Patch Changes
@@ -2568,7 +2579,6 @@
   ```
 
   Improve form support by exposing `hiddenInputProps`. When the machine is passed a `name` property:
-
   - The `input` element with `api.hiddenInputProps` is attached will send updates to the closest `form` element.
   - When the pin input's value is complete and the `Enter` key is pressed, the closest `form` will be submitted.
 

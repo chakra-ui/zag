@@ -1,5 +1,17 @@
 # @zag-js/carousel
 
+## 1.17.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.17.0
+  - @zag-js/core@1.17.0
+  - @zag-js/types@1.17.0
+  - @zag-js/utils@1.17.0
+  - @zag-js/dom-query@1.17.0
+  - @zag-js/scroll-snap@1.17.0
+
 ## 1.16.0
 
 ### Patch Changes
@@ -1266,7 +1278,6 @@
 - [#1435](https://github.com/chakra-ui/zag/pull/1435)
   [`23ed828`](https://github.com/chakra-ui/zag/commit/23ed8283e8190fc9fb6496f4ba8c5eff78bda2d7) Thanks
   [@segunadebayo](https://github.com/segunadebayo)! - - Rename `api.getItemState` properties
-
   - `isCurrent` to `current`
   - `isNext` to `next`
   - `isPrevious` to `previous`
@@ -1709,7 +1720,6 @@
 
 - [`be34b47d`](https://github.com/chakra-ui/zag/commit/be34b47dcb1e0ed42f9eb889320f7ed4ba2d26f5) Thanks
   [@segunadebayo](https://github.com/segunadebayo)! - Refactor component naming convention
-
   - `slideGroupProps` -> `itemGroupProps`
   - `getSlideProps` -> `getItemProps`
   - `nextSlideTrigger` -> `nextTrigger`
@@ -1874,7 +1884,6 @@
 - [`7cf380b0`](https://github.com/chakra-ui/zag/commit/7cf380b0d3019507181b79e0fe99e894d9e83030) Thanks
   [@segunadebayo](https://github.com/segunadebayo)! - - Refactor machines to avoid the use of `dom.queryById`, this
   causes the machine to throw in React when the `key` of an element is reassigned.
-
   - Remove `queryById` from the `createScope` function.
 
 - Updated dependencies [[`7cf380b0`](https://github.com/chakra-ui/zag/commit/7cf380b0d3019507181b79e0fe99e894d9e83030)]:

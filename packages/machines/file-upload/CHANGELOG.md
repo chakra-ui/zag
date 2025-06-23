@@ -1,5 +1,18 @@
 # @zag-js/file-upload
 
+## 1.17.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.17.0
+  - @zag-js/core@1.17.0
+  - @zag-js/types@1.17.0
+  - @zag-js/utils@1.17.0
+  - @zag-js/dom-query@1.17.0
+  - @zag-js/file-utils@1.17.0
+  - @zag-js/i18n-utils@1.17.0
+
 ## 1.16.0
 
 ### Patch Changes
@@ -718,7 +731,6 @@
 - [`59b04ae`](https://github.com/chakra-ui/zag/commit/59b04ae0a004475524d6936971d0fc99fe5c4dfb) Thanks
   [@segunadebayo](https://github.com/segunadebayo)! - - Add support for preventing drop on document when the file upload
   is used. Use the `preventDropOnDocument` context property. Set to `true` by default to prevent drop on document.
-
   - Add `api.setClipboardFiles` method to set the files from the clipboard data.
   - Fix issue where hidden input isn't synced with the accepted files.
 
@@ -1293,13 +1305,11 @@
 - [`9216a62`](https://github.com/chakra-ui/zag/commit/9216a625e1be9f7dd169501515297a8214f12b93) Thanks
   [@segunadebayo](https://github.com/segunadebayo)! - - Ensure consistent application of form related properties like
   `invalid`, `required`, and `readOnly`
-
   - Export `Service` from all machines for use in Lit based components.
 
 - [`0033e46`](https://github.com/chakra-ui/zag/commit/0033e46d0600bdee08619f514afb6afe85a0cca9) Thanks
   [@segunadebayo](https://github.com/segunadebayo)! - - Add support for `api.clearRejectedFiles` to allow clearing the
   rejected files programmatically.
-
   - Improve DX of the `accept` context property by providing autocompletions for common file types.
 
 ### Patch Changes
@@ -1488,7 +1498,6 @@
 - [#1435](https://github.com/chakra-ui/zag/pull/1435)
   [`23ed828`](https://github.com/chakra-ui/zag/commit/23ed8283e8190fc9fb6496f4ba8c5eff78bda2d7) Thanks
   [@segunadebayo](https://github.com/segunadebayo)! - Rename `api` properties
-
   - `isDragging` -> `dragging`
   - `isFocused` -> `focused`
   - `open()` -> `openFilePicker()`
@@ -1569,7 +1578,6 @@
   `<input type=file>`, is largely a readonly operation that can't be set by the user.
 
   > Consider using the `onFileChange` event to handle file changes.
-
   - Rename `api.files` to `api.acceptedFiles`
   - Rename `onFilesChange` to `onFileChange`
 
@@ -1900,7 +1908,6 @@
 
 - [`e02fc592`](https://github.com/chakra-ui/zag/commit/e02fc59202a8a72f66de6ce63c74df492cc57664) Thanks
   [@segunadebayo](https://github.com/segunadebayo)! - - Add support for `onFileAccept` and `onFileReject` callbacks.
-
   - Add support customizing `ids` and aria labels using `messages` context property.
   - **Breaking**: Update file error types
     - `TOO_MANY_FILES_REJECTION` > `TOO_MANY_FILES`
