@@ -10,13 +10,20 @@ import type { EventKeyMap, NormalizeProps, PropTypes } from "@zag-js/types"
 import { add, isEqual, uniq } from "@zag-js/utils"
 import { parts } from "./tree-view.anatomy"
 import * as dom from "./tree-view.dom"
-import type { NodeProps, NodeState, TreeViewApi, TreeViewService } from "./tree-view.types"
+import type { NodeProps, NodeState, TreeNode, TreeViewApi, TreeViewService } from "./tree-view.types"
+import { getCheckedState, getCheckedValueMap } from "./utils/checked-state"
 
-export function connect<T extends PropTypes>(service: TreeViewService, normalize: NormalizeProps<T>): TreeViewApi<T> {
+export function connect<T extends PropTypes, V extends TreeNode = TreeNode>(
+  service: TreeViewService<V>,
+  normalize: NormalizeProps<T>,
+): TreeViewApi<T, V> {
   const { context, scope, computed, prop, send } = service
   const collection = prop("collection")
+
   const expandedValue = Array.from(context.get("expandedValue"))
   const selectedValue = Array.from(context.get("selectedValue"))
+  const checkedValue = Array.from(context.get("checkedValue"))
+
   const isTypingAhead = computed("isTypingAhead")
   const focusedValue = context.get("focusedValue")
   const loadingStatus = context.get("loadingStatus")
@@ -35,6 +42,9 @@ export function connect<T extends PropTypes>(service: TreeViewService, normalize
       loading: loadingStatus[value] === "loading",
       depth: indexPath.length,
       isBranch: collection.isBranchNode(node),
+      get checked() {
+        return getCheckedState(collection, node, checkedValue)
+      },
     }
   }
 
@@ -42,6 +52,19 @@ export function connect<T extends PropTypes>(service: TreeViewService, normalize
     collection,
     expandedValue,
     selectedValue,
+    checkedValue,
+    toggleChecked(value, isBranch) {
+      send({ type: "CHECKED.TOGGLE", value, isBranch })
+    },
+    setChecked(value) {
+      send({ type: "CHECKED.SET", value })
+    },
+    clearChecked() {
+      send({ type: "CHECKED.CLEAR" })
+    },
+    getCheckedMap() {
+      return getCheckedValueMap(collection, checkedValue)
+    },
     expand(value) {
       send({ type: value ? "BRANCH.EXPAND" : "EXPANDED.ALL", value })
     },
@@ -52,7 +75,7 @@ export function connect<T extends PropTypes>(service: TreeViewService, normalize
       send({ type: value ? "NODE.DESELECT" : "SELECTED.CLEAR", value })
     },
     select(value) {
-      send({ type: value ? "NODE.SELECT" : "SELECTED.ALL", value })
+      send({ type: value ? "NODE.SELECT" : "SELECTED.ALL", value, isTrusted: false })
     },
     getVisibleNodes() {
       return computed("visibleNodes").map(({ node }) => node)
@@ -386,6 +409,28 @@ export function connect<T extends PropTypes>(service: TreeViewService, normalize
       return normalize.element({
         ...parts.branchIndentGuide.attrs,
         "data-depth": nodeState.depth,
+      })
+    },
+
+    getItemCheckboxProps(props) {
+      const nodeState = getNodeState(props)
+      return normalize.element({
+        ...parts.itemCheckbox.attrs,
+        tabIndex: -1,
+        role: "checkbox",
+        "data-state":
+          nodeState.checked === true ? "checked" : nodeState.checked === false ? "unchecked" : "indeterminate",
+        "aria-checked": nodeState.checked === true ? "true" : nodeState.checked === false ? "false" : "mixed",
+        onClick(event) {
+          if (event.defaultPrevented) return
+          if (nodeState.disabled) return
+
+          send({ type: "CHECKED.TOGGLE", value: nodeState.value, isBranch: nodeState.isBranch })
+          event.stopPropagation()
+
+          const node = event.currentTarget.closest("[role=treeitem]") as HTMLElement | null
+          node?.focus({ preventScroll: true })
+        },
       })
     },
   }

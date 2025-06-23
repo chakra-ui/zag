@@ -1,7 +1,7 @@
 // Modified from https://github.com/dabbott/tree-visit
 // MIT License
 
-import type { FlatTreeNode } from "./types"
+import type { FlatTreeNode, IndexPath } from "./types"
 
 // Accessors
 
@@ -451,8 +451,6 @@ export type NodeOperation<T> =
   | { type: "remove"; indexes: number[] }
   | { type: "replace" }
   | { type: "removeThenInsert"; removeIndexes: number[]; insertIndex: number; insertNodes: T[] }
-
-export type IndexPath = number[]
 
 export interface BaseOptions<T> {
   getChildren: (node: T, indexPath: IndexPath) => T[]

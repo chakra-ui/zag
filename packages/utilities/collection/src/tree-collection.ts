@@ -12,7 +12,6 @@ import {
   remove,
   replace,
   visit,
-  type IndexPath,
   type TreeVisitOptions,
 } from "./tree-visit"
 import type {
@@ -22,6 +21,8 @@ import type {
   TreeCollectionOptions,
   TreeNode,
   TreeSkipOptions,
+  DescendantOptions,
+  IndexPath,
 } from "./types"
 
 export class TreeCollection<T = TreeNode> {
@@ -39,8 +40,13 @@ export class TreeCollection<T = TreeNode> {
     return this.options.nodeToChildren?.(node) ?? fallbackMethods.nodeToChildren(node) ?? []
   }
 
-  private _indexPath = (valueOrIndexPath: string | IndexPath): IndexPath | undefined => {
+  private resolveIndexPath = (valueOrIndexPath: string | IndexPath): IndexPath | undefined => {
     return typeof valueOrIndexPath === "string" ? this.getIndexPath(valueOrIndexPath) : valueOrIndexPath
+  }
+
+  private resolveNode = (valueOrIndexPath: string | IndexPath): T | undefined => {
+    const indexPath = this.resolveIndexPath(valueOrIndexPath)
+    return indexPath ? this.at(indexPath) : undefined
   }
 
   getNodeChildrenCount = (node: T): number | undefined => {
@@ -215,7 +221,7 @@ export class TreeCollection<T = TreeNode> {
   }
 
   getParentNodes = (valueOrIndexPath: string | IndexPath): T[] => {
-    const indexPath = this._indexPath(valueOrIndexPath)?.slice()
+    const indexPath = this.resolveIndexPath(valueOrIndexPath)?.slice()
     if (!indexPath) return []
     const result: T[] = []
     while (indexPath.length > 0) {
@@ -228,12 +234,32 @@ export class TreeCollection<T = TreeNode> {
     return result
   }
 
+  getDescendantNodes = (valueOrIndexPath: string | IndexPath, options?: DescendantOptions): T[] => {
+    const parentNode = this.resolveNode(valueOrIndexPath)
+    if (!parentNode) return []
+    const result: T[] = []
+    visit(parentNode, {
+      getChildren: this.getNodeChildren,
+      onEnter: (node, nodeIndexPath) => {
+        if (nodeIndexPath.length === 0) return
+        if (!options?.withBranch && this.isBranchNode(node)) return
+        result.push(node)
+      },
+    })
+    return result
+  }
+
+  getDescendantValues = (valueOrIndexPath: string | IndexPath, options?: DescendantOptions): string[] => {
+    const children = this.getDescendantNodes(valueOrIndexPath, options)
+    return children.map((child) => this.getNodeValue(child))
+  }
+
   private getParentIndexPath = (indexPath: IndexPath): IndexPath => {
     return indexPath.slice(0, -1)
   }
 
   getParentNode = (valueOrIndexPath: string | IndexPath): T | undefined => {
-    const indexPath = this._indexPath(valueOrIndexPath)
+    const indexPath = this.resolveIndexPath(valueOrIndexPath)
     return indexPath ? this.at(this.getParentIndexPath(indexPath)) : undefined
   }
 

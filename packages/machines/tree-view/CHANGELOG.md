@@ -1,5 +1,31 @@
 # @zag-js/tree-view
 
+## 1.16.0
+
+### Minor Changes
+
+- [`f0545c6`](https://github.com/chakra-ui/zag/commit/f0545c61ef151e5e4480b0cc1d7401dda4653094) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - - Add support for checkbox state for checkbox trees via
+  `defaultCheckedValue`, `checkedValue`, `onCheckedChange` props
+
+  - Add callback for when `loadChildren` fails via `onLoadChildrenError` prop
+  - Add `api.getCheckedMap` method to get the checked state of all nodes
+
+- [`075404e`](https://github.com/chakra-ui/zag/commit/075404e6f3722522fc50f790f9498601b94e2e15) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix issue where `api.collapse` and `api.deselect` throws error
+  when called without arguments
+
+### Patch Changes
+
+- Updated dependencies [[`f0545c6`](https://github.com/chakra-ui/zag/commit/f0545c61ef151e5e4480b0cc1d7401dda4653094),
+  [`6f6c8f3`](https://github.com/chakra-ui/zag/commit/6f6c8f329d9eb9d9889eff4317c84a4f41d4bfb2)]:
+  - @zag-js/collection@1.16.0
+  - @zag-js/types@1.16.0
+  - @zag-js/dom-query@1.16.0
+  - @zag-js/core@1.16.0
+  - @zag-js/anatomy@1.16.0
+  - @zag-js/utils@1.16.0
+
 ## 1.15.7
 
 ### Patch Changes

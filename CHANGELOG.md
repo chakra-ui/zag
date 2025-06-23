@@ -4,6 +4,23 @@ All notable changes to this project will be documented in this file.
 
 > For v0.x changelog, see the [v0 branch](https://github.com/chakra-ui/zag/blob/v0/CHANGELOG.md)
 
+## [1.15.8](./#1.15.8) - 2025-06-21
+
+### Added
+
+- **Tree View**
+
+  - Add support for checkbox state for checkbox trees via `defaultCheckedValue`, `checkedValue`, `onCheckedChange` props
+  - Add callback for when `loadChildren` fails via `onLoadChildrenError` prop
+  - Add `api.getCheckedMap` method to get the checked state of all nodes
+
+- **Tree Collection**: Add support for `getDescendantNodes` and `getDescendantValues`
+
+### Fixed
+
+- **Tree View**: Fix issue where `api.collapse` and `api.deselect` throws error when called without arguments
+- **General**: Add better support for TypeScript's `exactOptionalPropertyTypes` compiler option
+
 ## [1.15.7](./#1.15.7) - 2025-06-19
 
 ### Fixed
