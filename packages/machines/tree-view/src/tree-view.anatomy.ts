@@ -1,20 +1,20 @@
 import { createAnatomy } from "@zag-js/anatomy"
 
 export const anatomy = createAnatomy("tree-view").parts(
-  "root",
-  "label",
-  "tree",
+  "branch",
+  "branchContent",
+  "branchControl",
+  "branchIndentGuide",
+  "branchIndicator",
+  "branchText",
+  "branchTrigger",
   "item",
   "itemIndicator",
   "itemText",
-  "itemCheckbox",
-  "branch",
-  "branchControl",
-  "branchTrigger",
-  "branchContent",
-  "branchText",
-  "branchIndicator",
-  "branchIndentGuide",
+  "label",
+  "nodeCheckbox",
+  "root",
+  "tree",
 )
 
 export const parts = anatomy.build()

@@ -358,7 +358,7 @@ export interface TreeViewApi<T extends PropTypes = PropTypes, V extends TreeNode
   getTreeProps(): T["element"]
   getNodeState(props: NodeProps): NodeState
   getItemProps(props: NodeProps): T["element"]
-  getItemCheckboxProps(props: NodeProps): T["element"]
+  getNodeCheckboxProps(props: NodeProps): T["element"]
   getItemIndicatorProps(props: NodeProps): T["element"]
   getItemTextProps(props: NodeProps): T["element"]
   getBranchProps(props: NodeProps): T["element"]

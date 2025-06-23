@@ -412,10 +412,10 @@ export function connect<T extends PropTypes, V extends TreeNode = TreeNode>(
       })
     },
 
-    getItemCheckboxProps(props) {
+    getNodeCheckboxProps(props) {
       const nodeState = getNodeState(props)
       return normalize.element({
-        ...parts.itemCheckbox.attrs,
+        ...parts.nodeCheckbox.attrs,
         tabIndex: -1,
         role: "checkbox",
         "data-state":
