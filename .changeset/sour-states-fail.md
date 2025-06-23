@@ -2,4 +2,5 @@
 "@zag-js/progress": patch
 ---
 
-fix(progress): orientation vertical don't work
+- Fix issue where setting orientation to `vertical` don't work
+- Fix issue where setting `defaultValue` to `null` doesn't show indeterminate state
