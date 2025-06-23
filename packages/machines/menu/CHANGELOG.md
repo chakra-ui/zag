@@ -1,5 +1,19 @@
 # @zag-js/menu
 
+## 1.17.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.17.0
+  - @zag-js/core@1.17.0
+  - @zag-js/types@1.17.0
+  - @zag-js/utils@1.17.0
+  - @zag-js/dismissable@1.17.0
+  - @zag-js/dom-query@1.17.0
+  - @zag-js/popper@1.17.0
+  - @zag-js/rect-utils@1.17.0
+
 ## 1.16.0
 
 ### Patch Changes
@@ -1703,12 +1717,10 @@
 
 - [`b27380f`](https://github.com/chakra-ui/zag/commit/b27380f807910f9c21614976a99057ae1dae661b) Thanks
   [@cschroeter](https://github.com/cschroeter)! - Breaking: Refactor the anatomy
-
   - Rename `getOptionItemIndicatorProps` to `getItemIndicatorProps`
   - Rename `getOptionItemTextProps` to `getItemTextProps`
 
   Changed `data-part` to match new anatomy:
-
   - `data-part="option-item"` -> `data-part="item"`
   - `data-part="option-item-indicator"` -> `data-part="item-indicator"`
   - `data-part="option-item-text"` -> `data-part="item-text"`
@@ -1749,7 +1761,6 @@
 - [#1387](https://github.com/chakra-ui/zag/pull/1387)
   [`b119136`](https://github.com/chakra-ui/zag/commit/b119136d6e993f973dab71799f2fa26e157fe8d7) Thanks
   [@segunadebayo](https://github.com/segunadebayo)! - > Breaking changes to the menu component
-
   - Removed `value` and `onValueChange` in favor of using explicit state to manage option items.
   - Prefer `value` over `id` in `getItemProps` and `getOptionItemProps` for consistency with other machine.
   - `onSelect` now provides `value` not `id` in its details.
@@ -2357,13 +2368,11 @@
 
 - [`97e559d6`](https://github.com/chakra-ui/zag/commit/97e559d6a56d1452208b27c026ad02c37070e016) Thanks
   [@segunadebayo](https://github.com/segunadebayo)! - - Add new `optionItemIndicator` and `optionItemText` part
-
   - Add `api.optionItemIndicatorProps(...)`, `api.optionItemTextProps(...)` support
   - Add `api.getOptionItemState` and `api.getItemState`
   - Export `OptionItemState` and `ItemState` types
 
   > Breaking changes
-
   - Removed `api.isOptionChecked` in favor of `api.getOptionItemState`
 
 ### Patch Changes
@@ -2388,14 +2397,11 @@
   [`fd71ad98`](https://github.com/chakra-ui/zag/commit/fd71ad98660fce3dd06c6dc2fa01e913ae7c3992) Thanks
   [@segunadebayo](https://github.com/segunadebayo)! - - Refactor component anatomy to use consistent naming convention
   across all machines.
-
   - **Accordion**
-
     - `getTriggerProps` => `getItemTriggerProps`
     - `getContentProps` => `getItemContentProps`
 
   - **Radio**
-
     - `getRadioProps` => `getItemProps`
     - `getRadioControlProps` => `getItemControlProps`
     - `getRadioLabelProps` => `getItemTextProps`
@@ -2403,7 +2409,6 @@
     - `getRatingProps` => `getItemProps`
 
   - **TagsInput**
-
     - `getTagProps` => `getItemProps`
     - `getTagDeleteTriggerProps` => `getItemDeleteTriggerProps`
     - `getTagInputProps` => `getItemInputProps`
@@ -2619,7 +2624,6 @@
   **Potential breaking change:**
 
   We replaced `data-expanded` or `data-checked` to `data-state` attribute
-
   - `data-expanded` maps to `data-state="open"` or `data-state="closed"`
   - `data-checked` maps to `data-state="checked"` or `data-state="unchecked"`
   - `data-indeterminate` maps to `data-state="indeterminate"`

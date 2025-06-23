@@ -1,5 +1,20 @@
 # @zag-js/dialog
 
+## 1.17.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.17.0
+  - @zag-js/core@1.17.0
+  - @zag-js/types@1.17.0
+  - @zag-js/aria-hidden@1.17.0
+  - @zag-js/utils@1.17.0
+  - @zag-js/dismissable@1.17.0
+  - @zag-js/dom-query@1.17.0
+  - @zag-js/focus-trap@1.17.0
+  - @zag-js/remove-scroll@1.17.0
+
 ## 1.16.0
 
 ### Patch Changes
@@ -2151,11 +2166,9 @@
 
 - [`0f39f6fd`](https://github.com/chakra-ui/zag/commit/0f39f6fd580fb89110c43c24dd7fcc0a2a5f7a0a) Thanks
   [@segunadebayo](https://github.com/segunadebayo)! - - Fix issue where interact outside handlers are not exposed
-
   - Fix issue where interacting with toast closes dialog
 
   > Breaking Changes
-
   - Rename `closeOnEsc` to `closeOnEscapeKeyDown`
   - Rename `onEsc` to `onEscapeKeyDown`
   - Rename `closeOnOutsideClick` to `closeOnInteractOutside`
@@ -2342,7 +2355,6 @@
   **Potential breaking change:**
 
   We replaced `data-expanded` or `data-checked` to `data-state` attribute
-
   - `data-expanded` maps to `data-state="open"` or `data-state="closed"`
   - `data-checked` maps to `data-state="checked"` or `data-state="unchecked"`
   - `data-indeterminate` maps to `data-state="indeterminate"`

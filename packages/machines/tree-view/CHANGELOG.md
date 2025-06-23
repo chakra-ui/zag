@@ -1,5 +1,23 @@
 # @zag-js/tree-view
 
+## 1.17.0
+
+### Minor Changes
+
+- [`f4015be`](https://github.com/chakra-ui/zag/commit/f4015becaf1eab89db527df2cd3c16332ef0bdfb) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Rename `getItemCheckboxProps` to `getNodeCheckboxProps` since it
+  can be used in both items and branches
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.17.0
+  - @zag-js/core@1.17.0
+  - @zag-js/types@1.17.0
+  - @zag-js/collection@1.17.0
+  - @zag-js/utils@1.17.0
+  - @zag-js/dom-query@1.17.0
+
 ## 1.16.0
 
 ### Minor Changes
@@ -7,7 +25,6 @@
 - [`f0545c6`](https://github.com/chakra-ui/zag/commit/f0545c61ef151e5e4480b0cc1d7401dda4653094) Thanks
   [@segunadebayo](https://github.com/segunadebayo)! - - Add support for checkbox state for checkbox trees via
   `defaultCheckedValue`, `checkedValue`, `onCheckedChange` props
-
   - Add callback for when `loadChildren` fails via `onLoadChildrenError` prop
   - Add `api.getCheckedMap` method to get the checked state of all nodes
 
@@ -1342,7 +1359,6 @@
 
 - [`c7b781c`](https://github.com/chakra-ui/zag/commit/c7b781c937378dcf45f07e8333360d913fc9f8f1) Thanks
   [@segunadebayo](https://github.com/segunadebayo)! - - Rename some properties for better consistency:
-
   - `id` -> `value`
   - `expandedIds` -> `expandedValue`
   - `selectedIds` -> `selectedValue`
@@ -1350,12 +1366,10 @@
 - [#1435](https://github.com/chakra-ui/zag/pull/1435)
   [`23ed828`](https://github.com/chakra-ui/zag/commit/23ed8283e8190fc9fb6496f4ba8c5eff78bda2d7) Thanks
   [@segunadebayo](https://github.com/segunadebayo)! - - Rename `api.getItemState` properties
-
   - `isDisabled` -> `disabled`
   - `isFocused` -> `focused`
   - `isSelected` -> `selected`
   - Rename `api.getBranchState` properties
-
     - `isExpanded` -> `expanded`
 
 ### Patch Changes

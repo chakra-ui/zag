@@ -1,5 +1,19 @@
 # @zag-js/tags-input
 
+## 1.17.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.17.0
+  - @zag-js/core@1.17.0
+  - @zag-js/types@1.17.0
+  - @zag-js/auto-resize@1.17.0
+  - @zag-js/utils@1.17.0
+  - @zag-js/dom-query@1.17.0
+  - @zag-js/interact-outside@1.17.0
+  - @zag-js/live-region@1.17.0
+
 ## 1.16.0
 
 ### Patch Changes
@@ -1610,7 +1624,6 @@
 - [`a110001`](https://github.com/chakra-ui/zag/commit/a110001fa422a71d879f3390308fff3f338d94cf) Thanks
   [@segunadebayo](https://github.com/segunadebayo)! - - Fix issue where editing a tag and clearing it's value leaves an
   empty tag. Now, empty tags will be deleted.
-
   - Fix issue where deleting a tag with pointer and navigating with keyboard doesn't work
 
 - [`dfc85a4`](https://github.com/chakra-ui/zag/commit/dfc85a43337ca854ae37ecf9bdd6c6be99db8922) Thanks
@@ -2332,14 +2345,11 @@
   [`fd71ad98`](https://github.com/chakra-ui/zag/commit/fd71ad98660fce3dd06c6dc2fa01e913ae7c3992) Thanks
   [@segunadebayo](https://github.com/segunadebayo)! - - Refactor component anatomy to use consistent naming convention
   across all machines.
-
   - **Accordion**
-
     - `getTriggerProps` => `getItemTriggerProps`
     - `getContentProps` => `getItemContentProps`
 
   - **Radio**
-
     - `getRadioProps` => `getItemProps`
     - `getRadioControlProps` => `getItemControlProps`
     - `getRadioLabelProps` => `getItemTextProps`
@@ -2347,7 +2357,6 @@
     - `getRatingProps` => `getItemProps`
 
   - **TagsInput**
-
     - `getTagProps` => `getItemProps`
     - `getTagDeleteTriggerProps` => `getItemDeleteTriggerProps`
     - `getTagInputProps` => `getItemInputProps`
@@ -2459,7 +2468,6 @@
 - [#789](https://github.com/chakra-ui/zag/pull/789)
   [`db81eaab`](https://github.com/chakra-ui/zag/commit/db81eaab8c8b06d74cf81d46fa145f4b480b7e82) Thanks
   [@segunadebayo](https://github.com/segunadebayo)! - - Rename `onHighlight` to `onFocusChange`
-
   - Remove `onTagUpdate`, use `onChange` instead
 
 - [#789](https://github.com/chakra-ui/zag/pull/789)

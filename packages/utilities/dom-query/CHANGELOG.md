@@ -1,5 +1,12 @@
 # @zag-js/dom-query
 
+## 1.17.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/types@1.17.0
+
 ## 1.16.0
 
 ### Patch Changes
@@ -466,7 +473,6 @@
 
 - [`bf57d7b`](https://github.com/chakra-ui/zag/commit/bf57d7b3933daf9974eaefc443da6f3c37706bb4) Thanks
   [@segunadebayo](https://github.com/segunadebayo)! - Improve support for focus visible across components.
-
   - **Switch, Checkbox, Radio Group:** The `data-focus-visible` attribute to the selected radio button when it is
     interacted with the keyboard.
   - **Tooltip:** Focus behavior only opens when the tooltip trigger is focused with keyboard.
@@ -667,7 +673,6 @@
 - [`7cf380b0`](https://github.com/chakra-ui/zag/commit/7cf380b0d3019507181b79e0fe99e894d9e83030) Thanks
   [@segunadebayo](https://github.com/segunadebayo)! - - Refactor machines to avoid the use of `dom.queryById`, this
   causes the machine to throw in React when the `key` of an element is reassigned.
-
   - Remove `queryById` from the `createScope` function.
 
 ## 0.13.0

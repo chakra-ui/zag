@@ -1,5 +1,20 @@
 # @zag-js/progress
 
+## 1.17.0
+
+### Patch Changes
+
+- [#2536](https://github.com/chakra-ui/zag/pull/2536)
+  [`220ad21`](https://github.com/chakra-ui/zag/commit/220ad214dba69c3afb6b3a1b766457a47962e196) Thanks
+  [@iamdin](https://github.com/iamdin)! - - Fix issue where setting orientation to `vertical` don't work
+  - Fix issue where setting `defaultValue` to `null` doesn't show indeterminate state
+- Updated dependencies []:
+  - @zag-js/anatomy@1.17.0
+  - @zag-js/core@1.17.0
+  - @zag-js/types@1.17.0
+  - @zag-js/utils@1.17.0
+  - @zag-js/dom-query@1.17.0
+
 ## 1.16.0
 
 ### Patch Changes

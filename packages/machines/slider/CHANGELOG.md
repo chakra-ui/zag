@@ -1,5 +1,16 @@
 # @zag-js/slider
 
+## 1.17.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.17.0
+  - @zag-js/core@1.17.0
+  - @zag-js/types@1.17.0
+  - @zag-js/utils@1.17.0
+  - @zag-js/dom-query@1.17.0
+
 ## 1.16.0
 
 ### Patch Changes
@@ -2052,7 +2063,6 @@
   duplication.
 
   Some notable changes:
-
   - `value` and `onValueChange` type has been updated to be `number[]`
   - Update `api.getThumbProps(index)` to `api.getThumbProps({ index })`
 
@@ -2228,7 +2238,6 @@
 - [`a1a585d6`](https://github.com/chakra-ui/zag/commit/a1a585d6d2dbac5836a847a39faf7d68db354188) Thanks
   [@segunadebayo](https://github.com/segunadebayo)! - - Fix issue where slider marks are not aligned to the thumb
   position in "contain" alignment mode.
-
   - Add support for passing the `thumbSize` in the machine context to avoid first-render flicker due to DOM measurement.
 
 - [#789](https://github.com/chakra-ui/zag/pull/789)
@@ -2299,7 +2308,6 @@
 - [`7cf380b0`](https://github.com/chakra-ui/zag/commit/7cf380b0d3019507181b79e0fe99e894d9e83030) Thanks
   [@segunadebayo](https://github.com/segunadebayo)! - - Refactor machines to avoid the use of `dom.queryById`, this
   causes the machine to throw in React when the `key` of an element is reassigned.
-
   - Remove `queryById` from the `createScope` function.
 
 - Updated dependencies [[`7cf380b0`](https://github.com/chakra-ui/zag/commit/7cf380b0d3019507181b79e0fe99e894d9e83030)]:
@@ -3011,7 +3019,6 @@
 * [`49b666ad`](https://github.com/chakra-ui/zag/commit/49b666ad40b3a91057a9f8935c34a7edc5cc6b59) Thanks
   [@segunadebayo](https://github.com/segunadebayo)! - Add support for changing the slider thumb alignment via the
   `thumbAlignment` context property. The value can be set to either `center` or `contain`.
-
   - `center`: the thumb will extend beyond the bounds of the slider track.
   - `contain`: the thumb will be contained within the bounds of the track.
 

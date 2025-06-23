@@ -1,5 +1,20 @@
 # @zag-js/combobox
 
+## 1.17.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.17.0
+  - @zag-js/core@1.17.0
+  - @zag-js/types@1.17.0
+  - @zag-js/aria-hidden@1.17.0
+  - @zag-js/collection@1.17.0
+  - @zag-js/utils@1.17.0
+  - @zag-js/dismissable@1.17.0
+  - @zag-js/dom-query@1.17.0
+  - @zag-js/popper@1.17.0
+
 ## 1.16.0
 
 ### Patch Changes
@@ -1808,7 +1823,6 @@
   [`80b97a9`](https://github.com/chakra-ui/zag/commit/80b97a907382f0cece781abeae2a462f9bfba686) Thanks
   [@segunadebayo](https://github.com/segunadebayo)! - - Add `open` and `open.controlled` property to programmatically
   control the combobox's open state
-
   - Add new `openOnChange` property to automatically open the combobox when the value changes. Value can be a boolean or
     a function that returns a boolean.
 
@@ -1820,7 +1834,6 @@
     }),
   )
   ```
-
   - Add new `openOnKeypress` property to automatically open the combobox when the arrow keys (up and down) are pressed.
   - Add `getSelectionValue` to the combobox's context to allow customizing the input value when an item is selected.
 
@@ -1833,7 +1846,6 @@
     }),
   )
   ```
-
   - Add new `dismissable` property to determine whether to add the combobox content to the dismissable stack.
   - Add `popup` attribute to allow rendering the combobox has a select with input within the content.
   - Add `persistFocus` to the item props to determine whether to clear the highlighted item on pointer leave.
@@ -1841,7 +1853,6 @@
 - [#1435](https://github.com/chakra-ui/zag/pull/1435)
   [`23ed828`](https://github.com/chakra-ui/zag/commit/23ed8283e8190fc9fb6496f4ba8c5eff78bda2d7) Thanks
   [@segunadebayo](https://github.com/segunadebayo)! - Rename `api` properties
-
   - `isFocused` -> `focused`
   - `isOpen` -> `open`
   - `isInputValueEmpty` -> `inputEmpty`
@@ -2910,7 +2921,6 @@
   **Potential breaking change:**
 
   We replaced `data-expanded` or `data-checked` to `data-state` attribute
-
   - `data-expanded` maps to `data-state="open"` or `data-state="closed"`
   - `data-checked` maps to `data-state="checked"` or `data-state="unchecked"`
   - `data-indeterminate` maps to `data-state="indeterminate"`

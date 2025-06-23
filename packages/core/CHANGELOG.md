@@ -1,5 +1,13 @@
 # @zag-js/core
 
+## 1.17.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/utils@1.17.0
+  - @zag-js/dom-query@1.17.0
+
 ## 1.16.0
 
 ### Patch Changes
@@ -356,9 +364,7 @@
   [`b1caa44`](https://github.com/chakra-ui/zag/commit/b1caa44085e7f1da0ad24fc7b25178081811646c) Thanks
   [@segunadebayo](https://github.com/segunadebayo)! - - **Core**: Rewrite machines for increased performance and initial
   mount time. The results show roughly 1.5x - 4x performance improvements across components.
-
   - **[Breaking] Toast**
-
     - Require the creation of a toast store using `createStore`
     - Solid.js: Require the usage of `<Key>` component to render toasts
 
@@ -463,7 +469,6 @@
 - [`5584a83`](https://github.com/chakra-ui/zag/commit/5584a833151ee9f2c2ef9c07b6d699addfbca18e) Thanks
   [@segunadebayo](https://github.com/segunadebayo)! - - Fix issue where react elements could not be passed to tree view.
   In general, we've improved the entire machine to better support complex objects like react and vue elements.
-
   - Remove support for promises in store and snapshot. Prefer to use framework-specific hooks to manage async
     operations.
 
@@ -774,7 +779,6 @@
 - [#1545](https://github.com/chakra-ui/zag/pull/1545)
   [`590c177`](https://github.com/chakra-ui/zag/commit/590c1779f5208fb99114c872175e779508f2f96d) Thanks
   [@anubra266](https://github.com/anubra266)! - Update all machines to use prop getters.
-
   - Improves render performance due to the lazy evaluation of prop getters
   - Helps reduce breaking changes in the future
 
@@ -1616,7 +1620,6 @@
 
 * [`587cbec9`](https://github.com/chakra-ui/zag/commit/587cbec9b32ee9e8faef5ceeefb779231b152018) Thanks
   [@segunadebayo](https://github.com/segunadebayo)! - Add the following type utilities:
-
   - `StateFrom`: To infer the state information from any machine
   - `ContextFrom`: To infer the context information from any machine
   - `EventFrom`: To infer the event types from any machine

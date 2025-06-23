@@ -1,5 +1,19 @@
 # @zag-js/select
 
+## 1.17.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.17.0
+  - @zag-js/core@1.17.0
+  - @zag-js/types@1.17.0
+  - @zag-js/collection@1.17.0
+  - @zag-js/utils@1.17.0
+  - @zag-js/dismissable@1.17.0
+  - @zag-js/dom-query@1.17.0
+  - @zag-js/popper@1.17.0
+
 ## 1.16.0
 
 ### Patch Changes
@@ -2558,14 +2572,11 @@
   [`fd71ad98`](https://github.com/chakra-ui/zag/commit/fd71ad98660fce3dd06c6dc2fa01e913ae7c3992) Thanks
   [@segunadebayo](https://github.com/segunadebayo)! - - Refactor component anatomy to use consistent naming convention
   across all machines.
-
   - **Accordion**
-
     - `getTriggerProps` => `getItemTriggerProps`
     - `getContentProps` => `getItemContentProps`
 
   - **Radio**
-
     - `getRadioProps` => `getItemProps`
     - `getRadioControlProps` => `getItemControlProps`
     - `getRadioLabelProps` => `getItemTextProps`
@@ -2573,7 +2584,6 @@
     - `getRatingProps` => `getItemProps`
 
   - **TagsInput**
-
     - `getTagProps` => `getItemProps`
     - `getTagDeleteTriggerProps` => `getItemDeleteTriggerProps`
     - `getTagInputProps` => `getItemInputProps`
@@ -2757,7 +2767,6 @@
 - [#816](https://github.com/chakra-ui/zag/pull/816)
   [`c1b04e32`](https://github.com/chakra-ui/zag/commit/c1b04e3248a2bf5211c4ee82298bc827521f102d) Thanks
   [@segunadebayo](https://github.com/segunadebayo)! - - Fix issue where select clicks underlying element on mobile.
-
   - Fix issue where combobox and menu option item triggers double click.
 
 - [#807](https://github.com/chakra-ui/zag/pull/807)
@@ -2887,7 +2896,6 @@
   **Potential breaking change:**
 
   We replaced `data-expanded` or `data-checked` to `data-state` attribute
-
   - `data-expanded` maps to `data-state="open"` or `data-state="closed"`
   - `data-checked` maps to `data-state="checked"` or `data-state="unchecked"`
   - `data-indeterminate` maps to `data-state="indeterminate"`
@@ -3379,7 +3387,6 @@
 - [`839a296a`](https://github.com/chakra-ui/zag/commit/839a296ac493c4305d6f4cf0bf12c0762463e91a) Thanks
   [@segunadebayo](https://github.com/segunadebayo)! - - Rename `openMenu`/`closeMenu` to `open`/`close` respectively for
   consistency
-
   - Add `type=button` to select trigger
   - Add missing `data-disabled` attribute to select trigger
   - Set `selectOnTab` to `false` by default
