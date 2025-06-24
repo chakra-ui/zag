@@ -1,80 +1,96 @@
-import { getEventKey, getNativeEvent, isLeftClick, type EventKeyMap } from "@zag-js/dom-event"
+import type { Service } from "@zag-js/core"
 import {
   ariaAttr,
   dataAttr,
   getByTypeahead,
+  getEventKey,
+  getEventTarget,
   isEditableElement,
   isSelfTarget,
+  isValidTabEvent,
   visuallyHiddenStyle,
 } from "@zag-js/dom-query"
 import { getPlacementStyles } from "@zag-js/popper"
-import type { NormalizeProps, PropTypes } from "@zag-js/types"
+import type { EventKeyMap, NormalizeProps, PropTypes } from "@zag-js/types"
+import { ensure } from "@zag-js/utils"
 import { parts } from "./select.anatomy"
-import { dom } from "./select.dom"
-import type { CollectionItem, ItemProps, ItemState, MachineApi, Send, State } from "./select.types"
+import * as dom from "./select.dom"
+import type { CollectionItem, ItemProps, ItemState, SelectApi, SelectSchema } from "./select.types"
 
 export function connect<T extends PropTypes, V extends CollectionItem = CollectionItem>(
-  state: State,
-  send: Send,
+  service: Service<SelectSchema<V>>,
   normalize: NormalizeProps<T>,
-): MachineApi<T, V> {
-  const disabled = state.context.isDisabled
-  const invalid = state.context.invalid
-  const readOnly = state.context.readOnly
-  const interactive = state.context.isInteractive
+): SelectApi<T, V> {
+  const { context, prop, scope, state, computed, send } = service
+
+  const disabled = prop("disabled") || context.get("fieldsetDisabled")
+  const invalid = prop("invalid")
+  const readOnly = prop("readOnly")
+  const composite = prop("composite")
+  const collection = prop("collection")
 
   const open = state.hasTag("open")
   const focused = state.matches("focused")
 
-  const highlightedItem = state.context.highlightedItem
-  const selectedItems = state.context.selectedItems
-  const isTypingAhead = state.context.isTypingAhead
+  const highlightedValue = context.get("highlightedValue")
+  const highlightedItem = context.get("highlightedItem")
+  const selectedItems = context.get("selectedItems")
+  const currentPlacement = context.get("currentPlacement")
+
+  const isTypingAhead = computed("isTypingAhead")
+  const interactive = computed("isInteractive")
+
+  const ariaActiveDescendant = highlightedValue ? dom.getItemId(scope, highlightedValue) : undefined
 
   function getItemState(props: ItemProps): ItemState {
-    const _disabled = state.context.collection.isItemDisabled(props.item)
-    const value = state.context.collection.itemToValue(props.item)
+    const _disabled = collection.getItemDisabled(props.item)
+    const value = collection.getItemValue(props.item)
+    ensure(value, () => `[zag-js] No value found for item ${JSON.stringify(props.item)}`)
     return {
       value,
       disabled: Boolean(disabled || _disabled),
-      highlighted: state.context.highlightedValue === value,
-      selected: state.context.value.includes(value),
+      highlighted: highlightedValue === value,
+      selected: context.get("value").includes(value),
     }
   }
 
   const popperStyles = getPlacementStyles({
-    ...state.context.positioning,
-    placement: state.context.currentPlacement,
+    ...prop("positioning"),
+    placement: currentPlacement,
   })
 
   return {
     open: open,
     focused: focused,
-    empty: state.context.value.length === 0,
+    empty: context.get("value").length === 0,
     highlightedItem,
-    highlightedValue: state.context.highlightedValue,
+    highlightedValue,
     selectedItems,
-    hasSelectedItems: state.context.hasSelectedItems,
-    value: state.context.value,
-    valueAsString: state.context.valueAsString,
-    collection: state.context.collection,
-    setCollection(collection) {
-      send({ type: "COLLECTION.SET", value: collection })
-    },
+    hasSelectedItems: computed("hasSelectedItems"),
+    value: context.get("value"),
+    valueAsString: context.get("valueAsString"),
+    collection,
+    multiple: !!prop("multiple"),
+    disabled: !!disabled,
     reposition(options = {}) {
       send({ type: "POSITIONING.SET", options })
     },
     focus() {
-      dom.getTriggerEl(state.context)?.focus({ preventScroll: true })
+      dom.getTriggerEl(scope)?.focus({ preventScroll: true })
     },
-    setOpen(_open) {
-      if (_open === open) return
-      send(_open ? "OPEN" : "CLOSE")
+    setOpen(nextOpen) {
+      const open = state.hasTag("open")
+      if (open === nextOpen) return
+      send({ type: nextOpen ? "OPEN" : "CLOSE" })
     },
     selectValue(value) {
       send({ type: "ITEM.SELECT", value })
     },
     setValue(value) {
       send({ type: "VALUE.SET", value })
+    },
+    selectAll() {
+      send({ type: "VALUE.SET", value: collection.getValues() })
     },
     highlightValue(value) {
       send({ type: "HIGHLIGHTED_VALUE.SET", value })
@@ -89,143 +105,162 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
 
     getItemState,
 
-    rootProps: normalize.element({
-      ...parts.root.attrs,
-      dir: state.context.dir,
-      id: dom.getRootId(state.context),
-      "data-invalid": dataAttr(invalid),
-      "data-readonly": dataAttr(readOnly),
-    }),
+    getRootProps() {
+      return normalize.element({
+        ...parts.root.attrs,
+        dir: prop("dir"),
+        id: dom.getRootId(scope),
+        "data-invalid": dataAttr(invalid),
+        "data-readonly": dataAttr(readOnly),
+      })
+    },
 
-    labelProps: normalize.label({
-      dir: state.context.dir,
-      id: dom.getLabelId(state.context),
-      ...parts.label.attrs,
-      "data-disabled": dataAttr(disabled),
-      "data-invalid": dataAttr(invalid),
-      "data-readonly": dataAttr(readOnly),
-      htmlFor: dom.getHiddenSelectId(state.context),
-      onClick() {
-        if (disabled) return
-        dom.getTriggerEl(state.context)?.focus({ preventScroll: true })
-      },
-    }),
+    getLabelProps() {
+      return normalize.label({
+        dir: prop("dir"),
+        id: dom.getLabelId(scope),
+        ...parts.label.attrs,
+        "data-disabled": dataAttr(disabled),
+        "data-invalid": dataAttr(invalid),
+        "data-readonly": dataAttr(readOnly),
+        htmlFor: dom.getHiddenSelectId(scope),
+        onClick(event) {
+          if (event.defaultPrevented) return
+          if (disabled) return
+          dom.getTriggerEl(scope)?.focus({ preventScroll: true })
+        },
+      })
+    },
 
-    controlProps: normalize.element({
-      ...parts.control.attrs,
-      dir: state.context.dir,
-      id: dom.getControlId(state.context),
-      "data-state": open ? "open" : "closed",
-      "data-focus": dataAttr(focused),
-      "data-disabled": dataAttr(disabled),
-      "data-invalid": dataAttr(invalid),
-    }),
+    getControlProps() {
+      return normalize.element({
+        ...parts.control.attrs,
+        dir: prop("dir"),
+        id: dom.getControlId(scope),
+        "data-state": open ? "open" : "closed",
+        "data-focus": dataAttr(focused),
+        "data-disabled": dataAttr(disabled),
+        "data-invalid": dataAttr(invalid),
+      })
+    },
 
-    triggerProps: normalize.button({
-      id: dom.getTriggerId(state.context),
-      disabled: disabled,
-      dir: state.context.dir,
-      type: "button",
-      role: "combobox",
-      "aria-controls": dom.getContentId(state.context),
-      "aria-expanded": open,
-      "aria-haspopup": "listbox",
-      "data-state": open ? "open" : "closed",
-      "aria-invalid": invalid,
-      "aria-labelledby": dom.getLabelId(state.context),
-      ...parts.trigger.attrs,
-      "data-disabled": dataAttr(disabled),
-      "data-invalid": dataAttr(invalid),
-      "data-readonly": dataAttr(readOnly),
-      "data-placement": state.context.currentPlacement,
-      "data-placeholder-shown": dataAttr(!state.context.hasSelectedItems),
-      onPointerDown(event) {
-        if (!isLeftClick(event)) return
-        if (!interactive) return
-        event.currentTarget.dataset.pointerType = event.pointerType
-        if (disabled || event.pointerType === "touch") return
-        send({ type: "TRIGGER.CLICK" })
-      },
-      onClick(event) {
-        if (!interactive || event.button) return
-        if (event.currentTarget.dataset.pointerType === "touch") {
+    getValueTextProps() {
+      return normalize.element({
+        ...parts.valueText.attrs,
+        dir: prop("dir"),
+        "data-disabled": dataAttr(disabled),
+        "data-invalid": dataAttr(invalid),
+        "data-focus": dataAttr(focused),
+      })
+    },
+
+    getTriggerProps() {
+      return normalize.button({
+        id: dom.getTriggerId(scope),
+        disabled: disabled,
+        dir: prop("dir"),
+        type: "button",
+        role: "combobox",
+        "aria-controls": dom.getContentId(scope),
+        "aria-expanded": open,
+        "aria-haspopup": "listbox",
+        "data-state": open ? "open" : "closed",
+        "aria-invalid": invalid,
+        "aria-labelledby": dom.getLabelId(scope),
+        ...parts.trigger.attrs,
+        "data-disabled": dataAttr(disabled),
+        "data-invalid": dataAttr(invalid),
+        "data-readonly": dataAttr(readOnly),
+        "data-placement": currentPlacement,
+        "data-placeholder-shown": dataAttr(!computed("hasSelectedItems")),
+        onClick(event) {
+          if (!interactive) return
+          if (event.defaultPrevented) return
           send({ type: "TRIGGER.CLICK" })
-        }
-      },
-      onFocus() {
-        send("TRIGGER.FOCUS")
-      },
-      onBlur() {
-        send("TRIGGER.BLUR")
-      },
-      onKeyDown(event) {
-        if (event.defaultPrevented) return
-        if (!interactive) return
+        },
+        onFocus() {
+          send({ type: "TRIGGER.FOCUS" })
+        },
+        onBlur() {
+          send({ type: "TRIGGER.BLUR" })
+        },
+        onKeyDown(event) {
+          if (event.defaultPrevented) return
+          if (!interactive) return
 
-        const keyMap: EventKeyMap = {
-          ArrowUp() {
-            send({ type: "TRIGGER.ARROW_UP" })
-          },
-          ArrowDown(event) {
-            send({ type: event.altKey ? "OPEN" : "TRIGGER.ARROW_DOWN" })
-          },
-          ArrowLeft() {
-            send({ type: "TRIGGER.ARROW_LEFT" })
-          },
-          ArrowRight() {
-            send({ type: "TRIGGER.ARROW_RIGHT" })
-          },
-          Home() {
-            send({ type: "TRIGGER.HOME" })
-          },
-          End() {
-            send({ type: "TRIGGER.END" })
-          },
-          Enter() {
-            send({ type: "TRIGGER.ENTER" })
-          },
-          Space(event) {
-            if (isTypingAhead) {
-              send({ type: "TRIGGER.TYPEAHEAD", key: event.key })
-            } else {
+          const keyMap: EventKeyMap = {
+            ArrowUp() {
+              send({ type: "TRIGGER.ARROW_UP" })
+            },
+            ArrowDown(event) {
+              send({ type: event.altKey ? "OPEN" : "TRIGGER.ARROW_DOWN" })
+            },
+            ArrowLeft() {
+              send({ type: "TRIGGER.ARROW_LEFT" })
+            },
+            ArrowRight() {
+              send({ type: "TRIGGER.ARROW_RIGHT" })
+            },
+            Home() {
+              send({ type: "TRIGGER.HOME" })
+            },
+            End() {
+              send({ type: "TRIGGER.END" })
+            },
+            Enter() {
               send({ type: "TRIGGER.ENTER" })
-            }
-          },
-        }
+            },
+            Space(event) {
+              if (isTypingAhead) {
+                send({ type: "TRIGGER.TYPEAHEAD", key: event.key })
+              } else {
+                send({ type: "TRIGGER.ENTER" })
+              }
+            },
+          }
 
-        const exec = keyMap[getEventKey(event, state.context)]
+          const exec =
+            keyMap[
+              getEventKey(event, {
+                dir: prop("dir"),
+                orientation: "vertical",
+              })
+            ]
 
-        if (exec) {
-          exec(event)
-          event.preventDefault()
-          return
-        }
+          if (exec) {
+            exec(event)
+            event.preventDefault()
+            return
+          }
 
-        if (getByTypeahead.isValidEvent(event)) {
-          send({ type: "TRIGGER.TYPEAHEAD", key: event.key })
-          event.preventDefault()
-        }
-      },
-    }),
+          if (getByTypeahead.isValidEvent(event)) {
+            send({ type: "TRIGGER.TYPEAHEAD", key: event.key })
+            event.preventDefault()
+          }
+        },
+      })
+    },
 
-    indicatorProps: normalize.element({
-      ...parts.indicator.attrs,
-      dir: state.context.dir,
-      "aria-hidden": true,
-      "data-state": open ? "open" : "closed",
-      "data-disabled": dataAttr(disabled),
-      "data-invalid": dataAttr(invalid),
-      "data-readonly": dataAttr(readOnly),
-    }),
+    getIndicatorProps() {
+      return normalize.element({
+        ...parts.indicator.attrs,
+        dir: prop("dir"),
+        "aria-hidden": true,
+        "data-state": open ? "open" : "closed",
+        "data-disabled": dataAttr(disabled),
+        "data-invalid": dataAttr(invalid),
+        "data-readonly": dataAttr(readOnly),
+      })
+    },
 
     getItemProps(props) {
       const itemState = getItemState(props)
 
       return normalize.element({
-        id: dom.getItemId(state.context, itemState.value),
+        id: dom.getItemId(scope, itemState.value),
         role: "option",
         ...parts.item.attrs,
-        dir: state.context.dir,
+        dir: prop("dir"),
         "data-value": itemState.value,
         "aria-selected": itemState.selected,
         "data-state": itemState.selected ? "checked" : "unchecked",
@@ -234,22 +269,23 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
         "aria-disabled": ariaAttr(itemState.disabled),
         onPointerMove(event) {
           if (itemState.disabled || event.pointerType !== "mouse") return
-          if (itemState.value === state.context.highlightedValue) return
+          if (itemState.value === highlightedValue) return
           send({ type: "ITEM.POINTER_MOVE", value: itemState.value })
         },
-        onPointerUp() {
+        onClick(event) {
+          if (event.defaultPrevented) return
           if (itemState.disabled) return
           send({ type: "ITEM.CLICK", src: "pointerup", value: itemState.value })
         },
         onPointerLeave(event) {
-          const isKeyboardNavigationEvent = ["CONTENT.ARROW_UP", "CONTENT.ARROW_DOWN"].includes(state.event.type)
-          if (itemState.disabled || event.pointerType !== "mouse" || isKeyboardNavigationEvent) return
+          if (itemState.disabled) return
+          if (props.persistFocus) return
+          if (event.pointerType !== "mouse") return
+
+          const pointerMoved = service.event.previous()?.type.includes("POINTER")
+          if (!pointerMoved) return
+
           send({ type: "ITEM.POINTER_LEAVE" })
-        },
-        onTouchEnd(event) {
-          // prevent clicking elements behind content
-          event.preventDefault()
-          event.stopPropagation()
         },
       })
     },
@@ -258,6 +294,7 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
       const itemState = getItemState(props)
       return normalize.element({
         ...parts.itemText.attrs,
+        "data-state": itemState.selected ? "checked" : "unchecked",
         "data-disabled": dataAttr(itemState.disabled),
         "data-highlighted": dataAttr(itemState.highlighted),
       })
@@ -277,9 +314,9 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
       const { htmlFor } = props
       return normalize.element({
         ...parts.itemGroupLabel.attrs,
-        id: dom.getItemGroupLabelId(state.context, htmlFor),
-        role: "group",
-        dir: state.context.dir,
+        id: dom.getItemGroupLabelId(scope, htmlFor),
+        dir: prop("dir"),
+        role: "presentation",
       })
     },
 
@@ -288,118 +325,147 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
       return normalize.element({
         ...parts.itemGroup.attrs,
         "data-disabled": dataAttr(disabled),
-        id: dom.getItemGroupId(state.context, id),
-        "aria-labelledby": dom.getItemGroupLabelId(state.context, id),
-        dir: state.context.dir,
+        id: dom.getItemGroupId(scope, id),
+        "aria-labelledby": dom.getItemGroupLabelId(scope, id),
+        role: "group",
+        dir: prop("dir"),
       })
     },
 
-    clearTriggerProps: normalize.button({
-      ...parts.clearTrigger.attrs,
-      id: dom.getClearTriggerId(state.context),
-      type: "button",
-      "aria-label": "Clear value",
-      disabled: disabled,
-      hidden: !state.context.hasSelectedItems,
-      dir: state.context.dir,
-      onClick() {
-        send("VALUE.CLEAR")
-      },
-    }),
+    getClearTriggerProps() {
+      return normalize.button({
+        ...parts.clearTrigger.attrs,
+        id: dom.getClearTriggerId(scope),
+        type: "button",
+        "aria-label": "Clear value",
+        "data-invalid": dataAttr(invalid),
+        disabled: disabled,
+        hidden: !computed("hasSelectedItems"),
+        dir: prop("dir"),
+        onClick(event) {
+          if (event.defaultPrevented) return
+          send({ type: "CLEAR.CLICK" })
+        },
+      })
+    },
 
-    hiddenSelectProps: normalize.select({
-      name: state.context.name,
-      form: state.context.form,
-      disabled: disabled,
-      multiple: state.context.multiple,
-      "aria-hidden": true,
-      id: dom.getHiddenSelectId(state.context),
-      defaultValue: state.context.multiple ? state.context.value : state.context.value[0],
-      style: visuallyHiddenStyle,
-      tabIndex: -1,
-      // Some browser extensions will focus the hidden select.
-      // Let's forward the focus to the trigger.
-      onFocus() {
-        dom.getTriggerEl(state.context)?.focus({ preventScroll: true })
-      },
-      "aria-labelledby": dom.getLabelId(state.context),
-    }),
+    getHiddenSelectProps() {
+      const value = context.get("value")
+      const defaultValue = prop("multiple") ? value : value?.[0]
+      return normalize.select({
+        name: prop("name"),
+        form: prop("form"),
+        disabled: disabled,
+        multiple: prop("multiple"),
+        required: prop("required"),
+        "aria-hidden": true,
+        id: dom.getHiddenSelectId(scope),
+        defaultValue,
+        style: visuallyHiddenStyle,
+        tabIndex: -1,
+        // Some browser extensions will focus the hidden select.
+        // Let's forward the focus to the trigger.
+        onFocus() {
+          dom.getTriggerEl(scope)?.focus({ preventScroll: true })
+        },
+        "aria-labelledby": dom.getLabelId(scope),
+      })
+    },
 
-    positionerProps: normalize.element({
-      ...parts.positioner.attrs,
-      dir: state.context.dir,
-      id: dom.getPositionerId(state.context),
-      style: popperStyles.floating,
-    }),
+    getPositionerProps() {
+      return normalize.element({
+        ...parts.positioner.attrs,
+        dir: prop("dir"),
+        id: dom.getPositionerId(scope),
+        style: popperStyles.floating,
+      })
+    },
 
-    contentProps: normalize.element({
-      hidden: !open,
-      dir: state.context.dir,
-      id: dom.getContentId(state.context),
-      role: "listbox",
-      ...parts.content.attrs,
-      "data-state": open ? "open" : "closed",
-      "data-placement": state.context.currentPlacement,
-      "aria-activedescendant": state.context.highlightedValue
-        ? dom.getItemId(state.context, state.context.highlightedValue)
-        : undefined,
-      "aria-multiselectable": state.context.multiple ? "true" : undefined,
-      "aria-labelledby": dom.getLabelId(state.context),
-      tabIndex: 0,
-      onKeyDown(event) {
-        if (event.defaultPrevented) return
-        const evt = getNativeEvent(event)
-        if (!interactive) return
-        if (!isSelfTarget(evt)) return
+    getContentProps() {
+      return normalize.element({
+        hidden: !open,
+        dir: prop("dir"),
+        id: dom.getContentId(scope),
+        role: composite ? "listbox" : "dialog",
+        ...parts.content.attrs,
+        "data-state": open ? "open" : "closed",
+        "data-placement": currentPlacement,
+        "data-activedescendant": ariaActiveDescendant,
+        "aria-activedescendant": composite ? ariaActiveDescendant : undefined,
+        "aria-multiselectable": prop("multiple") && composite ? true : undefined,
+        "aria-labelledby": dom.getLabelId(scope),
+        tabIndex: 0,
+        onKeyDown(event) {
+          if (!interactive) return
+          if (!isSelfTarget(event)) return
 
-        // select should not be navigated using tab key so we prevent it
-        if (event.key === "Tab") {
-          event.preventDefault()
-          return
-        }
-
-        const keyMap: EventKeyMap = {
-          ArrowUp() {
-            send({ type: "CONTENT.ARROW_UP" })
-          },
-          ArrowDown() {
-            send({ type: "CONTENT.ARROW_DOWN" })
-          },
-          Home() {
-            send({ type: "CONTENT.HOME" })
-          },
-          End() {
-            send({ type: "CONTENT.END" })
-          },
-          Enter() {
-            send({ type: "ITEM.CLICK", src: "keydown.enter" })
-          },
-          Space(event) {
-            if (isTypingAhead) {
-              send({ type: "CONTENT.TYPEAHEAD", key: event.key })
-            } else {
-              keyMap.Enter?.(event)
+          // select should not be navigated using tab key so we prevent it
+          // but, we want to allow tabbing within the content when composing
+          // with widgets like tabs or trees
+          if (event.key === "Tab") {
+            const valid = isValidTabEvent(event)
+            if (!valid) {
+              event.preventDefault()
+              return
             }
-          },
-        }
+          }
 
-        const exec = keyMap[getEventKey(event)]
+          const keyMap: EventKeyMap = {
+            ArrowUp() {
+              send({ type: "CONTENT.ARROW_UP" })
+            },
+            ArrowDown() {
+              send({ type: "CONTENT.ARROW_DOWN" })
+            },
+            Home() {
+              send({ type: "CONTENT.HOME" })
+            },
+            End() {
+              send({ type: "CONTENT.END" })
+            },
+            Enter() {
+              send({ type: "ITEM.CLICK", src: "keydown.enter" })
+            },
+            Space(event) {
+              if (isTypingAhead) {
+                send({ type: "CONTENT.TYPEAHEAD", key: event.key })
+              } else {
+                keyMap.Enter?.(event)
+              }
+            },
+          }
 
-        if (exec) {
-          exec(event)
-          event.preventDefault()
-          return
-        }
+          const exec = keyMap[getEventKey(event)]
 
-        if (isEditableElement(event.target)) {
-          return
-        }
+          if (exec) {
+            exec(event)
+            event.preventDefault()
+            return
+          }
 
-        if (getByTypeahead.isValidEvent(event)) {
-          send({ type: "CONTENT.TYPEAHEAD", key: event.key })
-          event.preventDefault()
-        }
-      },
-    }),
+          const target = getEventTarget<Element>(event)
+
+          if (isEditableElement(target)) {
+            return
+          }
+
+          if (getByTypeahead.isValidEvent(event)) {
+            send({ type: "CONTENT.TYPEAHEAD", key: event.key })
+            event.preventDefault()
+          }
+        },
+      })
+    },
+
+    getListProps() {
+      return normalize.element({
+        ...parts.list.attrs,
+        tabIndex: 0,
+        role: !composite ? "listbox" : undefined,
+        "aria-labelledby": dom.getTriggerId(scope),
+        "aria-activedescendant": !composite ? ariaActiveDescendant : undefined,
+        "aria-multiselectable": !composite && prop("multiple") ? true : undefined,
+      })
+    },
   }
 }

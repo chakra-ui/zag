@@ -1,0 +1,279 @@
+---
+title: Tree View
+description: Using the tree view machine in your project.
+package: "@zag-js/tree-view"
+---
+
+# Tree View
+
+The TreeView component provides a hierarchical view of data, similar to a file
+system explorer. It allows users to expand and collapse branches, select
+individual or multiple nodes, and traverse the hierarchy using keyboard
+navigation.
+
+<Resources pkg="@zag-js/tree-view" />
+
+<Showcase id="TreeView" />
+
+**Features**
+
+- Display hierarchical data in a tree structure
+- Expand or collapse nodes
+- Support for keyboard navigation
+- Select single or multiple nodes (depending on the selection mode)
+- Perform actions on the nodes, such as deleting them or performing some other
+  operation
+
+## Installation
+
+To use the tree view machine in your project, run the following command in your
+command line:
+
+<CodeSnippet id="tree-view/installation.mdx" />
+
+## Anatomy
+
+To set up the tree view correctly, you'll need to understand its anatomy.
+
+<Anatomy id="tree-view" />
+
+## Usage
+
+First, import the tree view package into your project
+
+```jsx
+import * as tree from "@zag-js/tree-view"
+```
+
+The tree view package exports two key functions:
+
+- `machine` — The state machine logic for the tree view widget.
+- `connect` — The function that translates the machine's state to JSX attributes
+  and event handlers.
+
+Next, import the required hooks and functions for your framework and use the
+tree view machine in your project 🔥
+
+### Create the tree collection
+
+Use the `collection` function to create a tree collection. This create a tree
+factory that the component uses for traversal.
+
+```ts
+import * as tree from "@zag-js/tree-view"
+
+interface Node {
+  id: string
+  name: string
+  children?: Node[]
+}
+
+const collection = tree.collection<Node>({
+  nodeToValue: (node) => node.id,
+  nodeToString: (node) => node.name,
+  rootNode: {
+    id: "ROOT",
+    name: "",
+    children: [
+      {
+        id: "node_modules",
+        name: "node_modules",
+        children: [
+          { id: "node_modules/zag-js", name: "zag-js" },
+          { id: "node_modules/pandacss", name: "panda" },
+          {
+            id: "node_modules/@types",
+            name: "@types",
+            children: [
+              { id: "node_modules/@types/react", name: "react" },
+              { id: "node_modules/@types/react-dom", name: "react-dom" },
+            ],
+          },
+        ],
+      },
+    ],
+  },
+})
+```
+
+### Create the tree view
+
+Pass the tree collection to the machine to create the tree view.
+
+<CodeSnippet id="tree-view/usage.mdx" />
+
+### Expanding and Collapsing Nodes
+
+By default, the tree view will expand or collapse when clicking the branch
+control. To control the expanded state of the tree view, use the `api.expand`
+and `api.collapse` methods.
+
+```tsx
+api.expand(["node_modules/pandacss"]) // expand a single node
+api.expand() // expand all nodes
+
+api.collapse(["node_modules/pandacss"]) // collapse a single node
+api.collapse() // collapse all nodes
+```
+
+### Multiple selection
+
+The tree view supports multiple selection. To enable this, set the
+`selectionMode` to `multiple`.
+
+```tsx {2}
+const service = useMachine(tree.machine, {
+  selectionMode: "multiple",
+})
+```
+
+### Setting the default expanded nodes
+
+To set the default expanded nodes, use the `expandedValue` context property.
+
+```tsx {2}
+const service = useMachine(tree.machine, {
+  defaultExpandedValue: ["node_modules/pandacss"],
+})
+```
+
+### Setting the default selected nodes
+
+To set the default selected nodes, use the `selectedValue` context property.
+
+```tsx {2}
+const service = useMachine(tree.machine, {
+  defaultSelectedValue: ["node_modules/pandacss"],
+})
+```
+
+### Indentation Guide
+
+When rendering a branch node in the tree view, you can render the `indentGuide`
+element by using the `api.getBranchIndentGuideProps()` function.
+
+```tsx {9}
+<div {...api.getBranchProps(nodeProps)}>
+  <div {...api.getBranchControlProps(nodeProps)}>
+    <FolderIcon />
+    {node.name}
+    <span {...api.getBranchIndicatorProps(nodeProps)}>
+      <ChevronRightIcon />
+    </span>
+  </div>
+  <div {...api.getBranchContentProps(nodeProps)}>
+    <div {...api.getBranchIndentGuideProps(nodeProps)} />
+    {node.children.map((childNode, index) => (
+      <TreeNode
+        key={childNode.id}
+        node={childNode}
+        indexPath={[...indexPath, index]}
+        api={api}
+      />
+    ))}
+  </div>
+</div>
+```
+
+### Listening for selection
+
+When a node is selected, the `onSelectionChange` callback is invoked with the
+selected nodes.
+
+```jsx {2-5}
+const service = useMachine(tree.machine, {
+  onSelectionChange(details) {
+    console.log("selected nodes:", details)
+  },
+})
+```
+
+### Listening for expanding and collapsing
+
+When a node is expanded or collapsed, the `onExpandedChange` callback is invoked
+with the expanded nodes.
+
+```jsx {2-5}
+const service = useMachine(tree.machine, {
+  onExpandedChange(details) {
+    console.log("expanded nodes:", details)
+  },
+})
+```
+
+### Lazy Loading
+
+> **Added in v1.15.0**
+
+Lazy loading is a feature that allows the tree view to load children of a node
+on demand. This helps to improve the initial load time and memory usage.
+
+To use this, you need to provide the following:
+
+- `loadChildren` — A function that is used to load the children of a node.
+- `onLoadChildrenComplete` — A callback that is called when the children of a
+  node are loaded. Used to update the tree collection.
+- `childrenCount` — A number that indicates the number of children of a branch
+  node.
+
+```tsx
+function TreeAsync() {
+  const [collection, setCollection] = useState(
+    tree.collection({
+      nodeToValue: (node) => node.id,
+      nodeToString: (node) => node.name,
+      rootNode: {
+        id: "ROOT",
+        name: "",
+        children: [
+          { id: "node_modules", name: "node_modules", childrenCount: 3 },
+          { id: "src", name: "src", childrenCount: 2 },
+        ],
+      },
+    }),
+  )
+
+  const service = useMachine(tree.machine, {
+    id: useId(),
+    collection,
+    async loadChildren({ valuePath, signal }) {
+      const url = `/api/file-system/${valuePath.join("/")}`
+      const response = await fetch(url, { signal })
+      const data = await response.json()
+      return data.children
+    },
+    onLoadChildrenComplete({ collection }) {
+      setCollection(collection)
+    },
+  })
+
+  // ...
+}
+```
+
+## Methods and Properties
+
+### Machine Context
+
+The tree view machine exposes the following context properties:
+
+<ContextTable name="tree-view" />
+
+### Machine API
+
+The tree view `api` exposes the following methods:
+
+<ApiTable name="tree-view" />
+
+### Data Attributes
+
+<DataAttrTable name="tree-view" />
+
+## Accessibility
+
+Adheres to the
+[Tree View WAI-ARIA design pattern](https://www.w3.org/WAI/ARIA/apg/patterns/treeview).
+
+### Keyboard Interactions
+
+<KeyboardTable name="tree-view" />

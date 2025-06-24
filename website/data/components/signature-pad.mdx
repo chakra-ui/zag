@@ -15,9 +15,9 @@ touch or pointer devices. The signature can be saved as an image or cleared.
 
 **Features**
 
-- Draw signatures using touch or pointer devices.
-- Save the signature as an image.
-- Clear the signature.
+- Draw signatures using touch or pointer devices
+- Save the signature as an image
+- Clear the signature
 
 ## Installation
 
@@ -25,9 +25,6 @@ To use the signature pad machine in your project, run the following command in
 your command line:
 
 <CodeSnippet id="signature-pad/installation.mdx" />
-
-This command will install the framework agnostic signature pad logic and the
-reactive utilities for your framework of choice.
 
 ## Anatomy
 
@@ -57,7 +54,7 @@ signature pad machine in your project 🔥
 
 <CodeSnippet id="signature-pad/usage.mdx" />
 
-## Listening to drawing events
+### Listening to drawing events
 
 The signature pad component emits the following events:
 
@@ -65,21 +62,19 @@ The signature pad component emits the following events:
 - `onDrawEnd`: Emitted when the user stops drawing the signature.
 
 ```jsx
-const [state, send] = useMachine(
-  signature.machine({
-    onDraw(details) {
-      // details => { path: string[] }
-      console.log("Drawing signature", details)
-    },
-    onDrawEnd(details) {
-      // details => { path: string[], toDataURL: () => string }
-      console.log("Signature drawn", details)
-    },
-  }),
-)
+const service = useMachine(signature.machine, {
+  onDraw(details) {
+    // details => { path: string[] }
+    console.log("Drawing signature", details)
+  },
+  onDrawEnd(details) {
+    // details => { path: string[], toDataURL: () => string }
+    console.log("Signature drawn", details)
+  },
+})
 ```
 
-## Clearing the signature
+### Clearing the signature
 
 To clear the signature, use the `api.clear()`, or render the clear trigger
 button.
@@ -88,7 +83,7 @@ button.
 <button onClick={() => api.clear()}>Clear</button>
 ```
 
-## Rendering an image preview
+### Rendering an image preview
 
 Use the `api.getDataUrl()` method to get the signature as a data URL and render
 it as an image.
@@ -96,16 +91,14 @@ it as an image.
 > You can also leverage the `onDrawEnd` event to get the signature data URL.
 
 ```jsx
-const [state, send] = useMachine(
-  signature.machine({
-    onDrawEnd(details) {
-      details.getDataUrl("image/png").then((url) => {
-        // set the image URL in local state
-        setImageURL(url)
-      })
-    },
-  }),
-)
+const service = useMachine(signature.machine, {
+  onDrawEnd(details) {
+    details.getDataUrl("image/png").then((url) => {
+      // set the image URL in local state
+      setImageURL(url)
+    })
+  },
+})
 ```
 
 Next, render the image preview using the URL.
@@ -114,92 +107,80 @@ Next, render the image preview using the URL.
 <img src={imageURL} alt="Signature" />
 ```
 
-## Changing the stroke color
+### Changing the stroke color
 
 To change the stroke color, set the `drawing.fill` option to a valid CSS color.
 
 > Note: You can't use a css variable as the stroke color.
 
 ```jsx
-const [state, send] = useMachine(
-  signature.machine({
-    drawing: {
-      fill: "red",
-    },
-  }),
-)
+const service = useMachine(signature.machine, {
+  drawing: {
+    fill: "red",
+  },
+})
 ```
 
-## Changing the stroke width
+### Changing the stroke width
 
 To change the stroke width, set the `drawing.size` option to a number.
 
 ```jsx
-const [state, send] = useMachine(
-  signature.machine({
-    drawing: {
-      size: 5,
-    },
-  }),
-)
+const service = useMachine(signature.machine, {
+  drawing: {
+    size: 5,
+  },
+})
 ```
 
-## Simulating pressure sensitivity
+### Simulating pressure sensitivity
 
 Pressure sensitivity is disabled by default. To enable it, set the
 `drawing.simulatePressure` option to `true`.
 
 ```jsx
-const [state, send] = useMachine(
-  signature.machine({
-    drawing: {
-      simulatePressure: true,
-    },
-  }),
-)
+const service = useMachine(signature.machine, {
+  drawing: {
+    simulatePressure: true,
+  },
+})
 ```
 
-## Usage in forms
+### Usage in forms
 
 To use the signature pad in a form, set the `name` context property.
 
 ```jsx
-const [state, send] = useMachine(
-  signature.machine({
-    name: "signature",
-  }),
-)
+const service = useMachine(signature.machine, {
+  name: "signature",
+})
 ```
 
-Then, render the hidden input element using `api.getHiddenInputProps`.
+Then, render the hidden input element using `api.getHiddenInputProps()`.
 
 ```jsx
 <input {...api.getHiddenInputProps({ value: imageURL })} />
 ```
 
-## Disabling the signature pad
+### Disabling the signature pad
 
 Set the `disabled` context property to `true` to disable the signature pad.
 
 ```jsx
-const [state, send] = useMachine(
-  signature.machine({
-    disabled: true,
-  }),
-)
+const service = useMachine(signature.machine, {
+  disabled: true,
+})
 ```
 
-## Making the signature pad read-only
+### Making the signature pad read-only
 
 Set the `readOnly` context property to `true` to make the signature pad
 read-only.
 
 ```jsx
-const [state, send] = useMachine(
-  signature.machine({
-    readOnly: true,
-  }),
-)
+const service = useMachine(signature.machine, {
+  readOnly: true,
+})
 ```
 
 ## Methods and Properties
@@ -217,3 +198,7 @@ The signature pad machine exposes the following context properties:
 The signature pad `api` exposes the following methods:
 
 <ApiTable name="signature-pad" />
+
+### Data Attributes
+
+<DataAttrTable name="signature-pad" />

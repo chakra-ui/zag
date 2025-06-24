@@ -3,6 +3,7 @@ import {
   allGuides,
   allOverviews,
   allSnippets,
+  allUtilities,
 } from "@/contentlayer"
 import { FRAMEWORKS, isFramework, type Framework } from "./framework-utils"
 
@@ -82,5 +83,19 @@ export function getSnippetPaths() {
 export function getSnippetDoc(slug: string | string[]) {
   return allSnippets.find(
     (snippet) => snippet.frontmatter.slug === `/snippets/${slug}`,
+  )
+}
+
+/* -----------------------------------------------------------------------------
+ * Utility
+ * -----------------------------------------------------------------------------*/
+
+export function getUtilityPaths() {
+  return allUtilities.map((doc) => `/utilities/${doc.slug}`)
+}
+
+export function getUtilityDoc(slug: string | string[]) {
+  return allUtilities.find(
+    (utility) => utility.frontmatter.slug === `/utilities/${slug}`,
   )
 }

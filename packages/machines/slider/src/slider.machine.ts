@@ -1,303 +1,319 @@
 import { createMachine } from "@zag-js/core"
-import { trackPointerMove } from "@zag-js/dom-event"
-import { raf } from "@zag-js/dom-query"
-import { trackElementsSize, type ElementSize } from "@zag-js/element-size"
-import { trackFormControl } from "@zag-js/form-utils"
-import { getValuePercent } from "@zag-js/numeric-range"
-import { compact, isEqual } from "@zag-js/utils"
-import { dom } from "./slider.dom"
-import type { MachineContext, MachineState, UserDefinedContext } from "./slider.types"
+import { raf, setElementValue, trackElementRect, trackFormControl, trackPointerMove } from "@zag-js/dom-query"
+import type { Size } from "@zag-js/types"
 import {
-  assignArray,
-  constrainValue,
-  decrement,
-  getClosestIndex,
-  getRangeAtIndex,
-  increment,
-  normalizeValues,
-} from "./slider.utils"
+  clampValue,
+  getValuePercent,
+  getValueRanges,
+  isEqual,
+  isValueWithinRange,
+  pick,
+  setValueAtIndex,
+  snapValueToStep,
+} from "@zag-js/utils"
+import * as dom from "./slider.dom"
+import type { SliderSchema } from "./slider.types"
+import { constrainValue, decrement, getClosestIndex, getRangeAtIndex, increment, normalizeValues } from "./slider.utils"
 
-const isEqualSize = (a: ElementSize | null, b: ElementSize | null) => {
+const isEqualSize = (a: Size | null, b: Size | null) => {
   return a?.width === b?.width && a?.height === b?.height
 }
 
-export function machine(userContext: UserDefinedContext) {
-  const ctx = compact(userContext)
-  return createMachine<MachineContext, MachineState>(
-    {
-      id: "slider",
-      initial: "idle",
+const normalize = (value: number[], min: number, max: number, step: number, minStepsBetweenThumbs: number) => {
+  const ranges = getValueRanges(value, min, max, minStepsBetweenThumbs * step)
+  return ranges.map((range) => {
+    const snapValue = snapValueToStep(range.value, range.min, range.max, step)
+    const rangeValue = clampValue(snapValue, range.min, range.max)
+    if (!isValueWithinRange(rangeValue, min, max)) {
+      throw new Error(
+        "[zag-js/slider] The configured `min`, `max`, `step` or `minStepsBetweenThumbs` values are invalid",
+      )
+    }
+    return rangeValue
+  })
+}
 
-      context: {
-        thumbSize: null,
-        thumbAlignment: "contain",
-        min: 0,
-        max: 100,
-        step: 1,
-        value: [0],
-        origin: "start",
-        orientation: "horizontal",
-        dir: "ltr",
-        minStepsBetweenThumbs: 0,
-        disabled: false,
-        ...ctx,
-        focusedIndex: -1,
-        fieldsetDisabled: false,
-      },
+export const machine = createMachine<SliderSchema>({
+  props({ props }) {
+    const min = props.min ?? 0
+    const max = props.max ?? 100
+    const step = props.step ?? 1
+    const defaultValue = props.defaultValue ?? [min]
+    const minStepsBetweenThumbs = props.minStepsBetweenThumbs ?? 0
+    return {
+      dir: "ltr",
+      thumbAlignment: "contain",
+      origin: "start",
+      orientation: "horizontal",
+      minStepsBetweenThumbs,
+      ...props,
+      defaultValue: normalize(defaultValue, min, max, step, minStepsBetweenThumbs),
+      value: props.value ? normalize(props.value, min, max, step, minStepsBetweenThumbs) : undefined,
+      max,
+      step,
+      min,
+    }
+  },
 
-      computed: {
-        isHorizontal: (ctx) => ctx.orientation === "horizontal",
-        isVertical: (ctx) => ctx.orientation === "vertical",
-        isRtl: (ctx) => ctx.orientation === "horizontal" && ctx.dir === "rtl",
-        isDisabled: (ctx) => !!ctx.disabled || ctx.fieldsetDisabled,
-        isInteractive: (ctx) => !(ctx.readOnly || ctx.isDisabled),
-        spacing: (ctx) => ctx.minStepsBetweenThumbs * ctx.step,
-        hasMeasuredThumbSize: (ctx) => ctx.thumbSize != null,
-        valuePercent(ctx) {
-          return ctx.value.map((value) => 100 * getValuePercent(value, ctx.min, ctx.max))
+  initialState() {
+    return "idle"
+  },
+
+  context({ prop, bindable, getContext }) {
+    return {
+      thumbSize: bindable(() => ({
+        defaultValue: prop("thumbSize") || null,
+      })),
+      value: bindable(() => ({
+        defaultValue: prop("defaultValue"),
+        value: prop("value"),
+        isEqual,
+        hash(a) {
+          return a.join(",")
         },
+        onChange(value) {
+          prop("onValueChange")?.({ value })
+        },
+      })),
+      focusedIndex: bindable(() => ({
+        defaultValue: -1,
+        onChange(value) {
+          const ctx = getContext()
+          prop("onFocusChange")?.({ focusedIndex: value, value: ctx.get("value") })
+        },
+      })),
+      fieldsetDisabled: bindable(() => ({
+        defaultValue: false,
+      })),
+    }
+  },
+
+  computed: {
+    isHorizontal: ({ prop }) => prop("orientation") === "horizontal",
+    isVertical: ({ prop }) => prop("orientation") === "vertical",
+    isRtl: ({ prop }) => prop("orientation") === "horizontal" && prop("dir") === "rtl",
+    isDisabled: ({ context, prop }) => !!prop("disabled") || context.get("fieldsetDisabled"),
+    isInteractive: ({ prop, computed }) => !(prop("readOnly") || computed("isDisabled")),
+    hasMeasuredThumbSize: ({ context }) => context.get("thumbSize") != null,
+    valuePercent({ context, prop }) {
+      return context.get("value").map((value) => 100 * getValuePercent(value, prop("min"), prop("max")))
+    },
+  },
+
+  watch({ track, action, context }) {
+    track([() => context.hash("value")], () => {
+      action(["syncInputElements", "dispatchChangeEvent"])
+    })
+  },
+
+  effects: ["trackFormControlState", "trackThumbSize"],
+
+  on: {
+    SET_VALUE: [
+      {
+        guard: "hasIndex",
+        actions: ["setValueAtIndex"],
       },
-
-      watch: {
-        value: ["syncInputElements"],
+      {
+        actions: ["setValue"],
       },
+    ],
+    INCREMENT: {
+      actions: ["incrementThumbAtIndex"],
+    },
+    DECREMENT: {
+      actions: ["decrementThumbAtIndex"],
+    },
+  },
 
-      entry: ["coarseValue"],
-
-      activities: ["trackFormControlState", "trackThumbsSize"],
-
+  states: {
+    idle: {
       on: {
-        SET_VALUE: [
-          {
-            guard: "hasIndex",
-            actions: "setValueAtIndex",
-          },
-          { actions: "setValue" },
-        ],
-        INCREMENT: {
-          actions: "incrementAtIndex",
+        POINTER_DOWN: {
+          target: "dragging",
+          actions: ["setClosestThumbIndex", "setPointerValue", "focusActiveThumb"],
         },
-        DECREMENT: {
-          actions: "decrementAtIndex",
+        FOCUS: {
+          target: "focus",
+          actions: ["setFocusedIndex"],
         },
-      },
-
-      states: {
-        idle: {
-          on: {
-            POINTER_DOWN: {
-              target: "dragging",
-              actions: ["setClosestThumbIndex", "setPointerValue", "focusActiveThumb"],
-            },
-            FOCUS: {
-              target: "focus",
-              actions: "setFocusedIndex",
-            },
-            THUMB_POINTER_DOWN: {
-              target: "dragging",
-              actions: ["setFocusedIndex", "focusActiveThumb"],
-            },
-          },
-        },
-        focus: {
-          entry: "focusActiveThumb",
-          on: {
-            POINTER_DOWN: {
-              target: "dragging",
-              actions: ["setClosestThumbIndex", "setPointerValue", "focusActiveThumb"],
-            },
-            THUMB_POINTER_DOWN: {
-              target: "dragging",
-              actions: ["setFocusedIndex", "focusActiveThumb"],
-            },
-            ARROW_LEFT: {
-              guard: "isHorizontal",
-              actions: "decrementAtIndex",
-            },
-            ARROW_RIGHT: {
-              guard: "isHorizontal",
-              actions: "incrementAtIndex",
-            },
-            ARROW_UP: {
-              guard: "isVertical",
-              actions: "incrementAtIndex",
-            },
-            ARROW_DOWN: {
-              guard: "isVertical",
-              actions: "decrementAtIndex",
-            },
-            PAGE_UP: {
-              actions: "incrementAtIndex",
-            },
-            PAGE_DOWN: {
-              actions: "decrementAtIndex",
-            },
-            HOME: {
-              actions: "setActiveThumbToMin",
-            },
-            END: {
-              actions: "setActiveThumbToMax",
-            },
-            BLUR: {
-              target: "idle",
-              actions: "clearFocusedIndex",
-            },
-          },
-        },
-        dragging: {
-          entry: "focusActiveThumb",
-          activities: "trackPointerMove",
-          on: {
-            POINTER_UP: {
-              target: "focus",
-              actions: "invokeOnChangeEnd",
-            },
-            POINTER_MOVE: {
-              actions: "setPointerValue",
-            },
-          },
+        THUMB_POINTER_DOWN: {
+          target: "dragging",
+          actions: ["setFocusedIndex", "focusActiveThumb"],
         },
       },
     },
-    {
-      guards: {
-        isHorizontal: (ctx) => ctx.isHorizontal,
-        isVertical: (ctx) => ctx.isVertical,
-        hasIndex: (_ctx, evt) => evt.index != null,
-      },
-      activities: {
-        trackFormControlState(ctx, _evt, { initialContext }) {
-          return trackFormControl(dom.getRootEl(ctx), {
-            onFieldsetDisabledChange(disabled) {
-              ctx.fieldsetDisabled = disabled
-            },
-            onFormReset() {
-              set.value(ctx, initialContext.value)
-            },
-          })
-        },
 
-        trackPointerMove(ctx, _evt, { send }) {
-          return trackPointerMove(dom.getDoc(ctx), {
-            onPointerMove(info) {
-              send({ type: "POINTER_MOVE", point: info.point })
-            },
-            onPointerUp() {
-              send("POINTER_UP")
-            },
-          })
+    focus: {
+      entry: ["focusActiveThumb"],
+      on: {
+        POINTER_DOWN: {
+          target: "dragging",
+          actions: ["setClosestThumbIndex", "setPointerValue", "focusActiveThumb"],
         },
-        trackThumbsSize(ctx) {
-          if (ctx.thumbAlignment !== "contain" || ctx.thumbSize) return
-
-          return trackElementsSize({
-            getNodes: () => dom.getElements(ctx),
-            observeMutation: true,
-            callback(size) {
-              if (!size || isEqualSize(ctx.thumbSize, size)) return
-              ctx.thumbSize = size
-            },
-          })
+        THUMB_POINTER_DOWN: {
+          target: "dragging",
+          actions: ["setFocusedIndex", "focusActiveThumb"],
+        },
+        ARROW_DEC: {
+          actions: ["decrementThumbAtIndex", "invokeOnChangeEnd"],
+        },
+        ARROW_INC: {
+          actions: ["incrementThumbAtIndex", "invokeOnChangeEnd"],
+        },
+        HOME: {
+          actions: ["setFocusedThumbToMin", "invokeOnChangeEnd"],
+        },
+        END: {
+          actions: ["setFocusedThumbToMax", "invokeOnChangeEnd"],
+        },
+        BLUR: {
+          target: "idle",
+          actions: ["clearFocusedIndex"],
         },
       },
-      actions: {
-        syncInputElements(ctx) {
-          ctx.value.forEach((value, index) => {
-            const inputEl = dom.getHiddenInputEl(ctx, index)
-            dom.setValue(inputEl, value)
-          })
+    },
+
+    dragging: {
+      entry: ["focusActiveThumb"],
+      effects: ["trackPointerMove"],
+      on: {
+        POINTER_UP: {
+          target: "focus",
+          actions: ["invokeOnChangeEnd"],
         },
-        invokeOnChangeEnd(ctx) {
-          ctx.onValueChangeEnd?.({ value: ctx.value })
+        POINTER_MOVE: {
+          actions: ["setPointerValue"],
         },
-        setClosestThumbIndex(ctx, evt) {
-          const pointValue = dom.getValueFromPoint(ctx, evt.point)
+      },
+    },
+  },
+
+  implementations: {
+    guards: {
+      hasIndex: ({ event }) => event.index != null,
+    },
+
+    effects: {
+      trackFormControlState({ context, scope }) {
+        return trackFormControl(dom.getRootEl(scope), {
+          onFieldsetDisabledChange(disabled) {
+            context.set("fieldsetDisabled", disabled)
+          },
+          onFormReset() {
+            context.set("value", context.initial("value"))
+          },
+        })
+      },
+
+      trackPointerMove({ scope, send }) {
+        return trackPointerMove(scope.getDoc(), {
+          onPointerMove(info) {
+            send({ type: "POINTER_MOVE", point: info.point })
+          },
+          onPointerUp() {
+            send({ type: "POINTER_UP" })
+          },
+        })
+      },
+
+      trackThumbSize({ context, scope, prop }) {
+        if (prop("thumbAlignment") !== "contain" || prop("thumbSize")) return
+
+        return trackElementRect(dom.getThumbEls(scope), {
+          box: "border-box",
+          measure(el) {
+            return dom.getOffsetRect(el)
+          },
+          onEntry({ rects }) {
+            if (rects.length === 0) return
+            const size = pick(rects[0], ["width", "height"])
+            if (isEqualSize(context.get("thumbSize"), size)) return
+            context.set("thumbSize", size)
+          },
+        })
+      },
+    },
+
+    actions: {
+      dispatchChangeEvent({ context, scope }) {
+        dom.dispatchChangeEvent(scope, context.get("value"))
+      },
+      syncInputElements({ context, scope }) {
+        context.get("value").forEach((value, index) => {
+          const inputEl = dom.getHiddenInputEl(scope, index)
+          setElementValue(inputEl, value.toString())
+        })
+      },
+      invokeOnChangeEnd({ prop, context }) {
+        queueMicrotask(() => {
+          prop("onValueChangeEnd")?.({ value: context.get("value") })
+        })
+      },
+      setClosestThumbIndex(params) {
+        const { context, event } = params
+
+        const pointValue = dom.getPointValue(params, event.point)
+        if (pointValue == null) return
+
+        const focusedIndex = getClosestIndex(params, pointValue)
+        context.set("focusedIndex", focusedIndex)
+      },
+      setFocusedIndex({ context, event }) {
+        context.set("focusedIndex", event.index)
+      },
+      clearFocusedIndex({ context }) {
+        context.set("focusedIndex", -1)
+      },
+      setPointerValue(params) {
+        queueMicrotask(() => {
+          const { context, event } = params
+          const pointValue = dom.getPointValue(params, event.point)
           if (pointValue == null) return
 
-          const focusedIndex = getClosestIndex(ctx, pointValue)
-          set.focusedIndex(ctx, focusedIndex)
-        },
-        setFocusedIndex(ctx, evt) {
-          set.focusedIndex(ctx, evt.index)
-        },
-        clearFocusedIndex(ctx) {
-          set.focusedIndex(ctx, -1)
-        },
-        setPointerValue(ctx, evt) {
-          const pointerValue = dom.getValueFromPoint(ctx, evt.point)
-          if (pointerValue == null) return
-
-          const value = constrainValue(ctx, pointerValue, ctx.focusedIndex)
-          set.valueAtIndex(ctx, ctx.focusedIndex, value)
-        },
-        focusActiveThumb(ctx) {
-          raf(() => {
-            const thumbEl = dom.getThumbEl(ctx, ctx.focusedIndex)
-            thumbEl?.focus({ preventScroll: true })
-          })
-        },
-        decrementAtIndex(ctx, evt) {
-          const value = decrement(ctx, evt.index, evt.step)
-          set.value(ctx, value)
-        },
-        incrementAtIndex(ctx, evt) {
-          const value = increment(ctx, evt.index, evt.step)
-          set.value(ctx, value)
-        },
-        setActiveThumbToMin(ctx) {
-          const { min } = getRangeAtIndex(ctx, ctx.focusedIndex)
-          set.valueAtIndex(ctx, ctx.focusedIndex, min)
-        },
-        setActiveThumbToMax(ctx) {
-          const { max } = getRangeAtIndex(ctx, ctx.focusedIndex)
-          set.valueAtIndex(ctx, ctx.focusedIndex, max)
-        },
-        coarseValue(ctx) {
-          const value = normalizeValues(ctx, ctx.value)
-          set.value(ctx, value)
-        },
-        setValueAtIndex(ctx, evt) {
-          const value = constrainValue(ctx, evt.value, evt.index)
-          set.valueAtIndex(ctx, evt.index, value)
-        },
-        setValue(ctx, evt) {
-          const value = normalizeValues(ctx, evt.value)
-          set.value(ctx, value)
-        },
+          const focusedIndex = context.get("focusedIndex")
+          const value = constrainValue(params, pointValue, focusedIndex)
+          context.set("value", (prev) => setValueAtIndex(prev, focusedIndex, value))
+        })
+      },
+      focusActiveThumb({ scope, context }) {
+        raf(() => {
+          const thumbEl = dom.getThumbEl(scope, context.get("focusedIndex"))
+          thumbEl?.focus({ preventScroll: true })
+        })
+      },
+      decrementThumbAtIndex(params) {
+        const { context, event } = params
+        const value = decrement(params, event.index, event.step)
+        context.set("value", value)
+      },
+      incrementThumbAtIndex(params) {
+        const { context, event } = params
+        const value = increment(params, event.index, event.step)
+        context.set("value", value)
+      },
+      setFocusedThumbToMin(params) {
+        const { context } = params
+        const index = context.get("focusedIndex")
+        const { min } = getRangeAtIndex(params, index)
+        context.set("value", (prev) => setValueAtIndex(prev, index, min))
+      },
+      setFocusedThumbToMax(params) {
+        const { context } = params
+        const index = context.get("focusedIndex")
+        const { max } = getRangeAtIndex(params, index)
+        context.set("value", (prev) => setValueAtIndex(prev, index, max))
+      },
+      setValueAtIndex(params) {
+        const { context, event } = params
+        const value = constrainValue(params, event.value, event.index)
+        context.set("value", (prev) => setValueAtIndex(prev, event.index, value))
+      },
+      setValue(params) {
+        const { context, event } = params
+        const value = normalizeValues(params, event.value)
+        context.set("value", value)
       },
     },
-  )
-}
-
-const invoke = {
-  change: (ctx: MachineContext) => {
-    ctx.onValueChange?.({
-      value: Array.from(ctx.value),
-    })
-    dom.dispatchChangeEvent(ctx)
   },
-  focusChange: (ctx: MachineContext) => {
-    ctx.onFocusChange?.({
-      value: Array.from(ctx.value),
-      focusedIndex: ctx.focusedIndex,
-    })
-  },
-}
-
-const set = {
-  valueAtIndex: (ctx: MachineContext, index: number, value: number) => {
-    if (isEqual(ctx.value[index], value)) return
-    ctx.value[index] = value
-    invoke.change(ctx)
-  },
-  value: (ctx: MachineContext, value: number[]) => {
-    if (isEqual(ctx.value, value)) return
-    assignArray(ctx.value, value)
-    invoke.change(ctx)
-  },
-  focusedIndex: (ctx: MachineContext, index: number) => {
-    if (isEqual(ctx.focusedIndex, index)) return
-    ctx.focusedIndex = index
-    invoke.focusChange(ctx)
-  },
-}
+})

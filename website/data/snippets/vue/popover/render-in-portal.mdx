@@ -1,0 +1,27 @@
+```html
+<script setup>
+  import * as popover from "@zag-js/popover"
+  import { normalizeProps, useMachine } from "@zag-js/vue"
+  import { computed, Teleport } from "vue"
+
+  const service = useMachine(popover.machine, { id: "1" })
+
+  const api = computed(() => popover.connect(service, normalizeProps))
+</script>
+
+<template>
+  <div ref="ref">
+    <button v-bind="api.getTriggerProps()">Click me</button>
+    <Teleport to="body">
+      <div v-bind="api.getPositionerProps()">
+        <div v-bind="api.getContentProps()">
+          <div v-bind="api.getTitleProps()">Presenters</div>
+          <div v-bind="api.getDescriptionProps()">Description</div>
+          <button>Action Button</button>
+          <button v-bind="api.getCloseTriggerProps()">X</button>
+        </div>
+      </div>
+    </Teleport>
+  </div>
+</template>
+```

@@ -1,6 +1,6 @@
 {
   "name": "@zag-js/pin-input",
-  "version": "0.49.0",
+  "version": "1.17.1",
   "description": "Core logic for the pin-input widget implemented as a state machine",
   "keywords": [
     "js",
@@ -17,8 +17,7 @@
   "repository": "https://github.com/chakra-ui/zag/tree/main/packages/pin-input",
   "sideEffects": false,
   "files": [
-    "dist",
-    "src"
+    "dist"
   ],
   "publishConfig": {
     "access": "public"
@@ -29,8 +28,6 @@
   "dependencies": {
     "@zag-js/anatomy": "workspace:*",
     "@zag-js/dom-query": "workspace:*",
-    "@zag-js/dom-event": "workspace:*",
-    "@zag-js/form-utils": "workspace:*",
     "@zag-js/utils": "workspace:*",
     "@zag-js/core": "workspace:*",
     "@zag-js/types": "workspace:*"
@@ -40,7 +37,7 @@
   },
   "scripts": {
     "build": "tsup",
-    "lint": "eslint src --ext .ts,.tsx",
+    "lint": "eslint src",
     "typecheck": "tsc --noEmit",
     "prepack": "clean-package",
     "postpack": "clean-package restore"

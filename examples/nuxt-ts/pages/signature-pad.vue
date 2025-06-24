@@ -1,34 +1,46 @@
 <script setup lang="ts">
-import * as signaturePad from "@zag-js/signature-pad"
 import { signaturePadControls } from "@zag-js/shared"
+import * as signaturePad from "@zag-js/signature-pad"
 import { normalizeProps, useMachine } from "@zag-js/vue"
+import { RotateCcw } from "lucide-vue-next"
 
 const url = ref("")
 const setUrl = (v: string) => (url.value = v)
 
 const controls = useControls(signaturePadControls)
 
-const [state, send] = useMachine(signaturePad.machine({ id: "1" }), {
-  context: controls.context,
-})
+const service = useMachine(
+  signaturePad.machine,
+  controls.mergeProps<signaturePad.Props>({
+    id: useId(),
+    onDrawEnd(details) {
+      details.getDataUrl("image/png").then(setUrl)
+    },
+    drawing: {
+      fill: "red",
+      size: 4,
+      simulatePressure: true,
+    },
+  }),
+)
 
-const api = computed(() => signaturePad.connect(state.value, send, normalizeProps))
+const api = computed(() => signaturePad.connect(service, normalizeProps))
 </script>
 
 <template>
-  <main className="signature-pad">
-    <div v-bind="api.rootProps">
-      <label v-bind="api.labelProps">Signature Pad</label>
+  <main class="signature-pad">
+    <div v-bind="api.getRootProps()">
+      <label v-bind="api.getLabelProps()">Signature Pad</label>
 
-      <div v-bind="api.controlProps">
-        <svg v-bind="api.segmentProps">
-          <path v-for="path of api.paths" key="{i}" v-bind="api.getSegmentPathProps({ path })" />
+      <div v-bind="api.getControlProps()">
+        <svg v-bind="api.getSegmentProps()">
+          <path v-for="(path, i) of api.paths" :key="i" v-bind="api.getSegmentPathProps({ path })" />
           <path v-if="api.currentPath" v-bind="api.getSegmentPathProps({ path: api.currentPath })" />
         </svg>
-        <div v-bind="api.guideProps" />
+        <div v-bind="api.getGuideProps()" />
       </div>
 
-      <button v-bind="api.clearTriggerProps">
+      <button v-bind="api.getClearTriggerProps()">
         <RotateCcw />
       </button>
     </div>
@@ -46,7 +58,7 @@ const api = computed(() => signaturePad.connect(state.value, send, normalizeProp
   </main>
 
   <Toolbar>
-    <StateVisualizer :state="state" />
+    <StateVisualizer :state="service" :omit="['currentPoints', 'currentPath', 'paths']" />
     <template #controls>
       <Controls :control="controls" />
     </template>

@@ -6,27 +6,25 @@ import { normalizeProps, useMachine } from "@zag-js/vue"
 
 const controls = useControls(selectControls)
 
-const [state, send] = useMachine(
-  select.machine({
+const service = useMachine(
+  select.machine,
+  controls.mergeProps<select.Props>({
     collection: select.collection({ items: selectData }),
-    id: "1",
+    id: useId(),
   }),
-  {
-    context: controls.context,
-  },
 )
 
-const api = computed(() => select.connect(state.value, send, normalizeProps))
+const api = computed(() => select.connect(service, normalizeProps))
 </script>
 
 <template>
   <main class="select">
-    <div v-bind="api.rootProps">
-      <div v-bind="api.controlProps">
-        <label v-bind="api.labelProps">Label</label>
-        <button v-bind="api.triggerProps">
+    <div v-bind="api.getRootProps()">
+      <div v-bind="api.getControlProps()">
+        <label v-bind="api.getLabelProps()">Label</label>
+        <button v-bind="api.getTriggerProps()">
           <span>{{ api.valueAsString || "Select option" }}</span>
-          <span v-bind="api.indicatorProps">▼</span>
+          <span v-bind="api.getIndicatorProps()">▼</span>
         </button>
       </div>
       <form
@@ -38,13 +36,13 @@ const api = computed(() => select.connect(state.value, send, normalizeProps))
           }
         "
       >
-        <select v-bind="api.hiddenSelectProps">
+        <select v-bind="api.getHiddenSelectProps()">
           <option v-for="option in selectData" :key="option.value" :value="option.value">{{ option.label }}</option>
         </select>
       </form>
-      <Teleport to="body">
-        <div v-bind="api.positionerProps">
-          <ul v-bind="api.contentProps">
+      <Teleport to="#teleports">
+        <div v-bind="api.getPositionerProps()">
+          <ul v-bind="api.getContentProps()">
             <li v-for="item in selectData" :key="item.value" v-bind="api.getItemProps({ item })">
               <span v-bind="api.getItemTextProps({ item })">{{ item.label }}</span>
               <span v-bind="api.getItemIndicatorProps({ item })">✓</span>
@@ -56,7 +54,7 @@ const api = computed(() => select.connect(state.value, send, normalizeProps))
   </main>
 
   <Toolbar>
-    <StateVisualizer :state="state" :omit="['collection']" />
+    <StateVisualizer :state="service" :omit="['collection']" />
     <template #controls>
       <Controls :control="controls" />
     </template>

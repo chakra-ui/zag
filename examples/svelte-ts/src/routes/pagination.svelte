@@ -9,20 +9,19 @@
   const controls = useControls(paginationControls)
   let details = $state<any>({})
 
-  const [snapshot, send] = useMachine(
-    pagination.machine({
-      id: "1",
+  const id = $props.id()
+  const service = useMachine(
+    pagination.machine,
+    controls.mergeProps<pagination.Props>({
+      id,
       count: paginationData.length,
       onPageChange(v) {
         details = v
       },
     }),
-    {
-      context: controls.context,
-    },
   )
 
-  const api = $derived(pagination.connect(snapshot, send, normalizeProps))
+  const api = $derived(pagination.connect(service, normalizeProps))
 
   const data = $derived(api.slice(paginationData))
 </script>
@@ -51,10 +50,10 @@
     </tbody>
   </table>
   {#if api.totalPages > 1}
-    <nav {...api.rootProps}>
+    <nav {...api.getRootProps()}>
       <ul>
         <li>
-          <button {...api.prevTriggerProps}>
+          <button {...api.getPrevTriggerProps()}>
             Previous <span class="sr-only">Page</span>
           </button>
         </li>
@@ -72,7 +71,7 @@
           {/if}
         {/each}
         <li>
-          <button {...api.nextTriggerProps}>
+          <button {...api.getNextTriggerProps()}>
             Next <span class="sr-only">Page</span>
           </button>
         </li>
@@ -82,5 +81,5 @@
 </main>
 
 <Toolbar {controls}>
-  <StateVisualizer state={snapshot} />
+  <StateVisualizer state={service} />
 </Toolbar>

@@ -16,10 +16,10 @@ triggered (click, focus, or double-click).
 
 **Features**
 
-- Use custom controls for the editable.
-- Pressing `Enter` commits the input value.
-- Pressing `Esc` reverts the value.
-- Activate edit mode by double-clicking or focusing on the preview text.
+- Use custom controls for the editable
+- Pressing `Enter` commits the input value
+- Pressing `Esc` reverts the value
+- Activate edit mode by double-clicking or focusing on the preview text
 - Auto-resize input to fit content
 
 ## Installation
@@ -28,9 +28,6 @@ To use the editable machine in your project, run the following command in your
 command line:
 
 <CodeSnippet id="editable/installation.mdx" />
-
-This command will install the framework agnostic editable logic and the reactive
-utilities for your framework of choice.
 
 ## Anatomy
 
@@ -63,40 +60,36 @@ editable machine in your project 🔥
 
 <CodeSnippet id="editable/usage.mdx" />
 
-## Setting the initial value
+### Setting the initial value
 
-To set the initial value of the editable, pass the `value` property to the
-machine's context.
+To set the initial value of the editable, pass the `defaultValue` property to
+the machine's context.
 
-```jsx {3}
-const [state, send] = useMachine(
-  editable.machine({
-    value: "Hello World",
-  }),
-)
+```jsx {2}
+const service = useMachine(editable.machine, {
+  defaultValue: "Hello World",
+})
 ```
 
-## Listening for value changes
+### Listening for value changes
 
 The editable machine supports two ways of listening for value changes:
 
 - `onValueChange`: called when value changes.
 - `onValueCommit`: called when the value is committed.
 
-```jsx {3-4}
-const [state, send] = useMachine(
-  editable.machine({
-    onValueChange(details) {
-      console.log("Value changed", details.value)
-    },
-    onValueCommit(details) {
-      console.log("Value submitted", details.value)
-    },
-  }),
-)
+```jsx {2-4}
+const service = useMachine(editable.machine, {
+  onValueChange(details) {
+    console.log("Value changed", details.value)
+  },
+  onValueCommit(details) {
+    console.log("Value submitted", details.value)
+  },
+})
 ```
 
-## Using custom controls
+### Using custom controls
 
 In some cases, you might need to use custom controls to toggle the edit and read
 mode. We use the render prop pattern to provide access to the internal state of
@@ -104,21 +97,20 @@ the component.
 
 <CodeSnippet id="editable/custom-controls.mdx" />
 
-## Auto-resizing the editable
+### Auto-resizing
 
 To auto-grow the editable as the content changes, pass the `autoResize: true`
 property to the machine's context.
 
-```jsx {3}
-const [state, send] = useMachine(
-  editable.machine({
-    autoResize: true,
-  }),
-)
+```jsx {2}
+const service = useMachine(editable.machine, {
+  autoResize: true,
+})
 ```
 
-> **Please note that**, in this mode, the input and preview elements should not
-> have any styles. Instead, pass the styles to the "area" element.
+When using autoresize, the input and preview elements should not have any
+styles. Use `all: unset` if needed and pass any styles to the "area" element
+since its shared by the input and preview elements.
 
 ### Setting a maxWidth
 
@@ -126,19 +118,17 @@ It is a common pattern to set a maximum of the editable as it auto-grows. To
 achieve this, set the `maxWidth` property of the machine's context to the
 desired value.
 
-```jsx {3-4}
-const [state, send] = useMachine(
-  editable.machine({
-    autoResize: true,
-    maxWidth: "320px",
-  }),
-)
+```jsx {2-3}
+const service = useMachine(editable.machine, {
+  autoResize: true,
+  maxWidth: "320px",
+})
 ```
 
 When the editable reaches the specified max-width, it'll clip the preview text
 with an ellipsis.
 
-## Editing with double click
+### Editing with double click
 
 The editable supports two modes of activating the "edit" state:
 
@@ -148,12 +138,23 @@ The editable supports two modes of activating the "edit" state:
 To change the mode to "double-click", set the `activationMode: 'dblclick'`
 property in the machine's context.
 
-```jsx {3}
-const [state, send] = useMachine(
-  editable.machine({
-    activationMode: "dblclick",
-  }),
-)
+```jsx {2}
+const service = useMachine(editable.machine, {
+  activationMode: "dblclick",
+})
+```
+
+### Usage with Textarea
+
+The editable machine supports using a `textarea` instead of an `input` field.
+When a textarea is used, the editable will commit the value on `Cmd + Enter` or
+`Ctrl + Enter`.
+
+> Use the `api.inputProps` to spread the input props to the textarea element.
+> You might need to cast the input props to the correct type.
+
+```tsx {2}
+<textarea {...(api.inputProps as HTMLTextareaProps<HTMLTextareaElement>)} />
 ```
 
 ## Styling guide
@@ -208,8 +209,12 @@ The editable `api` exposes the following methods:
 
 <ApiTable name="editable" />
 
+### Data Attributes
+
+<DataAttrTable name="editable" />
+
 ## Accessibility
 
 ### Keyboard Interactions
 
-<KeyboardTable id="editable" />
+<KeyboardTable name="editable" />

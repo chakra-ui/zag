@@ -1,0 +1,16 @@
+```svelte
+<script lang="ts">
+  import { normalizeProps, useMachine } from "@zag-js/svelte"
+  import * as toggle from "@zag-js/toggle-group"
+
+  const id = $props.id()
+  const service = useMachine(toggle.machine, { id })
+  const api = $derived(toggle.connect(service, normalizeProps))
+</script>
+
+<div {...api.getRootProps()}>
+  <button {...api.getItemProps({ value: "bold" })}>B</button>
+  <button {...api.getItemProps({ value: "italic" })}>I</button>
+  <button {...api.getItemProps({ value: "underline" })}>U</button>
+</div>
+```

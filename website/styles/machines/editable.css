@@ -8,6 +8,9 @@
 
 [data-scope="editable"][data-part="input"] {
   background: transparent;
+  &[data-autoresize] {
+    all: unset;
+  }
 }
 
 [data-scope="editable"][data-part="input"]:focus {

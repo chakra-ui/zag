@@ -3,26 +3,26 @@ import * as hoverCard from "@zag-js/hover-card"
 import { useMachine, normalizeProps, Portal } from "@zag-js/react"
 
 function HoverCard() {
-  const [state, send] = useMachine(hoverCard.machine({ id: "1" }))
+  const service = useMachine(hoverCard.machine, { id: "1" })
 
-  const api = hoverCard.connect(state, send, normalizeProps)
+  const api = hoverCard.connect(service, normalizeProps)
 
   return (
     <>
       <a
         href="https://twitter.com/zag_js"
         target="_blank"
-        {...api.triggerProps}
+        {...api.getTriggerProps()}
       >
         Twitter
       </a>
 
-      {api.isOpen && (
+      {api.open && (
         <Portal>
-          <div {...api.positionerProps}>
-            <div {...api.contentProps}>
-              <div {...api.arrowProps}>
-                <div {...api.arrowTipProps} />
+          <div {...api.getPositionerProps()}>
+            <div {...api.getContentProps()}>
+              <div {...api.getArrowProps()}>
+                <div {...api.getArrowTipProps()} />
               </div>
               Twitter Preview
             </div>

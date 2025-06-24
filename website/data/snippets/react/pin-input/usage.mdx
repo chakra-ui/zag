@@ -3,13 +3,13 @@ import * as pinInput from "@zag-js/pin-input"
 import { useMachine, normalizeProps } from "@zag-js/react"
 
 export function PinInput() {
-  const [state, send] = useMachine(pinInput.machine({ id: "1" }))
-  
-  const api = pinInput.connect(state, send, normalizeProps)
+  const service = useMachine(pinInput.machine, { id: "1" })
+
+  const api = pinInput.connect(service, normalizeProps)
 
   return (
     <div>
-      <div {...api.rootProps}>
+      <div {...api.getRootProps()}>
         <input {...api.getInputProps({ index: 0 })} />
         <input {...api.getInputProps({ index: 1 })} />
         <input {...api.getInputProps({ index: 2 })} />

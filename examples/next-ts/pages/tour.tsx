@@ -1,6 +1,7 @@
 import { Portal, normalizeProps, useMachine } from "@zag-js/react"
 import { tourControls, tourData } from "@zag-js/shared"
 import * as tour from "@zag-js/tour"
+import { X } from "lucide-react"
 import { useId } from "react"
 import { IFrame } from "../components/iframe"
 import { StateVisualizer } from "../components/state-visualizer"
@@ -10,17 +11,13 @@ import { useControls } from "../hooks/use-controls"
 export default function Page() {
   const controls = useControls(tourControls)
 
-  const [state, send] = useMachine(
-    tour.machine({
-      id: useId(),
-      steps: tourData,
-    }),
-    {
-      context: controls.context,
-    },
-  )
+  const service = useMachine(tour.machine, {
+    id: useId(),
+    steps: tourData,
+    ...controls.context,
+  })
 
-  const api = tour.connect(state, send, normalizeProps)
+  const api = tour.connect(service, normalizeProps)
 
   return (
     <>
@@ -46,35 +43,43 @@ export default function Page() {
           </div>
         </div>
 
-        <Portal>
-          <div {...api.overlayProps} />
-          <div {...api.spotlightProps} />
-          <div {...api.positionerProps}>
-            {api.currentStep && (
-              <div {...api.contentProps}>
-                <div {...api.arrowProps}>
-                  <div {...api.arrowTipProps} />
-                </div>
-                <p {...api.titleProps}>{api.currentStep.title}</p>
-                <div {...api.descriptionProps}>{api.currentStep.description}</div>
+        {api.step && api.open && (
+          <Portal>
+            {api.step.backdrop && <div {...api.getBackdropProps()} />}
+            <div {...api.getSpotlightProps()} />
+            <div {...api.getPositionerProps()}>
+              <div {...api.getContentProps()}>
+                {api.step.arrow && (
+                  <div {...api.getArrowProps()}>
+                    <div {...api.getArrowTipProps()} />
+                  </div>
+                )}
 
-                <div className="tour button__group">
-                  <button {...api.prevTriggerProps}>Prev</button>
-                  <button {...api.nextTriggerProps}>Next</button>
-                  {api.isLastStep && (
-                    <button {...api.closeTriggerProps} style={{ marginLeft: "auto" }}>
-                      Close
-                    </button>
-                  )}
-                </div>
+                <p {...api.getTitleProps()}>{api.step.title}</p>
+                <div {...api.getDescriptionProps()}>{api.step.description}</div>
+                <div {...api.getProgressTextProps()}>{api.getProgressText()}</div>
+
+                {api.step.actions && (
+                  <div className="tour button__group">
+                    {api.step.actions.map((action) => (
+                      <button key={action.label} {...api.getActionTriggerProps({ action })}>
+                        {action.label}
+                      </button>
+                    ))}
+                  </div>
+                )}
+
+                <button {...api.getCloseTriggerProps()}>
+                  <X />
+                </button>
               </div>
-            )}
-          </div>
-        </Portal>
+            </div>
+          </Portal>
+        )}
       </main>
 
       <Toolbar controls={controls.ui}>
-        <StateVisualizer state={state} omit={["steps"]} />
+        <StateVisualizer state={service} omit={["steps"]} />
       </Toolbar>
     </>
   )

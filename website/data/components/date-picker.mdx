@@ -1,0 +1,434 @@
+---
+title: Date Picker
+description: Using the date-picker machine in your project.
+package: "@zag-js/date-picker"
+---
+
+# Date Picker
+
+A datepicker allows users to enter a date either through text input, or by
+choosing a date from the calendar.
+
+> **Good to know**: The date picker machine is built around the
+> [ISO 8601 date format](https://www.iso.org/iso-8601-date-and-time-format.html)
+
+<Resources pkg="@zag-js/date-picker" />
+
+<Showcase id="DatePicker" />
+
+**Features**
+
+- Displays a calendar view for date selection
+- Support for date range selection
+- Support for disabling specific dates
+- Localization support
+- Provides keyboard accessibility for navigating the calendar.
+
+## Installation
+
+To use the date-picker machine in your project, run the following command in
+your command line:
+
+<CodeSnippet id="date-picker/installation.mdx" />
+
+## Anatomy
+
+To set up the date-picker correctly, you'll need to understand its anatomy and
+how we name its parts.
+
+> Each part includes a `data-part` attribute to help identify them in the DOM.
+
+<Anatomy id="date-picker" />
+
+## Usage
+
+First, import the date picker package into your project
+
+```jsx
+import * as datepicker from "@zag-js/date-picker"
+```
+
+The date picker package exports these key functions:
+
+- `machine` — The state machine logic for the date-picker widget.
+- `connect` — The function that translates the machine's state to JSX attributes
+  and event handlers.
+- `parse` - The function that parses the date string into a date object. This
+  function uses
+  [`@internationalized/date`](https://react-spectrum.adobe.com/internationalized/date/CalendarDate.html)
+  under the hood.
+
+> You'll also need to provide a unique `id` to the `useMachine` hook. This is
+> used to ensure that every part has a unique identifier.
+
+Next, import the required hooks and functions for your framework and use the
+date-picker machine in your project 🔥
+
+<CodeSnippet id="date-picker/usage.mdx" />
+
+### Setting the initial date
+
+To set the initial value that is rendered by the date picker, set the `value`
+property in the machine context.
+
+```jsx
+const service = useMachine(datepicker.machine, {
+  defaultValue: [datepicker.parse("2022-01-01")],
+})
+```
+
+### Controlling the selected date
+
+Use the `api.setValue` method to control the selected date in the DatePicker
+component.
+
+```jsx
+// parse the date string into a date object
+const nextValue = datepicker.parse("2022-01-01")
+
+// set the new value
+api.setValue(nextValue)
+```
+
+> Alternatively, you can also use the `value` and `onValueChange` callbacks to
+> programmatically control the selected date.
+
+### Controlling the open state
+
+To manage the open state of the datepicker's dialog, we recommended using
+`api.setOpen` method.
+
+```jsx
+// open the date picker
+api.setOpen(true)
+
+// close the date picker
+api.setOpen(false)
+```
+
+> Alternatively, you can also use the `open` and `onOpenChange` callbacks to
+> programmatically control the open state.
+
+### Setting the min and max dates
+
+To constrain the date range that can be selected by the user, set the `min` and
+`max` properties in the machine context.
+
+```jsx
+const service = useMachine(datepicker.machine, {
+  min: datepicker.parse("2022-01-01"),
+  max: datepicker.parse("2022-12-31"),
+})
+```
+
+When the min or max date value is reached, the next and prev triggers will be
+disabled.
+
+### Changing the start of the week
+
+Set the `startOfWeek` property in the machine context to change the start of the
+week. The property accepts a number from `0` to `6`, where `0` is Sunday and `6`
+is Saturday.
+
+```jsx
+const service = useMachine(datepicker.machine, {
+  startOfWeek: 1, // Monday
+})
+```
+
+### Disabling the date picker
+
+To disable the date picker, set the `disabled` property in the machine context
+to `true`.
+
+```jsx
+const service = useMachine(datepicker.machine, {
+  disabled: true,
+})
+```
+
+### Rendering month and year pickers
+
+To render the month and year pickers, use the `api.getMonthSelectProps` and
+`api.getYearSelectProps` prop getters.
+
+```jsx
+<div>
+  <select {...api.getMonthSelectProps()}>
+    {api.getMonths().map((month, i) => (
+      <option key={i} value={month.value}>
+        {month.label}
+      </option>
+    ))}
+  </select>
+
+  <select {...api.getYearSelectProps()}>
+    {getYearsRange({ from: 1_000, to: 4_000 }).map((year, i) => (
+      <option key={i} value={year}>
+        {year}
+      </option>
+    ))}
+  </select>
+</div>
+```
+
+### Marking unavailable dates
+
+To mark specific dates as unavailable, set the `isDateUnavailable` function in
+the machine context. This function should return `true` for dates that are
+unavailable.
+
+```jsx
+const service = useMachine(datepicker.machine, {
+  isDateUnavailable: (date, locale) => {
+    // mark weekends as unavailable
+    return date.day === 0 || date.day === 6
+  },
+})
+```
+
+You can also leverage the numerous helpers from
+[`@internationalized/date`](https://react-spectrum.adobe.com/internationalized/date/CalendarDate.html)
+to create more complex date availability rules.
+
+```jsx
+import { isWeekend } from "@internationalized/date"
+
+const service = useMachine(datepicker.machine, {
+  isDateUnavailable: (date, locale) => {
+    // mark weekends as unavailable
+    return isWeekend(date, locale)
+  },
+})
+```
+
+### Setting the calendar starting view
+
+The calendar view is set to `day` by default. To change the starting view of the
+calendar, set the `view` property in the machine context to either `day`,
+`month`, or `year`.
+
+```jsx
+const service = useMachine(datepicker.machine, {
+  view: "month",
+})
+```
+
+### Setting the read-only mode
+
+Set the `readOnly` property in the machine context to `true` to make the date
+picker read-only. This means that users can't change the selected date.
+
+```jsx
+const service = useMachine(datepicker.machine, {
+  readOnly: true,
+})
+```
+
+### Setting the focused date
+
+The datepicker's focused date is set to either the first selected date or
+today's date by default.
+
+To change the focused date, set the `focusedDate` property in the machine
+context.
+
+```jsx
+const service = useMachine(datepicker.machine, {
+  focusedDate: datepicker.parse("2022-01-01"),
+})
+```
+
+### Rendering the calendar inline
+
+To render the calendar inline, we recommended setting the `open` property to
+`true` and `closeOnSelect` to `false`.
+
+```jsx
+const service = useMachine(datepicker.machine, {
+  open: true,
+  closeOnSelect: false,
+})
+```
+
+### Usage within a form
+
+To use the date picker within a form, set the `name` property in the machine
+context. This property is used to identify the date picker in the form data.
+
+```jsx
+const service = useMachine(datepicker.machine, {
+  name: "date",
+})
+```
+
+### Rendering fixed number of weeks
+
+The datepicker's calendar will render the weeks needed to display all of the
+days in the month. Sometimes this can result in a jump in the UI when navigating
+between different sized months (e.g., February vs. March).
+
+To ensure the calendar renders the maximum number of weeks (6), you can set the
+`fixedWeeks` prop to `true`.
+
+```jsx
+const service = useMachine(datepicker.machine, {
+  fixedWeeks: true,
+})
+```
+
+### Listening to date changes
+
+To listen to date changes, use the `onValueChange` callback in the machine
+context.
+
+```jsx
+const service = useMachine(datepicker.machine, {
+  onValueChange(details) {
+    // details => { value: DateValue[], valueAsString: string[], view: string }
+    console.log("selected date:", details.valueAsString)
+  },
+})
+```
+
+### Listening to view changes
+
+When the calendar view changes by click on the view controls, the `onViewChange`
+callback is invoked.
+
+```jsx
+const service = useMachine(datepicker.machine, {
+  onViewChange(details) {
+    // details => { view: string }
+    console.log("view changed to:", details.view)
+  },
+})
+```
+
+### Rendering multiple months
+
+To display multiple months in the calendar
+
+- set the `numOfMonths` prop to the desired number of months
+- generate the weeks for the offset months using `api.getOffset({ months: 1 })`
+
+```tsx
+const service = useMachine(datepicker.machine, {
+  // ...
+  numOfMonths: 2,
+})
+
+const offset = api.getOffset({ months: 1 })
+```
+
+Next, render the calendar for the offset months.
+
+```tsx
+<tbody {...api.getTableBodyProps({ view: "day" })}>
+  {offset.weeks.map((week, i) => (
+    <tr key={i} {...api.getTableRowProps({ view: "day" })}>
+      {week.map((value, i) => (
+        <td
+          key={i}
+          {...api.getDayTableCellProps({
+            value,
+            visibleRange: offset.visibleRange,
+          })}
+        >
+          <div
+            {...api.getDayTableCellTriggerProps({
+              value,
+              visibleRange: offset.visibleRange,
+            })}
+          >
+            {value.day}
+          </div>
+        </td>
+      ))}
+    </tr>
+  ))}
+</tbody>
+```
+
+## Styling guide
+
+Earlier, we mentioned that each date-picker part has a `data-part` attribute
+added to them to select and style them in the DOM.
+
+```css
+[data-scope="date-picker"][data-part="root"] {
+  /* styles for the root part */
+}
+
+[data-scope="date-picker"][data-part="input"] {
+  /* styles for the input part */
+}
+
+[data-scope="date-picker"][data-part="trigger"] {
+  /* styles for the trigger part */
+}
+
+[data-scope="date-picker"][data-part="content"] {
+  /* styles for the input part */
+}
+```
+
+### Open State
+
+```css
+[data-scope="date-picker"][data-part="trigger"] {
+  &[data-state="open"] {
+    /* styles for the open state */
+  }
+
+  &[data-state="closed"] {
+    /* styles for the closed state */
+  }
+}
+```
+
+### Cell States
+
+```css
+[data-scope="date-picker"][data-part="table-cell-trigger"] {
+  /* styles for the cell */
+
+  &[data-selected] {
+    /* styles for the selected date */
+  }
+
+  &[data-focus] {
+    /* styles for the focused date */
+  }
+
+  &[data-disabled] {
+    /* styles for the disabled date */
+  }
+
+  &[data-unavailable] {
+    /* styles for the unavailable date */
+  }
+
+  &[data-today] {
+    /* styles for the today date */
+  }
+
+  &[data-weekend] {
+    /* styles for the weekend date */
+  }
+}
+```
+
+## Methods and Properties
+
+### Machine Context
+
+The date picker machine exposes the following context properties:
+
+<ContextTable name="date-picker" />
+
+### Machine API
+
+The date picker `api` exposes the following methods:
+
+<ApiTable name="date-picker" />

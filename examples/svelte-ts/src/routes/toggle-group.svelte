@@ -8,16 +8,15 @@
 
   const controls = useControls(toggleGroupControls)
 
-  const [snapshot, send] = useMachine(toggle.machine({ id: "1" }), {
-    context: controls.context,
-  })
+  const id = $props.id()
+  const service = useMachine(toggle.machine, controls.mergeProps<toggle.Props>({ id }))
 
-  const api = $derived(toggle.connect(snapshot, send, normalizeProps))
+  const api = $derived(toggle.connect(service, normalizeProps))
 </script>
 
 <main class="toggle-group">
   <button>Outside</button>
-  <div {...api.rootProps}>
+  <div {...api.getRootProps()}>
     {#each toggleGroupData as item}
       <button {...api.getItemProps({ value: item.value })}>
         {item.label}
@@ -27,5 +26,5 @@
 </main>
 
 <Toolbar {controls}>
-  <StateVisualizer state={snapshot} />
+  <StateVisualizer state={service} />
 </Toolbar>

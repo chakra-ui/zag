@@ -1,141 +1,154 @@
-import { createMachine, guards } from "@zag-js/core"
-import { trackFocusVisible, trackPress } from "@zag-js/dom-event"
-import { dispatchInputCheckedEvent, trackFormControl } from "@zag-js/form-utils"
-import { compact, isEqual } from "@zag-js/utils"
-import { dom } from "./switch.dom"
-import type { MachineContext, MachineState, UserDefinedContext } from "./switch.types"
+import { createGuards, createMachine } from "@zag-js/core"
+import { dispatchInputCheckedEvent, setElementChecked, trackFormControl, trackPress } from "@zag-js/dom-query"
+import { trackFocusVisible } from "@zag-js/focus-visible"
+import * as dom from "./switch.dom"
+import type { SwitchSchema } from "./switch.types"
 
-const { not } = guards
+const { not } = createGuards<SwitchSchema>()
 
-export function machine(userContext: UserDefinedContext) {
-  const ctx = compact(userContext)
-  return createMachine<MachineContext, MachineState>(
-    {
-      id: "switch",
-      initial: "ready",
+export const machine = createMachine<SwitchSchema>({
+  props({ props }) {
+    return {
+      defaultChecked: false,
+      label: "switch",
+      value: "on",
+      ...props,
+    }
+  },
 
-      context: {
-        checked: false,
-        label: "switch",
-        value: "on",
-        disabled: false,
-        ...ctx,
-        fieldsetDisabled: false,
-      },
+  initialState() {
+    return "ready"
+  },
 
-      computed: {
-        isDisabled: (ctx) => ctx.disabled || ctx.fieldsetDisabled,
-      },
-
-      watch: {
-        disabled: "removeFocusIfNeeded",
-        checked: "syncInputElement",
-      },
-
-      activities: ["trackFormControlState", "trackPressEvent", "trackFocusVisible"],
-
-      on: {
-        "CHECKED.TOGGLE": [
-          {
-            guard: not("isTrusted"),
-            actions: ["toggleChecked", "dispatchChangeEvent"],
-          },
-          {
-            actions: ["toggleChecked"],
-          },
-        ],
-        "CHECKED.SET": [
-          {
-            guard: not("isTrusted"),
-            actions: ["setChecked", "dispatchChangeEvent"],
-          },
-          {
-            actions: ["setChecked"],
-          },
-        ],
-        "CONTEXT.SET": {
-          actions: ["setContext"],
+  context({ prop, bindable }) {
+    return {
+      checked: bindable<boolean>(() => ({
+        defaultValue: prop("defaultChecked"),
+        value: prop("checked"),
+        onChange(value) {
+          prop("onCheckedChange")?.({ checked: value })
         },
-      },
+      })),
+      fieldsetDisabled: bindable<boolean>(() => ({
+        defaultValue: false,
+      })),
+      focusVisible: bindable<boolean>(() => ({
+        defaultValue: false,
+      })),
+      active: bindable<boolean>(() => ({
+        defaultValue: false,
+      })),
+      focused: bindable<boolean>(() => ({
+        defaultValue: false,
+      })),
+      hovered: bindable<boolean>(() => ({
+        defaultValue: false,
+      })),
+    }
+  },
 
-      states: {
-        ready: {},
+  computed: {
+    isDisabled: ({ context, prop }) => prop("disabled") || context.get("fieldsetDisabled"),
+  },
+
+  watch({ track, prop, context, action }) {
+    track([() => prop("disabled")], () => {
+      action(["removeFocusIfNeeded"])
+    })
+    track([() => context.get("checked")], () => {
+      action(["syncInputElement"])
+    })
+  },
+
+  effects: ["trackFormControlState", "trackPressEvent", "trackFocusVisible"],
+
+  on: {
+    "CHECKED.TOGGLE": [
+      {
+        guard: not("isTrusted"),
+        actions: ["toggleChecked", "dispatchChangeEvent"],
+      },
+      {
+        actions: ["toggleChecked"],
+      },
+    ],
+    "CHECKED.SET": [
+      {
+        guard: not("isTrusted"),
+        actions: ["setChecked", "dispatchChangeEvent"],
+      },
+      {
+        actions: ["setChecked"],
+      },
+    ],
+    "CONTEXT.SET": {
+      actions: ["setContext"],
+    },
+  },
+
+  states: {
+    ready: {},
+  },
+
+  implementations: {
+    guards: {
+      isTrusted: ({ event }) => !!event.isTrusted,
+    },
+    effects: {
+      trackPressEvent({ computed, scope, context }) {
+        if (computed("isDisabled")) return
+        return trackPress({
+          pointerNode: dom.getRootEl(scope),
+          keyboardNode: dom.getHiddenInputEl(scope),
+          isValidKey: (event) => event.key === " ",
+          onPress: () => context.set("active", false),
+          onPressStart: () => context.set("active", true),
+          onPressEnd: () => context.set("active", false),
+        })
+      },
+      trackFocusVisible({ computed, scope }) {
+        if (computed("isDisabled")) return
+        return trackFocusVisible({ root: scope.getRootNode() })
+      },
+      trackFormControlState({ context, send, scope }) {
+        return trackFormControl(dom.getHiddenInputEl(scope), {
+          onFieldsetDisabledChange(disabled) {
+            context.set("fieldsetDisabled", disabled)
+          },
+          onFormReset() {
+            const checked = context.initial("checked")
+            send({ type: "CHECKED.SET", checked: !!checked, src: "form-reset" })
+          },
+        })
       },
     },
-    {
-      guards: {
-        isTrusted: (_ctx, evt) => !!evt.isTrusted,
-      },
-      activities: {
-        trackPressEvent(ctx) {
-          if (ctx.isDisabled) return
-          return trackPress({
-            pointerNode: dom.getRootEl(ctx),
-            keyboardNode: dom.getHiddenInputEl(ctx),
-            isValidKey: (event) => event.key === " ",
-            onPress: () => (ctx.active = false),
-            onPressStart: () => (ctx.active = true),
-            onPressEnd: () => (ctx.active = false),
-          })
-        },
-        trackFocusVisible(ctx) {
-          if (ctx.isDisabled) return
-          return trackFocusVisible(dom.getHiddenInputEl(ctx), {
-            onFocus: () => (ctx.focused = true),
-            onBlur: () => (ctx.focused = false),
-          })
-        },
-        trackFormControlState(ctx, _evt, { send, initialContext }) {
-          return trackFormControl(dom.getHiddenInputEl(ctx), {
-            onFieldsetDisabledChange(disabled) {
-              ctx.fieldsetDisabled = disabled
-            },
-            onFormReset() {
-              send({ type: "CHECKED.SET", checked: !!initialContext.checked, src: "form-reset" })
-            },
-          })
-        },
-      },
 
-      actions: {
-        setContext(ctx, evt) {
-          Object.assign(ctx, evt.context)
-        },
-        syncInputElement(ctx) {
-          const inputEl = dom.getHiddenInputEl(ctx)
-          if (!inputEl) return
-          inputEl.checked = !!ctx.checked
-        },
-        removeFocusIfNeeded(ctx) {
-          if (ctx.disabled && ctx.focused) {
-            ctx.focused = false
-          }
-        },
-        setChecked(ctx, evt) {
-          set.checked(ctx, evt.checked)
-        },
-        toggleChecked(ctx, _evt) {
-          set.checked(ctx, !ctx.checked)
-        },
-        dispatchChangeEvent(ctx) {
-          const inputEl = dom.getHiddenInputEl(ctx)
-          dispatchInputCheckedEvent(inputEl, { checked: ctx.checked })
-        },
+    actions: {
+      setContext({ context, event }) {
+        for (const key in event.context) {
+          context.set(key as any, event.context[key])
+        }
+      },
+      syncInputElement({ context, scope }) {
+        const inputEl = dom.getHiddenInputEl(scope)
+        if (!inputEl) return
+        setElementChecked(inputEl, !!context.get("checked"))
+      },
+      removeFocusIfNeeded({ context, prop }) {
+        if (prop("disabled")) {
+          context.set("focused", false)
+        }
+      },
+      setChecked({ context, event }) {
+        context.set("checked", event.checked)
+      },
+      toggleChecked({ context }) {
+        context.set("checked", !context.get("checked"))
+      },
+      dispatchChangeEvent({ context, scope }) {
+        const inputEl = dom.getHiddenInputEl(scope)
+        dispatchInputCheckedEvent(inputEl, { checked: context.get("checked") })
       },
     },
-  )
-}
-
-const invoke = {
-  change: (ctx: MachineContext) => {
-    ctx.onCheckedChange?.({ checked: ctx.checked })
   },
-}
-
-const set = {
-  checked: (ctx: MachineContext, checked: boolean) => {
-    if (isEqual(ctx.checked, checked)) return
-    ctx.checked = checked
-    invoke.change(ctx)
-  },
-}
+})

@@ -5,24 +5,27 @@ import { normalizeProps, useMachine } from "@zag-js/vue"
 
 const controls = useControls(fileUploadControls)
 
-const [state, send] = useMachine(fileUpload.machine({ id: "1" }), {
-  context: controls.context,
-})
+const service = useMachine(
+  fileUpload.machine,
+  controls.mergeProps<fileUpload.Props>({
+    id: useId(),
+  }),
+)
 
-const api = computed(() => fileUpload.connect(state.value, send, normalizeProps))
+const api = computed(() => fileUpload.connect(service, normalizeProps))
 </script>
 
 <template>
   <main class="file-upload">
-    <div v-bind="api.rootProps">
-      <div v-bind="api.dropzoneProps">
-        <input v-bind="api.hiddenInputProps" />
+    <div v-bind="api.getRootProps()">
+      <div v-bind="api.getDropzoneProps()">
+        <input v-bind="api.getHiddenInputProps()" />
         Drag your files here
       </div>
 
-      <button v-bind="api.triggerProps">Choose Files...</button>
+      <button v-bind="api.getTriggerProps()">Choose Files...</button>
 
-      <ul v-bind="api.itemGroupProps">
+      <ul v-bind="api.getItemGroupProps()">
         <li v-for="file in api.acceptedFiles" :key="file.name" class="file" v-bind="api.getItemProps({ file })">
           <div v-bind="api.getItemNameProps({ file })">
             <b>{file.name}</b>
@@ -36,7 +39,7 @@ const api = computed(() => fileUpload.connect(state.value, send, normalizeProps)
   </main>
 
   <Toolbar>
-    <StateVisualizer :state="state" />
+    <StateVisualizer :state="service" />
     <template #controls>
       <Controls :control="controls" />
     </template>

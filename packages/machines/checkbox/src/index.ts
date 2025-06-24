@@ -3,9 +3,11 @@ export { connect } from "./checkbox.connect"
 export { machine } from "./checkbox.machine"
 export * from "./checkbox.props"
 export type {
-  MachineApi as Api,
+  CheckboxApi as Api,
+  CheckboxMachine as Machine,
+  CheckboxProps as Props,
+  CheckboxSchema as Schema,
   CheckedChangeDetails,
   CheckedState,
-  UserDefinedContext as Context,
   ElementIds,
 } from "./checkbox.types"

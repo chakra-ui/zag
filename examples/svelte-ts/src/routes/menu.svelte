@@ -8,20 +8,25 @@
 
   const controls = useControls(menuControls)
 
-  const [snapshot, send] = useMachine(menu.machine({ id: "1", onSelect: console.log }), {
-    context: controls.context,
-  })
+  const id = $props.id()
+  const service = useMachine(
+    menu.machine,
+    controls.mergeProps<menu.Props>({
+      id,
+      onSelect: console.log,
+    }),
+  )
 
-  const api = $derived(menu.connect(snapshot, send, normalizeProps))
+  const api = $derived(menu.connect(service, normalizeProps))
 </script>
 
 <main>
   <div>
-    <button {...api.triggerProps}>
-      Actions <span {...api.indicatorProps}>▾</span>
+    <button {...api.getTriggerProps()}>
+      Actions <span {...api.getIndicatorProps()}>▾</span>
     </button>
-    <div use:portal {...api.positionerProps}>
-      <ul {...api.contentProps}>
+    <div use:portal {...api.getPositionerProps()}>
+      <ul {...api.getContentProps()}>
         <li {...api.getItemProps({ value: "edit" })}>Edit</li>
         <li {...api.getItemProps({ value: "duplicate" })}>Duplicate</li>
         <li {...api.getItemProps({ value: "delete" })}>Delete</li>
@@ -32,5 +37,5 @@
 </main>
 
 <Toolbar {controls}>
-  <StateVisualizer state={snapshot} />
+  <StateVisualizer state={service} />
 </Toolbar>

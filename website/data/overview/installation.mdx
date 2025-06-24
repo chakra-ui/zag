@@ -38,27 +38,22 @@ import * as tooltip from "@zag-js/tooltip"
 import { useMachine, normalizeProps } from "@zag-js/react"
 
 export function Tooltip() {
-  const [state, send] = useMachine(tooltip.machine({ id: "1" }))
+  const service = useMachine(tooltip.machine, { id: "1" })
 
-  const api = tooltip.connect(state, send, normalizeProps)
+  const api = tooltip.connect(service, normalizeProps)
 
   return (
     <>
-      <button {...api.triggerProps}>Hover me</button>
-      {api.isOpen && (
-        <div {...api.positionerProps}>
-          <div {...api.contentProps}>Tooltip</div>
+      <button {...api.getTriggerProps()}>Hover me</button>
+      {api.open && (
+        <div {...api.getPositionerProps()}>
+          <div {...api.getContentProps()}>Tooltip</div>
         </div>
       )}
     </>
   )
 }
 ```
-
-> Zag uses [`valtio`](https://github.com/pmndrs/valtio) behind the scenes to
-> provide automatic render optimizations due to the `useSnapshot` hook used
-> within the machine hook.
-> [Learn more](https://github.com/pmndrs/valtio#react-via-usesnapshot)
 
 ### Usage with Vue 3 (JSX)
 
@@ -73,20 +68,18 @@ import { computed, defineComponent, h, Fragment } from "vue"
 export default defineComponent({
   name: "Tooltip",
   setup() {
-    const [state, send] = useMachine(tooltip.machine({ id: "1" }))
-    const apiRef = computed(() =>
-      tooltip.connect(state.value, send, normalizeProps),
-    )
+    const service = useMachine(tooltip.machine, { id: "1" })
+    const apiRef = computed(() => tooltip.connect(service, normalizeProps))
 
     return () => {
       const api = apiRef.current
       return (
         <>
           <div>
-            <button {...api.triggerProps}>Hover me</button>
-            {api.isOpen && (
-              <div {...api.positionerProps}>
-                <div {...api.contentProps}>Tooltip</div>
+            <button {...api.getTriggerProps()}>Hover me</button>
+            {api.open && (
+              <div {...api.getPositionerProps()}>
+                <div {...api.getContentProps()}>Tooltip</div>
               </div>
             )}
           </div>
@@ -115,16 +108,16 @@ import { normalizeProps, useMachine } from "@zag-js/solid"
 import { createMemo, createUniqueId, Show } from "solid-js"
 
 export function Tooltip() {
-  const [state, send] = useMachine(tooltip.machine({ id: createUniqueId() }))
+  const service = useMachine(tooltip.machine, { id: createUniqueId() })
 
-  const api = createMemo(() => tooltip.connect(state, send, normalizeProps))
+  const api = createMemo(() => tooltip.connect(service, normalizeProps))
 
   return (
     <div>
-      <button {...api().triggerProps}>Hover me</button>
-      <Show when={api().isOpen}>
-        <div {...api().positionerProps}>
-          <div {...api().contentProps}>Tooltip</div>
+      <button {...api().getTriggerProps()}>Hover me</button>
+      <Show when={api().open}>
+        <div {...api().getPositionerProps()}>
+          <div {...api().getContentProps()}>Tooltip</div>
         </div>
       </Show>
     </div>
@@ -139,10 +132,41 @@ There are some extra functions that need to be used in order to make it work:
 - `createMemo` - Ensures that the tooltip's `api` is always up to date with the
   current state of the machine.
 
+### Usage with Svelte
+
+Here's how to use the same tooltip logic in Svelte:
+
+```html
+<script lang="ts">
+  import * as tooltip from "@zag-js/tooltip"
+  import { useMachine, normalizeProps } from "@zag-js/svelte"
+
+  const service = useMachine(tooltip.machine, { id: "1" })
+
+  const api = $derived(tooltip.connect(service, normalizeProps))
+</script>
+
+<div>
+  <button {...api.getTriggerProps()}>Hover me</button>
+  {#if api.open}
+  <div {...api.getPositionerProps()}>
+    <div {...api.getContentProps()}>Tooltip</div>
+  </div>
+  {/if}
+</div>
+```
+
+There are some extra functions that need to be used in order to make it work:
+
+- `normalizeProps` - Converts the props of the component into the format that is
+  compatible with Svelte.
+- `$derived` - Ensures that the tooltip's `api` is always up to date with the
+  current state of the machine.
+
 ### About prop normalization
 
 There are subtle difference between how JSX attributes are named across
-frameworks like React, Solid and Vue. Here are some examples:
+frameworks like React, Solid, Vue and Svelte. Here are some examples:
 
 **Keydown listener**
 

@@ -1,0 +1,31 @@
+```svelte
+<script lang="ts">
+  import * as radio from "@zag-js/radio-group"
+  import { useMachine, normalizeProps } from "@zag-js/svelte"
+
+  const items = [
+    { id: "apple", label: "Apples" },
+    { id: "orange", label: "Oranges" },
+    { id: "mango", label: "Mangoes" },
+    { id: "grape", label: "Grapes" },
+  ]
+
+  const id = $props.id()
+  const service = useMachine(radio.machine, {
+    id,
+    name: "fruit",
+  })
+  const api = $derived(radio.connect(service, normalizeProps))
+</script>
+
+<div {...api.getRootProps()}>
+  <h3 {...api.getLabelProps()}>Fruits</h3>
+  {#each items as opt}
+    <label {...api.getItemProps({ value: opt.id })}>
+      <span {...api.getItemTextProps({ value: opt.id })}>{opt.label}</span>
+      <input {...api.getItemHiddenInputProps({ value: opt.id })} />
+      <div {...api.getItemControlProps({ value: opt.id })}></div>
+    </label>
+  {/each}
+</div>
+```

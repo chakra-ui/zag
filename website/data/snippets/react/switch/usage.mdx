@@ -3,17 +3,17 @@ import * as zagSwitch from "@zag-js/switch"
 import { useMachine, normalizeProps } from "@zag-js/react"
 
 function Checkbox() {
-  const [state, send] = useMachine(zagSwitch.machine({ id: "1" }))
+  const service = useMachine(zagSwitch.machine, { id: "1" })
 
-  const api = zagSwitch.connect(state, send, normalizeProps)
+  const api = zagSwitch.connect(service, normalizeProps)
 
   return (
-    <label {...api.rootProps}>
-      <input {...api.hiddenInputProps} />
-      <span {...api.controlProps}>
-        <span {...api.thumbProps} />
+    <label {...api.getRootProps()}>
+      <input {...api.getHiddenInputProps()} />
+      <span {...api.getControlProps()}>
+        <span {...api.getThumbProps()} />
       </span>
-      <span {...api.labelProps}>{api.isChecked ? "On" : "Off"}</span>
+      <span {...api.getLabelProps()}>{api.checked ? "On" : "Off"}</span>
     </label>
   )
 }

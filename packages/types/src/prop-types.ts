@@ -3,42 +3,43 @@ import type { JSX } from "./jsx"
 type Dict<T = any> = Record<string, T>
 
 type DataAttr = {
-  "data-selected"?: any
-  "data-expanded"?: any
-  "data-highlighted"?: any
-  "data-readonly"?: any
-  "data-indeterminate"?: any
-  "data-invalid"?: any
-  "data-hover"?: any
-  "data-active"?: any
-  "data-focus"?: any
-  "data-disabled"?: any
-  "data-open"?: any
-  "data-checked"?: any
-  "data-pressed"?: any
-  "data-complete"?: any
-  "data-side"?: any
-  "data-align"?: any
-  "data-empty"?: any
-  "data-placeholder-shown"?: any
-  "data-half"?: any
-  "data-scope"?: string
-  "data-uid"?: string
-  "data-name"?: string
-  "data-ownedby"?: string
-  "data-type"?: string
-  "data-valuetext"?: string
-  "data-placement"?: string
-  "data-controls"?: string
-  "data-part"?: string
-  "data-label"?: string
-  "data-state"?: string | null
-  "data-value"?: string | number
-  "data-orientation"?: "horizontal" | "vertical"
-  "data-count"?: number
-  "data-index"?: number
+  "data-selected"?: any | undefined
+  "data-expanded"?: any | undefined
+  "data-highlighted"?: any | undefined
+  "data-readonly"?: any | undefined
+  "data-indeterminate"?: any | undefined
+  "data-invalid"?: any | undefined
+  "data-hover"?: any | undefined
+  "data-active"?: any | undefined
+  "data-focus"?: any | undefined
+  "data-focus-visible"?: any | undefined
+  "data-disabled"?: any | undefined
+  "data-open"?: any | undefined
+  "data-checked"?: any | undefined
+  "data-pressed"?: any | undefined
+  "data-complete"?: any | undefined
+  "data-side"?: any | undefined
+  "data-align"?: any | undefined
+  "data-empty"?: any | undefined
+  "data-placeholder-shown"?: any | undefined
+  "data-half"?: any | undefined
+  "data-scope"?: string | undefined
+  "data-uid"?: string | undefined
+  "data-name"?: string | undefined
+  "data-ownedby"?: string | undefined
+  "data-type"?: string | undefined
+  "data-valuetext"?: string | undefined
+  "data-placement"?: string | undefined
+  "data-controls"?: string | undefined
+  "data-part"?: string | undefined
+  "data-label"?: string | undefined
+  "data-state"?: string | null | undefined
+  "data-value"?: string | number | undefined
+  "data-orientation"?: "horizontal" | "vertical" | undefined
+  "data-count"?: number | undefined
+  "data-index"?: number | undefined
 } & {
-  [key in `data-${string}`]?: any
+  [key in `data-${string}`]?: any | undefined
 }
 
 export type PropTypes<T = Dict> = Record<
@@ -50,6 +51,7 @@ export type PropTypes<T = Dict> = Record<
   | "output"
   | "element"
   | "select"
+  | "rect"
   | "style"
   | "circle"
   | "svg"
@@ -66,7 +68,11 @@ export type NormalizeProps<T extends PropTypes> = {
 
 export function createNormalizer<T extends PropTypes>(fn: (props: Dict) => Dict): NormalizeProps<T> {
   return new Proxy({} as any, {
-    get() {
+    get(_target, key: string) {
+      if (key === "style")
+        return (props: Dict) => {
+          return fn({ style: props }).style
+        }
       return fn
     },
   })

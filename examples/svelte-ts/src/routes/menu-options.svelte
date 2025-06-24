@@ -11,11 +11,10 @@
   let order = $state("")
   let type = $state<string[]>([])
 
-  const [snapshot, send] = useMachine(menu.machine({ id: "1" }), {
-    context: controls.context,
-  })
+  const id = $props.id()
+  const service = useMachine(menu.machine, controls.mergeProps<menu.Props>({ id }))
 
-  const api = $derived(menu.connect(snapshot, send, normalizeProps))
+  const api = $derived(menu.connect(service, normalizeProps))
 
   const radios = $derived(
     menuOptionData.order.map((item) => ({
@@ -46,19 +45,19 @@
 
 <main>
   <div>
-    <button data-testid="trigger" {...api.triggerProps}>
-      Actions <span {...api.indicatorProps}>▾</span>
+    <button data-testid="trigger" {...api.getTriggerProps()}>
+      Actions <span {...api.getIndicatorProps()}>▾</span>
     </button>
 
-    <div use:portal {...api.positionerProps}>
-      <div {...api.contentProps}>
+    <div use:portal {...api.getPositionerProps()}>
+      <div {...api.getContentProps()}>
         {#each radios as item}
           <div {...api.getOptionItemProps(item)}>
             <span {...api.getItemIndicatorProps(item)}>✅</span>
             <span {...api.getItemTextProps(item)}>{item.label}</span>
           </div>
         {/each}
-        <hr {...api.separatorProps} />
+        <hr {...api.getSeparatorProps()} />
         {#each checkboxes as item}
           <div {...api.getOptionItemProps(item)}>
             <span {...api.getItemIndicatorProps(item)}>✅</span>
@@ -71,5 +70,5 @@
 </main>
 
 <Toolbar {controls}>
-  <StateVisualizer state={snapshot} />
+  <StateVisualizer state={service} />
 </Toolbar>

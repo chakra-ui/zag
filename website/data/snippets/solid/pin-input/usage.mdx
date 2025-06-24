@@ -4,13 +4,13 @@ import { normalizeProps, useMachine } from "@zag-js/solid"
 import { createMemo, createUniqueId } from "solid-js"
 
 export function PinInput() {
-  const [state, send] = useMachine(pinInput.machine({ id: createUniqueId() }))
+  const service = useMachine(pinInput.machine, { id: createUniqueId() })
 
-  const api = createMemo(() => pinInput.connect(state, send, normalizeProps))
+  const api = createMemo(() => pinInput.connect(service, normalizeProps))
 
   return (
     <div>
-      <div {...api().rootProps}>
+      <div {...api().getRootProps()}>
         <input {...api().getInputProps({ index: 0 })} />
         <input {...api().getInputProps({ index: 1 })} />
         <input {...api().getInputProps({ index: 2 })} />

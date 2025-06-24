@@ -10,17 +10,13 @@ import { useControls } from "../hooks/use-controls"
 export default function Page() {
   const controls = useControls(radioControls)
 
-  const [state, send] = useMachine(
-    radio.machine({
-      id: useId(),
-      name: "fruit",
-    }),
-    {
-      context: controls.context,
-    },
-  )
+  const service = useMachine(radio.machine, {
+    id: useId(),
+    name: "fruit",
+    ...controls.context,
+  })
 
-  const api = radio.connect(state, send, normalizeProps)
+  const api = radio.connect(service, normalizeProps)
 
   return (
     <>
@@ -32,9 +28,9 @@ export default function Page() {
           }}
         >
           <fieldset disabled={false}>
-            <div {...api.rootProps}>
-              <h3 {...api.labelProps}>Fruits</h3>
-              <div {...api.indicatorProps} />
+            <div {...api.getRootProps()}>
+              <h3 {...api.getLabelProps()}>Fruits</h3>
+              <div {...api.getIndicatorProps()} />
               {radioData.map((opt) => (
                 <label key={opt.id} data-testid={`radio-${opt.id}`} {...api.getItemProps({ value: opt.id })}>
                   <div data-testid={`control-${opt.id}`} {...api.getItemControlProps({ value: opt.id })} />
@@ -62,7 +58,7 @@ export default function Page() {
       </main>
 
       <Toolbar controls={controls.ui}>
-        <StateVisualizer state={state} />
+        <StateVisualizer state={service} />
       </Toolbar>
     </>
   )

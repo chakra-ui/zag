@@ -9,28 +9,29 @@ import { useControls } from "../hooks/use-controls"
 export default function Page() {
   const controls = useControls(progressControls)
 
-  const [state, send] = useMachine(progress.machine({ id: useId() }), {
-    context: controls.context,
+  const service = useMachine(progress.machine, {
+    id: useId(),
+    ...controls.context,
   })
 
-  const api = progress.connect(state, send, normalizeProps)
+  const api = progress.connect(service, normalizeProps)
 
   return (
     <>
       <main className="progress">
-        <div {...api.rootProps}>
-          <div {...api.labelProps}>Upload progress</div>
+        <div {...api.getRootProps()}>
+          <div {...api.getLabelProps()}>Upload progress</div>
 
-          <svg {...api.circleProps}>
-            <circle {...api.circleTrackProps} />
-            <circle {...api.circleRangeProps} />
+          <svg {...api.getCircleProps()}>
+            <circle {...api.getCircleTrackProps()} />
+            <circle {...api.getCircleRangeProps()} />
           </svg>
 
-          <div {...api.trackProps}>
-            <div {...api.rangeProps} />
+          <div {...api.getTrackProps()}>
+            <div {...api.getRangeProps()} />
           </div>
 
-          <div {...api.valueTextProps}>{api.valueAsString}</div>
+          <div {...api.getValueTextProps()}>{api.valueAsString}</div>
 
           <div>
             <button onClick={() => api.setValue((api.value ?? 0) - 20)}>Decrease</button>
@@ -41,7 +42,7 @@ export default function Page() {
       </main>
 
       <Toolbar controls={controls.ui}>
-        <StateVisualizer state={state} />
+        <StateVisualizer state={service} />
       </Toolbar>
     </>
   )

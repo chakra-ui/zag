@@ -5,19 +5,20 @@ import { createMemo, createUniqueId, For } from "solid-js"
 import { data } from "./data"
 
 function Pagination() {
-  const [state, send] = useMachine(
-    pagination.machine({ id: createUniqueId(), count: data.length }),
-  )
+  const service = useMachine(pagination.machine, {
+    id: createUniqueId(),
+    count: data.length,
+  })
 
-  const api = createMemo(() => pagination.connect(state, send, normalizeProps))
+  const api = createMemo(() => pagination.connect(service, normalizeProps))
 
   return (
     <div>
       {api().totalPages > 1 && (
-        <nav {...api().rootProps}>
+        <nav {...api().getRootProps()}>
           <ul>
             <li>
-              <a href="#previous" {...api().prevTriggerProps}>
+              <a href="#previous" {...api().getPrevTriggerProps()}>
                 Previous <span class="visually-hidden">Page</span>
               </a>
             </li>
@@ -41,7 +42,7 @@ function Pagination() {
               }}
             </For>
             <li>
-              <a href="#next" {...api().nextTriggerProps}>
+              <a href="#next" {...api().getNextTriggerProps()}>
                 Next <span class="visually-hidden">Page</span>
               </a>
             </li>

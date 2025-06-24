@@ -2,17 +2,18 @@ import { createAnatomy } from "@zag-js/anatomy"
 
 export const anatomy = createAnatomy("combobox").parts(
   "root",
-  "label",
-  "input",
-  "positioner",
-  "control",
-  "trigger",
-  "content",
   "clearTrigger",
+  "content",
+  "control",
+  "input",
   "item",
-  "itemText",
-  "itemIndicator",
   "itemGroup",
   "itemGroupLabel",
+  "itemIndicator",
+  "itemText",
+  "label",
+  "list",
+  "positioner",
+  "trigger",
 )
 export const parts = anatomy.build()

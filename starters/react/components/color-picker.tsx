@@ -19,45 +19,32 @@ const EyeDropIcon = () => (
   </svg>
 )
 
-interface Props extends Omit<colorPicker.Context, "id"> {
-  defaultOpen?: boolean
-  defaultValue?: colorPicker.Color
-}
+interface Props extends Omit<colorPicker.Props, "id"> {}
 
 export function ColorPicker(props: Props) {
-  const { defaultOpen, defaultValue = colorPicker.parse("hsl(0, 100%, 50%)"), open, value, ...contextProps } = props
+  const { defaultValue = colorPicker.parse("hsl(0, 100%, 50%)"), ...contextProps } = props
 
-  const [state, send] = useMachine(
-    colorPicker.machine({
-      id: useId(),
-      name: "color",
-      format: "hsla",
-      value: value ?? defaultValue,
-      open: open ?? defaultOpen,
-    }),
-    {
-      context: {
-        ...contextProps,
-        "open.controlled": open !== undefined,
-        open,
-        value,
-      },
-    },
-  )
+  const service = useMachine(colorPicker.machine, {
+    id: useId(),
+    name: "color",
+    defaultFormat: "hsla",
+    defaultValue,
+    ...contextProps,
+  })
 
-  const api = colorPicker.connect(state, send, normalizeProps)
+  const api = colorPicker.connect(service, normalizeProps)
 
   return (
     <>
       <main className="color-picker">
-        <input {...api.hiddenInputProps} />
-        <div {...api.rootProps}>
-          <label {...api.labelProps}>
+        <input {...api.getHiddenInputProps()} />
+        <div {...api.getRootProps()}>
+          <label {...api.getLabelProps()}>
             Select Color: <span data-testid="value-text">{api.valueAsString}</span>
           </label>
 
-          <div {...api.controlProps}>
-            <button {...api.triggerProps}>
+          <div {...api.getControlProps()}>
+            <button {...api.getTriggerProps()}>
               <div {...api.getTransparencyGridProps({ size: "10px" })} />
               <div {...api.getSwatchProps({ value: api.value })} />
             </button>
@@ -65,8 +52,8 @@ export function ColorPicker(props: Props) {
             <input {...api.getChannelInputProps({ channel: "alpha" })} />
           </div>
 
-          <div {...api.positionerProps}>
-            <div {...api.contentProps}>
+          <div {...api.getPositionerProps()}>
+            <div {...api.getContentProps()}>
               <div className="content__inner">
                 <div {...api.getAreaProps()}>
                   <div {...api.getAreaBackgroundProps()} />
@@ -121,7 +108,7 @@ export function ColorPicker(props: Props) {
 
                 <input {...api.getChannelInputProps({ channel: "hex" })} />
 
-                <div {...api.swatchGroupProps} style={{ display: "flex", gap: "10px" }}>
+                <div {...api.getSwatchGroupProps()} style={{ display: "flex", gap: "10px" }}>
                   {presets.map((preset) => (
                     <button key={preset} {...api.getSwatchTriggerProps({ value: preset })}>
                       <div style={{ position: "relative" }}>
@@ -132,7 +119,7 @@ export function ColorPicker(props: Props) {
                   ))}
                 </div>
 
-                <button {...api.eyeDropperTriggerProps}>
+                <button {...api.getEyeDropperTriggerProps()}>
                   <EyeDropIcon />
                 </button>
               </div>

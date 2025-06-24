@@ -9,11 +9,16 @@
 
   const controls = useControls(radioControls)
 
-  const [snapshot, send] = useMachine(radio.machine({ id: "1", name: "fruit" }), {
-    context: controls.context,
-  })
+  const id = $props.id()
+  const service = useMachine(
+    radio.machine,
+    controls.mergeProps<radio.Props>({
+      id,
+      name: "fruit",
+    }),
+  )
 
-  const api = $derived(radio.connect(snapshot, send, normalizeProps))
+  const api = $derived(radio.connect(service, normalizeProps))
 </script>
 
 <main class="radio">
@@ -24,9 +29,9 @@
     }}
   >
     <fieldset disabled={false}>
-      <div {...api.rootProps}>
-        <h3 {...api.labelProps}>Fruits</h3>
-        <div {...api.indicatorProps}></div>
+      <div {...api.getRootProps()}>
+        <h3 {...api.getLabelProps()}>Fruits</h3>
+        <div {...api.getIndicatorProps()}></div>
         {#each radioData as opt}
           <label data-testid={`radio-${opt.id}`} {...api.getItemProps({ value: opt.id })}>
             <div data-testid={`control-${opt.id}`} {...api.getItemControlProps({ value: opt.id })}></div>
@@ -47,5 +52,5 @@
 </main>
 
 <Toolbar {controls}>
-  <StateVisualizer state={snapshot} />
+  <StateVisualizer state={service} />
 </Toolbar>

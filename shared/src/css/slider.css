@@ -113,3 +113,17 @@
 [data-scope="slider"][data-part="marker"]:is([data-state="under-value"], [data-state="at-value"]) {
   color: red;
 }
+
+[data-scope="slider"][data-part="dragging-indicator"] {
+  background: magenta;
+  border-radius: 4px;
+  padding: 2px 4px;
+  color: white;
+  &[data-orientation="horizontal"] {
+    top: calc(var(--slider-thumb-size) + 8px);
+  }
+
+  &[data-orientation="vertical"] {
+    left: calc(var(--slider-thumb-size) + 8px);
+  }
+}

@@ -13,20 +13,12 @@ split information, instead of being shown on a single page.
 
 <Showcase id="Pagination" />
 
-**Features**
-
-- Full keyboard navigation.
-- Optimized for screen readers.
-
 ## Installation
 
 To use the pagination machine in your project, run the following command in your
 command line:
 
 <CodeSnippet id="pagination/installation.mdx" />
-
-This command will install the framework agnostic pagination logic and the
-reactive utilities for your framework of choice.
 
 ## Anatomy
 
@@ -57,7 +49,7 @@ The pagination package exports two key functions:
 <CodeSnippet id="pagination/usage.mdx" />
 
 ```jsx
-const api = connect(state, send)
+const api = connect(service)
 
 // You can slice the data, to get data for current page
 const currentPageData = data.slice(api.pageRange.start, api.pageRange.end)
@@ -153,3 +145,7 @@ The pagination machine exposes the following context properties:
 The pagination `api` exposes the following methods:
 
 <ApiTable name="pagination" />
+
+### Data Attributes
+
+<DataAttrTable name="pagination" />

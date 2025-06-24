@@ -15,12 +15,12 @@
     "moduleResolution": "node",
     "noImplicitReturns": false,
     "resolveJsonModule": true,
+    "exactOptionalPropertyTypes": true,
     "skipLibCheck": true,
     "strict": true,
     "strictNullChecks": true,
     "stripInternal": true,
     "ignoreDeprecations": "5.0",
-    "suppressImplicitAnyIndexErrors": true,
     "types": ["vitest/globals"],
     "verbatimModuleSyntax": true
   }

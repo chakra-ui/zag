@@ -5,69 +5,88 @@ import { normalizeProps, useMachine } from "@zag-js/vue"
 
 const controls = useControls(treeviewControls)
 
-const [state, send] = useMachine(tree.machine({ id: "1" }), {
-  context: controls.context,
+interface Node {
+  id: string
+  name: string
+  children?: Node[]
+}
+
+const collection = tree.collection<Node>({
+  nodeToValue: (node) => node.id,
+  nodeToString: (node) => node.name,
+  rootNode: {
+    id: "ROOT",
+    name: "",
+    children: [
+      {
+        id: "node_modules",
+        name: "node_modules",
+        children: [
+          { id: "node_modules/zag-js", name: "zag-js" },
+          { id: "node_modules/pandacss", name: "panda" },
+          {
+            id: "node_modules/@types",
+            name: "@types",
+            children: [
+              { id: "node_modules/@types/react", name: "react" },
+              { id: "node_modules/@types/react-dom", name: "react-dom" },
+            ],
+          },
+        ],
+      },
+      {
+        id: "src",
+        name: "src",
+        children: [
+          { id: "src/app.tsx", name: "app.tsx" },
+          { id: "src/index.ts", name: "index.ts" },
+        ],
+      },
+      { id: "panda.config", name: "panda.config.ts" },
+      { id: "package.json", name: "package.json" },
+      { id: "renovate.json", name: "renovate.json" },
+      { id: "readme.md", name: "README.md" },
+    ],
+  },
 })
 
-const api = computed(() => tree.connect(state.value, send, normalizeProps))
+const service = useMachine(
+  tree.machine,
+  controls.mergeProps<tree.Props>({
+    id: useId(),
+    collection,
+  }),
+)
+
+const api = computed(() => tree.connect(service, normalizeProps))
 </script>
 
 <template>
   <main class="tree-view">
-    <div v-bind="api.rootProps">
-      <h3 v-bind="api.labelProps">My Documents</h3>
-      <div>
+    <div v-bind="api.getRootProps()">
+      <h3 v-bind="api.getLabelProps()">My Documents</h3>
+      <div style="display: flex; gap: 10px">
         <button @click="api.collapse()">Collapse All</button>
         <button @click="api.expand()">Expand All</button>
-        <span> - </span>
-        <button @click="api.select()">Select All</button>
-        <button @click="api.deselect()">Deselect All</button>
+        <template v-if="controls.context.value.selectionMode === 'multiple'">
+          <button @click="api.select()">Select All</button>
+          <button @click="api.deselect()">Deselect All</button>
+        </template>
       </div>
-
-      <ul v-bind="api.treeProps">
-        <li v-bind="api.getBranchProps({ value: 'node_modules', depth: 1 })">
-          <div v-bind="api.getBranchControlProps({ value: 'node_modules', depth: 1 })">
-            <span v-bind="api.getBranchTextProps({ value: 'node_modules', depth: 1 })"> 📂 node_modules</span>
-          </div>
-
-          <ul v-bind="api.getBranchContentProps({ value: 'node_modules', depth: 1 })">
-            <li v-bind="api.getItemProps({ value: 'node_modules/zag-js', depth: 2 })">📄 zag-js</li>
-            <li v-bind="api.getItemProps({ value: 'node_modules/pandacss', depth: 2 })">📄 panda</li>
-
-            <li v-bind="api.getBranchProps({ value: 'node_modules/@types', depth: 2 })">
-              <div v-bind="api.getBranchControlProps({ value: 'node_modules/@types', depth: 2 })">
-                <span v-bind="api.getBranchTextProps({ value: 'node_modules/@types', depth: 2 })"> 📂 @types</span>
-              </div>
-
-              <ul v-bind="api.getBranchContentProps({ value: 'node_modules/@types', depth: 2 })">
-                <li v-bind="api.getItemProps({ value: 'node_modules/@types/react', depth: 3 })">📄 react</li>
-                <li v-bind="api.getItemProps({ value: 'node_modules/@types/react-dom', depth: 3 })">📄 react-dom</li>
-              </ul>
-            </li>
-          </ul>
-        </li>
-
-        <li v-bind="api.getBranchProps({ value: 'src', depth: 1 })">
-          <div v-bind="api.getBranchControlProps({ value: 'src', depth: 1 })">
-            <span v-bind="api.getBranchTextProps({ value: 'src', depth: 1 })"> 📂 src</span>
-          </div>
-
-          <ul v-bind="api.getBranchContentProps({ value: 'src', depth: 1 })">
-            <li v-bind="api.getItemProps({ value: 'src/app.tsx', depth: 2 })">📄 app.tsx</li>
-            <li v-bind="api.getItemProps({ value: 'src/index.ts', depth: 2 })">📄 index.ts</li>
-          </ul>
-        </li>
-
-        <li v-bind="api.getItemProps({ value: 'panda.config', depth: 1 })">📄 panda.config.ts</li>
-        <li v-bind="api.getItemProps({ value: 'package.json', depth: 1 })">📄 package.json</li>
-        <li v-bind="api.getItemProps({ value: 'renovate.json', depth: 1 })">📄 renovate.json</li>
-        <li v-bind="api.getItemProps({ value: 'readme.md', depth: 1 })">📄 README.md</li>
-      </ul>
+      <div v-bind="api.getTreeProps()">
+        <TreeNode
+          v-for="(node, index) in api.collection.rootNode.children"
+          :key="node.id"
+          :node="node"
+          :index-path="[index]"
+          :api="api"
+        />
+      </div>
     </div>
   </main>
 
   <Toolbar>
-    <StateVisualizer :state="state" />
+    <StateVisualizer :state="service" :omit="['collection']" />
     <template #controls>
       <Controls :control="controls" />
     </template>

@@ -15,10 +15,10 @@ actions or options that a user can choose.
 
 **Features**
 
-- Support for items, labels, groups of items.
-- Focus is fully managed using `aria-activedescendant` pattern.
-- Typeahead to allow focusing items by typing text.
-- Keyboard navigation support including arrow keys, home/end, page up/down.
+- Support for items, labels, groups of items
+- Focus is fully managed using `aria-activedescendant` pattern
+- Typeahead to allow focusing items by typing text
+- Keyboard navigation support including arrow keys, home/end, page up/down
 
 ## Installation
 
@@ -26,9 +26,6 @@ To use the menu machine in your project, run the following command in your
 command line:
 
 <CodeSnippet id="menu/installation.mdx" />
-
-This command will install the framework agnostic menu logic and the reactive
-utilities for your framework of choice.
 
 ## Anatomy
 
@@ -61,51 +58,47 @@ menu machine in your project 🔥
 
 <CodeSnippet id="menu/usage.mdx" />
 
-## Listening for item selection
+### Listening for item selection
 
 When a menu item is clicked, the `onSelect` callback is invoked.
 
-```jsx {4-7}
-const [state, send] = useMachine(
-  menu.machine({
-    onSelect(details) {
-      // details => { value: string }
-      console.log("selected value is ", details.value)
-    },
-  }),
-)
+```jsx {3-6}
+const service = useMachine(menu.machine, {
+  onSelect(details) {
+    // details => { value: string }
+    console.log("selected value is ", details.value)
+  },
+})
 ```
 
-## Listening for open state changes
+### Listening for open state changes
 
 When a menu is opened or closed, the `onOpenChange` callback is invoked.
 
-```jsx {4-7}
-const [state, send] = useMachine(
-  menu.machine({
-    onOpenChange(details) {
-      // details => { open: boolean }
-      console.log("open state is ", details.open)
-    },
-  }),
-)
+```jsx {3-6}
+const service = useMachine(menu.machine, {
+  onOpenChange(details) {
+    // details => { open: boolean }
+    console.log("open state is ", details.open)
+  },
+})
 ```
 
-## Grouping menu items
+### Grouping menu items
 
 When the number of menu items gets much, it might be useful to group related
 menu items. To achieve this:
 
 - Wrap the menu items within an element.
-- Spread the `api.groupProps(...)` JSX properties unto the element, providing an
-  `id`.
+- Spread the `api.getGroupProps(...)` JSX properties unto the element, providing
+  an `id`.
 - Render a label for the menu group, providing the `id` of the group element.
 
 ```jsx
 //...
-<div {...api.contentProps}>
+<div {...api.getContentProps()}>
   {/* ... */}
-  <hr {...api.separatorProps} />
+  <hr {...api.getSeparatorProps()} />
   <p {...api.getLabelProps({ htmlFor: "account" })}>Accounts</p>
   <div {...api.getGroupProps({ id: "account" })}>
     <button {...api.getItemProps({ id: "account-1" })}>Account 1</button>
@@ -115,7 +108,7 @@ menu items. To achieve this:
 //...
 ```
 
-## Checkbox and Radio option items
+### Checkbox and Radio option items
 
 To use checkbox or radio option items, you'll need to:
 
@@ -219,6 +212,10 @@ The menu `api` exposes the following methods:
 
 <ApiTable name="menu" />
 
+### Data Attributes
+
+<DataAttrTable name="menu" />
+
 ## Accessibility
 
 Uses
@@ -227,4 +224,4 @@ pattern to manage focus movement among menu items.
 
 ### Keyboard Interactions
 
-<KeyboardTable id="menu" />
+<KeyboardTable name="menu" />

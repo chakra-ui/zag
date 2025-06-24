@@ -20,20 +20,21 @@ export interface AvatarProps extends Omit<avatar.Context, "id"> {
 function Avatar(props: AvatarProps) {
   const [machineProps, localProps] = avatar.splitProps(props)
 
-  const [state, send] = useMachine(avatar.machine({ id: useId() }), {
-    context: machineProps,
+  const service = useMachine(avatar.machine, {
+    id: useId(),
+    ...machineProps,
   })
 
-  const api = avatar.connect(state, send, normalizeProps)
+  const api = avatar.connect(service, normalizeProps)
 
   return (
-    <div {...api.rootProps}>
-      <span {...api.fallbackProps}>{getInitials(localProps.name)}</span>
+    <div {...api.getRootProps()}>
+      <span {...api.getFallbackProps()}>{getInitials(localProps.name)}</span>
       <img
         alt="PA"
         src={localProps.src}
         srcSet={localProps.srcSet}
-        {...api.imageProps}
+        {...api.getImageProps()}
       />
     </div>
   )

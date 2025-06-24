@@ -1,0 +1,97 @@
+```html
+<!-- TreeNode.vue -->
+<script setup lang="ts">
+  import { FileIcon, FolderIcon, ChevronRightIcon } from "lucide-vue-next"
+  import type { Api } from "@zag-js/tree-view"
+
+  interface Node {
+    id: string
+    name: string
+    children?: Node[]
+  }
+
+  interface Props {
+    node: Node
+    indexPath: number[]
+    api: Api
+  }
+
+  const props = defineProps<Props>()
+
+  const nodeProps = computed(() => ({
+    indexPath: props.indexPath,
+    node: props.node,
+  }))
+
+  const nodeState = computed(() => props.api.getNodeState(nodeProps.value))
+</script>
+
+<template>
+  <template v-if="nodeState.isBranch">
+    <div v-bind="api.getBranchProps(nodeProps)">
+      <div v-bind="api.getBranchControlProps(nodeProps)">
+        <FolderIcon />
+        <span v-bind="api.getBranchTextProps(nodeProps)">{{ node.name }}</span>
+        <span v-bind="api.getBranchIndicatorProps(nodeProps)">
+          <ChevronRightIcon />
+        </span>
+      </div>
+      <div v-bind="api.getBranchContentProps(nodeProps)">
+        <div v-bind="api.getBranchIndentGuideProps(nodeProps)" />
+        <TreeNode
+          v-for="(childNode, index) in node.children"
+          :key="childNode.id"
+          :node="childNode"
+          :index-path="[...indexPath, index]"
+          :api="api"
+        />
+      </div>
+    </div>
+  </template>
+  <template v-else>
+    <div v-bind="api.getItemProps(nodeProps)"><FileIcon /> {{ node.name }}</div>
+  </template>
+</template>
+```
+
+```html
+<!-- TreeView.vue -->
+<script setup lang="ts">
+  import * as tree from "@zag-js/tree-view"
+  import { normalizeProps, useMachine } from "@zag-js/vue"
+  import { computed, useId } from "vue"
+
+  // 1. Create the tree collection
+
+  interface Node {
+    id: string
+    name: string
+    children?: Node[]
+  }
+
+  const collection = tree.collection<Node>({
+    // ...
+  })
+
+  const service = useMachine(tree.machine, { id: useId(), collection })
+
+  const api = computed(() => tree.connect(service, normalizeProps))
+</script>
+
+<template>
+  <main class="tree-view">
+    <div v-bind="api.getRootProps()">
+      <h3 v-bind="api.getLabelProps()">My Documents</h3>
+      <div v-bind="api.getTreeProps()">
+        <TreeNode
+          v-for="(node, index) in api.collection.rootNode.children"
+          :key="node.id"
+          :node="node"
+          :index-path="[index]"
+          :api="api"
+        />
+      </div>
+    </div>
+  </main>
+</template>
+```

@@ -1,0 +1,55 @@
+```html
+<script setup>
+  import * as steps from "@zag-js/steps"
+  import { useMachine, normalizeProps } from "@zag-js/vue"
+  import { computed } from "vue"
+
+  const stepsData = [
+    { title: "Step 1" },
+    { title: "Step 2" },
+    { title: "Step 3" },
+  ]
+
+  const service = useMachine(steps.machine, {
+    id: "1",
+    count: stepsData.length,
+  })
+
+  const api = computed(() => steps.connect(service, normalizeProps))
+</script>
+
+<template>
+  <div v-bind="api.getRootProps()">
+    <div v-bind="api.getListProps()">
+      <div
+        v-for="(step, index) in stepsData"
+        :key="index"
+        v-bind="api.getItemProps({ index })"
+      >
+        <button v-bind="api.getTriggerProps({ index })">
+          <div v-bind="api.getIndicatorProps({ index })">{{ index + 1 }}</div>
+          <span>{{ step.title }}</span>
+        </button>
+        <div v-bind="api.getSeparatorProps({ index })" />
+      </div>
+    </div>
+
+    <div
+      v-for="(step, index) in stepsData"
+      :key="index"
+      v-bind="api.getContentProps({ index })"
+    >
+      {{ step.title }} - {{ step.description }}
+    </div>
+
+    <div v-bind="api.getContentProps({ index: stepsData.length })">
+      Steps Complete - Thank you for filling out the form!
+    </div>
+
+    <div>
+      <button v-bind="api.getPrevTriggerProps()">Back</button>
+      <button v-bind="api.getNextTriggerProps()">Next</button>
+    </div>
+  </div>
+</template>
+```

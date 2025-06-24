@@ -9,21 +9,22 @@ import { useControls } from "../hooks/use-controls"
 export default function Page() {
   const controls = useControls({{camelize machine}}Controls)
 
-  const [state, send] = useMachine({{camelize machine}}.machine({ id: useId() }), {
-    context: controls.context,
+  const service = useMachine({{camelize machine}}.machine, {
+    id: useId(),
+    ...controls.context,
   })
 
-  const api = {{camelize machine}}.connect(state, send, normalizeProps)
+  const api = {{camelize machine}}.connect(service, normalizeProps)
 
   return (
     <>
       <main className="{{machine}}">
-        <div {...api.rootProps}>
+        <div {...api.getRootProps()}>
         </div>
       </main>
 
       <Toolbar controls={controls.ui}>
-        <StateVisualizer state={state} />
+        <StateVisualizer state={service} />
       </Toolbar>
     </>
   )

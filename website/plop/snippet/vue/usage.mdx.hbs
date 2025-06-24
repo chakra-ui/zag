@@ -1,0 +1,16 @@
+```html
+<script setup>
+import * as {{component}} from "@zag-js/{{component}}"
+import { useMachine, normalizeProps } from "@zag-js/vue"
+import { computed, useId } from "vue"
+
+const service = useMachine({{component}}.machine({ id: useId() }))
+
+const api = computed(() => {{component}}.connect(service, normalizeProps))
+</script>
+
+<template>
+  <div v-bind="api.getRootProps()">
+  </div>
+</template>
+```

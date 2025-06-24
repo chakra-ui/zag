@@ -12,9 +12,11 @@
   let url = $state("")
   const setUrl = (value: string) => (url = value)
 
-  const [snapshot, send] = useMachine(
-    signaturePad.machine({
-      id: "1",
+  const id = $props.id()
+  const service = useMachine(
+    signaturePad.machine,
+    controls.mergeProps<signaturePad.Props>({
+      id,
       onDrawEnd(details) {
         details.getDataUrl("image/png").then(setUrl)
       },
@@ -24,21 +26,18 @@
         simulatePressure: true,
       },
     }),
-    {
-      context: controls.context,
-    },
   )
 
-  const api = $derived(signaturePad.connect(snapshot, send, normalizeProps))
+  const api = $derived(signaturePad.connect(service, normalizeProps))
 </script>
 
 <main class="signature-pad">
-  <div {...api.rootProps}>
-    <!-- svelte-ignore a11y-label-has-associated-control -->
-    <label {...api.labelProps}>Signature Pad</label>
+  <div {...api.getRootProps()}>
+    <!-- svelte-ignore a11y_label_has_associated_control -->
+    <label {...api.getLabelProps()}>Signature Pad</label>
 
-    <div {...api.controlProps}>
-      <svg {...api.segmentProps}>
+    <div {...api.getControlProps()}>
+      <svg {...api.getSegmentProps()}>
         {#each api.paths as path}
           <path {...api.getSegmentPathProps({ path })} />
         {/each}
@@ -47,16 +46,16 @@
         {/if}
       </svg>
 
-      <div {...api.guideProps} />
+      <div {...api.getGuideProps()}></div>
     </div>
 
-    <button {...api.clearTriggerProps}>
+    <button {...api.getClearTriggerProps()}>
       <RotateCcw />
     </button>
   </div>
 
   <button
-    onClick={() => {
+    onclick={() => {
       api.getDataUrl("image/png").then(setUrl)
     }}
   >
@@ -69,5 +68,5 @@
 </main>
 
 <Toolbar {controls}>
-  <StateVisualizer state={snapshot} />
+  <StateVisualizer state={service} omit={["currentPoints", "currentPath", "paths"]} />
 </Toolbar>

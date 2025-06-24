@@ -1,6 +1,8 @@
-import { Box, Flex, Stack } from "@chakra-ui/layout"
+import { Box, Flex, HStack, Stack } from "@chakra-ui/layout"
 import { chakra } from "@chakra-ui/system"
+import { openInStackblitz } from "lib/open-in-stackblitz"
 import { useState } from "react"
+import { SiStackblitz } from "react-icons/si"
 
 const Header = (props: any) => (
   <Flex
@@ -15,34 +17,64 @@ const Header = (props: any) => (
   />
 )
 
-type PlaygroundProps = {
-  component: (props: any) => JSX.Element
-  defaultContext?: Record<string, any>
-  defaultProps?: Record<
-    string,
-    | string
-    | number
-    | boolean
-    | { options: string[]; default: string; required?: boolean }
-  >
+type PlaygroundProps<T> = {
+  name: string
+  component: React.ComponentType<T>
+  defaultProps?: Partial<{
+    [K in keyof T]:
+      | T[K]
+      | { default: T[K]; options: Array<T[K]>; required?: boolean }
+  }>
   hideControls?: boolean
   debug?: boolean
 }
 
-export function Playground(props: PlaygroundProps) {
+const isObject = (value: any): value is Record<string, any> =>
+  typeof value === "object" && value !== null && !Array.isArray(value)
+
+const OpenInStackblitz = (props: { name: string; defaultProps: any }) => {
+  const { name } = props
+  const defaultProps = Object.fromEntries(
+    Object.entries(props.defaultProps).map(([key, value]) => [
+      key,
+      isObject(value) ? value.default : value,
+    ]),
+  )
+
+  return (
+    <HStack
+      spacing="1"
+      as="button"
+      bg="#1574ef"
+      color="white"
+      fontSize="sm"
+      px="2"
+      py="1"
+      shadow="rgba(255, 255, 255, 0.14) 0px 0px 0px 1px inset"
+      onClick={() => {
+        openInStackblitz(name, defaultProps)
+      }}
+    >
+      <SiStackblitz />
+      <p>Stackblitz</p>
+    </HStack>
+  )
+}
+
+export function Playground<T extends object>(props: PlaygroundProps<T>) {
   const {
-    component: Comp,
+    name: componentName,
+    component: Component,
     defaultProps = {},
     debug,
     hideControls,
-    defaultContext,
   } = props
 
   const [state, setState] = useState(
     Object.fromEntries(
       Object.entries(defaultProps).map(([key, value]) => [
         key,
-        typeof value === "object" ? value.default : value,
+        isObject(value) && "default" in value ? value.default : value,
       ]),
     ),
   )
@@ -54,11 +86,16 @@ export function Playground(props: PlaygroundProps) {
       id="playground"
       direction={{ base: "column", md: "row" }}
       borderWidth="1px"
+      pos="relative"
       minHeight="24em"
       my="16"
       bg="bg-code-block"
       borderColor="border-subtle"
     >
+      <Box pos="absolute" bottom="2" right="2">
+        <OpenInStackblitz name={componentName} defaultProps={defaultProps} />
+      </Box>
+
       <Flex
         align="flex-start"
         justify="center"
@@ -71,7 +108,7 @@ export function Playground(props: PlaygroundProps) {
             "radial-gradient(circle,var(--colors-gray-700) 1px, transparent 1px);",
         }}
       >
-        <Comp controls={state} defaultContext={defaultContext} />
+        <Component {...(state as T)} />
       </Flex>
 
       <Box flexBasis="1px" alignSelf="stretch" bg="bg-bold" />
@@ -83,10 +120,10 @@ export function Playground(props: PlaygroundProps) {
         hidden={isEmpty}
       >
         <Header>Properties</Header>
-        <Stack direction="column" spacing="4" px="5" py="4">
+        <Stack pos="relative" direction="column" spacing="4" px="5" py="4">
           {Object.keys(state).map((key) => {
             const value = state[key]
-            const type = defaultProps[key]
+            const type = (defaultProps as Partial<T>)[key as keyof T]
 
             if (typeof type === "boolean") {
               return (
@@ -123,7 +160,7 @@ export function Playground(props: PlaygroundProps) {
                     type="text"
                     defaultValue={value as any}
                     bg="bg-subtle"
-                    onChange={(e) => {
+                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                       setState({ ...state, [key]: e.target.value })
                     }}
                   />
@@ -142,8 +179,8 @@ export function Playground(props: PlaygroundProps) {
                     borderWidth="1px"
                     px="2"
                     bg="bg-subtle"
-                    defaultValue={state[key] as number}
-                    onChange={(e) => {
+                    defaultValue={value as number}
+                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                       const val = e.currentTarget.valueAsNumber
                       setState((s) => ({ ...s, [key]: isNaN(val) ? 0 : val }))
                     }}
@@ -152,31 +189,33 @@ export function Playground(props: PlaygroundProps) {
               )
             }
 
-            if (!value) return null
+            if (isObject(type) && "options" in type) {
+              return (
+                <Flex justify="space-between" key={key}>
+                  <label htmlFor={key}>{key}</label>
+                  <chakra.select
+                    id={key}
+                    borderWidth="1px"
+                    fontSize="xs"
+                    px="1"
+                    bg="bg-subtle"
+                    defaultValue={value as string}
+                    onChange={(e: React.ChangeEvent<HTMLSelectElement>) => {
+                      setState((s) => ({ ...s, [key]: e.target.value }))
+                    }}
+                  >
+                    {!type.required && <option>-----</option>}
+                    {type.options.map((option: string) => (
+                      <option key={option} value={option}>
+                        {option}
+                      </option>
+                    ))}
+                  </chakra.select>
+                </Flex>
+              )
+            }
 
-            return (
-              <Flex justify="space-between" key={key}>
-                <label htmlFor={key}>{key}</label>
-                <chakra.select
-                  id={key}
-                  borderWidth="1px"
-                  fontSize="xs"
-                  px="1"
-                  bg="bg-subtle"
-                  defaultValue={state[key] as any}
-                  onChange={(e) => {
-                    setState((s) => ({ ...s, [key]: e.target.value }))
-                  }}
-                >
-                  {!type.required && <option>-----</option>}
-                  {type.options.map((option) => (
-                    <option key={option} value={option}>
-                      {option}
-                    </option>
-                  ))}
-                </chakra.select>
-              </Flex>
-            )
+            return null
           })}
 
           {debug && (

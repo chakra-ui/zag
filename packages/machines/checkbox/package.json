@@ -1,6 +1,6 @@
 {
   "name": "@zag-js/checkbox",
-  "version": "0.49.0",
+  "version": "1.17.1",
   "description": "Core logic for the checkbox widget implemented as a state machine",
   "keywords": [
     "js",
@@ -17,13 +17,12 @@
   "repository": "https://github.com/chakra-ui/zag/tree/main/packages/checkbox",
   "sideEffects": false,
   "files": [
-    "dist",
-    "src"
+    "dist"
   ],
   "scripts": {
     "build": "tsup",
-    "test": "jest --config ../../jest.config.js --rootDir tests",
-    "lint": "eslint src --ext .ts,.tsx",
+    "test": "vitest",
+    "lint": "eslint src",
     "test-ci": "pnpm test --ci --runInBand -u",
     "test-watch": "pnpm test --watch",
     "prepack": "clean-package",
@@ -40,8 +39,7 @@
     "@zag-js/core": "workspace:*",
     "@zag-js/types": "workspace:*",
     "@zag-js/dom-query": "workspace:*",
-    "@zag-js/dom-event": "workspace:*",
-    "@zag-js/form-utils": "workspace:*",
+    "@zag-js/focus-visible": "workspace:*",
     "@zag-js/utils": "workspace:*"
   },
   "devDependencies": {

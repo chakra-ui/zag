@@ -17,14 +17,14 @@ input element.
 
 **Features**
 
-- Typing in the input and pressing enter will add new items.
-- Clear button to reset all tags values.
-- Add tags by pasting into the input.
-- Delete tags on backspace.
-- Edit tags after creation.
-- Limit the number of tags.
-- Navigate tags with keyboard.
-- Custom validation to accept/reject tags.
+- Typing in the input and pressing enter will add new items
+- Clear button to reset all tags values
+- Add tags by pasting into the input
+- Delete tags on backspace
+- Edit tags after creation
+- Limit the number of tags
+- Navigate tags with keyboard
+- Custom validation to accept/reject tags
 
 ## Installation
 
@@ -64,7 +64,7 @@ tags input machine in your project 🔥
 
 <CodeSnippet id="tags-input/usage.mdx" />
 
-## Navigating and Editing tags
+### Navigating and Editing tags
 
 When the input has an empty value or the caret is at the start position, the
 tags can be selected by using the arrow left and arrow right keys. When "visual"
@@ -74,29 +74,34 @@ focus in on any tag:
   allowing the user change its value and press `Enter` to commit the changes.
 - Pressing `Delete` or `Backspace` will delete the tag that has "visual" focus.
 
-## Setting the initial tags
+### Setting the initial tags
 
-To set the initial tag values, pass the `value` property in the machine's
+To set the initial tag values, pass the `defaultValue` property in the machine's
 context.
 
-```jsx {3}
-const [state, send] = useMachine(
-  tagsInput.machine({
-    value: ["React", "Redux", "TypeScript"],
-  }),
-)
+```jsx {2}
+const service = useMachine(tagsInput.machine, {
+  defaultValue: ["React", "Redux", "TypeScript"],
+})
 ```
 
-## Removing all tags
+### Controlled tags input
+
+To control the tags input programmatically, pass the `value` and `onValueChange`
+properties to the machine function.
+
+<CodeSnippet id="tags-input/controlled.mdx" />
+
+### Removing all tags
 
 The tags input will remove all tags when the clear button is clicked. To remove
 all tags, use the provided `clearButtonProps` function from the `api`.
 
 ```jsx {4}
 //...
-<div {...api.controlProps}>
-  <input {...api.inputProps} />
-  <button {...api.clearButtonProps} />
+<div {...api.getControlProps()}>
+  <input {...api.getInputProps()} />
+  <button {...api.getClearButtonProps()} />
 </div>
 //...
 ```
@@ -104,7 +109,7 @@ all tags, use the provided `clearButtonProps` function from the `api`.
 To programmatically remove all tags, use the `api.clearAll()` method that's
 available in the `connect`.
 
-## Usage within forms
+### Usage within forms
 
 The tags input works when placed within a form and the form is submitted. We
 achieve this by:
@@ -116,16 +121,14 @@ achieve this by:
 To get this feature working you need to pass a `name` option to the context and
 render the `hiddenInput` element.
 
-```jsx {3}
-const [state, send] = useMachine(
-  tagsInput.machine({
-    name: "tags",
-    value: ["React", "Redux", "TypeScript"],
-  }),
-)
+```jsx {2}
+const service = useMachine(tagsInput.machine, {
+  name: "tags",
+  defaultValue: ["React", "Redux", "TypeScript"],
+})
 ```
 
-## Limiting the number of tags
+### Limiting the number of tags
 
 To limit the number of tags within the component, you can set the `max` property
 to the limit you want. The default value is `Infinity`.
@@ -133,16 +136,14 @@ to the limit you want. The default value is `Infinity`.
 When the tag reaches the limit, new tags cannot be added except the
 `allowOverflow` option is passed to the context.
 
-```jsx {3-4}
-const [state, send] = useMachine(
-  tagsInput.machine({
-    max: 10,
-    allowOverflow: true,
-  }),
-)
+```jsx {2-3}
+const service = useMachine(tagsInput.machine, {
+  max: 10,
+  allowOverflow: true,
+})
 ```
 
-## Validating Tags
+### Validating Tags
 
 Before a tag is added, the machine provides a `validate` function you can use to
 determine whether to accept or reject a tag.
@@ -150,17 +151,15 @@ determine whether to accept or reject a tag.
 A common use-case for validating tags is preventing duplicates or validating the
 data type.
 
-```jsx {3-4}
-const [state, send] = useMachine(
-  tagsInput.machine({
-    validate(details) {
-      return !details.values.includes(details.inputValue)
-    },
-  }),
-)
+```jsx {2-3}
+const service = useMachine(tagsInput.machine, {
+  validate(details) {
+    return !details.values.includes(details.inputValue)
+  },
+})
 ```
 
-## Blur behavior
+### Blur behavior
 
 When the tags input is blurred, you can configure the action the machine should
 take by passing the `blurBehavior` option to the context.
@@ -168,17 +167,15 @@ take by passing the `blurBehavior` option to the context.
 - `"add"` — Adds the tag to the list of tags.
 - `"clear"` — Clears the tags input value.
 
-```jsx {3}
-const [state, send] = useMachine(
-  tagsInput.machine({
-    blurBehavior: "add",
-  }),
-)
+```jsx {2}
+const service = useMachine(tagsInput.machine, {
+  blurBehavior: "add",
+})
 ```
 
-## Paste behavior
+### Paste behavior
 
-To add a tag when a arbritary value is pasted in the input element, pass the
+To add a tag when a arbitrary value is pasted in the input element, pass the
 `addOnPaste` option.
 
 When a value is pasted, the machine will:
@@ -186,29 +183,25 @@ When a value is pasted, the machine will:
 - check if the value is a valid tag based on the `validate` option
 - split the value by the `delimiter` option passed
 
-```jsx {3}
-const [state, send] = useMachine(
-  tagsInput.machine({
-    addOnPaste: true,
-  }),
-)
+```jsx {2}
+const service = useMachine(tagsInput.machine, {
+  addOnPaste: true,
+})
 ```
 
-## Disable tag editing
+### Disable tag editing
 
 by default the tags can be edited by double clicking on the tag or focusing on
 them and pressing `Enter`. To disable this behavior, pass the
 `allowEditTag: false`
 
-```jsx {3}
-const [state, send] = useMachine(
-  tagsInput.machine({
-    allowEditTag: false,
-  }),
-)
+```jsx {2}
+const service = useMachine(tagsInput.machine, {
+  allowEditTag: false,
+})
 ```
 
-## Listening for events
+### Listening for events
 
 During the lifetime of the tags input interaction, here's a list of events we
 emit:
@@ -219,21 +212,19 @@ emit:
   function returns `false`.
 
 ```jsx
-const [state, send] = useMachine(
-  tagsInput.machine({
-    onValueChange(details) {
-      // details => { value: string[] }
-      console.log("tags changed to:", details.value)
-    },
-    onHighlightChange(details) {
-      // details => { value: string }
-      console.log("highlighted tag:", details.value)
-    },
-    onValueInvalid(details) {
-      console.log("Invalid!", details.reason)
-    },
-  }),
-)
+const service = useMachine(tagsInput.machine, {
+  onValueChange(details) {
+    // details => { value: string[] }
+    console.log("tags changed to:", details.value)
+  },
+  onHighlightChange(details) {
+    // details => { value: string }
+    console.log("highlighted tag:", details.value)
+  },
+  onValueInvalid(details) {
+    console.log("Invalid!", details.reason)
+  },
+})
 ```
 
 ## Styling guide
@@ -360,8 +351,12 @@ The tags input `api` exposes the following methods:
 
 <ApiTable name="tags-input" />
 
+### Data Attributes
+
+<DataAttrTable name="tags-input" />
+
 ## Accessibility
 
 ### Keyboard Interactions
 
-<KeyboardTable id="tags-input" />
+<KeyboardTable name="tags-input" />

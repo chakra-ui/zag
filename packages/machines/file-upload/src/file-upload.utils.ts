@@ -1,29 +1,38 @@
+import type { Params } from "@zag-js/core"
+import { getEventTarget, getWindow } from "@zag-js/dom-query"
 import { isValidFileSize, isValidFileType, type FileError } from "@zag-js/file-utils"
-import { type FileRejection, type MachineContext } from "./file-upload.types"
+import type { FileRejection, FileUploadSchema } from "./file-upload.types"
 
 export function isEventWithFiles(event: Pick<DragEvent, "dataTransfer" | "target">) {
-  if (!event.dataTransfer) return !!event.target && "files" in event.target
+  const target = getEventTarget<Element>(event)
+  if (!event.dataTransfer) return !!target && "files" in target
   return event.dataTransfer.types.some((type) => {
     return type === "Files" || type === "application/x-moz-file"
   })
 }
 
-export function isFilesWithinRange(ctx: MachineContext, incomingCount: number) {
-  if (!ctx.multiple && incomingCount > 1) return false
-  if (!ctx.multiple && incomingCount + ctx.acceptedFiles.length === 2) return true
-  if (incomingCount + ctx.acceptedFiles.length > ctx.maxFiles) return false
+export function isFilesWithinRange(ctx: Params<FileUploadSchema>, incomingCount: number) {
+  const { context, prop, computed } = ctx
+  if (!computed("multiple") && incomingCount > 1) return false
+  if (!computed("multiple") && incomingCount + context.get("acceptedFiles").length === 2) return true
+  if (incomingCount + context.get("acceptedFiles").length > prop("maxFiles")) return false
   return true
 }
 
-export function getFilesFromEvent(ctx: MachineContext, files: File[]) {
+export function getEventFiles(ctx: Params<FileUploadSchema>, files: File[]) {
+  const { context, prop, computed } = ctx
   const acceptedFiles: File[] = []
   const rejectedFiles: FileRejection[] = []
 
   files.forEach((file) => {
-    const [accepted, acceptError] = isValidFileType(file, ctx.acceptAttr)
-    const [sizeMatch, sizeError] = isValidFileSize(file, ctx.minFileSize, ctx.maxFileSize)
+    const [accepted, acceptError] = isValidFileType(file, computed("acceptAttr"))
+    const [sizeMatch, sizeError] = isValidFileSize(file, prop("minFileSize"), prop("maxFileSize"))
 
-    const validateErrors = ctx.validate?.(file)
+    const validateErrors = prop("validate")?.(file, {
+      acceptedFiles: context.get("acceptedFiles"),
+      rejectedFiles: context.get("rejectedFiles"),
+    })
+
     const valid = validateErrors ? validateErrors.length === 0 : true
 
     if (accepted && sizeMatch && valid) {
@@ -45,5 +54,20 @@ export function getFilesFromEvent(ctx: MachineContext, files: File[]) {
   return {
     acceptedFiles,
     rejectedFiles,
+  }
+}
+
+export function setInputFiles(inputEl: HTMLInputElement, files: File[]) {
+  const win = getWindow(inputEl)
+  try {
+    if ("DataTransfer" in win) {
+      const dataTransfer = new win.DataTransfer()
+      files.forEach((file) => {
+        dataTransfer.items.add(file)
+      })
+      inputEl.files = dataTransfer.files
+    }
+  } catch {
+    // do nothing
   }
 }

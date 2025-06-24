@@ -1,0 +1,18 @@
+```tsx
+import { useState } from "react"
+
+export function ControlledTabs() {
+  const [value, setValue] = useState("tab-1")
+
+  const service = useMachine(tabs.machine, {
+    value,
+    onValueChange(details) {
+      setValue(details.value)
+    },
+  })
+
+  return (
+    // ...
+  )
+}
+```

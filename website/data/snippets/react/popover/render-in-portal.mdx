@@ -4,20 +4,20 @@ import { useMachine, normalizeProps, Portal } from "@zag-js/react"
 import * as React from "react"
 
 export function Popover() {
-  const [state, send] = useMachine(popover.machine({ id: "1" }))
+  const service = useMachine(popover.machine, { id: "1" })
 
-  const api = popover.connect(state, send, normalizeProps)
+  const api = popover.connect(service, normalizeProps)
 
   return (
     <div>
-      <button {...api.triggerProps}>Click me</button>
+      <button {...api.getTriggerProps()}>Click me</button>
       <Portal>
-        <div {...api.positionerProps}>
-          <div {...api.contentProps}>
-            <div {...api.titleProps}>Presenters</div>
-            <div {...api.descriptionProps}>Description</div>
+        <div {...api.getPositionerProps()}>
+          <div {...api.getContentProps()}>
+            <div {...api.getTitleProps()}>Presenters</div>
+            <div {...api.getDescriptionProps()}>Description</div>
             <button>Action Button</button>
-            <button {...api.closeTriggerProps}>X</button>
+            <button {...api.getCloseTriggerProps()}>X</button>
           </div>
         </div>
       </Portal>

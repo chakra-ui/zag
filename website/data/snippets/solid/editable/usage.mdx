@@ -4,15 +4,15 @@ import { normalizeProps, useMachine } from "@zag-js/solid"
 import { createMemo, createUniqueId } from "solid-js"
 
 export default function Editable() {
-  const [state, send] = useMachine(editable.machine({ id: createUniqueId() }))
-  
-  const api = createMemo(() => editable.connect(state, send, normalizeProps))
+  const service = useMachine(editable.machine, { id: createUniqueId() })
+
+  const api = createMemo(() => editable.connect(service, normalizeProps))
 
   return (
-    <div {...api().rootProps}>
-      <div {...api().areaProps}>
-        <input {...api().inputProps} />
-        <span {...api().previewProps} />
+    <div {...api().getRootProps()}>
+      <div {...api().getAreaProps()}>
+        <input {...api().getInputProps()} />
+        <span {...api().getPreviewProps()} />
       </div>
     </div>
   )

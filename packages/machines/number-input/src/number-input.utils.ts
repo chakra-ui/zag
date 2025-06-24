@@ -1,32 +1,34 @@
 import { NumberParser } from "@internationalized/number"
-import { ref } from "@zag-js/core"
-import type { MachineContext } from "./number-input.types"
-
-const defaultFormatOptions: Intl.NumberFormatOptions = {
-  style: "decimal",
-  minimumFractionDigits: 0,
-  maximumFractionDigits: 20,
-}
+import type { Params } from "@zag-js/core"
+import type { NumberInputSchema } from "./number-input.types"
 
 export const createFormatter = (locale: string, options: Intl.NumberFormatOptions = {}) => {
-  const formatOptions = Object.assign({}, defaultFormatOptions, options)
-  return ref(new Intl.NumberFormat(locale, formatOptions))
+  return new Intl.NumberFormat(locale, options)
 }
 
 export const createParser = (locale: string, options: Intl.NumberFormatOptions = {}) => {
-  const formatOptions = Object.assign({}, defaultFormatOptions, options)
-  return ref(new NumberParser(locale, formatOptions))
+  return new NumberParser(locale, options)
 }
 
-export const parseValue = (ctx: MachineContext, value: string) => {
-  return ctx.parser.parse(String(value))
+type Ctx = Pick<Params<NumberInputSchema>, "prop" | "computed">
+
+export const parseValue = (value: string, params: Ctx) => {
+  const { prop, computed } = params
+  if (!prop("formatOptions")) return parseFloat(value)
+  return computed("parser").parse(String(value))
 }
 
-export const nan = (value: any, fallback: any) => {
-  return Number.isNaN(value) ? fallback : value
-}
-
-export const formatValue = (ctx: MachineContext, value: number): string => {
+export const formatValue = (value: number, params: Ctx): string => {
+  const { prop, computed } = params
   if (Number.isNaN(value)) return ""
-  return ctx.formatter.format(value)
+  if (!prop("formatOptions")) return value.toString()
+  return computed("formatter").format(value)
+}
+
+export const getDefaultStep = (step: number | undefined, formatOptions: Intl.NumberFormatOptions | undefined) => {
+  let defaultStep = step !== undefined && !Number.isNaN(step) ? step : 1
+  if (formatOptions?.style === "percent" && (step === undefined || Number.isNaN(step))) {
+    defaultStep = 0.01
+  }
+  return defaultStep
 }

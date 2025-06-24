@@ -34,7 +34,7 @@ const getTransformOrigin = (arrow?: Partial<Coords>) => ({
   "right-end": arrow ? `left ${arrow.y}px` : "left bottom",
 })
 
-export const __transformOrigin: Middleware = {
+export const transformOriginMiddleware: Middleware = {
   name: "transformOrigin",
   fn({ placement, elements, middlewareData }) {
     const { arrow } = middlewareData
@@ -53,7 +53,7 @@ export const __transformOrigin: Middleware = {
  * Rect Middleware (to expose the rect data)
  * -----------------------------------------------------------------------------*/
 
-export const __rects: Middleware = {
+export const rectMiddleware: Middleware = {
   name: "rects",
   fn({ rects }) {
     return {
@@ -66,7 +66,7 @@ export const __rects: Middleware = {
  * Arrow Middleware
  * -----------------------------------------------------------------------------*/
 
-export const __shiftArrow = (arrowEl: HTMLElement | null): Middleware | undefined => {
+export const shiftArrowMiddleware = (arrowEl: HTMLElement | null): Middleware | undefined => {
   if (!arrowEl) return
   return {
     name: "shiftArrow",

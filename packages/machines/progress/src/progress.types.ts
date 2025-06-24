@@ -1,4 +1,4 @@
-import type { StateMachine as S } from "@zag-js/core"
+import type { EventObject, Machine, Service } from "@zag-js/core"
 import type {
   CommonProperties,
   DirectionProperty,
@@ -21,6 +21,10 @@ export interface ValueTranslationDetails {
   percent: number
 }
 
+export interface ValueChangeDetails {
+  value: number | null
+}
+
 export interface IntlTranslations {
   value(details: ValueTranslationDetails): string
 }
@@ -36,73 +40,76 @@ export type ElementIds = Partial<{
  * Machine context
  * -----------------------------------------------------------------------------*/
 
-interface PublicContext extends DirectionProperty, CommonProperties, OrientationProperty {
+export interface ProgressProps extends DirectionProperty, CommonProperties, OrientationProperty {
   /**
    * The ids of the elements in the progress bar. Useful for composition.
    */
-  ids?: ElementIds
+  ids?: ElementIds | undefined
   /**
-   *  The current value of the progress bar.
+   * The controlled value of the progress bar.
+   */
+  value?: number | null | undefined
+  /**
+   * The initial value of the progress bar when rendered.
+   * Use when you don't need to control the value of the progress bar.
    * @default 50
    */
-  value: number | null
+  defaultValue?: number | null | undefined
   /**
    * The minimum allowed value of the progress bar.
    * @default 0
    */
-  min: number
+  min?: number | undefined
   /**
    * The maximum allowed value of the progress bar.
    * @default 100
    */
-  max: number
+  max?: number | undefined
   /**
    * The localized messages to use.
    */
-  translations: IntlTranslations
+  translations?: IntlTranslations | undefined
+  /**
+   * Callback fired when the value changes.
+   */
+  onValueChange?: ((details: ValueChangeDetails) => void) | undefined
+  /**
+   * The options to use for formatting the value.
+   * @default { style: "percent" }
+   */
+  formatOptions?: Intl.NumberFormatOptions | undefined
+  /**
+   * The locale to use for formatting the value.
+   * @default "en-US"
+   */
+  locale?: string | undefined
 }
 
-interface PrivateContext {}
+type PropsWithDefault = "orientation" | "translations" | "min" | "max" | "formatOptions"
 
-type ComputedContext = Readonly<{
-  /**
-   * @computed
-   * Whether the progress bar is indeterminate.
-   */
+type Computed = Readonly<{
   isIndeterminate: boolean
-  /**
-   * @computed
-   * The percentage of the progress bar's value.
-   */
   percent: number
-  /**
-   * @computed
-   * Whether the progress bar is at its minimum value.
-   */
-  isAtMax: boolean
-  /**
-   * @computed
-   *  Whether the progress bar is horizontal.
-   */
   isHorizontal: boolean
-  /**
-   * @computed
-   * Whether the progress bar is in RTL mode.
-   */
-  isRtl: boolean
+  formatter: Intl.NumberFormat
 }>
 
-export type UserDefinedContext = RequiredBy<PublicContext, "id">
-
-export type MachineContext = PublicContext & PrivateContext & ComputedContext
-
-export type MachineState = {
-  value: "idle"
+export interface ProgressSchema {
+  props: RequiredBy<ProgressProps, PropsWithDefault>
+  computed: Computed
+  context: {
+    value: number | null
+  }
+  state: "idle"
+  event: EventObject
+  action: string
+  effect: string
+  guard: string
 }
 
-export type State = S.State<MachineContext, MachineState>
+export type ProgressService = Service<ProgressSchema>
 
-export type Send = S.Send<S.AnyEventObject>
+export type ProgressMachine = Machine<ProgressSchema>
 
 /* -----------------------------------------------------------------------------
  * Component API
@@ -112,7 +119,7 @@ export interface ViewProps {
   state: ProgressState
 }
 
-export interface MachineApi<T extends PropTypes> {
+export interface ProgressApi<T extends PropTypes = PropTypes> {
   /**
    * The current value of the progress bar.
    */
@@ -129,15 +136,40 @@ export interface MachineApi<T extends PropTypes> {
    * Sets the current value of the progress bar to the max value.
    */
   setToMax(): void
-  rootProps: T["element"]
-  labelProps: T["element"]
-  trackProps: T["element"]
-  valueTextProps: T["element"]
-  rangeProps: T["element"]
+  /**
+   * Sets the current value of the progress bar to the min value.
+   */
+  setToMin(): void
+  /**
+   * The percentage of the progress bar's value.
+   */
+  percent: number
+  /**
+   * The percentage of the progress bar's value as a string.
+   */
+  percentAsString: string
+  /**
+   * The minimum allowed value of the progress bar.
+   */
+  min: number
+  /**
+   * The maximum allowed value of the progress bar.
+   */
+  max: number
+  /**
+   * Whether the progress bar is indeterminate.
+   */
+  indeterminate: boolean
+
+  getRootProps(): T["element"]
+  getLabelProps(): T["element"]
+  getTrackProps(): T["element"]
+  getValueTextProps(): T["element"]
+  getRangeProps(): T["element"]
   getViewProps(props: ViewProps): T["element"]
-  circleProps: T["svg"]
-  circleTrackProps: T["circle"]
-  circleRangeProps: T["circle"]
+  getCircleProps(): T["svg"]
+  getCircleTrackProps(): T["circle"]
+  getCircleRangeProps(): T["circle"]
 }
 
 /* -----------------------------------------------------------------------------

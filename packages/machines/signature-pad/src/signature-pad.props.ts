@@ -1,18 +1,20 @@
 import { createProps } from "@zag-js/types"
 import { createSplitProps } from "@zag-js/utils"
-import type { UserDefinedContext } from "./signature-pad.types"
+import type { SignaturePadProps } from "./signature-pad.types"
 
-export const props = createProps<UserDefinedContext>()([
+export const props = createProps<SignaturePadProps>()([
   "dir",
   "disabled",
+  "drawing",
   "getRootNode",
   "id",
   "ids",
+  "name",
   "onDraw",
   "onDrawEnd",
   "readOnly",
-  "drawing",
-  "name",
+  "required",
+  "translations",
 ])
 
-export const splitProps = createSplitProps<Partial<UserDefinedContext>>(props)
+export const splitProps = createSplitProps<Partial<SignaturePadProps>>(props)

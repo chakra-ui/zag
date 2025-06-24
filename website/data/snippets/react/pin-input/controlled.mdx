@@ -1,0 +1,14 @@
+```tsx
+import { useState } from "react"
+
+export function ControlledPinInput() {
+  const [value, setValue] = useState(["", "", "", ""])
+
+  const service = useMachine(pinInput.machine, {
+    value,
+    onValueChange(details) {
+      setValue(details.value)
+    },
+  })
+}
+```

@@ -1,319 +1,389 @@
-import { createMachine, guards, subscribe } from "@zag-js/core"
-import { addDomEvent } from "@zag-js/dom-event"
-import { getOverflowAncestors, isHTMLElement, isSafari } from "@zag-js/dom-query"
+import { createGuards, createMachine } from "@zag-js/core"
+import { addDomEvent, getOverflowAncestors, isComposingEvent } from "@zag-js/dom-query"
+import { trackFocusVisible as trackFocusVisibleFn } from "@zag-js/focus-visible"
 import { getPlacement } from "@zag-js/popper"
-import { compact } from "@zag-js/utils"
-import { dom } from "./tooltip.dom"
+import { subscribe } from "@zag-js/store"
+import * as dom from "./tooltip.dom"
 import { store } from "./tooltip.store"
-import type { MachineContext, MachineState, UserDefinedContext } from "./tooltip.types"
+import type { Placement, TooltipSchema } from "./tooltip.types"
 
-const { and, not } = guards
+const { and, not } = createGuards<TooltipSchema>()
 
-export function machine(userContext: UserDefinedContext) {
-  const ctx = compact(userContext)
-  return createMachine<MachineContext, MachineState>(
-    {
-      id: "tooltip",
-      initial: ctx.open ? "open" : "closed",
+export const machine = createMachine<TooltipSchema>({
+  initialState: ({ prop }) => {
+    const open = prop("open") || prop("defaultOpen")
+    return open ? "open" : "closed"
+  },
 
-      context: {
-        openDelay: 1000,
-        closeDelay: 500,
-        closeOnPointerDown: true,
-        closeOnEscape: true,
-        interactive: false,
-        ...ctx,
-        currentPlacement: undefined,
-        hasPointerMoveOpened: false,
-        positioning: {
-          placement: "bottom",
-          ...ctx.positioning,
-        },
+  props({ props }) {
+    return {
+      id: "x",
+      openDelay: 1000,
+      closeDelay: 500,
+      closeOnPointerDown: true,
+      closeOnEscape: true,
+      interactive: false,
+      closeOnScroll: true,
+      closeOnClick: true,
+      disabled: false,
+      ...props,
+      positioning: {
+        placement: "bottom",
+        ...props.positioning,
       },
+    }
+  },
 
-      computed: {
-        hasAriaLabel: (ctx) => !!ctx["aria-label"],
+  effects: ["trackFocusVisible", "trackStore"],
+
+  context: ({ bindable }) => ({
+    currentPlacement: bindable<Placement | undefined>(() => ({ defaultValue: undefined })),
+    hasPointerMoveOpened: bindable<boolean>(() => ({ defaultValue: false })),
+  }),
+
+  watch({ track, action, prop }) {
+    track([() => prop("disabled")], () => {
+      action(["closeIfDisabled"])
+    })
+
+    track([() => prop("open")], () => {
+      action(["toggleVisibility"])
+    })
+  },
+
+  states: {
+    closed: {
+      entry: ["clearGlobalId"],
+      on: {
+        "controlled.open": {
+          target: "open",
+        },
+        open: [
+          {
+            guard: "isOpenControlled",
+            actions: ["invokeOnOpen"],
+          },
+          {
+            target: "open",
+            actions: ["invokeOnOpen"],
+          },
+        ],
+        "pointer.leave": {
+          actions: ["clearPointerMoveOpened"],
+        },
+        "pointer.move": [
+          {
+            guard: and("noVisibleTooltip", not("hasPointerMoveOpened")),
+            target: "opening",
+          },
+          {
+            guard: not("hasPointerMoveOpened"),
+            target: "open",
+            actions: ["setPointerMoveOpened", "invokeOnOpen"],
+          },
+        ],
       },
+    },
 
-      watch: {
-        disabled: ["closeIfDisabled"],
-        open: ["toggleVisibility"],
+    opening: {
+      effects: ["trackScroll", "trackPointerlockChange", "waitForOpenDelay"],
+      on: {
+        "after.openDelay": [
+          {
+            guard: "isOpenControlled",
+            actions: ["setPointerMoveOpened", "invokeOnOpen"],
+          },
+          {
+            target: "open",
+            actions: ["setPointerMoveOpened", "invokeOnOpen"],
+          },
+        ],
+        "controlled.open": {
+          target: "open",
+        },
+        "controlled.close": {
+          target: "closed",
+        },
+        open: [
+          {
+            guard: "isOpenControlled",
+            actions: ["invokeOnOpen"],
+          },
+          {
+            target: "open",
+            actions: ["invokeOnOpen"],
+          },
+        ],
+        "pointer.leave": [
+          {
+            guard: "isOpenControlled",
+            // We trigger toggleVisibility manually since the `ctx.open` has not changed yet (at this point)
+            actions: ["clearPointerMoveOpened", "invokeOnClose", "toggleVisibility"],
+          },
+          {
+            target: "closed",
+            actions: ["clearPointerMoveOpened", "invokeOnClose"],
+          },
+        ],
+        close: [
+          {
+            guard: "isOpenControlled",
+            // We trigger toggleVisibility manually since the `ctx.open` has not changed yet (at this point)
+            actions: ["invokeOnClose", "toggleVisibility"],
+          },
+          {
+            target: "closed",
+            actions: ["invokeOnClose"],
+          },
+        ],
       },
+    },
 
-      states: {
-        closed: {
-          tags: ["closed"],
-          entry: ["clearGlobalId"],
-          on: {
-            "CONTROLLED.OPEN": "open",
-            OPEN: {
-              target: "open",
-              actions: ["invokeOnOpen"],
-            },
-            POINTER_LEAVE: {
-              actions: ["clearPointerMoveOpened"],
-            },
-            POINTER_MOVE: [
-              {
-                guard: and("noVisibleTooltip", not("hasPointerMoveOpened")),
-                target: "opening",
-              },
-              {
-                guard: not("hasPointerMoveOpened"),
-                target: "open",
-                actions: ["setPointerMoveOpened", "invokeOnOpen"],
-              },
-            ],
-          },
+    open: {
+      effects: ["trackEscapeKey", "trackScroll", "trackPointerlockChange", "trackPositioning"],
+      entry: ["setGlobalId"],
+      on: {
+        "controlled.close": {
+          target: "closed",
         },
-
-        opening: {
-          tags: ["closed"],
-          activities: ["trackScroll", "trackPointerlockChange"],
-          after: {
-            OPEN_DELAY: [
-              {
-                guard: "isOpenControlled",
-                actions: ["setPointerMoveOpened", "invokeOnOpen"],
-              },
-              {
-                target: "open",
-                actions: ["setPointerMoveOpened", "invokeOnOpen"],
-              },
-            ],
+        close: [
+          {
+            guard: "isOpenControlled",
+            actions: ["invokeOnClose"],
           },
-          on: {
-            "CONTROLLED.OPEN": "open",
-            "CONTROLLED.CLOSE": "closed",
-            OPEN: [
-              {
-                guard: "isOpenControlled",
-                actions: ["invokeOnOpen"],
-              },
-              {
-                target: "open",
-                actions: ["invokeOnOpen"],
-              },
-            ],
-            POINTER_LEAVE: [
-              {
-                guard: "isOpenControlled",
-                actions: ["clearPointerMoveOpened", "invokeOnClose"],
-              },
-              {
-                target: "closed",
-                actions: ["clearPointerMoveOpened", "invokeOnClose"],
-              },
-            ],
-            CLOSE: {
-              target: "closed",
-              actions: ["invokeOnClose"],
-            },
+          {
+            target: "closed",
+            actions: ["invokeOnClose"],
           },
+        ],
+        "pointer.leave": [
+          {
+            guard: "isVisible",
+            target: "closing",
+            actions: ["clearPointerMoveOpened"],
+          },
+          // == group ==
+          {
+            guard: "isOpenControlled",
+            actions: ["clearPointerMoveOpened", "invokeOnClose"],
+          },
+          {
+            target: "closed",
+            actions: ["clearPointerMoveOpened", "invokeOnClose"],
+          },
+        ],
+        "content.pointer.leave": {
+          guard: "isInteractive",
+          target: "closing",
         },
-
-        open: {
-          tags: ["open"],
-          activities: [
-            "trackEscapeKey",
-            "trackDisabledTriggerOnSafari",
-            "trackScroll",
-            "trackPointerlockChange",
-            "trackPositioning",
-          ],
-          entry: ["setGlobalId"],
-          on: {
-            "CONTROLLED.CLOSE": "closed",
-            CLOSE: {
-              target: "closed",
-              actions: ["invokeOnClose"],
-            },
-            POINTER_LEAVE: [
-              {
-                guard: "isVisible",
-                target: "closing",
-                actions: ["clearPointerMoveOpened"],
-              },
-              // == group ==
-              {
-                guard: "isOpenControlled",
-                actions: ["clearPointerMoveOpened", "invokeOnClose"],
-              },
-              {
-                target: "closed",
-                actions: ["clearPointerMoveOpened", "invokeOnClose"],
-              },
-            ],
-            "CONTENT.POINTER_LEAVE": {
-              guard: "isInteractive",
-              target: "closing",
-            },
-            "POSITIONING.SET": {
-              actions: "reposition",
-            },
-          },
-        },
-
-        closing: {
-          tags: ["open"],
-          activities: ["trackStore", "trackPositioning"],
-          after: {
-            CLOSE_DELAY: [
-              {
-                guard: "isOpenControlled",
-                actions: ["invokeOnClose"],
-              },
-              {
-                target: "closed",
-                actions: ["invokeOnClose"],
-              },
-            ],
-          },
-          on: {
-            "CONTROLLED.CLOSE": "closed",
-            "CONTROLLED.OPEN": "open",
-            CLOSE: [
-              {
-                guard: "isOpenControlled",
-                actions: ["invokeOnClose"],
-              },
-              {
-                target: "closed",
-                actions: ["invokeOnClose"],
-              },
-            ],
-            POINTER_MOVE: [
-              {
-                guard: "isOpenControlled",
-                actions: ["setPointerMoveOpened", "invokeOnOpen"],
-              },
-              {
-                target: "open",
-                actions: ["setPointerMoveOpened", "invokeOnOpen"],
-              },
-            ],
-            "CONTENT.POINTER_MOVE": {
-              guard: "isInteractive",
-              target: "open",
-            },
-            "POSITIONING.SET": {
-              actions: "reposition",
-            },
-          },
+        "positioning.set": {
+          actions: ["reposition"],
         },
       },
     },
-    {
-      activities: {
-        trackPositioning(ctx) {
-          ctx.currentPlacement = ctx.positioning.placement
-          const getPositionerEl = () => dom.getPositionerEl(ctx)
-          return getPlacement(dom.getTriggerEl(ctx), getPositionerEl, {
-            ...ctx.positioning,
-            defer: true,
-            onComplete(data) {
-              ctx.currentPlacement = data.placement
-            },
-          })
-        },
-        trackPointerlockChange(ctx, _evt, { send }) {
-          const onChange = () => send({ type: "CLOSE", src: "pointerlock:change" })
-          return addDomEvent(dom.getDoc(ctx), "pointerlockchange", onChange, false)
-        },
-        trackScroll(ctx, _evt, { send }) {
-          const triggerEl = dom.getTriggerEl(ctx)
-          if (!triggerEl) return
 
-          const overflowParents = getOverflowAncestors(triggerEl)
-          const cleanups = overflowParents.map((overflowParent) =>
-            addDomEvent(overflowParent, "scroll", () => send({ type: "CLOSE", src: "scroll" }), {
-              passive: true,
-              capture: true,
-            }),
-          )
-
-          return () => {
-            cleanups.forEach((fn) => fn?.())
-          }
+    closing: {
+      effects: ["trackPositioning", "waitForCloseDelay"],
+      on: {
+        "after.closeDelay": [
+          {
+            guard: "isOpenControlled",
+            actions: ["invokeOnClose"],
+          },
+          {
+            target: "closed",
+            actions: ["invokeOnClose"],
+          },
+        ],
+        "controlled.close": {
+          target: "closed",
         },
-        trackStore(ctx, _evt, { send }) {
-          return subscribe(store, () => {
-            if (store.id !== ctx.id) {
-              send({ type: "CLOSE", src: "id:change" })
-            }
-          })
+        "controlled.open": {
+          target: "open",
         },
-        trackDisabledTriggerOnSafari(ctx, _evt, { send }) {
-          if (!isSafari()) return
-          const doc = dom.getDoc(ctx)
-          return addDomEvent(doc, "pointermove", (event) => {
-            const selector = "[data-part=trigger][data-expanded]"
-            if (isHTMLElement(event.target) && event.target.closest(selector)) return
-            send("POINTER_LEAVE")
-          })
+        close: [
+          {
+            guard: "isOpenControlled",
+            actions: ["invokeOnClose"],
+          },
+          {
+            target: "closed",
+            actions: ["invokeOnClose"],
+          },
+        ],
+        "pointer.move": [
+          {
+            guard: "isOpenControlled",
+            // We trigger toggleVisibility manually since the `ctx.open` has not changed yet (at this point)
+            actions: ["setPointerMoveOpened", "invokeOnOpen", "toggleVisibility"],
+          },
+          {
+            target: "open",
+            actions: ["setPointerMoveOpened", "invokeOnOpen"],
+          },
+        ],
+        "content.pointer.move": {
+          guard: "isInteractive",
+          target: "open",
         },
-        trackEscapeKey(ctx, _evt, { send }) {
-          if (!ctx.closeOnEscape) return
-          const doc = dom.getDoc(ctx)
-          return addDomEvent(doc, "keydown", (event) => {
-            if (event.key === "Escape") {
-              send("CLOSE")
-            }
-          })
+        "positioning.set": {
+          actions: ["reposition"],
         },
-      },
-      actions: {
-        setGlobalId(ctx) {
-          store.setId(ctx.id)
-        },
-        clearGlobalId(ctx) {
-          if (ctx.id === store.id) {
-            store.setId(null)
-          }
-        },
-        invokeOnOpen(ctx) {
-          ctx.onOpenChange?.({ open: true })
-        },
-        invokeOnClose(ctx) {
-          ctx.onOpenChange?.({ open: false })
-        },
-        closeIfDisabled(ctx, _evt, { send }) {
-          if (!ctx.disabled) return
-          send({ type: "CLOSE", src: "disabled:change" })
-        },
-        reposition(ctx, evt) {
-          const getPositionerEl = () => dom.getPositionerEl(ctx)
-          getPlacement(dom.getTriggerEl(ctx), getPositionerEl, {
-            ...ctx.positioning,
-            ...evt.options,
-            defer: true,
-            listeners: false,
-            onComplete(data) {
-              ctx.currentPlacement = data.placement
-            },
-          })
-        },
-        toggleVisibility(ctx, evt, { send }) {
-          send({ type: ctx.open ? "CONTROLLED.OPEN" : "CONTROLLED.CLOSE", previousEvent: evt })
-        },
-        setPointerMoveOpened(ctx) {
-          ctx.hasPointerMoveOpened = true
-        },
-        clearPointerMoveOpened(ctx) {
-          ctx.hasPointerMoveOpened = false
-        },
-      },
-      guards: {
-        noVisibleTooltip: () => store.id === null,
-        isVisible: (ctx) => ctx.id === store.id,
-        isInteractive: (ctx) => ctx.interactive,
-        hasPointerMoveOpened: (ctx) => !!ctx.hasPointerMoveOpened,
-        isOpenControlled: (ctx) => !!ctx["open.controlled"],
-      },
-      delays: {
-        OPEN_DELAY: (ctx) => ctx.openDelay,
-        CLOSE_DELAY: (ctx) => ctx.closeDelay,
       },
     },
-  )
-}
+  },
+
+  implementations: {
+    guards: {
+      noVisibleTooltip: () => store.id === null,
+      isVisible: ({ prop }) => prop("id") === store.id,
+      isInteractive: ({ prop }) => !!prop("interactive"),
+      hasPointerMoveOpened: ({ context }) => context.get("hasPointerMoveOpened"),
+      isOpenControlled: ({ prop }) => prop("open") !== undefined,
+    },
+
+    actions: {
+      setGlobalId: ({ prop }) => {
+        store.id = prop("id")
+      },
+
+      clearGlobalId: ({ prop }) => {
+        if (prop("id") === store.id) {
+          store.id = null
+        }
+      },
+
+      invokeOnOpen: ({ prop }) => {
+        prop("onOpenChange")?.({ open: true })
+      },
+
+      invokeOnClose: ({ prop }) => {
+        prop("onOpenChange")?.({ open: false })
+      },
+
+      closeIfDisabled: ({ prop, send }) => {
+        if (!prop("disabled")) return
+        send({ type: "close", src: "disabled.change" })
+      },
+
+      reposition: ({ context, event, prop, scope }) => {
+        if (event.type !== "positioning.set") return
+        const getPositionerEl = () => dom.getPositionerEl(scope)
+        return getPlacement(dom.getTriggerEl(scope), getPositionerEl, {
+          ...prop("positioning"),
+          ...event.options,
+          defer: true,
+          listeners: false,
+          onComplete(data) {
+            context.set("currentPlacement", data.placement)
+          },
+        })
+      },
+
+      toggleVisibility: ({ prop, event, send }) => {
+        queueMicrotask(() => {
+          send({
+            type: prop("open") ? "controlled.open" : "controlled.close",
+            previousEvent: event,
+          })
+        })
+      },
+
+      setPointerMoveOpened: ({ context }) => {
+        context.set("hasPointerMoveOpened", true)
+      },
+
+      clearPointerMoveOpened: ({ context }) => {
+        context.set("hasPointerMoveOpened", false)
+      },
+    },
+    effects: {
+      trackFocusVisible: ({ scope }) => {
+        return trackFocusVisibleFn({ root: scope.getRootNode?.() })
+      },
+
+      trackPositioning: ({ context, prop, scope }) => {
+        if (!context.get("currentPlacement")) {
+          context.set("currentPlacement", prop("positioning").placement)
+        }
+
+        const getPositionerEl = () => dom.getPositionerEl(scope)
+        return getPlacement(dom.getTriggerEl(scope), getPositionerEl, {
+          ...prop("positioning"),
+          defer: true,
+          onComplete(data) {
+            context.set("currentPlacement", data.placement)
+          },
+        })
+      },
+
+      trackPointerlockChange: ({ send, scope }) => {
+        const doc = scope.getDoc()
+        const onChange = () => send({ type: "close", src: "pointerlock:change" })
+        return addDomEvent(doc, "pointerlockchange", onChange, false)
+      },
+
+      trackScroll: ({ send, prop, scope }) => {
+        if (!prop("closeOnScroll")) return
+
+        const triggerEl = dom.getTriggerEl(scope)
+        if (!triggerEl) return
+
+        const overflowParents = getOverflowAncestors(triggerEl)
+
+        const cleanups = overflowParents.map((overflowParent) => {
+          const onScroll = () => {
+            send({ type: "close", src: "scroll" })
+          }
+          return addDomEvent(overflowParent, "scroll", onScroll, {
+            passive: true,
+            capture: true,
+          })
+        })
+
+        return () => {
+          cleanups.forEach((fn) => fn?.())
+        }
+      },
+
+      trackStore: ({ prop, send }) => {
+        let cleanup: VoidFunction | undefined
+        queueMicrotask(() => {
+          cleanup = subscribe(store, () => {
+            if (store.id !== prop("id")) {
+              send({ type: "close", src: "id.change" })
+            }
+          })
+        })
+        return () => cleanup?.()
+      },
+
+      trackEscapeKey: ({ send, prop }) => {
+        if (!prop("closeOnEscape")) return
+
+        const onKeyDown = (event: KeyboardEvent) => {
+          if (isComposingEvent(event)) return
+          if (event.key !== "Escape") return
+          event.stopPropagation()
+          send({ type: "close", src: "keydown.escape" })
+        }
+
+        return addDomEvent(document, "keydown", onKeyDown, true)
+      },
+
+      waitForOpenDelay: ({ send, prop }) => {
+        const id = setTimeout(() => {
+          send({ type: "after.openDelay" })
+        }, prop("openDelay"))
+        return () => clearTimeout(id)
+      },
+
+      waitForCloseDelay: ({ send, prop }) => {
+        const id = setTimeout(() => {
+          send({ type: "after.closeDelay" })
+        }, prop("closeDelay"))
+        return () => clearTimeout(id)
+      },
+    },
+  },
+})

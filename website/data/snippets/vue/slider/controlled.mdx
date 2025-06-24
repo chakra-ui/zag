@@ -1,0 +1,16 @@
+```html
+<script setup lang="ts">
+  import { ref } from "vue"
+
+  const valueRef = ref([30])
+
+  const service = useMachine(slider.machine, {
+    get value() {
+      return valueRef.value
+    },
+    onValueChange(details) {
+      valueRef.value = details.value
+    },
+  })
+</script>
+```

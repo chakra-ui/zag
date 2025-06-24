@@ -9,21 +9,17 @@ import { useControls } from "../hooks/use-controls"
 export default function Accordion() {
   const controls = useControls(accordionControls)
 
-  const [state, send] = useMachine(
-    accordion.machine({
-      id: useId(),
-    }),
-    {
-      context: controls.context,
-    },
-  )
+  const service = useMachine(accordion.machine, {
+    id: useId(),
+    ...controls.context,
+  })
 
-  const api = accordion.connect(state, send, normalizeProps)
+  const api = accordion.connect(service, normalizeProps)
 
   return (
     <>
       <main className="accordion">
-        <div {...api.rootProps}>
+        <div {...api.getRootProps()}>
           {accordionData.map((item) => (
             <div key={item.id} {...api.getItemProps({ value: item.id })}>
               <h3>
@@ -42,7 +38,7 @@ export default function Accordion() {
       </main>
 
       <Toolbar controls={controls.ui}>
-        <StateVisualizer state={state} />
+        <StateVisualizer state={service} />
       </Toolbar>
     </>
   )

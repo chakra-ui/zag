@@ -14,6 +14,7 @@ import rehypeSlug from "rehype-slug"
 import remarkDirective from "remark-directive"
 import { remarkAdmonition } from "./lib/remark-utils"
 import siteConfig from "./site.config"
+import svelte from "./lib/svelte-highlight"
 
 const fields: FieldDefs = {
   title: { type: "string" },
@@ -100,7 +101,54 @@ const Component = defineDocumentType(() => ({
     visualizeUrl: {
       type: "string",
       resolve: (doc) =>
-        `https://state-machine-viz.vercel.app/${doc.slugAlias ?? getSlug(doc)}`,
+        `https://zag-visualizer.vercel.app/${doc.slugAlias ?? getSlug(doc)}`,
+    },
+    version: {
+      type: "string",
+      resolve: (doc) => {
+        try {
+          const file = fs.readFileSync(
+            `node_modules/${doc.package}/package.json`,
+            "utf8",
+          )
+          return JSON.parse(file).version
+        } catch {
+          return ""
+        }
+      },
+    },
+  },
+}))
+
+const Utility = defineDocumentType(() => ({
+  name: "Utility",
+  filePathPattern: "utilities/**/*.mdx",
+  contentType: "mdx",
+  fields: {
+    ...fields,
+    slugAlias: { type: "string" },
+  },
+  computedFields: {
+    ...computedFields,
+    npmUrl: {
+      type: "string",
+      resolve: (doc) => `https://www.npmjs.com/package/${doc.package}`,
+    },
+    pathname: {
+      type: "string",
+      resolve: () => "/utilities/[...slug]",
+    },
+    sourceUrl: {
+      type: "string",
+      resolve: (doc) =>
+        `${siteConfig.repo.url}/tree/main/packages/machines/${
+          doc.slugAlias ?? getSlug(doc)
+        }`,
+    },
+    visualizeUrl: {
+      type: "string",
+      resolve: (doc) =>
+        `https://zag-visualizer.vercel.app/${doc.slugAlias ?? getSlug(doc)}`,
     },
     version: {
       type: "string",
@@ -136,7 +184,7 @@ const Snippet = defineDocumentType(() => ({
 export default makeSource({
   contentDirPath: "./data",
   contentDirExclude: ["*/node_modules", "dist"],
-  documentTypes: [Overview, Guide, Snippet, Component],
+  documentTypes: [Overview, Guide, Snippet, Component, Utility],
   disableImportAliasWarning: true,
   onUnknownDocuments: "skip-ignore",
   mdx: {
@@ -144,7 +192,7 @@ export default makeSource({
     rehypePlugins: [
       rehypeSlug,
       rehypeCodeTitles,
-      //@ts-expect-error
+      svelte,
       rehypePrism,
       [
         rehypeAutolinkHeadings,

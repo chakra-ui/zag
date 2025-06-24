@@ -1,20 +1,18 @@
 ```jsx {16-18}
 const ColorPicker = () => {
-  const [state, send] = useMachine(
-    colorPicker.machine({
-      id: createUniqueId(),
-      value: colorPicker.parse("hsl(0, 100%, 50%)"),
-    }),
-  )
+  const service = useMachine(colorPicker.machine, {
+    id: createUniqueId(),
+    defaultValue: colorPicker.parse("hsl(0, 100%, 50%)"),
+  })
 
-  const api = createMemo(() => colorPicker.connect(state, send, normalizeProps))
+  const api = createMemo(() => colorPicker.connect(service, normalizeProps))
 
   return (
-    <div {...api().rootProps}>
+    <div {...api().getRootProps()}>
       {/* ... */}
-      <div {...api().positionerProps}>
-        <div {...api().contentProps}>
-          <button {...api().eyeDropperTriggerProps}>
+      <div {...api().getPositionerProps()}>
+        <div {...api().getContentProps()}>
+          <button {...api().getEyeDropperTriggerProps()}>
             <EyeDropIcon />
           </button>
         </div>

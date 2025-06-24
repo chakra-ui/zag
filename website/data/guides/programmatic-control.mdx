@@ -1,0 +1,71 @@
+---
+title: Programmatic Control
+description: Controlling the state machines programmatically
+---
+
+# Programmatic Control
+
+In some cases, you may want to control the state or context values of a machine
+programmatically via its `props` or based on certain conditions. This is
+typically known as "controlling" the components.
+
+Zag provides a number of ways to control the state of a machine
+programmatically.
+
+## Setting initial context
+
+All machines support setting the controlled and uncontrolled values for context
+properties. For example:
+
+- `defaultOpen` and `open` for controlling the open state of disclosure
+  components
+- `defaultValue` and `value` for controlling the value of input machines
+
+For example, if you want an accordion to start with a specific selected value.
+Here's how to achieve that:
+
+```tsx
+const service = useMachine(accordion.machine, {
+  defaultValue: ["item-1"],
+})
+```
+
+## Controlled Usage
+
+You can pass the context value to the `useMachine` hook directly and provide the
+`onValueChange` callback to react to the changes.
+
+```jsx
+const service = useMachine(accordion.machine, {
+  value: props.value,
+  onValueChange(details) {
+    console.log(details)
+  },
+})
+```
+
+## Using exposed methods
+
+The `connect` method of the machines provide helpful methods (APIs) to change
+the machine state or update its context.
+
+> This approach is the recommended approach to programmatically update a
+> machine.
+
+Let's say we'd like to change the expanded accordion item in an accordion group.
+Here's how to do that:
+
+```jsx
+function Accordion() {
+  // 1. Bind the machine in your framework
+  const service = useMachine(accordion.machine)
+
+  // 2. Call the connect function
+  const api = accordion.connect(service)
+
+  // 3. Use exposed methods
+  api.setValue("item-1")
+
+  return (...)
+}
+```

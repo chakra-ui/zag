@@ -1,4 +1,4 @@
-import type { StateMachine as S } from "@zag-js/core"
+import type { EventObject, Machine, Service } from "@zag-js/core"
 import type { CommonProperties, DirectionProperty, PropTypes, RequiredBy } from "@zag-js/types"
 
 /* -----------------------------------------------------------------------------
@@ -26,6 +26,7 @@ export interface ValueTextDetails {
 export type ElementIds = Partial<{
   root: string
   thumb(index: number): string
+  hiddenInput(index: number): string
   control: string
   track: string
   range: string
@@ -34,43 +35,48 @@ export type ElementIds = Partial<{
   marker(index: number): string
 }>
 
-interface PublicContext extends DirectionProperty, CommonProperties {
+export interface SliderProps extends DirectionProperty, CommonProperties {
   /**
-   * The ids of the elements in the range slider. Useful for composition.
+   * The ids of the elements in the slider. Useful for composition.
    */
-  ids?: ElementIds
+  ids?: ElementIds | undefined
   /**
    * The aria-label of each slider thumb. Useful for providing an accessible name to the slider
    */
-  "aria-label"?: string[]
+  "aria-label"?: string[] | undefined
   /**
    * The `id` of the elements that labels each slider thumb. Useful for providing an accessible name to the slider
    */
-  "aria-labelledby"?: string[]
+  "aria-labelledby"?: string[] | undefined
   /**
    * The name associated with each slider thumb (when used in a form)
    */
-  name?: string
+  name?: string | undefined
   /**
    * The associate form of the underlying input element.
    */
-  form?: string
+  form?: string | undefined
   /**
-   * The value of the range slider
+   * The controlled value of the slider
    */
-  value: number[]
+  value?: number[] | undefined
+  /**
+   * The initial value of the slider when rendered.
+   * Use when you don't need to control the value of the slider.
+   */
+  defaultValue?: number[] | undefined
   /**
    * Whether the slider is disabled
    */
-  disabled?: boolean
+  disabled?: boolean | undefined
   /**
    * Whether the slider is read-only
    */
-  readOnly?: boolean
+  readOnly?: boolean | undefined
   /**
    * Whether the slider is invalid
    */
-  invalid?: boolean
+  invalid?: boolean | undefined
   /**
    * Function invoked when the value of the slider changes
    */
@@ -91,35 +97,43 @@ interface PublicContext extends DirectionProperty, CommonProperties {
    * The minimum value of the slider
    * @default 0
    */
-  min: number
+  min?: number | undefined
   /**
    * The maximum value of the slider
    * @default 100
    */
-  max: number
+  max?: number | undefined
   /**
    * The step value of the slider
    * @default 1
    */
-  step: number
+  step?: number | undefined
   /**
    * The minimum permitted steps between multiple thumbs.
+   *
+   * `minStepsBetweenThumbs` * `step` should reflect the gap between the thumbs.
+   *
+   * - `step: 1` and `minStepsBetweenThumbs: 10` => gap is `10`
+   * - `step: 10` and `minStepsBetweenThumbs: 2` => gap is `20`
+   *
    * @default 0
    */
-  minStepsBetweenThumbs: number
+  minStepsBetweenThumbs?: number | undefined
   /**
    * The orientation of the slider
    * @default "horizontal"
    */
-  orientation: "vertical" | "horizontal"
+  orientation?: "vertical" | "horizontal" | undefined
   /**
-   * The origin of the slider range
+   * The origin of the slider range. The track is filled from the origin
+   * to the thumb for single values.
    * - "start": Useful when the value represents an absolute value
    * - "center": Useful when the value represents an offset (relative)
+   * - "end": Useful when the value represents an offset from the end
    *
    * @default "start"
    */
-  origin?: "start" | "center"
+  origin?: "start" | "center" | "end" | undefined
   /**
    * The alignment of the slider thumb relative to the track
    * - `center`: the thumb will extend beyond the bounds of the slider track.
@@ -127,16 +141,25 @@ interface PublicContext extends DirectionProperty, CommonProperties {
    *
    * @default "contain"
    */
-  thumbAlignment?: "contain" | "center"
+  thumbAlignment?: "contain" | "center" | undefined
   /**
    * The slider thumbs dimensions
    */
-  thumbSize: { width: number; height: number } | null
+  thumbSize?: { width: number; height: number } | undefined
 }
 
-export type UserDefinedContext = RequiredBy<PublicContext, "id">
+type PropsWithDefault =
+  | "dir"
+  | "min"
+  | "max"
+  | "step"
+  | "orientation"
+  | "defaultValue"
+  | "origin"
+  | "thumbAlignment"
+  | "minStepsBetweenThumbs"
 
-type ComputedContext = Readonly<{
+type Computed = Readonly<{
   /**
    * @computed
    * Whether the slider thumb has been measured
@@ -147,11 +170,6 @@ type ComputedContext = Readonly<{
    * Whether the slider is interactive
    */
   isInteractive: boolean
-  /**
-   * @computed
-   * The raw value of the space between each thumb
-   */
-  spacing: number
   /**
    * @computed
    * Whether the slider is vertical
@@ -179,9 +197,8 @@ type ComputedContext = Readonly<{
   isDisabled: boolean
 }>
 
-interface PrivateContext {
+interface Context {
   /**
-   * @internal
    * The active index of the range slider. This represents
    * the currently dragged/focused thumb.
    */
@@ -191,17 +208,30 @@ interface PrivateContext {
    * Whether the slider fieldset is disabled
    */
   fieldsetDisabled: boolean
+  /**
+   * The value of the range slider
+   */
+  value: number[]
+  /**
+   * The size of the slider thumbs
+   */
+  thumbSize: Size | null
 }
 
-export interface MachineContext extends PublicContext, ComputedContext, PrivateContext {}
-
-export interface MachineState {
-  value: "idle" | "dragging" | "focus"
+export interface SliderSchema {
+  state: "idle" | "dragging" | "focus"
+  props: RequiredBy<SliderProps, PropsWithDefault>
+  context: Context
+  computed: Computed
+  event: EventObject
+  action: string
+  effect: string
+  guard: string
 }
 
-export type State = S.State<MachineContext, MachineState>
+export type SliderService = Service<SliderSchema>
 
-export type Send = S.Send<S.AnyEventObject>
+export type SliderMachine = Machine<SliderSchema>
 
 /* -----------------------------------------------------------------------------
  * Component API
@@ -218,10 +248,14 @@ export interface MarkerProps {
 
 export interface ThumbProps {
   index: number
-  name?: string
+  name?: string | undefined
 }
 
-export interface MachineApi<T extends PropTypes = PropTypes> {
+export interface DraggingIndicatorProps {
+  index: number
+}
+
+export interface SliderApi<T extends PropTypes = PropTypes> {
   /**
    * The value of the slider.
    */
@@ -282,16 +316,17 @@ export interface MachineApi<T extends PropTypes = PropTypes> {
    * Function to focus the slider. This focuses the first thumb.
    */
   focus(): void
-  labelProps: T["label"]
-  rootProps: T["element"]
-  valueTextProps: T["element"]
-  trackProps: T["element"]
+  getLabelProps(): T["label"]
+  getRootProps(): T["element"]
+  getValueTextProps(): T["element"]
+  getTrackProps(): T["element"]
   getThumbProps(props: ThumbProps): T["element"]
   getHiddenInputProps(props: ThumbProps): T["input"]
-  rangeProps: T["element"]
-  controlProps: T["element"]
-  markerGroupProps: T["element"]
+  getRangeProps(): T["element"]
+  getControlProps(): T["element"]
+  getMarkerGroupProps(): T["element"]
   getMarkerProps(props: MarkerProps): T["element"]
+  getDraggingIndicatorProps(props: DraggingIndicatorProps): T["element"]
 }
 
 /* -----------------------------------------------------------------------------
@@ -302,13 +337,13 @@ export interface SharedContext {
   min: number
   max: number
   step: number
-  dir?: "ltr" | "rtl"
+  dir?: "ltr" | "rtl" | undefined
   isRtl: boolean
   isVertical: boolean
   isHorizontal: boolean
   value: number
   thumbSize: Size | null
-  thumbAlignment?: "contain" | "center"
-  orientation?: "horizontal" | "vertical"
+  thumbAlignment?: "contain" | "center" | undefined
+  orientation?: "horizontal" | "vertical" | undefined
   readonly hasMeasuredThumbSize: boolean
 }

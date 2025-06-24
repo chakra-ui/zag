@@ -1,0 +1,19 @@
+```svelte
+<script lang="ts">
+  import * as numberInput from "@zag-js/number-input"
+  import { normalizeProps, useMachine } from "@zag-js/svelte"
+
+  const id = $props.id()
+  const service = useMachine(numberInput.machine, { id })
+  const api = $derived(numberInput.connect(service, normalizeProps))
+</script>
+
+<div {...api.getRootProps()}>
+  <label {...api.getLabelProps()}>Enter number:</label>
+  <div>
+    <button {...api.getDecrementTriggerProps()}>DEC</button>
+    <input {...api.getInputProps()} />
+    <button {...api.getIncrementTriggerProps()}>INC</button>
+  </div>
+</div>
+```

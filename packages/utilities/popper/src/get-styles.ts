@@ -3,7 +3,7 @@ import { cssVars } from "./middleware"
 import type { PositioningOptions } from "./types"
 
 export interface GetPlacementStylesOptions {
-  placement?: Placement
+  placement?: Placement | undefined
 }
 
 const ARROW_FLOATING_STYLE = {
@@ -28,6 +28,7 @@ export function getPlacementStyles(
     } as const,
 
     arrowTip: {
+      // @ts-expect-error - Fix this
       transform: placement ? ARROW_FLOATING_STYLE[placement.split("-")[0]] : undefined,
       background: cssVars.arrowBg.reference,
       top: "0",
@@ -45,6 +46,7 @@ export function getPlacementStyles(
       width: sameWidth ? "var(--reference-width)" : undefined,
       maxWidth: fitViewport ? "var(--available-width)" : undefined,
       maxHeight: fitViewport ? "var(--available-height)" : undefined,
+      pointerEvents: !placement ? "none" : undefined,
       top: "0px",
       left: "0px",
       // move off-screen if placement is not defined

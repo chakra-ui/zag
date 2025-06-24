@@ -16,10 +16,10 @@ interact with it.
 
 **Features**
 
-- Supports modal and non-modal modes.
-- Focus is trapped and scrolling is blocked in the modal mode.
-- Provides screen reader announcements via rendered title and description.
-- Pressing `Esc` closes the dialog.
+- Supports modal and non-modal modes
+- Focus is trapped and scrolling is blocked in the modal mode
+- Provides screen reader announcements via rendered title and description
+- Pressing `Esc` closes the dialog
 
 ## Installation
 
@@ -27,9 +27,6 @@ To use the dialog machine in your project, run the following command in your
 command line:
 
 <CodeSnippet id="dialog/installation.mdx" />
-
-This command will install the framework agnostic dialog logic and the reactive
-utilities for your framework of choice.
 
 ## Anatomy
 
@@ -63,7 +60,7 @@ dialog machine in your project 🔥
 
 <CodeSnippet id="dialog/usage.mdx" />
 
-## Managing focus within the dialog
+### Managing focus within the dialog
 
 When the dialog opens, it automatically sets focus on the first focusable
 elements and traps focus within it, so that tabbing is constrained to it.
@@ -77,64 +74,63 @@ element)
 To set the element that receives focus when the dialog closes, pass the
 `finalFocusEl` in the similar fashion as shown above.
 
-## Closing the dialog on interaction outside
+### Closing the dialog on interaction outside
 
 By default, the dialog closes when you click its overlay. You can set
 `closeOnInteractOutside` to `false` if you want the modal to stay visible.
 
-```jsx {3}
-const [state, send] = useMachine(
-  dialog.machine({
-    closeOnInteractOutside: false,
-  }),
-)
+```jsx {2}
+const service = useMachine(dialog.machine, {
+  closeOnInteractOutside: false,
+})
 ```
 
 You can also customize the behavior by passing a function to the
 `onInteractOutside` context and calling `event.preventDefault()`
 
-```jsx {3-8}
-const [state, send] = useMachine(
-  dialog.machine({
-    onInteractOutside(event) {
-      const target = event.target
-      if (target?.closest("<selector>")) {
-        return event.preventDefault()
-      }
-    },
-  }),
-)
+```jsx {2-7}
+const service = useMachine(dialog.machine, {
+  onInteractOutside(event) {
+    const target = event.target
+    if (target?.closest("<selector>")) {
+      return event.preventDefault()
+    }
+  },
+})
 ```
 
-## Listening for open state changes
+### Listening for open state changes
 
 When the dialog is opened or closed, the `onOpenChange` callback is invoked.
 
-```jsx {3-8}
-const [state, send] = useMachine(
-  dialog.machine({
-    onOpenChange(details) {
-      // details => { open: boolean }
-      console.log("open:", details.open)
-    },
-  }),
-)
+```jsx {2-7}
+const service = useMachine(dialog.machine, {
+  onOpenChange(details) {
+    // details => { open: boolean }
+    console.log("open:", details.open)
+  },
+})
 ```
 
-## Controlling the scroll behavior
+### Controlled dialog
+
+To control the dialog's open state, pass the `open` and `onOpenChange`
+properties.
+
+<CodeSnippet id="dialog/controlled.mdx" />
+
+### Controlling the scroll behavior
 
 When the dialog is open, it prevents scrolling on the `body` element. To disable
 this behavior, set the `preventScroll` context to `false`.
 
-```jsx {3}
-const [state, send] = useMachine(
-  dialog.machine({
-    preventScroll: false,
-  }),
-)
+```jsx {2}
+const service = useMachine(dialog.machine, {
+  preventScroll: false,
+})
 ```
 
-## Creating an alert dialog
+### Creating an alert dialog
 
 The dialog has support for dialog and alert dialog roles. It's set to `dialog`
 by default. To change it's role, pass the `role: alertdialog` property to the
@@ -142,12 +138,10 @@ machine's context.
 
 That's it! Now you have an alert dialog.
 
-```jsx {3}
-const [state, send] = useMachine(
-  dialog.machine({
-    role: "alertdialog",
-  }),
-)
+```jsx {2}
+const service = useMachine(dialog.machine, {
+  role: "alertdialog",
+})
 ```
 
 > By definition, an alert dialog will contain two or more action buttons. We
@@ -217,6 +211,10 @@ The dialog `api` exposes the following methods:
 
 <ApiTable name="dialog" />
 
+### Data Attributes
+
+<DataAttrTable name="dialog" />
+
 ## Accessibility
 
 Adheres to the
@@ -224,4 +222,4 @@ Adheres to the
 
 ### Keyboard Interactions
 
-<KeyboardTable id="dialog" />
+<KeyboardTable name="dialog" />

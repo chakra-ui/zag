@@ -1,4 +1,4 @@
-import { clampValue, mod, toFixedNumber } from "@zag-js/numeric-range"
+import { clampValue, mod, toFixedNumber } from "@zag-js/utils"
 import { Color } from "./color"
 import { HSLColor } from "./hsl-color"
 import { RGBColor } from "./rgb-color"
@@ -103,6 +103,28 @@ export class HSBColor extends Color {
 
   clone(): ColorType {
     return new HSBColor(this.hue, this.saturation, this.brightness, this.alpha)
+  }
+
+  getChannelFormatOptions(channel: ColorChannel): Intl.NumberFormatOptions {
+    switch (channel) {
+      case "hue":
+        return { style: "unit", unit: "degree", unitDisplay: "narrow" }
+      case "saturation":
+      case "brightness":
+      case "alpha":
+        return { style: "percent" }
+      default:
+        throw new Error("Unknown color channel: " + channel)
+    }
+  }
+
+  formatChannelValue(channel: ColorChannel, locale: string) {
+    let options = this.getChannelFormatOptions(channel)
+    let value = this.getChannelValue(channel)
+    if (channel === "saturation" || channel === "brightness") {
+      value /= 100
+    }
+    return new Intl.NumberFormat(locale, options).format(value)
   }
 
   getChannelRange(channel: ColorChannel): ColorChannelRange {

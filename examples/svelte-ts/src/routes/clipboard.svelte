@@ -9,26 +9,25 @@
 
   const controls = useControls(clipboardControls)
 
-  const [snapshot, send] = useMachine(
-    clipboard.machine({
-      id: "1",
-      value: "https://github/com/chakra-ui/zag",
+  const id = $props.id()
+  const service = useMachine(
+    clipboard.machine,
+    controls.mergeProps<clipboard.Props>({
+      id,
+      defaultValue: "https://github/com/chakra-ui/zag",
     }),
-    {
-      context: controls.context,
-    },
   )
 
-  const api = $derived(clipboard.connect(snapshot, send, normalizeProps))
+  const api = $derived(clipboard.connect(service, normalizeProps))
 </script>
 
 <main class="clipboard">
-  <div {...api.rootProps}>
-    <!-- svelte-ignore a11y-label-has-associated-control -->
-    <label {...api.labelProps}>Copy this link</label>
-    <div {...api.controlProps}>
-      <input {...api.inputProps} />
-      <button {...api.triggerProps}>
+  <div {...api.getRootProps()}>
+    <!-- svelte-ignore a11y_label_has_associated_control -->
+    <label {...api.getLabelProps()}>Copy this link</label>
+    <div {...api.getControlProps()}>
+      <input {...api.getInputProps()} />
+      <button {...api.getTriggerProps()}>
         {#if api.copied}
           <ClipboardCheckIcon />
         {:else}
@@ -42,5 +41,5 @@
 </main>
 
 <Toolbar {controls}>
-  <StateVisualizer state={snapshot} />
+  <StateVisualizer state={service} />
 </Toolbar>

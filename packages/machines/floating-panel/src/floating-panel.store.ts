@@ -21,4 +21,7 @@ export const panelStack = proxy({
   isTopmost(id: string) {
     return this.stack[this.stack.length - 1] === id
   },
+  indexOf(id: string) {
+    return this.stack.indexOf(id)
+  },
 })

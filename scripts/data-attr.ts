@@ -8,6 +8,7 @@ const docsMap = {
   "data-orientation": "The orientation of the {{widget}}",
   "data-active": "Present when active or pressed",
   "data-focus": "Present when focused",
+  "data-focus-visible": "Present when focused with keyboard",
   "data-hover": "Present when hovered",
   "data-disabled": "Present when disabled",
   "data-readonly": "Present when read-only",
@@ -35,12 +36,15 @@ const docsMap = {
   "data-expanded": "Present when expanded",
   "data-valuetext": "The human-readable value",
   "data-inview": "Present when in viewport",
+  "data-type": "The type of the item",
   "data-selected": "Present when selected",
   "data-mounted": "Present when mounted",
   "data-pressed": "Present when pressed",
   "data-paused": "Present when paused",
   "data-checked": "Present when checked",
   "data-overlap": "Present when overlapping",
+  "data-path": "The path of the item",
+  "data-value": "The value of the item",
 }
 
 const skipAttrs = ["data-ownedby", "data-uid"]
@@ -111,7 +115,7 @@ function processObjectLiteral(node: ObjectLiteralElementLike, opts: ProcessLiter
     if (!name.startsWith("data-") || skipAttrs.includes(name)) return
 
     const rep = part === "Root" ? widget : part.startsWith("Item") ? "Item" : part
-    let desc = docsMap[name]?.replace("{{widget}}", rep.toLowerCase()) ?? ""
+    let desc = docsMap[name as keyof typeof docsMap]?.replace("{{widget}}", rep.toLowerCase()) ?? ""
 
     if (name === "data-state") {
       const tenaryValues = getTenaryValues(literal)

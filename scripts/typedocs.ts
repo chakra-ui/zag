@@ -2,6 +2,7 @@ import { writeFileSync } from "fs"
 import { join } from "path"
 import { ModuleResolutionKind, Project, SourceFile, Symbol, TypeChecker } from "ts-morph"
 import { getMachinePackages } from "./get-packages"
+import { pascalCase } from "scule"
 
 function trimType(value: string) {
   return value
@@ -22,7 +23,7 @@ function getDescription(property: Symbol, typeChecker?: TypeChecker) {
   return description?.text
 }
 
-function getContextReturnType(sourceFile: SourceFile | undefined, typeName: string, typeChecker?: TypeChecker) {
+function getPropTypes(sourceFile: SourceFile | undefined, typeName: string, typeChecker?: TypeChecker) {
   if (!sourceFile) return {}
 
   const result: Record<string, { type: string; description: string; defaultValue: string | null }> = {}
@@ -68,14 +69,14 @@ async function main() {
     const sourceFile = project.getSourceFile(typesFilePath)
 
     try {
-      const ctxName = baseDir === "toast" ? "GroupPublicContext" : "PublicContext"
-      const publicContext = getContextReturnType(sourceFile, ctxName, typeChecker)
+      const ctxName = baseDir === "toast" ? "ToastStore" : `${pascalCase(baseDir)}Props`
+      const propTypes = getPropTypes(sourceFile, ctxName, typeChecker)
 
-      const apiName = baseDir === "toast" ? "GroupMachineApi" : "MachineApi"
-      const publicApi = getContextReturnType(sourceFile, apiName, typeChecker)
+      const apiName = baseDir === "toast" ? "ToastGroupApi" : `${pascalCase(baseDir)}Api`
+      const apiTypes = getPropTypes(sourceFile, apiName, typeChecker)
 
-      result[baseDir] = { api: publicApi, context: publicContext }
-    } catch (error) {
+      result[baseDir] = { api: apiTypes, context: propTypes }
+    } catch {
       console.error("failed --------->", dir)
     }
   }

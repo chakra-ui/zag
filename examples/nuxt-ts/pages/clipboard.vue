@@ -6,26 +6,24 @@ import { ClipboardCheck, ClipboardCopyIcon } from "lucide-vue-next"
 
 const controls = useControls(clipboardControls)
 
-const [state, send] = useMachine(
-  clipboard.machine({
-    id: "1",
-    value: "https://github.com/chakra-ui/zag",
+const service = useMachine(
+  clipboard.machine,
+  controls.mergeProps<clipboard.Props>({
+    id: useId(),
+    defaultValue: "https://github.com/chakra-ui/zag",
   }),
-  {
-    context: controls.context,
-  },
 )
 
-const api = computed(() => clipboard.connect(state.value, send, normalizeProps))
+const api = computed(() => clipboard.connect(service, normalizeProps))
 </script>
 
 <template>
-  <main className="clipboard">
-    <div v-bind="api.rootProps">
-      <label v-bind="api.labelProps">Copy this link</label>
-      <div v-bind="api.controlProps">
-        <input v-bind="api.inputProps" style="width: 100%" />
-        <button v-bind="api.triggerProps">
+  <main class="clipboard">
+    <div v-bind="api.getRootProps()">
+      <label v-bind="api.getLabelProps()">Copy this link</label>
+      <div v-bind="api.getControlProps()">
+        <input v-bind="api.getInputProps()" style="width: 100%" />
+        <button v-bind="api.getTriggerProps()">
           <ClipboardCheck v-if="api.copied" />
           <ClipboardCopyIcon v-else />
         </button>
@@ -36,7 +34,7 @@ const api = computed(() => clipboard.connect(state.value, send, normalizeProps))
   </main>
 
   <Toolbar>
-    <StateVisualizer :state="state" />
+    <StateVisualizer :state="service" />
     <template #controls>
       <Controls :control="controls" />
     </template>

@@ -1,0 +1,16 @@
+```html
+<script setup lang="ts">
+  import { ref } from "vue"
+
+  const valueRef = ref("")
+
+  const service = useMachine(numberInput.machine, {
+    get value() {
+      return valueRef.value
+    },
+    onValueChange(details) {
+      valueRef.value = details.value
+    },
+  })
+</script>
+```

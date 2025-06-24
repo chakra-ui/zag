@@ -1,0 +1,59 @@
+```tsx
+import * as listbox from "@zag-js/listbox"
+import { createFilter } from "@zag-js/i18n-utils"
+import { normalizeProps, useMachine } from "@zag-js/solid"
+import { createSignal, createMemo, createUniqueId, For } from "solid-js"
+
+interface Item {
+  label: string
+  value: string
+}
+
+const data: Item[] = [
+  { label: "Nigeria", value: "NG" },
+  { label: "United States", value: "US" },
+  { label: "Canada", value: "CA" },
+  { label: "Japan", value: "JP" },
+]
+
+const filter = createFilter({ sensitivity: "base" })
+
+function ListboxFiltering() {
+  const [search, setSearch] = createSignal("")
+
+  const collection = createMemo(() => {
+    const items = data.filter((item) => filter.startsWith(item.label, search()))
+    return listbox.collection({ items })
+  })
+
+  const service = useMachine(listbox.machine as listbox.Machine<Item>, {
+    get collection() {
+      return collection()
+    },
+    id: createUniqueId(),
+    typeahead: false,
+  })
+
+  const api = createMemo(() => listbox.connect(service, normalizeProps))
+
+  return (
+    <div {...api().getRootProps()}>
+      <input
+        {...api().getInputProps({ autoHighlight: true })}
+        onInput={(e) => setSearch(e.currentTarget.value)}
+        value={search()}
+      />
+      <ul {...api().getContentProps()}>
+        <For each={collection().items}>
+          {(item) => (
+            <li {...api().getItemProps({ item })}>
+              <span {...api().getItemTextProps({ item })}>{item.label}</span>
+              <span {...api().getItemIndicatorProps({ item })}>✓</span>
+            </li>
+          )}
+        </For>
+      </ul>
+    </div>
+  )
+}
+```

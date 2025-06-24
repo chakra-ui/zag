@@ -1,6 +1,7 @@
 ```jsx
 import * as menu from "@zag-js/menu"
 import { useMachine, normalizeProps } from "@zag-js/react"
+import { useState } from "react"
 
 const data = {
   order: [
@@ -19,9 +20,9 @@ export function Menu() {
   const [order, setOrder] = useState("")
   const [type, setType] = useState([])
 
-  const [state, send] = useMachine(menu.machine({ id: "1" }))
+  const service = useMachine(menu.machine, { id: "1" })
 
-  const api = menu.connect(state, send, normalizeProps)
+  const api = menu.connect(service, normalizeProps)
 
   const radios = menuOptionData.order.map((item) => ({
     type: "radio",
@@ -46,9 +47,9 @@ export function Menu() {
 
   return (
     <>
-      <button {...api.triggerProps}>Trigger</button>
-      <div {...api.positionerProps}>
-        <div {...api.contentProps}>
+      <button {...api.getTriggerProps()}>Trigger</button>
+      <div {...api.getPositionerProps()}>
+        <div {...api.getContentProps()}>
           {radios.map((item) => {
             return (
               <div key={item.value} {...api.getOptionItemProps(item)}>
@@ -57,7 +58,7 @@ export function Menu() {
               </div>
             )
           })}
-          <hr {...api.separatorProps} />
+          <hr {...api.getSeparatorProps()} />
           {checkboxes.map((item) => {
             return (
               <div key={item.value} {...api.getOptionItemProps(item)}>

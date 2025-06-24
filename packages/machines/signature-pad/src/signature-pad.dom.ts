@@ -1,56 +1,16 @@
-import { createScope, query } from "@zag-js/dom-query"
-import type { MachineContext as Ctx, DataUrlOptions } from "./signature-pad.types"
+import { getDataUrl as dataUrl, query } from "@zag-js/dom-query"
+import type { DataUrlOptions } from "./signature-pad.types"
+import type { Scope } from "@zag-js/core"
 
-export const dom = createScope({
-  getRootId: (ctx: Ctx) => ctx.ids?.root ?? `signature-${ctx.id}`,
-  getControlId: (ctx: Ctx) => ctx.ids?.control ?? `signature-control-${ctx.id}`,
-  getHiddenInputId: (ctx: Ctx) => ctx.ids?.hiddenInput ?? `signature-input-${ctx.id}`,
+export const getRootId = (ctx: Scope) => ctx.ids?.root ?? `signature-${ctx.id}`
+export const getControlId = (ctx: Scope) => ctx.ids?.control ?? `signature-control-${ctx.id}`
+export const getLabelId = (ctx: Scope) => ctx.ids?.label ?? `signature-label-${ctx.id}`
+export const getHiddenInputId = (ctx: Scope) => ctx.ids?.hiddenInput ?? `signature-input-${ctx.id}`
 
-  getControlEl: (ctx: Ctx) => dom.getById(ctx, dom.getControlId(ctx)),
-  getSegmentEl: (ctx: Ctx) => query(dom.getControlEl(ctx), "[data-part=segment]"),
-  getHiddenInputEl: (ctx: Ctx) => dom.getById(ctx, dom.getHiddenInputId(ctx)),
+export const getControlEl = (ctx: Scope) => ctx.getById(getControlId(ctx))
+export const getSegmentEl = (ctx: Scope) => query<SVGSVGElement>(getControlEl(ctx), "[data-part=segment]")
+export const getHiddenInputEl = (ctx: Scope) => ctx.getById(getHiddenInputId(ctx))
 
-  getDataUrl: (ctx: Ctx, options: DataUrlOptions): Promise<string> => {
-    const { type, quality = 0.92 } = options
-
-    if (ctx.isEmpty) {
-      return Promise.resolve("")
-    }
-
-    const svg = dom.getSegmentEl(ctx) as SVGElement | null
-    if (!svg) {
-      throw new Error("Could not find the svg element.")
-    }
-
-    const win = dom.getWin(ctx)
-    const doc = win.document
-
-    const serializer = new win.XMLSerializer()
-    const source = '<?xml version="1.0" standalone="no"?>\r\n' + serializer.serializeToString(svg)
-    const svgString = "data:image/svg+xml;charset=utf-8," + encodeURIComponent(source)
-
-    if (type === "image/svg+xml") {
-      return Promise.resolve(svgString)
-    }
-
-    const svgBounds = svg.getBoundingClientRect()
-    const dpr = win.devicePixelRatio || 1
-
-    const canvas = doc.createElement("canvas")
-    const image = new win.Image()
-    image.src = svgString
-
-    canvas.width = svgBounds.width * dpr
-    canvas.height = svgBounds.height * dpr
-
-    const context = canvas.getContext("2d")
-    context!.scale(dpr, dpr)
-
-    return new Promise((resolve) => {
-      image.onload = () => {
-        context!.drawImage(image, 0, 0)
-        resolve(canvas.toDataURL(type, quality))
-      }
-    })
-  },
-})
+export const getDataUrl = (ctx: Scope, options: DataUrlOptions): Promise<string> => {
+  return dataUrl(getSegmentEl(ctx), options)
+}

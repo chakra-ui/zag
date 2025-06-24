@@ -5,22 +5,20 @@ import { StateVisualizer } from "../components/state-visualizer"
 import { Toolbar } from "../components/toolbar"
 
 export default function Page() {
-  const [state, send] = useMachine(
-    menu.machine({
-      id: useId(),
-      onSelect: console.log,
-    }),
-  )
+  const service = useMachine(menu.machine, {
+    id: useId(),
+    onSelect: console.log,
+  })
 
-  const api = menu.connect(state, send, normalizeProps)
+  const api = menu.connect(service, normalizeProps)
 
   return (
     <>
       <main className="context-menu">
-        <div {...api.contextTriggerProps}>Right Click here</div>
+        <div {...api.getContextTriggerProps()}>Right Click here</div>
         <Portal>
-          <div {...api.positionerProps}>
-            <ul {...api.contentProps}>
+          <div {...api.getPositionerProps()}>
+            <ul {...api.getContentProps()}>
               <li {...api.getItemProps({ value: "edit" })}>Edit</li>
               <li {...api.getItemProps({ value: "duplicate" })}>Duplicate</li>
               <li {...api.getItemProps({ value: "delete" })}>Delete</li>
@@ -31,7 +29,7 @@ export default function Page() {
       </main>
 
       <Toolbar controls={null}>
-        <StateVisualizer state={state} />
+        <StateVisualizer state={service} />
       </Toolbar>
     </>
   )

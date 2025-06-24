@@ -1,4 +1,3 @@
-/* eslint-disable react-hooks/exhaustive-deps */
 "use client"
 import { Portal, normalizeProps, useMachine } from "@zag-js/react"
 import * as select from "@zag-js/select"
@@ -13,9 +12,8 @@ const collection = select.collection({
   itemToValue: (item) => item.value,
 })
 
-interface SelectProps extends Omit<select.Context, "id" | "value" | "onValueChange" | "collection"> {
+interface SelectProps extends Omit<select.Props, "id" | "value" | "defaultValue" | "onValueChange" | "collection"> {
   defaultValue?: string | null | undefined
-  defaultOpen?: boolean
   value?: string | null | undefined
   onValueChange?: (value: string) => void
 }
@@ -25,38 +23,31 @@ const toArray = (value: string | null | undefined) => (value ? [value] : undefin
 export function Select(props: SelectProps) {
   const { value, defaultValue, onValueChange, defaultOpen, open, ...contextProps } = props
 
-  const [state, send] = useMachine(
-    select.machine({
-      id: useId(),
-      collection,
-      value: toArray(value) ?? toArray(defaultValue),
-      open: open ?? defaultOpen,
-    }),
-    {
-      context: {
-        ...contextProps,
-        open,
-        "open.controlled": open !== undefined,
-        value: toArray(value),
-        onValueChange(details: any) {
-          onValueChange?.(details.value[0])
-        },
-      },
+  const service = useMachine(select.machine, {
+    id: useId(),
+    collection,
+    defaultValue: toArray(defaultValue),
+    value: toArray(value),
+    open,
+    defaultOpen,
+    onValueChange(details: any) {
+      onValueChange?.(details.value[0])
     },
-  )
+    ...contextProps,
+  })
 
-  const api = select.connect(state, send, normalizeProps)
+  const api = select.connect(service, normalizeProps)
 
   return (
-    <div {...api.rootProps}>
-      <div {...api.controlProps}>
-        <label {...api.labelProps}>Label</label>
-        <button {...api.triggerProps}>{api.valueAsString || "Select a country"}</button>
+    <div {...api.getRootProps()}>
+      <div {...api.getControlProps()}>
+        <label {...api.getLabelProps()}>Label</label>
+        <button {...api.getTriggerProps()}>{api.valueAsString || "Select a country"}</button>
       </div>
 
       <Portal>
-        <div {...api.positionerProps}>
-          <ul {...api.contentProps}>
+        <div {...api.getPositionerProps()}>
+          <ul {...api.getContentProps()}>
             {items.map((item) => (
               <li key={item.value} {...api.getItemProps({ item })}>
                 <span>{item.label}</span>

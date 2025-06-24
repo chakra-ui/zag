@@ -1,271 +1,264 @@
-import { expect, type Locator, test } from "@playwright/test"
-import { a11y, controls, isInViewport, part, pointer, repeat } from "./_utils"
+import { test } from "@playwright/test"
+import { SelectModel } from "./models/select.model"
 
-const label = part("label")
-const trigger = part("trigger")
-const menu = part("content")
-
-const options = "[data-part=item]:not([data-disabled])"
-const getOption = (id: string) => `[data-part=item][data-value="${id}"]`
-
-const expectToBeHighlighted = async (el: Locator) => {
-  await expect(el).toHaveAttribute("data-highlighted", "")
-}
-
-const expectToBeChecked = async (el: Locator) => {
-  await expect(el).toHaveAttribute("data-state", "checked")
-}
-
-const expectToBeInViewport = async (viewport: Locator, option: Locator) => {
-  expect(await isInViewport(viewport, option)).toBe(true)
-}
+let I: SelectModel
 
 test.beforeEach(async ({ page }) => {
-  await page.goto("/select")
+  I = new SelectModel(page)
+  await I.goto()
 })
 
-test.describe("select / accessibility", () => {
-  test("should have no accessibility violation", async ({ page }) => {
-    await a11y(page, ".select")
+test.describe("accessibility", () => {
+  test("should have no accessibility violation", async () => {
+    await I.checkAccessibility()
   })
 
-  test("clicking the label should focus control", async ({ page }) => {
-    await page.click(label)
-    await expect(page.locator(trigger)).toBeFocused()
-  })
-
-  test("trigger sets aria-labbeledby to label id", async ({ page }) => {
-    const labelId = await page.locator(label).getAttribute("id")
-    expect(labelId).not.toBeNull()
-    await expect(page.locator(trigger)).toHaveAttribute("aria-labelledby", labelId as string)
+  test("clicking the label should focus control", async () => {
+    await I.clickLabel()
+    await I.seeTriggerIsFocused()
   })
 })
 
-test.describe("select / pointer", () => {
-  test("should toggle select", async ({ page }) => {
-    await page.click(trigger)
-    await expect(page.locator(menu)).toBeVisible()
-    await page.click(trigger)
-    await expect(page.locator(menu)).not.toBeVisible()
+test.describe("pointer", () => {
+  test("should toggle select", async () => {
+    await I.clickTrigger()
+    await I.seeDropdown()
+
+    await I.clickTrigger()
+    await I.dontSeeDropdown()
   })
 
-  test("should open with pointer", async ({ page }) => {
-    await page.click(trigger)
-    await expect(page.locator(menu)).toBeVisible()
+  test("should deselect", async () => {
+    await I.controls.bool("deselectable", true)
+
+    await I.clickTrigger()
+    await I.clickItem("Albania")
+
+    await I.clickTrigger()
+    await I.clickItem("Albania")
+
+    await I.seeTriggerHasText("Select option")
   })
 
-  test("should open with pointer down", async ({ page }) => {
-    await pointer.down(page.locator(trigger))
-    await expect(page.locator(menu)).toBeVisible()
+  test("clicking clear trigger should return focus", async () => {
+    await I.clickTrigger()
+
+    await I.clickItem("Albania")
+    await I.seeTriggerHasText("Albania")
+
+    await I.clickClearTrigger()
+
+    await I.seeTriggerIsFocused()
+    await I.seeTriggerHasText("Select option")
   })
 
-  test("should open and select with pointer cycle", async ({ page }) => {
-    await pointer.down(page.locator(trigger))
-    const albania = page.locator(getOption("AL"))
-    await pointer.move(albania)
-    await pointer.up(albania)
-    await expectToBeChecked(albania)
-    await expect(page.locator(trigger)).toContainText("Albania")
-  })
+  test("should highlight on hover", async () => {
+    await I.clickTrigger()
+    await I.hoverItem("Albania")
+    await I.seeItemIsHighlighted("Albania")
 
-  test("should highlight on hover", async ({ page }) => {
-    await page.click(trigger)
-
-    const albania = page.locator(getOption("AL"))
-    await pointer.move(albania)
-    await expectToBeHighlighted(albania)
-
-    const angola = page.locator(getOption("AO"))
-    await pointer.move(angola)
-    await expectToBeHighlighted(angola)
-  })
-})
-
-test.describe("select/ open / keyboard", () => {
-  test("should navigate on arrow down", async ({ page }) => {
-    await page.click(trigger)
-    await repeat(3, () => page.keyboard.press("ArrowDown"))
-    const afganistan = page.locator(getOption("AF"))
-    await expectToBeHighlighted(afganistan)
-    await expectToBeInViewport(page.locator(menu), afganistan)
-  })
-
-  test("should navigate on arrow up", async ({ page }) => {
-    await page.click(trigger)
-    await repeat(3, () => page.keyboard.press("ArrowUp"))
-    const southAfrica = page.locator(getOption("ZA"))
-    await expectToBeHighlighted(southAfrica)
-    await expectToBeInViewport(page.locator(menu), southAfrica)
-  })
-
-  test("should navigate on home/end", async ({ page }) => {
-    await page.click(trigger)
-    await page.keyboard.press("End")
-    const zimbabwe = page.locator(getOption("ZW"))
-    await expectToBeHighlighted(zimbabwe)
-    await expectToBeInViewport(page.locator(menu), zimbabwe)
-
-    await page.keyboard.press("Home")
-    const andora = page.locator(getOption("AD"))
-    await expectToBeHighlighted(andora)
-    await expectToBeInViewport(page.locator(menu), andora)
-  })
-
-  test("should navigate on typeahead", async ({ page }) => {
-    await page.click(trigger)
-    await page.keyboard.type("Cy")
-    const cyprus = page.locator(getOption("CY"))
-    await expectToBeHighlighted(cyprus)
-    await expectToBeInViewport(page.locator(menu), cyprus)
-  })
-
-  test("should loop through the options when loop is enabled", async ({ page }) => {
-    await controls(page).bool("loopFocus")
-    await page.focus(trigger)
-    await page.keyboard.press("Enter")
-
-    await page.keyboard.press("ArrowUp")
-    await expectToBeHighlighted(page.locator(options).last())
-
-    await page.keyboard.press("ArrowDown")
-    await expectToBeHighlighted(page.locator(options).first())
+    await I.hoverItem("Algeria")
+    await I.seeItemIsHighlighted("Algeria")
   })
 })
 
-test.describe("select / keyboard / close", () => {
-  test("should close on escape", async ({ page }) => {
-    await page.click(trigger)
-    await page.keyboard.press("Escape")
-    await expect(page.locator(menu)).not.toBeVisible()
+test.describe("open with keyboard", () => {
+  test("should navigate on arrow down", async () => {
+    await I.clickTrigger()
+    await I.pressKey("ArrowDown", 3)
+    await I.seeItemIsHighlighted("Afghanistan")
+    await I.seeItemInViewport("Afghanistan")
+  })
+
+  test("should navigate on arrow up", async () => {
+    await I.clickTrigger()
+    await I.pressKey("ArrowUp", 3)
+    await I.seeItemIsHighlighted("South Africa")
+    await I.seeItemInViewport("South Africa")
+  })
+
+  test("should navigate on home/end", async () => {
+    await I.clickTrigger()
+    await I.pressKey("End")
+
+    await I.seeItemIsHighlighted("Zimbabwe")
+    await I.seeItemInViewport("Zimbabwe")
+
+    await I.pressKey("Home")
+    await I.seeItemIsHighlighted("Andorra")
+    await I.seeItemInViewport("Andorra")
+  })
+
+  test("should navigate on typeahead", async () => {
+    await I.clickTrigger()
+    await I.type("Cy")
+    await I.seeItemIsHighlighted("Cyprus")
+    await I.seeItemInViewport("Cyprus")
+  })
+
+  test("should loop through the options when loop is enabled", async () => {
+    await I.controls.bool("loopFocus")
+
+    await I.focusTrigger()
+    await I.pressKey("Enter")
+
+    await I.pressKey("ArrowUp")
+    await I.seeItemIsHighlighted("Zimbabwe")
+
+    await I.pressKey("ArrowDown")
+    await I.seeItemIsHighlighted("Andorra")
   })
 })
 
-test.describe("select / keyboard / select", () => {
-  test("should select on enter", async ({ page }) => {
-    await page.click(trigger)
-    await page.keyboard.press("ArrowDown")
-    await page.keyboard.press("Enter")
-    const andorra = page.locator(getOption("AD"))
-    await expectToBeChecked(andorra)
-    await expect(page.locator(trigger)).toContainText("Andorra")
-  })
-
-  test("should select on space", async ({ page }) => {
-    await page.click(trigger)
-    await page.keyboard.press("ArrowDown")
-    await page.keyboard.press(" ")
-    const andorra = page.locator(getOption("AD"))
-    await expectToBeChecked(andorra)
-    await expect(page.locator(trigger)).toContainText("Andorra")
-  })
-
-  test("should close on select", async ({ page }) => {
-    await page.click(trigger)
-    await page.keyboard.press("ArrowDown")
-    await page.keyboard.press("Enter")
-    await expect(page.locator(menu)).not.toBeVisible()
-  })
-
-  test("should not close on select / closeOnSelect = false", async ({ page }) => {
-    await controls(page).bool("closeOnSelect", false)
-    await page.click(trigger)
-    await page.keyboard.press("ArrowDown")
-    await page.keyboard.press("Enter")
-    await expect(page.locator(menu)).toBeVisible()
+test.describe("keyboard / close", () => {
+  test("should close on escape", async () => {
+    await I.clickTrigger()
+    await I.pressKey("Escape")
+    await I.dontSeeDropdown()
   })
 })
 
-test.describe("select / open / blur", () => {
-  test("should close on outside click", async ({ page }) => {
-    await page.click(trigger)
-    await page.click("body")
-    await expect(page.locator(menu)).not.toBeVisible()
+test.describe("keyboard / select", () => {
+  test("should select on enter", async () => {
+    await I.clickTrigger()
+    await I.pressKey("ArrowDown")
+    await I.pressKey("Enter")
+    await I.seeItemIsChecked("Andorra")
+    await I.seeTriggerHasText("Andorra")
+    await I.seeTriggerIsFocused()
   })
 
-  test("should close on blur - no selection", async ({ page }) => {
-    await page.click(trigger)
-    await repeat(3, () => page.keyboard.press("ArrowDown"))
-    await page.click("body")
-    await expect(page.locator(menu)).not.toBeVisible()
-    await expect(page.locator(trigger)).toContainText("Select option")
-  })
-})
-
-test.describe("select / focused / open", () => {
-  test("should open the select with enter key", async ({ page }) => {
-    await page.focus(trigger)
-    await page.keyboard.press("Enter")
-    await expect(page.locator(menu)).toBeVisible()
+  test("should select on space", async () => {
+    await I.clickTrigger()
+    await I.pressKey("ArrowDown")
+    await I.pressKey(" ")
+    await I.seeItemIsChecked("Andorra")
+    await I.seeTriggerHasText("Andorra")
+    await I.seeTriggerIsFocused()
   })
 
-  test("should open the select with space key", async ({ page }) => {
-    await page.focus(trigger)
-    await page.keyboard.press(" ")
-    await expect(page.locator(menu)).toBeVisible()
+  test("should close on select", async () => {
+    await I.clickTrigger()
+    await I.pressKey("ArrowDown")
+    await I.pressKey("Enter")
+    await I.dontSeeDropdown()
+    await I.seeTriggerIsFocused()
   })
 
-  test("should open with down arrow keys + highlight first option", async ({ page }) => {
-    await page.focus(trigger)
-    await page.keyboard.press("ArrowDown")
-    await expect(page.locator(menu)).toBeVisible()
-    await expectToBeHighlighted(page.locator(options).first())
-  })
-
-  test("should open with up arrow keys  + highlight last option", async ({ page }) => {
-    await page.focus(trigger)
-    await page.keyboard.press("ArrowUp")
-    await expect(page.locator(menu)).toBeVisible()
-    await expectToBeHighlighted(page.locator(options).last())
+  test("should not close on closeOnSelect = false", async () => {
+    await I.controls.bool("closeOnSelect", false)
+    await I.clickTrigger()
+    await I.pressKey("ArrowDown")
+    await I.pressKey("Enter")
+    await I.seeDropdown()
   })
 })
 
-test.describe("select / focused / select option", () => {
-  test("should select last option on arrow left", async ({ page }) => {
-    await page.focus(trigger)
-    await page.keyboard.press("ArrowLeft")
-    await expectToBeChecked(page.locator(getOption("ZW")))
+test.describe("open / blur", () => {
+  test("should close on outside click", async () => {
+    await I.clickTrigger()
+    await I.seeDropdown()
+
+    await I.clickOutside()
+    await I.dontSeeDropdown()
   })
 
-  test("should select first option on arrow right", async ({ page }) => {
-    await page.focus(trigger)
+  test("should close on blur - no selection", async () => {
+    await I.clickTrigger()
+    await I.pressKey("ArrowDown", 3)
+    await I.clickOutside()
+    await I.dontSeeDropdown()
+    await I.seeTriggerHasText("Select option")
+  })
+})
 
-    await page.keyboard.press("ArrowRight")
-    await expectToBeChecked(page.locator(getOption("AD")))
+test.describe("focused / open", () => {
+  test("should open the select with enter key", async () => {
+    await I.focusTrigger()
+    await I.pressKey("Enter")
+    await I.seeDropdown()
   })
 
-  test("should select next options on arrow right", async ({ page }) => {
-    await page.focus(trigger)
-
-    await page.keyboard.press("ArrowRight")
-    await expectToBeChecked(page.locator(getOption("AD")))
-
-    await page.keyboard.press("ArrowRight")
-    await expectToBeChecked(page.locator(getOption("AE")))
-
-    await page.keyboard.press("ArrowRight")
-    await expectToBeChecked(page.locator(getOption("AF")))
+  test("should open the select with space key", async () => {
+    await I.focusTrigger()
+    await I.pressKey(" ")
+    await I.seeDropdown()
   })
 
-  test("should select with typeahead", async ({ page }) => {
-    await page.focus(trigger)
-    await page.keyboard.type("Nigeri")
-    await expectToBeChecked(page.locator(getOption("NG")))
+  test("should open with down arrow keys + highlight first option", async () => {
+    await I.focusTrigger()
+    await I.pressKey("ArrowDown")
+    await I.seeDropdown()
+    await I.seeItemIsHighlighted("Andorra")
+  })
+
+  test("should open with up arrow keys  + highlight last option", async () => {
+    await I.focusTrigger()
+    await I.pressKey("ArrowUp")
+    await I.seeDropdown()
+    await I.seeItemIsHighlighted("Zimbabwe")
+  })
+})
+
+test.describe("closed state + keyboard selection", () => {
+  test("should select last option on arrow left", async () => {
+    await I.focusTrigger()
+    await I.pressKey("ArrowLeft")
+    await I.seeItemIsChecked("Zimbabwe")
+  })
+
+  test("should select first option on arrow right", async () => {
+    await I.focusTrigger()
+    await I.pressKey("ArrowRight")
+    await I.seeItemIsChecked("Andorra")
+  })
+
+  test("should select next options on arrow right", async () => {
+    await I.focusTrigger()
+
+    await I.pressKey("ArrowRight")
+    await I.seeItemIsChecked("Andorra")
+
+    await I.pressKey("ArrowRight")
+    await I.seeItemIsChecked("United Arab Emirates")
+
+    await I.pressKey("ArrowRight")
+    await I.seeItemIsChecked("Afghanistan")
+  })
+
+  test("should select with typeahead", async () => {
+    await I.focusTrigger()
+    await I.type("Nigeri")
+    await I.seeItemIsChecked("Nigeria")
   })
 
   test("should cycle selected value with typeahead", async ({ page }) => {
-    await page.focus(trigger)
+    await I.focusTrigger()
 
-    await page.keyboard.type("P") // select Panama
-    await expectToBeChecked(page.locator(getOption("PA")))
+    await I.type("P")
+    await I.seeItemIsChecked("Panama")
 
-    await page.keyboard.type("P") // select Panama
-    await expectToBeChecked(page.locator(getOption("PE")))
+    await I.type("P")
+    await I.seeItemIsChecked("Peru")
 
-    await page.keyboard.type("P") // select papua new guinea
-    await expectToBeChecked(page.locator(getOption("PG")))
+    await I.type("P")
+    await I.seeItemIsChecked("Papua New Guinea")
 
-    await page.waitForTimeout(350) // default timeout for typeahead to reset
-    await page.keyboard.type("K") // select papua new guinea
-    await expectToBeChecked(page.locator(getOption("KE")))
+    await page.waitForTimeout(350)
+    await I.type("K")
+    await I.seeItemIsChecked("Kenya")
+  })
+})
+
+test.describe("multiple", () => {
+  test("should select multiple items", async () => {
+    await I.controls.bool("multiple", true)
+    await I.controls.bool("closeOnSelect", false)
+
+    await I.clickTrigger()
+    await I.clickItem("Andorra")
+    await I.clickItem("Algeria")
+
+    await I.seeTriggerHasText("Andorra (AD), Algeria (DZ)")
   })
 })

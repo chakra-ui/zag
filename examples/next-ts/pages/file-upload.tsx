@@ -9,24 +9,22 @@ import { useControls } from "../hooks/use-controls"
 export default function Page() {
   const controls = useControls(fileUploadControls)
 
-  const [state, send] = useMachine(fileUpload.machine({ id: useId() }), {
-    context: controls.context,
-  })
+  const service = useMachine(fileUpload.machine, { id: useId(), ...controls.context })
 
-  const api = fileUpload.connect(state, send, normalizeProps)
+  const api = fileUpload.connect(service, normalizeProps)
 
   return (
     <>
       <main className="file-upload">
-        <div {...api.rootProps}>
-          <div {...api.dropzoneProps}>
-            <input {...api.hiddenInputProps} />
+        <div {...api.getRootProps()}>
+          <div {...api.getDropzoneProps()}>
+            <input data-testid="input" {...api.getHiddenInputProps()} />
             Drag your files here
           </div>
 
-          <button {...api.triggerProps}>Choose Files...</button>
+          <button {...api.getTriggerProps()}>Choose Files...</button>
 
-          <ul {...api.itemGroupProps}>
+          <ul {...api.getItemGroupProps()}>
             {api.acceptedFiles.map((file) => {
               return (
                 <li className="file" key={file.name} {...api.getItemProps({ file })}>
@@ -43,8 +41,8 @@ export default function Page() {
         </div>
       </main>
 
-      <Toolbar controls={controls.ui} viz>
-        <StateVisualizer state={state} />
+      <Toolbar controls={controls.ui}>
+        <StateVisualizer state={service} />
       </Toolbar>
     </>
   )

@@ -6,7 +6,8 @@ package: "@zag-js/carousel"
 
 # Carousel
 
-A slideshow component that cycles through elements.
+an accessible carousel component that leverages native CSS Scroll Snap for
+smooth, performant scrolling between slides.
 
 <Resources pkg="@zag-js/carousel" />
 
@@ -14,11 +15,12 @@ A slideshow component that cycles through elements.
 
 **Features**
 
-- Support for horizontal and vertical orientations.
-- Supports alignment of slides (start, center or end alignment).
-- Supports custom number of slides to show at a time.
-- Supports looping of slides.
-- Supports custom spacing between slides.
+- Uses native CSS Scroll Snap
+- Supports horizontal and vertical orientations
+- Supports alignment of slides (start, center or end alignment)
+- Show multiple slides at a time
+- Supports looping and auto-playing
+- Supports custom spacing between slides
 
 ## Installation
 
@@ -26,9 +28,6 @@ To use the carousel machine in your project, run the following command in your
 command line:
 
 <CodeSnippet id="carousel/installation.mdx" />
-
-This command will install the framework agnostic carousel logic and the reactive
-utilities for your framework of choice.
 
 ## Anatomy
 
@@ -59,106 +58,129 @@ The carousel package exports two key functions:
 Next, import the required hooks and functions for your framework and use the
 carousel machine in your project 🔥
 
+> **Note:** The carousel requires that you provide a `slideCount` property in
+> the machine's context. This is the number of slides in the carousel.
+
 <CodeSnippet id="carousel/usage.mdx" />
 
-## Changing the orientation
+### Vertical carousel
 
-By default, the carousel is assumed to be horizontal. To change the orientation
-to vertical, set the `orientation` property in the machine's context to
-`vertical`.
+To create a vertical carousel, set the `orientation` property in the machine's
+context to `vertical`.
 
-In this mode, the carousel will use the arrow up and down keys to
-increment/decrement its value.
-
-> Don't forget to change the styles of the vertical carousel by specifying its
-> height.
-
-```jsx {3}
-const [state, send] = useMachine(
-  carousel.machine({
-    orientation: "vertical",
-  }),
-)
+```jsx {2}
+const service = useMachine(carousel.machine, {
+  orientation: "vertical",
+})
 ```
 
-## Setting the initial slide
+### Setting the initial slide
 
-To set the initial slide of the carousel, pass the `index` property to the
+To set the initial slide of the carousel, pass the `defaultPage` property to the
 machine's context.
 
-```jsx {3}
-const [state, send] = useMachine(
-  carousel.machine({
-    index: 2,
-  }),
-)
+> The `defaultPage` corresponds to the scroll snap position index based on the
+> layout. It does not necessarily correspond to the index of the slide in the
+> carousel.
+
+```jsx {2}
+const service = useMachine(carousel.machine, {
+  defaultPage: 2,
+})
 ```
 
-## Setting the alignment of the slides
+### Setting the number of slides to show at a time
 
-To set the alignment, set the `align` property in the machine's context to the
-`start`, `center`, or `end` value.
+To customize number of slides to show at a time, set the `slidesPerPage`
+property in the machine's context. The value must be an integer.
 
-```jsx {3}
-const [state, send] = useMachine(
-  carousel.machine({
-    align: "center",
-  }),
-)
+```jsx {2}
+const service = useMachine(carousel.machine, {
+  slidesPerPage: 2,
+})
 ```
 
-## Setting the number of slides to show at a time
+### Setting the number of slides to move at a time
 
-To customize number of slides to show, set the `slidesPerView` property in the
-machine's context to a number value or `auto` string.
+To customize number of slides to move at a time, set the `slidesPerMove`
+property in the machine's context. The value must be an integer or `auto`.
 
-```jsx {3}
-const [state, send] = useMachine(
-  carousel.machine({
-    slidesPerView: 2,
-  }),
-)
+> If the value is `auto`, the carousel will move the number of slides equal to
+> the number of slides per page.
+
+```jsx {2}
+const service = useMachine(carousel.machine, {
+  slidesPerMove: 2,
+})
 ```
 
-## Setting the carousel should loop around
+> Ensure the `slidesPerMove` is less than or equal to the `slidesPerPage` to
+> avoid skipping slides.
+
+### Setting the carousel should loop around
 
 To allow looping of slides, set the `loop` property in the machine's context to
 `true`.
 
-```jsx {3}
-const [state, send] = useMachine(
-  carousel.machine({
-    loop: true,
-  }),
-)
+```jsx {2}
+const service = useMachine(carousel.machine, {
+  loop: true,
+})
 ```
 
-## Setting the amount of space between slides
+### Setting the gap between slides
 
 To customize spacing between slides, set the `spacing` property in the machine's
 context to a valid CSS unit.
 
-```jsx {3}
-const [state, send] = useMachine(
-  carousel.machine({
-    spacing: "16px",
-  }),
-)
+```jsx {2}
+const service = useMachine(carousel.machine, {
+  spacing: "16px",
+})
 ```
 
-## Listening for changes
+### Listening for page changes
 
-When the carousel slide changes, the `onIndexChange` callback is invoked.
+When the carousel page changes, the `onPageChange` callback is invoked.
 
-```jsx {3-6}
-const [state, send] = useMachine(
-  carousel.machine({
-    onIndexChange(details) {
-      // details => { index: number }
-      console.log("selected slide:", details.index)
-    },
-  }),
-)
+```jsx {2-5}
+const service = useMachine(carousel.machine, {
+  onPageChange(details) {
+    // details => { page: number }
+    console.log("selected page:", details.page)
+  },
+})
+```
+
+### Dragging the carousel
+
+To allow dragging the carousel with the mouse, set the `allowMouseDrag` property
+in the machine's context to `true`.
+
+```jsx {2}
+const service = useMachine(carousel.machine, {
+  allowMouseDrag: true,
+})
+```
+
+### Autoplaying the carousel
+
+To allow the carousel to autoplay, set the `autoplay` property in the machine's
+context to `true`.
+
+```jsx {2}
+const service = useMachine(carousel.machine, {
+  autoplay: true,
+})
+```
+
+Alternatively, you can configure the autoplay interval by setting the `delay`
+property in the machine's context.
+
+```jsx {2}
+const service = useMachine(carousel.machine, {
+  autoplay: { delay: 2000 },
+})
 ```
 
 ## Styling guide
@@ -167,12 +189,8 @@ Earlier, we mentioned that each carousel part has a `data-part` attribute added
 to them to select and style them in the DOM.
 
 ```css
-[data-part="item"] {
+[data-part="root"] {
   /* styles for the root part */
-}
-
-[data-part="viewport"] {
-  /* styles for the viewport part */
 }
 
 [data-part="item-group"] {
@@ -180,7 +198,11 @@ to them to select and style them in the DOM.
 }
 
 [data-part="item"] {
-  /* styles for the item part */
+  /* styles for the root part */
+}
+
+[data-part="control"] {
+  /* styles for the control part */
 }
 
 [data-part="next-trigger"] {
@@ -197,6 +219,10 @@ to them to select and style them in the DOM.
 
 [data-part="indicator"] {
   /* styles for the indicator part */
+}
+
+[data-part="autoplay-trigger"] {
+  /* styles for the autoplay-trigger part */
 }
 ```
 
@@ -226,3 +252,7 @@ The carousel machine exposes the following context properties:
 The carousel `api` exposes the following methods:
 
 <ApiTable name="carousel" />
+
+### Data Attributes
+
+<DataAttrTable name="carousel" />

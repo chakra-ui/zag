@@ -30,6 +30,11 @@
   background: #eeeeee;
   font-size: 14px;
   border: 1px solid slategray;
+
+  & svg {
+    width: 14px;
+    height: 14px;
+  }
 }
 
 .select svg {

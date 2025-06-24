@@ -1,0 +1,14 @@
+```tsx
+import { useState } from "react"
+
+export function ControlledNumberInput() {
+  const [value, setValue] = useState("")
+
+  const service = useMachine(numberInput.machine, {
+    value,
+    onValueChange(details) {
+      setValue(details.value)
+    },
+  })
+}
+```

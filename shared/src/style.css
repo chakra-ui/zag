@@ -1,4 +1,5 @@
 @import url("./css/accordion.css");
+@import url("./css/angle-slider.css");
 @import url("./css/anatomy.css");
 @import url("./css/avatar.css");
 
@@ -21,17 +22,26 @@
 
 @import url("./css/hover-card.css");
 
+@import url("./css/listbox.css");
 @import url("./css/layout.css");
 
 @import url("./css/menu.css");
 
+@import url("./css/navigation-menu.css");
+@import url("./css/navigation-menu-viewport.css");
+@import url("./css/navigation-menu-nested.css");
+
 @import url("./css/number-input.css");
+@import url("./css/steps.css");
+@import url("./css/swap.css");
 
 @import url("./css/pagination.css");
+@import url("./css/password-input.css");
 @import url("./css/pin-input.css");
 @import url("./css/popover.css");
 @import url("./css/presence.css");
 @import url("./css/progress.css");
+@import url("./css/qr-code.css");
 
 @import url("./css/radio-group.css");
 @import url("./css/rating-group.css");
@@ -45,8 +55,11 @@
 
 @import url("./css/tabs.css");
 @import url("./css/tags-input.css");
+@import url("./css/timer.css");
+@import url("./css/time-picker.css");
 @import url("./css/toast.css");
 @import url("./css/toggle-group.css");
+@import url("./css/toggle.css");
 @import url("./css/tooltip.css");
 @import url("./css/tour.css");
 @import url("./css/tree-view.css");

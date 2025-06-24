@@ -84,6 +84,25 @@ export function Sidebar() {
                               New
                             </Badge>
                           )}
+                          {subItem.beta && (
+                            <Badge
+                              bg="purple.50"
+                              borderWidth="1px"
+                              borderColor="purple.200"
+                              color="purple.500"
+                              _dark={{
+                                bg: "purple.900",
+                                color: "purple.200",
+                                borderColor: "purple.800",
+                              }}
+                              ms="2"
+                              px="1"
+                              rounded="sm"
+                              fontSize="xs"
+                            >
+                              Beta
+                            </Badge>
+                          )}
                         </DocLink>
                       )
                     }

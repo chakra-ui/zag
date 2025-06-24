@@ -5,15 +5,15 @@ import { normalizeProps, useMachine } from "@zag-js/vue"
 
 const controls = useControls(ratingControls)
 
-const [state, send] = useMachine(
-  rating.machine({
-    id: "rating",
-    value: 2.5,
+const service = useMachine(
+  rating.machine,
+  controls.mergeProps<rating.Props>({
+    id: useId(),
+    defaultValue: 2.5,
   }),
-  { context: controls.context },
 )
 
-const api = computed(() => rating.connect(state.value, send, normalizeProps))
+const api = computed(() => rating.connect(service, normalizeProps))
 
 const items = computed(() =>
   api.value.items.map((index) => {
@@ -24,19 +24,19 @@ const items = computed(() =>
 
 <template>
   <main class="rating">
-    <div v-bind="api.rootProps">
-      <div v-bind="api.controlProps">
+    <div v-bind="api.getRootProps()">
+      <div v-bind="api.getControlProps()">
         <span v-for="[index, state] in items" :key="index" v-bind="api.getItemProps({ index })">
           <HalfStar v-if="state.half" />
           <Star v-else="" />
         </span>
       </div>
-      <input v-bind="api.hiddenInputProps" data-testid="hidden-input" />
+      <input v-bind="api.getHiddenInputProps()" data-testid="hidden-input" />
     </div>
   </main>
 
   <Toolbar>
-    <StateVisualizer :state="state" />
+    <StateVisualizer :state="service" />
     <template #controls>
       <Controls :control="controls" />
     </template>

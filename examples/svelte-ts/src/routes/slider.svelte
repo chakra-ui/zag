@@ -9,18 +9,17 @@
 
   const controls = useControls(sliderControls)
 
-  const [snapshot, send] = useMachine(
-    slider.machine({
-      id: "1",
+  const id = $props.id()
+  const service = useMachine(
+    slider.machine,
+    controls.mergeProps<slider.Props>({
+      id,
       name: "quantity",
-      value: [0],
+      defaultValue: [0],
     }),
-    {
-      context: controls.context,
-    },
   )
 
-  const api = $derived(slider.connect(snapshot, send, normalizeProps))
+  const api = $derived(slider.connect(service, normalizeProps))
 </script>
 
 <main class="slider">
@@ -30,18 +29,18 @@
       console.log(formData)
     }}
   >
-    <div {...api.rootProps}>
+    <div {...api.getRootProps()}>
       <div>
-        <!-- svelte-ignore a11y-label-has-associated-control -->
-        <label data-testid="label" {...api.labelProps}> Slider Label </label>
-        <output data-testid="output" {...api.valueTextProps}>
+        <!-- svelte-ignore a11y_label_has_associated_control -->
+        <label data-testid="label" {...api.getLabelProps()}> Slider Label </label>
+        <output data-testid="output" {...api.getValueTextProps()}>
           {api.value}
         </output>
       </div>
       <div class="control-area">
-        <div {...api.controlProps}>
-          <div data-testid="track" {...api.trackProps}>
-            <div {...api.rangeProps} />
+        <div {...api.getControlProps()}>
+          <div data-testid="track" {...api.getTrackProps()}>
+            <div {...api.getRangeProps()}></div>
           </div>
           {#each api.value as _, index}
             <div {...api.getThumbProps({ index })}>
@@ -49,7 +48,7 @@
             </div>
           {/each}
         </div>
-        <div {...api.markerGroupProps}>
+        <div {...api.getMarkerGroupProps()}>
           <span {...api.getMarkerProps({ value: 10 })}>*</span>
           <span {...api.getMarkerProps({ value: 30 })}>*</span>
           <span {...api.getMarkerProps({ value: 90 })}>*</span>
@@ -60,5 +59,5 @@
 </main>
 
 <Toolbar {controls}>
-  <StateVisualizer state={snapshot} />
+  <StateVisualizer state={service} />
 </Toolbar>

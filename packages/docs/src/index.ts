@@ -6,22 +6,18 @@ import dataAttrJson from "../data/data-attr.json"
  * The data attribute documentation
  * -----------------------------------------------------------------------------*/
 
-interface DataAttrEntry {
+export interface DataAttrEntry {
   [part: string]: Record<string, string>
 }
 
-export interface DataAttrDoc {
-  [widget: string]: DataAttrEntry
-}
+export type DataAttrDocKey = keyof typeof dataAttrJson
 
-export type DataAttrKey = keyof typeof dataAttrJson
-
-export function getDataAttrDoc(key: DataAttrKey): DataAttrDoc {
+export function getDataAttrDoc(key: DataAttrDocKey): DataAttrEntry {
   const data = dataAttrJson[key]
   if (!data) {
     throw new Error(`No data attribute data found for ${key}`)
   }
-  return data as DataAttrDoc
+  return data
 }
 
 /* -----------------------------------------------------------------------------
@@ -54,7 +50,7 @@ export function getAccessibilityDoc(key: AccessibilityDocKey): AccessibilityDoc 
 interface Prop {
   type: string
   description: string
-  defaultValue?: string
+  defaultValue?: string | undefined
 }
 
 export interface ApiDoc {

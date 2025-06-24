@@ -1,5 +1,4 @@
 import * as datePicker from "@zag-js/date-picker"
-import { getYearsRange } from "@zag-js/date-utils"
 import { normalizeProps, useMachine } from "@zag-js/react"
 import { datePickerControls } from "@zag-js/shared"
 import { useId } from "react"
@@ -9,18 +8,14 @@ import { useControls } from "../hooks/use-controls"
 
 export default function Page() {
   const controls = useControls(datePickerControls)
-  const [state, send] = useMachine(
-    datePicker.machine({
-      id: useId(),
-      locale: "en",
-      selectionMode: "single",
-    }),
-    {
-      context: controls.context,
-    },
-  )
+  const service = useMachine(datePicker.machine, {
+    id: useId(),
+    locale: "en",
+    selectionMode: "single",
+    ...controls.context,
+  })
 
-  const api = datePicker.connect(state, send, normalizeProps)
+  const api = datePicker.connect(service, normalizeProps)
 
   return (
     <>
@@ -35,16 +30,16 @@ export default function Page() {
           <div>Focused: {api.focusedValueAsString}</div>
         </output>
 
-        <div {...api.controlProps}>
+        <div {...api.getControlProps()}>
           <input {...api.getInputProps()} />
-          <button {...api.clearTriggerProps}>❌</button>
-          <button {...api.triggerProps}>🗓</button>
+          <button {...api.getClearTriggerProps()}>❌</button>
+          <button {...api.getTriggerProps()}>🗓</button>
         </div>
 
-        <div {...api.positionerProps}>
-          <div {...api.contentProps}>
+        <div {...api.getPositionerProps()}>
+          <div {...api.getContentProps()}>
             <div style={{ marginBottom: "20px" }}>
-              <select {...api.monthSelectProps}>
+              <select {...api.getMonthSelectProps()}>
                 {api.getMonths().map((month, i) => (
                   <option key={i} value={month.value}>
                     {month.label}
@@ -52,10 +47,10 @@ export default function Page() {
                 ))}
               </select>
 
-              <select {...api.yearSelectProps}>
-                {getYearsRange({ from: 1_000, to: 4_000 }).map((year, i) => (
-                  <option key={i} value={year}>
-                    {year}
+              <select {...api.getYearSelectProps()}>
+                {api.getYears().map((year, i) => (
+                  <option key={i} value={year.value}>
+                    {year.label}
                   </option>
                 ))}
               </select>
@@ -96,7 +91,7 @@ export default function Page() {
               <div hidden={api.view !== "month"} style={{ width: "100%" }}>
                 <div {...api.getViewControlProps({ view: "month" })}>
                   <button {...api.getPrevTriggerProps({ view: "month" })}>Prev</button>
-                  <span {...api.getViewTriggerProps({ view: "month" })}>{api.visibleRange.start.year}</span>
+                  <button {...api.getViewTriggerProps({ view: "month" })}>{api.visibleRange.start.year}</button>
                   <button {...api.getNextTriggerProps({ view: "month" })}>Next</button>
                 </div>
 
@@ -144,7 +139,7 @@ export default function Page() {
       </main>
 
       <Toolbar viz controls={controls.ui}>
-        <StateVisualizer state={state} omit={["weeks"]} />
+        <StateVisualizer state={service} omit={["weeks"]} />
       </Toolbar>
     </>
   )

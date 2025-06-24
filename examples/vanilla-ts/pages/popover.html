@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Vite + TS</title>
+  </head>
+  <body style="padding: 40px">
+    <h1>Popover</h1>
+
+    <div class="popover">
+      <button class="popover-trigger">Click me</button>
+      <div class="popover-positioner">
+        <div class="popover-content">
+          <div class="popover-arrow">
+            <div class="popover-arrow-tip"></div>
+          </div>
+          <div>
+            <div class="popover-title">
+              <b>About Tabs</b>
+            </div>
+            <div class="popover-description">
+              Tabs are used to organize and group content into sections that the user can navigate between.
+            </div>
+            <button>Action Button</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script type="module" src="./popover.ts"></script>
+  </body>
+</html>

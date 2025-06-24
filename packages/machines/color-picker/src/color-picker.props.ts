@@ -6,20 +6,21 @@ import type {
   SwatchProps,
   SwatchTriggerProps,
   TransparencyGridProps,
-  UserDefinedContext,
+  ColorPickerProps,
 } from "./color-picker.types"
 
-export const props = createProps<UserDefinedContext>()([
+export const props = createProps<ColorPickerProps>()([
   "closeOnSelect",
   "dir",
   "disabled",
   "format",
+  "defaultFormat",
   "getRootNode",
   "id",
   "ids",
   "initialFocusEl",
   "name",
-  "name",
+  "positioning",
   "onFocusOutside",
   "onFormatChange",
   "onInteractOutside",
@@ -27,13 +28,18 @@ export const props = createProps<UserDefinedContext>()([
   "onPointerDownOutside",
   "onValueChange",
   "onValueChangeEnd",
-  "open.controlled",
+  "defaultOpen",
   "open",
   "positioning",
+  "required",
   "readOnly",
   "value",
+  "defaultValue",
+  "invalid",
+  "openAutoFocus",
 ])
-export const splitProps = createSplitProps<Partial<UserDefinedContext>>(props)
+
+export const splitProps = createSplitProps<Partial<ColorPickerProps>>(props)
 
 export const areaProps = createProps<AreaProps>()(["xChannel", "yChannel"])
 export const splitAreaProps = createSplitProps<AreaProps>(areaProps)

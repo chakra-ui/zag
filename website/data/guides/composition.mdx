@@ -1,0 +1,221 @@
+---
+title: Composition
+description: Best practices to compose events and components
+---
+
+# Composition
+
+## Event composition
+
+Zag encourages the use of spread props to ensure we automatically attach all the
+event handlers and properties to elements.
+
+Sometimes, you may want to attach your own event handlers to the elements. To do
+that, import the `mergeProps` utility provided by zag for your framework.
+
+```jsx
+// 1. import mergeProps utility
+import { useMachine, mergeProps } from "@zag-js/react"
+import * as hoverCard from "@zag-js/hover-card"
+
+export function Toggle() {
+  const service = useMachine(hoverCard.machine, {
+    id: "1",
+  })
+  const api = hoverCard.connect(service)
+
+  // 2. write your custom event handlers
+  const handleHover = () => {
+    // do something
+  }
+
+  // 3. merge the props
+  const triggerProps = mergeProps(api.getTriggerProps(), {
+    onPointerEnter: handleHover,
+  })
+
+  return (
+    // 4. spread the new props
+    <a href="https://twitter.com/zag_js" target="_blank" {...triggerProps}>
+      {api.open ? "Open" : "Close"}
+    </a>
+  )
+}
+```
+
+## Id composition
+
+Zag depends heavily on pure DOM queries to identify elements. This means every
+element part needs to have a unique id.
+
+Each time you initiate the machine with the `useMachine` hook, you'll need to
+ensure that you provide a unique id.
+
+In most cases, you can rely on the framework providing a unique id for each machine.
+
+### React
+
+```jsx
+import * as accordion from "@zag-js/accordion"
+import { useMachine, normalizeProps } from "@zag-js/framework"
+import { useId } from "react"
+
+function Component() {
+  const service = useMachine(accordion.machine, { id: useId() })
+  const api = machine.connect(service, normalizeProps)
+
+  // ...
+}
+```
+
+See [useId](https://react.dev/reference/react/useId).
+
+### Solid
+
+```jsx
+import * as accordion from "@zag-js/accordion"
+import { useMachine, normalizeProps } from "@zag-js/solid"
+import { createUniqueId } from "solid-js"
+
+function Component() {
+  const service = useMachine(accordion.machine, { id: createUniqueId() })
+  const api = machine.connect(service, normalizeProps)
+
+  // ...
+}
+```
+
+See [createUniqueId](https://docs.solidjs.com/reference/component-apis/create-unique-id).
+
+### Vue
+
+```html
+<script setup>
+import * as accordion from "@zag-js/accordion"
+import { useMachine, normalizeProps } from "@zag-js/vue"
+import { useId } from "vue"
+
+const service = useMachine(accordion.machine, { id: useId() })
+const api = machine.connect(service, normalizeProps)
+</script>
+
+<template>
+  <!-- ... -->
+</template>
+```
+
+See [useId](https://vuejs.org/api/composition-api-helpers#useid).
+
+### Svelte
+
+```html
+<script>
+  import * as accordion from "@zag-js/accordion"
+  import { useMachine, normalizeProps } from "@zag-js/svelte"
+
+  const id = $props.id()
+  const service = useMachine(accordion.machine, { id })
+  const api = machine.connect(service, normalizeProps)
+</script>
+
+
+<!-- ... -->
+```
+
+See [$props.id](https://svelte.dev/docs/svelte/$props#$props.id()).
+
+Internally, Zag maps the unique id provided to each component parts needed for
+the widget to work.
+
+In some cases, you might want to compose different machines together in a single
+component. For example, you want to use the same trigger as a popover and
+tooltip trigger at the same time.
+
+To achieve this, you will need to pass custom `ids` to the machine's context.
+This will ensure that calling `document.getElementById(...)` within the tooltip
+and/or popover will return the same element.
+
+```tsx {6,10}
+import * as tooltip from "@zag-js/tooltip"
+import * as popover from "@zag-js/popover"
+
+function Example() {
+  const tooltipService = useMachine(tooltip.machine, {
+    ids: { trigger: "id-1" },
+  })
+
+  const popoverService = useMachine(popover.machine, {
+    ids: { trigger: "id-1" },
+  })
+  
+  // ...
+}
+```
+
+In the example above, you will notice that the popover and tooltip trigger share
+the same id. That's how to compose machines together.
+
+## Custom window environment
+
+Internally, we use DOM query methods like `document.querySelectorAll` and
+`document.getElementById` to locate elements within the machine.
+
+In custom environments like iframe, Shadow DOM, Electron, etc., the machine
+might not work as expected because `document` may not be available.
+
+To provide the correct reference to root node or document, you can pass
+`getRootNode` function it to the machine's context.
+
+> In shadow DOM, the root node can be derived from calling
+> `element.getRootNode()` method on any element.
+
+```jsx {12,16,42}
+import * as accordion from "@zag-js/accordion"
+import { useMachine, normalizeProps } from "@zag-js/react"
+import Frame, { useFrame } from "react-frame-component"
+
+const data = [
+  { title: "Watercraft", content: "Sample accordion content" },
+  { title: "Automobiles", content: "Sample accordion content" },
+  { title: "Aircraft", content: "Sample accordion content" },
+]
+
+function Accordion({ id }) {
+  const { document } = useFrame()
+
+  const service = useMachine(accordion.machine, {
+    id,
+    getRootNode: () => document,
+  })
+
+  const api = accordion.connect(service, normalizeProps)
+
+  return (
+    <div {...api.getRootProps()}>
+      {data.map((item, index) => (
+        <div key={index} {...api.getItemProps({ value: item.title })}>
+          <h3>
+            <button {...api.getTriggerProps({ value: item.title })}>
+              {item.title}
+            </button>
+          </h3>
+          <div {...api.getContentProps({ value: item.title })}>
+            {item.content}
+          </div>
+        </div>
+      ))}
+    </div>
+  )
+}
+
+export default function App() {
+  return (
+    <div className="App">
+      <h1>ZagJs in Iframe</h1>
+      <Frame height="200px" width="100%">
+        <Accordion id="2" />
+      </Frame>
+    </div>
+  )
+}
+```

@@ -1,0 +1,20 @@
+```tsx
+import { createSignal } from "solid-js"
+
+export function ControlledTabs() {
+  const [value, setValue] = createSignal("tab-1")
+
+  const service = useMachine(tabs.machine, {
+    get value() {
+      return value()
+    },
+    onValueChange(details) {
+      setValue(details.value)
+    },
+  })
+
+  return (
+    // ...
+  )
+}
+```

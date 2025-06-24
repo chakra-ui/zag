@@ -1,5 +1,368 @@
 # @zag-js/aria-hidden
 
+## 1.17.1
+
+## 1.17.0
+
+## 1.16.0
+
+## 1.15.7
+
+## 1.15.6
+
+## 1.15.5
+
+## 1.15.4
+
+## 1.15.3
+
+## 1.15.2
+
+## 1.15.1
+
+## 1.15.0
+
+## 1.14.0
+
+## 1.13.1
+
+## 1.13.0
+
+## 1.12.4
+
+## 1.12.3
+
+## 1.12.2
+
+## 1.12.1
+
+## 1.12.0
+
+## 1.11.0
+
+## 1.10.0
+
+## 1.9.3
+
+## 1.9.2
+
+## 1.9.1
+
+## 1.9.0
+
+## 1.8.2
+
+## 1.8.1
+
+## 1.8.0
+
+## 1.7.0
+
+## 1.6.2
+
+## 1.6.1
+
+## 1.6.0
+
+## 1.5.0
+
+## 1.4.2
+
+## 1.4.1
+
+## 1.4.0
+
+## 1.3.3
+
+## 1.3.2
+
+## 1.3.1
+
+## 1.3.0
+
+## 1.2.1
+
+## 1.2.0
+
+## 1.1.0
+
+## 1.0.2
+
+## 1.0.1
+
+## 1.0.0
+
+## 0.82.2
+
+### Patch Changes
+
+- [#2249](https://github.com/chakra-ui/zag/pull/2249)
+  [`a747af4`](https://github.com/chakra-ui/zag/commit/a747af4b4dac0b47d74a2a6e9e886272f193f098) Thanks
+  [@maartenottenhof](https://github.com/maartenottenhof)! - Fix issue where `aria-hidden` could be set `''` instead of
+  'true'
+
+## 0.82.1
+
+## 0.82.0
+
+## 0.81.2
+
+## 0.81.1
+
+## 0.81.0
+
+## 0.80.0
+
+## 0.79.3
+
+## 0.79.2
+
+## 0.79.1
+
+## 0.79.0
+
+## 0.78.3
+
+## 0.78.2
+
+### Patch Changes
+
+- [#2082](https://github.com/chakra-ui/zag/pull/2082)
+  [`eb948dc`](https://github.com/chakra-ui/zag/commit/eb948dcd54ba24aa7a779199e330d1e90b180fae) Thanks
+  [@healtheloper](https://github.com/healtheloper)! - Fixed accessibility warning related to `aria-hidden` on touch
+  devices.
+
+  **The error reads:**
+
+  "Blocked aria-hidden on an element because its descendant retained focus. The focus must not be hidden from assistive
+  technology users. Avoid using aria-hidden on a focused element or its ancestor"
+
+## 0.78.1
+
+## 0.78.0
+
+## 0.77.1
+
+## 0.77.0
+
+## 0.76.0
+
+## 0.75.0
+
+## 0.74.2
+
+## 0.74.1
+
+## 0.74.0
+
+## 0.73.1
+
+## 0.73.0
+
+## 0.72.0
+
+## 0.71.0
+
+### Minor Changes
+
+- [`b3a251e`](https://github.com/chakra-ui/zag/commit/b3a251e5e10b9b27af353e0f41117329846b14e9) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - We no longer ship `src` files in the packages.
+
+## 0.70.0
+
+## 0.69.0
+
+## 0.68.1
+
+## 0.68.0
+
+## 0.67.0
+
+## 0.66.1
+
+## 0.66.0
+
+### Patch Changes
+
+- [`6e35eed`](https://github.com/chakra-ui/zag/commit/6e35eed3bea08165623539b68a8d1ce0a5e92fe1) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Replace internal `aria-hidden` implementation with `aria-hidden`
+  package for improved accessibility
+
+## 0.65.1
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/dom-query@0.65.1
+
+## 0.65.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/dom-query@0.65.0
+
+## 0.64.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/dom-query@0.64.0
+
+## 0.63.0
+
+### Patch Changes
+
+- Updated dependencies [[`ca437b9`](https://github.com/chakra-ui/zag/commit/ca437b94b49760742bad69aa57a3d6527219782a)]:
+  - @zag-js/dom-query@0.63.0
+
+## 0.62.1
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/dom-query@0.62.1
+
+## 0.62.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/dom-query@0.62.0
+
+## 0.61.1
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/dom-query@0.61.1
+
+## 0.61.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/dom-query@0.61.0
+
+## 0.60.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/dom-query@0.60.0
+
+## 0.59.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/dom-query@0.59.0
+
+## 0.58.3
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/dom-query@0.58.3
+
+## 0.58.2
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/dom-query@0.58.2
+
+## 0.58.1
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/dom-query@0.58.1
+
+## 0.58.0
+
+### Patch Changes
+
+- Updated dependencies [[`9216a62`](https://github.com/chakra-ui/zag/commit/9216a625e1be9f7dd169501515297a8214f12b93)]:
+  - @zag-js/dom-query@0.58.0
+
+## 0.57.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/dom-query@0.57.0
+
+## 0.56.1
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/dom-query@0.56.1
+
+## 0.56.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/dom-query@0.56.0
+
+## 0.55.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/dom-query@0.55.0
+
+## 0.54.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/dom-query@0.54.0
+
+## 0.53.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/dom-query@0.53.0
+
+## 0.52.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/dom-query@0.52.0
+
+## 0.51.2
+
+### Patch Changes
+
+- Updated dependencies [[`70c2108`](https://github.com/chakra-ui/zag/commit/70c2108928746583687ac50ec51bc701c217ffdc)]:
+  - @zag-js/dom-query@0.51.2
+
+## 0.51.1
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/dom-query@0.51.1
+
+## 0.51.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/dom-query@0.51.0
+
+## 0.50.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/dom-query@0.50.0
+
 ## 0.49.0
 
 ### Patch Changes

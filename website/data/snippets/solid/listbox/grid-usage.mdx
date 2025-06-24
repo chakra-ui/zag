@@ -1,0 +1,51 @@
+```jsx
+import * as listbox from "@zag-js/listbox"
+import { useMachine, normalizeProps } from "@zag-js/solid"
+import { createMemo, createUniqueId, For } from "solid-js"
+
+const data = [
+  { label: "Red", value: "red" },
+  { label: "Green", value: "green" },
+  { label: "Blue", value: "blue" },
+  { label: "Yellow", value: "yellow" },
+  { label: "Purple", value: "purple" },
+  { label: "Orange", value: "orange" },
+]
+
+function ListboxGrid() {
+  const collection = listbox.gridCollection({
+    items: data,
+    columnCount: 3,
+  })
+
+  const service = useMachine(listbox.machine, {
+    id: createUniqueId(),
+    collection,
+  })
+
+  const api = createMemo(() => listbox.connect(service, normalizeProps))
+
+  return (
+    <div {...api().getRootProps()}>
+      <label {...api().getLabelProps()}>Select color</label>
+      <div
+        {...api().getContentProps()}
+        style={{
+          display: "grid",
+          "grid-template-columns": "repeat(3, 1fr)",
+          gap: "8px",
+        }}
+      >
+        <For each={collection.items}>
+          {(item) => (
+            <div {...api().getItemProps({ item })}>
+              <span {...api().getItemTextProps({ item })}>{item.label}</span>
+              <span {...api().getItemIndicatorProps({ item })}>✓</span>
+            </div>
+          )}
+        </For>
+      </div>
+    </div>
+  )
+}
+```

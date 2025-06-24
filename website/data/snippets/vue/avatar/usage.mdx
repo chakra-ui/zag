@@ -1,0 +1,18 @@
+```html
+<script setup>
+  import * as avatar from "@zag-js/avatar"
+  import { normalizeProps, useMachine } from "@zag-js/vue"
+  import { computed } from "vue"
+
+  const service = useMachine(avatar.machine, { id: "1" })
+
+  const api = computed(() => avatar.connect(service, normalizeProps))
+</script>
+
+<template>
+  <div v-bind="api.getRootProps()">
+    <span v-bind="api.getFallbackProps()">PA</span>
+    <img alt="PA" :src="src" v-bind="api.getImageProps()" />
+  </div>
+</template>
+```

@@ -13,24 +13,20 @@ function toDashCase(str: string) {
 export default function Page() {
   const controls = useControls(tagsInputControls)
 
-  const [state, send] = useMachine(
-    tagsInput.machine({
-      id: useId(),
-      value: ["React", "Vue"],
-    }),
-    {
-      context: controls.context,
-    },
-  )
+  const service = useMachine(tagsInput.machine, {
+    id: useId(),
+    defaultValue: ["React", "Vue"],
+    ...controls.context,
+  })
 
-  const api = tagsInput.connect(state, send, normalizeProps)
+  const api = tagsInput.connect(service, normalizeProps)
 
   return (
     <>
       <main className="tags-input">
-        <div {...api.rootProps}>
-          <label {...api.labelProps}>Enter frameworks:</label>
-          <div {...api.controlProps}>
+        <div {...api.getRootProps()}>
+          <label {...api.getLabelProps()}>Enter frameworks:</label>
+          <div {...api.getControlProps()}>
             {api.value.map((value, index) => (
               <span key={`${toDashCase(value)}-tag-${index}`} {...api.getItemProps({ index, value })}>
                 <div data-testid={`${toDashCase(value)}-tag`} {...api.getItemPreviewProps({ index, value })}>
@@ -47,13 +43,13 @@ export default function Page() {
                 <input data-testid={`${toDashCase(value)}-input`} {...api.getItemInputProps({ index, value })} />
               </span>
             ))}
-            <input data-testid="input" placeholder="add tag" {...api.inputProps} />
+            <input data-testid="input" placeholder="add tag" {...api.getInputProps()} />
           </div>
-          <input {...api.hiddenInputProps} />
+          <input {...api.getHiddenInputProps()} />
         </div>
       </main>
       <Toolbar controls={controls.ui}>
-        <StateVisualizer state={state} />
+        <StateVisualizer state={service} />
       </Toolbar>
     </>
   )

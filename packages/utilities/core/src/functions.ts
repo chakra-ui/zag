@@ -1,3 +1,5 @@
+import { isFunction } from "./guard"
+
 export type MaybeFunction<T> = T | (() => T)
 
 export type Nullable<T> = T | null | undefined
@@ -12,10 +14,12 @@ export const runIfFn = <T>(
 
 export const cast = <T>(v: unknown): T => v as T
 
+export const identity = (v: VoidFunction) => v()
+
 export const noop = () => {}
 
 export const callAll =
-  <T extends (...a: any[]) => void>(...fns: (T | undefined)[]) =>
+  <T extends (...a: any[]) => void>(...fns: (T | null | undefined)[]) =>
   (...a: Parameters<T>) => {
     fns.forEach(function (fn) {
       fn?.(...a)
@@ -37,7 +41,7 @@ export function match<V extends string | number = string, R = unknown>(
 ): R {
   if (key in record) {
     const fn = record[key]
-    return typeof fn === "function" ? fn(...args) : fn
+    return isFunction(fn) ? fn(...args) : (fn as any)
   }
 
   const error = new Error(`No matching key: ${JSON.stringify(key)} in ${JSON.stringify(Object.keys(record))}`)
@@ -55,4 +59,43 @@ export const tryCatch = <R>(fn: () => R, fallback: () => R) => {
     }
     return fallback?.()
   }
+}
+
+export function throttle<T extends (...args: any[]) => void>(fn: T, wait = 0): T {
+  let lastCall = 0
+  let timeout: ReturnType<typeof setTimeout> | null = null
+
+  return ((...args: Parameters<T>) => {
+    const now = Date.now()
+    const timeSinceLastCall = now - lastCall
+
+    if (timeSinceLastCall >= wait) {
+      if (timeout) {
+        clearTimeout(timeout)
+        timeout = null
+      }
+      fn(...args)
+      lastCall = now
+    } else if (!timeout) {
+      timeout = setTimeout(() => {
+        fn(...args)
+        lastCall = Date.now()
+        timeout = null
+      }, wait - timeSinceLastCall)
+    }
+  }) as T
+}
+
+export function debounce<T extends (...args: any[]) => void>(fn: T, wait = 0): T {
+  let timeout: ReturnType<typeof setTimeout> | null = null
+
+  return ((...args: Parameters<T>) => {
+    if (timeout) {
+      clearTimeout(timeout)
+      timeout = null
+    }
+    timeout = setTimeout(() => {
+      fn(...args)
+    }, wait)
+  }) as T
 }

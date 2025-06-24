@@ -1,33 +1,42 @@
-import { addDomEvent, fireCustomEvent, isContextMenuEvent } from "@zag-js/dom-event"
-import { contains, getDocument, getEventTarget, getWindow, isHTMLElement, raf } from "@zag-js/dom-query"
-import { isFocusable } from "@zag-js/tabbable"
+import { addDomEvent, isContextMenuEvent, isShadowRoot, isTouchDevice } from "@zag-js/dom-query"
+import {
+  contains,
+  getDocument,
+  getEventTarget,
+  getNearestOverflowAncestor,
+  getWindow,
+  isFocusable,
+  isHTMLElement,
+  raf,
+} from "@zag-js/dom-query"
 import { callAll } from "@zag-js/utils"
-import { getWindowFrames } from "./get-window-frames"
+import { getParentWindow, getWindowFrames } from "./frame-utils"
 
 export interface InteractOutsideHandlers {
   /**
    * Function called when the pointer is pressed down outside the component
    */
-  onPointerDownOutside?: (event: PointerDownOutsideEvent) => void
+  onPointerDownOutside?: ((event: PointerDownOutsideEvent) => void) | undefined
   /**
    * Function called when the focus is moved outside the component
    */
-  onFocusOutside?: (event: FocusOutsideEvent) => void
+  onFocusOutside?: ((event: FocusOutsideEvent) => void) | undefined
   /**
    * Function called when an interaction happens outside the component
    */
-  onInteractOutside?: (event: InteractOutsideEvent) => void
+  onInteractOutside?: ((event: InteractOutsideEvent) => void) | undefined
 }
 
 export interface InteractOutsideOptions extends InteractOutsideHandlers {
-  exclude?: (target: HTMLElement) => boolean
-  defer?: boolean
+  exclude?: ((target: HTMLElement) => boolean) | undefined
+  defer?: boolean | undefined
 }
 
 export interface EventDetails<T> {
   originalEvent: T
   contextmenu: boolean
   focusable: boolean
+  target: EventTarget
 }
 
 const POINTER_OUTSIDE_EVENT = "pointerdown.outside"
@@ -65,15 +74,32 @@ function isEventPointWithin(node: MaybeElement, event: Event) {
   )
 }
 
-function isEventWithinScrollbar(event: Event): boolean {
-  const target = getEventTarget<HTMLElement>(event)
-  if (!target || !isPointerEvent(event)) return false
+function isPointInRect(rect: { x: number; y: number; width: number; height: number }, point: { x: number; y: number }) {
+  return rect.y <= point.y && point.y <= rect.y + rect.height && rect.x <= point.x && point.x <= rect.x + rect.width
+}
 
-  const isScrollableY = target.scrollHeight > target.clientHeight
-  const onScrollbarY = isScrollableY && event.clientX > target.clientWidth
+function isEventWithinScrollbar(event: Event, ancestor: HTMLElement): boolean {
+  if (!ancestor || !isPointerEvent(event)) return false
 
-  const isScrollableX = target.scrollWidth > target.clientWidth
-  const onScrollbarX = isScrollableX && event.clientY > target.clientHeight
+  const isScrollableY = ancestor.scrollHeight > ancestor.clientHeight
+  const onScrollbarY = isScrollableY && event.clientX > ancestor.offsetLeft + ancestor.clientWidth
+
+  const isScrollableX = ancestor.scrollWidth > ancestor.clientWidth
+  const onScrollbarX = isScrollableX && event.clientY > ancestor.offsetTop + ancestor.clientHeight
+
+  const rect = {
+    x: ancestor.offsetLeft,
+    y: ancestor.offsetTop,
+    width: ancestor.clientWidth + (isScrollableY ? 16 : 0),
+    height: ancestor.clientHeight + (isScrollableX ? 16 : 0),
+  }
+
+  const point = {
+    x: event.clientX,
+    y: event.clientY,
+  }
+
+  if (!isPointInRect(rect, point)) return false
 
   return onScrollbarY || onScrollbarX
 }
@@ -86,25 +112,48 @@ function trackInteractOutsideImpl(node: MaybeElement, options: InteractOutsideOp
   const doc = getDocument(node)
   const win = getWindow(node)
   const frames = getWindowFrames(win)
+  const parentWin = getParentWindow(win)
 
-  function isEventOutside(event: Event): boolean {
-    const target = getEventTarget(event)
+  function isEventOutside(event: Event, target: EventTarget | null): boolean {
     if (!isHTMLElement(target)) return false
+
+    // ignore disconnected nodes (removed from DOM)
+    if (!target.isConnected) return false
+
+    // ignore nodes that are inside the component
     if (contains(node, target)) return false
+
+    // Ex: password manager selection
     if (isEventPointWithin(node, event)) return false
-    if (isEventWithinScrollbar(event)) return false
+
+    // Ex: page content that is scrollable
+    const triggerEl = doc.querySelector(`[aria-controls="${node!.id}"]`)
+    if (triggerEl) {
+      const triggerAncestor = getNearestOverflowAncestor(triggerEl)
+      if (isEventWithinScrollbar(event, triggerAncestor)) return false
+    }
+
+    // Ex: dialog positioner that is scrollable
+    const nodeAncestor = getNearestOverflowAncestor(node!)
+    if (isEventWithinScrollbar(event, nodeAncestor)) return false
+
+    // Custom exclude function
     return !exclude?.(target)
   }
 
-  let clickHandler: VoidFunction
+  const pointerdownCleanups: Set<VoidFunction> = new Set()
+
+  const isInShadowRoot = isShadowRoot(node?.getRootNode())
 
   function onPointerDown(event: PointerEvent) {
     //
-    function handler() {
-      const func = defer ? raf : (v: any) => v()
-      const composedPath = event.composedPath?.() ?? [event.target]
+    function handler(clickEvent?: MouseEvent) {
+      const func = defer && !isTouchDevice() ? raf : (v: any) => v()
+      const evt = clickEvent ?? event
+      const composedPath = evt?.composedPath?.() ?? [evt?.target]
       func(() => {
-        if (!node || !isEventOutside(event)) return
+        const target = isInShadowRoot ? composedPath[0] : getEventTarget<HTMLElement>(event)
+        if (!node || !isEventOutside(event, target)) return
 
         if (onPointerDownOutside || onInteractOutside) {
           const handler = callAll(onPointerDownOutside, onInteractOutside) as EventListener
@@ -115,22 +164,22 @@ function trackInteractOutsideImpl(node: MaybeElement, options: InteractOutsideOp
           bubbles: false,
           cancelable: true,
           detail: {
-            originalEvent: event,
-            contextmenu: isContextMenuEvent(event),
+            originalEvent: evt,
+            contextmenu: isContextMenuEvent(evt),
             focusable: isComposedPathFocusable(composedPath),
+            target,
           },
         })
       })
     }
 
     if (event.pointerType === "touch") {
-      frames.removeEventListener("click", handler)
-      doc.removeEventListener("click", handler)
-
-      clickHandler = handler
-
-      doc.addEventListener("click", handler, { once: true })
-      frames.addEventListener("click", handler, { once: true })
+      // flush any pending pointerup events
+      pointerdownCleanups.forEach((fn) => fn())
+      // add a pointerup event listener to the document and all frame documents
+      pointerdownCleanups.add(addDomEvent(doc, "click", handler, { once: true }))
+      pointerdownCleanups.add(parentWin.addEventListener("click", handler, { once: true }))
+      pointerdownCleanups.add(frames.addEventListener("click", handler, { once: true }))
     } else {
       handler()
     }
@@ -138,15 +187,17 @@ function trackInteractOutsideImpl(node: MaybeElement, options: InteractOutsideOp
   const cleanups = new Set<VoidFunction>()
 
   const timer = setTimeout(() => {
-    cleanups.add(frames.addEventListener("pointerdown", onPointerDown, true))
     cleanups.add(addDomEvent(doc, "pointerdown", onPointerDown, true))
+    cleanups.add(parentWin.addEventListener("pointerdown", onPointerDown, true))
+    cleanups.add(frames.addEventListener("pointerdown", onPointerDown, true))
   }, 0)
 
   function onFocusin(event: FocusEvent) {
     //
     const func = defer ? raf : (v: any) => v()
     func(() => {
-      if (!node || !isEventOutside(event)) return
+      const target = getEventTarget<HTMLElement>(event)
+      if (!node || !isEventOutside(event, target)) return
 
       if (onFocusOutside || onInteractOutside) {
         const handler = callAll(onFocusOutside, onInteractOutside) as EventListener
@@ -159,21 +210,22 @@ function trackInteractOutsideImpl(node: MaybeElement, options: InteractOutsideOp
         detail: {
           originalEvent: event,
           contextmenu: false,
-          focusable: isFocusable(getEventTarget(event)),
+          focusable: isFocusable(target),
+          target,
         },
       })
     })
   }
 
-  cleanups.add(addDomEvent(doc, "focusin", onFocusin, true))
-  cleanups.add(frames.addEventListener("focusin", onFocusin, true))
+  if (!isTouchDevice()) {
+    cleanups.add(addDomEvent(doc, "focusin", onFocusin, true))
+    cleanups.add(parentWin.addEventListener("focusin", onFocusin, true))
+    cleanups.add(frames.addEventListener("focusin", onFocusin, true))
+  }
 
   return () => {
     clearTimeout(timer)
-    if (clickHandler) {
-      frames.removeEventListener("click", clickHandler)
-      doc.removeEventListener("click", clickHandler)
-    }
+    pointerdownCleanups.forEach((fn) => fn())
     cleanups.forEach((fn) => fn())
   }
 }
@@ -191,4 +243,10 @@ export function trackInteractOutside(nodeOrFn: NodeOrFn, options: InteractOutsid
   return () => {
     cleanups.forEach((fn) => fn?.())
   }
+}
+
+function fireCustomEvent(el: HTMLElement, type: string, init?: CustomEventInit) {
+  const win = el.ownerDocument.defaultView || window
+  const event = new win.CustomEvent(type, init)
+  return el.dispatchEvent(event)
 }

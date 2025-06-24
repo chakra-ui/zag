@@ -1,198 +1,270 @@
-import { createMachine, ref } from "@zag-js/core"
-import { getComputedStyle, raf } from "@zag-js/dom-query"
-import { compact } from "@zag-js/utils"
-import { dom } from "./collapsible.dom"
-import type { MachineContext, MachineState, UserDefinedContext } from "./collapsible.types"
+import { createMachine } from "@zag-js/core"
+import { getComputedStyle, getEventTarget, nextTick, raf, setStyle } from "@zag-js/dom-query"
+import * as dom from "./collapsible.dom"
+import type { CollapsibleSchema } from "./collapsible.types"
 
-export function machine(userContext: UserDefinedContext) {
-  const ctx = compact(userContext)
-  return createMachine<MachineContext, MachineState>(
-    {
-      id: "collapsible",
-      initial: ctx.open ? "open" : "closed",
+export const machine = createMachine<CollapsibleSchema>({
+  initialState({ prop }) {
+    const open = prop("open") || prop("defaultOpen")
+    return open ? "open" : "closed"
+  },
 
-      context: {
-        ...ctx,
-        height: 0,
-        width: 0,
-        initial: false,
-        stylesRef: null,
-        unmountAnimationName: null,
-      },
+  context({ bindable }) {
+    return {
+      size: bindable(() => ({
+        defaultValue: { height: 0, width: 0 },
+        sync: true,
+      })),
+      initial: bindable(() => ({
+        defaultValue: false,
+      })),
+    }
+  },
 
-      watch: {
-        open: ["setInitial", "computeSize", "toggleVisibility"],
-      },
+  refs() {
+    return {
+      cleanup: undefined,
+      stylesRef: undefined,
+    }
+  },
 
-      exit: ["clearInitial"],
+  watch({ track, prop, action }) {
+    track([() => prop("open")], () => {
+      action(["setInitial", "computeSize", "toggleVisibility"])
+    })
+  },
 
-      states: {
-        closed: {
-          tags: ["closed"],
-          on: {
-            "CONTROLLED.OPEN": "open",
-            OPEN: [
-              {
-                guard: "isOpenControlled",
-                actions: ["invokeOnOpen"],
-              },
-              {
-                target: "open",
-                actions: ["setInitial", "computeSize", "invokeOnOpen"],
-              },
-            ],
-          },
+  exit: ["clearInitial", "cleanupNode"],
+
+  states: {
+    closed: {
+      on: {
+        "controlled.open": {
+          target: "open",
         },
-
-        closing: {
-          tags: ["open"],
-          activities: ["trackAnimationEvents"],
-          on: {
-            "CONTROLLED.CLOSE": "closed",
-            "CONTROLLED.OPEN": "open",
-            OPEN: [
-              {
-                guard: "isOpenControlled",
-                actions: ["invokeOnOpen"],
-              },
-              {
-                target: "open",
-                actions: ["setInitial", "invokeOnOpen"],
-              },
-            ],
-            CLOSE: [
-              {
-                guard: "isOpenControlled",
-                actions: ["invokeOnExitComplete"],
-              },
-              {
-                target: "closed",
-                actions: ["setInitial", "computeSize", "invokeOnExitComplete"],
-              },
-            ],
-            "ANIMATION.END": {
-              target: "closed",
-              actions: ["invokeOnExitComplete"],
-            },
+        open: [
+          {
+            guard: "isOpenControlled",
+            actions: ["invokeOnOpen"],
           },
+          {
+            target: "open",
+            actions: ["setInitial", "computeSize", "invokeOnOpen"],
+          },
+        ],
+      },
+    },
+
+    closing: {
+      effects: ["trackExitAnimation"],
+      on: {
+        "controlled.close": {
+          target: "closed",
         },
-
-        open: {
-          tags: ["open"],
-          on: {
-            "CONTROLLED.CLOSE": "closing",
-            CLOSE: [
-              {
-                guard: "isOpenControlled",
-                actions: ["invokeOnClose"],
-              },
-              {
-                target: "closing",
-                actions: ["setInitial", "computeSize", "invokeOnClose"],
-              },
-            ],
+        "controlled.open": {
+          target: "open",
+        },
+        open: [
+          {
+            guard: "isOpenControlled",
+            actions: ["invokeOnOpen"],
           },
+          {
+            target: "open",
+            actions: ["setInitial", "invokeOnOpen"],
+          },
+        ],
+        close: [
+          {
+            guard: "isOpenControlled",
+            actions: ["invokeOnExitComplete"],
+          },
+          {
+            target: "closed",
+            actions: ["setInitial", "computeSize", "invokeOnExitComplete"],
+          },
+        ],
+        "animation.end": {
+          target: "closed",
+          actions: ["invokeOnExitComplete", "clearInitial"],
         },
       },
     },
-    {
-      guards: {
-        isOpenControlled: (ctx) => !!ctx["open.controlled"],
+
+    open: {
+      effects: ["trackEnterAnimation"],
+      on: {
+        "controlled.close": {
+          target: "closing",
+        },
+        close: [
+          {
+            guard: "isOpenControlled",
+            actions: ["invokeOnClose"],
+          },
+          {
+            target: "closing",
+            actions: ["setInitial", "computeSize", "invokeOnClose"],
+          },
+        ],
+        "size.measure": {
+          actions: ["measureSize"],
+        },
+        "animation.end": {
+          actions: ["clearInitial"],
+        },
       },
-      activities: {
-        trackAnimationEvents(ctx, _evt, { send }) {
-          let cleanup: VoidFunction | undefined
+    },
+  },
 
-          const rafCleanup = raf(() => {
-            const contentEl = dom.getContentEl(ctx)
-            if (!contentEl) return
+  implementations: {
+    guards: {
+      isOpenControlled: ({ prop }) => prop("open") != undefined,
+    },
 
-            // if there's no animation, send ANIMATION.END immediately
-            const animationName = getComputedStyle(contentEl).animationName
-            const hasNoAnimation = !animationName || animationName === "none"
+    effects: {
+      trackEnterAnimation: ({ send, scope }) => {
+        let cleanup: VoidFunction | undefined
 
-            if (hasNoAnimation) {
-              send({ type: "ANIMATION.END" })
-              return
-            }
+        const rafCleanup = raf(() => {
+          const contentEl = dom.getContentEl(scope)
+          if (!contentEl) return
 
-            const onEnd = (event: AnimationEvent) => {
-              const win = contentEl.ownerDocument.defaultView || window
-              const animationName = win.getComputedStyle(contentEl).animationName
-              if (event.target === contentEl && animationName === ctx.unmountAnimationName) {
-                send({ type: "ANIMATION.END" })
-              }
-            }
+          // if there's no animation, send ANIMATION.END immediately
+          const animationName = getComputedStyle(contentEl).animationName
+          const hasNoAnimation = !animationName || animationName === "none"
 
-            contentEl.addEventListener("animationend", onEnd)
-            cleanup = () => {
-              contentEl.removeEventListener("animationend", onEnd)
-            }
-          })
-
-          return () => {
-            rafCleanup()
-            cleanup?.()
+          if (hasNoAnimation) {
+            send({ type: "animation.end" })
+            return
           }
-        },
+
+          const onEnd = (event: AnimationEvent) => {
+            const target = getEventTarget<Element>(event)
+            if (target === contentEl) {
+              send({ type: "animation.end" })
+            }
+          }
+
+          contentEl.addEventListener("animationend", onEnd)
+
+          cleanup = () => {
+            contentEl.removeEventListener("animationend", onEnd)
+          }
+        })
+
+        return () => {
+          rafCleanup()
+          cleanup?.()
+        }
       },
-      actions: {
-        setInitial(ctx) {
-          ctx.initial = true
-        },
-        clearInitial(ctx) {
-          ctx.initial = false
-        },
-        computeSize(ctx, evt) {
-          ctx._rafCleanup?.()
 
-          ctx._rafCleanup = raf(() => {
-            const contentEl = dom.getContentEl(ctx)
-            if (!contentEl) return
+      trackExitAnimation: ({ send, scope }) => {
+        let cleanup: VoidFunction | undefined
 
-            ctx.stylesRef ||= ref({
-              animationName: contentEl.style.animationName,
-              animationDuration: contentEl.style.animationDuration,
-            })
+        const rafCleanup = raf(() => {
+          const contentEl = dom.getContentEl(scope)
+          if (!contentEl) return
 
-            if (evt.type === "CLOSE" || !ctx.open) {
-              const win = contentEl.ownerDocument.defaultView || window
-              ctx.unmountAnimationName = win.getComputedStyle(contentEl).animationName
+          // if there's no animation, send ANIMATION.END immediately
+          const animationName = getComputedStyle(contentEl).animationName
+          const hasNoAnimation = !animationName || animationName === "none"
+
+          if (hasNoAnimation) {
+            send({ type: "animation.end" })
+            return
+          }
+
+          const onEnd = (event: AnimationEvent) => {
+            const target = getEventTarget<Element>(event)
+            if (target === contentEl) {
+              send({ type: "animation.end" })
             }
+          }
 
-            const hidden = contentEl.hidden
-
-            // block any animations/transitions so the element renders at its full dimensions
-            contentEl.style.animationName = "none"
-            contentEl.style.animationDuration = "0s"
-            contentEl.hidden = false
-
-            const rect = contentEl.getBoundingClientRect()
-            ctx.height = rect.height
-            ctx.width = rect.width
-
-            // kick off any animations/transitions that were originally set up if it isn't the initial mount
-            if (ctx.initial) {
-              contentEl.style.animationName = ctx.stylesRef.animationName
-              contentEl.style.animationDuration = ctx.stylesRef.animationDuration
-            }
-
-            contentEl.hidden = hidden
+          contentEl.addEventListener("animationend", onEnd)
+          const restoreStyles = setStyle(contentEl, {
+            animationFillMode: "forwards",
           })
-        },
-        invokeOnOpen: (ctx) => {
-          ctx.onOpenChange?.({ open: true })
-        },
-        invokeOnClose: (ctx) => {
-          ctx.onOpenChange?.({ open: false })
-        },
-        invokeOnExitComplete(ctx) {
-          ctx.onExitComplete?.()
-        },
-        toggleVisibility: (ctx, _evt, { send }) => {
-          send({ type: ctx.open ? "CONTROLLED.OPEN" : "CONTROLLED.CLOSE" })
-        },
+          cleanup = () => {
+            contentEl.removeEventListener("animationend", onEnd)
+            nextTick(() => restoreStyles())
+          }
+        })
+
+        return () => {
+          rafCleanup()
+          cleanup?.()
+        }
       },
     },
-  )
-}
+
+    actions: {
+      setInitial: ({ context, flush }) => {
+        flush(() => {
+          context.set("initial", true)
+        })
+      },
+
+      clearInitial: ({ context }) => {
+        context.set("initial", false)
+      },
+
+      cleanupNode: ({ refs }) => {
+        refs.set("stylesRef", null)
+      },
+
+      measureSize: ({ context, scope }) => {
+        const contentEl = dom.getContentEl(scope)
+        if (!contentEl) return
+        const { height, width } = contentEl.getBoundingClientRect()
+        context.set("size", { height, width })
+      },
+
+      computeSize: ({ refs, scope, context }) => {
+        refs.get("cleanup")?.()
+
+        const rafCleanup = raf(() => {
+          const contentEl = dom.getContentEl(scope)
+          if (!contentEl) return
+
+          const hidden = contentEl.hidden
+
+          // block any animations/transitions so the element renders at its full dimensions
+          contentEl.style.animationName = "none"
+          contentEl.style.animationDuration = "0s"
+          contentEl.hidden = false
+
+          const rect = contentEl.getBoundingClientRect()
+
+          context.set("size", { height: rect.height, width: rect.width })
+
+          // kick off any animations/transitions that were originally set up if it isn't the initial mount
+          if (context.get("initial")) {
+            contentEl.style.animationName = ""
+            contentEl.style.animationDuration = ""
+          }
+          contentEl.hidden = hidden
+        })
+
+        refs.set("cleanup", rafCleanup)
+      },
+
+      invokeOnOpen: ({ prop }) => {
+        prop("onOpenChange")?.({ open: true })
+      },
+
+      invokeOnClose: ({ prop }) => {
+        prop("onOpenChange")?.({ open: false })
+      },
+
+      invokeOnExitComplete: ({ prop }) => {
+        prop("onExitComplete")?.()
+      },
+
+      toggleVisibility: ({ prop, send }) => {
+        send({ type: prop("open") ? "controlled.open" : "controlled.close" })
+      },
+    },
+  },
+})

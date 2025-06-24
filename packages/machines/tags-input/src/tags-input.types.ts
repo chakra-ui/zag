@@ -1,4 +1,4 @@
-import type { StateMachine as S } from "@zag-js/core"
+import type { EventObject, Machine, Service } from "@zag-js/core"
 import type { InteractOutsideHandlers } from "@zag-js/interact-outside"
 import type { LiveRegion } from "@zag-js/live-region"
 import type { CommonProperties, DirectionProperty, PropTypes, RequiredBy } from "@zag-js/types"
@@ -43,7 +43,7 @@ export interface IntlTranslations {
   tagEdited(value: string): string
   tagUpdated(value: string): string
   tagDeleted(value: string): string
-  noTagsSelected?: string
+  noTagsSelected?: string | undefined
   inputLabel?(count: number): string
 }
 
@@ -56,6 +56,7 @@ type Log =
 export type ElementIds = Partial<{
   root: string
   input: string
+  hiddenInput: string
   clearBtn: string
   label: string
   control: string
@@ -64,19 +65,19 @@ export type ElementIds = Partial<{
   itemInput(opts: ItemProps): string
 }>
 
-interface PublicContext extends DirectionProperty, CommonProperties, InteractOutsideHandlers {
+export interface TagsInputProps extends DirectionProperty, CommonProperties, InteractOutsideHandlers {
   /**
    * The ids of the elements in the tags input. Useful for composition.
    */
-  ids?: ElementIds
+  ids?: ElementIds | undefined
   /**
    * Specifies the localized strings that identifies the accessibility elements and their states
    */
-  translations: IntlTranslations
+  translations?: IntlTranslations | undefined
   /**
    * The max length of the input.
    */
-  maxLength?: number
+  maxLength?: number | undefined
   /**
    * The character that serves has:
    * - event key to trigger the addition of a new tag
@@ -84,176 +85,149 @@ interface PublicContext extends DirectionProperty, CommonProperties, InteractOut
    *
    * @default ","
    */
-  delimiter?: string | RegExp
+  delimiter?: string | RegExp | undefined
   /**
    * Whether the input should be auto-focused
    */
-  autoFocus?: boolean
+  autoFocus?: boolean | undefined
   /**
    * Whether the tags input should be disabled
    */
-  disabled?: boolean
+  disabled?: boolean | undefined
   /**
    * Whether the tags input should be read-only
    */
-  readOnly?: boolean
+  readOnly?: boolean | undefined
   /**
    * Whether the tags input is invalid
    */
-  invalid?: boolean
+  invalid?: boolean | undefined
   /**
-   * Whether a tag can be edited after creation, by presing `Enter` or double clicking.
+   * Whether the tags input is required
+   */
+  required?: boolean | undefined
+  /**
+   * Whether a tag can be edited after creation, by pressing `Enter` or double clicking.
    * @default true
    */
-  editable?: boolean
+  editable?: boolean | undefined
   /**
-   * The tag input's value
+   * The controlled tag input's value
    */
-  inputValue: string
+  inputValue?: string | undefined
   /**
-   * The tag values
+   * The initial tag input value when rendered.
+   * Use when you don't need to control the tag input value.
    */
-  value: string[]
+  defaultInputValue?: string | undefined
+  /**
+   * The controlled tag value
+   */
+  value?: string[] | undefined
+  /**
+   * The initial tag value when rendered.
+   * Use when you don't need to control the tag value.
+   */
+  defaultValue?: string[] | undefined
   /**
    * Callback fired when the tag values is updated
    */
-  onValueChange?(details: ValueChangeDetails): void
+  onValueChange?: ((details: ValueChangeDetails) => void) | undefined
   /**
    * Callback fired when the input value is updated
    */
-  onInputValueChange?(details: InputValueChangeDetails): void
+  onInputValueChange?: ((details: InputValueChangeDetails) => void) | undefined
   /**
    * Callback fired when a tag is highlighted by pointer or keyboard navigation
    */
-  onHighlightChange?(details: HighlightChangeDetails): void
+  onHighlightChange?: ((details: HighlightChangeDetails) => void) | undefined
   /**
    * Callback fired when the max tag count is reached or the `validateTag` function returns `false`
    */
-  onValueInvalid?(details: ValidityChangeDetails): void
+  onValueInvalid?: ((details: ValidityChangeDetails) => void) | undefined
   /**
    * Returns a boolean that determines whether a tag can be added.
    * Useful for preventing duplicates or invalid tag values.
    */
-  validate?(details: ValidateArgs): boolean
+  validate?: ((details: ValidateArgs) => boolean) | undefined
   /**
    * The behavior of the tags input when the input is blurred
    * - `"add"`: add the input value as a new tag
    * - `"clear"`: clear the input value
    */
-  blurBehavior?: "clear" | "add"
+  blurBehavior?: "clear" | "add" | undefined
   /**
    * Whether to add a tag when you paste values into the tag input
    * @default false
    */
-  addOnPaste?: boolean
+  addOnPaste?: boolean | undefined
   /**
    * The max number of tags
    * @default Infinity
    */
-  max: number
+  max?: number | undefined
   /**
    * Whether to allow tags to exceed max. In this case,
    * we'll attach `data-invalid` to the root
    */
-  allowOverflow?: boolean
+  allowOverflow?: boolean | undefined
   /**
    * The name attribute for the input. Useful for form submissions
    */
-  name?: string
+  name?: string | undefined
   /**
    * The associate form of the underlying input element.
    */
-  form?: string
+  form?: string | undefined
 }
 
-export type UserDefinedContext = RequiredBy<PublicContext, "id">
+type PropsWithDefault =
+  | "dir"
+  | "addOnPaste"
+  | "editable"
+  | "validate"
+  | "delimiter"
+  | "defaultValue"
+  | "translations"
+  | "max"
 
 type ComputedContext = Readonly<{
-  /**
-   * @computed
-   * The string value of the tags input
-   */
   valueAsString: string
-  /**
-   * @computed
-   * The trimmed value of the input
-   */
   trimmedInputValue: string
-  /**
-   * @computed
-   * Whether the tags input is interactive
-   */
   isInteractive: boolean
-  /**
-   * @computed
-   * Whether the tags input is at the maximum allowed number of tags
-   */
   isAtMax: boolean
-  /**
-   * @computed
-   * The total number of tags
-   */
   count: number
-  /**
-   * @computed
-   * Whether the tags input is exceeding the max number of tags
-   */
   isOverflowing: boolean
-  /**
-   * @computed
-   * Whether the tags input is disabled
-   */
   isDisabled: boolean
 }>
 
-interface PrivateContext {
-  /**
-   * @internal
-   * The output log for the screen reader to speak
-   */
-  log: { current: Log | null; prev: Log | null }
-  /**
-   * @internal
-   * The live region to announce changes to the user
-   */
-  liveRegion: LiveRegion | null
-  /**
-   * @internal
-   * The `id` of the currently highlighted tag
-   */
-  highlightedTagId: string | null
-  /**
-   * @internal
-   * The index of the deleted tag. Used to determine the next tag to focus.
-   */
-  idx?: number
-  /**
-   * @internal
-   * The `id` of the currently edited tag
-   */
-  editedTagId: string | null
-  /**
-   * @internal
-   * The value of the currently edited tag
-   */
-  editedTagValue: string
-  /**
-   * @internal
-   * Whether the fieldset is disabled
-   */
-  fieldsetDisabled: boolean
+export interface TagsInputSchema {
+  state: "idle" | "navigating:tag" | "focused:input" | "editing:tag"
+  tag: "focused" | "editing"
+  props: RequiredBy<TagsInputProps, PropsWithDefault>
+  context: {
+    value: string[]
+    inputValue: string
+    highlightedTagId: string | null
+    editedTagValue: string
+    editedTagId: string | null
+    editedTagIndex: number | null
+    fieldsetDisabled: boolean
+  }
+  refs: {
+    log: { current: Log | null; prev: Log | null }
+    liveRegion: LiveRegion | null
+  }
+  computed: ComputedContext
+  event: EventObject
+  action: string
+  effect: string
+  guard: string
 }
 
-export interface MachineContext extends PublicContext, ComputedContext, PrivateContext {}
+export type TagsInputService = Service<TagsInputSchema>
 
-export interface MachineState {
-  value: "idle" | "navigating:tag" | "focused:input" | "editing:tag"
-  tags: "focused" | "editing"
-}
-
-export type State = S.State<MachineContext, MachineState>
-
-export type Send = S.Send<S.AnyEventObject>
+export type TagsInputMachine = Machine<TagsInputSchema>
 
 /* -----------------------------------------------------------------------------
  * Component API
@@ -262,7 +236,7 @@ export type Send = S.Send<S.AnyEventObject>
 export interface ItemProps {
   index: string | number
   value: string
-  disabled?: boolean
+  disabled?: boolean | undefined
 }
 
 export interface ItemState {
@@ -284,7 +258,7 @@ export interface ItemState {
   disabled: boolean
 }
 
-export interface MachineApi<T extends PropTypes = PropTypes> {
+export interface TagsInputApi<T extends PropTypes = PropTypes> {
   /**
    * Whether the tags are empty
    */
@@ -342,12 +316,12 @@ export interface MachineApi<T extends PropTypes = PropTypes> {
    */
   getItemState(props: ItemProps): ItemState
 
-  rootProps: T["element"]
-  labelProps: T["label"]
-  controlProps: T["element"]
-  inputProps: T["input"]
-  hiddenInputProps: T["input"]
-  clearTriggerProps: T["button"]
+  getRootProps(): T["element"]
+  getLabelProps(): T["label"]
+  getControlProps(): T["element"]
+  getInputProps(): T["input"]
+  getHiddenInputProps(): T["input"]
+  getClearTriggerProps(): T["button"]
   getItemProps(options: ItemProps): T["element"]
   getItemPreviewProps(options: ItemProps): T["element"]
   getItemTextProps(options: ItemProps): T["element"]

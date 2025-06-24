@@ -9,17 +9,17 @@ import { useControls } from "../hooks/use-controls"
 export default function Page() {
   const controls = useControls(toggleGroupControls)
 
-  const [state, send] = useMachine(toggle.machine({ id: useId() }), {
-    context: controls.context,
+  const service = useMachine(toggle.machine, {
+    id: useId(),
+    ...controls.context,
   })
-
-  const api = toggle.connect(state, send, normalizeProps)
+  const api = toggle.connect(service, normalizeProps)
 
   return (
     <>
       <main className="toggle-group">
         <button>Outside</button>
-        <div {...api.rootProps}>
+        <div {...api.getRootProps()}>
           {toggleGroupData.map((item) => (
             <button key={item.value} {...api.getItemProps({ value: item.value })}>
               {item.label}
@@ -29,7 +29,7 @@ export default function Page() {
       </main>
 
       <Toolbar controls={controls.ui}>
-        <StateVisualizer state={state} />
+        <StateVisualizer state={service} context={["focusedId"]} />
       </Toolbar>
     </>
   )

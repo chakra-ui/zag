@@ -9,22 +9,22 @@ function toDashCase(str: string) {
   return str.replace(/\s+/g, "-").toLowerCase()
 }
 
-const [state, send] = useMachine(
-  tagsInput.machine({
-    id: "1",
-    value: ["React", "Vue"],
+const service = useMachine(
+  tagsInput.machine,
+  controls.mergeProps<tagsInput.Props>({
+    id: useId(),
+    defaultValue: ["React", "Vue"],
   }),
-  { context: controls.context },
 )
 
-const api = computed(() => tagsInput.connect(state.value, send, normalizeProps))
+const api = computed(() => tagsInput.connect(service, normalizeProps))
 </script>
 
 <template>
   <main class="tags-input">
-    <div v-bind="api.rootProps">
-      <label v-bind="api.labelProps">Enter frameworks:</label>
-      <div v-bind="api.controlProps">
+    <div v-bind="api.getRootProps()">
+      <label v-bind="api.getLabelProps()">Enter frameworks:</label>
+      <div v-bind="api.getControlProps()">
         <span v-for="(value, index) in api.value" :key="`${toDashCase(value)}-tag-${index}`">
           <div :data-testid="`${toDashCase(value)}-tag`" v-bind="api.getItemProps({ index, value })">
             <span :data-testid="`${toDashCase(value)}-valuetext`" v-bind="api.getItemTextProps({ index, value })"
@@ -40,14 +40,14 @@ const api = computed(() => tagsInput.connect(state.value, send, normalizeProps))
           <input :data-testid="`${toDashCase(value)}-input`" v-bind="api.getItemInputProps({ index, value })" />
         </span>
 
-        <input data-testid="input" placeholder="add tag" v-bind="api.inputProps" />
+        <input data-testid="input" placeholder="add tag" v-bind="api.getInputProps()" />
       </div>
-      <input v-bind="api.hiddenInputProps" />
+      <input v-bind="api.getHiddenInputProps()" />
     </div>
   </main>
 
   <Toolbar>
-    <StateVisualizer :state="state" />
+    <StateVisualizer :state="service" />
     <template #controls>
       <Controls :control="controls" />
     </template>

@@ -8,23 +8,22 @@
 
   const controls = useControls(fileUploadControls)
 
-  const [snapshot, send] = useMachine(fileUpload.machine({ id: "1" }), {
-    context: controls.context,
-  })
+  const id = $props.id()
+  const service = useMachine(fileUpload.machine, controls.mergeProps<fileUpload.Props>({ id }))
 
-  const api = $derived(fileUpload.connect(snapshot, send, normalizeProps))
+  const api = $derived(fileUpload.connect(service, normalizeProps))
 </script>
 
 <main class="file-upload">
-  <div {...api.rootProps}>
-    <div {...api.dropzoneProps}>
-      <input {...api.hiddenInputProps} />
+  <div {...api.getRootProps()}>
+    <div {...api.getDropzoneProps()}>
+      <input {...api.getHiddenInputProps()} data-testid="input" />
       Drag your files here
     </div>
 
-    <button {...api.triggerProps}>Choose Files...</button>
+    <button {...api.getTriggerProps()}>Choose Files...</button>
 
-    <ul {...api.itemGroupProps}>
+    <ul {...api.getItemGroupProps()}>
       {#each api.acceptedFiles as file}
         <li class="file" {...api.getItemProps({ file })}>
           <div>
@@ -40,5 +39,5 @@
 </main>
 
 <Toolbar {controls}>
-  <StateVisualizer state={snapshot} />
+  <StateVisualizer state={service} />
 </Toolbar>

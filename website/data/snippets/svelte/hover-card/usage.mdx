@@ -1,0 +1,25 @@
+```svelte
+<script lang="ts">
+  import * as hoverCard from "@zag-js/hover-card"
+  import { portal, useMachine, normalizeProps } from "@zag-js/svelte"
+
+  const id = $props.id()
+  const service = useMachine(hoverCard.machine, ({ id }))
+  const api = $derived(hoverCard.connect(service, normalizeProps))
+</script>
+
+<a href="https://twitter.com/zag_js" target="_blank" {...api.getTriggerProps()}> Twitter </a>
+
+{#if api.open}
+  <div use:portal {...api.getPositionerProps()}>
+    <div {...api.getPositionerProps()}>
+      <div {...api.getContentProps()}>
+        <div {...api.getArrowProps()}>
+          <div {...api.getArrowTipProps()}></div>
+        </div>
+        Twitter Preview
+      </div>
+    </div>
+  </div>
+{/if}
+```

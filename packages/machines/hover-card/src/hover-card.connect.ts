@@ -1,87 +1,98 @@
 import { getPlacementStyles } from "@zag-js/popper"
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import { parts } from "./hover-card.anatomy"
-import { dom } from "./hover-card.dom"
-import type { MachineApi, Send, State } from "./hover-card.types"
+import * as dom from "./hover-card.dom"
+import type { HoverCardApi, HoverCardService } from "./hover-card.types"
 
-export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>): MachineApi<T> {
+export function connect<T extends PropTypes>(service: HoverCardService, normalize: NormalizeProps<T>): HoverCardApi<T> {
+  const { state, send, prop, context, scope } = service
+
   const open = state.hasTag("open")
 
   const popperStyles = getPlacementStyles({
-    ...state.context.positioning,
-    placement: state.context.currentPlacement,
+    ...prop("positioning"),
+    placement: context.get("currentPlacement"),
   })
 
   return {
     open: open,
-    setOpen(_open) {
-      if (_open === open) return
-      send(_open ? "OPEN" : "CLOSE")
+    setOpen(nextOpen) {
+      const open = state.hasTag("open")
+      if (open === nextOpen) return
+      send({ type: nextOpen ? "OPEN" : "CLOSE" })
     },
     reposition(options = {}) {
       send({ type: "POSITIONING.SET", options })
     },
 
-    arrowProps: normalize.element({
-      id: dom.getArrowId(state.context),
-      ...parts.arrow.attrs,
-      dir: state.context.dir,
-      style: popperStyles.arrow,
-    }),
+    getArrowProps() {
+      return normalize.element({
+        id: dom.getArrowId(scope),
+        ...parts.arrow.attrs,
+        dir: prop("dir"),
+        style: popperStyles.arrow,
+      })
+    },
 
-    arrowTipProps: normalize.element({
-      ...parts.arrowTip.attrs,
-      dir: state.context.dir,
-      style: popperStyles.arrowTip,
-    }),
+    getArrowTipProps() {
+      return normalize.element({
+        ...parts.arrowTip.attrs,
+        dir: prop("dir"),
+        style: popperStyles.arrowTip,
+      })
+    },
 
-    triggerProps: normalize.element({
-      ...parts.trigger.attrs,
-      dir: state.context.dir,
-      "data-placement": state.context.currentPlacement,
-      id: dom.getTriggerId(state.context),
-      "data-state": open ? "open" : "closed",
-      onPointerEnter(event) {
-        if (event.pointerType === "touch") return
-        send({ type: "POINTER_ENTER", src: "trigger" })
-      },
-      onPointerLeave(event) {
-        if (event.pointerType === "touch") return
-        send({ type: "POINTER_LEAVE", src: "trigger" })
-      },
-      onFocus() {
-        send("TRIGGER_FOCUS")
-      },
-      onBlur() {
-        send("TRIGGER_BLUR")
-      },
-      onTouchStart(event) {
-        event.preventDefault()
-      },
-    }),
+    getTriggerProps() {
+      return normalize.element({
+        ...parts.trigger.attrs,
+        dir: prop("dir"),
+        "data-placement": context.get("currentPlacement"),
+        id: dom.getTriggerId(scope),
+        "data-state": open ? "open" : "closed",
+        onPointerEnter(event) {
+          if (event.pointerType === "touch") return
+          send({ type: "POINTER_ENTER", src: "trigger" })
+        },
+        onPointerLeave(event) {
+          if (event.pointerType === "touch") return
+          send({ type: "POINTER_LEAVE", src: "trigger" })
+        },
+        onFocus() {
+          send({ type: "TRIGGER_FOCUS" })
+        },
+        onBlur() {
+          send({ type: "TRIGGER_BLUR" })
+        },
+      })
+    },
 
-    positionerProps: normalize.element({
-      id: dom.getPositionerId(state.context),
-      ...parts.positioner.attrs,
-      dir: state.context.dir,
-      style: popperStyles.floating,
-    }),
+    getPositionerProps() {
+      return normalize.element({
+        id: dom.getPositionerId(scope),
+        ...parts.positioner.attrs,
+        dir: prop("dir"),
+        style: popperStyles.floating,
+      })
+    },
 
-    contentProps: normalize.element({
-      ...parts.content.attrs,
-      dir: state.context.dir,
-      id: dom.getContentId(state.context),
-      hidden: !open,
-      "data-state": open ? "open" : "closed",
-      "data-placement": state.context.currentPlacement,
-      onPointerEnter(event) {
-        if (event.pointerType === "touch") return
-        send({ type: "POINTER_ENTER", src: "content" })
-      },
-      onPointerLeave(event) {
-        if (event.pointerType === "touch") return
-        send({ type: "POINTER_LEAVE", src: "content" })
-      },
-    }),
+    getContentProps() {
+      return normalize.element({
+        ...parts.content.attrs,
+        dir: prop("dir"),
+        id: dom.getContentId(scope),
+        hidden: !open,
+        tabIndex: -1,
+        "data-state": open ? "open" : "closed",
+        "data-placement": context.get("currentPlacement"),
+        onPointerEnter(event) {
+          if (event.pointerType === "touch") return
+          send({ type: "POINTER_ENTER", src: "content" })
+        },
+        onPointerLeave(event) {
+          if (event.pointerType === "touch") return
+          send({ type: "POINTER_LEAVE", src: "content" })
+        },
+      })
+    },
   }
 }

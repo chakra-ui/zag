@@ -10,17 +10,14 @@ import { useControls } from "../hooks/use-controls"
 export default function Page() {
   const controls = useControls(pinInputControls)
 
-  const [state, send] = useMachine(
-    pinInput.machine({
-      name: "test",
-      id: useId(),
-    }),
-    {
-      context: controls.context,
-    },
-  )
+  const service = useMachine(pinInput.machine, {
+    name: "test",
+    id: useId(),
+    count: 3,
+    ...controls.context,
+  })
 
-  const api = pinInput.connect(state, send, normalizeProps)
+  const api = pinInput.connect(service, normalizeProps)
 
   return (
     <>
@@ -32,14 +29,14 @@ export default function Page() {
             console.log(formData)
           }}
         >
-          <div {...api.rootProps}>
-            <label {...api.labelProps}>Enter code:</label>
-            <div {...api.controlProps}>
-              <input data-testid="input-1" {...api.getInputProps({ index: 0 })} />
-              <input data-testid="input-2" {...api.getInputProps({ index: 1 })} />
-              <input data-testid="input-3" {...api.getInputProps({ index: 2 })} />
+          <div {...api.getRootProps()}>
+            <label {...api.getLabelProps()}>Enter code:</label>
+            <div {...api.getControlProps()}>
+              {api.items.map((index) => (
+                <input key={index} data-testid={`input-${index + 1}`} {...api.getInputProps({ index })} />
+              ))}
             </div>
-            <input {...api.hiddenInputProps} />
+            <input {...api.getHiddenInputProps()} />
           </div>
           <button data-testid="clear-button" onClick={api.clearValue}>
             Clear
@@ -49,7 +46,7 @@ export default function Page() {
       </main>
 
       <Toolbar controls={controls.ui}>
-        <StateVisualizer state={state} />
+        <StateVisualizer state={service} context={["value", "focusedIndex"]} />
       </Toolbar>
     </>
   )

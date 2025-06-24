@@ -1,6 +1,9 @@
-import type { ChannelProps, Color, MachineContext } from "../color-picker.types"
+import type { ChannelProps, Color, ColorPickerProps } from "../color-picker.types"
 
-function getSliderBackgroundDirection(orientation: "vertical" | "horizontal", dir: "ltr" | "rtl") {
+function getSliderBackgroundDirection(
+  orientation: "vertical" | "horizontal" | undefined,
+  dir: "ltr" | "rtl" | undefined,
+) {
   if (orientation === "vertical") {
     return "top"
   } else if (dir === "ltr") {
@@ -12,12 +15,12 @@ function getSliderBackgroundDirection(orientation: "vertical" | "horizontal", di
 
 interface SliderBackgroundProps extends Required<ChannelProps> {
   value: Color
-  dir: MachineContext["dir"]
+  dir: ColorPickerProps["dir"]
 }
 
 export const getSliderBackground = (props: SliderBackgroundProps) => {
-  const { channel, value, dir } = props
-  const bgDirection = getSliderBackgroundDirection(props.orientation, dir!)
+  const { channel, value, dir, orientation } = props
+  const bgDirection = getSliderBackgroundDirection(orientation, dir)
   const { minValue, maxValue } = value.getChannelRange(channel)
 
   switch (channel) {

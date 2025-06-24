@@ -1,9 +1,21 @@
-import type { StateMachine as S } from "@zag-js/core"
+import type { Machine, Service } from "@zag-js/core"
 import type { CommonProperties, PropTypes, RequiredBy } from "@zag-js/types"
+
+/* -----------------------------------------------------------------------------
+ * Callback details
+ * -----------------------------------------------------------------------------*/
 
 export interface CopyStatusDetails {
   copied: boolean
 }
+
+export interface ValueChangeDetails {
+  value: string
+}
+
+/* -----------------------------------------------------------------------------
+ * Machine context
+ * -----------------------------------------------------------------------------*/
 
 export type ElementIds = Partial<{
   root: string
@@ -11,41 +23,49 @@ export type ElementIds = Partial<{
   label: string
 }>
 
-interface PublicContext extends CommonProperties {
+export interface ClipboardProps extends CommonProperties {
   /**
    * The ids of the elements in the clipboard. Useful for composition.
    */
-  ids?: ElementIds
+  ids?: ElementIds | undefined
   /**
-   * The value to be copied to the clipboard
+   * The controlled value of the clipboard
    */
-  value: string
+  value?: string | undefined
+  /**
+   * The initial value to be copied to the clipboard when rendered.
+   * Use when you don't need to control the value of the clipboard.
+   */
+  defaultValue?: string | undefined
+  /**
+   * The function to be called when the value changes
+   */
+  onValueChange?: ((details: ValueChangeDetails) => void) | undefined
   /**
    * The function to be called when the value is copied to the clipboard
    */
-  onStatusChange?: (details: CopyStatusDetails) => void
+  onStatusChange?: ((details: CopyStatusDetails) => void) | undefined
   /**
    * The timeout for the copy operation
    * @default 3000
    */
-  timeout: number
+  timeout?: number | undefined
 }
 
-interface PrivateContext {}
-
-type ComputedContext = Readonly<{}>
-
-export type UserDefinedContext = RequiredBy<PublicContext, "id">
-
-export interface MachineContext extends PublicContext, PrivateContext, ComputedContext {}
-
-export interface MachineState {
-  value: "idle" | "copied"
+export interface ClipboardSchema {
+  state: "idle" | "copied"
+  props: RequiredBy<ClipboardProps, "timeout">
+  context: {
+    value: string
+  }
+  effect: string
+  action: string
+  guard: string
 }
 
-export type State = S.State<MachineContext, MachineState>
+export type ClipboardService = Service<ClipboardSchema>
 
-export type Send = S.Send<S.AnyEventObject>
+export type ClipboardMachine = Machine<ClipboardSchema>
 
 /* -----------------------------------------------------------------------------
  * Component API
@@ -55,7 +75,7 @@ export interface IndicatorProps {
   copied: boolean
 }
 
-export interface MachineApi<T extends PropTypes = PropTypes> {
+export interface ClipboardApi<T extends PropTypes = PropTypes> {
   /**
    * Whether the value has been copied to the clipboard
    */
@@ -73,10 +93,10 @@ export interface MachineApi<T extends PropTypes = PropTypes> {
    */
   copy(): void
 
-  rootProps: T["element"]
-  labelProps: T["label"]
-  controlProps: T["element"]
-  triggerProps: T["button"]
-  inputProps: T["input"]
+  getRootProps(): T["element"]
+  getLabelProps(): T["label"]
+  getControlProps(): T["element"]
+  getTriggerProps(): T["button"]
+  getInputProps(): T["input"]
   getIndicatorProps(props: IndicatorProps): T["element"]
 }

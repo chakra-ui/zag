@@ -1,26 +1,38 @@
-import type { PlaywrightTestConfig, ReporterDescription } from "@playwright/test"
+import { defineConfig, type PlaywrightTestConfig } from "@playwright/test"
 
-export function getWebServer() {
+const CI = !!process.env.CI
+
+type InferServer<T> = Exclude<T extends Array<infer U> ? U : T, undefined>
+
+type WebServer = InferServer<PlaywrightTestConfig["webServer"]>
+
+export function getWebServer(): WebServer {
   const framework = process.env.FRAMEWORK || "react"
 
-  const frameworks = {
+  const frameworks: Record<string, WebServer> = {
     react: {
       cwd: "./examples/next-ts",
       command: "cross-env PORT=3000 pnpm dev",
       url: "http://localhost:3000",
-      reuseExistingServer: !process.env.CI,
+      reuseExistingServer: !CI,
     },
     vue: {
       cwd: "./examples/vue-ts",
       command: "pnpm vite --port 3001",
       url: "http://localhost:3001",
-      reuseExistingServer: !process.env.CI,
+      reuseExistingServer: !CI,
     },
     solid: {
       cwd: "./examples/solid-ts",
       command: "pnpm vite --port 3002",
       url: "http://localhost:3002",
-      reuseExistingServer: !process.env.CI,
+      reuseExistingServer: !CI,
+    },
+    svelte: {
+      cwd: "./examples/svelte-ts",
+      command: "pnpm vite --port 3003",
+      url: "http://localhost:3003",
+      reuseExistingServer: !CI,
     },
   }
 
@@ -29,20 +41,21 @@ export function getWebServer() {
 
 const webServer = getWebServer()
 
-const config: PlaywrightTestConfig = {
+export default defineConfig({
   testDir: "./e2e",
   outputDir: "./e2e/results",
   testMatch: "*.e2e.ts",
-  fullyParallel: !process.env.CI,
+  fullyParallel: !CI,
   timeout: 30_000,
   expect: { timeout: 10_000 },
-  forbidOnly: !!process.env.CI,
-  workers: process.env.CI ? 1 : undefined,
+  forbidOnly: !!CI,
+  reportSlowTests: null,
+  retries: process.env.CI ? 2 : 1,
+  workers: process.env.CI ? 1 : "50%",
   reporter: [
     process.env.CI ? ["github", ["junit", { outputFile: "e2e/junit.xml" }]] : ["list"],
     ["html", { outputFolder: "e2e/report", open: "never" }],
-  ].filter(Boolean) as ReporterDescription[],
-  retries: process.env.CI ? 2 : 0,
+  ],
   webServer,
   use: {
     baseURL: webServer.url,
@@ -52,9 +65,7 @@ const config: PlaywrightTestConfig = {
     locale: "en-US",
     timezoneId: "GMT",
   },
-}
-
-export default config
+})
 
 declare global {
   namespace NodeJS {

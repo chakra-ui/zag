@@ -6,10 +6,9 @@ package: "@zag-js/tabs"
 
 # Tabs
 
-An accessible tabs component that provides keyboard interactions and ARIA
-attributes described in the WAI-ARIA Tabs Design Pattern. Tabs consist of a tab
-list with one or more visually separated tabs. Each tab has associated content,
-and only the selected tab's content is shown.
+An accessible tabs component that follows the WAI-ARIA Tabs Design Pattern. Each
+tab in the tab list has associated content, with only the selected tab's content
+being displayed.
 
 <Resources pkg="@zag-js/tabs" />
 
@@ -17,11 +16,10 @@ and only the selected tab's content is shown.
 
 **Features**
 
-- Support for mouse, touch, and keyboard interactions on tabs.
-- Support for LTR and RTL keyboard navigation.
-- Support for disabled tabs.
+- Support for mouse, touch, and keyboard interactions on tabs
+- Support for LTR and RTL keyboard navigation
 - Follows the tabs ARIA pattern, semantically linking tabs and their associated
-  tab panels.
+  tab panels
 - Focus management for tab panels without any focusable children
 
 ## Installation
@@ -30,9 +28,6 @@ To use the tabs machine in your project, run the following command in your
 command line:
 
 <CodeSnippet id="tabs/installation.mdx" />
-
-This command will install the framework agnostic tabs logic and the reactive
-utilities for your framework of choice.
 
 ## Anatomy
 
@@ -65,42 +60,50 @@ tabs machine in your project 🔥
 
 <CodeSnippet id="tabs/usage.mdx" />
 
-## Setting the selected tab
+### Setting the initially selected tab
 
-To set the initially selected tab, pass the `value` property to the machine's
-context.
+To set the initially selected tab, pass the `defaultValue` property to the
+machine's context.
 
-```jsx {3}
-const [state, send] = useMachine(
-  tabs.machine({
-    value: "tab-1",
-  }),
-)
+```jsx {2}
+const service = useMachine(tabs.machine, {
+  defaultValue: "tab-1",
+})
 ```
 
-Subsequently, you can use the `api.setValue` function to set the selected tab.
+Subsequently, you can use the `api.setValue` function to programatically set the
+selected tab.
 
-## Changing the orientation
+```jsx
+api.setValue("tab-2")
+```
+
+### Controlled tabs
+
+To control the selected tab programmatically, pass the `value` and
+`onValueChange` properties to the machine function.
+
+<CodeSnippet id="tabs/controlled.mdx" />
+
+### Changing the orientation
 
 The default orientation of the tabs is horizontal. To change the orientation,
 set the `orientation` property in the machine's context to `"vertical"`.
 
-```jsx {3}
-const [state, send] = useMachine(
-  tabs.machine({
-    orientation: "vertical",
-  }),
-)
+```jsx {2}
+const service = useMachine(tabs.machine, {
+  orientation: "vertical",
+})
 ```
 
-## Showing an indicator
+### Showing an indicator
 
 To show an active indicator when a tab is selected, you add the
 `tabIndicatorProps` object provided by the `connect` function.
 
 <CodeSnippet id="tabs/with-indicator.mdx" />
 
-## Disabling a tab
+### Disabling a tab
 
 To disable a tab, set the `disabled` property in the `getTriggerProps` to
 `true`.
@@ -114,27 +117,25 @@ clickable.
 //...
 ```
 
-## Listening for events
+### Listening for events
 
 - `onValueChange` — Callback invoked when the selected tab changes.
 - `onFocusChange` — Callback invoked when the focused tab changes.
 
-```jsx {3-8}
-const [state, send] = useMachine(
-  tabs.machine({
-    onFocusChange(details) {
-      // details => { value: string | null }
-      console.log("focused tab:", details.value)
-    },
-    onValueChange(details) {
-      // details => { value: string }
-      console.log("selected tab:", details.value)
-    },
-  }),
-)
+```jsx {2-7}
+const service = useMachine(tabs.machine, {
+  onFocusChange(details) {
+    // details => { value: string | null }
+    console.log("focused tab:", details.value)
+  },
+  onValueChange(details) {
+    // details => { value: string }
+    console.log("selected tab:", details.value)
+  },
+})
 ```
 
-## Manual tab activation
+### Manual tab activation
 
 By default, the tab can be selected when the receive focus from either the
 keyboard or pointer interaction. This is called "automatic tab activation".
@@ -142,27 +143,23 @@ keyboard or pointer interaction. This is called "automatic tab activation".
 The other approach is "manual tab activation" which means the tab is selected
 with the Enter key or by clicking on the tab.
 
-```jsx {3}
-const [state, send] = useMachine(
-  tabs.machine({
-    activationMode: "manual",
-  }),
-)
+```jsx {2}
+const service = useMachine(tabs.machine, {
+  activationMode: "manual",
+})
 ```
 
-## RTL Support
+### RTL Support
 
 The tabs machine provides support right to left writing directions. In this
 mode, the layout and keyboard interaction is flipped.
 
 To enable RTL support, set the `dir` property in the machine's context to `rtl`.
 
-```jsx {3}
-const [state, send] = useMachine(
-  tabs.machine({
-    dir: "rtl",
-  }),
-)
+```jsx {2}
+const service = useMachine(tabs.machine, {
+  dir: "rtl",
+})
 ```
 
 ## Styling guide
@@ -273,8 +270,12 @@ The tabs `api` exposes the following methods:
 
 <ApiTable name="tabs" />
 
+### Data Attributes
+
+<DataAttrTable name="tabs" />
+
 ## Accessibility
 
 ### Keyboard Interactions
 
-<KeyboardTable id="tabs" />
+<KeyboardTable name="tabs" />

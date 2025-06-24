@@ -4,9 +4,14 @@ import { menuControls, menuOptionData } from "@zag-js/shared"
 import { normalizeProps, useMachine } from "@zag-js/vue"
 
 const controls = useControls(menuControls)
-const [state, send] = useMachine(menu.machine({ id: "1" }))
+const service = useMachine(
+  menu.machine,
+  controls.mergeProps<menu.Props>({
+    id: useId(),
+  }),
+)
 
-const api = computed(() => menu.connect(state.value, send, normalizeProps))
+const api = computed(() => menu.connect(service, normalizeProps))
 
 const orderRef = ref("")
 const typeRef = ref<string[]>([])
@@ -41,15 +46,15 @@ const checkboxes = computed(() =>
 <template>
   <main>
     <div>
-      <button v-bind="api.triggerProps">Actions <span v-bind="api.indicatorProps">▾</span></button>
-      <Teleport to="body">
-        <div v-bind="api.positionerProps">
-          <div v-bind="api.contentProps">
+      <button v-bind="api.getTriggerProps()">Actions <span v-bind="api.getIndicatorProps()">▾</span></button>
+      <Teleport to="#teleports">
+        <div v-bind="api.getPositionerProps()">
+          <div v-bind="api.getContentProps()">
             <div v-for="item in radios" :key="item.value" v-bind="api.getOptionItemProps(item)">
               <span v-bind="api.getItemIndicatorProps(item)">✅</span>
               <span v-bind="api.getItemTextProps(item)">{{ item.label }}</span>
             </div>
-            <hr v-bind="api.separatorProps" />
+            <hr v-bind="api.getSeparatorProps()" />
             <div v-for="item in checkboxes" :key="item.value" v-bind="api.getOptionItemProps(item)">
               <span v-bind="api.getItemIndicatorProps(item)">✅</span>
               <span v-bind="api.getItemTextProps(item)">{{ item.label }}</span>
@@ -61,7 +66,7 @@ const checkboxes = computed(() =>
   </main>
 
   <Toolbar>
-    <StateVisualizer :state="state" />
+    <StateVisualizer :state="service" />
     <template #controls>
       <Controls :control="controls" />
     </template>

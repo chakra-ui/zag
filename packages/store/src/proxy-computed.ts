@@ -7,7 +7,7 @@ export function proxyWithComputed<T extends object, U extends object>(
       | ((snap: Snapshot<T>) => U[K])
       | {
           get: (snap: Snapshot<T>) => U[K]
-          set?: (state: T, newValue: U[K]) => void
+          set?: ((state: T, newValue: U[K]) => void) | undefined
         }
   },
 ) {
@@ -19,7 +19,7 @@ export function proxyWithComputed<T extends object, U extends object>(
     const computedFn = computedFns[key]
     const { get, set } = (typeof computedFn === "function" ? { get: computedFn } : computedFn) as {
       get: (snap: Snapshot<T>) => U[typeof key]
-      set?: (state: T, newValue: U[typeof key]) => void
+      set?: ((state: T, newValue: U[typeof key]) => void) | undefined
     }
     const desc: PropertyDescriptor = {}
     desc.get = () => get(snapshot(proxyObject))

@@ -1,0 +1,241 @@
+---
+title: Async List
+description: Using the Async List machine in your project.
+package: "@zag-js/async-list"
+---
+
+# Async List
+
+The async list is used to display a list of items that are loaded
+asynchronously. Usually paired with the combobox or select component.
+
+> This was inspired by React Stately's
+> [useAsyncList](https://react-spectrum.adobe.com/react-stately/useAsyncList.html)
+> hook.
+
+<Resources pkg="@zag-js/async-list" />
+
+**Features**
+
+- Support for pagination, sorting, and filtering
+- Support for abortable requests via `AbortSignal`
+- Manages loading and error states
+
+## Installation
+
+To use the Async List machine in your project, run the following command in your
+command line:
+
+<CodeSnippet id="async-list/installation.mdx" />
+
+## Usage
+
+First, import the async list package into your project
+
+```jsx
+import * as asyncList from "@zag-js/async-list"
+```
+
+The async list package exports two key functions:
+
+- `machine` — The state machine logic for the async list widget.
+- `connect` — returns the properties and methods for the async data management.
+
+<CodeSnippet id="async-list/usage.mdx" />
+
+### Loading and Error States
+
+The async list machine will automatically return the `error` and `loading`
+properties in the `api` when the `load` function returns an error or is loading.
+
+- `api.error` — The error instance returned by the last fetch.
+- `api.loading` — Whether the list is loading.
+- `api.items` — The items in the list after the last fetch.
+
+### Pagination
+
+The async list supports paginated data to avoid loading too many items at once.
+This is accomplished by returning a cursor in addition to items from the `load`
+function.
+
+When `loadMore` is called, the cursor is passed back to your `load` function,
+which you can use to determine the URL for the next page.
+
+```tsx
+const service = useMachine(asyncList.machine, {
+  async load({ signal, cursor }) {
+    const requestUrl = cursor || "https://pokeapi.co/api/v2/pokemon"
+    const res = await fetch(requestUrl, { signal })
+    const json = await res.json()
+
+    return {
+      items: json.results,
+      cursor: json.next,
+    }
+  },
+})
+```
+
+Then, you can use the `api.loadMore` method to load more items.
+
+```tsx
+api.loadMore()
+```
+
+### Reloading the data
+
+Use the `api.reload` method to reload the data.
+
+```tsx
+api.reload()
+```
+
+### Sorting
+
+The async list machine supports both client-side and server-side sorting. You
+can implement sorting by providing a `sort` function for client-side operations,
+or by handling the `sortDescriptor` parameter in your `load` function for
+server-side sorting.
+
+Regardless of the sorting implementation, the way to trigger the sorting is by
+calling the `api.sort` method with the descriptor.
+
+```tsx
+api.sort({ column: "name", direction: "ascending" })
+```
+
+#### Client-side sorting
+
+Use the `sort` function to implement client-side sorting.
+
+```tsx
+const service = useMachine(asyncList.machine, {
+  async load({ signal }) {
+    // ...
+  },
+  sort({ items, sortDescriptor }) {
+    return {
+      items: items.sort((a, b) => {
+        // Compare the items by the sorted column
+        const aColumn = a[sortDescriptor.column]
+        const bColumn = b[sortDescriptor.column]
+        let direction = aColumn.localeCompare(bColumn)
+
+        // Flip the direction if descending order is specified.
+        if (sortDescriptor.direction === "descending") {
+          direction *= -1
+        }
+
+        return direction
+      }),
+    }
+  },
+})
+```
+
+#### Server-side sorting
+
+For server-side sorting, use the `sortDescriptor` parameter in the `load`
+function to pass sorting parameters to your API.
+
+```tsx
+const service = useMachine(asyncList.machine, {
+  async load({ signal, sortDescriptor }) {
+    let url = new URL("http://example.com/api")
+    if (sortDescriptor) {
+      url.searchParams.append("sort_key", sortDescriptor.column)
+      url.searchParams.append("sort_direction", sortDescriptor.direction)
+    }
+
+    let res = await fetch(url, { signal })
+    let json = await res.json()
+    return {
+      items: json.results,
+    }
+  },
+})
+```
+
+### Filtering
+
+Filtering your data list is often necessary, such as for user searches or query
+lookups. For server-side filtering, use the `filterText` parameter in the `load`
+function.
+
+The way to trigger the filtering is by calling the `api.setFilterText` method
+with the filter text.
+
+```tsx
+api.setFilterText("filter text")
+```
+
+The `api.setFilterText` method modifies the `filterText` and calls the `load`
+function to refresh the data with the updated filter.
+
+```tsx
+const service = useMachine(asyncList.machine, {
+  async load({ signal, filterText }) {
+    let url = new URL("http://example.com/api")
+    if (filterText) {
+      url.searchParams.append("filter", filterText)
+    }
+
+    let res = await fetch(url, { signal })
+    let json = await res.json()
+    return {
+      items: json.results,
+    }
+  },
+})
+```
+
+### Aborting requests
+
+Use the `api.abort` method to abort the current request.
+
+```tsx
+api.abort()
+```
+
+This only works if you pass the `signal` parameter to the `load` function.
+
+```tsx
+const service = useMachine(asyncList.machine, {
+  async load({ signal }) {
+    // ...
+  },
+})
+```
+
+### Registering external dependencies
+
+In even more complex scenarios, you may need to register external dependencies
+that trigger a reload of the data.
+
+Use the `dependencies` parameter to register external dependencies. Ensure every
+dependency is a primitive value (no objects, arrays, maps, sets, etc.).
+
+```tsx
+const service = useMachine(asyncList.machine, {
+  dependencies: ["user"],
+  async load({ signal, deps }) {
+    // ...
+  },
+})
+```
+
+## Methods and Properties
+
+The async list's `api` exposes the following methods and properties:
+
+### Machine Context
+
+The async list machine exposes the following context properties:
+
+<ContextTable name="async-list" />
+
+### Machine API
+
+The async list `api` exposes the following methods:
+
+<ApiTable name="async-list" />

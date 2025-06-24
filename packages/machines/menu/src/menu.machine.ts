@@ -1,737 +1,847 @@
-import { createMachine, guards, ref } from "@zag-js/core"
+import { createGuards, createMachine, type Service, type Scope } from "@zag-js/core"
 import { trackDismissableElement } from "@zag-js/dismissable"
-import { addDomEvent } from "@zag-js/dom-event"
-import { getByTypeahead, isEditableElement, raf, scrollIntoView, observeAttributes } from "@zag-js/dom-query"
-import { getPlacement, getPlacementSide } from "@zag-js/popper"
-import { getElementPolygon, isPointInPolygon } from "@zag-js/rect-utils"
-import { getFirstTabbable } from "@zag-js/tabbable"
-import { cast, compact, isEqual } from "@zag-js/utils"
-import { dom } from "./menu.dom"
-import type { MachineContext, MachineState, UserDefinedContext } from "./menu.types"
+import {
+  addDomEvent,
+  clickIfLink,
+  contains,
+  getByTypeahead,
+  getEventTarget,
+  getInitialFocus,
+  isEditableElement,
+  observeAttributes,
+  raf,
+  scrollIntoView,
+} from "@zag-js/dom-query"
+import { getPlacement, getPlacementSide, type Placement } from "@zag-js/popper"
+import { getElementPolygon, isPointInPolygon, type Point } from "@zag-js/rect-utils"
+import * as dom from "./menu.dom"
+import type { MenuSchema, MenuService } from "./menu.types"
 
-const { not, and, or } = guards
+const { not, and, or } = createGuards<MenuSchema>()
 
-export function machine(userContext: UserDefinedContext) {
-  const ctx = compact(userContext)
-  return createMachine<MachineContext, MachineState>(
-    {
-      id: "menu",
-      initial: ctx.open ? "open" : "idle",
-      context: {
-        highlightedValue: null,
-        loopFocus: false,
-        anchorPoint: null,
-        closeOnSelect: true,
-        typeahead: true,
-        ...ctx,
-        positioning: {
-          placement: "bottom-start",
-          gutter: 8,
-          ...ctx.positioning,
+export const machine = createMachine<MenuSchema>({
+  props({ props }) {
+    return {
+      closeOnSelect: true,
+      typeahead: true,
+      composite: true,
+      loopFocus: false,
+      navigate(details) {
+        clickIfLink(details.node)
+      },
+      ...props,
+      positioning: {
+        placement: "bottom-start",
+        gutter: 8,
+        ...props.positioning,
+      },
+    }
+  },
+  initialState({ prop }) {
+    const open = prop("open") || prop("defaultOpen")
+    return open ? "open" : "idle"
+  },
+
+  context({ bindable, prop }) {
+    return {
+      suspendPointer: bindable<boolean>(() => ({
+        defaultValue: false,
+      })),
+      highlightedValue: bindable<string | null>(() => ({
+        defaultValue: prop("defaultHighlightedValue") || null,
+        value: prop("highlightedValue"),
+        onChange(value) {
+          prop("onHighlightChange")?.({ highlightedValue: value })
         },
-        intentPolygon: null,
-        parent: null,
-        lastHighlightedValue: null,
-        children: cast(ref({})),
-        suspendPointer: false,
-        restoreFocus: true,
-        typeaheadState: getByTypeahead.defaultOptions,
-      },
+      })),
+      lastHighlightedValue: bindable<string | null>(() => ({
+        defaultValue: null,
+      })),
+      currentPlacement: bindable<Placement | undefined>(() => ({
+        defaultValue: undefined,
+      })),
+      intentPolygon: bindable<Point[] | null>(() => ({
+        defaultValue: null,
+      })),
+      anchorPoint: bindable<Point | null>(() => ({
+        defaultValue: null,
+        hash(value) {
+          return `x: ${value?.x}, y: ${value?.y}`
+        },
+      })),
+    }
+  },
 
-      computed: {
-        isSubmenu: (ctx) => ctx.parent !== null,
-        isRtl: (ctx) => ctx.dir === "rtl",
-        isTypingAhead: (ctx) => ctx.typeaheadState.keysSoFar !== "",
-      },
+  refs() {
+    return {
+      parent: null,
+      children: {},
+      typeaheadState: { ...getByTypeahead.defaultOptions },
+      positioningOverride: {},
+    }
+  },
 
-      watch: {
-        isSubmenu: "setSubmenuPlacement",
-        anchorPoint: "reposition",
-        open: "toggleVisibility",
-      },
+  computed: {
+    isSubmenu: ({ refs }) => refs.get("parent") != null,
+    isRtl: ({ prop }) => prop("dir") === "rtl",
+    isTypingAhead: ({ refs }) => refs.get("typeaheadState").keysSoFar !== "",
+    highlightedId: ({ context, scope, refs }) =>
+      resolveItemId(refs.get("children"), context.get("highlightedValue"), scope),
+  },
 
+  watch({ track, action, context, computed, prop }) {
+    track([() => computed("isSubmenu")], () => {
+      action(["setSubmenuPlacement"])
+    })
+    track([() => context.hash("anchorPoint")], () => {
+      action(["reposition"])
+    })
+    track([() => prop("open")], () => {
+      action(["toggleVisibility"])
+    })
+  },
+
+  on: {
+    "PARENT.SET": {
+      actions: ["setParentMenu"],
+    },
+    "CHILD.SET": {
+      actions: ["setChildMenu"],
+    },
+    OPEN: [
+      {
+        guard: "isOpenControlled",
+        actions: ["invokeOnOpen"],
+      },
+      {
+        target: "open",
+        actions: ["invokeOnOpen"],
+      },
+    ],
+    OPEN_AUTOFOCUS: [
+      {
+        guard: "isOpenControlled",
+        actions: ["invokeOnOpen"],
+      },
+      {
+        // internal: true,
+        target: "open",
+        actions: ["highlightFirstItem", "invokeOnOpen"],
+      },
+    ],
+    CLOSE: [
+      {
+        guard: "isOpenControlled",
+        actions: ["invokeOnClose"],
+      },
+      {
+        target: "closed",
+        actions: ["invokeOnClose"],
+      },
+    ],
+    "HIGHLIGHTED.RESTORE": {
+      actions: ["restoreHighlightedItem"],
+    },
+    "HIGHLIGHTED.SET": {
+      actions: ["setHighlightedItem"],
+    },
+  },
+
+  states: {
+    idle: {
+      tags: ["closed"],
       on: {
-        "PARENT.SET": {
-          actions: "setParentMenu",
+        "CONTROLLED.OPEN": {
+          target: "open",
         },
-        "CHILD.SET": {
-          actions: "setChildMenu",
+        "CONTROLLED.CLOSE": {
+          target: "closed",
         },
-        OPEN: [
+        CONTEXT_MENU_START: {
+          target: "opening:contextmenu",
+          actions: ["setAnchorPoint"],
+        },
+        CONTEXT_MENU: [
           {
             guard: "isOpenControlled",
-            actions: "invokeOnOpen",
+            actions: ["setAnchorPoint", "invokeOnOpen"],
           },
           {
             target: "open",
-            actions: "invokeOnOpen",
+            actions: ["setAnchorPoint", "invokeOnOpen"],
           },
         ],
-        OPEN_AUTOFOCUS: [
+        TRIGGER_CLICK: [
           {
             guard: "isOpenControlled",
             actions: ["invokeOnOpen"],
           },
           {
-            internal: true,
+            target: "open",
+            actions: ["invokeOnOpen"],
+          },
+        ],
+        TRIGGER_FOCUS: {
+          guard: not("isSubmenu"),
+          target: "closed",
+        },
+        TRIGGER_POINTERMOVE: {
+          guard: "isSubmenu",
+          target: "opening",
+        },
+      },
+    },
+
+    "opening:contextmenu": {
+      tags: ["closed"],
+      effects: ["waitForLongPress"],
+      on: {
+        "CONTROLLED.OPEN": { target: "open" },
+        "CONTROLLED.CLOSE": { target: "closed" },
+        CONTEXT_MENU_CANCEL: [
+          {
+            guard: "isOpenControlled",
+            actions: ["invokeOnClose"],
+          },
+          {
+            target: "closed",
+            actions: ["invokeOnClose"],
+          },
+        ],
+        "LONG_PRESS.OPEN": [
+          {
+            guard: "isOpenControlled",
+            actions: ["invokeOnOpen"],
+          },
+          {
+            target: "open",
+            actions: ["invokeOnOpen"],
+          },
+        ],
+      },
+    },
+
+    opening: {
+      tags: ["closed"],
+      effects: ["waitForOpenDelay"],
+      on: {
+        "CONTROLLED.OPEN": {
+          target: "open",
+        },
+        "CONTROLLED.CLOSE": {
+          target: "closed",
+        },
+        BLUR: [
+          {
+            guard: "isOpenControlled",
+            actions: ["invokeOnClose"],
+          },
+          {
+            target: "closed",
+            actions: ["invokeOnClose"],
+          },
+        ],
+        TRIGGER_POINTERLEAVE: [
+          {
+            guard: "isOpenControlled",
+            actions: ["invokeOnClose"],
+          },
+          {
+            target: "closed",
+            actions: ["invokeOnClose"],
+          },
+        ],
+        "DELAY.OPEN": [
+          {
+            guard: "isOpenControlled",
+            actions: ["invokeOnOpen"],
+          },
+          {
+            target: "open",
+            actions: ["invokeOnOpen"],
+          },
+        ],
+      },
+    },
+
+    closing: {
+      tags: ["open"],
+      effects: ["trackPointerMove", "trackInteractOutside", "waitForCloseDelay"],
+      on: {
+        "CONTROLLED.OPEN": {
+          target: "open",
+        },
+        "CONTROLLED.CLOSE": {
+          target: "closed",
+          actions: ["focusParentMenu", "restoreParentHighlightedItem"],
+        },
+        // don't invoke on open here since the menu is still open (we're only keeping it open)
+        MENU_POINTERENTER: {
+          target: "open",
+          actions: ["clearIntentPolygon"],
+        },
+        POINTER_MOVED_AWAY_FROM_SUBMENU: [
+          {
+            guard: "isOpenControlled",
+            actions: ["invokeOnClose"],
+          },
+          {
+            target: "closed",
+            actions: ["focusParentMenu", "restoreParentHighlightedItem"],
+          },
+        ],
+        "DELAY.CLOSE": [
+          {
+            guard: "isOpenControlled",
+            actions: ["invokeOnClose"],
+          },
+          {
+            target: "closed",
+            actions: ["focusParentMenu", "restoreParentHighlightedItem", "invokeOnClose"],
+          },
+        ],
+      },
+    },
+
+    closed: {
+      tags: ["closed"],
+      entry: ["clearHighlightedItem", "focusTrigger", "resumePointer"],
+      on: {
+        "CONTROLLED.OPEN": [
+          {
+            guard: or("isOpenAutoFocusEvent", "isArrowDownEvent"),
+            target: "open",
+            actions: ["highlightFirstItem"],
+          },
+          {
+            guard: "isArrowUpEvent",
+            target: "open",
+            actions: ["highlightLastItem"],
+          },
+          {
+            target: "open",
+          },
+        ],
+        CONTEXT_MENU_START: {
+          target: "opening:contextmenu",
+          actions: ["setAnchorPoint"],
+        },
+        CONTEXT_MENU: [
+          {
+            guard: "isOpenControlled",
+            actions: ["setAnchorPoint", "invokeOnOpen"],
+          },
+          {
+            target: "open",
+            actions: ["setAnchorPoint", "invokeOnOpen"],
+          },
+        ],
+        TRIGGER_CLICK: [
+          {
+            guard: "isOpenControlled",
+            actions: ["invokeOnOpen"],
+          },
+          {
+            target: "open",
+            actions: ["invokeOnOpen"],
+          },
+        ],
+        TRIGGER_POINTERMOVE: {
+          guard: "isTriggerItem",
+          target: "opening",
+        },
+        TRIGGER_BLUR: { target: "idle" },
+        ARROW_DOWN: [
+          {
+            guard: "isOpenControlled",
+            actions: ["invokeOnOpen"],
+          },
+          {
             target: "open",
             actions: ["highlightFirstItem", "invokeOnOpen"],
           },
         ],
-        CLOSE: [
+        ARROW_UP: [
           {
             guard: "isOpenControlled",
-            actions: "invokeOnClose",
+            actions: ["invokeOnOpen"],
+          },
+          {
+            target: "open",
+            actions: ["highlightLastItem", "invokeOnOpen"],
+          },
+        ],
+      },
+    },
+
+    open: {
+      tags: ["open"],
+      effects: ["trackInteractOutside", "trackPositioning", "scrollToHighlightedItem"],
+      entry: ["focusMenu", "resumePointer"],
+      on: {
+        "CONTROLLED.CLOSE": [
+          {
+            target: "closed",
+            guard: "isArrowLeftEvent",
+            actions: ["focusParentMenu"],
           },
           {
             target: "closed",
-            actions: "invokeOnClose",
           },
         ],
-        "HIGHLIGHTED.RESTORE": {
-          actions: "restoreHighlightedItem",
+        TRIGGER_CLICK: [
+          {
+            guard: and(not("isTriggerItem"), "isOpenControlled"),
+            actions: ["invokeOnClose"],
+          },
+          {
+            guard: not("isTriggerItem"),
+            target: "closed",
+            actions: ["invokeOnClose"],
+          },
+        ],
+        CONTEXT_MENU: {
+          actions: ["setAnchorPoint", "focusMenu"],
         },
-        "HIGHLIGHTED.SET": {
-          actions: "setHighlightedItem",
+        ARROW_UP: {
+          actions: ["highlightPrevItem", "focusMenu"],
         },
-      },
-
-      states: {
-        idle: {
-          tags: ["closed"],
-          on: {
-            "CONTROLLED.OPEN": "open",
-            "CONTROLLED.CLOSE": "closed",
-            CONTEXT_MENU_START: {
-              target: "opening:contextmenu",
-              actions: "setAnchorPoint",
-            },
-            CONTEXT_MENU: [
-              {
-                guard: "isOpenControlled",
-                actions: ["setAnchorPoint", "invokeOnOpen"],
-              },
-              {
-                target: "open",
-                actions: ["setAnchorPoint", "invokeOnOpen"],
-              },
-            ],
-            TRIGGER_CLICK: [
-              {
-                guard: "isOpenControlled",
-                actions: "invokeOnOpen",
-              },
-              {
-                target: "open",
-                actions: "invokeOnOpen",
-              },
-            ],
-            TRIGGER_FOCUS: {
-              guard: not("isSubmenu"),
-              target: "closed",
-            },
-            TRIGGER_POINTERMOVE: {
-              guard: "isSubmenu",
-              target: "opening",
-            },
-          },
+        ARROW_DOWN: {
+          actions: ["highlightNextItem", "focusMenu"],
         },
-
-        "opening:contextmenu": {
-          tags: ["closed"],
-          after: {
-            LONG_PRESS_DELAY: [
-              {
-                guard: "isOpenControlled",
-                actions: "invokeOnOpen",
-              },
-              {
-                target: "open",
-                actions: "invokeOnOpen",
-              },
-            ],
+        ARROW_LEFT: [
+          {
+            guard: and("isSubmenu", "isOpenControlled"),
+            actions: ["invokeOnClose"],
           },
-          on: {
-            "CONTROLLED.OPEN": "open",
-            "CONTROLLED.CLOSE": "closed",
-            CONTEXT_MENU_CANCEL: [
-              {
-                guard: "isOpenControlled",
-                actions: "invokeOnClose",
-              },
-              {
-                target: "closed",
-                actions: "invokeOnClose",
-              },
-            ],
+          {
+            guard: "isSubmenu",
+            target: "closed",
+            actions: ["focusParentMenu", "invokeOnClose"],
           },
+        ],
+        HOME: {
+          actions: ["highlightFirstItem", "focusMenu"],
         },
-
-        opening: {
-          tags: ["closed"],
-          after: {
-            SUBMENU_OPEN_DELAY: [
-              {
-                guard: "isOpenControlled",
-                actions: "invokeOnOpen",
-              },
-              {
-                target: "open",
-                actions: "invokeOnOpen",
-              },
-            ],
-          },
-          on: {
-            "CONTROLLED.OPEN": "open",
-            "CONTROLLED.CLOSE": "closed",
-            BLUR: [
-              {
-                guard: "isOpenControlled",
-                actions: "invokeOnClose",
-              },
-              {
-                target: "closed",
-                actions: "invokeOnClose",
-              },
-            ],
-            TRIGGER_POINTERLEAVE: [
-              {
-                guard: "isOpenControlled",
-                actions: "invokeOnClose",
-              },
-              {
-                target: "closed",
-                actions: "invokeOnClose",
-              },
-            ],
-          },
+        END: {
+          actions: ["highlightLastItem", "focusMenu"],
         },
-
-        closing: {
-          tags: ["open"],
-          activities: ["trackPointerMove", "trackInteractOutside"],
-          after: {
-            SUBMENU_CLOSE_DELAY: [
-              {
-                guard: "isOpenControlled",
-                actions: ["invokeOnClose"],
-              },
-              {
-                target: "closed",
-                actions: ["focusParentMenu", "restoreParentHiglightedItem", "invokeOnClose"],
-              },
-            ],
-          },
-          on: {
-            "CONTROLLED.OPEN": "open",
-            "CONTROLLED.CLOSE": {
-              target: "closed",
-              actions: ["focusParentMenu", "restoreParentHiglightedItem"],
-            },
-            // don't invoke on open here since the menu is still open (we're only keeping it open)
-            MENU_POINTERENTER: {
-              target: "open",
-              actions: "clearIntentPolygon",
-            },
-            POINTER_MOVED_AWAY_FROM_SUBMENU: [
-              {
-                guard: "isOpenControlled",
-                actions: "invokeOnClose",
-              },
-              {
-                target: "closed",
-                actions: ["focusParentMenu", "restoreParentHiglightedItem"],
-              },
-            ],
-          },
+        ARROW_RIGHT: {
+          guard: "isTriggerItemHighlighted",
+          actions: ["openSubmenu"],
         },
-
-        closed: {
-          tags: ["closed"],
-          entry: ["clearHighlightedItem", "focusTrigger", "clearAnchorPoint", "resumePointer"],
-          on: {
-            "CONTROLLED.OPEN": [
-              {
-                guard: or("isOpenAutoFocusEvent", "isArrowDownEvent"),
-                target: "open",
-                actions: "highlightFirstItem",
-              },
-              {
-                guard: "isArrowUpEvent",
-                target: "open",
-                actions: "highlightLastItem",
-              },
-              {
-                target: "open",
-              },
-            ],
-            CONTEXT_MENU_START: {
-              target: "opening:contextmenu",
-              actions: "setAnchorPoint",
-            },
-            CONTEXT_MENU: [
-              {
-                guard: "isOpenControlled",
-                actions: ["setAnchorPoint", "invokeOnOpen"],
-              },
-              {
-                target: "open",
-                actions: ["setAnchorPoint", "invokeOnOpen"],
-              },
-            ],
-            TRIGGER_CLICK: [
-              {
-                guard: "isOpenControlled",
-                actions: "invokeOnOpen",
-              },
-              {
-                target: "open",
-                actions: "invokeOnOpen",
-              },
-            ],
-            TRIGGER_POINTERMOVE: {
-              guard: "isTriggerItem",
-              target: "opening",
-            },
-            TRIGGER_BLUR: "idle",
-            ARROW_DOWN: [
-              {
-                guard: "isOpenControlled",
-                actions: "invokeOnOpen",
-              },
-              {
-                target: "open",
-                actions: ["highlightFirstItem", "invokeOnOpen"],
-              },
-            ],
-            ARROW_UP: [
-              {
-                guard: "isOpenControlled",
-                actions: "invokeOnOpen",
-              },
-              {
-                target: "open",
-                actions: ["highlightLastItem", "invokeOnOpen"],
-              },
-            ],
+        ENTER: [
+          {
+            guard: "isTriggerItemHighlighted",
+            actions: ["openSubmenu"],
           },
+          {
+            actions: ["clickHighlightedItem"],
+          },
+        ],
+        ITEM_POINTERMOVE: [
+          {
+            guard: not("isPointerSuspended"),
+            actions: ["setHighlightedItem", "focusMenu"],
+          },
+          {
+            actions: ["setLastHighlightedItem"],
+          },
+        ],
+        ITEM_POINTERLEAVE: {
+          guard: and(not("isPointerSuspended"), not("isTriggerItem")),
+          actions: ["clearHighlightedItem"],
         },
-
-        open: {
-          tags: ["open"],
-          activities: ["trackInteractOutside", "trackPositioning", "scrollToHighlightedItem"],
-          entry: ["focusMenu", "resumePointer"],
-          on: {
-            "CONTROLLED.CLOSE": [
-              {
-                target: "closed",
-                guard: "isArrowLeftEvent",
-                actions: ["focusParentMenu"],
-              },
-              {
-                target: "closed",
-              },
-            ],
-            TRIGGER_CLICK: [
-              {
-                guard: and(not("isTriggerItem"), "isOpenControlled"),
-                actions: "invokeOnClose",
-              },
-              {
-                guard: not("isTriggerItem"),
-                target: "closed",
-                actions: "invokeOnClose",
-              },
-            ],
-            TAB: [
-              {
-                guard: "isForwardTabNavigation",
-                actions: ["highlightNextItem"],
-              },
-              {
-                actions: ["highlightPrevItem"],
-              },
-            ],
-            ARROW_UP: {
-              actions: ["highlightPrevItem", "focusMenu"],
-            },
-            ARROW_DOWN: {
-              actions: ["highlightNextItem", "focusMenu"],
-            },
-            ARROW_LEFT: [
-              {
-                guard: and("isSubmenu", "isOpenControlled"),
-                actions: "invokeOnClose",
-              },
-              {
-                guard: "isSubmenu",
-                target: "closed",
-                actions: ["focusParentMenu", "invokeOnClose"],
-              },
-            ],
-            HOME: {
-              actions: ["highlightFirstItem", "focusMenu"],
-            },
-            END: {
-              actions: ["highlightLastItem", "focusMenu"],
-            },
-            ARROW_RIGHT: {
-              guard: "isTriggerItemHighlighted",
-              actions: "openSubmenu",
-            },
-            ENTER: [
-              {
-                guard: "isTriggerItemHighlighted",
-                actions: "openSubmenu",
-              },
-              // == grouped ==
-              {
-                guard: and("closeOnSelect", "isOpenControlled"),
-                actions: ["clickHighlightedItem", "invokeOnClose"],
-              },
-              {
-                guard: "closeOnSelect",
-                target: "closed",
-                actions: "clickHighlightedItem",
-              },
-              //
-              {
-                actions: "clickHighlightedItem",
-              },
-            ],
-            ITEM_POINTERMOVE: [
-              {
-                guard: not("suspendPointer"),
-                actions: ["setHighlightedItem", "focusMenu"],
-              },
-              {
-                actions: "setLastHighlightedItem",
-              },
-            ],
-            ITEM_POINTERLEAVE: {
-              guard: and(not("suspendPointer"), not("isTriggerItem")),
-              actions: "clearHighlightedItem",
-            },
-            ITEM_CLICK: [
-              // == grouped ==
-              {
-                guard: and(
-                  not("isTriggerItemHighlighted"),
-                  not("isHighlightedItemEditable"),
-                  "closeOnSelect",
-                  "isOpenControlled",
-                ),
-                actions: ["invokeOnSelect", "setOptionState", "closeRootMenu", "invokeOnClose"],
-              },
-              {
-                guard: and(not("isTriggerItemHighlighted"), not("isHighlightedItemEditable"), "closeOnSelect"),
-                target: "closed",
-                actions: ["invokeOnSelect", "setOptionState", "closeRootMenu", "invokeOnClose"],
-              },
-              //
-              {
-                guard: and(not("isTriggerItemHighlighted"), not("isHighlightedItemEditable")),
-                actions: ["invokeOnSelect", "setOptionState"],
-              },
-              { actions: "setHighlightedItem" },
-            ],
-            TRIGGER_POINTERLEAVE: {
-              target: "closing",
-              actions: "setIntentPolygon",
-            },
-            ITEM_POINTERDOWN: {
-              actions: "setHighlightedItem",
-            },
-            TYPEAHEAD: {
-              actions: "highlightMatchedItem",
-            },
-            FOCUS_MENU: {
-              actions: "focusMenu",
-            },
-            "POSITIONING.SET": {
-              actions: "reposition",
-            },
+        ITEM_CLICK: [
+          // == grouped ==
+          {
+            guard: and(
+              not("isTriggerItemHighlighted"),
+              not("isHighlightedItemEditable"),
+              "closeOnSelect",
+              "isOpenControlled",
+            ),
+            actions: ["invokeOnSelect", "setOptionState", "closeRootMenu", "invokeOnClose"],
           },
+          {
+            guard: and(not("isTriggerItemHighlighted"), not("isHighlightedItemEditable"), "closeOnSelect"),
+            target: "closed",
+            actions: ["invokeOnSelect", "setOptionState", "closeRootMenu", "invokeOnClose"],
+          },
+          //
+          {
+            guard: and(not("isTriggerItemHighlighted"), not("isHighlightedItemEditable")),
+            actions: ["invokeOnSelect", "setOptionState"],
+          },
+          { actions: ["setHighlightedItem"] },
+        ],
+        TRIGGER_POINTERMOVE: {
+          guard: "isTriggerItem",
+          actions: ["setIntentPolygon"],
+        },
+        TRIGGER_POINTERLEAVE: {
+          target: "closing",
+        },
+        ITEM_POINTERDOWN: {
+          actions: ["setHighlightedItem"],
+        },
+        TYPEAHEAD: {
+          actions: ["highlightMatchedItem"],
+        },
+        FOCUS_MENU: {
+          actions: ["focusMenu"],
+        },
+        "POSITIONING.SET": {
+          actions: ["reposition"],
         },
       },
     },
-    {
-      delays: {
-        LONG_PRESS_DELAY: 700,
-        SUBMENU_OPEN_DELAY: 100,
-        SUBMENU_CLOSE_DELAY: 100,
-      },
-
-      guards: {
-        closeOnSelect: (ctx, evt) => !!(evt?.closeOnSelect ?? ctx.closeOnSelect),
-        // whether the trigger is also a menu item
-        isTriggerItem: (_ctx, evt) => dom.isTriggerItem(evt.target),
-        // whether the trigger item is the active item
-        isTriggerItemHighlighted: (ctx, evt) => {
-          const target = (evt.target ?? dom.getHighlightedItemEl(ctx)) as HTMLElement | null
-          return !!target?.hasAttribute("aria-controls")
-        },
-        isForwardTabNavigation: (_ctx, evt) => !evt.shiftKey,
-        isSubmenu: (ctx) => ctx.isSubmenu,
-        suspendPointer: (ctx) => ctx.suspendPointer,
-        isHighlightedItemEditable: (ctx) => isEditableElement(dom.getHighlightedItemEl(ctx)),
-        isWithinPolygon: (ctx, evt) => {
-          if (!ctx.intentPolygon) return false
-          return isPointInPolygon(ctx.intentPolygon, evt.point)
-        },
-        // guard assertions (for controlled mode)
-        isOpenControlled: (ctx) => !!ctx["open.controlled"],
-        isArrowLeftEvent: (_ctx, evt) => evt.previousEvent?.type === "ARROW_LEFT",
-        isArrowUpEvent: (_ctx, evt) => evt.previousEvent?.type === "ARROW_UP",
-        isArrowDownEvent: (_ctx, evt) => evt.previousEvent?.type === "ARROW_DOWN",
-        isOpenAutoFocusEvent: (_ctx, evt) => evt.previousEvent?.type === "OPEN_AUTOFOCUS",
-      },
-
-      activities: {
-        trackPositioning(ctx) {
-          if (ctx.anchorPoint) return
-          ctx.currentPlacement = ctx.positioning.placement
-          const getPositionerEl = () => dom.getPositionerEl(ctx)
-          return getPlacement(dom.getTriggerEl(ctx), getPositionerEl, {
-            ...ctx.positioning,
-            defer: true,
-            onComplete(data) {
-              ctx.currentPlacement = data.placement
-            },
-          })
-        },
-        trackInteractOutside(ctx, _evt, { send }) {
-          const getContentEl = () => dom.getContentEl(ctx)
-          return trackDismissableElement(getContentEl, {
-            defer: true,
-            exclude: [dom.getTriggerEl(ctx)],
-            onInteractOutside: ctx.onInteractOutside,
-            onFocusOutside: ctx.onFocusOutside,
-            onEscapeKeyDown(event) {
-              ctx.onEscapeKeyDown?.(event)
-              if (ctx.isSubmenu) event.preventDefault()
-              closeRootMenu(ctx)
-            },
-            onPointerDownOutside(event) {
-              ctx.restoreFocus = !event.detail.focusable
-              ctx.onPointerDownOutside?.(event)
-            },
-            onDismiss() {
-              send({ type: "CLOSE", src: "interact-outside" })
-            },
-          })
-        },
-        trackPointerMove(ctx, _evt, { guards, send }) {
-          const { isWithinPolygon } = guards
-
-          // NOTE: we're mutating parent context here. sending events to parent doesn't work
-          ctx.parent!.state.context.suspendPointer = true
-
-          const doc = dom.getDoc(ctx)
-
-          return addDomEvent(doc, "pointermove", (e) => {
-            const point = { x: e.clientX, y: e.clientY }
-
-            const isMovingToSubmenu = isWithinPolygon(ctx, { point })
-
-            if (!isMovingToSubmenu) {
-              send("POINTER_MOVED_AWAY_FROM_SUBMENU")
-              // NOTE: we're mutating parent context here. sending events to parent doesn't work
-              ctx.parent!.state.context.suspendPointer = false
-            }
-          })
-        },
-        scrollToHighlightedItem(ctx, _evt, { getState }) {
-          const exec = () => {
-            const state = getState()
-
-            if (state.event.type.startsWith("ITEM_POINTER")) return
-
-            const itemEl = dom.getHighlightedItemEl(ctx)
-            const contentEl = dom.getContentEl(ctx)
-
-            scrollIntoView(itemEl, { rootEl: contentEl, block: "nearest" })
-          }
-          raf(() => exec())
-
-          const contentEl = () => dom.getContentEl(ctx)
-          return observeAttributes(contentEl, {
-            defer: true,
-            attributes: ["aria-activedescendant"],
-            callback: exec,
-          })
-        },
-      },
-
-      actions: {
-        setAnchorPoint(ctx, evt) {
-          ctx.anchorPoint = evt.point
-        },
-        clearAnchorPoint(ctx) {
-          ctx.anchorPoint = null
-        },
-        setSubmenuPlacement(ctx) {
-          if (!ctx.isSubmenu) return
-          ctx.positioning.placement = ctx.isRtl ? "left-start" : "right-start"
-          ctx.positioning.gutter = 0
-        },
-        reposition(ctx, evt) {
-          const getPositionerEl = () => dom.getPositionerEl(ctx)
-          const getAnchorRect = ctx.anchorPoint ? () => ({ width: 0, height: 0, ...ctx.anchorPoint }) : undefined
-          getPlacement(dom.getTriggerEl(ctx), getPositionerEl, {
-            ...ctx.positioning,
-            getAnchorRect,
-            ...(evt.options ?? {}),
-            listeners: false,
-            onComplete(data) {
-              ctx.currentPlacement = data.placement
-            },
-          })
-        },
-        setOptionState(_ctx, evt) {
-          if (!evt.option) return
-          const { checked, onCheckedChange, type } = evt.option
-
-          if (type === "radio") {
-            onCheckedChange?.(true)
-          } else if (type === "checkbox") {
-            onCheckedChange?.(!checked)
-          }
-        },
-        clickHighlightedItem(ctx, _evt, { send }) {
-          const itemEl = dom.getHighlightedItemEl(ctx)
-          if (!itemEl || itemEl.dataset.disabled) return
-          const option = dom.getOptionFromItemEl(itemEl)
-          send({
-            type: "ITEM_CLICK",
-            src: "enter",
-            target: itemEl,
-            id: option.id,
-            option,
-            closeOnSelect: ctx.closeOnSelect,
-          })
-        },
-        setIntentPolygon(ctx, evt) {
-          const menu = dom.getContentEl(ctx)
-          const placement = ctx.currentPlacement
-
-          if (!menu || !placement) return
-
-          const rect = menu.getBoundingClientRect()
-          const polygon = getElementPolygon(rect, placement)
-          if (!polygon) return
-
-          const rightSide = getPlacementSide(placement) === "right"
-          const bleed = rightSide ? -5 : +5
-
-          ctx.intentPolygon = [{ ...evt.point, x: evt.point.x + bleed }, ...polygon]
-        },
-        clearIntentPolygon(ctx) {
-          ctx.intentPolygon = null
-        },
-        resumePointer(ctx) {
-          if (!ctx.parent) return
-          ctx.parent.state.context.suspendPointer = false
-        },
-        setHighlightedItem(ctx, evt) {
-          set.highlighted(ctx, evt.id)
-        },
-        clearHighlightedItem(ctx) {
-          set.highlighted(ctx, null)
-        },
-        focusMenu(ctx) {
-          raf(() => {
-            const contentEl = dom.getContentEl(ctx)
-            const firstFocusableEl = getFirstTabbable(contentEl, false) || contentEl
-            firstFocusableEl?.focus({ preventScroll: true })
-          })
-        },
-        highlightFirstItem(ctx) {
-          const first = dom.getFirstEl(ctx)
-          if (!first) return
-          set.highlighted(ctx, first.id)
-        },
-        highlightLastItem(ctx) {
-          const last = dom.getLastEl(ctx)
-          if (!last) return
-          set.highlighted(ctx, last.id)
-        },
-        highlightNextItem(ctx, evt) {
-          const next = dom.getNextEl(ctx, evt.loop)
-          set.highlighted(ctx, next?.id ?? null)
-        },
-        highlightPrevItem(ctx, evt) {
-          const prev = dom.getPrevEl(ctx, evt.loop)
-          set.highlighted(ctx, prev?.id ?? null)
-        },
-        invokeOnSelect(ctx) {
-          if (!ctx.highlightedValue) return
-          ctx.onSelect?.({ value: ctx.highlightedValue })
-        },
-        focusTrigger(ctx) {
-          if (ctx.isSubmenu || ctx.anchorPoint || !ctx.restoreFocus) return
-          raf(() => dom.getTriggerEl(ctx)?.focus({ preventScroll: true }))
-        },
-        highlightMatchedItem(ctx, evt) {
-          const node = dom.getElemByKey(ctx, evt.key)
-          if (!node) return
-          set.highlighted(ctx, node.id)
-        },
-        setParentMenu(ctx, evt) {
-          ctx.parent = ref(evt.value)
-        },
-        setChildMenu(ctx, evt) {
-          ctx.children[evt.id] = ref(evt.value)
-        },
-        closeRootMenu(ctx) {
-          closeRootMenu(ctx)
-        },
-        openSubmenu(ctx) {
-          const item = dom.getHighlightedItemEl(ctx)
-          const id = item?.getAttribute("data-uid")
-          const child = id ? ctx.children[id] : null
-          child?.send("OPEN_AUTOFOCUS")
-        },
-        focusParentMenu(ctx) {
-          ctx.parent?.send("FOCUS_MENU")
-        },
-        setLastHighlightedItem(ctx, evt) {
-          ctx.lastHighlightedValue = evt.id
-        },
-        restoreHighlightedItem(ctx) {
-          if (!ctx.lastHighlightedValue) return
-          set.highlighted(ctx, ctx.lastHighlightedValue)
-          ctx.lastHighlightedValue = null
-        },
-        restoreParentHiglightedItem(ctx) {
-          ctx.parent?.send("HIGHLIGHTED.RESTORE")
-        },
-        invokeOnOpen(ctx) {
-          ctx.onOpenChange?.({ open: true })
-        },
-        invokeOnClose(ctx) {
-          ctx.onOpenChange?.({ open: false })
-        },
-        toggleVisibility(ctx, evt, { send }) {
-          send({ type: ctx.open ? "CONTROLLED.OPEN" : "CONTROLLED.CLOSE", previousEvent: evt })
-        },
-      },
-    },
-  )
-}
-
-function closeRootMenu(ctx: MachineContext) {
-  let parent = ctx.parent
-  while (parent && parent.state.context.isSubmenu) {
-    parent = parent.state.context.parent
-  }
-  parent?.send("CLOSE")
-}
-
-const set = {
-  highlighted(ctx: MachineContext, value: string | null) {
-    if (isEqual(ctx.highlightedValue, value)) return
-    ctx.highlightedValue = value
-    ctx.onHighlightChange?.({ highlightedValue: value })
   },
+
+  implementations: {
+    guards: {
+      closeOnSelect: ({ prop, event }) => !!(event?.closeOnSelect ?? prop("closeOnSelect")),
+      // whether the trigger is also a menu item
+      isTriggerItem: ({ event }) => dom.isTriggerItem(event.target),
+      // whether the trigger item is the active item
+      isTriggerItemHighlighted: ({ event, scope, computed }) => {
+        const target = (event.target ?? scope.getById(computed("highlightedId")!)) as HTMLElement | null
+        return !!target?.hasAttribute("aria-controls")
+      },
+      isSubmenu: ({ computed }) => computed("isSubmenu"),
+      isPointerSuspended: ({ context }) => context.get("suspendPointer"),
+      isHighlightedItemEditable: ({ scope, computed }) => isEditableElement(scope.getById(computed("highlightedId")!)),
+      // guard assertions (for controlled mode)
+      isOpenControlled: ({ prop }) => prop("open") !== undefined,
+      isArrowLeftEvent: ({ event }) => event.previousEvent?.type === "ARROW_LEFT",
+      isArrowUpEvent: ({ event }) => event.previousEvent?.type === "ARROW_UP",
+      isArrowDownEvent: ({ event }) => event.previousEvent?.type === "ARROW_DOWN",
+      isOpenAutoFocusEvent: ({ event }) => event.previousEvent?.type === "OPEN_AUTOFOCUS",
+    },
+
+    effects: {
+      waitForOpenDelay({ send }) {
+        const timer = setTimeout(() => {
+          send({ type: "DELAY.OPEN" })
+        }, 100)
+        return () => clearTimeout(timer)
+      },
+      waitForCloseDelay({ send }) {
+        const timer = setTimeout(() => {
+          send({ type: "DELAY.CLOSE" })
+        }, 300)
+        return () => clearTimeout(timer)
+      },
+      waitForLongPress({ send }) {
+        const timer = setTimeout(() => {
+          send({ type: "LONG_PRESS.OPEN" })
+        }, 700)
+        return () => clearTimeout(timer)
+      },
+      trackPositioning({ context, prop, scope, refs }) {
+        if (!!dom.getContextTriggerEl(scope)) return
+        const positioning = {
+          ...prop("positioning"),
+          ...refs.get("positioningOverride"),
+        }
+        context.set("currentPlacement", positioning.placement!)
+        const getPositionerEl = () => dom.getPositionerEl(scope)
+        return getPlacement(dom.getTriggerEl(scope), getPositionerEl, {
+          ...positioning,
+          defer: true,
+          onComplete(data) {
+            context.set("currentPlacement", data.placement)
+          },
+        })
+      },
+      trackInteractOutside({ refs, scope, prop, computed, send }) {
+        const getContentEl = () => dom.getContentEl(scope)
+        let restoreFocus = true
+        return trackDismissableElement(getContentEl, {
+          defer: true,
+          exclude: [dom.getTriggerEl(scope)],
+          onInteractOutside: prop("onInteractOutside"),
+          onFocusOutside: prop("onFocusOutside"),
+          onEscapeKeyDown(event) {
+            prop("onEscapeKeyDown")?.(event)
+            if (computed("isSubmenu")) event.preventDefault()
+            closeRootMenu({ parent: refs.get("parent") })
+          },
+          onPointerDownOutside(event) {
+            const target = getEventTarget(event.detail.originalEvent)
+            const isWithinContextTrigger = contains(dom.getContextTriggerEl(scope), target)
+            if (isWithinContextTrigger && event.detail.contextmenu) {
+              event.preventDefault()
+              return
+            }
+            restoreFocus = !event.detail.focusable
+            prop("onPointerDownOutside")?.(event)
+          },
+          onDismiss() {
+            send({ type: "CLOSE", src: "interact-outside", restoreFocus })
+          },
+        })
+      },
+      trackPointerMove({ context, scope, send, refs, flush }) {
+        const parent = refs.get("parent")
+
+        // NOTE: we're mutating parent context here. sending events to parent doesn't work
+        flush(() => {
+          parent!.context.set("suspendPointer", true)
+        })
+
+        const doc = scope.getDoc()
+
+        return addDomEvent(doc, "pointermove", (e) => {
+          const isMovingToSubmenu = isWithinPolygon(context.get("intentPolygon"), {
+            x: e.clientX,
+            y: e.clientY,
+          })
+
+          if (!isMovingToSubmenu) {
+            send({ type: "POINTER_MOVED_AWAY_FROM_SUBMENU" })
+            parent!.context.set("suspendPointer", false)
+          }
+        })
+      },
+      scrollToHighlightedItem({ event, scope, computed }) {
+        const exec = () => {
+          if (event.type.startsWith("ITEM_POINTER")) return
+
+          const itemEl = scope.getById(computed("highlightedId")!)
+          const contentEl = dom.getContentEl(scope)
+
+          scrollIntoView(itemEl, { rootEl: contentEl, block: "nearest" })
+        }
+        raf(() => exec())
+
+        const contentEl = () => dom.getContentEl(scope)
+        return observeAttributes(contentEl, {
+          defer: true,
+          attributes: ["aria-activedescendant"],
+          callback: exec,
+        })
+      },
+    },
+
+    actions: {
+      setAnchorPoint({ context, event }) {
+        context.set("anchorPoint", event.point)
+      },
+      setSubmenuPlacement({ computed, refs }) {
+        if (!computed("isSubmenu")) return
+        const placement = computed("isRtl") ? "left-start" : "right-start"
+        refs.set("positioningOverride", { placement, gutter: 0 })
+      },
+      reposition({ context, scope, prop, event, refs }) {
+        const getPositionerEl = () => dom.getPositionerEl(scope)
+        const anchorPoint = context.get("anchorPoint")
+        const getAnchorRect = anchorPoint ? () => ({ width: 0, height: 0, ...anchorPoint }) : undefined
+
+        const positioning = {
+          ...prop("positioning"),
+          ...refs.get("positioningOverride"),
+        }
+
+        getPlacement(dom.getTriggerEl(scope), getPositionerEl, {
+          ...positioning,
+          defer: true,
+          getAnchorRect,
+          ...(event.options ?? {}),
+          listeners: false,
+          onComplete(data) {
+            context.set("currentPlacement", data.placement)
+          },
+        })
+      },
+      setOptionState({ event }) {
+        if (!event.option) return
+        const { checked, onCheckedChange, type } = event.option
+        if (type === "radio") {
+          onCheckedChange?.(true)
+        } else if (type === "checkbox") {
+          onCheckedChange?.(!checked)
+        }
+      },
+      clickHighlightedItem({ scope, computed }) {
+        const itemEl = scope.getById(computed("highlightedId")!)
+        if (!itemEl || itemEl.dataset.disabled) return
+        queueMicrotask(() => itemEl.click())
+      },
+      setIntentPolygon({ context, scope, event }) {
+        const menu = dom.getContentEl(scope)
+        const placement = context.get("currentPlacement")
+
+        if (!menu || !placement) return
+
+        const rect = menu.getBoundingClientRect()
+        const polygon = getElementPolygon(rect, placement)
+        if (!polygon) return
+
+        const rightSide = getPlacementSide(placement) === "right"
+        const bleed = rightSide ? -5 : +5
+
+        context.set("intentPolygon", [{ ...event.point, x: event.point.x + bleed }, ...polygon])
+      },
+      clearIntentPolygon({ context }) {
+        context.set("intentPolygon", null)
+      },
+      resumePointer({ refs, flush }) {
+        const parent = refs.get("parent")
+        if (!parent) return
+        flush(() => {
+          parent.context.set("suspendPointer", false)
+        })
+      },
+      setHighlightedItem({ context, event }) {
+        const value = event.value || dom.getItemValue(event.target)
+        context.set("highlightedValue", value)
+      },
+      clearHighlightedItem({ context }) {
+        context.set("highlightedValue", null)
+      },
+      focusMenu({ scope }) {
+        raf(() => {
+          const contentEl = dom.getContentEl(scope)
+          const initialFocusEl = getInitialFocus({
+            root: contentEl,
+            enabled: !contains(contentEl, scope.getActiveElement()),
+            filter(node) {
+              return !node.role?.startsWith("menuitem")
+            },
+          })
+          initialFocusEl?.focus({ preventScroll: true })
+        })
+      },
+      highlightFirstItem({ context, scope }) {
+        // use raf in event content is lazy mounted
+        const fn = dom.getContentEl(scope) ? queueMicrotask : raf
+        fn(() => {
+          const first = dom.getFirstEl(scope)
+          if (!first) return
+          context.set("highlightedValue", dom.getItemValue(first))
+        })
+      },
+      highlightLastItem({ context, scope }) {
+        // use raf in event content is lazy mounted
+        const fn = dom.getContentEl(scope) ? queueMicrotask : raf
+        fn(() => {
+          const last = dom.getLastEl(scope)
+          if (!last) return
+          context.set("highlightedValue", dom.getItemValue(last))
+        })
+      },
+      highlightNextItem({ context, scope, event, prop }) {
+        const next = dom.getNextEl(scope, {
+          loop: event.loop,
+          value: context.get("highlightedValue"),
+          loopFocus: prop("loopFocus"),
+        })
+        context.set("highlightedValue", dom.getItemValue(next))
+      },
+      highlightPrevItem({ context, scope, event, prop }) {
+        const prev = dom.getPrevEl(scope, {
+          loop: event.loop,
+          value: context.get("highlightedValue"),
+          loopFocus: prop("loopFocus"),
+        })
+        context.set("highlightedValue", dom.getItemValue(prev))
+      },
+      invokeOnSelect({ context, prop, scope }) {
+        const value = context.get("highlightedValue")
+        if (value == null) return
+
+        const node = dom.getItemEl(scope, value)
+        dom.dispatchSelectionEvent(node, value)
+
+        prop("onSelect")?.({ value })
+      },
+      focusTrigger({ scope, context, event, computed }) {
+        if (computed("isSubmenu") || context.get("anchorPoint") || event.restoreFocus === false) return
+        queueMicrotask(() => dom.getTriggerEl(scope)?.focus({ preventScroll: true }))
+      },
+      highlightMatchedItem({ scope, context, event, refs }) {
+        const node = dom.getElemByKey(scope, {
+          key: event.key,
+          value: context.get("highlightedValue"),
+          typeaheadState: refs.get("typeaheadState"),
+        })
+        if (!node) return
+        context.set("highlightedValue", dom.getItemValue(node))
+      },
+      setParentMenu({ refs, event }) {
+        refs.set("parent", event.value)
+      },
+      setChildMenu({ refs, event }) {
+        const children = refs.get("children")
+        children[event.id] = event.value
+        refs.set("children", children)
+      },
+      closeRootMenu({ refs }) {
+        closeRootMenu({ parent: refs.get("parent") })
+      },
+      openSubmenu({ refs, scope, computed }) {
+        const item = scope.getById(computed("highlightedId")!)
+        const id = item?.getAttribute("data-uid")
+        const children = refs.get("children")
+        const child = id ? children[id] : null
+        child?.send({ type: "OPEN_AUTOFOCUS" })
+      },
+      focusParentMenu({ refs }) {
+        refs.get("parent")?.send({ type: "FOCUS_MENU" })
+      },
+      setLastHighlightedItem({ context, event }) {
+        context.set("lastHighlightedValue", dom.getItemValue(event.target))
+      },
+      restoreHighlightedItem({ context }) {
+        if (!context.get("lastHighlightedValue")) return
+        context.set("highlightedValue", context.get("lastHighlightedValue"))
+        context.set("lastHighlightedValue", null)
+      },
+      restoreParentHighlightedItem({ refs }) {
+        refs.get("parent")?.send({ type: "HIGHLIGHTED.RESTORE" })
+      },
+      invokeOnOpen({ prop }) {
+        prop("onOpenChange")?.({ open: true })
+      },
+      invokeOnClose({ prop }) {
+        prop("onOpenChange")?.({ open: false })
+      },
+      toggleVisibility({ prop, event, send }) {
+        send({
+          type: prop("open") ? "CONTROLLED.OPEN" : "CONTROLLED.CLOSE",
+          previousEvent: event,
+        })
+      },
+    },
+  },
+})
+
+function closeRootMenu(ctx: { parent: Service<MenuSchema> | null }) {
+  let parent = ctx.parent
+  while (parent && parent.computed("isSubmenu")) {
+    parent = parent.refs.get("parent")
+  }
+  parent?.send({ type: "CLOSE" })
+}
+
+function isWithinPolygon(polygon: Point[] | null, point: Point) {
+  if (!polygon) return false
+  return isPointInPolygon(polygon, point)
+}
+
+function resolveItemId(children: Record<string, MenuService>, value: string | null, scope: Scope) {
+  const hasChildren = Object.keys(children).length > 0
+  if (!value) return null
+  if (!hasChildren) {
+    return dom.getItemId(scope, value)
+  }
+  for (const id in children) {
+    const childMenu = children[id]
+    const childTriggerId = dom.getTriggerId(childMenu.scope)
+    if (childTriggerId === value) {
+      return childTriggerId
+    }
+  }
+  return dom.getItemId(scope, value)
 }

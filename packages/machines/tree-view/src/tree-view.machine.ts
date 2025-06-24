@@ -1,509 +1,516 @@
-import { createMachine, guards } from "@zag-js/core"
-import { getByTypeahead, isHTMLElement, observeChildren } from "@zag-js/dom-query"
-import { compact } from "@zag-js/utils"
-import { dom } from "./tree-view.dom"
-import type { MachineContext, MachineState, UserDefinedContext } from "./tree-view.types"
+import type { TreeNode } from "@zag-js/collection"
+import { createGuards, createMachine } from "@zag-js/core"
+import { getByTypeahead } from "@zag-js/dom-query"
+import { addOrRemove, diff, first, isArray, isEqual, last, remove, toArray, uniq } from "@zag-js/utils"
+import { collection } from "./tree-view.collection"
+import * as dom from "./tree-view.dom"
+import type { TreeLoadingStatusMap, TreeViewSchema } from "./tree-view.types"
+import { toggleBranchChecked } from "./utils/checked-state"
+import { expandBranches } from "./utils/expand-branch"
+import { skipFn } from "./utils/visit-skip"
 
-const { and } = guards
+const { and } = createGuards<TreeViewSchema>()
 
-export function machine(userContext: UserDefinedContext) {
-  const ctx = compact(userContext)
-  return createMachine<MachineContext, MachineState>(
-    {
-      id: "tree-view",
-      initial: "idle",
-      context: {
-        expandedValue: [],
-        selectedValue: [],
-        focusedValue: null,
-        expandOnClick: true,
-        selectionMode: "single",
-        typeahead: true,
-        ...ctx,
-        typeaheadState: getByTypeahead.defaultOptions,
+export const machine = createMachine<TreeViewSchema>({
+  props({ props }) {
+    return {
+      selectionMode: "single",
+      collection: collection.empty(),
+      typeahead: true,
+      expandOnClick: true,
+      defaultExpandedValue: [],
+      defaultSelectedValue: [],
+      ...props,
+    }
+  },
+
+  initialState() {
+    return "idle"
+  },
+
+  context({ prop, bindable, getContext }) {
+    return {
+      expandedValue: bindable(() => ({
+        defaultValue: prop("defaultExpandedValue"),
+        value: prop("expandedValue"),
+        isEqual,
+        onChange(value) {
+          const ctx = getContext()
+          const focusedValue = ctx.get("focusedValue")
+          prop("onExpandedChange")?.({ expandedValue: value, focusedValue })
+        },
+      })),
+      selectedValue: bindable(() => ({
+        defaultValue: prop("defaultSelectedValue"),
+        value: prop("selectedValue"),
+        isEqual,
+        onChange(value) {
+          const ctx = getContext()
+          const focusedValue = ctx.get("focusedValue")
+          prop("onSelectionChange")?.({ selectedValue: value, focusedValue })
+        },
+      })),
+      focusedValue: bindable(() => ({
+        defaultValue: prop("defaultFocusedValue") || null,
+        value: prop("focusedValue"),
+        onChange(value) {
+          prop("onFocusChange")?.({ focusedValue: value })
+        },
+      })),
+      loadingStatus: bindable<TreeLoadingStatusMap>(() => ({
+        defaultValue: {},
+      })),
+      checkedValue: bindable(() => ({
+        defaultValue: prop("defaultCheckedValue") || [],
+        value: prop("checkedValue"),
+        isEqual,
+        onChange(value) {
+          prop("onCheckedChange")?.({ checkedValue: value })
+        },
+      })),
+    }
+  },
+
+  refs() {
+    return {
+      typeaheadState: { ...getByTypeahead.defaultOptions },
+      pendingAborts: new Map(),
+    }
+  },
+
+  computed: {
+    isMultipleSelection: ({ prop }) => prop("selectionMode") === "multiple",
+    isTypingAhead: ({ refs }) => refs.get("typeaheadState").keysSoFar.length > 0,
+    visibleNodes: ({ prop, context }) => {
+      const nodes: { node: TreeNode; indexPath: number[] }[] = []
+      prop("collection").visit({
+        skip: skipFn({ prop, context }),
+        onEnter: (node, indexPath) => {
+          nodes.push({ node, indexPath })
+        },
+      })
+      return nodes
+    },
+  },
+
+  on: {
+    "EXPANDED.SET": {
+      actions: ["setExpanded"],
+    },
+    "EXPANDED.CLEAR": {
+      actions: ["clearExpanded"],
+    },
+    "EXPANDED.ALL": {
+      actions: ["expandAllBranches"],
+    },
+    "BRANCH.EXPAND": {
+      actions: ["expandBranches"],
+    },
+    "BRANCH.COLLAPSE": {
+      actions: ["collapseBranches"],
+    },
+    "SELECTED.SET": {
+      actions: ["setSelected"],
+    },
+    "SELECTED.ALL": [
+      {
+        guard: and("isMultipleSelection", "moveFocus"),
+        actions: ["selectAllNodes", "focusTreeLastNode"],
       },
-
-      computed: {
-        isMultipleSelection: (ctx) => ctx.selectionMode === "multiple",
+      {
+        guard: "isMultipleSelection",
+        actions: ["selectAllNodes"],
       },
+    ],
+    "SELECTED.CLEAR": {
+      actions: ["clearSelected"],
+    },
+    "NODE.SELECT": {
+      actions: ["selectNode"],
+    },
+    "NODE.DESELECT": {
+      actions: ["deselectNode"],
+    },
+    "CHECKED.TOGGLE": {
+      actions: ["toggleChecked"],
+    },
+    "CHECKED.SET": {
+      actions: ["setChecked"],
+    },
+    "CHECKED.CLEAR": {
+      actions: ["clearChecked"],
+    },
+  },
 
+  exit: ["clearPendingAborts"],
+
+  states: {
+    idle: {
       on: {
-        "EXPANDED.SET": {
-          actions: ["setExpanded"],
+        "NODE.FOCUS": {
+          actions: ["setFocusedNode"],
         },
-        "SELECTED.SET": {
-          actions: ["setSelected"],
-        },
-        "SELECTED.ALL": [
+        "NODE.ARROW_DOWN": [
           {
-            guard: and("isMultipleSelection", "moveFocus"),
-            actions: ["selectAllItems", "focusTreeLastItem"],
+            guard: and("isShiftKey", "isMultipleSelection"),
+            actions: ["focusTreeNextNode", "extendSelectionToNextNode"],
           },
           {
-            guard: "isMultipleSelection",
-            actions: ["selectAllItems"],
+            actions: ["focusTreeNextNode"],
           },
         ],
-        "EXPANDED.ALL": {
-          actions: ["expandAllBranches"],
-        },
-      },
-
-      activities: ["trackChildrenMutation"],
-
-      entry: ["setFocusableNode"],
-
-      states: {
-        idle: {
-          on: {
-            "ITEM.FOCUS": {
-              actions: ["setFocusedItem"],
-            },
-            "ITEM.ARROW_DOWN": [
-              {
-                guard: and("isShiftKey", "isMultipleSelection"),
-                actions: ["focusTreeNextItem", "extendSelectionToNextItem"],
-              },
-              {
-                actions: ["focusTreeNextItem"],
-              },
-            ],
-            "ITEM.ARROW_UP": [
-              {
-                guard: and("isShiftKey", "isMultipleSelection"),
-                actions: ["focusTreePrevItem", "extendSelectionToPrevItem"],
-              },
-              {
-                actions: ["focusTreePrevItem"],
-              },
-            ],
-            "ITEM.ARROW_LEFT": {
-              actions: ["focusBranchControl"],
-            },
-            "BRANCH.ARROW_LEFT": [
-              {
-                guard: "isBranchExpanded",
-                actions: ["collapseBranch"],
-              },
-              {
-                actions: ["focusBranchControl"],
-              },
-            ],
-            "BRANCH.ARROW_RIGHT": [
-              {
-                guard: and("isBranchFocused", "isBranchExpanded"),
-                actions: ["focusBranchFirstItem"],
-              },
-              {
-                actions: ["expandBranch"],
-              },
-            ],
-            "EXPAND.SIBLINGS": {
-              actions: ["expandSiblingBranches"],
-            },
-            "ITEM.HOME": [
-              {
-                guard: and("isShiftKey", "isMultipleSelection"),
-                actions: ["extendSelectionToFirstItem", "focusTreeFirstItem"],
-              },
-              {
-                actions: ["focusTreeFirstItem"],
-              },
-            ],
-            "ITEM.END": [
-              {
-                guard: and("isShiftKey", "isMultipleSelection"),
-                actions: ["extendSelectionToLastItem", "focusTreeLastItem"],
-              },
-              {
-                actions: ["focusTreeLastItem"],
-              },
-            ],
-            "ITEM.CLICK": [
-              {
-                guard: and("isCtrlKey", "isMultipleSelection"),
-                actions: ["addOrRemoveItemFromSelection"],
-              },
-              {
-                guard: and("isShiftKey", "isMultipleSelection"),
-                actions: ["extendSelectionToItem"],
-              },
-              {
-                actions: ["selectItem"],
-              },
-            ],
-            "BRANCH.CLICK": [
-              {
-                guard: and("isCtrlKey", "isMultipleSelection"),
-                actions: ["addOrRemoveItemFromSelection"],
-              },
-              {
-                guard: and("isShiftKey", "isMultipleSelection"),
-                actions: ["extendSelectionToItem"],
-              },
-              {
-                guard: "openOnClick",
-                actions: ["selectItem", "toggleBranch"],
-              },
-              {
-                actions: ["selectItem"],
-              },
-            ],
-            "BRANCH_TOGGLE.CLICK": {
-              actions: ["toggleBranch"],
-            },
-            "TREE.TYPEAHEAD": {
-              actions: ["focusMatchedItem"],
-            },
-            "TREE.BLUR": {
-              actions: ["clearFocusedItem", "setFocusableNode"],
-            },
+        "NODE.ARROW_UP": [
+          {
+            guard: and("isShiftKey", "isMultipleSelection"),
+            actions: ["focusTreePrevNode", "extendSelectionToPrevNode"],
           },
+          {
+            actions: ["focusTreePrevNode"],
+          },
+        ],
+        "NODE.ARROW_LEFT": {
+          actions: ["focusBranchNode"],
+        },
+        "BRANCH_NODE.ARROW_LEFT": [
+          {
+            guard: "isBranchExpanded",
+            actions: ["collapseBranch"],
+          },
+          {
+            actions: ["focusBranchNode"],
+          },
+        ],
+        "BRANCH_NODE.ARROW_RIGHT": [
+          {
+            guard: and("isBranchFocused", "isBranchExpanded"),
+            actions: ["focusBranchFirstNode"],
+          },
+          {
+            actions: ["expandBranch"],
+          },
+        ],
+        "SIBLINGS.EXPAND": {
+          actions: ["expandSiblingBranches"],
+        },
+        "NODE.HOME": [
+          {
+            guard: and("isShiftKey", "isMultipleSelection"),
+            actions: ["extendSelectionToFirstNode", "focusTreeFirstNode"],
+          },
+          {
+            actions: ["focusTreeFirstNode"],
+          },
+        ],
+        "NODE.END": [
+          {
+            guard: and("isShiftKey", "isMultipleSelection"),
+            actions: ["extendSelectionToLastNode", "focusTreeLastNode"],
+          },
+          {
+            actions: ["focusTreeLastNode"],
+          },
+        ],
+        "NODE.CLICK": [
+          {
+            guard: and("isCtrlKey", "isMultipleSelection"),
+            actions: ["toggleNodeSelection"],
+          },
+          {
+            guard: and("isShiftKey", "isMultipleSelection"),
+            actions: ["extendSelectionToNode"],
+          },
+          {
+            actions: ["selectNode"],
+          },
+        ],
+        "BRANCH_NODE.CLICK": [
+          {
+            guard: and("isCtrlKey", "isMultipleSelection"),
+            actions: ["toggleNodeSelection"],
+          },
+          {
+            guard: and("isShiftKey", "isMultipleSelection"),
+            actions: ["extendSelectionToNode"],
+          },
+          {
+            guard: "expandOnClick",
+            actions: ["selectNode", "toggleBranchNode"],
+          },
+          {
+            actions: ["selectNode"],
+          },
+        ],
+        "BRANCH_TOGGLE.CLICK": {
+          actions: ["toggleBranchNode"],
+        },
+        "TREE.TYPEAHEAD": {
+          actions: ["focusMatchedNode"],
         },
       },
     },
-    {
-      guards: {
-        isBranchFocused: (ctx, evt) => ctx.focusedValue === evt.id,
-        isBranchExpanded: (ctx, evt) => ctx.expandedValue.includes(evt.id),
-        isShiftKey: (_ctx, evt) => evt.shiftKey,
-        isCtrlKey: (_ctx, evt) => evt.ctrlKey,
-        hasSelectedItems: (ctx) => ctx.selectedValue.length > 0,
-        isMultipleSelection: (ctx) => ctx.isMultipleSelection,
-        moveFocus: (_ctx, evt) => !!evt.moveFocus,
-        openOnClick: (ctx) => !!ctx.expandOnClick,
+  },
+
+  implementations: {
+    guards: {
+      isBranchFocused: ({ context, event }) => context.get("focusedValue") === event.id,
+      isBranchExpanded: ({ context, event }) => context.get("expandedValue").includes(event.id),
+      isShiftKey: ({ event }) => event.shiftKey,
+      isCtrlKey: ({ event }) => event.ctrlKey,
+      hasSelectedItems: ({ context }) => context.get("selectedValue").length > 0,
+      isMultipleSelection: ({ prop }) => prop("selectionMode") === "multiple",
+      moveFocus: ({ event }) => !!event.moveFocus,
+      expandOnClick: ({ prop }) => !!prop("expandOnClick"),
+    },
+    actions: {
+      selectNode({ context, event }) {
+        const value = (event.id || event.value) as string | string[] | undefined
+        context.set("selectedValue", (prev) => {
+          if (value == null) return prev
+          if (!event.isTrusted && isArray(value)) return prev.concat(...value)
+          return [isArray(value) ? last(value) : value].filter(Boolean) as string[]
+        })
       },
-      activities: {
-        trackChildrenMutation(ctx, _evt, { send }) {
-          const treeEl = dom.getTreeEl(ctx)
-          return observeChildren(treeEl, {
-            callback(records) {
-              const removedNodes = records
-                .flatMap((r) => Array.from(r.removedNodes))
-                .filter((node) => {
-                  if (!isHTMLElement(node)) return false
-                  return node.matches("[role=treeitem]") || node.matches("[role=group]")
-                })
-
-              if (!removedNodes.length) return
-
-              let elementToFocus: HTMLElement | null = null
-              records.forEach((record) => {
-                if (isHTMLElement(record.nextSibling)) {
-                  elementToFocus = record.nextSibling
-                } else if (isHTMLElement(record.previousSibling)) {
-                  elementToFocus = record.previousSibling
-                }
-              })
-
-              if (elementToFocus) {
-                dom.focusNode(elementToFocus)
-              }
-
-              const removedIds: Set<string> = new Set()
-              removedNodes.forEach((node) => {
-                const nodeId = dom.getNodeId(node)
-                if (isHTMLElement(node) && nodeId != null) {
-                  removedIds.add(nodeId)
-                }
-              })
-
-              const nextSet = new Set(ctx.selectedValue)
-              removedIds.forEach((id) => nextSet.delete(id))
-              send({ type: "SELECTED.SET", value: removedIds })
-            },
-          })
-        },
+      deselectNode({ context, event }) {
+        const value = toArray(event.id || event.value)
+        context.set("selectedValue", (prev) => remove(prev, ...value))
       },
-      actions: {
-        setFocusableNode(ctx) {
-          if (ctx.focusedValue) return
+      setFocusedNode({ context, event }) {
+        context.set("focusedValue", event.id)
+      },
+      clearFocusedNode({ context }) {
+        context.set("focusedValue", null)
+      },
+      clearSelectedItem({ context }) {
+        context.set("selectedValue", [])
+      },
+      toggleBranchNode({ context, event, action }) {
+        const isExpanded = context.get("expandedValue").includes(event.id)
+        action(isExpanded ? ["collapseBranch"] : ["expandBranch"])
+      },
+      expandBranch(params) {
+        const { event } = params
+        expandBranches(params, [event.id])
+      },
+      expandBranches(params) {
+        const { context, event } = params
+        const valuesToExpand = toArray(event.value)
+        expandBranches(params, diff(valuesToExpand, context.get("expandedValue")))
+      },
+      collapseBranch({ context, event }) {
+        context.set("expandedValue", (prev) => remove(prev, event.id))
+      },
+      collapseBranches(params) {
+        const { context, event } = params
+        const value = toArray(event.value)
+        context.set("expandedValue", (prev) => remove(prev, ...value))
+      },
+      setExpanded({ context, event }) {
+        if (!isArray(event.value)) return
+        context.set("expandedValue", event.value)
+      },
+      clearExpanded({ context }) {
+        context.set("expandedValue", [])
+      },
+      setSelected({ context, event }) {
+        if (!isArray(event.value)) return
+        context.set("selectedValue", event.value)
+      },
+      clearSelected({ context }) {
+        context.set("selectedValue", [])
+      },
+      focusTreeFirstNode({ prop, scope }) {
+        const collection = prop("collection")
+        const firstNode = collection.getFirstNode()
+        const firstValue = collection.getNodeValue(firstNode)
+        dom.focusNode(scope, firstValue)
+      },
+      focusTreeLastNode({ prop, scope }) {
+        const collection = prop("collection")
+        const lastNode = collection.getLastNode()
+        const lastValue = collection.getNodeValue(lastNode)
+        dom.focusNode(scope, lastValue)
+      },
+      focusBranchFirstNode({ event, prop, scope }) {
+        const collection = prop("collection")
+        const branchNode = collection.findNode(event.id)
+        const firstNode = collection.getFirstNode(branchNode)
+        const firstValue = collection.getNodeValue(firstNode)
+        dom.focusNode(scope, firstValue)
+      },
+      focusTreeNextNode(params) {
+        const { event, prop, scope } = params
+        const collection = prop("collection")
+        const nextNode = collection.getNextNode(event.id, { skip: skipFn(params) })
+        if (!nextNode) return
+        const nextValue = collection.getNodeValue(nextNode)
+        dom.focusNode(scope, nextValue)
+      },
+      focusTreePrevNode(params) {
+        const { event, prop, scope } = params
+        const collection = prop("collection")
+        const prevNode = collection.getPreviousNode(event.id, { skip: skipFn(params) })
+        if (!prevNode) return
+        const prevValue = collection.getNodeValue(prevNode)
+        dom.focusNode(scope, prevValue)
+      },
+      focusBranchNode({ event, prop, scope }) {
+        const collection = prop("collection")
+        const parentNode = collection.getParentNode(event.id)
+        const parentValue = parentNode ? collection.getNodeValue(parentNode) : undefined
+        dom.focusNode(scope, parentValue)
+      },
+      selectAllNodes({ context, prop }) {
+        context.set("selectedValue", prop("collection").getValues())
+      },
+      focusMatchedNode(params) {
+        const { context, prop, refs, event, scope, computed } = params
+        const nodes = computed("visibleNodes")
+        const elements = nodes.map(({ node }) => ({
+          textContent: prop("collection").stringifyNode(node),
+          id: prop("collection").getNodeValue(node),
+        }))
+        const node = getByTypeahead(elements, {
+          state: refs.get("typeaheadState"),
+          activeId: context.get("focusedValue"),
+          key: event.key,
+        })
 
-          if (ctx.selectedValue.length > 0) {
-            const firstSelectedId = Array.from(ctx.selectedValue)[0]
-            ctx.focusedValue = firstSelectedId
-            return
-          }
+        dom.focusNode(scope, node?.id)
+      },
+      toggleNodeSelection({ context, event }) {
+        const selectedValue = addOrRemove(context.get("selectedValue"), event.id)
+        context.set("selectedValue", selectedValue)
+      },
+      expandAllBranches(params) {
+        const { context, prop } = params
+        const branchValues = prop("collection").getBranchValues()
+        const valuesToExpand = diff(branchValues, context.get("expandedValue"))
+        expandBranches(params, valuesToExpand)
+      },
+      expandSiblingBranches(params) {
+        const { context, event, prop } = params
+        const collection = prop("collection")
 
-          const walker = dom.getTreeWalker(ctx)
-          const firstItem = walker.firstChild()
+        const indexPath = collection.getIndexPath(event.id)
+        if (!indexPath) return
 
-          if (!isHTMLElement(firstItem)) return
-          // don't use set.focused here because it will trigger focusChange event
-          ctx.focusedValue = dom.getNodeId(firstItem)
-        },
-        selectItem(ctx, evt) {
-          set.selected(ctx, [evt.id])
-        },
-        setFocusedItem(ctx, evt) {
-          set.focused(ctx, evt.id)
-        },
-        clearFocusedItem(ctx) {
-          set.focused(ctx, null)
-        },
-        clearSelectedItem(ctx) {
-          set.selected(ctx, [])
-        },
-        toggleBranch(ctx, evt) {
-          const nextSet = new Set(ctx.expandedValue)
+        const nodes = collection.getSiblingNodes(indexPath)
+        const values = nodes.map((node) => collection.getNodeValue(node))
 
-          if (nextSet.has(evt.id)) {
-            nextSet.delete(evt.id)
-            // collapseEffect(ctx, evt)
-          } else {
-            nextSet.add(evt.id)
-          }
+        const valuesToExpand = diff(values, context.get("expandedValue"))
+        expandBranches(params, valuesToExpand)
+      },
+      extendSelectionToNode(params) {
+        const { context, event, prop, computed } = params
+        const collection = prop("collection")
+        const anchorValue = first(context.get("selectedValue")) || collection.getNodeValue(collection.getFirstNode())
+        const targetValue = event.id
 
-          set.expanded(ctx, Array.from(nextSet))
-        },
-        expandBranch(ctx, evt) {
-          const nextSet = new Set(ctx.expandedValue)
-          nextSet.add(evt.id)
-          set.expanded(ctx, Array.from(nextSet))
-        },
-        collapseBranch(ctx, evt) {
-          const nextSet = new Set(ctx.expandedValue)
-          nextSet.delete(evt.id)
-          set.expanded(ctx, Array.from(nextSet))
-        },
-        setExpanded(ctx, evt) {
-          set.expanded(ctx, evt.value)
-        },
-        setSelected(ctx, evt) {
-          set.selected(ctx, evt.value)
-        },
-        focusTreeFirstItem(ctx) {
-          const walker = dom.getTreeWalker(ctx)
-          dom.focusNode(walker.firstChild())
-        },
-        focusTreeLastItem(ctx, evt) {
-          const walker = dom.getTreeWalker(ctx)
-          dom.focusNode(walker.lastChild(), { preventScroll: evt.preventScroll })
-        },
-        focusBranchFirstItem(ctx, evt) {
-          const focusedEl = dom.getNodeEl(ctx, evt.id)
-          if (!focusedEl) return
+        let values: string[] = [anchorValue, targetValue]
 
-          const walker = dom.getTreeWalker(ctx)
+        let hits = 0
+        const visibleNodes = computed("visibleNodes")
+        visibleNodes.forEach(({ node }) => {
+          const nodeValue = collection.getNodeValue(node)
+          if (hits === 1) values.push(nodeValue)
+          if (nodeValue === anchorValue || nodeValue === targetValue) hits++
+        })
+        context.set("selectedValue", uniq(values))
+      },
+      extendSelectionToNextNode(params) {
+        const { context, event, prop } = params
+        const collection = prop("collection")
+        const nextNode = collection.getNextNode(event.id, { skip: skipFn(params) })
+        if (!nextNode) return
 
-          walker.currentNode = focusedEl
-          dom.focusNode(walker.nextNode())
-        },
-        focusTreeNextItem(ctx, evt) {
-          const focusedEl = dom.getNodeEl(ctx, evt.id)
-          if (!focusedEl) return
+        // extend selection to nextNode (preserve the anchor node)
+        const values = new Set(context.get("selectedValue"))
+        const nextValue = collection.getNodeValue(nextNode)
 
-          const walker = dom.getTreeWalker(ctx)
+        if (nextValue == null) return
 
-          if (ctx.focusedValue) {
-            walker.currentNode = focusedEl
-            const nextNode = walker.nextNode()
-            dom.focusNode(nextNode)
-          } else {
-            dom.focusNode(walker.firstChild())
-          }
-        },
-        focusTreePrevItem(ctx, evt) {
-          const focusedEl = dom.getNodeEl(ctx, evt.id)
-          if (!focusedEl) return
+        if (values.has(event.id) && values.has(nextValue)) {
+          values.delete(event.id)
+        } else if (!values.has(nextValue)) {
+          values.add(nextValue)
+        }
 
-          const walker = dom.getTreeWalker(ctx)
+        context.set("selectedValue", Array.from(values))
+      },
+      extendSelectionToPrevNode(params) {
+        const { context, event, prop } = params
+        const collection = prop("collection")
+        const prevNode = collection.getPreviousNode(event.id, { skip: skipFn(params) })
+        if (!prevNode) return
 
-          if (ctx.focusedValue) {
-            walker.currentNode = focusedEl
-            const prevNode = walker.previousNode()
-            dom.focusNode(prevNode)
-          } else {
-            dom.focusNode(walker.lastChild())
-          }
-        },
-        focusBranchControl(ctx, evt) {
-          const focusedEl = dom.getNodeEl(ctx, evt.id)
-          if (!focusedEl) return
+        // extend selection to prevNode (preserve the anchor node)
+        const values = new Set(context.get("selectedValue"))
+        const prevValue = collection.getNodeValue(prevNode)
 
-          const parentDepth = Number(focusedEl.dataset.depth) - 1
-          if (parentDepth < 0) return
+        if (prevValue == null) return
 
-          const branchSelector = `[data-part=branch][data-depth="${parentDepth}"]`
-          const closestBranch = focusedEl.closest(branchSelector)
+        if (values.has(event.id) && values.has(prevValue)) {
+          values.delete(event.id)
+        } else if (!values.has(prevValue)) {
+          values.add(prevValue)
+        }
 
-          const branchControl = closestBranch?.querySelector("[data-part=branch-control]")
-          dom.focusNode(branchControl)
-        },
-        selectAllItems(ctx) {
-          const nextSet = new Set<string>()
-          const walker = dom.getTreeWalker(ctx)
-          let node = walker.firstChild()
-          while (node) {
-            const nodeId = dom.getNodeId(node)
-            if (isHTMLElement(node) && nodeId != null) {
-              nextSet.add(nodeId)
+        context.set("selectedValue", Array.from(values))
+      },
+      extendSelectionToFirstNode(params) {
+        const { context, prop } = params
+        const collection = prop("collection")
+        const currentSelection = first(context.get("selectedValue"))
+        const values: string[] = []
+
+        collection.visit({
+          skip: skipFn(params),
+          onEnter: (node) => {
+            const nodeValue = collection.getNodeValue(node)
+            values.push(nodeValue)
+            if (nodeValue === currentSelection) {
+              return "stop"
             }
-            node = walker.nextNode()
-          }
-          set.selected(ctx, Array.from(nextSet))
-        },
-        focusMatchedItem(ctx, evt) {
-          dom.focusNode(dom.getMatchingEl(ctx, evt.key))
-        },
-        addOrRemoveItemFromSelection(ctx, evt) {
-          const focusedEl = dom.getNodeEl(ctx, evt.id)
-          if (!focusedEl) return
+          },
+        })
 
-          const nextSet = new Set(ctx.selectedValue)
+        context.set("selectedValue", values)
+      },
+      extendSelectionToLastNode(params) {
+        const { context, prop } = params
+        const collection = prop("collection")
+        const currentSelection = first(context.get("selectedValue"))
+        const values: string[] = []
+        let current = false
 
-          const nodeId = dom.getNodeId(focusedEl)
-          if (nodeId == null) return
+        collection.visit({
+          skip: skipFn(params),
+          onEnter: (node) => {
+            const nodeValue = collection.getNodeValue(node)
+            if (nodeValue === currentSelection) current = true
+            if (current) values.push(nodeValue)
+          },
+        })
 
-          if (nextSet.has(nodeId)) {
-            nextSet.delete(nodeId)
-          } else {
-            nextSet.add(nodeId)
-          }
-
-          set.selected(ctx, Array.from(nextSet))
-        },
-        expandAllBranches(ctx) {
-          const nextSet = new Set<string>()
-          const walker = dom.getTreeWalker(ctx, { skipHidden: false })
-          while (walker.nextNode()) {
-            const node = walker.currentNode
-            const nodeId = dom.getNodeId(node)
-            if (isHTMLElement(node) && node.dataset.part === "branch-control" && nodeId != null) {
-              nextSet.add(nodeId)
-            }
-          }
-          set.expanded(ctx, Array.from(nextSet))
-        },
-        expandSiblingBranches(ctx, evt) {
-          const focusedEl = dom.getNodeEl(ctx, evt.id)
-          const nodes = dom.getBranchNodes(ctx, dom.getNodeDepth(focusedEl))
-
-          const nextSet = new Set<string>()
-          nodes.forEach((node) => {
-            const nodeId = dom.getNodeId(node)
-            if (nodeId == null) return
-            nextSet.add(nodeId)
-          })
-
-          set.expanded(ctx, Array.from(nextSet))
-        },
-        extendSelectionToItem(ctx, evt) {
-          const focusedEl = dom.getNodeEl(ctx, evt.id)
-          if (!focusedEl) return
-
-          const nodes = dom.getTreeNodes(ctx)
-          const selectedIds = Array.from(ctx.selectedValue)
-          const anchorEl = dom.getNodeEl(ctx, selectedIds[0]) || nodes[0]
-
-          const nextSet = dom.getNodesInRange(nodes, anchorEl, focusedEl)
-
-          set.selected(ctx, nextSet)
-        },
-        extendSelectionToNextItem(ctx, evt) {
-          const nodeId = evt.id
-
-          const currentNode = dom.getNodeEl(ctx, nodeId)
-          if (!currentNode) return
-
-          const walker = dom.getTreeWalker(ctx)
-          walker.currentNode = currentNode
-
-          const nextNode = walker.nextNode()
-          dom.focusNode(nextNode)
-
-          // extend selection to nextNode (preserve the anchor node)
-          const selectedIds = new Set(ctx.selectedValue)
-          const nextNodeId = dom.getNodeId(nextNode)
-
-          if (nextNodeId == null) return
-
-          if (selectedIds.has(nodeId) && selectedIds.has(nextNodeId)) {
-            selectedIds.delete(nodeId)
-          } else if (!selectedIds.has(nextNodeId)) {
-            selectedIds.add(nextNodeId)
-          }
-
-          set.selected(ctx, Array.from(selectedIds))
-        },
-        extendSelectionToPrevItem(ctx, evt) {
-          const nodeId = evt.id
-
-          const currentNode = dom.getNodeEl(ctx, nodeId)
-          if (!currentNode) return
-
-          const walker = dom.getTreeWalker(ctx)
-          walker.currentNode = currentNode
-
-          const prevNode = walker.previousNode()
-          dom.focusNode(prevNode)
-
-          // extend selection to prevNode (preserve the anchor node)
-          const selectedIds = new Set(ctx.selectedValue)
-          const prevNodeId = dom.getNodeId(prevNode)
-
-          if (prevNodeId == null) return
-
-          if (selectedIds.has(nodeId) && selectedIds.has(prevNodeId)) {
-            selectedIds.delete(nodeId)
-          } else if (!selectedIds.has(prevNodeId)) {
-            selectedIds.add(prevNodeId)
-          }
-
-          set.selected(ctx, Array.from(selectedIds))
-        },
-        extendSelectionToFirstItem(ctx) {
-          const nodes = dom.getTreeNodes(ctx)
-
-          const anchorEl = dom.getNodeEl(ctx, [...ctx.selectedValue][0]) || nodes[0]
-          const focusedEl = nodes[0]
-
-          const selectedIds = dom.getNodesInRange(nodes, anchorEl, focusedEl)
-          set.selected(ctx, selectedIds)
-        },
-        extendSelectionToLastItem(ctx) {
-          const nodes = dom.getTreeNodes(ctx)
-
-          const anchorEl = dom.getNodeEl(ctx, [...ctx.selectedValue][0]) || nodes[0]
-          const focusedEl = nodes[nodes.length - 1]
-
-          const selectedIds = dom.getNodesInRange(nodes, anchorEl, focusedEl)
-          set.selected(ctx, selectedIds)
-        },
+        context.set("selectedValue", values)
+      },
+      clearPendingAborts({ refs }) {
+        const aborts = refs.get("pendingAborts")
+        aborts.forEach((abort) => abort.abort())
+        aborts.clear()
+      },
+      toggleChecked({ context, event, prop }) {
+        const collection = prop("collection")
+        context.set("checkedValue", (prev) =>
+          event.isBranch ? toggleBranchChecked(collection, event.value, prev) : addOrRemove(prev, event.value),
+        )
+      },
+      setChecked({ context, event }) {
+        context.set("checkedValue", event.value)
+      },
+      clearChecked({ context }) {
+        context.set("checkedValue", [])
       },
     },
-  )
-}
-
-const invoke = {
-  focusChange(ctx: MachineContext) {
-    ctx.onFocusChange?.({ focusedValue: ctx.focusedValue! })
   },
-  expandedChange(ctx: MachineContext) {
-    ctx.onExpandedChange?.({
-      expandedValue: ctx.expandedValue,
-      focusedValue: ctx.focusedValue!,
-    })
-  },
-  selectionChange(ctx: MachineContext) {
-    ctx.onSelectionChange?.({
-      selectedValue: ctx.selectedValue,
-      focusedValue: ctx.focusedValue,
-    })
-  },
-}
-
-const set = {
-  selected(ctx: MachineContext, ids: string[]) {
-    ctx.selectedValue = ids
-    invoke.selectionChange(ctx)
-  },
-  focused(ctx: MachineContext, id: string | null) {
-    ctx.focusedValue = id
-    invoke.focusChange(ctx)
-  },
-  expanded(ctx: MachineContext, ids: string[]) {
-    ctx.expandedValue = ids
-    invoke.expandedChange(ctx)
-  },
-}
+})

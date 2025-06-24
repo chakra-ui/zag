@@ -32,7 +32,9 @@ import { createMachine } from "@zag-js/core"
 
 const machine = createMachine({
   // initial state
-  initial: "active",
+  initialState() {
+    return "active"
+  },
   // the finite states
   states: {
     active: {
@@ -77,17 +79,19 @@ specification for the switch component.
 We'll write a function called `connect` to do this.
 
 ```jsx
-function connect(state, send) {
+function connect(service) {
   const active = state.matches("active")
   return {
     active,
-    buttonProps: {
-      type: "button",
-      role: "switch",
-      "aria-checked": active,
-      onClick() {
-        send("CLICK")
-      },
+    getButtonProps() {
+      return {
+        type: "button",
+        role: "switch",
+        "aria-checked": active,
+        onClick() {
+          send("CLICK")
+        },
+      }
     },
   }
 }
@@ -96,16 +100,16 @@ function connect(state, send) {
 Here's how to consume the toggle machine logic and connect in React.js.
 
 ```jsx
-import { useMachine } from "@zag-js/react"
+import { useMachine, normalizeProps } from "@zag-js/react"
 import { machine, connect } from "./toggle"
 
 function Toggle() {
-  const [state, send] = useMachine(machine)
-  const api = connect(state, send)
+  const service = useMachine(machine)
+  const api = connect(service, normalizeProps)
 
   return (
     <button
-      {...api.buttonProps}
+      {...api.getButtonProps()}
       style={{
         width: "40px",
         height: "24px",

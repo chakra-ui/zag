@@ -6,15 +6,16 @@ import serialize from "form-serialize"
 
 const controls = useControls(pinInputControls)
 
-const [state, send] = useMachine(
-  pinInput.machine({
-    id: "1",
+const service = useMachine(
+  pinInput.machine,
+  controls.mergeProps<pinInput.Props>({
+    id: useId(),
     name: "test",
+    count: 3,
   }),
-  { context: controls.context },
 )
 
-const api = computed(() => pinInput.connect(state.value, send, normalizeProps))
+const api = computed(() => pinInput.connect(service, normalizeProps))
 </script>
 
 <template>
@@ -28,21 +29,19 @@ const api = computed(() => pinInput.connect(state.value, send, normalizeProps))
         }
       "
     >
-      <div v-bind="api.rootProps">
-        <label v-bind="api.labelProps">Enter code:</label>
-        <div v-bind="api.controlProps">
-          <input data-testid="input-1" v-bind="api.getInputProps({ index: 0 })" />
-          <input data-testid="input-2" v-bind="api.getInputProps({ index: 1 })" />
-          <input data-testid="input-3" v-bind="api.getInputProps({ index: 2 })" />
+      <div v-bind="api.getRootProps()">
+        <label v-bind="api.getLabelProps()">Enter code:</label>
+        <div v-bind="api.getControlProps()">
+          <input v-for="index in api.items" :data-testid="`input-${index + 1}`" v-bind="api.getInputProps({ index })" />
         </div>
-        <input v-bind="api.hiddenInputProps" />
+        <input v-bind="api.getHiddenInputProps()" />
       </div>
       <button data-testid="clear-button" @click="api.clearValue">Clear</button>
     </form>
   </main>
 
   <Toolbar>
-    <StateVisualizer :state="state" />
+    <StateVisualizer :state="service" />
     <template #controls>
       <Controls :control="controls" />
     </template>

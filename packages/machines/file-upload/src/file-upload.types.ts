@@ -1,5 +1,5 @@
-import type { StateMachine as S } from "@zag-js/core"
-import type { FileError } from "@zag-js/file-utils"
+import type { EventObject, Machine, Service } from "@zag-js/core"
+import type { FileError, FileMimeType } from "@zag-js/file-utils"
 import type { CommonProperties, LocaleProperties, PropTypes, RequiredBy } from "@zag-js/types"
 
 /* -----------------------------------------------------------------------------
@@ -12,6 +12,11 @@ export interface FileRejection {
 }
 
 export interface FileChangeDetails {
+  acceptedFiles: File[]
+  rejectedFiles: FileRejection[]
+}
+
+export interface FileValidateDetails {
   acceptedFiles: File[]
   rejectedFiles: FileRejection[]
 }
@@ -43,121 +48,135 @@ export type ElementIds = Partial<{
 }>
 
 export interface IntlTranslations {
-  itemPreview(file: File): string
-  deleteFile(file: File): string
+  dropzone?: string | undefined
+  itemPreview?(file: File): string
+  deleteFile?(file: File): string
 }
 
-interface PublicContext extends LocaleProperties, CommonProperties {
+export interface FileUploadProps extends LocaleProperties, CommonProperties {
   /**
    * The name of the underlying file input
    */
-  name?: string
+  name?: string | undefined
   /**
    * The ids of the elements. Useful for composition.
    */
-  ids?: ElementIds
+  ids?: ElementIds | undefined
   /**
    * The localized messages to use.
    */
-  translations: IntlTranslations
+  translations?: IntlTranslations | undefined
   /**
    * The accept file types
    */
-  accept?: Record<string, string[]> | string
+  accept?: Record<string, string[]> | FileMimeType | FileMimeType[] | undefined
   /**
    * Whether the file input is disabled
    */
-  disabled?: boolean
+  disabled?: boolean | undefined
+  /**
+   * Whether the file input is required
+   */
+  required?: boolean | undefined
   /**
    * Whether to allow drag and drop in the dropzone element
    * @default true
    */
-  allowDrop?: boolean
+  allowDrop?: boolean | undefined
   /**
    * The maximum file size in bytes
    *
    * @default Infinity
    */
-  maxFileSize: number
+  maxFileSize?: number | undefined
   /**
    * The minimum file size in bytes
    *
    * @default 0
    */
-  minFileSize: number
+  minFileSize?: number | undefined
   /**
    * The maximum number of files
    * @default 1
    */
-  maxFiles: number
+  maxFiles?: number | undefined
+  /**
+   * Whether to prevent the drop event on the document
+   * @default true
+   */
+  preventDocumentDrop?: boolean | undefined
   /**
    * Function to validate a file
    */
-  validate?: (file: File) => FileError[] | null
+  validate?: ((file: File, details: FileValidateDetails) => FileError[] | null) | undefined
   /**
    * Function called when the value changes, whether accepted or rejected
    */
-  onFileChange?: (details: FileChangeDetails) => void
+  onFileChange?: ((details: FileChangeDetails) => void) | undefined
   /**
    * Function called when the file is accepted
    */
-  onFileAccept?: (details: FileAcceptDetails) => void
+  onFileAccept?: ((details: FileAcceptDetails) => void) | undefined
   /**
    * Function called when the file is rejected
    */
-  onFileReject?: (details: FileRejectDetails) => void
+  onFileReject?: ((details: FileRejectDetails) => void) | undefined
   /**
    * The default camera to use when capturing media
    */
-  capture?: "user" | "environment"
+  capture?: "user" | "environment" | undefined
   /**
    * Whether to accept directories, only works in webkit browsers
    */
-  directory?: boolean
+  directory?: boolean | undefined
+  /**
+   * Whether the file input is invalid
+   */
+  invalid?: boolean | undefined
+  /**
+   * Function to transform the accepted files to apply transformations
+   */
+  transformFiles?: ((files: File[]) => Promise<File[]>) | undefined
 }
 
-interface PrivateContext {
+type PropWithDefault = "minFileSize" | "maxFileSize" | "maxFiles" | "preventDocumentDrop" | "allowDrop" | "translations"
+
+interface Context {
   /**
-   * @internal
-   * Whether the files includes any rejection
-   */
-  invalid: boolean
-  /**
-   * @internal
    * The rejected files
    */
   rejectedFiles: FileRejection[]
   /**
-   * @internal
    * The current value of the file input
    */
   acceptedFiles: File[]
 }
 
-type ComputedContext = Readonly<{
+type Computed = {
   /**
-   * @computed
    * The accept attribute as a string
    */
   acceptAttr: string | undefined
   /**
-   * @computed
    * Whether the file can select multiple files
    */
   multiple: boolean
-}>
-
-export type UserDefinedContext = RequiredBy<PublicContext, "id">
-
-export interface MachineContext extends PublicContext, PrivateContext, ComputedContext {}
-
-export interface MachineState {
-  value: "idle" | "focused" | "open" | "dragging"
 }
 
-export type State = S.State<MachineContext, MachineState>
+export interface FileUploadSchema {
+  state: "idle" | "focused" | "dragging"
+  props: RequiredBy<FileUploadProps, PropWithDefault>
+  context: Context
+  computed: Computed
+  event: EventObject
+  action: string
+  effect: string
+  guard: string
+}
 
-export type Send = S.Send<S.AnyEventObject>
+export type FileUploadService = Service<FileUploadSchema>
+
+export type FileUploadMachine = Machine<FileUploadSchema>
 
 /* -----------------------------------------------------------------------------
  * Component API
@@ -171,7 +190,14 @@ export interface ItemPreviewImageProps extends ItemProps {
   url: string
 }
 
-export interface MachineApi<T extends PropTypes> {
+export interface DropzoneProps {
+  /**
+   * Whether to disable the click event on the dropzone
+   */
+  disableClick?: boolean | undefined
+}
+
+export interface FileUploadApi<T extends PropTypes = PropTypes> {
   /**
    * Whether the user is dragging something over the root element
    */
@@ -180,6 +206,10 @@ export interface MachineApi<T extends PropTypes> {
    * Whether the user is focused on the dropzone element
    */
   focused: boolean
+  /**
+   * Whether the file input is disabled
+   */
+  disabled: boolean
   /**
    * Function to open the file dialog
    */
@@ -205,25 +235,37 @@ export interface MachineApi<T extends PropTypes> {
    */
   clearFiles(): void
   /**
+   * Function to clear the rejected files
+   */
+  clearRejectedFiles(): void
+  /**
    * Function to format the file size (e.g. 1.2MB)
    */
   getFileSize(file: File): string
   /**
    * Function to get the preview url of a file.
-   * It returns a function to revoke the url.
+   * Returns a function to revoke the url.
    */
   createFileUrl(file: File, cb: (url: string) => void): VoidFunction
+  /**
+   * Function to set the clipboard files.
+   * Returns `true` if the clipboard data contains files, `false` otherwise.
+   */
+  setClipboardFiles(dt: DataTransfer | null): boolean
 
-  labelProps: T["label"]
-  rootProps: T["element"]
-  dropzoneProps: T["element"]
-  triggerProps: T["button"]
-  hiddenInputProps: T["input"]
-  itemGroupProps: T["element"]
+  getLabelProps(): T["label"]
+  getRootProps(): T["element"]
+  getDropzoneProps(props?: DropzoneProps): T["element"]
+  getTriggerProps(): T["button"]
+  getHiddenInputProps(): T["input"]
+  getItemGroupProps(): T["element"]
   getItemProps(props: ItemProps): T["element"]
   getItemNameProps(props: ItemProps): T["element"]
   getItemPreviewProps(props: ItemProps): T["element"]
   getItemPreviewImageProps(props: ItemPreviewImageProps): T["img"]
   getItemSizeTextProps(props: ItemProps): T["element"]
   getItemDeleteTriggerProps(props: ItemProps): T["button"]
+  getClearTriggerProps(): T["button"]
 }
+
+export type { FileMimeType }

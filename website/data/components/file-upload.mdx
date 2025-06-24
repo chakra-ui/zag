@@ -20,11 +20,11 @@ drag-n-drop version.
 
 **Features**
 
-- Supports a button to open the file dialog.
-- Supports drag and drop to upload files.
-- Set the maximum number of files that can be uploaded.
-- Set the maximum size of the files that can be uploaded.
-- Set the accepted file types.
+- Supports a button to open the file dialog
+- Supports drag and drop to upload files
+- Set the maximum number of files that can be uploaded
+- Set the maximum size of the files that can be uploaded
+- Set the accepted file types
 
 ## Installation
 
@@ -32,9 +32,6 @@ To use the file upload machine in your project, run the following command in
 your command line:
 
 <CodeSnippet id="file-upload/installation.mdx" />
-
-This command will install the framework agnostic file upload logic and the
-reactive utilities for your framework of choice.
 
 ## Anatomy
 
@@ -64,144 +61,161 @@ file upload machine in your project 🔥
 
 <CodeSnippet id="file-upload/usage.mdx" />
 
-## Setting the accepted file types
+### Setting the accepted file types
 
 Use the `accept` attribute to set the accepted file types.
 
 ```jsx
-const [state, send] = useMachine(
-  fileUpload.machine({
-    accept: "image/*",
-  }),
-)
+const service = useMachine(fileUpload.machine, {
+  accept: "image/*",
+})
 ```
 
 Alternatively, you can provide an object with a MIME type and an array of file
 extensions.
 
 ```jsx
-const [state, send] = useMachine(
-  fileUpload.machine({
-    accept: {
-      "image/png": [".png"],
-      "text/html": [".html", ".htm"],
-    },
-  }),
-)
+const service = useMachine(fileUpload.machine, {
+  accept: {
+    "image/png": [".png"],
+    "text/html": [".html", ".htm"],
+  },
+})
 ```
 
-## Setting the maximum number of files
+### Setting the maximum number of files
 
 Use the `maxFiles` attribute to set the maximum number of files that can be
 uploaded. This will set the `multiple` attribute on the underlying input
 element.
 
 ```jsx
-const [state, send] = useMachine(
-  fileUpload.machine({
-    maxFiles: 5,
-  }),
-)
+const service = useMachine(fileUpload.machine, {
+  maxFiles: 5,
+})
 ```
 
-## Setting the maximum size per file
+### Setting the maximum size per file
 
 Use the `maxFileSize` attribute to set the maximum size per file that can be
 uploaded.
 
 ```jsx
-const [state, send] = useMachine(
-  fileUpload.machine({
-    maxFileSize: 1024 * 1024 * 10, // 10MB
-  }),
-)
+const service = useMachine(fileUpload.machine, {
+  maxFileSize: 1024 * 1024 * 10, // 10MB
+})
 ```
 
-## Listening to file changes
+### Listening to file changes
 
 When files are uploaded, the `onFileChange` callback is invoked with the details
 of the accepted and rejected files.
 
 ```jsx
-const [state, send] = useMachine(
-  fileUpload.machine({
-    onFileChange(details) {
-      // details => { acceptedFiles: File[], rejectedFiles: { file: File, errors: [] }[] }
-      console.log(details.acceptedFiles)
-      console.log(details.rejectedFiles)
-    },
-  }),
-)
+const service = useMachine(fileUpload.machine, {
+  onFileChange(details) {
+    // details => { acceptedFiles: File[], rejectedFiles: { file: File, errors: [] }[] }
+    console.log(details.acceptedFiles)
+    console.log(details.rejectedFiles)
+  },
+})
 ```
 
-## Usage within a form
+### Usage within a form
 
 To use the file upload within a form, set the `name` attribute in the machine's
-context, and ensure you render the input element `api.hiddenInputProps`
+context, and ensure you render the input element `api.getHiddenInputProps()`
 
 ```jsx
-const [state, send] = useMachine(
-  fileUpload.machine({
-    name: "avatar",
-  }),
-)
+const service = useMachine(fileUpload.machine, {
+  name: "avatar",
+})
 ```
 
-## Displaying image preview
+### Displaying image preview
 
 To display a preview of the uploaded image, use the built-in FileReader API to
 read the file and set the `src` attribute of an image element.
 
 ```jsx
-const [state, send] = useMachine(
-  fileUpload.machine({
-    onFileChange(details) {
-      const reader = new FileReader()
-      reader.onload = (event) => {
-        const image = event.target.result
-        // set the image as the src of an image element
-      }
-      reader.readAsDataURL(details.acceptedFiles[0])
-    },
-  }),
-)
+const service = useMachine(fileUpload.machine, {
+  onFileChange(details) {
+    const reader = new FileReader()
+    reader.onload = (event) => {
+      const image = event.target.result
+      // set the image as the src of an image element
+    }
+    reader.readAsDataURL(details.acceptedFiles[0])
+  },
+})
 ```
 
-## Applying custom validation
+### Applying custom validation
 
 To apply custom validation, set the `validate` attribute to a function that
-returns an array of errors.
+returns an **array of error strings**.
 
-The returned error must be one of `TOO_MANY_FILES`, `FILE_INVALID_TYPE`
-,`FILE_TOO_LARGE`, or `FILE_TOO_SMALL`
+The returned array can contain any string as an error message. While zagjs
+supports default errors such as `TOO_MANY_FILES`, `FILE_INVALID_TYPE`,
+`FILE_TOO_LARGE`, or `FILE_TOO_SMALL`, you can return any string that represents
+your custom validation errors.
+
+> Return `null` if no validation errors are detected.
 
 ```jsx
-const [state, send] = useMachine(
-  fileUpload.machine({
-    validate(file) {
-      if (file.size > 1024 * 1024 * 10) {
-        return ["FILE_TOO_LARGE"]
-      }
-      return null
-    },
-  }),
-)
+const service = useMachine(fileUpload.machine, {
+  validate(file) {
+    // Check if file size exceeds 10MB
+    if (file.size > 1024 * 1024 * 10) {
+      return ["FILE_TOO_LARGE"]
+    }
+    return null
+  },
+})
 ```
 
-## Disabling drag and drop
+Apply multiple validation errors:
 
-To disable the drag and drop functionalty, set the `allowDrop` context property
+```js
+const service = useMachine(fileUpload.machine, {
+  validate(file) {
+    const errors = []
+
+    // Check file size
+    if (file.size > 10 * 1024 * 1024) {
+      errors.push("FILE_TOO_LARGE") // Default error enum
+    }
+
+    // Ensure file is a PDF
+    if (!file.name.endsWith(".pdf")) {
+      errors.push("ONLY_PDF_ALLOWED") // Custom error
+    }
+
+    // Custom check: Reject duplicate files
+    const isDuplicate = details.acceptedFiles.some(
+      (acceptedFile) => acceptedFile.name === file.name,
+    )
+    if (isDuplicate) {
+      errors.push("FILE_EXISTS")
+    }
+
+    return errors.length > 0 ? errors : null
+  },
+})
+```
+
+### Disabling drag and drop
+
+To disable the drag and drop functionality, set the `allowDrop` context property
 to `false`.
 
 ```jsx
-const [state, send] = useMachine(
-  fileUpload.machine({
-    allowDrop: false,
-  }),
-)
+const service = useMachine(fileUpload.machine, {
+  allowDrop: false,
+})
 ```
 
-## Allowing directory selection
+### Allowing directory selection
 
 Set the `directory` property to `true` to enable selecting directories instead
 of files.
@@ -212,14 +226,12 @@ to select directories and their contents.
 > Please note that support for this feature varies from browser to browser.
 
 ```jsx
-const [state, send] = useMachine(
-  fileUpload.machine({
-    directory: true,
-  }),
-)
+const service = useMachine(fileUpload.machine, {
+  directory: true,
+})
 ```
 
-## Supporting media capture on mobile devices
+### Supporting media capture on mobile devices
 
 Set the `capture` property to specify the media capture mechanism to capture
 media on the spot. The value can be:
@@ -231,11 +243,37 @@ media on the spot. The value can be:
 > the file system like normal.
 
 ```jsx
-const [state, send] = useMachine(
-  fileUpload.machine({
-    capture: "user",
-  }),
-)
+const service = useMachine(fileUpload.machine, {
+  capture: "user",
+})
+```
+
+### Pasting files from clipboard
+
+After a user copies an image, to allow pasting the files from the clipboard, you
+can listen for the paste event and use the `api.setFiles` method to set the
+files.
+
+Here's an example of how to do this in React.
+
+```jsx
+function Demo() {
+  const service = useMachine(fileUpload.machine, {
+    accept: "image/*",
+  })
+
+  const api = fileUpload.connect(service, normalizeProps)
+
+  return (
+    <textarea
+      onPaste={(event) => {
+        if (event.clipboardData?.files) {
+          api.setFiles(Array.from(event.clipboardData.files))
+        }
+      }}
+    />
+  )
+}
 ```
 
 ## Styling guide
@@ -312,3 +350,7 @@ The file upload machine exposes the following context properties:
 The file upload `api` exposes the following methods:
 
 <ApiTable name="file-upload" />
+
+### Data Attributes
+
+<DataAttrTable name="file-upload" />

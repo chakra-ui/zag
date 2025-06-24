@@ -1,4 +1,4 @@
-import type { StateMachine as S } from "@zag-js/core"
+import type { EventObject, Machine, Service } from "@zag-js/core"
 import type { CommonProperties, DirectionProperty, PropTypes, RequiredBy } from "@zag-js/types"
 import type { StrokeOptions } from "perfect-freehand"
 
@@ -6,7 +6,7 @@ import type { StrokeOptions } from "perfect-freehand"
  * Callback details
  * -----------------------------------------------------------------------------*/
 
-interface Point {
+export interface Point {
   x: number
   y: number
   pressure: number
@@ -21,7 +21,7 @@ export interface DrawingOptions extends StrokeOptions {
    * The color of the stroke.
    * Note: Must be a valid CSS color string, not a css variable.
    */
-  fill?: string
+  fill?: string | undefined
 }
 
 export type DataUrlType = "image/png" | "image/jpeg" | "image/svg+xml"
@@ -33,14 +33,20 @@ export interface DrawEndDetails {
 
 export interface DataUrlOptions {
   type: DataUrlType
-  quality?: number
+  quality?: number | undefined
 }
 
 export type ElementIds = Partial<{
   root: string
   control: string
   hiddenInput: string
+  label: string
 }>
+
+export interface IntlTranslations {
+  clearTrigger: string
+  control: string
+}
 
 export type { StrokeOptions }
 
@@ -48,37 +54,47 @@ export type { StrokeOptions }
  * Machine context
  * -----------------------------------------------------------------------------*/
 
-interface PublicContext extends DirectionProperty, CommonProperties {
+export interface SignaturePadProps extends DirectionProperty, CommonProperties {
   /**
    * The ids of the signature pad elements. Useful for composition.
    */
-  ids?: ElementIds
+  ids?: ElementIds | undefined
+  /**
+   * The translations of the signature pad. Useful for internationalization.
+   */
+  translations?: IntlTranslations | undefined
   /**
    * Callback when the signature pad is drawing.
    */
-  onDraw?(details: DrawDetails): void
+  onDraw?: ((details: DrawDetails) => void) | undefined
   /**
    * Callback when the signature pad is done drawing.
    */
-  onDrawEnd?(details: DrawEndDetails): void
+  onDrawEnd?: ((details: DrawEndDetails) => void) | undefined
   /**
    * The drawing options.
    * @default '{ size: 2, simulatePressure: true }'
    */
-  drawing: DrawingOptions
+  drawing?: DrawingOptions | undefined
   /**
    * Whether the signature pad is disabled.
    */
-  disabled?: boolean
+  disabled?: boolean | undefined
+  /**
+   * Whether the signature pad is required.
+   */
+  required?: boolean | undefined
   /**
    * Whether the signature pad is read-only.
    */
-  readOnly?: boolean
+  readOnly?: boolean | undefined
   /**
    * The name of the signature pad. Useful for form submission.
    */
-  name?: string
+  name?: string | undefined
 }
+
+type PropsWithDefault = "drawing" | "translations"
 
 interface PrivateContext {
   /**
@@ -100,17 +116,20 @@ type ComputedContext = Readonly<{
   isEmpty: boolean
 }>
 
-export type UserDefinedContext = RequiredBy<PublicContext, "id">
-
-export interface MachineContext extends PublicContext, PrivateContext, ComputedContext {}
-
-export interface MachineState {
-  value: "idle" | "drawing"
+export interface SignaturePadSchema {
+  state: "idle" | "drawing"
+  props: RequiredBy<SignaturePadProps, PropsWithDefault>
+  context: PrivateContext
+  computed: ComputedContext
+  action: string
+  event: EventObject
+  effect: string
+  guard: string
 }
 
-export type State = S.State<MachineContext, MachineState>
+export type SignaturePadService = Service<SignaturePadSchema>
 
-export type Send = S.Send<S.AnyEventObject>
+export type SignaturePadMachine = Machine<SignaturePadSchema>
 
 /* -----------------------------------------------------------------------------
  * Component API
@@ -124,7 +143,7 @@ export interface HiddenInputProps {
   value: string
 }
 
-export interface MachineApi<T extends PropTypes = PropTypes> {
+export interface SignaturePadApi<T extends PropTypes = PropTypes> {
   /**
    * Whether the signature pad is empty.
    */
@@ -150,12 +169,12 @@ export interface MachineApi<T extends PropTypes = PropTypes> {
    */
   clear(): void
 
-  labelProps: T["element"]
-  rootProps: T["element"]
-  controlProps: T["element"]
-  segmentProps: T["svg"]
+  getLabelProps(): T["element"]
+  getRootProps(): T["element"]
+  getControlProps(): T["element"]
+  getSegmentProps(): T["svg"]
   getSegmentPathProps(props: SegmentPathProps): T["path"]
   getHiddenInputProps(props: HiddenInputProps): T["input"]
-  guideProps: T["element"]
-  clearTriggerProps: T["element"]
+  getGuideProps(): T["element"]
+  getClearTriggerProps(): T["element"]
 }

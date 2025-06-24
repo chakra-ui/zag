@@ -1,0 +1,40 @@
+```html
+<script setup>
+  import * as tabs from "@zag-js/tabs"
+  import { normalizeProps, useMachine } from "@zag-js/vue"
+  import { computed } from "vue"
+
+  const data = [
+    { value: "item-1", label: "Item one", content: "Item one content" },
+    { value: "item-2", label: "Item two", content: "Item two content" },
+    { value: "item-3", label: "Item three", content: "Item three content" },
+  ]
+
+  const service = useMachine(tabs.machine, {
+    id: "1",
+    defaultValue: "item-1",
+  })
+  const api = computed(() => tabs.connect(service, normalizeProps))
+</script>
+
+<template>
+  <div ref="ref" v-bind="api.getRootProps()">
+    <div v-bind="api.getListProps()">
+      <button
+        v-for="item in data"
+        v-bind="api.getTriggerProps({ value: item.value })"
+        :key="item.value"
+      >
+        {{ item.label }}
+      </button>
+    </div>
+    <div
+      v-for="item in data"
+      v-bind="api.getContentProps({ value: item.value })"
+      :key="item.value"
+    >
+      <p>{{ item.content }}</p>
+    </div>
+  </div>
+</template>
+```

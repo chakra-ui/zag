@@ -7,43 +7,44 @@ import { StateVisualizer } from "../components/state-visualizer"
 import { Toolbar } from "../components/toolbar"
 import { useControls } from "../hooks/use-controls"
 
+interface Item {
+  label: string
+  value: string
+}
+
 export default function Page() {
   const controls = useControls(selectControls)
 
-  const [state, send] = useMachine(
-    select.machine({
-      collection: select.collection({ items: selectData }),
-      id: useId(),
-      name: "country",
-      onHighlightChange(details) {
-        console.log("onHighlightChange", details)
-      },
-      onValueChange(details) {
-        console.log("onChange", details)
-      },
-      onOpenChange(details) {
-        console.log("onOpenChange", details)
-      },
-    }),
-    {
-      context: controls.context,
+  const service = useMachine(select.machine as select.Machine<Item>, {
+    collection: select.collection({ items: selectData }),
+    id: useId(),
+    name: "country",
+    onHighlightChange(details) {
+      console.log("onHighlightChange", details)
     },
-  )
+    onValueChange(details) {
+      console.log("onChange", details)
+    },
+    onOpenChange(details) {
+      console.log("onOpenChange", details)
+    },
+    ...controls.context,
+  })
 
-  const api = select.connect(state, send, normalizeProps)
+  const api = select.connect(service, normalizeProps)
 
   return (
     <>
       <main className="select">
-        <div {...api.rootProps}>
-          <label {...api.labelProps}>Label</label>
+        <div {...api.getRootProps()}>
+          <label {...api.getLabelProps()}>Label</label>
           {/* control */}
-          <div {...api.controlProps}>
-            <button {...api.triggerProps}>
+          <div {...api.getControlProps()}>
+            <button {...api.getTriggerProps()}>
               <span>{api.valueAsString || "Select option"}</span>
-              <span {...api.indicatorProps}>▼</span>
+              <span {...api.getIndicatorProps()}>▼</span>
             </button>
-            <button {...api.clearTriggerProps}>X</button>
+            <button {...api.getClearTriggerProps()}>X</button>
           </div>
 
           <form
@@ -53,7 +54,7 @@ export default function Page() {
             }}
           >
             {/* Hidden select */}
-            <select {...api.hiddenSelectProps}>
+            <select {...api.getHiddenSelectProps()}>
               {api.empty && <option value="" />}
               {selectData.map((option) => (
                 <option key={option.value} value={option.value}>
@@ -65,8 +66,8 @@ export default function Page() {
 
           {/* UI select */}
           <Portal>
-            <div {...api.positionerProps}>
-              <ul {...api.contentProps}>
+            <div {...api.getPositionerProps()}>
+              <ul {...api.getContentProps()}>
                 {selectData.map((item) => (
                   <li key={item.value} {...api.getItemProps({ item })}>
                     <span {...api.getItemTextProps({ item })}>{item.label}</span>
@@ -80,7 +81,7 @@ export default function Page() {
       </main>
 
       <Toolbar controls={controls.ui}>
-        <StateVisualizer state={state} omit={["collection"]} />
+        <StateVisualizer state={service} omit={["collection"]} />
       </Toolbar>
     </>
   )

@@ -5,30 +5,30 @@ import { normalizeProps, useMachine } from "@zag-js/vue"
 
 const controls = useControls(switchControls)
 
-const [state, send] = useMachine(
-  zagSwitch.machine({
+const service = useMachine(
+  zagSwitch.machine,
+  controls.mergeProps<zagSwitch.Props>({
     name: "switch",
-    id: "1",
+    id: useId(),
   }),
-  { context: controls.context },
 )
 
-const api = computed(() => zagSwitch.connect(state.value, send, normalizeProps))
+const api = computed(() => zagSwitch.connect(service, normalizeProps))
 </script>
 
 <template>
   <main class="switch">
-    <label v-bind="api.rootProps">
-      <input v-bind="api.hiddenInputProps" />
-      <span v-bind="api.controlProps">
-        <span v-bind="api.thumbProps" />
+    <label v-bind="api.getRootProps()">
+      <input v-bind="api.getHiddenInputProps()" />
+      <span v-bind="api.getControlProps()">
+        <span v-bind="api.getThumbProps()" />
       </span>
-      <span v-bind="api.labelProps">Feature is {{ api.checked ? "enabled" : "disabled" }}</span>
+      <span v-bind="api.getLabelProps()">Feature is {{ api.checked ? "enabled" : "disabled" }}</span>
     </label>
   </main>
 
   <Toolbar>
-    <StateVisualizer :state="state" />
+    <StateVisualizer :state="service" />
     <template #controls>
       <Controls :control="controls" />
     </template>

@@ -1,0 +1,56 @@
+```svelte
+<script lang="ts">
+  import * as select from "@zag-js/select"
+  import { portal, normalizeProps, useMachine } from "@zag-js/svelte"
+
+  const selectData = [
+    { label: "Nigeria", value: "NG" },
+    { label: "Japan", value: "JP" },
+    { label: "Korea", value: "KO" },
+    { label: "Kenya", value: "KE" },
+    { label: "United Kingdom", value: "UK" },
+    { label: "Ghana", value: "GH" },
+    { label: "Uganda", value: "UG" },
+  ]
+
+  const service = useMachine(select.machine, {
+    id: "1",
+    collection: select.collection({ items: selectData }),
+    name: "country",
+  })
+
+  const api = $derived(select.connect(service, normalizeProps))
+</script>
+
+<form>
+  <!-- Hidden select -->
+  <select {...api.getHiddenSelectProps()}>
+    {#each selectData as option}
+      <option value={option.value}>
+        {option.label}
+      </option>
+    {/each}
+  </select>
+
+  <!-- Custom Select -->
+
+<div {...api.getControlProps()}>
+  <label {...api.getLabelProps()}>Label</label>
+  <button type="button" {...api.getTriggerProps()}>
+    <span>{api.valueAsString || "Select option"}</span>
+    <CaretIcon />
+  </button>
+</div>
+
+  <div use:portal {...api.getPositionerProps()}>
+    <ul {...api.getContentProps()}>
+      {#each selectData as item}
+        <li {...api.getItemProps({ item })}>
+          <span>{item.label}</span>
+          <span {...api.getItemIndicatorProps({ item })}>✓</span>
+        </li>
+      {/each}
+    </ul>
+  </div>
+</form>
+```

@@ -8,6 +8,11 @@ import { StateVisualizer } from "../components/state-visualizer"
 import { Toolbar } from "../components/toolbar"
 import { useControls } from "../hooks/use-controls"
 
+interface Item {
+  code: string
+  label: string
+}
+
 export default function Page() {
   const controls = useControls(comboboxControls)
 
@@ -19,27 +24,20 @@ export default function Page() {
     itemToString: (item) => item.label,
   })
 
-  const [state, send] = useMachine(
-    combobox.machine({
-      id: useId(),
-      collection,
-      onOpenChange() {
-        setOptions(comboboxData)
-      },
-      onInputValueChange({ inputValue }) {
-        const filtered = matchSorter(comboboxData, inputValue, { keys: ["label"] })
-        setOptions(filtered.length > 0 ? filtered : comboboxData)
-      },
-    }),
-    {
-      context: {
-        ...controls.context,
-        collection,
-      },
+  const service = useMachine(combobox.machine as combobox.Machine<Item>, {
+    id: useId(),
+    collection,
+    onOpenChange() {
+      setOptions(comboboxData)
     },
-  )
+    onInputValueChange({ inputValue }) {
+      const filtered = matchSorter(comboboxData, inputValue, { keys: ["label"] })
+      setOptions(filtered.length > 0 ? filtered : comboboxData)
+    },
+    ...controls.context,
+  })
 
-  const api = combobox.connect(state, send, normalizeProps)
+  const api = combobox.connect(service, normalizeProps)
 
   return (
     <>
@@ -50,21 +48,21 @@ export default function Page() {
             Clear Value
           </button>
           <br />
-          <div {...api.rootProps}>
-            <label {...api.labelProps}>Select country</label>
-            <div {...api.controlProps}>
-              <input data-testid="input" {...api.inputProps} />
-              <button data-testid="trigger" {...api.triggerProps}>
+          <div {...api.getRootProps()}>
+            <label {...api.getLabelProps()}>Select country</label>
+            <div {...api.getControlProps()}>
+              <input data-testid="input" {...api.getInputProps()} />
+              <button data-testid="trigger" {...api.getTriggerProps()}>
                 ▼
               </button>
-              <button {...api.clearTriggerProps}>
+              <button {...api.getClearTriggerProps()}>
                 <XIcon />
               </button>
             </div>
           </div>
-          <div {...api.positionerProps}>
+          <div {...api.getPositionerProps()}>
             {options.length > 0 && (
-              <ul data-testid="combobox-content" {...api.contentProps}>
+              <ul data-testid="combobox-content" {...api.getContentProps()}>
                 {options.map((item) => (
                   <li data-testid={item.code} key={item.code} {...api.getItemProps({ item })}>
                     <span {...api.getItemIndicatorProps({ item })}>✅</span>
@@ -78,7 +76,7 @@ export default function Page() {
       </main>
 
       <Toolbar controls={controls.ui}>
-        <StateVisualizer state={state} omit={["collection"]} />
+        <StateVisualizer state={service} omit={["collection"]} />
       </Toolbar>
     </>
   )

@@ -5,18 +5,22 @@ import { normalizeProps, useMachine } from "@zag-js/vue"
 
 const controls = useControls(tabsControls)
 
-const [state, send] = useMachine(tabs.machine({ id: "1", value: "nils" }), {
-  context: controls.context,
-})
+const service = useMachine(
+  tabs.machine,
+  controls.mergeProps<tabs.Props>({
+    id: useId(),
+    defaultValue: "nils",
+  }),
+)
 
-const api = computed(() => tabs.connect(state.value, send, normalizeProps))
+const api = computed(() => tabs.connect(service, normalizeProps))
 </script>
 
 <template>
   <main class="tabs">
-    <div v-bind="api.rootProps">
-      <div v-bind="api.indicatorProps" />
-      <div v-bind="api.listProps">
+    <div v-bind="api.getRootProps()">
+      <div v-bind="api.getIndicatorProps()" />
+      <div v-bind="api.getListProps()">
         <button
           v-for="data in tabsData"
           v-bind="api.getTriggerProps({ value: data.id })"
@@ -40,7 +44,7 @@ const api = computed(() => tabs.connect(state.value, send, normalizeProps))
   </main>
 
   <Toolbar>
-    <StateVisualizer :state="state" />
+    <StateVisualizer :state="service" />
     <template #controls>
       <Controls :control="controls" />
     </template>

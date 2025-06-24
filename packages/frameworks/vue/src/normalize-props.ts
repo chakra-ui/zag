@@ -2,8 +2,8 @@ import { createNormalizer } from "@zag-js/types"
 import type * as Vue from "vue"
 
 type ReservedProps = {
-  key?: string | number | symbol
-  ref?: Vue.VNodeRef
+  key?: string | number | symbol | undefined
+  ref?: Vue.VNodeRef | undefined
 }
 
 type Attrs<T> = T & ReservedProps
@@ -19,7 +19,7 @@ function toCase(txt: string) {
   return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase()
 }
 
-const propMap = {
+const propMap: Record<string, string> = {
   htmlFor: "for",
   className: "class",
   onDoubleClick: "onDblclick",
@@ -30,13 +30,15 @@ const propMap = {
   defaultChecked: "checked",
 }
 
+const preserveKeys =
+  "viewBox,className,preserveAspectRatio,fillRule,clipPath,clipRule,strokeWidth,strokeLinecap,strokeLinejoin,strokeDasharray,strokeDashoffset,strokeMiterlimit".split(
+    ",",
+  )
+
 function toVueProp(prop: string) {
   if (prop in propMap) return propMap[prop]
-
-  if (prop.startsWith("on")) {
-    return `on${toCase(prop.substr(2))}`
-  }
-
+  if (prop.startsWith("on")) return `on${toCase(prop.substr(2))}`
+  if (preserveKeys.includes(prop)) return prop
   return prop.toLowerCase()
 }
 

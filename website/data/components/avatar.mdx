@@ -23,9 +23,6 @@ command line:
 
 <CodeSnippet id="avatar/installation.mdx" />
 
-This command will install the framework agnostic avatar logic and the reactive
-utilities for your framework of choice.
-
 ## Anatomy
 
 To set up the avatar correctly, you'll need to understand its anatomy and how we
@@ -57,19 +54,17 @@ avatar machine in your project 🔥
 
 <CodeSnippet id="avatar/usage.mdx" />
 
-## Listening for loading status changes
+### Listening for loading status changes
 
 When the image has loaded or failed to load, the `onStatusChange` callback is
 invoked.
 
-```jsx {3}
-const [state, send] = useMachine(
-  avatar.machine({
-    onStatusChange(details) {
-      // details => { status: "error" | "loaded" }
-    },
-  }),
-)
+```jsx {2}
+const service = useMachine(avatar.machine, {
+  onStatusChange(details) {
+    // details => { status: "error" | "loaded" }
+  },
+})
 ```
 
 ## Styling guide
@@ -119,3 +114,7 @@ The avatar machine exposes the following context properties:
 The avatar `api` exposes the following methods:
 
 <ApiTable name="avatar" />
+
+### Data Attributes
+
+<DataAttrTable name="avatar" />

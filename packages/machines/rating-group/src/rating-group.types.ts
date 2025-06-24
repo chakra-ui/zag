@@ -1,4 +1,4 @@
-import type { StateMachine as S } from "@zag-js/core"
+import type { EventObject, Machine, Service } from "@zag-js/core"
 import type { CommonProperties, DirectionProperty, PropTypes, RequiredBy } from "@zag-js/types"
 
 /* -----------------------------------------------------------------------------
@@ -26,76 +26,82 @@ export type ElementIds = Partial<{
   label: string
   hiddenInput: string
   control: string
-  rating(id: string): string
+  item(id: string): string
 }>
 
-interface PublicContext extends DirectionProperty, CommonProperties {
+export interface RatingGroupProps extends DirectionProperty, CommonProperties {
   /**
    * The ids of the elements in the rating. Useful for composition.
    */
-  ids?: ElementIds
+  ids?: ElementIds | undefined
   /**
    * Specifies the localized strings that identifies the accessibility elements and their states
    */
-  translations: IntlTranslations
+  translations?: IntlTranslations | undefined
   /**
    * The total number of ratings.
    * @default 5
    */
-  count: number
+  count?: number | undefined
   /**
    * The name attribute of the rating element (used in forms).
    */
-  name?: string
+  name?: string | undefined
   /**
    * The associate form of the underlying input element.
    */
-  form?: string
+  form?: string | undefined
   /**
-   * The current rating value.
+   * The controlled value of the rating
    */
-  value: number
+  value?: number | undefined
+  /**
+   * The initial value of the rating when rendered.
+   * Use when you don't need to control the value of the rating.
+   */
+  defaultValue?: number | undefined
   /**
    * Whether the rating is readonly.
    */
-  readOnly?: boolean
+  readOnly?: boolean | undefined
   /**
    * Whether the rating is disabled.
    */
-  disabled?: boolean
+  disabled?: boolean | undefined
+  /**
+   * Whether the rating is required.
+   */
+  required?: boolean | undefined
   /**
    * Whether to allow half stars.
    */
-  allowHalf?: boolean
+  allowHalf?: boolean | undefined
   /**
    * Whether to autofocus the rating.
    */
-  autoFocus?: boolean
+  autoFocus?: boolean | undefined
   /**
    * Function to be called when the rating value changes.
    */
-  onValueChange?: (details: ValueChangeDetails) => void
+  onValueChange?: ((details: ValueChangeDetails) => void) | undefined
   /**
    * Function to be called when the rating value is hovered.
    */
-  onHoverChange?: (details: HoverChangeDetails) => void
+  onHoverChange?: ((details: HoverChangeDetails) => void) | undefined
 }
 
-export type UserDefinedContext = RequiredBy<PublicContext, "id">
+type PropsWithDefault = "count" | "translations"
 
 type ComputedContext = Readonly<{
   /**
-   * @computed
    * Whether the rating is interactive
    */
   isInteractive: boolean
   /**
-   * @computed
    * Whether the pointer is hovering over the rating
    */
   isHovering: boolean
   /**
-   * @computed
    * Whether the rating is disabled
    */
   isDisabled: boolean
@@ -103,24 +109,34 @@ type ComputedContext = Readonly<{
 
 interface PrivateContext {
   /**
-   * @internal The value of the hovered rating.
+   * The value of the hovered rating.
    */
   hoveredValue: number
   /**
-   * @internal Whether the fieldset is disabled.
+   * Whether the fieldset is disabled.
    */
   fieldsetDisabled: boolean
+  /**
+   * The value of the rating group.
+   */
+  value: number
 }
 
-export interface MachineContext extends PublicContext, ComputedContext, PrivateContext {}
-
-export interface MachineState {
-  value: "idle" | "hover" | "focus"
+export interface RatingGroupSchema {
+  state: "idle" | "hover" | "focus"
+  context: PrivateContext
+  props: RequiredBy<RatingGroupProps, PropsWithDefault>
+  computed: ComputedContext
+  private: PrivateContext
+  action: string
+  event: EventObject
+  effect: string
+  guard: string
 }
 
-export type State = S.State<MachineContext, MachineState>
+export type RatingGroupService = Service<RatingGroupSchema>
 
-export type Send = S.Send<S.AnyEventObject>
+export type RatingGroupMachine = Machine<RatingGroupSchema>
 
 /* -----------------------------------------------------------------------------
  * Component API
@@ -145,7 +161,7 @@ export interface ItemState {
   checked: boolean
 }
 
-export interface MachineApi<T extends PropTypes = PropTypes> {
+export interface RatingGroupApi<T extends PropTypes = PropTypes> {
   /**
    * Sets the value of the rating group
    */
@@ -179,9 +195,9 @@ export interface MachineApi<T extends PropTypes = PropTypes> {
    */
   getItemState(props: ItemProps): ItemState
 
-  rootProps: T["element"]
-  hiddenInputProps: T["input"]
-  labelProps: T["element"]
-  controlProps: T["element"]
+  getRootProps(): T["element"]
+  getHiddenInputProps(): T["input"]
+  getLabelProps(): T["element"]
+  getControlProps(): T["element"]
   getItemProps(props: ItemProps): T["element"]
 }

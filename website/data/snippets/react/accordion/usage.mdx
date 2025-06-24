@@ -1,22 +1,23 @@
 ```jsx
 import * as accordion from "@zag-js/accordion"
 import { useMachine, normalizeProps } from "@zag-js/react"
+import { useId } from "react"
 
 const data = [
   { title: "Watercraft", content: "Sample accordion content" },
   { title: "Automobiles", content: "Sample accordion content" },
-  { title: "Aircrafts", content: "Sample accordion content" },
+  { title: "Aircraft", content: "Sample accordion content" },
 ]
 
 function Accordion() {
-  const [state, send] = useMachine(accordion.machine({ id: "1" }))
-  
-  const api = accordion.connect(state, send, normalizeProps)
+  const service = useMachine(accordion.machine, { id: useId() })
+
+  const api = accordion.connect(service, normalizeProps)
 
   return (
-    <div {...api.rootProps}>
+    <div {...api.getRootProps()}>
       {data.map((item) => (
-        <div {...api.getItemProps({ value: item.title })}>
+        <div key={item.title} {...api.getItemProps({ value: item.title })}>
           <h3>
             <button {...api.getItemTriggerProps({ value: item.title })}>
               {item.title}

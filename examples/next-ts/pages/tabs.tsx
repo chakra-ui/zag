@@ -9,24 +9,20 @@ import { useControls } from "../hooks/use-controls"
 export default function Page() {
   const controls = useControls(tabsControls)
 
-  const [state, send] = useMachine(
-    tabs.machine({
-      id: useId(),
-      value: "nils",
-    }),
-    {
-      context: controls.context,
-    },
-  )
+  const service = useMachine(tabs.machine, {
+    id: useId(),
+    defaultValue: "nils",
+    ...controls.context,
+  })
 
-  const api = tabs.connect(state, send, normalizeProps)
+  const api = tabs.connect(service, normalizeProps)
 
   return (
     <>
       <main className="tabs">
-        <div {...api.rootProps}>
-          <div {...api.indicatorProps} />
-          <div {...api.listProps}>
+        <div {...api.getRootProps()}>
+          <div {...api.getIndicatorProps()} />
+          <div {...api.getListProps()}>
             {tabsData.map((data) => (
               <button {...api.getTriggerProps({ value: data.id })} key={data.id} data-testid={`${data.id}-tab`}>
                 {data.label}
@@ -42,7 +38,7 @@ export default function Page() {
         </div>
       </main>
       <Toolbar controls={controls.ui}>
-        <StateVisualizer state={state} />
+        <StateVisualizer state={service} />
       </Toolbar>
     </>
   )

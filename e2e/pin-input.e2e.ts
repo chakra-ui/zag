@@ -6,8 +6,6 @@ const second = testid("input-2")
 const third = testid("input-3")
 const clear = testid("clear-button")
 
-const isMac = process.platform === "darwin"
-
 test.describe("pin input", () => {
   test.beforeEach(async ({ page }) => {
     await page.goto("/pin-input")
@@ -70,8 +68,7 @@ test.describe("pin input", () => {
     await page.locator(first).focus()
 
     await page.evaluate(() => navigator.clipboard.writeText("123"))
-    const metaKey = isMac ? "Meta" : "Control"
-    await page.locator(first).press(`${metaKey}+v`)
+    await page.locator(first).press("ControlOrMeta+v")
 
     await expect(page.locator(first)).toHaveValue("1")
     await expect(page.locator(second)).toHaveValue("2")
@@ -86,8 +83,7 @@ test.describe("pin input", () => {
     await page.locator(first).focus()
 
     await page.evaluate(() => navigator.clipboard.writeText("123"))
-    const metaKey = isMac ? "Meta" : "Control"
-    await page.locator(first).press(`${metaKey}+v`)
+    await page.locator(first).press("ControlOrMeta+v")
 
     await expect(page.locator(first)).toHaveValue("1")
     await expect(page.locator(second)).toHaveValue("2")
@@ -108,5 +104,16 @@ test.describe("pin input", () => {
     await page.locator(first).focus()
     await page.locator(first).fill("1")
     await expect(page.locator(first)).toHaveValue("1")
+  })
+
+  test("[on edit] should allow to edit the existing value", async ({ page }) => {
+    await page.locator(first).fill("1")
+    await page.locator(second).fill("2")
+    await page.locator(third).fill("3")
+    await page.locator(second).focus()
+    await page.locator(second).fill("4")
+    await expect(page.locator(second)).toHaveValue("4")
+    await expect(page.locator(third)).toHaveValue("3")
+    await expect(page.locator(third)).toBeFocused()
   })
 })

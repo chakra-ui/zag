@@ -1,115 +1,138 @@
 import { createMachine } from "@zag-js/core"
-import { getRelativePoint, trackPointerMove } from "@zag-js/dom-event"
-import { compact } from "@zag-js/utils"
+import { getRelativePoint, trackPointerMove } from "@zag-js/dom-query"
 import getStroke from "perfect-freehand"
 import { getSvgPathFromStroke } from "./get-svg-path"
-import { dom } from "./signature-pad.dom"
-import type { MachineContext, MachineState, UserDefinedContext } from "./signature-pad.types"
+import * as dom from "./signature-pad.dom"
+import type { Point, SignaturePadSchema } from "./signature-pad.types"
 
-export function machine(userContext: UserDefinedContext) {
-  const ctx = compact(userContext)
-  return createMachine<MachineContext, MachineState>(
-    {
-      id: "signature-pad",
-      initial: "idle",
-      context: {
-        ...ctx,
-        paths: [],
-        currentPoints: [],
-        currentPath: null,
-        drawing: {
-          size: 2,
-          simulatePressure: false,
-          thinning: 0.7,
-          smoothing: 0.4,
-          streamline: 0.6,
-          ...ctx.drawing,
+export const machine = createMachine<SignaturePadSchema>({
+  props({ props }) {
+    return {
+      ...props,
+      drawing: {
+        size: 2,
+        simulatePressure: false,
+        thinning: 0.7,
+        smoothing: 0.4,
+        streamline: 0.6,
+        ...props.drawing,
+      },
+      translations: {
+        control: "signature pad",
+        clearTrigger: "clear signature",
+        ...props.translations,
+      },
+    }
+  },
+
+  initialState() {
+    return "idle"
+  },
+
+  context({ prop, bindable }) {
+    return {
+      paths: bindable<string[]>(() => ({
+        defaultValue: [],
+        sync: true,
+        onChange(value) {
+          prop("onDraw")?.({ paths: value })
         },
-      },
+      })),
+      currentPoints: bindable<Point[]>(() => ({
+        defaultValue: [],
+      })),
+      currentPath: bindable<string | null>(() => ({
+        defaultValue: null,
+      })),
+    }
+  },
 
-      computed: {
-        isInteractive: (ctx) => !(ctx.disabled || ctx.readOnly),
-        isEmpty: (ctx) => ctx.paths.length === 0,
-      },
+  computed: {
+    isInteractive: ({ prop }) => !(prop("disabled") || prop("readOnly")),
+    isEmpty: ({ context }) => context.get("paths").length === 0,
+  },
 
+  on: {
+    CLEAR: {
+      actions: ["clearPoints", "invokeOnDrawEnd", "focusCanvasEl"],
+    },
+  },
+
+  states: {
+    idle: {
       on: {
-        CLEAR: {
-          actions: ["clearPoints", "invokeOnDrawEnd", "focusCanvasEl"],
+        POINTER_DOWN: {
+          target: "drawing",
+          actions: ["addPoint"],
         },
       },
+    },
+    drawing: {
+      effects: ["trackPointerMove"],
+      on: {
+        POINTER_MOVE: {
+          actions: ["addPoint", "invokeOnDraw"],
+        },
+        POINTER_UP: {
+          target: "idle",
+          actions: ["endStroke", "invokeOnDrawEnd"],
+        },
+      },
+    },
+  },
 
-      states: {
-        idle: {
-          on: {
-            POINTER_DOWN: {
-              target: "drawing",
-              actions: ["addPoint"],
-            },
+  implementations: {
+    effects: {
+      trackPointerMove({ scope, send }) {
+        const doc = scope.getDoc()
+        return trackPointerMove(doc, {
+          onPointerMove({ event, point }) {
+            const controlEl = dom.getControlEl(scope)
+            if (!controlEl) return
+            const { offset } = getRelativePoint(point, controlEl)
+            send({ type: "POINTER_MOVE", point: offset, pressure: event.pressure })
           },
-        },
-        drawing: {
-          activities: ["trackPointerMove"],
-          on: {
-            POINTER_MOVE: {
-              actions: ["addPoint", "invokeOnDraw"],
-            },
-            POINTER_UP: {
-              target: "idle",
-              actions: ["endStroke", "invokeOnDrawEnd"],
-            },
+          onPointerUp() {
+            send({ type: "POINTER_UP" })
           },
-        },
+        })
       },
     },
-    {
-      activities: {
-        trackPointerMove(ctx, _evt, { send }) {
-          const doc = dom.getDoc(ctx)
-          return trackPointerMove(doc, {
-            onPointerMove({ event, point }) {
-              const { offset } = getRelativePoint(point, dom.getControlEl(ctx)!)
-              send({ type: "POINTER_MOVE", point: offset, pressure: event.pressure })
-            },
-            onPointerUp() {
-              send({ type: "POINTER_UP" })
-            },
-          })
-        },
+    actions: {
+      addPoint({ context, event, prop }) {
+        const nextPoints = [...context.get("currentPoints"), event.point]
+        context.set("currentPoints", nextPoints)
+        const stroke = getStroke(nextPoints, prop("drawing"))
+        context.set("currentPath", getSvgPathFromStroke(stroke))
       },
-      actions: {
-        addPoint(ctx, evt) {
-          ctx.currentPoints.push(evt.point)
-          const stroke = getStroke(ctx.currentPoints, ctx.drawing)
-          ctx.currentPath = getSvgPathFromStroke(stroke)
-        },
-        endStroke(ctx) {
-          ctx.paths.push(ctx.currentPath!)
-          ctx.currentPoints = []
-          ctx.currentPath = null
-        },
-        clearPoints(ctx) {
-          ctx.currentPoints = []
-          ctx.paths = []
-        },
-        focusCanvasEl(ctx) {
-          queueMicrotask(() => {
-            dom.getControlEl(ctx)?.focus({ preventScroll: true })
-          })
-        },
-        invokeOnDraw(ctx) {
-          ctx.onDraw?.({
-            paths: [...ctx.paths, ctx.currentPath!],
-          })
-        },
-        invokeOnDrawEnd(ctx) {
-          ctx.onDrawEnd?.({
-            paths: [...ctx.paths],
-            getDataUrl(type, quality = 0.92) {
-              return dom.getDataUrl(ctx, { type, quality })
-            },
-          })
-        },
+      endStroke({ context }) {
+        context.set("paths", [...context.get("paths"), context.get("currentPath")!])
+        context.set("currentPoints", [])
+        context.set("currentPath", null)
+      },
+      clearPoints({ context }) {
+        context.set("currentPoints", [])
+        context.set("paths", [])
+      },
+      focusCanvasEl({ scope }) {
+        queueMicrotask(() => {
+          scope.getActiveElement()?.focus({ preventScroll: true })
+        })
+      },
+      invokeOnDraw({ context, prop }) {
+        prop("onDraw")?.({
+          paths: [...context.get("paths"), context.get("currentPath")!],
+        })
+      },
+      invokeOnDrawEnd({ context, prop, scope, computed }) {
+        prop("onDrawEnd")?.({
+          paths: [...context.get("paths")],
+          getDataUrl(type, quality = 0.92) {
+            if (computed("isEmpty")) return Promise.resolve("")
+            return dom.getDataUrl(scope, { type, quality })
+          },
+        })
       },
     },
-  )
-}
+  },
+})

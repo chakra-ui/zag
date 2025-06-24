@@ -1,4 +1,4 @@
-import * as floatingPanel from "@zag-js/floating-panel"
+import * as floating from "@zag-js/floating-panel"
 import { normalizeProps, useMachine } from "@zag-js/react"
 import { floatingPanelControls } from "@zag-js/shared"
 import { ArrowDownLeft, Maximize2, Minus, XIcon } from "lucide-react"
@@ -10,39 +10,37 @@ import { useControls } from "../hooks/use-controls"
 export default function Page() {
   const controls = useControls(floatingPanelControls)
 
-  const [state, send] = useMachine(floatingPanel.machine({ id: useId() }), {
-    context: controls.context,
-  })
+  const service = useMachine(floating.machine, { id: useId() })
 
-  const api = floatingPanel.connect(state, send, normalizeProps)
+  const api = floating.connect(service, normalizeProps)
 
   return (
     <>
       <main className="floating-panel">
         <div>
-          <button {...api.triggerProps}>Toggle Panel</button>
-          <div {...api.positionerProps}>
-            <div {...api.contentProps}>
-              <div {...api.dragTriggerProps}>
-                <div {...api.headerProps}>
-                  <p {...api.titleProps}>Floating Panel</p>
-                  <div data-scope="floating-panel" data-part="trigger-group">
-                    <button {...api.minimizeTriggerProps}>
+          <button {...api.getTriggerProps()}>Toggle Panel</button>
+          <div {...api.getPositionerProps()}>
+            <div {...api.getContentProps()}>
+              <div {...api.getDragTriggerProps()}>
+                <div {...api.getHeaderProps()}>
+                  <p {...api.getTitleProps()}>Floating Panel</p>
+                  <div {...api.getControlProps()}>
+                    <button {...api.getStageTriggerProps({ stage: "minimized" })}>
                       <Minus />
                     </button>
-                    <button {...api.maximizeTriggerProps}>
+                    <button {...api.getStageTriggerProps({ stage: "maximized" })}>
                       <Maximize2 />
                     </button>
-                    <button {...api.restoreTriggerProps}>
+                    <button {...api.getStageTriggerProps({ stage: "default" })}>
                       <ArrowDownLeft />
                     </button>
-                    <button {...api.closeTriggerProps}>
+                    <button {...api.getCloseTriggerProps()}>
                       <XIcon />
                     </button>
                   </div>
                 </div>
               </div>
-              <div {...api.bodyProps}>
+              <div {...api.getBodyProps()}>
                 <p>Some content</p>
               </div>
 
@@ -60,7 +58,7 @@ export default function Page() {
       </main>
 
       <Toolbar controls={controls.ui}>
-        <StateVisualizer state={state} />
+        <StateVisualizer state={service} />
       </Toolbar>
     </>
   )

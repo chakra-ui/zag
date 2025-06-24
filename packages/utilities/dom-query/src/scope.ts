@@ -1,25 +1,25 @@
-import { getDocument } from "./env"
+import { setElementValue } from "./form"
+import { getActiveElement, getDocument } from "./node"
+import type { HTMLElementWithValue } from "./types"
 
 export interface ScopeContext {
-  getRootNode?(): Document | ShadowRoot | Node
+  getRootNode?: (() => Document | ShadowRoot | Node) | undefined
 }
 
 export function createScope<T>(methods: T) {
-  const screen = {
+  const dom = {
     getRootNode: (ctx: ScopeContext) => (ctx.getRootNode?.() ?? document) as Document | ShadowRoot,
-    getDoc: (ctx: ScopeContext) => getDocument(screen.getRootNode(ctx)),
-    getWin: (ctx: ScopeContext) => screen.getDoc(ctx).defaultView ?? window,
-    getActiveElement: (ctx: ScopeContext) => screen.getDoc(ctx).activeElement as HTMLElement | null,
-    isActiveElement: (ctx: ScopeContext, elem: HTMLElement | null) => elem === screen.getActiveElement(ctx),
-    getById: <T extends HTMLElement = HTMLElement>(ctx: ScopeContext, id: string) =>
-      screen.getRootNode(ctx).getElementById(id) as T | null,
-    setValue: <T extends { value: string }>(elem: T | null, value: string | number | null | undefined) => {
+    getDoc: (ctx: ScopeContext) => getDocument(dom.getRootNode(ctx)),
+    getWin: (ctx: ScopeContext) => dom.getDoc(ctx).defaultView ?? window,
+    getActiveElement: (ctx: ScopeContext) => getActiveElement(dom.getRootNode(ctx)),
+    isActiveElement: (ctx: ScopeContext, elem: HTMLElement | null) => elem === dom.getActiveElement(ctx),
+    getById: <T extends Element = HTMLElement>(ctx: ScopeContext, id: string) =>
+      dom.getRootNode(ctx).getElementById(id) as T | null,
+    setValue: <T extends HTMLElementWithValue>(elem: T | null, value: string | number | null | undefined) => {
       if (elem == null || value == null) return
-      const valueAsString = value.toString()
-      if (elem.value === valueAsString) return
-      elem.value = value.toString()
+      setElementValue(elem, value.toString())
     },
   }
 
-  return { ...screen, ...methods }
+  return { ...dom, ...methods }
 }

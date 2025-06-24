@@ -9,15 +9,14 @@
 
   const controls = useControls(accordionControls)
 
-  const [snapshot, send] = useMachine(accordion.machine({ id: "1" }), {
-    context: controls.context,
-  })
+  const id = $props.id()
+  const service = useMachine(accordion.machine, controls.mergeProps<accordion.Props>({ id }))
 
-  const api = $derived(accordion.connect(snapshot, send, normalizeProps))
+  const api = $derived(accordion.connect(service, normalizeProps))
 </script>
 
 <main class="accordion">
-  <div {...api.rootProps}>
+  <div {...api.getRootProps()}>
     {#each accordionData as item}
       <div {...api.getItemProps({ value: item.id })}>
         <h3>
@@ -38,5 +37,5 @@
 </main>
 
 <Toolbar {controls}>
-  <StateVisualizer state={snapshot} />
+  <StateVisualizer state={service} />
 </Toolbar>

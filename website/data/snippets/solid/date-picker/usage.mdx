@@ -1,0 +1,162 @@
+```jsx
+import * as datepicker from "@zag-js/date-picker"
+import { useMachine, normalizeProps } from "@zag-js/solid"
+import { createMemo, createUniqueId, Portal } from "solid-js"
+
+function DatePicker() {
+  const service = useMachine(datepicker.machine, { id: createUniqueId() })
+
+  const api = createMemo(() => datepicker.connect(service, normalizeProps))
+
+  return (
+    <>
+      <div {...api().getControlProps()}>
+        <input {...api().getInputProps()} />
+        <button {...api().getTriggerProps()}>🗓</button>
+      </div>
+
+      <Portal>
+        <div {...api().getPositionerProps()}>
+          <div {...api().getContentProps()}>
+            {/*  Day View  */}
+            <div hidden={api().view !== "day"}>
+              <div {...api().getViewControlProps()}>
+                <button {...api().getPrevTriggerProps()}>Prev</button>
+                <button {...api().getViewTriggerProps()}>
+                  {api().visibleRangeText.start}
+                </button>
+                <button {...api().getNextTriggerProps()}>Next</button>
+              </div>
+
+              <table {...api().getTableProps()}>
+                <thead {...api().getTableHeaderProps()}>
+                  <tr {...api().getTableBodyProps()}>
+                    <Index each={api().weekDays}>
+                      {(day) => (
+                        <th scope="col" aria-label={day().long}>
+                          {day().narrow}
+                        </th>
+                      )}
+                    </Index>
+                  </tr>
+                </thead>
+                <tbody {...api().getTableBodyProps()}>
+                  <Index each={api().weeks}>
+                    {(week) => (
+                      <tr {...api().getTableRowProps()}>
+                        <Index each={week()}>
+                          {(value) => (
+                            <td
+                              {...api().getDayTableCellProps({
+                                value: value(),
+                              })}
+                            >
+                              <div
+                                {...api().getDayTableCellTriggerProps({
+                                  value: value(),
+                                })}
+                              >
+                                {value().day}
+                              </div>
+                            </td>
+                          )}
+                        </Index>
+                      </tr>
+                    )}
+                  </Index>
+                </tbody>
+              </table>
+            </div>
+
+            {/*  Month View  */}
+            <div hidden={api().view !== "month"}>
+              <div {...api().getViewControlProps({ view: "month" })}>
+                <button {...api().getPrevTriggerProps({ view: "month" })}>
+                  Prev
+                </button>
+                <button {...api().getViewTriggerProps({ view: "month" })}>
+                  {api().visibleRange.start.year}
+                </button>
+                <button {...api().getNextTriggerProps({ view: "month" })}>
+                  Next
+                </button>
+              </div>
+
+              <table {...api().getTableProps({ view: "month", columns: 4 })}>
+                <tbody>
+                  <Index
+                    each={api().getMonthsGrid({ columns: 4, format: "short" })}
+                  >
+                    {(months) => (
+                      <tr {...api().getTableBodyProps({ view: "month" })}>
+                        <Index each={months()}>
+                          {(month) => (
+                            <td {...api().getMonthTableCellProps(month())}>
+                              <div
+                                {...api().getMonthTableCellTriggerProps(
+                                  month(),
+                                )}
+                              >
+                                {month().label}
+                              </div>
+                            </td>
+                          )}
+                        </Index>
+                      </tr>
+                    )}
+                  </Index>
+                </tbody>
+              </table>
+            </div>
+
+            {/*  Year View  */}
+            <div hidden={api().view !== "year"}>
+              <div {...api().getViewControlProps({ view: "year" })}>
+                <button {...api().getPrevTriggerProps({ view: "year" })}>
+                  Prev
+                </button>
+                <span>
+                  {api().getDecade().start} - {api().getDecade().end}
+                </span>
+                <button {...api().getNextTriggerProps({ view: "year" })}>
+                  Next
+                </button>
+              </div>
+
+              <table {...api().getTableProps({ view: "year", columns: 4 })}>
+                <tbody>
+                  <Index each={api().getYearsGrid({ columns: 4 })}>
+                    {(years) => (
+                      <tr {...api().getTableBodyProps({ view: "year" })}>
+                        <Index each={years()}>
+                          {(year) => (
+                            <td
+                              {...api().getYearTableCellProps({
+                                ...year(),
+                                columns: 4,
+                              })}
+                            >
+                              <div
+                                {...api().getYearTableCellTriggerProps({
+                                  ...year(),
+                                  columns: 4,
+                                })}
+                              >
+                                {year().label}
+                              </div>
+                            </td>
+                          )}
+                        </Index>
+                      </tr>
+                    )}
+                  </Index>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </Portal>
+    </>
+  )
+}
+```

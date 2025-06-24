@@ -1,4 +1,4 @@
-import { getMonthNames } from "../src/get-month-names"
+import { getMonthNames } from "../src"
 
 describe("getMonthNames", () => {
   it("en / returns the list of month names", () => {

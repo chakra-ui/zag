@@ -5,20 +5,30 @@
   import * as collapsible from "@zag-js/collapsible"
   import { collapsibleControls } from "@zag-js/shared"
   import { normalizeProps, useMachine } from "@zag-js/svelte"
+  import { ChevronDownIcon } from "lucide-svelte"
 
   const controls = useControls(collapsibleControls)
 
-  const [snapshot, send] = useMachine(collapsible.machine({ id: "1" }), {
-    context: controls.context,
-  })
+  const id = $props.id()
+  const service = useMachine(
+    collapsible.machine,
+    controls.mergeProps<collapsible.Props>({
+      id,
+    }),
+  )
 
-  const api = $derived(collapsible.connect(snapshot, send, normalizeProps))
+  const api = $derived(collapsible.connect(service, normalizeProps))
 </script>
 
 <main class="collapsible">
-  <div {...api.rootProps}>
-    <button {...api.triggerProps}>Collapsible Trigger</button>
-    <div {...api.contentProps}>
+  <div {...api.getRootProps()}>
+    <button {...api.getTriggerProps()}
+      >Collapsible Trigger
+      <div {...api.getIndicatorProps()}>
+        <ChevronDownIcon />
+      </div>
+    </button>
+    <div {...api.getContentProps()}>
       <p>
         Lorem dfd dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore
         magna sfsd. Ut enim ad minimdfd v eniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
@@ -37,5 +47,5 @@
 </main>
 
 <Toolbar {controls}>
-  <StateVisualizer state={snapshot} />
+  <StateVisualizer state={service} />
 </Toolbar>

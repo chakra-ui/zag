@@ -1,49 +1,91 @@
-import { isHTMLElement, nextById, prevById, queryAll, getByTypeahead, createScope } from "@zag-js/dom-query"
-import { first, last } from "@zag-js/utils"
-import type { MachineContext as Ctx } from "./menu.types"
+import type { Scope } from "@zag-js/core"
+import { getByTypeahead, getWindow, isHTMLElement, queryAll, type TypeaheadState } from "@zag-js/dom-query"
+import { first, last, next, prev } from "@zag-js/utils"
 
-export const dom = createScope({
-  getTriggerId: (ctx: Ctx) => ctx.ids?.trigger ?? `menu:${ctx.id}:trigger`,
-  getContextTriggerId: (ctx: Ctx) => ctx.ids?.contextTrigger ?? `menu:${ctx.id}:ctx-trigger`,
-  getContentId: (ctx: Ctx) => ctx.ids?.content ?? `menu:${ctx.id}:content`,
-  getArrowId: (ctx: Ctx) => ctx.ids?.arrow ?? `menu:${ctx.id}:arrow`,
-  getPositionerId: (ctx: Ctx) => ctx.ids?.positioner ?? `menu:${ctx.id}:popper`,
-  getGroupId: (ctx: Ctx, id: string) => ctx.ids?.group?.(id) ?? `menu:${ctx.id}:group:${id}`,
-  getGroupLabelId: (ctx: Ctx, id: string) => ctx.ids?.label?.(id) ?? `menu:${ctx.id}:label:${id}`,
+export const getTriggerId = (ctx: Scope) => ctx.ids?.trigger ?? `menu:${ctx.id}:trigger`
+export const getContextTriggerId = (ctx: Scope) => ctx.ids?.contextTrigger ?? `menu:${ctx.id}:ctx-trigger`
+export const getContentId = (ctx: Scope) => ctx.ids?.content ?? `menu:${ctx.id}:content`
+export const getArrowId = (ctx: Scope) => ctx.ids?.arrow ?? `menu:${ctx.id}:arrow`
+export const getPositionerId = (ctx: Scope) => ctx.ids?.positioner ?? `menu:${ctx.id}:popper`
+export const getGroupId = (ctx: Scope, id: string) => ctx.ids?.group?.(id) ?? `menu:${ctx.id}:group:${id}`
 
-  getContentEl: (ctx: Ctx) => dom.getById(ctx, dom.getContentId(ctx)),
-  getPositionerEl: (ctx: Ctx) => dom.getById(ctx, dom.getPositionerId(ctx)),
-  getTriggerEl: (ctx: Ctx) => dom.getById(ctx, dom.getTriggerId(ctx)),
-  getHighlightedItemEl: (ctx: Ctx) => (ctx.highlightedValue ? dom.getById(ctx, ctx.highlightedValue) : null),
-  getArrowEl: (ctx: Ctx) => dom.getById(ctx, dom.getArrowId(ctx)),
+export const getItemId = (ctx: Scope, id: string) => `${ctx.id}/${id}`
+export const getItemValue = (el: HTMLElement | null | undefined) => el?.dataset.value ?? null
 
-  getElements: (ctx: Ctx) => {
-    const ownerId = CSS.escape(dom.getContentId(ctx))
-    const selector = `[role^="menuitem"][data-ownedby=${ownerId}]:not([data-disabled])`
-    return queryAll(dom.getContentEl(ctx), selector)
-  },
-  getFirstEl: (ctx: Ctx) => first(dom.getElements(ctx)),
-  getLastEl: (ctx: Ctx) => last(dom.getElements(ctx)),
-  getNextEl: (ctx: Ctx, loop?: boolean) => nextById(dom.getElements(ctx), ctx.highlightedValue!, loop ?? ctx.loopFocus),
-  getPrevEl: (ctx: Ctx, loop?: boolean) => prevById(dom.getElements(ctx), ctx.highlightedValue!, loop ?? ctx.loopFocus),
+export const getGroupLabelId = (ctx: Scope, id: string) =>
+  ctx.ids?.groupLabel?.(id) ?? `menu:${ctx.id}:group-label:${id}`
 
-  getElemByKey: (ctx: Ctx, key: string) =>
-    getByTypeahead(dom.getElements(ctx), { state: ctx.typeaheadState, key, activeId: ctx.highlightedValue }),
+export const getContentEl = (ctx: Scope) => ctx.getById(getContentId(ctx))
+export const getPositionerEl = (ctx: Scope) => ctx.getById(getPositionerId(ctx))
+export const getTriggerEl = (ctx: Scope) => ctx.getById(getTriggerId(ctx))
+export const getItemEl = (ctx: Scope, value: string | null) => (value ? ctx.getById(getItemId(ctx, value)) : null)
+export const getArrowEl = (ctx: Scope) => ctx.getById(getArrowId(ctx))
+export const getContextTriggerEl = (ctx: Scope) => ctx.getById(getContextTriggerId(ctx))
 
-  isTargetDisabled: (v: EventTarget | null) => {
-    return isHTMLElement(v) && (v.dataset.disabled === "" || v.hasAttribute("disabled"))
-  },
-  isTriggerItem: (el: HTMLElement | null) => {
-    return !!el?.getAttribute("role")?.startsWith("menuitem") && !!el?.hasAttribute("aria-controls")
-  },
+export const getElements = (ctx: Scope) => {
+  const ownerId = CSS.escape(getContentId(ctx))
+  const selector = `[role^="menuitem"][data-ownedby=${ownerId}]:not([data-disabled])`
+  return queryAll(getContentEl(ctx), selector)
+}
 
-  getOptionFromItemEl(el: HTMLElement) {
-    return {
-      id: el.id,
-      name: el.dataset.name,
-      value: el.dataset.value,
-      valueText: el.dataset.valueText,
-      type: el.dataset.type,
-    }
-  },
-})
+export const getFirstEl = (ctx: Scope) => first(getElements(ctx))
+export const getLastEl = (ctx: Scope) => last(getElements(ctx))
+
+const isMatch = (el: HTMLElement, value: string | null) => {
+  if (!value) return false
+  return el.id === value || el.dataset.value === value
+}
+
+export const getNextEl = (
+  ctx: Scope,
+  opts: { loop?: boolean | undefined; value: string | null; loopFocus: boolean },
+) => {
+  const items = getElements(ctx)
+  const index = items.findIndex((el) => isMatch(el, opts.value))
+  return next(items, index, { loop: opts.loop ?? opts.loopFocus })
+}
+
+export const getPrevEl = (
+  ctx: Scope,
+  opts: { loop?: boolean | undefined; value: string | null; loopFocus: boolean },
+) => {
+  const items = getElements(ctx)
+  const index = items.findIndex((el) => isMatch(el, opts.value))
+  return prev(items, index, { loop: opts.loop ?? opts.loopFocus })
+}
+
+export const getElemByKey = (
+  ctx: Scope,
+  opts: { key: string; value: string | null; typeaheadState: TypeaheadState },
+) => {
+  const items = getElements(ctx)
+  const item = items.find((el) => isMatch(el, opts.value))
+  return getByTypeahead(items, { state: opts.typeaheadState, key: opts.key, activeId: item?.id ?? null })
+}
+
+export const isTargetDisabled = (v: EventTarget | null) => {
+  return isHTMLElement(v) && (v.dataset.disabled === "" || v.hasAttribute("disabled"))
+}
+
+export const isTriggerItem = (el: HTMLElement | null) => {
+  return !!el?.getAttribute("role")?.startsWith("menuitem") && !!el?.hasAttribute("aria-controls")
+}
+
+export const getOptionFromItemEl = (el: HTMLElement) => {
+  return {
+    id: el.id,
+    name: el.dataset.name,
+    value: el.dataset.value,
+    valueText: el.dataset.valueText,
+    type: el.dataset.type,
+  }
+}
+
+export const itemSelectEvent = "menu:select"
+
+export function dispatchSelectionEvent(el: HTMLElement | null, value: string) {
+  if (!el) return
+  const win = getWindow(el)
+  const event = new win.CustomEvent(itemSelectEvent, { detail: { value } })
+  el.dispatchEvent(event)
+}

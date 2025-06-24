@@ -12,7 +12,7 @@ format that is compatible with the respective framework.
 
 It is also used to ensure that the returned properties are strongly typed.
 
-There are subtle difference between how element attributes are named across
+There are subtle differences between how element attributes are named across
 frameworks like React, Solid and Vue. Here are some examples:
 
 **Keydown listener**
@@ -32,11 +32,11 @@ These little nuances between frameworks are handled automatically when you use
 
 ## How can I attach custom extra event handlers to the elements?
 
-See the approach [here](/overview/composition#event-composition).
+See the approach [here](/guides/composition#event-composition).
 
 ## How can I get Zag working in a custom window environment?
 
-See the approach [here](/overview/composition#custom-window-environment).
+See the approach [here](/guides/composition#custom-window-environment).
 
 ## What would it take to support other frameworks?
 
@@ -63,23 +63,4 @@ pnpm up "@zag-js/*"
 yarn upgrade --scope @zag-js
 # or
 npm up @zag-js/...
-```
-
-## Why am I getting `proxyState is not iterable` error?
-
-This happens when there's a mismatch in the versions of `@zag-js/*` modules or
-multiple instances of `@zag-js/store` are installed. It is common with PNPM
-monorepo users.
-
-To fix this, you can use the `overrides` feature in your `package.json` to
-ensure that all `@zag-js/*` modules are on the same version.
-
-```json
-{
-  "pnpm": {
-    "overrides": {
-      "@zag-js/store": "^0.12.0"
-    }
-  }
-}
 ```

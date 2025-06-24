@@ -9,37 +9,34 @@ import { useControls } from "../hooks/use-controls"
 export default function Page() {
   const controls = useControls(editableControls)
 
-  const [state, send] = useMachine(
-    editable.machine({
-      id: useId(),
-    }),
-    {
-      context: controls.context,
-    },
-  )
+  const service = useMachine(editable.machine, {
+    id: useId(),
+    defaultValue: "Hello World",
+    ...controls.context,
+  })
 
-  const api = editable.connect(state, send, normalizeProps)
+  const api = editable.connect(service, normalizeProps)
 
   return (
     <>
       <main className="editable">
-        <div {...api.rootProps}>
-          <div {...api.areaProps}>
-            <input data-testid="input" {...api.inputProps} />
-            <span data-testid="preview" {...api.previewProps} />
+        <div {...api.getRootProps()}>
+          <div {...api.getAreaProps()}>
+            <input data-testid="input" {...api.getInputProps()} />
+            <span data-testid="preview" {...api.getPreviewProps()} />
           </div>
-          <div {...api.controlProps}>
+          <div {...api.getControlProps()}>
             {!api.editing && (
-              <button data-testid="edit-button" {...api.editTriggerProps}>
+              <button data-testid="edit-button" {...api.getEditTriggerProps()}>
                 Edit
               </button>
             )}
             {api.editing && (
               <>
-                <button data-testid="save-button" {...api.submitTriggerProps}>
+                <button data-testid="save-button" {...api.getSubmitTriggerProps()}>
                   Save
                 </button>
-                <button data-testid="cancel-button" {...api.cancelTriggerProps}>
+                <button data-testid="cancel-button" {...api.getCancelTriggerProps()}>
                   Cancel
                 </button>
               </>
@@ -48,7 +45,7 @@ export default function Page() {
         </div>
       </main>
       <Toolbar controls={controls.ui}>
-        <StateVisualizer state={state} />
+        <StateVisualizer state={service} />
       </Toolbar>
     </>
   )

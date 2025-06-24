@@ -1,5 +1,751 @@
 # @zag-js/file-utils
 
+## 1.17.1
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/i18n-utils@1.17.1
+
+## 1.17.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/i18n-utils@1.17.0
+
+## 1.16.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/i18n-utils@1.16.0
+
+## 1.15.7
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/i18n-utils@1.15.7
+
+## 1.15.6
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/i18n-utils@1.15.6
+
+## 1.15.5
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/i18n-utils@1.15.5
+
+## 1.15.4
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/i18n-utils@1.15.4
+
+## 1.15.3
+
+### Patch Changes
+
+- [`ff4c244`](https://github.com/chakra-ui/zag/commit/ff4c244549019680ada2afc073102c523a428524) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Improve download file function to handle webview scenarios
+
+- Updated dependencies []:
+  - @zag-js/i18n-utils@1.15.3
+
+## 1.15.2
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/i18n-utils@1.15.2
+
+## 1.15.1
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/i18n-utils@1.15.1
+
+## 1.15.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/i18n-utils@1.15.0
+
+## 1.14.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/i18n-utils@1.14.0
+
+## 1.13.1
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/i18n-utils@1.13.1
+
+## 1.13.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/i18n-utils@1.13.0
+
+## 1.12.4
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/i18n-utils@1.12.4
+
+## 1.12.3
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/i18n-utils@1.12.3
+
+## 1.12.2
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/i18n-utils@1.12.2
+
+## 1.12.1
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/i18n-utils@1.12.1
+
+## 1.12.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/i18n-utils@1.12.0
+
+## 1.11.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/i18n-utils@1.11.0
+
+## 1.10.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/i18n-utils@1.10.0
+
+## 1.9.3
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/i18n-utils@1.9.3
+
+## 1.9.2
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/i18n-utils@1.9.2
+
+## 1.9.1
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/i18n-utils@1.9.1
+
+## 1.9.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/i18n-utils@1.9.0
+
+## 1.8.2
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/i18n-utils@1.8.2
+
+## 1.8.1
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/i18n-utils@1.8.1
+
+## 1.8.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/i18n-utils@1.8.0
+
+## 1.7.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/i18n-utils@1.7.0
+
+## 1.6.2
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/i18n-utils@1.6.2
+
+## 1.6.1
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/i18n-utils@1.6.1
+
+## 1.6.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/i18n-utils@1.6.0
+
+## 1.5.0
+
+### Patch Changes
+
+- [`5db0d3f`](https://github.com/chakra-ui/zag/commit/5db0d3fc1827b8e6000c156466d40d3d66a44e21) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix issue in `downloadFile` where `name` is not considered in some
+  cases.
+
+- Updated dependencies []:
+  - @zag-js/i18n-utils@1.5.0
+
+## 1.4.2
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/i18n-utils@1.4.2
+
+## 1.4.1
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/i18n-utils@1.4.1
+
+## 1.4.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/i18n-utils@1.4.0
+
+## 1.3.3
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/i18n-utils@1.3.3
+
+## 1.3.2
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/i18n-utils@1.3.2
+
+## 1.3.1
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/i18n-utils@1.3.1
+
+## 1.3.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/i18n-utils@1.3.0
+
+## 1.2.1
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/i18n-utils@1.2.1
+
+## 1.2.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/i18n-utils@1.2.0
+
+## 1.1.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/i18n-utils@1.1.0
+
+## 1.0.2
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/i18n-utils@1.0.2
+
+## 1.0.1
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/i18n-utils@1.0.1
+
+## 1.0.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/i18n-utils@1.0.0
+
+## 0.82.2
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/i18n-utils@0.82.2
+
+## 0.82.1
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/i18n-utils@0.82.1
+
+## 0.82.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/i18n-utils@0.82.0
+
+## 0.81.2
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/i18n-utils@0.81.2
+
+## 0.81.1
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/i18n-utils@0.81.1
+
+## 0.81.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/i18n-utils@0.81.0
+
+## 0.80.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/i18n-utils@0.80.0
+
+## 0.79.3
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/i18n-utils@0.79.3
+
+## 0.79.2
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/i18n-utils@0.79.2
+
+## 0.79.1
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/i18n-utils@0.79.1
+
+## 0.79.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/i18n-utils@0.79.0
+
+## 0.78.3
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/i18n-utils@0.78.3
+
+## 0.78.2
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/i18n-utils@0.78.2
+
+## 0.78.1
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/i18n-utils@0.78.1
+
+## 0.78.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/i18n-utils@0.78.0
+
+## 0.77.1
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/i18n-utils@0.77.1
+
+## 0.77.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/i18n-utils@0.77.0
+
+## 0.76.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/i18n-utils@0.76.0
+
+## 0.75.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/i18n-utils@0.75.0
+
+## 0.74.2
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/i18n-utils@0.74.2
+
+## 0.74.1
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/i18n-utils@0.74.1
+
+## 0.74.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/i18n-utils@0.74.0
+
+## 0.73.1
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/i18n-utils@0.73.1
+
+## 0.73.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/i18n-utils@0.73.0
+
+## 0.72.0
+
+### Patch Changes
+
+- Updated dependencies [[`cdeaed6`](https://github.com/chakra-ui/zag/commit/cdeaed620f918a1684934081815e94ed76a8c388)]:
+  - @zag-js/i18n-utils@0.72.0
+
+## 0.71.0
+
+### Minor Changes
+
+- [`b3a251e`](https://github.com/chakra-ui/zag/commit/b3a251e5e10b9b27af353e0f41117329846b14e9) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - We no longer ship `src` files in the packages.
+
+### Patch Changes
+
+- Updated dependencies [[`b3a251e`](https://github.com/chakra-ui/zag/commit/b3a251e5e10b9b27af353e0f41117329846b14e9)]:
+  - @zag-js/i18n-utils@0.71.0
+
+## 0.70.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/i18n-utils@0.70.0
+
+## 0.69.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/i18n-utils@0.69.0
+
+## 0.68.1
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/i18n-utils@0.68.1
+
+## 0.68.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/i18n-utils@0.68.0
+
+## 0.67.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/i18n-utils@0.67.0
+
+## 0.66.1
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/i18n-utils@0.66.1
+
+## 0.66.0
+
+### Minor Changes
+
+- [`e3a21a6`](https://github.com/chakra-ui/zag/commit/e3a21a6aad1b8c549bee41f410e2cf5c1e355a64) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Add support for more file types in file upload `accept`
+  intellisense
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/i18n-utils@0.66.0
+
+## 0.65.1
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/i18n-utils@0.65.1
+
+## 0.65.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/i18n-utils@0.65.0
+
+## 0.64.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/i18n-utils@0.64.0
+
+## 0.63.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/i18n-utils@0.63.0
+
+## 0.62.1
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/i18n-utils@0.62.1
+
+## 0.62.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/i18n-utils@0.62.0
+
+## 0.61.1
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/i18n-utils@0.61.1
+
+## 0.61.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/i18n-utils@0.61.0
+
+## 0.60.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/i18n-utils@0.60.0
+
+## 0.59.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/i18n-utils@0.59.0
+
+## 0.58.3
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/i18n-utils@0.58.3
+
+## 0.58.2
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/i18n-utils@0.58.2
+
+## 0.58.1
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/i18n-utils@0.58.1
+
+## 0.58.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/i18n-utils@0.58.0
+
+## 0.57.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/i18n-utils@0.57.0
+
+## 0.56.1
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/i18n-utils@0.56.1
+
+## 0.56.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/i18n-utils@0.56.0
+
+## 0.55.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/i18n-utils@0.55.0
+
+## 0.54.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/i18n-utils@0.54.0
+
+## 0.53.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/i18n-utils@0.53.0
+
+## 0.52.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/i18n-utils@0.52.0
+
+## 0.51.2
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/i18n-utils@0.51.2
+
+## 0.51.1
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/i18n-utils@0.51.1
+
+## 0.51.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/i18n-utils@0.51.0
+
+## 0.50.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/i18n-utils@0.50.0
+
 ## 0.49.0
 
 ### Patch Changes

@@ -3,11 +3,9 @@ export function Popover() {
   // initial focused element signal
   const [inputEl, setInputEl] = createSignal()
 
-  const [state, send] = useMachine(
-    popover.machine({
-      initialFocusEl: inputEl,
-    }),
-  )
+  const service = useMachine(popover.machine, {
+    initialFocusEl: inputEl,
+  })
 
   // ...
 

@@ -16,13 +16,13 @@ hovered.
 
 **Features**
 
-- Show tooltip on hover and focus.
-- Hide tooltip on esc or pointer down.
-- Only one tooltip shows at a time.
-- Labeling support for screen readers via `aria-describedby`.
-- Custom show and hide delay support.
+- Show tooltip on hover and focus
+- Hide tooltip on esc or pointer down
+- Only one tooltip shows at a time
+- Labeling support for screen readers via `aria-describedby`
+- Custom show and hide delay support
 - Matches native tooltip behavior with delay on hover of first tooltip and no
-  delay on subsequent tooltips.
+  delay on subsequent tooltips
 
 ## Installation
 
@@ -30,9 +30,6 @@ To use the tooltip machine in your project, run the following command in your
 command line:
 
 <CodeSnippet id="tooltip/installation.mdx" />
-
-This command will install the framework agnostic tooltip logic and the reactive
-utilities for your framework of choice.
 
 ## Anatomy
 
@@ -70,35 +67,31 @@ tooltip machine in your project 🔥
 
 <CodeSnippet id="tooltip/usage.mdx" />
 
-## Customizing the timings
+### Customizing the timings
 
 By default, the tooltip is designed to open after `1000ms` and close after
 `500ms`. You can customize this by passing the `openDelay` and `closeDelay`
 context properties.
 
-```jsx {3-4}
-const [state, send] = useMachine(
-  tooltip.machine({
-    openDelay: 500,
-    closeDelay: 200,
-  }),
-)
+```jsx {2-3}
+const service = useMachine(tooltip.machine, {
+  openDelay: 500,
+  closeDelay: 200,
+})
 ```
 
-## Changing the placement
+### Changing the placement
 
 The tooltip uses [floating-ui](https://floating-ui.com/) for dynamic
 positioning. You can change the placement of the tooltip by passing the
 `positioning.placement` context property to the machine.
 
-```jsx {3-5}
-const [state, send] = useMachine(
-  tooltip.machine({
-    positioning: {
-      placement: "bottom-start",
-    },
-  }),
-)
+```jsx {2-4}
+const service = useMachine(tooltip.machine, {
+  positioning: {
+    placement: "bottom-start",
+  },
+})
 ```
 
 You can configure other position-related properties in the `positioning` object.
@@ -141,85 +134,73 @@ export type PositioningOptions = {
 }
 ```
 
-## Adding an arrow
+### Adding an arrow
 
-To render an arrow within the tooltip, use the `api.arrowProps` and
-`api.arrowTipProps`.
+To render an arrow within the tooltip, use the `api.getArrowProps()` and
+`api.getArrowTipProps()`.
 
 ```jsx {6-8}
 //...
-const api = popover.connect(state, send)
+const api = popover.connect(service, normalizeProps)
 //...
 return (
-  <div {...api.positionerProps}>
-    <div {...api.arrowProps}>
-      <div {...api.arrowTipProps} />
+  <div {...api.getPositionerProps()}>
+    <div {...api.getArrowProps()}>
+      <div {...api.getArrowTipProps()} />
     </div>
-    <div {...api.contentProps}>{/* ... */}</div>
+    <div {...api.getContentProps()}>{/* ... */}</div>
   </div>
 )
 //...
 ```
 
-## Pointerdown behavior
+### Pointerdown behavior
 
 By default, the tooltip will close when the pointer is down on its trigger. To
 prevent this behavior, pass the `closeOnPointerDown` context property and set it
 to `false`.
 
-```jsx {3}
-const [state, send] = useMachine(
-  tooltip.machine({
-    closeOnPointerDown: false,
-  }),
-)
+```jsx {2}
+const service = useMachine(tooltip.machine, {
+  closeOnPointerDown: false,
+})
 ```
 
-## Closing on Esc
+### Closing on Esc
 
 The tooltip is designed to close when the escape key is pressed. To prevent
 this, pass the `closeOnEscape` context property and set it to `false`.
 
-```jsx {3}
-const [state, send] = useMachine(
-  tooltip.machine({
-    closeOnEsc: false,
-  }),
-)
+```jsx {2}
+const service = useMachine(tooltip.machine, {
+  closeOnEsc: false,
+})
 ```
 
-## Making the tooltip interactive
+### Making the tooltip interactive
 
-Tooltips are interactive by default. That means it'll remain open even the
-pointer leaves the trigger and move into the tooltip's content.
+Set the `interactive` context property to `true` to make them interactive.
 
-To disabled this behavior, pass the `interactive` context property and set it to
-`false`.
+When a tooltip is interactive, it'll remain open even the pointer leaves the
+trigger and move into the tooltip's content.
 
-> Disabling this will violate the
-> [WCAG 2.1 success criterion 1.4.13](https://www.w3.org/TR/WCAG21/#content-on-hover-or-focus)
-
-```jsx {3}
-const [state, send] = useMachine(
-  tooltip.machine({
-    interactive: false,
-  }),
-)
+```jsx {2}
+const service = useMachine(tooltip.machine, {
+  interactive: true,
+})
 ```
 
-## Listening for open state changes
+### Listening for open state changes
 
 When the tooltip is opened or closed, the `onOpenChange` callback is invoked.
 
-```jsx {3-8}
-const [state, send] = useMachine(
-  tooltip.machine({
-    onOpenChange(details) {
-      // details => { open: boolean }
-      console.log("Tooltip", details.open)
-    },
-  }),
-)
+```jsx {2-7}
+const service = useMachine(tooltip.machine, {
+  onOpenChange(details) {
+    // details => { open: boolean }
+    console.log(details.open)
+  },
+})
 ```
 
 ## Styling guide
@@ -276,8 +257,12 @@ The tooltip `api` exposes the following methods:
 
 <ApiTable name="tooltip" />
 
+### Data Attributes
+
+<DataAttrTable name="tooltip" />
+
 ## Accessibility
 
 ### Keyboard Interactions
 
-<KeyboardTable id="tooltip" />
+<KeyboardTable name="tooltip" />

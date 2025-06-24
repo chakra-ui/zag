@@ -10,28 +10,26 @@ const selectData = [
 ]
 
 export function Select() {
-  const [state, send] = useMachine(
-    select.machine({
-      id: createUniqueId(),
-      collection: select.collection({
-        items: selectData,
-      }),
+  const service = useMachine(select.machine, {
+    id: createUniqueId(),
+    collection: select.collection({
+      items: selectData,
     }),
-  )
+  })
 
-  const api = createMemo(() => select.connect(state, send, normalizeProps))
+  const api = createMemo(() => select.connect(service, normalizeProps))
 
   return (
     <div>
       <div>
-        <label {...api().labelProps}>Label</label>
-        <button {...api().triggerProps}>
+        <label {...api().getLabelProps()}>Label</label>
+        <button {...api().getTriggerProps()}>
           <span>{api().valueAsString || "Select option"}</span>
         </button>
       </div>
 
-      <div {...api().positionerProps}>
-        <ul {...api().contentProps}>
+      <div {...api().getPositionerProps()}>
+        <ul {...api().getContentProps()}>
           {selectData.map((item) => (
             <li key={item.value} {...api().getItemProps({ item })}>
               <span>{item.label}</span>

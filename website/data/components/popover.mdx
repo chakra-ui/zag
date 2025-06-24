@@ -16,10 +16,10 @@ clickable trigger element.
 
 **Features**
 
-- Focus is managed and can be customized.
-- Supports modal and non-modal modes.
+- Focus is managed and can be customized
+- Supports modal and non-modal modes
 - Ensures correct DOM order after tabbing out of the popover, whether it's
-  portalled or not.
+  portalled or not
 
 ## Installation
 
@@ -27,9 +27,6 @@ To use the popover machine in your project, run the following command in your
 command line:
 
 <CodeSnippet id="popover/installation.mdx" />
-
-This command will install the framework agnostic popover logic and the reactive
-utilities for your framework of choice.
 
 ## Anatomy
 
@@ -62,7 +59,7 @@ popover machine in your project 🔥
 
 <CodeSnippet id="popover/usage.mdx" />
 
-## Rendering the popover in a portal
+### Rendering the popover in a portal
 
 By default, the popover is rendered in the same DOM hierarchy as the trigger. To
 render the popover within a portal, pass `portalled: true` property to the
@@ -73,7 +70,7 @@ machine's context.
 
 <CodeSnippet id="popover/render-in-portal.mdx" />
 
-## Managing focus within popover
+### Managing focus within popover
 
 When the popover open, focus is automatically set to the first focusable element
 within the popover. To customize the element that should get focus, set the
@@ -81,7 +78,7 @@ within the popover. To customize the element that should get focus, set the
 
 <CodeSnippet id="popover/initial-focus.mdx" />
 
-## Changing the modality
+### Changing the modality
 
 In some cases, you might want the popover to be **modal**. This means that
 it'll:
@@ -96,98 +93,87 @@ context. When `modal: true`, we set the `portalled` attribute to `true` as well.
 
 > **Note**: This requires that you render the component within a `Portal`.
 
-```jsx {3}
-const [state, send] = useMachine(
-  popover.machine({
-    modal: true,
-  }),
-)
+```jsx {2}
+const service = useMachine(popover.machine, {
+  modal: true,
+})
 ```
 
-## Close behavior
+### Close behavior
 
 The popover is designed to close on blur and when the `esc` key is pressed.
 
 To prevent it from closing on blur (clicking or focusing outside), pass the
-`closeOnBlur` property and set it to `false`.
+`closeOnInteractOutside` property and set it to `false`.
 
-```jsx {3}
-const [state, send] = useMachine(
-  popover.machine({
-    closeOnBlur: true,
-  }),
-)
+```jsx {2}
+const service = useMachine(popover.machine, {
+  closeOnInteractOutside: true,
+})
 ```
 
-To prevent it from closing when the `esc` key is pressed, pass the `closeOnEsc`
-property and set it to `false`.
+To prevent it from closing when the `esc` key is pressed, pass the
+`closeOnEscape` property and set it to `false`.
 
-```jsx {3}
-const [state, send] = useMachine(
-  popover.machine({
-    closeOnEsc: true,
-  }),
-)
+```jsx {2}
+const service = useMachine(popover.machine, {
+  closeOnEscape: true,
+})
 ```
 
-## Adding an arrow
+### Adding an arrow
 
-To render an arrow within the popover, use the `api.arrowProps` and
-`api.arrowTipProps`.
+To render an arrow within the popover, use the `api.getArrowProps()` and
+`api.getArrowTipProps()`.
 
 ```jsx {6-8}
 //...
-const api = popover.connect(state, send)
+const api = popover.connect(service, normalizeProps)
 //...
 return (
-  <div {...api.positionerProps}>
-    <div {...api.arrowProps}>
-      <div {...api.arrowTipProps} />
+  <div {...api.getPositionerProps()}>
+    <div {...api.getContentProps()}>
+      <div {...api.getArrowProps()}>
+        <div {...api.getArrowTipProps()} />
+      </div>
+      //...
     </div>
-    <div {...api.contentProps}>{/* ... */}</div>
   </div>
 )
 //...
 ```
 
-## Changing the placement
+### Changing the placement
 
-To change the placment of the popover, set the `positioning.placement` property
+To change the placement of the popover, set the `positioning.placement` property
 in the machine's context.
 
-```jsx {3-5}
-const [state, send] = useMachine(
-  popover.machine({
-    positioning: {
-      placement: "top-start",
-    },
-  }),
-)
+```jsx {2-4}
+const service = useMachine(popover.machine, {
+  positioning: {
+    placement: "top-start",
+  },
+})
 ```
 
-## Listening for open state changes
+### Listening for open state changes
 
 When the popover is opened or closed, the `onOpenChange` callback is invoked.
 
-```jsx {3-8}
-const [state, send] = useMachine(
-  popover.machine({
-    onOpenChange(details) {
-      // details => { open: boolean }
-      console.log("Popover", details.open)
-    },
-  }),
-)
+```jsx {2-7}
+const service = useMachine(popover.machine, {
+  onOpenChange(details) {
+    // details => { open: boolean }
+    console.log("Popover", details.open)
+  },
+})
 ```
 
-## Usage within dialog
+### Usage within dialog
 
-When using the popover within a dialog, you'll need to avoid rendering the
-popover in a `Portal` or `Teleport`. This is because the dialog will trap focus
-within it, and the popover will be rendered outside the dialog.
-
-> Consider designing a `portalled` property in your component to allow you
-> decide where to render the popover in a portal.
+When using the popover within a dialog, avoid rendering the popover in a
+`Portal` or `Teleport`. This is because the dialog will trap focus within it,
+and the popover will be rendered outside the dialog.
 
 ## Styling guide
 
@@ -264,6 +250,10 @@ The popover `api` exposes the following methods:
 
 <ApiTable name="popover" />
 
+### Data Attributes
+
+<DataAttrTable name="popover" />
+
 ## Accessibility
 
 Adheres to the
@@ -271,4 +261,4 @@ Adheres to the
 
 ### Keyboard Interactions
 
-<KeyboardTable id="popover" />
+<KeyboardTable name="popover" />

@@ -9,38 +9,34 @@ import { useControls } from "../hooks/use-controls"
 export default function Page() {
   const controls = useControls(numberInputControls)
 
-  const [state, send] = useMachine(
-    numberInput.machine({
-      id: useId(),
-    }),
-    {
-      context: controls.context,
-    },
-  )
+  const service = useMachine(numberInput.machine, {
+    id: useId(),
+    ...controls.context,
+  })
 
-  const api = numberInput.connect(state, send, normalizeProps)
+  const api = numberInput.connect(service, normalizeProps)
 
   return (
     <>
       <main>
-        <div {...api.rootProps}>
-          <div data-testid="scrubber" {...api.scrubberProps} />
-          <label data-testid="label" {...api.labelProps}>
+        <div {...api.getRootProps()}>
+          <div data-testid="scrubber" {...api.getScrubberProps()} />
+          <label data-testid="label" {...api.getLabelProps()}>
             Enter number:
           </label>
-          <div {...api.controlProps}>
-            <button data-testid="dec-button" {...api.decrementTriggerProps}>
+          <div {...api.getControlProps()}>
+            <button data-testid="dec-button" {...api.getDecrementTriggerProps()}>
               DEC
             </button>
-            <input data-testid="input" {...api.inputProps} />
-            <button data-testid="inc-button" {...api.incrementTriggerProps}>
+            <input data-testid="input" {...api.getInputProps()} />
+            <button data-testid="inc-button" {...api.getIncrementTriggerProps()}>
               INC
             </button>
           </div>
         </div>
       </main>
       <Toolbar controls={controls.ui}>
-        <StateVisualizer state={state} omit={["formatter", "parser"]} />
+        <StateVisualizer state={service} omit={["formatter", "parser"]} />
       </Toolbar>
     </>
   )

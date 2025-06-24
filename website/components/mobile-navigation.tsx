@@ -12,14 +12,12 @@ import { LogoWithLink } from "./logo"
 import { Sidebar } from "./sidebar"
 
 export function MobileNavigation() {
-  const [state, send] = useMachine(
-    dialog.machine({
-      id: "m1",
-      initialFocusEl: () => initialRef.current,
-    }),
-  )
+  const service = useMachine(dialog.machine, {
+    id: "m1",
+    initialFocusEl: () => initialRef.current,
+  })
 
-  const api = dialog.connect(state, send, normalizeProps)
+  const api = dialog.connect(service, normalizeProps)
   const initialRef = useRef<HTMLButtonElement>(null)
 
   const lgBreakpoint = useToken("breakpoints", "lg")
@@ -27,7 +25,6 @@ export function MobileNavigation() {
 
   useEffect(() => {
     if (desktop) api.setOpen(false)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [desktop])
 
   useRouteChange(() => {
@@ -41,7 +38,7 @@ export function MobileNavigation() {
         size="sm"
         px="2"
         bg="bg-subtle"
-        {...api.triggerProps}
+        {...api.getTriggerProps()}
       >
         <HStack>
           <HiMenu />{" "}
@@ -53,9 +50,9 @@ export function MobileNavigation() {
 
       {api.open && (
         <Portal>
-          <div {...api.positionerProps}>
+          <div {...api.getPositionerProps()}>
             <Box
-              {...api.contentProps}
+              {...api.getContentProps()}
               position="fixed"
               inset="0"
               zIndex="modal"
@@ -74,7 +71,7 @@ export function MobileNavigation() {
                   size="sm"
                   px="2"
                   bg="bg-subtle"
-                  {...api.closeTriggerProps}
+                  {...api.getCloseTriggerProps()}
                 >
                   <HStack>
                     <HiX /> <span>Close</span>

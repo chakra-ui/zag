@@ -1,18 +1,24 @@
-import { createScope, queryAll } from "@zag-js/dom-query"
-import type { MachineContext as Ctx } from "./carousel.types"
+import type { Scope } from "@zag-js/core"
+import { getTabbables, queryAll } from "@zag-js/dom-query"
 
-export const dom = createScope({
-  getRootId: (ctx: Ctx) => ctx.ids?.root ?? `carousel:${ctx.id}`,
-  getViewportId: (ctx: Ctx) => ctx.ids?.viewport ?? `carousel:${ctx.id}:viewport`,
-  getItemId: (ctx: Ctx, index: number) => ctx.ids?.slide?.(index) ?? `carousel:${ctx.id}:slide:${index}`,
-  getItemGroupId: (ctx: Ctx) => ctx.ids?.slideGroup ?? `carousel:${ctx.id}:slide-group`,
-  getNextTriggerId: (ctx: Ctx) => ctx.ids?.nextSlideTrigger ?? `carousel:${ctx.id}:next-slide-trigger`,
-  getPrevTriggerId: (ctx: Ctx) => ctx.ids?.prevSlideTrigger ?? `carousel:${ctx.id}:prev-slide-trigger`,
-  getIndicatorGroupId: (ctx: Ctx) => ctx.ids?.indicatorGroup ?? `carousel:${ctx.id}:indicator-group`,
-  getIndicatorId: (ctx: Ctx, index: number) => ctx.ids?.indicator?.(index) ?? `carousel:${ctx.id}:indicator:${index}`,
+export const getRootId = (ctx: Scope) => ctx.ids?.root ?? `carousel:${ctx.id}`
+export const getItemId = (ctx: Scope, index: number) => ctx.ids?.item?.(index) ?? `carousel:${ctx.id}:item:${index}`
+export const getItemGroupId = (ctx: Scope) => ctx.ids?.itemGroup ?? `carousel:${ctx.id}:item-group`
+export const getNextTriggerId = (ctx: Scope) => ctx.ids?.nextTrigger ?? `carousel:${ctx.id}:next-trigger`
+export const getPrevTriggerId = (ctx: Scope) => ctx.ids?.prevTrigger ?? `carousel:${ctx.id}:prev-trigger`
+export const getIndicatorGroupId = (ctx: Scope) => ctx.ids?.indicatorGroup ?? `carousel:${ctx.id}:indicator-group`
+export const getIndicatorId = (ctx: Scope, index: number) =>
+  ctx.ids?.indicator?.(index) ?? `carousel:${ctx.id}:indicator:${index}`
 
-  getRootEl: (ctx: Ctx) => dom.getById(ctx, dom.getRootId(ctx)),
-  getViewportEl: (ctx: Ctx) => dom.getById(ctx, dom.getViewportId(ctx)),
-  getSlideGroupEl: (ctx: Ctx) => dom.getById(ctx, dom.getItemGroupId(ctx)),
-  getSlideEls: (ctx: Ctx) => queryAll(dom.getSlideGroupEl(ctx), `[data-part=item]`),
-})
+export const getRootEl = (ctx: Scope) => ctx.getById(getRootId(ctx))
+export const getItemGroupEl = (ctx: Scope) => ctx.getById(getItemGroupId(ctx))
+export const getItemEl = (ctx: Scope, index: number) => ctx.getById(getItemId(ctx, index))
+export const getItemEls = (ctx: Scope) => queryAll(getItemGroupEl(ctx), `[data-part=item]`)
+export const getIndicatorEl = (ctx: Scope, page: number) => ctx.getById(getIndicatorId(ctx, page))
+
+export const syncTabIndex = (ctx: Scope) => {
+  const el = getItemGroupEl(ctx)
+  if (!el) return
+  const tabbables = getTabbables(el)
+  el.setAttribute("tabindex", tabbables.length > 0 ? "-1" : "0")
+}

@@ -4,20 +4,19 @@ import { useMachine, normalizeProps } from "@zag-js/react"
 import { useId } from "react"
 
 export function Splitter() {
-    const [state, send] = useMachine(
-    splitter.machine({
-      id: useId(),
-      size: [
-        { id: "a", size: 50 },
-        { id: "b", size: 50 },
-      ],
-    }),
-  )
+  const service = useMachine(splitter.machine, {
+    id: useId(),
+    defaultSize: [80, 20],
+    panels: [
+      { id: "a", minSize: 10 },
+      { id: "b", minSize: 10 },
+    ],
+  })
 
-  const api = slider.connect(state, send, normalizeProps)
+  const api = slider.connect(service, normalizeProps)
 
   return (
-    <div {...api.rootProps}>
+    <div {...api.getRootProps()}>
       <div {...api.getPanelProps({ id: "a" })}>
         <p>A</p>
       </div>

@@ -1,0 +1,23 @@
+```html
+<script setup>
+  import * as checkbox from "@zag-js/checkbox"
+  import { normalizeProps, useMachine } from "@zag-js/vue"
+  import { computed } from "vue"
+
+  const service = useMachine(checkbox.machine, { id: "1" })
+
+  const api = computed(() => checkbox.connect(service, normalizeProps))
+</script>
+
+<template>
+  <label v-bind="api.getRootProps()">
+    <span v-bind="api.getLabelProps()">
+      Input is
+      <span v-if="api.checked"> checked</span>
+      <span v-else> unchecked</span>
+    </span>
+    <div v-bind="api.getControlProps()" />
+    <input v-bind="api.getHiddenInputProps()" />
+  </label>
+</template>
+```

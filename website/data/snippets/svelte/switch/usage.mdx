@@ -1,0 +1,21 @@
+```svelte
+<script lang="ts">
+  import { normalizeProps, useMachine } from "@zag-js/svelte"
+  import * as zagSwitch from "@zag-js/switch"
+
+  const id = $props.id()
+  const service = useMachine(zagSwitch.machine, {
+    id,
+    name: "switch",
+  })
+  const api = $derived(zagSwitch.connect(service, normalizeProps))
+</script>
+
+<label {...api.getRootProps()}>
+  <input {...api.getHiddenInputProps()} />
+  <span {...api.getControlProps()}>
+    <span {...api.getThumbProps()}></span>
+  </span>
+  <span {...api.getLabelProps()}>{api.checked ? "On" : "Off"}</span>
+</label>
+```

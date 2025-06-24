@@ -5,16 +5,19 @@ import { normalizeProps, useMachine } from "@zag-js/vue"
 
 const controls = useControls(toggleGroupControls)
 
-const [state, send] = useMachine(toggle.machine({ id: "1" }), {
-  context: controls.context,
-})
-const api = computed(() => toggle.connect(state.value, send, normalizeProps))
+const service = useMachine(
+  toggle.machine,
+  controls.mergeProps<toggle.Props>({
+    id: useId(),
+  }),
+)
+const api = computed(() => toggle.connect(service, normalizeProps))
 </script>
 
 <template>
   <main class="toggle-group">
     <button>Outside</button>
-    <div v-bind="api.rootProps">
+    <div v-bind="api.getRootProps()">
       <button v-for="item in toggleGroupData" :key="item.value" v-bind="api.getItemProps({ value: item.value })">
         {{ item.label }}
       </button>
@@ -22,6 +25,9 @@ const api = computed(() => toggle.connect(state.value, send, normalizeProps))
   </main>
 
   <Toolbar>
-    <StateVisualizer :state="state" />
+    <StateVisualizer :state="service" />
+    <template #controls>
+      <Controls :control="controls" />
+    </template>
   </Toolbar>
 </template>

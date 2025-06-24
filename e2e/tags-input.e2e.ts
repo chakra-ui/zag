@@ -4,7 +4,8 @@ import { TagsInputModel } from "./models/tags-input.model"
 let I: TagsInputModel
 
 test.describe("tags-input", () => {
-  test.beforeEach(async ({ page }) => {
+  test.beforeEach(async ({ page, context }) => {
+    await context.grantPermissions(["clipboard-read", "clipboard-write"])
     I = new TagsInputModel(page)
     await I.goto()
   })
@@ -38,12 +39,25 @@ test.describe("tags-input", () => {
     await I.focusInput()
     await I.pressKey("ArrowLeft")
     await I.pressKey("Enter")
+    await I.seeTagInputIsFocused("Vue")
 
     await I.pressKey("Backspace")
     await I.pressKey("Enter")
 
     await I.seeInputIsFocused()
     await I.dontSeeTag("Vue")
+  })
+
+  test("delete tag with delete key, show allow keyboard navigation", async () => {
+    await I.focusInput()
+    await I.pressKey("ArrowLeft")
+    await I.pressKey("Delete")
+
+    await I.seeInputIsFocused()
+    await I.dontSeeTag("Vue")
+
+    await I.pressKey("ArrowLeft")
+    await I.seeTagIsHighlighted("React")
   })
 
   test("delete tag with pointer, show allow keyboard navigation", async () => {
@@ -73,7 +87,10 @@ test.describe("tags-input", () => {
 
   test("should navigate tags with arrow keys", async () => {
     await I.addTag("Svelte")
+    await I.seeTag("Svelte")
+
     await I.addTag("Solid")
+    await I.seeTag("Solid")
 
     await I.pressKey("ArrowLeft")
     await I.seeTagIsHighlighted("Solid")
@@ -104,10 +121,11 @@ test.describe("tags-input", () => {
   test("edit tag with enter key", async () => {
     await I.addTag("Svelte")
     await I.addTag("Solid")
+
     await I.pressKey("ArrowLeft", 2)
+    await I.seeTagIsHighlighted("Svelte")
 
     await I.pressKey("Enter")
-
     await I.seeTagInputIsFocused("Svelte")
     await I.editTag("Jenkins")
 
@@ -135,13 +153,56 @@ test.describe("tags-input", () => {
     await I.expectNoTagToBeHighlighted()
   })
 
+  test("delete + backspace interaction", async () => {
+    await I.addTag("Svelte")
+    await I.addTag("Angular")
+
+    await I.clickTag("Vue")
+
+    await I.pressKey("Delete")
+    await I.seeTagIsHighlighted("Svelte")
+    await I.dontSeeTag("Vue")
+
+    await I.pressKey("Delete")
+    await I.seeTagIsHighlighted("Angular")
+    await I.dontSeeTag("Svelte")
+
+    await I.pressKey("Delete")
+    await I.dontSeeTag("Angular")
+    await I.expectNoTagToBeHighlighted()
+
+    await I.pressKey("Backspace")
+    await I.seeTagIsHighlighted("React")
+
+    await I.pressKey("Backspace")
+    await I.dontSeeTag("React")
+
+    await I.expectNoTagToBeHighlighted()
+  })
+
+  test("[addOnPaste: false] pasting should work every time", async () => {
+    await I.paste("Svelte")
+    await I.seeInputHasValue("Svelte")
+
+    await I.pressKey("Enter")
+    await I.seeTag("Svelte")
+
+    await I.pressKey("Backspace", 2)
+
+    await I.paste("Svelte")
+    await I.seeInputHasValue("Svelte")
+
+    await I.pressKey("Enter")
+    await I.seeTag("Svelte")
+  })
+
   test("[addOnPaste: false] pasting + enter should work", async () => {
     await I.paste("Svelte")
     await I.pressKey("Enter")
     await I.seeTag("Svelte")
   })
 
-  test("[addOnPaste: true] pasting shoule add tags", async () => {
+  test("[addOnPaste: true] pasting should add tags", async () => {
     await I.controls.bool("addOnPaste", true)
 
     await I.paste("Github, Jenkins")
@@ -159,5 +220,18 @@ test.describe("tags-input", () => {
     // paste
     await I.paste("Github")
     await I.seeTag("Github")
+  })
+
+  test("should unselect highlighted tag when clicking in the input", async () => {
+    await I.focusInput()
+    await I.type("Type any text")
+    await I.pressKey("ArrowLeft", 12)
+    await I.pressKey("Backspace", 2)
+
+    await I.seeTagIsHighlighted("Vue")
+    await I.clickControl()
+    await I.pressKey("Backspace", 1)
+
+    await I.expectNoTagToBeHighlighted()
   })
 })

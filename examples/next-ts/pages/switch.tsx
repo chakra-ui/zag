@@ -9,32 +9,28 @@ import { useControls } from "../hooks/use-controls"
 export default function Page() {
   const controls = useControls(switchControls)
 
-  const [state, send] = useMachine(
-    zagSwitch.machine({
-      id: useId(),
-      name: "switch",
-    }),
-    {
-      context: controls.context,
-    },
-  )
+  const service = useMachine(zagSwitch.machine, {
+    id: useId(),
+    name: "switch",
+    ...controls.context,
+  })
 
-  const api = zagSwitch.connect(state, send, normalizeProps)
+  const api = zagSwitch.connect(service, normalizeProps)
 
   return (
     <>
       <main className="switch">
-        <label {...api.rootProps}>
-          <input {...api.hiddenInputProps} data-testid="hidden-input" />
-          <span {...api.controlProps}>
-            <span {...api.thumbProps} />
+        <label {...api.getRootProps()}>
+          <input {...api.getHiddenInputProps()} data-testid="hidden-input" />
+          <span {...api.getControlProps()}>
+            <span {...api.getThumbProps()} />
           </span>
-          <span {...api.labelProps}>Feature is {api.checked ? "enabled" : "disabled"}</span>
+          <span {...api.getLabelProps()}>Feature is {api.checked ? "enabled" : "disabled"}</span>
         </label>
       </main>
 
       <Toolbar controls={controls.ui}>
-        <StateVisualizer state={state} />
+        <StateVisualizer state={service} />
       </Toolbar>
     </>
   )

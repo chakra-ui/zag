@@ -1,0 +1,21 @@
+```html
+<script setup>
+  import * as numberInput from "@zag-js/number-input"
+  import { normalizeProps, useMachine } from "@zag-js/vue"
+  import { computed } from "vue"
+
+  const service = useMachine(numberInput.machine, { id: "1" })
+
+  const api = computed(() => numberInput.connect(service, normalizeProps))
+</script>
+
+<template>
+  <div ref="ref" v-bind="api.getRootProps()">
+    <label v-bind="api.getLabelProps()">Enter number</label>
+    <div>
+      <div v-bind="api.getScrubberProps()" />
+      <input v-bind="api.getInputProps()" />
+    </div>
+  </div>
+</template>
+```

@@ -9,54 +9,53 @@
 
   const controls = useControls(floatingPanelControls)
 
-  const [snapshot, send] = useMachine(floatingPanel.machine({ id: "1" }), {
-    context: controls.context,
-  })
+  const id = $props.id()
+  const service = useMachine(floatingPanel.machine, controls.mergeProps<floatingPanel.Props>({ id }))
 
-  const api = $derived(floatingPanel.connect(snapshot, send, normalizeProps))
+  const api = $derived(floatingPanel.connect(service, normalizeProps))
 </script>
 
 <main class="floating-panel">
   <div>
-    <button {...api.triggerProps}>Toggle Panel</button>
-    <div {...api.positionerProps}>
-      <div {...api.contentProps}>
-        <div {...api.dragTriggerProps}>
-          <div {...api.headerProps}>
-            <p {...api.titleProps}>Floating Panel</p>
-            <div data-scope="floating-panel" data-part="trigger-group">
-              <button {...api.minimizeTriggerProps}>
+    <button {...api.getTriggerProps()}>Toggle Panel</button>
+    <div {...api.getPositionerProps()}>
+      <div {...api.getContentProps()}>
+        <div {...api.getDragTriggerProps()}>
+          <div {...api.getHeaderProps()}>
+            <p {...api.getTitleProps()}>Floating Panel</p>
+            <div {...api.getControlProps()}>
+              <button {...api.getStageTriggerProps({ stage: "minimized" })}>
                 <Minus />
               </button>
-              <button {...api.maximizeTriggerProps}>
+              <button {...api.getStageTriggerProps({ stage: "maximized" })}>
                 <Maximize2 />
               </button>
-              <button {...api.restoreTriggerProps}>
+              <button {...api.getStageTriggerProps({ stage: "default" })}>
                 <ArrowDownLeft />
               </button>
-              <button {...api.closeTriggerProps}>
+              <button {...api.getCloseTriggerProps()}>
                 <XIcon />
               </button>
             </div>
           </div>
         </div>
-        <div {...api.bodyProps}>
+        <div {...api.getBodyProps()}>
           <p>Some content</p>
         </div>
 
-        <div {...api.getResizeTriggerProps({ axis: "n" })} />
-        <div {...api.getResizeTriggerProps({ axis: "e" })} />
-        <div {...api.getResizeTriggerProps({ axis: "w" })} />
-        <div {...api.getResizeTriggerProps({ axis: "s" })} />
-        <div {...api.getResizeTriggerProps({ axis: "ne" })} />
-        <div {...api.getResizeTriggerProps({ axis: "se" })} />
-        <div {...api.getResizeTriggerProps({ axis: "sw" })} />
-        <div {...api.getResizeTriggerProps({ axis: "nw" })} />
+        <div {...api.getResizeTriggerProps({ axis: "n" })}></div>
+        <div {...api.getResizeTriggerProps({ axis: "e" })}></div>
+        <div {...api.getResizeTriggerProps({ axis: "w" })}></div>
+        <div {...api.getResizeTriggerProps({ axis: "s" })}></div>
+        <div {...api.getResizeTriggerProps({ axis: "ne" })}></div>
+        <div {...api.getResizeTriggerProps({ axis: "se" })}></div>
+        <div {...api.getResizeTriggerProps({ axis: "sw" })}></div>
+        <div {...api.getResizeTriggerProps({ axis: "nw" })}></div>
       </div>
     </div>
   </div>
 </main>
 
 <Toolbar {controls}>
-  <StateVisualizer state={snapshot} />
+  <StateVisualizer state={service} />
 </Toolbar>

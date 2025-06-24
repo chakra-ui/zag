@@ -11,8 +11,8 @@ export class ToastModel extends Model {
     return a11y(this.page)
   }
 
-  goto() {
-    return this.page.goto("/toast")
+  goto(type: "stacked" | "overlap") {
+    return this.page.goto(`/toast-${type}`)
   }
 
   private get region() {

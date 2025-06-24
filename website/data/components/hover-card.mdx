@@ -15,10 +15,10 @@ An hover card allows sighted users to preview content available behind a link
 **Features**
 
 - Customize side, alignment, offsets
-- Optionally render a pointing arrow.
-- Supports custom open and close delays.
-- Opens on hover only.
-- Ignored by screen readers.
+- Optionally render a pointing arrow
+- Supports custom open and close delays
+- Opens on hover only
+- Ignored by screen readers
 
 ## Installation
 
@@ -26,9 +26,6 @@ To use the hover card machine in your project, run the following command in your
 command line:
 
 <CodeSnippet id="hover-card/installation.mdx" />
-
-This command will install the framework agnostic hover card logic and the
-reactive utilities for your framework of choice.
 
 ## Anatomy
 
@@ -58,32 +55,28 @@ hover-card machine in your project 🔥
 
 <CodeSnippet id="hover-card/usage.mdx" />
 
-## Making it opened initially
+### Setting the initial state
 
-To make an hover card open by default, set the context's `open` property to true
+To make an hover card open by default, set the `defaultOpen` property to `true`
 
-```jsx {3}
-const [state, send] = useMachine(
-  hoverCard.machine({
-    open: true,
-  }),
-)
+```jsx {2}
+const service = useMachine(hoverCard.machine, {
+  defaultOpen: true,
+})
 ```
 
-## Listening for open state changes
+### Listening for open state changes
 
 When the hover card is `opened` or `closed`, the `onOpenChange` callback is
 invoked.
 
-```jsx {3-6}
-const [state, send] = useMachine(
-  hoverCard.machine({
-    onOpenChange(details) {
-      // details => { open: boolean }
-      console.log("hovercard is:", details.open ? "opened" : "closed")
-    },
-  }),
-)
+```jsx {2-5}
+const service = useMachine(hoverCard.machine, {
+  onOpenChange(details) {
+    // details => { open: boolean }
+    console.log("hovercard is:", details.open ? "opened" : "closed")
+  },
+})
 ```
 
 ## Styling guide
@@ -147,6 +140,10 @@ The hover card machine exposes the following context properties:
 The hover card `api` exposes the following methods:
 
 <ApiTable name="hover-card" />
+
+### Data Attributes
+
+<DataAttrTable name="hover-card" />
 
 ## Accessibility
 

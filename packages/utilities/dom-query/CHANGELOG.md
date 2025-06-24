@@ -1,5 +1,569 @@
 # @zag-js/dom-query
 
+## 1.17.1
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/types@1.17.1
+
+## 1.17.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/types@1.17.0
+
+## 1.16.0
+
+### Patch Changes
+
+- Updated dependencies [[`6f6c8f3`](https://github.com/chakra-ui/zag/commit/6f6c8f329d9eb9d9889eff4317c84a4f41d4bfb2)]:
+  - @zag-js/types@1.16.0
+
+## 1.15.7
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/types@1.15.7
+
+## 1.15.6
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/types@1.15.6
+
+## 1.15.5
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/types@1.15.5
+
+## 1.15.4
+
+### Patch Changes
+
+- [`e5f698d`](https://github.com/chakra-ui/zag/commit/e5f698d082ea8ae7f9f45958c4e319de7c7b6107) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix issue in Svelte where menu and combobox items rendered as
+  links don't work.
+
+- Updated dependencies []:
+  - @zag-js/types@1.15.4
+
+## 1.15.3
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/types@1.15.3
+
+## 1.15.2
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/types@1.15.2
+
+## 1.15.1
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/types@1.15.1
+
+## 1.15.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/types@1.15.0
+
+## 1.14.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/types@1.14.0
+
+## 1.13.1
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/types@1.13.1
+
+## 1.13.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/types@1.13.0
+
+## 1.12.4
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/types@1.12.4
+
+## 1.12.3
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/types@1.12.3
+
+## 1.12.2
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/types@1.12.2
+
+## 1.12.1
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/types@1.12.1
+
+## 1.12.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/types@1.12.0
+
+## 1.11.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/types@1.11.0
+
+## 1.10.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/types@1.10.0
+
+## 1.9.3
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/types@1.9.3
+
+## 1.9.2
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/types@1.9.2
+
+## 1.9.1
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/types@1.9.1
+
+## 1.9.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/types@1.9.0
+
+## 1.8.2
+
+### Patch Changes
+
+- [`25d93b8`](https://github.com/chakra-ui/zag/commit/25d93b8be12e8df26ed04c5d298c66f54910fe85) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix resize observe for radio group and tabs indicator
+
+- Updated dependencies []:
+  - @zag-js/types@1.8.2
+
+## 1.8.1
+
+### Patch Changes
+
+- [`c3c1642`](https://github.com/chakra-ui/zag/commit/c3c164296cd643f2fb7c12c0d1fe9c406eba352f) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Improve platform detection logic to detect `macOS` and `iOS`
+  correctly.
+
+- Updated dependencies []:
+  - @zag-js/types@1.8.1
+
+## 1.8.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/types@1.8.0
+
+## 1.7.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/types@1.7.0
+
+## 1.6.2
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/types@1.6.2
+
+## 1.6.1
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/types@1.6.1
+
+## 1.6.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/types@1.6.0
+
+## 1.5.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/types@1.5.0
+
+## 1.4.2
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/types@1.4.2
+
+## 1.4.1
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/types@1.4.1
+
+## 1.4.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/types@1.4.0
+
+## 1.3.3
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/types@1.3.3
+
+## 1.3.2
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/types@1.3.2
+
+## 1.3.1
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/types@1.3.1
+
+## 1.3.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/types@1.3.0
+
+## 1.2.1
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/types@1.2.1
+
+## 1.2.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/types@1.2.0
+
+## 1.1.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/types@1.1.0
+
+## 1.0.2
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/types@1.0.2
+
+## 1.0.1
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/types@1.0.1
+
+## 1.0.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/types@1.0.0
+
+## 0.82.2
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/types@0.82.2
+
+## 0.82.1
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/types@0.82.1
+
+## 0.82.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/types@0.82.0
+
+## 0.81.2
+
+### Patch Changes
+
+- [`e9313a3`](https://github.com/chakra-ui/zag/commit/e9313a3663285a05c9ac9ac92f1c09fcb27ac818) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Don't reset form fields if reset event is cancelled.
+
+- Updated dependencies []:
+  - @zag-js/types@0.81.2
+
+## 0.81.1
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/types@0.81.1
+
+## 0.81.0
+
+### Minor Changes
+
+- [`792939f`](https://github.com/chakra-ui/zag/commit/792939f9d9eac5a97cc46f1b0ab286666ba1edd8) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Add support for `navigate` context property to handle custom
+  router navigations when trigger is rendered as a link.
+
+  Here's a React example usage with the tabs machine.
+
+  ```tsx
+  const [state, send] = useMachine(
+    tabs.machine({
+      id: useId(),
+      value: "nils",
+      // use router.push to navigate to the selected tab
+      navigate(details) {
+        router.push(`#${details.value}`)
+      },
+    }),
+  )
+  ```
+
+### Patch Changes
+
+- [`552e55d`](https://github.com/chakra-ui/zag/commit/552e55db4ec8c0fa86c5b7e5ce3ad08eb350ca68) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Refactor and streamline packages
+
+- Updated dependencies [[`552e55d`](https://github.com/chakra-ui/zag/commit/552e55db4ec8c0fa86c5b7e5ce3ad08eb350ca68)]:
+  - @zag-js/types@0.81.0
+
+## 0.80.0
+
+### Patch Changes
+
+- [`d7617d1`](https://github.com/chakra-ui/zag/commit/d7617d1d95f93b3557eb88ba879737894da42d51) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix issue in QR Code export where `getDataUrl` doesn't render the
+  full sized QR code.
+
+## 0.79.3
+
+## 0.79.2
+
+### Patch Changes
+
+- [`525e645`](https://github.com/chakra-ui/zag/commit/525e645404f56c10919cc9d36279044dff253a08) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - - Fix issue where dialog or popover closes when the focused
+  element is removed from the DOM.
+  - Improve touch device outside interaction detection.
+
+## 0.79.1
+
+## 0.79.0
+
+## 0.78.3
+
+## 0.78.2
+
+### Patch Changes
+
+- [`ce85272`](https://github.com/chakra-ui/zag/commit/ce85272c3d64dd4c7bae911ec4e4b813234850c2) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix issue where signature pad `getDataUrl(...)` doesn't render the
+  correctly scaled image in Firefox
+
+## 0.78.1
+
+## 0.78.0
+
+## 0.77.1
+
+## 0.77.0
+
+### Minor Changes
+
+- [`a2af4ad`](https://github.com/chakra-ui/zag/commit/a2af4adc6a0d9438e025eadd12eb7eb513131a90) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Refactor treeview to use the new tree collection for better
+  rendering and logic management.
+
+## 0.76.0
+
+## 0.75.0
+
+## 0.74.2
+
+## 0.74.1
+
+## 0.74.0
+
+## 0.73.1
+
+## 0.73.0
+
+## 0.72.0
+
+## 0.71.0
+
+### Minor Changes
+
+- [`b3a251e`](https://github.com/chakra-ui/zag/commit/b3a251e5e10b9b27af353e0f41117329846b14e9) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - We no longer ship `src` files in the packages.
+
+## 0.70.0
+
+## 0.69.0
+
+### Minor Changes
+
+- [`bf57d7b`](https://github.com/chakra-ui/zag/commit/bf57d7b3933daf9974eaefc443da6f3c37706bb4) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Improve support for focus visible across components.
+  - **Switch, Checkbox, Radio Group:** The `data-focus-visible` attribute to the selected radio button when it is
+    interacted with the keyboard.
+  - **Tooltip:** Focus behavior only opens when the tooltip trigger is focused with keyboard.
+
+## 0.68.1
+
+## 0.68.0
+
+## 0.67.0
+
+## 0.66.1
+
+## 0.66.0
+
+## 0.65.1
+
+## 0.65.0
+
+## 0.64.0
+
+## 0.63.0
+
+### Patch Changes
+
+- [#1696](https://github.com/chakra-ui/zag/pull/1696)
+  [`ca437b9`](https://github.com/chakra-ui/zag/commit/ca437b94b49760742bad69aa57a3d6527219782a) Thanks
+  [@ocavue](https://github.com/ocavue)! - - Fix an issue where `isHTMLElement` throws an error in Node.js environments.
+  - Fix an issue where `isNode` throws an error for `null` or `undefined` values.
+
+## 0.62.1
+
+## 0.62.0
+
+## 0.61.1
+
+## 0.61.0
+
+## 0.60.0
+
+## 0.59.0
+
+## 0.58.3
+
+## 0.58.2
+
+## 0.58.1
+
+## 0.58.0
+
+### Minor Changes
+
+- [`9216a62`](https://github.com/chakra-ui/zag/commit/9216a625e1be9f7dd169501515297a8214f12b93) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - - Ensure consistent application of form related properties like
+  `invalid`, `required`, and `readOnly`
+  - Export `Service` from all machines for use in Lit based components.
+
+## 0.57.0
+
+## 0.56.1
+
+## 0.56.0
+
+## 0.55.0
+
+## 0.54.0
+
+## 0.53.0
+
+## 0.52.0
+
+## 0.51.2
+
+### Patch Changes
+
+- [`70c2108`](https://github.com/chakra-ui/zag/commit/70c2108928746583687ac50ec51bc701c217ffdc) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix issue where keydown event might not fire in React due to
+  `nativeEvent` currentTarget not been set sometimes.
+
+## 0.51.1
+
+## 0.51.0
+
+## 0.50.0
+
 ## 0.49.0
 
 ## 0.48.0
@@ -116,7 +680,6 @@
 - [`7cf380b0`](https://github.com/chakra-ui/zag/commit/7cf380b0d3019507181b79e0fe99e894d9e83030) Thanks
   [@segunadebayo](https://github.com/segunadebayo)! - - Refactor machines to avoid the use of `dom.queryById`, this
   causes the machine to throw in React when the `key` of an element is reassigned.
-
   - Remove `queryById` from the `createScope` function.
 
 ## 0.13.0

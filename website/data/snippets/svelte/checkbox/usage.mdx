@@ -1,0 +1,18 @@
+```svelte
+<script lang="ts">
+  import * as checkbox from "@zag-js/checkbox"
+  import { normalizeProps, useMachine } from "@zag-js/svelte"
+
+  const id = $props.id()
+  const service = useMachine(checkbox.machine, ({ id }))
+  const api = $derived(checkbox.connect(service, normalizeProps))
+</script>
+
+<label {...api.getRootProps()}>
+  <span {...api.getLabelProps()}>
+    Input is {api.checked ? "checked" : "unchecked"}
+  </span>
+  <div {...api.getControlProps()}></div>
+  <input {...api.getHiddenInputProps()} />
+</label>
+```

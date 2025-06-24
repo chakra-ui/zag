@@ -4,15 +4,15 @@ import { normalizeProps, useMachine } from "@zag-js/solid"
 import { createMemo, createUniqueId } from "solid-js"
 
 function Progress() {
-  const [state, send] = useMachine(progress.machine({ id: useId() }))
+  const service = useMachine(progress.machine, { id: useId() })
 
-  const api = createMemo(() => progress.connect(state, send, normalizeProps))
+  const api = createMemo(() => progress.connect(service, normalizeProps))
 
   return (
-    <div {...api().rootProps}>
-      <div {...api().labelProps}>Upload progress</div>
-      <div {...api().trackProps}>
-        <div {...api().rangeProps} />
+    <div {...api().getRootProps()}>
+      <div {...api().getLabelProps()}>Upload progress</div>
+      <div {...api().getTrackProps()}>
+        <div {...api().getRangeProps()} />
       </div>
     </div>
   )

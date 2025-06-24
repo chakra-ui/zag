@@ -1,7 +1,7 @@
 {
   "name": "@zag-js/interact-outside",
-  "version": "0.49.0",
-  "description": "Track interations or focus outside an element",
+  "version": "1.17.1",
+  "description": "Track interactions or focus outside an element",
   "keywords": [
     "js",
     "utils",
@@ -13,13 +13,12 @@
   "repository": "https://github.com/chakra-ui/zag/tree/main/packages/utilities/interact-outside",
   "sideEffects": false,
   "files": [
-    "dist",
-    "src"
+    "dist"
   ],
   "scripts": {
     "build": "tsup",
-    "test": "jest --config ../../../jest.config.js --rootDir tests",
-    "lint": "eslint src --ext .ts,.tsx",
+    "test": "vitest",
+    "lint": "eslint src",
     "test-ci": "pnpm test --ci --runInBand -u",
     "test-watch": "pnpm test --watchAll",
     "prepack": "clean-package",
@@ -27,8 +26,6 @@
   },
   "dependencies": {
     "@zag-js/dom-query": "workspace:*",
-    "@zag-js/dom-event": "workspace:*",
-    "@zag-js/tabbable": "workspace:*",
     "@zag-js/utils": "workspace:*"
   },
   "devDependencies": {

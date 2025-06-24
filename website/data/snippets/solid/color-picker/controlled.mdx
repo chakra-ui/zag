@@ -1,0 +1,21 @@
+```tsx
+import { createSignal } from "solid-js"
+import * as colorPicker from "@zag-js/color-picker"
+
+export function ControlledColorPicker() {
+  const [value, setValue] = createSignal(colorPicker.parse("#ff0000"))
+
+  const service = useMachine(colorPicker.machine, {
+    get value() {
+      return value()
+    },
+    onValueChange(details) {
+      setValue(details.value)
+    },
+  })
+
+  return (
+    // ...
+  )
+}
+```

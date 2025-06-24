@@ -4,14 +4,14 @@ import { normalizeProps, useMachine } from "@zag-js/react"
 import { useId } from "react"
 
 function Collapsible() {
-  const [state, send] = useMachine(collapsible.machine({ id: useId() }))
+  const service = useMachine(collapsible.machine, { id: useId() })
 
-  const api = collapsible.connect(state, send, normalizeProps)
+  const api = collapsible.connect(service, normalizeProps)
 
   return (
-    <div {...api.rootProps}>
-      <button {...api.triggerProps}>Collapse Trigger</button>
-      <div {...api.contentProps}>Collape Content</div>
+    <div {...api.getRootProps()}>
+      <button {...api.getTriggerProps()}>Collapse Trigger</button>
+      <div {...api.getContentProps()}>Collape Content</div>
     </div>
   )
 }

@@ -3,11 +3,11 @@ import { AccessibilityDocKey, getAccessibilityDoc } from "@zag-js/docs"
 import { Kbd } from "./kbd"
 
 interface Props {
-  id: AccessibilityDocKey
+  name: AccessibilityDocKey
 }
 
 export const KeyboardTable = (props: Props) => {
-  const data = getAccessibilityDoc(props.id)
+  const data = getAccessibilityDoc(props.name)
 
   return (
     <Stack

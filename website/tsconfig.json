@@ -6,15 +6,26 @@
     "allowJs": true,
     "baseUrl": ".",
     "jsx": "preserve",
+    "exactOptionalPropertyTypes": false,
     "paths": {
       "@/panda/*": ["./panda/*"],
       "@/contentlayer": [".contentlayer/generated"],
       "@/*": ["src/*"]
     },
     "verbatimModuleSyntax": false,
-    "isolatedModules": true
+    "isolatedModules": true,
+    "plugins": [
+      {
+        "name": "next"
+      }
+    ],
+    "strictNullChecks": true
   },
-  "plugins": [{ "name": "next" }],
+  "plugins": [
+    {
+      "name": "next"
+    }
+  ],
   "include": [
     "next-env.d.ts",
     ".contentlayer",

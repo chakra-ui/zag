@@ -1,0 +1,11 @@
+[data-scope="toggle"][data-part="root"] {
+  border-radius: 4px;
+  border: 0;
+  width: 40px;
+  height: 40px;
+}
+
+[data-scope="toggle"][data-part="root"][data-pressed] {
+  background-color: blue;
+  color: white;
+}

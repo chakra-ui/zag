@@ -1,5 +1,5 @@
 import * as carousel from "@zag-js/carousel"
-import { useMachine, normalizeProps } from "@zag-js/react"
+import { normalizeProps, useMachine } from "@zag-js/react"
 import { carouselControls, carouselData } from "@zag-js/shared"
 import { useId } from "react"
 import { StateVisualizer } from "../components/state-visualizer"
@@ -9,40 +9,46 @@ import { useControls } from "../hooks/use-controls"
 export default function Page() {
   const controls = useControls(carouselControls)
 
-  const [state, send] = useMachine(
-    carousel.machine({
-      id: useId(),
-      index: 0,
-      spacing: "20px",
-      slidesPerView: 2,
-    }),
-    {
-      // context: controls.context,
-    },
-  )
+  const service = useMachine(carousel.machine, {
+    id: useId(),
+    spacing: "20px",
+    slidesPerPage: 2,
+    slideCount: carouselData.length,
+    allowMouseDrag: true,
+    ...controls.context,
+  })
 
-  const api = carousel.connect(state, send, normalizeProps)
+  const api = carousel.connect(service, normalizeProps)
 
   return (
     <>
       <main className="carousel">
-        <div {...api.rootProps}>
-          <button {...api.prevTriggerProps}>Prev</button>
-          <button {...api.nextTriggerProps}>Next</button>
-          <div {...api.viewportProps}>
-            <div {...api.itemGroupProps}>
-              {carouselData.map((image, index) => (
-                <div {...api.getItemProps({ index })} key={index}>
-                  <img src={image} alt="" style={{ height: "300px", width: "100%", objectFit: "cover" }} />
-                </div>
-              ))}
-            </div>
+        <div {...api.getRootProps()}>
+          <button onClick={() => api.scrollToIndex(4)}>Scroll to 4</button>
+          <div {...api.getControlProps()}>
+            <button {...api.getAutoplayTriggerProps()}>{api.isPlaying ? "Stop" : "Play"}</button>
+            <div className="carousel-spacer" />
+            <button {...api.getPrevTriggerProps()}>Prev</button>
+            <button {...api.getNextTriggerProps()}>Next</button>
+          </div>
+
+          <div {...api.getItemGroupProps()}>
+            {carouselData.map((image, index) => (
+              <div {...api.getItemProps({ index })} key={index}>
+                <img src={image} alt="" width="188px" />
+              </div>
+            ))}
+          </div>
+          <div {...api.getIndicatorGroupProps()}>
+            {api.pageSnapPoints.map((_, index) => (
+              <button {...api.getIndicatorProps({ index })} key={index} />
+            ))}
           </div>
         </div>
       </main>
 
-      <Toolbar viz controls={controls.ui}>
-        <StateVisualizer state={state} />
+      <Toolbar controls={controls.ui}>
+        <StateVisualizer state={service} omit={["translations"]} />
       </Toolbar>
     </>
   )

@@ -1,0 +1,118 @@
+[data-scope="floating-panel"][data-part="trigger"] {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-align: start;
+  cursor: pointer;
+  font-weight: 500;
+  padding-inline: 1rem;
+  padding-block: 0.25rem;
+  border-width: 1px;
+  background: var(--colors-bg-subtle);
+}
+
+[data-scope="floating-panel"][data-part="positioner"] {
+  z-index: 999999;
+}
+
+[data-scope="floating-panel"][data-part="content"] {
+  border: 1px solid #ebebeb;
+  box-shadow:
+    rgba(0, 0, 0, 0.15) 0px 8px 12px 0px,
+    rgba(0, 0, 0, 0.08) 0px 2px 8px 0px;
+  outline: 0 !important;
+  background-color: white;
+  display: flex;
+  flex-direction: column;
+
+  &[data-topmost] {
+    z-index: 999999;
+  }
+
+  &[data-behind] {
+    opacity: 0.4;
+  }
+}
+
+[data-scope="floating-panel"][data-part="body"] {
+  position: relative;
+  overflow: auto;
+  flex: 1 1 auto;
+  padding-block: 16px;
+  padding-inline: 16px;
+  background-color: white;
+}
+
+[data-scope="floating-panel"][data-part="header"] {
+  padding-block: 8px;
+  padding-inline: 16px;
+  background-color: #f5f5f5;
+  border-bottom: 1px solid #ebebeb;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+[data-scope="floating-panel"][data-part="header"] button {
+  width: 24px;
+  height: 24px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  padding: 0;
+  svg {
+    width: 1em;
+    height: 1em;
+  }
+}
+
+[data-scope="floating-panel"][data-part="control"] {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+[data-scope="floating-panel"][data-part="resize-trigger"] {
+  &[data-axis="n"],
+  &[data-axis="s"] {
+    height: 6px;
+    max-width: 90%;
+  }
+
+  &[data-axis="e"],
+  &[data-axis="w"] {
+    width: 6px;
+    max-height: 90%;
+  }
+
+  &[data-axis="ne"],
+  &[data-axis="nw"],
+  &[data-axis="se"],
+  &[data-axis="sw"] {
+    width: 10px;
+    height: 10px;
+  }
+}
+
+[data-scope="floating-panel"][data-part="body"] {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+
+  & :where(input, select) {
+    width: 100%;
+    border: 1px solid #ebebeb;
+    min-height: 32px;
+    padding-inline: 8px;
+    border-radius: 4px;
+  }
+
+  & label {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    font-size: 14px;
+    font-weight: 500;
+  }
+}

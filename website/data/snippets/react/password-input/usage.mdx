@@ -1,0 +1,26 @@
+```jsx
+import * as passwordInput from "@zag-js/password-input"
+import { useMachine, normalizeProps } from "@zag-js/react"
+import { EyeIcon, EyeOffIcon } from "lucide-react"
+import { useId } from "react"
+
+function PasswordInput() {
+  const service = useMachine(passwordInput.machine, { id: useId() })
+
+  const api = passwordInput.connect(service, normalizeProps)
+
+  return (
+    <div {...api.getRootProps()}>
+      <label {...api.getLabelProps()}>Password</label>
+      <div {...api.getControlProps()}>
+        <input {...api.getInputProps()} />
+        <button {...api.getVisibilityTriggerProps()}>
+          <span {...api.getIndicatorProps()}>
+            {api.visible ? <EyeIcon /> : <EyeOffIcon />}
+          </span>
+        </button>
+      </div>
+    </div>
+  )
+}
+```

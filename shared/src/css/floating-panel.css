@@ -50,7 +50,7 @@
   }
 }
 
-[data-scope="floating-panel"][data-part="trigger-group"] {
+[data-scope="floating-panel"][data-part="control"] {
   display: flex;
   align-items: center;
   gap: 8px;

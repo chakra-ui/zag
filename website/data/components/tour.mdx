@@ -1,0 +1,401 @@
+---
+title: Tour
+description: Used for creating product tours and onboarding.
+package: "@zag-js/tour"
+---
+
+# Tour
+
+A tour is an onboarding component used to guide users through a new product
+feature or series of steps. It is often used to boost feature discoverability or
+onboard new users by highlighting specific elements on the page.
+
+<Resources pkg="@zag-js/tour" />
+
+<Showcase id="Tour" />
+
+**Features**
+
+- Support for different step types such as "dialog", "floating", "tooltip" or
+  "wait".
+- Support for customizable content per step.
+- Wait steps for waiting for a specific selector to appear on the page before
+  showing the next step.
+- Flexible positioning of the tour dialog per step.
+- Progress tracking shows users their progress through the tour.
+
+## Installation
+
+To use the tooltip machine in your project, run the following command in your
+command line:
+
+<CodeSnippet id="tour/installation.mdx" />
+
+## Anatomy
+
+To set up the tooltip correctly, you'll need to understand its anatomy and how
+we name its parts.
+
+> Each part includes a `data-part` attribute to help identify them in the DOM.
+
+<Anatomy id="tour" />
+
+## Usage
+
+First, import the tooltip package into your project
+
+```jsx
+import * as tour from "@zag-js/tour"
+```
+
+The tour package exports two key functions:
+
+- `machine` — The state machine logic for the tour widget.
+- `connect` — The function that translates the machine's state to JSX attributes
+  and event handlers.
+
+Next, import the required hooks and functions for your framework and use the
+tour machine in your project 🔥
+
+<CodeSnippet id="tour/usage.mdx" />
+
+### Using step types
+
+The tour machine supports different types of steps, allowing you to create a
+diverse and interactive tour experience. The available step types are defined in
+the `StepType` type:
+
+- `"tooltip"`: Displays the step content as a tooltip, typically positioned near
+  the target element.
+
+- `"dialog"`: Shows the step content in a modal dialog centered on screen,
+  useful for starting or ending the tour. This usually don't have a `target`
+  defined.
+
+- `"floating"`: Presents the step content as a floating element, which can be
+  positioned flexibly on the screen. This usually don't have a `target` defined.
+
+- `"wait"`: A special type that waits for a specific condition before proceeding
+  to the next step.
+
+```tsx
+const steps: tour.StepDetails[] = [
+  // Tooltip step
+  {
+    id: "step-1",
+    type: "tooltip",
+    placement: "top-start",
+    target: () => document.querySelector("#target-1"),
+    title: "Tooltip Step",
+    description: "This is a tooltip step",
+  },
+
+  // Dialog step
+  {
+    id: "step-2",
+    type: "dialog",
+    title: "Dialog Step",
+    description: "This is a dialog step",
+  },
+
+  // Floating step
+  {
+    id: "step-3",
+    type: "floating",
+    placement: "top-start",
+    title: "Floating Step",
+    description: "This is a floating step",
+  },
+
+  // Wait step
+  {
+    id: "step-4",
+    type: "wait",
+    title: "Wait Step",
+    description: "This is a wait step",
+    effect({ next }) {
+      // do something and go next
+      // you can also return a cleanup
+    },
+  },
+]
+```
+
+### Configuring actions
+
+Every step supports a list of actions that are rendered in the step footer.Use
+the `actions` property to define each action.
+
+```tsx
+const steps: tour.StepDetails[] = [
+  {
+    id: "step-1",
+    type: "dialog",
+    title: "Dialog Step",
+    description: "This is a dialog step",
+    actions: [{ label: "Show me a tour!", action: "next" }],
+  },
+]
+```
+
+### Changing tooltip placement
+
+Use the `placement` property to define the placement of the tooltip.
+
+```tsx {5}
+const steps: tour.StepDetails[] = [
+  {
+    id: "step-1",
+    type: "tooltip",
+    placement: "top-start",
+    // ...
+  },
+]
+```
+
+### Hiding the arrow
+
+Set `arrow: false` in the step property to hide the tooltip arrow. This is only
+useful for tooltip steps.
+
+```tsx {5}
+const steps: tour.StepDetails[] = [
+  {
+    id: "step-1",
+    type: "tooltip",
+    arrow: false,
+  },
+]
+```
+
+### Hiding the backdrop
+
+Set `backdrop: false` in the step property to hide the backdrop. This applies to
+all step types except the `wait` step.
+
+```tsx {5}
+const steps: tour.StepDetails[] = [
+  {
+    id: "step-1",
+    type: "dialog",
+    backdrop: false,
+  },
+]
+```
+
+### Step Effects
+
+Step effects are functions that are called before a step is opened. They are
+useful for adding custom logic to a step.
+
+This function provides the following methods:
+
+- `next()`: Call this method to move to the next step.
+- `show()`: Call this method to show the current step.
+- `update(details: StepDetails)`: Call this method to update the details of the
+  current step (say, after data has been fetched).
+
+```tsx
+const steps: tour.StepDetails[] = [
+  {
+    id: "step-1",
+    type: "tooltip",
+    effect({ next, show, update }) {
+      fetchData().then((res) => {
+        // update the step details
+        update({ title: res.title })
+        // then show show the step
+        show()
+      })
+
+      return () => {
+        // cleanup fetch data
+      }
+    },
+  },
+]
+```
+
+### Wait Steps
+
+Wait steps are useful when you need to wait for a specific condition before
+proceeding to the next step.
+
+Use the step `effect` function to perform an action and then call `next()` to
+move to the next step.
+
+> **Note:** You cannot call `show()` in a wait step.
+
+```tsx
+const steps: tour.StepDetails[] = [
+  {
+    id: "step-1",
+    type: "wait",
+    effect({ next }) {
+      const button = document.querySelector("#button")
+      const listener = () => next()
+      button.addEventListener("click", listener)
+      return () => button.removeEventListener("click", listener)
+    },
+  },
+]
+```
+
+### Showing progress dots
+
+Use the `api.getProgressPercent()` to show the progress dots.
+
+```tsx
+const ProgressBar = () => {
+  const service = useMachine(tour.machine, { steps: [] })
+  const api = tour.connect(service, normalizeProps)
+  return <div>{api.getProgressPercent()}</div>
+}
+```
+
+### Tracking the lifecycle
+
+As the tour is progressed, events are fired and you can track the lifecycle of
+the tour. Here's are the events you can listen to:
+
+- `onStepChange`: Fires when the current step changes.
+- `onStatusChange`: Fires when the status of the tour changes.
+
+```tsx
+const Lifecycle = () => {
+  const service = useMachine(tour.machine, {
+    steps: [],
+    onStepChange(details) {
+      // => { stepId: "step-1", stepIndex: 0, totalSteps: 3, complete: false, progress: 0 }
+      console.log(details)
+    },
+    onStatusChange(status) {
+      // => { status: "started" | "skipped" | "completed" | "dismissed" | "not-found" }
+      console.log(status)
+    },
+  })
+
+  const api = tour.connect(service, normalizeProps)
+  // ...
+}
+```
+
+## Styling guide
+
+### Prerequisites
+
+Ensure the `box-sizing` is set to `border-box` for the means of measuring the
+tour target.
+
+```css
+* {
+  box-sizing: border-box;
+}
+```
+
+Ensure the `body` has a `position` of `relative`.
+
+```css
+body {
+  position: relative;
+}
+```
+
+### Overview
+
+Each tour part has a `data-part` attribute that can be used to style them in the
+DOM.
+
+```css
+[data-scope="tour"][data-part="content"] {
+  /* styles for the content part */
+}
+
+[data-scope="tour"][data-part="positioner"] {
+  /* styles for the positioner part */
+}
+
+[data-scope="tour"][data-part="arrow"] {
+  /* styles for the arrow part */
+}
+
+[data-scope="tour"][data-part="title"] {
+  /* styles for the title part */
+}
+
+[data-scope="tour"][data-part="description"] {
+  /* styles for the description part */
+}
+
+[data-scope="tour"][data-part="progress-text"] {
+  /* styles for the progress text part */
+}
+
+[data-scope="tour"][data-part="action-trigger"] {
+  /* styles for the action trigger part */
+}
+
+[data-scope="tour"][data-part="backdrop"] {
+  /* styles for the backdrop part */
+}
+```
+
+### Step types
+
+The tour component supports two types: `dialog` and `floating`. You can apply
+specific styles based on the tour type:
+
+```css
+[data-scope="tour"][data-part="content"][data-type="dialog"] {
+  /* styles for content when step is dialog type */
+}
+
+[data-scope="tour"][data-part="content"][data-type="floating"] {
+  /* styles for content when step is floating type */
+}
+
+[data-scope="tour"][data-part="positioner"][data-type="dialog"] {
+  /* styles for positioner when step is dialog type */
+}
+
+[data-scope="tour"][data-part="positioner"][data-type="floating"] {
+  /* styles for positioner when step is floating type */
+}
+```
+
+### Placement Styles
+
+For floating type tours, you can style based on the placement using the
+`data-placement` attribute:
+
+```css
+[data-scope="tour"][data-part="positioner"][data-type="floating"][data-placement*="bottom"] {
+  /* styles for bottom placement */
+}
+
+[data-scope="tour"][data-part="positioner"][data-type="floating"][data-placement*="top"] {
+  /* styles for top placement */
+}
+
+[data-scope="tour"][data-part="positioner"][data-type="floating"][data-placement*="start"] {
+  /* styles for start placement */
+}
+
+[data-scope="tour"][data-part="positioner"][data-type="floating"][data-placement*="end"] {
+  /* styles for end placement */
+}
+```
+
+## Methods and Properties
+
+### Machine Context
+
+The tour machine exposes the following context properties:
+
+<ContextTable name="tour" />
+
+### Machine API
+
+The time picker `api` exposes the following methods:
+
+<ApiTable name="tour" />

@@ -2,22 +2,20 @@
 import * as menu from "@zag-js/menu"
 import { normalizeProps, useMachine } from "@zag-js/vue"
 
-const [state, send] = useMachine(
-  menu.machine({
-    id: "v1",
-    onSelect: console.log,
-  }),
-)
+const service = useMachine(menu.machine, {
+  id: useId(),
+  onSelect: console.log,
+})
 
-const api = computed(() => menu.connect(state.value, send, normalizeProps))
+const api = computed(() => menu.connect(service, normalizeProps))
 </script>
 
 <template>
-  <main className="context-menu">
-    <div v-bind="api.contextTriggerProps">Right Click here</div>
-    <Teleport to="body">
-      <div v-bind="api.positionerProps">
-        <ul v-bind="api.contentProps">
+  <main class="context-menu">
+    <div v-bind="api.getContextTriggerProps()">Right Click here</div>
+    <Teleport to="#teleports"">
+      <div v-bind="api.getPositionerProps()">
+        <ul v-bind="api.getContentProps()">
           <li v-bind="api.getItemProps({ value: 'edit' })">Edit</li>
           <li v-bind="api.getItemProps({ value: 'duplicate' })">Duplicate</li>
           <li v-bind="api.getItemProps({ value: 'delete' })">Delete</li>
@@ -28,6 +26,6 @@ const api = computed(() => menu.connect(state.value, send, normalizeProps))
   </main>
 
   <Toolbar>
-    <StateVisualizer :state="state" />
+    <StateVisualizer :state="service" />
   </Toolbar>
 </template>

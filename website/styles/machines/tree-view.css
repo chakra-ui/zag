@@ -1,0 +1,78 @@
+[data-scope="tree-view"][data-part="tree"] {
+  margin-top: 20px;
+  width: 240px;
+  margin-left: -16px;
+}
+
+[data-scope="tree-view"][data-part="label"] {
+  font-weight: 500;
+}
+
+[data-scope="tree-view"][data-part="item"],
+[data-scope="tree-view"][data-part="branch-control"] {
+  user-select: none;
+  --padding-inline: 16px;
+  padding-inline-start: calc(var(--depth) * var(--padding-inline));
+  padding-inline-end: var(--padding-inline);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  border-radius: 2px;
+  min-height: 32px;
+
+  & svg {
+    width: 16px;
+    height: 16px;
+    opacity: 0.5;
+  }
+
+  &:hover {
+    background: var(--colors-border-bold);
+  }
+
+  &[data-selected] {
+    background: var(--colors-bg-primary-bold);
+    color: var(--colors-text-inverse);
+  }
+}
+
+[data-scope="tree-view"][data-part="item-text"],
+[data-scope="tree-view"][data-part="branch-text"] {
+  flex: 1;
+}
+
+[data-scope="tree-view"][data-part="branch-content"] {
+  position: relative;
+  isolation: isolate;
+}
+
+[data-scope="tree-view"][data-part="branch-indent-guide"] {
+  position: absolute;
+  content: "";
+  border-left: 1px solid rgba(226, 226, 226, 0.179);
+  height: 100%;
+  translate: calc(var(--depth) * 1.25rem);
+  z-index: 0;
+}
+
+[data-scope="tree-view"][data-part="branch-indicator"] {
+  display: flex;
+  align-items: center;
+  &[data-state="open"] svg {
+    transform: rotate(90deg);
+  }
+}
+
+.treeview-trigger {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-align: start;
+  cursor: pointer;
+  font-weight: 500;
+  padding-inline: 1rem;
+  padding-block: 0.25rem;
+  background: var(--colors-bg-primary-subtle);
+  color: #ffffff;
+  margin-top: 20px;
+}

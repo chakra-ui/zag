@@ -1,5 +1,5 @@
-import type { StateMachine as S } from "@zag-js/core"
 import type { CommonProperties, DirectionProperty, PropTypes, RequiredBy } from "@zag-js/types"
+import type { EventObject, Machine, Service } from "@zag-js/core"
 
 /* -----------------------------------------------------------------------------
  * Callback details
@@ -20,75 +20,74 @@ export interface FocusChangeDetails {
 export type ElementIds = Partial<{
   root: string
   item(value: string): string
-  content(value: string): string
-  trigger(value: string): string
+  itemContent(value: string): string
+  itemTrigger(value: string): string
 }>
 
-interface PublicContext extends DirectionProperty, CommonProperties {
+export interface AccordionProps extends DirectionProperty, CommonProperties {
   /**
    * The ids of the elements in the accordion. Useful for composition.
    */
-  ids?: ElementIds
+  ids?: ElementIds | undefined
   /**
-   * Whether multple accordion items can be expanded at the same time.
+   * Whether multiple accordion items can be expanded at the same time.
    * @default false
    */
-  multiple?: boolean
+  multiple?: boolean | undefined
   /**
    * Whether an accordion item can be closed after it has been expanded.
    * @default false
    */
-  collapsible?: boolean
+  collapsible?: boolean | undefined
   /**
-   * The `value` of the accordion items that are currently being expanded.
+   * The controlled value of the expanded accordion items.
    */
-  value: string[]
+  value?: string[] | undefined
+  /**
+   * The initial value of the expanded accordion items.
+   * Use when you don't need to control the value of the accordion.
+   */
+  defaultValue?: string[] | undefined
   /**
    * Whether the accordion items are disabled
    */
-  disabled?: boolean
+  disabled?: boolean | undefined
   /**
    * The callback fired when the state of expanded/collapsed accordion items changes.
    */
-  onValueChange?(details: ValueChangeDetails): void
+  onValueChange?: ((details: ValueChangeDetails) => void) | undefined
   /**
    * The callback fired when the focused accordion item changes.
    */
-  onFocusChange?(details: FocusChangeDetails): void
+  onFocusChange?: ((details: FocusChangeDetails) => void) | undefined
   /**
    *  The orientation of the accordion items.
    *  @default "vertical"
    */
-  orientation?: "horizontal" | "vertical"
+  orientation?: "horizontal" | "vertical" | undefined
 }
 
-export type UserDefinedContext = RequiredBy<PublicContext, "id">
+type PropsWithDefault = "multiple" | "collapsible" | "orientation"
 
-type ComputedContext = Readonly<{
-  /**
-   * @computed
-   * Whether the accordion items are horizontal.
-   */
-  isHorizontal: boolean
-}>
-
-interface PrivateContext {
-  /**
-   * @internal
-   * The `id` of the focused accordion item.
-   */
-  focusedValue: string | null
+export type AccordionSchema = {
+  state: "idle" | "focused"
+  props: RequiredBy<AccordionProps, PropsWithDefault>
+  context: {
+    value: string[]
+    focusedValue: string | null
+  }
+  computed: {
+    isHorizontal: boolean
+  }
+  action: string
+  guard: string
+  effect: string
+  event: EventObject
 }
 
-export interface MachineContext extends PublicContext, PrivateContext, ComputedContext {}
+export type AccordionService = Service<AccordionSchema>
 
-export interface MachineState {
-  value: "idle" | "focused"
-}
-
-export type State = S.State<MachineContext, MachineState>
-
-export type Send = S.Send<S.AnyEventObject>
+export type AccordionMachine = Machine<AccordionSchema>
 
 /* -----------------------------------------------------------------------------
  * Component API
@@ -102,7 +101,7 @@ export interface ItemProps {
   /**
    * Whether the accordion item is disabled.
    */
-  disabled?: boolean
+  disabled?: boolean | undefined
 }
 
 export interface ItemState {
@@ -120,7 +119,7 @@ export interface ItemState {
   disabled: boolean
 }
 
-export interface MachineApi<T extends PropTypes = PropTypes> {
+export interface AccordionApi<T extends PropTypes = PropTypes> {
   /**
    * The value of the focused accordion item.
    */
@@ -138,7 +137,7 @@ export interface MachineApi<T extends PropTypes = PropTypes> {
    */
   getItemState(props: ItemProps): ItemState
 
-  rootProps: T["element"]
+  getRootProps(): T["element"]
   getItemProps(props: ItemProps): T["element"]
   getItemContentProps(props: ItemProps): T["element"]
   getItemTriggerProps(props: ItemProps): T["button"]

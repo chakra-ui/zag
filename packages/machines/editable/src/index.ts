@@ -5,10 +5,13 @@ export { machine } from "./editable.machine"
 export * from "./editable.props"
 export type {
   ActivationMode,
-  MachineApi as Api,
-  UserDefinedContext as Context,
+  EditableApi as Api,
+  EditableProps as Props,
   ElementIds,
   IntlTranslations,
+  EditableService as Service,
+  EditableMachine as Machine,
   SubmitMode,
+  EditChangeDetails,
   ValueChangeDetails,
 } from "./editable.types"

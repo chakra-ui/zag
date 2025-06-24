@@ -4,17 +4,17 @@ import { normalizeProps, useMachine } from "@zag-js/solid"
 import { createMemo, createUniqueId } from "solid-js"
 
 function Checkbox() {
-  const [state, send] = useMachine(checkbox.machine({ id: createUniqueId() }))
+  const service = useMachine(checkbox.machine, { id: createUniqueId() })
 
-  const api = createMemo(() => checkbox.connect(state, send, normalizeProps))
+  const api = createMemo(() => checkbox.connect(service, normalizeProps))
 
   return (
-    <label {...api().rootProps}>
-      <span {...api().labelProps}>
-        Input is {api().isChecked ? "checked" : "unchecked"}
+    <label {...api().getRootProps()}>
+      <span {...api().getLabelProps()}>
+        Input is {api().checked ? "checked" : "unchecked"}
       </span>
-      <div {...api().controlProps} />
-      <input {...api().hiddenInputProps} />
+      <div {...api().getControlProps()} />
+      <input {...api().getHiddenInputProps()} />
     </label>
   )
 }

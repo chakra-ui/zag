@@ -1,0 +1,31 @@
+import * as {{camelCase machine}} from "@zag-js/{{machine}}"
+import { normalizeProps, useMachine, mergeProps } from "@zag-js/solid"
+import { createMemo, createUniqueId } from "solid-js"
+import { {{camelCase machine}}Controls, {{camelCase machine}}Data } from "@zag-js/shared"
+import { StateVisualizer } from "../components/state-visualizer"
+import { Toolbar } from "../components/toolbar"
+import { useControls } from "../hooks/use-controls"
+
+export default function Page() {
+  const controls = useControls({{camelCase machine}}Controls)
+
+  const service = useMachine({{camelCase machine}}.machine, controls.mergeProps({
+    id: createUniqueId(),
+  }))
+
+  const api = createMemo(() => {{camelCase machine}}.connect(service, normalizeProps))
+
+  return (
+    <>
+      <main class="{{machine}}"> 
+        <div {...api().getRootProps()}> 
+            
+        </div>
+      </main>
+
+      <Toolbar controls={controls.ui}>
+        <StateVisualizer state={service} />
+      </Toolbar>
+    </>
+  )
+}

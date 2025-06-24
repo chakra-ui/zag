@@ -1,15 +1,27 @@
 export { anatomy } from "./tree-view.anatomy"
+export { collection, filePathCollection } from "./tree-view.collection"
 export { connect } from "./tree-view.connect"
 export { machine } from "./tree-view.machine"
+export * from "./tree-view.props"
 export type {
-  MachineApi as Api,
-  BranchProps,
-  BranchState,
-  UserDefinedContext as Context,
+  TreeViewApi as Api,
+  CheckedChangeDetails,
+  CheckedState,
+  CheckedValueMap,
   ElementIds,
   ExpandedChangeDetails,
   FocusChangeDetails,
-  ItemProps,
-  ItemState,
+  LoadChildrenCompleteDetails,
+  LoadChildrenDetails,
+  LoadChildrenErrorDetails,
+  TreeViewMachine as Machine,
+  NodeProps,
+  NodeState,
+  NodeWithError,
+  TreeViewProps as Props,
   SelectionChangeDetails,
+  TreeViewService as Service,
+  TreeLoadingStatus,
+  TreeLoadingStatusMap,
+  TreeNode,
 } from "./tree-view.types"

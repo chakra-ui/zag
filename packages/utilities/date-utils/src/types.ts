@@ -12,3 +12,18 @@ export type DateAdjustFn = (options: { startDate: DateValue; focusedDate: DateVa
   endDate: DateValue
 }
 export type DateFormatOptions = Intl.ResolvedDateTimeFormatOptions
+
+export type DateRangePreset =
+  | "thisWeek"
+  | "lastWeek"
+  | "thisMonth"
+  | "lastMonth"
+  | "thisQuarter"
+  | "lastQuarter"
+  | "thisYear"
+  | "lastYear"
+  | "last3Days"
+  | "last7Days"
+  | "last14Days"
+  | "last30Days"
+  | "last90Days"

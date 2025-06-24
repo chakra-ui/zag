@@ -1,17 +1,17 @@
-import { createScope } from "@zag-js/dom-query"
-import type { MachineContext as Ctx } from "./file-upload.types"
+import type { Scope } from "@zag-js/core"
 
-export const dom = createScope({
-  getRootId: (ctx: Ctx) => ctx.ids?.root ?? `file:${ctx.id}`,
-  getDropzoneId: (ctx: Ctx) => ctx.ids?.dropzone ?? `file:${ctx.id}:dropzone`,
-  getHiddenInputId: (ctx: Ctx) => ctx.ids?.hiddenInput ?? `file:${ctx.id}:input`,
-  getTriggerId: (ctx: Ctx) => ctx.ids?.trigger ?? `file:${ctx.id}:trigger`,
-  getLabelId: (ctx: Ctx) => ctx.ids?.label ?? `file:${ctx.id}:label`,
-  getItemId: (ctx: Ctx, id: string) => ctx.ids?.item?.(id) ?? `file:${ctx.id}:item:${id}`,
-  getItemNameId: (ctx: Ctx, id: string) => ctx.ids?.itemName?.(id) ?? `file:${ctx.id}:item-name:${id}`,
-  getItemSizeTextId: (ctx: Ctx, id: string) => ctx.ids?.itemSizeText?.(id) ?? `file:${ctx.id}:item-size:${id}`,
-  getItemPreviewId: (ctx: Ctx, id: string) => ctx.ids?.itemPreview?.(id) ?? `file:${ctx.id}:item-preview:${id}`,
+export const getRootId = (ctx: Scope) => ctx.ids?.root ?? `file:${ctx.id}`
+export const getDropzoneId = (ctx: Scope) => ctx.ids?.dropzone ?? `file:${ctx.id}:dropzone`
+export const getHiddenInputId = (ctx: Scope) => ctx.ids?.hiddenInput ?? `file:${ctx.id}:input`
+export const getTriggerId = (ctx: Scope) => ctx.ids?.trigger ?? `file:${ctx.id}:trigger`
+export const getLabelId = (ctx: Scope) => ctx.ids?.label ?? `file:${ctx.id}:label`
+export const getItemId = (ctx: Scope, id: string) => ctx.ids?.item?.(id) ?? `file:${ctx.id}:item:${id}`
+export const getItemNameId = (ctx: Scope, id: string) => ctx.ids?.itemName?.(id) ?? `file:${ctx.id}:item-name:${id}`
+export const getItemSizeTextId = (ctx: Scope, id: string) =>
+  ctx.ids?.itemSizeText?.(id) ?? `file:${ctx.id}:item-size:${id}`
+export const getItemPreviewId = (ctx: Scope, id: string) =>
+  ctx.ids?.itemPreview?.(id) ?? `file:${ctx.id}:item-preview:${id}`
 
-  getHiddenInputEl: (ctx: Ctx) => dom.getById<HTMLInputElement>(ctx, dom.getHiddenInputId(ctx)),
-  getDropzoneEl: (ctx: Ctx) => dom.getById(ctx, dom.getDropzoneId(ctx)),
-})
+export const getRootEl = (ctx: Scope) => ctx.getById<HTMLElement>(getRootId(ctx))
+export const getHiddenInputEl = (ctx: Scope) => ctx.getById<HTMLInputElement>(getHiddenInputId(ctx))
+export const getDropzoneEl = (ctx: Scope) => ctx.getById<HTMLElement>(getDropzoneId(ctx))

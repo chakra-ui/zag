@@ -1,4 +1,4 @@
-import { contains, getEventTarget, raf } from "@zag-js/dom-query"
+import { contains, getEventTarget, isHTMLElement, raf } from "@zag-js/dom-query"
 import {
   trackInteractOutside,
   type FocusOutsideEvent,
@@ -18,18 +18,27 @@ export interface DismissableElementHandlers extends InteractOutsideHandlers {
   /**
    * Function called when the escape key is pressed
    */
-  onEscapeKeyDown?: (event: KeyboardEvent) => void
+  onEscapeKeyDown?: ((event: KeyboardEvent) => void) | undefined
 }
 
-export interface DismissableElementOptions extends DismissableElementHandlers {
+export interface PersistentElementOptions {
+  /**
+   * Returns the persistent elements that:
+   * - should not have pointer-events disabled
+   * - should not trigger the dismiss event
+   */
+  persistentElements?: Array<() => Element | null> | undefined
+}
+
+export interface DismissableElementOptions extends DismissableElementHandlers, PersistentElementOptions {
   /**
    * Whether to log debug information
    */
-  debug?: boolean
+  debug?: boolean | undefined
   /**
    * Whether to block pointer events outside the dismissable element
    */
-  pointerBlocking?: boolean
+  pointerBlocking?: boolean | undefined
   /**
    * Function called when the dismissable element is dismissed
    */
@@ -37,16 +46,26 @@ export interface DismissableElementOptions extends DismissableElementHandlers {
   /**
    * Exclude containers from the interact outside event
    */
-  exclude?: MaybeFunction<Container>
+  exclude?: MaybeFunction<Container> | undefined
   /**
    * Defer the interact outside event to the next frame
    */
-  defer?: boolean
+  defer?: boolean | undefined
+  /**
+   * Whether to warn when the node is `null` or `undefined`
+   */
+  warnOnMissingNode?: boolean | undefined
 }
 
 function trackDismissableElementImpl(node: MaybeElement, options: DismissableElementOptions) {
-  if (!node) {
+  const { warnOnMissingNode = true } = options
+
+  if (warnOnMissingNode && !node) {
     warn("[@zag-js/dismissable] node is `null` or `undefined`")
+    return
+  }
+
+  if (!node) {
     return
   }
 
@@ -94,11 +113,13 @@ function trackDismissableElementImpl(node: MaybeElement, options: DismissableEle
     if (!node) return false
     const containers = typeof excludeContainers === "function" ? excludeContainers() : excludeContainers
     const _containers = Array.isArray(containers) ? containers : [containers]
+    const persistentElements = options.persistentElements?.map((fn) => fn()).filter(isHTMLElement)
+    if (persistentElements) _containers.push(...persistentElements)
     return _containers.some((node) => contains(node, target)) || layerStack.isInNestedLayer(node, target)
   }
 
   const cleanups = [
-    pointerBlocking ? disablePointerEventsOutside(node) : undefined,
+    pointerBlocking ? disablePointerEventsOutside(node, options.persistentElements) : undefined,
     trackEscapeKeydown(node, onEscapeKeyDown),
     trackInteractOutside(node, { exclude, onFocusOutside, onPointerDownOutside, defer: options.defer }),
   ]
@@ -128,7 +149,7 @@ export function trackDismissableElement(nodeOrFn: NodeOrFn, options: Dismissable
   }
 }
 
-export function trackDismissableBranch(nodeOrFn: NodeOrFn, options: { defer?: boolean } = {}) {
+export function trackDismissableBranch(nodeOrFn: NodeOrFn, options: { defer?: boolean | undefined } = {}) {
   const { defer } = options
   const func = defer ? raf : (v: any) => v()
   const cleanups: (VoidFunction | undefined)[] = []

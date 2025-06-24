@@ -1,120 +1,149 @@
-import { dataAttr } from "@zag-js/dom-query"
+import { dataAttr, isLeftClick, isSafari } from "@zag-js/dom-query"
 import { getPlacementStyles } from "@zag-js/popper"
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import { parts } from "./popover.anatomy"
-import { dom } from "./popover.dom"
-import type { MachineApi, Send, State } from "./popover.types"
+import * as dom from "./popover.dom"
+import type { PopoverApi, PopoverService } from "./popover.types"
 
-export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>): MachineApi<T> {
+export function connect<T extends PropTypes>(service: PopoverService, normalize: NormalizeProps<T>): PopoverApi<T> {
+  const { state, context, send, computed, prop, scope } = service
   const open = state.matches("open")
 
-  const currentPlacement = state.context.currentPlacement
-  const portalled = state.context.currentPortalled
-  const rendered = state.context.renderedElements
+  const currentPlacement = context.get("currentPlacement")
+  const portalled = computed("currentPortalled")
+  const rendered = context.get("renderedElements")
 
   const popperStyles = getPlacementStyles({
-    ...state.context.positioning,
+    ...prop("positioning"),
     placement: currentPlacement,
   })
 
   return {
     portalled,
     open: open,
-    setOpen(_open) {
-      if (_open === open) return
-      send(_open ? "OPEN" : "CLOSE")
+    setOpen(nextOpen) {
+      const open = state.matches("open")
+      if (open === nextOpen) return
+      send({ type: nextOpen ? "OPEN" : "CLOSE" })
     },
     reposition(options = {}) {
       send({ type: "POSITIONING.SET", options })
     },
 
-    arrowProps: normalize.element({
-      id: dom.getArrowId(state.context),
-      ...parts.arrow.attrs,
-      dir: state.context.dir,
-      style: popperStyles.arrow,
-    }),
+    getArrowProps() {
+      return normalize.element({
+        id: dom.getArrowId(scope),
+        ...parts.arrow.attrs,
+        dir: prop("dir"),
+        style: popperStyles.arrow,
+      })
+    },
 
-    arrowTipProps: normalize.element({
-      ...parts.arrowTip.attrs,
-      dir: state.context.dir,
-      style: popperStyles.arrowTip,
-    }),
+    getArrowTipProps() {
+      return normalize.element({
+        ...parts.arrowTip.attrs,
+        dir: prop("dir"),
+        style: popperStyles.arrowTip,
+      })
+    },
 
-    anchorProps: normalize.element({
-      ...parts.anchor.attrs,
-      dir: state.context.dir,
-      id: dom.getAnchorId(state.context),
-    }),
+    getAnchorProps() {
+      return normalize.element({
+        ...parts.anchor.attrs,
+        dir: prop("dir"),
+        id: dom.getAnchorId(scope),
+      })
+    },
 
-    triggerProps: normalize.button({
-      ...parts.trigger.attrs,
-      dir: state.context.dir,
-      type: "button",
-      "data-placement": currentPlacement,
-      id: dom.getTriggerId(state.context),
-      "aria-haspopup": "dialog",
-      "aria-expanded": open,
-      "data-state": open ? "open" : "closed",
-      "aria-controls": dom.getContentId(state.context),
-      onClick(event) {
-        if (event.defaultPrevented) return
-        send("TOGGLE")
-      },
-      onBlur(event) {
-        send({ type: "TRIGGER_BLUR", target: event.relatedTarget })
-      },
-    }),
+    getTriggerProps() {
+      return normalize.button({
+        ...parts.trigger.attrs,
+        dir: prop("dir"),
+        type: "button",
+        "data-placement": currentPlacement,
+        id: dom.getTriggerId(scope),
+        "aria-haspopup": "dialog",
+        "aria-expanded": open,
+        "data-state": open ? "open" : "closed",
+        "aria-controls": dom.getContentId(scope),
+        onPointerDown(event) {
+          if (!isLeftClick(event)) return
+          if (isSafari()) {
+            event.currentTarget.focus()
+          }
+        },
+        onClick(event) {
+          if (event.defaultPrevented) return
+          send({ type: "TOGGLE" })
+        },
+        onBlur(event) {
+          send({ type: "TRIGGER_BLUR", target: event.relatedTarget })
+        },
+      })
+    },
 
-    indicatorProps: normalize.element({
-      ...parts.indicator.attrs,
-      dir: state.context.dir,
-      "data-state": open ? "open" : "closed",
-    }),
+    getIndicatorProps() {
+      return normalize.element({
+        ...parts.indicator.attrs,
+        dir: prop("dir"),
+        "data-state": open ? "open" : "closed",
+      })
+    },
 
-    positionerProps: normalize.element({
-      id: dom.getPositionerId(state.context),
-      ...parts.positioner.attrs,
-      dir: state.context.dir,
-      style: popperStyles.floating,
-    }),
+    getPositionerProps() {
+      return normalize.element({
+        id: dom.getPositionerId(scope),
+        ...parts.positioner.attrs,
+        dir: prop("dir"),
+        style: popperStyles.floating,
+      })
+    },
 
-    contentProps: normalize.element({
-      ...parts.content.attrs,
-      dir: state.context.dir,
-      id: dom.getContentId(state.context),
-      tabIndex: -1,
-      role: "dialog",
-      hidden: !open,
-      "data-state": open ? "open" : "closed",
-      "data-expanded": dataAttr(open),
-      "aria-labelledby": rendered.title ? dom.getTitleId(state.context) : undefined,
-      "aria-describedby": rendered.description ? dom.getDescriptionId(state.context) : undefined,
-      "data-placement": currentPlacement,
-    }),
+    getContentProps() {
+      return normalize.element({
+        ...parts.content.attrs,
+        dir: prop("dir"),
+        id: dom.getContentId(scope),
+        tabIndex: -1,
+        role: "dialog",
+        hidden: !open,
+        "data-state": open ? "open" : "closed",
+        "data-expanded": dataAttr(open),
+        "aria-labelledby": rendered.title ? dom.getTitleId(scope) : undefined,
+        "aria-describedby": rendered.description ? dom.getDescriptionId(scope) : undefined,
+        "data-placement": currentPlacement,
+      })
+    },
 
-    titleProps: normalize.element({
-      ...parts.title.attrs,
-      id: dom.getTitleId(state.context),
-      dir: state.context.dir,
-    }),
+    getTitleProps() {
+      return normalize.element({
+        ...parts.title.attrs,
+        id: dom.getTitleId(scope),
+        dir: prop("dir"),
+      })
+    },
 
-    descriptionProps: normalize.element({
-      ...parts.description.attrs,
-      id: dom.getDescriptionId(state.context),
-      dir: state.context.dir,
-    }),
+    getDescriptionProps() {
+      return normalize.element({
+        ...parts.description.attrs,
+        id: dom.getDescriptionId(scope),
+        dir: prop("dir"),
+      })
+    },
 
-    closeTriggerProps: normalize.button({
-      ...parts.closeTrigger.attrs,
-      dir: state.context.dir,
-      id: dom.getCloseTriggerId(state.context),
-      type: "button",
-      "aria-label": "close",
-      onClick(event) {
-        if (event.defaultPrevented) return
-        send("CLOSE")
-      },
-    }),
+    getCloseTriggerProps() {
+      return normalize.button({
+        ...parts.closeTrigger.attrs,
+        dir: prop("dir"),
+        id: dom.getCloseTriggerId(scope),
+        type: "button",
+        "aria-label": "close",
+        onClick(event) {
+          if (event.defaultPrevented) return
+          event.stopPropagation()
+          send({ type: "CLOSE" })
+        },
+      })
+    },
   }
 }

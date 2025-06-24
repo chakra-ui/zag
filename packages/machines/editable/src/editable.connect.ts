@@ -1,216 +1,269 @@
-import { getNativeEvent, type EventKeyMap } from "@zag-js/dom-event"
-import { ariaAttr, dataAttr } from "@zag-js/dom-query"
-import type { NormalizeProps, PropTypes } from "@zag-js/types"
+import type { Service } from "@zag-js/core"
+import { ariaAttr, dataAttr, isApple, isComposingEvent } from "@zag-js/dom-query"
+import type { EventKeyMap, NormalizeProps, PropTypes } from "@zag-js/types"
 import { parts } from "./editable.anatomy"
-import { dom } from "./editable.dom"
-import type { MachineApi, Send, State } from "./editable.types"
+import * as dom from "./editable.dom"
+import type { EditableApi, EditableSchema } from "./editable.types"
 
-export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>): MachineApi<T> {
-  const disabled = state.context.disabled
-  const interactive = state.context.isInteractive
-  const readOnly = state.context.readOnly
-  const empty = state.context.isValueEmpty
-  const invalid = state.context.invalid
-
-  const autoResize = state.context.autoResize
-  const translations = state.context.translations
+export function connect<T extends PropTypes>(
+  service: Service<EditableSchema>,
+  normalize: NormalizeProps<T>,
+): EditableApi<T> {
+  const { state, context, send, prop, scope, computed } = service
+  const disabled = prop("disabled")
+  const interactive = computed("isInteractive")
+  const readOnly = prop("readOnly")
+  const invalid = prop("invalid")
+  const autoResize = prop("autoResize")
+  const translations = prop("translations")
 
   const editing = state.matches("edit")
 
-  const placeholderProp = state.context.placeholder
+  const placeholderProp = prop("placeholder")
   const placeholder =
     typeof placeholderProp === "string" ? { edit: placeholderProp, preview: placeholderProp } : placeholderProp
+
+  const value = context.get("value")
+  const empty = value.trim() === ""
+
+  const valueText = empty ? (placeholder?.preview ?? "") : value
 
   return {
     editing,
     empty,
-    value: state.context.value,
+    value,
+    valueText,
     setValue(value) {
-      send({ type: "SET_VALUE", value })
+      send({ type: "VALUE.SET", value, src: "setValue" })
     },
     clearValue() {
-      send({ type: "SET_VALUE", value: "" })
+      send({ type: "VALUE.SET", value: "", src: "clearValue" })
     },
     edit() {
       if (!interactive) return
-      send("EDIT")
+      send({ type: "EDIT" })
     },
     cancel() {
       if (!interactive) return
-      send("CANCEL")
+      send({ type: "CANCEL" })
     },
     submit() {
       if (!interactive) return
-      send("SUBMIT")
+      send({ type: "SUBMIT" })
     },
 
-    rootProps: normalize.element({
-      ...parts.root.attrs,
-      id: dom.getRootId(state.context),
-      dir: state.context.dir,
-    }),
+    getRootProps() {
+      return normalize.element({
+        ...parts.root.attrs,
+        id: dom.getRootId(scope),
+        dir: prop("dir"),
+      })
+    },
 
-    areaProps: normalize.element({
-      ...parts.area.attrs,
-      id: dom.getAreaId(state.context),
-      dir: state.context.dir,
-      style: autoResize ? { display: "inline-grid" } : undefined,
-      "data-focus": dataAttr(editing),
-      "data-disabled": dataAttr(disabled),
-      "data-placeholder-shown": dataAttr(empty),
-    }),
+    getAreaProps() {
+      return normalize.element({
+        ...parts.area.attrs,
+        id: dom.getAreaId(scope),
+        dir: prop("dir"),
+        style: autoResize ? { display: "inline-grid" } : undefined,
+        "data-focus": dataAttr(editing),
+        "data-disabled": dataAttr(disabled),
+        "data-placeholder-shown": dataAttr(empty),
+      })
+    },
 
-    labelProps: normalize.label({
-      ...parts.label.attrs,
-      id: dom.getLabelId(state.context),
-      dir: state.context.dir,
-      htmlFor: dom.getInputId(state.context),
-      "data-focus": dataAttr(editing),
-      "data-invalid": dataAttr(invalid),
-      onClick() {
-        if (editing) return
-        const previewEl = dom.getPreviewEl(state.context)
-        previewEl?.focus({ preventScroll: true })
-      },
-    }),
+    getLabelProps() {
+      return normalize.label({
+        ...parts.label.attrs,
+        id: dom.getLabelId(scope),
+        dir: prop("dir"),
+        htmlFor: dom.getInputId(scope),
+        "data-focus": dataAttr(editing),
+        "data-invalid": dataAttr(invalid),
+        onClick() {
+          if (editing) return
+          const previewEl = dom.getPreviewEl(scope)
+          previewEl?.focus({ preventScroll: true })
+        },
+      })
+    },
 
-    inputProps: normalize.input({
-      ...parts.input.attrs,
-      dir: state.context.dir,
-      "aria-label": translations.input,
-      name: state.context.name,
-      form: state.context.form,
-      id: dom.getInputId(state.context),
-      hidden: autoResize ? undefined : !editing,
-      placeholder: placeholder?.edit,
-      maxLength: state.context.maxLength,
-      disabled: disabled,
-      "data-disabled": dataAttr(disabled),
-      readOnly: readOnly,
-      "data-readonly": dataAttr(readOnly),
-      "aria-invalid": ariaAttr(invalid),
-      "data-invalid": dataAttr(invalid),
-      defaultValue: state.context.value,
-      size: autoResize ? 1 : undefined,
-      onChange(event) {
-        send({ type: "TYPE", value: event.currentTarget.value })
-      },
-      onKeyDown(event) {
-        if (event.defaultPrevented) return
-        const evt = getNativeEvent(event)
-        if (evt.isComposing) return
+    getInputProps() {
+      return normalize.input({
+        ...parts.input.attrs,
+        dir: prop("dir"),
+        "aria-label": translations?.input,
+        name: prop("name"),
+        form: prop("form"),
+        id: dom.getInputId(scope),
+        hidden: autoResize ? undefined : !editing,
+        placeholder: placeholder?.edit,
+        maxLength: prop("maxLength"),
+        required: prop("required"),
+        disabled: disabled,
+        "data-disabled": dataAttr(disabled),
+        readOnly: readOnly,
+        "data-readonly": dataAttr(readOnly),
+        "aria-invalid": ariaAttr(invalid),
+        "data-invalid": dataAttr(invalid),
+        "data-autoresize": dataAttr(autoResize),
+        defaultValue: value,
+        size: autoResize ? 1 : undefined,
+        onChange(event) {
+          send({
+            type: "VALUE.SET",
+            src: "input.change",
+            value: event.currentTarget.value,
+          })
+        },
+        onKeyDown(event) {
+          if (event.defaultPrevented) return
+          if (isComposingEvent(event)) return
 
-        const keyMap: EventKeyMap = {
-          Escape() {
-            send("CANCEL")
-          },
-          Enter(event) {
-            if (!event.shiftKey && !event.metaKey) {
-              send("ENTER")
+          const keyMap: EventKeyMap = {
+            Escape() {
+              send({ type: "CANCEL" })
+              event.preventDefault()
+            },
+            Enter(event) {
+              if (!computed("submitOnEnter")) return
+              const { localName } = event.currentTarget
+
+              // when used as a textarea, we want to allow the user to enter a newline
+              if (localName === "textarea") {
+                const submitMod = isApple() ? event.metaKey : event.ctrlKey
+                if (!submitMod) return
+                send({ type: "SUBMIT", src: "keydown.enter" })
+                return
+              }
+
+              // when used as an input, we want to submit the form
+              if (localName === "input" && !event.shiftKey && !event.metaKey) {
+                send({ type: "SUBMIT", src: "keydown.enter" })
+                event.preventDefault()
+              }
+            },
+          }
+
+          const exec = keyMap[event.key]
+
+          if (exec) {
+            exec(event)
+          }
+        },
+        style: autoResize
+          ? {
+              gridArea: "1 / 1 / auto / auto",
+              visibility: !editing ? "hidden" : undefined,
             }
-          },
-        }
+          : undefined,
+      })
+    },
 
-        const exec = keyMap[event.key]
+    getPreviewProps() {
+      return normalize.element({
+        id: dom.getPreviewId(scope),
+        ...parts.preview.attrs,
+        dir: prop("dir"),
+        "data-placeholder-shown": dataAttr(empty),
+        "aria-readonly": ariaAttr(readOnly),
+        "data-readonly": dataAttr(disabled),
+        "data-disabled": dataAttr(disabled),
+        "aria-disabled": ariaAttr(disabled),
+        "aria-invalid": ariaAttr(invalid),
+        "data-invalid": dataAttr(invalid),
+        "aria-label": translations?.edit,
+        "data-autoresize": dataAttr(autoResize),
+        children: valueText,
+        hidden: autoResize ? undefined : editing,
+        tabIndex: interactive ? 0 : undefined,
+        onClick() {
+          if (!interactive) return
+          if (prop("activationMode") !== "click") return
+          send({ type: "EDIT", src: "click" })
+        },
+        onFocus() {
+          if (!interactive) return
+          if (prop("activationMode") !== "focus") return
+          send({ type: "EDIT", src: "focus" })
+        },
+        onDoubleClick(event) {
+          if (event.defaultPrevented) return
+          if (!interactive) return
+          if (prop("activationMode") !== "dblclick") return
+          send({ type: "EDIT", src: "dblclick" })
+        },
+        style: autoResize
+          ? {
+              whiteSpace: "pre",
+              userSelect: "none",
+              gridArea: "1 / 1 / auto / auto",
+              visibility: editing ? "hidden" : undefined,
+              // in event the preview overflow's the parent element
+              overflow: "hidden",
+              textOverflow: "ellipsis",
+            }
+          : undefined,
+      })
+    },
 
-        if (exec) {
-          event.preventDefault()
-          exec(event)
-        }
-      },
-      style: autoResize
-        ? {
-            all: "unset",
-            gridArea: "1 / 1 / auto / auto",
-            visibility: !editing ? "hidden" : undefined,
-          }
-        : undefined,
-    }),
+    getEditTriggerProps() {
+      return normalize.button({
+        ...parts.editTrigger.attrs,
+        id: dom.getEditTriggerId(scope),
+        dir: prop("dir"),
+        "aria-label": translations?.edit,
+        hidden: editing,
+        type: "button",
+        disabled: disabled,
+        onClick(event) {
+          if (event.defaultPrevented) return
+          if (!interactive) return
+          send({ type: "EDIT", src: "edit.click" })
+        },
+      })
+    },
 
-    previewProps: normalize.element({
-      id: dom.getPreviewId(state.context),
-      ...parts.preview.attrs,
-      dir: state.context.dir,
-      "data-placeholder-shown": dataAttr(empty),
-      "aria-readonly": ariaAttr(readOnly),
-      "data-readonly": dataAttr(disabled),
-      "data-disabled": dataAttr(disabled),
-      "aria-disabled": ariaAttr(disabled),
-      "aria-invalid": ariaAttr(invalid),
-      "data-invalid": dataAttr(invalid),
-      children: empty ? placeholder?.preview : state.context.value,
-      hidden: autoResize ? undefined : editing,
-      tabIndex: interactive && state.context.isPreviewFocusable ? 0 : undefined,
-      onFocus() {
-        if (!interactive) return
-        send("FOCUS")
-      },
-      onDoubleClick() {
-        if (!interactive) return
-        send("DBLCLICK")
-      },
-      style: autoResize
-        ? {
-            whiteSpace: "pre",
-            userSelect: "none",
-            gridArea: "1 / 1 / auto / auto",
-            visibility: editing ? "hidden" : undefined,
-            // in event the preview overflow's the parent element
-            overflow: "hidden",
-            textOverflow: "ellipsis",
-          }
-        : undefined,
-    }),
+    getControlProps() {
+      return normalize.element({
+        id: dom.getControlId(scope),
+        ...parts.control.attrs,
+        dir: prop("dir"),
+      })
+    },
 
-    editTriggerProps: normalize.button({
-      ...parts.editTrigger.attrs,
-      id: dom.getEditTriggerId(state.context),
-      dir: state.context.dir,
-      "aria-label": translations.edit,
-      hidden: editing,
-      type: "button",
-      disabled: disabled,
-      onClick(event) {
-        if (event.defaultPrevented) return
-        if (!interactive) return
-        send("EDIT")
-      },
-    }),
+    getSubmitTriggerProps() {
+      return normalize.button({
+        ...parts.submitTrigger.attrs,
+        dir: prop("dir"),
+        id: dom.getSubmitTriggerId(scope),
+        "aria-label": translations?.submit,
+        hidden: !editing,
+        disabled: disabled,
+        type: "button",
+        onClick(event) {
+          if (event.defaultPrevented) return
+          if (!interactive) return
+          send({ type: "SUBMIT", src: "submit.click" })
+        },
+      })
+    },
 
-    controlProps: normalize.element({
-      id: dom.getControlId(state.context),
-      ...parts.control.attrs,
-      dir: state.context.dir,
-    }),
-
-    submitTriggerProps: normalize.button({
-      ...parts.submitTrigger.attrs,
-      dir: state.context.dir,
-      id: dom.getSubmitTriggerId(state.context),
-      "aria-label": translations.submit,
-      hidden: !editing,
-      disabled: disabled,
-      type: "button",
-      onClick(event) {
-        if (event.defaultPrevented) return
-        if (!interactive) return
-        send("SUBMIT")
-      },
-    }),
-
-    cancelTriggerProps: normalize.button({
-      ...parts.cancelTrigger.attrs,
-      dir: state.context.dir,
-      "aria-label": translations.cancel,
-      id: dom.getCancelTriggerId(state.context),
-      hidden: !editing,
-      type: "button",
-      disabled: disabled,
-      onClick(event) {
-        if (event.defaultPrevented) return
-        if (!interactive) return
-        send("CANCEL")
-      },
-    }),
+    getCancelTriggerProps() {
+      return normalize.button({
+        ...parts.cancelTrigger.attrs,
+        dir: prop("dir"),
+        "aria-label": translations?.cancel,
+        id: dom.getCancelTriggerId(scope),
+        hidden: !editing,
+        type: "button",
+        disabled: disabled,
+        onClick(event) {
+          if (event.defaultPrevented) return
+          if (!interactive) return
+          send({ type: "CANCEL", src: "cancel.click" })
+        },
+      })
+    },
   }
 }

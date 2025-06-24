@@ -1,8 +1,8 @@
 import { createProps } from "@zag-js/types"
 import { createSplitProps } from "@zag-js/utils"
-import type { UserDefinedContext } from "./popover.types"
+import type { PopoverProps } from "./popover.types"
 
-export const props = createProps<UserDefinedContext>()([
+export const props = createProps<PopoverProps>()([
   "autoFocus",
   "closeOnEscape",
   "closeOnInteractOutside",
@@ -17,10 +17,11 @@ export const props = createProps<UserDefinedContext>()([
   "onInteractOutside",
   "onOpenChange",
   "onPointerDownOutside",
-  "open.controlled",
+  "defaultOpen",
   "open",
+  "persistentElements",
   "portalled",
   "positioning",
 ])
 
-export const splitProps = createSplitProps<Partial<UserDefinedContext>>(props)
+export const splitProps = createSplitProps<Partial<PopoverProps>>(props)

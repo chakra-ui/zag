@@ -1,0 +1,18 @@
+```html
+<script setup>
+  import * as collapsible from "@zag-js/collapsible"
+  import { normalizeProps, useMachine } from "@zag-js/vue"
+  import { computed } from "vue"
+
+  const service = useMachine(collapsible.machine, { id: "1" })
+
+  const api = computed(() => collapsible.connect(service, normalizeProps))
+</script>
+
+<template>
+  <div v-bind="api.getRootProps()">
+    <button v-bind="api.getTriggerProps()">Collapse Trigger</button>
+    <div v-bind="api.getContentProps()">Collapse Content</div>
+  </div>
+</template>
+```

@@ -1,0 +1,20 @@
+```tsx
+import { createSignal } from "solid-js"
+
+export function ControlledCheckbox() {
+  const [checked, setChecked] = createSignal(false)
+
+  const service = useMachine(checkbox.machine, {
+    get checked() {
+      return checked()
+    },
+    onCheckedChange(details) {
+      setChecked(details.checked)
+    },
+  })
+
+  return (
+    // ...
+  )
+}
+```

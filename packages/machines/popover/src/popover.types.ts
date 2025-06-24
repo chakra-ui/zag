@@ -1,7 +1,7 @@
-import type { StateMachine as S } from "@zag-js/core"
-import type { DismissableElementHandlers } from "@zag-js/dismissable"
+import type { EventObject, Machine, Service } from "@zag-js/core"
+import type { DismissableElementHandlers, PersistentElementOptions } from "@zag-js/dismissable"
 import type { Placement, PositioningOptions } from "@zag-js/popper"
-import type { CommonProperties, DirectionProperty, MaybeElement, PropTypes, RequiredBy } from "@zag-js/types"
+import type { CommonProperties, DirectionProperty, PropTypes, RequiredBy } from "@zag-js/types"
 
 /* -----------------------------------------------------------------------------
  * Callback details
@@ -26,11 +26,15 @@ export type ElementIds = Partial<{
   arrow: string
 }>
 
-interface PublicContext extends DismissableElementHandlers, CommonProperties, DirectionProperty {
+export interface PopoverProps
+  extends CommonProperties,
+    DirectionProperty,
+    DismissableElementHandlers,
+    PersistentElementOptions {
   /**
    * The ids of the elements in the popover. Useful for composition.
    */
-  ids?: ElementIds
+  ids?: ElementIds | undefined
   /**
    * Whether the popover should be modal. When set to `true`:
    * - interaction with outside elements will be disabled
@@ -40,58 +44,58 @@ interface PublicContext extends DismissableElementHandlers, CommonProperties, Di
    *
    * @default false
    */
-  modal?: boolean
+  modal?: boolean | undefined
   /**
    * Whether the popover is portalled. This will proxy the tabbing behavior regardless of the DOM position
    * of the popover content.
    *
    * @default true
    */
-  portalled?: boolean
+  portalled?: boolean | undefined
   /**
    * Whether to automatically set focus on the first focusable
    * content within the popover when opened.
    *
    * @default true
    */
-  autoFocus?: boolean
+  autoFocus?: boolean | undefined
   /**
    * The element to focus on when the popover is opened.
    */
-  initialFocusEl?: MaybeElement | (() => MaybeElement)
+  initialFocusEl?: (() => HTMLElement | null) | undefined
   /**
    * Whether to close the popover when the user clicks outside of the popover.
    * @default true
    */
-  closeOnInteractOutside?: boolean
+  closeOnInteractOutside?: boolean | undefined
   /**
    * Whether to close the popover when the escape key is pressed.
    * @default true
    */
-  closeOnEscape?: boolean
+  closeOnEscape?: boolean | undefined
   /**
    * Function invoked when the popover opens or closes
    */
-  onOpenChange?: (details: OpenChangeDetails) => void
+  onOpenChange?: ((details: OpenChangeDetails) => void) | undefined
   /**
    * The user provided options used to position the popover content
    */
-  positioning: PositioningOptions
+  positioning?: PositioningOptions | undefined
   /**
-   * Whether the popover is open
+   * The controlled open state of the popover
    */
-  open?: boolean
+  open?: boolean | undefined
   /**
-   * Whether the popover is controlled by the user
+   * The initial open state of the popover when rendered.
+   * Use when you don't need to control the open state of the popover.
    */
-  "open.controlled"?: boolean
+  defaultOpen?: boolean | undefined
 }
 
-export type UserDefinedContext = RequiredBy<PublicContext, "id">
+type PropsWithDefault = "closeOnInteractOutside" | "closeOnEscape" | "modal" | "portalled" | "autoFocus" | "positioning"
 
 type ComputedContext = Readonly<{
   /**
-   * @computed
    * The computed value of `portalled`
    */
   currentPortalled: boolean
@@ -99,7 +103,6 @@ type ComputedContext = Readonly<{
 
 interface PrivateContext {
   /**
-   * @internal
    * The elements that are rendered on mount
    */
   renderedElements: {
@@ -107,27 +110,31 @@ interface PrivateContext {
     description: boolean
   }
   /**
-   * @internal
    * The computed placement (maybe different from initial placement)
    */
-  currentPlacement?: Placement
+  currentPlacement?: Placement | undefined
 }
 
-export interface MachineContext extends PublicContext, ComputedContext, PrivateContext {}
-
-export interface MachineState {
-  value: "open" | "closed"
+export interface PopoverSchema {
+  props: RequiredBy<PopoverProps, PropsWithDefault>
+  state: "open" | "closed"
+  context: PrivateContext
+  computed: ComputedContext
+  event: EventObject
+  action: string
+  effect: string
+  guard: string
 }
 
-export type State = S.State<MachineContext, MachineState>
+export type PopoverService = Service<PopoverSchema>
 
-export type Send = S.Send<S.AnyEventObject>
+export type PopoverMachine = Machine<PopoverSchema>
 
 /* -----------------------------------------------------------------------------
  * Component API
  * -----------------------------------------------------------------------------*/
 
-export interface MachineApi<T extends PropTypes = PropTypes> {
+export interface PopoverApi<T extends PropTypes = PropTypes> {
   /**
    * Whether the popover is portalled.
    */
@@ -145,16 +152,16 @@ export interface MachineApi<T extends PropTypes = PropTypes> {
    */
   reposition(options?: Partial<PositioningOptions>): void
 
-  arrowProps: T["element"]
-  arrowTipProps: T["element"]
-  anchorProps: T["element"]
-  triggerProps: T["button"]
-  indicatorProps: T["element"]
-  positionerProps: T["element"]
-  contentProps: T["element"]
-  titleProps: T["element"]
-  descriptionProps: T["element"]
-  closeTriggerProps: T["button"]
+  getArrowProps(): T["element"]
+  getArrowTipProps(): T["element"]
+  getAnchorProps(): T["element"]
+  getTriggerProps(): T["button"]
+  getIndicatorProps(): T["element"]
+  getPositionerProps(): T["element"]
+  getContentProps(): T["element"]
+  getTitleProps(): T["element"]
+  getDescriptionProps(): T["element"]
+  getCloseTriggerProps(): T["button"]
 }
 
 /* -----------------------------------------------------------------------------

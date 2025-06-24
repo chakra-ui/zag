@@ -1,0 +1,243 @@
+---
+title: Listbox
+description:
+  Used to display a list of selectable options, supporting both single and
+  multiple selection modes.
+package: "@zag-js/listbox"
+---
+
+# Listbox
+
+A listbox component that displays a list of selectable options, supporting both
+single and multiple selection modes.
+
+<Resources pkg="@zag-js/listbox" />
+
+<Showcase id="Listbox" />
+
+**Features**
+
+- Supports single, multiple, or no selection
+- Can be controlled or uncontrolled
+- Fully managed keyboard navigation (arrow keys, home, end, etc.)
+- Vertical and horizontal orientation
+- Typeahead to allow focusing the matching item
+- Supports items, labels, groups of items
+- Supports grid and list layouts
+
+## Installation
+
+To use the listbox machine in your project, run the following command in your
+command line:
+
+<CodeSnippet id="listbox/installation.mdx" />
+
+## Anatomy
+
+To set up the listbox correctly, you'll need to understand its anatomy and how
+we name its parts.
+
+> Each part includes a `data-part` attribute to help identify them in the DOM.
+
+<Anatomy id="listbox" />
+
+## Usage
+
+First, import the listbox package into your project
+
+```jsx
+import * as listbox from "@zag-js/listbox"
+```
+
+The listbox package exports two key functions:
+
+- `machine` — The state machine logic for the listbox widget.
+- `connect` — The function that translates the machine's state to JSX attributes
+  and event handlers.
+
+> You'll also need to provide a unique `id` to the `useMachine` hook. This is
+> used to ensure that every part has a unique identifier.
+
+Next, import the required hooks and functions for your framework and use the
+listbox machine in your project 🔥
+
+<CodeSnippet id="listbox/usage.mdx" />
+
+### Setting the initial selection
+
+To set the initial selection, you can use the `defaultValue` property.
+
+```tsx
+const service = useMachine(listbox.machine, {
+  // ...
+  defaultValue: ["item-1", "item-2"],
+})
+```
+
+### Controlling the selection
+
+To control the selection programmatically, you can use the `value` and
+`onValueChange` properties.
+
+```tsx
+const service = useMachine(listbox.machine, {
+  value: ["item-1", "item-2"],
+  onValueChange: (value) => {
+    console.log(value)
+  },
+})
+```
+
+### Filtering
+
+The listbox component supports filtering of items via `api.getInputProps`.
+Here's an example of how to support searching through a list of items.
+
+<CodeSnippet id="listbox/filtering.mdx" />
+
+### Selecting multiple items
+
+To enable multiple selection, set the `selectionMode` property to `multiple` or
+`extended`.
+
+```tsx
+const service = useMachine(listbox.machine, {
+  // ...
+  selectionMode: "multiple",
+})
+```
+
+### Selection Modes
+
+By default, a user can select a single item in a listbox. You can set the
+`selectionMode` property to a SelectionMode enumeration value to enable
+multi-selection. Here are the selection mode values.
+
+- **single**: A user can select a single item using the space bar, mouse click,
+  or touch tap.
+- **multiple**: A user can select multiple items using the space bar, mouse
+  click, or touch tap to toggle selection on the focused item. Using the arrow
+  keys, a user can move focus independently of selection.
+- **extended**: With no modifier keys like `Ctrl`, `Cmd` or `Shift`: the
+  behavior is the same as single selection.
+
+```tsx
+const service = useMachine(listbox.machine, {
+  // ...
+  selectionMode: "extended",
+})
+```
+
+### Disabling items
+
+To disable an item, you can use the `disabled` property.
+
+```tsx
+api.getItemProps({
+  // ...
+  disabled: true,
+})
+```
+
+To disable the entire listbox, you can use the `disabled` property.
+
+```tsx
+const service = useMachine(listbox.machine, {
+  disabled: true,
+})
+```
+
+### Grid layout
+
+To enable a grid layout, provide a grid collection to the `collection` property.
+
+```tsx
+const service = useMachine(listbox.machine, {
+  collection: listbox.gridCollection({
+    items: [],
+    columnCount: 3,
+  }),
+})
+```
+
+<CodeSnippet id="listbox/grid-usage.mdx" />
+
+## Styling guide
+
+Earlier, we mentioned that each listbox part has a `data-part` attribute added
+to them to select and style them in the DOM.
+
+```css
+[data-scope="listbox"][data-part="root"] {
+  /* styles for the root part */
+}
+
+[data-scope="listbox"][data-part="label"] {
+  /* styles for the label part */
+}
+
+[data-scope="listbox"][data-part="content"] {
+  /* styles for the content part */
+}
+
+[data-scope="listbox"][data-part="item"] {
+  /* styles for the item part */
+}
+
+[data-scope="listbox"][data-part="itemGroup"] {
+  /* styles for the item group part */
+}
+```
+
+### Focused state
+
+The focused state is applied to the item that is currently focused.
+
+```css
+[data-scope="listbox"][data-part="item"][data-focused] {
+  /* styles for the focused item part */
+}
+```
+
+### Selected state
+
+The selected state is applied to the item that is currently selected.
+
+```css
+[data-scope="listbox"][data-part="item"][data-selected] {
+  /* styles for the selected item part */
+}
+```
+
+### Disabled state
+
+The disabled state is applied to the item that is currently disabled.
+
+```css
+[data-scope="listbox"][data-part="item"][data-disabled] {
+  /* styles for the disabled item part */
+}
+```
+
+## Methods and Properties
+
+### Machine Context
+
+The listbox machine exposes the following context properties:
+
+<ContextTable name="listbox" />
+
+### Machine API
+
+The listbox `api` exposes the following methods:
+
+<ApiTable name="listbox" />
+
+### Data Attributes
+
+<DataAttrTable name="listbox" />
+
+## Accessibility
+
+Adheres to the
+[Listbox WAI-ARIA design pattern](https://www.w3.org/WAI/ARIA/apg/patterns/listbox/).

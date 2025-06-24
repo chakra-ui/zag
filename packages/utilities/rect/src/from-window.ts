@@ -5,11 +5,11 @@ export type WindowRectOptions = {
   /**
    * Whether to exclude the element's scrollbar size from the calculation.
    */
-  excludeScrollbar?: boolean
+  excludeScrollbar?: boolean | undefined
 }
 
 /**
- * Creates a rectange from window object
+ * Creates a rectangle from window object
  */
 export function getWindowRect(win: Window, opts: WindowRectOptions = {}): Rect {
   return createRect(getViewportRect(win, opts))

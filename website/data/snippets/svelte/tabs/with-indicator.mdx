@@ -1,0 +1,20 @@
+```svelte {9}
+
+<!-- ... -->
+<div {...api.getRootProps()}>
+  <div {...api.getListProps()}>
+    {#each data as item}
+      <button {...api.getTriggerProps({ value: item.value })}>
+        {item.label}
+      </button>
+    {/each}
+    <div {...api.getIndicatorProps()}></div>
+  </div>
+  {#each data as item}
+    <div {...api.getContentProps({ value: item.value })}>
+      <p>{item.content}</p>
+    </div>
+  {/each}
+</div>
+<!-- ... -->
+```

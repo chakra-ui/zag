@@ -1,0 +1,30 @@
+```html
+<script setup>
+  import * as splitter from "@zag-js/splitter"
+  import { normalizeProps, useMachine } from "@zag-js/vue"
+  import { computed } from "vue"
+
+  const service = useMachine(splitter.machine, {
+    id: "1",
+    defaultSize: [80, 20],
+    panels: [
+      { id: "a", minSize: 10 },
+      { id: "b", minSize: 10 },
+    ],
+  })
+
+  const api = computed(() => splitter.connect(service, normalizeProps))
+</script>
+
+<template>
+  <div v-bind="api.getRootProps()">
+    <div v-bind="api.getPanelProps({ id: 'a' })">
+      <p>A</p>
+    </div>
+    <div v-bind="api.getResizeTriggerProps({ id: 'a:b' })" />
+    <div v-bind="api.getPanelProps({ id: 'b' })">
+      <p>B</p>
+    </div>
+  </div>
+</template>
+```

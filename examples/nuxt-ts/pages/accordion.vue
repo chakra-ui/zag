@@ -6,16 +6,19 @@ import { ChevronRight } from "lucide-vue-next"
 
 const controls = useControls(accordionControls)
 
-const [state, send] = useMachine(accordion.machine({ id: "1" }), {
-  context: controls.context,
-})
+const service = useMachine(
+  accordion.machine,
+  controls.mergeProps<accordion.Props>({
+    id: useId(),
+  }),
+)
 
-const api = computed(() => accordion.connect(state.value, send, normalizeProps))
+const api = computed(() => accordion.connect(service, normalizeProps))
 </script>
 
 <template>
   <main class="accordion">
-    <div v-bind="api.rootProps">
+    <div v-bind="api.getRootProps()">
       <div v-for="item in accordionData" v-bind="api.getItemProps({ value: item.id })">
         <h3>
           <button :data-testid="`${item.id}:trigger`" v-bind="api.getItemTriggerProps({ value: item.id })">
@@ -34,7 +37,7 @@ const api = computed(() => accordion.connect(state.value, send, normalizeProps))
   </main>
 
   <Toolbar>
-    <StateVisualizer :state="state" />
+    <StateVisualizer :state="service" />
     <template #controls>
       <Controls :control="controls" />
     </template>

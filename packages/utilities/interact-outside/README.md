@@ -1,6 +1,6 @@
 # @zag-js/interact-outside
 
-Track interations or focus outside an element
+Track interactions or focus outside an element
 
 ## Installation
 

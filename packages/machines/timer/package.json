@@ -1,0 +1,49 @@
+{
+  "name": "@zag-js/timer",
+  "version": "1.17.1",
+  "description": "Core logic for the timer widget implemented as a state machine",
+  "keywords": [
+    "js",
+    "machine",
+    "xstate",
+    "statechart",
+    "component",
+    "chakra-ui",
+    "timer"
+  ],
+  "author": "Abraham Aremu <anubra266@gmail.com>",
+  "homepage": "https://github.com/chakra-ui/zag#readme",
+  "license": "MIT",
+  "repository": "https://github.com/chakra-ui/zag/tree/main/packages/timer",
+  "sideEffects": false,
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsup",
+    "test": "vitest",
+    "lint": "eslint src",
+    "test-ci": "pnpm test --ci --runInBand -u",
+    "test-watch": "pnpm test --watch",
+    "prepack": "clean-package",
+    "postpack": "clean-package restore"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "bugs": {
+    "url": "https://github.com/chakra-ui/zag/issues"
+  },
+  "dependencies": {
+    "@zag-js/anatomy": "workspace:*",
+    "@zag-js/dom-query": "workspace:*",
+    "@zag-js/core": "workspace:*",
+    "@zag-js/types": "workspace:*",
+    "@zag-js/utils": "workspace:*"
+  },
+  "devDependencies": {
+    "clean-package": "2.2.0"
+  },
+  "clean-package": "../../../clean-package.config.json",
+  "main": "src/index.ts"
+}

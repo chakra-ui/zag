@@ -8,21 +8,7 @@ import {
   startOfYear,
   type DateValue,
 } from "@internationalized/date"
-
-export type DateRangePreset =
-  | "thisWeek"
-  | "lastWeek"
-  | "thisMonth"
-  | "lastMonth"
-  | "thisQuarter"
-  | "lastQuarter"
-  | "thisYear"
-  | "lastYear"
-  | "last3Days"
-  | "last7Days"
-  | "last14Days"
-  | "last30Days"
-  | "last90Days"
+import type { DateRangePreset } from "./types"
 
 export function getDateRangePreset(preset: DateRangePreset, locale: string, timeZone: string): [DateValue, DateValue] {
   const today = now(timeZone)

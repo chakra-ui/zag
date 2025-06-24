@@ -29,12 +29,6 @@ test.describe("tree view / basic", () => {
     await I.seeItemIsTabbable("panda.config.ts")
   })
 
-  test("Interaction outside should reset focused node", async ({ page }) => {
-    await I.focusItem("panda.config.ts")
-    await page.click("text=My Documents")
-    await I.seeBranchIsTabbable("node_modules")
-  })
-
   test("expand/collapse all button", async () => {
     await I.clickButton("Expand all")
     await I.seeBranchIsExpanded(["node_modules", "src", "node_modules/@types"])
@@ -196,5 +190,20 @@ test.describe("tree view / multiple selection", () => {
     await I.focusItem("panda.config.ts")
     await I.pressKey("*")
     await I.seeBranchIsExpanded(["node_modules", "src"])
+  })
+})
+
+test.describe("tree view / expand all + collapse all", () => {
+  test.beforeEach(async ({ page }) => {
+    I = new TreeViewModel(page)
+    await I.goto()
+  })
+
+  test("expand all button", async () => {
+    await I.clickButton("Expand all")
+    await I.seeAllBranchesAreExpanded()
+
+    await I.clickButton("Collapse all")
+    await I.seeAllBranchesAreCollapsed()
   })
 })

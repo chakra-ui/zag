@@ -3,13 +3,20 @@ export { connect } from "./floating-panel.connect"
 export { machine } from "./floating-panel.machine"
 export * from "./floating-panel.props"
 export type {
-  MachineApi as Api,
-  UserDefinedContext as Context,
+  FloatingPanelApi as Api,
   ElementIds,
+  FloatingPanelMachine as Machine,
   OpenChangeDetails,
   PositionChangeDetails,
+  FloatingPanelProps as Props,
   ResizeTriggerAxis,
   ResizeTriggerProps,
+  FloatingPanelService as Service,
   SizeChangeDetails,
   StageChangeDetails,
+  StageTriggerProps,
+  AnchorPositionDetails,
+  IntlTranslations,
+  Stage,
 } from "./floating-panel.types"
+export type { Rect, Point, Size } from "@zag-js/rect-utils"

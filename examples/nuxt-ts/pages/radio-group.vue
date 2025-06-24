@@ -6,11 +6,15 @@ import serialize from "form-serialize"
 
 const controls = useControls(radioControls)
 
-const [state, send] = useMachine(radio.machine({ id: "1", name: "fruit" }), {
-  context: controls.context,
-})
+const service = useMachine(
+  radio.machine,
+  controls.mergeProps<radio.Props>({
+    id: useId(),
+    name: "fruit",
+  }),
+)
 
-const api = computed(() => radio.connect(state.value, send, normalizeProps))
+const api = computed(() => radio.connect(service, normalizeProps))
 </script>
 
 <template>
@@ -24,9 +28,9 @@ const api = computed(() => radio.connect(state.value, send, normalizeProps))
       "
     >
       <fieldset>
-        <div v-bind="api.rootProps">
-          <h3 v-bind="api.labelProps">Fruits</h3>
-          <div v-bind="api.indicatorProps" />
+        <div v-bind="api.getRootProps()">
+          <h3 v-bind="api.getLabelProps()">Fruits</h3>
+          <div v-bind="api.getIndicatorProps()" />
 
           <label
             v-for="opt in radioData"
@@ -50,7 +54,7 @@ const api = computed(() => radio.connect(state.value, send, normalizeProps))
   </main>
 
   <Toolbar>
-    <StateVisualizer :state="state" />
+    <StateVisualizer :state="service" />
     <template #controls>
       <Controls :control="controls" />
     </template>

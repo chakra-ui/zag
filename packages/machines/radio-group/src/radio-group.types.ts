@@ -1,8 +1,8 @@
-import type { StateMachine as S } from "@zag-js/core"
+import type { EventObject, Machine, Service } from "@zag-js/core"
 import type { CommonProperties, DirectionProperty, PropTypes, RequiredBy } from "@zag-js/types"
 
 export interface ValueChangeDetails {
-  value: string
+  value: string | null
 }
 
 /* -----------------------------------------------------------------------------
@@ -19,100 +19,120 @@ export type ElementIds = Partial<{
   itemHiddenInput(value: string): string
 }>
 
-interface PublicContext extends DirectionProperty, CommonProperties {
+export interface RadioGroupProps extends DirectionProperty, CommonProperties {
   /**
    * The ids of the elements in the radio. Useful for composition.
    */
-  ids?: ElementIds
+  ids?: ElementIds | undefined
+  /**
+   * The controlled value of the radio group
+   */
+  value?: string | null | undefined
+  /**
+   * The initial value of the checked radio when rendered.
+   * Use when you don't need to control the value of the radio group.
+   */
+  defaultValue?: string | null | undefined
+  /**
+   * The name of the input fields in the radio
+   * (Useful for form submission).
+   */
+  name?: string | undefined
+  /**
+   * The associate form of the underlying input.
+   */
+  form?: string | undefined
+  /**
+   * If `true`, the radio group will be disabled
+   */
+  disabled?: boolean | undefined
+  /**
+   * Whether the checkbox is read-only
+   */
+  readOnly?: boolean | undefined
+  /**
+   * Function called once a radio is checked
+   */
+  onValueChange?: ((details: ValueChangeDetails) => void) | undefined
+  /**
+   * Orientation of the radio group
+   */
+  orientation?: "horizontal" | "vertical" | undefined
+}
+
+export interface IndicatorRect {
+  left: string
+  top: string
+  width: string
+  height: string
+}
+
+interface PrivateContext {
   /**
    * The value of the checked radio
    */
   value: string | null
   /**
-   * The name of the input fields in the radio
-   * (Useful for form submission).
-   */
-  name?: string
-  /**
-   * The associate form of the underlying input.
-   */
-  form?: string
-  /**
-   * If `true`, the radio group will be disabled
-   */
-  disabled?: boolean
-  /**
-   * Whether the checkbox is read-only
-   */
-  readOnly?: boolean
-  /**
-   * Function called once a radio is checked
-   * @param value the value of the checked radio
-   */
-  onValueChange?(details: ValueChangeDetails): void
-  /**
-   * Orientation of the radio group
-   */
-  orientation?: "horizontal" | "vertical"
-}
-
-interface PrivateContext {
-  /**
-   * @internal
    * The id of the active radio
    */
   activeValue: string | null
   /**
-   * @internal
    * The id of the focused radio
    */
   focusedValue: string | null
   /**
-   * @internal
    * The id of the hovered radio
    */
   hoveredValue: string | null
   /**
-   * @internal
    * The active tab indicator's dom rect
    */
-  indicatorRect?: Partial<{ left: string; top: string; width: string; height: string }>
+  indicatorRect: Partial<IndicatorRect>
   /**
-   * @internal
    * Whether the active tab indicator's rect can transition
    */
-  canIndicatorTransition?: boolean
+  canIndicatorTransition: boolean
   /**
-   * @internal
-   * Function to clean up the observer for the active tab's rect
-   */
-  indicatorCleanup?: VoidFunction | null
-  /**
-   * @internal
    * Whether the radio group's fieldset is disabled
    */
   fieldsetDisabled: boolean
+  /**
+   * Whether the radio group is in server-side rendering
+   */
+  ssr: boolean
 }
 
-export type UserDefinedContext = RequiredBy<PublicContext, "id">
+type PropsWithDefault = "orientation"
 
 type ComputedContext = Readonly<{
   /**
-   * @computed
    * Whether the radio group is disabled
    */
   isDisabled: boolean
 }>
 
-export interface MachineContext extends PublicContext, PrivateContext, ComputedContext {}
-
-export interface MachineState {
-  value: "idle"
+interface Refs {
+  /**
+   * Function to clean up the observer for the active tab's rect
+   */
+  indicatorCleanup: VoidFunction | null
 }
 
-export type State = S.State<MachineContext, MachineState>
+export interface RadioGroupSchema {
+  state: "idle"
+  props: RequiredBy<RadioGroupProps, PropsWithDefault>
+  context: PrivateContext
+  computed: ComputedContext
+  refs: Refs
+  event: EventObject
+  action: string
+  effect: string
+  guard: string
+}
 
-export type Send = S.Send<S.AnyEventObject>
+export type RadioGroupService = Service<RadioGroupSchema>
+
+export type RadioGroupMachine = Machine<RadioGroupSchema>
 
 /* -----------------------------------------------------------------------------
  * Component API
@@ -120,33 +140,41 @@ export type Send = S.Send<S.AnyEventObject>
 
 export interface ItemProps {
   value: string
-  disabled?: boolean
-  invalid?: boolean
+  disabled?: boolean | undefined
+  invalid?: boolean | undefined
 }
 
 export interface ItemState {
   /**
-   * Whether the radio is invalid
+   * The value of the item
+   */
+  value: string
+  /**
+   * Whether the item is invalid
    */
   invalid: boolean
   /**
-   * Whether the radio is disabled
+   * Whether the item is disabled
    */
   disabled: boolean
   /**
-   * Whether the radio is checked
+   * Whether the item is checked
    */
   checked: boolean
   /**
-   *  Whether the radio is focused
+   *  Whether the item is focused
    */
   focused: boolean
   /**
-   * Whether the radio is hovered
+   * Whether the item is focused and the focus is visible
+   */
+  focusVisible: boolean
+  /**
+   * Whether the item is hovered
    */
   hovered: boolean
   /**
-   * Whether the radio is active or pressed
+   * Whether the item is active or pressed
    */
   active: boolean
 }
@@ -155,7 +183,7 @@ export interface ItemState {
  * Component API
  * -----------------------------------------------------------------------------*/
 
-export interface MachineApi<T extends PropTypes = PropTypes> {
+export interface RadioGroupApi<T extends PropTypes = PropTypes> {
   /**
    * The current value of the radio group
    */
@@ -177,11 +205,11 @@ export interface MachineApi<T extends PropTypes = PropTypes> {
    */
   getItemState(props: ItemProps): ItemState
 
-  rootProps: T["element"]
-  labelProps: T["element"]
+  getRootProps(): T["element"]
+  getLabelProps(): T["element"]
   getItemProps(props: ItemProps): T["label"]
   getItemTextProps(props: ItemProps): T["element"]
   getItemControlProps(props: ItemProps): T["element"]
   getItemHiddenInputProps(props: ItemProps): T["input"]
-  indicatorProps: T["element"]
+  getIndicatorProps(): T["element"]
 }

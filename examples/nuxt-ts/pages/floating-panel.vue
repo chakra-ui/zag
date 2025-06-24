@@ -2,42 +2,46 @@
 import * as floatingPanel from "@zag-js/floating-panel"
 import { floatingPanelControls } from "@zag-js/shared"
 import { normalizeProps, useMachine } from "@zag-js/vue"
+import { Minus, Maximize2, ArrowDownLeft, XIcon } from "lucide-vue-next"
 
 const controls = useControls(floatingPanelControls)
 
-const [state, send] = useMachine(floatingPanel.machine({ id: "1" }), {
-  context: controls.context,
-})
+const service = useMachine(
+  floatingPanel.machine,
+  controls.mergeProps<floatingPanel.Props>({
+    id: useId(),
+  }),
+)
 
-const api = computed(() => floatingPanel.connect(state.value, send, normalizeProps))
+const api = computed(() => floatingPanel.connect(service, normalizeProps))
 </script>
 
 <template>
   <main class="floating-panel">
     <div>
-      <button v-bind="api.triggerProps">Toggle Panel</button>
-      <div v-bind="api.positionerProps">
-        <div v-bind="api.contentProps">
-          <div v-bind="api.dragTriggerProps">
-            <div v-bind="api.headerProps">
-              <p v-bind="api.titleProps">Floating Panel</p>
-              <div data-scope="floating-panel" data-part="trigger-group">
-                <button v-bind="api.minimizeTriggerProps">
+      <button v-bind="api.getTriggerProps()">Toggle Panel</button>
+      <div v-bind="api.getPositionerProps()">
+        <div v-bind="api.getContentProps()">
+          <div v-bind="api.getDragTriggerProps()">
+            <div v-bind="api.getHeaderProps()">
+              <p v-bind="api.getTitleProps()">Floating Panel</p>
+              <div v-bind="api.getControlProps()">
+                <button v-bind="api.getStageTriggerProps({ stage: 'minimized' })">
                   <Minus />
                 </button>
-                <button v-bind="api.maximizeTriggerProps">
+                <button v-bind="api.getStageTriggerProps({ stage: 'maximized' })">
                   <Maximize2 />
                 </button>
-                <button v-bind="api.restoreTriggerProps">
+                <button v-bind="api.getStageTriggerProps({ stage: 'default' })">
                   <ArrowDownLeft />
                 </button>
-                <button v-bind="api.closeTriggerProps">
+                <button v-bind="api.getCloseTriggerProps()">
                   <XIcon />
                 </button>
               </div>
             </div>
           </div>
-          <div v-bind="api.bodyProps">
+          <div v-bind="api.getBodyProps()">
             <p>Some content</p>
           </div>
 
@@ -55,7 +59,7 @@ const api = computed(() => floatingPanel.connect(state.value, send, normalizePro
   </main>
 
   <Toolbar>
-    <StateVisualizer :state="state" />
+    <StateVisualizer :state="service" />
     <template #controls>
       <Controls :control="controls" />
     </template>

@@ -1,94 +1,171 @@
-import type { StateMachine as S } from "@zag-js/core"
+import type { EventObject, Machine, Service } from "@zag-js/core"
 import type { CommonProperties, DirectionProperty, PropTypes, RequiredBy } from "@zag-js/types"
 
 /* -----------------------------------------------------------------------------
  * Callback details
  * -----------------------------------------------------------------------------*/
 
-export type PanelId = string | number
+export type ResizeEvent = PointerEvent | KeyboardEvent
 
-export interface PanelSizeData {
+export type PanelId = string
+export type ResizeTriggerId = `${PanelId}:${PanelId}`
+
+export interface PanelData {
+  /**
+   * The id of the panel.
+   */
   id: PanelId
-  size?: number
-  minSize?: number
-  maxSize?: number
+  /**
+   * The order of the panel. useful of you intend to conditionally render the panel.
+   */
+  order?: number | undefined
+  /**
+   * The minimum size of the panel.
+   */
+  minSize?: number | undefined
+  /**
+   * The maximum size of the panel.
+   */
+  maxSize?: number | undefined
+  /**
+   * Whether the panel is collapsible.
+   */
+  collapsible?: boolean | undefined
+  /**
+   * The size of the panel when collapsed.
+   */
+  collapsedSize?: number | undefined
 }
 
-export interface SizeChangeDetails {
-  size: PanelSizeData[]
-  activeHandleId: string | null
+export interface CursorState {
+  isAtMin: boolean
+  isAtMax: boolean
+}
+
+export interface ResizeDetails {
+  size: number[]
+  resizeTriggerId: string | null
+  layout: string
+  expandToSizes: Record<string, number>
+}
+
+export interface ResizeEndDetails {
+  size: number[]
+  resizeTriggerId: string | null
+}
+
+export interface ExpandCollapseDetails {
+  panelId: string
+  size: number
 }
 
 /* -----------------------------------------------------------------------------
  * Machine context
  * -----------------------------------------------------------------------------*/
 
-type ElementIds = Partial<{
+export type ElementIds = Partial<{
   root: string
   resizeTrigger(id: string): string
   label(id: string): string
   panel(id: string | number): string
 }>
 
-interface PublicContext extends DirectionProperty, CommonProperties {
+export interface SplitterProps extends DirectionProperty, CommonProperties {
   /**
    * The orientation of the splitter. Can be `horizontal` or `vertical`
+   * @default "horizontal"
    */
-  orientation: "horizontal" | "vertical"
+  orientation?: "horizontal" | "vertical" | undefined
   /**
-   * The size data of the panels
+   * The controlled size data of the panels
    */
-  size: PanelSizeData[]
+  size?: number[] | undefined
+  /**
+   * The initial size of the panels when rendered.
+   * Use when you don't need to control the size of the panels.
+   */
+  defaultSize?: number[] | undefined
+  /**
+   * The size constraints of the panels.
+   */
+  panels: PanelData[]
   /**
    * Function called when the splitter is resized.
    */
-  onSizeChange?: (details: SizeChangeDetails) => void
+  onResize?: ((details: ResizeDetails) => void) | undefined
+  /**
+   * Function called when the splitter resize starts.
+   */
+  onResizeStart?: (() => void) | undefined
   /**
    * Function called when the splitter resize ends.
    */
-  onSizeChangeEnd?: (details: SizeChangeDetails) => void
+  onResizeEnd?: ((details: ResizeEndDetails) => void) | undefined
   /**
    * The ids of the elements in the splitter. Useful for composition.
    */
-  ids?: ElementIds
+  ids?: ElementIds | undefined
+  /**
+   * The number of pixels to resize the panel by when the keyboard is used.
+   */
+  keyboardResizeBy?: number | null | undefined
+  /**
+   * The nonce for the injected splitter cursor stylesheet.
+   */
+  nonce?: string | undefined
+  /**
+   * Function called when a panel is collapsed.
+   */
+  onCollapse?: ((details: ExpandCollapseDetails) => void) | undefined
+  /**
+   * Function called when a panel is expanded.
+   */
+  onExpand?: ((details: ExpandCollapseDetails) => void) | undefined
 }
 
-export type UserDefinedContext = RequiredBy<PublicContext, "id">
+export type PropWithDefault = "orientation" | "panels"
 
-export type NormalizedPanelData = Array<
-  Required<PanelSizeData> & {
-    remainingSize: number
-    minSize: number
-    maxSize: number
-    start: number
-    end: number
+export interface DragState {
+  resizeTriggerId: string
+  resizeTriggerRect: DOMRect
+  initialCursorPosition: number
+  initialSize: number[]
+}
+
+export interface KeyboardState {
+  resizeTriggerId: string
+}
+
+interface Context {
+  dragState: DragState | null
+  keyboardState: KeyboardState | null
+  size: number[]
+}
+
+interface Refs {
+  panelSizeBeforeCollapse: Map<string, number>
+  panelIdToLastNotifiedSizeMap: Map<string, number>
+  prevDelta: number
+}
+
+export interface SplitterSchema {
+  state: "idle" | "hover:temp" | "hover" | "dragging" | "focused"
+  tag: "focus"
+  props: RequiredBy<SplitterProps, PropWithDefault>
+  context: Context
+  computed: {
+    horizontal: boolean
   }
->
-
-type ComputedContext = Readonly<{
-  isHorizontal: boolean
-  panels: NormalizedPanelData
-  activeResizeBounds?: { min: number; max: number }
-  activeResizePanels?: { before: PanelSizeData; after: PanelSizeData }
-}>
-
-interface PrivateContext {
-  activeResizeId: string | null
-  previousPanels: NormalizedPanelData
-  activeResizeState: { isAtMin: boolean; isAtMax: boolean }
-  initialSize: Array<Required<Pick<PanelSizeData, "id" | "size">>>
+  refs: Refs
+  action: string
+  event: EventObject
+  effect: string
+  guard: string
 }
 
-export interface MachineContext extends PublicContext, ComputedContext, PrivateContext {}
+export type SplitterService = Service<SplitterSchema>
 
-export interface MachineState {
-  value: "idle" | "hover:temp" | "hover" | "dragging" | "focused"
-  tags: "focus"
-}
-
-export type State = S.State<MachineContext, MachineState>
-
-export type Send = S.Send<S.AnyEventObject>
+export type SplitterMachine = Machine<SplitterSchema>
 
 /* -----------------------------------------------------------------------------
  * Component API
@@ -96,59 +173,76 @@ export type Send = S.Send<S.AnyEventObject>
 
 export interface PanelProps {
   id: PanelId
-  snapSize?: number
 }
 
 export interface ResizeTriggerProps {
-  id: `${PanelId}:${PanelId}`
-  step?: number
-  disabled?: boolean
+  id: ResizeTriggerId
+  disabled?: boolean | undefined
 }
 
-export interface ResizeTriggerState {
-  disabled: boolean
-  focused: boolean
-  panelIds: string[]
-  min: number | undefined
-  max: number | undefined
-  value: number
+export interface PanelItem {
+  type: "panel"
+  id: PanelId
 }
 
-export interface PanelBounds {
-  min: number
-  max: number
+export interface ResizeTriggerItem {
+  type: "handle"
+  id: ResizeTriggerId
 }
 
-export interface MachineApi<T extends PropTypes = PropTypes> {
+export type SplitterItem = PanelItem | ResizeTriggerItem
+
+export interface SplitterApi<T extends PropTypes = PropTypes> {
   /**
-   * Whether the splitter is focused.
-   */
-  focused: boolean
-  /**
-   * Whether the splitter is being dragged.
+   * Whether the splitter is currently being resized.
    */
   dragging: boolean
   /**
-   *  The bounds of the currently dragged splitter handle.
+   * The current sizes of the panels.
    */
-  bounds: PanelBounds | undefined
+  getSizes(): number[]
   /**
-   * Function to set a panel to its minimum size.
+   * Set the sizes of the panels.
    */
-  setToMinSize(id: PanelId): void
+  setSizes(size: number[]): void
   /**
-   * Function to set a panel to its maximum size.
+   * Get the items of the splitter.
    */
-  setToMaxSize(id: PanelId): void
+  getItems(): SplitterItem[]
   /**
-   * Function to set the size of a panel.
+   * Get the size of a panel.
    */
-  setSize(id: PanelId, size: number): void
+  getPanelSize(id: PanelId): number
   /**
-   * Returns the state details for a resize trigger.
+   * Whether a panel is collapsed.
    */
-  getResizeTriggerState(props: ResizeTriggerProps): ResizeTriggerState
-  rootProps: T["element"]
+  isPanelCollapsed(id: PanelId): boolean
+  /**
+   * Whether a panel is expanded.
+   */
+  isPanelExpanded(id: PanelId): boolean
+  /**
+   * Collapse a panel.
+   */
+  collapsePanel(id: PanelId): void
+  /**
+   * Expand a panel.
+   */
+  expandPanel(id: PanelId, minSize?: number): void
+  /**
+   * Resize a panel.
+   */
+  resizePanel(id: PanelId, unsafePanelSize: number): void
+  /**
+   * Get the layout of the splitter.
+   */
+  getLayout(): string
+  /**
+   * Reset the splitter to its initial state.
+   */
+  resetSizes(): void
+
+  getRootProps(): T["element"]
   getPanelProps(props: PanelProps): T["element"]
   getResizeTriggerProps(props: ResizeTriggerProps): T["element"]
 }

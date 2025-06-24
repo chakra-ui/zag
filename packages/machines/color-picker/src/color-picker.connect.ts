@@ -1,24 +1,15 @@
 import { getColorAreaGradient, normalizeColor } from "@zag-js/color-utils"
-import {
-  getEventKey,
-  getEventPoint,
-  getEventStep,
-  getNativeEvent,
-  isLeftClick,
-  isModifierKey,
-  type EventKeyMap,
-} from "@zag-js/dom-event"
+import { getEventKey, getEventPoint, getEventStep, isLeftClick, isModifierKey } from "@zag-js/dom-query"
 import { dataAttr, query, visuallyHiddenStyle } from "@zag-js/dom-query"
 import { getPlacementStyles } from "@zag-js/popper"
-import type { NormalizeProps, PropTypes } from "@zag-js/types"
+import type { NormalizeProps, PropTypes, EventKeyMap } from "@zag-js/types"
 import { parts } from "./color-picker.anatomy"
-import { dom } from "./color-picker.dom"
+import * as dom from "./color-picker.dom"
 import type {
   AreaProps,
   ColorFormat,
-  MachineApi,
-  Send,
-  State,
+  ColorPickerService,
+  ColorPickerApi,
   SwatchTriggerProps,
   SwatchTriggerState,
 } from "./color-picker.types"
@@ -26,13 +17,20 @@ import { getChannelDisplayColor } from "./utils/get-channel-display-color"
 import { getChannelRange, getChannelValue } from "./utils/get-channel-input-value"
 import { getSliderBackground } from "./utils/get-slider-background"
 
-export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>): MachineApi<T> {
-  const value = state.context.value
-  const areaValue = state.context.areaValue
-  const valueAsString = state.context.valueAsString
+export function connect<T extends PropTypes>(
+  service: ColorPickerService,
+  normalize: NormalizeProps<T>,
+): ColorPickerApi<T> {
+  const { context, send, prop, computed, state, scope } = service
 
-  const disabled = state.context.isDisabled
-  const interactive = state.context.isInteractive
+  const value = context.get("value")
+  const format = context.get("format")
+
+  const areaValue = computed("areaValue")
+  const valueAsString = computed("valueAsString")
+
+  const disabled = computed("disabled")
+  const interactive = computed("interactive")
 
   const dragging = state.hasTag("dragging")
   const open = state.hasTag("open")
@@ -46,14 +44,14 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     }
   }
 
-  const currentPlacement = state.context.currentPlacement
+  const currentPlacement = context.get("currentPlacement")
   const popperStyles = getPlacementStyles({
-    ...state.context.positioning,
+    ...prop("positioning"),
     placement: currentPlacement,
   })
 
   function getSwatchTriggerState(props: SwatchTriggerProps): SwatchTriggerState {
-    const color = normalizeColor(props.value).toFormat(state.context.format)
+    const color = normalizeColor(props.value).toFormat(context.get("format"))
     return {
       value: color,
       valueAsString: color.toString("hex"),
@@ -67,9 +65,10 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     open,
     valueAsString,
     value,
-    setOpen(_open) {
-      if (_open === open) return
-      send({ type: _open ? "OPEN" : "CLOSE" })
+    setOpen(nextOpen) {
+      const open = state.hasTag("open")
+      if (open === nextOpen) return
+      send({ type: nextOpen ? "OPEN" : "CLOSE" })
     },
     setValue(value) {
       send({ type: "VALUE.SET", value: normalizeColor(value), src: "set-color" })
@@ -77,11 +76,14 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     getChannelValue(channel) {
       return getChannelValue(value, channel)
     },
+    getChannelValueText(channel, locale) {
+      return value.formatChannelValue(channel, locale)
+    },
     setChannelValue(channel, channelValue) {
       const color = value.withChannelValue(channel, channelValue)
       send({ type: "VALUE.SET", value: color, src: "set-channel" })
     },
-    format: state.context.format,
+    format: context.get("format"),
     setFormat(format) {
       const formatValue = value.toFormat(format)
       send({ type: "VALUE.SET", value: formatValue, src: "set-format" })
@@ -92,105 +94,133 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       send({ type: "VALUE.SET", value: color, src: "set-alpha" })
     },
 
-    rootProps: normalize.element({
-      ...parts.root.attrs,
-      dir: state.context.dir,
-      id: dom.getRootId(state.context),
-      "data-disabled": dataAttr(disabled),
-      "data-readonly": dataAttr(state.context.readOnly),
-      style: {
-        "--value": value.toString("css"),
-      },
-    }),
+    getRootProps() {
+      return normalize.element({
+        ...parts.root.attrs,
+        dir: prop("dir"),
+        id: dom.getRootId(scope),
+        "data-disabled": dataAttr(disabled),
+        "data-readonly": dataAttr(prop("readOnly")),
+        "data-invalid": dataAttr(prop("invalid")),
+        style: {
+          "--value": value.toString("css"),
+        },
+      })
+    },
 
-    labelProps: normalize.element({
-      ...parts.label.attrs,
-      dir: state.context.dir,
-      id: dom.getLabelId(state.context),
-      htmlFor: dom.getHiddenInputId(state.context),
-      "data-disabled": dataAttr(disabled),
-      "data-readonly": dataAttr(state.context.readOnly),
-      "data-focus": dataAttr(focused),
-      onClick(event) {
-        event.preventDefault()
-        const inputEl = query(dom.getControlEl(state.context), "[data-channel=hex]")
-        inputEl?.focus({ preventScroll: true })
-      },
-    }),
+    getLabelProps() {
+      return normalize.element({
+        ...parts.label.attrs,
+        dir: prop("dir"),
+        id: dom.getLabelId(scope),
+        htmlFor: dom.getHiddenInputId(scope),
+        "data-disabled": dataAttr(disabled),
+        "data-readonly": dataAttr(prop("readOnly")),
+        "data-invalid": dataAttr(prop("invalid")),
+        "data-focus": dataAttr(focused),
+        onClick(event) {
+          event.preventDefault()
+          const inputEl = query(dom.getControlEl(scope), "[data-channel=hex]")
+          inputEl?.focus({ preventScroll: true })
+        },
+      })
+    },
 
-    controlProps: normalize.element({
-      ...parts.control.attrs,
-      id: dom.getControlId(state.context),
-      dir: state.context.dir,
-      "data-disabled": dataAttr(disabled),
-      "data-readonly": dataAttr(state.context.readOnly),
-      "data-state": open ? "open" : "closed",
-      "data-focus": dataAttr(focused),
-    }),
+    getControlProps() {
+      return normalize.element({
+        ...parts.control.attrs,
+        id: dom.getControlId(scope),
+        dir: prop("dir"),
+        "data-disabled": dataAttr(disabled),
+        "data-readonly": dataAttr(prop("readOnly")),
+        "data-invalid": dataAttr(prop("invalid")),
+        "data-state": open ? "open" : "closed",
+        "data-focus": dataAttr(focused),
+      })
+    },
 
-    triggerProps: normalize.button({
-      ...parts.trigger.attrs,
-      id: dom.getTriggerId(state.context),
-      dir: state.context.dir,
-      disabled: disabled,
-      "aria-label": `select color. current color is ${valueAsString}`,
-      "aria-controls": dom.getContentId(state.context),
-      "aria-labelledby": dom.getLabelId(state.context),
-      "data-disabled": dataAttr(disabled),
-      "data-readonly": dataAttr(state.context.readOnly),
-      "data-placement": currentPlacement,
-      "aria-expanded": dataAttr(open),
-      "data-state": open ? "open" : "closed",
-      "data-focus": dataAttr(focused),
-      type: "button",
-      onClick() {
-        if (!interactive) return
-        send({ type: "TRIGGER.CLICK" })
-      },
-      onBlur() {
-        if (!interactive) return
-        send({ type: "TRIGGER.BLUR" })
-      },
-      style: {
-        position: "relative",
-      },
-    }),
+    getTriggerProps() {
+      return normalize.button({
+        ...parts.trigger.attrs,
+        id: dom.getTriggerId(scope),
+        dir: prop("dir"),
+        disabled: disabled,
+        "aria-label": `select color. current color is ${valueAsString}`,
+        "aria-controls": dom.getContentId(scope),
+        "aria-labelledby": dom.getLabelId(scope),
+        "data-disabled": dataAttr(disabled),
+        "data-readonly": dataAttr(prop("readOnly")),
+        "data-invalid": dataAttr(prop("invalid")),
+        "data-placement": currentPlacement,
+        "aria-expanded": dataAttr(open),
+        "data-state": open ? "open" : "closed",
+        "data-focus": dataAttr(focused),
+        type: "button",
+        onClick() {
+          if (!interactive) return
+          send({ type: "TRIGGER.CLICK" })
+        },
+        onBlur() {
+          if (!interactive) return
+          send({ type: "TRIGGER.BLUR" })
+        },
+        style: {
+          position: "relative",
+        },
+      })
+    },
 
-    positionerProps: normalize.element({
-      ...parts.positioner.attrs,
-      id: dom.getPositionerId(state.context),
-      dir: state.context.dir,
-      style: popperStyles.floating,
-    }),
+    getPositionerProps() {
+      return normalize.element({
+        ...parts.positioner.attrs,
+        id: dom.getPositionerId(scope),
+        dir: prop("dir"),
+        style: popperStyles.floating,
+      })
+    },
 
-    contentProps: normalize.element({
-      ...parts.content.attrs,
-      id: dom.getContentId(state.context),
-      dir: state.context.dir,
-      "data-placement": currentPlacement,
-      "data-state": open ? "open" : "closed",
-      hidden: !open,
-    }),
+    getContentProps() {
+      return normalize.element({
+        ...parts.content.attrs,
+        id: dom.getContentId(scope),
+        dir: prop("dir"),
+        tabIndex: -1,
+        "data-placement": currentPlacement,
+        "data-state": open ? "open" : "closed",
+        hidden: !open,
+      })
+    },
+
+    getValueTextProps() {
+      return normalize.element({
+        ...parts.valueText.attrs,
+        dir: prop("dir"),
+        "data-disabled": dataAttr(disabled),
+        "data-focus": dataAttr(focused),
+      })
+    },
 
     getAreaProps(props = {}) {
       const { xChannel, yChannel } = getAreaChannels(props)
       const { areaStyles } = getColorAreaGradient(areaValue, {
         xChannel,
         yChannel,
-        dir: state.context.dir,
+        dir: prop("dir"),
       })
 
       return normalize.element({
         ...parts.area.attrs,
-        id: dom.getAreaId(state.context),
+        id: dom.getAreaId(scope),
         role: "group",
+        "data-invalid": dataAttr(prop("invalid")),
+        "data-disabled": dataAttr(disabled),
+        "data-readonly": dataAttr(prop("readOnly")),
         onPointerDown(event) {
           if (!interactive) return
+          if (!isLeftClick(event)) return
+          if (isModifierKey(event)) return
 
-          const evt = getNativeEvent(event)
-          if (!isLeftClick(evt) || isModifierKey(evt)) return
-
-          const point = getEventPoint(evt)
+          const point = getEventPoint(event)
           const channel = { xChannel, yChannel }
 
           send({ type: "AREA.POINTER_DOWN", point, channel, id: "area" })
@@ -210,12 +240,15 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       const { areaGradientStyles } = getColorAreaGradient(areaValue, {
         xChannel,
         yChannel,
-        dir: state.context.dir,
+        dir: prop("dir"),
       })
 
       return normalize.element({
         ...parts.areaBackground.attrs,
-        id: dom.getAreaGradientId(state.context),
+        id: dom.getAreaGradientId(scope),
+        "data-invalid": dataAttr(prop("invalid")),
+        "data-disabled": dataAttr(disabled),
+        "data-readonly": dataAttr(prop("readOnly")),
         style: {
           position: "relative",
           touchAction: "none",
@@ -235,12 +268,16 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       const xValue = areaValue.getChannelValue(xChannel)
       const yValue = areaValue.getChannelValue(yChannel)
 
+      const color = areaValue.withChannelValue("alpha", 1).toString("css")
+
       return normalize.element({
         ...parts.areaThumb.attrs,
-        id: dom.getAreaThumbId(state.context),
-        dir: state.context.dir,
+        id: dom.getAreaThumbId(scope),
+        dir: prop("dir"),
         tabIndex: disabled ? undefined : 0,
         "data-disabled": dataAttr(disabled),
+        "data-invalid": dataAttr(prop("invalid")),
+        "data-readonly": dataAttr(prop("readOnly")),
         role: "slider",
         "aria-valuemin": 0,
         "aria-valuemax": 100,
@@ -255,7 +292,8 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
           transform: "translate(-50%, -50%)",
           touchAction: "none",
           forcedColorAdjust: "none",
-          background: areaValue.withChannelValue("alpha", 1).toString("css"),
+          "--color": color,
+          background: color,
         },
         onFocus() {
           if (!interactive) return
@@ -291,7 +329,12 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
             },
           }
 
-          const exec = keyMap[getEventKey(event, state.context)]
+          const exec =
+            keyMap[
+              getEventKey(event, {
+                dir: prop("dir"),
+              })
+            ]
 
           if (exec) {
             exec(event)
@@ -321,7 +364,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     },
 
     getChannelSliderProps(props) {
-      const { orientation = "horizontal", channel } = props
+      const { orientation = "horizontal", channel, format } = props
       return normalize.element({
         ...parts.channelSlider.attrs,
         "data-channel": channel,
@@ -329,12 +372,11 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         role: "presentation",
         onPointerDown(event) {
           if (!interactive) return
+          if (!isLeftClick(event)) return
+          if (isModifierKey(event)) return
 
-          const evt = getNativeEvent(event)
-          if (!isLeftClick(evt) || isModifierKey(evt)) return
-
-          const point = getEventPoint(evt)
-          send({ type: "CHANNEL_SLIDER.POINTER_DOWN", channel, point, id: channel, orientation })
+          const point = getEventPoint(event)
+          send({ type: "CHANNEL_SLIDER.POINTER_DOWN", channel, format, point, id: channel, orientation })
 
           event.preventDefault()
         },
@@ -346,11 +388,12 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     },
 
     getChannelSliderTrackProps(props) {
-      const { orientation = "horizontal", channel } = props
+      const { orientation = "horizontal", channel, format } = props
+      const normalizedValue = format ? value.toFormat(format) : areaValue
 
       return normalize.element({
         ...parts.channelSliderTrack.attrs,
-        id: dom.getChannelSliderId(state.context, channel),
+        id: dom.getChannelSliderTrackId(scope, channel),
         role: "group",
         "data-channel": channel,
         "data-orientation": orientation,
@@ -360,19 +403,46 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
           backgroundImage: getSliderBackground({
             orientation,
             channel,
-            dir: state.context.dir,
-            value: areaValue,
+            dir: prop("dir"),
+            value: normalizedValue,
           }),
         },
       })
     },
 
-    getChannelSliderThumbProps(props) {
-      const { orientation = "horizontal", channel } = props
-      const { minValue, maxValue, step: stepValue } = areaValue.getChannelRange(channel)
-      const channelValue = areaValue.getChannelValue(channel)
+    getChannelSliderLabelProps(props) {
+      const { channel } = props
+      return normalize.element({
+        ...parts.channelSliderLabel.attrs,
+        "data-channel": channel,
+        onClick(event) {
+          if (!interactive) return
+          event.preventDefault()
+          const thumbId = dom.getChannelSliderThumbId(scope, channel)
+          scope.getById(thumbId)?.focus({ preventScroll: true })
+        },
+        style: {
+          userSelect: "none",
+          WebkitUserSelect: "none",
+        },
+      })
+    },
 
-      const offset = (channelValue - minValue) / (maxValue - minValue)
+    getChannelSliderValueTextProps(props) {
+      return normalize.element({
+        ...parts.channelSliderValueText.attrs,
+        "data-channel": props.channel,
+      })
+    },
+
+    getChannelSliderThumbProps(props) {
+      const { orientation = "horizontal", channel, format } = props
+
+      const normalizedValue = format ? value.toFormat(format) : areaValue
+      const channelRange = normalizedValue.getChannelRange(channel)
+      const channelValue = normalizedValue.getChannelValue(channel)
+
+      const offset = (channelValue - channelRange.minValue) / (channelRange.maxValue - channelRange.minValue)
 
       const placementStyles =
         orientation === "horizontal"
@@ -381,7 +451,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
 
       return normalize.element({
         ...parts.channelSliderThumb.attrs,
-        id: dom.getChannelSliderThumbId(state.context, channel),
+        id: dom.getChannelSliderThumbId(scope, channel),
         role: "slider",
         "aria-label": channel,
         tabIndex: disabled ? undefined : 0,
@@ -390,8 +460,8 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         "data-orientation": orientation,
         "aria-disabled": dataAttr(disabled),
         "aria-orientation": orientation,
-        "aria-valuemax": maxValue,
-        "aria-valuemin": minValue,
+        "aria-valuemax": channelRange.maxValue,
+        "aria-valuemin": channelRange.minValue,
         "aria-valuenow": channelValue,
         "aria-valuetext": `${channel} ${channelValue}`,
         style: {
@@ -408,7 +478,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
           if (event.defaultPrevented) return
           if (!interactive) return
 
-          const step = getEventStep(event) * stepValue
+          const step = getEventStep(event) * channelRange.step
 
           const keyMap: EventKeyMap = {
             ArrowUp() {
@@ -440,7 +510,12 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
             },
           }
 
-          const exec = keyMap[getEventKey(event, state.context)]
+          const exec =
+            keyMap[
+              getEventKey(event, {
+                dir: prop("dir"),
+              })
+            ]
 
           if (exec) {
             exec(event)
@@ -452,12 +527,13 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
 
     getChannelInputProps(props) {
       const { channel } = props
+
       const isTextField = channel === "hex" || channel === "css"
-      const range = getChannelRange(value, channel)
+      const channelRange = getChannelRange(value, channel)
 
       return normalize.input({
         ...parts.channelInput.attrs,
-        dir: state.context.dir,
+        dir: prop("dir"),
         type: isTextField ? "text" : "number",
         "data-channel": channel,
         "aria-label": channel,
@@ -465,11 +541,13 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         autoComplete: "off",
         disabled: disabled,
         "data-disabled": dataAttr(disabled),
-        readOnly: state.context.readOnly,
+        "data-invalid": dataAttr(prop("invalid")),
+        "data-readonly": dataAttr(prop("readOnly")),
+        readOnly: prop("readOnly"),
         defaultValue: getChannelValue(value, channel),
-        min: range?.minValue,
-        max: range?.maxValue,
-        step: range?.step,
+        min: channelRange?.minValue,
+        max: channelRange?.maxValue,
+        step: channelRange?.step,
         onBeforeInput(event) {
           if (isTextField || !interactive) return
           const value = event.currentTarget.value
@@ -480,7 +558,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         onFocus(event) {
           if (!interactive) return
           send({ type: "CHANNEL_INPUT.FOCUS", channel })
-          event.target.select()
+          event.currentTarget.select()
         },
         onBlur(event) {
           if (!interactive) return
@@ -504,103 +582,121 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       })
     },
 
-    hiddenInputProps: normalize.input({
-      type: "text",
-      disabled: disabled,
-      name: state.context.name,
-      id: dom.getHiddenInputId(state.context),
-      style: visuallyHiddenStyle,
-      defaultValue: valueAsString,
-    }),
+    getHiddenInputProps() {
+      return normalize.input({
+        type: "text",
+        disabled,
+        name: prop("name"),
+        tabIndex: -1,
+        readOnly: prop("readOnly"),
+        required: prop("required"),
+        id: dom.getHiddenInputId(scope),
+        style: visuallyHiddenStyle,
+        defaultValue: valueAsString,
+      })
+    },
 
-    eyeDropperTriggerProps: normalize.button({
-      ...parts.eyeDropperTrigger.attrs,
-      type: "button",
-      dir: state.context.dir,
-      disabled: disabled,
-      "data-disabled": dataAttr(disabled),
-      "aria-label": "Pick a color from the screen",
-      onClick() {
-        if (!interactive) return
-        send("EYEDROPPER.CLICK")
-      },
-    }),
+    getEyeDropperTriggerProps() {
+      return normalize.button({
+        ...parts.eyeDropperTrigger.attrs,
+        type: "button",
+        dir: prop("dir"),
+        disabled: disabled,
+        "data-disabled": dataAttr(disabled),
+        "data-invalid": dataAttr(prop("invalid")),
+        "data-readonly": dataAttr(prop("readOnly")),
+        "aria-label": "Pick a color from the screen",
+        onClick() {
+          if (!interactive) return
+          send({ type: "EYEDROPPER.CLICK" })
+        },
+      })
+    },
 
-    swatchGroupProps: normalize.element({
-      ...parts.swatchGroup.attrs,
-      role: "group",
-    }),
+    getSwatchGroupProps() {
+      return normalize.element({
+        ...parts.swatchGroup.attrs,
+        role: "group",
+      })
+    },
 
     getSwatchTriggerState,
 
     getSwatchTriggerProps(props) {
-      const triggerState = getSwatchTriggerState(props)
+      const swatchState = getSwatchTriggerState(props)
       return normalize.button({
         ...parts.swatchTrigger.attrs,
-        disabled: triggerState.disabled,
-        dir: state.context.dir,
+        disabled: swatchState.disabled,
+        dir: prop("dir"),
         type: "button",
-        "aria-label": `select ${triggerState.valueAsString} as the color`,
-        "data-state": triggerState.checked ? "checked" : "unchecked",
-        "data-value": triggerState.valueAsString,
-        "data-disabled": dataAttr(triggerState.disabled),
+        "aria-label": `select ${swatchState.valueAsString} as the color`,
+        "data-state": swatchState.checked ? "checked" : "unchecked",
+        "data-value": swatchState.valueAsString,
+        "data-disabled": dataAttr(swatchState.disabled),
         onClick() {
-          if (triggerState.disabled) return
-          send({ type: "SWATCH_TRIGGER.CLICK", value: triggerState.value })
+          if (swatchState.disabled) return
+          send({ type: "SWATCH_TRIGGER.CLICK", value: swatchState.value })
         },
         style: {
+          "--color": swatchState.valueAsString,
           position: "relative",
         },
       })
     },
 
     getSwatchIndicatorProps(props) {
-      const triggerState = getSwatchTriggerState(props)
+      const swatchState = getSwatchTriggerState(props)
       return normalize.element({
         ...parts.swatchIndicator.attrs,
-        dir: state.context.dir,
-        hidden: !triggerState.checked,
+        dir: prop("dir"),
+        hidden: !swatchState.checked,
       })
     },
 
     getSwatchProps(props) {
       const { respectAlpha = true } = props
-      const triggerState = getSwatchTriggerState(props)
+      const swatchState = getSwatchTriggerState(props)
+      const color = swatchState.value.toString(respectAlpha ? "css" : "hex")
       return normalize.element({
         ...parts.swatch.attrs,
-        dir: state.context.dir,
-        "data-state": triggerState.checked ? "checked" : "unchecked",
-        "data-value": triggerState.valueAsString,
+        dir: prop("dir"),
+        "data-state": swatchState.checked ? "checked" : "unchecked",
+        "data-value": swatchState.valueAsString,
         style: {
+          "--color": color,
           position: "relative",
-          background: triggerState.value.toString(respectAlpha ? "css" : "hex"),
+          background: color,
         },
       })
     },
 
-    formatTriggerProps: normalize.button({
-      ...parts.formatTrigger.attrs,
-      dir: state.context.dir,
-      type: "button",
-      "aria-label": `change color format to ${getNextFormat(state.context.format)}`,
-      onClick(event) {
-        if (event.currentTarget.disabled) return
-        const nextFormat = getNextFormat(state.context.format)
-        send({ type: "FORMAT.SET", format: nextFormat, src: "format-trigger" })
-      },
-    }),
+    getFormatTriggerProps() {
+      return normalize.button({
+        ...parts.formatTrigger.attrs,
+        dir: prop("dir"),
+        type: "button",
+        "aria-label": `change color format to ${getNextFormat(format)}`,
+        onClick(event) {
+          if (event.currentTarget.disabled) return
+          const nextFormat = getNextFormat(format)
+          send({ type: "FORMAT.SET", format: nextFormat, src: "format-trigger" })
+        },
+      })
+    },
 
-    formatSelectProps: normalize.select({
-      ...parts.formatSelect.attrs,
-      "aria-label": "change color format",
-      dir: state.context.dir,
-      defaultValue: state.context.format,
-      disabled: disabled,
-      onChange(event) {
-        const format = assertFormat(event.currentTarget.value)
-        send({ type: "FORMAT.SET", format, src: "format-select" })
-      },
-    }),
+    getFormatSelectProps() {
+      return normalize.select({
+        ...parts.formatSelect.attrs,
+        "aria-label": "change color format",
+        dir: prop("dir"),
+        defaultValue: prop("format"),
+        disabled: disabled,
+        onChange(event) {
+          const format = assertFormat(event.currentTarget.value)
+          send({ type: "FORMAT.SET", format, src: "format-select" })
+        },
+      })
+    },
   }
 }
 

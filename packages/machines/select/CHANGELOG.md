@@ -1,5 +1,1702 @@
 # @zag-js/select
 
+## 1.17.1
+
+### Patch Changes
+
+- Updated dependencies [[`4b6302f`](https://github.com/chakra-ui/zag/commit/4b6302fc9104f1ae8cd89a0f0157884fb775a65a)]:
+  - @zag-js/anatomy@1.17.1
+  - @zag-js/core@1.17.1
+  - @zag-js/types@1.17.1
+  - @zag-js/collection@1.17.1
+  - @zag-js/utils@1.17.1
+  - @zag-js/dismissable@1.17.1
+  - @zag-js/dom-query@1.17.1
+  - @zag-js/popper@1.17.1
+
+## 1.17.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.17.0
+  - @zag-js/core@1.17.0
+  - @zag-js/types@1.17.0
+  - @zag-js/collection@1.17.0
+  - @zag-js/utils@1.17.0
+  - @zag-js/dismissable@1.17.0
+  - @zag-js/dom-query@1.17.0
+  - @zag-js/popper@1.17.0
+
+## 1.16.0
+
+### Patch Changes
+
+- Updated dependencies [[`f0545c6`](https://github.com/chakra-ui/zag/commit/f0545c61ef151e5e4480b0cc1d7401dda4653094),
+  [`6f6c8f3`](https://github.com/chakra-ui/zag/commit/6f6c8f329d9eb9d9889eff4317c84a4f41d4bfb2)]:
+  - @zag-js/collection@1.16.0
+  - @zag-js/types@1.16.0
+  - @zag-js/dom-query@1.16.0
+  - @zag-js/core@1.16.0
+  - @zag-js/dismissable@1.16.0
+  - @zag-js/popper@1.16.0
+  - @zag-js/anatomy@1.16.0
+  - @zag-js/utils@1.16.0
+
+## 1.15.7
+
+### Patch Changes
+
+- Updated dependencies [[`3de5dd0`](https://github.com/chakra-ui/zag/commit/3de5dd059f847bd68cafaae230e706783ff43dc6)]:
+  - @zag-js/collection@1.15.7
+  - @zag-js/anatomy@1.15.7
+  - @zag-js/core@1.15.7
+  - @zag-js/types@1.15.7
+  - @zag-js/utils@1.15.7
+  - @zag-js/dismissable@1.15.7
+  - @zag-js/dom-query@1.15.7
+  - @zag-js/popper@1.15.7
+
+## 1.15.6
+
+### Patch Changes
+
+- Updated dependencies [[`bb9b1e1`](https://github.com/chakra-ui/zag/commit/bb9b1e128ee9ff6318bbbbb2505c192435f05d1e)]:
+  - @zag-js/collection@1.15.6
+  - @zag-js/anatomy@1.15.6
+  - @zag-js/core@1.15.6
+  - @zag-js/types@1.15.6
+  - @zag-js/utils@1.15.6
+  - @zag-js/dismissable@1.15.6
+  - @zag-js/dom-query@1.15.6
+  - @zag-js/popper@1.15.6
+
+## 1.15.5
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.15.5
+  - @zag-js/core@1.15.5
+  - @zag-js/types@1.15.5
+  - @zag-js/collection@1.15.5
+  - @zag-js/utils@1.15.5
+  - @zag-js/dismissable@1.15.5
+  - @zag-js/dom-query@1.15.5
+  - @zag-js/popper@1.15.5
+
+## 1.15.4
+
+### Patch Changes
+
+- Updated dependencies [[`e5f698d`](https://github.com/chakra-ui/zag/commit/e5f698d082ea8ae7f9f45958c4e319de7c7b6107)]:
+  - @zag-js/dom-query@1.15.4
+  - @zag-js/core@1.15.4
+  - @zag-js/dismissable@1.15.4
+  - @zag-js/popper@1.15.4
+  - @zag-js/anatomy@1.15.4
+  - @zag-js/types@1.15.4
+  - @zag-js/collection@1.15.4
+  - @zag-js/utils@1.15.4
+
+## 1.15.3
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.15.3
+  - @zag-js/core@1.15.3
+  - @zag-js/types@1.15.3
+  - @zag-js/collection@1.15.3
+  - @zag-js/utils@1.15.3
+  - @zag-js/dismissable@1.15.3
+  - @zag-js/dom-query@1.15.3
+  - @zag-js/popper@1.15.3
+
+## 1.15.2
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.15.2
+  - @zag-js/core@1.15.2
+  - @zag-js/types@1.15.2
+  - @zag-js/collection@1.15.2
+  - @zag-js/utils@1.15.2
+  - @zag-js/dismissable@1.15.2
+  - @zag-js/dom-query@1.15.2
+  - @zag-js/popper@1.15.2
+
+## 1.15.1
+
+### Patch Changes
+
+- [`aaf33ad`](https://github.com/chakra-ui/zag/commit/aaf33ad95098e40c1b8d1f715a40b0eb213641f9) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix issue where highlighted item could be cleared when navigating
+  up/down the list with keyboard.
+
+- Updated dependencies [[`af01eeb`](https://github.com/chakra-ui/zag/commit/af01eebf013dd9c16821474a26d846f502530feb)]:
+  - @zag-js/collection@1.15.1
+  - @zag-js/anatomy@1.15.1
+  - @zag-js/core@1.15.1
+  - @zag-js/types@1.15.1
+  - @zag-js/utils@1.15.1
+  - @zag-js/dismissable@1.15.1
+  - @zag-js/dom-query@1.15.1
+  - @zag-js/popper@1.15.1
+
+## 1.15.0
+
+### Patch Changes
+
+- Updated dependencies [[`ce98b54`](https://github.com/chakra-ui/zag/commit/ce98b54a9cf6c241bc15ce5bbb017797438ecdc6)]:
+  - @zag-js/collection@1.15.0
+  - @zag-js/anatomy@1.15.0
+  - @zag-js/core@1.15.0
+  - @zag-js/types@1.15.0
+  - @zag-js/utils@1.15.0
+  - @zag-js/dismissable@1.15.0
+  - @zag-js/dom-query@1.15.0
+  - @zag-js/popper@1.15.0
+
+## 1.14.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.14.0
+  - @zag-js/core@1.14.0
+  - @zag-js/types@1.14.0
+  - @zag-js/collection@1.14.0
+  - @zag-js/utils@1.14.0
+  - @zag-js/dismissable@1.14.0
+  - @zag-js/dom-query@1.14.0
+  - @zag-js/popper@1.14.0
+
+## 1.13.1
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.13.1
+  - @zag-js/core@1.13.1
+  - @zag-js/types@1.13.1
+  - @zag-js/collection@1.13.1
+  - @zag-js/utils@1.13.1
+  - @zag-js/dismissable@1.13.1
+  - @zag-js/dom-query@1.13.1
+  - @zag-js/popper@1.13.1
+
+## 1.13.0
+
+### Minor Changes
+
+- [`7366236`](https://github.com/chakra-ui/zag/commit/7366236f35058c8b2ffe52a6939a770158bda62f) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Add `onSelect` callback that gets fired when an item is selected
+  via keyboard/mouse
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.13.0
+  - @zag-js/core@1.13.0
+  - @zag-js/types@1.13.0
+  - @zag-js/collection@1.13.0
+  - @zag-js/utils@1.13.0
+  - @zag-js/dismissable@1.13.0
+  - @zag-js/dom-query@1.13.0
+  - @zag-js/popper@1.13.0
+
+## 1.12.4
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.12.4
+  - @zag-js/core@1.12.4
+  - @zag-js/types@1.12.4
+  - @zag-js/collection@1.12.4
+  - @zag-js/utils@1.12.4
+  - @zag-js/dismissable@1.12.4
+  - @zag-js/dom-query@1.12.4
+  - @zag-js/popper@1.12.4
+
+## 1.12.3
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.12.3
+  - @zag-js/core@1.12.3
+  - @zag-js/types@1.12.3
+  - @zag-js/collection@1.12.3
+  - @zag-js/utils@1.12.3
+  - @zag-js/dismissable@1.12.3
+  - @zag-js/dom-query@1.12.3
+  - @zag-js/popper@1.12.3
+
+## 1.12.2
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.12.2
+  - @zag-js/core@1.12.2
+  - @zag-js/types@1.12.2
+  - @zag-js/collection@1.12.2
+  - @zag-js/utils@1.12.2
+  - @zag-js/dismissable@1.12.2
+  - @zag-js/dom-query@1.12.2
+  - @zag-js/popper@1.12.2
+
+## 1.12.1
+
+### Patch Changes
+
+- Updated dependencies [[`eb31845`](https://github.com/chakra-ui/zag/commit/eb318457bea7f7a2dc3a219f463dcd74f8acd49e)]:
+  - @zag-js/collection@1.12.1
+  - @zag-js/anatomy@1.12.1
+  - @zag-js/core@1.12.1
+  - @zag-js/types@1.12.1
+  - @zag-js/utils@1.12.1
+  - @zag-js/dismissable@1.12.1
+  - @zag-js/dom-query@1.12.1
+  - @zag-js/popper@1.12.1
+
+## 1.12.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.12.0
+  - @zag-js/core@1.12.0
+  - @zag-js/types@1.12.0
+  - @zag-js/collection@1.12.0
+  - @zag-js/utils@1.12.0
+  - @zag-js/dismissable@1.12.0
+  - @zag-js/dom-query@1.12.0
+  - @zag-js/popper@1.12.0
+
+## 1.11.0
+
+### Patch Changes
+
+- Updated dependencies [[`a2ee03f`](https://github.com/chakra-ui/zag/commit/a2ee03f8a6fd7bd7baf4143ecda2efe5cff5a860)]:
+  - @zag-js/collection@1.11.0
+  - @zag-js/anatomy@1.11.0
+  - @zag-js/core@1.11.0
+  - @zag-js/types@1.11.0
+  - @zag-js/utils@1.11.0
+  - @zag-js/dismissable@1.11.0
+  - @zag-js/dom-query@1.11.0
+  - @zag-js/popper@1.11.0
+
+## 1.10.0
+
+### Patch Changes
+
+- [`d6c55d8`](https://github.com/chakra-ui/zag/commit/d6c55d8362214986adec8832744804541810fcfc) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - - Fix issue where machine doesn't leave focus state with
+  interacting outside with another editable element. This leads to the `data-focus` attribute not being removed from the
+  trigger element.
+- Updated dependencies []:
+  - @zag-js/anatomy@1.10.0
+  - @zag-js/core@1.10.0
+  - @zag-js/types@1.10.0
+  - @zag-js/collection@1.10.0
+  - @zag-js/utils@1.10.0
+  - @zag-js/dismissable@1.10.0
+  - @zag-js/dom-query@1.10.0
+  - @zag-js/popper@1.10.0
+
+## 1.9.3
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.9.3
+  - @zag-js/core@1.9.3
+  - @zag-js/types@1.9.3
+  - @zag-js/collection@1.9.3
+  - @zag-js/utils@1.9.3
+  - @zag-js/dismissable@1.9.3
+  - @zag-js/dom-query@1.9.3
+  - @zag-js/popper@1.9.3
+
+## 1.9.2
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.9.2
+  - @zag-js/core@1.9.2
+  - @zag-js/types@1.9.2
+  - @zag-js/collection@1.9.2
+  - @zag-js/utils@1.9.2
+  - @zag-js/dismissable@1.9.2
+  - @zag-js/dom-query@1.9.2
+  - @zag-js/popper@1.9.2
+
+## 1.9.1
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.9.1
+  - @zag-js/core@1.9.1
+  - @zag-js/types@1.9.1
+  - @zag-js/collection@1.9.1
+  - @zag-js/utils@1.9.1
+  - @zag-js/dismissable@1.9.1
+  - @zag-js/dom-query@1.9.1
+  - @zag-js/popper@1.9.1
+
+## 1.9.0
+
+### Patch Changes
+
+- Updated dependencies [[`490dd9f`](https://github.com/chakra-ui/zag/commit/490dd9fa6355eb25c6bbb77406cae24835453af5)]:
+  - @zag-js/collection@1.9.0
+  - @zag-js/anatomy@1.9.0
+  - @zag-js/core@1.9.0
+  - @zag-js/types@1.9.0
+  - @zag-js/utils@1.9.0
+  - @zag-js/dismissable@1.9.0
+  - @zag-js/dom-query@1.9.0
+  - @zag-js/popper@1.9.0
+
+## 1.8.2
+
+### Patch Changes
+
+- Updated dependencies [[`25d93b8`](https://github.com/chakra-ui/zag/commit/25d93b8be12e8df26ed04c5d298c66f54910fe85)]:
+  - @zag-js/dom-query@1.8.2
+  - @zag-js/core@1.8.2
+  - @zag-js/dismissable@1.8.2
+  - @zag-js/popper@1.8.2
+  - @zag-js/anatomy@1.8.2
+  - @zag-js/types@1.8.2
+  - @zag-js/collection@1.8.2
+  - @zag-js/utils@1.8.2
+
+## 1.8.1
+
+### Patch Changes
+
+- Updated dependencies [[`c3c1642`](https://github.com/chakra-ui/zag/commit/c3c164296cd643f2fb7c12c0d1fe9c406eba352f)]:
+  - @zag-js/dom-query@1.8.1
+  - @zag-js/core@1.8.1
+  - @zag-js/dismissable@1.8.1
+  - @zag-js/popper@1.8.1
+  - @zag-js/anatomy@1.8.1
+  - @zag-js/types@1.8.1
+  - @zag-js/collection@1.8.1
+  - @zag-js/utils@1.8.1
+
+## 1.8.0
+
+### Patch Changes
+
+- Updated dependencies [[`0cb6c0e`](https://github.com/chakra-ui/zag/commit/0cb6c0e70193b8a30c17c96f2b739be215f266ed),
+  [`66f7828`](https://github.com/chakra-ui/zag/commit/66f7828541102fcf4f0fba05bb241e20a5ed45cb)]:
+  - @zag-js/collection@1.8.0
+  - @zag-js/core@1.8.0
+  - @zag-js/dismissable@1.8.0
+  - @zag-js/anatomy@1.8.0
+  - @zag-js/types@1.8.0
+  - @zag-js/utils@1.8.0
+  - @zag-js/dom-query@1.8.0
+  - @zag-js/popper@1.8.0
+
+## 1.7.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.7.0
+  - @zag-js/core@1.7.0
+  - @zag-js/types@1.7.0
+  - @zag-js/collection@1.7.0
+  - @zag-js/utils@1.7.0
+  - @zag-js/dismissable@1.7.0
+  - @zag-js/dom-query@1.7.0
+  - @zag-js/popper@1.7.0
+
+## 1.6.2
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.6.2
+  - @zag-js/core@1.6.2
+  - @zag-js/types@1.6.2
+  - @zag-js/collection@1.6.2
+  - @zag-js/utils@1.6.2
+  - @zag-js/dismissable@1.6.2
+  - @zag-js/dom-query@1.6.2
+  - @zag-js/popper@1.6.2
+
+## 1.6.1
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.6.1
+  - @zag-js/core@1.6.1
+  - @zag-js/types@1.6.1
+  - @zag-js/collection@1.6.1
+  - @zag-js/utils@1.6.1
+  - @zag-js/dismissable@1.6.1
+  - @zag-js/dom-query@1.6.1
+  - @zag-js/popper@1.6.1
+
+## 1.6.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.6.0
+  - @zag-js/core@1.6.0
+  - @zag-js/types@1.6.0
+  - @zag-js/collection@1.6.0
+  - @zag-js/utils@1.6.0
+  - @zag-js/dismissable@1.6.0
+  - @zag-js/dom-query@1.6.0
+  - @zag-js/popper@1.6.0
+
+## 1.5.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.5.0
+  - @zag-js/core@1.5.0
+  - @zag-js/types@1.5.0
+  - @zag-js/collection@1.5.0
+  - @zag-js/utils@1.5.0
+  - @zag-js/dismissable@1.5.0
+  - @zag-js/dom-query@1.5.0
+  - @zag-js/popper@1.5.0
+
+## 1.4.2
+
+### Patch Changes
+
+- [`469d927`](https://github.com/chakra-ui/zag/commit/469d927388e32ebafb8db22f6ad199b15b65b0bb) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix issue where select `valueAsString` loses reactivity
+
+- Updated dependencies [[`469d927`](https://github.com/chakra-ui/zag/commit/469d927388e32ebafb8db22f6ad199b15b65b0bb)]:
+  - @zag-js/collection@1.4.2
+  - @zag-js/anatomy@1.4.2
+  - @zag-js/core@1.4.2
+  - @zag-js/types@1.4.2
+  - @zag-js/utils@1.4.2
+  - @zag-js/dismissable@1.4.2
+  - @zag-js/dom-query@1.4.2
+  - @zag-js/popper@1.4.2
+
+## 1.4.1
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.4.1
+  - @zag-js/core@1.4.1
+  - @zag-js/types@1.4.1
+  - @zag-js/collection@1.4.1
+  - @zag-js/utils@1.4.1
+  - @zag-js/dismissable@1.4.1
+  - @zag-js/dom-query@1.4.1
+  - @zag-js/popper@1.4.1
+
+## 1.4.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.4.0
+  - @zag-js/core@1.4.0
+  - @zag-js/types@1.4.0
+  - @zag-js/collection@1.4.0
+  - @zag-js/utils@1.4.0
+  - @zag-js/dismissable@1.4.0
+  - @zag-js/dom-query@1.4.0
+  - @zag-js/popper@1.4.0
+
+## 1.3.3
+
+### Patch Changes
+
+- Updated dependencies [[`66ba41b`](https://github.com/chakra-ui/zag/commit/66ba41bb10b232ff08e3cfbfc6cbf2a1c7449e21)]:
+  - @zag-js/utils@1.3.3
+  - @zag-js/core@1.3.3
+  - @zag-js/collection@1.3.3
+  - @zag-js/dismissable@1.3.3
+  - @zag-js/popper@1.3.3
+  - @zag-js/anatomy@1.3.3
+  - @zag-js/types@1.3.3
+  - @zag-js/dom-query@1.3.3
+
+## 1.3.2
+
+### Patch Changes
+
+- [`db63d0b`](https://github.com/chakra-ui/zag/commit/db63d0b6e8eb030f60b2578e88cfcd226bfa2ccc) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Prevent stale closure in `api.setOpen(...)` methods
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.3.2
+  - @zag-js/core@1.3.2
+  - @zag-js/types@1.3.2
+  - @zag-js/collection@1.3.2
+  - @zag-js/utils@1.3.2
+  - @zag-js/dismissable@1.3.2
+  - @zag-js/dom-query@1.3.2
+  - @zag-js/popper@1.3.2
+
+## 1.3.1
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.3.1
+  - @zag-js/core@1.3.1
+  - @zag-js/types@1.3.1
+  - @zag-js/collection@1.3.1
+  - @zag-js/utils@1.3.1
+  - @zag-js/dismissable@1.3.1
+  - @zag-js/dom-query@1.3.1
+  - @zag-js/popper@1.3.1
+
+## 1.3.0
+
+### Patch Changes
+
+- [`01566a1`](https://github.com/chakra-ui/zag/commit/01566a171ef426410b29b881fe1014bd26c2f86f) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix issue where machines that hold complex objects
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.3.0
+  - @zag-js/core@1.3.0
+  - @zag-js/types@1.3.0
+  - @zag-js/collection@1.3.0
+  - @zag-js/utils@1.3.0
+  - @zag-js/dismissable@1.3.0
+  - @zag-js/dom-query@1.3.0
+  - @zag-js/popper@1.3.0
+
+## 1.2.1
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.2.1
+  - @zag-js/core@1.2.1
+  - @zag-js/types@1.2.1
+  - @zag-js/collection@1.2.1
+  - @zag-js/utils@1.2.1
+  - @zag-js/dismissable@1.2.1
+  - @zag-js/dom-query@1.2.1
+  - @zag-js/popper@1.2.1
+
+## 1.2.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.2.0
+  - @zag-js/core@1.2.0
+  - @zag-js/types@1.2.0
+  - @zag-js/collection@1.2.0
+  - @zag-js/utils@1.2.0
+  - @zag-js/dismissable@1.2.0
+  - @zag-js/dom-query@1.2.0
+  - @zag-js/popper@1.2.0
+
+## 1.1.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.1.0
+  - @zag-js/core@1.1.0
+  - @zag-js/types@1.1.0
+  - @zag-js/collection@1.1.0
+  - @zag-js/utils@1.1.0
+  - @zag-js/dismissable@1.1.0
+  - @zag-js/dom-query@1.1.0
+  - @zag-js/popper@1.1.0
+
+## 1.0.2
+
+### Patch Changes
+
+- Updated dependencies [[`2fdf79c`](https://github.com/chakra-ui/zag/commit/2fdf79c82a5cbfa876adc858886ce22b8b52d8fb)]:
+  - @zag-js/collection@1.0.2
+  - @zag-js/anatomy@1.0.2
+  - @zag-js/core@1.0.2
+  - @zag-js/types@1.0.2
+  - @zag-js/utils@1.0.2
+  - @zag-js/dismissable@1.0.2
+  - @zag-js/dom-query@1.0.2
+  - @zag-js/popper@1.0.2
+
+## 1.0.1
+
+### Patch Changes
+
+- [`0eeec8c`](https://github.com/chakra-ui/zag/commit/0eeec8cee82a5eaae790b6aacac2ec727a960650) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix regression where `multiple: true` doesn't work
+
+- [`9883753`](https://github.com/chakra-ui/zag/commit/98837532c3b9c3f3698eee4e158e4318194361f6) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Expose `<component>.Machine` type to help when typecasting generic
+  components like combobox and select.
+
+  Here's an example of the combobox component:
+
+  ```ts
+  interface Item {
+    code: string
+    label: string
+  }
+
+  const service = useMachine(combobox.machine as combobox.Machine<Item>, {
+    id: useId(),
+    collection,
+  })
+  ```
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.0.1
+  - @zag-js/core@1.0.1
+  - @zag-js/types@1.0.1
+  - @zag-js/collection@1.0.1
+  - @zag-js/utils@1.0.1
+  - @zag-js/dismissable@1.0.1
+  - @zag-js/dom-query@1.0.1
+  - @zag-js/popper@1.0.1
+
+## 1.0.0
+
+### Patch Changes
+
+- Updated dependencies [[`b1caa44`](https://github.com/chakra-ui/zag/commit/b1caa44085e7f1da0ad24fc7b25178081811646c)]:
+  - @zag-js/core@1.0.0
+  - @zag-js/anatomy@1.0.0
+  - @zag-js/types@1.0.0
+  - @zag-js/collection@1.0.0
+  - @zag-js/utils@1.0.0
+  - @zag-js/dismissable@1.0.0
+  - @zag-js/dom-query@1.0.0
+  - @zag-js/popper@1.0.0
+
+## 0.82.2
+
+### Patch Changes
+
+- Updated dependencies [[`7519355`](https://github.com/chakra-ui/zag/commit/7519355cca15c10c90f47c30aaa3e8041b7089e8)]:
+  - @zag-js/dismissable@0.82.2
+  - @zag-js/anatomy@0.82.2
+  - @zag-js/core@0.82.2
+  - @zag-js/types@0.82.2
+  - @zag-js/collection@0.82.2
+  - @zag-js/utils@0.82.2
+  - @zag-js/dom-query@0.82.2
+  - @zag-js/popper@0.82.2
+
+## 0.82.1
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@0.82.1
+  - @zag-js/core@0.82.1
+  - @zag-js/types@0.82.1
+  - @zag-js/collection@0.82.1
+  - @zag-js/utils@0.82.1
+  - @zag-js/dismissable@0.82.1
+  - @zag-js/dom-query@0.82.1
+  - @zag-js/popper@0.82.1
+
+## 0.82.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@0.82.0
+  - @zag-js/core@0.82.0
+  - @zag-js/types@0.82.0
+  - @zag-js/collection@0.82.0
+  - @zag-js/utils@0.82.0
+  - @zag-js/dismissable@0.82.0
+  - @zag-js/dom-query@0.82.0
+  - @zag-js/popper@0.82.0
+
+## 0.81.2
+
+### Patch Changes
+
+- Updated dependencies [[`e9313a3`](https://github.com/chakra-ui/zag/commit/e9313a3663285a05c9ac9ac92f1c09fcb27ac818)]:
+  - @zag-js/dom-query@0.81.2
+  - @zag-js/dismissable@0.81.2
+  - @zag-js/popper@0.81.2
+  - @zag-js/anatomy@0.81.2
+  - @zag-js/core@0.81.2
+  - @zag-js/types@0.81.2
+  - @zag-js/collection@0.81.2
+  - @zag-js/utils@0.81.2
+
+## 0.81.1
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@0.81.1
+  - @zag-js/core@0.81.1
+  - @zag-js/types@0.81.1
+  - @zag-js/collection@0.81.1
+  - @zag-js/utils@0.81.1
+  - @zag-js/dismissable@0.81.1
+  - @zag-js/dom-query@0.81.1
+  - @zag-js/form-utils@0.81.1
+  - @zag-js/popper@0.81.1
+
+## 0.81.0
+
+### Patch Changes
+
+- [`552e55d`](https://github.com/chakra-ui/zag/commit/552e55db4ec8c0fa86c5b7e5ce3ad08eb350ca68) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Refactor and streamline packages
+
+- Updated dependencies [[`2e4ae72`](https://github.com/chakra-ui/zag/commit/2e4ae729818cd334d9cfe4ddb15c14dc2aabb6bb),
+  [`792939f`](https://github.com/chakra-ui/zag/commit/792939f9d9eac5a97cc46f1b0ab286666ba1edd8),
+  [`552e55d`](https://github.com/chakra-ui/zag/commit/552e55db4ec8c0fa86c5b7e5ce3ad08eb350ca68)]:
+  - @zag-js/collection@0.81.0
+  - @zag-js/dom-query@0.81.0
+  - @zag-js/dismissable@0.81.0
+  - @zag-js/types@0.81.0
+  - @zag-js/popper@0.81.0
+  - @zag-js/anatomy@0.81.0
+  - @zag-js/core@0.81.0
+  - @zag-js/utils@0.81.0
+  - @zag-js/form-utils@0.81.0
+
+## 0.80.0
+
+### Patch Changes
+
+- Updated dependencies [[`d7617d1`](https://github.com/chakra-ui/zag/commit/d7617d1d95f93b3557eb88ba879737894da42d51)]:
+  - @zag-js/dom-query@0.80.0
+  - @zag-js/dismissable@0.80.0
+  - @zag-js/dom-event@0.80.0
+  - @zag-js/popper@0.80.0
+  - @zag-js/anatomy@0.80.0
+  - @zag-js/core@0.80.0
+  - @zag-js/types@0.80.0
+  - @zag-js/collection@0.80.0
+  - @zag-js/utils@0.80.0
+  - @zag-js/form-utils@0.80.0
+
+## 0.79.3
+
+### Patch Changes
+
+- Updated dependencies [[`5fa08c5`](https://github.com/chakra-ui/zag/commit/5fa08c5f8894d6b23570fcd9e2c7bc1ca3d50f01)]:
+  - @zag-js/popper@0.79.3
+  - @zag-js/dismissable@0.79.3
+  - @zag-js/anatomy@0.79.3
+  - @zag-js/core@0.79.3
+  - @zag-js/types@0.79.3
+  - @zag-js/collection@0.79.3
+  - @zag-js/utils@0.79.3
+  - @zag-js/dom-event@0.79.3
+  - @zag-js/dom-query@0.79.3
+  - @zag-js/form-utils@0.79.3
+
+## 0.79.2
+
+### Patch Changes
+
+- Updated dependencies [[`525e645`](https://github.com/chakra-ui/zag/commit/525e645404f56c10919cc9d36279044dff253a08)]:
+  - @zag-js/dom-query@0.79.2
+  - @zag-js/dismissable@0.79.2
+  - @zag-js/dom-event@0.79.2
+  - @zag-js/popper@0.79.2
+  - @zag-js/anatomy@0.79.2
+  - @zag-js/core@0.79.2
+  - @zag-js/types@0.79.2
+  - @zag-js/collection@0.79.2
+  - @zag-js/utils@0.79.2
+  - @zag-js/form-utils@0.79.2
+
+## 0.79.1
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@0.79.1
+  - @zag-js/core@0.79.1
+  - @zag-js/types@0.79.1
+  - @zag-js/collection@0.79.1
+  - @zag-js/utils@0.79.1
+  - @zag-js/dismissable@0.79.1
+  - @zag-js/dom-event@0.79.1
+  - @zag-js/dom-query@0.79.1
+  - @zag-js/form-utils@0.79.1
+  - @zag-js/popper@0.79.1
+
+## 0.79.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@0.79.0
+  - @zag-js/core@0.79.0
+  - @zag-js/types@0.79.0
+  - @zag-js/collection@0.79.0
+  - @zag-js/utils@0.79.0
+  - @zag-js/dismissable@0.79.0
+  - @zag-js/dom-event@0.79.0
+  - @zag-js/dom-query@0.79.0
+  - @zag-js/form-utils@0.79.0
+  - @zag-js/popper@0.79.0
+
+## 0.78.3
+
+### Patch Changes
+
+- Updated dependencies [[`5584a83`](https://github.com/chakra-ui/zag/commit/5584a833151ee9f2c2ef9c07b6d699addfbca18e)]:
+  - @zag-js/core@0.78.3
+  - @zag-js/anatomy@0.78.3
+  - @zag-js/types@0.78.3
+  - @zag-js/collection@0.78.3
+  - @zag-js/utils@0.78.3
+  - @zag-js/dismissable@0.78.3
+  - @zag-js/dom-event@0.78.3
+  - @zag-js/dom-query@0.78.3
+  - @zag-js/form-utils@0.78.3
+  - @zag-js/popper@0.78.3
+
+## 0.78.2
+
+### Patch Changes
+
+- Updated dependencies [[`ce85272`](https://github.com/chakra-ui/zag/commit/ce85272c3d64dd4c7bae911ec4e4b813234850c2)]:
+  - @zag-js/dom-query@0.78.2
+  - @zag-js/dismissable@0.78.2
+  - @zag-js/dom-event@0.78.2
+  - @zag-js/popper@0.78.2
+  - @zag-js/anatomy@0.78.2
+  - @zag-js/core@0.78.2
+  - @zag-js/types@0.78.2
+  - @zag-js/collection@0.78.2
+  - @zag-js/utils@0.78.2
+  - @zag-js/form-utils@0.78.2
+
+## 0.78.1
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@0.78.1
+  - @zag-js/core@0.78.1
+  - @zag-js/types@0.78.1
+  - @zag-js/collection@0.78.1
+  - @zag-js/utils@0.78.1
+  - @zag-js/dismissable@0.78.1
+  - @zag-js/dom-event@0.78.1
+  - @zag-js/dom-query@0.78.1
+  - @zag-js/form-utils@0.78.1
+  - @zag-js/popper@0.78.1
+
+## 0.78.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@0.78.0
+  - @zag-js/core@0.78.0
+  - @zag-js/types@0.78.0
+  - @zag-js/collection@0.78.0
+  - @zag-js/utils@0.78.0
+  - @zag-js/dismissable@0.78.0
+  - @zag-js/dom-event@0.78.0
+  - @zag-js/dom-query@0.78.0
+  - @zag-js/form-utils@0.78.0
+  - @zag-js/popper@0.78.0
+
+## 0.77.1
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@0.77.1
+  - @zag-js/core@0.77.1
+  - @zag-js/types@0.77.1
+  - @zag-js/collection@0.77.1
+  - @zag-js/utils@0.77.1
+  - @zag-js/dismissable@0.77.1
+  - @zag-js/dom-event@0.77.1
+  - @zag-js/dom-query@0.77.1
+  - @zag-js/form-utils@0.77.1
+  - @zag-js/popper@0.77.1
+
+## 0.77.0
+
+### Patch Changes
+
+- Updated dependencies [[`a2af4ad`](https://github.com/chakra-ui/zag/commit/a2af4adc6a0d9438e025eadd12eb7eb513131a90)]:
+  - @zag-js/collection@0.77.0
+  - @zag-js/dom-query@0.77.0
+  - @zag-js/utils@0.77.0
+  - @zag-js/dismissable@0.77.0
+  - @zag-js/dom-event@0.77.0
+  - @zag-js/popper@0.77.0
+  - @zag-js/core@0.77.0
+  - @zag-js/anatomy@0.77.0
+  - @zag-js/types@0.77.0
+  - @zag-js/form-utils@0.77.0
+
+## 0.76.0
+
+### Patch Changes
+
+- Updated dependencies [[`70297fe`](https://github.com/chakra-ui/zag/commit/70297fe6abbbc164ab2d38079122e23f8382a23a)]:
+  - @zag-js/collection@0.76.0
+  - @zag-js/anatomy@0.76.0
+  - @zag-js/core@0.76.0
+  - @zag-js/types@0.76.0
+  - @zag-js/utils@0.76.0
+  - @zag-js/dismissable@0.76.0
+  - @zag-js/dom-event@0.76.0
+  - @zag-js/dom-query@0.76.0
+  - @zag-js/form-utils@0.76.0
+  - @zag-js/popper@0.76.0
+
+## 0.75.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@0.75.0
+  - @zag-js/core@0.75.0
+  - @zag-js/types@0.75.0
+  - @zag-js/collection@0.75.0
+  - @zag-js/utils@0.75.0
+  - @zag-js/dismissable@0.75.0
+  - @zag-js/dom-event@0.75.0
+  - @zag-js/dom-query@0.75.0
+  - @zag-js/form-utils@0.75.0
+  - @zag-js/popper@0.75.0
+
+## 0.74.2
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@0.74.2
+  - @zag-js/core@0.74.2
+  - @zag-js/types@0.74.2
+  - @zag-js/collection@0.74.2
+  - @zag-js/utils@0.74.2
+  - @zag-js/dismissable@0.74.2
+  - @zag-js/dom-event@0.74.2
+  - @zag-js/dom-query@0.74.2
+  - @zag-js/form-utils@0.74.2
+  - @zag-js/popper@0.74.2
+
+## 0.74.1
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@0.74.1
+  - @zag-js/core@0.74.1
+  - @zag-js/types@0.74.1
+  - @zag-js/collection@0.74.1
+  - @zag-js/utils@0.74.1
+  - @zag-js/dismissable@0.74.1
+  - @zag-js/dom-event@0.74.1
+  - @zag-js/dom-query@0.74.1
+  - @zag-js/form-utils@0.74.1
+  - @zag-js/popper@0.74.1
+
+## 0.74.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@0.74.0
+  - @zag-js/core@0.74.0
+  - @zag-js/types@0.74.0
+  - @zag-js/collection@0.74.0
+  - @zag-js/utils@0.74.0
+  - @zag-js/dismissable@0.74.0
+  - @zag-js/dom-event@0.74.0
+  - @zag-js/dom-query@0.74.0
+  - @zag-js/form-utils@0.74.0
+  - @zag-js/popper@0.74.0
+
+## 0.73.1
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@0.73.1
+  - @zag-js/core@0.73.1
+  - @zag-js/types@0.73.1
+  - @zag-js/collection@0.73.1
+  - @zag-js/utils@0.73.1
+  - @zag-js/dismissable@0.73.1
+  - @zag-js/dom-event@0.73.1
+  - @zag-js/dom-query@0.73.1
+  - @zag-js/form-utils@0.73.1
+  - @zag-js/popper@0.73.1
+
+## 0.73.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/dismissable@0.73.0
+  - @zag-js/anatomy@0.73.0
+  - @zag-js/core@0.73.0
+  - @zag-js/types@0.73.0
+  - @zag-js/collection@0.73.0
+  - @zag-js/utils@0.73.0
+  - @zag-js/dom-event@0.73.0
+  - @zag-js/dom-query@0.73.0
+  - @zag-js/form-utils@0.73.0
+  - @zag-js/popper@0.73.0
+
+## 0.72.0
+
+### Minor Changes
+
+- [`831e941`](https://github.com/chakra-ui/zag/commit/831e941241d48f9345c4da0172e72956beed8b25) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Expose `multiple` and `disabled` in api to allow for designing
+  custom UIs.
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@0.72.0
+  - @zag-js/core@0.72.0
+  - @zag-js/types@0.72.0
+  - @zag-js/collection@0.72.0
+  - @zag-js/utils@0.72.0
+  - @zag-js/dismissable@0.72.0
+  - @zag-js/dom-event@0.72.0
+  - @zag-js/dom-query@0.72.0
+  - @zag-js/form-utils@0.72.0
+  - @zag-js/popper@0.72.0
+
+## 0.71.0
+
+### Minor Changes
+
+- [`b3a251e`](https://github.com/chakra-ui/zag/commit/b3a251e5e10b9b27af353e0f41117329846b14e9) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - We no longer ship `src` files in the packages.
+
+### Patch Changes
+
+- Updated dependencies [[`b3a251e`](https://github.com/chakra-ui/zag/commit/b3a251e5e10b9b27af353e0f41117329846b14e9)]:
+  - @zag-js/core@0.71.0
+  - @zag-js/anatomy@0.71.0
+  - @zag-js/types@0.71.0
+  - @zag-js/collection@0.71.0
+  - @zag-js/utils@0.71.0
+  - @zag-js/dismissable@0.71.0
+  - @zag-js/dom-event@0.71.0
+  - @zag-js/dom-query@0.71.0
+  - @zag-js/form-utils@0.71.0
+  - @zag-js/popper@0.71.0
+
+## 0.70.0
+
+### Minor Changes
+
+- [`7a8b3ff`](https://github.com/chakra-ui/zag/commit/7a8b3ff2071eb1e92c4fedfd6e71269a3c56e22b) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Add support for `deselectable` prop to allow deselecting the
+  current value by clicking on the item.
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@0.70.0
+  - @zag-js/core@0.70.0
+  - @zag-js/types@0.70.0
+  - @zag-js/collection@0.70.0
+  - @zag-js/utils@0.70.0
+  - @zag-js/dismissable@0.70.0
+  - @zag-js/dom-event@0.70.0
+  - @zag-js/dom-query@0.70.0
+  - @zag-js/form-utils@0.70.0
+  - @zag-js/popper@0.70.0
+
+## 0.69.0
+
+### Patch Changes
+
+- Updated dependencies [[`bf57d7b`](https://github.com/chakra-ui/zag/commit/bf57d7b3933daf9974eaefc443da6f3c37706bb4)]:
+  - @zag-js/dom-event@0.69.0
+  - @zag-js/dom-query@0.69.0
+  - @zag-js/dismissable@0.69.0
+  - @zag-js/popper@0.69.0
+  - @zag-js/anatomy@0.69.0
+  - @zag-js/core@0.69.0
+  - @zag-js/types@0.69.0
+  - @zag-js/collection@0.69.0
+  - @zag-js/utils@0.69.0
+  - @zag-js/form-utils@0.69.0
+
+## 0.68.1
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@0.68.1
+  - @zag-js/core@0.68.1
+  - @zag-js/types@0.68.1
+  - @zag-js/collection@0.68.1
+  - @zag-js/utils@0.68.1
+  - @zag-js/dismissable@0.68.1
+  - @zag-js/dom-event@0.68.1
+  - @zag-js/dom-query@0.68.1
+  - @zag-js/form-utils@0.68.1
+  - @zag-js/popper@0.68.1
+
+## 0.68.0
+
+### Patch Changes
+
+- Updated dependencies [[`74d1848`](https://github.com/chakra-ui/zag/commit/74d18489fb64d53539fc62e5cfce7c5906720254)]:
+  - @zag-js/popper@0.68.0
+  - @zag-js/anatomy@0.68.0
+  - @zag-js/core@0.68.0
+  - @zag-js/types@0.68.0
+  - @zag-js/collection@0.68.0
+  - @zag-js/utils@0.68.0
+  - @zag-js/dismissable@0.68.0
+  - @zag-js/dom-event@0.68.0
+  - @zag-js/dom-query@0.68.0
+  - @zag-js/form-utils@0.68.0
+
+## 0.67.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@0.67.0
+  - @zag-js/core@0.67.0
+  - @zag-js/types@0.67.0
+  - @zag-js/collection@0.67.0
+  - @zag-js/utils@0.67.0
+  - @zag-js/dismissable@0.67.0
+  - @zag-js/dom-event@0.67.0
+  - @zag-js/dom-query@0.67.0
+  - @zag-js/form-utils@0.67.0
+  - @zag-js/popper@0.67.0
+
+## 0.66.1
+
+### Patch Changes
+
+- [`664fd91`](https://github.com/chakra-ui/zag/commit/664fd91ebd289ea7d698952b8d3176328e4d6e95) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix regression where select doesn't restore focus to trigger on
+  keyboard selection
+
+- Updated dependencies []:
+  - @zag-js/anatomy@0.66.1
+  - @zag-js/core@0.66.1
+  - @zag-js/types@0.66.1
+  - @zag-js/collection@0.66.1
+  - @zag-js/utils@0.66.1
+  - @zag-js/dismissable@0.66.1
+  - @zag-js/dom-event@0.66.1
+  - @zag-js/dom-query@0.66.1
+  - @zag-js/form-utils@0.66.1
+  - @zag-js/popper@0.66.1
+
+## 0.66.0
+
+### Patch Changes
+
+- [`44628a1`](https://github.com/chakra-ui/zag/commit/44628a119e957e07d0bdd96f3ad84a3b4d1bbac7) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Refactor opening and selection to be based on click events rather
+  than pointerdown/up cycles.
+
+  This improves the usability and accessibility of the select component. It also fixes an issue where controlled
+  multiple selects open state behaved unexpectedly.
+
+- Updated dependencies [[`54094ab`](https://github.com/chakra-ui/zag/commit/54094ab5005301b1f00ce062a7298b2399fa2b31)]:
+  - @zag-js/popper@0.66.0
+  - @zag-js/dismissable@0.66.0
+  - @zag-js/anatomy@0.66.0
+  - @zag-js/core@0.66.0
+  - @zag-js/types@0.66.0
+  - @zag-js/collection@0.66.0
+  - @zag-js/utils@0.66.0
+  - @zag-js/dom-event@0.66.0
+  - @zag-js/dom-query@0.66.0
+  - @zag-js/form-utils@0.66.0
+
+## 0.65.1
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@0.65.1
+  - @zag-js/core@0.65.1
+  - @zag-js/types@0.65.1
+  - @zag-js/collection@0.65.1
+  - @zag-js/utils@0.65.1
+  - @zag-js/dismissable@0.65.1
+  - @zag-js/dom-event@0.65.1
+  - @zag-js/dom-query@0.65.1
+  - @zag-js/form-utils@0.65.1
+  - @zag-js/popper@0.65.1
+
+## 0.65.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@0.65.0
+  - @zag-js/core@0.65.0
+  - @zag-js/types@0.65.0
+  - @zag-js/collection@0.65.0
+  - @zag-js/utils@0.65.0
+  - @zag-js/dismissable@0.65.0
+  - @zag-js/dom-event@0.65.0
+  - @zag-js/dom-query@0.65.0
+  - @zag-js/form-utils@0.65.0
+  - @zag-js/popper@0.65.0
+
+## 0.64.0
+
+### Minor Changes
+
+- [`c1a9ea7`](https://github.com/chakra-ui/zag/commit/c1a9ea763a7d74d31d63b57c2e2f66bd8deaf42b) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - BREAKING: Rename `Collection` class to `ListCollection` to better
+  reflect its intent.
+
+### Patch Changes
+
+- Updated dependencies [[`c1a9ea7`](https://github.com/chakra-ui/zag/commit/c1a9ea763a7d74d31d63b57c2e2f66bd8deaf42b)]:
+  - @zag-js/collection@0.64.0
+  - @zag-js/anatomy@0.64.0
+  - @zag-js/core@0.64.0
+  - @zag-js/types@0.64.0
+  - @zag-js/utils@0.64.0
+  - @zag-js/dismissable@0.64.0
+  - @zag-js/dom-event@0.64.0
+  - @zag-js/dom-query@0.64.0
+  - @zag-js/form-utils@0.64.0
+  - @zag-js/popper@0.64.0
+
+## 0.63.0
+
+### Patch Changes
+
+- Updated dependencies [[`ca437b9`](https://github.com/chakra-ui/zag/commit/ca437b94b49760742bad69aa57a3d6527219782a)]:
+  - @zag-js/dom-query@0.63.0
+  - @zag-js/dismissable@0.63.0
+  - @zag-js/dom-event@0.63.0
+  - @zag-js/popper@0.63.0
+  - @zag-js/anatomy@0.63.0
+  - @zag-js/core@0.63.0
+  - @zag-js/types@0.63.0
+  - @zag-js/collection@0.63.0
+  - @zag-js/utils@0.63.0
+  - @zag-js/form-utils@0.63.0
+
+## 0.62.1
+
+### Patch Changes
+
+- Updated dependencies [[`5644790`](https://github.com/chakra-ui/zag/commit/564479081d37cd06bc38043fccf9c229379a1531)]:
+  - @zag-js/core@0.62.1
+  - @zag-js/anatomy@0.62.1
+  - @zag-js/types@0.62.1
+  - @zag-js/collection@0.62.1
+  - @zag-js/utils@0.62.1
+  - @zag-js/dismissable@0.62.1
+  - @zag-js/dom-event@0.62.1
+  - @zag-js/dom-query@0.62.1
+  - @zag-js/form-utils@0.62.1
+  - @zag-js/popper@0.62.1
+
+## 0.62.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@0.62.0
+  - @zag-js/core@0.62.0
+  - @zag-js/types@0.62.0
+  - @zag-js/collection@0.62.0
+  - @zag-js/utils@0.62.0
+  - @zag-js/dismissable@0.62.0
+  - @zag-js/dom-event@0.62.0
+  - @zag-js/dom-query@0.62.0
+  - @zag-js/form-utils@0.62.0
+  - @zag-js/popper@0.62.0
+
+## 0.61.1
+
+### Patch Changes
+
+- [`338859e`](https://github.com/chakra-ui/zag/commit/338859e34ed669d33a55fa818ec234a35dc8cb5e) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix issue where `closeOnSelect` could not be customized when
+  `multiple` is set to `true`
+
+- Updated dependencies []:
+  - @zag-js/anatomy@0.61.1
+  - @zag-js/core@0.61.1
+  - @zag-js/types@0.61.1
+  - @zag-js/collection@0.61.1
+  - @zag-js/utils@0.61.1
+  - @zag-js/dismissable@0.61.1
+  - @zag-js/dom-event@0.61.1
+  - @zag-js/dom-query@0.61.1
+  - @zag-js/form-utils@0.61.1
+  - @zag-js/popper@0.61.1
+
+## 0.61.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@0.61.0
+  - @zag-js/core@0.61.0
+  - @zag-js/types@0.61.0
+  - @zag-js/collection@0.61.0
+  - @zag-js/utils@0.61.0
+  - @zag-js/dismissable@0.61.0
+  - @zag-js/dom-event@0.61.0
+  - @zag-js/dom-query@0.61.0
+  - @zag-js/form-utils@0.61.0
+  - @zag-js/popper@0.61.0
+
+## 0.60.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/core@0.60.0
+  - @zag-js/anatomy@0.60.0
+  - @zag-js/types@0.60.0
+  - @zag-js/collection@0.60.0
+  - @zag-js/utils@0.60.0
+  - @zag-js/dismissable@0.60.0
+  - @zag-js/dom-event@0.60.0
+  - @zag-js/dom-query@0.60.0
+  - @zag-js/form-utils@0.60.0
+  - @zag-js/popper@0.60.0
+
+## 0.59.0
+
+### Minor Changes
+
+- [`8fa3e08`](https://github.com/chakra-ui/zag/commit/8fa3e0800721ba5f84ca839386b96c1958158290) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Add support for valueText part for rendering internal state value
+
+### Patch Changes
+
+- [#1625](https://github.com/chakra-ui/zag/pull/1625)
+  [`1441d06`](https://github.com/chakra-ui/zag/commit/1441d06c03e0fc3958c8b25821b19db2398549dc) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Improve reliability of select and combobox by redesigning the
+  collection interface
+
+- Updated dependencies [[`1441d06`](https://github.com/chakra-ui/zag/commit/1441d06c03e0fc3958c8b25821b19db2398549dc)]:
+  - @zag-js/collection@0.59.0
+  - @zag-js/anatomy@0.59.0
+  - @zag-js/core@0.59.0
+  - @zag-js/types@0.59.0
+  - @zag-js/utils@0.59.0
+  - @zag-js/dismissable@0.59.0
+  - @zag-js/dom-event@0.59.0
+  - @zag-js/dom-query@0.59.0
+  - @zag-js/form-utils@0.59.0
+  - @zag-js/popper@0.59.0
+
+## 0.58.3
+
+### Patch Changes
+
+- [#1622](https://github.com/chakra-ui/zag/pull/1622)
+  [`f57eb81`](https://github.com/chakra-ui/zag/commit/f57eb81a06248449bf303bbdb7af83a0383d4f84) Thanks
+  [@Jonas-C](https://github.com/Jonas-C)! - Expose `data-invalid` on Combobox and Select triggers
+
+- [#1621](https://github.com/chakra-ui/zag/pull/1621)
+  [`1f7ea87`](https://github.com/chakra-ui/zag/commit/1f7ea87a34e19f9bd2119a13a7d8b7a7498609e4) Thanks
+  [@Jonas-C](https://github.com/Jonas-C)! - Expose `data-state` on `ItemText` for Combobox and Select
+
+- Updated dependencies []:
+  - @zag-js/anatomy@0.58.3
+  - @zag-js/core@0.58.3
+  - @zag-js/types@0.58.3
+  - @zag-js/collection@0.58.3
+  - @zag-js/utils@0.58.3
+  - @zag-js/dismissable@0.58.3
+  - @zag-js/dom-event@0.58.3
+  - @zag-js/dom-query@0.58.3
+  - @zag-js/form-utils@0.58.3
+  - @zag-js/popper@0.58.3
+
+## 0.58.2
+
+### Patch Changes
+
+- [`685e7a1`](https://github.com/chakra-ui/zag/commit/685e7a13db15fed3f388f176c87c12fdad267590) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Ensure form related components have the `required` property
+
+- Updated dependencies []:
+  - @zag-js/anatomy@0.58.2
+  - @zag-js/core@0.58.2
+  - @zag-js/types@0.58.2
+  - @zag-js/collection@0.58.2
+  - @zag-js/utils@0.58.2
+  - @zag-js/dismissable@0.58.2
+  - @zag-js/dom-event@0.58.2
+  - @zag-js/dom-query@0.58.2
+  - @zag-js/form-utils@0.58.2
+  - @zag-js/popper@0.58.2
+
+## 0.58.1
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@0.58.1
+  - @zag-js/core@0.58.1
+  - @zag-js/types@0.58.1
+  - @zag-js/collection@0.58.1
+  - @zag-js/utils@0.58.1
+  - @zag-js/dismissable@0.58.1
+  - @zag-js/dom-event@0.58.1
+  - @zag-js/dom-query@0.58.1
+  - @zag-js/form-utils@0.58.1
+  - @zag-js/popper@0.58.1
+
+## 0.58.0
+
+### Minor Changes
+
+- [`9216a62`](https://github.com/chakra-ui/zag/commit/9216a625e1be9f7dd169501515297a8214f12b93) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - - Ensure consistent application of form related properties like
+  `invalid`, `required`, and `readOnly`
+  - Export `Service` from all machines for use in Lit based components.
+
+### Patch Changes
+
+- Updated dependencies [[`9216a62`](https://github.com/chakra-ui/zag/commit/9216a625e1be9f7dd169501515297a8214f12b93)]:
+  - @zag-js/dom-query@0.58.0
+  - @zag-js/dismissable@0.58.0
+  - @zag-js/dom-event@0.58.0
+  - @zag-js/popper@0.58.0
+  - @zag-js/anatomy@0.58.0
+  - @zag-js/core@0.58.0
+  - @zag-js/types@0.58.0
+  - @zag-js/collection@0.58.0
+  - @zag-js/utils@0.58.0
+  - @zag-js/form-utils@0.58.0
+
+## 0.57.0
+
+### Minor Changes
+
+- [`761f185`](https://github.com/chakra-ui/zag/commit/761f185bc0e3fa337fcde6d3eeaae8e4a00ac00b) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Add support for selecting all values using `api.selectAll()`
+
+### Patch Changes
+
+- Updated dependencies [[`761f185`](https://github.com/chakra-ui/zag/commit/761f185bc0e3fa337fcde6d3eeaae8e4a00ac00b)]:
+  - @zag-js/collection@0.57.0
+  - @zag-js/dismissable@0.57.0
+  - @zag-js/anatomy@0.57.0
+  - @zag-js/core@0.57.0
+  - @zag-js/types@0.57.0
+  - @zag-js/utils@0.57.0
+  - @zag-js/dom-event@0.57.0
+  - @zag-js/dom-query@0.57.0
+  - @zag-js/form-utils@0.57.0
+  - @zag-js/popper@0.57.0
+
+## 0.56.1
+
+### Patch Changes
+
+- [`09189fb`](https://github.com/chakra-ui/zag/commit/09189fbdc9a885ec4dfab46be1ce7263c74c5e29) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Ensure consistent handling of `readOnly` and `disabled` context
+  properties
+
+- Updated dependencies []:
+  - @zag-js/anatomy@0.56.1
+  - @zag-js/core@0.56.1
+  - @zag-js/types@0.56.1
+  - @zag-js/collection@0.56.1
+  - @zag-js/utils@0.56.1
+  - @zag-js/dismissable@0.56.1
+  - @zag-js/dom-event@0.56.1
+  - @zag-js/dom-query@0.56.1
+  - @zag-js/form-utils@0.56.1
+  - @zag-js/popper@0.56.1
+
+## 0.56.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@0.56.0
+  - @zag-js/core@0.56.0
+  - @zag-js/types@0.56.0
+  - @zag-js/collection@0.56.0
+  - @zag-js/utils@0.56.0
+  - @zag-js/dismissable@0.56.0
+  - @zag-js/dom-event@0.56.0
+  - @zag-js/dom-query@0.56.0
+  - @zag-js/form-utils@0.56.0
+  - @zag-js/popper@0.56.0
+
+## 0.55.0
+
+### Patch Changes
+
+- [`5dca143`](https://github.com/chakra-ui/zag/commit/5dca1437d68878379210511304a2b29ff7b50165) Thanks
+  [@cschroeter](https://github.com/cschroeter)! - Add missing list part
+
+- Updated dependencies []:
+  - @zag-js/anatomy@0.55.0
+  - @zag-js/core@0.55.0
+  - @zag-js/types@0.55.0
+  - @zag-js/collection@0.55.0
+  - @zag-js/utils@0.55.0
+  - @zag-js/dismissable@0.55.0
+  - @zag-js/dom-event@0.55.0
+  - @zag-js/dom-query@0.55.0
+  - @zag-js/form-utils@0.55.0
+  - @zag-js/popper@0.55.0
+
+## 0.54.0
+
+### Patch Changes
+
+- Updated dependencies [[`590c177`](https://github.com/chakra-ui/zag/commit/590c1779f5208fb99114c872175e779508f2f96d)]:
+  - @zag-js/core@0.54.0
+  - @zag-js/anatomy@0.54.0
+  - @zag-js/types@0.54.0
+  - @zag-js/collection@0.54.0
+  - @zag-js/utils@0.54.0
+  - @zag-js/dismissable@0.54.0
+  - @zag-js/dom-event@0.54.0
+  - @zag-js/dom-query@0.54.0
+  - @zag-js/form-utils@0.54.0
+  - @zag-js/popper@0.54.0
+
+## 0.53.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@0.53.0
+  - @zag-js/core@0.53.0
+  - @zag-js/types@0.53.0
+  - @zag-js/collection@0.53.0
+  - @zag-js/utils@0.53.0
+  - @zag-js/dismissable@0.53.0
+  - @zag-js/dom-event@0.53.0
+  - @zag-js/dom-query@0.53.0
+  - @zag-js/form-utils@0.53.0
+  - @zag-js/popper@0.53.0
+
+## 0.52.0
+
+### Patch Changes
+
+- Updated dependencies [[`390f2c0`](https://github.com/chakra-ui/zag/commit/390f2c0ae813c93ae8513c515295f8ca3be4c10b)]:
+  - @zag-js/collection@0.52.0
+  - @zag-js/anatomy@0.52.0
+  - @zag-js/core@0.52.0
+  - @zag-js/types@0.52.0
+  - @zag-js/utils@0.52.0
+  - @zag-js/dismissable@0.52.0
+  - @zag-js/dom-event@0.52.0
+  - @zag-js/dom-query@0.52.0
+  - @zag-js/form-utils@0.52.0
+  - @zag-js/popper@0.52.0
+
+## 0.51.2
+
+### Patch Changes
+
+- [`70c2108`](https://github.com/chakra-ui/zag/commit/70c2108928746583687ac50ec51bc701c217ffdc) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix issue where keydown event might not fire in React due to
+  `nativeEvent` currentTarget not been set sometimes.
+
+- Updated dependencies [[`62eb21b`](https://github.com/chakra-ui/zag/commit/62eb21b60355dd0645936baf4692315134e7488c),
+  [`70c2108`](https://github.com/chakra-ui/zag/commit/70c2108928746583687ac50ec51bc701c217ffdc)]:
+  - @zag-js/core@0.51.2
+  - @zag-js/dom-event@0.51.2
+  - @zag-js/dom-query@0.51.2
+  - @zag-js/dismissable@0.51.2
+  - @zag-js/popper@0.51.2
+  - @zag-js/anatomy@0.51.2
+  - @zag-js/types@0.51.2
+  - @zag-js/collection@0.51.2
+  - @zag-js/utils@0.51.2
+  - @zag-js/form-utils@0.51.2
+
+## 0.51.1
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@0.51.1
+  - @zag-js/core@0.51.1
+  - @zag-js/types@0.51.1
+  - @zag-js/collection@0.51.1
+  - @zag-js/utils@0.51.1
+  - @zag-js/dismissable@0.51.1
+  - @zag-js/dom-event@0.51.1
+  - @zag-js/dom-query@0.51.1
+  - @zag-js/form-utils@0.51.1
+  - @zag-js/popper@0.51.1
+
+## 0.51.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@0.51.0
+  - @zag-js/core@0.51.0
+  - @zag-js/types@0.51.0
+  - @zag-js/collection@0.51.0
+  - @zag-js/utils@0.51.0
+  - @zag-js/dismissable@0.51.0
+  - @zag-js/dom-event@0.51.0
+  - @zag-js/dom-query@0.51.0
+  - @zag-js/form-utils@0.51.0
+  - @zag-js/popper@0.51.0
+
+## 0.50.0
+
+### Patch Changes
+
+- Updated dependencies [[`8f325a8`](https://github.com/chakra-ui/zag/commit/8f325a8a966256c45410ed3e953d7f041d40b658),
+  [`6784564`](https://github.com/chakra-ui/zag/commit/678456443f1ae958bb93bee8448e04a4ff2ce238)]:
+  - @zag-js/collection@0.50.0
+  - @zag-js/popper@0.50.0
+  - @zag-js/anatomy@0.50.0
+  - @zag-js/core@0.50.0
+  - @zag-js/types@0.50.0
+  - @zag-js/utils@0.50.0
+  - @zag-js/dismissable@0.50.0
+  - @zag-js/dom-event@0.50.0
+  - @zag-js/dom-query@0.50.0
+  - @zag-js/form-utils@0.50.0
+
 ## 0.49.0
 
 ### Patch Changes
@@ -20,9 +1717,14 @@
 
 ### Minor Changes
 
-- [#1431](https://github.com/chakra-ui/zag/pull/1431) [`80b97a9`](https://github.com/chakra-ui/zag/commit/80b97a907382f0cece781abeae2a462f9bfba686) Thanks [@segunadebayo](https://github.com/segunadebayo)! - Rename `loop` to `loopFocus` to better reflect its purpose
+- [#1431](https://github.com/chakra-ui/zag/pull/1431)
+  [`80b97a9`](https://github.com/chakra-ui/zag/commit/80b97a907382f0cece781abeae2a462f9bfba686) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Rename `loop` to `loopFocus` to better reflect its purpose
 
-- [#1431](https://github.com/chakra-ui/zag/pull/1431) [`80b97a9`](https://github.com/chakra-ui/zag/commit/80b97a907382f0cece781abeae2a462f9bfba686) Thanks [@segunadebayo](https://github.com/segunadebayo)! - Remove `selectOnBlur` to prevent accidental selection of options. Prefer explicit selection by user via click or enter key.
+- [#1431](https://github.com/chakra-ui/zag/pull/1431)
+  [`80b97a9`](https://github.com/chakra-ui/zag/commit/80b97a907382f0cece781abeae2a462f9bfba686) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Remove `selectOnBlur` to prevent accidental selection of options.
+  Prefer explicit selection by user via click or enter key.
 
 ### Patch Changes
 
@@ -42,7 +1744,9 @@
 
 ### Patch Changes
 
-- [`30528d0`](https://github.com/chakra-ui/zag/commit/30528d04563aa428d044867ce40c3ccab7cf8b7b) Thanks [@segunadebayo](https://github.com/segunadebayo)! - Prevent tab key interaction when the select is open. This keeps focus within the select and ensures keyboard interactions work consistently
+- [`30528d0`](https://github.com/chakra-ui/zag/commit/30528d04563aa428d044867ce40c3ccab7cf8b7b) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Prevent tab key interaction when the select is open. This keeps
+  focus within the select and ensures keyboard interactions work consistently
 
 - Updated dependencies []:
   - @zag-js/anatomy@0.47.0
@@ -882,14 +2586,11 @@
   [`fd71ad98`](https://github.com/chakra-ui/zag/commit/fd71ad98660fce3dd06c6dc2fa01e913ae7c3992) Thanks
   [@segunadebayo](https://github.com/segunadebayo)! - - Refactor component anatomy to use consistent naming convention
   across all machines.
-
   - **Accordion**
-
     - `getTriggerProps` => `getItemTriggerProps`
     - `getContentProps` => `getItemContentProps`
 
   - **Radio**
-
     - `getRadioProps` => `getItemProps`
     - `getRadioControlProps` => `getItemControlProps`
     - `getRadioLabelProps` => `getItemTextProps`
@@ -897,7 +2598,6 @@
     - `getRatingProps` => `getItemProps`
 
   - **TagsInput**
-
     - `getTagProps` => `getItemProps`
     - `getTagDeleteTriggerProps` => `getItemDeleteTriggerProps`
     - `getTagInputProps` => `getItemInputProps`
@@ -1035,12 +2735,12 @@
   const collection = select.collection({
     items: [],
     itemToString(item) {
-      return item.label;
+      return item.label
     },
     itemToValue(item) {
-      return item.value;
+      return item.value
     },
-  });
+  })
 
   // Pass the collection to the select machine
   const [state, send] = useMachine(
@@ -1048,7 +2748,7 @@
       collection,
       id: useId(),
     }),
-  );
+  )
   ```
 
 ### Patch Changes
@@ -1081,7 +2781,6 @@
 - [#816](https://github.com/chakra-ui/zag/pull/816)
   [`c1b04e32`](https://github.com/chakra-ui/zag/commit/c1b04e3248a2bf5211c4ee82298bc827521f102d) Thanks
   [@segunadebayo](https://github.com/segunadebayo)! - - Fix issue where select clicks underlying element on mobile.
-
   - Fix issue where combobox and menu option item triggers double click.
 
 - [#807](https://github.com/chakra-ui/zag/pull/807)
@@ -1211,7 +2910,6 @@
   **Potential breaking change:**
 
   We replaced `data-expanded` or `data-checked` to `data-state` attribute
-
   - `data-expanded` maps to `data-state="open"` or `data-state="closed"`
   - `data-checked` maps to `data-state="checked"` or `data-state="unchecked"`
   - `data-indeterminate` maps to `data-state="indeterminate"`
@@ -1703,7 +3401,6 @@
 - [`839a296a`](https://github.com/chakra-ui/zag/commit/839a296ac493c4305d6f4cf0bf12c0762463e91a) Thanks
   [@segunadebayo](https://github.com/segunadebayo)! - - Rename `openMenu`/`closeMenu` to `open`/`close` respectively for
   consistency
-
   - Add `type=button` to select trigger
   - Add missing `data-disabled` attribute to select trigger
   - Set `selectOnTab` to `false` by default

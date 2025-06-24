@@ -1,27 +1,29 @@
-```jsx
+```tsx
 import * as menu from "@zag-js/menu"
 import { useMachine, normalizeProps, Portal } from "@zag-js/react"
 import { useEffect } from "react"
 
 export function NestedMenu() {
   // Level 1 - File Menu
-  const [fileMenuState, fileMenuSend, fileMenuMachine] = useMachine(
-    menu.machine({ id: "1", "aria-label": "File" }),
-  )
+  const fileMenuService = useMachine(menu.machine, {
+    id: "1",
+    "aria-label": "File",
+  })
 
-  const fileMenu = menu.connect(fileMenuState, fileMenuSend, normalizeProps)
+  const fileMenu = menu.connect(fileMenuService, normalizeProps)
 
   // Level 2 - Share Menu
-  const [shareMenuState, shareMenuSend, shareMenuMachine] = useMachine(
-    menu.machine({ id: "2", "aria-label": "Share" }),
-  )
+  const shareMenuService = useMachine(menu.machine, {
+    id: "2",
+    "aria-label": "Share",
+  })
 
-  const shareMenu = menu.connect(shareMenuState, shareMenuSend, normalizeProps)
+  const shareMenu = menu.connect(shareMenuService, normalizeProps)
 
   useEffect(() => {
     setTimeout(() => {
-      fileMenu.setChild(shareMenuMachine)
-      shareMenu.setParent(fileMenuMachine)
+      fileMenu.setChild(shareMenuService)
+      shareMenu.setParent(fileMenuService)
     })
   }, [])
 
@@ -30,11 +32,11 @@ export function NestedMenu() {
 
   return (
     <>
-      <button {...fileMenu.triggerProps}>Click me</button>
+      <button {...fileMenu.getTriggerProps()}>Click me</button>
 
       <Portal>
-        <div {...fileMenu.positionerProps}>
-          <ul {...fileMenu.contentProps}>
+        <div {...fileMenu.getPositionerProps()}>
+          <ul {...fileMenu.getContentProps()}>
             <li {...fileMenu.getItemProps({ value: "new-tab" })}>New tab</li>
             <li {...fileMenu.getItemProps({ value: "new-win" })}>New window</li>
             <li {...shareMenuTriggerProps}>Share</li>
@@ -45,8 +47,8 @@ export function NestedMenu() {
       </Portal>
 
       <Portal>
-        <div {...shareMenu.positionerProps}>
-          <ul {...shareMenu.contentProps}>
+        <div {...shareMenu.getPositionerProps()}>
+          <ul {...shareMenu.getContentProps()}>
             <li {...shareMenu.getItemProps({ value: "messages" })}>Messages</li>
             <li {...shareMenu.getItemProps({ value: "airdrop" })}>Airdrop</li>
             <li {...shareMenu.getItemProps({ value: "whatsapp" })}>WhatsApp</li>

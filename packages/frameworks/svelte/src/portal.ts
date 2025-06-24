@@ -1,26 +1,22 @@
-type PortalActionArgs = {
-  disabled?: boolean
-  container?: HTMLElement
-  getRootNode?: () => ShadowRoot | Document | Node
+export interface PortalActionProps {
+  disabled?: boolean | undefined
+  container?: HTMLElement | undefined
+  getRootNode?: (() => ShadowRoot | Document | Node) | undefined
 }
 
-export function portal(node: HTMLElement, args?: PortalActionArgs) {
-  function update(args?: PortalActionArgs) {
-    const { container, disabled, getRootNode } = args ?? {}
+export function portal(node: HTMLElement, props: PortalActionProps = {}) {
+  function update(props: PortalActionProps = {}) {
+    const { container, disabled, getRootNode } = props
     if (disabled) return
-
     const doc = getRootNode?.().ownerDocument ?? document
     const mountNode = container ?? doc.body
-
     mountNode.appendChild(node)
   }
 
-  update(args)
+  update(props)
 
   return {
-    destroy: () => {
-      node.remove()
-    },
+    destroy: () => node.remove(),
     update,
   }
 }

@@ -3,6 +3,7 @@
   import { routesData } from "@zag-js/shared"
   import { Link, Route, Router } from "svelte-routing"
   import Accordion from "./routes/accordion.svelte"
+  import AngleSlider from "./routes/angle-slider.svelte"
   import Avatar from "./routes/avatar.svelte"
   import Carousel from "./routes/carousel.svelte"
   import Checkbox from "./routes/checkbox.svelte"
@@ -11,32 +12,50 @@
   import ColorPicker from "./routes/color-picker.svelte"
   import Combobox from "./routes/combobox.svelte"
   import ContextMenu from "./routes/context-menu.svelte"
+  import DatePickerMulti from "./routes/date-picker-multi.svelte"
+  import DatePickerRange from "./routes/date-picker-range.svelte"
+  import DatePicker from "./routes/date-picker.svelte"
+  import Dialog from "./routes/dialog.svelte"
+  import Editable from "./routes/editable.svelte"
   import FileUpload from "./routes/file-upload.svelte"
   import FloatingPanel from "./routes/floating-panel.svelte"
   import HoverCard from "./routes/hover-card.svelte"
   import Index from "./routes/index.svelte"
+  import ListboxGrid from "./routes/listbox-grid.svelte"
+  import Listbox from "./routes/listbox.svelte"
+  import NestedMenu from "./routes/menu-nested.svelte"
   import MenuOptions from "./routes/menu-options.svelte"
   import Menu from "./routes/menu.svelte"
   import NumberInput from "./routes/number-input.svelte"
   import Pagination from "./routes/pagination.svelte"
+  import PasswordInput from "./routes/password-input.svelte"
   import PinInput from "./routes/pin-input.svelte"
   import Popover from "./routes/popover.svelte"
+  import Popper from "./routes/popper.svelte"
+  import Presence from "./routes/presence.svelte"
   import Progress from "./routes/progress.svelte"
+  import QrCode from "./routes/qr-code.svelte"
+  import RadioGroup from "./routes/radio-group.svelte"
+  import RangeSlider from "./routes/range-slider.svelte"
   import RatingGroup from "./routes/rating-group.svelte"
   import SegmentControl from "./routes/segment-control.svelte"
   import Select from "./routes/select.svelte"
   import SignaturePad from "./routes/signature-pad.svelte"
   import Slider from "./routes/slider.svelte"
+  import Splitter from "./routes/splitter.svelte"
+  import Steps from "./routes/steps.svelte"
   import Switch from "./routes/switch.svelte"
   import Tabs from "./routes/tabs.svelte"
   import TagsInput from "./routes/tags-input.svelte"
-  import Toast from "./routes/toast.svelte"
+  import TimePicker from "./routes/time-picker.svelte"
+  import TimerCountdown from "./routes/timer-countdown.svelte"
+  import TimerStopwatch from "./routes/timer-stopwatch.svelte"
+  import ToastOverlap from "./routes/toast-overlap.svelte"
+  import ToastStacked from "./routes/toast-stacked.svelte"
   import ToggleGroup from "./routes/toggle-group.svelte"
   import Tooltip from "./routes/tooltip.svelte"
   import Tour from "./routes/tour.svelte"
   import TreeView from "./routes/tree-view.svelte"
-  import RadioGroup from "./routes/radio-group.svelte"
-  import RangeSlider from "./routes/range-slider.svelte"
 
   const sortedRoutes = routesData.sort((a, b) => a.label.localeCompare(b.label))
 
@@ -44,6 +63,7 @@
     { path: "/", component: Index },
     { path: "/accordion", component: Accordion },
     { path: "/avatar", component: Avatar },
+    { path: "/angle-slider", component: AngleSlider },
     { path: "/carousel", component: Carousel },
     { path: "/checkbox", component: Checkbox },
     { path: "/clipboard", component: Clipboard },
@@ -51,9 +71,15 @@
     { path: "/color-picker", component: ColorPicker },
     { path: "/combobox", component: Combobox },
     { path: "/context-menu", component: ContextMenu },
+    { path: "/date-picker", component: DatePicker },
+    { path: "/date-picker-multi", component: DatePickerMulti },
+    { path: "/date-picker-range", component: DatePickerRange },
+    { path: "/dialog", component: Dialog },
+    { path: "/editable", component: Editable },
     { path: "/file-upload", component: FileUpload },
     { path: "/floating-panel", component: FloatingPanel },
     { path: "/hover-card", component: HoverCard },
+    { path: "/menu-nested", component: NestedMenu },
     { path: "/menu", component: Menu },
     { path: "/menu-options", component: MenuOptions },
     { path: "/number-input", component: NumberInput },
@@ -66,16 +92,28 @@
     { path: "/rating-group", component: RatingGroup },
     { path: "/segment-control", component: SegmentControl },
     { path: "/select", component: Select },
+    { path: "/splitter", component: Splitter },
     { path: "/signature-pad", component: SignaturePad },
     { path: "/slider", component: Slider },
     { path: "/switch", component: Switch },
     { path: "/tabs", component: Tabs },
     { path: "/tags-input", component: TagsInput },
-    { path: "/toast", component: Toast },
+    { path: "/time-picker", component: TimePicker },
+    { path: "/toast-overlap", component: ToastOverlap },
+    { path: "/toast-stacked", component: ToastStacked },
     { path: "/toggle-group", component: ToggleGroup },
     { path: "/tooltip", component: Tooltip },
     { path: "/tour", component: Tour },
     { path: "/tree-view", component: TreeView },
+    { path: "/timer-countdown", component: TimerCountdown },
+    { path: "/timer-stopwatch", component: TimerStopwatch },
+    { path: "/qr-code", component: QrCode },
+    { path: "/presence", component: Presence },
+    { path: "/popper", component: Popper },
+    { path: "/steps", component: Steps },
+    { path: "/listbox", component: Listbox },
+    { path: "/listbox-grid", component: ListboxGrid },
+    { path: "/password-input", component: PasswordInput },
   ]
 </script>
 

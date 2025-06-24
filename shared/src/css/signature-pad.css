@@ -4,6 +4,10 @@
   flex-direction: column;
   width: 100%;
   max-width: 400px;
+
+  &[data-disabled] {
+    opacity: 0.5;
+  }
 }
 
 [data-scope="signature-pad"][data-part="label"] {

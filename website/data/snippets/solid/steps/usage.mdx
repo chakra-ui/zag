@@ -1,0 +1,55 @@
+```jsx
+import * as steps from "@zag-js/steps"
+import { useMachine, normalizeProps } from "@zag-js/solid"
+import { createMemo, createUniqueId } from "solid-js"
+
+const stepsData = [
+  { title: "Step 1" },
+  { title: "Step 2" },
+  { title: "Step 3" },
+]
+
+function Steps() {
+  const service = useMachine(steps.machine, {
+    id: createUniqueId(),
+    count: stepsData.length,
+  })
+
+  const api = createMemo(() => steps.connect(service, normalizeProps))
+
+  return (
+    <div {...api().getRootProps()}>
+      <div {...api().getListProps()}>
+        <Index each={stepsData}>
+          {(step, index) => (
+            <div {...api().getItemProps({ index })}>
+              <button {...api().getTriggerProps({ index })}>
+                <div {...api().getIndicatorProps({ index })}>{index + 1}</div>
+                <span>{step().title}</span>
+              </button>
+              <div {...api().getSeparatorProps({ index })} />
+            </div>
+          )}
+        </Index>
+      </div>
+
+      <Index each={stepsData}>
+        {(step, index) => (
+          <div {...api().getContentProps({ index })}>
+            {step().title} - {step().description}
+          </div>
+        )}
+      </Index>
+
+      <div {...api().getContentProps({ index: stepsData.length })}>
+        Steps Complete - Thank you for filling out the form!
+      </div>
+
+      <div>
+        <button {...api().getPrevTriggerProps()}>Back</button>
+        <button {...api().getNextTriggerProps()}>Next</button>
+      </div>
+    </div>
+  )
+}
+```

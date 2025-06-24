@@ -1,12 +1,9 @@
-import { createScope } from "@zag-js/dom-query"
-import type { MachineContext as Ctx } from "./collapsible.types"
+import type { Scope } from "@zag-js/core"
 
-export const dom = createScope({
-  getRootId: (ctx: Ctx) => ctx.ids?.root ?? `collapsible:${ctx.id}`,
-  getContentId: (ctx: Ctx) => ctx.ids?.content ?? `collapsible:${ctx.id}:content`,
-  getTriggerId: (ctx: Ctx) => ctx.ids?.trigger ?? `collapsible:${ctx.id}:trigger`,
+export const getRootId = (ctx: Scope) => ctx.ids?.root ?? `collapsible:${ctx.id}`
+export const getContentId = (ctx: Scope) => ctx.ids?.content ?? `collapsible:${ctx.id}:content`
+export const getTriggerId = (ctx: Scope) => ctx.ids?.trigger ?? `collapsible:${ctx.id}:trigger`
 
-  getRootEl: (ctx: Ctx) => dom.getById(ctx, dom.getRootId(ctx)),
-  getContentEl: (ctx: Ctx) => dom.getById(ctx, dom.getContentId(ctx)),
-  getTriggerEl: (ctx: Ctx) => dom.getById(ctx, dom.getTriggerId(ctx)),
-})
+export const getRootEl = (ctx: Scope) => ctx.getById(getRootId(ctx))
+export const getContentEl = (ctx: Scope) => ctx.getById(getContentId(ctx))
+export const getTriggerEl = (ctx: Scope) => ctx.getById(getTriggerId(ctx))

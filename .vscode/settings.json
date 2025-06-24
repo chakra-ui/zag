@@ -4,5 +4,6 @@
     "**/node_modules": true,
     "**/dist": true,
     "**/.xstate": true
-  }
+  },
+  "biome.enabled": false
 }

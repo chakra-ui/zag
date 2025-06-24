@@ -1,0 +1,61 @@
+```html
+<script setup lang="ts">
+  import * as listbox from "@zag-js/listbox"
+  import { createFilter } from "@zag-js/i18n-utils"
+  import { normalizeProps, useMachine } from "@zag-js/vue"
+  import { computed, ref } from "vue"
+  import { useId } from "@zag-js/vue-aria"
+
+  interface Item {
+    label: string
+    value: string
+  }
+
+  const data: Item[] = [
+    { label: "Nigeria", value: "NG" },
+    { label: "United States", value: "US" },
+    { label: "Canada", value: "CA" },
+    { label: "Japan", value: "JP" },
+  ]
+
+  const filter = createFilter({ sensitivity: "base" })
+
+  const search = ref("")
+
+  const collection = computed(() => {
+    const items = data.filter((item) =>
+      filter.startsWith(item.label, search.value),
+    )
+    return listbox.collection({ items })
+  })
+
+  const service = useMachine(listbox.machine as listbox.Machine<Item>, {
+    id: useId(),
+    get collection() {
+      return collection.value
+    },
+    typeahead: false,
+  })
+
+  const api = computed(() => listbox.connect(service, normalizeProps))
+</script>
+
+<template>
+  <div v-bind="api.getRootProps()">
+    <input
+      v-bind="api.getInputProps({ autoHighlight: true })"
+      v-model="search"
+    />
+    <ul v-bind="api.getContentProps()">
+      <li
+        v-for="item in collection.items"
+        :key="item.value"
+        v-bind="api.getItemProps({ item })"
+      >
+        <span v-bind="api.getItemTextProps({ item })">{{ item.label }}</span>
+        <span v-bind="api.getItemIndicatorProps({ item })">✓</span>
+      </li>
+    </ul>
+  </div>
+</template>
+```

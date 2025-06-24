@@ -18,12 +18,16 @@ export class TreeViewModel extends Model {
     return this.page.getByRole("treeitem", { name })
   }
 
-  private branch(name: string) {
-    return this.page.locator(`[role=treeitem][data-branch="${name}"]`)
+  private get tree() {
+    return this.page.locator('[role="tree"]')
   }
 
-  private branchTrigger(name: string) {
-    return this.page.locator(`[role=button][data-branch="${name}"]`)
+  private branch(value: string) {
+    return this.page.locator(`[data-part=branch][data-value="${value}"]`)
+  }
+
+  private branchTrigger(value: string) {
+    return this.page.locator(`[data-part=branch-control][data-value="${value}"]`)
   }
 
   private button(name: string) {
@@ -80,6 +84,14 @@ export class TreeViewModel extends Model {
 
   seeBranchIsCollapsed(name: string) {
     return expect(this.branch(name)).toHaveAttribute("aria-expanded", "false")
+  }
+
+  seeAllBranchesAreCollapsed() {
+    return expect(this.tree.locator('[role="treeitem"][aria-expanded="true"]')).toHaveCount(0)
+  }
+
+  seeAllBranchesAreExpanded() {
+    return expect(this.tree.locator('[role="treeitem"][aria-expanded="false"]')).toHaveCount(0)
   }
 
   seeBranchIsTabbable(name: string) {

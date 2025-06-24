@@ -8,23 +8,22 @@
 
   const controls = useControls(tabsControls)
 
-  const [snapshot, send] = useMachine(
-    tabs.machine({
-      id: "1",
-      value: "nils",
+  const id = $props.id()
+  const service = useMachine(
+    tabs.machine,
+    controls.mergeProps<tabs.Props>({
+      id,
+      defaultValue: "nils",
     }),
-    {
-      context: controls.context,
-    },
   )
 
-  const api = $derived(tabs.connect(snapshot, send, normalizeProps))
+  const api = $derived(tabs.connect(service, normalizeProps))
 </script>
 
 <main class="tabs">
-  <div {...api.rootProps}>
-    <div {...api.indicatorProps}></div>
-    <div {...api.listProps}>
+  <div {...api.getRootProps()}>
+    <div {...api.getIndicatorProps()}></div>
+    <div {...api.getListProps()}>
       {#each tabsData as data}
         <button {...api.getTriggerProps({ value: data.id })} data-testid={`${data.id}-tab`}>
           {data.label}
@@ -44,5 +43,5 @@
 </main>
 
 <Toolbar {controls}>
-  <StateVisualizer state={snapshot} />
+  <StateVisualizer state={service} />
 </Toolbar>

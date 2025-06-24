@@ -3,11 +3,12 @@ export { anatomy } from "./combobox.anatomy"
 export { collection } from "./combobox.collection"
 export { connect } from "./combobox.connect"
 export { machine } from "./combobox.machine"
+export * from "./combobox.props"
 export type {
-  MachineApi as Api,
+  ComboboxApi as Api,
   CollectionItem,
   CollectionOptions,
-  UserDefinedContext as Context,
+  ComboboxProps as Props,
   ElementIds,
   HighlightChangeDetails,
   InputValueChangeDetails,
@@ -16,10 +17,14 @@ export type {
   ItemGroupProps,
   ItemProps,
   ItemState,
+  NavigateDetails,
   OpenChangeDetails,
   Placement,
   PositioningOptions,
   ScrollToIndexDetails,
-  SelectionValueDetails,
+  ComboboxService as Service,
+  ComboboxMachine as Machine,
+  TriggerProps,
   ValueChangeDetails,
+  SelectionDetails,
 } from "./combobox.types"

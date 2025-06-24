@@ -8,29 +8,47 @@
 
   const controls = useControls(carouselControls)
 
-  const [snapshot, send] = useMachine(carousel.machine({ id: "1", index: 0, spacing: "20px", slidesPerView: 2 }), {
-    // context: controls.context,
-  })
+  const id = $props.id()
+  const service = useMachine(
+    carousel.machine,
+    controls.mergeProps<carousel.Props>({
+      id,
+      spacing: "20px",
+      slidesPerPage: 2,
+      slideCount: carouselData.length,
+      allowMouseDrag: true,
+    }),
+  )
 
-  const api = $derived(carousel.connect(snapshot, send, normalizeProps))
+  const api = $derived(carousel.connect(service, normalizeProps))
 </script>
 
 <main class="carousel">
-  <div {...api.rootProps}>
-    <button {...api.prevTriggerProps}>Prev</button>
-    <button {...api.nextTriggerProps}>Next</button>
-    <div {...api.viewportProps}>
-      <div {...api.itemGroupProps}>
-        {#each carouselData as image, index}
-          <div {...api.getItemProps({ index })}>
-            <img src={image} alt="" style="height:300px;width:100%;object-fit:cover;" />
-          </div>
-        {/each}
-      </div>
+  <div {...api.getRootProps()}>
+    <button onclick={() => api.scrollToIndex(4)}>Scroll to 4</button>
+    <div {...api.getControlProps()}>
+      <button {...api.getAutoplayTriggerProps()}>{api.isPlaying ? "Stop" : "Play"}</button>
+      <div class="carousel-spacer"></div>
+      <button {...api.getPrevTriggerProps()}>Prev</button>
+      <button {...api.getNextTriggerProps()}>Next</button>
+    </div>
+
+    <div {...api.getItemGroupProps()}>
+      {#each carouselData as image, index}
+        <div {...api.getItemProps({ index })}>
+          <img src={image} alt="" />
+        </div>
+      {/each}
+    </div>
+    <div {...api.getIndicatorGroupProps()}>
+      {#each api.pageSnapPoints as _, index}
+        <!-- svelte-ignore a11y_consider_explicit_label -->
+        <button {...api.getIndicatorProps({ index })}></button>
+      {/each}
     </div>
   </div>
 </main>
 
 <Toolbar {controls}>
-  <StateVisualizer state={snapshot} />
+  <StateVisualizer state={service} />
 </Toolbar>

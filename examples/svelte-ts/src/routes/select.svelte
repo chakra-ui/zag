@@ -9,31 +9,30 @@
 
   const controls = useControls(selectControls)
 
-  const [snapshot, send] = useMachine(
-    select.machine({
-      id: "1",
+  const id = $props.id()
+  const service = useMachine(
+    select.machine,
+    controls.mergeProps<select.Props>({
+      id,
       name: "select",
       collection: select.collection({ items: selectData }),
     }),
-    {
-      context: controls.context,
-    },
   )
 
-  const api = $derived(select.connect(snapshot, send, normalizeProps))
+  const api = $derived(select.connect(service, normalizeProps))
 </script>
 
 <main class="select">
-  <div {...api.rootProps}>
-    <!-- svelte-ignore a11y-label-has-associated-control -->
-    <label {...api.labelProps}>Label</label>
+  <div {...api.getRootProps()}>
+    <!-- svelte-ignore a11y_label_has_associated_control -->
+    <label {...api.getLabelProps()}>Label</label>
 
-    <div {...api.controlProps}>
-      <button {...api.triggerProps}>
+    <div {...api.getControlProps()}>
+      <button {...api.getTriggerProps()}>
         <span>{api.valueAsString || "Select option"}</span>
-        <span {...api.indicatorProps}>▼</span>
+        <span {...api.getIndicatorProps()}>▼</span>
       </button>
-      <button {...api.clearTriggerProps}>X</button>
+      <button {...api.getClearTriggerProps()}>X</button>
     </div>
 
     <form
@@ -48,7 +47,7 @@
       }}
     >
       <button>Submit</button>
-      <select {...api.hiddenSelectProps}>
+      <select {...api.getHiddenSelectProps()}>
         {#each selectData as option}
           <option value={option.value}>
             {option.label}
@@ -57,8 +56,8 @@
       </select>
     </form>
 
-    <div use:portal {...api.positionerProps}>
-      <ul {...api.contentProps}>
+    <div use:portal {...api.getPositionerProps()}>
+      <ul {...api.getContentProps()}>
         {#each selectData as item}
           <li {...api.getItemProps({ item })}>
             <span {...api.getItemTextProps({ item })}>{item.label}</span>
@@ -71,5 +70,5 @@
 </main>
 
 <Toolbar {controls}>
-  <StateVisualizer state={snapshot} omit={["collection"]} />
+  <StateVisualizer state={service} omit={["collection"]} />
 </Toolbar>

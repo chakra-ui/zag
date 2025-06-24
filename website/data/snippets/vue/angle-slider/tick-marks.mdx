@@ -1,0 +1,22 @@
+```html {10-16}
+//...
+
+<div v-bind="api.getRootProps()">
+  <label v-bind="api.getLabelProps()">
+    Angle Slider:
+    <div v-bind="api.getValueTextProps()">{{ api.valueAsDegree }}</div>
+  </label>
+  <div v-bind="api.getControlProps()">
+    <div v-bind="api.getThumbProps()"></div>
+    <div v-bind="api.getMarkerGroupProps()">
+      <div
+        v-for="value in [0, 45, 90, 135, 180, 225, 270, 315]"
+        :key="value"
+        v-bind="api.getMarkerProps({ value })"
+      ></div>
+    </div>
+  </div>
+  <input v-bind="api.getHiddenInputProps()" />
+</div>
+//...
+```

@@ -1,175 +1,225 @@
-import { createMachine, guards, ref } from "@zag-js/core"
-import { raf } from "@zag-js/dom-query"
+import { createMachine } from "@zag-js/core"
+import { addDomEvent, contains, getEventTarget, raf } from "@zag-js/dom-query"
 import { getAcceptAttrString, isFileEqual } from "@zag-js/file-utils"
-import { compact } from "@zag-js/utils"
-import { dom } from "./file-upload.dom"
-import type { MachineContext, MachineState, FileRejection, UserDefinedContext } from "./file-upload.types"
-import { getFilesFromEvent, isFilesWithinRange } from "./file-upload.utils"
+import { callAll, warn } from "@zag-js/utils"
+import * as dom from "./file-upload.dom"
+import type { FileRejection, FileUploadSchema } from "./file-upload.types"
+import { getEventFiles, setInputFiles } from "./file-upload.utils"
 
-const { not } = guards
+export const machine = createMachine<FileUploadSchema>({
+  props({ props }) {
+    return {
+      minFileSize: 0,
+      maxFileSize: Number.POSITIVE_INFINITY,
+      maxFiles: 1,
+      allowDrop: true,
+      preventDocumentDrop: true,
+      ...props,
+      translations: {
+        dropzone: "dropzone",
+        itemPreview: (file) => `preview of ${file.name}`,
+        deleteFile: (file) => `delete file ${file.name}`,
+        ...props.translations,
+      },
+    }
+  },
 
-export function machine(userContext: UserDefinedContext) {
-  const ctx = compact(userContext)
-  return createMachine<MachineContext, MachineState>(
-    {
-      id: "fileupload",
-      initial: "idle",
-      context: {
-        minFileSize: 0,
-        maxFileSize: Infinity,
-        maxFiles: 1,
-        allowDrop: true,
-        ...ctx,
-        acceptedFiles: ref([]),
-        rejectedFiles: ref([]),
-        invalid: false,
-        translations: {
-          itemPreview: (file) => `preview of ${file.name}`,
-          deleteFile: (file) => `delete file ${file.name}`,
-          ...ctx.translations,
+  initialState() {
+    return "idle"
+  },
+
+  context({ prop, bindable, getContext }) {
+    return {
+      acceptedFiles: bindable<File[]>(() => ({
+        defaultValue: [],
+        isEqual: (a, b) => a.length === b?.length && a.every((file, i) => isFileEqual(file, b[i])),
+        hash(value) {
+          return value.map((file) => `${file.name}-${file.size}`).join(",")
         },
-      },
-      computed: {
-        acceptAttr: (ctx) => getAcceptAttrString(ctx.accept),
-        multiple: (ctx) => ctx.maxFiles > 1,
-      },
+        onChange(value) {
+          const ctx = getContext()
+          prop("onFileAccept")?.({ files: value })
+          prop("onFileChange")?.({ acceptedFiles: value, rejectedFiles: ctx.get("rejectedFiles") })
+        },
+      })),
+      rejectedFiles: bindable<FileRejection[]>(() => ({
+        defaultValue: [],
+        isEqual: (a, b) => a.length === b?.length && a.every((file, i) => isFileEqual(file.file, b[i].file)),
+        onChange(value) {
+          const ctx = getContext()
+          prop("onFileReject")?.({ files: value })
+          prop("onFileChange")?.({ acceptedFiles: ctx.get("acceptedFiles"), rejectedFiles: value })
+        },
+      })),
+    }
+  },
+
+  computed: {
+    acceptAttr: ({ prop }) => getAcceptAttrString(prop("accept")),
+    multiple: ({ prop }) => prop("maxFiles") > 1,
+  },
+
+  watch({ track, context, action }) {
+    track([() => context.hash("acceptedFiles")], () => {
+      action(["syncInputElement"])
+    })
+  },
+
+  on: {
+    "FILES.SET": {
+      actions: ["setFiles"],
+    },
+    "FILE.SELECT": {
+      actions: ["setEventFiles"],
+    },
+    "FILE.DELETE": {
+      actions: ["removeFile"],
+    },
+    "FILES.CLEAR": {
+      actions: ["clearFiles"],
+    },
+    "REJECTED_FILES.CLEAR": {
+      actions: ["clearRejectedFiles"],
+    },
+  },
+
+  effects: ["preventDocumentDrop"],
+
+  states: {
+    idle: {
       on: {
-        "FILES.SET": {
-          actions: ["setFilesFromEvent"],
+        OPEN: {
+          actions: ["openFilePicker"],
         },
-        "FILE.DELETE": {
-          actions: ["removeFile"],
+        "DROPZONE.CLICK": {
+          actions: ["openFilePicker"],
         },
-        "FILES.CLEAR": {
-          actions: ["clearFiles"],
+        "DROPZONE.FOCUS": {
+          target: "focused",
         },
-      },
-      states: {
-        idle: {
-          on: {
-            OPEN: {
-              actions: ["openFilePicker"],
-            },
-            "DROPZONE.CLICK": {
-              actions: ["openFilePicker"],
-            },
-            "DROPZONE.FOCUS": "focused",
-            "DROPZONE.DRAG_OVER": [
-              {
-                guard: not("isWithinRange"),
-                target: "dragging",
-                actions: ["setInvalid"],
-              },
-              { target: "dragging" },
-            ],
-          },
-        },
-        focused: {
-          on: {
-            "DROPZONE.BLUR": "idle",
-            OPEN: {
-              actions: ["openFilePicker"],
-            },
-            "DROPZONE.CLICK": {
-              actions: ["openFilePicker"],
-            },
-            "DROPZONE.DRAG_OVER": [
-              {
-                guard: not("isWithinRange"),
-                target: "dragging",
-                actions: ["setInvalid"],
-              },
-              { target: "dragging" },
-            ],
-          },
-        },
-        dragging: {
-          on: {
-            "DROPZONE.DROP": {
-              target: "idle",
-              actions: ["clearInvalid", "setFilesFromEvent"],
-            },
-            "DROPZONE.DRAG_LEAVE": {
-              target: "idle",
-              actions: ["clearInvalid"],
-            },
-          },
+        "DROPZONE.DRAG_OVER": {
+          target: "dragging",
         },
       },
     },
-    {
-      guards: {
-        isWithinRange: (ctx, evt) => isFilesWithinRange(ctx, evt.count),
+    focused: {
+      on: {
+        "DROPZONE.BLUR": {
+          target: "idle",
+        },
+        OPEN: {
+          actions: ["openFilePicker"],
+        },
+        "DROPZONE.CLICK": {
+          actions: ["openFilePicker"],
+        },
+        "DROPZONE.DRAG_OVER": {
+          target: "dragging",
+        },
       },
-      actions: {
-        openFilePicker(ctx) {
-          raf(() => {
-            dom.getHiddenInputEl(ctx)?.click()
-          })
+    },
+    dragging: {
+      on: {
+        "DROPZONE.DROP": {
+          target: "idle",
+          actions: ["setEventFiles"],
         },
-        setInvalid(ctx) {
-          ctx.invalid = true
+        "DROPZONE.DRAG_LEAVE": {
+          target: "idle",
         },
-        clearInvalid(ctx) {
-          ctx.invalid = false
-        },
-        setFilesFromEvent(ctx, evt) {
-          const result = getFilesFromEvent(ctx, evt.files)
-          const { acceptedFiles, rejectedFiles } = result
+      },
+    },
+  },
 
-          if (ctx.multiple) {
-            const files = ref([...ctx.acceptedFiles, ...acceptedFiles])
-            set.files(ctx, files, rejectedFiles)
+  implementations: {
+    effects: {
+      preventDocumentDrop({ prop, scope }) {
+        if (!prop("preventDocumentDrop")) return
+        if (!prop("allowDrop")) return
+        if (prop("disabled")) return
+        const doc = scope.getDoc()
+        const onDragOver = (event: DragEvent) => {
+          event?.preventDefault()
+        }
+        const onDrop = (event: DragEvent) => {
+          if (contains(dom.getRootEl(scope), getEventTarget(event))) return
+          event.preventDefault()
+        }
+        return callAll(addDomEvent(doc, "dragover", onDragOver, false), addDomEvent(doc, "drop", onDrop, false))
+      },
+    },
+
+    actions: {
+      syncInputElement({ scope, context }) {
+        queueMicrotask(() => {
+          const inputEl = dom.getHiddenInputEl(scope)
+          if (!inputEl) return
+          setInputFiles(inputEl, context.get("acceptedFiles"))
+          const win = scope.getWin()
+          inputEl.dispatchEvent(new win.Event("change", { bubbles: true }))
+        })
+      },
+      openFilePicker({ scope }) {
+        raf(() => {
+          dom.getHiddenInputEl(scope)?.click()
+        })
+      },
+      setFiles(params) {
+        const { computed, context, event } = params
+        const { acceptedFiles, rejectedFiles } = getEventFiles(params, event.files)
+        context.set(
+          "acceptedFiles",
+          computed("multiple") ? acceptedFiles : acceptedFiles.length > 0 ? [acceptedFiles[0]] : [],
+        )
+        context.set("rejectedFiles", rejectedFiles)
+      },
+      setEventFiles(params) {
+        const { computed, context, event, prop } = params
+        const { acceptedFiles, rejectedFiles } = getEventFiles(params, event.files)
+
+        const set = (files: File[]) => {
+          if (computed("multiple")) {
+            context.set("acceptedFiles", (prev) => [...prev, ...files])
+            context.set("rejectedFiles", rejectedFiles)
             return
           }
 
-          if (acceptedFiles.length) {
-            const files = ref([acceptedFiles[0]])
-            set.files(ctx, files, rejectedFiles)
-          } else if (rejectedFiles.length) {
-            set.files(ctx, [], rejectedFiles)
+          if (files.length) {
+            context.set("acceptedFiles", [files[0]])
+            context.set("rejectedFiles", rejectedFiles)
+            return
           }
-        },
-        removeFile(ctx, evt) {
-          const nextFiles = ctx.acceptedFiles.filter((file) => file !== evt.file)
-          set.files(ctx, nextFiles)
-        },
-        clearFiles(ctx) {
-          set.files(ctx, [])
-        },
+
+          if (rejectedFiles.length) {
+            context.set("acceptedFiles", context.get("acceptedFiles"))
+            context.set("rejectedFiles", rejectedFiles)
+          }
+        }
+
+        const transform = prop("transformFiles")
+        if (transform) {
+          transform(acceptedFiles)
+            .then(set)
+            .catch((err) => {
+              warn(`[zag-js/file-upload] error transforming files\n${err}`)
+            })
+        } else {
+          set(acceptedFiles)
+        }
       },
-      compareFns: {
-        acceptedFiles: (a, b) => a.length === b.length && a.every((file, i) => isFileEqual(file, b[i])),
+      removeFile({ context, event }) {
+        const files = context.get("acceptedFiles").filter((file) => !isFileEqual(file, event.file))
+        const rejectedFiles = context.get("rejectedFiles").filter((item) => !isFileEqual(item.file, event.file))
+        context.set("acceptedFiles", files)
+        context.set("rejectedFiles", rejectedFiles)
+      },
+      clearRejectedFiles({ context }) {
+        context.set("rejectedFiles", [])
+      },
+      clearFiles({ context }) {
+        context.set("acceptedFiles", [])
+        context.set("rejectedFiles", [])
       },
     },
-  )
-}
-
-const invoke = {
-  change: (ctx: MachineContext) => {
-    ctx.onFileChange?.({
-      acceptedFiles: ctx.acceptedFiles,
-      rejectedFiles: ctx.rejectedFiles,
-    })
   },
-  accept: (ctx: MachineContext) => {
-    ctx.onFileAccept?.({ files: ctx.acceptedFiles })
-  },
-  reject: (ctx: MachineContext) => {
-    ctx.onFileReject?.({ files: ctx.rejectedFiles })
-  },
-}
-
-const set = {
-  files: (ctx: MachineContext, acceptedFiles: File[], rejectedFiles?: FileRejection[]) => {
-    ctx.acceptedFiles = ref(acceptedFiles)
-    invoke.accept(ctx)
-
-    if (rejectedFiles) {
-      ctx.rejectedFiles = ref(rejectedFiles)
-      invoke.reject(ctx)
-    }
-
-    invoke.change(ctx)
-  },
-}
+})

@@ -1,5 +1,4 @@
-import { Badge, Box, Flex, HStack } from "@chakra-ui/layout"
-import packageJson from "@zag-js/react/package.json"
+import { Box, Flex, HStack } from "@chakra-ui/layout"
 import { GithubIcon } from "components/icons"
 import { ThemeToggle } from "components/theme-toggle"
 import { FaDiscord } from "react-icons/fa"
@@ -7,7 +6,7 @@ import siteConfig from "site.config"
 import { IconLink } from "./icon-link"
 import { LogoWithLink } from "./logo"
 import { MobileNavigation } from "./mobile-navigation"
-// import { WorkshopLink } from "./workshop-link"
+import { VersionSelector } from "./version-selector"
 
 export function TopNavigation() {
   return (
@@ -33,21 +32,7 @@ export function TopNavigation() {
       >
         <HStack spacing="3">
           <LogoWithLink />
-          <Badge
-            color="text-badge"
-            bg="bg-badge"
-            rounded="sm"
-            px="2"
-            py="0.5"
-            fontSize="xs"
-            letterSpacing="wider"
-            fontWeight="semibold"
-            display={{ base: "none", sm: "block" }}
-            borderBottomColor="border-subtle"
-          >
-            {packageJson.version}
-          </Badge>
-          {/* <WorkshopLink /> */}
+          <VersionSelector />
         </HStack>
         <HStack spacing="4">
           <nav hidden>

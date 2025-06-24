@@ -1,4 +1,4 @@
-import type { StateMachine as S } from "@zag-js/core"
+import type { EventObject, Machine, Service } from "@zag-js/core"
 import type { CommonProperties, DirectionProperty, PropTypes, RequiredBy } from "@zag-js/types"
 
 /* -----------------------------------------------------------------------------
@@ -13,12 +13,18 @@ export interface FocusChangeDetails {
   focusedValue: string
 }
 
+export interface NavigateDetails {
+  value: string
+  node: HTMLAnchorElement
+  href: string
+}
+
 /* -----------------------------------------------------------------------------
  * Machine context
  * -----------------------------------------------------------------------------*/
 
 export interface IntlTranslations {
-  listLabel?: string
+  listLabel?: string | undefined
 }
 
 export type ElementIds = Partial<{
@@ -29,24 +35,29 @@ export type ElementIds = Partial<{
   indicator: string
 }>
 
-interface PublicContext extends DirectionProperty, CommonProperties {
+export interface TabsProps extends DirectionProperty, CommonProperties {
   /**
    * The ids of the elements in the tabs. Useful for composition.
    */
-  ids?: ElementIds
+  ids?: ElementIds | undefined
   /**
    * Specifies the localized strings that identifies the accessibility elements and their states
    */
-  translations: IntlTranslations
+  translations?: IntlTranslations | undefined
   /**
    * Whether the keyboard navigation will loop from last tab to first, and vice versa.
    * @default true
    */
-  loopFocus: boolean
+  loopFocus?: boolean | undefined
   /**
-   * The selected tab id
+   * The controlled selected tab value
    */
-  value: string | null
+  value?: string | null | undefined
+  /**
+   * The initial selected tab value when rendered.
+   * Use when you don't need to control the selected tab value.
+   */
+  defaultValue?: string | null | undefined
   /**
    * The orientation of the tabs. Can be `horizontal` or `vertical`
    * - `horizontal`: only left and right arrow key navigation will work.
@@ -54,7 +65,7 @@ interface PublicContext extends DirectionProperty, CommonProperties {
    *
    * @default "horizontal"
    */
-  orientation?: "horizontal" | "vertical"
+  orientation?: "horizontal" | "vertical" | undefined
   /**
    * The activation mode of the tabs. Can be `manual` or `automatic`
    * - `manual`: Tabs are activated when clicked or press `enter` key.
@@ -62,69 +73,57 @@ interface PublicContext extends DirectionProperty, CommonProperties {
    *
    * @default "automatic"
    */
-  activationMode?: "manual" | "automatic"
+  activationMode?: "manual" | "automatic" | undefined
   /**
    * Callback to be called when the selected/active tab changes
    */
-  onValueChange?: (details: ValueChangeDetails) => void
+  onValueChange?: ((details: ValueChangeDetails) => void) | undefined
   /**
    * Callback to be called when the focused tab changes
    */
-  onFocusChange?: (details: FocusChangeDetails) => void
+  onFocusChange?: ((details: FocusChangeDetails) => void) | undefined
+  /**
+   * Whether the tab is composite
+   */
+  composite?: boolean | undefined
+  /**
+   * Whether the active tab can be deselected when clicking on it.
+   */
+  deselectable?: boolean | undefined
+  /**
+   * Function to navigate to the selected tab when clicking on it.
+   * Useful if tab triggers are anchor elements.
+   */
+  navigate?: ((details: NavigateDetails) => void) | null | undefined
 }
 
-export type UserDefinedContext = RequiredBy<PublicContext, "id">
+type PropsWithDefault = "orientation" | "activationMode" | "loopFocus"
 
-type ComputedContext = Readonly<{
-  /**
-   * @computed
-   * Whether the tab is in the horizontal orientation
-   */
-  isHorizontal: boolean
-  /**
-   * @computed
-   * Whether the tab is in the vertical orientation
-   */
-  isVertical: boolean
-}>
-
-interface PrivateContext {
-  /**
-   * @internal
-   * The focused tab id
-   */
-  focusedValue: string | null
-  /**
-   * @internal
-   * Whether the indicator is rendered.
-   */
-  isIndicatorRendered: boolean
-  /**
-   * @internal
-   * The active tab indicator's dom rect
-   */
-  indicatorRect?: Partial<{ left: string; top: string; width: string; height: string }>
-  /**
-   * @internal
-   * Whether the active tab indicator's rect can transition
-   */
-  canIndicatorTransition?: boolean
-  /**
-   * @internal
-   * Function to clean up the observer for the active tab's rect
-   */
-  indicatorCleanup?: VoidFunction | null
+export type TabsSchema = {
+  state: "idle" | "focused"
+  props: RequiredBy<TabsProps, PropsWithDefault>
+  context: {
+    ssr: boolean
+    value: string | null
+    focusedValue: string | null
+    indicatorTransition: boolean
+    indicatorRect: { left: string; top: string; width: string; height: string }
+  }
+  refs: {
+    indicatorCleanup: VoidFunction | null | undefined
+  }
+  computed: {
+    focused: boolean
+  }
+  action: string
+  guard: string
+  effect: string
+  event: EventObject
 }
 
-export interface MachineContext extends PublicContext, ComputedContext, PrivateContext {}
+export type TabsService = Service<TabsSchema>
 
-export interface MachineState {
-  value: "idle" | "focused"
-}
-
-export type State = S.State<MachineContext, MachineState>
-
-export type Send = S.Send<S.AnyEventObject>
+export type TabsMachine = Machine<TabsSchema>
 
 /* -----------------------------------------------------------------------------
  * Component API
@@ -138,7 +137,7 @@ export interface TriggerProps {
   /**
    * Whether the tab is disabled
    */
-  disabled?: boolean
+  disabled?: boolean | undefined
 }
 
 export interface TriggerState {
@@ -163,7 +162,7 @@ export interface ContentProps {
   value: string
 }
 
-export interface MachineApi<T extends PropTypes = PropTypes> {
+export interface TabsApi<T extends PropTypes = PropTypes> {
   /**
    * The current value of the tabs.
    */
@@ -185,13 +184,30 @@ export interface MachineApi<T extends PropTypes = PropTypes> {
    */
   setIndicatorRect(value: string): void
   /**
+   * Synchronizes the tab index of the content element.
+   * Useful when rendering tabs within a select or combobox
+   */
+  syncTabIndex(): void
+  /**
+   * Set focus on the selected tab trigger
+   */
+  focus(): void
+  /**
+   * Selects the next tab
+   */
+  selectNext(fromValue?: string): void
+  /**
+   * Selects the previous tab
+   */
+  selectPrev(fromValue?: string): void
+  /**
    * Returns the state of the trigger with the given props
    */
   getTriggerState(props: TriggerProps): TriggerState
 
-  rootProps: T["element"]
-  listProps: T["element"]
+  getRootProps(): T["element"]
+  getListProps(): T["element"]
   getTriggerProps(props: TriggerProps): T["button"]
   getContentProps(props: ContentProps): T["element"]
-  indicatorProps: T["element"]
+  getIndicatorProps(): T["element"]
 }

@@ -6,16 +6,16 @@ import { createMemo, createUniqueId, For } from "solid-js"
 const data = [
   { title: "Watercraft", content: "Sample accordion content" },
   { title: "Automobiles", content: "Sample accordion content" },
-  { title: "Aircrafts", content: "Sample accordion content" },
+  { title: "Aircraft", content: "Sample accordion content" },
 ]
 
 function Accordion() {
-  const [state, send] = useMachine(accordion.machine({ id: createUniqueId() }))
+  const service = useMachine(accordion.machine, { id: createUniqueId() })
 
-  const api = createMemo(() => accordion.connect(state, send, normalizeProps))
+  const api = createMemo(() => accordion.connect(service, normalizeProps))
 
   return (
-    <div {...api().rootProps}>
+    <div {...api().getRootProps()}>
       <For each={data}>
         {(item) => (
           <div {...api().getItemProps({ value: item.title })}>

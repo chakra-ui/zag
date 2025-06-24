@@ -6,16 +6,16 @@ import { normalizeProps, useMachine } from "@zag-js/vue"
 
 const controls = useControls(sliderControls)
 
-const [state, send] = useMachine(
-  slider.machine({
-    id: "1",
+const service = useMachine(
+  slider.machine,
+  controls.mergeProps<slider.Props>({
+    id: useId(),
     name: "quantity",
-    value: [0],
+    defaultValue: [0],
   }),
-  { context: controls.context },
 )
 
-const api = computed(() => slider.connect(state.value, send, normalizeProps))
+const api = computed(() => slider.connect(service, normalizeProps))
 </script>
 
 <template>
@@ -29,21 +29,21 @@ const api = computed(() => slider.connect(state.value, send, normalizeProps))
         }
       "
     >
-      <div v-bind="api.rootProps">
+      <div v-bind="api.getRootProps()">
         <div>
-          <label data-testid="label" v-bind="api.labelProps"> Slider Label </label>
-          <output data-testid="output" v-bind="api.valueTextProps"> {{ api.value.at(0) }} </output>
+          <label data-testid="label" v-bind="api.getLabelProps()"> Slider Label </label>
+          <output data-testid="output" v-bind="api.getValueTextProps()"> {{ api.value.at(0) }} </output>
         </div>
         <div class="control-area">
-          <div v-bind="api.controlProps">
-            <div data-testid="track" v-bind="api.trackProps">
-              <div v-bind="api.rangeProps" />
+          <div v-bind="api.getControlProps()">
+            <div data-testid="track" v-bind="api.getTrackProps()">
+              <div v-bind="api.getRangeProps()" />
             </div>
             <div v-for="(_, index) in api.value" :key="index" v-bind="api.getThumbProps({ index })">
               <input v-bind="api.getHiddenInputProps({ index })" />
             </div>
           </div>
-          <div v-bind="api.markerGroupProps">
+          <div v-bind="api.getMarkerGroupProps()">
             <span v-bind="api.getMarkerProps({ value: 10 })">*</span>
             <span v-bind="api.getMarkerProps({ value: 30 })">*</span>
             <span v-bind="api.getMarkerProps({ value: 90 })">*</span>
@@ -54,7 +54,7 @@ const api = computed(() => slider.connect(state.value, send, normalizeProps))
   </main>
 
   <Toolbar>
-    <StateVisualizer :state="state" />
+    <StateVisualizer :state="service" />
     <template #controls>
       <Controls :control="controls" />
     </template>

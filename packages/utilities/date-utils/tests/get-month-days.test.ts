@@ -1,5 +1,5 @@
 import { CalendarDate } from "@internationalized/date"
-import { getMonthDays } from "../src/get-month-days"
+import { getMonthDays } from "../src"
 
 describe("getMonthDays", () => {
   it("en / returns the list of month dates", () => {

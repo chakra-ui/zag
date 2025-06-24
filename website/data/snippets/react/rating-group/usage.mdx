@@ -4,24 +4,24 @@ import { useMachine, normalizeProps } from "@zag-js/react"
 import { HalfStar, Star } from "./icons"
 
 function Rating() {
-  const [state, send] = useMachine(rating.machine({ id: "1" }))
+  const service = useMachine(rating.machine, { id: "1" })
 
-  const api = rating.connect(state, send, normalizeProps)
+  const api = rating.connect(service, normalizeProps)
 
   return (
-    <div {...api.rootProps}>
-      <label {...api.labelProps}>Rate:</label>
-      <div {...api.controlProps}>
+    <div {...api.getRootProps()}>
+      <label {...api.getLabelProps()}>Rate:</label>
+      <div {...api.getControlProps()}>
         {api.items.map((index) => {
           const state = api.getItemState({ index })
           return (
             <span key={index} {...api.getItemProps({ index })}>
-              {state.isHalf ? <HalfStar /> : <Star />}
+              {state.half ? <HalfStar /> : <Star />}
             </span>
           )
         })}
       </div>
-      <input {...api.hiddenInputProps} />
+      <input {...api.getHiddenInputProps()} />
     </div>
   )
 }

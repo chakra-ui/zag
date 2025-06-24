@@ -6,15 +6,15 @@ import serialize from "form-serialize"
 
 const controls = useControls(checkboxControls)
 
-const [state, send] = useMachine(
-  checkbox.machine({
+const service = useMachine(
+  checkbox.machine,
+  controls.mergeProps<checkbox.Props>({
     name: "checkbox",
-    id: "v1",
+    id: useId(),
   }),
-  { context: controls.context },
 )
 
-const api = computed(() => checkbox.connect(state.value, send, normalizeProps))
+const api = computed(() => checkbox.connect(service, normalizeProps))
 </script>
 
 <template>
@@ -28,11 +28,11 @@ const api = computed(() => checkbox.connect(state.value, send, normalizeProps))
       "
     >
       <fieldset>
-        <label v-bind="api.rootProps">
-          <div v-bind="api.controlProps" />
-          <span v-bind="api.labelProps">Input {{ api.checked ? "Checked" : "Unchecked" }}</span>
-          <input v-bind="api.hiddenInputProps" data-testid="hidden-input" />
-          <div v-bind="api.indicatorProps">Indicator</div>
+        <label v-bind="api.getRootProps()">
+          <div v-bind="api.getControlProps()" />
+          <span v-bind="api.getLabelProps()">Input {{ api.checked ? "Checked" : "Unchecked" }}</span>
+          <input v-bind="api.getHiddenInputProps()" data-testid="hidden-input" />
+          <div v-bind="api.getIndicatorProps()">Indicator</div>
         </label>
 
         <button type="button" :disabled="api.checked" @click="() => api.setChecked(true)">Check</button>
@@ -43,7 +43,7 @@ const api = computed(() => checkbox.connect(state.value, send, normalizeProps))
   </main>
 
   <Toolbar>
-    <StateVisualizer :state="state" />
+    <StateVisualizer :state="service" />
     <template #controls>
       <Controls :control="controls" />
     </template>

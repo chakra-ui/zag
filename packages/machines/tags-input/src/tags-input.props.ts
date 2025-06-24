@@ -1,8 +1,8 @@
 import { createProps } from "@zag-js/types"
 import { createSplitProps } from "@zag-js/utils"
-import type { ItemProps, UserDefinedContext } from "./tags-input.types"
+import type { ItemProps, TagsInputProps } from "./tags-input.types"
 
-export const props = createProps<UserDefinedContext>()([
+export const props = createProps<TagsInputProps>()([
   "addOnPaste",
   "allowOverflow",
   "autoFocus",
@@ -27,13 +27,16 @@ export const props = createProps<UserDefinedContext>()([
   "onPointerDownOutside",
   "onValueChange",
   "onValueInvalid",
+  "required",
   "readOnly",
   "translations",
   "validate",
   "value",
+  "defaultValue",
+  "defaultInputValue",
 ])
 
-export const splitProps = createSplitProps<Partial<UserDefinedContext>>(props)
+export const splitProps = createSplitProps<Partial<TagsInputProps>>(props)
 
 export const itemProps = createProps<ItemProps>()(["index", "disabled", "value"])
 

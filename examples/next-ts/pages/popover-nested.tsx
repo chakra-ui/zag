@@ -3,13 +3,12 @@ import { normalizeProps, Portal, useMachine } from "@zag-js/react"
 import * as React from "react"
 
 function Popover({ children, nested, id }: any) {
-  const [state, send] = useMachine(popover.machine({ id }), {
-    context: {
-      portalled: true,
-      modal: false,
-    },
+  const service = useMachine(popover.machine, {
+    id,
+    portalled: true,
+    modal: false,
   })
-  const api = popover.connect(state, send, normalizeProps)
+  const api = popover.connect(service, normalizeProps)
   const Wrapper = api.portalled ? Portal : React.Fragment
 
   return (
@@ -17,19 +16,19 @@ function Popover({ children, nested, id }: any) {
       <div data-part="root">
         {!nested && <button data-testid="button-before">Button :before</button>}
 
-        <button data-testid="popover-trigger" {...api.triggerProps}>
+        <button data-testid="popover-trigger" {...api.getTriggerProps()}>
           {nested ? "Open Nested" : "Click me"}
         </button>
 
-        {!nested && <div {...api.anchorProps}>anchor</div>}
+        {!nested && <div {...api.getAnchorProps()}>anchor</div>}
 
         <Wrapper>
-          <div {...api.positionerProps}>
-            <div data-testid="popover-content" className="popover-content" {...api.contentProps}>
-              <div {...api.arrowProps}>
-                <div {...api.arrowTipProps} />
+          <div {...api.getPositionerProps()}>
+            <div data-testid="popover-content" className="popover-content" {...api.getContentProps()}>
+              <div {...api.getArrowProps()}>
+                <div {...api.getArrowTipProps()} />
               </div>
-              <div data-testid="popover-title" {...api.titleProps}>
+              <div data-testid="popover-title" {...api.getTitleProps()}>
                 Popover Title
               </div>
               <div data-part="body" data-testid="popover-body">
@@ -38,7 +37,7 @@ function Popover({ children, nested, id }: any) {
                   Focusable Link
                 </a>
                 <input data-testid="input" placeholder="input" />
-                <button data-testid="popover-close-button" {...api.closeTriggerProps}>
+                <button data-testid="popover-close-button" {...api.getCloseTriggerProps()}>
                   X
                 </button>
                 {children}

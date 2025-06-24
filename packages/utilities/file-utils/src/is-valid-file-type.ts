@@ -2,7 +2,9 @@ import type { FileError } from "./types"
 
 function isFileAccepted(file: File | null, accept: string[] | string | undefined) {
   if (file && accept) {
-    const types = Array.isArray(accept) ? accept : accept.split(",")
+    const types = Array.isArray(accept) ? accept : typeof accept === "string" ? accept.split(",") : []
+
+    if (types.length === 0) return true
 
     const fileName = file.name || ""
     const mimeType = (file.type || "").toLowerCase()

@@ -1,43 +1,76 @@
-import { expect, test } from "@playwright/test"
-import { testid } from "./_utils"
+import { test } from "@playwright/test"
+import { MenuModel } from "./models/menu.model"
 
-const trigger = testid("trigger")
-const menu = testid("menu")
+let I: MenuModel
 
 test.describe("menu option", () => {
   test.beforeEach(async ({ page }) => {
-    await page.goto("/menu-options")
+    I = new MenuModel(page)
+    await I.goto("/menu-options")
   })
 
-  test("should check/uncheck radio item", async ({ page }) => {
-    const ascending = page.locator(`[id=asc]`).first()
-    const descending = page.locator(`[id=desc]`).first()
+  test("mouse, should check/uncheck radio item", async () => {
+    await I.clickTrigger()
+    await I.clickItem("Ascending")
 
-    await page.click(trigger)
-    await ascending.click()
+    await I.dontSeeDropdown()
+    await I.seeItemIsChecked("Ascending")
 
-    await expect(page.locator(menu)).not.toBeVisible()
-    await expect(ascending).toBeChecked()
+    await I.clickTrigger()
+    await I.clickItem("Descending")
 
-    await page.click(trigger)
-    await descending.click()
-    await expect(descending).toBeChecked()
-    await expect(ascending).not.toBeChecked()
+    await I.seeItemIsChecked("Descending")
+    await I.seeItemIsNotChecked("Ascending")
   })
 
-  test("should check/uncheck checkbox item", async ({ page }) => {
-    const email = page.locator(`[id=email]`).first()
-    const phone = page.locator(`[id=phone]`).first()
+  test("keyboard, should check/uncheck radio item", async () => {
+    await I.focusTrigger()
+    await I.pressKey("Enter", 2)
 
-    await page.click(trigger)
-    await email.click()
+    await I.dontSeeDropdown()
+    await I.seeItemIsChecked("Ascending")
 
-    await expect(page.locator(menu)).not.toBeVisible()
-    await expect(email).toBeChecked()
+    // navigate the 'Descending' item
+    await I.pressKey("Enter")
+    await I.pressKey("ArrowDown")
+    await I.pressKey("Enter")
 
-    await page.click(trigger)
-    await phone.click()
-    await expect(phone).toBeChecked()
-    await expect(email).toBeChecked()
+    await I.seeItemIsChecked("Descending")
+    await I.seeItemIsNotChecked("Ascending")
+  })
+
+  test("mouse, should check/uncheck checkbox item", async () => {
+    await I.clickTrigger()
+    await I.clickItem("Email")
+
+    await I.dontSeeDropdown()
+    await I.seeItemIsChecked("Email")
+
+    await I.clickTrigger()
+    await I.clickItem("Phone")
+
+    await I.seeItemIsChecked("Phone")
+    await I.seeItemIsChecked("Email")
+  })
+
+  test("keyboard, should check/uncheck checkbox item", async () => {
+    await I.focusTrigger()
+    await I.pressKey("Enter")
+
+    // navigate the 'Email' item
+    await I.pressKey("ArrowDown", 3)
+    await I.pressKey("Enter")
+    await I.seeItemIsChecked("Email")
+
+    // open the menu
+    await I.focusTrigger()
+    await I.pressKey("Enter")
+
+    // // navigate the 'Phone' item
+    await I.pressKey("ArrowDown", 4)
+    await I.pressKey("Enter")
+
+    await I.seeItemIsChecked("Email")
+    await I.seeItemIsChecked("Phone")
   })
 })

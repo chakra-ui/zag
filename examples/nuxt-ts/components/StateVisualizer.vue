@@ -1,14 +1,24 @@
-<script setup lang="ts">
-import { stringifyState } from "@zag-js/shared"
-import { isRef } from "vue"
+<script setup lang="ts" generic="T extends MachineSchema">
+import { highlightState } from "@zag-js/stringify-state"
+import type { MachineSchema, Service } from "@zag-js/core"
 
 const props = defineProps<{
-  state: any
+  state: Service<T>
   label?: string
   omit?: string[]
+  context?: Array<keyof T["context"]>
 }>()
 
-const state = isRef(props.state) ? props.state.value : props.state
+const obj = computed(() => {
+  const service = props.state
+  return {
+    state: service.state.get(),
+    event: service.event.current(),
+    context: props.context
+      ? Object.fromEntries(props.context.map((key) => [key, service.context.get(key)]))
+      : undefined,
+  }
+})
 </script>
 
 <template>
@@ -16,7 +26,7 @@ const state = isRef(props.state) ? props.state.value : props.state
     <pre>
         <details open>
           <summary> {{props.label || "Visualizer"}} </summary>
-          <div v-html="stringifyState(state, props.omit)"></div>
+          <div v-html="highlightState(obj, props.omit)"></div>
         </details>
       </pre>
   </div>

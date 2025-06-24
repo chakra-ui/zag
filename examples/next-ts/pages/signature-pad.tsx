@@ -12,41 +12,40 @@ export default function Page() {
 
   const controls = useControls(signaturePadControls)
 
-  const [state, send] = useMachine(
-    signaturePad.machine({
-      id: useId(),
-      onDrawEnd(details) {
-        details.getDataUrl("image/png").then(setUrl)
-      },
-      drawing: {
-        fill: "red",
-        size: 4,
-        simulatePressure: true,
-      },
-    }),
-    { context: controls.context },
-  )
+  const service = useMachine(signaturePad.machine, {
+    id: useId(),
+    onDrawEnd(details) {
+      details.getDataUrl("image/png").then(setUrl)
+    },
+    drawing: {
+      fill: "red",
+      size: 4,
+      simulatePressure: true,
+    },
+    ...controls.context,
+  })
 
-  const api = signaturePad.connect(state, send, normalizeProps)
+  const api = signaturePad.connect(service, normalizeProps)
 
   return (
     <>
       <main className="signature-pad">
-        <div {...api.rootProps}>
-          <label {...api.labelProps}>Signature Pad</label>
+        <div {...api.getRootProps()}>
+          <input {...api.getHiddenInputProps({ value: url })} />
+          <label {...api.getLabelProps()}>Signature Pad</label>
 
-          <div {...api.controlProps}>
-            <svg {...api.segmentProps}>
+          <div {...api.getControlProps()}>
+            <svg {...api.getSegmentProps()}>
               {api.paths.map((path, i) => (
                 <path key={i} {...api.getSegmentPathProps({ path })} />
               ))}
               {api.currentPath && <path {...api.getSegmentPathProps({ path: api.currentPath })} />}
             </svg>
 
-            <div {...api.guideProps} />
+            <div {...api.getGuideProps()} />
           </div>
 
-          <button {...api.clearTriggerProps}>
+          <button {...api.getClearTriggerProps()}>
             <RotateCcw />
           </button>
         </div>
@@ -62,7 +61,7 @@ export default function Page() {
       </main>
 
       <Toolbar controls={controls.ui}>
-        <StateVisualizer state={state} omit={["points"]} />
+        <StateVisualizer state={service} omit={["currentPoints", "currentPath", "paths"]} />
       </Toolbar>
     </>
   )

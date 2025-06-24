@@ -47,6 +47,18 @@ test.describe("combobox", () => {
     await I.dontSeeDropdown()
   })
 
+  test("[pointer] select and select again", async () => {
+    await I.clickTrigger()
+
+    await I.clickItem("Zambia")
+    await I.seeInputHasValue("Zambia")
+
+    await I.clickTrigger()
+    await I.clickItem("Canada")
+
+    await I.seeInputHasValue("Canada")
+  })
+
   test("[keyboard / loop] on arrow down, open and highlight first enabled option", async () => {
     await I.focusInput()
     await I.pressKey("ArrowDown")
@@ -182,6 +194,25 @@ test.describe("combobox", () => {
     await I.type("mal")
     await I.pressKey("Enter")
     await I.seeInputHasValue("")
+  })
+
+  test("[no value] enter behavior for custom values", async () => {
+    await I.controls.select("inputBehavior", "none")
+    await I.type("foo")
+    await I.pressKey("Enter")
+    await I.seeInputHasValue("")
+  })
+
+  test("[value] enter reverts the value", async () => {
+    await I.controls.select("inputBehavior", "none")
+    await I.type("mal")
+    await I.clickItem("Malawi")
+
+    await I.pressKey("ControlOrMeta+A")
+    await I.type("foo")
+    await I.pressKey("Enter")
+
+    await I.seeInputHasValue("Malawi")
   })
 })
 

@@ -1,0 +1,19 @@
+```html
+<script setup>
+  import * as tooltip from "@zag-js/tooltip"
+  import { normalizeProps, useMachine } from "@zag-js/vue"
+  import { computed } from "vue"
+
+  const service = useMachine(tooltip.machine, { id: "1" })
+  const api = computed(() => tooltip.connect(service, normalizeProps))
+</script>
+
+<template>
+  <div>
+    <button ref="ref" v-bind="api.getTriggerProps()">Hover me</button>
+    <div v-if="api.open" v-bind="api.getPositionerProps()">
+      <div v-bind="api.getContentProps()">Tooltip</div>
+    </div>
+  </div>
+</template>
+```

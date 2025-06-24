@@ -6,16 +6,21 @@ function useFocusVisible() {
   const [focus, setFocus] = useState(false)
 
   useEffect(() => {
-    return trackFocusVisible(setFocusVisible)
+    return trackFocusVisible({
+      onChange(details) {
+        setFocusVisible(details.isFocusVisible)
+      },
+    })
   }, [])
+
   const showFocus = focusVisible && focus
 
   return {
     focusVisible: showFocus,
-    focusProps: {
+    getFocusProps: () => ({
       onFocus: () => setFocus(true),
       onBlur: () => setFocus(false),
-    },
+    }),
   }
 }
 
@@ -25,7 +30,7 @@ export default function Page() {
 
   return (
     <div style={{ padding: 40 }}>
-      <button {...button.focusProps} style={{ background: button.focusVisible ? "red" : undefined }}>
+      <button {...button.getFocusProps()} style={{ background: button.focusVisible ? "red" : undefined }}>
         Click me
       </button>
 
@@ -33,7 +38,7 @@ export default function Page() {
       <br />
 
       <label style={{ background: checkbox.focusVisible ? "red" : undefined }}>
-        <input type="checkbox" {...checkbox.focusProps} />
+        <input type="checkbox" {...checkbox.getFocusProps()} />
         <span>Focus me</span>
       </label>
     </div>

@@ -10,6 +10,7 @@ export const anatomy = createAnatomy("slider").parts(
   "control",
   "markerGroup",
   "marker",
+  "draggingIndicator",
 )
 
 export const parts = anatomy.build()

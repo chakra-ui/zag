@@ -1,5 +1,1496 @@
 # @zag-js/file-upload
 
+## 1.17.1
+
+### Patch Changes
+
+- Updated dependencies [[`4b6302f`](https://github.com/chakra-ui/zag/commit/4b6302fc9104f1ae8cd89a0f0157884fb775a65a)]:
+  - @zag-js/anatomy@1.17.1
+  - @zag-js/core@1.17.1
+  - @zag-js/types@1.17.1
+  - @zag-js/utils@1.17.1
+  - @zag-js/dom-query@1.17.1
+  - @zag-js/file-utils@1.17.1
+  - @zag-js/i18n-utils@1.17.1
+
+## 1.17.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.17.0
+  - @zag-js/core@1.17.0
+  - @zag-js/types@1.17.0
+  - @zag-js/utils@1.17.0
+  - @zag-js/dom-query@1.17.0
+  - @zag-js/file-utils@1.17.0
+  - @zag-js/i18n-utils@1.17.0
+
+## 1.16.0
+
+### Patch Changes
+
+- Updated dependencies [[`6f6c8f3`](https://github.com/chakra-ui/zag/commit/6f6c8f329d9eb9d9889eff4317c84a4f41d4bfb2)]:
+  - @zag-js/types@1.16.0
+  - @zag-js/dom-query@1.16.0
+  - @zag-js/core@1.16.0
+  - @zag-js/i18n-utils@1.16.0
+  - @zag-js/file-utils@1.16.0
+  - @zag-js/anatomy@1.16.0
+  - @zag-js/utils@1.16.0
+
+## 1.15.7
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.15.7
+  - @zag-js/core@1.15.7
+  - @zag-js/types@1.15.7
+  - @zag-js/utils@1.15.7
+  - @zag-js/dom-query@1.15.7
+  - @zag-js/file-utils@1.15.7
+  - @zag-js/i18n-utils@1.15.7
+
+## 1.15.6
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.15.6
+  - @zag-js/core@1.15.6
+  - @zag-js/types@1.15.6
+  - @zag-js/utils@1.15.6
+  - @zag-js/dom-query@1.15.6
+  - @zag-js/file-utils@1.15.6
+  - @zag-js/i18n-utils@1.15.6
+
+## 1.15.5
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.15.5
+  - @zag-js/core@1.15.5
+  - @zag-js/types@1.15.5
+  - @zag-js/utils@1.15.5
+  - @zag-js/dom-query@1.15.5
+  - @zag-js/file-utils@1.15.5
+  - @zag-js/i18n-utils@1.15.5
+
+## 1.15.4
+
+### Patch Changes
+
+- Updated dependencies [[`e5f698d`](https://github.com/chakra-ui/zag/commit/e5f698d082ea8ae7f9f45958c4e319de7c7b6107)]:
+  - @zag-js/dom-query@1.15.4
+  - @zag-js/core@1.15.4
+  - @zag-js/i18n-utils@1.15.4
+  - @zag-js/file-utils@1.15.4
+  - @zag-js/anatomy@1.15.4
+  - @zag-js/types@1.15.4
+  - @zag-js/utils@1.15.4
+
+## 1.15.3
+
+### Patch Changes
+
+- Updated dependencies [[`ff4c244`](https://github.com/chakra-ui/zag/commit/ff4c244549019680ada2afc073102c523a428524)]:
+  - @zag-js/file-utils@1.15.3
+  - @zag-js/anatomy@1.15.3
+  - @zag-js/core@1.15.3
+  - @zag-js/types@1.15.3
+  - @zag-js/utils@1.15.3
+  - @zag-js/dom-query@1.15.3
+  - @zag-js/i18n-utils@1.15.3
+
+## 1.15.2
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.15.2
+  - @zag-js/core@1.15.2
+  - @zag-js/types@1.15.2
+  - @zag-js/utils@1.15.2
+  - @zag-js/dom-query@1.15.2
+  - @zag-js/file-utils@1.15.2
+  - @zag-js/i18n-utils@1.15.2
+
+## 1.15.1
+
+### Patch Changes
+
+- [#2514](https://github.com/chakra-ui/zag/pull/2514)
+  [`f272a23`](https://github.com/chakra-ui/zag/commit/f272a235e08a7eebff476e557f42443765057b6c) Thanks
+  [@ichizero](https://github.com/ichizero)! - Prevent `undefined` in `acceptedFiles` when no files accepted
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.15.1
+  - @zag-js/core@1.15.1
+  - @zag-js/types@1.15.1
+  - @zag-js/utils@1.15.1
+  - @zag-js/dom-query@1.15.1
+  - @zag-js/file-utils@1.15.1
+  - @zag-js/i18n-utils@1.15.1
+
+## 1.15.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.15.0
+  - @zag-js/core@1.15.0
+  - @zag-js/types@1.15.0
+  - @zag-js/utils@1.15.0
+  - @zag-js/dom-query@1.15.0
+  - @zag-js/file-utils@1.15.0
+  - @zag-js/i18n-utils@1.15.0
+
+## 1.14.0
+
+### Minor Changes
+
+- [`7976c82`](https://github.com/chakra-ui/zag/commit/7976c82deb7ceb5c361d7ddc085c750b74fe86ce) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Add support for transforming uploaded files via `transformFiles`
+  context property.
+
+  ```tsx
+  const service = useMachine(fileUpload.machine, {
+    id: useId(),
+    accept: ["image/jpeg", "image/png"],
+    transformFiles: async (files) => {
+      return Promise.all(files.map((file) => compress(file, { size: 200 })))
+    },
+  })
+  ```
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.14.0
+  - @zag-js/core@1.14.0
+  - @zag-js/types@1.14.0
+  - @zag-js/utils@1.14.0
+  - @zag-js/dom-query@1.14.0
+  - @zag-js/file-utils@1.14.0
+  - @zag-js/i18n-utils@1.14.0
+
+## 1.13.1
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.13.1
+  - @zag-js/core@1.13.1
+  - @zag-js/types@1.13.1
+  - @zag-js/utils@1.13.1
+  - @zag-js/dom-query@1.13.1
+  - @zag-js/file-utils@1.13.1
+  - @zag-js/i18n-utils@1.13.1
+
+## 1.13.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.13.0
+  - @zag-js/core@1.13.0
+  - @zag-js/types@1.13.0
+  - @zag-js/utils@1.13.0
+  - @zag-js/dom-query@1.13.0
+  - @zag-js/file-utils@1.13.0
+  - @zag-js/i18n-utils@1.13.0
+
+## 1.12.4
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.12.4
+  - @zag-js/core@1.12.4
+  - @zag-js/types@1.12.4
+  - @zag-js/utils@1.12.4
+  - @zag-js/dom-query@1.12.4
+  - @zag-js/file-utils@1.12.4
+  - @zag-js/i18n-utils@1.12.4
+
+## 1.12.3
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.12.3
+  - @zag-js/core@1.12.3
+  - @zag-js/types@1.12.3
+  - @zag-js/utils@1.12.3
+  - @zag-js/dom-query@1.12.3
+  - @zag-js/file-utils@1.12.3
+  - @zag-js/i18n-utils@1.12.3
+
+## 1.12.2
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.12.2
+  - @zag-js/core@1.12.2
+  - @zag-js/types@1.12.2
+  - @zag-js/utils@1.12.2
+  - @zag-js/dom-query@1.12.2
+  - @zag-js/file-utils@1.12.2
+  - @zag-js/i18n-utils@1.12.2
+
+## 1.12.1
+
+### Patch Changes
+
+- [#2447](https://github.com/chakra-ui/zag/pull/2447)
+  [`33b85ed`](https://github.com/chakra-ui/zag/commit/33b85ed5bd9d38ea8953cf983b138d4c944fbb25) Thanks
+  [@YusukeSano](https://github.com/YusukeSano)! - Add default `PropTypes` type parameter to `Api` interface
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.12.1
+  - @zag-js/core@1.12.1
+  - @zag-js/types@1.12.1
+  - @zag-js/utils@1.12.1
+  - @zag-js/dom-query@1.12.1
+  - @zag-js/file-utils@1.12.1
+  - @zag-js/i18n-utils@1.12.1
+
+## 1.12.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.12.0
+  - @zag-js/core@1.12.0
+  - @zag-js/types@1.12.0
+  - @zag-js/utils@1.12.0
+  - @zag-js/dom-query@1.12.0
+  - @zag-js/file-utils@1.12.0
+  - @zag-js/i18n-utils@1.12.0
+
+## 1.11.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.11.0
+  - @zag-js/core@1.11.0
+  - @zag-js/types@1.11.0
+  - @zag-js/utils@1.11.0
+  - @zag-js/dom-query@1.11.0
+  - @zag-js/file-utils@1.11.0
+  - @zag-js/i18n-utils@1.11.0
+
+## 1.10.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.10.0
+  - @zag-js/core@1.10.0
+  - @zag-js/types@1.10.0
+  - @zag-js/utils@1.10.0
+  - @zag-js/dom-query@1.10.0
+  - @zag-js/file-utils@1.10.0
+  - @zag-js/i18n-utils@1.10.0
+
+## 1.9.3
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.9.3
+  - @zag-js/core@1.9.3
+  - @zag-js/types@1.9.3
+  - @zag-js/utils@1.9.3
+  - @zag-js/dom-query@1.9.3
+  - @zag-js/file-utils@1.9.3
+  - @zag-js/i18n-utils@1.9.3
+
+## 1.9.2
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.9.2
+  - @zag-js/core@1.9.2
+  - @zag-js/types@1.9.2
+  - @zag-js/utils@1.9.2
+  - @zag-js/dom-query@1.9.2
+  - @zag-js/file-utils@1.9.2
+  - @zag-js/i18n-utils@1.9.2
+
+## 1.9.1
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.9.1
+  - @zag-js/core@1.9.1
+  - @zag-js/types@1.9.1
+  - @zag-js/utils@1.9.1
+  - @zag-js/dom-query@1.9.1
+  - @zag-js/file-utils@1.9.1
+  - @zag-js/i18n-utils@1.9.1
+
+## 1.9.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.9.0
+  - @zag-js/core@1.9.0
+  - @zag-js/types@1.9.0
+  - @zag-js/utils@1.9.0
+  - @zag-js/dom-query@1.9.0
+  - @zag-js/file-utils@1.9.0
+  - @zag-js/i18n-utils@1.9.0
+
+## 1.8.2
+
+### Patch Changes
+
+- Updated dependencies [[`25d93b8`](https://github.com/chakra-ui/zag/commit/25d93b8be12e8df26ed04c5d298c66f54910fe85)]:
+  - @zag-js/dom-query@1.8.2
+  - @zag-js/core@1.8.2
+  - @zag-js/i18n-utils@1.8.2
+  - @zag-js/file-utils@1.8.2
+  - @zag-js/anatomy@1.8.2
+  - @zag-js/types@1.8.2
+  - @zag-js/utils@1.8.2
+
+## 1.8.1
+
+### Patch Changes
+
+- Updated dependencies [[`c3c1642`](https://github.com/chakra-ui/zag/commit/c3c164296cd643f2fb7c12c0d1fe9c406eba352f)]:
+  - @zag-js/dom-query@1.8.1
+  - @zag-js/core@1.8.1
+  - @zag-js/i18n-utils@1.8.1
+  - @zag-js/file-utils@1.8.1
+  - @zag-js/anatomy@1.8.1
+  - @zag-js/types@1.8.1
+  - @zag-js/utils@1.8.1
+
+## 1.8.0
+
+### Patch Changes
+
+- Updated dependencies [[`66f7828`](https://github.com/chakra-ui/zag/commit/66f7828541102fcf4f0fba05bb241e20a5ed45cb)]:
+  - @zag-js/core@1.8.0
+  - @zag-js/anatomy@1.8.0
+  - @zag-js/types@1.8.0
+  - @zag-js/utils@1.8.0
+  - @zag-js/dom-query@1.8.0
+  - @zag-js/file-utils@1.8.0
+  - @zag-js/i18n-utils@1.8.0
+
+## 1.7.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.7.0
+  - @zag-js/core@1.7.0
+  - @zag-js/types@1.7.0
+  - @zag-js/utils@1.7.0
+  - @zag-js/dom-query@1.7.0
+  - @zag-js/file-utils@1.7.0
+  - @zag-js/i18n-utils@1.7.0
+
+## 1.6.2
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.6.2
+  - @zag-js/core@1.6.2
+  - @zag-js/types@1.6.2
+  - @zag-js/utils@1.6.2
+  - @zag-js/dom-query@1.6.2
+  - @zag-js/file-utils@1.6.2
+  - @zag-js/i18n-utils@1.6.2
+
+## 1.6.1
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.6.1
+  - @zag-js/core@1.6.1
+  - @zag-js/types@1.6.1
+  - @zag-js/utils@1.6.1
+  - @zag-js/dom-query@1.6.1
+  - @zag-js/file-utils@1.6.1
+  - @zag-js/i18n-utils@1.6.1
+
+## 1.6.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.6.0
+  - @zag-js/core@1.6.0
+  - @zag-js/types@1.6.0
+  - @zag-js/utils@1.6.0
+  - @zag-js/dom-query@1.6.0
+  - @zag-js/file-utils@1.6.0
+  - @zag-js/i18n-utils@1.6.0
+
+## 1.5.0
+
+### Patch Changes
+
+- Updated dependencies [[`5db0d3f`](https://github.com/chakra-ui/zag/commit/5db0d3fc1827b8e6000c156466d40d3d66a44e21)]:
+  - @zag-js/file-utils@1.5.0
+  - @zag-js/anatomy@1.5.0
+  - @zag-js/core@1.5.0
+  - @zag-js/types@1.5.0
+  - @zag-js/utils@1.5.0
+  - @zag-js/dom-query@1.5.0
+  - @zag-js/i18n-utils@1.5.0
+
+## 1.4.2
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.4.2
+  - @zag-js/core@1.4.2
+  - @zag-js/types@1.4.2
+  - @zag-js/utils@1.4.2
+  - @zag-js/dom-query@1.4.2
+  - @zag-js/file-utils@1.4.2
+  - @zag-js/i18n-utils@1.4.2
+
+## 1.4.1
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.4.1
+  - @zag-js/core@1.4.1
+  - @zag-js/types@1.4.1
+  - @zag-js/utils@1.4.1
+  - @zag-js/dom-query@1.4.1
+  - @zag-js/file-utils@1.4.1
+  - @zag-js/i18n-utils@1.4.1
+
+## 1.4.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.4.0
+  - @zag-js/core@1.4.0
+  - @zag-js/types@1.4.0
+  - @zag-js/utils@1.4.0
+  - @zag-js/dom-query@1.4.0
+  - @zag-js/file-utils@1.4.0
+  - @zag-js/i18n-utils@1.4.0
+
+## 1.3.3
+
+### Patch Changes
+
+- Updated dependencies [[`66ba41b`](https://github.com/chakra-ui/zag/commit/66ba41bb10b232ff08e3cfbfc6cbf2a1c7449e21)]:
+  - @zag-js/utils@1.3.3
+  - @zag-js/core@1.3.3
+  - @zag-js/anatomy@1.3.3
+  - @zag-js/types@1.3.3
+  - @zag-js/dom-query@1.3.3
+  - @zag-js/file-utils@1.3.3
+  - @zag-js/i18n-utils@1.3.3
+
+## 1.3.2
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.3.2
+  - @zag-js/core@1.3.2
+  - @zag-js/types@1.3.2
+  - @zag-js/utils@1.3.2
+  - @zag-js/dom-query@1.3.2
+  - @zag-js/file-utils@1.3.2
+  - @zag-js/i18n-utils@1.3.2
+
+## 1.3.1
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.3.1
+  - @zag-js/core@1.3.1
+  - @zag-js/types@1.3.1
+  - @zag-js/utils@1.3.1
+  - @zag-js/dom-query@1.3.1
+  - @zag-js/file-utils@1.3.1
+  - @zag-js/i18n-utils@1.3.1
+
+## 1.3.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.3.0
+  - @zag-js/core@1.3.0
+  - @zag-js/types@1.3.0
+  - @zag-js/utils@1.3.0
+  - @zag-js/dom-query@1.3.0
+  - @zag-js/file-utils@1.3.0
+  - @zag-js/i18n-utils@1.3.0
+
+## 1.2.1
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.2.1
+  - @zag-js/core@1.2.1
+  - @zag-js/types@1.2.1
+  - @zag-js/utils@1.2.1
+  - @zag-js/dom-query@1.2.1
+  - @zag-js/file-utils@1.2.1
+  - @zag-js/i18n-utils@1.2.1
+
+## 1.2.0
+
+### Patch Changes
+
+- [`d598cce`](https://github.com/chakra-ui/zag/commit/d598cce3e8b1bffa4c6f351c5a351bf703f80168) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix issue where `win.DataTransfer` could throw in testing
+  environments
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.2.0
+  - @zag-js/core@1.2.0
+  - @zag-js/types@1.2.0
+  - @zag-js/utils@1.2.0
+  - @zag-js/dom-query@1.2.0
+  - @zag-js/file-utils@1.2.0
+  - @zag-js/i18n-utils@1.2.0
+
+## 1.1.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.1.0
+  - @zag-js/core@1.1.0
+  - @zag-js/types@1.1.0
+  - @zag-js/utils@1.1.0
+  - @zag-js/dom-query@1.1.0
+  - @zag-js/file-utils@1.1.0
+  - @zag-js/i18n-utils@1.1.0
+
+## 1.0.2
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.0.2
+  - @zag-js/core@1.0.2
+  - @zag-js/types@1.0.2
+  - @zag-js/utils@1.0.2
+  - @zag-js/dom-query@1.0.2
+  - @zag-js/file-utils@1.0.2
+  - @zag-js/i18n-utils@1.0.2
+
+## 1.0.1
+
+### Patch Changes
+
+- [`9883753`](https://github.com/chakra-ui/zag/commit/98837532c3b9c3f3698eee4e158e4318194361f6) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Expose `<component>.Machine` type to help when typecasting generic
+  components like combobox and select.
+
+  Here's an example of the combobox component:
+
+  ```ts
+  interface Item {
+    code: string
+    label: string
+  }
+
+  const service = useMachine(combobox.machine as combobox.Machine<Item>, {
+    id: useId(),
+    collection,
+  })
+  ```
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.0.1
+  - @zag-js/core@1.0.1
+  - @zag-js/types@1.0.1
+  - @zag-js/utils@1.0.1
+  - @zag-js/dom-query@1.0.1
+  - @zag-js/file-utils@1.0.1
+  - @zag-js/i18n-utils@1.0.1
+
+## 1.0.0
+
+### Patch Changes
+
+- Updated dependencies [[`b1caa44`](https://github.com/chakra-ui/zag/commit/b1caa44085e7f1da0ad24fc7b25178081811646c)]:
+  - @zag-js/core@1.0.0
+  - @zag-js/anatomy@1.0.0
+  - @zag-js/types@1.0.0
+  - @zag-js/utils@1.0.0
+  - @zag-js/dom-query@1.0.0
+  - @zag-js/file-utils@1.0.0
+  - @zag-js/i18n-utils@1.0.0
+
+## 0.82.2
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@0.82.2
+  - @zag-js/core@0.82.2
+  - @zag-js/types@0.82.2
+  - @zag-js/utils@0.82.2
+  - @zag-js/dom-query@0.82.2
+  - @zag-js/file-utils@0.82.2
+  - @zag-js/i18n-utils@0.82.2
+
+## 0.82.1
+
+### Patch Changes
+
+- [`a7ea823`](https://github.com/chakra-ui/zag/commit/a7ea82364e7a680bc2fa1ebbe8dd00b98d3debb4) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix issue where multiple files could get added a single upload
+  operation.
+
+- Updated dependencies []:
+  - @zag-js/anatomy@0.82.1
+  - @zag-js/core@0.82.1
+  - @zag-js/types@0.82.1
+  - @zag-js/utils@0.82.1
+  - @zag-js/dom-query@0.82.1
+  - @zag-js/file-utils@0.82.1
+  - @zag-js/i18n-utils@0.82.1
+
+## 0.82.0
+
+### Patch Changes
+
+- [`b655b4d`](https://github.com/chakra-ui/zag/commit/b655b4de8d6a4762e6bc3a4ae1f68fa65098dff5) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - - Fix issue where change event is not fired when dropping files
+  into the dropzone
+  - Fix issue where `api.setClipboardFiles(...)` was still called when file upload is disabled
+  - Expose disabled state via `api.disabled`
+  - Fix issue where machine transitions to `dragging` when disabled
+  - Fix issue where rejected files could not be deleted using the item delete trigger.
+- Updated dependencies []:
+  - @zag-js/anatomy@0.82.0
+  - @zag-js/core@0.82.0
+  - @zag-js/types@0.82.0
+  - @zag-js/utils@0.82.0
+  - @zag-js/dom-query@0.82.0
+  - @zag-js/file-utils@0.82.0
+  - @zag-js/i18n-utils@0.82.0
+
+## 0.81.2
+
+### Patch Changes
+
+- [`884973b`](https://github.com/chakra-ui/zag/commit/884973b53e16aaa364f466e5f416caa3aa431c65) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - - Improve click detection for dropzone
+  - Add support for `disableClick` prop on dropzone
+- Updated dependencies [[`e9313a3`](https://github.com/chakra-ui/zag/commit/e9313a3663285a05c9ac9ac92f1c09fcb27ac818)]:
+  - @zag-js/dom-query@0.81.2
+  - @zag-js/i18n-utils@0.81.2
+  - @zag-js/file-utils@0.81.2
+  - @zag-js/anatomy@0.81.2
+  - @zag-js/core@0.81.2
+  - @zag-js/types@0.81.2
+  - @zag-js/utils@0.81.2
+
+## 0.81.1
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@0.81.1
+  - @zag-js/core@0.81.1
+  - @zag-js/types@0.81.1
+  - @zag-js/utils@0.81.1
+  - @zag-js/dom-query@0.81.1
+  - @zag-js/file-utils@0.81.1
+  - @zag-js/i18n-utils@0.81.1
+
+## 0.81.0
+
+### Patch Changes
+
+- Updated dependencies [[`792939f`](https://github.com/chakra-ui/zag/commit/792939f9d9eac5a97cc46f1b0ab286666ba1edd8),
+  [`552e55d`](https://github.com/chakra-ui/zag/commit/552e55db4ec8c0fa86c5b7e5ce3ad08eb350ca68)]:
+  - @zag-js/dom-query@0.81.0
+  - @zag-js/types@0.81.0
+  - @zag-js/i18n-utils@0.81.0
+  - @zag-js/file-utils@0.81.0
+  - @zag-js/anatomy@0.81.0
+  - @zag-js/core@0.81.0
+  - @zag-js/utils@0.81.0
+
+## 0.80.0
+
+### Minor Changes
+
+- [`59b04ae`](https://github.com/chakra-ui/zag/commit/59b04ae0a004475524d6936971d0fc99fe5c4dfb) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - - Add support for preventing drop on document when the file upload
+  is used. Use the `preventDropOnDocument` context property. Set to `true` by default to prevent drop on document.
+  - Add `api.setClipboardFiles` method to set the files from the clipboard data.
+  - Fix issue where hidden input isn't synced with the accepted files.
+
+### Patch Changes
+
+- Updated dependencies [[`d7617d1`](https://github.com/chakra-ui/zag/commit/d7617d1d95f93b3557eb88ba879737894da42d51)]:
+  - @zag-js/dom-query@0.80.0
+  - @zag-js/i18n-utils@0.80.0
+  - @zag-js/file-utils@0.80.0
+  - @zag-js/anatomy@0.80.0
+  - @zag-js/core@0.80.0
+  - @zag-js/types@0.80.0
+  - @zag-js/utils@0.80.0
+
+## 0.79.3
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@0.79.3
+  - @zag-js/core@0.79.3
+  - @zag-js/types@0.79.3
+  - @zag-js/utils@0.79.3
+  - @zag-js/dom-query@0.79.3
+  - @zag-js/file-utils@0.79.3
+  - @zag-js/i18n-utils@0.79.3
+
+## 0.79.2
+
+### Patch Changes
+
+- Updated dependencies [[`525e645`](https://github.com/chakra-ui/zag/commit/525e645404f56c10919cc9d36279044dff253a08)]:
+  - @zag-js/dom-query@0.79.2
+  - @zag-js/i18n-utils@0.79.2
+  - @zag-js/file-utils@0.79.2
+  - @zag-js/anatomy@0.79.2
+  - @zag-js/core@0.79.2
+  - @zag-js/types@0.79.2
+  - @zag-js/utils@0.79.2
+
+## 0.79.1
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@0.79.1
+  - @zag-js/core@0.79.1
+  - @zag-js/types@0.79.1
+  - @zag-js/utils@0.79.1
+  - @zag-js/dom-query@0.79.1
+  - @zag-js/file-utils@0.79.1
+  - @zag-js/i18n-utils@0.79.1
+
+## 0.79.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@0.79.0
+  - @zag-js/core@0.79.0
+  - @zag-js/types@0.79.0
+  - @zag-js/utils@0.79.0
+  - @zag-js/dom-query@0.79.0
+  - @zag-js/file-utils@0.79.0
+  - @zag-js/i18n-utils@0.79.0
+
+## 0.78.3
+
+### Patch Changes
+
+- [#2108](https://github.com/chakra-ui/zag/pull/2108)
+  [`64b7d50`](https://github.com/chakra-ui/zag/commit/64b7d50f2149889a17945e309d5f1ca7236bd9b8) Thanks
+  [@Adebesin-Cell](https://github.com/Adebesin-Cell)! - fix: ensure accept attribute is applied to file upload input
+
+- Updated dependencies [[`5584a83`](https://github.com/chakra-ui/zag/commit/5584a833151ee9f2c2ef9c07b6d699addfbca18e)]:
+  - @zag-js/core@0.78.3
+  - @zag-js/anatomy@0.78.3
+  - @zag-js/types@0.78.3
+  - @zag-js/utils@0.78.3
+  - @zag-js/dom-query@0.78.3
+  - @zag-js/file-utils@0.78.3
+  - @zag-js/i18n-utils@0.78.3
+
+## 0.78.2
+
+### Patch Changes
+
+- [#2037](https://github.com/chakra-ui/zag/pull/2037)
+  [`e58126f`](https://github.com/chakra-ui/zag/commit/e58126f3ae0def8cf0a1c14ee917ede7405e8cf4) Thanks
+  [@anubra266](https://github.com/anubra266)! - Expose `acceptedFiles` and `rejectedFiles` to validate file method. This
+  is useful for checking for duplicate files.
+
+  ```ts
+  fileUpload.machine({
+    validate(file, details) {
+      const { acceptedFiles, rejectedFiles } = details
+      // Check for duplicate files by comparing names in acceptedFiles
+      const duplicate = acceptedFiles.some((item) => item.name === file.name)
+      if (duplicate) return ["FILE_EXISTS"]
+      return null // No errors
+    },
+  })
+  ```
+
+- Updated dependencies [[`ce85272`](https://github.com/chakra-ui/zag/commit/ce85272c3d64dd4c7bae911ec4e4b813234850c2)]:
+  - @zag-js/dom-query@0.78.2
+  - @zag-js/i18n-utils@0.78.2
+  - @zag-js/file-utils@0.78.2
+  - @zag-js/anatomy@0.78.2
+  - @zag-js/core@0.78.2
+  - @zag-js/types@0.78.2
+  - @zag-js/utils@0.78.2
+
+## 0.78.1
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@0.78.1
+  - @zag-js/core@0.78.1
+  - @zag-js/types@0.78.1
+  - @zag-js/utils@0.78.1
+  - @zag-js/dom-query@0.78.1
+  - @zag-js/file-utils@0.78.1
+  - @zag-js/i18n-utils@0.78.1
+
+## 0.78.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@0.78.0
+  - @zag-js/core@0.78.0
+  - @zag-js/types@0.78.0
+  - @zag-js/utils@0.78.0
+  - @zag-js/dom-query@0.78.0
+  - @zag-js/file-utils@0.78.0
+  - @zag-js/i18n-utils@0.78.0
+
+## 0.77.1
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@0.77.1
+  - @zag-js/core@0.77.1
+  - @zag-js/types@0.77.1
+  - @zag-js/utils@0.77.1
+  - @zag-js/dom-query@0.77.1
+  - @zag-js/file-utils@0.77.1
+  - @zag-js/i18n-utils@0.77.1
+
+## 0.77.0
+
+### Patch Changes
+
+- Updated dependencies [[`a2af4ad`](https://github.com/chakra-ui/zag/commit/a2af4adc6a0d9438e025eadd12eb7eb513131a90)]:
+  - @zag-js/dom-query@0.77.0
+  - @zag-js/utils@0.77.0
+  - @zag-js/i18n-utils@0.77.0
+  - @zag-js/core@0.77.0
+  - @zag-js/file-utils@0.77.0
+  - @zag-js/anatomy@0.77.0
+  - @zag-js/types@0.77.0
+
+## 0.76.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@0.76.0
+  - @zag-js/core@0.76.0
+  - @zag-js/types@0.76.0
+  - @zag-js/utils@0.76.0
+  - @zag-js/dom-query@0.76.0
+  - @zag-js/file-utils@0.76.0
+  - @zag-js/i18n-utils@0.76.0
+
+## 0.75.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@0.75.0
+  - @zag-js/core@0.75.0
+  - @zag-js/types@0.75.0
+  - @zag-js/utils@0.75.0
+  - @zag-js/dom-query@0.75.0
+  - @zag-js/file-utils@0.75.0
+  - @zag-js/i18n-utils@0.75.0
+
+## 0.74.2
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@0.74.2
+  - @zag-js/core@0.74.2
+  - @zag-js/types@0.74.2
+  - @zag-js/utils@0.74.2
+  - @zag-js/dom-query@0.74.2
+  - @zag-js/file-utils@0.74.2
+  - @zag-js/i18n-utils@0.74.2
+
+## 0.74.1
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@0.74.1
+  - @zag-js/core@0.74.1
+  - @zag-js/types@0.74.1
+  - @zag-js/utils@0.74.1
+  - @zag-js/dom-query@0.74.1
+  - @zag-js/file-utils@0.74.1
+  - @zag-js/i18n-utils@0.74.1
+
+## 0.74.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@0.74.0
+  - @zag-js/core@0.74.0
+  - @zag-js/types@0.74.0
+  - @zag-js/utils@0.74.0
+  - @zag-js/dom-query@0.74.0
+  - @zag-js/file-utils@0.74.0
+  - @zag-js/i18n-utils@0.74.0
+
+## 0.73.1
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@0.73.1
+  - @zag-js/core@0.73.1
+  - @zag-js/types@0.73.1
+  - @zag-js/utils@0.73.1
+  - @zag-js/dom-query@0.73.1
+  - @zag-js/file-utils@0.73.1
+  - @zag-js/i18n-utils@0.73.1
+
+## 0.73.0
+
+### Patch Changes
+
+- [`8bbea0a`](https://github.com/chakra-ui/zag/commit/8bbea0a00d7e87b213aad84f730cc5fb6a0ce199) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix issue where `acceptedFiles` is removed after an invalid file
+  is uploaded
+
+- Updated dependencies []:
+  - @zag-js/anatomy@0.73.0
+  - @zag-js/core@0.73.0
+  - @zag-js/types@0.73.0
+  - @zag-js/utils@0.73.0
+  - @zag-js/dom-query@0.73.0
+  - @zag-js/file-utils@0.73.0
+  - @zag-js/i18n-utils@0.73.0
+
+## 0.72.0
+
+### Patch Changes
+
+- Updated dependencies [[`cdeaed6`](https://github.com/chakra-ui/zag/commit/cdeaed620f918a1684934081815e94ed76a8c388)]:
+  - @zag-js/i18n-utils@0.72.0
+  - @zag-js/file-utils@0.72.0
+  - @zag-js/anatomy@0.72.0
+  - @zag-js/core@0.72.0
+  - @zag-js/types@0.72.0
+  - @zag-js/utils@0.72.0
+  - @zag-js/dom-query@0.72.0
+
+## 0.71.0
+
+### Minor Changes
+
+- [`b3a251e`](https://github.com/chakra-ui/zag/commit/b3a251e5e10b9b27af353e0f41117329846b14e9) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - We no longer ship `src` files in the packages.
+
+- [`c9616cb`](https://github.com/chakra-ui/zag/commit/c9616cb6bdc8028648f799e9771ff49f00e03454) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Add support for `api.getClearTriggerProps()` to render a clear
+  trigger that clears the accepted files.
+
+### Patch Changes
+
+- Updated dependencies [[`b3a251e`](https://github.com/chakra-ui/zag/commit/b3a251e5e10b9b27af353e0f41117329846b14e9)]:
+  - @zag-js/core@0.71.0
+  - @zag-js/anatomy@0.71.0
+  - @zag-js/types@0.71.0
+  - @zag-js/utils@0.71.0
+  - @zag-js/dom-query@0.71.0
+  - @zag-js/file-utils@0.71.0
+  - @zag-js/i18n-utils@0.71.0
+
+## 0.70.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@0.70.0
+  - @zag-js/core@0.70.0
+  - @zag-js/types@0.70.0
+  - @zag-js/utils@0.70.0
+  - @zag-js/dom-query@0.70.0
+  - @zag-js/file-utils@0.70.0
+  - @zag-js/i18n-utils@0.70.0
+
+## 0.69.0
+
+### Patch Changes
+
+- [`7a6b6e7`](https://github.com/chakra-ui/zag/commit/7a6b6e7fff9de69620d47431515bc0a4cdac3c75) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix issue where `directory: true` doesn't work
+
+- Updated dependencies [[`bf57d7b`](https://github.com/chakra-ui/zag/commit/bf57d7b3933daf9974eaefc443da6f3c37706bb4)]:
+  - @zag-js/dom-query@0.69.0
+  - @zag-js/i18n-utils@0.69.0
+  - @zag-js/file-utils@0.69.0
+  - @zag-js/anatomy@0.69.0
+  - @zag-js/core@0.69.0
+  - @zag-js/types@0.69.0
+  - @zag-js/utils@0.69.0
+
+## 0.68.1
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@0.68.1
+  - @zag-js/core@0.68.1
+  - @zag-js/types@0.68.1
+  - @zag-js/utils@0.68.1
+  - @zag-js/dom-query@0.68.1
+  - @zag-js/file-utils@0.68.1
+  - @zag-js/i18n-utils@0.68.1
+
+## 0.68.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@0.68.0
+  - @zag-js/core@0.68.0
+  - @zag-js/types@0.68.0
+  - @zag-js/utils@0.68.0
+  - @zag-js/dom-query@0.68.0
+  - @zag-js/file-utils@0.68.0
+  - @zag-js/i18n-utils@0.68.0
+
+## 0.67.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@0.67.0
+  - @zag-js/core@0.67.0
+  - @zag-js/types@0.67.0
+  - @zag-js/utils@0.67.0
+  - @zag-js/dom-query@0.67.0
+  - @zag-js/file-utils@0.67.0
+  - @zag-js/i18n-utils@0.67.0
+
+## 0.66.1
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@0.66.1
+  - @zag-js/core@0.66.1
+  - @zag-js/types@0.66.1
+  - @zag-js/utils@0.66.1
+  - @zag-js/dom-query@0.66.1
+  - @zag-js/file-utils@0.66.1
+  - @zag-js/i18n-utils@0.66.1
+
+## 0.66.0
+
+### Minor Changes
+
+- [`4c1923e`](https://github.com/chakra-ui/zag/commit/4c1923e2de9c4ace2de96b4c177478f53dde1f35) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Add support for `invalid` prop in file upload to explicitly mark
+  upload operation as invalid. This could be paired with the `rejectedFiles` to show an error message.
+
+### Patch Changes
+
+- Updated dependencies [[`e3a21a6`](https://github.com/chakra-ui/zag/commit/e3a21a6aad1b8c549bee41f410e2cf5c1e355a64)]:
+  - @zag-js/file-utils@0.66.0
+  - @zag-js/anatomy@0.66.0
+  - @zag-js/core@0.66.0
+  - @zag-js/types@0.66.0
+  - @zag-js/utils@0.66.0
+  - @zag-js/dom-query@0.66.0
+  - @zag-js/i18n-utils@0.66.0
+
+## 0.65.1
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@0.65.1
+  - @zag-js/core@0.65.1
+  - @zag-js/types@0.65.1
+  - @zag-js/utils@0.65.1
+  - @zag-js/dom-query@0.65.1
+  - @zag-js/file-utils@0.65.1
+  - @zag-js/i18n-utils@0.65.1
+
+## 0.65.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@0.65.0
+  - @zag-js/core@0.65.0
+  - @zag-js/types@0.65.0
+  - @zag-js/utils@0.65.0
+  - @zag-js/dom-query@0.65.0
+  - @zag-js/file-utils@0.65.0
+  - @zag-js/i18n-utils@0.65.0
+
+## 0.64.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@0.64.0
+  - @zag-js/core@0.64.0
+  - @zag-js/types@0.64.0
+  - @zag-js/utils@0.64.0
+  - @zag-js/dom-query@0.64.0
+  - @zag-js/file-utils@0.64.0
+  - @zag-js/i18n-utils@0.64.0
+
+## 0.63.0
+
+### Patch Changes
+
+- Updated dependencies [[`ca437b9`](https://github.com/chakra-ui/zag/commit/ca437b94b49760742bad69aa57a3d6527219782a)]:
+  - @zag-js/dom-query@0.63.0
+  - @zag-js/i18n-utils@0.63.0
+  - @zag-js/file-utils@0.63.0
+  - @zag-js/anatomy@0.63.0
+  - @zag-js/core@0.63.0
+  - @zag-js/types@0.63.0
+  - @zag-js/utils@0.63.0
+
+## 0.62.1
+
+### Patch Changes
+
+- Updated dependencies [[`5644790`](https://github.com/chakra-ui/zag/commit/564479081d37cd06bc38043fccf9c229379a1531)]:
+  - @zag-js/core@0.62.1
+  - @zag-js/anatomy@0.62.1
+  - @zag-js/types@0.62.1
+  - @zag-js/utils@0.62.1
+  - @zag-js/dom-query@0.62.1
+  - @zag-js/file-utils@0.62.1
+  - @zag-js/i18n-utils@0.62.1
+
+## 0.62.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@0.62.0
+  - @zag-js/core@0.62.0
+  - @zag-js/types@0.62.0
+  - @zag-js/utils@0.62.0
+  - @zag-js/dom-query@0.62.0
+  - @zag-js/file-utils@0.62.0
+  - @zag-js/i18n-utils@0.62.0
+
+## 0.61.1
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@0.61.1
+  - @zag-js/core@0.61.1
+  - @zag-js/types@0.61.1
+  - @zag-js/utils@0.61.1
+  - @zag-js/dom-query@0.61.1
+  - @zag-js/file-utils@0.61.1
+  - @zag-js/i18n-utils@0.61.1
+
+## 0.61.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@0.61.0
+  - @zag-js/core@0.61.0
+  - @zag-js/types@0.61.0
+  - @zag-js/utils@0.61.0
+  - @zag-js/dom-query@0.61.0
+  - @zag-js/file-utils@0.61.0
+  - @zag-js/i18n-utils@0.61.0
+
+## 0.60.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/core@0.60.0
+  - @zag-js/anatomy@0.60.0
+  - @zag-js/types@0.60.0
+  - @zag-js/utils@0.60.0
+  - @zag-js/dom-query@0.60.0
+  - @zag-js/file-utils@0.60.0
+  - @zag-js/i18n-utils@0.60.0
+
+## 0.59.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@0.59.0
+  - @zag-js/core@0.59.0
+  - @zag-js/types@0.59.0
+  - @zag-js/utils@0.59.0
+  - @zag-js/dom-query@0.59.0
+  - @zag-js/file-utils@0.59.0
+  - @zag-js/i18n-utils@0.59.0
+
+## 0.58.3
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@0.58.3
+  - @zag-js/core@0.58.3
+  - @zag-js/types@0.58.3
+  - @zag-js/utils@0.58.3
+  - @zag-js/dom-query@0.58.3
+  - @zag-js/file-utils@0.58.3
+  - @zag-js/i18n-utils@0.58.3
+
+## 0.58.2
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@0.58.2
+  - @zag-js/core@0.58.2
+  - @zag-js/types@0.58.2
+  - @zag-js/utils@0.58.2
+  - @zag-js/dom-query@0.58.2
+  - @zag-js/file-utils@0.58.2
+  - @zag-js/i18n-utils@0.58.2
+
+## 0.58.1
+
+### Patch Changes
+
+- [`bfcce0a`](https://github.com/chakra-ui/zag/commit/bfcce0a7fbba85d8c5d3d451c2e1ebba1c62a09e) Thanks
+  [@cschroeter](https://github.com/cschroeter)! - Export missing types
+
+- Updated dependencies []:
+  - @zag-js/anatomy@0.58.1
+  - @zag-js/core@0.58.1
+  - @zag-js/types@0.58.1
+  - @zag-js/utils@0.58.1
+  - @zag-js/dom-query@0.58.1
+  - @zag-js/file-utils@0.58.1
+  - @zag-js/i18n-utils@0.58.1
+
+## 0.58.0
+
+### Minor Changes
+
+- [`9216a62`](https://github.com/chakra-ui/zag/commit/9216a625e1be9f7dd169501515297a8214f12b93) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - - Ensure consistent application of form related properties like
+  `invalid`, `required`, and `readOnly`
+  - Export `Service` from all machines for use in Lit based components.
+
+- [`0033e46`](https://github.com/chakra-ui/zag/commit/0033e46d0600bdee08619f514afb6afe85a0cca9) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - - Add support for `api.clearRejectedFiles` to allow clearing the
+  rejected files programmatically.
+  - Improve DX of the `accept` context property by providing autocompletions for common file types.
+
+### Patch Changes
+
+- Updated dependencies [[`9216a62`](https://github.com/chakra-ui/zag/commit/9216a625e1be9f7dd169501515297a8214f12b93)]:
+  - @zag-js/dom-query@0.58.0
+  - @zag-js/i18n-utils@0.58.0
+  - @zag-js/file-utils@0.58.0
+  - @zag-js/anatomy@0.58.0
+  - @zag-js/core@0.58.0
+  - @zag-js/types@0.58.0
+  - @zag-js/utils@0.58.0
+
+## 0.57.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@0.57.0
+  - @zag-js/core@0.57.0
+  - @zag-js/types@0.57.0
+  - @zag-js/utils@0.57.0
+  - @zag-js/dom-query@0.57.0
+  - @zag-js/file-utils@0.57.0
+  - @zag-js/i18n-utils@0.57.0
+
+## 0.56.1
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@0.56.1
+  - @zag-js/core@0.56.1
+  - @zag-js/types@0.56.1
+  - @zag-js/utils@0.56.1
+  - @zag-js/dom-query@0.56.1
+  - @zag-js/file-utils@0.56.1
+  - @zag-js/i18n-utils@0.56.1
+
+## 0.56.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@0.56.0
+  - @zag-js/core@0.56.0
+  - @zag-js/types@0.56.0
+  - @zag-js/utils@0.56.0
+  - @zag-js/dom-query@0.56.0
+  - @zag-js/file-utils@0.56.0
+  - @zag-js/i18n-utils@0.56.0
+
+## 0.55.0
+
+### Patch Changes
+
+- [`c962169`](https://github.com/chakra-ui/zag/commit/c962169f64d0c99aeef38308c49df7abe116502e) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix issue where `onFileAccept` gets called when deleting an item
+  via the delete trigger. Now, only `onFileChange` is called when deleting or calling `api.clearFiles`
+- Updated dependencies []:
+  - @zag-js/anatomy@0.55.0
+  - @zag-js/core@0.55.0
+  - @zag-js/types@0.55.0
+  - @zag-js/utils@0.55.0
+  - @zag-js/dom-query@0.55.0
+  - @zag-js/file-utils@0.55.0
+  - @zag-js/i18n-utils@0.55.0
+
+## 0.54.0
+
+### Patch Changes
+
+- Updated dependencies [[`590c177`](https://github.com/chakra-ui/zag/commit/590c1779f5208fb99114c872175e779508f2f96d)]:
+  - @zag-js/core@0.54.0
+  - @zag-js/anatomy@0.54.0
+  - @zag-js/types@0.54.0
+  - @zag-js/utils@0.54.0
+  - @zag-js/dom-query@0.54.0
+  - @zag-js/file-utils@0.54.0
+  - @zag-js/i18n-utils@0.54.0
+
+## 0.53.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@0.53.0
+  - @zag-js/core@0.53.0
+  - @zag-js/types@0.53.0
+  - @zag-js/utils@0.53.0
+  - @zag-js/dom-query@0.53.0
+  - @zag-js/file-utils@0.53.0
+  - @zag-js/i18n-utils@0.53.0
+
+## 0.52.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@0.52.0
+  - @zag-js/core@0.52.0
+  - @zag-js/types@0.52.0
+  - @zag-js/utils@0.52.0
+  - @zag-js/dom-query@0.52.0
+  - @zag-js/file-utils@0.52.0
+  - @zag-js/i18n-utils@0.52.0
+
+## 0.51.2
+
+### Patch Changes
+
+- [`70c2108`](https://github.com/chakra-ui/zag/commit/70c2108928746583687ac50ec51bc701c217ffdc) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix issue where keydown event might not fire in React due to
+  `nativeEvent` currentTarget not been set sometimes.
+
+- Updated dependencies [[`62eb21b`](https://github.com/chakra-ui/zag/commit/62eb21b60355dd0645936baf4692315134e7488c),
+  [`70c2108`](https://github.com/chakra-ui/zag/commit/70c2108928746583687ac50ec51bc701c217ffdc)]:
+  - @zag-js/core@0.51.2
+  - @zag-js/dom-query@0.51.2
+  - @zag-js/i18n-utils@0.51.2
+  - @zag-js/file-utils@0.51.2
+  - @zag-js/anatomy@0.51.2
+  - @zag-js/types@0.51.2
+  - @zag-js/utils@0.51.2
+
+## 0.51.1
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@0.51.1
+  - @zag-js/core@0.51.1
+  - @zag-js/types@0.51.1
+  - @zag-js/utils@0.51.1
+  - @zag-js/dom-query@0.51.1
+  - @zag-js/file-utils@0.51.1
+  - @zag-js/i18n-utils@0.51.1
+
+## 0.51.0
+
+### Patch Changes
+
+- [`903dd32`](https://github.com/chakra-ui/zag/commit/903dd325ecb1efbb9a97693e31c933107d4be295) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix issue where hidden input doesn't include the file list when
+  dropping files on the dropzone
+
+- Updated dependencies []:
+  - @zag-js/anatomy@0.51.0
+  - @zag-js/core@0.51.0
+  - @zag-js/types@0.51.0
+  - @zag-js/utils@0.51.0
+  - @zag-js/dom-query@0.51.0
+  - @zag-js/file-utils@0.51.0
+  - @zag-js/i18n-utils@0.51.0
+
+## 0.50.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@0.50.0
+  - @zag-js/core@0.50.0
+  - @zag-js/types@0.50.0
+  - @zag-js/utils@0.50.0
+  - @zag-js/dom-query@0.50.0
+  - @zag-js/file-utils@0.50.0
+  - @zag-js/i18n-utils@0.50.0
+
 ## 0.49.0
 
 ### Patch Changes
@@ -17,8 +1508,9 @@
 
 ### Minor Changes
 
-- [#1435](https://github.com/chakra-ui/zag/pull/1435) [`23ed828`](https://github.com/chakra-ui/zag/commit/23ed8283e8190fc9fb6496f4ba8c5eff78bda2d7) Thanks [@segunadebayo](https://github.com/segunadebayo)! - Rename `api` properties
-
+- [#1435](https://github.com/chakra-ui/zag/pull/1435)
+  [`23ed828`](https://github.com/chakra-ui/zag/commit/23ed8283e8190fc9fb6496f4ba8c5eff78bda2d7) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Rename `api` properties
   - `isDragging` -> `dragging`
   - `isFocused` -> `focused`
   - `open()` -> `openFilePicker()`
@@ -99,7 +1591,6 @@
   `<input type=file>`, is largely a readonly operation that can't be set by the user.
 
   > Consider using the `onFileChange` event to handle file changes.
-
   - Rename `api.files` to `api.acceptedFiles`
   - Rename `onFilesChange` to `onFileChange`
 
@@ -430,7 +1921,6 @@
 
 - [`e02fc592`](https://github.com/chakra-ui/zag/commit/e02fc59202a8a72f66de6ce63c74df492cc57664) Thanks
   [@segunadebayo](https://github.com/segunadebayo)! - - Add support for `onFileAccept` and `onFileReject` callbacks.
-
   - Add support customizing `ids` and aria labels using `messages` context property.
   - **Breaking**: Update file error types
     - `TOO_MANY_FILES_REJECTION` > `TOO_MANY_FILES`

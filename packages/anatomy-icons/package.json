@@ -1,6 +1,6 @@
 {
   "name": "@zag-js/anatomy-icons",
-  "version": "0.49.0",
+  "version": "1.17.1",
   "keywords": [
     "ui-machines",
     "state-machines",
@@ -15,13 +15,12 @@
   "repository": "https://github.com/chakra-ui/zag/tree/main/packages/machine",
   "sideEffects": false,
   "files": [
-    "dist",
-    "src"
+    "dist"
   ],
   "scripts": {
     "build": "tsup",
-    "test": "jest --config ../../jest.config.js --rootDir . --passWithNoTests",
-    "lint": "eslint src --ext .ts,.tsx",
+    "test": "vitest --passWithNoTests",
+    "lint": "eslint src",
     "gen": "node scripts/generate.mjs",
     "gen-dry": "node scripts/generate.mjs --dry-run",
     "typecheck": "tsc --noEmit",
@@ -37,9 +36,9 @@
   "clean-package": "../../clean-package.config.json",
   "main": "src/index.ts",
   "devDependencies": {
-    "@types/react": "18.3.1",
+    "@types/react": "^19",
     "clean-package": "2.2.0",
-    "react": "18.3.1"
+    "react": "19.1.0"
   },
   "dependencies": {
     "color2k": "2.0.3",

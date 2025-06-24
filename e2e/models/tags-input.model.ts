@@ -1,5 +1,4 @@
 import { expect, type Page } from "@playwright/test"
-import { paste } from "../_utils"
 import { Model } from "./model"
 
 export class TagsInputModel extends Model {
@@ -27,19 +26,35 @@ export class TagsInputModel extends Model {
     return this.page.locator(`[data-testid=${value.toLowerCase()}-input]`)
   }
 
+  getControl() {
+    return this.page.locator(`[data-scope=tags-input][data-part=control]`)
+  }
+
   async paste(value: string) {
     await this.input.focus()
-    return this.page.$eval("[data-testid=input]", paste, value)
+    await this.page.evaluate((value) => navigator.clipboard.writeText(value), value)
+    await this.page.keyboard.press("ControlOrMeta+V")
   }
 
   async addTag(value: string) {
     await this.input.pressSequentially(value)
     await this.page.keyboard.press("Enter")
+    await this.seeInputHasValue("")
+    await this.seeInputIsFocused()
   }
 
   async editTag(value: string) {
     await this.type(value)
     await this.page.keyboard.press("Enter")
+    await this.seeInputIsFocused()
+  }
+
+  async clickControl() {
+    await this.getControl().click()
+  }
+
+  clickTag(value: string) {
+    return this.getTag(value).click()
   }
 
   focusInput() {
@@ -63,8 +78,7 @@ export class TagsInputModel extends Model {
   }
 
   async seeTagIsHighlighted(value: string) {
-    const el = this.getTag(value)
-    await expect(el).toHaveAttribute("data-highlighted", "")
+    await expect(this.getTag(value)).toHaveAttribute("data-highlighted", "")
   }
 
   async seeTag(value: string) {

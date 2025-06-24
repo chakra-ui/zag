@@ -1,0 +1,406 @@
+---
+title: Migration Guide
+description: Migrating your project to v1
+---
+
+# Migration Guide
+
+After years of refinement and iteration, we've cemented Zag to work seamlessly
+across major JavaScript frameworks.
+
+Now, we're taking things to the next level by focusing on:
+
+- **Performance**: Improving the runtime and rendering performance of every
+  component
+- **Bundle Size**: Reducing the gross bundle size of each component + framework
+  adapters
+
+We achieved this by **moving from an external store to native reactive
+primitives** provided by each framework.
+
+Our rigorous performance testing, which involved stress-testing with 10,000
+instances of the same component, revealed roughly **1.5x - 4x** performance
+improvements across components. [View Breakdown](#performance)
+
+## Changed
+
+The major changes are quite simple, and are listed below:
+
+### useMachine
+
+`useMachine` now returns a `service` object instead of a tuple of
+`[state, send]`.
+
+This change is the same across all components. Using "find and replace" will
+help you migrate faster.
+
+**Before**
+
+```tsx
+const [state, send] = useMachine(avatar.machine({ id: useId() }))
+```
+
+**After**
+
+```tsx
+const service = useMachine(avatar.machine, { id: useId() })
+```
+
+> Notice that `avatar.machine` is no longer a function, it is passed directly to
+> `useMachine`.
+
+#### Caveats
+
+Due to the switch from `<component>.machine()` as a function to
+`<component>.machine` as an object, the TS inference is limited for generic
+components like combobox and select.
+
+To help with this, we've exported an equivalent `<component>.Machine` type to
+help with the casting.
+
+```ts
+useMachine(combobox.machine as combobox.Machine<Item>)
+```
+
+### Controlled vs Uncontrolled value
+
+Managing controlled and uncontrolled values is a fairly common need in most
+component libraries.
+
+Previously, we handled this by providing initial and controlled context to the
+machine.
+
+```tsx
+///                                                    👇🏻 Default value
+const [state, send] = useMachine(numberInput.machine({ value: "10" }), {
+  context: {
+    // 👇🏻 Controlled value
+    value: "10",
+  },
+})
+```
+
+This can be initially confusing to users and is error prone.
+
+Now, we've moved the logic to the machine itself. Allowing users to explicitly
+provide a default value and a controlled value.
+
+```tsx
+const service = useMachine(numberInput.machine, {
+  // 👇🏻 Default value
+  defaultValue: "10",
+  // 👇🏻 Controlled value
+  value: "10",
+})
+```
+
+> This change applies all component with some form of `value` prop.
+
+### Controlled vs Uncontrolled open
+
+Previously, we handled controlled and uncontrolled open states by providing
+initial `open` state and an additional `open.controlled` property.
+
+```tsx
+//                                                    👇🏻 Default value
+const [state, send] = useMachine(dialog.machine({ open: true }), {
+  context: {
+    // 👇🏻 Controlled value
+    open: true,
+    "open.controlled": true,
+  },
+})
+```
+
+Now, we've moved the logic to the machine itself. Allowing users to explicitly
+provide a default and controlled open state.
+
+```tsx
+const service = useMachine(dialog.machine, {
+  // 👇🏻 Default value
+  defaultOpen: true,
+  // 👇🏻 Controlled value
+  open: true,
+})
+```
+
+### Typings
+
+`<component>.Context` is now renamed to `<component>.Props`
+
+**Before**
+
+```tsx
+import * as accordion from "@zag-js/accordion"
+
+interface Props extends accordion.Context {}
+```
+
+**After**
+
+```tsx
+import * as accordion from "@zag-js/accordion"
+
+interface Props extends accordion.Props {}
+```
+
+### Toast
+
+The toast component new requires that you create a toast store (or manager), and
+pass that store to the toast group machine.
+
+This store is to be used in userland to create and manage toasts.
+
+> Refer to the [toast](/components/react/toast) documentation for more details.
+
+**Before**
+
+```tsx
+const [state, send] = useMachine(
+  toast.group.machine({
+    overlap: false,
+    placement: "bottom",
+  }),
+)
+
+const toaster = toast.group.connect(state, send, normalizeProps)
+
+// propagate the `toaster` via context and use it in your app.
+
+toaster.create({
+  title: "Hello",
+  description: "World",
+})
+```
+
+**After**
+
+```tsx
+const toaster = toast.createStore({
+  overlap: false,
+  placement: "bottom",
+})
+
+const service = useMachine(toast.group.machine, {
+  store: toaster,
+})
+
+// use the `toaster` store to create and manage toasts. No need for context.
+
+toaster.create({
+  title: "Hello",
+  description: "World",
+})
+```
+
+For Solid.js users, we recommend using `<Key>` exported from `@zag-js/solid`
+when mapping over the toasts, instead of the `<For>` component.
+
+## Fixed
+
+- **Menu**: Fix issue where context menu doesn't update positioning on
+  subsequent right clicks.
+
+- **Avatar**: Fix issue where `api.setSrc` doesn't work.
+
+- **File Upload**: Fix issue where drag-and-drop doesn't work when `directory`
+  is `true`.
+
+- **Carousel**
+
+  - Fix issue where initial page is not working.
+  - Fix issue where pagination sync broken after using dots indicators.
+
+## Removed
+
+- General
+
+  - Removed `useActor` hook in favor of `useMachine` everywhere.
+  - Removed `open.controlled` in favor of `defaultOpen` and `open` props.
+
+- Pagination
+
+  - `api.setCount` is removed in favor of explicitly setting the `count` prop.
+
+- Select, Combobox
+
+  - `api.setCollection` is removed in favor of explicitly setting the
+    `collection` prop.
+
+## Performance
+
+We measured the mount performance of 10k instances of each component, and
+compared the before and after.
+
+### Avatar
+
+**Result**: ~27% faster mount time and ~99% faster update time
+
+#**Before**
+
+```sh
+{phase: 'mount', duration: 1007.3000000119209}
+{phase: 'update', duration: 890.4000000357628}
+```
+
+**#After:**
+
+```sh
+{phase: 'mount', duration: 736.9999999403954}
+{phase: 'update', duration: 1.899999976158142}
+```
+
+### Accordion
+
+**Result**: ~61% faster mount time and no update time
+
+**Before**
+
+```sh
+{phase: 'mount', duration: 2778.4999997913837}
+{phase: 'update', duration: 2.3000000715255737}
+```
+
+**After**
+
+```sh
+{phase: 'mount', duration: 1079.0000001490116}
+```
+
+### Collapsible
+
+**Result**: ~65% faster mount time and no update time
+
+**Before**
+
+```sh
+{phase: 'mount', duration: 834.4000000357628}
+{phase: 'update', duration: 2.1999999284744263}
+```
+
+**After**
+
+```sh
+{phase: 'mount', duration: 290.3000001013279}
+```
+
+### Dialog
+
+**Result**: ~80% faster mount time and no update time
+
+**Before**
+
+```sh
+{phase: 'mount', duration: 688.9000000357628}
+{phase: 'update', duration: 2.0000000298023224}
+```
+
+**After**
+
+```sh
+{phase: 'mount', duration: 135.50000008940697}
+```
+
+### Editable
+
+**Result**: ~56% faster mount time and no update time
+
+**Before**
+
+```sh
+{phase: 'mount', duration: 1679.500000089407}
+{phase: 'update', duration: 2.0000000298023224}
+```
+
+**After**
+
+```sh
+{phase: 'mount', duration: 737.5999999940395}
+```
+
+### Tooltip
+
+**Result**: ~82% faster mount time and no update time
+
+**Before**
+
+```sh
+{phase: 'mount', duration: 797.7999999821186}
+{phase: 'update', duration: 2.5999999940395355}
+```
+
+**After**
+
+```sh
+{phase: 'mount', duration: 139.9000000357628}
+```
+
+### Presence
+
+**Result**: ~64% faster mount time and eliminated update time
+
+**Before**
+
+```sh
+{ phase: "mount", duration: 1414 }
+{ phase: "update", duration: 0 }
+```
+
+**After**
+
+```sh
+{ phase: "mount", duration: 502 }
+```
+
+### Tabs
+
+**Result**: ~6% faster mount time
+
+**Before**
+
+```sh
+{ phase: "mount", duration: 4120 }
+{ phase: "update", duration: 2014 }
+```
+
+**After**
+
+```sh
+{ phase: "mount", duration: 3880 }
+{ phase: "nested-update", duration: 3179 }
+```
+
+## Bundle Size
+
+We've made significant strides in reducing the bundle size of the overall
+library. The core package powers all components. It is now less than 2KB
+minified, a whopping **98% reduction** in size.
+
+**Before**: 13.78 KB
+
+**After**: 1.52 KB
+
+## Contributors Notes
+
+- `activities` is now renamed to `effects`
+
+- `prop`, `context` and `refs` are now explicitly passed to the machine. Prior
+  to this everything was pass to the `context` object which was quite expensive
+  (performance wise).
+
+- The syntax for `watch` has changed significantly, refer to the new machines to
+  learn how it works. It is somewhat similar to how `useEffect` works in react.
+
+- `createMachine` is just an identity function, it doesn't do anything. The
+  machine work is now moved to the framework `useMachine` hook.
+
+## Thank you
+
+We'd like to thank the following contributors for their help in making this
+release possible:
+
+- [Segun Adebayo](https://github.com/segunadebayo) for leading the charge and
+  making such engineering feats possible.
+
+- [Christian Schroeter](https://github.com/cschroeter) for providing valuable
+  feedback and suggestions to improve the library.

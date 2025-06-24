@@ -1,0 +1,24 @@
+```html
+<script setup>
+  import * as zagSwitch from "@zag-js/switch"
+  import { normalizeProps, useMachine } from "@zag-js/vue"
+  import { computed } from "vue"
+
+  const service = useMachine(zagSwitch.machine, { id: "1" })
+
+  const api = computed(() => zagSwitch.connect(service, normalizeProps))
+</script>
+
+<template>
+  <label v-bind="api.getRootProps()">
+    <input v-bind="api.getHiddenInputProps()" />
+    <span v-bind="api.getControlProps()">
+      <span v-bind="api.getThumbProps()" />
+    </span>
+    <span v-bind="api.getLabelProps()">
+      <span v-if="api.checked">On</span>
+      <span v-else>Off</span>
+    </span>
+  </label>
+</template>
+```

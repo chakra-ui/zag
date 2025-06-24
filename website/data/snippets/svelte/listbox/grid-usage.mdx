@@ -1,0 +1,43 @@
+```svelte
+<script lang="ts">
+  import * as listbox from "@zag-js/listbox"
+  import { normalizeProps, useMachine } from "@zag-js/svelte"
+  import { createUniqueId } from "@zag-js/utils"
+
+  const data = [
+    { label: "Red", value: "red" },
+    { label: "Green", value: "green" },
+    { label: "Blue", value: "blue" },
+    { label: "Yellow", value: "yellow" },
+    { label: "Purple", value: "purple" },
+    { label: "Orange", value: "orange" },
+  ]
+
+  const collection = listbox.gridCollection({
+    items: data,
+    columnCount: 3,
+  })
+
+  const service = useMachine(listbox.machine, {
+    id: createUniqueId(),
+    collection,
+  })
+
+  const api = $derived(listbox.connect(service, normalizeProps))
+</script>
+
+<div {...api.getRootProps()}>
+  <label {...api.getLabelProps()}>Select color</label>
+  <div
+    {...api.getContentProps()}
+    style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px"
+  >
+    {#each data as item}
+      <div {...api.getItemProps({ item })}>
+        <span {...api.getItemTextProps({ item })}>{item.label}</span>
+        <span {...api.getItemIndicatorProps({ item })}>✓</span>
+      </div>
+    {/each}
+  </div>
+</div>
+```

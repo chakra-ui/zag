@@ -4,18 +4,22 @@ export { connect } from "./menu.connect"
 export { machine } from "./menu.machine"
 export * from "./menu.props"
 export type {
-  MachineApi as Api,
-  UserDefinedContext as Context,
+  MenuApi as Api,
   HighlightChangeDetails,
   ItemGroupLabelProps,
   ItemGroupProps,
+  ItemListenerProps,
   ItemProps,
+  ItemBaseProps,
   ItemState,
+  MenuMachine as Machine,
+  NavigateDetails,
   OpenChangeDetails,
   OptionItemProps,
   OptionItemState,
   Point,
   PositioningOptions,
+  MenuProps as Props,
   SelectionDetails,
-  Service,
+  MenuService as Service,
 } from "./menu.types"

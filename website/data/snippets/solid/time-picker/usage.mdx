@@ -1,0 +1,70 @@
+```jsx
+import * as timePicker from "@zag-js/time-picker"
+import { normalizeProps, useMachine } from "@zag-js/solid"
+import { For, createMemo, createUniqueId, type ParentProps } from "solid-js"
+import { Portal } from "solid-js/web"
+
+function Wrapper(props: ParentProps) {
+  return <Portal mount={document.body}>{props.children}</Portal>
+}
+
+export function TimePicker() {
+  const service = useMachine(timePicker.machine, { id: createUniqueId() })
+
+  const api = createMemo(() => timePicker.connect(service, normalizeProps))
+
+  return (
+    <>
+      <div {...api().getRootProps()}>
+        <div {...api().getControlProps()} style={{ display: "flex", gap: "10px" }}>
+          <input {...api().getInputProps()} />
+          <button {...api().getTriggerProps()}>🗓</button>
+          <button {...api().getClearTriggerProps()}>❌</button>
+        </div>
+
+        <Wrapper>
+          <div {...api().getPositionerProps()}>
+            <div {...api().getContentProps()}>
+              <div {...api().getColumnProps({ unit: "hour" })}>
+                <For each={api().getHours()}>
+                  {(item) => (
+                    <button {...api().getHourCellProps({ value: item.value })}>
+                      {item.label}
+                    </button>
+                  )}
+                </For>
+              </div>
+              <div {...api().getColumnProps({ unit: "minute" })}>
+                <For each={api().getMinutes()}>
+                  {(item) => (
+                    <button {...api().getMinuteCellProps({ value: item.value })}>
+                      {item.label}
+                    </button>
+                  )}
+                </For>
+              </div>
+              <div {...api().getColumnProps({ unit: "second" })}>
+                <For each={api().getSeconds()}>
+                  {(item) => (
+                    <button {...api().getSecondCellProps({ value: item.value })}>
+                      {item.label}
+                    </button>
+                  )}
+                </For>
+              </div>
+              <div {...api().getColumnProps({ unit: "period" })}>
+                <button {...api().getPeriodCellProps({ value: "am" })}>
+                  AM
+                </button>
+                <button {...api().getPeriodCellProps({ value: "pm" })}>
+                  PM
+                </button>
+              </div>
+            </div>
+          </div>
+        </Wrapper>
+      </div>
+    </>
+  )
+}
+```

@@ -13,22 +13,6 @@ export function getTodayDate(timeZone?: string) {
   return today(timeZone ?? getLocalTimeZone())
 }
 
-export function getNextDay(date: DateValue) {
-  return date.add({ days: 1 })
-}
-
-export function getPreviousDay(date: DateValue) {
-  return date.subtract({ days: 1 })
-}
-
-export function setMonth(date: DateValue, month: number) {
-  return date.set({ month })
-}
-
-export function setYear(date: DateValue, year: number) {
-  return date.set({ year })
-}
-
 export function setCalendar(date: DateValue, calendar: Calendar) {
   return toCalendar(toCalendarDateTime(date), calendar)
 }

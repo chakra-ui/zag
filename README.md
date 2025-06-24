@@ -4,6 +4,14 @@
 
 # Zag
 
+<p>
+  <img alt="NPM Downloads" src="https://img.shields.io/npm/dm/@zag-js/core.svg?style=flat"/>
+  <img alt="Github Stars" src="https://badgen.net/github/stars/chakra-ui/zag" />
+  <a href="https://zagjs.com/discord">
+    <img alt="Discord" src="https://img.shields.io/discord/660863154703695893.svg?label=&logo=discord&logoColor=ffffff&color=7389D8&labelColor=6A7EC2" />
+  </a>
+</p>
+
 Finite state machines for accessible JavaScript components
 
 - **Write once, use everywhere 🦄**: The component interactions are modelled in a framework agnostic way. We provide
@@ -66,11 +74,11 @@ import * as toggle from "@zag-js/toggle-group"
 import { useId } from "react"
 
 export function ToggleGroup() {
-  const [state, send] = useMachine(toggle.machine({ id: useId() }))
-  const api = toggle.connect(state, send, normalizeProps)
+  const service = useMachine(toggle.machine({ id: useId() }))
+  const api = toggle.connect(service, normalizeProps)
 
   return (
-    <div {...api.rootProps}>
+    <div {...api.getRootProps()}>
       <button {...api.getItemProps({ value: "bold" })}>B</button>
       <button {...api.getItemProps({ value: "italic" })}>I</button>
       <button {...api.getItemProps({ value: "underline" })}>U</button>

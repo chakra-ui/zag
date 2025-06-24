@@ -14,9 +14,9 @@ A toggle group is used to toggle either one option or multiple options.
 
 **Features**
 
-- Fully managed keyboard navigation.
-- Supports horizontal and vertical orientation.
-- Support for multiple selection.
+- Fully managed keyboard navigation
+- Supports horizontal and vertical orientation
+- Support for multiple selection
 
 ## Installation
 
@@ -24,9 +24,6 @@ To use the toggle group machine in your project, run the following command in
 your command line:
 
 <CodeSnippet id="toggle-group/installation.mdx" />
-
-This command will install the framework agnostic toggle group logic and the
-reactive utilities for your framework of choice.
 
 ## Anatomy
 
@@ -60,99 +57,87 @@ toggle group machine in your project 🔥
 
 <CodeSnippet id="toggle-group/usage.mdx" />
 
-## Changing the orientation
+### Changing the orientation
 
 By default, the toggle group is assumed to be horizontal. To change the
 orientation to vertical, set the `orientation` property in the machine's context
 to `vertical`.
 
-```jsx {3}
-const [state, send] = useMachine(
-  toggle.machine({
-    orientation: "vertical",
-  }),
-)
+```jsx {2}
+const service = useMachine(toggle.machine, {
+  orientation: "vertical",
+})
 ```
 
-## Listening for value changes
+### Listening for value changes
 
 When the pressed toggle in the group changes, `onValueChange` callback is
 invoked.
 
-```jsx {3-5}
-const [state, send] = useMachine(
-  toggle.machine({
-    onValueChange(details) {
-      // details => { value: string[] }
-      console.log(details.value)
-    },
-  }),
-)
+```jsx {2-4}
+const service = useMachine(toggle.machine, {
+  onValueChange(details) {
+    // details => { value: string[] }
+    console.log(details.value)
+  },
+})
 ```
 
-## Allowing multiple selection
+### Allowing multiple selection
 
 Set the `multiple` property in the machine's context to `true` to allow multiple
 options to be toggled.
 
-```jsx {3}
-const [state, send] = useMachine(
-  toggle.machine({
-    multiple: true,
-  }),
-)
+```jsx {2}
+const service = useMachine(toggle.machine, {
+  multiple: true,
+})
 ```
 
-## Disabling the toggle group
+### Disabling the toggle group
 
 Set the `disabled` property in the machine's context to `true` to disable the
 toggle group.
 
-```jsx {3}
-const [state, send] = useMachine(
-  toggle.machine({
-    disabled: true,
-  }),
-)
+```jsx {2}
+const service = useMachine(toggle.machine, {
+  disabled: true,
+})
 ```
 
-## Disabling a toggle
+### Disabling a toggle
 
 Set the `disabled` property in the `getToggleProps` function to `true` to
 disable a toggle.
 
 ```jsx
 //...
-<div {...api.rootProps}>
+<div {...api.getRootProps()}>
   <button {...api.getToggleProps({ value: "bold", disabled: true })}>B</button>
 </div>
 //...
 ```
 
-## Disabling focus loop
+### Disabling focus loop
 
 The toggle group loops keyboard navigation by default. To disable this, set the
 `loop` property in the machine's context to `false`.
 
-```jsx {3}
-const [state, send] = useMachine(
-  toggle.machine({
-    loop: false,
-  }),
-)
+```jsx {2}
+const service = useMachine(toggle.machine, {
+  loop: false,
+})
 ```
 
-## Disabling roving focus management
+### Disabling roving focus management
 
 The toggle group uses roving focus management by default. To disable this, set
 the `rovingFocus` property in the machine's context to `false`.
 
-```jsx {3}
-const [state, send] = useMachine(
-  toggle.machine({
-    rovingFocus: false,
-  }),
-)
+```jsx {2}
+const service = useMachine(toggle.machine, {
+  rovingFocus: false,
+})
 ```
 
 ## Styling Guide
@@ -215,6 +200,10 @@ The toggle group `api` exposes the following methods:
 
 <ApiTable name="toggle-group" />
 
+### Data Attributes
+
+<DataAttrTable name="toggle-group" />
+
 ## Accessibility
 
 Uses
@@ -223,4 +212,4 @@ to manage focus movement among items.
 
 ### Keyboard Interactions
 
-<KeyboardTable id="toggle-group" />
+<KeyboardTable name="toggle-group" />

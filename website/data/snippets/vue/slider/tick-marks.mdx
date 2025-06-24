@@ -1,0 +1,20 @@
+```html {11-15}
+//...
+
+<div>
+  <div v-bind="api.getControlProps()">
+    <div v-bind="api.getTrackProps()">
+      <div v-bind="api.getRangeProps()" />
+    </div>
+    <div v-bind="api.getThumbProps({ index: 0 })">
+      <input v-bind="api.getHiddenInputProps({ index: 0 })" />
+    </div>
+  </div>
+  <div v-bind="api.getMarkerGroupProps()">
+    <span v-bind="api.getMarkerProps({ value: 10 })">|</span>
+    <span v-bind="api.getMarkerProps({ value: 30 })">|</span>
+    <span v-bind="api.getMarkerProps({ value: 90 })">|</span>
+  </div>
+</div>
+//...
+```

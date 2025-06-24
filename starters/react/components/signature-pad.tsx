@@ -1,38 +1,41 @@
-/* eslint-disable @next/next/no-img-element */
 import { normalizeProps, useMachine } from "@zag-js/react"
 import * as signaturePad from "@zag-js/signature-pad"
 import { useId, useState } from "react"
 
-export function SignaturePad(props: { value?: string }) {
-  const [url, setUrl] = useState(props.value ?? "")
+interface Props extends Omit<signaturePad.Props, "id"> {
+  value?: string
+}
 
-  const [state, send] = useMachine(
-    signaturePad.machine({
-      id: useId(),
-      onDrawEnd(details) {
-        details.getDataUrl("image/png").then(setUrl)
-      },
-    }),
-  )
+export function SignaturePad(props: Props) {
+  const { value, ...context } = props
+  const [url, setUrl] = useState(value ?? "")
 
-  const api = signaturePad.connect(state, send, normalizeProps)
+  const service = useMachine(signaturePad.machine, {
+    id: useId(),
+    onDrawEnd(details) {
+      details.getDataUrl("image/png").then(setUrl)
+    },
+    ...context,
+  })
+
+  const api = signaturePad.connect(service, normalizeProps)
 
   return (
-    <div {...api.rootProps}>
-      <label {...api.labelProps}>Signature Pad</label>
+    <div {...api.getRootProps()}>
+      <label {...api.getLabelProps()}>Signature Pad</label>
 
-      <div {...api.controlProps}>
-        <svg {...api.segmentProps}>
+      <div {...api.getControlProps()}>
+        <svg {...api.getSegmentProps()}>
           {api.paths.map((path, i) => (
             <path key={i} {...api.getSegmentPathProps({ path })} />
           ))}
           {api.currentPath && <path {...api.getSegmentPathProps({ path: api.currentPath })} />}
         </svg>
 
-        <div {...api.guideProps} />
+        <div {...api.getGuideProps()} />
       </div>
 
-      <button {...api.clearTriggerProps}>X</button>
+      <button {...api.getClearTriggerProps()}>X</button>
 
       <button
         onClick={() => {

@@ -1,4 +1,4 @@
-import { clampValue, getPercentValue, getValuePercent, snapValueToStep } from "@zag-js/numeric-range"
+import { clampValue, getPercentValue, getValuePercent, snapValueToStep } from "@zag-js/utils"
 import type {
   Color2DAxes,
   ColorAxes,
@@ -23,12 +23,14 @@ export abstract class Color implements ColorType {
   abstract getChannelRange(channel: ColorChannel): ColorChannelRange
   abstract getFormat(): ColorFormat
   abstract getChannels(): [ColorChannel, ColorChannel, ColorChannel]
+  abstract formatChannelValue(channel: ColorChannel, locale: string): string
 
   toHexInt(): number {
     return this.toFormat("rgba").toHexInt()
   }
 
   getChannelValue(channel: ColorChannel): number {
+    // @ts-ignore
     if (channel in this) return this[channel]
     throw new Error("Unsupported color channel: " + channel)
   }
@@ -49,6 +51,7 @@ export abstract class Color implements ColorType {
     const { minValue, maxValue } = this.getChannelRange(channel)
     if (channel in this) {
       let clone = this.clone()
+      // @ts-ignore
       clone[channel] = clampValue(value, minValue, maxValue)
       return clone
     }

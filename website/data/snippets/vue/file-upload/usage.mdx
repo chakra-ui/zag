@@ -1,0 +1,33 @@
+```html
+<script setup>
+  import * as fileUpload from "@zag-js/file-upload"
+  import { normalizeProps, useMachine } from "@zag-js/vue"
+  import { computed } from "vue"
+
+  const service = useMachine(fileUpload.machine, { id: "1" })
+
+  const api = computed(() => fileUpload.connect(service, normalizeProps))
+</script>
+
+<template>
+  <div v-bind="api.getRootProps()">
+    <div v-bind="api.getDropzoneProps()">
+      <input v-bind="api.getHiddenInputProps()" />
+      Drag your files here
+    </div>
+
+    <button v-bind="api.getTriggerProps()">Choose Files...</button>
+
+    <ul v-bind="api.getItemGroupProps()">
+      <li
+        v-for="file in api.acceptedFiles"
+        :key="file.name"
+        v-bind="api.getItemProps({ file })"
+      >
+        <div v-bind="api.getItemNameProps({ file })">{{ file.name }}</div>
+        <button v-bind="api.getItemDeleteTriggerProps({ file })">Delete</button>
+      </li>
+    </ul>
+  </div>
+</template>
+```

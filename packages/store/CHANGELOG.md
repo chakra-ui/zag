@@ -1,10 +1,241 @@
 # @zag-js/store
 
+## 1.17.1
+
+## 1.17.0
+
+## 1.16.0
+
+## 1.15.7
+
+## 1.15.6
+
+## 1.15.5
+
+## 1.15.4
+
+## 1.15.3
+
+## 1.15.2
+
+## 1.15.1
+
+## 1.15.0
+
+## 1.14.0
+
+## 1.13.1
+
+## 1.13.0
+
+## 1.12.4
+
+## 1.12.3
+
+## 1.12.2
+
+## 1.12.1
+
+## 1.12.0
+
+## 1.11.0
+
+## 1.10.0
+
+## 1.9.3
+
+## 1.9.2
+
+## 1.9.1
+
+## 1.9.0
+
+## 1.8.2
+
+## 1.8.1
+
+## 1.8.0
+
+## 1.7.0
+
+## 1.6.2
+
+## 1.6.1
+
+## 1.6.0
+
+## 1.5.0
+
+## 1.4.2
+
+## 1.4.1
+
+## 1.4.0
+
+## 1.3.3
+
+## 1.3.2
+
+## 1.3.1
+
+## 1.3.0
+
+## 1.2.1
+
+## 1.2.0
+
+## 1.1.0
+
+## 1.0.2
+
+## 1.0.1
+
+## 1.0.0
+
+## 0.82.2
+
+## 0.82.1
+
+## 0.82.0
+
+## 0.81.2
+
+## 0.81.1
+
+## 0.81.0
+
+## 0.80.0
+
+## 0.79.3
+
+## 0.79.2
+
+## 0.79.1
+
+## 0.79.0
+
+## 0.78.3
+
+### Patch Changes
+
+- [`5584a83`](https://github.com/chakra-ui/zag/commit/5584a833151ee9f2c2ef9c07b6d699addfbca18e) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - - Fix issue where react elements could not be passed to tree view.
+  In general, we've improved the entire machine to better support complex objects like react and vue elements.
+  - Remove support for promises in store and snapshot. Prefer to use framework-specific hooks to manage async
+    operations.
+
+## 0.78.2
+
+## 0.78.1
+
+## 0.78.0
+
+## 0.77.1
+
+## 0.77.0
+
+## 0.76.0
+
+## 0.75.0
+
+## 0.74.2
+
+## 0.74.1
+
+## 0.74.0
+
+## 0.73.1
+
+## 0.73.0
+
+## 0.72.0
+
+## 0.71.0
+
+### Minor Changes
+
+- [`b3a251e`](https://github.com/chakra-ui/zag/commit/b3a251e5e10b9b27af353e0f41117329846b14e9) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - We no longer ship `src` files in the packages.
+
+## 0.70.0
+
+## 0.69.0
+
+## 0.68.1
+
+## 0.68.0
+
+## 0.67.0
+
+## 0.66.1
+
+## 0.66.0
+
+## 0.65.1
+
+## 0.65.0
+
+## 0.64.0
+
+## 0.63.0
+
+## 0.62.1
+
+## 0.62.0
+
+## 0.61.1
+
+## 0.61.0
+
+## 0.60.0
+
+### Minor Changes
+
+- [#1641](https://github.com/chakra-ui/zag/pull/1641)
+  [`49bf73b`](https://github.com/chakra-ui/zag/commit/49bf73b7119bdd5dfd40d33119c3543626e201f0) Thanks
+  [@baptisteArno](https://github.com/baptisteArno)! - Improve reliability in web runtime by wrapping the `process.env`
+  check in a function
+
+## 0.59.0
+
+## 0.58.3
+
+## 0.58.2
+
+## 0.58.1
+
+## 0.58.0
+
+## 0.57.0
+
+## 0.56.1
+
+## 0.56.0
+
+## 0.55.0
+
+## 0.54.0
+
+## 0.53.0
+
+## 0.52.0
+
+## 0.51.2
+
+## 0.51.1
+
+## 0.51.0
+
+## 0.50.0
+
 ## 0.49.0
 
 ### Patch Changes
 
-- [#1441](https://github.com/chakra-ui/zag/pull/1441) [`c8aeca4`](https://github.com/chakra-ui/zag/commit/c8aeca475b078806c2765659668d843037746ba6) Thanks [@segunadebayo](https://github.com/segunadebayo)! - Fix issue where multiple versions of @zag-js/store could lead to "proxy state is not iterable" errors.
+- [#1441](https://github.com/chakra-ui/zag/pull/1441)
+  [`c8aeca4`](https://github.com/chakra-ui/zag/commit/c8aeca475b078806c2765659668d843037746ba6) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix issue where multiple versions of @zag-js/store could lead to
+  "proxy state is not iterable" errors.
 
 ## 0.48.0
 

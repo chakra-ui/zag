@@ -24,9 +24,6 @@ your command line:
 
 <CodeSnippet id="rating-group/installation.mdx" />
 
-This command will install the framework agnostic rating logic and the reactive
-utilities for your framework of choice.
-
 ## Anatomy
 
 To set up the rating correctly, you'll need to understand its anatomy and how we
@@ -58,70 +55,60 @@ rating machine in your project 🔥
 
 <CodeSnippet id="rating-group/usage.mdx" />
 
-## Disabling the rating group
+### Disabling the rating group
 
 To make rating disabled, set the context's `disabled` property to true
 
-```jsx {3}
-const [state, send] = useMachine(
-  rating.machine({
-    disabled: true,
-  }),
-)
+```jsx {2}
+const service = useMachine(rating.machine, {
+  disabled: true,
+})
 ```
 
-## Making the rating readonly
+### Making the rating readonly
 
 To make rating readonly, set the context's `readOnly` property to true
 
-```jsx {3}
-const [state, send] = useMachine(
-  rating.machine({
-    readOnly: true,
-  }),
-)
+```jsx {2}
+const service = useMachine(rating.machine, {
+  readOnly: true,
+})
 ```
 
-## Setting the initial value
+### Setting the initial value
 
-To set the rating's initial value, set the context's `value` property.
+Use the `defaultValue` property to set the rating's initial value.
 
-```jsx {3}
-const [state, send] = useMachine(
-  rating.machine({
-    value: 2.5,
-  }),
-)
+```jsx {2}
+const service = useMachine(rating.machine, {
+  defaultValue: 2.5,
+})
 ```
 
-## Listening for changes
+### Listening for changes
 
 When the rating value changes, the `onValueChange` callback is invoked.
 
-```jsx {3-8}
-const [state, send] = useMachine(
-  rating.machine({
-    onValueChange({ value }) {
-      console.log("rating value is:", value)
-      // '1' | '2.5' | '4'
-    },
-  }),
-)
+```jsx {2-7}
+const service = useMachine(rating.machine, {
+  onValueChange({ value }) {
+    console.log("rating value is:", value)
+    // '1' | '2.5' | '4'
+  },
+})
 ```
 
-## Usage within forms
+### Usage within forms
 
 To use rating within forms, use the exposed `inputProps` from the `connect`
 function and ensure you pass `name` value to the machine's context. It will
 render a hidden input and ensure the value changes get propagated to the form
 correctly.
 
-```jsx {3}
-const [state, send] = useMachine(
-  rating.machine({
-    name: "rating",
-  }),
-)
+```jsx {2}
+const service = useMachine(rating.machine, {
+  name: "rating",
+})
 ```
 
 ## Styling guide
@@ -205,8 +192,12 @@ The rating group `api` exposes the following methods:
 
 <ApiTable name="rating-group" />
 
+### Data Attributes
+
+<DataAttrTable name="rating-group" />
+
 ## Accessibility
 
 ### Keyboard Interactions
 
-<KeyboardTable id="rating-group" />
+<KeyboardTable name="rating-group" />

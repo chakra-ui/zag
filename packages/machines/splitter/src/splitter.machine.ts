@@ -1,285 +1,595 @@
-import { createMachine } from "@zag-js/core"
-import { getRelativePoint, trackPointerMove } from "@zag-js/dom-event"
-import { raf } from "@zag-js/dom-query"
-import { compact } from "@zag-js/utils"
-import { dom } from "./splitter.dom"
-import type { MachineContext, MachineState, UserDefinedContext } from "./splitter.types"
-import { clamp, getHandleBounds, getHandlePanels, getNormalizedPanels, getPanelBounds } from "./splitter.utils"
+import { createMachine, type Params } from "@zag-js/core"
+import { trackPointerMove } from "@zag-js/dom-query"
+import { ensure, ensureProps, isEqual, next, prev, setRafTimeout } from "@zag-js/utils"
+import * as dom from "./splitter.dom"
+import type { CursorState, ResizeTriggerId, DragState, KeyboardState, SplitterSchema } from "./splitter.types"
+import { getAriaValue } from "./utils/aria"
+import { fuzzyNumbersEqual, fuzzySizeEqual } from "./utils/fuzzy"
+import {
+  findPanelDataIndex,
+  getPanelById,
+  getPanelLayout,
+  getUnsafeDefaultSize,
+  panelDataHelper,
+  serializePanels,
+  sortPanels,
+} from "./utils/panel"
+import { resizeByDelta } from "./utils/resize-by-delta"
+import { validateSizes } from "./utils/validate-sizes"
 
-export function machine(userContext: UserDefinedContext) {
-  const ctx = compact(userContext)
-  return createMachine<MachineContext, MachineState>(
-    {
-      id: "splitter",
-      initial: "idle",
-      context: {
-        orientation: "horizontal",
-        activeResizeId: null,
-        previousPanels: [],
-        size: [],
-        initialSize: [],
-        activeResizeState: {
-          isAtMin: false,
-          isAtMax: false,
+export const machine = createMachine<SplitterSchema>({
+  props({ props }) {
+    ensureProps(props, ["panels"])
+    return {
+      orientation: "horizontal",
+      defaultSize: [],
+      dir: "ltr",
+      ...props,
+      panels: sortPanels(props.panels),
+    }
+  },
+
+  initialState() {
+    return "idle"
+  },
+
+  context({ prop, bindable, getContext, getRefs }) {
+    return {
+      size: bindable(() => ({
+        value: prop("size"),
+        defaultValue: prop("defaultSize"),
+        isEqual(a, b) {
+          return b != null && fuzzySizeEqual(a, b)
         },
-        ...ctx,
-      },
+        onChange(value) {
+          const ctx = getContext()
+          const refs = getRefs()
 
-      created: ["setPreviousPanels", "setInitialSize"],
+          const sizesBeforeCollapse = refs.get("panelSizeBeforeCollapse")
+          const expandToSizes = Object.fromEntries(sizesBeforeCollapse.entries())
+          const resizeTriggerId = ctx.get("dragState")?.resizeTriggerId ?? null
+          const layout = getPanelLayout(prop("panels"))
 
-      watch: {
-        size: ["setActiveResizeState"],
-      },
+          prop("onResize")?.({
+            size: value,
+            layout,
+            resizeTriggerId,
+            expandToSizes,
+          })
+        },
+      })),
+      dragState: bindable<DragState | null>(() => ({
+        defaultValue: null,
+      })),
+      keyboardState: bindable<KeyboardState | null>(() => ({
+        defaultValue: null,
+      })),
+    }
+  },
 
-      computed: {
-        isHorizontal: (ctx) => ctx.orientation === "horizontal",
-        panels: (ctx) => getNormalizedPanels(ctx),
-      },
+  watch({ track, action, prop }) {
+    track([() => serializePanels(prop("panels"))], () => {
+      action(["syncSize"])
+    })
+  },
 
+  refs() {
+    return {
+      panelSizeBeforeCollapse: new Map(),
+      prevDelta: 0,
+      panelIdToLastNotifiedSizeMap: new Map(),
+    }
+  },
+
+  computed: {
+    horizontal({ prop }) {
+      return prop("orientation") === "horizontal"
+    },
+  },
+
+  on: {
+    "SIZE.SET": {
+      actions: ["setSize"],
+    },
+    "PANEL.COLLAPSE": {
+      actions: ["collapsePanel"],
+    },
+    "PANEL.EXPAND": {
+      actions: ["expandPanel"],
+    },
+    "PANEL.RESIZE": {
+      actions: ["resizePanel"],
+    },
+  },
+
+  entry: ["syncSize"],
+
+  states: {
+    idle: {
+      entry: ["clearDraggingState", "clearKeyboardState"],
       on: {
-        SET_PANEL_SIZE: {
-          actions: "setPanelSize",
+        POINTER_OVER: {
+          target: "hover:temp",
+          actions: ["setKeyboardState"],
         },
-      },
-      states: {
-        idle: {
-          entry: ["clearActiveHandleId"],
-          on: {
-            POINTER_OVER: {
-              target: "hover:temp",
-              actions: ["setActiveHandleId"],
-            },
-            FOCUS: {
-              target: "focused",
-              actions: ["setActiveHandleId"],
-            },
-            DOUBLE_CLICK: {
-              actions: ["resetStartPanel", "setPreviousPanels"],
-            },
-          },
+        FOCUS: {
+          target: "focused",
+          actions: ["setKeyboardState"],
         },
-
-        "hover:temp": {
-          after: {
-            HOVER_DELAY: "hover",
-          },
-          on: {
-            POINTER_DOWN: {
-              target: "dragging",
-              actions: ["setActiveHandleId"],
-            },
-            POINTER_LEAVE: "idle",
-          },
-        },
-
-        hover: {
-          tags: ["focus"],
-          on: {
-            POINTER_DOWN: "dragging",
-            POINTER_LEAVE: "idle",
-          },
-        },
-
-        focused: {
-          tags: ["focus"],
-          on: {
-            BLUR: "idle",
-            POINTER_DOWN: {
-              target: "dragging",
-              actions: ["setActiveHandleId"],
-            },
-            ARROW_LEFT: {
-              guard: "isHorizontal",
-              actions: ["shrinkStartPanel", "setPreviousPanels"],
-            },
-            ARROW_RIGHT: {
-              guard: "isHorizontal",
-              actions: ["expandStartPanel", "setPreviousPanels"],
-            },
-            ARROW_UP: {
-              guard: "isVertical",
-              actions: ["shrinkStartPanel", "setPreviousPanels"],
-            },
-            ARROW_DOWN: {
-              guard: "isVertical",
-              actions: ["expandStartPanel", "setPreviousPanels"],
-            },
-            ENTER: [
-              {
-                guard: "isStartPanelAtMax",
-                actions: ["setStartPanelToMin", "setPreviousPanels"],
-              },
-              { actions: ["setStartPanelToMax", "setPreviousPanels"] },
-            ],
-            HOME: {
-              actions: ["setStartPanelToMin", "setPreviousPanels"],
-            },
-            END: {
-              actions: ["setStartPanelToMax", "setPreviousPanels"],
-            },
-          },
-        },
-
-        dragging: {
-          tags: ["focus"],
-          entry: "focusResizeHandle",
-          activities: ["trackPointerMove"],
-          on: {
-            POINTER_MOVE: {
-              actions: ["setPointerValue", "setGlobalCursor", "invokeOnResize"],
-            },
-            POINTER_UP: {
-              target: "focused",
-              actions: ["setPreviousPanels", "clearGlobalCursor", "blurResizeHandle", "invokeOnResizeEnd"],
-            },
-          },
+        POINTER_DOWN: {
+          target: "dragging",
+          actions: ["setDraggingState"],
         },
       },
     },
-    {
-      activities: {
-        trackPointerMove: (ctx, _evt, { send }) => {
-          const doc = dom.getDoc(ctx)
-          return trackPointerMove(doc, {
-            onPointerMove(info) {
-              send({ type: "POINTER_MOVE", point: info.point })
-            },
-            onPointerUp() {
-              send("POINTER_UP")
-            },
-          })
-        },
-      },
-      guards: {
-        isStartPanelAtMin: (ctx) => ctx.activeResizeState.isAtMin,
-        isStartPanelAtMax: (ctx) => ctx.activeResizeState.isAtMax,
-        isHorizontal: (ctx) => ctx.isHorizontal,
-        isVertical: (ctx) => !ctx.isHorizontal,
-      },
-      delays: {
-        HOVER_DELAY: 250,
-      },
-      actions: {
-        setGlobalCursor(ctx) {
-          dom.setupGlobalCursor(ctx)
-        },
-        clearGlobalCursor(ctx) {
-          dom.removeGlobalCursor(ctx)
-        },
-        invokeOnResize(ctx) {
-          ctx.onSizeChange?.({ size: Array.from(ctx.size), activeHandleId: ctx.activeResizeId })
-        },
-        invokeOnResizeEnd(ctx) {
-          ctx.onSizeChangeEnd?.({ size: Array.from(ctx.size), activeHandleId: ctx.activeResizeId })
-        },
-        setActiveHandleId(ctx, evt) {
-          ctx.activeResizeId = evt.id
-        },
-        clearActiveHandleId(ctx) {
-          ctx.activeResizeId = null
-        },
-        setInitialSize(ctx) {
-          ctx.initialSize = ctx.panels.slice().map((panel) => ({
-            id: panel.id,
-            size: panel.size,
-          }))
-        },
-        setPanelSize(ctx, evt) {
-          const { id, size } = evt
-          ctx.size = ctx.size.map((panel) => {
-            const panelSize = clamp(size, panel.minSize ?? 0, panel.maxSize ?? 100)
-            return panel.id === id ? { ...panel, size: panelSize } : panel
-          })
-        },
-        setStartPanelToMin(ctx) {
-          const bounds = getPanelBounds(ctx)
-          if (!bounds) return
-          const { before, after } = bounds
-          ctx.size[before.index].size = before.min
-          ctx.size[after.index].size = after.min
-        },
-        setStartPanelToMax(ctx) {
-          const bounds = getPanelBounds(ctx)
-          if (!bounds) return
-          const { before, after } = bounds
-          ctx.size[before.index].size = before.max
-          ctx.size[after.index].size = after.max
-        },
-        expandStartPanel(ctx, evt) {
-          const bounds = getPanelBounds(ctx)
-          if (!bounds) return
-          const { before, after } = bounds
-          ctx.size[before.index].size = before.up(evt.step)
-          ctx.size[after.index].size = after.down(evt.step)
-        },
-        shrinkStartPanel(ctx, evt) {
-          const bounds = getPanelBounds(ctx)
-          if (!bounds) return
-          const { before, after } = bounds
-          ctx.size[before.index].size = before.down(evt.step)
-          ctx.size[after.index].size = after.up(evt.step)
-        },
-        resetStartPanel(ctx, evt) {
-          const bounds = getPanelBounds(ctx, evt.id)
-          if (!bounds) return
-          const { before, after } = bounds
-          ctx.size[before.index].size = ctx.initialSize[before.index].size
-          ctx.size[after.index].size = ctx.initialSize[after.index].size
-        },
-        focusResizeHandle(ctx) {
-          raf(() => {
-            dom.getActiveHandleEl(ctx)?.focus({ preventScroll: true })
-          })
-        },
-        blurResizeHandle(ctx) {
-          raf(() => {
-            dom.getActiveHandleEl(ctx)?.blur()
-          })
-        },
-        setPreviousPanels(ctx) {
-          ctx.previousPanels = ctx.panels.slice()
-        },
-        setActiveResizeState(ctx) {
-          const panels = getPanelBounds(ctx)
-          if (!panels) return
-          const { before } = panels
-          ctx.activeResizeState = {
-            isAtMin: before.isAtMin,
-            isAtMax: before.isAtMax,
-          }
-        },
-        setPointerValue(ctx, evt) {
-          const panels = getHandlePanels(ctx)
-          const bounds = getHandleBounds(ctx)
 
-          if (!panels || !bounds) return
-
-          const rootEl = dom.getRootEl(ctx)
-          if (!rootEl) return
-
-          const relativePoint = getRelativePoint(evt.point, rootEl)
-          const percentValue = relativePoint.getPercentValue({
-            dir: ctx.dir,
-            orientation: ctx.orientation,
-          })
-
-          let pointValue = percentValue * 100
-
-          // update active resize state here because we use `previousPanels` in the calculations
-          ctx.activeResizeState = {
-            isAtMin: pointValue < bounds.min,
-            isAtMax: pointValue > bounds.max,
-          }
-
-          pointValue = clamp(pointValue, bounds.min, bounds.max)
-
-          const { before, after } = panels
-
-          const offset = pointValue - before.end
-          ctx.size[before.index].size = before.size + offset
-          ctx.size[after.index].size = after.size - offset
+    "hover:temp": {
+      effects: ["waitForHoverDelay"],
+      on: {
+        HOVER_DELAY: {
+          target: "hover",
+        },
+        POINTER_DOWN: {
+          target: "dragging",
+          actions: ["setDraggingState"],
+        },
+        POINTER_LEAVE: {
+          target: "idle",
         },
       },
     },
-  )
+
+    hover: {
+      tags: ["focus"],
+      on: {
+        POINTER_DOWN: {
+          target: "dragging",
+          actions: ["setDraggingState"],
+        },
+        POINTER_LEAVE: {
+          target: "idle",
+        },
+      },
+    },
+
+    focused: {
+      tags: ["focus"],
+      on: {
+        BLUR: {
+          target: "idle",
+        },
+        ENTER: {
+          actions: ["collapseOrExpandPanel"],
+        },
+        POINTER_DOWN: {
+          target: "dragging",
+          actions: ["setDraggingState"],
+        },
+        KEYBOARD_MOVE: {
+          actions: ["invokeOnResizeStart", "setKeyboardValue", "invokeOnResizeEnd"],
+        },
+        "FOCUS.CYCLE": {
+          actions: ["focusNextResizeTrigger"],
+        },
+      },
+    },
+
+    dragging: {
+      tags: ["focus"],
+      effects: ["trackPointerMove"],
+      entry: ["invokeOnResizeStart"],
+      on: {
+        POINTER_MOVE: {
+          actions: ["setPointerValue", "setGlobalCursor"],
+        },
+        POINTER_UP: {
+          target: "idle",
+          actions: ["invokeOnResizeEnd", "clearGlobalCursor"],
+        },
+      },
+    },
+  },
+
+  implementations: {
+    effects: {
+      waitForHoverDelay: ({ send }) => {
+        return setRafTimeout(() => {
+          send({ type: "HOVER_DELAY" })
+        }, 250)
+      },
+      trackPointerMove: ({ scope, send }) => {
+        const doc = scope.getDoc()
+        return trackPointerMove(doc, {
+          onPointerMove(info) {
+            send({ type: "POINTER_MOVE", point: info.point })
+          },
+          onPointerUp() {
+            send({ type: "POINTER_UP" })
+          },
+        })
+      },
+    },
+
+    actions: {
+      setSize(params) {
+        const { context, event, prop } = params
+
+        const unsafeSize = event.size
+        const prevSize = context.get("size")
+        const panels = prop("panels")
+
+        const safeSize = validateSizes({
+          size: unsafeSize,
+          panels,
+        })
+
+        if (!isEqual(prevSize, safeSize)) {
+          setSize(params, safeSize)
+        }
+      },
+
+      syncSize({ context, prop }) {
+        const panels = prop("panels")
+        let prevSize = context.get("size")
+
+        let unsafeSize: number[] | null = null
+
+        if (prevSize.length === 0) {
+          unsafeSize = getUnsafeDefaultSize({
+            panels,
+            size: context.initial("size"),
+          })
+        }
+
+        const nextSize = validateSizes({
+          size: unsafeSize ?? prevSize,
+          panels,
+        })
+
+        if (!isEqual(prevSize, nextSize)) {
+          context.set("size", nextSize)
+        }
+      },
+
+      setDraggingState({ context, event, prop, scope }) {
+        const orientation = prop("orientation")
+        const size = context.get("size")
+        const resizeTriggerId = event.id
+
+        const panelGroupEl = dom.getRootEl(scope)
+        if (!panelGroupEl) return
+
+        const handleElement = dom.getResizeTriggerEl(scope, resizeTriggerId)
+        ensure(handleElement, () => `Drag handle element not found for id "${resizeTriggerId}"`)
+
+        const initialCursorPosition = orientation === "horizontal" ? event.point.x : event.point.y
+
+        context.set("dragState", {
+          resizeTriggerId: event.id,
+          resizeTriggerRect: handleElement.getBoundingClientRect(),
+          initialCursorPosition,
+          initialSize: size,
+        })
+      },
+
+      clearDraggingState({ context }) {
+        context.set("dragState", null)
+      },
+
+      setKeyboardState({ context, event }) {
+        context.set("keyboardState", {
+          resizeTriggerId: event.id,
+        })
+      },
+
+      clearKeyboardState({ context }) {
+        context.set("keyboardState", null)
+      },
+
+      collapsePanel(params) {
+        const { context, prop, event, refs } = params
+
+        const prevSize = context.get("size")
+        const panels = prop("panels")
+
+        const panel = panels.find((panel) => panel.id === event.id)
+        ensure(panel, () => `Panel data not found for id "${event.id}"`)
+
+        if (panel.collapsible) {
+          const { collapsedSize = 0, panelSize, pivotIndices } = panelDataHelper(panels, panel, prevSize)
+
+          ensure(panelSize, () => `Panel size not found for panel "${panel.id}"`)
+
+          if (!fuzzyNumbersEqual(panelSize, collapsedSize)) {
+            refs.get("panelSizeBeforeCollapse").set(panel.id, panelSize)
+
+            const isLastPanel = findPanelDataIndex(panels, panel) === panels.length - 1
+            const delta = isLastPanel ? panelSize - collapsedSize : collapsedSize - panelSize
+
+            const nextSize = resizeByDelta({
+              delta,
+              initialSize: prevSize,
+              panels,
+              pivotIndices,
+              prevSize,
+              trigger: "imperative-api",
+            })
+
+            if (!isEqual(prevSize, nextSize)) {
+              setSize(params, nextSize)
+            }
+          }
+        }
+      },
+
+      expandPanel(params) {
+        const { context, prop, event, refs } = params
+
+        const panels = prop("panels")
+        const prevSize = context.get("size")
+
+        const panel = panels.find((panel) => panel.id === event.id)
+        ensure(panel, () => `Panel data not found for id "${event.id}"`)
+
+        if (panel.collapsible) {
+          const {
+            collapsedSize = 0,
+            panelSize = 0,
+            minSize: minSizeFromProps = 0,
+            pivotIndices,
+          } = panelDataHelper(panels, panel, prevSize)
+
+          const minSize = event.minSize ?? minSizeFromProps
+
+          if (fuzzyNumbersEqual(panelSize, collapsedSize)) {
+            // Restore this panel to the size it was before it was collapsed, if possible.
+            const prevPanelSize = refs.get("panelSizeBeforeCollapse").get(panel.id)
+
+            const baseSize = prevPanelSize != null && prevPanelSize >= minSize ? prevPanelSize : minSize
+
+            const isLastPanel = findPanelDataIndex(panels, panel) === panels.length - 1
+            const delta = isLastPanel ? panelSize - baseSize : baseSize - panelSize
+
+            const nextSize = resizeByDelta({
+              delta,
+              initialSize: prevSize,
+              panels,
+              pivotIndices,
+              prevSize,
+              trigger: "imperative-api",
+            })
+
+            if (!isEqual(prevSize, nextSize)) {
+              setSize(params, nextSize)
+            }
+          }
+        }
+      },
+
+      resizePanel(params) {
+        const { context, prop, event } = params
+
+        const prevSize = context.get("size")
+        const panels = prop("panels")
+
+        const panel = getPanelById(panels, event.id)
+        const unsafePanelSize = event.size
+
+        const { panelSize, pivotIndices } = panelDataHelper(panels, panel, prevSize)
+        ensure(panelSize, () => `Panel size not found for panel "${panel.id}"`)
+
+        const isLastPanel = findPanelDataIndex(panels, panel) === panels.length - 1
+        const delta = isLastPanel ? panelSize - unsafePanelSize : unsafePanelSize - panelSize
+
+        const nextSize = resizeByDelta({
+          delta,
+          initialSize: prevSize,
+          panels: panels,
+          pivotIndices,
+          prevSize,
+          trigger: "imperative-api",
+        })
+
+        if (!isEqual(prevSize, nextSize)) {
+          setSize(params, nextSize)
+        }
+      },
+
+      setPointerValue(params) {
+        const { context, event, prop, scope } = params
+
+        const dragState = context.get("dragState")
+        if (!dragState) return
+
+        const { resizeTriggerId, initialSize, initialCursorPosition } = dragState
+        const panels = prop("panels")
+
+        const panelGroupElement = dom.getRootEl(scope)
+        ensure(panelGroupElement, () => `Panel group element not found`)
+
+        const pivotIndices = resizeTriggerId.split(":").map((id) => panels.findIndex((panel) => panel.id === id))
+
+        const horizontal = prop("orientation") === "horizontal"
+
+        const cursorPosition = horizontal ? event.point.x : event.point.y
+        const groupRect = panelGroupElement.getBoundingClientRect()
+        const groupSizeInPixels = horizontal ? groupRect.width : groupRect.height
+
+        const offsetPixels = cursorPosition - initialCursorPosition
+        const offsetPercentage = (offsetPixels / groupSizeInPixels) * 100
+
+        const prevSize = context.get("size")
+
+        const nextSize = resizeByDelta({
+          delta: offsetPercentage,
+          initialSize: initialSize ?? prevSize,
+          panels,
+          pivotIndices,
+          prevSize,
+          trigger: "mouse-or-touch",
+        })
+
+        if (!isEqual(prevSize, nextSize)) {
+          setSize(params, nextSize)
+        }
+      },
+
+      setKeyboardValue(params) {
+        const { context, event, prop } = params
+
+        const panelDataArray = prop("panels")
+
+        const resizeTriggerId = event.id as ResizeTriggerId
+        const delta = event.delta
+
+        const pivotIndices = resizeTriggerId
+          .split(":")
+          .map((id) => panelDataArray.findIndex((panelData) => panelData.id === id))
+
+        const prevSize = context.get("size")
+
+        const nextSize = resizeByDelta({
+          delta,
+          initialSize: prevSize,
+          panels: panelDataArray,
+          pivotIndices,
+          prevSize,
+          trigger: "keyboard",
+        })
+
+        if (!isEqual(prevSize, nextSize)) {
+          setSize(params, nextSize)
+        }
+      },
+
+      invokeOnResizeEnd({ context, prop }) {
+        queueMicrotask(() => {
+          const dragState = context.get("dragState")
+          prop("onResizeEnd")?.({
+            size: context.get("size"),
+            resizeTriggerId: dragState?.resizeTriggerId ?? null,
+          })
+        })
+      },
+
+      invokeOnResizeStart({ prop }) {
+        queueMicrotask(() => {
+          prop("onResizeStart")?.()
+        })
+      },
+
+      collapseOrExpandPanel(params) {
+        const { context, prop } = params
+
+        const panelDataArray = prop("panels")
+        const sizes = context.get("size")
+
+        const resizeTriggerId = context.get("keyboardState")?.resizeTriggerId
+        const [idBefore, idAfter] = resizeTriggerId?.split(":") ?? []
+
+        const index = panelDataArray.findIndex((panelData) => panelData.id === idBefore)
+        if (index === -1) return
+
+        const panelData = panelDataArray[index]
+        ensure(panelData, () => `No panel data found for index ${index}`)
+
+        const size = sizes[index]
+
+        const { collapsedSize = 0, collapsible, minSize = 0 } = panelData
+
+        if (size != null && collapsible) {
+          const pivotIndices = [idBefore, idAfter].map((id) =>
+            panelDataArray.findIndex((panelData) => panelData.id === id),
+          )
+
+          const nextSize = resizeByDelta({
+            delta: fuzzyNumbersEqual(size, collapsedSize) ? minSize - collapsedSize : collapsedSize - size,
+            initialSize: context.initial("size"),
+            panels: panelDataArray,
+            pivotIndices,
+            prevSize: sizes,
+            trigger: "keyboard",
+          })
+
+          if (!isEqual(sizes, nextSize)) {
+            setSize(params, nextSize)
+          }
+        }
+      },
+
+      setGlobalCursor({ context, scope, prop }) {
+        const dragState = context.get("dragState")
+        if (!dragState) return
+
+        const panels = prop("panels")
+        const horizontal = prop("orientation") === "horizontal"
+
+        const [idBefore] = dragState.resizeTriggerId.split(":")
+        const indexBefore = panels.findIndex((panel) => panel.id === idBefore)
+        const panel = panels[indexBefore]
+
+        const size = context.get("size")
+        const aria = getAriaValue(size, panels, dragState.resizeTriggerId)
+
+        const isAtMin =
+          fuzzyNumbersEqual(aria.valueNow, aria.valueMin) || fuzzyNumbersEqual(aria.valueNow, panel.collapsedSize)
+
+        const isAtMax = fuzzyNumbersEqual(aria.valueNow, aria.valueMax)
+        const cursorState: CursorState = { isAtMin, isAtMax }
+        dom.setupGlobalCursor(scope, cursorState, horizontal, prop("nonce"))
+      },
+
+      clearGlobalCursor({ scope }) {
+        dom.removeGlobalCursor(scope)
+      },
+
+      focusNextResizeTrigger({ event, scope }) {
+        const resizeTriggers = dom.getResizeTriggerEls(scope)
+        const index = resizeTriggers.findIndex((el) => el.dataset.id === event.id)
+        const handleEl = event.shiftKey ? prev(resizeTriggers, index) : next(resizeTriggers, index)
+        handleEl?.focus()
+      },
+    },
+  },
+})
+
+function setSize(params: Params<SplitterSchema>, sizes: number[]) {
+  const { refs, prop, context } = params
+
+  const panelsArray = prop("panels")
+  const onCollapse = prop("onCollapse")
+  const onExpand = prop("onExpand")
+
+  const panelIdToLastNotifiedSizeMap = refs.get("panelIdToLastNotifiedSizeMap")
+
+  context.set("size", sizes)
+
+  sizes.forEach((size, index) => {
+    const panelData = panelsArray[index]
+    ensure(panelData, () => `Panel data not found for index ${index}`)
+
+    const { collapsedSize = 0, collapsible, id: panelId } = panelData
+
+    const lastNotifiedSize = panelIdToLastNotifiedSizeMap.get(panelId)
+    if (lastNotifiedSize == null || size !== lastNotifiedSize) {
+      panelIdToLastNotifiedSizeMap.set(panelId, size)
+
+      if (collapsible && (onCollapse || onExpand)) {
+        if (
+          (lastNotifiedSize == null || fuzzyNumbersEqual(lastNotifiedSize, collapsedSize)) &&
+          !fuzzyNumbersEqual(size, collapsedSize)
+        ) {
+          onExpand?.({ panelId, size })
+        }
+
+        if (
+          onCollapse &&
+          (lastNotifiedSize == null || !fuzzyNumbersEqual(lastNotifiedSize, collapsedSize)) &&
+          fuzzyNumbersEqual(size, collapsedSize)
+        ) {
+          onCollapse?.({ panelId, size })
+        }
+      }
+    }
+  })
 }

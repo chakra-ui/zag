@@ -4,23 +4,23 @@ import { normalizeProps, useMachine } from "@zag-js/solid"
 import { createMemo, createUniqueId } from "solid-js"
 
 function ColorPicker() {
-  const [state, send] = useMachine(
-    colorPicker.machine({
-      id: createUniqueId(),
-      value: colorPicker.parse("hsl(0, 100%, 50%)"),
-    }),
-  )
+  const service = useMachine(colorPicker.machine, {
+    id: createUniqueId(),
+    defaultValue: colorPicker.parse("hsl(0, 100%, 50%)"),
+  })
 
-  const api = createMemo(() => colorPicker.connect(state, send, normalizeProps))
+  const api = createMemo(() => colorPicker.connect(service, normalizeProps))
 
   return (
-    <div {...api().rootProps}>
-      <label {...api().labelProps}>Select Color: {api.valueAsString}</label>
+    <div {...api().getRootProps()}>
+      <label {...api().getLabelProps()}>
+        Select Color: {api.valueAsString}
+      </label>
 
-      <input {...api().hiddenInputProps} />
+      <input {...api().getHiddenInputProps()} />
 
-      <div {...api().controlProps}>
-        <button {...api().triggerProps}>
+      <div {...api().getControlProps()}>
+        <button {...api().getTriggerProps()}>
           <div {...api().getTransparencyGridProps({ size: "10px" })} />
           <div {...api().getSwatchProps({ value: api.value })} />
         </button>
@@ -28,8 +28,8 @@ function ColorPicker() {
         <input {...api().getChannelInputProps({ channel: "alpha" })} />
       </div>
 
-      <div {...api().positionerProps}>
-        <div {...api().contentProps}>
+      <div {...api().getPositionerProps()}>
+        <div {...api().getContentProps()}>
           <div {...api().getAreaProps()}>
             <div {...api().getAreaBackgroundProps()} />
             <div {...api().getAreaThumbProps()} />

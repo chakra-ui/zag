@@ -9,7 +9,7 @@ export interface Locale {
 
 declare global {
   interface Navigator {
-    userLanguage?: string
+    userLanguage?: string | undefined
   }
 }
 
@@ -18,7 +18,7 @@ export function getDefaultLocale(): Locale {
 
   try {
     Intl.DateTimeFormat.supportedLocalesOf([locale])
-  } catch (_err) {
+  } catch {
     locale = "en-US"
   }
 

@@ -4,17 +4,17 @@ import { normalizeProps, useMachine } from "@zag-js/solid"
 import { createMemo, createUniqueId } from "solid-js"
 
 export function ContextMenu() {
-  const [state, send] = useMachine(menu.machine({ id: createUniqueId() }))
+  const service = useMachine(menu.machine, { id: createUniqueId() })
 
-  const api = createMemo(() => menu.connect(state, send, normalizeProps))
+  const api = createMemo(() => menu.connect(service, normalizeProps))
 
   return (
     <div>
-      <div {...api().contextTriggerProps}>
+      <div {...api().getContextTriggerProps()}>
         <div style={{ border: "solid 1px red" }}>Open context menu</div>
       </div>
-      <div {...api().positionerProps}>
-        <ul {...api().contentProps}>
+      <div {...api().getPositionerProps()}>
+        <ul {...api().getContentProps()}>
           <li {...api().getItemProps({ value: "edit" })}>Edit</li>
           <li {...api().getItemProps({ value: "duplicate" })}>Duplicate</li>
           <li {...api().getItemProps({ value: "delete" })}>Delete</li>

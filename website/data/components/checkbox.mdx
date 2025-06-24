@@ -27,9 +27,6 @@ command line:
 
 <CodeSnippet id="checkbox/installation.mdx" />
 
-This command will install the framework agnostic checkbox logic and the reactive
-utilities for your framework of choice.
-
 ## Anatomy
 
 To set up the checkbox correctly, you'll need to understand its anatomy and how
@@ -58,72 +55,75 @@ checkbox machine in your project 🔥
 
 <CodeSnippet id="checkbox/usage.mdx" />
 
-## Indeterminate checkboxes
+### Setting the initial checked state
 
-To make a checkbox indeterminate, set the context's `indeterminate` property to
-true
+To make a checkbox checked by default, set the context's `defaultChecked`
+property to `true`
 
-```jsx {3}
-const [state, send] = useMachine(
-  checkbox.machine({
-    indeterminate: true,
-  }),
-)
+```jsx {2}
+const service = useMachine(checkbox.machine, {
+  defaultChecked: true,
+})
 ```
 
-## Disabling the checkbox
+### Indeterminate checkboxes
+
+To make a checkbox indeterminate, set the `defaultChecked` or `checked` property
+to `"indeterminate"`
+
+```jsx {2}
+const service = useMachine(checkbox.machine, {
+  defaultChecked: "indeterminate",
+})
+```
+
+### Controlled checkbox
+
+To control the checked state programmatically, pass the `checked` and
+`onCheckedChange` properties to the machine function.
+
+<CodeSnippet id="checkbox/controlled.mdx" />
+
+### Disabling the checkbox
 
 To make a checkbox disabled, set the context's `disabled` property to true
 
-```jsx {3}
-const [state, send] = useMachine(
-  checkbox.machine({
-    disabled: true,
-  }),
-)
+```jsx {2}
+const service = useMachine(checkbox.machine, {
+  disabled: true,
+})
 ```
 
-## Making it checked by default
-
-To make a checkbox checked by default, set the context's `checked` property to
-`true`
-
-```jsx {3}
-const [state, send] = useMachine(
-  checkbox.machine({
-    checked: true,
-  }),
-)
-```
-
-## Listening for changes
+### Listening for changes
 
 When the checkbox value changes, the `onCheckChange` callback is invoked.
 
-```jsx {3-6}
-const [state, send] = useMachine(
-  checkbox.machine({
-    onCheckChange(details) {
-      // details => { checked: boolean }
-      console.log("checkbox is:", details.checked)
-    },
-  }),
-)
+```jsx {2-5}
+const service = useMachine(checkbox.machine, {
+  onCheckChange(details) {
+    // details => { checked: boolean }
+    console.log("checkbox is:", details.checked)
+  },
+})
 ```
 
-## Usage within forms
+### Usage within forms
 
-To use checkbox within forms, use the exposed `hiddenInputProps` from the
-`connect` function and ensure you pass `name` value to the machine's context. It
-will render a hidden input and ensure the value changes get propagated to the
+To use checkbox within forms, use the exposed `api.getHiddenInputProps()` from
+the `connect` function and ensure you pass `name` value to the machine's
+context.
+
+```jsx {2}
+const service = useMachine(checkbox.machine, {
+  name: "fruits",
+})
+```
+
+Next, render the hidden input and ensure the value changes get propagated to the
 form correctly.
 
-```jsx {3}
-const [state, send] = useMachine(
-  checkbox.machine({
-    name: "fruits",
-  }),
-)
+```jsx
+<input {...api.getHiddenInputProps()} />
 ```
 
 ## Styling guide
@@ -221,8 +221,12 @@ The checkbox `api` exposes the following methods:
 
 <ApiTable name="checkbox" />
 
+### Data Attributes
+
+<DataAttrTable name="checkbox" />
+
 ## Accessibility
 
 ### Keyboard Interactions
 
-<KeyboardTable id="checkbox" />
+<KeyboardTable name="checkbox" />

@@ -5,22 +5,20 @@ import { ClipboardCheck, ClipboardCopyIcon } from "lucide-solid"
 import { createMemo, createUniqueId } from "solid-js"
 
 function Clipboard() {
-  const [state, send] = useMachine(
-    clipboard.machine({
-      id: createUniqueId(),
-      value: "https://github.com/chakra-ui/zag",
-    }),
-  )
+  const service = useMachine(clipboard.machine, {
+    id: createUniqueId(),
+    value: "https://github.com/chakra-ui/zag",
+  })
 
-  const api = createMemo(() => clipboard.connect(state, send, normalizeProps))
+  const api = createMemo(() => clipboard.connect(service, normalizeProps))
 
   return (
-    <div {...api().rootProps}>
-      <label {...api().labelProps}>Copy this link</label>
-      <div {...api().controlProps}>
-        <input {...api().inputProps} />
-        <button {...api().triggerProps}>
-          <Show when={api().isCopied} fallback={<ClipboardCopyIcon />}>
+    <div {...api().getRootProps()}>
+      <label {...api().getLabelProps()}>Copy this link</label>
+      <div {...api().getControlProps()}>
+        <input {...api().getInputProps()} />
+        <button {...api().getTriggerProps()}>
+          <Show when={api().copied} fallback={<ClipboardCopyIcon />}>
             <ClipboardCheck />
           </Show>
         </button>

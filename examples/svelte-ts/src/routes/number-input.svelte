@@ -8,26 +8,25 @@
 
   const controls = useControls(numberInputControls)
 
-  const [snapshot, send] = useMachine(numberInput.machine({ id: "1" }), {
-    context: controls.context,
-  })
+  const id = $props.id()
+  const service = useMachine(numberInput.machine, controls.mergeProps<numberInput.Props>({ id }))
 
-  const api = $derived(numberInput.connect(snapshot, send, normalizeProps))
+  const api = $derived(numberInput.connect(service, normalizeProps))
 </script>
 
 <main>
-  <div {...api.rootProps}>
-    <div data-testid="scrubber" {...api.scrubberProps}></div>
-    <!-- svelte-ignore a11y-label-has-associated-control -->
-    <label data-testid="label" {...api.labelProps}> Enter number: </label>
-    <div {...api.controlProps}>
-      <button data-testid="dec-button" {...api.decrementTriggerProps}> DEC </button>
-      <input data-testid="input" {...api.inputProps} />
-      <button data-testid="inc-button" {...api.incrementTriggerProps}> INC </button>
+  <div {...api.getRootProps()}>
+    <div data-testid="scrubber" {...api.getScrubberProps()}></div>
+    <!-- svelte-ignore a11y_label_has_associated_control -->
+    <label data-testid="label" {...api.getLabelProps()}> Enter number: </label>
+    <div {...api.getControlProps()}>
+      <button data-testid="dec-button" {...api.getDecrementTriggerProps()}> DEC </button>
+      <input data-testid="input" {...api.getInputProps()} />
+      <button data-testid="inc-button" {...api.getIncrementTriggerProps()}> INC </button>
     </div>
   </div>
 </main>
 
 <Toolbar {controls}>
-  <StateVisualizer state={snapshot} omit={["formatter", "parser"]} />
+  <StateVisualizer state={service} omit={["formatter", "parser"]} />
 </Toolbar>

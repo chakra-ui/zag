@@ -13,6 +13,9 @@ export function useControls<T extends ControlRecord>(config: T) {
     setContext(key: string, value: any) {
       deepSet(context, key, value)
     },
+    mergeProps<T extends object>(props: T | (() => T)) {
+      return () => ({ ...context, ...(typeof props === "function" ? props() : props) })
+    },
   }
 
   return controls

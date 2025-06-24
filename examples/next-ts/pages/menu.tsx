@@ -8,33 +8,37 @@ import { useControls } from "../hooks/use-controls"
 
 export default function Page() {
   const controls = useControls(menuControls)
-  const [state, send] = useMachine(menu.machine({ id: useId(), onSelect: console.log }), {
-    context: controls.context,
+  const service = useMachine(menu.machine, {
+    id: useId(),
+    onSelect: console.log,
+    ...controls.context,
   })
 
-  const api = menu.connect(state, send, normalizeProps)
+  const api = menu.connect(service, normalizeProps)
 
   return (
     <>
       <main>
         <div>
-          <button {...api.triggerProps}>
-            Actions <span {...api.indicatorProps}>▾</span>
+          <button {...api.getTriggerProps()}>
+            Actions <span {...api.getIndicatorProps()}>▾</span>
           </button>
-          <Portal>
-            <div {...api.positionerProps}>
-              <ul {...api.contentProps}>
-                <li {...api.getItemProps({ value: "edit" })}>Edit</li>
-                <li {...api.getItemProps({ value: "duplicate" })}>Duplicate</li>
-                <li {...api.getItemProps({ value: "delete" })}>Delete</li>
-                <li {...api.getItemProps({ value: "export" })}>Export...</li>
-              </ul>
-            </div>
-          </Portal>
+          {api.open && (
+            <Portal>
+              <div {...api.getPositionerProps()}>
+                <ul {...api.getContentProps()}>
+                  <li {...api.getItemProps({ value: "edit" })}>Edit</li>
+                  <li {...api.getItemProps({ value: "duplicate" })}>Duplicate</li>
+                  <li {...api.getItemProps({ value: "delete" })}>Delete</li>
+                  <li {...api.getItemProps({ value: "export" })}>Export...</li>
+                </ul>
+              </div>
+            </Portal>
+          )}
         </div>
       </main>
       <Toolbar controls={controls.ui}>
-        <StateVisualizer state={state} />
+        <StateVisualizer state={service} />
       </Toolbar>
     </>
   )

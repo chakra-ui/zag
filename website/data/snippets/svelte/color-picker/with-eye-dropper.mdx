@@ -1,0 +1,24 @@
+```svelte {14-16}
+<script lang="ts">
+  import * as colorPicker from "@zag-js/color-picker"
+  import { normalizeProps, useMachine } from "@zag-js/svelte"
+
+  const id = $props.id()
+  const service = useMachine(colorPicker.machine, {
+    id,
+    defaultValue: colorPicker.parse("hsl(0, 100%, 50%)"),
+  })
+  const api = $derived(colorPicker.connect(service, normalizeProps))
+</script>
+
+<div {...api.getRootProps()}>
+  <!-- ... -->
+  <div {...api.getPositionerProps()}>
+    <div {...api.getContentProps()}>
+      <button {...api.getEyeDropperTriggerProps()}>
+        <EyeDropIcon />
+      </button>
+    </div>
+  </div>
+</div>
+```

@@ -614,7 +614,7 @@ export namespace JSX {
     // RDFa Attributes
     about?: string | undefined
     datatype?: string | undefined
-    inlist?: any
+    inlist?: any | undefined
     prefix?: string | undefined
     property?: string | undefined
     resource?: string | undefined
@@ -680,7 +680,7 @@ export namespace JSX {
     default?: boolean | undefined
     defer?: boolean | undefined
     disabled?: boolean | undefined
-    download?: any
+    download?: any | undefined
     encType?: string | undefined
     form?: string | undefined
     formAction?: string | undefined
@@ -772,7 +772,7 @@ export namespace JSX {
   type HTMLAttributeAnchorTarget = "_self" | "_blank" | "_parent" | "_top" | (string & {})
 
   export interface AnchorHTMLAttributes<T> extends HTMLAttributes<T> {
-    download?: any
+    download?: any | undefined
     href?: string | undefined
     hrefLang?: string | undefined
     media?: string | undefined
@@ -788,7 +788,7 @@ export namespace JSX {
   export interface AreaHTMLAttributes<T> extends HTMLAttributes<T> {
     alt?: string | undefined
     coords?: string | undefined
-    download?: any
+    download?: any | undefined
     href?: string | undefined
     hrefLang?: string | undefined
     media?: string | undefined
@@ -951,7 +951,7 @@ export namespace JSX {
     | (string & {})
 
   export interface InputHTMLAttributes<T> extends HTMLAttributes<T> {
-    webkitdirectory?: any
+    webkitdirectory?: any | undefined
     accept?: string | undefined
     alt?: string | undefined
     autoComplete?: string | undefined
@@ -1259,7 +1259,7 @@ export namespace JSX {
     // Other HTML properties supported by SVG elements in browsers
     role?: AriaRole | undefined
     tabIndex?: number | undefined
-    crossOrigin?: any
+    crossOrigin?: any | undefined
 
     // SVG Specific attributes
     accentHeight?: number | string | undefined
@@ -1638,8 +1638,12 @@ export namespace JSX {
     var: HTMLAttributes<HTMLElement>
     video: VideoHTMLAttributes<HTMLVideoElement>
 
+    g: SVGAttributes<SVGGElement>
     svg: SVGAttributes<SVGSVGElement>
     circle: SVGAttributes<SVGCircleElement>
     path: SVGAttributes<SVGPathElement>
+    rect: SVGAttributes<SVGRectElement>
+    polyline: SVGAttributes<SVGPolylineElement>
+    polygon: SVGAttributes<SVGPolygonElement>
   }
 }

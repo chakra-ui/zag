@@ -1,0 +1,17 @@
+```html
+<script setup lang="ts">
+  import { ref } from "vue"
+  import * as colorPicker from "@zag-js/color-picker"
+
+  const valueRef = ref(colorPicker.parse("#ff0000"))
+
+  const service = useMachine(colorPicker.machine, {
+    get value() {
+      return valueRef.value
+    },
+    onValueChange(details) {
+      valueRef.value = details.value
+    },
+  })
+</script>
+```

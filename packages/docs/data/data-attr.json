@@ -36,6 +36,44 @@
       "data-state": "\"open\" | \"closed\""
     }
   },
+  "angle-slider": {
+    "Root": {
+      "data-scope": "angle-slider",
+      "data-part": "root",
+      "data-disabled": "Present when disabled",
+      "data-invalid": "Present when invalid",
+      "data-readonly": "Present when read-only"
+    },
+    "Label": {
+      "data-scope": "angle-slider",
+      "data-part": "label",
+      "data-disabled": "Present when disabled",
+      "data-invalid": "Present when invalid",
+      "data-readonly": "Present when read-only"
+    },
+    "Control": {
+      "data-scope": "angle-slider",
+      "data-part": "control",
+      "data-disabled": "Present when disabled",
+      "data-invalid": "Present when invalid",
+      "data-readonly": "Present when read-only"
+    },
+    "Thumb": {
+      "data-scope": "angle-slider",
+      "data-part": "thumb",
+      "data-disabled": "Present when disabled",
+      "data-invalid": "Present when invalid",
+      "data-readonly": "Present when read-only"
+    },
+    "Marker": {
+      "data-scope": "angle-slider",
+      "data-part": "marker",
+      "data-value": "The value of the item",
+      "data-state": "",
+      "data-disabled": "Present when disabled"
+    }
+  },
+  "async-list": {},
   "avatar": {
     "Image": {
       "data-scope": "avatar",
@@ -54,22 +92,23 @@
       "data-part": "root",
       "data-orientation": "The orientation of the carousel"
     },
-    "Viewport": {
-      "data-scope": "carousel",
-      "data-part": "viewport",
-      "data-orientation": "The orientation of the viewport"
-    },
     "ItemGroup": {
       "data-scope": "carousel",
       "data-part": "item-group",
-      "data-orientation": "The orientation of the item"
+      "data-orientation": "The orientation of the item",
+      "data-dragging": "Present when in the dragging state"
     },
     "Item": {
       "data-scope": "carousel",
       "data-part": "item",
-      "data-current": "Present when current",
+      "data-index": "The index of the item",
       "data-inview": "Present when in viewport",
       "data-orientation": "The orientation of the item"
+    },
+    "Control": {
+      "data-scope": "carousel",
+      "data-part": "control",
+      "data-orientation": "The orientation of the control"
     },
     "PrevTrigger": {
       "data-scope": "carousel",
@@ -93,12 +132,19 @@
       "data-index": "The index of the item",
       "data-readonly": "Present when read-only",
       "data-current": "Present when current"
+    },
+    "AutoplayTrigger": {
+      "data-scope": "carousel",
+      "data-part": "autoplay-trigger",
+      "data-orientation": "The orientation of the autoplaytrigger",
+      "data-pressed": "Present when pressed"
     }
   },
   "checkbox": {
     "Root": {
       "data-active": "Present when active or pressed",
       "data-focus": "Present when focused",
+      "data-focus-visible": "Present when focused with keyboard",
       "data-readonly": "Present when read-only",
       "data-hover": "Present when hovered",
       "data-disabled": "Present when disabled",
@@ -108,6 +154,7 @@
     "Label": {
       "data-active": "Present when active or pressed",
       "data-focus": "Present when focused",
+      "data-focus-visible": "Present when focused with keyboard",
       "data-readonly": "Present when read-only",
       "data-hover": "Present when hovered",
       "data-disabled": "Present when disabled",
@@ -117,6 +164,7 @@
     "Control": {
       "data-active": "Present when active or pressed",
       "data-focus": "Present when focused",
+      "data-focus-visible": "Present when focused with keyboard",
       "data-readonly": "Present when read-only",
       "data-hover": "Present when hovered",
       "data-disabled": "Present when disabled",
@@ -126,6 +174,7 @@
     "Indicator": {
       "data-active": "Present when active or pressed",
       "data-focus": "Present when focused",
+      "data-focus-visible": "Present when focused with keyboard",
       "data-readonly": "Present when read-only",
       "data-hover": "Present when hovered",
       "data-disabled": "Present when disabled",
@@ -170,12 +219,19 @@
     "Content": {
       "data-scope": "collapsible",
       "data-part": "content",
+      "data-collapsible": "",
       "data-state": "\"open\" | \"closed\"",
       "data-disabled": "Present when disabled"
     },
     "Trigger": {
       "data-scope": "collapsible",
       "data-part": "trigger",
+      "data-state": "\"open\" | \"closed\"",
+      "data-disabled": "Present when disabled"
+    },
+    "Indicator": {
+      "data-scope": "collapsible",
+      "data-part": "indicator",
       "data-state": "\"open\" | \"closed\"",
       "data-disabled": "Present when disabled"
     }
@@ -185,13 +241,15 @@
       "data-scope": "color-picker",
       "data-part": "root",
       "data-disabled": "Present when disabled",
-      "data-readonly": "Present when read-only"
+      "data-readonly": "Present when read-only",
+      "data-invalid": "Present when invalid"
     },
     "Label": {
       "data-scope": "color-picker",
       "data-part": "label",
       "data-disabled": "Present when disabled",
       "data-readonly": "Present when read-only",
+      "data-invalid": "Present when invalid",
       "data-focus": "Present when focused"
     },
     "Control": {
@@ -199,6 +257,7 @@
       "data-part": "control",
       "data-disabled": "Present when disabled",
       "data-readonly": "Present when read-only",
+      "data-invalid": "Present when invalid",
       "data-state": "\"open\" | \"closed\"",
       "data-focus": "Present when focused"
     },
@@ -207,6 +266,7 @@
       "data-part": "trigger",
       "data-disabled": "Present when disabled",
       "data-readonly": "Present when read-only",
+      "data-invalid": "Present when invalid",
       "data-placement": "The placement of the trigger",
       "data-state": "\"open\" | \"closed\"",
       "data-focus": "Present when focused"
@@ -217,10 +277,32 @@
       "data-placement": "The placement of the content",
       "data-state": "\"open\" | \"closed\""
     },
+    "ValueText": {
+      "data-scope": "color-picker",
+      "data-part": "value-text",
+      "data-disabled": "Present when disabled",
+      "data-focus": "Present when focused"
+    },
+    "Area": {
+      "data-scope": "color-picker",
+      "data-part": "area",
+      "data-invalid": "Present when invalid",
+      "data-disabled": "Present when disabled",
+      "data-readonly": "Present when read-only"
+    },
+    "AreaBackground": {
+      "data-scope": "color-picker",
+      "data-part": "area-background",
+      "data-invalid": "Present when invalid",
+      "data-disabled": "Present when disabled",
+      "data-readonly": "Present when read-only"
+    },
     "AreaThumb": {
       "data-scope": "color-picker",
       "data-part": "area-thumb",
-      "data-disabled": "Present when disabled"
+      "data-disabled": "Present when disabled",
+      "data-invalid": "Present when invalid",
+      "data-readonly": "Present when read-only"
     },
     "ChannelSlider": {
       "data-scope": "color-picker",
@@ -234,6 +316,16 @@
       "data-channel": "The color channel of the channelslidertrack",
       "data-orientation": "The orientation of the channelslidertrack"
     },
+    "ChannelSliderLabel": {
+      "data-scope": "color-picker",
+      "data-part": "channel-slider-label",
+      "data-channel": "The color channel of the channelsliderlabel"
+    },
+    "ChannelSliderValueText": {
+      "data-scope": "color-picker",
+      "data-part": "channel-slider-value-text",
+      "data-channel": "The color channel of the channelslidervaluetext"
+    },
     "ChannelSliderThumb": {
       "data-scope": "color-picker",
       "data-part": "channel-slider-thumb",
@@ -245,25 +337,29 @@
       "data-scope": "color-picker",
       "data-part": "channel-input",
       "data-channel": "The color channel of the channelinput",
-      "data-disabled": "Present when disabled"
+      "data-disabled": "Present when disabled",
+      "data-invalid": "Present when invalid",
+      "data-readonly": "Present when read-only"
     },
     "EyeDropperTrigger": {
       "data-scope": "color-picker",
       "data-part": "eye-dropper-trigger",
-      "data-disabled": "Present when disabled"
+      "data-disabled": "Present when disabled",
+      "data-invalid": "Present when invalid",
+      "data-readonly": "Present when read-only"
     },
     "SwatchTrigger": {
       "data-scope": "color-picker",
       "data-part": "swatch-trigger",
       "data-state": "\"checked\" | \"unchecked\"",
-      "data-value": "",
+      "data-value": "The value of the item",
       "data-disabled": "Present when disabled"
     },
     "Swatch": {
       "data-scope": "color-picker",
       "data-part": "swatch",
       "data-state": "\"checked\" | \"unchecked\"",
-      "data-value": ""
+      "data-value": "The value of the item"
     }
   },
   "combobox": {
@@ -293,19 +389,34 @@
       "data-scope": "combobox",
       "data-part": "input",
       "data-invalid": "Present when invalid",
+      "data-autofocus": "",
       "data-state": "\"open\" | \"closed\""
     },
     "Trigger": {
       "data-scope": "combobox",
       "data-part": "trigger",
       "data-state": "\"open\" | \"closed\"",
+      "data-invalid": "Present when invalid",
+      "data-focusable": "",
       "data-readonly": "Present when read-only",
       "data-disabled": "Present when disabled"
     },
     "Content": {
       "data-scope": "combobox",
       "data-part": "content",
-      "data-state": "\"open\" | \"closed\""
+      "data-state": "\"open\" | \"closed\"",
+      "data-placement": "The placement of the content",
+      "data-empty": ""
+    },
+    "List": {
+      "data-scope": "combobox",
+      "data-part": "list",
+      "data-empty": ""
+    },
+    "ClearTrigger": {
+      "data-scope": "combobox",
+      "data-part": "clear-trigger",
+      "data-invalid": "Present when invalid"
     },
     "Item": {
       "data-scope": "combobox",
@@ -313,11 +424,12 @@
       "data-highlighted": "Present when highlighted",
       "data-state": "\"checked\" | \"unchecked\"",
       "data-disabled": "Present when disabled",
-      "data-value": ""
+      "data-value": "The value of the item"
     },
     "ItemText": {
       "data-scope": "combobox",
       "data-part": "item-text",
+      "data-state": "\"checked\" | \"unchecked\"",
       "data-disabled": "Present when disabled",
       "data-highlighted": "Present when highlighted"
     },
@@ -325,6 +437,11 @@
       "data-scope": "combobox",
       "data-part": "item-indicator",
       "data-state": "\"checked\" | \"unchecked\""
+    },
+    "ItemGroup": {
+      "data-scope": "combobox",
+      "data-part": "item-group",
+      "data-empty": ""
     }
   },
   "date-picker": {
@@ -339,6 +456,7 @@
       "data-scope": "date-picker",
       "data-part": "label",
       "data-state": "\"open\" | \"closed\"",
+      "data-index": "The index of the item",
       "data-disabled": "Present when disabled",
       "data-readonly": "Present when read-only"
     },
@@ -386,14 +504,14 @@
     "DayTableCell": {
       "data-scope": "date-picker",
       "data-part": "day-table-cell",
-      "data-value": ""
+      "data-value": "The value of the item"
     },
     "DayTableCellTrigger": {
       "data-scope": "date-picker",
       "data-part": "day-table-cell-trigger",
       "data-disabled": "Present when disabled",
       "data-selected": "Present when selected",
-      "data-value": "",
+      "data-value": "The value of the item",
       "data-view": "The view of the daytablecelltrigger",
       "data-today": "Present when the date represents today",
       "data-focus": "Present when focused",
@@ -408,7 +526,7 @@
       "data-scope": "date-picker",
       "data-part": "month-table-cell",
       "data-selected": "Present when selected",
-      "data-value": ""
+      "data-value": "The value of the item"
     },
     "MonthTableCellTrigger": {
       "data-scope": "date-picker",
@@ -417,13 +535,13 @@
       "data-disabled": "Present when disabled",
       "data-focus": "Present when focused",
       "data-view": "The view of the monthtablecelltrigger",
-      "data-value": ""
+      "data-value": "The value of the item"
     },
     "YearTableCell": {
       "data-scope": "date-picker",
       "data-part": "year-table-cell",
       "data-selected": "Present when selected",
-      "data-value": ""
+      "data-value": "The value of the item"
     },
     "YearTableCellTrigger": {
       "data-scope": "date-picker",
@@ -431,14 +549,29 @@
       "data-selected": "Present when selected",
       "data-focus": "Present when focused",
       "data-disabled": "Present when disabled",
-      "data-value": "",
+      "data-value": "The value of the item",
       "data-view": "The view of the yeartablecelltrigger"
+    },
+    "NextTrigger": {
+      "data-scope": "date-picker",
+      "data-part": "next-trigger",
+      "data-disabled": "Present when disabled"
+    },
+    "PrevTrigger": {
+      "data-scope": "date-picker",
+      "data-part": "prev-trigger",
+      "data-disabled": "Present when disabled"
     },
     "Trigger": {
       "data-scope": "date-picker",
       "data-part": "trigger",
       "data-placement": "The placement of the trigger",
       "data-state": "\"open\" | \"closed\""
+    },
+    "View": {
+      "data-scope": "date-picker",
+      "data-part": "view",
+      "data-view": "The view of the view"
     },
     "ViewTrigger": {
       "data-scope": "date-picker",
@@ -453,6 +586,7 @@
     "Input": {
       "data-scope": "date-picker",
       "data-part": "input",
+      "data-index": "The index of the item",
       "data-state": "\"open\" | \"closed\""
     }
   },
@@ -492,7 +626,8 @@
       "data-part": "input",
       "data-disabled": "Present when disabled",
       "data-readonly": "Present when read-only",
-      "data-invalid": "Present when invalid"
+      "data-invalid": "Present when invalid",
+      "data-autoresize": ""
     },
     "Preview": {
       "data-scope": "editable",
@@ -500,7 +635,8 @@
       "data-placeholder-shown": "Present when placeholder is shown",
       "data-readonly": "Present when read-only",
       "data-disabled": "Present when disabled",
-      "data-invalid": "Present when invalid"
+      "data-invalid": "Present when invalid",
+      "data-autoresize": ""
     }
   },
   "file-upload": {
@@ -520,7 +656,8 @@
     "Trigger": {
       "data-scope": "file-upload",
       "data-part": "trigger",
-      "data-disabled": "Present when disabled"
+      "data-disabled": "Present when disabled",
+      "data-invalid": "Present when invalid"
     },
     "ItemGroup": {
       "data-scope": "file-upload",
@@ -561,6 +698,11 @@
       "data-scope": "file-upload",
       "data-part": "label",
       "data-disabled": "Present when disabled"
+    },
+    "ClearTrigger": {
+      "data-scope": "file-upload",
+      "data-part": "clear-trigger",
+      "data-disabled": "Present when disabled"
     }
   },
   "floating-panel": {
@@ -574,7 +716,9 @@
       "data-scope": "floating-panel",
       "data-part": "content",
       "data-state": "\"open\" | \"closed\"",
-      "data-dragging": "Present when in the dragging state"
+      "data-dragging": "Present when in the dragging state",
+      "data-topmost": "",
+      "data-behind": ""
     },
     "ResizeTrigger": {
       "data-scope": "floating-panel",
@@ -587,10 +731,18 @@
       "data-part": "drag-trigger",
       "data-disabled": "Present when disabled"
     },
+    "Control": {
+      "data-scope": "floating-panel",
+      "data-part": "control",
+      "data-disabled": "Present when disabled",
+      "data-stage": ""
+    },
     "Header": {
       "data-scope": "floating-panel",
       "data-part": "header",
-      "data-dragging": "Present when in the dragging state"
+      "data-dragging": "Present when in the dragging state",
+      "data-topmost": "",
+      "data-behind": ""
     },
     "Body": {
       "data-scope": "floating-panel",
@@ -610,6 +762,67 @@
       "data-part": "content",
       "data-state": "\"open\" | \"closed\"",
       "data-placement": "The placement of the content"
+    }
+  },
+  "listbox": {
+    "Root": {
+      "data-scope": "listbox",
+      "data-part": "root",
+      "data-orientation": "The orientation of the listbox",
+      "data-disabled": "Present when disabled"
+    },
+    "Input": {
+      "data-scope": "listbox",
+      "data-part": "input",
+      "data-disabled": "Present when disabled"
+    },
+    "Label": {
+      "data-scope": "listbox",
+      "data-part": "label",
+      "data-disabled": "Present when disabled"
+    },
+    "ValueText": {
+      "data-scope": "listbox",
+      "data-part": "value-text",
+      "data-disabled": "Present when disabled"
+    },
+    "Item": {
+      "data-scope": "listbox",
+      "data-part": "item",
+      "data-value": "The value of the item",
+      "data-selected": "Present when selected",
+      "data-layout": "",
+      "data-state": "\"checked\" | \"unchecked\"",
+      "data-orientation": "The orientation of the item",
+      "data-highlighted": "Present when highlighted",
+      "data-disabled": "Present when disabled"
+    },
+    "ItemText": {
+      "data-scope": "listbox",
+      "data-part": "item-text",
+      "data-state": "\"checked\" | \"unchecked\"",
+      "data-disabled": "Present when disabled",
+      "data-highlighted": "Present when highlighted"
+    },
+    "ItemIndicator": {
+      "data-scope": "listbox",
+      "data-part": "item-indicator",
+      "data-state": "\"checked\" | \"unchecked\""
+    },
+    "ItemGroup": {
+      "data-scope": "listbox",
+      "data-part": "item-group",
+      "data-disabled": "Present when disabled",
+      "data-orientation": "The orientation of the item",
+      "data-empty": ""
+    },
+    "Content": {
+      "data-scope": "listbox",
+      "data-part": "content",
+      "data-activedescendant": "",
+      "data-orientation": "The orientation of the content",
+      "data-layout": "",
+      "data-empty": ""
     }
   },
   "menu": {
@@ -635,13 +848,14 @@
       "data-part": "item",
       "data-disabled": "Present when disabled",
       "data-highlighted": "Present when highlighted",
+      "data-value": "The value of the item",
       "data-valuetext": "The human-readable value"
     },
     "OptionItem": {
       "data-scope": "menu",
       "data-part": "option-item",
-      "data-type": "",
-      "data-value": "",
+      "data-type": "The type of the item",
+      "data-value": "The value of the item",
       "data-state": "\"checked\" | \"unchecked\"",
       "data-disabled": "Present when disabled",
       "data-highlighted": "Present when highlighted",
@@ -652,14 +866,86 @@
       "data-part": "item-indicator",
       "data-disabled": "Present when disabled",
       "data-highlighted": "Present when highlighted",
-      "data-state": "\"checked\" | \"unchecked\""
+      "data-state": "\"checked\""
     },
     "ItemText": {
       "data-scope": "menu",
       "data-part": "item-text",
       "data-disabled": "Present when disabled",
       "data-highlighted": "Present when highlighted",
-      "data-state": "\"checked\" | \"unchecked\""
+      "data-state": "\"checked\""
+    }
+  },
+  "navigation-menu": {
+    "Root": {
+      "data-scope": "navigation-menu",
+      "data-part": "root",
+      "data-orientation": "The orientation of the navigation-menu",
+      "data-type": "The type of the item"
+    },
+    "List": {
+      "data-scope": "navigation-menu",
+      "data-part": "list",
+      "data-orientation": "The orientation of the list",
+      "data-type": "The type of the item"
+    },
+    "Item": {
+      "data-scope": "navigation-menu",
+      "data-part": "item",
+      "data-value": "The value of the item",
+      "data-state": "\"open\" | \"closed\"",
+      "data-orientation": "The orientation of the item",
+      "data-disabled": "Present when disabled"
+    },
+    "IndicatorTrack": {
+      "data-scope": "navigation-menu",
+      "data-part": "indicator-track",
+      "data-orientation": "The orientation of the indicatortrack"
+    },
+    "Indicator": {
+      "data-scope": "navigation-menu",
+      "data-part": "indicator",
+      "data-state": "\"open\" | \"closed\"",
+      "data-orientation": "The orientation of the indicator",
+      "data-type": "The type of the item"
+    },
+    "Arrow": {
+      "data-scope": "navigation-menu",
+      "data-part": "arrow",
+      "data-orientation": "The orientation of the arrow"
+    },
+    "Trigger": {
+      "data-scope": "navigation-menu",
+      "data-part": "trigger",
+      "data-value": "The value of the item",
+      "data-state": "\"open\" | \"closed\"",
+      "data-type": "The type of the item",
+      "data-disabled": "Present when disabled"
+    },
+    "Link": {
+      "data-scope": "navigation-menu",
+      "data-part": "link",
+      "data-value": "The value of the item",
+      "data-current": "Present when current"
+    },
+    "Content": {
+      "data-scope": "navigation-menu",
+      "data-part": "content",
+      "data-state": "\"open\" | \"closed\"",
+      "data-type": "The type of the item",
+      "data-value": "The value of the item"
+    },
+    "ViewportPositioner": {
+      "data-scope": "navigation-menu",
+      "data-part": "viewport-positioner",
+      "data-orientation": "The orientation of the viewportpositioner"
+    },
+    "Viewport": {
+      "data-scope": "navigation-menu",
+      "data-part": "viewport",
+      "data-state": "\"open\" | \"closed\"",
+      "data-orientation": "The orientation of the viewport",
+      "data-type": "The type of the item"
     }
   },
   "number-input": {
@@ -683,6 +969,13 @@
       "data-focus": "Present when focused",
       "data-disabled": "Present when disabled",
       "data-invalid": "Present when invalid"
+    },
+    "ValueText": {
+      "data-scope": "number-input",
+      "data-part": "value-text",
+      "data-disabled": "Present when disabled",
+      "data-invalid": "Present when invalid",
+      "data-focus": "Present when focused"
     },
     "Input": {
       "data-scope": "number-input",
@@ -724,26 +1017,75 @@
       "data-disabled": "Present when disabled"
     }
   },
+  "password-input": {
+    "Root": {
+      "data-scope": "password-input",
+      "data-part": "root",
+      "data-disabled": "Present when disabled",
+      "data-invalid": "Present when invalid",
+      "data-readonly": "Present when read-only"
+    },
+    "Label": {
+      "data-scope": "password-input",
+      "data-part": "label",
+      "data-disabled": "Present when disabled",
+      "data-invalid": "Present when invalid",
+      "data-readonly": "Present when read-only"
+    },
+    "Input": {
+      "data-scope": "password-input",
+      "data-part": "input",
+      "data-state": "\"visible\" | \"hidden\"",
+      "data-disabled": "Present when disabled",
+      "data-invalid": "Present when invalid",
+      "data-readonly": "Present when read-only"
+    },
+    "VisibilityTrigger": {
+      "data-scope": "password-input",
+      "data-part": "visibility-trigger",
+      "data-readonly": "Present when read-only",
+      "data-disabled": "Present when disabled",
+      "data-state": "\"visible\" | \"hidden\""
+    },
+    "Indicator": {
+      "data-scope": "password-input",
+      "data-part": "indicator",
+      "data-state": "\"visible\" | \"hidden\"",
+      "data-disabled": "Present when disabled",
+      "data-invalid": "Present when invalid",
+      "data-readonly": "Present when read-only"
+    },
+    "Control": {
+      "data-scope": "password-input",
+      "data-part": "control",
+      "data-disabled": "Present when disabled",
+      "data-invalid": "Present when invalid",
+      "data-readonly": "Present when read-only"
+    }
+  },
   "pin-input": {
     "Root": {
       "data-scope": "pin-input",
       "data-part": "root",
       "data-invalid": "Present when invalid",
       "data-disabled": "Present when disabled",
-      "data-complete": "Present when the pin-input value is complete"
+      "data-complete": "Present when the pin-input value is complete",
+      "data-readonly": "Present when read-only"
     },
     "Label": {
       "data-scope": "pin-input",
       "data-part": "label",
       "data-invalid": "Present when invalid",
       "data-disabled": "Present when disabled",
-      "data-complete": "Present when the label value is complete"
+      "data-complete": "Present when the label value is complete",
+      "data-readonly": "Present when read-only"
     },
     "Input": {
       "data-scope": "pin-input",
       "data-part": "input",
       "data-disabled": "Present when disabled",
       "data-complete": "Present when the input value is complete",
+      "data-index": "The index of the item",
       "data-invalid": "Present when invalid"
     }
   },
@@ -773,7 +1115,7 @@
       "data-scope": "progress",
       "data-part": "root",
       "data-max": "",
-      "data-value": "",
+      "data-value": "The value of the item",
       "data-state": "",
       "data-orientation": "The orientation of the progress"
     },
@@ -804,6 +1146,7 @@
       "data-state": ""
     }
   },
+  "qr-code": {},
   "radio-group": {
     "Root": {
       "data-scope": "radio-group",
@@ -873,6 +1216,13 @@
       "data-disabled": "Present when disabled",
       "data-invalid": "Present when invalid"
     },
+    "ValueText": {
+      "data-scope": "select",
+      "data-part": "value-text",
+      "data-disabled": "Present when disabled",
+      "data-invalid": "Present when invalid",
+      "data-focus": "Present when focused"
+    },
     "Trigger": {
       "data-scope": "select",
       "data-part": "trigger",
@@ -894,7 +1244,7 @@
     "Item": {
       "data-scope": "select",
       "data-part": "item",
-      "data-value": "",
+      "data-value": "The value of the item",
       "data-state": "\"checked\" | \"unchecked\"",
       "data-highlighted": "Present when highlighted",
       "data-disabled": "Present when disabled"
@@ -902,6 +1252,7 @@
     "ItemText": {
       "data-scope": "select",
       "data-part": "item-text",
+      "data-state": "\"checked\" | \"unchecked\"",
       "data-disabled": "Present when disabled",
       "data-highlighted": "Present when highlighted"
     },
@@ -915,11 +1266,17 @@
       "data-part": "item-group",
       "data-disabled": "Present when disabled"
     },
+    "ClearTrigger": {
+      "data-scope": "select",
+      "data-part": "clear-trigger",
+      "data-invalid": "Present when invalid"
+    },
     "Content": {
       "data-scope": "select",
       "data-part": "content",
       "data-state": "\"open\" | \"closed\"",
-      "data-placement": "The placement of the content"
+      "data-placement": "The placement of the content",
+      "data-activedescendant": ""
     }
   },
   "signature-pad": {
@@ -951,6 +1308,7 @@
       "data-disabled": "Present when disabled",
       "data-orientation": "The orientation of the label",
       "data-invalid": "Present when invalid",
+      "data-dragging": "Present when in the dragging state",
       "data-focus": "Present when focused"
     },
     "Root": {
@@ -958,6 +1316,7 @@
       "data-part": "root",
       "data-disabled": "Present when disabled",
       "data-orientation": "The orientation of the slider",
+      "data-dragging": "Present when in the dragging state",
       "data-invalid": "Present when invalid",
       "data-focus": "Present when focused"
     },
@@ -974,6 +1333,7 @@
       "data-part": "track",
       "data-disabled": "Present when disabled",
       "data-invalid": "Present when invalid",
+      "data-dragging": "Present when in the dragging state",
       "data-orientation": "The orientation of the track",
       "data-focus": "Present when focused"
     },
@@ -984,11 +1344,13 @@
       "data-name": "",
       "data-disabled": "Present when disabled",
       "data-orientation": "The orientation of the thumb",
-      "data-focus": "Present when focused"
+      "data-focus": "Present when focused",
+      "data-dragging": "Present when in the dragging state"
     },
     "Range": {
       "data-scope": "slider",
       "data-part": "range",
+      "data-dragging": "Present when in the dragging state",
       "data-focus": "Present when focused",
       "data-invalid": "Present when invalid",
       "data-disabled": "Present when disabled",
@@ -997,6 +1359,7 @@
     "Control": {
       "data-scope": "slider",
       "data-part": "control",
+      "data-dragging": "Present when in the dragging state",
       "data-disabled": "Present when disabled",
       "data-orientation": "The orientation of the control",
       "data-invalid": "Present when invalid",
@@ -1011,9 +1374,15 @@
       "data-scope": "slider",
       "data-part": "marker",
       "data-orientation": "The orientation of the marker",
-      "data-value": "",
+      "data-value": "The value of the item",
       "data-disabled": "Present when disabled",
       "data-state": ""
+    },
+    "DraggingIndicator": {
+      "data-scope": "slider",
+      "data-part": "dragging-indicator",
+      "data-orientation": "The orientation of the draggingindicator",
+      "data-state": "\"open\" | \"closed\""
     }
   },
   "splitter": {
@@ -1025,20 +1394,76 @@
     "Panel": {
       "data-scope": "splitter",
       "data-part": "panel",
-      "data-orientation": "The orientation of the panel"
+      "data-orientation": "The orientation of the panel",
+      "data-id": "",
+      "data-index": "The index of the item"
     },
     "ResizeTrigger": {
       "data-scope": "splitter",
       "data-part": "resize-trigger",
+      "data-id": "",
       "data-orientation": "The orientation of the resizetrigger",
       "data-focus": "Present when focused",
       "data-disabled": "Present when disabled"
+    }
+  },
+  "steps": {
+    "Root": {
+      "data-scope": "steps",
+      "data-part": "root",
+      "data-orientation": "The orientation of the steps"
+    },
+    "List": {
+      "data-scope": "steps",
+      "data-part": "list",
+      "data-orientation": "The orientation of the list"
+    },
+    "Item": {
+      "data-scope": "steps",
+      "data-part": "item",
+      "data-orientation": "The orientation of the item"
+    },
+    "Trigger": {
+      "data-scope": "steps",
+      "data-part": "trigger",
+      "data-state": "\"open\" | \"closed\"",
+      "data-orientation": "The orientation of the trigger",
+      "data-complete": "Present when the trigger value is complete",
+      "data-current": "Present when current",
+      "data-incomplete": ""
+    },
+    "Content": {
+      "data-scope": "steps",
+      "data-part": "content",
+      "data-state": "\"open\" | \"closed\"",
+      "data-orientation": "The orientation of the content"
+    },
+    "Indicator": {
+      "data-scope": "steps",
+      "data-part": "indicator",
+      "data-complete": "Present when the indicator value is complete",
+      "data-current": "Present when current",
+      "data-incomplete": ""
+    },
+    "Separator": {
+      "data-scope": "steps",
+      "data-part": "separator",
+      "data-orientation": "The orientation of the separator",
+      "data-complete": "Present when the separator value is complete",
+      "data-current": "Present when current",
+      "data-incomplete": ""
+    },
+    "Progress": {
+      "data-scope": "steps",
+      "data-part": "progress",
+      "data-complete": "Present when the progress value is complete"
     }
   },
   "switch": {
     "Root": {
       "data-active": "Present when active or pressed",
       "data-focus": "Present when focused",
+      "data-focus-visible": "Present when focused with keyboard",
       "data-readonly": "Present when read-only",
       "data-hover": "Present when hovered",
       "data-disabled": "Present when disabled",
@@ -1048,6 +1473,7 @@
     "Label": {
       "data-active": "Present when active or pressed",
       "data-focus": "Present when focused",
+      "data-focus-visible": "Present when focused with keyboard",
       "data-readonly": "Present when read-only",
       "data-hover": "Present when hovered",
       "data-disabled": "Present when disabled",
@@ -1057,6 +1483,7 @@
     "Thumb": {
       "data-active": "Present when active or pressed",
       "data-focus": "Present when focused",
+      "data-focus-visible": "Present when focused with keyboard",
       "data-readonly": "Present when read-only",
       "data-hover": "Present when hovered",
       "data-disabled": "Present when disabled",
@@ -1066,6 +1493,7 @@
     "Control": {
       "data-active": "Present when active or pressed",
       "data-focus": "Present when focused",
+      "data-focus-visible": "Present when focused with keyboard",
       "data-readonly": "Present when read-only",
       "data-hover": "Present when hovered",
       "data-disabled": "Present when disabled",
@@ -1091,9 +1519,10 @@
       "data-part": "trigger",
       "data-orientation": "The orientation of the trigger",
       "data-disabled": "Present when disabled",
-      "data-value": "",
+      "data-value": "The value of the item",
       "data-selected": "Present when selected",
-      "data-focus": "Present when focused"
+      "data-focus": "Present when focused",
+      "data-ssr": ""
     },
     "Content": {
       "data-scope": "tabs",
@@ -1141,13 +1570,13 @@
     "Item": {
       "data-scope": "tags-input",
       "data-part": "item",
-      "data-value": "",
+      "data-value": "The value of the item",
       "data-disabled": "Present when disabled"
     },
     "ItemPreview": {
       "data-scope": "tags-input",
       "data-part": "item-preview",
-      "data-value": "",
+      "data-value": "The value of the item",
       "data-disabled": "Present when disabled",
       "data-highlighted": "Present when highlighted"
     },
@@ -1163,12 +1592,113 @@
       "data-readonly": "Present when read-only"
     }
   },
+  "time-picker": {
+    "Root": {
+      "data-scope": "time-picker",
+      "data-part": "root",
+      "data-state": "\"open\" | \"closed\"",
+      "data-disabled": "Present when disabled",
+      "data-readonly": "Present when read-only"
+    },
+    "Label": {
+      "data-scope": "time-picker",
+      "data-part": "label",
+      "data-state": "\"open\" | \"closed\"",
+      "data-disabled": "Present when disabled",
+      "data-readonly": "Present when read-only"
+    },
+    "Control": {
+      "data-scope": "time-picker",
+      "data-part": "control",
+      "data-disabled": "Present when disabled"
+    },
+    "Trigger": {
+      "data-scope": "time-picker",
+      "data-part": "trigger",
+      "data-placement": "The placement of the trigger",
+      "data-readonly": "Present when read-only",
+      "data-state": "\"open\" | \"closed\""
+    },
+    "ClearTrigger": {
+      "data-scope": "time-picker",
+      "data-part": "clear-trigger",
+      "data-readonly": "Present when read-only"
+    },
+    "Content": {
+      "data-scope": "time-picker",
+      "data-part": "content",
+      "data-state": "\"open\" | \"closed\"",
+      "data-placement": "The placement of the content"
+    },
+    "Column": {
+      "data-scope": "time-picker",
+      "data-part": "column",
+      "data-unit": "",
+      "data-focus": "Present when focused"
+    },
+    "HourCell": {
+      "data-scope": "time-picker",
+      "data-part": "hour-cell",
+      "data-disabled": "Present when disabled",
+      "data-selected": "Present when selected",
+      "data-now": "",
+      "data-focus": "Present when focused",
+      "data-value": "The value of the item",
+      "data-unit": ""
+    },
+    "MinuteCell": {
+      "data-scope": "time-picker",
+      "data-part": "minute-cell",
+      "data-disabled": "Present when disabled",
+      "data-selected": "Present when selected",
+      "data-value": "The value of the item",
+      "data-now": "",
+      "data-focus": "Present when focused",
+      "data-unit": ""
+    },
+    "SecondCell": {
+      "data-scope": "time-picker",
+      "data-part": "second-cell",
+      "data-disabled": "Present when disabled",
+      "data-selected": "Present when selected",
+      "data-value": "The value of the item",
+      "data-unit": "",
+      "data-focus": "Present when focused",
+      "data-now": ""
+    },
+    "PeriodCell": {
+      "data-scope": "time-picker",
+      "data-part": "period-cell",
+      "data-selected": "Present when selected",
+      "data-focus": "Present when focused",
+      "data-now": "",
+      "data-value": "The value of the item",
+      "data-unit": ""
+    }
+  },
+  "timer": {
+    "Item": {
+      "data-scope": "timer",
+      "data-part": "item",
+      "data-type": "The type of the item"
+    },
+    "ItemLabel": {
+      "data-scope": "timer",
+      "data-part": "item-label",
+      "data-type": "The type of the item"
+    },
+    "ItemValue": {
+      "data-scope": "timer",
+      "data-part": "item-value",
+      "data-type": "The type of the item"
+    }
+  },
   "toast": {
     "Root": {
       "data-scope": "toast",
       "data-part": "root",
       "data-state": "\"open\" | \"closed\"",
-      "data-type": "",
+      "data-type": "The type of the item",
       "data-placement": "The placement of the toast",
       "data-align": "",
       "data-side": "",
@@ -1188,6 +1718,22 @@
       "data-scope": "toast",
       "data-part": "ghost-after",
       "data-ghost": ""
+    }
+  },
+  "toggle": {
+    "Root": {
+      "data-scope": "toggle",
+      "data-part": "root",
+      "data-state": "\"on\" | \"off\"",
+      "data-pressed": "Present when pressed",
+      "data-disabled": "Present when disabled"
+    },
+    "Indicator": {
+      "data-scope": "toggle",
+      "data-part": "indicator",
+      "data-disabled": "Present when disabled",
+      "data-pressed": "Present when pressed",
+      "data-state": "\"on\" | \"off\""
     }
   },
   "toggle-group": {
@@ -1222,15 +1768,23 @@
     }
   },
   "tour": {
-    "Overlay": {
+    "Backdrop": {
       "data-scope": "tour",
-      "data-part": "overlay",
-      "data-state": "\"open\" | \"closed\""
+      "data-part": "backdrop",
+      "data-state": "\"open\" | \"closed\"",
+      "data-type": "The type of the item"
+    },
+    "Positioner": {
+      "data-scope": "tour",
+      "data-part": "positioner",
+      "data-type": "The type of the item",
+      "data-placement": "The placement of the positioner"
     },
     "Content": {
       "data-scope": "tour",
       "data-part": "content",
       "data-state": "\"open\" | \"closed\"",
+      "data-type": "The type of the item",
       "data-placement": "The placement of the content",
       "data-step": ""
     },
@@ -1244,14 +1798,15 @@
       "data-part": "description",
       "data-placement": "The placement of the description"
     },
-    "NextTrigger": {
+    "CloseTrigger": {
       "data-scope": "tour",
-      "data-part": "next-trigger",
-      "data-disabled": "Present when disabled"
+      "data-part": "close-trigger",
+      "data-type": "The type of the item"
     },
-    "PrevTrigger": {
+    "ActionTrigger": {
       "data-scope": "tour",
-      "data-part": "prev-trigger",
+      "data-part": "action-trigger",
+      "data-type": "The type of the item",
       "data-disabled": "Present when disabled"
     }
   },
@@ -1259,7 +1814,8 @@
     "Item": {
       "data-scope": "tree-view",
       "data-part": "item",
-      "data-item": "",
+      "data-path": "The path of the item",
+      "data-value": "The value of the item",
       "data-focus": "Present when focused",
       "data-selected": "Present when selected",
       "data-disabled": "Present when disabled",
@@ -1284,9 +1840,12 @@
       "data-part": "branch",
       "data-depth": "The depth of the item",
       "data-branch": "",
+      "data-value": "The value of the item",
+      "data-path": "The path of the item",
       "data-selected": "Present when selected",
       "data-state": "\"open\" | \"closed\"",
-      "data-disabled": "Present when disabled"
+      "data-disabled": "Present when disabled",
+      "data-loading": ""
     },
     "BranchIndicator": {
       "data-scope": "tree-view",
@@ -1294,35 +1853,53 @@
       "data-state": "\"open\" | \"closed\"",
       "data-disabled": "Present when disabled",
       "data-selected": "Present when selected",
-      "data-focus": "Present when focused"
+      "data-focus": "Present when focused",
+      "data-loading": ""
     },
     "BranchTrigger": {
       "data-scope": "tree-view",
       "data-part": "branch-trigger",
       "data-disabled": "Present when disabled",
-      "data-state": "\"open\" | \"closed\""
+      "data-state": "\"open\" | \"closed\"",
+      "data-value": "The value of the item",
+      "data-loading": ""
     },
     "BranchControl": {
       "data-scope": "tree-view",
       "data-part": "branch-control",
+      "data-path": "The path of the item",
       "data-state": "\"open\" | \"closed\"",
       "data-disabled": "Present when disabled",
       "data-selected": "Present when selected",
-      "data-branch": "",
-      "data-depth": "The depth of the item"
+      "data-focus": "Present when focused",
+      "data-value": "The value of the item",
+      "data-depth": "The depth of the item",
+      "data-loading": ""
     },
     "BranchText": {
       "data-scope": "tree-view",
       "data-part": "branch-text",
-      "data-branch": "",
       "data-disabled": "Present when disabled",
-      "data-state": "\"open\" | \"closed\""
+      "data-state": "\"open\" | \"closed\"",
+      "data-loading": ""
     },
     "BranchContent": {
       "data-scope": "tree-view",
       "data-part": "branch-content",
-      "data-branch": "",
-      "data-state": "\"open\" | \"closed\""
+      "data-state": "\"open\" | \"closed\"",
+      "data-depth": "The depth of the item",
+      "data-path": "The path of the item",
+      "data-value": "The value of the item"
+    },
+    "BranchIndentGuide": {
+      "data-scope": "tree-view",
+      "data-part": "branch-indent-guide",
+      "data-depth": "The depth of the item"
+    },
+    "NodeCheckbox": {
+      "data-scope": "tree-view",
+      "data-part": "node-checkbox",
+      "data-state": "\"checked\" | \"unchecked\" | \"indeterminate\""
     }
   }
 }

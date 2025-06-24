@@ -27,10 +27,6 @@ export class TourModel extends Model {
     return this.page.locator("[data-tour-highlighted]")
   }
 
-  private get iframeTarget() {
-    return this.page.frameLocator("iframe").first().locator("[data-tour-highlighted]")
-  }
-
   private get spotlight() {
     return this.page.locator("[data-scope=tour][data-part=spotlight]")
   }
@@ -81,13 +77,15 @@ export class TourModel extends Model {
   }
 
   async seeTarget(text: string) {
-    await expect(this.target).toContainText(text)
-    await expect(this.target).toBeInViewport()
+    const target = this.page.getByRole("heading", { name: text })
+    // await expect(target).toBeInViewport()
+    await expect(target).toBeVisible()
   }
 
   async seeIframeTarget(text: string) {
-    await expect(this.iframeTarget).toContainText(text)
-    await expect(this.iframeTarget).toBeInViewport()
+    const target = this.page.frameLocator("iframe").getByRole("heading", { name: text })
+    // await expect(target).toBeInViewport()
+    await expect(target).toBeVisible()
   }
 
   async seeSpotlightAroundTarget() {

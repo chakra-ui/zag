@@ -11,19 +11,18 @@
 
   const controls = useControls(colorPickerControls)
 
-  const [snapshot, send] = useMachine(
-    colorPicker.machine({
-      id: "1",
+  const id = $props.id()
+  const service = useMachine(
+    colorPicker.machine,
+    controls.mergeProps<colorPicker.Props>({
+      id,
       name: "color",
       format: "hsla",
-      value: colorPicker.parse("hsl(0, 100%, 50%)"),
+      defaultValue: colorPicker.parse("hsl(0, 100%, 50%)"),
     }),
-    {
-      context: controls.context,
-    },
   )
 
-  const api = $derived(colorPicker.connect(snapshot, send, normalizeProps))
+  const api = $derived(colorPicker.connect(service, normalizeProps))
 </script>
 
 <main class="color-picker">
@@ -32,39 +31,40 @@
       console.log("change:", serialize(e.currentTarget, { hash: true }))
     }}
   >
-    <input {...api.hiddenInputProps} />
-    <div {...api.rootProps}>
-      <!-- svelte-ignore a11y-label-has-associated-control -->
-      <label {...api.labelProps}>
+    <input {...api.getHiddenInputProps()} />
+    <div {...api.getRootProps()}>
+      <!-- svelte-ignore a11y_label_has_associated_control -->
+      <label {...api.getLabelProps()}>
         Select Color: <span data-testid="value-text">{api.valueAsString}</span>
       </label>
 
-      <div {...api.controlProps}>
-        <button {...api.triggerProps}>
-          <div {...api.getTransparencyGridProps({ size: "10px" })} />
-          <div {...api.getSwatchProps({ value: api.value })} />
+      <div {...api.getControlProps()}>
+        <!-- svelte-ignore a11y_consider_explicit_label -->
+        <button {...api.getTriggerProps()}>
+          <div {...api.getTransparencyGridProps({ size: "10px" })}></div>
+          <div {...api.getSwatchProps({ value: api.value })}></div>
         </button>
         <input {...api.getChannelInputProps({ channel: "hex" })} />
         <input {...api.getChannelInputProps({ channel: "alpha" })} />
       </div>
 
-      <div {...api.positionerProps}>
-        <div {...api.contentProps}>
+      <div {...api.getPositionerProps()}>
+        <div {...api.getContentProps()}>
           <div class="content__inner">
             <div {...api.getAreaProps()}>
-              <div {...api.getAreaBackgroundProps()} />
-              <div {...api.getAreaThumbProps()} />
+              <div {...api.getAreaBackgroundProps()}></div>
+              <div {...api.getAreaThumbProps()}></div>
             </div>
 
             <div {...api.getChannelSliderProps({ channel: "hue" })}>
-              <div {...api.getChannelSliderTrackProps({ channel: "hue" })} />
-              <div {...api.getChannelSliderThumbProps({ channel: "hue" })} />
+              <div {...api.getChannelSliderTrackProps({ channel: "hue" })}></div>
+              <div {...api.getChannelSliderThumbProps({ channel: "hue" })}></div>
             </div>
 
             <div {...api.getChannelSliderProps({ channel: "alpha" })}>
-              <div {...api.getTransparencyGridProps({ size: "12px" })} />
-              <div {...api.getChannelSliderTrackProps({ channel: "alpha" })} />
-              <div {...api.getChannelSliderThumbProps({ channel: "alpha" })} />
+              <div {...api.getTransparencyGridProps({ size: "12px" })}></div>
+              <div {...api.getChannelSliderTrackProps({ channel: "alpha" })}></div>
+              <div {...api.getChannelSliderThumbProps({ channel: "alpha" })}></div>
             </div>
 
             {#if api.format.startsWith("hsl")}
@@ -94,28 +94,29 @@
               </div>
             {/if}
 
-            <div style="display:flex;gap:10px;alig-items:center;">
+            <div style="display:flex;gap:10px;align-items:center;">
               <div style="position:relative;">
-                <div {...api.getTransparencyGridProps({ size: "4px" })} />
-                <div {...api.getSwatchProps({ value: api.value })} />
+                <div {...api.getTransparencyGridProps({ size: "4px" })}></div>
+                <div {...api.getSwatchProps({ value: api.value })}></div>
               </div>
               <p data-testid="value-text">{api.valueAsString}</p>
             </div>
 
             <input {...api.getChannelInputProps({ channel: "hex" })} />
 
-            <div {...api.swatchGroupProps} style="display:flex;gap:10px;">
+            <div {...api.getSwatchGroupProps()} style="display:flex;gap:10px;">
               {#each presets as preset}
+                <!-- svelte-ignore a11y_consider_explicit_label -->
                 <button {...api.getSwatchTriggerProps({ value: preset })}>
                   <div style="position:relative;">
-                    <div {...api.getTransparencyGridProps({ size: "4px" })} />
-                    <div {...api.getSwatchProps({ value: preset })} />
+                    <div {...api.getTransparencyGridProps({ size: "4px" })}></div>
+                    <div {...api.getSwatchProps({ value: preset })}></div>
                   </div>
                 </button>
               {/each}
             </div>
 
-            <button {...api.eyeDropperTriggerProps}>
+            <button {...api.getEyeDropperTriggerProps()}>
               {@render EyeDropIcon()}
             </button>
           </div>
@@ -128,7 +129,7 @@
 </main>
 
 <Toolbar {controls}>
-  <StateVisualizer state={snapshot} />
+  <StateVisualizer state={service} />
 </Toolbar>
 
 {#snippet EyeDropIcon()}

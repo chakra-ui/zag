@@ -9,36 +9,36 @@
 
   const controls = useControls(pinInputControls)
 
-  const [snapshot, send] = useMachine(
-    pinInput.machine({
+  const id = $props.id()
+  const service = useMachine(
+    pinInput.machine,
+    controls.mergeProps<pinInput.Props>({
       name: "test",
-      id: "1",
+      id,
+      count: 3,
     }),
-    {
-      context: controls.context,
-    },
   )
 
-  const api = $derived(pinInput.connect(snapshot, send, normalizeProps))
+  const api = $derived(pinInput.connect(service, normalizeProps))
 </script>
 
 <main class="pin-input">
   <form
-    onSubmit={(e) => {
+    onsubmit={(e) => {
       e.preventDefault()
       const formData = serialize(e.currentTarget, { hash: true })
       console.log(formData)
     }}
   >
-    <div {...api.rootProps}>
-      <!-- svelte-ignore a11y-label-has-associated-control -->
-      <label {...api.labelProps}>Enter code:</label>
-      <div {...api.controlProps}>
-        <input data-testid="input-1" {...api.getInputProps({ index: 0 })} />
-        <input data-testid="input-2" {...api.getInputProps({ index: 1 })} />
-        <input data-testid="input-3" {...api.getInputProps({ index: 2 })} />
+    <div {...api.getRootProps()}>
+      <!-- svelte-ignore a11y_label_has_associated_control -->
+      <label {...api.getLabelProps()}>Enter code:</label>
+      <div {...api.getControlProps()}>
+        {#each api.items as index}
+          <input data-testid={`input-${index + 1}`} {...api.getInputProps({ index })} />
+        {/each}
       </div>
-      <input {...api.hiddenInputProps} />
+      <input {...api.getHiddenInputProps()} />
     </div>
     <button data-testid="clear-button" onclick={api.clearValue}> Clear </button>
     <button onclick={api.focus}>Focus</button>
@@ -46,5 +46,5 @@
 </main>
 
 <Toolbar {controls}>
-  <StateVisualizer state={snapshot} />
+  <StateVisualizer state={service} />
 </Toolbar>

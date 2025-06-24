@@ -1,0 +1,18 @@
+```svelte {2,13}
+<script lang="ts">
+  import { portal } from "@zag-js/svelte"
+
+  // ...
+  const id = $props.id()
+  const service = useMachine(toast.group.machine, ({ id, store: toaster }))
+  const api = $derived(toast.group.connect(service, normalizeProps))
+
+  // ...
+</script>
+
+<div use:portal {...api.getGroupProps()}>
+  {#each api.getToasts() as toast, index (toast.id)}
+    <Toast toast={toast} index={index} parent={service} />
+  {/each}
+</div>
+```

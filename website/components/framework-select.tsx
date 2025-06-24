@@ -1,6 +1,6 @@
 import { HStack } from "@chakra-ui/layout"
 import { chakra } from "@chakra-ui/system"
-import { type Framework } from "lib/framework-utils"
+import { frameworks, type Framework } from "lib/framework-utils"
 import { useRouter } from "next/router"
 import { useFramework } from "./framework"
 
@@ -23,7 +23,7 @@ export function FrameworkSelect() {
         fontWeight="semibold"
         color="text-primary-bold"
         defaultValue={framework}
-        onChange={(event) => {
+        onChange={(event: React.ChangeEvent<HTMLSelectElement>) => {
           const newFramework = event.currentTarget.value as Framework
           setFramework?.(newFramework)
           if (asPath.includes(framework) && newFramework !== framework) {
@@ -32,10 +32,11 @@ export function FrameworkSelect() {
           }
         }}
       >
-        <option value="react">React</option>
-        <option value="vue-jsx">Vue 3 (JSX)</option>
-        <option value="vue-sfc">Vue 3 (SFC)</option>
-        <option value="solid">Solid.js</option>
+        {Object.entries(frameworks).map(([key, value]) => (
+          <option key={key} value={key}>
+            {value.label}
+          </option>
+        ))}
       </chakra.select>
     </HStack>
   )

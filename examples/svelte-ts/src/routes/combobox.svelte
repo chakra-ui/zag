@@ -6,41 +6,40 @@
   import { comboboxControls, comboboxData } from "@zag-js/shared"
   import { normalizeProps, useMachine } from "@zag-js/svelte"
   import { matchSorter } from "match-sorter"
+  import { XIcon } from "lucide-svelte"
 
   const controls = useControls(comboboxControls)
 
-  let options = $state.frozen(comboboxData)
+  let options = $state.raw(comboboxData)
 
-  const collection = combobox.collection({
-    items: comboboxData,
-    itemToValue: (item) => item.code,
-    itemToString: (item) => item.label,
-  })
+  const collection = $derived(
+    combobox.collection({
+      items: options,
+      itemToValue: (item) => item.code,
+      itemToString: (item) => item.label,
+    }),
+  )
 
-  controls.setContext("collection", collection)
-
-  const [snapshot, send] = useMachine(
-    combobox.machine({
-      id: "1",
-      collection,
+  const id = $props.id()
+  const service = useMachine(
+    combobox.machine,
+    controls.mergeProps<combobox.Props>({
+      id,
+      get collection() {
+        return collection
+      },
       onOpenChange() {
         options = comboboxData
       },
       onInputValueChange({ inputValue }) {
         const filtered = matchSorter(comboboxData, inputValue, { keys: ["label"] })
         const newOptions = filtered.length > 0 ? filtered : comboboxData
-
-        collection.setItems(newOptions)
         options = newOptions
       },
     }),
-    {
-      context: controls.context,
-    },
   )
 
-  const api = $derived(combobox.connect(snapshot, send, normalizeProps))
-  $inspect(api.inputValue)
+  const api = $derived(combobox.connect(service, normalizeProps))
 </script>
 
 <main class="combobox">
@@ -48,17 +47,20 @@
     <button onclick={() => api.setValue(["TG"])}>Set to Togo</button>
     <button data-testid="clear-value-button" onclick={() => api.clearValue()}> Clear Value </button>
     <br />
-    <div {...api.rootProps}>
-      <!-- svelte-ignore a11y-label-has-associated-control -->
-      <label {...api.labelProps}>Select country</label>
-      <div {...api.controlProps}>
-        <input data-testid="input" {...api.inputProps} />
-        <button data-testid="trigger" {...api.triggerProps}> ▼ </button>
+    <div {...api.getRootProps()}>
+      <!-- svelte-ignore a11y_label_has_associated_control -->
+      <label {...api.getLabelProps()}>Select country</label>
+      <div {...api.getControlProps()}>
+        <input data-testid="input" {...api.getInputProps()} />
+        <button data-testid="trigger" {...api.getTriggerProps()}> ▼ </button>
+        <button {...api.getClearTriggerProps()}>
+          <XIcon />
+        </button>
       </div>
     </div>
-    <div {...api.positionerProps}>
+    <div {...api.getPositionerProps()}>
       {#if options.length > 0}
-        <ul data-testid="combobox-content" {...api.contentProps}>
+        <ul data-testid="combobox-content" {...api.getContentProps()}>
           {#each options as item}
             <li data-testid={item.code} {...api.getItemProps({ item })}>
               {item.label}
@@ -71,5 +73,5 @@
 </main>
 
 <Toolbar {controls}>
-  <StateVisualizer state={snapshot} />
+  <StateVisualizer state={service} />
 </Toolbar>

@@ -1,10 +1,7 @@
+import type { Service } from "@zag-js/core"
 import { MAX_Z_INDEX } from "@zag-js/dom-query"
 import type { Style } from "@zag-js/types"
-import type { GroupMachineContext, MachineContext, Placement, Service, Type } from "./toast.types"
-
-export function getToastsByPlacement<T>(toasts: Service<T>[], placement: Placement) {
-  return toasts.filter((toast) => toast.state.context.placement === placement)
-}
+import type { Placement, ToastGroupService, ToastSchema, Type } from "./toast.types"
 
 export const defaultTimeouts: Record<Type, number> = {
   info: 5000,
@@ -14,16 +11,21 @@ export const defaultTimeouts: Record<Type, number> = {
   DEFAULT: 5000,
 }
 
-export function getToastDuration(duration: number | undefined, type: NonNullable<MachineContext["type"]>) {
+export function getToastDuration(duration: number | undefined, type: Type) {
   return duration ?? defaultTimeouts[type] ?? defaultTimeouts.DEFAULT
 }
 
-export function getGroupPlacementStyle<T>(ctx: GroupMachineContext<T>, placement: Placement): Style {
-  const offset = ctx.offsets
-  const computedOffset =
-    typeof offset === "string" ? { left: offset, right: offset, bottom: offset, top: offset } : offset
+const getOffsets = (offsets: string | Record<"left" | "right" | "bottom" | "top", string>) =>
+  typeof offsets === "string" ? { left: offsets, right: offsets, bottom: offsets, top: offsets } : offsets
 
-  const rtl = ctx.dir === "rtl"
+export function getGroupPlacementStyle(service: ToastGroupService, placement: Placement): Style {
+  const { prop, computed, context } = service
+  const { offsets, gap } = prop("store").attrs
+
+  const heights = context.get("heights")
+  const computedOffset = getOffsets(offsets)
+
+  const rtl = prop("dir") === "rtl"
   const computedPlacement = placement
     .replace("-start", rtl ? "-right" : "-left")
     .replace("-end", rtl ? "-left" : "-right")
@@ -33,11 +35,11 @@ export function getGroupPlacementStyle<T>(ctx: GroupMachineContext<T>, placement
 
   const styles: Style = {
     position: "fixed",
-    pointerEvents: ctx.count > 0 ? undefined : "none",
+    pointerEvents: computed("count") > 0 ? undefined : "none",
     display: "flex",
     flexDirection: "column",
-    "--gap": `${ctx.gap}px`,
-    "--first-height": `${ctx.heights[0]?.height || 0}px`,
+    "--gap": `${gap}px`,
+    "--first-height": `${heights[0]?.height || 0}px`,
     zIndex: MAX_Z_INDEX,
   }
 
@@ -70,21 +72,39 @@ export function getGroupPlacementStyle<T>(ctx: GroupMachineContext<T>, placement
   return styles
 }
 
-export function getPlacementStyle<T>(ctx: MachineContext<T>, visible: boolean): Style {
-  const [side] = ctx.placement!.split("-")
-  const sibling = !ctx.frontmost
-  const overlap = !ctx.stacked
+export function getPlacementStyle(service: Service<ToastSchema>, visible: boolean): Style {
+  const { prop, context, computed } = service
+
+  const parent = prop("parent")
+  const placement = parent.computed("placement")
+  const { gap } = parent.prop("store").attrs
+
+  const [side] = placement.split("-")
+
+  const mounted = context.get("mounted")
+  const remainingTime = context.get("remainingTime")
+
+  const height = computed("height")
+  const frontmost = computed("frontmost")
+  const sibling = !frontmost
+
+  const overlap = !prop("stacked")
+  const stacked = prop("stacked")
+  const type = prop("type")
+
+  const duration = type === "loading" ? Number.MAX_SAFE_INTEGER : remainingTime
+  const offset = computed("heightIndex") * gap + computed("heightBefore")
 
   const styles: Style = {
     position: "absolute",
     pointerEvents: "auto",
     "--opacity": "0",
-    "--remove-delay": `${ctx.removeDelay}ms`,
-    "--duration": `${ctx.type === "loading" ? Number.MAX_SAFE_INTEGER : ctx.duration}ms`,
-    "--initial-height": `${ctx.height}px`,
-    "--offset": `${ctx.offset}px`,
-    "--index": ctx.index,
-    "--z-index": ctx.zIndex,
+    "--remove-delay": `${prop("removeDelay")}ms`,
+    "--duration": `${duration}ms`,
+    "--initial-height": `${height}px`,
+    "--offset": `${offset}px`,
+    "--index": prop("index"),
+    "--z-index": computed("zIndex"),
     "--lift-amount": "calc(var(--lift) * var(--gap))",
     "--y": "100%",
     "--x": "0",
@@ -111,13 +131,13 @@ export function getPlacementStyle<T>(ctx: MachineContext<T>, visible: boolean): 
     })
   }
 
-  if (ctx.mounted) {
+  if (mounted) {
     assign({
       "--y": "0",
       "--opacity": "1",
     })
 
-    if (ctx.stacked) {
+    if (stacked) {
       assign({
         "--y": "calc(var(--lift) * var(--offset))",
         "--height": "var(--initial-height)",
@@ -147,13 +167,13 @@ export function getPlacementStyle<T>(ctx: MachineContext<T>, visible: boolean): 
     }
   }
 
-  if (sibling && ctx.stacked && !visible) {
+  if (sibling && stacked && !visible) {
     assign({
       "--y": "calc(var(--lift) * var(--offset) + var(--lift) * -100%)",
     })
   }
 
-  if (ctx.frontmost && !visible) {
+  if (frontmost && !visible) {
     assign({
       "--y": "calc(var(--lift) * -100%)",
     })
@@ -162,7 +182,8 @@ export function getPlacementStyle<T>(ctx: MachineContext<T>, visible: boolean): 
   return styles
 }
 
-export function getGhostBeforeStyle<T>(ctx: MachineContext<T>, visible: boolean): Style {
+export function getGhostBeforeStyle(service: Service<ToastSchema>, visible: boolean): Style {
+  const { computed } = service
   const styles: Style = {
     position: "absolute",
     inset: "0",
@@ -172,7 +193,7 @@ export function getGhostBeforeStyle<T>(ctx: MachineContext<T>, visible: boolean)
 
   const assign = (overrides: Style) => Object.assign(styles, overrides)
 
-  if (ctx.frontmost && !visible) {
+  if (computed("frontmost") && !visible) {
     assign({
       height: "calc(var(--initial-height) + 80%)",
     })
@@ -181,7 +202,7 @@ export function getGhostBeforeStyle<T>(ctx: MachineContext<T>, visible: boolean)
   return styles
 }
 
-export function getGhostAfterStyle<T>(_ctx: MachineContext<T>, _visible: boolean): Style {
+export function getGhostAfterStyle(): Style {
   return {
     position: "absolute",
     left: "0",

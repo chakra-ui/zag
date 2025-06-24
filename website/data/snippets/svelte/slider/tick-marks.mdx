@@ -1,0 +1,22 @@
+```svelte {13-17}
+
+<!-- ... -->
+<div {...api.getRootProps()}>
+  <div {...api.getControlProps()}>
+    <div {...api.getTrackProps()}>
+      <div {...api.getRangeProps()}></div>
+    </div>
+    {#each api.value as _, index}
+      <div {...api.getThumbProps({ index })}>
+        <input {...api.getHiddenInputProps({ index })} />
+      </div>
+    {/each}
+  </div>
+  <div {...api.getMarkerGroupProps()}>
+    <span {...api.getMarkerProps({ value: 10 })}>|</span>
+    <span {...api.getMarkerProps({ value: 30 })}>|</span>
+    <span {...api.getMarkerProps({ value: 90 })}>|</span>
+  </div>
+</div>
+<!-- ... -->
+```

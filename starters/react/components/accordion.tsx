@@ -3,7 +3,7 @@ import { normalizeProps, useMachine } from "@zag-js/react"
 import { useId } from "react"
 import { Collapsible } from "./collapsible"
 
-interface Props extends Omit<accordion.Context, "id"> {
+interface Props extends Omit<accordion.Props, "id" | "value" | "defaultValue"> {
   defaultValue?: Array<string>
   items: Array<{ value: string; title: React.ReactNode; description: React.ReactNode }>
 }
@@ -11,14 +11,16 @@ interface Props extends Omit<accordion.Context, "id"> {
 export const Accordion = (props: Props) => {
   const { items, defaultValue, ...context } = props
 
-  const [state, send] = useMachine(accordion.machine({ id: useId(), value: defaultValue }), {
-    context,
+  const service = useMachine(accordion.machine, {
+    id: useId(),
+    value: defaultValue,
+    ...context,
   })
 
-  const api = accordion.connect(state, send, normalizeProps)
+  const api = accordion.connect(service, normalizeProps)
 
   return (
-    <div {...api.rootProps}>
+    <div {...api.getRootProps()}>
       {items.map((item, index) => {
         const _data = { value: item.value }
         const itemState = api.getItemState(_data)

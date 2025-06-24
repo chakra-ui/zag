@@ -8,7 +8,9 @@ type FormatOptions<T> = T extends Intl.NumberFormat
         ? Intl.ListFormatOptions
         : T extends Intl.PluralRules
           ? Intl.PluralRulesOptions
-          : never
+          : T extends Intl.Collator
+            ? Intl.CollatorOptions
+            : never
 
 export function i18nCache<T extends abstract new (...args: any) => any>(Ins: T) {
   const formatterCache = new Map<string, T>()

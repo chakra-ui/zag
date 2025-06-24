@@ -15,9 +15,9 @@ title, content snippet, or thumbnail representing a section of content.
 
 **Features**
 
-- Full keyboard navigation.
-- Can expand one or multiple items.
-- Collapse each accordion item.
+- Full keyboard navigation
+- Can expand one or multiple items
+- Collapse each accordion item
 
 ## Installation
 
@@ -25,9 +25,6 @@ To use the accordion machine in your project, run the following command in your
 command line:
 
 <CodeSnippet id="accordion/installation.mdx" />
-
-This command will install the framework agnostic accordion logic and the
-reactive utilities for your framework of choice.
 
 ## Anatomy
 
@@ -66,73 +63,70 @@ recommended by the
 design pattern to ensure the accordion has the appropriate hierarchy on the
 page.
 
-## Opening multiple accordions at once
+### Opening multiple accordions at once
 
 To allow multiple items to be expanded at once, set `multiple` to `true`. This
 mode implicitly sets `collapsible` to `true` and ensures that each accordion can
 be expanded.
 
-```jsx {3}
-const [state, send] = useMachine(
-  accordion.machine({
-    multiple: true,
-  }),
-)
+```jsx {2}
+const service = useMachine(accordion.machine, {
+  multiple: true,
+})
 ```
 
-## Opening specific accordions
+### Opening accordions by default
 
 To set the value of the accordion(s) that should be opened initially, pass the
-`value` property to the machine function.
+`defaultValue` property to the machine function.
 
-```jsx {4,5,12}
+```jsx {3,4,9}
 // for multiple accordions
-const [state, send] = useMachine(
-  accordion.machine({
-    multiple: true,
-    value: ["home"],
-  }),
-)
+const service = useMachine(accordion.machine, {
+  multiple: true,
+  defaultValue: ["home"],
+})
 
 // for single accordions
-const [state, send] = useMachine(
-  accordion.machine({
-    value: ["home"],
-  }),
-)
+const service = useMachine(accordion.machine, {
+  defaultValue: ["home"],
+})
 ```
 
-## Toggle each accordion item
+### Controlled accordions
+
+To control the accordion's value, pass the `value` and `onValueChange`
+properties to the machine function.
+
+<CodeSnippet id="accordion/controlled.mdx" />
+
+### Toggle each accordion item
 
 To collapse an already expanded accordion item by clicking on it, set the
 context's `collapsible` property to `true`.
 
 > Note: If `multiple` is `true`, we internally set `collapsible` to be `true`.
 
-```jsx {3}
-const [state, send] = useMachine(
-  accordion.machine({
-    collapsible: true,
-  }),
-)
+```jsx {2}
+const service = useMachine(accordion.machine, {
+  collapsible: true,
+})
 ```
 
-## Listening for changes
+#### Listening for changes
 
 When the accordion value changes, the `onValueChange` callback is invoked.
 
-```jsx {3-6}
-const [state, send] = useMachine(
-  accordion.machine({
-    onValueChange(details) {
-      // details => { value: string[] }
-      console.log("selected accordion:", details.value)
-    },
-  }),
-)
+```jsx {2-5}
+const service = useMachine(accordion.machine, {
+  onValueChange(details) {
+    // details => { value: string[] }
+    console.log("selected accordion:", details.value)
+  },
+})
 ```
 
-## Disabling an accordion item
+### Disabling an accordion item
 
 To disable a specific accordion item, pass the `disabled: true` property to the
 `getItemProps`, `getItemTriggerProps` and `getItemContentProps`.
@@ -158,12 +152,10 @@ can't be interacted with.
 You can also disable the entire accordion items by passing `disabled` to the
 machine's context.
 
-```jsx {3}
-const [state, send] = useMachine(
-  accordion.machine({
-    disabled: true,
-  }),
-)
+```jsx {2}
+const service = useMachine(accordion.machine, {
+  disabled: true,
+})
 ```
 
 ## Styling guide
@@ -242,8 +234,12 @@ The accordion `api` exposes the following methods:
 
 <ApiTable name="accordion" />
 
+### Data Attributes
+
+<DataAttrTable name="accordion" />
+
 ## Accessibility
 
 ### Keyboard Interactions
 
-<KeyboardTable id="accordion" />
+<KeyboardTable name="accordion" />

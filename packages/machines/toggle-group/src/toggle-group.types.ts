@@ -1,4 +1,4 @@
-import type { StateMachine as S } from "@zag-js/core"
+import type { EventObject, Machine, Service } from "@zag-js/core"
 import type { CommonProperties, DirectionProperty, Orientation, PropTypes, RequiredBy } from "@zag-js/types"
 
 /* -----------------------------------------------------------------------------
@@ -18,45 +18,57 @@ export type ElementIds = Partial<{
   item(value: string): string
 }>
 
-interface PublicContext extends DirectionProperty, CommonProperties {
+export interface ToggleGroupProps extends DirectionProperty, CommonProperties {
   /**
    * The ids of the elements in the toggle. Useful for composition.
    */
-  ids?: ElementIds
+  ids?: ElementIds | undefined
   /**
    * Whether the toggle is disabled.
    */
-  disabled?: boolean
+  disabled?: boolean | undefined
   /**
-   * The values of the toggles in the group.
+   * The controlled selected value of the toggle group.
    */
-  value: string[]
+  value?: string[] | undefined
+  /**
+   * The initial selected value of the toggle group when rendered.
+   * Use when you don't need to control the selected value of the toggle group.
+   */
+  defaultValue?: string[] | undefined
   /**
    * Function to call when the toggle is clicked.
    */
-  onValueChange?: (details: ValueChangeDetails) => void
+  onValueChange?: ((details: ValueChangeDetails) => void) | undefined
   /**
    * Whether to loop focus inside the toggle group.
    * @default true
    */
-  loopFocus: boolean
+  loopFocus?: boolean | undefined
   /**
-   *  Whether to use roving tab index to manage focus.
+   * Whether to use roving tab index to manage focus.
    * @default true
    */
-  rovingFocus?: boolean
+  rovingFocus?: boolean | undefined
   /**
    * The orientation of the toggle group.
    * @default "horizontal"
    */
-  orientation: Orientation
+  orientation?: Orientation | undefined
   /**
    * Whether to allow multiple toggles to be selected.
    */
-  multiple?: boolean
+  multiple?: boolean | undefined
+  /**
+   * Whether the toggle group allows empty selection.
+   * **Note:** This is ignored if `multiple` is `true`.
+   *
+   * @default true
+   */
+  deselectable?: boolean | undefined
 }
 
-export type UserDefinedContext = RequiredBy<PublicContext, "id">
+type PropsWithDefault = "loopFocus" | "rovingFocus" | "orientation"
 
 type ComputedContext = Readonly<{
   currentLoopFocus: boolean
@@ -64,37 +76,42 @@ type ComputedContext = Readonly<{
 
 interface PrivateContext {
   /**
-   * @internal
    * Whether the user is tabbing backward.
    */
   isTabbingBackward: boolean
   /**
-   * @internal
    * Whether the toggle was focused by a click.
    */
   isClickFocus: boolean
   /**
-   * @internal
    * The value of the toggle that was focused.
    */
   focusedId: string | null
   /**
-   * @internal
    * Whether the toggle group is within a toolbar.
    * This is used to determine whether to use roving tab index.
    */
   isWithinToolbar: boolean
+  /**
+   * The value of the toggle group.
+   */
+  value: string[]
 }
 
-export interface MachineContext extends PublicContext, PrivateContext, ComputedContext {}
-
-export interface MachineState {
-  value: "idle" | "focused"
+export interface ToggleGroupSchema {
+  props: RequiredBy<ToggleGroupProps, PropsWithDefault>
+  context: PrivateContext
+  computed: ComputedContext
+  state: "idle" | "focused"
+  event: EventObject
+  action: string
+  effect: string
+  guard: string
 }
 
-export type State = S.State<MachineContext, MachineState>
+export type ToggleGroupService = Service<ToggleGroupSchema>
 
-export type Send = S.Send<S.AnyEventObject>
+export type ToggleGroupMachine = Machine<ToggleGroupSchema>
 
 /* -----------------------------------------------------------------------------
  * Component API
@@ -102,7 +119,7 @@ export type Send = S.Send<S.AnyEventObject>
 
 export interface ItemProps {
   value: string
-  disabled?: boolean
+  disabled?: boolean | undefined
 }
 
 export interface ItemState {
@@ -124,7 +141,7 @@ export interface ItemState {
   focused: boolean
 }
 
-export interface MachineApi<T extends PropTypes = PropTypes> {
+export interface ToggleGroupApi<T extends PropTypes = PropTypes> {
   /**
    * The value of the toggle group.
    */
@@ -137,7 +154,7 @@ export interface MachineApi<T extends PropTypes = PropTypes> {
    * Returns the state of the toggle item.
    */
   getItemState(props: ItemProps): ItemState
-  rootProps: T["element"]
+  getRootProps(): T["element"]
   getItemProps(props: ItemProps): T["button"]
 }
 

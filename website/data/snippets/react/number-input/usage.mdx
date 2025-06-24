@@ -3,17 +3,17 @@ import * as numberInput from "@zag-js/number-input"
 import { useMachine, normalizeProps } from "@zag-js/react"
 
 export function NumberInput() {
-  const [state, send] = useMachine(numberInput.machine({ id: "1" }))
-  
-  const api = numberInput.connect(state, send, normalizeProps)
+  const service = useMachine(numberInput.machine, { id: "1" })
+
+  const api = numberInput.connect(service, normalizeProps)
 
   return (
-    <div {...api.rootProps}>
-      <label {...api.labelProps}>Enter number:</label>
+    <div {...api.getRootProps()}>
+      <label {...api.getLabelProps()}>Enter number:</label>
       <div>
-        <button {...api.decrementTriggerProps}>DEC</button>
-        <input {...api.inputProps} />
-        <button {...api.incrementTriggerProps}>INC</button>
+        <button {...api.getDecrementTriggerProps()}>DEC</button>
+        <input {...api.getInputProps()} />
+        <button {...api.getIncrementTriggerProps()}>INC</button>
       </div>
     </div>
   )

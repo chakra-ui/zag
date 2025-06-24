@@ -9,14 +9,19 @@ import { ComboboxAnatomy } from "./combobox"
 import { DatePickerAnatomy } from "./date-picker"
 import { DialogAnatomy } from "./dialog"
 import { EditableAnatomy } from "./editable"
+import { FieldAnatomy } from "./field"
+import { FieldsetAnatomy } from "./fieldset"
 import { FileUploadAnatomy } from "./file-upload"
+import { FloatingPanelAnatomy } from "./floating-panel"
 import { HoverCardAnatomy } from "./hover-card"
 import { LinearProgressAnatomy } from "./linear-progress"
 import { MenuAnatomy } from "./menu"
 import { NumberInputAnatomy } from "./number-input"
 import { PaginationAnatomy } from "./pagination"
+import { PasswordInputAnatomy } from "./password-input"
 import { PinInputAnatomy } from "./pin-input"
 import { PopoverAnatomy } from "./popover"
+import { QRCodeAnatomy } from "./qr-code"
 import { RadioGroupAnatomy } from "./radio-group"
 import { RatingGroupAnatomy } from "./rating-group"
 import { SegmentedControlAnatomy } from "./segmented-control"
@@ -24,15 +29,25 @@ import { SelectAnatomy } from "./select"
 import { SignaturePadAnatomy } from "./signature-pad"
 import { SliderAnatomy } from "./slider"
 import { SplitterAnatomy } from "./splitter"
+import { StepsAnatomy } from "./steps"
 import { SwitchAnatomy } from "./switch"
 import { TabsAnatomy } from "./tabs"
 import { TagsInputAnatomy } from "./tags-input"
+import { TimePickerAnatomy } from "./time-picker"
 import { ToastAnatomy } from "./toast"
 import { ToggleGroupAnatomy } from "./toggle-group"
 import { TooltipAnatomy } from "./tooltip"
+import { TourAnatomy } from "./tour"
 import { TreeViewAnatomy } from "./tree-view"
 
 export const allComponents = {
+  "password-input": PasswordInputAnatomy,
+  "floating-panel": FloatingPanelAnatomy,
+  tour: TourAnatomy,
+  fieldset: FieldsetAnatomy,
+  field: FieldAnatomy,
+  steps: StepsAnatomy,
+  "qr-code": QRCodeAnatomy,
   "signature-pad": SignaturePadAnatomy,
   clipboard: ClipboardAnatomy,
   "tree-view": TreeViewAnatomy,
@@ -64,6 +79,7 @@ export const allComponents = {
   splitter: SplitterAnatomy,
   switch: SwitchAnatomy,
   tabs: TabsAnatomy,
+  "time-picker": TimePickerAnatomy,
   toast: ToastAnatomy,
   tooltip: TooltipAnatomy,
 }

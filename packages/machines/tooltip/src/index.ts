@@ -3,10 +3,12 @@ export { connect } from "./tooltip.connect"
 export { machine } from "./tooltip.machine"
 export * from "./tooltip.props"
 export type {
-  MachineApi as Api,
-  UserDefinedContext as Context,
+  TooltipApi as Api,
   ElementIds,
   OpenChangeDetails,
   Placement,
   PositioningOptions,
+  TooltipMachine as Machine,
+  TooltipProps as Props,
+  TooltipService as Service,
 } from "./tooltip.types"

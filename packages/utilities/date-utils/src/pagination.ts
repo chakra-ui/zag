@@ -6,7 +6,7 @@ import {
   startOfMonth,
   startOfWeek,
 } from "@internationalized/date"
-import { isDateInvalid } from "./assertion"
+import { isDateOutsideRange } from "./assertion"
 import { alignEnd, alignStart, constrainStart, constrainValue } from "./constrain"
 import { getEndDate, getUnitDuration } from "./duration"
 
@@ -30,7 +30,7 @@ export function getAdjustedDateFn(
     const endDate = getEndDate(startDate, visibleDuration)
 
     // If the focused date was moved to an invalid value, it can't be focused, so constrain it.
-    if (isDateInvalid(focusedDate, minValue, maxValue)) {
+    if (isDateOutsideRange(focusedDate, minValue, maxValue)) {
       return {
         startDate,
         focusedDate: constrainValue(focusedDate, minValue, maxValue),
@@ -212,7 +212,6 @@ export function getSectionEnd(
 
   if (visibleDuration.weeks) {
     return adjust({
-      //@ts-expect-error - endOfWeek is loosely typed
       focusedDate: endOfWeek(focusedDate, locale),
       startDate,
     })

@@ -35,6 +35,42 @@
       }
     ]
   },
+  "angle-slider": {
+    "keyboard": [
+      {
+        "keys": ["ArrowRight"],
+        "description": "<span>Increments the angle slider based on defined step</span>"
+      },
+      {
+        "keys": ["ArrowLeft"],
+        "description": "<span>Decrements the angle slider based on defined step</span>"
+      },
+      {
+        "keys": ["ArrowUp"],
+        "description": "<span>Decreases the value by the step amount.</span>"
+      },
+      {
+        "keys": ["ArrowDown"],
+        "description": "<span>Increases the value by the step amount.</span>"
+      },
+      {
+        "keys": ["Shift + ArrowUp"],
+        "description": "<span>Decreases the value by a larger step</span>"
+      },
+      {
+        "keys": ["Shift + ArrowDown"],
+        "description": "<span>Increases the value by a larger step</span>"
+      },
+      {
+        "keys": ["Home"],
+        "description": "Sets the value to 0 degrees."
+      },
+      {
+        "keys": ["End"],
+        "description": "Sets the value to 360 degrees."
+      }
+    ]
+  },
   "checkbox": {
     "keyboard": [
       {
@@ -712,6 +748,34 @@
       {
         "keys": ["Esc"],
         "description": "Closes the dialog and moves focus to trigger or the defined final focus element"
+      }
+    ]
+  },
+  "time-picker": {
+    "keyboard": [
+      {
+        "keys": ["ArrowLeft"],
+        "description": "Moves focus to the previous column."
+      },
+      {
+        "keys": ["ArrowRight"],
+        "description": "Moves focus to the next column."
+      },
+      {
+        "keys": ["ArrowUp"],
+        "description": "Moves focus to the previous cell within the current column."
+      },
+      {
+        "keys": ["ArrowDown"],
+        "description": "Moves focus to the next cell within the current column."
+      },
+      {
+        "keys": ["Enter"],
+        "description": "Selects the focused hour/minute/second/period and moves focus to the next column."
+      },
+      {
+        "keys": ["Esc"],
+        "description": "Closes the time picker without selecting any time."
       }
     ]
   }

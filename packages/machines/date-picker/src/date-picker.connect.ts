@@ -1,4 +1,4 @@
-import { DateFormatter, isEqualDay, isWeekend, type DateValue } from "@internationalized/date"
+import { DateFormatter, isEqualDay, isToday, isWeekend, type DateValue } from "@internationalized/date"
 import {
   constrainValue,
   getDateRangePreset,
@@ -11,95 +11,94 @@ import {
   getTodayDate,
   getUnitDuration,
   getWeekDays,
-  isDateDisabled,
+  getYearsRange,
   isDateEqual,
-  isDateInvalid,
-  isDateOutsideVisibleRange,
+  isDateOutsideRange,
   isDateUnavailable,
-  isTodayDate,
-  setMonth,
-  setYear,
 } from "@zag-js/date-utils"
-import { getEventKey, getNativeEvent, type EventKeyMap } from "@zag-js/dom-event"
-import { ariaAttr, dataAttr } from "@zag-js/dom-query"
+import { ariaAttr, dataAttr, getEventKey, getNativeEvent, isComposingEvent } from "@zag-js/dom-query"
 import { getPlacementStyles } from "@zag-js/popper"
-import type { NormalizeProps, PropTypes } from "@zag-js/types"
-import { chunk } from "@zag-js/utils"
+import type { EventKeyMap, NormalizeProps, PropTypes } from "@zag-js/types"
+import { chunk, isValueWithinRange } from "@zag-js/utils"
 import { parts } from "./date-picker.anatomy"
-import { dom } from "./date-picker.dom"
+import * as dom from "./date-picker.dom"
 import type {
+  DatePickerService,
   DayTableCellProps,
   DayTableCellState,
-  MachineApi,
-  Send,
-  State,
+  DatePickerApi,
   TableCellProps,
   TableCellState,
   TableProps,
 } from "./date-picker.types"
 import {
   adjustStartAndEndDate,
+  defaultTranslations,
   ensureValidCharacters,
   getInputPlaceholder,
   getLocaleSeparator,
-  getNextTriggerLabel,
-  getPrevTriggerLabel,
   getRoleDescription,
-  getViewTriggerLabel,
   isDateWithinRange,
   isValidCharacter,
 } from "./date-picker.utils"
 
-const pretty = (value: DateValue) => value.toString().split("T")[0]
+export function connect<T extends PropTypes>(
+  service: DatePickerService,
+  normalize: NormalizeProps<T>,
+): DatePickerApi<T> {
+  const { state, context, prop, send, computed, scope } = service
 
-export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>): MachineApi<T> {
-  const startValue = state.context.startValue
-  const endValue = state.context.endValue
-  const selectedValue = state.context.value
-  const focusedValue = state.context.focusedValue
+  const startValue = context.get("startValue")
+  const endValue = computed("endValue")
+  const selectedValue = context.get("value")
+  const focusedValue = context.get("focusedValue")
 
-  const hoveredValue = state.context.hoveredValue
+  const hoveredValue = context.get("hoveredValue")
   const hoveredRangeValue = hoveredValue ? adjustStartAndEndDate([selectedValue[0], hoveredValue]) : []
 
-  const disabled = state.context.disabled
-  const readOnly = state.context.readOnly
-  const interactive = state.context.isInteractive
+  const disabled = prop("disabled")
+  const readOnly = prop("readOnly")
+  const interactive = computed("isInteractive")
 
-  const min = state.context.min
-  const max = state.context.max
-  const locale = state.context.locale
-  const timeZone = state.context.timeZone
-  const startOfWeek = state.context.startOfWeek
+  const min = prop("min")
+  const max = prop("max")
+  const locale = prop("locale")
+  const timeZone = prop("timeZone")
+  const startOfWeek = prop("startOfWeek")
 
   const focused = state.matches("focused")
   const open = state.matches("open")
 
-  const isRangePicker = state.context.selectionMode === "range"
-  const isDateUnavailableFn = state.context.isDateUnavailable
+  const isRangePicker = prop("selectionMode") === "range"
+  const isDateUnavailableFn = prop("isDateUnavailable")
 
-  const currentPlacement = state.context.currentPlacement
+  const currentPlacement = context.get("currentPlacement")
   const popperStyles = getPlacementStyles({
-    ...state.context.positioning,
+    ...prop("positioning"),
     placement: currentPlacement,
   })
 
   const separator = getLocaleSeparator(locale)
+  const translations = { ...defaultTranslations, ...prop("translations") }
 
   function getMonthWeeks(from = startValue) {
-    const numOfWeeks = state.context.fixedWeeks ? 6 : undefined
+    const numOfWeeks = prop("fixedWeeks") ? 6 : undefined
     return getMonthDays(from, locale, numOfWeeks, startOfWeek)
   }
 
-  function getMonths(props: { format?: "short" | "long" } = {}) {
+  function getMonths(props: { format?: "short" | "long" | undefined } = {}) {
     const { format } = props
     return getMonthNames(locale, format).map((label, index) => ({ label, value: index + 1 }))
   }
 
   function getYears() {
-    return getDecadeRange(focusedValue.year).map((year) => ({
-      label: year.toString(),
-      value: year,
-    }))
+    const range = getYearsRange({ from: min?.year ?? 1900, to: max?.year ?? 2100 })
+    return range.map((year) => ({ label: year.toString(), value: year }))
+  }
+
+  function getDecadeYears(year?: number) {
+    const range = getDecadeRange(year ?? focusedValue.year)
+    return range.map((year) => ({ label: year.toString(), value: year }))
   }
 
   function isUnavailable(date: DateValue) {
@@ -107,21 +106,20 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
   }
 
   function focusMonth(month: number) {
-    const value = setMonth(startValue ?? getTodayDate(timeZone), month)
-    send({ type: "FOCUS.SET", value })
+    const date = startValue ?? getTodayDate(timeZone)
+    send({ type: "FOCUS.SET", value: date.set({ month }) })
   }
 
   function focusYear(year: number) {
-    const value = setYear(startValue ?? getTodayDate(timeZone), year)
-    send({ type: "FOCUS.SET", value })
+    const date = startValue ?? getTodayDate(timeZone)
+    send({ type: "FOCUS.SET", value: date.set({ year }) })
   }
 
   function getYearTableCellState(props: TableCellProps): TableCellState {
     const { value, disabled } = props
-    const normalized = focusedValue.set({ year: value })
     const cellState = {
       focused: focusedValue.year === props.value,
-      selectable: !isDateInvalid(normalized, min, max),
+      selectable: isValueWithinRange(value, min?.year ?? 0, max?.year ?? 9999),
       selected: !!selectedValue.find((date) => date.year === value),
       valueText: value.toString(),
       get disabled() {
@@ -137,7 +135,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     const formatter = getMonthFormatter(locale, timeZone)
     const cellState = {
       focused: focusedValue.month === props.value,
-      selectable: !isDateInvalid(normalized, min, max),
+      selectable: !isDateOutsideRange(normalized, min, max),
       selected: !!selectedValue.find((date) => date.month === value && date.year === focusedValue.year),
       valueText: formatter.format(normalized.toDate(timeZone)),
       get disabled() {
@@ -148,33 +146,33 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
   }
 
   function getDayTableCellState(props: DayTableCellProps): DayTableCellState {
-    const { value, disabled, visibleRange = state.context.visibleRange } = props
+    const { value, disabled, visibleRange = computed("visibleRange") } = props
 
     const formatter = getDayFormatter(locale, timeZone)
-    const unitDuration = getUnitDuration(state.context.visibleDuration)
+    const unitDuration = getUnitDuration(computed("visibleDuration"))
+    const outsideDaySelectable = prop("outsideDaySelectable")
 
     const end = visibleRange.start.add(unitDuration).subtract({ days: 1 })
+    const isOutsideRange = isDateOutsideRange(value, visibleRange.start, end)
 
     const cellState = {
-      invalid: isDateInvalid(value, min, max),
-      disabled: disabled || isDateDisabled(value, visibleRange.start, end, min, max),
+      invalid: isDateOutsideRange(value, min, max),
+      disabled: disabled || (!outsideDaySelectable && isOutsideRange) || isDateOutsideRange(value, min, max),
       selected: selectedValue.some((date) => isDateEqual(value, date)),
       unavailable: isDateUnavailable(value, isDateUnavailableFn, locale, min, max) && !disabled,
-      outsideRange: isDateOutsideVisibleRange(value, visibleRange.start, end),
+      outsideRange: isOutsideRange,
       inRange:
         isRangePicker && (isDateWithinRange(value, selectedValue) || isDateWithinRange(value, hoveredRangeValue)),
       firstInRange: isRangePicker && isDateEqual(value, selectedValue[0]),
       lastInRange: isRangePicker && isDateEqual(value, selectedValue[1]),
-      today: isTodayDate(value, timeZone),
+      today: isToday(value, timeZone),
       weekend: isWeekend(value, locale),
       formattedDate: formatter.format(value.toDate(timeZone)),
       get focused() {
-        return isDateEqual(value, focusedValue) && !cellState.outsideRange
+        return isDateEqual(value, focusedValue) && (!cellState.outsideRange || outsideDaySelectable)
       },
-      get ariaLabel() {
-        if (cellState.unavailable) return `Not available. ${cellState.formattedDate}`
-        if (cellState.selected) return `Selected date. ${cellState.formattedDate}`
-        return `Choose ${cellState.formattedDate}`
+      get ariaLabel(): string {
+        return translations.dayCell(cellState)
       },
       get selectable() {
         return !cellState.disabled && !cellState.unavailable
@@ -191,7 +189,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
   return {
     focused,
     open,
-    view: state.context.view,
+    view: context.get("view"),
     getRangePresetValue(preset) {
       return getDateRangePreset(preset, locale, timeZone)
     },
@@ -200,23 +198,29 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     },
     getOffset(duration) {
       const from = startValue.add(duration)
+      const end = endValue.add(duration)
+      const formatter = getMonthFormatter(locale, timeZone)
       return {
-        visibleRange: { start: from, end: endValue.add(duration) },
+        visibleRange: { start: from, end },
         weeks: getMonthWeeks(from),
+        visibleRangeText: {
+          start: formatter.format(from.toDate(timeZone)),
+          end: formatter.format(end.toDate(timeZone)),
+        },
       }
     },
-    getMonthWeeks: getMonthWeeks,
+    getMonthWeeks,
     isUnavailable,
     weeks: getMonthWeeks(),
     weekDays: getWeekDays(getTodayDate(timeZone), startOfWeek, timeZone, locale),
-    visibleRangeText: state.context.visibleRangeText,
+    visibleRangeText: computed("visibleRangeText"),
     value: selectedValue,
     valueAsDate: selectedValue.map((date) => date.toDate(timeZone)),
-    valueAsString: selectedValue.map(pretty),
-    focusedValue: focusedValue,
+    valueAsString: computed("valueAsString"),
+    focusedValue,
     focusedValueAsDate: focusedValue?.toDate(timeZone),
-    focusedValueAsString: pretty(focusedValue),
-    visibleRange: state.context.visibleRange,
+    focusedValueAsString: prop("format")(focusedValue, { locale, timeZone }),
+    visibleRange: computed("visibleRange"),
     selectToday() {
       const value = constrainValue(getTodayDate(timeZone), min, max)
       send({ type: "VALUE.SET", value })
@@ -226,14 +230,15 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       send({ type: "VALUE.SET", value: computedValue })
     },
     clearValue() {
-      send("VALUE.CLEAR")
+      send({ type: "VALUE.CLEAR" })
     },
     setFocusedValue(value) {
       send({ type: "FOCUS.SET", value })
     },
-    setOpen(_open) {
-      if (_open === open) return
-      send(_open ? "OPEN" : "CLOSE")
+    setOpen(nextOpen) {
+      const open = state.matches("open")
+      if (open === nextOpen) return
+      send({ type: nextOpen ? "OPEN" : "CLOSE" })
     },
     focusMonth,
     focusYear,
@@ -241,7 +246,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     getMonths,
     getYearsGrid(props = {}) {
       const { columns = 1 } = props
-      return chunk(getYears(), columns)
+      return chunk(getDecadeYears(), columns)
     },
     getDecade() {
       const years = getDecadeRange(focusedValue.year)
@@ -255,56 +260,70 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       return new DateFormatter(locale, opts).format(value.toDate(timeZone))
     },
     setView(view) {
-      send({ type: "VIEW.SET", cell: view })
+      send({ type: "VIEW.SET", view })
     },
     goToNext() {
-      send({ type: "GOTO.NEXT", view: state.context.view })
+      send({ type: "GOTO.NEXT", view: context.get("view") })
     },
     goToPrev() {
-      send({ type: "GOTO.PREV", view: state.context.view })
+      send({ type: "GOTO.PREV", view: context.get("view") })
     },
 
-    rootProps: normalize.element({
-      ...parts.root.attrs,
-      dir: state.context.dir,
-      id: dom.getRootId(state.context),
-      "data-state": open ? "open" : "closed",
-      "data-disabled": dataAttr(disabled),
-      "data-readonly": dataAttr(readOnly),
-    }),
+    getRootProps() {
+      return normalize.element({
+        ...parts.root.attrs,
+        dir: prop("dir"),
+        id: dom.getRootId(scope),
+        "data-state": open ? "open" : "closed",
+        "data-disabled": dataAttr(disabled),
+        "data-readonly": dataAttr(readOnly),
+      })
+    },
 
-    labelProps: normalize.label({
-      ...parts.label.attrs,
-      dir: state.context.dir,
-      htmlFor: dom.getInputId(state.context, 0),
-      "data-state": open ? "open" : "closed",
-      "data-disabled": dataAttr(disabled),
-      "data-readonly": dataAttr(readOnly),
-    }),
+    getLabelProps(props = {}) {
+      const { index = 0 } = props
+      return normalize.label({
+        ...parts.label.attrs,
+        id: dom.getLabelId(scope, index),
+        dir: prop("dir"),
+        htmlFor: dom.getInputId(scope, index),
+        "data-state": open ? "open" : "closed",
+        "data-index": index,
+        "data-disabled": dataAttr(disabled),
+        "data-readonly": dataAttr(readOnly),
+      })
+    },
 
-    controlProps: normalize.element({
-      ...parts.control.attrs,
-      dir: state.context.dir,
-      id: dom.getControlId(state.context),
-      "data-disabled": dataAttr(disabled),
-    }),
+    getControlProps() {
+      return normalize.element({
+        ...parts.control.attrs,
+        dir: prop("dir"),
+        id: dom.getControlId(scope),
+        "data-disabled": dataAttr(disabled),
+      })
+    },
 
-    rangeTextProps: normalize.element({
-      ...parts.rangeText.attrs,
-      dir: state.context.dir,
-    }),
+    getRangeTextProps() {
+      return normalize.element({
+        ...parts.rangeText.attrs,
+        dir: prop("dir"),
+      })
+    },
 
-    contentProps: normalize.element({
-      ...parts.content.attrs,
-      hidden: !open,
-      dir: state.context.dir,
-      "data-state": open ? "open" : "closed",
-      "data-placement": currentPlacement,
-      id: dom.getContentId(state.context),
-      role: "application",
-      "aria-roledescription": "datepicker",
-      "aria-label": "calendar",
-    }),
+    getContentProps() {
+      return normalize.element({
+        ...parts.content.attrs,
+        hidden: !open,
+        dir: prop("dir"),
+        "data-state": open ? "open" : "closed",
+        "data-placement": currentPlacement,
+        id: dom.getContentId(scope),
+        tabIndex: -1,
+        role: "application",
+        "aria-roledescription": "datepicker",
+        "aria-label": translations.content,
+      })
+    },
 
     getTableProps(props = {}) {
       const { view = "day", columns = view === "day" ? 7 : 4 } = props
@@ -314,20 +333,27 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         role: "grid",
         "data-columns": columns,
         "aria-roledescription": getRoleDescription(view),
-        id: dom.getTableId(state.context, uid),
+        id: dom.getTableId(scope, uid),
         "aria-readonly": ariaAttr(readOnly),
         "aria-disabled": ariaAttr(disabled),
-        "aria-multiselectable": ariaAttr(state.context.selectionMode !== "single"),
+        "aria-multiselectable": ariaAttr(prop("selectionMode") !== "single"),
         "data-view": view,
-        dir: state.context.dir,
+        dir: prop("dir"),
         tabIndex: -1,
         onKeyDown(event) {
           if (event.defaultPrevented) return
 
           const keyMap: EventKeyMap = {
             Enter() {
-              // if focused date is unavailable, do nothing
-              if (isUnavailable(focusedValue)) return
+              if (view === "day" && isUnavailable(focusedValue)) return
+              if (view === "month") {
+                const cellState = getMonthTableCellState({ value: focusedValue.month })
+                if (!cellState.selectable) return
+              }
+              if (view === "year") {
+                const cellState = getYearTableCellState({ value: focusedValue.year })
+                if (!cellState.selectable) return
+              }
               send({ type: "TABLE.ENTER", view, columns, focus: true })
             },
             ArrowLeft() {
@@ -356,7 +382,12 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
             },
           }
 
-          const exec = keyMap[getEventKey(event, state.context)]
+          const exec =
+            keyMap[
+              getEventKey(event, {
+                dir: prop("dir"),
+              })
+            ]
 
           if (exec) {
             exec(event)
@@ -381,7 +412,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       return normalize.element({
         ...parts.tableHead.attrs,
         "aria-hidden": true,
-        dir: state.context.dir,
+        dir: prop("dir"),
         "data-view": view,
         "data-disabled": dataAttr(disabled),
       })
@@ -391,7 +422,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       const { view = "day" } = props
       return normalize.element({
         ...parts.tableHeader.attrs,
-        dir: state.context.dir,
+        dir: prop("dir"),
         "data-view": view,
         "data-disabled": dataAttr(disabled),
       })
@@ -417,6 +448,7 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     },
 
     getDayTableCellState,
+
     getDayTableCellProps(props) {
       const { value } = props
       const cellState = getDayTableCellState(props)
@@ -430,14 +462,15 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         "data-value": value.toString(),
       })
     },
+
     getDayTableCellTriggerProps(props) {
       const { value } = props
       const cellState = getDayTableCellState(props)
       return normalize.element({
         ...parts.tableCellTrigger.attrs,
-        id: dom.getCellTriggerId(state.context, value.toString()),
+        id: dom.getCellTriggerId(scope, value.toString()),
         role: "button",
-        dir: state.context.dir,
+        dir: prop("dir"),
         tabIndex: cellState.focused ? 0 : -1,
         "aria-label": cellState.ariaLabel,
         "aria-disabled": ariaAttr(!cellState.selectable),
@@ -469,12 +502,13 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     },
 
     getMonthTableCellState,
+
     getMonthTableCellProps(props) {
       const { value, columns } = props
       const cellState = getMonthTableCellState(props)
       return normalize.element({
         ...parts.tableCell.attrs,
-        dir: state.context.dir,
+        dir: prop("dir"),
         colSpan: columns,
         role: "gridcell",
         "aria-selected": ariaAttr(cellState.selected),
@@ -483,14 +517,15 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         "data-value": value,
       })
     },
+
     getMonthTableCellTriggerProps(props) {
       const { value } = props
       const cellState = getMonthTableCellState(props)
       return normalize.element({
         ...parts.tableCellTrigger.attrs,
-        dir: state.context.dir,
+        dir: prop("dir"),
         role: "button",
-        id: dom.getCellTriggerId(state.context, value.toString()),
+        id: dom.getCellTriggerId(scope, value.toString()),
         "data-selected": dataAttr(cellState.selected),
         "aria-disabled": ariaAttr(!cellState.selectable),
         "data-disabled": dataAttr(!cellState.selectable),
@@ -508,12 +543,13 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     },
 
     getYearTableCellState,
+
     getYearTableCellProps(props) {
       const { value, columns } = props
       const cellState = getYearTableCellState(props)
       return normalize.element({
         ...parts.tableCell.attrs,
-        dir: state.context.dir,
+        dir: prop("dir"),
         colSpan: columns,
         role: "gridcell",
         "aria-selected": ariaAttr(cellState.selected),
@@ -522,14 +558,15 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
         "data-value": value,
       })
     },
+
     getYearTableCellTriggerProps(props) {
       const { value } = props
       const cellState = getYearTableCellState(props)
       return normalize.element({
         ...parts.tableCellTrigger.attrs,
-        dir: state.context.dir,
+        dir: prop("dir"),
         role: "button",
-        id: dom.getCellTriggerId(state.context, value.toString()),
+        id: dom.getCellTriggerId(scope, value.toString()),
         "data-selected": dataAttr(cellState.selected),
         "data-focus": dataAttr(cellState.focused),
         "aria-disabled": ariaAttr(!cellState.selectable),
@@ -548,13 +585,15 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
 
     getNextTriggerProps(props = {}) {
       const { view = "day" } = props
+      const isDisabled = disabled || !computed("isNextVisibleRangeValid")
       return normalize.button({
         ...parts.nextTrigger.attrs,
-        dir: state.context.dir,
-        id: dom.getNextTriggerId(state.context, view),
+        dir: prop("dir"),
+        id: dom.getNextTriggerId(scope, view),
         type: "button",
-        "aria-label": getNextTriggerLabel(view),
-        disabled: disabled || !state.context.isNextVisibleRangeValid,
+        "aria-label": translations.nextTrigger(view),
+        disabled: isDisabled,
+        "data-disabled": dataAttr(isDisabled),
         onClick(event) {
           if (event.defaultPrevented) return
           send({ type: "GOTO.NEXT", view })
@@ -564,13 +603,15 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
 
     getPrevTriggerProps(props = {}) {
       const { view = "day" } = props
+      const isDisabled = disabled || !computed("isPrevVisibleRangeValid")
       return normalize.button({
         ...parts.prevTrigger.attrs,
-        dir: state.context.dir,
-        id: dom.getPrevTriggerId(state.context, view),
+        dir: prop("dir"),
+        id: dom.getPrevTriggerId(scope, view),
         type: "button",
-        "aria-label": getPrevTriggerLabel(view),
-        disabled: disabled || !state.context.isPrevVisibleRangeValid,
+        "aria-label": translations.prevTrigger(view),
+        disabled: isDisabled,
+        "data-disabled": dataAttr(isDisabled),
         onClick(event) {
           if (event.defaultPrevented) return
           send({ type: "GOTO.PREV", view })
@@ -578,51 +619,64 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       })
     },
 
-    clearTriggerProps: normalize.button({
-      ...parts.clearTrigger.attrs,
-      id: dom.getClearTriggerId(state.context),
-      dir: state.context.dir,
-      type: "button",
-      "aria-label": "Clear dates",
-      hidden: !state.context.value.length,
-      onClick(event) {
-        if (event.defaultPrevented) return
-        send("VALUE.CLEAR")
-      },
-    }),
+    getClearTriggerProps() {
+      return normalize.button({
+        ...parts.clearTrigger.attrs,
+        id: dom.getClearTriggerId(scope),
+        dir: prop("dir"),
+        type: "button",
+        "aria-label": translations.clearTrigger,
+        hidden: !selectedValue.length,
+        onClick(event) {
+          if (event.defaultPrevented) return
+          send({ type: "VALUE.CLEAR" })
+        },
+      })
+    },
 
-    triggerProps: normalize.button({
-      ...parts.trigger.attrs,
-      id: dom.getTriggerId(state.context),
-      dir: state.context.dir,
-      type: "button",
-      "data-placement": currentPlacement,
-      "aria-label": open ? "Close calendar" : "Open calendar",
-      "aria-controls": dom.getContentId(state.context),
-      "data-state": open ? "open" : "closed",
-      "aria-haspopup": "grid",
-      disabled,
-      onClick(event) {
-        if (event.defaultPrevented) return
-        if (!interactive) return
-        send("TRIGGER.CLICK")
-      },
-    }),
+    getTriggerProps() {
+      return normalize.button({
+        ...parts.trigger.attrs,
+        id: dom.getTriggerId(scope),
+        dir: prop("dir"),
+        type: "button",
+        "data-placement": currentPlacement,
+        "aria-label": translations.trigger(open),
+        "aria-controls": dom.getContentId(scope),
+        "data-state": open ? "open" : "closed",
+        "aria-haspopup": "grid",
+        disabled,
+        onClick(event) {
+          if (event.defaultPrevented) return
+          if (!interactive) return
+          send({ type: "TRIGGER.CLICK" })
+        },
+      })
+    },
+
+    getViewProps(props = {}) {
+      const { view = "day" } = props
+      return normalize.element({
+        ...parts.view.attrs,
+        "data-view": view,
+        hidden: context.get("view") !== view,
+      })
+    },
 
     getViewTriggerProps(props = {}) {
       const { view = "day" } = props
       return normalize.button({
         ...parts.viewTrigger.attrs,
         "data-view": view,
-        dir: state.context.dir,
-        id: dom.getViewTriggerId(state.context, view),
+        dir: prop("dir"),
+        id: dom.getViewTriggerId(scope, view),
         type: "button",
         disabled,
-        "aria-label": getViewTriggerLabel(state.context.view),
+        "aria-label": translations.viewTrigger(view),
         onClick(event) {
           if (event.defaultPrevented) return
           if (!interactive) return
-          send("VIEW.CHANGE")
+          send({ type: "VIEW.TOGGLE", src: "viewTrigger" })
         },
       })
     },
@@ -632,26 +686,27 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
       return normalize.element({
         ...parts.viewControl.attrs,
         "data-view": view,
-        dir: state.context.dir,
+        dir: prop("dir"),
       })
     },
 
     getInputProps(props = {}) {
-      const { index = 0 } = props
+      const { index = 0, fixOnBlur = true } = props
 
       return normalize.input({
         ...parts.input.attrs,
-        id: dom.getInputId(state.context, index),
+        id: dom.getInputId(scope, index),
         autoComplete: "off",
         autoCorrect: "off",
         spellCheck: "false",
-        dir: state.context.dir,
-        name: state.context.name,
+        dir: prop("dir"),
+        name: prop("name"),
+        "data-index": index,
         "data-state": open ? "open" : "closed",
         readOnly,
         disabled,
-        placeholder: getInputPlaceholder(locale),
-        defaultValue: state.context.formattedValue[index],
+        placeholder: prop("placeholder") || getInputPlaceholder(locale),
+        defaultValue: computed("valueAsString")[index],
         onBeforeInput(event) {
           const { data } = getNativeEvent(event)
           if (!isValidCharacter(data, separator)) {
@@ -662,63 +717,78 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
           send({ type: "INPUT.FOCUS", index })
         },
         onBlur(event) {
-          send({ type: "INPUT.BLUR", value: event.currentTarget.value, index })
+          const value = event.currentTarget.value.trim()
+          send({ type: "INPUT.BLUR", value, index, fixOnBlur })
         },
         onKeyDown(event) {
           if (event.defaultPrevented) return
           if (!interactive) return
-          const evt = getNativeEvent(event)
-          if (evt.isComposing) return
-          if (event.key !== "Enter") return
-          if (isUnavailable(state.context.focusedValue)) return
-          send({ type: "INPUT.ENTER", value: event.currentTarget.value, index })
-          event.preventDefault()
+          const keyMap: EventKeyMap<HTMLInputElement> = {
+            Enter(event) {
+              // TODO: consider form submission (with enter key)
+              if (isComposingEvent(event)) return
+              if (isUnavailable(focusedValue)) return
+              if (event.currentTarget.value.trim() === "") return
+              send({ type: "INPUT.ENTER", value: event.currentTarget.value, index })
+            },
+          }
+
+          const exec = keyMap[event.key]
+          if (exec) {
+            exec(event)
+            event.preventDefault()
+          }
         },
-        onChange(event) {
-          const { value } = event.target
+        onInput(event) {
+          const value = event.currentTarget.value
           send({ type: "INPUT.CHANGE", value: ensureValidCharacters(value, separator), index })
         },
       })
     },
 
-    monthSelectProps: normalize.select({
-      ...parts.monthSelect.attrs,
-      id: dom.getMonthSelectId(state.context),
-      "aria-label": "Select month",
-      disabled,
-      dir: state.context.dir,
-      defaultValue: startValue.month,
-      onChange(event) {
-        focusMonth(Number(event.currentTarget.value))
-      },
-    }),
+    getMonthSelectProps() {
+      return normalize.select({
+        ...parts.monthSelect.attrs,
+        id: dom.getMonthSelectId(scope),
+        "aria-label": translations.monthSelect,
+        disabled,
+        dir: prop("dir"),
+        defaultValue: startValue.month,
+        onChange(event) {
+          focusMonth(Number(event.currentTarget.value))
+        },
+      })
+    },
 
-    yearSelectProps: normalize.select({
-      ...parts.yearSelect.attrs,
-      id: dom.getYearSelectId(state.context),
-      disabled,
-      "aria-label": "Select year",
-      dir: state.context.dir,
-      defaultValue: startValue.year,
-      onChange(event) {
-        focusYear(Number(event.currentTarget.value))
-      },
-    }),
+    getYearSelectProps() {
+      return normalize.select({
+        ...parts.yearSelect.attrs,
+        id: dom.getYearSelectId(scope),
+        disabled,
+        "aria-label": translations.yearSelect,
+        dir: prop("dir"),
+        defaultValue: startValue.year,
+        onChange(event) {
+          focusYear(Number(event.currentTarget.value))
+        },
+      })
+    },
 
-    positionerProps: normalize.element({
-      id: dom.getPositionerId(state.context),
-      ...parts.positioner.attrs,
-      dir: state.context.dir,
-      style: popperStyles.floating,
-    }),
+    getPositionerProps() {
+      return normalize.element({
+        id: dom.getPositionerId(scope),
+        ...parts.positioner.attrs,
+        dir: prop("dir"),
+        style: popperStyles.floating,
+      })
+    },
 
     getPresetTriggerProps(props) {
       const value = Array.isArray(props.value) ? props.value : getDateRangePreset(props.value, locale, timeZone)
+      const valueAsString = value.map((item) => item.toDate(timeZone).toDateString())
       return normalize.button({
         ...parts.presetTrigger.attrs,
-        "aria-label": Array.isArray(props.value)
-          ? `select ${value[0].toString()} to ${value[1].toString()}`
-          : `select ${value}`,
+        "aria-label": translations.presetTrigger(valueAsString),
         type: "button",
         onClick(event) {
           if (event.defaultPrevented) return

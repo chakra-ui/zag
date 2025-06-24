@@ -39,25 +39,21 @@ function Star() {
 export default function Page() {
   const controls = useControls(ratingControls)
 
-  const [state, send] = useMachine(
-    rating.machine({
-      id: useId(),
-      value: 2.5,
-    }),
-    {
-      context: controls.context,
-    },
-  )
+  const service = useMachine(rating.machine, {
+    id: useId(),
+    defaultValue: 2.5,
+    ...controls.context,
+  })
 
-  const api = rating.connect(state, send, normalizeProps)
+  const api = rating.connect(service, normalizeProps)
 
   return (
     <>
       <main className="rating">
         <form action="">
-          <div {...api.rootProps}>
-            <label {...api.labelProps}>Rate:</label>
-            <div {...api.controlProps}>
+          <div {...api.getRootProps()}>
+            <label {...api.getLabelProps()}>Rate:</label>
+            <div {...api.getControlProps()}>
               {api.items.map((index) => {
                 const state = api.getItemState({ index })
                 return (
@@ -67,13 +63,13 @@ export default function Page() {
                 )
               })}
             </div>
-            <input {...api.hiddenInputProps} data-testid="hidden-input" />
+            <input {...api.getHiddenInputProps()} data-testid="hidden-input" />
           </div>
           <button type="reset">Reset</button>
         </form>
       </main>
       <Toolbar controls={controls.ui}>
-        <StateVisualizer state={state} />
+        <StateVisualizer state={service} />
       </Toolbar>
     </>
   )

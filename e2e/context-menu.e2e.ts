@@ -1,31 +1,31 @@
-import { expect, test, type Page } from "@playwright/test"
-import { part, repeat } from "./_utils"
+import { test } from "@playwright/test"
+import { MenuModel } from "./models/menu.model"
 
-const trigger = part("context-trigger")
-const menu = part("content")
-
-const expectToBeFocused = async (page: Page, id: string) => {
-  return expect(page.locator(`[id=${id}]`).first()).toHaveAttribute("data-highlighted", "")
-}
+let I: MenuModel
 
 test.describe("context menu", () => {
   test.beforeEach(async ({ page }) => {
-    await page.goto("/context-menu")
+    I = new MenuModel(page)
+    await I.goto("/context-menu")
   })
 
-  test("should open on right click", async ({ page }) => {
-    await page.click(trigger, { button: "right" })
+  test("should open on right click", async () => {
+    await I.clickContextTrigger()
 
-    await expect(page.locator(menu)).toBeVisible()
-    await expect(page.locator(menu)).toBeFocused()
+    await I.seeDropdown()
+    await I.seeDropdownIsFocused()
 
-    await page.press("body", "Escape")
-    await expect(page.locator(menu)).not.toBeVisible()
+    await I.pressKey("Escape")
+    await I.dontSeeDropdown()
   })
 
-  test("keyboard navigation works", async ({ page }) => {
-    await page.click(trigger, { button: "right" })
-    await repeat(3, () => page.keyboard.press("ArrowDown"))
-    await expectToBeFocused(page, "delete")
+  test("keyboard navigation works", async () => {
+    await I.clickContextTrigger()
+
+    await I.seeDropdown()
+    await I.seeDropdownIsFocused()
+
+    await I.pressKey("ArrowDown", 3)
+    await I.seeItemIsHighlighted("Delete")
   })
 })

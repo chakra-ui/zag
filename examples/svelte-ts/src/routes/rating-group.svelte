@@ -8,11 +8,16 @@
 
   const controls = useControls(ratingControls)
 
-  const [snapshot, send] = useMachine(rating.machine({ id: "1", value: 2.5 }), {
-    context: controls.context,
-  })
+  const id = $props.id()
+  const service = useMachine(
+    rating.machine,
+    controls.mergeProps<rating.Props>({
+      id,
+      defaultValue: 2.5,
+    }),
+  )
 
-  const api = $derived(rating.connect(snapshot, send, normalizeProps))
+  const api = $derived(rating.connect(service, normalizeProps))
 </script>
 
 {#snippet HalfStar()}
@@ -43,10 +48,10 @@
 
 <main class="rating">
   <form action="">
-    <div {...api.rootProps}>
-      <!-- svelte-ignore a11y-label-has-associated-control -->
-      <label {...api.labelProps}>Rate:</label>
-      <div {...api.controlProps}>
+    <div {...api.getRootProps()}>
+      <!-- svelte-ignore a11y_label_has_associated_control -->
+      <label {...api.getLabelProps()}>Rate:</label>
+      <div {...api.getControlProps()}>
         {#each api.items as index}
           {@const itemState = api.getItemState({ index })}
           <span {...api.getItemProps({ index })}>
@@ -58,12 +63,12 @@
           </span>
         {/each}
       </div>
-      <input {...api.hiddenInputProps} data-testid="hidden-input" />
+      <input {...api.getHiddenInputProps()} data-testid="hidden-input" />
     </div>
     <button type="reset">Reset</button>
   </form>
 </main>
 
 <Toolbar {controls}>
-  <StateVisualizer state={snapshot} />
+  <StateVisualizer state={service} />
 </Toolbar>

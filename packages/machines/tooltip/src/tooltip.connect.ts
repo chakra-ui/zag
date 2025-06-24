@@ -1,115 +1,145 @@
-import { dataAttr } from "@zag-js/dom-query"
+import type { Service } from "@zag-js/core"
+import { dataAttr, isLeftClick } from "@zag-js/dom-query"
+import { isFocusVisible } from "@zag-js/focus-visible"
 import { getPlacementStyles } from "@zag-js/popper"
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import { parts } from "./tooltip.anatomy"
-import { dom } from "./tooltip.dom"
+import * as dom from "./tooltip.dom"
 import { store } from "./tooltip.store"
-import type { MachineApi, Send, State } from "./tooltip.types"
+import type { TooltipApi, TooltipSchema } from "./tooltip.types"
 
-export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>): MachineApi<T> {
-  const id = state.context.id
-  const hasAriaLabel = state.context.hasAriaLabel
+export function connect<P extends PropTypes>(
+  service: Service<TooltipSchema>,
+  normalize: NormalizeProps<P>,
+): TooltipApi<P> {
+  const { state, context, send, scope, prop, event: _event } = service
+  const id = prop("id")
+  const hasAriaLabel = !!prop("aria-label")
 
-  const open = state.hasTag("open")
+  const open = state.matches("open", "closing")
 
-  const triggerId = dom.getTriggerId(state.context)
-  const contentId = dom.getContentId(state.context)
+  const triggerId = dom.getTriggerId(scope)
+  const contentId = dom.getContentId(scope)
 
-  const disabled = state.context.disabled
+  const disabled = prop("disabled")
 
   const popperStyles = getPlacementStyles({
-    ...state.context.positioning,
-    placement: state.context.currentPlacement,
+    ...prop("positioning"),
+    placement: context.get("currentPlacement"),
   })
 
   return {
     open: open,
-    setOpen(_open) {
-      if (_open === open) return
-      send(_open ? "OPEN" : "CLOSE")
+    setOpen(nextOpen) {
+      const open = state.matches("open", "closing")
+      if (open === nextOpen) return
+      send({ type: nextOpen ? "open" : "close" })
     },
     reposition(options = {}) {
-      send({ type: "POSITIONING.SET", options })
+      send({ type: "positioning.set", options })
     },
 
-    triggerProps: normalize.button({
-      ...parts.trigger.attrs,
-      id: triggerId,
-      dir: state.context.dir,
-      "data-expanded": dataAttr(open),
-      "data-state": open ? "open" : "closed",
-      "aria-describedby": open ? contentId : undefined,
-      onClick() {
-        if (disabled) return
-        send("CLOSE")
-      },
-      onFocus() {
-        if (disabled || state.event.type === "POINTER_DOWN") return
-        send("OPEN")
-      },
-      onBlur() {
-        if (disabled) return
-        if (id === store.id) {
-          send("CLOSE")
-        }
-      },
-      onPointerDown() {
-        if (disabled || !state.context.closeOnPointerDown) return
-        if (id === store.id) {
-          send("CLOSE")
-        }
-      },
-      onPointerMove(event) {
-        if (disabled || event.pointerType === "touch") return
-        send("POINTER_MOVE")
-      },
-      onPointerLeave() {
-        if (disabled) return
-        send("POINTER_LEAVE")
-      },
-      onPointerCancel() {
-        if (disabled) return
-        send("POINTER_LEAVE")
-      },
-    }),
+    getTriggerProps() {
+      return normalize.button({
+        ...parts.trigger.attrs,
+        id: triggerId,
+        dir: prop("dir"),
+        "data-expanded": dataAttr(open),
+        "data-state": open ? "open" : "closed",
+        "aria-describedby": open ? contentId : undefined,
+        onClick(event) {
+          if (event.defaultPrevented) return
+          if (disabled) return
+          if (!prop("closeOnClick")) return
+          send({ type: "close", src: "trigger.click" })
+        },
+        onFocus(event) {
+          queueMicrotask(() => {
+            if (event.defaultPrevented) return
+            if (disabled) return
+            if (_event.src === "trigger.pointerdown") return
+            if (!isFocusVisible()) return
+            send({ type: "open", src: "trigger.focus" })
+          })
+        },
+        onBlur(event) {
+          if (event.defaultPrevented) return
+          if (disabled) return
+          if (id === store.id) {
+            send({ type: "close", src: "trigger.blur" })
+          }
+        },
+        onPointerDown(event) {
+          if (event.defaultPrevented) return
+          if (disabled) return
+          if (!isLeftClick(event)) return
+          if (!prop("closeOnPointerDown")) return
+          if (id === store.id) {
+            send({ type: "close", src: "trigger.pointerdown" })
+          }
+        },
+        onPointerMove(event) {
+          if (event.defaultPrevented) return
+          if (disabled) return
+          if (event.pointerType === "touch") return
+          send({ type: "pointer.move" })
+        },
+        onPointerLeave() {
+          if (disabled) return
+          send({ type: "pointer.leave" })
+        },
+        onPointerCancel() {
+          if (disabled) return
+          send({ type: "pointer.leave" })
+        },
+      })
+    },
 
-    arrowProps: normalize.element({
-      id: dom.getArrowId(state.context),
-      ...parts.arrow.attrs,
-      dir: state.context.dir,
-      style: popperStyles.arrow,
-    }),
+    getArrowProps() {
+      return normalize.element({
+        id: dom.getArrowId(scope),
+        ...parts.arrow.attrs,
+        dir: prop("dir"),
+        style: popperStyles.arrow,
+      })
+    },
 
-    arrowTipProps: normalize.element({
-      ...parts.arrowTip.attrs,
-      dir: state.context.dir,
-      style: popperStyles.arrowTip,
-    }),
+    getArrowTipProps() {
+      return normalize.element({
+        ...parts.arrowTip.attrs,
+        dir: prop("dir"),
+        style: popperStyles.arrowTip,
+      })
+    },
 
-    positionerProps: normalize.element({
-      id: dom.getPositionerId(state.context),
-      ...parts.positioner.attrs,
-      dir: state.context.dir,
-      style: popperStyles.floating,
-    }),
+    getPositionerProps() {
+      return normalize.element({
+        id: dom.getPositionerId(scope),
+        ...parts.positioner.attrs,
+        dir: prop("dir"),
+        style: popperStyles.floating,
+      })
+    },
 
-    contentProps: normalize.element({
-      ...parts.content.attrs,
-      dir: state.context.dir,
-      hidden: !open,
-      "data-state": open ? "open" : "closed",
-      role: hasAriaLabel ? undefined : "tooltip",
-      id: hasAriaLabel ? undefined : contentId,
-      "data-placement": state.context.currentPlacement,
-      onPointerEnter() {
-        send("CONTENT.POINTER_MOVE")
-      },
-      onPointerLeave() {
-        send("CONTENT.POINTER_LEAVE")
-      },
-      style: {
-        pointerEvents: state.context.interactive ? "auto" : "none",
-      },
-    }),
+    getContentProps() {
+      return normalize.element({
+        ...parts.content.attrs,
+        dir: prop("dir"),
+        hidden: !open,
+        "data-state": open ? "open" : "closed",
+        role: hasAriaLabel ? undefined : "tooltip",
+        id: hasAriaLabel ? undefined : contentId,
+        "data-placement": context.get("currentPlacement"),
+        onPointerEnter() {
+          send({ type: "content.pointer.move" })
+        },
+        onPointerLeave() {
+          send({ type: "content.pointer.leave" })
+        },
+        style: {
+          pointerEvents: prop("interactive") ? "auto" : "none",
+        },
+      })
+    },
   }
 }

@@ -2,6 +2,7 @@
 import * as combobox from "@zag-js/combobox"
 import { comboboxControls, comboboxData } from "@zag-js/shared"
 import { normalizeProps, useMachine } from "@zag-js/vue"
+import { XIcon } from "lucide-vue-next"
 import { matchSorter } from "match-sorter"
 
 const controls = useControls(comboboxControls)
@@ -15,10 +16,13 @@ const collectionRef = computed(() =>
   }),
 )
 
-const [state, send] = useMachine(
-  combobox.machine({
-    id: "1",
-    collection: collectionRef.value,
+const service = useMachine(
+  combobox.machine,
+  controls.mergeProps<combobox.Props>({
+    id: useId(),
+    get collection() {
+      return collectionRef.value
+    },
     onOpenChange() {
       options.value = comboboxData
     },
@@ -27,36 +31,33 @@ const [state, send] = useMachine(
       options.value = filtered.length > 0 ? filtered : comboboxData
     },
   }),
-  {
-    context: computed(() => ({
-      ...controls.context.value,
-      collection: collectionRef.value,
-    })),
-  },
 )
 
-const api = computed(() => combobox.connect(state.value, send, normalizeProps))
+const api = computed(() => combobox.connect(service, normalizeProps))
 </script>
 
 <template>
   <main class="combobox">
     <div>
       <button @click="() => api.setValue(['TG'])">Set to Togo</button>
-      <button data-testid="clear-value-button" @click="api.clearValue">Clear Value</button>
-      <button v-bind="api.clearTriggerProps">Clear Trigger</button>
+      <button data-testid="clear-value-button" @click="() => api.clearValue()">Clear Value</button>
+
       <br />
 
-      <div v-bind="api.rootProps">
-        <label v-bind="api.labelProps">Select country</label>
+      <div v-bind="api.getRootProps()">
+        <label v-bind="api.getLabelProps()">Select country</label>
 
-        <div v-bind="api.controlProps">
-          <input data-testid="input" v-bind="api.inputProps" />
-          <button data-testid="trigger" v-bind="api.triggerProps">▼</button>
+        <div v-bind="api.getControlProps()">
+          <input data-testid="input" v-bind="api.getInputProps()" />
+          <button data-testid="trigger" v-bind="api.getTriggerProps()">▼</button>
+          <button v-bind="api.getClearTriggerProps()">
+            <XIcon />
+          </button>
         </div>
       </div>
 
-      <div v-bind="api.positionerProps">
-        <ul v-if="options.length > 0" data-testid="combobox-content" v-bind="api.contentProps">
+      <div v-bind="api.getPositionerProps()">
+        <ul v-if="options.length > 0" data-testid="combobox-content" v-bind="api.getContentProps()">
           <li v-for="item in options" :key="item.code" v-bind="api.getItemProps({ item })">
             {{ item.label }}
           </li>
@@ -66,7 +67,7 @@ const api = computed(() => combobox.connect(state.value, send, normalizeProps))
   </main>
 
   <Toolbar>
-    <StateVisualizer :state="state" :omit="['collection']" />
+    <StateVisualizer :state="service" :omit="['collection']" />
     <template #controls>
       <Controls :control="controls" />
     </template>

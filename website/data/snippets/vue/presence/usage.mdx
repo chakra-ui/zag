@@ -1,0 +1,43 @@
+```html
+<script setup lang="ts">
+  import * as presence from "@zag-js/presence"
+  import { useMachine, normalizeProps } from "@zag-js/vue"
+  import { computed, watch, ref } from "vue"
+
+  const props = defineProps<{
+    present: boolean
+    unmountOnExit?: boolean
+  }>()
+
+  const emit = defineEmits<{
+    (e: "exit-complete"): void
+  }>()
+
+  const service = useMachine(presence.machine, {
+    get present() {
+      return props.present
+    },
+    onExitComplete: () => emit("exit-complete"),
+  })
+
+  const api = computed(() => presence.connect(service, normalizeProps))
+
+  const nodeRef = ref<HTMLElement | null>(null)
+
+  watch(nodeRef, () => {
+    api.value.setNode(nodeRef.value)
+  })
+
+  const unmount = computed(() => !api.value.present && unmountOnExit)
+</script>
+
+<template>
+  <div
+    v-show="!unmount"
+    :hidden="!api.present"
+    :data-state="api.skip ? undefined : present ? 'open' : 'closed'"
+    ref="nodeRef"
+    v-bind="$attrs"
+  />
+</template>
+```

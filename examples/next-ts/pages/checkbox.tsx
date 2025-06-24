@@ -10,17 +10,13 @@ import { useControls } from "../hooks/use-controls"
 export default function Page() {
   const controls = useControls(checkboxControls)
 
-  const [state, send] = useMachine(
-    checkbox.machine({
-      id: useId(),
-      name: "checkbox",
-    }),
-    {
-      context: controls.context,
-    },
-  )
+  const service = useMachine(checkbox.machine, {
+    id: useId(),
+    name: "checkbox",
+    ...controls.context,
+  })
 
-  const api = checkbox.connect(state, send, normalizeProps)
+  const api = checkbox.connect(service, normalizeProps)
 
   return (
     <>
@@ -32,11 +28,11 @@ export default function Page() {
           }}
         >
           <fieldset>
-            <label {...api.rootProps}>
-              <div {...api.controlProps} />
-              <span {...api.labelProps}>Input {api.checked ? "Checked" : "Unchecked"}</span>
-              <input {...api.hiddenInputProps} data-testid="hidden-input" />
-              <div {...api.indicatorProps}>Indicator</div>
+            <label {...api.getRootProps()}>
+              <div {...api.getControlProps()} />
+              <span {...api.getLabelProps()}>Input {api.checked ? "Checked" : "Unchecked"}</span>
+              <input {...api.getHiddenInputProps()} data-testid="hidden-input" />
+              <div {...api.getIndicatorProps()}>Indicator</div>
             </label>
 
             <button type="button" disabled={api.checked} onClick={() => api.setChecked(true)}>
@@ -51,7 +47,7 @@ export default function Page() {
       </main>
 
       <Toolbar controls={controls.ui}>
-        <StateVisualizer state={state} />
+        <StateVisualizer state={service} />
       </Toolbar>
     </>
   )

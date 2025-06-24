@@ -19,7 +19,7 @@ module.exports = function main(plop) {
       if (!answers) return actions
       const { component } = answers
 
-      const frameworks = ["react", "vue-jsx", "vue-sfc", "solid"]
+      const frameworks = ["react", "vue", "solid", "svelte"]
       frameworks.forEach((framework) => {
         actions.push({
           type: "addMany",

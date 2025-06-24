@@ -10,26 +10,22 @@ import { useControls } from "../hooks/use-controls"
 export default function Page() {
   const controls = useControls(clipboardControls)
 
-  const [state, send] = useMachine(
-    clipboard.machine({
-      id: useId(),
-      value: "https://github.com/chakra-ui/zag",
-    }),
-    {
-      context: controls.context,
-    },
-  )
+  const service = useMachine(clipboard.machine, {
+    id: useId(),
+    value: "https://github.com/chakra-ui/zag",
+    ...controls.context,
+  })
 
-  const api = clipboard.connect(state, send, normalizeProps)
+  const api = clipboard.connect(service, normalizeProps)
 
   return (
     <>
       <main className="clipboard">
-        <div {...api.rootProps}>
-          <label {...api.labelProps}>Copy this link</label>
-          <div {...api.controlProps}>
-            <input {...api.inputProps} />
-            <button {...api.triggerProps}>{api.copied ? <ClipboardCheck /> : <ClipboardCopyIcon />}</button>
+        <div {...api.getRootProps()}>
+          <label {...api.getLabelProps()}>Copy this link</label>
+          <div {...api.getControlProps()}>
+            <input {...api.getInputProps()} />
+            <button {...api.getTriggerProps()}>{api.copied ? <ClipboardCheck /> : <ClipboardCopyIcon />}</button>
           </div>
           <div {...api.getIndicatorProps({ copied: true })}>Copied!</div>
           <div {...api.getIndicatorProps({ copied: false })}>Copy</div>
@@ -37,7 +33,7 @@ export default function Page() {
       </main>
 
       <Toolbar controls={controls.ui}>
-        <StateVisualizer state={state} />
+        <StateVisualizer state={service} />
       </Toolbar>
     </>
   )

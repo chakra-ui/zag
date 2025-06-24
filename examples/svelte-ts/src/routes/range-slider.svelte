@@ -9,16 +9,17 @@
 
   const controls = useControls(sliderControls)
 
-  const [snapshot, send] = useMachine(
-    slider.machine({
-      id: "1",
+  const id = $props.id()
+  const service = useMachine(
+    slider.machine,
+    controls.mergeProps<slider.Props>({
+      id,
       name: "quantity",
-      value: [10, 60],
+      defaultValue: [10, 60],
     }),
-    { context: controls.context },
   )
 
-  const api = $derived(slider.connect(snapshot, send, normalizeProps))
+  const api = $derived(slider.connect(service, normalizeProps))
 </script>
 
 <main class="slider">
@@ -28,16 +29,16 @@
       console.log(formData)
     }}
   >
-    <div {...api.rootProps}>
+    <div {...api.getRootProps()}>
       <div>
-        <!-- svelte-ignore a11y-label-has-associated-control -->
-        <label {...api.labelProps}>Quantity:</label>
-        <output {...api.valueTextProps}>{api.value.join(" - ")}</output>
+        <!-- svelte-ignore a11y_label_has_associated_control -->
+        <label {...api.getLabelProps()}>Quantity:</label>
+        <output {...api.getValueTextProps()}>{api.value.join(" - ")}</output>
       </div>
       <div class="control-area">
-        <div {...api.controlProps}>
-          <div {...api.trackProps}>
-            <div {...api.rangeProps}></div>
+        <div {...api.getControlProps()}>
+          <div {...api.getTrackProps()}>
+            <div {...api.getRangeProps()}></div>
           </div>
           {#each api.value as _, index}
             <div {...api.getThumbProps({ index })}>
@@ -45,7 +46,7 @@
             </div>
           {/each}
         </div>
-        <div {...api.markerGroupProps}>
+        <div {...api.getMarkerGroupProps()}>
           <span {...api.getMarkerProps({ value: 10 })}>*</span>
           <span {...api.getMarkerProps({ value: 30 })}>*</span>
           <span {...api.getMarkerProps({ value: 50 })}>*</span>
@@ -57,5 +58,5 @@
 </main>
 
 <Toolbar {controls}>
-  <StateVisualizer state={snapshot} />
+  <StateVisualizer state={service} />
 </Toolbar>

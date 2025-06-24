@@ -1,0 +1,28 @@
+```svelte
+<script lang="ts">
+  import * as editable from "@zag-js/editable"
+  import { useMachine, normalizeProps } from "@zag-js/svelte"
+
+  const id = $props.id()
+  const service = useMachine(editable.machine, ({ id }))
+  const api = $derived(editable.connect(service, normalizeProps))
+</script>
+
+<div {...api.getRootProps()}>
+  <div {...api.getAreaProps()}>
+    <input {...api.getInputProps()} />
+    <span {...api.getPreviewProps()}>{api.valueText}</span>
+  </div>
+  <div>
+    {#if !api.editing}
+      <button {...api.getEditTriggerProps()}>Edit</button>
+    {/if}
+    {#if api.editing}
+      <div>
+        <button {...api.getSubmitTriggerProps()}>Save</button>
+        <button {...api.getCancelTriggerProps()}>Cancel</button>
+      </div>
+    {/if}
+  </div>
+</div>
+```

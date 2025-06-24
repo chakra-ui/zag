@@ -14,7 +14,7 @@ export function Search() {
 
   return (
     <>
-      <SearchTrigger {...dialog_api.triggerProps} />
+      <SearchTrigger {...dialog_api.getTriggerProps()} />
       {dialog_api.open && (
         <Portal>
           <Box
@@ -22,7 +22,7 @@ export function Search() {
             inset="0"
             bg="blackAlpha.700"
             zIndex="modal"
-            {...dialog_api.backdropProps}
+            {...dialog_api.getBackdropProps()}
           />
           <Flex
             direction="column"
@@ -32,7 +32,7 @@ export function Search() {
             position="fixed"
             zIndex="modal"
             inset="0"
-            {...dialog_api.positionerProps}
+            {...dialog_api.getPositionerProps()}
           >
             <Box
               mt="90px"
@@ -42,16 +42,16 @@ export function Search() {
               bg="bg-subtle"
               position="relative"
               pointerEvents="auto"
-              {...dialog_api.contentProps}
+              {...dialog_api.getContentProps()}
             >
-              <chakra.h2 srOnly {...dialog_api.titleProps}>
+              <chakra.h2 srOnly {...dialog_api.getTitleProps()}>
                 Search the docs
               </chakra.h2>
 
               <Box
                 display="flex"
                 flexDirection="column"
-                {...combobox_api.rootProps}
+                {...combobox_api.getRootProps()}
               >
                 <Flex
                   height="64px"
@@ -71,7 +71,7 @@ export function Search() {
                     width="full"
                     outline="0"
                     bg="bg-subtle"
-                    {...combobox_api.inputProps}
+                    {...combobox_api.getInputProps()}
                   />
                 </Flex>
                 <Box
@@ -80,7 +80,7 @@ export function Search() {
                   maxHeight="340px"
                   overflowY="auto"
                   px="1"
-                  {...combobox_api.contentProps}
+                  {...combobox_api.getContentProps()}
                 >
                   {results.map((item) => {
                     const isLvl1 = item.type === "lvl1"

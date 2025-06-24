@@ -1,0 +1,24 @@
+```svelte
+<script lang="ts">
+  import * as menu from "@zag-js/menu"
+  import { normalizeProps, useMachine } from "@zag-js/svelte"
+
+  const id = $props.id()
+  const service = useMachine(menu.machine, { id })
+  const api = $derived(menu.connect(service, normalizeProps))
+</script>
+
+<div>
+  <div {...api.getContextTriggerProps()}>
+    <div>Open context menu</div>
+  </div>
+  <div {...api.getPositionerProps()}>
+    <ul {...api.getContentProps()}>
+      <li {...api.getItemProps({ value: "edit" })}>Edit</li>
+      <li {...api.getItemProps({ value: "duplicate" })}>Duplicate</li>
+      <li {...api.getItemProps({ value: "delete" })}>Delete</li>
+      <li {...api.getItemProps({ value: "export" })}>Export...</li>
+    </ul>
+  </div>
+</div>
+```

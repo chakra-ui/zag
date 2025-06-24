@@ -1,4 +1,4 @@
-import type { StateMachine as S } from "@zag-js/core"
+import type { EventObject, Machine, Service } from "@zag-js/core"
 import type { InteractOutsideHandlers } from "@zag-js/interact-outside"
 import type { CommonProperties, DirectionProperty, PropTypes, RequiredBy } from "@zag-js/types"
 
@@ -10,11 +10,15 @@ export interface ValueChangeDetails {
   value: string
 }
 
+export interface EditChangeDetails {
+  edit: boolean
+}
+
 /* -----------------------------------------------------------------------------
  * Machine context
  * -----------------------------------------------------------------------------*/
 
-export type ActivationMode = "focus" | "dblclick" | "none"
+export type ActivationMode = "focus" | "dblclick" | "click" | "none"
 
 export type SubmitMode = "enter" | "blur" | "both" | "none"
 
@@ -31,43 +35,44 @@ export type ElementIds = Partial<{
   label: string
   preview: string
   input: string
-  controls: string
+  control: string
   submitTrigger: string
   cancelTrigger: string
   editTrigger: string
 }>
 
-interface PublicContext extends DirectionProperty, CommonProperties, InteractOutsideHandlers {
+export interface EditableProps extends DirectionProperty, CommonProperties, InteractOutsideHandlers {
   /**
    * The ids of the elements in the editable. Useful for composition.
    */
-  ids?: ElementIds
+  ids?: ElementIds | undefined
   /**
    * Whether the input's value is invalid.
    */
-  invalid?: boolean
+  invalid?: boolean | undefined
   /**
    * The name attribute of the editable component. Used for form submission.
    */
-  name?: string
+  name?: string | undefined
   /**
    * The associate form of the underlying input.
    */
-  form?: string
+  form?: string | undefined
   /**
    * Whether the editable should auto-resize to fit the content.
    */
-  autoResize?: boolean
+  autoResize?: boolean | undefined
   /**
    * The activation mode for the preview element.
    *
-   * - "focus" - Enter edit mode when the preview element is focused
-   * - "dblclick" - Enter edit mode when the preview element is double-clicked
-   * - "none" - No interaction with the preview element will trigger edit mode.
+   * - "focus" - Enter edit mode when the preview is focused
+   * - "dblclick" - Enter edit mode when the preview is double-clicked
+   * - "click" - Enter edit mode when the preview is clicked
+   * - "none" - Edit can be triggered programmatically only
    *
    * @default "focus"
    */
-  activationMode: ActivationMode
+  activationMode?: ActivationMode | undefined
   /**
    * The action that triggers submit in the edit mode:
    *
@@ -78,116 +83,104 @@ interface PublicContext extends DirectionProperty, CommonProperties, InteractOut
    *
    * @default "both"
    */
-  submitMode: SubmitMode
-  /**
-   * Whether to start with the edit mode active.
-   */
-  startWithEditView?: boolean
+  submitMode?: SubmitMode | undefined
   /**
    * Whether to select the text in the input when it is focused.
    * @default true
    */
-  selectOnFocus?: boolean
+  selectOnFocus?: boolean | undefined
   /**
-   * The value of the editable in both edit and preview mode
+   * Whether the editable is in edit mode.
    */
-  value: string
+  edit?: boolean | undefined
+  /**
+   * Whether the editable is in edit mode by default.
+   */
+  defaultEdit?: boolean | undefined
+  /**
+   * Function to call when the edit mode changes.
+   */
+  onEditChange?: ((details: EditChangeDetails) => void) | undefined
   /**
    * The maximum number of characters allowed in the editable
    */
-  maxLength?: number
+  maxLength?: number | undefined
   /**
-   * Whether the editable is disabled
+   * Whether the editable is disabled.
    */
-  disabled?: boolean
+  disabled?: boolean | undefined
   /**
-   * Whether the editable is readonly
+   * Whether the editable is read-only.
    */
-  readOnly?: boolean
+  readOnly?: boolean | undefined
   /**
-   * The callback that is called when the editable's value is changed
+   * Whether the editable is required.
    */
-  onValueChange?: (details: ValueChangeDetails) => void
+  required?: boolean | undefined
   /**
-   * The callback that is called when the esc key is pressed or the cancel button is clicked
+   * The placeholder text for the editable.
    */
-  onValueRevert?: (details: ValueChangeDetails) => void
+  placeholder?: string | { edit: string; preview: string } | undefined
   /**
-   * The callback that is called when the editable's value is submitted.
+   * The translations for the editable.
    */
-  onValueCommit?: (details: ValueChangeDetails) => void
+  translations?: IntlTranslations | undefined
   /**
-   * The callback that is called when in the edit mode.
+   * The element to receive focus when the editable is closed.
    */
-  onEdit?: () => void
+  finalFocusEl?: (() => HTMLElement | null) | undefined
   /**
-   * The placeholder value to show when the `value` is empty
+   * The controlled value of the editable.
    */
-  placeholder?: string | { edit: string; preview: string }
+  value?: string | undefined
   /**
-   * Specifies the localized strings that identifies the accessibility elements and their states
+   * The initial value of the editable when rendered.
+   * Use when you don't need to control the value of the editable.
    */
-  translations: IntlTranslations
+  defaultValue?: string | undefined
   /**
-   * The element that should receive focus when the editable is closed.
-   * By default, it will focus on the trigger element.
+   * Function to call when the value changes.
    */
-  finalFocusEl?: () => HTMLElement | null
+  onValueChange?: ((details: ValueChangeDetails) => void) | undefined
+  /**
+   * Function to call when the value is reverted.
+   */
+  onValueRevert?: ((details: ValueChangeDetails) => void) | undefined
+  /**
+   * Function to call when the value is committed.
+   */
+  onValueCommit?: ((details: ValueChangeDetails) => void) | undefined
 }
 
-export type UserDefinedContext = RequiredBy<PublicContext, "id">
+type PropsWithDefault = "activationMode" | "submitMode" | "selectOnFocus" | "translations"
 
-type ComputedContext = Readonly<{
-  /**
-   * @computed
-   * Whether the editable can be interacted with
-   */
-  isInteractive: boolean
-  /**
-   * @computed
-   * Whether value is empty
-   */
-  isValueEmpty: boolean
-  /**
-   * @computed
-   * Whether the preview element is focusable
-   */
-  isPreviewFocusable: boolean
-  /**
-   * @computed
-   * Whether to submit on enter press
-   */
-  submitOnEnter: boolean
-  /**
-   * @computed
-   * Whether to submit on blur
-   */
-  submitOnBlur: boolean
-}>
-
-interface PrivateContext {
-  /**
-   * @internal
-   * The previous value of the editable. Used to revert in case of cancel/escape
-   */
-  previousValue: string
+export interface EditableSchema {
+  props: RequiredBy<EditableProps, PropsWithDefault>
+  state: "edit" | "preview"
+  context: {
+    value: string
+    previousValue: string
+  }
+  computed: {
+    isInteractive: boolean
+    submitOnEnter: boolean
+    submitOnBlur: boolean
+  }
+  action: string
+  effect: string
+  event: EventObject
+  guard: string
 }
 
-export interface MachineContext extends PublicContext, PrivateContext, ComputedContext {}
+export type EditableService = Service<EditableSchema>
 
-export interface MachineState {
-  value: "preview" | "edit"
-}
-
-export type State = S.State<MachineContext, MachineState>
-
-export type Send = S.Send<S.AnyEventObject>
+export type EditableMachine = Machine<EditableSchema>
 
 /* -----------------------------------------------------------------------------
  * Component API
  * -----------------------------------------------------------------------------*/
 
-export interface MachineApi<T extends PropTypes = PropTypes> {
+export interface EditableApi<T extends PropTypes = PropTypes> {
   /**
    * Whether the editable is in edit mode
    */
@@ -200,6 +193,10 @@ export interface MachineApi<T extends PropTypes = PropTypes> {
    * The current value of the editable
    */
   value: string
+  /**
+   * The current value of the editable, or the placeholder if the value is empty
+   */
+  valueText: string
   /**
    * Function to set the value of the editable
    */
@@ -221,13 +218,13 @@ export interface MachineApi<T extends PropTypes = PropTypes> {
    */
   submit(): void
 
-  rootProps: T["element"]
-  areaProps: T["element"]
-  labelProps: T["label"]
-  inputProps: T["input"]
-  previewProps: T["element"]
-  editTriggerProps: T["button"]
-  controlProps: T["element"]
-  submitTriggerProps: T["button"]
-  cancelTriggerProps: T["button"]
+  getRootProps(): T["element"]
+  getAreaProps(): T["element"]
+  getLabelProps(): T["label"]
+  getInputProps(): T["input"]
+  getPreviewProps(): T["element"]
+  getEditTriggerProps(): T["button"]
+  getControlProps(): T["element"]
+  getSubmitTriggerProps(): T["button"]
+  getCancelTriggerProps(): T["button"]
 }

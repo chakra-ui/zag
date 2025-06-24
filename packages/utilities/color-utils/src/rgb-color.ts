@@ -1,4 +1,4 @@
-import { clampValue, toFixedNumber } from "@zag-js/numeric-range"
+import { clampValue, toFixedNumber } from "@zag-js/utils"
 import { Color } from "./color"
 import { HSBColor } from "./hsb-color"
 import { HSLColor } from "./hsl-color"
@@ -180,6 +180,25 @@ export class RGBColor extends Color {
 
   clone(): ColorType {
     return new RGBColor(this.red, this.green, this.blue, this.alpha)
+  }
+
+  getChannelFormatOptions(channel: ColorChannel): Intl.NumberFormatOptions {
+    switch (channel) {
+      case "red":
+      case "green":
+      case "blue":
+        return { style: "decimal" }
+      case "alpha":
+        return { style: "percent" }
+      default:
+        throw new Error("Unknown color channel: " + channel)
+    }
+  }
+
+  formatChannelValue(channel: ColorChannel, locale: string) {
+    let options = this.getChannelFormatOptions(channel)
+    let value = this.getChannelValue(channel)
+    return new Intl.NumberFormat(locale, options).format(value)
   }
 
   getChannelRange(channel: ColorChannel): ColorChannelRange {

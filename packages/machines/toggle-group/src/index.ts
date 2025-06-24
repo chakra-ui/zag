@@ -3,8 +3,10 @@ export { connect } from "./toggle-group.connect"
 export { machine } from "./toggle-group.machine"
 export * from "./toggle-group.props"
 export type {
-  MachineApi as Api,
-  UserDefinedContext as Context,
+  ToggleGroupApi as Api,
+  ToggleGroupService as Service,
+  ToggleGroupProps as Props,
+  ToggleGroupMachine as Machine,
   ElementIds,
   ItemProps,
   ItemState,

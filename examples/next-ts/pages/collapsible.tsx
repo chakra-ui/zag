@@ -1,6 +1,7 @@
 import * as collapsible from "@zag-js/collapsible"
 import { normalizeProps, useMachine } from "@zag-js/react"
 import { collapsibleControls } from "@zag-js/shared"
+import { ChevronDownIcon } from "lucide-react"
 import { useId } from "react"
 import { StateVisualizer } from "../components/state-visualizer"
 import { Toolbar } from "../components/toolbar"
@@ -9,23 +10,24 @@ import { useControls } from "../hooks/use-controls"
 export default function Page() {
   const controls = useControls(collapsibleControls)
 
-  const [state, send] = useMachine(
-    collapsible.machine({
-      id: useId(),
-    }),
-    {
-      context: controls.context,
-    },
-  )
+  const service = useMachine(collapsible.machine, {
+    id: useId(),
+    ...controls.context,
+  })
 
-  const api = collapsible.connect(state, send, normalizeProps)
+  const api = collapsible.connect(service, normalizeProps)
 
   return (
     <>
       <main className="collapsible">
-        <div {...api.rootProps}>
-          <button {...api.triggerProps}>Collapsible Trigger</button>
-          <div {...api.contentProps}>
+        <div {...api.getRootProps()}>
+          <button {...api.getTriggerProps()}>
+            Collapsible Trigger
+            <div {...api.getIndicatorProps()}>
+              <ChevronDownIcon />
+            </div>
+          </button>
+          <div {...api.getContentProps()}>
             <p>
               Lorem dfd dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et
               dolore magna sfsd. Ut enim ad minimdfd v eniam, quis nostrud exercitation ullamco laboris nisi ut aliquip
@@ -44,7 +46,7 @@ export default function Page() {
       </main>
 
       <Toolbar controls={controls.ui} viz>
-        <StateVisualizer state={state} omit={["stylesRef"]} />
+        <StateVisualizer state={service} omit={["stylesRef"]} />
       </Toolbar>
     </>
   )

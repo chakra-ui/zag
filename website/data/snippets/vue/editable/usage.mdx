@@ -1,0 +1,19 @@
+```html
+<script setup>
+  import * as editable from "@zag-js/editable"
+  import { normalizeProps, useMachine } from "@zag-js/vue"
+  import { computed } from "vue"
+
+  const service = useMachine(editable.machine, { id: "1" })
+  const api = computed(() => editable.connect(service, normalizeProps))
+</script>
+
+<template>
+  <div ref="ref" v-bind="api.getRootProps()">
+    <div v-bind="api.getAreaProps()">
+      <input v-bind="api.getInputProps()" />
+      <span v-bind="api.getPreviewProps()" />
+    </div>
+  </div>
+</template>
+```

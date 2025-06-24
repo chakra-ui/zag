@@ -18,11 +18,12 @@
     "@zag-js/shared",
     "next-app",
     "next-ts",
-    "vue-ts",
+    "nuxt-ts",
     "solid-ts",
     "nuxt-ts",
     "preact-ts",
     "svelte-ts",
+    "vanilla-ts",
     "website"
   ]
 }

@@ -19,9 +19,6 @@ command line:
 
 <CodeSnippet id="clipboard/installation.mdx" />
 
-This command will install the framework agnostic clipboard logic and the
-reactive utilities for your framework of choice.
-
 ## Anatomy
 
 To set up the clipboard correctly, you'll need to understand its anatomy and how
@@ -53,58 +50,52 @@ clipboard machine in your project 🔥
 
 <CodeSnippet id="clipboard/usage.mdx" />
 
-## Setting the value to copy
+### Setting the clipboard value
 
 You can set the value to copy by passing a `value` prop to the `machine`
 context.
 
-```jsx {3}
-const [state, send] = useMachine(
-  clipboard.machine({
-    value: "Hello, world!",
-  }),
-)
+```jsx {2}
+const service = useMachine(clipboard.machine, {
+  value: "Hello, world!",
+})
 ```
 
-## Listening to copy events
+### Listening to copy events
 
 When the value is copied to the clipboard, the `onStatusChange` event is fired.
 You can listen to this event and perform any action you want.
 
-```jsx {3}
-const [state, send] = useMachine(
-  clipboard.machine({
-    onStatusChange: (details) => {
-      console.log("Copy status changed to", details.copied)
-    },
-  }),
-)
+```jsx {2}
+const service = useMachine(clipboard.machine, {
+  onStatusChange: (details) => {
+    console.log("Copy status changed to", details.copied)
+  },
+})
 ```
 
-## Checking if the value is copied
+### Checking if the value is copied
 
 Use the `api.copied` property to check if the value is copied to the clipboard.
 
-```jsx {3}
-const api = clipboard.connect(state, send)
+```jsx {2}
+const api = clipboard.connect(service)
 
 if (api.copied) {
   console.log("Value is copied to the clipboard")
 }
 ```
 
-## Changing the timeout
+### Changing the timeout
 
 By default, the clipboard machine will automatically reset the state to `idle`
 after `3000ms`. You can change this timeout by passing a `timeout` option to the
 `machine` context.
 
-```jsx {3}
-const [state, send] = useMachine(
-  clipboard.machine({
-    timeout: 5000,
-  }),
-)
+```jsx {2}
+const service = useMachine(clipboard.machine, {
+  timeout: 5000,
+})
 ```
 
 ## Styling guide
@@ -131,3 +122,7 @@ The clipboard machine exposes the following context properties:
 The clipboard `api` exposes the following methods:
 
 <ApiTable name="clipboard" />
+
+### Data Attributes
+
+<DataAttrTable name="clipboard" />

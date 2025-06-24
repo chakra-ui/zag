@@ -3,4 +3,11 @@ export { anatomy } from "./dialog.anatomy"
 export { connect } from "./dialog.connect"
 export { machine } from "./dialog.machine"
 export * from "./dialog.props"
-export type { MachineApi as Api, UserDefinedContext as Context, ElementIds, OpenChangeDetails } from "./dialog.types"
+export type {
+  DialogApi as Api,
+  DialogMachine as Machine,
+  DialogProps as Props,
+  ElementIds,
+  OpenChangeDetails,
+  DialogService as Service,
+} from "./dialog.types"

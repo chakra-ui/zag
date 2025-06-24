@@ -9,11 +9,15 @@
 
   const controls = useControls(checkboxControls)
 
-  const [snapshot, send] = useMachine(checkbox.machine({ id: "1" }), {
-    context: controls.context,
-  })
+  const id = $props.id()
+  const service = useMachine(
+    checkbox.machine,
+    controls.mergeProps<checkbox.Props>({
+      id,
+    }),
+  )
 
-  const api = $derived(checkbox.connect(snapshot, send, normalizeProps))
+  const api = $derived(checkbox.connect(service, normalizeProps))
 </script>
 
 <main class="checkbox">
@@ -24,11 +28,11 @@
     }}
   >
     <fieldset>
-      <label {...api.rootProps}>
-        <div {...api.controlProps}></div>
-        <span {...api.labelProps}>Input {api.checked ? "Checked" : "Unchecked"}</span>
-        <input {...api.hiddenInputProps} data-testid="hidden-input" />
-        <div {...api.indicatorProps}>Indicator</div>
+      <label {...api.getRootProps()}>
+        <div {...api.getControlProps()}></div>
+        <span {...api.getLabelProps()}>Input {api.checked ? "Checked" : "Unchecked"}</span>
+        <input {...api.getHiddenInputProps()} data-testid="hidden-input" />
+        <div {...api.getIndicatorProps()}>Indicator</div>
       </label>
 
       <button type="button" disabled={api.checked} onclick={() => api.setChecked(true)}>Check</button>
@@ -39,5 +43,5 @@
 </main>
 
 <Toolbar {controls}>
-  <StateVisualizer state={snapshot} />
+  <StateVisualizer state={service} />
 </Toolbar>

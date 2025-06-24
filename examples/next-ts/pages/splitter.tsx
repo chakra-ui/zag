@@ -9,37 +9,35 @@ import { useControls } from "../hooks/use-controls"
 export default function Page() {
   const controls = useControls(splitterControls)
 
-  const [state, send] = useMachine(
-    splitter.machine({
-      id: useId(),
-      size: [
-        { id: "a", size: 50 },
-        { id: "b", size: 50 },
-      ],
-    }),
-    {
-      context: controls.context,
-    },
-  )
+  const service = useMachine(splitter.machine, {
+    id: useId(),
+    panels: [{ id: "a" }, { id: "b" }, { id: "c" }],
+    ...controls.context,
+  })
 
-  const api = splitter.connect(state, send, normalizeProps)
+  const api = splitter.connect(service, normalizeProps)
 
   return (
     <>
       <main className="splitter">
-        <div {...api.rootProps}>
+        <pre>{JSON.stringify(api.getSizes(), null, 2)}</pre>
+        <div {...api.getRootProps()}>
           <div {...api.getPanelProps({ id: "a" })}>
-            <p>A</p>
+            <p>Left</p>
           </div>
-          <div {...api.getResizeTriggerProps({ id: "a:b" })} />
+          <div data-testid="trigger-a:b" {...api.getResizeTriggerProps({ id: "a:b" })} />
           <div {...api.getPanelProps({ id: "b" })}>
-            <p>B</p>
+            <p>Middle</p>
+          </div>
+          <div data-testid="trigger-b:c" {...api.getResizeTriggerProps({ id: "b:c" })} />
+          <div {...api.getPanelProps({ id: "c" })}>
+            <p>Right</p>
           </div>
         </div>
       </main>
 
       <Toolbar controls={controls.ui}>
-        <StateVisualizer state={state} omit={["previousPanels", "initialSize"]} />
+        <StateVisualizer state={service} />
       </Toolbar>
     </>
   )

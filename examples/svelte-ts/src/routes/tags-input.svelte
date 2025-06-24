@@ -12,24 +12,23 @@
 
   const controls = useControls(tagsInputControls)
 
-  const [snapshot, send] = useMachine(
-    tagsInput.machine({
-      id: "1",
-      value: ["React", "Vue"],
+  const id = $props.id()
+  const service = useMachine(
+    tagsInput.machine,
+    controls.mergeProps<tagsInput.Props>({
+      id,
+      defaultValue: ["React", "Vue"],
     }),
-    {
-      context: controls.context,
-    },
   )
 
-  const api = $derived(tagsInput.connect(snapshot, send, normalizeProps))
+  const api = $derived(tagsInput.connect(service, normalizeProps))
 </script>
 
 <main class="tags-input">
-  <div {...api.rootProps}>
-    <!-- svelte-ignore a11y-label-has-associated-control -->
-    <label {...api.labelProps}>Enter frameworks:</label>
-    <div {...api.controlProps}>
+  <div {...api.getRootProps()}>
+    <!-- svelte-ignore a11y_label_has_associated_control -->
+    <label {...api.getLabelProps()}>Enter frameworks:</label>
+    <div {...api.getControlProps()}>
       {#each api.value as value, index}
         <span {...api.getItemProps({ index, value })}>
           <div data-testid={`${toDashCase(value)}-tag`} {...api.getItemPreviewProps({ index, value })}>
@@ -47,12 +46,12 @@
         </span>
       {/each}
 
-      <input data-testid="input" placeholder="add tag" {...api.inputProps} />
+      <input data-testid="input" placeholder="add tag" {...api.getInputProps()} />
     </div>
-    <input {...api.hiddenInputProps} />
+    <input {...api.getHiddenInputProps()} />
   </div>
 </main>
 
 <Toolbar {controls}>
-  <StateVisualizer state={snapshot} />
+  <StateVisualizer state={service} />
 </Toolbar>

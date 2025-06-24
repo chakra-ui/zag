@@ -1,0 +1,132 @@
+:root {
+  --tour-z-index: 100;
+}
+
+.tour-trigger {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-align: start;
+  cursor: pointer;
+  font-weight: 500;
+  padding-inline: 1rem;
+  padding-block: 0.25rem;
+  background: var(--colors-bg-primary-subtle);
+  color: #ffffff;
+  margin-top: 80px;
+}
+
+[data-scope="tour"][data-part="content"] {
+  --arrow-background: var(--colors-bg-subtle);
+  --arrow-size: 10px;
+  background: var(--colors-bg-subtle);
+  padding: 24px;
+  border-radius: 4px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  width: 300px;
+  position: relative;
+  z-index: calc(var(--tour-layer) + var(--tour-z-index));
+}
+
+[data-scope="tour"][data-part="positioner"] {
+  z-index: calc(var(--tour-layer) + var(--tour-z-index));
+
+  &[data-type="floating"] {
+    position: absolute;
+
+    &[data-placement*="bottom"] {
+      bottom: 24px;
+    }
+
+    &[data-placement*="top"] {
+      top: 24px;
+    }
+
+    &[data-placement*="end"] {
+      inset-inline-end: 24px;
+    }
+
+    &[data-placement*="start"] {
+      inset-inline-start: 24px;
+    }
+  }
+
+  &[data-type="dialog"] {
+    width: 100%;
+    position: fixed;
+    inset: 0;
+    margin: auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+}
+
+[data-scope="tour"][data-part="content"] {
+  &[data-type="dialog"] {
+    width: 500px;
+    background: var(--colors-bg-subtle);
+  }
+
+  &[data-type="floating"] {
+    width: 500px;
+    background: rgb(15, 39, 136);
+    color: white;
+  }
+}
+
+[data-scope="tour"][data-part="arrow"] {
+  box-shadow: var(--box-shadow);
+}
+
+[data-scope="tour"][data-part="title"] {
+  font-weight: 600;
+}
+
+[data-scope="tour"][data-part="description"] {
+  margin-bottom: 20px;
+  margin-top: 12px;
+}
+
+[data-scope="tour"][data-part="progress-text"] {
+  margin-bottom: 20px;
+  opacity: 0.72;
+}
+
+[data-scope="tour"][data-part="action-trigger"] {
+  padding-inline: 0.75rem;
+  height: 2rem;
+  text-align: center;
+  color: var(--colors-text-bold);
+  border: solid 1px;
+  border-color: var(--colors-border-bold);
+  background: var(--colors-bg-subtle);
+  display: flex;
+  box-sizing: border-box;
+  align-items: center;
+  font-weight: 500;
+  font-size: 14px;
+  border-radius: 4px;
+}
+
+[data-scope="tour"][data-part="backdrop"] {
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: calc(var(--tour-layer) + var(--tour-z-index));
+}
+
+[data-scope="tour"][data-part="spotlight"] {
+  border: 3px solid var(--colors-bg-primary-subtle);
+  z-index: calc(var(--tour-layer) + var(--tour-z-index));
+}
+
+[data-scope="tour"][data-part="close-trigger"] {
+  font-family: inherit;
+  height: 25px;
+  width: 25px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  position: absolute;
+  top: 10px;
+  right: 10px;
+}

@@ -1,160 +1,177 @@
-import { dataAttr, visuallyHiddenStyle } from "@zag-js/dom-query"
+import { dataAttr, isLeftClick, isSafari, visuallyHiddenStyle } from "@zag-js/dom-query"
+import { isFocusVisible } from "@zag-js/focus-visible"
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import { parts } from "./radio-group.anatomy"
-import { dom } from "./radio-group.dom"
-import type { ItemProps, ItemState, MachineApi, Send, State } from "./radio-group.types"
+import * as dom from "./radio-group.dom"
+import type { ItemProps, ItemState, RadioGroupApi, RadioGroupService } from "./radio-group.types"
 
-export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>): MachineApi<T> {
-  const groupDisabled = state.context.isDisabled
-  const readOnly = state.context.readOnly
+export function connect<T extends PropTypes>(
+  service: RadioGroupService,
+  normalize: NormalizeProps<T>,
+): RadioGroupApi<T> {
+  const { context, send, computed, prop, scope } = service
+
+  const groupDisabled = computed("isDisabled")
+  const readOnly = prop("readOnly")
 
   function getItemState(props: ItemProps): ItemState {
+    const focused = context.get("focusedValue") === props.value
+    const focusVisible = focused && isFocusVisible()
     return {
+      value: props.value,
       invalid: !!props.invalid,
       disabled: !!props.disabled || groupDisabled,
-      checked: state.context.value === props.value,
-      focused: state.context.focusedValue === props.value,
-      hovered: state.context.hoveredValue === props.value,
-      active: state.context.activeValue === props.value,
+      checked: context.get("value") === props.value,
+      focused,
+      focusVisible,
+      hovered: context.get("hoveredValue") === props.value,
+      active: context.get("activeValue") === props.value,
     }
   }
 
   function getItemDataAttrs<T extends ItemProps>(props: T) {
-    const radioState = getItemState(props)
+    const itemState = getItemState(props)
     return {
-      "data-focus": dataAttr(radioState.focused),
-      "data-disabled": dataAttr(radioState.disabled),
-      "dats-readonly": dataAttr(readOnly),
-      "data-state": radioState.checked ? "checked" : "unchecked",
-      "data-hover": dataAttr(radioState.hovered),
-      "data-invalid": dataAttr(radioState.invalid),
-      "data-orientation": state.context.orientation,
+      "data-focus": dataAttr(itemState.focused),
+      "data-focus-visible": dataAttr(itemState.focusVisible),
+      "data-disabled": dataAttr(itemState.disabled),
+      "data-readonly": dataAttr(readOnly),
+      "data-state": itemState.checked ? "checked" : "unchecked",
+      "data-hover": dataAttr(itemState.hovered),
+      "data-invalid": dataAttr(itemState.invalid),
+      "data-orientation": prop("orientation"),
+      "data-ssr": dataAttr(context.get("ssr")),
     }
   }
 
   const focus = () => {
-    const firstEnabledAndCheckedInput = dom.getFirstEnabledAndCheckedInputEl(state.context)
-
-    if (firstEnabledAndCheckedInput) {
-      firstEnabledAndCheckedInput.focus()
-      return
-    }
-
-    const firstEnabledInput = dom.getFirstEnabledInputEl(state.context)
-    firstEnabledInput?.focus()
+    const nodeToFocus = dom.getFirstEnabledAndCheckedInputEl(scope) ?? dom.getFirstEnabledInputEl(scope)
+    nodeToFocus?.focus()
   }
 
   return {
     focus,
-    value: state.context.value,
+    value: context.get("value"),
     setValue(value) {
       send({ type: "SET_VALUE", value, isTrusted: false })
     },
     clearValue() {
       send({ type: "SET_VALUE", value: null, isTrusted: false })
     },
+
+    getRootProps() {
+      return normalize.element({
+        ...parts.root.attrs,
+        role: "radiogroup",
+        id: dom.getRootId(scope),
+        "aria-labelledby": dom.getLabelId(scope),
+        "data-orientation": prop("orientation"),
+        "data-disabled": dataAttr(groupDisabled),
+        "aria-orientation": prop("orientation"),
+        dir: prop("dir"),
+        style: {
+          position: "relative",
+        },
+      })
+    },
+
+    getLabelProps() {
+      return normalize.element({
+        ...parts.label.attrs,
+        dir: prop("dir"),
+        "data-orientation": prop("orientation"),
+        "data-disabled": dataAttr(groupDisabled),
+        id: dom.getLabelId(scope),
+        onClick: focus,
+      })
+    },
+
     getItemState,
 
-    rootProps: normalize.element({
-      ...parts.root.attrs,
-      role: "radiogroup",
-      id: dom.getRootId(state.context),
-      "aria-labelledby": dom.getLabelId(state.context),
-      "data-orientation": state.context.orientation,
-      "data-disabled": dataAttr(groupDisabled),
-      "aria-orientation": state.context.orientation,
-      dir: state.context.dir,
-      style: {
-        position: "relative",
-      },
-    }),
-
-    labelProps: normalize.element({
-      ...parts.label.attrs,
-      dir: state.context.dir,
-      "data-orientation": state.context.orientation,
-      "data-disabled": dataAttr(groupDisabled),
-      id: dom.getLabelId(state.context),
-      onClick: focus,
-    }),
-
-    getItemProps(props: ItemProps) {
-      const rootState = getItemState(props)
+    getItemProps(props) {
+      const itemState = getItemState(props)
 
       return normalize.label({
         ...parts.item.attrs,
-        dir: state.context.dir,
-        id: dom.getItemId(state.context, props.value),
-        htmlFor: dom.getItemHiddenInputId(state.context, props.value),
+        dir: prop("dir"),
+        id: dom.getItemId(scope, props.value),
+        htmlFor: dom.getItemHiddenInputId(scope, props.value),
         ...getItemDataAttrs(props),
         onPointerMove() {
-          if (rootState.disabled) return
+          if (itemState.disabled) return
+          if (itemState.hovered) return
           send({ type: "SET_HOVERED", value: props.value, hovered: true })
         },
         onPointerLeave() {
-          if (rootState.disabled) return
+          if (itemState.disabled) return
           send({ type: "SET_HOVERED", value: null })
         },
         onPointerDown(event) {
-          if (rootState.disabled) return
+          if (itemState.disabled) return
+          if (!isLeftClick(event)) return
           // On pointerdown, the input blurs and returns focus to the `body`,
           // we need to prevent this.
-          if (rootState.focused && event.pointerType === "mouse") {
+          if (itemState.focused && event.pointerType === "mouse") {
             event.preventDefault()
           }
           send({ type: "SET_ACTIVE", value: props.value, active: true })
         },
         onPointerUp() {
-          if (rootState.disabled) return
+          if (itemState.disabled) return
           send({ type: "SET_ACTIVE", value: null })
+        },
+        onClick() {
+          if (!itemState.disabled && isSafari()) {
+            dom.getItemHiddenInputEl(scope, props.value)?.focus()
+          }
         },
       })
     },
 
-    getItemTextProps(props: ItemProps) {
+    getItemTextProps(props) {
       return normalize.element({
         ...parts.itemText.attrs,
-        dir: state.context.dir,
-        id: dom.getItemLabelId(state.context, props.value),
+        dir: prop("dir"),
+        id: dom.getItemLabelId(scope, props.value),
         ...getItemDataAttrs(props),
       })
     },
 
-    getItemControlProps(props: ItemProps) {
-      const controlState = getItemState(props)
+    getItemControlProps(props) {
+      const itemState = getItemState(props)
 
       return normalize.element({
         ...parts.itemControl.attrs,
-        dir: state.context.dir,
-        id: dom.getItemControlId(state.context, props.value),
-        "data-active": dataAttr(controlState.active),
+        dir: prop("dir"),
+        id: dom.getItemControlId(scope, props.value),
+        "data-active": dataAttr(itemState.active),
         "aria-hidden": true,
         ...getItemDataAttrs(props),
       })
     },
 
-    getItemHiddenInputProps(props: ItemProps) {
-      const inputState = getItemState(props)
+    getItemHiddenInputProps(props) {
+      const itemState = getItemState(props)
 
       return normalize.input({
-        "data-ownedby": dom.getRootId(state.context),
-        id: dom.getItemHiddenInputId(state.context, props.value),
+        "data-ownedby": dom.getRootId(scope),
+        id: dom.getItemHiddenInputId(scope, props.value),
         type: "radio",
-        name: state.context.name || state.context.id,
-        form: state.context.form,
+        name: prop("name") || prop("id"),
+        form: prop("form"),
         value: props.value,
-        onChange(event) {
+        onClick(event) {
           if (readOnly) {
             event.preventDefault()
             return
           }
 
-          if (event.target.checked) {
+          if (event.currentTarget.checked) {
             send({ type: "SET_VALUE", value: props.value, isTrusted: true })
           }
         },
         onBlur() {
-          send({ type: "SET_FOCUSED", value: null })
+          send({ type: "SET_FOCUSED", value: null, focused: false })
         },
         onFocus() {
           send({ type: "SET_FOCUSED", value: props.value, focused: true })
@@ -171,33 +188,36 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
             send({ type: "SET_ACTIVE", value: null })
           }
         },
-        disabled: inputState.disabled,
-        defaultChecked: inputState.checked,
+        disabled: itemState.disabled,
+        defaultChecked: itemState.checked,
         style: visuallyHiddenStyle,
       })
     },
 
-    indicatorProps: normalize.element({
-      id: dom.getIndicatorId(state.context),
-      ...parts.indicator.attrs,
-      dir: state.context.dir,
-      hidden: state.context.value == null,
-      "data-disabled": dataAttr(groupDisabled),
-      "data-orientation": state.context.orientation,
-      style: {
-        "--transition-property": "left, top, width, height",
-        "--left": state.context.indicatorRect?.left,
-        "--top": state.context.indicatorRect?.top,
-        "--width": state.context.indicatorRect?.width,
-        "--height": state.context.indicatorRect?.height,
-        position: "absolute",
-        willChange: "var(--transition-property)",
-        transitionProperty: "var(--transition-property)",
-        transitionDuration: state.context.canIndicatorTransition ? "var(--transition-duration, 150ms)" : "0ms",
-        transitionTimingFunction: "var(--transition-timing-function)",
-        [state.context.orientation === "horizontal" ? "left" : "top"]:
-          state.context.orientation === "horizontal" ? "var(--left)" : "var(--top)",
-      },
-    }),
+    getIndicatorProps() {
+      const rect = context.get("indicatorRect")
+      return normalize.element({
+        id: dom.getIndicatorId(scope),
+        ...parts.indicator.attrs,
+        dir: prop("dir"),
+        hidden: context.get("value") == null,
+        "data-disabled": dataAttr(groupDisabled),
+        "data-orientation": prop("orientation"),
+        style: {
+          "--transition-property": "left, top, width, height",
+          "--left": rect?.left,
+          "--top": rect?.top,
+          "--width": rect?.width,
+          "--height": rect?.height,
+          position: "absolute",
+          willChange: "var(--transition-property)",
+          transitionProperty: "var(--transition-property)",
+          transitionDuration: context.get("canIndicatorTransition") ? "var(--transition-duration, 150ms)" : "0ms",
+          transitionTimingFunction: "var(--transition-timing-function)",
+          [prop("orientation") === "horizontal" ? "left" : "top"]:
+            prop("orientation") === "horizontal" ? "var(--left)" : "var(--top)",
+        },
+      })
+    },
   }
 }

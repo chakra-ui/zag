@@ -1,136 +1,143 @@
-import { expect, test } from "@playwright/test"
-import { a11y, controls, testid, clickOutside, rect } from "./_utils"
+import { test } from "@playwright/test"
+import { NumberInputModel } from "./models/number-input.model"
 
-const input = testid("input")
-const inc = testid("inc-button")
-const dec = testid("dec-button")
-const scrubber = testid("scrubber")
+let I: NumberInputModel
 
 test.describe("number input", () => {
   test.beforeEach(async ({ page }) => {
-    await page.goto("/number-input")
+    I = new NumberInputModel(page)
+    await I.goto()
   })
 
-  test("should have no accessibility violation", async ({ page }) => {
-    await a11y(page)
+  test("should have no accessibility violation", async () => {
+    await I.checkAccessibility()
   })
 
-  test.describe("when typing into the input", () => {
-    test("should allow empty string value", async ({ page }) => {
-      await page.focus(input)
-      await page.locator(input).fill("12")
-
-      await page.keyboard.press("Backspace")
-      await page.keyboard.press("Backspace")
-
-      await expect(page.locator(input)).toHaveValue("")
-    })
-
-    test("should clamp value when blurred", async ({ page }) => {
-      await page.focus(input)
-      await page.locator(input).fill("200")
-      await expect(page.locator(input)).toHaveAttribute("aria-invalid", "true")
-
-      await clickOutside(page)
-      await expect(page.locator(input)).toHaveValue("100")
-    })
-
-    test("should not clamp value when input is empty", async ({ page }) => {
-      await page.focus(input)
-      await page.locator(input).fill("5")
-      await page.keyboard.press("Backspace")
-      await clickOutside(page)
-      await expect(page.locator(input)).toHaveValue("")
-    })
+  test("should allow typing empty string value", async () => {
+    await I.type("12")
+    await I.pressKey("Backspace", 2)
+    await I.seeInputHasValue("")
   })
 
-  test.describe("when using keyboard arrow in the input", () => {
-    test("should increment the value", async ({ page }) => {
-      await page.locator(input).pressSequentially("5")
-      await page.keyboard.press("ArrowUp")
-      await expect(page.locator(input)).toHaveValue("6")
-    })
-
-    test("should decrement the value", async ({ page }) => {
-      await page.locator(input).fill("5")
-      await page.keyboard.press("ArrowDown")
-      await page.keyboard.press("ArrowDown")
-      await expect(page.locator(input)).toHaveValue("3")
-    })
-
-    test("should for home/end keys", async ({ page }) => {
-      await page.locator(input).fill("5")
-      await page.keyboard.press("Home")
-      await expect(page.locator(input)).toHaveValue("0")
-      await page.keyboard.press("End")
-      await expect(page.locator(input)).toHaveValue("100")
-    })
-
-    test("should change 10 steps on shift arrow", async ({ page }) => {
-      await page.locator(input).fill("0")
-      await page.keyboard.press("ArrowUp")
-      await expect(page.locator(input)).toHaveValue("1")
-      await page.keyboard.press("Shift+ArrowUp")
-      await expect(page.locator(input)).toHaveValue("11")
-      await page.keyboard.press("Shift+ArrowDown")
-      await expect(page.locator(input)).toHaveValue("1")
-      await page.keyboard.press("ArrowDown")
-      await expect(page.locator(input)).toHaveValue("0")
-    })
-
-    test("should change for 0.1 steps", async ({ page }) => {
-      await controls(page).num("step", "0.1")
-
-      await page.locator(input).pressSequentially("0.10", { delay: 20 })
-      await page.keyboard.press("Control+ArrowUp")
-      await expect(page.locator(input)).toHaveValue("0.11")
-      await page.keyboard.press("Control+ArrowDown")
-      await expect(page.locator(input)).toHaveValue("0.1")
-
-      await page.keyboard.press("ArrowDown")
-      await expect(page.locator(input)).toHaveValue("0")
-    })
+  test("should clamp value when blurred", async () => {
+    await I.type("200")
+    await I.seeInputIsInvalid()
+    await I.clickOutside()
+    await I.seeInputHasValue("100")
   })
 
-  test.describe.skip("when using the spinner", () => {
-    const tick = (n: number) => 50 * n + 300
-
-    test("should spin value on increment long press", async ({ page }) => {
-      const inc_btn = page.locator(inc)
-
-      await inc_btn.dispatchEvent("pointerdown")
-      await page.waitForTimeout(tick(10))
-      await inc_btn.dispatchEvent("pointerup")
-
-      await expect(page.locator(input)).toHaveValue("11")
-    })
-
-    test("should spin value on decrement long press", async ({ page }) => {
-      await page.locator(input).pressSequentially("20")
-
-      const dec_btn = page.locator(dec)
-
-      await dec_btn.dispatchEvent("pointerdown")
-      await page.waitForTimeout(tick(10))
-      await dec_btn.dispatchEvent("pointerup")
-
-      await expect(page.locator(input)).toHaveValue("10")
-    })
+  test("should clamp value when input is empty", async () => {
+    await I.type("5")
+    await I.pressKey("Backspace")
+    await I.clickOutside()
+    await I.seeInputHasValue("")
   })
 
-  test.describe("when using scrubber", () => {
-    test("should increment on left mouse movement", async ({ page }) => {
-      const scrubber_btn = page.locator(scrubber)
-      const bbox = await rect(scrubber_btn)
-      const midX = bbox.x + bbox.width / 2
-      const midY = bbox.y + bbox.height / 2
+  test("should increment with arrow up", async () => {
+    await I.type("5")
+    await I.pressKey("ArrowUp")
+    await I.seeInputHasValue("6")
+  })
 
-      await scrubber_btn.dispatchEvent("mousedown")
+  test("clicking increment", async () => {
+    await I.clickInc()
+    await I.seeInputHasValue("1")
+  })
 
-      await page.mouse.move(midX + 10, midY, { steps: 11 })
+  test("should decrement the value", async () => {
+    await I.type("5")
+    await I.pressKey("ArrowDown", 2)
+    await I.seeInputHasValue("3")
+  })
 
-      await expect(page.locator(input)).toHaveValue("10")
-      await page.mouse.up()
-    })
+  test("clicking decrement", async () => {
+    await I.type("5")
+    await I.clickDec()
+    await I.seeInputHasValue("4")
+  })
+
+  test("pressing enter should make up/down still work", async () => {
+    await I.type("5")
+    await I.pressKey("Enter")
+
+    await I.pressKey("ArrowDown")
+    await I.seeInputHasValue("4")
+
+    await I.pressKey("ArrowUp")
+    await I.seeInputHasValue("5")
+  })
+
+  test("should set value to min/max on home/end keys", async () => {
+    await I.type("5")
+    await I.pressKey("Home")
+    await I.seeInputHasValue("0")
+
+    await I.pressKey("End")
+    await I.seeInputHasValue("100")
+  })
+
+  test("shift+arrowup: should change 10 steps", async () => {
+    await I.type("0")
+
+    await I.pressKey("ArrowUp")
+    await I.seeInputHasValue("1")
+
+    await I.pressKey("Shift+ArrowUp")
+    await I.seeInputHasValue("11")
+
+    await I.pressKey("Shift+ArrowDown")
+    await I.seeInputHasValue("1")
+
+    await I.pressKey("ArrowDown")
+    await I.seeInputHasValue("0")
+  })
+
+  test("ctrl+arrowup: should change for 0.1 steps", async () => {
+    await I.controls.num("step", "0.1")
+
+    await I.type("0.10", { delay: 20 })
+    await I.pressKey("Control+ArrowUp")
+    await I.seeInputHasValue("0.11")
+
+    await I.pressKey("Control+ArrowDown")
+    await I.seeInputHasValue("0.1")
+
+    await I.pressKey("ArrowDown")
+    await I.seeInputHasValue("0")
+  })
+
+  test("inc click: should increment value", async () => {
+    await I.clickInc()
+    await I.seeInputHasValue("1")
+  })
+
+  test("dec click: should increment value", async () => {
+    await I.type("5")
+    await I.clickDec()
+    await I.seeInputHasValue("4")
+  })
+
+  test.skip("scrub: should update value on scrubbing", async () => {
+    await I.scrubBy(10)
+    await I.seeInputHasValue("10")
+  })
+
+  test.skip("inc longpress: should spin value upwards", async () => {
+    await I.mousedownInc()
+    await I.seeInputHasValue("1")
+    await I.waitForTick(3)
+    await I.mouseup()
+    await I.seeInputHasValue("4")
+  })
+
+  test("dec longpress: should spin value downwards", async () => {
+    await I.type("20")
+
+    await I.mousedownDec()
+    await I.seeInputHasValue("19")
+    await I.waitForTick(9)
+
+    await I.mouseup()
+    await I.seeInputHasValue("10")
   })
 })

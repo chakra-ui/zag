@@ -1,0 +1,44 @@
+```svelte {13-35}
+<script lang="ts">
+  import * as colorPicker from "@zag-js/color-picker"
+  import { normalizeProps, useMachine } from "@zag-js/svelte"
+
+  const id = $props.id()
+  const service = useMachine(colorPicker.machine, {
+    id,
+    defaultValue: colorPicker.parse("hsl(0, 100%, 50%)"),
+  })
+  const api = $derived(colorPicker.connect(service, normalizeProps))
+</script>
+
+<div {...api.getRootProps()}>
+  <!-- ... -->
+  <div {...api.getPositionerProps()}>
+    <div {...api.getContentProps()}>
+      {#if api.format === "rgba"}
+        <div>
+          <div>
+            <span>R</span>
+            <input {...api.getChannelInputProps({ channel: "red" })} />
+          </div>
+
+          <div>
+            <span>G</span>
+            <input {...api.getChannelInputProps({ channel: "green" })} />
+          </div>
+
+          <div>
+            <span>B</span>
+            <input {...api.getChannelInputProps({ channel: "blue" })} />
+          </div>
+
+          <div>
+            <span>A</span>
+            <input {...api.getChannelInputProps({ channel: "alpha" })} />
+          </div>
+        </div>
+      {/if}
+    </div>
+  </div>
+</div>
+```

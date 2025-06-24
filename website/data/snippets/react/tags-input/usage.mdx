@@ -3,17 +3,15 @@ import * as tagsInput from "@zag-js/tags-input"
 import { useMachine, normalizeProps } from "@zag-js/react"
 
 export function TagsInput() {
-  const [state, send] = useMachine(
-    tagsInput.machine({
-      id: "1",
-      value: ["React", "Vue"],
-    }),
-  )
+  const service = useMachine(tagsInput.machine, {
+    id: "1",
+    value: ["React", "Vue"],
+  })
 
-  const api = tagsInput.connect(state, send, normalizeProps)
+  const api = tagsInput.connect(service, normalizeProps)
 
   return (
-    <div {...api.rootProps}>
+    <div {...api.getRootProps()}>
       {api.value.map((value, index) => (
         <span key={index} {...api.getItemProps({ index, value })}>
           <div {...api.getItemPreviewProps({ index, value })}>
@@ -25,7 +23,7 @@ export function TagsInput() {
           <input {...api.getItemInputProps({ index, value })} />
         </span>
       ))}
-      <input placeholder="Add tag..." {...api.inputProps} />
+      <input placeholder="Add tag..." {...api.getInputProps()} />
     </div>
   )
 }

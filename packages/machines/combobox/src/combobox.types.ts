@@ -1,5 +1,5 @@
-import type { Collection, CollectionItem, CollectionOptions } from "@zag-js/collection"
-import type { StateMachine as S } from "@zag-js/core"
+import type { CollectionItem, CollectionOptions, ListCollection } from "@zag-js/collection"
+import type { EventObject, Machine, Service } from "@zag-js/core"
 import type { InteractOutsideHandlers } from "@zag-js/dismissable"
 import type { Placement, PositioningOptions } from "@zag-js/popper"
 import type { CommonProperties, DirectionProperty, PropTypes, RequiredBy } from "@zag-js/types"
@@ -15,7 +15,7 @@ export interface ValueChangeDetails<T extends CollectionItem = CollectionItem> {
 
 export interface HighlightChangeDetails<T extends CollectionItem = CollectionItem> {
   highlightedValue: string | null
-  highligtedItem: T | null
+  highlightedItem: T | null
 }
 
 export interface InputValueChangeDetails {
@@ -26,15 +26,20 @@ export interface OpenChangeDetails {
   open: boolean
 }
 
-export interface SelectionValueDetails<T extends CollectionItem = CollectionItem> {
-  inputValue: string
-  selectedItems: T[]
-  valueAsString: string
-}
-
 export interface ScrollToIndexDetails {
   index: number
-  immediate?: boolean
+  immediate?: boolean | undefined
+}
+
+export interface NavigateDetails {
+  value: string
+  node: HTMLAnchorElement
+  href: string
+}
+
+export interface SelectionDetails {
+  value: string[]
+  itemValue: string
 }
 
 /* -----------------------------------------------------------------------------
@@ -42,8 +47,8 @@ export interface ScrollToIndexDetails {
  * -----------------------------------------------------------------------------*/
 
 export interface IntlTranslations {
-  triggerLabel?: string
-  clearTriggerLabel?: string
+  triggerLabel?: string | undefined
+  clearTriggerLabel?: string | undefined
 }
 
 export type ElementIds = Partial<{
@@ -60,59 +65,81 @@ export type ElementIds = Partial<{
   itemGroupLabel(id: string | number): string
 }>
 
-interface PublicContext<T extends CollectionItem = CollectionItem>
+export interface ComboboxProps<T extends CollectionItem = CollectionItem>
   extends DirectionProperty,
     CommonProperties,
     InteractOutsideHandlers {
   /**
-   * Whether the combobox is open
+   * The controlled open state of the combobox
    */
-  open?: boolean
+  open?: boolean | undefined
   /**
-   * Whether the combobox open state is controlled by the user
+   * The initial open state of the combobox when rendered.
+   * Use when you don't need to control the open state of the combobox.
    */
-  "open.controlled"?: boolean
+  defaultOpen?: boolean | undefined
   /**
    * The ids of the elements in the combobox. Useful for composition.
    */
-  ids?: ElementIds
+  ids?: ElementIds | undefined
   /**
-   * The current value of the combobox's input
+   * The controlled value of the combobox's input
    */
-  inputValue: string
+  inputValue?: string | undefined
+  /**
+   * The initial value of the combobox's input when rendered.
+   * Use when you don't need to control the value of the combobox's input.
+   * @default ""
+   */
+  defaultInputValue?: string | undefined
   /**
    * The `name` attribute of the combobox's input. Useful for form submission
    */
-  name?: string
+  name?: string | undefined
   /**
    * The associate form of the combobox.
    */
-  form?: string
+  form?: string | undefined
   /**
    * Whether the combobox is disabled
    */
-  disabled?: boolean
+  disabled?: boolean | undefined
   /**
    * Whether the combobox is readonly. This puts the combobox in a "non-editable" mode
    * but the user can still interact with it
    */
-  readOnly?: boolean
+  readOnly?: boolean | undefined
+  /**
+   * Whether the combobox is invalid
+   */
+  invalid?: boolean | undefined
   /**
    * Whether the combobox is required
    */
-  invalid?: boolean
+  required?: boolean | undefined
   /**
    * The placeholder text of the combobox's input
    */
-  placeholder?: string
+  placeholder?: string | undefined
   /**
-   * The active item's id. Used to set the `aria-activedescendant` attribute
+   * The initial highlighted value of the combobox when rendered.
+   * Use when you don't need to control the highlighted value of the combobox.
    */
-  highlightedValue: string | null
+  defaultHighlightedValue?: string | null | undefined
   /**
-   * The keys of the selected items
+   * The controlled highlighted value of the combobox
    */
-  value: string[]
+  highlightedValue?: string | null | undefined
+  /**
+   * The controlled value of the combobox's selected items
+   */
+  value?: string[] | undefined
+  /**
+   * The initial value of the combobox's selected items when rendered.
+   * Use when you don't need to control the value of the combobox's selected items.
+   * @default []
+   */
+  defaultValue?: string[] | undefined
   /**
    * Defines the auto-completion behavior of the combobox.
    *
@@ -121,7 +148,7 @@ interface PublicContext<T extends CollectionItem = CollectionItem>
    *
    * @default "none"
    */
-  inputBehavior: "autohighlight" | "autocomplete" | "none"
+  inputBehavior?: "autohighlight" | "autocomplete" | "none" | undefined
   /**
    * The behavior of the combobox input when an item is selected
    *
@@ -131,168 +158,161 @@ interface PublicContext<T extends CollectionItem = CollectionItem>
    *
    * @default "replace"
    */
-  selectionBehavior: "clear" | "replace" | "preserve"
+  selectionBehavior?: "clear" | "replace" | "preserve" | undefined
   /**
    * Whether to autofocus the input on mount
    */
-  autoFocus?: boolean
+  autoFocus?: boolean | undefined
   /**
    * Whether to open the combobox popup on initial click on the input
    * @default false
    */
-  openOnClick?: boolean
+  openOnClick?: boolean | undefined
   /**
    * Whether to show the combobox when the input value changes
    * @default true
    */
-  openOnChange?: boolean | ((details: InputValueChangeDetails) => boolean)
+  openOnChange?: boolean | ((details: InputValueChangeDetails) => boolean) | undefined
   /**
    * Whether to allow typing custom values in the input
    */
-  allowCustomValue?: boolean
+  allowCustomValue?: boolean | undefined
   /**
    * Whether to loop the keyboard navigation through the items
    * @default true
    */
-  loopFocus?: boolean
+  loopFocus?: boolean | undefined
   /**
    * The positioning options to dynamically position the menu
+   * @default { placement: "bottom-start" }
    */
-  positioning: PositioningOptions
+  positioning?: PositioningOptions | undefined
   /**
    * Function called when the input's value changes
    */
-  onInputValueChange?: (details: InputValueChangeDetails) => void
+  onInputValueChange?: ((details: InputValueChangeDetails) => void) | undefined
   /**
    * Function called when a new item is selected
    */
-  onValueChange?: (details: ValueChangeDetails<T>) => void
+  onValueChange?: ((details: ValueChangeDetails<T>) => void) | undefined
   /**
    * Function called when an item is highlighted using the pointer
    * or keyboard navigation.
    */
-  onHighlightChange?: (details: HighlightChangeDetails<T>) => void
+  onHighlightChange?: ((details: HighlightChangeDetails<T>) => void) | undefined
+  /**
+   * Function called when an item is selected
+   */
+  onSelect?: ((details: SelectionDetails) => void) | undefined
   /**
    * Function called when the popup is opened
    */
-  onOpenChange?: (details: OpenChangeDetails) => void
+  onOpenChange?: ((details: OpenChangeDetails) => void) | undefined
   /**
    * Specifies the localized strings that identifies the accessibility elements and their states
    */
-  translations: IntlTranslations
+  translations?: IntlTranslations | undefined
   /**
    * The collection of items
    */
-  collection: Collection<any>
+  collection?: ListCollection<T> | undefined
   /**
-   * Whether to allow multiple selection
+   * Whether to allow multiple selection.
+   *
+   * **Good to know:** When `multiple` is `true`, the `selectionBehavior` is automatically set to `clear`.
+   * It is recommended to render the selected items in a separate container.
    */
-  multiple?: boolean
+  multiple?: boolean | undefined
   /**
    * Whether to close the combobox when an item is selected.
    */
-  closeOnSelect?: boolean
-  /**
-   * Function to get the display value of the selected item
-   */
-  getSelectionValue?: (details: SelectionValueDetails<T>) => string
+  closeOnSelect?: boolean | undefined
   /**
    * Whether to open the combobox on arrow key press
    * @default true
    */
-  openOnKeyPress: boolean
+  openOnKeyPress?: boolean | undefined
   /**
    * Function to scroll to a specific index
    */
-  scrollToIndexFn?: (details: ScrollToIndexDetails) => void
+  scrollToIndexFn?: ((details: ScrollToIndexDetails) => void) | undefined
   /**
-   * The underling `aria-haspopup` attribute to use for the combobox
-   * - `listbox`: The combobox has a listbox popup (default)
-   * - `dialog`: The combobox has a dialog popup. Useful when in select only mode
-   *
-   * @default "listbox"
-   */
-  popup: "listbox" | "dialog"
-  /**
-   * Whether to register this combobox as a dismissable layer
+   * Whether the combobox is a composed with other composite widgets like tabs
    * @default true
    */
-  dismissable: boolean
+  composite?: boolean | undefined
+  /**
+   * Whether to disable registering this a dismissable layer
+   */
+  disableLayer?: boolean | undefined
+  /**
+   * Function to navigate to the selected item
+   */
+  navigate?: ((details: NavigateDetails) => void) | null | undefined
 }
 
-export type UserDefinedContext<T extends CollectionItem = CollectionItem> = RequiredBy<
-  PublicContext<T>,
-  "id" | "collection"
->
+type PropsWithDefault =
+  | "openOnChange"
+  | "openOnKeyPress"
+  | "composite"
+  | "loopFocus"
+  | "positioning"
+  | "openOnClick"
+  | "openOnChange"
+  | "inputBehavior"
+  | "collection"
+  | "selectionBehavior"
+  | "closeOnSelect"
+  | "translations"
+  | "positioning"
 
-type ComputedContext = Readonly<{
-  /**
-   * @computed
-   * Whether the input's value is empty
-   */
-  isInputValueEmpty: boolean
-  /**
-   * @computed
-   * Whether the combobox is interactive
-   */
-  isInteractive: boolean
-  /**
-   * @computed
-   */
-  autoComplete: boolean
-  /**
-   * @computed
-   */
-  autoHighlight: boolean
-  /**
-   * @computed
-   * Whether there's a selected option
-   */
-  hasSelectedItems: boolean
-}>
-
-interface PrivateContext<T extends CollectionItem = CollectionItem> {
-  /**
-   * @internal
-   * The placement of the combobox popover.
-   */
-  currentPlacement?: Placement
-  /**
-   * The highlighted item
-   */
-  highlightedItem: T | null
-  /**
-   * @interal
-   * The selected items
-   */
-  selectedItems: T[]
-  /**
-   * @interal
-   * The display value of the combobox (based on the selected items)
-   */
-  valueAsString: string
+export interface ComboboxSchema<T extends CollectionItem = CollectionItem> {
+  props: RequiredBy<ComboboxProps<T>, PropsWithDefault>
+  state: "idle" | "focused" | "suggesting" | "interacting"
+  tag: "open" | "focused" | "idle" | "closed"
+  context: {
+    value: string[]
+    inputValue: string
+    highlightedValue: string | null
+    currentPlacement?: Placement | undefined
+    highlightedItem: T | null
+    selectedItems: T[]
+    valueAsString: string
+  }
+  computed: {
+    isCustomValue: boolean
+    isInputValueEmpty: boolean
+    isInteractive: boolean
+    autoComplete: boolean
+    autoHighlight: boolean
+    hasSelectedItems: boolean
+  }
+  event: EventObject
+  action: string
+  effect: string
+  guard: string
 }
 
-export interface MachineContext extends PublicContext, PrivateContext, ComputedContext {}
+export type ComboboxService<T extends CollectionItem = CollectionItem> = Service<ComboboxSchema<T>>
 
-export interface MachineState {
-  value: "idle" | "focused" | "suggesting" | "interacting"
-  tags: "open" | "focused" | "idle" | "closed"
-}
-
-export type State = S.State<MachineContext, MachineState>
-
-export type Send = S.Send<S.AnyEventObject>
+export type ComboboxMachine<T extends CollectionItem = CollectionItem> = Machine<ComboboxSchema<T>>
 
 /* -----------------------------------------------------------------------------
  * Component API
  * -----------------------------------------------------------------------------*/
 
+export interface TriggerProps {
+  /**
+   * Whether the trigger is focusable
+   */
+  focusable?: boolean | undefined
+}
+
 export interface ItemProps {
   /**
    * Whether hovering outside should clear the highlighted state
    */
-  persistFocus?: boolean
+  persistFocus?: boolean | undefined
   /**
    * The item to render
    */
@@ -326,7 +346,7 @@ export interface ItemGroupLabelProps {
   htmlFor: string
 }
 
-export interface MachineApi<T extends PropTypes = PropTypes, V extends CollectionItem = CollectionItem> {
+export interface ComboboxApi<T extends PropTypes = PropTypes, V extends CollectionItem = CollectionItem> {
   /**
    * Whether the combobox is focused
    */
@@ -335,10 +355,6 @@ export interface MachineApi<T extends PropTypes = PropTypes, V extends Collectio
    * Whether the combobox is open
    */
   open: boolean
-  /**
-   * Whether the combobox input value is empty
-   */
-  inputEmpty: boolean
   /**
    * The value of the combobox input
    */
@@ -354,7 +370,12 @@ export interface MachineApi<T extends PropTypes = PropTypes, V extends Collectio
   /**
    * The value of the combobox input
    */
-  highlightValue(value: string): void
+  setHighlightValue(value: string): void
+  /**
+   * Function to sync the selected items with the value.
+   * Useful when `value` is updated from async sources.
+   */
+  syncSelectedItems(): void
   /**
    * The selected items
    */
@@ -402,25 +423,29 @@ export interface MachineApi<T extends PropTypes = PropTypes, V extends Collectio
   /**
    * Function to toggle the combobox
    */
-  collection: Collection<V>
-  /**
-   * Function to set the collection of items
-   */
-  setCollection(collection: Collection<V>): void
+  collection: ListCollection<V>
   /**
    * Function to set the positioning options
    */
   reposition(options?: Partial<PositioningOptions>): void
+  /**
+   * Whether the combobox allows multiple selections
+   */
+  multiple: boolean
+  /**
+   * Whether the combobox is disabled
+   */
+  disabled: boolean
 
-  rootProps: T["element"]
-  labelProps: T["label"]
-  controlProps: T["element"]
-  positionerProps: T["element"]
-  inputProps: T["input"]
-  contentProps: T["element"]
-  triggerProps: T["button"]
-  clearTriggerProps: T["button"]
-  listProps: T["element"]
+  getRootProps(): T["element"]
+  getLabelProps(): T["label"]
+  getControlProps(): T["element"]
+  getPositionerProps(): T["element"]
+  getInputProps(): T["input"]
+  getContentProps(): T["element"]
+  getTriggerProps(props?: TriggerProps): T["button"]
+  getClearTriggerProps(): T["button"]
+  getListProps(): T["element"]
   getItemProps(props: ItemProps): T["element"]
   getItemTextProps(props: ItemProps): T["element"]
   getItemIndicatorProps(props: ItemProps): T["element"]

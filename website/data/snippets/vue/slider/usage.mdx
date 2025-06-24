@@ -1,0 +1,34 @@
+```html
+<script setup>
+  import * as slider from "@zag-js/slider"
+  import { normalizeProps, useMachine } from "@zag-js/vue"
+  import { computed } from "vue"
+
+  const service = useMachine(slider.machine, {
+    id: "1",
+    defaultValue: [0],
+  })
+  const api = computed(() => slider.connect(service, normalizeProps))
+</script>
+
+<template>
+  <div ref="ref" v-bind="api.getRootProps()">
+    <div>
+      <label v-bind="api.getLabelProps()">Slider Label</label>
+      <output v-bind="api.getValueTextProps()">{{ api.value.at(0) }}</output>
+    </div>
+    <div v-bind="api.getControlProps()">
+      <div v-bind="api.getTrackProps()">
+        <div v-bind="api.getRangeProps()" />
+      </div>
+      <div
+        v-for="(_, index) in api.value"
+        :key="index"
+        v-bind="api.getThumbProps({ index })"
+      >
+        <input v-bind="api.getHiddenInputProps({ index })" />
+      </div>
+    </div>
+  </div>
+</template>
+```

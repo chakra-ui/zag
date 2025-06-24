@@ -2,21 +2,30 @@
 import * as collapsible from "@zag-js/collapsible"
 import { collapsibleControls } from "@zag-js/shared"
 import { normalizeProps, useMachine } from "@zag-js/vue"
+import { ChevronDownIcon } from "lucide-vue-next"
 
 const controls = useControls(collapsibleControls)
 
-const [state, send] = useMachine(collapsible.machine({ id: "1" }), {
-  context: controls.context,
-})
+const service = useMachine(
+  collapsible.machine,
+  controls.mergeProps<collapsible.Props>({
+    id: useId(),
+  }),
+)
 
-const api = computed(() => collapsible.connect(state.value, send, normalizeProps))
+const api = computed(() => collapsible.connect(service, normalizeProps))
 </script>
 
 <template>
   <main class="collapsible">
-    <div v-bind="api.rootProps">
-      <button v-bind="api.triggerProps">Collapsible Trigger</button>
-      <div v-bind="api.contentProps">
+    <div v-bind="api.getRootProps()">
+      <button v-bind="api.getTriggerProps()">
+        Collapsible Trigger
+        <div v-bind="api.getIndicatorProps()">
+          <ChevronDownIcon />
+        </div>
+      </button>
+      <div v-bind="api.getContentProps()">
         <p>
           Lorem dfd dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore
           magna sfsd. Ut enim ad minimdfd v eniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea
@@ -29,7 +38,7 @@ const api = computed(() => collapsible.connect(state.value, send, normalizeProps
   </main>
 
   <Toolbar>
-    <StateVisualizer :state="state" />
+    <StateVisualizer :state="service" />
     <template #controls>
       <Controls :control="controls" :state="controls.context" />
     </template>

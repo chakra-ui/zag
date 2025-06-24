@@ -1,0 +1,16 @@
+```tsx
+import { createSignal } from "solid-js"
+
+export function ControlledPinInput() {
+  const [value, setValue] = createSignal(["", "", "", ""])
+
+  const service = useMachine(pinInput.machine, {
+    get value() {
+      return value()
+    },
+    onValueChange(details) {
+      setValue(details.value)
+    },
+  })
+}
+```

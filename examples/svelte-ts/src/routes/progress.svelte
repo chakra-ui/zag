@@ -8,27 +8,26 @@
 
   const controls = useControls(progressControls)
 
-  const [snapshot, send] = useMachine(progress.machine({ id: "1" }), {
-    context: controls.context,
-  })
+  const id = $props.id()
+  const service = useMachine(progress.machine, controls.mergeProps<progress.Props>({ id }))
 
-  const api = $derived(progress.connect(snapshot, send, normalizeProps))
+  const api = $derived(progress.connect(service, normalizeProps))
 </script>
 
 <main class="progress">
-  <div {...api.rootProps}>
-    <div {...api.labelProps}>Upload progress</div>
+  <div {...api.getRootProps()}>
+    <div {...api.getLabelProps()}>Upload progress</div>
 
-    <svg {...api.circleProps}>
-      <circle {...api.circleTrackProps} />
-      <circle {...api.circleRangeProps} />
+    <svg {...api.getCircleProps()}>
+      <circle {...api.getCircleTrackProps()} />
+      <circle {...api.getCircleRangeProps()} />
     </svg>
 
-    <div {...api.trackProps}>
-      <div {...api.rangeProps}></div>
+    <div {...api.getTrackProps()}>
+      <div {...api.getRangeProps()}></div>
     </div>
 
-    <div {...api.valueTextProps}>{api.valueAsString}</div>
+    <div {...api.getValueTextProps()}>{api.valueAsString}</div>
 
     <div>
       <button onclick={() => api.setValue((api.value ?? 0) - 20)}>Decrease</button>
@@ -39,5 +38,5 @@
 </main>
 
 <Toolbar {controls}>
-  <StateVisualizer state={snapshot} />
+  <StateVisualizer state={service} />
 </Toolbar>

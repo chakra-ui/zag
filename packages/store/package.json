@@ -1,6 +1,6 @@
 {
   "name": "@zag-js/store",
-  "version": "0.49.0",
+  "version": "1.17.1",
   "description": "The reactive store package for zag machines",
   "keywords": [
     "js",
@@ -14,13 +14,12 @@
   "repository": "https://github.com/chakra-ui/zag/tree/main/packages/utilities/store",
   "sideEffects": false,
   "files": [
-    "dist",
-    "src"
+    "dist"
   ],
   "scripts": {
     "build": "tsup",
-    "test": "jest --config ../../../jest.config.js --rootDir tests",
-    "lint": "eslint src --ext .ts,.tsx",
+    "test": "vitest",
+    "lint": "eslint src",
     "test-ci": "pnpm test --ci --runInBand -u",
     "test-watch": "pnpm test --watchAll",
     "prepack": "clean-package",
@@ -33,7 +32,7 @@
     "url": "https://github.com/chakra-ui/zag/issues"
   },
   "dependencies": {
-    "proxy-compare": "3.0.0"
+    "proxy-compare": "3.0.1"
   },
   "clean-package": "../../clean-package.config.json",
   "main": "src/index.ts",

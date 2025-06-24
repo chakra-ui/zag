@@ -1,19 +1,22 @@
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import { parts } from "./progress.anatomy"
-import { dom } from "./progress.dom"
-import type { MachineApi, MachineContext, ProgressState, Send, State } from "./progress.types"
+import * as dom from "./progress.dom"
+import type { ProgressApi, ProgressService, ProgressState } from "./progress.types"
 
-export function connect<T extends PropTypes>(state: State, send: Send, normalize: NormalizeProps<T>): MachineApi<T> {
-  const percent = state.context.percent
-  const max = state.context.max
-  const min = state.context.min
+export function connect<T extends PropTypes>(service: ProgressService, normalize: NormalizeProps<T>): ProgressApi<T> {
+  const { context, computed, prop, send, scope } = service
+  const percent = computed("percent")
+  const percentAsString = computed("isIndeterminate") ? "" : computed("formatter").format(computed("percent") / 100)
 
-  const orientation = state.context.orientation
-  const translations = state.context.translations
-  const indeterminate = state.context.isIndeterminate
+  const max = prop("max")
+  const min = prop("min")
 
-  const value = state.context.value
-  const valueAsString = translations.value({ value, max, percent, min })
+  const orientation = prop("orientation")
+  const translations = prop("translations")
+  const indeterminate = computed("isIndeterminate")
+
+  const value = context.get("value")
+  const valueAsString = translations?.value({ value, max, percent, min }) ?? ""
   const progressState = getProgressState(value, max)
 
   const progressbarProps = {
@@ -27,86 +30,110 @@ export function connect<T extends PropTypes>(state: State, send: Send, normalize
     "data-state": progressState,
   }
 
-  const circleProps = getCircleProps(state.context)
+  const circleProps = getCircleProps(service)
 
   return {
     value,
     valueAsString,
+    min,
+    max,
+    percent,
+    percentAsString,
+    indeterminate,
     setValue(value) {
       send({ type: "VALUE.SET", value })
     },
     setToMax() {
       send({ type: "VALUE.SET", value: max })
     },
+    setToMin() {
+      send({ type: "VALUE.SET", value: min })
+    },
 
-    rootProps: normalize.element({
-      dir: state.context.dir,
-      ...parts.root.attrs,
-      id: dom.getRootId(state.context),
-      "data-max": max,
-      "data-value": value ?? undefined,
-      "data-state": progressState,
-      "data-orientation": orientation,
-      style: {
-        "--percent": indeterminate ? undefined : percent,
-      },
-    }),
+    getRootProps() {
+      return normalize.element({
+        dir: prop("dir"),
+        ...parts.root.attrs,
+        id: dom.getRootId(scope),
+        "data-max": max,
+        "data-value": value ?? undefined,
+        "data-state": progressState,
+        "data-orientation": orientation,
+        style: {
+          "--percent": indeterminate ? undefined : percent,
+        },
+      })
+    },
 
-    labelProps: normalize.element({
-      dir: state.context.dir,
-      id: dom.getLabelId(state.context),
-      ...parts.label.attrs,
-      "data-orientation": orientation,
-    }),
+    getLabelProps() {
+      return normalize.element({
+        dir: prop("dir"),
+        id: dom.getLabelId(scope),
+        ...parts.label.attrs,
+        "data-orientation": orientation,
+      })
+    },
 
-    valueTextProps: normalize.element({
-      dir: state.context.dir,
-      "aria-live": "polite",
-      ...parts.valueText.attrs,
-    }),
+    getValueTextProps() {
+      return normalize.element({
+        dir: prop("dir"),
+        "aria-live": "polite",
+        ...parts.valueText.attrs,
+      })
+    },
 
-    trackProps: normalize.element({
-      dir: state.context.dir,
-      id: dom.getTrackId(state.context),
-      ...parts.track.attrs,
-      ...progressbarProps,
-    }),
+    getTrackProps() {
+      return normalize.element({
+        dir: prop("dir"),
+        id: dom.getTrackId(scope),
+        ...parts.track.attrs,
+        ...progressbarProps,
+      })
+    },
 
-    rangeProps: normalize.element({
-      dir: state.context.dir,
-      ...parts.range.attrs,
-      "data-orientation": orientation,
-      "data-state": progressState,
-      style: {
-        [state.context.isHorizontal ? "width" : "height"]: indeterminate ? undefined : `${percent}%`,
-      },
-    }),
+    getRangeProps() {
+      return normalize.element({
+        dir: prop("dir"),
+        ...parts.range.attrs,
+        "data-orientation": orientation,
+        "data-state": progressState,
+        style: {
+          [computed("isHorizontal") ? "width" : "height"]: indeterminate ? undefined : `${percent}%`,
+        },
+      })
+    },
 
-    circleProps: normalize.element({
-      dir: state.context.dir,
-      id: dom.getCircleId(state.context),
-      ...parts.circle.attrs,
-      ...progressbarProps,
-      ...circleProps.root,
-    }),
+    getCircleProps() {
+      return normalize.element({
+        dir: prop("dir"),
+        id: dom.getCircleId(scope),
+        ...parts.circle.attrs,
+        ...progressbarProps,
+        ...circleProps.root,
+      })
+    },
 
-    circleTrackProps: normalize.element({
-      dir: state.context.dir,
-      "data-orientation": orientation,
-      ...parts.circleTrack.attrs,
-      ...circleProps.track,
-    }),
+    getCircleTrackProps() {
+      return normalize.element({
+        dir: prop("dir"),
+        "data-orientation": orientation,
+        ...parts.circleTrack.attrs,
+        ...circleProps.track,
+      })
+    },
 
-    circleRangeProps: normalize.element({
-      dir: state.context.dir,
-      ...parts.circleRange.attrs,
-      ...circleProps.range,
-      "data-state": progressState,
-    }),
+    getCircleRangeProps() {
+      return normalize.element({
+        dir: prop("dir"),
+        ...parts.circleRange.attrs,
+        ...circleProps.range,
+        "data-state": progressState,
+      })
+    },
 
     getViewProps(props) {
       return normalize.element({
-        dir: state.context.dir,
+        dir: prop("dir"),
         ...parts.view.attrs,
         "data-state": props.state,
         hidden: props.state !== progressState,
@@ -119,34 +146,38 @@ function getProgressState(value: number | null, maxValue: number): ProgressState
   return value == null ? "indeterminate" : value === maxValue ? "complete" : "loading"
 }
 
-function getCircleProps(ctx: MachineContext) {
-  const circleProps = {
-    style: {
-      "--radius": "calc(var(--size) / 2 - var(--thickness) / 2)",
-      cx: "calc(var(--size) / 2)",
-      cy: "calc(var(--size) / 2)",
-      r: "var(--radius)",
-      fill: "transparent",
-      strokeWidth: "var(--thickness)",
-    },
-  }
+const circleProps = {
+  style: {
+    "--radius": "calc(var(--size) / 2 - var(--thickness) / 2)",
+    cx: "calc(var(--size) / 2)",
+    cy: "calc(var(--size) / 2)",
+    r: "var(--radius)",
+    fill: "transparent",
+    strokeWidth: "var(--thickness)",
+  },
+}
+
+const rootProps = {
+  style: {
+    width: "var(--size)",
+    height: "var(--size)",
+  },
+}
+
+function getCircleProps(service: ProgressService) {
+  const { context, computed } = service
   return {
-    root: {
-      viewBox: "0 0 var(--size) var(--size)",
-      style: {
-        width: "var(--size)",
-        height: "var(--size)",
-      },
-    },
+    root: rootProps,
     track: circleProps,
     range: {
+      opacity: context.get("value") === 0 ? 0 : undefined,
       style: {
         ...circleProps.style,
-        "--percent": ctx.percent,
+        "--percent": computed("percent"),
         "--circumference": `calc(2 * 3.14159 * var(--radius))`,
-        "--offset": `calc(var(--circumference) * (100 - var(--percent)) / 100}))`,
+        "--offset": `calc(var(--circumference) * (100 - var(--percent)) / 100)`,
         strokeDashoffset: `calc(var(--circumference) * ((100 - var(--percent)) / 100))`,
-        strokeDasharray: ctx.isIndeterminate ? undefined : `var(--circumference)`,
+        strokeDasharray: computed("isIndeterminate") ? undefined : `var(--circumference)`,
         transformOrigin: "center",
         transform: "rotate(-90deg)",
       },

@@ -1,4 +1,6 @@
-import type { StateMachine as S } from "@zag-js/core"
+import type { TreeCollection, TreeNode } from "@zag-js/collection"
+import type { IndexPath, ValuePath } from "@zag-js/collection"
+import type { Machine, Service } from "@zag-js/core"
 import type { TypeaheadState } from "@zag-js/dom-query"
 import type { CommonProperties, DirectionProperty, PropTypes, RequiredBy } from "@zag-js/types"
 
@@ -18,33 +20,106 @@ export interface SelectionChangeDetails extends FocusChangeDetails {
   selectedValue: string[]
 }
 
+export interface CheckedChangeDetails {
+  checkedValue: string[]
+}
+
+export interface LoadChildrenDetails<T = any> {
+  /**
+   * The value path of the node whose children are being loaded
+   */
+  valuePath: ValuePath
+  /**
+   * The index path of the node whose children are being loaded
+   */
+  indexPath: IndexPath
+  /**
+   * The node whose children are being loaded
+   */
+  node: T
+  /**
+   * AbortSignal to cancel the loading operation
+   */
+  signal: AbortSignal
+}
+
+export interface LoadChildrenCompleteDetails<T = any> {
+  /**
+   * The updated tree collection with the loaded children
+   */
+  collection: TreeCollection<T>
+}
+
+export interface NodeWithError<T = any> {
+  node: T
+  error: Error
+  indexPath: IndexPath
+  valuePath: ValuePath
+}
+
+export interface LoadChildrenErrorDetails<T = any> {
+  /**
+   * Array of nodes that failed to load children
+   */
+  nodes: NodeWithError<T>[]
+}
+
 export type ElementIds = Partial<{
   root: string
   tree: string
   label: string
+  node(value: string): string
 }>
 
 /* -----------------------------------------------------------------------------
  * Machine context
  * -----------------------------------------------------------------------------*/
 
-interface PublicContext extends DirectionProperty, CommonProperties {
+export interface TreeViewProps<T = any> extends DirectionProperty, CommonProperties {
+  /**
+   * The tree collection data
+   */
+  collection?: TreeCollection<T> | undefined
   /**
    * The ids of the tree elements. Useful for composition.
    */
-  ids?: ElementIds
+  ids?: ElementIds | undefined
   /**
-   * The id of the expanded nodes
+   * The controlled expanded node ids
    */
-  expandedValue: string[]
+  expandedValue?: string[] | undefined
   /**
-   * The id of the selected nodes
+   * The initial expanded node ids when rendered.
+   * Use when you don't need to control the expanded node value.
    */
-  selectedValue: string[]
+  defaultExpandedValue?: string[] | undefined
   /**
-   * The id of the focused node
+   * The controlled selected node value
    */
-  focusedValue: string | null
+  selectedValue?: string[] | undefined
+  /**
+   * The initial selected node value when rendered.
+   * Use when you don't need to control the selected node value.
+   */
+  defaultSelectedValue?: string[] | undefined
+  /**
+   * The initial checked node value when rendered.
+   * Use when you don't need to control the checked node value.
+   */
+  defaultCheckedValue?: string[] | undefined
+  /**
+   * The controlled checked node value
+   */
+  checkedValue?: string[] | undefined
+  /**
+   * The initial focused node value when rendered.
+   * Use when you don't need to control the focused node value.
+   */
+  defaultFocusedValue?: string | null | undefined
+  /**
+   * The value of the focused node
+   */
+  focusedValue?: string | null | undefined
   /**
    * Whether the tree supports multiple selection
    * - "single": only one node can be selected
@@ -52,90 +127,118 @@ interface PublicContext extends DirectionProperty, CommonProperties {
    *
    * @default "single"
    */
-  selectionMode: "single" | "multiple"
+  selectionMode?: "single" | "multiple" | undefined
   /**
    * Called when the tree is opened or closed
    */
-  onExpandedChange?: (details: ExpandedChangeDetails) => void
+  onExpandedChange?: ((details: ExpandedChangeDetails) => void) | undefined
   /**
    * Called when the selection changes
    */
-  onSelectionChange?: (details: SelectionChangeDetails) => void
+  onSelectionChange?: ((details: SelectionChangeDetails) => void) | undefined
   /**
    * Called when the focused node changes
    */
-  onFocusChange?: (details: FocusChangeDetails) => void
+  onFocusChange?: ((details: FocusChangeDetails) => void) | undefined
+  /**
+   * Called when the checked value changes
+   */
+  onCheckedChange?: ((details: CheckedChangeDetails) => void) | undefined
+  /**
+   * Called when a node finishes loading children
+   */
+  onLoadChildrenComplete?: ((details: LoadChildrenCompleteDetails<T>) => void) | undefined
+  /**
+   * Called when loading children fails for one or more nodes
+   */
+  onLoadChildrenError?: ((details: LoadChildrenErrorDetails<T>) => void) | undefined
   /**
    * Whether clicking on a branch should open it or not
    * @default true
    */
-  expandOnClick?: boolean
+  expandOnClick?: boolean | undefined
   /**
    * Whether the tree supports typeahead search
    * @default true
    */
-  typeahead?: boolean
+  typeahead?: boolean | undefined
+  /**
+   * Function to load children for a node asynchronously.
+   * When provided, branches will wait for this promise to resolve before expanding.
+   */
+  loadChildren?: ((details: LoadChildrenDetails<T>) => Promise<T[]>) | undefined
 }
 
-interface PrivateContext {
-  /**
-   * @internal
-   * The typeahead state for faster keyboard navigation
-   */
-  typeaheadState: TypeaheadState
+type PropsWithDefault =
+  | "collection"
+  | "selectionMode"
+  | "expandOnClick"
+  | "typeahead"
+  | "defaultExpandedValue"
+  | "defaultSelectedValue"
+
+export type TreeLoadingStatus = "loading" | "loaded"
+
+export type TreeLoadingStatusMap = Record<string, TreeLoadingStatus>
+
+export interface TreeViewSchema<T extends TreeNode = TreeNode> {
+  state: "idle"
+  props: RequiredBy<TreeViewProps<T>, PropsWithDefault>
+  context: {
+    expandedValue: string[]
+    selectedValue: string[]
+    checkedValue: string[]
+    focusedValue: string | null
+    loadingStatus: TreeLoadingStatusMap
+  }
+  refs: {
+    typeaheadState: TypeaheadState
+    pendingAborts: Map<string, AbortController>
+  }
+  computed: {
+    isTypingAhead: boolean
+    isMultipleSelection: boolean
+    visibleNodes: { node: T; indexPath: number[] }[]
+  }
+  action: string
+  effect: string
+  guard: string
 }
 
-type ComputedContext = Readonly<{
-  /**
-   * @computed
-   * Whether a typeahead search is ongoing
-   */
-  isTypingAhead: boolean
-  /**
-   * @computed
-   * Whether the tree supports multiple selection
-   */
-  isMultipleSelection: boolean
-}>
+export type TreeViewService<T extends TreeNode = TreeNode> = Service<TreeViewSchema<T>>
 
-export type UserDefinedContext = RequiredBy<PublicContext, "id">
-
-export interface MachineContext extends PublicContext, PrivateContext, ComputedContext {}
-
-export interface MachineState {
-  value: "idle"
-}
-
-export type State = S.State<MachineContext, MachineState>
-
-export type Send = S.Send<S.AnyEventObject>
+export type TreeViewMachine<T extends TreeNode = TreeNode> = Machine<TreeViewSchema<T>>
 
 /* -----------------------------------------------------------------------------
  * Component API
  * -----------------------------------------------------------------------------*/
 
-export interface ItemProps {
+export interface NodeProps {
   /**
-   * The depth of the item or branch
+   * The tree node
    */
-  depth: number
+  node: TreeNode
   /**
-   * The id of the item or branch
+   * The index path of the tree node
    */
-  value: string
-  /**
-   * Whether the item or branch is disabled
-   */
-  disabled?: boolean
+  indexPath: number[]
 }
 
-export interface BranchProps extends ItemProps {}
+export type CheckedState = boolean | "indeterminate"
 
-export interface ItemState {
+export interface NodeState {
   /**
    * The value of the tree item
    */
   value: string
+  /**
+   * The index path of the tree item
+   */
+  indexPath: IndexPath
+  /**
+   * The value path of the tree item
+   */
+  valuePath: ValuePath
   /**
    * Whether the tree item is disabled
    */
@@ -148,24 +251,75 @@ export interface ItemState {
    * Whether the tree item is focused
    */
   focused: boolean
-}
-
-export interface BranchState extends ItemState {
+  /**
+   * The depth of the tree item
+   */
+  depth: number
   /**
    * Whether the tree branch is expanded
    */
   expanded: boolean
+  /**
+   * Whether the tree item is a branch
+   */
+  isBranch: boolean
+  /**
+   * Whether the tree item is currently loading children
+   */
+  loading: boolean
+  /**
+   * Whether the tree item is checked
+   */
+  checked: CheckedState
 }
 
-export interface MachineApi<T extends PropTypes = PropTypes> {
+export type CheckedValueMap = Map<string, { type: "leaf" | "branch"; checked: CheckedState }>
+
+export interface TreeViewApi<T extends PropTypes = PropTypes, V extends TreeNode = TreeNode> {
   /**
-   * The id of the expanded nodes
+   * The tree collection data
+   */
+  collection: TreeCollection<V>
+  /**
+   * The value of the expanded nodes
    */
   expandedValue: string[]
   /**
-   * The id of the selected nodes
+   * Function to set the expanded value
+   */
+  setExpandedValue(value: string[]): void
+  /**
+   * The value of the selected nodes
    */
   selectedValue: string[]
+  /**
+   * Function to set the selected value
+   */
+  setSelectedValue(value: string[]): void
+  /**
+   * The value of the checked nodes
+   */
+  checkedValue: string[]
+  /**
+   * Function to toggle the checked value of a node
+   */
+  toggleChecked(value: string, isBranch: boolean): void
+  /**
+   * Function to set the checked value of a node
+   */
+  setChecked(value: string[]): void
+  /**
+   * Function to clear the checked value of a node
+   */
+  clearChecked(): void
+  /**
+   * Function to get the checked details of branch and leaf nodes
+   */
+  getCheckedMap(): CheckedValueMap
+  /**
+   * Function to get the visible nodes
+   */
+  getVisibleNodes(): V[]
   /**
    * Function to expand nodes.
    * If no value is provided, all nodes will be expanded
@@ -187,26 +341,33 @@ export interface MachineApi<T extends PropTypes = PropTypes> {
    */
   deselect(value?: string[]): void
   /**
-   * Function to focus a branch node
+   * Function to focus a node by value
    */
-  focusBranch(value: string): void
+  focus(value: string): void
   /**
-   * Function to focus an item node
+   * Function to select the parent node of the focused node
    */
-  focusItem(value: string): void
+  selectParent(value: string): void
+  /**
+   * Function to expand the parent node of the focused node
+   */
+  expandParent(value: string): void
 
-  rootProps: T["element"]
-  labelProps: T["element"]
-  treeProps: T["element"]
-  getItemState(props: ItemProps): ItemState
-  getItemProps(props: ItemProps): T["element"]
-  getItemIndicatorProps(props: ItemProps): T["element"]
-  getItemTextProps(props: ItemProps): T["element"]
-  getBranchState(props: BranchProps): BranchState
-  getBranchProps(props: BranchProps): T["element"]
-  getBranchIndicatorProps(props: BranchProps): T["element"]
-  getBranchTriggerProps(props: BranchProps): T["element"]
-  getBranchControlProps(props: BranchProps): T["element"]
-  getBranchContentProps(props: BranchProps): T["element"]
-  getBranchTextProps(props: BranchProps): T["element"]
+  getRootProps(): T["element"]
+  getLabelProps(): T["element"]
+  getTreeProps(): T["element"]
+  getNodeState(props: NodeProps): NodeState
+  getItemProps(props: NodeProps): T["element"]
+  getNodeCheckboxProps(props: NodeProps): T["element"]
+  getItemIndicatorProps(props: NodeProps): T["element"]
+  getItemTextProps(props: NodeProps): T["element"]
+  getBranchProps(props: NodeProps): T["element"]
+  getBranchIndicatorProps(props: NodeProps): T["element"]
+  getBranchTriggerProps(props: NodeProps): T["element"]
+  getBranchControlProps(props: NodeProps): T["element"]
+  getBranchContentProps(props: NodeProps): T["element"]
+  getBranchTextProps(props: NodeProps): T["element"]
+  getBranchIndentGuideProps(props: NodeProps): T["element"]
 }
+
+export type { TreeNode } from "@zag-js/collection"
