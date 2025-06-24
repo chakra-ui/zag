@@ -1,5 +1,12 @@
 # @zag-js/focus-visible
 
+## 1.17.1
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/dom-query@1.17.1
+
 ## 1.17.0
 
 ### Patch Changes
