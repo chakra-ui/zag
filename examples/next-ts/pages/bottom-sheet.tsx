@@ -10,16 +10,12 @@ import { useControls } from "../hooks/use-controls"
 export default function Page() {
   const controls = useControls(bottomSheetControls)
 
-  const [state, send] = useMachine(
-    bottomSheet.machine({
-      id: useId(),
-    }),
-    {
-      context: controls.context,
-    },
-  )
+  const service = useMachine(bottomSheet.machine, {
+    id: useId(),
+    ...controls.context,
+  })
 
-  const api = bottomSheet.connect(state, send, normalizeProps)
+  const api = bottomSheet.connect(service, normalizeProps)
 
   return (
     <>
@@ -60,7 +56,7 @@ export default function Page() {
       </main>
 
       <Toolbar controls={controls.ui} viz>
-        <StateVisualizer state={state} />
+        <StateVisualizer state={service} />
       </Toolbar>
     </>
   )

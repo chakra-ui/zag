@@ -1,5 +1,5 @@
-import type { StateMachine as S } from "@zag-js/core"
-import type { CommonProperties, DirectionProperty, PropTypes, RequiredBy } from "@zag-js/types"
+import type { EventObject, Machine, Service } from "@zag-js/core"
+import type { CommonProperties, DirectionProperty, Point, RequiredBy } from "@zag-js/types"
 
 export type SnapPoint = number | `${number}%`
 
@@ -12,45 +12,77 @@ export interface OpenChangeDetails {
   open: boolean
 }
 
-interface PublicContext extends DirectionProperty, CommonProperties {
-  snapPoints: SnapPoint[]
-  snapIndex: number
+export interface BottomSheetProps extends DirectionProperty, CommonProperties {
+  /**
+   * The snap points of the bottom sheet.
+   */
+  snapPoints?: SnapPoint[]
+  /**
+   * The index of the snap point to use.
+   */
+  snapIndex?: number
+  /**
+   * The default index of the snap point to use.
+   */
+  defaultSnapIndex?: number
+  /**
+   * Function called when the snap point changes.
+   */
   onSnapPointChange?: (details: SnapPointChangeDetails) => void
+  /**
+   * Whether the bottom sheet is modal.
+   */
   modal?: boolean
+  /**
+   * Whether the bottom sheet is resizable.
+   */
   open?: boolean
+  /**
+   * The initial open state of the bottom sheet.
+   */
+  defaultOpen?: boolean
+  /**
+   * Whether the bottom sheet is resizable.
+   */
   resizable?: boolean
-  // resizeOnScroll?: boolean
+  /**
+   * Function called when the open state changes.
+   */
   onOpenChange?: (details: OpenChangeDetails) => void
+  /**
+   * The threshold at which the bottom sheet will close.
+   */
   closeThreshold?: number
 }
 
-interface PrivateContext {
-  viewportHeight: number | null
-  pointerStartPoint: { x: number; y: number; timestamp: number } | null
-  visible: boolean
-  dragOffset: number | null
+export type UserDefinedContext = RequiredBy<BottomSheetProps, "id">
+
+type PropsWithDefault = "modal" | "resizable" | "snapPoints" | "defaultSnapIndex"
+
+export interface BottomSheetSchema {
+  props: RequiredBy<BottomSheetProps, PropsWithDefault>
+  state: "closed" | "open" | "panning" | "closing"
+  tag: "open" | "closed"
+  context: {
+    viewportHeight: number | null
+    pointerStartPoint: Point | null
+    visible: boolean
+    dragOffset: number | null
+    snapIndex: number
+  }
+  computed: Readonly<{
+    snapPoint: SnapPoint
+    snapPointOffsets: number[]
+    snapPointOffset: number | null
+    lastSnapPointOffset: number | null
+  }>
+  event: EventObject
+  action: string
+  effect: string
+  guard: string
+  active: string
 }
 
-type ComputedContext = Readonly<{
-  snapPoint: SnapPoint
-  snapPointOffsets: number[]
-  snapPointOffset: number | null
-  lastSnapPointOffset: number | null
-}>
+export type BottomSheetService = Service<BottomSheetSchema>
 
-export type UserDefinedContext = RequiredBy<PublicContext, "id">
-
-export interface MachineContext extends PublicContext, PrivateContext, ComputedContext {}
-
-export interface MachineState {
-  value: "closed" | "open" | "panning" | "closing"
-  tags: "open" | "closed"
-}
-
-export type State = S.State<MachineContext, MachineState>
-
-export type Send = S.Send<S.AnyEventObject>
-
-export interface MachineApi<T extends PropTypes = PropTypes> {
-  triggerProps: T["button"]
-}
+export type BottomSheetMachine = Machine<BottomSheetSchema>

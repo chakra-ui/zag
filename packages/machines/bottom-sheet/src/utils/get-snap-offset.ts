@@ -1,8 +1,11 @@
-import type { MachineContext, SnapPoint } from "./bottom-sheet.types"
+import type { BottomSheetSchema, SnapPoint } from "../bottom-sheet.types"
 
 const isPercentage = (v: SnapPoint): v is `${number}%` => typeof v === "string" && v.endsWith("%")
 
-export function getSnapOffsets(snapPoints: SnapPoint[], viewportHeight: MachineContext["viewportHeight"]) {
+export function getSnapOffsets(
+  snapPoints: SnapPoint[],
+  viewportHeight: BottomSheetSchema["context"]["viewportHeight"],
+) {
   return snapPoints.map((snapPoint) => {
     if (!isPercentage(snapPoint)) {
       return viewportHeight != null ? viewportHeight - snapPoint : snapPoint

@@ -1,24 +1,23 @@
-import { createScope, queryAll } from "@zag-js/dom-query"
-import type { MachineContext as Ctx } from "./bottom-sheet.types"
+import type { Scope } from "@zag-js/core"
+import { queryAll } from "@zag-js/dom-query"
 
-export const dom = createScope({
-  getContentId: (ctx: Ctx) => `bottom-sheet:${ctx.id}:content`,
-  getContentEl: (ctx: Ctx) => dom.getById(ctx, dom.getContentId(ctx)),
-  getScrollEls: (ctx: Ctx) => {
-    const els: Record<"x" | "y", HTMLElement[]> = { x: [], y: [] }
+export const getContentId = (scope: Scope) => `bottom-sheet:${scope.id}:content`
+export const getContentEl = (scope: Scope) => scope.getById(getContentId(scope))
 
-    const contentEl = dom.getContentEl(ctx)
-    if (!contentEl) return els
+export const getScrollEls = (scope: Scope) => {
+  const els: Record<"x" | "y", HTMLElement[]> = { x: [], y: [] }
 
-    const nodes = queryAll(contentEl, "*")
-    nodes.forEach((node) => {
-      const y = node.scrollHeight > node.clientHeight
-      if (y) els.y.push(node)
+  const contentEl = getContentEl(scope)
+  if (!contentEl) return els
 
-      const x = node.scrollWidth > node.clientWidth
-      if (x) els.x.push(node)
-    })
+  const nodes = queryAll(contentEl, "*")
+  nodes.forEach((node) => {
+    const y = node.scrollHeight > node.clientHeight
+    if (y) els.y.push(node)
 
-    return els
-  },
-})
+    const x = node.scrollWidth > node.clientWidth
+    if (x) els.x.push(node)
+  })
+
+  return els
+}
