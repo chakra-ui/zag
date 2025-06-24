@@ -1,5 +1,7 @@
 import {
+  ariaAttr,
   dataAttr,
+  getByTypeahead,
   getEventKey,
   getEventTarget,
   isComposingEvent,
@@ -218,10 +220,7 @@ export function connect<T extends PropTypes, V extends TreeNode = TreeNode>(
             return
           }
 
-          if (!isTypingAhead) return
-
-          const isValidTypeahead = event.key.length === 1 && !isModifierKey(event)
-          if (!isValidTypeahead) return
+          if (!getByTypeahead.isValidEvent(event)) return
 
           send({ type: "TREE.TYPEAHEAD", key: event.key, id: nodeId })
           event.preventDefault()
@@ -246,7 +245,7 @@ export function connect<T extends PropTypes, V extends TreeNode = TreeNode>(
         "aria-current": itemState.selected ? "true" : undefined,
         "aria-selected": itemState.disabled ? undefined : itemState.selected,
         "data-selected": dataAttr(itemState.selected),
-        "aria-disabled": itemState.disabled,
+        "aria-disabled": ariaAttr(itemState.disabled),
         "data-disabled": dataAttr(itemState.disabled),
         "aria-level": itemState.depth,
         "data-depth": itemState.depth,
@@ -307,10 +306,10 @@ export function connect<T extends PropTypes, V extends TreeNode = TreeNode>(
         "data-selected": dataAttr(nodeState.selected),
         "aria-expanded": nodeState.expanded,
         "data-state": nodeState.expanded ? "open" : "closed",
-        "aria-disabled": nodeState.disabled,
+        "aria-disabled": ariaAttr(nodeState.disabled),
         "data-disabled": dataAttr(nodeState.disabled),
         "data-loading": dataAttr(nodeState.loading),
-        "aria-busy": nodeState.loading,
+        "aria-busy": ariaAttr(nodeState.loading),
         style: {
           "--depth": nodeState.depth,
         },
@@ -365,7 +364,7 @@ export function connect<T extends PropTypes, V extends TreeNode = TreeNode>(
         "data-value": nodeState.value,
         "data-depth": nodeState.depth,
         "data-loading": dataAttr(nodeState.loading),
-        "aria-busy": nodeState.loading,
+        "aria-busy": ariaAttr(nodeState.loading),
         onFocus(event) {
           send({ type: "NODE.FOCUS", id: nodeState.value })
           event.stopPropagation()
@@ -414,13 +413,14 @@ export function connect<T extends PropTypes, V extends TreeNode = TreeNode>(
 
     getNodeCheckboxProps(props) {
       const nodeState = getNodeState(props)
+      const checkedState = nodeState.checked
       return normalize.element({
         ...parts.nodeCheckbox.attrs,
         tabIndex: -1,
         role: "checkbox",
-        "data-state":
-          nodeState.checked === true ? "checked" : nodeState.checked === false ? "unchecked" : "indeterminate",
-        "aria-checked": nodeState.checked === true ? "true" : nodeState.checked === false ? "false" : "mixed",
+        "data-state": checkedState === true ? "checked" : checkedState === false ? "unchecked" : "indeterminate",
+        "aria-checked": checkedState === true ? "true" : checkedState === false ? "false" : "mixed",
+        "data-disabled": dataAttr(nodeState.disabled),
         onClick(event) {
           if (event.defaultPrevented) return
           if (nodeState.disabled) return
