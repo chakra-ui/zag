@@ -16,7 +16,7 @@
 }
 
 [data-scope="carousel"][data-orientation="vertical"][data-part="item-group"] {
-  height: 250px;
+  height: 100%;
 }
 
 [data-scope="carousel"][data-part="item"] > img {
