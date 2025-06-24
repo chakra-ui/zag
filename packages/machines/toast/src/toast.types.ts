@@ -357,7 +357,7 @@ export interface ToastStore<V = any> {
 type MaybeFunction<Value, Args> = Value | ((arg: Args) => Value)
 
 export interface PromiseOptions<V, O = any> {
-  loading?: Omit<Options<O>, "type"> | undefined
+  loading: Omit<Options<O>, "type">
   success?: MaybeFunction<Omit<Options<O>, "type">, V> | undefined
   error?: MaybeFunction<Omit<Options<O>, "type">, unknown> | undefined
   finally?: (() => void | Promise<void>) | undefined

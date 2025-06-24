@@ -1,5 +1,5 @@
 import type { Required } from "@zag-js/types"
-import { compact, runIfFn, uuid } from "@zag-js/utils"
+import { compact, runIfFn, uuid, warn } from "@zag-js/utils"
 import type { Options, PromiseOptions, ToastProps, ToastStore, ToastStoreProps } from "./toast.types"
 
 const withDefaults = <T extends object, D extends Partial<T>>(options: T, defaults: D): T & Required<D> => {
@@ -134,19 +134,19 @@ export function createToastStore<V = any>(props: ToastStoreProps): ToastStore<V>
     options: PromiseOptions<T, V>,
     shared: Omit<Options<V>, "type"> = {},
   ) => {
-    if (!options) return
-
-    let id: string | undefined = undefined
-    if (options.loading !== undefined) {
-      id = create({
-        ...shared,
-        ...options.loading,
-        promise,
-        type: "loading",
-      })
+    if (!options || !options.loading) {
+      warn("[zag-js > toast] toaster.promise() requires at least a 'loading' option to be specified")
+      return
     }
 
-    let removable = id !== undefined
+    const id = create({
+      ...shared,
+      ...options.loading,
+      promise,
+      type: "loading",
+    })
+
+    let removable = true
     let result: ["resolve", T] | ["reject", unknown]
 
     const prom = runIfFn(promise)
@@ -175,7 +175,6 @@ export function createToastStore<V = any>(props: ToastStoreProps): ToastStore<V>
       .finally(() => {
         if (removable) {
           remove(id)
-          id = undefined
         }
         options.finally?.()
       })
