@@ -79,6 +79,12 @@ export function connect<T extends PropTypes>(
           if (!isLeftClick(event)) return
           const point = getEventPoint(event)
           send({ type: "CONTROL.POINTER_DOWN", point })
+          event.stopPropagation()
+        },
+        style: {
+          touchAction: "none",
+          userSelect: "none",
+          WebkitUserSelect: "none",
         },
       })
     },
