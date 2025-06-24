@@ -13,6 +13,7 @@ export interface Anatomy<T extends string> {
   build: () => Record<T, AnatomyPart>
   rename: (newName: string) => Anatomy<T>
   keys: () => T[]
+  omit: <U extends T>(...values: U[]) => AnatomyInstance<Exclude<T, U>>
 }
 
 export const createAnatomy = <T extends string>(name: string, parts = [] as T[]): Anatomy<T> => ({
@@ -23,6 +24,8 @@ export const createAnatomy = <T extends string>(name: string, parts = [] as T[])
     throw new Error("createAnatomy().parts(...) should only be called once. Did you mean to use .extendWith(...) ?")
   },
   extendWith: (...values) => createAnatomy(name, [...parts, ...values]),
+  omit: <U extends T>(...values: U[]) =>
+    createAnatomy(name, parts.filter((part) => !values.includes(part as U)) as Exclude<T, U>[]),
   rename: (newName) => createAnatomy(newName, parts),
   keys: () => parts,
   build: () =>
