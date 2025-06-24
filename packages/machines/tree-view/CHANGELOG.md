@@ -1,5 +1,21 @@
 # @zag-js/tree-view
 
+## 1.17.1
+
+### Patch Changes
+
+- [`05084b6`](https://github.com/chakra-ui/zag/commit/05084b68ac69a0cee4d4b532beba454ed9336d5f) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - - Fix issue where clicking a branch with indeterminate state
+  doesn't check its child nodes.
+  - Remove `aria-busy` attribute from branch trigger when not loading children.
+- Updated dependencies [[`4b6302f`](https://github.com/chakra-ui/zag/commit/4b6302fc9104f1ae8cd89a0f0157884fb775a65a)]:
+  - @zag-js/anatomy@1.17.1
+  - @zag-js/core@1.17.1
+  - @zag-js/types@1.17.1
+  - @zag-js/collection@1.17.1
+  - @zag-js/utils@1.17.1
+  - @zag-js/dom-query@1.17.1
+
 ## 1.17.0
 
 ### Minor Changes

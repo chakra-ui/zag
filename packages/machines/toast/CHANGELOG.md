@@ -1,5 +1,23 @@
 # @zag-js/toast
 
+## 1.17.1
+
+### Patch Changes
+
+- [`c374878`](https://github.com/chakra-ui/zag/commit/c374878ba6a564afad27928b45382e963fba9b7e) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix issue where app crashes when `toaster.promise` is called
+  without loading option.
+  - Now, the toast will not be created if the `loading` option is not provided.
+  - The `loading` option is now required. A warning will be logged if it is not provided.
+
+- Updated dependencies [[`4b6302f`](https://github.com/chakra-ui/zag/commit/4b6302fc9104f1ae8cd89a0f0157884fb775a65a)]:
+  - @zag-js/anatomy@1.17.1
+  - @zag-js/core@1.17.1
+  - @zag-js/types@1.17.1
+  - @zag-js/utils@1.17.1
+  - @zag-js/dismissable@1.17.1
+  - @zag-js/dom-query@1.17.1
+
 ## 1.17.0
 
 ### Patch Changes

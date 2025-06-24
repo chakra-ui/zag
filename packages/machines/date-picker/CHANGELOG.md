@@ -1,5 +1,23 @@
 # @zag-js/date-picker
 
+## 1.17.1
+
+### Patch Changes
+
+- [`9cedef9`](https://github.com/chakra-ui/zag/commit/9cedef94d205b312ad88c6c6bb674c2bfe33d13a) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix issue with keyboard selection where setting unavailable date
+  causes month view to behave differently from clicking with mouse.
+- Updated dependencies [[`4b6302f`](https://github.com/chakra-ui/zag/commit/4b6302fc9104f1ae8cd89a0f0157884fb775a65a)]:
+  - @zag-js/anatomy@1.17.1
+  - @zag-js/core@1.17.1
+  - @zag-js/types@1.17.1
+  - @zag-js/utils@1.17.1
+  - @zag-js/date-utils@1.17.1
+  - @zag-js/dismissable@1.17.1
+  - @zag-js/dom-query@1.17.1
+  - @zag-js/live-region@1.17.1
+  - @zag-js/popper@1.17.1
+
 ## 1.17.0
 
 ### Patch Changes
