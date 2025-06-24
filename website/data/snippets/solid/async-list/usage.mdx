@@ -1,0 +1,44 @@
+```jsx
+import * as asyncList from "@zag-js/async-list"
+import { useMachine, normalizeProps } from "@zag-js/solid"
+import { createMemo, Show } from "solid-js"
+
+function AsyncList() {
+  const service = useMachine(asyncList.machine, {
+    async load({ signal }) {
+      const res = await fetch(`/api/items`, { signal })
+      const json = await res.json()
+      return {
+        items: json.results,
+        cursor: json.next,
+      }
+    },
+  })
+
+  const api = createMemo(() => asyncList.connect(service, normalizeProps))
+
+  return (
+    <div>
+      <div>
+        <pre>{JSON.stringify(api().items, null, 2)}</pre>
+        <input
+          type="text"
+          onInput={(e) => api().setFilterText(e.target.value)}
+        />
+      </div>
+      <div>
+        <Show when={api().loading}>
+          <p>Loading...</p>
+        </Show>
+        <button onClick={() => api().reload()}>Reload</button>
+        <button onClick={() => api().loadMore()}>Load More</button>
+        <button
+          onClick={() => api().sort({ column: "name", direction: "ascending" })}
+        >
+          Sort by name
+        </button>
+      </div>
+    </div>
+  )
+}
+```
