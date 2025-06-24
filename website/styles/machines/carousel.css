@@ -15,7 +15,7 @@
   }
 }
 
-[data-scope="carousel"][data-part="item-group"][data-orientation="vertical"] {
+[data-scope="carousel"][data-orientation="vertical"][data-part="item-group"] {
   height: 250px;
 }
 
@@ -36,13 +36,13 @@
   position: absolute;
 }
 
-[data-scope="carousel"][data-part="control"][data-orientation="horizontal"] {
+[data-scope="carousel"][data-orientation="horizontal"][data-part="control"] {
   left: 50%;
   transform: translateX(-50%);
   bottom: 1rem;
 }
 
-[data-scope="carousel"][data-part="control"][data-orientation="vertical"] {
+[data-scope="carousel"][data-orientation="vertical"][data-part="control"] {
   top: 50%;
   transform: translateY(-50%);
   right: 1rem;
@@ -61,7 +61,7 @@
   gap: 0.75rem;
 }
 
-[data-scope="carousel"][data-part="indicator-group"][data-orientation="vertical"] {
+[data-scope="carousel"][data-orientation="vertical"][data-part="indicator-group"] {
   flex-direction: column;
 }
 
@@ -77,9 +77,9 @@
   background: var(--colors-bg-primary-bold);
 }
 
-[data-scope="carousel"]:is(
+[data-scope="carousel"][data-orientation="vertical"]:is(
     [data-part="prev-trigger"],
     [data-part="next-trigger"]
-  )[data-orientation="vertical"] {
+  ) {
   transform: rotate(90deg);
 }
