@@ -345,8 +345,15 @@ export function connect<T extends PropTypes>(
 
           const keyMap: EventKeyMap = {
             Enter() {
-              // if focused date is unavailable, do nothing
-              if (isUnavailable(focusedValue)) return
+              if (view === "day" && isUnavailable(focusedValue)) return
+              if (view === "month") {
+                const cellState = getMonthTableCellState({ value: focusedValue.month })
+                if (!cellState.selectable) return
+              }
+              if (view === "year") {
+                const cellState = getYearTableCellState({ value: focusedValue.year })
+                if (!cellState.selectable) return
+              }
               send({ type: "TABLE.ENTER", view, columns, focus: true })
             },
             ArrowLeft() {
