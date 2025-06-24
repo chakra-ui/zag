@@ -130,7 +130,7 @@ export function connect<T extends PropTypes>(service: CarouselService, normalize
           scrollSnapType: [horizontal ? "x" : "y", prop("snapType")].join(" "),
           gridAutoFlow: horizontal ? "column" : "row",
           scrollbarWidth: "none",
-          overscrollBehavior: "contain",
+          overscrollBehavior: "auto",
           [horizontal ? "gridAutoColumns" : "gridAutoRows"]: "var(--slide-item-size)",
           [horizontal ? "scrollPaddingInline" : "scrollPaddingBlock"]: padding,
           [horizontal ? "paddingInline" : "paddingBlock"]: padding,
