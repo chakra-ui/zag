@@ -4,6 +4,27 @@ All notable changes to this project will be documented in this file.
 
 > For v0.x changelog, see the [v0 branch](https://github.com/chakra-ui/zag/blob/v0/CHANGELOG.md)
 
+## [1.16.2](./#1.16.2) - 2025-06-26
+
+### Fixed
+
+- **Angle Slider**: Fix issue where scrubbing doesn't feel smooth on touch devices
+
+- **Timer**:
+  - Fix issue where timer could continue beyond `targetMs` when window is not visible
+  - Add validation to ensure `startMs` and `targetMs` are configured correctly
+  - Fix `progressPercent` calculation for countdown timers
+
+- **Tree View**: Expose node details in `onExpandChange`, `onSelectionChange` and `onFocusChange`
+
+### Changed
+
+- **Collection**:
+  - Add support for `findNodes` to find multiple nodes by value in a single pass
+  - Fix issue with `getLastNode` not returning the last node in the tree with only one branch
+
+- **I18n Utils**: Add new `createCollator` function for locale sensitive string comparison
+
 ## [1.16.1](./#1.16.1) - 2025-06-24
 
 ### Fixed

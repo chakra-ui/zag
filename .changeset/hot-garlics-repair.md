@@ -1,5 +1,5 @@
 ---
-"@zag-js/collection": minor
+"@zag-js/collection": patch
 ---
 
 - Add support for `findNodes` to find multiple nodes by value in a single pass
