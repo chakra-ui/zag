@@ -1,5 +1,16 @@
 # @zag-js/collection
 
+## 1.17.2
+
+### Patch Changes
+
+- [`2ce6e5c`](https://github.com/chakra-ui/zag/commit/2ce6e5c2296d07c16220eb85fbd720a5b33e1f48) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - - Add support for `findNodes` to find multiple nodes by value in a
+  single pass
+  - Fix issue with `getLastNode` not returning the last node in the tree with only one branch
+- Updated dependencies []:
+  - @zag-js/utils@1.17.2
+
 ## 1.17.1
 
 ### Patch Changes

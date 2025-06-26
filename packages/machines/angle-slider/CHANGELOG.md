@@ -1,5 +1,20 @@
 # @zag-js/angle-slider
 
+## 1.17.2
+
+### Patch Changes
+
+- [`47902b1`](https://github.com/chakra-ui/zag/commit/47902b17484e9f59ba07272a366d5882d94da7dc) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix issue where scrubbing doesn't feel smooth on touch devices
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.17.2
+  - @zag-js/core@1.17.2
+  - @zag-js/types@1.17.2
+  - @zag-js/utils@1.17.2
+  - @zag-js/dom-query@1.17.2
+  - @zag-js/rect-utils@1.17.2
+
 ## 1.17.1
 
 ### Patch Changes
