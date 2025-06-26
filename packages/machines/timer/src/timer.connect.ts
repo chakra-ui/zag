@@ -1,10 +1,11 @@
 import type { Service } from "@zag-js/core"
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
+import { match } from "@zag-js/utils"
 import { parts } from "./timer.anatomy"
 import * as dom from "./timer.dom"
 import type { TimerApi, TimerSchema } from "./timer.types"
 
-const validActions = new Set(["start", "pause", "resume", "reset"])
+const validActions = new Set(["start", "pause", "resume", "reset", "restart"])
 
 export function connect<T extends PropTypes>(service: Service<TimerSchema>, normalize: NormalizeProps<T>): TimerApi<T> {
   const { state, send, computed, scope } = service
@@ -102,20 +103,13 @@ export function connect<T extends PropTypes>(service: Service<TimerSchema>, norm
 
       return normalize.button({
         ...parts.actionTrigger.attrs,
-        hidden: (() => {
-          switch (props.action) {
-            case "start":
-              return running || paused
-            case "pause":
-              return !running
-            case "reset":
-              return !running && !paused
-            case "resume":
-              return !paused
-            default:
-              return
-          }
-        })(),
+        hidden: match(props.action, {
+          start: () => running || paused,
+          pause: () => !running,
+          reset: () => !running && !paused,
+          resume: () => !paused,
+          restart: () => false,
+        }),
         type: "button",
         onClick(event) {
           if (event.defaultPrevented) return
