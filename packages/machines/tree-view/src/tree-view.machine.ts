@@ -341,9 +341,10 @@ export const machine = createMachine<TreeViewSchema>({
         const firstValue = collection.getNodeValue(firstNode)
         dom.focusNode(scope, firstValue)
       },
-      focusTreeLastNode({ prop, scope }) {
+      focusTreeLastNode(params) {
+        const { prop, scope } = params
         const collection = prop("collection")
-        const lastNode = collection.getLastNode()
+        const lastNode = collection.getLastNode(undefined, { skip: skipFn(params) })
         const lastValue = collection.getNodeValue(lastNode)
         dom.focusNode(scope, lastValue)
       },

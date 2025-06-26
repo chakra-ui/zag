@@ -86,11 +86,13 @@ export class TreeCollection<T = TreeNode> {
     return firstChild
   }
 
-  getLastNode = (rootNode = this.rootNode): T | undefined => {
+  getLastNode = (rootNode = this.rootNode, opts: TreeSkipOptions<T> = {}): T | undefined => {
     let lastChild: T | undefined
     visit(rootNode, {
       getChildren: this.getNodeChildren,
       onEnter: (node, indexPath) => {
+        if (this.isSameNode(node, rootNode)) return
+        if (opts.skip?.({ value: this.getNodeValue(node), node, indexPath })) return "skip"
         if (indexPath.length > 0 && !this.getNodeDisabled(node)) {
           lastChild = node
         }
@@ -163,8 +165,12 @@ export class TreeCollection<T = TreeNode> {
     return indexPath?.length ?? 0
   }
 
+  isSameNode = (node: T, other: T) => {
+    return this.getNodeValue(node) === this.getNodeValue(other)
+  }
+
   isRootNode = (node: T) => {
-    return this.getNodeValue(node) === this.getNodeValue(this.rootNode)
+    return this.isSameNode(node, this.rootNode)
   }
 
   contains = (parentIndexPath: IndexPath, valueIndexPath: IndexPath) => {
