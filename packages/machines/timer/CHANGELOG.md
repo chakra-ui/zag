@@ -1,5 +1,21 @@
 # @zag-js/checkbox
 
+## 1.17.2
+
+### Patch Changes
+
+- [`eda76d6`](https://github.com/chakra-ui/zag/commit/eda76d6e324cb7fce509bd5a57d891b89a0db460) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - - Fix issue wher timer could continue beyond `targetMs` when
+  window is not visible
+  - Add validation to ensure `startMs` and `targetMs` are configured correctly
+  - Fix `progressPercent` calculation for countdown timers
+- Updated dependencies []:
+  - @zag-js/anatomy@1.17.2
+  - @zag-js/core@1.17.2
+  - @zag-js/types@1.17.2
+  - @zag-js/utils@1.17.2
+  - @zag-js/dom-query@1.17.2
+
 ## 1.17.1
 
 ### Patch Changes
