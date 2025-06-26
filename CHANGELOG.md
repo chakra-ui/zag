@@ -4,7 +4,7 @@ All notable changes to this project will be documented in this file.
 
 > For v0.x changelog, see the [v0 branch](https://github.com/chakra-ui/zag/blob/v0/CHANGELOG.md)
 
-## [1.16.2](./#1.16.2) - 2025-06-26
+## [1.17.2](./#1.17.2) - 2025-06-26
 
 ### Fixed
 
@@ -25,7 +25,7 @@ All notable changes to this project will be documented in this file.
 
 - **I18n Utils**: Add new `createCollator` function for locale sensitive string comparison
 
-## [1.16.1](./#1.16.1) - 2025-06-24
+## [1.17.1](./#1.17.1) - 2025-06-24
 
 ### Fixed
 
@@ -39,7 +39,7 @@ All notable changes to this project will be documented in this file.
   - Fix issue where clicking a branch with indeterminate state doesn't check its child nodes
   - Remove `aria-busy` attribute from branch trigger when not loading children
 
-## [1.16.0](./#1.16.0) - 2025-06-23
+## [1.17.0](./#1.17.0) - 2025-06-23
 
 ### Fixed
 
@@ -50,7 +50,7 @@ All notable changes to this project will be documented in this file.
 
 - **Tree View**: Rename `getItemCheckboxProps` to `getNodeCheckboxProps` since it can be used in both items and branches
 
-## [1.15.8](./#1.15.8) - 2025-06-21
+## [1.16.0](./#1.16.0) - 2025-06-21
 
 ### Added
 
