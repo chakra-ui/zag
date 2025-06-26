@@ -15,7 +15,7 @@
 Finite state machines for accessible JavaScript components
 
 - **Write once, use everywhere 🦄**: The component interactions are modelled in a framework agnostic way. We provide
-  adapters for JS frameworks like React, Solid, or Vue.
+  adapters for JS frameworks like React, Svelte, Solid, or Vue.
 - **Focus on accessibility ♿️**: Zag is built with accessibility in mind. We handle many details related to keyboard
   interactions, focus management, aria roles and attributes.
 - **Headless ✨**: The machine APIs are completely unstyled and gives you the control to use any styling solution you
@@ -65,6 +65,7 @@ For framework specific solutions, we provide simple wrappers to help you consume
 - ⚛️ `@zag-js/react` - React hooks for consuming machines in React applications
 - 💚 `@zag-js/vue` - Vue composition for consuming machines in Vue applications
 - 🎷 `@zag-js/solid` - Solid.js utilities for consuming machines in Solid.js applications
+- 🎭 `@zag-js/svelte` - Svelte utilities for consuming machines in Svelte applications
 
 ## Usage
 
@@ -107,7 +108,7 @@ power the logic behind UI components.
 
 ### Teasers
 
-- When you see someone using classic react, vue or solid to build an interactive UI component that exists in Zag, tell
+- When you see someone using classic react, svelte, vue or solid to build an interactive UI component that exists in Zag, tell
   them to **"zag it!"** ⚡️
 
 - Anyone using Zag will be called a **"zagger"** 💥
@@ -134,6 +135,7 @@ projects for the frameworks we support.
 - `start-react` : Starts the Next.js TypeScript project
 - `start-vue` : Starts the Vue 3 TypeScript project
 - `start-solid` : Starts the Solid TypeScript project
+- `start-svelte` : Starts the Svelte TypeScript project
 
 ### E2E Tests
 
@@ -143,6 +145,7 @@ ensure that the component works the same way regardless of the framework.
 - `e2e-react` : Starts the E2E tests for the React project
 - `e2e-vue` : Starts the E2E tests for the Vue project
 - `e2e-solid` : Starts the E2E tests for the Solid project
+- `e2e-svelte` : Starts the E2E tests for the Svelte project
 
 ### Contributing new machines/features
 
