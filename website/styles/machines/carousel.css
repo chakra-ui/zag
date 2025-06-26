@@ -4,6 +4,7 @@
   border-width: 2px;
   border-color: var(--colors-border-subtle);
   position: relative;
+  box-sizing: content-box;
 }
 
 [data-scope="carousel"][data-part="item-group"] {
