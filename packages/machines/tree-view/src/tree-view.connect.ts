@@ -9,7 +9,7 @@ import {
   isModifierKey,
 } from "@zag-js/dom-query"
 import type { EventKeyMap, NormalizeProps, PropTypes } from "@zag-js/types"
-import { add, isEqual, uniq } from "@zag-js/utils"
+import { add, uniq } from "@zag-js/utils"
 import { parts } from "./tree-view.anatomy"
 import * as dom from "./tree-view.dom"
 import type { NodeProps, NodeState, TreeNode, TreeViewApi, TreeViewService } from "./tree-view.types"
@@ -33,12 +33,14 @@ export function connect<T extends PropTypes, V extends TreeNode = TreeNode>(
   function getNodeState(props: NodeProps): NodeState {
     const { node, indexPath } = props
     const value = collection.getNodeValue(node)
+    const firstNode = collection.getFirstNode()
+    const firstNodeValue = firstNode ? collection.getNodeValue(firstNode) : null
     return {
       value,
       indexPath,
       valuePath: collection.getValuePath(indexPath),
       disabled: Boolean(node.disabled),
-      focused: focusedValue == null ? isEqual(indexPath, [0]) : focusedValue === value,
+      focused: focusedValue == null ? firstNodeValue == value : focusedValue === value,
       selected: selectedValue.includes(value),
       expanded: expandedValue.includes(value),
       loading: loadingStatus[value] === "loading",

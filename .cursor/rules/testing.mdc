@@ -1,0 +1,8 @@
+---
+description: 
+globs: **/utilities/**
+alwaysApply: false
+---
+Follow these guardrails when running tests
+
+- Always use `vitest` to run the tests

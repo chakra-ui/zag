@@ -4,6 +4,7 @@ import {
   compareIndexPaths,
   filter,
   find,
+  findAll,
   findIndexPath,
   flatMap,
   flatten,
@@ -85,15 +86,12 @@ export class TreeCollection<T = TreeNode> {
     return firstChild
   }
 
-  getLastNode = (rootNode = this.rootNode, opts: TreeSkipOptions<T> = {}): T | undefined => {
+  getLastNode = (rootNode = this.rootNode): T | undefined => {
     let lastChild: T | undefined
     visit(rootNode, {
       getChildren: this.getNodeChildren,
       onEnter: (node, indexPath) => {
-        const nodeValue = this.getNodeValue(node)
-        if (opts.skip?.({ value: nodeValue, node, indexPath })) return "skip"
-        if (indexPath.length > 1) return "skip"
-        if (!this.getNodeDisabled(node)) {
+        if (indexPath.length > 0 && !this.getNodeDisabled(node)) {
           lastChild = node
         }
       },
@@ -111,6 +109,14 @@ export class TreeCollection<T = TreeNode> {
     return find(rootNode, {
       getChildren: this.getNodeChildren,
       predicate: (node) => this.getNodeValue(node) === value,
+    })
+  }
+
+  findNodes = (values: string[], rootNode = this.rootNode): T[] => {
+    const v = new Set(values.filter((v) => v != null))
+    return findAll(rootNode, {
+      getChildren: this.getNodeChildren,
+      predicate: (node) => v.has(this.getNodeValue(node)),
     })
   }
 
@@ -280,7 +286,7 @@ export class TreeCollection<T = TreeNode> {
     const parentNode = this.getParentNode(indexPath)
     if (!parentNode) return
     const siblings = this.getNodeChildren(parentNode)
-    let idx = siblings.findIndex((sibling) => this.getValue(indexPath) === this.getNodeValue(sibling))
+    let idx = indexPath[indexPath.length - 1]
     while (--idx >= 0) {
       const sibling = siblings[idx]
       if (!this.getNodeDisabled(sibling)) return sibling
@@ -292,7 +298,7 @@ export class TreeCollection<T = TreeNode> {
     const parentNode = this.getParentNode(indexPath)
     if (!parentNode) return
     const siblings = this.getNodeChildren(parentNode)
-    let idx = siblings.findIndex((sibling) => this.getValue(indexPath) === this.getNodeValue(sibling))
+    let idx = indexPath[indexPath.length - 1]
     while (++idx < siblings.length) {
       const sibling = siblings[idx]
       if (!this.getNodeDisabled(sibling)) return sibling
@@ -331,6 +337,7 @@ export class TreeCollection<T = TreeNode> {
     visit(rootNode, {
       getChildren: this.getNodeChildren,
       onEnter: (node, indexPath) => {
+        if (indexPath.length === 0) return
         const nodeValue = this.getNodeValue(node)
         if (opts.skip?.({ value: nodeValue, node, indexPath })) return "skip"
         if (this.isBranchNode(node) && this.isSameDepth(indexPath, opts.depth)) {
@@ -338,8 +345,7 @@ export class TreeCollection<T = TreeNode> {
         }
       },
     })
-    // remove the root node
-    return values.slice(1)
+    return values
   }
 
   flatten = (rootNode = this.rootNode): Array<FlatTreeNode<T>> => {

@@ -8,23 +8,28 @@ import type { CommonProperties, DirectionProperty, PropTypes, RequiredBy } from 
  * Callback details
  * -----------------------------------------------------------------------------*/
 
-export interface FocusChangeDetails {
+export interface FocusChangeDetails<T extends TreeNode = TreeNode> {
   focusedValue: string | null
+  focusedNode: T | null
 }
 
-export interface ExpandedChangeDetails extends FocusChangeDetails {
+export interface ExpandedChangeDetails<T extends TreeNode = TreeNode> {
+  focusedValue: string | null
   expandedValue: string[]
+  expandedNodes: T[]
 }
 
-export interface SelectionChangeDetails extends FocusChangeDetails {
+export interface SelectionChangeDetails<T extends TreeNode = TreeNode> {
+  focusedValue: string | null
   selectedValue: string[]
+  selectedNodes: T[]
 }
 
 export interface CheckedChangeDetails {
   checkedValue: string[]
 }
 
-export interface LoadChildrenDetails<T = any> {
+export interface LoadChildrenDetails<T extends TreeNode = TreeNode> {
   /**
    * The value path of the node whose children are being loaded
    */
@@ -43,21 +48,21 @@ export interface LoadChildrenDetails<T = any> {
   signal: AbortSignal
 }
 
-export interface LoadChildrenCompleteDetails<T = any> {
+export interface LoadChildrenCompleteDetails<T extends TreeNode = TreeNode> {
   /**
    * The updated tree collection with the loaded children
    */
   collection: TreeCollection<T>
 }
 
-export interface NodeWithError<T = any> {
+export interface NodeWithError<T extends TreeNode = TreeNode> {
   node: T
   error: Error
   indexPath: IndexPath
   valuePath: ValuePath
 }
 
-export interface LoadChildrenErrorDetails<T = any> {
+export interface LoadChildrenErrorDetails<T extends TreeNode = TreeNode> {
   /**
    * Array of nodes that failed to load children
    */
@@ -75,7 +80,7 @@ export type ElementIds = Partial<{
  * Machine context
  * -----------------------------------------------------------------------------*/
 
-export interface TreeViewProps<T = any> extends DirectionProperty, CommonProperties {
+export interface TreeViewProps<T extends TreeNode = TreeNode> extends DirectionProperty, CommonProperties {
   /**
    * The tree collection data
    */

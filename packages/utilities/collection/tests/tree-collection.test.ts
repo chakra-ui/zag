@@ -135,6 +135,36 @@ describe("tree / traversal", () => {
     `)
   })
 
+  it("one branch scenario", () => {
+    // Test case with only one branch - the last node should be the deepest last child
+    const oneBranchTree = new TreeCollection({
+      nodeToChildren: (node) => node.children ?? [],
+      rootNode: {
+        value: "ROOT",
+        children: [
+          {
+            value: "branch1",
+            children: [
+              { value: "child1-1" },
+              { value: "child1-2" },
+              {
+                value: "branch1-1",
+                children: [{ value: "child2-1" }, { value: "child2-2" }],
+              },
+            ],
+          },
+        ],
+      },
+    })
+
+    // This should return "child2-2" (the actual last node in document order)
+    const lastNode = oneBranchTree.getLastNode()
+    expect(lastNode?.value).toBe("child2-2")
+
+    const firstNode = oneBranchTree.getFirstNode()
+    expect(firstNode?.value).toBe("branch1")
+  })
+
   it("branch nodes", () => {
     const branch = tree.findNode("branch1")
     expect(branch).toMatchInlineSnapshot(`
@@ -177,12 +207,7 @@ describe("tree / traversal", () => {
 
     expect(tree.getLastNode(branch)).toMatchInlineSnapshot(`
       {
-        "children": [
-          {
-            "value": "child2-1",
-          },
-        ],
-        "value": "branch1-1",
+        "value": "child2-1",
       }
     `)
   })

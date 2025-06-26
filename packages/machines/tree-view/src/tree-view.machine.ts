@@ -34,27 +34,44 @@ export const machine = createMachine<TreeViewSchema>({
         defaultValue: prop("defaultExpandedValue"),
         value: prop("expandedValue"),
         isEqual,
-        onChange(value) {
+        onChange(expandedValue) {
           const ctx = getContext()
           const focusedValue = ctx.get("focusedValue")
-          prop("onExpandedChange")?.({ expandedValue: value, focusedValue })
+          prop("onExpandedChange")?.({
+            expandedValue,
+            focusedValue,
+            get expandedNodes() {
+              return prop("collection").findNodes(expandedValue)
+            },
+          })
         },
       })),
       selectedValue: bindable(() => ({
         defaultValue: prop("defaultSelectedValue"),
         value: prop("selectedValue"),
         isEqual,
-        onChange(value) {
+        onChange(selectedValue) {
           const ctx = getContext()
           const focusedValue = ctx.get("focusedValue")
-          prop("onSelectionChange")?.({ selectedValue: value, focusedValue })
+          prop("onSelectionChange")?.({
+            selectedValue,
+            focusedValue,
+            get selectedNodes() {
+              return prop("collection").findNodes(selectedValue)
+            },
+          })
         },
       })),
       focusedValue: bindable(() => ({
         defaultValue: prop("defaultFocusedValue") || null,
         value: prop("focusedValue"),
-        onChange(value) {
-          prop("onFocusChange")?.({ focusedValue: value })
+        onChange(focusedValue) {
+          prop("onFocusChange")?.({
+            focusedValue,
+            get focusedNode() {
+              return focusedValue ? prop("collection").findNode(focusedValue) : null
+            },
+          })
         },
       })),
       loadingStatus: bindable<TreeLoadingStatusMap>(() => ({
