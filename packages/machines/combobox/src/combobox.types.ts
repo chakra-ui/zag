@@ -277,7 +277,6 @@ export interface ComboboxSchema<T extends CollectionItem = CollectionItem> {
     currentPlacement?: Placement | undefined
     highlightedItem: T | null
     selectedItems: T[]
-    valueAsString: string
   }
   computed: {
     isCustomValue: boolean
@@ -286,6 +285,7 @@ export interface ComboboxSchema<T extends CollectionItem = CollectionItem> {
     autoComplete: boolean
     autoHighlight: boolean
     hasSelectedItems: boolean
+    valueAsString: string
   }
   event: EventObject
   action: string

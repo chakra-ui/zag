@@ -135,7 +135,6 @@ export interface ListboxSchema<T extends CollectionItem = CollectionItem> {
     highlightedValue: string | null
     highlightedItem: T | null
     selectedItems: T[]
-    valueAsString: string
     focused: boolean
   }
   computed: {
@@ -144,6 +143,7 @@ export interface ListboxSchema<T extends CollectionItem = CollectionItem> {
     isInteractive: boolean
     selection: Selection
     multiple: boolean
+    valueAsString: string
   }
   refs: {
     typeahead: TypeaheadState

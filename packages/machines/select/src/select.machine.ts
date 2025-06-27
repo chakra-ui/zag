@@ -69,10 +69,6 @@ export const machine = createMachine<SelectSchema>({
         const items = prop("collection").findMany(value)
         return { defaultValue: items }
       }),
-      valueAsString: bindable(() => {
-        const value = prop("value") ?? prop("defaultValue") ?? []
-        return { defaultValue: prop("collection").stringifyMany(value) }
-      }),
     }
   },
 
@@ -87,6 +83,7 @@ export const machine = createMachine<SelectSchema>({
     isTypingAhead: ({ refs }) => refs.get("typeahead").keysSoFar !== "",
     isDisabled: ({ prop, context }) => !!prop("disabled") || !!context.get("fieldsetDisabled"),
     isInteractive: ({ prop }) => !(prop("disabled") || prop("readOnly")),
+    valueAsString: ({ context, prop }) => prop("collection").stringifyItems(context.get("selectedItems")),
   },
 
   initialState({ prop }) {
@@ -696,9 +693,6 @@ export const machine = createMachine<SelectSchema>({
 
         const selectedItems = collection.findMany(context.get("value"))
         context.set("selectedItems", selectedItems)
-
-        const valueAsString = collection.stringifyItems(selectedItems)
-        context.set("valueAsString", valueAsString)
       },
 
       syncSelectedItems({ context, prop }) {
@@ -712,7 +706,6 @@ export const machine = createMachine<SelectSchema>({
         })
 
         context.set("selectedItems", selectedItems)
-        context.set("valueAsString", collection.stringifyItems(selectedItems))
       },
 
       syncHighlightedItem({ context, prop }) {

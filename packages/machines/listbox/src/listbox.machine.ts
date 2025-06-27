@@ -58,11 +58,6 @@ export const machine = createMachine<ListboxSchema>({
         return { defaultValue: items }
       }),
 
-      valueAsString: bindable(() => {
-        const value = prop("value") ?? prop("defaultValue") ?? []
-        return { defaultValue: prop("collection").stringifyMany(value) }
-      }),
-
       focused: bindable(() => ({
         defaultValue: false,
       })),
@@ -87,6 +82,7 @@ export const machine = createMachine<ListboxSchema>({
       return selection
     },
     multiple: ({ prop }) => prop("selectionMode") === "multiple" || prop("selectionMode") === "extended",
+    valueAsString: ({ context, prop }) => prop("collection").stringifyItems(context.get("selectedItems")),
   },
 
   initialState() {
@@ -291,9 +287,6 @@ export const machine = createMachine<ListboxSchema>({
         const selectedItems = collection.findMany(context.get("value"))
         context.set("selectedItems", selectedItems)
 
-        const valueAsString = collection.stringifyItems(selectedItems)
-        context.set("valueAsString", valueAsString)
-
         const highlightedValue = syncHighlightedValue(
           collection,
           refs.get("prevCollection"),
@@ -317,7 +310,6 @@ export const machine = createMachine<ListboxSchema>({
         })
 
         context.set("selectedItems", selectedItems)
-        context.set("valueAsString", collection.stringifyItems(selectedItems))
       },
 
       syncHighlightedItem({ context, prop }) {

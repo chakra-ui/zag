@@ -71,7 +71,6 @@ export const machine = createMachine({
           })
 
           context.set("selectedItems", nextItems)
-          context.set("valueAsString", collection.stringifyItems(nextItems))
 
           prop("onValueChange")?.({ value, items: nextItems })
         },
@@ -115,11 +114,6 @@ export const machine = createMachine({
         const selectedItems = prop("collection").findMany(value)
         return { defaultValue: selectedItems }
       }),
-      valueAsString: bindable<string>(() => {
-        const value = prop("value") || prop("defaultValue") || []
-        const valueAsString = prop("collection").stringifyMany(value)
-        return { sync: true, defaultValue: valueAsString }
-      }),
     }
   },
 
@@ -129,7 +123,8 @@ export const machine = createMachine({
     autoComplete: ({ prop }) => prop("inputBehavior") === "autocomplete",
     autoHighlight: ({ prop }) => prop("inputBehavior") === "autohighlight",
     hasSelectedItems: ({ context }) => context.get("value").length > 0,
-    isCustomValue: ({ context }) => context.get("inputValue") !== context.get("valueAsString"),
+    valueAsString: ({ context, prop }) => prop("collection").stringifyItems(context.get("selectedItems")),
+    isCustomValue: ({ context, computed }) => context.get("inputValue") !== computed("valueAsString"),
   },
 
   watch({ context, prop, track, action }) {
@@ -868,7 +863,7 @@ export const machine = createMachine({
       revertInputValue({ context, prop, computed }) {
         const selectionBehavior = prop("selectionBehavior")
         const inputValue = match(selectionBehavior, {
-          replace: computed("hasSelectedItems") ? context.get("valueAsString") : "",
+          replace: computed("hasSelectedItems") ? computed("valueAsString") : "",
           preserve: context.get("inputValue"),
           clear: "",
         })
@@ -1007,10 +1002,10 @@ export const machine = createMachine({
   },
 })
 
-function getInputValue({ context, prop }: Params<ComboboxSchema>) {
+function getInputValue({ context, prop, computed }: Params<ComboboxSchema>) {
   return match(prop("selectionBehavior"), {
     preserve: context.get("inputValue"),
-    replace: context.get("valueAsString"),
+    replace: computed("valueAsString"),
     clear: "",
   })
 }

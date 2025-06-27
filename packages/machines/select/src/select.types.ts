@@ -176,13 +176,13 @@ export interface SelectSchema<T extends CollectionItem = CollectionItem> {
     fieldsetDisabled: boolean
     highlightedItem: T | null
     selectedItems: T[]
-    valueAsString: string
   }
   computed: {
     hasSelectedItems: boolean
     isTypingAhead: boolean
     isInteractive: boolean
     isDisabled: boolean
+    valueAsString: string
   }
   refs: {
     typeahead: TypeaheadState

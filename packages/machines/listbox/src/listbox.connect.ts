@@ -61,7 +61,7 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
     selectedItems,
     hasSelectedItems: computed("hasSelectedItems"),
     value,
-    valueAsString: context.get("valueAsString"),
+    valueAsString: computed("valueAsString"),
     collection,
     disabled: !!disabled,
     selectValue(value) {
