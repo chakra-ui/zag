@@ -1,5 +1,24 @@
 # @zag-js/combobox
 
+## 1.17.4
+
+### Patch Changes
+
+- [`b709e44`](https://github.com/chakra-ui/zag/commit/b709e44ae7442f40ff2ad671b6a08604f26c6fae) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix issue where rehydrating `defaultValue` or `value` after
+  fetching items doesn't update the `valueAsString`
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.17.4
+  - @zag-js/core@1.17.4
+  - @zag-js/types@1.17.4
+  - @zag-js/aria-hidden@1.17.4
+  - @zag-js/collection@1.17.4
+  - @zag-js/utils@1.17.4
+  - @zag-js/dismissable@1.17.4
+  - @zag-js/dom-query@1.17.4
+  - @zag-js/popper@1.17.4
+
 ## 1.17.3
 
 ### Patch Changes
