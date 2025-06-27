@@ -5,7 +5,7 @@ export type WindowRectOptions = {
   /**
    * Whether to exclude the element's scrollbar size from the calculation.
    */
-  excludeScrollbar?: boolean
+  excludeScrollbar?: boolean | undefined
 }
 
 /**

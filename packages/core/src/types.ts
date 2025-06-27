@@ -33,11 +33,11 @@ type TrackFn = (deps: AnyFunction[], fn: VoidFunction) => void
 export interface BindableParams<T> {
   defaultValue?: T | undefined
   value?: T | undefined
-  hash?: (a: T) => string
-  isEqual?: (a: T, b: T | undefined) => boolean
-  onChange?: (value: T, prev: T | undefined) => void
-  debug?: string
-  sync?: boolean
+  hash?: ((a: T) => string) | undefined
+  isEqual?: ((a: T, b: T | undefined) => boolean) | undefined
+  onChange?: ((value: T, prev: T | undefined) => void) | undefined
+  debug?: string | undefined
+  sync?: boolean | undefined
 }
 
 export type ValueOrFn<T> = T | ((prev: T) => T)
@@ -86,8 +86,8 @@ export interface Scope {
 }
 
 type EventType<T = any> = T & {
-  previousEvent?: T & { [key: string]: any }
-  src?: string
+  previousEvent?: (T & { [key: string]: any }) | undefined
+  src?: string | undefined
   [key: string]: any
 }
 
@@ -118,10 +118,10 @@ export interface Params<T extends Dict> {
 export type GuardFn<T extends Dict> = (params: Params<T>) => boolean
 
 export interface Transition<T extends Dict> {
-  target?: T["state"]
-  actions?: T["action"][]
-  guard?: T["guard"] | GuardFn<T>
-  reenter?: boolean
+  target?: T["state"] | undefined
+  actions?: T["action"][] | undefined
+  guard?: T["guard"] | GuardFn<T> | undefined
+  reenter?: boolean | undefined
 }
 
 type MaybeArray<T> = T | T[]
@@ -145,45 +145,61 @@ export type ActionsOrFn<T extends Dict> = T["action"][] | ((params: Params<T>) =
 export type EffectsOrFn<T extends Dict> = T["effect"][] | ((params: Params<T>) => T["effect"][] | undefined)
 
 export interface Machine<T extends Dict> {
-  debug?: boolean
-  props?: (params: PropsParams<T>) => T["props"]
-  context?: (params: ContextParams<T>) => {
-    [K in keyof T["context"]]: Bindable<T["context"][K]>
-  }
-  computed?: {
-    [K in keyof T["computed"]]: (params: ComputedParams<T>) => T["computed"][K]
-  }
+  debug?: boolean | undefined
+  props?: ((params: PropsParams<T>) => T["props"]) | undefined
+  context?:
+    | ((params: ContextParams<T>) => {
+        [K in keyof T["context"]]: Bindable<T["context"][K]>
+      })
+    | undefined
+  computed?:
+    | {
+        [K in keyof T["computed"]]: (params: ComputedParams<T>) => T["computed"][K]
+      }
+    | undefined
   initialState: (params: { prop: PropFn<T> }) => T["state"]
-  entry?: ActionsOrFn<T>
-  exit?: ActionsOrFn<T>
-  effects?: EffectsOrFn<T>
-  refs?: (params: RefsParams<T>) => T["refs"]
-  watch?: (params: Params<T>) => void
-  on?: {
-    [E in T["event"]["type"]]?: Transition<T> | Array<Transition<T>>
-  }
-  states: {
-    [K in T["state"]]: {
-      tags?: T["tag"][]
-      entry?: ActionsOrFn<T>
-      exit?: ActionsOrFn<T>
-      effects?: EffectsOrFn<T>
-      on?: {
+  entry?: ActionsOrFn<T> | undefined
+  exit?: ActionsOrFn<T> | undefined
+  effects?: EffectsOrFn<T> | undefined
+  refs?: ((params: RefsParams<T>) => T["refs"]) | undefined
+  watch?: ((params: Params<T>) => void) | undefined
+  on?:
+    | {
         [E in T["event"]["type"]]?: Transition<T> | Array<Transition<T>>
       }
+    | undefined
+  states: {
+    [K in T["state"]]: {
+      tags?: T["tag"][] | undefined
+      entry?: ActionsOrFn<T> | undefined
+      exit?: ActionsOrFn<T> | undefined
+      effects?: EffectsOrFn<T> | undefined
+      on?:
+        | {
+            [E in T["event"]["type"]]?: Transition<T> | Array<Transition<T>>
+          }
+        | undefined
     }
   }
-  implementations?: {
-    guards?: {
-      [K in T["guard"]]: (params: Params<T>) => boolean
-    }
-    actions?: {
-      [K in T["action"]]: (params: Params<T>) => void
-    }
-    effects?: {
-      [K in T["effect"]]: (params: Params<T>) => void | VoidFunction
-    }
-  }
+  implementations?:
+    | {
+        guards?:
+          | {
+              [K in T["guard"]]: (params: Params<T>) => boolean
+            }
+          | undefined
+        actions?:
+          | {
+              [K in T["action"]]: (params: Params<T>) => void
+            }
+          | undefined
+        effects?:
+          | {
+              [K in T["effect"]]: (params: Params<T>) => void | VoidFunction
+            }
+          | undefined
+      }
+    | undefined
 }
 
 interface MachineBaseProps {
@@ -194,16 +210,16 @@ interface MachineBaseProps {
 }
 
 export interface MachineSchema {
-  props?: MachineBaseProps
-  context?: Record<string, any>
-  refs?: Record<string, any>
-  computed?: Record<string, any>
-  state?: string
-  tag?: string
-  guard?: string
-  action?: string
-  effect?: string
-  event?: { type: string } & Dict
+  props?: MachineBaseProps | undefined
+  context?: Record<string, any> | undefined
+  refs?: Record<string, any> | undefined
+  computed?: Record<string, any> | undefined
+  state?: string | undefined
+  tag?: string | undefined
+  guard?: string | undefined
+  action?: string | undefined
+  effect?: string | undefined
+  event?: ({ type: string } & Dict) | undefined
 }
 
 type State<T extends MachineSchema> = Bindable<T["state"]> & {

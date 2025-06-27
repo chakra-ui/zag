@@ -8,13 +8,14 @@ export function setRafInterval(callback: (options: RafIntervalOptions) => void, 
   let handle: number
 
   function loop(now: number) {
-    handle = requestAnimationFrame(loop)
     const delta = now - start
 
     if (delta >= interval) {
-      start = now - (delta % interval)
+      start = interval > 0 ? now - (delta % interval) : now
       callback({ startMs: start, deltaMs: delta })
     }
+
+    handle = requestAnimationFrame(loop)
   }
 
   handle = requestAnimationFrame(loop)
@@ -26,12 +27,14 @@ export function setRafTimeout(callback: () => void, delay: number) {
   let handle: number
 
   function loop(now: number) {
-    handle = requestAnimationFrame(loop)
     const delta = now - start
 
     if (delta >= delay) {
       callback()
+      return
     }
+
+    handle = requestAnimationFrame(loop)
   }
 
   handle = requestAnimationFrame(loop)

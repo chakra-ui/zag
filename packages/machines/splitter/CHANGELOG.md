@@ -1,5 +1,71 @@
 # @zag-js/splitter
 
+## 1.17.4
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.17.4
+  - @zag-js/core@1.17.4
+  - @zag-js/types@1.17.4
+  - @zag-js/utils@1.17.4
+  - @zag-js/dom-query@1.17.4
+
+## 1.17.3
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.17.3
+  - @zag-js/core@1.17.3
+  - @zag-js/types@1.17.3
+  - @zag-js/utils@1.17.3
+  - @zag-js/dom-query@1.17.3
+
+## 1.17.2
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.17.2
+  - @zag-js/core@1.17.2
+  - @zag-js/types@1.17.2
+  - @zag-js/utils@1.17.2
+  - @zag-js/dom-query@1.17.2
+
+## 1.17.1
+
+### Patch Changes
+
+- Updated dependencies [[`4b6302f`](https://github.com/chakra-ui/zag/commit/4b6302fc9104f1ae8cd89a0f0157884fb775a65a)]:
+  - @zag-js/anatomy@1.17.1
+  - @zag-js/core@1.17.1
+  - @zag-js/types@1.17.1
+  - @zag-js/utils@1.17.1
+  - @zag-js/dom-query@1.17.1
+
+## 1.17.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.17.0
+  - @zag-js/core@1.17.0
+  - @zag-js/types@1.17.0
+  - @zag-js/utils@1.17.0
+  - @zag-js/dom-query@1.17.0
+
+## 1.16.0
+
+### Patch Changes
+
+- Updated dependencies [[`6f6c8f3`](https://github.com/chakra-ui/zag/commit/6f6c8f329d9eb9d9889eff4317c84a4f41d4bfb2)]:
+  - @zag-js/types@1.16.0
+  - @zag-js/dom-query@1.16.0
+  - @zag-js/core@1.16.0
+  - @zag-js/anatomy@1.16.0
+  - @zag-js/utils@1.16.0
+
 ## 1.15.7
 
 ### Patch Changes
@@ -370,7 +436,6 @@
   ```
 
   The also comes with new features such as:
-
   - Support for collapsible panels
   - Support for collapse and expand events
   - New `api` methods for resizing the panels programmatically
@@ -2001,7 +2066,6 @@
 - [`7cf380b0`](https://github.com/chakra-ui/zag/commit/7cf380b0d3019507181b79e0fe99e894d9e83030) Thanks
   [@segunadebayo](https://github.com/segunadebayo)! - - Refactor machines to avoid the use of `dom.queryById`, this
   causes the machine to throw in React when the `key` of an element is reassigned.
-
   - Remove `queryById` from the `createScope` function.
 
 - Updated dependencies [[`7cf380b0`](https://github.com/chakra-ui/zag/commit/7cf380b0d3019507181b79e0fe99e894d9e83030)]:

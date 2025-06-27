@@ -1,5 +1,95 @@
 # @zag-js/dialog
 
+## 1.17.4
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.17.4
+  - @zag-js/core@1.17.4
+  - @zag-js/types@1.17.4
+  - @zag-js/aria-hidden@1.17.4
+  - @zag-js/utils@1.17.4
+  - @zag-js/dismissable@1.17.4
+  - @zag-js/dom-query@1.17.4
+  - @zag-js/focus-trap@1.17.4
+  - @zag-js/remove-scroll@1.17.4
+
+## 1.17.3
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.17.3
+  - @zag-js/core@1.17.3
+  - @zag-js/types@1.17.3
+  - @zag-js/aria-hidden@1.17.3
+  - @zag-js/utils@1.17.3
+  - @zag-js/dismissable@1.17.3
+  - @zag-js/dom-query@1.17.3
+  - @zag-js/focus-trap@1.17.3
+  - @zag-js/remove-scroll@1.17.3
+
+## 1.17.2
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.17.2
+  - @zag-js/core@1.17.2
+  - @zag-js/types@1.17.2
+  - @zag-js/aria-hidden@1.17.2
+  - @zag-js/utils@1.17.2
+  - @zag-js/dismissable@1.17.2
+  - @zag-js/dom-query@1.17.2
+  - @zag-js/focus-trap@1.17.2
+  - @zag-js/remove-scroll@1.17.2
+
+## 1.17.1
+
+### Patch Changes
+
+- Updated dependencies [[`4b6302f`](https://github.com/chakra-ui/zag/commit/4b6302fc9104f1ae8cd89a0f0157884fb775a65a)]:
+  - @zag-js/anatomy@1.17.1
+  - @zag-js/core@1.17.1
+  - @zag-js/types@1.17.1
+  - @zag-js/aria-hidden@1.17.1
+  - @zag-js/utils@1.17.1
+  - @zag-js/dismissable@1.17.1
+  - @zag-js/dom-query@1.17.1
+  - @zag-js/focus-trap@1.17.1
+  - @zag-js/remove-scroll@1.17.1
+
+## 1.17.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.17.0
+  - @zag-js/core@1.17.0
+  - @zag-js/types@1.17.0
+  - @zag-js/aria-hidden@1.17.0
+  - @zag-js/utils@1.17.0
+  - @zag-js/dismissable@1.17.0
+  - @zag-js/dom-query@1.17.0
+  - @zag-js/focus-trap@1.17.0
+  - @zag-js/remove-scroll@1.17.0
+
+## 1.16.0
+
+### Patch Changes
+
+- Updated dependencies [[`6f6c8f3`](https://github.com/chakra-ui/zag/commit/6f6c8f329d9eb9d9889eff4317c84a4f41d4bfb2)]:
+  - @zag-js/types@1.16.0
+  - @zag-js/dom-query@1.16.0
+  - @zag-js/core@1.16.0
+  - @zag-js/dismissable@1.16.0
+  - @zag-js/focus-trap@1.16.0
+  - @zag-js/remove-scroll@1.16.0
+  - @zag-js/anatomy@1.16.0
+  - @zag-js/aria-hidden@1.16.0
+  - @zag-js/utils@1.16.0
+
 ## 1.15.7
 
 ### Patch Changes
@@ -2136,11 +2226,9 @@
 
 - [`0f39f6fd`](https://github.com/chakra-ui/zag/commit/0f39f6fd580fb89110c43c24dd7fcc0a2a5f7a0a) Thanks
   [@segunadebayo](https://github.com/segunadebayo)! - - Fix issue where interact outside handlers are not exposed
-
   - Fix issue where interacting with toast closes dialog
 
   > Breaking Changes
-
   - Rename `closeOnEsc` to `closeOnEscapeKeyDown`
   - Rename `onEsc` to `onEscapeKeyDown`
   - Rename `closeOnOutsideClick` to `closeOnInteractOutside`
@@ -2327,7 +2415,6 @@
   **Potential breaking change:**
 
   We replaced `data-expanded` or `data-checked` to `data-state` attribute
-
   - `data-expanded` maps to `data-state="open"` or `data-state="closed"`
   - `data-checked` maps to `data-state="checked"` or `data-state="unchecked"`
   - `data-indeterminate` maps to `data-state="indeterminate"`

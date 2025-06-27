@@ -4,6 +4,81 @@ All notable changes to this project will be documented in this file.
 
 > For v0.x changelog, see the [v0 branch](https://github.com/chakra-ui/zag/blob/v0/CHANGELOG.md)
 
+## [1.17.4](./#1.17.4) - 2025-06-27
+
+### Fixed
+
+- **Combobox, Select, Listbox**: Fix issue where rehydrating `defaultValue` or `value` after fetching items doesn't
+  update the `valueAsString`
+
+## [1.17.3](./#1.17.3) - 2025-06-27
+
+### Fixed
+
+- **Tree View**: Fix tree traversal for querying last node
+
+## [1.17.2](./#1.17.2) - 2025-06-26
+
+### Fixed
+
+- **Angle Slider**: Fix issue where scrubbing doesn't feel smooth on touch devices
+
+- **Timer**:
+  - Fix issue where timer could continue beyond `targetMs` when window is not visible
+  - Add validation to ensure `startMs` and `targetMs` are configured correctly
+  - Fix `progressPercent` calculation for countdown timers
+
+- **Tree View**: Expose node details in `onExpandChange`, `onSelectionChange` and `onFocusChange`
+
+### Changed
+
+- **Collection**:
+  - Add support for `findNodes` to find multiple nodes by value in a single pass
+  - Fix issue with `getLastNode` not returning the last node in the tree with only one branch
+
+- **I18n Utils**: Add new `createCollator` function for locale sensitive string comparison
+
+## [1.17.1](./#1.17.1) - 2025-06-24
+
+### Fixed
+
+- **Date Picker**: Fix issue with keyboard selection where setting unavailable date causes month view to behave
+  differently from clicking with mouse
+
+- **Toast**: Fix issue where app crashes when `toaster.promise` is called without loading option. The `loading` option
+  is now required. A warning will be logged if it is not provided
+
+- **Tree View**:
+  - Fix issue where clicking a branch with indeterminate state doesn't check its child nodes
+  - Remove `aria-busy` attribute from branch trigger when not loading children
+
+## [1.17.0](./#1.17.0) - 2025-06-23
+
+### Fixed
+
+- **Progress**: Fix issue where setting orientation to `vertical` don't work
+- **Progress**: Fix issue where setting `defaultValue` to `null` doesn't show indeterminate state
+
+### Changed
+
+- **Tree View**: Rename `getItemCheckboxProps` to `getNodeCheckboxProps` since it can be used in both items and branches
+
+## [1.16.0](./#1.16.0) - 2025-06-21
+
+### Added
+
+- **Tree View**
+  - Add support for checkbox state for checkbox trees via `defaultCheckedValue`, `checkedValue`, `onCheckedChange` props
+  - Add callback for when `loadChildren` fails via `onLoadChildrenError` prop
+  - Add `api.getCheckedMap` method to get the checked state of all nodes
+
+- **Tree Collection**: Add support for `getDescendantNodes` and `getDescendantValues`
+
+### Fixed
+
+- **Tree View**: Fix issue where `api.collapse` and `api.deselect` throws error when called without arguments
+- **General**: Add better support for TypeScript's `exactOptionalPropertyTypes` compiler option
+
 ## [1.15.7](./#1.15.7) - 2025-06-19
 
 ### Fixed
@@ -93,7 +168,6 @@ All notable changes to this project will be documented in this file.
 ### Added
 
 - **Tree View**: Add support for lazy loading node children. To use this, you need to provide:
-
   - `loadChildren` is a function that is used to load the children of a node.
   - `onLoadChildrenComplete` is a callback that is called when the children of a node are loaded. Used to update the
     tree collection.
@@ -155,7 +229,6 @@ const service = useMachine(fileUpload.machine, {
 ### Fixed
 
 - **Password Input**
-
   - Export missing types for `Api` and `Service`
   - Add `api.toggleVisible` function to toggle the visibility of the password input
   - Implement `translations` prop to customize the visibility trigger accessibility label
@@ -186,7 +259,6 @@ const service = useMachine(fileUpload.machine, {
 ### Fixed
 
 - **Carousel**:
-
   - Fix issue where focusing on carousel region and navigating with keyboard doesn't work as expected
   - Fix issue when `allowMouseDrag` is set where carousel no longer snaps after mouse interaction
 
@@ -216,7 +288,6 @@ const service = useMachine(fileUpload.machine, {
 - **Collection**: Fix issue where `getNextValue` and `getPreviousValue` doesn't work as expected when `groupBy` is used.
 
 - **Combobox**:
-
   - Fix issue in Vue.js where combobox doesn't work for items rendered as link
   - Add `href` to params in `navigate` context property
 
@@ -250,7 +321,6 @@ const service = useMachine(fileUpload.machine, {
 - **Toggle Group**: Add support for `deselectable` prop to ensure one or more toggle is selected at any time.
 
 - **Splitter**:
-
   - Expose `api.resetSizes()` to reset the size to the initial specified size
   - Fix issue in vertical orientation where arrow up doesn't work as expected.
 
@@ -266,7 +336,6 @@ const service = useMachine(fileUpload.machine, {
 ### Fixed
 
 - **Floating Panel**
-
   - Change default strategy from `absolute` to `fixed` to improve positioning consistency
   - Implement controlled open/close state
   - Constraint the mouse movement to the boundary rect to prevent content from being moved outside completely
@@ -282,7 +351,6 @@ const service = useMachine(fileUpload.machine, {
 ### Changed
 
 - **Floating Panel**
-
   - Update props and APIs to be consistent with other components
   - Fix issue where position and size were not synchronized correctly
 
@@ -291,13 +359,11 @@ const service = useMachine(fileUpload.machine, {
 ### Added
 
 - **Toast**: Add support for queuing toasts that exceed the maximum limit. When the maximum number of toasts is reached:
-
   - New toasts are added to a queue instead of being dropped
   - Queued toasts are automatically displayed when space becomes available
   - Queue is cleared when all toasts are removed
 
 - **Listbox**
-
   - Add support for clearing selection on Escape press
   - Add `api.clearHighlightedValue` function to clear the highlighted value
   - Add `data-empty` attribute to indicate when the listbox is empty
@@ -325,7 +391,6 @@ const service = useMachine(fileUpload.machine, {
 ### Fixed
 
 - **Listbox**
-
   - Fix issue where keyboard focus loops when `loopFocus` was not set.
   - Fix issue where `extended` selection mode was not working as expected.
 
@@ -348,12 +413,10 @@ const service = useMachine(fileUpload.machine, {
 - **Tabs**: Fix issue where tabs indicator animation behaves inconsistently.
 
 - **Date Picker**
-
   - Fix issue where datepicker throws error when navigating month view.
   - Fix issue where range selection doesn't reset correctly when clicking the same start date.
 
 - **Interact Outside**
-
   - Fix issue where pointerdown outside doesn't work consistently on mobile devices.
   - Improve pointerdown outside click detection in shadow DOM environments.
 
@@ -362,7 +425,6 @@ const service = useMachine(fileUpload.machine, {
 ### Added
 
 - **Slider**
-
   - Add support for `origin: end` to align the thumb to the end of the track.
   - Expose `thumbSize` as CSS variables in the root element. Can be useful for styling the slider.
 
@@ -439,7 +501,6 @@ const service = useMachine(fileUpload.machine, {
   ```
 
   The also comes with new features such as:
-
   - Support for collapsible panels
   - Support for collapse and expand events
   - Methods for resizing the panels programmatically
@@ -481,7 +542,6 @@ const service = useMachine(fileUpload.machine, {
 - **Tags Input**: Improve caret detection logic to prevent unwanted tag removal
 
 - **Timer**
-
   - Fix issue where timer slows down when switching tabs/windows
   - Change default `interval` value from `250` to `1000`
 
@@ -522,7 +582,6 @@ const service = useMachine(fileUpload.machine, {
 ### Added
 
 - **Date Picker**:
-
   - Add support for `api.getViewProps`.
   - Add `visibleRangeText` property to `api.offset()` return value.
 
@@ -547,7 +606,6 @@ const service = useMachine(fileUpload.machine, {
 ### Fixed
 
 - **Signature Pad**
-
   - Fix issue where hidden input throws a controlled warning in React due to the absence of `readOnly` or `onChange`.
   - Fix issue where calling `getDataUrl` in the `onDrawEnd` callback after clearing the signature pad does not return an
     empty string.
@@ -625,7 +683,6 @@ const service = useMachine(fileUpload.machine, {
   performance improvements across components.
 
 - **[Breaking] Toast**
-
   - Require the creation of a toast store using `createStore`
   - **Solid.js**: Require the usage of `<Key>` component to render toasts
 
@@ -638,7 +695,6 @@ const service = useMachine(fileUpload.machine, {
 - **File Upload**: Fix issue where drag-and-drop doesn't work when `directory` is `true`.
 
 - **Carousel**
-
   - Fix issue where initial page is not working.
   - Fix issue where pagination sync broken after using dots indicators.
 

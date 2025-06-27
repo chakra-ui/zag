@@ -3,7 +3,7 @@ import { GridCollection } from "../src"
 interface Item {
   label: string
   value: string
-  disabled?: boolean
+  disabled?: boolean | undefined
 }
 
 const items: Item[] = [

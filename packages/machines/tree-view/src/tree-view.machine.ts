@@ -1,10 +1,13 @@
-import type { TreeNode, TreeSkipFn } from "@zag-js/collection"
-import { createGuards, createMachine, type Params } from "@zag-js/core"
+import type { TreeNode } from "@zag-js/collection"
+import { createGuards, createMachine } from "@zag-js/core"
 import { getByTypeahead } from "@zag-js/dom-query"
-import { add, addOrRemove, diff, ensure, first, isArray, isEqual, last, remove, toArray, uniq } from "@zag-js/utils"
+import { addOrRemove, diff, first, isArray, isEqual, last, remove, toArray, uniq } from "@zag-js/utils"
 import { collection } from "./tree-view.collection"
 import * as dom from "./tree-view.dom"
 import type { TreeLoadingStatusMap, TreeViewSchema } from "./tree-view.types"
+import { toggleBranchChecked } from "./utils/checked-state"
+import { expandBranches } from "./utils/expand-branch"
+import { skipFn } from "./utils/visit-skip"
 
 const { and } = createGuards<TreeViewSchema>()
 
@@ -31,30 +34,56 @@ export const machine = createMachine<TreeViewSchema>({
         defaultValue: prop("defaultExpandedValue"),
         value: prop("expandedValue"),
         isEqual,
-        onChange(value) {
+        onChange(expandedValue) {
           const ctx = getContext()
           const focusedValue = ctx.get("focusedValue")
-          prop("onExpandedChange")?.({ expandedValue: value, focusedValue })
+          prop("onExpandedChange")?.({
+            expandedValue,
+            focusedValue,
+            get expandedNodes() {
+              return prop("collection").findNodes(expandedValue)
+            },
+          })
         },
       })),
       selectedValue: bindable(() => ({
         defaultValue: prop("defaultSelectedValue"),
         value: prop("selectedValue"),
         isEqual,
-        onChange(value) {
+        onChange(selectedValue) {
           const ctx = getContext()
           const focusedValue = ctx.get("focusedValue")
-          prop("onSelectionChange")?.({ selectedValue: value, focusedValue })
+          prop("onSelectionChange")?.({
+            selectedValue,
+            focusedValue,
+            get selectedNodes() {
+              return prop("collection").findNodes(selectedValue)
+            },
+          })
         },
       })),
       focusedValue: bindable(() => ({
-        defaultValue: prop("focusedValue"),
-        onChange(value) {
-          prop("onFocusChange")?.({ focusedValue: value })
+        defaultValue: prop("defaultFocusedValue") || null,
+        value: prop("focusedValue"),
+        onChange(focusedValue) {
+          prop("onFocusChange")?.({
+            focusedValue,
+            get focusedNode() {
+              return focusedValue ? prop("collection").findNode(focusedValue) : null
+            },
+          })
         },
       })),
       loadingStatus: bindable<TreeLoadingStatusMap>(() => ({
         defaultValue: {},
+      })),
+      checkedValue: bindable(() => ({
+        defaultValue: prop("defaultCheckedValue") || [],
+        value: prop("checkedValue"),
+        isEqual,
+        onChange(value) {
+          prop("onCheckedChange")?.({ checkedValue: value })
+        },
       })),
     }
   },
@@ -118,6 +147,15 @@ export const machine = createMachine<TreeViewSchema>({
     },
     "NODE.DESELECT": {
       actions: ["deselectNode"],
+    },
+    "CHECKED.TOGGLE": {
+      actions: ["toggleChecked"],
+    },
+    "CHECKED.SET": {
+      actions: ["setChecked"],
+    },
+    "CHECKED.CLEAR": {
+      actions: ["clearChecked"],
     },
   },
 
@@ -241,14 +279,12 @@ export const machine = createMachine<TreeViewSchema>({
       expandOnClick: ({ prop }) => !!prop("expandOnClick"),
     },
     actions: {
-      selectNode({ context, event, prop }) {
-        const value = toArray(event.id || event.value)
+      selectNode({ context, event }) {
+        const value = (event.id || event.value) as string | string[] | undefined
         context.set("selectedValue", (prev) => {
-          if (prop("selectionMode") === "single") {
-            return [last(value)].filter(Boolean)
-          } else {
-            return uniq([...prev, ...value])
-          }
+          if (value == null) return prev
+          if (!event.isTrusted && isArray(value)) return prev.concat(...value)
+          return [isArray(value) ? last(value) : value].filter(Boolean) as string[]
         })
       },
       deselectNode({ context, event }) {
@@ -305,9 +341,10 @@ export const machine = createMachine<TreeViewSchema>({
         const firstValue = collection.getNodeValue(firstNode)
         dom.focusNode(scope, firstValue)
       },
-      focusTreeLastNode({ prop, scope }) {
+      focusTreeLastNode(params) {
+        const { prop, scope } = params
         const collection = prop("collection")
-        const lastNode = collection.getLastNode()
+        const lastNode = collection.getLastNode(undefined, { skip: skipFn(params) })
         const lastValue = collection.getNodeValue(lastNode)
         dom.focusNode(scope, lastValue)
       },
@@ -480,114 +517,18 @@ export const machine = createMachine<TreeViewSchema>({
         aborts.forEach((abort) => abort.abort())
         aborts.clear()
       },
+      toggleChecked({ context, event, prop }) {
+        const collection = prop("collection")
+        context.set("checkedValue", (prev) =>
+          event.isBranch ? toggleBranchChecked(collection, event.value, prev) : addOrRemove(prev, event.value),
+        )
+      },
+      setChecked({ context, event }) {
+        context.set("checkedValue", event.value)
+      },
+      clearChecked({ context }) {
+        context.set("checkedValue", [])
+      },
     },
   },
 })
-
-function skipFn(params: Pick<Params<TreeViewSchema>, "prop" | "context">): TreeSkipFn<any> {
-  const { prop, context } = params
-  return function skip({ indexPath }) {
-    const paths = prop("collection").getValuePath(indexPath).slice(0, -1)
-    return paths.some((value) => !context.get("expandedValue").includes(value))
-  }
-}
-
-function partition<T>(array: T[], predicate: (value: T) => boolean) {
-  const pass: T[] = []
-  const fail: T[] = []
-  array.forEach((value) => {
-    if (predicate(value)) pass.push(value)
-    else fail.push(value)
-  })
-  return [pass, fail]
-}
-
-function expandBranches(params: Params<TreeViewSchema>, ids: string[]) {
-  const { context, prop, refs } = params
-
-  if (!prop("loadChildren")) {
-    context.set("expandedValue", (prev) => uniq(add(prev, ...ids)))
-    return
-  }
-
-  const [loadedValues, loadingValues] = partition(ids, (id) => context.get("loadingStatus")[id] === "loaded")
-
-  if (loadedValues.length > 0) {
-    context.set("expandedValue", (prev) => uniq(add(prev, ...loadedValues)))
-  }
-
-  if (loadingValues.length === 0) return
-
-  const collection = prop("collection")
-  const [nodeWithChildren, nodeWithoutChildren] = partition(loadingValues, (id) => {
-    const node = collection.findNode(id)
-    return collection.getNodeChildren(node).length > 0
-  })
-
-  // Check if node already has children (skip loading)
-  if (nodeWithChildren.length > 0) {
-    context.set("expandedValue", (prev) => uniq(add(prev, ...nodeWithChildren)))
-  }
-
-  if (nodeWithoutChildren.length === 0) return
-
-  context.set("loadingStatus", (prev) => ({
-    ...prev,
-    ...nodeWithoutChildren.reduce((acc, id) => ({ ...acc, [id]: "loading" }), {}),
-  }))
-
-  const nodesToLoad = nodeWithoutChildren.map((id) => {
-    const indexPath = collection.getIndexPath(id)!
-    const valuePath = collection.getValuePath(indexPath)!
-    const node = collection.findNode(id)!
-    return { id, indexPath, valuePath, node }
-  })
-
-  const pendingAborts = refs.get("pendingAborts")
-
-  // load children asynchronously
-  const loadChildren = prop("loadChildren")
-  ensure(loadChildren, () => "[zag-js/tree-view] `loadChildren` is required for async expansion")
-
-  const proms = nodesToLoad.map(({ id, indexPath, valuePath, node }) => {
-    const existingAbort = pendingAborts.get(id)
-    if (existingAbort) {
-      existingAbort.abort()
-      pendingAborts.delete(id)
-    }
-    const abortController = new AbortController()
-    pendingAborts.set(id, abortController)
-    return loadChildren({
-      valuePath,
-      indexPath,
-      node,
-      signal: abortController.signal,
-    })
-  })
-
-  // prefer `Promise.allSettled` over `Promise.all` to avoid early termination
-  Promise.allSettled(proms).then((results) => {
-    const loadedValues: string[] = []
-    const nextLoadingStatus = context.get("loadingStatus")
-    let collection = prop("collection")
-
-    results.forEach((result, index) => {
-      const { id, indexPath, node } = nodesToLoad[index]
-      if (result.status === "fulfilled") {
-        nextLoadingStatus[id] = "loaded"
-        loadedValues.push(id)
-        collection = collection.replace(indexPath, { ...node, children: result.value })
-      } else {
-        pendingAborts.delete(id)
-        Reflect.deleteProperty(nextLoadingStatus, id)
-      }
-    })
-
-    context.set("loadingStatus", nextLoadingStatus)
-
-    if (loadedValues.length) {
-      context.set("expandedValue", (prev) => uniq(add(prev, ...loadedValues)))
-      prop("onLoadChildrenComplete")?.({ collection })
-    }
-  })
-}

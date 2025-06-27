@@ -109,6 +109,8 @@ By default, the select collection expects an array of items with `label` and
   Used to compare items when filtering.
 - `itemToValue` — A function that returns the unique value of an item.
 - `itemToDisabled` — A function that returns the disabled state of an item.
+- `groupBy` — A function that returns the group of an item.
+- `groupSort` — An array or function to sort the groups.
 
 ```jsx
 const collection = select.collection({
@@ -131,6 +133,10 @@ const collection = select.collection({
   itemToDisabled(item) {
     return !item.available || item.quantity === 0
   },
+  groupBy(item) {
+    return item.available ? "available" : "unavailable"
+  },
+  groupSort: ["available", "unavailable"],
 })
 
 // use the collection
@@ -257,6 +263,41 @@ const service = useMachine(select.machine, {
     console.log("Select opened")
   },
 })
+```
+
+### Grouping items
+
+The select component relies explicitly on the collection. This means the
+rendered items much match the items in the collection.
+
+To ensure this, you need to pass the `groupBy` option to the collection
+function.
+
+```tsx
+const collection = select.collection({
+  items: [],
+  itemToValue: (item) => item.value,
+  itemToString: (item) => item.label,
+  groupBy: (item) => item.group || "default",
+})
+```
+
+Then, use the `collection.group()` method to render the grouped items.
+
+```tsx
+{
+  collection.group().map(([group, items], index) => (
+    <div key={`${group}-${index}`}>
+      <div {...api.getItemGroupProps({ id: group })}>{group}</div>
+      {items.map((item, index) => (
+        <div key={`${item.value}-${index}`} {...api.getItemProps({ item })}>
+          <span {...api.getItemTextProps({ item })}>{item.label}</span>
+          <span {...api.getItemIndicatorProps({ item })}>✓</span>
+        </div>
+      ))}
+    </div>
+  ))
+}
 ```
 
 ### Usage with large data

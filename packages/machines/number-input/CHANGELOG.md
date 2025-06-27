@@ -1,5 +1,71 @@
 # @zag-js/number-input
 
+## 1.17.4
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.17.4
+  - @zag-js/core@1.17.4
+  - @zag-js/types@1.17.4
+  - @zag-js/utils@1.17.4
+  - @zag-js/dom-query@1.17.4
+
+## 1.17.3
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.17.3
+  - @zag-js/core@1.17.3
+  - @zag-js/types@1.17.3
+  - @zag-js/utils@1.17.3
+  - @zag-js/dom-query@1.17.3
+
+## 1.17.2
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.17.2
+  - @zag-js/core@1.17.2
+  - @zag-js/types@1.17.2
+  - @zag-js/utils@1.17.2
+  - @zag-js/dom-query@1.17.2
+
+## 1.17.1
+
+### Patch Changes
+
+- Updated dependencies [[`4b6302f`](https://github.com/chakra-ui/zag/commit/4b6302fc9104f1ae8cd89a0f0157884fb775a65a)]:
+  - @zag-js/anatomy@1.17.1
+  - @zag-js/core@1.17.1
+  - @zag-js/types@1.17.1
+  - @zag-js/utils@1.17.1
+  - @zag-js/dom-query@1.17.1
+
+## 1.17.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.17.0
+  - @zag-js/core@1.17.0
+  - @zag-js/types@1.17.0
+  - @zag-js/utils@1.17.0
+  - @zag-js/dom-query@1.17.0
+
+## 1.16.0
+
+### Patch Changes
+
+- Updated dependencies [[`6f6c8f3`](https://github.com/chakra-ui/zag/commit/6f6c8f329d9eb9d9889eff4317c84a4f41d4bfb2)]:
+  - @zag-js/types@1.16.0
+  - @zag-js/dom-query@1.16.0
+  - @zag-js/core@1.16.0
+  - @zag-js/anatomy@1.16.0
+  - @zag-js/utils@1.16.0
+
 ## 1.15.7
 
 ### Patch Changes
@@ -2669,7 +2735,6 @@
   [`a85f7055`](https://github.com/chakra-ui/zag/commit/a85f70559ba58a5dcfa4ff9d5065c1e7a456b7af) Thanks
   [@segunadebayo](https://github.com/segunadebayo)! - - Add support for `spinOnPress` to allow user control whether to
   spin the input's value when the decrement or increment button is pressed.
-
   - Add support for `onFocus` and `onBlur` callbacks in the machine's context.
 
   ```jsx
@@ -2684,7 +2749,6 @@
     }),
   )
   ```
-
   - Add `focus()` and `blur()` methods to the machine's `api`
 
 ## 0.1.13

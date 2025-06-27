@@ -1,5 +1,77 @@
 # @zag-js/checkbox
 
+## 1.17.4
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.17.4
+  - @zag-js/core@1.17.4
+  - @zag-js/types@1.17.4
+  - @zag-js/utils@1.17.4
+  - @zag-js/dom-query@1.17.4
+  - @zag-js/focus-visible@1.17.4
+
+## 1.17.3
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.17.3
+  - @zag-js/core@1.17.3
+  - @zag-js/types@1.17.3
+  - @zag-js/utils@1.17.3
+  - @zag-js/dom-query@1.17.3
+  - @zag-js/focus-visible@1.17.3
+
+## 1.17.2
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.17.2
+  - @zag-js/core@1.17.2
+  - @zag-js/types@1.17.2
+  - @zag-js/utils@1.17.2
+  - @zag-js/dom-query@1.17.2
+  - @zag-js/focus-visible@1.17.2
+
+## 1.17.1
+
+### Patch Changes
+
+- Updated dependencies [[`4b6302f`](https://github.com/chakra-ui/zag/commit/4b6302fc9104f1ae8cd89a0f0157884fb775a65a)]:
+  - @zag-js/anatomy@1.17.1
+  - @zag-js/core@1.17.1
+  - @zag-js/types@1.17.1
+  - @zag-js/utils@1.17.1
+  - @zag-js/dom-query@1.17.1
+  - @zag-js/focus-visible@1.17.1
+
+## 1.17.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.17.0
+  - @zag-js/core@1.17.0
+  - @zag-js/types@1.17.0
+  - @zag-js/utils@1.17.0
+  - @zag-js/dom-query@1.17.0
+  - @zag-js/focus-visible@1.17.0
+
+## 1.16.0
+
+### Patch Changes
+
+- Updated dependencies [[`6f6c8f3`](https://github.com/chakra-ui/zag/commit/6f6c8f329d9eb9d9889eff4317c84a4f41d4bfb2)]:
+  - @zag-js/types@1.16.0
+  - @zag-js/dom-query@1.16.0
+  - @zag-js/core@1.16.0
+  - @zag-js/focus-visible@1.16.0
+  - @zag-js/anatomy@1.16.0
+  - @zag-js/utils@1.16.0
+
 ## 1.15.7
 
 ### Patch Changes
@@ -921,7 +993,6 @@
 
 - [`bf57d7b`](https://github.com/chakra-ui/zag/commit/bf57d7b3933daf9974eaefc443da6f3c37706bb4) Thanks
   [@segunadebayo](https://github.com/segunadebayo)! - Improve support for focus visible across components.
-
   - **Switch, Checkbox, Radio Group:** The `data-focus-visible` attribute to the selected radio button when it is
     interacted with the keyboard.
   - **Tooltip:** Focus behavior only opens when the tooltip trigger is focused with keyboard.
@@ -1356,7 +1427,6 @@
 - [#1435](https://github.com/chakra-ui/zag/pull/1435)
   [`23ed828`](https://github.com/chakra-ui/zag/commit/23ed8283e8190fc9fb6496f4ba8c5eff78bda2d7) Thanks
   [@segunadebayo](https://github.com/segunadebayo)! - Rename `api` properties
-
   - `isChecked` to `checked`
   - `isDisabled` to `disabled`
   - `isIndeterminate` to `indeterminate`
@@ -1921,14 +1991,11 @@
   [`fd71ad98`](https://github.com/chakra-ui/zag/commit/fd71ad98660fce3dd06c6dc2fa01e913ae7c3992) Thanks
   [@segunadebayo](https://github.com/segunadebayo)! - - Refactor component anatomy to use consistent naming convention
   across all machines.
-
   - **Accordion**
-
     - `getTriggerProps` => `getItemTriggerProps`
     - `getContentProps` => `getItemContentProps`
 
   - **Radio**
-
     - `getRadioProps` => `getItemProps`
     - `getRadioControlProps` => `getItemControlProps`
     - `getRadioLabelProps` => `getItemTextProps`
@@ -1936,7 +2003,6 @@
     - `getRatingProps` => `getItemProps`
 
   - **TagsInput**
-
     - `getTagProps` => `getItemProps`
     - `getTagDeleteTriggerProps` => `getItemDeleteTriggerProps`
     - `getTagInputProps` => `getItemInputProps`
@@ -2093,7 +2159,6 @@
 - [`7cf380b0`](https://github.com/chakra-ui/zag/commit/7cf380b0d3019507181b79e0fe99e894d9e83030) Thanks
   [@segunadebayo](https://github.com/segunadebayo)! - - Refactor machines to avoid the use of `dom.queryById`, this
   causes the machine to throw in React when the `key` of an element is reassigned.
-
   - Remove `queryById` from the `createScope` function.
 
 - Updated dependencies [[`7cf380b0`](https://github.com/chakra-ui/zag/commit/7cf380b0d3019507181b79e0fe99e894d9e83030)]:
@@ -2129,7 +2194,6 @@
   **Potential breaking change:**
 
   We replaced `data-expanded` or `data-checked` to `data-state` attribute
-
   - `data-expanded` maps to `data-state="open"` or `data-state="closed"`
   - `data-checked` maps to `data-state="checked"` or `data-state="unchecked"`
   - `data-indeterminate` maps to `data-state="indeterminate"`

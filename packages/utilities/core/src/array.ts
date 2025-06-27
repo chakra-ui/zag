@@ -11,7 +11,7 @@ export const last = <T>(v: T[]): T | undefined => v[v.length - 1]
 
 export const isEmpty = <T>(v: T[]): boolean => v.length === 0
 
-export const has = <T>(v: T[], t: any): boolean => v.indexOf(t) !== -1
+export const has = <T>(v: T[], t: T): boolean => v.indexOf(t) !== -1
 
 export const add = <T>(v: T[], ...items: T[]): T[] => v.concat(items)
 
@@ -28,10 +28,7 @@ export const diff = <T>(a: T[], b: T[]): T[] => {
   return a.filter((t) => !set.has(t))
 }
 
-export const addOrRemove = <T>(v: T[], item: T): T[] => {
-  if (has(v, item)) return remove(v, item)
-  return add(v, item)
-}
+export const addOrRemove = <T>(v: T[], item: T): T[] => (has(v, item) ? remove(v, item) : add(v, item))
 
 export function clear<T>(v: T[]): T[] {
   while (v.length > 0) v.pop()
@@ -39,8 +36,8 @@ export function clear<T>(v: T[]): T[] {
 }
 
 export type IndexOptions = {
-  step?: number
-  loop?: boolean
+  step?: number | undefined
+  loop?: boolean | undefined
 }
 
 export function nextIndex<T>(v: T[], idx: number, opts: IndexOptions = {}): number {
@@ -67,13 +64,12 @@ export function prev<T>(v: T[], index: number, opts: IndexOptions = {}): T | und
   return v[prevIndex(v, index, opts)]
 }
 
-export const chunk = <T>(v: T[], size: number): T[][] => {
-  const res: T[][] = []
-  return v.reduce((rows, value, index) => {
+export function chunk<T>(v: T[], size: number): T[][] {
+  return v.reduce<T[][]>((rows, value, index) => {
     if (index % size === 0) rows.push([value])
     else last(rows)?.push(value)
     return rows
-  }, res)
+  }, [])
 }
 
 export function flatArray<T>(arr: T[]): T[] {
@@ -83,4 +79,15 @@ export function flatArray<T>(arr: T[]): T[] {
     }
     return flat.concat(item)
   }, [])
+}
+
+export function partition<T>(arr: T[], fn: (value: T) => boolean): [T[], T[]] {
+  return arr.reduce<[T[], T[]]>(
+    ([pass, fail], value) => {
+      if (fn(value)) pass.push(value)
+      else fail.push(value)
+      return [pass, fail]
+    },
+    [[], []],
+  )
 }

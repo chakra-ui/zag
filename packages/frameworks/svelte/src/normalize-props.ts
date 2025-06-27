@@ -16,7 +16,7 @@ const propMap: Record<string, string> = {
 
 export type PropTypes = SvelteHTMLElements & {
   element: HTMLAttributes<HTMLElement>
-  style?: HTMLAttributes<HTMLElement>["style"]
+  style?: HTMLAttributes<HTMLElement>["style"] | undefined
 }
 
 export function toStyleString(style: Record<string, number | string>) {

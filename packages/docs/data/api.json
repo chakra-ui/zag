@@ -150,6 +150,92 @@
       }
     }
   },
+  "async-list": {
+    "api": {
+      "items": {
+        "type": "T[]",
+        "description": "The items in the list."
+      },
+      "filterText": {
+        "type": "string",
+        "description": "The filter text."
+      },
+      "cursor": {
+        "type": "C",
+        "description": "The cursor."
+      },
+      "sortDescriptor": {
+        "type": "SortDescriptor",
+        "description": "The sort descriptor."
+      },
+      "loading": {
+        "type": "boolean",
+        "description": "Whether the list is loading."
+      },
+      "error": {
+        "type": "any",
+        "description": "The error instance returned by the last fetch."
+      },
+      "abort": {
+        "type": "() => void",
+        "description": "Function to abort the current fetch."
+      },
+      "reload": {
+        "type": "() => void",
+        "description": "Function to reload the list"
+      },
+      "loadMore": {
+        "type": "() => void",
+        "description": "Function to load more items"
+      },
+      "sort": {
+        "type": "(sortDescriptor: SortDescriptor) => void",
+        "description": "Function to sort the list"
+      },
+      "setFilterText": {
+        "type": "(filterText: string) => void",
+        "description": "Function to set the filter text"
+      }
+    },
+    "context": {
+      "load": {
+        "type": "(args: LoadDetails<C>) => Promise<LoadResult<T, C>>",
+        "description": "The function to call when the list is loaded"
+      },
+      "sort": {
+        "type": "(args: SortDetails<T>) => Promise<{ items: T[]; }> | { items: T[]; }",
+        "description": "The function to call when the list is sorted"
+      },
+      "initialItems": {
+        "type": "T[]",
+        "description": "The initial items to display"
+      },
+      "initialSortDescriptor": {
+        "type": "SortDescriptor",
+        "description": "The initial sort descriptor to use"
+      },
+      "initialFilterText": {
+        "type": "string",
+        "description": "The initial filter text to use"
+      },
+      "dependencies": {
+        "type": "LoadDependency[]",
+        "description": "The dependencies to watch for changes"
+      },
+      "autoReload": {
+        "type": "boolean",
+        "description": "Whether to automatically reload the list when the dependencies change"
+      },
+      "onSuccess": {
+        "type": "(details: { items: T[]; }) => void",
+        "description": "The function to call when the list is loaded successfully"
+      },
+      "onError": {
+        "type": "(details: { error: Error; }) => void",
+        "description": "The function to call when the list fails to load"
+      }
+    }
+  },
   "avatar": {
     "api": {
       "loaded": {
@@ -1495,7 +1581,7 @@
       },
       "activationMode": {
         "type": "ActivationMode",
-        "description": "The activation mode for the preview element.\n\n- \"focus\" - Enter edit mode when the preview is focused\n- \"dblclick\" - Enter edit mode when the preview is double-clicked\n- \"click\" - Enter edit mode when the preview is clicked",
+        "description": "The activation mode for the preview element.\n\n- \"focus\" - Enter edit mode when the preview is focused\n- \"dblclick\" - Enter edit mode when the preview is double-clicked\n- \"click\" - Enter edit mode when the preview is clicked\n- \"none\" - Edit can be triggered programmatically only",
         "defaultValue": "\"focus\""
       },
       "submitMode": {
@@ -5193,7 +5279,7 @@
       },
       "expandedValue": {
         "type": "string[]",
-        "description": "The id of the expanded nodes"
+        "description": "The value of the expanded nodes"
       },
       "setExpandedValue": {
         "type": "(value: string[]) => void",
@@ -5201,11 +5287,31 @@
       },
       "selectedValue": {
         "type": "string[]",
-        "description": "The id of the selected nodes"
+        "description": "The value of the selected nodes"
       },
       "setSelectedValue": {
         "type": "(value: string[]) => void",
         "description": "Function to set the selected value"
+      },
+      "checkedValue": {
+        "type": "string[]",
+        "description": "The value of the checked nodes"
+      },
+      "toggleChecked": {
+        "type": "(value: string, isBranch: boolean) => void",
+        "description": "Function to toggle the checked value of a node"
+      },
+      "setChecked": {
+        "type": "(value: string[]) => void",
+        "description": "Function to set the checked value of a node"
+      },
+      "clearChecked": {
+        "type": "() => void",
+        "description": "Function to clear the checked value of a node"
+      },
+      "getCheckedMap": {
+        "type": "() => CheckedValueMap",
+        "description": "Function to get the checked details of branch and leaf nodes"
       },
       "getVisibleNodes": {
         "type": "() => V[]",
@@ -5229,7 +5335,7 @@
       },
       "focus": {
         "type": "(value: string) => void",
-        "description": "Function to focus an item node"
+        "description": "Function to focus a node by value"
       },
       "selectParent": {
         "type": "(value: string) => void",
@@ -5255,19 +5361,31 @@
       },
       "defaultExpandedValue": {
         "type": "string[]",
-        "description": "The initial expanded node ids when rendered.\nUse when you don't need to control the expanded node ids."
+        "description": "The initial expanded node ids when rendered.\nUse when you don't need to control the expanded node value."
       },
       "selectedValue": {
         "type": "string[]",
-        "description": "The controlled selected node ids"
+        "description": "The controlled selected node value"
       },
       "defaultSelectedValue": {
         "type": "string[]",
-        "description": "The initial selected node ids when rendered.\nUse when you don't need to control the selected node ids."
+        "description": "The initial selected node value when rendered.\nUse when you don't need to control the selected node value."
+      },
+      "defaultCheckedValue": {
+        "type": "string[]",
+        "description": "The initial checked node value when rendered.\nUse when you don't need to control the checked node value."
+      },
+      "checkedValue": {
+        "type": "string[]",
+        "description": "The controlled checked node value"
+      },
+      "defaultFocusedValue": {
+        "type": "string",
+        "description": "The initial focused node value when rendered.\nUse when you don't need to control the focused node value."
       },
       "focusedValue": {
         "type": "string",
-        "description": "The id of the focused node"
+        "description": "The value of the focused node"
       },
       "selectionMode": {
         "type": "\"single\" | \"multiple\"",
@@ -5286,9 +5404,17 @@
         "type": "(details: FocusChangeDetails) => void",
         "description": "Called when the focused node changes"
       },
+      "onCheckedChange": {
+        "type": "(details: CheckedChangeDetails) => void",
+        "description": "Called when the checked value changes"
+      },
       "onLoadChildrenComplete": {
-        "type": "(details: LoadChildrenCompleteDetails<any>) => void",
+        "type": "(details: LoadChildrenCompleteDetails<T>) => void",
         "description": "Called when a node finishes loading children"
+      },
+      "onLoadChildrenError": {
+        "type": "(details: LoadChildrenErrorDetails<T>) => void",
+        "description": "Called when loading children fails for one or more nodes"
       },
       "expandOnClick": {
         "type": "boolean",

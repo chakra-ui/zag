@@ -1,4 +1,4 @@
-import { AiOutlineCompass, AiOutlineBook } from "react-icons/ai"
+import { AiOutlineCompass, AiOutlineBook, AiOutlineTool } from "react-icons/ai"
 import { HiOutlineViewGrid } from "react-icons/hi"
 import { IconType } from "react-icons/lib"
 
@@ -134,6 +134,16 @@ const sidebar: Record<"docs", SidebarItem[]> = {
         { type: "doc", label: "Tooltip", id: "tooltip" },
         { type: "doc", label: "Tour", id: "tour" },
         { type: "doc", label: "Tree View", id: "tree-view" },
+      ],
+    },
+    {
+      type: "category",
+      label: "Utilities",
+      icon: AiOutlineTool,
+      id: "utilities",
+      items: [
+        // { type: "doc", label: "I18n", id: "i18n" },
+        { type: "doc", label: "Async List", id: "async-list", beta: true },
       ],
     },
   ],

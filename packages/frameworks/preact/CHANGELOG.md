@@ -1,5 +1,59 @@
 # @zag-js/preact
 
+## 1.17.4
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/core@1.17.4
+  - @zag-js/store@1.17.4
+  - @zag-js/types@1.17.4
+
+## 1.17.3
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/core@1.17.3
+  - @zag-js/store@1.17.3
+  - @zag-js/types@1.17.3
+
+## 1.17.2
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/core@1.17.2
+  - @zag-js/store@1.17.2
+  - @zag-js/types@1.17.2
+
+## 1.17.1
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/core@1.17.1
+  - @zag-js/store@1.17.1
+  - @zag-js/types@1.17.1
+
+## 1.17.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/core@1.17.0
+  - @zag-js/store@1.17.0
+  - @zag-js/types@1.17.0
+
+## 1.16.0
+
+### Patch Changes
+
+- Updated dependencies [[`6f6c8f3`](https://github.com/chakra-ui/zag/commit/6f6c8f329d9eb9d9889eff4317c84a4f41d4bfb2)]:
+  - @zag-js/types@1.16.0
+  - @zag-js/core@1.16.0
+  - @zag-js/store@1.16.0
+
 ## 1.15.7
 
 ### Patch Changes
@@ -507,7 +561,6 @@
 - [`5584a83`](https://github.com/chakra-ui/zag/commit/5584a833151ee9f2c2ef9c07b6d699addfbca18e) Thanks
   [@segunadebayo](https://github.com/segunadebayo)! - - Fix issue where react elements could not be passed to tree view.
   In general, we've improved the entire machine to better support complex objects like react and vue elements.
-
   - Remove support for promises in store and snapshot. Prefer to use framework-specific hooks to manage async
     operations.
 

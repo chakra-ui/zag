@@ -1,5 +1,7 @@
 import {
+  ariaAttr,
   dataAttr,
+  getByTypeahead,
   getEventKey,
   getEventTarget,
   isComposingEvent,
@@ -7,16 +9,23 @@ import {
   isModifierKey,
 } from "@zag-js/dom-query"
 import type { EventKeyMap, NormalizeProps, PropTypes } from "@zag-js/types"
-import { add, isEqual, uniq } from "@zag-js/utils"
+import { add, uniq } from "@zag-js/utils"
 import { parts } from "./tree-view.anatomy"
 import * as dom from "./tree-view.dom"
-import type { NodeProps, NodeState, TreeViewApi, TreeViewService } from "./tree-view.types"
+import type { NodeProps, NodeState, TreeNode, TreeViewApi, TreeViewService } from "./tree-view.types"
+import { getCheckedState, getCheckedValueMap } from "./utils/checked-state"
 
-export function connect<T extends PropTypes>(service: TreeViewService, normalize: NormalizeProps<T>): TreeViewApi<T> {
+export function connect<T extends PropTypes, V extends TreeNode = TreeNode>(
+  service: TreeViewService<V>,
+  normalize: NormalizeProps<T>,
+): TreeViewApi<T, V> {
   const { context, scope, computed, prop, send } = service
   const collection = prop("collection")
+
   const expandedValue = Array.from(context.get("expandedValue"))
   const selectedValue = Array.from(context.get("selectedValue"))
+  const checkedValue = Array.from(context.get("checkedValue"))
+
   const isTypingAhead = computed("isTypingAhead")
   const focusedValue = context.get("focusedValue")
   const loadingStatus = context.get("loadingStatus")
@@ -24,17 +33,22 @@ export function connect<T extends PropTypes>(service: TreeViewService, normalize
   function getNodeState(props: NodeProps): NodeState {
     const { node, indexPath } = props
     const value = collection.getNodeValue(node)
+    const firstNode = collection.getFirstNode()
+    const firstNodeValue = firstNode ? collection.getNodeValue(firstNode) : null
     return {
       value,
       indexPath,
       valuePath: collection.getValuePath(indexPath),
       disabled: Boolean(node.disabled),
-      focused: focusedValue == null ? isEqual(indexPath, [0]) : focusedValue === value,
+      focused: focusedValue == null ? firstNodeValue == value : focusedValue === value,
       selected: selectedValue.includes(value),
       expanded: expandedValue.includes(value),
       loading: loadingStatus[value] === "loading",
       depth: indexPath.length,
       isBranch: collection.isBranchNode(node),
+      get checked() {
+        return getCheckedState(collection, node, checkedValue)
+      },
     }
   }
 
@@ -42,6 +56,19 @@ export function connect<T extends PropTypes>(service: TreeViewService, normalize
     collection,
     expandedValue,
     selectedValue,
+    checkedValue,
+    toggleChecked(value, isBranch) {
+      send({ type: "CHECKED.TOGGLE", value, isBranch })
+    },
+    setChecked(value) {
+      send({ type: "CHECKED.SET", value })
+    },
+    clearChecked() {
+      send({ type: "CHECKED.CLEAR" })
+    },
+    getCheckedMap() {
+      return getCheckedValueMap(collection, checkedValue)
+    },
     expand(value) {
       send({ type: value ? "BRANCH.EXPAND" : "EXPANDED.ALL", value })
     },
@@ -52,7 +79,7 @@ export function connect<T extends PropTypes>(service: TreeViewService, normalize
       send({ type: value ? "NODE.DESELECT" : "SELECTED.CLEAR", value })
     },
     select(value) {
-      send({ type: value ? "NODE.SELECT" : "SELECTED.ALL", value })
+      send({ type: value ? "NODE.SELECT" : "SELECTED.ALL", value, isTrusted: false })
     },
     getVisibleNodes() {
       return computed("visibleNodes").map(({ node }) => node)
@@ -195,10 +222,7 @@ export function connect<T extends PropTypes>(service: TreeViewService, normalize
             return
           }
 
-          if (!isTypingAhead) return
-
-          const isValidTypeahead = event.key.length === 1 && !isModifierKey(event)
-          if (!isValidTypeahead) return
+          if (!getByTypeahead.isValidEvent(event)) return
 
           send({ type: "TREE.TYPEAHEAD", key: event.key, id: nodeId })
           event.preventDefault()
@@ -223,7 +247,7 @@ export function connect<T extends PropTypes>(service: TreeViewService, normalize
         "aria-current": itemState.selected ? "true" : undefined,
         "aria-selected": itemState.disabled ? undefined : itemState.selected,
         "data-selected": dataAttr(itemState.selected),
-        "aria-disabled": itemState.disabled,
+        "aria-disabled": ariaAttr(itemState.disabled),
         "data-disabled": dataAttr(itemState.disabled),
         "aria-level": itemState.depth,
         "data-depth": itemState.depth,
@@ -284,10 +308,10 @@ export function connect<T extends PropTypes>(service: TreeViewService, normalize
         "data-selected": dataAttr(nodeState.selected),
         "aria-expanded": nodeState.expanded,
         "data-state": nodeState.expanded ? "open" : "closed",
-        "aria-disabled": nodeState.disabled,
+        "aria-disabled": ariaAttr(nodeState.disabled),
         "data-disabled": dataAttr(nodeState.disabled),
         "data-loading": dataAttr(nodeState.loading),
-        "aria-busy": nodeState.loading,
+        "aria-busy": ariaAttr(nodeState.loading),
         style: {
           "--depth": nodeState.depth,
         },
@@ -342,7 +366,7 @@ export function connect<T extends PropTypes>(service: TreeViewService, normalize
         "data-value": nodeState.value,
         "data-depth": nodeState.depth,
         "data-loading": dataAttr(nodeState.loading),
-        "aria-busy": nodeState.loading,
+        "aria-busy": ariaAttr(nodeState.loading),
         onFocus(event) {
           send({ type: "NODE.FOCUS", id: nodeState.value })
           event.stopPropagation()
@@ -386,6 +410,29 @@ export function connect<T extends PropTypes>(service: TreeViewService, normalize
       return normalize.element({
         ...parts.branchIndentGuide.attrs,
         "data-depth": nodeState.depth,
+      })
+    },
+
+    getNodeCheckboxProps(props) {
+      const nodeState = getNodeState(props)
+      const checkedState = nodeState.checked
+      return normalize.element({
+        ...parts.nodeCheckbox.attrs,
+        tabIndex: -1,
+        role: "checkbox",
+        "data-state": checkedState === true ? "checked" : checkedState === false ? "unchecked" : "indeterminate",
+        "aria-checked": checkedState === true ? "true" : checkedState === false ? "false" : "mixed",
+        "data-disabled": dataAttr(nodeState.disabled),
+        onClick(event) {
+          if (event.defaultPrevented) return
+          if (nodeState.disabled) return
+
+          send({ type: "CHECKED.TOGGLE", value: nodeState.value, isBranch: nodeState.isBranch })
+          event.stopPropagation()
+
+          const node = event.currentTarget.closest("[role=treeitem]") as HTMLElement | null
+          node?.focus({ preventScroll: true })
+        },
       })
     },
   }

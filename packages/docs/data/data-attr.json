@@ -73,6 +73,7 @@
       "data-disabled": "Present when disabled"
     }
   },
+  "async-list": {},
   "avatar": {
     "Image": {
       "data-scope": "avatar",
@@ -388,6 +389,7 @@
       "data-scope": "combobox",
       "data-part": "input",
       "data-invalid": "Present when invalid",
+      "data-autofocus": "",
       "data-state": "\"open\" | \"closed\""
     },
     "Trigger": {
@@ -729,6 +731,12 @@
       "data-part": "drag-trigger",
       "data-disabled": "Present when disabled"
     },
+    "Control": {
+      "data-scope": "floating-panel",
+      "data-part": "control",
+      "data-disabled": "Present when disabled",
+      "data-stage": ""
+    },
     "Header": {
       "data-scope": "floating-panel",
       "data-part": "header",
@@ -858,14 +866,14 @@
       "data-part": "item-indicator",
       "data-disabled": "Present when disabled",
       "data-highlighted": "Present when highlighted",
-      "data-state": "\"checked\" | \"unchecked\""
+      "data-state": "\"checked\""
     },
     "ItemText": {
       "data-scope": "menu",
       "data-part": "item-text",
       "data-disabled": "Present when disabled",
       "data-highlighted": "Present when highlighted",
-      "data-state": "\"checked\" | \"unchecked\""
+      "data-state": "\"checked\""
     }
   },
   "navigation-menu": {
@@ -1007,6 +1015,52 @@
       "data-scope": "pagination",
       "data-part": "next-trigger",
       "data-disabled": "Present when disabled"
+    }
+  },
+  "password-input": {
+    "Root": {
+      "data-scope": "password-input",
+      "data-part": "root",
+      "data-disabled": "Present when disabled",
+      "data-invalid": "Present when invalid",
+      "data-readonly": "Present when read-only"
+    },
+    "Label": {
+      "data-scope": "password-input",
+      "data-part": "label",
+      "data-disabled": "Present when disabled",
+      "data-invalid": "Present when invalid",
+      "data-readonly": "Present when read-only"
+    },
+    "Input": {
+      "data-scope": "password-input",
+      "data-part": "input",
+      "data-state": "\"visible\" | \"hidden\"",
+      "data-disabled": "Present when disabled",
+      "data-invalid": "Present when invalid",
+      "data-readonly": "Present when read-only"
+    },
+    "VisibilityTrigger": {
+      "data-scope": "password-input",
+      "data-part": "visibility-trigger",
+      "data-readonly": "Present when read-only",
+      "data-disabled": "Present when disabled",
+      "data-state": "\"visible\" | \"hidden\""
+    },
+    "Indicator": {
+      "data-scope": "password-input",
+      "data-part": "indicator",
+      "data-state": "\"visible\" | \"hidden\"",
+      "data-disabled": "Present when disabled",
+      "data-invalid": "Present when invalid",
+      "data-readonly": "Present when read-only"
+    },
+    "Control": {
+      "data-scope": "password-input",
+      "data-part": "control",
+      "data-disabled": "Present when disabled",
+      "data-invalid": "Present when invalid",
+      "data-readonly": "Present when read-only"
     }
   },
   "pin-input": {
@@ -1790,7 +1844,8 @@
       "data-path": "The path of the item",
       "data-selected": "Present when selected",
       "data-state": "\"open\" | \"closed\"",
-      "data-disabled": "Present when disabled"
+      "data-disabled": "Present when disabled",
+      "data-loading": ""
     },
     "BranchIndicator": {
       "data-scope": "tree-view",
@@ -1798,14 +1853,16 @@
       "data-state": "\"open\" | \"closed\"",
       "data-disabled": "Present when disabled",
       "data-selected": "Present when selected",
-      "data-focus": "Present when focused"
+      "data-focus": "Present when focused",
+      "data-loading": ""
     },
     "BranchTrigger": {
       "data-scope": "tree-view",
       "data-part": "branch-trigger",
       "data-disabled": "Present when disabled",
       "data-state": "\"open\" | \"closed\"",
-      "data-value": "The value of the item"
+      "data-value": "The value of the item",
+      "data-loading": ""
     },
     "BranchControl": {
       "data-scope": "tree-view",
@@ -1816,13 +1873,15 @@
       "data-selected": "Present when selected",
       "data-focus": "Present when focused",
       "data-value": "The value of the item",
-      "data-depth": "The depth of the item"
+      "data-depth": "The depth of the item",
+      "data-loading": ""
     },
     "BranchText": {
       "data-scope": "tree-view",
       "data-part": "branch-text",
       "data-disabled": "Present when disabled",
-      "data-state": "\"open\" | \"closed\""
+      "data-state": "\"open\" | \"closed\"",
+      "data-loading": ""
     },
     "BranchContent": {
       "data-scope": "tree-view",
@@ -1836,6 +1895,11 @@
       "data-scope": "tree-view",
       "data-part": "branch-indent-guide",
       "data-depth": "The depth of the item"
+    },
+    "NodeCheckbox": {
+      "data-scope": "tree-view",
+      "data-part": "node-checkbox",
+      "data-state": "\"checked\" | \"unchecked\" | \"indeterminate\""
     }
   }
 }

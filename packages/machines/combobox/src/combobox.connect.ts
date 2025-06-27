@@ -59,7 +59,7 @@ export function connect<T extends PropTypes, V extends CollectionItem>(
     highlightedValue,
     highlightedItem: context.get("highlightedItem"),
     value: context.get("value"),
-    valueAsString: context.get("valueAsString"),
+    valueAsString: computed("valueAsString"),
     hasSelectedItems: computed("hasSelectedItems"),
     selectedItems: context.get("selectedItems"),
     collection: prop("collection"),

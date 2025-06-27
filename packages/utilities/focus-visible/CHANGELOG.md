@@ -1,5 +1,47 @@
 # @zag-js/focus-visible
 
+## 1.17.4
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/dom-query@1.17.4
+
+## 1.17.3
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/dom-query@1.17.3
+
+## 1.17.2
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/dom-query@1.17.2
+
+## 1.17.1
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/dom-query@1.17.1
+
+## 1.17.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/dom-query@1.17.0
+
+## 1.16.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/dom-query@1.16.0
+
 ## 1.15.7
 
 ### Patch Changes
@@ -507,7 +549,6 @@
 
 - [`bf57d7b`](https://github.com/chakra-ui/zag/commit/bf57d7b3933daf9974eaefc443da6f3c37706bb4) Thanks
   [@segunadebayo](https://github.com/segunadebayo)! - Improve support for focus visible across components.
-
   - **Switch, Checkbox, Radio Group:** The `data-focus-visible` attribute to the selected radio button when it is
     interacted with the keyboard.
   - **Tooltip:** Focus behavior only opens when the tooltip trigger is focused with keyboard.

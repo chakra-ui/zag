@@ -44,7 +44,7 @@ export function setElementChecked(el: HTMLInputElement | null, checked: boolean)
 
 export interface InputValueEventOptions {
   value: string | number
-  bubbles?: boolean
+  bubbles?: boolean | undefined
 }
 
 export function dispatchInputValueEvent(el: HTMLElementWithValue | null, options: InputValueEventOptions) {
@@ -61,7 +61,7 @@ export function dispatchInputValueEvent(el: HTMLElementWithValue | null, options
 
 export interface CheckedEventOptions {
   checked: boolean
-  bubbles?: boolean
+  bubbles?: boolean | undefined
 }
 
 export function dispatchInputCheckedEvent(el: HTMLInputElement | null, options: CheckedEventOptions) {

@@ -21,9 +21,9 @@ export const getElements = (ctx: Scope) => {
 
 export const getFirstTriggerEl = (ctx: Scope) => first(getElements(ctx))
 export const getLastTriggerEl = (ctx: Scope) => last(getElements(ctx))
-export const getNextTriggerEl = (ctx: Scope, opts: { value: string; loopFocus?: boolean }) =>
+export const getNextTriggerEl = (ctx: Scope, opts: { value: string; loopFocus?: boolean | undefined }) =>
   nextById(getElements(ctx), getTriggerId(ctx, opts.value), opts.loopFocus)
-export const getPrevTriggerEl = (ctx: Scope, opts: { value: string; loopFocus?: boolean }) =>
+export const getPrevTriggerEl = (ctx: Scope, opts: { value: string; loopFocus?: boolean | undefined }) =>
   prevById(getElements(ctx), getTriggerId(ctx, opts.value), opts.loopFocus)
 
 export const getOffsetRect = (el: HTMLElement | undefined) => {

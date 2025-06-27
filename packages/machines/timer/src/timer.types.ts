@@ -11,7 +11,7 @@ export interface Time<T = number> {
 
 export type TimePart = keyof Time
 
-export type TimerAction = "start" | "pause" | "resume" | "reset"
+export type TimerAction = "start" | "pause" | "resume" | "reset" | "restart"
 
 export type ElementIds = Partial<{
   root: string

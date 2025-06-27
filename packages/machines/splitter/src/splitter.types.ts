@@ -108,7 +108,7 @@ export interface SplitterProps extends DirectionProperty, CommonProperties {
   /**
    * The number of pixels to resize the panel by when the keyboard is used.
    */
-  keyboardResizeBy?: number | null
+  keyboardResizeBy?: number | null | undefined
   /**
    * The nonce for the injected splitter cursor stylesheet.
    */

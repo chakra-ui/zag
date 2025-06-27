@@ -1,5 +1,98 @@
 # @zag-js/date-picker
 
+## 1.17.4
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.17.4
+  - @zag-js/core@1.17.4
+  - @zag-js/types@1.17.4
+  - @zag-js/utils@1.17.4
+  - @zag-js/date-utils@1.17.4
+  - @zag-js/dismissable@1.17.4
+  - @zag-js/dom-query@1.17.4
+  - @zag-js/live-region@1.17.4
+  - @zag-js/popper@1.17.4
+
+## 1.17.3
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.17.3
+  - @zag-js/core@1.17.3
+  - @zag-js/types@1.17.3
+  - @zag-js/utils@1.17.3
+  - @zag-js/date-utils@1.17.3
+  - @zag-js/dismissable@1.17.3
+  - @zag-js/dom-query@1.17.3
+  - @zag-js/live-region@1.17.3
+  - @zag-js/popper@1.17.3
+
+## 1.17.2
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.17.2
+  - @zag-js/core@1.17.2
+  - @zag-js/types@1.17.2
+  - @zag-js/utils@1.17.2
+  - @zag-js/date-utils@1.17.2
+  - @zag-js/dismissable@1.17.2
+  - @zag-js/dom-query@1.17.2
+  - @zag-js/live-region@1.17.2
+  - @zag-js/popper@1.17.2
+
+## 1.17.1
+
+### Patch Changes
+
+- [`9cedef9`](https://github.com/chakra-ui/zag/commit/9cedef94d205b312ad88c6c6bb674c2bfe33d13a) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix issue with keyboard selection where setting unavailable date
+  causes month view to behave differently from clicking with mouse.
+- Updated dependencies [[`4b6302f`](https://github.com/chakra-ui/zag/commit/4b6302fc9104f1ae8cd89a0f0157884fb775a65a)]:
+  - @zag-js/anatomy@1.17.1
+  - @zag-js/core@1.17.1
+  - @zag-js/types@1.17.1
+  - @zag-js/utils@1.17.1
+  - @zag-js/date-utils@1.17.1
+  - @zag-js/dismissable@1.17.1
+  - @zag-js/dom-query@1.17.1
+  - @zag-js/live-region@1.17.1
+  - @zag-js/popper@1.17.1
+
+## 1.17.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.17.0
+  - @zag-js/core@1.17.0
+  - @zag-js/types@1.17.0
+  - @zag-js/utils@1.17.0
+  - @zag-js/date-utils@1.17.0
+  - @zag-js/dismissable@1.17.0
+  - @zag-js/dom-query@1.17.0
+  - @zag-js/live-region@1.17.0
+  - @zag-js/popper@1.17.0
+
+## 1.16.0
+
+### Patch Changes
+
+- Updated dependencies [[`6f6c8f3`](https://github.com/chakra-ui/zag/commit/6f6c8f329d9eb9d9889eff4317c84a4f41d4bfb2)]:
+  - @zag-js/types@1.16.0
+  - @zag-js/dom-query@1.16.0
+  - @zag-js/core@1.16.0
+  - @zag-js/dismissable@1.16.0
+  - @zag-js/popper@1.16.0
+  - @zag-js/anatomy@1.16.0
+  - @zag-js/utils@1.16.0
+  - @zag-js/date-utils@1.16.0
+  - @zag-js/live-region@1.16.0
+
 ## 1.15.7
 
 ### Patch Changes
@@ -724,7 +817,6 @@
 - [`c4eb308`](https://github.com/chakra-ui/zag/commit/c4eb30878405fccef1ba05e947470dacc1368adc) Thanks
   [@segunadebayo](https://github.com/segunadebayo)! - - Add support for `minView` and `maxView` to provide better
   control of the datepicker views. This makes it easier to build month and year only pickers.
-
   - Add new `parse` method to parse the input value and return a valid date. This should be paired with the `format`
     option to provide a better user experience.
   - Add `locale` and `timeZone` to the `format` method.
@@ -1565,7 +1657,6 @@
 - [`9216a62`](https://github.com/chakra-ui/zag/commit/9216a625e1be9f7dd169501515297a8214f12b93) Thanks
   [@segunadebayo](https://github.com/segunadebayo)! - - Ensure consistent application of form related properties like
   `invalid`, `required`, and `readOnly`
-
   - Export `Service` from all machines for use in Lit based components.
 
 - [`82c0aef`](https://github.com/chakra-ui/zag/commit/82c0aef542d20c55a3ca7e63a753060c88005a59) Thanks
@@ -2211,7 +2302,6 @@
   [`36958b5`](https://github.com/chakra-ui/zag/commit/36958b59d51f3ad9f2193e107f8ca8952c698438) Thanks
   [@segunadebayo](https://github.com/segunadebayo)! - - [BREAKING] Change date picker from `inputProps` to
   `getInputProps` to support multiple inputs.
-
   - Added a new prop `getPresetTriggerProps` to support custom trigger for common date presets (e.g. Last 7 days, Last
     30 days, etc.)
 
@@ -2858,7 +2948,6 @@
   **Potential breaking change:**
 
   We replaced `data-expanded` or `data-checked` to `data-state` attribute
-
   - `data-expanded` maps to `data-state="open"` or `data-state="closed"`
   - `data-checked` maps to `data-state="checked"` or `data-state="unchecked"`
   - `data-indeterminate` maps to `data-state="indeterminate"`

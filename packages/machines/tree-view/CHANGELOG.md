@@ -1,5 +1,107 @@
 # @zag-js/tree-view
 
+## 1.17.4
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.17.4
+  - @zag-js/core@1.17.4
+  - @zag-js/types@1.17.4
+  - @zag-js/collection@1.17.4
+  - @zag-js/utils@1.17.4
+  - @zag-js/dom-query@1.17.4
+
+## 1.17.3
+
+### Patch Changes
+
+- [`bc70411`](https://github.com/chakra-ui/zag/commit/bc7041187e5b8dc950c7e6b57aadc1e50b8a3850) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix tree traversal for querying last node.
+
+- Updated dependencies [[`bc70411`](https://github.com/chakra-ui/zag/commit/bc7041187e5b8dc950c7e6b57aadc1e50b8a3850)]:
+  - @zag-js/collection@1.17.3
+  - @zag-js/anatomy@1.17.3
+  - @zag-js/core@1.17.3
+  - @zag-js/types@1.17.3
+  - @zag-js/utils@1.17.3
+  - @zag-js/dom-query@1.17.3
+
+## 1.17.2
+
+### Patch Changes
+
+- [`2ce6e5c`](https://github.com/chakra-ui/zag/commit/2ce6e5c2296d07c16220eb85fbd720a5b33e1f48) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Expose node details in `onExpandChange`, `onSelectionChange` and
+  `onFocusChange`
+
+- Updated dependencies [[`2ce6e5c`](https://github.com/chakra-ui/zag/commit/2ce6e5c2296d07c16220eb85fbd720a5b33e1f48)]:
+  - @zag-js/collection@1.17.2
+  - @zag-js/anatomy@1.17.2
+  - @zag-js/core@1.17.2
+  - @zag-js/types@1.17.2
+  - @zag-js/utils@1.17.2
+  - @zag-js/dom-query@1.17.2
+
+## 1.17.1
+
+### Patch Changes
+
+- [`05084b6`](https://github.com/chakra-ui/zag/commit/05084b68ac69a0cee4d4b532beba454ed9336d5f) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - - Fix issue where clicking a branch with indeterminate state
+  doesn't check its child nodes.
+  - Remove `aria-busy` attribute from branch trigger when not loading children.
+- Updated dependencies [[`4b6302f`](https://github.com/chakra-ui/zag/commit/4b6302fc9104f1ae8cd89a0f0157884fb775a65a)]:
+  - @zag-js/anatomy@1.17.1
+  - @zag-js/core@1.17.1
+  - @zag-js/types@1.17.1
+  - @zag-js/collection@1.17.1
+  - @zag-js/utils@1.17.1
+  - @zag-js/dom-query@1.17.1
+
+## 1.17.0
+
+### Minor Changes
+
+- [`f4015be`](https://github.com/chakra-ui/zag/commit/f4015becaf1eab89db527df2cd3c16332ef0bdfb) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Rename `getItemCheckboxProps` to `getNodeCheckboxProps` since it
+  can be used in both items and branches
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.17.0
+  - @zag-js/core@1.17.0
+  - @zag-js/types@1.17.0
+  - @zag-js/collection@1.17.0
+  - @zag-js/utils@1.17.0
+  - @zag-js/dom-query@1.17.0
+
+## 1.16.0
+
+### Minor Changes
+
+- [`f0545c6`](https://github.com/chakra-ui/zag/commit/f0545c61ef151e5e4480b0cc1d7401dda4653094) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - - Add support for checkbox state for checkbox trees via
+  `defaultCheckedValue`, `checkedValue`, `onCheckedChange` props
+  - Add callback for when `loadChildren` fails via `onLoadChildrenError` prop
+  - Add `api.getCheckedMap` method to get the checked state of all nodes
+
+- [`075404e`](https://github.com/chakra-ui/zag/commit/075404e6f3722522fc50f790f9498601b94e2e15) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix issue where `api.collapse` and `api.deselect` throws error
+  when called without arguments
+
+### Patch Changes
+
+- Updated dependencies [[`f0545c6`](https://github.com/chakra-ui/zag/commit/f0545c61ef151e5e4480b0cc1d7401dda4653094),
+  [`6f6c8f3`](https://github.com/chakra-ui/zag/commit/6f6c8f329d9eb9d9889eff4317c84a4f41d4bfb2)]:
+  - @zag-js/collection@1.16.0
+  - @zag-js/types@1.16.0
+  - @zag-js/dom-query@1.16.0
+  - @zag-js/core@1.16.0
+  - @zag-js/anatomy@1.16.0
+  - @zag-js/utils@1.16.0
+
 ## 1.15.7
 
 ### Patch Changes
@@ -1316,7 +1418,6 @@
 
 - [`c7b781c`](https://github.com/chakra-ui/zag/commit/c7b781c937378dcf45f07e8333360d913fc9f8f1) Thanks
   [@segunadebayo](https://github.com/segunadebayo)! - - Rename some properties for better consistency:
-
   - `id` -> `value`
   - `expandedIds` -> `expandedValue`
   - `selectedIds` -> `selectedValue`
@@ -1324,12 +1425,10 @@
 - [#1435](https://github.com/chakra-ui/zag/pull/1435)
   [`23ed828`](https://github.com/chakra-ui/zag/commit/23ed8283e8190fc9fb6496f4ba8c5eff78bda2d7) Thanks
   [@segunadebayo](https://github.com/segunadebayo)! - - Rename `api.getItemState` properties
-
   - `isDisabled` -> `disabled`
   - `isFocused` -> `focused`
   - `isSelected` -> `selected`
   - Rename `api.getBranchState` properties
-
     - `isExpanded` -> `expanded`
 
 ### Patch Changes

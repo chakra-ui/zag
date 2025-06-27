@@ -4,7 +4,7 @@ import { diagram } from "./tree-diagram"
 
 interface Node {
   value: string
-  children?: Array<Node>
+  children?: Array<Node> | undefined
 }
 
 let tree: TreeCollection<Node>
@@ -135,6 +135,36 @@ describe("tree / traversal", () => {
     `)
   })
 
+  it("one branch scenario", () => {
+    // Test case with only one branch - the last node should be the deepest last child
+    const oneBranchTree = new TreeCollection({
+      nodeToChildren: (node) => node.children ?? [],
+      rootNode: {
+        value: "ROOT",
+        children: [
+          {
+            value: "branch1",
+            children: [
+              { value: "child1-1" },
+              { value: "child1-2" },
+              {
+                value: "branch1-1",
+                children: [{ value: "child2-1" }, { value: "child2-2" }],
+              },
+            ],
+          },
+        ],
+      },
+    })
+
+    // This should return "child2-2" (the actual last node in document order)
+    const lastNode = oneBranchTree.getLastNode()
+    expect(lastNode?.value).toBe("child2-2")
+
+    const firstNode = oneBranchTree.getFirstNode()
+    expect(firstNode?.value).toBe("branch1")
+  })
+
   it("branch nodes", () => {
     const branch = tree.findNode("branch1")
     expect(branch).toMatchInlineSnapshot(`
@@ -177,12 +207,7 @@ describe("tree / traversal", () => {
 
     expect(tree.getLastNode(branch)).toMatchInlineSnapshot(`
       {
-        "children": [
-          {
-            "value": "child2-1",
-          },
-        ],
-        "value": "branch1-1",
+        "value": "child2-1",
       }
     `)
   })
@@ -576,10 +601,10 @@ describe("tree / siblings", () => {
 describe("tree / flatten", () => {
   interface TestNode {
     value: string
-    label?: string
-    disabled?: boolean
-    customProp?: string
-    children?: TestNode[]
+    label?: string | undefined
+    disabled?: boolean | undefined
+    customProp?: string | undefined
+    children?: TestNode[] | undefined
   }
 
   const complexTree: TestNode = {
@@ -807,6 +832,148 @@ describe("tree / flatten", () => {
 
     const level3Node = reconstructed.findNode("level3")
     expect((level3Node as any)?.data).toEqual({ level: 3, info: "third" })
+  })
+})
+
+describe("tree / descendants", () => {
+  it("getDescendantNodes - gets all descendants of root", () => {
+    const descendants = tree.getDescendantNodes("ROOT")
+    expect(descendants.map((node) => node.value)).toMatchInlineSnapshot(`
+      [
+        "child1-1",
+        "child1-2",
+        "child1-3",
+        "child2-1",
+        "child1",
+        "child2",
+      ]
+    `)
+  })
+
+  it("getDescendantNodes - gets all descendants of branch node", () => {
+    const descendants = tree.getDescendantNodes("branch1")
+    expect(descendants.map((node) => node.value)).toMatchInlineSnapshot(`
+      [
+        "child1-1",
+        "child1-2",
+        "child1-3",
+        "child2-1",
+      ]
+    `)
+  })
+
+  it("getDescendantNodes - gets all descendants of nested branch", () => {
+    const descendants = tree.getDescendantNodes("branch1-1")
+    expect(descendants.map((node) => node.value)).toMatchInlineSnapshot(`
+      [
+        "child2-1",
+      ]
+    `)
+  })
+
+  it("getDescendantNodes - returns empty array for leaf nodes", () => {
+    const descendants = tree.getDescendantNodes("child1-1")
+    expect(descendants).toEqual([])
+  })
+
+  it("getDescendantNodes - returns empty array for non-existent nodes", () => {
+    const descendants = tree.getDescendantNodes("non-existent")
+    expect(descendants).toEqual([])
+  })
+
+  it("getDescendantNodes - with withBranch option", () => {
+    const descendants = tree.getDescendantNodes("branch1", { withBranch: true })
+    expect(descendants.map((node) => node.value)).toMatchInlineSnapshot(`
+      [
+        "child1-1",
+        "child1-2",
+        "child1-3",
+        "branch1-1",
+        "child2-1",
+      ]
+    `)
+  })
+
+  it("getDescendantNodes - without withBranch option (excludes branch nodes)", () => {
+    const descendants = tree.getDescendantNodes("branch1", { withBranch: false })
+    expect(descendants.map((node) => node.value)).toMatchInlineSnapshot(`
+      [
+        "child1-1",
+        "child1-2",
+        "child1-3",
+        "child2-1",
+      ]
+    `)
+  })
+
+  it("getDescendantNodes - using index path", () => {
+    const indexPath = tree.getIndexPath("branch1")!
+    const descendants = tree.getDescendantNodes(indexPath)
+    expect(descendants.map((node) => node.value)).toMatchInlineSnapshot(`
+      [
+        "child1-1",
+        "child1-2",
+        "child1-3",
+        "child2-1",
+      ]
+    `)
+  })
+
+  it("getDescendantValues - gets all descendant values", () => {
+    const values = tree.getDescendantValues("branch1")
+    expect(values).toMatchInlineSnapshot(`
+      [
+        "child1-1",
+        "child1-2",
+        "child1-3",
+        "child2-1",
+      ]
+    `)
+  })
+
+  it("getDescendantValues - with withBranch option", () => {
+    const values = tree.getDescendantValues("branch1", { withBranch: true })
+    expect(values).toMatchInlineSnapshot(`
+      [
+        "child1-1",
+        "child1-2",
+        "child1-3",
+        "branch1-1",
+        "child2-1",
+      ]
+    `)
+  })
+
+  it("getDescendantValues - without withBranch option", () => {
+    const values = tree.getDescendantValues("branch1", { withBranch: false })
+    expect(values).toMatchInlineSnapshot(`
+      [
+        "child1-1",
+        "child1-2",
+        "child1-3",
+        "child2-1",
+      ]
+    `)
+  })
+
+  it("getDescendantValues - returns empty array for leaf nodes", () => {
+    const values = tree.getDescendantValues("child1-1")
+    expect(values).toEqual([])
+  })
+
+  it("getDescendantValues - returns empty array for non-existent nodes", () => {
+    const values = tree.getDescendantValues("non-existent")
+    expect(values).toEqual([])
+  })
+
+  it("getDescendantValues - using index path", () => {
+    const indexPath = tree.getIndexPath("branch1-1")!
+    const values = tree.getDescendantValues(indexPath)
+    expect(values).toMatchInlineSnapshot(`
+      [
+        "child2-1",
+      ]
+    `)
   })
 })
 

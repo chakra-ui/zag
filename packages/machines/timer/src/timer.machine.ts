@@ -1,9 +1,10 @@
 import { createMachine } from "@zag-js/core"
-import { setRafInterval, setRafTimeout } from "@zag-js/utils"
-import type { Time, TimerSchema } from "./timer.types"
+import { clampValue, setRafInterval, setRafTimeout } from "@zag-js/utils"
+import type { Time, TimerProps, TimerSchema } from "./timer.types"
 
 export const machine = createMachine<TimerSchema>({
   props({ props }) {
+    validateProps(props)
     return {
       interval: 1000,
       ...props,
@@ -41,7 +42,14 @@ export const machine = createMachine<TimerSchema>({
     progressPercent: ({ context, prop }) => {
       const targetMs = prop("targetMs")
       if (targetMs == null) return 0
-      return toPercent(context.get("currentMs"), prop("startMs") ?? 0, targetMs)
+      const startMs = prop("startMs") ?? 0
+      const currentMs = context.get("currentMs")
+
+      // Fix for countdown timers: swap min/max values
+      if (prop("countdown")) {
+        return clampValue(toPercent(currentMs, targetMs, startMs), 0, 1)
+      }
+      return clampValue(toPercent(currentMs, startMs, targetMs), 0, 1)
     },
   },
 
@@ -118,7 +126,18 @@ export const machine = createMachine<TimerSchema>({
       updateTime({ context, prop, event }) {
         const sign = prop("countdown") ? -1 : 1
         const deltaMs = roundToInterval(event.deltaMs, prop("interval"))
-        context.set("currentMs", (prev) => prev + sign * deltaMs)
+        context.set("currentMs", (prev) => {
+          const newValue = prev + sign * deltaMs
+          let targetMs = prop("targetMs")
+          if (targetMs == null && prop("countdown")) targetMs = 0
+
+          if (prop("countdown") && targetMs != null) {
+            return Math.max(newValue, targetMs)
+          } else if (!prop("countdown") && targetMs != null) {
+            return Math.min(newValue, targetMs)
+          }
+          return newValue
+        })
       },
       resetTime({ context, prop }) {
         let targetMs = prop("targetMs")
@@ -142,18 +161,20 @@ export const machine = createMachine<TimerSchema>({
         let targetMs = prop("targetMs")
         if (targetMs == null && prop("countdown")) targetMs = 0
         if (targetMs == null) return false
-        return context.get("currentMs") === targetMs
+        const currentMs = context.get("currentMs")
+        return prop("countdown") ? currentMs <= targetMs : currentMs >= targetMs
       },
     },
   },
 })
 
 function msToTime(ms: number): Time {
-  const milliseconds = ms % 1000
-  const seconds = Math.floor(ms / 1000) % 60
-  const minutes = Math.floor(ms / (1000 * 60)) % 60
-  const hours = Math.floor(ms / (1000 * 60 * 60)) % 24
-  const days = Math.floor(ms / (1000 * 60 * 60 * 24))
+  const time = Math.max(0, ms)
+  const milliseconds = time % 1000
+  const seconds = Math.floor(time / 1000) % 60
+  const minutes = Math.floor(time / (1000 * 60)) % 60
+  const hours = Math.floor(time / (1000 * 60 * 60)) % 24
+  const days = Math.floor(time / (1000 * 60 * 60 * 24))
   return {
     days,
     hours,
@@ -164,7 +185,9 @@ function msToTime(ms: number): Time {
 }
 
 function toPercent(value: number, minValue: number, maxValue: number) {
-  return (value - minValue) / (maxValue - minValue)
+  const range = maxValue - minValue
+  if (range === 0) return 0
+  return (value - minValue) / range
 }
 
 function padStart(num: number, size = 2) {
@@ -172,7 +195,7 @@ function padStart(num: number, size = 2) {
 }
 
 function roundToInterval(value: number, interval: number) {
-  return Math.round(value / interval) * interval
+  return Math.floor(value / interval) * interval
 }
 
 function formatTime(time: Time): Time<string> {
@@ -182,6 +205,50 @@ function formatTime(time: Time): Time<string> {
     hours: padStart(hours),
     minutes: padStart(minutes),
     seconds: padStart(seconds),
-    milliseconds: time.milliseconds.toString(),
+    milliseconds: padStart(time.milliseconds, 3),
+  }
+}
+
+function validateProps(props: Partial<TimerProps>) {
+  const { startMs, targetMs, countdown, interval } = props
+
+  // Validate interval
+  if (interval != null && (typeof interval !== "number" || interval <= 0)) {
+    throw new Error(`[timer] Invalid interval: ${interval}. Must be a positive number.`)
+  }
+
+  // Validate startMs
+  if (startMs != null && (typeof startMs !== "number" || startMs < 0)) {
+    throw new Error(`[timer] Invalid startMs: ${startMs}. Must be a non-negative number.`)
+  }
+
+  // Validate targetMs
+  if (targetMs != null && (typeof targetMs !== "number" || targetMs < 0)) {
+    throw new Error(`[timer] Invalid targetMs: ${targetMs}. Must be a non-negative number.`)
+  }
+
+  // Validate countdown timer configuration
+  if (countdown && startMs != null && targetMs != null) {
+    if (startMs <= targetMs) {
+      throw new Error(
+        `[timer] Invalid countdown configuration: startMs (${startMs}) must be greater than targetMs (${targetMs}).`,
+      )
+    }
+  }
+
+  // Validate stopwatch timer configuration
+  if (!countdown && startMs != null && targetMs != null) {
+    if (startMs >= targetMs) {
+      throw new Error(
+        `[timer] Invalid stopwatch configuration: startMs (${startMs}) must be less than targetMs (${targetMs}).`,
+      )
+    }
+  }
+
+  // Validate that countdown timers have a targetMs or it defaults to 0
+  if (countdown && targetMs == null && startMs != null && startMs <= 0) {
+    throw new Error(
+      `[timer] Invalid countdown configuration: startMs (${startMs}) must be greater than 0 when no targetMs is provided.`,
+    )
   }
 }

@@ -1,5 +1,76 @@
 # @zag-js/checkbox
 
+## 1.17.4
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.17.4
+  - @zag-js/core@1.17.4
+  - @zag-js/types@1.17.4
+  - @zag-js/utils@1.17.4
+  - @zag-js/dom-query@1.17.4
+
+## 1.17.3
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.17.3
+  - @zag-js/core@1.17.3
+  - @zag-js/types@1.17.3
+  - @zag-js/utils@1.17.3
+  - @zag-js/dom-query@1.17.3
+
+## 1.17.2
+
+### Patch Changes
+
+- [`eda76d6`](https://github.com/chakra-ui/zag/commit/eda76d6e324cb7fce509bd5a57d891b89a0db460) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - - Fix issue wher timer could continue beyond `targetMs` when
+  window is not visible
+  - Add validation to ensure `startMs` and `targetMs` are configured correctly
+  - Fix `progressPercent` calculation for countdown timers
+- Updated dependencies []:
+  - @zag-js/anatomy@1.17.2
+  - @zag-js/core@1.17.2
+  - @zag-js/types@1.17.2
+  - @zag-js/utils@1.17.2
+  - @zag-js/dom-query@1.17.2
+
+## 1.17.1
+
+### Patch Changes
+
+- Updated dependencies [[`4b6302f`](https://github.com/chakra-ui/zag/commit/4b6302fc9104f1ae8cd89a0f0157884fb775a65a)]:
+  - @zag-js/anatomy@1.17.1
+  - @zag-js/core@1.17.1
+  - @zag-js/types@1.17.1
+  - @zag-js/utils@1.17.1
+  - @zag-js/dom-query@1.17.1
+
+## 1.17.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.17.0
+  - @zag-js/core@1.17.0
+  - @zag-js/types@1.17.0
+  - @zag-js/utils@1.17.0
+  - @zag-js/dom-query@1.17.0
+
+## 1.16.0
+
+### Patch Changes
+
+- Updated dependencies [[`6f6c8f3`](https://github.com/chakra-ui/zag/commit/6f6c8f329d9eb9d9889eff4317c84a4f41d4bfb2)]:
+  - @zag-js/types@1.16.0
+  - @zag-js/dom-query@1.16.0
+  - @zag-js/core@1.16.0
+  - @zag-js/anatomy@1.16.0
+  - @zag-js/utils@1.16.0
+
 ## 1.15.7
 
 ### Patch Changes
@@ -829,7 +900,6 @@
 - [`f079c60`](https://github.com/chakra-ui/zag/commit/f079c603d71bb6bbd4b63f750343c6fe2f668d4f) Thanks
   [@segunadebayo](https://github.com/segunadebayo)! - - Introduces new area and control parts for better anatomy and
   structure.
-
   - [BREAKING] Move `role"timer` to new area part.
   - Automatically hide the action triggers based on the action prop passed.
 
@@ -1092,7 +1162,6 @@
 
 - [`621b0a8`](https://github.com/chakra-ui/zag/commit/621b0a8688afa6b602af0a8b36106d8ce18a7ab0) Thanks
   [@segunadebayo](https://github.com/segunadebayo)! - Refactor anatomy for timer machine.
-
   - Before: `root`, `segment`, `control`, `separator`
   - After: `root`, `item`, `itemValue`, `itemLabel`, `actionTrigger`, `separator`,
 

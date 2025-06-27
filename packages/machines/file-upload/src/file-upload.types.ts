@@ -194,7 +194,7 @@ export interface DropzoneProps {
   /**
    * Whether to disable the click event on the dropzone
    */
-  disableClick?: boolean
+  disableClick?: boolean | undefined
 }
 
 export interface FileUploadApi<T extends PropTypes = PropTypes> {

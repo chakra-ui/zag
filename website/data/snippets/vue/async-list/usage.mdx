@@ -1,0 +1,42 @@
+```html
+<script setup>
+import * as asyncList from "@zag-js/async-list"
+import { useMachine, normalizeProps } from "@zag-js/vue"
+import { computed } from "vue"
+
+const service = useMachine(asyncList.machine, {
+  async load({ signal }) {
+    const res = await fetch(`/api/items?id=${id}`, { signal })
+    const json = await res.json()
+    return {
+      items: json.results,
+      cursor: json.next,
+    }
+  },
+})
+
+const api = computed(() => asyncList.connect(service.value, normalizeProps))
+</script>
+
+<template>
+  <div>
+    <div>
+      <pre>{{ JSON.stringify(api.items, null, 2) }}</pre>
+      <input
+        type="text"
+        @input="(e) => api.setFilterText(e.target.value)"
+      />
+    </div>
+    <div>
+      <p v-if="api.loading">Loading...</p>
+      <button @click="() => api.reload()">Reload</button>
+      <button @click="() => api.loadMore()">Load More</button>
+      <button
+        @click="() => api.sort({ column: 'name', direction: 'ascending' })"
+      >
+        Sort by name
+      </button>
+    </div>
+  </div>
+</template>
+```

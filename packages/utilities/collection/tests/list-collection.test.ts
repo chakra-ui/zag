@@ -3,7 +3,7 @@ import { ListCollection } from "../src"
 interface Item {
   label: string
   value: string
-  disabled?: boolean
+  disabled?: boolean | undefined
 }
 
 interface GroupItem extends Item {
@@ -194,7 +194,12 @@ describe("list collection", () => {
   })
 
   test("group entries", () => {
-    const collection = new ListCollection<{ label: string; value: string; type: string; disabled?: boolean }>({
+    const collection = new ListCollection<{
+      label: string
+      value: string
+      type: string
+      disabled?: boolean | undefined
+    }>({
       items: [
         { label: "React", value: "react", type: "framework" },
         { label: "Vue", value: "vue", type: "framework" },

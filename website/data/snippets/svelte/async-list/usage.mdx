@@ -1,0 +1,41 @@
+```svelte
+<script>
+  import * as asyncList from "@zag-js/async-list"
+  import { useMachine, normalizeProps } from "@zag-js/svelte"
+
+  const service = useMachine(asyncList.machine, {
+    async load({ signal }) {
+      const res = await fetch(`/api/items`, { signal })
+      const json = await res.json()
+      return {
+        items: json.results,
+        cursor: json.next,
+      }
+    },
+  })
+
+  const api = $derived(asyncList.connect(service, normalizeProps))
+</script>
+
+<div>
+  <div>
+    <pre>{JSON.stringify(api.items, null, 2)}</pre>
+    <input
+      type="text"
+      oninput={(e) => api.setFilterText(e.target.value)}
+    />
+  </div>
+  <div>
+    {#if api.loading}
+      <p>Loading...</p>
+    {/if}
+    <button onclick={() => api.reload()}>Reload</button>
+    <button onclick={() => api.loadMore()}>Load More</button>
+    <button
+      onclick={() => api.sort({ column: "name", direction: "ascending" })}
+    >
+      Sort by name
+    </button>
+  </div>
+</div>
+```

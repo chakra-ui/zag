@@ -1,5 +1,100 @@
 # @zag-js/combobox
 
+## 1.17.4
+
+### Patch Changes
+
+- [`b709e44`](https://github.com/chakra-ui/zag/commit/b709e44ae7442f40ff2ad671b6a08604f26c6fae) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix issue where rehydrating `defaultValue` or `value` after
+  fetching items doesn't update the `valueAsString`
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.17.4
+  - @zag-js/core@1.17.4
+  - @zag-js/types@1.17.4
+  - @zag-js/aria-hidden@1.17.4
+  - @zag-js/collection@1.17.4
+  - @zag-js/utils@1.17.4
+  - @zag-js/dismissable@1.17.4
+  - @zag-js/dom-query@1.17.4
+  - @zag-js/popper@1.17.4
+
+## 1.17.3
+
+### Patch Changes
+
+- Updated dependencies [[`bc70411`](https://github.com/chakra-ui/zag/commit/bc7041187e5b8dc950c7e6b57aadc1e50b8a3850)]:
+  - @zag-js/collection@1.17.3
+  - @zag-js/anatomy@1.17.3
+  - @zag-js/core@1.17.3
+  - @zag-js/types@1.17.3
+  - @zag-js/aria-hidden@1.17.3
+  - @zag-js/utils@1.17.3
+  - @zag-js/dismissable@1.17.3
+  - @zag-js/dom-query@1.17.3
+  - @zag-js/popper@1.17.3
+
+## 1.17.2
+
+### Patch Changes
+
+- Updated dependencies [[`2ce6e5c`](https://github.com/chakra-ui/zag/commit/2ce6e5c2296d07c16220eb85fbd720a5b33e1f48)]:
+  - @zag-js/collection@1.17.2
+  - @zag-js/anatomy@1.17.2
+  - @zag-js/core@1.17.2
+  - @zag-js/types@1.17.2
+  - @zag-js/aria-hidden@1.17.2
+  - @zag-js/utils@1.17.2
+  - @zag-js/dismissable@1.17.2
+  - @zag-js/dom-query@1.17.2
+  - @zag-js/popper@1.17.2
+
+## 1.17.1
+
+### Patch Changes
+
+- Updated dependencies [[`4b6302f`](https://github.com/chakra-ui/zag/commit/4b6302fc9104f1ae8cd89a0f0157884fb775a65a)]:
+  - @zag-js/anatomy@1.17.1
+  - @zag-js/core@1.17.1
+  - @zag-js/types@1.17.1
+  - @zag-js/aria-hidden@1.17.1
+  - @zag-js/collection@1.17.1
+  - @zag-js/utils@1.17.1
+  - @zag-js/dismissable@1.17.1
+  - @zag-js/dom-query@1.17.1
+  - @zag-js/popper@1.17.1
+
+## 1.17.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.17.0
+  - @zag-js/core@1.17.0
+  - @zag-js/types@1.17.0
+  - @zag-js/aria-hidden@1.17.0
+  - @zag-js/collection@1.17.0
+  - @zag-js/utils@1.17.0
+  - @zag-js/dismissable@1.17.0
+  - @zag-js/dom-query@1.17.0
+  - @zag-js/popper@1.17.0
+
+## 1.16.0
+
+### Patch Changes
+
+- Updated dependencies [[`f0545c6`](https://github.com/chakra-ui/zag/commit/f0545c61ef151e5e4480b0cc1d7401dda4653094),
+  [`6f6c8f3`](https://github.com/chakra-ui/zag/commit/6f6c8f329d9eb9d9889eff4317c84a4f41d4bfb2)]:
+  - @zag-js/collection@1.16.0
+  - @zag-js/types@1.16.0
+  - @zag-js/dom-query@1.16.0
+  - @zag-js/core@1.16.0
+  - @zag-js/dismissable@1.16.0
+  - @zag-js/popper@1.16.0
+  - @zag-js/anatomy@1.16.0
+  - @zag-js/aria-hidden@1.16.0
+  - @zag-js/utils@1.16.0
+
 ## 1.15.7
 
 ### Patch Changes
@@ -1792,7 +1887,6 @@
   [`80b97a9`](https://github.com/chakra-ui/zag/commit/80b97a907382f0cece781abeae2a462f9bfba686) Thanks
   [@segunadebayo](https://github.com/segunadebayo)! - - Add `open` and `open.controlled` property to programmatically
   control the combobox's open state
-
   - Add new `openOnChange` property to automatically open the combobox when the value changes. Value can be a boolean or
     a function that returns a boolean.
 
@@ -1804,7 +1898,6 @@
     }),
   )
   ```
-
   - Add new `openOnKeypress` property to automatically open the combobox when the arrow keys (up and down) are pressed.
   - Add `getSelectionValue` to the combobox's context to allow customizing the input value when an item is selected.
 
@@ -1817,7 +1910,6 @@
     }),
   )
   ```
-
   - Add new `dismissable` property to determine whether to add the combobox content to the dismissable stack.
   - Add `popup` attribute to allow rendering the combobox has a select with input within the content.
   - Add `persistFocus` to the item props to determine whether to clear the highlighted item on pointer leave.
@@ -1825,7 +1917,6 @@
 - [#1435](https://github.com/chakra-ui/zag/pull/1435)
   [`23ed828`](https://github.com/chakra-ui/zag/commit/23ed8283e8190fc9fb6496f4ba8c5eff78bda2d7) Thanks
   [@segunadebayo](https://github.com/segunadebayo)! - Rename `api` properties
-
   - `isFocused` -> `focused`
   - `isOpen` -> `open`
   - `isInputValueEmpty` -> `inputEmpty`
@@ -2894,7 +2985,6 @@
   **Potential breaking change:**
 
   We replaced `data-expanded` or `data-checked` to `data-state` attribute
-
   - `data-expanded` maps to `data-state="open"` or `data-state="closed"`
   - `data-checked` maps to `data-state="checked"` or `data-state="unchecked"`
   - `data-indeterminate` maps to `data-state="indeterminate"`

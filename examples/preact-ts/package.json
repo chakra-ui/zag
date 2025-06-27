@@ -82,7 +82,7 @@
     "@zag-js/tree-view": "workspace:*",
     "@zag-js/types": "workspace:*",
     "@zag-js/utils": "workspace:*",
-    "lucide-preact": "0.516.0",
+    "lucide-preact": "0.522.0",
     "match-sorter": "8.0.3",
     "preact": "10.26.9",
     "preact-iso": "2.9.2",

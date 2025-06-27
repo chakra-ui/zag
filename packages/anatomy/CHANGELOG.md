@@ -1,5 +1,22 @@
 # @zag-js/anatomy
 
+## 1.17.4
+
+## 1.17.3
+
+## 1.17.2
+
+## 1.17.1
+
+### Patch Changes
+
+- [`4b6302f`](https://github.com/chakra-ui/zag/commit/4b6302fc9104f1ae8cd89a0f0157884fb775a65a) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Add support for `.omit(...)` in `createAnatomy`
+
+## 1.17.0
+
+## 1.16.0
+
 ## 1.15.7
 
 ## 1.15.6

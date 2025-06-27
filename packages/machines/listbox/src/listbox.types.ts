@@ -82,7 +82,7 @@ export interface ListboxProps<T extends CollectionItem = CollectionItem>
   /**
    * The controlled key of the highlighted item
    */
-  highlightedValue?: string | null
+  highlightedValue?: string | null | undefined
   /**
    * The initial value of the highlighted item when opened.
    * Use when you don't need to control the highlighted value of the listbox.
@@ -135,7 +135,6 @@ export interface ListboxSchema<T extends CollectionItem = CollectionItem> {
     highlightedValue: string | null
     highlightedItem: T | null
     selectedItems: T[]
-    valueAsString: string
     focused: boolean
   }
   computed: {
@@ -144,6 +143,7 @@ export interface ListboxSchema<T extends CollectionItem = CollectionItem> {
     isInteractive: boolean
     selection: Selection
     multiple: boolean
+    valueAsString: string
   }
   refs: {
     typeahead: TypeaheadState

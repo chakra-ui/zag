@@ -124,7 +124,7 @@ export interface SelectProps<T extends CollectionItem = CollectionItem>
   /**
    * The controlled key of the highlighted item
    */
-  highlightedValue?: string | null
+  highlightedValue?: string | null | undefined
   /**
    * The initial value of the highlighted item when opened.
    * Use when you don't need to control the highlighted value of the select.
@@ -176,13 +176,13 @@ export interface SelectSchema<T extends CollectionItem = CollectionItem> {
     fieldsetDisabled: boolean
     highlightedItem: T | null
     selectedItems: T[]
-    valueAsString: string
   }
   computed: {
     hasSelectedItems: boolean
     isTypingAhead: boolean
     isInteractive: boolean
     isDisabled: boolean
+    valueAsString: string
   }
   refs: {
     typeahead: TypeaheadState

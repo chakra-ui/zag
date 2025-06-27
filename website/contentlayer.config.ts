@@ -120,6 +120,53 @@ const Component = defineDocumentType(() => ({
   },
 }))
 
+const Utility = defineDocumentType(() => ({
+  name: "Utility",
+  filePathPattern: "utilities/**/*.mdx",
+  contentType: "mdx",
+  fields: {
+    ...fields,
+    slugAlias: { type: "string" },
+  },
+  computedFields: {
+    ...computedFields,
+    npmUrl: {
+      type: "string",
+      resolve: (doc) => `https://www.npmjs.com/package/${doc.package}`,
+    },
+    pathname: {
+      type: "string",
+      resolve: () => "/utilities/[...slug]",
+    },
+    sourceUrl: {
+      type: "string",
+      resolve: (doc) =>
+        `${siteConfig.repo.url}/tree/main/packages/machines/${
+          doc.slugAlias ?? getSlug(doc)
+        }`,
+    },
+    visualizeUrl: {
+      type: "string",
+      resolve: (doc) =>
+        `https://zag-visualizer.vercel.app/${doc.slugAlias ?? getSlug(doc)}`,
+    },
+    version: {
+      type: "string",
+      resolve: (doc) => {
+        try {
+          const file = fs.readFileSync(
+            `node_modules/${doc.package}/package.json`,
+            "utf8",
+          )
+          return JSON.parse(file).version
+        } catch {
+          return ""
+        }
+      },
+    },
+  },
+}))
+
 const Snippet = defineDocumentType(() => ({
   name: "Snippet",
   filePathPattern: "snippets/**/*.mdx",
@@ -137,7 +184,7 @@ const Snippet = defineDocumentType(() => ({
 export default makeSource({
   contentDirPath: "./data",
   contentDirExclude: ["*/node_modules", "dist"],
-  documentTypes: [Overview, Guide, Snippet, Component],
+  documentTypes: [Overview, Guide, Snippet, Component, Utility],
   disableImportAliasWarning: true,
   onUnknownDocuments: "skip-ignore",
   mdx: {

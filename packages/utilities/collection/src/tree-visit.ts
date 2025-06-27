@@ -1,7 +1,7 @@
 // Modified from https://github.com/dabbott/tree-visit
 // MIT License
 
-import type { FlatTreeNode } from "./types"
+import type { FlatTreeNode, IndexPath } from "./types"
 
 // Accessors
 
@@ -452,11 +452,9 @@ export type NodeOperation<T> =
   | { type: "replace" }
   | { type: "removeThenInsert"; removeIndexes: number[]; insertIndex: number; insertNodes: T[] }
 
-export type IndexPath = number[]
-
 export interface BaseOptions<T> {
   getChildren: (node: T, indexPath: IndexPath) => T[]
-  reuseIndexPath?: boolean
+  reuseIndexPath?: boolean | undefined
 }
 
 export interface FindOptions<T> extends BaseOptions<T> {
@@ -517,12 +515,12 @@ interface TreeVisitStack<T> {
    * -1        => skipped
    * n         => nth child
    */
-  state?: number
+  state?: number | undefined
 
   /**
    * Cached children, so we only call getChildren once per node
    */
-  children?: T[]
+  children?: T[] | undefined
 }
 
 export type TreeVisitEnterReturnValue = void | "skip" | "stop"

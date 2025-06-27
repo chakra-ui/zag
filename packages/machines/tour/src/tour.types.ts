@@ -65,7 +65,7 @@ export interface StepBaseDetails {
   /**
    * The offset between the content and the target
    */
-  offset?: { mainAxis?: number; crossAxis?: number } | undefined
+  offset?: { mainAxis?: number | undefined; crossAxis?: number | undefined } | undefined
   /**
    * Additional metadata of the step
    */
