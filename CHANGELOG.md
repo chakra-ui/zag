@@ -4,6 +4,13 @@ All notable changes to this project will be documented in this file.
 
 > For v0.x changelog, see the [v0 branch](https://github.com/chakra-ui/zag/blob/v0/CHANGELOG.md)
 
+## [1.17.4](./#1.17.4) - 2025-06-27
+
+### Fixed
+
+- **Combobox, Select, Listbox**: Fix issue where rehydrating `defaultValue` or `value` after fetching items doesn't
+  update the `valueAsString`
+
 ## [1.17.3](./#1.17.3) - 2025-06-27
 
 ### Fixed
