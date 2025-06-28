@@ -4,6 +4,7 @@ type RouteData = {
 }
 
 export const routesData: RouteData[] = [
+  { label: "Bottom Sheet", path: "/bottom-sheet" },
   { label: "Async List", path: "/async-list" },
   { label: "Password Input", path: "/password-input" },
   { label: "Listbox", path: "/listbox" },
