@@ -82,17 +82,17 @@
     "@zag-js/tree-view": "workspace:*",
     "@zag-js/types": "workspace:*",
     "@zag-js/utils": "workspace:*",
-    "lucide-preact": "0.522.0",
+    "lucide-preact": "0.525.0",
     "match-sorter": "8.0.3",
     "preact": "10.26.9",
     "preact-iso": "2.9.2",
     "preact-render-to-string": "6.5.13"
   },
   "devDependencies": {
-    "@preact/preset-vite": "2.10.1",
-    "eslint": "9.29.0",
+    "@preact/preset-vite": "2.10.2",
+    "eslint": "9.30.0",
     "eslint-config-preact": "1.5.0",
     "typescript": "5.8.3",
-    "vite": "6.3.5"
+    "vite": "7.0.0"
   }
 }

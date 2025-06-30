@@ -25,7 +25,7 @@
     "url": "https://github.com/chakra-ui/zag/issues"
   },
   "dependencies": {
-    "@solid-primitives/keyed": "^1.5.1",
+    "@solid-primitives/keyed": "^1.5.2",
     "@zag-js/utils": "workspace:*",
     "@zag-js/core": "workspace:*",
     "@zag-js/store": "workspace:*",
