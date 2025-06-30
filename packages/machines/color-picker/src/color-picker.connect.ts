@@ -65,7 +65,9 @@ export function connect<T extends PropTypes>(
     open,
     valueAsString,
     value,
+    inline: !!prop("inline"),
     setOpen(nextOpen) {
+      if (prop("inline")) return
       const open = state.hasTag("open")
       if (open === nextOpen) return
       send({ type: nextOpen ? "OPEN" : "CLOSE" })

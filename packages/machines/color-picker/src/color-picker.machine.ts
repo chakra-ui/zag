@@ -17,6 +17,7 @@ import * as dom from "./color-picker.dom"
 import { parse } from "./color-picker.parse"
 import type { ColorFormat, ColorPickerSchema, ExtendedColorChannel } from "./color-picker.types"
 import { getChannelValue } from "./utils/get-channel-input-value"
+import { prefixHex } from "./utils/is-valid-hex"
 
 const { and } = createGuards<ColorPickerSchema>()
 
@@ -36,7 +37,7 @@ export const machine = createMachine<ColorPickerSchema>({
   },
 
   initialState({ prop }) {
-    const open = prop("open") || prop("defaultOpen")
+    const open = prop("open") || prop("defaultOpen") || prop("inline")
     return open ? "open" : "idle"
   },
 
@@ -381,11 +382,13 @@ export const machine = createMachine<ColorPickerSchema>({
   implementations: {
     guards: {
       closeOnSelect: ({ prop }) => !!prop("closeOnSelect"),
-      isOpenControlled: ({ prop }) => prop("open") != null,
+      isOpenControlled: ({ prop }) => prop("open") != null || !!prop("inline"),
       shouldRestoreFocus: ({ context }) => !!context.get("restoreFocus"),
     },
     effects: {
       trackPositioning({ context, prop, scope }) {
+        if (prop("inline")) return
+
         if (!context.get("currentPlacement")) {
           context.set("currentPlacement", prop("positioning")?.placement)
         }
@@ -401,6 +404,8 @@ export const machine = createMachine<ColorPickerSchema>({
         })
       },
       trackDismissableElement({ context, scope, prop, send }) {
+        if (prop("inline")) return
+
         const getContentEl = () => dom.getContentEl(scope)
         return trackDismissableElement(getContentEl, {
           exclude: dom.getTriggerEl(scope),
@@ -534,7 +539,10 @@ export const machine = createMachine<ColorPickerSchema>({
         } else if (isTextField) {
           //
           color = tryCatch(
-            () => parse(value).withChannelValue("alpha", currentAlpha),
+            () => {
+              const parseValue = channel === "hex" ? prefixHex(value) : value
+              return parse(parseValue).withChannelValue("alpha", currentAlpha)
+            },
             () => context.get("value"),
           )
           //
@@ -627,9 +635,11 @@ export const machine = createMachine<ColorPickerSchema>({
         syncFormatSelect(scope, context.get("format"))
       },
       invokeOnOpen({ prop }) {
+        if (prop("inline")) return
         prop("onOpenChange")?.({ open: true })
       },
       invokeOnClose({ prop }) {
+        if (prop("inline")) return
         prop("onOpenChange")?.({ open: false })
       },
       toggleVisibility({ prop, event, send }) {

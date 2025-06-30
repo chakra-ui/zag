@@ -145,6 +145,10 @@ export interface ColorPickerProps extends CommonProperties, DirectionProperty, I
    * @default true
    */
   openAutoFocus?: boolean | undefined
+  /**
+   * Whether to render the color picker inline
+   */
+  inline?: boolean | undefined
 }
 
 type PropsWithDefault = "defaultFormat" | "defaultValue" | "openAutoFocus" | "dir" | "positioning"
@@ -245,6 +249,10 @@ export interface ColorPickerApi<T extends PropTypes = PropTypes> {
    * Whether the color picker is open
    */
   open: boolean
+  /**
+   * Whether the color picker is rendered inline
+   */
+  inline: boolean
   /**
    * The current color value (as a string)
    */
