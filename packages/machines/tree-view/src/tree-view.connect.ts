@@ -4,8 +4,10 @@ import {
   getByTypeahead,
   getEventKey,
   getEventTarget,
+  isAnchorElement,
   isComposingEvent,
   isEditableElement,
+  isLeftClick,
   isModifierKey,
 } from "@zag-js/dom-query"
 import type { EventKeyMap, NormalizeProps, PropTypes } from "@zag-js/types"
@@ -196,11 +198,13 @@ export function connect<T extends PropTypes, V extends TreeNode = TreeNode>(
             },
             Enter(event) {
               if (node.dataset.disabled) return
-
-              const isLink = target?.closest("a[href]")
-              if (!isLink) event.preventDefault()
+              if (isAnchorElement(target) && isModifierKey(event)) return
 
               send({ type: isBranchNode ? "BRANCH_NODE.CLICK" : "NODE.CLICK", id: nodeId, src: "keyboard" })
+
+              if (!isAnchorElement(target)) {
+                event.preventDefault()
+              }
             },
             "*"(event) {
               if (node.dataset.disabled) return
@@ -260,12 +264,16 @@ export function connect<T extends PropTypes, V extends TreeNode = TreeNode>(
         },
         onClick(event) {
           if (itemState.disabled) return
+          if (!isLeftClick(event)) return
+          if (isAnchorElement(event.currentTarget) && isModifierKey(event)) return
+
           const isMetaKey = event.metaKey || event.ctrlKey
           send({ type: "NODE.CLICK", id: itemState.value, shiftKey: event.shiftKey, ctrlKey: isMetaKey })
           event.stopPropagation()
 
-          const isLink = event.currentTarget.matches("a[href]")
-          if (!isLink) event.preventDefault()
+          if (!isAnchorElement(event.currentTarget)) {
+            event.preventDefault()
+          }
         },
       })
     },
@@ -372,7 +380,11 @@ export function connect<T extends PropTypes, V extends TreeNode = TreeNode>(
           event.stopPropagation()
         },
         onClick(event) {
-          if (nodeState.disabled || nodeState.loading) return
+          if (nodeState.disabled) return
+          if (nodeState.loading) return
+          if (!isLeftClick(event)) return
+          if (isAnchorElement(event.currentTarget) && isModifierKey(event)) return
+
           const isMetaKey = event.metaKey || event.ctrlKey
           send({ type: "BRANCH_NODE.CLICK", id: nodeState.value, shiftKey: event.shiftKey, ctrlKey: isMetaKey })
           event.stopPropagation()
@@ -426,6 +438,7 @@ export function connect<T extends PropTypes, V extends TreeNode = TreeNode>(
         onClick(event) {
           if (event.defaultPrevented) return
           if (nodeState.disabled) return
+          if (!isLeftClick(event)) return
 
           send({ type: "CHECKED.TOGGLE", value: nodeState.value, isBranch: nodeState.isBranch })
           event.stopPropagation()
