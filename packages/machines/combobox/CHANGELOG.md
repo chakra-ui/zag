@@ -1,5 +1,20 @@
 # @zag-js/combobox
 
+## 1.18.0
+
+### Patch Changes
+
+- Updated dependencies [[`029a864`](https://github.com/chakra-ui/zag/commit/029a864ac9f4aab39bb2c90b3b765a32082e07af)]:
+  - @zag-js/aria-hidden@1.18.0
+  - @zag-js/anatomy@1.18.0
+  - @zag-js/core@1.18.0
+  - @zag-js/types@1.18.0
+  - @zag-js/collection@1.18.0
+  - @zag-js/utils@1.18.0
+  - @zag-js/dismissable@1.18.0
+  - @zag-js/dom-query@1.18.0
+  - @zag-js/popper@1.18.0
+
 ## 1.17.4
 
 ### Patch Changes
@@ -1898,6 +1913,7 @@
     }),
   )
   ```
+
   - Add new `openOnKeypress` property to automatically open the combobox when the arrow keys (up and down) are pressed.
   - Add `getSelectionValue` to the combobox's context to allow customizing the input value when an item is selected.
 
@@ -1910,6 +1926,7 @@
     }),
   )
   ```
+
   - Add new `dismissable` property to determine whether to add the combobox content to the dismissable stack.
   - Add `popup` attribute to allow rendering the combobox has a select with input within the content.
   - Add `persistFocus` to the item props to determine whether to clear the highlighted item on pointer leave.
