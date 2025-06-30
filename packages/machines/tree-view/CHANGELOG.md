@@ -1,5 +1,20 @@
 # @zag-js/tree-view
 
+## 1.18.0
+
+### Patch Changes
+
+- [`6092c58`](https://github.com/chakra-ui/zag/commit/6092c58dd37289debb54360038d7b77a58bcdc0f) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Improve support for rendering tree items as links
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.18.0
+  - @zag-js/core@1.18.0
+  - @zag-js/types@1.18.0
+  - @zag-js/collection@1.18.0
+  - @zag-js/utils@1.18.0
+  - @zag-js/dom-query@1.18.0
+
 ## 1.17.4
 
 ### Patch Changes

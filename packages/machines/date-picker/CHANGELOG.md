@@ -1,5 +1,25 @@
 # @zag-js/date-picker
 
+## 1.18.0
+
+### Minor Changes
+
+- [`6614056`](https://github.com/chakra-ui/zag/commit/6614056a9a67eb8a34a645f392b8de55f5c5e8b5) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Add support for `inline` prop to render the date calendar inline.
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.18.0
+  - @zag-js/core@1.18.0
+  - @zag-js/types@1.18.0
+  - @zag-js/utils@1.18.0
+  - @zag-js/date-utils@1.18.0
+  - @zag-js/dismissable@1.18.0
+  - @zag-js/dom-query@1.18.0
+  - @zag-js/live-region@1.18.0
+  - @zag-js/popper@1.18.0
+
 ## 1.17.4
 
 ### Patch Changes

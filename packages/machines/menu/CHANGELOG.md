@@ -1,5 +1,22 @@
 # @zag-js/menu
 
+## 1.18.0
+
+### Patch Changes
+
+- [`8092833`](https://github.com/chakra-ui/zag/commit/8092833ea05a3e885caa54c1704a4bba4a0c4f0e) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix interaction outside detection for focusable context trigger.
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.18.0
+  - @zag-js/core@1.18.0
+  - @zag-js/types@1.18.0
+  - @zag-js/utils@1.18.0
+  - @zag-js/dismissable@1.18.0
+  - @zag-js/dom-query@1.18.0
+  - @zag-js/popper@1.18.0
+  - @zag-js/rect-utils@1.18.0
+
 ## 1.17.4
 
 ### Patch Changes

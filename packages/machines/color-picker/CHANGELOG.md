@@ -1,5 +1,25 @@
 # @zag-js/color-picker
 
+## 1.18.0
+
+### Minor Changes
+
+- [`f1f9918`](https://github.com/chakra-ui/zag/commit/f1f9918180eaf61c674f806eb7d675cde9cd7691) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - - Add support for `inline` prop to render color picker inline
+  - Auto-prefix Hex values with `#` if missing when using the `hex` channel input
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.18.0
+  - @zag-js/core@1.18.0
+  - @zag-js/types@1.18.0
+  - @zag-js/color-utils@1.18.0
+  - @zag-js/utils@1.18.0
+  - @zag-js/dismissable@1.18.0
+  - @zag-js/dom-query@1.18.0
+  - @zag-js/popper@1.18.0
+
 ## 1.17.4
 
 ### Patch Changes
