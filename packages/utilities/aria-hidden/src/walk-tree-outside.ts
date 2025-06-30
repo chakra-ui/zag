@@ -29,9 +29,10 @@ interface WalkTreeOutsideOptions {
   explicitBooleanValue: boolean
 }
 
+const ignoreableNodes = new Set<string>(["script", "output", "status", "next-route-announcer"])
 const isIgnoredNode = (node: Element) => {
-  if (node.localName === "next-route-announcer") return true
-  if (node.localName === "script") return true
+  if (ignoreableNodes.has(node.localName)) return true
+  if (node.role === "status") return true
   if (node.hasAttribute("aria-live")) return true
   return node.matches("[data-live-announcer]")
 }

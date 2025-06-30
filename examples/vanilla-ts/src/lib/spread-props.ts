@@ -1,8 +1,10 @@
 export interface Attrs {
-  [key: string]: any // Change 'any' to the specific type you want to allow for attributes
+  [key: string]: any
 }
 
 const prevAttrsMap = new WeakMap<HTMLElement, Attrs>()
+
+const assignableProps = new Set<string>(["value", "checked", "htmlFor"])
 
 export function spreadProps(node: HTMLElement, attrs: Attrs): () => void {
   const oldAttrs = prevAttrsMap.get(node) || {}
@@ -34,8 +36,8 @@ export function spreadProps(node: HTMLElement, attrs: Attrs): () => void {
     }
 
     if (value != null) {
-      if (["value", "checked", "htmlFor"].includes(attrName)) {
-        ;(node as any)[attrName] = value // Using 'any' here because TypeScript can't narrow the type based on the array check
+      if (assignableProps.has(attrName)) {
+        ;(node as any)[attrName] = value
       } else {
         node.setAttribute(attrName.toLowerCase(), value)
       }

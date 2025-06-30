@@ -123,6 +123,8 @@ export const textSelection = (page: Page) => {
 
 export type SwipeDirection = "left" | "right" | "up" | "down"
 
+const swipeDirections = new Set<SwipeDirection>(["left", "right", "up", "down"])
+
 export async function swipe(
   page: Page,
   locator: Locator,
@@ -130,7 +132,7 @@ export async function swipe(
   distance: number = 100,
   duration: number = 500,
 ): Promise<void> {
-  if (!["left", "right", "up", "down"].includes(direction)) {
+  if (!swipeDirections.has(direction)) {
     throw new Error("Invalid direction. Use 'left', 'right', 'up', or 'down'.")
   }
 
