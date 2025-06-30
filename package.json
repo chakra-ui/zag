@@ -78,7 +78,7 @@
     "axe-core": "4.10.3",
     "commitlint": "19.8.1",
     "cross-env": "^7.0.3",
-    "dotenv": "16.5.0",
+    "dotenv": "17.0.0",
     "eslint": "9.29.0",
     "eslint-config-prettier": "10.1.5",
     "eslint-plugin-import": "2.32.0",
