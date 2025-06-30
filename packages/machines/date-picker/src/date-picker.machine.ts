@@ -101,7 +101,7 @@ export const machine = createMachine<DatePickerSchema>({
   },
 
   initialState({ prop }) {
-    const open = prop("open") || prop("defaultOpen")
+    const open = prop("open") || prop("defaultOpen") || prop("inline")
     return open ? "open" : "idle"
   },
 
@@ -654,7 +654,7 @@ export const machine = createMachine<DatePickerSchema>({
       shouldRestoreFocus: ({ context }) => !!context.get("restoreFocus"),
       isSelectingEndDate: ({ context }) => context.get("activeIndex") === 1,
       closeOnSelect: ({ prop }) => !!prop("closeOnSelect"),
-      isOpenControlled: ({ prop }) => prop("open") != undefined,
+      isOpenControlled: ({ prop }) => prop("open") != undefined || !!prop("inline"),
       isInteractOutsideEvent: ({ event }) => event.previousEvent?.type === "INTERACT_OUTSIDE",
       isInputValueEmpty: ({ event }) => event.value.trim() === "",
       shouldFixOnBlur: ({ event }) => !!event.fixOnBlur,
@@ -662,6 +662,8 @@ export const machine = createMachine<DatePickerSchema>({
 
     effects: {
       trackPositioning({ context, prop, scope }) {
+        if (prop("inline")) return
+
         if (!context.get("currentPlacement")) {
           context.set("currentPlacement", prop("positioning").placement)
         }
@@ -682,7 +684,9 @@ export const machine = createMachine<DatePickerSchema>({
         return () => refs.get("announcer")?.destroy?.()
       },
 
-      trackDismissableElement({ scope, send, context }) {
+      trackDismissableElement({ scope, send, context, prop }) {
+        if (prop("inline")) return
+
         const getContentEl = () => dom.getContentEl(scope)
         return trackDismissableElement(getContentEl, {
           defer: true,
@@ -1091,10 +1095,12 @@ export const machine = createMachine<DatePickerSchema>({
       },
 
       invokeOnOpen({ prop }) {
+        if (prop("inline")) return
         prop("onOpenChange")?.({ open: true })
       },
 
       invokeOnClose({ prop }) {
+        if (prop("inline")) return
         prop("onOpenChange")?.({ open: false })
       },
 

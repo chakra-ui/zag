@@ -21,6 +21,7 @@ export const props = createProps<DatePickerProps>()([
   "getRootNode",
   "id",
   "ids",
+  "inline",
   "isDateUnavailable",
   "locale",
   "max",

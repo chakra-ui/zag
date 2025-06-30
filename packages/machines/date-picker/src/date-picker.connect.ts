@@ -189,6 +189,7 @@ export function connect<T extends PropTypes>(
   return {
     focused,
     open,
+    inline: !!prop("inline"),
     view: context.get("view"),
     getRangePresetValue(preset) {
       return getDateRangePreset(preset, locale, timeZone)
@@ -236,6 +237,7 @@ export function connect<T extends PropTypes>(
       send({ type: "FOCUS.SET", value })
     },
     setOpen(nextOpen) {
+      if (prop("inline")) return
       const open = state.matches("open")
       if (open === nextOpen) return
       send({ type: nextOpen ? "OPEN" : "CLOSE" })

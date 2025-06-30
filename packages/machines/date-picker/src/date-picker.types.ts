@@ -245,6 +245,10 @@ export interface DatePickerProps extends DirectionProperty, CommonProperties {
    * Use when you don't need to control the open state of the date picker.
    */
   defaultOpen?: boolean | undefined
+  /**
+   * Whether to render the date picker inline
+   */
+  inline?: boolean | undefined
 }
 
 type PropsWithDefault =
@@ -492,6 +496,10 @@ export interface DatePickerApi<T extends PropTypes = PropTypes> {
    * Whether the date picker is open
    */
   open: boolean
+  /**
+   * Whether the date picker is rendered inline
+   */
+  inline: boolean
   /**
    * The current view of the date picker
    */
