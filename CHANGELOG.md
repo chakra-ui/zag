@@ -4,6 +4,20 @@ All notable changes to this project will be documented in this file.
 
 > For v0.x changelog, see the [v0 branch](https://github.com/chakra-ui/zag/blob/v0/CHANGELOG.md)
 
+## [1.18.0](./#1.18.0) - 2025-06-30
+
+### Added
+
+- **Color Picker**: Add support for `inline` prop to render color picker inline
+- **Date Picker**: Add support for `inline` prop to render the date calendar inline
+
+### Fixed
+
+- **Aria Hidden**: Exclude elements with `role="status"` and `output` elements when applying aria-hidden
+- **Color Picker**: Auto-prefix Hex values with `#` if missing when using the `hex` channel input
+- **Menu**: Fix interaction outside detection for focusable context trigger
+- **Tree View**: Improve support for rendering tree items as links
+
 ## [1.17.4](./#1.17.4) - 2025-06-27
 
 ### Fixed
