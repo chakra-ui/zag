@@ -1,4 +1,4 @@
-import { createGuards, createMachine, type Service, type Scope } from "@zag-js/core"
+import { createGuards, createMachine, type Scope, type Service } from "@zag-js/core"
 import { trackDismissableElement } from "@zag-js/dismissable"
 import {
   addDomEvent,
@@ -14,6 +14,7 @@ import {
 } from "@zag-js/dom-query"
 import { getPlacement, getPlacementSide, type Placement } from "@zag-js/popper"
 import { getElementPolygon, isPointInPolygon, type Point } from "@zag-js/rect-utils"
+import { isEqual } from "@zag-js/utils"
 import * as dom from "./menu.dom"
 import type { MenuSchema, MenuService } from "./menu.types"
 
@@ -561,13 +562,24 @@ export const machine = createMachine<MenuSchema>({
           defer: true,
           exclude: [dom.getTriggerEl(scope)],
           onInteractOutside: prop("onInteractOutside"),
-          onFocusOutside: prop("onFocusOutside"),
+          onFocusOutside(event) {
+            prop("onFocusOutside")?.(event)
+
+            const target = getEventTarget(event.detail.originalEvent)
+            const isWithinContextTrigger = contains(dom.getContextTriggerEl(scope), target)
+            if (isWithinContextTrigger) {
+              event.preventDefault()
+              return
+            }
+          },
           onEscapeKeyDown(event) {
             prop("onEscapeKeyDown")?.(event)
             if (computed("isSubmenu")) event.preventDefault()
             closeRootMenu({ parent: refs.get("parent") })
           },
           onPointerDownOutside(event) {
+            prop("onPointerDownOutside")?.(event)
+
             const target = getEventTarget(event.detail.originalEvent)
             const isWithinContextTrigger = contains(dom.getContextTriggerEl(scope), target)
             if (isWithinContextTrigger && event.detail.contextmenu) {
@@ -575,7 +587,6 @@ export const machine = createMachine<MenuSchema>({
               return
             }
             restoreFocus = !event.detail.focusable
-            prop("onPointerDownOutside")?.(event)
           },
           onDismiss() {
             send({ type: "CLOSE", src: "interact-outside", restoreFocus })
@@ -626,7 +637,7 @@ export const machine = createMachine<MenuSchema>({
 
     actions: {
       setAnchorPoint({ context, event }) {
-        context.set("anchorPoint", event.point)
+        context.set("anchorPoint", (prev) => (isEqual(prev, event.point) ? prev : event.point))
       },
       setSubmenuPlacement({ computed, refs }) {
         if (!computed("isSubmenu")) return
