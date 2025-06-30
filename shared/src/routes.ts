@@ -32,6 +32,7 @@ export const routesData: RouteData[] = [
   { label: "Date Picker (Single)", path: "/date-picker" },
   { label: "Date Picker (Range)", path: "/date-picker-range" },
   { label: "Date Picker (Multi)", path: "/date-picker-multi" },
+  { label: "Date Picker (Inline)", path: "/date-picker-inline" },
   { label: "Select", path: "/select" },
   { label: "Accordion", path: "/accordion" },
   { label: "Checkbox", path: "/checkbox" },
