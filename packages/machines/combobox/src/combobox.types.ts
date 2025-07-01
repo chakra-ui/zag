@@ -372,6 +372,10 @@ export interface ComboboxApi<T extends PropTypes = PropTypes, V extends Collecti
    */
   setHighlightValue(value: string): void
   /**
+   * Function to clear the highlighted value
+   */
+  clearHighlightValue(): void
+  /**
    * Function to sync the selected items with the value.
    * Useful when `value` is updated from async sources.
    */

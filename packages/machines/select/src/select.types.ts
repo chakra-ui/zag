@@ -263,7 +263,11 @@ export interface SelectApi<T extends PropTypes = PropTypes, V extends Collection
   /**
    * Function to highlight a value
    */
-  highlightValue(value: string): void
+  setHighlightValue(value: string): void
+  /**
+   * Function to clear the highlighted value
+   */
+  clearHighlightValue(): void
   /**
    * The selected items
    */

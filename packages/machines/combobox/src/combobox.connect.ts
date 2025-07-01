@@ -74,6 +74,9 @@ export function connect<T extends PropTypes, V extends CollectionItem>(
     setHighlightValue(value) {
       send({ type: "HIGHLIGHTED_VALUE.SET", value })
     },
+    clearHighlightValue() {
+      send({ type: "HIGHLIGHTED_VALUE.CLEAR" })
+    },
     selectValue(value) {
       send({ type: "ITEM.SELECT", value })
     },
