@@ -50,7 +50,8 @@
     "play": "tsx scripts/play.ts",
     "document-types": "tsx scripts/typedocs.ts",
     "document-attr": "tsx scripts/data-attr.ts",
-    "website": "pnpm --filter=./website"
+    "website": "pnpm --filter=./website",
+    "sync-submodules": "pnpm vercel-submodules --all"
   },
   "lint-staged": {
     "**/*.{ts,tsx,js,jsx}": "prettier --write"
