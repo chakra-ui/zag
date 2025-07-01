@@ -26,7 +26,7 @@ export const machine = createMachine<ProgressSchema>({
             return formatter.format(num)
           }
 
-          return value
+          return value.toString()
         },
         ...props.translations,
       },
