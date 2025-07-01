@@ -19,6 +19,7 @@ export interface ValueTranslationDetails {
   max: number
   min: number
   percent: number
+  formatter?: Intl.NumberFormat
 }
 
 export interface ValueChangeDetails {
