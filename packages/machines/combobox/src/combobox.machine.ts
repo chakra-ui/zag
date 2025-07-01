@@ -800,8 +800,9 @@ export const machine = createMachine({
       selectHighlightedItem(params) {
         const { context, prop } = params
 
+        const collection = prop("collection")
         const highlightedValue = context.get("highlightedValue")
-        if (!highlightedValue) return
+        if (!highlightedValue || !collection.has(highlightedValue)) return
 
         const nextValue = prop("multiple") ? addOrRemove(context.get("value"), highlightedValue) : [highlightedValue]
 

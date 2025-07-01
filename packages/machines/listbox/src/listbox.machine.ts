@@ -198,10 +198,11 @@ export const machine = createMachine<ListboxSchema>({
     actions: {
       selectHighlightedItem({ context, prop, event, computed }) {
         const value = event.value ?? context.get("highlightedValue")
-        if (value == null) return
+
+        const collection = prop("collection")
+        if (value == null || !collection.has(value)) return
 
         const selection = computed("selection")
-        const collection = prop("collection")
 
         if (event.shiftKey && computed("multiple") && event.anchorValue) {
           const next = selection.extendSelection(collection, event.anchorValue, value)

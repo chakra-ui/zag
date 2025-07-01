@@ -547,7 +547,7 @@ export const machine = createMachine<SelectSchema>({
 
       selectHighlightedItem({ context, prop, event }) {
         let value = event.value ?? context.get("highlightedValue")
-        if (value == null) return
+        if (value == null || !prop("collection").has(value)) return
 
         prop("onSelect")?.({ value })
 
