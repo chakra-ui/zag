@@ -233,6 +233,10 @@ export type CheckedState = boolean | "indeterminate"
 
 export interface NodeState {
   /**
+   * The id of the tree item
+   */
+  id: string
+  /**
    * The value of the tree item
    */
   value: string

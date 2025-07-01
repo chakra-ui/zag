@@ -38,6 +38,7 @@ export function connect<T extends PropTypes, V extends TreeNode = TreeNode>(
     const firstNode = collection.getFirstNode()
     const firstNodeValue = firstNode ? collection.getNodeValue(firstNode) : null
     return {
+      id: dom.getNodeId(scope, value),
       value,
       indexPath,
       valuePath: collection.getValuePath(indexPath),
@@ -237,38 +238,38 @@ export function connect<T extends PropTypes, V extends TreeNode = TreeNode>(
     getNodeState,
 
     getItemProps(props) {
-      const itemState = getNodeState(props)
+      const nodeState = getNodeState(props)
       return normalize.element({
         ...parts.item.attrs,
-        id: dom.getNodeId(scope, itemState.value),
+        id: nodeState.id,
         dir: prop("dir"),
         "data-ownedby": dom.getTreeId(scope),
         "data-path": props.indexPath.join("/"),
-        "data-value": itemState.value,
-        tabIndex: itemState.focused ? 0 : -1,
-        "data-focus": dataAttr(itemState.focused),
+        "data-value": nodeState.value,
+        tabIndex: nodeState.focused ? 0 : -1,
+        "data-focus": dataAttr(nodeState.focused),
         role: "treeitem",
-        "aria-current": itemState.selected ? "true" : undefined,
-        "aria-selected": itemState.disabled ? undefined : itemState.selected,
-        "data-selected": dataAttr(itemState.selected),
-        "aria-disabled": ariaAttr(itemState.disabled),
-        "data-disabled": dataAttr(itemState.disabled),
-        "aria-level": itemState.depth,
-        "data-depth": itemState.depth,
+        "aria-current": nodeState.selected ? "true" : undefined,
+        "aria-selected": nodeState.disabled ? undefined : nodeState.selected,
+        "data-selected": dataAttr(nodeState.selected),
+        "aria-disabled": ariaAttr(nodeState.disabled),
+        "data-disabled": dataAttr(nodeState.disabled),
+        "aria-level": nodeState.depth,
+        "data-depth": nodeState.depth,
         style: {
-          "--depth": itemState.depth,
+          "--depth": nodeState.depth,
         },
         onFocus(event) {
           event.stopPropagation()
-          send({ type: "NODE.FOCUS", id: itemState.value })
+          send({ type: "NODE.FOCUS", id: nodeState.value })
         },
         onClick(event) {
-          if (itemState.disabled) return
+          if (nodeState.disabled) return
           if (!isLeftClick(event)) return
           if (isAnchorElement(event.currentTarget) && isModifierKey(event)) return
 
           const isMetaKey = event.metaKey || event.ctrlKey
-          send({ type: "NODE.CLICK", id: itemState.value, shiftKey: event.shiftKey, ctrlKey: isMetaKey })
+          send({ type: "NODE.CLICK", id: nodeState.value, shiftKey: event.shiftKey, ctrlKey: isMetaKey })
           event.stopPropagation()
 
           if (!isAnchorElement(event.currentTarget)) {
@@ -363,7 +364,7 @@ export function connect<T extends PropTypes, V extends TreeNode = TreeNode>(
       return normalize.element({
         ...parts.branchControl.attrs,
         role: "button",
-        id: dom.getNodeId(scope, nodeState.value),
+        id: nodeState.id,
         dir: prop("dir"),
         tabIndex: nodeState.focused ? 0 : -1,
         "data-path": props.indexPath.join("/"),
