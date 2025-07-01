@@ -19,7 +19,7 @@ export interface ValueTranslationDetails {
   max: number
   min: number
   percent: number
-  formatter?: Intl.NumberFormat
+  formatter: Intl.NumberFormat
 }
 
 export interface ValueChangeDetails {
@@ -77,6 +77,8 @@ export interface ProgressProps extends DirectionProperty, CommonProperties, Orie
   /**
    * The options to use for formatting the value.
    * @default { style: "percent" }
+   *
+   * @see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/NumberFormat/NumberFormat
    */
   formatOptions?: Intl.NumberFormatOptions | undefined
   /**
