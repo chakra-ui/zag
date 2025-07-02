@@ -1,5 +1,18 @@
 # @zag-js/file-upload
 
+## 1.18.1
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.18.1
+  - @zag-js/core@1.18.1
+  - @zag-js/types@1.18.1
+  - @zag-js/utils@1.18.1
+  - @zag-js/dom-query@1.18.1
+  - @zag-js/file-utils@1.18.1
+  - @zag-js/i18n-utils@1.18.1
+
 ## 1.18.0
 
 ### Patch Changes

@@ -1,5 +1,21 @@
 # @zag-js/listbox
 
+## 1.18.1
+
+### Patch Changes
+
+- [`7ffe018`](https://github.com/chakra-ui/zag/commit/7ffe018bd12a02c032a72a4d65e5ecbf66a80ba1) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Select highlighted item only if it exists in the collection
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.18.1
+  - @zag-js/core@1.18.1
+  - @zag-js/types@1.18.1
+  - @zag-js/collection@1.18.1
+  - @zag-js/utils@1.18.1
+  - @zag-js/dom-query@1.18.1
+  - @zag-js/focus-visible@1.18.1
+
 ## 1.18.0
 
 ### Patch Changes

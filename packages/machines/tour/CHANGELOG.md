@@ -1,5 +1,24 @@
 # @zag-js/tour
 
+## 1.18.1
+
+### Patch Changes
+
+- [`7143ff7`](https://github.com/chakra-ui/zag/commit/7143ff770e9e6c45de2be4a13e9f2b1c8333e055) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix an issue where the `goto` function in `StepActionMap` doesn't
+  work when passing step IDs (string).
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.18.1
+  - @zag-js/core@1.18.1
+  - @zag-js/types@1.18.1
+  - @zag-js/utils@1.18.1
+  - @zag-js/dismissable@1.18.1
+  - @zag-js/dom-query@1.18.1
+  - @zag-js/focus-trap@1.18.1
+  - @zag-js/interact-outside@1.18.1
+  - @zag-js/popper@1.18.1
+
 ## 1.18.0
 
 ### Patch Changes

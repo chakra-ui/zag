@@ -1,5 +1,20 @@
 # @zag-js/progress
 
+## 1.18.1
+
+### Patch Changes
+
+- [#2562](https://github.com/chakra-ui/zag/pull/2562)
+  [`b1de0de`](https://github.com/chakra-ui/zag/commit/b1de0de0953c4ab70b4d363d19f066290f306e29) Thanks
+  [@anubra266](https://github.com/anubra266)! - Improve `valueAsString` formating in progress.
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.18.1
+  - @zag-js/core@1.18.1
+  - @zag-js/types@1.18.1
+  - @zag-js/utils@1.18.1
+  - @zag-js/dom-query@1.18.1
+
 ## 1.18.0
 
 ### Patch Changes
