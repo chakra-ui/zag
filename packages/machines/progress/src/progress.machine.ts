@@ -17,7 +17,17 @@ export const machine = createMachine<ProgressSchema>({
         ...props.formatOptions,
       },
       translations: {
-        value: ({ percent }) => (percent === -1 ? "loading..." : `${percent} percent`),
+        value: ({ value, percent, formatter }) => {
+          if (value === null) return "loading..."
+
+          if (formatter) {
+            const formatOptions = formatter.resolvedOptions()
+            const num = formatOptions.style === "percent" ? percent / 100 : value
+            return formatter.format(num)
+          }
+
+          return value.toString()
+        },
         ...props.translations,
       },
     }

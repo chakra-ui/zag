@@ -6,7 +6,7 @@ import type { ProgressApi, ProgressService, ProgressState } from "./progress.typ
 export function connect<T extends PropTypes>(service: ProgressService, normalize: NormalizeProps<T>): ProgressApi<T> {
   const { context, computed, prop, send, scope } = service
   const percent = computed("percent")
-  const percentAsString = computed("isIndeterminate") ? "" : computed("formatter").format(computed("percent") / 100)
+  const percentAsString = computed("isIndeterminate") ? "" : computed("formatter").format(percent / 100)
 
   const max = prop("max")
   const min = prop("min")
@@ -16,7 +16,7 @@ export function connect<T extends PropTypes>(service: ProgressService, normalize
   const indeterminate = computed("isIndeterminate")
 
   const value = context.get("value")
-  const valueAsString = translations?.value({ value, max, percent, min }) ?? ""
+  const valueAsString = translations?.value({ value, max, percent, min, formatter: computed("formatter") }) ?? ""
   const progressState = getProgressState(value, max)
 
   const progressbarProps = {
