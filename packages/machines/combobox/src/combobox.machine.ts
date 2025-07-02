@@ -1066,10 +1066,8 @@ export const machine = createMachine({
         const item = prop("collection").find(context.get("highlightedValue"))
         context.set("highlightedItem", item)
       },
-      toggleVisibility({ event, send, prop, flush }) {
-        flush(() => {
-          send({ type: prop("open") ? "CONTROLLED.OPEN" : "CONTROLLED.CLOSE", previousEvent: event })
-        })
+      toggleVisibility({ event, send, prop }) {
+        send({ type: prop("open") ? "CONTROLLED.OPEN" : "CONTROLLED.CLOSE", previousEvent: event })
       },
     },
   },
