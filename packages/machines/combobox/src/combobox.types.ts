@@ -22,8 +22,23 @@ export interface InputValueChangeDetails {
   inputValue: string
 }
 
+/**
+ * The reason for the combobox open/close state change
+ */
+export type OpenChangeReason =
+  | "input-click" // User clicked the input
+  | "trigger-click" // User clicked the trigger button
+  | "script" // Programmatically changed via API
+  | "arrow-key" // User pressed arrow keys or used the listbox navigation keys
+  | "input-change" // Input value changed
+  | "interact-outside" // User clicked outside
+  | "escape-key" // User pressed escape
+  | "item-select" // User selected an item
+  | "clear-trigger" // User clicked clear button
+
 export interface OpenChangeDetails {
   open: boolean
+  reason?: OpenChangeReason | undefined
 }
 
 export interface ScrollToIndexDetails {
@@ -423,7 +438,7 @@ export interface ComboboxApi<T extends PropTypes = PropTypes, V extends Collecti
   /**
    * Function to open or close the combobox
    */
-  setOpen(open: boolean): void
+  setOpen(open: boolean, reason?: OpenChangeReason): void
   /**
    * Function to toggle the combobox
    */

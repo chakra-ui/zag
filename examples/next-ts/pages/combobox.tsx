@@ -43,7 +43,6 @@ export default function Page() {
     <>
       <main className="combobox">
         <div>
-          <pre data-testid="value-text">{JSON.stringify(api.valueAsString, null, 2)}</pre>
           <button onClick={() => api.setValue(["TG"])}>Set to Togo</button>
           <button data-testid="clear-value-button" onClick={() => api.clearValue()}>
             Clear Value

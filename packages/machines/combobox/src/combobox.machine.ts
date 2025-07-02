@@ -6,7 +6,7 @@ import { getPlacement } from "@zag-js/popper"
 import { addOrRemove, isBoolean, isEqual, match, remove } from "@zag-js/utils"
 import { collection } from "./combobox.collection"
 import * as dom from "./combobox.dom"
-import type { ComboboxSchema, Placement } from "./combobox.types"
+import type { ComboboxSchema, OpenChangeReason, Placement } from "./combobox.types"
 
 const { guards, createMachine, choose } = setup<ComboboxSchema>()
 
@@ -711,10 +711,10 @@ export const machine = createMachine({
           onEscapeKeyDown(event) {
             event.preventDefault()
             event.stopPropagation()
-            send({ type: "LAYER.ESCAPE" })
+            send({ type: "LAYER.ESCAPE", src: "escape-key" })
           },
           onDismiss() {
-            send({ type: "LAYER.INTERACT_OUTSIDE", restoreFocus: false })
+            send({ type: "LAYER.INTERACT_OUTSIDE", src: "interact-outside", restoreFocus: false })
           },
         })
       },
@@ -952,11 +952,13 @@ export const machine = createMachine({
           contentEl.scrollTop = 0
         }
       },
-      invokeOnOpen({ prop }) {
-        prop("onOpenChange")?.({ open: true })
+      invokeOnOpen({ prop, event }) {
+        const reason = getOpenChangeReason(event)
+        prop("onOpenChange")?.({ open: true, reason })
       },
-      invokeOnClose({ prop }) {
-        prop("onOpenChange")?.({ open: false })
+      invokeOnClose({ prop, event }) {
+        const reason = getOpenChangeReason(event)
+        prop("onOpenChange")?.({ open: false, reason })
       },
       highlightFirstItem({ context, prop, scope }) {
         const exec = dom.getContentEl(scope) ? queueMicrotask : raf
@@ -1064,9 +1066,15 @@ export const machine = createMachine({
         const item = prop("collection").find(context.get("highlightedValue"))
         context.set("highlightedItem", item)
       },
-      toggleVisibility({ event, send, prop }) {
-        send({ type: prop("open") ? "CONTROLLED.OPEN" : "CONTROLLED.CLOSE", previousEvent: event })
+      toggleVisibility({ event, send, prop, flush }) {
+        flush(() => {
+          send({ type: prop("open") ? "CONTROLLED.OPEN" : "CONTROLLED.CLOSE", previousEvent: event })
+        })
       },
     },
   },
 })
+
+function getOpenChangeReason(event: ComboboxSchema["event"]): OpenChangeReason | undefined {
+  return (event.previousEvent || event).src
+}

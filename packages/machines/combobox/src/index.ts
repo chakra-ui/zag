@@ -19,6 +19,7 @@ export type {
   ItemState,
   NavigateDetails,
   OpenChangeDetails,
+  OpenChangeReason,
   Placement,
   PositioningOptions,
   ScrollToIndexDetails,
