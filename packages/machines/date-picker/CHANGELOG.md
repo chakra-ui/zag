@@ -1,5 +1,25 @@
 # @zag-js/date-picker
 
+## 1.18.1
+
+### Patch Changes
+
+- [#2563](https://github.com/chakra-ui/zag/pull/2563)
+  [`55b4854`](https://github.com/chakra-ui/zag/commit/55b4854a8b0876938f0f6d81bd5281b7d144c779) Thanks
+  [@devpla](https://github.com/devpla)! - Fix issue where datepicker errors when setting `selectionMode=range` and
+  `minView=year`
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.18.1
+  - @zag-js/core@1.18.1
+  - @zag-js/types@1.18.1
+  - @zag-js/utils@1.18.1
+  - @zag-js/date-utils@1.18.1
+  - @zag-js/dismissable@1.18.1
+  - @zag-js/dom-query@1.18.1
+  - @zag-js/live-region@1.18.1
+  - @zag-js/popper@1.18.1
+
 ## 1.18.0
 
 ### Minor Changes

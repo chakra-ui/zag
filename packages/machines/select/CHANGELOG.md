@@ -1,5 +1,25 @@
 # @zag-js/select
 
+## 1.18.1
+
+### Patch Changes
+
+- [`9296233`](https://github.com/chakra-ui/zag/commit/9296233b201f4e634843e5c327d75fdd0bf63d3b) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Expose function to clear highlighted value
+
+- [`7ffe018`](https://github.com/chakra-ui/zag/commit/7ffe018bd12a02c032a72a4d65e5ecbf66a80ba1) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Select highlighted item only if it exists in the collection
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.18.1
+  - @zag-js/core@1.18.1
+  - @zag-js/types@1.18.1
+  - @zag-js/collection@1.18.1
+  - @zag-js/utils@1.18.1
+  - @zag-js/dismissable@1.18.1
+  - @zag-js/dom-query@1.18.1
+  - @zag-js/popper@1.18.1
+
 ## 1.18.0
 
 ### Patch Changes

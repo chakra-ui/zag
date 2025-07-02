@@ -1,5 +1,20 @@
 # @zag-js/tree-view
 
+## 1.18.1
+
+### Patch Changes
+
+- [`1da9046`](https://github.com/chakra-ui/zag/commit/1da90469c28d201f388cbdc1291034a5c1867060) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Expose `id` in the tree node state
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.18.1
+  - @zag-js/core@1.18.1
+  - @zag-js/types@1.18.1
+  - @zag-js/collection@1.18.1
+  - @zag-js/utils@1.18.1
+  - @zag-js/dom-query@1.18.1
+
 ## 1.18.0
 
 ### Patch Changes
