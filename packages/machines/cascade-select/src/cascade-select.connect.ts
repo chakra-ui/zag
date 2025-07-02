@@ -1,12 +1,4 @@
-import {
-  ariaAttr,
-  dataAttr,
-  getEventKey,
-  isEditableElement,
-  isLeftClick,
-  isSelfTarget,
-  isValidTabEvent,
-} from "@zag-js/dom-query"
+import { ariaAttr, dataAttr, getEventKey, isEditableElement, isSelfTarget, isValidTabEvent } from "@zag-js/dom-query"
 import { getPlacementStyles } from "@zag-js/popper"
 import type { EventKeyMap, NormalizeProps, PropTypes } from "@zag-js/types"
 import type { Service } from "@zag-js/core"
@@ -374,8 +366,8 @@ export function connect<T extends PropTypes, V = TreeNode>(
           send({ type: "CLOSE" })
         },
         onClick(event) {
+          if (event.defaultPrevented) return
           if (!interactive) return
-          if (!isLeftClick(event)) return
           if (itemState.disabled) return
           send({ type: "ITEM.CLICK", value: itemState.value, indexPath })
         },
@@ -405,11 +397,6 @@ export function connect<T extends PropTypes, V = TreeNode>(
             clientX: event.clientX,
             clientY: event.clientY,
           })
-        },
-        onTouchEnd(event) {
-          // prevent clicking elements behind content
-          event.preventDefault()
-          event.stopPropagation()
         },
       })
     },
