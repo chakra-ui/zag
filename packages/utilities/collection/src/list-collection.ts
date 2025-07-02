@@ -394,8 +394,8 @@ export class ListCollection<T extends CollectionItem = CollectionItem> {
   /**
    * Filter the collection
    */
-  filter = (fn: (itemString: string, index: number) => boolean) => {
-    const filteredItems = this.items.filter((item, index) => fn(this.stringifyItem(item)!, index))
+  filter = (fn: (itemString: string, index: number, item: T) => boolean) => {
+    const filteredItems = this.items.filter((item, index) => fn(this.stringifyItem(item)!, index, item))
     return this.copy(filteredItems)
   }
 
