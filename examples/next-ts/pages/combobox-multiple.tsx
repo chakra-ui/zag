@@ -1,12 +1,12 @@
 import * as combobox from "@zag-js/combobox"
-import { normalizeProps, useMachine } from "@zag-js/react"
-import { comboboxControls, comboboxData } from "@zag-js/shared"
+import { mergeProps, normalizeProps, useMachine } from "@zag-js/react"
+import { comboboxData } from "@zag-js/shared"
 import { XIcon } from "lucide-react"
 import { matchSorter } from "match-sorter"
-import { useId, useState } from "react"
-import { StateVisualizer } from "../components/state-visualizer"
-import { Toolbar } from "../components/toolbar"
+import { useId, useMemo, useRef, useState } from "react"
 import { useControls } from "../hooks/use-controls"
+import { Toolbar } from "../components/toolbar"
+import { StateVisualizer } from "../components/state-visualizer"
 
 interface Item {
   code: string
@@ -14,12 +14,24 @@ interface Item {
 }
 
 export default function Page() {
-  const controls = useControls(comboboxControls)
+  const controls = useControls({
+    removeSelected: {
+      type: "boolean",
+      defaultValue: false,
+    },
+  })
 
   const [options, setOptions] = useState(comboboxData)
+  const selectedValue = useRef<string[]>([])
+
+  const removeSelected = controls.context.removeSelected
+
+  const items = useMemo(() => {
+    return removeSelected ? options.filter((item) => !selectedValue.current.includes(item.code)) : options
+  }, [options, selectedValue.current, removeSelected])
 
   const collection = combobox.collection({
-    items: options,
+    items,
     itemToValue: (item) => item.code,
     itemToString: (item) => item.label,
   })
@@ -27,14 +39,14 @@ export default function Page() {
   const service = useMachine(combobox.machine as combobox.Machine<Item>, {
     id: useId(),
     collection,
-    onOpenChange() {
-      setOptions(comboboxData)
-    },
     onInputValueChange({ inputValue }) {
       const filtered = matchSorter(comboboxData, inputValue, { keys: ["label"] })
       setOptions(filtered.length > 0 ? filtered : comboboxData)
     },
-    ...controls.context,
+    multiple: true,
+    onValueChange({ value }) {
+      selectedValue.current = value
+    },
   })
 
   const api = combobox.connect(service, normalizeProps)
@@ -43,17 +55,19 @@ export default function Page() {
     <>
       <main className="combobox">
         <div>
-          <pre data-testid="value-text">{JSON.stringify(api.valueAsString, null, 2)}</pre>
-          <button onClick={() => api.setValue(["TG"])}>Set to Togo</button>
-          <button data-testid="clear-value-button" onClick={() => api.clearValue()}>
-            Clear Value
-          </button>
-          <br />
+          <b>{service.state.get()}</b>
+          <b> / {api.highlightedValue || "-"}</b>
+          <pre data-testid="value-text">{api.valueAsString}</pre>
           <div {...api.getRootProps()}>
             <label {...api.getLabelProps()}>Select country</label>
             <div {...api.getControlProps()}>
               <input data-testid="input" {...api.getInputProps()} />
-              <button data-testid="trigger" {...api.getTriggerProps()}>
+              <button
+                data-testid="trigger"
+                {...mergeProps(api.getTriggerProps(), {
+                  onClick: () => setOptions(comboboxData),
+                })}
+              >
                 ▼
               </button>
               <button {...api.getClearTriggerProps()}>
@@ -61,6 +75,7 @@ export default function Page() {
               </button>
             </div>
           </div>
+
           <div {...api.getPositionerProps()}>
             {options.length > 0 && (
               <ul data-testid="combobox-content" {...api.getContentProps()}>
@@ -77,7 +92,7 @@ export default function Page() {
       </main>
 
       <Toolbar controls={controls.ui}>
-        <StateVisualizer state={service} omit={["collection"]} />
+        <StateVisualizer state={service} />
       </Toolbar>
     </>
   )

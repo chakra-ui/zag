@@ -1,7 +1,7 @@
 import { ariaHidden } from "@zag-js/aria-hidden"
-import { setup, type Params } from "@zag-js/core"
+import { setup } from "@zag-js/core"
 import { trackDismissableElement } from "@zag-js/dismissable"
-import { clickIfLink, observeAttributes, observeChildren, raf, scrollIntoView, setCaretToEnd } from "@zag-js/dom-query"
+import { clickIfLink, nextTick, observeAttributes, raf, scrollIntoView, setCaretToEnd } from "@zag-js/dom-query"
 import { getPlacement } from "@zag-js/popper"
 import { addOrRemove, isBoolean, isEqual, match, remove } from "@zag-js/utils"
 import { collection } from "./combobox.collection"
@@ -127,7 +127,7 @@ export const machine = createMachine({
     isCustomValue: ({ context, computed }) => context.get("inputValue") !== computed("valueAsString"),
   },
 
-  watch({ context, prop, track, action }) {
+  watch({ context, prop, track, action, send }) {
     track([() => context.hash("value")], () => {
       action(["syncSelectedItems"])
     })
@@ -140,6 +140,9 @@ export const machine = createMachine({
     track([() => prop("open")], () => {
       action(["toggleVisibility"])
     })
+    track([() => prop("collection").toString()], () => {
+      send({ type: "CHILDREN_CHANGE" })
+    })
   },
 
   on: {
@@ -147,10 +150,10 @@ export const machine = createMachine({
       actions: ["syncSelectedItems"],
     },
     "HIGHLIGHTED_VALUE.SET": {
-      actions: ["setHighlightedItem"],
+      actions: ["setHighlightedValue"],
     },
     "HIGHLIGHTED_VALUE.CLEAR": {
-      actions: ["clearHighlightedItem"],
+      actions: ["clearHighlightedValue"],
     },
     "ITEM.SELECT": {
       actions: ["selectItem"],
@@ -179,7 +182,7 @@ export const machine = createMachine({
   states: {
     idle: {
       tags: ["idle", "closed"],
-      entry: ["scrollContentToTop", "clearHighlightedItem"],
+      entry: ["scrollContentToTop", "clearHighlightedValue"],
       on: {
         "CONTROLLED.OPEN": {
           target: "interacting",
@@ -226,7 +229,7 @@ export const machine = createMachine({
 
     focused: {
       tags: ["focused", "closed"],
-      entry: ["scrollContentToTop", "clearHighlightedItem"],
+      entry: ["scrollContentToTop", "clearHighlightedValue"],
       on: {
         "CONTROLLED.OPEN": [
           {
@@ -355,6 +358,15 @@ export const machine = createMachine({
             target: "idle",
           },
         ],
+        CHILDREN_CHANGE: [
+          {
+            guard: "isHighlightedItemRemoved",
+            actions: ["clearHighlightedValue"],
+          },
+          {
+            actions: ["scrollToHighlightedItem"],
+          },
+        ],
         "INPUT.HOME": {
           actions: ["highlightFirstItem"],
         },
@@ -364,7 +376,7 @@ export const machine = createMachine({
         "INPUT.ARROW_DOWN": [
           {
             guard: and("autoComplete", "isLastItemHighlighted"),
-            actions: ["clearHighlightedItem", "scrollContentToTop"],
+            actions: ["clearHighlightedValue", "scrollContentToTop"],
           },
           {
             actions: ["highlightNextItem"],
@@ -373,7 +385,7 @@ export const machine = createMachine({
         "INPUT.ARROW_UP": [
           {
             guard: and("autoComplete", "isFirstItemHighlighted"),
-            actions: ["clearHighlightedItem"],
+            actions: ["clearHighlightedValue"],
           },
           {
             actions: ["highlightPrevItem"],
@@ -412,14 +424,14 @@ export const machine = createMachine({
           },
           {
             target: "suggesting",
-            actions: ["clearHighlightedItem", "setInputValue"],
+            actions: ["clearHighlightedValue", "setInputValue"],
           },
         ],
         "ITEM.POINTER_MOVE": {
-          actions: ["setHighlightedItem"],
+          actions: ["setHighlightedValue"],
         },
         "ITEM.POINTER_LEAVE": {
-          actions: ["clearHighlightedItem"],
+          actions: ["clearHighlightedValue"],
         },
         "ITEM.CLICK": [
           {
@@ -510,13 +522,7 @@ export const machine = createMachine({
 
     suggesting: {
       tags: ["open", "focused"],
-      effects: [
-        "trackDismissableLayer",
-        "scrollToHighlightedItem",
-        "trackPlacement",
-        "trackChildNodes",
-        "hideOtherElements",
-      ],
+      effects: ["trackDismissableLayer", "scrollToHighlightedItem", "trackPlacement", "hideOtherElements"],
       entry: ["setInitialFocus"],
       on: {
         "CONTROLLED.CLOSE": [
@@ -529,10 +535,16 @@ export const machine = createMachine({
             target: "idle",
           },
         ],
-        CHILDREN_CHANGE: {
-          guard: "autoHighlight",
-          actions: ["highlightFirstItem"],
-        },
+        CHILDREN_CHANGE: [
+          {
+            guard: "autoHighlight",
+            actions: ["highlightFirstItem"],
+          },
+          {
+            guard: "isHighlightedItemRemoved",
+            actions: ["clearHighlightedValue"],
+          },
+        ],
         "INPUT.ARROW_DOWN": {
           target: "interacting",
           actions: ["highlightNextItem"],
@@ -589,10 +601,10 @@ export const machine = createMachine({
         ],
         "ITEM.POINTER_MOVE": {
           target: "interacting",
-          actions: ["setHighlightedItem"],
+          actions: ["setHighlightedValue"],
         },
         "ITEM.POINTER_LEAVE": {
-          actions: ["clearHighlightedItem"],
+          actions: ["clearHighlightedValue"],
         },
         "LAYER.INTERACT_OUTSIDE": [
           // == group 1 ==
@@ -683,6 +695,7 @@ export const machine = createMachine({
       restoreFocus: ({ event }) => (event.restoreFocus == null ? true : !!event.restoreFocus),
       isChangeEvent: ({ event }) => event.previousEvent?.type === "INPUT.CHANGE",
       autoFocus: ({ prop }) => !!prop("autoFocus"),
+      isHighlightedItemRemoved: ({ prop, context }) => !prop("collection").has(context.get("highlightedValue")),
     },
 
     effects: {
@@ -724,16 +737,6 @@ export const machine = createMachine({
           onComplete(data) {
             context.set("currentPlacement", data.placement)
           },
-        })
-      },
-      // in event the options are fetched (async), we still want to auto-highlight the first option
-      trackChildNodes({ scope, computed, send }) {
-        if (!computed("autoHighlight")) return
-        const exec = () => send({ type: "CHILDREN_CHANGE" })
-        const contentEl = () => dom.getContentEl(scope)
-        return observeChildren(contentEl, {
-          callback: exec,
-          defer: true,
         })
       },
       scrollToHighlightedItem({ context, prop, scope, event }) {
@@ -791,27 +794,51 @@ export const machine = createMachine({
           },
         })
       },
-      setHighlightedItem(params) {
-        const { context, event } = params
+      setHighlightedValue({ context, event }) {
         if (event.value == null) return
         context.set("highlightedValue", event.value)
       },
-      clearHighlightedItem(params) {
-        const { context } = params
+      clearHighlightedValue({ context }) {
         context.set("highlightedValue", null)
       },
       selectHighlightedItem(params) {
         const { context, prop } = params
-
         const collection = prop("collection")
+
+        // check if item is valid
         const highlightedValue = context.get("highlightedValue")
         if (!highlightedValue || !collection.has(highlightedValue)) return
 
+        // select item
         const nextValue = prop("multiple") ? addOrRemove(context.get("value"), highlightedValue) : [highlightedValue]
-
         prop("onSelect")?.({ value: nextValue, itemValue: highlightedValue })
         context.set("value", nextValue)
-        context.set("inputValue", getInputValue(params))
+
+        // set input value
+        const inputValue = match(prop("selectionBehavior"), {
+          preserve: context.get("inputValue"),
+          replace: collection.stringifyMany(nextValue),
+          clear: "",
+        })
+        context.set("inputValue", inputValue)
+      },
+      scrollToHighlightedItem({ context, prop, scope }) {
+        nextTick(() => {
+          const highlightedValue = context.get("highlightedValue")
+          if (highlightedValue == null) return
+
+          const itemEl = dom.getItemEl(scope, highlightedValue)
+          const contentEl = dom.getContentEl(scope)
+
+          const scrollToIndexFn = prop("scrollToIndexFn")
+          if (scrollToIndexFn) {
+            const highlightedIndex = prop("collection").indexOf(highlightedValue)
+            scrollToIndexFn({ index: highlightedIndex, immediate: true })
+            return
+          }
+
+          scrollIntoView(itemEl, { rootEl: contentEl, block: "nearest" })
+        })
       },
       selectItem(params) {
         const { context, event, flush, prop } = params
@@ -820,16 +847,30 @@ export const machine = createMachine({
           const nextValue = prop("multiple") ? addOrRemove(context.get("value"), event.value) : [event.value]
           prop("onSelect")?.({ value: nextValue, itemValue: event.value })
           context.set("value", nextValue)
-          context.set("inputValue", getInputValue(params))
+
+          // set input value
+          const inputValue = match(prop("selectionBehavior"), {
+            preserve: context.get("inputValue"),
+            replace: prop("collection").stringifyMany(nextValue),
+            clear: "",
+          })
+          context.set("inputValue", inputValue)
         })
       },
       clearItem(params) {
-        const { context, event, flush } = params
+        const { context, event, flush, prop } = params
         if (event.value == null) return
         flush(() => {
           const nextValue = remove(context.get("value"), event.value)
           context.set("value", nextValue)
-          context.set("inputValue", getInputValue(params))
+
+          // set input value
+          const inputValue = match(prop("selectionBehavior"), {
+            preserve: context.get("inputValue"),
+            replace: prop("collection").stringifyMany(nextValue),
+            clear: "",
+          })
+          context.set("inputValue", inputValue)
         })
       },
       setInitialFocus({ scope }) {
@@ -874,17 +915,31 @@ export const machine = createMachine({
         context.set("inputValue", inputValue)
       },
       setValue(params) {
-        const { context, flush, event } = params
+        const { context, flush, event, prop } = params
         flush(() => {
           context.set("value", event.value)
-          context.set("inputValue", getInputValue(params))
+
+          // set input value
+          const inputValue = match(prop("selectionBehavior"), {
+            preserve: context.get("inputValue"),
+            replace: prop("collection").stringifyMany(event.value),
+            clear: "",
+          })
+          context.set("inputValue", inputValue)
         })
       },
       clearSelectedItems(params) {
-        const { context, flush } = params
+        const { context, flush, prop } = params
         flush(() => {
           context.set("value", [])
-          context.set("inputValue", getInputValue(params))
+
+          // set input value
+          const inputValue = match(prop("selectionBehavior"), {
+            preserve: context.get("inputValue"),
+            replace: prop("collection").stringifyMany([]),
+            clear: "",
+          })
+          context.set("inputValue", inputValue)
         })
       },
       scrollContentToTop({ prop, scope }) {
@@ -986,12 +1041,22 @@ export const machine = createMachine({
       syncSelectedItems(params) {
         queueMicrotask(() => {
           const { context, prop } = params
+          const collection = prop("collection")
+          const value = context.get("value")
+
+          // set selected items (based on value)
+          const selectedItems = value.map((v) => {
+            const item = context.get("selectedItems").find((item) => collection.getItemValue(item) === v)
+            return item || collection.find(v)
+          })
+          context.set("selectedItems", selectedItems)
+
+          // set input value
           const inputValue = match(prop("selectionBehavior"), {
             preserve: context.get("inputValue"),
-            replace: prop("collection").stringifyMany(context.get("value")),
+            replace: collection.stringifyMany(value),
             clear: "",
           })
-          context.set("selectedItems", getSelectedItems(params))
           context.set("inputValue", inputValue)
         })
       },
@@ -1005,20 +1070,3 @@ export const machine = createMachine({
     },
   },
 })
-
-function getInputValue({ context, prop, computed }: Params<ComboboxSchema>) {
-  return match(prop("selectionBehavior"), {
-    preserve: context.get("inputValue"),
-    replace: computed("valueAsString"),
-    clear: "",
-  })
-}
-
-function getSelectedItems({ context, prop }: Params<ComboboxSchema>) {
-  const collection = prop("collection")
-  return context.get("value").map((v) => {
-    const foundItem = context.get("selectedItems").find((item) => collection.getItemValue(item) === v)
-    if (foundItem) return foundItem
-    return collection.find(v)
-  })
-}

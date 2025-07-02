@@ -11,8 +11,8 @@ export class ComboboxModel extends Model {
     return a11y(this.page)
   }
 
-  goto() {
-    return this.page.goto("/combobox")
+  goto(url = "/combobox") {
+    return this.page.goto(url)
   }
 
   private get input() {
@@ -115,5 +115,9 @@ export class ComboboxModel extends Model {
 
   dontSeeHighlightedItem = async () => {
     expect(await this.highlightedItem.count()).toBe(0)
+  }
+
+  seeValueText = async (text: string) => {
+    await expect(this.page.locator("[data-testid=value-text]")).toContainText(text)
   }
 }
