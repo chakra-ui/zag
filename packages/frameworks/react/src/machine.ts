@@ -51,6 +51,9 @@ export function useMachine<T extends MachineSchema>(
     getRefs() {
       return refs as any
     },
+    getEvent() {
+      return getEvent()
+    },
   })
 
   const contextRef = useLiveRef<any>(context)

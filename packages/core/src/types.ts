@@ -16,6 +16,7 @@ interface ContextParams<T extends Dict> {
   getContext: () => BindableContext<T>
   getComputed: () => ComputedFn<T>
   getRefs: () => BindableRefs<T>
+  getEvent: () => EventType<T["event"]>
   flush: (fn: VoidFunction) => void
 }
 

@@ -18,8 +18,19 @@ export interface HighlightChangeDetails<T extends CollectionItem = CollectionIte
   highlightedItem: T | null
 }
 
+/**
+ * The reason for the input value change
+ */
+export type InputValueChangeReason =
+  | "input-change" // User typed in the input
+  | "item-select" // Item was selected and input value changed based on selection behavior
+  | "clear-trigger" // Clear button was clicked
+  | "script" // Programmatically changed
+  | "interact-outside" // User clicked outside or blurred the input
+
 export interface InputValueChangeDetails {
   inputValue: string
+  reason?: InputValueChangeReason | undefined
 }
 
 /**
@@ -28,7 +39,7 @@ export interface InputValueChangeDetails {
 export type OpenChangeReason =
   | "input-click" // User clicked the input
   | "trigger-click" // User clicked the trigger button
-  | "script" // Programmatically changed via API
+  | "script" // Programmatically changed
   | "arrow-key" // User pressed arrow keys or used the listbox navigation keys
   | "input-change" // Input value changed
   | "interact-outside" // User clicked outside
@@ -430,7 +441,7 @@ export interface ComboboxApi<T extends PropTypes = PropTypes, V extends Collecti
   /**
    * Function to set the input value of the combobox
    */
-  setInputValue(value: string): void
+  setInputValue(value: string, reason?: InputValueChangeReason): void
   /**
    * Returns the state of a combobox item
    */

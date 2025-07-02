@@ -6,7 +6,7 @@ import { getPlacement } from "@zag-js/popper"
 import { addOrRemove, isBoolean, isEqual, match, remove } from "@zag-js/utils"
 import { collection } from "./combobox.collection"
 import * as dom from "./combobox.dom"
-import type { ComboboxSchema, OpenChangeReason, Placement } from "./combobox.types"
+import type { ComboboxSchema, InputValueChangeReason, OpenChangeReason, Placement } from "./combobox.types"
 
 const { guards, createMachine, choose } = setup<ComboboxSchema>()
 
@@ -48,7 +48,7 @@ export const machine = createMachine({
     return open ? "suggesting" : "idle"
   },
 
-  context({ prop, bindable, getContext }) {
+  context({ prop, bindable, getContext, getEvent }) {
     return {
       currentPlacement: bindable<Placement | undefined>(() => ({
         defaultValue: undefined,
@@ -100,7 +100,9 @@ export const machine = createMachine({
           defaultValue: inputValue,
           value: prop("inputValue"),
           onChange(value) {
-            prop("onInputValueChange")?.({ inputValue: value })
+            const event = getEvent()
+            const reason = (event.previousEvent || event).src as InputValueChangeReason | undefined
+            prop("onInputValueChange")?.({ inputValue: value, reason })
           },
         }
       }),

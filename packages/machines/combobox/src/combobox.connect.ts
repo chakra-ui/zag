@@ -83,8 +83,8 @@ export function connect<T extends PropTypes, V extends CollectionItem>(
     setValue(value) {
       send({ type: "VALUE.SET", value })
     },
-    setInputValue(value) {
-      send({ type: "INPUT_VALUE.SET", value })
+    setInputValue(value, reason = "script") {
+      send({ type: "INPUT_VALUE.SET", value, src: reason })
     },
     clearValue(value) {
       if (value != null) {

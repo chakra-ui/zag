@@ -59,6 +59,9 @@ export function useMachine<T extends MachineSchema>(
     getRefs() {
       return refs as any
     },
+    getEvent() {
+      return getEvent()
+    },
   })
 
   const ctx: BindableContext<T> = {

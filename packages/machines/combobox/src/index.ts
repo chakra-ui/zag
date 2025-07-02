@@ -12,6 +12,7 @@ export type {
   ElementIds,
   HighlightChangeDetails,
   InputValueChangeDetails,
+  InputValueChangeReason,
   IntlTranslations,
   ItemGroupLabelProps,
   ItemGroupProps,
