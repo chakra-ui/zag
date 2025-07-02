@@ -189,8 +189,6 @@ export function connect<T extends PropTypes>(
     return [view, id].filter(Boolean).join(" ")
   }
 
-  console.log("selectedValue", selectedValue)
-
   return {
     focused,
     open,
