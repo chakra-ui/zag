@@ -4,6 +4,29 @@ All notable changes to this project will be documented in this file.
 
 > For v0.x changelog, see the [v0 branch](https://github.com/chakra-ui/zag/blob/v0/CHANGELOG.md)
 
+## [1.18.1](./#1.18.1) - 2025-07-02
+
+### Fixed
+
+- **Combobox**:
+  - Expose `reason` to `onOpenChange` and `onInputValueChange` callbacks
+  - Select highlighted item only if it exists in the collection
+  - Expose `api.clearHighlightedValue` function to clear highlighted value
+
+- **Date Picker**: Fix issue where datepicker errors when setting `selectionMode=range` and `minView=year`
+
+- **Listbox**: Select highlighted item only if it exists in the collection
+
+- **Progress**: Improve `valueAsString` formatting
+
+- **Select**:
+  - Select highlighted item only if it exists in the collection
+  - Expose `api.clearHighlightedValue` function to clear highlighted value
+
+- **Tour**: Fix an issue where the `goto` function in `StepActionMap` doesn't work when passing step IDs (string)
+
+- **Tree View**: Expose `id` in the tree node state
+
 ## [1.18.0](./#1.18.0) - 2025-06-30
 
 ### Added
