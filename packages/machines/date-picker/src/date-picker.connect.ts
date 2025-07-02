@@ -117,11 +117,17 @@ export function connect<T extends PropTypes>(
 
   function getYearTableCellState(props: TableCellProps): TableCellState {
     const { value, disabled } = props
+    const normalized = focusedValue.set({ year: value })
+
     const cellState = {
       focused: focusedValue.year === props.value,
       selectable: isValueWithinRange(value, min?.year ?? 0, max?.year ?? 9999),
       selected: !!selectedValue.find((date) => date.year === value),
       valueText: value.toString(),
+      inRange:
+        isRangePicker &&
+        (isDateWithinRange(normalized, selectedValue) || isDateWithinRange(normalized, hoveredRangeValue)),
+      normalizedDate: normalized,
       get disabled() {
         return disabled || !cellState.selectable
       },
@@ -141,6 +147,7 @@ export function connect<T extends PropTypes>(
       inRange:
         isRangePicker &&
         (isDateWithinRange(normalized, selectedValue) || isDateWithinRange(normalized, hoveredRangeValue)),
+      normalizedDate: normalized,
       get disabled() {
         return disabled || !cellState.selectable
       },
@@ -545,6 +552,12 @@ export function connect<T extends PropTypes>(
           if (!cellState.selectable) return
           send({ type: "CELL.CLICK", cell: "month", value })
         },
+        onPointerMove(event) {
+          if (event.pointerType === "touch" || !cellState.selectable) return
+          const focus = event.currentTarget.ownerDocument.activeElement !== event.currentTarget
+          if (hoveredValue && cellState.normalizedDate && isEqualDay(cellState.normalizedDate, hoveredValue)) return
+          send({ type: "CELL.POINTER_MOVE", cell: "month", value: cellState.normalizedDate, focus })
+        },
       })
     },
 
@@ -575,6 +588,7 @@ export function connect<T extends PropTypes>(
         id: dom.getCellTriggerId(scope, value.toString()),
         "data-selected": dataAttr(cellState.selected),
         "data-focus": dataAttr(cellState.focused),
+        "data-in-range": dataAttr(cellState.inRange),
         "aria-disabled": ariaAttr(!cellState.selectable),
         "data-disabled": dataAttr(!cellState.selectable),
         "aria-label": cellState.valueText,
