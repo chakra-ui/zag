@@ -262,8 +262,6 @@ test.describe("combobox / multiple", () => {
   })
 
   test("should toggle the same item", async () => {
-    await I.controls.bool("removeSelected", true)
-
     await I.type("mal")
 
     await I.pressKey("ArrowDown")
@@ -272,11 +270,11 @@ test.describe("combobox / multiple", () => {
     await I.seeValueText("Malawi")
 
     await I.pressKey("Enter")
-    await I.seeValueText("Malawi")
+    await I.dontSeeValueText()
   })
 
   test("[removeSelected=true] should not toggle the same item", async () => {
-    await I.controls.bool("removeSelected", false)
+    await I.controls.bool("removeSelected", true)
 
     await I.type("mal")
 

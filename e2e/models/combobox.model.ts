@@ -117,7 +117,15 @@ export class ComboboxModel extends Model {
     expect(await this.highlightedItem.count()).toBe(0)
   }
 
+  get valueText() {
+    return this.page.locator("[data-testid=value-text]")
+  }
+
   seeValueText = async (text: string) => {
-    await expect(this.page.locator("[data-testid=value-text]")).toContainText(text)
+    await expect(this.valueText).toContainText(text)
+  }
+
+  dontSeeValueText = async () => {
+    await expect(this.valueText).toHaveText("")
   }
 }
