@@ -117,7 +117,7 @@ export function connect<T extends PropTypes>(
 
   function getYearTableCellState(props: TableCellProps): TableCellState {
     const { value, disabled } = props
-    const normalized = focusedValue.set({ year: value })
+    const dateValue = focusedValue.set({ year: value })
 
     const cellState = {
       focused: focusedValue.year === props.value,
@@ -126,8 +126,8 @@ export function connect<T extends PropTypes>(
       valueText: value.toString(),
       inRange:
         isRangePicker &&
-        (isDateWithinRange(normalized, selectedValue) || isDateWithinRange(normalized, hoveredRangeValue)),
-      normalizedDate: normalized,
+        (isDateWithinRange(dateValue, selectedValue) || isDateWithinRange(dateValue, hoveredRangeValue)),
+      value: dateValue,
       get disabled() {
         return disabled || !cellState.selectable
       },
@@ -137,17 +137,17 @@ export function connect<T extends PropTypes>(
 
   function getMonthTableCellState(props: TableCellProps): TableCellState {
     const { value, disabled } = props
-    const normalized = focusedValue.set({ month: value })
+    const dateValue = focusedValue.set({ month: value })
     const formatter = getMonthFormatter(locale, timeZone)
     const cellState = {
       focused: focusedValue.month === props.value,
-      selectable: !isDateOutsideRange(normalized, min, max),
+      selectable: !isDateOutsideRange(dateValue, min, max),
       selected: !!selectedValue.find((date) => date.month === value && date.year === focusedValue.year),
-      valueText: formatter.format(normalized.toDate(timeZone)),
+      valueText: formatter.format(dateValue.toDate(timeZone)),
       inRange:
         isRangePicker &&
-        (isDateWithinRange(normalized, selectedValue) || isDateWithinRange(normalized, hoveredRangeValue)),
-      normalizedDate: normalized,
+        (isDateWithinRange(dateValue, selectedValue) || isDateWithinRange(dateValue, hoveredRangeValue)),
+      value: dateValue,
       get disabled() {
         return disabled || !cellState.selectable
       },
@@ -504,12 +504,15 @@ export function connect<T extends PropTypes>(
           if (!cellState.selectable) return
           send({ type: "CELL.CLICK", cell: "day", value })
         },
-        onPointerMove(event) {
-          if (event.pointerType === "touch" || !cellState.selectable) return
-          const focus = event.currentTarget.ownerDocument.activeElement !== event.currentTarget
-          if (hoveredValue && isEqualDay(value, hoveredValue)) return
-          send({ type: "CELL.POINTER_MOVE", cell: "day", value, focus })
-        },
+        onPointerMove: isRangePicker
+          ? (event) => {
+              if (event.pointerType === "touch") return
+              if (!cellState.selectable) return
+              const focus = event.currentTarget.ownerDocument.activeElement !== event.currentTarget
+              if (hoveredValue && isEqualDay(value, hoveredValue)) return
+              send({ type: "CELL.POINTER_MOVE", cell: "day", value, focus })
+            }
+          : undefined,
       })
     },
 
@@ -552,12 +555,15 @@ export function connect<T extends PropTypes>(
           if (!cellState.selectable) return
           send({ type: "CELL.CLICK", cell: "month", value })
         },
-        onPointerMove(event) {
-          if (event.pointerType === "touch" || !cellState.selectable) return
-          const focus = event.currentTarget.ownerDocument.activeElement !== event.currentTarget
-          if (hoveredValue && cellState.normalizedDate && isEqualDay(cellState.normalizedDate, hoveredValue)) return
-          send({ type: "CELL.POINTER_MOVE", cell: "month", value: cellState.normalizedDate, focus })
-        },
+        onPointerMove: isRangePicker
+          ? (event) => {
+              if (event.pointerType === "touch") return
+              if (!cellState.selectable) return
+              const focus = event.currentTarget.ownerDocument.activeElement !== event.currentTarget
+              if (hoveredValue && cellState.value && isEqualDay(cellState.value, hoveredValue)) return
+              send({ type: "CELL.POINTER_MOVE", cell: "month", value: cellState.value, focus })
+            }
+          : undefined,
       })
     },
 
