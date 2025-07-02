@@ -396,7 +396,8 @@ export interface TableCellState {
   selectable: boolean
   selected: boolean
   valueText: string
-  inRange?: boolean
+  inRange: boolean
+  normalizedDate: DateValue
   readonly disabled: boolean
 }
 
