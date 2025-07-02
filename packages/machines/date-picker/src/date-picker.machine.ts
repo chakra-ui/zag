@@ -782,7 +782,8 @@ export const machine = createMachine<DatePickerSchema>({
       },
       resetSelection(params) {
         const { context, event } = params
-        context.set("value", [event.value ?? context.get("focusedValue")])
+        const value = normalizeValue(params, event.value ?? context.get("focusedValue"))
+        context.set("value", [value])
       },
       toggleSelectedDate(params) {
         const { context, event } = params

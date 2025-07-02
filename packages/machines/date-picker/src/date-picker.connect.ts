@@ -138,6 +138,9 @@ export function connect<T extends PropTypes>(
       selectable: !isDateOutsideRange(normalized, min, max),
       selected: !!selectedValue.find((date) => date.month === value && date.year === focusedValue.year),
       valueText: formatter.format(normalized.toDate(timeZone)),
+      inRange:
+        isRangePicker &&
+        (isDateWithinRange(normalized, selectedValue) || isDateWithinRange(normalized, hoveredRangeValue)),
       get disabled() {
         return disabled || !cellState.selectable
       },
@@ -513,7 +516,7 @@ export function connect<T extends PropTypes>(
         dir: prop("dir"),
         colSpan: columns,
         role: "gridcell",
-        "aria-selected": ariaAttr(cellState.selected),
+        "aria-selected": ariaAttr(cellState.selected || cellState.inRange),
         "data-selected": dataAttr(cellState.selected),
         "aria-disabled": ariaAttr(!cellState.selectable),
         "data-value": value,
@@ -532,6 +535,7 @@ export function connect<T extends PropTypes>(
         "aria-disabled": ariaAttr(!cellState.selectable),
         "data-disabled": dataAttr(!cellState.selectable),
         "data-focus": dataAttr(cellState.focused),
+        "data-in-range": dataAttr(cellState.inRange),
         "aria-label": cellState.valueText,
         "data-view": "month",
         "data-value": value,
