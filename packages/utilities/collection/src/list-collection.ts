@@ -341,8 +341,17 @@ export class ListCollection<T extends CollectionItem = CollectionItem> {
    * Update an item in the collection
    */
   update = (value: string, item: T) => {
-    let index = this.items.findIndex((item) => this.getItemValue(item) === value)
+    let index = this.indexOf(value)
     if (index === -1) return this
+    return this.copy([...this.items.slice(0, index), item, ...this.items.slice(index + 1)])
+  }
+
+  /**
+   * Update an item in the collection if it exists, otherwise append it
+   */
+  upsert = (value: string, item: T) => {
+    let index = this.indexOf(value)
+    if (index === -1) return this.append(item)
     return this.copy([...this.items.slice(0, index), item, ...this.items.slice(index + 1)])
   }
 
