@@ -263,7 +263,7 @@ type PropsWithDefault =
   | "closeOnSelect"
   | "format"
   | "parse"
-  | "focusedValue"
+  | "defaultFocusedValue"
   | "outsideDaySelectable"
 
 interface PrivateContext {
@@ -573,11 +573,11 @@ export interface DatePickerApi<T extends PropTypes = PropTypes> {
   /**
    * Sets the selected date to the given date.
    */
-  setValue(values: CalendarDate[]): void
+  setValue(values: DateValue[]): void
   /**
    * Sets the focused date to the given date.
    */
-  setFocusedValue(value: CalendarDate): void
+  setFocusedValue(value: DateValue): void
   /**
    * Clears the selected date(s).
    */
@@ -619,7 +619,7 @@ export interface DatePickerApi<T extends PropTypes = PropTypes> {
   /**
    * Formats the given date value based on the provided options.
    */
-  format(value: CalendarDate, opts?: Intl.DateTimeFormatOptions): string
+  format(value: DateValue, opts?: Intl.DateTimeFormatOptions): string
   /**
    * Sets the view of the date picker.
    */

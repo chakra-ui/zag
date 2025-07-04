@@ -64,7 +64,8 @@ export const machine = createMachine<DatePickerSchema>({
       : undefined
 
     // get initial focused value
-    let focusedValue = props.focusedValue || value?.[0] || defaultValue?.[0] || getTodayDate(timeZone)
+    let focusedValue =
+      props.focusedValue || props.defaultFocusedValue || value?.[0] || defaultValue?.[0] || getTodayDate(timeZone)
     focusedValue = constrainValue(focusedValue, props.min, props.max)
 
     // get the initial view
@@ -90,7 +91,8 @@ export const machine = createMachine<DatePickerSchema>({
         return parseDateString(value, locale, timeZone)
       },
       ...props,
-      focusedValue,
+      focusedValue: typeof props.focusedValue === "undefined" ? undefined : focusedValue,
+      defaultFocusedValue: focusedValue,
       value,
       defaultValue: defaultValue ?? [],
       positioning: {
@@ -111,22 +113,22 @@ export const machine = createMachine<DatePickerSchema>({
     }
   },
 
-  context({ prop, bindable, getContext, getComputed }) {
+  context({ prop, bindable, getContext }) {
     return {
       focusedValue: bindable<DateValue>(() => ({
-        defaultValue: prop("focusedValue"),
+        defaultValue: prop("defaultFocusedValue"),
+        value: prop("focusedValue"),
         isEqual: isDateEqual,
         hash: (v) => v.toString(),
         sync: true,
         onChange(focusedValue) {
           const context = getContext()
-          const computed = getComputed()
-          prop("onFocusChange")?.({
-            value: context.get("value"),
-            valueAsString: computed("valueAsString"),
-            view: context.get("view"),
-            focusedValue,
-          })
+          const view = context.get("view")
+          const value = context.get("value")
+          const valueAsString = value.map((date) =>
+            prop("format")(date, { locale: prop("locale"), timeZone: prop("timeZone") }),
+          )
+          prop("onFocusChange")?.({ value, valueAsString, view, focusedValue })
         },
       })),
       value: bindable(() => ({
@@ -161,8 +163,9 @@ export const machine = createMachine<DatePickerSchema>({
         },
       })),
       startValue: bindable(() => {
+        const focusedValue = prop("focusedValue") || prop("defaultFocusedValue")
         return {
-          defaultValue: alignDate(prop("focusedValue"), "start", { months: prop("numOfMonths") }, prop("locale")),
+          defaultValue: alignDate(focusedValue, "start", { months: prop("numOfMonths") }, prop("locale")),
           isEqual: isDateEqual,
         }
       }),
