@@ -349,9 +349,12 @@ export class ListCollection<T extends CollectionItem = CollectionItem> {
   /**
    * Update an item in the collection if it exists, otherwise append it
    */
-  upsert = (value: string, item: T) => {
+  upsert = (value: string, item: T, mode: "append" | "prepend" = "append") => {
     let index = this.indexOf(value)
-    if (index === -1) return this.append(item)
+    if (index === -1) {
+      const fn = mode === "append" ? this.append : this.prepend
+      return fn(item)
+    }
     return this.copy([...this.items.slice(0, index), item, ...this.items.slice(index + 1)])
   }
 
