@@ -1,5 +1,16 @@
 # @zag-js/collection
 
+## 1.18.2
+
+### Patch Changes
+
+- [`3b583f8`](https://github.com/chakra-ui/zag/commit/3b583f8e71dcf625d09d895f90e26e454b725cc5) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Add `upsert` to list collection. Useful for making creatable items
+  in select or combobox
+
+- Updated dependencies [[`11843e6`](https://github.com/chakra-ui/zag/commit/11843e6adf62b906006890c8003b38da2850c8ee)]:
+  - @zag-js/utils@1.18.2
+
 ## 1.18.1
 
 ### Patch Changes

@@ -1,5 +1,23 @@
 # @zag-js/date-picker
 
+## 1.18.2
+
+### Patch Changes
+
+- [`8c9e6b3`](https://github.com/chakra-ui/zag/commit/8c9e6b329e8af1a380c266b18034e373e1c060a3) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix issue where `focusedValue` could not be fully controlled.
+
+- Updated dependencies [[`11843e6`](https://github.com/chakra-ui/zag/commit/11843e6adf62b906006890c8003b38da2850c8ee)]:
+  - @zag-js/utils@1.18.2
+  - @zag-js/core@1.18.2
+  - @zag-js/dismissable@1.18.2
+  - @zag-js/popper@1.18.2
+  - @zag-js/anatomy@1.18.2
+  - @zag-js/types@1.18.2
+  - @zag-js/date-utils@1.18.2
+  - @zag-js/dom-query@1.18.2
+  - @zag-js/live-region@1.18.2
+
 ## 1.18.1
 
 ### Patch Changes

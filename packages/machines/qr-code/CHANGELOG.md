@@ -1,5 +1,16 @@
 # @zag-js/qr-code
 
+## 1.18.2
+
+### Patch Changes
+
+- Updated dependencies [[`11843e6`](https://github.com/chakra-ui/zag/commit/11843e6adf62b906006890c8003b38da2850c8ee)]:
+  - @zag-js/utils@1.18.2
+  - @zag-js/core@1.18.2
+  - @zag-js/anatomy@1.18.2
+  - @zag-js/types@1.18.2
+  - @zag-js/dom-query@1.18.2
+
 ## 1.18.1
 
 ### Patch Changes
