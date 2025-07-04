@@ -4,6 +4,17 @@ All notable changes to this project will be documented in this file.
 
 > For v0.x changelog, see the [v0 branch](https://github.com/chakra-ui/zag/blob/v0/CHANGELOG.md)
 
+## [1.18.2](./#1.18.2) - 2025-07-04
+
+### Added
+
+- **Collection**: Add `upsert` to list collection. Useful for making creatable items in select or combobox
+
+### Fixed
+
+- **Date Picker**: Fix issue where `focusedValue` could not be fully controlled
+- **Toast**: Fix issue where toast `title` or `description` could not accept React or Vue elements
+
 ## [1.18.1](./#1.18.1) - 2025-07-02
 
 ### Fixed
