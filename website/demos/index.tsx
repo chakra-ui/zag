@@ -88,6 +88,11 @@ const components = {
         loop: false,
         spacing: "0px",
         allowMouseDrag: false,
+        orientation: {
+          default: "horizontal",
+          options: ["horizontal", "vertical"],
+          required: true,
+        },
       }}
     />
   ),
