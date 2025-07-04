@@ -1,3 +1,5 @@
+import { isPlainObject } from "./guard"
+
 export function compact<T extends Record<string, unknown> | undefined>(obj: T): T {
   if (!isPlainObject(obj) || obj === undefined) return obj
   const keys = Reflect.ownKeys(obj).filter((key) => typeof key === "string")
@@ -12,10 +14,6 @@ export function compact<T extends Record<string, unknown> | undefined>(obj: T): 
 }
 
 export const json = (v: any) => JSON.parse(JSON.stringify(v))
-
-const isPlainObject = (v: any) => {
-  return v && typeof v === "object" && v.constructor === Object
-}
 
 export function pick<T extends Record<string, any>, K extends keyof T>(obj: T, keys: K[]): Pick<T, K> {
   const filtered: Partial<T> = {}
