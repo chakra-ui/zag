@@ -227,11 +227,11 @@ export interface FileUploadApi<T extends PropTypes = PropTypes> {
    */
   rejectedFiles: FileRejection[]
   /**
-   * Function to set the value
+   * Function to set the accepted files
    */
   setFiles(files: File[]): void
   /**
-   * Function to clear the value
+   * Function to clear the accepted files
    */
   clearFiles(): void
   /**

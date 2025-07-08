@@ -175,7 +175,16 @@ export const machine = createMachine<FileUploadSchema>({
       },
       setEventFiles(params) {
         const { computed, context, event, prop } = params
-        const { acceptedFiles, rejectedFiles } = getEventFiles(params, event.files)
+
+        const currentAcceptedFiles = context.get("acceptedFiles")
+        const currentRejectedFiles = context.get("rejectedFiles")
+
+        const { acceptedFiles, rejectedFiles } = getEventFiles(
+          params,
+          event.files,
+          currentAcceptedFiles,
+          currentRejectedFiles,
+        )
 
         const set = (files: File[]) => {
           if (computed("multiple")) {
