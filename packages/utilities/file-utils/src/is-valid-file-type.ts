@@ -1,4 +1,5 @@
 import type { FileError } from "./types"
+import { getFileMimeType } from "./get-file-mime-type"
 
 function isFileAccepted(file: File | null, accept: string[] | string | undefined) {
   if (file && accept) {
@@ -7,7 +8,7 @@ function isFileAccepted(file: File | null, accept: string[] | string | undefined
     if (types.length === 0) return true
 
     const fileName = file.name || ""
-    const mimeType = (file.type || "").toLowerCase()
+    const mimeType = (file.type || getFileMimeType(fileName) || "").toLowerCase()
     const baseMimeType = mimeType.replace(/\/.*$/, "")
 
     return types.some((type) => {
