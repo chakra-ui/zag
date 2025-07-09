@@ -239,6 +239,9 @@ importers:
       '@zag-js/interact-outside':
         specifier: workspace:*
         version: link:../../packages/utilities/interact-outside
+      '@zag-js/json-tree-utils':
+        specifier: workspace:*
+        version: link:../../packages/utilities/json-tree-utils
       '@zag-js/listbox':
         specifier: workspace:*
         version: link:../../packages/machines/listbox
@@ -522,6 +525,9 @@ importers:
       '@zag-js/interact-outside':
         specifier: workspace:*
         version: link:../../packages/utilities/interact-outside
+      '@zag-js/json-tree-utils':
+        specifier: workspace:*
+        version: link:../../packages/utilities/json-tree-utils
       '@zag-js/listbox':
         specifier: workspace:*
         version: link:../../packages/machines/listbox
@@ -778,6 +784,9 @@ importers:
       '@zag-js/interact-outside':
         specifier: workspace:*
         version: link:../../packages/utilities/interact-outside
+      '@zag-js/json-tree-utils':
+        specifier: workspace:*
+        version: link:../../packages/utilities/json-tree-utils
       '@zag-js/listbox':
         specifier: workspace:*
         version: link:../../packages/machines/listbox
@@ -1043,6 +1052,9 @@ importers:
       '@zag-js/interact-outside':
         specifier: workspace:*
         version: link:../../packages/utilities/interact-outside
+      '@zag-js/json-tree-utils':
+        specifier: workspace:*
+        version: link:../../packages/utilities/json-tree-utils
       '@zag-js/listbox':
         specifier: workspace:*
         version: link:../../packages/machines/listbox
@@ -1283,6 +1295,9 @@ importers:
       '@zag-js/interact-outside':
         specifier: workspace:*
         version: link:../../packages/utilities/interact-outside
+      '@zag-js/json-tree-utils':
+        specifier: workspace:*
+        version: link:../../packages/utilities/json-tree-utils
       '@zag-js/listbox':
         specifier: workspace:*
         version: link:../../packages/machines/listbox
@@ -1548,6 +1563,9 @@ importers:
       '@zag-js/interact-outside':
         specifier: workspace:*
         version: link:../../packages/utilities/interact-outside
+      '@zag-js/json-tree-utils':
+        specifier: workspace:*
+        version: link:../../packages/utilities/json-tree-utils
       '@zag-js/listbox':
         specifier: workspace:*
         version: link:../../packages/machines/listbox
@@ -3202,6 +3220,12 @@ importers:
       '@zag-js/utils':
         specifier: workspace:*
         version: link:../core
+    devDependencies:
+      clean-package:
+        specifier: 2.2.0
+        version: 2.2.0
+
+  packages/utilities/json-tree-utils:
     devDependencies:
       clean-package:
         specifier: 2.2.0
@@ -17831,7 +17855,7 @@ snapshots:
       eslint: 9.30.0(jiti@2.4.2)
       eslint-import-resolver-node: 0.3.9
       eslint-import-resolver-typescript: 3.10.1(eslint-plugin-import@2.32.0(@typescript-eslint/parser@8.36.0(eslint@9.30.1(jiti@2.4.2))(typescript@5.8.3))(eslint@9.30.1(jiti@2.4.2)))(eslint@9.30.0(jiti@2.4.2))
-      eslint-plugin-import: 2.32.0(@typescript-eslint/parser@8.36.0(eslint@9.30.1(jiti@2.4.2))(typescript@5.8.3))(eslint-import-resolver-typescript@3.10.1(eslint-plugin-import@2.32.0(@typescript-eslint/parser@8.36.0(eslint@9.30.1(jiti@2.4.2))(typescript@5.8.3))(eslint@9.30.1(jiti@2.4.2)))(eslint@9.30.0(jiti@2.4.2)))(eslint@9.30.0(jiti@2.4.2))
+      eslint-plugin-import: 2.32.0(@typescript-eslint/parser@8.36.0(eslint@9.30.1(jiti@2.4.2))(typescript@5.8.3))(eslint-import-resolver-typescript@3.10.1)(eslint@9.30.0(jiti@2.4.2))
       eslint-plugin-jsx-a11y: 6.10.2(eslint@9.30.0(jiti@2.4.2))
       eslint-plugin-react: 7.37.5(eslint@9.30.0(jiti@2.4.2))
       eslint-plugin-react-hooks: 5.2.0(eslint@9.30.0(jiti@2.4.2))
@@ -17851,7 +17875,7 @@ snapshots:
       eslint: 9.30.1(jiti@2.4.2)
       eslint-import-resolver-node: 0.3.9
       eslint-import-resolver-typescript: 3.10.1(eslint-plugin-import@2.32.0(@typescript-eslint/parser@8.36.0(eslint@9.30.1(jiti@2.4.2))(typescript@5.8.3))(eslint@9.30.1(jiti@2.4.2)))(eslint@9.30.1(jiti@2.4.2))
-      eslint-plugin-import: 2.32.0(@typescript-eslint/parser@8.36.0(eslint@9.30.1(jiti@2.4.2))(typescript@5.8.3))(eslint-import-resolver-typescript@3.10.1(eslint-plugin-import@2.32.0(@typescript-eslint/parser@8.36.0(eslint@9.30.1(jiti@2.4.2))(typescript@5.8.3))(eslint@9.30.1(jiti@2.4.2)))(eslint@9.30.1(jiti@2.4.2)))(eslint@9.30.1(jiti@2.4.2))
+      eslint-plugin-import: 2.32.0(@typescript-eslint/parser@8.36.0(eslint@9.30.1(jiti@2.4.2))(typescript@5.8.3))(eslint-import-resolver-typescript@3.10.1)(eslint@9.30.1(jiti@2.4.2))
       eslint-plugin-jsx-a11y: 6.10.2(eslint@9.30.1(jiti@2.4.2))
       eslint-plugin-react: 7.37.5(eslint@9.30.1(jiti@2.4.2))
       eslint-plugin-react-hooks: 5.2.0(eslint@9.30.1(jiti@2.4.2))
@@ -17913,7 +17937,7 @@ snapshots:
       tinyglobby: 0.2.14
       unrs-resolver: 1.11.0
     optionalDependencies:
-      eslint-plugin-import: 2.32.0(@typescript-eslint/parser@8.36.0(eslint@9.30.1(jiti@2.4.2))(typescript@5.8.3))(eslint-import-resolver-typescript@3.10.1(eslint-plugin-import@2.32.0(@typescript-eslint/parser@8.36.0(eslint@9.30.1(jiti@2.4.2))(typescript@5.8.3))(eslint@9.30.1(jiti@2.4.2)))(eslint@9.30.1(jiti@2.4.2)))(eslint@9.30.1(jiti@2.4.2))
+      eslint-plugin-import: 2.32.0(@typescript-eslint/parser@8.36.0(eslint@9.30.1(jiti@2.4.2))(typescript@5.8.3))(eslint-import-resolver-typescript@3.10.1)(eslint@9.30.1(jiti@2.4.2))
     transitivePeerDependencies:
       - supports-color
 
@@ -17960,7 +17984,7 @@ snapshots:
       lodash.memoize: 4.1.2
       semver: 7.7.2
 
-  eslint-plugin-import@2.32.0(@typescript-eslint/parser@8.36.0(eslint@9.30.1(jiti@2.4.2))(typescript@5.8.3))(eslint-import-resolver-typescript@3.10.1(eslint-plugin-import@2.32.0(@typescript-eslint/parser@8.36.0(eslint@9.30.1(jiti@2.4.2))(typescript@5.8.3))(eslint@9.30.1(jiti@2.4.2)))(eslint@9.30.0(jiti@2.4.2)))(eslint@9.30.0(jiti@2.4.2)):
+  eslint-plugin-import@2.32.0(@typescript-eslint/parser@8.36.0(eslint@9.30.1(jiti@2.4.2))(typescript@5.8.3))(eslint-import-resolver-typescript@3.10.1)(eslint@9.30.0(jiti@2.4.2)):
     dependencies:
       '@rtsao/scc': 1.1.0
       array-includes: 3.1.9
@@ -17989,7 +18013,7 @@ snapshots:
       - eslint-import-resolver-webpack
       - supports-color
 
-  eslint-plugin-import@2.32.0(@typescript-eslint/parser@8.36.0(eslint@9.30.1(jiti@2.4.2))(typescript@5.8.3))(eslint-import-resolver-typescript@3.10.1(eslint-plugin-import@2.32.0(@typescript-eslint/parser@8.36.0(eslint@9.30.1(jiti@2.4.2))(typescript@5.8.3))(eslint@9.30.1(jiti@2.4.2)))(eslint@9.30.1(jiti@2.4.2)))(eslint@9.30.1(jiti@2.4.2)):
+  eslint-plugin-import@2.32.0(@typescript-eslint/parser@8.36.0(eslint@9.30.1(jiti@2.4.2))(typescript@5.8.3))(eslint-import-resolver-typescript@3.10.1)(eslint@9.30.1(jiti@2.4.2)):
     dependencies:
       '@rtsao/scc': 1.1.0
       array-includes: 3.1.9
