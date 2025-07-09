@@ -27,7 +27,12 @@ interface ValueNodeProps {
 const ValueNode = (props: ValueNodeProps): React.ReactNode => {
   const { node } = props
   return (
-    <span data-type={node.props.nodeType} data-kind={node.props.kind} suppressHydrationWarning>
+    <span
+      data-root={node.props.root ? "" : undefined}
+      data-type={node.props.nodeType}
+      data-kind={node.props.kind}
+      suppressHydrationWarning
+    >
       {Array.isArray(node.props.children)
         ? node.props.children.map((child, index) => <ValueNode key={index} node={child} />)
         : node.props.children}

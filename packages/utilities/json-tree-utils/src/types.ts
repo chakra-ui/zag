@@ -56,6 +56,7 @@ export type JsonNodeSyntaxKind =
 export interface JsonNodeElement {
   type: "span" | "div" | "a"
   props: {
+    root?: boolean
     nodeType?: string
     kind?: JsonNodeSyntaxKind
     children: string | number | boolean | null | undefined | JsonNodeElement[]

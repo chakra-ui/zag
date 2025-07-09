@@ -117,7 +117,7 @@ export const UndefinedType = dataType<undefined>({
   previewElement() {
     return {
       type: "span",
-      props: { kind: "preview", nodeType: "undefined", children: "undefined" },
+      props: { children: "undefined" },
     }
   },
   node({ id, parentKey, keyPath, dataTypePath }) {
@@ -145,7 +145,7 @@ export const SymbolType = dataType<symbol>({
   previewElement(node) {
     return {
       type: "span",
-      props: { kind: "preview", nodeType: "symbol", children: node.value.toString() },
+      props: { children: node.value.toString() },
     }
   },
   node({ id, parentKey, value }) {
@@ -171,14 +171,14 @@ export const BigIntType = dataType<BigInt>({
   previewElement(node) {
     return {
       type: "span",
-      props: { kind: "preview", nodeType: "bigint", children: node.value.toString() },
+      props: { children: `${node.value}n` },
     }
   },
   node({ id, parentKey, value }) {
     return {
       id,
       key: parentKey,
-      value: `${value}n`,
+      value,
       type: "bigint",
     }
   },
@@ -215,7 +215,7 @@ export const SetType = dataType<Set<unknown>>({
 
     return {
       type: "span",
-      props: { kind: "preview", nodeType: "set", children },
+      props: { children },
     }
   },
   node({ value, id, parentKey, createNode, visited }) {
@@ -256,8 +256,6 @@ export const WeakSetType = dataType<WeakSet<WeakKey>>({
     return {
       type: "span",
       props: {
-        kind: "preview",
-        nodeType: "weakset",
         children: [
           { type: "span", props: { kind: "constructor", children: "WeakSet" } },
           { type: "span", props: { kind: "brace", children: " {" } },
@@ -289,8 +287,6 @@ export const WeakMapType = dataType<WeakMap<WeakKey, WeakKey>>({
     return {
       type: "span",
       props: {
-        kind: "preview",
-        nodeType: "weakmap",
         children: [
           { type: "span", props: { kind: "constructor", children: "WeakMap" } },
           { type: "span", props: { kind: "brace", children: " {" } },
@@ -334,7 +330,7 @@ export const RegexType = dataType<RegExp>({
     return value instanceof RegExp
   },
   previewElement(node) {
-    return { type: "span", props: { nodeType: "regex", children: String(node.value) } }
+    return { type: "span", props: { children: String(node.value) } }
   },
   node({ value, id, createNode, parentKey }) {
     const children = REGEX_KEYS.map((key) => createNode(getProp(value, key), key))
@@ -365,8 +361,6 @@ export const DataViewType = dataType<DataView>({
     return {
       type: "span",
       props: {
-        kind: "preview",
-        nodeType: "dataview",
         children: [
           { type: "span", props: { kind: "constructor", children: `DataView(${dataView.byteLength})` } },
           { type: "span", props: { kind: "brace", children: " { " } },
@@ -424,8 +418,6 @@ export const UrlType = dataType<URL>({
     return {
       type: "span",
       props: {
-        kind: "preview",
-        nodeType: "url",
         children: [
           { type: "span", props: { kind: "constructor", children: "URL" } },
           { type: "span", props: { kind: "brace", children: " { " } },
@@ -467,8 +459,6 @@ export const URLSearchParamsType = dataType<URLSearchParams>({
     return {
       type: "span",
       props: {
-        kind: "preview",
-        nodeType: "urlsearchparams",
         children: [
           { type: "span", props: { kind: "constructor", children: "URLSearchParams" } },
           { type: "span", props: { kind: "brace", children: " { " } },
@@ -530,8 +520,6 @@ export const BlobType = dataType<Blob>({
     return {
       type: "span",
       props: {
-        kind: "preview",
-        nodeType: "blob",
         children: [
           { type: "span", props: { kind: "constructor", children: "Blob" } },
           { type: "span", props: { kind: "brace", children: " { " } },
@@ -577,8 +565,6 @@ export const FileType = dataType<File>({
     return {
       type: "span",
       props: {
-        kind: "preview",
-        nodeType: "file",
         children: [
           { type: "span", props: { kind: "constructor", children: "File" } },
           { type: "span", props: { kind: "brace", children: " { " } },
@@ -673,8 +659,6 @@ export const FunctionType = dataType<Function>({
     return {
       type: "span",
       props: {
-        kind: "preview",
-        nodeType: "function",
         children: [
           { type: "span", props: { kind: "function-type", children: functionTypePrefix } },
           { type: "span", props: { kind: "function-body", children: preview } },
@@ -785,8 +769,6 @@ export const BufferType = dataType<Buffer>({
     return {
       type: "span",
       props: {
-        kind: "preview",
-        nodeType: "buffer",
         children: [
           { type: "span", props: { kind: "constructor", children: `Buffer(${buffer.length})` } },
           { type: "span", props: { kind: "brace", children: " ['" } },
@@ -819,7 +801,7 @@ export const DateType = dataType<Date>({
   previewElement(node) {
     return {
       type: "span",
-      props: { kind: "preview", nodeType: "date", children: node.value.toISOString() },
+      props: { children: node.value.toISOString() },
     }
   },
   node({ value, id, parentKey }) {
@@ -867,7 +849,7 @@ export const MapType = dataType<Map<unknown, unknown>>({
 
     return {
       type: "span",
-      props: { kind: "preview", nodeType: "map", children },
+      props: { children },
     }
   },
   node({ value, id, parentKey, createNode, visited, keyPath, dataTypePath }) {
@@ -926,8 +908,6 @@ export const ErrorType = dataType<Error>({
     return {
       type: "span",
       props: {
-        kind: "preview",
-        nodeType: "error",
         children: [
           { type: "span", props: { kind: "constructor", children: err.name } },
           { type: "span", props: { kind: "colon", children: ": " } },
@@ -998,8 +978,6 @@ export const HeadersType = dataType<Headers>({
     return {
       type: "span",
       props: {
-        kind: "preview",
-        nodeType: "headers",
         children: [
           { type: "span", props: { kind: "constructor", children: `Headers(${entriesArray.length})` } },
           { type: "span", props: { kind: "brace", children: " {" } },
@@ -1068,8 +1046,6 @@ export const FormDataType = dataType<FormData>({
     return {
       type: "span",
       props: {
-        kind: "preview",
-        nodeType: "formdata",
         children: [
           { type: "span", props: { kind: "constructor", children: `FormData(${entriesArray.length})` } },
           { type: "span", props: { kind: "brace", children: " {" } },
@@ -1150,7 +1126,7 @@ export const ArrayType = dataType<Array<unknown>>({
 
     return {
       type: "span",
-      props: { kind: "preview", nodeType: "array", children },
+      props: { children },
     }
   },
   node({ value, id, parentKey, createNode, visited, keyPath, dataTypePath }) {
@@ -1245,8 +1221,6 @@ export const TypedArrayType = dataType<any>({
     return {
       type: "span",
       props: {
-        kind: "preview",
-        nodeType: Reflect.get(typedArrayConstructors, constructorName),
         children: [
           {
             type: "span",
@@ -1316,7 +1290,7 @@ export const IterableType = dataType<any>({
 
     return {
       type: "span",
-      props: { kind: "preview", nodeType: "iterable", children },
+      props: { children },
     }
   },
   node({ value, id, parentKey, createNode, visited }) {
@@ -1425,7 +1399,7 @@ export const ObjectType = dataType<object>({
 
     return {
       type: "span",
-      props: { kind: "preview", nodeType: "object", children },
+      props: { children },
     }
   },
   node({ value, id, parentKey, createNode, visited, keyPath, dataTypePath }) {
@@ -1474,8 +1448,6 @@ export const PrimitiveType = dataType<any>({
     return {
       type: "span",
       props: {
-        kind: "preview",
-        nodeType: valueType,
         children: valueType === "string" ? `"${node.value}"` : String(node.value),
       },
     }
@@ -1536,7 +1508,6 @@ export const dataTypes: DataTypeOptions<any>[] = [
 ///////////////////////////////////////////////////////////////////////////////////////////
 
 export const jsonNodeToElement = (node: JsonNode): JsonNodeElement => {
-  // Special handling for error stack traces
   if (node.key === "stack" && typeof node.value === "string") {
     return errorStackToElement(node.value)
   }
@@ -1545,7 +1516,17 @@ export const jsonNodeToElement = (node: JsonNode): JsonNodeElement => {
   if (!dataType) {
     return { type: "span", props: { children: String(node.value) } }
   }
-  return dataType.previewElement(node)
+
+  const element = dataType.previewElement(node)
+
+  if (!node.key) {
+    element.props.root = true
+  }
+
+  element.props.kind = "preview"
+  element.props.nodeType = typeof dataType.type === "function" ? dataType.type(node.value) : dataType.type
+
+  return element
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////
