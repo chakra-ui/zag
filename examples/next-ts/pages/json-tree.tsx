@@ -123,7 +123,7 @@ export default function JsonTree() {
           ]),
           //   err: new Error("There was an error"),
           testClass: new TestClass(),
-          file: new File(["sdfdfsd"], "test.txt"),
+          // file: new File(["sdfdfsd"], "test.txt"),
           elements: ["svelte", 123, false, true, null, undefined, 456n],
           functions: [
             function sum(a, b) {
@@ -139,7 +139,7 @@ export default function JsonTree() {
           set: new Set([1, 2, 3, 4, 5]),
           regex: /^[a-z0-9]+/g,
           case_insensitive: /^(?:[a-z0-9]+)foo.*?/i,
-          date: new Date(),
+          date: new Date(2025, 6, 10),
           symbol: Symbol("test"),
           bigint: BigInt(123),
           null: null,
