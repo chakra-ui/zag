@@ -556,7 +556,7 @@ export const FileType = dataType<File>({
   type: "file",
   description: "File",
   check(value) {
-    return value instanceof File
+    return typeof File !== "undefined" && value instanceof File
   },
   previewElement(node) {
     const file = node.value
@@ -1027,7 +1027,7 @@ export const FormDataType = dataType<FormData>({
   type: "formdata",
   description: "FormData",
   check(value) {
-    return value instanceof FormData
+    return typeof FormData !== "undefined" && value instanceof FormData
   },
   previewElement(node) {
     const formData = node.value
