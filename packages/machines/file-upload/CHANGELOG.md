@@ -1,5 +1,22 @@
 # @zag-js/file-upload
 
+## 1.18.3
+
+### Patch Changes
+
+- [`55aa5d8`](https://github.com/chakra-ui/zag/commit/55aa5d8511a01e5203f5a0562e53bf26d7807e0c) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix issue where calling `api.setFiles` invokes validation with
+  incorrect `acceptedFiles`
+
+- Updated dependencies [[`09b1292`](https://github.com/chakra-ui/zag/commit/09b12921e7165392ce9efa0d9dab1b4cdae6835c)]:
+  - @zag-js/file-utils@1.18.3
+  - @zag-js/anatomy@1.18.3
+  - @zag-js/core@1.18.3
+  - @zag-js/types@1.18.3
+  - @zag-js/utils@1.18.3
+  - @zag-js/dom-query@1.18.3
+  - @zag-js/i18n-utils@1.18.3
+
 ## 1.18.2
 
 ### Patch Changes

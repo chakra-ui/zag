@@ -1,5 +1,7 @@
 # @zag-js/utils
 
+## 1.18.3
+
 ## 1.18.2
 
 ### Patch Changes

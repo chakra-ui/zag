@@ -1,5 +1,19 @@
 # @zag-js/file-utils
 
+## 1.18.3
+
+### Patch Changes
+
+- [`09b1292`](https://github.com/chakra-ui/zag/commit/09b12921e7165392ce9efa0d9dab1b4cdae6835c) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix issue where the browser might not be able to infer the mime
+  type of a file due to limitations, drag source or security restrictions. When this happens, the file type is set to
+  `""`.
+
+  As a fallback in the file validation logic, we now infer the mime type from the file extension.
+
+- Updated dependencies []:
+  - @zag-js/i18n-utils@1.18.3
+
 ## 1.18.2
 
 ### Patch Changes
