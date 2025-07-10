@@ -106,6 +106,7 @@ export default function JsonTree() {
       <JsonTreeNode
         node={jsonToTree({
           name: "John Doe",
+          longString: "This is a long string that should be collapsed after 30 characters and show ellipsis",
           age: 30,
           email: "john.doe@example.com",
           tags: ["tag1", "tag2", "tag3"],

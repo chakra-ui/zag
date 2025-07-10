@@ -1,10 +1,10 @@
 import { getNodeTypeDescription } from "./data-type"
-import type { JsonNode } from "./types"
+import { type JsonNode, type JsonNodePreviewOptions } from "./types"
 
 const propertyWord = (count: number) => (count === 1 ? "property" : "properties")
 
-export const getAccessibleDescription = (node: JsonNode): string => {
-  const typeDescription = getNodeTypeDescription(node)
+export const getAccessibleDescription = (node: JsonNode, opts?: JsonNodePreviewOptions): string => {
+  const typeDescription = getNodeTypeDescription(node, opts)
 
   const key = node.key || ""
   const nonEnumerablePrefix = node.isNonEnumerable ? "non-enumerable " : ""

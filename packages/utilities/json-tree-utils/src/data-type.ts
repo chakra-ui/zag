@@ -1,4 +1,4 @@
-import type { JsonNode, JsonNodeElement, JsonNodeType } from "./types"
+import type { JsonDataTypeOptions, JsonNode, JsonNodeElement, JsonNodeType, JsonNodePreviewOptions } from "./types"
 
 ///////////////////////////////////////////////////////////////////////////////////////////
 
@@ -44,37 +44,7 @@ const formatValue = (value: unknown): string => {
 
 ///////////////////////////////////////////////////////////////////////////////////////////
 
-interface CreateNodeOpts<T = unknown> {
-  value: T
-  id: string
-  visited: WeakSet<WeakKey>
-  parentKey: string
-  keyPath: Array<string | number>
-  dataTypePath: string
-  createNode(
-    value: unknown,
-    key: string,
-    id?: string,
-    visited?: WeakSet<WeakKey>,
-    keyPath?: Array<string | number>,
-    dataTypePath?: string,
-  ): JsonNode
-}
-
-interface CreateNodeFn<T = unknown> {
-  (opts: CreateNodeOpts<T>): JsonNode
-}
-
-interface DataTypeOptions<T = unknown> {
-  type: JsonNodeType | ((value: T) => JsonNodeType)
-  description: string | ((node: JsonNode<T>) => string)
-  previewText?: (node: JsonNode<T>, maxItems: number) => string
-  check(value: unknown): boolean
-  node: CreateNodeFn<T>
-  previewElement(node: JsonNode<T>): JsonNodeElement
-}
-
-function dataType<T = unknown>(opts: DataTypeOptions<T>) {
+function dataType<T = unknown>(opts: JsonDataTypeOptions<T>) {
   return opts
 }
 
@@ -152,7 +122,7 @@ export const SymbolType = dataType<symbol>({
     return {
       id,
       key: parentKey,
-      value: value.toString(),
+      value,
       type: "symbol",
     }
   },
@@ -194,14 +164,15 @@ export const SetType = dataType<Set<unknown>>({
   check(value) {
     return value instanceof Set
   },
-  previewText(node, maxItems) {
+  previewText(node, opts) {
+    const maxItems = opts.maxPreviewItems
     const entries = Array.from(node.value as Set<unknown>)
     const values = entries.slice(0, maxItems).map(formatValue)
     const hasMore = entries.length > maxItems
     return generatePreviewText(values, hasMore)
   },
-  previewElement(node) {
-    const preview = this.previewText?.(node, 3) ?? ""
+  previewElement(node, opts) {
+    const preview = this.previewText?.(node, opts) ?? ""
     const size = node.children?.length || 0
 
     const children: JsonNodeElement[] = [
@@ -824,7 +795,8 @@ export const MapType = dataType<Map<unknown, unknown>>({
   check(value) {
     return value instanceof Map
   },
-  previewText(node, maxItems) {
+  previewText(node, opts) {
+    const maxItems = opts.maxPreviewItems
     const entries = Array.from((node.value as Map<unknown, unknown>).entries())
     const previews = entries.slice(0, maxItems).map(([key, value]) => {
       const valueDesc = formatValue(value)
@@ -834,8 +806,8 @@ export const MapType = dataType<Map<unknown, unknown>>({
     const hasMore = entries.length > maxItems
     return generatePreviewText(previews, hasMore)
   },
-  previewElement(node) {
-    const preview = this.previewText?.(node, 3) || ""
+  previewElement(node, opts) {
+    const preview = this.previewText?.(node, opts) || ""
     const size = node.children?.length || 0
 
     const children: JsonNodeElement[] = [
@@ -1099,15 +1071,16 @@ export const ArrayType = dataType<Array<unknown>>({
   check(value) {
     return Array.isArray(value)
   },
-  previewText(node, maxItems) {
+  previewText(node, opts) {
+    const maxItems = opts.maxPreviewItems
     const children = node.children || []
     const enumerableChildren = children.filter((child) => !child.isNonEnumerable && child.key !== "length")
     const values = enumerableChildren.slice(0, maxItems).map(formatValueMini)
     const hasMore = enumerableChildren.length > maxItems
     return generatePreviewText(values, hasMore)
   },
-  previewElement(node) {
-    const preview = this.previewText?.(node, 3) || ""
+  previewElement(node, opts) {
+    const preview = this.previewText?.(node, opts) || ""
 
     // Only count actual array elements (numeric indices), not length property or non-enumerable properties
     const count =
@@ -1275,8 +1248,8 @@ export const IterableType = dataType<any>({
         !(value instanceof ArrayBuffer),
     )
   },
-  previewElement(node) {
-    const preview = SetType.previewText?.(node, 3) ?? ""
+  previewElement(node, opts) {
+    const preview = SetType.previewText?.(node, opts) ?? ""
     const size = node.children?.length || 0
 
     const children: JsonNodeElement[] = [
@@ -1331,11 +1304,11 @@ export const ClassType = dataType<any>({
   check(value) {
     return typeof value === "object" && value !== null && value.constructor !== Object
   },
-  previewText(node, maxItems) {
-    return ObjectType.previewText?.(node, maxItems) || ""
+  previewText(node, opts) {
+    return ObjectType.previewText?.(node, opts) || ""
   },
-  previewElement(node) {
-    return ObjectType.previewElement(node)
+  previewElement(node, opts) {
+    return ObjectType.previewElement(node, opts)
   },
   node({ value, id, parentKey, createNode, visited, keyPath, dataTypePath }) {
     const constructorName = value.constructor.name
@@ -1375,7 +1348,8 @@ export const ObjectType = dataType<object>({
   check(value) {
     return typeof value === "object" && value !== null
   },
-  previewText(node, maxItems) {
+  previewText(node, opts) {
+    const maxItems = opts.maxPreviewItems
     const children = node.children || []
     const previews = children.slice(0, maxItems).map((child) => {
       const valueDesc = getNodeTypeDescription(child)
@@ -1384,8 +1358,8 @@ export const ObjectType = dataType<object>({
     const hasMore = children.length > maxItems
     return generatePreviewText(previews, hasMore)
   },
-  previewElement(node) {
-    const preview = this.previewText?.(node, 3) ?? ""
+  previewElement(node, opts) {
+    const preview = this.previewText?.(node, opts) ?? ""
     const children: JsonNodeElement[] = []
 
     if (node.constructorName) {
@@ -1433,22 +1407,63 @@ export const ObjectType = dataType<object>({
 
 ///////////////////////////////////////////////////////////////////////////////////////////
 
+const map: Record<string, string> = {
+  "\n": "\\n",
+  "\t": "\\t",
+  "\r": "\\r",
+}
+
+const STRING_ESCAPE_REGEXP = /[\n\t\r]/g
+
+export const StringType = dataType<string>({
+  type: "primitive",
+  description(node, opts) {
+    return `"${this.previewText?.(node, opts) ?? node.value}"`
+  },
+  check(value) {
+    return typeof value === "string"
+  },
+  previewText(node, opts) {
+    const serialised = node.value.replace(STRING_ESCAPE_REGEXP, (_: string) => map[_])
+    const preview =
+      serialised.slice(0, opts.collapseStringsAfterLength) +
+      (serialised.length > opts.collapseStringsAfterLength ? "…" : "")
+    return preview
+  },
+  previewElement(node) {
+    const serialised = node.value.replace(STRING_ESCAPE_REGEXP, (_: string) => map[_])
+    return {
+      type: "span",
+      props: { children: `"${serialised}"` },
+    }
+  },
+  node({ value, id, parentKey }) {
+    return {
+      id,
+      key: parentKey,
+      value,
+      type: "primitive",
+    }
+  },
+})
+
+///////////////////////////////////////////////////////////////////////////////////////////
+
 export const PrimitiveType = dataType<any>({
   type(value) {
     return typeof value as JsonNodeType
   },
   description(node) {
-    return typeof node.value === "string" ? `"${node.value}"` : String(node.value)
+    return String(node.value)
   },
   check(value) {
     return value !== null && value !== undefined
   },
   previewElement(node) {
-    const valueType = typeof node.value
     return {
       type: "span",
       props: {
-        children: valueType === "string" ? `"${node.value}"` : String(node.value),
+        children: String(node.value),
       },
     }
   },
@@ -1466,7 +1481,7 @@ export const PrimitiveType = dataType<any>({
 
 ///////////////////////////////////////////////////////////////////////////////////////////
 
-export const dataTypes: DataTypeOptions<any>[] = [
+export const dataTypes: JsonDataTypeOptions<any>[] = [
   NullType,
   UndefinedType,
   SymbolType,
@@ -1502,12 +1517,18 @@ export const dataTypes: DataTypeOptions<any>[] = [
   ClassType,
   ObjectType,
 
+  StringType,
   PrimitiveType,
 ]
 
 ///////////////////////////////////////////////////////////////////////////////////////////
 
-export const jsonNodeToElement = (node: JsonNode): JsonNodeElement => {
+export const defaultPreviewOptions: JsonNodePreviewOptions = {
+  maxPreviewItems: 3,
+  collapseStringsAfterLength: 30,
+}
+
+export const jsonNodeToElement = (node: JsonNode, opts = defaultPreviewOptions): JsonNodeElement => {
   if (node.key === "stack" && typeof node.value === "string") {
     return errorStackToElement(node.value)
   }
@@ -1517,7 +1538,7 @@ export const jsonNodeToElement = (node: JsonNode): JsonNodeElement => {
     return { type: "span", props: { children: String(node.value) } }
   }
 
-  const element = dataType.previewElement(node)
+  const element = dataType.previewElement(node, opts)
 
   if (!node.key) {
     element.props.root = true
@@ -1531,10 +1552,10 @@ export const jsonNodeToElement = (node: JsonNode): JsonNodeElement => {
 
 ///////////////////////////////////////////////////////////////////////////////////////////
 
-export const getNodeTypeDescription = (node: JsonNode): string => {
+export const getNodeTypeDescription = (node: JsonNode, opts = defaultPreviewOptions): string => {
   const dataType = dataTypes.find((dataType) => dataType.check(node.value))
   if (dataType) {
-    return typeof dataType.description === "function" ? dataType.description(node) : dataType.description
+    return typeof dataType.description === "function" ? dataType.description(node, opts) : dataType.description
   }
   return String(node.value)
 }
