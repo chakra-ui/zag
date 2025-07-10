@@ -1081,11 +1081,7 @@ export const ArrayType = dataType<Array<unknown>>({
   },
   previewElement(node, opts) {
     const preview = this.previewText?.(node, opts) || ""
-
-    // Only count actual array elements (numeric indices), not length property or non-enumerable properties
-    const count =
-      node.children?.filter((child) => child.key && !Number.isNaN(Number(child.key)) && !child.isNonEnumerable)
-        .length || 0
+    const count = node.value.length
 
     const children: JsonNodeElement[] = []
     if (count > 0) {
