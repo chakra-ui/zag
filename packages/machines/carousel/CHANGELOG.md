@@ -1,5 +1,21 @@
 # @zag-js/carousel
 
+## 1.18.3
+
+### Patch Changes
+
+- [#2547](https://github.com/chakra-ui/zag/pull/2547)
+  [`830dc1c`](https://github.com/chakra-ui/zag/commit/830dc1c3e2a997cdd2dfb0d8ecd053461379ede2) Thanks
+  [@isBatak](https://github.com/isBatak)! - - update overscrollBehavior to auto in carousel connect
+  - Docs: add orientation options to carousel component playground
+- Updated dependencies []:
+  - @zag-js/anatomy@1.18.3
+  - @zag-js/core@1.18.3
+  - @zag-js/types@1.18.3
+  - @zag-js/utils@1.18.3
+  - @zag-js/dom-query@1.18.3
+  - @zag-js/scroll-snap@1.18.3
+
 ## 1.18.2
 
 ### Patch Changes
