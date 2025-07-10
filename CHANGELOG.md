@@ -10,11 +10,11 @@ All notable changes to this project will be documented in this file.
 
 - **Carousel**: Fix issue where full page carousel could trap scrolling
 
-- **File Upload**: Fix issue where calling `api.setFiles` invokes validation with incorrect `acceptedFiles`
-
-- **File Utils**: Fix issue where the browser might not be able to infer the mime type of a file due to limitations,
-  drag source or security restrictions. When this happens, the file type is set to `""`. As a fallback in the file
-  validation logic, we now infer the mime type from the file extension.
+- **File Upload**:
+  - Fix issue where calling `api.setFiles` invokes validation with incorrect `acceptedFiles`
+  - Fix issue where the browser might not be able to infer the mime type of a file due to limitations, drag source or
+    security restrictions. As a fallback in the file validation logic, we now infer the mime type from the file
+    extension.
 
 ## [1.18.2](./#1.18.2) - 2025-07-04
 
