@@ -37,7 +37,7 @@ export const machine = createMachine({
       clampValueOnBlur: !props.allowOverflow,
       allowOverflow: false,
       inputMode: "decimal",
-      pattern: "[0-9]*(.[0-9]+)?",
+      pattern: "-?[0-9]*(.[0-9]+)?",
       defaultValue: "",
       step,
       min: Number.MIN_SAFE_INTEGER,
