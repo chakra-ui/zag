@@ -48,6 +48,12 @@ export class NumberInputModel extends Model {
     await expect(this.input).toHaveAttribute("aria-invalid", "true")
   }
 
+  async seeInputIsValid() {
+    const isValid = await this.input.evaluate((el: HTMLInputElement) => el.checkValidity())
+
+    await expect(isValid).toBe(true)
+  }
+
   async clickInc() {
     await this.incButton.click()
   }
