@@ -1,0 +1,9 @@
+{
+  "extends": "../../../tsconfig.json",
+  "include": ["src", "tests"],
+  "compilerOptions": {
+    "jsx": "react-jsx",
+    "jsxImportSource": "hono/jsx",
+    "tsBuildInfoFile": "node_modules/.cache/.tsbuildinfo"
+  }
+}
