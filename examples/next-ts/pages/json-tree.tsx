@@ -1,6 +1,6 @@
 import {
   type JsonNode,
-  JsonNodeElement,
+  JsonNodeHastElement,
   getAccessibleDescription,
   jsonNodeToElement,
   jsonToTree,
@@ -22,21 +22,29 @@ const KeyNode = (props: KeyNodeProps): React.ReactNode => {
 }
 
 interface ValueNodeProps {
-  node: JsonNodeElement
+  node: JsonNodeHastElement
 }
 const ValueNode = (props: ValueNodeProps): React.ReactNode => {
   const { node } = props
+
+  // Handle text nodes
+  if (node.type === "text") {
+    return <>{node.value}</>
+  }
+
+  // Handle element nodes
+  const Element = node.tagName
   return (
-    <span
-      data-root={node.props.root ? "" : undefined}
-      data-type={node.props.nodeType}
-      data-kind={node.props.kind}
+    <Element
+      data-root={node.properties.root ? "" : undefined}
+      data-type={node.properties.nodeType}
+      data-kind={node.properties.kind}
       suppressHydrationWarning
     >
-      {Array.isArray(node.props.children)
-        ? node.props.children.map((child, index) => <ValueNode key={index} node={child} />)
-        : node.props.children}
-    </span>
+      {node.children.map((child, index) => (
+        <ValueNode key={index} node={child} />
+      ))}
+    </Element>
   )
 }
 
@@ -46,6 +54,8 @@ interface JsonTreeNodeProps {
 }
 function JsonTreeNode(props: JsonTreeNodeProps) {
   const { node, indexPath } = props
+  const line = indexPath.reduce((acc, curr) => acc + curr, 1)
+  const lineLength = indexPath.length - 1
   return (
     <>
       {node.children && node.children.length > 0 ? (
@@ -61,11 +71,16 @@ function JsonTreeNode(props: JsonTreeNodeProps) {
           </div>
         </div>
       ) : (
-        <div aria-label={getAccessibleDescription(node)} suppressHydrationWarning>
-          <span>
-            {node.key && <KeyNode node={node} />}
-            <ValueNode node={jsonNodeToElement(node)} />
-          </span>
+        <div
+          aria-label={getAccessibleDescription(node)}
+          suppressHydrationWarning
+          data-line={line}
+          style={{
+            ["--line-length" as any]: lineLength,
+          }}
+        >
+          {node.key && <KeyNode node={node} />}
+          <ValueNode node={jsonNodeToElement(node)} />
         </div>
       )}
     </>

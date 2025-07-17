@@ -1,4 +1,11 @@
-import type { JsonDataTypeOptions, JsonNode, JsonNodeElement, JsonNodeType, JsonNodePreviewOptions } from "./types"
+import type {
+  JsonDataTypeOptions,
+  JsonNode,
+  JsonNodeElement,
+  JsonNodeText,
+  JsonNodeType,
+  JsonNodePreviewOptions,
+} from "./types"
 
 ///////////////////////////////////////////////////////////////////////////////////////////
 
@@ -15,6 +22,23 @@ const hasProp = (value: object, key: string): boolean => {
 const getProp = (value: object, key: string): unknown => {
   return value[key as keyof typeof value]
 }
+
+// Helper functions for creating hast-compatible nodes
+const txt = (value: string | number | boolean | null | undefined): JsonNodeText => ({
+  type: "text",
+  value,
+})
+
+const jsx = (
+  tagName: "span" | "div" | "a",
+  properties: Record<string, any> = {},
+  children: Array<JsonNodeElement | JsonNodeText> = [],
+): JsonNodeElement => ({
+  type: "element",
+  tagName,
+  properties,
+  children,
+})
 
 const formatValueMini = (child: JsonNode): string => {
   if (child.type === "primitive" && typeof child.value === "string") return `"${child.value}"`
@@ -59,10 +83,7 @@ export const NullType = dataType<null>({
     return value === null
   },
   previewElement() {
-    return {
-      type: "span",
-      props: { kind: "preview", nodeType: "null", children: "null" },
-    }
+    return jsx("span", { kind: "preview", nodeType: "null" }, [txt("null")])
   },
   node({ id, parentKey }) {
     return {
@@ -85,10 +106,7 @@ export const UndefinedType = dataType<undefined>({
     return value === undefined
   },
   previewElement() {
-    return {
-      type: "span",
-      props: { children: "undefined" },
-    }
+    return jsx("span", {}, [txt("undefined")])
   },
   node({ id, parentKey, keyPath, dataTypePath }) {
     return {
@@ -113,10 +131,7 @@ export const SymbolType = dataType<symbol>({
     return typeof value === "symbol"
   },
   previewElement(node) {
-    return {
-      type: "span",
-      props: { children: node.value.toString() },
-    }
+    return jsx("span", {}, [txt(node.value.toString())])
   },
   node({ id, parentKey, value }) {
     return {
@@ -139,10 +154,7 @@ export const BigIntType = dataType<BigInt>({
     return typeof value === "bigint"
   },
   previewElement(node) {
-    return {
-      type: "span",
-      props: { children: `${node.value}n` },
-    }
+    return jsx("span", {}, [txt(`${node.value}n`)])
   },
   node({ id, parentKey, value }) {
     return {
@@ -175,19 +187,16 @@ export const SetType = dataType<Set<unknown>>({
     const preview = this.previewText?.(node, opts) ?? ""
     const size = node.children?.length || 0
 
-    const children: JsonNodeElement[] = [
-      { type: "span", props: { kind: "constructor", children: `Set(${size})` } },
-      { type: "span", props: { kind: "brace", children: " {" } },
+    const children: Array<JsonNodeElement | JsonNodeText> = [
+      jsx("span", { kind: "constructor" }, [txt(`Set(${size})`)]),
+      jsx("span", { kind: "brace" }, [txt(" {")]),
     ]
     if (preview) {
-      children.push({ type: "span", props: { kind: "preview-text", children: preview } })
+      children.push(jsx("span", { kind: "preview-text" }, [txt(preview)]))
     }
-    children.push({ type: "span", props: { kind: "brace", children: "}" } })
+    children.push(jsx("span", { kind: "brace" }, [txt("}")]))
 
-    return {
-      type: "span",
-      props: { children },
-    }
+    return jsx("span", {}, children)
   },
   node({ value, id, parentKey, createNode, visited }) {
     const entriesChildren = Array.from(value).map((item, index) =>
@@ -224,17 +233,12 @@ export const WeakSetType = dataType<WeakSet<WeakKey>>({
     return value instanceof WeakSet
   },
   previewElement() {
-    return {
-      type: "span",
-      props: {
-        children: [
-          { type: "span", props: { kind: "constructor", children: "WeakSet" } },
-          { type: "span", props: { kind: "brace", children: " {" } },
-          { type: "span", props: { kind: "preview", children: " [[Entries]]: not enumerable " } },
-          { type: "span", props: { kind: "brace", children: "}" } },
-        ],
-      },
-    }
+    return jsx("span", {}, [
+      jsx("span", { kind: "constructor" }, [txt("WeakSet")]),
+      jsx("span", { kind: "brace" }, [txt(" {")]),
+      jsx("span", { kind: "preview" }, [txt(" [[Entries]]: not enumerable ")]),
+      jsx("span", { kind: "brace" }, [txt("}")]),
+    ])
   },
   node({ value, id, parentKey }) {
     return {
@@ -255,17 +259,12 @@ export const WeakMapType = dataType<WeakMap<WeakKey, WeakKey>>({
     return value instanceof WeakMap
   },
   previewElement() {
-    return {
-      type: "span",
-      props: {
-        children: [
-          { type: "span", props: { kind: "constructor", children: "WeakMap" } },
-          { type: "span", props: { kind: "brace", children: " {" } },
-          { type: "span", props: { kind: "preview", children: " [[Entries]]: not enumerable " } },
-          { type: "span", props: { kind: "brace", children: "}" } },
-        ],
-      },
-    }
+    return jsx("span", {}, [
+      jsx("span", { kind: "constructor" }, [txt("WeakMap")]),
+      jsx("span", { kind: "brace" }, [txt(" {")]),
+      jsx("span", { kind: "preview" }, [txt(" [[Entries]]: not enumerable ")]),
+      jsx("span", { kind: "brace" }, [txt("}")]),
+    ])
   },
   node({ value, id, parentKey }) {
     return {
@@ -301,7 +300,7 @@ export const RegexType = dataType<RegExp>({
     return value instanceof RegExp
   },
   previewElement(node) {
-    return { type: "span", props: { children: String(node.value) } }
+    return jsx("span", {}, [txt(String(node.value))])
   },
   node({ value, id, createNode, parentKey }) {
     const children = REGEX_KEYS.map((key) => createNode(getProp(value, key), key))
@@ -329,23 +328,14 @@ export const DataViewType = dataType<DataView>({
   },
   previewElement(node) {
     const dataView = node.value
-    return {
-      type: "span",
-      props: {
-        children: [
-          { type: "span", props: { kind: "constructor", children: `DataView(${dataView.byteLength})` } },
-          { type: "span", props: { kind: "brace", children: " { " } },
-          {
-            type: "span",
-            props: {
-              kind: "preview",
-              children: ` buffer: ArrayBuffer(${dataView.buffer.byteLength}), byteOffset: ${dataView.byteOffset} `,
-            },
-          },
-          { type: "span", props: { kind: "brace", children: " }" } },
-        ],
-      },
-    }
+    return jsx("span", {}, [
+      jsx("span", { kind: "constructor" }, [txt(`DataView(${dataView.byteLength})`)]),
+      jsx("span", { kind: "brace" }, [txt(" { ")]),
+      jsx("span", { kind: "preview" }, [
+        txt(` buffer: ArrayBuffer(${dataView.buffer.byteLength}), byteOffset: ${dataView.byteOffset} `),
+      ]),
+      jsx("span", { kind: "brace" }, [txt(" }")]),
+    ])
   },
   node({ value, id, createNode, parentKey }) {
     const children = DATA_VIEW_KEYS.map((key) => createNode(getProp(value, key), key))
@@ -386,23 +376,16 @@ export const UrlType = dataType<URL>({
     const url = node.value
     const maxItems = 5
     const hasMore = URL_KEYS.length > maxItems
-    return {
-      type: "span",
-      props: {
-        children: [
-          { type: "span", props: { kind: "constructor", children: "URL" } },
-          { type: "span", props: { kind: "brace", children: " { " } },
-          {
-            type: "span",
-            props: {
-              kind: "preview",
-              children: `origin: '${url.origin}', protocol: '${url.protocol}', username: '${url.username}', password: '${url.password}', host: '${url.host}'${hasMore ? ", …" : ""}`,
-            },
-          },
-          { type: "span", props: { kind: "brace", children: " }" } },
-        ],
-      },
-    }
+    return jsx("span", {}, [
+      jsx("span", { kind: "constructor" }, [txt("URL")]),
+      jsx("span", { kind: "brace" }, [txt(" { ")]),
+      jsx("span", { kind: "preview" }, [
+        txt(
+          `origin: '${url.origin}', protocol: '${url.protocol}', username: '${url.username}', password: '${url.password}', host: '${url.host}'${hasMore ? ", …" : ""}`,
+        ),
+      ]),
+      jsx("span", { kind: "brace" }, [txt(" }")]),
+    ])
   },
   node({ value, id, createNode, parentKey }) {
     const children = URL_KEYS.map((key) => createNode(Reflect.get(value, key), key))
@@ -427,17 +410,12 @@ export const URLSearchParamsType = dataType<URLSearchParams>({
   previewElement(node) {
     const params = node.value
     const paramsArray = Array.from(params.entries())
-    return {
-      type: "span",
-      props: {
-        children: [
-          { type: "span", props: { kind: "constructor", children: "URLSearchParams" } },
-          { type: "span", props: { kind: "brace", children: " { " } },
-          { type: "span", props: { kind: "preview", children: `size: ${paramsArray.length}` } },
-          { type: "span", props: { kind: "brace", children: " }" } },
-        ],
-      },
-    }
+    return jsx("span", {}, [
+      jsx("span", { kind: "constructor" }, [txt("URLSearchParams")]),
+      jsx("span", { kind: "brace" }, [txt(" { ")]),
+      jsx("span", { kind: "preview" }, [txt(`size: ${paramsArray.length}`)]),
+      jsx("span", { kind: "brace" }, [txt(" }")]),
+    ])
   },
   node({ value, id, createNode, parentKey, visited }) {
     const entriesChildren = Array.from(value.entries()).map(([key, value], index): JsonNode => {
@@ -488,23 +466,12 @@ export const BlobType = dataType<Blob>({
   },
   previewElement(node) {
     const blob = node.value
-    return {
-      type: "span",
-      props: {
-        children: [
-          { type: "span", props: { kind: "constructor", children: "Blob" } },
-          { type: "span", props: { kind: "brace", children: " { " } },
-          {
-            type: "span",
-            props: {
-              kind: "preview",
-              children: `size: ${blob.size}, type: '${blob.type || "application/octet-stream"}'`,
-            },
-          },
-          { type: "span", props: { kind: "brace", children: " }" } },
-        ],
-      },
-    }
+    return jsx("span", {}, [
+      jsx("span", { kind: "constructor" }, [txt("Blob")]),
+      jsx("span", { kind: "brace" }, [txt(" { ")]),
+      jsx("span", { kind: "preview" }, [txt(`size: ${blob.size}, type: '${blob.type || "application/octet-stream"}'`)]),
+      jsx("span", { kind: "brace" }, [txt(" }")]),
+    ])
   },
   node({ value, id, createNode, parentKey, visited }) {
     const blobProperties = BLOB_KEYS.map((key) => ({ key, value: Reflect.get(value, key) }))
@@ -533,23 +500,14 @@ export const FileType = dataType<File>({
     const file = node.value
     const maxItems = 2
     const hasMore = FILE_KEYS.length > maxItems
-    return {
-      type: "span",
-      props: {
-        children: [
-          { type: "span", props: { kind: "constructor", children: "File" } },
-          { type: "span", props: { kind: "brace", children: " { " } },
-          {
-            type: "span",
-            props: {
-              kind: "preview",
-              children: `name: '${file.name}', lastModified: ${file.lastModified}${hasMore ? ", …" : ""}`,
-            },
-          },
-          { type: "span", props: { kind: "brace", children: " }" } },
-        ],
-      },
-    }
+    return jsx("span", {}, [
+      jsx("span", { kind: "constructor" }, [txt("File")]),
+      jsx("span", { kind: "brace" }, [txt(" { ")]),
+      jsx("span", { kind: "preview" }, [
+        txt(`name: '${file.name}', lastModified: ${file.lastModified}${hasMore ? ", …" : ""}`),
+      ]),
+      jsx("span", { kind: "brace" }, [txt(" }")]),
+    ])
   },
   node({ value, id, createNode, parentKey, visited }) {
     const fileProperties = FILE_KEYS.map((key) => ({ key, value: getProp(value, key) || "" }))
@@ -627,15 +585,10 @@ export const FunctionType = dataType<Function>({
       functionTypePrefix += "ƒ* "
     if (!constructorName.includes("Generator")) functionTypePrefix += "ƒ "
 
-    return {
-      type: "span",
-      props: {
-        children: [
-          { type: "span", props: { kind: "function-type", children: functionTypePrefix } },
-          { type: "span", props: { kind: "function-body", children: preview } },
-        ],
-      },
-    }
+    return jsx("span", {}, [
+      jsx("span", { kind: "function-type" }, [txt(functionTypePrefix)]),
+      jsx("span", { kind: "function-body" }, [txt(preview)]),
+    ])
   },
   node({ value, id, parentKey, createNode, visited }) {
     const funcName = value.name || "anonymous"
@@ -686,7 +639,7 @@ export const ArrayBufferType = dataType<ArrayBuffer>({
     return value instanceof ArrayBuffer
   },
   previewElement(node) {
-    return { type: "span", props: { nodeType: "arraybuffer", children: node.value.toString() } }
+    return jsx("span", { nodeType: "arraybuffer" }, [txt(node.value.toString())])
   },
   node({ value, id, parentKey }) {
     return {
@@ -709,7 +662,7 @@ export const SharedArrayBufferType = dataType<SharedArrayBuffer>({
     return typeof SharedArrayBuffer !== "undefined" && value instanceof SharedArrayBuffer
   },
   previewElement() {
-    return { type: "span", props: { nodeType: "sharedarraybuffer", children: "sharedarraybuffer" } }
+    return jsx("span", { nodeType: "sharedarraybuffer" }, [txt("sharedarraybuffer")])
   },
   node({ value, id, parentKey }) {
     return {
@@ -737,17 +690,12 @@ export const BufferType = dataType<Buffer>({
       .map((byte) => byte.toString(16).padStart(2, "0"))
       .join(" ")
     const hasMore = buffer.length > 8
-    return {
-      type: "span",
-      props: {
-        children: [
-          { type: "span", props: { kind: "constructor", children: `Buffer(${buffer.length})` } },
-          { type: "span", props: { kind: "brace", children: " ['" } },
-          { type: "span", props: { kind: "preview-text", children: preview + (hasMore ? " …" : "") } },
-          { type: "span", props: { kind: "brace", children: "']" } },
-        ],
-      },
-    }
+    return jsx("span", {}, [
+      jsx("span", { kind: "constructor" }, [txt(`Buffer(${buffer.length})`)]),
+      jsx("span", { kind: "brace" }, [txt(" ['")]),
+      jsx("span", { kind: "preview-text" }, [txt(preview + (hasMore ? " …" : ""))]),
+      jsx("span", { kind: "brace" }, [txt("']")]),
+    ])
   },
   node({ value, id, parentKey }) {
     return {
@@ -770,10 +718,7 @@ export const DateType = dataType<Date>({
     return value instanceof Date
   },
   previewElement(node) {
-    return {
-      type: "span",
-      props: { children: node.value.toISOString() },
-    }
+    return jsx("span", {}, [txt(node.value.toISOString())])
   },
   node({ value, id, parentKey }) {
     return {
@@ -810,19 +755,16 @@ export const MapType = dataType<Map<unknown, unknown>>({
     const preview = this.previewText?.(node, opts) || ""
     const size = node.children?.length || 0
 
-    const children: JsonNodeElement[] = [
-      { type: "span", props: { kind: "constructor", children: `Map(${size})` } },
-      { type: "span", props: { kind: "brace", children: " {" } },
+    const children: Array<JsonNodeElement | JsonNodeText> = [
+      jsx("span", { kind: "constructor" }, [txt(`Map(${size})`)]),
+      jsx("span", { kind: "brace" }, [txt(" {")]),
     ]
     if (preview) {
-      children.push({ type: "span", props: { kind: "preview-text", children: preview } })
+      children.push(jsx("span", { kind: "preview-text" }, [txt(preview)]))
     }
-    children.push({ type: "span", props: { kind: "brace", children: "}" } })
+    children.push(jsx("span", { kind: "brace" }, [txt("}")]))
 
-    return {
-      type: "span",
-      props: { children },
-    }
+    return jsx("span", {}, children)
   },
   node({ value, id, parentKey, createNode, visited, keyPath, dataTypePath }) {
     const entriesChildren = Array.from(value.entries()).map(([key, value], index): JsonNode => {
@@ -877,16 +819,11 @@ export const ErrorType = dataType<Error>({
   },
   previewElement(node) {
     const err = node.value
-    return {
-      type: "span",
-      props: {
-        children: [
-          { type: "span", props: { kind: "constructor", children: err.name } },
-          { type: "span", props: { kind: "colon", children: ": " } },
-          { type: "span", props: { children: err.message } },
-        ],
-      },
-    }
+    return jsx("span", {}, [
+      jsx("span", { kind: "constructor" }, [txt(err.name)]),
+      jsx("span", { kind: "colon" }, [txt(": ")]),
+      jsx("span", {}, [txt(err.message)]),
+    ])
   },
   node({ value, id, parentKey, createNode, visited }) {
     const errorProperties = ERROR_KEYS.map((key) => ({ key, value: Reflect.get(value, key) }))
@@ -910,25 +847,24 @@ export const ErrorType = dataType<Error>({
 
 function errorStackToElement(stack: string): JsonNodeElement {
   const stackLines = stack?.split("\n").filter((line) => line.trim()) || []
-  return {
-    type: "span",
-    props: {
-      children: stackLines.map((line, index) => {
-        const appendNewLine = index < stackLines.length - 1
-        return {
-          type: "span",
-          props: {
-            nodeType: "string",
-            kind: "error-stack",
-            children: [
-              { type: "span", props: { children: line + (appendNewLine ? "\\n" : "") } },
-              { type: "span", props: { kind: "operator", children: appendNewLine ? " +" : "" } },
-            ],
-          },
-        }
-      }),
-    },
-  }
+  return jsx(
+    "span",
+    {},
+    stackLines.map((line, index) => {
+      const appendNewLine = index < stackLines.length - 1
+      return jsx(
+        "span",
+        {
+          nodeType: "string",
+          kind: "error-stack",
+        },
+        [
+          jsx("span", {}, [txt(line + (appendNewLine ? "\\n" : ""))]),
+          jsx("span", { kind: "operator" }, [txt(appendNewLine ? " +" : "")]),
+        ],
+      )
+    }),
+  )
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////
@@ -947,17 +883,12 @@ export const HeadersType = dataType<Headers>({
       .map(([key, value]) => `${key}: ${value}`)
       .join(", ")
     const hasMore = entriesArray.length > 2
-    return {
-      type: "span",
-      props: {
-        children: [
-          { type: "span", props: { kind: "constructor", children: `Headers(${entriesArray.length})` } },
-          { type: "span", props: { kind: "brace", children: " {" } },
-          { type: "span", props: { kind: "preview-text", children: ` ${preview}${hasMore ? ", …" : ""} ` } },
-          { type: "span", props: { kind: "brace", children: "}" } },
-        ],
-      },
-    }
+    return jsx("span", {}, [
+      jsx("span", { kind: "constructor" }, [txt(`Headers(${entriesArray.length})`)]),
+      jsx("span", { kind: "brace" }, [txt(" {")]),
+      jsx("span", { kind: "preview-text" }, [txt(` ${preview}${hasMore ? ", …" : ""} `)]),
+      jsx("span", { kind: "brace" }, [txt("}")]),
+    ])
   },
   node({ value, id, parentKey, createNode, visited }) {
     const entriesChildren = Array.from(value.entries()).map(([key, value], index): JsonNode => {
@@ -1015,17 +946,12 @@ export const FormDataType = dataType<FormData>({
 
     const hasMore = entriesArray.length > 2
 
-    return {
-      type: "span",
-      props: {
-        children: [
-          { type: "span", props: { kind: "constructor", children: `FormData(${entriesArray.length})` } },
-          { type: "span", props: { kind: "brace", children: " {" } },
-          { type: "span", props: { kind: "preview-text", children: ` ${preview}${hasMore ? ", …" : ""} ` } },
-          { type: "span", props: { kind: "brace", children: "}" } },
-        ],
-      },
-    }
+    return jsx("span", {}, [
+      jsx("span", { kind: "constructor" }, [txt(`FormData(${entriesArray.length})`)]),
+      jsx("span", { kind: "brace" }, [txt(" {")]),
+      jsx("span", { kind: "preview-text" }, [txt(` ${preview}${hasMore ? ", …" : ""} `)]),
+      jsx("span", { kind: "brace" }, [txt("}")]),
+    ])
   },
   node({ value, id, parentKey, createNode, visited }) {
     const entriesChildren = Array.from(value.entries()).map(([key, value], index): JsonNode => {
@@ -1083,20 +1009,17 @@ export const ArrayType = dataType<Array<unknown>>({
     const preview = this.previewText?.(node, opts) || ""
     const count = node.value.length
 
-    const children: JsonNodeElement[] = []
+    const children: Array<JsonNodeElement | JsonNodeText> = []
     if (count > 0) {
-      children.push({ type: "span", props: { kind: "constructor", children: `(${count}) ` } })
+      children.push(jsx("span", { kind: "constructor" }, [txt(`(${count}) `)]))
     }
-    children.push({ type: "span", props: { kind: "brace", children: "[" } })
+    children.push(jsx("span", { kind: "brace" }, [txt("[")]))
     if (preview) {
-      children.push({ type: "span", props: { kind: "preview-text", children: preview } })
+      children.push(jsx("span", { kind: "preview-text" }, [txt(preview)]))
     }
-    children.push({ type: "span", props: { kind: "brace", children: "]" } })
+    children.push(jsx("span", { kind: "brace" }, [txt("]")]))
 
-    return {
-      type: "span",
-      props: { children },
-    }
+    return jsx("span", {}, children)
   },
   node({ value, id, parentKey, createNode, visited, keyPath, dataTypePath }) {
     // Handle sparse arrays by showing only slots with actual values
@@ -1187,20 +1110,12 @@ export const TypedArrayType = dataType<any>({
     const constructorName = typedArray.constructor.name
     const preview = Array.from(typedArray).slice(0, 5).join(", ")
     const hasMore = typedArray.length > 5
-    return {
-      type: "span",
-      props: {
-        children: [
-          {
-            type: "span",
-            props: { kind: "constructor", children: `${constructorName}(${typedArray.length})` },
-          },
-          { type: "span", props: { kind: "brace", children: " [ " } },
-          { type: "span", props: { kind: "preview-text", children: preview + (hasMore ? ", …" : "") } },
-          { type: "span", props: { kind: "brace", children: " ]" } },
-        ],
-      },
-    }
+    return jsx("span", {}, [
+      jsx("span", { kind: "constructor" }, [txt(`${constructorName}(${typedArray.length})`)]),
+      jsx("span", { kind: "brace" }, [txt(" [ ")]),
+      jsx("span", { kind: "preview-text" }, [txt(preview + (hasMore ? ", …" : ""))]),
+      jsx("span", { kind: "brace" }, [txt(" ]")]),
+    ])
   },
   node({ value, id, parentKey, createNode, visited }) {
     const typedArray = value as any
@@ -1248,19 +1163,16 @@ export const IterableType = dataType<any>({
     const preview = SetType.previewText?.(node, opts) ?? ""
     const size = node.children?.length || 0
 
-    const children: JsonNodeElement[] = [
-      { type: "span", props: { kind: "constructor", children: `Iterable(${size})` } },
-      { type: "span", props: { kind: "brace", children: " {" } },
+    const children: Array<JsonNodeElement | JsonNodeText> = [
+      jsx("span", { kind: "constructor" }, [txt(`Iterable(${size})`)]),
+      jsx("span", { kind: "brace" }, [txt(" {")]),
     ]
     if (preview) {
-      children.push({ type: "span", props: { kind: "preview-text", children: preview } })
+      children.push(jsx("span", { kind: "preview-text" }, [txt(preview)]))
     }
-    children.push({ type: "span", props: { kind: "brace", children: "}" } })
+    children.push(jsx("span", { kind: "brace" }, [txt("}")]))
 
-    return {
-      type: "span",
-      props: { children },
-    }
+    return jsx("span", {}, children)
   },
   node({ value, id, parentKey, createNode, visited }) {
     const entriesArray = Array.from(value as Iterable<unknown>)
@@ -1356,21 +1268,18 @@ export const ObjectType = dataType<object>({
   },
   previewElement(node, opts) {
     const preview = this.previewText?.(node, opts) ?? ""
-    const children: JsonNodeElement[] = []
+    const children: Array<JsonNodeElement | JsonNodeText> = []
 
     if (node.constructorName) {
-      children.push({ type: "span", props: { kind: "constructor", children: `${node.constructorName} ` } })
+      children.push(jsx("span", { kind: "constructor" }, [txt(`${node.constructorName} `)]))
     }
-    children.push({ type: "span", props: { kind: "brace", children: "{" } })
+    children.push(jsx("span", { kind: "brace" }, [txt("{")]))
     if (preview) {
-      children.push({ type: "span", props: { kind: "preview-text", children: preview } })
+      children.push(jsx("span", { kind: "preview-text" }, [txt(preview)]))
     }
-    children.push({ type: "span", props: { kind: "brace", children: "}" } })
+    children.push(jsx("span", { kind: "brace" }, [txt("}")]))
 
-    return {
-      type: "span",
-      props: { children },
-    }
+    return jsx("span", {}, children)
   },
   node({ value, id, parentKey, createNode, visited, keyPath, dataTypePath }) {
     const allPropertyNames = Object.getOwnPropertyNames(value)
@@ -1428,10 +1337,7 @@ export const StringType = dataType<string>({
   },
   previewElement(node) {
     const serialised = node.value.replace(STRING_ESCAPE_REGEXP, (_: string) => map[_])
-    return {
-      type: "span",
-      props: { children: `"${serialised}"` },
-    }
+    return jsx("span", {}, [txt(`"${serialised}"`)])
   },
   node({ value, id, parentKey }) {
     return {
@@ -1456,12 +1362,7 @@ export const PrimitiveType = dataType<any>({
     return value !== null && value !== undefined
   },
   previewElement(node) {
-    return {
-      type: "span",
-      props: {
-        children: String(node.value),
-      },
-    }
+    return jsx("span", {}, [txt(String(node.value))])
   },
   node({ value, id, parentKey, keyPath, dataTypePath }) {
     return {
@@ -1531,17 +1432,17 @@ export const jsonNodeToElement = (node: JsonNode, opts = defaultPreviewOptions):
 
   const dataType = dataTypes.find((dataType) => dataType.check(node.value))
   if (!dataType) {
-    return { type: "span", props: { children: String(node.value) } }
+    return jsx("span", {}, [txt(String(node.value))])
   }
 
   const element = dataType.previewElement(node, opts)
 
   if (!node.key) {
-    element.props.root = true
+    element.properties.root = true
   }
 
-  element.props.kind = "preview"
-  element.props.nodeType = typeof dataType.type === "function" ? dataType.type(node.value) : dataType.type
+  element.properties.kind = "preview"
+  element.properties.nodeType = typeof dataType.type === "function" ? dataType.type(node.value) : dataType.type
 
   return element
 }

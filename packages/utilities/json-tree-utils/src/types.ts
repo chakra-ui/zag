@@ -53,15 +53,27 @@ export type JsonNodeSyntaxKind =
   | "operator"
   | "error-stack"
 
+// Hast-compatible element interface
 export interface JsonNodeElement {
-  type: "span" | "div" | "a"
-  props: {
+  type: "element"
+  tagName: "span" | "div" | "a"
+  properties: {
     root?: boolean
     nodeType?: string
     kind?: JsonNodeSyntaxKind
-    children: string | number | boolean | null | undefined | JsonNodeElement[]
+    [key: string]: any
   }
+  children: Array<JsonNodeElement | JsonNodeText>
 }
+
+// Hast-compatible text node interface
+export interface JsonNodeText {
+  type: "text"
+  value: string | number | boolean | null | undefined
+}
+
+// Union type for all node types
+export type JsonNodeHastElement = JsonNodeElement | JsonNodeText
 
 export interface JsonNode<T = any> {
   id: string
