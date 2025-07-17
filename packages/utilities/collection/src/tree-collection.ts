@@ -1,4 +1,4 @@
-import { compact, hasProp, isEqual, isObject } from "@zag-js/utils"
+import { hasProp, isEqual, isObject } from "@zag-js/utils"
 import {
   access,
   compareIndexPaths,
@@ -359,7 +359,11 @@ export class TreeCollection<T = TreeNode> {
   }
 
   private _create = (node: T, children: T[]) => {
-    return compact({ ...node, children: children.length > 0 ? children : undefined })
+    // Only set children if the node originally had children or there are filtered children
+    if (this.getNodeChildren(node).length > 0 || children.length > 0) {
+      return { ...node, children }
+    }
+    return { ...node }
   }
 
   private _insert = (rootNode: T, indexPath: IndexPath, nodes: T[]): TreeCollection<T> => {
