@@ -1,5 +1,12 @@
 # @zag-js/dom-query
 
+## 1.18.5
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/types@1.18.5
+
 ## 1.18.4
 
 ### Patch Changes
