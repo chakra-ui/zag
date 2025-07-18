@@ -326,8 +326,9 @@ export class TreeCollection<T = TreeNode> {
     return values.slice(1)
   }
 
-  private isSameDepth = (indexPath: IndexPath, depth?: number): boolean => {
+  private isValidDepth = (indexPath: IndexPath, depth?: number | ((nodeDepth: number) => boolean)): boolean => {
     if (depth == null) return true
+    if (typeof depth === "function") return depth(indexPath.length)
     return indexPath.length === depth
   }
 
@@ -337,7 +338,7 @@ export class TreeCollection<T = TreeNode> {
 
   getBranchValues = (
     rootNode = this.rootNode,
-    opts: TreeSkipOptions<T> & { depth?: number | undefined } = {},
+    opts: TreeSkipOptions<T> & { depth?: number | ((nodeDepth: number) => boolean) | undefined } = {},
   ): string[] => {
     let values: string[] = []
     visit(rootNode, {
@@ -346,7 +347,7 @@ export class TreeCollection<T = TreeNode> {
         if (indexPath.length === 0) return
         const nodeValue = this.getNodeValue(node)
         if (opts.skip?.({ value: nodeValue, node, indexPath })) return "skip"
-        if (this.isBranchNode(node) && this.isSameDepth(indexPath, opts.depth)) {
+        if (this.isBranchNode(node) && this.isValidDepth(indexPath, opts.depth)) {
           values.push(this.getNodeValue(node))
         }
       },

@@ -1225,7 +1225,7 @@ export const ClassType = dataType<any>({
     const nonEnumerableKeys = allPropertyNames.filter((key) => !enumerableKeys.includes(key))
 
     const children = [
-      ...enumerableKeys.map((key) => createNode(Reflect.get(value, key), key, id, visited)),
+      ...enumerableKeys.map((key) => createNode(Reflect.get(value, key), key, id, visited, keyPath, dataTypePath)),
       ...nonEnumerableKeys.map((key) => {
         const descriptor = Object.getOwnPropertyDescriptor(value, key)
         const node = createNode(getProp(value, key), `[[${key}]]`, id, visited)
@@ -1425,7 +1425,17 @@ export const defaultPreviewOptions: JsonNodePreviewOptions = {
   collapseStringsAfterLength: 30,
 }
 
-export const jsonNodeToElement = (node: JsonNode, opts = defaultPreviewOptions): JsonNodeElement => {
+const withDefault = (a: any, b: any) => {
+  const res = { ...a }
+  for (const key in b) {
+    if (b[key] !== undefined) res[key] = b[key]
+  }
+  return res
+}
+
+export const jsonNodeToElement = (node: JsonNode, opts: Partial<JsonNodePreviewOptions>): JsonNodeElement => {
+  const options = withDefault(defaultPreviewOptions, opts)
+
   if (node.key === "stack" && typeof node.value === "string") {
     return errorStackToElement(node.value)
   }
@@ -1435,7 +1445,7 @@ export const jsonNodeToElement = (node: JsonNode, opts = defaultPreviewOptions):
     return jsx("span", {}, [txt(String(node.value))])
   }
 
-  const element = dataType.previewElement(node, opts)
+  const element = dataType.previewElement(node, options)
 
   if (!node.key) {
     element.properties.root = true
