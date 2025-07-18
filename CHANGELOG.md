@@ -4,6 +4,15 @@ All notable changes to this project will be documented in this file.
 
 > For v0.x changelog, see the [v0 branch](https://github.com/chakra-ui/zag/blob/v0/CHANGELOG.md)
 
+## [1.18.4](./#1.18.4) - 2025-07-18
+
+### Fixed
+
+- **Collection**: Fix issue where the `filter` method completely deletes the children key from the node when there are
+  no matching children
+
+- **Number Input**: Fix issue where default pattern does not allow negative numbers with decimal point
+
 ## [1.18.3](./#1.18.3) - 2025-07-05
 
 ### Fixed
