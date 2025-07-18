@@ -136,15 +136,15 @@ export interface TreeViewProps<T extends TreeNode = TreeNode> extends DirectionP
   /**
    * Called when the tree is opened or closed
    */
-  onExpandedChange?: ((details: ExpandedChangeDetails) => void) | undefined
+  onExpandedChange?: ((details: ExpandedChangeDetails<T>) => void) | undefined
   /**
    * Called when the selection changes
    */
-  onSelectionChange?: ((details: SelectionChangeDetails) => void) | undefined
+  onSelectionChange?: ((details: SelectionChangeDetails<T>) => void) | undefined
   /**
    * Called when the focused node changes
    */
-  onFocusChange?: ((details: FocusChangeDetails) => void) | undefined
+  onFocusChange?: ((details: FocusChangeDetails<T>) => void) | undefined
   /**
    * Called when the checked value changes
    */
