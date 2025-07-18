@@ -1,4 +1,4 @@
-import { parseDate } from "@internationalized/date"
+import { parseDate, parseDateTime } from "@internationalized/date"
 import { describe, expect, test } from "vitest"
 import { constrainValue, getNextPage, getPreviousPage } from "../src"
 
@@ -6,8 +6,8 @@ const locale = "en-US"
 // const timeZone = "UTC"
 const duration = { months: 1 }
 
-const min = parseDate("2023-01-01")
-const max = parseDate("2023-12-31")
+const min = parseDateTime("2023-01-01T00:00:00")
+const max = parseDateTime("2023-12-31T23:59:59.999")
 
 const stringify = (opts: any) => ({
   startDate: opts.startDate.toString(),
@@ -18,7 +18,7 @@ const stringify = (opts: any) => ({
 describe("Date utilities", () => {
   test("constrain", () => {
     const focusedDate = parseDate("2024-03-15")
-    expect(constrainValue(focusedDate, min, max).toString()).toMatchInlineSnapshot(`"2023-12-31"`)
+    expect(constrainValue(focusedDate, min, max).toString()).toMatchInlineSnapshot(`"2023-12-31T23:59:59.999"`)
   })
 
   test("pagination / next page", () => {
@@ -40,9 +40,9 @@ describe("Date utilities", () => {
     const prevPage = getPreviousPage(focusedDate, startDate, duration, locale, min, max)
     expect(stringify(prevPage)).toMatchInlineSnapshot(`
       {
-        "endDate": "2023-01-31",
-        "focusedDate": "2023-01-01",
-        "startDate": "2023-01-01",
+        "endDate": "2023-01-31T00:00:00",
+        "focusedDate": "2023-01-01T00:00:00",
+        "startDate": "2023-01-01T00:00:00",
       }
     `)
   })
