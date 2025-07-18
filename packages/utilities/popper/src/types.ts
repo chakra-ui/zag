@@ -95,7 +95,9 @@ export interface PositioningOptions {
    * A callback that will be called when the popover needs to calculate its
    * position.
    */
-  updatePosition?: ((data: { updatePosition: () => Promise<void> }) => void | Promise<void>) | undefined
+  updatePosition?:
+    | ((data: { updatePosition: () => Promise<void>; floatingElement: HTMLElement | null }) => void | Promise<void>)
+    | undefined
 }
 
 export type { AutoUpdateOptions, Boundary, ComputePositionReturn, Placement }

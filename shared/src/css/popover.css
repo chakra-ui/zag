@@ -17,6 +17,17 @@
   z-index: var(--layer-index);
 }
 
+[data-scope="popover"][data-part="content"][data-fullscreen] {
+  position: fixed;
+  padding: 20px;
+  width: 100%;
+  bottom: 0px;
+}
+
+[data-scope="popover"][data-part="positioner"][data-fullscreen] {
+  display: contents;
+}
+
 [data-scope="popover"][data-part="title"] {
   font-size: 15px;
   line-height: 19px;
