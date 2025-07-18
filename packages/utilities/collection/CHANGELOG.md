@@ -1,5 +1,15 @@
 # @zag-js/collection
 
+## 1.18.4
+
+### Patch Changes
+
+- [`8d0179b`](https://github.com/chakra-ui/zag/commit/8d0179b282dc6bedbd7d782192c82df872bf5697) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - **TreeCollection**: Fix issue where the `filter` method completely
+  deletes the children key from the node when there are no matching children
+- Updated dependencies []:
+  - @zag-js/utils@1.18.4
+
 ## 1.18.3
 
 ### Patch Changes
