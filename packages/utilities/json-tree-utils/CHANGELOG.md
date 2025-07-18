@@ -1,5 +1,7 @@
 # @zag-js/json-tree-utils
 
+## 1.18.4
+
 ## 1.18.3
 
 ### Patch Changes

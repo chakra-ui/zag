@@ -1,5 +1,21 @@
 # @zag-js/number-input
 
+## 1.18.4
+
+### Patch Changes
+
+- [#2578](https://github.com/chakra-ui/zag/pull/2578)
+  [`5e28e7c`](https://github.com/chakra-ui/zag/commit/5e28e7ca83bc0100a39d158bf154cd6d9ff8b5a1) Thanks
+  [@IvanKalinin](https://github.com/IvanKalinin)! - Fix issue where default pattern does not allow negative numbers with
+  decimal point
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.18.4
+  - @zag-js/core@1.18.4
+  - @zag-js/types@1.18.4
+  - @zag-js/utils@1.18.4
+  - @zag-js/dom-query@1.18.4
+
 ## 1.18.3
 
 ### Patch Changes

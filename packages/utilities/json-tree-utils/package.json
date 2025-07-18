@@ -1,6 +1,6 @@
 {
   "name": "@zag-js/json-tree-utils",
-  "version": "1.18.3",
+  "version": "1.18.4",
   "description": "Utilities for building json tree data",
   "keywords": [
     "json",
