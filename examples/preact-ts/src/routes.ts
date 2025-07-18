@@ -47,4 +47,5 @@ export const routes: RouteDefinition[] = [
   // { path: "/tooltip", component: lazy(() => import("./pages/tooltip")) },
   // { path: "/splitter", component: lazy(() => import("./pages/splitter")) },
   // { path: "/segment-control", component: lazy(() => import("./pages/segment-control")) },
+  { path: "/json-tree", component: lazy(() => import("./pages/json-tree")) },
 ]

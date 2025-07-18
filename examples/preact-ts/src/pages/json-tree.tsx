@@ -6,11 +6,13 @@ import {
   jsonToTree,
 } from "@zag-js/json-tree-utils"
 import { jsonTreeData } from "@zag-js/shared"
+import { JSX } from "preact"
 
 interface KeyNodeProps {
   node: JsonNode
 }
-const KeyNode = (props: KeyNodeProps): React.ReactNode => {
+
+const KeyNode = (props: KeyNodeProps) => {
   const { node } = props
   return (
     <>
@@ -25,7 +27,8 @@ const KeyNode = (props: KeyNodeProps): React.ReactNode => {
 interface ValueNodeProps {
   node: JsonNodeHastElement
 }
-const ValueNode = (props: ValueNodeProps): React.ReactNode => {
+
+const ValueNode = (props: ValueNodeProps) => {
   const { node } = props
 
   // Handle text nodes
@@ -34,13 +37,12 @@ const ValueNode = (props: ValueNodeProps): React.ReactNode => {
   }
 
   // Handle element nodes
-  const Element = node.tagName
+  const Element = node.tagName as keyof JSX.IntrinsicElements
   return (
     <Element
       data-root={node.properties.root ? "" : undefined}
       data-type={node.properties.nodeType}
       data-kind={node.properties.kind}
-      suppressHydrationWarning
     >
       {node.children.map((child, index) => (
         <ValueNode key={index} node={child} />
@@ -53,15 +55,17 @@ interface JsonTreeNodeProps {
   node: JsonNode
   indexPath: number[]
 }
+
 function JsonTreeNode(props: JsonTreeNodeProps) {
   const { node, indexPath } = props
   const line = indexPath.reduce((acc, curr) => acc + curr, 1)
   const lineLength = indexPath.length - 1
+
   return (
     <>
       {node.children && node.children.length > 0 ? (
         <div>
-          <div aria-label={getAccessibleDescription(node)} suppressHydrationWarning>
+          <div aria-label={getAccessibleDescription(node)}>
             {node.key && <KeyNode node={node} />}
             <ValueNode node={jsonNodeToElement(node)} />
           </div>
@@ -74,7 +78,6 @@ function JsonTreeNode(props: JsonTreeNodeProps) {
       ) : (
         <div
           aria-label={getAccessibleDescription(node)}
-          suppressHydrationWarning
           data-line={line}
           style={{
             ["--line-length" as any]: lineLength,
