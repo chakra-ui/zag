@@ -78,14 +78,13 @@ export const NullType = dataType<null>({
     return value === null
   },
   previewElement() {
-    return jsx("span", { kind: "preview", nodeType: "null" }, [txt("null")])
+    return jsx("span", {}, [txt("null")])
   },
   node({ value, keyPath }) {
     return {
       value,
       type: "null",
       keyPath,
-      _value: value,
     }
   },
 })
@@ -106,7 +105,6 @@ export const UndefinedType = dataType<undefined>({
       type: "undefined",
       value,
       keyPath,
-      _value: value,
     }
   },
 })
@@ -129,7 +127,6 @@ export const SymbolType = dataType<symbol>({
       type: "symbol",
       value,
       keyPath,
-      _value: value,
     }
   },
 })
@@ -152,7 +149,6 @@ export const BigIntType = dataType<BigInt>({
       type: "bigint",
       value,
       keyPath,
-      _value: value,
     }
   },
 })
@@ -198,7 +194,6 @@ export const SetType = dataType<Set<unknown>>({
       type: "array",
       children: entriesChildren,
       isNonEnumerable: true,
-      _value: value,
     }
 
     const sizeNode = createNode(["size"], value.size)
@@ -208,7 +203,6 @@ export const SetType = dataType<Set<unknown>>({
       value,
       keyPath,
       children: [entriesNode, sizeNode],
-      _value: value,
     }
   },
 })
@@ -234,7 +228,6 @@ export const WeakSetType = dataType<WeakSet<WeakKey>>({
       type: "weakset",
       value,
       keyPath,
-      _value: value,
     }
   },
 })
@@ -260,7 +253,6 @@ export const WeakMapType = dataType<WeakMap<WeakKey, WeakKey>>({
       type: "weakmap",
       value,
       keyPath,
-      _value: value,
     }
   },
 })
@@ -298,7 +290,6 @@ export const RegexType = dataType<RegExp>({
       type: "regex",
       keyPath,
       children,
-      _value: value,
     }
   },
 })
@@ -333,7 +324,6 @@ export const DataViewType = dataType<DataView>({
       keyPath,
       type: "dataview",
       children,
-      _value: value,
     }
   },
 })
@@ -383,7 +373,6 @@ export const UrlType = dataType<URL>({
       keyPath,
       type: "url",
       children,
-      _value: value,
     }
   },
 })
@@ -417,7 +406,6 @@ export const URLSearchParamsType = dataType<URLSearchParams>({
         value: { [key]: value },
         type: "object",
         children: [keyNode, valueNode],
-        _value: value,
       }
     })
 
@@ -427,7 +415,6 @@ export const URLSearchParamsType = dataType<URLSearchParams>({
       type: "array",
       children: entriesChildren,
       isNonEnumerable: true,
-      _value: value,
     }
 
     return {
@@ -435,7 +422,6 @@ export const URLSearchParamsType = dataType<URLSearchParams>({
       keyPath,
       type: "urlsearchparams",
       children: [entriesNode],
-      _value: value,
     }
   },
 })
@@ -469,7 +455,6 @@ export const BlobType = dataType<Blob>({
       keyPath,
       type: "blob",
       children,
-      _value: value,
     }
   },
 })
@@ -505,7 +490,6 @@ export const FileType = dataType<File>({
       keyPath,
       type: "file",
       children,
-      _value: value,
     }
   },
 })
@@ -621,7 +605,6 @@ export const FunctionType = dataType<Function>({
       type: "function",
       keyPath,
       children,
-      _value: value,
     }
   },
 })
@@ -644,7 +627,6 @@ export const ArrayBufferType = dataType<ArrayBuffer>({
       value,
       keyPath,
       type: "arraybuffer",
-      _value: value,
     }
   },
 })
@@ -667,7 +649,6 @@ export const SharedArrayBufferType = dataType<SharedArrayBuffer>({
       value,
       keyPath,
       type: "sharedarraybuffer",
-      _value: value,
     }
   },
 })
@@ -700,7 +681,6 @@ export const BufferType = dataType<Buffer>({
       value,
       keyPath,
       type: "buffer",
-      _value: value,
     }
   },
 })
@@ -723,7 +703,6 @@ export const DateType = dataType<Date>({
       value,
       keyPath,
       type: "date",
-      _value: value,
     }
   },
 })
@@ -785,7 +764,6 @@ export const MapType = dataType<Map<unknown, unknown>>({
       type: "array",
       children: entriesChildren,
       isNonEnumerable: true,
-      _value: value,
     }
 
     const sizeNode = createNode(["size"], value.size)
@@ -795,7 +773,6 @@ export const MapType = dataType<Map<unknown, unknown>>({
       keyPath,
       type: "map",
       children: [entriesNode, sizeNode],
-      _value: value,
     }
   },
 })
@@ -836,7 +813,6 @@ export const ErrorType = dataType<Error>({
       keyPath,
       type: "error",
       children,
-      _value: value,
     }
   },
 })
@@ -898,7 +874,6 @@ export const HeadersType = dataType<Headers>({
         value: { [key]: value },
         type: "object",
         children: [keyNode, valueNode],
-        _value: value,
       }
     })
 
@@ -908,7 +883,6 @@ export const HeadersType = dataType<Headers>({
       type: "array",
       children: entriesChildren,
       isNonEnumerable: true,
-      _value: value,
     }
 
     return {
@@ -916,7 +890,6 @@ export const HeadersType = dataType<Headers>({
       keyPath,
       type: "headers",
       children: [entriesNode],
-      _value: value,
     }
   },
 })
@@ -971,7 +944,6 @@ export const FormDataType = dataType<FormData>({
       type: "array",
       children: entriesChildren,
       isNonEnumerable: true,
-      _value: value,
     }
 
     return {
@@ -979,7 +951,6 @@ export const FormDataType = dataType<FormData>({
       keyPath,
       type: "formdata",
       children: [entriesNode],
-      _value: value,
     }
   },
 })
@@ -1061,7 +1032,6 @@ export const ArrayType = dataType<Array<unknown>>({
           type: "array",
           children: groupChildren,
           isNonEnumerable: false,
-          _value: value,
         }
 
         arrayChildren.push(groupNode)
@@ -1103,7 +1073,6 @@ export const ArrayType = dataType<Array<unknown>>({
       type: "array",
       children,
       keyPath,
-      _value: value,
     }
   },
 })
@@ -1175,7 +1144,6 @@ export const TypedArrayType = dataType<any>({
       keyPath,
       type: Reflect.get(typedArrayConstructors, value.constructor.name),
       children,
-      _value: value,
     }
   },
 })
@@ -1222,7 +1190,6 @@ export const IterableType = dataType<any>({
       type: "array",
       children: entriesChildren,
       isNonEnumerable: true,
-      _value: value,
     }
 
     // Try to get size/length property
@@ -1234,7 +1201,6 @@ export const IterableType = dataType<any>({
       type: "iterable",
       children: [entriesNode, sizeNode],
       keyPath,
-      _value: value,
     }
   },
 })
@@ -1280,7 +1246,6 @@ export const ClassType = dataType<any>({
       type: "object",
       constructorName,
       children,
-      _value: value,
     }
   },
 })
@@ -1342,7 +1307,6 @@ export const ObjectType = dataType<object>({
       type: "object",
       children,
       keyPath,
-      _value: value,
     }
   },
 })
@@ -1381,7 +1345,6 @@ export const StringType = dataType<string>({
       value,
       type: "string",
       keyPath,
-      _value: value,
     }
   },
 })
@@ -1406,7 +1369,6 @@ export const PrimitiveType = dataType<any>({
       value,
       type: typeof value as JsonNodeType,
       keyPath,
-      _value: value,
     }
   },
 })

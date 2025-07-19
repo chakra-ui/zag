@@ -85,7 +85,6 @@ export interface JsonNode<T = any> {
   isNonEnumerable?: boolean
   propertyDescriptor?: PropertyDescriptor | undefined
   children?: JsonNode[]
-  _value?: T
 }
 
 export interface JsonNodePreviewOptions {
