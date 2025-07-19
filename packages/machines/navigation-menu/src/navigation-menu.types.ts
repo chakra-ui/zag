@@ -172,15 +172,15 @@ export interface NavigationMenuApi<T extends PropTypes = PropTypes> {
    */
   orientation: Orientation
 
-  getRootProps(): T["element"]
-  getListProps(): T["element"]
-  getItemProps(props: ItemProps): T["element"]
-  getIndicatorTrackProps(): T["element"]
-  getIndicatorProps(): T["element"]
-  getArrowProps(props?: ArrowProps): T["element"]
-  getTriggerProps(props: ItemProps): T["button"]
-  getLinkProps(props: LinkProps): T["element"]
-  getContentProps(props: LinkProps): T["element"]
-  getViewportPositionerProps(): T["element"]
-  getViewportProps(): T["element"]
+  getRootProps: () => T["element"]
+  getListProps: () => T["element"]
+  getItemProps: (props: ItemProps) => T["element"]
+  getIndicatorTrackProps: () => T["element"]
+  getIndicatorProps: () => T["element"]
+  getArrowProps: (props?: ArrowProps) => T["element"]
+  getTriggerProps: (props: ItemProps) => T["button"]
+  getLinkProps: (props: LinkProps) => T["element"]
+  getContentProps: (props: LinkProps) => T["element"]
+  getViewportPositionerProps: () => T["element"]
+  getViewportProps: () => T["element"]
 }

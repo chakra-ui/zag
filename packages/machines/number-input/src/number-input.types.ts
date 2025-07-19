@@ -299,38 +299,38 @@ export interface NumberInputApi<T extends PropTypes = PropTypes> {
   /**
    * Function to set the value of the input.
    */
-  setValue(value: number): void
+  setValue: (value: number) => void
   /**
    * Function to clear the value of the input.
    */
-  clearValue(): void
+  clearValue: VoidFunction
   /**
    * Function to increment the value of the input by the step.
    */
-  increment(): void
+  increment: VoidFunction
   /**
    * Function to decrement the value of the input by the step.
    */
-  decrement(): void
+  decrement: VoidFunction
   /**
    * Function to set the value of the input to the max.
    */
-  setToMax(): void
+  setToMax: VoidFunction
   /**
    * Function to set the value of the input to the min.
    */
-  setToMin(): void
+  setToMin: VoidFunction
   /**
    * Function to focus the input.
    */
-  focus(): void
+  focus: VoidFunction
 
-  getRootProps(): T["element"]
-  getLabelProps(): T["label"]
-  getControlProps(): T["element"]
-  getValueTextProps(): T["element"]
-  getInputProps(): T["input"]
-  getDecrementTriggerProps(): T["button"]
-  getIncrementTriggerProps(): T["button"]
-  getScrubberProps(): T["element"]
+  getRootProps: () => T["element"]
+  getLabelProps: () => T["label"]
+  getControlProps: () => T["element"]
+  getValueTextProps: () => T["element"]
+  getInputProps: () => T["input"]
+  getDecrementTriggerProps: () => T["button"]
+  getIncrementTriggerProps: () => T["button"]
+  getScrubberProps: () => T["element"]
 }

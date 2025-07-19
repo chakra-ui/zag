@@ -48,8 +48,8 @@ export interface ToggleApi<T extends PropTypes = PropTypes> {
   /**
    * Sets the pressed state of the toggle.
    */
-  setPressed(pressed: boolean): void
+  setPressed: (pressed: boolean) => void
 
-  getRootProps(): T["element"]
-  getIndicatorProps(): T["element"]
+  getRootProps: () => T["element"]
+  getIndicatorProps: () => T["element"]
 }

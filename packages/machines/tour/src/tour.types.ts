@@ -9,11 +9,11 @@ import type { Point, Rect, Size } from "./utils/rect"
  * -----------------------------------------------------------------------------*/
 
 export interface StepEffectArgs {
-  next(): void
-  goto(id: string): void
-  dismiss(): void
-  show(): void
-  update(data: Partial<StepBaseDetails>): void
+  next: VoidFunction
+  goto: (id: string) => void
+  dismiss: VoidFunction
+  show: VoidFunction
+  update: (data: Partial<StepBaseDetails>) => void
   target?: (() => HTMLElement | null) | undefined
 }
 
@@ -49,7 +49,7 @@ export interface StepBaseDetails {
   /**
    * Function to return the target element to highlight
    */
-  target?(): HTMLElement | null
+  target?: (() => HTMLElement | null) | undefined
   /**
    * The title of the step
    */
@@ -92,7 +92,7 @@ export interface StepDetails extends StepBaseDetails {
   /**
    * The effect to run before the step is shown
    */
-  effect?(args: StepEffectArgs): VoidFunction
+  effect?: ((args: StepEffectArgs) => VoidFunction) | undefined
 }
 
 export interface StepChangeDetails {
@@ -110,10 +110,10 @@ export interface StepsChangeDetails {
 export type StepStatus = "idle" | "started" | "skipped" | "completed" | "dismissed" | "not-found"
 
 export interface StepActionMap {
-  next(): void
-  prev(): void
-  dismiss(): void
-  goto(id: string): void
+  next: VoidFunction
+  prev: VoidFunction
+  dismiss: VoidFunction
+  goto: (id: string) => void
 }
 
 export interface StatusChangeDetails {
@@ -128,7 +128,7 @@ export interface ProgressTextDetails {
 }
 
 export interface IntlTranslations {
-  progressText?(details: ProgressTextDetails): string
+  progressText?: ((details: ProgressTextDetails) => string) | undefined
   nextStep?: string | undefined
   prevStep?: string | undefined
   close?: string | undefined
@@ -348,65 +348,65 @@ export interface TourApi<T extends PropTypes = PropTypes> {
   /**
    * Add a new step to the tour
    */
-  addStep(step: StepDetails): void
+  addStep: (step: StepDetails) => void
   /**
    * Remove a step from the tour
    */
-  removeStep(id: string): void
+  removeStep: (id: string) => void
   /**
    * Update a step in the tour with partial details
    */
-  updateStep(id: string, stepOverrides: Partial<StepDetails>): void
+  updateStep: (id: string, stepOverrides: Partial<StepDetails>) => void
   /**
    * Set the steps of the tour
    */
-  setSteps(steps: StepDetails[]): void
+  setSteps: (steps: StepDetails[]) => void
   /**
    * Set the current step of the tour
    */
-  setStep(id: string): void
+  setStep: (id: string) => void
   /**
    * Start the tour at a specific step (or the first step if not provided)
    */
-  start(id?: string): void
+  start: (id?: string) => void
   /**
    * Check if a step is valid
    */
-  isValidStep(id: string): boolean
+  isValidStep: (id: string) => boolean
   /**
    * Check if a step is visible
    */
-  isCurrentStep(id: string): boolean
+  isCurrentStep: (id: string) => boolean
   /**
    * Move to the next step
    */
-  next(): void
+  next: VoidFunction
   /**
    * Move to the previous step
    */
-  prev(): void
+  prev: VoidFunction
   /**
    * Returns the progress text
    */
-  getProgressText(): string
+  getProgressText: () => string
   /**
    * Returns the progress percent
    */
-  getProgressPercent(): number
+  getProgressPercent: () => number
 
-  getBackdropProps(): T["element"]
-  getSpotlightProps(): T["element"]
-  getProgressTextProps(): T["element"]
+  getBackdropProps: () => T["element"]
+  getSpotlightProps: () => T["element"]
+  getProgressTextProps: () => T["element"]
 
-  getPositionerProps(): T["element"]
-  getArrowProps(): T["element"]
-  getArrowTipProps(): T["element"]
-  getContentProps(): T["element"]
+  getPositionerProps: () => T["element"]
+  getArrowProps: () => T["element"]
+  getArrowTipProps: () => T["element"]
+  getContentProps: () => T["element"]
 
-  getTitleProps(): T["element"]
-  getDescriptionProps(): T["element"]
-  getCloseTriggerProps(): T["button"]
-  getActionTriggerProps(props: StepActionTriggerProps): T["button"]
+  getTitleProps: () => T["element"]
+  getDescriptionProps: () => T["element"]
+  getCloseTriggerProps: () => T["button"]
+  getActionTriggerProps: (props: StepActionTriggerProps) => T["button"]
 }
 
 /* -----------------------------------------------------------------------------

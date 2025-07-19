@@ -25,14 +25,14 @@ export interface ValueTextDetails {
 
 export type ElementIds = Partial<{
   root: string
-  thumb(index: number): string
-  hiddenInput(index: number): string
+  thumb: (index: number) => string
+  hiddenInput: (index: number) => string
   control: string
   track: string
   range: string
   label: string
   valueText: string
-  marker(index: number): string
+  marker: (index: number) => string
 }>
 
 export interface SliderProps extends DirectionProperty, CommonProperties {
@@ -80,19 +80,19 @@ export interface SliderProps extends DirectionProperty, CommonProperties {
   /**
    * Function invoked when the value of the slider changes
    */
-  onValueChange?(details: ValueChangeDetails): void
+  onValueChange?: ((details: ValueChangeDetails) => void) | undefined
   /**
    * Function invoked when the slider value change is done
    */
-  onValueChangeEnd?(details: ValueChangeDetails): void
+  onValueChangeEnd?: ((details: ValueChangeDetails) => void) | undefined
   /**
    * Function invoked when the slider's focused index changes
    */
-  onFocusChange?(details: FocusChangeDetails): void
+  onFocusChange?: ((details: FocusChangeDetails) => void) | undefined
   /**
    * Function that returns a human readable value for the slider thumb
    */
-  getAriaValueText?(details: ValueTextDetails): string
+  getAriaValueText?: ((details: ValueTextDetails) => string) | undefined
   /**
    * The minimum value of the slider
    * @default 0
@@ -271,15 +271,15 @@ export interface SliderApi<T extends PropTypes = PropTypes> {
   /**
    * Function to set the value of the slider.
    */
-  setValue(value: number[]): void
+  setValue: (value: number[]) => void
   /**
    * Returns the value of the thumb at the given index.
    */
-  getThumbValue(index: number): number
+  getThumbValue: (index: number) => number
   /**
    * Sets the value of the thumb at the given index.
    */
-  setThumbValue(index: number, value: number): void
+  setThumbValue: (index: number, value: number) => void
   /**
    * Returns the percent of the thumb at the given index.
    */
@@ -291,42 +291,43 @@ export interface SliderApi<T extends PropTypes = PropTypes> {
   /**
    * Returns the percent of the thumb at the given index.
    */
-  getThumbPercent(index: number): number
+  getThumbPercent: (index: number) => number
   /**
    * Sets the percent of the thumb at the given index.
    */
-  setThumbPercent(index: number, percent: number): void
+  setThumbPercent: (index: number, percent: number) => void
   /**
    * Returns the min value of the thumb at the given index.
    */
-  getThumbMin(index: number): number
+  getThumbMin: (index: number) => number
   /**
    * Returns the max value of the thumb at the given index.
    */
-  getThumbMax(index: number): number
+  getThumbMax: (index: number) => number
   /**
    * Function to increment the value of the slider at the given index.
    */
-  increment(index: number): void
+  increment: (index: number) => void
   /**
    * Function to decrement the value of the slider at the given index.
    */
-  decrement(index: number): void
+  decrement: (index: number) => void
   /**
    * Function to focus the slider. This focuses the first thumb.
    */
-  focus(): void
-  getLabelProps(): T["label"]
-  getRootProps(): T["element"]
-  getValueTextProps(): T["element"]
-  getTrackProps(): T["element"]
-  getThumbProps(props: ThumbProps): T["element"]
-  getHiddenInputProps(props: ThumbProps): T["input"]
-  getRangeProps(): T["element"]
-  getControlProps(): T["element"]
-  getMarkerGroupProps(): T["element"]
-  getMarkerProps(props: MarkerProps): T["element"]
-  getDraggingIndicatorProps(props: DraggingIndicatorProps): T["element"]
+  focus: VoidFunction
+
+  getLabelProps: () => T["label"]
+  getRootProps: () => T["element"]
+  getValueTextProps: () => T["element"]
+  getTrackProps: () => T["element"]
+  getThumbProps: (props: ThumbProps) => T["element"]
+  getHiddenInputProps: (props: ThumbProps) => T["input"]
+  getRangeProps: () => T["element"]
+  getControlProps: () => T["element"]
+  getMarkerGroupProps: () => T["element"]
+  getMarkerProps: (props: MarkerProps) => T["element"]
+  getDraggingIndicatorProps: (props: DraggingIndicatorProps) => T["element"]
 }
 
 /* -----------------------------------------------------------------------------

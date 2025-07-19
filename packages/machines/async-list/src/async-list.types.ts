@@ -117,21 +117,21 @@ export interface AsyncListApi<T, C> {
   /**
    * Function to abort the current fetch.
    */
-  abort(): void
+  abort: VoidFunction
   /**
    * Function to reload the list
    */
-  reload(): void
+  reload: VoidFunction
   /**
    * Function to load more items
    */
-  loadMore(): void
+  loadMore: VoidFunction
   /**
    * Function to sort the list
    */
-  sort(sortDescriptor: SortDescriptor): void
+  sort: (sortDescriptor: SortDescriptor) => void
   /**
    * Function to set the filter text
    */
-  setFilterText(filterText: string): void
+  setFilterText: (filterText: string) => void
 }

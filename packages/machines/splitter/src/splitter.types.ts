@@ -65,9 +65,9 @@ export interface ExpandCollapseDetails {
 
 export type ElementIds = Partial<{
   root: string
-  resizeTrigger(id: string): string
-  label(id: string): string
-  panel(id: string | number): string
+  resizeTrigger: (id: string) => string
+  label: (id: string) => string
+  panel: (id: string | number) => string
 }>
 
 export interface SplitterProps extends DirectionProperty, CommonProperties {
@@ -198,51 +198,51 @@ export interface SplitterApi<T extends PropTypes = PropTypes> {
    */
   dragging: boolean
   /**
-   * The current sizes of the panels.
+   * Returns the current sizes of the panels.
    */
-  getSizes(): number[]
+  getSizes: () => number[]
   /**
-   * Set the sizes of the panels.
+   * Sets the sizes of the panels.
    */
-  setSizes(size: number[]): void
+  setSizes: (size: number[]) => void
   /**
-   * Get the items of the splitter.
+   * Returns the items of the splitter.
    */
-  getItems(): SplitterItem[]
+  getItems: () => SplitterItem[]
   /**
-   * Get the size of a panel.
+   * Returns the size of the specified panel.
    */
-  getPanelSize(id: PanelId): number
+  getPanelSize: (id: PanelId) => number
   /**
-   * Whether a panel is collapsed.
+   * Returns whether the specified panel is collapsed.
    */
-  isPanelCollapsed(id: PanelId): boolean
+  isPanelCollapsed: (id: PanelId) => boolean
   /**
-   * Whether a panel is expanded.
+   * Returns whether the specified panel is expanded.
    */
-  isPanelExpanded(id: PanelId): boolean
+  isPanelExpanded: (id: PanelId) => boolean
   /**
-   * Collapse a panel.
+   * Collapses the specified panel.
    */
-  collapsePanel(id: PanelId): void
+  collapsePanel: (id: PanelId) => void
   /**
-   * Expand a panel.
+   * Expands the specified panel.
    */
-  expandPanel(id: PanelId, minSize?: number): void
+  expandPanel: (id: PanelId, minSize?: number) => void
   /**
-   * Resize a panel.
+   * Resizes the specified panel.
    */
-  resizePanel(id: PanelId, unsafePanelSize: number): void
+  resizePanel: (id: PanelId, unsafePanelSize: number) => void
   /**
-   * Get the layout of the splitter.
+   * Returns the layout of the splitter.
    */
-  getLayout(): string
+  getLayout: () => string
   /**
-   * Reset the splitter to its initial state.
+   * Resets the splitter to its initial state.
    */
-  resetSizes(): void
+  resetSizes: VoidFunction
 
-  getRootProps(): T["element"]
-  getPanelProps(props: PanelProps): T["element"]
-  getResizeTriggerProps(props: ResizeTriggerProps): T["element"]
+  getRootProps: () => T["element"]
+  getPanelProps: (props: PanelProps) => T["element"]
+  getResizeTriggerProps: (props: ResizeTriggerProps) => T["element"]
 }

@@ -98,17 +98,17 @@ export interface QrCodeApi<T extends PropTypes = PropTypes> {
   /**
    * Set the value to encode.
    */
-  setValue(value: string): void
+  setValue: (value: string) => void
   /**
    * Returns the data URL of the qr code.
    */
-  getDataUrl(type: DataUrlType, quality?: number): Promise<string>
+  getDataUrl: (type: DataUrlType, quality?: number) => Promise<string>
 
-  getRootProps(): T["element"]
-  getFrameProps(): T["svg"]
-  getPatternProps(): T["path"]
-  getOverlayProps(): T["element"]
-  getDownloadTriggerProps(props: DownloadTriggerProps): T["button"]
+  getRootProps: () => T["element"]
+  getFrameProps: () => T["svg"]
+  getPatternProps: () => T["path"]
+  getOverlayProps: () => T["element"]
+  getDownloadTriggerProps: (props: DownloadTriggerProps) => T["button"]
 }
 
 export type { QrCodeGenerateOptions, QrCodeGenerateResult } from "uqr"

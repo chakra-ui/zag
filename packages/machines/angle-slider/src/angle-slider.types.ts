@@ -114,18 +114,18 @@ export interface AngleSliderApi<T extends PropTypes = PropTypes> {
   /**
    * Sets the value of the angle slider
    */
-  setValue(value: number): void
+  setValue: (value: number) => void
   /**
    * Whether the slider is being dragged.
    */
   dragging: boolean
 
-  getRootProps(): T["element"]
-  getLabelProps(): T["label"]
-  getHiddenInputProps(): T["element"]
-  getControlProps(): T["element"]
-  getThumbProps(): T["element"]
-  getValueTextProps(): T["element"]
-  getMarkerGroupProps(): T["element"]
-  getMarkerProps(props: MarkerProps): T["element"]
+  getRootProps: () => T["element"]
+  getLabelProps: () => T["label"]
+  getHiddenInputProps: () => T["element"]
+  getControlProps: () => T["element"]
+  getThumbProps: () => T["element"]
+  getValueTextProps: () => T["element"]
+  getMarkerGroupProps: () => T["element"]
+  getMarkerProps: (props: MarkerProps) => T["element"]
 }
