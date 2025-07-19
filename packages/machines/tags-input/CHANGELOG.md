@@ -1,5 +1,23 @@
 # @zag-js/tags-input
 
+## 1.18.5
+
+### Patch Changes
+
+- [`59a7bfb`](https://github.com/chakra-ui/zag/commit/59a7bfb7215b4c9d13d11487f50ad852cd8347a9) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix issue destructuring returned api could throw an ESLint
+  `unbound-method` warning
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.18.5
+  - @zag-js/core@1.18.5
+  - @zag-js/types@1.18.5
+  - @zag-js/auto-resize@1.18.5
+  - @zag-js/utils@1.18.5
+  - @zag-js/dom-query@1.18.5
+  - @zag-js/interact-outside@1.18.5
+  - @zag-js/live-region@1.18.5
+
 ## 1.18.4
 
 ### Patch Changes

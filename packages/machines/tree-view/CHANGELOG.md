@@ -1,5 +1,25 @@
 # @zag-js/tree-view
 
+## 1.18.5
+
+### Patch Changes
+
+- [`1b13205`](https://github.com/chakra-ui/zag/commit/1b1320589e8956afe7823aca3075f64574d7f8ad) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix issue where `onExpandedChange`, `onSelectionChange` and
+  `onFocusChange` doesn't infer the tree node types
+
+- [`59a7bfb`](https://github.com/chakra-ui/zag/commit/59a7bfb7215b4c9d13d11487f50ad852cd8347a9) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix issue destructuring returned api could throw an ESLint
+  `unbound-method` warning
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.18.5
+  - @zag-js/core@1.18.5
+  - @zag-js/types@1.18.5
+  - @zag-js/collection@1.18.5
+  - @zag-js/utils@1.18.5
+  - @zag-js/dom-query@1.18.5
+
 ## 1.18.4
 
 ### Patch Changes

@@ -1,5 +1,25 @@
 # @zag-js/popover
 
+## 1.18.5
+
+### Patch Changes
+
+- [`59a7bfb`](https://github.com/chakra-ui/zag/commit/59a7bfb7215b4c9d13d11487f50ad852cd8347a9) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix issue destructuring returned api could throw an ESLint
+  `unbound-method` warning
+
+- Updated dependencies [[`218ab81`](https://github.com/chakra-ui/zag/commit/218ab81e6453356a3bbd5e5eb612d9b671f84323)]:
+  - @zag-js/popper@1.18.5
+  - @zag-js/anatomy@1.18.5
+  - @zag-js/core@1.18.5
+  - @zag-js/types@1.18.5
+  - @zag-js/aria-hidden@1.18.5
+  - @zag-js/utils@1.18.5
+  - @zag-js/dismissable@1.18.5
+  - @zag-js/dom-query@1.18.5
+  - @zag-js/focus-trap@1.18.5
+  - @zag-js/remove-scroll@1.18.5
+
 ## 1.18.4
 
 ### Patch Changes
