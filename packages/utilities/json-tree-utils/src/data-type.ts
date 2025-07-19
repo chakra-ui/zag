@@ -200,9 +200,9 @@ export const SetType = dataType<Set<unknown>>({
 
     return jsx("span", {}, children)
   },
-  node({ value, id, parentKey, createNode, visited }) {
+  node({ value, id, parentKey, createNode }) {
     const entriesChildren = Array.from(value).map((item, index) =>
-      createNode(item, index.toString(), `${id}.[[Entries]]`, visited),
+      createNode(item, index.toString(), `${id}.[[Entries]]`),
     )
 
     const entriesNode: JsonNode = {
@@ -214,7 +214,7 @@ export const SetType = dataType<Set<unknown>>({
       isNonEnumerable: true,
     }
 
-    const sizeNode = createNode(value.size, "size", id, visited)
+    const sizeNode = createNode(value.size, "size", id)
 
     return {
       id,
@@ -419,12 +419,12 @@ export const URLSearchParamsType = dataType<URLSearchParams>({
       jsx("span", { kind: "brace" }, [txt(" }")]),
     ])
   },
-  node({ value, id, createNode, parentKey, visited }) {
+  node({ value, id, createNode, parentKey }) {
     const entriesChildren = Array.from(value.entries()).map(([key, value], index): JsonNode => {
       const entryId = join(id, "[[Entries]]", index.toString())
 
-      const keyNode = createNode(key, "key", entryId, visited)
-      const valueNode = createNode(value, "value", entryId, visited)
+      const keyNode = createNode(key, "key", entryId)
+      const valueNode = createNode(value, "value", entryId)
 
       return {
         id: entryId,
@@ -475,9 +475,9 @@ export const BlobType = dataType<Blob>({
       jsx("span", { kind: "brace" }, [txt(" }")]),
     ])
   },
-  node({ value, id, createNode, parentKey, visited }) {
+  node({ value, id, createNode, parentKey }) {
     const blobProperties = BLOB_KEYS.map((key) => ({ key, value: Reflect.get(value, key) }))
-    const children = blobProperties.map(({ key, value }) => createNode(value, key, id, visited))
+    const children = blobProperties.map(({ key, value }) => createNode(value, key, id))
     return {
       id,
       key: parentKey,
@@ -511,9 +511,9 @@ export const FileType = dataType<File>({
       jsx("span", { kind: "brace" }, [txt(" }")]),
     ])
   },
-  node({ value, id, createNode, parentKey, visited }) {
+  node({ value, id, createNode, parentKey }) {
     const fileProperties = FILE_KEYS.map((key) => ({ key, value: getProp(value, key) || "" }))
-    const children = fileProperties.map(({ key, value }) => createNode(value, key, id, visited))
+    const children = fileProperties.map(({ key, value }) => createNode(value, key, id))
     return {
       id,
       key: parentKey,
@@ -592,7 +592,7 @@ export const FunctionType = dataType<Function>({
       jsx("span", { kind: "function-body" }, [txt(preview)]),
     ])
   },
-  node({ value, id, parentKey, createNode, visited, keyPath, dataTypePath, options }) {
+  node({ value, id, parentKey, createNode, keyPath, dataTypePath, options }) {
     const funcName = value.name || "anonymous"
     const constructorName = value.constructor.name
 
@@ -617,12 +617,12 @@ export const FunctionType = dataType<Function>({
     enumerableProperties.push(...additionalProps)
 
     const enumerableChildren = enumerableProperties.map(({ key, value }) =>
-      createNode(value, key, id, visited, keyPath, dataTypePath),
+      createNode(value, key, id, keyPath, dataTypePath),
     )
 
     const nonEnumerableChildren = options?.showNonenumerable
       ? nonEnumerableProperties.map(({ key, value }) => {
-          const node = createNode(value, key, id, visited, keyPath, dataTypePath)
+          const node = createNode(value, key, id, keyPath, dataTypePath)
           node.isNonEnumerable = true
           return node
         })
@@ -780,13 +780,13 @@ export const MapType = dataType<Map<unknown, unknown>>({
 
     return jsx("span", {}, children)
   },
-  node({ value, id, parentKey, createNode, visited, keyPath, dataTypePath }) {
+  node({ value, id, parentKey, createNode, keyPath, dataTypePath }) {
     const entriesChildren = Array.from(value.entries()).map(([key, value], index): JsonNode => {
       const entryId = join(id, "[[Entries]]", index.toString())
       const entryKeyPath = [...keyPath, "[[Entries]]", index.toString()]
       const entryDataTypePath = join(dataTypePath, "[[Entries]]", index.toString())
-      const keyNode = createNode(key, "key", entryId, visited, entryKeyPath, entryDataTypePath)
-      const valueNode = createNode(value, "value", entryId, visited, entryKeyPath, entryDataTypePath)
+      const keyNode = createNode(key, "key", entryId, entryKeyPath, entryDataTypePath)
+      const valueNode = createNode(value, "value", entryId, entryKeyPath, entryDataTypePath)
 
       return {
         id: entryId,
@@ -806,7 +806,7 @@ export const MapType = dataType<Map<unknown, unknown>>({
       isNonEnumerable: true,
     }
 
-    const sizeNode = createNode(value.size, "size", id, visited, keyPath, dataTypePath)
+    const sizeNode = createNode(value.size, "size", id, keyPath, dataTypePath)
 
     return {
       id,
@@ -839,7 +839,7 @@ export const ErrorType = dataType<Error>({
       jsx("span", {}, [txt(err.message)]),
     ])
   },
-  node({ value, id, parentKey, createNode, visited }) {
+  node({ value, id, parentKey, createNode }) {
     const errorProperties = ERROR_KEYS.map((key) => ({ key, value: Reflect.get(value, key) }))
 
     const additionalProps = Object.getOwnPropertyNames(value)
@@ -847,7 +847,7 @@ export const ErrorType = dataType<Error>({
       .map((key) => ({ key, value: getProp(value, key) }))
 
     const allProperties = [...errorProperties, ...additionalProps]
-    const children = allProperties.map(({ key, value }) => createNode(value, key, id, visited))
+    const children = allProperties.map(({ key, value }) => createNode(value, key, id))
 
     return {
       id,
@@ -904,11 +904,11 @@ export const HeadersType = dataType<Headers>({
       jsx("span", { kind: "brace" }, [txt("}")]),
     ])
   },
-  node({ value, id, parentKey, createNode, visited }) {
+  node({ value, id, parentKey, createNode }) {
     const entriesChildren = Array.from(value.entries()).map(([key, value], index): JsonNode => {
       const entryId = join(id, "[[Entries]]", index.toString())
-      const keyNode = createNode(key, "key", entryId, visited)
-      const valueNode = createNode(value, "value", entryId, visited)
+      const keyNode = createNode(key, "key", entryId)
+      const valueNode = createNode(value, "value", entryId)
 
       return {
         id: entryId,
@@ -967,11 +967,11 @@ export const FormDataType = dataType<FormData>({
       jsx("span", { kind: "brace" }, [txt("}")]),
     ])
   },
-  node({ value, id, parentKey, createNode, visited }) {
+  node({ value, id, parentKey, createNode }) {
     const entriesChildren = Array.from(value.entries()).map(([key, value], index): JsonNode => {
       const entryId = join(id, "[[Entries]]", index.toString())
-      const keyNode = createNode(key, "key", entryId, visited)
-      const valueNode = createNode(value, "value", entryId, visited)
+      const keyNode = createNode(key, "key", entryId)
+      const valueNode = createNode(value, "value", entryId)
 
       return {
         id: entryId,
@@ -1035,7 +1035,7 @@ export const ArrayType = dataType<Array<unknown>>({
 
     return jsx("span", {}, children)
   },
-  node({ value, id, parentKey, createNode, visited, keyPath, dataTypePath, options }) {
+  node({ value, id, parentKey, createNode, keyPath, dataTypePath, options }) {
     // Handle sparse arrays by showing only slots with actual values
     // This prevents crashes when arrays have holes (e.g., let arr = []; arr[50] = "value")
     const arrayChildren: JsonNode[] = []
@@ -1068,7 +1068,7 @@ export const ArrayType = dataType<Array<unknown>>({
         const groupId = `${id}/${groupKey}`
 
         // Create children for this chunk
-        const groupChildren = chunk.map((index) => createNode(value[index], index.toString(), groupId, visited))
+        const groupChildren = chunk.map((index) => createNode(value[index], index.toString(), groupId))
 
         // Create the group node
         const groupNode: JsonNode = {
@@ -1085,12 +1085,12 @@ export const ArrayType = dataType<Array<unknown>>({
     } else {
       // Create nodes normally for smaller arrays
       for (const index of definedIndices) {
-        arrayChildren.push(createNode(value[index], index.toString(), id, visited))
+        arrayChildren.push(createNode(value[index], index.toString(), id))
       }
     }
 
     // Add length property to show the true size of the array (including sparse slots)
-    const lengthChild = createNode(value.length, "length", id, visited)
+    const lengthChild = createNode(value.length, "length", id)
 
     // Get non-enumerable properties
     const allPropertyNames = Object.getOwnPropertyNames(value)
@@ -1105,7 +1105,7 @@ export const ArrayType = dataType<Array<unknown>>({
     const nonEnumerableChildren = options?.showNonenumerable
       ? nonEnumerableKeys.map((key) => {
           const descriptor = Object.getOwnPropertyDescriptor(value, key)
-          const node = createNode(Reflect.get(value, key), key, id, visited)
+          const node = createNode(Reflect.get(value, key), key, id)
           node.isNonEnumerable = true
           node.propertyDescriptor = descriptor
           return node
@@ -1170,19 +1170,19 @@ export const TypedArrayType = dataType<any>({
       jsx("span", { kind: "brace" }, [txt(" ]")]),
     ])
   },
-  node({ value, id, parentKey, createNode, visited, keyPath, dataTypePath, options }) {
+  node({ value, id, parentKey, createNode, keyPath, dataTypePath, options }) {
     const typedArray = value as any
     const enumerableProperties = TYPED_ARRAY_KEYS.map((key) => ({ key, value: Reflect.get(typedArray, key) }))
 
     const enumerableChildren = enumerableProperties.map(({ key, value }) =>
-      createNode(value, key, id, visited, keyPath, dataTypePath),
+      createNode(value, key, id, keyPath, dataTypePath),
     )
 
     const nonEnumerableChildren = options?.showNonenumerable
       ? (() => {
           // Show first few values
           const values = Array.from(typedArray).slice(0, 100) // Limit for performance
-          const node = createNode(values, "[[Values]]", id, visited, keyPath, dataTypePath)
+          const node = createNode(values, "[[Values]]", id, keyPath, dataTypePath)
           node.isNonEnumerable = true
           return [node]
         })()
@@ -1235,10 +1235,10 @@ export const IterableType = dataType<any>({
 
     return jsx("span", {}, children)
   },
-  node({ value, id, parentKey, createNode, visited }) {
+  node({ value, id, parentKey, createNode }) {
     const entriesArray = Array.from(value as Iterable<unknown>)
     const entriesChildren = entriesArray.map((item, index) =>
-      createNode(item, index.toString(), join(id, "[[Entries]]"), visited),
+      createNode(item, index.toString(), join(id, "[[Entries]]")),
     )
     const entriesNode: JsonNode = {
       id: join(id, "[[Entries]]"),
@@ -1251,7 +1251,7 @@ export const IterableType = dataType<any>({
 
     // Try to get size/length property
     const sizeValue = value.size ?? value.length ?? entriesArray.length
-    const sizeNode = createNode(sizeValue, "size", id, visited)
+    const sizeNode = createNode(sizeValue, "size", id)
 
     return {
       id,
@@ -1279,19 +1279,19 @@ export const ClassType = dataType<any>({
   previewElement(node, opts) {
     return ObjectType.previewElement(node, opts)
   },
-  node({ value, id, parentKey, createNode, visited, keyPath, dataTypePath, options }) {
+  node({ value, id, parentKey, createNode, keyPath, dataTypePath, options }) {
     const constructorName = value.constructor.name
     const allPropertyNames = Object.getOwnPropertyNames(value)
     const enumerableKeys = Object.keys(value)
     const nonEnumerableKeys = allPropertyNames.filter((key) => !enumerableKeys.includes(key))
 
     const enumerableChildren = enumerableKeys.map((key) =>
-      createNode(Reflect.get(value, key), key, id, visited, keyPath, dataTypePath),
+      createNode(Reflect.get(value, key), key, id, keyPath, dataTypePath),
     )
     const nonEnumerableChildren = options?.showNonenumerable
       ? nonEnumerableKeys.map((key) => {
           const descriptor = Object.getOwnPropertyDescriptor(value, key)
-          const node = createNode(getProp(value, key), `[[${key}]]`, id, visited)
+          const node = createNode(getProp(value, key), `[[${key}]]`, id)
           node.isNonEnumerable = true
           node.propertyDescriptor = descriptor
           return node
@@ -1346,19 +1346,19 @@ export const ObjectType = dataType<object>({
 
     return jsx("span", {}, children)
   },
-  node({ value, id, parentKey, createNode, visited, keyPath, dataTypePath, options }) {
+  node({ value, id, parentKey, createNode, keyPath, dataTypePath, options }) {
     const allPropertyNames = Object.getOwnPropertyNames(value)
 
     const enumerableKeys = Object.keys(value)
     const nonEnumerableKeys = allPropertyNames.filter((key) => !enumerableKeys.includes(key))
 
     const enumerableChildren = enumerableKeys.map((key) =>
-      createNode(getProp(value, key), key, id, visited, keyPath, dataTypePath),
+      createNode(getProp(value, key), key, id, keyPath, dataTypePath),
     )
     const nonEnumerableChildren = options?.showNonenumerable
       ? nonEnumerableKeys.map((key) => {
           const descriptor = Object.getOwnPropertyDescriptor(value, key)
-          const node = createNode(getProp(value, key), `[[${key}]]`, id, visited, keyPath, dataTypePath)
+          const node = createNode(getProp(value, key), `[[${key}]]`, id, keyPath, dataTypePath)
           node.isNonEnumerable = true
           node.propertyDescriptor = descriptor
           return node

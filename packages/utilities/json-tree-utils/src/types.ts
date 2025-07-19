@@ -109,7 +109,6 @@ export interface JsonDataTypeOptions<T = unknown> {
 export interface JsonNodeCreatorParams<T = unknown> {
   value: T
   id: string
-  visited: WeakSet<WeakKey>
   parentKey: string
   keyPath: Array<string | number>
   dataTypePath: string
@@ -118,7 +117,6 @@ export interface JsonNodeCreatorParams<T = unknown> {
     value: unknown,
     key: string,
     id?: string,
-    visited?: WeakSet<WeakKey>,
     keyPath?: Array<string | number>,
     dataTypePath?: string,
   ): JsonNode

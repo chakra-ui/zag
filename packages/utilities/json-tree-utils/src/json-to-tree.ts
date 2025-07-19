@@ -43,8 +43,7 @@ export const jsonToTree = (data: unknown, props: JsonToTreeOptions = {}): JsonNo
     value: data,
     id,
     parentKey,
-    visited,
-    createNode: (value, key, id, visited, keyPath, dataTypePath) =>
+    createNode: (value, key, id, keyPath, dataTypePath) =>
       jsonToTree(value, { parentKey: key, parentId: id, visited, keyPath, dataTypePath, options }),
     keyPath: currentKeyPath,
     dataTypePath: currentDataTypePath,
