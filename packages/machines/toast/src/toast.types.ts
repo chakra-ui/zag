@@ -360,7 +360,7 @@ export interface PromiseOptions<V, O = any> {
   loading: Omit<Options<O>, "type">
   success?: MaybeFunction<Omit<Options<O>, "type">, V> | undefined
   error?: MaybeFunction<Omit<Options<O>, "type">, unknown> | undefined
-  finally?: (VoidFunction | Promise<void>) | undefined
+  finally?: (() => void | Promise<void>) | undefined
 }
 
 export interface GroupProps {
