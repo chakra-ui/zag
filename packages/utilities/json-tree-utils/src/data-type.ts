@@ -1,3 +1,4 @@
+import { getPreviewOptions } from "./options"
 import type {
   JsonDataTypeOptions,
   JsonNode,
@@ -5,6 +6,7 @@ import type {
   JsonNodeText,
   JsonNodeType,
   JsonNodePreviewOptions,
+  JsonNodeHastElement,
 } from "./types"
 
 ///////////////////////////////////////////////////////////////////////////////////////////
@@ -1021,7 +1023,7 @@ export const ArrayType = dataType<Array<unknown>>({
 
     return jsx("span", {}, children)
   },
-  node({ value, id, parentKey, createNode, visited, keyPath, dataTypePath }) {
+  node({ value, id, parentKey, createNode, visited, keyPath, dataTypePath, options }) {
     // Handle sparse arrays by showing only slots with actual values
     // This prevents crashes when arrays have holes (e.g., let arr = []; arr[50] = "value")
     const arrayChildren: JsonNode[] = []
@@ -1033,9 +1035,46 @@ export const ArrayType = dataType<Array<unknown>>({
       .map(Number)
       .sort((a, b) => a - b) // Sort numerically
 
-    // Create nodes only for indices that have values
-    for (const index of definedIndices) {
-      arrayChildren.push(createNode(value[index], index.toString(), id, visited))
+    // Check if we should group the array items
+    const chunkSize = options?.groupArraysAfterLength
+    const shouldGroup = chunkSize && definedIndices.length > chunkSize
+
+    if (shouldGroup) {
+      // Group array items into chunks
+      const chunks: number[][] = []
+
+      for (let i = 0; i < definedIndices.length; i += chunkSize) {
+        chunks.push(definedIndices.slice(i, i + chunkSize))
+      }
+
+      // Create grouped nodes
+      for (let chunkIndex = 0; chunkIndex < chunks.length; chunkIndex++) {
+        const chunk = chunks[chunkIndex]
+        const startIndex = chunk[0]
+        const endIndex = chunk[chunk.length - 1]
+        const groupKey = `[${startIndex}…${endIndex}]`
+        const groupId = `${id}/${groupKey}`
+
+        // Create children for this chunk
+        const groupChildren = chunk.map((index) => createNode(value[index], index.toString(), groupId, visited))
+
+        // Create the group node
+        const groupNode: JsonNode = {
+          id: groupId,
+          key: groupKey,
+          value: chunk.map((index) => value[index]),
+          type: "array",
+          children: groupChildren,
+          isNonEnumerable: false,
+        }
+
+        arrayChildren.push(groupNode)
+      }
+    } else {
+      // Create nodes normally for smaller arrays
+      for (const index of definedIndices) {
+        arrayChildren.push(createNode(value[index], index.toString(), id, visited))
+      }
     }
 
     // Add length property to show the true size of the array (including sparse slots)
@@ -1420,21 +1459,8 @@ export const dataTypes: JsonDataTypeOptions<any>[] = [
 
 ///////////////////////////////////////////////////////////////////////////////////////////
 
-export const defaultPreviewOptions: JsonNodePreviewOptions = {
-  maxPreviewItems: 3,
-  collapseStringsAfterLength: 30,
-}
-
-const withDefault = (a: any, b: any) => {
-  const res = { ...a }
-  for (const key in b) {
-    if (b[key] !== undefined) res[key] = b[key]
-  }
-  return res
-}
-
-export const jsonNodeToElement = (node: JsonNode, opts: Partial<JsonNodePreviewOptions>): JsonNodeElement => {
-  const options = withDefault(defaultPreviewOptions, opts)
+export const jsonNodeToElement = (node: JsonNode, opts?: Partial<JsonNodePreviewOptions>): JsonNodeHastElement => {
+  const options = getPreviewOptions(opts)
 
   if (node.key === "stack" && typeof node.value === "string") {
     return errorStackToElement(node.value)
@@ -1459,10 +1485,11 @@ export const jsonNodeToElement = (node: JsonNode, opts: Partial<JsonNodePreviewO
 
 ///////////////////////////////////////////////////////////////////////////////////////////
 
-export const getNodeTypeDescription = (node: JsonNode, opts = defaultPreviewOptions): string => {
+export const getNodeTypeDescription = (node: JsonNode, opts?: Partial<JsonNodePreviewOptions>): string => {
+  const options = getPreviewOptions(opts)
   const dataType = dataTypes.find((dataType) => dataType.check(node.value))
   if (dataType) {
-    return typeof dataType.description === "function" ? dataType.description(node, opts) : dataType.description
+    return typeof dataType.description === "function" ? dataType.description(node, options) : dataType.description
   }
   return String(node.value)
 }

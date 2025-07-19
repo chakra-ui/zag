@@ -91,6 +91,7 @@ export interface JsonNode<T = any> {
 export interface JsonNodePreviewOptions {
   maxPreviewItems: number
   collapseStringsAfterLength: number
+  groupArraysAfterLength: number
 }
 
 export interface JsonDataTypeOptions<T = unknown> {
@@ -109,6 +110,7 @@ export interface JsonNodeCreatorParams<T = unknown> {
   parentKey: string
   keyPath: Array<string | number>
   dataTypePath: string
+  options: JsonNodePreviewOptions | undefined
   createNode(
     value: unknown,
     key: string,
@@ -119,6 +121,4 @@ export interface JsonNodeCreatorParams<T = unknown> {
   ): JsonNode
 }
 
-export interface JsonNodeCreatorFn<T = unknown> {
-  (opts: JsonNodeCreatorParams<T>): JsonNode
-}
+export type JsonNodeCreatorFn<T = unknown> = (opts: JsonNodeCreatorParams<T>) => JsonNode

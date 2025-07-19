@@ -1,16 +1,22 @@
 import { dataTypes, PrimitiveType } from "./data-type"
-import type { JsonNode } from "./types"
+import { getPreviewOptions } from "./options"
+import type { JsonNode, JsonNodePreviewOptions } from "./types"
 
 const ROOT_ID = "#"
 
-export const jsonToTree = (
-  data: unknown,
-  parentKey = "",
-  parentId = "",
-  visited = new WeakSet(),
-  keyPath: (string | number)[] = [],
-  dataTypePath = "",
-): JsonNode => {
+export interface JsonToTreeOptions {
+  parentKey?: string | undefined
+  parentId?: string | undefined
+  visited?: WeakSet<WeakKey> | undefined
+  keyPath?: (string | number)[] | undefined
+  dataTypePath?: string | undefined
+  options?: JsonNodePreviewOptions | undefined
+}
+
+export const jsonToTree = (data: unknown, props: JsonToTreeOptions = {}): JsonNode => {
+  const { parentKey = "", parentId = "", visited = new WeakSet(), keyPath = [], dataTypePath = "" } = props
+  const options = getPreviewOptions(props.options)
+
   const id = parentId ? `${parentId}/${parentKey}` : parentKey || ROOT_ID
 
   // Build the full path from root - only add parentKey if it's not empty and not 'root'
@@ -38,8 +44,10 @@ export const jsonToTree = (
     id,
     parentKey,
     visited,
-    createNode: jsonToTree,
+    createNode: (value, key, id, visited, keyPath, dataTypePath) =>
+      jsonToTree(value, { parentKey: key, parentId: id, visited, keyPath, dataTypePath, options }),
     keyPath: currentKeyPath,
     dataTypePath: currentDataTypePath,
+    options,
   })
 }

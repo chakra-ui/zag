@@ -1,5 +1,6 @@
 import { jsonToTree } from "./json-to-tree"
-import type { JsonNode } from "./types"
+import { getPreviewOptions } from "./options"
+import type { JsonNode, JsonNodePreviewOptions } from "./types"
 
 const regexReturnCharacters = /\r/g
 
@@ -19,12 +20,21 @@ export function nodeToString(node: JsonNode) {
   return node.key || "root"
 }
 
-export function getRootNode(data: unknown): JsonNode {
+export function getRootNode(data: unknown, opts?: Partial<JsonNodePreviewOptions>): JsonNode {
   return {
     id: "#",
     key: "",
     value: "",
     type: "object",
-    children: [jsonToTree(data, "", "#", new WeakSet(), [], "")],
+    children: [
+      jsonToTree(data, {
+        parentKey: "",
+        parentId: "#",
+        visited: new WeakSet(),
+        keyPath: [],
+        dataTypePath: "",
+        options: getPreviewOptions(opts),
+      }),
+    ],
   }
 }
