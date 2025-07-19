@@ -11,16 +11,16 @@
       },
       "setValue": {
         "type": "(value: string[]) => void",
-        "description": "Sets the value of the accordion."
+        "description": "Sets the value of the accordion"
       },
       "getItemState": {
         "type": "(props: ItemProps) => ItemState",
-        "description": "Gets the state of an accordion item."
+        "description": "Returns the state of an accordion item."
       }
     },
     "context": {
       "ids": {
-        "type": "Partial<{ root: string; item(value: string): string; itemContent(value: string): string; itemTrigger(value: string): string; }>",
+        "type": "Partial<{ root: string; item: (value: string) => string; itemContent: (value: string) => string; itemTrigger: (value: string) => string; }>",
         "description": "The ids of the elements in the accordion. Useful for composition."
       },
       "multiple": {
@@ -177,15 +177,15 @@
         "description": "The error instance returned by the last fetch."
       },
       "abort": {
-        "type": "() => void",
+        "type": "VoidFunction",
         "description": "Function to abort the current fetch."
       },
       "reload": {
-        "type": "() => void",
+        "type": "VoidFunction",
         "description": "Function to reload the list"
       },
       "loadMore": {
-        "type": "() => void",
+        "type": "VoidFunction",
         "description": "Function to load more items"
       },
       "sort": {
@@ -247,11 +247,11 @@
         "description": "Function to set new src."
       },
       "setLoaded": {
-        "type": "() => void",
+        "type": "VoidFunction",
         "description": "Function to set loaded state."
       },
       "setError": {
-        "type": "() => void",
+        "type": "VoidFunction",
         "description": "Function to set error state."
       }
     },
@@ -326,11 +326,11 @@
         "description": "Returns the current scroll progress as a percentage"
       },
       "play": {
-        "type": "() => void",
+        "type": "VoidFunction",
         "description": "Function to start/resume autoplay"
       },
       "pause": {
-        "type": "() => void",
+        "type": "VoidFunction",
         "description": "Function to pause autoplay"
       },
       "isInView": {
@@ -338,13 +338,13 @@
         "description": "Whether the item is in view"
       },
       "refresh": {
-        "type": "() => void",
+        "type": "VoidFunction",
         "description": "Function to re-compute the snap points\nand clamp the page"
       }
     },
     "context": {
       "ids": {
-        "type": "Partial<{ root: string; item(index: number): string; itemGroup: string; nextTrigger: string; prevTrigger: string; indicatorGroup: string; indicator(index: number): string; }>",
+        "type": "Partial<{ root: string; item: (index: number) => string; itemGroup: string; nextTrigger: string; prevTrigger: string; indicatorGroup: string; indicator: (index: number) => string; }>",
         "description": "The ids of the elements in the carousel. Useful for composition."
       },
       "translations": {
@@ -467,7 +467,7 @@
         "description": "Function to set the checked state of the checkbox"
       },
       "toggleChecked": {
-        "type": "() => void",
+        "type": "VoidFunction",
         "description": "Function to toggle the checked state of the checkbox"
       }
     },
@@ -547,7 +547,7 @@
         "description": "Set the value to be copied to the clipboard"
       },
       "copy": {
-        "type": "() => void",
+        "type": "VoidFunction",
         "description": "Copy the value to the clipboard"
       }
     },
@@ -606,7 +606,7 @@
         "description": "Function to open or close the collapsible."
       },
       "measureSize": {
-        "type": "() => void",
+        "type": "VoidFunction",
         "description": "Function to measure the size of the content."
       }
     },
@@ -660,6 +660,10 @@
         "type": "boolean",
         "description": "Whether the color picker is open"
       },
+      "inline": {
+        "type": "boolean",
+        "description": "Whether the color picker is rendered inline"
+      },
       "value": {
         "type": "Color",
         "description": "The current color value (as a string)"
@@ -707,7 +711,7 @@
     },
     "context": {
       "ids": {
-        "type": "Partial<{ root: string; control: string; trigger: string; label: string; input: string; hiddenInput: string; content: string; area: string; areaGradient: string; positioner: string; formatSelect: string; areaThumb: string; channelInput(id: string): string; channelSliderTrack(id: ColorChannel): string; }>",
+        "type": "Partial<{ root: string; control: string; trigger: string; label: string; input: string; hiddenInput: string; content: string; area: string; areaGradient: string; positioner: string; formatSelect: string; areaThumb: string; channelInput: (id: string) => string; channelSliderTrack: (id: ColorChannel) => string; channelSliderThumb: (id: ColorChannel) => string; }>",
         "description": "The ids of the elements in the color picker. Useful for composition."
       },
       "value": {
@@ -790,6 +794,10 @@
         "description": "Whether to auto focus the color picker when it is opened",
         "defaultValue": "true"
       },
+      "inline": {
+        "type": "boolean",
+        "description": "Whether to render the color picker inline"
+      },
       "id": {
         "type": "string",
         "description": "The unique identifier of the machine."
@@ -843,8 +851,12 @@
         "type": "(value: string) => void",
         "description": "The value of the combobox input"
       },
+      "clearHighlightValue": {
+        "type": "VoidFunction",
+        "description": "Function to clear the highlighted value"
+      },
       "syncSelectedItems": {
-        "type": "() => void",
+        "type": "VoidFunction",
         "description": "Function to sync the selected items with the value.\nUseful when `value` is updated from async sources."
       },
       "selectedItems": {
@@ -876,11 +888,11 @@
         "description": "Function to clear the value of the combobox"
       },
       "focus": {
-        "type": "() => void",
+        "type": "VoidFunction",
         "description": "Function to focus on the combobox input"
       },
       "setInputValue": {
-        "type": "(value: string) => void",
+        "type": "(value: string, reason?: InputValueChangeReason) => void",
         "description": "Function to set the input value of the combobox"
       },
       "getItemState": {
@@ -888,7 +900,7 @@
         "description": "Returns the state of a combobox item"
       },
       "setOpen": {
-        "type": "(open: boolean) => void",
+        "type": "(open: boolean, reason?: OpenChangeReason) => void",
         "description": "Function to open or close the combobox"
       },
       "collection": {
@@ -918,7 +930,7 @@
         "description": "The initial open state of the combobox when rendered.\nUse when you don't need to control the open state of the combobox."
       },
       "ids": {
-        "type": "Partial<{ root: string; label: string; control: string; input: string; content: string; trigger: string; clearTrigger: string; item(id: string, index?: number): string; positioner: string; itemGroup(id: string | number): string; itemGroupLabel(id: string | number): string; }>",
+        "type": "Partial<{ root: string; label: string; control: string; input: string; content: string; trigger: string; clearTrigger: string; item: (id: string, index?: number) => string; positioner: string; itemGroup: (id: string | number) => string; itemGroupLabel: (id: string | number) => string; }>",
         "description": "The ids of the elements in the combobox. Useful for composition."
       },
       "inputValue": {
@@ -1108,6 +1120,10 @@
         "type": "boolean",
         "description": "Whether the date picker is open"
       },
+      "inline": {
+        "type": "boolean",
+        "description": "Whether the date picker is rendered inline"
+      },
       "view": {
         "type": "DateView",
         "description": "The current view of the date picker"
@@ -1173,19 +1189,19 @@
         "description": "The focused date as a string."
       },
       "selectToday": {
-        "type": "() => void",
+        "type": "VoidFunction",
         "description": "Sets the selected date to today."
       },
       "setValue": {
-        "type": "(values: CalendarDate[]) => void",
+        "type": "(values: DateValue[]) => void",
         "description": "Sets the selected date to the given date."
       },
       "setFocusedValue": {
-        "type": "(value: CalendarDate) => void",
+        "type": "(value: DateValue) => void",
         "description": "Sets the focused date to the given date."
       },
       "clearValue": {
-        "type": "() => void",
+        "type": "VoidFunction",
         "description": "Clears the selected date(s)."
       },
       "setOpen": {
@@ -1221,7 +1237,7 @@
         "description": "Returns the months of the year based on the columns.\nRepresented as an array of arrays of months."
       },
       "format": {
-        "type": "(value: CalendarDate, opts?: Intl.DateTimeFormatOptions) => string",
+        "type": "(value: DateValue, opts?: Intl.DateTimeFormatOptions) => string",
         "description": "Formats the given date value based on the provided options."
       },
       "setView": {
@@ -1229,11 +1245,11 @@
         "description": "Sets the view of the date picker."
       },
       "goToNext": {
-        "type": "() => void",
+        "type": "VoidFunction",
         "description": "Goes to the next month/year/decade."
       },
       "goToPrev": {
-        "type": "() => void",
+        "type": "VoidFunction",
         "description": "Goes to the previous month/year/decade."
       },
       "getDayTableCellState": {
@@ -1260,7 +1276,7 @@
         "description": "The localized messages to use."
       },
       "ids": {
-        "type": "Partial<{ root: string; label(index: number): string; table(id: string): string; tableHeader(id: string): string; tableBody(id: string): string; tableRow(id: string): string; content: string; cellTrigger(id: string): string; prevTrigger(view: DateView): string; clearTrigger: string; control: string; input(index: number): string; trigger: string; monthSelect: string; yearSelect: string; positioner: string; }>",
+        "type": "Partial<{ root: string; label: (index: number) => string; table: (id: string) => string; tableHeader: (id: string) => string; tableBody: (id: string) => string; tableRow: (id: string) => string; content: string; cellTrigger: (id: string) => string; prevTrigger: (view: DateView) => string; nextTrigger: (view: DateView) => string; viewTrigger: (view: DateView) => string; clearTrigger: string; control: string; input: (index: number) => string; trigger: string; monthSelect: string; yearSelect: string; positioner: string; }>",
         "description": "The ids of the elements in the date picker. Useful for composition."
       },
       "name": {
@@ -1393,6 +1409,10 @@
       "defaultOpen": {
         "type": "boolean",
         "description": "The initial open state of the date picker when rendered.\nUse when you don't need to control the open state of the date picker."
+      },
+      "inline": {
+        "type": "boolean",
+        "description": "Whether to render the date picker inline"
       },
       "dir": {
         "type": "\"ltr\" | \"rtl\"",
@@ -1542,19 +1562,19 @@
         "description": "Function to set the value of the editable"
       },
       "clearValue": {
-        "type": "() => void",
+        "type": "VoidFunction",
         "description": "Function to clear the value of the editable"
       },
       "edit": {
-        "type": "() => void",
+        "type": "VoidFunction",
         "description": "Function to enter edit mode"
       },
       "cancel": {
-        "type": "() => void",
+        "type": "VoidFunction",
         "description": "Function to exit edit mode, and discard any changes"
       },
       "submit": {
-        "type": "() => void",
+        "type": "VoidFunction",
         "description": "Function to exit edit mode, and submit any changes"
       }
     },
@@ -1696,7 +1716,7 @@
         "description": "Whether the file input is disabled"
       },
       "openFilePicker": {
-        "type": "() => void",
+        "type": "VoidFunction",
         "description": "Function to open the file dialog"
       },
       "deleteFile": {
@@ -1713,27 +1733,27 @@
       },
       "setFiles": {
         "type": "(files: File[]) => void",
-        "description": "Function to set the value"
+        "description": "Sets the accepted files"
       },
       "clearFiles": {
-        "type": "() => void",
-        "description": "Function to clear the value"
+        "type": "VoidFunction",
+        "description": "Clears the accepted files"
       },
       "clearRejectedFiles": {
-        "type": "() => void",
-        "description": "Function to clear the rejected files"
+        "type": "VoidFunction",
+        "description": "Clears the rejected files"
       },
       "getFileSize": {
         "type": "(file: File) => string",
-        "description": "Function to format the file size (e.g. 1.2MB)"
+        "description": "Returns the formatted file size (e.g. 1.2MB)"
       },
       "createFileUrl": {
         "type": "(file: File, cb: (url: string) => void) => VoidFunction",
-        "description": "Function to get the preview url of a file.\nReturns a function to revoke the url."
+        "description": "Returns the preview url of a file.\nReturns a function to revoke the url."
       },
       "setClipboardFiles": {
         "type": "(dt: DataTransfer) => boolean",
-        "description": "Function to set the clipboard files.\nReturns `true` if the clipboard data contains files, `false` otherwise."
+        "description": "Sets the clipboard files\nReturns `true` if the clipboard data contains files, `false` otherwise."
       }
     },
     "context": {
@@ -1742,7 +1762,7 @@
         "description": "The name of the underlying file input"
       },
       "ids": {
-        "type": "Partial<{ root: string; dropzone: string; hiddenInput: string; trigger: string; label: string; item(id: string): string; itemName(id: string): string; itemSizeText(id: string): string; itemPreview(id: string): string; }>",
+        "type": "Partial<{ root: string; dropzone: string; hiddenInput: string; trigger: string; label: string; item: (id: string) => string; itemName: (id: string) => string; itemSizeText: (id: string) => string; itemPreview: (id: string) => string; }>",
         "description": "The ids of the elements. Useful for composition."
       },
       "translations": {
@@ -1873,15 +1893,15 @@
         "description": "Function to set the size of the panel"
       },
       "minimize": {
-        "type": "() => void",
+        "type": "VoidFunction",
         "description": "Function to minimize the panel"
       },
       "maximize": {
-        "type": "() => void",
+        "type": "VoidFunction",
         "description": "Function to maximize the panel"
       },
       "restore": {
-        "type": "() => void",
+        "type": "VoidFunction",
         "description": "Function to restore the panel before it was minimized or maximized"
       },
       "resizable": {
@@ -2115,7 +2135,7 @@
         "description": "Function to highlight a value"
       },
       "clearHighlightedValue": {
-        "type": "() => void",
+        "type": "VoidFunction",
         "description": "Function to clear the highlighted value"
       },
       "selectedItems": {
@@ -2139,7 +2159,7 @@
         "description": "Function to select a value"
       },
       "selectAll": {
-        "type": "() => void",
+        "type": "VoidFunction",
         "description": "Function to select all values.\n\n**Note**: This should only be called when the selectionMode is `multiple` or `extended`.\nOtherwise, an exception will be thrown."
       },
       "setValue": {
@@ -2169,7 +2189,7 @@
         "description": "The item collection"
       },
       "ids": {
-        "type": "Partial<{ root: string; content: string; label: string; item(id: string | number): string; itemGroup(id: string | number): string; itemGroupLabel(id: string | number): string; }>",
+        "type": "Partial<{ root: string; content: string; label: string; item: (id: string | number) => string; itemGroup: (id: string | number) => string; itemGroupLabel: (id: string | number) => string; }>",
         "description": "The ids of the elements in the listbox. Useful for composition."
       },
       "disabled": {
@@ -2300,7 +2320,7 @@
     },
     "context": {
       "ids": {
-        "type": "Partial<{ trigger: string; contextTrigger: string; content: string; groupLabel(id: string): string; group(id: string): string; positioner: string; arrow: string; }>",
+        "type": "Partial<{ trigger: string; contextTrigger: string; content: string; groupLabel: (id: string) => string; group: (id: string) => string; positioner: string; arrow: string; }>",
         "description": "The ids of the elements in the menu. Useful for composition."
       },
       "defaultHighlightedValue": {
@@ -2507,27 +2527,27 @@
         "description": "Function to set the value of the input."
       },
       "clearValue": {
-        "type": "() => void",
+        "type": "VoidFunction",
         "description": "Function to clear the value of the input."
       },
       "increment": {
-        "type": "() => void",
+        "type": "VoidFunction",
         "description": "Function to increment the value of the input by the step."
       },
       "decrement": {
-        "type": "() => void",
+        "type": "VoidFunction",
         "description": "Function to decrement the value of the input by the step."
       },
       "setToMax": {
-        "type": "() => void",
+        "type": "VoidFunction",
         "description": "Function to set the value of the input to the max."
       },
       "setToMin": {
-        "type": "() => void",
+        "type": "VoidFunction",
         "description": "Function to set the value of the input to the min."
       },
       "focus": {
-        "type": "() => void",
+        "type": "VoidFunction",
         "description": "Function to focus the input."
       }
     },
@@ -2704,25 +2724,25 @@
         "description": "Function to set the current page."
       },
       "goToNextPage": {
-        "type": "() => void",
+        "type": "VoidFunction",
         "description": "Function to go to the next page."
       },
       "goToPrevPage": {
-        "type": "() => void",
+        "type": "VoidFunction",
         "description": "Function to go to the previous page."
       },
       "goToFirstPage": {
-        "type": "() => void",
+        "type": "VoidFunction",
         "description": "Function to go to the first page."
       },
       "goToLastPage": {
-        "type": "() => void",
+        "type": "VoidFunction",
         "description": "Function to go to the last page."
       }
     },
     "context": {
       "ids": {
-        "type": "Partial<{ root: string; ellipsis(index: number): string; prevTrigger: string; nextTrigger: string; item(page: number): string; }>",
+        "type": "Partial<{ root: string; ellipsis: (index: number) => string; prevTrigger: string; nextTrigger: string; item: (page: number) => string; }>",
         "description": "The ids of the elements in the accordion. Useful for composition."
       },
       "translations": {
@@ -2799,7 +2819,7 @@
         "description": "Whether the password input is invalid."
       },
       "focus": {
-        "type": "() => void",
+        "type": "VoidFunction",
         "description": "Focus the password input."
       },
       "setVisible": {
@@ -2807,7 +2827,7 @@
         "description": "Set the visibility of the password input."
       },
       "toggleVisible": {
-        "type": "() => void",
+        "type": "VoidFunction",
         "description": "Toggle the visibility of the password input."
       }
     },
@@ -2903,7 +2923,7 @@
         "description": "Function to set the value of the inputs."
       },
       "clearValue": {
-        "type": "() => void",
+        "type": "VoidFunction",
         "description": "Function to clear the value of the inputs."
       },
       "setValueAtIndex": {
@@ -2911,7 +2931,7 @@
         "description": "Function to set the value of the input at a specific index."
       },
       "focus": {
-        "type": "() => void",
+        "type": "VoidFunction",
         "description": "Function to focus the pin-input. This will focus the first input."
       }
     },
@@ -2929,7 +2949,7 @@
         "description": "The regular expression that the user-entered input value is checked against."
       },
       "ids": {
-        "type": "Partial<{ root: string; hiddenInput: string; label: string; control: string; input(id: string): string; }>",
+        "type": "Partial<{ root: string; hiddenInput: string; label: string; control: string; input: (id: string) => string; }>",
         "description": "The ids of the elements in the pin input. Useful for composition."
       },
       "disabled": {
@@ -3140,7 +3160,7 @@
         "description": "Function to set the node (as early as possible)"
       },
       "unmount": {
-        "type": "() => void",
+        "type": "VoidFunction",
         "description": "Function to programmatically unmount the node"
       }
     },
@@ -3174,11 +3194,11 @@
         "description": "Sets the current value of the progress bar."
       },
       "setToMax": {
-        "type": "() => void",
+        "type": "VoidFunction",
         "description": "Sets the current value of the progress bar to the max value."
       },
       "setToMin": {
-        "type": "() => void",
+        "type": "VoidFunction",
         "description": "Sets the current value of the progress bar to the min value."
       },
       "percent": {
@@ -3330,11 +3350,11 @@
         "description": "Function to set the value of the radio group"
       },
       "clearValue": {
-        "type": "() => void",
+        "type": "VoidFunction",
         "description": "Function to clear the value of the radio group"
       },
       "focus": {
-        "type": "() => void",
+        "type": "VoidFunction",
         "description": "Function to focus the radio group"
       },
       "getItemState": {
@@ -3344,7 +3364,7 @@
     },
     "context": {
       "ids": {
-        "type": "Partial<{ root: string; label: string; indicator: string; item(value: string): string; itemLabel(value: string): string; itemControl(value: string): string; itemHiddenInput(value: string): string; }>",
+        "type": "Partial<{ root: string; label: string; indicator: string; item: (value: string) => string; itemLabel: (value: string) => string; itemControl: (value: string) => string; itemHiddenInput: (value: string) => string; }>",
         "description": "The ids of the elements in the radio. Useful for composition."
       },
       "value": {
@@ -3401,7 +3421,7 @@
         "description": "Sets the value of the rating group"
       },
       "clearValue": {
-        "type": "() => void",
+        "type": "VoidFunction",
         "description": "Clears the value of the rating group"
       },
       "hovering": {
@@ -3431,7 +3451,7 @@
     },
     "context": {
       "ids": {
-        "type": "Partial<{ root: string; label: string; hiddenInput: string; control: string; item(id: string): string; }>",
+        "type": "Partial<{ root: string; label: string; hiddenInput: string; control: string; item: (id: string) => string; }>",
         "description": "The ids of the elements in the rating. Useful for composition."
       },
       "translations": {
@@ -3524,9 +3544,13 @@
         "type": "V",
         "description": "The highlighted item"
       },
-      "highlightValue": {
+      "setHighlightValue": {
         "type": "(value: string) => void",
         "description": "Function to highlight a value"
+      },
+      "clearHighlightValue": {
+        "type": "VoidFunction",
+        "description": "Function to clear the highlighted value"
       },
       "selectedItems": {
         "type": "V[]",
@@ -3549,7 +3573,7 @@
         "description": "Function to select a value"
       },
       "selectAll": {
-        "type": "() => void",
+        "type": "VoidFunction",
         "description": "Function to select all values"
       },
       "setValue": {
@@ -3561,7 +3585,7 @@
         "description": "Function to clear the value of the select.\nIf a value is provided, it will only clear that value, otherwise, it will clear all values."
       },
       "focus": {
-        "type": "() => void",
+        "type": "VoidFunction",
         "description": "Function to focus on the select input"
       },
       "getItemState": {
@@ -3595,7 +3619,7 @@
         "description": "The item collection"
       },
       "ids": {
-        "type": "Partial<{ root: string; content: string; control: string; trigger: string; clearTrigger: string; label: string; hiddenSelect: string; positioner: string; item(id: string | number): string; itemGroup(id: string | number): string; itemGroupLabel(id: string | number): string; }>",
+        "type": "Partial<{ root: string; content: string; control: string; trigger: string; clearTrigger: string; label: string; hiddenSelect: string; positioner: string; item: (id: string | number) => string; itemGroup: (id: string | number) => string; itemGroupLabel: (id: string | number) => string; }>",
         "description": "The ids of the elements in the select. Useful for composition."
       },
       "name": {
@@ -3743,7 +3767,7 @@
         "description": "Returns the data URL of the signature pad."
       },
       "clear": {
-        "type": "() => void",
+        "type": "VoidFunction",
         "description": "Clears the signature pad."
       }
     },
@@ -3859,13 +3883,13 @@
         "description": "Function to decrement the value of the slider at the given index."
       },
       "focus": {
-        "type": "() => void",
+        "type": "VoidFunction",
         "description": "Function to focus the slider. This focuses the first thumb."
       }
     },
     "context": {
       "ids": {
-        "type": "Partial<{ root: string; thumb(index: number): string; hiddenInput(index: number): string; control: string; track: string; range: string; label: string; valueText: string; marker(index: number): string; }>",
+        "type": "Partial<{ root: string; thumb: (index: number) => string; hiddenInput: (index: number) => string; control: string; track: string; range: string; label: string; valueText: string; marker: (index: number) => string; }>",
         "description": "The ids of the elements in the slider. Useful for composition."
       },
       "aria-label": {
@@ -3982,47 +4006,47 @@
       },
       "getSizes": {
         "type": "() => number[]",
-        "description": "The current sizes of the panels."
+        "description": "Returns the current sizes of the panels."
       },
       "setSizes": {
         "type": "(size: number[]) => void",
-        "description": "Set the sizes of the panels."
+        "description": "Sets the sizes of the panels."
       },
       "getItems": {
         "type": "() => SplitterItem[]",
-        "description": "Get the items of the splitter."
+        "description": "Returns the items of the splitter."
       },
       "getPanelSize": {
         "type": "(id: string) => number",
-        "description": "Get the size of a panel."
+        "description": "Returns the size of the specified panel."
       },
       "isPanelCollapsed": {
         "type": "(id: string) => boolean",
-        "description": "Whether a panel is collapsed."
+        "description": "Returns whether the specified panel is collapsed."
       },
       "isPanelExpanded": {
         "type": "(id: string) => boolean",
-        "description": "Whether a panel is expanded."
+        "description": "Returns whether the specified panel is expanded."
       },
       "collapsePanel": {
         "type": "(id: string) => void",
-        "description": "Collapse a panel."
+        "description": "Collapses the specified panel."
       },
       "expandPanel": {
         "type": "(id: string, minSize?: number) => void",
-        "description": "Expand a panel."
+        "description": "Expands the specified panel."
       },
       "resizePanel": {
         "type": "(id: string, unsafePanelSize: number) => void",
-        "description": "Resize a panel."
+        "description": "Resizes the specified panel."
       },
       "getLayout": {
         "type": "() => string",
-        "description": "Get the layout of the splitter."
+        "description": "Returns the layout of the splitter."
       },
       "resetSizes": {
-        "type": "() => void",
-        "description": "Reset the splitter to its initial state."
+        "type": "VoidFunction",
+        "description": "Resets the splitter to its initial state."
       }
     },
     "context": {
@@ -4056,7 +4080,7 @@
         "description": "Function called when the splitter resize ends."
       },
       "ids": {
-        "type": "Partial<{ root: string; resizeTrigger(id: string): string; label(id: string): string; panel(id: string | number): string; }>",
+        "type": "Partial<{ root: string; resizeTrigger: (id: string) => string; label: (id: string) => string; panel: (id: string | number) => string; }>",
         "description": "The ids of the elements in the splitter. Useful for composition."
       },
       "keyboardResizeBy": {
@@ -4121,15 +4145,15 @@
         "description": "Function to set the value of the stepper."
       },
       "goToNextStep": {
-        "type": "() => void",
+        "type": "VoidFunction",
         "description": "Function to go to the next step."
       },
       "goToPrevStep": {
-        "type": "() => void",
+        "type": "VoidFunction",
         "description": "Function to go to the previous step."
       },
       "resetStep": {
-        "type": "() => void",
+        "type": "VoidFunction",
         "description": "Function to go to reset the stepper."
       },
       "getItemState": {
@@ -4190,23 +4214,23 @@
     "api": {
       "checked": {
         "type": "boolean",
-        "description": "Whether the checkbox is checked"
+        "description": "Whether the switch is checked"
       },
       "disabled": {
         "type": "boolean",
-        "description": "Whether the checkbox is disabled"
+        "description": "Whether the switch is disabled"
       },
       "focused": {
         "type": "boolean",
-        "description": "Whether the checkbox is focused"
+        "description": "Whether the switch is focused"
       },
       "setChecked": {
         "type": "(checked: boolean) => void",
-        "description": "Function to set the checked state of the switch."
+        "description": "Sets the checked state of the switch."
       },
       "toggleChecked": {
-        "type": "() => void",
-        "description": "Function to toggle the checked state of the checkbox"
+        "type": "VoidFunction",
+        "description": "Toggles the checked state of the switch."
       }
     },
     "context": {
@@ -4289,7 +4313,7 @@
         "description": "Sets the value of the tabs."
       },
       "clearValue": {
-        "type": "() => void",
+        "type": "VoidFunction",
         "description": "Clears the value of the tabs."
       },
       "setIndicatorRect": {
@@ -4297,11 +4321,11 @@
         "description": "Sets the indicator rect to the tab with the given value"
       },
       "syncTabIndex": {
-        "type": "() => void",
+        "type": "VoidFunction",
         "description": "Synchronizes the tab index of the content element.\nUseful when rendering tabs within a select or combobox"
       },
       "focus": {
-        "type": "() => void",
+        "type": "VoidFunction",
         "description": "Set focus on the selected tab trigger"
       },
       "selectNext": {
@@ -4431,11 +4455,11 @@
         "description": "Function to set the value of the tags entry input."
       },
       "clearInputValue": {
-        "type": "() => void",
+        "type": "VoidFunction",
         "description": "Function to clear the value of the tags entry input."
       },
       "focus": {
-        "type": "() => void",
+        "type": "VoidFunction",
         "description": "Function to focus the tags entry input."
       },
       "getItemState": {
@@ -4445,7 +4469,7 @@
     },
     "context": {
       "ids": {
-        "type": "Partial<{ root: string; input: string; hiddenInput: string; clearBtn: string; label: string; control: string; item(opts: ItemProps): string; }>",
+        "type": "Partial<{ root: string; input: string; hiddenInput: string; clearBtn: string; label: string; control: string; item: (opts: ItemProps) => string; itemDeleteTrigger: (opts: ItemProps) => string; itemInput: (opts: ItemProps) => string; }>",
         "description": "The ids of the elements in the tags input. Useful for composition."
       },
       "translations": {
@@ -4606,7 +4630,7 @@
         "description": "Function to open the time picker"
       },
       "clearValue": {
-        "type": "() => void",
+        "type": "VoidFunction",
         "description": "Function to clear the selected time"
       },
       "setValue": {
@@ -4614,7 +4638,7 @@
         "description": "Function to set the selected time"
       },
       "setUnitValue": {
-        "type": "{ (unit: \"period\", value: TimeUnit, value: number): void; }",
+        "type": "(unit: TimeUnit, value: number) => void",
         "description": "Function to set the focused time unit"
       },
       "getHours": {
@@ -4652,7 +4676,7 @@
         "description": "Whether the timepicker open state is controlled by the user"
       },
       "ids": {
-        "type": "Partial<{ trigger: string; input: string; positioner: string; content: string; clearTrigger: string; control: string; column(unit: TimeUnit): string; }>",
+        "type": "Partial<{ trigger: string; input: string; positioner: string; content: string; clearTrigger: string; control: string; column: (unit: TimeUnit) => string; }>",
         "description": "The ids of the elements in the date picker. Useful for composition."
       },
       "name": {
@@ -4741,23 +4765,23 @@
         "description": "The formatted time parts of the timer count."
       },
       "start": {
-        "type": "() => void",
+        "type": "VoidFunction",
         "description": "Function to start the timer."
       },
       "pause": {
-        "type": "() => void",
+        "type": "VoidFunction",
         "description": "Function to pause the timer."
       },
       "resume": {
-        "type": "() => void",
+        "type": "VoidFunction",
         "description": "Function to resume the timer."
       },
       "reset": {
-        "type": "() => void",
+        "type": "VoidFunction",
         "description": "Function to reset the timer."
       },
       "restart": {
-        "type": "() => void",
+        "type": "VoidFunction",
         "description": "Function to restart the timer."
       },
       "progressPercent": {
@@ -4940,8 +4964,8 @@
         "description": "The value of the toggle group."
       },
       "setValue": {
-        "type": "(values: string[]) => void",
-        "description": "Function to set the value of the toggle group."
+        "type": "(value: string[]) => void",
+        "description": "Sets the value of the toggle group."
       },
       "getItemState": {
         "type": "(props: ItemProps) => ItemState",
@@ -4950,7 +4974,7 @@
     },
     "context": {
       "ids": {
-        "type": "Partial<{ root: string; item(value: string): string; }>",
+        "type": "Partial<{ root: string; item: (value: string) => string; }>",
         "description": "The ids of the elements in the toggle. Useful for composition."
       },
       "disabled": {
@@ -5169,11 +5193,11 @@
         "description": "Check if a step is visible"
       },
       "next": {
-        "type": "() => void",
+        "type": "VoidFunction",
         "description": "Move to the next step"
       },
       "prev": {
-        "type": "() => void",
+        "type": "VoidFunction",
         "description": "Move to the previous step"
       },
       "getProgressText": {
@@ -5279,19 +5303,19 @@
       },
       "expandedValue": {
         "type": "string[]",
-        "description": "The value of the expanded nodes"
+        "description": "The value of the expanded nodes."
       },
       "setExpandedValue": {
         "type": "(value: string[]) => void",
-        "description": "Function to set the expanded value"
+        "description": "Sets the expanded value"
       },
       "selectedValue": {
         "type": "string[]",
-        "description": "The value of the selected nodes"
+        "description": "The value of the selected nodes."
       },
       "setSelectedValue": {
         "type": "(value: string[]) => void",
-        "description": "Function to set the selected value"
+        "description": "Sets the selected value"
       },
       "checkedValue": {
         "type": "string[]",
@@ -5299,23 +5323,23 @@
       },
       "toggleChecked": {
         "type": "(value: string, isBranch: boolean) => void",
-        "description": "Function to toggle the checked value of a node"
+        "description": "Toggles the checked value of a node"
       },
       "setChecked": {
         "type": "(value: string[]) => void",
-        "description": "Function to set the checked value of a node"
+        "description": "Sets the checked value of a node"
       },
       "clearChecked": {
-        "type": "() => void",
-        "description": "Function to clear the checked value of a node"
+        "type": "VoidFunction",
+        "description": "Clears the checked value of a node"
       },
       "getCheckedMap": {
         "type": "() => CheckedValueMap",
-        "description": "Function to get the checked details of branch and leaf nodes"
+        "description": "Returns the checked details of branch and leaf nodes"
       },
       "getVisibleNodes": {
         "type": "() => V[]",
-        "description": "Function to get the visible nodes"
+        "description": "Returns the visible nodes as a flat array of nodes and their index path"
       },
       "expand": {
         "type": "(value?: string[]) => void",
@@ -5352,7 +5376,7 @@
         "description": "The tree collection data"
       },
       "ids": {
-        "type": "Partial<{ root: string; tree: string; label: string; node(value: string): string; }>",
+        "type": "Partial<{ root: string; tree: string; label: string; node: (value: string) => string; }>",
         "description": "The ids of the tree elements. Useful for composition."
       },
       "expandedValue": {
@@ -5393,15 +5417,15 @@
         "defaultValue": "\"single\""
       },
       "onExpandedChange": {
-        "type": "(details: ExpandedChangeDetails) => void",
+        "type": "(details: ExpandedChangeDetails<T>) => void",
         "description": "Called when the tree is opened or closed"
       },
       "onSelectionChange": {
-        "type": "(details: SelectionChangeDetails) => void",
+        "type": "(details: SelectionChangeDetails<T>) => void",
         "description": "Called when the selection changes"
       },
       "onFocusChange": {
-        "type": "(details: FocusChangeDetails) => void",
+        "type": "(details: FocusChangeDetails<T>) => void",
         "description": "Called when the focused node changes"
       },
       "onCheckedChange": {
