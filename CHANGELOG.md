@@ -4,6 +4,22 @@ All notable changes to this project will be documented in this file.
 
 > For v0.x changelog, see the [v0 branch](https://github.com/chakra-ui/zag/blob/v0/CHANGELOG.md)
 
+## [1.18.5](./#1.18.5) - 2025-07-19
+
+### Added
+
+- **JSON Tree Utils**: Add support for `groupArraysAfterLength` to truncate large arrays into chunks (reducing the
+  number of DOM nodes rendered).
+
+### Fixed
+
+- **General**: Fix issue destructuring returned api could throw an ESLint `unbound-method` warning
+
+- **Tree View**: Fix issue where `onExpandedChange`, `onSelectionChange` and `onFocusChange` doesn't infer the tree node
+  types
+
+- **Popper**: Expose floatingElement to the `updatePosition` function
+
 ## [1.18.4](./#1.18.4) - 2025-07-18
 
 ### Fixed
