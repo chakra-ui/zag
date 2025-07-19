@@ -96,7 +96,7 @@ export interface JsonNodePreviewOptions {
 
 export interface JsonDataTypeOptions<T = any> {
   type: JsonNodeType | ((value: T) => JsonNodeType)
-  check: (value: unknown) => boolean
+  check: (value: any) => boolean
   node: JsonNodeCreatorFn<T>
   description: string | ((node: JsonNode<T>, opts: JsonNodePreviewOptions) => string)
   previewText?: (node: JsonNode<T>, opts: JsonNodePreviewOptions) => string

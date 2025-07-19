@@ -1,5 +1,5 @@
 import { getPreviewOptions, keyPathToKey } from "./node-conversion"
-import { getProp, hasProp } from "./shared"
+import { getProp, isObj, typeOf } from "./shared"
 import type {
   JsonDataTypeOptions,
   JsonNode,
@@ -349,25 +349,23 @@ export const UrlType = dataType<URL>({
   type: "url",
   description: "URL",
   check(value) {
-    return URL_KEYS.every((key) => hasProp(value, key))
+    return typeOf(value) === "[object URL]"
   },
-  previewElement(node) {
-    const url = node.value
-    const maxItems = 5
+  previewElement(node, opts) {
+    const url = node.value as any
+    const maxItems = opts.maxPreviewItems
+    const previewKeys = URL_KEYS.slice(0, maxItems)
+    const preview = previewKeys.map((key) => `${key}: '${url[key]}'`).join(", ")
     const hasMore = URL_KEYS.length > maxItems
     return jsx("span", {}, [
       jsx("span", { kind: "constructor" }, [txt("URL")]),
       jsx("span", { kind: "brace" }, [txt(" { ")]),
-      jsx("span", { kind: "preview" }, [
-        txt(
-          `origin: '${url.origin}', protocol: '${url.protocol}', username: '${url.username}', password: '${url.password}', host: '${url.host}'${hasMore ? ", …" : ""}`,
-        ),
-      ]),
+      jsx("span", { kind: "preview-text" }, [txt(` ${preview}${hasMore ? ", …" : ""} `)]),
       jsx("span", { kind: "brace" }, [txt(" }")]),
     ])
   },
   node({ value, keyPath, createNode }) {
-    const children = URL_KEYS.map((key) => createNode(Reflect.get(value, key), [...keyPath, key]))
+    const children = URL_KEYS.map((key) => createNode([...keyPath, key], Reflect.get(value, key)))
     return {
       value,
       keyPath,
@@ -383,7 +381,7 @@ export const URLSearchParamsType = dataType<URLSearchParams>({
   type: "urlsearchparams",
   description: "URLSearchParams",
   check(value) {
-    return value instanceof URLSearchParams
+    return typeOf(value) === "[object URLSearchParams]"
   },
   previewElement(node) {
     const params = node.value
@@ -396,13 +394,13 @@ export const URLSearchParamsType = dataType<URLSearchParams>({
     ])
   },
   node({ value, keyPath, createNode }) {
-    const entriesChildren = Array.from(value.entries()).map(([key, value]): JsonNode => {
+    const entriesChildren = Array.from(value.entries()).map(([key, value], index): JsonNode => {
       const keyStr = String(key)
       const keyNode = createNode([ENTRIES_KEY, keyStr, "key"], key)
       const valueNode = createNode([ENTRIES_KEY, keyStr, "value"], value)
 
       return {
-        keyPath: [...keyPath, ENTRIES_KEY, keyStr],
+        keyPath: [...keyPath, ENTRIES_KEY, index],
         value: { [key]: value },
         type: "object",
         children: [keyNode, valueNode],
@@ -417,11 +415,13 @@ export const URLSearchParamsType = dataType<URLSearchParams>({
       isNonEnumerable: true,
     }
 
+    const sizeNode = createNode(["size"], Array.from(value.entries()).length)
+
     return {
       value,
       keyPath,
       type: "urlsearchparams",
-      children: [entriesNode],
+      children: [entriesNode, sizeNode],
     }
   },
 })
@@ -436,7 +436,7 @@ export const BlobType = dataType<Blob>({
     return `Blob(${node.value.size})`
   },
   check(value) {
-    return value instanceof Blob
+    return typeOf(value) === "[object Blob]"
   },
   previewElement(node) {
     const blob = node.value
@@ -465,9 +465,11 @@ const FILE_KEYS = ["name", "size", "type", "lastModified", "webkitRelativePath"]
 
 export const FileType = dataType<File>({
   type: "file",
-  description: "File",
+  description(node) {
+    return `File(${node.value.size})`
+  },
   check(value) {
-    return typeof File !== "undefined" && value instanceof File
+    return typeOf(value) === "[object File]"
   },
   previewElement(node) {
     const file = node.value
@@ -744,14 +746,12 @@ export const MapType = dataType<Map<unknown, unknown>>({
     return jsx("span", {}, children)
   },
   node({ value, keyPath, createNode }) {
-    const entriesChildren = Array.from(value.entries()).map(([key, value]): JsonNode => {
+    const entriesChildren = Array.from(value.entries()).map(([key, value], index): JsonNode => {
       const keyStr = String(key)
-      const entryKeyPath = [...keyPath, ENTRIES_KEY, keyStr]
       const keyNode = createNode([ENTRIES_KEY, keyStr, "key"], key)
       const valueNode = createNode([ENTRIES_KEY, keyStr, "value"], value)
-
       return {
-        keyPath: entryKeyPath,
+        keyPath: [...keyPath, ENTRIES_KEY, index],
         value: { [keyStr]: value },
         type: "object",
         children: [keyNode, valueNode],
@@ -845,7 +845,7 @@ export const HeadersType = dataType<Headers>({
   type: "headers",
   description: "Headers",
   check(value) {
-    return typeof Headers !== "undefined" && value instanceof Headers
+    return typeOf(value) === "[object Headers]"
   },
   previewElement(node) {
     const headers = node.value
@@ -863,14 +863,12 @@ export const HeadersType = dataType<Headers>({
     ])
   },
   node({ value, keyPath, createNode }) {
-    const entriesChildren = Array.from(value.entries()).map(([key, value]): JsonNode => {
+    const entriesChildren = Array.from(value.entries()).map(([key, value], index): JsonNode => {
       const keyStr = String(key)
-      const entryKeyPath = [...keyPath, ENTRIES_KEY, keyStr]
       const keyNode = createNode([ENTRIES_KEY, keyStr, "key"], key)
       const valueNode = createNode([ENTRIES_KEY, keyStr, "value"], value)
-
       return {
-        keyPath: entryKeyPath,
+        keyPath: [...keyPath, ENTRIES_KEY, index],
         value: { [key]: value },
         type: "object",
         children: [keyNode, valueNode],
@@ -900,7 +898,7 @@ export const FormDataType = dataType<FormData>({
   type: "formdata",
   description: "FormData",
   check(value) {
-    return typeof FormData !== "undefined" && value instanceof FormData
+    return typeOf(value) === "[object FormData]"
   },
   previewElement(node) {
     const formData = node.value
@@ -909,7 +907,7 @@ export const FormDataType = dataType<FormData>({
     const preview = entriesArray
       .slice(0, 2)
       .map(([key, value]) => {
-        const valueStr = value instanceof File ? `File(${value.name})` : String(value)
+        const valueStr = FileType.check(value) ? `File(${(value as File).size})` : String(value)
         return `${key}: ${valueStr}`
       })
       .join(", ")
@@ -924,14 +922,12 @@ export const FormDataType = dataType<FormData>({
     ])
   },
   node({ value, keyPath, createNode }) {
-    const entriesChildren = Array.from(value.entries()).map(([key, value]): JsonNode => {
-      const keyStr = String(key)
-      const entryKeyPath = [...keyPath, ENTRIES_KEY, keyStr]
-      const keyNode = createNode([ENTRIES_KEY, keyStr, "key"], key)
-      const valueNode = createNode([ENTRIES_KEY, keyStr, "value"], value)
+    const entriesChildren = Array.from(value.entries()).map(([key, value], index): JsonNode => {
+      const keyNode = createNode([ENTRIES_KEY, index, "key"], key)
+      const valueNode = createNode([ENTRIES_KEY, index, "value"], value)
 
       return {
-        keyPath: entryKeyPath,
+        keyPath: [...keyPath, ENTRIES_KEY, index],
         value: { [key]: value },
         type: "object",
         children: [keyNode, valueNode],
@@ -1107,7 +1103,7 @@ export const TypedArrayType = dataType<any>({
     return `${revertTypedArrayConstructors[constructorName]}(${typedArray.length})`
   },
   check(value) {
-    return Boolean(value && typeof value === "object" && value.constructor.name in typedArrayConstructors)
+    return isObj(value) && value.constructor.name in typedArrayConstructors
   },
   previewElement(node) {
     const typedArray = node.value
@@ -1183,7 +1179,7 @@ export const IterableType = dataType<any>({
   },
   node({ value, keyPath, createNode }) {
     const entriesArray = Array.from(value as Iterable<unknown>)
-    const entriesChildren = entriesArray.map((item, index) => createNode([ENTRIES_KEY, index.toString()], item))
+    const entriesChildren = entriesArray.map((item, index) => createNode([ENTRIES_KEY, index], item))
     const entriesNode: JsonNode = {
       keyPath: [...keyPath, ENTRIES_KEY],
       value: entriesArray,

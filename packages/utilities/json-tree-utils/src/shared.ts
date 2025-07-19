@@ -23,3 +23,8 @@ export function defu<T>(a: T, b: Partial<T>): T {
   }
   return res
 }
+
+export const isObj = (v: unknown): v is Record<string, unknown> =>
+  v != null && typeof v === "object" && !Array.isArray(v)
+
+export const typeOf = (value: any): string => Object.prototype.toString.call(value)
