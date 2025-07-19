@@ -1,40 +1,59 @@
 import { jsonToTree } from "./json-to-tree"
-import { getPreviewOptions } from "./options"
+import { defu, hash } from "./shared"
 import type { JsonNode, JsonNodePreviewOptions } from "./types"
 
-const regexReturnCharacters = /\r/g
+export const ROOT_KEY = "$"
+export const PATH_SEP = "."
 
-function hash(str: string) {
-  const v = str.replace(regexReturnCharacters, "")
-  let hash = 5381
-  let i = v.length
-  while (i--) hash = ((hash << 5) - hash) ^ v.charCodeAt(i)
-  return (hash >>> 0).toString(36)
+////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+export function isRootKeyPath(keyPath: Array<string | number>): boolean {
+  return keyPath.length === 1 && keyPath[0] === ROOT_KEY
+}
+
+export function keyPathToId(keyPath: Array<string | number>): string {
+  return keyPath.join(PATH_SEP)
+}
+
+export function keyPathToKey(keyPath: Array<string | number>, opts?: { excludeRoot?: boolean }): string {
+  if (keyPath.length === 0) return ""
+  if (opts?.excludeRoot && isRootKeyPath(keyPath)) return ""
+  return String(keyPath[keyPath.length - 1])
 }
 
 export function nodeToValue(node: JsonNode) {
-  return hash(node.id)
+  return hash(keyPathToId(node.keyPath))
 }
 
 export function nodeToString(node: JsonNode) {
-  return node.key || "root"
+  return keyPathToKey(node.keyPath) || "root"
 }
 
 export function getRootNode(data: unknown, opts?: Partial<JsonNodePreviewOptions>): JsonNode {
   return {
-    id: "#",
-    key: "",
     value: "",
     type: "object",
+    keyPath: [],
     children: [
       jsonToTree(data, {
-        parentKey: "",
-        parentId: "#",
         visited: new WeakSet(),
-        keyPath: [],
-        dataTypePath: "",
+        keyPath: [ROOT_KEY],
         options: getPreviewOptions(opts),
       }),
     ],
   }
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+export const DEFAULT_PREVIEW_OPTIONS: JsonNodePreviewOptions = {
+  maxPreviewItems: 3,
+  collapseStringsAfterLength: 30,
+  groupArraysAfterLength: 100,
+  showNonenumerable: true,
+}
+
+export const getPreviewOptions = (opts?: Partial<JsonNodePreviewOptions> | undefined): JsonNodePreviewOptions => {
+  if (!opts) return DEFAULT_PREVIEW_OPTIONS
+  return defu(DEFAULT_PREVIEW_OPTIONS, opts)
 }

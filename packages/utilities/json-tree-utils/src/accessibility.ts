@@ -1,4 +1,5 @@
 import { getNodeTypeDescription } from "./data-type"
+import { keyPathToKey } from "./node-conversion"
 import { type JsonNode, type JsonNodePreviewOptions } from "./types"
 
 const propertyWord = (count: number) => (count === 1 ? "property" : "properties")
@@ -10,7 +11,7 @@ const isPrimitive = (node: JsonNode) => {
 export const getAccessibleDescription = (node: JsonNode, opts?: JsonNodePreviewOptions): string => {
   const typeDescription = getNodeTypeDescription(node, opts)
 
-  const key = node.key || ""
+  const key = keyPathToKey(node.keyPath, { excludeRoot: true })
   const nonEnumerablePrefix = node.isNonEnumerable ? "non-enumerable " : ""
   const format = (text: string) => {
     return [key, `${nonEnumerablePrefix}${text}`].filter(Boolean).join(": ")
@@ -20,7 +21,7 @@ export const getAccessibleDescription = (node: JsonNode, opts?: JsonNodePreviewO
   if (node.children && node.children.length > 0) {
     const childCount = node.children.length
 
-    if (node.key === "[[Entries]]") {
+    if (key === "[[Entries]]") {
       return format(`${childCount} ${propertyWord(childCount)}`)
     }
 
@@ -29,11 +30,11 @@ export const getAccessibleDescription = (node: JsonNode, opts?: JsonNodePreviewO
 
   // For leaf nodes, include the actual value for primitives
   if (isPrimitive(node)) {
-    if (node.key === "stack") {
+    if (key === "stack") {
       return format(node.value.split("\n")[1]?.trim() || "trace")
     }
 
-    if (node.key === "[[Function]]") {
+    if (key === "[[Function]]") {
       return format("function implementation")
     }
 

@@ -78,16 +78,14 @@ export interface JsonNodeText {
 export type JsonNodeHastElement = JsonNodeElement | JsonNodeText
 
 export interface JsonNode<T = any> {
-  id: string
-  key?: string | undefined
   value: T
   type: JsonNodeType
+  keyPath: JsonNodeKeyPath
   constructorName?: string | undefined
   isNonEnumerable?: boolean
   propertyDescriptor?: PropertyDescriptor | undefined
   children?: JsonNode[]
-  keyPath?: JsonNodeKeyPath | undefined
-  dataTypePath?: string | undefined
+  _value?: T
 }
 
 export interface JsonNodePreviewOptions {
@@ -97,29 +95,20 @@ export interface JsonNodePreviewOptions {
   showNonenumerable: boolean
 }
 
-export interface JsonDataTypeOptions<T = unknown> {
+export interface JsonDataTypeOptions<T = any> {
   type: JsonNodeType | ((value: T) => JsonNodeType)
-  check(value: unknown): boolean
+  check: (value: unknown) => boolean
   node: JsonNodeCreatorFn<T>
   description: string | ((node: JsonNode<T>, opts: JsonNodePreviewOptions) => string)
   previewText?: (node: JsonNode<T>, opts: JsonNodePreviewOptions) => string
-  previewElement(node: JsonNode<T>, opts: JsonNodePreviewOptions): JsonNodeElement
+  previewElement: (node: JsonNode<T>, opts: JsonNodePreviewOptions) => JsonNodeElement
 }
 
-export interface JsonNodeCreatorParams<T = unknown> {
+export interface JsonNodeCreatorParams<T = any> {
   value: T
-  id: string
-  parentKey: string
-  keyPath: Array<string | number>
-  dataTypePath: string
+  keyPath: JsonNodeKeyPath
   options: JsonNodePreviewOptions | undefined
-  createNode(
-    value: unknown,
-    key: string,
-    id?: string,
-    keyPath?: Array<string | number>,
-    dataTypePath?: string,
-  ): JsonNode
+  createNode: (keyPath: JsonNodeKeyPath, value: unknown) => JsonNode
 }
 
-export type JsonNodeCreatorFn<T = unknown> = (opts: JsonNodeCreatorParams<T>) => JsonNode
+export type JsonNodeCreatorFn<T = any> = (opts: JsonNodeCreatorParams<T>) => JsonNode
