@@ -94,6 +94,7 @@ export interface JsonNodePreviewOptions {
   maxPreviewItems: number
   collapseStringsAfterLength: number
   groupArraysAfterLength: number
+  showNonenumerable: boolean
 }
 
 export interface JsonDataTypeOptions<T = unknown> {

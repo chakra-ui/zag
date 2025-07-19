@@ -592,33 +592,43 @@ export const FunctionType = dataType<Function>({
       jsx("span", { kind: "function-body" }, [txt(preview)]),
     ])
   },
-  node({ value, id, parentKey, createNode, visited }) {
+  node({ value, id, parentKey, createNode, visited, keyPath, dataTypePath, options }) {
     const funcName = value.name || "anonymous"
     const constructorName = value.constructor.name
 
     // Extract function properties
-    const funcProperties = []
+    const enumerableProperties = []
+    const nonEnumerableProperties = []
 
     // Add the [[Function]] internal property showing the function implementation
     const funcString = getFunctionString(value)
-    funcProperties.push({ key: "[[Function]]", value: funcString })
+    nonEnumerableProperties.push({ key: "[[Function]]", value: funcString })
 
     // Add function metadata
-    funcProperties.push({ key: "name", value: funcName })
-    funcProperties.push({ key: "length", value: value.length })
-    funcProperties.push({ key: "constructor", value: constructorName })
+    enumerableProperties.push({ key: "name", value: funcName })
+    enumerableProperties.push({ key: "length", value: value.length })
+    enumerableProperties.push({ key: "constructor", value: constructorName })
 
     // Add any additional enumerable properties
     const additionalProps = Object.getOwnPropertyNames(value)
       .filter((key) => !["name", "length", "prototype", "caller", "arguments"].includes(key))
       .map((key) => ({ key, value: Reflect.get(value, key) }))
 
-    const allProperties = [...funcProperties, ...additionalProps]
-    const children = allProperties.map(({ key, value }) => {
-      const node = createNode(value, key, id, visited)
-      if (key === "[[Function]]") node.isNonEnumerable = true
-      return node
-    })
+    enumerableProperties.push(...additionalProps)
+
+    const enumerableChildren = enumerableProperties.map(({ key, value }) =>
+      createNode(value, key, id, visited, keyPath, dataTypePath),
+    )
+
+    const nonEnumerableChildren = options?.showNonenumerable
+      ? nonEnumerableProperties.map(({ key, value }) => {
+          const node = createNode(value, key, id, visited, keyPath, dataTypePath)
+          node.isNonEnumerable = true
+          return node
+        })
+      : []
+
+    const children = [...enumerableChildren, ...nonEnumerableChildren]
 
     return {
       id,
@@ -626,6 +636,8 @@ export const FunctionType = dataType<Function>({
       value,
       type: "function",
       children,
+      keyPath,
+      dataTypePath,
     }
   },
 })
@@ -1090,13 +1102,15 @@ export const ArrayType = dataType<Array<unknown>>({
         Number.isNaN(Number(key)), // exclude numeric indices
     )
 
-    const nonEnumerableChildren = nonEnumerableKeys.map((key) => {
-      const descriptor = Object.getOwnPropertyDescriptor(value, key)
-      const node = createNode(Reflect.get(value, key), key, id, visited)
-      node.isNonEnumerable = true
-      node.propertyDescriptor = descriptor
-      return node
-    })
+    const nonEnumerableChildren = options?.showNonenumerable
+      ? nonEnumerableKeys.map((key) => {
+          const descriptor = Object.getOwnPropertyDescriptor(value, key)
+          const node = createNode(Reflect.get(value, key), key, id, visited)
+          node.isNonEnumerable = true
+          node.propertyDescriptor = descriptor
+          return node
+        })
+      : []
 
     const children = [...arrayChildren, lengthChild, ...nonEnumerableChildren]
 
@@ -1156,19 +1170,25 @@ export const TypedArrayType = dataType<any>({
       jsx("span", { kind: "brace" }, [txt(" ]")]),
     ])
   },
-  node({ value, id, parentKey, createNode, visited }) {
+  node({ value, id, parentKey, createNode, visited, keyPath, dataTypePath, options }) {
     const typedArray = value as any
-    const properties = TYPED_ARRAY_KEYS.map((key) => ({ key, value: Reflect.get(typedArray, key) }))
+    const enumerableProperties = TYPED_ARRAY_KEYS.map((key) => ({ key, value: Reflect.get(typedArray, key) }))
 
-    // Show first few values
-    const values = Array.from(typedArray).slice(0, 100) // Limit for performance
-    properties.push({ key: "[[Values]]", value: values })
+    const enumerableChildren = enumerableProperties.map(({ key, value }) =>
+      createNode(value, key, id, visited, keyPath, dataTypePath),
+    )
 
-    const children = properties.map(({ key, value }) => {
-      const node = createNode(value, key, id, visited)
-      if (key === "[[Values]]") node.isNonEnumerable = true
-      return node
-    })
+    const nonEnumerableChildren = options?.showNonenumerable
+      ? (() => {
+          // Show first few values
+          const values = Array.from(typedArray).slice(0, 100) // Limit for performance
+          const node = createNode(values, "[[Values]]", id, visited, keyPath, dataTypePath)
+          node.isNonEnumerable = true
+          return [node]
+        })()
+      : []
+
+    const children = [...enumerableChildren, ...nonEnumerableChildren]
 
     return {
       id,
@@ -1176,6 +1196,8 @@ export const TypedArrayType = dataType<any>({
       value,
       type: Reflect.get(typedArrayConstructors, value.constructor.name),
       children,
+      keyPath,
+      dataTypePath,
     }
   },
 })
@@ -1257,22 +1279,26 @@ export const ClassType = dataType<any>({
   previewElement(node, opts) {
     return ObjectType.previewElement(node, opts)
   },
-  node({ value, id, parentKey, createNode, visited, keyPath, dataTypePath }) {
+  node({ value, id, parentKey, createNode, visited, keyPath, dataTypePath, options }) {
     const constructorName = value.constructor.name
     const allPropertyNames = Object.getOwnPropertyNames(value)
     const enumerableKeys = Object.keys(value)
     const nonEnumerableKeys = allPropertyNames.filter((key) => !enumerableKeys.includes(key))
 
-    const children = [
-      ...enumerableKeys.map((key) => createNode(Reflect.get(value, key), key, id, visited, keyPath, dataTypePath)),
-      ...nonEnumerableKeys.map((key) => {
-        const descriptor = Object.getOwnPropertyDescriptor(value, key)
-        const node = createNode(getProp(value, key), `[[${key}]]`, id, visited)
-        node.isNonEnumerable = true
-        node.propertyDescriptor = descriptor
-        return node
-      }),
-    ]
+    const enumerableChildren = enumerableKeys.map((key) =>
+      createNode(Reflect.get(value, key), key, id, visited, keyPath, dataTypePath),
+    )
+    const nonEnumerableChildren = options?.showNonenumerable
+      ? nonEnumerableKeys.map((key) => {
+          const descriptor = Object.getOwnPropertyDescriptor(value, key)
+          const node = createNode(getProp(value, key), `[[${key}]]`, id, visited)
+          node.isNonEnumerable = true
+          node.propertyDescriptor = descriptor
+          return node
+        })
+      : []
+
+    const children = [...enumerableChildren, ...nonEnumerableChildren]
 
     return {
       id,
@@ -1320,22 +1346,26 @@ export const ObjectType = dataType<object>({
 
     return jsx("span", {}, children)
   },
-  node({ value, id, parentKey, createNode, visited, keyPath, dataTypePath }) {
+  node({ value, id, parentKey, createNode, visited, keyPath, dataTypePath, options }) {
     const allPropertyNames = Object.getOwnPropertyNames(value)
 
     const enumerableKeys = Object.keys(value)
     const nonEnumerableKeys = allPropertyNames.filter((key) => !enumerableKeys.includes(key))
 
-    const children = [
-      ...enumerableKeys.map((key) => createNode(getProp(value, key), key, id, visited, keyPath, dataTypePath)),
-      ...nonEnumerableKeys.map((key) => {
-        const descriptor = Object.getOwnPropertyDescriptor(value, key)
-        const node = createNode(getProp(value, key), `[[${key}]]`, id, visited, keyPath, dataTypePath)
-        node.isNonEnumerable = true
-        node.propertyDescriptor = descriptor
-        return node
-      }),
-    ]
+    const enumerableChildren = enumerableKeys.map((key) =>
+      createNode(getProp(value, key), key, id, visited, keyPath, dataTypePath),
+    )
+    const nonEnumerableChildren = options?.showNonenumerable
+      ? nonEnumerableKeys.map((key) => {
+          const descriptor = Object.getOwnPropertyDescriptor(value, key)
+          const node = createNode(getProp(value, key), `[[${key}]]`, id, visited, keyPath, dataTypePath)
+          node.isNonEnumerable = true
+          node.propertyDescriptor = descriptor
+          return node
+        })
+      : []
+
+    const children = [...enumerableChildren, ...nonEnumerableChildren]
 
     return {
       id,

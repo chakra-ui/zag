@@ -4,6 +4,7 @@ export const defaultPreviewOptions: JsonNodePreviewOptions = {
   maxPreviewItems: 3,
   collapseStringsAfterLength: 30,
   groupArraysAfterLength: 100,
+  showNonenumerable: true,
 }
 
 const withDefault = <T>(a: T, b: Partial<T>): T => {
