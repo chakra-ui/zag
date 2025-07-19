@@ -3,6 +3,10 @@ import { type JsonNode, type JsonNodePreviewOptions } from "./types"
 
 const propertyWord = (count: number) => (count === 1 ? "property" : "properties")
 
+const isPrimitive = (node: JsonNode) => {
+  return node.type === "string" || node.type === "number" || node.type === "boolean"
+}
+
 export const getAccessibleDescription = (node: JsonNode, opts?: JsonNodePreviewOptions): string => {
   const typeDescription = getNodeTypeDescription(node, opts)
 
@@ -24,7 +28,7 @@ export const getAccessibleDescription = (node: JsonNode, opts?: JsonNodePreviewO
   }
 
   // For leaf nodes, include the actual value for primitives
-  if (node.type === "primitive") {
+  if (isPrimitive(node)) {
     if (node.key === "stack") {
       return format(node.value.split("\n")[1]?.trim() || "trace")
     }

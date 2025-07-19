@@ -1,7 +1,9 @@
 export type JsonNodeType =
   | "object"
   | "array"
-  | "primitive"
+  | "boolean"
+  | "number"
+  | "string"
   | "null"
   | "set"
   | "map"
@@ -59,7 +61,7 @@ export interface JsonNodeElement {
   tagName: "span" | "div" | "a"
   properties: {
     root?: boolean
-    nodeType?: string
+    nodeType?: JsonNodeType
     kind?: JsonNodeSyntaxKind
     [key: string]: any
   }

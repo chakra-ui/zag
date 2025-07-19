@@ -33,7 +33,7 @@ const txt = (value: string | number | boolean | null | undefined): JsonNodeText 
 
 const jsx = (
   tagName: "span" | "div" | "a",
-  properties: Record<string, any> = {},
+  properties: JsonNodeElement["properties"] = {},
   children: Array<JsonNodeElement | JsonNodeText> = [],
 ): JsonNodeElement => ({
   type: "element",
@@ -43,7 +43,7 @@ const jsx = (
 })
 
 const formatValueMini = (child: JsonNode): string => {
-  if (child.type === "primitive" && typeof child.value === "string") return `"${child.value}"`
+  if (child.type === "string") return `"${child.value}"`
   if (child.type === "null") return "null"
   if (child.type === "undefined" || child.type === "symbol") return "undefined"
   if (child.type === "object") return "{…}"
@@ -1360,7 +1360,7 @@ const map: Record<string, string> = {
 const STRING_ESCAPE_REGEXP = /[\n\t\r]/g
 
 export const StringType = dataType<string>({
-  type: "primitive",
+  type: "string",
   description(node, opts) {
     return `"${this.previewText?.(node, opts) ?? node.value}"`
   },
@@ -1383,7 +1383,7 @@ export const StringType = dataType<string>({
       id,
       key: parentKey,
       value,
-      type: "primitive",
+      type: "string",
     }
   },
 })
@@ -1408,7 +1408,7 @@ export const PrimitiveType = dataType<any>({
       id,
       key: parentKey,
       value,
-      type: "primitive",
+      type: typeof value as JsonNodeType,
       keyPath,
       dataTypePath,
     }
