@@ -1309,8 +1309,21 @@ export const ObjectType = dataType<object>({
 
 ///////////////////////////////////////////////////////////////////////////////////////////
 
-const ELEMENT_KEYS = ["tagName", "id", "className", "dataset", "attributes", "childElementCount", "textContent"]
-const EXCLUDED_ELEMENTS = new Set(["html", "head", "body", "script", "style", "link", "meta", "title", "noscript"])
+const ELEMENT_KEYS = [
+  "attributes",
+  "childElementCount",
+  "className",
+  "dataset",
+  "hidden",
+  "id",
+  "inert",
+  "isConnected",
+  "isContentEditable",
+  "nodeType",
+  "style",
+  "tabIndex",
+  "tagName",
+]
 
 const isSvg = (el: Element): el is SVGSVGElement =>
   typeof el === "object" && el.tagName === "svg" && el.namespaceURI === "http://www.w3.org/2000/svg"
@@ -1330,7 +1343,6 @@ export const ElementType = dataType<SVGElement | HTMLElement>({
 
   previewElement(node) {
     const el = node.value as Element
-
     const classList = Array.from(el.classList).slice(0, 3)
 
     return jsx("span", {}, [
@@ -1348,26 +1360,16 @@ export const ElementType = dataType<SVGElement | HTMLElement>({
 
       if (key === "attributes") {
         const attrs = Array.from(value.attributes)
-        if (!attrs.length) return acc
-        childValue = Object.fromEntries(attrs.map((attr) => [attr.name, attr.value]))
+        childValue = attrs.length ? Object.fromEntries(attrs.map((attr) => [attr.name, attr.value])) : undefined
       }
 
-      if (key === "className" && value.className) {
-        childValue = value.className
+      if (key === "style") {
+        const style = Array.from(value.style)
+        childValue = style.length
+          ? Object.fromEntries(style.map((key) => [key, value.style.getPropertyValue(key)]))
+          : undefined
       }
 
-      if (key === "dataset") {
-        childValue = { ...value.dataset }
-        if (Object.keys(childValue).length === 0) {
-          return acc
-        }
-      }
-
-      if (key === "textContent" && EXCLUDED_ELEMENTS.has(value.localName)) {
-        childValue = undefined
-      }
-
-      if (!childValue) return acc
       acc.push(createNode([key], childValue))
       return acc
     }, [] as JsonNode[])
