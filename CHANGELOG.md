@@ -4,6 +4,15 @@ All notable changes to this project will be documented in this file.
 
 > For v0.x changelog, see the [v0 branch](https://github.com/chakra-ui/zag/blob/v0/CHANGELOG.md)
 
+## [1.19.0](./#1.19.0) - 2025-07-20
+
+### Added
+
+- **File Upload**: Add support for programmatically controlling the accepted files via `acceptedFiles` and
+  `defaultAcceptedFiles`
+
+- **Signature Pad**: Add support for programmatically controlling the paths via `paths` and `defaultPaths` props.
+
 ## [1.18.5](./#1.18.5) - 2025-07-19
 
 ### Added
