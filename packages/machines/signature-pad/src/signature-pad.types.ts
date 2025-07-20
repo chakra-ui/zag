@@ -92,6 +92,15 @@ export interface SignaturePadProps extends DirectionProperty, CommonProperties {
    * The name of the signature pad. Useful for form submission.
    */
   name?: string | undefined
+  /**
+   * The default paths of the signature pad.
+   * Use when you don't need to control the paths of the signature pad.
+   */
+  defaultPaths?: string[] | undefined
+  /**
+   * The controlled paths of the signature pad.
+   */
+  paths?: string[] | undefined
 }
 
 type PropsWithDefault = "drawing" | "translations"

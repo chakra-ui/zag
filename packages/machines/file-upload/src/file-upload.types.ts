@@ -110,6 +110,15 @@ export interface FileUploadProps extends LocaleProperties, CommonProperties {
    */
   validate?: ((file: File, details: FileValidateDetails) => FileError[] | null) | undefined
   /**
+   * The default accepted files when rendered.
+   * Use when you don't need to control the accepted files of the input.
+   */
+  defaultAcceptedFiles?: File[] | undefined
+  /**
+   * The controlled accepted files
+   */
+  acceptedFiles?: File[] | undefined
+  /**
    * Function called when the value changes, whether accepted or rejected
    */
   onFileChange?: ((details: FileChangeDetails) => void) | undefined

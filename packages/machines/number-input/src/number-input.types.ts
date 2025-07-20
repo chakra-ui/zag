@@ -84,7 +84,7 @@ export interface NumberInputProps extends LocaleProperties, CommonProperties {
   /**
    * The pattern used to check the <input> element's value against
    *
-   * @default "[0-9]*(.[0-9]+)?"
+   * @default "-?[0-9]*(.[0-9]+)?"
    */
   pattern?: string | undefined
   /**

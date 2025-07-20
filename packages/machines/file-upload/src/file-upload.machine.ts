@@ -14,6 +14,7 @@ export const machine = createMachine<FileUploadSchema>({
       maxFiles: 1,
       allowDrop: true,
       preventDocumentDrop: true,
+      defaultAcceptedFiles: [],
       ...props,
       translations: {
         dropzone: "dropzone",
@@ -31,7 +32,8 @@ export const machine = createMachine<FileUploadSchema>({
   context({ prop, bindable, getContext }) {
     return {
       acceptedFiles: bindable<File[]>(() => ({
-        defaultValue: [],
+        defaultValue: prop("defaultAcceptedFiles"),
+        value: prop("acceptedFiles"),
         isEqual: (a, b) => a.length === b?.length && a.every((file, i) => isFileEqual(file, b[i])),
         hash(value) {
           return value.map((file) => `${file.name}-${file.size}`).join(",")
