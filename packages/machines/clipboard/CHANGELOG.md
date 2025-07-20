@@ -1,5 +1,16 @@
 # @zag-js/clipboard
 
+## 1.19.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.19.0
+  - @zag-js/core@1.19.0
+  - @zag-js/types@1.19.0
+  - @zag-js/utils@1.19.0
+  - @zag-js/dom-query@1.19.0
+
 ## 1.18.5
 
 ### Patch Changes

@@ -1,5 +1,22 @@
 # @zag-js/signature-pad
 
+## 1.19.0
+
+### Minor Changes
+
+- [`6332081`](https://github.com/chakra-ui/zag/commit/633208183516e272d74cbfdc2c94547b0c4f3218) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Add support for programmatically controlling the paths via `paths`
+  and `defaultPaths` props.
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.19.0
+  - @zag-js/core@1.19.0
+  - @zag-js/types@1.19.0
+  - @zag-js/utils@1.19.0
+  - @zag-js/dom-query@1.19.0
+
 ## 1.18.5
 
 ### Patch Changes
