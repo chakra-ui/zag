@@ -1,6 +1,6 @@
 {
   "name": "@zag-js/highlight-word",
-  "version": "1.18.5",
+  "version": "1.19.0",
   "description": "Highlight a portion of text in a string",
   "keywords": [
     "js",
