@@ -40,6 +40,10 @@ export type JsonNodeType =
   | "error"
   | "function"
   | "circular"
+  | "element"
+  | "document"
+  | "window"
+  | "react-element"
 
 export type JsonNodeKeyPath = (string | number)[]
 

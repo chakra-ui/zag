@@ -365,7 +365,7 @@ export const UrlType = dataType<URL>({
     ])
   },
   node({ value, keyPath, createNode }) {
-    const children = URL_KEYS.map((key) => createNode([...keyPath, key], Reflect.get(value, key)))
+    const children = URL_KEYS.map((key) => createNode([key], Reflect.get(value, key)))
     return {
       value,
       keyPath,
@@ -806,7 +806,7 @@ export const ErrorType = dataType<Error>({
       .map((key) => ({ key, value: getProp(value, key) }))
 
     const allProperties = [...errorProperties, ...additionalProps]
-    const children = allProperties.map(({ key, value }) => createNode(value, [...keyPath, key]))
+    const children = allProperties.map(({ key, value }) => createNode([key], value))
 
     return {
       value,
@@ -1309,6 +1309,201 @@ export const ObjectType = dataType<object>({
 
 ///////////////////////////////////////////////////////////////////////////////////////////
 
+const ELEMENT_KEYS = ["tagName", "id", "className", "dataset", "attributes", "childElementCount", "textContent"]
+const EXCLUDED_ELEMENTS = new Set(["html", "head", "body", "script", "style", "link", "meta", "title", "noscript"])
+
+const isSvg = (el: Element): el is SVGSVGElement =>
+  typeof el === "object" && el.tagName === "svg" && el.namespaceURI === "http://www.w3.org/2000/svg"
+
+const isHTML = (el: Element): el is HTMLElement =>
+  typeof el === "object" && el.namespaceURI === "http://www.w3.org/1999/xhtml"
+
+export const ElementType = dataType<SVGElement | HTMLElement>({
+  type: "element",
+  description(node) {
+    return typeOf(node.value)
+  },
+
+  check(value) {
+    return isSvg(value) || isHTML(value)
+  },
+
+  previewElement(node) {
+    const el = node.value as Element
+
+    const classList = Array.from(el.classList).slice(0, 3)
+
+    return jsx("span", {}, [
+      jsx("span", { kind: "constructor" }, [txt(el.constructor.name)]),
+      jsx("span", {}, [txt(" ")]),
+      jsx("span", { kind: "preview-text" }, [
+        txt(`<${el.localName}${el.id ? `#${el.id}` : ""}${classList.length > 0 ? "." + classList.join(".") : ""}>`),
+      ]),
+    ])
+  },
+
+  node({ value, keyPath, createNode }) {
+    const children = ELEMENT_KEYS.reduce((acc, key) => {
+      let childValue = Reflect.get(value, key)
+
+      if (key === "attributes") {
+        const attrs = Array.from(value.attributes)
+        if (!attrs.length) return acc
+        childValue = Object.fromEntries(attrs.map((attr) => [attr.name, attr.value]))
+      }
+
+      if (key === "className" && value.className) {
+        childValue = value.className
+      }
+
+      if (key === "dataset") {
+        childValue = { ...value.dataset }
+        if (Object.keys(childValue).length === 0) {
+          return acc
+        }
+      }
+
+      if (key === "textContent" && EXCLUDED_ELEMENTS.has(value.localName)) {
+        childValue = undefined
+      }
+
+      if (!childValue) return acc
+      acc.push(createNode([key], childValue))
+      return acc
+    }, [] as JsonNode[])
+
+    return {
+      value,
+      keyPath,
+      type: "element",
+      children,
+    }
+  },
+})
+
+///////////////////////////////////////////////////////////////////////////////////////////
+
+const DOCUMENT_KEYS = ["title", "URL", "documentElement", "head", "body", "contentType", "readyState"]
+export const DocumentType = dataType<Document>({
+  type: "document",
+  description: "Document",
+
+  check(value) {
+    return typeOf(value) === "[object HTMLDocument]"
+  },
+
+  previewElement(node) {
+    const doc = node.value as Document
+    const url = doc.URL || "unknown"
+    return jsx("span", {}, [
+      jsx("span", { kind: "constructor" }, [txt("#document")]),
+      jsx("span", { kind: "preview-text" }, [txt(` (${url})`)]),
+    ])
+  },
+
+  node({ value, keyPath, createNode }) {
+    const children = DOCUMENT_KEYS.map((key) => createNode([key], Reflect.get(value, key)))
+    return {
+      value,
+      keyPath,
+      type: "document",
+      children,
+    }
+  },
+})
+
+///////////////////////////////////////////////////////////////////////////////////////////
+
+const WINDOW_KEYS = ["location", "navigator", "document", "innerWidth", "innerHeight", "devicePixelRatio", "origin"]
+
+export const WindowType = dataType<Window>({
+  type: "window",
+  description: "Window",
+
+  check(value) {
+    return typeOf(value) === "[object Window]"
+  },
+
+  previewElement() {
+    return jsx("span", {}, [
+      jsx("span", { kind: "constructor" }, [txt("Window")]),
+      jsx("span", { kind: "preview-text" }, [txt(" { … }")]),
+    ])
+  },
+
+  node({ value, keyPath, createNode }) {
+    const children = WINDOW_KEYS.map((key) => {
+      const childValue = Reflect.get(value, key)
+      return createNode([key], childValue)
+    })
+
+    return {
+      value,
+      keyPath,
+      type: "window",
+      children,
+    }
+  },
+})
+
+///////////////////////////////////////////////////////////////////////////////////////////
+
+const REACT_ELEMENT_KEYS = ["$$typeof", "type", "key", "ref", "props"]
+
+const getElementTypeName = (type: any): string => {
+  if (typeof type === "string") return type
+  if (typeof type === "function") return type.displayName || type.name || "Component"
+  return type?.toString() || "Component"
+}
+
+export const ReactElementType = dataType<any>({
+  type: "react-element",
+  description(node) {
+    const el = node.value
+    return getElementTypeName(el.type)
+  },
+  check(value) {
+    return isObj(value) && "$$typeof" in value && "props" in value
+  },
+  previewElement(node, opts) {
+    const el = node.value
+
+    const elName = getElementTypeName(el.type)
+    const props = Object.entries(el.props)
+    const hasMore = props.length > opts.maxPreviewItems
+
+    return jsx("span", {}, [
+      txt(`<${elName} `),
+      ...props.slice(0, opts.maxPreviewItems).reduce((acc, [key, value]) => {
+        if (key === "children") return acc
+        acc.push(jsx("span", {}, [txt(` ${key}=${typeof value === "string" ? `"${value}"` : `{${value}}`}`)]))
+        return acc
+      }, [] as JsonNodeElement[]),
+      ...(hasMore ? [txt(" …")] : []),
+      txt(el.children ? `> {…} </${elName}>` : ` />`),
+    ])
+  },
+  node({ value, keyPath, createNode }) {
+    const children = REACT_ELEMENT_KEYS.reduce((acc, key) => {
+      let childValue = Reflect.get(value, key)
+      if (key === "type") {
+        childValue = getElementTypeName(childValue)
+      }
+      acc.push(createNode([key], childValue))
+      return acc
+    }, [] as JsonNode[])
+
+    return {
+      value,
+      type: "react-element",
+      keyPath,
+      children,
+    }
+  },
+})
+
+///////////////////////////////////////////////////////////////////////////////////////////
+
 const map: Record<string, string> = {
   "\n": "\\n",
   "\t": "\\t",
@@ -1395,6 +1590,11 @@ export const dataTypes: JsonDataTypeOptions<any>[] = [
 
   FileType,
   BlobType,
+
+  ReactElementType,
+  WindowType,
+  DocumentType,
+  ElementType,
 
   UrlType,
   URLSearchParamsType,
