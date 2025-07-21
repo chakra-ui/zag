@@ -1,3 +1,4 @@
+import { toCalendarDate } from "@internationalized/date"
 import {
   type DateDuration,
   type DateValue,
@@ -108,10 +109,10 @@ export function constrainStart(
 
 export function constrainValue(date: DateValue, minValue?: DateValue, maxValue?: DateValue): DateValue {
   if (minValue) {
-    date = maxDate(date, toCalendarDateTime(minValue))!
+    date = maxDate(date, minValue)!
   }
   if (maxValue) {
-    date = minDate(date, toCalendarDateTime(maxValue))!
+    date = minDate(date, maxValue)!
   }
   return date
 }

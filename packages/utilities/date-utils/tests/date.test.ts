@@ -16,14 +16,39 @@ const stringify = (opts: any) => ({
 })
 
 describe("Date utilities", () => {
-  test("constrain", () => {
+  test("constrain to max value", () => {
     const focusedDate = parseDate("2024-03-15")
     expect(constrainValue(focusedDate, min, max).toString()).toMatchInlineSnapshot(`"2023-12-31T23:59:59.999"`)
+  })
+
+  test("constrain to min value", () => {
+    const focusedDate = parseDate("2022-03-15")
+    expect(constrainValue(focusedDate, min, max).toString()).toMatchInlineSnapshot(`"2023-01-01T00:00:00"`)
+  })
+
+  test("unchange date when focused date is within min and max", () => {
+    const focusedDate = parseDate("2023-03-15")
+    expect(constrainValue(focusedDate, min, max).toString()).toMatchInlineSnapshot(`"2023-03-15"`)
   })
 
   test("pagination / next page", () => {
     const focusedDate = parseDate("2023-01-12")
     const startDate = parseDate("2023-01-01")
+    const nextPage = getNextPage(focusedDate, startDate, duration, locale, min, max)
+    expect(stringify(nextPage)).toMatchInlineSnapshot(`
+      {
+        "endDate": "2023-02-28",
+        "focusedDate": "2023-02-12",
+        "startDate": "2023-02-01",
+      }
+    `)
+  })
+
+  test("pagination / next page with CalendarDate min and max", () => {
+    const focusedDate = parseDate("2023-01-12")
+    const startDate = parseDate("2023-01-01")
+    const min = parseDate("2023-01-01")
+    const max = parseDate("2023-12-31")
     const nextPage = getNextPage(focusedDate, startDate, duration, locale, min, max)
     expect(stringify(nextPage)).toMatchInlineSnapshot(`
       {
