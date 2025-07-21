@@ -51,7 +51,7 @@ function isDateArrayEqual(a: DateValue[], b: DateValue[] | undefined) {
 export const machine = createMachine<DatePickerSchema>({
   props({ props }) {
     const locale = props.locale || "en-US"
-    const timeZone = props.timeZone || "UTC"
+    const timeZone = props.timeZone || Intl.DateTimeFormat().resolvedOptions().timeZone
     const selectionMode = props.selectionMode || "single"
     const numOfMonths = props.numOfMonths || 1
 
