@@ -173,8 +173,8 @@ export function connect<T extends PropTypes>(
       outsideRange: isOutsideRange,
       inRange:
         isRangePicker && (isDateWithinRange(value, selectedValue) || isDateWithinRange(value, hoveredRangeValue)),
-      firstInRange: isRangePicker && isDateEqual(value, selectedValue[0]),
-      lastInRange: isRangePicker && isDateEqual(value, selectedValue[1]),
+      firstInRange: isRangePicker && (isDateEqual(value, selectedValue[0]) || isDateEqual(value, hoveredRangeValue[0])),
+      lastInRange: isRangePicker && (isDateEqual(value, selectedValue[1]) || isDateEqual(value, hoveredRangeValue[1])),
       today: isToday(value, timeZone),
       weekend: isWeekend(value, locale),
       formattedDate: formatter.format(value.toDate(timeZone)),
