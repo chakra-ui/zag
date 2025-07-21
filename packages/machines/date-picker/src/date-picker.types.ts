@@ -103,10 +103,8 @@ export interface DatePickerProps extends DirectionProperty, CommonProperties {
    */
   name?: string | undefined
   /**
-   * The timezone to use, in `IANA` format.
-   * @default "Intl.DateTimeFormat().resolvedOptions().timeZone"
-   *
-   * @see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Temporal/ZonedDateTime#time_zones_and_offsets
+   * The time zone to use
+   * @default "UTC"
    */
   timeZone?: string | undefined
   /**
