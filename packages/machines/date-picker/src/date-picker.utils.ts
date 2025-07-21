@@ -1,4 +1,4 @@
-import { DateFormatter, type DateValue } from "@internationalized/date"
+import { DateFormatter, toCalendarDate, type DateValue } from "@internationalized/date"
 import { clampValue, match } from "@zag-js/utils"
 import type { DateView, IntlTranslations } from "./date-picker.types"
 
@@ -11,7 +11,10 @@ export function adjustStartAndEndDate(value: DateValue[]) {
 export function isDateWithinRange(date: DateValue, value: (DateValue | null)[]) {
   const [startDate, endDate] = value
   if (!startDate || !endDate) return false
-  return startDate.compare(date) <= 0 && endDate.compare(date) >= 0
+  return (
+    toCalendarDate(startDate).compare(toCalendarDate(date)) <= 0 &&
+    toCalendarDate(endDate).compare(toCalendarDate(date)) >= 0
+  )
 }
 
 export function sortDates(values: DateValue[]) {
