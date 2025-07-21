@@ -108,7 +108,7 @@ export interface DatePickerProps extends DirectionProperty, CommonProperties {
    *
    * @see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Temporal/ZonedDateTime#time_zones_and_offsets
    */
-  timeZone?: Intl.DateTimeFormatOptions["timeZone"] | undefined
+  timeZone?: string | undefined
   /**
    * Whether the calendar is disabled.
    */
