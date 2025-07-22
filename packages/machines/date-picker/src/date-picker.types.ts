@@ -422,6 +422,9 @@ export interface DayTableCellState {
   readonly focused: boolean
   readonly ariaLabel: string
   readonly selectable: boolean
+  inHoveredRange: boolean
+  firstInHoveredRange: boolean
+  lastInHoveredRange: boolean
 }
 
 export interface TableProps {
