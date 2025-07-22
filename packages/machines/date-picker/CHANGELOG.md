@@ -1,5 +1,40 @@
 # @zag-js/date-picker
 
+## 1.20.0
+
+### Minor Changes
+
+- [`1e82a49`](https://github.com/chakra-ui/zag/commit/1e82a491e6963156335ce722b6eacc1a35b48e35) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Add hover range preview support for date picker range selection
+  - Added `inHoveredRange`, `firstInHoveredRange`, and `lastInHoveredRange` properties to `DayTableCellState`
+  - Added corresponding data attributes `data-in-hover-range`, `data-hover-range-start`, and `data-hover-range-end`
+  - Hover range states are only active when not overlapping with actual selected range
+  - Enables distinct styling for hover preview vs actual selection in range mode
+
+### Patch Changes
+
+- [`78dd066`](https://github.com/chakra-ui/zag/commit/78dd066b2feda69d1f759e46b3cd099d2d2560e8) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix date comparison issues when time components are involved
+
+  This change resolves critical issues with date comparison operations when different date types (`CalendarDate`,
+  `CalendarDateTime`, `ZonedDateTime`) are mixed, particularly in scenarios involving time components.
+  - Convert `now(timeZone)` result to `CalendarDate` to ensure consistent date types without time components across all
+    date range preset operations
+  - Update `constrainValue` function to normalize all input dates to `CalendarDate` before comparison, preventing
+    time-component comparison issues
+  - Remove redundant date type conversion in `getMonthFormatter` for cleaner, more efficient code
+
+- Updated dependencies [[`78dd066`](https://github.com/chakra-ui/zag/commit/78dd066b2feda69d1f759e46b3cd099d2d2560e8)]:
+  - @zag-js/date-utils@1.20.0
+  - @zag-js/anatomy@1.20.0
+  - @zag-js/core@1.20.0
+  - @zag-js/types@1.20.0
+  - @zag-js/utils@1.20.0
+  - @zag-js/dismissable@1.20.0
+  - @zag-js/dom-query@1.20.0
+  - @zag-js/live-region@1.20.0
+  - @zag-js/popper@1.20.0
+
 ## 1.19.0
 
 ### Patch Changes
