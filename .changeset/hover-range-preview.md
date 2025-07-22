@@ -1,5 +1,5 @@
 ---
-"@zag-js/date-picker": patch
+"@zag-js/date-picker": minor
 ---
 
 Add hover range preview support for date picker range selection
