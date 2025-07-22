@@ -6,12 +6,15 @@ import {
   startOfMonth,
   startOfWeek,
   startOfYear,
+  toCalendarDate,
   type DateValue,
 } from "@internationalized/date"
 import type { DateRangePreset } from "./types"
 
 export function getDateRangePreset(preset: DateRangePreset, locale: string, timeZone: string): [DateValue, DateValue] {
-  const today = now(timeZone)
+  // Convert ZonedDateTime to CalendarDate to ensure consistent date type without time components
+  // This prevents issues with mixed date types in comparisons and range operations
+  const today = toCalendarDate(now(timeZone))
 
   switch (preset) {
     case "thisWeek":
