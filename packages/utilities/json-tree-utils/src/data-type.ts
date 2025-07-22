@@ -71,9 +71,7 @@ function dataType<T = unknown>(opts: JsonDataTypeOptions<T>) {
 
 export const NullType = dataType<null>({
   type: "null",
-  description(node) {
-    return `Array(${node.children?.length || 0})`
-  },
+  description: "null",
   check(value) {
     return value === null
   },
@@ -158,7 +156,7 @@ export const BigIntType = dataType<BigInt>({
 export const SetType = dataType<Set<unknown>>({
   type: "set",
   description(node) {
-    return `Set(${node.children?.length || 0})`
+    return `Set(${(node.value as Set<unknown>).size})`
   },
   check(value) {
     return value instanceof Set
@@ -172,7 +170,7 @@ export const SetType = dataType<Set<unknown>>({
   },
   previewElement(node, opts) {
     const preview = this.previewText?.(node, opts) ?? ""
-    const size = node.children?.length || 0
+    const size = (node.value as Set<unknown>).size
 
     const children: Array<JsonNodeElement | JsonNodeText> = [
       jsx("span", { kind: "constructor" }, [txt(`Set(${size})`)]),
@@ -714,7 +712,7 @@ export const DateType = dataType<Date>({
 export const MapType = dataType<Map<unknown, unknown>>({
   type: "map",
   description(node) {
-    return `Map(${node.children?.length || 0})`
+    return `Map(${(node.value as Map<unknown, unknown>).size})`
   },
   check(value) {
     return value instanceof Map
@@ -732,7 +730,7 @@ export const MapType = dataType<Map<unknown, unknown>>({
   },
   previewElement(node, opts) {
     const preview = this.previewText?.(node, opts) || ""
-    const size = node.children?.length || 0
+    const size = (node.value as Map<unknown, unknown>).size
 
     const children: Array<JsonNodeElement | JsonNodeText> = [
       jsx("span", { kind: "constructor" }, [txt(`Map(${size})`)]),
@@ -956,7 +954,7 @@ export const FormDataType = dataType<FormData>({
 export const ArrayType = dataType<Array<unknown>>({
   type: "array",
   description(node) {
-    return `Array(${node.children?.length || 0})`
+    return `Array(${(node.value as Array<unknown>).length})`
   },
   check(value) {
     return Array.isArray(value)
@@ -1164,7 +1162,9 @@ export const IterableType = dataType<any>({
   },
   previewElement(node, opts) {
     const preview = SetType.previewText?.(node, opts) ?? ""
-    const size = node.children?.length || 0
+    // Use the same calculation as in the node method
+    const entriesArray = Array.from(node.value as Iterable<unknown>)
+    const size = node.value.size ?? node.value.length ?? entriesArray.length
 
     const children: Array<JsonNodeElement | JsonNodeText> = [
       jsx("span", { kind: "constructor" }, [txt(`Iterable(${size})`)]),
