@@ -92,7 +92,7 @@
     "image-conversion": "2.1.1",
     "lucide-react": "0.525.0",
     "match-sorter": "8.0.3",
-    "next": "15.4.1",
+    "next": "15.4.2",
     "next-cloudinary": "6.16.0",
     "react": "19.1.0",
     "react-dom": "19.1.0",
@@ -102,10 +102,10 @@
   },
   "devDependencies": {
     "@types/form-serialize": "0.7.4",
-    "@types/node": "24.0.14",
+    "@types/node": "24.1.0",
     "@types/react": "^19",
     "@types/react-dom": "^19",
-    "@next/eslint-plugin-next": "15.4.1",
+    "@next/eslint-plugin-next": "15.4.2",
     "eslint-plugin-react": "7.37.5",
     "eslint-plugin-react-hooks": "5.2.0",
     "typescript": "5.8.3"

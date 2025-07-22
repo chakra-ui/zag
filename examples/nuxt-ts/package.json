@@ -94,7 +94,7 @@
   "devDependencies": {
     "@nuxt/devtools": "^2.6.2",
     "@types/form-serialize": "0.7.4",
-    "@types/node": "24.0.14",
-    "nuxt": "4.0.0"
+    "@types/node": "24.1.0",
+    "nuxt": "4.0.1"
   }
 }
