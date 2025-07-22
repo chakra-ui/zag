@@ -1810,6 +1810,14 @@
         "type": "(file: File, details: FileValidateDetails) => FileError[]",
         "description": "Function to validate a file"
       },
+      "defaultAcceptedFiles": {
+        "type": "File[]",
+        "description": "The default accepted files when rendered.\nUse when you don't need to control the accepted files of the input."
+      },
+      "acceptedFiles": {
+        "type": "File[]",
+        "description": "The controlled accepted files"
+      },
       "onFileChange": {
         "type": "(details: FileChangeDetails) => void",
         "description": "Function called when the value changes, whether accepted or rejected"
@@ -2583,7 +2591,7 @@
       "pattern": {
         "type": "string",
         "description": "The pattern used to check the <input> element's value against",
-        "defaultValue": "\"[0-9]*(.[0-9]+)?\""
+        "defaultValue": "\"-?[0-9]*(.[0-9]+)?\""
       },
       "value": {
         "type": "string",
@@ -3808,6 +3816,14 @@
       "name": {
         "type": "string",
         "description": "The name of the signature pad. Useful for form submission."
+      },
+      "defaultPaths": {
+        "type": "string[]",
+        "description": "The default paths of the signature pad.\nUse when you don't need to control the paths of the signature pad."
+      },
+      "paths": {
+        "type": "string[]",
+        "description": "The controlled paths of the signature pad."
       },
       "dir": {
         "type": "\"ltr\" | \"rtl\"",

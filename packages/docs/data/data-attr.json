@@ -520,7 +520,10 @@
       "data-range-end": "Present when is the end of a range",
       "data-in-range": "Present when is within the range",
       "data-outside-range": "Present when is outside the range",
-      "data-weekend": "Present when is a weekend day"
+      "data-weekend": "Present when is a weekend day",
+      "data-in-hover-range": "Present when in hovered range",
+      "data-hover-range-start": "Present when is the start of the hovered range",
+      "data-hover-range-end": "Present when is the end of the hovered range"
     },
     "MonthTableCell": {
       "data-scope": "date-picker",
@@ -534,6 +537,7 @@
       "data-selected": "Present when selected",
       "data-disabled": "Present when disabled",
       "data-focus": "Present when focused",
+      "data-in-range": "Present when is within the range",
       "data-view": "The view of the monthtablecelltrigger",
       "data-value": "The value of the item"
     },
@@ -548,6 +552,7 @@
       "data-part": "year-table-cell-trigger",
       "data-selected": "Present when selected",
       "data-focus": "Present when focused",
+      "data-in-range": "Present when is within the range",
       "data-disabled": "Present when disabled",
       "data-value": "The value of the item",
       "data-view": "The view of the yeartablecelltrigger"
@@ -819,7 +824,7 @@
     "Content": {
       "data-scope": "listbox",
       "data-part": "content",
-      "data-activedescendant": "",
+      "data-activedescendant": "The id the active descendant of the content",
       "data-orientation": "The orientation of the content",
       "data-layout": "",
       "data-empty": ""
@@ -1276,7 +1281,7 @@
       "data-part": "content",
       "data-state": "\"open\" | \"closed\"",
       "data-placement": "The placement of the content",
-      "data-activedescendant": ""
+      "data-activedescendant": "The id the active descendant of the content"
     }
   },
   "signature-pad": {
@@ -1845,7 +1850,7 @@
       "data-selected": "Present when selected",
       "data-state": "\"open\" | \"closed\"",
       "data-disabled": "Present when disabled",
-      "data-loading": ""
+      "data-loading": "Present when loading"
     },
     "BranchIndicator": {
       "data-scope": "tree-view",
@@ -1854,7 +1859,7 @@
       "data-disabled": "Present when disabled",
       "data-selected": "Present when selected",
       "data-focus": "Present when focused",
-      "data-loading": ""
+      "data-loading": "Present when loading"
     },
     "BranchTrigger": {
       "data-scope": "tree-view",
@@ -1862,7 +1867,7 @@
       "data-disabled": "Present when disabled",
       "data-state": "\"open\" | \"closed\"",
       "data-value": "The value of the item",
-      "data-loading": ""
+      "data-loading": "Present when loading"
     },
     "BranchControl": {
       "data-scope": "tree-view",
@@ -1874,14 +1879,14 @@
       "data-focus": "Present when focused",
       "data-value": "The value of the item",
       "data-depth": "The depth of the item",
-      "data-loading": ""
+      "data-loading": "Present when loading"
     },
     "BranchText": {
       "data-scope": "tree-view",
       "data-part": "branch-text",
       "data-disabled": "Present when disabled",
       "data-state": "\"open\" | \"closed\"",
-      "data-loading": ""
+      "data-loading": "Present when loading"
     },
     "BranchContent": {
       "data-scope": "tree-view",
@@ -1899,7 +1904,8 @@
     "NodeCheckbox": {
       "data-scope": "tree-view",
       "data-part": "node-checkbox",
-      "data-state": "\"checked\" | \"unchecked\" | \"indeterminate\""
+      "data-state": "\"checked\" | \"unchecked\" | \"indeterminate\"",
+      "data-disabled": "Present when disabled"
     }
   }
 }
