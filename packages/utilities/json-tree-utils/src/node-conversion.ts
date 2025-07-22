@@ -25,6 +25,10 @@ export function nodeToValue(node: JsonNode) {
   return hash(keyPathToId(node.keyPath))
 }
 
+export function jsonPathToValue(path: string) {
+  return hash(path)
+}
+
 export function nodeToString(node: JsonNode) {
   return keyPathToKey(node.keyPath) || "root"
 }
