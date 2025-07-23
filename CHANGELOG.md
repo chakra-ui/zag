@@ -4,6 +4,14 @@ All notable changes to this project will be documented in this file.
 
 > For v0.x changelog, see the [v0 branch](https://github.com/chakra-ui/zag/blob/v0/CHANGELOG.md)
 
+## [1.20.1](./#1.20.1) - 2025-07-23
+
+### Fixed
+
+- **Date Picker**: Fixed issue where hovered range was connect to selected values, when it shouldn't
+
+- **Tree View**: Fixed issue where tree view doesn't scroll into view when content overflows.
+
 ## [1.20.0](./#1.20.0) - 2025-07-22
 
 ### Fixed
