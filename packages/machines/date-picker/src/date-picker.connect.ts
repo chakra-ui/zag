@@ -195,15 +195,15 @@ export function connect<T extends PropTypes>(
         return !cellState.disabled && !cellState.unavailable
       },
 
-      // Range states (using pre-calculated values)
+      // Range states
       inRange: isInSelectedRange || isInHoveredRange,
       firstInRange: isFirstInSelectedRange,
       lastInRange: isLastInSelectedRange,
 
-      // Preview range states (only when not in actual selection)
-      inHoveredRange: isInHoveredRange && !isInSelectedRange,
-      firstInHoveredRange: isFirstInHoveredRange && !isFirstInSelectedRange,
-      lastInHoveredRange: isLastInHoveredRange && !isLastInSelectedRange,
+      // Preview range states
+      inHoveredRange: isInHoveredRange,
+      firstInHoveredRange: isFirstInHoveredRange,
+      lastInHoveredRange: isLastInHoveredRange,
     }
 
     return cellState
