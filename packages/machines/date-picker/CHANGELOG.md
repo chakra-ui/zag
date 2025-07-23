@@ -1,5 +1,24 @@
 # @zag-js/date-picker
 
+## 1.20.1
+
+### Patch Changes
+
+- [`4a50c58`](https://github.com/chakra-ui/zag/commit/4a50c58357c53df27fa85cb65a1add4f31f21f6a) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fixed issue where hovered range was connect to selected values,
+  when it shouldn't
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.20.1
+  - @zag-js/core@1.20.1
+  - @zag-js/types@1.20.1
+  - @zag-js/utils@1.20.1
+  - @zag-js/date-utils@1.20.1
+  - @zag-js/dismissable@1.20.1
+  - @zag-js/dom-query@1.20.1
+  - @zag-js/live-region@1.20.1
+  - @zag-js/popper@1.20.1
+
 ## 1.20.0
 
 ### Minor Changes

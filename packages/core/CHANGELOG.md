@@ -1,5 +1,13 @@
 # @zag-js/core
 
+## 1.20.1
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/utils@1.20.1
+  - @zag-js/dom-query@1.20.1
+
 ## 1.20.0
 
 ### Patch Changes
