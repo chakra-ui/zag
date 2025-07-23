@@ -1,5 +1,21 @@
 # @zag-js/tree-view
 
+## 1.20.1
+
+### Patch Changes
+
+- [`c4061c8`](https://github.com/chakra-ui/zag/commit/c4061c8b4f0eaec9d51ff0a4846b2efad01fe4dd) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fixed issue where tree view doesn't scroll into view when content
+  overflows.
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.20.1
+  - @zag-js/core@1.20.1
+  - @zag-js/types@1.20.1
+  - @zag-js/collection@1.20.1
+  - @zag-js/utils@1.20.1
+  - @zag-js/dom-query@1.20.1
+
 ## 1.20.0
 
 ### Patch Changes
