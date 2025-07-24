@@ -159,6 +159,10 @@ interface Context {
    * The current value of the file input
    */
   acceptedFiles: File[]
+  /**
+   * Whether files are currently being transformed
+   */
+  transforming: boolean
 }
 
 type Computed = {
@@ -219,6 +223,10 @@ export interface FileUploadApi<T extends PropTypes = PropTypes> {
    * Whether the file input is disabled
    */
   disabled: boolean
+  /**
+   * Whether files are currently being transformed via `transformFiles`
+   */
+  transforming: boolean
   /**
    * Function to open the file dialog
    */

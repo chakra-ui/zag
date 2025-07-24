@@ -53,6 +53,9 @@ export const machine = createMachine<FileUploadSchema>({
           prop("onFileChange")?.({ acceptedFiles: ctx.get("acceptedFiles"), rejectedFiles: value })
         },
       })),
+      transforming: bindable<boolean>(() => ({
+        defaultValue: false,
+      })),
     }
   },
 
@@ -209,10 +212,14 @@ export const machine = createMachine<FileUploadSchema>({
 
         const transform = prop("transformFiles")
         if (transform) {
+          context.set("transforming", true)
           transform(acceptedFiles)
             .then(set)
             .catch((err) => {
               warn(`[zag-js/file-upload] error transforming files\n${err}`)
+            })
+            .finally(() => {
+              context.set("transforming", false)
             })
         } else {
           set(acceptedFiles)
