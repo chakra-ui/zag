@@ -1,5 +1,12 @@
 # @zag-js/i18n-utils
 
+## 1.21.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/dom-query@1.21.0
+
 ## 1.20.1
 
 ### Patch Changes
