@@ -1,0 +1,106 @@
+[data-scope="bottom-sheet"][data-part="backdrop"] {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  opacity: 0;
+  transition: opacity 0.5s cubic-bezier(0.32, 0.72, 0, 1);
+
+  &[data-visible] {
+    opacity: 1;
+  }
+}
+
+[data-scope="bottom-sheet"][data-part="content"] {
+  background: white;
+  transform: translate3d(0, 100%, 0);
+  transition: transform 0.5s cubic-bezier(0.32, 0.72, 0, 1);
+  display: flex;
+  flex-direction: column;
+  border-top-left-radius: 16px;
+  border-top-right-radius: 16px;
+  height: 100%;
+  position: fixed;
+  bottom: 0;
+  width: 400px;
+  left: 0;
+  right: 0;
+
+  & [data-scollable] {
+    overflow-y: hidden !important;
+  }
+
+  &[data-visible] {
+    transform: translate3d(0, var(--snap-point-height, 0), 0);
+  }
+}
+
+[data-scope="bottom-sheet"][data-part="header"] {
+  height: 40px;
+  background-color: red;
+  border-top-left-radius: 16px;
+  border-top-right-radius: 16px;
+}
+
+[data-scope="bottom-sheet"][data-part="close-trigger"] {
+  position: absolute;
+  top: 40px;
+  right: 40px;
+}
+
+.bottom-sheet {
+  .x {
+    display: flex;
+    padding: 8px;
+    max-width: 100%;
+    overflow-x: auto;
+  }
+
+  .x-trigger {
+    display: inline-flex;
+    flex-direction: column;
+    gap: 4px;
+    margin-right: 40px;
+
+    & button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 40px;
+      height: 40px;
+      border-radius: 4px;
+    }
+
+    & span {
+      font-size: 12px;
+      text-align: start;
+      margin-top: 4px;
+      max-width: 40px;
+    }
+  }
+
+  .y {
+    max-height: 40%;
+    overflow-y: auto;
+    margin-top: 20px;
+    padding-inline: 9px;
+  }
+
+  .y-trigger {
+    & button {
+      width: 100%;
+      min-height: 40px;
+      border-radius: 4px;
+      padding-inline: 4px;
+      padding-block: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+
+      & + & {
+        border-bottom-left-radius: 0px;
+        border-bottom-right-radius: 0px;
+        border-top: 1px solid #e0e0e0;
+      }
+    }
+  }
+}
