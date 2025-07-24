@@ -1,5 +1,24 @@
 # @zag-js/dialog
 
+## 1.21.0
+
+### Patch Changes
+
+- [`1aab192`](https://github.com/chakra-ui/zag/commit/1aab19287b3d979959ad5a3f1cbff97b8ef40f6b) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Decouple `trapFocus` from `modal` so it's possible to set
+  `modal=false` and `trapFocus=true`
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.21.0
+  - @zag-js/core@1.21.0
+  - @zag-js/types@1.21.0
+  - @zag-js/aria-hidden@1.21.0
+  - @zag-js/utils@1.21.0
+  - @zag-js/dismissable@1.21.0
+  - @zag-js/dom-query@1.21.0
+  - @zag-js/focus-trap@1.21.0
+  - @zag-js/remove-scroll@1.21.0
+
 ## 1.20.1
 
 ### Patch Changes

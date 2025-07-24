@@ -1,5 +1,43 @@
 # @zag-js/file-upload
 
+## 1.21.0
+
+### Minor Changes
+
+- [`aca32e9`](https://github.com/chakra-ui/zag/commit/aca32e9a7339ac5a273e610b9dd898b447edca71) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Add `api.transforming` to track file transformation state when
+  using `transformFiles`. This enables developers to show loading states during file processing.
+
+  ```tsx
+  const service = useMachine(fileUpload.machine, {
+    // 1. Define a function to transform the files
+    transformFiles: async (files) => {
+      return files.map((file) => {
+        return new File([file], file.name, { type: file.type })
+      })
+    },
+  })
+
+  // 2. Connect the service to the component
+  const api = fileUpload.connect(service, normalizeProps)
+
+  // 3. Show loading indicator when files are being transformed
+  if (api.transforming) {
+    return <div>Transforming files...</div>
+  }
+  ```
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.21.0
+  - @zag-js/core@1.21.0
+  - @zag-js/types@1.21.0
+  - @zag-js/utils@1.21.0
+  - @zag-js/dom-query@1.21.0
+  - @zag-js/file-utils@1.21.0
+  - @zag-js/i18n-utils@1.21.0
+
 ## 1.20.1
 
 ### Patch Changes
