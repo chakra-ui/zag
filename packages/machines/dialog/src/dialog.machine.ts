@@ -179,6 +179,7 @@ export const machine = createMachine<DialogSchema>({
           const elems = [dom.getPositionerEl(scope), dom.getBackdropEl(scope)]
           elems.forEach((node) => {
             node?.style.setProperty("--z-index", styles.zIndex)
+            node?.style.setProperty("--layer-index", styles.getPropertyValue("--layer-index"))
           })
         })
       },
