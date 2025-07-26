@@ -59,6 +59,17 @@ export const comboboxData = [
 
 export const tabsData = [
   {
+    id: "evelyn",
+    label: "Evelyn Glennie",
+    content: `
+    Evelyn Glennie is a Scottish percussionist and composer who has been profoundly deaf since the age of 12. She
+            is known for her ability to feel music through vibrations and has performed internationally, becoming one
+            of the world's leading solo percussionists. Her work has inspired many and challenged perceptions of
+            disability in music.
+    `,
+    disabled: true,
+  },
+  {
     id: "nils",
     label: "Nils Frahm",
     content: `

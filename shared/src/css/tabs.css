@@ -26,6 +26,10 @@
     background: blue;
     color: white;
   }
+  &[disabled] {
+    opacity: 0.5;
+    pointer-events: none;
+  }
 }
 
 [data-scope="tabs"][data-part="content"] {
@@ -38,6 +42,10 @@
 [data-scope="tabs"][data-part="indicator"] {
   background-color: red;
   z-index: 10;
+
+  &[data-disabled] {
+    opacity: 0.5;
+  }
 }
 
 [data-scope="tabs"][data-part="indicator"][data-orientation="horizontal"] {

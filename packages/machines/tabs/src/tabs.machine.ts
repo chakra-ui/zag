@@ -46,6 +46,7 @@ export const machine = createMachine({
       indicatorRect: bindable(() => ({
         defaultValue: { left: "0px", top: "0px", width: "0px", height: "0px" },
       })),
+      indicatorDisabled: bindable(() => ({ defaultValue: false })),
     }
   },
 
@@ -260,6 +261,7 @@ export const machine = createMachine({
         if (!triggerEl) return
 
         context.set("indicatorRect", dom.getRectById(scope, value))
+        context.set("indicatorDisabled", dom.getIsTriggerDisabled(scope, value))
 
         nextTick(() => {
           context.set("indicatorTransition", false)
@@ -289,6 +291,7 @@ export const machine = createMachine({
           onEntry({ rects }) {
             const [rect] = rects
             context.set("indicatorRect", dom.resolveRect(rect))
+            context.set("indicatorDisabled", dom.getIsTriggerDisabled(scope, value))
           },
         })
 
