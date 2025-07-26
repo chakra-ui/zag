@@ -4,6 +4,19 @@ All notable changes to this project will be documented in this file.
 
 > For v0.x changelog, see the [v0 branch](https://github.com/chakra-ui/zag/blob/v0/CHANGELOG.md)
 
+## [1.21.0](./#1.21.0) - 2025-07-26
+
+### Added
+
+- **File Upload**: Add `api.transforming` to track file transformation state when using `transformFiles`. This enables
+  developers to show loading states during file processing.
+
+### Fixed
+
+- **Dialog**
+  - Sync content `--layer-index` with positioner and backdrop
+  - Decouple `trapFocus` from `modal` so it's possible to set `modal=false` and `trapFocus=true`
+
 ## [1.20.1](./#1.20.1) - 2025-07-23
 
 ### Fixed
