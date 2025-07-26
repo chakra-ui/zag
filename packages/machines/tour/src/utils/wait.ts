@@ -33,4 +33,6 @@ export function waitForElementValue(
   )
 }
 
-export { waitForPromise, waitForElement } from "@zag-js/dom-query"
+export { waitForElement, waitForPromise } from "@zag-js/dom-query"
+
+export type { WaitForOptions as WaitOptions }
