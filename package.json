@@ -78,7 +78,7 @@
     "@typescript-eslint/parser": "8.38.0",
     "axe-core": "4.10.3",
     "commitlint": "19.8.1",
-    "cross-env": "^7.0.3",
+    "cross-env": "^10.0.0",
     "dotenv": "17.2.0",
     "eslint": "9.31.0",
     "eslint-config-prettier": "10.1.8",
