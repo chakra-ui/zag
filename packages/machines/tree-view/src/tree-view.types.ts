@@ -69,6 +69,11 @@ export interface LoadChildrenErrorDetails<T extends TreeNode = TreeNode> {
   nodes: NodeWithError<T>[]
 }
 
+export interface ScrollToNodeDetails<T extends TreeNode = TreeNode> {
+  value: string
+  node: T
+}
+
 export type ElementIds = Partial<{
   root: string
   tree: string
@@ -172,6 +177,10 @@ export interface TreeViewProps<T extends TreeNode = TreeNode> extends DirectionP
    * When provided, branches will wait for this promise to resolve before expanding.
    */
   loadChildren?: ((details: LoadChildrenDetails<T>) => Promise<T[]>) | undefined
+  /**
+   * Function to scroll to a node by index path
+   */
+  scrollToNode?: (details: ScrollToNodeDetails<T>) => void | undefined
 }
 
 type PropsWithDefault =

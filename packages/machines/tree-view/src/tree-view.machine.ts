@@ -1,7 +1,7 @@
 import type { TreeNode } from "@zag-js/collection"
-import { createGuards, createMachine } from "@zag-js/core"
-import { getByTypeahead } from "@zag-js/dom-query"
-import { addOrRemove, diff, first, isArray, isEqual, last, remove, toArray, uniq } from "@zag-js/utils"
+import { createGuards, createMachine, type Params } from "@zag-js/core"
+import { getByTypeahead, waitForElement } from "@zag-js/dom-query"
+import { addOrRemove, callAll, diff, first, isArray, isEqual, last, remove, toArray, uniq } from "@zag-js/utils"
 import { collection } from "./tree-view.collection"
 import * as dom from "./tree-view.dom"
 import type { TreeLoadingStatusMap, TreeViewSchema } from "./tree-view.types"
@@ -335,65 +335,60 @@ export const machine = createMachine<TreeViewSchema>({
       clearSelected({ context }) {
         context.set("selectedValue", [])
       },
-      focusTreeFirstNode({ prop, scope }) {
+      focusTreeFirstNode(params) {
+        const { prop } = params
         const collection = prop("collection")
-        const firstNode = collection.getFirstNode()
-        const firstValue = collection.getNodeValue(firstNode)
-        dom.focusNode(scope, firstValue)
+        focusNodeEl(params, collection.getFirstNode())
       },
       focusTreeLastNode(params) {
-        const { prop, scope } = params
+        const { prop } = params
         const collection = prop("collection")
-        const lastNode = collection.getLastNode(undefined, { skip: skipFn(params) })
-        const lastValue = collection.getNodeValue(lastNode)
-        dom.focusNode(scope, lastValue)
+        focusNodeEl(params, collection.getLastNode(undefined, { skip: skipFn(params) }))
       },
-      focusBranchFirstNode({ event, prop, scope }) {
+      focusBranchFirstNode(params) {
+        const { event, prop } = params
         const collection = prop("collection")
         const branchNode = collection.findNode(event.id)
-        const firstNode = collection.getFirstNode(branchNode)
-        const firstValue = collection.getNodeValue(firstNode)
-        dom.focusNode(scope, firstValue)
+        focusNodeEl(params, collection.getFirstNode(branchNode))
       },
       focusTreeNextNode(params) {
-        const { event, prop, scope } = params
+        const { event, prop } = params
         const collection = prop("collection")
         const nextNode = collection.getNextNode(event.id, { skip: skipFn(params) })
         if (!nextNode) return
-        const nextValue = collection.getNodeValue(nextNode)
-        dom.focusNode(scope, nextValue)
+        focusNodeEl(params, nextNode)
       },
       focusTreePrevNode(params) {
-        const { event, prop, scope } = params
+        const { event, prop } = params
         const collection = prop("collection")
         const prevNode = collection.getPreviousNode(event.id, { skip: skipFn(params) })
         if (!prevNode) return
-        const prevValue = collection.getNodeValue(prevNode)
-        dom.focusNode(scope, prevValue)
+        focusNodeEl(params, prevNode)
       },
-      focusBranchNode({ event, prop, scope }) {
+      focusBranchNode(params) {
+        const { event, prop } = params
         const collection = prop("collection")
         const parentNode = collection.getParentNode(event.id)
-        const parentValue = parentNode ? collection.getNodeValue(parentNode) : undefined
-        dom.focusNode(scope, parentValue)
+        focusNodeEl(params, parentNode)
       },
       selectAllNodes({ context, prop }) {
         context.set("selectedValue", prop("collection").getValues())
       },
       focusMatchedNode(params) {
-        const { context, prop, refs, event, scope, computed } = params
-        const nodes = computed("visibleNodes")
-        const elements = nodes.map(({ node }) => ({
+        const { context, prop, refs, event, computed } = params
+        const visibleNodes = computed("visibleNodes")
+        const elements = visibleNodes.map(({ node }) => ({
           textContent: prop("collection").stringifyNode(node),
           id: prop("collection").getNodeValue(node),
+          node,
         }))
-        const node = getByTypeahead(elements, {
+        const matchedNode = getByTypeahead(elements, {
           state: refs.get("typeaheadState"),
           activeId: context.get("focusedValue"),
           key: event.key,
         })
 
-        dom.focusNode(scope, node?.id)
+        focusNodeEl(params, matchedNode?.node)
       },
       toggleNodeSelection({ context, event }) {
         const selectedValue = addOrRemove(context.get("selectedValue"), event.id)
@@ -532,3 +527,20 @@ export const machine = createMachine<TreeViewSchema>({
     },
   },
 })
+
+function focusNodeEl(params: Params<TreeViewSchema>, node: TreeNode) {
+  const { prop, scope } = params
+
+  const collection = prop("collection")
+  const scrollToNode = prop("scrollToNode")
+
+  const value = collection.getNodeValue(node)
+
+  if (scrollToNode) {
+    // consider getting flattened index path
+    scrollToNode({ value, node })
+  }
+
+  const [promise, cleanup] = waitForElement(() => dom.getNodeEl(scope, value), { timeout: 1000 })
+  promise.then((el) => callAll(el.focus, cleanup))
+}

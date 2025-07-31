@@ -5,8 +5,4 @@ export const getLabelId = (ctx: Scope) => ctx.ids?.label ?? `tree:${ctx.id}:labe
 export const getNodeId = (ctx: Scope, value: string) => ctx.ids?.node?.(value) ?? `tree:${ctx.id}:node:${value}`
 export const getTreeId = (ctx: Scope) => ctx.ids?.tree ?? `tree:${ctx.id}:tree`
 export const getTreeEl = (ctx: Scope) => ctx.getById(getTreeId(ctx))
-
-export const focusNode = (ctx: Scope, value: string | null | undefined) => {
-  if (value == null) return
-  ctx.getById(getNodeId(ctx, value))?.focus()
-}
+export const getNodeEl = (ctx: Scope, value: string) => ctx.getById(getNodeId(ctx, value))

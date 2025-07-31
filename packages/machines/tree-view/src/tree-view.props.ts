@@ -26,6 +26,7 @@ export const props = createProps<TreeViewProps>()([
   "onLoadChildrenComplete",
   "onLoadChildrenError",
   "loadChildren",
+  "scrollToNode",
 ])
 
 export const splitProps = createSplitProps<Partial<TreeViewProps>>(props)

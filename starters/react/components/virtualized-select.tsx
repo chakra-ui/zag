@@ -31,7 +31,7 @@ export function VirtualizedSelect(props: SelectProps) {
     estimateSize: () => 32,
   })
 
-  const timerRef = useRef<NodeJS.Timeout>()
+  const timerRef = useRef<NodeJS.Timeout | null>(null)
 
   const service = useMachine(select.machine, {
     id: useId(),
@@ -48,7 +48,9 @@ export function VirtualizedSelect(props: SelectProps) {
       if (!details.immediate) {
         rowVirtualizer.scrollToIndex(details.index, { align: "center", behavior: "auto" })
       } else {
-        clearTimeout(timerRef.current)
+        if (timerRef.current != null) {
+          clearTimeout(timerRef.current)
+        }
         timerRef.current = setTimeout(() => {
           rowVirtualizer.scrollToIndex(details.index, { align: "center", behavior: "auto" })
         })
