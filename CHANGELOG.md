@@ -4,6 +4,16 @@ All notable changes to this project will be documented in this file.
 
 > For v0.x changelog, see the [v0 branch](https://github.com/chakra-ui/zag/blob/v0/CHANGELOG.md)
 
+## [1.21.1](./#1.21.1) - 2025-07-31
+
+### Fixed
+
+- **Carousel**: Fix issue where controlled carousel ignores last slide
+
+- **Tour**: Re-expose `WaitOptions`
+
+- **Floating Panel**: Add data attributes for floating panel stage status
+
 ## [1.21.0](./#1.21.0) - 2025-07-26
 
 ### Added
