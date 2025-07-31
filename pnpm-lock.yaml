@@ -230,6 +230,9 @@ importers:
       '@zag-js/highlight-word':
         specifier: workspace:*
         version: link:../../packages/utilities/highlight-word
+      '@zag-js/hotkeys':
+        specifier: workspace:*
+        version: link:../../packages/utilities/hotkeys
       '@zag-js/hover-card':
         specifier: workspace:*
         version: link:../../packages/machines/hover-card
@@ -516,6 +519,9 @@ importers:
       '@zag-js/highlight-word':
         specifier: workspace:*
         version: link:../../packages/utilities/highlight-word
+      '@zag-js/hotkeys':
+        specifier: workspace:*
+        version: link:../../packages/utilities/hotkeys
       '@zag-js/hover-card':
         specifier: workspace:*
         version: link:../../packages/machines/hover-card
@@ -775,6 +781,9 @@ importers:
       '@zag-js/highlight-word':
         specifier: workspace:*
         version: link:../../packages/utilities/highlight-word
+      '@zag-js/hotkeys':
+        specifier: workspace:*
+        version: link:../../packages/utilities/hotkeys
       '@zag-js/hover-card':
         specifier: workspace:*
         version: link:../../packages/machines/hover-card
@@ -1043,6 +1052,9 @@ importers:
       '@zag-js/highlight-word':
         specifier: workspace:*
         version: link:../../packages/utilities/highlight-word
+      '@zag-js/hotkeys':
+        specifier: workspace:*
+        version: link:../../packages/utilities/hotkeys
       '@zag-js/hover-card':
         specifier: workspace:*
         version: link:../../packages/machines/hover-card
@@ -1286,6 +1298,9 @@ importers:
       '@zag-js/highlight-word':
         specifier: workspace:*
         version: link:../../packages/utilities/highlight-word
+      '@zag-js/hotkeys':
+        specifier: workspace:*
+        version: link:../../packages/utilities/hotkeys
       '@zag-js/hover-card':
         specifier: workspace:*
         version: link:../../packages/machines/hover-card
@@ -1554,6 +1569,9 @@ importers:
       '@zag-js/highlight-word':
         specifier: workspace:*
         version: link:../../packages/utilities/highlight-word
+      '@zag-js/hotkeys':
+        specifier: workspace:*
+        version: link:../../packages/utilities/hotkeys
       '@zag-js/hover-card':
         specifier: workspace:*
         version: link:../../packages/machines/hover-card
@@ -3194,6 +3212,12 @@ importers:
         version: 2.2.0
 
   packages/utilities/highlight-word:
+    devDependencies:
+      clean-package:
+        specifier: 2.2.0
+        version: 2.2.0
+
+  packages/utilities/hotkeys:
     devDependencies:
       clean-package:
         specifier: 2.2.0
