@@ -1,5 +1,24 @@
 # @zag-js/floating-panel
 
+## 1.21.1
+
+### Patch Changes
+
+- [#2601](https://github.com/chakra-ui/zag/pull/2601)
+  [`1248b86`](https://github.com/chakra-ui/zag/commit/1248b8632753633bf6dea48db24f7132f38cda3c) Thanks
+  [@anubra266](https://github.com/anubra266)! - Add data attributes for floating panel stage status
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.21.1
+  - @zag-js/core@1.21.1
+  - @zag-js/store@1.21.1
+  - @zag-js/types@1.21.1
+  - @zag-js/utils@1.21.1
+  - @zag-js/dismissable@1.21.1
+  - @zag-js/dom-query@1.21.1
+  - @zag-js/popper@1.21.1
+  - @zag-js/rect-utils@1.21.1
+
 ## 1.21.0
 
 ### Patch Changes

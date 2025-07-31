@@ -1,5 +1,20 @@
 # @zag-js/carousel
 
+## 1.21.1
+
+### Patch Changes
+
+- [`ab109c6`](https://github.com/chakra-ui/zag/commit/ab109c696d235492f6f216c783d5302c0918f988) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix issue where controlled carousel ignores last slide
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.21.1
+  - @zag-js/core@1.21.1
+  - @zag-js/types@1.21.1
+  - @zag-js/utils@1.21.1
+  - @zag-js/dom-query@1.21.1
+  - @zag-js/scroll-snap@1.21.1
+
 ## 1.21.0
 
 ### Patch Changes
