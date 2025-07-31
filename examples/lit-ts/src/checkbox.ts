@@ -21,12 +21,6 @@ export class Checkbox extends Component<checkbox.Api> {
   static styles = unsafeCSS(style)
 
   override render() {
-    console.log("rendering", {
-      getRootProps: this.api.getRootProps(),
-      getControlProps: this.api.getControlProps(),
-      getLabelProps: this.api.getLabelProps(),
-      getHiddenInputProps: this.api.getHiddenInputProps(),
-    })
     return html`<label ${spread(this.api.getRootProps())} class="checkbox">
       <div ${spread(this.api.getControlProps())} class="checkbox-control"></div>
       <span ${spread(this.api.getLabelProps())} class="checkbox-label">Checkbox Label</span>

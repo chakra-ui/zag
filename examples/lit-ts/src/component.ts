@@ -26,7 +26,6 @@ export abstract class Component<Api> extends LitElement implements ComponentInte
 
     this.machine.subscribe((service) => {
       this.api = this.initApi()
-      console.log("request update", service)
       this.requestUpdate()
     })
     this.machine.start()

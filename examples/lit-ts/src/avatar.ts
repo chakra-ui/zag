@@ -19,11 +19,6 @@ export class Avatar extends Component<avatar.Api> {
   static styles = unsafeCSS(style)
 
   override render() {
-    console.log("rendering", {
-      getRootProps: this.api.getRootProps(),
-      getFallbackProps: this.api.getFallbackProps(),
-      getImageProps: this.api.getImageProps(),
-    })
     return html`<div ${spread(this.api.getRootProps())} class="avatar">
       <span ${spread(this.api.getFallbackProps())} class="avatar-fallback">PA</span>
       <img
