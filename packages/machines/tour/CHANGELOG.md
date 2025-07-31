@@ -1,5 +1,23 @@
 # @zag-js/tour
 
+## 1.21.1
+
+### Patch Changes
+
+- [`aecf900`](https://github.com/chakra-ui/zag/commit/aecf9006294ba179e74e6eb755f3be1ac69967bb) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Re-expose `WaitOptions`
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.21.1
+  - @zag-js/core@1.21.1
+  - @zag-js/types@1.21.1
+  - @zag-js/utils@1.21.1
+  - @zag-js/dismissable@1.21.1
+  - @zag-js/dom-query@1.21.1
+  - @zag-js/focus-trap@1.21.1
+  - @zag-js/interact-outside@1.21.1
+  - @zag-js/popper@1.21.1
+
 ## 1.21.0
 
 ### Patch Changes
