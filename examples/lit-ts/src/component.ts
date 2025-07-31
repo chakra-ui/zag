@@ -24,7 +24,7 @@ export abstract class Component<Api> extends LitElement implements ComponentInte
   override connectedCallback(): void {
     super.connectedCallback()
 
-    this.machine.subscribe((service) => {
+    this.machine.subscribe(() => {
       this.api = this.initApi()
       this.requestUpdate()
     })
