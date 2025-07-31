@@ -1,0 +1,235 @@
+:root {
+  --ring-color: blue;
+}
+
+body {
+  position: relative;
+}
+
+* {
+  box-sizing: border-box;
+  font-family:
+    -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue",
+    sans-serif;
+}
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+}
+
+*:focus {
+  outline: 2px solid var(--ring-color);
+  outline-offset: 2px;
+}
+
+button {
+  flex-shrink: 0;
+}
+
+.root {
+  margin: 24px;
+}
+
+ul {
+  padding-inline-start: 0;
+}
+
+[hidden] {
+  display: none !important;
+}
+
+.pre {
+  background: rgba(0, 0, 0, 0.05);
+  padding: 20px;
+  margin-bottom: 40px;
+  border-radius: 10px;
+  font-family: monospace;
+}
+
+.index-nav {
+  line-height: 1em;
+  flex: 1;
+  padding: 40px;
+  overflow-y: auto;
+}
+
+.index-nav ul {
+  list-style-type: none;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  grid-gap: 20px;
+  padding: 0;
+}
+
+.index-nav a {
+  display: block;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  padding: 20px;
+  text-transform: capitalize;
+  text-decoration: none;
+}
+
+.backlink {
+  margin: 16px 12px;
+}
+
+body {
+  margin: 0;
+  font-size: 14px;
+  overflow: hidden;
+}
+
+.page {
+  display: flex;
+  height: 100vh;
+  overflow: hidden;
+}
+
+.page main {
+  flex: auto;
+  display: flex;
+  gap: 10px;
+  position: relative;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: 40px;
+  overflow-y: auto;
+}
+
+.nav {
+  display: flex;
+  flex-direction: column;
+  width: 292px;
+  border-right: solid 1px #d7e0da;
+  overflow-y: scroll;
+}
+
+.nav header {
+  padding: 8px;
+  font-size: larger;
+  font-weight: 600;
+}
+
+.nav a {
+  padding: 6px 14px;
+  border-left: solid 4px transparent;
+  text-decoration: none;
+  color: black;
+}
+
+.nav a:hover {
+  background-color: rgba(124, 128, 125, 0.4);
+}
+
+.nav a:focus {
+  outline: none;
+}
+
+.nav a[data-active],
+a[aria-current="page"] {
+  border-color: green;
+  font-weight: 500;
+}
+
+.controls-container {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  order: 1;
+  padding: 12px 22px;
+}
+.controls-container .text {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.controls-container .text label {
+  font-weight: 500;
+}
+.controls-container .text input,
+.controls-container .text select {
+  padding: 4px;
+  border: solid 1px black;
+  border-radius: 4px;
+}
+
+.toolbar {
+  border-left: solid 1px #d7e0da;
+  width: 400px;
+  display: flex;
+  flex-direction: column;
+}
+
+.toolbar nav {
+  padding: 16px;
+  display: flex;
+  gap: 24px;
+  border-bottom: solid 1px #d7e0da;
+}
+
+.toolbar nav button {
+  all: unset;
+  font-weight: 500;
+}
+
+.toolbar nav button[data-active] {
+  color: green;
+}
+
+.toolbar > div {
+  max-height: 100%;
+  overflow: hidden;
+}
+
+.toolbar [data-content] {
+  display: none;
+}
+
+.toolbar [data-content][data-active] {
+  display: flex;
+  flex-direction: column;
+  max-height: 100%;
+}
+
+.toolbar .viz {
+  font-size: 13px;
+  --viz-font: SF Mono, Menlo, monospace;
+  padding-left: 14px;
+  flex: 1;
+  overflow: auto;
+  border-bottom: solid 1px #d7e0da;
+}
+
+.toolbar .viz summary {
+  margin-bottom: 24;
+  font-family: var(--viz-font);
+  font-weight: bold;
+}
+
+.toolbar .viz summary + div > * {
+  font-family: var(--viz-font);
+}
+
+.output {
+  border: 2px solid black;
+  padding-inline: 40px;
+  padding-block: 10px;
+  padding-bottom: 32px;
+}
+
+.output p {
+  font-weight: 600;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
