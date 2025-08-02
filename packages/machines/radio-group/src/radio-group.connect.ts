@@ -196,12 +196,14 @@ export function connect<T extends PropTypes>(
 
     getIndicatorProps() {
       const rect = context.get("indicatorRect")
+      const disabled = context.get("indicatorDisabled")
+
       return normalize.element({
         id: dom.getIndicatorId(scope),
         ...parts.indicator.attrs,
         dir: prop("dir"),
         hidden: context.get("value") == null,
-        "data-disabled": dataAttr(groupDisabled),
+        "data-disabled": dataAttr(groupDisabled) || dataAttr(disabled),
         "data-orientation": prop("orientation"),
         style: {
           "--transition-property": "left, top, width, height",

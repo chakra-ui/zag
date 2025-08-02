@@ -11,9 +11,18 @@
   padding: 8px;
   width: 100%;
   text-align: center;
+
+  &[data-disabled] {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
 }
 
 .segmented-control [data-part="indicator"] {
   width: var(--width);
   height: var(--height);
+
+  &[data-disabled] {
+    opacity: 0.5;
+  }
 }

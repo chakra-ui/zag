@@ -59,6 +59,15 @@ export const comboboxData = [
 
 export const tabsData = [
   {
+    id: "nils",
+    label: "Nils Frahm",
+    content: `
+    Nils Frahm is a German musician, composer and record producer based in Berlin. He is known for combining
+            classical and electronic music and for an unconventional approach to the piano in which he mixes a grand
+            piano, upright piano, Roland Juno-60, Rhodes piano, drum machine, and Moog Taurus.
+    `,
+  },
+  {
     id: "evelyn",
     label: "Evelyn Glennie",
     content: `
@@ -68,15 +77,6 @@ export const tabsData = [
             disability in music.
     `,
     disabled: true,
-  },
-  {
-    id: "nils",
-    label: "Nils Frahm",
-    content: `
-    Nils Frahm is a German musician, composer and record producer based in Berlin. He is known for combining
-            classical and electronic music and for an unconventional approach to the piano in which he mixes a grand
-            piano, upright piano, Roland Juno-60, Rhodes piano, drum machine, and Moog Taurus.
-    `,
   },
   {
     id: "agnes",
@@ -136,6 +136,13 @@ export const menuOptionData = {
 export const radioData = [
   { id: "apple", label: "Apples" },
   { id: "orange", label: "Oranges" },
+  { id: "mango", label: "Mangoes" },
+  { id: "grape", label: "Grapes" },
+]
+
+export const segmentControlData = [
+  { id: "apple", label: "Apples" },
+  { id: "orange", label: "Oranges", disabled: true },
   { id: "mango", label: "Mangoes" },
   { id: "grape", label: "Grapes" },
 ]

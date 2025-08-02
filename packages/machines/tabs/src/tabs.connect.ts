@@ -185,14 +185,14 @@ export function connect<T extends PropTypes>(service: Service<TabsSchema>, norma
     getIndicatorProps() {
       const indicatorRect = context.get("indicatorRect")
       const indicatorTransition = context.get("indicatorTransition")
-      const disabled = context.get("indicatorDisabled")
+      const indicatorDisabled = context.get("indicatorDisabled")
 
       return normalize.element({
         id: dom.getIndicatorId(scope),
         ...parts.indicator.attrs,
         dir: prop("dir"),
         "data-orientation": prop("orientation"),
-        "data-disabled": dataAttr(disabled),
+        "data-disabled": dataAttr(indicatorDisabled),
         style: {
           "--transition-property": "left, right, top, bottom, width, height",
           "--left": indicatorRect.left,
