@@ -45,6 +45,11 @@ const docsMap = {
   "data-overlap": "Present when overlapping",
   "data-path": "The path of the item",
   "data-value": "The value of the item",
+  "data-in-hover-range": "Present when in hovered range",
+  "data-hover-range-start": "Present when is the start of the hovered range",
+  "data-hover-range-end": "Present when is the end of the hovered range",
+  "data-loading": "Present when loading",
+  "data-activedescendant": "The id the active descendant of the {{widget}}",
 }
 
 const skipAttrs = ["data-ownedby", "data-uid"]

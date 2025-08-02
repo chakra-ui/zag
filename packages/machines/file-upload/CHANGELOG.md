@@ -1,5 +1,137 @@
 # @zag-js/file-upload
 
+## 1.21.1
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.21.1
+  - @zag-js/core@1.21.1
+  - @zag-js/types@1.21.1
+  - @zag-js/utils@1.21.1
+  - @zag-js/dom-query@1.21.1
+  - @zag-js/file-utils@1.21.1
+  - @zag-js/i18n-utils@1.21.1
+
+## 1.21.0
+
+### Minor Changes
+
+- [`aca32e9`](https://github.com/chakra-ui/zag/commit/aca32e9a7339ac5a273e610b9dd898b447edca71) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Add `api.transforming` to track file transformation state when
+  using `transformFiles`. This enables developers to show loading states during file processing.
+
+  ```tsx
+  const service = useMachine(fileUpload.machine, {
+    // 1. Define a function to transform the files
+    transformFiles: async (files) => {
+      return files.map((file) => {
+        return new File([file], file.name, { type: file.type })
+      })
+    },
+  })
+
+  // 2. Connect the service to the component
+  const api = fileUpload.connect(service, normalizeProps)
+
+  // 3. Show loading indicator when files are being transformed
+  if (api.transforming) {
+    return <div>Transforming files...</div>
+  }
+  ```
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.21.0
+  - @zag-js/core@1.21.0
+  - @zag-js/types@1.21.0
+  - @zag-js/utils@1.21.0
+  - @zag-js/dom-query@1.21.0
+  - @zag-js/file-utils@1.21.0
+  - @zag-js/i18n-utils@1.21.0
+
+## 1.20.1
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.20.1
+  - @zag-js/core@1.20.1
+  - @zag-js/types@1.20.1
+  - @zag-js/utils@1.20.1
+  - @zag-js/dom-query@1.20.1
+  - @zag-js/file-utils@1.20.1
+  - @zag-js/i18n-utils@1.20.1
+
+## 1.20.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.20.0
+  - @zag-js/core@1.20.0
+  - @zag-js/types@1.20.0
+  - @zag-js/utils@1.20.0
+  - @zag-js/dom-query@1.20.0
+  - @zag-js/file-utils@1.20.0
+  - @zag-js/i18n-utils@1.20.0
+
+## 1.19.0
+
+### Minor Changes
+
+- [`6332081`](https://github.com/chakra-ui/zag/commit/633208183516e272d74cbfdc2c94547b0c4f3218) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Add support for programmatically controlling the accepted files
+  via `acceptedFiles` and `defaultAcceptedFiles`
+
+  ```tsx
+  const service = useMachine(fileUpload.machine, {
+    defaultAcceptedFiles: [new File(["test"], "test.txt", { type: "text/plain" })],
+  })
+  ```
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.19.0
+  - @zag-js/core@1.19.0
+  - @zag-js/types@1.19.0
+  - @zag-js/utils@1.19.0
+  - @zag-js/dom-query@1.19.0
+  - @zag-js/file-utils@1.19.0
+  - @zag-js/i18n-utils@1.19.0
+
+## 1.18.5
+
+### Patch Changes
+
+- [`59a7bfb`](https://github.com/chakra-ui/zag/commit/59a7bfb7215b4c9d13d11487f50ad852cd8347a9) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix issue destructuring returned api could throw an ESLint
+  `unbound-method` warning
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.18.5
+  - @zag-js/core@1.18.5
+  - @zag-js/types@1.18.5
+  - @zag-js/utils@1.18.5
+  - @zag-js/dom-query@1.18.5
+  - @zag-js/file-utils@1.18.5
+  - @zag-js/i18n-utils@1.18.5
+
+## 1.18.4
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.18.4
+  - @zag-js/core@1.18.4
+  - @zag-js/types@1.18.4
+  - @zag-js/utils@1.18.4
+  - @zag-js/dom-query@1.18.4
+  - @zag-js/file-utils@1.18.4
+  - @zag-js/i18n-utils@1.18.4
+
 ## 1.18.3
 
 ### Patch Changes

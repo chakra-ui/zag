@@ -196,7 +196,7 @@ function getPlacementImpl(referenceOrVirtual: MaybeRectElement, floating: MaybeE
 
   const update = async () => {
     if (opts.updatePosition) {
-      await opts.updatePosition({ updatePosition })
+      await opts.updatePosition({ updatePosition, floatingElement: floating })
       onPositioned?.({ placed: true })
     } else {
       await updatePosition()

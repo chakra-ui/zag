@@ -73,7 +73,7 @@ export type ElementIds = Partial<{
   root: string
   tree: string
   label: string
-  node(value: string): string
+  node: (value: string) => string
 }>
 
 /* -----------------------------------------------------------------------------
@@ -136,15 +136,15 @@ export interface TreeViewProps<T extends TreeNode = TreeNode> extends DirectionP
   /**
    * Called when the tree is opened or closed
    */
-  onExpandedChange?: ((details: ExpandedChangeDetails) => void) | undefined
+  onExpandedChange?: ((details: ExpandedChangeDetails<T>) => void) | undefined
   /**
    * Called when the selection changes
    */
-  onSelectionChange?: ((details: SelectionChangeDetails) => void) | undefined
+  onSelectionChange?: ((details: SelectionChangeDetails<T>) => void) | undefined
   /**
    * Called when the focused node changes
    */
-  onFocusChange?: ((details: FocusChangeDetails) => void) | undefined
+  onFocusChange?: ((details: FocusChangeDetails<T>) => void) | undefined
   /**
    * Called when the checked value changes
    */
@@ -290,93 +290,93 @@ export interface TreeViewApi<T extends PropTypes = PropTypes, V extends TreeNode
    */
   collection: TreeCollection<V>
   /**
-   * The value of the expanded nodes
+   * The value of the expanded nodes.
    */
   expandedValue: string[]
   /**
-   * Function to set the expanded value
+   * Sets the expanded value
    */
-  setExpandedValue(value: string[]): void
+  setExpandedValue: (value: string[]) => void
   /**
-   * The value of the selected nodes
+   * The value of the selected nodes.
    */
   selectedValue: string[]
   /**
-   * Function to set the selected value
+   * Sets the selected value
    */
-  setSelectedValue(value: string[]): void
+  setSelectedValue: (value: string[]) => void
   /**
    * The value of the checked nodes
    */
   checkedValue: string[]
   /**
-   * Function to toggle the checked value of a node
+   * Toggles the checked value of a node
    */
-  toggleChecked(value: string, isBranch: boolean): void
+  toggleChecked: (value: string, isBranch: boolean) => void
   /**
-   * Function to set the checked value of a node
+   * Sets the checked value of a node
    */
-  setChecked(value: string[]): void
+  setChecked: (value: string[]) => void
   /**
-   * Function to clear the checked value of a node
+   * Clears the checked value of a node
    */
-  clearChecked(): void
+  clearChecked: VoidFunction
   /**
-   * Function to get the checked details of branch and leaf nodes
+   * Returns the checked details of branch and leaf nodes
    */
-  getCheckedMap(): CheckedValueMap
+  getCheckedMap: () => CheckedValueMap
   /**
-   * Function to get the visible nodes
+   * Returns the visible nodes as a flat array of nodes and their index path
    */
-  getVisibleNodes(): V[]
+  getVisibleNodes: () => V[]
   /**
    * Function to expand nodes.
    * If no value is provided, all nodes will be expanded
    */
-  expand(value?: string[]): void
+  expand: (value?: string[]) => void
   /**
    * Function to collapse nodes
    * If no value is provided, all nodes will be collapsed
    */
-  collapse(value?: string[]): void
+  collapse: (value?: string[]) => void
   /**
    * Function to select nodes
    * If no value is provided, all nodes will be selected
    */
-  select(value?: string[]): void
+  select: (value?: string[]) => void
   /**
    * Function to deselect nodes
    * If no value is provided, all nodes will be deselected
    */
-  deselect(value?: string[]): void
+  deselect: (value?: string[]) => void
   /**
    * Function to focus a node by value
    */
-  focus(value: string): void
+  focus: (value: string) => void
   /**
    * Function to select the parent node of the focused node
    */
-  selectParent(value: string): void
+  selectParent: (value: string) => void
   /**
    * Function to expand the parent node of the focused node
    */
-  expandParent(value: string): void
+  expandParent: (value: string) => void
 
-  getRootProps(): T["element"]
-  getLabelProps(): T["element"]
-  getTreeProps(): T["element"]
-  getNodeState(props: NodeProps): NodeState
-  getItemProps(props: NodeProps): T["element"]
-  getNodeCheckboxProps(props: NodeProps): T["element"]
-  getItemIndicatorProps(props: NodeProps): T["element"]
-  getItemTextProps(props: NodeProps): T["element"]
-  getBranchProps(props: NodeProps): T["element"]
-  getBranchIndicatorProps(props: NodeProps): T["element"]
-  getBranchTriggerProps(props: NodeProps): T["element"]
-  getBranchControlProps(props: NodeProps): T["element"]
-  getBranchContentProps(props: NodeProps): T["element"]
-  getBranchTextProps(props: NodeProps): T["element"]
-  getBranchIndentGuideProps(props: NodeProps): T["element"]
+  getRootProps: () => T["element"]
+  getLabelProps: () => T["element"]
+  getTreeProps: () => T["element"]
+  getNodeState: (props: NodeProps) => NodeState
+  getItemProps: (props: NodeProps) => T["element"]
+  getNodeCheckboxProps: (props: NodeProps) => T["element"]
+  getItemIndicatorProps: (props: NodeProps) => T["element"]
+  getItemTextProps: (props: NodeProps) => T["element"]
+  getBranchProps: (props: NodeProps) => T["element"]
+  getBranchIndicatorProps: (props: NodeProps) => T["element"]
+  getBranchTriggerProps: (props: NodeProps) => T["element"]
+  getBranchControlProps: (props: NodeProps) => T["element"]
+  getBranchContentProps: (props: NodeProps) => T["element"]
+  getBranchTextProps: (props: NodeProps) => T["element"]
+  getBranchIndentGuideProps: (props: NodeProps) => T["element"]
 }
 
 export type { TreeNode } from "@zag-js/collection"

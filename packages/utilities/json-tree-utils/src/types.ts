@@ -1,7 +1,9 @@
 export type JsonNodeType =
   | "object"
   | "array"
-  | "primitive"
+  | "boolean"
+  | "number"
+  | "string"
   | "null"
   | "set"
   | "map"
@@ -38,6 +40,10 @@ export type JsonNodeType =
   | "error"
   | "function"
   | "circular"
+  | "element"
+  | "document"
+  | "window"
+  | "react-element"
 
 export type JsonNodeKeyPath = (string | number)[]
 
@@ -59,7 +65,7 @@ export interface JsonNodeElement {
   tagName: "span" | "div" | "a"
   properties: {
     root?: boolean
-    nodeType?: string
+    nodeType?: JsonNodeType
     kind?: JsonNodeSyntaxKind
     [key: string]: any
   }
@@ -76,49 +82,36 @@ export interface JsonNodeText {
 export type JsonNodeHastElement = JsonNodeElement | JsonNodeText
 
 export interface JsonNode<T = any> {
-  id: string
-  key?: string | undefined
   value: T
   type: JsonNodeType
+  keyPath: JsonNodeKeyPath
   constructorName?: string | undefined
   isNonEnumerable?: boolean
   propertyDescriptor?: PropertyDescriptor | undefined
   children?: JsonNode[]
-  keyPath?: JsonNodeKeyPath | undefined
-  dataTypePath?: string | undefined
 }
 
 export interface JsonNodePreviewOptions {
   maxPreviewItems: number
   collapseStringsAfterLength: number
+  groupArraysAfterLength: number
+  showNonenumerable: boolean
 }
 
-export interface JsonDataTypeOptions<T = unknown> {
+export interface JsonDataTypeOptions<T = any> {
   type: JsonNodeType | ((value: T) => JsonNodeType)
-  check(value: unknown): boolean
+  check: (value: any) => boolean
   node: JsonNodeCreatorFn<T>
   description: string | ((node: JsonNode<T>, opts: JsonNodePreviewOptions) => string)
   previewText?: (node: JsonNode<T>, opts: JsonNodePreviewOptions) => string
-  previewElement(node: JsonNode<T>, opts: JsonNodePreviewOptions): JsonNodeElement
+  previewElement: (node: JsonNode<T>, opts: JsonNodePreviewOptions) => JsonNodeElement
 }
 
-export interface JsonNodeCreatorParams<T = unknown> {
+export interface JsonNodeCreatorParams<T = any> {
   value: T
-  id: string
-  visited: WeakSet<WeakKey>
-  parentKey: string
-  keyPath: Array<string | number>
-  dataTypePath: string
-  createNode(
-    value: unknown,
-    key: string,
-    id?: string,
-    visited?: WeakSet<WeakKey>,
-    keyPath?: Array<string | number>,
-    dataTypePath?: string,
-  ): JsonNode
+  keyPath: JsonNodeKeyPath
+  options: JsonNodePreviewOptions | undefined
+  createNode: (keyPath: JsonNodeKeyPath, value: unknown) => JsonNode
 }
 
-export interface JsonNodeCreatorFn<T = unknown> {
-  (opts: JsonNodeCreatorParams<T>): JsonNode
-}
+export type JsonNodeCreatorFn<T = any> = (opts: JsonNodeCreatorParams<T>) => JsonNode

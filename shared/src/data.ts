@@ -340,3 +340,60 @@ export const stepsData = [
 ]
 
 export * as commandData from "./command"
+
+// JSON Tree test data
+const testArray = [1, 2, 3, 4, 5]
+Object.defineProperties(testArray, {
+  customProperty: { value: "custom value", enumerable: false, writable: false },
+  anotherProperty: { value: 42, enumerable: false, writable: false },
+})
+
+const sparseArray = new Array(10)
+sparseArray[9] = 9
+
+class TestClass {
+  name: string
+  constructor() {
+    this.name = "Test Class"
+  }
+}
+
+export const jsonTreeData = {
+  name: "John Doe",
+  longString: "This is a long string that should be collapsed after 30 characters and show ellipsis",
+  age: 30,
+  email: "john.doe@example.com",
+  tags: ["tag1", "tag2", "tag3"],
+  address: {
+    street: "123 Main St",
+    city: "Anytown",
+    state: "CA",
+    zip: "12345",
+  },
+  testArray,
+  sparseArray,
+  map: new Map([
+    ["key1", "value1"],
+    ["key2", "value2"],
+  ]),
+  testClass: new TestClass(),
+  elements: ["svelte", 123, false, true, null, undefined, 456n],
+  functions: [
+    function sum(a: number, b: number) {
+      return a + b
+    },
+    async (promises: Promise<any>[]) => await Promise.all(promises),
+    function* generator(a: number) {
+      while (a--) {
+        yield a
+      }
+    },
+  ],
+  set: new Set([1, 2, 3, 4, 5]),
+  regex: /^[a-z0-9]+/g,
+  case_insensitive: /^(?:[a-z0-9]+)foo.*?/i,
+  date: new Date(2025, 6, 10),
+  symbol: Symbol("test"),
+  bigint: BigInt(123),
+  null: null,
+}

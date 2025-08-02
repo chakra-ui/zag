@@ -104,6 +104,9 @@ export function connect<T extends PropTypes>(
         "data-dragging": dataAttr(dragging),
         "data-topmost": dataAttr(isTopmost),
         "data-behind": dataAttr(!isTopmost),
+        "data-minimized": dataAttr(isMinimized),
+        "data-maximized": dataAttr(isMaximized),
+        "data-staged": dataAttr(isStaged),
         style: {
           width: "var(--width)",
           height: "var(--height)",
@@ -277,6 +280,9 @@ export function connect<T extends PropTypes>(
         ...parts.control.attrs,
         "data-disabled": dataAttr(prop("disabled")),
         "data-stage": context.get("stage"),
+        "data-minimized": dataAttr(isMinimized),
+        "data-maximized": dataAttr(isMaximized),
+        "data-staged": dataAttr(isStaged),
       })
     },
 
@@ -294,6 +300,9 @@ export function connect<T extends PropTypes>(
         "data-dragging": dataAttr(dragging),
         "data-topmost": dataAttr(isTopmost),
         "data-behind": dataAttr(!isTopmost),
+        "data-minimized": dataAttr(isMinimized),
+        "data-maximized": dataAttr(isMaximized),
+        "data-staged": dataAttr(isStaged),
       })
     },
 
@@ -301,6 +310,9 @@ export function connect<T extends PropTypes>(
       return normalize.element({
         ...parts.body.attrs,
         "data-dragging": dataAttr(dragging),
+        "data-minimized": dataAttr(isMinimized),
+        "data-maximized": dataAttr(isMaximized),
+        "data-staged": dataAttr(isStaged),
         hidden: isMinimized,
       })
     },

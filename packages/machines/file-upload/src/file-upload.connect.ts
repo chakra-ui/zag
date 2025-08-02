@@ -24,6 +24,7 @@ export function connect<T extends PropTypes>(
     dragging,
     focused,
     disabled: !!disabled,
+    transforming: context.get("transforming"),
     openFilePicker() {
       if (disabled) return
       send({ type: "OPEN" })

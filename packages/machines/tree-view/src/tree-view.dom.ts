@@ -8,6 +8,5 @@ export const getTreeEl = (ctx: Scope) => ctx.getById(getTreeId(ctx))
 
 export const focusNode = (ctx: Scope, value: string | null | undefined) => {
   if (value == null) return
-  const nodeId = getNodeId(ctx, value)
-  ctx.getById(nodeId)?.focus({ preventScroll: true })
+  ctx.getById(getNodeId(ctx, value))?.focus()
 }

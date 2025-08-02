@@ -65,4 +65,5 @@ export const routesData: RouteData[] = [
   { label: "Tooltip", path: "/tooltip" },
   { label: "Segment Control", path: "/segment-control" },
   { label: "Splitter", path: "/splitter" },
+  { label: "JSON Tree", path: "/json-tree" },
 ]

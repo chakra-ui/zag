@@ -1,27 +1,22 @@
+import { getPreviewOptions, keyPathToKey } from "./node-conversion"
+import { getProp, isObj, typeOf } from "./shared"
 import type {
   JsonDataTypeOptions,
   JsonNode,
   JsonNodeElement,
+  JsonNodeHastElement,
+  JsonNodePreviewOptions,
   JsonNodeText,
   JsonNodeType,
-  JsonNodePreviewOptions,
 } from "./types"
 
 ///////////////////////////////////////////////////////////////////////////////////////////
-
-const join = (...parts: string[]) => parts.filter(Boolean).join("/")
 
 const generatePreviewText = (items: string[], hasMore: boolean): string => {
   return ` ${items.join(", ")}${hasMore ? ", … " : " "}`
 }
 
-const hasProp = (value: object, key: string): boolean => {
-  return Object.prototype.hasOwnProperty.call(value, key)
-}
-
-const getProp = (value: object, key: string): unknown => {
-  return value[key as keyof typeof value]
-}
+const ENTRIES_KEY = "[[Entries]]"
 
 // Helper functions for creating hast-compatible nodes
 const txt = (value: string | number | boolean | null | undefined): JsonNodeText => ({
@@ -31,7 +26,7 @@ const txt = (value: string | number | boolean | null | undefined): JsonNodeText 
 
 const jsx = (
   tagName: "span" | "div" | "a",
-  properties: Record<string, any> = {},
+  properties: JsonNodeElement["properties"] = {},
   children: Array<JsonNodeElement | JsonNodeText> = [],
 ): JsonNodeElement => ({
   type: "element",
@@ -41,7 +36,7 @@ const jsx = (
 })
 
 const formatValueMini = (child: JsonNode): string => {
-  if (child.type === "primitive" && typeof child.value === "string") return `"${child.value}"`
+  if (child.type === "string") return `"${child.value}"`
   if (child.type === "null") return "null"
   if (child.type === "undefined" || child.type === "symbol") return "undefined"
   if (child.type === "object") return "{…}"
@@ -76,23 +71,18 @@ function dataType<T = unknown>(opts: JsonDataTypeOptions<T>) {
 
 export const NullType = dataType<null>({
   type: "null",
-  description(node) {
-    return `Array(${node.children?.length || 0})`
-  },
+  description: "null",
   check(value) {
     return value === null
   },
   previewElement() {
-    return jsx("span", { kind: "preview", nodeType: "null" }, [txt("null")])
+    return jsx("span", {}, [txt("null")])
   },
-  node({ id, parentKey }) {
+  node({ value, keyPath }) {
     return {
-      id,
-      key: parentKey,
-      value: null,
+      value,
       type: "null",
-      keyPath: [parentKey],
-      dataTypePath: "null",
+      keyPath,
     }
   },
 })
@@ -108,14 +98,11 @@ export const UndefinedType = dataType<undefined>({
   previewElement() {
     return jsx("span", {}, [txt("undefined")])
   },
-  node({ id, parentKey, keyPath, dataTypePath }) {
+  node({ value, keyPath }) {
     return {
-      id,
-      key: parentKey,
-      value: undefined,
       type: "undefined",
+      value,
       keyPath,
-      dataTypePath,
     }
   },
 })
@@ -133,12 +120,11 @@ export const SymbolType = dataType<symbol>({
   previewElement(node) {
     return jsx("span", {}, [txt(node.value.toString())])
   },
-  node({ id, parentKey, value }) {
+  node({ value, keyPath }) {
     return {
-      id,
-      key: parentKey,
-      value,
       type: "symbol",
+      value,
+      keyPath,
     }
   },
 })
@@ -156,12 +142,11 @@ export const BigIntType = dataType<BigInt>({
   previewElement(node) {
     return jsx("span", {}, [txt(`${node.value}n`)])
   },
-  node({ id, parentKey, value }) {
+  node({ value, keyPath }) {
     return {
-      id,
-      key: parentKey,
-      value,
       type: "bigint",
+      value,
+      keyPath,
     }
   },
 })
@@ -171,7 +156,7 @@ export const BigIntType = dataType<BigInt>({
 export const SetType = dataType<Set<unknown>>({
   type: "set",
   description(node) {
-    return `Set(${node.children?.length || 0})`
+    return `Set(${(node.value as Set<unknown>).size})`
   },
   check(value) {
     return value instanceof Set
@@ -185,7 +170,7 @@ export const SetType = dataType<Set<unknown>>({
   },
   previewElement(node, opts) {
     const preview = this.previewText?.(node, opts) ?? ""
-    const size = node.children?.length || 0
+    const size = (node.value as Set<unknown>).size
 
     const children: Array<JsonNodeElement | JsonNodeText> = [
       jsx("span", { kind: "constructor" }, [txt(`Set(${size})`)]),
@@ -198,27 +183,23 @@ export const SetType = dataType<Set<unknown>>({
 
     return jsx("span", {}, children)
   },
-  node({ value, id, parentKey, createNode, visited }) {
-    const entriesChildren = Array.from(value).map((item, index) =>
-      createNode(item, index.toString(), `${id}.[[Entries]]`, visited),
-    )
+  node({ value, keyPath, createNode }) {
+    const entriesChildren = Array.from(value).map((item, index) => createNode([ENTRIES_KEY, index.toString()], item))
 
     const entriesNode: JsonNode = {
-      id: `${id}.[[Entries]]`,
-      key: "[[Entries]]",
       value: Array.from(value),
+      keyPath: [...keyPath, ENTRIES_KEY],
       type: "array",
       children: entriesChildren,
       isNonEnumerable: true,
     }
 
-    const sizeNode = createNode(value.size, "size", id, visited)
+    const sizeNode = createNode(["size"], value.size)
 
     return {
-      id,
-      key: parentKey,
-      value,
       type: "set",
+      value,
+      keyPath,
       children: [entriesNode, sizeNode],
     }
   },
@@ -240,12 +221,11 @@ export const WeakSetType = dataType<WeakSet<WeakKey>>({
       jsx("span", { kind: "brace" }, [txt("}")]),
     ])
   },
-  node({ value, id, parentKey }) {
+  node({ value, keyPath }) {
     return {
-      id,
-      key: parentKey,
-      value,
       type: "weakset",
+      value,
+      keyPath,
     }
   },
 })
@@ -266,12 +246,11 @@ export const WeakMapType = dataType<WeakMap<WeakKey, WeakKey>>({
       jsx("span", { kind: "brace" }, [txt("}")]),
     ])
   },
-  node({ value, id, parentKey }) {
+  node({ value, keyPath }) {
     return {
-      id,
-      key: parentKey,
-      value,
       type: "weakmap",
+      value,
+      keyPath,
     }
   },
 })
@@ -302,13 +281,12 @@ export const RegexType = dataType<RegExp>({
   previewElement(node) {
     return jsx("span", {}, [txt(String(node.value))])
   },
-  node({ value, id, createNode, parentKey }) {
-    const children = REGEX_KEYS.map((key) => createNode(getProp(value, key), key))
+  node({ value, keyPath, createNode }) {
+    const children = REGEX_KEYS.map((key) => createNode([key], getProp(value, key)))
     return {
-      id,
-      key: parentKey,
       value,
       type: "regex",
+      keyPath,
       children,
     }
   },
@@ -337,12 +315,11 @@ export const DataViewType = dataType<DataView>({
       jsx("span", { kind: "brace" }, [txt(" }")]),
     ])
   },
-  node({ value, id, createNode, parentKey }) {
-    const children = DATA_VIEW_KEYS.map((key) => createNode(getProp(value, key), key))
+  node({ value, keyPath, createNode }) {
+    const children = DATA_VIEW_KEYS.map((key) => createNode([key], getProp(value, key)))
     return {
-      id,
-      key: parentKey,
       value,
+      keyPath,
       type: "dataview",
       children,
     }
@@ -369,30 +346,27 @@ const URL_KEYS = [
 export const UrlType = dataType<URL>({
   type: "url",
   description: "URL",
-  check(value: object) {
-    return URL_KEYS.every((key) => hasProp(value, key))
+  check(value) {
+    return typeOf(value) === "[object URL]"
   },
-  previewElement(node) {
-    const url = node.value
-    const maxItems = 5
+  previewElement(node, opts) {
+    const url = node.value as any
+    const maxItems = opts.maxPreviewItems
+    const previewKeys = URL_KEYS.slice(0, maxItems)
+    const preview = previewKeys.map((key) => `${key}: '${url[key]}'`).join(", ")
     const hasMore = URL_KEYS.length > maxItems
     return jsx("span", {}, [
       jsx("span", { kind: "constructor" }, [txt("URL")]),
       jsx("span", { kind: "brace" }, [txt(" { ")]),
-      jsx("span", { kind: "preview" }, [
-        txt(
-          `origin: '${url.origin}', protocol: '${url.protocol}', username: '${url.username}', password: '${url.password}', host: '${url.host}'${hasMore ? ", …" : ""}`,
-        ),
-      ]),
+      jsx("span", { kind: "preview-text" }, [txt(` ${preview}${hasMore ? ", …" : ""} `)]),
       jsx("span", { kind: "brace" }, [txt(" }")]),
     ])
   },
-  node({ value, id, createNode, parentKey }) {
-    const children = URL_KEYS.map((key) => createNode(Reflect.get(value, key), key))
+  node({ value, keyPath, createNode }) {
+    const children = URL_KEYS.map((key) => createNode([key], Reflect.get(value, key)))
     return {
-      id,
-      key: parentKey,
       value,
+      keyPath,
       type: "url",
       children,
     }
@@ -405,7 +379,7 @@ export const URLSearchParamsType = dataType<URLSearchParams>({
   type: "urlsearchparams",
   description: "URLSearchParams",
   check(value) {
-    return value instanceof URLSearchParams
+    return typeOf(value) === "[object URLSearchParams]"
   },
   previewElement(node) {
     const params = node.value
@@ -417,16 +391,14 @@ export const URLSearchParamsType = dataType<URLSearchParams>({
       jsx("span", { kind: "brace" }, [txt(" }")]),
     ])
   },
-  node({ value, id, createNode, parentKey, visited }) {
+  node({ value, keyPath, createNode }) {
     const entriesChildren = Array.from(value.entries()).map(([key, value], index): JsonNode => {
-      const entryId = join(id, "[[Entries]]", index.toString())
-
-      const keyNode = createNode(key, "key", entryId, visited)
-      const valueNode = createNode(value, "value", entryId, visited)
+      const keyStr = String(key)
+      const keyNode = createNode([ENTRIES_KEY, keyStr, "key"], key)
+      const valueNode = createNode([ENTRIES_KEY, keyStr, "value"], value)
 
       return {
-        id: entryId,
-        key: index.toString(),
+        keyPath: [...keyPath, ENTRIES_KEY, index],
         value: { [key]: value },
         type: "object",
         children: [keyNode, valueNode],
@@ -434,20 +406,20 @@ export const URLSearchParamsType = dataType<URLSearchParams>({
     })
 
     const entriesNode: JsonNode = {
-      id: join(id, "[[Entries]]"),
-      key: "[[Entries]]",
+      keyPath: [...keyPath, "[[Entries]]"],
       value: Array.from(value.entries()),
       type: "array",
       children: entriesChildren,
       isNonEnumerable: true,
     }
 
+    const sizeNode = createNode(["size"], Array.from(value.entries()).length)
+
     return {
-      id,
-      key: parentKey,
       value,
+      keyPath,
       type: "urlsearchparams",
-      children: [entriesNode],
+      children: [entriesNode, sizeNode],
     }
   },
 })
@@ -462,7 +434,7 @@ export const BlobType = dataType<Blob>({
     return `Blob(${node.value.size})`
   },
   check(value) {
-    return value instanceof Blob
+    return typeOf(value) === "[object Blob]"
   },
   previewElement(node) {
     const blob = node.value
@@ -473,13 +445,12 @@ export const BlobType = dataType<Blob>({
       jsx("span", { kind: "brace" }, [txt(" }")]),
     ])
   },
-  node({ value, id, createNode, parentKey, visited }) {
+  node({ value, keyPath, createNode }) {
     const blobProperties = BLOB_KEYS.map((key) => ({ key, value: Reflect.get(value, key) }))
-    const children = blobProperties.map(({ key, value }) => createNode(value, key, id, visited))
+    const children = blobProperties.map(({ key, value }) => createNode([key], value))
     return {
-      id,
-      key: parentKey,
       value,
+      keyPath,
       type: "blob",
       children,
     }
@@ -492,9 +463,11 @@ const FILE_KEYS = ["name", "size", "type", "lastModified", "webkitRelativePath"]
 
 export const FileType = dataType<File>({
   type: "file",
-  description: "File",
+  description(node) {
+    return `File(${node.value.size})`
+  },
   check(value) {
-    return typeof File !== "undefined" && value instanceof File
+    return typeOf(value) === "[object File]"
   },
   previewElement(node) {
     const file = node.value
@@ -509,13 +482,12 @@ export const FileType = dataType<File>({
       jsx("span", { kind: "brace" }, [txt(" }")]),
     ])
   },
-  node({ value, id, createNode, parentKey, visited }) {
+  node({ value, keyPath, createNode }) {
     const fileProperties = FILE_KEYS.map((key) => ({ key, value: getProp(value, key) || "" }))
-    const children = fileProperties.map(({ key, value }) => createNode(value, key, id, visited))
+    const children = fileProperties.map(({ key, value }) => createNode([key], value))
     return {
-      id,
-      key: parentKey,
       value,
+      keyPath,
       type: "file",
       children,
     }
@@ -548,6 +520,8 @@ const getFunctionSignature = (func: Function): string => {
   const signatureMatch = funcString.match(FUNCTION_SIGNATURE_REGEX)
   return signatureMatch ? signatureMatch[1] : `${func.name || "anonymous"}()`
 }
+
+const FUNC_KEYS = ["name", "length", "prototype", "caller", "arguments"]
 
 export const FunctionType = dataType<Function>({
   type: "function",
@@ -590,39 +564,46 @@ export const FunctionType = dataType<Function>({
       jsx("span", { kind: "function-body" }, [txt(preview)]),
     ])
   },
-  node({ value, id, parentKey, createNode, visited }) {
+  node({ value, keyPath, createNode, options }) {
     const funcName = value.name || "anonymous"
     const constructorName = value.constructor.name
 
     // Extract function properties
-    const funcProperties = []
+    const enumerableProperties = []
+    const nonEnumerableProperties = []
 
     // Add the [[Function]] internal property showing the function implementation
     const funcString = getFunctionString(value)
-    funcProperties.push({ key: "[[Function]]", value: funcString })
+    nonEnumerableProperties.push({ key: "[[Function]]", value: funcString })
 
     // Add function metadata
-    funcProperties.push({ key: "name", value: funcName })
-    funcProperties.push({ key: "length", value: value.length })
-    funcProperties.push({ key: "constructor", value: constructorName })
+    enumerableProperties.push({ key: "name", value: funcName })
+    enumerableProperties.push({ key: "length", value: value.length })
+    enumerableProperties.push({ key: "constructor", value: constructorName })
 
     // Add any additional enumerable properties
     const additionalProps = Object.getOwnPropertyNames(value)
-      .filter((key) => !["name", "length", "prototype", "caller", "arguments"].includes(key))
+      .filter((key) => !FUNC_KEYS.includes(key))
       .map((key) => ({ key, value: Reflect.get(value, key) }))
 
-    const allProperties = [...funcProperties, ...additionalProps]
-    const children = allProperties.map(({ key, value }) => {
-      const node = createNode(value, key, id, visited)
-      if (key === "[[Function]]") node.isNonEnumerable = true
-      return node
-    })
+    enumerableProperties.push(...additionalProps)
+
+    const enumerableChildren = enumerableProperties.map(({ key, value }) => createNode([key], value))
+
+    const nonEnumerableChildren = options?.showNonenumerable
+      ? nonEnumerableProperties.map(({ key, value }) => {
+          const node = createNode([key], value)
+          node.isNonEnumerable = true
+          return node
+        })
+      : []
+
+    const children = [...enumerableChildren, ...nonEnumerableChildren]
 
     return {
-      id,
-      key: parentKey,
       value,
       type: "function",
+      keyPath,
       children,
     }
   },
@@ -641,11 +622,10 @@ export const ArrayBufferType = dataType<ArrayBuffer>({
   previewElement(node) {
     return jsx("span", { nodeType: "arraybuffer" }, [txt(node.value.toString())])
   },
-  node({ value, id, parentKey }) {
+  node({ value, keyPath }) {
     return {
-      id,
-      key: parentKey,
-      value: `ArrayBuffer(${value.byteLength})`,
+      value,
+      keyPath,
       type: "arraybuffer",
     }
   },
@@ -664,11 +644,10 @@ export const SharedArrayBufferType = dataType<SharedArrayBuffer>({
   previewElement() {
     return jsx("span", { nodeType: "sharedarraybuffer" }, [txt("sharedarraybuffer")])
   },
-  node({ value, id, parentKey }) {
+  node({ value, keyPath }) {
     return {
-      id,
-      key: parentKey,
-      value: `SharedArrayBuffer(${value.byteLength})`,
+      value,
+      keyPath,
       type: "sharedarraybuffer",
     }
   },
@@ -697,11 +676,10 @@ export const BufferType = dataType<Buffer>({
       jsx("span", { kind: "brace" }, [txt("']")]),
     ])
   },
-  node({ value, id, parentKey }) {
+  node({ value, keyPath }) {
     return {
-      id,
-      key: parentKey,
       value,
+      keyPath,
       type: "buffer",
     }
   },
@@ -720,11 +698,10 @@ export const DateType = dataType<Date>({
   previewElement(node) {
     return jsx("span", {}, [txt(node.value.toISOString())])
   },
-  node({ value, id, parentKey }) {
+  node({ value, keyPath }) {
     return {
-      id,
-      key: parentKey,
       value,
+      keyPath,
       type: "date",
     }
   },
@@ -735,7 +712,7 @@ export const DateType = dataType<Date>({
 export const MapType = dataType<Map<unknown, unknown>>({
   type: "map",
   description(node) {
-    return `Map(${node.children?.length || 0})`
+    return `Map(${(node.value as Map<unknown, unknown>).size})`
   },
   check(value) {
     return value instanceof Map
@@ -753,7 +730,7 @@ export const MapType = dataType<Map<unknown, unknown>>({
   },
   previewElement(node, opts) {
     const preview = this.previewText?.(node, opts) || ""
-    const size = node.children?.length || 0
+    const size = (node.value as Map<unknown, unknown>).size
 
     const children: Array<JsonNodeElement | JsonNodeText> = [
       jsx("span", { kind: "constructor" }, [txt(`Map(${size})`)]),
@@ -766,38 +743,32 @@ export const MapType = dataType<Map<unknown, unknown>>({
 
     return jsx("span", {}, children)
   },
-  node({ value, id, parentKey, createNode, visited, keyPath, dataTypePath }) {
+  node({ value, keyPath, createNode }) {
     const entriesChildren = Array.from(value.entries()).map(([key, value], index): JsonNode => {
-      const entryId = join(id, "[[Entries]]", index.toString())
-      const entryKeyPath = [...keyPath, "[[Entries]]", index.toString()]
-      const entryDataTypePath = join(dataTypePath, "[[Entries]]", index.toString())
-      const keyNode = createNode(key, "key", entryId, visited, entryKeyPath, entryDataTypePath)
-      const valueNode = createNode(value, "value", entryId, visited, entryKeyPath, entryDataTypePath)
-
+      const keyStr = String(key)
+      const keyNode = createNode([ENTRIES_KEY, keyStr, "key"], key)
+      const valueNode = createNode([ENTRIES_KEY, keyStr, "value"], value)
       return {
-        id: entryId,
-        key: index.toString(),
-        value: { [String(key)]: value },
+        keyPath: [...keyPath, ENTRIES_KEY, index],
+        value: { [keyStr]: value },
         type: "object",
         children: [keyNode, valueNode],
       }
     })
 
     const entriesNode: JsonNode = {
-      id: join(id, "[[Entries]]"),
-      key: "[[Entries]]",
+      keyPath: [...keyPath, ENTRIES_KEY],
       value: Array.from(value.entries()),
       type: "array",
       children: entriesChildren,
       isNonEnumerable: true,
     }
 
-    const sizeNode = createNode(value.size, "size", id, visited, keyPath, dataTypePath)
+    const sizeNode = createNode(["size"], value.size)
 
     return {
-      id,
-      key: parentKey,
       value,
+      keyPath,
       type: "map",
       children: [entriesNode, sizeNode],
     }
@@ -825,7 +796,7 @@ export const ErrorType = dataType<Error>({
       jsx("span", {}, [txt(err.message)]),
     ])
   },
-  node({ value, id, parentKey, createNode, visited }) {
+  node({ value, keyPath, createNode }) {
     const errorProperties = ERROR_KEYS.map((key) => ({ key, value: Reflect.get(value, key) }))
 
     const additionalProps = Object.getOwnPropertyNames(value)
@@ -833,12 +804,11 @@ export const ErrorType = dataType<Error>({
       .map((key) => ({ key, value: getProp(value, key) }))
 
     const allProperties = [...errorProperties, ...additionalProps]
-    const children = allProperties.map(({ key, value }) => createNode(value, key, id, visited))
+    const children = allProperties.map(({ key, value }) => createNode([key], value))
 
     return {
-      id,
-      key: parentKey,
       value,
+      keyPath,
       type: "error",
       children,
     }
@@ -873,7 +843,7 @@ export const HeadersType = dataType<Headers>({
   type: "headers",
   description: "Headers",
   check(value) {
-    return typeof Headers !== "undefined" && value instanceof Headers
+    return typeOf(value) === "[object Headers]"
   },
   previewElement(node) {
     const headers = node.value
@@ -890,15 +860,13 @@ export const HeadersType = dataType<Headers>({
       jsx("span", { kind: "brace" }, [txt("}")]),
     ])
   },
-  node({ value, id, parentKey, createNode, visited }) {
+  node({ value, keyPath, createNode }) {
     const entriesChildren = Array.from(value.entries()).map(([key, value], index): JsonNode => {
-      const entryId = join(id, "[[Entries]]", index.toString())
-      const keyNode = createNode(key, "key", entryId, visited)
-      const valueNode = createNode(value, "value", entryId, visited)
-
+      const keyStr = String(key)
+      const keyNode = createNode([ENTRIES_KEY, keyStr, "key"], key)
+      const valueNode = createNode([ENTRIES_KEY, keyStr, "value"], value)
       return {
-        id: entryId,
-        key: index.toString(),
+        keyPath: [...keyPath, ENTRIES_KEY, index],
         value: { [key]: value },
         type: "object",
         children: [keyNode, valueNode],
@@ -906,8 +874,7 @@ export const HeadersType = dataType<Headers>({
     })
 
     const entriesNode: JsonNode = {
-      id: join(id, "[[Entries]]"),
-      key: "[[Entries]]",
+      keyPath: [...keyPath, ENTRIES_KEY],
       value: Array.from(value.entries()),
       type: "array",
       children: entriesChildren,
@@ -915,9 +882,8 @@ export const HeadersType = dataType<Headers>({
     }
 
     return {
-      id,
-      key: parentKey,
       value,
+      keyPath,
       type: "headers",
       children: [entriesNode],
     }
@@ -930,7 +896,7 @@ export const FormDataType = dataType<FormData>({
   type: "formdata",
   description: "FormData",
   check(value) {
-    return typeof FormData !== "undefined" && value instanceof FormData
+    return typeOf(value) === "[object FormData]"
   },
   previewElement(node) {
     const formData = node.value
@@ -939,7 +905,7 @@ export const FormDataType = dataType<FormData>({
     const preview = entriesArray
       .slice(0, 2)
       .map(([key, value]) => {
-        const valueStr = value instanceof File ? `File(${value.name})` : String(value)
+        const valueStr = FileType.check(value) ? `File(${(value as File).size})` : String(value)
         return `${key}: ${valueStr}`
       })
       .join(", ")
@@ -953,15 +919,13 @@ export const FormDataType = dataType<FormData>({
       jsx("span", { kind: "brace" }, [txt("}")]),
     ])
   },
-  node({ value, id, parentKey, createNode, visited }) {
+  node({ value, keyPath, createNode }) {
     const entriesChildren = Array.from(value.entries()).map(([key, value], index): JsonNode => {
-      const entryId = join(id, "[[Entries]]", index.toString())
-      const keyNode = createNode(key, "key", entryId, visited)
-      const valueNode = createNode(value, "value", entryId, visited)
+      const keyNode = createNode([ENTRIES_KEY, index, "key"], key)
+      const valueNode = createNode([ENTRIES_KEY, index, "value"], value)
 
       return {
-        id: entryId,
-        key: index.toString(),
+        keyPath: [...keyPath, ENTRIES_KEY, index],
         value: { [key]: value },
         type: "object",
         children: [keyNode, valueNode],
@@ -969,8 +933,7 @@ export const FormDataType = dataType<FormData>({
     })
 
     const entriesNode: JsonNode = {
-      id: join(id, "[[Entries]]"),
-      key: "[[Entries]]",
+      keyPath: [...keyPath, ENTRIES_KEY],
       value: Array.from(value.entries()),
       type: "array",
       children: entriesChildren,
@@ -978,9 +941,8 @@ export const FormDataType = dataType<FormData>({
     }
 
     return {
-      id,
-      key: parentKey,
       value,
+      keyPath,
       type: "formdata",
       children: [entriesNode],
     }
@@ -992,7 +954,7 @@ export const FormDataType = dataType<FormData>({
 export const ArrayType = dataType<Array<unknown>>({
   type: "array",
   description(node) {
-    return `Array(${node.children?.length || 0})`
+    return `Array(${(node.value as Array<unknown>).length})`
   },
   check(value) {
     return Array.isArray(value)
@@ -1000,7 +962,9 @@ export const ArrayType = dataType<Array<unknown>>({
   previewText(node, opts) {
     const maxItems = opts.maxPreviewItems
     const children = node.children || []
-    const enumerableChildren = children.filter((child) => !child.isNonEnumerable && child.key !== "length")
+    const enumerableChildren = children.filter(
+      (child) => !child.isNonEnumerable && keyPathToKey(child.keyPath) !== "length",
+    )
     const values = enumerableChildren.slice(0, maxItems).map(formatValueMini)
     const hasMore = enumerableChildren.length > maxItems
     return generatePreviewText(values, hasMore)
@@ -1021,7 +985,7 @@ export const ArrayType = dataType<Array<unknown>>({
 
     return jsx("span", {}, children)
   },
-  node({ value, id, parentKey, createNode, visited, keyPath, dataTypePath }) {
+  node({ value, keyPath, createNode, options }) {
     // Handle sparse arrays by showing only slots with actual values
     // This prevents crashes when arrays have holes (e.g., let arr = []; arr[50] = "value")
     const arrayChildren: JsonNode[] = []
@@ -1033,42 +997,76 @@ export const ArrayType = dataType<Array<unknown>>({
       .map(Number)
       .sort((a, b) => a - b) // Sort numerically
 
-    // Create nodes only for indices that have values
-    for (const index of definedIndices) {
-      arrayChildren.push(createNode(value[index], index.toString(), id, visited))
+    // Check if we should group the array items
+    const chunkSize = options?.groupArraysAfterLength
+    const shouldGroup = chunkSize && definedIndices.length > chunkSize
+
+    if (shouldGroup) {
+      // Group array items into chunks
+      const chunks: number[][] = []
+
+      for (let i = 0; i < definedIndices.length; i += chunkSize) {
+        chunks.push(definedIndices.slice(i, i + chunkSize))
+      }
+
+      // Create grouped nodes
+      for (let chunkIndex = 0; chunkIndex < chunks.length; chunkIndex++) {
+        const chunk = chunks[chunkIndex]
+        const startIndex = chunk[0]
+        const endIndex = chunk[chunk.length - 1]
+        const groupKey = `[${startIndex}…${endIndex}]`
+
+        // Create children for this chunk
+        const groupChildren = chunk.map((index) => createNode([index.toString()], value[index]))
+
+        // Create the group node
+        const groupNode: JsonNode = {
+          keyPath: [...keyPath, groupKey],
+          value: chunk.map((index) => value[index]),
+          type: "array",
+          children: groupChildren,
+          isNonEnumerable: false,
+        }
+
+        arrayChildren.push(groupNode)
+      }
+    } else {
+      // Create nodes normally for smaller arrays
+      for (const index of definedIndices) {
+        arrayChildren.push(createNode([index.toString()], value[index]))
+      }
     }
 
     // Add length property to show the true size of the array (including sparse slots)
-    const lengthChild = createNode(value.length, "length", id, visited)
+    const lengthChild = createNode(["length"], value.length)
 
     // Get non-enumerable properties
-    const allPropertyNames = Object.getOwnPropertyNames(value)
+    const propertyNames = Object.getOwnPropertyNames(value)
     const enumerableKeys = Object.keys(value).filter((key) => !Number.isNaN(Number(key))) // Only numeric indices
-    const nonEnumerableKeys = allPropertyNames.filter(
+    const nonEnumerableKeys = propertyNames.filter(
       (key) =>
         !enumerableKeys.includes(key) &&
         key !== "length" && // length is already handled above
         Number.isNaN(Number(key)), // exclude numeric indices
     )
 
-    const nonEnumerableChildren = nonEnumerableKeys.map((key) => {
-      const descriptor = Object.getOwnPropertyDescriptor(value, key)
-      const node = createNode(Reflect.get(value, key), key, id, visited)
-      node.isNonEnumerable = true
-      node.propertyDescriptor = descriptor
-      return node
-    })
+    const nonEnumerableChildren = options?.showNonenumerable
+      ? nonEnumerableKeys.map((key) => {
+          const descriptor = Object.getOwnPropertyDescriptor(value, key)
+          const node = createNode([key], Reflect.get(value, key))
+          node.isNonEnumerable = true
+          node.propertyDescriptor = descriptor
+          return node
+        })
+      : []
 
     const children = [...arrayChildren, lengthChild, ...nonEnumerableChildren]
 
     return {
-      id,
-      key: parentKey,
       value,
       type: "array",
       children,
       keyPath,
-      dataTypePath,
     }
   },
 })
@@ -1103,7 +1101,7 @@ export const TypedArrayType = dataType<any>({
     return `${revertTypedArrayConstructors[constructorName]}(${typedArray.length})`
   },
   check(value) {
-    return Boolean(value && typeof value === "object" && value.constructor.name in typedArrayConstructors)
+    return isObj(value) && value.constructor.name in typedArrayConstructors
   },
   previewElement(node) {
     const typedArray = node.value
@@ -1117,24 +1115,27 @@ export const TypedArrayType = dataType<any>({
       jsx("span", { kind: "brace" }, [txt(" ]")]),
     ])
   },
-  node({ value, id, parentKey, createNode, visited }) {
+  node({ value, keyPath, createNode, options }) {
     const typedArray = value as any
-    const properties = TYPED_ARRAY_KEYS.map((key) => ({ key, value: Reflect.get(typedArray, key) }))
+    const enumerableProperties = TYPED_ARRAY_KEYS.map((key) => ({ key, value: Reflect.get(typedArray, key) }))
 
-    // Show first few values
-    const values = Array.from(typedArray).slice(0, 100) // Limit for performance
-    properties.push({ key: "[[Values]]", value: values })
+    const enumerableChildren = enumerableProperties.map(({ key, value }) => createNode([key], value))
 
-    const children = properties.map(({ key, value }) => {
-      const node = createNode(value, key, id, visited)
-      if (key === "[[Values]]") node.isNonEnumerable = true
-      return node
-    })
+    const nonEnumerableChildren = options?.showNonenumerable
+      ? (() => {
+          // Show first few values
+          const values = Array.from(typedArray).slice(0, 100) // Limit for performance
+          const node = createNode(["[[Values]]"], values)
+          node.isNonEnumerable = true
+          return [node]
+        })()
+      : []
+
+    const children = [...enumerableChildren, ...nonEnumerableChildren]
 
     return {
-      id,
-      key: parentKey,
       value,
+      keyPath,
       type: Reflect.get(typedArrayConstructors, value.constructor.name),
       children,
     }
@@ -1161,7 +1162,9 @@ export const IterableType = dataType<any>({
   },
   previewElement(node, opts) {
     const preview = SetType.previewText?.(node, opts) ?? ""
-    const size = node.children?.length || 0
+    // Use the same calculation as in the node method
+    const entriesArray = Array.from(node.value as Iterable<unknown>)
+    const size = node.value.size ?? node.value.length ?? entriesArray.length
 
     const children: Array<JsonNodeElement | JsonNodeText> = [
       jsx("span", { kind: "constructor" }, [txt(`Iterable(${size})`)]),
@@ -1174,14 +1177,11 @@ export const IterableType = dataType<any>({
 
     return jsx("span", {}, children)
   },
-  node({ value, id, parentKey, createNode, visited }) {
+  node({ value, keyPath, createNode }) {
     const entriesArray = Array.from(value as Iterable<unknown>)
-    const entriesChildren = entriesArray.map((item, index) =>
-      createNode(item, index.toString(), join(id, "[[Entries]]"), visited),
-    )
+    const entriesChildren = entriesArray.map((item, index) => createNode([ENTRIES_KEY, index], item))
     const entriesNode: JsonNode = {
-      id: join(id, "[[Entries]]"),
-      key: "[[Entries]]",
+      keyPath: [...keyPath, ENTRIES_KEY],
       value: entriesArray,
       type: "array",
       children: entriesChildren,
@@ -1190,14 +1190,13 @@ export const IterableType = dataType<any>({
 
     // Try to get size/length property
     const sizeValue = value.size ?? value.length ?? entriesArray.length
-    const sizeNode = createNode(sizeValue, "size", id, visited)
+    const sizeNode = createNode(["size"], sizeValue)
 
     return {
-      id,
-      key: parentKey,
       value,
       type: "iterable",
       children: [entriesNode, sizeNode],
+      keyPath,
     }
   },
 })
@@ -1218,32 +1217,31 @@ export const ClassType = dataType<any>({
   previewElement(node, opts) {
     return ObjectType.previewElement(node, opts)
   },
-  node({ value, id, parentKey, createNode, visited, keyPath, dataTypePath }) {
+  node({ value, keyPath, createNode, options }) {
     const constructorName = value.constructor.name
     const allPropertyNames = Object.getOwnPropertyNames(value)
     const enumerableKeys = Object.keys(value)
     const nonEnumerableKeys = allPropertyNames.filter((key) => !enumerableKeys.includes(key))
 
-    const children = [
-      ...enumerableKeys.map((key) => createNode(Reflect.get(value, key), key, id, visited)),
-      ...nonEnumerableKeys.map((key) => {
-        const descriptor = Object.getOwnPropertyDescriptor(value, key)
-        const node = createNode(getProp(value, key), `[[${key}]]`, id, visited)
-        node.isNonEnumerable = true
-        node.propertyDescriptor = descriptor
-        return node
-      }),
-    ]
+    const enumerableChildren = enumerableKeys.map((key) => createNode([key], Reflect.get(value, key)))
+    const nonEnumerableChildren = options?.showNonenumerable
+      ? nonEnumerableKeys.map((key) => {
+          const descriptor = Object.getOwnPropertyDescriptor(value, key)
+          const node = createNode([`[[${key}]]`], getProp(value, key))
+          node.isNonEnumerable = true
+          node.propertyDescriptor = descriptor
+          return node
+        })
+      : []
+
+    const children = [...enumerableChildren, ...nonEnumerableChildren]
 
     return {
-      id,
-      key: parentKey,
       value,
+      keyPath,
       type: "object",
       constructorName,
       children,
-      keyPath,
-      dataTypePath,
     }
   },
 })
@@ -1261,7 +1259,7 @@ export const ObjectType = dataType<object>({
     const children = node.children || []
     const previews = children.slice(0, maxItems).map((child) => {
       const valueDesc = getNodeTypeDescription(child)
-      return `${child.key}: ${valueDesc}`
+      return `${keyPathToKey(child.keyPath)}: ${valueDesc}`
     })
     const hasMore = children.length > maxItems
     return generatePreviewText(previews, hasMore)
@@ -1281,31 +1279,227 @@ export const ObjectType = dataType<object>({
 
     return jsx("span", {}, children)
   },
-  node({ value, id, parentKey, createNode, visited, keyPath, dataTypePath }) {
+  node({ value, keyPath, createNode, options }) {
     const allPropertyNames = Object.getOwnPropertyNames(value)
 
     const enumerableKeys = Object.keys(value)
     const nonEnumerableKeys = allPropertyNames.filter((key) => !enumerableKeys.includes(key))
 
-    const children = [
-      ...enumerableKeys.map((key) => createNode(getProp(value, key), key, id, visited, keyPath, dataTypePath)),
-      ...nonEnumerableKeys.map((key) => {
-        const descriptor = Object.getOwnPropertyDescriptor(value, key)
-        const node = createNode(getProp(value, key), `[[${key}]]`, id, visited, keyPath, dataTypePath)
-        node.isNonEnumerable = true
-        node.propertyDescriptor = descriptor
-        return node
-      }),
-    ]
+    const enumerableChildren = enumerableKeys.map((key) => createNode([key], getProp(value, key)))
+    const nonEnumerableChildren = options?.showNonenumerable
+      ? nonEnumerableKeys.map((key) => {
+          const descriptor = Object.getOwnPropertyDescriptor(value, key)
+          const node = createNode([`[[${key}]]`], getProp(value, key))
+          node.isNonEnumerable = true
+          node.propertyDescriptor = descriptor
+          return node
+        })
+      : []
+
+    const children = [...enumerableChildren, ...nonEnumerableChildren]
 
     return {
-      id,
-      key: parentKey,
       value,
       type: "object",
       children,
       keyPath,
-      dataTypePath,
+    }
+  },
+})
+
+///////////////////////////////////////////////////////////////////////////////////////////
+
+const ELEMENT_KEYS = [
+  "attributes",
+  "childElementCount",
+  "className",
+  "dataset",
+  "hidden",
+  "id",
+  "inert",
+  "isConnected",
+  "isContentEditable",
+  "nodeType",
+  "style",
+  "tabIndex",
+  "tagName",
+]
+
+const isSvg = (el: Element): el is SVGSVGElement =>
+  typeof el === "object" && el.tagName === "svg" && el.namespaceURI === "http://www.w3.org/2000/svg"
+
+const isHTML = (el: Element): el is HTMLElement =>
+  typeof el === "object" && el.namespaceURI === "http://www.w3.org/1999/xhtml"
+
+export const ElementType = dataType<SVGElement | HTMLElement>({
+  type: "element",
+  description(node) {
+    return typeOf(node.value)
+  },
+
+  check(value) {
+    return isSvg(value) || isHTML(value)
+  },
+
+  previewElement(node) {
+    const el = node.value as Element
+    const classList = Array.from(el.classList).slice(0, 3)
+
+    return jsx("span", {}, [
+      jsx("span", { kind: "constructor" }, [txt(el.constructor.name)]),
+      jsx("span", {}, [txt(" ")]),
+      jsx("span", { kind: "preview-text" }, [
+        txt(`<${el.localName}${el.id ? `#${el.id}` : ""}${classList.length > 0 ? "." + classList.join(".") : ""}>`),
+      ]),
+    ])
+  },
+
+  node({ value, keyPath, createNode }) {
+    const children = ELEMENT_KEYS.reduce((acc, key) => {
+      let childValue = Reflect.get(value, key)
+
+      if (key === "attributes") {
+        const attrs = Array.from(value.attributes)
+        childValue = attrs.length ? Object.fromEntries(attrs.map((attr) => [attr.name, attr.value])) : undefined
+      }
+
+      if (key === "style") {
+        const style = Array.from(value.style)
+        childValue = style.length
+          ? Object.fromEntries(style.map((key) => [key, value.style.getPropertyValue(key)]))
+          : undefined
+      }
+
+      acc.push(createNode([key], childValue))
+      return acc
+    }, [] as JsonNode[])
+
+    return {
+      value,
+      keyPath,
+      type: "element",
+      children,
+    }
+  },
+})
+
+///////////////////////////////////////////////////////////////////////////////////////////
+
+const DOCUMENT_KEYS = ["title", "URL", "documentElement", "head", "body", "contentType", "readyState"]
+export const DocumentType = dataType<Document>({
+  type: "document",
+  description: "Document",
+
+  check(value) {
+    return typeOf(value) === "[object HTMLDocument]"
+  },
+
+  previewElement(node) {
+    const doc = node.value as Document
+    const url = doc.URL || "unknown"
+    return jsx("span", {}, [
+      jsx("span", { kind: "constructor" }, [txt("#document")]),
+      jsx("span", { kind: "preview-text" }, [txt(` (${url})`)]),
+    ])
+  },
+
+  node({ value, keyPath, createNode }) {
+    const children = DOCUMENT_KEYS.map((key) => createNode([key], Reflect.get(value, key)))
+    return {
+      value,
+      keyPath,
+      type: "document",
+      children,
+    }
+  },
+})
+
+///////////////////////////////////////////////////////////////////////////////////////////
+
+const WINDOW_KEYS = ["location", "navigator", "document", "innerWidth", "innerHeight", "devicePixelRatio", "origin"]
+
+export const WindowType = dataType<Window>({
+  type: "window",
+  description: "Window",
+
+  check(value) {
+    return typeOf(value) === "[object Window]"
+  },
+
+  previewElement() {
+    return jsx("span", {}, [
+      jsx("span", { kind: "constructor" }, [txt("Window")]),
+      jsx("span", { kind: "preview-text" }, [txt(" { … }")]),
+    ])
+  },
+
+  node({ value, keyPath, createNode }) {
+    const children = WINDOW_KEYS.map((key) => {
+      const childValue = Reflect.get(value, key)
+      return createNode([key], childValue)
+    })
+
+    return {
+      value,
+      keyPath,
+      type: "window",
+      children,
+    }
+  },
+})
+
+///////////////////////////////////////////////////////////////////////////////////////////
+
+const REACT_ELEMENT_KEYS = ["$$typeof", "type", "key", "ref", "props"]
+
+const getElementTypeName = (type: any): string => {
+  if (typeof type === "string") return type
+  if (typeof type === "function") return type.displayName || type.name || "Component"
+  return type?.toString() || "Component"
+}
+
+export const ReactElementType = dataType<any>({
+  type: "react-element",
+  description(node) {
+    const el = node.value
+    return getElementTypeName(el.type)
+  },
+  check(value) {
+    return isObj(value) && "$$typeof" in value && "props" in value
+  },
+  previewElement(node, opts) {
+    const el = node.value
+
+    const elName = getElementTypeName(el.type)
+    const props = Object.entries(el.props)
+    const hasMore = props.length > opts.maxPreviewItems
+
+    return jsx("span", {}, [
+      txt(`<${elName} `),
+      ...props.slice(0, opts.maxPreviewItems).reduce((acc, [key, value]) => {
+        if (key === "children") return acc
+        acc.push(jsx("span", {}, [txt(` ${key}=${typeof value === "string" ? `"${value}"` : `{${value}}`}`)]))
+        return acc
+      }, [] as JsonNodeElement[]),
+      ...(hasMore ? [txt(" …")] : []),
+      txt(el.children ? `> {…} </${elName}>` : ` />`),
+    ])
+  },
+  node({ value, keyPath, createNode }) {
+    const children = REACT_ELEMENT_KEYS.reduce((acc, key) => {
+      let childValue = Reflect.get(value, key)
+      if (key === "type") {
+        childValue = getElementTypeName(childValue)
+      }
+      acc.push(createNode([key], childValue))
+      return acc
+    }, [] as JsonNode[])
+
+    return {
+      value,
+      type: "react-element",
+      keyPath,
+      children,
     }
   },
 })
@@ -1321,7 +1515,7 @@ const map: Record<string, string> = {
 const STRING_ESCAPE_REGEXP = /[\n\t\r]/g
 
 export const StringType = dataType<string>({
-  type: "primitive",
+  type: "string",
   description(node, opts) {
     return `"${this.previewText?.(node, opts) ?? node.value}"`
   },
@@ -1339,12 +1533,11 @@ export const StringType = dataType<string>({
     const serialised = node.value.replace(STRING_ESCAPE_REGEXP, (_: string) => map[_])
     return jsx("span", {}, [txt(`"${serialised}"`)])
   },
-  node({ value, id, parentKey }) {
+  node({ value, keyPath }) {
     return {
-      id,
-      key: parentKey,
       value,
-      type: "primitive",
+      type: "string",
+      keyPath,
     }
   },
 })
@@ -1364,14 +1557,11 @@ export const PrimitiveType = dataType<any>({
   previewElement(node) {
     return jsx("span", {}, [txt(String(node.value))])
   },
-  node({ value, id, parentKey, keyPath, dataTypePath }) {
+  node({ value, keyPath }) {
     return {
-      id,
-      key: parentKey,
       value,
-      type: "primitive",
+      type: typeof value as JsonNodeType,
       keyPath,
-      dataTypePath,
     }
   },
 })
@@ -1403,6 +1593,11 @@ export const dataTypes: JsonDataTypeOptions<any>[] = [
   FileType,
   BlobType,
 
+  ReactElementType,
+  WindowType,
+  DocumentType,
+  ElementType,
+
   UrlType,
   URLSearchParamsType,
   HeadersType,
@@ -1420,13 +1615,11 @@ export const dataTypes: JsonDataTypeOptions<any>[] = [
 
 ///////////////////////////////////////////////////////////////////////////////////////////
 
-export const defaultPreviewOptions: JsonNodePreviewOptions = {
-  maxPreviewItems: 3,
-  collapseStringsAfterLength: 30,
-}
+export const jsonNodeToElement = (node: JsonNode, opts?: Partial<JsonNodePreviewOptions>): JsonNodeHastElement => {
+  const options = getPreviewOptions(opts)
+  const key = keyPathToKey(node.keyPath, { excludeRoot: true })
 
-export const jsonNodeToElement = (node: JsonNode, opts = defaultPreviewOptions): JsonNodeElement => {
-  if (node.key === "stack" && typeof node.value === "string") {
+  if (key === "stack" && typeof node.value === "string") {
     return errorStackToElement(node.value)
   }
 
@@ -1435,9 +1628,9 @@ export const jsonNodeToElement = (node: JsonNode, opts = defaultPreviewOptions):
     return jsx("span", {}, [txt(String(node.value))])
   }
 
-  const element = dataType.previewElement(node, opts)
+  const element = dataType.previewElement(node, options)
 
-  if (!node.key) {
+  if (!key) {
     element.properties.root = true
   }
 
@@ -1449,10 +1642,11 @@ export const jsonNodeToElement = (node: JsonNode, opts = defaultPreviewOptions):
 
 ///////////////////////////////////////////////////////////////////////////////////////////
 
-export const getNodeTypeDescription = (node: JsonNode, opts = defaultPreviewOptions): string => {
+export const getNodeTypeDescription = (node: JsonNode, opts?: Partial<JsonNodePreviewOptions>): string => {
+  const options = getPreviewOptions(opts)
   const dataType = dataTypes.find((dataType) => dataType.check(node.value))
   if (dataType) {
-    return typeof dataType.description === "function" ? dataType.description(node, opts) : dataType.description
+    return typeof dataType.description === "function" ? dataType.description(node, options) : dataType.description
   }
   return String(node.value)
 }

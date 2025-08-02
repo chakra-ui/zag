@@ -18,7 +18,7 @@ export interface HoverChangeDetails {
  * -----------------------------------------------------------------------------*/
 
 export interface IntlTranslations {
-  ratingValueText(index: number): string
+  ratingValueText: (index: number) => string
 }
 
 export type ElementIds = Partial<{
@@ -26,7 +26,7 @@ export type ElementIds = Partial<{
   label: string
   hiddenInput: string
   control: string
-  item(id: string): string
+  item: (id: string) => string
 }>
 
 export interface RatingGroupProps extends DirectionProperty, CommonProperties {
@@ -165,11 +165,11 @@ export interface RatingGroupApi<T extends PropTypes = PropTypes> {
   /**
    * Sets the value of the rating group
    */
-  setValue(value: number): void
+  setValue: (value: number) => void
   /**
    * Clears the value of the rating group
    */
-  clearValue(): void
+  clearValue: VoidFunction
   /**
    * Whether the rating group is being hovered
    */
@@ -193,11 +193,11 @@ export interface RatingGroupApi<T extends PropTypes = PropTypes> {
   /**
    * Returns the state of a rating item
    */
-  getItemState(props: ItemProps): ItemState
+  getItemState: (props: ItemProps) => ItemState
 
-  getRootProps(): T["element"]
-  getHiddenInputProps(): T["input"]
-  getLabelProps(): T["element"]
-  getControlProps(): T["element"]
-  getItemProps(props: ItemProps): T["element"]
+  getRootProps: () => T["element"]
+  getHiddenInputProps: () => T["input"]
+  getLabelProps: () => T["element"]
+  getControlProps: () => T["element"]
+  getItemProps: (props: ItemProps) => T["element"]
 }

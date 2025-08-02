@@ -494,7 +494,9 @@ function getPageSnapPoints(totalSlides: number | undefined, slidesPerMove: numbe
     return []
   }
 
-  for (let i = 0; i < totalSlides - 1; i += perMove) {
+  for (let i = 0; i < totalSlides; i += perMove) {
+    // Ensure we don't create a snap point that would go beyond the available slides
+    if (i + slidesPerPage > totalSlides) break
     snapPoints.push(i)
   }
   return snapPoints

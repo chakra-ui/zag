@@ -1,5 +1,138 @@
 # @zag-js/date-picker
 
+## 1.21.1
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.21.1
+  - @zag-js/core@1.21.1
+  - @zag-js/types@1.21.1
+  - @zag-js/utils@1.21.1
+  - @zag-js/date-utils@1.21.1
+  - @zag-js/dismissable@1.21.1
+  - @zag-js/dom-query@1.21.1
+  - @zag-js/live-region@1.21.1
+  - @zag-js/popper@1.21.1
+
+## 1.21.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.21.0
+  - @zag-js/core@1.21.0
+  - @zag-js/types@1.21.0
+  - @zag-js/utils@1.21.0
+  - @zag-js/date-utils@1.21.0
+  - @zag-js/dismissable@1.21.0
+  - @zag-js/dom-query@1.21.0
+  - @zag-js/live-region@1.21.0
+  - @zag-js/popper@1.21.0
+
+## 1.20.1
+
+### Patch Changes
+
+- [`4a50c58`](https://github.com/chakra-ui/zag/commit/4a50c58357c53df27fa85cb65a1add4f31f21f6a) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fixed issue where hovered range was connect to selected values,
+  when it shouldn't
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.20.1
+  - @zag-js/core@1.20.1
+  - @zag-js/types@1.20.1
+  - @zag-js/utils@1.20.1
+  - @zag-js/date-utils@1.20.1
+  - @zag-js/dismissable@1.20.1
+  - @zag-js/dom-query@1.20.1
+  - @zag-js/live-region@1.20.1
+  - @zag-js/popper@1.20.1
+
+## 1.20.0
+
+### Minor Changes
+
+- [`1e82a49`](https://github.com/chakra-ui/zag/commit/1e82a491e6963156335ce722b6eacc1a35b48e35) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Add hover range preview support for date picker range selection
+  - Added `inHoveredRange`, `firstInHoveredRange`, and `lastInHoveredRange` properties to `DayTableCellState`
+  - Added corresponding data attributes `data-in-hover-range`, `data-hover-range-start`, and `data-hover-range-end`
+  - Hover range states are only active when not overlapping with actual selected range
+  - Enables distinct styling for hover preview vs actual selection in range mode
+
+### Patch Changes
+
+- [`78dd066`](https://github.com/chakra-ui/zag/commit/78dd066b2feda69d1f759e46b3cd099d2d2560e8) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix date comparison issues when time components are involved
+
+  This change resolves critical issues with date comparison operations when different date types (`CalendarDate`,
+  `CalendarDateTime`, `ZonedDateTime`) are mixed, particularly in scenarios involving time components.
+  - Convert `now(timeZone)` result to `CalendarDate` to ensure consistent date types without time components across all
+    date range preset operations
+  - Update `constrainValue` function to normalize all input dates to `CalendarDate` before comparison, preventing
+    time-component comparison issues
+  - Remove redundant date type conversion in `getMonthFormatter` for cleaner, more efficient code
+
+- Updated dependencies [[`78dd066`](https://github.com/chakra-ui/zag/commit/78dd066b2feda69d1f759e46b3cd099d2d2560e8)]:
+  - @zag-js/date-utils@1.20.0
+  - @zag-js/anatomy@1.20.0
+  - @zag-js/core@1.20.0
+  - @zag-js/types@1.20.0
+  - @zag-js/utils@1.20.0
+  - @zag-js/dismissable@1.20.0
+  - @zag-js/dom-query@1.20.0
+  - @zag-js/live-region@1.20.0
+  - @zag-js/popper@1.20.0
+
+## 1.19.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.19.0
+  - @zag-js/core@1.19.0
+  - @zag-js/types@1.19.0
+  - @zag-js/utils@1.19.0
+  - @zag-js/date-utils@1.19.0
+  - @zag-js/dismissable@1.19.0
+  - @zag-js/dom-query@1.19.0
+  - @zag-js/live-region@1.19.0
+  - @zag-js/popper@1.19.0
+
+## 1.18.5
+
+### Patch Changes
+
+- [`59a7bfb`](https://github.com/chakra-ui/zag/commit/59a7bfb7215b4c9d13d11487f50ad852cd8347a9) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix issue destructuring returned api could throw an ESLint
+  `unbound-method` warning
+
+- Updated dependencies [[`218ab81`](https://github.com/chakra-ui/zag/commit/218ab81e6453356a3bbd5e5eb612d9b671f84323)]:
+  - @zag-js/popper@1.18.5
+  - @zag-js/anatomy@1.18.5
+  - @zag-js/core@1.18.5
+  - @zag-js/types@1.18.5
+  - @zag-js/utils@1.18.5
+  - @zag-js/date-utils@1.18.5
+  - @zag-js/dismissable@1.18.5
+  - @zag-js/dom-query@1.18.5
+  - @zag-js/live-region@1.18.5
+
+## 1.18.4
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.18.4
+  - @zag-js/core@1.18.4
+  - @zag-js/types@1.18.4
+  - @zag-js/utils@1.18.4
+  - @zag-js/date-utils@1.18.4
+  - @zag-js/dismissable@1.18.4
+  - @zag-js/dom-query@1.18.4
+  - @zag-js/live-region@1.18.4
+  - @zag-js/popper@1.18.4
+
 ## 1.18.3
 
 ### Patch Changes

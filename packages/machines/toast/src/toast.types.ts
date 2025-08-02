@@ -41,7 +41,7 @@ export interface ActionOptions {
   /**
    * The function to call when the action is clicked
    */
-  onClick: () => void
+  onClick: VoidFunction
 }
 
 /* -----------------------------------------------------------------------------
@@ -342,12 +342,12 @@ export interface ToastStore<V = any> {
    * @internal
    * Expand all toasts to show their full content
    */
-  expand: () => void
+  expand: VoidFunction
   /**
    * @internal
    * Collapse all toasts to their compact state
    */
-  collapse: () => void
+  collapse: VoidFunction
 }
 
 /* -----------------------------------------------------------------------------
@@ -374,17 +374,17 @@ export interface ToastGroupApi<T extends PropTypes = PropTypes, O = any> {
   /**
    * The total number of toasts
    */
-  getCount(): number
+  getCount: () => number
   /**
    * The toasts
    */
-  getToasts(): ToastProps[]
+  getToasts: () => ToastProps[]
   /**
    * Subscribe to the toast group
    */
-  subscribe(callback: (toasts: Options<O>[]) => void): VoidFunction
+  subscribe: (callback: (toasts: Options<O>[]) => void) => VoidFunction
 
-  getGroupProps(options?: GroupProps): T["element"]
+  getGroupProps: (options?: GroupProps) => T["element"]
 }
 
 export interface ToastApi<T extends PropTypes = PropTypes, O = any> {
@@ -419,21 +419,21 @@ export interface ToastApi<T extends PropTypes = PropTypes, O = any> {
   /**
    * Function to pause the toast (keeping it visible).
    */
-  pause(): void
+  pause: VoidFunction
   /**
    * Function to resume the toast dismissing.
    */
-  resume(): void
+  resume: VoidFunction
   /**
    * Function to instantly dismiss the toast.
    */
-  dismiss(): void
+  dismiss: VoidFunction
 
-  getRootProps(): T["element"]
-  getTitleProps(): T["element"]
-  getGhostBeforeProps(): T["element"]
-  getGhostAfterProps(): T["element"]
-  getDescriptionProps(): T["element"]
-  getCloseTriggerProps(): T["button"]
-  getActionTriggerProps(): T["button"]
+  getRootProps: () => T["element"]
+  getTitleProps: () => T["element"]
+  getGhostBeforeProps: () => T["element"]
+  getGhostAfterProps: () => T["element"]
+  getDescriptionProps: () => T["element"]
+  getCloseTriggerProps: () => T["button"]
+  getActionTriggerProps: () => T["button"]
 }

@@ -165,16 +165,23 @@ export function connect<T extends PropTypes>(
     const end = visibleRange.start.add(unitDuration).subtract({ days: 1 })
     const isOutsideRange = isDateOutsideRange(value, visibleRange.start, end)
 
+    // Calculate range states
+    const isInSelectedRange = isRangePicker && isDateWithinRange(value, selectedValue)
+    const isFirstInSelectedRange = isRangePicker && isDateEqual(value, selectedValue[0])
+    const isLastInSelectedRange = isRangePicker && isDateEqual(value, selectedValue[1])
+
+    // Calculate hover range states
+    const hasHoveredRange = isRangePicker && hoveredRangeValue.length > 0
+    const isInHoveredRange = hasHoveredRange && isDateWithinRange(value, hoveredRangeValue)
+    const isFirstInHoveredRange = hasHoveredRange && isDateEqual(value, hoveredRangeValue[0])
+    const isLastInHoveredRange = hasHoveredRange && isDateEqual(value, hoveredRangeValue[1])
+
     const cellState = {
       invalid: isDateOutsideRange(value, min, max),
       disabled: disabled || (!outsideDaySelectable && isOutsideRange) || isDateOutsideRange(value, min, max),
       selected: selectedValue.some((date) => isDateEqual(value, date)),
       unavailable: isDateUnavailable(value, isDateUnavailableFn, locale, min, max) && !disabled,
       outsideRange: isOutsideRange,
-      inRange:
-        isRangePicker && (isDateWithinRange(value, selectedValue) || isDateWithinRange(value, hoveredRangeValue)),
-      firstInRange: isRangePicker && isDateEqual(value, selectedValue[0]),
-      lastInRange: isRangePicker && isDateEqual(value, selectedValue[1]),
       today: isToday(value, timeZone),
       weekend: isWeekend(value, locale),
       formattedDate: formatter.format(value.toDate(timeZone)),
@@ -187,7 +194,18 @@ export function connect<T extends PropTypes>(
       get selectable() {
         return !cellState.disabled && !cellState.unavailable
       },
+
+      // Range states
+      inRange: isInSelectedRange || isInHoveredRange,
+      firstInRange: isFirstInSelectedRange,
+      lastInRange: isLastInSelectedRange,
+
+      // Preview range states
+      inHoveredRange: isInHoveredRange,
+      firstInHoveredRange: isFirstInHoveredRange,
+      lastInHoveredRange: isLastInHoveredRange,
     }
+
     return cellState
   }
 
@@ -499,6 +517,9 @@ export function connect<T extends PropTypes>(
         "data-in-range": dataAttr(cellState.inRange),
         "data-outside-range": dataAttr(cellState.outsideRange),
         "data-weekend": dataAttr(cellState.weekend),
+        "data-in-hover-range": dataAttr(cellState.inHoveredRange),
+        "data-hover-range-start": dataAttr(cellState.firstInHoveredRange),
+        "data-hover-range-end": dataAttr(cellState.lastInHoveredRange),
         onClick(event) {
           if (event.defaultPrevented) return
           if (!cellState.selectable) return

@@ -1,32 +1,35 @@
 import { dataTypes, PrimitiveType } from "./data-type"
-import type { JsonNode } from "./types"
+import { getPreviewOptions, ROOT_KEY } from "./node-conversion"
+import type { JsonNode, JsonNodePreviewOptions } from "./types"
 
-const ROOT_ID = "#"
+export interface JsonToTreeOptions {
+  visited?: WeakSet<WeakKey> | undefined
+  keyPath?: (string | number)[] | undefined
+  options?: JsonNodePreviewOptions | undefined
+  depth?: number | undefined
+}
 
-export const jsonToTree = (
-  data: unknown,
-  parentKey = "",
-  parentId = "",
-  visited = new WeakSet(),
-  keyPath: (string | number)[] = [],
-  dataTypePath = "",
-): JsonNode => {
-  const id = parentId ? `${parentId}/${parentKey}` : parentKey || ROOT_ID
+const MAX_DEPTH = 20
 
-  // Build the full path from root - only add parentKey if it's not empty and not 'root'
-  const currentKeyPath = parentKey && parentKey !== ROOT_ID ? [...keyPath, parentKey] : keyPath
-  const currentDataTypePath = dataTypePath ? `${dataTypePath}/${parentKey}` : parentKey || ""
+export const jsonToTree = (data: unknown, props: JsonToTreeOptions = {}): JsonNode => {
+  const { visited = new WeakSet(), keyPath = [ROOT_KEY], depth = 0 } = props
+  const options = getPreviewOptions(props.options)
 
-  // Check for circular references for objects
+  // Prevent infinite recursion by limiting depth
+  if (depth > MAX_DEPTH) {
+    return {
+      value: "[Max Depth Reached]",
+      type: "string",
+      keyPath,
+    }
+  }
+
   if (data && typeof data === "object") {
     if (visited.has(data)) {
       return {
-        id,
-        key: parentKey,
         value: "[Circular Reference]",
         type: "circular",
-        keyPath: currentKeyPath,
-        dataTypePath: currentDataTypePath,
+        keyPath,
       }
     }
     visited.add(data)
@@ -35,11 +38,14 @@ export const jsonToTree = (
   const dataType = dataTypes.find((dataType) => dataType.check(data)) || PrimitiveType
   return dataType.node({
     value: data,
-    id,
-    parentKey,
-    visited,
-    createNode: jsonToTree,
-    keyPath: currentKeyPath,
-    dataTypePath: currentDataTypePath,
+    createNode: (nestedKeyPath, value) =>
+      jsonToTree(value, {
+        visited,
+        keyPath: [...keyPath, ...nestedKeyPath],
+        options,
+        depth: depth + 1,
+      }),
+    keyPath,
+    options,
   })
 }

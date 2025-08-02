@@ -1,5 +1,75 @@
 # @zag-js/solid
 
+## 1.21.1
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/core@1.21.1
+  - @zag-js/store@1.21.1
+  - @zag-js/types@1.21.1
+  - @zag-js/utils@1.21.1
+
+## 1.21.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/core@1.21.0
+  - @zag-js/store@1.21.0
+  - @zag-js/types@1.21.0
+  - @zag-js/utils@1.21.0
+
+## 1.20.1
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/core@1.20.1
+  - @zag-js/store@1.20.1
+  - @zag-js/types@1.20.1
+  - @zag-js/utils@1.20.1
+
+## 1.20.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/core@1.20.0
+  - @zag-js/store@1.20.0
+  - @zag-js/types@1.20.0
+  - @zag-js/utils@1.20.0
+
+## 1.19.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/core@1.19.0
+  - @zag-js/store@1.19.0
+  - @zag-js/types@1.19.0
+  - @zag-js/utils@1.19.0
+
+## 1.18.5
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/core@1.18.5
+  - @zag-js/store@1.18.5
+  - @zag-js/types@1.18.5
+  - @zag-js/utils@1.18.5
+
+## 1.18.4
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/core@1.18.4
+  - @zag-js/store@1.18.4
+  - @zag-js/types@1.18.4
+  - @zag-js/utils@1.18.4
+
 ## 1.18.3
 
 ### Patch Changes

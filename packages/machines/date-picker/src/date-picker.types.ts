@@ -50,34 +50,34 @@ export interface LocaleDetails {
 export type SelectionMode = "single" | "multiple" | "range"
 
 export interface IntlTranslations {
-  dayCell(state: DayTableCellState): string
-  nextTrigger(view: DateView): string
+  dayCell: (state: DayTableCellState) => string
+  nextTrigger: (view: DateView) => string
   monthSelect: string
   yearSelect: string
-  viewTrigger(view: DateView): string
-  prevTrigger(view: DateView): string
-  presetTrigger(value: string[]): string
+  viewTrigger: (view: DateView) => string
+  prevTrigger: (view: DateView) => string
+  presetTrigger: (value: string[]) => string
   clearTrigger: string
-  trigger(open: boolean): string
+  trigger: (open: boolean) => string
   content: string
   placeholder: (locale: string) => { year: string; month: string; day: string }
 }
 
 export type ElementIds = Partial<{
   root: string
-  label(index: number): string
-  table(id: string): string
-  tableHeader(id: string): string
-  tableBody(id: string): string
-  tableRow(id: string): string
+  label: (index: number) => string
+  table: (id: string) => string
+  tableHeader: (id: string) => string
+  tableBody: (id: string) => string
+  tableRow: (id: string) => string
   content: string
-  cellTrigger(id: string): string
-  prevTrigger(view: DateView): string
-  nextTrigger(view: DateView): string
-  viewTrigger(view: DateView): string
+  cellTrigger: (id: string) => string
+  prevTrigger: (view: DateView) => string
+  nextTrigger: (view: DateView) => string
+  viewTrigger: (view: DateView) => string
   clearTrigger: string
   control: string
-  input(index: number): string
+  input: (index: number) => string
   trigger: string
   monthSelect: string
   yearSelect: string
@@ -422,6 +422,9 @@ export interface DayTableCellState {
   readonly focused: boolean
   readonly ariaLabel: string
   readonly selectable: boolean
+  inHoveredRange: boolean
+  firstInHoveredRange: boolean
+  lastInHoveredRange: boolean
 }
 
 export interface TableProps {
@@ -509,23 +512,23 @@ export interface DatePickerApi<T extends PropTypes = PropTypes> {
   /**
    * Returns an array of days in the week index counted from the provided start date, or the first visible date if not given.
    */
-  getDaysInWeek(week: number, from?: DateValue): DateValue[]
+  getDaysInWeek: (week: number, from?: DateValue) => DateValue[]
   /**
    * Returns the offset of the month based on the provided number of months.
    */
-  getOffset(duration: DateDuration): DateValueOffset
+  getOffset: (duration: DateDuration) => DateValueOffset
   /**
    * Returns the range of dates based on the provided date range preset.
    */
-  getRangePresetValue(value: DateRangePreset): DateValue[]
+  getRangePresetValue: (value: DateRangePreset) => DateValue[]
   /**
    * Returns the weeks of the month from the provided date. Represented as an array of arrays of dates.
    */
-  getMonthWeeks(from?: DateValue): DateValue[][]
+  getMonthWeeks: (from?: DateValue) => DateValue[][]
   /**
    * Returns whether the provided date is available (or can be selected)
    */
-  isUnavailable(date: DateValue): boolean
+  isUnavailable: (date: DateValue) => boolean
   /**
    * The weeks of the month. Represented as an array of arrays of dates.
    */
@@ -569,117 +572,117 @@ export interface DatePickerApi<T extends PropTypes = PropTypes> {
   /**
    * Sets the selected date to today.
    */
-  selectToday(): void
+  selectToday: VoidFunction
   /**
    * Sets the selected date to the given date.
    */
-  setValue(values: DateValue[]): void
+  setValue: (values: DateValue[]) => void
   /**
    * Sets the focused date to the given date.
    */
-  setFocusedValue(value: DateValue): void
+  setFocusedValue: (value: DateValue) => void
   /**
    * Clears the selected date(s).
    */
-  clearValue(): void
+  clearValue: VoidFunction
   /**
    * Function to open or close the calendar.
    */
-  setOpen(open: boolean): void
+  setOpen: (open: boolean) => void
   /**
    * Function to set the selected month.
    */
-  focusMonth(month: number): void
+  focusMonth: (month: number) => void
   /**
    * Function to set the selected year.
    */
-  focusYear(year: number): void
+  focusYear: (year: number) => void
   /**
    * Returns the months of the year
    */
-  getYears(): Cell[]
+  getYears: () => Cell[]
   /**
    * Returns the years of the decade based on the columns.
    * Represented as an array of arrays of years.
    */
-  getYearsGrid(props?: YearGridProps): YearGridValue
+  getYearsGrid: (props?: YearGridProps) => YearGridValue
   /**
    * Returns the start and end years of the decade.
    */
-  getDecade(): Range<number | undefined>
+  getDecade: () => Range<number | undefined>
   /**
    * Returns the months of the year
    */
-  getMonths(props?: MonthFormatOptions): Cell[]
+  getMonths: (props?: MonthFormatOptions) => Cell[]
   /**
    * Returns the months of the year based on the columns.
    * Represented as an array of arrays of months.
    */
-  getMonthsGrid(props?: MonthGridProps): MonthGridValue
+  getMonthsGrid: (props?: MonthGridProps) => MonthGridValue
   /**
    * Formats the given date value based on the provided options.
    */
-  format(value: DateValue, opts?: Intl.DateTimeFormatOptions): string
+  format: (value: DateValue, opts?: Intl.DateTimeFormatOptions) => string
   /**
    * Sets the view of the date picker.
    */
-  setView(view: DateView): void
+  setView: (view: DateView) => void
   /**
    * Goes to the next month/year/decade.
    */
-  goToNext(): void
+  goToNext: VoidFunction
   /**
    * Goes to the previous month/year/decade.
    */
-  goToPrev(): void
+  goToPrev: VoidFunction
   /**
    * Returns the state details for a given cell.
    */
-  getDayTableCellState(props: DayTableCellProps): DayTableCellState
+  getDayTableCellState: (props: DayTableCellProps) => DayTableCellState
   /**
    * Returns the state details for a given month cell.
    */
-  getMonthTableCellState(props: TableCellProps): TableCellState
+  getMonthTableCellState: (props: TableCellProps) => TableCellState
   /**
    * Returns the state details for a given year cell.
    */
-  getYearTableCellState(props: TableCellProps): TableCellState
+  getYearTableCellState: (props: TableCellProps) => TableCellState
 
-  getRootProps(): T["element"]
-  getLabelProps(props?: LabelProps): T["label"]
-  getControlProps(): T["element"]
-  getContentProps(): T["element"]
-  getPositionerProps(): T["element"]
-  getRangeTextProps(): T["element"]
+  getRootProps: () => T["element"]
+  getLabelProps: (props?: LabelProps) => T["label"]
+  getControlProps: () => T["element"]
+  getContentProps: () => T["element"]
+  getPositionerProps: () => T["element"]
+  getRangeTextProps: () => T["element"]
 
-  getTableProps(props?: TableProps): T["element"]
-  getTableHeadProps(props?: TableProps): T["element"]
-  getTableHeaderProps(props?: TableProps): T["element"]
-  getTableBodyProps(props?: TableProps): T["element"]
-  getTableRowProps(props?: TableProps): T["element"]
+  getTableProps: (props?: TableProps) => T["element"]
+  getTableHeadProps: (props?: TableProps) => T["element"]
+  getTableHeaderProps: (props?: TableProps) => T["element"]
+  getTableBodyProps: (props?: TableProps) => T["element"]
+  getTableRowProps: (props?: TableProps) => T["element"]
 
-  getDayTableCellProps(props: DayTableCellProps): T["element"]
-  getDayTableCellTriggerProps(props: DayTableCellProps): T["element"]
+  getDayTableCellProps: (props: DayTableCellProps) => T["element"]
+  getDayTableCellTriggerProps: (props: DayTableCellProps) => T["element"]
 
-  getMonthTableCellProps(props: TableCellProps): T["element"]
-  getMonthTableCellTriggerProps(props: TableCellProps): T["element"]
+  getMonthTableCellProps: (props: TableCellProps) => T["element"]
+  getMonthTableCellTriggerProps: (props: TableCellProps) => T["element"]
 
-  getYearTableCellProps(props: TableCellProps): T["element"]
-  getYearTableCellTriggerProps(props: TableCellProps): T["element"]
+  getYearTableCellProps: (props: TableCellProps) => T["element"]
+  getYearTableCellTriggerProps: (props: TableCellProps) => T["element"]
 
-  getNextTriggerProps(props?: ViewProps): T["button"]
-  getPrevTriggerProps(props?: ViewProps): T["button"]
+  getNextTriggerProps: (props?: ViewProps) => T["button"]
+  getPrevTriggerProps: (props?: ViewProps) => T["button"]
 
-  getClearTriggerProps(): T["button"]
-  getTriggerProps(): T["button"]
-  getPresetTriggerProps(props: PresetTriggerProps): T["button"]
+  getClearTriggerProps: () => T["button"]
+  getTriggerProps: () => T["button"]
+  getPresetTriggerProps: (props: PresetTriggerProps) => T["button"]
 
-  getViewProps(props?: ViewProps): T["element"]
-  getViewTriggerProps(props?: ViewProps): T["button"]
-  getViewControlProps(props?: ViewProps): T["element"]
-  getInputProps(props?: InputProps): T["input"]
-  getMonthSelectProps(): T["select"]
-  getYearSelectProps(): T["select"]
+  getViewProps: (props?: ViewProps) => T["element"]
+  getViewTriggerProps: (props?: ViewProps) => T["button"]
+  getViewControlProps: (props?: ViewProps) => T["element"]
+  getInputProps: (props?: InputProps) => T["input"]
+  getMonthSelectProps: () => T["select"]
+  getYearSelectProps: () => T["select"]
 }
 
 /* -----------------------------------------------------------------------------

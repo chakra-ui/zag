@@ -1,33 +1,83 @@
-import { isHTMLElement } from "./node"
+import { getDocument, getWindow } from "./node"
 
-type ElementGetter = () => Element | null
-
-const fps = 1000 / 60
-
-export function waitForElement(query: ElementGetter, cb: (el: HTMLElement) => void) {
-  const el = query()
-  if (isHTMLElement(el) && el.isConnected) {
-    cb(el)
-    return () => void 0
-  } else {
-    const timerId = setInterval(() => {
-      const el = query()
-      if (isHTMLElement(el) && el.isConnected) {
-        cb(el)
-        clearInterval(timerId)
-      }
-    }, fps)
-    return () => clearInterval(timerId)
-  }
+export interface WaitForOptions {
+  timeout: number
+  rootNode?: Document | ShadowRoot | undefined
 }
 
-export function waitForElements(queries: ElementGetter[], cb: (el: HTMLElement) => void) {
-  const cleanups: VoidFunction[] = []
-  queries?.forEach((query) => {
-    const clean = waitForElement(query, cb)
-    cleanups.push(clean)
+export type WaitForPromiseReturn<T> = [Promise<T>, () => void]
+
+export function waitForPromise<T>(
+  promise: Promise<T>,
+  controller: AbortController,
+  timeout: number,
+): WaitForPromiseReturn<T> {
+  const { signal } = controller
+
+  const wrappedPromise = new Promise<T>((resolve, reject) => {
+    const timeoutId = setTimeout(() => {
+      reject(new Error(`Timeout of ${timeout}ms exceeded`))
+    }, timeout)
+
+    signal.addEventListener("abort", () => {
+      clearTimeout(timeoutId)
+      reject(new Error("Promise aborted"))
+    })
+
+    promise
+      .then((result) => {
+        if (!signal.aborted) {
+          clearTimeout(timeoutId)
+          resolve(result)
+        }
+      })
+      .catch((error) => {
+        if (!signal.aborted) {
+          clearTimeout(timeoutId)
+          reject(error)
+        }
+      })
   })
-  return () => {
-    cleanups.forEach((fn) => fn())
-  }
+
+  const abort = () => controller.abort()
+
+  return [wrappedPromise, abort]
+}
+
+export function waitForElement(
+  target: () => HTMLElement | null,
+  options: WaitForOptions,
+): WaitForPromiseReturn<HTMLElement> {
+  const { timeout, rootNode } = options
+
+  const win = getWindow(rootNode)
+  const doc = getDocument(rootNode)
+  const controller = new win.AbortController()
+
+  return waitForPromise(
+    new Promise<HTMLElement>((resolve) => {
+      const el = target()
+
+      if (el) {
+        resolve(el)
+        return
+      }
+
+      const observer = new win.MutationObserver(() => {
+        const el = target()
+
+        if (el && el.isConnected) {
+          observer.disconnect()
+          resolve(el)
+        }
+      })
+
+      observer.observe(doc.body, {
+        childList: true,
+        subtree: true,
+      })
+    }),
+    controller,
+    timeout,
+  )
 }

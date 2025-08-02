@@ -101,20 +101,20 @@ export interface PasswordInputApi<T extends PropTypes = PropTypes> {
   /**
    * Focus the password input.
    */
-  focus(): void
+  focus: VoidFunction
   /**
    * Set the visibility of the password input.
    */
-  setVisible(value: boolean): void
+  setVisible: (value: boolean) => void
   /**
    * Toggle the visibility of the password input.
    */
-  toggleVisible(): void
+  toggleVisible: VoidFunction
 
-  getRootProps(): T["element"]
-  getLabelProps(): T["label"]
-  getInputProps(): T["input"]
-  getVisibilityTriggerProps(): T["button"]
-  getIndicatorProps(): T["element"]
-  getControlProps(): T["element"]
+  getRootProps: () => T["element"]
+  getLabelProps: () => T["label"]
+  getInputProps: () => T["input"]
+  getVisibilityTriggerProps: () => T["button"]
+  getIndicatorProps: () => T["element"]
+  getControlProps: () => T["element"]
 }

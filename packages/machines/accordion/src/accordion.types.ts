@@ -19,9 +19,9 @@ export interface FocusChangeDetails {
 
 export type ElementIds = Partial<{
   root: string
-  item(value: string): string
-  itemContent(value: string): string
-  itemTrigger(value: string): string
+  item: (value: string) => string
+  itemContent: (value: string) => string
+  itemTrigger: (value: string) => string
 }>
 
 export interface AccordionProps extends DirectionProperty, CommonProperties {
@@ -129,17 +129,17 @@ export interface AccordionApi<T extends PropTypes = PropTypes> {
    */
   value: string[]
   /**
-   * Sets the value of the accordion.
+   * Sets the value of the accordion
    */
   setValue: (value: string[]) => void
   /**
-   * Gets the state of an accordion item.
+   * Returns the state of an accordion item.
    */
-  getItemState(props: ItemProps): ItemState
+  getItemState: (props: ItemProps) => ItemState
 
-  getRootProps(): T["element"]
-  getItemProps(props: ItemProps): T["element"]
-  getItemContentProps(props: ItemProps): T["element"]
-  getItemTriggerProps(props: ItemProps): T["button"]
-  getItemIndicatorProps(props: ItemProps): T["element"]
+  getRootProps: () => T["element"]
+  getItemProps: (props: ItemProps) => T["element"]
+  getItemContentProps: (props: ItemProps) => T["element"]
+  getItemTriggerProps: (props: ItemProps) => T["button"]
+  getItemIndicatorProps: (props: ItemProps) => T["element"]
 }

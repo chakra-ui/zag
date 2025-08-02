@@ -4,6 +4,88 @@ All notable changes to this project will be documented in this file.
 
 > For v0.x changelog, see the [v0 branch](https://github.com/chakra-ui/zag/blob/v0/CHANGELOG.md)
 
+## [1.21.1](./#1.21.1) - 2025-07-31
+
+### Fixed
+
+- **Carousel**: Fix issue where controlled carousel ignores last slide
+
+- **Tour**: Re-expose `WaitOptions`
+
+- **Floating Panel**: Add data attributes for floating panel stage status
+
+## [1.21.0](./#1.21.0) - 2025-07-26
+
+### Added
+
+- **File Upload**: Add `api.transforming` to track file transformation state when using `transformFiles`. This enables
+  developers to show loading states during file processing.
+
+### Fixed
+
+- **Dialog**
+  - Sync content `--layer-index` with positioner and backdrop
+  - Decouple `trapFocus` from `modal` so it's possible to set `modal=false` and `trapFocus=true`
+
+## [1.20.1](./#1.20.1) - 2025-07-23
+
+### Fixed
+
+- **Date Picker**: Fixed issue where hovered range was connect to selected values, when it shouldn't
+
+- **Tree View**: Fixed issue where tree view doesn't scroll into view when content overflows.
+
+## [1.20.0](./#1.20.0) - 2025-07-22
+
+### Fixed
+
+- **Date Picker**: Fix date comparison issues when time components are involved. This resolves critical issues with date
+  comparison operations when different date types (`CalendarDate`, `CalendarDateTime`, `ZonedDateTime`) are mixed,
+  particularly in scenarios involving time components.
+
+### Added
+
+- **Date Picker**: Added hover range preview support for date picker range selection. Added `inHoveredRange`,
+  `firstInHoveredRange`, and `lastInHoveredRange` properties to `DayTableCellState` with corresponding data attributes
+  `data-in-hover-range`, `data-hover-range-start`, and `data-hover-range-end`.
+
+  Hover range states are only active when not overlapping with actual selected range, enabling distinct styling for
+  hover preview vs actual selection in range mode.
+
+## [1.19.0](./#1.19.0) - 2025-07-20
+
+### Added
+
+- **File Upload**: Add support for programmatically controlling the accepted files via `acceptedFiles` and
+  `defaultAcceptedFiles`
+
+- **Signature Pad**: Add support for programmatically controlling the paths via `paths` and `defaultPaths` props.
+
+## [1.18.5](./#1.18.5) - 2025-07-19
+
+### Added
+
+- **JSON Tree Utils**: Add support for `groupArraysAfterLength` to truncate large arrays into chunks (reducing the
+  number of DOM nodes rendered).
+
+### Fixed
+
+- **General**: Fix issue destructuring returned api could throw an ESLint `unbound-method` warning
+
+- **Tree View**: Fix issue where `onExpandedChange`, `onSelectionChange` and `onFocusChange` doesn't infer the tree node
+  types
+
+- **Popper**: Expose floatingElement to the `updatePosition` function
+
+## [1.18.4](./#1.18.4) - 2025-07-18
+
+### Fixed
+
+- **Collection**: Fix issue where the `filter` method completely deletes the children key from the node when there are
+  no matching children
+
+- **Number Input**: Fix issue where default pattern does not allow negative numbers with decimal point
+
 ## [1.18.3](./#1.18.3) - 2025-07-05
 
 ### Fixed

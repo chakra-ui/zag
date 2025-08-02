@@ -56,6 +56,7 @@
   import Tooltip from "./routes/tooltip.svelte"
   import Tour from "./routes/tour.svelte"
   import TreeView from "./routes/tree-view.svelte"
+  import JsonTree from "./routes/json-tree.svelte"
 
   const sortedRoutes = routesData.sort((a, b) => a.label.localeCompare(b.label))
 
@@ -114,6 +115,7 @@
     { path: "/listbox", component: Listbox },
     { path: "/listbox-grid", component: ListboxGrid },
     { path: "/password-input", component: PasswordInput },
+    { path: "/json-tree", component: JsonTree },
   ]
 </script>
 

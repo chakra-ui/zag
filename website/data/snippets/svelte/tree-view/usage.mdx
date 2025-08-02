@@ -1,0 +1,75 @@
+```svelte
+<script lang="ts">
+  import { normalizeProps, useMachine } from "@zag-js/svelte"
+  import * as tree from "@zag-js/tree-view"
+  import { FileIcon, FolderIcon, ChevronRightIcon } from "lucide-svelte"
+
+// 1. Create the tree collection
+
+  interface Node {
+    id: string
+    name: string
+    children?: Node[]
+  }
+
+  const collection = tree.collection<Node>({
+  // ...
+  })
+
+// 2. Create the recursive tree node
+
+  interface TreeNodeProps {
+    node: Node
+    indexPath: number[]
+    api: tree.Api
+  }
+
+  const id = $props.id()
+  const service = useMachine(tree.machine, {
+    id,
+    collection,
+  })
+
+  const api = $derived(tree.connect(service, normalizeProps))
+</script>
+
+{#snippet treeNode(nodeProps: TreeNodeProps)}
+  {@const { node, indexPath, api } = nodeProps}
+  {@const nodeState = api.getNodeState({ indexPath, node })}
+
+  {#if nodeState.isBranch}
+    <div {...api.getBranchProps({ indexPath, node })}>
+      <div {...api.getBranchControlProps({ indexPath, node })}>
+        <FolderIcon />
+        <span {...api.getBranchTextProps({ indexPath, node })}>{node.name}</span>
+        <span {...api.getBranchIndicatorProps({ indexPath, node })}>
+          <ChevronRightIcon />
+        </span>
+      </div>
+      <div {...api.getBranchContentProps({ indexPath, node })}>
+        <div {...api.getBranchIndentGuideProps({ indexPath, node })}></div>
+        {#each node.children || [] as childNode, index}
+          {@render treeNode({ node: childNode, indexPath: [...indexPath, index], api })}
+        {/each}
+      </div>
+    </div>
+  {:else}
+    <div {...api.getItemProps({ indexPath, node })}>
+      <FileIcon />
+      {node.name}
+    </div>
+  {/if}
+{/snippet}
+
+<!-- 3. Create the tree view -->
+
+<div {...api.getRootProps()}>
+  <h3 {...api.getLabelProps()}>My Documents</h3>
+  <div {...api.getTreeProps()}>
+    {#each collection.rootNode.children || [] as node, index}
+      {@render treeNode({ node, indexPath: [index], api })}
+    {/each}
+  </div>
+</div>
+
+```
