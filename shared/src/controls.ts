@@ -309,3 +309,5 @@ export const passwordInputControls = defineControls({
   readOnly: { type: "boolean", defaultValue: false },
   ignorePasswordManagers: { type: "boolean", defaultValue: false },
 })
+
+export const bottomSheetControls = defineControls({})
