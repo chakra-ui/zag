@@ -1,6 +1,7 @@
 import type { EventObject, Machine, Service } from "@zag-js/core"
 import type { CommonProperties, DirectionProperty, Orientation, PropTypes, Size } from "@zag-js/types"
 import type { Timeout } from "./utils/timeout"
+import type { EasingFunction } from "./utils/scroll-until"
 
 export type ScrollToEdge = "top" | "right" | "bottom" | "left"
 
@@ -80,6 +81,20 @@ export interface ScrollbarState {
   hidden: boolean
 }
 
+export interface ScrollEasingOptions {
+  easing?: EasingFunction | undefined
+  duration?: number | undefined
+}
+
+export interface ScrollToDetails extends ScrollEasingOptions {
+  top?: number | undefined
+  left?: number | undefined
+}
+
+export interface ScrollToEdgeDetails extends ScrollEasingOptions {
+  edge: ScrollToEdge
+}
+
 export interface ScrollViewApi<T extends PropTypes> {
   /**
    * Whether the scroll view is at the top
@@ -100,7 +115,11 @@ export interface ScrollViewApi<T extends PropTypes> {
   /**
    * Scroll to the edge of the scroll view
    */
-  scrollToEdge: (edge: ScrollToEdge) => void
+  scrollToEdge: (details: ScrollToEdgeDetails) => Promise<boolean>
+  /**
+   * Scroll to specific coordinates
+   */
+  scrollTo: (details: ScrollToDetails) => Promise<boolean>
   /**
    * Returns the state of the scrollbar
    */
