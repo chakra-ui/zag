@@ -347,6 +347,7 @@ export function connect<T extends PropTypes>(
         dir: prop("dir"),
         "data-state": open ? "open" : "closed",
         "data-placement": currentPlacement,
+        "data-inline": dataAttr(prop("inline")),
         id: dom.getContentId(scope),
         tabIndex: -1,
         role: "application",
