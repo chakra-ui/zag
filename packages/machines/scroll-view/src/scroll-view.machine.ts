@@ -439,7 +439,11 @@ export const machine = createMachine<ScrollViewSchema>({
         if (!contentEl) return
         const win = scope.getWin()
         const obs = new win.ResizeObserver(() => {
-          send({ type: "thumb.measure" })
+          // Use a small timeout to ensure scroll events are processed before resize adjustments
+          // This prevents conflicts between scroll events and resize observer events
+          setTimeout(() => {
+            send({ type: "thumb.measure" })
+          }, 1)
         })
         obs.observe(contentEl)
         return () => {
