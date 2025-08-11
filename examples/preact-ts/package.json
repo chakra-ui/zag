@@ -62,6 +62,7 @@
     "@zag-js/rect-utils": "workspace:*",
     "@zag-js/remove-scroll": "workspace:*",
     "@zag-js/scroll-snap": "workspace:*",
+    "@zag-js/scroll-view": "workspace:*",
     "@zag-js/select": "workspace:*",
     "@zag-js/shared": "workspace:*",
     "@zag-js/signature-pad": "workspace:*",

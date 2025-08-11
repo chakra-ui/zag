@@ -1,0 +1,64 @@
+[data-scope="scroll-view"][data-part="root"] {
+  box-sizing: border-box;
+  width: 24rem;
+  height: 8.5rem;
+  max-width: calc(100vw - 8rem);
+}
+
+[data-scope="scroll-view"][data-part="viewport"] {
+  height: 100%;
+  border-radius: 0.375rem;
+  outline: 1px solid lightgray;
+  outline-offset: -1px;
+  overscroll-behavior: contain;
+
+  /* hide scrollbar */
+  scrollbar-width: none;
+  &::-webkit-scrollbar {
+    display: none;
+  }
+
+  &:focus-visible {
+    outline: 2px solid blue;
+  }
+}
+
+[data-scope="scroll-view"][data-part="content"] {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  padding-block: 0.75rem;
+  padding-left: 1rem;
+  padding-right: 1.5rem;
+}
+
+[data-scope="scroll-view"][data-part="scrollbar"] {
+  display: flex;
+  justify-content: center;
+  background-color: lightgray;
+  width: 0.5rem;
+  border-radius: 0.375rem;
+  margin: 0.5rem;
+  opacity: 0;
+  transition: opacity 150ms 300ms;
+
+  &[data-hovering],
+  &[data-scrolling] {
+    opacity: 1;
+    transition-duration: 75ms;
+    transition-delay: 0ms;
+  }
+
+  &::before {
+    content: "";
+    position: absolute;
+    width: 1.25rem;
+    height: 100%;
+  }
+}
+
+[data-scope="scroll-view"][data-part="thumb"] {
+  width: 100%;
+  border-radius: inherit;
+  background-color: gray;
+}
