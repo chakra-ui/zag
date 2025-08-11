@@ -1,12 +1,13 @@
 import { createMachine } from "@zag-js/core"
-import type { ScrollbarHiddenState, ScrollViewSchema } from "./scroll-view.types"
-import type { Size } from "@zag-js/types"
-import { Timeout } from "./utils/timeout"
-import * as dom from "./scroll-view.dom"
-import { getOffset } from "./utils/offset"
-import { MIN_THUMB_SIZE, SCROLL_TIMEOUT } from "./utils/constants"
-import { callAll, clampValue } from "@zag-js/utils"
 import { addDomEvent, trackPointerMove } from "@zag-js/dom-query"
+import type { Size } from "@zag-js/types"
+import { callAll, clampValue, isEqual } from "@zag-js/utils"
+import * as dom from "./scroll-view.dom"
+import type { ScrollbarHiddenState, ScrollRecord, ScrollViewSchema } from "./scroll-view.types"
+import { MIN_THUMB_SIZE, SCROLL_TIMEOUT } from "./utils/constants"
+import { getOffset } from "./utils/offset"
+import { getScrollSides } from "./utils/scroll-sides"
+import { Timeout } from "./utils/timeout"
 
 export const machine = createMachine<ScrollViewSchema>({
   props({ props }) {
@@ -16,14 +17,15 @@ export const machine = createMachine<ScrollViewSchema>({
     }
   },
 
-  debug: true,
-
   context({ bindable }) {
     return {
       scrollingX: bindable<boolean>(() => ({ defaultValue: false })),
       scrollingY: bindable<boolean>(() => ({ defaultValue: false })),
       hovering: bindable<boolean>(() => ({ defaultValue: false })),
       touchModality: bindable<boolean>(() => ({ defaultValue: false })),
+      atSides: bindable<ScrollRecord<boolean>>(() => ({
+        defaultValue: { top: true, right: false, bottom: false, left: true },
+      })),
       cornerSize: bindable<Size>(() => ({
         defaultValue: { width: 0, height: 0 },
       })),
@@ -249,6 +251,12 @@ export const machine = createMachine<ScrollViewSchema>({
             cornerHidden,
           }
         })
+
+        context.set("atSides", (prev) => {
+          const next = getScrollSides(viewportEl, prop("dir"))
+          if (isEqual(prev, next)) return prev
+          return next
+        })
       },
 
       checkHovering({ scope, context }) {
@@ -258,7 +266,7 @@ export const machine = createMachine<ScrollViewSchema>({
         }
       },
 
-      setScrolling({ event, refs, context }) {
+      setScrolling({ event, refs, context, prop }) {
         const scrollPosition = {
           x: event.target.scrollLeft,
           y: event.target.scrollTop,
@@ -269,6 +277,12 @@ export const machine = createMachine<ScrollViewSchema>({
         const offsetY = scrollPosition.y - scrollPositionRef.y
 
         refs.set("scrollPosition", scrollPosition)
+
+        context.set("atSides", (prev) => {
+          const next = getScrollSides(event.target, prop("dir"))
+          if (isEqual(prev, next)) return prev
+          return next
+        })
 
         if (offsetY !== 0) {
           context.set("scrollingY", true)

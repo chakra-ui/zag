@@ -11,8 +11,15 @@ export function connect<T extends PropTypes>(service: ScrollViewService, normali
   const cornerSize = context.get("cornerSize")
   const thumbSize = context.get("thumbSize")
   const hiddenState = context.get("hiddenState")
+  const atSides = context.get("atSides")
 
   return {
+    atSides,
+    isAtTop: atSides.top,
+    isAtBottom: atSides.bottom,
+    isAtLeft: atSides.left,
+    isAtRight: atSides.right,
+
     getScrollbarState(props: ScrollbarProps) {
       return {
         hovering: context.get("hovering"),
@@ -31,7 +38,7 @@ export function connect<T extends PropTypes>(service: ScrollViewService, normali
           send({ type: "root.pointerenter", pointerType: event.pointerType })
         },
         onPointerMove(event) {
-          // send({ type: "root.pointerenter", pointerType: event.pointerType })
+          send({ type: "root.pointerenter", pointerType: event.pointerType })
         },
         onPointerDown({ pointerType }) {
           send({ type: "root.pointerdown", pointerType })
@@ -57,6 +64,10 @@ export function connect<T extends PropTypes>(service: ScrollViewService, normali
         ...parts.viewport.attrs,
         role: "presentation",
         id: dom.getViewportId(scope),
+        "data-at-top": dataAttr(atSides.top),
+        "data-at-bottom": dataAttr(atSides.bottom),
+        "data-at-left": dataAttr(atSides.left),
+        "data-at-right": dataAttr(atSides.right),
         tabIndex: hiddenState.scrollbarXHidden || hiddenState.scrollbarYHidden ? undefined : 0,
         style: {
           overflow: "auto",

@@ -56,6 +56,7 @@ export interface ScrollViewContext {
   hiddenState: ScrollbarHiddenState
   hovering: boolean
   touchModality: boolean
+  atSides: ScrollRecord<boolean>
 }
 
 export interface ScrollViewRefs {
