@@ -3,9 +3,13 @@ import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import { toPx } from "@zag-js/utils"
 import { parts } from "./scroll-view.anatomy"
 import * as dom from "./scroll-view.dom"
-import type { ScrollbarProps, ScrollViewService } from "./scroll-view.types"
+import type { ScrollViewApi, ScrollViewService } from "./scroll-view.types"
+import { scrollToEdge } from "./utils/scroll-to-edge"
 
-export function connect<T extends PropTypes>(service: ScrollViewService, normalize: NormalizeProps<T>) {
+export function connect<T extends PropTypes>(
+  service: ScrollViewService,
+  normalize: NormalizeProps<T>,
+): ScrollViewApi<T> {
   const { send, context, prop, scope } = service
 
   const cornerSize = context.get("cornerSize")
@@ -14,13 +18,14 @@ export function connect<T extends PropTypes>(service: ScrollViewService, normali
   const atSides = context.get("atSides")
 
   return {
-    atSides,
     isAtTop: atSides.top,
     isAtBottom: atSides.bottom,
     isAtLeft: atSides.left,
     isAtRight: atSides.right,
-
-    getScrollbarState(props: ScrollbarProps) {
+    scrollToEdge(edge) {
+      scrollToEdge(dom.getViewportEl(scope), edge, prop("dir"))
+    },
+    getScrollbarState(props) {
       return {
         hovering: context.get("hovering"),
         scrolling: context.get(props.orientation === "horizontal" ? "scrollingX" : "scrollingY"),
@@ -94,7 +99,7 @@ export function connect<T extends PropTypes>(service: ScrollViewService, normali
       })
     },
 
-    getScrollbarProps(props: ScrollbarProps = {}) {
+    getScrollbarProps(props = {}) {
       const { orientation = "vertical" } = props
       return normalize.element({
         ...parts.scrollbar.attrs,
@@ -134,7 +139,7 @@ export function connect<T extends PropTypes>(service: ScrollViewService, normali
       })
     },
 
-    getThumbProps(props: ScrollbarProps = {}) {
+    getThumbProps(props = {}) {
       const { orientation = "vertical" } = props
       return normalize.element({
         ...parts.thumb.attrs,

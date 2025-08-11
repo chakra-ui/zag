@@ -1,42 +1,25 @@
-import type { EventObject, Service, Machine } from "@zag-js/core"
-import type { CommonProperties, DirectionProperty, Orientation, RequiredBy, Size } from "@zag-js/types"
+import type { EventObject, Machine, Service } from "@zag-js/core"
+import type { CommonProperties, DirectionProperty, Orientation, PropTypes, Size } from "@zag-js/types"
 import type { Timeout } from "./utils/timeout"
 
-export type ScrollRecord<T> = Record<"top" | "right" | "bottom" | "left", T>
+export type ScrollToEdge = "top" | "right" | "bottom" | "left"
+
+export type ScrollRecord<T> = Record<ScrollToEdge, T>
+
+export type ElementIds = Partial<{
+  root: string
+  viewport: string
+  content: string
+  scrollbar: string
+  thumb: string
+}>
 
 export interface ScrollViewProps extends DirectionProperty, CommonProperties {
   /**
-   * Called when scrolling starts
+   * The ids of the scroll view elements
    */
-  onScrollStart?: (e: Event) => void
-  /**
-   * Called when scrolling ends
-   */
-  onScrollEnd?: (e: Event) => void
-  /**
-   * Called during scrolling
-   */
-  onScroll?: (e: Event) => void
-  /**
-   * Called when scrolling state changes
-   */
-  onScrollChange?: (scrolling: boolean) => void
-  /**
-   * Called when any side of the scroll area is reached
-   */
-  onSideReached?: (sides: ScrollRecord<boolean>) => void
-  /**
-   * Offset values for detecting when sides are reached
-   */
-  offset?: ScrollRecord<number>
-  /**
-   * The delay in milliseconds before hiding the scrollbar
-   * @default 600
-   */
-  scrollHideDelay?: number
+  ids?: ElementIds
 }
-
-type PropsWithDefault = "scrollHideDelay"
 
 export interface ScrollbarProps {
   orientation?: Orientation
@@ -78,7 +61,7 @@ export interface ScrollViewRefs {
 
 export interface ScrollViewSchema {
   state: "idle" | "dragging"
-  props: RequiredBy<ScrollViewProps, PropsWithDefault>
+  props: ScrollViewProps
   context: ScrollViewContext
   event: EventObject
   action: string
@@ -90,3 +73,43 @@ export interface ScrollViewSchema {
 export type ScrollViewService = Service<ScrollViewSchema>
 
 export type ScrollViewMachine = Machine<ScrollViewSchema>
+
+export interface ScrollbarState {
+  hovering: boolean
+  scrolling: boolean
+  hidden: boolean
+}
+
+export interface ScrollViewApi<T extends PropTypes> {
+  /**
+   * Whether the scroll view is at the top
+   */
+  isAtTop: boolean
+  /**
+   * Whether the scroll view is at the bottom
+   */
+  isAtBottom: boolean
+  /**
+   * Whether the scroll view is at the left
+   */
+  isAtLeft: boolean
+  /**
+   * Whether the scroll view is at the right
+   */
+  isAtRight: boolean
+  /**
+   * Scroll to the edge of the scroll view
+   */
+  scrollToEdge: (edge: ScrollToEdge) => void
+  /**
+   * Returns the state of the scrollbar
+   */
+  getScrollbarState: (props: ScrollbarProps) => ScrollbarState
+
+  getRootProps: () => T["element"]
+  getViewportProps: () => T["element"]
+  getContentProps: () => T["element"]
+  getScrollbarProps: (props?: ScrollbarProps) => T["element"]
+  getThumbProps: (props?: ScrollbarProps) => T["element"]
+  getCornerProps: () => T["element"]
+}

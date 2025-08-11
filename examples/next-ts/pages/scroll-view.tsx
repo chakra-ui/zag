@@ -14,6 +14,7 @@ export default function Page() {
   return (
     <>
       <main className="scroll-view">
+        <button onClick={() => api.scrollToEdge("bottom")}>Scroll to bottom</button>
         <div {...api.getRootProps()}>
           <div {...api.getViewportProps()}>
             <div {...api.getContentProps()}>

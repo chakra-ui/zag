@@ -12,7 +12,7 @@ import { Timeout } from "./utils/timeout"
 export const machine = createMachine<ScrollViewSchema>({
   props({ props }) {
     return {
-      scrollHideDelay: 600,
+      id: "sv",
       ...props,
     }
   },
@@ -70,7 +70,7 @@ export const machine = createMachine<ScrollViewSchema>({
     })
   },
 
-  effects: ["trackContentSize", "trackViewportVisibility", "trackWheelEvent"],
+  effects: ["trackContentResize", "trackViewportVisibility", "trackWheelEvent"],
 
   entry: ["checkHovering"],
 
@@ -434,7 +434,7 @@ export const machine = createMachine<ScrollViewSchema>({
     },
 
     effects: {
-      trackContentSize({ scope, send }) {
+      trackContentResize({ scope, send }) {
         const contentEl = dom.getContentEl(scope)
         if (!contentEl) return
         const win = scope.getWin()
