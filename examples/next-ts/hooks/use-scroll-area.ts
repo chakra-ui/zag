@@ -2,7 +2,7 @@ import { addDomEvent, getComputedStyle, getEventTarget, getWindow } from "@zag-j
 import { Direction } from "@zag-js/types"
 import { useEffect, useRef } from "react"
 
-export interface ScrollViewProps {
+export interface ScrollAreaProps {
   onScrollStart?: (e: Event) => void
   onScrollEnd?: (e: Event) => void
   onScroll?: (e: Event) => void
@@ -17,7 +17,7 @@ export interface ScrollViewProps {
   }
 }
 
-function trackScrollView(node: HTMLElement | null, props: ScrollViewProps) {
+function trackScrollArea(node: HTMLElement | null, props: ScrollAreaProps) {
   if (!node) return
 
   let { onScrollStart, onScrollEnd, onScrollChange, onSideReached, offset = {}, flush } = props
@@ -185,10 +185,10 @@ function getScrollLeft(node: Element, direction: Direction): number {
   return scrollLeft
 }
 
-export function useScrollView(props: ScrollViewProps) {
+export function useScrollArea(props: ScrollAreaProps) {
   const ref = useRef<HTMLDivElement>(null)
   useEffect(() => {
-    return trackScrollView(ref.current, props)
+    return trackScrollArea(ref.current, props)
   }, [props])
   return ref
 }

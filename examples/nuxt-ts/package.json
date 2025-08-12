@@ -62,6 +62,7 @@
     "@zag-js/rect-utils": "workspace:*",
     "@zag-js/remove-scroll": "workspace:*",
     "@zag-js/scroll-snap": "workspace:*",
+    "@zag-js/scroll-area": "workspace:*",
     "@zag-js/select": "workspace:*",
     "@zag-js/shared": "workspace:*",
     "@zag-js/signature-pad": "workspace:*",
@@ -88,7 +89,7 @@
     "form-serialize": "0.7.2",
     "lucide-vue-next": "0.525.0",
     "match-sorter": "8.0.3",
-    "vue": "3.5.17",
+    "vue": "3.5.18",
     "vue-router": "4.5.1"
   },
   "devDependencies": {

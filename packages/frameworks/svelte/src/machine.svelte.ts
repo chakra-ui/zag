@@ -251,6 +251,8 @@ export function useMachine<T extends MachineSchema>(
     transitionRef.current = transition
     const target = transition.target ?? currentState
 
+    debug("transition", event.type, transition.target || currentState, `(${transition.actions})`)
+
     const changed = target !== currentState
     if (changed) {
       // state change is high priority
