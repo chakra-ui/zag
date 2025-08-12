@@ -1,9 +1,40 @@
 import type { Required } from "@zag-js/types"
 import { compact, runIfFn, uuid, warn } from "@zag-js/utils"
-import type { Options, PromiseOptions, ToastProps, ToastStore, ToastStoreProps } from "./toast.types"
+import type {
+  Options,
+  ToastQueuePriority,
+  PromiseOptions,
+  ToastProps,
+  ToastStore,
+  ToastStoreProps,
+  Type,
+} from "./toast.types"
 
 const withDefaults = <T extends object, D extends Partial<T>>(options: T, defaults: D): T & Required<D> => {
   return { ...defaults, ...compact(options as any) }
+}
+
+const priorities: Record<string, [ToastQueuePriority, ToastQueuePriority]> = {
+  error: [1, 2],
+  warning: [2, 6],
+  loading: [3, 4],
+  success: [4, 7],
+  info: [5, 8],
+}
+
+const DEFAULT_TYPE: Type = "info"
+
+const getPriorityForType = (type?: Type, hasAction?: boolean): ToastQueuePriority => {
+  const [actionable, nonActionable] = priorities[type ?? DEFAULT_TYPE] ?? [5, 8]
+  return hasAction ? actionable : nonActionable
+}
+
+const sortToastsByPriority = <V>(toastArray: Partial<ToastProps<V>>[]): Partial<ToastProps<V>>[] => {
+  return toastArray.sort((a, b) => {
+    const priorityA = a.priority ?? getPriorityForType(a.type, !!a.action)
+    const priorityB = b.priority ?? getPriorityForType(b.type, !!b.action)
+    return priorityA - priorityB
+  })
 }
 
 export function createToastStore<V = any>(props: ToastStoreProps): ToastStore<V> {
@@ -47,6 +78,7 @@ export function createToastStore<V = any>(props: ToastStoreProps): ToastStore<V>
 
   const processQueue = () => {
     while (toastQueue.length > 0 && toasts.length < attrs.max) {
+      toastQueue = sortToastsByPriority(toastQueue)
       const nextToast = toastQueue.shift()
       if (nextToast) {
         publish(nextToast)
@@ -70,15 +102,17 @@ export function createToastStore<V = any>(props: ToastStoreProps): ToastStore<V>
         return toast
       })
     } else {
-      addToast({
+      const newToast = {
         id,
         duration: attrs.duration,
         removeDelay: attrs.removeDelay,
-        type: "info",
+        type: DEFAULT_TYPE,
         ...data,
         stacked: !attrs.overlap,
         gap: attrs.gap,
-      })
+      }
+      const priority = newToast.priority ?? getPriorityForType(newToast.type, !!newToast.action)
+      addToast({ ...newToast, priority })
     }
 
     return id
@@ -102,23 +136,28 @@ export function createToastStore<V = any>(props: ToastStoreProps): ToastStore<V>
   }
 
   const error = (data?: Omit<Options<V>, "type">) => {
-    return create({ ...data, type: "error" })
+    const priority = data?.priority ?? getPriorityForType("error", !!data?.action)
+    return create({ ...data, type: "error", priority })
   }
 
   const success = (data?: Omit<Options<V>, "type">) => {
-    return create({ ...data, type: "success" })
+    const priority = data?.priority ?? getPriorityForType("success", !!data?.action)
+    return create({ ...data, type: "success", priority })
   }
 
   const info = (data?: Omit<Options<V>, "type">) => {
-    return create({ ...data, type: "info" })
+    const priority = data?.priority ?? getPriorityForType("info", !!data?.action)
+    return create({ ...data, type: "info", priority })
   }
 
   const warning = (data?: Omit<Options<V>, "type">) => {
-    return create({ ...data, type: "warning" })
+    const priority = data?.priority ?? getPriorityForType("warning", !!data?.action)
+    return create({ ...data, type: "warning", priority })
   }
 
   const loading = (data?: Omit<Options<V>, "type">) => {
-    return create({ ...data, type: "loading" })
+    const priority = data?.priority ?? getPriorityForType("loading", !!data?.action)
+    return create({ ...data, type: "loading", priority })
   }
 
   const getVisibleToasts = () => {
@@ -161,7 +200,7 @@ export function createToastStore<V = any>(props: ToastStoreProps): ToastStore<V>
         } else if (options.success !== undefined) {
           removable = false
           const successOptions = runIfFn(options.success, response)
-          create({ ...shared, ...successOptions, id, type: "success" })
+          create({ ...shared, ...successOptions, id, type: successOptions.type ?? "success" })
         }
       })
       .catch(async (error) => {
