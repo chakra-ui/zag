@@ -90,7 +90,7 @@ export const machine = createMachine<CarouselSchema>({
     track([() => prop("slideCount")], () => {
       action(["setSnapPoints", "clampPage"])
     })
-    track([() => prop("autoplay")], () => {
+    track([() => !!prop("autoplay")], () => {
       send({ type: prop("autoplay") ? "AUTOPLAY.START" : "AUTOPLAY.PAUSE", src: "autoplay.prop.change" })
     })
   },
