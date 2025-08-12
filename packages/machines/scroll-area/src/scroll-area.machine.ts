@@ -3,12 +3,13 @@ import { addDomEvent, trackPointerMove } from "@zag-js/dom-query"
 import type { Size } from "@zag-js/types"
 import { callAll, clampValue, isEqual } from "@zag-js/utils"
 import * as dom from "./scroll-area.dom"
-import type { ScrollbarHiddenState, ScrollRecord, ScrollAreaSchema } from "./scroll-area.types"
-const MIN_THUMB_SIZE = 20
-const SCROLL_TIMEOUT = 1000
+import type { ScrollAreaSchema, ScrollbarHiddenState, ScrollRecord } from "./scroll-area.types"
 import { getScrollOffset } from "./utils/scroll-offset"
 import { getScrollSides } from "./utils/scroll-sides"
 import { Timeout } from "./utils/timeout"
+
+const MIN_THUMB_SIZE = 20
+const SCROLL_TIMEOUT = 1000
 
 export const machine = createMachine<ScrollAreaSchema>({
   props({ props }) {
