@@ -77,7 +77,7 @@ export const machine = createMachine<CarouselSchema>({
     },
   },
 
-  watch({ track, action, context, prop, send, state, computed }) {
+  watch({ track, action, context, prop, send }) {
     track([() => prop("slidesPerPage"), () => prop("slidesPerMove")], () => {
       action(["setSnapPoints"])
     })
