@@ -722,11 +722,11 @@
       "data-part": "content",
       "data-state": "\"open\" | \"closed\"",
       "data-dragging": "Present when in the dragging state",
-      "data-topmost": "",
-      "data-behind": "",
-      "data-minimized": "",
-      "data-maximized": "",
-      "data-staged": ""
+      "data-topmost": "Present when topmost",
+      "data-behind": "Present when not topmost",
+      "data-minimized": "Present when minimized",
+      "data-maximized": "Present when maximized",
+      "data-staged": "Present when not in default stage"
     },
     "ResizeTrigger": {
       "data-scope": "floating-panel",
@@ -743,28 +743,28 @@
       "data-scope": "floating-panel",
       "data-part": "control",
       "data-disabled": "Present when disabled",
-      "data-stage": "",
-      "data-minimized": "",
-      "data-maximized": "",
-      "data-staged": ""
+      "data-stage": "The stage of the floating panel",
+      "data-minimized": "Present when minimized",
+      "data-maximized": "Present when maximized",
+      "data-staged": "Present when not in default stage"
     },
     "Header": {
       "data-scope": "floating-panel",
       "data-part": "header",
       "data-dragging": "Present when in the dragging state",
-      "data-topmost": "",
-      "data-behind": "",
-      "data-minimized": "",
-      "data-maximized": "",
-      "data-staged": ""
+      "data-topmost": "Present when topmost",
+      "data-behind": "Present when not topmost",
+      "data-minimized": "Present when minimized",
+      "data-maximized": "Present when maximized",
+      "data-staged": "Present when not in default stage"
     },
     "Body": {
       "data-scope": "floating-panel",
       "data-part": "body",
       "data-dragging": "Present when in the dragging state",
-      "data-minimized": "",
-      "data-maximized": "",
-      "data-staged": ""
+      "data-minimized": "Present when minimized",
+      "data-maximized": "Present when maximized",
+      "data-staged": "Present when not in default stage"
     }
   },
   "hover-card": {

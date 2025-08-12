@@ -56,6 +56,12 @@ const docsMap = {
   "data-at-bottom": "Present when scrolled to the bottom edge",
   "data-at-left": "Present when scrolled to the left edge",
   "data-at-right": "Present when scrolled to the right edge",
+  "data-behind": "Present when not topmost",
+  "data-minimized": "Present when minimized",
+  "data-maximized": "Present when maximized",
+  "data-staged": "Present when not in default stage",
+  "data-topmost": "Present when topmost",
+  "data-stage": "The stage of the floating panel",
 }
 
 const skipAttrs = ["data-ownedby", "data-uid"]
