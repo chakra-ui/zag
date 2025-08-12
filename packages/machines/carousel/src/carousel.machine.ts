@@ -91,13 +91,7 @@ export const machine = createMachine<CarouselSchema>({
       action(["setSnapPoints", "clampPage"])
     })
     track([() => prop("autoplay")], () => {
-      const autoplay = prop("autoplay")
-      
-      if (autoplay) {
-        send({ type: "AUTOPLAY.START", src: "autoplay.prop.change" })
-      } else {
-        send({ type: "AUTOPLAY.PAUSE", src: "autoplay.prop.change" })
-      }
+      send({ type: prop("autoplay") ? "AUTOPLAY.START" : "AUTOPLAY.PAUSE", src: "autoplay.prop.change" })
     })
     track([() => computed("autoplayInterval")], () => {
       const isAutoplayActive = state.matches("autoplay")
