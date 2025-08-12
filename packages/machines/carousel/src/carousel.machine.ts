@@ -13,7 +13,7 @@ export const machine = createMachine<CarouselSchema>({
       defaultPage: 0,
       orientation: "horizontal",
       snapType: "mandatory",
-      loop: false,
+      loop: !!props.autoplay,
       slidesPerPage: 1,
       slidesPerMove: "auto",
       spacing: "0px",
