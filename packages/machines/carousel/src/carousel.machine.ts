@@ -92,11 +92,10 @@ export const machine = createMachine<CarouselSchema>({
     })
     track([() => prop("autoplay")], () => {
       const autoplay = prop("autoplay")
-      const isAutoplayActive = state.matches("autoplay")
       
-      if (autoplay && !isAutoplayActive) {
+      if (autoplay) {
         send({ type: "AUTOPLAY.START", src: "autoplay.prop.change" })
-      } else if (!autoplay && isAutoplayActive) {
+      } else {
         send({ type: "AUTOPLAY.PAUSE", src: "autoplay.prop.change" })
       }
     })
