@@ -1,0 +1,5 @@
+export { anatomy } from "./scroll-area.anatomy"
+export { connect } from "./scroll-area.connect"
+export { machine } from "./scroll-area.machine"
+export * from "./scroll-area.props"
+export type { ScrollAreaService, ScrollAreaSchema } from "./scroll-area.types"

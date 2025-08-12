@@ -296,12 +296,12 @@ importers:
       '@zag-js/remove-scroll':
         specifier: workspace:*
         version: link:../../packages/utilities/remove-scroll
+      '@zag-js/scroll-area':
+        specifier: workspace:*
+        version: link:../../packages/machines/scroll-area
       '@zag-js/scroll-snap':
         specifier: workspace:*
         version: link:../../packages/utilities/scroll-snap
-      '@zag-js/scroll-view':
-        specifier: workspace:*
-        version: link:../../packages/machines/scroll-view
       '@zag-js/select':
         specifier: workspace:*
         version: link:../../packages/machines/select
@@ -582,12 +582,12 @@ importers:
       '@zag-js/remove-scroll':
         specifier: workspace:*
         version: link:../../packages/utilities/remove-scroll
+      '@zag-js/scroll-area':
+        specifier: workspace:*
+        version: link:../../packages/machines/scroll-area
       '@zag-js/scroll-snap':
         specifier: workspace:*
         version: link:../../packages/utilities/scroll-snap
-      '@zag-js/scroll-view':
-        specifier: workspace:*
-        version: link:../../packages/machines/scroll-view
       '@zag-js/select':
         specifier: workspace:*
         version: link:../../packages/machines/select
@@ -847,12 +847,12 @@ importers:
       '@zag-js/remove-scroll':
         specifier: workspace:*
         version: link:../../packages/utilities/remove-scroll
+      '@zag-js/scroll-area':
+        specifier: workspace:*
+        version: link:../../packages/machines/scroll-area
       '@zag-js/scroll-snap':
         specifier: workspace:*
         version: link:../../packages/utilities/scroll-snap
-      '@zag-js/scroll-view':
-        specifier: workspace:*
-        version: link:../../packages/machines/scroll-view
       '@zag-js/select':
         specifier: workspace:*
         version: link:../../packages/machines/select
@@ -1115,12 +1115,12 @@ importers:
       '@zag-js/remove-scroll':
         specifier: workspace:*
         version: link:../../packages/utilities/remove-scroll
+      '@zag-js/scroll-area':
+        specifier: workspace:*
+        version: link:../../packages/machines/scroll-area
       '@zag-js/scroll-snap':
         specifier: workspace:*
         version: link:../../packages/utilities/scroll-snap
-      '@zag-js/scroll-view':
-        specifier: workspace:*
-        version: link:../../packages/machines/scroll-view
       '@zag-js/select':
         specifier: workspace:*
         version: link:../../packages/machines/select
@@ -1361,12 +1361,12 @@ importers:
       '@zag-js/remove-scroll':
         specifier: workspace:*
         version: link:../../packages/utilities/remove-scroll
+      '@zag-js/scroll-area':
+        specifier: workspace:*
+        version: link:../../packages/machines/scroll-area
       '@zag-js/scroll-snap':
         specifier: workspace:*
         version: link:../../packages/utilities/scroll-snap
-      '@zag-js/scroll-view':
-        specifier: workspace:*
-        version: link:../../packages/machines/scroll-view
       '@zag-js/select':
         specifier: workspace:*
         version: link:../../packages/machines/select
@@ -1632,12 +1632,12 @@ importers:
       '@zag-js/remove-scroll':
         specifier: workspace:*
         version: link:../../packages/utilities/remove-scroll
+      '@zag-js/scroll-area':
+        specifier: workspace:*
+        version: link:../../packages/machines/scroll-area
       '@zag-js/scroll-snap':
         specifier: workspace:*
         version: link:../../packages/utilities/scroll-snap
-      '@zag-js/scroll-view':
-        specifier: workspace:*
-        version: link:../../packages/machines/scroll-view
       '@zag-js/select':
         specifier: workspace:*
         version: link:../../packages/machines/select
@@ -2672,7 +2672,7 @@ importers:
         specifier: 2.2.0
         version: 2.2.0
 
-  packages/machines/scroll-view:
+  packages/machines/scroll-area:
     dependencies:
       '@zag-js/anatomy':
         specifier: workspace:*

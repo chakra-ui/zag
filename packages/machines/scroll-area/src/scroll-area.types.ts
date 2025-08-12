@@ -15,9 +15,9 @@ export type ElementIds = Partial<{
   thumb: string
 }>
 
-export interface ScrollViewProps extends DirectionProperty, CommonProperties {
+export interface ScrollAreaProps extends DirectionProperty, CommonProperties {
   /**
-   * The ids of the scroll view elements
+   * The ids of the scroll area elements
    */
   ids?: ElementIds
 }
@@ -32,7 +32,7 @@ export interface ScrollbarHiddenState {
   cornerHidden: boolean
 }
 
-export interface ScrollViewContext {
+export interface ScrollAreaContext {
   cornerSize: Size
   thumbSize: Size
   scrollingX: boolean
@@ -43,7 +43,7 @@ export interface ScrollViewContext {
   atSides: ScrollRecord<boolean>
 }
 
-export interface ScrollViewRefs {
+export interface ScrollAreaRefs {
   orientation: Orientation | null
   scrollPosition: { x: number; y: number }
 
@@ -60,20 +60,20 @@ export interface ScrollViewRefs {
   programmaticScroll: boolean
 }
 
-export interface ScrollViewSchema {
+export interface ScrollAreaSchema {
   state: "idle" | "dragging"
-  props: ScrollViewProps
-  context: ScrollViewContext
+  props: ScrollAreaProps
+  context: ScrollAreaContext
   event: EventObject
   action: string
   guard: string
   effect: string
-  refs: ScrollViewRefs
+  refs: ScrollAreaRefs
 }
 
-export type ScrollViewService = Service<ScrollViewSchema>
+export type ScrollAreaService = Service<ScrollAreaSchema>
 
-export type ScrollViewMachine = Machine<ScrollViewSchema>
+export type ScrollAreaMachine = Machine<ScrollAreaSchema>
 
 export interface ScrollbarState {
   hovering: boolean
@@ -95,29 +95,29 @@ export interface ScrollToEdgeDetails extends ScrollEasingOptions {
   edge: ScrollToEdge
 }
 
-export interface ScrollViewApi<T extends PropTypes> {
+export interface ScrollAreaApi<T extends PropTypes> {
   /**
-   * Whether the scroll view is at the top
+   * Whether the scroll area is at the top
    */
   isAtTop: boolean
   /**
-   * Whether the scroll view is at the bottom
+   * Whether the scroll area is at the bottom
    */
   isAtBottom: boolean
   /**
-   * Whether the scroll view is at the left
+   * Whether the scroll area is at the left
    */
   isAtLeft: boolean
   /**
-   * Whether the scroll view is at the right
+   * Whether the scroll area is at the right
    */
   isAtRight: boolean
   /**
-   * Whether the scroll view has horizontal overflow
+   * Whether the scroll area has horizontal overflow
    */
   hasOverflowX: boolean
   /**
-   * Whether the scroll view has vertical overflow
+   * Whether the scroll area has vertical overflow
    */
   hasOverflowY: boolean
   /**
@@ -125,7 +125,7 @@ export interface ScrollViewApi<T extends PropTypes> {
    */
   getScrollProgress: () => Point
   /**
-   * Scroll to the edge of the scroll view
+   * Scroll to the edge of the scroll area
    */
   scrollToEdge: (details: ScrollToEdgeDetails) => Promise<boolean>
   /**

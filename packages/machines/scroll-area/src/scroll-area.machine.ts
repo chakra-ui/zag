@@ -2,14 +2,14 @@ import { createMachine } from "@zag-js/core"
 import { addDomEvent, trackPointerMove } from "@zag-js/dom-query"
 import type { Size } from "@zag-js/types"
 import { callAll, clampValue, isEqual } from "@zag-js/utils"
-import * as dom from "./scroll-view.dom"
-import type { ScrollbarHiddenState, ScrollRecord, ScrollViewSchema } from "./scroll-view.types"
+import * as dom from "./scroll-area.dom"
+import type { ScrollbarHiddenState, ScrollRecord, ScrollAreaSchema } from "./scroll-area.types"
 import { MIN_THUMB_SIZE, SCROLL_TIMEOUT } from "./utils/constants"
 import { getOffset } from "./utils/offset"
 import { getScrollSides } from "./utils/scroll-sides"
 import { Timeout } from "./utils/timeout"
 
-export const machine = createMachine<ScrollViewSchema>({
+export const machine = createMachine<ScrollAreaSchema>({
   props({ props }) {
     return {
       id: "sv",

@@ -1,5 +1,5 @@
 import type { Direction } from "@zag-js/types"
-import type { ScrollEasingOptions, ScrollToEdge } from "../scroll-view.types"
+import type { ScrollEasingOptions, ScrollToEdge } from "../scroll-area.types"
 import { EASE_OUT_CUBIC } from "./constants"
 import { scrollUntil } from "./scroll-until"
 

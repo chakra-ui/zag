@@ -1,9 +1,9 @@
 import type { Scope } from "@zag-js/core"
 import { query } from "@zag-js/dom-query/src/query"
 
-export const getRootId = (ctx: Scope) => ctx.ids?.root ?? `scroll-view-${ctx.id}`
-export const getViewportId = (ctx: Scope) => ctx.ids?.viewport ?? `scroll-view-${ctx.id}:viewport`
-export const getContentId = (ctx: Scope) => ctx.ids?.content ?? `scroll-view-${ctx.id}:content`
+export const getRootId = (ctx: Scope) => ctx.ids?.root ?? `scroll-area-${ctx.id}`
+export const getViewportId = (ctx: Scope) => ctx.ids?.viewport ?? `scroll-area-${ctx.id}:viewport`
+export const getContentId = (ctx: Scope) => ctx.ids?.content ?? `scroll-area-${ctx.id}:content`
 
 export const getRootEl = (ctx: Scope) => ctx.getById(getRootId(ctx))
 export const getViewportEl = (ctx: Scope) => ctx.getById(getViewportId(ctx))

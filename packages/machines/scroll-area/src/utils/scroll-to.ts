@@ -1,4 +1,4 @@
-import type { ScrollToDetails } from "../scroll-view.types"
+import type { ScrollToDetails } from "../scroll-area.types"
 import { EASE_OUT_CUBIC } from "./constants"
 import { scrollUntil } from "./scroll-until"
 

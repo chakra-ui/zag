@@ -1,11 +1,11 @@
-[data-scope="scroll-view"][data-part="root"] {
+[data-scope="scroll-area"][data-part="root"] {
   box-sizing: border-box;
   width: 24rem;
   height: 8.5rem;
   max-width: calc(100vw - 8rem);
 }
 
-[data-scope="scroll-view"][data-part="viewport"] {
+[data-scope="scroll-area"][data-part="viewport"] {
   height: 100%;
   border-radius: 0.375rem;
   outline: 1px solid lightgray;
@@ -23,7 +23,7 @@
   }
 }
 
-[data-scope="scroll-view"][data-part="content"] {
+[data-scope="scroll-area"][data-part="content"] {
   display: flex;
   flex-direction: column;
   gap: 1rem;
@@ -32,7 +32,7 @@
   padding-inline-end: 1.5rem;
 }
 
-[data-scope="scroll-view"][data-part="scrollbar"] {
+[data-scope="scroll-area"][data-part="scrollbar"] {
   display: flex;
   justify-content: center;
   background-color: lightgray;
@@ -65,7 +65,7 @@
   }
 }
 
-[data-scope="scroll-view"][data-part="thumb"] {
+[data-scope="scroll-area"][data-part="thumb"] {
   width: 100%;
   border-radius: inherit;
   background-color: gray;

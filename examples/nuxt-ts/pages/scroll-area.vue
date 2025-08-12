@@ -1,14 +1,14 @@
 <script setup lang="ts">
-import * as scrollView from "@zag-js/scroll-view"
+import * as scrollArea from "@zag-js/scroll-area"
 import { normalizeProps, useMachine } from "@zag-js/vue"
 import { computed, useId } from "vue"
 
-const service = useMachine(scrollView.machine, { id: useId() })
-const api = computed(() => scrollView.connect(service, normalizeProps))
+const service = useMachine(scrollArea.machine, { id: useId() })
+const api = computed(() => scrollArea.connect(service, normalizeProps))
 </script>
 
 <template>
-  <main class="scroll-view">
+  <main class="scroll-area">
     <div v-bind="api.getRootProps()">
       <div v-bind="api.getViewportProps()">
         <div v-bind="api.getContentProps()">

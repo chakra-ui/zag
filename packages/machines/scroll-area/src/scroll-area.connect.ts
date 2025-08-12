@@ -1,17 +1,17 @@
 import { dataAttr, getEventPoint } from "@zag-js/dom-query"
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import { toPx } from "@zag-js/utils"
-import { parts } from "./scroll-view.anatomy"
-import * as dom from "./scroll-view.dom"
-import type { ScrollViewApi, ScrollViewService } from "./scroll-view.types"
+import { parts } from "./scroll-area.anatomy"
+import * as dom from "./scroll-area.dom"
+import type { ScrollAreaApi, ScrollAreaService } from "./scroll-area.types"
 import { getScrollProgress } from "./utils/scroll-progress"
 import { scrollTo } from "./utils/scroll-to"
 import { scrollToEdge } from "./utils/scroll-to-edge"
 
 export function connect<T extends PropTypes>(
-  service: ScrollViewService,
+  service: ScrollAreaService,
   normalize: NormalizeProps<T>,
-): ScrollViewApi<T> {
+): ScrollAreaApi<T> {
   const { send, context, prop, scope } = service
 
   const cornerSize = context.get("cornerSize")

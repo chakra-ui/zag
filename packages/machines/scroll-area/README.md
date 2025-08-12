@@ -1,13 +1,13 @@
-# @zag-js/scroll-view
+# @zag-js/scroll-area
 
-Core logic for the scroll-view widget implemented as a state machine
+Core logic for the scroll-area widget implemented as a state machine
 
 ## Installation
 
 ```sh
-yarn add @zag-js/scroll-view
+yarn add @zag-js/scroll-area
 # or
-npm i @zag-js/scroll-view
+npm i @zag-js/scroll-area
 ```
 
 ## Contribution
