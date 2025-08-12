@@ -77,7 +77,7 @@ export const machine = createMachine<CarouselSchema>({
     },
   },
 
-  watch({ track, action, context, prop }) {
+  watch({ track, action, context, prop, send, state, computed }) {
     track([() => prop("slidesPerPage"), () => prop("slidesPerMove")], () => {
       action(["setSnapPoints"])
     })
@@ -86,6 +86,31 @@ export const machine = createMachine<CarouselSchema>({
     })
     track([() => prop("orientation")], () => {
       action(["setSnapPoints", "scrollToPage"])
+    })
+    track([() => prop("slideCount")], () => {
+      action(["setSnapPoints", "clampPage"])
+    })
+    track([() => prop("autoplay")], () => {
+      const autoplay = prop("autoplay")
+      const isAutoplayActive = state.matches("autoplay")
+      
+      if (autoplay && !isAutoplayActive) {
+        send({ type: "AUTOPLAY.START", src: "autoplay.prop.change" })
+      } else if (!autoplay && isAutoplayActive) {
+        send({ type: "AUTOPLAY.PAUSE", src: "autoplay.prop.change" })
+      }
+    })
+    track([() => computed("autoplayInterval")], () => {
+      const isAutoplayActive = state.matches("autoplay")
+      const autoplay = prop("autoplay")
+      
+      if (autoplay && isAutoplayActive) {
+        // Restart autoplay to apply new interval if delay changed
+        send({ type: "AUTOPLAY.PAUSE", src: "autoplay.interval.change" })
+        setTimeout(() => {
+          send({ type: "AUTOPLAY.START", src: "autoplay.interval.change" })
+        }, 0)
+      }
     })
   },
 
