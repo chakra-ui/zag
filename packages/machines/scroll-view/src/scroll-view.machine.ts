@@ -480,19 +480,25 @@ export const machine = createMachine<ScrollViewSchema>({
 
           const orientation = (event.currentTarget as HTMLElement).dataset.orientation as "vertical" | "horizontal"
 
-          event.preventDefault()
-
+          // Only preventDefault when the inner viewport will actually scroll.
+          // If at boundaries, allow the event to bubble for nested scroll chaining.
           if (orientation === "vertical") {
-            const atTopBoundary = viewportEl.scrollTop === 0 && event.deltaY < 0
-            const atBottomBoundary =
+            const canScrollY = viewportEl.scrollHeight > viewportEl.clientHeight
+            const atTop = viewportEl.scrollTop === 0 && event.deltaY < 0
+            const atBottom =
               viewportEl.scrollTop === viewportEl.scrollHeight - viewportEl.clientHeight && event.deltaY > 0
-            if (atTopBoundary || atBottomBoundary) return
+            const shouldScroll = canScrollY && event.deltaY !== 0 && !(atTop || atBottom)
+            if (!shouldScroll) return
+            event.preventDefault()
             viewportEl.scrollTop += event.deltaY
           } else if (orientation === "horizontal") {
-            const atLeftBoundary = viewportEl.scrollLeft === 0 && event.deltaX < 0
-            const atRightBoundary =
+            const canScrollX = viewportEl.scrollWidth > viewportEl.clientWidth
+            const atLeft = viewportEl.scrollLeft === 0 && event.deltaX < 0
+            const atRight =
               viewportEl.scrollLeft === viewportEl.scrollWidth - viewportEl.clientWidth && event.deltaX > 0
-            if (atLeftBoundary || atRightBoundary) return
+            const shouldScroll = canScrollX && event.deltaX !== 0 && !(atLeft || atRight)
+            if (!shouldScroll) return
+            event.preventDefault()
             viewportEl.scrollLeft += event.deltaX
           }
         }

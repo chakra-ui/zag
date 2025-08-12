@@ -37,10 +37,11 @@ export function connect<T extends PropTypes>(
       return scrollTo(dom.getViewportEl(scope), details)
     },
     getScrollbarState(props) {
+      const horizontal = props.orientation === "horizontal"
       return {
         hovering: context.get("hovering"),
-        scrolling: context.get(props.orientation === "horizontal" ? "scrollingX" : "scrollingY"),
-        hidden: props.orientation === "horizontal" ? hiddenState.scrollbarXHidden : hiddenState.scrollbarYHidden,
+        scrolling: context.get(horizontal ? "scrollingX" : "scrollingY"),
+        hidden: horizontal ? hiddenState.scrollbarXHidden : hiddenState.scrollbarYHidden,
       }
     },
 
