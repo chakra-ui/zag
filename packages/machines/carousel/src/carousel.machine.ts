@@ -13,7 +13,7 @@ export const machine = createMachine<CarouselSchema>({
       defaultPage: 0,
       orientation: "horizontal",
       snapType: "mandatory",
-      loop: !!props.autoplay,
+      loop: false,
       slidesPerPage: 1,
       slidesPerMove: "auto",
       spacing: "0px",
@@ -199,9 +199,16 @@ export const machine = createMachine<CarouselSchema>({
       effects: ["trackDocumentVisibility", "trackScroll", "autoUpdateSlide"],
       exit: ["invokeAutoplayEnd"],
       on: {
-        "AUTOPLAY.TICK": {
-          actions: ["setNextPage", "invokeAutoplay"],
-        },
+        "AUTOPLAY.TICK": [
+          {
+            guard: "canScrollNext",
+            actions: ["setNextPage", "invokeAutoplay"],
+          },
+          {
+            target: "idle",
+            actions: ["invokeAutoplayEnd"],
+          },
+        ],
         "DRAGGING.START": {
           target: "dragging",
           actions: ["invokeDragStart"],
@@ -372,12 +379,12 @@ export const machine = createMachine<CarouselSchema>({
         context.set("page", page)
       },
       setNextPage({ context, prop, state }) {
-        const loop = state.matches("autoplay") || prop("loop")
+        const loop = prop("loop")
         const page = nextIndex(context.get("pageSnapPoints"), context.get("page"), { loop })
         context.set("page", page)
       },
       setPrevPage({ context, prop, state }) {
-        const loop = state.matches("autoplay") || prop("loop")
+        const loop = prop("loop")
         const page = prevIndex(context.get("pageSnapPoints"), context.get("page"), { loop })
         context.set("page", page)
       },
