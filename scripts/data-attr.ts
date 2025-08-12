@@ -50,6 +50,23 @@ const docsMap = {
   "data-hover-range-end": "Present when is the end of the hovered range",
   "data-loading": "Present when loading",
   "data-activedescendant": "The id the active descendant of the {{widget}}",
+  "data-scrolling": "Present when scrolling",
+  "data-hovering": "Present when hovering",
+  "data-at-top": "Present when scrolled to the top edge",
+  "data-at-bottom": "Present when scrolled to the bottom edge",
+  "data-at-left": "Present when scrolled to the left edge",
+  "data-at-right": "Present when scrolled to the right edge",
+  "data-behind": "Present when not topmost",
+  "data-minimized": "Present when minimized",
+  "data-maximized": "Present when maximized",
+  "data-staged": "Present when not in default stage",
+  "data-topmost": "Present when topmost",
+  "data-stage": "The stage of the {{widget}}",
+  "data-inline": "Present when the content is inline",
+  "data-empty": "Present when the content is empty",
+  "data-overflow-x": "Present when the content overflows the x-axis",
+  "data-overflow-y": "Present when the content overflows the y-axis",
+  "data-ssr": "Present when not rendered in the browser. Useful for ssr styling",
 }
 
 const skipAttrs = ["data-ownedby", "data-uid"]

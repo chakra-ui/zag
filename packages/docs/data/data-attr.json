@@ -406,12 +406,12 @@
       "data-part": "content",
       "data-state": "\"open\" | \"closed\"",
       "data-placement": "The placement of the content",
-      "data-empty": ""
+      "data-empty": "Present when the content is empty"
     },
     "List": {
       "data-scope": "combobox",
       "data-part": "list",
-      "data-empty": ""
+      "data-empty": "Present when the content is empty"
     },
     "ClearTrigger": {
       "data-scope": "combobox",
@@ -441,7 +441,7 @@
     "ItemGroup": {
       "data-scope": "combobox",
       "data-part": "item-group",
-      "data-empty": ""
+      "data-empty": "Present when the content is empty"
     }
   },
   "date-picker": {
@@ -469,7 +469,8 @@
       "data-scope": "date-picker",
       "data-part": "content",
       "data-state": "\"open\" | \"closed\"",
-      "data-placement": "The placement of the content"
+      "data-placement": "The placement of the content",
+      "data-inline": "Present when the content is inline"
     },
     "Table": {
       "data-scope": "date-picker",
@@ -722,8 +723,11 @@
       "data-part": "content",
       "data-state": "\"open\" | \"closed\"",
       "data-dragging": "Present when in the dragging state",
-      "data-topmost": "",
-      "data-behind": ""
+      "data-topmost": "Present when topmost",
+      "data-behind": "Present when not topmost",
+      "data-minimized": "Present when minimized",
+      "data-maximized": "Present when maximized",
+      "data-staged": "Present when not in default stage"
     },
     "ResizeTrigger": {
       "data-scope": "floating-panel",
@@ -740,19 +744,28 @@
       "data-scope": "floating-panel",
       "data-part": "control",
       "data-disabled": "Present when disabled",
-      "data-stage": ""
+      "data-stage": "The stage of the control",
+      "data-minimized": "Present when minimized",
+      "data-maximized": "Present when maximized",
+      "data-staged": "Present when not in default stage"
     },
     "Header": {
       "data-scope": "floating-panel",
       "data-part": "header",
       "data-dragging": "Present when in the dragging state",
-      "data-topmost": "",
-      "data-behind": ""
+      "data-topmost": "Present when topmost",
+      "data-behind": "Present when not topmost",
+      "data-minimized": "Present when minimized",
+      "data-maximized": "Present when maximized",
+      "data-staged": "Present when not in default stage"
     },
     "Body": {
       "data-scope": "floating-panel",
       "data-part": "body",
-      "data-dragging": "Present when in the dragging state"
+      "data-dragging": "Present when in the dragging state",
+      "data-minimized": "Present when minimized",
+      "data-maximized": "Present when maximized",
+      "data-staged": "Present when not in default stage"
     }
   },
   "hover-card": {
@@ -819,7 +832,7 @@
       "data-part": "item-group",
       "data-disabled": "Present when disabled",
       "data-orientation": "The orientation of the item",
-      "data-empty": ""
+      "data-empty": "Present when the content is empty"
     },
     "Content": {
       "data-scope": "listbox",
@@ -827,7 +840,7 @@
       "data-activedescendant": "The id the active descendant of the content",
       "data-orientation": "The orientation of the content",
       "data-layout": "",
-      "data-empty": ""
+      "data-empty": "Present when the content is empty"
     }
   },
   "menu": {
@@ -1199,6 +1212,43 @@
       "data-half": ""
     }
   },
+  "scroll-area": {
+    "Root": {
+      "data-scope": "scroll-area",
+      "data-part": "root",
+      "data-overflow-x": "Present when the content overflows the x-axis",
+      "data-overflow-y": "Present when the content overflows the y-axis"
+    },
+    "Viewport": {
+      "data-scope": "scroll-area",
+      "data-part": "viewport",
+      "data-at-top": "Present when scrolled to the top edge",
+      "data-at-bottom": "Present when scrolled to the bottom edge",
+      "data-at-left": "Present when scrolled to the left edge",
+      "data-at-right": "Present when scrolled to the right edge",
+      "data-overflow-x": "Present when the content overflows the x-axis",
+      "data-overflow-y": "Present when the content overflows the y-axis"
+    },
+    "Scrollbar": {
+      "data-scope": "scroll-area",
+      "data-part": "scrollbar",
+      "data-orientation": "The orientation of the scrollbar",
+      "data-scrolling": "Present when scrolling",
+      "data-hovering": "Present when hovering",
+      "data-overflow-x": "Present when the content overflows the x-axis",
+      "data-overflow-y": "Present when the content overflows the y-axis"
+    },
+    "Thumb": {
+      "data-scope": "scroll-area",
+      "data-part": "thumb",
+      "data-orientation": "The orientation of the thumb"
+    },
+    "Corner": {
+      "data-scope": "scroll-area",
+      "data-part": "corner",
+      "data-state": "\"hidden\" | \"visible\""
+    }
+  },
   "select": {
     "Root": {
       "data-scope": "select",
@@ -1527,7 +1577,7 @@
       "data-value": "The value of the item",
       "data-selected": "Present when selected",
       "data-focus": "Present when focused",
-      "data-ssr": ""
+      "data-ssr": "Present when not rendered in the browser. Useful for ssr styling"
     },
     "Content": {
       "data-scope": "tabs",
@@ -1549,7 +1599,7 @@
       "data-readonly": "Present when read-only",
       "data-disabled": "Present when disabled",
       "data-focus": "Present when focused",
-      "data-empty": ""
+      "data-empty": "Present when the content is empty"
     },
     "Label": {
       "data-scope": "tags-input",
