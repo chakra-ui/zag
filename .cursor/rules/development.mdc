@@ -1,0 +1,18 @@
+---
+description: When making changes to the code
+alwaysApply: false
+---
+
+### Pull Requests
+
+- Always create a changeset in the `.changeset` directory.
+
+```md
+---
+@zag-js/<package-name>: minor|patch
+---
+
+Summary of changes
+```
+
+- PR convention is `fix: <description>` or `feat: <description>`
