@@ -2,4 +2,4 @@
 "@zag-js/carousel": patch
 ---
 
-fix(carousel): add watchers for slideCount and autoplay prop changes to ensure carousel reacts properly when these props are updated dynamically
+Fix carousel not updating when slideCount or autoplay props change. Navigation buttons and autoplay now work correctly when slides are added/removed or autoplay is toggled.
