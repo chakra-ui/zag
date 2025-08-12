@@ -1199,6 +1199,41 @@
       "data-half": ""
     }
   },
+  "scroll-view": {
+    "Root": {
+      "data-scope": "scroll-view",
+      "data-part": "root"
+    },
+    "Viewport": {
+      "data-scope": "scroll-view",
+      "data-part": "viewport",
+      "data-at-top": "Present when scrolled to the top edge",
+      "data-at-bottom": "Present when scrolled to the bottom edge",
+      "data-at-left": "Present when scrolled to the left edge",
+      "data-at-right": "Present when scrolled to the right edge"
+    },
+    "Content": {
+      "data-scope": "scroll-view",
+      "data-part": "content"
+    },
+    "Scrollbar": {
+      "data-scope": "scroll-view",
+      "data-part": "scrollbar",
+      "data-orientation": "The orientation of the scrollbar",
+      "data-scrolling": "Present when scrolling",
+      "data-hovering": "Present when hovering"
+    },
+    "Thumb": {
+      "data-scope": "scroll-view",
+      "data-part": "thumb",
+      "data-orientation": "The orientation of the thumb"
+    },
+    "Corner": {
+      "data-scope": "scroll-view",
+      "data-part": "corner",
+      "data-state": "\"hidden\" | \"visible\""
+    }
+  },
   "select": {
     "Root": {
       "data-scope": "select",
