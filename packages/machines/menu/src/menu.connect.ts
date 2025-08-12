@@ -423,7 +423,6 @@ export function connect<T extends PropTypes>(service: Service<MenuSchema>, norma
             if (isOpeningInNewTab(event)) return
             const target = event.currentTarget
             send({ type: "ITEM_CLICK", target, option, closeOnSelect })
-            onCheckedChange?.(!itemState.checked)
           },
         }),
       }
