@@ -378,11 +378,11 @@ export const machine = createMachine<CarouselSchema>({
         if (page === -1) return
         context.set("page", page)
       },
-      setNextPage({ context, prop, state }) {
+      setNextPage({ context, prop }) {
         const page = nextIndex(context.get("pageSnapPoints"), context.get("page"), { loop: prop("loop") })
         context.set("page", page)
       },
-      setPrevPage({ context, prop, state }) {
+      setPrevPage({ context, prop }) {
         const page = prevIndex(context.get("pageSnapPoints"), context.get("page"), { loop: prop("loop") })
         context.set("page", page)
       },
