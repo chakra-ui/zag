@@ -23,9 +23,11 @@ export default function Page() {
               ))}
             </div>
           </div>
-          <div {...api.getScrollbarProps()}>
-            <div {...api.getThumbProps()} />
-          </div>
+          {api.hasOverflowY && (
+            <div {...api.getScrollbarProps()}>
+              <div {...api.getThumbProps()} />
+            </div>
+          )}
         </div>
       </main>
 

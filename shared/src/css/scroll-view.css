@@ -28,8 +28,8 @@
   flex-direction: column;
   gap: 1rem;
   padding-block: 0.75rem;
-  padding-left: 1rem;
-  padding-right: 1.5rem;
+  padding-inline-start: 1rem;
+  padding-inline-end: 1.5rem;
 }
 
 [data-scope="scroll-view"][data-part="scrollbar"] {
@@ -54,6 +54,14 @@
     position: absolute;
     width: 1.25rem;
     height: 100%;
+  }
+
+  &[data-orientation="vertical"]:not([data-overflow-y]) {
+    display: none;
+  }
+
+  &[data-orientation="horizontal"]:not([data-overflow-x]) {
+    display: none;
   }
 }
 

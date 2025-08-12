@@ -51,6 +51,8 @@ export function connect<T extends PropTypes>(
         id: dom.getRootId(scope),
         dir: prop("dir"),
         role: "presentation",
+        "data-overflow-x": dataAttr(!hiddenState.scrollbarXHidden),
+        "data-overflow-y": dataAttr(!hiddenState.scrollbarYHidden),
         onPointerEnter(event) {
           send({ type: "root.pointerenter", pointerType: event.pointerType })
         },
@@ -86,6 +88,8 @@ export function connect<T extends PropTypes>(
         "data-at-bottom": dataAttr(atSides.bottom),
         "data-at-left": dataAttr(atSides.left),
         "data-at-right": dataAttr(atSides.right),
+        "data-overflow-x": dataAttr(!hiddenState.scrollbarXHidden),
+        "data-overflow-y": dataAttr(!hiddenState.scrollbarYHidden),
         tabIndex: hiddenState.scrollbarXHidden || hiddenState.scrollbarYHidden ? undefined : 0,
         style: {
           overflow: "auto",
@@ -120,6 +124,8 @@ export function connect<T extends PropTypes>(
         "data-orientation": orientation,
         "data-scrolling": dataAttr(context.get(orientation === "horizontal" ? "scrollingX" : "scrollingY")),
         "data-hovering": dataAttr(context.get("hovering")),
+        "data-overflow-x": dataAttr(!hiddenState.scrollbarXHidden),
+        "data-overflow-y": dataAttr(!hiddenState.scrollbarYHidden),
         onPointerUp() {
           send({ type: "scrollbar.pointerup", orientation })
         },
