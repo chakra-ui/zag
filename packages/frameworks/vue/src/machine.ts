@@ -246,8 +246,6 @@ export function useMachine<T extends MachineSchema>(
     previousEventRef.current = eventRef.current
     eventRef.current = event
 
-    debug("send", event)
-
     let currentState = state.get()
 
     const transitions =
@@ -261,7 +259,7 @@ export function useMachine<T extends MachineSchema>(
     transitionRef = transition
     const target = transition.target ?? currentState
 
-    debug("transition", transition)
+    debug("transition", event.type, transition.target || currentState, `(${transition.actions})`)
 
     const changed = target !== currentState
     if (changed) {

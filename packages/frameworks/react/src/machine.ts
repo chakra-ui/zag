@@ -268,7 +268,7 @@ export function useMachine<T extends MachineSchema>(
       transitionRef.current = transition
       const target = transition.target ?? currentState
 
-      debug("transition", JSON.stringify(transition), event.type)
+      debug("transition", event.type, transition.target || currentState, `(${transition.actions})`)
 
       const changed = target !== currentState
       if (changed) {
