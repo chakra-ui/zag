@@ -379,13 +379,11 @@ export const machine = createMachine<CarouselSchema>({
         context.set("page", page)
       },
       setNextPage({ context, prop, state }) {
-        const loop = prop("loop")
-        const page = nextIndex(context.get("pageSnapPoints"), context.get("page"), { loop })
+        const page = nextIndex(context.get("pageSnapPoints"), context.get("page"), { loop: prop("loop") })
         context.set("page", page)
       },
       setPrevPage({ context, prop, state }) {
-        const loop = prop("loop")
-        const page = prevIndex(context.get("pageSnapPoints"), context.get("page"), { loop })
+        const page = prevIndex(context.get("pageSnapPoints"), context.get("page"), { loop: prop("loop") })
         context.set("page", page)
       },
       setMatchingPage({ context, event, computed, scope }) {
