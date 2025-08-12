@@ -77,7 +77,7 @@ export const machine = createMachine<CarouselSchema>({
     },
   },
 
-  watch({ track, action, context, prop }) {
+  watch({ track, action, context, prop, send }) {
     track([() => prop("slidesPerPage"), () => prop("slidesPerMove")], () => {
       action(["setSnapPoints"])
     })
@@ -86,6 +86,12 @@ export const machine = createMachine<CarouselSchema>({
     })
     track([() => prop("orientation")], () => {
       action(["setSnapPoints", "scrollToPage"])
+    })
+    track([() => prop("slideCount")], () => {
+      action(["setSnapPoints", "clampPage"])
+    })
+    track([() => !!prop("autoplay")], () => {
+      send({ type: prop("autoplay") ? "AUTOPLAY.START" : "AUTOPLAY.PAUSE", src: "autoplay.prop.change" })
     })
   },
 
