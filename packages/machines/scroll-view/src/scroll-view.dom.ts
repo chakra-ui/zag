@@ -10,10 +10,13 @@ export const getViewportEl = (ctx: Scope) => ctx.getById(getViewportId(ctx))
 export const getContentEl = (ctx: Scope) => ctx.getById(getContentId(ctx))
 
 export const getScrollbarXEl = (ctx: Scope) =>
-  query(getRootEl(ctx), `[data-part=scrollbar][data-orientation=horizontal]`)
-export const getScrollbarYEl = (ctx: Scope) => query(getRootEl(ctx), `[data-part=scrollbar][data-orientation=vertical]`)
+  query(getRootEl(ctx), `[data-part=scrollbar][data-orientation=horizontal][data-ownedby="${getRootId(ctx)}"]`)
+export const getScrollbarYEl = (ctx: Scope) =>
+  query(getRootEl(ctx), `[data-part=scrollbar][data-orientation=vertical][data-ownedby="${getRootId(ctx)}"]`)
 
-export const getThumbXEl = (ctx: Scope) => query(getRootEl(ctx), `[data-part=thumb][data-orientation=horizontal]`)
-export const getThumbYEl = (ctx: Scope) => query(getRootEl(ctx), `[data-part=thumb][data-orientation=vertical]`)
+export const getThumbXEl = (ctx: Scope) =>
+  query(getScrollbarXEl(ctx), `[data-part=thumb][data-orientation=horizontal][data-ownedby="${getRootId(ctx)}"]`)
+export const getThumbYEl = (ctx: Scope) =>
+  query(getScrollbarYEl(ctx), `[data-part=thumb][data-orientation=vertical][data-ownedby="${getRootId(ctx)}"]`)
 
-export const getCornerEl = (ctx: Scope) => query(getRootEl(ctx), `[data-part=corner]`)
+export const getCornerEl = (ctx: Scope) => query(getRootEl(ctx), `[data-part=corner][data-ownedby="${getRootId(ctx)}"]`)

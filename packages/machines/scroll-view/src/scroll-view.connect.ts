@@ -79,6 +79,7 @@ export function connect<T extends PropTypes>(
       return normalize.element({
         ...parts.viewport.attrs,
         role: "presentation",
+        "data-ownedby": dom.getRootId(scope),
         id: dom.getViewportId(scope),
         "data-at-top": dataAttr(atSides.top),
         "data-at-bottom": dataAttr(atSides.bottom),
@@ -114,6 +115,7 @@ export function connect<T extends PropTypes>(
       const { orientation = "vertical" } = props
       return normalize.element({
         ...parts.scrollbar.attrs,
+        "data-ownedby": dom.getRootId(scope),
         "data-orientation": orientation,
         "data-scrolling": dataAttr(context.get(orientation === "horizontal" ? "scrollingX" : "scrollingY")),
         "data-hovering": dataAttr(context.get("hovering")),
@@ -154,6 +156,7 @@ export function connect<T extends PropTypes>(
       const { orientation = "vertical" } = props
       return normalize.element({
         ...parts.thumb.attrs,
+        "data-ownedby": dom.getRootId(scope),
         "data-orientation": orientation,
         onPointerDown(event) {
           if (event.button !== 0) return
@@ -170,6 +173,7 @@ export function connect<T extends PropTypes>(
     getCornerProps() {
       return normalize.element({
         ...parts.corner.attrs,
+        "data-ownedby": dom.getRootId(scope),
         "data-state": hiddenState.cornerHidden ? "hidden" : "visible",
         style: {
           position: "absolute",
