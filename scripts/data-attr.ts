@@ -50,6 +50,12 @@ const docsMap = {
   "data-hover-range-end": "Present when is the end of the hovered range",
   "data-loading": "Present when loading",
   "data-activedescendant": "The id the active descendant of the {{widget}}",
+  "data-scrolling": "Present when scrolling",
+  "data-hovering": "Present when hovering",
+  "data-at-top": "Present when scrolled to the top edge",
+  "data-at-bottom": "Present when scrolled to the bottom edge",
+  "data-at-left": "Present when scrolled to the left edge",
+  "data-at-right": "Present when scrolled to the right edge",
 }
 
 const skipAttrs = ["data-ownedby", "data-uid"]
