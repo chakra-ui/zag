@@ -1,5 +1,5 @@
 import type { EventObject, Machine, Service } from "@zag-js/core"
-import type { CommonProperties, DirectionProperty, Orientation, PropTypes, Size } from "@zag-js/types"
+import type { CommonProperties, DirectionProperty, Orientation, Point, PropTypes, Size } from "@zag-js/types"
 import type { Timeout } from "./utils/timeout"
 import type { EasingFunction } from "./utils/scroll-until"
 
@@ -112,6 +112,18 @@ export interface ScrollViewApi<T extends PropTypes> {
    * Whether the scroll view is at the right
    */
   isAtRight: boolean
+  /**
+   * Whether the scroll view has horizontal overflow
+   */
+  hasOverflowX: boolean
+  /**
+   * Whether the scroll view has vertical overflow
+   */
+  hasOverflowY: boolean
+  /**
+   * Get the scroll progress as values between 0 and 1
+   */
+  getScrollProgress: () => Point
   /**
    * Scroll to the edge of the scroll view
    */

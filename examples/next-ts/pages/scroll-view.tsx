@@ -1,8 +1,8 @@
 import { normalizeProps, useMachine } from "@zag-js/react"
 import * as scrollView from "@zag-js/scroll-view"
 import { useId } from "react"
-import { Toolbar } from "../components/toolbar"
 import { StateVisualizer } from "../components/state-visualizer"
+import { Toolbar } from "../components/toolbar"
 
 export default function Page() {
   const service = useMachine(scrollView.machine, {
@@ -14,7 +14,7 @@ export default function Page() {
   return (
     <>
       <main className="scroll-view">
-        <button onClick={() => api.scrollToEdge("bottom")}>Scroll to bottom</button>
+        <button onClick={() => api.scrollToEdge({ edge: "bottom" })}>Scroll to bottom</button>
         <div {...api.getRootProps()}>
           <div {...api.getViewportProps()}>
             <div {...api.getContentProps()}>

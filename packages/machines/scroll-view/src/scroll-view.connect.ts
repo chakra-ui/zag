@@ -4,6 +4,7 @@ import { toPx } from "@zag-js/utils"
 import { parts } from "./scroll-view.anatomy"
 import * as dom from "./scroll-view.dom"
 import type { ScrollViewApi, ScrollViewService } from "./scroll-view.types"
+import { getScrollProgress } from "./utils/scroll-progress"
 import { scrollTo } from "./utils/scroll-to"
 import { scrollToEdge } from "./utils/scroll-to-edge"
 
@@ -23,6 +24,11 @@ export function connect<T extends PropTypes>(
     isAtBottom: atSides.bottom,
     isAtLeft: atSides.left,
     isAtRight: atSides.right,
+    hasOverflowX: !hiddenState.scrollbarXHidden,
+    hasOverflowY: !hiddenState.scrollbarYHidden,
+    getScrollProgress() {
+      return getScrollProgress(dom.getViewportEl(scope), 0)
+    },
     scrollToEdge(details) {
       const { edge, ...easingOptions } = details
       return scrollToEdge(dom.getViewportEl(scope), edge, prop("dir"), easingOptions)

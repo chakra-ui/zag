@@ -1,4 +1,5 @@
 import type { ScrollToDetails } from "../scroll-view.types"
+import { EASE_OUT_CUBIC } from "./constants"
 import { scrollUntil } from "./scroll-until"
 
 export function scrollTo(node: HTMLElement | null | undefined, options: ScrollToDetails = {}): Promise<boolean> {
@@ -12,7 +13,7 @@ export function scrollTo(node: HTMLElement | null | undefined, options: ScrollTo
   return scrollUntil(node, condition, {
     targetScrollTop: top,
     targetScrollLeft: left,
-    easing: easing || ((t: number) => 1 - Math.pow(1 - t, 3)), // easeOutCubic
+    easing: easing || EASE_OUT_CUBIC,
     duration,
   })
 }

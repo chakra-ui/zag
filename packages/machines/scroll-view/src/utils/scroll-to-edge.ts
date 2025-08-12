@@ -1,5 +1,6 @@
 import type { Direction } from "@zag-js/types"
 import type { ScrollEasingOptions, ScrollToEdge } from "../scroll-view.types"
+import { EASE_OUT_CUBIC } from "./constants"
 import { scrollUntil } from "./scroll-until"
 
 export function scrollToEdge(
@@ -56,6 +57,6 @@ export function scrollToEdge(
     ...options,
     ...(targetScrollTop !== undefined && { targetScrollTop }),
     ...(targetScrollLeft !== undefined && { targetScrollLeft }),
-    easing: options.easing || ((t: number) => 1 - Math.pow(1 - t, 3)), // easeOutCubic
+    easing: options.easing || EASE_OUT_CUBIC,
   })
 }
