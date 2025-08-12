@@ -1,9 +1,3 @@
-/**
- * Calculate scroll progress for both horizontal and vertical axes
- * @param element - The scrollable element
- * @param scrollThreshold - Minimum scrollable distance before progress is calculated (default: 0)
- * @returns Object with x and y progress values between 0 and 1
- */
 export function getScrollProgress(element: HTMLElement | null, scrollThreshold: number): { x: number; y: number } {
   if (!element) return EMPTY_SCROLL_PROGRESS
   let progressX = 0

@@ -1,6 +1,6 @@
 import { getComputedStyle } from "@zag-js/dom-query"
 
-export function getOffset(
+export function getScrollOffset(
   element: HTMLElement | null | undefined,
   prop: "margin" | "padding",
   axis: "x" | "y",

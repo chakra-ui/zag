@@ -4,8 +4,9 @@ import type { Size } from "@zag-js/types"
 import { callAll, clampValue, isEqual } from "@zag-js/utils"
 import * as dom from "./scroll-area.dom"
 import type { ScrollbarHiddenState, ScrollRecord, ScrollAreaSchema } from "./scroll-area.types"
-import { MIN_THUMB_SIZE, SCROLL_TIMEOUT } from "./utils/constants"
-import { getOffset } from "./utils/offset"
+const MIN_THUMB_SIZE = 20
+const SCROLL_TIMEOUT = 1000
+import { getScrollOffset } from "./utils/scroll-offset"
 import { getScrollSides } from "./utils/scroll-sides"
 import { Timeout } from "./utils/timeout"
 
@@ -173,10 +174,10 @@ export const machine = createMachine<ScrollAreaSchema>({
         const nextWidth = scrollbarXHidden ? 0 : viewportWidth
         const nextHeight = scrollbarYHidden ? 0 : viewportHeight
 
-        const scrollbarXOffset = getOffset(scrollbarXEl, "padding", "x")
-        const scrollbarYOffset = getOffset(scrollbarYEl, "padding", "y")
-        const thumbXOffset = getOffset(thumbXEl, "margin", "x")
-        const thumbYOffset = getOffset(thumbYEl, "margin", "y")
+        const scrollbarXOffset = getScrollOffset(scrollbarXEl, "padding", "x")
+        const scrollbarYOffset = getScrollOffset(scrollbarYEl, "padding", "y")
+        const thumbXOffset = getScrollOffset(thumbXEl, "margin", "x")
+        const thumbYOffset = getScrollOffset(thumbYEl, "margin", "y")
 
         const idealNextWidth = nextWidth - scrollbarXOffset - thumbXOffset
         const idealNextHeight = nextHeight - scrollbarYOffset - thumbYOffset
@@ -312,8 +313,8 @@ export const machine = createMachine<ScrollAreaSchema>({
 
         // Handle Y-axis (vertical) scroll
         if (thumbYRef && scrollbarYRef && event.orientation === "vertical") {
-          const thumbYOffset = getOffset(thumbYRef, "margin", "y")
-          const scrollbarYOffset = getOffset(scrollbarYRef, "padding", "y")
+          const thumbYOffset = getScrollOffset(thumbYRef, "margin", "y")
+          const scrollbarYOffset = getScrollOffset(scrollbarYRef, "padding", "y")
           const thumbHeight = thumbYRef.offsetHeight
           const trackRectY = scrollbarYRef.getBoundingClientRect()
           const clickY = client.y - trackRectY.top - thumbHeight / 2 - scrollbarYOffset + thumbYOffset / 2
@@ -329,8 +330,8 @@ export const machine = createMachine<ScrollAreaSchema>({
         }
 
         if (thumbXRef && scrollbarXRef && event.orientation === "horizontal") {
-          const thumbXOffset = getOffset(thumbXRef, "margin", "x")
-          const scrollbarXOffset = getOffset(scrollbarXRef, "padding", "x")
+          const thumbXOffset = getScrollOffset(thumbXRef, "margin", "x")
+          const scrollbarXOffset = getScrollOffset(scrollbarXRef, "padding", "x")
           const thumbWidth = thumbXRef.offsetWidth
           const trackRectX = scrollbarXRef.getBoundingClientRect()
           const clickX = client.x - trackRectX.left - thumbWidth / 2 - scrollbarXOffset + thumbXOffset / 2
@@ -395,8 +396,8 @@ export const machine = createMachine<ScrollAreaSchema>({
         const scrollbarYEl = dom.getScrollbarYEl(scope)
 
         if (thumbYEl && scrollbarYEl && orientation === "vertical") {
-          const scrollbarYOffset = getOffset(scrollbarYEl, "padding", "y")
-          const thumbYOffset = getOffset(thumbYEl, "margin", "y")
+          const scrollbarYOffset = getScrollOffset(scrollbarYEl, "padding", "y")
+          const thumbYOffset = getScrollOffset(thumbYEl, "margin", "y")
           const thumbHeight = thumbYEl.offsetHeight
           const maxThumbOffsetY = scrollbarYEl.offsetHeight - thumbHeight - scrollbarYOffset - thumbYOffset
           const scrollRatioY = deltaY / maxThumbOffsetY
@@ -409,8 +410,8 @@ export const machine = createMachine<ScrollAreaSchema>({
         const thumbXEl = dom.getThumbXEl(scope)
         const scrollbarXEl = dom.getScrollbarXEl(scope)
         if (thumbXEl && scrollbarXEl && orientation === "horizontal") {
-          const scrollbarXOffset = getOffset(scrollbarXEl, "padding", "x")
-          const thumbXOffset = getOffset(thumbXEl, "margin", "x")
+          const scrollbarXOffset = getScrollOffset(scrollbarXEl, "padding", "x")
+          const thumbXOffset = getScrollOffset(thumbXEl, "margin", "x")
           const thumbWidth = thumbXEl.offsetWidth
           const maxThumbOffsetX = scrollbarXEl.offsetWidth - thumbWidth - scrollbarXOffset - thumbXOffset
           const scrollRatioX = deltaX / maxThumbOffsetX

@@ -30,8 +30,8 @@ export function connect<T extends PropTypes>(
       return getScrollProgress(dom.getViewportEl(scope), 0)
     },
     scrollToEdge(details) {
-      const { edge, ...easingOptions } = details
-      return scrollToEdge(dom.getViewportEl(scope), edge, prop("dir"), easingOptions)
+      const { edge, behavior } = details
+      return scrollToEdge(dom.getViewportEl(scope), edge, prop("dir"), behavior)
     },
     scrollTo(details) {
       return scrollTo(dom.getViewportEl(scope), details)

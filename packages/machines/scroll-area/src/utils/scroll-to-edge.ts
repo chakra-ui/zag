@@ -1,15 +1,14 @@
 import type { Direction } from "@zag-js/types"
-import type { ScrollEasingOptions, ScrollToEdge } from "../scroll-area.types"
-import { EASE_OUT_CUBIC } from "./constants"
-import { scrollUntil } from "./scroll-until"
+import { compact } from "@zag-js/utils"
+import type { ScrollToEdge } from "../scroll-area.types"
 
 export function scrollToEdge(
   node: HTMLElement | null | undefined,
   edge: ScrollToEdge,
   dir?: Direction,
-  options: ScrollEasingOptions | undefined = {},
-): Promise<boolean> {
-  if (!node) return Promise.resolve(false)
+  behavior: ScrollBehavior = "smooth",
+): void {
+  if (!node) return
 
   const maxLeft = node.scrollWidth - node.clientWidth
   const maxTop = node.scrollHeight - node.clientHeight
@@ -43,20 +42,11 @@ export function scrollToEdge(
       break
   }
 
-  const condition = () => {
-    if (targetScrollTop !== undefined) {
-      return Math.abs(node.scrollTop - targetScrollTop) < 1
-    }
-    if (targetScrollLeft !== undefined) {
-      return Math.abs(node.scrollLeft - targetScrollLeft) < 1
-    }
-    return true
-  }
-
-  return scrollUntil(node, condition, {
-    ...options,
-    ...(targetScrollTop !== undefined && { targetScrollTop }),
-    ...(targetScrollLeft !== undefined && { targetScrollLeft }),
-    easing: options.easing || EASE_OUT_CUBIC,
+  const options = compact({
+    left: targetScrollLeft,
+    top: targetScrollTop,
+    behavior,
   })
+
+  node.scrollTo(options as ScrollToOptions)
 }
