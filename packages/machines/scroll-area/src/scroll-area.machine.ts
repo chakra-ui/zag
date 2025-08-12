@@ -85,20 +85,20 @@ export const machine = createMachine<ScrollAreaSchema>({
     "viewport.scroll": {
       actions: ["setThumbSize", "setScrolling", "setProgrammaticScroll"],
     },
+    "root.pointerenter": {
+      actions: ["setTouchModality", "setHovering"],
+    },
+    "root.pointerdown": {
+      actions: ["setTouchModality"],
+    },
+    "root.pointerleave": {
+      actions: ["clearHovering"],
+    },
   },
 
   states: {
     idle: {
       on: {
-        "root.pointerenter": {
-          actions: ["setTouchModality", "setHovering"],
-        },
-        "root.pointerdown": {
-          actions: ["setTouchModality"],
-        },
-        "root.pointerleave": {
-          actions: ["clearHovering"],
-        },
         "scrollbar.pointerdown": {
           target: "dragging",
           actions: ["scrollToPointer", "startDragging"],
