@@ -3,11 +3,12 @@
   import { routesData } from "@zag-js/shared"
   import { Link, Route, Router } from "svelte-routing"
   import Index from "./routes/index.svelte"
-  
+
   const sortedRoutes = routesData.sort((a, b) => a.label.localeCompare(b.label))
 
   const paths: Array<{ path: string; component: any }> = [
     { path: "/", component: Index },
+    { path: "/sandbox", component: () => import("./routes/sandbox.svelte") },
     { path: "/accordion", component: () => import("./routes/accordion.svelte") },
     { path: "/avatar", component: () => import("./routes/avatar.svelte") },
     { path: "/angle-slider", component: () => import("./routes/angle-slider.svelte") },
@@ -79,11 +80,11 @@
 
     {#each paths as { path, component }}
       <Route {path}>
-        {#if typeof component === 'function'}
+        {#if typeof component === "function"}
           {#await component() then module}
             <svelte:component this={module.default} />
           {:catch error}
-            <div>Error loading component: {error?.message || 'Failed to load component'}</div>
+            <div>Error loading component: {error?.message || "Failed to load component"}</div>
           {/await}
         {:else}
           <svelte:component this={component} />
