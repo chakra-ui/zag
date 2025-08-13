@@ -100,3 +100,37 @@ test("should check items when navigating by arrows", async ({ page }) => {
 
   await expectToBeChecked(page, grape)
 })
+
+test("should keep data-focus-visible when navigating by arrows", async ({ page }) => {
+  await page.click("main")
+  await page.keyboard.press("Tab")
+
+  await expect(page.locator(apple.input)).toBeFocused()
+  await expect(page.locator(apple.control)).toHaveAttribute("data-focus", "")
+  await expect(page.locator(apple.control)).toHaveAttribute("data-focus-visible", "")
+
+  await page.keyboard.press("ArrowDown")
+  await page.keyboard.press("ArrowDown")
+  await page.keyboard.press("ArrowDown")
+
+  await expect(page.locator(grape.input)).toBeFocused()
+  await expect(page.locator(grape.control)).toHaveAttribute("data-focus", "")
+  await expect(page.locator(grape.control)).toHaveAttribute("data-focus-visible", "")
+})
+
+test("should apply data-focus-visible after mouse click then arrow navigation", async ({ page }) => {
+  await page.click(apple.radio)
+  await expectToBeChecked(page, apple)
+
+  // Initially focused via pointer, focus-visible should not be present
+  await expect(page.locator(apple.control)).toHaveAttribute("data-focus", "")
+  await expect(page.locator(apple.control)).not.toHaveAttribute("data-focus-visible", "")
+
+  await page.keyboard.press("ArrowDown")
+  await page.keyboard.press("ArrowDown")
+  await page.keyboard.press("ArrowDown")
+
+  await expect(page.locator(grape.input)).toBeFocused()
+  await expect(page.locator(grape.control)).toHaveAttribute("data-focus", "")
+  await expect(page.locator(grape.control)).toHaveAttribute("data-focus-visible", "")
+})
