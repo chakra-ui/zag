@@ -85,16 +85,16 @@
     "@zag-js/types": "workspace:*",
     "@zag-js/utils": "workspace:*",
     "lucide-preact": "0.525.0",
-    "match-sorter": "8.0.3",
-    "preact": "10.26.9",
+    "match-sorter": "8.1.0",
+    "preact": "10.27.0",
     "preact-iso": "2.9.2",
     "preact-render-to-string": "6.5.13"
   },
   "devDependencies": {
     "@preact/preset-vite": "2.10.2",
-    "eslint": "9.31.0",
+    "eslint": "9.33.0",
     "eslint-config-preact": "2.0.0",
-    "typescript": "5.8.3",
-    "vite": "7.0.5"
+    "typescript": "5.9.2",
+    "vite": "7.1.2"
   }
 }

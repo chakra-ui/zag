@@ -9,8 +9,8 @@
     "preview": "vite preview"
   },
   "devDependencies": {
-    "typescript": "^5.8.3",
-    "vite": "^7.0.5"
+    "typescript": "^5.9.2",
+    "vite": "^7.1.2"
   },
   "dependencies": {
     "@internationalized/date": "3.8.2",
@@ -89,7 +89,7 @@
     "@zag-js/types": "workspace:*",
     "@zag-js/utils": "workspace:*",
     "form-serialize": "0.7.2",
-    "match-sorter": "8.0.3",
+    "match-sorter": "8.1.0",
     "nanoid": "^5.1.5"
   }
 }
