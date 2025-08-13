@@ -2,5 +2,7 @@
 "@zag-js/carousel": patch
 ---
 
-Fix carousel not updating when `slideCount` or `autoplay` props change. Navigation buttons and autoplay now work
-correctly when slides are added/removed or autoplay is toggled.
+- Fix an issue where the carousel would not update when `slideCount` or `autoplay` props change.
+
+- Fix an issue where `loop: false` was ignored when using autoplay. Now, the carousel will stop when it gets to the last
+  slide.
