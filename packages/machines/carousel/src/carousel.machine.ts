@@ -199,16 +199,9 @@ export const machine = createMachine<CarouselSchema>({
       effects: ["trackDocumentVisibility", "trackScroll", "autoUpdateSlide"],
       exit: ["invokeAutoplayEnd"],
       on: {
-        "AUTOPLAY.TICK": [
-          {
-            guard: "canScrollNext",
-            actions: ["setNextPage", "invokeAutoplay"],
-          },
-          {
-            target: "idle",
-            actions: ["invokeAutoplayEnd"],
-          },
-        ],
+        "AUTOPLAY.TICK": {
+          actions: ["setNextPageOrPause", "invokeAutoplay"],
+        },
         "DRAGGING.START": {
           target: "dragging",
           actions: ["invokeDragStart"],
@@ -385,6 +378,18 @@ export const machine = createMachine<CarouselSchema>({
       setPrevPage({ context, prop }) {
         const page = prevIndex(context.get("pageSnapPoints"), context.get("page"), { loop: prop("loop") })
         context.set("page", page)
+      },
+      setNextPageOrPause({ context, prop, send }) {
+        const currentPage = context.get("page")
+        const nextPage = nextIndex(context.get("pageSnapPoints"), currentPage, { loop: prop("loop") })
+        
+        if (nextPage === currentPage && !prop("loop")) {
+          // We've reached the end and loop is false, pause autoplay
+          send({ type: "AUTOPLAY.PAUSE", src: "autoplay.end" })
+          return
+        }
+        
+        context.set("page", nextPage)
       },
       setMatchingPage({ context, event, computed, scope }) {
         const el = dom.getItemGroupEl(scope)
