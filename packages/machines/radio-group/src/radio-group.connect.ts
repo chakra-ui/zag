@@ -9,21 +9,19 @@ export function connect<T extends PropTypes>(
   service: RadioGroupService,
   normalize: NormalizeProps<T>,
 ): RadioGroupApi<T> {
-  const { context, send, computed, prop, scope } = service
+  const { context, send, computed, prop, scope, refs } = service
 
   const groupDisabled = computed("isDisabled")
   const readOnly = prop("readOnly")
 
   function getItemState(props: ItemProps): ItemState {
-    const focused = context.get("focusedValue") === props.value
-    const focusVisible = focused && isFocusVisible()
     return {
       value: props.value,
       invalid: !!props.invalid,
       disabled: !!props.disabled || groupDisabled,
       checked: context.get("value") === props.value,
-      focused,
-      focusVisible,
+      focused: context.get("focusedValue") === props.value,
+      focusVisible: refs.get("focusVisibleValue") === props.value,
       hovered: context.get("hoveredValue") === props.value,
       active: context.get("activeValue") === props.value,
     }
@@ -174,7 +172,8 @@ export function connect<T extends PropTypes>(
           send({ type: "SET_FOCUSED", value: null, focused: false })
         },
         onFocus() {
-          send({ type: "SET_FOCUSED", value: props.value, focused: true })
+          const focusVisible = isFocusVisible()
+          send({ type: "SET_FOCUSED", value: props.value, focused: true, focusVisible })
         },
         onKeyDown(event) {
           if (event.defaultPrevented) return
