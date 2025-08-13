@@ -1,5 +1,21 @@
 # @zag-js/radio-group
 
+## 1.21.2
+
+### Patch Changes
+
+- [`ad58108`](https://github.com/chakra-ui/zag/commit/ad58108780806a741bfba7a172c600fda4e770d3) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fixed issue where arrow key navigation doesn't apply
+  `data-focus-visible` on the newly focused item.
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.21.2
+  - @zag-js/core@1.21.2
+  - @zag-js/types@1.21.2
+  - @zag-js/utils@1.21.2
+  - @zag-js/dom-query@1.21.2
+  - @zag-js/focus-visible@1.21.2
+
 ## 1.21.1
 
 ### Patch Changes

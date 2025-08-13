@@ -1,5 +1,24 @@
 # @zag-js/menu
 
+## 1.21.2
+
+### Patch Changes
+
+- [#2624](https://github.com/chakra-ui/zag/pull/2624)
+  [`ad84b5d`](https://github.com/chakra-ui/zag/commit/ad84b5d78a564c78090b05a6eb8488321d9b105c) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix issue where `onCheckedChange` could be called twice on
+  checkbox or radio item
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.21.2
+  - @zag-js/core@1.21.2
+  - @zag-js/types@1.21.2
+  - @zag-js/utils@1.21.2
+  - @zag-js/dismissable@1.21.2
+  - @zag-js/dom-query@1.21.2
+  - @zag-js/popper@1.21.2
+  - @zag-js/rect-utils@1.21.2
+
 ## 1.21.1
 
 ### Patch Changes
