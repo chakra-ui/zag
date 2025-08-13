@@ -16,7 +16,7 @@ export function connect<T extends PropTypes>(
 
   function getItemState(props: ItemProps): ItemState {
     const focused = context.get("focusedValue") === props.value
-    const focusVisible = focused && isFocusVisible()
+    const focusVisible = context.get("focusVisibleValue") === props.value
     return {
       value: props.value,
       invalid: !!props.invalid,
@@ -172,9 +172,14 @@ export function connect<T extends PropTypes>(
         },
         onBlur() {
           send({ type: "SET_FOCUSED", value: null, focused: false })
+          send({ type: "SET_FOCUS_VISIBLE", value: null, focusVisible: false })
         },
         onFocus() {
           send({ type: "SET_FOCUSED", value: props.value, focused: true })
+          const focusVisible = isFocusVisible()
+          if (focusVisible) {
+            send({ type: "SET_FOCUS_VISIBLE", value: props.value, focusVisible: true })
+          }
         },
         onKeyDown(event) {
           if (event.defaultPrevented) return

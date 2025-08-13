@@ -81,6 +81,10 @@ interface PrivateContext {
    */
   focusedValue: string | null
   /**
+   * The id of the focused radio
+   */
+  focusVisibleValue: string | null
+  /**
    * The id of the hovered radio
    */
   hoveredValue: string | null

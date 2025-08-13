@@ -34,6 +34,9 @@ export const machine = createMachine<RadioGroupSchema>({
       focusedValue: bindable<string | null>(() => ({
         defaultValue: null,
       })),
+      focusVisibleValue: bindable<string | null>(() => ({
+        defaultValue: null,
+      })),
       hoveredValue: bindable<string | null>(() => ({
         defaultValue: null,
       })),
@@ -93,6 +96,9 @@ export const machine = createMachine<RadioGroupSchema>({
     SET_FOCUSED: {
       actions: ["setFocused"],
     },
+    SET_FOCUS_VISIBLE: {
+      actions: ["setFocusVisible"],
+    },
   },
 
   states: {
@@ -132,6 +138,9 @@ export const machine = createMachine<RadioGroupSchema>({
       },
       setFocused({ context, event }) {
         context.set("focusedValue", event.value)
+      },
+      setFocusVisible({ context, event }) {
+        context.set("focusVisibleValue", event.value)
       },
       syncInputElements({ context, scope }) {
         const inputs = dom.getInputEls(scope)
