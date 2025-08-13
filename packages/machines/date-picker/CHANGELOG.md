@@ -1,5 +1,24 @@
 # @zag-js/date-picker
 
+## 1.21.2
+
+### Patch Changes
+
+- [#2617](https://github.com/chakra-ui/zag/pull/2617)
+  [`b59fce3`](https://github.com/chakra-ui/zag/commit/b59fce37036deeb075734f2b464caebd6b57bb3e) Thanks
+  [@isBatak](https://github.com/isBatak)! - Expose `data-inline` attribute on Content part to enable distinct styling
+  for inline date pickers versus popover date pickers.
+- Updated dependencies []:
+  - @zag-js/anatomy@1.21.2
+  - @zag-js/core@1.21.2
+  - @zag-js/types@1.21.2
+  - @zag-js/utils@1.21.2
+  - @zag-js/date-utils@1.21.2
+  - @zag-js/dismissable@1.21.2
+  - @zag-js/dom-query@1.21.2
+  - @zag-js/live-region@1.21.2
+  - @zag-js/popper@1.21.2
+
 ## 1.21.1
 
 ### Patch Changes

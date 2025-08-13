@@ -1,5 +1,24 @@
 # @zag-js/carousel
 
+## 1.21.2
+
+### Patch Changes
+
+- [#2625](https://github.com/chakra-ui/zag/pull/2625)
+  [`04f4871`](https://github.com/chakra-ui/zag/commit/04f4871fc6deb829f4e6d8ff159a52881954ff8a) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - - Fix an issue where the carousel would not update when
+  `slideCount` or `autoplay` props change.
+  - Fix an issue where `loop: false` was ignored when using autoplay. Now, the carousel will stop when it gets to the
+    last slide.
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.21.2
+  - @zag-js/core@1.21.2
+  - @zag-js/types@1.21.2
+  - @zag-js/utils@1.21.2
+  - @zag-js/dom-query@1.21.2
+  - @zag-js/scroll-snap@1.21.2
+
 ## 1.21.1
 
 ### Patch Changes
