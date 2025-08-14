@@ -4,6 +4,19 @@ All notable changes to this project will be documented in this file.
 
 > For v0.x changelog, see the [v0 branch](https://github.com/chakra-ui/zag/blob/v0/CHANGELOG.md)
 
+## [1.21.3](./#1.21.3) - 2025-08-14
+
+### Fixed
+
+- **Listbox**: Add support for navigating grid collections
+
+### Changed
+
+- **Async List**: Improve type inference for descriptors
+
+- **Framework Components**: Improve runtime performance of components by removing refs/events from stateful to
+  non-stateful objects (affects Svelte, Solid, and Vue components)
+
 ## [1.21.2](./#1.21.2) - 2025-08-13
 
 ### Added
