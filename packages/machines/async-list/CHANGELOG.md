@@ -1,5 +1,16 @@
 # @zag-js/async-list
 
+## 1.21.3
+
+### Patch Changes
+
+- [`374aa4d`](https://github.com/chakra-ui/zag/commit/374aa4d8e249d4d7f4ac497926bd716686e0abfa) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Improve type inference for descriptors
+
+- Updated dependencies []:
+  - @zag-js/core@1.21.3
+  - @zag-js/utils@1.21.3
+
 ## 1.21.2
 
 ### Patch Changes

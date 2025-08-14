@@ -1,5 +1,21 @@
 # @zag-js/listbox
 
+## 1.21.3
+
+### Patch Changes
+
+- [`362381a`](https://github.com/chakra-ui/zag/commit/362381a4344dd524076a6a1cd7d2df7bb38dd289) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Add support for navigating grid collections
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.21.3
+  - @zag-js/core@1.21.3
+  - @zag-js/types@1.21.3
+  - @zag-js/collection@1.21.3
+  - @zag-js/utils@1.21.3
+  - @zag-js/dom-query@1.21.3
+  - @zag-js/focus-visible@1.21.3
+
 ## 1.21.2
 
 ### Patch Changes

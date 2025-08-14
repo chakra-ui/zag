@@ -1,5 +1,18 @@
 # @zag-js/svelte
 
+## 1.21.3
+
+### Patch Changes
+
+- [`7ff4117`](https://github.com/chakra-ui/zag/commit/7ff41177cfde7aeb92605f796a112de9079353a9) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Improve runtime performance of components by removing refs/events
+  from stateful to non-stateful objects.
+
+- Updated dependencies []:
+  - @zag-js/core@1.21.3
+  - @zag-js/types@1.21.3
+  - @zag-js/utils@1.21.3
+
 ## 1.21.2
 
 ### Patch Changes
