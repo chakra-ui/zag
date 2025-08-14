@@ -2,21 +2,27 @@ import {
   type JsonNode,
   JsonNodeHastElement,
   getAccessibleDescription,
+  isRootKeyPath,
   jsonNodeToElement,
   jsonToTree,
+  keyPathToId,
+  keyPathToKey,
 } from "@zag-js/json-tree-utils"
 import { jsonTreeData } from "@zag-js/shared"
-import { For, JSX } from "solid-js"
+import { Key } from "@zag-js/solid"
+import { Index, JSX } from "solid-js"
+import { Dynamic } from "solid-js/web"
 
 interface KeyNodeProps {
   node: JsonNode
 }
 
-const KeyNode = (props: KeyNodeProps) => {
+const KeyNode = (props: KeyNodeProps): JSX.Element => {
+  const key = () => keyPathToKey(props.node.keyPath, { excludeRoot: true })
   return (
     <>
       <span data-kind="key" data-non-enumerable={props.node.isNonEnumerable ? "" : undefined}>
-        {props.node.key}
+        {key()}
       </span>
       <span data-kind="colon">: </span>
     </>
@@ -27,22 +33,22 @@ interface ValueNodeProps {
   node: JsonNodeHastElement
 }
 
-const ValueNode = (props: ValueNodeProps): JSX.Element => {
+function ValueNode(props: ValueNodeProps): JSX.Element {
   // Handle text nodes
   if (props.node.type === "text") {
     return <>{props.node.value}</>
   }
 
   // Handle element nodes
-  const Element = props.node.tagName as keyof JSX.IntrinsicElements
   return (
-    <Element
+    <Dynamic
+      component={props.node.tagName}
       data-root={props.node.properties.root ? "" : undefined}
       data-type={props.node.properties.nodeType}
       data-kind={props.node.properties.kind}
     >
-      <For each={props.node.children}>{(child) => <ValueNode node={child} />}</For>
-    </Element>
+      <Index each={props.node.children}>{(child) => <ValueNode node={child()} />}</Index>
+    </Dynamic>
   )
 }
 
@@ -54,30 +60,32 @@ interface JsonTreeNodeProps {
 function JsonTreeNode(props: JsonTreeNodeProps) {
   const line = () => props.indexPath.reduce((acc, curr) => acc + curr, 1)
   const lineLength = () => props.indexPath.length - 1
+  const key = () => (isRootKeyPath(props.node.keyPath) ? "" : keyPathToKey(props.node.keyPath))
 
   return (
     <>
       {props.node.children && props.node.children.length > 0 ? (
         <div>
-          <div aria-label={getAccessibleDescription(props.node)}>
-            {props.node.key && <KeyNode node={props.node} />}
+          <div aria-label={getAccessibleDescription(props.node)} data-key={props.node.keyPath.join(".")}>
+            {key() && <KeyNode node={props.node} />}
             <ValueNode node={jsonNodeToElement(props.node)} />
           </div>
           <div style={{ "padding-left": `${props.indexPath.length * 4}px` }}>
-            <For each={props.node.children}>
-              {(child, index) => <JsonTreeNode node={child} indexPath={[...props.indexPath, index()]} />}
-            </For>
+            <Key each={props.node.children} by={(child) => keyPathToId(child.keyPath)}>
+              {(child, index) => <JsonTreeNode node={child()} indexPath={[...props.indexPath, index()]} />}
+            </Key>
           </div>
         </div>
       ) : (
         <div
           aria-label={getAccessibleDescription(props.node)}
           data-line={line()}
+          data-key={props.node.keyPath.join(".")}
           style={{
             "--line-length": lineLength(),
           }}
         >
-          {props.node.key && <KeyNode node={props.node} />}
+          {key() && <KeyNode node={props.node} />}
           <ValueNode node={jsonNodeToElement(props.node)} />
         </div>
       )}

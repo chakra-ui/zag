@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import * as asyncList from "@zag-js/async-list"
-import { useMachine, normalizeProps } from "@zag-js/vue"
+import { useMachine } from "@zag-js/vue"
 import { computed } from "vue"
 import StateVisualizer from "~/components/StateVisualizer.vue"
 import Toolbar from "~/components/Toolbar.vue"
@@ -58,7 +58,7 @@ const service = useMachine(asyncList.machine as asyncList.Machine<Character, str
   },
 })
 
-const api = computed(() => asyncList.connect(service, normalizeProps))
+const api = computed(() => asyncList.connect(service))
 </script>
 
 <template>

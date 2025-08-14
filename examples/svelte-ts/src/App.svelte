@@ -2,14 +2,14 @@
   import { dataAttr } from "@zag-js/dom-query"
   import { routesData } from "@zag-js/shared"
   import { Link, Route, Router } from "svelte-routing"
-  import Index from "./routes/index.svelte"
 
   const sortedRoutes = routesData.sort((a, b) => a.label.localeCompare(b.label))
 
   const paths: Array<{ path: string; component: any }> = [
-    { path: "/", component: Index },
+    { path: "/", component: () => import("./routes/index.svelte") },
     { path: "/sandbox", component: () => import("./routes/sandbox.svelte") },
     { path: "/accordion", component: () => import("./routes/accordion.svelte") },
+    { path: "/async-list", component: () => import("./routes/async-list.svelte") },
     { path: "/avatar", component: () => import("./routes/avatar.svelte") },
     { path: "/angle-slider", component: () => import("./routes/angle-slider.svelte") },
     { path: "/carousel", component: () => import("./routes/carousel.svelte") },

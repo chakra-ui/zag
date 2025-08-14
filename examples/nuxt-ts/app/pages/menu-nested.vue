@@ -55,7 +55,6 @@ const [level1, level2, level3] = menuData
 <template>
   <main>
     <div>
-      <pre>{{ subService.computed("isSubmenu") }}</pre>
       <button data-testid="trigger" v-bind="root.getTriggerProps()">Click me</button>
 
       <Teleport to="body" v-if="root.open">

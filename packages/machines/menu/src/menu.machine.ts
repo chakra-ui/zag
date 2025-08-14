@@ -70,6 +70,9 @@ export const machine = createMachine<MenuSchema>({
           return `x: ${value?.x}, y: ${value?.y}`
         },
       })),
+      isSubmenu: bindable<boolean>(() => ({
+        defaultValue: false,
+      })),
     }
   },
 
@@ -83,15 +86,14 @@ export const machine = createMachine<MenuSchema>({
   },
 
   computed: {
-    isSubmenu: ({ refs }) => refs.get("parent") != null,
     isRtl: ({ prop }) => prop("dir") === "rtl",
     isTypingAhead: ({ refs }) => refs.get("typeaheadState").keysSoFar !== "",
     highlightedId: ({ context, scope, refs }) =>
       resolveItemId(refs.get("children"), context.get("highlightedValue"), scope),
   },
 
-  watch({ track, action, context, computed, prop }) {
-    track([() => computed("isSubmenu")], () => {
+  watch({ track, action, context, prop }) {
+    track([() => context.get("isSubmenu")], () => {
       action(["setSubmenuPlacement"])
     })
     track([() => context.hash("anchorPoint")], () => {
@@ -509,7 +511,7 @@ export const machine = createMachine<MenuSchema>({
         const target = (event.target ?? scope.getById(computed("highlightedId")!)) as HTMLElement | null
         return !!target?.hasAttribute("aria-controls")
       },
-      isSubmenu: ({ computed }) => computed("isSubmenu"),
+      isSubmenu: ({ context }) => context.get("isSubmenu"),
       isPointerSuspended: ({ context }) => context.get("suspendPointer"),
       isHighlightedItemEditable: ({ scope, computed }) => isEditableElement(scope.getById(computed("highlightedId")!)),
       // guard assertions (for controlled mode)
@@ -555,7 +557,7 @@ export const machine = createMachine<MenuSchema>({
           },
         })
       },
-      trackInteractOutside({ refs, scope, prop, computed, send }) {
+      trackInteractOutside({ refs, scope, prop, context, send }) {
         const getContentEl = () => dom.getContentEl(scope)
         let restoreFocus = true
         return trackDismissableElement(getContentEl, {
@@ -574,7 +576,7 @@ export const machine = createMachine<MenuSchema>({
           },
           onEscapeKeyDown(event) {
             prop("onEscapeKeyDown")?.(event)
-            if (computed("isSubmenu")) event.preventDefault()
+            if (context.get("isSubmenu")) event.preventDefault()
             closeRootMenu({ parent: refs.get("parent") })
           },
           onPointerDownOutside(event) {
@@ -639,8 +641,8 @@ export const machine = createMachine<MenuSchema>({
       setAnchorPoint({ context, event }) {
         context.set("anchorPoint", (prev) => (isEqual(prev, event.point) ? prev : event.point))
       },
-      setSubmenuPlacement({ computed, refs }) {
-        if (!computed("isSubmenu")) return
+      setSubmenuPlacement({ context, computed, refs }) {
+        if (!context.get("isSubmenu")) return
         const placement = computed("isRtl") ? "left-start" : "right-start"
         refs.set("positioningOverride", { placement, gutter: 0 })
       },
@@ -767,8 +769,8 @@ export const machine = createMachine<MenuSchema>({
 
         prop("onSelect")?.({ value })
       },
-      focusTrigger({ scope, context, event, computed }) {
-        if (computed("isSubmenu") || context.get("anchorPoint") || event.restoreFocus === false) return
+      focusTrigger({ scope, context, event }) {
+        if (context.get("isSubmenu") || context.get("anchorPoint") || event.restoreFocus === false) return
         queueMicrotask(() => dom.getTriggerEl(scope)?.focus({ preventScroll: true }))
       },
       highlightMatchedItem({ scope, context, event, refs }) {
@@ -780,8 +782,9 @@ export const machine = createMachine<MenuSchema>({
         if (!node) return
         context.set("highlightedValue", dom.getItemValue(node))
       },
-      setParentMenu({ refs, event }) {
+      setParentMenu({ refs, event, context }) {
         refs.set("parent", event.value)
+        context.set("isSubmenu", true)
       },
       setChildMenu({ refs, event }) {
         const children = refs.get("children")
@@ -830,7 +833,7 @@ export const machine = createMachine<MenuSchema>({
 
 function closeRootMenu(ctx: { parent: Service<MenuSchema> | null }) {
   let parent = ctx.parent
-  while (parent && parent.computed("isSubmenu")) {
+  while (parent && parent.context.get("isSubmenu")) {
     parent = parent.refs.get("parent")
   }
   parent?.send({ type: "CLOSE" })

@@ -70,5 +70,5 @@
 </main>
 
 <Toolbar {controls}>
-  <StateVisualizer state={service} omit={["collection"]} />
+  <StateVisualizer state={service} />
 </Toolbar>

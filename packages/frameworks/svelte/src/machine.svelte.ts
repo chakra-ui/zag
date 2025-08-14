@@ -79,7 +79,7 @@ export function useMachine<T extends MachineSchema>(
   let transitionRef: { current: any } = { current: null }
 
   let previousEventRef: { current: any } = { current: null }
-  let eventRef: { current: any } = $state({ current: { type: "" } })
+  let eventRef: { current: any } = { current: { type: "" } }
 
   const getEvent = () => ({
     ...eventRef.current,

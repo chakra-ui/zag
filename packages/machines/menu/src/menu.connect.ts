@@ -28,7 +28,7 @@ export function connect<T extends PropTypes>(service: Service<MenuSchema>, norma
 
   const open = state.hasTag("open")
 
-  const isSubmenu = computed("isSubmenu")
+  const isSubmenu = context.get("isSubmenu")
   const isTypingAhead = computed("isTypingAhead")
   const composite = prop("composite")
 

@@ -1,15 +1,16 @@
+<style scoped>
+.json-tree-container * {
+  font-family: monospace;
+  font-size: 12px;
+}
+
+:deep([data-kind="error-stack"]) {
+  display: block;
+}
+</style>
+
 <template>
   <main class="json-tree-container">
-    <style scoped>
-      .json-tree-container * {
-        font-family: monospace;
-        font-size: 12px;
-      }
-
-      :deep([data-kind="error-stack"]) {
-        display: block;
-      }
-    </style>
     <JsonTreeNode :node="treeData" :index-path="[0]" />
   </main>
 </template>
@@ -20,8 +21,11 @@ import {
   type JsonNode,
   type JsonNodeHastElement,
   getAccessibleDescription,
+  isRootKeyPath,
   jsonNodeToElement,
   jsonToTree,
+  keyPathToId,
+  keyPathToKey,
 } from "@zag-js/json-tree-utils"
 import { jsonTreeData } from "@zag-js/shared"
 
@@ -33,6 +37,7 @@ const KeyNode = defineComponent({
     },
   },
   render() {
+    const key = keyPathToKey(this.node.keyPath)
     return [
       h(
         "span",
@@ -40,7 +45,7 @@ const KeyNode = defineComponent({
           "data-kind": "key",
           "data-non-enumerable": this.node.isNonEnumerable ? "" : undefined,
         },
-        this.node.key,
+        key,
       ),
       h("span", { "data-kind": "colon" }, ": "),
     ]
@@ -91,12 +96,15 @@ const JsonTreeNode = defineComponent({
     lineLength() {
       return this.indexPath.length - 1
     },
+    key() {
+      return isRootKeyPath(this.node.keyPath) ? "" : keyPathToKey(this.node.keyPath)
+    },
   },
   render() {
     if (this.node.children && this.node.children.length > 0) {
       return h("div", [
         h("div", { "aria-label": getAccessibleDescription(this.node) }, [
-          this.node.key && h(KeyNode, { node: this.node }),
+          this.key && h(KeyNode, { node: this.node }),
           h(ValueNode, { node: jsonNodeToElement(this.node) }),
         ]),
         h(
@@ -104,7 +112,7 @@ const JsonTreeNode = defineComponent({
           { style: { paddingLeft: `${this.indexPath.length * 4}px` } },
           this.node.children.map((child, index) =>
             h(JsonTreeNode, {
-              key: child.id,
+              key: keyPathToId(child.keyPath),
               node: child,
               indexPath: [...this.indexPath, index],
             }),
@@ -121,7 +129,7 @@ const JsonTreeNode = defineComponent({
             "--line-length": this.lineLength,
           },
         },
-        [this.node.key && h(KeyNode, { node: this.node }), h(ValueNode, { node: jsonNodeToElement(this.node) })],
+        [this.key && h(KeyNode, { node: this.node }), h(ValueNode, { node: jsonNodeToElement(this.node) })],
       )
     }
   },

@@ -47,7 +47,6 @@ export default function Page() {
   return (
     <>
       <main class="combobox">
-        <pre>{JSON.stringify(service.state.get(), null, 2)}</pre>
         <div>
           <button onClick={() => setValue(["TG"])}>Set to Togo</button>
           <button data-testid="clear-value-button" onClick={() => api().clearValue()}>
@@ -85,7 +84,7 @@ export default function Page() {
       </main>
 
       <Toolbar controls={controls}>
-        <StateVisualizer state={service} omit={["collection"]} />
+        <StateVisualizer state={service} />
       </Toolbar>
     </>
   )

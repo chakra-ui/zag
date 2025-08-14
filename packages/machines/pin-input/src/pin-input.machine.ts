@@ -247,7 +247,9 @@ export const machine = createMachine({
       },
       clearValue({ context }) {
         const nextValue = Array.from<string>({ length: context.get("count") }).fill("")
-        context.set("value", nextValue)
+        queueMicrotask(() => {
+          context.set("value", nextValue)
+        })
       },
       clearFocusedValue({ context, computed }) {
         const focusedIndex = context.get("focusedIndex")

@@ -134,9 +134,9 @@ export interface MenuSchema {
     intentPolygon: Point[] | null
     anchorPoint: Point | null
     suspendPointer: boolean
+    isSubmenu: boolean
   }
   computed: {
-    isSubmenu: boolean
     isRtl: boolean
     isTypingAhead: boolean
     highlightedId: string | null
