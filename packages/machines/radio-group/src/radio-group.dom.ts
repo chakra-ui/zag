@@ -52,3 +52,8 @@ export const resolveRect = (rect: Record<"width" | "height" | "left" | "top", nu
   left: `${rect.left}px`,
   top: `${rect.top}px`,
 })
+
+export const getIsTriggerDisabled = (ctx: Scope, value: string) => {
+  const el = ctx.getById(getItemId(ctx, value))
+  return el?.getAttribute("data-disabled") === ""
+}

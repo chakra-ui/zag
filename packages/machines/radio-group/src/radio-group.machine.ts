@@ -40,6 +40,7 @@ export const machine = createMachine<RadioGroupSchema>({
       indicatorRect: bindable<Partial<IndicatorRect>>(() => ({
         defaultValue: {},
       })),
+      indicatorDisabled: bindable(() => ({ defaultValue: false })),
       canIndicatorTransition: bindable<boolean>(() => ({
         defaultValue: false,
       })),
@@ -63,7 +64,7 @@ export const machine = createMachine<RadioGroupSchema>({
     isDisabled: ({ prop, context }) => !!prop("disabled") || context.get("fieldsetDisabled"),
   },
 
-  entry: ["syncIndicatorRect", "syncSsr"],
+  entry: ["syncIndicatorDisabled", "syncIndicatorRect", "syncSsr"],
 
   exit: ["cleanupObserver"],
 
@@ -71,7 +72,7 @@ export const machine = createMachine<RadioGroupSchema>({
 
   watch({ track, action, context }) {
     track([() => context.get("value")], () => {
-      action(["setIndicatorTransition", "syncIndicatorRect", "syncInputElements"])
+      action(["setIndicatorTransition", "syncIndicatorDisabled", "syncIndicatorRect", "syncInputElements"])
     })
   },
 
@@ -149,6 +150,12 @@ export const machine = createMachine<RadioGroupSchema>({
       },
       syncSsr({ context }) {
         context.set("ssr", false)
+      },
+      syncIndicatorDisabled({ context, scope }) {
+        const value = context.get("value")
+        if (value) {
+          context.set("indicatorDisabled", dom.getIsTriggerDisabled(scope, value))
+        }
       },
       syncIndicatorRect({ context, scope, refs }) {
         refs.get("indicatorCleanup")?.()
