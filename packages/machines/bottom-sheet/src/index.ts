@@ -1,5 +1,5 @@
 export { anatomy } from "./bottom-sheet.anatomy"
 export { connect } from "./bottom-sheet.connect"
 export { machine } from "./bottom-sheet.machine"
-export * from "./bottom-sheet.props.ts"
+export * from "./bottom-sheet.props"
 export type { UserDefinedContext as Context } from "./bottom-sheet.types"

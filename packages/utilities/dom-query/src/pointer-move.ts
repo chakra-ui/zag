@@ -13,11 +13,18 @@ export interface PointerMoveDetails {
   event: PointerEvent
 }
 
+export interface PointerUpDetails {
+  /**
+   * The current position of the pointer.
+   */
+  point: Point
+}
+
 export interface PointerMoveHandlers {
   /**
    * Called when the pointer is released.
    */
-  onPointerUp: VoidFunction
+  onPointerUp: (details: PointerUpDetails) => void
   /**
    * Called when the pointer moves.
    */
@@ -37,18 +44,23 @@ export function trackPointerMove(doc: Document, handlers: PointerMoveHandlers) {
 
     // Because Safari doesn't trigger mouseup events when it's above a `<select>`
     if (event.pointerType === "mouse" && event.button === 0) {
-      onPointerUp()
+      handleUp(event)
       return
     }
 
     onPointerMove({ point, event })
   }
 
+  const handleUp = (event: PointerEvent | MouseEvent) => {
+    const point = getEventPoint(event)
+    onPointerUp({ point })
+  }
+
   const cleanups = [
     addDomEvent(doc, "pointermove", handleMove, false),
-    addDomEvent(doc, "pointerup", onPointerUp, false),
-    addDomEvent(doc, "pointercancel", onPointerUp, false),
-    addDomEvent(doc, "contextmenu", onPointerUp, false),
+    addDomEvent(doc, "pointerup", handleUp, false),
+    addDomEvent(doc, "pointercancel", handleUp, false),
+    addDomEvent(doc, "contextmenu", handleUp, false),
     disableTextSelection({ doc }),
   ]
 

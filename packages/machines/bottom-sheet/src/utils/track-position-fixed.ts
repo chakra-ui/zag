@@ -1,5 +1,4 @@
-import { addDomEvent } from "@zag-js/dom-event"
-import { getWindow, raf } from "@zag-js/dom-query"
+import { addDomEvent, getWindow, raf } from "@zag-js/dom-query"
 
 let previousBodyPosition: Record<string, string> | null = null
 
