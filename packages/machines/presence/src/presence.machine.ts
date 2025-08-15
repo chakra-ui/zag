@@ -155,17 +155,19 @@ export const machine = createMachine<PresenceSchema>({
         if (!node) return
 
         const onStart = (event: AnimationEvent) => {
-          const target = event.composedPath?.()?.[0] ?? event.target
+          const target = getEventTarget(event)
           if (target === node) {
             context.set("prevAnimationName", getAnimationName(refs.get("styles")))
           }
         }
 
         const onEnd = (event: AnimationEvent) => {
-          const animationName = getAnimationName(refs.get("styles"))
           const target = getEventTarget(event)
-          if (target === node && animationName === context.get("unmountAnimationName")) {
-            send({ type: "UNMOUNT", src: "animationend" })
+          if (target === node) {
+            const endedName = CSS.escape(event.animationName)
+            if (endedName === context.get("unmountAnimationName")) {
+              send({ type: "UNMOUNT", src: "animationend" })
+            }
           }
         }
 
