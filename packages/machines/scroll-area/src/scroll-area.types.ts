@@ -84,13 +84,20 @@ export interface ScrollbarState {
   hidden: boolean
 }
 
-export interface ScrollToDetails {
+export type ScrollEasingFunction = (t: number) => number
+
+export interface ScrollbarEasing {
+  easing?: ScrollEasingFunction | undefined
+  duration?: number | undefined
+}
+
+export interface ScrollToDetails extends ScrollbarEasing {
   top?: number | undefined
   left?: number | undefined
   behavior?: ScrollBehavior | undefined
 }
 
-export interface ScrollToEdgeDetails {
+export interface ScrollToEdgeDetails extends ScrollbarEasing {
   edge: ScrollToEdge
   behavior?: ScrollBehavior | undefined
 }

@@ -14,4 +14,8 @@ export type {
   ScrollToEdgeDetails,
   ScrollAreaService as Service,
   ThumbProps,
+  ScrollEasingFunction,
+  ScrollbarHiddenState,
+  ScrollbarEasing,
+  ScrollRecord,
 } from "./scroll-area.types"
