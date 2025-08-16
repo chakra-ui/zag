@@ -4,6 +4,15 @@ All notable changes to this project will be documented in this file.
 
 > For v0.x changelog, see the [v0 branch](https://github.com/chakra-ui/zag/blob/v0/CHANGELOG.md)
 
+## [1.21.5](./#1.21.5) - 2025-08-16
+
+### Fixed
+
+- **Scroll Area**:
+  - Fix issue where scroll area thumb applies width/height incorrectly
+  - Add `data-overflow-*` to content and corner
+  - Add custom easing function support for smooth scrolling
+
 ## [1.21.4](./#1.21.4) - 2025-08-16
 
 ### Fixed
