@@ -25,6 +25,10 @@ export interface ScrollbarProps {
   orientation?: Orientation
 }
 
+export interface ThumbProps {
+  orientation?: Orientation
+}
+
 export interface ScrollbarHiddenState {
   scrollbarYHidden: boolean
   scrollbarXHidden: boolean
@@ -137,6 +141,6 @@ export interface ScrollAreaApi<T extends PropTypes> {
   getViewportProps: () => T["element"]
   getContentProps: () => T["element"]
   getScrollbarProps: (props?: ScrollbarProps) => T["element"]
-  getThumbProps: (props?: ScrollbarProps) => T["element"]
+  getThumbProps: (props?: ThumbProps) => T["element"]
   getCornerProps: () => T["element"]
 }

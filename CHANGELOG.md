@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 
 > For v0.x changelog, see the [v0 branch](https://github.com/chakra-ui/zag/blob/v0/CHANGELOG.md)
 
+## [1.21.4](./#1.21.4) - 2025-08-16
+
+### Fixed
+
+- **Scroll Area**: Ensure types are exported and fix incorrect `@zag-js/dom-query/src/query` import
+
 ## [1.21.3](./#1.21.3) - 2025-08-14
 
 ### Fixed
