@@ -22,6 +22,7 @@ export type {
   StatusChangeDetails,
   ToastStore as Store,
   ToastStoreProps as StoreProps,
+  ToastQueuePriority,
   Type,
 } from "./toast.types"
 

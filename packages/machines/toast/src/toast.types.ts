@@ -5,7 +5,9 @@ import type { EventObject, Machine, Service } from "@zag-js/core"
  * Base types
  * -----------------------------------------------------------------------------*/
 
-export type Type = "success" | "error" | "loading" | "info" | (string & {})
+export type Type = "success" | "error" | "loading" | "info" | "warning" | (string & {})
+
+export type ToastQueuePriority = 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8
 
 export type Placement = "top-start" | "top" | "top-end" | "bottom-start" | "bottom" | "bottom-end"
 
@@ -74,6 +76,10 @@ export interface Options<T = any> {
    * The type of the toast
    */
   type?: Type | undefined
+  /**
+   * The priority of the toast (1 = highest, 8 = lowest)
+   */
+  priority?: ToastQueuePriority | undefined
   /**
    * Function called when the toast is visible
    */
@@ -358,7 +364,7 @@ type MaybeFunction<Value, Args> = Value | ((arg: Args) => Value)
 
 export interface PromiseOptions<V, O = any> {
   loading: Omit<Options<O>, "type">
-  success?: MaybeFunction<Omit<Options<O>, "type">, V> | undefined
+  success?: MaybeFunction<Omit<Options<O>, "type"> & { type?: "success" | "warning" }, V> | undefined
   error?: MaybeFunction<Omit<Options<O>, "type">, unknown> | undefined
   finally?: (() => void | Promise<void>) | undefined
 }
