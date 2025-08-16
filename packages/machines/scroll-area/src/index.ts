@@ -7,10 +7,11 @@ export type {
   ElementIds,
   ScrollAreaMachine as Machine,
   ScrollAreaProps as Props,
+  ScrollbarProps,
   ScrollbarState,
   ScrollToDetails,
   ScrollToEdge,
   ScrollToEdgeDetails,
   ScrollAreaService as Service,
-  ScrollbarProps,
+  ThumbProps,
 } from "./scroll-area.types"

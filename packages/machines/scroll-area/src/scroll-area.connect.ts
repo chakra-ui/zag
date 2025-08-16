@@ -110,6 +110,8 @@ export function connect<T extends PropTypes>(
         ...parts.content.attrs,
         id: dom.getContentId(scope),
         role: "presentation",
+        "data-overflow-x": dataAttr(!hiddenState.scrollbarXHidden),
+        "data-overflow-y": dataAttr(!hiddenState.scrollbarYHidden),
         style: {
           minWidth: "fit-content",
         },
@@ -171,8 +173,12 @@ export function connect<T extends PropTypes>(
           send({ type: "thumb.pointerdown", orientation, point })
         },
         style: {
-          width: "var(--thumb-width)",
-          height: "var(--thumb-height)",
+          ...(orientation === "vertical" && {
+            height: "var(--thumb-height)",
+          }),
+          ...(orientation === "horizontal" && {
+            width: "var(--thumb-width)",
+          }),
         },
       })
     },
@@ -182,6 +188,8 @@ export function connect<T extends PropTypes>(
         ...parts.corner.attrs,
         "data-ownedby": dom.getRootId(scope),
         "data-state": hiddenState.cornerHidden ? "hidden" : "visible",
+        "data-overflow-x": dataAttr(!hiddenState.scrollbarXHidden),
+        "data-overflow-y": dataAttr(!hiddenState.scrollbarYHidden),
         style: {
           position: "absolute",
           bottom: 0,
