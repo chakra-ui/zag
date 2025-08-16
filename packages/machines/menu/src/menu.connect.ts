@@ -146,6 +146,7 @@ export function connect<T extends PropTypes>(service: Service<MenuSchema>, norma
         ...parts.contextTrigger.attrs,
         dir: prop("dir"),
         id: dom.getContextTriggerId(scope),
+        "data-state": open ? "open" : "closed",
         onPointerDown(event) {
           if (event.pointerType === "mouse") return
           const point = getEventPoint(event)
