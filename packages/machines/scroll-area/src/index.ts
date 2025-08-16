@@ -12,4 +12,5 @@ export type {
   ScrollToEdge,
   ScrollToEdgeDetails,
   ScrollAreaService as Service,
+  ScrollbarProps,
 } from "./scroll-area.types"
