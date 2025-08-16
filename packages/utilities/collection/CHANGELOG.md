@@ -1,5 +1,19 @@
 # @zag-js/collection
 
+## 1.21.4
+
+### Patch Changes
+
+- [`d07647c`](https://github.com/chakra-ui/zag/commit/d07647cc53cec91d126653dec056c7dd7f9805a7) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - - **ListCollection**
+  - Avoid recomputing groups on every call to `at()` and `indexOf()`
+  - Fixed bug in `find()` method (was checking `!= null` instead of `!== -1`)
+  - **GridCollection**
+    - Avoid recomputing rows on every call to `getRows()`
+
+- Updated dependencies []:
+  - @zag-js/utils@1.21.4
+
 ## 1.21.3
 
 ### Patch Changes
