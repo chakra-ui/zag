@@ -1,6 +1,6 @@
 {
   "name": "@zag-js/scroll-area",
-  "version": "1.21.4",
+  "version": "1.21.5",
   "description": "Core logic for the scroll-area widget implemented as a state machine",
   "keywords": [
     "js",
