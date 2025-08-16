@@ -10,6 +10,12 @@ All notable changes to this project will be documented in this file.
 
 - **Scroll Area**: Ensure types are exported and fix incorrect `@zag-js/dom-query/src/query` import
 
+- **ListCollection**
+  - Avoid recomputing groups on every call to `at()` and `indexOf()`
+  - Fixed bug in `find()` method (was checking `!= null` instead of `!== -1`)
+
+- **GridCollection**: Avoid recomputing rows on every call to `getRows()`
+
 ## [1.21.3](./#1.21.3) - 2025-08-14
 
 ### Fixed
