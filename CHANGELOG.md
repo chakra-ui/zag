@@ -16,6 +16,8 @@ All notable changes to this project will be documented in this file.
 
 - **GridCollection**: Avoid recomputing rows on every call to `getRows()`
 
+- **Menu**: Add `data-state` attribute for context menu trigger
+
 ## [1.21.3](./#1.21.3) - 2025-08-14
 
 ### Fixed
