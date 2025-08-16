@@ -1,5 +1,21 @@
 # @zag-js/scroll-area
 
+## 1.21.5
+
+### Patch Changes
+
+- [`32f7259`](https://github.com/chakra-ui/zag/commit/32f72590c3d6cac1a50d8d0a88e6b647509c1f2c) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - - Fix issue where scroll area thumb applies width/height
+  incorrectly
+  - Add `data-overflow-*` to content and corner
+  - Add custom easing function support for smooth scrolling
+- Updated dependencies []:
+  - @zag-js/anatomy@1.21.5
+  - @zag-js/core@1.21.5
+  - @zag-js/types@1.21.5
+  - @zag-js/utils@1.21.5
+  - @zag-js/dom-query@1.21.5
+
 ## 1.21.4
 
 ### Patch Changes

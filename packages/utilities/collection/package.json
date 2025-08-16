@@ -1,6 +1,6 @@
 {
   "name": "@zag-js/collection",
-  "version": "1.21.4",
+  "version": "1.21.5",
   "description": "Utilities to manage a collection of items.",
   "keywords": [
     "js",

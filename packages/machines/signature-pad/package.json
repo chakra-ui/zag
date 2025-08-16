@@ -1,6 +1,6 @@
 {
   "name": "@zag-js/signature-pad",
-  "version": "1.21.4",
+  "version": "1.21.5",
   "description": "Core logic for the signature-pad widget implemented as a state machine",
   "keywords": [
     "js",
