@@ -1,5 +1,20 @@
 # @zag-js/scroll-area
 
+## 1.21.4
+
+### Patch Changes
+
+- [`341fec8`](https://github.com/chakra-ui/zag/commit/341fec808433943e2e66fba7bd627cdac8578f2c) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Ensure types are exported and fix incorrect
+  `@zag-js/dom-query/src/query` import
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.21.4
+  - @zag-js/core@1.21.4
+  - @zag-js/types@1.21.4
+  - @zag-js/utils@1.21.4
+  - @zag-js/dom-query@1.21.4
+
 ## 1.21.3
 
 ### Patch Changes

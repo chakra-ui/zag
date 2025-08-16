@@ -1,6 +1,6 @@
 {
   "name": "@zag-js/date-utils",
-  "version": "1.21.3",
+  "version": "1.21.4",
   "description": "Date utilities for zag.js",
   "keywords": [
     "js",
