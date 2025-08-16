@@ -66,8 +66,8 @@
     "@zag-js/react": "workspace:*",
     "@zag-js/rect-utils": "workspace:*",
     "@zag-js/remove-scroll": "workspace:*",
-    "@zag-js/scroll-snap": "workspace:*",
     "@zag-js/scroll-area": "workspace:*",
+    "@zag-js/scroll-snap": "workspace:*",
     "@zag-js/select": "workspace:*",
     "@zag-js/shared": "workspace:*",
     "@zag-js/signature-pad": "workspace:*",
@@ -99,14 +99,15 @@
     "react-dom": "19.1.1",
     "react-hook-form": "7.62.0",
     "react-spinners": "0.17.0",
-    "textarea-caret": "^3.1.0"
+    "textarea-caret": "^3.1.0",
+    "virtua": "^0.41.5"
   },
   "devDependencies": {
+    "@next/eslint-plugin-next": "15.4.6",
     "@types/form-serialize": "0.7.4",
     "@types/node": "24.2.1",
     "@types/react": "^19",
     "@types/react-dom": "^19",
-    "@next/eslint-plugin-next": "15.4.6",
     "eslint-plugin-react": "7.37.5",
     "eslint-plugin-react-hooks": "5.2.0",
     "typescript": "5.9.2"
