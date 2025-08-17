@@ -58,6 +58,7 @@
     "@zag-js/radio-group": "workspace:*",
     "@zag-js/rating-group": "workspace:*",
     "@zag-js/react": "workspace:*",
+    "@zag-js/scroll-area": "workspace:*",
     "@zag-js/select": "workspace:*",
     "@zag-js/signature-pad": "workspace:*",
     "@zag-js/slider": "workspace:*",

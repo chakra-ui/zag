@@ -165,7 +165,7 @@
         "description": "The cursor."
       },
       "sortDescriptor": {
-        "type": "SortDescriptor",
+        "type": "SortDescriptor<T>",
         "description": "The sort descriptor."
       },
       "loading": {
@@ -189,7 +189,7 @@
         "description": "Function to load more items"
       },
       "sort": {
-        "type": "(sortDescriptor: SortDescriptor) => void",
+        "type": "(sortDescriptor: SortDescriptor<T>) => void",
         "description": "Function to sort the list"
       },
       "setFilterText": {
@@ -199,7 +199,7 @@
     },
     "context": {
       "load": {
-        "type": "(args: LoadDetails<C>) => Promise<LoadResult<T, C>>",
+        "type": "(args: LoadDetails<T, C>) => Promise<LoadResult<T, C>>",
         "description": "The function to call when the list is loaded"
       },
       "sort": {
@@ -211,7 +211,7 @@
         "description": "The initial items to display"
       },
       "initialSortDescriptor": {
-        "type": "SortDescriptor",
+        "type": "SortDescriptor<T>",
         "description": "The initial sort descriptor to use"
       },
       "initialFilterText": {
@@ -1714,6 +1714,10 @@
       "disabled": {
         "type": "boolean",
         "description": "Whether the file input is disabled"
+      },
+      "transforming": {
+        "type": "boolean",
+        "description": "Whether files are currently being transformed via `transformFiles`"
       },
       "openFilePicker": {
         "type": "VoidFunction",
@@ -3514,6 +3518,69 @@
       "onHoverChange": {
         "type": "(details: HoverChangeDetails) => void",
         "description": "Function to be called when the rating value is hovered."
+      },
+      "dir": {
+        "type": "\"ltr\" | \"rtl\"",
+        "description": "The document's text/writing direction.",
+        "defaultValue": "\"ltr\""
+      },
+      "id": {
+        "type": "string",
+        "description": "The unique identifier of the machine."
+      },
+      "getRootNode": {
+        "type": "() => ShadowRoot | Node | Document",
+        "description": "A root node to correctly resolve document in custom environments. E.x.: Iframes, Electron."
+      }
+    }
+  },
+  "scroll-area": {
+    "api": {
+      "isAtTop": {
+        "type": "boolean",
+        "description": "Whether the scroll area is at the top"
+      },
+      "isAtBottom": {
+        "type": "boolean",
+        "description": "Whether the scroll area is at the bottom"
+      },
+      "isAtLeft": {
+        "type": "boolean",
+        "description": "Whether the scroll area is at the left"
+      },
+      "isAtRight": {
+        "type": "boolean",
+        "description": "Whether the scroll area is at the right"
+      },
+      "hasOverflowX": {
+        "type": "boolean",
+        "description": "Whether the scroll area has horizontal overflow"
+      },
+      "hasOverflowY": {
+        "type": "boolean",
+        "description": "Whether the scroll area has vertical overflow"
+      },
+      "getScrollProgress": {
+        "type": "() => Point",
+        "description": "Get the scroll progress as values between 0 and 1"
+      },
+      "scrollToEdge": {
+        "type": "(details: ScrollToEdgeDetails) => void",
+        "description": "Scroll to the edge of the scroll area"
+      },
+      "scrollTo": {
+        "type": "(details: ScrollToDetails) => void",
+        "description": "Scroll to specific coordinates"
+      },
+      "getScrollbarState": {
+        "type": "(props: ScrollbarProps) => ScrollbarState",
+        "description": "Returns the state of the scrollbar"
+      }
+    },
+    "context": {
+      "ids": {
+        "type": "Partial<{ root: string; viewport: string; content: string; scrollbar: string; thumb: string; }>",
+        "description": "The ids of the scroll area elements"
       },
       "dir": {
         "type": "\"ltr\" | \"rtl\"",

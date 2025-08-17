@@ -844,6 +844,11 @@
     }
   },
   "menu": {
+    "ContextTrigger": {
+      "data-scope": "menu",
+      "data-part": "context-trigger",
+      "data-state": "\"open\" | \"closed\""
+    },
     "Trigger": {
       "data-scope": "menu",
       "data-part": "trigger",
@@ -1229,6 +1234,12 @@
       "data-overflow-x": "Present when the content overflows the x-axis",
       "data-overflow-y": "Present when the content overflows the y-axis"
     },
+    "Content": {
+      "data-scope": "scroll-area",
+      "data-part": "content",
+      "data-overflow-x": "Present when the content overflows the x-axis",
+      "data-overflow-y": "Present when the content overflows the y-axis"
+    },
     "Scrollbar": {
       "data-scope": "scroll-area",
       "data-part": "scrollbar",
@@ -1246,7 +1257,9 @@
     "Corner": {
       "data-scope": "scroll-area",
       "data-part": "corner",
-      "data-state": "\"hidden\" | \"visible\""
+      "data-state": "\"hidden\" | \"visible\"",
+      "data-overflow-x": "Present when the content overflows the x-axis",
+      "data-overflow-y": "Present when the content overflows the y-axis"
     }
   },
   "select": {

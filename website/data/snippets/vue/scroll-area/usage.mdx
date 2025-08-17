@@ -1,0 +1,24 @@
+```html
+<script setup>
+import * as scrollArea from "@zag-js/scroll-area"
+import { useMachine, normalizeProps } from "@zag-js/vue"
+import { computed, useId } from "vue"
+
+const service = useMachine(scrollArea.machine, { id: useId() })
+
+const api = computed(() => scrollArea.connect(service, normalizeProps))
+</script>
+
+<template>
+  <div v-bind="api.getRootProps()">
+    <div v-bind="api.getViewportProps()">
+      <div v-bind="api.getContentProps()">
+        <!-- Your scrollable content here -->
+      </div>
+    </div>
+    <div v-bind="api.getScrollbarProps()">
+      <div v-bind="api.getThumbProps()" />
+    </div>
+  </div>
+</template>
+```

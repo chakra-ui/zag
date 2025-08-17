@@ -39,8 +39,10 @@ import { ToggleGroupAnatomy } from "./toggle-group"
 import { TooltipAnatomy } from "./tooltip"
 import { TourAnatomy } from "./tour"
 import { TreeViewAnatomy } from "./tree-view"
+import { ScrollAreaAnatomy } from "./scroll-area"
 
 export const allComponents = {
+  "scroll-area": ScrollAreaAnatomy,
   "password-input": PasswordInputAnatomy,
   "floating-panel": FloatingPanelAnatomy,
   tour: TourAnatomy,

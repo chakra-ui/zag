@@ -26,6 +26,7 @@ import { QrCode } from "./qr-code"
 import { Radio } from "./radio"
 import { RangeSlider } from "./range-slider"
 import { Rating } from "./rating"
+import { ScrollArea } from "./scroll-area"
 import { SegmentedControl } from "./segmented-control"
 import { Select } from "./select"
 import { SignaturePad } from "./signature-pad"
@@ -327,6 +328,7 @@ const components = {
       }}
     />
   ),
+  ScrollArea: () => <Playground name="scroll-area" component={ScrollArea} />,
   Select: () => (
     <Playground
       name="select"
