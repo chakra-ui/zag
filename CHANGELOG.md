@@ -4,6 +4,14 @@ All notable changes to this project will be documented in this file.
 
 > For v0.x changelog, see the [v0 branch](https://github.com/chakra-ui/zag/blob/v0/CHANGELOG.md)
 
+## [1.21.6](./#1.21.6) - 2025-08-17
+
+### Fixed
+
+- **Menu**: Fix context menu positioning bug where reopening at the same coordinates fails to reposition
+
+- **Scroll Area**: Rename `data-hovering` to `data-hover` for consistency
+
 ## [1.21.5](./#1.21.5) - 2025-08-16
 
 ### Fixed
