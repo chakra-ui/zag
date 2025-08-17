@@ -1,5 +1,23 @@
 # @zag-js/menu
 
+## 1.21.6
+
+### Patch Changes
+
+- [`eee6ad2`](https://github.com/chakra-ui/zag/commit/eee6ad2d03a301108efd66ff25af61024fba0597) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix context menu positioning bug where reopening at the same
+  coordinates fails to reposition
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.21.6
+  - @zag-js/core@1.21.6
+  - @zag-js/types@1.21.6
+  - @zag-js/utils@1.21.6
+  - @zag-js/dismissable@1.21.6
+  - @zag-js/dom-query@1.21.6
+  - @zag-js/popper@1.21.6
+  - @zag-js/rect-utils@1.21.6
+
 ## 1.21.5
 
 ### Patch Changes
