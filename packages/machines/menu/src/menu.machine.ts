@@ -308,7 +308,7 @@ export const machine = createMachine<MenuSchema>({
 
     closed: {
       tags: ["closed"],
-      entry: ["clearHighlightedItem", "focusTrigger", "resumePointer"],
+      entry: ["clearHighlightedItem", "focusTrigger", "resumePointer", "clearAnchorPoint"],
       on: {
         "CONTROLLED.OPEN": [
           {
@@ -698,6 +698,9 @@ export const machine = createMachine<MenuSchema>({
       },
       clearIntentPolygon({ context }) {
         context.set("intentPolygon", null)
+      },
+      clearAnchorPoint({ context }) {
+        context.set("anchorPoint", null)
       },
       resumePointer({ refs, flush }) {
         const parent = refs.get("parent")
