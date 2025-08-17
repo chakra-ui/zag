@@ -99,7 +99,6 @@ const sidebar: Record<"docs", SidebarItem[]> = {
           type: "doc",
           label: "Password Input",
           id: "password-input",
-          new: true,
         },
         { type: "doc", label: "Pin Input", id: "pin-input" },
         { type: "doc", label: "Popover", id: "popover" },
