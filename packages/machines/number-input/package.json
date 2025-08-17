@@ -1,6 +1,6 @@
 {
   "name": "@zag-js/number-input",
-  "version": "1.21.5",
+  "version": "1.21.6",
   "description": "Core logic for the number-input widget implemented as a state machine",
   "keywords": [
     "js",

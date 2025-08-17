@@ -1,6 +1,6 @@
 {
   "name": "@zag-js/stringify-state",
-  "version": "1.21.5",
+  "version": "1.21.6",
   "description": "Helper to stringify state of Zag machines",
   "keywords": [
     "js",

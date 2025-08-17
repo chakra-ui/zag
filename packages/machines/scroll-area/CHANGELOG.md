@@ -1,5 +1,19 @@
 # @zag-js/scroll-area
 
+## 1.21.6
+
+### Patch Changes
+
+- [`47acc94`](https://github.com/chakra-ui/zag/commit/47acc94dcf21b6f21e183abbc86d8fc4880dbf39) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Rename `data-hovering` to `data-hover` for consistency
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.21.6
+  - @zag-js/core@1.21.6
+  - @zag-js/types@1.21.6
+  - @zag-js/utils@1.21.6
+  - @zag-js/dom-query@1.21.6
+
 ## 1.21.5
 
 ### Patch Changes
