@@ -1245,7 +1245,7 @@
       "data-part": "scrollbar",
       "data-orientation": "The orientation of the scrollbar",
       "data-scrolling": "Present when scrolling",
-      "data-hovering": "Present when hovering",
+      "data-hover": "Present when hovering",
       "data-overflow-x": "Present when the content overflows the x-axis",
       "data-overflow-y": "Present when the content overflows the y-axis"
     },

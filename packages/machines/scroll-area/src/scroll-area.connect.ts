@@ -125,7 +125,7 @@ export function connect<T extends PropTypes>(
         "data-ownedby": dom.getRootId(scope),
         "data-orientation": orientation,
         "data-scrolling": dataAttr(context.get(orientation === "horizontal" ? "scrollingX" : "scrollingY")),
-        "data-hovering": dataAttr(context.get("hovering")),
+        "data-hover": dataAttr(context.get("hovering")),
         "data-overflow-x": dataAttr(!hiddenState.scrollbarXHidden),
         "data-overflow-y": dataAttr(!hiddenState.scrollbarYHidden),
         onPointerUp() {

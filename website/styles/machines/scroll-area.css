@@ -48,7 +48,7 @@
   position: absolute;
 
   &:hover,
-  &[data-hovering] {
+  &[data-hover] {
     opacity: 1;
   }
   &[data-scrolling] {
@@ -81,7 +81,7 @@
 }
 
 [data-scope="scroll-area"][data-part="thumb"]:hover,
-[data-scope="scroll-area"][data-part="thumb"][data-hovering] {
+[data-scope="scroll-area"][data-part="thumb"][data-hover] {
   background: var(--colors-text);
 }
 
