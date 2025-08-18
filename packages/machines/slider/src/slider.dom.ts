@@ -29,11 +29,30 @@ export const getPointValue = (params: Params<SliderSchema>, point: Point) => {
   const controlEl = getControlEl(scope)
   if (!controlEl) return
   const relativePoint = getRelativePoint(point, controlEl)
-  const percent = relativePoint.getPercentValue({
-    orientation: prop("orientation"),
-    dir: prop("dir"),
-    inverted: { y: true },
-  })
+  const orientation = prop("orientation")
+  const dir = prop("dir")
+  const inverted = !!prop("inverted")
+
+  // Compute effective options for pointer -> percent mapping.
+  // - Vertical defaults to inverted Y (bottom is 0). When `inverted` is true, we un-invert Y.
+  // - Horizontal defaults to LTR behavior; when `inverted` is true we flip the mapping.
+  //   In RTL, flipping is equivalent to neutralizing RTL inversion.
+  let options: { orientation: "horizontal" | "vertical"; dir?: "ltr" | "rtl"; inverted?: any } = {
+    orientation,
+    dir,
+  }
+
+  if (orientation === "vertical") {
+    options.inverted = { y: !inverted ? true : false }
+  } else {
+    // horizontal
+    if (inverted) {
+      // Achieve XOR with RTL: if RTL, neutralize dir-based inversion; if LTR, invert X.
+      options = { orientation, dir: dir === "rtl" ? "ltr" : "ltr", inverted: dir === "rtl" ? undefined : { x: true } }
+    }
+  }
+
+  const percent = relativePoint.getPercentValue(options)
   return getPercentValue(percent, prop("min"), prop("max"), prop("step"))
 }
 

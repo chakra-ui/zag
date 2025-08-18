@@ -201,23 +201,28 @@ export function connect<T extends PropTypes>(service: SliderService, normalize: 
           if (!interactive) return
 
           const step = getEventStep(event) * prop("step")
+          const isInverted = !!prop("inverted")
 
           const keyMap: EventKeyMap = {
             ArrowUp() {
               if (isHorizontal) return
-              send({ type: "ARROW_INC", step, src: "ArrowUp" })
+              const type = isInverted ? "ARROW_DEC" : "ARROW_INC"
+              send({ type, step, src: "ArrowUp" })
             },
             ArrowDown() {
               if (isHorizontal) return
-              send({ type: "ARROW_DEC", step, src: "ArrowDown" })
+              const type = isInverted ? "ARROW_INC" : "ARROW_DEC"
+              send({ type, step, src: "ArrowDown" })
             },
             ArrowLeft() {
               if (isVertical) return
-              send({ type: "ARROW_DEC", step, src: "ArrowLeft" })
+              const type = isInverted ? "ARROW_INC" : "ARROW_DEC"
+              send({ type, step, src: "ArrowLeft" })
             },
             ArrowRight() {
               if (isVertical) return
-              send({ type: "ARROW_INC", step, src: "ArrowRight" })
+              const type = isInverted ? "ARROW_DEC" : "ARROW_INC"
+              send({ type, step, src: "ArrowRight" })
             },
             PageUp() {
               send({ type: "ARROW_INC", step, src: "PageUp" })

@@ -18,13 +18,31 @@ function getBounds<T>(value: T[]): [T, T] {
 export function getRangeOffsets(params: Pick<Ctx, "prop" | "computed">) {
   const { prop, computed } = params
   const valuePercent = computed("valuePercent")
-  const [firstPercent, lastPercent] = getBounds(valuePercent)
+
+  const isHorizontal = computed("isHorizontal")
+  const isVertical = computed("isVertical")
+  const dir = prop("dir")
+  const inverted = !!prop("inverted")
+
+  // Convert logical value percent to visual percent (0..100)
+  const toVisual = (p: number) => {
+    if (isVertical) {
+      return inverted ? 100 - p : p
+    }
+    // horizontal
+    if (dir === "ltr") return inverted ? 100 - p : p
+    return p
+  }
+
+  const visualPercents = valuePercent.map((p) => toVisual(p))
+  const [firstPercent, lastPercent] = getBounds(visualPercents)
 
   if (valuePercent.length === 1) {
+    const p = visualPercents[0]
     if (prop("origin") === "center") {
-      const isNegative = valuePercent[0] < 50
-      const start = isNegative ? `${valuePercent[0]}%` : "50%"
-      const end = isNegative ? "50%" : `${100 - valuePercent[0]}%`
+      const isNegative = p < 50
+      const start = isNegative ? `${p}%` : "50%"
+      const end = isNegative ? "50%" : `${100 - p}%`
       return { start, end }
     }
     if (prop("origin") === "end") {
@@ -92,8 +110,18 @@ function getOffset(params: Pick<Ctx, "computed" | "context" | "prop">, percent: 
 }
 
 export function getThumbOffset(params: Pick<Ctx, "computed" | "context" | "prop">, value: number) {
-  const { prop } = params
-  const percent = getValuePercent(value, prop("min"), prop("max")) * 100
+  const { prop, computed } = params
+  const raw = getValuePercent(value, prop("min"), prop("max")) * 100
+  const isVertical = computed("isVertical")
+  const dir = prop("dir")
+  const inverted = !!prop("inverted")
+
+  let percent = raw
+  if (isVertical) {
+    percent = inverted ? 100 - raw : raw
+  } else {
+    if (dir === "ltr" && inverted) percent = 100 - raw
+  }
   return getOffset(params, percent, value)
 }
 
