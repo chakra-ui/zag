@@ -1,5 +1,17 @@
 # @zag-js/carousel
 
+## 1.21.7
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.21.7
+  - @zag-js/core@1.21.7
+  - @zag-js/types@1.21.7
+  - @zag-js/utils@1.21.7
+  - @zag-js/dom-query@1.21.7
+  - @zag-js/scroll-snap@1.21.7
+
 ## 1.21.6
 
 ### Patch Changes

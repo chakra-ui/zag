@@ -1,5 +1,19 @@
 # @zag-js/scroll-area
 
+## 1.21.7
+
+### Patch Changes
+
+- [`49ca977`](https://github.com/chakra-ui/zag/commit/49ca977985566adeb4d9e5932c48893b87155463) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Add `data-hover` to scroll area
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.21.7
+  - @zag-js/core@1.21.7
+  - @zag-js/types@1.21.7
+  - @zag-js/utils@1.21.7
+  - @zag-js/dom-query@1.21.7
+
 ## 1.21.6
 
 ### Patch Changes
