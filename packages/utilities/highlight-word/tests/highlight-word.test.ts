@@ -105,6 +105,70 @@ describe("highlightWord / First Occurrence", () => {
   test("throw when query is array and matchAll is false", () => {
     expect(() => highlightWord({ text: "Hello world", query: ["rld", "llo"], matchAll: false })).toThrow()
   })
+
+  test("not exact match partial words", () => {
+    const result = highlightWord({ text: "The quickly brown fox", query: "quick", exactMatch: true })
+    expect(result).toMatchInlineSnapshot(`
+      [
+        {
+          "match": false,
+          "text": "The quickly brown fox",
+        },
+      ]
+    `)
+  })
+
+  test("exact match complete words", () => {
+    const result = highlightWord({ text: "The quick brown fox", query: "quick", exactMatch: true })
+    expect(result).toMatchInlineSnapshot(`
+      [
+        {
+          "match": false,
+          "text": "The ",
+        },
+        {
+          "match": true,
+          "text": "quick",
+        },
+        {
+          "match": false,
+          "text": " brown fox",
+        },
+      ]
+    `)
+  })
+
+  test("exact match without ignore case", () => {
+    const result = highlightWord({ text: "The QUICK brown fox", query: "quick", exactMatch: true, ignoreCase: false })
+    expect(result).toMatchInlineSnapshot(`
+      [
+        {
+          "match": false,
+          "text": "The QUICK brown fox",
+        },
+      ]
+    `)
+  })
+
+  test("exact match with ignore case", () => {
+    const result = highlightWord({ text: "The QUICK brown fox", query: "quick", exactMatch: true, ignoreCase: true })
+    expect(result).toMatchInlineSnapshot(`
+      [
+        {
+          "match": false,
+          "text": "The ",
+        },
+        {
+          "match": true,
+          "text": "QUICK",
+        },
+        {
+          "match": false,
+          "text": " brown fox",
+        },
+      ]
+    `)
+  })
 })
 
 describe("highlightWord / Multiple Occurrences", () => {
@@ -334,6 +398,175 @@ describe("highlightWord / Multiple Occurrences", () => {
         {
           "match": true,
           "text": "fox",
+        },
+      ]
+    `)
+  })
+
+  test("not exact match partial words", () => {
+    const result = highlightWord({
+      text: "The quickly brown fox quick runs",
+      query: "quick",
+      exactMatch: true,
+      matchAll: true,
+    })
+    expect(result).toMatchInlineSnapshot(`
+      [
+        {
+          "match": false,
+          "text": "The quickly brown fox ",
+        },
+        {
+          "match": true,
+          "text": "quick",
+        },
+        {
+          "match": false,
+          "text": " runs",
+        },
+      ]
+    `)
+  })
+
+  test("exact match without ignore case", () => {
+    const result = highlightWord({
+      text: "The QUICK brown fox quick runs",
+      query: "quick",
+      exactMatch: true,
+      ignoreCase: false,
+      matchAll: true,
+    })
+    expect(result).toMatchInlineSnapshot(`
+      [
+        {
+          "match": false,
+          "text": "The QUICK brown fox ",
+        },
+        {
+          "match": true,
+          "text": "quick",
+        },
+        {
+          "match": false,
+          "text": " runs",
+        },
+      ]
+    `)
+  })
+
+  test("exact match with ignore case", () => {
+    const result = highlightWord({
+      text: "The QUICK brown fox quick runs",
+      query: "quick",
+      exactMatch: true,
+      ignoreCase: true,
+      matchAll: true,
+    })
+    expect(result).toMatchInlineSnapshot(`
+      [
+        {
+          "match": false,
+          "text": "The ",
+        },
+        {
+          "match": true,
+          "text": "QUICK",
+        },
+        {
+          "match": false,
+          "text": " brown fox ",
+        },
+        {
+          "match": true,
+          "text": "quick",
+        },
+        {
+          "match": false,
+          "text": " runs",
+        },
+      ]
+    `)
+  })
+
+  test("exact match with array query", () => {
+    const result = highlightWord({
+      text: "The quickly brown fox runs fast",
+      query: ["quick", "fast"],
+      exactMatch: true,
+      matchAll: true,
+    })
+    expect(result).toMatchInlineSnapshot(`
+      [
+        {
+          "match": false,
+          "text": "The quickly brown fox runs ",
+        },
+        {
+          "match": true,
+          "text": "fast",
+        },
+      ]
+    `)
+  })
+
+  test("exact match with array query and ignore case", () => {
+    const result = highlightWord({
+      text: "The QUICKLY brown FOX runs FAST",
+      query: ["quick", "fox", "fast"],
+      exactMatch: true,
+      ignoreCase: true,
+      matchAll: true,
+    })
+    expect(result).toMatchInlineSnapshot(`
+      [
+        {
+          "match": false,
+          "text": "The QUICKLY brown ",
+        },
+        {
+          "match": true,
+          "text": "FOX",
+        },
+        {
+          "match": false,
+          "text": " runs ",
+        },
+        {
+          "match": true,
+          "text": "FAST",
+        },
+      ]
+    `)
+  })
+
+  test("exact match with punctuation boundaries", () => {
+    const result = highlightWord({
+      text: "Hello, world! The world is nice.",
+      query: "world",
+      exactMatch: true,
+      matchAll: true,
+    })
+    expect(result).toMatchInlineSnapshot(`
+      [
+        {
+          "match": false,
+          "text": "Hello, ",
+        },
+        {
+          "match": true,
+          "text": "world",
+        },
+        {
+          "match": false,
+          "text": "! The ",
+        },
+        {
+          "match": true,
+          "text": "world",
+        },
+        {
+          "match": false,
+          "text": " is nice.",
         },
       ]
     `)
