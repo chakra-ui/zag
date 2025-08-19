@@ -97,6 +97,7 @@ export const machine = createMachine<MenuSchema>({
       action(["setSubmenuPlacement"])
     })
     track([() => context.hash("anchorPoint")], () => {
+      if (!context.get("anchorPoint")) return
       action(["reposition"])
     })
     track([() => prop("open")], () => {
@@ -649,6 +650,7 @@ export const machine = createMachine<MenuSchema>({
       reposition({ context, scope, prop, event, refs }) {
         const getPositionerEl = () => dom.getPositionerEl(scope)
         const anchorPoint = context.get("anchorPoint")
+
         const getAnchorRect = anchorPoint ? () => ({ width: 0, height: 0, ...anchorPoint }) : undefined
 
         const positioning = {
