@@ -4,6 +4,18 @@ All notable changes to this project will be documented in this file.
 
 > For v0.x changelog, see the [v0 branch](https://github.com/chakra-ui/zag/blob/v0/CHANGELOG.md)
 
+## [1.21.7](./#1.21.7) - 2025-08-19
+
+### Added
+
+- **Highlight Word**: Add `exactMatch` option that enables whole-word matching using regex word boundaries.
+
+### Fixed
+
+- **Menu**: Fix context menu repositioning logic
+
+- **Scroll Area**: Add `data-hover` to scroll area
+
 ## [1.21.6](./#1.21.6) - 2025-08-17
 
 ### Fixed
