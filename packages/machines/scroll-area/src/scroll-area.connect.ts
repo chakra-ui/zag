@@ -187,6 +187,7 @@ export function connect<T extends PropTypes>(
       return normalize.element({
         ...parts.corner.attrs,
         "data-ownedby": dom.getRootId(scope),
+        "data-hover": dataAttr(context.get("hovering")),
         "data-state": hiddenState.cornerHidden ? "hidden" : "visible",
         "data-overflow-x": dataAttr(!hiddenState.scrollbarXHidden),
         "data-overflow-y": dataAttr(!hiddenState.scrollbarYHidden),
