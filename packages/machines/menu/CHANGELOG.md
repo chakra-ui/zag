@@ -1,5 +1,22 @@
 # @zag-js/menu
 
+## 1.21.7
+
+### Patch Changes
+
+- [`672e44b`](https://github.com/chakra-ui/zag/commit/672e44b9035e583d7593cf0241785dffe0b4d299) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix context menu repositioning logic
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.21.7
+  - @zag-js/core@1.21.7
+  - @zag-js/types@1.21.7
+  - @zag-js/utils@1.21.7
+  - @zag-js/dismissable@1.21.7
+  - @zag-js/dom-query@1.21.7
+  - @zag-js/popper@1.21.7
+  - @zag-js/rect-utils@1.21.7
+
 ## 1.21.6
 
 ### Patch Changes
