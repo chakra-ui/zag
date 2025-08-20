@@ -40,6 +40,7 @@ export function connect<T extends PropTypes>(
       const horizontal = props.orientation === "horizontal"
       return {
         hovering: context.get("hovering"),
+        dragging: context.get("dragging"),
         scrolling: context.get(horizontal ? "scrollingX" : "scrollingY"),
         hidden: horizontal ? hiddenState.scrollbarXHidden : hiddenState.scrollbarYHidden,
       }
@@ -126,6 +127,7 @@ export function connect<T extends PropTypes>(
         "data-orientation": orientation,
         "data-scrolling": dataAttr(context.get(orientation === "horizontal" ? "scrollingX" : "scrollingY")),
         "data-hover": dataAttr(context.get("hovering")),
+        "data-dragging": dataAttr(context.get("dragging")),
         "data-overflow-x": dataAttr(!hiddenState.scrollbarXHidden),
         "data-overflow-y": dataAttr(!hiddenState.scrollbarYHidden),
         onPointerUp() {
@@ -167,6 +169,8 @@ export function connect<T extends PropTypes>(
         ...parts.thumb.attrs,
         "data-ownedby": dom.getRootId(scope),
         "data-orientation": orientation,
+        "data-hover": dataAttr(context.get("hovering")),
+        "data-dragging": dataAttr(context.get("dragging")),
         onPointerDown(event) {
           if (event.button !== 0) return
           const point = getEventPoint(event)
