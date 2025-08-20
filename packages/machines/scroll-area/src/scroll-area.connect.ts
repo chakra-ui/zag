@@ -12,7 +12,10 @@ export function connect<T extends PropTypes>(
   service: ScrollAreaService,
   normalize: NormalizeProps<T>,
 ): ScrollAreaApi<T> {
-  const { send, context, prop, scope } = service
+  const { state, send, context, prop, scope } = service
+
+  const dragging = state.matches("dragging")
+  const hovering = context.get("hovering")
 
   const cornerSize = context.get("cornerSize")
   const thumbSize = context.get("thumbSize")
@@ -39,8 +42,8 @@ export function connect<T extends PropTypes>(
     getScrollbarState(props) {
       const horizontal = props.orientation === "horizontal"
       return {
-        hovering: context.get("hovering"),
-        dragging: context.get("dragging"),
+        hovering,
+        dragging,
         scrolling: context.get(horizontal ? "scrollingX" : "scrollingY"),
         hidden: horizontal ? hiddenState.scrollbarXHidden : hiddenState.scrollbarYHidden,
       }
@@ -126,8 +129,8 @@ export function connect<T extends PropTypes>(
         "data-ownedby": dom.getRootId(scope),
         "data-orientation": orientation,
         "data-scrolling": dataAttr(context.get(orientation === "horizontal" ? "scrollingX" : "scrollingY")),
-        "data-hover": dataAttr(context.get("hovering")),
-        "data-dragging": dataAttr(context.get("dragging")),
+        "data-hover": dataAttr(hovering),
+        "data-dragging": dataAttr(dragging),
         "data-overflow-x": dataAttr(!hiddenState.scrollbarXHidden),
         "data-overflow-y": dataAttr(!hiddenState.scrollbarYHidden),
         onPointerUp() {
@@ -169,8 +172,8 @@ export function connect<T extends PropTypes>(
         ...parts.thumb.attrs,
         "data-ownedby": dom.getRootId(scope),
         "data-orientation": orientation,
-        "data-hover": dataAttr(context.get("hovering")),
-        "data-dragging": dataAttr(context.get("dragging")),
+        "data-hover": dataAttr(hovering),
+        "data-dragging": dataAttr(dragging),
         onPointerDown(event) {
           if (event.button !== 0) return
           const point = getEventPoint(event)
@@ -191,7 +194,7 @@ export function connect<T extends PropTypes>(
       return normalize.element({
         ...parts.corner.attrs,
         "data-ownedby": dom.getRootId(scope),
-        "data-hover": dataAttr(context.get("hovering")),
+        "data-hover": dataAttr(hovering),
         "data-state": hiddenState.cornerHidden ? "hidden" : "visible",
         "data-overflow-x": dataAttr(!hiddenState.scrollbarXHidden),
         "data-overflow-y": dataAttr(!hiddenState.scrollbarYHidden),

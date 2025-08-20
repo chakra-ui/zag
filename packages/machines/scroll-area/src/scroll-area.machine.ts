@@ -360,7 +360,7 @@ export const machine = createMachine<ScrollAreaSchema>({
         }
       },
 
-      startDragging({ event, refs, scope, context }) {
+      startDragging({ event, refs, scope }) {
         refs.set("startX", event.point.x)
         refs.set("startY", event.point.y)
         refs.set("orientation", event.orientation)
@@ -370,7 +370,6 @@ export const machine = createMachine<ScrollAreaSchema>({
 
         refs.set("startScrollTop", viewportEl.scrollTop)
         refs.set("startScrollLeft", viewportEl.scrollLeft)
-        context.set("dragging", true)
       },
 
       setDraggingScroll({ event, refs, scope, context }) {
@@ -426,9 +425,8 @@ export const machine = createMachine<ScrollAreaSchema>({
         }
       },
 
-      stopDragging({ refs, context }) {
+      stopDragging({ refs }) {
         refs.set("orientation", null)
-        context.set("dragging", false)
       },
 
       clearTimeouts({ refs }) {
