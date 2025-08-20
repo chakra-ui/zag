@@ -24,6 +24,7 @@ export const machine = createMachine<ScrollAreaSchema>({
       scrollingX: bindable<boolean>(() => ({ defaultValue: false })),
       scrollingY: bindable<boolean>(() => ({ defaultValue: false })),
       hovering: bindable<boolean>(() => ({ defaultValue: false })),
+      dragging: bindable<boolean>(() => ({ defaultValue: false })),
       touchModality: bindable<boolean>(() => ({ defaultValue: false })),
       atSides: bindable<ScrollRecord<boolean>>(() => ({
         defaultValue: { top: true, right: false, bottom: false, left: true },
@@ -359,7 +360,7 @@ export const machine = createMachine<ScrollAreaSchema>({
         }
       },
 
-      startDragging({ event, refs, scope }) {
+      startDragging({ event, refs, scope, context }) {
         refs.set("startX", event.point.x)
         refs.set("startY", event.point.y)
         refs.set("orientation", event.orientation)
@@ -369,6 +370,7 @@ export const machine = createMachine<ScrollAreaSchema>({
 
         refs.set("startScrollTop", viewportEl.scrollTop)
         refs.set("startScrollLeft", viewportEl.scrollLeft)
+        context.set("dragging", true)
       },
 
       setDraggingScroll({ event, refs, scope, context }) {
@@ -424,8 +426,9 @@ export const machine = createMachine<ScrollAreaSchema>({
         }
       },
 
-      stopDragging({ refs }) {
+      stopDragging({ refs, context }) {
         refs.set("orientation", null)
+        context.set("dragging", false)
       },
 
       clearTimeouts({ refs }) {

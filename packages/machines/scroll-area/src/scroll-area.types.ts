@@ -42,6 +42,7 @@ export interface ScrollAreaContext {
   scrollingY: boolean
   hiddenState: ScrollbarHiddenState
   hovering: boolean
+  dragging: boolean
   touchModality: boolean
   atSides: ScrollRecord<boolean>
 }
