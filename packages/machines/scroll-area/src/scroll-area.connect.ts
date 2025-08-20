@@ -169,6 +169,8 @@ export function connect<T extends PropTypes>(
         ...parts.thumb.attrs,
         "data-ownedby": dom.getRootId(scope),
         "data-orientation": orientation,
+        "data-hover": dataAttr(context.get("hovering")),
+        "data-dragging": dataAttr(context.get("dragging")),
         onPointerDown(event) {
           if (event.button !== 0) return
           const point = getEventPoint(event)
