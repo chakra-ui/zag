@@ -1,6 +1,6 @@
 import type { CollectionItem, ListCollection } from "@zag-js/collection"
 import { Selection } from "@zag-js/collection"
-import { createMachine } from "@zag-js/core"
+import { setup } from "@zag-js/core"
 import { getByTypeahead, observeAttributes, raf, scrollIntoView } from "@zag-js/dom-query"
 import { getInteractionModality, trackFocusVisible as trackFocusVisibleFn } from "@zag-js/focus-visible"
 import { isEqual } from "@zag-js/utils"
@@ -8,7 +8,11 @@ import { collection } from "./listbox.collection"
 import * as dom from "./listbox.dom"
 import type { ListboxSchema, SelectionDetails } from "./listbox.types"
 
-export const machine = createMachine<ListboxSchema>({
+const { guards, createMachine } = setup<ListboxSchema>()
+
+const { or } = guards
+
+export const machine = createMachine({
   props({ props }) {
     return {
       loopFocus: false,
@@ -128,9 +132,15 @@ export const machine = createMachine<ListboxSchema>({
     idle: {
       effects: ["scrollToHighlightedItem"],
       on: {
-        "CONTENT.FOCUS": {
-          actions: ["setFocused"],
-        },
+        "CONTENT.FOCUS": [
+          {
+            guard: or("hasSelectedValue", "hasHighlightedValue"),
+            actions: ["setFocused"],
+          },
+          {
+            actions: ["setDefaultHighlightedValue"],
+          },
+        ],
         "CONTENT.BLUR": {
           actions: ["clearFocused"],
         },
@@ -154,6 +164,11 @@ export const machine = createMachine<ListboxSchema>({
   },
 
   implementations: {
+    guards: {
+      hasSelectedValue: ({ context }) => context.get("value").length > 0,
+      hasHighlightedValue: ({ context }) => context.get("highlightedValue") != null,
+    },
+
     effects: {
       trackFocusVisible: ({ scope }) => {
         return trackFocusVisibleFn({ root: scope.getRootNode?.() })
@@ -322,6 +337,14 @@ export const machine = createMachine<ListboxSchema>({
 
       setFocused({ context }) {
         context.set("focused", true)
+      },
+
+      setDefaultHighlightedValue({ context, prop }) {
+        const collection = prop("collection")
+        const firstValue = collection.firstValue
+        if (firstValue != null) {
+          context.set("highlightedValue", firstValue)
+        }
       },
 
       clearFocused({ context }) {
