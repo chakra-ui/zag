@@ -10,7 +10,7 @@
   "scripts": {
     "packages": "pnpm --filter=./packages/** -r",
     "build": "pnpm packages -- build",
-    "postbuild": "pnpm document-types && pnpm document-attr",
+    "postbuild": "pnpm document-types && pnpm document-attr && pnpm document-css-vars",
     "prepare": "husky",
     "sync-pkgs": "tsx scripts/sync-packages.ts",
     "clean-pkgs": "pnpm -r exec rm -rf dist .swc *.log",
@@ -50,6 +50,7 @@
     "play": "tsx scripts/play.ts",
     "document-types": "tsx scripts/typedocs.ts",
     "document-attr": "tsx scripts/data-attr.ts",
+    "document-css-vars": "tsx scripts/css-vars.ts",
     "website": "pnpm --filter=./website",
     "sync-submodules": "pnpm vercel-submodules --all"
   },

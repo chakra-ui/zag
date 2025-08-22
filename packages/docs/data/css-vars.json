@@ -1,0 +1,145 @@
+{
+  "tree-view": {
+    "Item": {
+      "--depth": "The depth value for the item"
+    },
+    "Branch": {
+      "--depth": "The depth value for the branch"
+    }
+  },
+  "tour": {
+    "Backdrop": {
+      "--tour-layer": "The tour layer value for the backdrop"
+    },
+    "Spotlight": {
+      "--tour-layer": "The tour layer value for the spotlight"
+    },
+    "Positioner": {
+      "--tour-layer": "The tour layer value for the positioner"
+    }
+  },
+  "timer": {
+    "Item": {
+      "--value": "The current value"
+    }
+  },
+  "tabs": {
+    "Indicator": {
+      "--transition-property": "The transition property value for the indicator",
+      "--left": "The left position value",
+      "--top": "The top position value",
+      "--width": "The width of the element",
+      "--height": "The height of the element"
+    }
+  },
+  "steps": {
+    "Root": {
+      "--percent": "The percent value for the root"
+    }
+  },
+  "scroll-area": {
+    "Root": {
+      "--corner-width": "The width of the root",
+      "--corner-height": "The height of the root",
+      "--thumb-width": "The width of the slider thumb",
+      "--thumb-height": "The height of the slider thumb"
+    }
+  },
+  "qr-code": {
+    "Root": {
+      "--qrcode-pixel-size": "The size of the root",
+      "--qrcode-width": "The width of the root",
+      "--qrcode-height": "The height of the root"
+    }
+  },
+  "radio-group": {
+    "Indicator": {
+      "--transition-property": "The transition property value for the indicator",
+      "--left": "The left position value",
+      "--top": "The top position value",
+      "--width": "The width of the element",
+      "--height": "The height of the element"
+    }
+  },
+  "progress": {
+    "Root": {
+      "--percent": "The percent value for the root",
+      "--radius": "The border radius value",
+      "--circumference": "The circumference value for the root",
+      "--offset": "The offset position of the element"
+    }
+  },
+  "navigation-menu": {
+    "Root": {
+      "--trigger-width": "The width of the root",
+      "--trigger-height": "The height of the root",
+      "--trigger-x": "The trigger x value for the root",
+      "--trigger-y": "The trigger y value for the root",
+      "--viewport-width": "The width of the root",
+      "--viewport-height": "The height of the root"
+    }
+  },
+  "listbox": {
+    "Content": {
+      "--column-count": "The column count value for the content"
+    }
+  },
+  "floating-panel": {
+    "Positioner": {
+      "--width": "The width of the element",
+      "--height": "The height of the element",
+      "--x": "The x value for the positioner",
+      "--y": "The y value for the positioner"
+    }
+  },
+  "color-picker": {
+    "Root": {
+      "--value": "The current value"
+    },
+    "Areathumb": {
+      "--color": "The text color"
+    },
+    "Transparencygrid": {
+      "--size": "The size (width and height) of the element"
+    },
+    "Swatchtrigger": {
+      "--color": "The text color"
+    },
+    "Swatch": {
+      "--color": "The text color"
+    }
+  },
+  "collapsible": {
+    "Content": {
+      "--height": "The height of the element",
+      "--width": "The width of the element"
+    }
+  },
+  "carousel": {
+    "Root": {
+      "--slides-per-page": "The number of slides visible per page",
+      "--slide-spacing": "The spacing between slides",
+      "--slide-item-size": "The calculated size of each slide item"
+    }
+  },
+  "angle-slider": {
+    "Root": {
+      "--value": "The current value",
+      "--angle": "The angle in degrees"
+    },
+    "Marker": {
+      "--marker-value": "The marker value value for the marker"
+    }
+  },
+  "slider": {
+    "Root": {
+      "--slider-thumb-width": "The thumb width of the slider",
+      "--slider-thumb-height": "The thumb height of the slider",
+      "--slider-thumb-transform": "The thumb transform of the slider",
+      "--slider-range-start": "The range start of the slider",
+      "--slider-range-end": "The range end of the slider",
+      "--translate-x": "The horizontal translation value",
+      "--translate-y": "The vertical translation value"
+    }
+  }
+}

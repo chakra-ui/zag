@@ -76,8 +76,8 @@ export function connect<T extends PropTypes>(
         },
         style: {
           position: "relative",
-          "--corder-width": toPx(cornerSize?.width),
-          "--corder-height": toPx(cornerSize?.height),
+          "--corner-width": toPx(cornerSize?.width),
+          "--corner-height": toPx(cornerSize?.height),
           "--thumb-width": toPx(thumbSize?.width),
           "--thumb-height": toPx(thumbSize?.height),
         },
@@ -159,12 +159,12 @@ export function connect<T extends PropTypes>(
           userSelect: "none",
           ...(orientation === "vertical" && {
             top: 0,
-            bottom: `var(--corder-height)`,
+            bottom: `var(--corner-height)`,
             insetInlineEnd: 0,
           }),
           ...(orientation === "horizontal" && {
             insetInlineStart: 0,
-            insetInlineEnd: `var(--corder-width)`,
+            insetInlineEnd: `var(--corner-width)`,
             bottom: 0,
           }),
         },
@@ -207,8 +207,8 @@ export function connect<T extends PropTypes>(
           position: "absolute",
           bottom: 0,
           insetInlineEnd: 0,
-          width: "var(--corder-width)",
-          height: "var(--corder-height)",
+          width: "var(--corner-width)",
+          height: "var(--corner-height)",
         },
       })
     },
