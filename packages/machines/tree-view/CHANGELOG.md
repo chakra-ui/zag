@@ -1,5 +1,271 @@
 # @zag-js/tree-view
 
+## 1.21.7
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.21.7
+  - @zag-js/core@1.21.7
+  - @zag-js/types@1.21.7
+  - @zag-js/collection@1.21.7
+  - @zag-js/utils@1.21.7
+  - @zag-js/dom-query@1.21.7
+
+## 1.21.6
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.21.6
+  - @zag-js/core@1.21.6
+  - @zag-js/types@1.21.6
+  - @zag-js/collection@1.21.6
+  - @zag-js/utils@1.21.6
+  - @zag-js/dom-query@1.21.6
+
+## 1.21.5
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.21.5
+  - @zag-js/core@1.21.5
+  - @zag-js/types@1.21.5
+  - @zag-js/collection@1.21.5
+  - @zag-js/utils@1.21.5
+  - @zag-js/dom-query@1.21.5
+
+## 1.21.4
+
+### Patch Changes
+
+- Updated dependencies [[`d07647c`](https://github.com/chakra-ui/zag/commit/d07647cc53cec91d126653dec056c7dd7f9805a7)]:
+  - @zag-js/collection@1.21.4
+  - @zag-js/anatomy@1.21.4
+  - @zag-js/core@1.21.4
+  - @zag-js/types@1.21.4
+  - @zag-js/utils@1.21.4
+  - @zag-js/dom-query@1.21.4
+
+## 1.21.3
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.21.3
+  - @zag-js/core@1.21.3
+  - @zag-js/types@1.21.3
+  - @zag-js/collection@1.21.3
+  - @zag-js/utils@1.21.3
+  - @zag-js/dom-query@1.21.3
+
+## 1.21.2
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.21.2
+  - @zag-js/core@1.21.2
+  - @zag-js/types@1.21.2
+  - @zag-js/collection@1.21.2
+  - @zag-js/utils@1.21.2
+  - @zag-js/dom-query@1.21.2
+
+## 1.21.1
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.21.1
+  - @zag-js/core@1.21.1
+  - @zag-js/types@1.21.1
+  - @zag-js/collection@1.21.1
+  - @zag-js/utils@1.21.1
+  - @zag-js/dom-query@1.21.1
+
+## 1.21.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.21.0
+  - @zag-js/core@1.21.0
+  - @zag-js/types@1.21.0
+  - @zag-js/collection@1.21.0
+  - @zag-js/utils@1.21.0
+  - @zag-js/dom-query@1.21.0
+
+## 1.20.1
+
+### Patch Changes
+
+- [`c4061c8`](https://github.com/chakra-ui/zag/commit/c4061c8b4f0eaec9d51ff0a4846b2efad01fe4dd) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fixed issue where tree view doesn't scroll into view when content
+  overflows.
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.20.1
+  - @zag-js/core@1.20.1
+  - @zag-js/types@1.20.1
+  - @zag-js/collection@1.20.1
+  - @zag-js/utils@1.20.1
+  - @zag-js/dom-query@1.20.1
+
+## 1.20.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.20.0
+  - @zag-js/core@1.20.0
+  - @zag-js/types@1.20.0
+  - @zag-js/collection@1.20.0
+  - @zag-js/utils@1.20.0
+  - @zag-js/dom-query@1.20.0
+
+## 1.19.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.19.0
+  - @zag-js/core@1.19.0
+  - @zag-js/types@1.19.0
+  - @zag-js/collection@1.19.0
+  - @zag-js/utils@1.19.0
+  - @zag-js/dom-query@1.19.0
+
+## 1.18.5
+
+### Patch Changes
+
+- [`1b13205`](https://github.com/chakra-ui/zag/commit/1b1320589e8956afe7823aca3075f64574d7f8ad) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix issue where `onExpandedChange`, `onSelectionChange` and
+  `onFocusChange` doesn't infer the tree node types
+
+- [`59a7bfb`](https://github.com/chakra-ui/zag/commit/59a7bfb7215b4c9d13d11487f50ad852cd8347a9) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix issue destructuring returned api could throw an ESLint
+  `unbound-method` warning
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.18.5
+  - @zag-js/core@1.18.5
+  - @zag-js/types@1.18.5
+  - @zag-js/collection@1.18.5
+  - @zag-js/utils@1.18.5
+  - @zag-js/dom-query@1.18.5
+
+## 1.18.4
+
+### Patch Changes
+
+- Updated dependencies [[`8d0179b`](https://github.com/chakra-ui/zag/commit/8d0179b282dc6bedbd7d782192c82df872bf5697)]:
+  - @zag-js/collection@1.18.4
+  - @zag-js/anatomy@1.18.4
+  - @zag-js/core@1.18.4
+  - @zag-js/types@1.18.4
+  - @zag-js/utils@1.18.4
+  - @zag-js/dom-query@1.18.4
+
+## 1.18.3
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.18.3
+  - @zag-js/core@1.18.3
+  - @zag-js/types@1.18.3
+  - @zag-js/collection@1.18.3
+  - @zag-js/utils@1.18.3
+  - @zag-js/dom-query@1.18.3
+
+## 1.18.2
+
+### Patch Changes
+
+- Updated dependencies [[`3b583f8`](https://github.com/chakra-ui/zag/commit/3b583f8e71dcf625d09d895f90e26e454b725cc5),
+  [`11843e6`](https://github.com/chakra-ui/zag/commit/11843e6adf62b906006890c8003b38da2850c8ee)]:
+  - @zag-js/collection@1.18.2
+  - @zag-js/utils@1.18.2
+  - @zag-js/core@1.18.2
+  - @zag-js/anatomy@1.18.2
+  - @zag-js/types@1.18.2
+  - @zag-js/dom-query@1.18.2
+
+## 1.18.1
+
+### Patch Changes
+
+- [`1da9046`](https://github.com/chakra-ui/zag/commit/1da90469c28d201f388cbdc1291034a5c1867060) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Expose `id` in the tree node state
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.18.1
+  - @zag-js/core@1.18.1
+  - @zag-js/types@1.18.1
+  - @zag-js/collection@1.18.1
+  - @zag-js/utils@1.18.1
+  - @zag-js/dom-query@1.18.1
+
+## 1.18.0
+
+### Patch Changes
+
+- [`6092c58`](https://github.com/chakra-ui/zag/commit/6092c58dd37289debb54360038d7b77a58bcdc0f) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Improve support for rendering tree items as links
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.18.0
+  - @zag-js/core@1.18.0
+  - @zag-js/types@1.18.0
+  - @zag-js/collection@1.18.0
+  - @zag-js/utils@1.18.0
+  - @zag-js/dom-query@1.18.0
+
+## 1.17.4
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.17.4
+  - @zag-js/core@1.17.4
+  - @zag-js/types@1.17.4
+  - @zag-js/collection@1.17.4
+  - @zag-js/utils@1.17.4
+  - @zag-js/dom-query@1.17.4
+
+## 1.17.3
+
+### Patch Changes
+
+- [`bc70411`](https://github.com/chakra-ui/zag/commit/bc7041187e5b8dc950c7e6b57aadc1e50b8a3850) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix tree traversal for querying last node.
+
+- Updated dependencies [[`bc70411`](https://github.com/chakra-ui/zag/commit/bc7041187e5b8dc950c7e6b57aadc1e50b8a3850)]:
+  - @zag-js/collection@1.17.3
+  - @zag-js/anatomy@1.17.3
+  - @zag-js/core@1.17.3
+  - @zag-js/types@1.17.3
+  - @zag-js/utils@1.17.3
+  - @zag-js/dom-query@1.17.3
+
+## 1.17.2
+
+### Patch Changes
+
+- [`2ce6e5c`](https://github.com/chakra-ui/zag/commit/2ce6e5c2296d07c16220eb85fbd720a5b33e1f48) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Expose node details in `onExpandChange`, `onSelectionChange` and
+  `onFocusChange`
+
+- Updated dependencies [[`2ce6e5c`](https://github.com/chakra-ui/zag/commit/2ce6e5c2296d07c16220eb85fbd720a5b33e1f48)]:
+  - @zag-js/collection@1.17.2
+  - @zag-js/anatomy@1.17.2
+  - @zag-js/core@1.17.2
+  - @zag-js/types@1.17.2
+  - @zag-js/utils@1.17.2
+  - @zag-js/dom-query@1.17.2
+
 ## 1.17.1
 
 ### Patch Changes

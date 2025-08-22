@@ -140,4 +140,24 @@ test.describe("number input", () => {
     await I.mouseup()
     await I.seeInputHasValue("10")
   })
+
+  test("should allow negative integer values", async () => {
+    await I.type("-12345")
+    await I.seeInputIsValid()
+  })
+
+  test("should allow positive integer values", async () => {
+    await I.type("12345")
+    await I.seeInputIsValid()
+  })
+
+  test("should allow positive values with decimal point", async () => {
+    await I.type("0.30")
+    await I.seeInputIsValid()
+  })
+
+  test("should allow negative values with decimal point", async () => {
+    await I.type("-0.30")
+    await I.seeInputIsValid()
+  })
 })

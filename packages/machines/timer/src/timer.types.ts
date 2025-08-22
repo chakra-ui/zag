@@ -11,7 +11,7 @@ export interface Time<T = number> {
 
 export type TimePart = keyof Time
 
-export type TimerAction = "start" | "pause" | "resume" | "reset"
+export type TimerAction = "start" | "pause" | "resume" | "reset" | "restart"
 
 export type ElementIds = Partial<{
   root: string
@@ -139,34 +139,34 @@ export interface TimerApi<T extends PropTypes = PropTypes> {
   /**
    * Function to start the timer.
    */
-  start(): void
+  start: VoidFunction
   /**
    * Function to pause the timer.
    */
-  pause(): void
+  pause: VoidFunction
   /**
    * Function to resume the timer.
    */
-  resume(): void
+  resume: VoidFunction
   /**
    * Function to reset the timer.
    */
-  reset(): void
+  reset: VoidFunction
   /**
    * Function to restart the timer.
    */
-  restart(): void
+  restart: VoidFunction
   /**
    * The progress percentage of the timer.
    */
   progressPercent: number
 
-  getRootProps(): T["element"]
-  getAreaProps(): T["element"]
-  getControlProps(): T["element"]
-  getItemProps(props: ItemProps): T["element"]
-  getItemValueProps(props: ItemProps): T["element"]
-  getItemLabelProps(props: ItemProps): T["element"]
-  getSeparatorProps(): T["element"]
-  getActionTriggerProps(props: ActionTriggerProps): T["button"]
+  getRootProps: () => T["element"]
+  getAreaProps: () => T["element"]
+  getControlProps: () => T["element"]
+  getItemProps: (props: ItemProps) => T["element"]
+  getItemValueProps: (props: ItemProps) => T["element"]
+  getItemLabelProps: (props: ItemProps) => T["element"]
+  getSeparatorProps: () => T["element"]
+  getActionTriggerProps: (props: ActionTriggerProps) => T["button"]
 }

@@ -56,6 +56,9 @@ export function useMachine<T extends MachineSchema>(
     getRefs() {
       return refs as any
     },
+    getEvent() {
+      return getEvent()
+    },
   })
 
   const ctx: BindableContext<T> = {
@@ -241,8 +244,6 @@ export function useMachine<T extends MachineSchema>(
     previousEventRef.current = eventRef.current
     eventRef.current = event
 
-    debug("send", event)
-
     let currentState = state.get()
 
     const transitions =
@@ -254,11 +255,11 @@ export function useMachine<T extends MachineSchema>(
     const transition = choose(transitions)
     if (!transition) return
 
-    debug("transition", transition)
-
     // save current transition
     transitionRef.current = transition
     const target = transition.target ?? currentState
+
+    debug("transition", event.type, transition.target || currentState, `(${transition.actions})`)
 
     const changed = target !== currentState
     if (changed) {

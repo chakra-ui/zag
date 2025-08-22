@@ -23,7 +23,6 @@ export default function Page() {
   return (
     <>
       <main class="checkbox">
-        <pre>{JSON.stringify(service.prop("id"), null, 2)}</pre>
         <form
           onChange={(e) => {
             const result = serialize(e.currentTarget, { hash: true })
@@ -31,14 +30,12 @@ export default function Page() {
           }}
         >
           <fieldset>
-            <fieldset>
-              <label {...api().getRootProps()}>
-                <div {...api().getControlProps()} />
-                <span {...api().getLabelProps()}>Input {api().checked ? "Checked" : "Unchecked"}</span>
-                <input {...api().getHiddenInputProps()} data-testid="hidden-input" />
-                <div {...api().getIndicatorProps()}>Indicator</div>
-              </label>
-            </fieldset>
+            <label {...api().getRootProps()}>
+              <div {...api().getControlProps()} />
+              <span {...api().getLabelProps()}>Input {api().checked ? "Checked" : "Unchecked"}</span>
+              <input {...api().getHiddenInputProps()} data-testid="hidden-input" />
+              <div {...api().getIndicatorProps()}>Indicator</div>
+            </label>
 
             <div>
               <button type="button" disabled={api().checked} onClick={() => api().setChecked(true)}>

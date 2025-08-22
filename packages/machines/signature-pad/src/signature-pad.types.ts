@@ -28,7 +28,7 @@ export type DataUrlType = "image/png" | "image/jpeg" | "image/svg+xml"
 
 export interface DrawEndDetails {
   paths: string[]
-  getDataUrl(type: DataUrlType, quality?: number): Promise<string>
+  getDataUrl: (type: DataUrlType, quality?: number) => Promise<string>
 }
 
 export interface DataUrlOptions {
@@ -92,6 +92,15 @@ export interface SignaturePadProps extends DirectionProperty, CommonProperties {
    * The name of the signature pad. Useful for form submission.
    */
   name?: string | undefined
+  /**
+   * The default paths of the signature pad.
+   * Use when you don't need to control the paths of the signature pad.
+   */
+  defaultPaths?: string[] | undefined
+  /**
+   * The controlled paths of the signature pad.
+   */
+  paths?: string[] | undefined
 }
 
 type PropsWithDefault = "drawing" | "translations"
@@ -163,18 +172,18 @@ export interface SignaturePadApi<T extends PropTypes = PropTypes> {
   /**
    * Returns the data URL of the signature pad.
    */
-  getDataUrl(type: DataUrlType, quality?: number): Promise<string>
+  getDataUrl: (type: DataUrlType, quality?: number) => Promise<string>
   /**
    * Clears the signature pad.
    */
-  clear(): void
+  clear: VoidFunction
 
-  getLabelProps(): T["element"]
-  getRootProps(): T["element"]
-  getControlProps(): T["element"]
-  getSegmentProps(): T["svg"]
-  getSegmentPathProps(props: SegmentPathProps): T["path"]
-  getHiddenInputProps(props: HiddenInputProps): T["input"]
-  getGuideProps(): T["element"]
-  getClearTriggerProps(): T["element"]
+  getLabelProps: () => T["element"]
+  getRootProps: () => T["element"]
+  getControlProps: () => T["element"]
+  getSegmentProps: () => T["svg"]
+  getSegmentPathProps: (props: SegmentPathProps) => T["path"]
+  getHiddenInputProps: (props: HiddenInputProps) => T["input"]
+  getGuideProps: () => T["element"]
+  getClearTriggerProps: () => T["element"]
 }

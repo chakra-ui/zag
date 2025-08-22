@@ -36,7 +36,7 @@ export type ElementIds = Partial<{
   content: string
   clearTrigger: string
   control: string
-  column(unit: TimeUnit): string
+  column: (unit: TimeUnit) => string
 }>
 
 export interface TimePickerProps extends DirectionProperty, CommonProperties {
@@ -224,54 +224,50 @@ export interface TimePickerApi<T extends PropTypes = PropTypes> {
   /**
    * Function to reposition the time picker content
    */
-  reposition(options?: PositioningOptions): void
+  reposition: (options?: PositioningOptions) => void
   /**
    * Function to open the time picker
    */
-  setOpen(nextOpen: boolean): void
+  setOpen: (nextOpen: boolean) => void
   /**
    * Function to clear the selected time
    */
-  clearValue(): void
+  clearValue: VoidFunction
   /**
    * Function to set the selected time
    */
-  setValue(value: string | Time): void
+  setValue: (value: string | Time) => void
   /**
    * Function to set the focused time unit
    */
-  setUnitValue(unit: "period", value: TimePeriod): void
-  /**
-   * Function to set the focused time unit
-   */
-  setUnitValue(unit: TimeUnit, value: number): void
+  setUnitValue: (unit: TimeUnit, value: number) => void
   /**
    * Get the available hours that will be displayed in the time picker
    */
-  getHours(): Cell[]
+  getHours: () => Cell[]
   /**
    * Get the available minutes that will be displayed in the time picker
    */
-  getMinutes(): Cell[]
+  getMinutes: () => Cell[]
   /**
    * Get the available seconds that will be displayed in the time picker
    */
-  getSeconds(): Cell[]
+  getSeconds: () => Cell[]
 
-  getRootProps(): T["element"]
-  getLabelProps(): T["element"]
-  getControlProps(): T["element"]
-  getInputProps(): T["element"]
-  getTriggerProps(): T["element"]
-  getSpacerProps(): T["element"]
-  getClearTriggerProps(): T["element"]
-  getPositionerProps(): T["element"]
-  getContentProps(): T["element"]
-  getColumnProps(options: ColumnProps): T["element"]
-  getHourCellProps(options: CellProps): T["element"]
-  getMinuteCellProps(options: CellProps): T["element"]
-  getSecondCellProps(options: CellProps): T["element"]
-  getPeriodCellProps(options: PeriodCellProps): T["element"]
+  getRootProps: () => T["element"]
+  getLabelProps: () => T["element"]
+  getControlProps: () => T["element"]
+  getInputProps: () => T["element"]
+  getTriggerProps: () => T["element"]
+  getSpacerProps: () => T["element"]
+  getClearTriggerProps: () => T["element"]
+  getPositionerProps: () => T["element"]
+  getContentProps: () => T["element"]
+  getColumnProps: (props: ColumnProps) => T["element"]
+  getHourCellProps: (props: CellProps) => T["element"]
+  getMinuteCellProps: (props: CellProps) => T["element"]
+  getSecondCellProps: (props: CellProps) => T["element"]
+  getPeriodCellProps: (props: PeriodCellProps) => T["element"]
 }
 
 /* -----------------------------------------------------------------------------

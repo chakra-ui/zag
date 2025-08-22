@@ -1,5 +1,51 @@
 # @zag-js/utils
 
+## 1.21.7
+
+## 1.21.6
+
+## 1.21.5
+
+## 1.21.4
+
+## 1.21.3
+
+## 1.21.2
+
+## 1.21.1
+
+## 1.21.0
+
+## 1.20.1
+
+## 1.20.0
+
+## 1.19.0
+
+## 1.18.5
+
+## 1.18.4
+
+## 1.18.3
+
+## 1.18.2
+
+### Patch Changes
+
+- [`11843e6`](https://github.com/chakra-ui/zag/commit/11843e6adf62b906006890c8003b38da2850c8ee) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix issue where toast title or description could not accept React
+  or Vue elements.
+
+## 1.18.1
+
+## 1.18.0
+
+## 1.17.4
+
+## 1.17.3
+
+## 1.17.2
+
 ## 1.17.1
 
 ## 1.17.0

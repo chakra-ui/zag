@@ -4,6 +4,10 @@ import { HSBColor } from "./hsb-color"
 import { HSLColor } from "./hsl-color"
 import type { ColorChannel, ColorChannelRange, ColorFormat, ColorStringFormat, ColorType } from "./types"
 
+const HEX_COLOR_REGEX = /^#[\da-f]+$/i
+const RGB_COLOR_REGEX = /^rgba?\((.*)\)$/
+const HEX_STARTING_REGEX = /[^#]/gi
+
 export class RGBColor extends Color {
   constructor(
     private red: number,
@@ -18,8 +22,8 @@ export class RGBColor extends Color {
     let colors: (number | undefined)[] = []
 
     // matching #rgb, #rgba, #rrggbb, #rrggbbaa
-    if (/^#[\da-f]+$/i.test(value) && [4, 5, 7, 9].includes(value.length)) {
-      const values = (value.length < 6 ? value.replace(/[^#]/gi, "$&$&") : value).slice(1).split("")
+    if (HEX_COLOR_REGEX.test(value) && [4, 5, 7, 9].includes(value.length)) {
+      const values = (value.length < 6 ? value.replace(HEX_STARTING_REGEX, "$&$&") : value).slice(1).split("")
       while (values.length > 0) {
         colors.push(parseInt(values.splice(0, 2).join(""), 16))
       }
@@ -27,7 +31,7 @@ export class RGBColor extends Color {
     }
 
     // matching rgb(rrr, ggg, bbb), rgba(rrr, ggg, bbb, 0.a)
-    const match = value.match(/^rgba?\((.*)\)$/)
+    const match = value.match(RGB_COLOR_REGEX)
 
     if (match?.[1]) {
       colors = match[1]

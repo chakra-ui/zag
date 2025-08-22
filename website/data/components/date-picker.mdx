@@ -9,8 +9,9 @@ package: "@zag-js/date-picker"
 A datepicker allows users to enter a date either through text input, or by
 choosing a date from the calendar.
 
-> **Good to know**: The date picker machine is built around the
-> [ISO 8601 date format](https://www.iso.org/iso-8601-date-and-time-format.html)
+> **Good to know**: The date picker machine is built on top of the
+> [`@internationalized/date`](https://react-spectrum.adobe.com/internationalized/date/CalendarDate.html)
+> library.
 
 <Resources pkg="@zag-js/date-picker" />
 
@@ -44,7 +45,7 @@ how we name its parts.
 
 First, import the date picker package into your project
 
-```jsx
+```tsx
 import * as datepicker from "@zag-js/date-picker"
 ```
 
@@ -53,10 +54,10 @@ The date picker package exports these key functions:
 - `machine` — The state machine logic for the date-picker widget.
 - `connect` — The function that translates the machine's state to JSX attributes
   and event handlers.
-- `parse` - The function that parses the date string into a date object. This
-  function uses
-  [`@internationalized/date`](https://react-spectrum.adobe.com/internationalized/date/CalendarDate.html)
-  under the hood.
+- `parse` - The function that parses the date string into a date object.
+  Requires passing the
+  [ISO 8601 date format](https://www.iso.org/iso-8601-date-and-time-format.html)
+  as the first argument.
 
 > You'll also need to provide a unique `id` to the `useMachine` hook. This is
 > used to ensure that every part has a unique identifier.
@@ -71,7 +72,7 @@ date-picker machine in your project 🔥
 To set the initial value that is rendered by the date picker, set the `value`
 property in the machine context.
 
-```jsx
+```tsx
 const service = useMachine(datepicker.machine, {
   defaultValue: [datepicker.parse("2022-01-01")],
 })
@@ -79,10 +80,23 @@ const service = useMachine(datepicker.machine, {
 
 ### Controlling the selected date
 
-Use the `api.setValue` method to control the selected date in the DatePicker
-component.
+Use the `value` and `onValueChange` properties to programmatically control the
+selected date.
 
-```jsx
+```tsx
+const service = useMachine(datepicker.machine, {
+  value: [datepicker.parse("2022-01-01")],
+  onValueChange(details) {
+    // details => { value: DateValue[], valueAsString: string[], view: string }
+    console.log("selected date:", details.valueAsString)
+  },
+})
+```
+
+Alternatively, you can also use the `api.setValue` method to control the
+selected date.
+
+```tsx
 // parse the date string into a date object
 const nextValue = datepicker.parse("2022-01-01")
 
@@ -90,15 +104,24 @@ const nextValue = datepicker.parse("2022-01-01")
 api.setValue(nextValue)
 ```
 
-> Alternatively, you can also use the `value` and `onValueChange` callbacks to
-> programmatically control the selected date.
-
 ### Controlling the open state
 
-To manage the open state of the datepicker's dialog, we recommended using
-`api.setOpen` method.
+Use the `open` and `onOpenChange` callbacks to programmatically control the open
+state of the date picker.
 
-```jsx
+```tsx
+const service = useMachine(datepicker.machine, {
+  open: true,
+  onOpenChange(open) {
+    console.log("open state changed to:", open)
+  },
+})
+```
+
+Alternatively, you can also use the `api.setOpen` method to manage the open
+state of the datepicker's dialog.
+
+```tsx
 // open the date picker
 api.setOpen(true)
 
@@ -106,15 +129,12 @@ api.setOpen(true)
 api.setOpen(false)
 ```
 
-> Alternatively, you can also use the `open` and `onOpenChange` callbacks to
-> programmatically control the open state.
-
 ### Setting the min and max dates
 
 To constrain the date range that can be selected by the user, set the `min` and
 `max` properties in the machine context.
 
-```jsx
+```tsx
 const service = useMachine(datepicker.machine, {
   min: datepicker.parse("2022-01-01"),
   max: datepicker.parse("2022-12-31"),
@@ -130,7 +150,7 @@ Set the `startOfWeek` property in the machine context to change the start of the
 week. The property accepts a number from `0` to `6`, where `0` is Sunday and `6`
 is Saturday.
 
-```jsx
+```tsx
 const service = useMachine(datepicker.machine, {
   startOfWeek: 1, // Monday
 })
@@ -141,7 +161,7 @@ const service = useMachine(datepicker.machine, {
 To disable the date picker, set the `disabled` property in the machine context
 to `true`.
 
-```jsx
+```tsx
 const service = useMachine(datepicker.machine, {
   disabled: true,
 })
@@ -152,7 +172,7 @@ const service = useMachine(datepicker.machine, {
 To render the month and year pickers, use the `api.getMonthSelectProps` and
 `api.getYearSelectProps` prop getters.
 
-```jsx
+```tsx
 <div>
   <select {...api.getMonthSelectProps()}>
     {api.getMonths().map((month, i) => (
@@ -178,7 +198,7 @@ To mark specific dates as unavailable, set the `isDateUnavailable` function in
 the machine context. This function should return `true` for dates that are
 unavailable.
 
-```jsx
+```tsx
 const service = useMachine(datepicker.machine, {
   isDateUnavailable: (date, locale) => {
     // mark weekends as unavailable
@@ -191,7 +211,7 @@ You can also leverage the numerous helpers from
 [`@internationalized/date`](https://react-spectrum.adobe.com/internationalized/date/CalendarDate.html)
 to create more complex date availability rules.
 
-```jsx
+```tsx
 import { isWeekend } from "@internationalized/date"
 
 const service = useMachine(datepicker.machine, {
@@ -205,12 +225,12 @@ const service = useMachine(datepicker.machine, {
 ### Setting the calendar starting view
 
 The calendar view is set to `day` by default. To change the starting view of the
-calendar, set the `view` property in the machine context to either `day`,
+calendar, set the `defaultView` property in the machine context to either `day`,
 `month`, or `year`.
 
-```jsx
+```tsx
 const service = useMachine(datepicker.machine, {
-  view: "month",
+  defaultView: "month",
 })
 ```
 
@@ -219,7 +239,7 @@ const service = useMachine(datepicker.machine, {
 Set the `readOnly` property in the machine context to `true` to make the date
 picker read-only. This means that users can't change the selected date.
 
-```jsx
+```tsx
 const service = useMachine(datepicker.machine, {
   readOnly: true,
 })
@@ -230,24 +250,23 @@ const service = useMachine(datepicker.machine, {
 The datepicker's focused date is set to either the first selected date or
 today's date by default.
 
-To change the focused date, set the `focusedDate` property in the machine
-context.
+To change the focused date, set the `defaultFocusedValue` property in the
+machine context.
 
-```jsx
+```tsx
 const service = useMachine(datepicker.machine, {
-  focusedDate: datepicker.parse("2022-01-01"),
+  defaultFocusedValue: datepicker.parse("2022-01-01"),
 })
 ```
 
 ### Rendering the calendar inline
 
-To render the calendar inline, we recommended setting the `open` property to
-`true` and `closeOnSelect` to `false`.
+To render the calendar inline, we recommended setting the `inline` property to
+`true`.
 
-```jsx
+```tsx
 const service = useMachine(datepicker.machine, {
-  open: true,
-  closeOnSelect: false,
+  inline: true,
 })
 ```
 
@@ -256,7 +275,7 @@ const service = useMachine(datepicker.machine, {
 To use the date picker within a form, set the `name` property in the machine
 context. This property is used to identify the date picker in the form data.
 
-```jsx
+```tsx
 const service = useMachine(datepicker.machine, {
   name: "date",
 })
@@ -271,7 +290,7 @@ between different sized months (e.g., February vs. March).
 To ensure the calendar renders the maximum number of weeks (6), you can set the
 `fixedWeeks` prop to `true`.
 
-```jsx
+```tsx
 const service = useMachine(datepicker.machine, {
   fixedWeeks: true,
 })
@@ -282,7 +301,7 @@ const service = useMachine(datepicker.machine, {
 To listen to date changes, use the `onValueChange` callback in the machine
 context.
 
-```jsx
+```tsx
 const service = useMachine(datepicker.machine, {
   onValueChange(details) {
     // details => { value: DateValue[], valueAsString: string[], view: string }
@@ -296,7 +315,7 @@ const service = useMachine(datepicker.machine, {
 When the calendar view changes by click on the view controls, the `onViewChange`
 callback is invoked.
 
-```jsx
+```tsx
 const service = useMachine(datepicker.machine, {
   onViewChange(details) {
     // details => { view: string }

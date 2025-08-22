@@ -221,8 +221,13 @@ export const machine = createMachine<TourSchema>({
         node?.scrollIntoView({ behavior: "instant", block: "center", inline: "center" })
       },
       setStep(params) {
-        const { event } = params
-        setStep(params, event.value)
+        const { event, context } = params
+        const steps = context.get("steps")
+
+        let step: string | number | undefined = event.value
+        if (step == null) return
+
+        setStep(params, isString(step) ? findStepIndex(steps, step) : step)
       },
       clearStep(params) {
         const { context } = params

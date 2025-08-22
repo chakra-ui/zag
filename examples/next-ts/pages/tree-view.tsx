@@ -125,7 +125,7 @@ export default function Page() {
       </main>
 
       <Toolbar controls={controls.ui}>
-        <StateVisualizer state={service} omit={["collection"]} />
+        <StateVisualizer state={service} />
       </Toolbar>
     </>
   )

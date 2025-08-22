@@ -100,17 +100,17 @@ export interface HoverCardApi<T extends PropTypes = PropTypes> {
   /**
    * Function to open the hover card
    */
-  setOpen(open: boolean): void
+  setOpen: (open: boolean) => void
   /**
    * Function to reposition the popover
    */
-  reposition(options?: Partial<PositioningOptions>): void
+  reposition: (options?: Partial<PositioningOptions>) => void
 
-  getArrowProps(): T["element"]
-  getArrowTipProps(): T["element"]
-  getTriggerProps(): T["element"]
-  getPositionerProps(): T["element"]
-  getContentProps(): T["element"]
+  getArrowProps: () => T["element"]
+  getArrowTipProps: () => T["element"]
+  getTriggerProps: () => T["element"]
+  getPositionerProps: () => T["element"]
+  getContentProps: () => T["element"]
 }
 
 /* -----------------------------------------------------------------------------

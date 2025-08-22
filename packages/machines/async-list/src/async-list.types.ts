@@ -2,16 +2,16 @@ import type { EventObject, Service, Machine } from "@zag-js/core"
 
 export type SortDirection = "ascending" | "descending"
 
-export interface SortDescriptor {
-  column: string
+export interface SortDescriptor<T> {
+  column: keyof T
   direction: SortDirection
 }
 
-export interface LoadDetails<C> {
+export interface LoadDetails<T, C> {
   signal: AbortSignal | undefined
   filterText: string
   cursor?: C | undefined
-  sortDescriptor?: SortDescriptor | undefined
+  sortDescriptor?: SortDescriptor<T> | undefined
 }
 
 export interface LoadResult<T, C> {
@@ -21,7 +21,7 @@ export interface LoadResult<T, C> {
 
 export interface SortDetails<T> {
   items: T[]
-  descriptor: SortDescriptor
+  descriptor: SortDescriptor<T>
 }
 
 export type LoadDependency = string | number | boolean | undefined | null
@@ -30,7 +30,7 @@ export interface AsyncListProps<T, C> {
   /**
    * The function to call when the list is loaded
    */
-  load: (args: LoadDetails<C>) => Promise<LoadResult<T, C>>
+  load: (args: LoadDetails<T, C>) => Promise<LoadResult<T, C>>
   /**
    * The function to call when the list is sorted
    */
@@ -42,7 +42,7 @@ export interface AsyncListProps<T, C> {
   /**
    * The initial sort descriptor to use
    */
-  initialSortDescriptor?: SortDescriptor | undefined
+  initialSortDescriptor?: SortDescriptor<T> | undefined
   /**
    * The initial filter text to use
    */
@@ -72,7 +72,7 @@ export interface AsyncListSchema<T, C> {
     items: T[]
     filterText: string
     cursor?: C | undefined
-    sortDescriptor?: SortDescriptor | undefined
+    sortDescriptor?: SortDescriptor<T> | undefined
     error?: any | undefined
   }
   refs: {
@@ -105,7 +105,7 @@ export interface AsyncListApi<T, C> {
   /**
    * The sort descriptor.
    */
-  sortDescriptor: SortDescriptor | undefined
+  sortDescriptor: SortDescriptor<T> | undefined
   /**
    * Whether the list is loading.
    */
@@ -117,21 +117,21 @@ export interface AsyncListApi<T, C> {
   /**
    * Function to abort the current fetch.
    */
-  abort(): void
+  abort: VoidFunction
   /**
    * Function to reload the list
    */
-  reload(): void
+  reload: VoidFunction
   /**
    * Function to load more items
    */
-  loadMore(): void
+  loadMore: VoidFunction
   /**
    * Function to sort the list
    */
-  sort(sortDescriptor: SortDescriptor): void
+  sort: (sortDescriptor: SortDescriptor<T>) => void
   /**
    * Function to set the filter text
    */
-  setFilterText(filterText: string): void
+  setFilterText: (filterText: string) => void
 }

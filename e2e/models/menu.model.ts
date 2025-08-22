@@ -47,8 +47,8 @@ export class MenuModel extends Model {
     await this.trigger.click()
   }
 
-  clickContextTrigger = async () => {
-    await this.contextTrigger.click({ button: "right" })
+  clickContextTrigger = async (options: { button?: "left" | "right" } = {}) => {
+    await this.contextTrigger.click(options)
   }
 
   clickItem = async (text: string) => {
@@ -97,5 +97,11 @@ export class MenuModel extends Model {
   seeItemInViewport = async (text: string) => {
     const item = this.getItem(text)
     expect(await isInViewport(this.content, item)).toBe(true)
+  }
+
+  seeMenuIsPositioned = async () => {
+    const positioner = this.page.locator("[data-scope=menu][data-part=positioner]")
+    await expect(positioner).toHaveCSS("--x", /\d+px/)
+    await expect(positioner).toHaveCSS("--y", /\d+px/)
   }
 }

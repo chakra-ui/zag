@@ -23,6 +23,7 @@ export class ListCollection<T extends CollectionItem = CollectionItem> {
    * The items in the collection
    */
   items: T[]
+  private indexMap: Map<string, number> | null = null
 
   constructor(private options: CollectionOptions<T>) {
     this.items = [...options.items] as T[]
@@ -53,9 +54,12 @@ export class ListCollection<T extends CollectionItem = CollectionItem> {
    * Returns all the values in the collection
    */
   getValues = (items = this.items) => {
-    return Array.from(items)
-      .map((item) => this.getItemValue(item))
-      .filter(Boolean) as string[]
+    const values: string[] = []
+    for (const item of items) {
+      const value = this.getItemValue(item)
+      if (value != null) values.push(value)
+    }
+    return values
   }
 
   /**
@@ -64,16 +68,19 @@ export class ListCollection<T extends CollectionItem = CollectionItem> {
   find = (value: string | null | undefined): T | null => {
     if (value == null) return null
     const index = this.indexOf(value)
-    return index != null ? this.at(index) : null
+    return index !== -1 ? this.at(index) : null
   }
 
   /**
    * Get the items based on its values
    */
   findMany = (values: string[]): T[] => {
-    return Array.from(values)
-      .map((value) => this.find(value))
-      .filter((item) => item != null)
+    const result: T[] = []
+    for (const value of values) {
+      const item = this.find(value)
+      if (item != null) result.push(item)
+    }
+    return result
   }
 
   /**
@@ -148,10 +155,12 @@ export class ListCollection<T extends CollectionItem = CollectionItem> {
    * Convert an array of items to a string
    */
   stringifyItems = (items: T[], separator = ", "): string => {
-    return Array.from(items)
-      .map((item) => this.stringifyItem(item))
-      .filter(Boolean)
-      .join(separator)
+    const strs: string[] = []
+    for (const item of items) {
+      const str = this.stringifyItem(item)
+      if (str != null) strs.push(str)
+    }
+    return strs.join(separator)
   }
 
   /**
@@ -274,18 +283,23 @@ export class ListCollection<T extends CollectionItem = CollectionItem> {
       return this.items.findIndex((item) => this.getItemValue(item) === value)
     }
 
-    // When grouping is used, calculate index based on grouped structure
-    let idx = 0
-    const groups = this.group()
-
-    for (const [, items] of groups) {
-      for (const item of items) {
-        if (this.getItemValue(item) === value) return idx
-        idx++
+    // Use cache for grouped lookups
+    if (!this.indexMap) {
+      this.indexMap = new Map()
+      let idx = 0
+      const groups = this.group()
+      for (const [, items] of groups) {
+        for (const item of items) {
+          const itemValue = this.getItemValue(item)
+          if (itemValue != null) {
+            this.indexMap.set(itemValue, idx)
+          }
+          idx++
+        }
       }
     }
 
-    return -1
+    return this.indexMap.get(value) ?? -1
   }
 
   private getByText = (text: string, current: string | null): T | undefined => {
@@ -341,8 +355,20 @@ export class ListCollection<T extends CollectionItem = CollectionItem> {
    * Update an item in the collection
    */
   update = (value: string, item: T) => {
-    let index = this.items.findIndex((item) => this.getItemValue(item) === value)
+    let index = this.indexOf(value)
     if (index === -1) return this
+    return this.copy([...this.items.slice(0, index), item, ...this.items.slice(index + 1)])
+  }
+
+  /**
+   * Update an item in the collection if it exists, otherwise append it
+   */
+  upsert = (value: string, item: T, mode: "append" | "prepend" = "append") => {
+    let index = this.indexOf(value)
+    if (index === -1) {
+      const fn = mode === "append" ? this.append : this.prepend
+      return fn(item)
+    }
     return this.copy([...this.items.slice(0, index), item, ...this.items.slice(index + 1)])
   }
 
@@ -394,8 +420,8 @@ export class ListCollection<T extends CollectionItem = CollectionItem> {
   /**
    * Filter the collection
    */
-  filter = (fn: (itemString: string, index: number) => boolean) => {
-    const filteredItems = this.items.filter((item, index) => fn(this.stringifyItem(item)!, index))
+  filter = (fn: (itemString: string, index: number, item: T) => boolean) => {
+    const filteredItems = this.items.filter((item, index) => fn(this.stringifyItem(item)!, index, item))
     return this.copy(filteredItems)
   }
 

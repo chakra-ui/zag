@@ -11,27 +11,34 @@ export function isEventWithFiles(event: Pick<DragEvent, "dataTransfer" | "target
   })
 }
 
-export function isFilesWithinRange(ctx: Params<FileUploadSchema>, incomingCount: number) {
-  const { context, prop, computed } = ctx
+export function isFilesWithinRange(ctx: Params<FileUploadSchema>, incomingCount: number, currentAcceptedFiles: File[]) {
+  const { prop, computed } = ctx
   if (!computed("multiple") && incomingCount > 1) return false
-  if (!computed("multiple") && incomingCount + context.get("acceptedFiles").length === 2) return true
-  if (incomingCount + context.get("acceptedFiles").length > prop("maxFiles")) return false
+  if (!computed("multiple") && incomingCount + currentAcceptedFiles.length === 2) return true
+  if (incomingCount + currentAcceptedFiles.length > prop("maxFiles")) return false
   return true
 }
 
-export function getEventFiles(ctx: Params<FileUploadSchema>, files: File[]) {
-  const { context, prop, computed } = ctx
+export function getEventFiles(
+  ctx: Params<FileUploadSchema>,
+  files: File[],
+  currentAcceptedFiles: File[] = [],
+  currentRejectedFiles: FileRejection[] = [],
+) {
+  const { prop, computed } = ctx
   const acceptedFiles: File[] = []
   const rejectedFiles: FileRejection[] = []
+
+  const validateParams = {
+    acceptedFiles: currentAcceptedFiles,
+    rejectedFiles: currentRejectedFiles,
+  }
 
   files.forEach((file) => {
     const [accepted, acceptError] = isValidFileType(file, computed("acceptAttr"))
     const [sizeMatch, sizeError] = isValidFileSize(file, prop("minFileSize"), prop("maxFileSize"))
 
-    const validateErrors = prop("validate")?.(file, {
-      acceptedFiles: context.get("acceptedFiles"),
-      rejectedFiles: context.get("rejectedFiles"),
-    })
+    const validateErrors = prop("validate")?.(file, validateParams)
 
     const valid = validateErrors ? validateErrors.length === 0 : true
 
@@ -44,7 +51,7 @@ export function getEventFiles(ctx: Params<FileUploadSchema>, files: File[]) {
     }
   })
 
-  if (!isFilesWithinRange(ctx, acceptedFiles.length)) {
+  if (!isFilesWithinRange(ctx, acceptedFiles.length, currentAcceptedFiles)) {
     acceptedFiles.forEach((file) => {
       rejectedFiles.push({ file, errors: ["TOO_MANY_FILES"] })
     })

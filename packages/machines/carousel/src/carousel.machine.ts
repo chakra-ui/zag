@@ -77,7 +77,7 @@ export const machine = createMachine<CarouselSchema>({
     },
   },
 
-  watch({ track, action, context, prop }) {
+  watch({ track, action, context, prop, send }) {
     track([() => prop("slidesPerPage"), () => prop("slidesPerMove")], () => {
       action(["setSnapPoints"])
     })
@@ -86,6 +86,12 @@ export const machine = createMachine<CarouselSchema>({
     })
     track([() => prop("orientation")], () => {
       action(["setSnapPoints", "scrollToPage"])
+    })
+    track([() => prop("slideCount")], () => {
+      send({ type: "SNAP.REFRESH", src: "slide.count" })
+    })
+    track([() => !!prop("autoplay")], () => {
+      send({ type: prop("autoplay") ? "AUTOPLAY.START" : "AUTOPLAY.PAUSE", src: "autoplay.prop.change" })
     })
   },
 
@@ -221,7 +227,10 @@ export const machine = createMachine<CarouselSchema>({
     effects: {
       autoUpdateSlide({ computed, send }) {
         const id = setInterval(() => {
-          send({ type: "AUTOPLAY.TICK", src: "autoplay.interval" })
+          send({
+            type: computed("canScrollNext") ? "AUTOPLAY.TICK" : "AUTOPLAY.PAUSE",
+            src: "autoplay.interval",
+          })
         }, computed("autoplayInterval"))
         return () => clearInterval(id)
       },
@@ -494,7 +503,9 @@ function getPageSnapPoints(totalSlides: number | undefined, slidesPerMove: numbe
     return []
   }
 
-  for (let i = 0; i < totalSlides - 1; i += perMove) {
+  for (let i = 0; i < totalSlides; i += perMove) {
+    // Ensure we don't create a snap point that would go beyond the available slides
+    if (i + slidesPerPage > totalSlides) break
     snapPoints.push(i)
   }
   return snapPoints

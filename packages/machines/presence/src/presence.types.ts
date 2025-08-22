@@ -56,9 +56,9 @@ export interface PresenceApi {
   /**
    * Function to set the node (as early as possible)
    */
-  setNode(node: HTMLElement | null): void
+  setNode: (node: HTMLElement | null) => void
   /**
    * Function to programmatically unmount the node
    */
-  unmount(): void
+  unmount: VoidFunction
 }

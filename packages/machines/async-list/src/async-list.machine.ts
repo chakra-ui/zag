@@ -19,7 +19,7 @@ export const machine = createMachine<AsyncListSchema<any, any>>({
       filterText: bindable<string>(() => ({
         defaultValue: prop("initialFilterText") ?? "",
       })),
-      sortDescriptor: bindable<SortDescriptor | undefined>(() => ({
+      sortDescriptor: bindable<SortDescriptor<any> | undefined>(() => ({
         defaultValue: prop("initialSortDescriptor"),
       })),
       error: bindable<any>(() => ({

@@ -55,6 +55,7 @@ export const machine = createMachine<RadioGroupSchema>({
   refs() {
     return {
       indicatorCleanup: null,
+      focusVisibleValue: null,
     }
   },
 
@@ -130,8 +131,9 @@ export const machine = createMachine<RadioGroupSchema>({
       setActive({ context, event }) {
         context.set("activeValue", event.value)
       },
-      setFocused({ context, event }) {
+      setFocused({ context, event, refs }) {
         context.set("focusedValue", event.value)
+        refs.set("focusVisibleValue", event.focusVisible ? event.value : null)
       },
       syncInputElements({ context, scope }) {
         const inputs = dom.getInputEls(scope)

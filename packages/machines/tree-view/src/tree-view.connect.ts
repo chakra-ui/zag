@@ -4,12 +4,14 @@ import {
   getByTypeahead,
   getEventKey,
   getEventTarget,
+  isAnchorElement,
   isComposingEvent,
   isEditableElement,
+  isLeftClick,
   isModifierKey,
 } from "@zag-js/dom-query"
 import type { EventKeyMap, NormalizeProps, PropTypes } from "@zag-js/types"
-import { add, isEqual, uniq } from "@zag-js/utils"
+import { add, uniq } from "@zag-js/utils"
 import { parts } from "./tree-view.anatomy"
 import * as dom from "./tree-view.dom"
 import type { NodeProps, NodeState, TreeNode, TreeViewApi, TreeViewService } from "./tree-view.types"
@@ -33,12 +35,15 @@ export function connect<T extends PropTypes, V extends TreeNode = TreeNode>(
   function getNodeState(props: NodeProps): NodeState {
     const { node, indexPath } = props
     const value = collection.getNodeValue(node)
+    const firstNode = collection.getFirstNode()
+    const firstNodeValue = firstNode ? collection.getNodeValue(firstNode) : null
     return {
+      id: dom.getNodeId(scope, value),
       value,
       indexPath,
       valuePath: collection.getValuePath(indexPath),
       disabled: Boolean(node.disabled),
-      focused: focusedValue == null ? isEqual(indexPath, [0]) : focusedValue === value,
+      focused: focusedValue == null ? firstNodeValue == value : focusedValue === value,
       selected: selectedValue.includes(value),
       expanded: expandedValue.includes(value),
       loading: loadingStatus[value] === "loading",
@@ -194,11 +199,13 @@ export function connect<T extends PropTypes, V extends TreeNode = TreeNode>(
             },
             Enter(event) {
               if (node.dataset.disabled) return
-
-              const isLink = target?.closest("a[href]")
-              if (!isLink) event.preventDefault()
+              if (isAnchorElement(target) && isModifierKey(event)) return
 
               send({ type: isBranchNode ? "BRANCH_NODE.CLICK" : "NODE.CLICK", id: nodeId, src: "keyboard" })
+
+              if (!isAnchorElement(target)) {
+                event.preventDefault()
+              }
             },
             "*"(event) {
               if (node.dataset.disabled) return
@@ -231,39 +238,43 @@ export function connect<T extends PropTypes, V extends TreeNode = TreeNode>(
     getNodeState,
 
     getItemProps(props) {
-      const itemState = getNodeState(props)
+      const nodeState = getNodeState(props)
       return normalize.element({
         ...parts.item.attrs,
-        id: dom.getNodeId(scope, itemState.value),
+        id: nodeState.id,
         dir: prop("dir"),
         "data-ownedby": dom.getTreeId(scope),
         "data-path": props.indexPath.join("/"),
-        "data-value": itemState.value,
-        tabIndex: itemState.focused ? 0 : -1,
-        "data-focus": dataAttr(itemState.focused),
+        "data-value": nodeState.value,
+        tabIndex: nodeState.focused ? 0 : -1,
+        "data-focus": dataAttr(nodeState.focused),
         role: "treeitem",
-        "aria-current": itemState.selected ? "true" : undefined,
-        "aria-selected": itemState.disabled ? undefined : itemState.selected,
-        "data-selected": dataAttr(itemState.selected),
-        "aria-disabled": ariaAttr(itemState.disabled),
-        "data-disabled": dataAttr(itemState.disabled),
-        "aria-level": itemState.depth,
-        "data-depth": itemState.depth,
+        "aria-current": nodeState.selected ? "true" : undefined,
+        "aria-selected": nodeState.disabled ? undefined : nodeState.selected,
+        "data-selected": dataAttr(nodeState.selected),
+        "aria-disabled": ariaAttr(nodeState.disabled),
+        "data-disabled": dataAttr(nodeState.disabled),
+        "aria-level": nodeState.depth,
+        "data-depth": nodeState.depth,
         style: {
-          "--depth": itemState.depth,
+          "--depth": nodeState.depth,
         },
         onFocus(event) {
           event.stopPropagation()
-          send({ type: "NODE.FOCUS", id: itemState.value })
+          send({ type: "NODE.FOCUS", id: nodeState.value })
         },
         onClick(event) {
-          if (itemState.disabled) return
+          if (nodeState.disabled) return
+          if (!isLeftClick(event)) return
+          if (isAnchorElement(event.currentTarget) && isModifierKey(event)) return
+
           const isMetaKey = event.metaKey || event.ctrlKey
-          send({ type: "NODE.CLICK", id: itemState.value, shiftKey: event.shiftKey, ctrlKey: isMetaKey })
+          send({ type: "NODE.CLICK", id: nodeState.value, shiftKey: event.shiftKey, ctrlKey: isMetaKey })
           event.stopPropagation()
 
-          const isLink = event.currentTarget.matches("a[href]")
-          if (!isLink) event.preventDefault()
+          if (!isAnchorElement(event.currentTarget)) {
+            event.preventDefault()
+          }
         },
       })
     },
@@ -353,7 +364,7 @@ export function connect<T extends PropTypes, V extends TreeNode = TreeNode>(
       return normalize.element({
         ...parts.branchControl.attrs,
         role: "button",
-        id: dom.getNodeId(scope, nodeState.value),
+        id: nodeState.id,
         dir: prop("dir"),
         tabIndex: nodeState.focused ? 0 : -1,
         "data-path": props.indexPath.join("/"),
@@ -370,7 +381,11 @@ export function connect<T extends PropTypes, V extends TreeNode = TreeNode>(
           event.stopPropagation()
         },
         onClick(event) {
-          if (nodeState.disabled || nodeState.loading) return
+          if (nodeState.disabled) return
+          if (nodeState.loading) return
+          if (!isLeftClick(event)) return
+          if (isAnchorElement(event.currentTarget) && isModifierKey(event)) return
+
           const isMetaKey = event.metaKey || event.ctrlKey
           send({ type: "BRANCH_NODE.CLICK", id: nodeState.value, shiftKey: event.shiftKey, ctrlKey: isMetaKey })
           event.stopPropagation()
@@ -424,6 +439,7 @@ export function connect<T extends PropTypes, V extends TreeNode = TreeNode>(
         onClick(event) {
           if (event.defaultPrevented) return
           if (nodeState.disabled) return
+          if (!isLeftClick(event)) return
 
           send({ type: "CHECKED.TOGGLE", value: nodeState.value, isBranch: nodeState.isBranch })
           event.stopPropagation()

@@ -68,7 +68,7 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
     selectedItems,
     hasSelectedItems: computed("hasSelectedItems"),
     value: context.get("value"),
-    valueAsString: context.get("valueAsString"),
+    valueAsString: computed("valueAsString"),
     collection,
     multiple: !!prop("multiple"),
     disabled: !!disabled,
@@ -92,8 +92,11 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
     selectAll() {
       send({ type: "VALUE.SET", value: collection.getValues() })
     },
-    highlightValue(value) {
+    setHighlightValue(value) {
       send({ type: "HIGHLIGHTED_VALUE.SET", value })
+    },
+    clearHighlightValue() {
+      send({ type: "HIGHLIGHTED_VALUE.CLEAR" })
     },
     clearValue(value) {
       if (value) {

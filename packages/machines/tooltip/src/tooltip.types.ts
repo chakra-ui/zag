@@ -131,17 +131,17 @@ export interface TooltipApi<T extends PropTypes = PropTypes> {
   /**
    * Function to open the tooltip.
    */
-  setOpen(open: boolean): void
+  setOpen: (open: boolean) => void
   /**
    * Function to reposition the popover
    */
-  reposition(options?: Partial<PositioningOptions>): void
+  reposition: (options?: Partial<PositioningOptions>) => void
 
-  getTriggerProps(): T["button"]
-  getArrowProps(): T["element"]
-  getArrowTipProps(): T["element"]
-  getPositionerProps(): T["element"]
-  getContentProps(): T["element"]
+  getTriggerProps: () => T["button"]
+  getArrowProps: () => T["element"]
+  getArrowTipProps: () => T["element"]
+  getPositionerProps: () => T["element"]
+  getContentProps: () => T["element"]
 }
 
 /* -----------------------------------------------------------------------------

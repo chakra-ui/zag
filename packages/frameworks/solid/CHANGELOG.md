@@ -1,5 +1,209 @@
 # @zag-js/solid
 
+## 1.21.7
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/core@1.21.7
+  - @zag-js/store@1.21.7
+  - @zag-js/types@1.21.7
+  - @zag-js/utils@1.21.7
+
+## 1.21.6
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/core@1.21.6
+  - @zag-js/store@1.21.6
+  - @zag-js/types@1.21.6
+  - @zag-js/utils@1.21.6
+
+## 1.21.5
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/core@1.21.5
+  - @zag-js/store@1.21.5
+  - @zag-js/types@1.21.5
+  - @zag-js/utils@1.21.5
+
+## 1.21.4
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/core@1.21.4
+  - @zag-js/store@1.21.4
+  - @zag-js/types@1.21.4
+  - @zag-js/utils@1.21.4
+
+## 1.21.3
+
+### Patch Changes
+
+- [`7ff4117`](https://github.com/chakra-ui/zag/commit/7ff41177cfde7aeb92605f796a112de9079353a9) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Improve runtime performance of components by removing refs/events
+  from stateful to non-stateful objects.
+
+- Updated dependencies []:
+  - @zag-js/core@1.21.3
+  - @zag-js/store@1.21.3
+  - @zag-js/types@1.21.3
+  - @zag-js/utils@1.21.3
+
+## 1.21.2
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/core@1.21.2
+  - @zag-js/store@1.21.2
+  - @zag-js/types@1.21.2
+  - @zag-js/utils@1.21.2
+
+## 1.21.1
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/core@1.21.1
+  - @zag-js/store@1.21.1
+  - @zag-js/types@1.21.1
+  - @zag-js/utils@1.21.1
+
+## 1.21.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/core@1.21.0
+  - @zag-js/store@1.21.0
+  - @zag-js/types@1.21.0
+  - @zag-js/utils@1.21.0
+
+## 1.20.1
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/core@1.20.1
+  - @zag-js/store@1.20.1
+  - @zag-js/types@1.20.1
+  - @zag-js/utils@1.20.1
+
+## 1.20.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/core@1.20.0
+  - @zag-js/store@1.20.0
+  - @zag-js/types@1.20.0
+  - @zag-js/utils@1.20.0
+
+## 1.19.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/core@1.19.0
+  - @zag-js/store@1.19.0
+  - @zag-js/types@1.19.0
+  - @zag-js/utils@1.19.0
+
+## 1.18.5
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/core@1.18.5
+  - @zag-js/store@1.18.5
+  - @zag-js/types@1.18.5
+  - @zag-js/utils@1.18.5
+
+## 1.18.4
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/core@1.18.4
+  - @zag-js/store@1.18.4
+  - @zag-js/types@1.18.4
+  - @zag-js/utils@1.18.4
+
+## 1.18.3
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/core@1.18.3
+  - @zag-js/store@1.18.3
+  - @zag-js/types@1.18.3
+  - @zag-js/utils@1.18.3
+
+## 1.18.2
+
+### Patch Changes
+
+- Updated dependencies [[`11843e6`](https://github.com/chakra-ui/zag/commit/11843e6adf62b906006890c8003b38da2850c8ee)]:
+  - @zag-js/utils@1.18.2
+  - @zag-js/core@1.18.2
+  - @zag-js/store@1.18.2
+  - @zag-js/types@1.18.2
+
+## 1.18.1
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/core@1.18.1
+  - @zag-js/store@1.18.1
+  - @zag-js/types@1.18.1
+  - @zag-js/utils@1.18.1
+
+## 1.18.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/core@1.18.0
+  - @zag-js/store@1.18.0
+  - @zag-js/types@1.18.0
+  - @zag-js/utils@1.18.0
+
+## 1.17.4
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/core@1.17.4
+  - @zag-js/store@1.17.4
+  - @zag-js/types@1.17.4
+  - @zag-js/utils@1.17.4
+
+## 1.17.3
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/core@1.17.3
+  - @zag-js/store@1.17.3
+  - @zag-js/types@1.17.3
+  - @zag-js/utils@1.17.3
+
+## 1.17.2
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/core@1.17.2
+  - @zag-js/store@1.17.2
+  - @zag-js/types@1.17.2
+  - @zag-js/utils@1.17.2
+
 ## 1.17.1
 
 ### Patch Changes

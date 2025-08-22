@@ -27,15 +27,15 @@ export interface IntlTranslations {
   rootLabel?: string | undefined
   prevTriggerLabel?: string | undefined
   nextTriggerLabel?: string | undefined
-  itemLabel?(details: ItemLabelDetails): string
+  itemLabel?: ((details: ItemLabelDetails) => string) | undefined
 }
 
 export type ElementIds = Partial<{
   root: string
-  ellipsis(index: number): string
+  ellipsis: (index: number) => string
   prevTrigger: string
   nextTrigger: string
-  item(page: number): string
+  item: (page: number) => string
 }>
 
 export interface PaginationProps extends DirectionProperty, CommonProperties {
@@ -192,35 +192,35 @@ export interface PaginationApi<T extends PropTypes = PropTypes> {
   /**
    * Function to slice an array of data based on the current page.
    */
-  slice<V>(data: V[]): V[]
+  slice: <V>(data: V[]) => V[]
   /**
    * Function to set the page size.
    */
-  setPageSize(size: number): void
+  setPageSize: (size: number) => void
   /**
    * Function to set the current page.
    */
-  setPage(page: number): void
+  setPage: (page: number) => void
   /**
    * Function to go to the next page.
    */
-  goToNextPage(): void
+  goToNextPage: VoidFunction
   /**
    * Function to go to the previous page.
    */
-  goToPrevPage(): void
+  goToPrevPage: VoidFunction
   /**
    * Function to go to the first page.
    */
-  goToFirstPage(): void
+  goToFirstPage: VoidFunction
   /**
    * Function to go to the last page.
    */
-  goToLastPage(): void
+  goToLastPage: VoidFunction
 
-  getRootProps(): T["element"]
-  getEllipsisProps(props: EllipsisProps): T["element"]
-  getItemProps(page: ItemProps): T["element"]
-  getPrevTriggerProps(): T["element"]
-  getNextTriggerProps(): T["element"]
+  getRootProps: () => T["element"]
+  getEllipsisProps: (props: EllipsisProps) => T["element"]
+  getItemProps: (props: ItemProps) => T["element"]
+  getPrevTriggerProps: () => T["element"]
+  getNextTriggerProps: () => T["element"]
 }

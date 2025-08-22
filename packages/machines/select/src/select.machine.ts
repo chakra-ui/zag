@@ -69,10 +69,6 @@ export const machine = createMachine<SelectSchema>({
         const items = prop("collection").findMany(value)
         return { defaultValue: items }
       }),
-      valueAsString: bindable(() => {
-        const value = prop("value") ?? prop("defaultValue") ?? []
-        return { defaultValue: prop("collection").stringifyMany(value) }
-      }),
     }
   },
 
@@ -87,6 +83,7 @@ export const machine = createMachine<SelectSchema>({
     isTypingAhead: ({ refs }) => refs.get("typeahead").keysSoFar !== "",
     isDisabled: ({ prop, context }) => !!prop("disabled") || !!context.get("fieldsetDisabled"),
     isInteractive: ({ prop }) => !(prop("disabled") || prop("readOnly")),
+    valueAsString: ({ context, prop }) => prop("collection").stringifyItems(context.get("selectedItems")),
   },
 
   initialState({ prop }) {
@@ -114,6 +111,9 @@ export const machine = createMachine<SelectSchema>({
   on: {
     "HIGHLIGHTED_VALUE.SET": {
       actions: ["setHighlightedItem"],
+    },
+    "HIGHLIGHTED_VALUE.CLEAR": {
+      actions: ["clearHighlightedItem"],
     },
     "ITEM.SELECT": {
       actions: ["selectItem"],
@@ -550,7 +550,7 @@ export const machine = createMachine<SelectSchema>({
 
       selectHighlightedItem({ context, prop, event }) {
         let value = event.value ?? context.get("highlightedValue")
-        if (value == null) return
+        if (value == null || !prop("collection").has(value)) return
 
         prop("onSelect")?.({ value })
 
@@ -696,9 +696,6 @@ export const machine = createMachine<SelectSchema>({
 
         const selectedItems = collection.findMany(context.get("value"))
         context.set("selectedItems", selectedItems)
-
-        const valueAsString = collection.stringifyItems(selectedItems)
-        context.set("valueAsString", valueAsString)
       },
 
       syncSelectedItems({ context, prop }) {
@@ -712,7 +709,6 @@ export const machine = createMachine<SelectSchema>({
         })
 
         context.set("selectedItems", selectedItems)
-        context.set("valueAsString", collection.stringifyItems(selectedItems))
       },
 
       syncHighlightedItem({ context, prop }) {

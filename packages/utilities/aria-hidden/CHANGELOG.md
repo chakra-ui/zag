@@ -1,5 +1,51 @@
 # @zag-js/aria-hidden
 
+## 1.21.7
+
+## 1.21.6
+
+## 1.21.5
+
+## 1.21.4
+
+## 1.21.3
+
+## 1.21.2
+
+## 1.21.1
+
+## 1.21.0
+
+## 1.20.1
+
+## 1.20.0
+
+## 1.19.0
+
+## 1.18.5
+
+## 1.18.4
+
+## 1.18.3
+
+## 1.18.2
+
+## 1.18.1
+
+## 1.18.0
+
+### Patch Changes
+
+- [`029a864`](https://github.com/chakra-ui/zag/commit/029a864ac9f4aab39bb2c90b3b765a32082e07af) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Exclude elements with `role="status"` and `output` elements when
+  applying aria-hidden
+
+## 1.17.4
+
+## 1.17.3
+
+## 1.17.2
+
 ## 1.17.1
 
 ## 1.17.0

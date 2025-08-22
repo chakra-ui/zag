@@ -40,8 +40,8 @@ export type ElementIds = Partial<{
   trigger: string
   contextTrigger: string
   content: string
-  groupLabel(id: string): string
-  group(id: string): string
+  groupLabel: (id: string) => string
+  group: (id: string) => string
   positioner: string
   arrow: string
 }>
@@ -134,9 +134,9 @@ export interface MenuSchema {
     intentPolygon: Point[] | null
     anchorPoint: Point | null
     suspendPointer: boolean
+    isSubmenu: boolean
   }
   computed: {
-    isSubmenu: boolean
     isRtl: boolean
     isTypingAhead: boolean
     highlightedId: string | null
@@ -167,8 +167,8 @@ export type MenuMachine = Machine<MenuSchema>
  * -----------------------------------------------------------------------------*/
 
 export interface Api {
-  getItemProps: (opts: ItemProps) => Record<string, any>
-  getTriggerProps(): Record<string, any>
+  getItemProps: (props: ItemProps) => Record<string, any>
+  getTriggerProps: () => Record<string, any>
 }
 
 export interface ItemProps {
@@ -218,7 +218,7 @@ export interface OptionItemProps extends Partial<ItemProps> {
   /**
    * Function called when the option state is changed
    */
-  onCheckedChange?(checked: boolean): void
+  onCheckedChange?: ((checked: boolean) => void) | undefined
 }
 
 export interface ItemState {
@@ -272,7 +272,7 @@ export interface MenuApi<T extends PropTypes = PropTypes> {
   /**
    * Function to open or close the menu
    */
-  setOpen(open: boolean): void
+  setOpen: (open: boolean) => void
   /**
    * The id of the currently highlighted menuitem
    */
@@ -280,47 +280,47 @@ export interface MenuApi<T extends PropTypes = PropTypes> {
   /**
    * Function to set the highlighted menuitem
    */
-  setHighlightedValue(value: string): void
+  setHighlightedValue: (value: string) => void
   /**
    * Function to register a parent menu. This is used for submenus
    */
-  setParent(parent: MenuService): void
+  setParent: (parent: MenuService) => void
   /**
    * Function to register a child menu. This is used for submenus
    */
-  setChild(child: MenuService): void
+  setChild: (child: MenuService) => void
   /**
    * Function to reposition the popover
    */
-  reposition(options?: Partial<PositioningOptions>): void
+  reposition: (options?: Partial<PositioningOptions>) => void
   /**
    * Returns the state of the option item
    */
-  getOptionItemState(props: OptionItemProps): OptionItemState
+  getOptionItemState: (props: OptionItemProps) => OptionItemState
   /**
    * Returns the state of the menu item
    */
-  getItemState(props: ItemProps): ItemState
+  getItemState: (props: ItemProps) => ItemState
   /**
    * Setup the custom event listener for item selection event
    */
-  addItemListener(props: ItemListenerProps): VoidFunction | undefined
+  addItemListener: (props: ItemListenerProps) => VoidFunction | undefined
 
-  getContextTriggerProps(): T["element"]
-  getTriggerItemProps<A extends Api>(childApi: A): T["element"]
-  getTriggerProps(): T["button"]
-  getIndicatorProps(): T["element"]
-  getPositionerProps(): T["element"]
-  getArrowProps(): T["element"]
-  getArrowTipProps(): T["element"]
-  getContentProps(): T["element"]
-  getSeparatorProps(): T["element"]
-  getItemProps(options: ItemProps): T["element"]
-  getOptionItemProps(option: OptionItemProps): T["element"]
-  getItemIndicatorProps(option: ItemBaseProps): T["element"]
-  getItemTextProps(option: ItemBaseProps): T["element"]
-  getItemGroupLabelProps(options: ItemGroupLabelProps): T["element"]
-  getItemGroupProps(options: ItemGroupProps): T["element"]
+  getContextTriggerProps: () => T["element"]
+  getTriggerItemProps: <A extends Api>(childApi: A) => T["element"]
+  getTriggerProps: () => T["button"]
+  getIndicatorProps: () => T["element"]
+  getPositionerProps: () => T["element"]
+  getArrowProps: () => T["element"]
+  getArrowTipProps: () => T["element"]
+  getContentProps: () => T["element"]
+  getSeparatorProps: () => T["element"]
+  getItemProps: (options: ItemProps) => T["element"]
+  getOptionItemProps: (option: OptionItemProps) => T["element"]
+  getItemIndicatorProps: (option: ItemBaseProps) => T["element"]
+  getItemTextProps: (option: ItemBaseProps) => T["element"]
+  getItemGroupLabelProps: (options: ItemGroupLabelProps) => T["element"]
+  getItemGroupProps: (options: ItemGroupProps) => T["element"]
 }
 
 /* -----------------------------------------------------------------------------

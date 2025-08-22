@@ -36,15 +36,15 @@ export interface ValidateArgs {
 
 export interface IntlTranslations {
   clearTriggerLabel: string
-  deleteTagTriggerLabel(value: string): string
-  tagSelected(value: string): string
-  tagAdded(value: string): string
-  tagsPasted(value: string[]): string
-  tagEdited(value: string): string
-  tagUpdated(value: string): string
-  tagDeleted(value: string): string
+  deleteTagTriggerLabel: (value: string) => string
+  tagSelected: (value: string) => string
+  tagAdded: (value: string) => string
+  tagsPasted: (value: string[]) => string
+  tagEdited: (value: string) => string
+  tagUpdated: (value: string) => string
+  tagDeleted: (value: string) => string
   noTagsSelected?: string | undefined
-  inputLabel?(count: number): string
+  inputLabel?: ((count: number) => string) | undefined
 }
 
 type Log =
@@ -60,9 +60,9 @@ export type ElementIds = Partial<{
   clearBtn: string
   label: string
   control: string
-  item(opts: ItemProps): string
-  itemDeleteTrigger(opts: ItemProps): string
-  itemInput(opts: ItemProps): string
+  item: (opts: ItemProps) => string
+  itemDeleteTrigger: (opts: ItemProps) => string
+  itemInput: (opts: ItemProps) => string
 }>
 
 export interface TagsInputProps extends DirectionProperty, CommonProperties, InteractOutsideHandlers {
@@ -286,45 +286,45 @@ export interface TagsInputApi<T extends PropTypes = PropTypes> {
   /**
    * Function to set the value of the tags.
    */
-  setValue(value: string[]): void
+  setValue: (value: string[]) => void
   /**
    * Function to clear the value of the tags.
    */
-  clearValue(id?: string): void
+  clearValue: (id?: string) => void
   /**
    * Function to add a tag to the tags.
    */
-  addValue(value: string): void
+  addValue: (value: string) => void
   /**
    * Function to set the value of a tag at the given index.
    */
-  setValueAtIndex(index: number, value: string): void
+  setValueAtIndex: (index: number, value: string) => void
   /**
    * Function to set the value of the tags entry input.
    */
-  setInputValue(value: string): void
+  setInputValue: (value: string) => void
   /**
    * Function to clear the value of the tags entry input.
    */
-  clearInputValue(): void
+  clearInputValue: VoidFunction
   /**
    * Function to focus the tags entry input.
    */
-  focus(): void
+  focus: VoidFunction
   /**
    * Returns the state of a tag
    */
-  getItemState(props: ItemProps): ItemState
+  getItemState: (props: ItemProps) => ItemState
 
-  getRootProps(): T["element"]
-  getLabelProps(): T["label"]
-  getControlProps(): T["element"]
-  getInputProps(): T["input"]
-  getHiddenInputProps(): T["input"]
-  getClearTriggerProps(): T["button"]
-  getItemProps(options: ItemProps): T["element"]
-  getItemPreviewProps(options: ItemProps): T["element"]
-  getItemTextProps(options: ItemProps): T["element"]
-  getItemInputProps(options: ItemProps): T["input"]
-  getItemDeleteTriggerProps(options: ItemProps): T["button"]
+  getRootProps: () => T["element"]
+  getLabelProps: () => T["label"]
+  getControlProps: () => T["element"]
+  getInputProps: () => T["input"]
+  getHiddenInputProps: () => T["input"]
+  getClearTriggerProps: () => T["button"]
+  getItemProps: (props: ItemProps) => T["element"]
+  getItemPreviewProps: (props: ItemProps) => T["element"]
+  getItemTextProps: (props: ItemProps) => T["element"]
+  getItemInputProps: (props: ItemProps) => T["input"]
+  getItemDeleteTriggerProps: (props: ItemProps) => T["button"]
 }

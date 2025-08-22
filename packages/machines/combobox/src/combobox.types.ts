@@ -18,12 +18,38 @@ export interface HighlightChangeDetails<T extends CollectionItem = CollectionIte
   highlightedItem: T | null
 }
 
+/**
+ * The reason for the input value change
+ */
+export type InputValueChangeReason =
+  | "input-change" // User typed in the input
+  | "item-select" // Item was selected and input value changed based on selection behavior
+  | "clear-trigger" // Clear button was clicked
+  | "script" // Programmatically changed
+  | "interact-outside" // User clicked outside or blurred the input
+
 export interface InputValueChangeDetails {
   inputValue: string
+  reason?: InputValueChangeReason | undefined
 }
+
+/**
+ * The reason for the combobox open/close state change
+ */
+export type OpenChangeReason =
+  | "input-click" // User clicked the input
+  | "trigger-click" // User clicked the trigger button
+  | "script" // Programmatically changed
+  | "arrow-key" // User pressed arrow keys or used the listbox navigation keys
+  | "input-change" // Input value changed
+  | "interact-outside" // User clicked outside
+  | "escape-key" // User pressed escape
+  | "item-select" // User selected an item
+  | "clear-trigger" // User clicked clear button
 
 export interface OpenChangeDetails {
   open: boolean
+  reason?: OpenChangeReason | undefined
 }
 
 export interface ScrollToIndexDetails {
@@ -59,10 +85,10 @@ export type ElementIds = Partial<{
   content: string
   trigger: string
   clearTrigger: string
-  item(id: string, index?: number): string
+  item: (id: string, index?: number) => string
   positioner: string
-  itemGroup(id: string | number): string
-  itemGroupLabel(id: string | number): string
+  itemGroup: (id: string | number) => string
+  itemGroupLabel: (id: string | number) => string
 }>
 
 export interface ComboboxProps<T extends CollectionItem = CollectionItem>
@@ -277,7 +303,6 @@ export interface ComboboxSchema<T extends CollectionItem = CollectionItem> {
     currentPlacement?: Placement | undefined
     highlightedItem: T | null
     selectedItems: T[]
-    valueAsString: string
   }
   computed: {
     isCustomValue: boolean
@@ -286,6 +311,7 @@ export interface ComboboxSchema<T extends CollectionItem = CollectionItem> {
     autoComplete: boolean
     autoHighlight: boolean
     hasSelectedItems: boolean
+    valueAsString: string
   }
   event: EventObject
   action: string
@@ -370,12 +396,16 @@ export interface ComboboxApi<T extends PropTypes = PropTypes, V extends Collecti
   /**
    * The value of the combobox input
    */
-  setHighlightValue(value: string): void
+  setHighlightValue: (value: string) => void
+  /**
+   * Function to clear the highlighted value
+   */
+  clearHighlightValue: VoidFunction
   /**
    * Function to sync the selected items with the value.
    * Useful when `value` is updated from async sources.
    */
-  syncSelectedItems(): void
+  syncSelectedItems: VoidFunction
   /**
    * The selected items
    */
@@ -395,31 +425,31 @@ export interface ComboboxApi<T extends PropTypes = PropTypes, V extends Collecti
   /**
    * Function to select a value
    */
-  selectValue(value: string): void
+  selectValue: (value: string) => void
   /**
    * Function to set the value of the combobox
    */
-  setValue(value: string[]): void
+  setValue: (value: string[]) => void
   /**
    * Function to clear the value of the combobox
    */
-  clearValue(value?: string): void
+  clearValue: (value?: string) => void
   /**
    * Function to focus on the combobox input
    */
-  focus(): void
+  focus: VoidFunction
   /**
    * Function to set the input value of the combobox
    */
-  setInputValue(value: string): void
+  setInputValue: (value: string, reason?: InputValueChangeReason) => void
   /**
    * Returns the state of a combobox item
    */
-  getItemState(props: ItemProps): ItemState
+  getItemState: (props: ItemProps) => ItemState
   /**
    * Function to open or close the combobox
    */
-  setOpen(open: boolean): void
+  setOpen: (open: boolean, reason?: OpenChangeReason) => void
   /**
    * Function to toggle the combobox
    */
@@ -427,7 +457,7 @@ export interface ComboboxApi<T extends PropTypes = PropTypes, V extends Collecti
   /**
    * Function to set the positioning options
    */
-  reposition(options?: Partial<PositioningOptions>): void
+  reposition: (options?: Partial<PositioningOptions>) => void
   /**
    * Whether the combobox allows multiple selections
    */
@@ -437,20 +467,20 @@ export interface ComboboxApi<T extends PropTypes = PropTypes, V extends Collecti
    */
   disabled: boolean
 
-  getRootProps(): T["element"]
-  getLabelProps(): T["label"]
-  getControlProps(): T["element"]
-  getPositionerProps(): T["element"]
-  getInputProps(): T["input"]
-  getContentProps(): T["element"]
-  getTriggerProps(props?: TriggerProps): T["button"]
-  getClearTriggerProps(): T["button"]
-  getListProps(): T["element"]
-  getItemProps(props: ItemProps): T["element"]
-  getItemTextProps(props: ItemProps): T["element"]
-  getItemIndicatorProps(props: ItemProps): T["element"]
-  getItemGroupProps(props: ItemGroupProps): T["element"]
-  getItemGroupLabelProps(props: ItemGroupLabelProps): T["element"]
+  getRootProps: () => T["element"]
+  getLabelProps: () => T["label"]
+  getControlProps: () => T["element"]
+  getPositionerProps: () => T["element"]
+  getInputProps: () => T["input"]
+  getContentProps: () => T["element"]
+  getTriggerProps: (props?: TriggerProps) => T["button"]
+  getClearTriggerProps: () => T["button"]
+  getListProps: () => T["element"]
+  getItemProps: (props: ItemProps) => T["element"]
+  getItemTextProps: (props: ItemProps) => T["element"]
+  getItemIndicatorProps: (props: ItemProps) => T["element"]
+  getItemGroupProps: (props: ItemGroupProps) => T["element"]
+  getItemGroupLabelProps: (props: ItemGroupLabelProps) => T["element"]
 }
 
 /* -----------------------------------------------------------------------------

@@ -9,8 +9,8 @@
     "preview": "vite preview"
   },
   "devDependencies": {
-    "typescript": "^5.8.3",
-    "vite": "^6.3.5"
+    "typescript": "^5.9.2",
+    "vite": "^7.1.3"
   },
   "dependencies": {
     "@internationalized/date": "3.8.2",
@@ -48,6 +48,7 @@
     "@zag-js/hover-card": "workspace:*",
     "@zag-js/i18n-utils": "workspace:*",
     "@zag-js/interact-outside": "workspace:*",
+    "@zag-js/json-tree-utils": "workspace:*",
     "@zag-js/listbox": "workspace:*",
     "@zag-js/live-region": "workspace:*",
     "@zag-js/menu": "workspace:*",
@@ -66,6 +67,7 @@
     "@zag-js/rect-utils": "workspace:*",
     "@zag-js/remove-scroll": "workspace:*",
     "@zag-js/scroll-snap": "workspace:*",
+    "@zag-js/scroll-area": "workspace:*",
     "@zag-js/select": "workspace:*",
     "@zag-js/shared": "workspace:*",
     "@zag-js/signature-pad": "workspace:*",
@@ -88,7 +90,7 @@
     "@zag-js/types": "workspace:*",
     "@zag-js/utils": "workspace:*",
     "form-serialize": "0.7.2",
-    "match-sorter": "8.0.3",
+    "match-sorter": "8.1.0",
     "nanoid": "^5.1.5"
   }
 }

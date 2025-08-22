@@ -3,25 +3,20 @@
   import { normalizeProps, useMachine } from "@zag-js/svelte"
 
   let present = $state(false)
-  let ref: HTMLDivElement | null = $state(null)
 
-  const service = useMachine(presence.machine, {
-    get present() {
-      return present
-    },
-  })
+  const service = useMachine(presence.machine, () => ({
+    present,
+  }))
   const api = $derived(presence.connect(service, normalizeProps))
 
-  $effect(() => {
-    if (ref) {
-      api.setNode(ref)
-    }
-  })
+  function setNode(node: HTMLDivElement) {
+    api.setNode(node)
+  }
 </script>
 
 <main class="presence">
   <button onclick={() => (present = !present)}>Toggle</button>
   {#if api.present}
-    <div bind:this={ref} data-scope="presence" data-state={present ? "open" : "closed"}>Content</div>
+    <div {@attach setNode} data-scope="presence" data-state={present ? "open" : "closed"}>Content</div>
   {/if}
 </main>

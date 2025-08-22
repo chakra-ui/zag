@@ -1,9 +1,10 @@
-import { compact, hasProp, isEqual, isObject } from "@zag-js/utils"
+import { hasProp, isEqual, isObject } from "@zag-js/utils"
 import {
   access,
   compareIndexPaths,
   filter,
   find,
+  findAll,
   findIndexPath,
   flatMap,
   flatten,
@@ -90,10 +91,9 @@ export class TreeCollection<T = TreeNode> {
     visit(rootNode, {
       getChildren: this.getNodeChildren,
       onEnter: (node, indexPath) => {
-        const nodeValue = this.getNodeValue(node)
-        if (opts.skip?.({ value: nodeValue, node, indexPath })) return "skip"
-        if (indexPath.length > 1) return "skip"
-        if (!this.getNodeDisabled(node)) {
+        if (this.isSameNode(node, rootNode)) return
+        if (opts.skip?.({ value: this.getNodeValue(node), node, indexPath })) return "skip"
+        if (indexPath.length > 0 && !this.getNodeDisabled(node)) {
           lastChild = node
         }
       },
@@ -111,6 +111,14 @@ export class TreeCollection<T = TreeNode> {
     return find(rootNode, {
       getChildren: this.getNodeChildren,
       predicate: (node) => this.getNodeValue(node) === value,
+    })
+  }
+
+  findNodes = (values: string[], rootNode = this.rootNode): T[] => {
+    const v = new Set(values.filter((v) => v != null))
+    return findAll(rootNode, {
+      getChildren: this.getNodeChildren,
+      predicate: (node) => v.has(this.getNodeValue(node)),
     })
   }
 
@@ -157,8 +165,12 @@ export class TreeCollection<T = TreeNode> {
     return indexPath?.length ?? 0
   }
 
+  isSameNode = (node: T, other: T) => {
+    return this.getNodeValue(node) === this.getNodeValue(other)
+  }
+
   isRootNode = (node: T) => {
-    return this.getNodeValue(node) === this.getNodeValue(this.rootNode)
+    return this.isSameNode(node, this.rootNode)
   }
 
   contains = (parentIndexPath: IndexPath, valueIndexPath: IndexPath) => {
@@ -280,7 +292,7 @@ export class TreeCollection<T = TreeNode> {
     const parentNode = this.getParentNode(indexPath)
     if (!parentNode) return
     const siblings = this.getNodeChildren(parentNode)
-    let idx = siblings.findIndex((sibling) => this.getValue(indexPath) === this.getNodeValue(sibling))
+    let idx = indexPath[indexPath.length - 1]
     while (--idx >= 0) {
       const sibling = siblings[idx]
       if (!this.getNodeDisabled(sibling)) return sibling
@@ -292,7 +304,7 @@ export class TreeCollection<T = TreeNode> {
     const parentNode = this.getParentNode(indexPath)
     if (!parentNode) return
     const siblings = this.getNodeChildren(parentNode)
-    let idx = siblings.findIndex((sibling) => this.getValue(indexPath) === this.getNodeValue(sibling))
+    let idx = indexPath[indexPath.length - 1]
     while (++idx < siblings.length) {
       const sibling = siblings[idx]
       if (!this.getNodeDisabled(sibling)) return sibling
@@ -314,8 +326,9 @@ export class TreeCollection<T = TreeNode> {
     return values.slice(1)
   }
 
-  private isSameDepth = (indexPath: IndexPath, depth?: number): boolean => {
+  private isValidDepth = (indexPath: IndexPath, depth?: number | ((nodeDepth: number) => boolean)): boolean => {
     if (depth == null) return true
+    if (typeof depth === "function") return depth(indexPath.length)
     return indexPath.length === depth
   }
 
@@ -325,21 +338,21 @@ export class TreeCollection<T = TreeNode> {
 
   getBranchValues = (
     rootNode = this.rootNode,
-    opts: TreeSkipOptions<T> & { depth?: number | undefined } = {},
+    opts: TreeSkipOptions<T> & { depth?: number | ((nodeDepth: number) => boolean) | undefined } = {},
   ): string[] => {
     let values: string[] = []
     visit(rootNode, {
       getChildren: this.getNodeChildren,
       onEnter: (node, indexPath) => {
+        if (indexPath.length === 0) return
         const nodeValue = this.getNodeValue(node)
         if (opts.skip?.({ value: nodeValue, node, indexPath })) return "skip"
-        if (this.isBranchNode(node) && this.isSameDepth(indexPath, opts.depth)) {
+        if (this.isBranchNode(node) && this.isValidDepth(indexPath, opts.depth)) {
           values.push(this.getNodeValue(node))
         }
       },
     })
-    // remove the root node
-    return values.slice(1)
+    return values
   }
 
   flatten = (rootNode = this.rootNode): Array<FlatTreeNode<T>> => {
@@ -347,7 +360,11 @@ export class TreeCollection<T = TreeNode> {
   }
 
   private _create = (node: T, children: T[]) => {
-    return compact({ ...node, children: children.length > 0 ? children : undefined })
+    // Only set children if the node originally had children or there are filtered children
+    if (this.getNodeChildren(node).length > 0 || children.length > 0) {
+      return { ...node, children }
+    }
+    return { ...node }
   }
 
   private _insert = (rootNode: T, indexPath: IndexPath, nodes: T[]): TreeCollection<T> => {

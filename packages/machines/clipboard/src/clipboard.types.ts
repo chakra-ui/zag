@@ -87,16 +87,16 @@ export interface ClipboardApi<T extends PropTypes = PropTypes> {
   /**
    * Set the value to be copied to the clipboard
    */
-  setValue(value: string): void
+  setValue: (value: string) => void
   /**
    * Copy the value to the clipboard
    */
-  copy(): void
+  copy: VoidFunction
 
-  getRootProps(): T["element"]
-  getLabelProps(): T["label"]
-  getControlProps(): T["element"]
-  getTriggerProps(): T["button"]
-  getInputProps(): T["input"]
-  getIndicatorProps(props: IndicatorProps): T["element"]
+  getRootProps: () => T["element"]
+  getLabelProps: () => T["label"]
+  getControlProps: () => T["element"]
+  getTriggerProps: () => T["button"]
+  getInputProps: () => T["input"]
+  getIndicatorProps: (props: IndicatorProps) => T["element"]
 }

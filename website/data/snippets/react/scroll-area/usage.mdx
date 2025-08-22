@@ -1,0 +1,26 @@
+```jsx
+import * as scrollArea from "@zag-js/scroll-area"
+import { useMachine, normalizeProps } from "@zag-js/react"
+import { useId } from "react"
+
+function ScrollArea() {
+  const service = useMachine(scrollArea.machine, {
+    id: useId(),
+  })
+
+  const api = scrollArea.connect(service, normalizeProps)
+
+  return (
+    <div {...api.getRootProps()}>
+      <div {...api.getViewportProps()}>
+        <div {...api.getContentProps()}>
+          {/* Your scrollable content here */}
+        </div>
+      </div>
+      <div {...api.getScrollbarProps()}>
+        <div {...api.getThumbProps()} />
+      </div>
+    </div>
+  )
+}
+```

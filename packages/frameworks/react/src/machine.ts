@@ -51,6 +51,9 @@ export function useMachine<T extends MachineSchema>(
     getRefs() {
       return refs as any
     },
+    getEvent() {
+      return getEvent()
+    },
   })
 
   const contextRef = useLiveRef<any>(context)
@@ -250,8 +253,6 @@ export function useMachine<T extends MachineSchema>(
       previousEventRef.current = eventRef.current
       eventRef.current = event
 
-      debug("send", event)
-
       let currentState = getCurrentState()
 
       const transitions =
@@ -267,7 +268,7 @@ export function useMachine<T extends MachineSchema>(
       transitionRef.current = transition
       const target = transition.target ?? currentState
 
-      debug("transition", transition)
+      debug("transition", event.type, transition.target || currentState, `(${transition.actions})`)
 
       const changed = target !== currentState
       if (changed) {

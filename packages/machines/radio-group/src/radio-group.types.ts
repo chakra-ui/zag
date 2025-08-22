@@ -13,10 +13,10 @@ export type ElementIds = Partial<{
   root: string
   label: string
   indicator: string
-  item(value: string): string
-  itemLabel(value: string): string
-  itemControl(value: string): string
-  itemHiddenInput(value: string): string
+  item: (value: string) => string
+  itemLabel: (value: string) => string
+  itemControl: (value: string) => string
+  itemHiddenInput: (value: string) => string
 }>
 
 export interface RadioGroupProps extends DirectionProperty, CommonProperties {
@@ -116,6 +116,10 @@ interface Refs {
    * Function to clean up the observer for the active tab's rect
    */
   indicatorCleanup: VoidFunction | null
+  /**
+   * The value of the radio that has focus visible
+   */
+  focusVisibleValue: string | null
 }
 
 export interface RadioGroupSchema {
@@ -191,25 +195,25 @@ export interface RadioGroupApi<T extends PropTypes = PropTypes> {
   /**
    * Function to set the value of the radio group
    */
-  setValue(value: string): void
+  setValue: (value: string) => void
   /**
    * Function to clear the value of the radio group
    */
-  clearValue(): void
+  clearValue: VoidFunction
   /**
    * Function to focus the radio group
    */
-  focus(): void
+  focus: VoidFunction
   /**
    * Returns the state details of a radio input
    */
-  getItemState(props: ItemProps): ItemState
+  getItemState: (props: ItemProps) => ItemState
 
-  getRootProps(): T["element"]
-  getLabelProps(): T["element"]
-  getItemProps(props: ItemProps): T["label"]
-  getItemTextProps(props: ItemProps): T["element"]
-  getItemControlProps(props: ItemProps): T["element"]
-  getItemHiddenInputProps(props: ItemProps): T["input"]
-  getIndicatorProps(): T["element"]
+  getRootProps: () => T["element"]
+  getLabelProps: () => T["element"]
+  getItemProps: (props: ItemProps) => T["label"]
+  getItemTextProps: (props: ItemProps) => T["element"]
+  getItemControlProps: (props: ItemProps) => T["element"]
+  getItemHiddenInputProps: (props: ItemProps) => T["input"]
+  getIndicatorProps: () => T["element"]
 }

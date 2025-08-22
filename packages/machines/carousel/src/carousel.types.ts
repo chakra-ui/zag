@@ -38,12 +38,12 @@ export interface IntlTranslations {
 
 export type ElementIds = Partial<{
   root: string
-  item(index: number): string
+  item: (index: number) => string
   itemGroup: string
   nextTrigger: string
   prevTrigger: string
   indicatorGroup: string
-  indicator(index: number): string
+  indicator: (index: number) => string
 }>
 
 export interface CarouselProps extends DirectionProperty, CommonProperties, OrientationProperty {
@@ -236,50 +236,50 @@ export interface CarouselApi<T extends PropTypes = PropTypes> {
   /**
    * Function to scroll to a specific item index
    */
-  scrollToIndex(index: number, instant?: boolean): void
+  scrollToIndex: (index: number, instant?: boolean) => void
   /**
    * Function to scroll to a specific page
    */
-  scrollTo(page: number, instant?: boolean): void
+  scrollTo: (page: number, instant?: boolean) => void
   /**
    * Function to scroll to the next page
    */
-  scrollNext(instant?: boolean): void
+  scrollNext: (instant?: boolean) => void
   /**
    * Function to scroll to the previous page
    */
-  scrollPrev(instant?: boolean): void
+  scrollPrev: (instant?: boolean) => void
   /**
    * Returns the current scroll progress as a percentage
    */
-  getProgress(): number
+  getProgress: () => number
   /**
    * Function to start/resume autoplay
    */
-  play(): void
+  play: VoidFunction
   /**
    * Function to pause autoplay
    */
-  pause(): void
+  pause: VoidFunction
   /**
    * Whether the item is in view
    */
-  isInView(index: number): boolean
+  isInView: (index: number) => boolean
   /**
    * Function to re-compute the snap points
    * and clamp the page
    */
-  refresh(): void
+  refresh: VoidFunction
 
-  getRootProps(): T["element"]
-  getControlProps(): T["element"]
-  getItemGroupProps(): T["element"]
-  getItemProps(props: ItemProps): T["element"]
-  getPrevTriggerProps(): T["button"]
-  getNextTriggerProps(): T["button"]
-  getAutoplayTriggerProps(): T["button"]
-  getIndicatorGroupProps(): T["element"]
-  getIndicatorProps(props: IndicatorProps): T["button"]
+  getRootProps: () => T["element"]
+  getControlProps: () => T["element"]
+  getItemGroupProps: () => T["element"]
+  getItemProps: (props: ItemProps) => T["element"]
+  getPrevTriggerProps: () => T["button"]
+  getNextTriggerProps: () => T["button"]
+  getAutoplayTriggerProps: () => T["button"]
+  getIndicatorGroupProps: () => T["element"]
+  getIndicatorProps: (props: IndicatorProps) => T["button"]
 }
 
 /* -----------------------------------------------------------------------------

@@ -11,11 +11,12 @@ export const machine = createMachine<DialogSchema>({
   props({ props, scope }) {
     const alertDialog = props.role === "alertdialog"
     const initialFocusEl: any = alertDialog ? () => dom.getCloseTriggerEl(scope) : undefined
+    const modal = typeof props.modal === "boolean" ? props.modal : true
     return {
       role: "dialog",
-      modal: true,
-      trapFocus: true,
-      preventScroll: true,
+      modal,
+      trapFocus: modal,
+      preventScroll: modal,
       closeOnInteractOutside: !alertDialog,
       closeOnEscape: true,
       restoreFocus: true,
@@ -142,7 +143,7 @@ export const machine = createMachine<DialogSchema>({
       },
 
       trapFocus({ scope, prop }) {
-        if (!prop("trapFocus") || !prop("modal")) return
+        if (!prop("trapFocus")) return
         const contentEl = () => dom.getContentEl(scope)
         return trapFocus(contentEl, {
           preventScroll: true,
@@ -178,6 +179,7 @@ export const machine = createMachine<DialogSchema>({
           const elems = [dom.getPositionerEl(scope), dom.getBackdropEl(scope)]
           elems.forEach((node) => {
             node?.style.setProperty("--z-index", styles.zIndex)
+            node?.style.setProperty("--layer-index", styles.getPropertyValue("--layer-index"))
           })
         })
       },

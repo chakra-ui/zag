@@ -59,7 +59,7 @@ export function connect<T extends PropTypes, V extends CollectionItem>(
     highlightedValue,
     highlightedItem: context.get("highlightedItem"),
     value: context.get("value"),
-    valueAsString: context.get("valueAsString"),
+    valueAsString: computed("valueAsString"),
     hasSelectedItems: computed("hasSelectedItems"),
     selectedItems: context.get("selectedItems"),
     collection: prop("collection"),
@@ -74,14 +74,17 @@ export function connect<T extends PropTypes, V extends CollectionItem>(
     setHighlightValue(value) {
       send({ type: "HIGHLIGHTED_VALUE.SET", value })
     },
+    clearHighlightValue() {
+      send({ type: "HIGHLIGHTED_VALUE.CLEAR" })
+    },
     selectValue(value) {
       send({ type: "ITEM.SELECT", value })
     },
     setValue(value) {
       send({ type: "VALUE.SET", value })
     },
-    setInputValue(value) {
-      send({ type: "INPUT_VALUE.SET", value })
+    setInputValue(value, reason = "script") {
+      send({ type: "INPUT_VALUE.SET", value, src: reason })
     },
     clearValue(value) {
       if (value != null) {
@@ -93,10 +96,10 @@ export function connect<T extends PropTypes, V extends CollectionItem>(
     focus() {
       dom.getInputEl(scope)?.focus()
     },
-    setOpen(nextOpen) {
+    setOpen(nextOpen, reason = "script") {
       const open = state.hasTag("open")
       if (open === nextOpen) return
-      send({ type: nextOpen ? "OPEN" : "CLOSE" })
+      send({ type: nextOpen ? "OPEN" : "CLOSE", src: reason })
     },
 
     getRootProps() {
@@ -178,7 +181,7 @@ export function connect<T extends PropTypes, V extends CollectionItem>(
           if (event.defaultPrevented) return
           if (!prop("openOnClick")) return
           if (!interactive) return
-          send({ type: "INPUT.CLICK" })
+          send({ type: "INPUT.CLICK", src: "input-click" })
         },
         onFocus() {
           if (disabled) return
@@ -189,7 +192,7 @@ export function connect<T extends PropTypes, V extends CollectionItem>(
           send({ type: "INPUT.BLUR" })
         },
         onChange(event) {
-          send({ type: "INPUT.CHANGE", value: event.currentTarget.value })
+          send({ type: "INPUT.CHANGE", value: event.currentTarget.value, src: "input-change" })
         },
         onKeyDown(event) {
           if (event.defaultPrevented) return
@@ -204,12 +207,12 @@ export function connect<T extends PropTypes, V extends CollectionItem>(
           const keymap: EventKeyMap = {
             ArrowDown(event) {
               if (!openOnKeyPress && !open) return
-              send({ type: event.altKey ? "OPEN" : "INPUT.ARROW_DOWN", keypress })
+              send({ type: event.altKey ? "OPEN" : "INPUT.ARROW_DOWN", keypress, src: "arrow-key" })
               event.preventDefault()
             },
             ArrowUp() {
               if (!openOnKeyPress && !open) return
-              send({ type: event.altKey ? "CLOSE" : "INPUT.ARROW_UP", keypress })
+              send({ type: event.altKey ? "CLOSE" : "INPUT.ARROW_UP", keypress, src: "arrow-key" })
               event.preventDefault()
             },
             Home(event) {
@@ -227,7 +230,7 @@ export function connect<T extends PropTypes, V extends CollectionItem>(
               }
             },
             Enter(event) {
-              send({ type: "INPUT.ENTER", keypress })
+              send({ type: "INPUT.ENTER", keypress, src: "item-select" })
 
               // when there's a form owner, allow submitting custom value if `allowCustomValue` is true
               const submittable = computed("isCustomValue") && prop("allowCustomValue")
@@ -243,7 +246,7 @@ export function connect<T extends PropTypes, V extends CollectionItem>(
               }
             },
             Escape() {
-              send({ type: "INPUT.ESCAPE", keypress })
+              send({ type: "INPUT.ESCAPE", keypress, src: "escape-key" })
               event.preventDefault()
             },
           }
@@ -280,7 +283,7 @@ export function connect<T extends PropTypes, V extends CollectionItem>(
           if (event.defaultPrevented) return
           if (!interactive) return
           if (!isLeftClick(event)) return
-          send({ type: "TRIGGER.CLICK" })
+          send({ type: "TRIGGER.CLICK", src: "trigger-click" })
         },
         onPointerDown(event) {
           if (!interactive) return
@@ -297,10 +300,10 @@ export function connect<T extends PropTypes, V extends CollectionItem>(
 
           const keyMap: EventKeyMap = {
             ArrowDown() {
-              send({ type: "INPUT.ARROW_DOWN", src: "trigger" })
+              send({ type: "INPUT.ARROW_DOWN", src: "arrow-key" })
             },
             ArrowUp() {
-              send({ type: "INPUT.ARROW_UP", src: "trigger" })
+              send({ type: "INPUT.ARROW_UP", src: "arrow-key" })
             },
           }
 
@@ -406,7 +409,7 @@ export function connect<T extends PropTypes, V extends CollectionItem>(
           if (isOpeningInNewTab(event)) return
           if (isContextMenuEvent(event)) return
           if (itemState.disabled) return
-          send({ type: "ITEM.CLICK", src: "click", value })
+          send({ type: "ITEM.CLICK", src: "item-select", value })
         },
       })
     },

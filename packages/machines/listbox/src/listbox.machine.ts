@@ -1,6 +1,6 @@
 import type { CollectionItem, ListCollection } from "@zag-js/collection"
 import { Selection } from "@zag-js/collection"
-import { createMachine } from "@zag-js/core"
+import { setup } from "@zag-js/core"
 import { getByTypeahead, observeAttributes, raf, scrollIntoView } from "@zag-js/dom-query"
 import { getInteractionModality, trackFocusVisible as trackFocusVisibleFn } from "@zag-js/focus-visible"
 import { isEqual } from "@zag-js/utils"
@@ -8,7 +8,11 @@ import { collection } from "./listbox.collection"
 import * as dom from "./listbox.dom"
 import type { ListboxSchema, SelectionDetails } from "./listbox.types"
 
-export const machine = createMachine<ListboxSchema>({
+const { guards, createMachine } = setup<ListboxSchema>()
+
+const { or } = guards
+
+export const machine = createMachine({
   props({ props }) {
     return {
       loopFocus: false,
@@ -58,11 +62,6 @@ export const machine = createMachine<ListboxSchema>({
         return { defaultValue: items }
       }),
 
-      valueAsString: bindable(() => {
-        const value = prop("value") ?? prop("defaultValue") ?? []
-        return { defaultValue: prop("collection").stringifyMany(value) }
-      }),
-
       focused: bindable(() => ({
         defaultValue: false,
       })),
@@ -87,6 +86,7 @@ export const machine = createMachine<ListboxSchema>({
       return selection
     },
     multiple: ({ prop }) => prop("selectionMode") === "multiple" || prop("selectionMode") === "extended",
+    valueAsString: ({ context, prop }) => prop("collection").stringifyItems(context.get("selectedItems")),
   },
 
   initialState() {
@@ -132,9 +132,15 @@ export const machine = createMachine<ListboxSchema>({
     idle: {
       effects: ["scrollToHighlightedItem"],
       on: {
-        "CONTENT.FOCUS": {
-          actions: ["setFocused"],
-        },
+        "CONTENT.FOCUS": [
+          {
+            guard: or("hasSelectedValue", "hasHighlightedValue"),
+            actions: ["setFocused"],
+          },
+          {
+            actions: ["setDefaultHighlightedValue"],
+          },
+        ],
         "CONTENT.BLUR": {
           actions: ["clearFocused"],
         },
@@ -158,6 +164,11 @@ export const machine = createMachine<ListboxSchema>({
   },
 
   implementations: {
+    guards: {
+      hasSelectedValue: ({ context }) => context.get("value").length > 0,
+      hasHighlightedValue: ({ context }) => context.get("highlightedValue") != null,
+    },
+
     effects: {
       trackFocusVisible: ({ scope }) => {
         return trackFocusVisibleFn({ root: scope.getRootNode?.() })
@@ -202,10 +213,11 @@ export const machine = createMachine<ListboxSchema>({
     actions: {
       selectHighlightedItem({ context, prop, event, computed }) {
         const value = event.value ?? context.get("highlightedValue")
-        if (value == null) return
+
+        const collection = prop("collection")
+        if (value == null || !collection.has(value)) return
 
         const selection = computed("selection")
-        const collection = prop("collection")
 
         if (event.shiftKey && computed("multiple") && event.anchorValue) {
           const next = selection.extendSelection(collection, event.anchorValue, value)
@@ -291,9 +303,6 @@ export const machine = createMachine<ListboxSchema>({
         const selectedItems = collection.findMany(context.get("value"))
         context.set("selectedItems", selectedItems)
 
-        const valueAsString = collection.stringifyItems(selectedItems)
-        context.set("valueAsString", valueAsString)
-
         const highlightedValue = syncHighlightedValue(
           collection,
           refs.get("prevCollection"),
@@ -317,7 +326,6 @@ export const machine = createMachine<ListboxSchema>({
         })
 
         context.set("selectedItems", selectedItems)
-        context.set("valueAsString", collection.stringifyItems(selectedItems))
       },
 
       syncHighlightedItem({ context, prop }) {
@@ -329,6 +337,14 @@ export const machine = createMachine<ListboxSchema>({
 
       setFocused({ context }) {
         context.set("focused", true)
+      },
+
+      setDefaultHighlightedValue({ context, prop }) {
+        const collection = prop("collection")
+        const firstValue = collection.firstValue
+        if (firstValue != null) {
+          context.set("highlightedValue", firstValue)
+        }
       },
 
       clearFocused({ context }) {

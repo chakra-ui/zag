@@ -1,4 +1,4 @@
-import { DateFormatter, toCalendarDate, toCalendarDateTime, today } from "@internationalized/date"
+import { DateFormatter, toCalendarDateTime, today } from "@internationalized/date"
 import { getEraFormat } from "./get-era-format"
 
 export function getDayFormatter(locale: string, timeZone: string) {
@@ -14,7 +14,7 @@ export function getDayFormatter(locale: string, timeZone: string) {
 }
 
 export function getMonthFormatter(locale: string, timeZone: string) {
-  const date = toCalendarDate(today(timeZone))
+  const date = today(timeZone)
   return new DateFormatter(locale, {
     month: "long",
     year: "numeric",

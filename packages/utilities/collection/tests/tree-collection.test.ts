@@ -135,6 +135,36 @@ describe("tree / traversal", () => {
     `)
   })
 
+  it("one branch scenario", () => {
+    // Test case with only one branch - the last node should be the deepest last child
+    const oneBranchTree = new TreeCollection({
+      nodeToChildren: (node) => node.children ?? [],
+      rootNode: {
+        value: "ROOT",
+        children: [
+          {
+            value: "branch1",
+            children: [
+              { value: "child1-1" },
+              { value: "child1-2" },
+              {
+                value: "branch1-1",
+                children: [{ value: "child2-1" }, { value: "child2-2" }],
+              },
+            ],
+          },
+        ],
+      },
+    })
+
+    // This should return "child2-2" (the actual last node in document order)
+    const lastNode = oneBranchTree.getLastNode()
+    expect(lastNode?.value).toBe("child2-2")
+
+    const firstNode = oneBranchTree.getFirstNode()
+    expect(firstNode?.value).toBe("branch1")
+  })
+
   it("branch nodes", () => {
     const branch = tree.findNode("branch1")
     expect(branch).toMatchInlineSnapshot(`
@@ -177,12 +207,7 @@ describe("tree / traversal", () => {
 
     expect(tree.getLastNode(branch)).toMatchInlineSnapshot(`
       {
-        "children": [
-          {
-            "value": "child2-1",
-          },
-        ],
-        "value": "branch1-1",
+        "value": "child2-1",
       }
     `)
   })
@@ -978,6 +1003,7 @@ describe("tree / filter", () => {
           {
             "children": [
               {
+                "children": [],
                 "value": "branch1-1",
               },
             ],
@@ -1012,7 +1038,7 @@ describe("tree / filter", () => {
 
   it("filters by depth", () => {
     // Filter nodes at depth 1 (direct children of root)
-    expect(filter((node, indexPath) => indexPath.length === 1)).toMatchInlineSnapshot(`
+    expect(filter((_, indexPath) => indexPath.length === 1)).toMatchInlineSnapshot(`
       "ROOT
       ├── branch1
       ├── child1
@@ -1020,7 +1046,7 @@ describe("tree / filter", () => {
     `)
 
     // Filter nodes at depth 2
-    expect(filter((node, indexPath) => indexPath.length === 2)).toMatchInlineSnapshot(`
+    expect(filter((_, indexPath) => indexPath.length === 2)).toMatchInlineSnapshot(`
       "ROOT
       └── branch1
           ├── child1-1
@@ -1056,5 +1082,43 @@ describe("tree / filter", () => {
       │       └── child2-1
       └── child2"
     `)
+  })
+
+  it("preserves children key as empty array when filtering results in no matching children", () => {
+    // Filter nodes that don't match any children - this should preserve the children key as empty array
+    const filtered = tree.filter((node) => node.value === "non-existent-child")
+
+    // The root node should still have the children key, but as an empty array
+    expect(filtered.rootNode.children).toEqual([])
+    expect(filtered.rootNode).toHaveProperty("children")
+
+    // Test with a node that originally had children but after filtering has none
+    // Filter for child1 at root level - this should preserve ROOT and child1 but not branch1
+    const filteredForChild1 = tree.filter((node) => node.value === "child1")
+
+    // ROOT should still have children property (empty array) since it originally had children
+    expect(filteredForChild1.rootNode.children).toHaveLength(1)
+    expect(filteredForChild1.rootNode.children?.[0].value).toBe("child1")
+
+    // Test filtering that results in a branch with no children
+    const filteredForBranch = tree.filter((node) => node.value === "branch1")
+    const branch1 = filteredForBranch.findNode("branch1")
+    expect(branch1).toBeDefined()
+    // branch1 should have empty children array since it originally had children but none match
+    expect(branch1?.children).toEqual([])
+    expect(branch1).toHaveProperty("children")
+
+    // Test nodes that were filtered out but still have the structure preserved
+    const filteredSpecific = tree.filter((node) => node.value === "child2-1")
+
+    // branch1-1 should have children array with the matching node
+    const branch1_1 = filteredSpecific.findNode("branch1-1")
+    expect(branch1_1?.children).toHaveLength(1)
+    expect(branch1_1?.children?.[0].value).toBe("child2-1")
+
+    // The matched child should not have children property (since it's a leaf)
+    const child21 = filteredSpecific.findNode("child2-1")
+    expect(child21).toBeDefined()
+    expect(child21).not.toHaveProperty("children")
   })
 })

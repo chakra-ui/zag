@@ -174,40 +174,40 @@ export interface TabsApi<T extends PropTypes = PropTypes> {
   /**
    * Sets the value of the tabs.
    */
-  setValue(value: string): void
+  setValue: (value: string) => void
   /**
    * Clears the value of the tabs.
    */
-  clearValue(): void
+  clearValue: VoidFunction
   /**
    * Sets the indicator rect to the tab with the given value
    */
-  setIndicatorRect(value: string): void
+  setIndicatorRect: (value: string) => void
   /**
    * Synchronizes the tab index of the content element.
    * Useful when rendering tabs within a select or combobox
    */
-  syncTabIndex(): void
+  syncTabIndex: VoidFunction
   /**
    * Set focus on the selected tab trigger
    */
-  focus(): void
+  focus: VoidFunction
   /**
    * Selects the next tab
    */
-  selectNext(fromValue?: string): void
+  selectNext: (fromValue?: string) => void
   /**
    * Selects the previous tab
    */
-  selectPrev(fromValue?: string): void
+  selectPrev: (fromValue?: string) => void
   /**
    * Returns the state of the trigger with the given props
    */
-  getTriggerState(props: TriggerProps): TriggerState
+  getTriggerState: (props: TriggerProps) => TriggerState
 
-  getRootProps(): T["element"]
-  getListProps(): T["element"]
-  getTriggerProps(props: TriggerProps): T["button"]
-  getContentProps(props: ContentProps): T["element"]
-  getIndicatorProps(): T["element"]
+  getRootProps: () => T["element"]
+  getListProps: () => T["element"]
+  getTriggerProps: (props: TriggerProps) => T["button"]
+  getContentProps: (props: ContentProps) => T["element"]
+  getIndicatorProps: () => T["element"]
 }

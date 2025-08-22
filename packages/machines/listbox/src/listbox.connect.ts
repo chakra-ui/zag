@@ -61,7 +61,7 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
     selectedItems,
     hasSelectedItems: computed("hasSelectedItems"),
     value,
-    valueAsString: context.get("valueAsString"),
+    valueAsString: computed("valueAsString"),
     collection,
     disabled: !!disabled,
     selectValue(value) {
@@ -143,21 +143,34 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
           if (event.defaultPrevented) return
           if (isComposingEvent(event)) return
           const nativeEvent = getNativeEvent(event)
+
+          const forwardEvent = () => {
+            event.preventDefault()
+            const win = scope.getWin()
+            const keyboardEvent = new win.KeyboardEvent(nativeEvent.type, nativeEvent)
+            dom.getContentEl(scope)?.dispatchEvent(keyboardEvent)
+          }
+
           switch (nativeEvent.key) {
-            case "ArrowDown":
-            case "ArrowUp":
+            case "ArrowLeft":
+            case "ArrowRight": {
+              if (!isGridCollection(collection)) return
+              if (event.ctrlKey) return
+              forwardEvent()
+            }
+
             case "Home":
             case "End": {
-              if ((event.key === "Home" || event.key === "End") && !highlightedValue && event.shiftKey) {
-                return
-              }
+              if (highlightedValue == null && event.shiftKey) return
+              forwardEvent()
+            }
 
-              event.preventDefault()
-              const win = scope.getWin()
-              const keyboardEvent = new win.KeyboardEvent(nativeEvent.type, nativeEvent)
-              dom.getContentEl(scope)?.dispatchEvent(keyboardEvent)
+            case "ArrowDown":
+            case "ArrowUp": {
+              forwardEvent()
               break
             }
+
             case "Enter":
               event.preventDefault()
               send({ type: "ITEM.CLICK", value: highlightedValue })

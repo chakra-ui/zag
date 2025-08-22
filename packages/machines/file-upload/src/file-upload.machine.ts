@@ -14,6 +14,7 @@ export const machine = createMachine<FileUploadSchema>({
       maxFiles: 1,
       allowDrop: true,
       preventDocumentDrop: true,
+      defaultAcceptedFiles: [],
       ...props,
       translations: {
         dropzone: "dropzone",
@@ -31,7 +32,8 @@ export const machine = createMachine<FileUploadSchema>({
   context({ prop, bindable, getContext }) {
     return {
       acceptedFiles: bindable<File[]>(() => ({
-        defaultValue: [],
+        defaultValue: prop("defaultAcceptedFiles"),
+        value: prop("acceptedFiles"),
         isEqual: (a, b) => a.length === b?.length && a.every((file, i) => isFileEqual(file, b[i])),
         hash(value) {
           return value.map((file) => `${file.name}-${file.size}`).join(",")
@@ -50,6 +52,9 @@ export const machine = createMachine<FileUploadSchema>({
           prop("onFileReject")?.({ files: value })
           prop("onFileChange")?.({ acceptedFiles: ctx.get("acceptedFiles"), rejectedFiles: value })
         },
+      })),
+      transforming: bindable<boolean>(() => ({
+        defaultValue: false,
       })),
     }
   },
@@ -175,7 +180,16 @@ export const machine = createMachine<FileUploadSchema>({
       },
       setEventFiles(params) {
         const { computed, context, event, prop } = params
-        const { acceptedFiles, rejectedFiles } = getEventFiles(params, event.files)
+
+        const currentAcceptedFiles = context.get("acceptedFiles")
+        const currentRejectedFiles = context.get("rejectedFiles")
+
+        const { acceptedFiles, rejectedFiles } = getEventFiles(
+          params,
+          event.files,
+          currentAcceptedFiles,
+          currentRejectedFiles,
+        )
 
         const set = (files: File[]) => {
           if (computed("multiple")) {
@@ -198,10 +212,14 @@ export const machine = createMachine<FileUploadSchema>({
 
         const transform = prop("transformFiles")
         if (transform) {
+          context.set("transforming", true)
           transform(acceptedFiles)
             .then(set)
             .catch((err) => {
               warn(`[zag-js/file-upload] error transforming files\n${err}`)
+            })
+            .finally(() => {
+              context.set("transforming", false)
             })
         } else {
           set(acceptedFiles)

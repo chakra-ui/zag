@@ -16,8 +16,8 @@ export interface StepChangeDetails {
 export interface ElementIds {
   root?: string | undefined
   list?: string | undefined
-  triggerId?(index: number): string
-  contentId?(index: number): string
+  triggerId?: ((index: number) => string) | undefined
+  contentId?: ((index: number) => string) | undefined
 }
 
 export interface StepsProps extends DirectionProperty, CommonProperties {
@@ -132,32 +132,32 @@ export interface StepsApi<T extends PropTypes = PropTypes> {
   /**
    * Function to set the value of the stepper.
    */
-  setStep(step: number): void
+  setStep: (step: number) => void
   /**
    * Function to go to the next step.
    */
-  goToNextStep(): void
+  goToNextStep: VoidFunction
   /**
    * Function to go to the previous step.
    */
-  goToPrevStep(): void
+  goToPrevStep: VoidFunction
   /**
    * Function to go to reset the stepper.
    */
-  resetStep(): void
+  resetStep: VoidFunction
   /**
    * Returns the state of the item at the given index.
    */
-  getItemState(props: ItemProps): ItemState
+  getItemState: (props: ItemProps) => ItemState
 
-  getRootProps(): T["element"]
-  getListProps(): T["element"]
-  getItemProps(props: ItemProps): T["element"]
-  getTriggerProps(props: ItemProps): T["element"]
-  getContentProps(props: ItemProps): T["element"]
-  getNextTriggerProps(): T["button"]
-  getPrevTriggerProps(): T["button"]
-  getProgressProps(): T["element"]
-  getIndicatorProps(props: ItemProps): T["element"]
-  getSeparatorProps(props: ItemProps): T["element"]
+  getRootProps: () => T["element"]
+  getListProps: () => T["element"]
+  getItemProps: (props: ItemProps) => T["element"]
+  getTriggerProps: (props: ItemProps) => T["element"]
+  getContentProps: (props: ItemProps) => T["element"]
+  getNextTriggerProps: () => T["button"]
+  getPrevTriggerProps: () => T["button"]
+  getProgressProps: () => T["element"]
+  getIndicatorProps: (props: ItemProps) => T["element"]
+  getSeparatorProps: (props: ItemProps) => T["element"]
 }

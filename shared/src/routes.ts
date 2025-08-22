@@ -5,6 +5,8 @@ type RouteData = {
 
 export const routesData: RouteData[] = [
   { label: "Bottom Sheet", path: "/bottom-sheet" },
+  { label: "Scroll Area", path: "/scroll-area" },
+  { label: "Scroll Area (Nested)", path: "/scroll-area-nested" },
   { label: "Async List", path: "/async-list" },
   { label: "Password Input", path: "/password-input" },
   { label: "Listbox", path: "/listbox" },
@@ -33,6 +35,9 @@ export const routesData: RouteData[] = [
   { label: "Date Picker (Single)", path: "/date-picker" },
   { label: "Date Picker (Range)", path: "/date-picker-range" },
   { label: "Date Picker (Multi)", path: "/date-picker-multi" },
+  { label: "Date Picker (Inline)", path: "/date-picker-inline" },
+  { label: "Date Picker (Month + Range)", path: "/date-picker-month-range" },
+  { label: "Date Picker (Year + Range)", path: "/date-picker-year-range" },
   { label: "Select", path: "/select" },
   { label: "Accordion", path: "/accordion" },
   { label: "Checkbox", path: "/checkbox" },
@@ -63,4 +68,5 @@ export const routesData: RouteData[] = [
   { label: "Tooltip", path: "/tooltip" },
   { label: "Segment Control", path: "/segment-control" },
   { label: "Splitter", path: "/splitter" },
+  { label: "JSON Tree", path: "/json-tree" },
 ]

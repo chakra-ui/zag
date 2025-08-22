@@ -12,7 +12,7 @@
     "@internationalized/date": "3.8.2",
     "@solidjs/meta": "0.29.4",
     "@solidjs/router": "0.15.3",
-    "@solidjs/start": "1.1.5",
+    "@solidjs/start": "1.1.7",
     "@zag-js/accordion": "workspace:*",
     "@zag-js/anatomy": "workspace:*",
     "@zag-js/anatomy-icons": "workspace:*",
@@ -47,6 +47,7 @@
     "@zag-js/hover-card": "workspace:*",
     "@zag-js/i18n-utils": "workspace:*",
     "@zag-js/interact-outside": "workspace:*",
+    "@zag-js/json-tree-utils": "workspace:*",
     "@zag-js/listbox": "workspace:*",
     "@zag-js/live-region": "workspace:*",
     "@zag-js/menu": "workspace:*",
@@ -65,6 +66,7 @@
     "@zag-js/rect-utils": "workspace:*",
     "@zag-js/remove-scroll": "workspace:*",
     "@zag-js/scroll-snap": "workspace:*",
+    "@zag-js/scroll-area": "workspace:*",
     "@zag-js/select": "workspace:*",
     "@zag-js/shared": "workspace:*",
     "@zag-js/signature-pad": "workspace:*",
@@ -88,10 +90,10 @@
     "@zag-js/types": "workspace:*",
     "@zag-js/utils": "workspace:*",
     "form-serialize": "0.7.2",
-    "lucide-solid": "0.522.0",
-    "match-sorter": "8.0.3",
-    "solid-js": "1.9.7",
-    "vinxi": "0.5.7"
+    "lucide-solid": "0.540.0",
+    "match-sorter": "8.1.0",
+    "solid-js": "1.9.9",
+    "vinxi": "0.5.8"
   },
   "engines": {
     "node": ">=18"

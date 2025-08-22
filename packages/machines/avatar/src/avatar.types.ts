@@ -62,17 +62,17 @@ export interface AvatarApi<T extends PropTypes = PropTypes> {
   /**
    * Function to set new src.
    */
-  setSrc(src: string): void
+  setSrc: (src: string) => void
   /**
    * Function to set loaded state.
    */
-  setLoaded(): void
+  setLoaded: VoidFunction
   /**
    * Function to set error state.
    */
-  setError(): void
+  setError: VoidFunction
 
-  getRootProps(): T["element"]
-  getImageProps(): T["img"]
-  getFallbackProps(): T["element"]
+  getRootProps: () => T["element"]
+  getImageProps: () => T["img"]
+  getFallbackProps: () => T["element"]
 }

@@ -12,7 +12,7 @@
   },
   "dependencies": {
     "@internationalized/date": "3.8.2",
-    "@tanstack/react-virtual": "3.13.10",
+    "@tanstack/react-virtual": "3.13.12",
     "@types/textarea-caret": "3.0.4",
     "@zag-js/accordion": "workspace:*",
     "@zag-js/anatomy": "workspace:*",
@@ -48,6 +48,7 @@
     "@zag-js/hover-card": "workspace:*",
     "@zag-js/i18n-utils": "workspace:*",
     "@zag-js/interact-outside": "workspace:*",
+    "@zag-js/json-tree-utils": "workspace:*",
     "@zag-js/listbox": "workspace:*",
     "@zag-js/live-region": "workspace:*",
     "@zag-js/menu": "workspace:*",
@@ -66,6 +67,7 @@
     "@zag-js/react": "workspace:*",
     "@zag-js/rect-utils": "workspace:*",
     "@zag-js/remove-scroll": "workspace:*",
+    "@zag-js/scroll-area": "workspace:*",
     "@zag-js/scroll-snap": "workspace:*",
     "@zag-js/select": "workspace:*",
     "@zag-js/shared": "workspace:*",
@@ -90,25 +92,26 @@
     "@zag-js/utils": "workspace:*",
     "form-serialize": "0.7.2",
     "image-conversion": "2.1.1",
-    "lucide-react": "0.522.0",
-    "match-sorter": "8.0.3",
-    "next": "15.3.4",
+    "lucide-react": "0.540.0",
+    "match-sorter": "8.1.0",
+    "next": "15.4.7",
     "next-cloudinary": "6.16.0",
-    "react": "19.1.0",
-    "react-dom": "19.1.0",
-    "react-hook-form": "7.58.1",
+    "react": "19.1.1",
+    "react-dom": "19.1.1",
+    "react-hook-form": "7.62.0",
     "react-spinners": "0.17.0",
-    "textarea-caret": "^3.1.0"
+    "textarea-caret": "^3.1.0",
+    "virtua": "^0.41.5"
   },
   "devDependencies": {
+    "@next/eslint-plugin-next": "15.4.7",
     "@types/form-serialize": "0.7.4",
-    "@types/node": "24.0.3",
+    "@types/node": "24.3.0",
     "@types/react": "^19",
     "@types/react-dom": "^19",
-    "@next/eslint-plugin-next": "15.3.4",
     "eslint-plugin-react": "7.37.5",
     "eslint-plugin-react-hooks": "5.2.0",
-    "typescript": "5.8.3"
+    "typescript": "5.9.2"
   },
   "license": "MIT"
 }

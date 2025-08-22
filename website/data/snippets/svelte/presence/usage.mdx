@@ -1,0 +1,38 @@
+```svelte
+<script lang="ts">
+  import * as presence from "@zag-js/presence"
+  import { normalizeProps, useMachine } from "@zag-js/svelte"
+  import type { Snippet } from "svelte"
+
+  interface Props {
+    present: boolean
+    unmountOnExit?: boolean
+    onExitComplete?: () => void
+    children?: Snippet
+  }
+
+  let { present, unmountOnExit, onExitComplete, children }: Props = $props()
+
+  const service = useMachine(presence.machine, () => ({
+    present,
+    onExitComplete,
+  }))
+  const api = $derived(presence.connect(service, normalizeProps))
+
+  function setNode(node: HTMLDivElement) {
+    api.setNode(node)
+  }
+
+  const unmount = $derived(!api.present && unmountOnExit)
+</script>
+
+{#if !unmount}
+  <div
+    {@attach setNode}
+    hidden={!api.present}
+    data-state={api.skip ? undefined : present ? "open" : "closed"}
+  >
+    {@render children?.()}
+  </div>
+{/if}
+```

@@ -4,7 +4,259 @@ All notable changes to this project will be documented in this file.
 
 > For v0.x changelog, see the [v0 branch](https://github.com/chakra-ui/zag/blob/v0/CHANGELOG.md)
 
-## [1.16.1](./#1.16.1) - 2025-06-24
+## [1.21.7](./#1.21.7) - 2025-08-19
+
+### Added
+
+- **Highlight Word**: Add `exactMatch` option that enables whole-word matching using regex word boundaries.
+
+### Fixed
+
+- **Menu**: Fix context menu repositioning logic
+
+- **Scroll Area**: Add `data-hover` to scroll area
+
+## [1.21.6](./#1.21.6) - 2025-08-17
+
+### Fixed
+
+- **Menu**: Fix context menu positioning bug where reopening at the same coordinates fails to reposition
+
+- **Scroll Area**: Rename `data-hovering` to `data-hover` for consistency
+
+## [1.21.5](./#1.21.5) - 2025-08-16
+
+### Fixed
+
+- **Scroll Area**:
+  - Fix issue where scroll area thumb applies width/height incorrectly
+  - Add `data-overflow-*` to content and corner
+  - Add custom easing function support for smooth scrolling
+
+## [1.21.4](./#1.21.4) - 2025-08-16
+
+### Fixed
+
+- **Scroll Area**: Ensure types are exported and fix incorrect `@zag-js/dom-query/src/query` import
+
+- **ListCollection**
+  - Avoid recomputing groups on every call to `at()` and `indexOf()`
+  - Fixed bug in `find()` method (was checking `!= null` instead of `!== -1`)
+
+- **GridCollection**: Avoid recomputing rows on every call to `getRows()`
+
+- **Menu**: Add `data-state` attribute for context menu trigger
+
+## [1.21.3](./#1.21.3) - 2025-08-14
+
+### Fixed
+
+- **Listbox**: Add support for navigating grid collections
+
+### Changed
+
+- **Async List**: Improve type inference for descriptors
+
+- **Framework Components**: Improve runtime performance of components by removing refs/events from stateful to
+  non-stateful objects (affects Svelte, Solid, and Vue components)
+
+## [1.21.2](./#1.21.2) - 2025-08-13
+
+### Added
+
+- **Scroll Area**: Initial release of scroll area state machine
+
+### Fixed
+
+- **Carousel**:
+  - Fix an issue where the carousel would not update when `slideCount` or `autoplay` props change.
+  - Fix an issue where `loop: false` was ignored when using autoplay. Now, the carousel will stop when it gets to the
+    last slide.
+
+- **Date Picker**: Expose `data-inline` attribute on Content part to enable distinct styling for inline date pickers
+  versus popover date pickers.
+
+- **Menu**: Fix issue where `onCheckedChange` could be called twice on checkbox or radio item
+
+- **Radio Group**: Fixed issue where arrow key navigation doesn't apply `data-focus-visible` on the newly focused item.
+
+## [1.21.1](./#1.21.1) - 2025-07-31
+
+### Fixed
+
+- **Carousel**: Fix issue where controlled carousel ignores last slide
+
+- **Tour**: Re-expose `WaitOptions`
+
+- **Floating Panel**: Add data attributes for floating panel stage status
+
+## [1.21.0](./#1.21.0) - 2025-07-26
+
+### Added
+
+- **File Upload**: Add `api.transforming` to track file transformation state when using `transformFiles`. This enables
+  developers to show loading states during file processing.
+
+### Fixed
+
+- **Dialog**
+  - Sync content `--layer-index` with positioner and backdrop
+  - Decouple `trapFocus` from `modal` so it's possible to set `modal=false` and `trapFocus=true`
+
+## [1.20.1](./#1.20.1) - 2025-07-23
+
+### Fixed
+
+- **Date Picker**: Fixed issue where hovered range was connect to selected values, when it shouldn't
+
+- **Tree View**: Fixed issue where tree view doesn't scroll into view when content overflows.
+
+## [1.20.0](./#1.20.0) - 2025-07-22
+
+### Fixed
+
+- **Date Picker**: Fix date comparison issues when time components are involved. This resolves critical issues with date
+  comparison operations when different date types (`CalendarDate`, `CalendarDateTime`, `ZonedDateTime`) are mixed,
+  particularly in scenarios involving time components.
+
+### Added
+
+- **Date Picker**: Added hover range preview support for date picker range selection. Added `inHoveredRange`,
+  `firstInHoveredRange`, and `lastInHoveredRange` properties to `DayTableCellState` with corresponding data attributes
+  `data-in-hover-range`, `data-hover-range-start`, and `data-hover-range-end`.
+
+  Hover range states are only active when not overlapping with actual selected range, enabling distinct styling for
+  hover preview vs actual selection in range mode.
+
+## [1.19.0](./#1.19.0) - 2025-07-20
+
+### Added
+
+- **File Upload**: Add support for programmatically controlling the accepted files via `acceptedFiles` and
+  `defaultAcceptedFiles`
+
+- **Signature Pad**: Add support for programmatically controlling the paths via `paths` and `defaultPaths` props.
+
+## [1.18.5](./#1.18.5) - 2025-07-19
+
+### Added
+
+- **JSON Tree Utils**: Add support for `groupArraysAfterLength` to truncate large arrays into chunks (reducing the
+  number of DOM nodes rendered).
+
+### Fixed
+
+- **General**: Fix issue destructuring returned api could throw an ESLint `unbound-method` warning
+
+- **Tree View**: Fix issue where `onExpandedChange`, `onSelectionChange` and `onFocusChange` doesn't infer the tree node
+  types
+
+- **Popper**: Expose floatingElement to the `updatePosition` function
+
+## [1.18.4](./#1.18.4) - 2025-07-18
+
+### Fixed
+
+- **Collection**: Fix issue where the `filter` method completely deletes the children key from the node when there are
+  no matching children
+
+- **Number Input**: Fix issue where default pattern does not allow negative numbers with decimal point
+
+## [1.18.3](./#1.18.3) - 2025-07-05
+
+### Fixed
+
+- **Carousel**: Fix issue where full page carousel could trap scrolling
+
+- **File Upload**:
+  - Fix issue where calling `api.setFiles` invokes validation with incorrect `acceptedFiles`
+  - Fix issue where the browser might not be able to infer the mime type of a file due to limitations, drag source or
+    security restrictions. As a fallback in the file validation logic, we now infer the mime type from the file
+    extension.
+
+## [1.18.2](./#1.18.2) - 2025-07-04
+
+### Added
+
+- **Collection**: Add `upsert` to list collection. Useful for making creatable items in select or combobox
+
+### Fixed
+
+- **Date Picker**: Fix issue where `focusedValue` could not be fully controlled
+- **Toast**: Fix issue where toast `title` or `description` could not accept React or Vue elements
+
+## [1.18.1](./#1.18.1) - 2025-07-02
+
+### Fixed
+
+- **Combobox**:
+  - Expose `reason` to `onOpenChange` and `onInputValueChange` callbacks
+  - Select highlighted item only if it exists in the collection
+  - Expose `api.clearHighlightedValue` function to clear highlighted value
+
+- **Date Picker**: Fix issue where datepicker errors when setting `selectionMode=range` and `minView=year`
+
+- **Listbox**: Select highlighted item only if it exists in the collection
+
+- **Progress**: Improve `valueAsString` formatting
+
+- **Select**:
+  - Select highlighted item only if it exists in the collection
+  - Expose `api.clearHighlightedValue` function to clear highlighted value
+
+- **Tour**: Fix an issue where the `goto` function in `StepActionMap` doesn't work when passing step IDs (string)
+
+- **Tree View**: Expose `id` in the tree node state
+
+## [1.18.0](./#1.18.0) - 2025-06-30
+
+### Added
+
+- **Color Picker**: Add support for `inline` prop to render color picker inline
+- **Date Picker**: Add support for `inline` prop to render the date calendar inline
+
+### Fixed
+
+- **Aria Hidden**: Exclude elements with `role="status"` and `output` elements when applying aria-hidden
+- **Color Picker**: Auto-prefix Hex values with `#` if missing when using the `hex` channel input
+- **Menu**: Fix interaction outside detection for focusable context trigger
+- **Tree View**: Improve support for rendering tree items as links
+
+## [1.17.4](./#1.17.4) - 2025-06-27
+
+### Fixed
+
+- **Combobox, Select, Listbox**: Fix issue where rehydrating `defaultValue` or `value` after fetching items doesn't
+  update the `valueAsString`
+
+## [1.17.3](./#1.17.3) - 2025-06-27
+
+### Fixed
+
+- **Tree View**: Fix tree traversal for querying last node
+
+## [1.17.2](./#1.17.2) - 2025-06-26
+
+### Fixed
+
+- **Angle Slider**: Fix issue where scrubbing doesn't feel smooth on touch devices
+
+- **Timer**:
+  - Fix issue where timer could continue beyond `targetMs` when window is not visible
+  - Add validation to ensure `startMs` and `targetMs` are configured correctly
+  - Fix `progressPercent` calculation for countdown timers
+
+- **Tree View**: Expose node details in `onExpandChange`, `onSelectionChange` and `onFocusChange`
+
+### Changed
+
+- **Collection**:
+  - Add support for `findNodes` to find multiple nodes by value in a single pass
+  - Fix issue with `getLastNode` not returning the last node in the tree with only one branch
+
+- **I18n Utils**: Add new `createCollator` function for locale sensitive string comparison
+
+## [1.17.1](./#1.17.1) - 2025-06-24
 
 ### Fixed
 
@@ -18,7 +270,7 @@ All notable changes to this project will be documented in this file.
   - Fix issue where clicking a branch with indeterminate state doesn't check its child nodes
   - Remove `aria-busy` attribute from branch trigger when not loading children
 
-## [1.16.0](./#1.16.0) - 2025-06-23
+## [1.17.0](./#1.17.0) - 2025-06-23
 
 ### Fixed
 
@@ -29,7 +281,7 @@ All notable changes to this project will be documented in this file.
 
 - **Tree View**: Rename `getItemCheckboxProps` to `getNodeCheckboxProps` since it can be used in both items and branches
 
-## [1.15.8](./#1.15.8) - 2025-06-21
+## [1.16.0](./#1.16.0) - 2025-06-21
 
 ### Added
 

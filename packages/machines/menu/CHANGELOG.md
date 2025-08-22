@@ -1,5 +1,304 @@
 # @zag-js/menu
 
+## 1.21.7
+
+### Patch Changes
+
+- [`672e44b`](https://github.com/chakra-ui/zag/commit/672e44b9035e583d7593cf0241785dffe0b4d299) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix context menu repositioning logic
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.21.7
+  - @zag-js/core@1.21.7
+  - @zag-js/types@1.21.7
+  - @zag-js/utils@1.21.7
+  - @zag-js/dismissable@1.21.7
+  - @zag-js/dom-query@1.21.7
+  - @zag-js/popper@1.21.7
+  - @zag-js/rect-utils@1.21.7
+
+## 1.21.6
+
+### Patch Changes
+
+- [`eee6ad2`](https://github.com/chakra-ui/zag/commit/eee6ad2d03a301108efd66ff25af61024fba0597) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix context menu positioning bug where reopening at the same
+  coordinates fails to reposition
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.21.6
+  - @zag-js/core@1.21.6
+  - @zag-js/types@1.21.6
+  - @zag-js/utils@1.21.6
+  - @zag-js/dismissable@1.21.6
+  - @zag-js/dom-query@1.21.6
+  - @zag-js/popper@1.21.6
+  - @zag-js/rect-utils@1.21.6
+
+## 1.21.5
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.21.5
+  - @zag-js/core@1.21.5
+  - @zag-js/types@1.21.5
+  - @zag-js/utils@1.21.5
+  - @zag-js/dismissable@1.21.5
+  - @zag-js/dom-query@1.21.5
+  - @zag-js/popper@1.21.5
+  - @zag-js/rect-utils@1.21.5
+
+## 1.21.4
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.21.4
+  - @zag-js/core@1.21.4
+  - @zag-js/types@1.21.4
+  - @zag-js/utils@1.21.4
+  - @zag-js/dismissable@1.21.4
+  - @zag-js/dom-query@1.21.4
+  - @zag-js/popper@1.21.4
+  - @zag-js/rect-utils@1.21.4
+
+## 1.21.3
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.21.3
+  - @zag-js/core@1.21.3
+  - @zag-js/types@1.21.3
+  - @zag-js/utils@1.21.3
+  - @zag-js/dismissable@1.21.3
+  - @zag-js/dom-query@1.21.3
+  - @zag-js/popper@1.21.3
+  - @zag-js/rect-utils@1.21.3
+
+## 1.21.2
+
+### Patch Changes
+
+- [#2624](https://github.com/chakra-ui/zag/pull/2624)
+  [`ad84b5d`](https://github.com/chakra-ui/zag/commit/ad84b5d78a564c78090b05a6eb8488321d9b105c) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix issue where `onCheckedChange` could be called twice on
+  checkbox or radio item
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.21.2
+  - @zag-js/core@1.21.2
+  - @zag-js/types@1.21.2
+  - @zag-js/utils@1.21.2
+  - @zag-js/dismissable@1.21.2
+  - @zag-js/dom-query@1.21.2
+  - @zag-js/popper@1.21.2
+  - @zag-js/rect-utils@1.21.2
+
+## 1.21.1
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.21.1
+  - @zag-js/core@1.21.1
+  - @zag-js/types@1.21.1
+  - @zag-js/utils@1.21.1
+  - @zag-js/dismissable@1.21.1
+  - @zag-js/dom-query@1.21.1
+  - @zag-js/popper@1.21.1
+  - @zag-js/rect-utils@1.21.1
+
+## 1.21.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.21.0
+  - @zag-js/core@1.21.0
+  - @zag-js/types@1.21.0
+  - @zag-js/utils@1.21.0
+  - @zag-js/dismissable@1.21.0
+  - @zag-js/dom-query@1.21.0
+  - @zag-js/popper@1.21.0
+  - @zag-js/rect-utils@1.21.0
+
+## 1.20.1
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.20.1
+  - @zag-js/core@1.20.1
+  - @zag-js/types@1.20.1
+  - @zag-js/utils@1.20.1
+  - @zag-js/dismissable@1.20.1
+  - @zag-js/dom-query@1.20.1
+  - @zag-js/popper@1.20.1
+  - @zag-js/rect-utils@1.20.1
+
+## 1.20.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.20.0
+  - @zag-js/core@1.20.0
+  - @zag-js/types@1.20.0
+  - @zag-js/utils@1.20.0
+  - @zag-js/dismissable@1.20.0
+  - @zag-js/dom-query@1.20.0
+  - @zag-js/popper@1.20.0
+  - @zag-js/rect-utils@1.20.0
+
+## 1.19.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.19.0
+  - @zag-js/core@1.19.0
+  - @zag-js/types@1.19.0
+  - @zag-js/utils@1.19.0
+  - @zag-js/dismissable@1.19.0
+  - @zag-js/dom-query@1.19.0
+  - @zag-js/popper@1.19.0
+  - @zag-js/rect-utils@1.19.0
+
+## 1.18.5
+
+### Patch Changes
+
+- [`59a7bfb`](https://github.com/chakra-ui/zag/commit/59a7bfb7215b4c9d13d11487f50ad852cd8347a9) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix issue destructuring returned api could throw an ESLint
+  `unbound-method` warning
+
+- Updated dependencies [[`218ab81`](https://github.com/chakra-ui/zag/commit/218ab81e6453356a3bbd5e5eb612d9b671f84323)]:
+  - @zag-js/popper@1.18.5
+  - @zag-js/anatomy@1.18.5
+  - @zag-js/core@1.18.5
+  - @zag-js/types@1.18.5
+  - @zag-js/utils@1.18.5
+  - @zag-js/dismissable@1.18.5
+  - @zag-js/dom-query@1.18.5
+  - @zag-js/rect-utils@1.18.5
+
+## 1.18.4
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.18.4
+  - @zag-js/core@1.18.4
+  - @zag-js/types@1.18.4
+  - @zag-js/utils@1.18.4
+  - @zag-js/dismissable@1.18.4
+  - @zag-js/dom-query@1.18.4
+  - @zag-js/popper@1.18.4
+  - @zag-js/rect-utils@1.18.4
+
+## 1.18.3
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.18.3
+  - @zag-js/core@1.18.3
+  - @zag-js/types@1.18.3
+  - @zag-js/utils@1.18.3
+  - @zag-js/dismissable@1.18.3
+  - @zag-js/dom-query@1.18.3
+  - @zag-js/popper@1.18.3
+  - @zag-js/rect-utils@1.18.3
+
+## 1.18.2
+
+### Patch Changes
+
+- Updated dependencies [[`11843e6`](https://github.com/chakra-ui/zag/commit/11843e6adf62b906006890c8003b38da2850c8ee)]:
+  - @zag-js/utils@1.18.2
+  - @zag-js/core@1.18.2
+  - @zag-js/dismissable@1.18.2
+  - @zag-js/popper@1.18.2
+  - @zag-js/anatomy@1.18.2
+  - @zag-js/types@1.18.2
+  - @zag-js/dom-query@1.18.2
+  - @zag-js/rect-utils@1.18.2
+
+## 1.18.1
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.18.1
+  - @zag-js/core@1.18.1
+  - @zag-js/types@1.18.1
+  - @zag-js/utils@1.18.1
+  - @zag-js/dismissable@1.18.1
+  - @zag-js/dom-query@1.18.1
+  - @zag-js/popper@1.18.1
+  - @zag-js/rect-utils@1.18.1
+
+## 1.18.0
+
+### Patch Changes
+
+- [`8092833`](https://github.com/chakra-ui/zag/commit/8092833ea05a3e885caa54c1704a4bba4a0c4f0e) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix interaction outside detection for focusable context trigger.
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.18.0
+  - @zag-js/core@1.18.0
+  - @zag-js/types@1.18.0
+  - @zag-js/utils@1.18.0
+  - @zag-js/dismissable@1.18.0
+  - @zag-js/dom-query@1.18.0
+  - @zag-js/popper@1.18.0
+  - @zag-js/rect-utils@1.18.0
+
+## 1.17.4
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.17.4
+  - @zag-js/core@1.17.4
+  - @zag-js/types@1.17.4
+  - @zag-js/utils@1.17.4
+  - @zag-js/dismissable@1.17.4
+  - @zag-js/dom-query@1.17.4
+  - @zag-js/popper@1.17.4
+  - @zag-js/rect-utils@1.17.4
+
+## 1.17.3
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.17.3
+  - @zag-js/core@1.17.3
+  - @zag-js/types@1.17.3
+  - @zag-js/utils@1.17.3
+  - @zag-js/dismissable@1.17.3
+  - @zag-js/dom-query@1.17.3
+  - @zag-js/popper@1.17.3
+  - @zag-js/rect-utils@1.17.3
+
+## 1.17.2
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.17.2
+  - @zag-js/core@1.17.2
+  - @zag-js/types@1.17.2
+  - @zag-js/utils@1.17.2
+  - @zag-js/dismissable@1.17.2
+  - @zag-js/dom-query@1.17.2
+  - @zag-js/popper@1.17.2
+  - @zag-js/rect-utils@1.17.2
+
 ## 1.17.1
 
 ### Patch Changes

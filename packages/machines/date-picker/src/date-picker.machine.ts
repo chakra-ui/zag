@@ -64,7 +64,8 @@ export const machine = createMachine<DatePickerSchema>({
       : undefined
 
     // get initial focused value
-    let focusedValue = props.focusedValue || value?.[0] || defaultValue?.[0] || getTodayDate(timeZone)
+    let focusedValue =
+      props.focusedValue || props.defaultFocusedValue || value?.[0] || defaultValue?.[0] || getTodayDate(timeZone)
     focusedValue = constrainValue(focusedValue, props.min, props.max)
 
     // get the initial view
@@ -90,7 +91,8 @@ export const machine = createMachine<DatePickerSchema>({
         return parseDateString(value, locale, timeZone)
       },
       ...props,
-      focusedValue,
+      focusedValue: typeof props.focusedValue === "undefined" ? undefined : focusedValue,
+      defaultFocusedValue: focusedValue,
       value,
       defaultValue: defaultValue ?? [],
       positioning: {
@@ -101,7 +103,7 @@ export const machine = createMachine<DatePickerSchema>({
   },
 
   initialState({ prop }) {
-    const open = prop("open") || prop("defaultOpen")
+    const open = prop("open") || prop("defaultOpen") || prop("inline")
     return open ? "open" : "idle"
   },
 
@@ -111,22 +113,22 @@ export const machine = createMachine<DatePickerSchema>({
     }
   },
 
-  context({ prop, bindable, getContext, getComputed }) {
+  context({ prop, bindable, getContext }) {
     return {
       focusedValue: bindable<DateValue>(() => ({
-        defaultValue: prop("focusedValue"),
+        defaultValue: prop("defaultFocusedValue"),
+        value: prop("focusedValue"),
         isEqual: isDateEqual,
         hash: (v) => v.toString(),
         sync: true,
         onChange(focusedValue) {
           const context = getContext()
-          const computed = getComputed()
-          prop("onFocusChange")?.({
-            value: context.get("value"),
-            valueAsString: computed("valueAsString"),
-            view: context.get("view"),
-            focusedValue,
-          })
+          const view = context.get("view")
+          const value = context.get("value")
+          const valueAsString = value.map((date) =>
+            prop("format")(date, { locale: prop("locale"), timeZone: prop("timeZone") }),
+          )
+          prop("onFocusChange")?.({ value, valueAsString, view, focusedValue })
         },
       })),
       value: bindable(() => ({
@@ -161,8 +163,9 @@ export const machine = createMachine<DatePickerSchema>({
         },
       })),
       startValue: bindable(() => {
+        const focusedValue = prop("focusedValue") || prop("defaultFocusedValue")
         return {
-          defaultValue: alignDate(prop("focusedValue"), "start", { months: prop("numOfMonths") }, prop("locale")),
+          defaultValue: alignDate(focusedValue, "start", { months: prop("numOfMonths") }, prop("locale")),
           isEqual: isDateEqual,
         }
       }),
@@ -654,7 +657,7 @@ export const machine = createMachine<DatePickerSchema>({
       shouldRestoreFocus: ({ context }) => !!context.get("restoreFocus"),
       isSelectingEndDate: ({ context }) => context.get("activeIndex") === 1,
       closeOnSelect: ({ prop }) => !!prop("closeOnSelect"),
-      isOpenControlled: ({ prop }) => prop("open") != undefined,
+      isOpenControlled: ({ prop }) => prop("open") != undefined || !!prop("inline"),
       isInteractOutsideEvent: ({ event }) => event.previousEvent?.type === "INTERACT_OUTSIDE",
       isInputValueEmpty: ({ event }) => event.value.trim() === "",
       shouldFixOnBlur: ({ event }) => !!event.fixOnBlur,
@@ -662,6 +665,8 @@ export const machine = createMachine<DatePickerSchema>({
 
     effects: {
       trackPositioning({ context, prop, scope }) {
+        if (prop("inline")) return
+
         if (!context.get("currentPlacement")) {
           context.set("currentPlacement", prop("positioning").placement)
         }
@@ -682,7 +687,9 @@ export const machine = createMachine<DatePickerSchema>({
         return () => refs.get("announcer")?.destroy?.()
       },
 
-      trackDismissableElement({ scope, send, context }) {
+      trackDismissableElement({ scope, send, context, prop }) {
+        if (prop("inline")) return
+
         const getContentEl = () => dom.getContentEl(scope)
         return trackDismissableElement(getContentEl, {
           defer: true,
@@ -778,7 +785,8 @@ export const machine = createMachine<DatePickerSchema>({
       },
       resetSelection(params) {
         const { context, event } = params
-        context.set("value", [event.value ?? context.get("focusedValue")])
+        const value = normalizeValue(params, event.value ?? context.get("focusedValue"))
+        context.set("value", [value])
       },
       toggleSelectedDate(params) {
         const { context, event } = params
@@ -1091,10 +1099,12 @@ export const machine = createMachine<DatePickerSchema>({
       },
 
       invokeOnOpen({ prop }) {
+        if (prop("inline")) return
         prop("onOpenChange")?.({ open: true })
       },
 
       invokeOnClose({ prop }) {
+        if (prop("inline")) return
         prop("onOpenChange")?.({ open: false })
       },
 

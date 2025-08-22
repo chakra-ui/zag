@@ -1,4 +1,4 @@
-import type { AsyncListApi, AsyncListService, SortDescriptor } from "./async-list.types"
+import type { AsyncListApi, AsyncListService } from "./async-list.types"
 
 export function connect<T, C>(service: AsyncListService<T, C>): AsyncListApi<T, C> {
   const { state, context, send } = service
@@ -19,10 +19,10 @@ export function connect<T, C>(service: AsyncListService<T, C>): AsyncListApi<T, 
     loadMore() {
       send({ type: "LOAD_MORE" })
     },
-    sort(sortDescriptor: SortDescriptor) {
+    sort(sortDescriptor) {
       send({ type: "SORT", sortDescriptor })
     },
-    setFilterText(filterText: string) {
+    setFilterText(filterText) {
       send({ type: "FILTER", filterText })
     },
   }

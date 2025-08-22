@@ -41,16 +41,16 @@ export type ElementIds = Partial<{
   hiddenInput: string
   trigger: string
   label: string
-  item(id: string): string
-  itemName(id: string): string
-  itemSizeText(id: string): string
-  itemPreview(id: string): string
+  item: (id: string) => string
+  itemName: (id: string) => string
+  itemSizeText: (id: string) => string
+  itemPreview: (id: string) => string
 }>
 
 export interface IntlTranslations {
   dropzone?: string | undefined
-  itemPreview?(file: File): string
-  deleteFile?(file: File): string
+  itemPreview?: ((file: File) => string) | undefined
+  deleteFile?: ((file: File) => string) | undefined
 }
 
 export interface FileUploadProps extends LocaleProperties, CommonProperties {
@@ -110,6 +110,15 @@ export interface FileUploadProps extends LocaleProperties, CommonProperties {
    */
   validate?: ((file: File, details: FileValidateDetails) => FileError[] | null) | undefined
   /**
+   * The default accepted files when rendered.
+   * Use when you don't need to control the accepted files of the input.
+   */
+  defaultAcceptedFiles?: File[] | undefined
+  /**
+   * The controlled accepted files
+   */
+  acceptedFiles?: File[] | undefined
+  /**
    * Function called when the value changes, whether accepted or rejected
    */
   onFileChange?: ((details: FileChangeDetails) => void) | undefined
@@ -150,6 +159,10 @@ interface Context {
    * The current value of the file input
    */
   acceptedFiles: File[]
+  /**
+   * Whether files are currently being transformed
+   */
+  transforming: boolean
 }
 
 type Computed = {
@@ -211,13 +224,17 @@ export interface FileUploadApi<T extends PropTypes = PropTypes> {
    */
   disabled: boolean
   /**
+   * Whether files are currently being transformed via `transformFiles`
+   */
+  transforming: boolean
+  /**
    * Function to open the file dialog
    */
-  openFilePicker(): void
+  openFilePicker: VoidFunction
   /**
    * Function to delete the file from the list
    */
-  deleteFile(file: File): void
+  deleteFile: (file: File) => void
   /**
    * The accepted files that have been dropped or selected
    */
@@ -227,45 +244,45 @@ export interface FileUploadApi<T extends PropTypes = PropTypes> {
    */
   rejectedFiles: FileRejection[]
   /**
-   * Function to set the value
+   * Sets the accepted files
    */
-  setFiles(files: File[]): void
+  setFiles: (files: File[]) => void
   /**
-   * Function to clear the value
+   * Clears the accepted files
    */
-  clearFiles(): void
+  clearFiles: VoidFunction
   /**
-   * Function to clear the rejected files
+   * Clears the rejected files
    */
-  clearRejectedFiles(): void
+  clearRejectedFiles: VoidFunction
   /**
-   * Function to format the file size (e.g. 1.2MB)
+   * Returns the formatted file size (e.g. 1.2MB)
    */
-  getFileSize(file: File): string
+  getFileSize: (file: File) => string
   /**
-   * Function to get the preview url of a file.
+   * Returns the preview url of a file.
    * Returns a function to revoke the url.
    */
-  createFileUrl(file: File, cb: (url: string) => void): VoidFunction
+  createFileUrl: (file: File, cb: (url: string) => void) => VoidFunction
   /**
-   * Function to set the clipboard files.
+   * Sets the clipboard files
    * Returns `true` if the clipboard data contains files, `false` otherwise.
    */
-  setClipboardFiles(dt: DataTransfer | null): boolean
+  setClipboardFiles: (dt: DataTransfer | null) => boolean
 
-  getLabelProps(): T["label"]
-  getRootProps(): T["element"]
-  getDropzoneProps(props?: DropzoneProps): T["element"]
-  getTriggerProps(): T["button"]
-  getHiddenInputProps(): T["input"]
-  getItemGroupProps(): T["element"]
-  getItemProps(props: ItemProps): T["element"]
-  getItemNameProps(props: ItemProps): T["element"]
-  getItemPreviewProps(props: ItemProps): T["element"]
-  getItemPreviewImageProps(props: ItemPreviewImageProps): T["img"]
-  getItemSizeTextProps(props: ItemProps): T["element"]
-  getItemDeleteTriggerProps(props: ItemProps): T["button"]
-  getClearTriggerProps(): T["button"]
+  getLabelProps: () => T["label"]
+  getRootProps: () => T["element"]
+  getDropzoneProps: (props?: DropzoneProps) => T["element"]
+  getTriggerProps: () => T["button"]
+  getHiddenInputProps: () => T["input"]
+  getItemGroupProps: () => T["element"]
+  getItemProps: (props: ItemProps) => T["element"]
+  getItemNameProps: (props: ItemProps) => T["element"]
+  getItemPreviewProps: (props: ItemProps) => T["element"]
+  getItemPreviewImageProps: (props: ItemPreviewImageProps) => T["img"]
+  getItemSizeTextProps: (props: ItemProps) => T["element"]
+  getItemDeleteTriggerProps: (props: ItemProps) => T["button"]
+  getClearTriggerProps: () => T["button"]
 }
 
 export type { FileMimeType }

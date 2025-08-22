@@ -44,6 +44,7 @@
     "@zag-js/hover-card": "workspace:*",
     "@zag-js/i18n-utils": "workspace:*",
     "@zag-js/interact-outside": "workspace:*",
+    "@zag-js/json-tree-utils": "workspace:*",
     "@zag-js/listbox": "workspace:*",
     "@zag-js/live-region": "workspace:*",
     "@zag-js/menu": "workspace:*",
@@ -62,6 +63,7 @@
     "@zag-js/rect-utils": "workspace:*",
     "@zag-js/remove-scroll": "workspace:*",
     "@zag-js/scroll-snap": "workspace:*",
+    "@zag-js/scroll-area": "workspace:*",
     "@zag-js/select": "workspace:*",
     "@zag-js/shared": "workspace:*",
     "@zag-js/signature-pad": "workspace:*",
@@ -86,15 +88,15 @@
     "@zag-js/vue": "workspace:*",
     "epic-spinners": "2.0.0",
     "form-serialize": "0.7.2",
-    "lucide-vue-next": "0.522.0",
-    "match-sorter": "8.0.3",
-    "vue": "3.5.17",
+    "lucide-vue-next": "0.540.0",
+    "match-sorter": "8.1.0",
+    "vue": "3.5.18",
     "vue-router": "4.5.1"
   },
   "devDependencies": {
-    "@nuxt/devtools": "^2.5.0",
+    "@nuxt/devtools": "^2.6.2",
     "@types/form-serialize": "0.7.4",
-    "@types/node": "24.0.3",
-    "nuxt": "3.17.5"
+    "@types/node": "24.3.0",
+    "nuxt": "4.0.3"
   }
 }

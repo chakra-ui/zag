@@ -90,6 +90,7 @@ export class VanillaMachine<T extends MachineSchema> {
       getRefs() {
         return refs as any
       },
+      getEvent: this.getEvent.bind(this),
     })
 
     // subscribe to context changes

@@ -254,3 +254,36 @@ test.describe("combobox / autocomplete", () => {
     await I.seeInputHasValue("mal")
   })
 })
+
+test.describe("combobox / multiple", () => {
+  test.beforeEach(async ({ page }) => {
+    I = new ComboboxModel(page)
+    await I.goto("/combobox-multiple")
+  })
+
+  test("should toggle the same item", async () => {
+    await I.type("mal")
+
+    await I.pressKey("ArrowDown")
+    await I.pressKey("Enter")
+
+    await I.seeValueText("Malawi")
+
+    await I.pressKey("Enter")
+    await I.dontSeeValueText()
+  })
+
+  test("[removeSelected=true] should not toggle the same item", async () => {
+    await I.controls.bool("removeSelected", true)
+
+    await I.type("mal")
+
+    await I.pressKey("ArrowDown")
+    await I.pressKey("Enter")
+
+    await I.seeValueText("Malawi")
+
+    await I.pressKey("Enter")
+    await I.seeValueText("Malawi")
+  })
+})

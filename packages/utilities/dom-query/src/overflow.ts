@@ -40,10 +40,12 @@ export function isInView(el: HTMLElement | Window | VisualViewport, ancestor: HT
 
 const OVERFLOW_RE = /auto|scroll|overlay|hidden|clip/
 
+const nonOverflowValues = new Set<string>(["inline", "contents"])
+
 export function isOverflowElement(el: HTMLElement): boolean {
   const win = getWindow(el)
   const { overflow, overflowX, overflowY, display } = win.getComputedStyle(el)
-  return OVERFLOW_RE.test(overflow + overflowY + overflowX) && !["inline", "contents"].includes(display)
+  return OVERFLOW_RE.test(overflow + overflowY + overflowX) && !nonOverflowValues.has(display)
 }
 
 export interface ScrollOptions extends ScrollIntoViewOptions {

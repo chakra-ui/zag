@@ -1,0 +1,7 @@
+---
+description: 
+globs: **/utilities/**
+alwaysApply: false
+---
+
+Always use the command `pnpm exec vitest` to run the tests

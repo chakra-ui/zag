@@ -43,6 +43,7 @@
     "@zag-js/hover-card": "workspace:*",
     "@zag-js/i18n-utils": "workspace:*",
     "@zag-js/interact-outside": "workspace:*",
+    "@zag-js/json-tree-utils": "workspace:*",
     "@zag-js/listbox": "workspace:*",
     "@zag-js/live-region": "workspace:*",
     "@zag-js/menu": "workspace:*",
@@ -62,6 +63,7 @@
     "@zag-js/rect-utils": "workspace:*",
     "@zag-js/remove-scroll": "workspace:*",
     "@zag-js/scroll-snap": "workspace:*",
+    "@zag-js/scroll-area": "workspace:*",
     "@zag-js/select": "workspace:*",
     "@zag-js/shared": "workspace:*",
     "@zag-js/signature-pad": "workspace:*",
@@ -83,17 +85,17 @@
     "@zag-js/tree-view": "workspace:*",
     "@zag-js/types": "workspace:*",
     "@zag-js/utils": "workspace:*",
-    "lucide-preact": "0.522.0",
-    "match-sorter": "8.0.3",
-    "preact": "10.26.9",
+    "lucide-preact": "0.540.0",
+    "match-sorter": "8.1.0",
+    "preact": "10.27.1",
     "preact-iso": "2.9.2",
-    "preact-render-to-string": "6.5.13"
+    "preact-render-to-string": "6.6.0"
   },
   "devDependencies": {
-    "@preact/preset-vite": "2.10.1",
-    "eslint": "9.29.0",
-    "eslint-config-preact": "1.5.0",
-    "typescript": "5.8.3",
-    "vite": "6.3.5"
+    "@preact/preset-vite": "2.10.2",
+    "eslint": "9.33.0",
+    "eslint-config-preact": "2.0.0",
+    "typescript": "5.9.2",
+    "vite": "7.1.3"
   }
 }

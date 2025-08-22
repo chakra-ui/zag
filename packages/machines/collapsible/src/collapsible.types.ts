@@ -107,14 +107,14 @@ export interface CollapsibleApi<T extends PropTypes = PropTypes> {
   /**
    * Function to open or close the collapsible.
    */
-  setOpen(open: boolean): void
+  setOpen: (open: boolean) => void
   /**
    * Function to measure the size of the content.
    */
-  measureSize(): void
+  measureSize: VoidFunction
 
-  getRootProps(): T["element"]
-  getTriggerProps(): T["button"]
-  getContentProps(): T["element"]
-  getIndicatorProps(): T["element"]
+  getRootProps: () => T["element"]
+  getTriggerProps: () => T["button"]
+  getContentProps: () => T["element"]
+  getIndicatorProps: () => T["element"]
 }

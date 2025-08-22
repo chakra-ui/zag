@@ -96,10 +96,14 @@ export function constrainStart(
   max?: DateValue,
 ): DateValue {
   if (min && date.compare(min) >= 0) {
+    // Ensure consistent date types by converting min to CalendarDate for alignment operations
+    // This prevents time-component comparison issues in alignment calculations
     aligned = maxDate(aligned, alignStart(toCalendarDate(min), duration, locale))!
   }
 
   if (max && date.compare(max) <= 0) {
+    // Ensure consistent date types by converting max to CalendarDate for alignment operations
+    // This prevents time-component comparison issues in alignment calculations
     aligned = minDate(aligned, alignEnd(toCalendarDate(max), duration, locale))!
   }
 
@@ -107,11 +111,16 @@ export function constrainStart(
 }
 
 export function constrainValue(date: DateValue, minValue?: DateValue, maxValue?: DateValue): DateValue {
+  // Convert all dates to CalendarDate for consistent comparison without time components
+  // This prevents issues when comparing dates with different time information
+  let constrainedDate = toCalendarDate(date)
+
   if (minValue) {
-    date = maxDate(date, toCalendarDate(minValue))!
+    constrainedDate = maxDate(constrainedDate, toCalendarDate(minValue))!
   }
   if (maxValue) {
-    date = minDate(date, toCalendarDate(maxValue))!
+    constrainedDate = minDate(constrainedDate, toCalendarDate(maxValue))!
   }
-  return date
+
+  return constrainedDate
 }

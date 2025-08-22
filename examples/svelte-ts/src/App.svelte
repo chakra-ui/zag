@@ -2,118 +2,68 @@
   import { dataAttr } from "@zag-js/dom-query"
   import { routesData } from "@zag-js/shared"
   import { Link, Route, Router } from "svelte-routing"
-  import Accordion from "./routes/accordion.svelte"
-  import AngleSlider from "./routes/angle-slider.svelte"
-  import Avatar from "./routes/avatar.svelte"
-  import Carousel from "./routes/carousel.svelte"
-  import Checkbox from "./routes/checkbox.svelte"
-  import Clipboard from "./routes/clipboard.svelte"
-  import Collapsible from "./routes/collapsible.svelte"
-  import ColorPicker from "./routes/color-picker.svelte"
-  import Combobox from "./routes/combobox.svelte"
-  import ContextMenu from "./routes/context-menu.svelte"
-  import DatePickerMulti from "./routes/date-picker-multi.svelte"
-  import DatePickerRange from "./routes/date-picker-range.svelte"
-  import DatePicker from "./routes/date-picker.svelte"
-  import Dialog from "./routes/dialog.svelte"
-  import Editable from "./routes/editable.svelte"
-  import FileUpload from "./routes/file-upload.svelte"
-  import FloatingPanel from "./routes/floating-panel.svelte"
-  import HoverCard from "./routes/hover-card.svelte"
-  import Index from "./routes/index.svelte"
-  import ListboxGrid from "./routes/listbox-grid.svelte"
-  import Listbox from "./routes/listbox.svelte"
-  import NestedMenu from "./routes/menu-nested.svelte"
-  import MenuOptions from "./routes/menu-options.svelte"
-  import Menu from "./routes/menu.svelte"
-  import NumberInput from "./routes/number-input.svelte"
-  import Pagination from "./routes/pagination.svelte"
-  import PasswordInput from "./routes/password-input.svelte"
-  import PinInput from "./routes/pin-input.svelte"
-  import Popover from "./routes/popover.svelte"
-  import Popper from "./routes/popper.svelte"
-  import Presence from "./routes/presence.svelte"
-  import Progress from "./routes/progress.svelte"
-  import QrCode from "./routes/qr-code.svelte"
-  import RadioGroup from "./routes/radio-group.svelte"
-  import RangeSlider from "./routes/range-slider.svelte"
-  import RatingGroup from "./routes/rating-group.svelte"
-  import SegmentControl from "./routes/segment-control.svelte"
-  import Select from "./routes/select.svelte"
-  import SignaturePad from "./routes/signature-pad.svelte"
-  import Slider from "./routes/slider.svelte"
-  import Splitter from "./routes/splitter.svelte"
-  import Steps from "./routes/steps.svelte"
-  import Switch from "./routes/switch.svelte"
-  import Tabs from "./routes/tabs.svelte"
-  import TagsInput from "./routes/tags-input.svelte"
-  import TimePicker from "./routes/time-picker.svelte"
-  import TimerCountdown from "./routes/timer-countdown.svelte"
-  import TimerStopwatch from "./routes/timer-stopwatch.svelte"
-  import ToastOverlap from "./routes/toast-overlap.svelte"
-  import ToastStacked from "./routes/toast-stacked.svelte"
-  import ToggleGroup from "./routes/toggle-group.svelte"
-  import Tooltip from "./routes/tooltip.svelte"
-  import Tour from "./routes/tour.svelte"
-  import TreeView from "./routes/tree-view.svelte"
 
   const sortedRoutes = routesData.sort((a, b) => a.label.localeCompare(b.label))
 
-  const paths = [
-    { path: "/", component: Index },
-    { path: "/accordion", component: Accordion },
-    { path: "/avatar", component: Avatar },
-    { path: "/angle-slider", component: AngleSlider },
-    { path: "/carousel", component: Carousel },
-    { path: "/checkbox", component: Checkbox },
-    { path: "/clipboard", component: Clipboard },
-    { path: "/collapsible", component: Collapsible },
-    { path: "/color-picker", component: ColorPicker },
-    { path: "/combobox", component: Combobox },
-    { path: "/context-menu", component: ContextMenu },
-    { path: "/date-picker", component: DatePicker },
-    { path: "/date-picker-multi", component: DatePickerMulti },
-    { path: "/date-picker-range", component: DatePickerRange },
-    { path: "/dialog", component: Dialog },
-    { path: "/editable", component: Editable },
-    { path: "/file-upload", component: FileUpload },
-    { path: "/floating-panel", component: FloatingPanel },
-    { path: "/hover-card", component: HoverCard },
-    { path: "/menu-nested", component: NestedMenu },
-    { path: "/menu", component: Menu },
-    { path: "/menu-options", component: MenuOptions },
-    { path: "/number-input", component: NumberInput },
-    { path: "/pagination", component: Pagination },
-    { path: "/pin-input", component: PinInput },
-    { path: "/popover", component: Popover },
-    { path: "/progress", component: Progress },
-    { path: "/range-slider", component: RangeSlider },
-    { path: "/radio-group", component: RadioGroup },
-    { path: "/rating-group", component: RatingGroup },
-    { path: "/segment-control", component: SegmentControl },
-    { path: "/select", component: Select },
-    { path: "/splitter", component: Splitter },
-    { path: "/signature-pad", component: SignaturePad },
-    { path: "/slider", component: Slider },
-    { path: "/switch", component: Switch },
-    { path: "/tabs", component: Tabs },
-    { path: "/tags-input", component: TagsInput },
-    { path: "/time-picker", component: TimePicker },
-    { path: "/toast-overlap", component: ToastOverlap },
-    { path: "/toast-stacked", component: ToastStacked },
-    { path: "/toggle-group", component: ToggleGroup },
-    { path: "/tooltip", component: Tooltip },
-    { path: "/tour", component: Tour },
-    { path: "/tree-view", component: TreeView },
-    { path: "/timer-countdown", component: TimerCountdown },
-    { path: "/timer-stopwatch", component: TimerStopwatch },
-    { path: "/qr-code", component: QrCode },
-    { path: "/presence", component: Presence },
-    { path: "/popper", component: Popper },
-    { path: "/steps", component: Steps },
-    { path: "/listbox", component: Listbox },
-    { path: "/listbox-grid", component: ListboxGrid },
-    { path: "/password-input", component: PasswordInput },
+  const paths: Array<{ path: string; component: any }> = [
+    { path: "/", component: () => import("./routes/index.svelte") },
+    { path: "/sandbox", component: () => import("./routes/sandbox.svelte") },
+    { path: "/accordion", component: () => import("./routes/accordion.svelte") },
+    { path: "/async-list", component: () => import("./routes/async-list.svelte") },
+    { path: "/avatar", component: () => import("./routes/avatar.svelte") },
+    { path: "/angle-slider", component: () => import("./routes/angle-slider.svelte") },
+    { path: "/carousel", component: () => import("./routes/carousel.svelte") },
+    { path: "/checkbox", component: () => import("./routes/checkbox.svelte") },
+    { path: "/clipboard", component: () => import("./routes/clipboard.svelte") },
+    { path: "/collapsible", component: () => import("./routes/collapsible.svelte") },
+    { path: "/color-picker", component: () => import("./routes/color-picker.svelte") },
+    { path: "/combobox", component: () => import("./routes/combobox.svelte") },
+    { path: "/context-menu", component: () => import("./routes/context-menu.svelte") },
+    { path: "/date-picker", component: () => import("./routes/date-picker.svelte") },
+    { path: "/date-picker-multi", component: () => import("./routes/date-picker-multi.svelte") },
+    { path: "/date-picker-range", component: () => import("./routes/date-picker-range.svelte") },
+    { path: "/dialog", component: () => import("./routes/dialog.svelte") },
+    { path: "/editable", component: () => import("./routes/editable.svelte") },
+    { path: "/file-upload", component: () => import("./routes/file-upload.svelte") },
+    { path: "/floating-panel", component: () => import("./routes/floating-panel.svelte") },
+    { path: "/hover-card", component: () => import("./routes/hover-card.svelte") },
+    { path: "/menu-nested", component: () => import("./routes/menu-nested.svelte") },
+    { path: "/menu", component: () => import("./routes/menu.svelte") },
+    { path: "/menu-options", component: () => import("./routes/menu-options.svelte") },
+    { path: "/number-input", component: () => import("./routes/number-input.svelte") },
+    { path: "/pagination", component: () => import("./routes/pagination.svelte") },
+    { path: "/pin-input", component: () => import("./routes/pin-input.svelte") },
+    { path: "/popover", component: () => import("./routes/popover.svelte") },
+    { path: "/progress", component: () => import("./routes/progress.svelte") },
+    { path: "/range-slider", component: () => import("./routes/range-slider.svelte") },
+    { path: "/radio-group", component: () => import("./routes/radio-group.svelte") },
+    { path: "/rating-group", component: () => import("./routes/rating-group.svelte") },
+    { path: "/scroll-area", component: () => import("./routes/scroll-area.svelte") },
+    { path: "/segment-control", component: () => import("./routes/segment-control.svelte") },
+    { path: "/select", component: () => import("./routes/select.svelte") },
+    { path: "/splitter", component: () => import("./routes/splitter.svelte") },
+    { path: "/signature-pad", component: () => import("./routes/signature-pad.svelte") },
+    { path: "/slider", component: () => import("./routes/slider.svelte") },
+    { path: "/switch", component: () => import("./routes/switch.svelte") },
+    { path: "/tabs", component: () => import("./routes/tabs.svelte") },
+    { path: "/tags-input", component: () => import("./routes/tags-input.svelte") },
+    { path: "/time-picker", component: () => import("./routes/time-picker.svelte") },
+    { path: "/toast-overlap", component: () => import("./routes/toast-overlap.svelte") },
+    { path: "/toast-stacked", component: () => import("./routes/toast-stacked.svelte") },
+    { path: "/toggle-group", component: () => import("./routes/toggle-group.svelte") },
+    { path: "/tooltip", component: () => import("./routes/tooltip.svelte") },
+    { path: "/tour", component: () => import("./routes/tour.svelte") },
+    { path: "/tree-view", component: () => import("./routes/tree-view.svelte") },
+    { path: "/timer-countdown", component: () => import("./routes/timer-countdown.svelte") },
+    { path: "/timer-stopwatch", component: () => import("./routes/timer-stopwatch.svelte") },
+    { path: "/qr-code", component: () => import("./routes/qr-code.svelte") },
+    { path: "/presence", component: () => import("./routes/presence.svelte") },
+    { path: "/popper", component: () => import("./routes/popper.svelte") },
+    { path: "/steps", component: () => import("./routes/steps.svelte") },
+    { path: "/listbox", component: () => import("./routes/listbox.svelte") },
+    { path: "/listbox-grid", component: () => import("./routes/listbox-grid.svelte") },
+    { path: "/password-input", component: () => import("./routes/password-input.svelte") },
+    { path: "/json-tree", component: () => import("./routes/json-tree.svelte") },
   ]
 </script>
 
@@ -130,7 +80,15 @@
 
     {#each paths as { path, component }}
       <Route {path}>
-        <svelte:component this={component} />
+        {#if typeof component === "function"}
+          {#await component() then module}
+            <svelte:component this={module.default} />
+          {:catch error}
+            <div>Error loading component: {error?.message || "Failed to load component"}</div>
+          {/await}
+        {:else}
+          <svelte:component this={component} />
+        {/if}
       </Route>
     {/each}
   </div>

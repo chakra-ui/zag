@@ -268,7 +268,7 @@ export interface FloatingPanelApi<T extends PropTypes = PropTypes> {
   /**
    * Function to open or close the panel
    */
-  setOpen(open: boolean): void
+  setOpen: (open: boolean) => void
   /**
    * Whether the panel is being dragged
    */
@@ -284,7 +284,7 @@ export interface FloatingPanelApi<T extends PropTypes = PropTypes> {
   /**
    * Function to set the position of the panel
    */
-  setPosition(position: Point): void
+  setPosition: (position: Point) => void
   /**
    * The size of the panel
    */
@@ -292,19 +292,19 @@ export interface FloatingPanelApi<T extends PropTypes = PropTypes> {
   /**
    * Function to set the size of the panel
    */
-  setSize(size: Size): void
+  setSize: (size: Size) => void
   /**
    * Function to minimize the panel
    */
-  minimize(): void
+  minimize: VoidFunction
   /**
    * Function to maximize the panel
    */
-  maximize(): void
+  maximize: VoidFunction
   /**
    * Function to restore the panel before it was minimized or maximized
    */
-  restore(): void
+  restore: VoidFunction
   /**
    * Whether the panel is resizable
    */
@@ -314,15 +314,15 @@ export interface FloatingPanelApi<T extends PropTypes = PropTypes> {
    */
   draggable: boolean
 
-  getDragTriggerProps(): T["element"]
-  getResizeTriggerProps(props: ResizeTriggerProps): T["element"]
-  getTriggerProps(): T["button"]
-  getPositionerProps(): T["element"]
-  getContentProps(): T["element"]
-  getTitleProps(): T["element"]
-  getHeaderProps(): T["element"]
-  getBodyProps(): T["element"]
-  getCloseTriggerProps(): T["button"]
-  getControlProps(): T["element"]
-  getStageTriggerProps(props: StageTriggerProps): T["button"]
+  getDragTriggerProps: () => T["element"]
+  getResizeTriggerProps: (props: ResizeTriggerProps) => T["element"]
+  getTriggerProps: () => T["button"]
+  getPositionerProps: () => T["element"]
+  getContentProps: () => T["element"]
+  getTitleProps: () => T["element"]
+  getHeaderProps: () => T["element"]
+  getBodyProps: () => T["element"]
+  getCloseTriggerProps: () => T["button"]
+  getControlProps: () => T["element"]
+  getStageTriggerProps: (props: StageTriggerProps) => T["button"]
 }

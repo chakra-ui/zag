@@ -1,5 +1,58 @@
 # @zag-js/date-utils
 
+## 1.21.7
+
+## 1.21.6
+
+## 1.21.5
+
+## 1.21.4
+
+## 1.21.3
+
+## 1.21.2
+
+## 1.21.1
+
+## 1.21.0
+
+## 1.20.1
+
+## 1.20.0
+
+### Patch Changes
+
+- [`78dd066`](https://github.com/chakra-ui/zag/commit/78dd066b2feda69d1f759e46b3cd099d2d2560e8) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix date comparison issues when time components are involved
+
+  This change resolves critical issues with date comparison operations when different date types (`CalendarDate`,
+  `CalendarDateTime`, `ZonedDateTime`) are mixed, particularly in scenarios involving time components.
+  - Convert `now(timeZone)` result to `CalendarDate` to ensure consistent date types without time components across all
+    date range preset operations
+  - Update `constrainValue` function to normalize all input dates to `CalendarDate` before comparison, preventing
+    time-component comparison issues
+  - Remove redundant date type conversion in `getMonthFormatter` for cleaner, more efficient code
+
+## 1.19.0
+
+## 1.18.5
+
+## 1.18.4
+
+## 1.18.3
+
+## 1.18.2
+
+## 1.18.1
+
+## 1.18.0
+
+## 1.17.4
+
+## 1.17.3
+
+## 1.17.2
+
 ## 1.17.1
 
 ## 1.17.0

@@ -1,5 +1,166 @@
 # @zag-js/collection
 
+## 1.21.7
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/utils@1.21.7
+
+## 1.21.6
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/utils@1.21.6
+
+## 1.21.5
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/utils@1.21.5
+
+## 1.21.4
+
+### Patch Changes
+
+- [`d07647c`](https://github.com/chakra-ui/zag/commit/d07647cc53cec91d126653dec056c7dd7f9805a7) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - - **ListCollection**
+  - Avoid recomputing groups on every call to `at()` and `indexOf()`
+  - Fixed bug in `find()` method (was checking `!= null` instead of `!== -1`)
+  - **GridCollection**
+    - Avoid recomputing rows on every call to `getRows()`
+
+- Updated dependencies []:
+  - @zag-js/utils@1.21.4
+
+## 1.21.3
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/utils@1.21.3
+
+## 1.21.2
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/utils@1.21.2
+
+## 1.21.1
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/utils@1.21.1
+
+## 1.21.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/utils@1.21.0
+
+## 1.20.1
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/utils@1.20.1
+
+## 1.20.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/utils@1.20.0
+
+## 1.19.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/utils@1.19.0
+
+## 1.18.5
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/utils@1.18.5
+
+## 1.18.4
+
+### Patch Changes
+
+- [`8d0179b`](https://github.com/chakra-ui/zag/commit/8d0179b282dc6bedbd7d782192c82df872bf5697) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - **TreeCollection**: Fix issue where the `filter` method completely
+  deletes the children key from the node when there are no matching children
+- Updated dependencies []:
+  - @zag-js/utils@1.18.4
+
+## 1.18.3
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/utils@1.18.3
+
+## 1.18.2
+
+### Patch Changes
+
+- [`3b583f8`](https://github.com/chakra-ui/zag/commit/3b583f8e71dcf625d09d895f90e26e454b725cc5) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Add `upsert` to list collection. Useful for making creatable items
+  in select or combobox
+
+- Updated dependencies [[`11843e6`](https://github.com/chakra-ui/zag/commit/11843e6adf62b906006890c8003b38da2850c8ee)]:
+  - @zag-js/utils@1.18.2
+
+## 1.18.1
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/utils@1.18.1
+
+## 1.18.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/utils@1.18.0
+
+## 1.17.4
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/utils@1.17.4
+
+## 1.17.3
+
+### Patch Changes
+
+- [`bc70411`](https://github.com/chakra-ui/zag/commit/bc7041187e5b8dc950c7e6b57aadc1e50b8a3850) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix tree traversal for querying last node.
+
+- Updated dependencies []:
+  - @zag-js/utils@1.17.3
+
+## 1.17.2
+
+### Patch Changes
+
+- [`2ce6e5c`](https://github.com/chakra-ui/zag/commit/2ce6e5c2296d07c16220eb85fbd720a5b33e1f48) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - - Add support for `findNodes` to find multiple nodes by value in a
+  single pass
+  - Fix issue with `getLastNode` not returning the last node in the tree with only one branch
+- Updated dependencies []:
+  - @zag-js/utils@1.17.2
+
 ## 1.17.1
 
 ### Patch Changes

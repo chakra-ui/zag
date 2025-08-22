@@ -12,6 +12,7 @@ import {
   Text,
 } from "@chakra-ui/layout"
 import { chakra } from "@chakra-ui/system"
+import { Annoucement } from "components/annoucement"
 import { Button } from "components/button"
 import { CodeArea } from "components/code-area"
 import { Footer } from "components/footer"
@@ -34,8 +35,6 @@ import { NextSeo } from "next-seo"
 import Image from "next/image"
 import Link from "next/link"
 import { type ElementType } from "react"
-import { HiArrowRight } from "react-icons/hi"
-import { LuPartyPopper } from "react-icons/lu"
 import siteConfig from "site.config"
 
 type FeatureItemProps = {
@@ -57,22 +56,6 @@ function FeatureItem(props: FeatureItemProps) {
   )
 }
 
-const Annoucement = chakra("div", {
-  baseStyle: {
-    display: "inline-flex",
-    alignItems: "center",
-    textStyle: "sm",
-    gap: "2.5",
-    px: "4",
-    py: "2",
-    fontWeight: "medium",
-    bg: "bg-tertiary-bold",
-    borderRadius: "4px",
-    focusRing: "outside",
-    mb: "6",
-  },
-})
-
 export default function Home() {
   return (
     <Box>
@@ -83,13 +66,7 @@ export default function Home() {
       <Box as="header" position="relative">
         <Box layerStyle="contain">
           <Box pos="relative" maxW="4xl" pt={{ base: "16", md: "24" }}>
-            <Link href="/components/react/password-input">
-              <Annoucement alignSelf="flex-start">
-                <LuPartyPopper />
-                [New] Password Input component
-                <HiArrowRight />
-              </Annoucement>
-            </Link>
+            <Annoucement />
             <chakra.h1 textStyle="display.2xl">
               UI components powered by Finite State Machines
             </chakra.h1>
