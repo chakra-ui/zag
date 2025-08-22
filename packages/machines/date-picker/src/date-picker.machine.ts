@@ -212,8 +212,6 @@ export const machine = createMachine<DatePickerSchema>({
     track([() => context.hash("focusedValue")], () => {
       action([
         "setStartValue",
-        "syncMonthSelectElement",
-        "syncYearSelectElement",
         "focusActiveCellIfNeeded",
         "setHoveredValueIfKeyboard",
       ])
