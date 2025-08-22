@@ -167,6 +167,7 @@ export const machine = createMachine<DatePickerSchema>({
         return {
           defaultValue: alignDate(focusedValue, "start", { months: prop("numOfMonths") }, prop("locale")),
           isEqual: isDateEqual,
+          hash: (v) => v.toString(),
         }
       }),
       currentPlacement: bindable<Placement | undefined>(() => ({
