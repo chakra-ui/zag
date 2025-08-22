@@ -88,12 +88,17 @@ export function connect<T extends PropTypes>(
 
   function getMonths(props: { format?: "short" | "long" | undefined } = {}) {
     const { format } = props
-    return getMonthNames(locale, format).map((label, index) => ({ label, value: index + 1 }))
+    return getMonthNames(locale, format).map((label, index) => {
+      const value = index + 1
+      const dateValue = focusedValue.set({ month: value })
+      const disabled = isDateOutsideRange(dateValue, min, max)
+      return { label, value, disabled }
+    })
   }
 
   function getYears() {
     const range = getYearsRange({ from: min?.year ?? 1900, to: max?.year ?? 2100 })
-    return range.map((year) => ({ label: year.toString(), value: year }))
+    return range.map((year) => ({ label: year.toString(), value: year, disabled: !isValueWithinRange(year, min?.year ?? 0, max?.year ?? 9999) }))
   }
 
   function getDecadeYears(year?: number) {
