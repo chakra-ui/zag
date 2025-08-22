@@ -1,4 +1,4 @@
-import { chunk, nextIndex, prevIndex } from "@zag-js/utils"
+import { chunk, hasProp, nextIndex, prevIndex } from "@zag-js/utils"
 import { ListCollection } from "./list-collection"
 import type { CollectionItem, CollectionOptions } from "./types"
 
@@ -161,6 +161,6 @@ export class GridCollection<T extends CollectionItem = CollectionItem> extends L
   }
 }
 
-export function isGridCollection(v: unknown): v is GridCollection<any> {
-  return v instanceof GridCollection
+export function isGridCollection(v: any): v is GridCollection<any> {
+  return hasProp(v, "columnCount") && hasProp(v, "getRows")
 }

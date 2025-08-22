@@ -27,6 +27,7 @@ export interface OpenChangeDetails {
 export interface ScrollToIndexDetails {
   index: number
   immediate?: boolean | undefined
+  getElement: () => HTMLElement | null
 }
 
 export interface SelectionDetails {

@@ -757,7 +757,11 @@ export const machine = createMachine({
           const scrollToIndexFn = prop("scrollToIndexFn")
           if (scrollToIndexFn) {
             const highlightedIndex = prop("collection").indexOf(highlightedValue)
-            scrollToIndexFn({ index: highlightedIndex, immediate })
+            scrollToIndexFn({
+              index: highlightedIndex,
+              immediate,
+              getElement: () => dom.getItemEl(scope, highlightedValue),
+            })
             return
           }
 
@@ -835,7 +839,11 @@ export const machine = createMachine({
           const scrollToIndexFn = prop("scrollToIndexFn")
           if (scrollToIndexFn) {
             const highlightedIndex = prop("collection").indexOf(highlightedValue)
-            scrollToIndexFn({ index: highlightedIndex, immediate: true })
+            scrollToIndexFn({
+              index: highlightedIndex,
+              immediate: true,
+              getElement: () => dom.getItemEl(scope, highlightedValue),
+            })
             return
           }
 
@@ -947,7 +955,12 @@ export const machine = createMachine({
       scrollContentToTop({ prop, scope }) {
         const scrollToIndexFn = prop("scrollToIndexFn")
         if (scrollToIndexFn) {
-          scrollToIndexFn({ index: 0, immediate: true })
+          const firstValue = prop("collection").firstValue
+          scrollToIndexFn({
+            index: 0,
+            immediate: true,
+            getElement: () => dom.getItemEl(scope, firstValue),
+          })
         } else {
           const contentEl = dom.getContentEl(scope)
           if (!contentEl) return
