@@ -91,9 +91,9 @@
     "@zag-js/utils": "workspace:*",
     "form-serialize": "0.7.2",
     "image-conversion": "2.1.1",
-    "lucide-react": "0.540.0",
+    "lucide-react": "0.541.0",
     "match-sorter": "8.1.0",
-    "next": "15.4.7",
+    "next": "15.5.0",
     "next-cloudinary": "6.16.0",
     "react": "19.1.1",
     "react-dom": "19.1.1",
@@ -103,7 +103,7 @@
     "virtua": "^0.41.5"
   },
   "devDependencies": {
-    "@next/eslint-plugin-next": "15.4.7",
+    "@next/eslint-plugin-next": "15.5.0",
     "@types/form-serialize": "0.7.4",
     "@types/node": "24.3.0",
     "@types/react": "^19",

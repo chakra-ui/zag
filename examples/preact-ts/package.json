@@ -84,11 +84,11 @@
     "@zag-js/tree-view": "workspace:*",
     "@zag-js/types": "workspace:*",
     "@zag-js/utils": "workspace:*",
-    "lucide-preact": "0.540.0",
+    "lucide-preact": "0.541.0",
     "match-sorter": "8.1.0",
     "preact": "10.27.1",
-    "preact-iso": "2.9.2",
-    "preact-render-to-string": "6.6.0"
+    "preact-iso": "2.10.0",
+    "preact-render-to-string": "6.6.1"
   },
   "devDependencies": {
     "@preact/preset-vite": "2.10.2",
