@@ -58,9 +58,11 @@ export function connect<T extends PropTypes>(
         "data-overflow-x": dataAttr(!hiddenState.scrollbarXHidden),
         "data-overflow-y": dataAttr(!hiddenState.scrollbarYHidden),
         onPointerEnter(event) {
+          if (!contains(event.currentTarget, event.target)) return
           send({ type: "root.pointerenter", pointerType: event.pointerType })
         },
         onPointerMove(event) {
+          if (!contains(event.currentTarget, event.target)) return
           send({ type: "root.pointerenter", pointerType: event.pointerType })
         },
         onPointerDown({ pointerType }) {
