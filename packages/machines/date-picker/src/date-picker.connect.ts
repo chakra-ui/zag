@@ -98,7 +98,11 @@ export function connect<T extends PropTypes>(
 
   function getYears() {
     const range = getYearsRange({ from: min?.year ?? 1900, to: max?.year ?? 2100 })
-    return range.map((year) => ({ label: year.toString(), value: year, disabled: !isValueWithinRange(year, min?.year ?? 0, max?.year ?? 9999) }))
+    return range.map((year) => ({
+      label: year.toString(),
+      value: year,
+      disabled: !isValueWithinRange(year, min?.year, max?.year),
+    }))
   }
 
   function getDecadeYears(year?: number) {
@@ -126,7 +130,7 @@ export function connect<T extends PropTypes>(
 
     const cellState = {
       focused: focusedValue.year === props.value,
-      selectable: isValueWithinRange(value, min?.year ?? 0, max?.year ?? 9999),
+      selectable: isValueWithinRange(value, min?.year, max?.year),
       selected: !!selectedValue.find((date) => date.year === value),
       valueText: value.toString(),
       inRange:
