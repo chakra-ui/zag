@@ -1,5 +1,5 @@
 import { resolve } from "node:path"
-import { writeFileSync } from "node:fs"
+import { writeFileSync, readFileSync } from "node:fs"
 import { glob } from "glob"
 import { Project, Node, SyntaxKind } from "ts-morph"
 
@@ -9,7 +9,7 @@ interface CSSVariable {
   component: string
   part: string
   type: "dynamic" | "static" | "calculated"
-  source: "connect" | "style" | "css"
+  source: "connect" | "style" | "css" | "utility"
 }
 
 interface PartCSSVars {
@@ -93,7 +93,20 @@ const cssVarDescriptions: Record<string, string> = {
 
   // Tooltip specific
   "--arrow-size": "The size of the arrow",
-  "--arrow-background": "The background color of the arrow",
+  "--arrow-background": "Use this variable to style the arrow background",
+
+  // Popper utility specific
+  "--arrow-size-half": "Half the size of the arrow",
+  "--arrow-offset": "The offset position of the arrow",
+  "--transform-origin": "The transform origin for animations",
+  "--reference-width": "The width of the reference element",
+  "--available-width": "The available width in viewport",
+  "--available-height": "The available height in viewport",
+  "--x": "The x position for transform",
+  "--y": "The y position for transform",
+
+  // Dismissable utility specific
+  "--layer-index": "The index of the dismissable in the layer stack",
 
   // Rating specific
   "--rating-value": "The rating value",
@@ -225,7 +238,7 @@ function extractCSSVariablesFromConnect(filePath: string, project: Project): CSS
               if (containingFunction) {
                 const functionName = containingFunction.getName()
                 if (functionName?.includes("get") && functionName?.includes("Props")) {
-                  part = functionName.replace("get", "").replace("Props", "").toLowerCase()
+                  part = functionName.replace("get", "").replace("Props", "")
                   if (part === "") part = "root"
                 }
               }
@@ -290,16 +303,138 @@ function extractCSSVariablesFromStyle(filePath: string, project: Project): CSSVa
   return variables
 }
 
+function extractCSSVariablesFromUtility(filePath: string, project: Project): CSSVariable[] {
+  const sourceFile = project.getSourceFile(filePath)
+  if (!sourceFile) return []
+
+  const variables: CSSVariable[] = []
+  const pathParts = filePath.split("/")
+  const utilityName = pathParts[pathParts.indexOf("utilities") + 1] // e.g., "popper", "dismissable"
+
+  sourceFile.forEachDescendant((node) => {
+    // Look for regular object literals with CSS variables
+    if (Node.isObjectLiteralExpression(node)) {
+      node.getProperties().forEach((prop) => {
+        if (Node.isPropertyAssignment(prop)) {
+          let name = prop.getName()
+
+          // Clean up the property name - remove surrounding quotes if they exist
+          if (name?.startsWith('"') && name?.endsWith('"')) {
+            name = name.slice(1, -1)
+          }
+
+          // Alternative approach: get from string literal value
+          const nameNode = prop.getNameNode()
+          if (Node.isStringLiteral(nameNode)) {
+            name = nameNode.getLiteralValue()
+          }
+
+          if (name?.startsWith("--")) {
+            variables.push({
+              name: name,
+              description: generateDescription(name, utilityName, "root"),
+              component: utilityName,
+              part: "root",
+              type: "calculated",
+              source: "utility",
+            })
+          }
+        }
+      })
+    }
+
+    // Look for toVar() calls that define CSS variables
+    if (Node.isCallExpression(node)) {
+      const expression = node.getExpression()
+      if (Node.isIdentifier(expression) && expression.getText() === "toVar") {
+        const args = node.getArguments()
+        if (args.length > 0) {
+          const firstArg = args[0]
+          if (Node.isStringLiteral(firstArg)) {
+            const varName = firstArg.getLiteralValue()
+            if (varName.startsWith("--")) {
+              variables.push({
+                name: varName,
+                description: generateDescription(varName, utilityName, "root"),
+                component: utilityName,
+                part: "root",
+                type: "calculated",
+                source: "utility",
+              })
+            }
+          }
+        }
+      }
+    }
+
+    // Look for direct CSS variable usage in string literals (like "var(--variable-name)" or "--variable-name")
+    if (Node.isStringLiteral(node)) {
+      const value = node.getLiteralValue()
+      // Match CSS variables in var() functions or direct usage
+      const varMatches = value.match(/(?:var\()?(--.+?)(?:\)|$)/g)
+      if (varMatches) {
+        for (const match of varMatches) {
+          const varName = match
+            .replace(/^var\(/, "")
+            .replace(/\)$/, "")
+            .trim()
+          if (varName.startsWith("--") && !variables.some((v) => v.name === varName)) {
+            variables.push({
+              name: varName,
+              description: generateDescription(varName, utilityName, "root"),
+              component: utilityName,
+              part: "root",
+              type: "calculated",
+              source: "utility",
+            })
+          }
+        }
+      }
+    }
+  })
+
+  return variables
+}
+
 function capitalizeFirstLetter(str: string): string {
   return str.charAt(0).toUpperCase() + str.slice(1)
 }
 
 function formatPartName(part: string): string {
   // Convert camelCase and kebab-case to PascalCase
-  return part
+  // First handle camelCase by inserting hyphens before uppercase letters
+  const withHyphens = part.replace(/([a-z])([A-Z])/g, "$1-$2")
+
+  return withHyphens
     .split(/[-_]/)
     .map((word) => capitalizeFirstLetter(word))
     .join("")
+}
+
+async function findComponentsUsingDependency(dependencyName: string): Promise<string[]> {
+  const packageFiles = await glob("packages/machines/*/package.json")
+  const components: string[] = []
+
+  for (const packageFile of packageFiles) {
+    try {
+      const packagePath = resolve(packageFile)
+      const packageJson = JSON.parse(readFileSync(packagePath, "utf-8"))
+
+      // Check if the package has the dependency
+      const hasDependency = packageJson.dependencies?.[dependencyName] || packageJson.devDependencies?.[dependencyName]
+
+      if (hasDependency) {
+        // Extract component name from path: packages/machines/COMPONENT-NAME/package.json
+        const componentName = packageFile.split("/").slice(-2, -1)[0]
+        components.push(componentName)
+      }
+    } catch {
+      // Skip packages with invalid JSON
+      continue
+    }
+  }
+
+  return components
 }
 
 async function extractAllCSSVariables(): Promise<AllCSSVars> {
@@ -325,6 +460,18 @@ async function extractAllCSSVariables(): Promise<AllCSSVars> {
     tempVariables.push(...variables)
   }
 
+  // Extract from utility packages
+  const utilityFiles = await glob("packages/utilities/*/src/*.ts")
+  for (const file of utilityFiles) {
+    const filePath = resolve(file)
+    const variables = extractCSSVariablesFromUtility(filePath, project)
+    tempVariables.push(...variables)
+  }
+
+  // Dynamically find components that use popper and dismissable utilities
+  const popperComponents = await findComponentsUsingDependency("@zag-js/popper")
+  const dismissableComponents = await findComponentsUsingDependency("@zag-js/dismissable")
+
   // Transform to match data-attr.json structure
   const allVariables: AllCSSVars = {}
 
@@ -332,14 +479,59 @@ async function extractAllCSSVariables(): Promise<AllCSSVars> {
     const component = variable.component
     const partName = formatPartName(variable.part)
 
-    if (!allVariables[component]) {
-      allVariables[component] = {}
-    }
-    if (!allVariables[component][partName]) {
-      allVariables[component][partName] = {}
+    // Skip utility components - they're not user-facing components
+    if (variable.source === "utility") {
+      continue
     }
 
+    allVariables[component] ||= {}
+    allVariables[component][partName] ||= {}
+
     allVariables[component][partName][variable.name] = variable.description
+  }
+
+  // Add popper CSS variables to components that use popper utility
+  const popperVariables = tempVariables.filter((v) => v.component === "popper")
+  const arrowVariables = ["--arrow-size", "--arrow-size-half", "--arrow-background", "--arrow-offset"]
+  const positionerVariables = [
+    "--transform-origin",
+    "--reference-width",
+    "--available-width",
+    "--available-height",
+    "--x",
+    "--y",
+    "--z-index",
+  ]
+
+  for (const popperComponent of popperComponents) {
+    allVariables[popperComponent] ||= {}
+
+    // Add arrow-related variables to Arrow part
+    allVariables[popperComponent]["Arrow"] ||= {}
+
+    // Add positioning variables to Positioner part
+    allVariables[popperComponent]["Positioner"] ||= {}
+
+    for (const popperVar of popperVariables) {
+      if (arrowVariables.includes(popperVar.name)) {
+        allVariables[popperComponent]["Arrow"][popperVar.name] = popperVar.description
+      } else if (positionerVariables.includes(popperVar.name)) {
+        allVariables[popperComponent]["Positioner"][popperVar.name] = popperVar.description
+      }
+    }
+  }
+
+  // Add dismissable CSS variables to components that use dismissable utility
+  for (const dismissableComponent of dismissableComponents) {
+    allVariables[dismissableComponent] ||= {}
+
+    // Add --layer-index to the Content part (this is set dynamically by the dismissable layer stack)
+    allVariables[dismissableComponent]["Content"] ||= {}
+    allVariables[dismissableComponent]["Content"]["--layer-index"] = "The index of the dismissable in the layer stack"
+
+    // Also add --layer-index to Backdrop part if the component has one
+    allVariables[dismissableComponent]["Backdrop"] ||= {}
+    allVariables[dismissableComponent]["Backdrop"]["--layer-index"] = "The index of the dismissable in the layer stack"
   }
 
   return allVariables
