@@ -1,4 +1,4 @@
-import { dataAttr, getEventPoint } from "@zag-js/dom-query"
+import { contains, dataAttr, getEventPoint, getEventTarget } from "@zag-js/dom-query"
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import { toPx } from "@zag-js/utils"
 import { parts } from "./scroll-area.anatomy"
@@ -58,15 +58,20 @@ export function connect<T extends PropTypes>(
         "data-overflow-x": dataAttr(!hiddenState.scrollbarXHidden),
         "data-overflow-y": dataAttr(!hiddenState.scrollbarYHidden),
         onPointerEnter(event) {
+          const target = getEventTarget(event)
+          if (!contains(event.currentTarget, target)) return
           send({ type: "root.pointerenter", pointerType: event.pointerType })
         },
         onPointerMove(event) {
+          const target = getEventTarget(event)
+          if (!contains(event.currentTarget, target)) return
           send({ type: "root.pointerenter", pointerType: event.pointerType })
         },
         onPointerDown({ pointerType }) {
           send({ type: "root.pointerdown", pointerType })
         },
-        onPointerLeave() {
+        onPointerLeave(event) {
+          if (contains(event.currentTarget, event.relatedTarget)) return
           send({ type: "root.pointerleave" })
         },
         style: {
