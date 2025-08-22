@@ -1,4 +1,4 @@
-import { dataAttr, getEventPoint } from "@zag-js/dom-query"
+import { contains, dataAttr, getEventPoint } from "@zag-js/dom-query"
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import { toPx } from "@zag-js/utils"
 import { parts } from "./scroll-area.anatomy"
@@ -66,7 +66,8 @@ export function connect<T extends PropTypes>(
         onPointerDown({ pointerType }) {
           send({ type: "root.pointerdown", pointerType })
         },
-        onPointerLeave() {
+        onPointerLeave(event) {
+          if (contains(event.currentTarget, event.relatedTarget)) return
           send({ type: "root.pointerleave" })
         },
         style: {
