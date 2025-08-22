@@ -66,7 +66,7 @@ export default function Page() {
             <div style={{ marginBottom: "20px" }}>
               <select {...api.getMonthSelectProps()}>
                 {api.getMonths().map((month, i) => (
-                  <option key={i} value={month.value}>
+                  <option key={i} value={month.value} disabled={month.disabled}>
                     {month.label}
                   </option>
                 ))}
@@ -74,7 +74,7 @@ export default function Page() {
 
               <select {...api.getYearSelectProps()}>
                 {api.getYears().map((year, i) => (
-                  <option key={i} value={year.value}>
+                  <option key={i} value={year.value} disabled={year.disabled}>
                     {year.label}
                   </option>
                 ))}
