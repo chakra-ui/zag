@@ -218,6 +218,11 @@ export const machine = createMachine<DatePickerSchema>({
       ])
     })
 
+    // Ensure the month/year select reflect the actual visible start value
+    track([() => context.hash("startValue")], () => {
+      action(["syncMonthSelectElement", "syncYearSelectElement"])
+    })
+
     track([() => context.get("inputValue")], () => {
       action(["syncInputValue"])
     })
