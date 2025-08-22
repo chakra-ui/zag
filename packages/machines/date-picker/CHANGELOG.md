@@ -1,5 +1,39 @@
 # @zag-js/date-picker
 
+## 1.21.8
+
+### Patch Changes
+
+- [#2658](https://github.com/chakra-ui/zag/pull/2658)
+  [`5778795`](https://github.com/chakra-ui/zag/commit/5778795130da1f8aa09adb02429d51912f05adcb) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - - Fix keyboard navigation issue where pressing HOME key in month
+  view would incorrectly jump to an invalid date instead of January, potentially causing date selection errors.
+  - Clear hover state immediately when completing range selection instead of waiting for pointer to leave the calendar
+    area.
+
+- [#2658](https://github.com/chakra-ui/zag/pull/2658)
+  [`5778795`](https://github.com/chakra-ui/zag/commit/5778795130da1f8aa09adb02429d51912f05adcb) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - fix(date-picker): ensure Month/Year select labels update under
+  min/max constraints
+  - Sync Month/Year `<select>` values when `startValue` changes so the labels reflect the visible month/year even if
+    `focusedValue` doesn't change.
+  - Add `hash` for `startValue` to enable efficient watcher updates.
+  - Remove duplicate select sync from `focusedValue` watcher (syncs now only on `startValue`).
+  - Expose `disabled` on `api.getMonths()` and `api.getYears()` results to indicate options out of range for current
+    constraints.
+  - Update Next.js examples to apply `disabled` on `<option>`.
+
+- Updated dependencies [[`dd1519a`](https://github.com/chakra-ui/zag/commit/dd1519a668f315e2feab7aed51007f3380880229)]:
+  - @zag-js/dom-query@1.21.8
+  - @zag-js/core@1.21.8
+  - @zag-js/dismissable@1.21.8
+  - @zag-js/popper@1.21.8
+  - @zag-js/anatomy@1.21.8
+  - @zag-js/types@1.21.8
+  - @zag-js/utils@1.21.8
+  - @zag-js/date-utils@1.21.8
+  - @zag-js/live-region@1.21.8
+
 ## 1.21.7
 
 ### Patch Changes

@@ -1,5 +1,19 @@
 # @zag-js/tags-input
 
+## 1.21.8
+
+### Patch Changes
+
+- Updated dependencies [[`dd1519a`](https://github.com/chakra-ui/zag/commit/dd1519a668f315e2feab7aed51007f3380880229)]:
+  - @zag-js/dom-query@1.21.8
+  - @zag-js/core@1.21.8
+  - @zag-js/auto-resize@1.21.8
+  - @zag-js/interact-outside@1.21.8
+  - @zag-js/anatomy@1.21.8
+  - @zag-js/types@1.21.8
+  - @zag-js/utils@1.21.8
+  - @zag-js/live-region@1.21.8
+
 ## 1.21.7
 
 ### Patch Changes

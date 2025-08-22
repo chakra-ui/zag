@@ -1,5 +1,7 @@
 # @zag-js/highlight-word
 
+## 1.21.8
+
 ## 1.21.7
 
 ### Patch Changes

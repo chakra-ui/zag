@@ -1,5 +1,25 @@
 # @zag-js/select
 
+## 1.21.8
+
+### Patch Changes
+
+- [`d4d276e`](https://github.com/chakra-ui/zag/commit/d4d276eb2a4f8fd662abd8d1791a05c4307810e8) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - - **Listbox, Select, Combobox:** Add required `getElement` to
+  `scrollToIndexFn` details and pass the element getter when scrolling to the highlighted index and on initial
+  scroll-to-top.
+  - **Listbox:** Track collection changes and clear `highlightedValue` if the item is no longer in the collection.
+
+- Updated dependencies [[`dd1519a`](https://github.com/chakra-ui/zag/commit/dd1519a668f315e2feab7aed51007f3380880229)]:
+  - @zag-js/dom-query@1.21.8
+  - @zag-js/core@1.21.8
+  - @zag-js/dismissable@1.21.8
+  - @zag-js/popper@1.21.8
+  - @zag-js/anatomy@1.21.8
+  - @zag-js/types@1.21.8
+  - @zag-js/collection@1.21.8
+  - @zag-js/utils@1.21.8
+
 ## 1.21.7
 
 ### Patch Changes
