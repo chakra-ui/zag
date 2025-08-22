@@ -167,6 +167,7 @@ export const machine = createMachine<DatePickerSchema>({
         return {
           defaultValue: alignDate(focusedValue, "start", { months: prop("numOfMonths") }, prop("locale")),
           isEqual: isDateEqual,
+          hash: (v) => v.toString(),
         }
       }),
       currentPlacement: bindable<Placement | undefined>(() => ({
@@ -209,13 +210,12 @@ export const machine = createMachine<DatePickerSchema>({
     })
 
     track([() => context.hash("focusedValue")], () => {
-      action([
-        "setStartValue",
-        "syncMonthSelectElement",
-        "syncYearSelectElement",
-        "focusActiveCellIfNeeded",
-        "setHoveredValueIfKeyboard",
-      ])
+      action(["setStartValue", "focusActiveCellIfNeeded", "setHoveredValueIfKeyboard"])
+    })
+
+    // Ensure the month/year select reflect the actual visible start value
+    track([() => context.hash("startValue")], () => {
+      action(["syncMonthSelectElement", "syncYearSelectElement"])
     })
 
     track([() => context.get("inputValue")], () => {
@@ -407,7 +407,14 @@ export const machine = createMachine<DatePickerSchema>({
           // === Grouped transitions (based on `closeOnSelect` and `isOpenControlled`) ===
           {
             guard: and("isRangePicker", "isSelectingEndDate", "closeOnSelect", "isOpenControlled"),
-            actions: ["setFocusedDate", "setSelectedDate", "setActiveIndexToStart", "invokeOnClose", "setRestoreFocus"],
+            actions: [
+              "setFocusedDate",
+              "setSelectedDate",
+              "setActiveIndexToStart",
+              "clearHoveredDate",
+              "invokeOnClose",
+              "setRestoreFocus",
+            ],
           },
           {
             guard: and("isRangePicker", "isSelectingEndDate", "closeOnSelect"),
@@ -416,6 +423,7 @@ export const machine = createMachine<DatePickerSchema>({
               "setFocusedDate",
               "setSelectedDate",
               "setActiveIndexToStart",
+              "clearHoveredDate",
               "invokeOnClose",
               "focusInputElement",
             ],
@@ -484,16 +492,22 @@ export const machine = createMachine<DatePickerSchema>({
           // === Grouped transitions (based on `closeOnSelect` and `isOpenControlled`) ===
           {
             guard: and("isRangePicker", "isSelectingEndDate", "closeOnSelect", "isOpenControlled"),
-            actions: ["setSelectedDate", "setActiveIndexToStart", "invokeOnClose"],
+            actions: ["setSelectedDate", "setActiveIndexToStart", "clearHoveredDate", "invokeOnClose"],
           },
           {
             guard: and("isRangePicker", "isSelectingEndDate", "closeOnSelect"),
             target: "focused",
-            actions: ["setSelectedDate", "setActiveIndexToStart", "invokeOnClose", "focusInputElement"],
+            actions: [
+              "setSelectedDate",
+              "setActiveIndexToStart",
+              "clearHoveredDate",
+              "invokeOnClose",
+              "focusInputElement",
+            ],
           },
           {
             guard: and("isRangePicker", "isSelectingEndDate"),
-            actions: ["setSelectedDate", "setActiveIndexToStart"],
+            actions: ["setSelectedDate", "setActiveIndexToStart", "clearHoveredDate"],
           },
           // ===
           {
@@ -949,7 +963,7 @@ export const machine = createMachine<DatePickerSchema>({
       },
       focusFirstMonth(params) {
         const { context } = params
-        const nextValue = context.get("focusedValue").set({ month: 0 })
+        const nextValue = context.get("focusedValue").set({ month: 1 })
         setFocusedValue(params, nextValue)
       },
       focusLastMonth(params) {

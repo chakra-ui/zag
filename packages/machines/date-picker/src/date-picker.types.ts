@@ -467,6 +467,7 @@ export interface MonthGridProps {
 export interface Cell {
   label: string
   value: number
+  disabled?: boolean | undefined
 }
 
 export type MonthGridValue = Cell[][]
