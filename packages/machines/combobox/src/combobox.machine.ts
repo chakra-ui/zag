@@ -751,7 +751,6 @@ export const machine = createMachine({
           const highlightedValue = context.get("highlightedValue")
           if (pointer || !highlightedValue) return
 
-          const itemEl = dom.getItemEl(scope, highlightedValue)
           const contentEl = dom.getContentEl(scope)
 
           const scrollToIndexFn = prop("scrollToIndexFn")
@@ -765,6 +764,7 @@ export const machine = createMachine({
             return
           }
 
+          const itemEl = dom.getItemEl(scope, highlightedValue)
           const raf_cleanup = raf(() => {
             scrollIntoView(itemEl, { rootEl: contentEl, block: "nearest" })
           })
