@@ -407,7 +407,14 @@ export const machine = createMachine<DatePickerSchema>({
           // === Grouped transitions (based on `closeOnSelect` and `isOpenControlled`) ===
           {
             guard: and("isRangePicker", "isSelectingEndDate", "closeOnSelect", "isOpenControlled"),
-            actions: ["setFocusedDate", "setSelectedDate", "setActiveIndexToStart", "invokeOnClose", "setRestoreFocus"],
+            actions: [
+              "setFocusedDate",
+              "setSelectedDate",
+              "setActiveIndexToStart",
+              "clearHoveredDate",
+              "invokeOnClose",
+              "setRestoreFocus",
+            ],
           },
           {
             guard: and("isRangePicker", "isSelectingEndDate", "closeOnSelect"),
@@ -416,6 +423,7 @@ export const machine = createMachine<DatePickerSchema>({
               "setFocusedDate",
               "setSelectedDate",
               "setActiveIndexToStart",
+              "clearHoveredDate",
               "invokeOnClose",
               "focusInputElement",
             ],
@@ -484,16 +492,22 @@ export const machine = createMachine<DatePickerSchema>({
           // === Grouped transitions (based on `closeOnSelect` and `isOpenControlled`) ===
           {
             guard: and("isRangePicker", "isSelectingEndDate", "closeOnSelect", "isOpenControlled"),
-            actions: ["setSelectedDate", "setActiveIndexToStart", "invokeOnClose"],
+            actions: ["setSelectedDate", "setActiveIndexToStart", "clearHoveredDate", "invokeOnClose"],
           },
           {
             guard: and("isRangePicker", "isSelectingEndDate", "closeOnSelect"),
             target: "focused",
-            actions: ["setSelectedDate", "setActiveIndexToStart", "invokeOnClose", "focusInputElement"],
+            actions: [
+              "setSelectedDate",
+              "setActiveIndexToStart",
+              "clearHoveredDate",
+              "invokeOnClose",
+              "focusInputElement",
+            ],
           },
           {
             guard: and("isRangePicker", "isSelectingEndDate"),
-            actions: ["setSelectedDate", "setActiveIndexToStart"],
+            actions: ["setSelectedDate", "setActiveIndexToStart", "clearHoveredDate"],
           },
           // ===
           {
