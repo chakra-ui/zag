@@ -210,11 +210,7 @@ export const machine = createMachine<DatePickerSchema>({
     })
 
     track([() => context.hash("focusedValue")], () => {
-      action([
-        "setStartValue",
-        "focusActiveCellIfNeeded",
-        "setHoveredValueIfKeyboard",
-      ])
+      action(["setStartValue", "focusActiveCellIfNeeded", "setHoveredValueIfKeyboard"])
     })
 
     // Ensure the month/year select reflect the actual visible start value
@@ -953,7 +949,7 @@ export const machine = createMachine<DatePickerSchema>({
       },
       focusFirstMonth(params) {
         const { context } = params
-        const nextValue = context.get("focusedValue").set({ month: 0 })
+        const nextValue = context.get("focusedValue").set({ month: 1 })
         setFocusedValue(params, nextValue)
       },
       focusLastMonth(params) {
