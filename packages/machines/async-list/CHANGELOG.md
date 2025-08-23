@@ -1,5 +1,22 @@
 # @zag-js/async-list
 
+## 1.21.9
+
+### Patch Changes
+
+- [`0e62c21`](https://github.com/chakra-ui/zag/commit/0e62c21c9a0c5eede7740d8422dfd6a4fa3b1032) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - ## Fixed
+  - Fixed critical race conditions and dual operations in sort functionality that could cause stale data overwrites and
+    unexpected behavior
+  - Fixed event handling during async operations - users can now properly interrupt sorting with RELOAD, FILTER, or new
+    SORT events
+  - Enhanced `SortDetails` interface with `filterText` parameter for consistent filtering context across local and
+    server-side operations
+
+- Updated dependencies []:
+  - @zag-js/core@1.21.9
+  - @zag-js/utils@1.21.9
+
 ## 1.21.8
 
 ### Patch Changes
