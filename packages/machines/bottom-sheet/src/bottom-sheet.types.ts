@@ -35,12 +35,12 @@ export interface BottomSheetProps extends DirectionProperty, CommonProperties, D
    */
   onOpenChange?: ((details: OpenChangeDetails) => void) | undefined
   /**
-   * Whether to close the bottom sheet when the outside is clicked
+   * Whether to close the bottom sheet when the outside is clicked.
    * @default true
    */
   closeOnInteractOutside?: boolean | undefined
   /**
-   * Whether to close the bottom sheet when the escape key is pressed
+   * Whether to close the bottom sheet when the escape key is pressed.
    * @default true
    */
   closeOnEscape?: boolean | undefined
