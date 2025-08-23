@@ -311,9 +311,5 @@ export const passwordInputControls = defineControls({
 })
 
 export const bottomSheetControls = defineControls({
-  // modal: { type: "boolean", defaultValue: true },
-  // dismissible: { type: "boolean", defaultValue: true },
-  // resizable: { type: "boolean", defaultValue: false },
-  // closeThreshold: { type: "number", defaultValue: 0.3 },
-  // defaultSnapIndex: { type: "number", defaultValue: 0 },
+  closeThreshold: { type: "number", defaultValue: 0.5 },
 })
