@@ -55,11 +55,11 @@ export const machine = createMachine<BottomSheetSchema>({
         CLOSE: [
           {
             guard: "isOpenControlled",
-            actions: ["invokeOnClose"],
+            actions: ["invokeOnClose", "clearSnapOffset"],
           },
           {
             target: "closed",
-            actions: ["invokeOnClose"],
+            actions: ["invokeOnClose", "clearSnapOffset"],
           },
         ],
         GRABBER_POINTERDOWN: [
@@ -150,6 +150,10 @@ export const machine = createMachine<BottomSheetSchema>({
       clearDragOffset({ context }) {
         context.set("dragOffset", null)
       },
+
+      clearSnapOffset({ context }) {
+        context.set("snapPointOffset", null)
+      },
     },
     effects: {
       trackDismissableElement({ scope, prop, send }) {
@@ -199,10 +203,8 @@ export const machine = createMachine<BottomSheetSchema>({
           context.set("contentHeight", rect.height)
         }
 
-        // Initial measurement
         updateHeight()
 
-        // Track size changes
         const observer = new win.ResizeObserver(() => {
           updateHeight()
         })
