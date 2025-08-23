@@ -1,6 +1,6 @@
 {
   "name": "@zag-js/vue",
-  "version": "1.21.7",
+  "version": "1.21.8",
   "description": "The vue wrapper for zag",
   "keywords": [
     "ui-machines",
@@ -31,7 +31,7 @@
     "@zag-js/utils": "workspace:*"
   },
   "devDependencies": {
-    "vue": "3.5.18",
+    "vue": "3.5.19",
     "clean-package": "2.2.0"
   },
   "peerDependencies": {

@@ -1,5 +1,4 @@
 import * as datePicker from "@zag-js/date-picker"
-import { getYearsRange } from "@zag-js/date-utils"
 import { normalizeProps, useMachine } from "@zag-js/react"
 import { useId } from "react"
 
@@ -44,16 +43,16 @@ export function DateRangePicker(props: Props) {
           <div style={{ marginBottom: "20px" }}>
             <select {...api.getMonthSelectProps()}>
               {api.getMonths().map((month, i) => (
-                <option key={i} value={i + 1}>
+                <option key={i} value={i + 1} disabled={month.disabled}>
                   {month.label}
                 </option>
               ))}
             </select>
 
             <select {...api.getYearSelectProps()}>
-              {getYearsRange({ from: 1_800, to: 2_300 }).map((year, i) => (
-                <option key={i} value={year}>
-                  {year}
+              {api.getYears().map((year, i) => (
+                <option key={i} value={year.value} disabled={year.disabled}>
+                  {year.label}
                 </option>
               ))}
             </select>

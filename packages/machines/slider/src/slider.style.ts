@@ -169,9 +169,9 @@ export function getMarkerStyle(params: Pick<Ctx, "computed" | "context" | "prop"
     position: "absolute",
     pointerEvents: "none",
     [isHorizontal ? "insetInlineStart" : "bottom"]: getThumbOffset(params, value),
-    translate: "var(--tx) var(--ty)",
-    "--tx": isHorizontal ? (isRtl ? "50%" : "-50%") : "0%",
-    "--ty": !isHorizontal ? "50%" : "0%",
+    translate: "var(--translate-x) var(--translate-y)",
+    "--translate-x": isHorizontal ? (isRtl ? "50%" : "-50%") : "0%",
+    "--translate-y": !isHorizontal ? "50%" : "0%",
   }
 }
 

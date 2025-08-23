@@ -31,8 +31,9 @@ export class ListboxModel extends Model {
     return this.page.locator("[data-scope=listbox][data-part=content]")
   }
 
-  async focusContent() {
-    await this.content.focus()
+  async tabToContent() {
+    await this.page.click("main.listbox", { position: { x: 300, y: 30 }, force: true })
+    await this.page.keyboard.press("Tab")
     await expect(this.content).toBeFocused()
   }
 

@@ -1,5 +1,18 @@
 # @zag-js/dom-query
 
+## 1.21.8
+
+### Patch Changes
+
+- [#2656](https://github.com/chakra-ui/zag/pull/2656)
+  [`dd1519a`](https://github.com/chakra-ui/zag/commit/dd1519a668f315e2feab7aed51007f3380880229) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix Firefox virtual click detection by removing deprecated
+  `mozInputSource` check and using `PointerEvent.pointerType === ""` with `isTrusted`. Preserves Android-specific
+  behavior.
+
+- Updated dependencies []:
+  - @zag-js/types@1.21.8
+
 ## 1.21.7
 
 ### Patch Changes

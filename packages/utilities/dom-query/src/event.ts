@@ -72,9 +72,11 @@ export function isVirtualPointerEvent(e: PointerEvent) {
 }
 
 export function isVirtualClick(e: MouseEvent | PointerEvent): boolean {
-  if ((e as any).mozInputSource === 0 && e.isTrusted) return true
+  // Firefox used to expose `mozInputSource === 0` for virtual clicks.
+  // Modern, safer check: in Firefox, PointerEvent.pointerType can be an empty string for virtual clicks.
+  if ((e as PointerEvent).pointerType === "" && (e as any).isTrusted) return true
   if (isAndroid() && (e as PointerEvent).pointerType) {
-    return e.type === "click" && e.buttons === 1
+    return e.type === "click" && (e as MouseEvent).buttons === 1
   }
   return e.detail === 0 && !(e as PointerEvent).pointerType
 }

@@ -1,5 +1,26 @@
 # @zag-js/scroll-area
 
+## 1.21.8
+
+### Patch Changes
+
+- [#2659](https://github.com/chakra-ui/zag/pull/2659)
+  [`a16d148`](https://github.com/chakra-ui/zag/commit/a16d148fa9aab318c1878409f1c1b21334a5e386) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Prevent hover state from clearing when pointer moves into
+  descendants or portals by guarding `onPointerLeave` with `contains` from `@zag-js/dom-query`. This avoids unintended
+  scrollbar hide/show when interacting with sibling portals.
+
+- [#2652](https://github.com/chakra-ui/zag/pull/2652)
+  [`d4bbfb0`](https://github.com/chakra-ui/zag/commit/d4bbfb0a72f48ef736ac012ead64d99dc02b2b15) Thanks
+  [@devpla](https://github.com/devpla)! - Add `data-dragging` attribute to scroll area parts for ease of styling.
+
+- Updated dependencies [[`dd1519a`](https://github.com/chakra-ui/zag/commit/dd1519a668f315e2feab7aed51007f3380880229)]:
+  - @zag-js/dom-query@1.21.8
+  - @zag-js/core@1.21.8
+  - @zag-js/anatomy@1.21.8
+  - @zag-js/types@1.21.8
+  - @zag-js/utils@1.21.8
+
 ## 1.21.7
 
 ### Patch Changes

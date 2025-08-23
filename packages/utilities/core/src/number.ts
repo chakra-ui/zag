@@ -11,7 +11,12 @@ export const getMaxValueAtIndex = (i: number, v: number[], vmax: number) => (i =
 
 export const isValueAtMax = (v: number, vmax: number) => nan(v) >= vmax
 export const isValueAtMin = (v: number, vmin: number) => nan(v) <= vmin
-export const isValueWithinRange = (v: number, vmin: number, vmax: number) => nan(v) >= vmin && nan(v) <= vmax
+export const isValueWithinRange = (v: number, vmin: number | null | undefined, vmax: number | null | undefined) => {
+  const value = nan(v)
+  const minCheck = vmin == null || value >= vmin
+  const maxCheck = vmax == null || value <= vmax
+  return minCheck && maxCheck
+}
 
 export const roundValue = (v: number, vmin: number, step: number) => round((nan(v) - vmin) / step) * step + vmin
 export const clampValue = (v: number, vmin: number, vmax: number) => min(max(nan(v), vmin), vmax)

@@ -19,6 +19,7 @@ import { DataAttrTable } from "./data-attr-table"
 import { useFramework } from "./framework"
 import { KeyboardTable } from "./keyboard-table"
 import { PropTable } from "./prop-table"
+import { CssVarTable } from "./css-var-table"
 import { Showcase } from "../demos"
 
 function SnippetItem({ body, id }: { body: MDX; id: string }) {
@@ -160,6 +161,7 @@ const components: Record<string, FC<any>> = {
   ContextTable(props) {
     return <PropTable type="context" {...props} />
   },
+  CssVarTable,
   PropValueTable: (props: {
     items: { headings: string[]; data: Array<[string, string]> }
   }) => {
