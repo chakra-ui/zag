@@ -107,12 +107,15 @@ export const machine = createMachine<BottomSheetSchema>({
       invokeOnOpen({ prop }) {
         prop("onOpenChange")?.({ open: true })
       },
+
       invokeOnClose({ prop }) {
         prop("onOpenChange")?.({ open: false })
       },
+
       setPointerStart({ context, event }) {
         context.set("pointerStartPoint", event.point)
       },
+
       setDragOffset({ context, event }) {
         const startPoint = context.get("pointerStartPoint")
         if (startPoint == null) return
@@ -123,6 +126,7 @@ export const machine = createMachine<BottomSheetSchema>({
 
         context.set("dragOffset", -delta)
       },
+
       clearDragOffset({ context }) {
         context.set("dragOffset", null)
       },
@@ -152,6 +156,7 @@ export const machine = createMachine<BottomSheetSchema>({
           },
         })
       },
+
       trackPointerMove({ send, scope }) {
         return trackPointerMove(scope.getDoc(), {
           onPointerMove({ point }) {
@@ -162,6 +167,7 @@ export const machine = createMachine<BottomSheetSchema>({
           },
         })
       },
+
       trackContentHeight({ context, scope }) {
         const contentEl = dom.getContentEl(scope)
         if (!contentEl) return
