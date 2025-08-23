@@ -24,16 +24,18 @@ import { disableTextSelection, raf, restoreTextSelection, setElementValue } from
 import { createLiveRegion } from "@zag-js/live-region"
 import { getPlacement, type Placement } from "@zag-js/popper"
 import * as dom from "./date-picker.dom"
-import type { DatePickerSchema, DateValue, DateView } from "./date-picker.types"
+import type { DatePickerSchema, DateValue, DateView, ValidSegments } from "./date-picker.types"
 import {
   adjustStartAndEndDate,
   clampView,
+  defaultTranslations,
   eachView,
   getNextView,
   getPreviousView,
   isAboveMinView,
   isBelowMinView,
   isValidDate,
+  processSegments,
   sortDates,
 } from "./date-picker.utils"
 
@@ -72,6 +74,8 @@ export const machine = createMachine<DatePickerSchema>({
     const minView: DateView = "day"
     const maxView: DateView = "year"
     const defaultView = clampView(props.view || minView, minView, maxView)
+    const granularity = props.granularity || "day"
+    const translations = { ...defaultTranslations, ...props.translations }
 
     return {
       locale,
@@ -91,6 +95,7 @@ export const machine = createMachine<DatePickerSchema>({
         return parseDateString(value, locale, timeZone)
       },
       ...props,
+      translations,
       focusedValue: typeof props.focusedValue === "undefined" ? undefined : focusedValue,
       defaultFocusedValue: focusedValue,
       value,
@@ -99,6 +104,7 @@ export const machine = createMachine<DatePickerSchema>({
         placement: "bottom",
         ...props.positioning,
       },
+      granularity,
     }
   },
 
@@ -176,6 +182,9 @@ export const machine = createMachine<DatePickerSchema>({
       restoreFocus: bindable<boolean | undefined>(() => ({
         defaultValue: false,
       })),
+      validSegments: bindable<ValidSegments[]>(() => ({
+        defaultValue: [{}, {}],
+      })),
     }
   },
 
@@ -199,6 +208,29 @@ export const machine = createMachine<DatePickerSchema>({
     valueAsString({ context, prop }) {
       const value = context.get("value")
       return value.map((date) => prop("format")(date, { locale: prop("locale"), timeZone: prop("timeZone") }))
+    },
+    segments: ({ context, prop }) => {
+      const value = context.get("value")
+      const timeZone = prop("timeZone")
+      const translations = prop("translations")
+      const formatter = new DateFormatter(prop("locale"), {
+        timeZone,
+        day: "2-digit",
+        month: "2-digit",
+        year: "numeric",
+      }) // TODO: move globally
+
+      return value.map((date, i) => {
+        return processSegments({
+          dateValue: date.toDate(timeZone),
+          displayValue: date,
+          validSegments: context.get("validSegments")[i],
+          formatter,
+          locale: prop("locale"),
+          translations,
+          granularity: prop("granularity"),
+        })
+      })
     },
   },
 

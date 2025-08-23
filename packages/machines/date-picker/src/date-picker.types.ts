@@ -8,10 +8,11 @@ import type {
   ZonedDateTime,
 } from "@internationalized/date"
 import type { Machine, Service } from "@zag-js/core"
-import type { DateRangePreset } from "@zag-js/date-utils"
+import type { DateRangePreset, DateGranularity } from "@zag-js/date-utils"
 import type { LiveRegion } from "@zag-js/live-region"
 import type { Placement, PositioningOptions } from "@zag-js/popper"
 import type { CommonProperties, DirectionProperty, PropTypes, RequiredBy } from "@zag-js/types"
+import type { EDITABLE_SEGMENTS } from "./date-picker.utils"
 
 /* -----------------------------------------------------------------------------
  * Callback details
@@ -249,6 +250,10 @@ export interface DatePickerProps extends DirectionProperty, CommonProperties {
    * Whether to render the date picker inline
    */
   inline?: boolean | undefined
+  /**
+   * Determines the smallest unit that is displayed in the date picker. By default, this is `"day"`.
+   */
+  granularity?: DateGranularity | undefined
 }
 
 type PropsWithDefault =
@@ -343,6 +348,10 @@ type ComputedContext = Readonly<{
    * The value text to display in the input.
    */
   valueAsString: string[]
+  /**
+   * A list of segments for the selected date(s).
+   */
+  segments: DateSegment[][]
 }>
 
 type Refs = {
@@ -401,6 +410,64 @@ export interface TableCellState {
   readonly disabled: boolean
 }
 
+export interface SegmentsProps {
+  index?: number | undefined
+}
+
+export type SegmentType =
+  | "era"
+  | "year"
+  | "month"
+  | "day"
+  | "hour"
+  | "minute"
+  | "second"
+  | "dayPeriod"
+  | "literal"
+  | "timeZoneName"
+
+export type ValidSegments = Partial<typeof EDITABLE_SEGMENTS>
+
+export interface DateSegment {
+  /**
+   * The type of segment.
+   */
+  type: SegmentType
+  /**
+   * The formatted text for the segment.
+   */
+  text: string
+  /**
+   * The numeric value for the segment, if applicable.
+   */
+  value?: number
+  /**
+   * The minimum numeric value for the segment, if applicable.
+   */
+  minValue?: number
+  /**
+   * The maximum numeric value for the segment, if applicable.
+   */
+  maxValue?: number
+  /**
+   * Whether the value is a placeholder.
+   */
+  isPlaceholder: boolean
+  /**
+   * A placeholder string for the segment.
+   */
+  placeholder: string
+  /**
+   * Whether the segment is editable.
+   */
+  isEditable: boolean
+}
+
+export interface SegmentProps {
+  segment?: DateSegment
+}
+
+export interface SegmentState {}
 export interface DayTableCellProps {
   value: DateValue
   disabled?: boolean | undefined
@@ -648,6 +715,14 @@ export interface DatePickerApi<T extends PropTypes = PropTypes> {
    * Returns the state details for a given year cell.
    */
   getYearTableCellState: (props: TableCellProps) => TableCellState
+  /**
+   *
+   */
+  getSegments: (props?: SegmentsProps) => DateSegment[]
+  /**
+   * Returns the state details for a given segment.
+   */
+  getSegmentState: (props: SegmentProps) => SegmentState
 
   getRootProps: () => T["element"]
   getLabelProps: (props?: LabelProps) => T["label"]
@@ -682,6 +757,7 @@ export interface DatePickerApi<T extends PropTypes = PropTypes> {
   getViewTriggerProps: (props?: ViewProps) => T["button"]
   getViewControlProps: (props?: ViewProps) => T["element"]
   getInputProps: (props?: InputProps) => T["input"]
+  getSegmentProps: (props?: SegmentProps) => T["element"]
   getMonthSelectProps: () => T["select"]
   getYearSelectProps: () => T["select"]
 }

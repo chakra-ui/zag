@@ -30,10 +30,11 @@ import type {
   TableCellProps,
   TableCellState,
   TableProps,
+  SegmentProps,
+  SegmentState,
 } from "./date-picker.types"
 import {
   adjustStartAndEndDate,
-  defaultTranslations,
   ensureValidCharacters,
   getInputPlaceholder,
   getLocaleSeparator,
@@ -79,7 +80,7 @@ export function connect<T extends PropTypes>(
   })
 
   const separator = getLocaleSeparator(locale)
-  const translations = { ...defaultTranslations, ...prop("translations") }
+  const translations = prop("translations")
 
   function getMonthWeeks(from = startValue) {
     const numOfWeeks = prop("fixedWeeks") ? 6 : undefined
@@ -221,6 +222,11 @@ export function connect<T extends PropTypes>(
   function getTableId(props: TableProps) {
     const { view = "day", id } = props
     return [view, id].filter(Boolean).join(" ")
+  }
+
+  function getSegmentState(props: SegmentProps): SegmentState {
+    const {} = props
+    return {}
   }
 
   return {
@@ -801,6 +807,21 @@ export function connect<T extends PropTypes>(
           send({ type: "INPUT.CHANGE", value: ensureValidCharacters(value, separator), index })
         },
       })
+    },
+
+    getSegments(props = {}) {
+      const { index = 0 } = props
+      console.log(computed("segments"))
+
+      return computed("segments")[index] ?? []
+    },
+
+    getSegmentState,
+
+    getSegmentProps(props = {}) {
+      const {} = props
+
+      return {}
     },
 
     getMonthSelectProps() {
