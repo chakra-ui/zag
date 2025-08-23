@@ -34,6 +34,7 @@ export function connect<T extends PropTypes>(
       return normalize.element({
         ...parts.content.attrs,
         id: dom.getContentId(scope),
+        tabIndex: -1,
         role: "dialog",
         "aria-modal": "true",
         hidden: !open,

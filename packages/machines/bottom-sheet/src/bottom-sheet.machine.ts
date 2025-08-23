@@ -1,7 +1,7 @@
 import { createMachine } from "@zag-js/core"
 import type { BottomSheetSchema } from "./bottom-sheet.types"
 import type { Point } from "@zag-js/types"
-import { trackPointerMove } from "@zag-js/dom-query"
+import { getInitialFocus, raf, trackPointerMove } from "@zag-js/dom-query"
 import * as dom from "./bottom-sheet.dom"
 import { resolveSnapPoints } from "./utils/resolve-snap-points"
 import { trackDismissableElement } from "@zag-js/dismissable"
@@ -73,11 +73,11 @@ export const machine = createMachine<BottomSheetSchema>({
         OPEN: [
           {
             guard: "isOpenControlled",
-            actions: ["invokeOnOpen"],
+            actions: ["setInitialFocus", "invokeOnOpen"],
           },
           {
             target: "open",
-            actions: ["invokeOnOpen"],
+            actions: ["setInitialFocus", "invokeOnOpen"],
           },
         ],
       },
@@ -110,6 +110,15 @@ export const machine = createMachine<BottomSheetSchema>({
 
       invokeOnClose({ prop }) {
         prop("onOpenChange")?.({ open: false })
+      },
+
+      setInitialFocus({ scope }) {
+        raf(() => {
+          const element = getInitialFocus({
+            root: dom.getContentEl(scope),
+          })
+          element?.focus({ preventScroll: true })
+        })
       },
 
       setPointerStart({ context, event }) {
