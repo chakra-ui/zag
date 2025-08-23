@@ -33,11 +33,17 @@ export interface BottomSheetProps extends DirectionProperty, CommonProperties, D
   closeOnEscape?: boolean | undefined
   /**
    * The snap points of the bottom sheet.
+   * @default ['100%']
    */
   snapPoints?: SnapPoint[]
+  /**
+   * The threshold velocity (in pixels/ms) for closing the bottom sheet.
+   * @default 0.5
+   */
+  closeVelocityThreshold?: number
 }
 
-type PropsWithDefault = "closeOnInteractOutside" | "closeOnEscape" | "snapPoints"
+type PropsWithDefault = "closeOnInteractOutside" | "closeOnEscape" | "snapPoints" | "closeVelocityThreshold"
 
 export interface BottomSheetSchema {
   props: RequiredBy<BottomSheetProps, PropsWithDefault>
@@ -48,6 +54,9 @@ export interface BottomSheetSchema {
     dragOffset: number | null
     snapPointOffset: number | null
     contentHeight: number
+    lastPoint: Point | null
+    lastTimestamp: number | null
+    velocity: number
   }
   computed: {
     resolvedSnapPoints: number[]

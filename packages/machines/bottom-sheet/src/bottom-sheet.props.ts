@@ -9,6 +9,7 @@ export const props = createProps<BottomSheetProps>()([
   "defaultOpen",
   "getRootNode",
   "snapPoints",
+  "closeVelocityThreshold",
   "closeOnEscape",
   "closeOnInteractOutside",
   "onEscapeKeyDown",

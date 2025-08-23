@@ -12,7 +12,8 @@ export const machine = createMachine<BottomSheetSchema>({
     return {
       closeOnInteractOutside: true,
       closeOnEscape: true,
-      snapPoints: [],
+      snapPoints: ["100%"],
+      closeVelocityThreshold: 0.5,
       ...props,
     }
   },
@@ -29,6 +30,15 @@ export const machine = createMachine<BottomSheetSchema>({
         defaultValue: null,
       })),
       contentHeight: bindable<number>(() => ({
+        defaultValue: 0,
+      })),
+      lastPoint: bindable<Point | null>(() => ({
+        defaultValue: null,
+      })),
+      lastTimestamp: bindable<number | null>(() => ({
+        defaultValue: null,
+      })),
+      velocity: bindable<number>(() => ({
         defaultValue: 0,
       })),
     }
@@ -91,13 +101,22 @@ export const machine = createMachine<BottomSheetSchema>({
       tags: ["open"],
       effects: ["trackPointerMove"],
       on: {
-        GRABBER_DRAG: {
-          actions: ["setDragOffset"],
-        },
-        GRABBER_RELEASE: {
-          target: "open",
-          actions: ["setClosestSnapOffset", "clearDragOffset"],
-        },
+        GRABBER_DRAG: [
+          {
+            actions: ["setDragOffset"],
+          },
+        ],
+        GRABBER_RELEASE: [
+          {
+            guard: "shouldCloseOnSwipe",
+            actions: ["invokeOnClose", "clearSnapOffset", "clearDragOffset"],
+            target: "closed",
+          },
+          {
+            target: "open",
+            actions: ["setClosestSnapOffset", "clearDragOffset", "resetVelocityTracking"],
+          },
+        ],
       },
     },
   },
@@ -105,6 +124,16 @@ export const machine = createMachine<BottomSheetSchema>({
   implementations: {
     guards: {
       isOpenControlled: ({ prop }) => prop("open") !== undefined,
+
+      shouldCloseOnSwipe({ prop, context }) {
+        const velocity = context.get("velocity")
+        const closeVelocityThreshold = prop("closeVelocityThreshold")
+
+        console.log("velocity", velocity)
+        console.log("closeVelocityThreshold", closeVelocityThreshold)
+
+        return velocity > 0 && velocity >= closeVelocityThreshold
+      },
     },
 
     actions: {
@@ -140,7 +169,26 @@ export const machine = createMachine<BottomSheetSchema>({
         const startPoint = context.get("pointerStartPoint")
         if (startPoint == null) return
 
-        let delta = startPoint.y - event.point.y - (context.get("snapPointOffset") ?? 0)
+        const currentPoint = event.point
+        const currentTimestamp = performance.now()
+
+        let delta = startPoint.y - currentPoint.y - (context.get("snapPointOffset") ?? 0)
+
+        const lastPoint = context.get("lastPoint")
+        if (lastPoint) {
+          const dy = currentPoint.y - lastPoint.y
+
+          const lastTimestamp = context.get("lastTimestamp")
+          if (lastTimestamp) {
+            const dt = currentTimestamp - lastTimestamp
+            if (dt > 0) {
+              context.set("velocity", dy / dt)
+            }
+          }
+        }
+
+        context.set("lastPoint", currentPoint)
+        context.set("lastTimestamp", currentTimestamp)
 
         if (delta > 0) delta = 0
 
@@ -153,6 +201,12 @@ export const machine = createMachine<BottomSheetSchema>({
 
       clearSnapOffset({ context }) {
         context.set("snapPointOffset", null)
+      },
+
+      resetVelocityTracking({ context }) {
+        context.set("lastPoint", null)
+        context.set("lastTimestamp", null)
+        context.set("velocity", 0)
       },
     },
     effects: {
