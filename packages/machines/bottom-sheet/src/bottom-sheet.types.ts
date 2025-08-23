@@ -46,9 +46,10 @@ export interface BottomSheetSchema {
   context: {
     pointerStartPoint: Point | null
     dragOffset: number | null
+    contentHeight: number
   }
   computed: {
-    resolvedSnapPoints: number[] | null
+    resolvedSnapPoints: number[]
   }
   // computed: Readonly<{
   //   snapPoint: SnapPoint

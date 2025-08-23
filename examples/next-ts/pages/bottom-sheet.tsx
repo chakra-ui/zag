@@ -11,6 +11,7 @@ export default function Page() {
 
   const service = useMachine(bottomSheet.machine, {
     id: useId(),
+    snapPoints: [100, "50%", "80%"],
     ...controls.context,
   })
 

@@ -24,18 +24,17 @@ export const machine = createMachine<BottomSheetSchema>({
       pointerStartPoint: bindable<Point | null>(() => ({
         defaultValue: null,
       })),
+      contentHeight: bindable<number>(() => ({
+        defaultValue: 0,
+      })),
     }
   },
 
   computed: {
-    resolvedSnapPoints({ scope, prop }) {
-      const contentEl = dom.getContentEl(scope)
-      if (!contentEl) return null
-
-      const rect = contentEl.getBoundingClientRect()
-      const height = rect.height
-
-      return resolveSnapPoints(prop("snapPoints"), height)
+    resolvedSnapPoints({ context, prop }) {
+      const contentHeight = context.get("contentHeight")
+      if (contentHeight === 0) return []
+      return resolveSnapPoints(prop("snapPoints"), contentHeight)
     },
   },
 
@@ -47,7 +46,7 @@ export const machine = createMachine<BottomSheetSchema>({
   states: {
     open: {
       tags: ["open"],
-      effects: ["trackDismissableElement"],
+      effects: ["trackDismissableElement", "trackContentHeight"],
       on: {
         CLOSE: [
           {
@@ -162,6 +161,30 @@ export const machine = createMachine<BottomSheetSchema>({
             send({ type: "GRABBER_RELEASE", point })
           },
         })
+      },
+      trackContentHeight({ context, scope }) {
+        const contentEl = dom.getContentEl(scope)
+        if (!contentEl) return
+
+        const win = scope.getWin()
+
+        const updateHeight = () => {
+          const rect = contentEl.getBoundingClientRect()
+          context.set("contentHeight", rect.height)
+        }
+
+        // Initial measurement
+        updateHeight()
+
+        // Track size changes
+        const observer = new win.ResizeObserver(() => {
+          updateHeight()
+        })
+        observer.observe(contentEl)
+
+        return () => {
+          observer.disconnect()
+        }
       },
     },
   },
