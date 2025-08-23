@@ -13,7 +13,7 @@ export const machine = createMachine<BottomSheetSchema>({
       closeOnInteractOutside: true,
       closeOnEscape: true,
       snapPoints: ["100%"],
-      closeVelocityThreshold: 0.5,
+      closeThreshold: 0.5,
       ...props,
     }
   },
@@ -127,12 +127,12 @@ export const machine = createMachine<BottomSheetSchema>({
 
       shouldCloseOnSwipe({ prop, context }) {
         const velocity = context.get("velocity")
-        const closeVelocityThreshold = prop("closeVelocityThreshold")
+        const closeThreshold = prop("closeThreshold")
 
         console.log("velocity", velocity)
-        console.log("closeVelocityThreshold", closeVelocityThreshold)
+        console.log("closeThreshold", closeThreshold)
 
-        return velocity > 0 && velocity >= closeVelocityThreshold
+        return velocity > 0 && velocity >= closeThreshold
       },
     },
 

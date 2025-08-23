@@ -53,10 +53,10 @@ export interface BottomSheetProps extends DirectionProperty, CommonProperties, D
    * The threshold velocity (in pixels/ms) for closing the bottom sheet.
    * @default 0.5
    */
-  closeVelocityThreshold?: number
+  closeThreshold?: number
 }
 
-type PropsWithDefault = "closeOnInteractOutside" | "closeOnEscape" | "snapPoints" | "closeVelocityThreshold"
+type PropsWithDefault = "closeOnInteractOutside" | "closeOnEscape" | "snapPoints" | "closeThreshold"
 
 export interface BottomSheetSchema {
   props: RequiredBy<BottomSheetProps, PropsWithDefault>
