@@ -1,8 +1,11 @@
 import type { Scope } from "@zag-js/core"
 import { queryAll } from "@zag-js/dom-query"
 
-export const getContentId = (scope: Scope) => `bottom-sheet:${scope.id}:content`
-export const getContentEl = (scope: Scope) => scope.getById(getContentId(scope))
+export const getContentId = (ctx: Scope) => ctx.ids?.content ?? `bottom-sheet:${ctx.id}:content`
+export const getTriggerId = (ctx: Scope) => ctx.ids?.trigger ?? `bottom-sheet:${ctx.id}:trigger`
+
+export const getContentEl = (ctx: Scope) => ctx.getById(getContentId(ctx))
+export const getTriggerEl = (ctx: Scope) => ctx.getById(getTriggerId(ctx))
 
 export const getScrollEls = (scope: Scope) => {
   const els: Record<"x" | "y", HTMLElement[]> = { x: [], y: [] }

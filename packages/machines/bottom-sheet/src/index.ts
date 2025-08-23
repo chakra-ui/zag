@@ -1,5 +1,6 @@
+export type { FocusOutsideEvent, InteractOutsideEvent, PointerDownOutsideEvent } from "@zag-js/dismissable"
 export { anatomy } from "./bottom-sheet.anatomy"
 export { connect } from "./bottom-sheet.connect"
 export { machine } from "./bottom-sheet.machine"
 export * from "./bottom-sheet.props"
-export type { UserDefinedContext as Context } from "./bottom-sheet.types"
+export type { BottomSheetService, BottomSheetSchema } from "./bottom-sheet.types"

@@ -279,64 +279,6 @@
       }
     }
   },
-  "bottom-sheet": {
-    "api": {},
-    "context": {
-      "snapPoints": {
-        "type": "SnapPoint[]",
-        "description": "The snap points of the bottom sheet."
-      },
-      "snapIndex": {
-        "type": "number",
-        "description": "The index of the snap point to use."
-      },
-      "defaultSnapIndex": {
-        "type": "number",
-        "description": "The default index of the snap point to use."
-      },
-      "onSnapPointChange": {
-        "type": "(details: SnapPointChangeDetails) => void",
-        "description": "Function called when the snap point changes."
-      },
-      "modal": {
-        "type": "boolean",
-        "description": "Whether the bottom sheet is modal."
-      },
-      "open": {
-        "type": "boolean",
-        "description": "Whether the bottom sheet is resizable."
-      },
-      "defaultOpen": {
-        "type": "boolean",
-        "description": "The initial open state of the bottom sheet."
-      },
-      "resizable": {
-        "type": "boolean",
-        "description": "Whether the bottom sheet is resizable."
-      },
-      "onOpenChange": {
-        "type": "(details: OpenChangeDetails) => void",
-        "description": "Function called when the open state changes."
-      },
-      "closeThreshold": {
-        "type": "number",
-        "description": "The threshold at which the bottom sheet will close."
-      },
-      "dir": {
-        "type": "\"ltr\" | \"rtl\"",
-        "description": "The document's text/writing direction.",
-        "defaultValue": "\"ltr\""
-      },
-      "id": {
-        "type": "string",
-        "description": "The unique identifier of the machine."
-      },
-      "getRootNode": {
-        "type": "() => ShadowRoot | Node | Document",
-        "description": "A root node to correctly resolve document in custom environments. E.x.: Iframes, Electron."
-      }
-    }
-  },
   "carousel": {
     "api": {
       "page": {

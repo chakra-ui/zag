@@ -86,19 +86,6 @@
       "data-state": "\"hidden\" | \"visible\""
     }
   },
-  "bottom-sheet": {
-    "Content": {
-      "data-scope": "bottom-sheet",
-      "data-part": "content",
-      "data-state": "\"open\" | \"closed\"",
-      "data-visible": ""
-    },
-    "Backdrop": {
-      "data-scope": "bottom-sheet",
-      "data-part": "backdrop",
-      "data-visible": ""
-    }
-  },
   "carousel": {
     "Root": {
       "data-scope": "carousel",
