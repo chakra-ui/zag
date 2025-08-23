@@ -63,8 +63,6 @@ export function connect<T extends PropTypes>(
       return normalize.element({
         ...parts.grabber.attrs,
         onPointerDown(event) {
-          // if (!shouldGestureMoveSheet(evt, scope)) return
-          // if (state.get() === "closing") return
           if (!isLeftClick(event)) return
 
           const point = { x: event.clientX, y: event.clientY }
