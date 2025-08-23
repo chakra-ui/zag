@@ -129,9 +129,6 @@ export const machine = createMachine<BottomSheetSchema>({
         const velocity = context.get("velocity")
         const closeThreshold = prop("closeThreshold")
 
-        console.log("velocity", velocity)
-        console.log("closeThreshold", closeThreshold)
-
         return velocity > 0 && velocity >= closeThreshold
       },
     },
