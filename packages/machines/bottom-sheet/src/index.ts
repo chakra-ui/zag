@@ -3,4 +3,9 @@ export { anatomy } from "./bottom-sheet.anatomy"
 export { connect } from "./bottom-sheet.connect"
 export { machine } from "./bottom-sheet.machine"
 export * from "./bottom-sheet.props"
-export type { BottomSheetService, BottomSheetSchema } from "./bottom-sheet.types"
+export type {
+  BottomSheetApi as Api,
+  BottomSheetMachine as Machine,
+  BottomSheetProps as Props,
+  BottomSheetService as Service,
+} from "./bottom-sheet.types"

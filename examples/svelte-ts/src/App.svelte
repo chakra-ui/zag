@@ -12,6 +12,7 @@
     { path: "/async-list", component: () => import("./routes/async-list.svelte") },
     { path: "/avatar", component: () => import("./routes/avatar.svelte") },
     { path: "/angle-slider", component: () => import("./routes/angle-slider.svelte") },
+    { path: "/bottom-sheet", component: () => import("./routes/bottom-sheet.svelte") },
     { path: "/carousel", component: () => import("./routes/carousel.svelte") },
     { path: "/checkbox", component: () => import("./routes/checkbox.svelte") },
     { path: "/clipboard", component: () => import("./routes/clipboard.svelte") },

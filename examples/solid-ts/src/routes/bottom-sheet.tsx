@@ -21,7 +21,14 @@ export default function Page() {
   return (
     <>
       <main class="bottom-sheet">
-        <div {...api().getHeaderProps()}></div>
+        <button {...api().getTriggerProps()}>Open</button>
+        <div {...api().getBackdropProps()} />
+        <div {...api().getContentProps()}>
+          <div {...api().getGrabberProps()}>
+            <div {...api().getGrabberIndicatorProps()} />
+          </div>
+          <div>Bottom Sheet</div>
+        </div>
       </main>
 
       <Toolbar controls={controls}>
