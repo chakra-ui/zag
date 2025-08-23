@@ -44,8 +44,8 @@ export function connect<T extends PropTypes>(
           ...(state.get() === "panning" && {
             transitionDuration: "0s",
           }),
-          //   "--snap-point-height": tap(computed("snapPointOffset"), (v) => `${v}px`),
-          //   willChange: "transform",
+          "--snap-point-height": tap(context.get("snapPointOffset"), (v) => `${v}px`),
+          willChange: "transform",
         },
       })
     },

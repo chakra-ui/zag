@@ -46,17 +46,12 @@ export interface BottomSheetSchema {
   context: {
     pointerStartPoint: Point | null
     dragOffset: number | null
+    snapPointOffset: number | null
     contentHeight: number
   }
   computed: {
     resolvedSnapPoints: number[]
   }
-  // computed: Readonly<{
-  //   snapPoint: SnapPoint
-  //   snapPointOffsets: number[]
-  //   snapPointOffset: number | null
-  //   lastSnapPointOffset: number | null
-  // }>
   event: EventObject
   action: string
   guard: string

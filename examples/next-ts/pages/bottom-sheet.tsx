@@ -11,7 +11,7 @@ export default function Page() {
 
   const service = useMachine(bottomSheet.machine, {
     id: useId(),
-    snapPoints: [100, "50%", "80%"],
+    snapPoints: [100, "50%", "80%", "100%"],
     ...controls.context,
   })
 
@@ -31,7 +31,10 @@ export default function Page() {
       </main>
 
       <Toolbar controls={controls.ui} viz>
-        <StateVisualizer state={service} />
+        <StateVisualizer
+          state={service}
+          context={["contentHeight", "dragOffset", "pointerStartPoint", "snapPointOffset"]}
+        />
       </Toolbar>
     </>
   )

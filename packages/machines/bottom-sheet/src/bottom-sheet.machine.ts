@@ -5,6 +5,7 @@ import { getInitialFocus, raf, trackPointerMove } from "@zag-js/dom-query"
 import * as dom from "./bottom-sheet.dom"
 import { resolveSnapPoints } from "./utils/resolve-snap-points"
 import { trackDismissableElement } from "@zag-js/dismissable"
+import { findClosestSnapPoint } from "./utils/find-closest-snap-point"
 
 export const machine = createMachine<BottomSheetSchema>({
   props({ props }) {
@@ -19,6 +20,9 @@ export const machine = createMachine<BottomSheetSchema>({
   context({ bindable }) {
     return {
       dragOffset: bindable<number | null>(() => ({
+        defaultValue: null,
+      })),
+      snapPointOffset: bindable<number | null>(() => ({
         defaultValue: null,
       })),
       pointerStartPoint: bindable<Point | null>(() => ({
@@ -92,7 +96,7 @@ export const machine = createMachine<BottomSheetSchema>({
         },
         GRABBER_RELEASE: {
           target: "open",
-          actions: ["clearDragOffset"],
+          actions: ["setClosestSnapOffset", "clearDragOffset"],
         },
       },
     },
@@ -125,11 +129,18 @@ export const machine = createMachine<BottomSheetSchema>({
         context.set("pointerStartPoint", event.point)
       },
 
+      setClosestSnapOffset({ computed, context, event }) {
+        const snapPoints = computed("resolvedSnapPoints")
+        const closestSnapPoint = findClosestSnapPoint(window.innerHeight - event.point.y, snapPoints)
+
+        context.set("snapPointOffset", context.get("contentHeight") - closestSnapPoint)
+      },
+
       setDragOffset({ context, event }) {
         const startPoint = context.get("pointerStartPoint")
         if (startPoint == null) return
 
-        let delta = startPoint.y - event.point.y
+        let delta = startPoint.y - event.point.y - (context.get("snapPointOffset") ?? 0)
 
         if (delta > 0) delta = 0
 
