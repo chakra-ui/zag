@@ -8,7 +8,20 @@ export interface OpenChangeDetails {
   open: boolean
 }
 
+export type ElementIds = Partial<{
+  backdrop: string
+  content: string
+  trigger: string
+  grabber: string
+  grabberIndicator: string
+  closeTrigger: string
+}>
+
 export interface BottomSheetProps extends DirectionProperty, CommonProperties, DismissableElementHandlers {
+  /**
+   * The ids of the elements in the bottom sheet. Useful for composition.
+   */
+  ids?: ElementIds
   /**
    * Whether the bottom sheet is resizable.
    */

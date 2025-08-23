@@ -8,4 +8,7 @@ export type {
   BottomSheetMachine as Machine,
   BottomSheetProps as Props,
   BottomSheetService as Service,
+  ElementIds,
+  OpenChangeDetails,
+  SnapPoint,
 } from "./bottom-sheet.types"

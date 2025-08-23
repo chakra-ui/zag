@@ -4,6 +4,7 @@ import type { BottomSheetProps } from "./bottom-sheet.types"
 
 export const props = createProps<BottomSheetProps>()([
   "id",
+  "ids",
   "dir",
   "open",
   "defaultOpen",
