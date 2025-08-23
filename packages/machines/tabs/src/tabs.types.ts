@@ -108,6 +108,7 @@ export type TabsSchema = {
     focusedValue: string | null
     indicatorTransition: boolean
     indicatorRect: { left: string; top: string; width: string; height: string }
+    indicatorDisabled: boolean
   }
   refs: {
     indicatorCleanup: VoidFunction | null | undefined

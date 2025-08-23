@@ -11,7 +11,7 @@ export default function Page() {
 
   const service = useMachine(tabs.machine, {
     id: useId(),
-    defaultValue: "nils",
+    defaultValue: "evelyn",
     ...controls.context,
   })
 
@@ -24,7 +24,11 @@ export default function Page() {
           <div {...api.getIndicatorProps()} />
           <div {...api.getListProps()}>
             {tabsData.map((data) => (
-              <button {...api.getTriggerProps({ value: data.id })} key={data.id} data-testid={`${data.id}-tab`}>
+              <button
+                {...api.getTriggerProps({ value: data.id, disabled: data.disabled })}
+                key={data.id}
+                data-testid={`${data.id}-tab`}
+              >
                 {data.label}
               </button>
             ))}
