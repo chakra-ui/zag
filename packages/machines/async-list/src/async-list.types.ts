@@ -22,6 +22,7 @@ export interface LoadResult<T, C> {
 export interface SortDetails<T> {
   items: T[]
   descriptor: SortDescriptor<T>
+  filterText: string
 }
 
 export type LoadDependency = string | number | boolean | undefined | null
@@ -66,7 +67,7 @@ export interface AsyncListProps<T, C> {
 }
 
 export interface AsyncListSchema<T, C> {
-  state: "idle" | "loading"
+  state: "idle" | "loading" | "sorting"
   props: AsyncListProps<T, C>
   context: {
     items: T[]
@@ -111,6 +112,18 @@ export interface AsyncListApi<T, C> {
    */
   loading: boolean
   /**
+   * Whether the list is sorting.
+   */
+  sorting: boolean
+  /**
+   * Whether the list is empty.
+   */
+  empty: boolean
+  /**
+   * Whether there are more items to load.
+   */
+  hasMore: boolean
+  /**
    * The error instance returned by the last fetch.
    */
   error: any | undefined
@@ -134,4 +147,8 @@ export interface AsyncListApi<T, C> {
    * Function to set the filter text
    */
   setFilterText: (filterText: string) => void
+  /**
+   * Function to clear the filter text
+   */
+  clearFilter: VoidFunction
 }
