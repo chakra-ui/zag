@@ -28,6 +28,11 @@ export interface BottomSheetProps extends DirectionProperty, CommonProperties, D
    */
   trapFocus?: boolean | undefined
   /**
+   * Whether to prevent scrolling behind the sheet when it's opened
+   * @default true
+   */
+  preventScroll?: boolean | undefined
+  /**
    * Whether to prevent pointer interaction outside the element and hide all content below it.
    * @default true
    */
@@ -89,6 +94,7 @@ type PropsWithDefault =
   | "modal"
   | "trapFocus"
   | "restoreFocus"
+  | "preventScroll"
   | "initialFocusEl"
   | "snapPoints"
   | "closeThreshold"

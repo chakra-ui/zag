@@ -7,6 +7,8 @@ import { resolveSnapPoints } from "./utils/resolve-snap-points"
 import { trackDismissableElement } from "@zag-js/dismissable"
 import { findClosestSnapPoint } from "./utils/find-closest-snap-point"
 import { trapFocus } from "@zag-js/focus-trap"
+import { preventBodyScroll } from "@zag-js/remove-scroll"
+import { ariaHidden } from "@zag-js/aria-hidden"
 
 export const machine = createMachine<BottomSheetSchema>({
   props({ props, scope }) {
@@ -16,6 +18,7 @@ export const machine = createMachine<BottomSheetSchema>({
     return {
       modal,
       trapFocus: modal,
+      preventScroll: modal,
       closeOnInteractOutside: true,
       closeOnEscape: true,
       restoreFocus: true,
@@ -68,7 +71,7 @@ export const machine = createMachine<BottomSheetSchema>({
   states: {
     open: {
       tags: ["open"],
-      effects: ["trackDismissableElement", "trapFocus", "trackContentHeight"],
+      effects: ["trackDismissableElement", "trapFocus", "preventScroll", "hideContentBelow", "trackContentHeight"],
       on: {
         CLOSE: [
           {
@@ -107,7 +110,7 @@ export const machine = createMachine<BottomSheetSchema>({
 
     panning: {
       tags: ["open"],
-      effects: ["trackPointerMove"],
+      effects: ["trackPointerMove", "trapFocus"],
       on: {
         GRABBER_DRAG: [
           {
@@ -231,6 +234,11 @@ export const machine = createMachine<BottomSheetSchema>({
         })
       },
 
+      preventScroll({ scope, prop }) {
+        if (!prop("preventScroll")) return
+        return preventBodyScroll(scope.getDoc())
+      },
+
       trapFocus({ scope, prop }) {
         if (!prop("trapFocus")) return
         const contentEl = () => dom.getContentEl(scope)
@@ -238,8 +246,14 @@ export const machine = createMachine<BottomSheetSchema>({
           preventScroll: true,
           returnFocusOnDeactivate: !!prop("restoreFocus"),
           initialFocus: prop("initialFocusEl"),
-          setReturnFocus: (el) => prop("finalFocusEl")?.() ?? el,
+          setReturnFocus: (el) => prop("finalFocusEl")?.() || el,
         })
+      },
+
+      hideContentBelow({ scope, prop }) {
+        if (!prop("modal")) return
+        const getElements = () => [dom.getContentEl(scope)]
+        return ariaHidden(getElements, { defer: true })
       },
 
       trackPointerMove({ send, scope }) {
