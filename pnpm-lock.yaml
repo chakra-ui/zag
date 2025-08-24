@@ -2037,6 +2037,9 @@ importers:
       '@zag-js/dom-query':
         specifier: workspace:*
         version: link:../../utilities/dom-query
+      '@zag-js/focus-trap':
+        specifier: workspace:*
+        version: link:../../utilities/focus-trap
       '@zag-js/types':
         specifier: workspace:*
         version: link:../../types

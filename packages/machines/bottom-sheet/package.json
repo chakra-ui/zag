@@ -39,6 +39,7 @@
     "@zag-js/core": "workspace:*",
     "@zag-js/dismissable": "workspace:*",
     "@zag-js/dom-query": "workspace:*",
+    "@zag-js/focus-trap": "workspace:*",
     "@zag-js/types": "workspace:*",
     "@zag-js/utils": "workspace:*"
   },

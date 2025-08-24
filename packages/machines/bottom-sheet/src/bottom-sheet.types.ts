@@ -1,6 +1,6 @@
 import type { EventObject, Machine, Service } from "@zag-js/core"
 import type { DismissableElementHandlers } from "@zag-js/dismissable"
-import type { CommonProperties, DirectionProperty, Point, PropTypes, RequiredBy } from "@zag-js/types"
+import type { CommonProperties, DirectionProperty, MaybeElement, Point, PropTypes, RequiredBy } from "@zag-js/types"
 
 export type SnapPoint = number | `${number}%`
 
@@ -22,6 +22,33 @@ export interface BottomSheetProps extends DirectionProperty, CommonProperties, D
    * The ids of the elements in the bottom sheet. Useful for composition.
    */
   ids?: ElementIds
+  /**
+   * Whether to trap focus inside the sheet when it's opened.
+   * @default true
+   */
+  trapFocus?: boolean | undefined
+  /**
+   * Whether to prevent pointer interaction outside the element and hide all content below it.
+   * @default true
+   */
+  modal?: boolean | undefined
+  /**
+   * Element to receive focus when the sheet is opened.
+   */
+  initialFocusEl?: (() => MaybeElement) | undefined
+  /**
+   * Element to receive focus when the sheet is closed.
+   */
+  finalFocusEl?: (() => MaybeElement) | undefined
+  /**
+   * Whether to restore focus to the element that had focus before the sheet was opened.
+   */
+  restoreFocus?: boolean | undefined
+  /**
+   * The sheet's role
+   * @default "dialog"
+   */
+  role?: "dialog" | "alertdialog" | undefined
   /**
    * Whether the bottom sheet is resizable.
    */
@@ -56,7 +83,15 @@ export interface BottomSheetProps extends DirectionProperty, CommonProperties, D
   closeThreshold?: number
 }
 
-type PropsWithDefault = "closeOnInteractOutside" | "closeOnEscape" | "snapPoints" | "closeThreshold"
+type PropsWithDefault =
+  | "closeOnInteractOutside"
+  | "closeOnEscape"
+  | "modal"
+  | "trapFocus"
+  | "restoreFocus"
+  | "initialFocusEl"
+  | "snapPoints"
+  | "closeThreshold"
 
 export interface BottomSheetSchema {
   props: RequiredBy<BottomSheetProps, PropsWithDefault>
@@ -86,11 +121,11 @@ export type BottomSheetMachine = Machine<BottomSheetSchema>
 
 export interface BottomSheetApi<T extends PropTypes = PropTypes> {
   /**
-   * Whether the bottom sheet is open
+   * Whether the bottom sheet is open.
    */
   open: boolean
   /**
-   * Function to open or close the menu
+   * Function to open or close the menu.
    */
   setOpen: (open: boolean) => void
 

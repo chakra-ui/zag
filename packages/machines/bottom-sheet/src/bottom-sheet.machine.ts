@@ -1,17 +1,25 @@
 import { createMachine } from "@zag-js/core"
 import type { BottomSheetSchema } from "./bottom-sheet.types"
 import type { Point } from "@zag-js/types"
-import { getInitialFocus, raf, trackPointerMove } from "@zag-js/dom-query"
+import { trackPointerMove } from "@zag-js/dom-query"
 import * as dom from "./bottom-sheet.dom"
 import { resolveSnapPoints } from "./utils/resolve-snap-points"
 import { trackDismissableElement } from "@zag-js/dismissable"
 import { findClosestSnapPoint } from "./utils/find-closest-snap-point"
+import { trapFocus } from "@zag-js/focus-trap"
 
 export const machine = createMachine<BottomSheetSchema>({
-  props({ props }) {
+  props({ props, scope }) {
+    const alertDialog = props.role === "alertdialog"
+    const initialFocusEl: any = alertDialog ? () => dom.getCloseTriggerEl(scope) : undefined
+    const modal = typeof props.modal === "boolean" ? props.modal : true
     return {
+      modal,
+      trapFocus: modal,
       closeOnInteractOutside: true,
       closeOnEscape: true,
+      restoreFocus: true,
+      initialFocusEl,
       snapPoints: ["100%"],
       closeThreshold: 0.5,
       ...props,
@@ -60,7 +68,7 @@ export const machine = createMachine<BottomSheetSchema>({
   states: {
     open: {
       tags: ["open"],
-      effects: ["trackDismissableElement", "trackContentHeight"],
+      effects: ["trackDismissableElement", "trapFocus", "trackContentHeight"],
       on: {
         CLOSE: [
           {
@@ -87,11 +95,11 @@ export const machine = createMachine<BottomSheetSchema>({
         OPEN: [
           {
             guard: "isOpenControlled",
-            actions: ["setInitialFocus", "invokeOnOpen"],
+            actions: ["invokeOnOpen"],
           },
           {
             target: "open",
-            actions: ["setInitialFocus", "invokeOnOpen"],
+            actions: ["invokeOnOpen"],
           },
         ],
       },
@@ -140,15 +148,6 @@ export const machine = createMachine<BottomSheetSchema>({
 
       invokeOnClose({ prop }) {
         prop("onOpenChange")?.({ open: false })
-      },
-
-      setInitialFocus({ scope }) {
-        raf(() => {
-          const element = getInitialFocus({
-            root: dom.getContentEl(scope),
-          })
-          element?.focus({ preventScroll: true })
-        })
       },
 
       setPointerStart({ context, event }) {
@@ -229,6 +228,17 @@ export const machine = createMachine<BottomSheetSchema>({
           onDismiss() {
             send({ type: "CLOSE", src: "interact-outside" })
           },
+        })
+      },
+
+      trapFocus({ scope, prop }) {
+        if (!prop("trapFocus")) return
+        const contentEl = () => dom.getContentEl(scope)
+        return trapFocus(contentEl, {
+          preventScroll: true,
+          returnFocusOnDeactivate: !!prop("restoreFocus"),
+          initialFocus: prop("initialFocusEl"),
+          setReturnFocus: (el) => prop("finalFocusEl")?.() ?? el,
         })
       },
 

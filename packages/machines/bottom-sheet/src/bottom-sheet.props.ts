@@ -6,6 +6,9 @@ export const props = createProps<BottomSheetProps>()([
   "id",
   "ids",
   "dir",
+  "modal",
+  "initialFocusEl",
+  "finalFocusEl",
   "open",
   "defaultOpen",
   "getRootNode",
@@ -18,6 +21,9 @@ export const props = createProps<BottomSheetProps>()([
   "onInteractOutside",
   "onOpenChange",
   "onPointerDownOutside",
+  "restoreFocus",
+  "role",
+  "trapFocus",
 ])
 
 export const splitProps = createSplitProps<Partial<BottomSheetProps>>(props)

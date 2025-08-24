@@ -24,6 +24,7 @@ export function connect<T extends PropTypes>(
     getTriggerProps() {
       return normalize.button({
         ...parts.trigger.attrs,
+        id: dom.getTriggerId(scope),
         type: "button",
         onClick() {
           send({ type: open ? "CLOSE" : "OPEN" })
@@ -81,6 +82,7 @@ export function connect<T extends PropTypes>(
     getCloseTriggerProps() {
       return normalize.button({
         ...parts.closeTrigger.attrs,
+        id: dom.getCloseTriggerId(scope),
         onClick() {
           send({ type: "CLOSE" })
         },
