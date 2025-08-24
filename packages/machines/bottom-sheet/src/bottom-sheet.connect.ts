@@ -42,7 +42,7 @@ export function connect<T extends PropTypes>(
         "data-state": open ? "open" : "closed",
         style: {
           transform: tap(context.get("dragOffset"), (v) => `translate3d(0, ${v}px, 0)`),
-          ...(state.get() === "panning" && {
+          ...(state.matches("panning") && {
             transitionDuration: "0s",
           }),
           "--snap-point-height": tap(context.get("snapPointOffset"), (v) => `${v}px`),
