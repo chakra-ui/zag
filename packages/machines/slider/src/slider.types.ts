@@ -146,6 +146,14 @@ export interface SliderProps extends DirectionProperty, CommonProperties {
    * The slider thumbs dimensions
    */
   thumbSize?: { width: number; height: number } | undefined
+  /**
+   * Whether the visual direction of the slider is inverted.
+   * - Horizontal: value increases towards the left when `true`.
+   * - Vertical: value increases towards the bottom when `true`.
+   *
+   * This affects pointer interactions, thumb/range positioning, and arrow key behavior.
+   */
+  inverted?: boolean | undefined
 }
 
 type PropsWithDefault =
