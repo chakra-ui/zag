@@ -26,6 +26,7 @@ export default function Page() {
             <div {...api.getGrabberIndicatorProps()} />
           </div>
           <div>Bottom Sheet</div>
+          <div data-no-drag>No drag area</div>
         </div>
       </main>
 

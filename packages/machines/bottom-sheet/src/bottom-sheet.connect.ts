@@ -2,7 +2,7 @@ import type { JSX, NormalizeProps, PropTypes } from "@zag-js/types"
 import type { BottomSheetApi, BottomSheetService } from "./bottom-sheet.types"
 import { parts } from "./bottom-sheet.anatomy"
 import * as dom from "./bottom-sheet.dom"
-import { isLeftClick } from "@zag-js/dom-query"
+import { getEventTarget, isLeftClick } from "@zag-js/dom-query"
 
 const tap = <T, R>(v: T | null, fn: (v: T) => R): R | undefined => (v != null ? fn(v) : undefined)
 
@@ -14,6 +14,9 @@ export function connect<T extends PropTypes>(
 
   function onPointerDown(event: JSX.PointerEvent<HTMLElement>) {
     if (!isLeftClick(event)) return
+
+    const target = getEventTarget<HTMLElement>(event)
+    if (target?.hasAttribute("data-no-drag") || target?.closest("[data-no-drag]")) return
 
     const point = { x: event.clientX, y: event.clientY }
     send({ type: "GRABBER_POINTERDOWN", point })
@@ -28,6 +31,7 @@ export function connect<T extends PropTypes>(
       if (open === nextOpen) return
       send({ type: nextOpen ? "OPEN" : "CLOSE" })
     },
+
     getContentProps() {
       return normalize.element({
         ...parts.content.attrs,
@@ -51,6 +55,7 @@ export function connect<T extends PropTypes>(
         },
       })
     },
+
     getTriggerProps() {
       return normalize.button({
         ...parts.trigger.attrs,
@@ -61,6 +66,7 @@ export function connect<T extends PropTypes>(
         },
       })
     },
+
     getBackdropProps() {
       return normalize.element({
         ...parts.backdrop.attrs,
@@ -72,6 +78,7 @@ export function connect<T extends PropTypes>(
         },
       })
     },
+
     getGrabberProps() {
       return normalize.element({
         ...parts.grabber.attrs,
@@ -85,11 +92,14 @@ export function connect<T extends PropTypes>(
         },
       })
     },
+
     getGrabberIndicatorProps() {
       return normalize.element({
         ...parts.grabberIndicator.attrs,
+        id: dom.getGrabberIndicatorId(scope),
       })
     },
+
     getCloseTriggerProps() {
       return normalize.button({
         ...parts.closeTrigger.attrs,
