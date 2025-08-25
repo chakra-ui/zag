@@ -4,6 +4,7 @@ type RouteData = {
 }
 
 export const routesData: RouteData[] = [
+  { label: "Bottom Sheet", path: "/bottom-sheet" },
   { label: "Scroll Area", path: "/scroll-area" },
   { label: "Scroll Area (Nested)", path: "/scroll-area-nested" },
   { label: "Async List", path: "/async-list" },

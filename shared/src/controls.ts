@@ -309,3 +309,9 @@ export const passwordInputControls = defineControls({
   readOnly: { type: "boolean", defaultValue: false },
   ignorePasswordManagers: { type: "boolean", defaultValue: false },
 })
+
+export const bottomSheetControls = defineControls({
+  closeThreshold: { type: "number", defaultValue: 0.5 },
+  grabberOnly: { type: "boolean", defaultValue: false },
+  handleScrollableElements: { type: "boolean", defaultValue: true },
+})

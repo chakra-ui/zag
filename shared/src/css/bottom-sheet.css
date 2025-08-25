@@ -1,0 +1,58 @@
+[data-scope="bottom-sheet"][data-part="backdrop"] {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  opacity: 0;
+  transition: opacity 0.5s cubic-bezier(0.32, 0.72, 0, 1);
+
+  &[data-state="open"] {
+    opacity: 1;
+  }
+}
+
+[data-scope="bottom-sheet"][data-part="content"] {
+  background: white;
+  transform: translate3d(0, 100%, 0);
+  transition: transform 0.5s cubic-bezier(0.32, 0.72, 0, 1);
+  display: flex;
+  flex-direction: column;
+  border-top-left-radius: 16px;
+  border-top-right-radius: 16px;
+  height: 100%;
+  max-height: 500px;
+  position: fixed;
+  width: 100%;
+  bottom: 0;
+  left: 0;
+  right: 0;
+
+  &[data-state="open"] {
+    transform: translate3d(0, var(--snap-point-height, 0), 0);
+  }
+}
+
+[data-scope="bottom-sheet"][data-part="grabber"] {
+  width: 100%;
+  padding: 20px 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+[data-scope="bottom-sheet"][data-part="grabber-indicator"] {
+  height: 4px;
+  width: 40px;
+  background-color: gray;
+  border-radius: 1000px;
+}
+
+[data-scope="bottom-sheet"] [data-no-drag="true"] {
+  width: 100%;
+  padding: 40px 0;
+  border: 1px solid black;
+  border-radius: 16px;
+}
+
+[data-scope="bottom-sheet"] .scrollable {
+  overflow-y: auto;
+}
