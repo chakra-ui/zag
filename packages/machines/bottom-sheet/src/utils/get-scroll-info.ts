@@ -15,8 +15,6 @@ export function getScrollInfo(target: HTMLElement, container: HTMLElement) {
 
     const scrolled = scrollHeight - scrollTop - clientHeight
 
-    console.log(element)
-
     if ((scrollTop !== 0 || scrolled !== 0) && isScrollContainer(element)) {
       availableScroll += scrolled
       availableScrollTop += scrollTop
