@@ -24,6 +24,7 @@ const api = computed(() => bottomSheet.connect(service, normalizeProps))
         <div v-bind="api.getGrabberIndicatorProps()"></div>
       </div>
       <div>Bottom Sheet</div>
+      <div data-no-drag="true">No drag area</div>
     </div>
   </main>
 
