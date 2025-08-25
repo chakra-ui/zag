@@ -1,5 +1,20 @@
 # @zag-js/number-input
 
+## 1.22.0
+
+### Patch Changes
+
+- [#2662](https://github.com/chakra-ui/zag/pull/2662)
+  [`33db1b7`](https://github.com/chakra-ui/zag/commit/33db1b70a0e2e2ef8fe8e964656d6d31a726b7dd) Thanks
+  [@julienbenac](https://github.com/julienbenac)! - - Handle empty values consistently across all format options.
+  - Add `data-scrubbing` attribute to the number input parts.
+- Updated dependencies []:
+  - @zag-js/anatomy@1.22.0
+  - @zag-js/core@1.22.0
+  - @zag-js/types@1.22.0
+  - @zag-js/utils@1.22.0
+  - @zag-js/dom-query@1.22.0
+
 ## 1.21.9
 
 ### Patch Changes
