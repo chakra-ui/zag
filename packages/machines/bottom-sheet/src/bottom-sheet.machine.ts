@@ -26,6 +26,7 @@ export const machine = createMachine<BottomSheetSchema>({
       snapPoints: ["100%"],
       closeThreshold: 0.5,
       grabberOnly: false,
+      handleScrollableElements: true,
       ...props,
     }
   },

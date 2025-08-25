@@ -15,6 +15,7 @@ export const props = createProps<BottomSheetProps>()([
   "snapPoints",
   "closeThreshold",
   "grabberOnly",
+  "handleScrollableElements",
   "closeOnEscape",
   "closeOnInteractOutside",
   "onEscapeKeyDown",

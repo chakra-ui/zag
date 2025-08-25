@@ -27,6 +27,11 @@ export default function Page() {
           </div>
           <div>Bottom Sheet</div>
           <div data-no-drag>No drag area</div>
+          <div className="scrollable">
+            {Array.from({ length: 100 }).map((_element, index) => (
+              <div key={index}>Item {index}</div>
+            ))}
+          </div>
         </div>
       </main>
 

@@ -84,7 +84,6 @@ export function connect<T extends PropTypes>(
         ...parts.grabber.attrs,
         id: dom.getGrabberId(scope),
         onPointerDown(event) {
-          if (!prop("grabberOnly")) return
           onPointerDown(event)
         },
         style: {

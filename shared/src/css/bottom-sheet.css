@@ -26,25 +26,14 @@
   left: 0;
   right: 0;
 
-  & [data-scrollable] {
-    overflow-y: hidden !important;
-  }
-
   &[data-state="open"] {
     transform: translate3d(0, var(--snap-point-height, 0), 0);
   }
 }
 
-[data-scope="bottom-sheet"] [data-no-drag="true"] {
-  width: 100%;
-  height: 80px;
-  border: 1px solid black;
-  border-radius: 16px;
-}
-
 [data-scope="bottom-sheet"][data-part="grabber"] {
   width: 100%;
-  height: 40px;
+  padding: 20px 0;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -55,4 +44,15 @@
   width: 40px;
   background-color: gray;
   border-radius: 1000px;
+}
+
+[data-scope="bottom-sheet"] [data-no-drag="true"] {
+  width: 100%;
+  padding: 40px 0;
+  border: 1px solid black;
+  border-radius: 16px;
+}
+
+[data-scope="bottom-sheet"] .scrollable {
+  overflow-y: auto;
 }

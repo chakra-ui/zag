@@ -91,6 +91,12 @@ export interface BottomSheetProps extends DirectionProperty, CommonProperties, D
    * @default false
    */
   grabberOnly?: boolean
+  /**
+   * Whether to handle scrollable elements within the bottom sheet.
+   * When enabled, the sheet will not start dragging if the pointer is over a scrollable element.
+   * @default true
+   */
+  handleScrollableElements?: boolean
 }
 
 type PropsWithDefault =
@@ -104,6 +110,7 @@ type PropsWithDefault =
   | "initialFocusEl"
   | "snapPoints"
   | "closeThreshold"
+  | "handleScrollableElements"
 
 export interface BottomSheetSchema {
   props: RequiredBy<BottomSheetProps, PropsWithDefault>
