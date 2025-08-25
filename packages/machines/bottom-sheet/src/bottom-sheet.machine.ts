@@ -113,7 +113,7 @@ export const machine = createMachine<BottomSheetSchema>({
         GRABBER_RELEASE: [
           {
             guard: "shouldCloseOnSwipe",
-            actions: ["invokeOnClose", "clearSnapOffset", "clearDragOffset", "clearDragging"],
+            actions: ["invokeOnClose", "clearSnapOffset", "clearDragOffset", "resetVelocityTracking", "clearDragging"],
             target: "closed",
           },
           {
@@ -197,6 +197,7 @@ export const machine = createMachine<BottomSheetSchema>({
           const { availableScroll, availableScrollTop } = getScrollInfo(target, container)
 
           if ((delta > 0 && Math.abs(availableScroll) > 1) || (delta < 0 && availableScrollTop > 0)) {
+            context.set("isPointerDown", false)
             send({ type: "GRABBER_RELEASE", point })
             return
           }
