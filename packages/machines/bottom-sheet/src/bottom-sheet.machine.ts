@@ -1,7 +1,7 @@
 import { createMachine } from "@zag-js/core"
 import type { BottomSheetSchema } from "./bottom-sheet.types"
 import type { Point } from "@zag-js/types"
-import { addDomEvent, trackPointerMove } from "@zag-js/dom-query"
+import { addDomEvent, getEventPoint, trackPointerMove } from "@zag-js/dom-query"
 import * as dom from "./bottom-sheet.dom"
 import { resolveSnapPoints } from "./utils/resolve-snap-points"
 import { trackDismissableElement } from "@zag-js/dismissable"
@@ -163,15 +163,14 @@ export const machine = createMachine<BottomSheetSchema>({
       },
 
       setPointerStart({ context, event }) {
-        const { x, y } = event
-        context.set("pointerStartPoint", { x, y })
+        context.set("pointerStartPoint", event.point)
       },
 
       setClosestSnapOffset({ computed, context, event }) {
         if (!context.get("isDragging")) return
 
         const snapPoints = computed("resolvedSnapPoints")
-        const closestSnapPoint = findClosestSnapPoint(window.innerHeight - event.y, snapPoints)
+        const closestSnapPoint = findClosestSnapPoint(window.innerHeight - event.point.y, snapPoints)
 
         context.set("snapPointOffset", context.get("contentHeight") - closestSnapPoint)
       },
@@ -186,26 +185,26 @@ export const machine = createMachine<BottomSheetSchema>({
         const startPoint = context.get("pointerStartPoint")
         if (startPoint == null) return
 
-        const { x, y, target } = event
+        const { point, target } = event
         const currentTimestamp = performance.now()
 
         const container = dom.getContentEl(scope)
         if (!container) return
 
-        let delta = startPoint.y - y - (context.get("snapPointOffset") ?? 0)
+        let delta = startPoint.y - point.y - (context.get("snapPointOffset") ?? 0)
 
         if (prop("handleScrollableElements")) {
           const { availableScroll, availableScrollTop } = getScrollInfo(target, container)
 
           if ((delta > 0 && Math.abs(availableScroll) > 1) || (delta < 0 && availableScrollTop > 0)) {
-            send({ type: "GRABBER_RELEASE", x, y })
+            send({ type: "GRABBER_RELEASE", point })
             return
           }
         }
 
         const lastPoint = context.get("lastPoint")
         if (lastPoint) {
-          const dy = y - lastPoint.y
+          const dy = point.y - lastPoint.y
 
           const lastTimestamp = context.get("lastTimestamp")
           if (lastTimestamp) {
@@ -216,7 +215,7 @@ export const machine = createMachine<BottomSheetSchema>({
           }
         }
 
-        context.set("lastPoint", { x, y })
+        context.set("lastPoint", point)
         context.set("lastTimestamp", currentTimestamp)
 
         if (delta > 0) delta = 0
@@ -294,12 +293,11 @@ export const machine = createMachine<BottomSheetSchema>({
         return trackPointerMove(scope.getDoc(), {
           onPointerMove({ point, event }) {
             if (!context.get("isPointerDown")) return
-            const { x, y } = point
-            send({ type: "GRABBER_DRAG", x, y, target: event.target })
+            send({ type: "GRABBER_DRAG", point, target: event.target })
           },
           onPointerUp({ point, event }) {
             context.set("isPointerDown", false)
-            if (event.pointerType !== "touch") send({ type: "GRABBER_RELEASE", x: point.x, y: point.y })
+            if (event.pointerType !== "touch") send({ type: "GRABBER_RELEASE", point })
           },
         })
       },
@@ -307,14 +305,14 @@ export const machine = createMachine<BottomSheetSchema>({
       trackTouchMove({ send, scope }) {
         function onTouchMove(event: TouchEvent) {
           if (!event.touches[0]) return
-          const { clientX: x, clientY: y } = event.touches[0]
-          send({ type: "GRABBER_DRAG", x, y, target: event.target })
+          const point = getEventPoint(event)
+          send({ type: "GRABBER_DRAG", point, target: event.target })
         }
 
         function onTouchEnd(event: TouchEvent) {
           if (event.touches.length !== 0) return
-          const { clientX: x, clientY: y } = event.changedTouches[0]
-          send({ type: "GRABBER_RELEASE", x, y })
+          const point = getEventPoint(event)
+          send({ type: "GRABBER_RELEASE", point })
         }
 
         const cleanups = [

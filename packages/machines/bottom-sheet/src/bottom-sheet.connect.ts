@@ -2,7 +2,7 @@ import type { JSX, NormalizeProps, PropTypes } from "@zag-js/types"
 import type { BottomSheetApi, BottomSheetService } from "./bottom-sheet.types"
 import { parts } from "./bottom-sheet.anatomy"
 import * as dom from "./bottom-sheet.dom"
-import { getEventTarget, isLeftClick } from "@zag-js/dom-query"
+import { getEventPoint, getEventTarget, isLeftClick } from "@zag-js/dom-query"
 
 const tap = <T, R>(v: T | null, fn: (v: T) => R): R | undefined => (v != null ? fn(v) : undefined)
 
@@ -18,9 +18,9 @@ export function connect<T extends PropTypes>(
     const target = getEventTarget<HTMLElement>(event)
     if (target?.hasAttribute("data-no-drag") || target?.closest("[data-no-drag]")) return
 
-    const { clientX: x, clientY: y } = event
+    const point = getEventPoint(event)
     context.set("isPointerDown", true)
-    send({ type: "GRABBER_POINTERDOWN", x, y })
+    send({ type: "GRABBER_POINTERDOWN", point })
   }
 
   const open = state.hasTag("open")
