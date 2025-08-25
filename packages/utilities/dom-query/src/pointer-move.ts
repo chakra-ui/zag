@@ -18,6 +18,10 @@ export interface PointerUpDetails {
    * The current position of the pointer.
    */
   point: Point
+  /**
+   * The event that triggered the move.
+   */
+  event: PointerEvent
 }
 
 export interface PointerMoveHandlers {
@@ -51,9 +55,9 @@ export function trackPointerMove(doc: Document, handlers: PointerMoveHandlers) {
     onPointerMove({ point, event })
   }
 
-  const handleUp = (event: PointerEvent | MouseEvent) => {
+  const handleUp = (event: PointerEvent) => {
     const point = getEventPoint(event)
-    onPointerUp({ point })
+    onPointerUp({ point, event })
   }
 
   const cleanups = [

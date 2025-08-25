@@ -1,7 +1,7 @@
 import { createMachine } from "@zag-js/core"
 import type { BottomSheetSchema } from "./bottom-sheet.types"
 import type { Point } from "@zag-js/types"
-import { trackPointerMove } from "@zag-js/dom-query"
+import { addDomEvent, trackPointerMove } from "@zag-js/dom-query"
 import * as dom from "./bottom-sheet.dom"
 import { resolveSnapPoints } from "./utils/resolve-snap-points"
 import { trackDismissableElement } from "@zag-js/dismissable"
@@ -9,6 +9,7 @@ import { findClosestSnapPoint } from "./utils/find-closest-snap-point"
 import { trapFocus } from "@zag-js/focus-trap"
 import { preventBodyScroll } from "@zag-js/remove-scroll"
 import { ariaHidden } from "@zag-js/aria-hidden"
+import { getScrollInfo } from "./utils/get-scroll-info"
 
 export const machine = createMachine<BottomSheetSchema>({
   props({ props, scope }) {
@@ -33,6 +34,12 @@ export const machine = createMachine<BottomSheetSchema>({
 
   context({ bindable }) {
     return {
+      isDragging: bindable<boolean>(() => ({
+        defaultValue: false,
+      })),
+      isPointerDown: bindable<boolean>(() => ({
+        defaultValue: false,
+      })),
       dragOffset: bindable<number | null>(() => ({
         defaultValue: null,
       })),
@@ -73,7 +80,15 @@ export const machine = createMachine<BottomSheetSchema>({
   states: {
     open: {
       tags: ["open"],
-      effects: ["trackDismissableElement", "trapFocus", "preventScroll", "hideContentBelow", "trackContentHeight"],
+      effects: [
+        "trackDismissableElement",
+        "trackPointerMove",
+        "trackTouchMove",
+        "trapFocus",
+        "preventScroll",
+        "hideContentBelow",
+        "trackContentHeight",
+      ],
       on: {
         CLOSE: [
           {
@@ -87,8 +102,23 @@ export const machine = createMachine<BottomSheetSchema>({
         ],
         GRABBER_POINTERDOWN: [
           {
-            target: "panning",
             actions: ["setPointerStart"],
+          },
+        ],
+        GRABBER_DRAG: [
+          {
+            actions: ["setDragOffset", "setDragging"],
+          },
+        ],
+        GRABBER_RELEASE: [
+          {
+            guard: "shouldCloseOnSwipe",
+            actions: ["invokeOnClose", "clearSnapOffset", "clearDragOffset", "clearDragging"],
+            target: "closed",
+          },
+          {
+            target: "open",
+            actions: ["setClosestSnapOffset", "clearDragOffset", "resetVelocityTracking", "clearDragging"],
           },
         ],
       },
@@ -105,29 +135,6 @@ export const machine = createMachine<BottomSheetSchema>({
           {
             target: "open",
             actions: ["invokeOnOpen"],
-          },
-        ],
-      },
-    },
-
-    panning: {
-      tags: ["open"],
-      effects: ["trackPointerMove", "trapFocus"],
-      on: {
-        GRABBER_DRAG: [
-          {
-            actions: ["setDragOffset"],
-          },
-        ],
-        GRABBER_RELEASE: [
-          {
-            guard: "shouldCloseOnSwipe",
-            actions: ["invokeOnClose", "clearSnapOffset", "clearDragOffset"],
-            target: "closed",
-          },
-          {
-            target: "open",
-            actions: ["setClosestSnapOffset", "clearDragOffset", "resetVelocityTracking"],
           },
         ],
       },
@@ -156,28 +163,49 @@ export const machine = createMachine<BottomSheetSchema>({
       },
 
       setPointerStart({ context, event }) {
-        context.set("pointerStartPoint", event.point)
+        const { x, y } = event
+        context.set("pointerStartPoint", { x, y })
       },
 
       setClosestSnapOffset({ computed, context, event }) {
+        if (!context.get("isDragging")) return
+
         const snapPoints = computed("resolvedSnapPoints")
-        const closestSnapPoint = findClosestSnapPoint(window.innerHeight - event.point.y, snapPoints)
+        const closestSnapPoint = findClosestSnapPoint(window.innerHeight - event.y, snapPoints)
 
         context.set("snapPointOffset", context.get("contentHeight") - closestSnapPoint)
       },
 
-      setDragOffset({ context, event }) {
+      setDragging({ context }) {
+        context.set("isDragging", true)
+      },
+
+      setDragOffset({ context, event, prop, scope, send }) {
+        if (!context.get("isPointerDown")) return
+
         const startPoint = context.get("pointerStartPoint")
         if (startPoint == null) return
 
-        const currentPoint = event.point
+        const { x, y, target } = event
         const currentTimestamp = performance.now()
 
-        let delta = startPoint.y - currentPoint.y - (context.get("snapPointOffset") ?? 0)
+        const container = dom.getContentEl(scope)
+        if (!container) return
+
+        let delta = startPoint.y - y - (context.get("snapPointOffset") ?? 0)
+
+        if (prop("handleScrollableElements")) {
+          const { availableScroll, availableScrollTop } = getScrollInfo(target, container)
+
+          if ((delta > 0 && Math.abs(availableScroll) > 1) || (delta < 0 && availableScrollTop > 0)) {
+            send({ type: "GRABBER_RELEASE", x, y })
+            return
+          }
+        }
 
         const lastPoint = context.get("lastPoint")
         if (lastPoint) {
-          const dy = currentPoint.y - lastPoint.y
+          const dy = y - lastPoint.y
 
           const lastTimestamp = context.get("lastTimestamp")
           if (lastTimestamp) {
@@ -188,12 +216,16 @@ export const machine = createMachine<BottomSheetSchema>({
           }
         }
 
-        context.set("lastPoint", currentPoint)
+        context.set("lastPoint", { x, y })
         context.set("lastTimestamp", currentTimestamp)
 
         if (delta > 0) delta = 0
 
         context.set("dragOffset", -delta)
+      },
+
+      clearDragging({ context }) {
+        context.set("isDragging", false)
       },
 
       clearDragOffset({ context }) {
@@ -258,15 +290,41 @@ export const machine = createMachine<BottomSheetSchema>({
         return ariaHidden(getElements, { defer: true })
       },
 
-      trackPointerMove({ send, scope }) {
+      trackPointerMove({ send, scope, context }) {
         return trackPointerMove(scope.getDoc(), {
-          onPointerMove({ point }) {
-            send({ type: "GRABBER_DRAG", point })
+          onPointerMove({ point, event }) {
+            if (!context.get("isPointerDown")) return
+            const { x, y } = point
+            send({ type: "GRABBER_DRAG", x, y, target: event.target })
           },
-          onPointerUp({ point }) {
-            send({ type: "GRABBER_RELEASE", point })
+          onPointerUp({ point, event }) {
+            context.set("isPointerDown", false)
+            if (event.pointerType !== "touch") send({ type: "GRABBER_RELEASE", x: point.x, y: point.y })
           },
         })
+      },
+
+      trackTouchMove({ send, scope }) {
+        function onTouchMove(event: TouchEvent) {
+          if (!event.touches[0]) return
+          const { clientX: x, clientY: y } = event.touches[0]
+          send({ type: "GRABBER_DRAG", x, y, target: event.target })
+        }
+
+        function onTouchEnd(event: TouchEvent) {
+          if (event.touches.length !== 0) return
+          const { clientX: x, clientY: y } = event.changedTouches[0]
+          send({ type: "GRABBER_RELEASE", x, y })
+        }
+
+        const cleanups = [
+          addDomEvent(scope.getDoc(), "touchmove", onTouchMove),
+          addDomEvent(scope.getDoc(), "touchend", onTouchEnd),
+        ]
+
+        return () => {
+          cleanups.forEach((cleanup) => cleanup())
+        }
       },
 
       trackContentHeight({ context, scope }) {

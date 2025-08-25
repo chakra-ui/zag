@@ -114,9 +114,11 @@ type PropsWithDefault =
 
 export interface BottomSheetSchema {
   props: RequiredBy<BottomSheetProps, PropsWithDefault>
-  state: "open" | "closed" | "panning"
+  state: "open" | "closed"
   tag: "open" | "closed"
   context: {
+    isDragging: boolean
+    isPointerDown: boolean
     pointerStartPoint: Point | null
     dragOffset: number | null
     snapPointOffset: number | null

@@ -18,8 +18,9 @@ export function connect<T extends PropTypes>(
     const target = getEventTarget<HTMLElement>(event)
     if (target?.hasAttribute("data-no-drag") || target?.closest("[data-no-drag]")) return
 
-    const point = { x: event.clientX, y: event.clientY }
-    send({ type: "GRABBER_POINTERDOWN", point })
+    const { clientX: x, clientY: y } = event
+    context.set("isPointerDown", true)
+    send({ type: "GRABBER_POINTERDOWN", x, y })
   }
 
   const open = state.hasTag("open")
@@ -43,9 +44,7 @@ export function connect<T extends PropTypes>(
         "data-state": open ? "open" : "closed",
         style: {
           transform: tap(context.get("dragOffset"), (v) => `translate3d(0, ${v}px, 0)`),
-          ...(state.matches("panning") && {
-            transitionDuration: "0s",
-          }),
+          transitionDuration: context.get("isDragging") ? "0s" : undefined,
           "--snap-point-height": tap(context.get("snapPointOffset"), (v) => `${v}px`),
           willChange: "transform",
         },
