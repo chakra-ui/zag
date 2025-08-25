@@ -28,6 +28,11 @@
     </div>
     <div>Bottom Sheet</div>
     <div data-no-drag="true">No drag area</div>
+    <div class="scrollable">
+      {#each Array.from({ length: 100 }) as _, index}
+        <div>Item {index}</div>
+      {/each}
+    </div>
   </div>
 </main>
 

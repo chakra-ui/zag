@@ -25,6 +25,9 @@ const api = computed(() => bottomSheet.connect(service, normalizeProps))
       </div>
       <div>Bottom Sheet</div>
       <div data-no-drag="true">No drag area</div>
+      <div class="scrollable">
+        <div v-for="(_element, index) in Array.from({ length: 100 })" :key="index">Item {{ index }}</div>
+      </div>
     </div>
   </main>
 
