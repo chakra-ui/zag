@@ -80,8 +80,11 @@ export const machine = createMachine({
 
   computed: {
     isRtl: ({ prop }) => prop("dir") === "rtl",
-    valueAsNumber: ({ context, computed, prop }) => parseValue(context.get("value"), { computed, prop }),
-    formattedValue: ({ computed, prop }) => formatValue(computed("valueAsNumber"), { computed, prop }),
+    formattedValue: ({ context, computed, prop }) => {
+      const value = parseValue(context.get("value"), { computed, prop })
+      return formatValue(value, { computed, prop })
+    },
+    valueAsNumber: ({ computed, prop }) => parseValue(computed("formattedValue"), { computed, prop }),
     isAtMin: ({ computed, prop }) => isValueAtMin(computed("valueAsNumber"), prop("min")),
     isAtMax: ({ computed, prop }) => isValueAtMax(computed("valueAsNumber"), prop("max")),
     isOutOfRange: ({ computed, prop }) => !isValueWithinRange(computed("valueAsNumber"), prop("min"), prop("max")),
