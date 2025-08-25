@@ -102,7 +102,7 @@ export const machine = createMachine<BottomSheetSchema>({
         ],
         GRABBER_POINTERDOWN: [
           {
-            actions: ["setPointerStart"],
+            actions: ["setPointerStart", "setPointerDown"],
           },
         ],
         GRABBER_DRAG: [
@@ -113,12 +113,25 @@ export const machine = createMachine<BottomSheetSchema>({
         GRABBER_RELEASE: [
           {
             guard: "shouldCloseOnSwipe",
-            actions: ["invokeOnClose", "clearSnapOffset", "clearDragOffset", "resetVelocityTracking", "clearDragging"],
+            actions: [
+              "invokeOnClose",
+              "clearSnapOffset",
+              "clearDragOffset",
+              "resetVelocityTracking",
+              "clearDragging",
+              "clearPointerDown",
+            ],
             target: "closed",
           },
           {
             target: "open",
-            actions: ["setClosestSnapOffset", "clearDragOffset", "resetVelocityTracking", "clearDragging"],
+            actions: [
+              "setClosestSnapOffset",
+              "clearDragOffset",
+              "resetVelocityTracking",
+              "clearDragging",
+              "clearPointerDown",
+            ],
           },
         ],
       },
@@ -179,6 +192,10 @@ export const machine = createMachine<BottomSheetSchema>({
         context.set("isDragging", true)
       },
 
+      setPointerDown({ context }) {
+        context.set("isPointerDown", true)
+      },
+
       setDragOffset({ context, event, prop, scope, send }) {
         if (!context.get("isPointerDown")) return
 
@@ -197,7 +214,6 @@ export const machine = createMachine<BottomSheetSchema>({
           const { availableScroll, availableScrollTop } = getScrollInfo(target, container)
 
           if ((delta > 0 && Math.abs(availableScroll) > 1) || (delta < 0 && availableScrollTop > 0)) {
-            context.set("isPointerDown", false)
             send({ type: "GRABBER_RELEASE", point })
             return
           }
@@ -226,6 +242,10 @@ export const machine = createMachine<BottomSheetSchema>({
 
       clearDragging({ context }) {
         context.set("isDragging", false)
+      },
+
+      clearPointerDown({ context }) {
+        context.set("isPointerDown", false)
       },
 
       clearDragOffset({ context }) {
@@ -297,7 +317,6 @@ export const machine = createMachine<BottomSheetSchema>({
             send({ type: "GRABBER_DRAG", point, target: event.target })
           },
           onPointerUp({ point, event }) {
-            context.set("isPointerDown", false)
             if (event.pointerType !== "touch") send({ type: "GRABBER_RELEASE", point })
           },
         })

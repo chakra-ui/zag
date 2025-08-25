@@ -19,7 +19,6 @@ export function connect<T extends PropTypes>(
     if (target?.hasAttribute("data-no-drag") || target?.closest("[data-no-drag]")) return
 
     const point = getEventPoint(event)
-    context.set("isPointerDown", true)
     send({ type: "GRABBER_POINTERDOWN", point })
   }
 
