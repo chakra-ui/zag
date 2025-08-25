@@ -25,6 +25,7 @@ export const machine = createMachine<BottomSheetSchema>({
       initialFocusEl,
       snapPoints: ["100%"],
       closeThreshold: 0.5,
+      grabberOnly: false,
       ...props,
     }
   },

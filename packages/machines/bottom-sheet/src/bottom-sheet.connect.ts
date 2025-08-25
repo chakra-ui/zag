@@ -1,4 +1,4 @@
-import type { NormalizeProps, PropTypes } from "@zag-js/types"
+import type { JSX, NormalizeProps, PropTypes } from "@zag-js/types"
 import type { BottomSheetApi, BottomSheetService } from "./bottom-sheet.types"
 import { parts } from "./bottom-sheet.anatomy"
 import * as dom from "./bottom-sheet.dom"
@@ -10,7 +10,14 @@ export function connect<T extends PropTypes>(
   service: BottomSheetService,
   normalize: NormalizeProps<T>,
 ): BottomSheetApi<T> {
-  const { state, send, context, scope } = service
+  const { state, send, context, scope, prop } = service
+
+  function onPointerDown(event: JSX.PointerEvent<HTMLElement>) {
+    if (!isLeftClick(event)) return
+
+    const point = { x: event.clientX, y: event.clientY }
+    send({ type: "GRABBER_POINTERDOWN", point })
+  }
 
   const open = state.hasTag("open")
 
@@ -20,16 +27,6 @@ export function connect<T extends PropTypes>(
       const open = state.hasTag("open")
       if (open === nextOpen) return
       send({ type: nextOpen ? "OPEN" : "CLOSE" })
-    },
-    getTriggerProps() {
-      return normalize.button({
-        ...parts.trigger.attrs,
-        id: dom.getTriggerId(scope),
-        type: "button",
-        onClick() {
-          send({ type: open ? "CLOSE" : "OPEN" })
-        },
-      })
     },
     getContentProps() {
       return normalize.element({
@@ -48,11 +45,26 @@ export function connect<T extends PropTypes>(
           "--snap-point-height": tap(context.get("snapPointOffset"), (v) => `${v}px`),
           willChange: "transform",
         },
+        onPointerDown(event) {
+          if (prop("grabberOnly")) return
+          onPointerDown(event)
+        },
+      })
+    },
+    getTriggerProps() {
+      return normalize.button({
+        ...parts.trigger.attrs,
+        id: dom.getTriggerId(scope),
+        type: "button",
+        onClick() {
+          send({ type: open ? "CLOSE" : "OPEN" })
+        },
       })
     },
     getBackdropProps() {
       return normalize.element({
         ...parts.backdrop.attrs,
+        id: dom.getBackdropId(scope),
         hidden: !open,
         "data-state": open ? "open" : "closed",
         style: {
@@ -63,11 +75,10 @@ export function connect<T extends PropTypes>(
     getGrabberProps() {
       return normalize.element({
         ...parts.grabber.attrs,
+        id: dom.getGrabberId(scope),
         onPointerDown(event) {
-          if (!isLeftClick(event)) return
-
-          const point = { x: event.clientX, y: event.clientY }
-          send({ type: "GRABBER_POINTERDOWN", point })
+          if (!prop("grabberOnly")) return
+          onPointerDown(event)
         },
         style: {
           touchAction: "none",

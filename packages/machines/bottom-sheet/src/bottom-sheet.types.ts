@@ -86,6 +86,11 @@ export interface BottomSheetProps extends DirectionProperty, CommonProperties, D
    * @default 0.5
    */
   closeThreshold?: number
+  /**
+   * Whether the bottom sheet should only be draggable by the grabber.
+   * @default false
+   */
+  grabberOnly?: boolean
 }
 
 type PropsWithDefault =
@@ -93,6 +98,7 @@ type PropsWithDefault =
   | "closeOnEscape"
   | "modal"
   | "trapFocus"
+  | "grabberOnly"
   | "restoreFocus"
   | "preventScroll"
   | "initialFocusEl"
