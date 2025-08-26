@@ -15,17 +15,21 @@ export const machine = createMachine<TooltipSchema>({
   },
 
   props({ props }) {
+    // If consumer disables click-to-close, default pointerdown-to-close to follow it
+    const closeOnClick = props.closeOnClick ?? true
+    const closeOnPointerDown = props.closeOnPointerDown ?? closeOnClick
+
     return {
       id: "x",
       openDelay: 1000,
       closeDelay: 500,
-      closeOnPointerDown: true,
       closeOnEscape: true,
       interactive: false,
       closeOnScroll: true,
-      closeOnClick: true,
       disabled: false,
       ...props,
+      closeOnPointerDown,
+      closeOnClick,
       positioning: {
         placement: "bottom",
         ...props.positioning,
