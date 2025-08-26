@@ -1,6 +1,6 @@
 import * as presence from "@zag-js/presence"
 import { normalizeProps, useMachine } from "@zag-js/react"
-import { forwardRef, Ref, RefObject } from "react"
+import { forwardRef } from "react"
 
 interface PresenceProps extends React.HTMLAttributes<HTMLDivElement> {}
 
@@ -22,13 +22,12 @@ export const Presence = forwardRef<HTMLDivElement, PresenceProps>(function Prese
   )
 })
 
-function mergeRefs<T>(...refs: (RefObject<T> | Ref<T>)[]) {
+function mergeRefs<T>(...refs: (React.RefObject<T> | React.Ref<T>)[]) {
   return (node: T) => {
     refs.forEach((ref) => {
       if (typeof ref === "function") {
         ref(node)
       } else if (ref != null) {
-        // @ts-expect-error - ref is a ref object
         ref.current = node
       }
     })
