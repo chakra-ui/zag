@@ -496,6 +496,7 @@ async function extractAllCSSVariables(): Promise<AllCSSVars> {
   const positionerVariables = [
     "--transform-origin",
     "--reference-width",
+    "--reference-height",
     "--available-width",
     "--available-height",
     "--x",
