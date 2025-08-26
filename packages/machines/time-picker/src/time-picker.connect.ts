@@ -20,6 +20,7 @@ export function connect<T extends PropTypes>(
 
   const disabled = prop("disabled")
   const readOnly = prop("readOnly")
+  const interactive = computed("isInteractive")
 
   const locale = prop("locale")
   const hour12 = is12HourFormat(locale)
@@ -135,6 +136,7 @@ export function connect<T extends PropTypes>(
         },
         onKeyDown(event) {
           if (isComposingEvent(event)) return
+          if (!interactive) return
           if (event.key !== "Enter") return
           send({ type: "INPUT.ENTER", value: event.currentTarget.value })
           event.preventDefault()
@@ -155,6 +157,7 @@ export function connect<T extends PropTypes>(
         "data-state": open ? "open" : "closed",
         onClick(event) {
           if (event.defaultPrevented) return
+          if (!interactive) return
           send({ type: "TRIGGER.CLICK" })
         },
       })

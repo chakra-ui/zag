@@ -60,6 +60,7 @@ export const machine = createMachine<TimePickerSchema>({
   },
 
   computed: {
+    isInteractive: ({ prop }) => !prop("disabled") && !prop("readOnly"),
     valueAsString: ({ context, prop, computed }) =>
       getValueString(context.get("value"), computed("hour12"), computed("period"), prop("allowSeconds")),
     hour12: ({ prop }) => is12HourFormat(prop("locale")),

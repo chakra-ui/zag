@@ -703,6 +703,7 @@ export function connect<T extends PropTypes>(
         "data-state": open ? "open" : "closed",
         "aria-haspopup": "grid",
         disabled,
+        "data-readonly": dataAttr(readOnly),
         onClick(event) {
           if (event.defaultPrevented) return
           if (!interactive) return

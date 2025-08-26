@@ -150,6 +150,10 @@ interface PrivateContext {
 
 type ComputedContext = Readonly<{
   /**
+   * Whether the calendar is interactive.
+   */
+  isInteractive: boolean
+  /**
    * The selected time as a string
    */
   valueAsString: string
