@@ -24,12 +24,13 @@ import { disableTextSelection, raf, restoreTextSelection, setElementValue } from
 import { createLiveRegion } from "@zag-js/live-region"
 import { getPlacement, type Placement } from "@zag-js/popper"
 import * as dom from "./date-picker.dom"
-import type { DatePickerSchema, DateValue, DateView, ValidSegments } from "./date-picker.types"
+import type { DatePickerSchema, DateValue, DateView, Segments } from "./date-picker.types"
 import {
   adjustStartAndEndDate,
   clampView,
   defaultTranslations,
   eachView,
+  EDITABLE_SEGMENTS,
   getNextView,
   getPreviousView,
   isAboveMinView,
@@ -37,6 +38,7 @@ import {
   isValidDate,
   processSegments,
   sortDates,
+  TYPE_MAPPING,
 } from "./date-picker.utils"
 
 const { and } = createGuards<DatePickerSchema>()
@@ -182,9 +184,24 @@ export const machine = createMachine<DatePickerSchema>({
       restoreFocus: bindable<boolean | undefined>(() => ({
         defaultValue: false,
       })),
-      validSegments: bindable<ValidSegments[]>(() => ({
-        defaultValue: [{}, {}],
-      })),
+      validSegments: bindable<Segments[]>(() => {
+        const formatter = new DateFormatter(prop("locale"), {
+          timeZone: prop("timeZone"),
+          day: "2-digit",
+          month: "2-digit",
+          year: "numeric",
+        }) // TODO: move globally
+        const allSegments = formatter
+          .formatToParts(new Date())
+          .filter((seg) => EDITABLE_SEGMENTS[seg.type])
+          .reduce((p, seg) => ((p[TYPE_MAPPING[seg.type] || seg.type] = true), p), {})
+
+        const dateValue = prop("value") || prop("defaultValue")
+
+        return {
+          defaultValue: dateValue?.map((date) => (date ? { ...allSegments } : {})) ?? [{}, {}],
+        }
+      }),
     }
   },
 

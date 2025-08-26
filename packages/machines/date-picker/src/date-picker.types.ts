@@ -426,7 +426,7 @@ export type SegmentType =
   | "literal"
   | "timeZoneName"
 
-export type ValidSegments = Partial<typeof EDITABLE_SEGMENTS>
+export type Segments = Partial<typeof EDITABLE_SEGMENTS>
 
 export interface DateSegment {
   /**

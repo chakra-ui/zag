@@ -7,7 +7,7 @@ import {
   type DateValue,
 } from "@internationalized/date"
 import { clampValue, match } from "@zag-js/utils"
-import type { Calendar, DateSegment, DateView, IntlTranslations, ValidSegments } from "./date-picker.types"
+import type { Calendar, DateSegment, DateView, IntlTranslations, Segments } from "./date-picker.types"
 import type { DateGranularity } from "@zag-js/date-utils"
 
 export function adjustStartAndEndDate(value: DateValue[]) {
@@ -104,7 +104,7 @@ export const defaultTranslations: IntlTranslations = {
     })
   },
   placeholder() {
-    const placeholders: Record<keyof ValidSegments, string> = {
+    const placeholders: Record<keyof Segments, string> = {
       day: "dd",
       month: "mm",
       year: "yyyy",
@@ -193,7 +193,7 @@ export const EDITABLE_SEGMENTS = {
   fractionalSecond: true,
 } as const satisfies Record<keyof Intl.DateTimeFormatPartTypesRegistry, boolean>
 
-const TYPE_MAPPING = {
+export const TYPE_MAPPING = {
   // Node seems to convert everything to lowercase...
   dayperiod: "dayPeriod",
   // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/DateTimeFormat/formatToParts#named_years
@@ -203,18 +203,17 @@ const TYPE_MAPPING = {
 } as const
 
 function getSafeType<TType extends keyof Intl.DateTimeFormatPartTypesRegistry>(type: TType): TType {
-  console.log(type)
   return (TYPE_MAPPING as any)[type] ?? type
 }
 
-function getPlaceholder(type: keyof ValidSegments, translations: IntlTranslations, locale: string): string {
+function getPlaceholder(type: keyof Segments, translations: IntlTranslations, locale: string): string {
   return translations.placeholder(locale)[type]
 }
 
 interface ProcessSegmentsProps {
   dateValue: Date
   displayValue: DateValue
-  validSegments: ValidSegments
+  validSegments: Segments
   formatter: DateFormatter
   locale: string
   translations: IntlTranslations
