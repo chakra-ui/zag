@@ -2,6 +2,7 @@ import * as popover from "@zag-js/popover"
 import { normalizeProps, Portal, useMachine } from "@zag-js/react"
 import { popoverControls } from "@zag-js/shared"
 import { Fragment, useId } from "react"
+import { Presence } from "../components/presence"
 import { StateVisualizer } from "../components/state-visualizer"
 import { Toolbar } from "../components/toolbar"
 import { useControls } from "../hooks/use-controls"
@@ -33,7 +34,7 @@ export default function Page() {
 
           <Wrapper>
             <div {...api.getPositionerProps()}>
-              <div data-testid="popover-content" className="popover-content" {...api.getContentProps()}>
+              <Presence data-testid="popover-content" className="popover-content" {...api.getContentProps()}>
                 <div {...api.getArrowProps()}>
                   <div {...api.getArrowTipProps()} />
                 </div>
@@ -50,7 +51,7 @@ export default function Page() {
                     X
                   </button>
                 </div>
-              </div>
+              </Presence>
             </div>
           </Wrapper>
           <span data-testid="plain-text">I am just text</span>
