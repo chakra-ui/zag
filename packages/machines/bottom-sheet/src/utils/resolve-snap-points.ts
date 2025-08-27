@@ -3,8 +3,7 @@ export function resolveSnapPoints(snapPoints: (number | string)[], containerHeig
     .map((point) => {
       if (typeof point === "number") return containerHeight * point
       if (typeof point === "string") {
-        const percent = parseFloat(point) / 100
-        return containerHeight * percent
+        return parseFloat(point)
       }
       throw new Error(`Invalid snap point: ${point}`)
     })
