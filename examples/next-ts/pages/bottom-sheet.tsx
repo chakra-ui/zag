@@ -37,7 +37,7 @@ export default function Page() {
       </main>
 
       <Toolbar controls={controls.ui} viz>
-        <StateVisualizer state={service} />
+        <StateVisualizer state={service} context={["snapPointOffset", "dragOffset"]} />
       </Toolbar>
     </>
   )
