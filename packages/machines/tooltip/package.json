@@ -1,6 +1,6 @@
 {
   "name": "@zag-js/tooltip",
-  "version": "1.21.8",
+  "version": "1.22.0",
   "description": "Core logic for the tooltip widget implemented as a state machine",
   "keywords": [
     "js",
@@ -28,7 +28,6 @@
   "dependencies": {
     "@zag-js/anatomy": "workspace:*",
     "@zag-js/core": "workspace:*",
-    "@zag-js/store": "workspace:*",
     "@zag-js/popper": "workspace:*",
     "@zag-js/focus-visible": "workspace:*",
     "@zag-js/dom-query": "workspace:*",

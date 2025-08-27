@@ -54,14 +54,15 @@ export default function Page() {
               )}
             </For>
             <input data-testid="input" placeholder="add tag" {...api().getInputProps()} />
+            <button {...api().getClearTriggerProps()}>X</button>
           </div>
           <input {...api().getHiddenInputProps()} />
         </div>
       </main>
 
-      {/* <Toolbar viz controls={controls}>
+      <Toolbar viz controls={controls}>
         <StateVisualizer state={service} context={["value"]} />
-      </Toolbar> */}
+      </Toolbar>
     </>
   )
 }

@@ -1,5 +1,35 @@
 # @zag-js/number-input
 
+## 1.22.0
+
+### Patch Changes
+
+- [`289a13a`](https://github.com/chakra-ui/zag/commit/289a13ac9973255a588d3e33bf2a92452275688d) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Omit the input `pattern` when `formatOptions` is provided. This
+  prevents native pattern validation from conflicting with formatted values (e.g., currency or percent).
+
+- [#2662](https://github.com/chakra-ui/zag/pull/2662)
+  [`33db1b7`](https://github.com/chakra-ui/zag/commit/33db1b70a0e2e2ef8fe8e964656d6d31a726b7dd) Thanks
+  [@julienbenac](https://github.com/julienbenac)! - - Handle empty values consistently across all format options.
+  - Add `data-scrubbing` attribute to the number input parts.
+- Updated dependencies []:
+  - @zag-js/anatomy@1.22.0
+  - @zag-js/core@1.22.0
+  - @zag-js/types@1.22.0
+  - @zag-js/utils@1.22.0
+  - @zag-js/dom-query@1.22.0
+
+## 1.21.9
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.21.9
+  - @zag-js/core@1.21.9
+  - @zag-js/types@1.21.9
+  - @zag-js/utils@1.21.9
+  - @zag-js/dom-query@1.21.9
+
 ## 1.21.8
 
 ### Patch Changes

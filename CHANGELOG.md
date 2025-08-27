@@ -4,6 +4,67 @@ All notable changes to this project will be documented in this file.
 
 > For v0.x changelog, see the [v0 branch](https://github.com/chakra-ui/zag/blob/v0/CHANGELOG.md)
 
+## [1.21.10](./#1.21.10) - 2025-08-26
+
+### Added
+
+- **Hover Card**: Add support for `disabled` prop
+
+### Fixed
+
+- **Color Picker**: Fix issue where color picker was not working correctly in RTL mode
+
+- **Dismissable**: Expose `onRequestDismiss` custom event handler for event a parent layer requests the child layer to
+  dismiss. If prevented via `event.preventDefault()`, the child layer will not dismiss when the parent layer is
+  dismissed.
+
+- **Number Input**
+  - Omit the input `pattern` when `formatOptions` is provided. This prevents native pattern validation from conflicting
+    with formatted values (e.g., currency or percent).
+  - Handle empty values consistently across all format options.
+  - Add `data-scrubbing` attribute to the number input parts.
+
+- **Tooltip**
+  - Set `closeOnPointerdown` to `false` when `closeOnClick` is set to `false`
+  - Reduce bundle size by replacing `@zag-js/store` dependency with a lightweight store implementation.
+
+## [1.21.9](./#1.21.9) - 2025-08-23
+
+## Fixed
+
+- **Async List**:
+  - Fixed critical race conditions and dual operations in sort functionality that could cause stale data overwrites and
+    unexpected behavior
+  - Fixed event handling during async operations - users can now properly interrupt sorting with RELOAD, FILTER, or new
+    SORT events
+  - Enhanced `SortDetails` interface with `filterText` parameter for consistent filtering context across local and
+    server-side operations
+
+## [1.21.8](./#1.21.8) - 2025-08-22
+
+### Fixed
+
+- **Date Picker**:
+  - Clear hovered range state after completing range selection instead of waiting for pointer to leave the calendar
+    area.
+  - Fix issue where month and year select labels don't update correctly when using `min`/`max` constraints.
+  - Expose `disabled` on `api.getMonths()` and `api.getYears()` results to indicate options out of range for current
+    constraints.
+
+- **Listbox**:
+  - Fix issue where first enabled item should be highlighted by default when listbox receives focus and no item is
+    currently highlighted.
+  - Add `getElement` to `scrollToIndexFn` details
+  - Track collection changes and clear `highlightedValue` if the item is no longer in the collection.
+
+- **Scroll Area**:
+  - Avoid detecting hover state from portalled descendants.
+  - Add `data-dragging` attribute to scroll area parts.
+
+- **Select**: Add `getElement` to `scrollToIndexFn` details
+
+- **Combobox**: Add `getElement` to `scrollToIndexFn` details
+
 ## [1.21.7](./#1.21.7) - 2025-08-19
 
 ### Added

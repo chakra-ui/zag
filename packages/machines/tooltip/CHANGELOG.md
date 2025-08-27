@@ -1,5 +1,40 @@
 # @zag-js/tooltip
 
+## 1.22.0
+
+### Patch Changes
+
+- [`d97c83b`](https://github.com/chakra-ui/zag/commit/d97c83b19de9b66581162facbca70470ddd0dd87) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Set `closeOnPointerdown` to `false` when `closeOnClick` is set to
+  `false`
+
+- [`5fd4d27`](https://github.com/chakra-ui/zag/commit/5fd4d27b244b7853f6faf92efe0bd0938283d231) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - - Reduce bundle size by replacing @zag-js/store dependency with a
+  lightweight store implementation.
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.22.0
+  - @zag-js/core@1.22.0
+  - @zag-js/types@1.22.0
+  - @zag-js/utils@1.22.0
+  - @zag-js/dom-query@1.22.0
+  - @zag-js/focus-visible@1.22.0
+  - @zag-js/popper@1.22.0
+
+## 1.21.9
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.21.9
+  - @zag-js/core@1.21.9
+  - @zag-js/store@1.21.9
+  - @zag-js/types@1.21.9
+  - @zag-js/utils@1.21.9
+  - @zag-js/dom-query@1.21.9
+  - @zag-js/focus-visible@1.21.9
+  - @zag-js/popper@1.21.9
+
 ## 1.21.8
 
 ### Patch Changes

@@ -7,7 +7,7 @@ import {
 } from "@zag-js/interact-outside"
 import { isFunction, warn, type MaybeFunction } from "@zag-js/utils"
 import { trackEscapeKeydown } from "./escape-keydown"
-import { layerStack, type Layer } from "./layer-stack"
+import { layerStack, type Layer, type LayerDismissEvent } from "./layer-stack"
 import { assignPointerEventToLayers, clearPointerEvent, disablePointerEventsOutside } from "./pointer-event-outside"
 
 type MaybeElement = HTMLElement | null
@@ -19,6 +19,10 @@ export interface DismissableElementHandlers extends InteractOutsideHandlers {
    * Function called when the escape key is pressed
    */
   onEscapeKeyDown?: ((event: KeyboardEvent) => void) | undefined
+  /**
+   * Function called when this layer is closed due to a parent layer being closed
+   */
+  onRequestDismiss?: ((event: LayerDismissEvent) => void) | undefined
 }
 
 export interface PersistentElementOptions {
@@ -69,9 +73,9 @@ function trackDismissableElementImpl(node: MaybeElement, options: DismissableEle
     return
   }
 
-  const { onDismiss, pointerBlocking, exclude: excludeContainers, debug } = options
+  const { onDismiss, onRequestDismiss, pointerBlocking, exclude: excludeContainers, debug } = options
 
-  const layer: Layer = { dismiss: onDismiss, node, pointerBlocking }
+  const layer: Layer = { dismiss: onDismiss, node, pointerBlocking, requestDismiss: onRequestDismiss }
 
   layerStack.add(layer)
   assignPointerEventToLayers()

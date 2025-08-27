@@ -164,6 +164,7 @@ export const machine = createMachine<PopoverSchema>({
           onPointerDownOutside: prop("onPointerDownOutside"),
           onFocusOutside: prop("onFocusOutside"),
           persistentElements: prop("persistentElements"),
+          onRequestDismiss: prop("onRequestDismiss"),
           onDismiss() {
             send({ type: "CLOSE", src: "interact-outside", restoreFocus })
           },

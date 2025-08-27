@@ -73,8 +73,10 @@ export interface PositioningOptions {
   fitViewport?: boolean | undefined
   /**
    * The overflow boundary of the reference element
+   * Accepts a function returning a Boundary, a Boundary directly,
+   * or the shorthand string 'clipping-ancestors' which maps to Floating UI's 'clippingAncestors'.
    */
-  boundary?: (() => Boundary) | undefined
+  boundary?: (() => Boundary) | Boundary | "clipping-ancestors" | undefined
   /**
    * Options to activate auto-update listeners
    */

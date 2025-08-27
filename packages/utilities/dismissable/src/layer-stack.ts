@@ -1,10 +1,22 @@
 import { contains } from "@zag-js/dom-query"
 
+export type LayerDismissEventDetail = {
+  originalLayer: HTMLElement
+  targetLayer: HTMLElement | undefined
+  originalIndex: number
+  targetIndex: number
+}
+
+export type LayerDismissEvent = CustomEvent<LayerDismissEventDetail>
+
 export interface Layer {
   dismiss: VoidFunction
   node: HTMLElement
   pointerBlocking?: boolean | undefined
+  requestDismiss?: ((event: LayerDismissEvent) => void) | undefined
 }
+
+const LAYER_REQUEST_DISMISS_EVENT = "layer:request-dismiss"
 
 export const layerStack = {
   layers: [] as Layer[],
@@ -42,8 +54,8 @@ export const layerStack = {
     return Array.from(this.branches).some((branch) => contains(branch, target))
   },
   add(layer: Layer) {
-    const num = this.layers.push(layer)
-    layer.node.style.setProperty("--layer-index", `${num}`)
+    this.layers.push(layer)
+    this.syncLayerIndex()
   },
   addBranch(node: HTMLElement) {
     this.branches.push(node)
@@ -55,23 +67,59 @@ export const layerStack = {
     // dismiss nested layers
     if (index < this.count() - 1) {
       const _layers = this.getNestedLayers(node)
-      _layers.forEach((layer) => layer.dismiss())
+      _layers.forEach((layer) => layerStack.dismiss(layer.node, node))
     }
+
     // remove this layer
     this.layers.splice(index, 1)
-    node.style.removeProperty("--layer-index")
+    this.syncLayerIndex()
   },
   removeBranch(node: HTMLElement) {
     const index = this.branches.indexOf(node)
     if (index >= 0) this.branches.splice(index, 1)
   },
+  syncLayerIndex() {
+    this.layers.forEach((layer, index) => {
+      layer.node.style.setProperty("--layer-index", `${index}`)
+    })
+  },
   indexOf(node: HTMLElement | undefined) {
     return this.layers.findIndex((layer) => layer.node === node)
   },
-  dismiss(node: HTMLElement) {
-    this.layers[this.indexOf(node)]?.dismiss()
+  dismiss(node: HTMLElement, parent?: HTMLElement) {
+    // Create and dispatch the preventable event
+    const index = this.indexOf(node)
+    if (index === -1) return
+
+    const layer = this.layers[index]
+
+    addListenerOnce(node, LAYER_REQUEST_DISMISS_EVENT, (event) => {
+      layer.requestDismiss?.(event)
+      if (!event.defaultPrevented) {
+        layer?.dismiss()
+      }
+    })
+
+    fireCustomEvent(node, LAYER_REQUEST_DISMISS_EVENT, {
+      originalLayer: node,
+      targetLayer: parent,
+      originalIndex: index,
+      targetIndex: parent ? this.indexOf(parent) : -1,
+    })
+
+    this.syncLayerIndex()
   },
   clear() {
     this.remove(this.layers[0].node)
   },
+}
+
+function fireCustomEvent(el: HTMLElement, type: string, detail?: LayerDismissEventDetail) {
+  const win = el.ownerDocument.defaultView || window
+  const event = new win.CustomEvent(type, { cancelable: true, bubbles: true, detail })
+  return el.dispatchEvent(event)
+}
+
+function addListenerOnce(el: HTMLElement, type: string, callback: (event: LayerDismissEvent) => void) {
+  el.addEventListener(type, callback as EventListener, { once: true })
 }

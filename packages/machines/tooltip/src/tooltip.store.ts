@@ -1,3 +1,3 @@
-import { proxy } from "@zag-js/store"
+import { createStore } from "@zag-js/utils"
 
-export const store = proxy<{ id: string | null }>({ id: null })
+export const store = createStore<{ id: string | null }>({ id: null })
