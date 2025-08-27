@@ -202,6 +202,19 @@ export const machine = createMachine<DatePickerSchema>({
           defaultValue: dateValue?.map((date) => (date ? { ...allSegments } : {})) ?? [{}, {}],
         }
       }),
+      placeholderDate: bindable<DateValue>(() => {
+        const timeZone = prop("timeZone")
+
+        // Create a placeholder date similar to React Spectrum's createPlaceholderDate
+        // We use today's date as the base, but this can be customized via placeholderValue prop if needed
+        const placeholderValue = getTodayDate(timeZone)
+
+        return {
+          defaultValue: placeholderValue,
+          isEqual: isDateEqual,
+          hash: (v) => v.toString(),
+        }
+      }),
     }
   },
 
@@ -224,9 +237,13 @@ export const machine = createMachine<DatePickerSchema>({
       !isNextRangeInvalid(computed("endValue"), prop("min"), prop("max")),
     valueAsString: ({ context, prop }) => getValueAsString(context.get("value"), prop),
     segments: ({ context, prop }) => {
-      const value = context.get("value")
+      const value = prop("value")
+      const selectionMode = prop("selectionMode")
+      const placeholderDate = context.get("placeholderDate")
+      const validSegments = context.get("validSegments")
       const timeZone = prop("timeZone")
-      const translations = prop("translations")
+      const translations = prop("translations") || defaultTranslations
+      const granularity = prop("granularity")
       const formatter = new DateFormatter(prop("locale"), {
         timeZone,
         day: "2-digit",
@@ -234,15 +251,24 @@ export const machine = createMachine<DatePickerSchema>({
         year: "numeric",
       }) // TODO: move globally
 
-      return value.map((date, i) => {
+      let dates: DateValue[] = value?.length ? value : [placeholderDate]
+
+      if (selectionMode === "range") {
+        dates = value?.length ? value : [placeholderDate, placeholderDate]
+      }
+
+      return dates.map((date, i) => {
+        const displayValue = date || placeholderDate
+        const currentValidSegments = validSegments?.[i] || {}
+
         return processSegments({
-          dateValue: date.toDate(timeZone),
-          displayValue: date,
-          validSegments: context.get("validSegments")[i],
+          dateValue: displayValue.toDate(timeZone),
+          displayValue,
+          validSegments: currentValidSegments,
           formatter,
           locale: prop("locale"),
           translations,
-          granularity: prop("granularity"),
+          granularity,
         })
       })
     },

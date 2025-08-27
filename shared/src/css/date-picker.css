@@ -37,6 +37,12 @@
   margin-bottom: 16px;
 }
 
+[data-scope="date-picker"][data-part="segment"] {
+  font-variant-numeric: tabular-nums;
+  text-align: end;
+  padding: 0 2px;
+}
+
 [data-scope="date-picker"][data-part="table-cell-trigger"][data-today] {
   color: purple;
 }

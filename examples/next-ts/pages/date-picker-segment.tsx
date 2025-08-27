@@ -31,7 +31,7 @@ export default function Page() {
         </output>
 
         <div {...api.getControlProps()}>
-          <div>
+          <div {...api.getSegmentInputProps()}>
             {api.getSegments().map((segment, i) => (
               <span key={i} {...api.getSegmentProps({ segment })}>
                 {segment.text}

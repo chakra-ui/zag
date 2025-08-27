@@ -270,6 +270,8 @@ type PropsWithDefault =
   | "parse"
   | "defaultFocusedValue"
   | "outsideDaySelectable"
+  | "granularity"
+  | "translations"
 
 interface PrivateContext {
   /**
@@ -313,6 +315,14 @@ interface PrivateContext {
    * The focused date.
    */
   focusedValue: DateValue
+  /**
+   * The valid segments for each date value (tracks which segments have been filled).
+   */
+  validSegments: Segments[]
+  /**
+   * The placeholder date to use when segments are not filled.
+   */
+  placeholderDate: DateValue
 }
 
 type ComputedContext = Readonly<{
@@ -464,7 +474,7 @@ export interface DateSegment {
 }
 
 export interface SegmentProps {
-  segment?: DateSegment
+  segment: DateSegment
 }
 
 export interface SegmentState {}
@@ -718,6 +728,10 @@ export interface DatePickerApi<T extends PropTypes = PropTypes> {
   /**
    *
    */
+  getSegmentInputProps: () => T["element"]
+  /**
+   *
+   */
   getSegments: (props?: SegmentsProps) => DateSegment[]
   /**
    * Returns the state details for a given segment.
@@ -757,7 +771,7 @@ export interface DatePickerApi<T extends PropTypes = PropTypes> {
   getViewTriggerProps: (props?: ViewProps) => T["button"]
   getViewControlProps: (props?: ViewProps) => T["element"]
   getInputProps: (props?: InputProps) => T["input"]
-  getSegmentProps: (props?: SegmentProps) => T["element"]
+  getSegmentProps: (props: SegmentProps) => T["element"]
   getMonthSelectProps: () => T["select"]
   getYearSelectProps: () => T["select"]
 }

@@ -809,19 +809,71 @@ export function connect<T extends PropTypes>(
       })
     },
 
+    getSegmentInputProps() {
+      return normalize.element({
+        ...parts.input.attrs,
+        id: dom.getInputId(scope, 0), // FIXIT: figure out the index
+        dir: prop("dir"),
+        "data-state": open ? "open" : "closed",
+        role: "presentation",
+        readOnly,
+        disabled,
+        style: {
+          unicodeBidi: "isolate",
+        },
+      })
+    },
+
     getSegments(props = {}) {
       const { index = 0 } = props
-      console.log(computed("segments"))
-
       return computed("segments")[index] ?? []
     },
 
     getSegmentState,
 
-    getSegmentProps(props = {}) {
-      const {} = props
+    getSegmentProps(props) {
+      const { segment } = props
 
-      return {}
+      if (segment.type === "literal") {
+        return normalize.element({
+          ...parts.segment.attrs,
+          dir: prop("dir"),
+          "aria-hidden": true,
+          "data-type": segment.type,
+          "data-readonly": dataAttr(true),
+          "data-disabled": dataAttr(true),
+        })
+      }
+
+      return {
+        ...parts.segment.attrs,
+        dir: prop("dir"),
+        role: "spinbutton",
+        tabIndex: segment.isEditable && !readOnly && !disabled ? 0 : -1,
+        autoComplete: "off",
+        autoCorrect: "off",
+        spellCheck: "false",
+        contentEditable: "true",
+        inputMode: segment.type !== "dayPeriod" ? "numeric" : undefined,
+        enterKeyHint: "next",
+        "data-placeholder": segment.isPlaceholder,
+        "aria-labelledby": dom.getInputId(scope, 0), // FIXIT: figure out the index
+        // "aria-label": translations.segmentLabel(segment),
+        "aria-valuenow": segment.value,
+        "aria-valuetext": segment.text,
+        "aria-valuemin": segment.minValue,
+        "aria-valuemax": segment.maxValue,
+        "aria-readonly": ariaAttr(!segment.isEditable || readOnly),
+        "aria-disabled": ariaAttr(disabled),
+        "data-value": segment.value,
+        "data-type": segment.type,
+        "data-readonly": dataAttr(!segment.isEditable || readOnly),
+        "data-disabled": dataAttr(disabled),
+        "data-editable": dataAttr(segment.isEditable && !readOnly && !disabled),
+        style: {
+          "caret-color": "transparent",
+        },
+      }
     },
 
     getMonthSelectProps() {

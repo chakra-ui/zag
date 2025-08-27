@@ -1,13 +1,6 @@
-import {
-  createCalendar,
-  DateFormatter,
-  getMinimumDayInMonth,
-  getMinimumMonthInYear,
-  type CalendarIdentifier,
-  type DateValue,
-} from "@internationalized/date"
+import { DateFormatter, getMinimumDayInMonth, getMinimumMonthInYear, type DateValue } from "@internationalized/date"
 import { clampValue, match } from "@zag-js/utils"
-import type { Calendar, DateSegment, DateView, IntlTranslations, Segments } from "./date-picker.types"
+import type { DateSegment, DateView, IntlTranslations, Segments } from "./date-picker.types"
 import type { DateGranularity } from "@zag-js/date-utils"
 
 export function adjustStartAndEndDate(value: DateValue[]) {
