@@ -298,6 +298,7 @@ export const machine = createMachine<BottomSheetSchema>({
             }
           },
           onPointerDownOutside: prop("onPointerDownOutside"),
+          onRequestDismiss: prop("onRequestDismiss"),
           onDismiss() {
             send({ type: "CLOSE", src: "interact-outside" })
           },

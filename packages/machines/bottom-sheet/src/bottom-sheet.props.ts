@@ -24,6 +24,7 @@ export const props = createProps<BottomSheetProps>()([
   "onInteractOutside",
   "onOpenChange",
   "onPointerDownOutside",
+  "onRequestDismiss",
   "preventScroll",
   "restoreFocus",
   "role",
