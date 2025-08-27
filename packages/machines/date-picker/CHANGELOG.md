@@ -1,5 +1,54 @@
 # @zag-js/date-picker
 
+## 1.22.1
+
+### Patch Changes
+
+- [`6074d4c`](https://github.com/chakra-ui/zag/commit/6074d4cd58ed1eae2ba3dfef2a434132bd1aa9bc) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix issue where datepicker doesn't revert to a valid value when
+  the input value exceeds the min/max and blurred
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.22.1
+  - @zag-js/core@1.22.1
+  - @zag-js/types@1.22.1
+  - @zag-js/utils@1.22.1
+  - @zag-js/date-utils@1.22.1
+  - @zag-js/dismissable@1.22.1
+  - @zag-js/dom-query@1.22.1
+  - @zag-js/live-region@1.22.1
+  - @zag-js/popper@1.22.1
+
+## 1.22.0
+
+### Patch Changes
+
+- Updated dependencies [[`c1f9b45`](https://github.com/chakra-ui/zag/commit/c1f9b45cf71308b1376fc70d0c5b785fd0a8e275)]:
+  - @zag-js/dismissable@1.22.0
+  - @zag-js/anatomy@1.22.0
+  - @zag-js/core@1.22.0
+  - @zag-js/types@1.22.0
+  - @zag-js/utils@1.22.0
+  - @zag-js/date-utils@1.22.0
+  - @zag-js/dom-query@1.22.0
+  - @zag-js/live-region@1.22.0
+  - @zag-js/popper@1.22.0
+
+## 1.21.9
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.21.9
+  - @zag-js/core@1.21.9
+  - @zag-js/types@1.21.9
+  - @zag-js/utils@1.21.9
+  - @zag-js/date-utils@1.21.9
+  - @zag-js/dismissable@1.21.9
+  - @zag-js/dom-query@1.21.9
+  - @zag-js/live-region@1.21.9
+  - @zag-js/popper@1.21.9
+
 ## 1.21.8
 
 ### Patch Changes

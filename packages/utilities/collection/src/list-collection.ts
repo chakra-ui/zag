@@ -303,12 +303,17 @@ export class ListCollection<T extends CollectionItem = CollectionItem> {
   }
 
   private getByText = (text: string, current: string | null): T | undefined => {
-    let items = current != null ? wrap(this.items, this.indexOf(current)) : this.items
-
+    const currentIndex = current != null ? this.indexOf(current) : -1
     const isSingleKey = text.length === 1
-    if (isSingleKey) items = items.filter((item) => this.getItemValue(item) !== current)
 
-    return items.find((item) => match(this.stringifyItem(item), text))
+    // Use a single loop to filter and find the item
+    for (let i = 0; i < this.items.length; i++) {
+      const item = this.items[(currentIndex + i + 1) % this.items.length]
+      if (isSingleKey && this.getItemValue(item) === current) continue
+      if (this.getItemDisabled(item)) continue
+      if (match(this.stringifyItem(item), text)) return item
+    }
+    return undefined
   }
 
   /**
@@ -549,10 +554,6 @@ export class ListCollection<T extends CollectionItem = CollectionItem> {
 
 const match = (label: string | null, query: string) => {
   return !!label?.toLowerCase().startsWith(query.toLowerCase())
-}
-
-const wrap = <T>(v: T[] | readonly T[], idx: number) => {
-  return v.map((_, index) => v[(Math.max(idx, 0) + index) % v.length])
 }
 
 export function isListCollection(v: unknown): v is ListCollection<any> {

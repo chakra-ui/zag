@@ -42,6 +42,10 @@ export interface HoverCardProps extends DirectionProperty, CommonProperties, Int
    */
   closeDelay?: number | undefined
   /**
+   * Whether the hover card is disabled
+   */
+  disabled?: boolean | undefined
+  /**
    * The controlled open state of the hover card
    */
   open?: boolean | undefined

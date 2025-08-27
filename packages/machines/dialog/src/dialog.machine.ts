@@ -125,6 +125,7 @@ export const machine = createMachine<DialogSchema>({
           persistentElements: prop("persistentElements"),
           onFocusOutside: prop("onFocusOutside"),
           onPointerDownOutside: prop("onPointerDownOutside"),
+          onRequestDismiss: prop("onRequestDismiss"),
           onEscapeKeyDown(event) {
             prop("onEscapeKeyDown")?.(event)
             if (!prop("closeOnEscape")) {

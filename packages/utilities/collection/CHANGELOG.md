@@ -1,5 +1,29 @@
 # @zag-js/collection
 
+## 1.22.1
+
+### Patch Changes
+
+- [`4790d22`](https://github.com/chakra-ui/zag/commit/4790d22ee49c02daafad02aa4f5beb5fcdd507f7) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix issue where disabled items could be reached via typeahead
+
+- Updated dependencies []:
+  - @zag-js/utils@1.22.1
+
+## 1.22.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/utils@1.22.0
+
+## 1.21.9
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/utils@1.21.9
+
 ## 1.21.8
 
 ### Patch Changes

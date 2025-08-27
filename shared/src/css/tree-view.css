@@ -75,12 +75,3 @@
 [data-scope="tree-view"][data-part="branch-control"][data-loading]:hover {
   background: rgb(243, 243, 243);
 }
-
-@keyframes spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
-}

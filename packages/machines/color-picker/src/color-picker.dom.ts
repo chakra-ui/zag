@@ -1,7 +1,7 @@
 import type { ColorChannel } from "@zag-js/color-utils"
 import type { Scope } from "@zag-js/core"
 import { getRelativePoint, queryAll } from "@zag-js/dom-query"
-import type { Point } from "@zag-js/types"
+import type { Direction, Point } from "@zag-js/types"
 
 export const getRootId = (ctx: Scope) => ctx.ids?.root ?? `color-picker:${ctx.id}`
 export const getLabelId = (ctx: Scope) => ctx.ids?.label ?? `color-picker:${ctx.id}:label`
@@ -33,11 +33,14 @@ export const getChannelInputEl = (ctx: Scope, channel: string): HTMLInputElement
 export const getFormatSelectEl = (ctx: Scope) => ctx.getById<HTMLSelectElement>(getFormatSelectId(ctx))
 export const getHiddenInputEl = (ctx: Scope) => ctx.getById<HTMLInputElement>(getHiddenInputId(ctx))
 export const getAreaEl = (ctx: Scope) => ctx.getById(getAreaId(ctx))
-export const getAreaValueFromPoint = (ctx: Scope, point: Point) => {
+export const getAreaValueFromPoint = (ctx: Scope, point: Point, dir?: Direction) => {
   const areaEl = getAreaEl(ctx)
   if (!areaEl) return
-  const { percent } = getRelativePoint(point, areaEl)
-  return percent
+  const { getPercentValue } = getRelativePoint(point, areaEl)
+  return {
+    x: getPercentValue({ dir, orientation: "horizontal" }),
+    y: getPercentValue({ orientation: "vertical" }),
+  }
 }
 
 export const getControlEl = (ctx: Scope) => ctx.getById(getControlId(ctx))
@@ -45,11 +48,14 @@ export const getTriggerEl = (ctx: Scope) => ctx.getById(getTriggerId(ctx))
 export const getPositionerEl = (ctx: Scope) => ctx.getById(getPositionerId(ctx))
 export const getChannelSliderTrackEl = (ctx: Scope, channel: ColorChannel) =>
   ctx.getById(getChannelSliderTrackId(ctx, channel))
-export const getChannelSliderValueFromPoint = (ctx: Scope, point: Point, channel: ColorChannel) => {
+export const getChannelSliderValueFromPoint = (ctx: Scope, point: Point, channel: ColorChannel, dir?: Direction) => {
   const trackEl = getChannelSliderTrackEl(ctx, channel)
   if (!trackEl) return
-  const { percent } = getRelativePoint(point, trackEl)
-  return percent
+  const { getPercentValue } = getRelativePoint(point, trackEl)
+  return {
+    x: getPercentValue({ dir, orientation: "horizontal" }),
+    y: getPercentValue({ orientation: "vertical" }),
+  }
 }
 export const getChannelInputEls = (ctx: Scope) => {
   return [

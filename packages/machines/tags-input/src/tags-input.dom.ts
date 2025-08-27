@@ -18,6 +18,7 @@ export const getItemInputId = (ctx: Scope, opt: ItemProps) =>
 export const getEditInputId = (id: string) => `${id}:input`
 export const getEditInputEl = (ctx: Scope, id: string) => ctx.getById<HTMLInputElement>(getEditInputId(id))
 
+export const getItemEls = (ctx: Scope) => queryAll(getRootEl(ctx), `[data-part=item]`)
 export const getTagInputEl = (ctx: Scope, opt: ItemProps) => ctx.getById<HTMLInputElement>(getItemInputId(ctx, opt))
 export const getRootEl = (ctx: Scope) => ctx.getById<HTMLDivElement>(getRootId(ctx))
 export const getInputEl = (ctx: Scope) => ctx.getById<HTMLInputElement>(getInputId(ctx))

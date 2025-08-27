@@ -47,6 +47,7 @@
       {/each}
 
       <input data-testid="input" placeholder="add tag" {...api.getInputProps()} />
+      <button {...api.getClearTriggerProps()}>X</button>
     </div>
     <input {...api.getHiddenInputProps()} />
   </div>

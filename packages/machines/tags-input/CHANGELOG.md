@@ -1,5 +1,50 @@
 # @zag-js/tags-input
 
+## 1.22.1
+
+### Patch Changes
+
+- [`7b2dc8e`](https://github.com/chakra-ui/zag/commit/7b2dc8ecde6d0e782fa022927e6c305049d7daa9) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix issue where highlighted item doesn't clear when tabbing out of
+  the input to an external button within the `control` part.
+- Updated dependencies []:
+  - @zag-js/anatomy@1.22.1
+  - @zag-js/core@1.22.1
+  - @zag-js/types@1.22.1
+  - @zag-js/auto-resize@1.22.1
+  - @zag-js/utils@1.22.1
+  - @zag-js/dom-query@1.22.1
+  - @zag-js/interact-outside@1.22.1
+  - @zag-js/live-region@1.22.1
+
+## 1.22.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.22.0
+  - @zag-js/core@1.22.0
+  - @zag-js/types@1.22.0
+  - @zag-js/auto-resize@1.22.0
+  - @zag-js/utils@1.22.0
+  - @zag-js/dom-query@1.22.0
+  - @zag-js/interact-outside@1.22.0
+  - @zag-js/live-region@1.22.0
+
+## 1.21.9
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.21.9
+  - @zag-js/core@1.21.9
+  - @zag-js/types@1.21.9
+  - @zag-js/auto-resize@1.21.9
+  - @zag-js/utils@1.21.9
+  - @zag-js/dom-query@1.21.9
+  - @zag-js/interact-outside@1.21.9
+  - @zag-js/live-region@1.21.9
+
 ## 1.21.8
 
 ### Patch Changes

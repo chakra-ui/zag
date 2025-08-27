@@ -1,0 +1,67 @@
+@keyframes expandHeight {
+  from {
+    opacity: 0.01;
+    height: 0;
+  }
+  to {
+    opacity: 1;
+    height: var(--height);
+  }
+}
+
+@keyframes collapseHeight {
+  from {
+    opacity: 1;
+    height: var(--height);
+  }
+  to {
+    opacity: 0.01;
+    height: 0;
+  }
+}
+
+@keyframes scaleFadeIn {
+  from {
+    scale: 0.9;
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+    scale: 1;
+  }
+}
+
+@keyframes scaleFadeOut {
+  to {
+    opacity: 0;
+    scale: 0.9;
+  }
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes shrinkX {
+  from {
+    transform: scaleX(1);
+  }
+  to {
+    transform: scaleX(0);
+  }
+}
+
+@keyframes growX {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}

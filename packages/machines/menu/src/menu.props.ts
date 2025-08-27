@@ -22,6 +22,7 @@ export const props = createProps<MenuProps>()([
   "onInteractOutside",
   "onOpenChange",
   "onPointerDownOutside",
+  "onRequestDismiss",
   "onSelect",
   "open",
   "positioning",

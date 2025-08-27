@@ -9,6 +9,7 @@ const { not, and } = createGuards<HoverCardSchema>()
 export const machine = createMachine<HoverCardSchema>({
   props({ props }) {
     return {
+      disabled: false,
       openDelay: 700,
       closeDelay: 300,
       ...props,
@@ -42,7 +43,12 @@ export const machine = createMachine<HoverCardSchema>({
     }
   },
 
-  watch({ track, context, action }) {
+  watch({ track, context, action, prop, send }) {
+    track([() => prop("disabled")], () => {
+      if (prop("disabled")) {
+        send({ type: "CLOSE", src: "disabled.change" })
+      }
+    })
     track([() => context.get("open")], () => {
       action(["toggleVisibility"])
     })
