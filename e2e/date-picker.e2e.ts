@@ -145,3 +145,55 @@ test.describe("datepicker [single]", () => {
   // test("renders previous month when the left arrow is clicked", async ({ page }) => {})
   // test("renders next month when the right arrow is clicked", async ({ page }) => {})
 })
+
+test.describe("datepicker [min-max]", () => {
+  test.beforeEach(async ({ page }) => {
+    I = new DatePickerModel(page)
+    await I.goto("/date-picker-min-max")
+  })
+
+  test("constrains date to max value on blur when out-of-range date entered", async () => {
+    // Min: 2025-07-01, Max: 2025-09-30
+    // Enter a date after max (2025-10-15)
+    await I.type("10/15/2025")
+    await I.clickOutsideToBlur() // Use more reliable blur method
+    await I.seeInputHasValue("09/30/2025") // Should be constrained to max
+    await I.seeSelectedValue("09/30/2025")
+  })
+
+  test("constrains date to min value on blur when out-of-range date entered", async () => {
+    // Min: 2025-07-01, Max: 2025-09-30
+    // Enter a date before min (2025-05-15)
+    await I.type("05/15/2025")
+    await I.clickOutsideToBlur() // Use more reliable blur method
+    await I.seeInputHasValue("07/01/2025") // Should be constrained to min
+    await I.seeSelectedValue("07/01/2025")
+  })
+
+  test("constrains date to max value on Enter when out-of-range date entered", async () => {
+    // Min: 2025-07-01, Max: 2025-09-30
+    // Enter a date after max (2025-11-20)
+    await I.type("11/20/2025")
+    await I.pressKey("Enter")
+    await I.seeInputHasValue("09/30/2025") // Should be constrained to max
+    await I.seeSelectedValue("09/30/2025")
+  })
+
+  test("constrains date to min value on Enter when out-of-range date entered", async () => {
+    // Min: 2025-07-01, Max: 2025-09-30
+    // Enter a date before min (2025-04-10)
+    await I.type("04/10/2025")
+    await I.pressKey("Enter")
+    await I.seeInputHasValue("07/01/2025") // Should be constrained to min
+    await I.seeSelectedValue("07/01/2025")
+  })
+
+  test("allows valid dates within range", async () => {
+    // Min: 2025-07-01, Max: 2025-09-30
+    // Enter a valid date within range (2025-08-15)
+    await I.type("08/15/2025")
+    await I.pressKey("Enter")
+    await I.seeInputHasValue("08/15/2025") // Should remain unchanged
+    await I.seeSelectedValue("08/15/2025")
+  })
+})
