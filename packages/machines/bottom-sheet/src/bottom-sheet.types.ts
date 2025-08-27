@@ -2,8 +2,6 @@ import type { EventObject, Machine, Service } from "@zag-js/core"
 import type { DismissableElementHandlers } from "@zag-js/dismissable"
 import type { CommonProperties, DirectionProperty, MaybeElement, Point, PropTypes, RequiredBy } from "@zag-js/types"
 
-export type SnapPoint = number | `${number}%`
-
 export interface OpenChangeDetails {
   open: boolean
 }
@@ -78,9 +76,10 @@ export interface BottomSheetProps extends DirectionProperty, CommonProperties, D
   closeOnEscape?: boolean | undefined
   /**
    * The snap points of the bottom sheet.
-   * @default ['100%']
+   * Array of numbers or strings representing the snap points.
+   * @default [1]
    */
-  snapPoints?: SnapPoint[]
+  snapPoints?: (number | string)[]
   /**
    * The threshold velocity (in pixels/ms) for closing the bottom sheet.
    * @default 0.5

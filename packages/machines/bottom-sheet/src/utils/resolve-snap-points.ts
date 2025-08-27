@@ -1,10 +1,8 @@
-import type { SnapPoint } from "../bottom-sheet.types"
-
-export function resolveSnapPoints(snapPoints: SnapPoint[], containerHeight: number): number[] {
+export function resolveSnapPoints(snapPoints: (number | string)[], containerHeight: number): number[] {
   return snapPoints
     .map((point) => {
-      if (typeof point === "number") return point
-      if (typeof point === "string" && point.endsWith("%")) {
+      if (typeof point === "number") return containerHeight * point
+      if (typeof point === "string") {
         const percent = parseFloat(point) / 100
         return containerHeight * percent
       }
