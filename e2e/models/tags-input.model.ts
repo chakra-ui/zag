@@ -14,6 +14,14 @@ export class TagsInputModel extends Model {
     return this.page.locator("[data-testid=input]")
   }
 
+  get clearTrigger() {
+    return this.page.locator("[data-part=clear-trigger]")
+  }
+
+  getTagElements() {
+    return this.page.locator("[data-part=item]")
+  }
+
   getTag(value: string) {
     return this.page.locator(`[data-testid=${value.toLowerCase()}-tag]`)
   }
@@ -77,12 +85,20 @@ export class TagsInputModel extends Model {
     return this.getTagClose(value).click({ force: true })
   }
 
+  clickClearTrigger() {
+    return this.clearTrigger.click({ force: true })
+  }
+
   async seeTagIsHighlighted(value: string) {
     await expect(this.getTag(value)).toHaveAttribute("data-highlighted", "")
   }
 
   async seeTag(value: string) {
     await expect(this.getTag(value)).toBeVisible()
+  }
+
+  async seeNoTags() {
+    return expect(this.getTagElements()).toHaveCount(0)
   }
 
   async dontSeeTag(value: string) {
@@ -109,7 +125,11 @@ export class TagsInputModel extends Model {
     await expect(this.getTagInput(value)).toHaveValue(value)
   }
 
-  async expectNoTagToBeHighlighted() {
+  async seeNoHighlightedTag() {
     return expect(await this.page.locator("[data-part=item][data-selected]").count()).toBe(0)
+  }
+
+  async seeClearTriggerIsFocused() {
+    await expect(this.clearTrigger).toBeFocused()
   }
 }

@@ -45,6 +45,7 @@ const api = computed(() => tagsInput.connect(service, normalizeProps))
         </span>
 
         <input data-testid="input" placeholder="add tag" v-bind="api.getInputProps()" />
+        <button v-bind="api.getClearTriggerProps()">X</button>
       </div>
       <input v-bind="api.getHiddenInputProps()" />
     </div>
