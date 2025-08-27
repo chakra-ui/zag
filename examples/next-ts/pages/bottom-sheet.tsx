@@ -2,6 +2,7 @@ import * as bottomSheet from "@zag-js/bottom-sheet"
 import { normalizeProps, useMachine } from "@zag-js/react"
 import { bottomSheetControls } from "@zag-js/shared"
 import { useId } from "react"
+import { Presence } from "../components/presence"
 import { StateVisualizer } from "../components/state-visualizer"
 import { Toolbar } from "../components/toolbar"
 import { useControls } from "../hooks/use-controls"
@@ -20,8 +21,8 @@ export default function Page() {
     <>
       <main className="bottom-sheet">
         <button {...api.getTriggerProps()}>Open</button>
-        <div {...api.getBackdropProps()} />
-        <div {...api.getContentProps()}>
+        <Presence {...api.getBackdropProps()} />
+        <Presence {...api.getContentProps()}>
           <div {...api.getGrabberProps()}>
             <div {...api.getGrabberIndicatorProps()} />
           </div>
@@ -32,7 +33,7 @@ export default function Page() {
               <div key={index}>Item {index}</div>
             ))}
           </div>
-        </div>
+        </Presence>
       </main>
 
       <Toolbar controls={controls.ui} viz>
