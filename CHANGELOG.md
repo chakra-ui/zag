@@ -4,6 +4,18 @@ All notable changes to this project will be documented in this file.
 
 > For v0.x changelog, see the [v0 branch](https://github.com/chakra-ui/zag/blob/v0/CHANGELOG.md)
 
+## [1.21.11](./#1.21.11) - 2025-08-27
+
+### Fixed
+
+- **Collection**: Fix issue where disabled items could be reached via typeahead
+
+- **Date Picker**: Fix issue where datepicker doesn't revert to a valid value when the input value exceeds the min/max
+  and blurred
+
+- **Tags Input**: Fix issue where highlighted item doesn't clear when tabbing out of the input to an external button
+  within the `control` part.
+
 ## [1.21.10](./#1.21.10) - 2025-08-26
 
 ### Added
