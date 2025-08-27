@@ -13,6 +13,7 @@ export const props = createProps<BottomSheetProps>()([
   "defaultOpen",
   "getRootNode",
   "snapPoints",
+  "swipeVelocityThreshold",
   "closeThreshold",
   "grabberOnly",
   "handleScrollableElements",

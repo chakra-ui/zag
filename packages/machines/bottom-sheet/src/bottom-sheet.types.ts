@@ -84,6 +84,11 @@ export interface BottomSheetProps extends DirectionProperty, CommonProperties, D
    * The threshold velocity (in pixels/ms) for closing the bottom sheet.
    * @default 0.5
    */
+  swipeVelocityThreshold?: number
+  /**
+   * The threshold distance for dismissing the bottom sheet.
+   * @default 0.25
+   */
   closeThreshold?: number
   /**
    * Whether the bottom sheet should only be draggable by the grabber.
@@ -108,6 +113,7 @@ type PropsWithDefault =
   | "preventScroll"
   | "initialFocusEl"
   | "snapPoints"
+  | "swipeVelocityThreshold"
   | "closeThreshold"
   | "handleScrollableElements"
 

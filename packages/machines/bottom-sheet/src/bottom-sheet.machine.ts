@@ -25,7 +25,8 @@ export const machine = createMachine<BottomSheetSchema>({
       restoreFocus: true,
       initialFocusEl,
       snapPoints: [1],
-      closeThreshold: 0.5,
+      swipeVelocityThreshold: 0.5,
+      closeThreshold: 0.25,
       grabberOnly: false,
       handleScrollableElements: true,
       ...props,
@@ -158,11 +159,26 @@ export const machine = createMachine<BottomSheetSchema>({
     guards: {
       isOpenControlled: ({ prop }) => prop("open") !== undefined,
 
-      shouldCloseOnSwipe({ prop, context }) {
+      shouldCloseOnSwipe({ prop, context, computed }) {
         const velocity = context.get("velocity")
+        const dragOffset = context.get("dragOffset")
+        const contentHeight = context.get("contentHeight")
+        const swipeVelocityThreshold = prop("swipeVelocityThreshold")
         const closeThreshold = prop("closeThreshold")
+        const resolvedSnapPoints = computed("resolvedSnapPoints")
 
-        return velocity > 0 && velocity >= closeThreshold
+        if (!dragOffset) return false
+        const visibleHeight = contentHeight - dragOffset
+
+        const isFastSwipe = velocity > 0 && velocity >= swipeVelocityThreshold
+
+        const closeThresholdInPixels = contentHeight * (1 - closeThreshold)
+        const isBelowSmallestSnapPoint = visibleHeight < resolvedSnapPoints[0]
+        const isBelowcloseThreshold = visibleHeight < closeThresholdInPixels
+
+        const hasEnoughDragToDismiss = (isBelowcloseThreshold && isBelowSmallestSnapPoint) || visibleHeight === 0
+
+        return isFastSwipe || hasEnoughDragToDismiss
       },
     },
 
