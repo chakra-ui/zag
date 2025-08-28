@@ -275,6 +275,8 @@
       "data-scope": "color-picker",
       "data-part": "content",
       "data-placement": "The placement of the content",
+      "data-nested": "popover",
+      "data-has-nested": "popover",
       "data-state": "\"open\" | \"closed\""
     },
     "ValueText": {
@@ -405,6 +407,8 @@
       "data-scope": "combobox",
       "data-part": "content",
       "data-state": "\"open\" | \"closed\"",
+      "data-nested": "listbox",
+      "data-has-nested": "listbox",
       "data-placement": "The placement of the content",
       "data-empty": "Present when the content is empty"
     },
@@ -469,6 +473,8 @@
       "data-scope": "date-picker",
       "data-part": "content",
       "data-state": "\"open\" | \"closed\"",
+      "data-nested": "popover",
+      "data-has-nested": "popover",
       "data-placement": "The placement of the content",
       "data-inline": "Present when the content is inline"
     },
@@ -610,7 +616,9 @@
     "Content": {
       "data-scope": "dialog",
       "data-part": "content",
-      "data-state": "\"open\" | \"closed\""
+      "data-state": "\"open\" | \"closed\"",
+      "data-nested": "dialog",
+      "data-has-nested": "dialog"
     }
   },
   "editable": {
@@ -779,6 +787,8 @@
       "data-scope": "hover-card",
       "data-part": "content",
       "data-state": "\"open\" | \"closed\"",
+      "data-nested": "popover",
+      "data-has-nested": "popover",
       "data-placement": "The placement of the content"
     }
   },
@@ -864,6 +874,8 @@
       "data-scope": "menu",
       "data-part": "content",
       "data-state": "\"open\" | \"closed\"",
+      "data-nested": "menu",
+      "data-has-nested": "menu",
       "data-placement": "The placement of the content"
     },
     "Item": {
@@ -977,49 +989,57 @@
       "data-part": "root",
       "data-disabled": "Present when disabled",
       "data-focus": "Present when focused",
-      "data-invalid": "Present when invalid"
+      "data-invalid": "Present when invalid",
+      "data-scrubbing": ""
     },
     "Label": {
       "data-scope": "number-input",
       "data-part": "label",
       "data-disabled": "Present when disabled",
       "data-focus": "Present when focused",
-      "data-invalid": "Present when invalid"
+      "data-invalid": "Present when invalid",
+      "data-scrubbing": ""
     },
     "Control": {
       "data-scope": "number-input",
       "data-part": "control",
       "data-focus": "Present when focused",
       "data-disabled": "Present when disabled",
-      "data-invalid": "Present when invalid"
+      "data-invalid": "Present when invalid",
+      "data-scrubbing": ""
     },
     "ValueText": {
       "data-scope": "number-input",
       "data-part": "value-text",
       "data-disabled": "Present when disabled",
       "data-invalid": "Present when invalid",
-      "data-focus": "Present when focused"
+      "data-focus": "Present when focused",
+      "data-scrubbing": ""
     },
     "Input": {
       "data-scope": "number-input",
       "data-part": "input",
       "data-invalid": "Present when invalid",
-      "data-disabled": "Present when disabled"
+      "data-disabled": "Present when disabled",
+      "data-scrubbing": ""
     },
     "DecrementTrigger": {
       "data-scope": "number-input",
       "data-part": "decrement-trigger",
-      "data-disabled": "Present when disabled"
+      "data-disabled": "Present when disabled",
+      "data-scrubbing": ""
     },
     "IncrementTrigger": {
       "data-scope": "number-input",
       "data-part": "increment-trigger",
-      "data-disabled": "Present when disabled"
+      "data-disabled": "Present when disabled",
+      "data-scrubbing": ""
     },
     "Scrubber": {
       "data-scope": "number-input",
       "data-part": "scrubber",
-      "data-disabled": "Present when disabled"
+      "data-disabled": "Present when disabled",
+      "data-scrubbing": ""
     }
   },
   "pagination": {
@@ -1128,6 +1148,8 @@
       "data-scope": "popover",
       "data-part": "content",
       "data-state": "\"open\" | \"closed\"",
+      "data-nested": "popover",
+      "data-has-nested": "popover",
       "data-expanded": "Present when expanded",
       "data-placement": "The placement of the content"
     }
@@ -1245,18 +1267,22 @@
       "data-part": "scrollbar",
       "data-orientation": "The orientation of the scrollbar",
       "data-scrolling": "Present when scrolling",
-      "data-hover": "Present when hovering",
+      "data-hover": "Present when hovered",
+      "data-dragging": "Present when in the dragging state",
       "data-overflow-x": "Present when the content overflows the x-axis",
       "data-overflow-y": "Present when the content overflows the y-axis"
     },
     "Thumb": {
       "data-scope": "scroll-area",
       "data-part": "thumb",
-      "data-orientation": "The orientation of the thumb"
+      "data-orientation": "The orientation of the thumb",
+      "data-hover": "Present when hovered",
+      "data-dragging": "Present when in the dragging state"
     },
     "Corner": {
       "data-scope": "scroll-area",
       "data-part": "corner",
+      "data-hover": "Present when hovered",
       "data-state": "\"hidden\" | \"visible\"",
       "data-overflow-x": "Present when the content overflows the x-axis",
       "data-overflow-y": "Present when the content overflows the y-axis"
@@ -1343,6 +1369,8 @@
       "data-scope": "select",
       "data-part": "content",
       "data-state": "\"open\" | \"closed\"",
+      "data-nested": "listbox",
+      "data-has-nested": "listbox",
       "data-placement": "The placement of the content",
       "data-activedescendant": "The id the active descendant of the content"
     }
@@ -1696,6 +1724,8 @@
       "data-scope": "time-picker",
       "data-part": "content",
       "data-state": "\"open\" | \"closed\"",
+      "data-nested": "listbox",
+      "data-has-nested": "listbox",
       "data-placement": "The placement of the content"
     },
     "Column": {
@@ -1852,6 +1882,8 @@
       "data-scope": "tour",
       "data-part": "content",
       "data-state": "\"open\" | \"closed\"",
+      "data-nested": "popover",
+      "data-has-nested": "popover",
       "data-type": "The type of the item",
       "data-placement": "The placement of the content",
       "data-step": ""

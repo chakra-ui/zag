@@ -2348,9 +2348,6 @@ importers:
       '@zag-js/core':
         specifier: workspace:*
         version: link:../../core
-      '@zag-js/dismissable':
-        specifier: workspace:*
-        version: link:../../utilities/dismissable
       '@zag-js/dom-query':
         specifier: workspace:*
         version: link:../../utilities/dom-query
