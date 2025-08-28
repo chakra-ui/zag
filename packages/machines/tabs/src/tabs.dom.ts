@@ -4,8 +4,8 @@ import { first, last } from "@zag-js/utils"
 
 export const getRootId = (ctx: Scope) => ctx.ids?.root ?? `tabs:${ctx.id}`
 export const getListId = (ctx: Scope) => ctx.ids?.list ?? `tabs:${ctx.id}:list`
-export const getContentId = (ctx: Scope, id: string) => ctx.ids?.content ?? `tabs:${ctx.id}:content-${id}`
-export const getTriggerId = (ctx: Scope, id: string) => ctx.ids?.trigger ?? `tabs:${ctx.id}:trigger-${id}`
+export const getContentId = (ctx: Scope, id: string) => ctx.ids?.content?.(id) ?? `tabs:${ctx.id}:content-${id}`
+export const getTriggerId = (ctx: Scope, id: string) => ctx.ids?.trigger?.(id) ?? `tabs:${ctx.id}:trigger-${id}`
 export const getIndicatorId = (ctx: Scope) => ctx.ids?.indicator ?? `tabs:${ctx.id}:indicator`
 
 export const getListEl = (ctx: Scope) => ctx.getById(getListId(ctx))
