@@ -107,6 +107,7 @@ const cssVarDescriptions: Record<string, string> = {
 
   // Dismissable utility specific
   "--layer-index": "The index of the dismissable in the layer stack",
+  "--nested-layer-count": "The number of nested {{widget}}s",
 
   // Rating specific
   "--rating-value": "The rating value",
@@ -526,9 +527,12 @@ async function extractAllCSSVariables(): Promise<AllCSSVars> {
   for (const dismissableComponent of dismissableComponents) {
     allVariables[dismissableComponent] ||= {}
 
-    // Add --layer-index to the Content part (this is set dynamically by the dismissable layer stack)
+    // Add --layer-index and --nested-layer-count to the Content part (these are set dynamically by the dismissable layer stack)
     allVariables[dismissableComponent]["Content"] ||= {}
     allVariables[dismissableComponent]["Content"]["--layer-index"] = "The index of the dismissable in the layer stack"
+    allVariables[dismissableComponent]["Content"]["--nested-layer-count"] = cssVarDescriptions[
+      "--nested-layer-count"
+    ].replace("{{widget}}", dismissableComponent)
 
     // Also add --layer-index to Backdrop part if the component has one
     allVariables[dismissableComponent]["Backdrop"] ||= {}
