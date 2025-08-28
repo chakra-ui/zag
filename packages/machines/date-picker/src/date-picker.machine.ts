@@ -26,6 +26,7 @@ import { getPlacement, type Placement } from "@zag-js/popper"
 import * as dom from "./date-picker.dom"
 import type { DatePickerSchema, DateValue, DateView, Segments } from "./date-picker.types"
 import {
+  addSegment,
   adjustStartAndEndDate,
   clampView,
   defaultTranslations,
@@ -120,8 +121,26 @@ export const machine = createMachine<DatePickerSchema>({
   },
 
   refs({ prop }) {
+    const formatter = new DateFormatter(prop("locale"), {
+      timeZone: prop("timeZone"),
+      day: "2-digit",
+      month: "2-digit",
+      year: "numeric",
+    })
+
+    const allSegments = formatter
+      .formatToParts(new Date())
+      .filter((seg) => EDITABLE_SEGMENTS[seg.type])
+      .reduce<Segments>((p, seg) => {
+        const key = TYPE_MAPPING[seg.type as keyof typeof TYPE_MAPPING] || seg.type
+        p[key] = true
+        return p
+      }, {})
+
     return {
       announcer: undefined,
+      formatter,
+      allSegments,
       placeholderDate: getTodayDate(prop("timeZone")),
     }
   },
@@ -206,21 +225,9 @@ export const machine = createMachine<DatePickerSchema>({
     isNextVisibleRangeValid: ({ prop, computed }) =>
       !isNextRangeInvalid(computed("endValue"), prop("min"), prop("max")),
     valueAsString: ({ context, prop }) => getValueAsString(context.get("value"), prop),
-    validSegments: ({ context, prop }) => {
-      const formatter = new DateFormatter(prop("locale"), {
-        timeZone: prop("timeZone"),
-        day: "2-digit",
-        month: "2-digit",
-        year: "numeric",
-      }) // TODO: move globally
-      const allSegments = formatter
-        .formatToParts(new Date())
-        .filter((seg) => EDITABLE_SEGMENTS[seg.type])
-        .reduce((p, seg) => ((p[TYPE_MAPPING[seg.type] || seg.type] = true), p), {})
-
+    validSegments: ({ context, refs }) => {
+      const allSegments = refs.get("allSegments")
       const dateValue = context.get("value")
-
-      console.log("validSegments: ", dateValue?.map((date) => (date ? { ...allSegments } : {})) ?? [{}, {}])
 
       return dateValue?.map((date) => (date ? { ...allSegments } : {})) ?? [{}, {}]
     },
@@ -419,6 +426,16 @@ export const machine = createMachine<DatePickerSchema>({
             actions: ["focusFirstSelectedDate", "focusActiveCell", "invokeOnOpen"],
           },
         ],
+        "SEGMENT.ARROW_UP": [
+          {
+            actions: ["invokeOnSegmentIncrement"],
+          },
+        ],
+        "SEGMENT.ARROW_DOWN": [
+          {
+            actions: ["invokeOnSegmentDecrement"],
+          },
+        ],
       },
     },
 
@@ -447,6 +464,16 @@ export const machine = createMachine<DatePickerSchema>({
           {
             target: "open",
             actions: ["focusFirstSelectedDate", "focusActiveCell", "invokeOnOpen"],
+          },
+        ],
+        "SEGMENT.ARROW_UP": [
+          {
+            actions: ["invokeOnSegmentIncrement"],
+          },
+        ],
+        "SEGMENT.ARROW_DOWN": [
+          {
+            actions: ["invokeOnSegmentDecrement"],
           },
         ],
       },
@@ -1207,6 +1234,36 @@ export const machine = createMachine<DatePickerSchema>({
       toggleVisibility({ event, send, prop }) {
         send({ type: prop("open") ? "CONTROLLED.OPEN" : "CONTROLLED.CLOSE", previousEvent: event })
       },
+
+      invokeOnSegmentIncrement({ event, computed, refs, context }) {
+        const { segment } = event
+        const type = segment.type
+        const value = context.get("value")
+        const validSegments = computed("validSegments")
+        const allSegments = refs.get("allSegments")
+        const formatter = refs.get("formatter")
+        const index = 0 // FIXIT: figure out the index
+
+        if (!validSegments[type]) {
+          // markValid(type)
+          let validKeys = Object.keys(validSegments)
+          let allKeys = Object.keys(allSegments)
+          if (
+            validKeys.length >= allKeys.length ||
+            (validKeys.length === allKeys.length - 1 && allSegments.dayPeriod && !validSegments[index].dayPeriod)
+          ) {
+            const values = Array.from(value) // FIXIT: implement setValue (original code setValue(displayValue);)
+            context.set("value", values)
+          }
+        } else {
+          const values = Array.from(value)
+          values[index] = addSegment(value[index], type, 1, formatter.resolvedOptions())
+          context.set("value", values)
+          // setValue(addSegment(value, type, 1, resolvedOptions))
+        }
+      },
+
+      invokeOnSegmentDecrement({ context, prop }) {},
     },
   },
 })

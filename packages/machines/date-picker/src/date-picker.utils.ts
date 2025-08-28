@@ -361,3 +361,37 @@ function getSegmentLimits(date: DateValue, type: string, options: Intl.ResolvedD
 
   return {}
 }
+
+export function addSegment(
+  value: DateValue,
+  part: string,
+  amount: number,
+  options: Intl.ResolvedDateTimeFormatOptions,
+) {
+  switch (part) {
+    case "era":
+    case "year":
+    case "month":
+    case "day":
+      return value.cycle(part, amount, { round: part === "year" })
+  }
+
+  if ("hour" in value) {
+    switch (part) {
+      case "dayPeriod": {
+        let hours = value.hour
+        let isPM = hours >= 12
+        return value.set({ hour: isPM ? hours - 12 : hours + 12 })
+      }
+      case "hour":
+      case "minute":
+      case "second":
+        return value.cycle(part, amount, {
+          round: part !== "hour",
+          hourCycle: options.hour12 ? 12 : 24,
+        })
+    }
+  }
+
+  throw new Error("Unknown segment: " + part)
+}

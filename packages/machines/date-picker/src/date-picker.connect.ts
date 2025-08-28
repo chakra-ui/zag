@@ -834,6 +834,7 @@ export function connect<T extends PropTypes>(
 
     getSegmentProps(props) {
       const { segment } = props
+      const isEditable = !disabled && !readOnly && segment.isEditable
 
       if (segment.type === "literal") {
         return normalize.element({
@@ -846,18 +847,19 @@ export function connect<T extends PropTypes>(
         })
       }
 
-      return {
+      return normalize.element({
         ...parts.segment.attrs,
         dir: prop("dir"),
         role: "spinbutton",
-        tabIndex: segment.isEditable && !readOnly && !disabled ? 0 : -1,
+        tabIndex: disabled ? undefined : 0,
         autoComplete: "off",
-        autoCorrect: "off",
-        spellCheck: "false",
-        contentEditable: "true",
-        inputMode: segment.type !== "dayPeriod" ? "numeric" : undefined,
+        spellCheck: isEditable ? "false" : undefined,
+        autoCorrect: isEditable ? "off" : undefined,
+        contentEditable: isEditable,
+        suppressContentEditableWarning: isEditable,
+        inputMode:
+          disabled || segment.type === "dayPeriod" || segment.type === "era" || !isEditable ? undefined : "numeric",
         enterKeyHint: "next",
-        "data-placeholder": segment.isPlaceholder,
         "aria-labelledby": dom.getInputId(scope, 0), // FIXIT: figure out the index
         // "aria-label": translations.segmentLabel(segment),
         "aria-valuenow": segment.value,
@@ -871,10 +873,73 @@ export function connect<T extends PropTypes>(
         "data-readonly": dataAttr(!segment.isEditable || readOnly),
         "data-disabled": dataAttr(disabled),
         "data-editable": dataAttr(segment.isEditable && !readOnly && !disabled),
+        "data-placeholder": dataAttr(segment.isPlaceholder),
         style: {
           "caret-color": "transparent",
         },
-      }
+        onKeyDown(event) {
+          if (
+            event.defaultPrevented ||
+            event.ctrlKey ||
+            event.metaKey ||
+            event.shiftKey ||
+            event.altKey ||
+            readOnly ||
+            event.nativeEvent.isComposing
+          ) {
+            return
+          }
+
+          const keyMap: EventKeyMap = {
+            Enter() {
+              send({ type: "SEGMENT.ENTER", focus: true })
+            },
+            ArrowLeft() {
+              send({ type: "SEGMENT.ARROW_LEFT", focus: true })
+            },
+            ArrowRight() {
+              send({ type: "SEGMENT.ARROW_RIGHT", focus: true })
+            },
+            ArrowUp() {
+              send({ type: "SEGMENT.ARROW_UP", segment, focus: true })
+            },
+            ArrowDown() {
+              send({ type: "SEGMENT.ARROW_DOWN", segment, focus: true })
+            },
+            PageUp(event) {
+              send({ type: "SEGMENT.PAGE_UP", larger: event.shiftKey, focus: true })
+            },
+            PageDown(event) {
+              send({ type: "SEGMENT.PAGE_DOWN", larger: event.shiftKey, focus: true })
+            },
+            Home() {
+              send({ type: "SEGMENT.HOME", focus: true })
+            },
+            End() {
+              send({ type: "SEGMENT.END", focus: true })
+            },
+          }
+
+          const exec =
+            keyMap[
+              getEventKey(event, {
+                dir: prop("dir"),
+              })
+            ]
+
+          if (exec) {
+            exec(event)
+            event.preventDefault()
+            event.stopPropagation()
+          }
+        },
+        onPointerDown(event) {
+          event.stopPropagation()
+        },
+        onMouseDown(event) {
+          event.stopPropagation()
+        },
+      })
     },
 
     getMonthSelectProps() {

@@ -33,7 +33,7 @@ export default function Page() {
         <div {...api.getControlProps()}>
           <div {...api.getSegmentInputProps()}>
             {api.getSegments().map((segment, i) => (
-              <span key={i} {...api.getSegmentProps({ segment })} suppressContentEditableWarning>
+              <span key={i} {...api.getSegmentProps({ segment })}>
                 {segment.text}
               </span>
             ))}

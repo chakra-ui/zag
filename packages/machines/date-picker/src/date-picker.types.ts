@@ -366,9 +366,17 @@ type Refs = {
    */
   announcer?: LiveRegion | undefined
   /**
+   * The date formatter used to format date values.
+   */
+  formatter: DateFormatter
+  /**
+   *
+   */
+  allSegments: Segments
+  /**
    * The placeholder date to use when segments are not filled.
    */
-  placeholderDate?: CalendarDate | undefined
+  placeholderDate: CalendarDate
 }
 
 export interface DatePickerSchema {
@@ -436,7 +444,9 @@ export type SegmentType =
   | "literal"
   | "timeZoneName"
 
-export type Segments = Partial<typeof EDITABLE_SEGMENTS>
+export type Segments = Partial<{
+  -readonly [K in keyof typeof EDITABLE_SEGMENTS]: boolean
+}>
 
 export interface DateSegment {
   /**
