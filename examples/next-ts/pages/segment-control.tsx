@@ -1,6 +1,6 @@
 import * as radio from "@zag-js/radio-group"
 import { normalizeProps, useMachine } from "@zag-js/react"
-import { radioControls, radioData } from "@zag-js/shared"
+import { radioControls, segmentControlData } from "@zag-js/shared"
 import { useId } from "react"
 import { StateVisualizer } from "../components/state-visualizer"
 import { Toolbar } from "../components/toolbar"
@@ -13,6 +13,7 @@ export default function Page() {
     id: useId(),
     name: "fruit",
     orientation: "horizontal",
+    defaultValue: "orange",
     ...controls.context,
   })
 
@@ -23,16 +24,31 @@ export default function Page() {
       <main className="segmented-control">
         <div {...api.getRootProps()}>
           <div {...api.getIndicatorProps()} />
-          {radioData.map((opt) => (
-            <label key={opt.id} data-testid={`radio-${opt.id}`} {...api.getItemProps({ value: opt.id })}>
-              <span data-testid={`label-${opt.id}`} {...api.getItemTextProps({ value: opt.id })}>
+          {segmentControlData.map((opt) => (
+            <label
+              key={opt.id}
+              data-testid={`radio-${opt.id}`}
+              {...api.getItemProps({ value: opt.id, disabled: opt.disabled })}
+            >
+              <span
+                data-testid={`label-${opt.id}`}
+                {...api.getItemTextProps({ value: opt.id, disabled: opt.disabled })}
+              >
                 {opt.label}
               </span>
-              <input data-testid={`input-${opt.id}`} {...api.getItemHiddenInputProps({ value: opt.id })} />
+              <input
+                data-testid={`input-${opt.id}`}
+                {...api.getItemHiddenInputProps({ value: opt.id, disabled: opt.disabled })}
+              />
             </label>
           ))}
         </div>
-        <button onClick={api.clearValue}>reset</button>
+
+        <div style={{ display: "flex", flexDirection: "row" }}>
+          <button onClick={api.clearValue}>Reset</button>
+          <button onClick={() => api.clearValue()}>Clear</button>
+          <button onClick={() => api.setValue("orange")}>Set to Oranges</button>
+        </div>
       </main>
 
       <Toolbar controls={controls.ui}>
