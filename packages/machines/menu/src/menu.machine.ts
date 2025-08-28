@@ -562,6 +562,7 @@ export const machine = createMachine<MenuSchema>({
         const getContentEl = () => dom.getContentEl(scope)
         let restoreFocus = true
         return trackDismissableElement(getContentEl, {
+          type: "menu",
           defer: true,
           exclude: [dom.getTriggerEl(scope)],
           onInteractOutside: prop("onInteractOutside"),

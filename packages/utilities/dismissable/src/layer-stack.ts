@@ -1,5 +1,7 @@
 import { contains } from "@zag-js/dom-query"
 
+export type LayerType = "dialog" | "popover" | "menu" | "listbox" | (string & {})
+
 export type LayerDismissEventDetail = {
   originalLayer: HTMLElement
   targetLayer: HTMLElement | undefined
@@ -12,6 +14,7 @@ export type LayerDismissEvent = CustomEvent<LayerDismissEventDetail>
 export interface Layer {
   dismiss: VoidFunction
   node: HTMLElement
+  type: LayerType
   pointerBlocking?: boolean | undefined
   requestDismiss?: ((event: LayerDismissEvent) => void) | undefined
 }
@@ -47,6 +50,25 @@ export const layerStack = {
   getNestedLayers(node: HTMLElement) {
     return Array.from(this.layers).slice(this.indexOf(node) + 1)
   },
+  getLayersByType(type: LayerType) {
+    return this.layers.filter((layer) => layer.type === type)
+  },
+  getNestedLayersByType(node: HTMLElement, type: LayerType) {
+    const index = this.indexOf(node)
+    if (index === -1) return []
+    return this.layers.slice(index + 1).filter((layer) => layer.type === type)
+  },
+  getParentLayerOfType(node: HTMLElement, type: LayerType) {
+    const index = this.indexOf(node)
+    if (index <= 0) return undefined
+    return this.layers
+      .slice(0, index)
+      .reverse()
+      .find((layer) => layer.type === type)
+  },
+  countNestedLayersOfType(node: HTMLElement, type: LayerType) {
+    return this.getNestedLayersByType(node, type).length
+  },
   isInNestedLayer(node: HTMLElement, target: HTMLElement | EventTarget | null) {
     return this.getNestedLayers(node).some((layer) => contains(layer.node, target))
   },
@@ -55,7 +77,7 @@ export const layerStack = {
   },
   add(layer: Layer) {
     this.layers.push(layer)
-    this.syncLayerIndex()
+    this.syncLayers()
   },
   addBranch(node: HTMLElement) {
     this.branches.push(node)
@@ -72,15 +94,34 @@ export const layerStack = {
 
     // remove this layer
     this.layers.splice(index, 1)
-    this.syncLayerIndex()
+    this.syncLayers()
   },
   removeBranch(node: HTMLElement) {
     const index = this.branches.indexOf(node)
     if (index >= 0) this.branches.splice(index, 1)
   },
-  syncLayerIndex() {
+  syncLayers() {
     this.layers.forEach((layer, index) => {
       layer.node.style.setProperty("--layer-index", `${index}`)
+
+      // Remove previous data attributes
+      layer.node.removeAttribute("data-nested")
+      layer.node.removeAttribute("data-has-nested")
+
+      // Check if this layer is nested within another of the same type
+      const parentOfSameType = this.getParentLayerOfType(layer.node, layer.type)
+      if (parentOfSameType) {
+        layer.node.setAttribute("data-nested", layer.type)
+      }
+
+      // Check if this layer has nested layers of the same type
+      const nestedCount = this.countNestedLayersOfType(layer.node, layer.type)
+      if (nestedCount > 0) {
+        layer.node.setAttribute("data-has-nested", layer.type)
+      }
+
+      // Set the nested layer count
+      layer.node.style.setProperty("--nested-layer-count", `${nestedCount}`)
     })
   },
   indexOf(node: HTMLElement | undefined) {
@@ -107,7 +148,7 @@ export const layerStack = {
       targetIndex: parent ? this.indexOf(parent) : -1,
     })
 
-    this.syncLayerIndex()
+    this.syncLayers()
   },
   clear() {
     this.remove(this.layers[0].node)

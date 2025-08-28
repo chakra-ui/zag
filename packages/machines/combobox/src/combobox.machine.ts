@@ -705,6 +705,7 @@ export const machine = createMachine({
         if (prop("disableLayer")) return
         const contentEl = () => dom.getContentEl(scope)
         return trackDismissableElement(contentEl, {
+          type: "listbox",
           defer: true,
           exclude: () => [dom.getInputEl(scope), dom.getTriggerEl(scope), dom.getClearTriggerEl(scope)],
           onFocusOutside: prop("onFocusOutside"),

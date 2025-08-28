@@ -7,7 +7,7 @@ import {
 } from "@zag-js/interact-outside"
 import { isFunction, warn, type MaybeFunction } from "@zag-js/utils"
 import { trackEscapeKeydown } from "./escape-keydown"
-import { layerStack, type Layer, type LayerDismissEvent } from "./layer-stack"
+import { layerStack, type Layer, type LayerDismissEvent, type LayerType } from "./layer-stack"
 import { assignPointerEventToLayers, clearPointerEvent, disablePointerEventsOutside } from "./pointer-event-outside"
 
 type MaybeElement = HTMLElement | null
@@ -59,6 +59,10 @@ export interface DismissableElementOptions extends DismissableElementHandlers, P
    * Whether to warn when the node is `null` or `undefined`
    */
   warnOnMissingNode?: boolean | undefined
+  /**
+   * The type of layer being tracked
+   */
+  type?: LayerType | undefined
 }
 
 function trackDismissableElementImpl(node: MaybeElement, options: DismissableElementOptions) {
@@ -73,9 +77,9 @@ function trackDismissableElementImpl(node: MaybeElement, options: DismissableEle
     return
   }
 
-  const { onDismiss, onRequestDismiss, pointerBlocking, exclude: excludeContainers, debug } = options
+  const { onDismiss, onRequestDismiss, pointerBlocking, exclude: excludeContainers, debug, type = "dialog" } = options
 
-  const layer: Layer = { dismiss: onDismiss, node, pointerBlocking, requestDismiss: onRequestDismiss }
+  const layer: Layer = { dismiss: onDismiss, node, type, pointerBlocking, requestDismiss: onRequestDismiss }
 
   layerStack.add(layer)
   assignPointerEventToLayers()
