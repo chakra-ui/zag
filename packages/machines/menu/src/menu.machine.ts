@@ -622,7 +622,7 @@ export const machine = createMachine<MenuSchema>({
       },
       scrollToHighlightedItem({ event, scope, computed }) {
         const exec = () => {
-          if (event.type.startsWith("ITEM_POINTER")) return
+          if (event.current().type.startsWith("ITEM_POINTER")) return
 
           const itemEl = scope.getById(computed("highlightedId")!)
           const contentEl = dom.getContentEl(scope)
