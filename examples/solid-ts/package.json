@@ -78,7 +78,6 @@
     "@zag-js/switch": "workspace:*",
     "@zag-js/tabs": "workspace:*",
     "@zag-js/tags-input": "workspace:*",
-    "@zag-js/time-picker": "workspace:*",
     "@zag-js/timer": "workspace:*",
     "@zag-js/toast": "workspace:*",
     "@zag-js/toggle": "workspace:*",

@@ -270,17 +270,6 @@ export const signaturePadControls = defineControls({
   "drawing.simulatePressure": { type: "boolean", defaultValue: true },
 })
 
-export const timePickerControls = defineControls({
-  locale: {
-    type: "select",
-    options: ["en-US", "en-GB", "fr-FR", "de-DE", "ja-JP", "mk-MK", "zh-CN"] as const,
-    defaultValue: "en-US",
-  },
-  withSeconds: { type: "boolean", defaultValue: false },
-  disabled: { type: "boolean", defaultValue: false },
-  readOnly: { type: "boolean", defaultValue: false },
-})
-
 export const qrCodeControls = defineControls({
   value: { type: "string", defaultValue: "https://chakra-ui.com/" },
   "encoding.ecc": { type: "select", options: ["L", "M", "Q", "H"] as const, defaultValue: "H" },

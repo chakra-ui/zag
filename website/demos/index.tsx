@@ -36,7 +36,7 @@ import { Steps } from "./steps"
 import { Switch } from "./switch"
 import { Tabs } from "./tabs"
 import { TagsInput } from "./tags-input"
-import { TimePicker } from "./time-picker"
+
 import { TimerCountdown } from "./timer-countdown"
 import { ToastGroup } from "./toast"
 import { ToggleGroup } from "./toggle-group"
@@ -399,30 +399,7 @@ const components = {
       }}
     />
   ),
-  TimePicker: () => (
-    <Playground
-      name="time-picker"
-      component={TimePicker}
-      defaultProps={{
-        locale: {
-          default: "en-US",
-          options: [
-            "en-US",
-            "en-GB",
-            "fr-FR",
-            "de-DE",
-            "ja-JP",
-            "mk-MK",
-            "zh-CN",
-          ],
-          required: true,
-        },
-        disabled: false,
-        readOnly: false,
-        allowSeconds: false,
-      }}
-    />
-  ),
+
   Toast: () => <Playground name="toast" component={ToastGroup} />,
   ToggleGroup: () => (
     <Playground
