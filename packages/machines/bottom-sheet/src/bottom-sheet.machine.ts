@@ -107,7 +107,7 @@ export const machine = createMachine<BottomSheetSchema>({
         ],
         GRABBER_DRAG: [
           {
-            actions: ["setDragOffset", "setDragging"],
+            actions: ["setDragOffset"],
           },
         ],
         GRABBER_RELEASE: [
@@ -213,10 +213,6 @@ export const machine = createMachine<BottomSheetSchema>({
         context.set("snapPointOffset", context.get("contentHeight") - closestSnapPoint)
       },
 
-      setDragging({ context }) {
-        context.set("isDragging", true)
-      },
-
       setPointerDown({ context }) {
         context.set("isPointerDown", true)
       },
@@ -236,13 +232,18 @@ export const machine = createMachine<BottomSheetSchema>({
         let delta = startPoint.y - point.y - (context.get("snapPointOffset") ?? 0)
 
         if (prop("handleScrollableElements")) {
-          const { availableScroll, availableScrollTop } = getScrollInfo(target, container)
+          const { availableScrollTop } = getScrollInfo(target, container)
 
-          if ((delta > 0 && Math.abs(availableScroll) > 1) || (delta < 0 && availableScrollTop > 0)) {
+          const isTryingToScrollDown = availableScrollTop === 0 && delta > 0
+          const isTryingToScrollUp = availableScrollTop > 0 && delta < 0
+
+          if ((isTryingToScrollDown || isTryingToScrollUp) && !context.get("isDragging")) {
             send({ type: "GRABBER_RELEASE", point })
             return
           }
         }
+
+        context.set("isDragging", true)
 
         const lastPoint = context.get("lastPoint")
         if (lastPoint) {
