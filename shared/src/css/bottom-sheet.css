@@ -14,8 +14,9 @@
 
 [data-scope="bottom-sheet"][data-part="content"] {
   background: white;
-  transform: translate3d(0, -100%, 0);
   transition: transform 0.5s cubic-bezier(0.32, 0.72, 0, 1);
+  animation-duration: 0.5s;
+  animation-timing-function: cubic-bezier(0.32, 0.72, 0, 1);
   display: flex;
   flex-direction: column;
   border-top-left-radius: 16px;
@@ -29,11 +30,12 @@
   right: 0;
 
   &[data-state="open"] {
-    transform: translate3d(0, var(--snap-point-height, 0), 0);
+    transform: translate3d(0, var(--snap-point-height, 0%), 0);
+    animation-name: slideIn;
   }
 
   &[data-state="closed"] {
-    transform: translate3d(0, -100%, 0);
+    animation-name: slideOut;
   }
 }
 
@@ -61,4 +63,19 @@
 
 [data-scope="bottom-sheet"] .scrollable {
   overflow-y: auto;
+}
+
+@keyframes slideIn {
+  from {
+    transform: translate3d(0, var(--initial-transform, 100%), 0);
+  }
+  to {
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+@keyframes slideOut {
+  to {
+    transform: translate3d(0, var(--initial-transform, 100%), 0);
+  }
 }

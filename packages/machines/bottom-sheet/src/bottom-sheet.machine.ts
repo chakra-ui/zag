@@ -1,7 +1,7 @@
 import { createMachine } from "@zag-js/core"
 import type { BottomSheetSchema } from "./bottom-sheet.types"
 import type { Point } from "@zag-js/types"
-import { addDomEvent, getEventPoint, trackPointerMove } from "@zag-js/dom-query"
+import { addDomEvent, getEventPoint, getEventTarget, raf, trackPointerMove } from "@zag-js/dom-query"
 import * as dom from "./bottom-sheet.dom"
 import { resolveSnapPoints } from "./utils/resolve-snap-points"
 import { trackDismissableElement } from "@zag-js/dismissable"
@@ -24,7 +24,6 @@ export const machine = createMachine<BottomSheetSchema>({
       closeOnEscape: true,
       restoreFocus: true,
       initialFocusEl,
-      snapPoints: [1],
       swipeVelocityThreshold: 0.5,
       closeThreshold: 0.25,
       grabberOnly: false,
@@ -97,7 +96,7 @@ export const machine = createMachine<BottomSheetSchema>({
             actions: ["invokeOnClose", "clearSnapOffset"],
           },
           {
-            target: "closed",
+            target: "closing",
             actions: ["invokeOnClose", "clearSnapOffset"],
           },
         ],
@@ -114,15 +113,7 @@ export const machine = createMachine<BottomSheetSchema>({
         GRABBER_RELEASE: [
           {
             guard: "shouldCloseOnSwipe",
-            actions: [
-              "invokeOnClose",
-              "clearSnapOffset",
-              "clearDragOffset",
-              "resetVelocityTracking",
-              "clearDragging",
-              "clearPointerDown",
-            ],
-            target: "closed",
+            target: "closing",
           },
           {
             target: "open",
@@ -135,6 +126,23 @@ export const machine = createMachine<BottomSheetSchema>({
             ],
           },
         ],
+      },
+    },
+
+    closing: {
+      effects: ["trackExitAnimation"],
+      on: {
+        ANIMATION_END: {
+          target: "closed",
+          actions: [
+            "invokeOnClose",
+            "clearSnapOffset",
+            "clearDragOffset",
+            "resetVelocityTracking",
+            "clearDragging",
+            "clearPointerDown",
+          ],
+        },
       },
     },
 
@@ -173,7 +181,7 @@ export const machine = createMachine<BottomSheetSchema>({
         const isFastSwipe = velocity > 0 && velocity >= swipeVelocityThreshold
 
         const closeThresholdInPixels = contentHeight * (1 - closeThreshold)
-        const isBelowSmallestSnapPoint = visibleHeight < resolvedSnapPoints[0]
+        const isBelowSmallestSnapPoint = resolvedSnapPoints ? visibleHeight < resolvedSnapPoints[0] : true
         const isBelowcloseThreshold = visibleHeight < closeThresholdInPixels
 
         const hasEnoughDragToDismiss = (isBelowcloseThreshold && isBelowSmallestSnapPoint) || visibleHeight === 0
@@ -197,8 +205,9 @@ export const machine = createMachine<BottomSheetSchema>({
 
       setClosestSnapOffset({ computed, context, event }) {
         if (!context.get("isDragging")) return
-
         const snapPoints = computed("resolvedSnapPoints")
+        if (!snapPoints) return
+
         const closestSnapPoint = findClosestSnapPoint(window.innerHeight - event.point.y, snapPoints)
 
         context.set("snapPointOffset", context.get("contentHeight") - closestSnapPoint)
@@ -303,6 +312,41 @@ export const machine = createMachine<BottomSheetSchema>({
             send({ type: "CLOSE", src: "interact-outside" })
           },
         })
+      },
+
+      trackExitAnimation({ send, scope }) {
+        let cleanup: VoidFunction | undefined
+
+        const rafCleanup = raf(() => {
+          const contentEl = dom.getContentEl(scope)
+          if (!contentEl) return
+
+          const animationName = getComputedStyle(contentEl).animationName
+          const hasNoAnimation = !animationName || animationName === "none"
+
+          if (hasNoAnimation) {
+            send({ type: "ANIMATION_END" })
+            return
+          }
+
+          const onEnd = (event: AnimationEvent) => {
+            const target = getEventTarget<Element>(event)
+            if (target === contentEl) {
+              send({ type: "ANIMATION_END" })
+            }
+          }
+
+          contentEl.addEventListener("animationend", onEnd)
+
+          cleanup = () => {
+            contentEl.removeEventListener("animationend", onEnd)
+          }
+        })
+
+        return () => {
+          rafCleanup()
+          cleanup?.()
+        }
       },
 
       preventScroll({ scope, prop }) {

@@ -77,9 +77,8 @@ export interface BottomSheetProps extends DirectionProperty, CommonProperties, D
   /**
    * The snap points of the bottom sheet.
    * Array of numbers or strings representing the snap points.
-   * @default [1]
    */
-  snapPoints?: (number | string)[]
+  snapPoints?: (number | string)[] | undefined
   /**
    * The threshold velocity (in pixels/ms) for closing the bottom sheet.
    * @default 0.5
@@ -112,14 +111,13 @@ type PropsWithDefault =
   | "restoreFocus"
   | "preventScroll"
   | "initialFocusEl"
-  | "snapPoints"
   | "swipeVelocityThreshold"
   | "closeThreshold"
   | "handleScrollableElements"
 
 export interface BottomSheetSchema {
   props: RequiredBy<BottomSheetProps, PropsWithDefault>
-  state: "open" | "closed"
+  state: "open" | "closed" | "closing"
   tag: "open" | "closed"
   context: {
     isDragging: boolean
@@ -133,7 +131,7 @@ export interface BottomSheetSchema {
     velocity: number
   }
   computed: {
-    resolvedSnapPoints: number[]
+    resolvedSnapPoints: number[] | undefined
   }
   event: EventObject
   action: string
