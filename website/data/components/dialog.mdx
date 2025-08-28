@@ -197,6 +197,33 @@ attribute to style the dialog or trigger based on its state.
 }
 ```
 
+### Nested dialogs
+
+When dialogs are nested (a dialog opened from within another dialog), the layer
+stack automatically applies data attributes to help create visual hierarchy look
+
+- `data-nested` - Applied to nested dialogs
+- `data-has-nested` - Applied to dialogs that have nested dialogs open
+- `--nested-layer-count` - CSS variable indicating the number of nested dialogs
+
+```css
+/* Scale down parent dialogs when they have nested children */
+[data-part="content"][data-has-nested] {
+  transform: scale(calc(1 - var(--nested-layer-count) * 0.05));
+  transition: transform 0.2s ease-in-out;
+}
+
+/* Style nested dialogs differently */
+[data-part="content"][data-nested] {
+  border: 2px solid var(--accent-color);
+}
+
+/* Create depth effect using backdrop opacity */
+[data-part="backdrop"][data-has-nested] {
+  opacity: calc(0.4 + var(--nested-layer-count) * 0.1);
+}
+```
+
 ## Methods and Properties
 
 ### Machine Context
