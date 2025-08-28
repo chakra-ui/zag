@@ -119,9 +119,10 @@ export const machine = createMachine<DatePickerSchema>({
     return open ? "open" : "idle"
   },
 
-  refs() {
+  refs({ prop }) {
     return {
       announcer: undefined,
+      placeholderDate: getTodayDate(prop("timeZone")),
     }
   },
 
@@ -184,37 +185,6 @@ export const machine = createMachine<DatePickerSchema>({
       restoreFocus: bindable<boolean | undefined>(() => ({
         defaultValue: false,
       })),
-      validSegments: bindable<Segments[]>(() => {
-        const formatter = new DateFormatter(prop("locale"), {
-          timeZone: prop("timeZone"),
-          day: "2-digit",
-          month: "2-digit",
-          year: "numeric",
-        }) // TODO: move globally
-        const allSegments = formatter
-          .formatToParts(new Date())
-          .filter((seg) => EDITABLE_SEGMENTS[seg.type])
-          .reduce((p, seg) => ((p[TYPE_MAPPING[seg.type] || seg.type] = true), p), {})
-
-        const dateValue = prop("value") || prop("defaultValue")
-
-        return {
-          defaultValue: dateValue?.map((date) => (date ? { ...allSegments } : {})) ?? [{}, {}],
-        }
-      }),
-      placeholderDate: bindable<DateValue>(() => {
-        const timeZone = prop("timeZone")
-
-        // Create a placeholder date similar to React Spectrum's createPlaceholderDate
-        // We use today's date as the base, but this can be customized via placeholderValue prop if needed
-        const placeholderValue = getTodayDate(timeZone)
-
-        return {
-          defaultValue: placeholderValue,
-          isEqual: isDateEqual,
-          hash: (v) => v.toString(),
-        }
-      }),
     }
   },
 
@@ -236,11 +206,29 @@ export const machine = createMachine<DatePickerSchema>({
     isNextVisibleRangeValid: ({ prop, computed }) =>
       !isNextRangeInvalid(computed("endValue"), prop("min"), prop("max")),
     valueAsString: ({ context, prop }) => getValueAsString(context.get("value"), prop),
-    segments: ({ context, prop }) => {
-      const value = prop("value")
+    validSegments: ({ context, prop }) => {
+      const formatter = new DateFormatter(prop("locale"), {
+        timeZone: prop("timeZone"),
+        day: "2-digit",
+        month: "2-digit",
+        year: "numeric",
+      }) // TODO: move globally
+      const allSegments = formatter
+        .formatToParts(new Date())
+        .filter((seg) => EDITABLE_SEGMENTS[seg.type])
+        .reduce((p, seg) => ((p[TYPE_MAPPING[seg.type] || seg.type] = true), p), {})
+
+      const dateValue = context.get("value")
+
+      console.log("validSegments: ", dateValue?.map((date) => (date ? { ...allSegments } : {})) ?? [{}, {}])
+
+      return dateValue?.map((date) => (date ? { ...allSegments } : {})) ?? [{}, {}]
+    },
+    segments: ({ context, prop, refs, computed }) => {
+      const value = context.get("value")
       const selectionMode = prop("selectionMode")
-      const placeholderDate = context.get("placeholderDate")
-      const validSegments = context.get("validSegments")
+      const placeholderDate = refs.get("placeholderDate")
+      const validSegments = computed("validSegments")
       const timeZone = prop("timeZone")
       const translations = prop("translations") || defaultTranslations
       const granularity = prop("granularity")
@@ -256,6 +244,23 @@ export const machine = createMachine<DatePickerSchema>({
       if (selectionMode === "range") {
         dates = value?.length ? value : [placeholderDate, placeholderDate]
       }
+
+      console.log(
+        dates.map((date, i) => {
+          const displayValue = date || placeholderDate
+          const currentValidSegments = validSegments?.[i] || {}
+
+          return processSegments({
+            dateValue: displayValue.toDate(timeZone),
+            displayValue,
+            validSegments: currentValidSegments,
+            formatter,
+            locale: prop("locale"),
+            translations,
+            granularity,
+          })
+        }),
+      )
 
       return dates.map((date, i) => {
         const displayValue = date || placeholderDate

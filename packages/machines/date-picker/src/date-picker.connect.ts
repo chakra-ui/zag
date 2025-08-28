@@ -709,6 +709,7 @@ export function connect<T extends PropTypes>(
         "data-state": open ? "open" : "closed",
         "aria-haspopup": "grid",
         disabled,
+        "data-readonly": dataAttr(readOnly),
         onClick(event) {
           if (event.defaultPrevented) return
           if (!interactive) return
@@ -811,7 +812,7 @@ export function connect<T extends PropTypes>(
 
     getSegmentInputProps() {
       return normalize.element({
-        ...parts.input.attrs,
+        ...parts.segmentInput.attrs,
         id: dom.getInputId(scope, 0), // FIXIT: figure out the index
         dir: prop("dir"),
         "data-state": open ? "open" : "closed",

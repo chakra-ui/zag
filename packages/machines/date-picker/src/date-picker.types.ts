@@ -315,14 +315,6 @@ interface PrivateContext {
    * The focused date.
    */
   focusedValue: DateValue
-  /**
-   * The valid segments for each date value (tracks which segments have been filled).
-   */
-  validSegments: Segments[]
-  /**
-   * The placeholder date to use when segments are not filled.
-   */
-  placeholderDate: DateValue
 }
 
 type ComputedContext = Readonly<{
@@ -359,6 +351,10 @@ type ComputedContext = Readonly<{
    */
   valueAsString: string[]
   /**
+   * The valid segments for each date value (tracks which segments have been filled).
+   */
+  validSegments: Segments[]
+  /**
    * A list of segments for the selected date(s).
    */
   segments: DateSegment[][]
@@ -369,6 +365,10 @@ type Refs = {
    * The live region to announce changes
    */
   announcer?: LiveRegion | undefined
+  /**
+   * The placeholder date to use when segments are not filled.
+   */
+  placeholderDate?: CalendarDate | undefined
 }
 
 export interface DatePickerSchema {

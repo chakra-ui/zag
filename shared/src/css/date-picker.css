@@ -37,10 +37,34 @@
   margin-bottom: 16px;
 }
 
+[data-scope="date-picker"][data-part="segment-input"] {
+  display: inline-flex;
+  align-items: center;
+  padding-block: 2px;
+  padding-inline: 3px;
+  border: 1px solid rgb(118, 118, 118);
+  border-radius: 2px;
+  background-color: #fff;
+  color: #333;
+  min-width: 154px;
+
+  &[data-focus] {
+    border-color: #66afe9;
+    box-shadow: 0 0 3px rgba(102, 175, 233, 0.6);
+    outline: none;
+  }
+}
+
 [data-scope="date-picker"][data-part="segment"] {
   font-variant-numeric: tabular-nums;
   text-align: end;
-  padding: 0 2px;
+  font-size: 13.3333px;
+  border-radius: 2px;
+
+  &:focus {
+    background-color: rgba(102, 175, 233, 0.6);
+    outline: none;
+  }
 }
 
 [data-scope="date-picker"][data-part="table-cell-trigger"][data-today] {
