@@ -384,9 +384,12 @@ export const machine = createMachine<BottomSheetSchema>({
         })
       },
 
-      trackTouchMove({ send, scope }) {
+      trackTouchMove({ send, scope, context }) {
         function onTouchMove(event: TouchEvent) {
           if (!event.touches[0]) return
+          if (!context.get("isDragging")) {
+            event.preventDefault()
+          }
           const point = getEventPoint(event)
           send({ type: "GRABBER_DRAG", point, target: event.target })
         }
@@ -398,7 +401,7 @@ export const machine = createMachine<BottomSheetSchema>({
         }
 
         const cleanups = [
-          addDomEvent(scope.getDoc(), "touchmove", onTouchMove),
+          addDomEvent(scope.getDoc(), "touchmove", onTouchMove, { passive: false }),
           addDomEvent(scope.getDoc(), "touchend", onTouchEnd),
         ]
 
