@@ -18,7 +18,7 @@ export const routesData: RouteData[] = [
   { label: "Angle Slider", path: "/angle-slider" },
   { label: "Steps", path: "/steps" },
   { label: "QR Code", path: "/qr-code" },
-  { label: "Time Picker", path: "/time-picker" },
+
   { label: "Signature Pad", path: "/signature-pad" },
   { label: "Floating Panel", path: "/floating-panel" },
   { label: "Tour", path: "/tour" },

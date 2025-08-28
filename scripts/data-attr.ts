@@ -82,7 +82,7 @@ const widgetLayerTypes: Record<string, string> = {
   "date-picker": "popover",
   "color-picker": "popover",
   "hover-card": "popover",
-  "time-picker": "listbox",
+
   toast: "dialog",
   tour: "popover",
 }
