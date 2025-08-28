@@ -2,6 +2,7 @@
   background-color: rgba(0, 0, 0, 0.44);
   position: fixed;
   inset: 0px;
+  z-index: var(--layer-index);
 }
 
 [data-scope="dialog"][data-part="positioner"] {
@@ -12,6 +13,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  z-index: var(--layer-index);
 }
 
 [data-scope="dialog"][data-part="title"] {
@@ -42,11 +44,11 @@
   z-index: var(--layer-index);
 
   &[data-state="open"] {
-    animation: dialogFadeIn 0.2s ease-in-out;
+    animation: scaleFadeIn 0.2s ease-in-out;
   }
 
   &[data-state="closed"] {
-    animation: dialogFadeOut 0.25s ease-in-out;
+    animation: scaleFadeOut 0.25s ease-in-out;
   }
 }
 
@@ -62,28 +64,4 @@
   top: 10px;
   right: 10px;
   border-radius: 100%;
-}
-
-[data-scope="dialog"][data-part="close-trigger"]:focus {
-  outline: 2px blue solid;
-  outline-offset: 2px;
-}
-
-@keyframes dialogFadeIn {
-  from {
-    scale: 0.9;
-    opacity: 0;
-  }
-
-  to {
-    opacity: 1;
-    scale: 1;
-  }
-}
-
-@keyframes dialogFadeOut {
-  to {
-    opacity: 0;
-    scale: 0.9;
-  }
 }

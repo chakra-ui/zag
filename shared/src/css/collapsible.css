@@ -1,16 +1,15 @@
 [data-scope="collapsible"][data-part="content"] {
   overflow: hidden;
   max-width: 400px;
-}
 
-[data-scope="collapsible"][data-part="content"][data-state="open"] {
-  animation: slideDown 200ms ease;
-}
+  &[data-state="open"] {
+    animation: expandHeight 200ms ease;
+  }
 
-[data-scope="collapsible"][data-part="content"][data-state="closed"] {
-  animation: slideUp 200ms ease;
+  &[data-state="closed"] {
+    animation: collapseHeight 200ms ease;
+  }
 }
-
 
 [data-scope="collapsible"][data-part="trigger"] {
   display: inline-flex;
@@ -18,28 +17,8 @@
   gap: 8px;
 }
 
-[data-scope="collapsible"][data-part="indicator"][data-state="open"] {
-  transform: rotate(180deg);
-}
-
-@keyframes slideDown {
-  from {
-    opacity: 0.01;
-    height: 0;
-  }
-  to {
-    opacity: 1;
-    height: var(--height);
-  }
-}
-
-@keyframes slideUp {
-  from {
-    opacity: 1;
-    height: var(--height);
-  }
-  to {
-    opacity: 0.01;
-    height: 0;
+[data-scope="collapsible"][data-part="indicator"] {
+  &[data-state="open"] {
+    transform: rotate(180deg);
   }
 }

@@ -120,7 +120,7 @@ export function connect<T extends PropTypes>(
         id: dom.getInputId(scope),
         role: "spinbutton",
         defaultValue: computed("formattedValue"),
-        pattern: prop("pattern"),
+        pattern: prop("formatOptions") ? undefined : prop("pattern"),
         inputMode: prop("inputMode"),
         "aria-invalid": ariaAttr(invalid),
         "data-invalid": dataAttr(invalid),

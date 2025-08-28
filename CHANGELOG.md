@@ -4,6 +4,42 @@ All notable changes to this project will be documented in this file.
 
 > For v0.x changelog, see the [v0 branch](https://github.com/chakra-ui/zag/blob/v0/CHANGELOG.md)
 
+## [1.21.11](./#1.21.11) - 2025-08-27
+
+### Fixed
+
+- **Collection**: Fix issue where disabled items could be reached via typeahead
+
+- **Date Picker**: Fix issue where datepicker doesn't revert to a valid value when the input value exceeds the min/max
+  and blurred
+
+- **Tags Input**: Fix issue where highlighted item doesn't clear when tabbing out of the input to an external button
+  within the `control` part.
+
+## [1.21.10](./#1.21.10) - 2025-08-26
+
+### Added
+
+- **Hover Card**: Add support for `disabled` prop
+
+### Fixed
+
+- **Color Picker**: Fix issue where color picker was not working correctly in RTL mode
+
+- **Dismissable**: Expose `onRequestDismiss` custom event handler for event a parent layer requests the child layer to
+  dismiss. If prevented via `event.preventDefault()`, the child layer will not dismiss when the parent layer is
+  dismissed.
+
+- **Number Input**
+  - Omit the input `pattern` when `formatOptions` is provided. This prevents native pattern validation from conflicting
+    with formatted values (e.g., currency or percent).
+  - Handle empty values consistently across all format options.
+  - Add `data-scrubbing` attribute to the number input parts.
+
+- **Tooltip**
+  - Set `closeOnPointerdown` to `false` when `closeOnClick` is set to `false`
+  - Reduce bundle size by replacing `@zag-js/store` dependency with a lightweight store implementation.
+
 ## [1.21.9](./#1.21.9) - 2025-08-23
 
 ## Fixed

@@ -1,5 +1,31 @@
 # @zag-js/listbox
 
+## 1.22.1
+
+### Patch Changes
+
+- Updated dependencies [[`4790d22`](https://github.com/chakra-ui/zag/commit/4790d22ee49c02daafad02aa4f5beb5fcdd507f7)]:
+  - @zag-js/collection@1.22.1
+  - @zag-js/anatomy@1.22.1
+  - @zag-js/core@1.22.1
+  - @zag-js/types@1.22.1
+  - @zag-js/utils@1.22.1
+  - @zag-js/dom-query@1.22.1
+  - @zag-js/focus-visible@1.22.1
+
+## 1.22.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.22.0
+  - @zag-js/core@1.22.0
+  - @zag-js/types@1.22.0
+  - @zag-js/collection@1.22.0
+  - @zag-js/utils@1.22.0
+  - @zag-js/dom-query@1.22.0
+  - @zag-js/focus-visible@1.22.0
+
 ## 1.21.9
 
 ### Patch Changes

@@ -1,5 +1,36 @@
 # @zag-js/color-picker
 
+## 1.22.1
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.22.1
+  - @zag-js/core@1.22.1
+  - @zag-js/types@1.22.1
+  - @zag-js/color-utils@1.22.1
+  - @zag-js/utils@1.22.1
+  - @zag-js/dismissable@1.22.1
+  - @zag-js/dom-query@1.22.1
+  - @zag-js/popper@1.22.1
+
+## 1.22.0
+
+### Patch Changes
+
+- [`c3a9bf1`](https://github.com/chakra-ui/zag/commit/c3a9bf1ab0874fc6e9941b0a768c62e9f0f6665e) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix issue where color picker was not working correctly in RTL mode
+
+- Updated dependencies [[`c1f9b45`](https://github.com/chakra-ui/zag/commit/c1f9b45cf71308b1376fc70d0c5b785fd0a8e275)]:
+  - @zag-js/dismissable@1.22.0
+  - @zag-js/anatomy@1.22.0
+  - @zag-js/core@1.22.0
+  - @zag-js/types@1.22.0
+  - @zag-js/color-utils@1.22.0
+  - @zag-js/utils@1.22.0
+  - @zag-js/dom-query@1.22.0
+  - @zag-js/popper@1.22.0
+
 ## 1.21.9
 
 ### Patch Changes

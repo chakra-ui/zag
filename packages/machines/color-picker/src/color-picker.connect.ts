@@ -266,6 +266,8 @@ export function connect<T extends PropTypes>(
 
       const xPercent = areaValue.getChannelValuePercent(xChannel)
       const yPercent = 1 - areaValue.getChannelValuePercent(yChannel)
+      const isRtl = prop("dir") === "rtl"
+      const finalXPercent = isRtl ? 1 - xPercent : xPercent
 
       const xValue = areaValue.getChannelValue(xChannel)
       const yValue = areaValue.getChannelValue(yChannel)
@@ -289,7 +291,7 @@ export function connect<T extends PropTypes>(
         "aria-valuetext": `${xChannel} ${xValue}, ${yChannel} ${yValue}`,
         style: {
           position: "absolute",
-          left: `${xPercent * 100}%`,
+          left: `${finalXPercent * 100}%`,
           top: `${yPercent * 100}%`,
           transform: "translate(-50%, -50%)",
           touchAction: "none",
@@ -445,10 +447,12 @@ export function connect<T extends PropTypes>(
       const channelValue = normalizedValue.getChannelValue(channel)
 
       const offset = (channelValue - channelRange.minValue) / (channelRange.maxValue - channelRange.minValue)
+      const isRtl = prop("dir") === "rtl"
+      const finalOffset = orientation === "horizontal" && isRtl ? 1 - offset : offset
 
       const placementStyles =
         orientation === "horizontal"
-          ? { left: `${offset * 100}%`, top: "50%" }
+          ? { left: `${finalOffset * 100}%`, top: "50%" }
           : { top: `${offset * 100}%`, left: "50%" }
 
       return normalize.element({

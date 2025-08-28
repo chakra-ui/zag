@@ -565,6 +565,7 @@ export const machine = createMachine<MenuSchema>({
           defer: true,
           exclude: [dom.getTriggerEl(scope)],
           onInteractOutside: prop("onInteractOutside"),
+          onRequestDismiss: prop("onRequestDismiss"),
           onFocusOutside(event) {
             prop("onFocusOutside")?.(event)
 

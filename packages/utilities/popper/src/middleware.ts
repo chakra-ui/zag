@@ -1,4 +1,4 @@
-import type { Coords, Middleware } from "@floating-ui/dom"
+import type { Middleware } from "@floating-ui/dom"
 import type { PlacementSide } from "./types"
 
 /* -----------------------------------------------------------------------------
@@ -19,34 +19,68 @@ export const cssVars = {
  * Transform Origin Middleware
  * -----------------------------------------------------------------------------*/
 
-const getTransformOrigin = (arrow?: Partial<Coords>) => ({
-  top: "bottom center",
-  "top-start": arrow ? `${arrow.x}px bottom` : "left bottom",
-  "top-end": arrow ? `${arrow.x}px bottom` : "right bottom",
-  bottom: "top center",
-  "bottom-start": arrow ? `${arrow.x}px top` : "top left",
-  "bottom-end": arrow ? `${arrow.x}px top` : "top right",
-  left: "right center",
-  "left-start": arrow ? `right ${arrow.y}px` : "right top",
-  "left-end": arrow ? `right ${arrow.y}px` : "right bottom",
-  right: "left center",
-  "right-start": arrow ? `left ${arrow.y}px` : "left top",
-  "right-end": arrow ? `left ${arrow.y}px` : "left bottom",
-})
+/* -----------------------------------------------------------------------------
+ * Transform Origin with overlap handling
+ * -----------------------------------------------------------------------------*/
 
-export const transformOriginMiddleware: Middleware = {
-  name: "transformOrigin",
-  fn({ placement, elements, middlewareData }) {
-    const { arrow } = middlewareData
-    const transformOrigin = getTransformOrigin(arrow)[placement]
+const getSideAxis = (side: PlacementSide) => (side === "top" || side === "bottom" ? "y" : "x")
 
-    const { floating } = elements
-    floating.style.setProperty(cssVars.transformOrigin.variable, transformOrigin)
-
-    return {
-      data: { transformOrigin },
-    }
+export function createTransformOriginMiddleware(
+  opts: {
+    gutter?: number | undefined
+    offset?: { mainAxis?: number | undefined } | undefined
+    overlap?: boolean | undefined
   },
+  arrowEl: HTMLElement | null,
+): Middleware {
+  return {
+    name: "transformOrigin",
+    fn(state) {
+      const { elements, middlewareData, placement, rects, y } = state
+
+      const side = placement.split("-")[0] as PlacementSide
+      const axis = getSideAxis(side)
+
+      const arrowX = middlewareData.arrow?.x || 0
+      const arrowY = middlewareData.arrow?.y || 0
+      const arrowWidth = arrowEl?.clientWidth || 0
+      const arrowHeight = arrowEl?.clientHeight || 0
+      const transformX = arrowX + arrowWidth / 2
+      const transformY = arrowY + arrowHeight / 2
+
+      const shiftY = Math.abs(middlewareData.shift?.y || 0)
+      const halfAnchorHeight = rects.reference.height / 2
+
+      const arrowOffset = arrowHeight / 2
+      const gutter = opts.offset?.mainAxis ?? opts.gutter
+      const sideOffsetValue = typeof gutter === "number" ? gutter + arrowOffset : (gutter ?? arrowOffset)
+
+      const isOverlappingAnchor = shiftY > sideOffsetValue
+
+      const adjacentTransformOrigin = (
+        {
+          top: `${transformX}px calc(100% + ${sideOffsetValue}px)`,
+          bottom: `${transformX}px ${-sideOffsetValue}px`,
+          left: `calc(100% + ${sideOffsetValue}px) ${transformY}px`,
+          right: `${-sideOffsetValue}px ${transformY}px`,
+        } as const
+      )[side]
+      const overlapTransformOrigin = `${transformX}px ${rects.reference.y + halfAnchorHeight - y}px`
+
+      const useOverlap = Boolean(opts.overlap) && axis === "y" && isOverlappingAnchor
+
+      elements.floating.style.setProperty(
+        cssVars.transformOrigin.variable,
+        useOverlap ? overlapTransformOrigin : adjacentTransformOrigin,
+      )
+
+      return {
+        data: {
+          transformOrigin: useOverlap ? overlapTransformOrigin : adjacentTransformOrigin,
+        },
+      }
+    },
+  }
 }
 
 /* -----------------------------------------------------------------------------

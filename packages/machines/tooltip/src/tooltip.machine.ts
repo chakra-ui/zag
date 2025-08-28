@@ -2,7 +2,6 @@ import { createGuards, createMachine } from "@zag-js/core"
 import { addDomEvent, getOverflowAncestors, isComposingEvent } from "@zag-js/dom-query"
 import { trackFocusVisible as trackFocusVisibleFn } from "@zag-js/focus-visible"
 import { getPlacement } from "@zag-js/popper"
-import { subscribe } from "@zag-js/store"
 import * as dom from "./tooltip.dom"
 import { store } from "./tooltip.store"
 import type { Placement, TooltipSchema } from "./tooltip.types"
@@ -16,17 +15,21 @@ export const machine = createMachine<TooltipSchema>({
   },
 
   props({ props }) {
+    // If consumer disables click-to-close, default pointerdown-to-close to follow it
+    const closeOnClick = props.closeOnClick ?? true
+    const closeOnPointerDown = props.closeOnPointerDown ?? closeOnClick
+
     return {
       id: "x",
       openDelay: 1000,
       closeDelay: 500,
-      closeOnPointerDown: true,
       closeOnEscape: true,
       interactive: false,
       closeOnScroll: true,
-      closeOnClick: true,
       disabled: false,
       ...props,
+      closeOnPointerDown,
+      closeOnClick,
       positioning: {
         placement: "bottom",
         ...props.positioning,
@@ -235,8 +238,8 @@ export const machine = createMachine<TooltipSchema>({
 
   implementations: {
     guards: {
-      noVisibleTooltip: () => store.id === null,
-      isVisible: ({ prop }) => prop("id") === store.id,
+      noVisibleTooltip: () => store.get("id") === null,
+      isVisible: ({ prop }) => prop("id") === store.get("id"),
       isInteractive: ({ prop }) => !!prop("interactive"),
       hasPointerMoveOpened: ({ context }) => context.get("hasPointerMoveOpened"),
       isOpenControlled: ({ prop }) => prop("open") !== undefined,
@@ -244,12 +247,12 @@ export const machine = createMachine<TooltipSchema>({
 
     actions: {
       setGlobalId: ({ prop }) => {
-        store.id = prop("id")
+        store.set("id", prop("id"))
       },
 
       clearGlobalId: ({ prop }) => {
-        if (prop("id") === store.id) {
-          store.id = null
+        if (prop("id") === store.get("id")) {
+          store.set("id", null)
         }
       },
 
@@ -349,8 +352,8 @@ export const machine = createMachine<TooltipSchema>({
       trackStore: ({ prop, send }) => {
         let cleanup: VoidFunction | undefined
         queueMicrotask(() => {
-          cleanup = subscribe(store, () => {
-            if (store.id !== prop("id")) {
+          cleanup = store.subscribe(() => {
+            if (store.get("id") !== prop("id")) {
               send({ type: "close", src: "id.change" })
             }
           })
