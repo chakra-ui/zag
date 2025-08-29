@@ -369,10 +369,43 @@ export const machine = createMachine<BottomSheetSchema>({
       },
 
       trackTouchMove({ send, scope }) {
+        let lastY = 0
+
+        function onTouchStart(event: TouchEvent) {
+          if (!event.touches[0]) return
+          lastY = event.touches[0].clientY
+        }
+
         function onTouchMove(event: TouchEvent) {
           if (!event.touches[0]) return
           const point = getEventPoint(event)
-          send({ type: "POINTER_MOVE", point, target: event.target })
+          const target = event.target as HTMLElement
+
+          // Prevent overscrolling
+          const contentEl = dom.getContentEl(scope)
+          if (!contentEl) return
+          let el: HTMLElement | null = target
+          while (el && el !== contentEl && el.scrollHeight <= el.clientHeight) {
+            el = el.parentElement
+          }
+
+          if (el && el !== contentEl) {
+            const scrollTop = el.scrollTop
+            const scrollHeight = el.scrollHeight
+            const clientHeight = el.clientHeight
+            const y = event.touches[0].clientY
+
+            const atTop = scrollTop <= 0
+            const atBottom = scrollTop + clientHeight >= scrollHeight
+
+            if ((atTop && y > lastY) || (atBottom && y < lastY)) {
+              event.preventDefault()
+            }
+
+            lastY = y
+          }
+
+          send({ type: "POINTER_MOVE", point, target })
         }
 
         function onTouchEnd(event: TouchEvent) {
@@ -382,7 +415,8 @@ export const machine = createMachine<BottomSheetSchema>({
         }
 
         const cleanups = [
-          addDomEvent(scope.getDoc(), "touchmove", onTouchMove),
+          addDomEvent(scope.getDoc(), "touchstart", onTouchStart, { passive: false }),
+          addDomEvent(scope.getDoc(), "touchmove", onTouchMove, { passive: false }),
           addDomEvent(scope.getDoc(), "touchend", onTouchEnd),
         ]
 
