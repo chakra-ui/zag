@@ -428,6 +428,10 @@ export interface TableCellState {
   readonly disabled: boolean
 }
 
+export interface SegmentGroupProps {
+  index?: number | undefined
+}
+
 export interface SegmentsProps {
   index?: number | undefined
 }
@@ -485,6 +489,7 @@ export interface DateSegment {
 
 export interface SegmentProps {
   segment: DateSegment
+  index?: number | undefined
 }
 
 export interface SegmentState {}
@@ -600,7 +605,7 @@ export interface DatePickerApi<T extends PropTypes = PropTypes> {
   /**
    * Returns an array of days in the week index counted from the provided start date, or the first visible date if not given.
    */
-  getDaysInWeek: (week: number, from?: DateValue) => DateValue[]
+  getDaysInWeek: (week: number, from?: DateValue | undefined) => DateValue[]
   /**
    * Returns the offset of the month based on the provided number of months.
    */
@@ -612,7 +617,7 @@ export interface DatePickerApi<T extends PropTypes = PropTypes> {
   /**
    * Returns the weeks of the month from the provided date. Represented as an array of arrays of dates.
    */
-  getMonthWeeks: (from?: DateValue) => DateValue[][]
+  getMonthWeeks: (from?: DateValue | undefined) => DateValue[][]
   /**
    * Returns whether the provided date is available (or can be selected)
    */
@@ -693,7 +698,7 @@ export interface DatePickerApi<T extends PropTypes = PropTypes> {
    * Returns the years of the decade based on the columns.
    * Represented as an array of arrays of years.
    */
-  getYearsGrid: (props?: YearGridProps) => YearGridValue
+  getYearsGrid: (props?: YearGridProps | undefined) => YearGridValue
   /**
    * Returns the start and end years of the decade.
    */
@@ -701,16 +706,16 @@ export interface DatePickerApi<T extends PropTypes = PropTypes> {
   /**
    * Returns the months of the year
    */
-  getMonths: (props?: MonthFormatOptions) => Cell[]
+  getMonths: (props?: MonthFormatOptions | undefined) => Cell[]
   /**
    * Returns the months of the year based on the columns.
    * Represented as an array of arrays of months.
    */
-  getMonthsGrid: (props?: MonthGridProps) => MonthGridValue
+  getMonthsGrid: (props?: MonthGridProps | undefined) => MonthGridValue
   /**
    * Formats the given date value based on the provided options.
    */
-  format: (value: DateValue, opts?: Intl.DateTimeFormatOptions) => string
+  format: (value: DateValue, opts?: Intl.DateTimeFormatOptions | undefined) => string
   /**
    * Sets the view of the date picker.
    */
@@ -736,13 +741,13 @@ export interface DatePickerApi<T extends PropTypes = PropTypes> {
    */
   getYearTableCellState: (props: TableCellProps) => TableCellState
   /**
-   *
+   * Returns the props for the segment group container.
    */
-  getSegmentInputProps: () => T["element"]
+  getSegmentGroupProps: (props?: SegmentGroupProps | undefined) => T["element"]
   /**
-   *
+   * Returns the props for a given segment.
    */
-  getSegments: (props?: SegmentsProps) => DateSegment[]
+  getSegments: (props?: SegmentsProps | undefined) => DateSegment[]
   /**
    * Returns the state details for a given segment.
    */

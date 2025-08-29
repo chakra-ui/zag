@@ -810,10 +810,12 @@ export function connect<T extends PropTypes>(
       })
     },
 
-    getSegmentInputProps() {
+    getSegmentGroupProps(props = {}) {
+      const { index = 0 } = props
+
       return normalize.element({
         ...parts.segmentInput.attrs,
-        id: dom.getInputId(scope, 0), // FIXIT: figure out the index
+        id: dom.getSegmentGroupId(scope, index),
         dir: prop("dir"),
         "data-state": open ? "open" : "closed",
         role: "presentation",
@@ -833,14 +835,14 @@ export function connect<T extends PropTypes>(
     getSegmentState,
 
     getSegmentProps(props) {
-      const { segment } = props
+      const { segment, index = 0 } = props
       const isEditable = !disabled && !readOnly && segment.isEditable
 
       if (segment.type === "literal") {
         return normalize.element({
           ...parts.segment.attrs,
           dir: prop("dir"),
-          "aria-hidden": true,
+          "aria-hidden": true, // Literal segments should not be visible to screen readers.
           "data-type": segment.type,
           "data-readonly": dataAttr(true),
           "data-disabled": dataAttr(true),
@@ -860,7 +862,7 @@ export function connect<T extends PropTypes>(
         inputMode:
           disabled || segment.type === "dayPeriod" || segment.type === "era" || !isEditable ? undefined : "numeric",
         enterKeyHint: "next",
-        "aria-labelledby": dom.getInputId(scope, 0), // FIXIT: figure out the index
+        "aria-labelledby": dom.getSegmentGroupId(scope, index),
         // "aria-label": translations.segmentLabel(segment),
         "aria-valuenow": segment.value,
         "aria-valuetext": segment.text,
@@ -875,7 +877,7 @@ export function connect<T extends PropTypes>(
         "data-editable": dataAttr(segment.isEditable && !readOnly && !disabled),
         "data-placeholder": dataAttr(segment.isPlaceholder),
         style: {
-          "caret-color": "transparent",
+          caretColor: "transparent",
         },
         onKeyDown(event) {
           if (
