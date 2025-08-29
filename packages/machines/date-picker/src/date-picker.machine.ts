@@ -239,12 +239,7 @@ export const machine = createMachine<DatePickerSchema>({
       const timeZone = prop("timeZone")
       const translations = prop("translations") || defaultTranslations
       const granularity = prop("granularity")
-      const formatter = new DateFormatter(prop("locale"), {
-        timeZone,
-        day: "2-digit",
-        month: "2-digit",
-        year: "numeric",
-      }) // TODO: move globally
+      const formatter = refs.get("formatter")
 
       let dates: DateValue[] = value?.length ? value : [placeholderDate]
 
