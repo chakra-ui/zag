@@ -1531,10 +1531,6 @@
 
 ### Patch Changes
 
-- [`a4b4cdb`](https://github.com/chakra-ui/zag/commit/a4b4cdbad37a1d935c248c15075ed0dd5ed56aed) Thanks
-  [@cschroeter](https://github.com/cschroeter)! - fix(time-picker): move @internationalized/date to the list of peer
-  deps"
-
 - Updated dependencies [[`a4b4cdb`](https://github.com/chakra-ui/zag/commit/a4b4cdbad37a1d935c248c15075ed0dd5ed56aed)]:
   - @zag-js/date-utils@0.74.1
   - @zag-js/anatomy@0.74.1

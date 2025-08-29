@@ -335,9 +335,6 @@ importers:
       '@zag-js/tags-input':
         specifier: workspace:*
         version: link:../../packages/machines/tags-input
-      '@zag-js/time-picker':
-        specifier: workspace:*
-        version: link:../../packages/machines/time-picker
       '@zag-js/timer':
         specifier: workspace:*
         version: link:../../packages/machines/timer
@@ -624,9 +621,6 @@ importers:
       '@zag-js/tags-input':
         specifier: workspace:*
         version: link:../../packages/machines/tags-input
-      '@zag-js/time-picker':
-        specifier: workspace:*
-        version: link:../../packages/machines/time-picker
       '@zag-js/timer':
         specifier: workspace:*
         version: link:../../packages/machines/timer
@@ -889,9 +883,6 @@ importers:
       '@zag-js/tags-input':
         specifier: workspace:*
         version: link:../../packages/machines/tags-input
-      '@zag-js/time-picker':
-        specifier: workspace:*
-        version: link:../../packages/machines/time-picker
       '@zag-js/timer':
         specifier: workspace:*
         version: link:../../packages/machines/timer
@@ -1160,9 +1151,6 @@ importers:
       '@zag-js/tags-input':
         specifier: workspace:*
         version: link:../../packages/machines/tags-input
-      '@zag-js/time-picker':
-        specifier: workspace:*
-        version: link:../../packages/machines/time-picker
       '@zag-js/timer':
         specifier: workspace:*
         version: link:../../packages/machines/timer
@@ -1406,9 +1394,6 @@ importers:
       '@zag-js/tags-input':
         specifier: workspace:*
         version: link:../../packages/machines/tags-input
-      '@zag-js/time-picker':
-        specifier: workspace:*
-        version: link:../../packages/machines/time-picker
       '@zag-js/timer':
         specifier: workspace:*
         version: link:../../packages/machines/timer
@@ -1674,9 +1659,6 @@ importers:
       '@zag-js/tags-input':
         specifier: workspace:*
         version: link:../../packages/machines/tags-input
-      '@zag-js/time-picker':
-        specifier: workspace:*
-        version: link:../../packages/machines/time-picker
       '@zag-js/timer':
         specifier: workspace:*
         version: link:../../packages/machines/timer
@@ -2296,9 +2278,6 @@ importers:
       '@zag-js/core':
         specifier: workspace:*
         version: link:../../core
-      '@zag-js/dismissable':
-        specifier: workspace:*
-        version: link:../../utilities/dismissable
       '@zag-js/dom-query':
         specifier: workspace:*
         version: link:../../utilities/dom-query
@@ -2893,37 +2872,6 @@ importers:
         specifier: workspace:*
         version: link:../../utilities/core
     devDependencies:
-      clean-package:
-        specifier: 2.2.0
-        version: 2.2.0
-
-  packages/machines/time-picker:
-    dependencies:
-      '@zag-js/anatomy':
-        specifier: workspace:*
-        version: link:../../anatomy
-      '@zag-js/core':
-        specifier: workspace:*
-        version: link:../../core
-      '@zag-js/dismissable':
-        specifier: workspace:*
-        version: link:../../utilities/dismissable
-      '@zag-js/dom-query':
-        specifier: workspace:*
-        version: link:../../utilities/dom-query
-      '@zag-js/popper':
-        specifier: workspace:*
-        version: link:../../utilities/popper
-      '@zag-js/types':
-        specifier: workspace:*
-        version: link:../../types
-      '@zag-js/utils':
-        specifier: workspace:*
-        version: link:../../utilities/core
-    devDependencies:
-      '@internationalized/date':
-        specifier: 3.8.2
-        version: 3.8.2
       clean-package:
         specifier: 2.2.0
         version: 2.2.0
@@ -3713,9 +3661,6 @@ importers:
       '@zag-js/tags-input':
         specifier: workspace:*
         version: link:../packages/machines/tags-input
-      '@zag-js/time-picker':
-        specifier: workspace:*
-        version: link:../packages/machines/time-picker
       '@zag-js/timer':
         specifier: workspace:*
         version: link:../packages/machines/timer

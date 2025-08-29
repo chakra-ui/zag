@@ -24,8 +24,8 @@ export type ElementIds = Partial<{
   list: string
   item: string
   indicator: string
-  trigger: string
-  content: string
+  trigger: (value: string) => string
+  content: (value: string) => string
   viewport: string
 }>
 

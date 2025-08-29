@@ -29,9 +29,9 @@ export interface IntlTranslations {
 
 export type ElementIds = Partial<{
   root: string
-  trigger: string
+  trigger: (value: string) => string
   list: string
-  content: string
+  content: (value: string) => string
   indicator: string
 }>
 

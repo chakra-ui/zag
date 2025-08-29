@@ -408,6 +408,7 @@ export const machine = createMachine<ColorPickerSchema>({
 
         const getContentEl = () => dom.getContentEl(scope)
         return trackDismissableElement(getContentEl, {
+          type: "popover",
           exclude: dom.getTriggerEl(scope),
           defer: true,
           onInteractOutside(event) {

@@ -1,7 +1,7 @@
 import { ModuleResolutionKind, Node, Project, StringLiteral, SyntaxKind, type ObjectLiteralElementLike } from "ts-morph"
 import * as fg from "fast-glob"
 import { join, sep } from "path"
-import { writeFileSync } from "fs"
+import { writeFileSync, readFileSync } from "fs"
 
 const docsMap = {
   "data-state": "The state of the {{widget}}",
@@ -66,13 +66,40 @@ const docsMap = {
   "data-overflow-x": "Present when the content overflows the x-axis",
   "data-overflow-y": "Present when the content overflows the y-axis",
   "data-ssr": "Present when not rendered in the browser. Useful for ssr styling",
+  "data-nested": "Present when the {{widget}} is nested within another {{widget}}",
+  "data-has-nested": "Present when the {{widget}} has nested {{widget}}s",
 }
 
 const skipAttrs = ["data-ownedby", "data-uid"]
 
+// Mapping of widgets to their layer types (only for widgets that use dismissable)
+const widgetLayerTypes: Record<string, string> = {
+  dialog: "dialog",
+  popover: "popover",
+  menu: "menu",
+  select: "listbox",
+  combobox: "listbox",
+  "date-picker": "popover",
+  "color-picker": "popover",
+  "hover-card": "popover",
+
+  toast: "dialog",
+  tour: "popover",
+}
+
 /* -----------------------------------------------------------------------------
  * Helpers
  * -----------------------------------------------------------------------------*/
+
+function hasDismissableDependency(widget: string): boolean {
+  try {
+    const packagePath = join(process.cwd(), "packages", "machines", widget, "package.json")
+    const packageJson = JSON.parse(readFileSync(packagePath, "utf-8"))
+    return "@zag-js/dismissable" in (packageJson.dependencies || {})
+  } catch {
+    return false
+  }
+}
 
 function titleCase(str: string) {
   return str.charAt(0).toUpperCase() + str.slice(1)
@@ -181,6 +208,9 @@ async function main() {
     const widget = file.split(sep)[2]
     project.addSourceFileAtPath(file)
 
+    const hasDismissable = hasDismissableDependency(widget)
+    const layerType = widgetLayerTypes[widget]
+
     const sourceFile = project.getSourceFile(file)
     if (!sourceFile) return
 
@@ -237,17 +267,35 @@ async function main() {
                 cb({ part, name, desc }) {
                   result[part] ||= { "data-scope": widget, "data-part": dashCase(part) }
                   result[part][name] = desc
+
+                  // Add layer attributes for content part if widget uses dismissable
+                  if (hasDismissable && part === "Content" && layerType) {
+                    result[part]["data-nested"] = layerType
+                    result[part]["data-has-nested"] = layerType
+                  }
                 },
                 eval({ part, name }) {
                   if (name === "dataAttrs") {
                     result[part] ||= {}
                     Object.assign(result[part], dataAttrs)
+
+                    // Add layer attributes for content part if widget uses dismissable
+                    if (hasDismissable && part === "Content" && layerType) {
+                      result[part]["data-nested"] = layerType
+                      result[part]["data-has-nested"] = layerType
+                    }
                     return
                   }
 
                   if (functions.has(name)) {
                     result[part] ||= { "data-scope": widget, "data-part": dashCase(part) }
                     Object.assign(result[part], functions.get(name))
+
+                    // Add layer attributes for content part if widget uses dismissable
+                    if (hasDismissable && part === "Content" && layerType) {
+                      result[part]["data-nested"] = layerType
+                      result[part]["data-has-nested"] = layerType
+                    }
                     return
                   }
                 },

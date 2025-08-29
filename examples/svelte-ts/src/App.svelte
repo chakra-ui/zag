@@ -47,7 +47,7 @@
     { path: "/switch", component: () => import("./routes/switch.svelte") },
     { path: "/tabs", component: () => import("./routes/tabs.svelte") },
     { path: "/tags-input", component: () => import("./routes/tags-input.svelte") },
-    { path: "/time-picker", component: () => import("./routes/time-picker.svelte") },
+
     { path: "/toast-overlap", component: () => import("./routes/toast-overlap.svelte") },
     { path: "/toast-stacked", component: () => import("./routes/toast-stacked.svelte") },
     { path: "/toggle-group", component: () => import("./routes/toggle-group.svelte") },
