@@ -99,6 +99,11 @@ export const machine = createMachine<BottomSheetSchema>({
             target: "open:dragging",
           },
         ],
+        POINTER_UP: [
+          {
+            actions: ["clearPointerStart"],
+          },
+        ],
         CLOSE: [
           {
             guard: "isOpenControlled",
