@@ -67,7 +67,7 @@
 
 @keyframes slideIn {
   from {
-    transform: translate3d(0, var(--initial-transform, 100%), 0);
+    transform: translate3d(0, 100%, 0);
   }
   to {
     transform: translate3d(0, 0, 0);
@@ -76,6 +76,6 @@
 
 @keyframes slideOut {
   to {
-    transform: translate3d(0, var(--initial-transform, 100%), 0);
+    transform: translate3d(0, 100%, 0);
   }
 }
