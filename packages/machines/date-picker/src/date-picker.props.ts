@@ -48,6 +48,7 @@ export const props = createProps<DatePickerProps>()([
   "outsideDaySelectable",
   "minView",
   "maxView",
+  "granularity",
 ])
 export const splitProps = createSplitProps<Partial<DatePickerProps>>(props)
 

@@ -24,17 +24,22 @@ import { disableTextSelection, raf, restoreTextSelection, setElementValue } from
 import { createLiveRegion } from "@zag-js/live-region"
 import { getPlacement, type Placement } from "@zag-js/popper"
 import * as dom from "./date-picker.dom"
-import type { DatePickerSchema, DateValue, DateView } from "./date-picker.types"
+import type { DatePickerSchema, DateValue, DateView, Segments } from "./date-picker.types"
 import {
+  addSegment,
   adjustStartAndEndDate,
   clampView,
+  defaultTranslations,
   eachView,
+  EDITABLE_SEGMENTS,
   getNextView,
   getPreviousView,
   isAboveMinView,
   isBelowMinView,
   isValidDate,
+  processSegments,
   sortDates,
+  TYPE_MAPPING,
 } from "./date-picker.utils"
 
 const { and } = createGuards<DatePickerSchema>()
@@ -76,6 +81,8 @@ export const machine = createMachine<DatePickerSchema>({
     const minView: DateView = "day"
     const maxView: DateView = "year"
     const defaultView = clampView(props.view || minView, minView, maxView)
+    const granularity = props.granularity || "day"
+    const translations = { ...defaultTranslations, ...props.translations }
 
     return {
       locale,
@@ -95,6 +102,7 @@ export const machine = createMachine<DatePickerSchema>({
         return parseDateString(value, locale, timeZone)
       },
       ...props,
+      translations,
       focusedValue: typeof props.focusedValue === "undefined" ? undefined : focusedValue,
       defaultFocusedValue: focusedValue,
       value,
@@ -103,6 +111,7 @@ export const machine = createMachine<DatePickerSchema>({
         placement: "bottom",
         ...props.positioning,
       },
+      granularity,
     }
   },
 
@@ -111,9 +120,28 @@ export const machine = createMachine<DatePickerSchema>({
     return open ? "open" : "idle"
   },
 
-  refs() {
+  refs({ prop }) {
+    const formatter = new DateFormatter(prop("locale"), {
+      timeZone: prop("timeZone"),
+      day: "2-digit",
+      month: "2-digit",
+      year: "numeric",
+    })
+
+    const allSegments = formatter
+      .formatToParts(new Date())
+      .filter((seg) => EDITABLE_SEGMENTS[seg.type])
+      .reduce<Segments>((p, seg) => {
+        const key = TYPE_MAPPING[seg.type as keyof typeof TYPE_MAPPING] || seg.type
+        p[key] = true
+        return p
+      }, {})
+
     return {
       announcer: undefined,
+      formatter,
+      allSegments,
+      placeholderDate: getTodayDate(prop("timeZone")),
     }
   },
 
@@ -197,6 +225,60 @@ export const machine = createMachine<DatePickerSchema>({
     isNextVisibleRangeValid: ({ prop, computed }) =>
       !isNextRangeInvalid(computed("endValue"), prop("min"), prop("max")),
     valueAsString: ({ context, prop }) => getValueAsString(context.get("value"), prop),
+    validSegments: ({ context, refs }) => {
+      const allSegments = refs.get("allSegments")
+      const dateValue = context.get("value")
+
+      return dateValue?.map((date) => (date ? { ...allSegments } : {})) ?? [{}, {}]
+    },
+    segments: ({ context, prop, refs, computed }) => {
+      const value = context.get("value")
+      const selectionMode = prop("selectionMode")
+      const placeholderDate = refs.get("placeholderDate")
+      const validSegments = computed("validSegments")
+      const timeZone = prop("timeZone")
+      const translations = prop("translations") || defaultTranslations
+      const granularity = prop("granularity")
+      const formatter = refs.get("formatter")
+
+      let dates: DateValue[] = value?.length ? value : [placeholderDate]
+
+      if (selectionMode === "range") {
+        dates = value?.length ? value : [placeholderDate, placeholderDate]
+      }
+
+      console.log(
+        dates.map((date, i) => {
+          const displayValue = date || placeholderDate
+          const currentValidSegments = validSegments?.[i] || {}
+
+          return processSegments({
+            dateValue: displayValue.toDate(timeZone),
+            displayValue,
+            validSegments: currentValidSegments,
+            formatter,
+            locale: prop("locale"),
+            translations,
+            granularity,
+          })
+        }),
+      )
+
+      return dates.map((date, i) => {
+        const displayValue = date || placeholderDate
+        const currentValidSegments = validSegments?.[i] || {}
+
+        return processSegments({
+          dateValue: displayValue.toDate(timeZone),
+          displayValue,
+          validSegments: currentValidSegments,
+          formatter,
+          locale: prop("locale"),
+          translations,
+          granularity,
+        })
+      })
+    },
   },
 
   effects: ["setupLiveRegion"],
@@ -339,6 +421,16 @@ export const machine = createMachine<DatePickerSchema>({
             actions: ["focusFirstSelectedDate", "focusActiveCell", "invokeOnOpen"],
           },
         ],
+        "SEGMENT.ARROW_UP": [
+          {
+            actions: ["invokeOnSegmentIncrement"],
+          },
+        ],
+        "SEGMENT.ARROW_DOWN": [
+          {
+            actions: ["invokeOnSegmentDecrement"],
+          },
+        ],
       },
     },
 
@@ -367,6 +459,16 @@ export const machine = createMachine<DatePickerSchema>({
           {
             target: "open",
             actions: ["focusFirstSelectedDate", "focusActiveCell", "invokeOnOpen"],
+          },
+        ],
+        "SEGMENT.ARROW_UP": [
+          {
+            actions: ["invokeOnSegmentIncrement"],
+          },
+        ],
+        "SEGMENT.ARROW_DOWN": [
+          {
+            actions: ["invokeOnSegmentDecrement"],
           },
         ],
       },
@@ -1128,6 +1230,36 @@ export const machine = createMachine<DatePickerSchema>({
       toggleVisibility({ event, send, prop }) {
         send({ type: prop("open") ? "CONTROLLED.OPEN" : "CONTROLLED.CLOSE", previousEvent: event })
       },
+
+      invokeOnSegmentIncrement({ event, computed, refs, context }) {
+        const { segment } = event
+        const type = segment.type
+        const value = context.get("value")
+        const validSegments = computed("validSegments")
+        const allSegments = refs.get("allSegments")
+        const formatter = refs.get("formatter")
+        const index = 0 // FIXIT: figure out the index
+
+        if (!validSegments[type]) {
+          // markValid(type)
+          let validKeys = Object.keys(validSegments)
+          let allKeys = Object.keys(allSegments)
+          if (
+            validKeys.length >= allKeys.length ||
+            (validKeys.length === allKeys.length - 1 && allSegments.dayPeriod && !validSegments[index].dayPeriod)
+          ) {
+            const values = Array.from(value) // FIXIT: implement setValue (original code setValue(displayValue);)
+            context.set("value", values)
+          }
+        } else {
+          const values = Array.from(value)
+          values[index] = addSegment(value[index], type, 1, formatter.resolvedOptions())
+          context.set("value", values)
+          // setValue(addSegment(value, type, 1, resolvedOptions))
+        }
+      },
+
+      invokeOnSegmentDecrement({ context, prop }) {},
     },
   },
 })

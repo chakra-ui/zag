@@ -30,10 +30,11 @@ import type {
   TableCellProps,
   TableCellState,
   TableProps,
+  SegmentProps,
+  SegmentState,
 } from "./date-picker.types"
 import {
   adjustStartAndEndDate,
-  defaultTranslations,
   ensureValidCharacters,
   getInputPlaceholder,
   getLocaleSeparator,
@@ -79,7 +80,7 @@ export function connect<T extends PropTypes>(
   })
 
   const separator = getLocaleSeparator(locale)
-  const translations = { ...defaultTranslations, ...prop("translations") }
+  const translations = prop("translations")
 
   function getMonthWeeks(from = startValue) {
     const numOfWeeks = prop("fixedWeeks") ? 6 : undefined
@@ -221,6 +222,11 @@ export function connect<T extends PropTypes>(
   function getTableId(props: TableProps) {
     const { view = "day", id } = props
     return [view, id].filter(Boolean).join(" ")
+  }
+
+  function getSegmentState(props: SegmentProps): SegmentState {
+    const {} = props
+    return {}
   }
 
   return {
@@ -703,6 +709,7 @@ export function connect<T extends PropTypes>(
         "data-state": open ? "open" : "closed",
         "aria-haspopup": "grid",
         disabled,
+        "data-readonly": dataAttr(readOnly),
         onClick(event) {
           if (event.defaultPrevented) return
           if (!interactive) return
@@ -799,6 +806,140 @@ export function connect<T extends PropTypes>(
         onInput(event) {
           const value = event.currentTarget.value
           send({ type: "INPUT.CHANGE", value: ensureValidCharacters(value, separator), index })
+        },
+      })
+    },
+
+    getSegmentGroupProps(props = {}) {
+      const { index = 0 } = props
+
+      return normalize.element({
+        ...parts.segmentInput.attrs,
+        id: dom.getSegmentGroupId(scope, index),
+        dir: prop("dir"),
+        "data-state": open ? "open" : "closed",
+        role: "presentation",
+        readOnly,
+        disabled,
+        style: {
+          unicodeBidi: "isolate",
+        },
+      })
+    },
+
+    getSegments(props = {}) {
+      const { index = 0 } = props
+      return computed("segments")[index] ?? []
+    },
+
+    getSegmentState,
+
+    getSegmentProps(props) {
+      const { segment, index = 0 } = props
+      const isEditable = !disabled && !readOnly && segment.isEditable
+
+      if (segment.type === "literal") {
+        return normalize.element({
+          ...parts.segment.attrs,
+          dir: prop("dir"),
+          "aria-hidden": true, // Literal segments should not be visible to screen readers.
+          "data-type": segment.type,
+          "data-readonly": dataAttr(true),
+          "data-disabled": dataAttr(true),
+        })
+      }
+
+      return normalize.element({
+        ...parts.segment.attrs,
+        dir: prop("dir"),
+        role: "spinbutton",
+        tabIndex: disabled ? undefined : 0,
+        autoComplete: "off",
+        spellCheck: isEditable ? "false" : undefined,
+        autoCorrect: isEditable ? "off" : undefined,
+        contentEditable: isEditable,
+        suppressContentEditableWarning: isEditable,
+        inputMode:
+          disabled || segment.type === "dayPeriod" || segment.type === "era" || !isEditable ? undefined : "numeric",
+        enterKeyHint: "next",
+        "aria-labelledby": dom.getSegmentGroupId(scope, index),
+        // "aria-label": translations.segmentLabel(segment),
+        "aria-valuenow": segment.value,
+        "aria-valuetext": segment.text,
+        "aria-valuemin": segment.minValue,
+        "aria-valuemax": segment.maxValue,
+        "aria-readonly": ariaAttr(!segment.isEditable || readOnly),
+        "aria-disabled": ariaAttr(disabled),
+        "data-value": segment.value,
+        "data-type": segment.type,
+        "data-readonly": dataAttr(!segment.isEditable || readOnly),
+        "data-disabled": dataAttr(disabled),
+        "data-editable": dataAttr(segment.isEditable && !readOnly && !disabled),
+        "data-placeholder": dataAttr(segment.isPlaceholder),
+        style: {
+          caretColor: "transparent",
+        },
+        onKeyDown(event) {
+          if (
+            event.defaultPrevented ||
+            event.ctrlKey ||
+            event.metaKey ||
+            event.shiftKey ||
+            event.altKey ||
+            readOnly ||
+            event.nativeEvent.isComposing
+          ) {
+            return
+          }
+
+          const keyMap: EventKeyMap = {
+            Enter() {
+              send({ type: "SEGMENT.ENTER", focus: true })
+            },
+            ArrowLeft() {
+              send({ type: "SEGMENT.ARROW_LEFT", focus: true })
+            },
+            ArrowRight() {
+              send({ type: "SEGMENT.ARROW_RIGHT", focus: true })
+            },
+            ArrowUp() {
+              send({ type: "SEGMENT.ARROW_UP", segment, focus: true })
+            },
+            ArrowDown() {
+              send({ type: "SEGMENT.ARROW_DOWN", segment, focus: true })
+            },
+            PageUp(event) {
+              send({ type: "SEGMENT.PAGE_UP", larger: event.shiftKey, focus: true })
+            },
+            PageDown(event) {
+              send({ type: "SEGMENT.PAGE_DOWN", larger: event.shiftKey, focus: true })
+            },
+            Home() {
+              send({ type: "SEGMENT.HOME", focus: true })
+            },
+            End() {
+              send({ type: "SEGMENT.END", focus: true })
+            },
+          }
+
+          const exec =
+            keyMap[
+              getEventKey(event, {
+                dir: prop("dir"),
+              })
+            ]
+
+          if (exec) {
+            exec(event)
+            event.preventDefault()
+            event.stopPropagation()
+          }
+        },
+        onPointerDown(event) {
+          event.stopPropagation()
+        },
+        onMouseDown(event) {
+          event.stopPropagation()
         },
       })
     },

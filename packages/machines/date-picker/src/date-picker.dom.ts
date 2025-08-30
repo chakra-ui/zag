@@ -22,6 +22,8 @@ export const getClearTriggerId = (ctx: Scope) => ctx.ids?.clearTrigger ?? `datep
 export const getControlId = (ctx: Scope) => ctx.ids?.control ?? `datepicker:${ctx.id}:control`
 export const getInputId = (ctx: Scope, index: number) =>
   ctx.ids?.input?.(index) ?? `datepicker:${ctx.id}:input:${index}`
+export const getSegmentGroupId = (ctx: Scope, index: number) =>
+  ctx.ids?.segmentGroup?.(index) ?? `datepicker:${ctx.id}:segment-group:${index}`
 export const getTriggerId = (ctx: Scope) => ctx.ids?.trigger ?? `datepicker:${ctx.id}:trigger`
 export const getPositionerId = (ctx: Scope) => ctx.ids?.positioner ?? `datepicker:${ctx.id}:positioner`
 export const getMonthSelectId = (ctx: Scope) => ctx.ids?.monthSelect ?? `datepicker:${ctx.id}:month-select`
