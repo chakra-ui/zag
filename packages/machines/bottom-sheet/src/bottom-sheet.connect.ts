@@ -25,7 +25,7 @@ export function connect<T extends PropTypes>(
   }
 
   const open = state.hasTag("open")
-  const dragging = state.matches("open:dragging")
+  const dragging = state.hasTag("dragging")
 
   return {
     open,

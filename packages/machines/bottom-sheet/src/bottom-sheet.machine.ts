@@ -119,7 +119,7 @@ export const machine = createMachine<BottomSheetSchema>({
 
     "open:dragging": {
       effects: ["trackPointerMove", "trackTouchMove"],
-      tags: ["open"],
+      tags: ["open", "dragging"],
       on: {
         POINTER_MOVE: [
           {
