@@ -391,14 +391,11 @@ export const machine = createMachine<BottomSheetSchema>({
 
           if (el && el !== contentEl) {
             const scrollTop = el.scrollTop
-            const scrollHeight = el.scrollHeight
-            const clientHeight = el.clientHeight
             const y = event.touches[0].clientY
 
             const atTop = scrollTop <= 0
-            const atBottom = scrollTop + clientHeight >= scrollHeight
 
-            if ((atTop && y > lastY) || (atBottom && y < lastY)) {
+            if (atTop && y > lastY) {
               event.preventDefault()
             }
 
