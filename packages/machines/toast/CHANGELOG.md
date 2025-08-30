@@ -1,5 +1,17 @@
 # @zag-js/toast
 
+## 1.23.0
+
+### Patch Changes
+
+- Updated dependencies [[`352c638`](https://github.com/chakra-ui/zag/commit/352c638b9d2bc9f603f3323a4bb18a87ae3fd9ab)]:
+  - @zag-js/dismissable@1.23.0
+  - @zag-js/anatomy@1.23.0
+  - @zag-js/core@1.23.0
+  - @zag-js/types@1.23.0
+  - @zag-js/utils@1.23.0
+  - @zag-js/dom-query@1.23.0
+
 ## 1.22.1
 
 ### Patch Changes
