@@ -118,7 +118,14 @@ export const machine = createMachine<BottomSheetSchema>({
     },
 
     "open:dragging": {
-      effects: ["trackPointerMove", "trackTouchMove"],
+      effects: [
+        "trackDismissableElement",
+        "preventScroll",
+        "trapFocus",
+        "hideContentBelow",
+        "trackPointerMove",
+        "trackTouchMove",
+      ],
       tags: ["open", "dragging"],
       on: {
         POINTER_MOVE: [
