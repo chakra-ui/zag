@@ -254,6 +254,11 @@ export interface DatePickerProps extends DirectionProperty, CommonProperties {
    * Determines the smallest unit that is displayed in the date picker. By default, this is `"day"`.
    */
   granularity?: DateGranularity | undefined
+  formatter?: DateFormatter | undefined
+  /**
+   *
+   */
+  allSegments?: Segments | undefined
 }
 
 type PropsWithDefault =
@@ -272,6 +277,8 @@ type PropsWithDefault =
   | "outsideDaySelectable"
   | "granularity"
   | "translations"
+  | "formatter"
+  | "allSegments"
 
 interface PrivateContext {
   /**
@@ -296,6 +303,10 @@ interface PrivateContext {
    */
   activeIndex: number
   /**
+   * The index of the currently active segment.
+   */
+  activeSegmentIndex: number
+  /**
    * The computed placement (maybe different from initial placement)
    */
   currentPlacement?: Placement | undefined
@@ -315,6 +326,14 @@ interface PrivateContext {
    * The focused date.
    */
   focusedValue: DateValue
+  /**
+   * The valid segments for each date value (tracks which segments have been filled).
+   */
+  validSegments: Segments[]
+  /**
+   * The placeholder date to use when segments are not filled.
+   */
+  placeholderDate: DateValue[]
 }
 
 type ComputedContext = Readonly<{
@@ -351,10 +370,6 @@ type ComputedContext = Readonly<{
    */
   valueAsString: string[]
   /**
-   * The valid segments for each date value (tracks which segments have been filled).
-   */
-  validSegments: Segments[]
-  /**
    * A list of segments for the selected date(s).
    */
   segments: DateSegment[][]
@@ -365,18 +380,6 @@ type Refs = {
    * The live region to announce changes
    */
   announcer?: LiveRegion | undefined
-  /**
-   * The date formatter used to format date values.
-   */
-  formatter: DateFormatter
-  /**
-   *
-   */
-  allSegments: Segments
-  /**
-   * The placeholder date to use when segments are not filled.
-   */
-  placeholderDate: CalendarDate
 }
 
 export interface DatePickerSchema {
@@ -492,7 +495,9 @@ export interface SegmentProps {
   index?: number | undefined
 }
 
-export interface SegmentState {}
+export interface SegmentState {
+  editable: boolean
+}
 export interface DayTableCellProps {
   value: DateValue
   disabled?: boolean | undefined

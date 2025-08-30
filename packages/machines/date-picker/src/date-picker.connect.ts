@@ -41,6 +41,7 @@ import {
   getRoleDescription,
   isDateWithinRange,
   isValidCharacter,
+  PAGE_STEP,
 } from "./date-picker.utils"
 
 export function connect<T extends PropTypes>(
@@ -225,8 +226,13 @@ export function connect<T extends PropTypes>(
   }
 
   function getSegmentState(props: SegmentProps): SegmentState {
-    const {} = props
-    return {}
+    const { segment } = props
+
+    const isEditable = !disabled && !readOnly && segment.isEditable
+
+    return {
+      editable: isEditable,
+    }
   }
 
   return {
@@ -810,11 +816,16 @@ export function connect<T extends PropTypes>(
       })
     },
 
+    getSegments(props = {}) {
+      const { index = 0 } = props
+      return computed("segments")[index] ?? []
+    },
+
     getSegmentGroupProps(props = {}) {
       const { index = 0 } = props
 
       return normalize.element({
-        ...parts.segmentInput.attrs,
+        ...parts.segmentGroup.attrs,
         id: dom.getSegmentGroupId(scope, index),
         dir: prop("dir"),
         "data-state": open ? "open" : "closed",
@@ -824,19 +835,20 @@ export function connect<T extends PropTypes>(
         style: {
           unicodeBidi: "isolate",
         },
+        onFocus() {
+          send({ type: "SEGMENT_GROUP.FOCUS", index: 1 })
+        },
+        onBlur() {
+          send({ type: "SEGMENT_GROUP.BLUR", index: -1 })
+        },
       })
-    },
-
-    getSegments(props = {}) {
-      const { index = 0 } = props
-      return computed("segments")[index] ?? []
     },
 
     getSegmentState,
 
     getSegmentProps(props) {
       const { segment, index = 0 } = props
-      const isEditable = !disabled && !readOnly && segment.isEditable
+      const segmentState = getSegmentState(props)
 
       if (segment.type === "literal") {
         return normalize.element({
@@ -855,12 +867,14 @@ export function connect<T extends PropTypes>(
         role: "spinbutton",
         tabIndex: disabled ? undefined : 0,
         autoComplete: "off",
-        spellCheck: isEditable ? "false" : undefined,
-        autoCorrect: isEditable ? "off" : undefined,
-        contentEditable: isEditable,
-        suppressContentEditableWarning: isEditable,
+        spellCheck: segmentState.editable ? "false" : undefined,
+        autoCorrect: segmentState.editable ? "off" : undefined,
+        contentEditable: segmentState.editable,
+        suppressContentEditableWarning: segmentState.editable,
         inputMode:
-          disabled || segment.type === "dayPeriod" || segment.type === "era" || !isEditable ? undefined : "numeric",
+          disabled || segment.type === "dayPeriod" || segment.type === "era" || !segmentState.editable
+            ? undefined
+            : "numeric",
         enterKeyHint: "next",
         "aria-labelledby": dom.getSegmentGroupId(scope, index),
         // "aria-label": translations.segmentLabel(segment),
@@ -878,6 +892,12 @@ export function connect<T extends PropTypes>(
         "data-placeholder": dataAttr(segment.isPlaceholder),
         style: {
           caretColor: "transparent",
+        },
+        onFocus() {
+          send({ type: "SEGMENT.FOCUS", index })
+        },
+        onBlur() {
+          send({ type: "SEGMENT.BLUR", index })
         },
         onKeyDown(event) {
           if (
@@ -902,17 +922,29 @@ export function connect<T extends PropTypes>(
             ArrowRight() {
               send({ type: "SEGMENT.ARROW_RIGHT", focus: true })
             },
-            ArrowUp() {
-              send({ type: "SEGMENT.ARROW_UP", segment, focus: true })
+            ArrowUp(event) {
+              event.preventDefault()
+              send({ type: "SEGMENT.ADJUST", segment, amount: 1, focus: true })
             },
-            ArrowDown() {
-              send({ type: "SEGMENT.ARROW_DOWN", segment, focus: true })
+            ArrowDown(event) {
+              event.preventDefault()
+              send({ type: "SEGMENT.ADJUST", segment, amount: -1, focus: true })
             },
-            PageUp(event) {
-              send({ type: "SEGMENT.PAGE_UP", larger: event.shiftKey, focus: true })
+            PageUp() {
+              send({
+                type: "SEGMENT.ADJUST",
+                segment,
+                amount: PAGE_STEP[segment.type] || 1,
+                focus: true,
+              })
             },
-            PageDown(event) {
-              send({ type: "SEGMENT.PAGE_DOWN", larger: event.shiftKey, focus: true })
+            PageDown() {
+              send({
+                type: "SEGMENT.ADJUST",
+                segment,
+                amount: -(PAGE_STEP[segment.type] ?? 1),
+                focus: true,
+              })
             },
             Home() {
               send({ type: "SEGMENT.HOME", focus: true })

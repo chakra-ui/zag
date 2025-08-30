@@ -5,7 +5,7 @@ export const anatomy = createAnatomy("date-picker").parts(
   "content",
   "control",
   "input",
-  "segmentInput",
+  "segmentGroup",
   "segment",
   "label",
   "monthSelect",

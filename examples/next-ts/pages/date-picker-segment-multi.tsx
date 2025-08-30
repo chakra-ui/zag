@@ -11,7 +11,7 @@ export default function Page() {
   const service = useMachine(datePicker.machine, {
     id: useId(),
     locale: "en",
-    selectionMode: "single",
+    selectionMode: "multiple",
     ...controls.context,
   })
 
@@ -33,7 +33,7 @@ export default function Page() {
         <div {...api.getControlProps()}>
           <div {...api.getSegmentGroupProps()}>
             {api.getSegments().map((segment, i) => (
-              <span key={i} {...api.getSegmentProps({ segment })}>
+              <span key={i} {...api.getSegmentProps({ segment, index: i })}>
                 {segment.text}
               </span>
             ))}

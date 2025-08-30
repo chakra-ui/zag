@@ -1,6 +1,6 @@
 import { DateFormatter, getMinimumDayInMonth, getMinimumMonthInYear, type DateValue } from "@internationalized/date"
 import { clampValue, match } from "@zag-js/utils"
-import type { DateSegment, DateView, IntlTranslations, Segments } from "./date-picker.types"
+import type { DateSegment, DateView, IntlTranslations, Segments, SegmentType } from "./date-picker.types"
 import type { DateGranularity } from "@zag-js/date-utils"
 
 export function adjustStartAndEndDate(value: DateValue[]) {
@@ -186,6 +186,22 @@ export const EDITABLE_SEGMENTS = {
   fractionalSecond: true,
 } as const satisfies Record<keyof Intl.DateTimeFormatPartTypesRegistry, boolean>
 
+export const PAGE_STEP = {
+  year: 5,
+  month: 2,
+  day: 7,
+  hour: 2,
+  minute: 15,
+  second: 15,
+  dayPeriod: undefined,
+  era: undefined,
+  literal: undefined,
+  timeZoneName: undefined,
+  weekday: undefined,
+  unknown: undefined,
+  fractionalSecond: undefined,
+} as const satisfies Record<keyof Segments, number | undefined>
+
 export const TYPE_MAPPING = {
   // Node seems to convert everything to lowercase...
   dayperiod: "dayPeriod",
@@ -364,20 +380,20 @@ function getSegmentLimits(date: DateValue, type: string, options: Intl.ResolvedD
 
 export function addSegment(
   value: DateValue,
-  part: string,
+  type: SegmentType,
   amount: number,
   options: Intl.ResolvedDateTimeFormatOptions,
 ) {
-  switch (part) {
+  switch (type) {
     case "era":
     case "year":
     case "month":
     case "day":
-      return value.cycle(part, amount, { round: part === "year" })
+      return value.cycle(type, amount, { round: type === "year" })
   }
 
   if ("hour" in value) {
-    switch (part) {
+    switch (type) {
       case "dayPeriod": {
         let hours = value.hour
         let isPM = hours >= 12
@@ -386,12 +402,12 @@ export function addSegment(
       case "hour":
       case "minute":
       case "second":
-        return value.cycle(part, amount, {
-          round: part !== "hour",
+        return value.cycle(type, amount, {
+          round: type !== "hour",
           hourCycle: options.hour12 ? 12 : 24,
         })
     }
   }
 
-  throw new Error("Unknown segment: " + part)
+  throw new Error("Unknown segment: " + type)
 }

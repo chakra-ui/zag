@@ -34,6 +34,7 @@ export const getFocusedCell = (ctx: Scope, view: DateView) =>
 export const getTriggerEl = (ctx: Scope) => ctx.getById<HTMLButtonElement>(getTriggerId(ctx))
 export const getContentEl = (ctx: Scope) => ctx.getById(getContentId(ctx))
 export const getInputEls = (ctx: Scope) => queryAll<HTMLInputElement>(getControlEl(ctx), `[data-part=input]`)
+export const getSegmentEls = (ctx: Scope) => queryAll<HTMLInputElement>(getControlEl(ctx), `[data-part=segment]`)
 export const getYearSelectEl = (ctx: Scope) => ctx.getById<HTMLSelectElement>(getYearSelectId(ctx))
 export const getMonthSelectEl = (ctx: Scope) => ctx.getById<HTMLSelectElement>(getMonthSelectId(ctx))
 export const getClearTriggerEl = (ctx: Scope) => ctx.getById<HTMLButtonElement>(getClearTriggerId(ctx))

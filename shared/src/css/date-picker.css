@@ -37,7 +37,7 @@
   margin-bottom: 16px;
 }
 
-[data-scope="date-picker"][data-part="segment-input"] {
+[data-scope="date-picker"][data-part="segment-group"] {
   display: inline-flex;
   align-items: center;
   padding-block: 2px;
@@ -47,12 +47,6 @@
   background-color: #fff;
   color: #333;
   min-width: 154px;
-
-  &[data-focus] {
-    border-color: #66afe9;
-    box-shadow: 0 0 3px rgba(102, 175, 233, 0.6);
-    outline: none;
-  }
 }
 
 [data-scope="date-picker"][data-part="segment"] {
