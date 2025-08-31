@@ -1,7 +1,7 @@
 import { createMachine } from "@zag-js/core"
 import type { BottomSheetSchema } from "./bottom-sheet.types"
 import type { Point } from "@zag-js/types"
-import { addDomEvent, getEventPoint, getEventTarget, raf, trackPointerMove } from "@zag-js/dom-query"
+import { addDomEvent, getEventPoint, getEventTarget, raf } from "@zag-js/dom-query"
 import * as dom from "./bottom-sheet.dom"
 import { resolveSnapPoints } from "./utils/resolve-snap-points"
 import { trackDismissableElement } from "@zag-js/dismissable"
@@ -84,7 +84,6 @@ export const machine = createMachine<BottomSheetSchema>({
         "trapFocus",
         "hideContentBelow",
         "trackPointerMove",
-        "trackTouchMove",
         "trackContentHeight",
       ],
       on: {
@@ -118,14 +117,7 @@ export const machine = createMachine<BottomSheetSchema>({
     },
 
     "open:dragging": {
-      effects: [
-        "trackDismissableElement",
-        "preventScroll",
-        "trapFocus",
-        "hideContentBelow",
-        "trackPointerMove",
-        "trackTouchMove",
-      ],
+      effects: ["trackDismissableElement", "preventScroll", "trapFocus", "hideContentBelow", "trackPointerMove"],
       tags: ["open", "dragging"],
       on: {
         POINTER_MOVE: [
@@ -365,18 +357,20 @@ export const machine = createMachine<BottomSheetSchema>({
       },
 
       trackPointerMove({ scope, send }) {
-        return trackPointerMove(scope.getDoc(), {
-          onPointerMove({ point, event }) {
-            send({ type: "POINTER_MOVE", point, target: event.target })
-          },
-          onPointerUp({ event, point }) {
-            if (event.pointerType !== "touch") send({ type: "POINTER_UP", point })
-          },
-        })
-      },
-
-      trackTouchMove({ send, scope }) {
         let lastY = 0
+
+        function onPointerMove(event: PointerEvent) {
+          const point = getEventPoint(event)
+          const target = getEventTarget<Element>(event)
+          send({ type: "POINTER_MOVE", point, target })
+        }
+
+        function onPointerUp(event: PointerEvent) {
+          if (event.pointerType !== "touch") {
+            const point = getEventPoint(event)
+            send({ type: "POINTER_UP", point })
+          }
+        }
 
         function onTouchStart(event: TouchEvent) {
           if (!event.touches[0]) return
@@ -419,6 +413,8 @@ export const machine = createMachine<BottomSheetSchema>({
         }
 
         const cleanups = [
+          addDomEvent(scope.getDoc(), "pointermove", onPointerMove),
+          addDomEvent(scope.getDoc(), "pointerup", onPointerUp),
           addDomEvent(scope.getDoc(), "touchstart", onTouchStart, { passive: false }),
           addDomEvent(scope.getDoc(), "touchmove", onTouchMove, { passive: false }),
           addDomEvent(scope.getDoc(), "touchend", onTouchEnd),
