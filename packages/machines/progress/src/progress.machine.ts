@@ -60,7 +60,7 @@ export const machine = createMachine<ProgressSchema>({
     },
     formatter: memo(
       ({ prop }) => [prop("locale"), prop("formatOptions")],
-      (locale, formatOptions) => new Intl.NumberFormat(locale, formatOptions),
+      ([locale, formatOptions]) => new Intl.NumberFormat(locale, formatOptions),
     ),
     isHorizontal: ({ prop }) => prop("orientation") === "horizontal",
   },

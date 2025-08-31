@@ -92,11 +92,11 @@ export const machine = createMachine({
     valueText: ({ prop, context }) => prop("translations").valueText?.(context.get("value")),
     formatter: memo(
       ({ prop }) => [prop("locale"), prop("formatOptions")],
-      (locale, formatOptions) => createFormatter(locale, formatOptions),
+      ([locale, formatOptions]) => createFormatter(locale, formatOptions),
     ),
     parser: memo(
       ({ prop }) => [prop("locale"), prop("formatOptions")],
-      (locale, formatOptions) => createParser(locale, formatOptions),
+      ([locale, formatOptions]) => createParser(locale, formatOptions),
     ),
   },
 

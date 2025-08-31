@@ -1,4 +1,4 @@
-import { createMachine } from "@zag-js/core"
+import { createMachine, memo } from "@zag-js/core"
 import { isValueWithinRange } from "@zag-js/utils"
 import type { StepsSchema } from "./steps.types"
 
@@ -28,7 +28,10 @@ export const machine = createMachine<StepsSchema>({
   },
 
   computed: {
-    percent: ({ context, prop }) => (context.get("step") / prop("count")) * 100,
+    percent: memo(
+      ({ context, prop }) => [context.get("step"), prop("count")],
+      ([step, count]) => (step / count) * 100,
+    ),
     hasNextStep: ({ context, prop }) => context.get("step") < prop("count"),
     hasPrevStep: ({ context }) => context.get("step") > 0,
     completed: ({ context, prop }) => context.get("step") === prop("count"),
