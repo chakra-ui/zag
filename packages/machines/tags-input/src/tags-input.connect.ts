@@ -12,8 +12,9 @@ export function connect<T extends PropTypes>(
   const { state, send, computed, prop, scope, context } = service
 
   const interactive = computed("isInteractive")
-  const disabled = prop("disabled")
-  const readOnly = prop("readOnly")
+  const disabled = !!prop("disabled")
+  const readOnly = !!prop("readOnly")
+  const required = !!prop("required")
   const invalid = prop("invalid") || computed("isOverflowing")
 
   const translations = prop("translations")
@@ -91,6 +92,7 @@ export function connect<T extends PropTypes>(
         "data-disabled": dataAttr(disabled),
         "data-invalid": dataAttr(invalid),
         "data-readonly": dataAttr(readOnly),
+        "data-required": dataAttr(required),
         id: dom.getLabelId(scope),
         dir: prop("dir"),
         htmlFor: dom.getInputId(scope),

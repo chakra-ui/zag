@@ -22,7 +22,8 @@ export function connect<T extends PropTypes>(
 
   const focused = state.hasTag("focus")
   const disabled = computed("isDisabled")
-  const readOnly = prop("readOnly")
+  const readOnly = !!prop("readOnly")
+  const required = !!prop("required")
   const scrubbing = state.matches("scrubbing")
 
   const empty = computed("isValueEmpty")
@@ -80,6 +81,7 @@ export function connect<T extends PropTypes>(
         "data-disabled": dataAttr(disabled),
         "data-focus": dataAttr(focused),
         "data-invalid": dataAttr(invalid),
+        "data-required": dataAttr(required),
         "data-scrubbing": dataAttr(scrubbing),
         id: dom.getLabelId(scope),
         htmlFor: dom.getInputId(scope),

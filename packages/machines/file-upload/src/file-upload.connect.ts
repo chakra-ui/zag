@@ -13,7 +13,8 @@ export function connect<T extends PropTypes>(
   normalize: NormalizeProps<T>,
 ): FileUploadApi<T> {
   const { state, send, prop, computed, scope, context } = service
-  const disabled = prop("disabled")
+  const disabled = !!prop("disabled")
+  const required = !!prop("required")
   const allowDrop = prop("allowDrop")
   const translations = prop("translations")
 
@@ -285,6 +286,7 @@ export function connect<T extends PropTypes>(
         id: dom.getLabelId(scope),
         htmlFor: dom.getHiddenInputId(scope),
         "data-disabled": dataAttr(disabled),
+        "data-required": dataAttr(required),
       })
     },
 

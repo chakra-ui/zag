@@ -24,8 +24,9 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
   const { context, prop, scope, state, computed, send } = service
 
   const disabled = prop("disabled") || context.get("fieldsetDisabled")
-  const invalid = prop("invalid")
-  const readOnly = prop("readOnly")
+  const invalid = !!prop("invalid")
+  const required = !!prop("required")
+  const readOnly = !!prop("readOnly")
   const composite = prop("composite")
   const collection = prop("collection")
 
@@ -126,6 +127,7 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
         "data-disabled": dataAttr(disabled),
         "data-invalid": dataAttr(invalid),
         "data-readonly": dataAttr(readOnly),
+        "data-required": dataAttr(required),
         htmlFor: dom.getHiddenSelectId(scope),
         onClick(event) {
           if (event.defaultPrevented) return
