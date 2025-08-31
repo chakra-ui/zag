@@ -107,7 +107,11 @@ export function connect<T extends PropTypes>(
 
   function getDecadeYears(year?: number) {
     const range = getDecadeRange(year ?? focusedValue.year)
-    return range.map((year) => ({ label: year.toString(), value: year }))
+    return range.map((year) => ({
+      label: year.toString(),
+      value: year,
+      disabled: !isValueWithinRange(year, min?.year, max?.year),
+    }))
   }
 
   function isUnavailable(date: DateValue) {
