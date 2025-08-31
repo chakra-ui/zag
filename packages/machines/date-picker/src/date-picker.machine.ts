@@ -314,6 +314,10 @@ export const machine = createMachine<DatePickerSchema>({
     track([() => prop("open")], () => {
       action(["toggleVisibility"])
     })
+
+    track([() => context.get("activeSegmentIndex")], () => {
+      action(["focusActiveSegment"])
+    })
   },
 
   on: {
@@ -389,10 +393,6 @@ export const machine = createMachine<DatePickerSchema>({
         actions: ["focusPreviousPage"],
       },
     ],
-
-    "SEGMENT_GROUP.BLUR": {
-      actions: ["setActiveSegmentIndex"],
-    },
   },
 
   states: {
@@ -425,7 +425,11 @@ export const machine = createMachine<DatePickerSchema>({
         ],
         "SEGMENT_GROUP.FOCUS": {
           target: "focused",
-          actions: ["setActiveSegmentIndex", "focusFirstSegmentElement"],
+          actions: ["focusFirstSegment"],
+        },
+        "SEGMENT.FOCUS": {
+          target: "focused",
+          actions: ["setActiveSegmentIndex"],
         },
       },
     },
@@ -457,8 +461,17 @@ export const machine = createMachine<DatePickerSchema>({
             actions: ["focusFirstSelectedDate", "focusActiveCell", "invokeOnOpen"],
           },
         ],
+        "SEGMENT.FOCUS": {
+          actions: ["setActiveSegmentIndex"],
+        },
         "SEGMENT.ADJUST": {
           actions: ["invokeOnSegmentAdjust"],
+        },
+        "SEGMENT.ARROW_LEFT": {
+          actions: ["focusPreviousSegment"],
+        },
+        "SEGMENT.ARROW_RIGHT": {
+          actions: ["focusNextSegment"],
         },
       },
     },
@@ -1226,10 +1239,40 @@ export const machine = createMachine<DatePickerSchema>({
         context.set("activeSegmentIndex", event.index)
       },
 
-      focusFirstSegmentElement({ scope }) {
+      focusFirstSegment({ scope }) {
         raf(() => {
-          const [inputEl] = dom.getSegmentEls(scope)
-          inputEl?.focus({ preventScroll: true })
+          const segmentEls = dom.getSegmentEls(scope)
+          const firstSegmentEl = segmentEls.find((el) => el.hasAttribute("data-editable"))
+          firstSegmentEl?.focus({ preventScroll: true })
+        })
+      },
+
+      focusNextSegment({ scope, context }) {
+        raf(() => {
+          const segmentEls = dom.getSegmentEls(scope)
+          const nextSegmentEl = segmentEls
+            .slice(context.get("activeSegmentIndex") + 1)
+            .find((el) => el.hasAttribute("data-editable"))
+          nextSegmentEl?.focus({ preventScroll: true })
+        })
+      },
+
+      focusPreviousSegment({ scope, context }) {
+        raf(() => {
+          const segmentEls = dom.getSegmentEls(scope)
+          const prevSegmentEl = segmentEls
+            .slice(0, context.get("activeSegmentIndex"))
+            .reverse()
+            .find((el) => el.hasAttribute("data-editable"))
+          prevSegmentEl?.focus({ preventScroll: true })
+        })
+      },
+
+      focusActiveSegment({ scope, context }) {
+        raf(() => {
+          const segmentEls = dom.getSegmentEls(scope)
+          const activeSegmentEl = segmentEls[context.get("activeSegmentIndex")]
+          activeSegmentEl?.focus({ preventScroll: true })
         })
       },
 

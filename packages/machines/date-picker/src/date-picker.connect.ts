@@ -836,10 +836,7 @@ export function connect<T extends PropTypes>(
           unicodeBidi: "isolate",
         },
         onFocus() {
-          send({ type: "SEGMENT_GROUP.FOCUS", index: 1 })
-        },
-        onBlur() {
-          send({ type: "SEGMENT_GROUP.BLUR", index: -1 })
+          send({ type: "SEGMENT_GROUP.FOCUS" })
         },
       })
     },
@@ -897,7 +894,7 @@ export function connect<T extends PropTypes>(
           send({ type: "SEGMENT.FOCUS", index })
         },
         onBlur() {
-          send({ type: "SEGMENT.BLUR", index })
+          send({ type: "SEGMENT.BLUR", index: -1 })
         },
         onKeyDown(event) {
           if (
@@ -922,12 +919,10 @@ export function connect<T extends PropTypes>(
             ArrowRight() {
               send({ type: "SEGMENT.ARROW_RIGHT", focus: true })
             },
-            ArrowUp(event) {
-              event.preventDefault()
+            ArrowUp() {
               send({ type: "SEGMENT.ADJUST", segment, amount: 1, focus: true })
             },
-            ArrowDown(event) {
-              event.preventDefault()
+            ArrowDown() {
               send({ type: "SEGMENT.ADJUST", segment, amount: -1, focus: true })
             },
             PageUp() {

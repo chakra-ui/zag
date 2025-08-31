@@ -10,7 +10,7 @@ export default function Page() {
   const controls = useControls(datePickerControls)
   const service = useMachine(datePicker.machine, {
     id: useId(),
-    locale: "en",
+    locale: "en-US",
     selectionMode: "single",
 
     ...controls.context,
