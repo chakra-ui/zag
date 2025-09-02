@@ -155,6 +155,7 @@ export interface BottomSheetApi<T extends PropTypes = PropTypes> {
   setOpen: (open: boolean) => void
 
   getContentProps: () => T["element"]
+  getTitleProps: () => T["element"]
   getTriggerProps: () => T["element"]
   getBackdropProps: () => T["element"]
   getGrabberProps: () => T["element"]

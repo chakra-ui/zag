@@ -38,10 +38,12 @@ export function connect<T extends PropTypes>(
     getContentProps() {
       return normalize.element({
         ...parts.content.attrs,
+        dir: prop("dir"),
         id: dom.getContentId(scope),
         tabIndex: -1,
         role: "dialog",
         "aria-modal": "true",
+        "aria-labelledby": dom.getTitleId(scope),
         hidden: !open,
         "data-state": open ? "open" : "closed",
         style: {
@@ -54,6 +56,14 @@ export function connect<T extends PropTypes>(
           if (prop("grabberOnly")) return
           onPointerDown(event)
         },
+      })
+    },
+
+    getTitleProps() {
+      return normalize.element({
+        ...parts.title.attrs,
+        id: dom.getTitleId(scope),
+        dir: prop("dir"),
       })
     },
 

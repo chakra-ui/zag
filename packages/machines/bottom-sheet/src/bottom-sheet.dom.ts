@@ -2,6 +2,7 @@ import type { Scope } from "@zag-js/core"
 import { queryAll } from "@zag-js/dom-query"
 
 export const getContentId = (ctx: Scope) => ctx.ids?.content ?? `bottom-sheet:${ctx.id}:content`
+export const getTitleId = (ctx: Scope) => ctx.ids?.title ?? `bottom-sheet:${ctx.id}:title`
 export const getTriggerId = (ctx: Scope) => ctx.ids?.trigger ?? `bottom-sheet:${ctx.id}:trigger`
 export const getBackdropId = (ctx: Scope) => ctx.ids?.backdrop ?? `bottom-sheet:${ctx.id}:backdrop`
 export const getHeaderId = (ctx: Scope) => ctx.ids?.header ?? `bottom-sheet:${ctx.id}:header`
