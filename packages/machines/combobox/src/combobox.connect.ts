@@ -25,10 +25,11 @@ export function connect<T extends PropTypes, V extends CollectionItem>(
   const translations = prop("translations")
   const collection = prop("collection")
 
-  const disabled = prop("disabled")
+  const disabled = !!prop("disabled")
   const interactive = computed("isInteractive")
-  const invalid = prop("invalid")
-  const readOnly = prop("readOnly")
+  const invalid = !!prop("invalid")
+  const required = !!prop("required")
+  const readOnly = !!prop("readOnly")
 
   const open = state.hasTag("open")
   const focused = state.hasTag("focused")
@@ -121,6 +122,7 @@ export function connect<T extends PropTypes, V extends CollectionItem>(
         "data-readonly": dataAttr(readOnly),
         "data-disabled": dataAttr(disabled),
         "data-invalid": dataAttr(invalid),
+        "data-required": dataAttr(required),
         "data-focus": dataAttr(focused),
         onClick(event) {
           if (composite) return
