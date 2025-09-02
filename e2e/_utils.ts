@@ -32,15 +32,6 @@ export const controls = (page: Page) => {
       const el = page.locator(testid(id))
       await el.selectOption(value)
     },
-    array: async (id: string, value: string | number[]) => {
-      const el = page.locator(testid(id))
-      await el.selectText()
-      await page.keyboard.press("Backspace")
-
-      const stringValue = Array.isArray(value) ? value.join(", ") : value
-      await el.fill(stringValue)
-      await el.blur()
-    },
   }
 }
 

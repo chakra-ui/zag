@@ -6,7 +6,6 @@ export type ControlProp =
   | { type: "select"; options: readonly string[]; defaultValue?: string; label?: string }
   | { type: "multiselect"; options: readonly string[]; defaultValue?: string[]; label?: string }
   | { type: "number"; label?: string; defaultValue?: number; min?: number; max?: number }
-  | { type: "array"; label?: string; defaultValue?: any[]; placeholder?: string; elementType?: "string" | "number" }
 
 export type ControlRecord = Record<string, ControlProp>
 
@@ -21,9 +20,7 @@ export type ControlValue<T extends ControlRecord> = {
           ? T[K]["options"][number][]
           : T[K] extends { type: "number" }
             ? number
-            : T[K] extends { type: "array" }
-              ? any[]
-              : never
+            : never
 }
 
 export function defineControls<T extends ControlRecord>(config: T) {
