@@ -31,6 +31,10 @@ export interface FocusChangeDetails extends ValueChangeDetails {
   view: DateView
 }
 
+export interface PlaceholderChangeDetails extends ValueChangeDetails {
+  placeholderValue: DateValue
+}
+
 export interface ViewChangeDetails {
   view: DateView
 }
@@ -61,7 +65,7 @@ export interface IntlTranslations {
   clearTrigger: string
   trigger: (open: boolean) => string
   content: string
-  placeholder: (locale: string) => { year: string; month: string; day: string }
+  placeholder: (locale: string) => Record<EditableSegmentType, string>
 }
 
 export type ElementIds = Partial<{
@@ -154,6 +158,15 @@ export interface DatePickerProps extends DirectionProperty, CommonProperties {
    */
   defaultFocusedValue?: DateValue | undefined
   /**
+   * The controlled placeholder date.
+   */
+  placeholderValue?: DateValue | undefined
+  /**
+   * The initial placeholder date when rendered.
+   * The date that is used when the date picker is empty to determine what point in time the calendar should start at.
+   */
+  defaultPlaceholderValue?: DateValue | undefined
+  /**
    * The number of months to display.
    */
   numOfMonths?: number | undefined
@@ -181,6 +194,10 @@ export interface DatePickerProps extends DirectionProperty, CommonProperties {
    * Function called when the focused date changes.
    */
   onFocusChange?: ((details: FocusChangeDetails) => void) | undefined
+  /**
+   * A function called when the placeholder value changes.
+   */
+  onPlaceholderChange?: ((details: PlaceholderChangeDetails) => void) | undefined
   /**
    * Function called when the view changes.
    */
@@ -327,13 +344,13 @@ interface PrivateContext {
    */
   focusedValue: DateValue
   /**
+   * The placeholder date.
+   */
+  placeholderValue: DateValue
+  /**
    * The valid segments for each date value (tracks which segments have been filled).
    */
   validSegments: Segments[]
-  /**
-   * The placeholder date to use when segments are not filled.
-   */
-  placeholderDate: DateValue[]
 }
 
 type ComputedContext = Readonly<{
@@ -454,6 +471,10 @@ export type SegmentType =
 export type Segments = Partial<{
   -readonly [K in keyof typeof EDITABLE_SEGMENTS]: boolean
 }>
+
+export type EditableSegmentType = {
+  [K in keyof typeof EDITABLE_SEGMENTS]: (typeof EDITABLE_SEGMENTS)[K] extends true ? K : never
+}[keyof typeof EDITABLE_SEGMENTS]
 
 export interface DateSegment {
   /**
@@ -667,6 +688,18 @@ export interface DatePickerApi<T extends PropTypes = PropTypes> {
    * The focused date as a string.
    */
   focusedValueAsString: string
+  /**
+   * The placeholder date.
+   */
+  placeholderValue: DateValue
+  /**
+   * The placeholder date as a Date object.
+   */
+  placeholderValueAsDate: Date
+  /**
+   * The placeholder date as a string.
+   */
+  placeholderValueAsString: string
   /**
    * Sets the selected date to today.
    */

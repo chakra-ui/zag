@@ -1,6 +1,13 @@
 import { DateFormatter, getMinimumDayInMonth, getMinimumMonthInYear, type DateValue } from "@internationalized/date"
 import { clampValue, match } from "@zag-js/utils"
-import type { DateSegment, DateView, IntlTranslations, Segments, SegmentType } from "./date-picker.types"
+import type {
+  DateSegment,
+  DateView,
+  EditableSegmentType,
+  IntlTranslations,
+  Segments,
+  SegmentType,
+} from "./date-picker.types"
 import type { DateGranularity } from "@zag-js/date-utils"
 
 export function adjustStartAndEndDate(value: DateValue[]) {
@@ -97,7 +104,7 @@ export const defaultTranslations: IntlTranslations = {
     })
   },
   placeholder() {
-    const placeholders: Record<keyof Segments, string> = {
+    return {
       day: "dd",
       month: "mm",
       year: "yyyy",
@@ -112,8 +119,6 @@ export const defaultTranslations: IntlTranslations = {
       unknown: "unknown",
       fractionalSecond: "ff",
     }
-
-    return placeholders
   },
   content: "calendar",
   monthSelect: "Select month",
@@ -183,7 +188,7 @@ export const EDITABLE_SEGMENTS = {
   timeZoneName: false,
   weekday: false,
   unknown: false,
-  fractionalSecond: true,
+  fractionalSecond: false,
 } as const satisfies Record<keyof Intl.DateTimeFormatPartTypesRegistry, boolean>
 
 export const PAGE_STEP = {
@@ -215,8 +220,12 @@ function getSafeType<TType extends keyof Intl.DateTimeFormatPartTypesRegistry>(t
   return (TYPE_MAPPING as any)[type] ?? type
 }
 
-function getPlaceholder(type: keyof Segments, translations: IntlTranslations, locale: string): string {
+function getPlaceholder(type: EditableSegmentType, translations: IntlTranslations, locale: string): string {
   return translations.placeholder(locale)[type]
+}
+
+function isEditableSegment(type: keyof Intl.DateTimeFormatPartTypesRegistry): type is EditableSegmentType {
+  return EDITABLE_SEGMENTS[type] === true
 }
 
 interface ProcessSegmentsProps {
@@ -245,13 +254,13 @@ export function processSegments({
 
   for (const segment of segments) {
     const type = getSafeType(segment.type)
-    let isEditable = EDITABLE_SEGMENTS[type]
+    let isEditable = isEditableSegment(type)
     if (type === "era" && displayValue.calendar.getEras().length === 1) {
       isEditable = false
     }
 
-    const isPlaceholder = EDITABLE_SEGMENTS[type] && !validSegments[type]
-    const placeholder = EDITABLE_SEGMENTS[type] ? getPlaceholder(type, translations, locale) : null
+    const isPlaceholder = isEditable && !validSegments[type]
+    const placeholder = isEditableSegment(type) ? getPlaceholder(type, translations, locale) : null
 
     const dateSegment = {
       type,
@@ -410,4 +419,8 @@ export function addSegment(
   }
 
   throw new Error("Unknown segment: " + type)
+}
+
+export function getDefaultValidSegments(value: DateValue[] | undefined, allSegments: Segments) {
+  return value?.length ? value.map((date) => (date ? { ...allSegments } : {})) : [{}]
 }

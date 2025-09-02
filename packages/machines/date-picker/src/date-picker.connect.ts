@@ -54,6 +54,7 @@ export function connect<T extends PropTypes>(
   const endValue = computed("endValue")
   const selectedValue = context.get("value")
   const focusedValue = context.get("focusedValue")
+  const placeholderValue = context.get("placeholderValue")
 
   const hoveredValue = context.get("hoveredValue")
   const hoveredRangeValue = hoveredValue ? adjustStartAndEndDate([selectedValue[0], hoveredValue]) : []
@@ -270,6 +271,9 @@ export function connect<T extends PropTypes>(
     focusedValue,
     focusedValueAsDate: focusedValue?.toDate(timeZone),
     focusedValueAsString: prop("format")(focusedValue, { locale, timeZone }),
+    placeholderValue: placeholderValue,
+    placeholderValueAsDate: placeholderValue?.toDate(timeZone),
+    placeholderValueAsString: prop("format")(placeholderValue, { locale, timeZone }),
     visibleRange: computed("visibleRange"),
     selectToday() {
       const value = constrainValue(getTodayDate(timeZone), min, max)

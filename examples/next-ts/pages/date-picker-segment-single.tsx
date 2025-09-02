@@ -10,10 +10,10 @@ export default function Page() {
   const controls = useControls(datePickerControls)
   const service = useMachine(datePicker.machine, {
     id: useId(),
-    locale: "en-US",
     selectionMode: "single",
-
     ...controls.context,
+    locale: "de",
+    defaultPlaceholderValue: datePicker.parse("2022-12-25"),
   })
 
   const api = datePicker.connect(service, normalizeProps)
@@ -29,6 +29,7 @@ export default function Page() {
         <output className="date-output">
           <div>Selected: {api.valueAsString ?? "-"}</div>
           <div>Focused: {api.focusedValueAsString}</div>
+          <div>Placeholder: {api.placeholderValueAsString}</div>
         </output>
 
         <div {...api.getControlProps()}>
