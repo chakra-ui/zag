@@ -91,6 +91,7 @@ export interface NavigationMenuSchema {
     contentResizeObserverCleanup: VoidFunction | undefined
     contentDismissableCleanup: VoidFunction | undefined
     triggerResizeObserverCleanup: VoidFunction | undefined
+    contentExitCompleteCleanup: VoidFunction | undefined
 
     parent: NavigationMenuService | null
     children: Record<string, NavigationMenuService | null>

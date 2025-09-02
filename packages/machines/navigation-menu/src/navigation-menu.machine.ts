@@ -1,5 +1,5 @@
 import { setup } from "@zag-js/core"
-import { contains, navigate, raf } from "@zag-js/dom-query"
+import { addDomEvent, contains, navigate, raf } from "@zag-js/dom-query"
 import type { Point, Rect, Size } from "@zag-js/types"
 import { callAll, ensureProps } from "@zag-js/utils"
 import { trackDismissableElement } from "@zag-js/dismissable"
@@ -41,11 +41,6 @@ export const machine = createMachine({
         defaultValue: "",
         sync: true,
       })),
-      isDelaySkipped: autoReset(bindable, () => ({
-        defaultValue: false,
-        resetAfter: 300,
-        sync: true,
-      })),
 
       // viewport
       viewportSize: bindable<Size | null>(() => ({
@@ -75,6 +70,12 @@ export const machine = createMachine({
         defaultValue: false,
       })),
 
+      // timers + event trackers
+      isDelaySkipped: autoReset(bindable, () => ({
+        defaultValue: false,
+        resetAfter: 300,
+        sync: true,
+      })),
       pointerMoveOpenedValue: autoReset(bindable, () => ({
         defaultValue: "",
         resetAfter: 300,
@@ -106,7 +107,7 @@ export const machine = createMachine({
       restoreContentTabOrder: undefined,
       contentResizeObserverCleanup: undefined,
       contentDismissableCleanup: undefined,
-
+      contentExitCompleteCleanup: undefined,
       triggerResizeObserverCleanup: undefined,
       parent: null,
       children: {},
@@ -114,6 +115,15 @@ export const machine = createMachine({
         (val) => {
           // passing `undefined` meant to reset the debounce timer
           if (typeof val === "string") {
+            // If we're rapidly switching (setting a new value while previous animation is still running)
+            // clear previousValue immediately to prevent overlap
+            const currentValue = context.get("value")
+            const previousValue = context.get("previousValue")
+
+            if (previousValue && currentValue && val && val !== currentValue) {
+              context.set("previousValue", "")
+            }
+
             context.set("previousValue", context.get("value"))
             context.set("value", val)
           }
@@ -147,7 +157,7 @@ export const machine = createMachine({
       actions: ["setViewportPosition"],
     },
     "TRIGGER.POINTERENTER": {
-      actions: ["clearClickCloseValue", "clearEscapeCloseValue"],
+      actions: ["clearClickCloseValue", "clearEscapeCloseValue", "clearValueWithDelay"],
     },
     "TRIGGER.POINTERMOVE": [
       {
@@ -242,6 +252,8 @@ export const machine = createMachine({
       },
       clearValue({ context }) {
         context.set("value", "")
+        // Also clear previousValue
+        context.set("previousValue", "")
       },
       setPointerMoveOpenedValue({ context, event }) {
         context.set("pointerMoveOpenedValue", event.value)
@@ -256,6 +268,8 @@ export const machine = createMachine({
         refs.get("setValue")("")
       },
       setValueWithDelay({ refs, event }) {
+        // Cancel any pending setValue operations before setting new value
+        refs.get("setValue")()
         refs.get("setValue")(event.value)
       },
       clearValueWithDelay({ refs }) {
@@ -274,15 +288,26 @@ export const machine = createMachine({
         if (context.get("isSubmenu")) {
           context.set("value", "")
         } else {
-          // When selecting item we trigger update immediately
-          context.set("previousValue", context.get("value"))
+          // When deselecting, clear immediately to prevent overlap
           context.set("value", "")
+          context.set("previousValue", "")
         }
       },
 
       syncContentNode({ context, scope, refs, send, computed }) {
         refs.get("contentResizeObserverCleanup")?.()
         refs.get("contentDismissableCleanup")?.()
+        refs.get("contentExitCompleteCleanup")?.()
+
+        // If there's a previous value, listen for exitcomplete on its content
+        const previousValue = context.get("previousValue")
+        if (previousValue) {
+          const previousContentEl = dom.getContentEl(scope, previousValue)
+          if (previousContentEl) {
+            const onExitComplete = () => context.set("previousValue", "")
+            refs.set("contentExitCompleteCleanup", addDomEvent(previousContentEl, "exitcomplete", onExitComplete))
+          }
+        }
 
         const contentEl = dom.getContentEl(scope, context.get("value"))
 
@@ -411,6 +436,7 @@ export const machine = createMachine({
         refs.get("contentDismissableCleanup")?.()
         refs.get("triggerResizeObserverCleanup")?.()
         refs.get("restoreContentTabOrder")?.()
+        refs.get("contentExitCompleteCleanup")?.()
       },
 
       setParentMenu({ refs, event, context }) {

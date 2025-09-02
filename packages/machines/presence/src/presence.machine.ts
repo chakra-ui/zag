@@ -1,5 +1,5 @@
-import { getComputedStyle, getEventTarget, nextTick, raf, setStyle } from "@zag-js/dom-query"
 import { createMachine } from "@zag-js/core"
+import { getComputedStyle, getEventTarget, getWindow, nextTick, raf, setStyle } from "@zag-js/dom-query"
 import type { PresenceSchema } from "./presence.types"
 
 export const machine = createMachine<PresenceSchema>({
@@ -95,8 +95,16 @@ export const machine = createMachine<PresenceSchema>({
         context.set("initial", false)
       },
 
-      invokeOnExitComplete: ({ prop }) => {
+      invokeOnExitComplete: ({ prop, refs }) => {
         prop("onExitComplete")?.()
+
+        // Emit exitcomplete event on the node
+        const node = refs.get("node")
+        if (!node) return
+
+        const win = getWindow(node)
+        const event = new win.CustomEvent("exitcomplete", { bubbles: false })
+        node.dispatchEvent(event)
       },
 
       setupNode: ({ refs, event }) => {
