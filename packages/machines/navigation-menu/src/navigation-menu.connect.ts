@@ -1,4 +1,4 @@
-import { contains, dataAttr, getEventTarget, getTabbables, getWindow, navigate } from "@zag-js/dom-query"
+import { contains, dataAttr, getTabbables, getWindow, navigate } from "@zag-js/dom-query"
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import { toPx } from "@zag-js/utils"
 import { parts } from "./navigation-menu.anatomy"
@@ -9,7 +9,7 @@ export function connect<T extends PropTypes>(
   service: NavigationMenuService,
   normalize: NormalizeProps<T>,
 ): NavigationMenuApi<T> {
-  const { context, send, prop, scope, computed } = service
+  const { context, send, prop, scope, computed, refs } = service
 
   const triggerRect = context.get("triggerRect")
 
@@ -201,7 +201,7 @@ export function connect<T extends PropTypes>(
         onClick() {
           if (prop("disableClickTrigger")) return
           // if open via pointer move, prevent click event
-          if (pointerMoveOpenedValue === props.value) return
+          if (itemState.hasPointerMoveOpened) return
           send({ type: "TRIGGER.CLICK", value: props.value })
         },
         onKeyDown(event) {
@@ -374,6 +374,7 @@ export function connect<T extends PropTypes>(
         onPointerLeave(event) {
           if (prop("disablePointerLeaveClose")) return
           if (event.pointerType !== "mouse") return
+          if (Object.keys(refs.get("children")).length) return
           send({ type: "CONTENT.POINTERLEAVE" })
         },
       })

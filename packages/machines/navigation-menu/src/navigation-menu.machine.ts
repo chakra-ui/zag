@@ -1,8 +1,8 @@
 import { setup } from "@zag-js/core"
+import { trackDismissableElement } from "@zag-js/dismissable"
 import { addDomEvent, contains, navigate, raf } from "@zag-js/dom-query"
 import type { Point, Rect, Size } from "@zag-js/types"
-import { callAll, ensureProps } from "@zag-js/utils"
-import { trackDismissableElement } from "@zag-js/dismissable"
+import { ensureProps } from "@zag-js/utils"
 import * as dom from "./navigation-menu.dom"
 import type { NavigationMenuSchema, NavigationMenuService } from "./navigation-menu.types"
 import { autoReset } from "./utils/auto-reset"
@@ -21,7 +21,6 @@ export const machine = createMachine({
       closeDelay: 300,
       orientation: "horizontal",
       defaultValue: "",
-      viewportAlign: "center",
       ...props,
     }
   },
@@ -136,7 +135,8 @@ export const machine = createMachine({
     }
   },
 
-  entry: ["checkViewportNode", "syncContentNode"],
+  // entry: ["checkViewportNode", "syncContentNode"],
+  entry: ["checkViewportNode"],
 
   exit: ["cleanupObservers"],
 
@@ -178,6 +178,10 @@ export const machine = createMachine({
       },
     ],
     "TRIGGER.CLICK": [
+      {
+        guard: "isSubmenu",
+        actions: ["setValue"],
+      },
       {
         guard: "isItemOpen",
         actions: ["deselectValue", "setClickCloseValue"],
@@ -314,61 +318,69 @@ export const machine = createMachine({
         if (!contentEl) return
         context.set("contentNode", contentEl)
 
+        /////////////////////////////////////////////////////////////////////////////////////////
+
         if (context.get("isViewportRendered")) {
-          refs.set(
-            "contentResizeObserverCleanup",
-            dom.trackResizeObserver([contentEl], () => {
-              context.set("viewportSize", { width: contentEl.offsetWidth, height: contentEl.offsetHeight })
-              send({ type: "VIEWPORT.POSITION" })
-            }),
-          )
+          const contentResizeObserver = dom.trackResizeObserver([contentEl], () => {
+            context.set("viewportSize", { width: contentEl.offsetWidth, height: contentEl.offsetHeight })
+            send({ type: "VIEWPORT.POSITION" })
+          })
+          refs.set("contentResizeObserverCleanup", contentResizeObserver)
         }
 
-        const getContentEl = () =>
-          context.get("isViewportRendered") ? dom.getViewportEl(scope) : dom.getContentEl(scope, context.get("value"))
-        refs.set(
-          "contentDismissableCleanup",
-          trackDismissableElement(getContentEl, {
-            defer: true,
-            onFocusOutside(event) {
-              const target = event.detail.target as HTMLElement
+        /////////////////////////////////////////////////////////////////////////////////////////
 
-              if (
-                target.matches("[data-scope=navigation-menu][data-part=trigger]") ||
-                target.matches("[data-trigger-proxy]")
-              ) {
+        if (context.get("isSubmenu")) return
+
+        const getContentEl = () => {
+          return context.get("isViewportRendered")
+            ? dom.getRootEl(scope)
+            : dom.getContentEl(scope, context.get("value"))
+        }
+
+        const contentDismissable = trackDismissableElement(getContentEl, {
+          defer: true,
+          onFocusOutside(event) {
+            const target = event.detail.target as HTMLElement
+
+            if (
+              target.matches("[data-scope=navigation-menu][data-part=trigger]") ||
+              target.matches("[data-trigger-proxy]") ||
+              contains(dom.getRootMenuEl(scope), target)
+            ) {
+              event.preventDefault()
+            }
+
+            if (!event.defaultPrevented) {
+              send({ type: "CONTENT.BLUR" })
+              // Only dismiss content when focus moves outside of the menu
+              if (contains(dom.getRootEl(scope), target)) {
                 event.preventDefault()
               }
+            }
+          },
 
-              if (!event.defaultPrevented) {
-                send({ type: "CONTENT.BLUR" })
-                // Only dismiss content when focus moves outside of the menu
-                if (contains(dom.getRootEl(scope), target)) {
-                  event.preventDefault()
-                }
+          onPointerDownOutside(event) {
+            const target = event.detail.target as HTMLElement
+            if (!event.defaultPrevented) {
+              const isTrigger = dom.getTriggerEls(scope).some((node) => node.contains(target))
+              const isRootViewport = computed("isRootMenu") && contains(dom.getViewportEl(scope), target)
+              if (isTrigger || isRootViewport || !computed("isRootMenu")) {
+                event.preventDefault()
               }
-            },
+            }
+          },
+          onEscapeKeyDown(event) {
+            if (!event.defaultPrevented) {
+              send({ type: "CONTENT.ESCAPE_KEYDOWN" })
+            }
+          },
+          onDismiss() {
+            send({ type: "ROOT.CLOSE" })
+          },
+        })
 
-            onPointerDownOutside(event) {
-              const target = event.detail.target as HTMLElement
-              if (!event.defaultPrevented) {
-                const isTrigger = dom.getTriggerEls(scope).some((node) => node.contains(target))
-                const isRootViewport = computed("isRootMenu") && contains(dom.getViewportEl(scope), target)
-                if (isTrigger || isRootViewport || !computed("isRootMenu")) {
-                  event.preventDefault()
-                }
-              }
-            },
-            onEscapeKeyDown(event) {
-              if (!event.defaultPrevented) {
-                send({ type: "CONTENT.ESCAPE_KEYDOWN" })
-              }
-            },
-            onDismiss() {
-              send({ type: "ROOT.CLOSE" })
-            },
-          }),
-        )
+        refs.set("contentDismissableCleanup", contentDismissable)
       },
 
       setTriggerNode({ context, scope, refs }) {
@@ -385,7 +397,8 @@ export const machine = createMachine({
         }
 
         const indicatorTrackEl = dom.getIndicatorTrackEl(scope)
-        refs.set("triggerResizeObserverCleanup", callAll(dom.trackResizeObserver([node, indicatorTrackEl], exec)))
+        const triggerResizeObserver = dom.trackResizeObserver([node, indicatorTrackEl], exec)
+        refs.set("triggerResizeObserverCleanup", triggerResizeObserver)
       },
       syncMotionAttribute({ context, scope, computed }) {
         if (!context.get("isViewportRendered")) return

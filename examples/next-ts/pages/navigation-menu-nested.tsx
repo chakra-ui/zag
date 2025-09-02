@@ -47,6 +47,7 @@ export default function Page() {
                   Products
                   <ChevronDown />
                 </button>
+                <span {...rootMenu.getTriggerProxyProps({ value: "products" })} />
               </div>
 
               <div {...rootMenu.getItemProps({ value: "company" })}>
@@ -54,6 +55,7 @@ export default function Page() {
                   Company
                   <ChevronDown />
                 </button>
+                <span {...rootMenu.getTriggerProxyProps({ value: "company" })} />
               </div>
 
               <div {...rootMenu.getItemProps({ value: "developers", disabled: true })}>
@@ -61,6 +63,7 @@ export default function Page() {
                   Developers
                   <ChevronDown />
                 </button>
+                <span {...rootMenu.getTriggerProxyProps({ value: "developers" })} />
               </div>
 
               <div {...rootMenu.getItemProps({ value: "pricing" })}>
@@ -77,14 +80,17 @@ export default function Page() {
                     <div {...productSubmenu.getListProps()}>
                       <div {...productSubmenu.getItemProps({ value: "extensibility" })}>
                         <button {...productSubmenu.getTriggerProps({ value: "extensibility" })}>Extensibility</button>
+                        <span {...productSubmenu.getTriggerProxyProps({ value: "extensibility" })} />
                       </div>
 
                       <div {...productSubmenu.getItemProps({ value: "security" })}>
                         <button {...productSubmenu.getTriggerProps({ value: "security" })}>Security</button>
+                        <span {...productSubmenu.getTriggerProxyProps({ value: "security" })} />
                       </div>
 
                       <div {...productSubmenu.getItemProps({ value: "authentication" })}>
                         <button {...productSubmenu.getTriggerProps({ value: "authentication" })}>Authentication</button>
+                        <span {...productSubmenu.getTriggerProxyProps({ value: "authentication" })} />
                       </div>
                       <div {...productSubmenu.getIndicatorProps()} />
                     </div>
@@ -160,14 +166,17 @@ export default function Page() {
                     <div {...companySubmenu.getListProps()}>
                       <div {...companySubmenu.getItemProps({ value: "customers" })}>
                         <button {...companySubmenu.getTriggerProps({ value: "customers" })}>Customers</button>
+                        <span {...companySubmenu.getTriggerProxyProps({ value: "customers" })} />
                       </div>
 
                       <div {...companySubmenu.getItemProps({ value: "partners" })}>
                         <button {...companySubmenu.getTriggerProps({ value: "partners" })}>Partners</button>
+                        <span {...companySubmenu.getTriggerProxyProps({ value: "partners" })} />
                       </div>
 
                       <div {...companySubmenu.getItemProps({ value: "enterprise" })}>
                         <button {...companySubmenu.getTriggerProps({ value: "enterprise" })}>Enterprise</button>
+                        <span {...companySubmenu.getTriggerProxyProps({ value: "enterprise" })} />
                       </div>
                     </div>
                     <div {...companySubmenu.getIndicatorProps()} />
@@ -241,9 +250,9 @@ export default function Page() {
       </main>
 
       <Toolbar viz>
-        <StateVisualizer state={rootService} label="root" />
-        <StateVisualizer state={productService} label="product" />
-        <StateVisualizer state={companyService} label="company" />
+        <StateVisualizer state={rootService} label="root" context={["value", "previousValue"]} />
+        <StateVisualizer state={productService} label="product" context={["value", "previousValue", "isSubmenu"]} />
+        <StateVisualizer state={companyService} label="company" context={["value", "previousValue", "isSubmenu"]} />
       </Toolbar>
     </>
   )
