@@ -169,6 +169,7 @@ export function connect<T extends PropTypes>(
           // if trigger is wrapped within the dropzone, stop propagation to avoid double opening
           if (contains(dom.getDropzoneEl(scope), event.currentTarget)) {
             event.stopPropagation()
+            return
           }
           send({ type: "OPEN" })
         },
