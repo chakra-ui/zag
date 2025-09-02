@@ -39,13 +39,26 @@ test.describe("bottom-sheet", () => {
     await I.seeTriggerIsFocused()
   })
 
-  test("should close when dragged down past threshold", async ({ page }) => {
+  test("should close when dragged down past swipeVelocityThreshold", async ({ page }) => {
     await I.clickTrigger()
     await I.seeContent()
 
     await page.waitForTimeout(ANIMATION_DURATION)
 
     await I.dragGrabber("down", 100, 100)
+    await I.dontSeeContent()
+  })
+
+  test("should close when dragged down past closeThreshold", async ({ page }) => {
+    await I.clickTrigger()
+    await I.seeContent()
+
+    await page.waitForTimeout(ANIMATION_DURATION)
+
+    const initialHeight = await I.getContentVisibleHeight()
+    const dragDistance = Math.floor(initialHeight * 0.3)
+
+    await I.dragGrabber("down", dragDistance)
     await I.dontSeeContent()
   })
 
