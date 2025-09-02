@@ -1,5 +1,31 @@
 # @zag-js/date-picker
 
+## 1.23.0
+
+### Patch Changes
+
+- [`e55d277`](https://github.com/chakra-ui/zag/commit/e55d2771642c1c27089717a3628871ead7052d27) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Add support for `disabled` property for years in `getYearsGrid`
+  function.
+
+- [`352c638`](https://github.com/chakra-ui/zag/commit/352c638b9d2bc9f603f3323a4bb18a87ae3fd9ab) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Add support for layer types in dismissable layer stack. Layers can
+  now be categorized as `dialog`, `popover`, `menu`, or `listbox`. This enables:
+  - `data-nested` attribute on nested layers of the same type
+  - `data-has-nested` attribute on parent layers with nested children of the same type
+  - `--nested-layer-count` CSS variable indicating the number of nested layers of the same type
+
+- Updated dependencies [[`352c638`](https://github.com/chakra-ui/zag/commit/352c638b9d2bc9f603f3323a4bb18a87ae3fd9ab)]:
+  - @zag-js/dismissable@1.23.0
+  - @zag-js/anatomy@1.23.0
+  - @zag-js/core@1.23.0
+  - @zag-js/types@1.23.0
+  - @zag-js/utils@1.23.0
+  - @zag-js/date-utils@1.23.0
+  - @zag-js/dom-query@1.23.0
+  - @zag-js/live-region@1.23.0
+  - @zag-js/popper@1.23.0
+
 ## 1.22.1
 
 ### Patch Changes

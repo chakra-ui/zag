@@ -1,5 +1,24 @@
 # @zag-js/rating-group
 
+## 1.23.0
+
+### Patch Changes
+
+- [#2673](https://github.com/chakra-ui/zag/pull/2673)
+  [`a493193`](https://github.com/chakra-ui/zag/commit/a493193dd55524e14800bfc449ca137be7f633aa) Thanks
+  [@julienbenac](https://github.com/julienbenac)! - Add `data-required` to label parts
+
+- [`4c8113d`](https://github.com/chakra-ui/zag/commit/4c8113d4d28fbb7bd17a788c6bfa0210bb92e679) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix missing `Partial` type wrapper in `splitProps` function for
+  rating-group and checkbox components.
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.23.0
+  - @zag-js/core@1.23.0
+  - @zag-js/types@1.23.0
+  - @zag-js/utils@1.23.0
+  - @zag-js/dom-query@1.23.0
+
 ## 1.22.1
 
 ### Patch Changes
