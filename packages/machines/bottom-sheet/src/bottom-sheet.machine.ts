@@ -356,7 +356,7 @@ export const machine = createMachine<BottomSheetSchema>({
         return ariaHidden(getElements, { defer: true })
       },
 
-      trackPointerMove({ scope, send }) {
+      trackPointerMove({ scope, send, prop }) {
         let lastY = 0
 
         function onPointerMove(event: PointerEvent) {
@@ -381,6 +381,11 @@ export const machine = createMachine<BottomSheetSchema>({
           if (!event.touches[0]) return
           const point = getEventPoint(event)
           const target = event.target as HTMLElement
+
+          if (!prop("handleScrollableElements")) {
+            send({ type: "POINTER_MOVE", point, target })
+            return
+          }
 
           // Prevent overscrolling
           const contentEl = dom.getContentEl(scope)
