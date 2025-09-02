@@ -1,5 +1,19 @@
 # @zag-js/tabs
 
+## 1.23.0
+
+### Patch Changes
+
+- [`45ca4d6`](https://github.com/chakra-ui/zag/commit/45ca4d6a3bdb80212c283a5ce6c943eea289c495) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix issue where ids for item and content could not be customized.
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.23.0
+  - @zag-js/core@1.23.0
+  - @zag-js/types@1.23.0
+  - @zag-js/utils@1.23.0
+  - @zag-js/dom-query@1.23.0
+
 ## 1.22.1
 
 ### Patch Changes
