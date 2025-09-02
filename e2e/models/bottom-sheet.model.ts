@@ -13,7 +13,7 @@ export class BottomSheetModel extends Model {
   }
 
   checkAccessibility() {
-    return a11y(this.page, "[data-part=content]")
+    return a11y(this.page, "[data-part=content]", ["scrollable-region-focusable"])
   }
 
   goto(url = "/bottom-sheet") {

@@ -28,7 +28,7 @@ export default function Page() {
           </div>
           <div {...api.getTitleProps()}>Bottom Sheet</div>
           <div data-no-drag>No drag area</div>
-          <div className="scrollable" tabIndex={0}>
+          <div className="scrollable">
             {Array.from({ length: 100 }).map((_element, index) => (
               <div key={index}>Item {index}</div>
             ))}

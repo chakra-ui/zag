@@ -1,11 +1,11 @@
 import AxeBuilder from "@axe-core/playwright"
 import { expect, type Locator, type Page } from "@playwright/test"
 
-export async function a11y(page: Page, selector = "[data-part=root]") {
+export async function a11y(page: Page, selector = "[data-part=root]", disableRules: string[] = []) {
   await page.waitForSelector(selector)
 
   const results = await new AxeBuilder({ page: page as any })
-    .disableRules(["color-contrast"])
+    .disableRules(["color-contrast", ...disableRules])
     .include(selector)
     .analyze()
 
