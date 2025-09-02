@@ -78,10 +78,11 @@ export const machine = createMachine<RadioGroupSchema>({
   on: {
     SET_VALUE: [
       {
-        guard: not("isTrusted"),
+        guard: [not("isTrusted"), not("isReadOnly")],
         actions: ["setValue", "dispatchChangeEvent"],
       },
       {
+        guard: not("isReadOnly"),
         actions: ["setValue"],
       },
     ],
@@ -103,6 +104,7 @@ export const machine = createMachine<RadioGroupSchema>({
   implementations: {
     guards: {
       isTrusted: ({ event }) => !!event.isTrusted,
+      isReadOnly: ({ prop }) => !!prop("readOnly"),
     },
 
     effects: {
@@ -122,7 +124,8 @@ export const machine = createMachine<RadioGroupSchema>({
     },
 
     actions: {
-      setValue({ context, event }) {
+      setValue({ context, event, prop }) {
+        if (prop("readOnly")) return
         context.set("value", event.value)
       },
       setHovered({ context, event }) {
