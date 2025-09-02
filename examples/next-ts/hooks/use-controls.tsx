@@ -18,7 +18,7 @@ export function useControls<T extends ControlRecord>(config: T) {
     ui: () => (
       <div className="controls-container">
         {Object.keys(config).map((key) => {
-          const { type, label = key, options, placeholder, min, max } = (config[key] ?? {}) as any
+          const { type, label = key, options, placeholder, min, max, elementType } = (config[key] ?? {}) as any
           const value = deepGet(state, key)
           switch (type) {
             case "boolean":
@@ -94,6 +94,34 @@ export function useControls<T extends ControlRecord>(config: T) {
                         const val = parseFloat(e.currentTarget.value)
                         setState(key, isNaN(val) ? 0 : val)
                       }
+                    }}
+                  />
+                </div>
+              )
+            case "array":
+              return (
+                <div key={key} className="text">
+                  <label style={{ marginRight: "10px" }}>{label}</label>
+                  <input
+                    data-testid={key}
+                    type="text"
+                    placeholder={placeholder}
+                    defaultValue={Array.isArray(value) ? value.join(", ") : ""}
+                    onBlur={(e) => {
+                      const textValue = e.currentTarget.value
+                      let arrayValue: any[] = textValue
+                        .split(",")
+                        .map((item) => item.trim())
+                        .filter((item) => item.length > 0)
+
+                      if (elementType === "number") {
+                        arrayValue = arrayValue.map((item) => {
+                          const num = parseFloat(item)
+                          return isNaN(num) ? 0 : num
+                        })
+                      }
+
+                      setState(key, arrayValue)
                     }}
                   />
                 </div>
