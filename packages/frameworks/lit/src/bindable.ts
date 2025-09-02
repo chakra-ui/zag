@@ -1,48 +1,39 @@
 import type { Bindable, BindableParams } from "@zag-js/core"
+import { proxy } from "@zag-js/store"
 import { isFunction } from "@zag-js/utils"
-import { createEffect, createMemo, createSignal, type Accessor, onCleanup } from "solid-js"
 
-export function createBindable<T>(props: Accessor<BindableParams<T>>): Bindable<T> {
+export function bindable<T>(props: () => BindableParams<T>): Bindable<T> {
   const initial = props().value ?? props().defaultValue
+
+  if (props().debug) {
+    console.log(`[bindable > ${props().debug}] initial`, initial)
+  }
 
   const eq = props().isEqual ?? Object.is
 
-  const [value, setValue] = createSignal(initial as T)
-  const controlled = createMemo(() => props().value != undefined)
+  const store = proxy({ value: initial as T })
 
-  const valueRef = { current: value() }
-  const prevValue: Record<"current", T | undefined> = { current: undefined }
-
-  createEffect(() => {
-    const v = controlled() ? props().value : value()
-    prevValue.current = v
-    valueRef.current = v as T
-  })
-
-  const set = (v: T | ((prev: T) => T)) => {
-    const prev = prevValue.current
-    const next = isFunction(v) ? v(valueRef.current as T) : v
-
-    if (props().debug) {
-      console.log(`[bindable > ${props().debug}] setValue`, { next, prev })
-    }
-
-    if (!controlled()) setValue(next as any)
-    if (!eq(next, prev)) {
-      props().onChange?.(next, prev)
-    }
-  }
-
-  function get(): T {
-    const v = (controlled() ? props().value : value) as T
-    return isFunction(v) ? v() : v
-  }
+  const controlled = () => props().value !== undefined
 
   return {
     initial,
-    ref: valueRef,
-    get,
-    set,
+    ref: store,
+    get() {
+      return controlled() ? (props().value as T) : store.value
+    },
+    set(nextValue: T | ((prev: T) => T)) {
+      const prev = store.value
+      const next = isFunction(nextValue) ? nextValue(prev as T) : nextValue
+
+      if (props().debug) {
+        console.log(`[bindable > ${props().debug}] setValue`, { next, prev })
+      }
+
+      if (!controlled()) store.value = next
+      if (!eq(next, prev)) {
+        props().onChange?.(next, prev)
+      }
+    },
     invoke(nextValue: T, prevValue: T) {
       props().onChange?.(nextValue, prevValue)
     },
@@ -52,11 +43,11 @@ export function createBindable<T>(props: Accessor<BindableParams<T>>): Bindable<
   }
 }
 
-createBindable.cleanup = (fn: VoidFunction) => {
-  onCleanup(() => fn())
+bindable.cleanup = (_fn: VoidFunction) => {
+  // No-op in vanilla implementation
 }
 
-createBindable.ref = <T>(defaultValue: T) => {
+bindable.ref = <T>(defaultValue: T) => {
   let value = defaultValue
   return {
     get: () => value,

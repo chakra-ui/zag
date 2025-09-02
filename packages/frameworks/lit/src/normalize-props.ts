@@ -1,29 +1,32 @@
 import { createNormalizer } from "@zag-js/types"
-import { isNumber, isObject, isString } from "@zag-js/utils"
-import type { JSX } from "solid-js"
 
-export type PropTypes = JSX.IntrinsicElements & {
-  element: JSX.HTMLAttributes<any>
-  style: JSX.CSSProperties
+// Lit uses built-in template binding syntax for prop normalization:
+// - 'attribute-name': value -> attribute
+// - '?boolean-attr': true -> boolean attribute
+// - '@event-name': handler -> event listener
+// - '.property': value -> property assignment
+
+type LitElementProps = {
+  [key: string]: any
+  style?: string | Record<string, any>
 }
 
-const eventMap: Record<string, string> = {
-  onFocus: "onFocusIn",
-  onBlur: "onFocusOut",
-  onDoubleClick: "onDblClick",
-  onChange: "onInput",
-  defaultChecked: "checked",
-  defaultValue: "value",
-  htmlFor: "for",
-  className: "class",
-}
+type RequiredElements =
+  | "button"
+  | "label"
+  | "input"
+  | "textarea"
+  | "img"
+  | "output"
+  | "select"
+  | "rect"
+  | "circle"
+  | "svg"
+  | "path"
 
-const format = (v: string) => (v.startsWith("--") ? v : hyphenateStyleName(v))
-
-type StyleObject = Record<string, any>
-
-function toSolidProp(prop: string) {
-  return prop in eventMap ? eventMap[prop] : prop
+export type PropTypes = Record<RequiredElements, LitElementProps> & {
+  element: LitElementProps
+  style: Record<string, any>
 }
 
 type Dict = Record<string, any>
@@ -34,49 +37,45 @@ export const normalizeProps = createNormalizer<PropTypes>((props: Dict) => {
   for (const key in props) {
     const value = props[key]
 
-    if (key === "readOnly" && value === false) {
+    // Skip undefined values
+    if (value === undefined) {
       continue
     }
 
-    if (key === "style" && isObject(value)) {
-      normalized["style"] = cssify(value)
+    // Handle event handlers - prefix with @
+    if (key.startsWith("on") && typeof value === "function") {
+      const eventName = key.slice(2).toLowerCase()
+      normalized[`@${eventName}`] = value
       continue
     }
 
-    if (key === "children") {
-      if (isString(value)) {
-        normalized["textContent"] = value
-      }
+    // Handle boolean attributes - prefix with ?
+    if (typeof value === "boolean") {
+      normalized[`?${key}`] = value
       continue
     }
 
-    normalized[toSolidProp(key)] = value
+    // Handle properties that should be set as properties not attributes
+    if (key === "value" || key === "checked" || key === "selected") {
+      normalized[`.${key}`] = value
+      continue
+    }
+
+    // Handle className -> class mapping
+    if (key === "className") {
+      normalized["class"] = value
+      continue
+    }
+
+    // Handle htmlFor -> for mapping
+    if (key === "htmlFor") {
+      normalized["for"] = value
+      continue
+    }
+
+    // Everything else as attribute
+    normalized[key] = value
   }
+
   return normalized
 })
-
-function cssify(style: StyleObject): StyleObject {
-  let css = {} as StyleObject
-  for (const property in style) {
-    const value = style[property]
-    if (!isString(value) && !isNumber(value)) continue
-    css[format(property)] = value
-  }
-
-  return css
-}
-
-const uppercasePattern = /[A-Z]/g
-const msPattern = /^ms-/
-
-function toHyphenLower(match: string) {
-  return "-" + match.toLowerCase()
-}
-
-const cache: Record<string, any> = {}
-
-function hyphenateStyleName(name: string) {
-  if (cache.hasOwnProperty(name)) return cache[name]
-  var hName = name.replace(uppercasePattern, toHyphenLower)
-  return (cache[name] = msPattern.test(hName) ? "-" + hName : hName)
-}
