@@ -304,5 +304,4 @@ export const bottomSheetControls = defineControls({
   closeThreshold: { type: "number", defaultValue: 0.25 },
   grabberOnly: { type: "boolean", defaultValue: false },
   handleScrollableElements: { type: "boolean", defaultValue: true },
-  snapPoints: { type: "array", defaultValue: [1], elementType: "number" },
 })
