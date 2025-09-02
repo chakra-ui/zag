@@ -36,6 +36,10 @@ export class BottomSheetModel extends Model {
     return this.page.locator(grabber)
   }
 
+  private get noDragArea() {
+    return this.page.locator("[data-no-drag]")
+  }
+
   clickTrigger(opts: { delay?: number } = {}) {
     return this.trigger.click(opts)
   }
@@ -50,6 +54,10 @@ export class BottomSheetModel extends Model {
 
   dragContent(direction: "up" | "down", distance: number = 100, duration = 500, release = true) {
     return swipe(this.page, this.content, direction, distance, duration, release)
+  }
+
+  dragNoDragArea(direction: "up" | "down", distance: number = 100, duration = 500, release = true) {
+    return swipe(this.page, this.noDragArea, direction, distance, duration, release)
   }
 
   seeContent() {

@@ -133,4 +133,24 @@ test.describe("bottom-sheet", () => {
     // Should be at a lower snap point
     expect(currentHeight).toBe(lowerHeight)
   })
+
+  test("should not allow dragging from no-drag area", async ({ page }) => {
+    await I.clickTrigger()
+    await I.seeContent()
+
+    await page.waitForTimeout(ANIMATION_DURATION)
+
+    const initialHeight = await I.getContentVisibleHeight()
+
+    await I.dragNoDragArea("down", 100, 500, false)
+    const heightAfterNoDragAreaDrag = await I.getContentVisibleHeight()
+
+    expect(initialHeight - heightAfterNoDragAreaDrag).toBe(0)
+
+    await page.mouse.up()
+
+    await I.seeContent()
+    const finalHeight = await I.getContentVisibleHeight()
+    expect(finalHeight).toBe(initialHeight)
+  })
 })
