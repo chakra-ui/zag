@@ -4,19 +4,20 @@ import type {
   DirectionProperty,
   Orientation,
   OrientationProperty,
+  Point,
   PropTypes,
   Rect,
   RequiredBy,
   Size,
 } from "@zag-js/types"
-import type { AutoReset } from "./auto-reset"
+import type { DebounceFnReturn } from "./utils/debounce-fn"
 
 /* -----------------------------------------------------------------------------
  * Callback details
  * -----------------------------------------------------------------------------*/
 
 export interface ValueChangeDetails {
-  value: string | null
+  value: string
 }
 
 export type ElementIds = Partial<{
@@ -41,12 +42,12 @@ export interface NavigationMenuProps extends DirectionProperty, CommonProperties
   /**
    * The controlled value of the navigation menu
    */
-  value?: string | null | undefined
+  value?: string | undefined
   /**
    * The default value of the navigation menu.
    * Use when you don't want to control the value of the menu.
    */
-  defaultValue?: string | null | undefined
+  defaultValue?: string | undefined
   /**
    * Function called when the value of the menu changes
    */
@@ -69,35 +70,49 @@ export interface NavigationMenuProps extends DirectionProperty, CommonProperties
    * Whether to disable the hover trigger
    */
   disableHoverTrigger?: boolean | undefined
+  /**
+   * Whether to disable the pointer leave close
+   */
+  disablePointerLeaveClose?: boolean | undefined
 }
 
-type PropsWithDefault = "openDelay" | "closeDelay" | "dir" | "id"
+type PropsWithDefault = "openDelay" | "closeDelay" | "dir" | "id" | "orientation"
 
 export interface NavigationMenuSchema {
   props: RequiredBy<NavigationMenuProps, PropsWithDefault>
-  state: "opening" | "open" | "closing" | "closed"
+  state: "idle"
   computed: {
     isRootMenu: boolean
     isSubmenu: boolean
+    open: boolean
   }
   refs: {
-    contentCleanup: VoidFunction | null
-    triggerCleanup: VoidFunction | null
-    tabOrderCleanup: VoidFunction | null
-    pointerMoveOpenedRef: AutoReset<string | null>
-    clickCloseRef: string | null
-    wasEscapeClose: boolean
+    restoreContentTabOrder: VoidFunction | undefined
+    contentResizeObserverCleanup: VoidFunction | undefined
+    contentDismissableCleanup: VoidFunction | undefined
+    triggerResizeObserverCleanup: VoidFunction | undefined
+
     parent: NavigationMenuService | null
     children: Record<string, NavigationMenuService | null>
+    setValue: DebounceFnReturn<(value: string | void) => void>
   }
   context: {
-    value: string | null
-    previousValue: string | null
+    value: string
+    previousValue: string
+
+    pointerMoveOpenedValue: string
+    clickCloseValue: string | null
+    escapeCloseValue: string | null
+
     viewportSize: Size | null
+    viewportPosition: Point | null
     isViewportRendered: boolean
+
     contentNode: HTMLElement | null
     triggerRect: Rect | null
     triggerNode: HTMLElement | null
+    isDelaySkipped: boolean
+    isSubmenu: boolean
   }
   action: string
   effect: string
@@ -146,6 +161,14 @@ export interface LinkProps {
   onSelect?: ((event: CustomEvent) => void) | undefined
 }
 
+export interface ViewportProps {
+  /**
+   * Placement of the viewport for css variables `(--viewport-x, --viewport-y)`.
+   * @defaultValue 'center'
+   */
+  align?: "start" | "center" | "end"
+}
+
 export interface NavigationMenuApi<T extends PropTypes = PropTypes> {
   /**
    * The current value of the menu
@@ -178,9 +201,12 @@ export interface NavigationMenuApi<T extends PropTypes = PropTypes> {
   getIndicatorTrackProps: () => T["element"]
   getIndicatorProps: () => T["element"]
   getArrowProps: (props?: ArrowProps) => T["element"]
+
   getTriggerProps: (props: ItemProps) => T["button"]
+  getTriggerProxyProps: (props: ItemProps) => T["element"]
+
   getLinkProps: (props: LinkProps) => T["element"]
   getContentProps: (props: LinkProps) => T["element"]
-  getViewportPositionerProps: () => T["element"]
-  getViewportProps: () => T["element"]
+  getViewportPositionerProps: (props?: ViewportProps) => T["element"]
+  getViewportProps: (props?: ViewportProps) => T["element"]
 }

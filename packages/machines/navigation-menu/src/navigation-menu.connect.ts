@@ -1,5 +1,6 @@
-import { dataAttr, getEventKey, getWindow } from "@zag-js/dom-query"
-import type { EventKeyMap, NormalizeProps, PropTypes } from "@zag-js/types"
+import { contains, dataAttr, getEventTarget, getTabbables, getWindow, navigate } from "@zag-js/dom-query"
+import type { NormalizeProps, PropTypes } from "@zag-js/types"
+import { toPx } from "@zag-js/utils"
 import { parts } from "./navigation-menu.anatomy"
 import * as dom from "./navigation-menu.dom"
 import type { ItemProps, NavigationMenuApi, NavigationMenuService } from "./navigation-menu.types"
@@ -8,10 +9,12 @@ export function connect<T extends PropTypes>(
   service: NavigationMenuService,
   normalize: NormalizeProps<T>,
 ): NavigationMenuApi<T> {
-  const { context, send, prop, scope, computed, refs } = service
+  const { context, send, prop, scope, computed } = service
 
   const triggerRect = context.get("triggerRect")
+
   const viewportSize = context.get("viewportSize")
+  const viewportPosition = context.get("viewportPosition")
 
   const value = context.get("value")
   const previousValue = context.get("previousValue")
@@ -19,7 +22,10 @@ export function connect<T extends PropTypes>(
 
   const isViewportRendered = context.get("isViewportRendered")
   const preventTransition = value && !previousValue
-  const pointerMoveOpenedRef = refs.get("pointerMoveOpenedRef")
+
+  const pointerMoveOpenedValue = context.get("pointerMoveOpenedValue")
+  const clickCloseValue = context.get("clickCloseValue")
+  const escapeCloseValue = context.get("escapeCloseValue")
 
   function getItemState(props: ItemProps) {
     const selected = value === props.value
@@ -27,6 +33,9 @@ export function connect<T extends PropTypes>(
     return {
       triggerId: dom.getTriggerId(scope, props.value),
       contentId: dom.getContentId(scope, props.value),
+      wasClickClose: clickCloseValue === props.value,
+      wasEscapeClose: escapeCloseValue === props.value,
+      hasPointerMoveOpened: pointerMoveOpenedValue === props.value,
       selected,
       wasSelected,
       open: selected || wasSelected,
@@ -52,17 +61,19 @@ export function connect<T extends PropTypes>(
       return normalize.element({
         ...parts.root.attrs,
         id: dom.getRootId(scope),
-        "aria-label": "Main",
+        "aria-label": "Main Navigation",
         "data-orientation": prop("orientation")!,
         "data-type": computed("isSubmenu") ? "submenu" : "root",
         dir: prop("dir"),
         style: {
-          "--trigger-width": triggerRect != null ? triggerRect.width + "px" : undefined,
-          "--trigger-height": triggerRect != null ? triggerRect.height + "px" : undefined,
-          "--trigger-x": triggerRect != null ? triggerRect.x + "px" : undefined,
-          "--trigger-y": triggerRect != null ? triggerRect.y + "px" : undefined,
-          "--viewport-width": viewportSize != null ? viewportSize.width + "px" : undefined,
-          "--viewport-height": viewportSize != null ? viewportSize.height + "px" : undefined,
+          "--trigger-width": toPx(triggerRect?.width),
+          "--trigger-height": toPx(triggerRect?.height),
+          "--trigger-x": toPx(triggerRect?.x),
+          "--trigger-y": toPx(triggerRect?.y),
+          "--viewport-width": toPx(viewportSize?.width),
+          "--viewport-height": toPx(viewportSize?.height),
+          "--viewport-x": toPx(viewportPosition?.x),
+          "--viewport-y": toPx(viewportPosition?.y),
         },
       })
     },
@@ -86,6 +97,35 @@ export function connect<T extends PropTypes>(
         "data-state": itemState.open ? "open" : "closed",
         "data-orientation": prop("orientation")!,
         "data-disabled": dataAttr(itemState.disabled),
+        // onKeyDown(event) {
+        //   switch (event.key) {
+        //     case "ArrowDown":
+        //     case "ArrowUp":
+        //     case "ArrowLeft":
+        //     case "ArrowRight":
+        //     case "Home":
+        //     case "End": {
+        //       send({ type: "ITEM.NAVIGATE", value: props.value, key: event.key })
+        //       event.preventDefault()
+        //       event.stopPropagation()
+        //       break
+        //     }
+        //     case "Enter":
+        //     case " ": {
+        //       if (value === props.value) {
+        //         send({ type: "ITEM.CLOSE", value: props.value })
+        //         event.preventDefault()
+        //       } else {
+        //         const target = getEventTarget<HTMLElement>(event)
+        //         target?.click()
+        //         event.preventDefault()
+        //       }
+        //       break
+        //     }
+        //     default:
+        //       break
+        //   }
+        // },
       })
     },
 
@@ -130,6 +170,7 @@ export function connect<T extends PropTypes>(
         ...parts.trigger.attrs,
         id: itemState.triggerId,
         "data-uid": prop("id"),
+        "data-trigger-proxy-id": dom.getTriggerProxyId(scope, props.value),
         dir: prop("dir"),
         disabled: props.disabled,
         "data-value": props.value,
@@ -138,64 +179,64 @@ export function connect<T extends PropTypes>(
         "data-disabled": dataAttr(props.disabled),
         "aria-controls": itemState.contentId,
         "aria-expanded": itemState.selected,
-        onPointerDown() {
-          send({ type: "TRIGGER.POINTERDOWN" })
-        },
         onPointerEnter() {
-          queueMicrotask(() => {
-            if (prop("disableHoverTrigger")) return
-            send({ type: "TRIGGER.ENTER", value: props.value })
-          })
+          if (prop("disableHoverTrigger")) return
+          send({ type: "TRIGGER.POINTERENTER", value: props.value })
         },
         onPointerMove(event) {
           if (prop("disableHoverTrigger")) return
           if (event.pointerType !== "mouse") return
           if (itemState.disabled) return
-          if (pointerMoveOpenedRef.get() === props.value) return
-          if (refs.get("clickCloseRef") === props.value) return
-          if (refs.get("wasEscapeClose")) return
-          send({ type: "TRIGGER.MOVE", value: props.value })
+          if (itemState.hasPointerMoveOpened) return
+          if (itemState.wasClickClose) return
+          if (itemState.wasEscapeClose) return
+          send({ type: "TRIGGER.POINTERMOVE", value: props.value })
         },
         onPointerLeave(event) {
           if (prop("disableHoverTrigger")) return
           if (event.pointerType !== "mouse") return
           if (props.disabled) return
-          if (computed("isSubmenu")) return
-          send({ type: "TRIGGER.LEAVE", value: props.value })
+          send({ type: "TRIGGER.POINTERLEAVE", value: props.value })
         },
         onClick() {
           if (prop("disableClickTrigger")) return
-          if (pointerMoveOpenedRef.get() === props.value) return
+          // if open via pointer move, prevent click event
+          if (pointerMoveOpenedValue === props.value) return
           send({ type: "TRIGGER.CLICK", value: props.value })
         },
         onKeyDown(event) {
-          const keyMap: EventKeyMap = {
-            ArrowLeft() {
-              send({ type: "TRIGGER.FOCUS", target: "prev", value: props.value })
-            },
-            ArrowRight() {
-              send({ type: "TRIGGER.FOCUS", target: "next", value: props.value })
-            },
-            Home() {
-              send({ type: "TRIGGER.FOCUS", target: "first" })
-            },
-            End() {
-              send({ type: "TRIGGER.FOCUS", target: "last" })
-            },
-            Enter() {
-              send({ type: "TRIGGER.CLICK", value: props.value })
-            },
-            ArrowDown() {
-              if (!itemState.selected) return
-              send({ type: "CONTENT.FOCUS", value })
-            },
-          }
+          const verticalEntryKey = prop("dir") === "rtl" ? "ArrowLeft" : "ArrowRight"
+          const entryKey = {
+            horizontal: "ArrowDown",
+            vertical: verticalEntryKey,
+          }[prop("orientation")]
 
-          const action = keyMap[getEventKey(event)]
-
-          if (action) {
-            action(event)
+          if (open && event.key === entryKey) {
+            send({ type: "CONTENT.FOCUS", side: "start" })
             event.preventDefault()
+            event.stopPropagation()
+          }
+        },
+      })
+    },
+
+    getTriggerProxyProps(props) {
+      return normalize.element({
+        "aria-hidden": true,
+        tabIndex: 0,
+        "data-trigger-proxy": "",
+        id: dom.getTriggerProxyId(scope, props.value),
+        "data-trigger-id": dom.getTriggerId(scope, props.value),
+        onFocus(event) {
+          const contentEl = dom.getContentEl(scope, props.value)
+          if (!contentEl) return
+          const prevFocusedEl = event.relatedTarget as HTMLElement | null
+
+          const wasTriggerFocused = prevFocusedEl === dom.getTriggerEl(scope, props.value)
+          const wasFocusFromContent = contains(contentEl, prevFocusedEl)
+
+          if (wasTriggerFocused || wasFocusFromContent) {
+            send({ type: "CONTENT.FOCUS", side: wasTriggerFocused ? "start" : "end" })
           }
         },
       })
@@ -210,12 +251,11 @@ export function connect<T extends PropTypes>(
         "aria-current": props.current ? "page" : undefined,
         "data-ownedby": dom.getContentId(scope, props.value),
         onClick(event) {
-          const { currentTarget } = event
+          const target = event.currentTarget
 
-          const win = getWindow(currentTarget)
-          currentTarget.addEventListener("navigationMenu.linkSelect", (event: any) => props.onSelect?.(event), {
-            once: true,
-          })
+          const win = getWindow(target)
+          const onSelect = props.onSelect as EventListener
+          target.addEventListener("link.select", onSelect, { once: true })
 
           const linkSelectEvent = new win.CustomEvent("link.select", {
             bubbles: true,
@@ -223,59 +263,10 @@ export function connect<T extends PropTypes>(
             detail: { originalEvent: event },
           })
 
-          currentTarget.dispatchEvent(linkSelectEvent)
+          target.dispatchEvent(linkSelectEvent)
 
           if (!linkSelectEvent.defaultPrevented && !event.metaKey) {
-            send({ type: "CONTENT.DISMISS" })
-          }
-        },
-        onKeyDown(event) {
-          const contentMenu = event.currentTarget.closest("[data-scope=navigation-menu][data-part=content]")
-          const isWithinContent = !!contentMenu
-
-          const keyMap: EventKeyMap = {
-            ArrowLeft(event) {
-              if (isWithinContent) return
-              send({ type: "TRIGGER.FOCUS", target: "prev", value: props.value })
-              event.preventDefault()
-            },
-            ArrowRight(event) {
-              if (isWithinContent) return
-              send({ type: "TRIGGER.FOCUS", target: "next", value: props.value })
-              event.preventDefault()
-            },
-            Home(event) {
-              if (isWithinContent) return
-              send({ type: "TRIGGER.FOCUS", target: "first" })
-              event.preventDefault()
-            },
-            End(event) {
-              if (isWithinContent) return
-              send({ type: "TRIGGER.FOCUS", target: "last" })
-              event.preventDefault()
-            },
-            ArrowDown(event) {
-              if (!isWithinContent) return
-              send({ type: "LINK.FOCUS", target: "next", node: event.currentTarget, value: props.value })
-              event.preventDefault()
-            },
-            ArrowUp(event) {
-              if (!isWithinContent) return
-              send({ type: "LINK.FOCUS", target: "prev", node: event.currentTarget, value: props.value })
-              event.preventDefault()
-            },
-          }
-
-          const action =
-            keyMap[
-              getEventKey(event, {
-                orientation: prop("orientation"),
-                dir: prop("dir"),
-              })
-            ]
-
-          if (action) {
-            action(event)
+            send({ type: "ROOT.CLOSE" })
           }
         },
       })
@@ -284,7 +275,7 @@ export function connect<T extends PropTypes>(
     getContentProps(props) {
       const itemState = getItemState(props)
 
-      const currentValue = context.get("value") ?? context.get("previousValue")
+      const currentValue = context.get("value") || context.get("previousValue")
       const selected = isViewportRendered ? currentValue === props.value : itemState.selected
 
       return normalize.element({
@@ -296,28 +287,69 @@ export function connect<T extends PropTypes>(
         "data-uid": prop("id"),
         "data-state": selected ? "open" : "closed",
         "data-type": computed("isSubmenu") ? "submenu" : "root",
+        "data-orientation": prop("orientation"),
         "data-value": props.value,
         onPointerEnter() {
           if (computed("isSubmenu")) return
-          send({ type: "CONTENT.ENTER", value: props.value })
+          send({ type: "CONTENT.POINTERENTER", value: props.value })
         },
         onPointerLeave(event) {
           if (event.pointerType !== "mouse") return
           if (computed("isSubmenu")) return
-          send({ type: "CONTENT.LEAVE", value: props.value })
+          send({ type: "CONTENT.POINTERLEAVE", value: props.value })
+        },
+        onKeyDown(event) {
+          // prevent parent menu triggering keydown event
+          if (event.currentTarget.closest("[data-scope=navigation-menu][data-part=root]") !== dom.getRootEl(scope))
+            return
+
+          const isMetaKey = event.altKey || event.ctrlKey || event.metaKey
+          const isTabKey = event.key === "Tab" && !isMetaKey
+          const candidates = getTabbables(event.currentTarget)
+
+          if (isTabKey) {
+            const focusedElement = scope.getActiveElement()
+            const index = candidates.findIndex((candidate) => candidate === focusedElement)
+            const isMovingBackwards = event.shiftKey
+            const nextCandidates = isMovingBackwards
+              ? candidates.slice(0, index).reverse()
+              : candidates.slice(index + 1, candidates.length)
+
+            if (dom.focusFirst(scope, nextCandidates)) {
+              // prevent browser tab keydown because we've handled focus
+              event.preventDefault()
+            } else {
+              // If we can't focus that means we're at the edges
+              // so focus the proxy and let browser handle
+              // tab/shift+tab keypress on the proxy instead
+              dom.getTriggerProxyEl(scope, props.value)?.focus()
+              return
+            }
+          }
+
+          const el = navigate(candidates, scope.getActiveElement(), {
+            key: event.key,
+            dir: prop("dir"),
+            loop: false,
+          })
+
+          el?.focus()
         },
       })
     },
 
-    getViewportPositionerProps() {
+    getViewportPositionerProps(props = {}) {
+      const { align = "center" } = props
       return normalize.element({
         ...parts.viewportPositioner.attrs,
         dir: prop("dir"),
         "data-orientation": prop("orientation"),
+        "data-align": align,
       })
     },
 
-    getViewportProps() {
+    getViewportProps(props = {}) {
+      const { align = "center" } = props
       const open = Boolean(value)
       return normalize.element({
         ...parts.viewport.attrs,
@@ -327,18 +359,22 @@ export function connect<T extends PropTypes>(
         "data-state": open ? "open" : "closed",
         "data-orientation": prop("orientation"),
         "data-type": computed("isSubmenu") ? "submenu" : "root",
+        "data-align": align,
         style: {
           transition: preventTransition ? "none" : undefined,
-          pointerEvents: !open ? "none" : undefined,
+          pointerEvents: !open && computed("isRootMenu") ? "none" : undefined,
+          "--viewport-width": toPx(viewportSize?.width),
+          "--viewport-height": toPx(viewportSize?.height),
+          "--viewport-x": toPx(viewportPosition?.x),
+          "--viewport-y": toPx(viewportPosition?.y),
         },
         onPointerEnter() {
-          if (computed("isSubmenu")) return
-          send({ type: "CONTENT.ENTER", src: "viewport" })
+          send({ type: "CONTENT.POINTERENTER" })
         },
         onPointerLeave(event) {
+          if (prop("disablePointerLeaveClose")) return
           if (event.pointerType !== "mouse") return
-          if (computed("isSubmenu")) return
-          send({ type: "CONTENT.LEAVE", src: "viewport" })
+          send({ type: "CONTENT.POINTERLEAVE" })
         },
       })
     },
