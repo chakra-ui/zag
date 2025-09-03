@@ -1,9 +1,7 @@
 import { LitElement, html, unsafeCSS } from "lit"
 import { customElement, property, state } from "lit/decorators.js"
-import type { Service } from "@zag-js/core"
 import styleLayout from "@zag-js/shared/src/css/layout.css?inline"
 import type { ControlsController } from "../lib/controls-controller"
-import "./state-visualizer"
 
 @customElement("zag-toolbar")
 export class Toolbar extends LitElement {
@@ -11,9 +9,6 @@ export class Toolbar extends LitElement {
 
   @property({ attribute: false })
   controls?: ControlsController<any>
-
-  @property({ attribute: false })
-  service?: Service<any>
 
   @state()
   private activeTab = 0
@@ -42,7 +37,7 @@ export class Toolbar extends LitElement {
             ? html` <div ?data-active=${this.activeTab === 0} data-content>${this.renderControls()}</div> `
             : ""}
           <div ?data-active=${this.activeTab === (hasControls ? 1 : 0)} data-content>
-            ${this.renderStateVisualizer()}
+            <slot></slot>
           </div>
         </div>
       </div>
@@ -141,9 +136,5 @@ export class Toolbar extends LitElement {
         })}
       </div>
     `
-  }
-
-  private renderStateVisualizer() {
-    return html`<state-visualizer .state=${this.service}></state-visualizer>`
   }
 }

@@ -1,9 +1,13 @@
-import { LitElement, css, html } from "lit"
+import { LitElement, html } from "lit"
 import { customElement, property } from "lit/decorators.js"
 import { routesData } from "@zag-js/shared"
-// import style from "@zag-js/shared/src/css/layout.css?inline"
+
 import "@zag-js/shared/src/style.css"
 import "./main.css"
+
+// Import toolbar components
+import "./components/toolbar"
+import "./components/state-visualizer"
 
 // Import all page components
 import "./pages/accordion"
@@ -14,13 +18,6 @@ export class ZagApp extends LitElement {
   protected createRenderRoot() {
     return this
   }
-
-  // static style = css`
-  //   .component-page {
-  //     flex: auto;
-  //     display: flex;
-  //   }
-  // `
 
   @property({ type: String })
   currentPath = window.location.pathname

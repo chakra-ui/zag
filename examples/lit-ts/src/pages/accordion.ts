@@ -10,7 +10,6 @@ import { ZagController, normalizeProps } from "@zag-js/lit"
 import { ArrowRight, createElement } from "lucide"
 import { nanoid } from "nanoid"
 import { ControlsController } from "../lib/controls-controller"
-import "../components/toolbar"
 
 @customElement("accordion-page")
 export class AccordionPage extends LitElement {
@@ -48,7 +47,9 @@ export class AccordionPage extends LitElement {
         </div>
       </main>
 
-      <zag-toolbar .controls=${this.controls} .service=${this.zagController.service}></zag-toolbar>
+      <zag-toolbar .controls=${this.controls}>
+        <state-visualizer .state=${this.zagController.service}></state-visualizer>
+      </zag-toolbar>
     `
   }
 }
