@@ -3,6 +3,7 @@ import { customElement, property, state } from "lit/decorators.js"
 import type { Service } from "@zag-js/core"
 import styleLayout from "@zag-js/shared/src/css/layout.css?inline"
 import type { ControlsController } from "../lib/controls-controller"
+import "./state-visualizer"
 
 @customElement("zag-toolbar")
 export class Toolbar extends LitElement {
@@ -142,15 +143,6 @@ export class Toolbar extends LitElement {
   }
 
   private renderStateVisualizer() {
-    if (!this.service) {
-      return html`<div class="state-visualizer"><pre>No service available</pre></div>`
-    }
-
-    return html`
-      <div class="state-visualizer">
-        <h4>State</h4>
-        <pre>${JSON.stringify(this.service.state.get(), null, 2)}</pre>
-      </div>
-    `
+    return html`<state-visualizer .state=${this.service}></state-visualizer>`
   }
 }
