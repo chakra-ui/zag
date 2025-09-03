@@ -1,7 +1,8 @@
 import { LitElement, html, css } from "lit"
 import { customElement } from "lit/decorators.js"
+import { spread } from "@open-wc/lit-helpers"
 import * as accordion from "@zag-js/accordion"
-import { ZagController } from "@zag-js/lit"
+import { ZagController, normalizeProps } from "@zag-js/lit"
 
 // Sample data matching other framework examples
 const accordionData = [
@@ -61,30 +62,30 @@ export class AccordionDemo extends LitElement {
     }
   `
 
-  private zagController = new ZagController(this, accordion.machine, accordion.connect, { id: "accordion-demo" })
+  private zagController = new ZagController(this, accordion.machine, () => ({ id: "accordion-demo" }))
 
   render() {
-    const { api } = this.zagController
+    const api = accordion.connect(this.zagController.service, normalizeProps)
 
     return html`
-      <div ${api.getRootProps()} data-part="root">
+      <div ${spread(api.getRootProps())} data-part="root">
         ${accordionData.map(
           (item) => html`
-            <div class="accordion-item" ${api.getItemProps({ value: item.id })}>
+            <div class="accordion-item" ${spread(api.getItemProps({ value: item.id }))}>
               <h3>
                 <button
                   class="accordion-trigger"
                   data-testid="${item.id}:trigger"
-                  ${api.getItemTriggerProps({ value: item.id })}
+                  ${spread(api.getItemTriggerProps({ value: item.id }))}
                 >
                   ${item.label}
-                  <div class="accordion-indicator" ${api.getItemIndicatorProps({ value: item.id })}>▶</div>
+                  <div class="accordion-indicator" ${spread(api.getItemIndicatorProps({ value: item.id }))}>▶</div>
                 </button>
               </h3>
               <div
                 class="accordion-content"
                 data-testid="${item.id}:content"
-                ${api.getItemContentProps({ value: item.id })}
+                ${spread(api.getItemContentProps({ value: item.id }))}
               >
                 Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et
                 dolore magna aliqua.

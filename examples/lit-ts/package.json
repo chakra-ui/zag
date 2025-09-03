@@ -8,6 +8,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@open-wc/lit-helpers": "^0.7.0",
     "@zag-js/accordion": "workspace:*",
     "@zag-js/avatar": "workspace:*",
     "@zag-js/checkbox": "workspace:*",

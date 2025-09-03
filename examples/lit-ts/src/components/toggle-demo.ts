@@ -1,7 +1,8 @@
 import { LitElement, html, css } from "lit"
 import { customElement } from "lit/decorators.js"
+import { spread } from "@open-wc/lit-helpers"
 import * as toggle from "@zag-js/toggle"
-import { ZagController } from "@zag-js/lit"
+import { ZagController, normalizeProps } from "@zag-js/lit"
 
 @customElement("toggle-demo")
 export class ToggleDemo extends LitElement {
@@ -36,15 +37,17 @@ export class ToggleDemo extends LitElement {
     }
   `
 
-  private zagController = new ZagController(this, toggle.machine, toggle.connect, { id: "toggle-demo" })
+  private zagController = new ZagController(this, toggle.machine, () => ({}))
 
   render() {
-    const { api } = this.zagController
+    const api = toggle.connect(this.zagController.service, normalizeProps)
 
     return html`
       <div>
         <h3>Toggle Demo</h3>
-        <button class="toggle-button" ${api.rootProps} data-part="root">${api.pressed ? "ON" : "OFF"}</button>
+        <button class="toggle-button" ${spread(api.getRootProps())} data-part="root">
+          ${api.pressed ? "ON" : "OFF"}
+        </button>
         <p>Current state: ${api.pressed ? "Pressed" : "Not Pressed"}</p>
       </div>
     `
