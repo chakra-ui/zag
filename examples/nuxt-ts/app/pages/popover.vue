@@ -25,7 +25,7 @@ const api = computed(() => popover.connect(service, normalizeProps))
       </button>
       <Teleport to="#teleports" :disabled="!api.portalled">
         <div v-bind="api.getPositionerProps()">
-          <div data-testid="popover-content" class="popover-content" v-bind="api.getContentProps()">
+          <Presence data-testid="popover-content" class="popover-content" v-bind="api.getContentProps()">
             <div v-bind="api.getArrowProps()">
               <div v-bind="api.getArrowTipProps()" />
             </div>
@@ -36,7 +36,7 @@ const api = computed(() => popover.connect(service, normalizeProps))
               <input data-testid="input" placeholder="input" />
               <button data-testid="popover-close-button" v-bind="api.getCloseTriggerProps()">X</button>
             </div>
-          </div>
+          </Presence>
         </div>
       </Teleport>
       <span data-testid="plain-text">I am just text</span>
