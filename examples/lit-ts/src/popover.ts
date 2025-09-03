@@ -11,6 +11,7 @@ export class Popover extends Component<popover.Api> {
   initMachine() {
     return new VanillaMachine(popover.machine, {
       id: this.id,
+      getRootNode: () => this.renderRoot,
       positioning: {
         placement: "right",
       },

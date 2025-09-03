@@ -29,6 +29,7 @@ export class Combobox extends Component<combobox.Api> {
     const self = this
     return new VanillaMachine(combobox.machine, {
       id: this.id,
+      getRootNode: () => this.renderRoot,
       get collection() {
         return self.getCollection(self.options || comboboxData)
       },
