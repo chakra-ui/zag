@@ -1,14 +1,13 @@
-import { LitElement, html } from "lit"
+import { LitElement, html, unsafeCSS } from "lit"
 import { customElement, property } from "lit/decorators.js"
 import { unsafeHTML } from "lit/directives/unsafe-html.js"
 import type { MachineSchema, Service } from "@zag-js/core"
 import { highlightState } from "@zag-js/stringify-state"
+import styleLayout from "@zag-js/shared/src/css/layout.css?inline"
 
 @customElement("state-visualizer")
 export class StateVisualizer<T extends MachineSchema = any> extends LitElement {
-  protected createRenderRoot() {
-    return this
-  }
+  static styles = unsafeCSS(styleLayout)
 
   @property({ attribute: false })
   state?: Service<T>
