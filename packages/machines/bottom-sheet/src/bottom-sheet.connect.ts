@@ -29,10 +29,18 @@ export function connect<T extends PropTypes>(
 
   return {
     open,
+    activeSnapPoint: context.get("activeSnapPoint"),
+
     setOpen(nextOpen) {
       const open = state.hasTag("open")
       if (open === nextOpen) return
       send({ type: nextOpen ? "OPEN" : "CLOSE" })
+    },
+
+    setActiveSnapPoint(snapPoint) {
+      const activeSnapPoint = context.get("activeSnapPoint")
+      if (activeSnapPoint === snapPoint) return
+      send({ type: "SET_ACTIVE_SNAP_POINT", snapPoint })
     },
 
     getContentProps() {

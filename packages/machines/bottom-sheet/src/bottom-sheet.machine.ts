@@ -25,6 +25,7 @@ export const machine = createMachine<BottomSheetSchema>({
       restoreFocus: true,
       initialFocusEl,
       snapPoints: [1],
+      defaultSnapPoint: 1,
       swipeVelocityThreshold: 500,
       closeThreshold: 0.25,
       grabberOnly: false,
@@ -33,13 +34,20 @@ export const machine = createMachine<BottomSheetSchema>({
     }
   },
 
-  context({ bindable }) {
+  context({ bindable, prop }) {
     return {
       pointerStart: bindable<Point | null>(() => ({
         defaultValue: null,
       })),
       dragOffset: bindable<number | null>(() => ({
         defaultValue: null,
+      })),
+      activeSnapPoint: bindable<number | string>(() => ({
+        defaultValue: prop("defaultSnapPoint"),
+        value: prop("activeSnapPoint"),
+        onChange(value) {
+          return prop("onActiveSnapPointChange")?.({ snapPoint: value })
+        },
       })),
       snapPointHeight: bindable<number | null>(() => ({
         defaultValue: null,
@@ -73,6 +81,12 @@ export const machine = createMachine<BottomSheetSchema>({
   initialState({ prop }) {
     const open = prop("open") || prop("defaultOpen")
     return open ? "open" : "closed"
+  },
+
+  on: {
+    SET_ACTIVE_SNAP_POINT: {
+      actions: ["setActiveSnapPoint"],
+    },
   },
 
   states: {
@@ -230,6 +244,10 @@ export const machine = createMachine<BottomSheetSchema>({
 
       invokeOnClose({ prop }) {
         prop("onOpenChange")?.({ open: false })
+      },
+
+      setActiveSnapPoint({ context, event }) {
+        context.set("activeSnapPoint", event.snapPoint)
       },
 
       setPointerStart({ event, context }) {

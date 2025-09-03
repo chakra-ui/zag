@@ -6,6 +6,10 @@ export interface OpenChangeDetails {
   open: boolean
 }
 
+export interface SnapPointChangeDetails {
+  snapPoint: number | string
+}
+
 export type ElementIds = Partial<{
   backdrop: string
   content: string
@@ -101,6 +105,19 @@ export interface BottomSheetProps extends DirectionProperty, CommonProperties, D
    * @default true
    */
   handleScrollableElements?: boolean
+  /**
+   * The currently active snap point.
+   */
+  activeSnapPoint?: number | string | undefined
+  /**
+   * The default snap point of the bottom sheet.
+   * @default 1
+   */
+  defaultSnapPoint?: number | string | undefined
+  /**
+   * Callback fired when the active snap point changes.
+   */
+  onActiveSnapPointChange?: ((details: SnapPointChangeDetails) => void) | undefined
 }
 
 type PropsWithDefault =
@@ -116,6 +133,7 @@ type PropsWithDefault =
   | "closeThreshold"
   | "grabberOnly"
   | "handleScrollableElements"
+  | "defaultSnapPoint"
 
 export interface BottomSheetSchema {
   props: RequiredBy<BottomSheetProps, PropsWithDefault>
@@ -124,6 +142,7 @@ export interface BottomSheetSchema {
   context: {
     pointerStart: Point | null
     dragOffset: number | null
+    activeSnapPoint: number | string
     snapPointHeight: number | null
     snapPointOffset: number | null
     contentHeight: number | null
@@ -150,9 +169,17 @@ export interface BottomSheetApi<T extends PropTypes = PropTypes> {
    */
   open: boolean
   /**
+   * The currently active snap point.
+   */
+  activeSnapPoint: number | string
+  /**
    * Function to open or close the menu.
    */
   setOpen: (open: boolean) => void
+  /**
+   * Function to set the active snap point.
+   */
+  setActiveSnapPoint: (snapPoint: number | string) => void
 
   getContentProps: () => T["element"]
   getTitleProps: () => T["element"]
