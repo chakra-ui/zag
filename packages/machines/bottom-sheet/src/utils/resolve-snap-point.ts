@@ -9,7 +9,7 @@ export function resolveSnapPoint(snapPoint: number | string, containerHeight: nu
   }
   if (typeof snapPoint === "string") {
     return {
-      value: parseFloat(snapPoint),
+      value: snapPoint,
       offset: containerHeight - parseFloat(snapPoint),
     }
   }

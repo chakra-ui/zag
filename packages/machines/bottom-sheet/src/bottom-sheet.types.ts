@@ -7,7 +7,7 @@ export interface OpenChangeDetails {
 }
 
 export interface ResolvedSnapPoint {
-  value: number
+  value: number | string
   offset: number
 }
 

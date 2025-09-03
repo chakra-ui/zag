@@ -295,6 +295,7 @@ export const machine = createMachine<BottomSheetSchema>({
 
         const closestSnapPoint = findClosestSnapPoint(dragOffset, snapPoints)
 
+        context.set("activeSnapPoint", closestSnapPoint.value)
         context.set("snapPointHeight", contentHeight - closestSnapPoint.offset)
         context.set("snapPointOffset", closestSnapPoint.offset)
         context.set("dragOffset", closestSnapPoint.offset)
