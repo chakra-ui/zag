@@ -1,3 +1,8 @@
+// TODO: These tests were AI generated and need review
+// - Fix TypeScript issues
+// - Verify test correctness and expectations
+// - Ensure tests match real Lit component lifecycle
+
 import { createMachine } from "@zag-js/core"
 import { ZagController } from "../src"
 
@@ -22,19 +27,21 @@ class MockLitElement {
   }
 }
 
-function renderMachine(machine: any) {
+function renderMachine(machine: any, props: any = {}) {
   const host = new MockLitElement()
-  const controller = new ZagController(host as any, machine)
+  const controller = new ZagController(host as any, machine, () => props)
 
   // Simulate hostConnected
   controller.hostConnected()
 
   const send = async (event: any) => {
-    controller.send(event)
+    controller.service.send(event)
     await Promise.resolve()
   }
 
-  return { controller, host, send, api: controller.api }
+  const { service } = controller
+
+  return { controller, host, send, service }
 }
 
 describe("LitMachine", () => {
@@ -53,9 +60,9 @@ describe("LitMachine", () => {
       },
     })
 
-    const { controller } = renderMachine(machine)
+    const { service } = renderMachine(machine)
 
-    expect(controller.api.state.get()).toBe("foo")
+    expect(service.state.get()).toBe("foo")
   })
 
   test("initial entry action", async () => {
@@ -100,10 +107,10 @@ describe("LitMachine", () => {
       },
     })
 
-    const { controller } = renderMachine(machine)
+    const { service } = renderMachine(machine)
 
-    expect(controller.api.state.get()).toEqual("test")
-    expect(controller.api.context.get("foo")).toEqual("bar")
+    expect(service.state.get()).toEqual("test")
+    expect(service.context.get("foo")).toEqual("bar")
   })
 
   test("send event", async () => {
@@ -167,18 +174,18 @@ describe("LitMachine", () => {
       },
     })
 
-    const { controller, send } = renderMachine(machine)
+    const { service, send } = renderMachine(machine)
     await Promise.resolve()
 
-    expect(controller.api.state.hasTag("go")).toBeTruthy()
+    expect(service.state.hasTag("go")).toBeTruthy()
 
     await send({ type: "TIMER" })
-    expect(controller.api.state.get()).toBe("yellow")
-    expect(controller.api.state.hasTag("go")).toBeTruthy()
+    expect(service.state.get()).toBe("yellow")
+    expect(service.state.hasTag("go")).toBeTruthy()
 
     await send({ type: "TIMER" })
-    expect(controller.api.state.get()).toBe("red")
-    expect(controller.api.state.hasTag("go")).toBeFalsy()
+    expect(service.state.get()).toBe("red")
+    expect(service.state.hasTag("go")).toBeFalsy()
   })
 
   test("computed", async () => {
@@ -208,13 +215,13 @@ describe("LitMachine", () => {
       },
     })
 
-    const { controller, send } = renderMachine(machine)
+    const { service, send } = renderMachine(machine)
     await Promise.resolve()
 
-    expect(controller.api.computed("length")).toEqual(3)
+    expect(service.computed("length")).toEqual(3)
 
     await send({ type: "UPDATE" })
-    expect(controller.api.computed("length")).toEqual(5)
+    expect(service.computed("length")).toEqual(5)
   })
 
   test("watch", async () => {
@@ -290,14 +297,14 @@ describe("LitMachine", () => {
       },
     })
 
-    const { controller, send } = renderMachine(machine)
+    const { service, send } = renderMachine(machine, { max: 1 })
     await Promise.resolve()
 
     await send({ type: "INCREMENT" })
-    expect(controller.api.context.get("count")).toEqual(1)
+    expect(service.context.get("count")).toEqual(1)
 
     await send({ type: "INCREMENT" })
-    expect(controller.api.context.get("count")).toEqual(1)
+    expect(service.context.get("count")).toEqual(1)
   })
 
   test("context: controlled", async () => {
@@ -335,12 +342,12 @@ describe("LitMachine", () => {
       },
     })
 
-    const { controller, send } = renderMachine(machine)
+    const { service, send } = renderMachine(machine, { value: "foo", defaultValue: "" })
 
     await send({ type: "VALUE.SET", value: "next" })
 
     // since value is controlled, it should not change
-    expect(controller.api.context.get("value")).toEqual("foo")
+    expect(service.context.get("value")).toEqual("foo")
   })
 })
 
@@ -385,17 +392,17 @@ describe("ZagController", () => {
       },
     })
 
-    const { controller } = renderMachine(machine)
+    const { service } = renderMachine(machine)
 
     // Check all service API properties are available
-    expect(controller.api.state).toBeDefined()
-    expect(controller.api.send).toBeDefined()
-    expect(controller.api.context).toBeDefined()
-    expect(controller.api.prop).toBeDefined()
-    expect(controller.api.scope).toBeDefined()
-    expect(controller.api.refs).toBeDefined()
-    expect(controller.api.computed).toBeDefined()
-    expect(controller.api.event).toBeDefined()
+    expect(service.state).toBeDefined()
+    expect(service.send).toBeDefined()
+    expect(service.context).toBeDefined()
+    expect(service.prop).toBeDefined()
+    expect(service.scope).toBeDefined()
+    expect(service.refs).toBeDefined()
+    expect(service.computed).toBeDefined()
+    expect(service.event).toBeDefined()
   })
 
   test("cleanup on hostDisconnected", () => {
@@ -409,13 +416,13 @@ describe("ZagController", () => {
     })
 
     const host = new MockLitElement()
-    const controller = new ZagController(host as any, machine)
+    const controller = new ZagController(host as any, machine, () => ({}))
 
     controller.hostConnected()
-    expect(controller.api).toBeDefined()
+    expect(controller.service).toBeDefined()
 
     controller.hostDisconnected()
     // Machine should be stopped and cleaned up
-    expect(controller.api.getStatus()).toBe("Stopped")
+    expect(controller.service.getStatus()).toBe("Stopped")
   })
 })
