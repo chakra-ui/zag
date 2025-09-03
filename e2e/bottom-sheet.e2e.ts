@@ -172,3 +172,48 @@ test.describe("bottom-sheet [snapPoints]", () => {
     expect(currentHeight).toBe(lowerHeight)
   })
 })
+
+test.describe("bottom-sheet [defaultSnapPoint]", () => {
+  test.beforeEach(async ({ page }) => {
+    I = new BottomSheetModel(page)
+    await I.goto("/bottom-sheet-default-snap-point")
+  })
+
+  test("should open at default snap point and drag to 50% and 100%", async ({ page }) => {
+    await I.clickTrigger()
+    await I.seeContent()
+
+    await page.waitForTimeout(ANIMATION_DURATION)
+
+    const fullHeight = 500
+    const middleHeight = fullHeight * 0.5
+    const lowerHeight = fullHeight * 0.25
+
+    let currentHeight = await I.getContentVisibleHeight()
+
+    // Should open at default snap point (25%)
+    expect(currentHeight).toBe(lowerHeight)
+
+    // Drag up to reach middle position (50%)
+    await I.dragGrabber("up", 175)
+
+    currentHeight = await I.getContentVisibleHeight()
+
+    // Should have snapped to middle position (50%)
+    expect(currentHeight).toBe(middleHeight)
+
+    // Drag up more to reach full height (100%)
+    await I.dragGrabber("up", 250)
+
+    currentHeight = await I.getContentVisibleHeight()
+
+    // Should be at maximum height (100% snap point)
+    expect(currentHeight).toBe(fullHeight)
+
+    // Try dragging up more - should not increase further as it's at max
+    await I.dragGrabber("up", 100)
+
+    const finalHeight = await I.getContentVisibleHeight()
+    expect(finalHeight).toBe(fullHeight)
+  })
+})
