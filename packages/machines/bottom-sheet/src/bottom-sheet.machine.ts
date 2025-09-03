@@ -25,7 +25,7 @@ export const machine = createMachine<BottomSheetSchema>({
       restoreFocus: true,
       initialFocusEl,
       snapPoints: [1],
-      swipeVelocityThreshold: 0.5,
+      swipeVelocityThreshold: 500,
       closeThreshold: 0.25,
       grabberOnly: false,
       handleScrollableElements: true,
@@ -252,7 +252,7 @@ export const machine = createMachine<BottomSheetSchema>({
           if (lastTimestamp) {
             const dt = currentTimestamp - lastTimestamp
             if (dt > 0) {
-              context.set("velocity", dy / dt)
+              context.set("velocity", (dy / dt) * 1000)
             }
           }
         }

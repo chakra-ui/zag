@@ -81,8 +81,8 @@ export interface BottomSheetProps extends DirectionProperty, CommonProperties, D
    */
   snapPoints?: (number | string)[] | undefined
   /**
-   * The threshold velocity (in pixels/ms) for closing the bottom sheet.
-   * @default 0.5
+   * The threshold velocity (in pixels/s) for closing the bottom sheet.
+   * @default 5
    */
   swipeVelocityThreshold?: number
   /**
