@@ -6,6 +6,11 @@ export interface OpenChangeDetails {
   open: boolean
 }
 
+export interface ResolvedSnapPoint {
+  value: number
+  offset: number
+}
+
 export interface SnapPointChangeDetails {
   snapPoint: number | string
 }
@@ -151,7 +156,7 @@ export interface BottomSheetSchema {
     velocity: number | null
   }
   computed: {
-    resolvedSnapPoints: number[]
+    resolvedSnapPoints: ResolvedSnapPoint[]
   }
   event: EventObject
   action: string

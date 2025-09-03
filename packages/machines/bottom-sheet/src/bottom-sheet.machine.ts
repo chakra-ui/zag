@@ -3,7 +3,7 @@ import type { BottomSheetSchema } from "./bottom-sheet.types"
 import type { Point } from "@zag-js/types"
 import { addDomEvent, getEventPoint, getEventTarget, raf } from "@zag-js/dom-query"
 import * as dom from "./bottom-sheet.dom"
-import { resolveSnapPoints } from "./utils/resolve-snap-points"
+import { resolveSnapPoint } from "./utils/resolve-snap-point"
 import { trackDismissableElement } from "@zag-js/dismissable"
 import { findClosestSnapPoint } from "./utils/find-closest-snap-point"
 import { trapFocus } from "@zag-js/focus-trap"
@@ -74,7 +74,7 @@ export const machine = createMachine<BottomSheetSchema>({
     resolvedSnapPoints({ context, prop }) {
       const contentHeight = context.get("contentHeight")
       if (contentHeight === null) return []
-      return resolveSnapPoints(prop("snapPoints"), contentHeight)
+      return prop("snapPoints").map((snapPoint) => resolveSnapPoint(snapPoint, contentHeight))
     },
   },
 
@@ -220,15 +220,17 @@ export const machine = createMachine<BottomSheetSchema>({
         const contentHeight = context.get("contentHeight")
         const swipeVelocityThreshold = prop("swipeVelocityThreshold")
         const closeThreshold = prop("closeThreshold")
-        const resolvedSnapPoints = computed("resolvedSnapPoints")
+        const snapPoints = computed("resolvedSnapPoints")
 
         if (dragOffset === null || contentHeight === null || velocity === null) return false
+
         const visibleHeight = contentHeight - dragOffset
+        const smallestSnapPoint = snapPoints.reduce((acc, curr) => (curr.offset > acc.offset ? curr : acc))
 
         const isFastSwipe = velocity > 0 && velocity >= swipeVelocityThreshold
 
         const closeThresholdInPixels = contentHeight * (1 - closeThreshold)
-        const isBelowSmallestSnapPoint = visibleHeight < resolvedSnapPoints[0]
+        const isBelowSmallestSnapPoint = visibleHeight < contentHeight - smallestSnapPoint.offset
         const isBelowcloseThreshold = visibleHeight < closeThresholdInPixels
 
         const hasEnoughDragToDismiss = (isBelowcloseThreshold && isBelowSmallestSnapPoint) || visibleHeight === 0
@@ -284,18 +286,18 @@ export const machine = createMachine<BottomSheetSchema>({
         context.set("dragOffset", -delta)
       },
 
-      setClosestSnapPoint({ computed, context, event }) {
+      setClosestSnapPoint({ computed, context }) {
         const snapPoints = computed("resolvedSnapPoints")
         const contentHeight = context.get("contentHeight")
-        if (!snapPoints || contentHeight === null) return
+        const dragOffset = context.get("dragOffset")
 
-        const closestSnapPoint = findClosestSnapPoint(window.innerHeight - event.point.y, snapPoints)
+        if (!snapPoints || contentHeight === null || dragOffset === null) return
 
-        const currentSnapPointOffset = contentHeight - closestSnapPoint
+        const closestSnapPoint = findClosestSnapPoint(dragOffset, snapPoints)
 
-        context.set("snapPointHeight", closestSnapPoint)
-        context.set("snapPointOffset", currentSnapPointOffset)
-        context.set("dragOffset", currentSnapPointOffset)
+        context.set("snapPointHeight", contentHeight - closestSnapPoint.offset)
+        context.set("snapPointOffset", closestSnapPoint.offset)
+        context.set("dragOffset", closestSnapPoint.offset)
       },
 
       clearDragOffset({ context }) {
