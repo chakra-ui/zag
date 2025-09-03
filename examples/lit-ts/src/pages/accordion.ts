@@ -9,15 +9,18 @@ import stylePage from "./page.css?inline"
 import { ZagController, normalizeProps } from "@zag-js/lit"
 import { ArrowRight, createElement } from "lucide"
 import { nanoid } from "nanoid"
+import { ControlsController } from "../lib/controls-controller"
+import "../components/toolbar"
 
 @customElement("accordion-page")
 export class AccordionPage extends LitElement {
   static styles = unsafeCSS(styleComponent + styleLayout + stylePage)
 
+  private controls = new ControlsController(this, accordionControls)
+
   private zagController = new ZagController(this, accordion.machine, () => ({
     id: nanoid(),
-    collapsible: false,
-    multiple: false,
+    ...this.controls.context,
   }))
 
   render() {
@@ -45,16 +48,7 @@ export class AccordionPage extends LitElement {
         </div>
       </main>
 
-      <div class="toolbar">
-        <div class="controls">
-          <h3>Controls</h3>
-          <p><em>Dynamic controls coming soon...</em></p>
-        </div>
-        <div class="state-visualizer">
-          <h4>State</h4>
-          <pre>${JSON.stringify(this.zagController.service.state.get(), null, 2)}</pre>
-        </div>
-      </div>
+      <zag-toolbar .controls=${this.controls} .service=${this.zagController.service}></zag-toolbar>
     `
   }
 }
