@@ -31,7 +31,13 @@ export function navigate<T extends HTMLElement>(
   const idx = items.indexOf(current)
   if (idx === -1) return null
 
-  const isForward = isVertical ? key === "ArrowDown" : dir === "ltr" ? key === "ArrowRight" : key === "ArrowLeft"
+  let isForward: boolean
+  if (orientation === "both") {
+    // When orientation is both, treat ArrowDown/Right as forward and ArrowUp/Left as backward
+    isForward = key === "ArrowDown" || (dir === "ltr" ? key === "ArrowRight" : key === "ArrowLeft")
+  } else {
+    isForward = isVertical ? key === "ArrowDown" : dir === "ltr" ? key === "ArrowRight" : key === "ArrowLeft"
+  }
 
   const nextIdx = isForward
     ? loop
