@@ -89,7 +89,7 @@ export class BottomSheetModel extends Model {
 
     const transform = await this.content.evaluate((el) => el.style.transform)
     const snapPointOffset = await this.content.evaluate((el) =>
-      getComputedStyle(el).getPropertyValue("--snap-point-offset"),
+      getComputedStyle(el).getPropertyValue("--bottom-sheet-translate"),
     )
 
     const translateY = transform.match(/translate3d\(([^,]+), ([^,]+), ([^,]+)\)/)

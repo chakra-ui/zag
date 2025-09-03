@@ -70,13 +70,13 @@
     transform: translate3d(0, 100%, 0);
   }
   to {
-    transform: translate3d(0, 0, 0);
+    transform: translate3d(0, var(--bottom-sheet-translate, 0), 0);
   }
 }
 
 @keyframes slideOut {
   from {
-    transform: translate3d(0, var(--drag-offset, var(--snap-point-offset)), 0);
+    transform: translate3d(0, var(--bottom-sheet-translate, 0), 0);
   }
   to {
     transform: translate3d(0, 100%, 0);

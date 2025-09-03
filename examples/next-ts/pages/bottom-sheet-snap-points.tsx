@@ -13,7 +13,6 @@ export default function Page() {
   const service = useMachine(bottomSheet.machine, {
     id: useId(),
     snapPoints: [0.25, "250px", 1],
-    defaultSnapPoint: "250px",
     ...controls.context,
   })
 

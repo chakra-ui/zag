@@ -27,6 +27,8 @@ export function connect<T extends PropTypes>(
   const open = state.hasTag("open")
   const dragging = state.hasTag("dragging")
 
+  const translate = context.get("dragOffset") ?? context.get("resolvedActiveSnapPoint")?.offset
+
   return {
     open,
     activeSnapPoint: context.get("activeSnapPoint"),
@@ -57,7 +59,7 @@ export function connect<T extends PropTypes>(
         style: {
           transform: tap(context.get("dragOffset"), (v) => `translate3d(0, ${v}px, 0)`),
           transitionDuration: dragging ? "0s" : undefined,
-          "--drag-offset": tap(context.get("dragOffset"), (v) => `${v}px`),
+          "--bottom-sheet-translate": tap(translate, (v) => `${v}px`),
           "--snap-point-offset": tap(context.get("resolvedActiveSnapPoint"), (v) => `${v.offset}px`),
           willChange: "transform",
         },
