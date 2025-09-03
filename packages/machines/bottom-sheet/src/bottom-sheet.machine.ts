@@ -1,5 +1,5 @@
 import { createMachine } from "@zag-js/core"
-import type { BottomSheetSchema } from "./bottom-sheet.types"
+import type { BottomSheetSchema, ResolvedSnapPoint } from "./bottom-sheet.types"
 import type { Point } from "@zag-js/types"
 import { addDomEvent, getEventPoint, getEventTarget, raf } from "@zag-js/dom-query"
 import * as dom from "./bottom-sheet.dom"
@@ -49,10 +49,7 @@ export const machine = createMachine<BottomSheetSchema>({
           return prop("onActiveSnapPointChange")?.({ snapPoint: value })
         },
       })),
-      snapPointHeight: bindable<number | null>(() => ({
-        defaultValue: null,
-      })),
-      snapPointOffset: bindable<number | null>(() => ({
+      resolvedActiveSnapPoint: bindable<ResolvedSnapPoint | null>(() => ({
         defaultValue: null,
       })),
       contentHeight: bindable<number | null>(() => ({
@@ -76,6 +73,17 @@ export const machine = createMachine<BottomSheetSchema>({
       if (contentHeight === null) return []
       return prop("snapPoints").map((snapPoint) => resolveSnapPoint(snapPoint, contentHeight))
     },
+  },
+
+  watch({ track, context }) {
+    track([() => context.get("activeSnapPoint"), () => context.get("contentHeight")], () => {
+      const activeSnapPoint = context.get("activeSnapPoint")
+      const contentHeight = context.get("contentHeight")
+      if (contentHeight === null) return
+
+      const resolvedActiveSnapPoint = resolveSnapPoint(activeSnapPoint, contentHeight)
+      context.set("resolvedActiveSnapPoint", resolvedActiveSnapPoint)
+    })
   },
 
   initialState({ prop }) {
@@ -114,7 +122,7 @@ export const machine = createMachine<BottomSheetSchema>({
         ],
         POINTER_UP: [
           {
-            actions: ["clearPointerStart"],
+            actions: ["clearPointerStart", "clearDragOffset"],
           },
         ],
         CLOSE: [
@@ -145,7 +153,7 @@ export const machine = createMachine<BottomSheetSchema>({
             target: "closing",
           },
           {
-            actions: ["setClosestSnapPoint", "clearPointerStart"],
+            actions: ["setClosestSnapPoint", "clearPointerStart", "clearDragOffset"],
             target: "open",
           },
         ],
@@ -159,10 +167,8 @@ export const machine = createMachine<BottomSheetSchema>({
           target: "closed",
           actions: [
             "invokeOnClose",
-            "clearSnapPointOffset",
-            "clearSnapPointHeight",
-            "clearDragOffset",
             "clearPointerStart",
+            "clearDragOffset",
             "clearContentHeight",
             "clearVelocityTracking",
           ],
@@ -280,7 +286,7 @@ export const machine = createMachine<BottomSheetSchema>({
         context.set("lastPoint", point)
         context.set("lastTimestamp", currentTimestamp)
 
-        let delta = pointerStart.y - point.y - (context.get("snapPointOffset") || 0)
+        let delta = pointerStart.y - point.y - (context.get("resolvedActiveSnapPoint")?.offset || 0)
         if (delta > 0) delta = 0
 
         context.set("dragOffset", -delta)
@@ -296,8 +302,6 @@ export const machine = createMachine<BottomSheetSchema>({
         const closestSnapPoint = findClosestSnapPoint(dragOffset, snapPoints)
 
         context.set("activeSnapPoint", closestSnapPoint.value)
-        context.set("snapPointHeight", contentHeight - closestSnapPoint.offset)
-        context.set("snapPointOffset", closestSnapPoint.offset)
         context.set("dragOffset", closestSnapPoint.offset)
       },
 
@@ -311,14 +315,6 @@ export const machine = createMachine<BottomSheetSchema>({
 
       clearContentHeight({ context }) {
         context.set("contentHeight", null)
-      },
-
-      clearSnapPointHeight({ context }) {
-        context.set("snapPointHeight", null)
-      },
-
-      clearSnapPointOffset({ context }) {
-        context.set("snapPointOffset", null)
       },
 
       clearVelocityTracking({ context }) {

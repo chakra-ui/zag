@@ -57,7 +57,7 @@ export function connect<T extends PropTypes>(
         style: {
           transform: tap(context.get("dragOffset"), (v) => `translate3d(0, ${v}px, 0)`),
           transitionDuration: dragging ? "0s" : undefined,
-          "--snap-point-height": tap(context.get("snapPointHeight"), (v) => `${v}px`),
+          "--snap-point-offset": tap(context.get("resolvedActiveSnapPoint"), (v) => `${v.offset}px`),
           willChange: "transform",
         },
         onPointerDown(event) {

@@ -148,8 +148,7 @@ export interface BottomSheetSchema {
     pointerStart: Point | null
     dragOffset: number | null
     activeSnapPoint: number | string
-    snapPointHeight: number | null
-    snapPointOffset: number | null
+    resolvedActiveSnapPoint: ResolvedSnapPoint | null
     contentHeight: number | null
     lastPoint: Point | null
     lastTimestamp: number | null

@@ -30,7 +30,7 @@
   right: 0;
 
   &[data-state="open"] {
-    transform: translate3d(0, var(--snap-point-height, 0%), 0);
+    transform: translate3d(0, var(--snap-point-offset, 0%), 0);
     animation-name: slideIn;
   }
 
