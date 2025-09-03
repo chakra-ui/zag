@@ -105,15 +105,15 @@ export default function Page() {
                     >
                       {renderLinks(productSubmenu, {
                         value: "extensibility",
-                        items: ["Donec quis dui", "Vestibulum", "Nunc dignissim"],
+                        items: ["API Extensions", "Plugin System", "Custom Hooks", "Integration Tools"],
                       })}
                       {renderLinks(productSubmenu, {
                         value: "extensibility",
-                        items: ["Fusce pellentesque", "Aliquam porttitor", "Pellentesque"],
+                        items: ["Webhooks", "Event Handlers", "Middleware", "SDKs"],
                       })}
                       {renderLinks(productSubmenu, {
                         value: "extensibility",
-                        items: ["Fusce pellentesque", "Aliquam porttitor", "Pellentesque"],
+                        items: ["Connectors", "Adapters", "Bridges", "Extensions"],
                       })}
                     </Presence>
 
@@ -125,15 +125,15 @@ export default function Page() {
                     >
                       {renderLinks(productSubmenu, {
                         value: "security",
-                        items: ["Fusce pellentesque", "Aliquam porttitor", "Pellentesque", "Vestibulum"],
+                        items: ["Authentication", "Authorization", "Encryption", "SSL/TLS"],
                       })}
                       {renderLinks(productSubmenu, {
                         value: "security",
-                        items: ["Fusce pellentesque", "Aliquam porttitor", "Pellentesque"],
+                        items: ["Firewall", "DDoS Protection", "Security Audit"],
                       })}
                       {renderLinks(productSubmenu, {
                         value: "security",
-                        items: ["Fusce pellentesque", "Aliquam porttitor"],
+                        items: ["Access Control", "Identity Management"],
                       })}
                     </Presence>
 
@@ -145,15 +145,15 @@ export default function Page() {
                     >
                       {renderLinks(productSubmenu, {
                         value: "authentication",
-                        items: ["Donec quis dui", "Vestibulum", "Nunc dignissim"],
+                        items: ["OAuth", "SAML", "JWT", "Multi-factor Auth"],
                       })}
                       {renderLinks(productSubmenu, {
                         value: "authentication",
-                        items: ["Fusce pellentesque", "Aliquam porttitor", "Pellentesque"],
+                        items: ["Social Login", "Passwordless", "Biometrics"],
                       })}
                       {renderLinks(productSubmenu, {
                         value: "authentication",
-                        items: ["Fusce pellentesque", "Aliquam porttitor", "Pellentesque"],
+                        items: ["SSO", "User Management", "Role-based Access"],
                       })}
                     </Presence>
                   </Presence>
@@ -191,11 +191,11 @@ export default function Page() {
                     >
                       {renderLinks(companySubmenu, {
                         value: "customers",
-                        items: ["Donec quis dui", "Vestibulum", "Nunc dignissim"],
+                        items: ["Customer Stories", "Case Studies", "Testimonials", "Success Metrics"],
                       })}
                       {renderLinks(companySubmenu, {
                         value: "customers",
-                        items: ["Fusce pellentesque", "Aliquam porttitor", "Pellentesque"],
+                        items: ["Customer Support", "Help Center", "Documentation"],
                       })}
                     </Presence>
 
@@ -207,11 +207,11 @@ export default function Page() {
                     >
                       {renderLinks(companySubmenu, {
                         value: "partners",
-                        items: ["Fusce pellentesque", "Aliquam porttitor", "Pellentesque", "Vestibulum"],
+                        items: ["Partner Program", "Channel Partners", "Technology Partners", "Resellers"],
                       })}
                       {renderLinks(companySubmenu, {
                         value: "partners",
-                        items: ["Fusce pellentesque", "Aliquam porttitor", "Pellentesque"],
+                        items: ["Integration Partners", "Consulting Partners", "System Integrators"],
                       })}
                     </Presence>
 
@@ -223,11 +223,16 @@ export default function Page() {
                     >
                       {renderLinks(companySubmenu, {
                         value: "enterprise",
-                        items: ["Donec quis dui", "Vestibulum", "Nunc dignissim"],
+                        items: [
+                          "Enterprise Solutions",
+                          "Large Scale Deployments",
+                          "Custom Development",
+                          "Dedicated Teams",
+                        ],
                       })}
                       {renderLinks(companySubmenu, {
                         value: "enterprise",
-                        items: ["Fusce pellentesque", "Aliquam porttitor", "Pellentesque"],
+                        items: ["Enterprise Support", "SLA Agreements", "Compliance"],
                       })}
                     </Presence>
                   </Presence>
@@ -237,11 +242,11 @@ export default function Page() {
               <Presence {...rootMenu.getContentProps({ value: "developers" })}>
                 {renderLinks(rootMenu, {
                   value: "developers",
-                  items: ["Donec quis dui", "Vestibulum", "Fusce pellentesque", "Aliquam porttitor"],
+                  items: ["Documentation", "API Reference", "SDKs", "Code Samples"],
                 })}
                 {renderLinks(rootMenu, {
                   value: "developers",
-                  items: ["Fusce pellentesque", "Aliquam porttitor"],
+                  items: ["GitHub", "Changelog", "Release Notes"],
                 })}
               </Presence>
             </Presence>
