@@ -24,6 +24,7 @@
     "preact-ts",
     "svelte-ts",
     "vanilla-ts",
+    "lit-ts",
     "website"
   ]
 }
