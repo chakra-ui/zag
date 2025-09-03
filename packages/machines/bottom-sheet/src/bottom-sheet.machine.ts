@@ -208,7 +208,7 @@ export const machine = createMachine<BottomSheetSchema>({
         const closeThreshold = prop("closeThreshold")
         const resolvedSnapPoints = computed("resolvedSnapPoints")
 
-        if (!dragOffset || !contentHeight || !velocity) return false
+        if (dragOffset === null || contentHeight === null || velocity === null) return false
         const visibleHeight = contentHeight - dragOffset
 
         const isFastSwipe = velocity > 0 && velocity >= swipeVelocityThreshold
@@ -269,7 +269,7 @@ export const machine = createMachine<BottomSheetSchema>({
       setClosestSnapPoint({ computed, context, event }) {
         const snapPoints = computed("resolvedSnapPoints")
         const contentHeight = context.get("contentHeight")
-        if (!snapPoints || !contentHeight) return
+        if (!snapPoints || contentHeight === null) return
 
         const closestSnapPoint = findClosestSnapPoint(window.innerHeight - event.point.y, snapPoints)
 
