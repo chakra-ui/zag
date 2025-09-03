@@ -99,25 +99,6 @@ test.describe("bottom-sheet", () => {
     expect(isStillAtTop).toBe(false)
   })
 
-  test("[grabberOnly] should only allow dragging from grabber", async ({ page }) => {
-    await I.controls.bool("grabberOnly", true)
-
-    await I.clickTrigger()
-    await I.seeContent()
-
-    await page.waitForTimeout(ANIMATION_DURATION)
-
-    const initialHeight = await I.getContentVisibleHeight()
-
-    await I.dragContent("down", 100, 500, false)
-    const heightAfterContentDrag = await I.getContentVisibleHeight()
-    expect(initialHeight - heightAfterContentDrag).toBe(0)
-
-    await I.dragGrabber("down", 100, 500, false)
-    const heightAfterGrabberDrag = await I.getContentVisibleHeight()
-    expect(initialHeight - heightAfterGrabberDrag).toBe(100)
-  })
-
   test("should not allow dragging from no-drag area", async ({ page }) => {
     await I.clickTrigger()
     await I.seeContent()
@@ -136,6 +117,25 @@ test.describe("bottom-sheet", () => {
     await I.seeContent()
     const finalHeight = await I.getContentVisibleHeight()
     expect(finalHeight).toBe(initialHeight)
+  })
+
+  test("[grabberOnly] should only allow dragging from grabber", async ({ page }) => {
+    await I.controls.bool("grabberOnly", true)
+
+    await I.clickTrigger()
+    await I.seeContent()
+
+    await page.waitForTimeout(ANIMATION_DURATION)
+
+    const initialHeight = await I.getContentVisibleHeight()
+
+    await I.dragContent("down", 100, 500, false)
+    const heightAfterContentDrag = await I.getContentVisibleHeight()
+    expect(initialHeight - heightAfterContentDrag).toBe(0)
+
+    await I.dragGrabber("down", 100, 500, false)
+    const heightAfterGrabberDrag = await I.getContentVisibleHeight()
+    expect(initialHeight - heightAfterGrabberDrag).toBe(100)
   })
 })
 
