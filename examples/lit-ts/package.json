@@ -1,0 +1,34 @@
+{
+  "name": "lit-ts",
+  "type": "module",
+  "private": "true",
+  "scripts": {
+    "dev": "vite --port 3004",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@zag-js/accordion": "workspace:*",
+    "@zag-js/avatar": "workspace:*",
+    "@zag-js/checkbox": "workspace:*",
+    "@zag-js/collapsible": "workspace:*",
+    "@zag-js/dialog": "workspace:*",
+    "@zag-js/editable": "workspace:*",
+    "@zag-js/lit": "workspace:*",
+    "@zag-js/popover": "workspace:*",
+    "@zag-js/radio-group": "workspace:*",
+    "@zag-js/slider": "workspace:*",
+    "@zag-js/switch": "workspace:*",
+    "@zag-js/tabs": "workspace:*",
+    "@zag-js/toggle": "workspace:*",
+    "@zag-js/tooltip": "workspace:*",
+    "lit": "^3.0.0"
+  },
+  "devDependencies": {
+    "typescript": "^5.0.0",
+    "vite": "^5.0.0"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}
