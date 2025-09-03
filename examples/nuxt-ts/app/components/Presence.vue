@@ -4,6 +4,7 @@ import { normalizeProps, useMachine } from "@zag-js/vue"
 import type { HTMLAttributes, VNodeRef } from "vue"
 import { computed, ref, watch } from "vue"
 
+/** @vue-ignore */
 interface Props extends HTMLAttributes {}
 
 const props = withDefaults(defineProps<Props>(), {
