@@ -11,7 +11,7 @@ export class StateVisualizer<T extends MachineSchema = any> extends LitElement {
   }
 
   @property({ attribute: false })
-  state!: Service<T>
+  state?: Service<T>
 
   @property({ type: String })
   label?: string
@@ -23,16 +23,18 @@ export class StateVisualizer<T extends MachineSchema = any> extends LitElement {
   context?: Array<keyof T["context"]>
 
   render() {
-    if (!this.state) {
+    const service = this.state
+
+    if (!service) {
       return html`<div class="viz"><pre>No state available</pre></div>`
     }
 
     const obj = {
-      state: this.state.state.get(),
-      event: this.state.event.current(),
-      previousEvent: this.state.event.previous(),
+      state: service.state.get(),
+      event: service.event.current(),
+      previousEvent: service.event.previous(),
       context: this.context
-        ? Object.fromEntries(this.context.map((key) => [key, this.state.context.get(key)]))
+        ? Object.fromEntries(this.context.map((key) => [key, service.context.get(key)]))
         : undefined,
     }
 

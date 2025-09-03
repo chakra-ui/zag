@@ -50,13 +50,14 @@ export class Toolbar extends LitElement {
   }
 
   private renderControls() {
-    if (!this.controls) return ""
+    const { controls } = this
+    if (!controls) return ""
 
     return html`
       <div class="controls-container">
-        ${this.controls.getControlKeys().map((key) => {
-          const config = this.controls!.getControlConfig(key)
-          const value = this.controls!.getValue(key)
+        ${controls.getControlKeys().map((key) => {
+          const config = controls.getControlConfig(key)
+          const value = controls.getValue(key)
           const { type, label = key, options, placeholder, min, max } = config
 
           switch (type) {
@@ -70,7 +71,7 @@ export class Toolbar extends LitElement {
                     .checked=${value}
                     @change=${(e: Event) => {
                       const target = e.target as HTMLInputElement
-                      this.controls!.setState(key, target.checked)
+                      controls.setState(key, target.checked)
                     }}
                   />
                   <label for=${label}>${label}</label>
@@ -89,7 +90,7 @@ export class Toolbar extends LitElement {
                     @keydown=${(e: KeyboardEvent) => {
                       if (e.key === "Enter") {
                         const target = e.target as HTMLInputElement
-                        this.controls!.setState(key, target.value)
+                        controls.setState(key, target.value)
                       }
                     }}
                   />
@@ -105,7 +106,7 @@ export class Toolbar extends LitElement {
                     .value=${value}
                     @change=${(e: Event) => {
                       const target = e.target as HTMLSelectElement
-                      this.controls!.setState(key, target.value)
+                      controls.setState(key, target.value)
                     }}
                   >
                     <option value="">-----</option>
@@ -128,7 +129,7 @@ export class Toolbar extends LitElement {
                       if (e.key === "Enter") {
                         const target = e.target as HTMLInputElement
                         const val = parseFloat(target.value)
-                        this.controls!.setState(key, isNaN(val) ? 0 : val)
+                        controls.setState(key, isNaN(val) ? 0 : val)
                       }
                     }}
                   />
