@@ -1,4 +1,5 @@
 import { createNormalizer } from "@zag-js/types"
+import { isObject } from "@zag-js/utils"
 
 // Lit uses built-in template binding syntax for prop normalization:
 // - 'attribute-name': value -> attribute
@@ -29,18 +30,16 @@ export type PropTypes = Record<RequiredElements, LitElementProps> & {
   style: Record<string, any>
 }
 
-// Map React-style event names to DOM event names
-const eventMap: Record<string, string> = {
+const propMap: Record<string, string> = {
   onFocus: "onfocusin",
   onBlur: "onfocusout",
-  onChange: "oninput",
   onDoubleClick: "ondblclick",
-}
-
-// Map React-style prop names to HTML attribute names
-const propMap: Record<string, string> = {
-  className: "class",
+  onChange: "oninput",
+  defaultChecked: "checked",
+  defaultValue: "value",
+  defaultSelected: "selected",
   htmlFor: "for",
+  className: "class",
 }
 
 // Properties that should be set as properties, not attributes
@@ -48,30 +47,53 @@ const propertyNames = new Set([
   "value",
   "checked",
   "selected",
-  "defaultValue",
-  "defaultChecked",
-  "defaultSelected",
   "disabled",
-  "readOnly",
+  "readonly",
   "multiple",
   "hidden",
-  "contentEditable",
+  "contenteditable",
   "draggable",
   "spellcheck",
   "autocomplete",
 ])
 
-const toStyleString = (style: Record<string, any>): string => {
-  let styleString = ""
-  for (const [key, value] of Object.entries(style)) {
-    if (value == null) continue
+const svgAttributes = new Set<string>(
+  "viewBox,preserveAspectRatio,fillRule,clipPath,clipRule,strokeWidth,strokeLinecap,strokeLinejoin,strokeDasharray,strokeDashoffset,strokeMiterlimit".split(
+    ",",
+  ),
+)
 
-    // Convert camelCase to kebab-case for CSS properties (except CSS custom properties)
-    const cssKey = key.startsWith("--") ? key : key.replace(/[A-Z]/g, (match) => `-${match.toLowerCase()}`)
+const shouldPreserveCase = (key: string): boolean => {
+  return (
+    key.startsWith("data-") ||
+    key.startsWith("aria-") ||
+    key.includes(":") || // XML namespaced
+    key.startsWith("xml") || // XML attributes
+    svgAttributes.has(key)
+  )
+}
 
-    styleString += `${cssKey}:${value};`
+export function toStyleString(style: Record<string, number | string>): string {
+  let string = ""
+
+  for (let key in style) {
+    /**
+     * Ignore null and undefined values.
+     */
+    const value = style[key]
+    if (value === null || value === undefined) continue
+
+    /**
+     * Convert camelCase to kebab-case except for CSS custom properties.
+     */
+    if (!key.startsWith("--")) {
+      key = key.replace(/[A-Z]/g, (match) => `-${match.toLowerCase()}`)
+    }
+
+    string += `${key}:${value};`
   }
-  return styleString
+
+  return string
 }
 
 type Dict = Record<string, any>
@@ -79,15 +101,17 @@ type Dict = Record<string, any>
 export const normalizeProps = createNormalizer<PropTypes>((props: Dict) => {
   const normalized: Dict = {}
 
-  for (let [key, value] of Object.entries(props)) {
+  for (let key in props) {
+    const value = props[key]
+
     // Skip undefined values
     if (value === undefined) {
       continue
     }
 
     // Handle style objects
-    if (key === "style" && typeof value === "object" && value !== null) {
-      normalized.style = toStyleString(value)
+    if (key === "style" && isObject(value)) {
+      normalized["style"] = toStyleString(value)
       continue
     }
 
@@ -96,34 +120,27 @@ export const normalizeProps = createNormalizer<PropTypes>((props: Dict) => {
       key = propMap[key]
     }
 
-    // Handle event handlers
+    // Convert to Lit event listener syntax: @eventname
     if (key.startsWith("on") && typeof value === "function") {
-      // Map React-style event names to DOM events
-      const mappedEvent = eventMap[key]
-      if (mappedEvent) {
-        key = mappedEvent
-      }
-
-      // Convert to Lit event listener syntax: @eventname
-      const eventName = key.slice(2).toLowerCase()
-      normalized[`@${eventName}`] = value
+      normalized[`@${key.toLowerCase().slice(2)}`] = value
       continue
     }
 
     // Handle boolean attributes with ? prefix
     if (typeof value === "boolean") {
-      normalized[`?${key}`] = value
+      normalized[`?${key.toLowerCase()}`] = value
       continue
     }
 
     // Handle properties that should be set as properties with . prefix
-    if (propertyNames.has(key)) {
-      normalized[`.${key}`] = value
+    if (propertyNames.has(key.toLowerCase())) {
+      normalized[`.${key.toLowerCase()}`] = value
       continue
     }
 
-    // Everything else as attribute (preserve original case for data-* and aria-* attributes)
-    normalized[key] = value
+    // Everything else as attribute
+    const attrKey = shouldPreserveCase(key) ? key : key.toLowerCase()
+    normalized[attrKey] = value
   }
 
   return normalized
