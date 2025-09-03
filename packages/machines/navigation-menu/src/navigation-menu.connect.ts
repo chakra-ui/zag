@@ -333,7 +333,11 @@ export function connect<T extends PropTypes>(
             loop: false,
           })
 
-          el?.focus()
+          if (el) {
+            el.focus()
+            event.preventDefault()
+            event.stopPropagation()
+          }
         },
       })
     },
