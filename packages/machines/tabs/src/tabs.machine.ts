@@ -46,12 +46,19 @@ export const machine = createMachine({
       indicatorRect: bindable(() => ({
         defaultValue: { left: "0px", top: "0px", width: "0px", height: "0px" },
       })),
+      indicatorDisabled: bindable(() => ({ defaultValue: false })),
     }
   },
 
   watch({ context, prop, track, action }) {
     track([() => context.get("value")], () => {
-      action(["allowIndicatorTransition", "syncIndicatorRect", "syncTabIndex", "navigateIfNeeded"])
+      action([
+        "allowIndicatorTransition",
+        "syncIndicatorDisabled",
+        "syncIndicatorRect",
+        "syncTabIndex",
+        "navigateIfNeeded",
+      ])
     })
     track([() => prop("dir"), () => prop("orientation")], () => {
       action(["syncIndicatorRect"])
@@ -73,7 +80,7 @@ export const machine = createMachine({
     },
   },
 
-  entry: ["syncIndicatorRect", "syncTabIndex", "syncSsr"],
+  entry: ["syncIndicatorDisabled", "syncIndicatorRect", "syncTabIndex", "syncSsr"],
 
   exit: ["cleanupObserver"],
 
@@ -267,6 +274,12 @@ export const machine = createMachine({
       },
       syncSsr({ context }) {
         context.set("ssr", false)
+      },
+      syncIndicatorDisabled({ context, scope }) {
+        const value = context.get("value")
+        if (value) {
+          context.set("indicatorDisabled", dom.getIsTriggerDisabled(scope, value))
+        }
       },
       syncIndicatorRect({ context, refs, scope }) {
         const cleanup = refs.get("indicatorCleanup")

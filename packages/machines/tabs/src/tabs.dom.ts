@@ -46,3 +46,8 @@ export const resolveRect = (rect: Record<"width" | "height" | "left" | "top", nu
   left: `${rect.left}px`,
   top: `${rect.top}px`,
 })
+
+export const getIsTriggerDisabled = (ctx: Scope, id: string) => {
+  const el = getTriggerEl(ctx, id)
+  return el?.hasAttribute("disabled") || el?.getAttribute("aria-disabled") === "true"
+}

@@ -89,6 +89,10 @@ interface PrivateContext {
    */
   indicatorRect: Partial<IndicatorRect>
   /**
+   * Whether the active tab indicator is disabled
+   */
+  indicatorDisabled: boolean
+  /**
    * Whether the active tab indicator's rect can transition
    */
   canIndicatorTransition: boolean
