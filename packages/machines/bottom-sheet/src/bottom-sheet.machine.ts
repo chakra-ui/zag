@@ -231,9 +231,9 @@ export const machine = createMachine<BottomSheetSchema>({
 
         const closeThresholdInPixels = contentHeight * (1 - closeThreshold)
         const isBelowSmallestSnapPoint = visibleHeight < contentHeight - smallestSnapPoint.offset
-        const isBelowcloseThreshold = visibleHeight < closeThresholdInPixels
+        const isBelowCloseThreshold = visibleHeight < closeThresholdInPixels
 
-        const hasEnoughDragToDismiss = (isBelowcloseThreshold && isBelowSmallestSnapPoint) || visibleHeight === 0
+        const hasEnoughDragToDismiss = (isBelowCloseThreshold && isBelowSmallestSnapPoint) || visibleHeight === 0
 
         return isFastSwipe || hasEnoughDragToDismiss
       },
