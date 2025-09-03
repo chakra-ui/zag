@@ -29,6 +29,9 @@ export const props = createProps<BottomSheetProps>()([
   "restoreFocus",
   "role",
   "trapFocus",
+  "defaultSnapPoint",
+  "activeSnapPoint",
+  "onActiveSnapPointChange",
 ])
 
 export const splitProps = createSplitProps<Partial<BottomSheetProps>>(props)
