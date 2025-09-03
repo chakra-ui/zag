@@ -5,25 +5,20 @@ import * as accordion from "@zag-js/accordion"
 import { accordionControls, accordionData } from "@zag-js/shared"
 import styleComponent from "@zag-js/shared/src/css/accordion.css?inline"
 import styleLayout from "@zag-js/shared/src/css/layout.css?inline"
+import stylePage from "./page.css?inline"
 import { ZagController, normalizeProps } from "@zag-js/lit"
 import { ArrowRight, createElement } from "lucide"
 import { nanoid } from "nanoid"
 
 @customElement("accordion-page")
 export class AccordionPage extends LitElement {
+  static styles = unsafeCSS(styleComponent + styleLayout + stylePage)
+
   private zagController = new ZagController(this, accordion.machine, () => ({
     id: nanoid(),
-    // Add some basic controls for testing
     collapsible: false,
     multiple: false,
   }))
-
-  static styles = unsafeCSS(styleLayout + "\n" + styleComponent)
-
-  // Light dom (no shadow root)
-  protected createRenderRoot() {
-    return this
-  }
 
   render() {
     const api = accordion.connect(this.zagController.service, normalizeProps)
