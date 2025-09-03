@@ -362,6 +362,9 @@ importers:
       lit:
         specifier: 3.3.1
         version: 3.3.1
+      lucide:
+        specifier: 0.542.0
+        version: 0.542.0
       match-sorter:
         specifier: 8.1.0
         version: 8.1.0
@@ -10340,6 +10343,9 @@ packages:
     resolution: {integrity: sha512-cJfyhFoneDgYTouHwUJEutXaCW5EQuRrBsvfELudWnMiwfqvcEtpZTFZLdZ5Nrqow+znzn+Iyhu3KeYIfa3mEg==}
     peerDependencies:
       vue: '>=3.0.1'
+
+  lucide@0.542.0:
+    resolution: {integrity: sha512-+EtDSHjqg/nONgCfnjHCNd84OzbDjxR8ShnOf+oImlU+A8gqlptZ6pGrMCnhEDw8pVNQv3zu/L0eDvMzcc7nWA==}
 
   luxon@3.7.1:
     resolution: {integrity: sha512-RkRWjA926cTvz5rAb1BqyWkKbbjzCGchDUIKMCUvNi17j6f6j8uHGDV82Aqcqtzd+icoYpELmG3ksgGiFNNcNg==}
@@ -20977,6 +20983,8 @@ snapshots:
   lucide-vue-next@0.542.0(vue@3.5.20(typescript@5.9.2)):
     dependencies:
       vue: 3.5.20(typescript@5.9.2)
+
+  lucide@0.542.0: {}
 
   luxon@3.7.1: {}
 

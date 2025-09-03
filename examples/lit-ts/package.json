@@ -4,7 +4,7 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite",
+    "dev": "vite --port 3004",
     "build": "vite build",
     "preview": "vite preview"
   },
@@ -90,6 +90,7 @@
     "@zag-js/utils": "workspace:*",
     "form-serialize": "0.7.2",
     "lit": "3.3.1",
+    "lucide": "0.542.0",
     "match-sorter": "8.1.0",
     "nanoid": "^5.1.5"
   }
