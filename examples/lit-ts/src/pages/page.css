@@ -1,15 +1,3 @@
 :host {
   outline: none !important;
 }
-
-/* Copied from shared/src/css/layout.css (.page main) */
-:host main {
-  flex: auto;
-  display: flex;
-  gap: 10px;
-  position: relative;
-  flex-direction: column;
-  align-items: flex-start;
-  padding: 40px;
-  overflow-y: auto;
-}

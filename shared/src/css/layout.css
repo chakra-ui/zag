@@ -86,7 +86,8 @@ body {
   overflow: hidden;
 }
 
-.page main {
+.page main,
+:host main {
   flex: auto;
   display: flex;
   gap: 10px;
