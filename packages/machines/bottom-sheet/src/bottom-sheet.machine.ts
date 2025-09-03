@@ -169,6 +169,8 @@ export const machine = createMachine<BottomSheetSchema>({
             "invokeOnClose",
             "clearPointerStart",
             "clearDragOffset",
+            "clearActiveSnapPoint",
+            "clearResolvedActiveSnapPoint",
             "clearContentHeight",
             "clearVelocityTracking",
           ],
@@ -307,6 +309,14 @@ export const machine = createMachine<BottomSheetSchema>({
 
       clearDragOffset({ context }) {
         context.set("dragOffset", null)
+      },
+
+      clearActiveSnapPoint({ context, prop }) {
+        context.set("activeSnapPoint", prop("defaultSnapPoint"))
+      },
+
+      clearResolvedActiveSnapPoint({ context }) {
+        context.set("resolvedActiveSnapPoint", null)
       },
 
       clearPointerStart({ context }) {
