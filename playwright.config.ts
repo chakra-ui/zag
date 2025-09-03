@@ -36,7 +36,7 @@ export function getWebServer(): WebServer {
     },
     lit: {
       cwd: "./examples/lit-ts",
-      command: "pnpm dev",
+      command: "pnpm vite --port 3004",
       url: "http://localhost:3004",
       reuseExistingServer: !CI,
     },

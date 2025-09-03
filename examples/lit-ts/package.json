@@ -3,7 +3,7 @@
   "type": "module",
   "private": "true",
   "scripts": {
-    "dev": "vite --port 3004",
+    "dev": "vite",
     "build": "vite build",
     "preview": "vite preview"
   },
