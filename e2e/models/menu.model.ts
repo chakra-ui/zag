@@ -1,14 +1,16 @@
 import { expect, type Page } from "@playwright/test"
-import { a11y, isInViewport } from "../_utils"
+import { a11y, isInViewport, withHost } from "../_utils"
 import { Model } from "./model"
+
+const shadowHost = "menu-page"
 
 export class MenuModel extends Model {
   constructor(public page: Page) {
     super(page)
   }
 
-  checkAccessibility() {
-    return a11y(this.page, "main")
+  checkAccessibility(selector?: string): Promise<void> {
+    return a11y(this.page, "main", shadowHost)
   }
 
   goto(url = "/menu") {
@@ -16,23 +18,23 @@ export class MenuModel extends Model {
   }
 
   private get trigger() {
-    return this.page.locator("[data-scope=menu][data-part=trigger]")
+    return this.page.locator(withHost(shadowHost, "[data-scope=menu][data-part=trigger]"))
   }
 
   private get contextTrigger() {
-    return this.page.locator("[data-scope=menu][data-part=context-trigger]")
+    return this.page.locator(withHost(shadowHost, "[data-scope=menu][data-part=context-trigger]"))
   }
 
   private get content() {
-    return this.page.locator("[data-scope=menu][data-part=content]")
+    return this.page.locator(withHost(shadowHost, "[data-scope=menu][data-part=content]"))
   }
 
   getItem = (text: string) => {
-    return this.page.locator(`[data-part=item]`, { hasText: text })
+    return this.page.locator(withHost(shadowHost, `[data-part=item]`), { hasText: text })
   }
 
   get highlightedItem() {
-    return this.page.locator("[data-part=item][data-highlighted]")
+    return this.page.locator(withHost(shadowHost, "[data-part=item][data-highlighted]"))
   }
 
   type(input: string) {
@@ -100,7 +102,7 @@ export class MenuModel extends Model {
   }
 
   seeMenuIsPositioned = async () => {
-    const positioner = this.page.locator("[data-scope=menu][data-part=positioner]")
+    const positioner = this.page.locator(withHost(shadowHost, "[data-scope=menu][data-part=positioner]"))
     await expect(positioner).toHaveCSS("--x", /\d+px/)
     await expect(positioner).toHaveCSS("--y", /\d+px/)
   }

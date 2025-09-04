@@ -1,0 +1,37 @@
+import { html, unsafeCSS } from "lit"
+import { customElement } from "lit/decorators.js"
+import { spread } from "@open-wc/lit-helpers"
+import * as toggle from "@zag-js/toggle"
+import styleComponent from "@zag-js/shared/src/css/toggle.css?inline"
+import styleLayout from "@zag-js/shared/src/css/layout.css?inline"
+import stylePage from "./page.css?inline"
+import { ZagController, normalizeProps } from "@zag-js/lit"
+import { Bold, createElement } from "lucide"
+import { nanoid } from "nanoid"
+import { PageElement } from "../lib/page-element"
+
+@customElement("toggle-page")
+export class TogglePage extends PageElement {
+  static styles = unsafeCSS(styleComponent + styleLayout + stylePage)
+
+  private zagController = new ZagController(this, toggle.machine, () => ({
+    getRootNode: () => this.shadowRoot,
+    id: nanoid(),
+  }))
+
+  render() {
+    const api = toggle.connect(this.zagController.service, normalizeProps)
+
+    return html`
+      <main class="toggle">
+        <button ${spread(api.getRootProps())}>
+          <span ${spread(api.getIndicatorProps())}> ${createElement(Bold)} </span>
+        </button>
+      </main>
+
+      <zag-toolbar>
+        <state-visualizer .state=${this.zagController.service}></state-visualizer>
+      </zag-toolbar>
+    `
+  }
+}
