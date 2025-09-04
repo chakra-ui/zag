@@ -19,6 +19,7 @@ export class AccordionPage extends PageElement {
   private controls = new ControlsController(this, accordionControls)
 
   private zagController = new ZagController(this, accordion.machine, () => ({
+    getRootNode: () => this.shadowRoot,
     id: nanoid(),
     ...this.controls.context,
   }))
