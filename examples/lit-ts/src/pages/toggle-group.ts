@@ -31,11 +31,7 @@ export class ToggleGroupPage extends PageElement {
         <button>Outside</button>
         <div ${spread(api.getRootProps())}>
           ${toggleGroupData.map(
-            (item) => html`
-              <button data-testid="${item.value}" ${spread(api.getItemProps({ value: item.value }))}>
-                ${item.label}
-              </button>
-            `,
+            (item) => html`<button ${spread(api.getItemProps({ value: item.value }))}>${item.label}</button>`,
           )}
         </div>
       </main>

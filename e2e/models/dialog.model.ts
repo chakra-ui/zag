@@ -1,5 +1,5 @@
 import { expect, type Page } from "@playwright/test"
-import { a11y, testid, withHost } from "../_utils"
+import { testid, withHost } from "../_utils"
 import { Model } from "./model"
 
 const shadowHost = "dialog-nested-page"
@@ -9,11 +9,12 @@ export class DialogModel extends Model {
     public page: Page,
     private id: string,
   ) {
-    super(page)
+    super(page, shadowHost)
   }
 
-  checkAccessibility(selector?: string): Promise<void> {
-    return a11y(this.page, "[role=dialog]", shadowHost)
+  checkAccessibility(): Promise<void> {
+    // return a11y(this.page, "[role=dialog]", shadowHost)
+    return super.checkAccessibility("[role=dialog]")
   }
 
   goto(url = "/dialog-nested") {

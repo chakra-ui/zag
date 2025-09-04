@@ -1,16 +1,17 @@
 import { expect, type Page } from "@playwright/test"
-import { a11y, isInViewport, withHost } from "../_utils"
+import { isInViewport, withHost } from "../_utils"
 import { Model } from "./model"
 
 const shadowHost = "menu-page"
 
 export class MenuModel extends Model {
   constructor(public page: Page) {
-    super(page)
+    super(page, shadowHost)
   }
 
-  checkAccessibility(selector?: string): Promise<void> {
-    return a11y(this.page, "main", shadowHost)
+  checkAccessibility(): Promise<void> {
+    // return a11y(this.page, "main", shadowHost)
+    return super.checkAccessibility("main")
   }
 
   goto(url = "/menu") {

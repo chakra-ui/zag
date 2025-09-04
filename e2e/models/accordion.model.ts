@@ -1,20 +1,16 @@
 import { expect, type Page } from "@playwright/test"
-import { a11y, testid, withHost } from "../_utils"
+import { testid, withHost } from "../_utils"
 import { Model } from "./model"
 
 const shadowHost = "accordion-page"
 
 export class AccordionModel extends Model {
   constructor(public page: Page) {
-    super(page)
+    super(page, shadowHost)
   }
 
   goto() {
     return this.page.goto("/accordion")
-  }
-
-  checkAccessibility(selector?: string): Promise<void> {
-    return a11y(this.page, selector, shadowHost)
   }
 
   getTrigger(id: string) {
