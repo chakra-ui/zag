@@ -1,11 +1,11 @@
 import AxeBuilder from "@axe-core/playwright"
 import { expect, type Locator, type Page } from "@playwright/test"
 
-export async function a11y(page: Page, selector = "[data-part=root]") {
+export async function a11y(page: Page, selector = "[data-part=root]", disableRules: string[] = []) {
   await page.waitForSelector(selector)
 
   const results = await new AxeBuilder({ page: page as any })
-    .disableRules(["color-contrast"])
+    .disableRules(["color-contrast", ...disableRules])
     .include(selector)
     .analyze()
 
@@ -131,6 +131,7 @@ export async function swipe(
   direction: SwipeDirection,
   distance: number = 100,
   duration: number = 500,
+  release: boolean = true,
 ): Promise<void> {
   if (!swipeDirections.has(direction)) {
     throw new Error("Invalid direction. Use 'left', 'right', 'up', or 'down'.")
@@ -167,7 +168,9 @@ export async function swipe(
   await page.mouse.move(startX, startY)
   await page.mouse.down()
   await page.mouse.move(endX, endY, { steps: Math.max(duration / 10, 1) }) // Smoothness based on duration
-  await page.mouse.up()
+  if (release) {
+    await page.mouse.up()
+  }
 }
 
 export function moveCaret(input: Locator, start: number, end = start) {
