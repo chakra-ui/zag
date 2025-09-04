@@ -1,4 +1,4 @@
-import { contains, dataAttr, getTabbables, getWindow, navigate } from "@zag-js/dom-query"
+import { contains, dataAttr, getTabbables, getWindow, navigate, visuallyHiddenStyle } from "@zag-js/dom-query"
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import { toPx } from "@zag-js/utils"
 import { parts } from "./navigation-menu.anatomy"
@@ -221,12 +221,16 @@ export function connect<T extends PropTypes>(
     },
 
     getTriggerProxyProps(props) {
+      const itemState = getItemState(props)
+
       return normalize.element({
         "aria-hidden": true,
         tabIndex: 0,
         "data-trigger-proxy": "",
         id: dom.getTriggerProxyId(scope, props.value),
         "data-trigger-id": dom.getTriggerId(scope, props.value),
+        hidden: !itemState.selected,
+        style: visuallyHiddenStyle,
         onFocus(event) {
           const contentEl = dom.getContentEl(scope, props.value)
           if (!contentEl) return
@@ -235,7 +239,7 @@ export function connect<T extends PropTypes>(
           const wasTriggerFocused = prevFocusedEl === dom.getTriggerEl(scope, props.value)
           const wasFocusFromContent = contains(contentEl, prevFocusedEl)
 
-          if (wasTriggerFocused || wasFocusFromContent) {
+          if (wasTriggerFocused || !wasFocusFromContent) {
             send({ type: "CONTENT.FOCUS", side: wasTriggerFocused ? "start" : "end" })
           }
         },
