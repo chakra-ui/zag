@@ -1,5 +1,5 @@
 import type { Scope } from "@zag-js/core"
-import { dispatchInputValueEvent, indexOfId, nextById, prevById, queryAll } from "@zag-js/dom-query"
+import { dispatchInputValueEvent, indexOfId, isActiveElement, nextById, prevById, queryAll } from "@zag-js/dom-query"
 import type { ItemProps } from "./tags-input.types"
 
 export const getRootId = (ctx: Scope) => ctx.ids?.root ?? `tags-input:${ctx.id}`
@@ -31,7 +31,7 @@ export const getNextEl = (ctx: Scope, id: string) => nextById(getTagElements(ctx
 
 export const getTagElAtIndex = (ctx: Scope, index: number) => getTagElements(ctx)[index]
 export const getIndexOfId = (ctx: Scope, id: string) => indexOfId(getTagElements(ctx), id)
-export const isInputFocused = (ctx: Scope) => ctx.getDoc().activeElement === getInputEl(ctx)
+export const isInputFocused = (ctx: Scope) => isActiveElement(getInputEl(ctx))
 
 export const getTagValue = (ctx: Scope, id: string | null) => {
   if (!id) return null

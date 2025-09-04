@@ -1,3 +1,5 @@
+import { isActiveElement } from "@zag-js/dom-query"
+
 interface Selection {
   start?: number | undefined
   end?: number | undefined
@@ -7,7 +9,7 @@ interface Selection {
 }
 
 export function recordCursor(inputEl: HTMLInputElement | null): Selection | undefined {
-  if (!inputEl || inputEl.ownerDocument.activeElement !== inputEl) return
+  if (!inputEl || !isActiveElement(inputEl)) return
   try {
     const { selectionStart: start, selectionEnd: end, value } = inputEl
     const beforeTxt = value.substring(0, start!)
@@ -23,7 +25,7 @@ export function recordCursor(inputEl: HTMLInputElement | null): Selection | unde
 }
 
 export function restoreCursor(inputEl: HTMLInputElement | null, selection: Selection | undefined) {
-  if (!inputEl || inputEl.ownerDocument.activeElement !== inputEl) return
+  if (!inputEl || !isActiveElement(inputEl)) return
 
   if (!selection) {
     inputEl.setSelectionRange(inputEl.value.length, inputEl.value.length)

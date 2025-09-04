@@ -16,7 +16,7 @@ import {
   isDateOutsideRange,
   isDateUnavailable,
 } from "@zag-js/date-utils"
-import { ariaAttr, dataAttr, getEventKey, getNativeEvent, isComposingEvent } from "@zag-js/dom-query"
+import { ariaAttr, dataAttr, isActiveElement, getEventKey, getNativeEvent, isComposingEvent } from "@zag-js/dom-query"
 import { getPlacementStyles } from "@zag-js/popper"
 import type { EventKeyMap, NormalizeProps, PropTypes } from "@zag-js/types"
 import { chunk, isValueWithinRange } from "@zag-js/utils"
@@ -543,7 +543,7 @@ export function connect<T extends PropTypes>(
           ? (event) => {
               if (event.pointerType === "touch") return
               if (!cellState.selectable) return
-              const focus = event.currentTarget.ownerDocument.activeElement !== event.currentTarget
+              const focus = !isActiveElement(event.currentTarget)
               if (hoveredValue && isEqualDay(value, hoveredValue)) return
               send({ type: "CELL.POINTER_MOVE", cell: "day", value, focus })
             }
@@ -594,7 +594,7 @@ export function connect<T extends PropTypes>(
           ? (event) => {
               if (event.pointerType === "touch") return
               if (!cellState.selectable) return
-              const focus = event.currentTarget.ownerDocument.activeElement !== event.currentTarget
+              const focus = !isActiveElement(event.currentTarget)
               if (hoveredValue && cellState.value && isEqualDay(cellState.value, hoveredValue)) return
               send({ type: "CELL.POINTER_MOVE", cell: "month", value: cellState.value, focus })
             }

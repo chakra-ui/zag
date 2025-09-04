@@ -401,8 +401,9 @@ export class FocusTrap {
 
     if (node === undefined || (node && !isFocusable(node))) {
       // option not specified nor focusable: use fallback options
-      if (this.findContainerIndex(this.doc.activeElement as HTMLElement) >= 0) {
-        node = this.doc.activeElement
+      const activeElement = getActiveElement(this.doc)
+      if (activeElement && this.findContainerIndex(activeElement) >= 0) {
+        node = activeElement
       } else {
         const firstTabbableGroup = this.state.tabbableGroups[0]
         const firstTabbableNode = firstTabbableGroup && firstTabbableGroup.firstTabbableNode

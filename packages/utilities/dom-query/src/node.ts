@@ -37,6 +37,16 @@ export const isElementVisible = (el: Node) => {
   return el.offsetWidth > 0 || el.offsetHeight > 0 || el.getClientRects().length > 0
 }
 
+export function isActiveElement(element: Element | null | undefined): boolean {
+  if (!element) return false
+  const rootNode = element.getRootNode() as Document | ShadowRoot
+
+  // Should we use .activeElement or getActiveElement here?
+  // It seems potentially wrong to enter a shadow-dom, since something within the element IS active
+  // Also, .activeElement is null if the focus is outside the rootNode
+  return rootNode.activeElement === element
+}
+
 const TEXTAREA_SELECT_REGEX = /(textarea|select)/
 
 export function isEditableElement(el: HTMLElement | EventTarget | null) {
