@@ -15,7 +15,6 @@
 [data-scope="bottom-sheet"][data-part="content"] {
   background: white;
   transition: transform 0.5s cubic-bezier(0.32, 0.72, 0, 1);
-  transform: translate3d(0, var(--snap-point-offset, 0%), 0);
   animation-duration: 0.5s;
   animation-timing-function: cubic-bezier(0.32, 0.72, 0, 1);
   display: flex;
