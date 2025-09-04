@@ -32,13 +32,16 @@ export function Presence(props: PresenceProps) {
   }
 
   const mergedProps = createMemo(() =>
-    mergeProps(restProps, {
-      ref: mergedRef,
-      "data-scope": "presence",
-      "data-state": api().skip ? undefined : present() ? "open" : "closed",
-      hidden: !api().present,
-    }),
+    mergeProps(
+      {
+        ref: mergedRef,
+        "data-scope": "presence",
+        "data-state": api().skip ? undefined : present() ? "open" : "closed",
+        hidden: !api().present,
+      },
+      restProps,
+    ),
   )
 
-  return <div {...mergedProps} />
+  return <div {...mergedProps()} />
 }
