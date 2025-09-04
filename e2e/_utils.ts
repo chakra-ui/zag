@@ -1,18 +1,131 @@
 import AxeBuilder from "@axe-core/playwright"
 import { expect, type Locator, type Page } from "@playwright/test"
+import { AxeResults, type RunOptions, type ElementContext } from "axe-core"
+import { run } from "axe-core"
 
+// Types and Framework Context Detection
+export type FrameworkContext = "shadow-dom" | "light-dom"
+
+// The context is determined by an environment variable at test runtime
+// Example: `TEST_FRAMEWORK=shadow-dom npx playwright test` or `FRAMEWORK=lit npx playwright test`
+export const FRAMEWORK_CONTEXT: FrameworkContext =
+  (process.env.TEST_FRAMEWORK as FrameworkContext) || (process.env.FRAMEWORK === "lit" ? "shadow-dom" : "light-dom")
+
+console.log(`Running E2E tests in '${FRAMEWORK_CONTEXT}' context.`)
+
+// Augment the window object for type safety in page.evaluate
+declare global {
+  interface Window {
+    axe: {
+      run: typeof run
+    }
+    // axe: {
+    //   run: (context?: ElementContext, options?: RunOptions) => Promise<AxeResults>
+    // }
+  }
+}
+
+/**
+ * Context-aware utility to locate a component part defined by a 'part' or 'data-part' attribute.
+ * This function abstracts the structural differences between Shadow DOM and Light DOM implementations.
+ *
+ * @param parent The root Playwright Page or a parent Locator to search within
+ * @param hostSelector A unique selector for the component's host/root element (e.g., 'accordion-page', '[data-testid="accordion-root"]')
+ * @param partName The name of the part to locate (e.g., 'trigger', 'content')
+ * @returns A Playwright Locator for the requested part
+ */
+export function getPart(parent: Page | Locator, hostSelector: string, partName: string): Locator {
+  // Use [part="..."] for CSS Shadow Parts standard, fallback to [data-part="..."]
+  const partSelector = `[part="${partName}"], [data-part="${partName}"]`
+
+  if (FRAMEWORK_CONTEXT === "shadow-dom") {
+    // For Shadow DOM, use a descendant combinator. Playwright's engine will
+    // pierce the shadow root of the element matching hostSelector.
+    return parent.locator(`${hostSelector} ${partSelector}`)
+  } else {
+    // For Light DOM, the structure might be a direct child or a deeper descendant.
+    // In many simple cases, the selector is identical to the shadow DOM version.
+    return parent.locator(`${hostSelector} ${partSelector}`)
+  }
+}
+
+/**
+ * Performs an accessibility scan, optionally scoped to a specific selector.
+ * @param page The Playwright Page object
+ * @param selector Optional selector to scope the scan (defaults to "[data-part=root]")
+ */
 export async function a11y(page: Page, selector = "[data-part=root]") {
+  // if (FRAMEWORK_CONTEXT === "shadow-dom") {
+  //   // For Shadow DOM, do a full-page scan since AxeBuilder.include()
+  //   // has issues finding elements across shadow boundaries
+  //   const accessibilityScanResults = await new AxeBuilder({ page: page as any })
+  //     .disableRules(["color-contrast"])
+  //     .analyze()
+
+  //   expect(accessibilityScanResults.violations).toEqual([])
+  // } else {
+  //   // For Light DOM, use the original scoped approach
+  // }
   await page.waitForSelector(selector)
 
-  const results = await new AxeBuilder({ page: page as any })
+  const accessibilityScanResults = await new AxeBuilder({ page: page as any })
     .disableRules(["color-contrast"])
     .include(selector)
     .analyze()
 
-  expect(results.violations).toEqual([])
+  expect(accessibilityScanResults.violations).toEqual([])
+}
+
+/**
+ * Performs a targeted accessibility scan on the shadow root of a specific component.
+ * @param page The Playwright Page object
+ * @param hostSelector A CSS selector for the shadow host element
+ */
+export async function a11yInShadow(page: Page, hostSelector: string | undefined, selector = "[data-part=root]") {
+  // // Inject axe-core library into the page
+  // await page.addScriptTag({
+  //   path: require.resolve("axe-core/axe.min.js"),
+  // })
+
+  // const results = await page.evaluate((selector) => {
+  //   const host = document.querySelector(selector)
+  //   if (!host || !host.shadowRoot) {
+  //     throw new Error(`Host element '${selector}' not found or has no shadowRoot.`)
+  //   }
+
+  //   // Run axe directly on the shadowRoot with minimal configuration
+  //   return window.axe.run(host.shadowRoot)
+  // }, hostSelector)
+
+  // expect(results.violations).toEqual([])
+
+  await page.waitForSelector(selector)
+
+  let selection = new AxeBuilder({ page: page as any }).disableRules(["color-contrast"])
+
+  if (hostSelector) {
+    selection = selection.include(hostSelector)
+  }
+  if (selector) {
+    selection = selection.include(selector)
+  }
+
+  const accessibilityScanResults = await selection.analyze()
+
+  expect(accessibilityScanResults.violations).toEqual([])
 }
 
 export const testid = (part: string) => `[data-testid=${esc(part)}]`
+
+/**
+ * Combines host selector and target selector for framework-aware locators.
+ * @param host Optional host selector (e.g., 'accordion-page'). If undefined, returns just the target.
+ * @param target The target selector (e.g., '[data-testid="about:trigger"]')
+ * @returns Combined selector string
+ */
+export function withHost(componentHost: string | undefined, target: string): string {
+  return FRAMEWORK_CONTEXT === "shadow-dom" && componentHost ? `${componentHost} ${target}` : target
+}
 
 export const controls = (page: Page) => {
   return {

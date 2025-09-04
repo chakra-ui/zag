@@ -1,5 +1,5 @@
 import { expect, type Page } from "@playwright/test"
-import { a11y, testid } from "../_utils"
+import { a11y, a11yInShadow, testid, withHost, FRAMEWORK_CONTEXT } from "../_utils"
 import { Model } from "./model"
 
 export class AccordionModel extends Model {
@@ -12,15 +12,21 @@ export class AccordionModel extends Model {
   }
 
   checkAccessibility(selector?: string): Promise<void> {
-    return a11y(this.page, selector)
+    if (FRAMEWORK_CONTEXT === "shadow-dom") {
+      // For Shadow DOM, use the specialized shadow root accessibility scan
+      return a11yInShadow(this.page, "accordion-page")
+    } else {
+      // For Light DOM, use the original scoped approach
+      return a11y(this.page, selector)
+    }
   }
 
   getTrigger(id: string) {
-    return this.page.locator(testid(`${id}:trigger`))
+    return this.page.locator(withHost("accordion-page", testid(`${id}:trigger`)))
   }
 
   getContent(id: string) {
-    return this.page.locator(testid(`${id}:content`))
+    return this.page.locator(withHost("accordion-page", testid(`${id}:content`)))
   }
 
   async focusTrigger(id: string) {
