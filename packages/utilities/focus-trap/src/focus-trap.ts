@@ -459,7 +459,7 @@ export class FocusTrap {
 
     this.state.active = true
     this.state.paused = false
-    this.state.nodeFocusedBeforeActivation = (this.doc.activeElement as HTMLElement) || null
+    this.state.nodeFocusedBeforeActivation = getActiveElement(this.doc)
 
     onActivate?.()
 
