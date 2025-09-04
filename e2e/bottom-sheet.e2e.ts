@@ -157,6 +157,7 @@ test.describe("bottom-sheet [snapPoints]", () => {
 
     // Drag down to middle position (50%)
     await I.dragGrabber("down", initialHeight / 2)
+    await page.waitForTimeout(ANIMATION_DURATION)
 
     let currentHeight = await I.getContentVisibleHeight()
 
@@ -165,6 +166,7 @@ test.describe("bottom-sheet [snapPoints]", () => {
 
     // Drag down more to snap to lower position (25%)
     await I.dragGrabber("down", currentHeight / 2)
+    await page.waitForTimeout(ANIMATION_DURATION)
 
     currentHeight = await I.getContentVisibleHeight()
 
@@ -196,6 +198,7 @@ test.describe("bottom-sheet [defaultSnapPoint]", () => {
 
     // Drag up to reach middle position (50%)
     await I.dragGrabber("up", 175)
+    await page.waitForTimeout(ANIMATION_DURATION)
 
     currentHeight = await I.getContentVisibleHeight()
 
@@ -204,6 +207,7 @@ test.describe("bottom-sheet [defaultSnapPoint]", () => {
 
     // Drag up more to reach full height (100%)
     await I.dragGrabber("up", 250)
+    await page.waitForTimeout(ANIMATION_DURATION)
 
     currentHeight = await I.getContentVisibleHeight()
 
@@ -212,8 +216,9 @@ test.describe("bottom-sheet [defaultSnapPoint]", () => {
 
     // Try dragging up more - should not increase further as it's at max
     await I.dragGrabber("up", 100)
+    await page.waitForTimeout(ANIMATION_DURATION)
 
-    const finalHeight = await I.getContentVisibleHeight()
-    expect(finalHeight).toBe(fullHeight)
+    currentHeight = await I.getContentVisibleHeight()
+    expect(currentHeight).toBe(fullHeight)
   })
 })

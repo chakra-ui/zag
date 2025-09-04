@@ -87,24 +87,11 @@ export class BottomSheetModel extends Model {
   async getContentVisibleHeight() {
     const initialHeight = await this.content.evaluate((el) => el.clientHeight)
 
-    const transform = await this.content.evaluate((el) => el.style.transform)
-    const snapPointOffset = await this.content.evaluate((el) =>
+    const translateY = await this.content.evaluate((el) =>
       getComputedStyle(el).getPropertyValue("--bottom-sheet-translate"),
     )
 
-    const translateY = transform.match(/translate3d\(([^,]+), ([^,]+), ([^,]+)\)/)
-
-    if (translateY) {
-      const [, , y] = translateY
-      return initialHeight - parseInt(y, 10)
-    }
-
-    if (snapPointOffset && snapPointOffset !== "") {
-      const offset = parseInt(snapPointOffset, 10)
-      return initialHeight - offset
-    }
-
-    return initialHeight
+    return initialHeight - parseInt(translateY, 10)
   }
 
   scrollContent(distance: number) {
