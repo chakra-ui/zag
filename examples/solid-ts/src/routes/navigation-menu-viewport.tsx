@@ -156,7 +156,7 @@ export default function Page() {
       </main>
 
       <Toolbar controls={controls} viz>
-        <StateVisualizer state={service} />
+        <StateVisualizer state={service} context={["value", "previousValue"]} />
       </Toolbar>
     </>
   )
