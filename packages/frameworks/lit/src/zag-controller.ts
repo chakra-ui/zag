@@ -8,7 +8,7 @@ export class ZagController<TSchema extends MachineSchema> implements ReactiveCon
   constructor(
     private host: ReactiveControllerHost,
     machineConfig: Machine<TSchema>,
-    getProps?: () => Partial<TSchema["props"]> & { getRootNode?: () => ShadowRoot | Document | Node },
+    getProps?: () => Partial<TSchema["props"]> & { getRootNode?: () => ShadowRoot | Document | Node | null },
   ) {
     this.machine = new LitMachine(machineConfig, getProps)
 

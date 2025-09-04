@@ -104,11 +104,6 @@ export const normalizeProps = createNormalizer<PropTypes>((props: Dict) => {
   for (let key in props) {
     const value = props[key]
 
-    // Skip undefined values
-    if (value === undefined) {
-      continue
-    }
-
     // Handle style objects
     if (key === "style" && isObject(value)) {
       normalized["style"] = toStyleString(value)
