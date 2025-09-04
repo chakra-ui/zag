@@ -44,22 +44,22 @@
 
 @keyframes nav-menu-scale-in {
   from {
-    transform: scale(0.9);
+    transform: rotateX(-30deg) scale(0.9);
     opacity: 0;
   }
   to {
-    transform: scale(1);
+    transform: rotateX(0deg) scale(1);
     opacity: 1;
   }
 }
 
 @keyframes nav-menu-scale-out {
   from {
-    transform: scale(1);
+    transform: rotateX(0deg) scale(1);
     opacity: 1;
   }
   to {
-    transform: scale(0.95);
+    transform: rotateX(-10deg) scale(0.95);
     opacity: 0;
   }
 }
