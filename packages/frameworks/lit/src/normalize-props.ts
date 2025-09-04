@@ -123,6 +123,12 @@ export const normalizeProps = createNormalizer<PropTypes>((props: Dict) => {
 
     // Handle boolean attributes with ? prefix
     if (typeof value === "boolean") {
+      // ARIA booleans must be string values "true" or "false"
+      if (key.startsWith("aria-")) {
+        normalized[key] = value.toString()
+        continue
+      }
+
       normalized[`?${key.toLowerCase()}`] = value
       continue
     }
