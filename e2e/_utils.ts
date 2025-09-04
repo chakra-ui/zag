@@ -1,7 +1,5 @@
 import AxeBuilder from "@axe-core/playwright"
 import { expect, type Locator, type Page } from "@playwright/test"
-import { AxeResults, type RunOptions, type ElementContext } from "axe-core"
-import { run } from "axe-core"
 
 // Types and Framework Context Detection
 export type FrameworkContext = "shadow-dom" | "light-dom"
@@ -12,18 +10,6 @@ export const FRAMEWORK_CONTEXT: FrameworkContext =
   (process.env.TEST_FRAMEWORK as FrameworkContext) || (process.env.FRAMEWORK === "lit" ? "shadow-dom" : "light-dom")
 
 console.log(`Running E2E tests in '${FRAMEWORK_CONTEXT}' context.`)
-
-// Augment the window object for type safety in page.evaluate
-declare global {
-  interface Window {
-    axe: {
-      run: typeof run
-    }
-    // axe: {
-    //   run: (context?: ElementContext, options?: RunOptions) => Promise<AxeResults>
-    // }
-  }
-}
 
 /**
  * Context-aware utility to locate a component part defined by a 'part' or 'data-part' attribute.
@@ -53,57 +39,14 @@ export function getPart(parent: Page | Locator, hostSelector: string, partName: 
  * Performs an accessibility scan, optionally scoped to a specific selector.
  * @param page The Playwright Page object
  * @param selector Optional selector to scope the scan (defaults to "[data-part=root]")
+ * @param hostSelector A CSS selector for a shadow host element
  */
-export async function a11y(page: Page, selector = "[data-part=root]") {
-  // if (FRAMEWORK_CONTEXT === "shadow-dom") {
-  //   // For Shadow DOM, do a full-page scan since AxeBuilder.include()
-  //   // has issues finding elements across shadow boundaries
-  //   const accessibilityScanResults = await new AxeBuilder({ page: page as any })
-  //     .disableRules(["color-contrast"])
-  //     .analyze()
-
-  //   expect(accessibilityScanResults.violations).toEqual([])
-  // } else {
-  //   // For Light DOM, use the original scoped approach
-  // }
-  await page.waitForSelector(selector)
-
-  const accessibilityScanResults = await new AxeBuilder({ page: page as any })
-    .disableRules(["color-contrast"])
-    .include(selector)
-    .analyze()
-
-  expect(accessibilityScanResults.violations).toEqual([])
-}
-
-/**
- * Performs a targeted accessibility scan on the shadow root of a specific component.
- * @param page The Playwright Page object
- * @param hostSelector A CSS selector for the shadow host element
- */
-export async function a11yInShadow(page: Page, hostSelector: string | undefined, selector = "[data-part=root]") {
-  // // Inject axe-core library into the page
-  // await page.addScriptTag({
-  //   path: require.resolve("axe-core/axe.min.js"),
-  // })
-
-  // const results = await page.evaluate((selector) => {
-  //   const host = document.querySelector(selector)
-  //   if (!host || !host.shadowRoot) {
-  //     throw new Error(`Host element '${selector}' not found or has no shadowRoot.`)
-  //   }
-
-  //   // Run axe directly on the shadowRoot with minimal configuration
-  //   return window.axe.run(host.shadowRoot)
-  // }, hostSelector)
-
-  // expect(results.violations).toEqual([])
-
+export async function a11y(page: Page, selector = "[data-part=root]", hostSelector?: string) {
   await page.waitForSelector(selector)
 
   let selection = new AxeBuilder({ page: page as any }).disableRules(["color-contrast"])
 
-  if (hostSelector) {
+  if (hostSelector && FRAMEWORK_CONTEXT === "shadow-dom") {
     selection = selection.include(hostSelector)
   }
   if (selector) {
