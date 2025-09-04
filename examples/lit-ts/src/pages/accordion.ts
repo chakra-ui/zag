@@ -29,27 +29,17 @@ export class AccordionPage extends PageElement {
 
     return html`
       <main class="accordion">
-        <div ${spread(api.getRootProps())} part="root">
+        <div ${spread(api.getRootProps())}>
           ${accordionData.map(
             (item) => html`
-              <div ${spread(api.getItemProps({ value: item.id }))} part="item">
+              <div ${spread(api.getItemProps({ value: item.id }))}>
                 <h3>
-                  <button
-                    data-testid="${item.id}:trigger"
-                    ${spread(api.getItemTriggerProps({ value: item.id }))}
-                    part="trigger"
-                  >
+                  <button data-testid="${item.id}:trigger" ${spread(api.getItemTriggerProps({ value: item.id }))}>
                     ${item.label}
-                    <div ${spread(api.getItemIndicatorProps({ value: item.id }))} part="indicator">
-                      ${createElement(ArrowRight)}
-                    </div>
+                    <div ${spread(api.getItemIndicatorProps({ value: item.id }))}>${createElement(ArrowRight)}</div>
                   </button>
                 </h3>
-                <div
-                  data-testid="${item.id}:content"
-                  ${spread(api.getItemContentProps({ value: item.id }))}
-                  part="content"
-                >
+                <div data-testid="${item.id}:content" ${spread(api.getItemContentProps({ value: item.id }))}>
                   Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et
                   dolore magna aliqua.
                 </div>
