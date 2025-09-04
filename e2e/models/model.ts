@@ -2,7 +2,10 @@ import { expect, type Page } from "@playwright/test"
 import { a11y, clickOutside, clickViz, controls, repeat } from "../_utils"
 
 export class Model {
-  constructor(public page: Page) {}
+  constructor(
+    public page: Page,
+    private shadowHost?: string,
+  ) {}
 
   get controls() {
     return controls(this.page)
@@ -17,7 +20,7 @@ export class Model {
   }
 
   checkAccessibility(selector?: string) {
-    return a11y(this.page, selector)
+    return a11y(this.page, selector, this.shadowHost)
   }
 
   pressKey(key: string, times = 1) {
