@@ -1,4 +1,4 @@
-import { LitElement, html, unsafeCSS } from "lit"
+import { html, unsafeCSS } from "lit"
 import { customElement } from "lit/decorators.js"
 import { spread } from "@open-wc/lit-helpers"
 import * as accordion from "@zag-js/accordion"
@@ -10,9 +10,10 @@ import { ZagController, normalizeProps } from "@zag-js/lit"
 import { ArrowRight, createElement } from "lucide"
 import { nanoid } from "nanoid"
 import { ControlsController } from "../lib/controls-controller"
+import { PageElement } from "../lib/page-element"
 
 @customElement("accordion-page")
-export class AccordionPage extends LitElement {
+export class AccordionPage extends PageElement {
   static styles = unsafeCSS(styleComponent + styleLayout + stylePage)
 
   private controls = new ControlsController(this, accordionControls)

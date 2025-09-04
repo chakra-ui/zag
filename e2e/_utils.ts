@@ -2,14 +2,18 @@ import AxeBuilder from "@axe-core/playwright"
 import { expect, type Locator, type Page } from "@playwright/test"
 
 // Types and Framework Context Detection
-export type FrameworkContext = "shadow-dom" | "light-dom"
+export type DomMode = "shadow-dom" | "light-dom"
 
-// The context is determined by an environment variable at test runtime
-// Example: `TEST_FRAMEWORK=shadow-dom npx playwright test` or `FRAMEWORK=lit npx playwright test`
-export const FRAMEWORK_CONTEXT: FrameworkContext =
-  (process.env.TEST_FRAMEWORK as FrameworkContext) || (process.env.FRAMEWORK === "lit" ? "shadow-dom" : "light-dom")
+// The context is determined by environment variables at test runtime
+// VITE_DOM_MODE is the primary control (matches client-side behavior)
+// Examples:
+// - `VITE_DOM_MODE=shadow-dom FRAMEWORK=react npx playwright test` (force Shadow DOM in React)
+// - `VITE_DOM_MODE=light-dom FRAMEWORK=lit npx playwright test` (force Light DOM in Lit)
+// - `FRAMEWORK=lit npx playwright test` (default Lit behavior: Shadow DOM)
+export const DOM_MODE: DomMode =
+  process.env.VITE_DOM_MODE === "light-dom" ? "light-dom" : process.env.FRAMEWORK === "lit" ? "shadow-dom" : "light-dom"
 
-console.log(`Running E2E tests in '${FRAMEWORK_CONTEXT}' context.`)
+console.log(`Running E2E tests in '${DOM_MODE}' context.`)
 
 /**
  * Context-aware utility to locate a component part defined by a 'part' or 'data-part' attribute.
@@ -24,7 +28,7 @@ export function getPart(parent: Page | Locator, hostSelector: string, partName: 
   // Use [part="..."] for CSS Shadow Parts standard, fallback to [data-part="..."]
   const partSelector = `[part="${partName}"], [data-part="${partName}"]`
 
-  if (FRAMEWORK_CONTEXT === "shadow-dom") {
+  if (DOM_MODE === "shadow-dom") {
     // For Shadow DOM, use a descendant combinator. Playwright's engine will
     // pierce the shadow root of the element matching hostSelector.
     return parent.locator(`${hostSelector} ${partSelector}`)
@@ -46,7 +50,7 @@ export async function a11y(page: Page, selector = "[data-part=root]", hostSelect
 
   let selection = new AxeBuilder({ page: page as any }).disableRules(["color-contrast"])
 
-  if (hostSelector && FRAMEWORK_CONTEXT === "shadow-dom") {
+  if (hostSelector && DOM_MODE === "shadow-dom") {
     selection = selection.include(hostSelector)
   }
   if (selector) {
@@ -67,7 +71,7 @@ export const testid = (part: string) => `[data-testid=${esc(part)}]`
  * @returns Combined selector string
  */
 export function withHost(componentHost: string | undefined, target: string): string {
-  return FRAMEWORK_CONTEXT === "shadow-dom" && componentHost ? `${componentHost} ${target}` : target
+  return DOM_MODE === "shadow-dom" && componentHost ? `${componentHost} ${target}` : target
 }
 
 export const controls = (page: Page) => {
