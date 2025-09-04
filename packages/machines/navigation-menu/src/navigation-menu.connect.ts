@@ -47,6 +47,10 @@ export function connect<T extends PropTypes>(
     open,
     value,
     orientation: prop("orientation")!,
+    isViewportRendered,
+    getViewportNode() {
+      return dom.getViewportEl(scope)
+    },
     setValue(value) {
       send({ type: "VALUE.SET", value })
     },
@@ -243,6 +247,19 @@ export function connect<T extends PropTypes>(
             send({ type: "CONTENT.FOCUS", side: wasTriggerFocused ? "start" : "end" })
           }
         },
+      })
+    },
+
+    getViewportProxyProps(props) {
+      const itemState = getItemState(props)
+
+      // Only render when item is open and viewport is used
+      if (!itemState.selected || !isViewportRendered) {
+        return { hidden: true }
+      }
+
+      return normalize.element({
+        "aria-owns": dom.getContentId(scope, props.value),
       })
     },
 

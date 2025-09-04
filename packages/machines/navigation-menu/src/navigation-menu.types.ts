@@ -184,6 +184,14 @@ export interface NavigationMenuApi<T extends PropTypes = PropTypes> {
    */
   open: boolean
   /**
+   * Whether the viewport is rendered
+   */
+  isViewportRendered: boolean
+  /**
+   * Gets the viewport node element
+   */
+  getViewportNode: () => HTMLElement | null
+  /**
    * Sets the parent of the menu
    */
   setParent: (parent: NavigationMenuService) => void
@@ -205,6 +213,7 @@ export interface NavigationMenuApi<T extends PropTypes = PropTypes> {
 
   getTriggerProps: (props: ItemProps) => T["button"]
   getTriggerProxyProps: (props: ItemProps) => T["element"]
+  getViewportProxyProps: (props: ItemProps) => T["element"]
 
   getLinkProps: (props: LinkProps) => T["element"]
   getContentProps: (props: LinkProps) => T["element"]

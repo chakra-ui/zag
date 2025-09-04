@@ -40,6 +40,7 @@ export default function Page() {
                     <ChevronDown />
                   </button>
                   <span {...api.getTriggerProxyProps({ value: "products" })} />
+                  <span {...api.getViewportProxyProps({ value: "products" })} />
                 </div>
 
                 <div {...api.getItemProps({ value: "company" })}>
@@ -48,6 +49,7 @@ export default function Page() {
                     <ChevronDown />
                   </button>
                   <span {...api.getTriggerProxyProps({ value: "company" })} />
+                  <span {...api.getViewportProxyProps({ value: "company" })} />
                 </div>
 
                 <div {...api.getItemProps({ value: "developers" })}>
@@ -56,6 +58,7 @@ export default function Page() {
                     <ChevronDown />
                   </button>
                   <span {...api.getTriggerProxyProps({ value: "developers" })} />
+                  <span {...api.getViewportProxyProps({ value: "developers" })} />
                 </div>
 
                 <div {...api.getItemProps({ value: "pricing" })}>
