@@ -85,6 +85,7 @@ test.describe("toggle-group", () => {
     // focus on outside button
     await I.clickOutsideButton()
     await I.pressKey("Tab")
+    await I.seeItemIsFocused("bold")
 
     await I.pressKey("ArrowRight")
     await I.seeItemIsFocused("italic")
