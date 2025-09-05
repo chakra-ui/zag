@@ -1,4 +1,12 @@
-import { contains, dataAttr, getTabbables, getWindow, navigate, visuallyHiddenStyle } from "@zag-js/dom-query"
+import {
+  contains,
+  dataAttr,
+  getTabbables,
+  getWindow,
+  isSelfTarget,
+  navigate,
+  visuallyHiddenStyle,
+} from "@zag-js/dom-query"
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import { toPx } from "@zag-js/utils"
 import { parts } from "./navigation-menu.anatomy"
@@ -101,35 +109,23 @@ export function connect<T extends PropTypes>(
         "data-state": itemState.open ? "open" : "closed",
         "data-orientation": prop("orientation")!,
         "data-disabled": dataAttr(itemState.disabled),
-        // onKeyDown(event) {
-        //   switch (event.key) {
-        //     case "ArrowDown":
-        //     case "ArrowUp":
-        //     case "ArrowLeft":
-        //     case "ArrowRight":
-        //     case "Home":
-        //     case "End": {
-        //       send({ type: "ITEM.NAVIGATE", value: props.value, key: event.key })
-        //       event.preventDefault()
-        //       event.stopPropagation()
-        //       break
-        //     }
-        //     case "Enter":
-        //     case " ": {
-        //       if (value === props.value) {
-        //         send({ type: "ITEM.CLOSE", value: props.value })
-        //         event.preventDefault()
-        //       } else {
-        //         const target = getEventTarget<HTMLElement>(event)
-        //         target?.click()
-        //         event.preventDefault()
-        //       }
-        //       break
-        //     }
-        //     default:
-        //       break
-        //   }
-        // },
+        onKeyDown(event) {
+          switch (event.key) {
+            case "ArrowDown":
+            case "ArrowUp":
+            case "ArrowLeft":
+            case "ArrowRight":
+            case "Home":
+            case "End": {
+              send({ type: "ITEM.NAVIGATE", value: props.value, key: event.key })
+              event.preventDefault()
+              event.stopPropagation()
+              break
+            }
+            default:
+              break
+          }
+        },
       })
     },
 
@@ -320,6 +316,9 @@ export function connect<T extends PropTypes>(
           send({ type: "CONTENT.POINTERLEAVE", value: props.value })
         },
         onKeyDown(event) {
+          if (event.defaultPrevented) return
+          if (!isSelfTarget(event)) return
+
           // prevent parent menu triggering keydown event
           if (event.currentTarget.closest("[data-scope=navigation-menu][data-part=root]") !== dom.getRootEl(scope))
             return

@@ -2,7 +2,7 @@ import * as navigationMenu from "@zag-js/navigation-menu"
 import { normalizeProps, useMachine } from "@zag-js/solid"
 import { navigationMenuControls } from "@zag-js/shared"
 import { ChevronDown } from "lucide-solid"
-import { createMemo, createUniqueId, For, JSX } from "solid-js"
+import { createMemo, createUniqueId, For } from "solid-js"
 import { Presence } from "~/components/presence"
 import { StateVisualizer } from "~/components/state-visualizer"
 import { Toolbar } from "~/components/toolbar"
@@ -36,7 +36,19 @@ export default function Page() {
   return (
     <>
       <main class="navigation-menu viewport">
-        <Navbar>
+        <div
+          style={{
+            position: "relative",
+            display: "flex",
+            "box-sizing": "border-box",
+            "align-items": "center",
+            padding: "15px 20px",
+            "justify-content": "space-between",
+            width: "100%",
+            "background-color": "white",
+            "box-shadow": "0 50px 100px -20px rgba(50,50,93,0.1),0 30px 60px -30px rgba(0,0,0,0.2)",
+          }}
+        >
           <button>Logo</button>
           <div {...api().getRootProps()}>
             <div {...api().getIndicatorTrackProps()}>
@@ -152,32 +164,21 @@ export default function Page() {
             </div>
           </div>
           <button>Login</button>
-        </Navbar>
+        </div>
+
+        <header>
+          <h1>Heading</h1>
+          <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quos.</p>
+          <div>
+            <button>Get Started</button>
+            <a href="#">Learn More</a>
+          </div>
+        </header>
       </main>
 
       <Toolbar controls={controls} viz>
         <StateVisualizer state={service} context={["value", "previousValue"]} />
       </Toolbar>
     </>
-  )
-}
-
-const Navbar = (props: { children: JSX.Element }) => {
-  return (
-    <div
-      style={{
-        position: "relative",
-        display: "flex",
-        "box-sizing": "border-box",
-        "align-items": "center",
-        padding: "15px 20px",
-        "justify-content": "space-between",
-        width: "100%",
-        "background-color": "white",
-        "box-shadow": "0 50px 100px -20px rgba(50,50,93,0.1),0 30px 60px -30px rgba(0,0,0,0.2)",
-      }}
-    >
-      {props.children}
-    </div>
   )
 }

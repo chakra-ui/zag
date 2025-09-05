@@ -3,46 +3,32 @@ import * as navigationMenu from "@zag-js/navigation-menu"
 import { navigationMenuControls } from "@zag-js/shared"
 import { normalizeProps, useMachine } from "@zag-js/vue"
 import { ChevronDown } from "lucide-vue-next"
-import { defineComponent, h } from "vue"
 
 const controls = useControls(navigationMenuControls)
 
-const service = useMachine(
-  navigationMenu.machine,
-  controls.mergeProps<navigationMenu.Props>({
-    id: useId(),
-  }),
-)
+const service = useMachine(navigationMenu.machine, {
+  id: useId(),
+})
 
 const api = computed(() => navigationMenu.connect(service, normalizeProps))
-
-const Navbar = defineComponent({
-  setup(_, { slots }) {
-    return () =>
-      h(
-        "div",
-        {
-          style: {
-            position: "relative",
-            display: "flex",
-            boxSizing: "border-box",
-            alignItems: "center",
-            padding: "15px 20px",
-            justifyContent: "space-between",
-            width: "100%",
-            backgroundColor: "white",
-            boxShadow: "0 50px 100px -20px rgba(50,50,93,0.1),0 30px 60px -30px rgba(0,0,0,0.2)",
-          },
-        },
-        [h("button", "Logo"), slots.default?.(), h("button", "Login")],
-      )
-  },
-})
 </script>
 
 <template>
   <main class="navigation-menu viewport">
-    <Navbar>
+    <div
+      :style="{
+        position: 'relative',
+        display: 'flex',
+        boxSizing: 'border-box',
+        alignItems: 'center',
+        padding: '15px 20px',
+        justifyContent: 'space-between',
+        width: '100%',
+        backgroundColor: 'white',
+        boxShadow: '0 50px 100px -20px rgba(50,50,93,0.1),0 30px 60px -30px rgba(0,0,0,0.2)',
+      }"
+    >
+      <button>Logo</button>
       <div v-bind="api.getRootProps()">
         <div v-bind="api.getIndicatorTrackProps()">
           <div v-bind="api.getListProps()">
@@ -184,7 +170,17 @@ const Navbar = defineComponent({
           </Presence>
         </div>
       </div>
-    </Navbar>
+      <button>Login</button>
+    </div>
+
+    <header>
+      <h1>Heading</h1>
+      <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quos.</p>
+      <div>
+        <button>Get Started</button>
+        <a href="#">Learn More</a>
+      </div>
+    </header>
   </main>
 
   <Toolbar :viz="true">
