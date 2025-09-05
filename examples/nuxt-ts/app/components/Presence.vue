@@ -1,17 +1,16 @@
 <script lang="ts" setup>
 import * as presence from "@zag-js/presence"
 import { normalizeProps, useMachine } from "@zag-js/vue"
-import type { HTMLAttributes, VNodeRef } from "vue"
-import { computed, ref, watch } from "vue"
+import type { VNodeRef } from "vue"
+import { computed, mergeProps, ref, watch } from "vue"
 
-/** @vue-ignore */
-interface Props extends HTMLAttributes {}
-
-const props = withDefaults(defineProps<Props>(), {
-  hidden: false,
+defineOptions({
+  inheritAttrs: false,
 })
 
-const present = computed(() => !props.hidden)
+const attrs = useAttrs()
+
+const present = computed(() => !attrs.hidden)
 const service = useMachine(
   presence.machine,
   computed(() => ({ present: present.value })),
@@ -24,15 +23,18 @@ watch(nodeRef, () => {
     api.value.setNode(nodeRef.value)
   }
 })
+
+const mergedProps = computed(() =>
+  mergeProps({ "data-scope": "presence" }, attrs, {
+    hidden: !api.value.present,
+    "data-state": api.value.skip ? undefined : present.value ? "open" : "closed",
+    ref: nodeRef,
+  }),
+)
 </script>
 
 <template>
-  <div
-    ref="nodeRef"
-    data-scope="presence"
-    :data-state="api.skip ? undefined : present ? 'open' : 'closed'"
-    :hidden="!api.present"
-  >
+  <div v-bind="mergedProps">
     <slot />
   </div>
 </template>
