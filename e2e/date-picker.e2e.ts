@@ -40,24 +40,32 @@ test.describe("datepicker [single]", () => {
 
   test("navigates to next day on ArrowRight key press", async () => {
     await I.clickTrigger()
+    await I.seeContent()
+    await I.seeTodayCellIsFocused()
     await I.pressKey("ArrowRight")
     await I.seeNextDayCellIsFocused()
   })
 
   test("navigates to previous day on ArrowLeft key press", async () => {
     await I.clickTrigger()
+    await I.seeContent()
+    await I.seeTodayCellIsFocused()
     await I.pressKey("ArrowLeft")
     await I.seePrevDayCellIsFocused()
   })
 
   test("navigates to previous week on ArrowUp key press", async () => {
     await I.clickTrigger()
+    await I.seeContent()
+    await I.seeTodayCellIsFocused()
     await I.pressKey("ArrowUp")
     await I.seePrevDayCellIsFocused({ step: 7 })
   })
 
   test("navigates to next week on ArrowDown key press", async () => {
     await I.clickTrigger()
+    await I.seeContent()
+    await I.seeTodayCellIsFocused()
     await I.pressKey("ArrowDown")
     await I.seeNextDayCellIsFocused({ step: 7 })
   })
