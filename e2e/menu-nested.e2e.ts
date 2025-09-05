@@ -24,6 +24,7 @@ const expectToBeFocused = async (page: Page, id: string) => {
 
 const navigateToSubmenuTrigger = async (page: Page) => {
   await page.click(menu_1.trigger)
+  await expect(page.locator(menu_1.menu)).toBeFocused()
   await page.keyboard.press("ArrowDown")
   await page.keyboard.press("ArrowDown")
   await page.keyboard.press("ArrowDown")
@@ -96,6 +97,7 @@ test.describe("nested menu / keyboard typeahead", async () => {
 
   test("parent menu", async ({ page }) => {
     await page.click(menu_1.trigger)
+    await expect(page.locator(menu_1.menu)).toBeFocused()
 
     await page.keyboard.type("n")
     await expectToBeFocused(page, testid("new-file"))
@@ -107,8 +109,9 @@ test.describe("nested menu / keyboard typeahead", async () => {
     await expectToBeFocused(page, testid("new-win"))
   })
 
-  test.skip("nested menu", async ({ page }) => {
+  test("nested menu", async ({ page }) => {
     await page.click(menu_1.trigger)
+    await expect(page.locator(menu_1.menu)).toBeFocused()
 
     await page.keyboard.type("m")
     await expectToBeFocused(page, testid("more-tools"))
@@ -130,12 +133,14 @@ test.describe("nested menu / select item", async () => {
   test("using keyboard", async ({ page }) => {
     await navigateToSubmenuTrigger(page)
     await page.keyboard.press("Enter", { delay: 10 })
+    await expect(page.locator(menu_2.menu)).toBeFocused()
 
     // open menu 3
     await page.keyboard.press("ArrowDown")
     await page.keyboard.press("ArrowDown")
     await page.keyboard.press("ArrowDown")
     await page.keyboard.press("Enter", { delay: 10 })
+    await expect(page.locator(menu_3.menu)).toBeFocused()
 
     // select first item in menu 3
     await page.keyboard.press("Enter", { delay: 10 })
