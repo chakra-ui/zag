@@ -60,6 +60,7 @@ test.describe("popover", () => {
 
   test("[keyboard / non-modal] on shift-tab outside: should move focus to trigger", async () => {
     await I.focusTrigger()
+    await I.seeTriggerIsFocused()
     await I.pressKey("Enter")
     await I.seeContent()
     await I.pressKey("Shift+Tab")
