@@ -107,10 +107,11 @@ test.describe("tabs", () => {
     await I.controls.select("activationMode", "manual")
 
     await I.clickTab("nils")
+    await I.seeTabContent("nils")
     await I.pressKey("ArrowRight")
-    await I.pressKey("Enter")
 
     await I.setTabIsFocused("agnes")
+    await I.pressKey("Enter")
     await I.seeTabContent("agnes")
   })
 

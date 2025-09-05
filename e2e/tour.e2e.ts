@@ -48,30 +48,36 @@ test.describe("tour", () => {
 
     // data fetching step
     await I.pressKey("ArrowRight")
+    await I.seeContent()
     await I.seeTarget("Step 1")
 
     // in overflow container
-    await I.pressKey("ArrowRight", 1)
+    await I.pressKey("ArrowRight")
+    await I.seeContent()
     await I.seeSpotlight()
     await I.seeTarget("Step 2")
 
     // iframe content
     await I.pressKey("ArrowRight")
+    await I.seeContent()
     await I.seeSpotlight()
     await I.seeIframeTarget("Iframe Content")
 
     // Close to the bottom
     await I.pressKey("ArrowRight")
+    await I.seeContent()
     await I.seeSpotlight()
     await I.seeTarget("Step 3")
 
     // Bottom of the page
     await I.pressKey("ArrowRight")
+    await I.seeContent()
     await I.seeSpotlight()
     await I.seeTarget("Step 4")
 
     // final step
     await I.pressKey("ArrowRight")
+    await I.seeContent()
     await I.seeTitle("all sorted!")
   })
 

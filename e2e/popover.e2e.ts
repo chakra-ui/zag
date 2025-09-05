@@ -53,6 +53,7 @@ test.describe("popover", () => {
   test("[keyboard / non-modal] on tab outside: should move focus to next tabbable element after button", async () => {
     await I.focusTrigger()
     await I.pressKey("Enter")
+    await I.seeContent()
     await I.pressKey("Tab", 3)
     await I.seeButtonAfterIsFocused()
   })
@@ -60,6 +61,7 @@ test.describe("popover", () => {
   test("[keyboard / non-modal] on shift-tab outside: should move focus to trigger", async () => {
     await I.focusTrigger()
     await I.pressKey("Enter")
+    await I.seeContent()
     await I.pressKey("Shift+Tab")
     await I.seeTriggerIsFocused()
     await I.seeContent()

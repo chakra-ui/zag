@@ -85,6 +85,7 @@ export class NumberInputModel extends Model {
   }
 
   async mousedownDec() {
-    await this.decButton.dispatchEvent("pointerdown")
+    await this.decButton.hover()
+    await this.page.mouse.down()
   }
 }
