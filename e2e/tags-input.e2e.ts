@@ -247,7 +247,9 @@ test.describe("tags-input", () => {
 
   test("clear trigger should clear tags", async () => {
     await I.addTag("Svelte")
+    await I.seeTag("Svelte")
     await I.addTag("Solid")
+    await I.seeTag("Solid")
 
     await I.clickClearTrigger()
     await I.seeNoTags()

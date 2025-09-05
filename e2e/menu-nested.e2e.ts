@@ -208,7 +208,9 @@ test.describe("nested menu / pointer movement", async () => {
 
   test("should close open submenu when moving pointer to parent menu item", async ({ page }) => {
     await page.click(menu_1.trigger)
+    await expect(page.locator(menu_1.menu)).toBeVisible()
     await page.hover(menu_2.trigger)
+    await expect(page.locator(menu_2.menu)).toBeVisible()
 
     const menuitem = testid("new-tab")
 
