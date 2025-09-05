@@ -17,7 +17,7 @@ test.describe("tabs", () => {
     await I.clickTab("agnes")
     await I.pressKey("Home")
 
-    await I.setTabIsFocused("nils")
+    await I.seeTabIsFocused("nils")
     await I.seeTabContent("nils")
   })
 
@@ -25,7 +25,7 @@ test.describe("tabs", () => {
     await I.clickTab("agnes")
     await I.pressKey("End")
 
-    await I.setTabIsFocused("joke")
+    await I.seeTabIsFocused("joke")
     await I.seeTabContent("joke")
   })
 
@@ -62,7 +62,7 @@ test.describe("tabs", () => {
     await I.clickTab("nils")
     await I.pressKey("ArrowRight")
 
-    await I.setTabIsFocused("agnes")
+    await I.seeTabIsFocused("agnes")
     await I.seeTabContent("agnes")
   })
 
@@ -71,7 +71,7 @@ test.describe("tabs", () => {
     await I.clickTab("nils")
     await I.pressKey("ArrowRight", 3)
 
-    await I.setTabIsFocused("nils")
+    await I.seeTabIsFocused("nils")
     await I.seeTabContent("nils")
   })
 
@@ -79,7 +79,7 @@ test.describe("tabs", () => {
     await I.clickTab("joke")
     await I.pressKey("ArrowLeft")
 
-    await I.setTabIsFocused("agnes")
+    await I.seeTabIsFocused("agnes")
     await I.seeTabContent("agnes")
   })
 
@@ -89,7 +89,7 @@ test.describe("tabs", () => {
     await I.clickTab("nils")
     await I.pressKey("ArrowRight")
 
-    await I.setTabIsFocused("agnes")
+    await I.seeTabIsFocused("agnes")
     await I.dontSeeTabContent("agnes")
   })
 
@@ -99,7 +99,7 @@ test.describe("tabs", () => {
     await I.clickTab("agnes")
     await I.pressKey("Home")
 
-    await I.setTabIsFocused("nils")
+    await I.seeTabIsFocused("nils")
     await I.dontSeeTabContent("nils")
   })
 
@@ -110,7 +110,7 @@ test.describe("tabs", () => {
     await I.seeTabContent("nils")
     await I.pressKey("ArrowRight")
 
-    await I.setTabIsFocused("agnes")
+    await I.seeTabIsFocused("agnes")
     await I.pressKey("Enter")
     await I.seeTabContent("agnes")
   })
@@ -121,6 +121,6 @@ test.describe("tabs", () => {
     await I.clickTab("joke")
     await I.pressKey("ArrowRight")
 
-    await I.setTabIsFocused("joke")
+    await I.seeTabIsFocused("joke")
   })
 })
