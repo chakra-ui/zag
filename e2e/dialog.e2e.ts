@@ -23,7 +23,7 @@ test.describe("dialog", () => {
 
   test("should close modal on escape", async () => {
     await parentDialog.clickTrigger()
-    await parentDialog.seeContent()
+    await parentDialog.seeCloseIsFocused()
     await parentDialog.pressKey("Escape")
 
     await parentDialog.dontSeeContent()

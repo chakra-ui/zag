@@ -38,6 +38,7 @@ test.describe("popover", () => {
     await I.seeTriggerIsFocused()
     await I.pressKey("Enter")
     await I.seeContent()
+    await I.seeLinkIsFocused()
     await I.pressKey("Escape")
     await I.dontSeeContent()
     await I.seeTriggerIsFocused()

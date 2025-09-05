@@ -27,6 +27,8 @@ test.describe("datepicker [single]", () => {
 
   test("closes the calendar on esc", async () => {
     await I.clickTrigger()
+    await I.seeContent()
+    await I.seeTodayCellIsFocused()
     await I.pressKey("Escape")
     await I.dontSeeContent()
   })

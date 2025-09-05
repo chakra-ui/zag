@@ -118,6 +118,7 @@ test.describe("combobox", () => {
   test("[keyboard / closed] on home and end, caret moves to start and end", async () => {
     await I.clickTrigger()
     await I.type("an")
+    await I.seeInputHasValue("an")
     await I.pressKey("Escape")
 
     await I.pressKey("Home")
