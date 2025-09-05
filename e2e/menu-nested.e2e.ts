@@ -118,7 +118,7 @@ test.describe("nested menu / keyboard typeahead", async () => {
 
     // open submenu
     await page.keyboard.press("Enter")
-    await expect(page.locator(menu_2.menu)).toBeVisible()
+    await expect(page.locator(menu_2.menu)).toBeFocused()
 
     await page.keyboard.type("s")
     await expectToBeFocused(page, testid("switch-win"))

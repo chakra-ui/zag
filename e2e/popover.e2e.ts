@@ -59,6 +59,7 @@ test.describe("popover", () => {
     await I.seeTriggerIsFocused()
     await I.pressKey("Enter")
     await I.seeContent()
+    await I.seeLinkIsFocused()
     await I.pressKey("Tab", 3)
     await I.seeButtonAfterIsFocused()
   })

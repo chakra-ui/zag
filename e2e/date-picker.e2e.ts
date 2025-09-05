@@ -72,12 +72,16 @@ test.describe("datepicker [single]", () => {
 
   test("navigates to first day of the month on Home key press", async () => {
     await I.clickTrigger()
+    await I.seeContent()
+    await I.seeTodayCellIsFocused()
     await I.pressKey("Home")
     await I.seeFirstDayCellIsFocused()
   })
 
   test("navigates to last day of the month on End key press", async () => {
     await I.clickTrigger()
+    await I.seeContent()
+    await I.seeTodayCellIsFocused()
     await I.pressKey("End")
     await I.seeLastDayCellIsFocused()
   })

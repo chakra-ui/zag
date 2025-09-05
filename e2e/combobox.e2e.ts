@@ -22,6 +22,7 @@ test.describe("combobox", () => {
   test("[keyboard] Escape should close content", async () => {
     await I.clickTrigger()
     await I.seeDropdown()
+    await I.seeInputIsFocused()
     await I.pressKey("Escape")
     await I.dontSeeDropdown()
   })
