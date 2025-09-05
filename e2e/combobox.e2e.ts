@@ -263,8 +263,10 @@ test.describe("combobox / multiple", () => {
 
   test("should toggle the same item", async () => {
     await I.type("mal")
+    await I.seeDropdown()
 
     await I.pressKey("ArrowDown")
+    await I.seeItemIsHighlighted("Malawi")
     await I.pressKey("Enter")
 
     await I.seeValueText("Malawi")
@@ -277,8 +279,10 @@ test.describe("combobox / multiple", () => {
     await I.controls.bool("removeSelected", true)
 
     await I.type("mal")
+    await I.seeDropdown()
 
     await I.pressKey("ArrowDown")
+    await I.seeItemIsHighlighted("Malawi")
     await I.pressKey("Enter")
 
     await I.seeValueText("Malawi")
