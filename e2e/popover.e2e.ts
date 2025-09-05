@@ -22,17 +22,20 @@ test.describe("popover", () => {
   test("[autoFocus=false] should not focus the content", async () => {
     await I.controls.bool("autoFocus", false)
     await I.clickTrigger()
+    await I.seeContent()
     await I.seeContentIsNotFocused()
   })
 
   test("[keyboard] should open the Popover on press `Enter`", async () => {
     await I.focusTrigger()
+    await I.seeTriggerIsFocused()
     await I.pressKey("Enter")
     await I.seeContent()
   })
 
   test("[keyboard] should close the Popover on press `Escape`", async () => {
     await I.focusTrigger()
+    await I.seeTriggerIsFocused()
     await I.pressKey("Enter")
     await I.seeContent()
     await I.pressKey("Escape")
@@ -44,6 +47,7 @@ test.describe("popover", () => {
     await I.controls.bool("modal", true)
 
     await I.focusTrigger()
+    await I.seeTriggerIsFocused()
     await I.pressKey("Enter")
     await I.seeLinkIsFocused()
     await I.pressKey("Tab", 3)
@@ -52,6 +56,7 @@ test.describe("popover", () => {
 
   test("[keyboard / non-modal] on tab outside: should move focus to next tabbable element after button", async () => {
     await I.focusTrigger()
+    await I.seeTriggerIsFocused()
     await I.pressKey("Enter")
     await I.seeContent()
     await I.pressKey("Tab", 3)
@@ -63,6 +68,7 @@ test.describe("popover", () => {
     await I.seeTriggerIsFocused()
     await I.pressKey("Enter")
     await I.seeContent()
+    await I.seeLinkIsFocused()
     await I.pressKey("Shift+Tab")
     await I.seeTriggerIsFocused()
     await I.seeContent()
@@ -70,6 +76,7 @@ test.describe("popover", () => {
 
   test("[pointer] close the popover on click close button", async () => {
     await I.clickTrigger()
+    await I.seeContent()
     await I.clickClose()
     await I.dontSeeContent()
     await I.seeTriggerIsFocused()
@@ -84,6 +91,7 @@ test.describe("popover", () => {
 
   test.skip("[pointer] when clicking outside, should re-focus the button", async () => {
     await I.clickTrigger()
+    await I.seeContent()
     await I.clickOutside()
     await I.dontSeeContent()
     await I.seeTriggerIsFocused()
@@ -91,6 +99,7 @@ test.describe("popover", () => {
 
   test("[pointer] when clicking outside on focusable element, should not re-focus the button", async () => {
     await I.clickTrigger()
+    await I.seeContent()
     await I.clickButtonBefore()
     await I.seeButtonBeforeIsFocused()
     await I.dontSeeContent()
