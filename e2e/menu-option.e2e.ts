@@ -25,13 +25,17 @@ test.describe("menu option", () => {
 
   test("keyboard, should check/uncheck radio item", async () => {
     await I.focusTrigger()
-    await I.pressKey("Enter", 2)
+    await I.seeTriggerIsFocused()
+    await I.pressKey("Enter")
+    await I.seeDropdownIsFocused()
+    await I.pressKey("Enter")
 
     await I.dontSeeDropdown()
     await I.seeItemIsChecked("Ascending")
 
     // navigate the 'Descending' item
     await I.pressKey("Enter")
+    await I.seeDropdownIsFocused()
     await I.pressKey("ArrowDown")
     await I.pressKey("Enter")
 

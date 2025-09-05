@@ -47,6 +47,10 @@ export class MenuModel extends Model {
     await this.trigger.click()
   }
 
+  seeTriggerIsFocused = async () => {
+    await expect(this.trigger).toBeFocused()
+  }
+
   clickContextTrigger = async (options: { button?: "left" | "right" } = {}) => {
     await this.contextTrigger.click(options)
   }
