@@ -157,6 +157,9 @@ test.describe("number input", () => {
     await I.seeInputIsValid()
   })
 
+  // FLAKY: Test timeout of 30000ms exceeded.
+  // Error: locator.fill: Test timeout of 30000ms exceeded.
+  // Call log: waiting for locator('[data-testid=input]') - element is not visible
   test("should allow negative values with decimal point", async () => {
     await I.type("-0.30")
     await I.seeInputIsValid()

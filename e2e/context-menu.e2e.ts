@@ -9,6 +9,9 @@ test.describe("context menu", () => {
     await I.goto("/context-menu")
   })
 
+  // FLAKY: Test timeout of 30000ms exceeded.
+  // Error: locator.click: Test timeout of 30000ms exceeded.
+  // Call log: waiting for locator('[data-scope=menu][data-part=context-trigger]') - element is not visible
   test("should open on right click", async () => {
     await I.clickContextTrigger({ button: "right" })
 
@@ -19,6 +22,9 @@ test.describe("context menu", () => {
     await I.dontSeeDropdown()
   })
 
+  // FLAKY: Test timeout of 30000ms exceeded.
+  // Error: locator.click: Test timeout of 30000ms exceeded.
+  // Call log: waiting for locator('[data-scope=menu][data-part=context-trigger]') - element is not visible
   test("keyboard navigation works", async () => {
     await I.clickContextTrigger({ button: "right" })
 
@@ -29,6 +35,9 @@ test.describe("context menu", () => {
     await I.seeItemIsHighlighted("Delete")
   })
 
+  // FLAKY: Test timeout of 30000ms exceeded.
+  // Error: locator.click: Test timeout of 30000ms exceeded.
+  // Call log: waiting for locator('[data-scope=menu][data-part=context-trigger]') - element is not visible
   test("should reposition when right-clicking at same coordinates", async () => {
     // Right click to open context menu
     await I.clickContextTrigger({ button: "right" })

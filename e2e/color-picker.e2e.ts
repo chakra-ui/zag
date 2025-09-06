@@ -116,6 +116,9 @@ test.describe("color-picker", () => {
     await I.seeValueText("hsla(180, 100%, 50%, 1)")
   })
 
+  // FLAKY: Test timeout of 30000ms exceeded.
+  // Error: locator.click: Test timeout of 30000ms exceeded.
+  // Call log: waiting for locator('[data-part=trigger]') - element is not visible
   test("[slider] should change alpha when clicking the alpha bar", async () => {
     await I.clickTrigger()
     await I.clickChannelSlider("alpha")

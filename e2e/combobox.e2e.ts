@@ -248,6 +248,9 @@ test.describe("combobox / autocomplete", () => {
     await I.dontSeeHighlightedItem()
   })
 
+  // FLAKY: Test timeout of 30000ms exceeded while running "beforeEach" hook.
+  // Error: locator.selectOption: Test timeout of 30000ms exceeded.
+  // Call log: waiting for locator('[data-testid=inputBehavior]') - element is not visible
   test("[pointer] hovering an option should not update input value", async () => {
     await I.clickTrigger()
     await I.type("mal")
@@ -277,6 +280,9 @@ test.describe("combobox / multiple", () => {
     await I.dontSeeValueText()
   })
 
+  // FLAKY: Test timeout of 30000ms exceeded.
+  // Error: locator.check: Test timeout of 30000ms exceeded.
+  // Call log: waiting for locator('[data-testid=removeSelected]') - element is not visible
   test("[removeSelected=true] should not toggle the same item", async () => {
     await I.controls.bool("removeSelected", true)
 

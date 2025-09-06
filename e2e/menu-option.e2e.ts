@@ -57,6 +57,9 @@ test.describe("menu option", () => {
     await I.seeItemIsChecked("Email")
   })
 
+  // FLAKY: Error: expect(locator).toHaveAttribute(expected) failed
+  // Locator: locator('[data-part=item]').filter({ hasText: 'Email' })
+  // Expected string: "checked" / Received string: "unchecked" / Timeout: 10000ms
   test("keyboard, should check/uncheck checkbox item", async () => {
     await I.focusTrigger()
     await I.pressKey("Enter")

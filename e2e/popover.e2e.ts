@@ -99,6 +99,9 @@ test.describe("popover", () => {
     await I.seeTriggerIsFocused()
   })
 
+  // FLAKY: Test timeout of 30000ms exceeded.
+  // Error: locator.click: Test timeout of 30000ms exceeded.
+  // Call log: waiting for locator('[data-scope=popover][data-part=trigger]') - element is not visible
   test("[pointer] when clicking outside on focusable element, should not re-focus the button", async () => {
     await I.clickTrigger()
     await I.seeContent()
