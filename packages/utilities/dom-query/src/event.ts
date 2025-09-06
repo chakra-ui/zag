@@ -143,7 +143,7 @@ interface DOMEventMap extends DocumentEventMap, WindowEventMap, HTMLElementEvent
 
 export const addDomEvent = <K extends keyof DOMEventMap>(
   target: MaybeFn<EventTarget | null>,
-  eventName: K,
+  eventName: K | (string & {}),
   handler: (event: DOMEventMap[K]) => void,
   options?: boolean | AddEventListenerOptions,
 ) => {
