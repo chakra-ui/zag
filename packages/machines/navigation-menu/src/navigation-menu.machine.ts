@@ -2,7 +2,7 @@ import { setup } from "@zag-js/core"
 import { trackDismissableElement } from "@zag-js/dismissable"
 import { addDomEvent, contains, navigate, raf } from "@zag-js/dom-query"
 import type { Point, Rect, Size } from "@zag-js/types"
-import { ensureProps } from "@zag-js/utils"
+import { callAll, ensureProps } from "@zag-js/utils"
 import * as dom from "./navigation-menu.dom"
 import type { NavigationMenuSchema, NavigationMenuService } from "./navigation-menu.types"
 import { autoReset } from "./utils/auto-reset"
@@ -114,15 +114,6 @@ export const machine = createMachine({
         (val) => {
           // passing `undefined` meant to reset the debounce timer
           if (typeof val === "string") {
-            // If we're rapidly switching (setting a new value while previous animation is still running)
-            // clear previousValue immediately to prevent overlap
-            const currentValue = context.get("value")
-            const previousValue = context.get("previousValue")
-
-            if (previousValue && currentValue && val && val !== currentValue) {
-              context.set("previousValue", "")
-            }
-
             context.set("previousValue", context.get("value"))
             context.set("value", val)
           }
@@ -157,7 +148,8 @@ export const machine = createMachine({
       actions: ["setViewportPosition"],
     },
     "TRIGGER.POINTERENTER": {
-      actions: ["clearClickCloseValue", "clearEscapeCloseValue", "clearValueWithDelay"],
+      // actions: ["clearClickCloseValue", "clearEscapeCloseValue", "clearValueWithDelay"],
+      actions: ["clearClickCloseValue", "clearEscapeCloseValue"],
     },
     "TRIGGER.POINTERMOVE": [
       {
@@ -254,11 +246,6 @@ export const machine = createMachine({
       setValue({ context, event }) {
         context.set("value", event.value)
       },
-      clearValue({ context }) {
-        context.set("value", "")
-        // Also clear previousValue
-        context.set("previousValue", "")
-      },
       setPointerMoveOpenedValue({ context, event }) {
         context.set("pointerMoveOpenedValue", event.value)
       },
@@ -307,9 +294,16 @@ export const machine = createMachine({
         const previousValue = context.get("previousValue")
         if (previousValue) {
           const previousContentEl = dom.getContentEl(scope, previousValue)
+          const viewportEl = dom.getViewportEl(scope)
           if (previousContentEl) {
             const onExitComplete = () => context.set("previousValue", "")
-            refs.set("contentExitCompleteCleanup", addDomEvent(previousContentEl, "exitcomplete", onExitComplete))
+            refs.set(
+              "contentExitCompleteCleanup",
+              callAll(
+                addDomEvent(previousContentEl, "exitcomplete", onExitComplete),
+                addDomEvent(viewportEl, "exitcomplete", onExitComplete),
+              ),
+            )
           }
         }
 
@@ -322,6 +316,8 @@ export const machine = createMachine({
 
         if (context.get("isViewportRendered")) {
           const contentResizeObserver = dom.trackResizeObserver([contentEl], () => {
+            const contentEl = dom.getContentEl(scope, context.get("value"))
+            if (!contentEl) return
             context.set("viewportSize", { width: contentEl.offsetWidth, height: contentEl.offsetHeight })
             send({ type: "VIEWPORT.POSITION" })
           })
@@ -333,9 +329,7 @@ export const machine = createMachine({
         if (context.get("isSubmenu")) return
 
         const getContentEl = () => {
-          return context.get("isViewportRendered")
-            ? dom.getRootEl(scope)
-            : dom.getContentEl(scope, context.get("value"))
+          return dom.getViewportEl(scope) || dom.getContentEl(scope, context.get("value"))
         }
 
         const contentDismissable = trackDismissableElement(getContentEl, {
@@ -345,8 +339,7 @@ export const machine = createMachine({
 
             if (
               target.matches("[data-scope=navigation-menu][data-part=trigger]") ||
-              target.matches("[data-trigger-proxy]") ||
-              contains(dom.getRootMenuEl(scope), target)
+              target.matches("[data-trigger-proxy]")
             ) {
               event.preventDefault()
             }

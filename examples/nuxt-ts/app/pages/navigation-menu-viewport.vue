@@ -3,6 +3,7 @@ import * as navigationMenu from "@zag-js/navigation-menu"
 import { navigationMenuControls } from "@zag-js/shared"
 import { normalizeProps, useMachine } from "@zag-js/vue"
 import { ChevronDown } from "lucide-vue-next"
+import { Teleport } from "vue"
 
 const controls = useControls(navigationMenuControls)
 
@@ -39,6 +40,45 @@ const api = computed(() => navigationMenu.connect(service, normalizeProps))
               </button>
               <span v-bind="api.getTriggerProxyProps({ value: 'products' })" />
               <span v-bind="api.getViewportProxyProps({ value: 'products' })" />
+              <Teleport :to="api.getViewportNode()">
+                <Presence
+                  v-bind="api.getContentProps({ value: 'products' })"
+                  :style="{
+                    gridTemplateColumns: '1fr 2fr',
+                    width: '600px',
+                  }"
+                >
+                  <a
+                    v-for="(item, index) in [
+                      'Analytics Platform',
+                      'Customer Engagement',
+                      'Marketing Automation',
+                      'Data Integration',
+                      'Enterprise Solutions',
+                      'API Documentation',
+                    ]"
+                    :key="`products-${item}-${index}`"
+                    href="#"
+                    v-bind="api.getLinkProps({ value: 'products' })"
+                  >
+                    {{ item }}
+                  </a>
+
+                  <a
+                    v-for="(item, index) in [
+                      'Case Studies',
+                      'Success Stories',
+                      'Integration Partners',
+                      'Security & Compliance',
+                    ]"
+                    :key="`products-2-${item}-${index}`"
+                    href="#"
+                    v-bind="api.getLinkProps({ value: 'products' })"
+                  >
+                    {{ item }}
+                  </a>
+                </Presence>
+              </Teleport>
             </div>
 
             <div v-bind="api.getItemProps({ value: 'company' })">
@@ -48,6 +88,33 @@ const api = computed(() => navigationMenu.connect(service, normalizeProps))
               </button>
               <span v-bind="api.getTriggerProxyProps({ value: 'company' })" />
               <span v-bind="api.getViewportProxyProps({ value: 'company' })" />
+              <Teleport :to="api.getViewportNode()">
+                <Presence
+                  v-bind="api.getContentProps({ value: 'company' })"
+                  :style="{
+                    gridTemplateColumns: '1fr 1fr',
+                    width: '450px',
+                  }"
+                >
+                  <a
+                    v-for="(item, index) in ['About Us', 'Leadership Team', 'Careers', 'Press Releases']"
+                    :key="`company-${item}-${index}`"
+                    href="#"
+                    v-bind="api.getLinkProps({ value: 'company' })"
+                  >
+                    {{ item }}
+                  </a>
+
+                  <a
+                    v-for="(item, index) in ['Investors', 'Partners', 'Corporate Responsibility']"
+                    :key="`company-2-${item}-${index}`"
+                    href="#"
+                    v-bind="api.getLinkProps({ value: 'company' })"
+                  >
+                    {{ item }}
+                  </a>
+                </Presence>
+              </Teleport>
             </div>
 
             <div v-bind="api.getItemProps({ value: 'developers' })">
@@ -57,6 +124,40 @@ const api = computed(() => navigationMenu.connect(service, normalizeProps))
               </button>
               <span v-bind="api.getTriggerProxyProps({ value: 'developers' })" />
               <span v-bind="api.getViewportProxyProps({ value: 'developers' })" />
+              <Teleport :to="api.getViewportNode()">
+                <Presence
+                  v-bind="api.getContentProps({ value: 'developers' })"
+                  :style="{
+                    gridTemplateColumns: '1.6fr 1fr',
+                    width: '650px',
+                  }"
+                >
+                  <a
+                    v-for="(item, index) in [
+                      'API Documentation',
+                      'SDKs & Libraries',
+                      'Developer Guides',
+                      'Code Samples',
+                      'Webhooks',
+                      'GraphQL Explorer',
+                    ]"
+                    :key="`developers-${item}-${index}`"
+                    href="#"
+                    v-bind="api.getLinkProps({ value: 'developers' })"
+                  >
+                    {{ item }}
+                  </a>
+
+                  <a
+                    v-for="(item, index) in ['Developer Community', 'Changelog', 'Status Page', 'Rate Limits']"
+                    :key="`developers-2-${item}-${index}`"
+                    href="#"
+                    v-bind="api.getLinkProps({ value: 'developers' })"
+                  >
+                    {{ item }}
+                  </a>
+                </Presence>
+              </Teleport>
             </div>
 
             <div v-bind="api.getItemProps({ value: 'pricing' })">
@@ -70,104 +171,7 @@ const api = computed(() => navigationMenu.connect(service, normalizeProps))
         </div>
 
         <div v-bind="api.getViewportPositionerProps()">
-          <Presence v-bind="api.getViewportProps()">
-            <Presence
-              v-bind="api.getContentProps({ value: 'products' })"
-              :style="{
-                gridTemplateColumns: '1fr 2fr',
-                width: '600px',
-              }"
-            >
-              <a
-                v-for="(item, index) in [
-                  'Analytics Platform',
-                  'Customer Engagement',
-                  'Marketing Automation',
-                  'Data Integration',
-                  'Enterprise Solutions',
-                  'API Documentation',
-                ]"
-                :key="`products-${item}-${index}`"
-                href="#"
-                v-bind="api.getLinkProps({ value: 'products' })"
-              >
-                {{ item }}
-              </a>
-
-              <a
-                v-for="(item, index) in [
-                  'Case Studies',
-                  'Success Stories',
-                  'Integration Partners',
-                  'Security & Compliance',
-                ]"
-                :key="`products-2-${item}-${index}`"
-                href="#"
-                v-bind="api.getLinkProps({ value: 'products' })"
-              >
-                {{ item }}
-              </a>
-            </Presence>
-
-            <Presence
-              v-bind="api.getContentProps({ value: 'company' })"
-              :style="{
-                gridTemplateColumns: '1fr 1fr',
-                width: '450px',
-              }"
-            >
-              <a
-                v-for="(item, index) in ['About Us', 'Leadership Team', 'Careers', 'Press Releases']"
-                :key="`company-${item}-${index}`"
-                href="#"
-                v-bind="api.getLinkProps({ value: 'company' })"
-              >
-                {{ item }}
-              </a>
-
-              <a
-                v-for="(item, index) in ['Investors', 'Partners', 'Corporate Responsibility']"
-                :key="`company-2-${item}-${index}`"
-                href="#"
-                v-bind="api.getLinkProps({ value: 'company' })"
-              >
-                {{ item }}
-              </a>
-            </Presence>
-
-            <Presence
-              v-bind="api.getContentProps({ value: 'developers' })"
-              :style="{
-                gridTemplateColumns: '1.6fr 1fr',
-                width: '650px',
-              }"
-            >
-              <a
-                v-for="(item, index) in [
-                  'API Documentation',
-                  'SDKs & Libraries',
-                  'Developer Guides',
-                  'Code Samples',
-                  'Webhooks',
-                  'GraphQL Explorer',
-                ]"
-                :key="`developers-${item}-${index}`"
-                href="#"
-                v-bind="api.getLinkProps({ value: 'developers' })"
-              >
-                {{ item }}
-              </a>
-
-              <a
-                v-for="(item, index) in ['Developer Community', 'Changelog', 'Status Page', 'Rate Limits']"
-                :key="`developers-2-${item}-${index}`"
-                href="#"
-                v-bind="api.getLinkProps({ value: 'developers' })"
-              >
-                {{ item }}
-              </a>
-            </Presence>
-          </Presence>
+          <Presence v-bind="api.getViewportProps()"> </Presence>
         </div>
       </div>
       <button>Login</button>
