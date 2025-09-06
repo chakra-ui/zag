@@ -13,7 +13,7 @@ export type DomMode = "shadow-dom" | "light-dom"
 export const DOM_MODE: DomMode =
   process.env.VITE_DOM_MODE === "light-dom" ? "light-dom" : process.env.FRAMEWORK === "lit" ? "shadow-dom" : "light-dom"
 
-console.log(`Running E2E tests in '${DOM_MODE}' context.`)
+console.log(`Running E2E tests in '${DOM_MODE}' context for '${process.env.FRAMEWORK}'.`)
 
 /**
  * Context-aware utility to locate a component part defined by a 'part' or 'data-part' attribute.
