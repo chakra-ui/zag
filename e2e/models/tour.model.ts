@@ -19,6 +19,10 @@ export class TourModel extends Model {
     return this.page.locator("[data-scope=tour][data-part=content]")
   }
 
+  private getStep(stepId: string) {
+    return this.page.locator(`[data-scope=tour][data-part=content][data-step=${stepId}]`)
+  }
+
   private get title() {
     return this.content.locator("[data-part=title]")
   }
@@ -70,6 +74,10 @@ export class TourModel extends Model {
 
   async dontSeeContent() {
     return expect(this.content).not.toBeVisible()
+  }
+
+  async seeStep(stepId: string) {
+    await expect(this.getStep(stepId)).toBeVisible()
   }
 
   async seeSpotlight() {
