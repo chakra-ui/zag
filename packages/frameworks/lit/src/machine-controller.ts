@@ -2,7 +2,7 @@ import type { Machine, MachineSchema } from "@zag-js/core"
 import type { ReactiveController, ReactiveControllerHost } from "lit"
 import { LitMachine } from "./machine"
 
-export class ZagController<TSchema extends MachineSchema> implements ReactiveController {
+export class MachineController<TSchema extends MachineSchema> implements ReactiveController {
   private machine: LitMachine<TSchema>
 
   constructor(

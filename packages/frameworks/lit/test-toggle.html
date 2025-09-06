@@ -1,57 +1,55 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Lit Toggle Test</title>
-  <script type="module">
-    import { LitElement, html, css } from 'lit';
-    import { customElement } from 'lit/decorators.js';
-    import * as toggle from '@zag-js/toggle';
-    import { ZagController, normalizeProps } from './src/index.js';
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Lit Toggle Test</title>
+    <script type="module">
+      import { LitElement, html, css } from "lit"
+      import { customElement } from "lit/decorators.js"
+      import * as toggle from "@zag-js/toggle"
+      import { MachineController, normalizeProps } from "./src/index.js"
 
-    @customElement('test-toggle')
-    class TestToggle extends LitElement {
-      static styles = css`
-        button {
-          padding: 12px 16px;
-          border: 2px solid #ccc;
-          background: white;
-          border-radius: 6px;
-          cursor: pointer;
-          transition: all 0.2s;
-        }
-        
-        button[data-state="on"] {
-          background: #007acc;
-          color: white;
-          border-color: #007acc;
-        }
-        
-        button:hover {
-          opacity: 0.8;
-        }
-      `;
+      @customElement("test-toggle")
+      class TestToggle extends LitElement {
+        static styles = css`
+          button {
+            padding: 12px 16px;
+            border: 2px solid #ccc;
+            background: white;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s;
+          }
 
-      zagController = new ZagController(this, toggle.machine({ id: 'toggle' }));
+          button[data-state="on"] {
+            background: #007acc;
+            color: white;
+            border-color: #007acc;
+          }
 
-      render() {
-        const { api } = this.zagController;
-        
-        return html`
-          <div>
-            <h2>Lit Toggle Test</h2>
-            <button ${normalizeProps(api.rootProps)}>
-              ${api.isPressed ? 'ON' : 'OFF'}
-            </button>
-            <p>Current state: ${api.isPressed ? 'Pressed' : 'Not Pressed'}</p>
-          </div>
-        `;
+          button:hover {
+            opacity: 0.8;
+          }
+        `
+
+        machine = new MachineController(this, toggle.machine({ id: "toggle" }))
+
+        render() {
+          const { api } = this.machine
+
+          return html`
+            <div>
+              <h2>Lit Toggle Test</h2>
+              <button ${normalizeProps(api.rootProps)}>${api.isPressed ? "ON" : "OFF"}</button>
+              <p>Current state: ${api.isPressed ? "Pressed" : "Not Pressed"}</p>
+            </div>
+          `
+        }
       }
-    }
-  </script>
-</head>
-<body>
-  <test-toggle></test-toggle>
-</body>
+    </script>
+  </head>
+  <body>
+    <test-toggle></test-toggle>
+  </body>
 </html>

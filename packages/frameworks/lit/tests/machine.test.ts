@@ -4,7 +4,7 @@
 // - Ensure tests match real Lit component lifecycle
 
 import { createMachine } from "@zag-js/core"
-import { ZagController } from "../src"
+import { MachineController } from "../src"
 
 // Mock LitElement for testing
 class MockLitElement {
@@ -29,7 +29,7 @@ class MockLitElement {
 
 function renderMachine(machine: any, props: any = {}) {
   const host = new MockLitElement()
-  const controller = new ZagController(host as any, machine, () => props)
+  const controller = new MachineController(host as any, machine, () => props)
 
   // Simulate hostConnected
   controller.hostConnected()
@@ -351,7 +351,7 @@ describe("LitMachine", () => {
   })
 })
 
-describe("ZagController", () => {
+describe("MachineController", () => {
   test("triggers host.requestUpdate on state changes", async () => {
     const machine = createMachine<any>({
       initialState() {
@@ -416,7 +416,7 @@ describe("ZagController", () => {
     })
 
     const host = new MockLitElement()
-    const controller = new ZagController(host as any, machine, () => ({}))
+    const controller = new MachineController(host as any, machine, () => ({}))
 
     controller.hostConnected()
     expect(controller.service).toBeDefined()

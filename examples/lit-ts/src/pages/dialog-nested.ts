@@ -5,7 +5,7 @@ import * as dialog from "@zag-js/dialog"
 import styleComponent from "@zag-js/shared/src/css/dialog.css?inline"
 import styleLayout from "@zag-js/shared/src/css/layout.css?inline"
 import stylePage from "./page.css?inline"
-import { ZagController, normalizeProps } from "@zag-js/lit"
+import { MachineController, normalizeProps } from "@zag-js/lit"
 import { nanoid } from "nanoid"
 import { PageElement } from "../lib/page-element"
 
@@ -14,20 +14,20 @@ export class DialogNestedPage extends PageElement {
   static styles = unsafeCSS(styleComponent + styleLayout + stylePage)
 
   // Dialog 1
-  private zagController1 = new ZagController(this, dialog.machine, () => ({
+  private machine1 = new MachineController(this, dialog.machine, () => ({
     getRootNode: () => this.shadowRoot,
     id: nanoid(),
   }))
 
   // Dialog 2
-  private zagController2 = new ZagController(this, dialog.machine, () => ({
+  private machine2 = new MachineController(this, dialog.machine, () => ({
     getRootNode: () => this.shadowRoot,
     id: nanoid(),
   }))
 
   render() {
-    const parentDialog = dialog.connect(this.zagController1.service, normalizeProps)
-    const childDialog = dialog.connect(this.zagController2.service, normalizeProps)
+    const parentDialog = dialog.connect(this.machine1.service, normalizeProps)
+    const childDialog = dialog.connect(this.machine2.service, normalizeProps)
 
     return html`
       <main class="dialog">
@@ -73,8 +73,8 @@ export class DialogNestedPage extends PageElement {
       </main>
 
       <zag-toolbar>
-        <state-visualizer .state=${this.zagController1.service} label="Dialog 1"></state-visualizer>
-        <state-visualizer .state=${this.zagController2.service} label="Dialog 2"></state-visualizer>
+        <state-visualizer .state=${this.machine1.service} label="Dialog 1"></state-visualizer>
+        <state-visualizer .state=${this.machine2.service} label="Dialog 2"></state-visualizer>
       </zag-toolbar>
     `
   }

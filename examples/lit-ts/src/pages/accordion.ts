@@ -6,7 +6,7 @@ import { accordionControls, accordionData } from "@zag-js/shared"
 import styleComponent from "@zag-js/shared/src/css/accordion.css?inline"
 import styleLayout from "@zag-js/shared/src/css/layout.css?inline"
 import stylePage from "./page.css?inline"
-import { ZagController, normalizeProps } from "@zag-js/lit"
+import { MachineController, normalizeProps } from "@zag-js/lit"
 import { ArrowRight, createElement } from "lucide"
 import { nanoid } from "nanoid"
 import { ControlsController } from "../lib/controls-controller"
@@ -18,14 +18,14 @@ export class AccordionPage extends PageElement {
 
   private controls = new ControlsController(this, accordionControls)
 
-  private zagController = new ZagController(this, accordion.machine, () => ({
+  private machine = new MachineController(this, accordion.machine, () => ({
     getRootNode: () => this.shadowRoot,
     id: nanoid(),
     ...this.controls.context,
   }))
 
   render() {
-    const api = accordion.connect(this.zagController.service, normalizeProps)
+    const api = accordion.connect(this.machine.service, normalizeProps)
 
     return html`
       <main class="accordion">
@@ -50,7 +50,7 @@ export class AccordionPage extends PageElement {
       </main>
 
       <zag-toolbar .controls=${this.controls}>
-        <state-visualizer .state=${this.zagController.service}></state-visualizer>
+        <state-visualizer .state=${this.machine.service}></state-visualizer>
       </zag-toolbar>
     `
   }

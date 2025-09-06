@@ -6,7 +6,7 @@ import { menuControls } from "@zag-js/shared"
 import styleComponent from "@zag-js/shared/src/css/menu.css?inline"
 import styleLayout from "@zag-js/shared/src/css/layout.css?inline"
 import stylePage from "./page.css?inline"
-import { ZagController, normalizeProps } from "@zag-js/lit"
+import { MachineController, normalizeProps } from "@zag-js/lit"
 import { nanoid } from "nanoid"
 import { ControlsController } from "../lib/controls-controller"
 import { PageElement } from "../lib/page-element"
@@ -17,7 +17,7 @@ export class MenuPage extends PageElement {
 
   private controls = new ControlsController(this, menuControls)
 
-  private zagController = new ZagController(this, menu.machine, () => ({
+  private machine = new MachineController(this, menu.machine, () => ({
     getRootNode: () => this.shadowRoot,
     id: nanoid(),
     onSelect: console.log,
@@ -25,7 +25,7 @@ export class MenuPage extends PageElement {
   }))
 
   render() {
-    const api = menu.connect(this.zagController.service, normalizeProps)
+    const api = menu.connect(this.machine.service, normalizeProps)
 
     return html`
       <main class="menu">
@@ -49,7 +49,7 @@ export class MenuPage extends PageElement {
       </main>
 
       <zag-toolbar .controls=${this.controls}>
-        <state-visualizer .state=${this.zagController.service}></state-visualizer>
+        <state-visualizer .state=${this.machine.service}></state-visualizer>
       </zag-toolbar>
     `
   }

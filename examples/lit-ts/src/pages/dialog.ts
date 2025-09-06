@@ -5,7 +5,7 @@ import * as dialog from "@zag-js/dialog"
 import styleComponent from "@zag-js/shared/src/css/dialog.css?inline"
 import styleLayout from "@zag-js/shared/src/css/layout.css?inline"
 import stylePage from "./page.css?inline"
-import { ZagController, normalizeProps } from "@zag-js/lit"
+import { MachineController, normalizeProps } from "@zag-js/lit"
 import { nanoid } from "nanoid"
 import { PageElement } from "../lib/page-element"
 
@@ -13,13 +13,13 @@ import { PageElement } from "../lib/page-element"
 export class DialogPage extends PageElement {
   static styles = unsafeCSS(styleComponent + styleLayout + stylePage)
 
-  private zagController = new ZagController(this, dialog.machine, () => ({
+  private machine = new MachineController(this, dialog.machine, () => ({
     getRootNode: () => this.shadowRoot,
     id: nanoid(),
   }))
 
   render() {
-    const api = dialog.connect(this.zagController.service, normalizeProps)
+    const api = dialog.connect(this.machine.service, normalizeProps)
 
     return html`
       <main class="dialog">
@@ -46,7 +46,7 @@ export class DialogPage extends PageElement {
       </main>
 
       <zag-toolbar>
-        <state-visualizer .state=${this.zagController.service}></state-visualizer>
+        <state-visualizer .state=${this.machine.service}></state-visualizer>
       </zag-toolbar>
     `
   }
