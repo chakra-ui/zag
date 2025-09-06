@@ -245,8 +245,6 @@ test.describe("tags-input", () => {
     await I.seeNoHighlightedTag()
   })
 
-  // FLAKY: Error: expect(locator).toBeFocused() failed
-  // Locator: locator('[data-testid=input]') / Expected: focused / Received: inactive / Timeout: 10000ms
   test("clear trigger should clear tags", async () => {
     await I.addTag("Svelte")
     await I.seeTag("Svelte")
