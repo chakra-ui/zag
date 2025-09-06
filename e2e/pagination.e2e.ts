@@ -47,9 +47,6 @@ test("should call onChange when next button is clicked", async () => {
   await I.seeOutputContains(": 2")
 })
 
-// FLAKY: Test timeout of 30000ms exceeded.
-// Error: locator.click: Test timeout of 30000ms exceeded.
-// Call log: waiting for locator('[data-scope=pagination][data-testid=item-5]') - element is not visible
 test("should call onChange when prev button is clicked", async () => {
   await I.clickItem("5")
   await I.clickPrev()

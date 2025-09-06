@@ -206,9 +206,6 @@ test.describe("nested menu / pointer movement", async () => {
     await expect(page.locator(menu_1.menu)).toBeFocused()
   })
 
-  // FLAKY: Test timeout of 30000ms exceeded.
-  // Error: page.click: Test timeout of 30000ms exceeded.
-  // Call log: waiting for locator('[data-testid=trigger]') - element is not visible
   test("should close open submenu when moving pointer to parent menu item", async ({ page }) => {
     await page.click(menu_1.trigger)
     await expect(page.locator(menu_1.menu)).toBeVisible()

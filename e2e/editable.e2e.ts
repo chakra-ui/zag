@@ -84,9 +84,6 @@ test.describe("editable", () => {
     await I.seePreviewHasText("Hello World")
   })
 
-  // FLAKY: Test timeout of 30000ms exceeded.
-  // Error: locator.click: Test timeout of 30000ms exceeded.
-  // Call log: waiting for locator('[data-testid=edit-button]') - element is not visible
   test("on click edit, should enter edit mode", async () => {
     await I.clickEdit()
     await I.seeInput()

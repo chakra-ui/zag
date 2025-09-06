@@ -56,9 +56,6 @@ test.describe("menu", () => {
     await I.dontSeeDropdown()
   })
 
-  // FLAKY: Test timeout of 30000ms exceeded.
-  // Error: locator.click: Test timeout of 30000ms exceeded.
-  // Call log: waiting for locator('[data-scope=menu][data-part=trigger]') - element is not visible
   test("on click outside, close menu", async () => {
     await I.clickTrigger()
     await I.seeDropdownIsFocused()
