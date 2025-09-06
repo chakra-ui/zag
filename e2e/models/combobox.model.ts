@@ -102,7 +102,7 @@ export class ComboboxModel extends Model {
 
   seeItemInViewport = async (text: string) => {
     const item = this.getItem(text)
-    expect(await isInViewport(this.content, item)).toBe(true)
+    await expect.poll(() => isInViewport(this.content, item)).toBe(true)
   }
 
   seeInputHasValue = async (value: string) => {
