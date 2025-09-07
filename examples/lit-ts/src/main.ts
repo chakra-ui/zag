@@ -16,6 +16,7 @@ import "./pages/dialog"
 import "./pages/dialog-nested"
 import "./pages/menu"
 import "./pages/popover"
+import "./pages/radio-group"
 import "./pages/switch"
 import "./pages/tabs"
 import "./pages/toggle"
@@ -65,6 +66,8 @@ export class ZagApp extends LitElement {
         return html`<menu-page class="component-page"></menu-page>`
       case "/popover":
         return html`<popover-page class="component-page"></popover-page>`
+      case "/radio-group":
+        return html`<radio-group-page class="component-page"></radio-group-page>`
       case "/switch":
         return html`<switch-page class="component-page"></switch-page>`
       case "/tabs":
@@ -97,6 +100,7 @@ export class ZagApp extends LitElement {
         "/dialog-nested",
         "/menu",
         "/popover",
+        "/radio-group",
         "/switch",
         "/tabs",
         "/toggle",

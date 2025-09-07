@@ -20,6 +20,7 @@ export default defineConfig({
     "**/dialog.e2e.ts",
     "**/menu.e2e.ts",
     "**/popover.e2e.ts",
+    "**/radio-group.e2e.ts",
     "**/switch.e2e.ts",
     "**/tabs.e2e.ts",
     "**/toggle-group.e2e.ts",

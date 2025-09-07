@@ -3,7 +3,7 @@ import { Model } from "./model"
 
 export class RadioGroupModel extends Model {
   constructor(public page: Page) {
-    super(page)
+    super(page, "radio-group-page")
   }
 
   goto(url = "/radio-group") {
@@ -11,19 +11,19 @@ export class RadioGroupModel extends Model {
   }
 
   get root() {
-    return this.page.locator("[data-scope='radio-group'][data-part='root']")
+    return this.host.locator("[data-scope='radio-group'][data-part='root']")
   }
 
   get label() {
-    return this.page.locator("[data-scope='radio-group'][data-part='label']")
+    return this.host.locator("[data-scope='radio-group'][data-part='label']")
   }
 
   getRadio(value: string) {
     return {
-      radio: this.page.getByTestId(`radio-${value}`),
-      label: this.page.getByTestId(`label-${value}`),
-      input: this.page.getByTestId(`input-${value}`),
-      control: this.page.getByTestId(`control-${value}`),
+      radio: this.host.getByTestId(`radio-${value}`),
+      label: this.host.getByTestId(`label-${value}`),
+      input: this.host.getByTestId(`input-${value}`),
+      control: this.host.getByTestId(`control-${value}`),
     }
   }
 
