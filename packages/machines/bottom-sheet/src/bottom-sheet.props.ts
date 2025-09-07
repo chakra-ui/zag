@@ -29,7 +29,7 @@ export const props = createProps<BottomSheetProps>()([
   "restoreFocus",
   "role",
   "trapFocus",
-  "defaultSnapPoint",
+  "defaultActiveSnapPoint",
   "activeSnapPoint",
   "onActiveSnapPointChange",
 ])

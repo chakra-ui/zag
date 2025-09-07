@@ -175,10 +175,10 @@ test.describe("bottom-sheet [snapPoints]", () => {
   })
 })
 
-test.describe("bottom-sheet [defaultSnapPoint]", () => {
+test.describe("bottom-sheet [defaultActiveSnapPoint]", () => {
   test.beforeEach(async ({ page }) => {
     I = new BottomSheetModel(page)
-    await I.goto("/bottom-sheet-default-snap-point")
+    await I.goto("/bottom-sheet-default-active-snap-point")
   })
 
   test("should open at default snap point and drag to 50% and 100%", async ({ page }) => {

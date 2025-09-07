@@ -115,10 +115,10 @@ export interface BottomSheetProps extends DirectionProperty, CommonProperties, D
    */
   activeSnapPoint?: number | string | undefined
   /**
-   * The default snap point of the bottom sheet.
+   * The default active snap point of the bottom sheet.
    * @default 1
    */
-  defaultSnapPoint?: number | string | undefined
+  defaultActiveSnapPoint?: number | string | undefined
   /**
    * Callback fired when the active snap point changes.
    */
@@ -138,7 +138,7 @@ type PropsWithDefault =
   | "closeThreshold"
   | "grabberOnly"
   | "handleScrollableElements"
-  | "defaultSnapPoint"
+  | "defaultActiveSnapPoint"
 
 export interface BottomSheetSchema {
   props: RequiredBy<BottomSheetProps, PropsWithDefault>

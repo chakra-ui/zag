@@ -25,7 +25,7 @@ export const machine = createMachine<BottomSheetSchema>({
       restoreFocus: true,
       initialFocusEl,
       snapPoints: [1],
-      defaultSnapPoint: 1,
+      defaultActiveSnapPoint: 1,
       swipeVelocityThreshold: 500,
       closeThreshold: 0.25,
       grabberOnly: false,
@@ -43,7 +43,7 @@ export const machine = createMachine<BottomSheetSchema>({
         defaultValue: null,
       })),
       activeSnapPoint: bindable<number | string>(() => ({
-        defaultValue: prop("defaultSnapPoint"),
+        defaultValue: prop("defaultActiveSnapPoint"),
         value: prop("activeSnapPoint"),
         onChange(value) {
           return prop("onActiveSnapPointChange")?.({ snapPoint: value })
@@ -311,7 +311,7 @@ export const machine = createMachine<BottomSheetSchema>({
       },
 
       clearActiveSnapPoint({ context, prop }) {
-        context.set("activeSnapPoint", prop("defaultSnapPoint"))
+        context.set("activeSnapPoint", prop("defaultActiveSnapPoint"))
       },
 
       clearResolvedActiveSnapPoint({ context }) {
