@@ -118,10 +118,15 @@ test.describe("bottom-sheet", () => {
     const finalHeight = await I.getContentVisibleHeight()
     expect(finalHeight).toBe(initialHeight)
   })
+})
 
-  test("[grabberOnly] should only allow dragging from grabber", async ({ page }) => {
-    await I.controls.bool("grabberOnly", true)
+test.describe("bottom-sheet [draggable=false]", () => {
+  test.beforeEach(async ({ page }) => {
+    I = new BottomSheetModel(page)
+    await I.goto("/bottom-sheet-draggable-false")
+  })
 
+  test("sheet content should not be draggable", async ({ page }) => {
     await I.clickTrigger()
     await I.seeContent()
 

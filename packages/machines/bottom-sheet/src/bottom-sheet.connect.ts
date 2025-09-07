@@ -45,7 +45,7 @@ export function connect<T extends PropTypes>(
       send({ type: "SET_ACTIVE_SNAP_POINT", snapPoint })
     },
 
-    getContentProps() {
+    getContentProps(props = { draggable: true }) {
       return normalize.element({
         ...parts.content.attrs,
         dir: prop("dir"),
@@ -63,7 +63,7 @@ export function connect<T extends PropTypes>(
           willChange: "transform",
         },
         onPointerDown(event) {
-          if (prop("grabberOnly")) return
+          if (!props.draggable) return
           onPointerDown(event)
         },
       })

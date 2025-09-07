@@ -28,7 +28,6 @@ export const machine = createMachine<BottomSheetSchema>({
       defaultActiveSnapPoint: 1,
       swipeVelocityThreshold: 500,
       closeThreshold: 0.25,
-      grabberOnly: false,
       handleScrollableElements: true,
       ...props,
     }

@@ -100,11 +100,6 @@ export interface BottomSheetProps extends DirectionProperty, CommonProperties, D
    */
   closeThreshold?: number
   /**
-   * Whether the bottom sheet should only be draggable by the grabber.
-   * @default false
-   */
-  grabberOnly?: boolean
-  /**
    * Whether to handle scrollable elements within the bottom sheet.
    * When enabled, the sheet will not start dragging if the pointer is over a scrollable element.
    * @default true
@@ -136,7 +131,6 @@ type PropsWithDefault =
   | "snapPoints"
   | "swipeVelocityThreshold"
   | "closeThreshold"
-  | "grabberOnly"
   | "handleScrollableElements"
   | "defaultActiveSnapPoint"
 
@@ -167,6 +161,15 @@ export type BottomSheetService = Service<BottomSheetSchema>
 
 export type BottomSheetMachine = Machine<BottomSheetSchema>
 
+export interface ContentProps {
+  /**
+   * Whether the bottom sheet content is draggable.
+   * If false, the bottom sheet can only be dragged by the grabber.
+   * @default true
+   */
+  draggable?: boolean | undefined
+}
+
 export interface BottomSheetApi<T extends PropTypes = PropTypes> {
   /**
    * Whether the bottom sheet is open.
@@ -185,7 +188,7 @@ export interface BottomSheetApi<T extends PropTypes = PropTypes> {
    */
   setActiveSnapPoint: (snapPoint: number | string) => void
 
-  getContentProps: () => T["element"]
+  getContentProps: (props?: ContentProps) => T["element"]
   getTitleProps: () => T["element"]
   getTriggerProps: () => T["element"]
   getBackdropProps: () => T["element"]
