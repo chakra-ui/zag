@@ -8,7 +8,7 @@ export class MachineController<TSchema extends MachineSchema> implements Reactiv
   constructor(
     private host: ReactiveControllerHost,
     machineConfig: Machine<TSchema>,
-    getProps?: () => Partial<TSchema["props"]> & { getRootNode?: () => ShadowRoot | Document | Node | null },
+    getProps?: () => Partial<TSchema["props"]>,
   ) {
     this.machine = new LitMachine(machineConfig, getProps)
 
