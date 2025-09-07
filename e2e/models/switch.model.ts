@@ -1,14 +1,12 @@
 import { expect, type Page } from "@playwright/test"
-import { a11y, repeat } from "../_utils"
+import { repeat, withHost } from "../_utils"
 import { Model } from "./model"
+
+const shadowHost = "switch-page"
 
 export class SwitchModel extends Model {
   constructor(public page: Page) {
-    super(page)
-  }
-
-  checkAccessibility() {
-    return a11y(this.page)
+    super(page, shadowHost)
   }
 
   goto(url = "/switch") {
@@ -16,19 +14,19 @@ export class SwitchModel extends Model {
   }
 
   get root() {
-    return this.page.locator("[data-scope='switch'][data-part='root']")
+    return this.page.locator(withHost(shadowHost, "[data-scope='switch'][data-part='root']"))
   }
 
   get label() {
-    return this.page.locator("[data-scope='switch'][data-part='label']")
+    return this.page.locator(withHost(shadowHost, "[data-scope='switch'][data-part='label']"))
   }
 
   get control() {
-    return this.page.locator("[data-scope='switch'][data-part='control']")
+    return this.page.locator(withHost(shadowHost, "[data-scope='switch'][data-part='control']"))
   }
 
   get input() {
-    return this.page.locator("[data-scope='switch'][data-part='root'] input")
+    return this.page.locator(withHost(shadowHost, "[data-scope='switch'][data-part='root'] input"))
   }
 
   async clickCheckbox() {

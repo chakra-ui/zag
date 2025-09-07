@@ -16,8 +16,12 @@ export default defineConfig({
   // Only test implemented Lit components
   testMatch: [
     "**/accordion.e2e.ts",
+    "**/checkbox.e2e.ts",
     "**/dialog.e2e.ts",
     "**/menu.e2e.ts",
+    "**/popover.e2e.ts",
+    "**/switch.e2e.ts",
+    "**/tabs.e2e.ts",
     "**/toggle-group.e2e.ts",
     "**/toggle.e2e.ts",
   ],

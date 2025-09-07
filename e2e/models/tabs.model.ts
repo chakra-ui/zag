@@ -1,14 +1,12 @@
 import { expect, type Page } from "@playwright/test"
-import { a11y, testid } from "../_utils"
+import { testid, withHost } from "../_utils"
 import { Model } from "./model"
+
+const shadowHost = "tabs-page"
 
 export class TabsModel extends Model {
   constructor(public page: Page) {
-    super(page)
-  }
-
-  checkAccessibility() {
-    return a11y(this.page)
+    super(page, shadowHost)
   }
 
   goto() {
@@ -16,11 +14,11 @@ export class TabsModel extends Model {
   }
 
   private getTabTrigger = (id: string) => {
-    return this.page.locator(testid(`${id}-tab`))
+    return this.page.locator(withHost(shadowHost, testid(`${id}-tab`)))
   }
 
   private getTabContent = (id: string) => {
-    return this.page.locator(testid(`${id}-tab-panel`))
+    return this.page.locator(withHost(shadowHost, testid(`${id}-tab-panel`)))
   }
 
   clickTab = async (id: string) => {
