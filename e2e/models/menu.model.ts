@@ -2,10 +2,11 @@ import { expect, type Page } from "@playwright/test"
 import { isInViewport } from "../_utils"
 import { Model } from "./model"
 
-const shadowHost = "menu-page"
-
 export class MenuModel extends Model {
-  constructor(public page: Page) {
+  constructor(
+    public page: Page,
+    shadowHost = "menu-page",
+  ) {
     super(page, shadowHost)
   }
 

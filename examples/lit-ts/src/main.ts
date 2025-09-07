@@ -16,6 +16,7 @@ import "./pages/collapsible"
 import "./pages/dialog"
 import "./pages/dialog-nested"
 import "./pages/menu"
+import "./pages/menu-options"
 import "./pages/popover"
 import "./pages/radio-group"
 import "./pages/range-slider"
@@ -69,6 +70,8 @@ export class ZagApp extends LitElement {
         return html`<dialog-nested-page class="component-page"></dialog-nested-page>`
       case "/menu":
         return html`<menu-page class="component-page"></menu-page>`
+      case "/menu-options":
+        return html`<menu-options-page class="component-page"></menu-options-page>`
       case "/popover":
         return html`<popover-page class="component-page"></popover-page>`
       case "/radio-group":
@@ -109,6 +112,7 @@ export class ZagApp extends LitElement {
         "/dialog",
         "/dialog-nested",
         "/menu",
+        "/menu-options",
         "/popover",
         "/radio-group",
         "/range-slider",
