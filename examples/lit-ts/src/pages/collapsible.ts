@@ -48,7 +48,7 @@ export class CollapsiblePage extends PageElement {
 
         <div>
           <div>Toggle Controls</div>
-          <button @click=${() => api.setOpen(true)}>Open</button>
+          <button data-testid="open-button" @click=${() => api.setOpen(true)}>Open</button>
           <button @click=${() => api.setOpen(false)}>Close</button>
         </div>
       </main>

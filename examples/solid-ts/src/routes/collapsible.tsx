@@ -37,7 +37,9 @@ export default function Page() {
 
         <div>
           <div>Toggle Controls</div>
-          <button onClick={() => api().setOpen(true)}>Open</button>
+          <button data-testid="open-button" onClick={() => api().setOpen(true)}>
+            Open
+          </button>
           <button onClick={() => api().setOpen(false)}>Close</button>
         </div>
       </main>

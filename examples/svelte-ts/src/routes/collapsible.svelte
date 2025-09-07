@@ -41,7 +41,7 @@
 
   <div>
     <div>Toggle Controls</div>
-    <button onclick={() => api.setOpen(true)}>Open</button>
+    <button data-testid="open-button" onclick={() => api.setOpen(true)}>Open</button>
     <button onclick={() => api.setOpen(false)}>Close</button>
   </div>
 </main>

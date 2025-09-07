@@ -21,10 +21,14 @@ test.describe("collapsible", () => {
     await I.dontSeeContent()
   })
 
-  test.skip("[closed] content should not be reachable via tab key", async () => {
+  test("[closed] content should not be reachable via tab key", async () => {
     await I.clickTrigger()
+    await I.seeContent()
+
     await I.clickTrigger()
+    await I.dontSeeContent()
+
     await I.pressKey("Tab")
-    await expect(I.host.getByRole("button", { name: "Open" })).toBeFocused()
+    await expect(I.host.getByTestId("open-button")).toBeFocused()
   })
 })
