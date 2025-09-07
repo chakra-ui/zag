@@ -1,5 +1,5 @@
 import { expect, type Page } from "@playwright/test"
-import { testid, withHost } from "../_utils"
+import { testid } from "../_utils"
 import { Model } from "./model"
 
 const shadowHost = "dialog-nested-page"
@@ -22,15 +22,15 @@ export class DialogModel extends Model {
   }
 
   private get trigger() {
-    return this.page.locator(withHost(shadowHost, testid(`trigger-${this.id}`)))
+    return this.host.locator(testid(`trigger-${this.id}`))
   }
 
   private get content() {
-    return this.page.locator(withHost(shadowHost, testid(`positioner-${this.id}`)))
+    return this.host.locator(testid(`positioner-${this.id}`))
   }
 
   private get closeTrigger() {
-    return this.page.locator(withHost(shadowHost, testid(`close-${this.id}`)))
+    return this.host.locator(testid(`close-${this.id}`))
   }
 
   clickTrigger(opts: { delay?: number } = {}) {

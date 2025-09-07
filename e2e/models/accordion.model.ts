@@ -1,5 +1,5 @@
 import { expect, type Page } from "@playwright/test"
-import { testid, withHost } from "../_utils"
+import { testid } from "../_utils"
 import { Model } from "./model"
 
 const shadowHost = "accordion-page"
@@ -14,11 +14,11 @@ export class AccordionModel extends Model {
   }
 
   getTrigger(id: string) {
-    return this.page.locator(withHost(shadowHost, testid(`${id}:trigger`)))
+    return this.host.locator(testid(`${id}:trigger`))
   }
 
   getContent(id: string) {
-    return this.page.locator(withHost(shadowHost, testid(`${id}:content`)))
+    return this.host.locator(testid(`${id}:content`))
   }
 
   async focusTrigger(id: string) {

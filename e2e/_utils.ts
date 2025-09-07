@@ -64,16 +64,6 @@ export async function a11y(page: Page, selector = "[data-part=root]", hostSelect
 
 export const testid = (part: string) => `[data-testid=${esc(part)}]`
 
-/**
- * Combines host selector and target selector for framework-aware locators.
- * @param host Optional host selector (e.g., 'accordion-page'). If undefined, returns just the target.
- * @param target The target selector (e.g., '[data-testid="about:trigger"]')
- * @returns Combined selector string
- */
-export function withHost(componentHost: string | undefined, target: string): string {
-  return DOM_MODE === "shadow-dom" && componentHost ? `${componentHost} ${target}` : target
-}
-
 export const controls = (page: Page) => {
   return {
     num: async (id: string, value: string) => {

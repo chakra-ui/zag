@@ -1,5 +1,5 @@
 import { expect, type Page } from "@playwright/test"
-import { repeat, withHost } from "../_utils"
+import { repeat } from "../_utils"
 import { Model } from "./model"
 
 const shadowHost = "switch-page"
@@ -14,19 +14,19 @@ export class SwitchModel extends Model {
   }
 
   get root() {
-    return this.page.locator(withHost(shadowHost, "[data-scope='switch'][data-part='root']"))
+    return this.host.locator("[data-scope='switch'][data-part='root']")
   }
 
   get label() {
-    return this.page.locator(withHost(shadowHost, "[data-scope='switch'][data-part='label']"))
+    return this.host.locator("[data-scope='switch'][data-part='label']")
   }
 
   get control() {
-    return this.page.locator(withHost(shadowHost, "[data-scope='switch'][data-part='control']"))
+    return this.host.locator("[data-scope='switch'][data-part='control']")
   }
 
   get input() {
-    return this.page.locator(withHost(shadowHost, "[data-scope='switch'][data-part='root'] input"))
+    return this.host.locator("[data-scope='switch'][data-part='root'] input")
   }
 
   async clickCheckbox() {

@@ -1,5 +1,5 @@
 import { expect, type Page } from "@playwright/test"
-import { isInViewport, withHost } from "../_utils"
+import { isInViewport } from "../_utils"
 import { Model } from "./model"
 
 const shadowHost = "menu-page"
@@ -19,23 +19,23 @@ export class MenuModel extends Model {
   }
 
   private get trigger() {
-    return this.page.locator(withHost(shadowHost, "[data-scope=menu][data-part=trigger]"))
+    return this.host.locator("[data-scope=menu][data-part=trigger]")
   }
 
   private get contextTrigger() {
-    return this.page.locator(withHost(shadowHost, "[data-scope=menu][data-part=context-trigger]"))
+    return this.host.locator("[data-scope=menu][data-part=context-trigger]")
   }
 
   private get content() {
-    return this.page.locator(withHost(shadowHost, "[data-scope=menu][data-part=content]"))
+    return this.host.locator("[data-scope=menu][data-part=content]")
   }
 
   getItem = (text: string) => {
-    return this.page.locator(withHost(shadowHost, `[data-part=item]`), { hasText: text })
+    return this.host.locator(`[data-part=item]`, { hasText: text })
   }
 
   get highlightedItem() {
-    return this.page.locator(withHost(shadowHost, "[data-part=item][data-highlighted]"))
+    return this.host.locator("[data-part=item][data-highlighted]")
   }
 
   type(input: string) {
@@ -103,7 +103,7 @@ export class MenuModel extends Model {
   }
 
   seeMenuIsPositioned = async () => {
-    const positioner = this.page.locator(withHost(shadowHost, "[data-scope=menu][data-part=positioner]"))
+    const positioner = this.host.locator("[data-scope=menu][data-part=positioner]")
     await expect(positioner).toHaveCSS("--x", /\d+px/)
     await expect(positioner).toHaveCSS("--y", /\d+px/)
   }

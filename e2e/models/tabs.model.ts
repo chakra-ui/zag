@@ -1,5 +1,5 @@
 import { expect, type Page } from "@playwright/test"
-import { testid, withHost } from "../_utils"
+import { testid } from "../_utils"
 import { Model } from "./model"
 
 const shadowHost = "tabs-page"
@@ -14,11 +14,11 @@ export class TabsModel extends Model {
   }
 
   private getTabTrigger = (id: string) => {
-    return this.page.locator(withHost(shadowHost, testid(`${id}-tab`)))
+    return this.host.locator(testid(`${id}-tab`))
   }
 
   private getTabContent = (id: string) => {
-    return this.page.locator(withHost(shadowHost, testid(`${id}-tab-panel`)))
+    return this.host.locator(testid(`${id}-tab-panel`))
   }
 
   clickTab = async (id: string) => {

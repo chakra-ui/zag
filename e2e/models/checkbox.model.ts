@@ -1,5 +1,5 @@
 import { expect, type Page } from "@playwright/test"
-import { part, testid, withHost } from "../_utils"
+import { part, testid } from "../_utils"
 import { Model } from "./model"
 
 const shadowHost = "checkbox-page"
@@ -14,19 +14,19 @@ export class CheckboxModel extends Model {
   }
 
   get root() {
-    return this.page.locator(withHost(shadowHost, part("root")))
+    return this.host.locator(part("root"))
   }
 
   get label() {
-    return this.page.locator(withHost(shadowHost, part("label")))
+    return this.host.locator(part("label"))
   }
 
   get control() {
-    return this.page.locator(withHost(shadowHost, part("control")))
+    return this.host.locator(part("control"))
   }
 
   get input() {
-    return this.page.locator(withHost(shadowHost, testid("hidden-input")))
+    return this.host.locator(testid("hidden-input"))
   }
 
   async expectToBeChecked() {
