@@ -12,6 +12,7 @@ import "./components/state-visualizer"
 // Import all page components
 import "./pages/accordion"
 import "./pages/checkbox"
+import "./pages/collapsible"
 import "./pages/dialog"
 import "./pages/dialog-nested"
 import "./pages/menu"
@@ -58,6 +59,8 @@ export class ZagApp extends LitElement {
         return html`<accordion-page class="component-page"></accordion-page>`
       case "/checkbox":
         return html`<checkbox-page class="component-page"></checkbox-page>`
+      case "/collapsible":
+        return html`<collapsible-page class="component-page"></collapsible-page>`
       case "/dialog":
         return html`<dialog-page class="component-page"></dialog-page>`
       case "/dialog-nested":
@@ -96,6 +99,7 @@ export class ZagApp extends LitElement {
       [
         "/accordion",
         "/checkbox",
+        "/collapsible",
         "/dialog",
         "/dialog-nested",
         "/menu",

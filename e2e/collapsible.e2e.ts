@@ -1,30 +1,30 @@
 import { expect, test } from "@playwright/test"
-import { a11y, part } from "./_utils"
+import { CollapsibleModel } from "./models/collapsible.model"
 
-const trigger = part("trigger")
-const content = part("content")
+let I: CollapsibleModel
 
 test.describe("collapsible", () => {
   test.beforeEach(async ({ page }) => {
-    await page.goto("/collapsible")
+    I = new CollapsibleModel(page)
+    await I.goto()
   })
 
-  test("should have no accessibility violation", async ({ page }) => {
-    await a11y(page)
+  test("should have no accessibility violation", async () => {
+    await I.checkAccessibility()
   })
 
-  test("[toggle] should be open when clicked", async ({ page }) => {
-    await page.click(trigger)
-    await expect(page.locator(content)).toBeVisible()
+  test("[toggle] should be open when clicked", async () => {
+    await I.clickTrigger()
+    await I.seeContent()
 
-    await page.click(trigger)
-    await expect(page.locator(content)).not.toBeVisible()
+    await I.clickTrigger()
+    await I.dontSeeContent()
   })
 
-  test.skip("[closed] content should not be reachable via tab key", async ({ page }) => {
-    await page.click(trigger)
-    await page.click(trigger)
-    await page.keyboard.press("Tab")
-    await expect(page.getByRole("button", { name: "Open" })).toBeFocused()
+  test.skip("[closed] content should not be reachable via tab key", async () => {
+    await I.clickTrigger()
+    await I.clickTrigger()
+    await I.pressKey("Tab")
+    await expect(I.host.getByRole("button", { name: "Open" })).toBeFocused()
   })
 })

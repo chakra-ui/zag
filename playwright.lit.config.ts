@@ -17,6 +17,7 @@ export default defineConfig({
   testMatch: [
     "**/accordion.e2e.ts",
     "**/checkbox.e2e.ts",
+    "**/collapsible.e2e.ts",
     "**/dialog.e2e.ts",
     "**/menu.e2e.ts",
     "**/popover.e2e.ts",
