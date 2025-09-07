@@ -287,6 +287,10 @@ export class LitMachine<T extends MachineSchema> {
 
   private status = MachineStatus.NotStarted
 
+  get started() {
+    return this.status === MachineStatus.Started
+  }
+
   get service(): Service<T> {
     return {
       state: this.getState(),

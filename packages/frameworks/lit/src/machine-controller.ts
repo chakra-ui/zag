@@ -17,19 +17,22 @@ export class MachineController<TSchema extends MachineSchema> implements Reactiv
   }
 
   hostConnected() {
-    // Start the machine when the host is connected
     this.machine.subscribe(() => {
-      // Request Lit component update
       this.host.requestUpdate()
     })
-    this.machine.start()
+  }
+
+  hostUpdated(): void {
+    // Start the machine after the initial html has been rendered
+    if (!this.machine.started) {
+      this.machine.start()
+    }
   }
 
   hostDisconnected() {
     this.machine.stop()
   }
 
-  // Expose machine methods for advanced usage
   get service() {
     return this.machine.service
   }
