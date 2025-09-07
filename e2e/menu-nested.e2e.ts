@@ -1,50 +1,8 @@
-import { expect, type Page, test } from "@playwright/test"
-import { clickOutside, rect, testid } from "./_utils"
+import { expect, test } from "@playwright/test"
+import { MenuNestedModel } from "./models/menu-nested.model"
+import { clickOutside, rect } from "./_utils"
 
-const menu_1 = {
-  trigger: testid("trigger"),
-  menu: testid("menu"),
-  sub_trigger: testid("more-tools"),
-}
-
-const menu_2 = {
-  trigger: testid("more-tools"),
-  menu: testid("more-tools-submenu"),
-  sub_trigger: testid("open-nested"),
-}
-
-const menu_3 = {
-  trigger: testid("open-nested"),
-  menu: testid("open-nested-submenu"),
-}
-
-const expectToBeFocused = async (page: Page, id: string) => {
-  return await expect(page.locator(id).first()).toHaveAttribute("data-highlighted", "")
-}
-
-const navigateToSubmenuTrigger = async (page: Page) => {
-  await page.click(menu_1.trigger)
-  await page.keyboard.press("ArrowDown")
-  await page.keyboard.press("ArrowDown")
-  await page.keyboard.press("ArrowDown")
-  await page.keyboard.press("ArrowDown")
-}
-
-async function expectSubmenuToBeFocused(page: Page) {
-  await expect(page.locator(menu_2.menu)).toBeVisible()
-  await expect(page.locator(menu_2.menu)).toBeFocused()
-  await expectToBeFocused(page, menu_2.trigger)
-}
-
-async function expectAllMenusToBeClosed(page: Page) {
-  // close all
-  await expect(page.locator(menu_1.menu)).toBeHidden()
-  await expect(page.locator(menu_2.menu)).toBeHidden()
-  await expect(page.locator(menu_3.menu)).toBeHidden()
-
-  // focus trigger
-  await expect(page.locator(menu_1.trigger)).toBeFocused()
-}
+let I: MenuNestedModel
 
 test.describe("nested menu / pointer", async () => {
   test.beforeEach(async ({ page }) => {
@@ -54,166 +12,178 @@ test.describe("nested menu / pointer", async () => {
 
 test.describe("nested menu / keyboard navigation", async () => {
   test.beforeEach(async ({ page }) => {
-    await page.goto("/menu-nested")
+    I = new MenuNestedModel(page)
+    await I.goto()
   })
 
-  test("open submenu when moving focus to trigger", async ({ page }) => {
-    await navigateToSubmenuTrigger(page)
-    await expect(page.locator(menu_2.menu)).toBeHidden()
+  test("open submenu when moving focus to trigger", async () => {
+    await I.navigateToSubmenuTrigger()
+    await expect(I.menu2.menu).toBeHidden()
   })
 
-  test("open submenu with space", async ({ page }) => {
-    await navigateToSubmenuTrigger(page)
-    await page.keyboard.press("Space")
-    await page.waitForTimeout(1)
-    await expectSubmenuToBeFocused(page)
+  test("open submenu with space", async () => {
+    await I.navigateToSubmenuTrigger()
+    await I.page.keyboard.press("Space")
+    await I.page.waitForTimeout(1)
+    await I.expectSubmenuToBeFocused()
   })
 
-  test("open submenu with enter", async ({ page }) => {
-    await navigateToSubmenuTrigger(page)
-    await page.keyboard.press("Enter")
-    await expectSubmenuToBeFocused(page)
+  test("open submenu with enter", async () => {
+    await I.navigateToSubmenuTrigger()
+    await I.page.keyboard.press("Enter")
+    await I.expectSubmenuToBeFocused()
   })
 
-  test("open submenu with arrow right", async ({ page }) => {
-    await navigateToSubmenuTrigger(page)
-    await page.keyboard.press("ArrowRight")
-    await expectSubmenuToBeFocused(page)
+  test("open submenu with arrow right", async () => {
+    await I.navigateToSubmenuTrigger()
+    await I.page.keyboard.press("ArrowRight")
+    await I.expectSubmenuToBeFocused()
   })
 
-  test("close submenu with arrow left", async ({ page }) => {
-    await navigateToSubmenuTrigger(page)
-    await page.keyboard.press("Enter", { delay: 20 })
-    await page.keyboard.press("ArrowLeft")
-    await expect(page.locator(menu_2.menu)).toBeHidden()
+  test("close submenu with arrow left", async () => {
+    await I.navigateToSubmenuTrigger()
+    await I.page.keyboard.press("Enter", { delay: 20 })
+    await I.page.keyboard.press("ArrowLeft")
+    await expect(I.menu2.menu).toBeHidden()
   })
 })
 
 test.describe("nested menu / keyboard typeahead", async () => {
   test.beforeEach(async ({ page }) => {
-    await page.goto("/menu-nested")
+    I = new MenuNestedModel(page)
+    await I.goto()
   })
 
-  test("parent menu", async ({ page }) => {
-    await page.click(menu_1.trigger)
+  test("parent menu", async () => {
+    await I.menu1.trigger.click()
+    await expect(I.menu1.menu).toBeFocused()
 
-    await page.keyboard.type("n")
-    await expectToBeFocused(page, testid("new-file"))
+    await I.page.keyboard.type("n")
+    await I.expectToBeHighlighted(I.getTestId("new-file"))
 
-    await page.keyboard.type("n")
-    await expectToBeFocused(page, testid("new-tab"))
+    await I.page.keyboard.type("n")
+    await I.expectToBeHighlighted(I.getTestId("new-tab"))
 
-    await page.keyboard.type("new w")
-    await expectToBeFocused(page, testid("new-win"))
+    await I.page.keyboard.type("new w")
+    await I.expectToBeHighlighted(I.getTestId("new-win"))
   })
 
-  test.skip("nested menu", async ({ page }) => {
-    await page.click(menu_1.trigger)
+  test("nested menu", async () => {
+    await I.menu1.trigger.click()
+    await expect(I.menu1.menu).toBeFocused()
 
-    await page.keyboard.type("m")
-    await expectToBeFocused(page, testid("more-tools"))
+    await I.page.keyboard.type("m")
+    await I.expectToBeHighlighted(I.getTestId("more-tools"))
 
     // open submenu
-    await page.keyboard.press("Enter")
-    await expect(page.locator(menu_2.menu)).toBeVisible()
+    await I.page.keyboard.press("Enter")
+    await I.expectSubmenuToBeFocused()
 
-    await page.keyboard.type("s")
-    await expectToBeFocused(page, testid("switch-win"))
+    await I.page.keyboard.type("s")
+    await I.expectToBeHighlighted(I.getTestId("switch-win"))
   })
 })
 
-test.describe("nested menu / select item", async () => {
+test.describe("nested menu / select item", () => {
   test.beforeEach(async ({ page }) => {
-    await page.goto("/menu-nested")
+    I = new MenuNestedModel(page)
+    await I.goto()
   })
 
-  test("using keyboard", async ({ page }) => {
-    await navigateToSubmenuTrigger(page)
-    await page.keyboard.press("Enter", { delay: 10 })
+  test("using keyboard", async () => {
+    await I.navigateToSubmenuTrigger()
+    await I.page.keyboard.press("Enter")
+    await I.expectSubmenuToBeFocused()
 
     // open menu 3
-    await page.keyboard.press("ArrowDown")
-    await page.keyboard.press("ArrowDown")
-    await page.keyboard.press("ArrowDown")
-    await page.keyboard.press("Enter", { delay: 10 })
+    await I.page.keyboard.press("ArrowDown")
+    await I.page.keyboard.press("ArrowDown")
+    await I.page.keyboard.press("ArrowDown")
+    await I.page.keyboard.press("Enter")
+    await expect(I.menu3.menu).toBeFocused()
 
     // select first item in menu 3
-    await page.keyboard.press("Enter", { delay: 10 })
-    await expectAllMenusToBeClosed(page)
+    await I.page.keyboard.press("Enter")
+    await I.expectAllMenusToBeClosed()
   })
 
-  test("using pointer click", async ({ page }) => {
-    await page.click(menu_1.trigger)
-    await page.hover(menu_1.sub_trigger)
-    await page.hover(menu_2.sub_trigger)
+  test("using pointer click", async () => {
+    await I.menu1.trigger.click()
+    await expect(I.menu1.menu).toBeFocused()
+    await I.menu1.subTrigger.hover()
+    await I.menu2.subTrigger.hover()
 
-    await page.hover(testid("playground"))
-    await page.click(testid("playground"))
-    await expectAllMenusToBeClosed(page)
+    await I.getTestId("playground").hover()
+    await I.getTestId("playground").click()
+    await I.expectAllMenusToBeClosed()
   })
 
-  test("clicking outside or blur", async ({ page }) => {
-    await page.click(menu_1.trigger)
-    await page.hover(menu_2.trigger)
-    await page.hover("body", { position: { x: 10, y: 10 } })
-    await clickOutside(page)
-    await expectAllMenusToBeClosed(page)
+  test("clicking outside or blur", async () => {
+    await I.menu1.trigger.click()
+    await I.menu2.trigger.hover()
+    await I.page.hover("body", { position: { x: 10, y: 10 } })
+    await clickOutside(I.page)
+    await I.expectAllMenusToBeClosed()
   })
 })
 
 test.describe("nested menu / pointer movement", async () => {
   test.beforeEach(async ({ page }) => {
-    await page.goto("/menu-nested")
+    I = new MenuNestedModel(page)
+    await I.goto()
   })
 
-  test("should open submenu and not focus first item", async ({ page }) => {
-    await page.click(menu_1.trigger)
-    await page.hover(menu_1.sub_trigger)
+  test("should open submenu and not focus first item", async () => {
+    await I.menu1.trigger.click()
+    // await expect(I.menu1.menu).toBeFocused()
+    await I.menu1.subTrigger.hover()
 
-    await expect(page.locator(menu_2.menu)).toBeVisible()
-    await expect(page.locator(menu_2.menu)).toBeFocused()
-    await expectToBeFocused(page, menu_2.trigger)
+    await expect(I.menu2.menu).toBeVisible()
+    await expect(I.menu2.menu).toBeFocused()
+    await I.expectToBeHighlighted(I.menu2.trigger)
 
-    const focusedItemCount = await page.locator(menu_2.menu).locator("[data-focus]").count()
+    const focusedItemCount = await I.menu2.menu.locator("[data-focus]").count()
     expect(focusedItemCount).toBe(0)
   })
 
-  test("should not close when moving pointer to submenu and back to parent trigger", async ({ page }) => {
-    await page.click(menu_1.trigger)
+  test("should not close when moving pointer to submenu and back to parent trigger", async () => {
+    await I.menu1.trigger.click()
 
-    await page.hover(menu_1.sub_trigger)
-    await page.hover(testid("save-page"))
-    await page.hover(menu_1.sub_trigger)
+    await I.menu1.subTrigger.hover()
 
-    await expect(page.locator(menu_1.menu)).toBeVisible()
-    await expect(page.locator(menu_2.menu)).toBeVisible()
+    await I.getTestId("save-page").hover()
+    await I.menu1.subTrigger.hover()
+
+    await expect(I.menu1.menu).toBeVisible()
+    await expect(I.menu2.menu).toBeVisible()
   })
 
-  test("should close submenu when moving pointer away", async ({ page }) => {
-    await page.click(menu_1.trigger)
-    await page.hover(menu_2.trigger)
+  test("should close submenu when moving pointer away", async () => {
+    await I.menu1.trigger.click()
+    await I.menu2.trigger.hover()
 
-    const menu_el = page.locator(menu_2.trigger)
-    const bbox = await rect(menu_el)
+    const bbox = await rect(I.menu2.trigger)
 
-    await page.hover("body", { position: { x: bbox.x - 20, y: bbox.height / 2 + bbox.y } })
-    await expect(page.locator(menu_2.menu)).toBeHidden()
-    await expect(page.locator(menu_1.menu)).toBeFocused()
+    await I.page.hover("body", { position: { x: bbox.x - 20, y: bbox.height / 2 + bbox.y } })
+    await expect(I.menu2.menu).toBeHidden()
+    await expect(I.menu1.menu).toBeFocused()
   })
 
-  test("should close open submenu when moving pointer to parent menu item", async ({ page }) => {
-    await page.click(menu_1.trigger)
-    await page.hover(menu_2.trigger)
+  test("should close open submenu when moving pointer to parent menu item", async () => {
+    await I.menu1.trigger.click()
+    await expect(I.menu1.menu).toBeVisible()
+    await I.menu2.trigger.hover()
+    await expect(I.menu2.menu).toBeVisible()
 
-    const menuitem = testid("new-tab")
+    const menuitem = I.getTestId("new-tab")
 
-    await page.hover(menuitem)
+    await menuitem.hover()
     // dispatch extra mouse movement to trigger hover
-    await page.locator(menuitem).dispatchEvent("pointermove")
+    await menuitem.dispatchEvent("pointermove")
 
-    await expect(page.locator(menu_2.menu)).toBeHidden()
-    await expect(page.locator(menu_1.menu)).toBeVisible()
-    await expect(page.locator(menu_1.menu)).toBeFocused()
-    await expectToBeFocused(page, testid("new-tab"))
+    await expect(I.menu2.menu).toBeHidden()
+    await expect(I.menu1.menu).toBeVisible()
+    await expect(I.menu1.menu).toBeFocused()
+    await I.expectToBeHighlighted(I.getTestId("new-tab"))
   })
 })

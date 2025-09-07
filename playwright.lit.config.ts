@@ -20,6 +20,7 @@ export default defineConfig({
     "**/collapsible.e2e.ts",
     "**/dialog.e2e.ts",
     "**/menu.e2e.ts",
+    "**/menu-nested.e2e.ts",
     "**/menu-option.e2e.ts",
     "**/popover.e2e.ts",
     "**/radio-group.e2e.ts",
