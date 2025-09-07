@@ -28,7 +28,7 @@ export const machine = createMachine<BottomSheetSchema>({
       defaultActiveSnapPoint: 1,
       swipeVelocityThreshold: 500,
       closeThreshold: 0.25,
-      handleScrollableElements: true,
+      preventDragOnScroll: true,
       ...props,
     }
   },
@@ -205,7 +205,7 @@ export const machine = createMachine<BottomSheetSchema>({
 
         const { point, target } = event
 
-        if (prop("handleScrollableElements")) {
+        if (prop("preventDragOnScroll")) {
           const delta = pointerStart.y - point.y
 
           if (Math.abs(delta) < 0.3) return false
@@ -407,7 +407,7 @@ export const machine = createMachine<BottomSheetSchema>({
           const point = getEventPoint(event)
           const target = event.target as HTMLElement
 
-          if (!prop("handleScrollableElements")) {
+          if (!prop("preventDragOnScroll")) {
             send({ type: "POINTER_MOVE", point, target })
             return
           }
