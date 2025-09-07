@@ -54,3 +54,13 @@ test("input is not blurred on label click", async ({ page }) => {
   await I.label.click()
   expect(blurCount).toBe(0)
 })
+
+test("reset form should restore initial state", async () => {
+  await expect(I.input).not.toBeChecked()
+
+  await I.label.click()
+  await expect(I.input).toBeChecked()
+
+  await I.resetButton.click()
+  await expect(I.input).not.toBeChecked()
+})

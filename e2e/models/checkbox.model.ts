@@ -29,6 +29,10 @@ export class CheckboxModel extends Model {
     return this.host.locator(testid("hidden-input"))
   }
 
+  get resetButton() {
+    return this.host.getByRole("button", { name: "Reset Form" })
+  }
+
   async expectToBeChecked() {
     await expect(this.root).toHaveAttribute("data-state", "checked")
     await expect(this.label).toHaveAttribute("data-state", "checked")
