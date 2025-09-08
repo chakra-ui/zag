@@ -59,36 +59,31 @@ export class LitMachine<T extends MachineSchema> {
     private readonly machine: Machine<T>,
     userProps: Partial<T["props"]> | (() => Partial<T["props"]>) = {},
   ) {
+    const self = this
+
     // create scope
     const { id, ids, getRootNode } = runIfFn(userProps) as any
     this.scope = createScope({ id, ids, getRootNode })
 
     // create prop
-    const prop: PropFn<T> = (key) => {
+    this.prop = (key) => {
       const __props = runIfFn(userProps)
-      const props: any = machine.props?.({ props: compact(__props), scope: this.scope }) ?? __props
+      const props: any = machine.props?.({ props: compact(__props), scope: self.scope }) ?? __props
       return props[key] as any
     }
-    this.prop = prop
 
     // create context
     const context: any = machine.context?.({
-      prop,
+      prop: self.prop,
       bindable,
-      scope: this.scope,
+      scope: self.scope,
       flush(fn: VoidFunction) {
-        queueMicrotask(fn)
+        queueMicrotask(fn) // requestUpdate?
       },
-      getContext() {
-        return ctx as any
-      },
-      getComputed() {
-        return computed as any
-      },
-      getRefs() {
-        return refs as any
-      },
-      getEvent: this.getEvent.bind(this),
+      getContext: () => self.ctx as any,
+      getComputed: () => self.computed as any,
+      getRefs: () => self.refs as any,
+      getEvent: self.getEvent,
     })
 
     // subscribe to context changes
@@ -100,7 +95,7 @@ export class LitMachine<T extends MachineSchema> {
     }
 
     // context function
-    const ctx: BindableContext<T> = {
+    this.ctx = {
       get(key) {
         return context?.[key].get()
       },
@@ -115,66 +110,60 @@ export class LitMachine<T extends MachineSchema> {
         return context?.[key].hash(current)
       },
     }
-    this.ctx = ctx
 
-    const computed: ComputedFn<T> = (key) => {
-      return (
-        machine.computed?.[key]({
-          context: ctx as any,
-          event: this.getEvent(),
-          prop,
-          refs: this.refs,
-          scope: this.scope,
-          computed: computed as any,
-        }) ?? ({} as any)
-      )
-    }
-    this.computed = computed
+    this.computed = (key) =>
+      machine.computed?.[key]({
+        context: self.ctx as any,
+        event: self.getEvent(),
+        prop: self.prop,
+        refs: self.refs,
+        scope: self.scope,
+        computed: self.computed as any,
+      }) ?? ({} as any)
 
-    const refs: BindableRefs<T> = createRefs(machine.refs?.({ prop, context: ctx }) ?? {})
-    this.refs = refs
+    this.refs = createRefs(self.machine.refs?.({ prop: self.prop, context: self.ctx }) ?? {})
 
     // state
-    const state = bindable(() => ({
-      defaultValue: machine.initialState({ prop }),
+    this.state = bindable(() => ({
+      defaultValue: self.machine.initialState({ prop: self.prop }),
       onChange: (nextState, prevState) => {
         // compute effects: exit -> transition -> enter
 
         // exit effects
         if (prevState) {
-          const exitEffects = this.effects.get(prevState)
+          const exitEffects = self.effects.get(prevState)
           exitEffects?.()
-          this.effects.delete(prevState)
+          self.effects.delete(prevState)
         }
 
         // exit actions
         if (prevState) {
           // @ts-ignore
-          this.action(machine.states[prevState]?.exit)
+          self.action(self.machine.states[prevState]?.exit)
         }
 
         // transition actions
-        this.action(this.transition?.actions)
+        self.action(self.transition?.actions)
 
         // enter effect
         // @ts-ignore
-        const cleanup = this.effect(machine.states[nextState]?.effects)
-        if (cleanup) this.effects.set(nextState as string, cleanup)
+        const cleanup = self.effect(self.machine.states[nextState]?.effects)
+        if (cleanup) self.effects.set(nextState as string, cleanup)
 
         // root entry actions
         if (prevState === INIT_STATE) {
-          this.action(machine.entry)
-          const cleanup = this.effect(machine.effects)
-          if (cleanup) this.effects.set(INIT_STATE, cleanup)
+          self.action(self.machine.entry)
+          const cleanup = self.effect(self.machine.effects)
+          if (cleanup) self.effects.set(INIT_STATE, cleanup)
         }
 
         // enter actions
         // @ts-ignore
-        this.action(machine.states[nextState]?.entry)
+        self.action(self.machine.states[nextState]?.entry)
       },
     }))
-    this.state = state
-    this.cleanups.push(subscribe(this.state.ref, () => this.publish()))
+
+    this.cleanups.push(subscribe(this.state.ref, () => self.publish()))
   }
 
   private readonly send = (event: any) => {
