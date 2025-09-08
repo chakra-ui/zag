@@ -7,6 +7,7 @@ import { isObject } from "@zag-js/utils"
 // - '@event-name': handler -> event listener
 // - '.property': value -> property assignment
 
+// TODO: Improve types
 type LitElementProps = {
   [key: string]: any
   style?: string | Record<string, any>

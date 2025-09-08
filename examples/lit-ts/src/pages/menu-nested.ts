@@ -14,19 +14,23 @@ import { PageElement } from "../lib/page-element"
 export class MenuNestedPage extends PageElement {
   static styles = unsafeCSS(styleComponent + styleLayout + stylePage)
 
+  private rootId = nanoid(5)
+  private subId = nanoid(5)
+  private sub2Id = nanoid(5)
+
   private rootMachine = new MachineController(this, menu.machine, () => ({
-    getRootNode: () => this.shadowRoot || this.ownerDocument,
-    id: nanoid(),
+    getRootNode: () => this.getRootNode(),
+    id: this.rootId,
   }))
 
   private subMachine = new MachineController(this, menu.machine, () => ({
-    getRootNode: () => this.shadowRoot || this.ownerDocument,
-    id: nanoid(),
+    getRootNode: () => this.getRootNode(),
+    id: this.subId,
   }))
 
   private sub2Machine = new MachineController(this, menu.machine, () => ({
-    getRootNode: () => this.shadowRoot || this.ownerDocument,
-    id: nanoid(),
+    getRootNode: () => this.getRootNode(),
+    id: this.sub2Id,
   }))
 
   protected firstUpdated() {
@@ -34,6 +38,7 @@ export class MenuNestedPage extends PageElement {
     const sub = menu.connect(this.subMachine.service, normalizeProps)
     const sub2 = menu.connect(this.sub2Machine.service, normalizeProps)
 
+    // Set up parent-child relationships
     root.setChild(this.subMachine.service)
     sub.setParent(this.rootMachine.service)
 

@@ -177,6 +177,7 @@ test.describe("nested menu / pointer movement", async () => {
 
     const menuitem = I.getTestId("new-tab")
 
+    // FIXME: .hover() causes "subtree intercepts pointer events" error in shadow-dom
     await menuitem.hover()
     // dispatch extra mouse movement to trigger hover
     await menuitem.dispatchEvent("pointermove")
