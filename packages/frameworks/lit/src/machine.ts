@@ -55,10 +55,6 @@ export class LitMachine<T extends MachineSchema> {
     if (this.machine.debug) console.log(...args)
   }
 
-  private readonly notify = () => {
-    this.publish()
-  }
-
   constructor(
     private readonly machine: Machine<T>,
     userProps: Partial<T["props"]> | (() => Partial<T["props"]>) = {},
@@ -98,7 +94,7 @@ export class LitMachine<T extends MachineSchema> {
     // subscribe to context changes
     if (context) {
       Object.values(context).forEach((item: any) => {
-        const unsub = subscribe(item.ref, () => this.notify())
+        const unsub = subscribe(item.ref, () => this.publish())
         this.cleanups.push(unsub)
       })
     }
@@ -178,7 +174,7 @@ export class LitMachine<T extends MachineSchema> {
       },
     }))
     this.state = state
-    this.cleanups.push(subscribe(this.state.ref, () => this.notify()))
+    this.cleanups.push(subscribe(this.state.ref, () => this.publish()))
   }
 
   private readonly send = (event: any) => {
