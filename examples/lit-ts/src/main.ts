@@ -27,6 +27,9 @@ import "./pages/tabs"
 import "./pages/toggle"
 import "./pages/toggle-group"
 
+// Sort alphabetically in place (Why not in shared/?)
+routesData.sort((a, b) => a.label.localeCompare(b.label))
+
 @customElement("zag-app")
 export class ZagApp extends LitElement {
   // Light dom (no shadow root) due to css
