@@ -951,6 +951,10 @@ export function connect<T extends PropTypes>(
             End() {
               send({ type: "SEGMENT.END", focus: true })
             },
+            Backspace() {
+              send({ type: "SEGMENT.BACKSPACE", segment, focus: true })
+            },
+            Delete() {},
           }
 
           const exec =

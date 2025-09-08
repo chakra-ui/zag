@@ -485,6 +485,9 @@ export const machine = createMachine<DatePickerSchema>({
         "SEGMENT.ARROW_RIGHT": {
           actions: ["focusNextSegment"],
         },
+        "SEGMENT.BACKSPACE": {
+          actions: ["clearSegmentValue"],
+        },
       },
     },
 
@@ -1291,7 +1294,26 @@ export const machine = createMachine<DatePickerSchema>({
         })
       },
 
-      invokeOnSegmentAdjust({ event, context, prop }) {
+      clearSegmentValue({ event }) {
+        const { segment } = event
+        if (segment.isPlaceholder) {
+          // focus previous segment if the current segment is already a placeholder
+          return
+        }
+
+        const newValue = segment.text.slice(0, -1)
+        const newValuePadded = newValue.padStart(segment.text.length, "0")
+
+        if (newValue.length === 0) {
+          // clear segment value and mark as placeholder
+        } else {
+          // update segment value
+          segment.text = newValuePadded
+        }
+      },
+
+      invokeOnSegmentAdjust(params) {
+        const { event, context, prop } = params
         const { segment, amount } = event
         const type = segment.type as DateSegment["type"]
         const validSegments = context.get("validSegments")
@@ -1311,44 +1333,13 @@ export const machine = createMachine<DatePickerSchema>({
             ? activeValue
             : placeholderValue
 
-        const setValue = (newValue: DateValue) => {
-          if (prop("disabled") || prop("readOnly")) return
-          const date = constrainValue(newValue, prop("min"), prop("max"))
-
-          // if all the segments are completed or a timefield with everything but am/pm set the time, also ignore when am/pm cleared
-          if (newValue == null) {
-            // setDate(null)
-            // setPlaceholderDate(createPlaceholderDate(props.placeholderValue, granularity, calendar, defaultTimeZone))
-            // setValidSegments({})
-          } else if (
-            // (validKeys.length === 0 && clearedSegment.current == null) || // FIXIT: figure out what is clearedSegment.current used for
-            validKeys.length >= allKeys.length ||
-            (validKeys.length === allKeys.length - 1 && allSegments.dayPeriod && !activeValidSegments.dayPeriod)
-            // && clearedSegment.current !== "dayPeriod" // FIXIT: figure out what is clearedSegment.current used for
-          ) {
-            // If the field was empty (no valid segments) or all segments are completed, commit the new value.
-            // When committing from an empty state, mark every segment as valid so value is committed.
-            if (validKeys.length === 0) {
-              validSegments[index] = { ...allSegments }
-              context.set("validSegments", validSegments)
-            }
-
-            const values = Array.from(context.get("value"))
-            values[index] = date
-            context.set("value", values)
-          } else {
-            context.set("placeholderValue", date)
-          }
-          // clearedSegment.current = null // FIXIT: figure out what is clearedSegment.current used for
-        }
-
         const markValid = (segmentType: SegmentType) => {
           activeValidSegments[segmentType] = true
           if (segmentType === "year" && allSegments.era) {
             activeValidSegments.era = true
           }
           validKeys = Object.keys(activeValidSegments)
-          // context.set("validSegments", validSegments)
+          context.set("validSegments", validSegments)
         }
 
         if (!activeValidSegments?.[type]) {
@@ -1358,10 +1349,10 @@ export const machine = createMachine<DatePickerSchema>({
             validKeys.length >= allKeys.length ||
             (validKeys.length === allKeys.length - 1 && allSegments.dayPeriod && !activeValidSegments.dayPeriod)
           ) {
-            setValue(displayValue)
+            setValue(params, displayValue)
           }
         } else {
-          setValue(addSegment(displayValue, type, amount, formatter.resolvedOptions()))
+          setValue(params, addSegment(displayValue, type, amount, formatter.resolvedOptions()))
         }
       },
     },
@@ -1404,4 +1395,42 @@ function setAdjustedValue(ctx: Params<DatePickerSchema>, value: AdjustDateReturn
   const focusedValue = context.get("focusedValue")
   if (isDateEqual(focusedValue, value.focusedDate)) return
   context.set("focusedValue", value.focusedDate)
+}
+
+function setValue(ctx: Params<DatePickerSchema>, value: DateValue) {
+  const { context, prop } = ctx
+  if (prop("disabled") || prop("readOnly")) return
+  const validSegments = context.get("validSegments")
+  const allSegments = prop("allSegments")
+  const index = context.get("activeIndex")
+  const activeValidSegments = validSegments[index]
+  const validKeys = Object.keys(activeValidSegments)
+  const allKeys = Object.keys(allSegments)
+  const date = constrainValue(value, prop("min"), prop("max"))
+
+  // if all the segments are completed or a timefield with everything but am/pm set the time, also ignore when am/pm cleared
+  if (value == null) {
+    // setDate(null)
+    // setPlaceholderDate(createPlaceholderDate(props.placeholderValue, granularity, calendar, defaultTimeZone))
+    // setValidSegments({})
+  } else if (
+    // (validKeys.length === 0 && clearedSegment.current == null) || // FIXIT: figure out what is clearedSegment.current used for
+    validKeys.length >= allKeys.length ||
+    (validKeys.length === allKeys.length - 1 && allSegments.dayPeriod && !activeValidSegments.dayPeriod)
+    // && clearedSegment.current !== "dayPeriod" // FIXIT: figure out what is clearedSegment.current used for
+  ) {
+    // If the field was empty (no valid segments) or all segments are completed, commit the new value.
+    // When committing from an empty state, mark every segment as valid so value is committed.
+    if (validKeys.length === 0) {
+      validSegments[index] = { ...allSegments }
+      context.set("validSegments", validSegments)
+    }
+
+    const values = Array.from(context.get("value"))
+    values[index] = date
+    context.set("value", values)
+  } else {
+    context.set("placeholderValue", date)
+  }
+  // clearedSegment.current = null // FIXIT: figure out what is clearedSegment.current used for
 }
