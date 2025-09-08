@@ -108,12 +108,11 @@ export const defaultTranslations: IntlTranslations = {
       day: "dd",
       month: "mm",
       year: "yyyy",
-      hour: "hh",
-      minute: "mm",
-      second: "ss",
+      hour: "--",
+      minute: "--",
+      second: "--",
       dayPeriod: "AM/PM",
       era: "era",
-      literal: "", // TODO: investigate what this should be
       timeZoneName: "timeZone",
       weekday: "weekday",
       unknown: "unknown",
@@ -172,7 +171,7 @@ export function eachView(cb: (view: DateView) => void) {
 }
 
 // ---------------------------------------------------
-// SEGMENT
+// SEGMENTS
 // ---------------------------------------------------
 
 export const EDITABLE_SEGMENTS = {

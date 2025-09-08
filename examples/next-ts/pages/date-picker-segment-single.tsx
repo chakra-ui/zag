@@ -44,7 +44,7 @@ export default function Page() {
           <button {...api.getTriggerProps()}>🗓</button>
         </div>
 
-        <input type="date" placeholder="mm/dd/yyyy" />
+        <input type="datetime-local" placeholder="mm/dd/yyyy" />
 
         <div {...api.getPositionerProps()}>
           <div {...api.getContentProps()}>

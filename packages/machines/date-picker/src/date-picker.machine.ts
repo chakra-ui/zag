@@ -1294,7 +1294,7 @@ export const machine = createMachine<DatePickerSchema>({
       invokeOnSegmentAdjust({ event, context, prop }) {
         const { segment, amount } = event
         const type = segment.type as DateSegment["type"]
-        const validSegments = Array.from(context.get("validSegments"))
+        const validSegments = context.get("validSegments")
         const value = context.get("value")
         const allSegments = prop("allSegments")
         const formatter = prop("formatter")
@@ -1302,7 +1302,7 @@ export const machine = createMachine<DatePickerSchema>({
         const placeholderValue = context.get("placeholderValue")
         const activeValidSegments = validSegments[index]
         const activeValue = value[index]
-        const validKeys = Object.keys(activeValidSegments)
+        let validKeys = Object.keys(activeValidSegments)
         const allKeys = Object.keys(allSegments)
 
         // If all segments are valid, use the date from state, otherwise use the placeholder date.
@@ -1347,7 +1347,8 @@ export const machine = createMachine<DatePickerSchema>({
           if (segmentType === "year" && allSegments.era) {
             activeValidSegments.era = true
           }
-          context.set("validSegments", validSegments)
+          validKeys = Object.keys(activeValidSegments)
+          // context.set("validSegments", validSegments)
         }
 
         if (!activeValidSegments?.[type]) {
