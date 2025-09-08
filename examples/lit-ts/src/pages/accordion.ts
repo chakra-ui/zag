@@ -17,10 +17,11 @@ export class AccordionPage extends PageElement {
   static styles = unsafeCSS(styleComponent + styleLayout + stylePage)
 
   private controls = new ControlsController(this, accordionControls)
+  private machineId = nanoid(5)
 
   private machine = new MachineController(this, accordion.machine, () => ({
     getRootNode: () => this.shadowRoot || this.ownerDocument,
-    id: nanoid(),
+    id: this.machineId,
     ...this.controls.context,
   }))
 

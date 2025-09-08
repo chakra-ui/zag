@@ -16,10 +16,11 @@ export class SwitchPage extends PageElement {
   static styles = unsafeCSS(styleComponent + styleLayout + stylePage)
 
   private controls = new ControlsController(this, switchControls)
+  private machineId = nanoid(5)
 
   private machine = new MachineController(this, zagSwitch.machine, () => ({
     getRootNode: () => this.shadowRoot || this.ownerDocument,
-    id: nanoid(),
+    id: this.machineId,
     name: "switch",
     ...this.controls.context,
   }))

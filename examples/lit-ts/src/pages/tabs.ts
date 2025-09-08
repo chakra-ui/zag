@@ -16,10 +16,11 @@ export class TabsPage extends PageElement {
   static styles = unsafeCSS(styleComponent + styleLayout + stylePage)
 
   private controls = new ControlsController(this, tabsControls)
+  private machineId = nanoid(5)
 
   private machine = new MachineController(this, tabs.machine, () => ({
     getRootNode: () => this.shadowRoot || this.ownerDocument,
-    id: nanoid(),
+    id: this.machineId,
     defaultValue: "nils",
     ...this.controls.context,
   }))

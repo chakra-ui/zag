@@ -18,10 +18,11 @@ export class CollapsiblePage extends PageElement {
   static styles = unsafeCSS(styleComponent + styleKeyframes + styleLayout + stylePage)
 
   private controls = new ControlsController(this, collapsibleControls)
+  private machineId = nanoid(5)
 
   private machine = new MachineController(this, collapsible.machine, () => ({
     getRootNode: () => this.shadowRoot || this.ownerDocument,
-    id: nanoid(),
+    id: this.machineId,
     ...this.controls.context,
   }))
 

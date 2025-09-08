@@ -16,10 +16,11 @@ export class CheckboxPage extends PageElement {
   static styles = unsafeCSS(styleComponent + styleLayout + stylePage)
 
   private controls = new ControlsController(this, checkboxControls)
+  private machineId = nanoid(5)
 
   private machine = new MachineController(this, checkbox.machine, () => ({
     getRootNode: () => this.shadowRoot || this.ownerDocument,
-    id: nanoid(),
+    id: this.machineId,
     name: "checkbox",
     ...this.controls.context,
   }))

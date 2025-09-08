@@ -16,10 +16,11 @@ export class MenuPage extends PageElement {
   static styles = unsafeCSS(styleComponent + styleLayout + stylePage)
 
   private controls = new ControlsController(this, menuControls)
+  private machineId = nanoid(5)
 
   private machine = new MachineController(this, menu.machine, () => ({
     getRootNode: () => this.shadowRoot || this.ownerDocument,
-    id: nanoid(),
+    id: this.machineId,
     onSelect: console.log,
     ...this.controls.context,
   }))

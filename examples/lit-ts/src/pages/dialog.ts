@@ -13,9 +13,11 @@ import { PageElement } from "../lib/page-element"
 export class DialogPage extends PageElement {
   static styles = unsafeCSS(styleComponent + styleLayout + stylePage)
 
+  private machineId = nanoid(5)
+
   private machine = new MachineController(this, dialog.machine, () => ({
     getRootNode: () => this.shadowRoot || this.ownerDocument,
-    id: nanoid(),
+    id: this.machineId,
   }))
 
   render() {

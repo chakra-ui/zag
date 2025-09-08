@@ -16,10 +16,11 @@ export class PopoverPage extends PageElement {
   static styles = unsafeCSS(styleComponent + styleLayout + stylePage)
 
   private controls = new ControlsController(this, popoverControls)
+  private machineId = nanoid(5)
 
   private machine = new MachineController(this, popover.machine, () => ({
     getRootNode: () => this.shadowRoot || this.ownerDocument,
-    id: nanoid(),
+    id: this.machineId,
     ...this.controls.context,
   }))
 

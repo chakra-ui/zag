@@ -13,16 +13,19 @@ import { PageElement } from "../lib/page-element"
 export class DialogNestedPage extends PageElement {
   static styles = unsafeCSS(styleComponent + styleLayout + stylePage)
 
+  private machine1Id = nanoid(5)
+  private machine2Id = nanoid(5)
+
   // Dialog 1
   private machine1 = new MachineController(this, dialog.machine, () => ({
     getRootNode: () => this.shadowRoot || this.ownerDocument,
-    id: nanoid(),
+    id: this.machine1Id,
   }))
 
   // Dialog 2
   private machine2 = new MachineController(this, dialog.machine, () => ({
     getRootNode: () => this.shadowRoot || this.ownerDocument,
-    id: nanoid(),
+    id: this.machine2Id,
   }))
 
   render() {
