@@ -178,9 +178,10 @@ export class LitMachine<T extends MachineSchema> {
   }
 
   private readonly send = (event: any) => {
-    if (this.status !== MachineStatus.Started) return
-
     queueMicrotask(() => {
+      // check status inside microtask to prevent race condition
+      if (this.status !== MachineStatus.Started) return
+
       this.previousEvent = this.event
       this.event = event
 
@@ -258,6 +259,8 @@ export class LitMachine<T extends MachineSchema> {
   }
 
   start() {
+    if (this.status === MachineStatus.Started) return
+
     this.status = MachineStatus.Started
     this.debug("initializing...")
     this.state.invoke(this.state.initial!, INIT_STATE)
@@ -265,6 +268,8 @@ export class LitMachine<T extends MachineSchema> {
   }
 
   stop() {
+    if (this.status === MachineStatus.Stopped) return
+
     // run exit effects
     this.effects.forEach((fn) => fn?.())
     this.effects.clear()
@@ -275,12 +280,24 @@ export class LitMachine<T extends MachineSchema> {
     this.cleanups.forEach((unsub) => unsub())
     this.cleanups = []
 
+    // clear trackers to prevent memory leak
+    this.trackers = []
+
+    // Should we clear this.subscriptions too?
+
     this.status = MachineStatus.Stopped
     this.debug("unmounting...")
   }
 
-  subscribe = (fn: (service: Service<T>) => void) => {
+  readonly subscribe = (fn: (service: Service<T>) => void) => {
     this.subscriptions.push(fn)
+    // return unsubscribe function
+    return () => {
+      const index = this.subscriptions.indexOf(fn)
+      if (index > -1) {
+        this.subscriptions.splice(index, 1)
+      }
+    }
   }
 
   get started() {
@@ -334,7 +351,7 @@ export class LitMachine<T extends MachineSchema> {
     },
     refs: this.refs,
     computed: this.computed,
-    flush: identity,
+    flush: identity, // requestUpdate?
     scope: this.scope,
     choose: this.choose,
   })
