@@ -15,13 +15,13 @@ export class DialogNestedPage extends PageElement {
 
   // Dialog 1
   private machine1 = new MachineController(this, dialog.machine, () => ({
-    getRootNode: () => this.shadowRoot,
+    getRootNode: () => this.shadowRoot || this.ownerDocument,
     id: nanoid(),
   }))
 
   // Dialog 2
   private machine2 = new MachineController(this, dialog.machine, () => ({
-    getRootNode: () => this.shadowRoot,
+    getRootNode: () => this.shadowRoot || this.ownerDocument,
     id: nanoid(),
   }))
 

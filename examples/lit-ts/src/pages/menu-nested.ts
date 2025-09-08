@@ -19,17 +19,17 @@ export class MenuNestedPage extends PageElement {
   private sub2Id = nanoid(5)
 
   private rootMachine = new MachineController(this, menu.machine, () => ({
-    getRootNode: () => this.getRootNode(),
+    getRootNode: () => this.shadowRoot || this.ownerDocument,
     id: this.rootId,
   }))
 
   private subMachine = new MachineController(this, menu.machine, () => ({
-    getRootNode: () => this.getRootNode(),
+    getRootNode: () => this.shadowRoot || this.ownerDocument,
     id: this.subId,
   }))
 
   private sub2Machine = new MachineController(this, menu.machine, () => ({
-    getRootNode: () => this.getRootNode(),
+    getRootNode: () => this.shadowRoot || this.ownerDocument,
     id: this.sub2Id,
   }))
 

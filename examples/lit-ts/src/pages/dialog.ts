@@ -14,7 +14,7 @@ export class DialogPage extends PageElement {
   static styles = unsafeCSS(styleComponent + styleLayout + stylePage)
 
   private machine = new MachineController(this, dialog.machine, () => ({
-    getRootNode: () => this.shadowRoot,
+    getRootNode: () => this.shadowRoot || this.ownerDocument,
     id: nanoid(),
   }))
 

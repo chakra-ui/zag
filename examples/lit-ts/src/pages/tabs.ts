@@ -18,7 +18,7 @@ export class TabsPage extends PageElement {
   private controls = new ControlsController(this, tabsControls)
 
   private machine = new MachineController(this, tabs.machine, () => ({
-    getRootNode: () => this.shadowRoot,
+    getRootNode: () => this.shadowRoot || this.ownerDocument,
     id: nanoid(),
     defaultValue: "nils",
     ...this.controls.context,

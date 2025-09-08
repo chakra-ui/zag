@@ -18,7 +18,7 @@ export class RadioGroupPage extends PageElement {
   private controls = new ControlsController(this, radioControls)
 
   private machine = new MachineController(this, radio.machine, () => ({
-    getRootNode: () => this.shadowRoot,
+    getRootNode: () => this.shadowRoot || this.ownerDocument,
     id: nanoid(),
     name: "fruit",
     ...this.controls.context,

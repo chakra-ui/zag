@@ -18,7 +18,7 @@ export class MenuOptionsPage extends PageElement {
   private controls = new ControlsController(this, menuControls)
 
   private machine = new MachineController(this, menu.machine, () => ({
-    getRootNode: () => this.shadowRoot,
+    getRootNode: () => this.shadowRoot || this.ownerDocument,
     id: nanoid(),
     ...this.controls.context,
   }))

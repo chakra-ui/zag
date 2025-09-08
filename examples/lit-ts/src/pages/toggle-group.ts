@@ -18,7 +18,7 @@ export class ToggleGroupPage extends PageElement {
   private controls = new ControlsController(this, toggleGroupControls)
 
   private machine = new MachineController(this, toggleGroup.machine, () => ({
-    getRootNode: () => this.shadowRoot,
+    getRootNode: () => this.shadowRoot || this.ownerDocument,
     id: nanoid(),
     ...this.controls.context,
   }))

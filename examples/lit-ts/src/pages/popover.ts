@@ -18,7 +18,7 @@ export class PopoverPage extends PageElement {
   private controls = new ControlsController(this, popoverControls)
 
   private machine = new MachineController(this, popover.machine, () => ({
-    getRootNode: () => this.shadowRoot,
+    getRootNode: () => this.shadowRoot || this.ownerDocument,
     id: nanoid(),
     ...this.controls.context,
   }))

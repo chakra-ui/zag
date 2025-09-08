@@ -20,7 +20,7 @@ export class CollapsiblePage extends PageElement {
   private controls = new ControlsController(this, collapsibleControls)
 
   private machine = new MachineController(this, collapsible.machine, () => ({
-    getRootNode: () => this.shadowRoot,
+    getRootNode: () => this.shadowRoot || this.ownerDocument,
     id: nanoid(),
     ...this.controls.context,
   }))

@@ -19,7 +19,7 @@ export class AccordionPage extends PageElement {
   private controls = new ControlsController(this, accordionControls)
 
   private machine = new MachineController(this, accordion.machine, () => ({
-    getRootNode: () => this.shadowRoot,
+    getRootNode: () => this.shadowRoot || this.ownerDocument,
     id: nanoid(),
     ...this.controls.context,
   }))

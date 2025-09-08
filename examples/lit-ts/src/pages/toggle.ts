@@ -7,17 +7,13 @@ import styleLayout from "@zag-js/shared/src/css/layout.css?inline"
 import stylePage from "./page.css?inline"
 import { MachineController, normalizeProps } from "@zag-js/lit"
 import { Bold, createElement } from "lucide"
-import { nanoid } from "nanoid"
 import { PageElement } from "../lib/page-element"
 
 @customElement("toggle-page")
 export class TogglePage extends PageElement {
   static styles = unsafeCSS(styleComponent + styleLayout + stylePage)
 
-  private machine = new MachineController(this, toggle.machine, () => ({
-    getRootNode: () => this.shadowRoot,
-    id: nanoid(),
-  }))
+  private machine = new MachineController(this, toggle.machine)
 
   render() {
     const api = toggle.connect(this.machine.service, normalizeProps)

@@ -18,7 +18,7 @@ export class SwitchPage extends PageElement {
   private controls = new ControlsController(this, switchControls)
 
   private machine = new MachineController(this, zagSwitch.machine, () => ({
-    getRootNode: () => this.shadowRoot,
+    getRootNode: () => this.shadowRoot || this.ownerDocument,
     id: nanoid(),
     name: "switch",
     ...this.controls.context,

@@ -19,7 +19,7 @@ export class RangeSliderPage extends PageElement {
   private controls = new ControlsController(this, sliderControls)
 
   private machine = new MachineController(this, slider.machine, () => ({
-    getRootNode: () => this.shadowRoot,
+    getRootNode: () => this.shadowRoot || this.ownerDocument,
     id: nanoid(),
     name: "quantity",
     defaultValue: [10, 60],

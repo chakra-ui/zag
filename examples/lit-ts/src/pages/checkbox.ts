@@ -18,7 +18,7 @@ export class CheckboxPage extends PageElement {
   private controls = new ControlsController(this, checkboxControls)
 
   private machine = new MachineController(this, checkbox.machine, () => ({
-    getRootNode: () => this.shadowRoot,
+    getRootNode: () => this.shadowRoot || this.ownerDocument,
     id: nanoid(),
     name: "checkbox",
     ...this.controls.context,
