@@ -1,5 +1,6 @@
 import type { Service } from "@zag-js/core"
 import { mergeProps } from "@zag-js/core"
+import { createNormalizer } from "@zag-js/types"
 import {
   ariaAttr,
   dataAttr,
@@ -21,6 +22,9 @@ import { cast, hasProp } from "@zag-js/utils"
 import { parts } from "./menu.anatomy"
 import * as dom from "./menu.dom"
 import type { ItemProps, ItemState, MenuApi, MenuSchema, OptionItemProps, OptionItemState } from "./menu.types"
+
+// We need to avoid mixing framework-agnostic logic with framework-specific prop handling
+const identityProps = createNormalizer<PropTypes>((v) => v)
 
 export function connect<T extends PropTypes>(service: Service<MenuSchema>, normalize: NormalizeProps<T>): MenuApi<T> {
   const { context, send, state, computed, prop, scope } = service
@@ -61,11 +65,12 @@ export function connect<T extends PropTypes>(service: Service<MenuSchema>, norma
     }
   }
 
-  function getItemProps(props: ItemProps) {
+  function getItemProps(props: ItemProps, normalized = true) {
     const { closeOnSelect, valueText, value } = props
     const itemState = getItemState(props)
     const id = dom.getItemId(scope, value)
-    return normalize.element({
+
+    const itemProps = identityProps.element({
       ...parts.item.attrs,
       id,
       role: "menuitem",
@@ -110,6 +115,8 @@ export function connect<T extends PropTypes>(service: Service<MenuSchema>, norma
         send({ type: "ITEM_CLICK", target, id, closeOnSelect })
       },
     })
+
+    return normalized ? normalize.element(itemProps) : itemProps
   }
 
   return {
@@ -177,12 +184,13 @@ export function connect<T extends PropTypes>(service: Service<MenuSchema>, norma
     },
 
     getTriggerItemProps(childApi) {
-      const triggerProps = childApi.getTriggerProps()
-      return mergeProps(getItemProps({ value: triggerProps.id }), triggerProps) as T["element"]
+      const triggerProps = childApi.getTriggerProps(false)
+      const itemProps = getItemProps({ value: triggerProps.id }, false)
+      return normalize.element(mergeProps(itemProps, triggerProps))
     },
 
-    getTriggerProps() {
-      return normalize.button({
+    getTriggerProps(normalized = true) {
+      const triggerProps = identityProps.button({
         ...(isSubmenu ? parts.triggerItem.attrs : parts.trigger.attrs),
         "data-placement": context.get("currentPlacement"),
         type: "button",
@@ -256,6 +264,8 @@ export function connect<T extends PropTypes>(service: Service<MenuSchema>, norma
           }
         },
       })
+
+      return normalized ? normalize.button(triggerProps) : triggerProps
     },
 
     getIndicatorProps() {
