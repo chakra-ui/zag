@@ -21,44 +21,46 @@ import { bindable } from "./bindable"
 import { createRefs } from "./refs"
 
 export class LitMachine<T extends MachineSchema> {
-  scope: Scope
-  ctx: BindableContext<T>
-  prop: PropFn<T>
-  state: Bindable<T["state"]>
-  refs: BindableRefs<T>
-  computed: ComputedFn<T>
+  private readonly scope: Scope
+  private readonly ctx: BindableContext<T>
+  private readonly prop: PropFn<T>
+  private readonly state: Bindable<T["state"]>
+  private readonly refs: BindableRefs<T>
+  private readonly computed: ComputedFn<T>
 
   private event: any = { type: "" }
   private previousEvent: any
 
-  private effects = new Map<string, VoidFunction>()
+  private readonly effects = new Map<string, VoidFunction>()
   private transition: any = null
 
   private cleanups: VoidFunction[] = []
-  private subscriptions: Array<(service: Service<T>) => void> = []
+  private readonly subscriptions: Array<(service: Service<T>) => void> = []
+  private trackers: { deps: any[]; fn: any }[] = []
+  private status = MachineStatus.NotStarted
 
-  private getEvent = () => ({
+  private readonly getEvent = () => ({
     ...this.event,
     current: () => this.event,
     previous: () => this.previousEvent,
   })
 
-  private getState = () => ({
+  private readonly getState = () => ({
     ...this.state,
     matches: (...values: T["state"][]) => values.includes(this.state.get()),
     hasTag: (tag: T["tag"]) => !!this.machine.states[this.state.get() as T["state"]]?.tags?.includes(tag),
   })
 
-  debug = (...args: any[]) => {
+  private readonly debug = (...args: any[]) => {
     if (this.machine.debug) console.log(...args)
   }
 
-  notify = () => {
+  private readonly notify = () => {
     this.publish()
   }
 
   constructor(
-    private machine: Machine<T>,
+    private readonly machine: Machine<T>,
     userProps: Partial<T["props"]> | (() => Partial<T["props"]>) = {},
   ) {
     // create scope
@@ -179,7 +181,7 @@ export class LitMachine<T extends MachineSchema> {
     this.cleanups.push(subscribe(this.state.ref, () => this.notify()))
   }
 
-  send = (event: any) => {
+  private readonly send = (event: any) => {
     if (this.status !== MachineStatus.Started) return
 
     queueMicrotask(() => {
@@ -216,7 +218,7 @@ export class LitMachine<T extends MachineSchema> {
     })
   }
 
-  private action = (keys: ActionsOrFn<T> | undefined) => {
+  private readonly action = (keys: ActionsOrFn<T> | undefined) => {
     const strs = isFunction(keys) ? keys(this.getParams()) : keys
     if (!strs) return
     const fns = strs.map((s) => {
@@ -229,12 +231,12 @@ export class LitMachine<T extends MachineSchema> {
     }
   }
 
-  private guard = (str: T["guard"] | GuardFn<T>) => {
+  private readonly guard = (str: T["guard"] | GuardFn<T>) => {
     if (isFunction(str)) return str(this.getParams())
     return this.machine.implementations?.guards?.[str](this.getParams())
   }
 
-  private effect = (keys: EffectsOrFn<T> | undefined) => {
+  private readonly effect = (keys: EffectsOrFn<T> | undefined) => {
     const strs = isFunction(keys) ? keys(this.getParams()) : keys
     if (!strs) return
     const fns = strs.map((s) => {
@@ -250,7 +252,7 @@ export class LitMachine<T extends MachineSchema> {
     return () => cleanups.forEach((fn) => fn?.())
   }
 
-  private choose: ChooseFn<T> = (transitions) => {
+  private readonly choose: ChooseFn<T> = (transitions) => {
     return toArray(transitions).find((t: any) => {
       let result = !t.guard
       if (isString(t.guard)) result = !!this.guard(t.guard)
@@ -285,8 +287,6 @@ export class LitMachine<T extends MachineSchema> {
     this.subscriptions.push(fn)
   }
 
-  private status = MachineStatus.NotStarted
-
   get started() {
     return this.status === MachineStatus.Started
   }
@@ -305,18 +305,16 @@ export class LitMachine<T extends MachineSchema> {
     }
   }
 
-  private publish = () => {
+  private readonly publish = () => {
     this.callTrackers()
     this.subscriptions.forEach((fn) => fn(this.service))
   }
 
-  private trackers: { deps: any[]; fn: any }[] = []
-
-  private setupTrackers = () => {
+  private readonly setupTrackers = () => {
     this.machine.watch?.(this.getParams())
   }
 
-  private callTrackers = () => {
+  private readonly callTrackers = () => {
     this.trackers.forEach(({ deps, fn }) => {
       const next = deps.map((dep) => dep())
       if (!isEqual(fn.prev, next)) {
@@ -326,7 +324,7 @@ export class LitMachine<T extends MachineSchema> {
     })
   }
 
-  getParams = (): Params<T> => ({
+  private readonly getParams = (): Params<T> => ({
     state: this.getState(),
     context: this.ctx,
     event: this.getEvent(),
