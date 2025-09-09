@@ -286,10 +286,6 @@ export class LitMachine<T extends MachineSchema> {
     }
   }
 
-  get started() {
-    return this.status === MachineStatus.Started
-  }
-
   get service(): Service<T> {
     return {
       state: this.getState(),

@@ -24,9 +24,7 @@ export class MachineController<TSchema extends MachineSchema> implements Reactiv
 
   hostUpdated(): void {
     // Start the machine after the initial html has been rendered
-    if (!this.machine.started) {
-      this.machine.start()
-    }
+    this.machine.start()
   }
 
   hostDisconnected() {
