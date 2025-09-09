@@ -44,6 +44,12 @@ export class NumberInputModel extends Model {
     await expect(this.input).toHaveValue(value)
   }
 
+  async seeInputValueIsApprox(expectedValue: number, tolerance = 1) {
+    const inputValue = Number(await this.input.inputValue())
+    expect(inputValue).toBeLessThanOrEqual(expectedValue + tolerance)
+    expect(inputValue).toBeGreaterThanOrEqual(expectedValue - tolerance)
+  }
+
   async seeInputIsInvalid() {
     await expect(this.input).toHaveAttribute("aria-invalid", "true")
   }
@@ -85,6 +91,7 @@ export class NumberInputModel extends Model {
   }
 
   async mousedownDec() {
-    await this.decButton.dispatchEvent("pointerdown")
+    await this.decButton.hover()
+    await this.page.mouse.down()
   }
 }

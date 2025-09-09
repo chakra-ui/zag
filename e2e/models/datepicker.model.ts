@@ -220,6 +220,10 @@ export class DatePickerModel extends Model {
     return expect(this.getInput(index)).toBeFocused()
   }
 
+  seeInputIsNotFocused(index?: number) {
+    return expect(this.getInput(index)).not.toBeFocused()
+  }
+
   seeSelectedValue(value: string) {
     return expect(this.page.locator(".date-output")).toContainText(`Selected: ${value}`)
   }
