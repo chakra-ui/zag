@@ -35,7 +35,7 @@ export class LitMachine<T extends MachineSchema> {
   private transition: any = null
 
   private cleanups: VoidFunction[] = []
-  private readonly subscriptions: Array<(service: Service<T>) => void> = []
+  private subscriptions: Array<(service: Service<T>) => void> = []
   private trackers: { deps: any[]; fn: any }[] = []
   private status = MachineStatus.NotStarted
 
@@ -268,11 +268,8 @@ export class LitMachine<T extends MachineSchema> {
     // unsubscribe from all subscriptions
     this.cleanups.forEach((unsub) => unsub())
     this.cleanups = []
-
-    // clear trackers to prevent memory leak
     this.trackers = []
-
-    // Should we clear this.subscriptions too?
+    this.subscriptions = []
 
     this.status = MachineStatus.Stopped
     this.debug("unmounting...")
