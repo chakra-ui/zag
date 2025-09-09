@@ -6,7 +6,7 @@ const withDefaults = <T extends object, D extends Partial<T>>(options: T, defaul
   return { ...defaults, ...compact(options as any) }
 }
 
-export function createToastStore<V = any>(props: ToastStoreProps): ToastStore<V> {
+export function createToastStore<V = any>(props: ToastStoreProps = {}): ToastStore<V> {
   const attrs = withDefaults(props, {
     placement: "bottom",
     overlap: false,
