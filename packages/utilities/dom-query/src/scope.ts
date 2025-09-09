@@ -1,5 +1,5 @@
 import { setElementValue } from "./form"
-import { getActiveElement, getDocument, isActiveElement } from "./node"
+import { getActiveElement, getDocument } from "./node"
 import type { HTMLElementWithValue } from "./types"
 
 export interface ScopeContext {
@@ -12,7 +12,8 @@ export function createScope<T>(methods: T) {
     getDoc: (ctx: ScopeContext) => getDocument(dom.getRootNode(ctx)),
     getWin: (ctx: ScopeContext) => dom.getDoc(ctx).defaultView ?? window,
     getActiveElement: (ctx: ScopeContext) => getActiveElement(dom.getRootNode(ctx)),
-    isActiveElement,
+    // Should this use isActiveElement from packages/utilities/dom-query/src/node.ts?
+    isActiveElement: (ctx: ScopeContext, elem: HTMLElement | null) => elem === dom.getActiveElement(ctx),
     getById: <T extends Element = HTMLElement>(ctx: ScopeContext, id: string) =>
       dom.getRootNode(ctx).getElementById(id) as T | null,
     setValue: <T extends HTMLElementWithValue>(elem: T | null, value: string | number | null | undefined) => {
