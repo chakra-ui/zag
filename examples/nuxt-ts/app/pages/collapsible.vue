@@ -35,6 +35,12 @@ const api = computed(() => collapsible.connect(service, normalizeProps))
         </p>
       </div>
     </div>
+
+    <div>
+      <div>Toggle Controls</div>
+      <button data-testid="open-button" @click="api.setOpen(true)">Open</button>
+      <button @click="api.setOpen(false)">Close</button>
+    </div>
   </main>
 
   <Toolbar>

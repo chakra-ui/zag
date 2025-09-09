@@ -38,36 +38,46 @@ type TupleTypes<T extends any[]> = T[number]
 
 type UnionToIntersection<U> = (U extends any ? (k: U) => void : never) extends (k: infer I) => void ? I : never
 
-export function mergeProps<T extends Props>(...args: T[]): UnionToIntersection<TupleTypes<T[]>> {
-  let result: Props = {}
-
-  for (let props of args) {
-    for (let key in result) {
-      if (key.startsWith("on") && typeof result[key] === "function" && typeof props[key] === "function") {
-        result[key] = callAll(props[key], result[key])
-        continue
-      }
-
-      if (key === "className" || key === "class") {
-        result[key] = clsx(result[key], props[key])
-        continue
-      }
-
-      if (key === "style") {
-        result[key] = css(result[key], props[key])
-        continue
-      }
-
-      result[key] = props[key] !== undefined ? props[key] : result[key]
-    }
-
-    // Add props from b that are not in a
-    for (let key in props) {
-      if (result[key] === undefined) {
-        result[key] = props[key]
-      }
-    }
-  }
-
-  return result as any
+interface MergePropsOptions {
+  eventPrefix?: string
 }
+
+export type MergePropsFunction = <T extends Props>(...args: T[]) => UnionToIntersection<TupleTypes<T[]>>
+
+export function createMergeProps({ eventPrefix = "on" }: MergePropsOptions = {}): MergePropsFunction {
+  return function mergeProps<T extends Props>(...args: T[]): UnionToIntersection<TupleTypes<T[]>> {
+    let result: Props = {}
+
+    for (let props of args) {
+      for (let key in result) {
+        if (key.startsWith(eventPrefix) && typeof result[key] === "function" && typeof props[key] === "function") {
+          result[key] = callAll(props[key], result[key])
+          continue
+        }
+
+        if (key === "className" || key === "class") {
+          result[key] = clsx(result[key], props[key])
+          continue
+        }
+
+        if (key === "style") {
+          result[key] = css(result[key], props[key])
+          continue
+        }
+
+        result[key] = props[key] !== undefined ? props[key] : result[key]
+      }
+
+      // Add props from b that are not in a
+      for (let key in props) {
+        if (result[key] === undefined) {
+          result[key] = props[key]
+        }
+      }
+    }
+
+    return result as any
+  }
+}
+
+export const mergeProps = createMergeProps()

@@ -92,4 +92,13 @@ test.describe("popover", () => {
     await I.seeButtonBeforeIsFocused()
     await I.dontSeeContent()
   })
+
+  test("[focus] should close popover when focus moves to button-after element", async () => {
+    await I.clickTrigger()
+    await I.seeContent()
+    await I.seeLinkIsFocused()
+    await I.pressKey("Tab", 3)
+    await I.seeButtonAfterIsFocused()
+    await I.dontSeeContent()
+  })
 })

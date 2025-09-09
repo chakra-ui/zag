@@ -1,14 +1,12 @@
 import { expect, type Page } from "@playwright/test"
-import { a11y, testid } from "../_utils"
+import { testid } from "../_utils"
 import { Model } from "./model"
+
+const shadowHost = "popover-page"
 
 export class PopoverModel extends Model {
   constructor(public page: Page) {
-    super(page)
-  }
-
-  checkAccessibility() {
-    return a11y(this.page)
+    super(page, shadowHost)
   }
 
   goto() {
@@ -16,31 +14,31 @@ export class PopoverModel extends Model {
   }
 
   get trigger() {
-    return this.page.locator("[data-scope=popover][data-part=trigger]")
+    return this.host.locator("[data-scope=popover][data-part=trigger]")
   }
 
   get content() {
-    return this.page.locator("[data-scope=popover][data-part=content]")
+    return this.host.locator("[data-scope=popover][data-part=content]")
   }
 
   get closeTrigger() {
-    return this.page.locator("[data-scope=popover][data-part=close-trigger]")
+    return this.content.locator("[data-scope=popover][data-part=close-trigger]")
   }
 
   get buttonBefore() {
-    return this.page.locator(testid("button-before"))
+    return this.host.locator(testid("button-before"))
   }
 
   get buttonAfter() {
-    return this.page.locator(testid("button-after"))
+    return this.host.locator(testid("button-after"))
   }
 
   get link() {
-    return this.page.locator(testid("focusable-link"))
+    return this.content.locator(testid("focusable-link"))
   }
 
   get plainText() {
-    return this.page.locator(testid("plain-text"))
+    return this.host.locator(testid("plain-text"))
   }
 
   clickClose() {

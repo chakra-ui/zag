@@ -2,15 +2,17 @@ import { type Page, expect } from "@playwright/test"
 import { Model } from "./model"
 import { part } from "../_utils"
 
+const shadowHost = "toggle-group-page"
+
 type Item = "bold" | "italic" | "underline"
 
 export class ToggleGroupModel extends Model {
   constructor(page: Page) {
-    super(page)
+    super(page, shadowHost)
   }
 
   private __item(item: Item) {
-    return this.page.locator(part("item")).nth(["bold", "italic", "underline"].indexOf(item))
+    return this.host.locator(part("item")).nth(["bold", "italic", "underline"].indexOf(item))
   }
 
   clickItem(item: Item) {

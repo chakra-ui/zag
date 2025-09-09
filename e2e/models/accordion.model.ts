@@ -1,26 +1,24 @@
 import { expect, type Page } from "@playwright/test"
-import { a11y, testid } from "../_utils"
+import { testid } from "../_utils"
 import { Model } from "./model"
+
+const shadowHost = "accordion-page"
 
 export class AccordionModel extends Model {
   constructor(public page: Page) {
-    super(page)
+    super(page, shadowHost)
   }
 
   goto() {
     return this.page.goto("/accordion")
   }
 
-  checkAccessibility(selector?: string): Promise<void> {
-    return a11y(this.page, selector)
-  }
-
   getTrigger(id: string) {
-    return this.page.locator(testid(`${id}:trigger`))
+    return this.host.locator(testid(`${id}:trigger`))
   }
 
   getContent(id: string) {
-    return this.page.locator(testid(`${id}:content`))
+    return this.host.locator(testid(`${id}:content`))
   }
 
   async focusTrigger(id: string) {

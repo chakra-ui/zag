@@ -86,7 +86,8 @@ body {
   overflow: hidden;
 }
 
-.page main {
+.page main,
+:host main {
   flex: auto;
   display: flex;
   gap: 10px;
@@ -192,7 +193,7 @@ a[aria-current="page"] {
   max-height: 100%;
 }
 
-.toolbar .viz {
+.viz {
   font-size: 13px;
   --viz-font: SF Mono, Menlo, monospace;
   padding-left: 14px;
@@ -201,13 +202,13 @@ a[aria-current="page"] {
   border-bottom: solid 1px #d7e0da;
 }
 
-.toolbar .viz summary {
+.viz summary {
   margin-bottom: 24;
   font-family: var(--viz-font);
   font-weight: bold;
 }
 
-.toolbar .viz summary + div > * {
+.viz summary + div > * {
   font-family: var(--viz-font);
 }
 

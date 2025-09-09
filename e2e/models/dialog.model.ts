@@ -1,17 +1,20 @@
 import { expect, type Page } from "@playwright/test"
-import { a11y } from "../_utils"
+import { testid } from "../_utils"
 import { Model } from "./model"
+
+const shadowHost = "dialog-nested-page"
 
 export class DialogModel extends Model {
   constructor(
     public page: Page,
     private id: string,
   ) {
-    super(page)
+    super(page, shadowHost)
   }
 
-  checkAccessibility() {
-    return a11y(this.page, "[role=dialog]")
+  checkAccessibility(): Promise<void> {
+    // return a11y(this.page, "[role=dialog]", shadowHost)
+    return super.checkAccessibility("[role=dialog]")
   }
 
   goto(url = "/dialog-nested") {
@@ -19,15 +22,15 @@ export class DialogModel extends Model {
   }
 
   private get trigger() {
-    return this.page.locator(`[data-testid='trigger-${this.id}']`)
+    return this.host.locator(testid(`trigger-${this.id}`))
   }
 
   private get content() {
-    return this.page.locator(`[data-testid='positioner-${this.id}']`)
+    return this.host.locator(testid(`positioner-${this.id}`))
   }
 
   private get closeTrigger() {
-    return this.page.locator(`[data-testid='close-${this.id}']`)
+    return this.host.locator(testid(`close-${this.id}`))
   }
 
   clickTrigger(opts: { delay?: number } = {}) {
