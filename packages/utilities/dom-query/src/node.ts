@@ -104,7 +104,7 @@ export function getActiveElement(rootNode: Document | ShadowRoot): HTMLElement |
   let activeElement = rootNode.activeElement as HTMLElement | null
   while (activeElement?.shadowRoot) {
     const el = activeElement.shadowRoot.activeElement as HTMLElement | null
-    if (el === activeElement) break
+    if (!el || el === activeElement) break
     else activeElement = el
   }
   return activeElement
