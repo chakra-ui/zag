@@ -39,6 +39,7 @@ import {
   isBelowMinView,
   isValidDate,
   processSegments,
+  setSegment,
   sortDates,
   TYPE_MAPPING,
 } from "./date-picker.utils"
@@ -1294,21 +1295,29 @@ export const machine = createMachine<DatePickerSchema>({
         })
       },
 
-      clearSegmentValue({ event }) {
+      clearSegmentValue(params) {
+        const { event, prop } = params
         const { segment } = event
         if (segment.isPlaceholder) {
           // focus previous segment if the current segment is already a placeholder
           return
         }
 
-        const newValue = segment.text.slice(0, -1)
-        const newValuePadded = newValue.padStart(segment.text.length, "0")
+        const displayValue = getDisplayValue(params)
+        const formatter = prop("formatter")
 
-        if (newValue.length === 0) {
+        const newValue = segment.text.slice(0, -1)
+
+        console.log("clear segment: ", newValue)
+        if (newValue === "") {
           // clear segment value and mark as placeholder
+          markSegmentInvalid(params, segment.type as DateSegment["type"])
+          setValue(params, displayValue)
         } else {
-          // update segment value
-          segment.text = newValuePadded
+          setValue(
+            params,
+            setSegment(displayValue, segment.type as DateSegment["type"], newValue, formatter.resolvedOptions()),
+          )
         }
       },
 
@@ -1317,40 +1326,15 @@ export const machine = createMachine<DatePickerSchema>({
         const { segment, amount } = event
         const type = segment.type as DateSegment["type"]
         const validSegments = context.get("validSegments")
-        const value = context.get("value")
-        const allSegments = prop("allSegments")
         const formatter = prop("formatter")
         const index = context.get("activeIndex")
-        const placeholderValue = context.get("placeholderValue")
         const activeValidSegments = validSegments[index]
-        const activeValue = value[index]
-        let validKeys = Object.keys(activeValidSegments)
-        const allKeys = Object.keys(allSegments)
 
-        // If all segments are valid, use the date from state, otherwise use the placeholder date.
-        const displayValue =
-          activeValue && Object.keys(activeValidSegments).length >= Object.keys(allSegments).length
-            ? activeValue
-            : placeholderValue
-
-        const markValid = (segmentType: SegmentType) => {
-          activeValidSegments[segmentType] = true
-          if (segmentType === "year" && allSegments.era) {
-            activeValidSegments.era = true
-          }
-          validKeys = Object.keys(activeValidSegments)
-          context.set("validSegments", validSegments)
-        }
+        const displayValue = getDisplayValue(params)
 
         if (!activeValidSegments?.[type]) {
-          markValid(type)
-
-          if (
-            validKeys.length >= allKeys.length ||
-            (validKeys.length === allKeys.length - 1 && allSegments.dayPeriod && !activeValidSegments.dayPeriod)
-          ) {
-            setValue(params, displayValue)
-          }
+          markSegmentValid(params, type)
+          setValue(params, displayValue)
         } else {
           setValue(params, addSegment(displayValue, type, amount, formatter.resolvedOptions()))
         }
@@ -1397,6 +1381,64 @@ function setAdjustedValue(ctx: Params<DatePickerSchema>, value: AdjustDateReturn
   context.set("focusedValue", value.focusedDate)
 }
 
+/**
+ * If all segments are valid, use return value date, otherwise return the placeholder date.
+ */
+function getDisplayValue(ctx: Params<DatePickerSchema>) {
+  const { context, prop } = ctx
+  const index = context.get("activeIndex")
+  const validSegments = context.get("validSegments")
+  const allSegments = prop("allSegments")
+  const value = context.get("value")[index]
+  const placeholderValue = context.get("placeholderValue")
+  const activeValidSegments = validSegments[index]
+
+  return value && Object.keys(activeValidSegments).length >= Object.keys(allSegments).length ? value : placeholderValue
+}
+
+function markSegmentInvalid(ctx: Params<DatePickerSchema>, segmentType: SegmentType) {
+  const { context } = ctx
+  const validSegments = context.get("validSegments")
+  const index = context.get("activeIndex")
+  const activeValidSegments = validSegments[index]
+
+  if (activeValidSegments?.[segmentType]) {
+    delete activeValidSegments[segmentType]
+    context.set("validSegments", validSegments)
+  }
+}
+
+function markSegmentValid(ctx: Params<DatePickerSchema>, segmentType: SegmentType) {
+  const { context, prop } = ctx
+  const validSegments = context.get("validSegments")
+  const allSegments = prop("allSegments")
+  const index = context.get("activeIndex")
+  const activeValidSegments = validSegments[index]
+
+  if (!activeValidSegments?.[segmentType]) {
+    activeValidSegments[segmentType] = true
+    if (segmentType === "year" && allSegments.era) {
+      activeValidSegments.era = true
+    }
+    context.set("validSegments", validSegments)
+  }
+}
+
+function isAllSegmentsCompleted(ctx: Params<DatePickerSchema>) {
+  const { context, prop } = ctx
+  const validSegments = context.get("validSegments")
+  const allSegments = prop("allSegments")
+  const index = context.get("activeIndex")
+  const activeValidSegments = validSegments[index]
+  const validKeys = Object.keys(activeValidSegments)
+  const allKeys = Object.keys(allSegments)
+
+  return (
+    validKeys.length >= allKeys.length ||
+    (validKeys.length === allKeys.length - 1 && allSegments.dayPeriod && !activeValidSegments.dayPeriod)
+  )
+}
+
 function setValue(ctx: Params<DatePickerSchema>, value: DateValue) {
   const { context, prop } = ctx
   if (prop("disabled") || prop("readOnly")) return
@@ -1405,7 +1447,6 @@ function setValue(ctx: Params<DatePickerSchema>, value: DateValue) {
   const index = context.get("activeIndex")
   const activeValidSegments = validSegments[index]
   const validKeys = Object.keys(activeValidSegments)
-  const allKeys = Object.keys(allSegments)
   const date = constrainValue(value, prop("min"), prop("max"))
 
   // if all the segments are completed or a timefield with everything but am/pm set the time, also ignore when am/pm cleared
@@ -1415,8 +1456,7 @@ function setValue(ctx: Params<DatePickerSchema>, value: DateValue) {
     // setValidSegments({})
   } else if (
     // (validKeys.length === 0 && clearedSegment.current == null) || // FIXIT: figure out what is clearedSegment.current used for
-    validKeys.length >= allKeys.length ||
-    (validKeys.length === allKeys.length - 1 && allSegments.dayPeriod && !activeValidSegments.dayPeriod)
+    isAllSegmentsCompleted(ctx)
     // && clearedSegment.current !== "dayPeriod" // FIXIT: figure out what is clearedSegment.current used for
   ) {
     // If the field was empty (no valid segments) or all segments are completed, commit the new value.
