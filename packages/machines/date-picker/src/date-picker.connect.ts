@@ -110,7 +110,11 @@ export function connect<T extends PropTypes>(
 
   function getDecadeYears(year?: number) {
     const range = getDecadeRange(year ?? focusedValue.year)
-    return range.map((year) => ({ label: year.toString(), value: year }))
+    return range.map((year) => ({
+      label: year.toString(),
+      value: year,
+      disabled: !isValueWithinRange(year, min?.year, max?.year),
+    }))
   }
 
   function isUnavailable(date: DateValue) {
@@ -555,7 +559,7 @@ export function connect<T extends PropTypes>(
           ? (event) => {
               if (event.pointerType === "touch") return
               if (!cellState.selectable) return
-              const focus = event.currentTarget.ownerDocument.activeElement !== event.currentTarget
+              const focus = !scope.isActiveElement(event.currentTarget)
               if (hoveredValue && isEqualDay(value, hoveredValue)) return
               send({ type: "CELL.POINTER_MOVE", cell: "day", value, focus })
             }
@@ -606,7 +610,7 @@ export function connect<T extends PropTypes>(
           ? (event) => {
               if (event.pointerType === "touch") return
               if (!cellState.selectable) return
-              const focus = event.currentTarget.ownerDocument.activeElement !== event.currentTarget
+              const focus = !scope.isActiveElement(event.currentTarget)
               if (hoveredValue && cellState.value && isEqualDay(cellState.value, hoveredValue)) return
               send({ type: "CELL.POINTER_MOVE", cell: "month", value: cellState.value, focus })
             }

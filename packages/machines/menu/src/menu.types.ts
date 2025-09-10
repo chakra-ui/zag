@@ -142,8 +142,8 @@ export interface MenuSchema {
     highlightedId: string | null
   }
   refs: {
-    parent: Service<MenuSchema> | null
-    children: Record<string, Service<MenuSchema>>
+    parent: ParentMenuService | null
+    children: Record<string, ChildMenuService>
     typeaheadState: TypeaheadState
     positioningOverride: Partial<PositioningOptions>
   }
@@ -161,6 +161,15 @@ export interface MenuSchema {
 export type MenuService = Service<MenuSchema>
 
 export type MenuMachine = Machine<MenuSchema>
+
+/**
+ * Minimal interface required for child menu relationship.
+ */
+export type ChildMenuService = Pick<MenuService, "prop" | "send" | "scope">
+/**
+ * Minimal interface required for parent menu relationship.
+ */
+export type ParentMenuService = Pick<MenuService, "prop" | "send" | "refs" | "context">
 
 /* -----------------------------------------------------------------------------
  * Component API
@@ -284,11 +293,11 @@ export interface MenuApi<T extends PropTypes = PropTypes> {
   /**
    * Function to register a parent menu. This is used for submenus
    */
-  setParent: (parent: MenuService) => void
+  setParent: (parent: ParentMenuService) => void
   /**
    * Function to register a child menu. This is used for submenus
    */
-  setChild: (child: MenuService) => void
+  setChild: (child: ChildMenuService) => void
   /**
    * Function to reposition the popover
    */

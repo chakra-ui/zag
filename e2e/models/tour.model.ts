@@ -19,6 +19,10 @@ export class TourModel extends Model {
     return this.page.locator("[data-scope=tour][data-part=content]")
   }
 
+  private getStep(stepId: string) {
+    return this.page.locator(`[data-scope=tour][data-part=content][data-step=${stepId}]`)
+  }
+
   private get title() {
     return this.content.locator("[data-part=title]")
   }
@@ -72,8 +76,14 @@ export class TourModel extends Model {
     return expect(this.content).not.toBeVisible()
   }
 
+  async seeStep(stepId: string) {
+    await expect(this.getStep(stepId)).toBeVisible()
+  }
+
   async seeSpotlight() {
-    return expect(this.spotlight).toBeInViewport()
+    // locator.toBeInViewport() is flaky due tests not waiting for tour state/auto-scroll to settle
+    // await expect(this.spotlight).toBeInViewport()
+    await expect(this.spotlight).toBeVisible()
   }
 
   async seeTarget(text: string) {

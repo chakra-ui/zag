@@ -13,7 +13,7 @@
     "vite": "^7.1.3"
   },
   "dependencies": {
-    "@internationalized/date": "3.8.2",
+    "@internationalized/date": "3.9.0",
     "@zag-js/accordion": "workspace:*",
     "@zag-js/anatomy": "workspace:*",
     "@zag-js/anatomy-icons": "workspace:*",
@@ -22,6 +22,7 @@
     "@zag-js/async-list": "workspace:*",
     "@zag-js/auto-resize": "workspace:*",
     "@zag-js/avatar": "workspace:*",
+    "@zag-js/bottom-sheet": "workspace:*",
     "@zag-js/carousel": "workspace:*",
     "@zag-js/checkbox": "workspace:*",
     "@zag-js/clipboard": "workspace:*",

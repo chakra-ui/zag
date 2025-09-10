@@ -1,3 +1,5 @@
+import type { Scope } from "@zag-js/core"
+
 interface Selection {
   start?: number | undefined
   end?: number | undefined
@@ -6,8 +8,8 @@ interface Selection {
   afterTxt?: string | undefined
 }
 
-export function recordCursor(inputEl: HTMLInputElement | null): Selection | undefined {
-  if (!inputEl || inputEl.ownerDocument.activeElement !== inputEl) return
+export function recordCursor(inputEl: HTMLInputElement | null, scope: Scope): Selection | undefined {
+  if (!inputEl || !scope.isActiveElement(inputEl)) return
   try {
     const { selectionStart: start, selectionEnd: end, value } = inputEl
     const beforeTxt = value.substring(0, start!)
@@ -22,8 +24,8 @@ export function recordCursor(inputEl: HTMLInputElement | null): Selection | unde
   } catch {}
 }
 
-export function restoreCursor(inputEl: HTMLInputElement | null, selection: Selection | undefined) {
-  if (!inputEl || inputEl.ownerDocument.activeElement !== inputEl) return
+export function restoreCursor(inputEl: HTMLInputElement | null, selection: Selection | undefined, scope: Scope) {
+  if (!inputEl || !scope.isActiveElement(inputEl)) return
 
   if (!selection) {
     inputEl.setSelectionRange(inputEl.value.length, inputEl.value.length)

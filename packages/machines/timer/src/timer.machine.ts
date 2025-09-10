@@ -1,4 +1,4 @@
-import { createMachine } from "@zag-js/core"
+import { createMachine, memo } from "@zag-js/core"
 import { clampValue, setRafInterval, setRafTimeout } from "@zag-js/utils"
 import type { Time, TimerProps, TimerSchema } from "./timer.types"
 
@@ -7,6 +7,7 @@ export const machine = createMachine<TimerSchema>({
     validateProps(props)
     return {
       interval: 1000,
+      startMs: 0,
       ...props,
     }
   },
@@ -18,7 +19,7 @@ export const machine = createMachine<TimerSchema>({
   context({ prop, bindable }) {
     return {
       currentMs: bindable(() => ({
-        defaultValue: prop("startMs") ?? 0,
+        defaultValue: prop("startMs"),
       })),
     }
   },
@@ -39,18 +40,13 @@ export const machine = createMachine<TimerSchema>({
   computed: {
     time: ({ context }) => msToTime(context.get("currentMs")),
     formattedTime: ({ computed }) => formatTime(computed("time")),
-    progressPercent: ({ context, prop }) => {
-      const targetMs = prop("targetMs")
-      if (targetMs == null) return 0
-      const startMs = prop("startMs") ?? 0
-      const currentMs = context.get("currentMs")
-
-      // Fix for countdown timers: swap min/max values
-      if (prop("countdown")) {
-        return clampValue(toPercent(currentMs, targetMs, startMs), 0, 1)
-      }
-      return clampValue(toPercent(currentMs, startMs, targetMs), 0, 1)
-    },
+    progressPercent: memo(
+      ({ context, prop }) => [context.get("currentMs"), prop("targetMs"), prop("startMs"), prop("countdown")],
+      ([currentMs, targetMs = 0, startMs, countdown]) => {
+        const percent = countdown ? toPercent(currentMs, targetMs, startMs) : toPercent(currentMs, startMs, targetMs)
+        return clampValue(percent, 0, 1)
+      },
+    ),
   },
 
   states: {

@@ -1,4 +1,4 @@
-import { createGuards, createMachine, type Scope, type Service } from "@zag-js/core"
+import { createGuards, createMachine, type Scope } from "@zag-js/core"
 import { trackDismissableElement } from "@zag-js/dismissable"
 import {
   addDomEvent,
@@ -16,7 +16,7 @@ import { getPlacement, getPlacementSide, type Placement } from "@zag-js/popper"
 import { getElementPolygon, isPointInPolygon, type Point } from "@zag-js/rect-utils"
 import { isEqual } from "@zag-js/utils"
 import * as dom from "./menu.dom"
-import type { MenuSchema, MenuService } from "./menu.types"
+import type { ChildMenuService, MenuSchema, ParentMenuService } from "./menu.types"
 
 const { not, and, or } = createGuards<MenuSchema>()
 
@@ -838,7 +838,7 @@ export const machine = createMachine<MenuSchema>({
   },
 })
 
-function closeRootMenu(ctx: { parent: Service<MenuSchema> | null }) {
+function closeRootMenu(ctx: { parent: ParentMenuService | null }) {
   let parent = ctx.parent
   while (parent && parent.context.get("isSubmenu")) {
     parent = parent.refs.get("parent")
@@ -851,7 +851,7 @@ function isWithinPolygon(polygon: Point[] | null, point: Point) {
   return isPointInPolygon(polygon, point)
 }
 
-function resolveItemId(children: Record<string, MenuService>, value: string | null, scope: Scope) {
+function resolveItemId(children: Record<string, ChildMenuService>, value: string | null, scope: Scope) {
   const hasChildren = Object.keys(children).length > 0
   if (!value) return null
   if (!hasChildren) {

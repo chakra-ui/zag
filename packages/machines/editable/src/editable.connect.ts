@@ -10,11 +10,12 @@ export function connect<T extends PropTypes>(
   normalize: NormalizeProps<T>,
 ): EditableApi<T> {
   const { state, context, send, prop, scope, computed } = service
-  const disabled = prop("disabled")
+  const disabled = !!prop("disabled")
   const interactive = computed("isInteractive")
-  const readOnly = prop("readOnly")
-  const invalid = prop("invalid")
-  const autoResize = prop("autoResize")
+  const readOnly = !!prop("readOnly")
+  const required = !!prop("required")
+  const invalid = !!prop("invalid")
+  const autoResize = !!prop("autoResize")
   const translations = prop("translations")
 
   const editing = state.matches("edit")
@@ -80,6 +81,7 @@ export function connect<T extends PropTypes>(
         htmlFor: dom.getInputId(scope),
         "data-focus": dataAttr(editing),
         "data-invalid": dataAttr(invalid),
+        "data-required": dataAttr(required),
         onClick() {
           if (editing) return
           const previewEl = dom.getPreviewEl(scope)

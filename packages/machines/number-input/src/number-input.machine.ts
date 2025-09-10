@@ -92,11 +92,11 @@ export const machine = createMachine({
     valueText: ({ prop, context }) => prop("translations").valueText?.(context.get("value")),
     formatter: memo(
       ({ prop }) => [prop("locale"), prop("formatOptions")],
-      (locale, formatOptions) => createFormatter(locale, formatOptions),
+      ([locale, formatOptions]) => createFormatter(locale, formatOptions),
     ),
     parser: memo(
       ({ prop }) => [prop("locale"), prop("formatOptions")],
-      (locale, formatOptions) => createParser(locale, formatOptions),
+      ([locale, formatOptions]) => createParser(locale, formatOptions),
     ),
   },
 
@@ -432,10 +432,10 @@ export const machine = createMachine({
       syncInputElement({ context, event, computed, scope }) {
         const value = event.type.endsWith("CHANGE") ? context.get("value") : computed("formattedValue")
         const inputEl = dom.getInputEl(scope)
-        const sel = recordCursor(inputEl)
+        const sel = recordCursor(inputEl, scope)
         raf(() => {
           setElementValue(inputEl, value)
-          restoreCursor(inputEl, sel)
+          restoreCursor(inputEl, sel, scope)
         })
       },
       setFormattedValue({ context, computed }) {

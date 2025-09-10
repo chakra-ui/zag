@@ -37,6 +37,13 @@ export const isElementVisible = (el: Node) => {
   return el.offsetWidth > 0 || el.offsetHeight > 0 || el.getClientRects().length > 0
 }
 
+export function isActiveElement(element: Element | null | undefined): boolean {
+  if (!element) return false
+  const rootNode = element.getRootNode() as Document | ShadowRoot
+
+  return getActiveElement(rootNode) === element
+}
+
 const TEXTAREA_SELECT_REGEX = /(textarea|select)/
 
 export function isEditableElement(el: HTMLElement | EventTarget | null) {
@@ -94,7 +101,7 @@ export function getActiveElement(rootNode: Document | ShadowRoot): HTMLElement |
   let activeElement = rootNode.activeElement as HTMLElement | null
   while (activeElement?.shadowRoot) {
     const el = activeElement.shadowRoot.activeElement as HTMLElement | null
-    if (el === activeElement) break
+    if (!el || el === activeElement) break
     else activeElement = el
   }
   return activeElement

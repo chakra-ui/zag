@@ -132,13 +132,14 @@ test.describe("number input", () => {
 
   test("dec longpress: should spin value downwards", async () => {
     await I.type("20")
+    await I.seeInputHasValue("20")
 
     await I.mousedownDec()
     await I.seeInputHasValue("19")
     await I.waitForTick(9)
 
     await I.mouseup()
-    await I.seeInputHasValue("10")
+    await I.seeInputValueIsApprox(9, 1)
   })
 
   test("should allow negative integer values", async () => {

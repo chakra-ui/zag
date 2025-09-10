@@ -95,6 +95,10 @@ export class SelectModel extends Model {
     await expect(this.content).not.toBeVisible()
   }
 
+  seeDropdownIsFocused = async () => {
+    await expect(this.content).toBeFocused()
+  }
+
   seeItemIsHighlighted = async (text: string) => {
     const item = this.getItem(text)
     await expect(item).toHaveAttribute("data-highlighted", "")

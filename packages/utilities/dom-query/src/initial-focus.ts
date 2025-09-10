@@ -1,3 +1,4 @@
+import { isActiveElement } from "./node"
 import { getTabbableEdges, getTabbables } from "./tabbable"
 
 export interface InitialFocusOptions {
@@ -30,10 +31,9 @@ export function isValidTabEvent(event: Pick<KeyboardEvent, "shiftKey" | "current
   if (!container) return false
 
   const [firstTabbable, lastTabbable] = getTabbableEdges(container)
-  const doc = container.ownerDocument || document
 
-  if (doc.activeElement === firstTabbable && event.shiftKey) return false
-  if (doc.activeElement === lastTabbable && !event.shiftKey) return false
+  if (isActiveElement(firstTabbable) && event.shiftKey) return false
+  if (isActiveElement(lastTabbable) && !event.shiftKey) return false
   if (!firstTabbable && !lastTabbable) return false
 
   return true

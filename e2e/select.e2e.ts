@@ -101,6 +101,7 @@ test.describe("open with keyboard", () => {
 
     await I.focusTrigger()
     await I.pressKey("Enter")
+    await I.seeDropdownIsFocused()
 
     await I.pressKey("ArrowUp")
     await I.seeItemIsHighlighted("Zimbabwe")
