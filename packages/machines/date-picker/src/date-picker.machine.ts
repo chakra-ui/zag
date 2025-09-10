@@ -1308,7 +1308,6 @@ export const machine = createMachine<DatePickerSchema>({
 
         const newValue = segment.text.slice(0, -1)
 
-        console.log("clear segment: ", newValue)
         if (newValue === "") {
           // clear segment value and mark as placeholder
           markSegmentInvalid(params, segment.type as DateSegment["type"])
