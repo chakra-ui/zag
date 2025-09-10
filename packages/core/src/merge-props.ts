@@ -1,7 +1,7 @@
 import { callAll, isString } from "@zag-js/utils"
 
 interface Props {
-  [key: string]: any
+  [key: string | symbol]: any
 }
 
 const clsx = (...args: (string | undefined)[]) =>
@@ -42,6 +42,7 @@ export function mergeProps<T extends Props>(...args: T[]): UnionToIntersection<T
   let result: Props = {}
 
   for (let props of args) {
+    // Handle string keys
     for (let key in result) {
       if (key.startsWith("on") && typeof result[key] === "function" && typeof props[key] === "function") {
         result[key] = callAll(props[key], result[key])
@@ -66,6 +67,12 @@ export function mergeProps<T extends Props>(...args: T[]): UnionToIntersection<T
       if (result[key] === undefined) {
         result[key] = props[key]
       }
+    }
+
+    // Handle symbol keys (for Svelte attachments)
+    const symbols = Object.getOwnPropertySymbols(props)
+    for (let symbol of symbols) {
+      result[symbol] = props[symbol]
     }
   }
 
