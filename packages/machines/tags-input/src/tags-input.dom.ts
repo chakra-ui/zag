@@ -31,7 +31,7 @@ export const getNextEl = (ctx: Scope, id: string) => nextById(getTagElements(ctx
 
 export const getTagElAtIndex = (ctx: Scope, index: number) => getTagElements(ctx)[index]
 export const getIndexOfId = (ctx: Scope, id: string) => indexOfId(getTagElements(ctx), id)
-export const isInputFocused = (ctx: Scope) => ctx.getDoc().activeElement === getInputEl(ctx)
+export const isInputFocused = (ctx: Scope) => ctx.isActiveElement(getInputEl(ctx))
 
 export const getTagValue = (ctx: Scope, id: string | null) => {
   if (!id) return null

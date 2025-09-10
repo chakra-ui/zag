@@ -543,7 +543,7 @@ export function connect<T extends PropTypes>(
           ? (event) => {
               if (event.pointerType === "touch") return
               if (!cellState.selectable) return
-              const focus = event.currentTarget.ownerDocument.activeElement !== event.currentTarget
+              const focus = !scope.isActiveElement(event.currentTarget)
               if (hoveredValue && isEqualDay(value, hoveredValue)) return
               send({ type: "CELL.POINTER_MOVE", cell: "day", value, focus })
             }
@@ -594,7 +594,7 @@ export function connect<T extends PropTypes>(
           ? (event) => {
               if (event.pointerType === "touch") return
               if (!cellState.selectable) return
-              const focus = event.currentTarget.ownerDocument.activeElement !== event.currentTarget
+              const focus = !scope.isActiveElement(event.currentTarget)
               if (hoveredValue && cellState.value && isEqualDay(cellState.value, hoveredValue)) return
               send({ type: "CELL.POINTER_MOVE", cell: "month", value: cellState.value, focus })
             }

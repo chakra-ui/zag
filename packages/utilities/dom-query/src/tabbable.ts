@@ -1,4 +1,4 @@
-import { isEditableElement, isElementVisible, isHTMLElement } from "./node"
+import { getActiveElement, isEditableElement, isElementVisible, isHTMLElement } from "./node"
 
 type IncludeContainerType = boolean | "if-empty"
 
@@ -108,7 +108,7 @@ export function getTabbableEdges(
 export function getNextTabbable(container: HTMLElement | null, current?: HTMLElement | null): HTMLElement | null {
   const tabbables = getTabbables(container)
   const doc = container?.ownerDocument || document
-  const currentElement = current ?? (doc.activeElement as HTMLElement | null)
+  const currentElement = current ?? getActiveElement(doc)
   if (!currentElement) return null
   const index = tabbables.indexOf(currentElement)
   return tabbables[index + 1] || null
