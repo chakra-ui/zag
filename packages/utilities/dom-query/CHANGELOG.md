@@ -1,5 +1,25 @@
 # @zag-js/dom-query
 
+## 1.23.0
+
+### Patch Changes
+
+- [#2697](https://github.com/chakra-ui/zag/pull/2697)
+  [`92c0bf5`](https://github.com/chakra-ui/zag/commit/92c0bf5f5e283451c6be989e63ff02188054be9a) Thanks
+  [@nikparo](https://github.com/nikparo)! - Fix issue where `isActiveElement` checks don't consider the Shadow DOM.
+
+- [#2548](https://github.com/chakra-ui/zag/pull/2548)
+  [`47011ad`](https://github.com/chakra-ui/zag/commit/47011add7c99572aaa162846cf01781ea42d35ac) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - **[New]** Introduce bottom sheet state machine to show secondary
+  content anchored to the bottom of the screen
+
+- [#2697](https://github.com/chakra-ui/zag/pull/2697)
+  [`92c0bf5`](https://github.com/chakra-ui/zag/commit/92c0bf5f5e283451c6be989e63ff02188054be9a) Thanks
+  [@nikparo](https://github.com/nikparo)! - Fix issue where `getActiveElement` returns `activeElement` rather than
+  `null` for focusable web components with no focusable children
+- Updated dependencies []:
+  - @zag-js/types@1.23.0
+
 ## 1.22.1
 
 ### Patch Changes
