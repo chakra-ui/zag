@@ -4,7 +4,40 @@ All notable changes to this project will be documented in this file.
 
 > For v0.x changelog, see the [v0 branch](https://github.com/chakra-ui/zag/blob/v0/CHANGELOG.md)
 
-## [1.21.11](./#1.21.11) - 2025-08-27
+## [1.23.0](./#1.23.0) - 2025-09-11
+
+### Added
+
+- **Dismissable**: Add support for layer types in dismissable layer stack. Layers can now be categorized as `dialog`,
+  `popover`, `menu`, or `listbox`. This enables:
+  - `data-nested` attribute on nested layers of the same type
+  - `data-has-nested` attribute on parent layers with nested children of the same type
+  - `--nested-layer-count` CSS variable indicating the number of nested layers of the same type
+
+### Fixed
+
+- **Core**: Fix issue where `mergeProps` strips symbols after merging
+
+- **Dom Query**:
+  - Fix issue where `isActiveElement` checks don't consider the Shadow DOM
+  - Fix issue where `getActiveElement` returns `activeElement` rather than `null` for focusable web components with no
+    focusable children
+
+- **Menu**: Fix issue where hovering a partially visible item with pointer causes it to scroll into view
+
+- **Tabs**: Fix issue where `ids` for `item` and `content` could not be customized
+
+- **Toast**: Allow creating a toast store without any arguments
+
+  ```tsx
+  // before
+  const store = toast.createStore({})
+
+  // after
+  const store = toast.createStore()
+  ```
+
+## [1.22.1](./#1.22.1) - 2025-08-27
 
 ### Fixed
 
@@ -16,7 +49,7 @@ All notable changes to this project will be documented in this file.
 - **Tags Input**: Fix issue where highlighted item doesn't clear when tabbing out of the input to an external button
   within the `control` part.
 
-## [1.21.10](./#1.21.10) - 2025-08-26
+## [1.22.0](./#1.22.0) - 2025-08-26
 
 ### Added
 

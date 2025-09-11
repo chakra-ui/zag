@@ -1,13 +1,13 @@
 ---
 "@zag-js/dismissable": minor
-"@zag-js/dialog": patch
-"@zag-js/popover": patch
-"@zag-js/menu": patch
-"@zag-js/select": patch
-"@zag-js/combobox": patch
-"@zag-js/date-picker": patch
-"@zag-js/color-picker": patch
-"@zag-js/hover-card": patch
+"@zag-js/dialog": minor
+"@zag-js/popover": minor
+"@zag-js/menu": minor
+"@zag-js/select": minor
+"@zag-js/combobox": minor
+"@zag-js/date-picker": minor
+"@zag-js/color-picker": minor
+"@zag-js/hover-card": minor
 ---
 
 Add support for layer types in dismissable layer stack. Layers can now be categorized as `dialog`, `popover`, `menu`, or

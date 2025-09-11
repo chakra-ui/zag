@@ -1,5 +1,9 @@
 ---
-"@zag-js/dom-query": minor
+"@zag-js/dom-query": patch
+"@zag-js/number-input": patch
+"@zag-js/date-picker": patch
+"@zag-js/focus-trap": patch
+"@zag-js/tags-input": patch
 ---
 
-Add isActiveElement helper and consistently pierce shadow-dom in focus checks
+Fix issue where `isActiveElement` checks don't consider the Shadow DOM.

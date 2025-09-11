@@ -2,4 +2,12 @@
 "@zag-js/toast": patch
 ---
 
-Set empty object as default value for store props
+Allow creating a toast store without any arguments.
+
+```tsx
+// before
+const store = toast.createStore({})
+
+// after
+const store = toast.createStore()
+```
