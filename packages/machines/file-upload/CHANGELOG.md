@@ -1,5 +1,53 @@
 # @zag-js/file-upload
 
+## 1.23.0
+
+### Minor Changes
+
+- [`2def7af`](https://github.com/chakra-ui/zag/commit/2def7afac7a7ed3815c688eb9de56000e2ce845c) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - - Resolved an issue where `onFileReject` was incorrectly triggered
+  when deleting accepted files using `ItemDeleteTrigger`
+  - The file deletion logic now properly differentiates between accepted and rejected files, preventing unnecessary
+    callbacks
+  - Added `type` prop to all item-related components (`ItemProps`, `ItemGroupProps`) to specify whether items are
+    "accepted" or "rejected"
+  - Added `data-type` attribute to all item-related elements for easier styling of accepted vs rejected files
+  - Exposed `ItemType`, `ItemGroupProps`, and `ItemTypeProps` types for better TypeScript support
+
+  ### Migration
+
+  When rendering rejected files, you should now pass `type: "rejected"` to item components:
+
+  ```tsx
+  // Before
+  <div {...api.getItemProps({ file })}>
+    <button {...api.getItemDeleteTriggerProps({ file })}>Delete</button>
+  </div>
+
+  // After - for rejected files
+  <div {...api.getItemProps({ file, type: "rejected" })}>
+    <button {...api.getItemDeleteTriggerProps({ file, type: "rejected" })}>Delete</button>
+  </div>
+  ```
+
+### Patch Changes
+
+- [#2673](https://github.com/chakra-ui/zag/pull/2673)
+  [`a493193`](https://github.com/chakra-ui/zag/commit/a493193dd55524e14800bfc449ca137be7f633aa) Thanks
+  [@julienbenac](https://github.com/julienbenac)! - Add `data-required` to label parts
+
+- Updated dependencies [[`92c0bf5`](https://github.com/chakra-ui/zag/commit/92c0bf5f5e283451c6be989e63ff02188054be9a),
+  [`47011ad`](https://github.com/chakra-ui/zag/commit/47011add7c99572aaa162846cf01781ea42d35ac),
+  [`92c0bf5`](https://github.com/chakra-ui/zag/commit/92c0bf5f5e283451c6be989e63ff02188054be9a),
+  [`50391e1`](https://github.com/chakra-ui/zag/commit/50391e11eb7f9af1f23f44661a8bc522c591175c)]:
+  - @zag-js/dom-query@1.23.0
+  - @zag-js/core@1.23.0
+  - @zag-js/i18n-utils@1.23.0
+  - @zag-js/file-utils@1.23.0
+  - @zag-js/anatomy@1.23.0
+  - @zag-js/types@1.23.0
+  - @zag-js/utils@1.23.0
+
 ## 1.22.1
 
 ### Patch Changes
