@@ -1,6 +1,5 @@
 <script lang="ts">
   import { routesData } from "@zag-js/shared"
-  import { Link } from "svelte-routing"
 </script>
 
 <div class="index-nav">
@@ -8,7 +7,7 @@
   <ul>
     {#each routesData as route}
       <li>
-        <Link to={route.path}>{route.label}</Link>
+        <a href={route.path}>{route.label}</a>
       </li>
     {/each}
   </ul>

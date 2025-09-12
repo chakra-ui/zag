@@ -1,6 +1,6 @@
 import type { Bindable, BindableParams } from "@zag-js/core"
 import { identity, isFunction } from "@zag-js/utils"
-import { flushSync, onDestroy } from "svelte"
+import { flushSync, onDestroy, untrack } from "svelte"
 
 export function bindable<T>(props: () => BindableParams<T>): Bindable<T> {
   const initial = props().defaultValue ?? props().value
@@ -9,7 +9,7 @@ export function bindable<T>(props: () => BindableParams<T>): Bindable<T> {
   let value = $state(initial)
   const controlled = $derived(props().value !== undefined)
 
-  let valueRef = { current: value }
+  let valueRef = { current: untrack(() => value) }
   let prevValue = { current: undefined as T | undefined }
 
   $effect.pre(() => {
