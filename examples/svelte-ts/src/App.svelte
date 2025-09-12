@@ -30,6 +30,7 @@
     { path: "/hover-card", component: () => import("./routes/hover-card.svelte") },
     { path: "/menu-nested", component: () => import("./routes/menu-nested.svelte") },
     { path: "/menu", component: () => import("./routes/menu.svelte") },
+    { path: "/menu-links", component: () => import("./routes/menu-links.svelte") },
     { path: "/menu-options", component: () => import("./routes/menu-options.svelte") },
     { path: "/number-input", component: () => import("./routes/number-input.svelte") },
     { path: "/pagination", component: () => import("./routes/pagination.svelte") },

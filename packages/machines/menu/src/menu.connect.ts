@@ -6,7 +6,6 @@ import {
   getEventKey,
   getEventPoint,
   getEventTarget,
-  isAnchorElement,
   isContextMenuEvent,
   isDownloadingEvent,
   isEditableElement,
@@ -327,7 +326,6 @@ export function connect<T extends PropTypes>(service: Service<MenuSchema>, norma
             }
           }
 
-          const item = dom.getItemEl(scope, highlightedValue)
           const keyMap: EventKeyMap = {
             ArrowDown() {
               send({ type: "ARROW_DOWN" })
@@ -343,12 +341,6 @@ export function connect<T extends PropTypes>(service: Service<MenuSchema>, norma
             },
             Enter() {
               send({ type: "ENTER" })
-
-              if (highlightedValue == null) return
-
-              if (isAnchorElement(item)) {
-                prop("navigate")?.({ value: highlightedValue, node: item, href: item.href })
-              }
             },
             Space(event) {
               if (isTypingAhead) {
