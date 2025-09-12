@@ -1,5 +1,5 @@
 <script lang="ts">
-  import Popover from "./components/popover.svelte"
+  import Popover from "$lib/components/popover.svelte"
 
   let visible = $state(false)
 </script>
