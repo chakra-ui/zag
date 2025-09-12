@@ -3,6 +3,7 @@ import { popoverControls } from "@zag-js/shared"
 import { normalizeProps, useMachine } from "@zag-js/solid"
 import { ParentProps, createMemo, createUniqueId } from "solid-js"
 import { Portal } from "solid-js/web"
+import { Presence } from "~/components/presence"
 import { StateVisualizer } from "~/components/state-visualizer"
 import { Toolbar } from "~/components/toolbar"
 import { useControls } from "~/hooks/use-controls"
@@ -29,7 +30,7 @@ export default function Page() {
           </button>
           <Wrapper guard={api().portalled}>
             <div {...api().getPositionerProps()}>
-              <div data-testid="popover-content" class="popover-content" {...api().getContentProps()}>
+              <Presence data-testid="popover-content" class="popover-content" {...api().getContentProps()}>
                 <div {...api().getArrowProps()}>
                   <div {...api().getArrowTipProps()} />
                 </div>
@@ -46,7 +47,7 @@ export default function Page() {
                     X
                   </button>
                 </div>
-              </div>
+              </Presence>
             </div>
           </Wrapper>
           <span data-testid="plain-text">I am just text</span>

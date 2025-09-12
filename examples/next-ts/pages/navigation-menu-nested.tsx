@@ -47,6 +47,7 @@ export default function Page() {
                   Products
                   <ChevronDown />
                 </button>
+                <span {...rootMenu.getTriggerProxyProps({ value: "products" })} />
               </div>
 
               <div {...rootMenu.getItemProps({ value: "company" })}>
@@ -54,6 +55,7 @@ export default function Page() {
                   Company
                   <ChevronDown />
                 </button>
+                <span {...rootMenu.getTriggerProxyProps({ value: "company" })} />
               </div>
 
               <div {...rootMenu.getItemProps({ value: "developers", disabled: true })}>
@@ -61,6 +63,7 @@ export default function Page() {
                   Developers
                   <ChevronDown />
                 </button>
+                <span {...rootMenu.getTriggerProxyProps({ value: "developers" })} />
               </div>
 
               <div {...rootMenu.getItemProps({ value: "pricing" })}>
@@ -77,14 +80,17 @@ export default function Page() {
                     <div {...productSubmenu.getListProps()}>
                       <div {...productSubmenu.getItemProps({ value: "extensibility" })}>
                         <button {...productSubmenu.getTriggerProps({ value: "extensibility" })}>Extensibility</button>
+                        <span {...productSubmenu.getTriggerProxyProps({ value: "extensibility" })} />
                       </div>
 
                       <div {...productSubmenu.getItemProps({ value: "security" })}>
                         <button {...productSubmenu.getTriggerProps({ value: "security" })}>Security</button>
+                        <span {...productSubmenu.getTriggerProxyProps({ value: "security" })} />
                       </div>
 
                       <div {...productSubmenu.getItemProps({ value: "authentication" })}>
                         <button {...productSubmenu.getTriggerProps({ value: "authentication" })}>Authentication</button>
+                        <span {...productSubmenu.getTriggerProxyProps({ value: "authentication" })} />
                       </div>
                       <div {...productSubmenu.getIndicatorProps()} />
                     </div>
@@ -99,15 +105,15 @@ export default function Page() {
                     >
                       {renderLinks(productSubmenu, {
                         value: "extensibility",
-                        items: ["Donec quis dui", "Vestibulum", "Nunc dignissim"],
+                        items: ["API Extensions", "Plugin System", "Custom Hooks", "Integration Tools"],
                       })}
                       {renderLinks(productSubmenu, {
                         value: "extensibility",
-                        items: ["Fusce pellentesque", "Aliquam porttitor", "Pellentesque"],
+                        items: ["Webhooks", "Event Handlers", "Middleware", "SDKs"],
                       })}
                       {renderLinks(productSubmenu, {
                         value: "extensibility",
-                        items: ["Fusce pellentesque", "Aliquam porttitor", "Pellentesque"],
+                        items: ["Connectors", "Adapters", "Bridges", "Extensions"],
                       })}
                     </Presence>
 
@@ -119,15 +125,15 @@ export default function Page() {
                     >
                       {renderLinks(productSubmenu, {
                         value: "security",
-                        items: ["Fusce pellentesque", "Aliquam porttitor", "Pellentesque", "Vestibulum"],
+                        items: ["Authentication", "Authorization", "Encryption", "SSL/TLS"],
                       })}
                       {renderLinks(productSubmenu, {
                         value: "security",
-                        items: ["Fusce pellentesque", "Aliquam porttitor", "Pellentesque"],
+                        items: ["Firewall", "DDoS Protection", "Security Audit"],
                       })}
                       {renderLinks(productSubmenu, {
                         value: "security",
-                        items: ["Fusce pellentesque", "Aliquam porttitor"],
+                        items: ["Access Control", "Identity Management"],
                       })}
                     </Presence>
 
@@ -139,15 +145,15 @@ export default function Page() {
                     >
                       {renderLinks(productSubmenu, {
                         value: "authentication",
-                        items: ["Donec quis dui", "Vestibulum", "Nunc dignissim"],
+                        items: ["OAuth", "SAML", "JWT", "Multi-factor Auth"],
                       })}
                       {renderLinks(productSubmenu, {
                         value: "authentication",
-                        items: ["Fusce pellentesque", "Aliquam porttitor", "Pellentesque"],
+                        items: ["Social Login", "Passwordless", "Biometrics"],
                       })}
                       {renderLinks(productSubmenu, {
                         value: "authentication",
-                        items: ["Fusce pellentesque", "Aliquam porttitor", "Pellentesque"],
+                        items: ["SSO", "User Management", "Role-based Access"],
                       })}
                     </Presence>
                   </Presence>
@@ -160,14 +166,17 @@ export default function Page() {
                     <div {...companySubmenu.getListProps()}>
                       <div {...companySubmenu.getItemProps({ value: "customers" })}>
                         <button {...companySubmenu.getTriggerProps({ value: "customers" })}>Customers</button>
+                        <span {...companySubmenu.getTriggerProxyProps({ value: "customers" })} />
                       </div>
 
                       <div {...companySubmenu.getItemProps({ value: "partners" })}>
                         <button {...companySubmenu.getTriggerProps({ value: "partners" })}>Partners</button>
+                        <span {...companySubmenu.getTriggerProxyProps({ value: "partners" })} />
                       </div>
 
                       <div {...companySubmenu.getItemProps({ value: "enterprise" })}>
                         <button {...companySubmenu.getTriggerProps({ value: "enterprise" })}>Enterprise</button>
+                        <span {...companySubmenu.getTriggerProxyProps({ value: "enterprise" })} />
                       </div>
                     </div>
                     <div {...companySubmenu.getIndicatorProps()} />
@@ -182,11 +191,11 @@ export default function Page() {
                     >
                       {renderLinks(companySubmenu, {
                         value: "customers",
-                        items: ["Donec quis dui", "Vestibulum", "Nunc dignissim"],
+                        items: ["Customer Stories", "Case Studies", "Testimonials", "Success Metrics"],
                       })}
                       {renderLinks(companySubmenu, {
                         value: "customers",
-                        items: ["Fusce pellentesque", "Aliquam porttitor", "Pellentesque"],
+                        items: ["Customer Support", "Help Center", "Documentation"],
                       })}
                     </Presence>
 
@@ -198,11 +207,11 @@ export default function Page() {
                     >
                       {renderLinks(companySubmenu, {
                         value: "partners",
-                        items: ["Fusce pellentesque", "Aliquam porttitor", "Pellentesque", "Vestibulum"],
+                        items: ["Partner Program", "Channel Partners", "Technology Partners", "Resellers"],
                       })}
                       {renderLinks(companySubmenu, {
                         value: "partners",
-                        items: ["Fusce pellentesque", "Aliquam porttitor", "Pellentesque"],
+                        items: ["Integration Partners", "Consulting Partners", "System Integrators"],
                       })}
                     </Presence>
 
@@ -214,11 +223,16 @@ export default function Page() {
                     >
                       {renderLinks(companySubmenu, {
                         value: "enterprise",
-                        items: ["Donec quis dui", "Vestibulum", "Nunc dignissim"],
+                        items: [
+                          "Enterprise Solutions",
+                          "Large Scale Deployments",
+                          "Custom Development",
+                          "Dedicated Teams",
+                        ],
                       })}
                       {renderLinks(companySubmenu, {
                         value: "enterprise",
-                        items: ["Fusce pellentesque", "Aliquam porttitor", "Pellentesque"],
+                        items: ["Enterprise Support", "SLA Agreements", "Compliance"],
                       })}
                     </Presence>
                   </Presence>
@@ -228,11 +242,11 @@ export default function Page() {
               <Presence {...rootMenu.getContentProps({ value: "developers" })}>
                 {renderLinks(rootMenu, {
                   value: "developers",
-                  items: ["Donec quis dui", "Vestibulum", "Fusce pellentesque", "Aliquam porttitor"],
+                  items: ["Documentation", "API Reference", "SDKs", "Code Samples"],
                 })}
                 {renderLinks(rootMenu, {
                   value: "developers",
-                  items: ["Fusce pellentesque", "Aliquam porttitor"],
+                  items: ["GitHub", "Changelog", "Release Notes"],
                 })}
               </Presence>
             </Presence>
@@ -241,9 +255,9 @@ export default function Page() {
       </main>
 
       <Toolbar viz>
-        <StateVisualizer state={rootService} label="root" />
-        <StateVisualizer state={productService} label="product" />
-        <StateVisualizer state={companyService} label="company" />
+        <StateVisualizer state={rootService} label="root" context={["value", "previousValue"]} />
+        <StateVisualizer state={productService} label="product" context={["value", "previousValue", "isSubmenu"]} />
+        <StateVisualizer state={companyService} label="company" context={["value", "previousValue", "isSubmenu"]} />
       </Toolbar>
     </>
   )

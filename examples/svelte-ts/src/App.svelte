@@ -32,6 +32,8 @@
     { path: "/menu", component: () => import("./routes/menu.svelte") },
     { path: "/menu-links", component: () => import("./routes/menu-links.svelte") },
     { path: "/menu-options", component: () => import("./routes/menu-options.svelte") },
+    { path: "/navigation-menu", component: () => import("./routes/navigation-menu.svelte") },
+    { path: "/navigation-menu-viewport", component: () => import("./routes/navigation-menu-viewport.svelte") },
     { path: "/number-input", component: () => import("./routes/number-input.svelte") },
     { path: "/pagination", component: () => import("./routes/pagination.svelte") },
     { path: "/pin-input", component: () => import("./routes/pin-input.svelte") },
