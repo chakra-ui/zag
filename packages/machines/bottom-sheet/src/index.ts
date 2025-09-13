@@ -10,4 +10,7 @@ export type {
   BottomSheetService as Service,
   ElementIds,
   OpenChangeDetails,
+  ResolvedSnapPoint,
+  SnapPointChangeDetails,
+  ContentProps,
 } from "./bottom-sheet.types"
