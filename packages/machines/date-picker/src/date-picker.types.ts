@@ -397,6 +397,10 @@ type Refs = {
    * The live region to announce changes
    */
   announcer?: LiveRegion | undefined
+  /**
+   * Accumulated keys entered in the focused segment
+   */
+  enteredKeys: string
 }
 
 export interface DatePickerSchema {

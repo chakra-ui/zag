@@ -919,23 +919,22 @@ export function connect<T extends PropTypes>(
 
           const keyMap: EventKeyMap = {
             ArrowLeft() {
-              send({ type: "SEGMENT.ARROW_LEFT", focus: true })
+              send({ type: "SEGMENT.ARROW_LEFT" })
             },
             ArrowRight() {
-              send({ type: "SEGMENT.ARROW_RIGHT", focus: true })
+              send({ type: "SEGMENT.ARROW_RIGHT" })
             },
             ArrowUp() {
-              send({ type: "SEGMENT.ADJUST", segment, amount: 1, focus: true })
+              send({ type: "SEGMENT.ADJUST", segment, amount: 1 })
             },
             ArrowDown() {
-              send({ type: "SEGMENT.ADJUST", segment, amount: -1, focus: true })
+              send({ type: "SEGMENT.ADJUST", segment, amount: -1 })
             },
             PageUp() {
               send({
                 type: "SEGMENT.ADJUST",
                 segment,
                 amount: PAGE_STEP[segment.type] || 1,
-                focus: true,
               })
             },
             PageDown() {
@@ -943,14 +942,13 @@ export function connect<T extends PropTypes>(
                 type: "SEGMENT.ADJUST",
                 segment,
                 amount: -(PAGE_STEP[segment.type] ?? 1),
-                focus: true,
               })
             },
             Backspace() {
-              send({ type: "SEGMENT.BACKSPACE", segment, focus: true })
+              send({ type: "SEGMENT.BACKSPACE", segment })
             },
             Delete() {
-              send({ type: "SEGMENT.BACKSPACE", segment, focus: true })
+              send({ type: "SEGMENT.BACKSPACE", segment })
             },
           }
 
@@ -972,6 +970,16 @@ export function connect<T extends PropTypes>(
         },
         onMouseDown(event) {
           event.stopPropagation()
+        },
+        onBeforeInput(event) {
+          const { data } = getNativeEvent(event)
+          if (!isValidCharacter(data, separator)) {
+            event.preventDefault()
+          }
+        },
+        onInput(event) {
+          const { data } = getNativeEvent(event)
+          send({ type: "SEGMENT.INPUT", segment, input: data })
         },
       })
     },

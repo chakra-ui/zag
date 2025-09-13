@@ -153,6 +153,7 @@ export const machine = createMachine<DatePickerSchema>({
   refs() {
     return {
       announcer: undefined,
+      enteredKeys: "",
     }
   },
 
@@ -488,6 +489,9 @@ export const machine = createMachine<DatePickerSchema>({
         },
         "SEGMENT.BACKSPACE": {
           actions: ["clearSegmentValue"],
+        },
+        "SEGMENT.INPUT": {
+          actions: ["setSegmentValue"],
         },
       },
     },
@@ -1299,7 +1303,7 @@ export const machine = createMachine<DatePickerSchema>({
         const { event, prop } = params
         const { segment } = event
         if (segment.isPlaceholder) {
-          // focus previous segment if the current segment is already a placeholder
+          // TODO: focus previous segment if the current segment is already a placeholder
           return
         }
 
@@ -1335,6 +1339,87 @@ export const machine = createMachine<DatePickerSchema>({
           setValue(params, displayValue)
         } else {
           setValue(params, addSegment(displayValue, type, amount, formatter.resolvedOptions()))
+        }
+      },
+
+      setSegmentValue(params) {
+        const { event, prop, refs } = params
+        const { segment, input } = event
+        if (!isNumberString(input)) return
+
+        const type = segment.type as DateSegment["type"]
+        const validSegments = params.context.get("validSegments")
+        const index = params.context.get("activeIndex")
+        const activeValidSegments = validSegments[index]
+        const formatter = prop("formatter")
+        const enteredKeys = refs.get("enteredKeys")
+
+        let newValue = enteredKeys + input
+
+        switch (type) {
+          case "dayPeriod":
+            // todo
+            break
+          case "era": {
+            // todo
+            break
+          }
+          case "day":
+          case "hour":
+          case "minute":
+          case "second":
+          case "month":
+          case "year": {
+            let numberValue = Number.parseInt(newValue)
+            let segmentValue = numberValue
+            let allowsZero = segment.minValue === 0
+            if (segment.type === "hour" && formatter.resolvedOptions().hour12) {
+              switch (formatter.resolvedOptions().hourCycle) {
+                case "h11":
+                  if (numberValue > 11) {
+                    segmentValue = Number.parseInt(input)
+                  }
+                  break
+                case "h12":
+                  allowsZero = false
+                  if (numberValue > 12) {
+                    segmentValue = Number.parseInt(input)
+                  }
+                  break
+              }
+
+              if (segment.value !== undefined && segment.value >= 12 && numberValue > 1) {
+                numberValue += 12
+              }
+            } else if (segment.maxValue !== undefined && numberValue > segment.maxValue) {
+              segmentValue = Number.parseInt(input)
+            }
+
+            if (isNaN(numberValue)) {
+              return
+            }
+
+            let shouldSetValue = segmentValue !== 0 || allowsZero
+            if (shouldSetValue) {
+              if (!activeValidSegments?.[type]) {
+                markSegmentValid(params, type)
+              }
+              setValue(params, setSegment(getDisplayValue(params), type, newValue, formatter.resolvedOptions()))
+            }
+
+            if (
+              segment.maxValue !== undefined &&
+              (Number(numberValue + "0") > segment.maxValue || newValue.length >= String(segment.maxValue).length)
+            ) {
+              refs.set("enteredKeys", "")
+              if (shouldSetValue) {
+                // TODO: focus next segment
+              }
+            } else {
+              refs.set("enteredKeys", newValue)
+            }
+            break
+          }
         }
       },
     },

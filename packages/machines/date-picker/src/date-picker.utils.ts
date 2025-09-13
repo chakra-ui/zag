@@ -431,7 +431,6 @@ export function setSegment(
     case "month":
     case "year":
     case "era":
-      console.log(segmentValue, value.set({ [part]: segmentValue }))
       return value.set({ [part]: segmentValue })
   }
 
