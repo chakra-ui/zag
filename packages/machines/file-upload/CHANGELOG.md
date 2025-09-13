@@ -1,5 +1,22 @@
 # @zag-js/file-upload
 
+## 1.24.0
+
+### Patch Changes
+
+- [`851bae8`](https://github.com/chakra-ui/zag/commit/851bae81cde30b106fb4cbfac4c22281097aa715) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix regression where clicking the trigger doesn't open the file
+  picker when used within the dropzone
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.24.0
+  - @zag-js/core@1.24.0
+  - @zag-js/types@1.24.0
+  - @zag-js/utils@1.24.0
+  - @zag-js/dom-query@1.24.0
+  - @zag-js/file-utils@1.24.0
+  - @zag-js/i18n-utils@1.24.0
+
 ## 1.23.0
 
 ### Minor Changes

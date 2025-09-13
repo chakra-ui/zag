@@ -1,5 +1,24 @@
 # @zag-js/tooltip
 
+## 1.24.0
+
+### Patch Changes
+
+- [`31ad169`](https://github.com/chakra-ui/zag/commit/31ad16905fa88010cf1366a70a9d27bd9c6230de) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Change default delay values for tooltip to improve accessibility.
+  [Learn more](https://www.nngroup.com/articles/timing-exposing-content)
+  - `openDelay`: from `1000ms` to `400ms`
+  - `closeDelay`: from `500ms` to `150ms`
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.24.0
+  - @zag-js/core@1.24.0
+  - @zag-js/types@1.24.0
+  - @zag-js/utils@1.24.0
+  - @zag-js/dom-query@1.24.0
+  - @zag-js/focus-visible@1.24.0
+  - @zag-js/popper@1.24.0
+
 ## 1.23.0
 
 ### Patch Changes

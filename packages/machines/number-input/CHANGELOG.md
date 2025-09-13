@@ -1,5 +1,16 @@
 # @zag-js/number-input
 
+## 1.24.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.24.0
+  - @zag-js/core@1.24.0
+  - @zag-js/types@1.24.0
+  - @zag-js/utils@1.24.0
+  - @zag-js/dom-query@1.24.0
+
 ## 1.23.0
 
 ### Patch Changes
