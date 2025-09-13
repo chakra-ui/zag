@@ -74,7 +74,7 @@ export const machine = createMachine<BottomSheetSchema>({
     },
   },
 
-  watch({ track, context }) {
+  watch({ track, context, prop, action }) {
     track([() => context.get("activeSnapPoint"), () => context.get("contentHeight")], () => {
       const activeSnapPoint = context.get("activeSnapPoint")
       const contentHeight = context.get("contentHeight")
@@ -82,6 +82,9 @@ export const machine = createMachine<BottomSheetSchema>({
 
       const resolvedActiveSnapPoint = resolveSnapPoint(activeSnapPoint, contentHeight)
       context.set("resolvedActiveSnapPoint", resolvedActiveSnapPoint)
+    })
+    track([() => prop("open")], () => {
+      action(["toggleVisibility"])
     })
   },
 
@@ -108,6 +111,9 @@ export const machine = createMachine<BottomSheetSchema>({
         "trackContentHeight",
       ],
       on: {
+        "CONTROLLED.CLOSE": {
+          target: "closed",
+        },
         POINTER_DOWN: [
           {
             actions: ["setPointerStart"],
@@ -180,6 +186,9 @@ export const machine = createMachine<BottomSheetSchema>({
     closed: {
       tags: ["closed"],
       on: {
+        "CONTROLLED.OPEN": {
+          target: "open",
+        },
         OPEN: [
           {
             guard: "isOpenControlled",
@@ -329,6 +338,10 @@ export const machine = createMachine<BottomSheetSchema>({
         context.set("lastPoint", null)
         context.set("lastTimestamp", null)
         context.set("velocity", null)
+      },
+
+      toggleVisibility({ event, send, prop }) {
+        send({ type: prop("open") ? "CONTROLLED.OPEN" : "CONTROLLED.CLOSE", previousEvent: event })
       },
     },
 

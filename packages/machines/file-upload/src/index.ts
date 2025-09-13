@@ -15,8 +15,11 @@ export type {
   FileRejection,
   FileValidateDetails,
   IntlTranslations,
+  ItemGroupProps,
   ItemPreviewImageProps,
   ItemProps,
+  ItemType,
+  ItemTypeProps,
   FileUploadService as Service,
   FileUploadMachine as Machine,
 } from "./file-upload.types"

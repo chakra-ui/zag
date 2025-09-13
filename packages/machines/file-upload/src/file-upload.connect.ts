@@ -1,4 +1,4 @@
-import { contains, dataAttr, isSelfTarget, visuallyHiddenStyle } from "@zag-js/dom-query"
+import { contains, dataAttr, getEventTarget, visuallyHiddenStyle } from "@zag-js/dom-query"
 import { getFileEntries } from "@zag-js/file-utils"
 import { formatBytes } from "@zag-js/i18n-utils"
 import { type NormalizeProps, type PropTypes } from "@zag-js/types"
@@ -7,6 +7,8 @@ import { parts } from "./file-upload.anatomy"
 import * as dom from "./file-upload.dom"
 import type { FileUploadApi, FileUploadService } from "./file-upload.types"
 import { isEventWithFiles } from "./file-upload.utils"
+
+const DEFAULT_ITEM_TYPE = "accepted" as const
 
 export function connect<T extends PropTypes>(
   service: FileUploadService,
@@ -30,8 +32,8 @@ export function connect<T extends PropTypes>(
       if (disabled) return
       send({ type: "OPEN" })
     },
-    deleteFile(file) {
-      send({ type: "FILE.DELETE", file })
+    deleteFile(file, type = DEFAULT_ITEM_TYPE) {
+      send({ type: "FILE.DELETE", file, itemType: type })
     },
     acceptedFiles: context.get("acceptedFiles"),
     rejectedFiles: context.get("rejectedFiles"),
@@ -92,7 +94,7 @@ export function connect<T extends PropTypes>(
         onKeyDown(event) {
           if (disabled) return
           if (event.defaultPrevented) return
-          if (!isSelfTarget(event)) return
+          if (event.currentTarget !== getEventTarget(event)) return
           if (props.disableClick) return
           if (event.key !== "Enter" && event.key !== " ") return
           send({ type: "DROPZONE.CLICK", src: "keydown" })
@@ -102,7 +104,7 @@ export function connect<T extends PropTypes>(
           if (event.defaultPrevented) return
           if (props.disableClick) return
           // ensure it's the dropzone that's actually clicked
-          if (!isSelfTarget(event)) return
+          if (event.currentTarget !== getEventTarget(event)) return
           // prevent opening the file dialog when clicking on the label (to avoid double opening)
           if (event.currentTarget.localName === "label") {
             event.preventDefault()
@@ -169,7 +171,6 @@ export function connect<T extends PropTypes>(
           // if trigger is wrapped within the dropzone, stop propagation to avoid double opening
           if (contains(dom.getDropzoneEl(scope), event.currentTarget)) {
             event.stopPropagation()
-            return
           }
           send({ type: "OPEN" })
         },
@@ -202,56 +203,62 @@ export function connect<T extends PropTypes>(
       })
     },
 
-    getItemGroupProps() {
+    getItemGroupProps(props = {}) {
+      const { type = DEFAULT_ITEM_TYPE } = props
       return normalize.element({
         ...parts.itemGroup.attrs,
         dir: prop("dir"),
         "data-disabled": dataAttr(disabled),
+        "data-type": type,
       })
     },
 
     getItemProps(props) {
-      const { file } = props
+      const { file, type = DEFAULT_ITEM_TYPE } = props
       return normalize.element({
         ...parts.item.attrs,
         dir: prop("dir"),
         id: dom.getItemId(scope, file.name),
         "data-disabled": dataAttr(disabled),
+        "data-type": type,
       })
     },
 
     getItemNameProps(props) {
-      const { file } = props
+      const { file, type = DEFAULT_ITEM_TYPE } = props
       return normalize.element({
         ...parts.itemName.attrs,
         dir: prop("dir"),
         id: dom.getItemNameId(scope, file.name),
         "data-disabled": dataAttr(disabled),
+        "data-type": type,
       })
     },
 
     getItemSizeTextProps(props) {
-      const { file } = props
+      const { file, type = DEFAULT_ITEM_TYPE } = props
       return normalize.element({
         ...parts.itemSizeText.attrs,
         dir: prop("dir"),
         id: dom.getItemSizeTextId(scope, file.name),
         "data-disabled": dataAttr(disabled),
+        "data-type": type,
       })
     },
 
     getItemPreviewProps(props) {
-      const { file } = props
+      const { file, type = DEFAULT_ITEM_TYPE } = props
       return normalize.element({
         ...parts.itemPreview.attrs,
         dir: prop("dir"),
         id: dom.getItemPreviewId(scope, file.name),
         "data-disabled": dataAttr(disabled),
+        "data-type": type,
       })
     },
 
     getItemPreviewImageProps(props) {
-      const { file, url } = props
+      const { file, url, type = DEFAULT_ITEM_TYPE } = props
       const isImage = file.type.startsWith("image/")
       if (!isImage) {
         throw new Error("Preview Image is only supported for image files")
@@ -261,21 +268,23 @@ export function connect<T extends PropTypes>(
         alt: translations.itemPreview?.(file),
         src: url,
         "data-disabled": dataAttr(disabled),
+        "data-type": type,
       })
     },
 
     getItemDeleteTriggerProps(props) {
-      const { file } = props
+      const { file, type = DEFAULT_ITEM_TYPE } = props
       return normalize.button({
         ...parts.itemDeleteTrigger.attrs,
         dir: prop("dir"),
         type: "button",
         disabled,
         "data-disabled": dataAttr(disabled),
+        "data-type": type,
         "aria-label": translations.deleteFile?.(file),
         onClick() {
           if (disabled) return
-          send({ type: "FILE.DELETE", file })
+          send({ type: "FILE.DELETE", file, itemType: type })
         },
       })
     },

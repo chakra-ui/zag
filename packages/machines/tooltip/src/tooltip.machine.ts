@@ -21,8 +21,8 @@ export const machine = createMachine<TooltipSchema>({
 
     return {
       id: "x",
-      openDelay: 1000,
-      closeDelay: 500,
+      openDelay: 400,
+      closeDelay: 150,
       closeOnEscape: true,
       interactive: false,
       closeOnScroll: true,

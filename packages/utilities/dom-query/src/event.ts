@@ -1,5 +1,4 @@
 import type { MaybeFn } from "@zag-js/types"
-import { contains } from "./node"
 import { isAndroid, isMac } from "./platform"
 import type { AnyPointerEvent, EventKeyOptions, NativeEvent } from "./types"
 
@@ -17,10 +16,6 @@ export function getEventTarget<T extends EventTarget>(
 ): T | null {
   const composedPath = getComposedPath(event)
   return (composedPath?.[0] ?? event.target) as T | null
-}
-
-export const isSelfTarget = (event: Partial<Pick<UIEvent, "currentTarget" | "target" | "composedPath">>) => {
-  return contains(event.currentTarget as Node, getEventTarget(event))
 }
 
 export function isOpeningInNewTab(event: Pick<MouseEvent, "currentTarget" | "metaKey" | "ctrlKey" | "button">) {

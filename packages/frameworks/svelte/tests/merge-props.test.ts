@@ -86,4 +86,48 @@ describe("mergeProps for Svelte", () => {
     expect(cb2).toHaveBeenCalledTimes(1)
     expect(cb2).toHaveBeenCalledWith("foo")
   })
+
+  it("preserves symbol keys for Svelte attachments", () => {
+    const attachmentKey1 = Symbol("attachment1")
+    const attachmentKey2 = Symbol("attachment2")
+    const attachmentFn1 = vi.fn()
+    const attachmentFn2 = vi.fn()
+
+    const props = mergeProps(
+      { [attachmentKey1]: attachmentFn1, class: "base" },
+      { [attachmentKey2]: attachmentFn2, class: "additional" },
+    )
+
+    expect(props[attachmentKey1]).toBe(attachmentFn1)
+    expect(props[attachmentKey2]).toBe(attachmentFn2)
+    expect(props.class).toBe("base additional")
+
+    // Test that symbols are enumerable with getOwnPropertySymbols
+    const symbols = Object.getOwnPropertySymbols(props)
+    expect(symbols).toContain(attachmentKey1)
+    expect(symbols).toContain(attachmentKey2)
+  })
+
+  it("overwrites same symbol key with last value for primitives", () => {
+    const attachmentKey = Symbol("attachment")
+
+    const props = mergeProps(
+      { [attachmentKey]: "first", class: "base" },
+      { [attachmentKey]: "second", class: "additional" },
+    )
+
+    expect(props[attachmentKey]).toBe("second")
+    expect(props.class).toBe("base additional")
+  })
+
+  it("overwrites same symbol key with last value for functions", () => {
+    const attachmentKey = Symbol("attachment")
+    const fn1 = vi.fn()
+    const fn2 = vi.fn()
+
+    const props = mergeProps({ [attachmentKey]: fn1, class: "base" }, { [attachmentKey]: fn2, class: "additional" })
+
+    expect(props[attachmentKey]).toBe(fn2)
+    expect(props.class).toBe("base additional")
+  })
 })

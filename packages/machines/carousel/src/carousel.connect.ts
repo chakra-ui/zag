@@ -1,13 +1,4 @@
-import {
-  ariaAttr,
-  contains,
-  dataAttr,
-  getEventKey,
-  getEventTarget,
-  isFocusable,
-  isLeftClick,
-  isSelfTarget,
-} from "@zag-js/dom-query"
+import { ariaAttr, contains, dataAttr, getEventKey, getEventTarget, isFocusable, isLeftClick } from "@zag-js/dom-query"
 import type { EventKeyMap, NormalizeProps, PropTypes } from "@zag-js/types"
 import { throttle } from "@zag-js/utils"
 import { parts } from "./carousel.anatomy"
@@ -92,7 +83,7 @@ export function connect<T extends PropTypes>(service: CarouselService, normalize
         dir: prop("dir"),
         "aria-live": isPlaying ? "off" : "polite",
         onFocus(event) {
-          if (!isSelfTarget(event)) return
+          if (!contains(event.currentTarget, getEventTarget(event))) return
           send({ type: "VIEWPORT.FOCUS" })
         },
         onBlur(event) {

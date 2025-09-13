@@ -1,5 +1,24 @@
 # @zag-js/switch
 
+## 1.23.0
+
+### Patch Changes
+
+- [#2673](https://github.com/chakra-ui/zag/pull/2673)
+  [`a493193`](https://github.com/chakra-ui/zag/commit/a493193dd55524e14800bfc449ca137be7f633aa) Thanks
+  [@julienbenac](https://github.com/julienbenac)! - Add `data-required` to label parts
+
+- Updated dependencies [[`92c0bf5`](https://github.com/chakra-ui/zag/commit/92c0bf5f5e283451c6be989e63ff02188054be9a),
+  [`47011ad`](https://github.com/chakra-ui/zag/commit/47011add7c99572aaa162846cf01781ea42d35ac),
+  [`92c0bf5`](https://github.com/chakra-ui/zag/commit/92c0bf5f5e283451c6be989e63ff02188054be9a),
+  [`50391e1`](https://github.com/chakra-ui/zag/commit/50391e11eb7f9af1f23f44661a8bc522c591175c)]:
+  - @zag-js/dom-query@1.23.0
+  - @zag-js/core@1.23.0
+  - @zag-js/focus-visible@1.23.0
+  - @zag-js/anatomy@1.23.0
+  - @zag-js/types@1.23.0
+  - @zag-js/utils@1.23.0
+
 ## 1.22.1
 
 ### Patch Changes

@@ -6,7 +6,7 @@ import {
   getEventKey,
   getEventTarget,
   isEditableElement,
-  isSelfTarget,
+  contains,
   isValidTabEvent,
   visuallyHiddenStyle,
 } from "@zag-js/dom-query"
@@ -402,7 +402,7 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
         tabIndex: 0,
         onKeyDown(event) {
           if (!interactive) return
-          if (!isSelfTarget(event)) return
+          if (!contains(event.currentTarget, getEventTarget(event))) return
 
           // select should not be navigated using tab key so we prevent it
           // but, we want to allow tabbing within the content when composing

@@ -45,11 +45,6 @@ test("should not be focusable when disabled", async () => {
   await I.seeRadioIsNotFocusable()
 })
 
-test("should be focusable when readonly", async () => {
-  await I.controls.bool("readOnly")
-  await I.seeRadioIsFocusable()
-})
-
 test("should be focused on active radio item when page is tabbed", async () => {
   await I.clickRadio("grape")
   await I.seeRadioIsChecked("grape")

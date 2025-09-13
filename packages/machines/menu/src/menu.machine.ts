@@ -7,6 +7,7 @@ import {
   getByTypeahead,
   getEventTarget,
   getInitialFocus,
+  isAnchorElement,
   isEditableElement,
   observeAttributes,
   raf,
@@ -680,10 +681,16 @@ export const machine = createMachine<MenuSchema>({
           onCheckedChange?.(!checked)
         }
       },
-      clickHighlightedItem({ scope, computed }) {
+      clickHighlightedItem({ scope, computed, prop, context }) {
         const itemEl = scope.getById(computed("highlightedId")!)
         if (!itemEl || itemEl.dataset.disabled) return
-        queueMicrotask(() => itemEl.click())
+        const highlightedValue = context.get("highlightedValue")
+
+        if (isAnchorElement(itemEl)) {
+          prop("navigate")?.({ value: highlightedValue!, node: itemEl, href: itemEl.href })
+        } else {
+          queueMicrotask(() => itemEl.click())
+        }
       },
       setIntentPolygon({ context, scope, event }) {
         const menu = dom.getContentEl(scope)
