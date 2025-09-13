@@ -236,7 +236,12 @@ export function connect<T extends PropTypes, V extends CollectionItem>(
 
               // when there's a form owner, allow submitting custom value if `allowCustomValue` is true
               const submittable = computed("isCustomValue") && prop("allowCustomValue")
-              if (open && !submittable) {
+              // Also allow submission when there's no highlighted item (bug fix)
+              const hasHighlight = highlightedValue != null
+              // Allow submission when alwaysSubmitOnEnter is true
+              const alwaysSubmit = prop("alwaysSubmitOnEnter")
+
+              if (open && !submittable && !alwaysSubmit && hasHighlight) {
                 event.preventDefault()
               }
 

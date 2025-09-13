@@ -20,6 +20,7 @@ export const machine = createMachine({
       defaultValue: [],
       closeOnSelect: !props.multiple,
       allowCustomValue: false,
+      alwaysSubmitOnEnter: false,
       inputBehavior: "none",
       selectionBehavior: props.multiple ? "clear" : "replace",
       openOnKeyPress: true,
