@@ -918,9 +918,6 @@ export function connect<T extends PropTypes>(
           }
 
           const keyMap: EventKeyMap = {
-            Enter() {
-              send({ type: "SEGMENT.ENTER", focus: true })
-            },
             ArrowLeft() {
               send({ type: "SEGMENT.ARROW_LEFT", focus: true })
             },
@@ -949,16 +946,12 @@ export function connect<T extends PropTypes>(
                 focus: true,
               })
             },
-            Home() {
-              send({ type: "SEGMENT.HOME", focus: true })
-            },
-            End() {
-              send({ type: "SEGMENT.END", focus: true })
-            },
             Backspace() {
               send({ type: "SEGMENT.BACKSPACE", segment, focus: true })
             },
-            Delete() {},
+            Delete() {
+              send({ type: "SEGMENT.BACKSPACE", segment, focus: true })
+            },
           }
 
           const exec =

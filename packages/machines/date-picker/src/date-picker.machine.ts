@@ -1308,8 +1308,7 @@ export const machine = createMachine<DatePickerSchema>({
 
         const newValue = segment.text.slice(0, -1)
 
-        if (newValue === "") {
-          // clear segment value and mark as placeholder
+        if (newValue === "" || newValue === "0") {
           markSegmentInvalid(params, segment.type as DateSegment["type"])
           setValue(params, displayValue)
         } else {
@@ -1423,6 +1422,7 @@ function markSegmentValid(ctx: Params<DatePickerSchema>, segmentType: SegmentTyp
   }
 }
 
+// TODO: maybe move this to computed
 function isAllSegmentsCompleted(ctx: Params<DatePickerSchema>) {
   const { context, prop } = ctx
   const validSegments = context.get("validSegments")
@@ -1448,18 +1448,7 @@ function setValue(ctx: Params<DatePickerSchema>, value: DateValue) {
   const validKeys = Object.keys(activeValidSegments)
   const date = constrainValue(value, prop("min"), prop("max"))
 
-  // if all the segments are completed or a timefield with everything but am/pm set the time, also ignore when am/pm cleared
-  if (value == null) {
-    // setDate(null)
-    // setPlaceholderDate(createPlaceholderDate(props.placeholderValue, granularity, calendar, defaultTimeZone))
-    // setValidSegments({})
-  } else if (
-    // (validKeys.length === 0 && clearedSegment.current == null) || // FIXIT: figure out what is clearedSegment.current used for
-    isAllSegmentsCompleted(ctx)
-    // && clearedSegment.current !== "dayPeriod" // FIXIT: figure out what is clearedSegment.current used for
-  ) {
-    // If the field was empty (no valid segments) or all segments are completed, commit the new value.
-    // When committing from an empty state, mark every segment as valid so value is committed.
+  if (isAllSegmentsCompleted(ctx)) {
     if (validKeys.length === 0) {
       validSegments[index] = { ...allSegments }
       context.set("validSegments", validSegments)
@@ -1471,5 +1460,9 @@ function setValue(ctx: Params<DatePickerSchema>, value: DateValue) {
   } else {
     context.set("placeholderValue", date)
   }
-  // clearedSegment.current = null // FIXIT: figure out what is clearedSegment.current used for
+}
+
+function isNumberString(value: string) {
+  if (Number.isNaN(Number.parseInt(value))) return false
+  return true
 }
