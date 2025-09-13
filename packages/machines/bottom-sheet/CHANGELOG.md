@@ -1,5 +1,29 @@
 # @zag-js/bottom-sheet
 
+## 1.24.0
+
+### Patch Changes
+
+- [#2710](https://github.com/chakra-ui/zag/pull/2710)
+  [`3e293ec`](https://github.com/chakra-ui/zag/commit/3e293ec84a07759d7fd969135360e3b0621bd211) Thanks
+  [@nelsonlaidev](https://github.com/nelsonlaidev)! - Re-export missing types
+
+- [#2709](https://github.com/chakra-ui/zag/pull/2709)
+  [`2c2211b`](https://github.com/chakra-ui/zag/commit/2c2211bfb87df3203c89502dde2d3439ac12117d) Thanks
+  [@nelsonlaidev](https://github.com/nelsonlaidev)! - Fix the issue where controlled props are not working in the bottom
+  sheet
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.24.0
+  - @zag-js/core@1.24.0
+  - @zag-js/types@1.24.0
+  - @zag-js/aria-hidden@1.24.0
+  - @zag-js/utils@1.24.0
+  - @zag-js/dismissable@1.24.0
+  - @zag-js/dom-query@1.24.0
+  - @zag-js/focus-trap@1.24.0
+  - @zag-js/remove-scroll@1.24.0
+
 ## 1.23.0
 
 ### Patch Changes
