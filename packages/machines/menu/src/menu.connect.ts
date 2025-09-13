@@ -12,7 +12,7 @@ import {
   isModifierKey,
   isOpeningInNewTab,
   isPrintableKey,
-  isSelfTarget,
+  contains,
   isValidTabEvent,
 } from "@zag-js/dom-query"
 import { getPlacementStyles } from "@zag-js/popper"
@@ -311,7 +311,7 @@ export function connect<T extends PropTypes>(service: Service<MenuSchema>, norma
         },
         onKeyDown(event) {
           if (event.defaultPrevented) return
-          if (!isSelfTarget(event)) return
+          if (!contains(event.currentTarget, getEventTarget(event))) return
 
           const target = getEventTarget<Element>(event)
 
