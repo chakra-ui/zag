@@ -24,17 +24,24 @@ import { disableTextSelection, raf, restoreTextSelection, setElementValue } from
 import { createLiveRegion } from "@zag-js/live-region"
 import { getPlacement, type Placement } from "@zag-js/popper"
 import * as dom from "./date-picker.dom"
-import type { DatePickerSchema, DateValue, DateView } from "./date-picker.types"
+import type { DatePickerSchema, DateSegment, DateValue, DateView, Segments, SegmentType } from "./date-picker.types"
 import {
+  addSegment,
   adjustStartAndEndDate,
   clampView,
+  defaultTranslations,
   eachView,
+  EDITABLE_SEGMENTS,
+  getDefaultValidSegments,
   getNextView,
   getPreviousView,
   isAboveMinView,
   isBelowMinView,
   isValidDate,
+  processSegments,
+  setSegment,
   sortDates,
+  TYPE_MAPPING,
 } from "./date-picker.utils"
 
 const { and } = createGuards<DatePickerSchema>()
@@ -72,10 +79,37 @@ export const machine = createMachine<DatePickerSchema>({
       props.focusedValue || props.defaultFocusedValue || value?.[0] || defaultValue?.[0] || getTodayDate(timeZone)
     focusedValue = constrainValue(focusedValue, props.min, props.max)
 
+    // get initial placeholder value
+    let placeholderValue =
+      props.placeholderValue ||
+      props.defaultPlaceholderValue ||
+      value?.[0] ||
+      defaultValue?.[0] ||
+      getTodayDate(timeZone)
+    placeholderValue = constrainValue(placeholderValue, props.min, props.max)
+
     // get the initial view
     const minView: DateView = "day"
     const maxView: DateView = "year"
     const defaultView = clampView(props.view || minView, minView, maxView)
+    const granularity = props.granularity || "day"
+    const translations = { ...defaultTranslations, ...props.translations }
+
+    const formatter = new DateFormatter(locale, {
+      timeZone: timeZone,
+      day: "2-digit",
+      month: "2-digit",
+      year: "numeric",
+    })
+
+    const allSegments = formatter
+      .formatToParts(new Date())
+      .filter((seg) => EDITABLE_SEGMENTS[seg.type])
+      .reduce<Segments>((p, seg) => {
+        const key = TYPE_MAPPING[seg.type as keyof typeof TYPE_MAPPING] || seg.type
+        p[key] = true
+        return p
+      }, {})
 
     return {
       locale,
@@ -87,14 +121,14 @@ export const machine = createMachine<DatePickerSchema>({
       maxView,
       outsideDaySelectable: false,
       closeOnSelect: true,
-      format(date, { locale, timeZone }) {
-        const formatter = new DateFormatter(locale, { timeZone, day: "2-digit", month: "2-digit", year: "numeric" })
+      format(date, { timeZone }) {
         return formatter.format(date.toDate(timeZone))
       },
       parse(value, { locale, timeZone }) {
         return parseDateString(value, locale, timeZone)
       },
       ...props,
+      translations,
       focusedValue: typeof props.focusedValue === "undefined" ? undefined : focusedValue,
       defaultFocusedValue: focusedValue,
       value,
@@ -103,6 +137,11 @@ export const machine = createMachine<DatePickerSchema>({
         placement: "bottom",
         ...props.positioning,
       },
+      granularity,
+      formatter,
+      placeholderValue: typeof props.placeholderValue === "undefined" ? undefined : placeholderValue,
+      defaultPlaceholderValue: placeholderValue,
+      allSegments,
     }
   },
 
@@ -151,6 +190,10 @@ export const machine = createMachine<DatePickerSchema>({
         defaultValue: 0,
         sync: true,
       })),
+      activeSegmentIndex: bindable(() => ({
+        defaultValue: -1,
+        sync: true,
+      })),
       hoveredValue: bindable<DateValue | null>(() => ({
         defaultValue: null,
         isEqual: (a, b) => b !== null && a !== null && isDateEqual(a, b),
@@ -176,6 +219,25 @@ export const machine = createMachine<DatePickerSchema>({
       restoreFocus: bindable<boolean | undefined>(() => ({
         defaultValue: false,
       })),
+      placeholderValue: bindable<DateValue>(() => ({
+        defaultValue: prop("defaultPlaceholderValue"),
+        value: prop("placeholderValue"),
+        isEqual: isDateEqual,
+        hash: (v) => v.toString(),
+        sync: true,
+        onChange(placeholderValue) {
+          const context = getContext()
+          const view = context.get("view")
+          const value = context.get("value")
+          const valueAsString = getValueAsString(value, prop)
+          prop("onPlaceholderChange")?.({ value, valueAsString, view, placeholderValue })
+        },
+      })),
+      validSegments: bindable<Segments[]>(() => {
+        return {
+          defaultValue: getDefaultValidSegments(prop("value") || prop("defaultValue"), prop("allSegments")),
+        }
+      }),
     }
   },
 
@@ -197,6 +259,37 @@ export const machine = createMachine<DatePickerSchema>({
     isNextVisibleRangeValid: ({ prop, computed }) =>
       !isNextRangeInvalid(computed("endValue"), prop("min"), prop("max")),
     valueAsString: ({ context, prop }) => getValueAsString(context.get("value"), prop),
+    segments: ({ context, prop }) => {
+      const value = context.get("value")
+      const selectionMode = prop("selectionMode")
+      const placeholderValue = context.get("placeholderValue")
+      const validSegments = context.get("validSegments")
+      const timeZone = prop("timeZone")
+      const translations = prop("translations") || defaultTranslations
+      const granularity = prop("granularity")
+      const formatter = prop("formatter")
+
+      let dates: DateValue[] = value?.length ? value : [placeholderValue]
+
+      if (selectionMode === "range") {
+        dates = value?.length ? value : [placeholderValue, placeholderValue]
+      }
+
+      return dates.map((date, i) => {
+        const displayValue = date || placeholderValue
+        const currentValidSegments = validSegments?.[i] || {}
+
+        return processSegments({
+          dateValue: displayValue.toDate(timeZone),
+          displayValue,
+          validSegments: currentValidSegments,
+          formatter,
+          locale: prop("locale"),
+          translations,
+          granularity,
+        })
+      })
+    },
   },
 
   effects: ["setupLiveRegion"],
@@ -220,7 +313,7 @@ export const machine = createMachine<DatePickerSchema>({
     })
 
     track([() => context.hash("value")], () => {
-      action(["syncInputElement"])
+      action(["syncValidSegments", "syncInputElement"])
     })
 
     track([() => computed("valueAsString").toString()], () => {
@@ -233,6 +326,10 @@ export const machine = createMachine<DatePickerSchema>({
 
     track([() => prop("open")], () => {
       action(["toggleVisibility"])
+    })
+
+    track([() => context.get("activeSegmentIndex")], () => {
+      action(["focusActiveSegment"])
     })
   },
 
@@ -339,6 +436,14 @@ export const machine = createMachine<DatePickerSchema>({
             actions: ["focusFirstSelectedDate", "focusActiveCell", "invokeOnOpen"],
           },
         ],
+        "SEGMENT_GROUP.FOCUS": {
+          target: "focused",
+          actions: ["focusFirstSegment"],
+        },
+        "SEGMENT.FOCUS": {
+          target: "focused",
+          actions: ["setActiveSegmentIndex"],
+        },
       },
     },
 
@@ -369,6 +474,21 @@ export const machine = createMachine<DatePickerSchema>({
             actions: ["focusFirstSelectedDate", "focusActiveCell", "invokeOnOpen"],
           },
         ],
+        "SEGMENT.FOCUS": {
+          actions: ["setActiveSegmentIndex"],
+        },
+        "SEGMENT.ADJUST": {
+          actions: ["invokeOnSegmentAdjust"],
+        },
+        "SEGMENT.ARROW_LEFT": {
+          actions: ["focusPreviousSegment"],
+        },
+        "SEGMENT.ARROW_RIGHT": {
+          actions: ["focusNextSegment"],
+        },
+        "SEGMENT.BACKSPACE": {
+          actions: ["clearSegmentValue"],
+        },
       },
     },
 
@@ -764,6 +884,9 @@ export const machine = createMachine<DatePickerSchema>({
           })
         })
       },
+      syncValidSegments({ context, prop }) {
+        context.set("validSegments", getDefaultValidSegments(context.get("value"), prop("allSegments")))
+      },
       setFocusedDate(params) {
         const { event } = params
         const value = Array.isArray(event.value) ? event.value[0] : event.value
@@ -1128,6 +1251,92 @@ export const machine = createMachine<DatePickerSchema>({
       toggleVisibility({ event, send, prop }) {
         send({ type: prop("open") ? "CONTROLLED.OPEN" : "CONTROLLED.CLOSE", previousEvent: event })
       },
+
+      // SEGMENT
+
+      setActiveSegmentIndex({ context, event }) {
+        context.set("activeSegmentIndex", event.index)
+      },
+
+      focusFirstSegment({ scope }) {
+        raf(() => {
+          const segmentEls = dom.getSegmentEls(scope)
+          const firstSegmentEl = segmentEls.find((el) => el.hasAttribute("data-editable"))
+          firstSegmentEl?.focus({ preventScroll: true })
+        })
+      },
+
+      focusNextSegment({ scope, context }) {
+        raf(() => {
+          const segmentEls = dom.getSegmentEls(scope)
+          const nextSegmentEl = segmentEls
+            .slice(context.get("activeSegmentIndex") + 1)
+            .find((el) => el.hasAttribute("data-editable"))
+          nextSegmentEl?.focus({ preventScroll: true })
+        })
+      },
+
+      focusPreviousSegment({ scope, context }) {
+        raf(() => {
+          const segmentEls = dom.getSegmentEls(scope)
+          const prevSegmentEl = segmentEls
+            .slice(0, context.get("activeSegmentIndex"))
+            .reverse()
+            .find((el) => el.hasAttribute("data-editable"))
+          prevSegmentEl?.focus({ preventScroll: true })
+        })
+      },
+
+      focusActiveSegment({ scope, context }) {
+        raf(() => {
+          const segmentEls = dom.getSegmentEls(scope)
+          const activeSegmentEl = segmentEls[context.get("activeSegmentIndex")]
+          activeSegmentEl?.focus({ preventScroll: true })
+        })
+      },
+
+      clearSegmentValue(params) {
+        const { event, prop } = params
+        const { segment } = event
+        if (segment.isPlaceholder) {
+          // focus previous segment if the current segment is already a placeholder
+          return
+        }
+
+        const displayValue = getDisplayValue(params)
+        const formatter = prop("formatter")
+
+        const newValue = segment.text.slice(0, -1)
+
+        if (newValue === "" || newValue === "0") {
+          markSegmentInvalid(params, segment.type as DateSegment["type"])
+          setValue(params, displayValue)
+        } else {
+          setValue(
+            params,
+            setSegment(displayValue, segment.type as DateSegment["type"], newValue, formatter.resolvedOptions()),
+          )
+        }
+      },
+
+      invokeOnSegmentAdjust(params) {
+        const { event, context, prop } = params
+        const { segment, amount } = event
+        const type = segment.type as DateSegment["type"]
+        const validSegments = context.get("validSegments")
+        const formatter = prop("formatter")
+        const index = context.get("activeIndex")
+        const activeValidSegments = validSegments[index]
+
+        const displayValue = getDisplayValue(params)
+
+        if (!activeValidSegments?.[type]) {
+          markSegmentValid(params, type)
+          setValue(params, displayValue)
+        } else {
+          setValue(params, addSegment(displayValue, type, amount, formatter.resolvedOptions()))
+        }
+      },
     },
   },
 })
@@ -1168,4 +1377,92 @@ function setAdjustedValue(ctx: Params<DatePickerSchema>, value: AdjustDateReturn
   const focusedValue = context.get("focusedValue")
   if (isDateEqual(focusedValue, value.focusedDate)) return
   context.set("focusedValue", value.focusedDate)
+}
+
+/**
+ * If all segments are valid, use return value date, otherwise return the placeholder date.
+ */
+function getDisplayValue(ctx: Params<DatePickerSchema>) {
+  const { context, prop } = ctx
+  const index = context.get("activeIndex")
+  const validSegments = context.get("validSegments")
+  const allSegments = prop("allSegments")
+  const value = context.get("value")[index]
+  const placeholderValue = context.get("placeholderValue")
+  const activeValidSegments = validSegments[index]
+
+  return value && Object.keys(activeValidSegments).length >= Object.keys(allSegments).length ? value : placeholderValue
+}
+
+function markSegmentInvalid(ctx: Params<DatePickerSchema>, segmentType: SegmentType) {
+  const { context } = ctx
+  const validSegments = context.get("validSegments")
+  const index = context.get("activeIndex")
+  const activeValidSegments = validSegments[index]
+
+  if (activeValidSegments?.[segmentType]) {
+    delete activeValidSegments[segmentType]
+    context.set("validSegments", validSegments)
+  }
+}
+
+function markSegmentValid(ctx: Params<DatePickerSchema>, segmentType: SegmentType) {
+  const { context, prop } = ctx
+  const validSegments = context.get("validSegments")
+  const allSegments = prop("allSegments")
+  const index = context.get("activeIndex")
+  const activeValidSegments = validSegments[index]
+
+  if (!activeValidSegments?.[segmentType]) {
+    activeValidSegments[segmentType] = true
+    if (segmentType === "year" && allSegments.era) {
+      activeValidSegments.era = true
+    }
+    context.set("validSegments", validSegments)
+  }
+}
+
+// TODO: maybe move this to computed
+function isAllSegmentsCompleted(ctx: Params<DatePickerSchema>) {
+  const { context, prop } = ctx
+  const validSegments = context.get("validSegments")
+  const allSegments = prop("allSegments")
+  const index = context.get("activeIndex")
+  const activeValidSegments = validSegments[index]
+  const validKeys = Object.keys(activeValidSegments)
+  const allKeys = Object.keys(allSegments)
+
+  return (
+    validKeys.length >= allKeys.length ||
+    (validKeys.length === allKeys.length - 1 && allSegments.dayPeriod && !activeValidSegments.dayPeriod)
+  )
+}
+
+function setValue(ctx: Params<DatePickerSchema>, value: DateValue) {
+  const { context, prop } = ctx
+  if (prop("disabled") || prop("readOnly")) return
+  const validSegments = context.get("validSegments")
+  const allSegments = prop("allSegments")
+  const index = context.get("activeIndex")
+  const activeValidSegments = validSegments[index]
+  const validKeys = Object.keys(activeValidSegments)
+  const date = constrainValue(value, prop("min"), prop("max"))
+
+  if (isAllSegmentsCompleted(ctx)) {
+    if (validKeys.length === 0) {
+      validSegments[index] = { ...allSegments }
+      context.set("validSegments", validSegments)
+    }
+
+    const values = Array.from(context.get("value"))
+    values[index] = date
+    context.set("value", values)
+  } else {
+    context.set("placeholderValue", date)
+  }
+}
+
+function isNumberString(value: string) {
+  if (Number.isNaN(Number.parseInt(value))) return false
+  return true
 }
