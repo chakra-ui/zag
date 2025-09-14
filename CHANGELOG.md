@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 
 > For v0.x changelog, see the [v0 branch](https://github.com/chakra-ui/zag/blob/v0/CHANGELOG.md)
 
+## [1.24.1](./#1.24.1) - 2025-09-14
+
+### Fixed
+
+- **Core**: Fix issue where `mergeProps` throws when `props` is undefined or null
+
 ## [1.24.0](./#1.24.0) - 2025-09-13
 
 ### Added
