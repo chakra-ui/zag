@@ -1,5 +1,13 @@
 # @zag-js/interact-outside
 
+## 1.24.1
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/utils@1.24.1
+  - @zag-js/dom-query@1.24.1
+
 ## 1.24.0
 
 ### Patch Changes
