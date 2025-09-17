@@ -18,7 +18,7 @@ import {
   isValueAtMin,
   isValueWithinRange,
 } from "@zag-js/utils"
-import { recordCursor, restoreCursor } from "./cursor"
+import { restoreCursor } from "./cursor"
 import * as dom from "./number-input.dom"
 import type { HintValue, NumberInputSchema } from "./number-input.types"
 import { createFormatter, createParser, formatValue, getDefaultStep, parseValue } from "./number-input.utils"
