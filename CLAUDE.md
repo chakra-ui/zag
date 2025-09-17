@@ -87,6 +87,16 @@ pnpm generate-util      # Generate new utility package
 pnpm sync-pkgs          # Sync package dependencies
 ```
 
+### Creating Changesets
+```bash
+npx changeset           # Interactive changeset creation (may not work in all terminals)
+# Or create manually in .changeset/descriptive-name.md with format:
+# ---
+# "@zag-js/package-name": patch|minor|major
+# ---
+# User-facing description of changes
+```
+
 ## Code Organization Patterns
 
 ### Machine Structure
@@ -190,6 +200,9 @@ Utilities are organized by functionality:
 ### Common Issues
 1. **Build Failures**: Check TypeScript errors and missing dependencies
 2. **Test Failures**: Verify E2E test setup and browser compatibility
+   - E2E tests run against built code - changes need to be built first
+   - Use `pnpm pw-test {component}.e2e.ts` to run specific E2E tests
+   - Add `.only` to test declarations for focused testing
 3. **Framework Issues**: Check framework adapter implementation
 4. **Type Errors**: Ensure proper type exports and imports
 
@@ -198,6 +211,7 @@ Utilities are organized by functionality:
 2. Check E2E test results for cross-framework issues
 3. Verify accessibility with screen readers and keyboard navigation
 4. Test in multiple browsers
+5. For keyboard/input issues, check both the machine logic and the connect file event handlers
 
 ## Contributing
 1. Follow conventional commit format

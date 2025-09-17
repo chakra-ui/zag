@@ -116,4 +116,30 @@ test.describe("pin input", () => {
     await expect(page.locator(third)).toHaveValue("3")
     await expect(page.locator(third)).toBeFocused()
   })
+
+  test("native delete keyboard behavior", async ({ page }) => {
+    // Fill the pin input with values
+    await page.locator(first).fill("1")
+    await page.locator(second).fill("2")
+    await page.locator(third).fill("3")
+
+    // Focus on the second input
+    await page.locator(third).focus()
+
+    // Press cmd+backspace (delete to start of line)
+    await page.keyboard.press("Meta+Backspace")
+
+    // The input should be cleared
+    await expect(page.locator(third)).toHaveValue("")
+
+    // Test fn+delete (forward delete) - refill first
+    await page.locator(third).fill("2")
+    await page.locator(third).focus()
+    // Move cursor to start of input to test forward delete
+    await page.keyboard.press("Home")
+    await page.keyboard.press("Delete")
+
+    // The input should be cleared
+    await expect(page.locator(third)).toHaveValue("")
+  })
 })
