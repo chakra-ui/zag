@@ -13,6 +13,7 @@ import { roundToDpr } from "@zag-js/utils"
 import { parts } from "./number-input.anatomy"
 import * as dom from "./number-input.dom"
 import type { NumberInputApi, NumberInputService } from "./number-input.types"
+import { recordCursor } from "./cursor"
 
 export function connect<T extends PropTypes>(
   service: NumberInputService,
@@ -147,7 +148,8 @@ export function connect<T extends PropTypes>(
           send({ type: "INPUT.BLUR" })
         },
         onInput(event) {
-          send({ type: "INPUT.CHANGE", target: event.currentTarget, hint: "set" })
+          const selection = recordCursor(event.currentTarget, scope)
+          send({ type: "INPUT.CHANGE", target: event.currentTarget, hint: "set", selection })
         },
         onBeforeInput(event) {
           try {

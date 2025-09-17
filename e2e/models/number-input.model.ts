@@ -40,6 +40,10 @@ export class NumberInputModel extends Model {
     }
   }
 
+  async typeSequentially(value: string, options?: { delay: number }) {
+    return this.input.pressSequentially(value, options)
+  }
+
   async seeInputHasValue(value: string) {
     await expect(this.input).toHaveValue(value)
   }
@@ -56,8 +60,15 @@ export class NumberInputModel extends Model {
 
   async seeInputIsValid() {
     const isValid = await this.input.evaluate((el: HTMLInputElement) => el.checkValidity())
+    expect(isValid).toBe(true)
+  }
 
-    await expect(isValid).toBe(true)
+  async focusInput() {
+    await this.input.focus()
+  }
+
+  async selectInput() {
+    await this.input.selectText()
   }
 
   async clickInc() {

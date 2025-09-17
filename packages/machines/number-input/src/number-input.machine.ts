@@ -432,7 +432,7 @@ export const machine = createMachine({
       syncInputElement({ context, event, computed, scope }) {
         const value = event.type.endsWith("CHANGE") ? context.get("value") : computed("formattedValue")
         const inputEl = dom.getInputEl(scope)
-        const sel = recordCursor(inputEl, scope)
+        const sel = event.selection
         raf(() => {
           setElementValue(inputEl, value)
           restoreCursor(inputEl, sel, scope)
