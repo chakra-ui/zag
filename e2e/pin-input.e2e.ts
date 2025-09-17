@@ -126,8 +126,8 @@ test.describe("pin input", () => {
     // Focus on the second input
     await page.locator(third).focus()
 
-    // Press cmd+backspace (delete to start of line)
-    await page.keyboard.press("Meta+Backspace")
+    // Press ctrl/cmd+backspace (delete to start of line - cross-platform)
+    await page.keyboard.press("ControlOrMeta+Backspace")
 
     // The input should be cleared
     await expect(page.locator(third)).toHaveValue("")
