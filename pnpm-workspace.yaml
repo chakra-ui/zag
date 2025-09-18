@@ -1,6 +1,9 @@
 packages:
-  - "packages/**"
-  - "shared"
-  - "examples/**"
-  - "starters/**"
-  - "website"
+  - packages/**
+  - shared
+  - examples/**
+  - starters/**
+  - website
+
+onlyBuiltDependencies:
+  - sharp
