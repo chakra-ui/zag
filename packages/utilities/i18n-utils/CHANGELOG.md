@@ -1,5 +1,16 @@
 # @zag-js/i18n-utils
 
+## 1.24.2
+
+### Patch Changes
+
+- [#2723](https://github.com/chakra-ui/zag/pull/2723)
+  [`55197c8`](https://github.com/chakra-ui/zag/commit/55197c89fa86daa10c8ac0a7f2f4726c88584211) Thanks
+  [@IvanKalinin](https://github.com/IvanKalinin)! - - **formatBytes**: Support `unitSystem` property to allow changing
+  between decimal (1000 bytes) and binary (1024 bytes) systems.
+- Updated dependencies []:
+  - @zag-js/dom-query@1.24.2
+
 ## 1.24.1
 
 ### Patch Changes

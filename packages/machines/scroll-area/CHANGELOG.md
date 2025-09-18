@@ -1,5 +1,19 @@
 # @zag-js/scroll-area
 
+## 1.24.2
+
+### Patch Changes
+
+- [`5c759c5`](https://github.com/chakra-ui/zag/commit/5c759c5a468ae054e0447bb339979bce10a12d06) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix issue where resize tracking was not observing the root
+  element, which caused the scrollbar to not update when the root element's size changed.
+- Updated dependencies []:
+  - @zag-js/anatomy@1.24.2
+  - @zag-js/core@1.24.2
+  - @zag-js/types@1.24.2
+  - @zag-js/utils@1.24.2
+  - @zag-js/dom-query@1.24.2
+
 ## 1.24.1
 
 ### Patch Changes

@@ -1,5 +1,20 @@
 # @zag-js/number-input
 
+## 1.24.2
+
+### Patch Changes
+
+- [`063ee9b`](https://github.com/chakra-ui/zag/commit/063ee9bc99b38c13896c539ab4ec01b750f6d6d1) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - When `formatOptions` is used (like `style: "currency"`), the
+  cursor would jump to the end of the input when typing in the middle. The cursor now maintains its relative position
+  during formatting changes.
+- Updated dependencies []:
+  - @zag-js/anatomy@1.24.2
+  - @zag-js/core@1.24.2
+  - @zag-js/types@1.24.2
+  - @zag-js/utils@1.24.2
+  - @zag-js/dom-query@1.24.2
+
 ## 1.24.1
 
 ### Patch Changes
