@@ -1,5 +1,5 @@
 import type { ParsedHotkey, HotkeyOptions, RootNode } from "./types"
-import { getWin, mapCode } from "./utils"
+import { getWin, normalizeKey } from "./utils"
 import { getState, resetSequence } from "./state"
 import { parseHotkey, matchesHotkey, shouldTrigger } from "./parser"
 
@@ -71,7 +71,7 @@ function getHotkeyPriority(parsed: ParsedHotkey): number {
 // Find and execute matching hotkeys for a specific phase
 function executeMatchingHotkeys(root: RootNode, event: KeyboardEvent, capture: boolean): void {
   const { currentlyPressedKeys, registeredHotkeys, activeScopes } = getState(root)
-  const eventKey = mapCode(event.code || event.key)
+  const eventKey = normalizeKey(event.key, event.code)
   currentlyPressedKeys.add(eventKey)
 
   const matches: Array<{
@@ -127,7 +127,7 @@ function createKeyDownHandler(root: RootNode, isCapture: boolean) {
 function createKeyUpHandler(root: RootNode) {
   const handler = (event: KeyboardEvent) => {
     const { currentlyPressedKeys } = getState(root)
-    const eventKey = mapCode(event.code || event.key)
+    const eventKey = normalizeKey(event.key, event.code)
     currentlyPressedKeys.delete(eventKey)
   }
   return handler as EventListener

@@ -49,6 +49,11 @@ registerHotkey("meta+space", () => console.log("Spotlight on macOS"))
 // Different modifier names are supported
 registerHotkey("cmd+c", () => console.log("Copy")) // same as meta+c
 registerHotkey("option+f", () => console.log("Find")) // same as alt+f
+
+// Plus key support (Playwright-style)
+registerHotkey("ctrl++", () => console.log("Zoom in")) // Ctrl/Cmd + Plus
+registerHotkey("+", () => console.log("Plus key")) // Just the plus key
+registerHotkey("shift++", () => console.log("Shift + Plus"))
 ```
 
 ### Key Sequences

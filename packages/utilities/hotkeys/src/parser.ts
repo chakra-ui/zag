@@ -1,5 +1,55 @@
 import type { ParsedHotkey, HotkeyOptions } from "./types"
-import { mapCode, resolveCtrlOrMeta } from "./utils"
+import { normalizeKey, resolveControlOrMeta } from "./utils"
+
+// Normalize user input for modifiers
+function normalizeModifier(key: string): string {
+  const lower = key.toLowerCase()
+  switch (lower) {
+    case "ctrl":
+    case "control":
+      return "Control"
+    case "alt":
+    case "option":
+      return "Alt"
+    case "shift":
+      return "Shift"
+    case "meta":
+    case "cmd":
+    case "command":
+    case "win":
+    case "windows":
+      return "Meta"
+    default:
+      return key
+  }
+}
+
+// Context-aware parsing to handle plus key (Playwright-style)
+function parseHotkeyString(hotkey: string): { modifiers: string[]; key: string } {
+  const modifierSet = new Set(["control", "ctrl", "alt", "option", "shift", "meta", "cmd", "command", "win", "windows"])
+
+  const parts = hotkey.split("+").map((part) => part.trim())
+  const modifiers: string[] = []
+  let keyIndex = parts.length - 1 // Start from the end, assume last part is the key
+
+  // Process each part except the last one (which we assume is the key)
+  for (let i = 0; i < parts.length - 1; i++) {
+    const part = parts[i].toLowerCase()
+    const resolved = resolveControlOrMeta(part).toLowerCase()
+
+    if (modifierSet.has(resolved) || resolved === "mod" || resolved === "controlormeta") {
+      modifiers.push(parts[i]) // Keep original casing for processing
+    } else {
+      // This part is not a modifier, so everything from here is the key
+      keyIndex = i
+      break
+    }
+  }
+
+  // Join remaining parts as the key (handles cases like "Control++" where key is "+")
+  const key = parts.slice(keyIndex).join("+")
+  return { modifiers, key }
+}
 
 // Parse hotkey string into structured object
 export function parseHotkey(hotkey: string): ParsedHotkey {
@@ -7,9 +57,9 @@ export function parseHotkey(hotkey: string): ParsedHotkey {
 
   if (isSequence) {
     // For sequences, split by > and return all keys without modifiers
-    const sequenceKeys = hotkey.split(">").map((key) => key.trim().toLowerCase())
+    const sequenceKeys = hotkey.split(">").map((key) => key.trim())
     return {
-      keys: sequenceKeys.map(mapCode),
+      keys: sequenceKeys.map((k) => normalizeKey(k)),
       alt: false,
       ctrl: false,
       meta: false,
@@ -18,8 +68,8 @@ export function parseHotkey(hotkey: string): ParsedHotkey {
     }
   }
 
-  // For combinations, parse modifiers and key
-  const parts = hotkey.toLowerCase().split(/[\s+]+/)
+  // Use context-aware parsing for combinations
+  const { modifiers, key } = parseHotkeyString(hotkey)
   const result: ParsedHotkey = {
     keys: [],
     alt: false,
@@ -29,30 +79,30 @@ export function parseHotkey(hotkey: string): ParsedHotkey {
     isSequence: false,
   }
 
-  for (const part of parts) {
-    const resolvedPart = resolveCtrlOrMeta(part)
-    switch (resolvedPart) {
-      case "alt":
-      case "option":
+  // Process modifiers
+  for (const modifier of modifiers) {
+    const resolvedModifier = resolveControlOrMeta(modifier)
+    const normalized = normalizeModifier(resolvedModifier)
+
+    switch (normalized) {
+      case "Alt":
         result.alt = true
         break
-      case "ctrl":
-      case "control":
+      case "Control":
         result.ctrl = true
         break
-      case "meta":
-      case "cmd":
-      case "command":
+      case "Meta":
         result.meta = true
         break
-      case "shift":
+      case "Shift":
         result.shift = true
         break
-      default:
-        if (resolvedPart && ![">", "+"].includes(resolvedPart)) {
-          result.keys.push(mapCode(resolvedPart))
-        }
     }
+  }
+
+  // Process the main key (now we can handle "+" as a literal key)
+  if (key && key !== ">") {
+    result.keys.push(normalizeKey(key))
   }
 
   return result
@@ -67,7 +117,7 @@ export function matchesHotkey(parsed: ParsedHotkey, event: KeyboardEvent): boole
   if (parsed.shift !== event.shiftKey) return false
 
   // Check main key
-  const eventKey = mapCode(event.code || event.key)
+  const eventKey = normalizeKey(event.key, event.code)
   return parsed.keys.some((key) => key === eventKey)
 }
 

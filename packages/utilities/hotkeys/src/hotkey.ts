@@ -43,7 +43,18 @@ export function isHotkeyPressed(hotkey: string | string[], getRootNode?: () => R
 
   return hotkeys.some((key) => {
     const parsed = parseHotkey(key)
-    return parsed.keys.every((k) => currentlyPressedKeys.has(k))
+    // Check if all keys in the combination are currently pressed
+    const keysMatch = parsed.keys.every((k) => currentlyPressedKeys.has(k))
+
+    // For combinations with modifiers, we need to check those too
+    // The currentlyPressedKeys set contains normalized keys
+    const modifiersMatch =
+      (!parsed.alt || currentlyPressedKeys.has("Alt")) &&
+      (!parsed.ctrl || currentlyPressedKeys.has("Control")) &&
+      (!parsed.meta || currentlyPressedKeys.has("Meta")) &&
+      (!parsed.shift || currentlyPressedKeys.has("Shift"))
+
+    return keysMatch && modifiersMatch
   })
 }
 
