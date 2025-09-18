@@ -1,5 +1,36 @@
 # @zag-js/hover-card
 
+## 1.24.1
+
+### Patch Changes
+
+- Updated dependencies [[`ab0d4f7`](https://github.com/chakra-ui/zag/commit/ab0d4f73d6ca0571cb09ebad5bf724fe81e94ef8)]:
+  - @zag-js/core@1.24.1
+  - @zag-js/anatomy@1.24.1
+  - @zag-js/types@1.24.1
+  - @zag-js/utils@1.24.1
+  - @zag-js/dismissable@1.24.1
+  - @zag-js/dom-query@1.24.1
+  - @zag-js/popper@1.24.1
+
+## 1.24.0
+
+### Patch Changes
+
+- [`05bf5c1`](https://github.com/chakra-ui/zag/commit/05bf5c1037fb58e8f09e5bc78a04501e551d715d) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Change default delay values for hover card to improve
+  accessibility.
+  - `openDelay`: from `700ms` to `600ms`
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.24.0
+  - @zag-js/core@1.24.0
+  - @zag-js/types@1.24.0
+  - @zag-js/utils@1.24.0
+  - @zag-js/dismissable@1.24.0
+  - @zag-js/dom-query@1.24.0
+  - @zag-js/popper@1.24.0
+
 ## 1.23.0
 
 ### Minor Changes

@@ -439,7 +439,10 @@ export const machine = createMachine<ScrollAreaSchema>({
     effects: {
       trackContentResize({ scope, send }) {
         const contentEl = dom.getContentEl(scope)
-        if (!contentEl) return
+        const rootEl = dom.getRootEl(scope)
+
+        if (!contentEl || !rootEl) return
+
         const win = scope.getWin()
         const obs = new win.ResizeObserver(() => {
           // Use a small timeout to ensure scroll events are processed before resize adjustments
@@ -448,7 +451,10 @@ export const machine = createMachine<ScrollAreaSchema>({
             send({ type: "thumb.measure" })
           }, 1)
         })
+
         obs.observe(contentEl)
+        obs.observe(rootEl)
+
         return () => {
           obs.disconnect()
         }

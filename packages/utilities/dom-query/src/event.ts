@@ -4,7 +4,8 @@ import type { AnyPointerEvent, EventKeyOptions, NativeEvent } from "./types"
 
 export function getBeforeInputValue(event: Pick<InputEvent, "currentTarget">) {
   const { selectionStart, selectionEnd, value } = event.currentTarget as HTMLInputElement
-  return value.slice(0, selectionStart!) + (event as any).data + value.slice(selectionEnd!)
+  const data = (event as any).data
+  return value.slice(0, selectionStart!) + (data ?? "") + value.slice(selectionEnd!)
 }
 
 function getComposedPath(event: any): EventTarget[] | undefined {

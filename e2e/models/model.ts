@@ -1,5 +1,5 @@
 import { expect, type Page } from "@playwright/test"
-import { a11y, clickOutside, clickViz, controls, repeat } from "../_utils"
+import { a11y, clickOutside, clickViz, controls, repeat, retry } from "../_utils"
 
 export class Model {
   constructor(public page: Page) {}
@@ -50,6 +50,46 @@ export class Model {
       }
     })
     expect(value).toBe(position)
+  }
+
+  moveCaretTo(start: number) {
+    return this.page.evaluate(
+      ({ start }) => {
+        const el = document.activeElement
+        if (el instanceof HTMLInputElement || el instanceof HTMLTextAreaElement) {
+          el.setSelectionRange(start, start)
+        }
+      },
+      { start },
+    )
+  }
+
+  async selectPartialText(text: string) {
+    await this.page.evaluate(async (text) => {
+      const el = document.activeElement
+      if (el instanceof HTMLInputElement || el instanceof HTMLTextAreaElement) {
+        const value = el.value
+        const start = value.indexOf(text)
+        if (start !== -1) {
+          const end = start + text.length
+          el.setSelectionRange(start, end)
+          return { start, end }
+        }
+      }
+    }, text)
+  }
+
+  async seeSelectedText(text: string) {
+    await retry(async () => {
+      const selectedText = await this.page.evaluate(() => {
+        const el = document.activeElement
+        if (el instanceof HTMLInputElement) {
+          return el.value.substring(el.selectionStart || 0, el.selectionEnd || 0)
+        }
+        return ""
+      })
+      expect(selectedText).toBe(text)
+    })
   }
 
   moveCursorTo(pos: { x: number; y: number }) {

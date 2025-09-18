@@ -195,3 +195,34 @@ export function getCaret(input: Locator) {
     throw new Error("Element is not an input or textarea")
   })
 }
+
+export async function retry<T>(
+  fn: () => Promise<T>,
+  options: {
+    maxAttempts?: number
+    delay?: number
+    backoffMultiplier?: number
+  } = {},
+): Promise<T> {
+  const { maxAttempts = 3, delay = 100, backoffMultiplier = 1.5 } = options
+  let currentDelay = delay
+  let lastError: Error
+
+  for (let attempt = 1; attempt <= maxAttempts; attempt++) {
+    try {
+      return await fn()
+    } catch (error) {
+      lastError = error as Error
+
+      if (attempt === maxAttempts) {
+        throw lastError
+      }
+
+      // Wait before retrying
+      await new Promise((resolve) => setTimeout(resolve, currentDelay))
+      currentDelay = Math.floor(currentDelay * backoffMultiplier)
+    }
+  }
+
+  throw lastError!
+}

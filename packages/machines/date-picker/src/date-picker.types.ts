@@ -449,6 +449,7 @@ export interface TableCellState {
   valueText: string
   inRange: boolean
   value: DateValue
+  outsideRange?: boolean | undefined
   readonly disabled: boolean
 }
 
