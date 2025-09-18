@@ -24,10 +24,10 @@ function normalizeModifier(key: string): string {
   }
 }
 
+const MODIFIER_SET = new Set(["control", "ctrl", "alt", "option", "shift", "meta", "cmd", "command", "win", "windows"])
+
 // Context-aware parsing to handle plus key (Playwright-style)
 function parseHotkeyString(hotkey: string): { modifiers: string[]; key: string } {
-  const modifierSet = new Set(["control", "ctrl", "alt", "option", "shift", "meta", "cmd", "command", "win", "windows"])
-
   const parts = hotkey.split("+").map((part) => part.trim())
   const modifiers: string[] = []
   let keyIndex = parts.length - 1 // Start from the end, assume last part is the key
@@ -37,7 +37,7 @@ function parseHotkeyString(hotkey: string): { modifiers: string[]; key: string }
     const part = parts[i].toLowerCase()
     const resolved = resolveControlOrMeta(part).toLowerCase()
 
-    if (modifierSet.has(resolved) || resolved === "mod" || resolved === "controlormeta") {
+    if (MODIFIER_SET.has(resolved) || resolved === "mod" || resolved === "controlormeta") {
       modifiers.push(parts[i]) // Keep original casing for processing
     } else {
       // This part is not a modifier, so everything from here is the key
@@ -56,15 +56,74 @@ export function parseHotkey(hotkey: string): ParsedHotkey {
   const isSequence = hotkey.includes(">")
 
   if (isSequence) {
-    // For sequences, split by > and return all keys without modifiers
-    const sequenceKeys = hotkey.split(">").map((key) => key.trim())
+    // For sequences, parse each step individually to preserve modifiers
+    const sequenceParts = hotkey.split(">").map((part) => part.trim())
+    const sequenceSteps: Array<{
+      key: string
+      alt?: boolean
+      ctrl?: boolean
+      meta?: boolean
+      shift?: boolean
+    }> = []
+
+    const allKeys: string[] = []
+
+    for (const part of sequenceParts) {
+      if (part.includes("+")) {
+        // This step has modifiers
+        const { modifiers, key } = parseHotkeyString(part)
+        const step = {
+          key: normalizeKey(key),
+          alt: false,
+          ctrl: false,
+          meta: false,
+          shift: false,
+        }
+
+        // Process modifiers for this step
+        for (const modifier of modifiers) {
+          const resolvedModifier = resolveControlOrMeta(modifier)
+          const normalized = normalizeModifier(resolvedModifier)
+          switch (normalized) {
+            case "Alt":
+              step.alt = true
+              break
+            case "Control":
+              step.ctrl = true
+              break
+            case "Meta":
+              step.meta = true
+              break
+            case "Shift":
+              step.shift = true
+              break
+          }
+        }
+
+        sequenceSteps.push(step)
+        allKeys.push(step.key)
+      } else {
+        // Simple key without modifiers
+        const key = normalizeKey(part)
+        sequenceSteps.push({
+          key,
+          alt: false,
+          ctrl: false,
+          meta: false,
+          shift: false,
+        })
+        allKeys.push(key)
+      }
+    }
+
     return {
-      keys: sequenceKeys.map((k) => normalizeKey(k)),
+      keys: allKeys,
       alt: false,
       ctrl: false,
       meta: false,
       shift: false,
       isSequence: true,
+      sequenceSteps,
     }
   }
 
@@ -121,23 +180,35 @@ export function matchesHotkey(parsed: ParsedHotkey, event: KeyboardEvent): boole
   return parsed.keys.some((key) => key === eventKey)
 }
 
-// Check if hotkey should be enabled in current context
-export function shouldTrigger(event: KeyboardEvent, options: HotkeyOptions, activeScopes: Set<string>): boolean {
-  if (!options.enabled) return false
+const FORM_TAGS = new Set(["input", "textarea", "select"])
+const getEventTarget = (event: KeyboardEvent): Element | null => {
+  const target = event.composedPath?.()[0] || event.target
+  return target instanceof Element ? target : null
+}
 
-  // Check scopes
-  if (options.scopes) {
-    const hotkeyScopes = Array.isArray(options.scopes) ? options.scopes : [options.scopes]
-    const hasMatchingScope = hotkeyScopes.some((scope) => activeScopes.has(scope) || activeScopes.has("*"))
-    if (!hasMatchingScope) return false
+// Check if hotkey should be enabled in current context
+export function shouldTrigger(event: KeyboardEvent, options: HotkeyOptions): boolean {
+  const target = getEventTarget(event)
+  if (!target) return true // If we can't determine target, allow the hotkey
+
+  const tagName = target.localName
+  const isContentEditable = target.getAttribute("contenteditable") === "true"
+
+  // Check form elements
+  const isFormElement = FORM_TAGS.has(tagName as any)
+
+  if (isFormElement) {
+    if (options.enableOnFormTags === false || options.enableOnFormTags === undefined) {
+      return false
+    }
+    if (Array.isArray(options.enableOnFormTags)) {
+      if (!options.enableOnFormTags.includes(tagName as any)) {
+        return false
+      }
+    }
+    // If enableOnFormTags === true, allow all form elements
   }
 
-  const target = (event.composedPath?.()[0] || event.target) as HTMLElement
-  const tagName = target?.localName
-  const isFormElement = ["input", "textarea", "select"].includes(tagName)
-  const isContentEditable = target?.contentEditable === "true"
-
-  if (isFormElement && !options.enableOnFormTags) return false
   if (isContentEditable && !options.enableOnContentEditable) return false
 
   return true

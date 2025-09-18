@@ -1,423 +1,575 @@
 # @zag-js/hotkeys
 
-A lightweight, TypeScript-first utility for managing keyboard shortcuts and hotkey sequences. Supports both regular DOM
-and Shadow DOM contexts with automatic cleanup and memory management.
+A TypeScript-first hotkey management system with context-aware scoping and command metadata. Built for modern applications that need sophisticated keyboard shortcut management.
 
 ## Installation
 
 ```sh
-yarn add @zag-js/hotkeys
+pnpm add @zag-js/hotkeys
 # or
 npm i @zag-js/hotkeys
 ```
 
 ## Features
 
-- 🎯 **Simple API** - Register hotkeys with a single function call
-- 🔥 **Key Sequences** - Support for vim-like key sequences (e.g., `"g>g"`)
-- 🌗 **Shadow DOM** - Works seamlessly in both regular DOM and Shadow DOM
-- 🧹 **Auto Cleanup** - Automatic event listener management and memory cleanup
-- ⚡ **TypeScript** - Full type safety with TypeScript support
-- 🎛️ **Configurable** - Extensive options for customization
-- 📦 **Lightweight** - Minimal bundle size with tree-shaking support
+- 🎯 **Store-based Architecture** - Centralized hotkey management with reactive state
+- 🔄 **Context-Aware** - Pass typed context to command actions
+- 🎚️ **Scoped Hotkeys** - Enable/disable hotkey groups based on app state
+- 📋 **Command Metadata** - Rich command information for command palettes
+- 🔗 **Key Sequences** - Support for vim-like sequences (e.g., `"G > H"`)
+- 🌗 **Shadow DOM** - Works in both regular DOM and Shadow DOM
+- ⚡ **TypeScript** - Full type safety with generic context support
+- 🧹 **Auto Cleanup** - Automatic event listener management
 
-## Basic Usage
-
-### Register a Simple Hotkey
+## Quick Start
 
 ```typescript
-import { registerHotkey } from "@zag-js/hotkeys"
+import { createHotkeyStore } from "@zag-js/hotkeys"
 
-// Register a hotkey
-const cleanup = registerHotkey("ctrl+s", (event) => {
-  console.log("Save shortcut pressed!")
-  // Your save logic here
+// Create store with typed context
+interface AppContext {
+  user: string
+  theme: "dark" | "light"
+}
+
+const store = createHotkeyStore<AppContext>()
+
+// Initialize with DOM and context
+store.initialize({
+  rootNode: document,
+  defaultContext: { user: "john", theme: "dark" }
 })
 
-// Clean up when done
-cleanup()
+// Register commands
+store.register([
+  {
+    id: "save",
+    hotkey: "Control+S",
+    label: "Save Document",
+    action: (context, event) => {
+      console.log(`Saving for ${context.user}`)
+    }
+  },
+  {
+    id: "toggle-theme",
+    hotkey: "Control+T",
+    action: (context) => {
+      const newTheme = context.theme === "dark" ? "light" : "dark"
+      store.setContext({ ...context, theme: newTheme })
+    }
+  }
+])
+
+// Cleanup when done
+store.destroy()
 ```
 
-### Key Combinations
+## Core API
+
+### Creating a Store
 
 ```typescript
-// Modifier keys
-registerHotkey("ctrl+shift+z", () => console.log("Redo"))
-registerHotkey("alt+tab", () => console.log("Switch window"))
-registerHotkey("meta+space", () => console.log("Spotlight on macOS"))
+import { createHotkeyStore } from "@zag-js/hotkeys"
 
-// Different modifier names are supported
-registerHotkey("cmd+c", () => console.log("Copy")) // same as meta+c
-registerHotkey("option+f", () => console.log("Find")) // same as alt+f
+// Basic store
+const store = createHotkeyStore()
 
-// Plus key support (Playwright-style)
-registerHotkey("ctrl++", () => console.log("Zoom in")) // Ctrl/Cmd + Plus
-registerHotkey("+", () => console.log("Plus key")) // Just the plus key
-registerHotkey("shift++", () => console.log("Shift + Plus"))
-```
+// With options
+const store = createHotkeyStore({
+  defaultActiveScopes: ["global", "editor"],
+  sequenceTimeoutMs: 1500
+})
 
-### Key Sequences
+// With typed context
+interface MyContext {
+  userId: string
+  permissions: string[]
+}
 
-```typescript
-// Vim-like sequences
-registerHotkey("g>g", () => console.log("Go to top"))
-registerHotkey("d>d", () => console.log("Delete line"))
-
-// Custom sequence timeout
-registerHotkey("g>g", () => console.log("Go to top"), {
-  sequenceTimeoutMs: 1500, // Wait 1.5s for sequence completion
+const store = createHotkeyStore<MyContext>({
+  defaultActiveScopes: ["app"]
 })
 ```
 
-### Event Capturing
-
-Control when your hotkeys are triggered during the event propagation phase:
+### Initialization
 
 ```typescript
-import { registerHotkey } from "@zag-js/hotkeys"
-
-// Capture phase (default) - triggers before child elements
-registerHotkey("ctrl+s", saveHandler, { capture: true })
-
-// Bubble phase - triggers after child elements
-registerHotkey("esc", closeModal, { capture: false })
-
-// Mixed usage - same key can have different handlers for different phases
-registerHotkey("tab", handleTabCapture, { capture: true }) // Runs first
-registerHotkey("tab", handleTabBubble, { capture: false }) // Runs after
+// Initialize with DOM and context
+store.initialize({
+  rootNode: document, // or shadowRoot
+  defaultContext: { userId: "123", permissions: ["read", "write"] }
+})
 ```
 
-**Use Cases:**
-
-- **Capture (default)**: Intercept keys before they reach form elements
-- **Bubble**: Handle keys after child elements have processed them
-- **Mixed**: Different behavior at different event phases
-
-### Overlapping Hotkeys Priority
-
-The library automatically handles overlapping hotkeys by prioritizing more specific combinations:
+### Command Registration
 
 ```typescript
-import { registerHotkey } from "@zag-js/hotkeys"
-
-// Less specific hotkey
-registerHotkey("d", () => console.log("Delete"))
-
-// More specific hotkey - this will take priority when both g and d are pressed
-registerHotkey("g+d", () => console.log("Go to definition"))
-
-// When you press g+d, only "Go to definition" will execute
-// When you press just d, "Delete" will execute
+store.register([
+  {
+    id: "save-file",
+    hotkey: "Control+S",
+    label: "Save File",
+    description: "Save the current document",
+    category: "File",
+    keywords: ["save", "persist", "store"],
+    scopes: ["editor"],
+    action: async (context, event) => {
+      // Your save logic here
+      console.log("Saving...")
+    },
+    options: {
+      preventDefault: true,
+      enableOnFormTags: false
+    }
+  },
+  {
+    id: "zoom-in",
+    hotkey: "Control++",
+    label: "Zoom In",
+    action: (context) => {
+      // Handle zoom
+    }
+  }
+])
 ```
 
-For even more control, use the `exactMatch` option:
+### Command Definition Properties
 
 ```typescript
-// This will ONLY execute when exactly these keys are pressed
-registerHotkey("ctrl+s", saveFile, { exactMatch: true })
-
-// This allows other combinations that include these keys
-registerHotkey("s", searchHandler) // Will still work with ctrl+s unless exactMatch is used above
+interface CommandDefinition<TContext = any> {
+  id: string                    // Unique identifier
+  hotkey: string               // Key combination
+  action: HotkeyAction<TContext> // Function to execute
+  label?: string               // Display name
+  description?: string         // What the command does
+  category?: string           // Grouping (File, Edit, View, etc.)
+  keywords?: string[]         // Search terms
+  scopes?: string | string[]  // When command is active
+  enabled?: boolean | ((context: TContext) => boolean)
+  options?: HotkeyOptions     // Behavior configuration
+}
 ```
 
-### Scoped Hotkeys
+## Scope Management
 
-Use scopes to enable/disable groups of hotkeys based on application state:
+Scopes control **when** hotkeys are active, enabling context-sensitive keyboard shortcuts.
+
+### Basic Scope Operations
 
 ```typescript
-import { registerHotkey, setScope, addScope, removeScope } from "@zag-js/hotkeys"
+// Set active scopes (replaces current)
+store.setScope(["editor", "sidebar"])
 
-// Register hotkeys with specific scopes
-registerHotkey("ctrl+s", saveFile, { scopes: "editor" })
-registerHotkey("ctrl+z", undo, { scopes: "editor" })
-registerHotkey("esc", closeModal, { scopes: "modal" })
-registerHotkey("ctrl+n", newFile, { scopes: "*" }) // Always active
-
-// Set active scope (replaces all current scopes)
-setScope("editor") // Only editor hotkeys will work
-
-// Add additional scopes
-addScope("modal") // Both editor and modal hotkeys work
+// Add scope without replacing others
+store.addScope("modal")
 
 // Remove specific scope
-removeScope("modal") // Only editor hotkeys work
+store.removeScope("sidebar")
 
-// Multiple scopes for a hotkey
-registerHotkey("ctrl+f", find, { scopes: ["editor", "viewer"] })
+// Toggle scope on/off
+store.toggleScope("debug")
+
+// Check current scopes
+const scopes = store.getActiveScopes() // ["editor", "modal", "debug"]
 ```
 
-## Advanced Usage
+### Scope Use Cases
 
-### Using with Shadow DOM
+#### 1. Modal/Overlay Management
+```typescript
+// Register modal-specific hotkeys
+store.register([
+  {
+    id: "close-modal",
+    hotkey: "Escape",
+    scopes: ["modal"],
+    action: () => closeModal()
+  },
+  {
+    id: "confirm-action",
+    hotkey: "Enter",
+    scopes: ["modal"],
+    action: () => confirmAction()
+  }
+])
+
+// When modal opens
+function openModal() {
+  store.setScope(["modal"]) // Only modal hotkeys active
+  showModal()
+}
+
+// When modal closes
+function closeModal() {
+  store.setScope(["global"]) // Restore global hotkeys
+  hideModal()
+}
+```
+
+#### 2. Application Modes
+```typescript
+// Register mode-specific hotkeys
+store.register([
+  {
+    id: "vim-movement",
+    hotkey: "H",
+    scopes: ["vim-mode"],
+    action: () => moveCursorLeft()
+  },
+  {
+    id: "normal-backspace",
+    hotkey: "Backspace",
+    scopes: ["normal-mode"],
+    action: () => deleteCharacter()
+  }
+])
+
+// Switch modes
+function enableVimMode() {
+  store.setScope(["global", "vim-mode"])
+}
+
+function enableNormalMode() {
+  store.setScope(["global", "normal-mode"])
+}
+```
+
+#### 3. Feature Gating
+```typescript
+// Pro features
+store.register([
+  {
+    id: "advanced-search",
+    hotkey: "Control+Shift+F",
+    scopes: ["pro-features"],
+    action: () => openAdvancedSearch()
+  }
+])
+
+// Enable based on user subscription
+if (user.isPro) {
+  store.addScope("pro-features")
+}
+```
+
+#### 4. Context-Sensitive Actions
+```typescript
+// Same hotkey, different actions
+store.register([
+  {
+    id: "save-document",
+    hotkey: "Control+S",
+    scopes: ["editor"],
+    action: () => saveDocument()
+  },
+  {
+    id: "save-settings",
+    hotkey: "Control+S",
+    scopes: ["settings"],
+    action: () => saveSettings()
+  }
+])
+```
+
+### Default Scope Behavior
+
+- **`["*"]`** - Always active (default)
+- **Empty scopes** - Same as `["*"]`
+- **Multiple scopes** - Command active if ANY scope matches
+- **No active scopes** - Only `["*"]` commands work
+
+## Context Management
+
+Pass typed data to command actions and update it dynamically.
 
 ```typescript
-import { registerHotkey, createHotkeyManager } from "@zag-js/hotkeys"
+interface AppContext {
+  user: { id: string; name: string }
+  document: { id: string; modified: boolean }
+  selection: { start: number; end: number }
+}
 
-// For a specific shadow root
-const shadowRoot = element.shadowRoot!
+const store = createHotkeyStore<AppContext>()
 
-registerHotkey("ctrl+c", copyHandler, {
-  getRootNode: () => shadowRoot,
+store.register([
+  {
+    id: "save",
+    hotkey: "Control+S",
+    action: (context, event) => {
+      // Fully typed context
+      saveDocument(context.document.id, context.user.id)
+
+      // Update context
+      store.setContext({
+        ...context,
+        document: { ...context.document, modified: false }
+      })
+    }
+  },
+  {
+    id: "delete-selection",
+    hotkey: "Delete",
+    enabled: (context) => context.selection.start !== context.selection.end,
+    action: (context) => {
+      deleteText(context.selection.start, context.selection.end)
+    }
+  }
+])
+
+// Update context from elsewhere
+function onSelectionChange(start: number, end: number) {
+  const context = store.getContext()
+  store.setContext({
+    ...context,
+    selection: { start, end }
+  })
+}
+```
+
+## Key Sequences
+
+Support for vim-like key sequences with configurable timeouts.
+
+```typescript
+store.register([
+  {
+    id: "go-to-line",
+    hotkey: "G > G", // Press G, then G within timeout
+    action: () => goToFirstLine()
+  },
+  {
+    id: "delete-line",
+    hotkey: "D > D",
+    action: () => deleteLine()
+  }
+])
+
+// Configure sequence timeout
+const store = createHotkeyStore({
+  sequenceTimeoutMs: 1500 // 1.5 seconds to complete sequence
 })
-
-// Or use a manager for multiple hotkeys
-const manager = createHotkeyManager(() => shadowRoot)
-manager.register("ctrl+v", pasteHandler).register("ctrl+x", cutHandler)
 ```
 
-### Hotkey Manager
-
-For managing multiple hotkeys with automatic cleanup:
-
-```typescript
-import { createHotkeyManager } from "@zag-js/hotkeys"
-
-const manager = createHotkeyManager()
-
-// Register multiple hotkeys
-manager
-  .register("ctrl+s", saveFile)
-  .register("ctrl+o", openFile)
-  .register("ctrl+n", newFile)
-  .register("esc", closeModal)
-
-// Unregister specific hotkey
-manager.unregister("esc")
-
-// Clear all hotkeys
-manager.clear()
-
-// Clean up everything
-manager.destroy()
-```
-
-## Configuration Options
+## Command Options
 
 ```typescript
 interface HotkeyOptions {
-  enabled?: boolean // Enable/disable hotkey (default: true)
-  preventDefault?: boolean // Prevent default browser behavior (default: true)
-  stopPropagation?: boolean // Stop event propagation (default: false)
-  enableOnFormTags?: boolean // Allow in form elements (default: false)
-  enableOnContentEditable?: boolean // Allow in contentEditable (default: false)
-  scopes?: string | string[] // Scopes where hotkey is active (default: all)
-  sequenceTimeoutMs?: number // Sequence timeout in ms (default: 1000)
-  getRootNode?: () => Document | ShadowRoot // Custom root node (default: document)
-  exactMatch?: boolean // Only execute this hotkey, block less specific ones (default: false)
-  capture?: boolean // Use capture phase for event listeners (default: true)
-}
-```
-
-### Example with Options
-
-```typescript
-registerHotkey("ctrl+s", saveHandler, {
-  preventDefault: true, // Prevent browser's save dialog
-  enableOnFormTags: true, // Allow when focused on inputs
-  enableOnContentEditable: true, // Allow in contentEditable elements
-  capture: false, // Use bubble phase instead of capture
-  exactMatch: true, // Only this exact combination
-})
-```
-
-## Utility Functions
-
-### Check Currently Pressed Keys
-
-```typescript
-import { isHotkeyPressed, getCurrentlyPressedKeys } from "@zag-js/hotkeys"
-
-// Check if specific keys are pressed
-if (isHotkeyPressed("shift")) {
-  console.log("Shift is currently pressed")
+  preventDefault?: boolean           // Prevent browser default (default: true)
+  stopPropagation?: boolean         // Stop event bubbling (default: false)
+  enableOnFormTags?: boolean | FormTagName[] // Allow in form elements
+  enableOnContentEditable?: boolean // Allow in contentEditable elements
+  capture?: boolean                 // Use capture phase (default: true)
 }
 
-// Get all currently pressed keys
-const pressedKeys = getCurrentlyPressedKeys()
-console.log("Currently pressed:", pressedKeys)
+store.register([
+  {
+    id: "submit-form",
+    hotkey: "Control+Enter",
+    action: () => submitForm(),
+    options: {
+      enableOnFormTags: true, // Works in inputs/textareas
+      preventDefault: false   // Don't block default behavior
+    }
+  }
+])
 ```
 
-### Global Cleanup
+## State Subscription
+
+React to store state changes for UI updates.
 
 ```typescript
-import { clearAllHotkeys } from "@zag-js/hotkeys"
+// Subscribe to specific state changes
+const unsubscribe = store.subscribe(
+  (state, context) => state.commands.size, // Selector
+  (commandCount) => {
+    console.log(`${commandCount} commands registered`)
+  }
+)
 
-// Clear all registered hotkeys for document
-clearAllHotkeys()
+// Subscribe to active scopes
+store.subscribe(
+  (state) => Array.from(state.activeScopes),
+  (scopes) => updateUI(scopes)
+)
 
-// Clear for specific shadow root
-clearAllHotkeys(() => shadowRoot)
+// Cleanup subscription
+unsubscribe()
 ```
-
-### Scope Management
-
-```typescript
-import { setScope, addScope, removeScope, getActiveScopes, isScopeActive } from "@zag-js/hotkeys"
-
-// Check current scopes
-console.log(getActiveScopes()) // ['*'] (default)
-
-// Set specific scopes
-setScope(["editor", "sidebar"])
-
-// Add scope without replacing others
-addScope("toolbar")
-
-// Remove specific scope
-removeScope("sidebar")
-
-// Check if scope is active
-if (isScopeActive("editor")) {
-  console.log("Editor hotkeys are active")
-}
-
-// Scope management with shadow DOM
-setScope("modal", () => shadowRoot)
-```
-
-## Key Mapping
-
-The library normalizes key names for consistency:
-
-```typescript
-// These are equivalent:
-registerHotkey("ctrl+s", handler)
-registerHotkey("control+s", handler)
-
-// These are equivalent:
-registerHotkey("meta+space", handler) // meta key
-registerHotkey("cmd+space", handler) // macOS command key
-registerHotkey("command+space", handler)
-
-// These are equivalent:
-registerHotkey("alt+tab", handler)
-registerHotkey("option+tab", handler) // macOS option key
-
-// Cross-platform modifier - resolves to Ctrl on Windows/Linux, Cmd on macOS
-registerHotkey("ctrlOrMeta+s", handler) // Ctrl+S on Windows/Linux, Cmd+S on macOS
-registerHotkey("ctrlOrMeta+c", copyHandler) // Cross-platform copy
-```
-
-## Cross-Platform Shortcuts
-
-Use `ctrlOrMeta` for shortcuts that should work consistently across platforms:
-
-```typescript
-import { registerHotkey } from '@zag-js/hotkeys'
-
-// Standard cross-platform shortcuts
-registerHotkey('ctrlOrMeta+s', saveFile)     // Ctrl+S (Win/Linux) / Cmd+S (Mac)
-registerHotkey('ctrlOrMeta+c', copy)         // Ctrl+C (Win/Linux) / Cmd+C (Mac)
-registerHotkey('ctrlOrMeta+v', paste)        // Ctrl+V (Win/Linux) / Cmd+V (Mac)
-registerHotkey('ctrlOrMeta+z', undo)         // Ctrl+Z (Win/Linux) / Cmd+Z (Mac)
-registerHotkey('ctrlOrMeta+shift+z', redo)   // Cross-platform redo
-
-// Platform detection utility
-import { isMac } from '@zag-js/hotkeys'
-
-if (isMac()) {
-  console.log('Running on macOS - using Cmd key')
-} else {
-  console.log('Running on Windows/Linux - using Ctrl key')
-}
-```
-
-**Why use ctrlOrMeta?**
-- **Consistent UX**: Users get familiar shortcuts regardless of platform
-- **Less code**: One registration instead of platform-specific logic
-- **Automatic**: No need to manually detect platform in your app
 
 ## Framework Integration
 
-### React
+### React Hook
 
 ```typescript
-import { useEffect } from 'react'
-import { registerHotkey, setScope } from '@zag-js/hotkeys'
+import { useEffect } from "react"
+import { createHotkeyStore } from "@zag-js/hotkeys"
 
-function useHotkey(keys: string, handler: (event: KeyboardEvent) => void) {
+function useHotkeyStore<T>(context: T) {
+  const [store] = useState(() => createHotkeyStore<T>())
+
   useEffect(() => {
-    const cleanup = registerHotkey(keys, handler)
-    return cleanup
-  }, [keys, handler])
+    store.initialize({
+      rootNode: document,
+      defaultContext: context
+    })
+
+    return () => store.destroy()
+  }, [])
+
+  useEffect(() => {
+    store.setContext(context)
+  }, [context])
+
+  return store
 }
 
-// Usage with scopes
+// Usage
 function MyComponent() {
-  useHotkey('ctrl+s', () => {
-    // Save logic
-  })
+  const store = useHotkeyStore({ userId: "123" })
 
   useEffect(() => {
-    // Set scope when component mounts
-    setScope('editor')
-    return () => setScope('*') // Reset to default
+    store.register([
+      {
+        id: "save",
+        hotkey: "Control+S",
+        action: (context) => save(context.userId)
+      }
+    ])
   }, [])
 
   return <div>Press Ctrl+S to save</div>
 }
 ```
 
-### Vue
+### Vue Composable
 
 ```typescript
-import { onMounted, onUnmounted } from "vue"
-import { registerHotkey } from "@zag-js/hotkeys"
+import { onMounted, onUnmounted, watch } from "vue"
+import { createHotkeyStore } from "@zag-js/hotkeys"
 
-export function useHotkey(keys: string, handler: (event: KeyboardEvent) => void) {
-  let cleanup: (() => void) | null = null
+export function useHotkeyStore<T>(context: Ref<T>) {
+  const store = createHotkeyStore<T>()
 
   onMounted(() => {
-    cleanup = registerHotkey(keys, handler)
+    store.initialize({
+      rootNode: document,
+      defaultContext: context.value
+    })
   })
 
+  watch(context, (newContext) => {
+    store.setContext(newContext)
+  }, { deep: true })
+
   onUnmounted(() => {
-    cleanup?.()
+    store.destroy()
   })
+
+  return store
+}
+```
+
+## Cross-Platform Support
+
+Handle platform differences automatically:
+
+```typescript
+store.register([
+  {
+    id: "save",
+    hotkey: "ControlOrMeta+S", // Ctrl on Windows/Linux, Cmd on macOS
+    action: () => save()
+  },
+  {
+    id: "copy",
+    hotkey: "mod+C", // Same as ControlOrMeta
+    action: () => copy()
+  }
+])
+```
+
+## Command Palette Integration
+
+The metadata-rich command system is designed for command palette integration:
+
+```typescript
+// Commands with rich metadata
+store.register([
+  {
+    id: "open-file",
+    hotkey: "Control+O",
+    label: "Open File",
+    description: "Open a file from disk",
+    category: "File",
+    keywords: ["open", "load", "import", "file"],
+    action: () => openFile()
+  }
+])
+
+// Get all commands for palette
+const commands = Array.from(store.getState().commands.values())
+
+// Filter by category
+const fileCommands = commands.filter(cmd => cmd.category === "File")
+
+// Search by keywords
+function searchCommands(query: string) {
+  return commands.filter(cmd =>
+    cmd.label?.toLowerCase().includes(query.toLowerCase()) ||
+    cmd.description?.toLowerCase().includes(query.toLowerCase()) ||
+    cmd.keywords?.some(keyword =>
+      keyword.toLowerCase().includes(query.toLowerCase())
+    )
+  )
 }
 ```
 
 ## TypeScript Support
 
-Full TypeScript support with comprehensive type definitions:
+Full type safety with generic context support:
 
 ```typescript
-import type { HotkeyCallback, HotkeyOptions, ParsedHotkey, KeyboardModifiers } from "@zag-js/hotkeys"
+import type {
+  HotkeyStore,
+  CommandDefinition,
+  HotkeyAction,
+  HotkeyOptions
+} from "@zag-js/hotkeys"
 
-const callback: HotkeyCallback = (event) => {
-  // event is properly typed as KeyboardEvent
-  console.log("Key pressed:", event.key)
+interface MyContext {
+  userId: string
+  theme: "light" | "dark"
 }
 
-const options: HotkeyOptions = {
-  enabled: true,
-  preventDefault: true,
-  // ... other options with full IntelliSense
+const store: HotkeyStore<MyContext> = createHotkeyStore<MyContext>()
+
+const command: CommandDefinition<MyContext> = {
+  id: "toggle-theme",
+  hotkey: "Control+T",
+  action: (context: MyContext, event: KeyboardEvent) => {
+    // Fully typed context and event
+    const newTheme = context.theme === "light" ? "dark" : "light"
+    store.setContext({ ...context, theme: newTheme })
+  }
 }
 ```
 
 ## Best Practices
 
-1. **Always clean up**: Use the returned cleanup function to prevent memory leaks
-2. **Use managers for multiple hotkeys**: Simplifies management and cleanup
-3. **Be specific with modifiers**: Use exact modifier combinations to avoid conflicts
-4. **Consider form elements**: Set `enableOnFormTags` appropriately for your use case
-5. **Test sequences**: Verify sequence timeouts work well for your users
+1. **Use scopes for context**: Group related hotkeys and enable/disable based on app state
+2. **Provide rich metadata**: Include labels, descriptions, and keywords for better UX
+3. **Type your context**: Use TypeScript generics for type-safe context handling
+4. **Clean up properly**: Always call `store.destroy()` when done
+5. **Consider sequences carefully**: Set appropriate timeouts for key sequences
+6. **Test across platforms**: Verify cross-platform shortcuts work as expected
 
 ## Browser Support
 
 - Chrome/Edge 88+
 - Firefox 85+
 - Safari 14+
-- Any browser with support for:
-  - `addEventListener` with capture
-  - `KeyboardEvent` properties
-  - `ShadowRoot` (for Shadow DOM features)
-
-## Contribution
-
-Yes please! See the [contributing guidelines](https://github.com/chakra-ui/zag/blob/main/CONTRIBUTING.md) for details.
 
 ## License
 
-This project is licensed under the terms of the [MIT license](https://github.com/chakra-ui/zag/blob/main/LICENSE).
+MIT License

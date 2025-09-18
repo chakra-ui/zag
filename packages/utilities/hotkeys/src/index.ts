@@ -1,8 +1,13 @@
-export { clearAllHotkeys, getCurrentlyPressedKeys, isHotkeyPressed, registerHotkey } from "./hotkey"
-export { startListening, stopListening, updateListeners } from "./listeners"
-export { createHotkeyManager, HotkeyManager } from "./manager"
-export { matchesHotkey, parseHotkey, shouldTrigger } from "./parser"
-export { addScope, getActiveScopes, isScopeActive, removeScope, setScope } from "./scopes"
-export { getState, resetSequence } from "./state"
-export type { HotkeyCallback, HotkeyOptions, HotkeyState, KeyboardModifiers, ParsedHotkey } from "./types"
-export { getDoc, getWin, isMac, normalizeKey, resolveControlOrMeta } from "./utils"
+export { createHotkeyStore, HotkeyStore } from "./store"
+export type {
+  CommandDefinition,
+  FormTagName,
+  HotkeyAction,
+  HotkeyCommand,
+  HotkeyOptions,
+  HotkeyStoreInit,
+  HotkeyStoreOptions,
+  HotkeyStoreState,
+  KeyboardModifiers,
+  ParsedHotkey,
+} from "./types"
