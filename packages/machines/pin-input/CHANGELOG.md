@@ -1,5 +1,19 @@
 # @zag-js/pin-input
 
+## 1.24.2
+
+### Patch Changes
+
+- [`18c3f4c`](https://github.com/chakra-ui/zag/commit/18c3f4c5ea8a27d3f7bbd42691e9a7af967eb70a) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix issue where using the keyboard shortcuts `Cmd+Backspace` and
+  `Cmd+Delete` to delete text in pin inputs would insert "undefined" instead of clearing the field.
+- Updated dependencies []:
+  - @zag-js/anatomy@1.24.2
+  - @zag-js/core@1.24.2
+  - @zag-js/types@1.24.2
+  - @zag-js/utils@1.24.2
+  - @zag-js/dom-query@1.24.2
+
 ## 1.24.1
 
 ### Patch Changes
