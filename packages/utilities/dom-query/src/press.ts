@@ -1,5 +1,5 @@
 import { addDomEvent, getEventPoint, getEventTarget } from "./event"
-import { contains, getDocument, getWindow } from "./node"
+import { contains, getWindow, isActiveElement } from "./node"
 import { noop, pipe } from "./shared"
 import type { Point } from "./types"
 
@@ -54,7 +54,6 @@ export function trackPress(options: TrackPressOptions) {
   if (!pointerNode) return noop
 
   const win = getWindow(pointerNode)
-  const doc = getDocument(pointerNode)
 
   let removeStartListeners: VoidFunction = noop
   let removeEndListeners: VoidFunction = noop
@@ -93,7 +92,7 @@ export function trackPress(options: TrackPressOptions) {
 
     removeEndListeners = pipe(removePointerUpListener, removePointerCancelListener)
 
-    if (doc.activeElement === keyboardNode && startEvent.pointerType === "mouse") {
+    if (isActiveElement(keyboardNode) && startEvent.pointerType === "mouse") {
       startEvent.preventDefault()
     }
 

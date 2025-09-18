@@ -105,17 +105,21 @@ const service = useMachine(carousel.machine, {
 To customize number of slides to move at a time, set the `slidesPerMove`
 property in the machine's context. The value must be an integer or `auto`.
 
-> If the value is `auto`, the carousel will move the number of slides equal to
-> the number of slides per page.
-
 ```jsx {2}
 const service = useMachine(carousel.machine, {
   slidesPerMove: 2,
 })
 ```
 
-> Ensure the `slidesPerMove` is less than or equal to the `slidesPerPage` to
-> avoid skipping slides.
+**Considerations**
+
+- If the value is `auto`, the carousel will move the number of slides equal to
+  the number of slides per page.
+- Ensure the `slidesPerMove` is less than or equal to the `slidesPerPage` to
+  avoid skipping slides.
+- On touch devices, `slidesPerMove` is not enforced during active swiping. The
+  browser's native scrolling and CSS Scroll Snap determine slide movement for
+  optimal performance and UX.
 
 ### Setting the carousel should loop around
 
@@ -256,3 +260,7 @@ The carousel `api` exposes the following methods:
 ### Data Attributes
 
 <DataAttrTable name="carousel" />
+
+### CSS Variables
+
+<CssVarTable name="carousel" />

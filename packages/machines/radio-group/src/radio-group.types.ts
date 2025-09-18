@@ -116,6 +116,10 @@ interface Refs {
    * Function to clean up the observer for the active tab's rect
    */
   indicatorCleanup: VoidFunction | null
+  /**
+   * The value of the radio that has focus visible
+   */
+  focusVisibleValue: string | null
 }
 
 export interface RadioGroupSchema {

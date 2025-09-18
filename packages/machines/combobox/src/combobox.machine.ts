@@ -20,6 +20,7 @@ export const machine = createMachine({
       defaultValue: [],
       closeOnSelect: !props.multiple,
       allowCustomValue: false,
+      alwaysSubmitOnEnter: false,
       inputBehavior: "none",
       selectionBehavior: props.multiple ? "clear" : "replace",
       openOnKeyPress: true,
@@ -705,6 +706,7 @@ export const machine = createMachine({
         if (prop("disableLayer")) return
         const contentEl = () => dom.getContentEl(scope)
         return trackDismissableElement(contentEl, {
+          type: "listbox",
           defer: true,
           exclude: () => [dom.getInputEl(scope), dom.getTriggerEl(scope), dom.getClearTriggerEl(scope)],
           onFocusOutside: prop("onFocusOutside"),
@@ -751,16 +753,20 @@ export const machine = createMachine({
           const highlightedValue = context.get("highlightedValue")
           if (pointer || !highlightedValue) return
 
-          const itemEl = dom.getItemEl(scope, highlightedValue)
           const contentEl = dom.getContentEl(scope)
 
           const scrollToIndexFn = prop("scrollToIndexFn")
           if (scrollToIndexFn) {
             const highlightedIndex = prop("collection").indexOf(highlightedValue)
-            scrollToIndexFn({ index: highlightedIndex, immediate })
+            scrollToIndexFn({
+              index: highlightedIndex,
+              immediate,
+              getElement: () => dom.getItemEl(scope, highlightedValue),
+            })
             return
           }
 
+          const itemEl = dom.getItemEl(scope, highlightedValue)
           const raf_cleanup = raf(() => {
             scrollIntoView(itemEl, { rootEl: contentEl, block: "nearest" })
           })
@@ -835,7 +841,11 @@ export const machine = createMachine({
           const scrollToIndexFn = prop("scrollToIndexFn")
           if (scrollToIndexFn) {
             const highlightedIndex = prop("collection").indexOf(highlightedValue)
-            scrollToIndexFn({ index: highlightedIndex, immediate: true })
+            scrollToIndexFn({
+              index: highlightedIndex,
+              immediate: true,
+              getElement: () => dom.getItemEl(scope, highlightedValue),
+            })
             return
           }
 
@@ -947,7 +957,12 @@ export const machine = createMachine({
       scrollContentToTop({ prop, scope }) {
         const scrollToIndexFn = prop("scrollToIndexFn")
         if (scrollToIndexFn) {
-          scrollToIndexFn({ index: 0, immediate: true })
+          const firstValue = prop("collection").firstValue
+          scrollToIndexFn({
+            index: 0,
+            immediate: true,
+            getElement: () => dom.getItemEl(scope, firstValue),
+          })
         } else {
           const contentEl = dom.getContentEl(scope)
           if (!contentEl) return

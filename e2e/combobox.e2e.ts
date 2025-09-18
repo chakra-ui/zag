@@ -22,6 +22,7 @@ test.describe("combobox", () => {
   test("[keyboard] Escape should close content", async () => {
     await I.clickTrigger()
     await I.seeDropdown()
+    await I.seeInputIsFocused()
     await I.pressKey("Escape")
     await I.dontSeeDropdown()
   })
@@ -117,6 +118,7 @@ test.describe("combobox", () => {
   test("[keyboard / closed] on home and end, caret moves to start and end", async () => {
     await I.clickTrigger()
     await I.type("an")
+    await I.seeInputHasValue("an")
     await I.pressKey("Escape")
 
     await I.pressKey("Home")
@@ -263,8 +265,10 @@ test.describe("combobox / multiple", () => {
 
   test("should toggle the same item", async () => {
     await I.type("mal")
+    await I.seeDropdown()
 
     await I.pressKey("ArrowDown")
+    await I.seeItemIsHighlighted("Malawi")
     await I.pressKey("Enter")
 
     await I.seeValueText("Malawi")
@@ -277,8 +281,10 @@ test.describe("combobox / multiple", () => {
     await I.controls.bool("removeSelected", true)
 
     await I.type("mal")
+    await I.seeDropdown()
 
     await I.pressKey("ArrowDown")
+    await I.seeItemIsHighlighted("Malawi")
     await I.pressKey("Enter")
 
     await I.seeValueText("Malawi")

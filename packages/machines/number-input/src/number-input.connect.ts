@@ -13,6 +13,7 @@ import { roundToDpr } from "@zag-js/utils"
 import { parts } from "./number-input.anatomy"
 import * as dom from "./number-input.dom"
 import type { NumberInputApi, NumberInputService } from "./number-input.types"
+import { recordCursor } from "./cursor"
 
 export function connect<T extends PropTypes>(
   service: NumberInputService,
@@ -22,7 +23,9 @@ export function connect<T extends PropTypes>(
 
   const focused = state.hasTag("focus")
   const disabled = computed("isDisabled")
-  const readOnly = prop("readOnly")
+  const readOnly = !!prop("readOnly")
+  const required = !!prop("required")
+  const scrubbing = state.matches("scrubbing")
 
   const empty = computed("isValueEmpty")
   const invalid = computed("isOutOfRange") || !!prop("invalid")
@@ -68,6 +71,7 @@ export function connect<T extends PropTypes>(
         "data-disabled": dataAttr(disabled),
         "data-focus": dataAttr(focused),
         "data-invalid": dataAttr(invalid),
+        "data-scrubbing": dataAttr(scrubbing),
       })
     },
 
@@ -78,6 +82,8 @@ export function connect<T extends PropTypes>(
         "data-disabled": dataAttr(disabled),
         "data-focus": dataAttr(focused),
         "data-invalid": dataAttr(invalid),
+        "data-required": dataAttr(required),
+        "data-scrubbing": dataAttr(scrubbing),
         id: dom.getLabelId(scope),
         htmlFor: dom.getInputId(scope),
       })
@@ -92,6 +98,7 @@ export function connect<T extends PropTypes>(
         "data-focus": dataAttr(focused),
         "data-disabled": dataAttr(disabled),
         "data-invalid": dataAttr(invalid),
+        "data-scrubbing": dataAttr(scrubbing),
         "aria-invalid": ariaAttr(invalid),
       })
     },
@@ -103,6 +110,7 @@ export function connect<T extends PropTypes>(
         "data-disabled": dataAttr(disabled),
         "data-invalid": dataAttr(invalid),
         "data-focus": dataAttr(focused),
+        "data-scrubbing": dataAttr(scrubbing),
       })
     },
 
@@ -115,7 +123,7 @@ export function connect<T extends PropTypes>(
         id: dom.getInputId(scope),
         role: "spinbutton",
         defaultValue: computed("formattedValue"),
-        pattern: prop("pattern"),
+        pattern: prop("formatOptions") ? undefined : prop("pattern"),
         inputMode: prop("inputMode"),
         "aria-invalid": ariaAttr(invalid),
         "data-invalid": dataAttr(invalid),
@@ -132,6 +140,7 @@ export function connect<T extends PropTypes>(
         "aria-valuemax": prop("max"),
         "aria-valuenow": Number.isNaN(computed("valueAsNumber")) ? undefined : computed("valueAsNumber"),
         "aria-valuetext": computed("valueText"),
+        "data-scrubbing": dataAttr(scrubbing),
         onFocus() {
           send({ type: "INPUT.FOCUS" })
         },
@@ -139,7 +148,8 @@ export function connect<T extends PropTypes>(
           send({ type: "INPUT.BLUR" })
         },
         onInput(event) {
-          send({ type: "INPUT.CHANGE", target: event.currentTarget, hint: "set" })
+          const selection = recordCursor(event.currentTarget, scope)
+          send({ type: "INPUT.CHANGE", target: event.currentTarget, hint: "set", selection })
         },
         onBeforeInput(event) {
           try {
@@ -203,6 +213,7 @@ export function connect<T extends PropTypes>(
         type: "button",
         tabIndex: -1,
         "aria-controls": dom.getInputId(scope),
+        "data-scrubbing": dataAttr(scrubbing),
         onPointerDown(event) {
           if (isDecrementDisabled) return
           if (!isLeftClick(event)) return
@@ -235,6 +246,7 @@ export function connect<T extends PropTypes>(
         type: "button",
         tabIndex: -1,
         "aria-controls": dom.getInputId(scope),
+        "data-scrubbing": dataAttr(scrubbing),
         onPointerDown(event) {
           if (isIncrementDisabled || !isLeftClick(event)) return
           send({ type: "TRIGGER.PRESS_DOWN", hint: "increment", pointerType: event.pointerType })
@@ -261,6 +273,7 @@ export function connect<T extends PropTypes>(
         "data-disabled": dataAttr(disabled),
         id: dom.getScrubberId(scope),
         role: "presentation",
+        "data-scrubbing": dataAttr(scrubbing),
         onMouseDown(event) {
           if (disabled) return
           if (!isLeftClick(event)) return

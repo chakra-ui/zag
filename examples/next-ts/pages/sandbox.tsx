@@ -1,7 +1,7 @@
-import { useScrollView } from "../hooks/use-scroll-view"
+import { useScrollArea } from "../hooks/use-scroll-area"
 
 export default function Page() {
-  const ref = useScrollView({
+  const ref = useScrollArea({
     offset: { bottom: 40 },
     onScrollStart: () => console.log("scroll start"),
     onScrollEnd: () => console.log("scroll end"),

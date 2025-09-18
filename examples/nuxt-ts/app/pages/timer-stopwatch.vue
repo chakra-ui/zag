@@ -34,8 +34,5 @@ const api = computed(() => timer.connect(service, normalizeProps))
 
   <Toolbar>
     <StateVisualizer :state="service" />
-    <template #controls>
-      <Controls :control="null" />
-    </template>
   </Toolbar>
 </template>

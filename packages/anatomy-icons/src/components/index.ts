@@ -33,14 +33,16 @@ import { StepsAnatomy } from "./steps"
 import { SwitchAnatomy } from "./switch"
 import { TabsAnatomy } from "./tabs"
 import { TagsInputAnatomy } from "./tags-input"
-import { TimePickerAnatomy } from "./time-picker"
+
 import { ToastAnatomy } from "./toast"
 import { ToggleGroupAnatomy } from "./toggle-group"
 import { TooltipAnatomy } from "./tooltip"
 import { TourAnatomy } from "./tour"
 import { TreeViewAnatomy } from "./tree-view"
+import { ScrollAreaAnatomy } from "./scroll-area"
 
 export const allComponents = {
+  "scroll-area": ScrollAreaAnatomy,
   "password-input": PasswordInputAnatomy,
   "floating-panel": FloatingPanelAnatomy,
   tour: TourAnatomy,
@@ -79,7 +81,7 @@ export const allComponents = {
   splitter: SplitterAnatomy,
   switch: SwitchAnatomy,
   tabs: TabsAnatomy,
-  "time-picker": TimePickerAnatomy,
+
   toast: ToastAnatomy,
   tooltip: TooltipAnatomy,
 }

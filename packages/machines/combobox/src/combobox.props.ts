@@ -48,6 +48,7 @@ export const props = createProps<ComboboxProps>()([
   "selectionBehavior",
   "translations",
   "value",
+  "alwaysSubmitOnEnter",
 ])
 export const splitProps = createSplitProps<Partial<ComboboxProps>>(props)
 

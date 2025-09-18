@@ -408,6 +408,7 @@ export const machine = createMachine<ColorPickerSchema>({
 
         const getContentEl = () => dom.getContentEl(scope)
         return trackDismissableElement(getContentEl, {
+          type: "popover",
           exclude: dom.getTriggerEl(scope),
           defer: true,
           onInteractOutside(event) {
@@ -477,11 +478,11 @@ export const machine = createMachine<ColorPickerSchema>({
         context.set("activeId", null)
         context.set("activeOrientation", null)
       },
-      setAreaColorFromPoint({ context, event, computed, scope }) {
+      setAreaColorFromPoint({ context, event, computed, scope, prop }) {
         const v = event.format ? context.get("value").toFormat(event.format) : computed("areaValue")
         const { xChannel, yChannel } = event.channel || context.get("activeChannel")
 
-        const percent = dom.getAreaValueFromPoint(scope, event.point)
+        const percent = dom.getAreaValueFromPoint(scope, event.point, prop("dir"))
         if (!percent) return
 
         const xValue = v.getChannelPercentValue(xChannel, percent.x)
@@ -490,11 +491,11 @@ export const machine = createMachine<ColorPickerSchema>({
         const color = v.withChannelValue(xChannel, xValue).withChannelValue(yChannel, yValue)
         context.set("value", color)
       },
-      setChannelColorFromPoint({ context, event, computed, scope }) {
+      setChannelColorFromPoint({ context, event, computed, scope, prop }) {
         const channel = event.channel || context.get("activeId")
         const normalizedValue = event.format ? context.get("value").toFormat(event.format) : computed("areaValue")
 
-        const percent = dom.getChannelSliderValueFromPoint(scope, event.point, channel)
+        const percent = dom.getChannelSliderValueFromPoint(scope, event.point, channel, prop("dir"))
         if (!percent) return
 
         const orientation = context.get("activeOrientation") || "horizontal"

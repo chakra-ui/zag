@@ -165,12 +165,24 @@
         "description": "The cursor."
       },
       "sortDescriptor": {
-        "type": "SortDescriptor",
+        "type": "SortDescriptor<T>",
         "description": "The sort descriptor."
       },
       "loading": {
         "type": "boolean",
         "description": "Whether the list is loading."
+      },
+      "sorting": {
+        "type": "boolean",
+        "description": "Whether the list is sorting."
+      },
+      "empty": {
+        "type": "boolean",
+        "description": "Whether the list is empty."
+      },
+      "hasMore": {
+        "type": "boolean",
+        "description": "Whether there are more items to load."
       },
       "error": {
         "type": "any",
@@ -189,17 +201,21 @@
         "description": "Function to load more items"
       },
       "sort": {
-        "type": "(sortDescriptor: SortDescriptor) => void",
+        "type": "(sortDescriptor: SortDescriptor<T>) => void",
         "description": "Function to sort the list"
       },
       "setFilterText": {
         "type": "(filterText: string) => void",
         "description": "Function to set the filter text"
+      },
+      "clearFilter": {
+        "type": "VoidFunction",
+        "description": "Function to clear the filter text"
       }
     },
     "context": {
       "load": {
-        "type": "(args: LoadDetails<C>) => Promise<LoadResult<T, C>>",
+        "type": "(args: LoadDetails<T, C>) => Promise<LoadResult<T, C>>",
         "description": "The function to call when the list is loaded"
       },
       "sort": {
@@ -211,7 +227,7 @@
         "description": "The initial items to display"
       },
       "initialSortDescriptor": {
-        "type": "SortDescriptor",
+        "type": "SortDescriptor<T>",
         "description": "The initial sort descriptor to use"
       },
       "initialFilterText": {
@@ -276,6 +292,152 @@
         "type": "\"ltr\" | \"rtl\"",
         "description": "The document's text/writing direction.",
         "defaultValue": "\"ltr\""
+      }
+    }
+  },
+  "bottom-sheet": {
+    "api": {
+      "open": {
+        "type": "boolean",
+        "description": "Whether the bottom sheet is open."
+      },
+      "activeSnapPoint": {
+        "type": "string | number",
+        "description": "The currently active snap point."
+      },
+      "setOpen": {
+        "type": "(open: boolean) => void",
+        "description": "Function to open or close the menu."
+      },
+      "setActiveSnapPoint": {
+        "type": "(snapPoint: string | number) => void",
+        "description": "Function to set the active snap point."
+      }
+    },
+    "context": {
+      "ids": {
+        "type": "Partial<{ backdrop: string; content: string; trigger: string; grabber: string; grabberIndicator: string; closeTrigger: string; }>",
+        "description": "The ids of the elements in the bottom sheet. Useful for composition."
+      },
+      "trapFocus": {
+        "type": "boolean",
+        "description": "Whether to trap focus inside the sheet when it's opened.",
+        "defaultValue": "true"
+      },
+      "preventScroll": {
+        "type": "boolean",
+        "description": "Whether to prevent scrolling behind the sheet when it's opened",
+        "defaultValue": "true"
+      },
+      "modal": {
+        "type": "boolean",
+        "description": "Whether to prevent pointer interaction outside the element and hide all content below it.",
+        "defaultValue": "true"
+      },
+      "initialFocusEl": {
+        "type": "() => HTMLElement",
+        "description": "Element to receive focus when the sheet is opened."
+      },
+      "finalFocusEl": {
+        "type": "() => HTMLElement",
+        "description": "Element to receive focus when the sheet is closed."
+      },
+      "restoreFocus": {
+        "type": "boolean",
+        "description": "Whether to restore focus to the element that had focus before the sheet was opened."
+      },
+      "role": {
+        "type": "\"dialog\" | \"alertdialog\"",
+        "description": "The sheet's role",
+        "defaultValue": "\"dialog\""
+      },
+      "open": {
+        "type": "boolean",
+        "description": "Whether the bottom sheet is resizable."
+      },
+      "defaultOpen": {
+        "type": "boolean",
+        "description": "The initial open state of the bottom sheet."
+      },
+      "onOpenChange": {
+        "type": "(details: OpenChangeDetails) => void",
+        "description": "Function called when the open state changes."
+      },
+      "closeOnInteractOutside": {
+        "type": "boolean",
+        "description": "Whether to close the bottom sheet when the outside is clicked.",
+        "defaultValue": "true"
+      },
+      "closeOnEscape": {
+        "type": "boolean",
+        "description": "Whether to close the bottom sheet when the escape key is pressed.",
+        "defaultValue": "true"
+      },
+      "snapPoints": {
+        "type": "(string | number)[]",
+        "description": "The snap points of the bottom sheet.\nArray of numbers or strings representing the snap points.",
+        "defaultValue": "[1]"
+      },
+      "swipeVelocityThreshold": {
+        "type": "number",
+        "description": "The threshold velocity (in pixels/s) for closing the bottom sheet.",
+        "defaultValue": "5"
+      },
+      "closeThreshold": {
+        "type": "number",
+        "description": "The threshold distance for dismissing the bottom sheet.",
+        "defaultValue": "0.25"
+      },
+      "preventDragOnScroll": {
+        "type": "boolean",
+        "description": "Whether to prevent dragging on scrollable elements.\nWhen enabled, the sheet will not start dragging if the user is interacting with a scrollable element.",
+        "defaultValue": "true"
+      },
+      "activeSnapPoint": {
+        "type": "string | number",
+        "description": "The currently active snap point."
+      },
+      "defaultActiveSnapPoint": {
+        "type": "string | number",
+        "description": "The default active snap point of the bottom sheet.",
+        "defaultValue": "1"
+      },
+      "onActiveSnapPointChange": {
+        "type": "(details: SnapPointChangeDetails) => void",
+        "description": "Callback fired when the active snap point changes."
+      },
+      "dir": {
+        "type": "\"ltr\" | \"rtl\"",
+        "description": "The document's text/writing direction.",
+        "defaultValue": "\"ltr\""
+      },
+      "id": {
+        "type": "string",
+        "description": "The unique identifier of the machine."
+      },
+      "getRootNode": {
+        "type": "() => Node | ShadowRoot | Document",
+        "description": "A root node to correctly resolve document in custom environments. E.x.: Iframes, Electron."
+      },
+      "onEscapeKeyDown": {
+        "type": "(event: KeyboardEvent) => void",
+        "description": "Function called when the escape key is pressed"
+      },
+      "onRequestDismiss": {
+        "type": "(event: LayerDismissEvent) => void",
+        "description": "Function called when this layer is closed due to a parent layer being closed"
+      },
+      "onPointerDownOutside": {
+        "type": "(event: PointerDownOutsideEvent) => void",
+        "description": "Function called when the pointer is pressed down outside the component"
+      },
+      "onFocusOutside": {
+        "type": "(event: FocusOutsideEvent) => void",
+        "description": "Function called when the focus is moved outside the component"
+      },
+      "onInteractOutside": {
+        "type": "(event: InteractOutsideEvent) => void",
+        "description": "Function called when an interaction happens outside the component"
       }
     }
   },
@@ -1521,6 +1683,10 @@
         "type": "(event: KeyboardEvent) => void",
         "description": "Function called when the escape key is pressed"
       },
+      "onRequestDismiss": {
+        "type": "(event: LayerDismissEvent) => void",
+        "description": "Function called when this layer is closed due to a parent layer being closed"
+      },
       "onPointerDownOutside": {
         "type": "(event: PointerDownOutsideEvent) => void",
         "description": "Function called when the pointer is pressed down outside the component"
@@ -1715,12 +1881,16 @@
         "type": "boolean",
         "description": "Whether the file input is disabled"
       },
+      "transforming": {
+        "type": "boolean",
+        "description": "Whether files are currently being transformed via `transformFiles`"
+      },
       "openFilePicker": {
         "type": "VoidFunction",
         "description": "Function to open the file dialog"
       },
       "deleteFile": {
-        "type": "(file: File) => void",
+        "type": "(file: File, type?: ItemType) => void",
         "description": "Function to delete the file from the list"
       },
       "acceptedFiles": {
@@ -2085,6 +2255,10 @@
         "description": "The duration from when the mouse leaves the trigger or content until the hover card closes.",
         "defaultValue": "300"
       },
+      "disabled": {
+        "type": "boolean",
+        "description": "Whether the hover card is disabled"
+      },
       "open": {
         "type": "boolean",
         "description": "The controlled open state of the hover card"
@@ -2192,6 +2366,11 @@
       }
     },
     "context": {
+      "orientation": {
+        "type": "\"horizontal\" | \"vertical\"",
+        "description": "The orientation of the listbox.",
+        "defaultValue": "\"vertical\""
+      },
       "collection": {
         "type": "GridCollection<T>",
         "description": "The item collection"
@@ -2275,11 +2454,6 @@
       "getRootNode": {
         "type": "() => ShadowRoot | Node | Document",
         "description": "A root node to correctly resolve document in custom environments. E.x.: Iframes, Electron."
-      },
-      "orientation": {
-        "type": "\"horizontal\" | \"vertical\"",
-        "description": "The orientation of the element.",
-        "defaultValue": "\"horizontal\""
       }
     }
   },
@@ -2302,11 +2476,11 @@
         "description": "Function to set the highlighted menuitem"
       },
       "setParent": {
-        "type": "(parent: MenuService) => void",
+        "type": "(parent: ParentMenuService) => void",
         "description": "Function to register a parent menu. This is used for submenus"
       },
       "setChild": {
-        "type": "(child: MenuService) => void",
+        "type": "(child: ChildMenuService) => void",
         "description": "Function to register a child menu. This is used for submenus"
       },
       "reposition": {
@@ -2412,6 +2586,10 @@
         "type": "(event: KeyboardEvent) => void",
         "description": "Function called when the escape key is pressed"
       },
+      "onRequestDismiss": {
+        "type": "(event: LayerDismissEvent) => void",
+        "description": "Function called when this layer is closed due to a parent layer being closed"
+      },
       "onPointerDownOutside": {
         "type": "(event: PointerDownOutsideEvent) => void",
         "description": "Function called when the pointer is pressed down outside the component"
@@ -2455,7 +2633,7 @@
     },
     "context": {
       "ids": {
-        "type": "Partial<{ root: string; list: string; item: string; indicator: string; trigger: string; content: string; viewport: string; }>",
+        "type": "Partial<{ root: string; list: string; item: string; indicator: string; trigger: (value: string) => string; content: (value: string) => string; viewport: string; }>",
         "description": "The ids of the elements in the machine."
       },
       "value": {
@@ -3135,6 +3313,10 @@
         "type": "(event: KeyboardEvent) => void",
         "description": "Function called when the escape key is pressed"
       },
+      "onRequestDismiss": {
+        "type": "(event: LayerDismissEvent) => void",
+        "description": "Function called when this layer is closed due to a parent layer being closed"
+      },
       "onPointerDownOutside": {
         "type": "(event: PointerDownOutsideEvent) => void",
         "description": "Function called when the pointer is pressed down outside the component"
@@ -3514,6 +3696,69 @@
       "onHoverChange": {
         "type": "(details: HoverChangeDetails) => void",
         "description": "Function to be called when the rating value is hovered."
+      },
+      "dir": {
+        "type": "\"ltr\" | \"rtl\"",
+        "description": "The document's text/writing direction.",
+        "defaultValue": "\"ltr\""
+      },
+      "id": {
+        "type": "string",
+        "description": "The unique identifier of the machine."
+      },
+      "getRootNode": {
+        "type": "() => ShadowRoot | Node | Document",
+        "description": "A root node to correctly resolve document in custom environments. E.x.: Iframes, Electron."
+      }
+    }
+  },
+  "scroll-area": {
+    "api": {
+      "isAtTop": {
+        "type": "boolean",
+        "description": "Whether the scroll area is at the top"
+      },
+      "isAtBottom": {
+        "type": "boolean",
+        "description": "Whether the scroll area is at the bottom"
+      },
+      "isAtLeft": {
+        "type": "boolean",
+        "description": "Whether the scroll area is at the left"
+      },
+      "isAtRight": {
+        "type": "boolean",
+        "description": "Whether the scroll area is at the right"
+      },
+      "hasOverflowX": {
+        "type": "boolean",
+        "description": "Whether the scroll area has horizontal overflow"
+      },
+      "hasOverflowY": {
+        "type": "boolean",
+        "description": "Whether the scroll area has vertical overflow"
+      },
+      "getScrollProgress": {
+        "type": "() => Point",
+        "description": "Get the scroll progress as values between 0 and 1"
+      },
+      "scrollToEdge": {
+        "type": "(details: ScrollToEdgeDetails) => void",
+        "description": "Scroll to the edge of the scroll area"
+      },
+      "scrollTo": {
+        "type": "(details: ScrollToDetails) => void",
+        "description": "Scroll to specific coordinates"
+      },
+      "getScrollbarState": {
+        "type": "(props: ScrollbarProps) => ScrollbarState",
+        "description": "Returns the state of the scrollbar"
+      }
+    },
+    "context": {
+      "ids": {
+        "type": "Partial<{ root: string; viewport: string; content: string; scrollbar: string; thumb: string; }>",
+        "description": "The ids of the scroll area elements"
       },
       "dir": {
         "type": "\"ltr\" | \"rtl\"",
@@ -4359,7 +4604,7 @@
     },
     "context": {
       "ids": {
-        "type": "Partial<{ root: string; trigger: string; list: string; content: string; indicator: string; }>",
+        "type": "Partial<{ root: string; trigger: (value: string) => string; list: string; content: (value: string) => string; indicator: string; }>",
         "description": "The ids of the elements in the tabs. Useful for composition."
       },
       "translations": {
@@ -4612,153 +4857,6 @@
       "onInteractOutside": {
         "type": "(event: InteractOutsideEvent) => void",
         "description": "Function called when an interaction happens outside the component"
-      }
-    }
-  },
-  "time-picker": {
-    "api": {
-      "focused": {
-        "type": "boolean",
-        "description": "Whether the input is focused"
-      },
-      "open": {
-        "type": "boolean",
-        "description": "Whether the time picker is open"
-      },
-      "value": {
-        "type": "Time",
-        "description": "The selected time"
-      },
-      "valueAsString": {
-        "type": "string",
-        "description": "The selected time as a string"
-      },
-      "hour12": {
-        "type": "boolean",
-        "description": "Whether the time picker is in 12-hour format (based on the locale prop)"
-      },
-      "reposition": {
-        "type": "(options?: PositioningOptions) => void",
-        "description": "Function to reposition the time picker content"
-      },
-      "setOpen": {
-        "type": "(nextOpen: boolean) => void",
-        "description": "Function to open the time picker"
-      },
-      "clearValue": {
-        "type": "VoidFunction",
-        "description": "Function to clear the selected time"
-      },
-      "setValue": {
-        "type": "(value: string | Time) => void",
-        "description": "Function to set the selected time"
-      },
-      "setUnitValue": {
-        "type": "(unit: TimeUnit, value: number) => void",
-        "description": "Function to set the focused time unit"
-      },
-      "getHours": {
-        "type": "() => Cell[]",
-        "description": "Get the available hours that will be displayed in the time picker"
-      },
-      "getMinutes": {
-        "type": "() => Cell[]",
-        "description": "Get the available minutes that will be displayed in the time picker"
-      },
-      "getSeconds": {
-        "type": "() => Cell[]",
-        "description": "Get the available seconds that will be displayed in the time picker"
-      }
-    },
-    "context": {
-      "locale": {
-        "type": "string",
-        "description": "The locale (BCP 47 language tag) to use when formatting the time."
-      },
-      "value": {
-        "type": "Time",
-        "description": "The controlled selected time."
-      },
-      "defaultValue": {
-        "type": "Time",
-        "description": "The initial selected time when rendered.\nUse when you don't need to control the selected time."
-      },
-      "open": {
-        "type": "boolean",
-        "description": "Whether the timepicker is open"
-      },
-      "defaultOpen": {
-        "type": "boolean",
-        "description": "Whether the timepicker open state is controlled by the user"
-      },
-      "ids": {
-        "type": "Partial<{ trigger: string; input: string; positioner: string; content: string; clearTrigger: string; control: string; column: (unit: TimeUnit) => string; }>",
-        "description": "The ids of the elements in the date picker. Useful for composition."
-      },
-      "name": {
-        "type": "string",
-        "description": "The `name` attribute of the input element."
-      },
-      "positioning": {
-        "type": "PositioningOptions",
-        "description": "The user provided options used to position the time picker content"
-      },
-      "placeholder": {
-        "type": "string",
-        "description": "The placeholder text of the input."
-      },
-      "disabled": {
-        "type": "boolean",
-        "description": "Whether the time picker is disabled."
-      },
-      "readOnly": {
-        "type": "boolean",
-        "description": "Whether the time picker is read-only."
-      },
-      "min": {
-        "type": "Time",
-        "description": "The minimum time that can be selected."
-      },
-      "max": {
-        "type": "Time",
-        "description": "The maximum time that can be selected."
-      },
-      "steps": {
-        "type": "{ hour?: number; minute?: number; second?: number; }",
-        "description": "The steps of each time unit."
-      },
-      "allowSeconds": {
-        "type": "boolean",
-        "description": "Whether to show the seconds."
-      },
-      "onValueChange": {
-        "type": "(value: ValueChangeDetails) => void",
-        "description": "Function called when the value changes."
-      },
-      "onOpenChange": {
-        "type": "(details: OpenChangeDetails) => void",
-        "description": "Function called when the time picker opens or closes."
-      },
-      "onFocusChange": {
-        "type": "(details: FocusChangeDetails) => void",
-        "description": "Function called when the focused date changes."
-      },
-      "disableLayer": {
-        "type": "boolean",
-        "description": "Whether to disable the interaction outside logic"
-      },
-      "dir": {
-        "type": "\"ltr\" | \"rtl\"",
-        "description": "The document's text/writing direction.",
-        "defaultValue": "\"ltr\""
-      },
-      "id": {
-        "type": "string",
-        "description": "The unique identifier of the machine."
-      },
-      "getRootNode": {
-        "type": "() => ShadowRoot | Node | Document",
-        "description": "A root node to correctly resolve document in custom environments. E.x.: Iframes, Electron."
       }
     }
   },
@@ -5071,12 +5169,12 @@
       "openDelay": {
         "type": "number",
         "description": "The open delay of the tooltip.",
-        "defaultValue": "1000"
+        "defaultValue": "400"
       },
       "closeDelay": {
         "type": "number",
         "description": "The close delay of the tooltip.",
-        "defaultValue": "500"
+        "defaultValue": "150"
       },
       "closeOnPointerDown": {
         "type": "boolean",

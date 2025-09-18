@@ -28,12 +28,12 @@ export interface TooltipProps extends DirectionProperty, CommonProperties {
   ids?: ElementIds | undefined
   /**
    * The open delay of the tooltip.
-   * @default 1000
+   * @default 400
    */
   openDelay?: number | undefined
   /**
    * The close delay of the tooltip.
-   * @default 500
+   * @default 150
    */
   closeDelay?: number | undefined
   /**

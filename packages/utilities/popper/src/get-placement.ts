@@ -1,9 +1,9 @@
 import type { AutoUpdateOptions, Middleware, Placement } from "@floating-ui/dom"
 import { arrow, autoUpdate, computePosition, flip, hide, limitShift, offset, shift, size } from "@floating-ui/dom"
 import { getComputedStyle, getWindow, raf } from "@zag-js/dom-query"
-import { compact, isNull, noop, runIfFn } from "@zag-js/utils"
+import { compact, isNull, noop } from "@zag-js/utils"
 import { getAnchorElement } from "./get-anchor"
-import { rectMiddleware, shiftArrowMiddleware, transformOriginMiddleware } from "./middleware"
+import { createTransformOriginMiddleware, rectMiddleware, shiftArrowMiddleware } from "./middleware"
 import { getPlacementDetails } from "./placement"
 import type { MaybeElement, MaybeFn, MaybeRectElement, PositioningOptions } from "./types"
 
@@ -45,16 +45,15 @@ function roundByDpr(win: Window, value: number) {
   return Math.round(value * dpr) / dpr
 }
 
-function getBoundaryMiddleware(opts: Options) {
-  return runIfFn(opts.boundary)
+function resolveBoundaryOption(boundary: Options["boundary"]) {
+  if (typeof boundary === "function") return boundary()
+  if (boundary === "clipping-ancestors") return "clippingAncestors"
+  return boundary
 }
 
-function getArrowMiddleware(arrowElement: HTMLElement | null, opts: Options) {
-  if (!arrowElement) return
-  return arrow({
-    element: arrowElement,
-    padding: opts.arrowPadding,
-  })
+function getArrowMiddleware(arrowElement: HTMLElement | null, doc: Document, opts: Options) {
+  const element = arrowElement || doc.createElement("div")
+  return arrow({ element, padding: opts.arrowPadding })
 }
 
 function getOffsetMiddleware(arrowElement: HTMLElement | null, opts: Options) {
@@ -79,8 +78,9 @@ function getOffsetMiddleware(arrowElement: HTMLElement | null, opts: Options) {
 
 function getFlipMiddleware(opts: Options) {
   if (!opts.flip) return
+  const boundary = resolveBoundaryOption(opts.boundary)
   return flip({
-    boundary: getBoundaryMiddleware(opts),
+    ...(boundary ? { boundary } : undefined),
     padding: opts.overflowPadding,
     fallbackPlacements: (opts.flip === true ? undefined : opts.flip) as Placement[],
   })
@@ -88,8 +88,9 @@ function getFlipMiddleware(opts: Options) {
 
 function getShiftMiddleware(opts: Options) {
   if (!opts.slide && !opts.overlap) return
+  const boundary = resolveBoundaryOption(opts.boundary)
   return shift({
-    boundary: getBoundaryMiddleware(opts),
+    ...(boundary ? { boundary } : undefined),
     mainAxis: opts.slide,
     crossAxis: opts.overlap,
     padding: opts.overflowPadding,
@@ -104,10 +105,12 @@ function getSizeMiddleware(opts: Options) {
       const floating = elements.floating
 
       const referenceWidth = Math.round(rects.reference.width)
+      const referenceHeight = Math.round(rects.reference.height)
       availableWidth = Math.floor(availableWidth)
       availableHeight = Math.floor(availableHeight)
 
       floating.style.setProperty("--reference-width", `${referenceWidth}px`)
+      floating.style.setProperty("--reference-height", `${referenceHeight}px`)
       floating.style.setProperty("--available-width", `${availableWidth}px`)
       floating.style.setProperty("--available-height", `${availableHeight}px`)
     },
@@ -116,7 +119,7 @@ function getSizeMiddleware(opts: Options) {
 
 function hideWhenDetachedMiddleware(opts: Options) {
   if (!opts.hideWhenDetached) return
-  return hide({ strategy: "referenceHidden", boundary: opts.boundary?.() ?? "clippingAncestors" })
+  return hide({ strategy: "referenceHidden", boundary: resolveBoundaryOption(opts.boundary) ?? "clippingAncestors" })
 }
 
 function getAutoUpdateOptions(opts?: boolean | AutoUpdateOptions): AutoUpdateOptions {
@@ -142,9 +145,12 @@ function getPlacementImpl(referenceOrVirtual: MaybeRectElement, floating: MaybeE
     getOffsetMiddleware(arrowEl, options),
     getFlipMiddleware(options),
     getShiftMiddleware(options),
-    getArrowMiddleware(arrowEl, options),
+    getArrowMiddleware(arrowEl, floating.ownerDocument, options),
     shiftArrowMiddleware(arrowEl),
-    transformOriginMiddleware,
+    createTransformOriginMiddleware(
+      { gutter: options.gutter, offset: options.offset, overlap: options.overlap },
+      arrowEl,
+    ),
     getSizeMiddleware(options),
     hideWhenDetachedMiddleware(options),
     rectMiddleware,

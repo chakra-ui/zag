@@ -1,0 +1,386 @@
+{
+  "tree-view": {
+    "Item": {
+      "--depth": "The depth value for the Item"
+    },
+    "Branch": {
+      "--depth": "The depth value for the Branch"
+    }
+  },
+  "tour": {
+    "Backdrop": {
+      "--tour-layer": "The tour layer value for the Backdrop",
+      "--layer-index": "The index of the dismissable in the layer stack"
+    },
+    "Spotlight": {
+      "--tour-layer": "The tour layer value for the Spotlight"
+    },
+    "Positioner": {
+      "--tour-layer": "The tour layer value for the Positioner",
+      "--transform-origin": "The transform origin for animations",
+      "--reference-width": "The width of the reference element",
+      "--available-width": "The available width in viewport",
+      "--available-height": "The available height in viewport",
+      "--x": "The x position for transform",
+      "--y": "The y position for transform",
+      "--z-index": "The z-index value",
+      "--reference-height": "The height of the root"
+    },
+    "Arrow": {
+      "--arrow-size": "The size of the arrow",
+      "--arrow-size-half": "Half the size of the arrow",
+      "--arrow-background": "Use this variable to style the arrow background",
+      "--arrow-offset": "The offset position of the arrow"
+    },
+    "Content": {
+      "--layer-index": "The index of the dismissable in the layer stack",
+      "--nested-layer-count": "The number of nested tours"
+    }
+  },
+  "timer": {
+    "Item": {
+      "--value": "The current value"
+    }
+  },
+  "tabs": {
+    "Indicator": {
+      "--transition-property": "The transition property value for the Indicator",
+      "--left": "The left position value",
+      "--top": "The top position value",
+      "--width": "The width of the element",
+      "--height": "The height of the element"
+    }
+  },
+  "steps": {
+    "Root": {
+      "--percent": "The percent value for the Root"
+    }
+  },
+  "scroll-area": {
+    "Root": {
+      "--corner-width": "The width of the Root",
+      "--corner-height": "The height of the Root",
+      "--thumb-width": "The width of the slider thumb",
+      "--thumb-height": "The height of the slider thumb"
+    }
+  },
+  "radio-group": {
+    "Indicator": {
+      "--transition-property": "The transition property value for the Indicator",
+      "--left": "The left position value",
+      "--top": "The top position value",
+      "--width": "The width of the element",
+      "--height": "The height of the element"
+    }
+  },
+  "qr-code": {
+    "Root": {
+      "--qrcode-pixel-size": "The size of the Root",
+      "--qrcode-width": "The width of the Root",
+      "--qrcode-height": "The height of the Root"
+    }
+  },
+  "progress": {
+    "Root": {
+      "--percent": "The percent value for the root",
+      "--radius": "The border radius value",
+      "--circumference": "The circumference value for the root",
+      "--offset": "The offset position of the element"
+    }
+  },
+  "navigation-menu": {
+    "Root": {
+      "--trigger-width": "The width of the Root",
+      "--trigger-height": "The height of the Root",
+      "--trigger-x": "The trigger x value for the Root",
+      "--trigger-y": "The trigger y value for the Root",
+      "--viewport-width": "The width of the Root",
+      "--viewport-height": "The height of the Root"
+    }
+  },
+  "listbox": {
+    "Content": {
+      "--column-count": "The column count value for the Content"
+    }
+  },
+  "floating-panel": {
+    "Positioner": {
+      "--width": "The width of the element",
+      "--height": "The height of the element",
+      "--x": "The x position for transform",
+      "--y": "The y position for transform",
+      "--transform-origin": "The transform origin for animations",
+      "--reference-width": "The width of the reference element",
+      "--available-width": "The available width in viewport",
+      "--available-height": "The available height in viewport",
+      "--z-index": "The z-index value",
+      "--reference-height": "The height of the root"
+    },
+    "Arrow": {
+      "--arrow-size": "The size of the arrow",
+      "--arrow-size-half": "Half the size of the arrow",
+      "--arrow-background": "Use this variable to style the arrow background",
+      "--arrow-offset": "The offset position of the arrow"
+    }
+  },
+  "color-picker": {
+    "Root": {
+      "--value": "The current value"
+    },
+    "AreaThumb": {
+      "--color": "The text color"
+    },
+    "TransparencyGrid": {
+      "--size": "The size (width and height) of the element"
+    },
+    "SwatchTrigger": {
+      "--color": "The text color"
+    },
+    "Swatch": {
+      "--color": "The text color"
+    },
+    "Arrow": {
+      "--arrow-size": "The size of the arrow",
+      "--arrow-size-half": "Half the size of the arrow",
+      "--arrow-background": "Use this variable to style the arrow background",
+      "--arrow-offset": "The offset position of the arrow"
+    },
+    "Positioner": {
+      "--transform-origin": "The transform origin for animations",
+      "--reference-width": "The width of the reference element",
+      "--available-width": "The available width in viewport",
+      "--available-height": "The available height in viewport",
+      "--x": "The x position for transform",
+      "--y": "The y position for transform",
+      "--z-index": "The z-index value",
+      "--reference-height": "The height of the root"
+    },
+    "Content": {
+      "--layer-index": "The index of the dismissable in the layer stack",
+      "--nested-layer-count": "The number of nested color-pickers"
+    },
+    "Backdrop": {
+      "--layer-index": "The index of the dismissable in the layer stack"
+    }
+  },
+  "collapsible": {
+    "Content": {
+      "--height": "The height of the element",
+      "--width": "The width of the element"
+    }
+  },
+  "carousel": {
+    "Root": {
+      "--slides-per-page": "The number of slides visible per page",
+      "--slide-spacing": "The spacing between slides",
+      "--slide-item-size": "The calculated size of each slide item"
+    }
+  },
+  "angle-slider": {
+    "Root": {
+      "--value": "The current value",
+      "--angle": "The angle in degrees"
+    },
+    "Marker": {
+      "--marker-value": "The marker value value for the Marker"
+    }
+  },
+  "slider": {
+    "Root": {
+      "--slider-thumb-width": "The thumb width of the slider",
+      "--slider-thumb-height": "The thumb height of the slider",
+      "--slider-thumb-transform": "The thumb transform of the slider",
+      "--slider-range-start": "The range start of the slider",
+      "--slider-range-end": "The range end of the slider",
+      "--translate-x": "The horizontal translation value",
+      "--translate-y": "The vertical translation value"
+    }
+  },
+  "tooltip": {
+    "Arrow": {
+      "--arrow-size": "The size of the arrow",
+      "--arrow-size-half": "Half the size of the arrow",
+      "--arrow-background": "Use this variable to style the arrow background",
+      "--arrow-offset": "The offset position of the arrow"
+    },
+    "Positioner": {
+      "--transform-origin": "The transform origin for animations",
+      "--reference-width": "The width of the reference element",
+      "--available-width": "The available width in viewport",
+      "--available-height": "The available height in viewport",
+      "--x": "The x position for transform",
+      "--y": "The y position for transform",
+      "--z-index": "The z-index value",
+      "--reference-height": "The height of the root"
+    }
+  },
+
+  "select": {
+    "Arrow": {
+      "--arrow-size": "The size of the arrow",
+      "--arrow-size-half": "Half the size of the arrow",
+      "--arrow-background": "Use this variable to style the arrow background",
+      "--arrow-offset": "The offset position of the arrow"
+    },
+    "Positioner": {
+      "--transform-origin": "The transform origin for animations",
+      "--reference-width": "The width of the reference element",
+      "--available-width": "The available width in viewport",
+      "--available-height": "The available height in viewport",
+      "--x": "The x position for transform",
+      "--y": "The y position for transform",
+      "--z-index": "The z-index value",
+      "--reference-height": "The height of the root"
+    },
+    "Content": {
+      "--layer-index": "The index of the dismissable in the layer stack",
+      "--nested-layer-count": "The number of nested selects"
+    },
+    "Backdrop": {
+      "--layer-index": "The index of the dismissable in the layer stack"
+    }
+  },
+  "popover": {
+    "Arrow": {
+      "--arrow-size": "The size of the arrow",
+      "--arrow-size-half": "Half the size of the arrow",
+      "--arrow-background": "Use this variable to style the arrow background",
+      "--arrow-offset": "The offset position of the arrow"
+    },
+    "Positioner": {
+      "--transform-origin": "The transform origin for animations",
+      "--reference-width": "The width of the reference element",
+      "--available-width": "The available width in viewport",
+      "--available-height": "The available height in viewport",
+      "--x": "The x position for transform",
+      "--y": "The y position for transform",
+      "--z-index": "The z-index value",
+      "--reference-height": "The height of the root"
+    },
+    "Content": {
+      "--layer-index": "The index of the dismissable in the layer stack",
+      "--nested-layer-count": "The number of nested popovers"
+    },
+    "Backdrop": {
+      "--layer-index": "The index of the dismissable in the layer stack"
+    }
+  },
+  "menu": {
+    "Arrow": {
+      "--arrow-size": "The size of the arrow",
+      "--arrow-size-half": "Half the size of the arrow",
+      "--arrow-background": "Use this variable to style the arrow background",
+      "--arrow-offset": "The offset position of the arrow"
+    },
+    "Positioner": {
+      "--transform-origin": "The transform origin for animations",
+      "--reference-width": "The width of the reference element",
+      "--available-width": "The available width in viewport",
+      "--available-height": "The available height in viewport",
+      "--x": "The x position for transform",
+      "--y": "The y position for transform",
+      "--z-index": "The z-index value",
+      "--reference-height": "The height of the root"
+    },
+    "Content": {
+      "--layer-index": "The index of the dismissable in the layer stack",
+      "--nested-layer-count": "The number of nested menus"
+    },
+    "Backdrop": {
+      "--layer-index": "The index of the dismissable in the layer stack"
+    }
+  },
+  "hover-card": {
+    "Arrow": {
+      "--arrow-size": "The size of the arrow",
+      "--arrow-size-half": "Half the size of the arrow",
+      "--arrow-background": "Use this variable to style the arrow background",
+      "--arrow-offset": "The offset position of the arrow"
+    },
+    "Positioner": {
+      "--transform-origin": "The transform origin for animations",
+      "--reference-width": "The width of the reference element",
+      "--available-width": "The available width in viewport",
+      "--available-height": "The available height in viewport",
+      "--x": "The x position for transform",
+      "--y": "The y position for transform",
+      "--z-index": "The z-index value",
+      "--reference-height": "The height of the root"
+    },
+    "Content": {
+      "--layer-index": "The index of the dismissable in the layer stack",
+      "--nested-layer-count": "The number of nested hover-cards"
+    },
+    "Backdrop": {
+      "--layer-index": "The index of the dismissable in the layer stack"
+    }
+  },
+  "date-picker": {
+    "Arrow": {
+      "--arrow-size": "The size of the arrow",
+      "--arrow-size-half": "Half the size of the arrow",
+      "--arrow-background": "Use this variable to style the arrow background",
+      "--arrow-offset": "The offset position of the arrow"
+    },
+    "Positioner": {
+      "--transform-origin": "The transform origin for animations",
+      "--reference-width": "The width of the reference element",
+      "--available-width": "The available width in viewport",
+      "--available-height": "The available height in viewport",
+      "--x": "The x position for transform",
+      "--y": "The y position for transform",
+      "--z-index": "The z-index value",
+      "--reference-height": "The height of the root"
+    },
+    "Content": {
+      "--layer-index": "The index of the dismissable in the layer stack",
+      "--nested-layer-count": "The number of nested date-pickers"
+    },
+    "Backdrop": {
+      "--layer-index": "The index of the dismissable in the layer stack"
+    }
+  },
+  "combobox": {
+    "Arrow": {
+      "--arrow-size": "The size of the arrow",
+      "--arrow-size-half": "Half the size of the arrow",
+      "--arrow-background": "Use this variable to style the arrow background",
+      "--arrow-offset": "The offset position of the arrow"
+    },
+    "Positioner": {
+      "--transform-origin": "The transform origin for animations",
+      "--reference-width": "The width of the reference element",
+      "--available-width": "The available width in viewport",
+      "--available-height": "The available height in viewport",
+      "--x": "The x position for transform",
+      "--y": "The y position for transform",
+      "--z-index": "The z-index value",
+      "--reference-height": "The height of the root"
+    },
+    "Content": {
+      "--layer-index": "The index of the dismissable in the layer stack",
+      "--nested-layer-count": "The number of nested comboboxs"
+    },
+    "Backdrop": {
+      "--layer-index": "The index of the dismissable in the layer stack"
+    }
+  },
+  "toast": {
+    "Content": {
+      "--layer-index": "The index of the dismissable in the layer stack",
+      "--nested-layer-count": "The number of nested toasts"
+    },
+    "Backdrop": {
+      "--layer-index": "The index of the dismissable in the layer stack"
+    }
+  },
+  "dialog": {
+    "Content": {
+      "--layer-index": "The index of the dismissable in the layer stack",
+      "--nested-layer-count": "The number of nested dialogs"
+    },
+    "Backdrop": {
+      "--layer-index": "The index of the dismissable in the layer stack"
+    }
+  }
+}

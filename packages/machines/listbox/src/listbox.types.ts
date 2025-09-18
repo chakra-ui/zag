@@ -1,7 +1,7 @@
 import type { CollectionItem, GridCollection, ListCollection, Selection, SelectionMode } from "@zag-js/collection"
 import type { EventObject, Machine, Service } from "@zag-js/core"
 import type { TypeaheadState } from "@zag-js/dom-query"
-import type { CommonProperties, DirectionProperty, OrientationProperty, PropTypes, RequiredBy } from "@zag-js/types"
+import type { CommonProperties, DirectionProperty, PropTypes, RequiredBy } from "@zag-js/types"
 
 /* -----------------------------------------------------------------------------
  * Callback details
@@ -21,6 +21,7 @@ export interface HighlightChangeDetails<T extends CollectionItem = CollectionIte
 export interface ScrollToIndexDetails {
   index: number
   immediate?: boolean | undefined
+  getElement: () => HTMLElement | null
 }
 
 export interface SelectionDetails {
@@ -40,10 +41,12 @@ export type ElementIds = Partial<{
   itemGroupLabel: (id: string | number) => string
 }>
 
-export interface ListboxProps<T extends CollectionItem = CollectionItem>
-  extends DirectionProperty,
-    CommonProperties,
-    OrientationProperty {
+export interface ListboxProps<T extends CollectionItem = CollectionItem> extends DirectionProperty, CommonProperties {
+  /**
+   * The orientation of the listbox.
+   * @default "vertical"
+   */
+  orientation?: "horizontal" | "vertical" | undefined
   /**
    * The item collection
    */
@@ -147,7 +150,7 @@ export interface ListboxSchema<T extends CollectionItem = CollectionItem> {
   }
   refs: {
     typeahead: TypeaheadState
-    prevCollection: ListCollection<T> | null
+    focusVisible: boolean
   }
   action: string
   guard: string
@@ -189,8 +192,17 @@ export interface ItemState {
   selected: boolean
   /**
    * Whether the item is highlighted
+   * @deprecated Use `focused` and `focusVisible` instead
    */
   highlighted: boolean
+  /**
+   * Whether the item is focused
+   */
+  focused: boolean
+  /**
+   * Whether the item is focus visible
+   */
+  focusVisible: boolean
 }
 
 export interface ItemGroupProps {

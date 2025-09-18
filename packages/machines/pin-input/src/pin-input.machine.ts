@@ -247,7 +247,9 @@ export const machine = createMachine({
       },
       clearValue({ context }) {
         const nextValue = Array.from<string>({ length: context.get("count") }).fill("")
-        context.set("value", nextValue)
+        queueMicrotask(() => {
+          context.set("value", nextValue)
+        })
       },
       clearFocusedValue({ context, computed }) {
         const focusedIndex = context.get("focusedIndex")
@@ -285,9 +287,14 @@ export const machine = createMachine({
 
 function getNextValue(current: string, next: string) {
   let nextValue = next
-  if (current[0] === next[0]) nextValue = next[1]
-  else if (current[0] === next[1]) nextValue = next[0]
-  return nextValue.split("")[nextValue.length - 1]
+  if (current[0] === next[0]) {
+    nextValue = next[1]
+  } else if (current[0] === next[1]) {
+    nextValue = next[0]
+  }
+  const chars = nextValue.split("")
+  nextValue = chars[chars.length - 1]
+  return nextValue ?? ""
 }
 
 function fill(value: string[], count: number) {

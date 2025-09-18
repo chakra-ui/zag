@@ -79,7 +79,7 @@ export function useMachine<T extends MachineSchema>(
   let transitionRef: { current: any } = { current: null }
 
   let previousEventRef: { current: any } = { current: null }
-  let eventRef: { current: any } = $state({ current: { type: "" } })
+  let eventRef: { current: any } = { current: { type: "" } }
 
   const getEvent = () => ({
     ...eventRef.current,
@@ -250,6 +250,8 @@ export function useMachine<T extends MachineSchema>(
     // save current transition
     transitionRef.current = transition
     const target = transition.target ?? currentState
+
+    debug("transition", event.type, transition.target || currentState, `(${transition.actions})`)
 
     const changed = target !== currentState
     if (changed) {

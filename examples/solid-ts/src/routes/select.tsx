@@ -66,7 +66,7 @@ export default function Page() {
       </main>
 
       <Toolbar controls={controls}>
-        <StateVisualizer state={service} omit={["collection"]} />
+        <StateVisualizer state={service} />
       </Toolbar>
     </>
   )

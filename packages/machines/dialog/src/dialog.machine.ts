@@ -113,6 +113,7 @@ export const machine = createMachine<DialogSchema>({
       trackDismissableElement({ scope, send, prop }) {
         const getContentEl = () => dom.getContentEl(scope)
         return trackDismissableElement(getContentEl, {
+          type: "dialog",
           defer: true,
           pointerBlocking: prop("modal"),
           exclude: [dom.getTriggerEl(scope)],
@@ -125,6 +126,7 @@ export const machine = createMachine<DialogSchema>({
           persistentElements: prop("persistentElements"),
           onFocusOutside: prop("onFocusOutside"),
           onPointerDownOutside: prop("onPointerDownOutside"),
+          onRequestDismiss: prop("onRequestDismiss"),
           onEscapeKeyDown(event) {
             prop("onEscapeKeyDown")?.(event)
             if (!prop("closeOnEscape")) {

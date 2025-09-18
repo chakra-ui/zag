@@ -25,8 +25,12 @@ const api = computed(() => tagsInput.connect(service, normalizeProps))
     <div v-bind="api.getRootProps()">
       <label v-bind="api.getLabelProps()">Enter frameworks:</label>
       <div v-bind="api.getControlProps()">
-        <span v-for="(value, index) in api.value" :key="`${toDashCase(value)}-tag-${index}`">
-          <div :data-testid="`${toDashCase(value)}-tag`" v-bind="api.getItemProps({ index, value })">
+        <span
+          v-for="(value, index) in api.value"
+          :key="`${toDashCase(value)}-tag-${index}`"
+          v-bind="api.getItemProps({ index, value })"
+        >
+          <div :data-testid="`${toDashCase(value)}-tag`" v-bind="api.getItemPreviewProps({ index, value })">
             <span :data-testid="`${toDashCase(value)}-valuetext`" v-bind="api.getItemTextProps({ index, value })"
               >{{ value }} &nbsp;</span
             >
@@ -41,6 +45,7 @@ const api = computed(() => tagsInput.connect(service, normalizeProps))
         </span>
 
         <input data-testid="input" placeholder="add tag" v-bind="api.getInputProps()" />
+        <button v-bind="api.getClearTriggerProps()">X</button>
       </div>
       <input v-bind="api.getHiddenInputProps()" />
     </div>

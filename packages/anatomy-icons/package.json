@@ -1,6 +1,6 @@
 {
   "name": "@zag-js/anatomy-icons",
-  "version": "1.20.1",
+  "version": "1.24.2",
   "keywords": [
     "ui-machines",
     "state-machines",
@@ -38,7 +38,7 @@
   "devDependencies": {
     "@types/react": "^19",
     "clean-package": "2.2.0",
-    "react": "19.1.0"
+    "react": "19.1.1"
   },
   "dependencies": {
     "color2k": "2.0.3",

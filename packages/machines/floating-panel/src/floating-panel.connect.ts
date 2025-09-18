@@ -1,10 +1,10 @@
-import { dataAttr, getEventKey, getEventStep, getEventTarget, isLeftClick, isSelfTarget } from "@zag-js/dom-query"
+import { dataAttr, getEventKey, getEventStep, getEventTarget, isLeftClick } from "@zag-js/dom-query"
 import type { EventKeyMap, NormalizeProps, PropTypes } from "@zag-js/types"
+import { match, toPx } from "@zag-js/utils"
 import { parts } from "./floating-panel.anatomy"
 import * as dom from "./floating-panel.dom"
-import type { FloatingPanelService, FloatingPanelApi, ResizeTriggerProps } from "./floating-panel.types"
+import type { FloatingPanelApi, FloatingPanelService, ResizeTriggerProps } from "./floating-panel.types"
 import { getResizeAxisStyle } from "./get-resize-axis-style"
-import { match, toPx } from "@zag-js/utils"
 
 const validStages = new Set(["minimized", "maximized", "default"])
 
@@ -104,6 +104,9 @@ export function connect<T extends PropTypes>(
         "data-dragging": dataAttr(dragging),
         "data-topmost": dataAttr(isTopmost),
         "data-behind": dataAttr(!isTopmost),
+        "data-minimized": dataAttr(isMinimized),
+        "data-maximized": dataAttr(isMaximized),
+        "data-staged": dataAttr(isStaged),
         style: {
           width: "var(--width)",
           height: "var(--height)",
@@ -114,7 +117,7 @@ export function connect<T extends PropTypes>(
         },
         onKeyDown(event) {
           if (event.defaultPrevented) return
-          if (!isSelfTarget(event)) return
+          if (event.currentTarget !== getEventTarget(event)) return
 
           const step = getEventStep(event) * prop("gridSize")
           const keyMap: EventKeyMap = {
@@ -277,6 +280,9 @@ export function connect<T extends PropTypes>(
         ...parts.control.attrs,
         "data-disabled": dataAttr(prop("disabled")),
         "data-stage": context.get("stage"),
+        "data-minimized": dataAttr(isMinimized),
+        "data-maximized": dataAttr(isMaximized),
+        "data-staged": dataAttr(isStaged),
       })
     },
 
@@ -294,6 +300,9 @@ export function connect<T extends PropTypes>(
         "data-dragging": dataAttr(dragging),
         "data-topmost": dataAttr(isTopmost),
         "data-behind": dataAttr(!isTopmost),
+        "data-minimized": dataAttr(isMinimized),
+        "data-maximized": dataAttr(isMaximized),
+        "data-staged": dataAttr(isStaged),
       })
     },
 
@@ -301,6 +310,9 @@ export function connect<T extends PropTypes>(
       return normalize.element({
         ...parts.body.attrs,
         "data-dragging": dataAttr(dragging),
+        "data-minimized": dataAttr(isMinimized),
+        "data-maximized": dataAttr(isMaximized),
+        "data-staged": dataAttr(isStaged),
         hidden: isMinimized,
       })
     },

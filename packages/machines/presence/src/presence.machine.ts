@@ -32,15 +32,18 @@ export const machine = createMachine<PresenceSchema>({
 
   exit: ["clearInitial", "cleanupNode"],
 
-  watch({ track, action, prop }) {
+  watch({ track, prop, send }) {
     track([() => prop("present")], () => {
-      action(["setInitial", "syncPresence"])
+      send({ type: "PRESENCE.CHANGED" })
     })
   },
 
   on: {
     "NODE.SET": {
-      actions: ["setNode", "setStyles"],
+      actions: ["setupNode"],
+    },
+    "PRESENCE.CHANGED": {
+      actions: ["setInitial", "syncPresence"],
     },
   },
 
@@ -87,23 +90,25 @@ export const machine = createMachine<PresenceSchema>({
           context.set("initial", true)
         })
       },
+
       clearInitial: ({ context }) => {
         context.set("initial", false)
       },
-      cleanupNode: ({ refs }) => {
-        refs.set("node", null)
-        refs.set("styles", null)
-      },
+
       invokeOnExitComplete: ({ prop }) => {
         prop("onExitComplete")?.()
       },
 
-      setNode: ({ refs, event }) => {
+      setupNode: ({ refs, event }) => {
+        // skip if same node
+        if (refs.get("node") === event.node) return
         refs.set("node", event.node)
+        refs.set("styles", getComputedStyle(event.node))
       },
 
-      setStyles: ({ refs, event }) => {
-        refs.set("styles", getComputedStyle(event.node))
+      cleanupNode: ({ refs }) => {
+        refs.set("node", null)
+        refs.set("styles", null)
       },
 
       syncPresence: ({ context, refs, send, prop }) => {

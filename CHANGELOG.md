@@ -4,6 +4,256 @@ All notable changes to this project will be documented in this file.
 
 > For v0.x changelog, see the [v0 branch](https://github.com/chakra-ui/zag/blob/v0/CHANGELOG.md)
 
+## [1.24.2](./#1.24.2) - 2025-09-18
+
+### Fixed
+
+- **Date Picker**: Fix issue where year range picker doesn't show the hovered range
+
+- **Date Utils**:
+  - Fix issue where quarter presets returns incorrect date
+  - Fix issue where year range picker doesn't show the hovered range
+
+- **I18n Utils**:
+  - **formatBytes**: Support `unitSystem` property to allow changing between decimal (1000 bytes) and binary (1024
+    bytes) systems.
+
+- **Number Input**: When `formatOptions` is used (like `style: "currency"`), the cursor would jump to the end of the
+  input when typing in the middle. The cursor now maintains its relative position during formatting changes.
+
+- **Pin Input**: Fix issue where using the keyboard shortcuts `Cmd+Backspace` and `Cmd+Delete` to delete text in pin
+  inputs would insert "undefined" instead of clearing the field.
+
+- **Scroll Area**: Fix issue where resize tracking was not observing the root element, which caused the scrollbar to not
+  update when the root element's size changed.
+
+## [1.24.1](./#1.24.1) - 2025-09-14
+
+### Fixed
+
+- **Core**: Fix issue where `mergeProps` throws when `props` is undefined or null
+
+## [1.24.0](./#1.24.0) - 2025-09-13
+
+### Added
+
+- **Combobox**: Add `alwaysSubmitOnEnter` prop to allow bypassing the default two-step behavior (Enter to close
+  combobox, then Enter to submit form) and instead submit the form immediately on Enter press. This is useful for
+  single-field autocomplete forms where Enter should submit the form directly.
+
+### Fixed
+
+- **Editable**: Allow text selection in editable preview when `autoResize` is enabled
+
+  Previously, when `autoResize` was set to `true`, the preview element had `userSelect: "none"` applied, preventing
+  users from selecting text. This has been fixed by removing the `userSelect` style property.
+
+- **File Upload**: Fix regression where clicking the trigger doesn't open the file picker when used within the dropzone
+
+- **Hover Card**: Change default delay values for hover card to improve accessibility.
+  - `openDelay`: from `700ms` to `600ms`
+
+- **Menu**: Fix issue where keyboard activation of menu items with `target="_blank"` would open two tabs
+
+- **Svelte**: Fix Svelte warning about state reference capturing initial value instead of current reactive state
+
+- **Tooltip**: Change default delay values for tooltip to improve accessibility.
+  [Learn more](https://www.nngroup.com/articles/timing-exposing-content)
+  - `openDelay`: from `1000ms` to `400ms`
+  - `closeDelay`: from `500ms` to `150ms`
+
+## [1.23.0](./#1.23.0) - 2025-09-11
+
+### Added
+
+- **Dismissable**: Add support for layer types in dismissable layer stack. Layers can now be categorized as `dialog`,
+  `popover`, `menu`, or `listbox`. This enables:
+  - `data-nested` attribute on nested layers of the same type
+  - `data-has-nested` attribute on parent layers with nested children of the same type
+  - `--nested-layer-count` CSS variable indicating the number of nested layers of the same type
+
+### Fixed
+
+- **Core**: Fix issue where `mergeProps` strips symbols after merging
+
+- **Dom Query**:
+  - Fix issue where `isActiveElement` checks don't consider the Shadow DOM
+  - Fix issue where `getActiveElement` returns `activeElement` rather than `null` for focusable web components with no
+    focusable children
+
+- **Menu**: Fix issue where hovering a partially visible item with pointer causes it to scroll into view
+
+- **Tabs**: Fix issue where `ids` for `item` and `content` could not be customized
+
+- **Toast**: Allow creating a toast store without any arguments
+
+  ```tsx
+  // before
+  const store = toast.createStore({})
+
+  // after
+  const store = toast.createStore()
+  ```
+
+## [1.22.1](./#1.22.1) - 2025-08-27
+
+### Fixed
+
+- **Collection**: Fix issue where disabled items could be reached via typeahead
+
+- **Date Picker**: Fix issue where datepicker doesn't revert to a valid value when the input value exceeds the min/max
+  and blurred
+
+- **Tags Input**: Fix issue where highlighted item doesn't clear when tabbing out of the input to an external button
+  within the `control` part.
+
+## [1.22.0](./#1.22.0) - 2025-08-26
+
+### Added
+
+- **Hover Card**: Add support for `disabled` prop
+
+### Fixed
+
+- **Color Picker**: Fix issue where color picker was not working correctly in RTL mode
+
+- **Dismissable**: Expose `onRequestDismiss` custom event handler for event a parent layer requests the child layer to
+  dismiss. If prevented via `event.preventDefault()`, the child layer will not dismiss when the parent layer is
+  dismissed.
+
+- **Number Input**
+  - Omit the input `pattern` when `formatOptions` is provided. This prevents native pattern validation from conflicting
+    with formatted values (e.g., currency or percent).
+  - Handle empty values consistently across all format options.
+  - Add `data-scrubbing` attribute to the number input parts.
+
+- **Tooltip**
+  - Set `closeOnPointerdown` to `false` when `closeOnClick` is set to `false`
+  - Reduce bundle size by replacing `@zag-js/store` dependency with a lightweight store implementation.
+
+## [1.21.9](./#1.21.9) - 2025-08-23
+
+## Fixed
+
+- **Async List**:
+  - Fixed critical race conditions and dual operations in sort functionality that could cause stale data overwrites and
+    unexpected behavior
+  - Fixed event handling during async operations - users can now properly interrupt sorting with RELOAD, FILTER, or new
+    SORT events
+  - Enhanced `SortDetails` interface with `filterText` parameter for consistent filtering context across local and
+    server-side operations
+
+## [1.21.8](./#1.21.8) - 2025-08-22
+
+### Fixed
+
+- **Date Picker**:
+  - Clear hovered range state after completing range selection instead of waiting for pointer to leave the calendar
+    area.
+  - Fix issue where month and year select labels don't update correctly when using `min`/`max` constraints.
+  - Expose `disabled` on `api.getMonths()` and `api.getYears()` results to indicate options out of range for current
+    constraints.
+
+- **Listbox**:
+  - Fix issue where first enabled item should be highlighted by default when listbox receives focus and no item is
+    currently highlighted.
+  - Add `getElement` to `scrollToIndexFn` details
+  - Track collection changes and clear `highlightedValue` if the item is no longer in the collection.
+
+- **Scroll Area**:
+  - Avoid detecting hover state from portalled descendants.
+  - Add `data-dragging` attribute to scroll area parts.
+
+- **Select**: Add `getElement` to `scrollToIndexFn` details
+
+- **Combobox**: Add `getElement` to `scrollToIndexFn` details
+
+## [1.21.7](./#1.21.7) - 2025-08-19
+
+### Added
+
+- **Highlight Word**: Add `exactMatch` option that enables whole-word matching using regex word boundaries.
+
+### Fixed
+
+- **Menu**: Fix context menu repositioning logic
+
+- **Scroll Area**: Add `data-hover` to scroll area
+
+## [1.21.6](./#1.21.6) - 2025-08-17
+
+### Fixed
+
+- **Menu**: Fix context menu positioning bug where reopening at the same coordinates fails to reposition
+
+- **Scroll Area**: Rename `data-hovering` to `data-hover` for consistency
+
+## [1.21.5](./#1.21.5) - 2025-08-16
+
+### Fixed
+
+- **Scroll Area**:
+  - Fix issue where scroll area thumb applies width/height incorrectly
+  - Add `data-overflow-*` to content and corner
+  - Add custom easing function support for smooth scrolling
+
+## [1.21.4](./#1.21.4) - 2025-08-16
+
+### Fixed
+
+- **Scroll Area**: Ensure types are exported and fix incorrect `@zag-js/dom-query/src/query` import
+
+- **ListCollection**
+  - Avoid recomputing groups on every call to `at()` and `indexOf()`
+  - Fixed bug in `find()` method (was checking `!= null` instead of `!== -1`)
+
+- **GridCollection**: Avoid recomputing rows on every call to `getRows()`
+
+- **Menu**: Add `data-state` attribute for context menu trigger
+
+## [1.21.3](./#1.21.3) - 2025-08-14
+
+### Fixed
+
+- **Listbox**: Add support for navigating grid collections
+
+### Changed
+
+- **Async List**: Improve type inference for descriptors
+
+- **Framework Components**: Improve runtime performance of components by removing refs/events from stateful to
+  non-stateful objects (affects Svelte, Solid, and Vue components)
+
+## [1.21.2](./#1.21.2) - 2025-08-13
+
+### Added
+
+- **Scroll Area**: Initial release of scroll area state machine
+
+### Fixed
+
+- **Carousel**:
+  - Fix an issue where the carousel would not update when `slideCount` or `autoplay` props change.
+  - Fix an issue where `loop: false` was ignored when using autoplay. Now, the carousel will stop when it gets to the
+    last slide.
+
+- **Date Picker**: Expose `data-inline` attribute on Content part to enable distinct styling for inline date pickers
+  versus popover date pickers.
+
+- **Menu**: Fix issue where `onCheckedChange` could be called twice on checkbox or radio item
+
+- **Radio Group**: Fixed issue where arrow key navigation doesn't apply `data-focus-visible` on the newly focused item.
+
+## [1.21.1](./#1.21.1) - 2025-07-31
+
+### Fixed
+
+- **Carousel**: Fix issue where controlled carousel ignores last slide
+
+- **Tour**: Re-expose `WaitOptions`
+
+- **Floating Panel**: Add data attributes for floating panel stage status
+
 ## [1.21.0](./#1.21.0) - 2025-07-26
 
 ### Added

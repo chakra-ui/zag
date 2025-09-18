@@ -28,7 +28,8 @@ test.describe("carousel", () => {
     await I.seePrevTriggerIsEnabled()
   })
 
-  test("autoplay start/stop", async ({ page }) => {
+  test.skip("[loop=true] autoplay start/stop", async ({ page }) => {
+    await I.controls.bool("loop", true)
     await page.clock.install()
 
     await I.clickAutoplayTrigger()

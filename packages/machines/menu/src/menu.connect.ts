@@ -6,14 +6,13 @@ import {
   getEventKey,
   getEventPoint,
   getEventTarget,
-  isAnchorElement,
   isContextMenuEvent,
   isDownloadingEvent,
   isEditableElement,
   isModifierKey,
   isOpeningInNewTab,
   isPrintableKey,
-  isSelfTarget,
+  contains,
   isValidTabEvent,
 } from "@zag-js/dom-query"
 import { getPlacementStyles } from "@zag-js/popper"
@@ -28,7 +27,7 @@ export function connect<T extends PropTypes>(service: Service<MenuSchema>, norma
 
   const open = state.hasTag("open")
 
-  const isSubmenu = computed("isSubmenu")
+  const isSubmenu = context.get("isSubmenu")
   const isTypingAhead = computed("isTypingAhead")
   const composite = prop("composite")
 
@@ -146,6 +145,7 @@ export function connect<T extends PropTypes>(service: Service<MenuSchema>, norma
         ...parts.contextTrigger.attrs,
         dir: prop("dir"),
         id: dom.getContextTriggerId(scope),
+        "data-state": open ? "open" : "closed",
         onPointerDown(event) {
           if (event.pointerType === "mouse") return
           const point = getEventPoint(event)
@@ -311,7 +311,7 @@ export function connect<T extends PropTypes>(service: Service<MenuSchema>, norma
         },
         onKeyDown(event) {
           if (event.defaultPrevented) return
-          if (!isSelfTarget(event)) return
+          if (!contains(event.currentTarget, getEventTarget(event))) return
 
           const target = getEventTarget<Element>(event)
 
@@ -326,7 +326,6 @@ export function connect<T extends PropTypes>(service: Service<MenuSchema>, norma
             }
           }
 
-          const item = dom.getItemEl(scope, highlightedValue)
           const keyMap: EventKeyMap = {
             ArrowDown() {
               send({ type: "ARROW_DOWN" })
@@ -342,12 +341,6 @@ export function connect<T extends PropTypes>(service: Service<MenuSchema>, norma
             },
             Enter() {
               send({ type: "ENTER" })
-
-              if (highlightedValue == null) return
-
-              if (isAnchorElement(item)) {
-                prop("navigate")?.({ value: highlightedValue, node: item, href: item.href })
-              }
             },
             Space(event) {
               if (isTypingAhead) {
@@ -402,7 +395,7 @@ export function connect<T extends PropTypes>(service: Service<MenuSchema>, norma
     getOptionItemState,
 
     getOptionItemProps(props) {
-      const { type, disabled, onCheckedChange, closeOnSelect } = props
+      const { type, disabled, closeOnSelect } = props
 
       const option = getOptionItemProps(props)
       const itemState = getOptionItemState(props)
@@ -423,7 +416,6 @@ export function connect<T extends PropTypes>(service: Service<MenuSchema>, norma
             if (isOpeningInNewTab(event)) return
             const target = event.currentTarget
             send({ type: "ITEM_CLICK", target, option, closeOnSelect })
-            onCheckedChange?.(!itemState.checked)
           },
         }),
       }

@@ -68,7 +68,7 @@ export interface TimerProps extends CommonProperties {
   onComplete?: (() => void) | undefined
 }
 
-type PropsWithDefault = "interval"
+type PropsWithDefault = "interval" | "startMs"
 
 interface Context {
   /**

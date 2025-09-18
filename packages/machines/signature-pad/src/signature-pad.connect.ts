@@ -13,7 +13,8 @@ export function connect<T extends PropTypes>(
   const drawing = state.matches("drawing")
   const empty = computed("isEmpty")
   const interactive = computed("isInteractive")
-  const disabled = prop("disabled")
+  const disabled = !!prop("disabled")
+  const required = !!prop("required")
 
   const translations = prop("translations")
 
@@ -36,6 +37,7 @@ export function connect<T extends PropTypes>(
         ...parts.label.attrs,
         id: dom.getLabelId(scope),
         "data-disabled": dataAttr(disabled),
+        "data-required": dataAttr(required),
         htmlFor: dom.getHiddenInputId(scope),
         onClick(event) {
           if (!interactive) return

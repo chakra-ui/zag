@@ -23,6 +23,7 @@
 @import url(./qr-code.css);
 @import url(./radio.css);
 @import url(./rating-group.css);
+@import url(./scroll-area.css);
 @import url(./segmented-control.css);
 @import url(./select.css);
 @import url(./slider.css);
@@ -30,7 +31,7 @@
 @import url(./switch.css);
 @import url(./tabs.css);
 @import url(./tags-input.css);
-@import url(./time-picker.css);
+
 @import url(./toast.css);
 @import url(./timer.css);
 @import url(./toggle-group.css);

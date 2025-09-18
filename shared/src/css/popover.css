@@ -15,13 +15,21 @@
   width: 260px;
   transform-origin: var(--transform-origin);
   z-index: var(--layer-index);
-}
 
-[data-scope="popover"][data-part="content"][data-fullscreen] {
-  position: fixed;
-  padding: 20px;
-  width: 100%;
-  bottom: 0px;
+  &[data-fullscreen] {
+    position: fixed;
+    padding: 20px;
+    width: 100%;
+    bottom: 0px;
+  }
+
+  &[data-state="open"] {
+    animation: scaleFadeIn 0.15s ease-in-out;
+  }
+
+  &[data-state="closed"] {
+    animation: scaleFadeOut 0.1s ease-in-out;
+  }
 }
 
 [data-scope="popover"][data-part="positioner"][data-fullscreen] {

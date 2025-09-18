@@ -1,5 +1,5 @@
 import { DateFormatter } from "@internationalized/date"
-import { createGuards, createMachine, type Params } from "@zag-js/core"
+import { createGuards, createMachine, type Params, type PropFn } from "@zag-js/core"
 import {
   alignDate,
   constrainValue,
@@ -46,6 +46,10 @@ function isDateArrayEqual(a: DateValue[], b: DateValue[] | undefined) {
     if (!isDateEqual(a[i], b[i])) return false
   }
   return true
+}
+
+function getValueAsString(value: DateValue[], prop: PropFn<DatePickerSchema>) {
+  return value.map((date) => prop("format")(date, { locale: prop("locale"), timeZone: prop("timeZone") }))
 }
 
 export const machine = createMachine<DatePickerSchema>({
@@ -125,9 +129,7 @@ export const machine = createMachine<DatePickerSchema>({
           const context = getContext()
           const view = context.get("view")
           const value = context.get("value")
-          const valueAsString = value.map((date) =>
-            prop("format")(date, { locale: prop("locale"), timeZone: prop("timeZone") }),
-          )
+          const valueAsString = getValueAsString(value, prop)
           prop("onFocusChange")?.({ value, valueAsString, view, focusedValue })
         },
       })),
@@ -138,9 +140,7 @@ export const machine = createMachine<DatePickerSchema>({
         hash: (v) => v.map((date) => date.toString()).join(","),
         onChange(value) {
           const context = getContext()
-          const valueAsString = value.map((date) =>
-            prop("format")(date, { locale: prop("locale"), timeZone: prop("timeZone") }),
-          )
+          const valueAsString = getValueAsString(value, prop)
           prop("onValueChange")?.({ value, valueAsString, view: context.get("view") })
         },
       })),
@@ -167,6 +167,7 @@ export const machine = createMachine<DatePickerSchema>({
         return {
           defaultValue: alignDate(focusedValue, "start", { months: prop("numOfMonths") }, prop("locale")),
           isEqual: isDateEqual,
+          hash: (v) => v.toString(),
         }
       }),
       currentPlacement: bindable<Placement | undefined>(() => ({
@@ -195,10 +196,7 @@ export const machine = createMachine<DatePickerSchema>({
       !isPreviousRangeInvalid(context.get("startValue"), prop("min"), prop("max")),
     isNextVisibleRangeValid: ({ prop, computed }) =>
       !isNextRangeInvalid(computed("endValue"), prop("min"), prop("max")),
-    valueAsString({ context, prop }) {
-      const value = context.get("value")
-      return value.map((date) => prop("format")(date, { locale: prop("locale"), timeZone: prop("timeZone") }))
-    },
+    valueAsString: ({ context, prop }) => getValueAsString(context.get("value"), prop),
   },
 
   effects: ["setupLiveRegion"],
@@ -209,13 +207,12 @@ export const machine = createMachine<DatePickerSchema>({
     })
 
     track([() => context.hash("focusedValue")], () => {
-      action([
-        "setStartValue",
-        "syncMonthSelectElement",
-        "syncYearSelectElement",
-        "focusActiveCellIfNeeded",
-        "setHoveredValueIfKeyboard",
-      ])
+      action(["setStartValue", "focusActiveCellIfNeeded", "setHoveredValueIfKeyboard"])
+    })
+
+    // Ensure the month/year select reflect the actual visible start value
+    track([() => context.hash("startValue")], () => {
+      action(["syncMonthSelectElement", "syncYearSelectElement"])
     })
 
     track([() => context.get("inputValue")], () => {
@@ -407,7 +404,14 @@ export const machine = createMachine<DatePickerSchema>({
           // === Grouped transitions (based on `closeOnSelect` and `isOpenControlled`) ===
           {
             guard: and("isRangePicker", "isSelectingEndDate", "closeOnSelect", "isOpenControlled"),
-            actions: ["setFocusedDate", "setSelectedDate", "setActiveIndexToStart", "invokeOnClose", "setRestoreFocus"],
+            actions: [
+              "setFocusedDate",
+              "setSelectedDate",
+              "setActiveIndexToStart",
+              "clearHoveredDate",
+              "invokeOnClose",
+              "setRestoreFocus",
+            ],
           },
           {
             guard: and("isRangePicker", "isSelectingEndDate", "closeOnSelect"),
@@ -416,6 +420,7 @@ export const machine = createMachine<DatePickerSchema>({
               "setFocusedDate",
               "setSelectedDate",
               "setActiveIndexToStart",
+              "clearHoveredDate",
               "invokeOnClose",
               "focusInputElement",
             ],
@@ -484,16 +489,22 @@ export const machine = createMachine<DatePickerSchema>({
           // === Grouped transitions (based on `closeOnSelect` and `isOpenControlled`) ===
           {
             guard: and("isRangePicker", "isSelectingEndDate", "closeOnSelect", "isOpenControlled"),
-            actions: ["setSelectedDate", "setActiveIndexToStart", "invokeOnClose"],
+            actions: ["setSelectedDate", "setActiveIndexToStart", "clearHoveredDate", "invokeOnClose"],
           },
           {
             guard: and("isRangePicker", "isSelectingEndDate", "closeOnSelect"),
             target: "focused",
-            actions: ["setSelectedDate", "setActiveIndexToStart", "invokeOnClose", "focusInputElement"],
+            actions: [
+              "setSelectedDate",
+              "setActiveIndexToStart",
+              "clearHoveredDate",
+              "invokeOnClose",
+              "focusInputElement",
+            ],
           },
           {
             guard: and("isRangePicker", "isSelectingEndDate"),
-            actions: ["setSelectedDate", "setActiveIndexToStart"],
+            actions: ["setSelectedDate", "setActiveIndexToStart", "clearHoveredDate"],
           },
           // ===
           {
@@ -692,6 +703,7 @@ export const machine = createMachine<DatePickerSchema>({
 
         const getContentEl = () => dom.getContentEl(scope)
         return trackDismissableElement(getContentEl, {
+          type: "popover",
           defer: true,
           exclude: [...dom.getInputEls(scope), dom.getTriggerEl(scope), dom.getClearTriggerEl(scope)],
           onInteractOutside(event) {
@@ -949,7 +961,7 @@ export const machine = createMachine<DatePickerSchema>({
       },
       focusFirstMonth(params) {
         const { context } = params
-        const nextValue = context.get("focusedValue").set({ month: 0 })
+        const nextValue = context.get("focusedValue").set({ month: 1 })
         setFocusedValue(params, nextValue)
       },
       focusLastMonth(params) {
@@ -1060,7 +1072,7 @@ export const machine = createMachine<DatePickerSchema>({
         setFocusedValue(params, date)
       },
 
-      selectParsedDate({ context, event, computed, prop }) {
+      selectParsedDate({ context, event, prop }) {
         if (event.index == null) return
 
         const parse = prop("parse")
@@ -1075,13 +1087,18 @@ export const machine = createMachine<DatePickerSchema>({
 
         if (!date) return
 
+        // constrain date to min/max range
+        date = constrainValue(date, prop("min"), prop("max"))
+
         const values = Array.from(context.get("value"))
         values[event.index] = date
 
         context.set("value", values)
+
         // always sync the input value, even if the selecteddate is not changed
         // e.g. selected value is 02/28/2024, and the input value changed to 02/28
-        context.set("inputValue", computed("valueAsString")[event.index])
+        const valueAsString = getValueAsString(values, prop)
+        context.set("inputValue", valueAsString[event.index])
       },
 
       resetView({ context }) {

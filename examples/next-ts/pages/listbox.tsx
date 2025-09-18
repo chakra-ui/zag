@@ -41,7 +41,7 @@ export default function Page() {
       </main>
 
       <Toolbar controls={controls.ui}>
-        <StateVisualizer state={service} omit={["collection"]} context={["highlightedValue"]} />
+        <StateVisualizer state={service} context={["highlightedValue"]} />
       </Toolbar>
     </>
   )

@@ -4,6 +4,11 @@ type RouteData = {
 }
 
 export const routesData: RouteData[] = [
+  { label: "Bottom Sheet", path: "/bottom-sheet" },
+  { label: "Bottom Sheet (Snap Points)", path: "/bottom-sheet-snap-points" },
+  { label: "Bottom Sheet (Default Active Snap Point)", path: "/bottom-sheet-default-active-snap-point" },
+  { label: "Scroll Area", path: "/scroll-area" },
+  { label: "Scroll Area (Nested)", path: "/scroll-area-nested" },
   { label: "Async List", path: "/async-list" },
   { label: "Password Input", path: "/password-input" },
   { label: "Listbox", path: "/listbox" },
@@ -15,7 +20,7 @@ export const routesData: RouteData[] = [
   { label: "Angle Slider", path: "/angle-slider" },
   { label: "Steps", path: "/steps" },
   { label: "QR Code", path: "/qr-code" },
-  { label: "Time Picker", path: "/time-picker" },
+
   { label: "Signature Pad", path: "/signature-pad" },
   { label: "Floating Panel", path: "/floating-panel" },
   { label: "Tour", path: "/tour" },

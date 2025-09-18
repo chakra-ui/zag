@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import * as timer from "@zag-js/timer"
 import { normalizeProps, useMachine } from "@zag-js/vue"
-import { computed } from "vue"
+import { computed, useId } from "vue"
 
 const service = useMachine(timer.machine, {
   id: useId(),
@@ -9,8 +9,8 @@ const service = useMachine(timer.machine, {
   autoStart: true,
   startMs: timer.parse({ days: 2, seconds: 10 }),
   onComplete() {
-      console.log("Timer completed")
-    },
+    console.log("Timer completed")
+  },
 })
 
 const api = computed(() => timer.connect(service, normalizeProps))
@@ -39,8 +39,5 @@ const api = computed(() => timer.connect(service, normalizeProps))
 
   <Toolbar>
     <StateVisualizer :state="service" />
-    <template #controls>
-      <Controls :control="null" />
-    </template>
   </Toolbar>
 </template>

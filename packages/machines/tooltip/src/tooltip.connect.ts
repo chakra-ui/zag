@@ -65,7 +65,7 @@ export function connect<P extends PropTypes>(
         onBlur(event) {
           if (event.defaultPrevented) return
           if (disabled) return
-          if (id === store.id) {
+          if (id === store.get("id")) {
             send({ type: "close", src: "trigger.blur" })
           }
         },
@@ -74,7 +74,7 @@ export function connect<P extends PropTypes>(
           if (disabled) return
           if (!isLeftClick(event)) return
           if (!prop("closeOnPointerDown")) return
-          if (id === store.id) {
+          if (id === store.get("id")) {
             send({ type: "close", src: "trigger.pointerdown" })
           }
         },

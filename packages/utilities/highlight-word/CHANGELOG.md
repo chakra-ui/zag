@@ -1,5 +1,45 @@
 # @zag-js/highlight-word
 
+## 1.24.2
+
+## 1.24.1
+
+## 1.24.0
+
+## 1.23.0
+
+## 1.22.1
+
+## 1.22.0
+
+## 1.21.9
+
+## 1.21.8
+
+## 1.21.7
+
+### Patch Changes
+
+- [#2650](https://github.com/chakra-ui/zag/pull/2650)
+  [`77833f3`](https://github.com/chakra-ui/zag/commit/77833f364f75a5460a6c4ca1b4d660d0801a3a4a) Thanks
+  [@julienbenac](https://github.com/julienbenac)! - Add `exactMatch` option that enables whole-word matching using regex
+  word boundaries. This enhancement provides more precise text highlighting when users need to avoid partial matches
+  within larger words.
+
+## 1.21.6
+
+## 1.21.5
+
+## 1.21.4
+
+## 1.21.3
+
+## 1.21.2
+
+## 1.21.1
+
+## 1.21.0
+
 ## 1.20.1
 
 ## 1.20.0

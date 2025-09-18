@@ -14,13 +14,16 @@ test.describe("listbox", () => {
   })
 
   test("no highlighted item, arrow down", async () => {
-    await I.focusContent()
-    await I.pressKey("ArrowDown")
+    await I.tabToContent()
     await I.seeItemIsHighlighted("Andorra")
+    await I.pressKey("ArrowDown")
+    await I.seeItemIsHighlighted("United Arab Emirates")
   })
 
   test("no highlighted item, arrow up", async () => {
-    await I.focusContent()
+    await I.controls.bool("loopFocus", true)
+    await I.tabToContent()
+    await I.seeItemIsHighlighted("Andorra")
     await I.pressKey("ArrowUp")
     await I.seeItemIsHighlighted("Zimbabwe")
   })

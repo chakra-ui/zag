@@ -145,6 +145,7 @@ export const machine = createMachine<PopoverSchema>({
         const getContentEl = () => dom.getContentEl(scope)
         let restoreFocus = true
         return trackDismissableElement(getContentEl, {
+          type: "popover",
           pointerBlocking: prop("modal"),
           exclude: dom.getTriggerEl(scope),
           defer: true,
@@ -164,6 +165,7 @@ export const machine = createMachine<PopoverSchema>({
           onPointerDownOutside: prop("onPointerDownOutside"),
           onFocusOutside: prop("onFocusOutside"),
           persistentElements: prop("persistentElements"),
+          onRequestDismiss: prop("onRequestDismiss"),
           onDismiss() {
             send({ type: "CLOSE", src: "interact-outside", restoreFocus })
           },

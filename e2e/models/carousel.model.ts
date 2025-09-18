@@ -76,6 +76,7 @@ export class CarouselModel extends Model {
   }
 
   async seeNumOfItems(count: number) {
+    await expect(this.carousel).toBeVisible()
     const items = this.page.locator(part("item"))
     await expect(items).toHaveCount(count)
   }

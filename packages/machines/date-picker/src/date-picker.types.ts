@@ -398,6 +398,7 @@ export interface TableCellState {
   valueText: string
   inRange: boolean
   value: DateValue
+  outsideRange?: boolean | undefined
   readonly disabled: boolean
 }
 
@@ -467,6 +468,7 @@ export interface MonthGridProps {
 export interface Cell {
   label: string
   value: number
+  disabled?: boolean | undefined
 }
 
 export type MonthGridValue = Cell[][]

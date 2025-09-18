@@ -170,6 +170,42 @@ root, trigger and content.
 }
 ```
 
+### Collapse animation
+
+The collapsible content provides `--width` and `--height` CSS variables that can be used to create smooth animations. These variables are automatically calculated and updated based on the content's dimensions.
+
+```css
+[data-scope="collapsible"][data-part="content"][data-state="open"] {
+  animation: slideDown 200ms ease;
+}
+
+[data-scope="collapsible"][data-part="content"][data-state="closed"] {
+  animation: slideUp 200ms ease;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0.01;
+    height: 0;
+  }
+  to {
+    opacity: 1;
+    height: var(--height);
+  }
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 1;
+    height: var(--height);
+  }
+  to {
+    opacity: 0.01;
+    height: 0;
+  }
+}
+```
+
 ## Methods and Properties
 
 The collapsible's `api` exposes the following methods and properties:
@@ -189,6 +225,10 @@ The collapsible `api` exposes the following methods:
 ### Data Attributes
 
 <DataAttrTable name="collapsible" />
+
+### CSS Variables
+
+<CssVarTable name="collapsible" />
 
 ## Accessibility
 

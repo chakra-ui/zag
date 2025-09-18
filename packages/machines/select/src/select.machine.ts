@@ -425,6 +425,7 @@ export const machine = createMachine<SelectSchema>({
         const contentEl = () => dom.getContentEl(scope)
         let restoreFocus = true
         return trackDismissableElement(contentEl, {
+          type: "listbox",
           defer: true,
           exclude: [dom.getTriggerEl(scope), dom.getClearTriggerEl(scope)],
           onFocusOutside: prop("onFocusOutside"),
@@ -461,17 +462,21 @@ export const machine = createMachine<SelectSchema>({
           // don't scroll into view if we're using the pointer
           if (event.current().type.includes("POINTER")) return
 
-          const optionEl = dom.getItemEl(scope, highlightedValue)
           const contentEl = dom.getContentEl(scope)
 
           const scrollToIndexFn = prop("scrollToIndexFn")
           if (scrollToIndexFn) {
             const highlightedIndex = prop("collection").indexOf(highlightedValue)
-            scrollToIndexFn?.({ index: highlightedIndex, immediate })
+            scrollToIndexFn?.({
+              index: highlightedIndex,
+              immediate,
+              getElement: () => dom.getItemEl(scope, highlightedValue),
+            })
             return
           }
 
-          scrollIntoView(optionEl, { rootEl: contentEl, block: "nearest" })
+          const itemEl = dom.getItemEl(scope, highlightedValue)
+          scrollIntoView(itemEl, { rootEl: contentEl, block: "nearest" })
         }
 
         raf(() => exec(true))
@@ -660,7 +665,12 @@ export const machine = createMachine<SelectSchema>({
 
       scrollContentToTop({ prop, scope }) {
         if (prop("scrollToIndexFn")) {
-          prop("scrollToIndexFn")?.({ index: 0, immediate: true })
+          const firstValue = prop("collection").firstValue
+          prop("scrollToIndexFn")?.({
+            index: 0,
+            immediate: true,
+            getElement: () => dom.getItemEl(scope, firstValue),
+          })
         } else {
           dom.getContentEl(scope)?.scrollTo(0, 0)
         }

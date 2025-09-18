@@ -55,6 +55,7 @@ export interface OpenChangeDetails {
 export interface ScrollToIndexDetails {
   index: number
   immediate?: boolean | undefined
+  getElement: () => HTMLElement | null
 }
 
 export interface NavigateDetails {
@@ -203,6 +204,12 @@ export interface ComboboxProps<T extends CollectionItem = CollectionItem>
    * Whether to allow typing custom values in the input
    */
   allowCustomValue?: boolean | undefined
+  /**
+   * Whether to always submit on Enter key press, even if popup is open.
+   * Useful for single-field autocomplete forms where Enter should submit the form.
+   * @default false
+   */
+  alwaysSubmitOnEnter?: boolean | undefined
   /**
    * Whether to loop the keyboard navigation through the items
    * @default true

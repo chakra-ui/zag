@@ -18,4 +18,4 @@ export const props = createProps<CheckboxProps>()([
   "required",
   "value",
 ])
-export const splitProps = createSplitProps<CheckboxProps>(props)
+export const splitProps = createSplitProps<Partial<CheckboxProps>>(props)

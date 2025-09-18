@@ -1,7 +1,10 @@
+@import url("./css/keyframes.css");
 @import url("./css/accordion.css");
 @import url("./css/angle-slider.css");
 @import url("./css/anatomy.css");
 @import url("./css/avatar.css");
+
+@import url("./css/bottom-sheet.css");
 
 @import url("./css/carousel.css");
 @import url("./css/checkbox.css");
@@ -30,6 +33,8 @@
 @import url("./css/navigation-menu-nested.css");
 
 @import url("./css/number-input.css");
+
+@import url("./css/scroll-area.css");
 @import url("./css/steps.css");
 @import url("./css/swap.css");
 
@@ -54,7 +59,7 @@
 @import url("./css/tabs.css");
 @import url("./css/tags-input.css");
 @import url("./css/timer.css");
-@import url("./css/time-picker.css");
+
 @import url("./css/toast.css");
 @import url("./css/toggle-group.css");
 @import url("./css/toggle.css");

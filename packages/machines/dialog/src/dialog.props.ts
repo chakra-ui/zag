@@ -20,6 +20,7 @@ export const props = createProps<DialogProps>()([
   "onInteractOutside",
   "onOpenChange",
   "onPointerDownOutside",
+  "onRequestDismiss",
   "defaultOpen",
   "open",
   "persistentElements",

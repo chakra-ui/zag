@@ -1,5 +1,46 @@
 # @zag-js/date-utils
 
+## 1.24.2
+
+### Patch Changes
+
+- [#2717](https://github.com/chakra-ui/zag/pull/2717)
+  [`05bf37a`](https://github.com/chakra-ui/zag/commit/05bf37aeb332f3666aa8cb4d586481b7a60a9374) Thanks
+  [@colinlienard](https://github.com/colinlienard)! - Fix issue where quarter presets returns incorrect date
+
+- [`9181889`](https://github.com/chakra-ui/zag/commit/91818897e1e1e95b5ebc8b5ea9f73a66c2f96ed0) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix issue where year range picker doesn't show the hovered range
+
+## 1.24.1
+
+## 1.24.0
+
+## 1.23.0
+
+## 1.22.1
+
+## 1.22.0
+
+## 1.21.9
+
+## 1.21.8
+
+## 1.21.7
+
+## 1.21.6
+
+## 1.21.5
+
+## 1.21.4
+
+## 1.21.3
+
+## 1.21.2
+
+## 1.21.1
+
+## 1.21.0
+
 ## 1.20.1
 
 ## 1.20.0
@@ -178,10 +219,6 @@
 ## 0.74.1
 
 ### Patch Changes
-
-- [`a4b4cdb`](https://github.com/chakra-ui/zag/commit/a4b4cdbad37a1d935c248c15075ed0dd5ed56aed) Thanks
-  [@cschroeter](https://github.com/cschroeter)! - fix(time-picker): move @internationalized/date to the list of peer
-  deps"
 
 ## 0.74.0
 

@@ -14,7 +14,7 @@ const serialize = (style: string): CSSObject => {
   return res
 }
 
-export function mergeProps(...args: Record<string, any>[]) {
+export function mergeProps(...args: Record<string | symbol, any>[]) {
   const merged = zagMergeProps(...args)
 
   if ("style" in merged) {

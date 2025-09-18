@@ -11,7 +11,7 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@internationalized/date": "3.8.2",
+    "@internationalized/date": "3.9.0",
     "@tanstack/react-virtual": "3.13.12",
     "@types/textarea-caret": "3.0.4",
     "@zag-js/accordion": "workspace:*",
@@ -22,6 +22,7 @@
     "@zag-js/async-list": "workspace:*",
     "@zag-js/auto-resize": "workspace:*",
     "@zag-js/avatar": "workspace:*",
+    "@zag-js/bottom-sheet": "workspace:*",
     "@zag-js/carousel": "workspace:*",
     "@zag-js/checkbox": "workspace:*",
     "@zag-js/clipboard": "workspace:*",
@@ -67,6 +68,7 @@
     "@zag-js/react": "workspace:*",
     "@zag-js/rect-utils": "workspace:*",
     "@zag-js/remove-scroll": "workspace:*",
+    "@zag-js/scroll-area": "workspace:*",
     "@zag-js/scroll-snap": "workspace:*",
     "@zag-js/select": "workspace:*",
     "@zag-js/shared": "workspace:*",
@@ -79,7 +81,6 @@
     "@zag-js/switch": "workspace:*",
     "@zag-js/tabs": "workspace:*",
     "@zag-js/tags-input": "workspace:*",
-    "@zag-js/time-picker": "workspace:*",
     "@zag-js/timer": "workspace:*",
     "@zag-js/toast": "workspace:*",
     "@zag-js/toggle": "workspace:*",
@@ -91,25 +92,26 @@
     "@zag-js/utils": "workspace:*",
     "form-serialize": "0.7.2",
     "image-conversion": "2.1.1",
-    "lucide-react": "0.525.0",
-    "match-sorter": "8.0.3",
-    "next": "15.4.2",
+    "lucide-react": "0.544.0",
+    "match-sorter": "8.1.0",
+    "next": "15.5.3",
     "next-cloudinary": "6.16.0",
-    "react": "19.1.0",
-    "react-dom": "19.1.0",
-    "react-hook-form": "7.60.0",
+    "react": "19.1.1",
+    "react-dom": "19.1.1",
+    "react-hook-form": "7.62.0",
     "react-spinners": "0.17.0",
-    "textarea-caret": "^3.1.0"
+    "textarea-caret": "^3.1.0",
+    "virtua": "^0.43.1"
   },
   "devDependencies": {
+    "@next/eslint-plugin-next": "15.5.3",
     "@types/form-serialize": "0.7.4",
-    "@types/node": "24.1.0",
+    "@types/node": "24.4.0",
     "@types/react": "^19",
     "@types/react-dom": "^19",
-    "@next/eslint-plugin-next": "15.4.2",
     "eslint-plugin-react": "7.37.5",
     "eslint-plugin-react-hooks": "5.2.0",
-    "typescript": "5.8.3"
+    "typescript": "5.9.2"
   },
   "license": "MIT"
 }

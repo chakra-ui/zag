@@ -8,8 +8,9 @@ import type { SwitchApi, SwitchService } from "./switch.types"
 export function connect<T extends PropTypes>(service: SwitchService, normalize: NormalizeProps<T>): SwitchApi<T> {
   const { context, send, prop, scope } = service
 
-  const disabled = prop("disabled")
-  const readOnly = prop("readOnly")
+  const disabled = !!prop("disabled")
+  const readOnly = !!prop("readOnly")
+  const required = !!prop("required")
   const checked = !!context.get("checked")
 
   const focused = !disabled && context.get("focused")
@@ -24,6 +25,7 @@ export function connect<T extends PropTypes>(service: SwitchService, normalize: 
     "data-disabled": dataAttr(disabled),
     "data-state": checked ? "checked" : "unchecked",
     "data-invalid": dataAttr(prop("invalid")),
+    "data-required": dataAttr(required),
   }
 
   return {

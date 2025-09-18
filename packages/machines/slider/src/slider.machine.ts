@@ -1,4 +1,4 @@
-import { createMachine } from "@zag-js/core"
+import { createMachine, memo } from "@zag-js/core"
 import { raf, setElementValue, trackElementRect, trackFormControl, trackPointerMove } from "@zag-js/dom-query"
 import type { Size } from "@zag-js/types"
 import {
@@ -95,9 +95,10 @@ export const machine = createMachine<SliderSchema>({
     isDisabled: ({ context, prop }) => !!prop("disabled") || context.get("fieldsetDisabled"),
     isInteractive: ({ prop, computed }) => !(prop("readOnly") || computed("isDisabled")),
     hasMeasuredThumbSize: ({ context }) => context.get("thumbSize") != null,
-    valuePercent({ context, prop }) {
-      return context.get("value").map((value) => 100 * getValuePercent(value, prop("min"), prop("max")))
-    },
+    valuePercent: memo(
+      ({ context, prop }) => [context.get("value"), prop("min"), prop("max")],
+      ([value, min, max]) => value.map((value) => 100 * getValuePercent(value, min, max)),
+    ),
   },
 
   watch({ track, action, context }) {
