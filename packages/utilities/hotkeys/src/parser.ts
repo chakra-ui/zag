@@ -1,4 +1,4 @@
-import type { ParsedHotkey, HotkeyOptions } from "./types"
+import type { ParsedHotkey, HotkeyOptions, SequenceStep, FormTagName } from "./types"
 import { normalizeKey, resolveControlOrMeta } from "./utils"
 
 // Normalize user input for modifiers
@@ -58,13 +58,7 @@ export function parseHotkey(hotkey: string): ParsedHotkey {
   if (isSequence) {
     // For sequences, parse each step individually to preserve modifiers
     const sequenceParts = hotkey.split(">").map((part) => part.trim())
-    const sequenceSteps: Array<{
-      key: string
-      alt?: boolean
-      ctrl?: boolean
-      meta?: boolean
-      shift?: boolean
-    }> = []
+    const sequenceSteps: SequenceStep[] = []
 
     const allKeys: string[] = []
 
@@ -181,9 +175,21 @@ export function matchesHotkey(parsed: ParsedHotkey, event: KeyboardEvent): boole
 }
 
 const FORM_TAGS = new Set(["input", "textarea", "select"])
+const isFormTag = (tagName: string): tagName is FormTagName => FORM_TAGS.has(tagName)
+
+const isHTMLElement = (target: unknown): target is HTMLElement => {
+  return (
+    target !== null &&
+    typeof target === "object" &&
+    "localName" in target &&
+    "nodeType" in target &&
+    target.nodeType === 1
+  )
+}
+
 const getEventTarget = (event: KeyboardEvent): Element | null => {
   const target = event.composedPath?.()[0] || event.target
-  return target instanceof Element ? target : null
+  return isHTMLElement(target) ? target : null
 }
 
 // Check if hotkey should be enabled in current context
@@ -194,15 +200,12 @@ export function shouldTrigger(event: KeyboardEvent, options: HotkeyOptions): boo
   const tagName = target.localName
   const isContentEditable = target.getAttribute("contenteditable") === "true"
 
-  // Check form elements
-  const isFormElement = FORM_TAGS.has(tagName as any)
-
-  if (isFormElement) {
+  if (isFormTag(tagName)) {
     if (options.enableOnFormTags === false || options.enableOnFormTags === undefined) {
       return false
     }
     if (Array.isArray(options.enableOnFormTags)) {
-      if (!options.enableOnFormTags.includes(tagName as any)) {
+      if (!options.enableOnFormTags.includes(tagName)) {
         return false
       }
     }
@@ -212,6 +215,21 @@ export function shouldTrigger(event: KeyboardEvent, options: HotkeyOptions): boo
   if (isContentEditable && !options.enableOnContentEditable) return false
 
   return true
+}
+
+// Check if a keyboard event matches a hotkey string or array of hotkey strings
+export function isHotKey(hotkey: string | string[], event: KeyboardEvent, options: HotkeyOptions = {}): boolean {
+  // Check if the hotkey should trigger in current context
+  if (!shouldTrigger(event, options)) {
+    return false
+  }
+
+  const hotkeys = Array.isArray(hotkey) ? hotkey : [hotkey]
+
+  return hotkeys.some((h) => {
+    const parsed = parseHotkey(h)
+    return matchesHotkey(parsed, event)
+  })
 }
 
 // Simple priority scoring (higher = more specific)

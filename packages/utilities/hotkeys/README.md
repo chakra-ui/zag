@@ -23,6 +23,73 @@ npm i @zag-js/hotkeys
 
 ## Quick Start
 
+### Simple Hotkey Checking
+
+For simple use cases where you just want to check if a keyboard event matches a hotkey pattern:
+
+```typescript
+import { isHotKey } from "@zag-js/hotkeys"
+
+// Check single hotkey
+document.addEventListener("keydown", (event) => {
+  if (isHotKey("mod+s", event)) {
+    event.preventDefault()
+    // Handle save
+  }
+})
+
+// Check multiple hotkeys (any match returns true)
+if (isHotKey(["mod+k", "ctrl+k"], event)) {
+  // Open command palette
+}
+
+// With options
+if (isHotKey("mod+enter", event, { enableOnFormTags: true })) {
+  // Submit form
+}
+```
+
+### Parsing Hotkey Strings
+
+Use `parseHotkey` to parse hotkey strings into structured objects for analysis:
+
+```typescript
+import { parseHotkey } from "@zag-js/hotkeys"
+
+// Parse simple hotkey
+const parsed = parseHotkey("mod+s")
+// Result: { keys: ["s"], alt: false, ctrl/meta: true, shift: false, isSequence: false }
+
+// Parse with multiple modifiers
+const parsed2 = parseHotkey("ctrl+shift+k")
+// Result: { keys: ["k"], alt: false, ctrl: true, shift: true, meta: false, isSequence: false }
+
+// Parse sequences
+const parsed3 = parseHotkey("g > g")
+// Result: {
+//   keys: ["g", "g"],
+//   isSequence: true,
+//   sequenceSteps: [
+//     { key: "g", alt: false, ctrl: false, meta: false, shift: false },
+//     { key: "g", alt: false, ctrl: false, meta: false, shift: false }
+//   ]
+// }
+
+// Parse special keys
+const parsed4 = parseHotkey("ctrl++") // Plus key
+// Result: { keys: ["+"], ctrl: true, alt: false, meta: false, shift: false }
+```
+
+This is useful for:
+- Building custom hotkey UI components
+- Validating hotkey strings
+- Analyzing hotkey complexity
+- Converting between hotkey formats
+
+### Store-Based Management
+
+For more complex applications with multiple hotkeys, scopes, and context:
+
 ```typescript
 import { createHotkeyStore } from "@zag-js/hotkeys"
 

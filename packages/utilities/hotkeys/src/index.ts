@@ -1,4 +1,5 @@
 export { createHotkeyStore, HotkeyStore } from "./store"
+export { isHotKey, parseHotkey } from "./parser"
 export type {
   CommandDefinition,
   FormTagName,

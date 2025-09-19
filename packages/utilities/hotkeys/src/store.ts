@@ -1,4 +1,4 @@
-import { matchesHotkey, parseHotkey, shouldTrigger } from "./parser"
+import { getHotkeyPriority, matchesHotkey, parseHotkey, shouldTrigger } from "./parser"
 import type {
   CommandDefinition,
   HotkeyCommand,
@@ -25,13 +25,22 @@ interface ListenerRecord {
   blur?: EventListener
 }
 
-const toArray = <T>(value: T | T[]): T[] => (Array.isArray(value) ? value : [value])
+interface SequenceState {
+  recordedKeys: string[]
+  timeoutId?: number
+}
+
+const toArray = <T>(value: T | T[]): T[] => {
+  const res = Array.isArray(value) ? value : [value]
+  return res.filter((item) => item !== undefined)
+}
 
 export class HotkeyStore<TContext = any> {
   private state: HotkeyStoreState<TContext>
   private context = {} as TContext
   private rootNode?: RootNode | undefined
   private sequenceTimeoutMs = 1000
+  private sequenceStates = new Map<string, SequenceState>()
   private registrationOrder = 0 // For deterministic execution order
   private listeners: {
     capture: ListenerRecord
@@ -50,7 +59,6 @@ export class HotkeyStore<TContext = any> {
     this.state = {
       pressedKeys: new Set<string>(),
       commands: new Map(),
-      sequenceStates: new Map(),
       listening: false,
       activeScopes: new Set(defaultScopes),
     }
@@ -71,6 +79,7 @@ export class HotkeyStore<TContext = any> {
     this.stopListening()
     this.clear()
     this.subscribers.clear()
+    this.sequenceStates.clear()
     this.rootNode = undefined
     this.registrationOrder = 0 // Reset for potential reuse
     // Don't reset context to avoid type issues - let it be garbage collected
@@ -92,7 +101,7 @@ export class HotkeyStore<TContext = any> {
     const scopes = toArray(scope)
     this.state.activeScopes = new Set(scopes)
     // Reset all sequences when scope changes as they might no longer be valid
-    this.state.sequenceStates.clear()
+    this.sequenceStates.clear()
     this.notifySubscribers()
     return this
   }
@@ -155,9 +164,9 @@ export class HotkeyStore<TContext = any> {
 
       // Parse and cache hotkey for performance
       const parsed = parseHotkey(command.hotkey)
-      const priority = this.getCommandPriority(parsed)
+      const priority = getHotkeyPriority(parsed)
 
-      const hotkeyCommand: HotkeyCommand<TContext> = {
+      this.state.commands.set(command.id, {
         id: command.id,
         hotkey: command.hotkey,
         action: command.action,
@@ -171,9 +180,7 @@ export class HotkeyStore<TContext = any> {
         ...(command.label !== undefined && { label: command.label }),
         ...(command.description !== undefined && { description: command.description }),
         ...(command.category !== undefined && { category: command.category }),
-      }
-
-      this.state.commands.set(command.id, hotkeyCommand)
+      })
     }
 
     this.updateListeners()
@@ -457,10 +464,10 @@ export class HotkeyStore<TContext = any> {
 
     const win = getWin(this.rootNode)
 
-    let state = this.state.sequenceStates.get(hotkeyString)
+    let state = this.sequenceStates.get(hotkeyString)
     if (!state) {
       state = { recordedKeys: [] }
-      this.state.sequenceStates.set(hotkeyString, state)
+      this.sequenceStates.set(hotkeyString, state)
     }
 
     // Clear existing timeout
@@ -506,29 +513,11 @@ export class HotkeyStore<TContext = any> {
   }
 
   private resetSequence(hotkey: string): void {
-    const state = this.state.sequenceStates.get(hotkey)
+    const state = this.sequenceStates.get(hotkey)
     if (state && typeof state.timeoutId === "number") {
       clearTimeout(state.timeoutId)
     }
-    this.state.sequenceStates.delete(hotkey)
-  }
-
-  private getCommandPriority(parsed: ParsedHotkey): number {
-    let priority = 0
-
-    // Sequences get highest priority
-    if (parsed.isSequence) priority += 1000
-
-    // Each modifier adds to priority
-    if (parsed.alt) priority += 100
-    if (parsed.ctrl) priority += 100
-    if (parsed.meta) priority += 100
-    if (parsed.shift) priority += 100
-
-    // Multiple keys add to priority
-    priority += parsed.keys.length * 10
-
-    return priority
+    this.sequenceStates.delete(hotkey)
   }
 
   // Notification system
