@@ -31,8 +31,10 @@ interface SequenceState {
 }
 
 const toArray = <T>(value: T | T[]): T[] => {
-  const res = Array.isArray(value) ? value : [value]
-  return res.filter((item) => item !== undefined)
+  if (Array.isArray(value)) {
+    return value.filter((item) => item !== undefined)
+  }
+  return value !== undefined ? [value] : []
 }
 
 export class HotkeyStore<TContext = any> {
@@ -119,7 +121,7 @@ export class HotkeyStore<TContext = any> {
   }
 
   getActiveScopes(): readonly string[] {
-    return Array.from(this.state.activeScopes)
+    return [...this.state.activeScopes]
   }
 
   getState(): Readonly<HotkeyStoreState<TContext>> {
@@ -232,9 +234,8 @@ export class HotkeyStore<TContext = any> {
   }
 
   clear(): this {
-    // Clear all sequence timeouts - collect hotkeys first before clearing commands
-    const hotkeys = Array.from(this.state.commands.values()).map((command) => command.hotkey)
-    for (const hotkey of hotkeys) {
+    // Clear all active sequences
+    for (const hotkey of this.sequenceStates.keys()) {
       this.resetSequence(hotkey)
     }
     this.state.commands.clear()
@@ -246,7 +247,13 @@ export class HotkeyStore<TContext = any> {
   // State queries
   isPressed(hotkey: string): boolean {
     // Check if we have a cached parsed version from any registered command
-    const cachedCommand = Array.from(this.state.commands.values()).find((cmd) => cmd.hotkey === hotkey)
+    let cachedCommand
+    for (const cmd of this.state.commands.values()) {
+      if (cmd.hotkey === hotkey) {
+        cachedCommand = cmd
+        break
+      }
+    }
     const parsed = cachedCommand?._parsed ?? parseHotkey(hotkey)
 
     const keysMatch = parsed.keys.every((k) => this.state.pressedKeys.has(k))
@@ -261,7 +268,7 @@ export class HotkeyStore<TContext = any> {
   }
 
   getCurrentlyPressed(): readonly string[] {
-    return Array.from(this.state.pressedKeys)
+    return [...this.state.pressedKeys]
   }
 
   // Private methods for event handling
@@ -299,14 +306,16 @@ export class HotkeyStore<TContext = any> {
     this.listeners.bubble.blur = bubbleBlurHandler
 
     // Add listeners
-    if (this.needsCapture()) {
+    const phases = this.getListenerPhases()
+
+    if (phases.capture) {
       this.rootNode.addEventListener("keydown", captureKeyDownHandler, true)
       this.rootNode.addEventListener("keyup", captureKeyUpHandler, true)
       win.addEventListener("blur", captureBlurHandler)
       win.addEventListener("contextmenu", captureBlurHandler)
     }
 
-    if (this.needsBubble()) {
+    if (phases.bubble) {
       this.rootNode.addEventListener("keydown", bubbleKeyDownHandler, false)
       this.rootNode.addEventListener("keyup", bubbleKeyUpHandler, false)
       win.addEventListener("blur", bubbleBlurHandler)
@@ -351,18 +360,25 @@ export class HotkeyStore<TContext = any> {
     this.state.listening = false
   }
 
-  private needsCapture(): boolean {
-    return Array.from(this.state.commands.values()).some(({ options, enabled }) => {
-      const isEnabled = typeof enabled === "function" ? enabled(this.context) : enabled
-      return isEnabled && options.capture !== false
-    })
-  }
+  private getListenerPhases(): { capture: boolean; bubble: boolean } {
+    let capture = false
+    let bubble = false
 
-  private needsBubble(): boolean {
-    return Array.from(this.state.commands.values()).some(({ options, enabled }) => {
-      const isEnabled = typeof enabled === "function" ? enabled(this.context) : enabled
-      return isEnabled && options.capture === false
-    })
+    for (const command of this.state.commands.values()) {
+      const isEnabled = typeof command.enabled === "function" ? command.enabled(this.context) : command.enabled
+      if (!isEnabled) continue
+
+      if (command.options.capture !== false) {
+        capture = true
+      } else {
+        bubble = true
+      }
+
+      // Early exit if both are found
+      if (capture && bubble) break
+    }
+
+    return { capture, bubble }
   }
 
   private createKeyDownHandler(isCapture: boolean) {
@@ -383,9 +399,9 @@ export class HotkeyStore<TContext = any> {
   private createBlurHandler() {
     return (() => {
       this.state.pressedKeys.clear()
-      // Clear all sequence states on blur
-      for (const command of this.state.commands.values()) {
-        this.resetSequence(command.hotkey)
+      // Clear all active sequences on blur
+      for (const hotkey of this.sequenceStates.keys()) {
+        this.resetSequence(hotkey)
       }
       this.notifySubscribers()
     }) as EventListener
@@ -480,14 +496,16 @@ export class HotkeyStore<TContext = any> {
     const expectedStep = parsed.sequenceSteps?.[currentStepIndex]
 
     if (expectedStep) {
+      // Check both logical key and physical code for layout independence
       const keyMatches = eventKey === expectedStep.key
+      const codeMatches = parsed.codes && parsed.codes[currentStepIndex] === event.code
       const modifiersMatch =
         (expectedStep.alt || false) === event.altKey &&
         (expectedStep.ctrl || false) === event.ctrlKey &&
         (expectedStep.meta || false) === event.metaKey &&
         (expectedStep.shift || false) === event.shiftKey
 
-      if (keyMatches && modifiersMatch) {
+      if ((keyMatches || codeMatches) && modifiersMatch) {
         state.recordedKeys.push(eventKey)
 
         // Check if sequence is complete

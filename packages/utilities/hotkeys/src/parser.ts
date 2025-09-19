@@ -1,44 +1,40 @@
 import type { ParsedHotkey, HotkeyOptions, SequenceStep, FormTagName } from "./types"
-import { normalizeKey, resolveControlOrMeta } from "./utils"
+import { normalizeKey, resolveControlOrMeta, keyToCode } from "./utils"
+
+// Modifier normalization map for performance
+const MODIFIER_NORMALIZATION_MAP = new Map([
+  ["ctrl", "Control"],
+  ["control", "Control"],
+  ["alt", "Alt"],
+  ["option", "Alt"],
+  ["shift", "Shift"],
+  ["meta", "Meta"],
+  ["cmd", "Meta"],
+  ["command", "Meta"],
+  ["win", "Meta"],
+  ["windows", "Meta"],
+])
 
 // Normalize user input for modifiers
 function normalizeModifier(key: string): string {
-  const lower = key.toLowerCase()
-  switch (lower) {
-    case "ctrl":
-    case "control":
-      return "Control"
-    case "alt":
-    case "option":
-      return "Alt"
-    case "shift":
-      return "Shift"
-    case "meta":
-    case "cmd":
-    case "command":
-    case "win":
-    case "windows":
-      return "Meta"
-    default:
-      return key
-  }
+  return MODIFIER_NORMALIZATION_MAP.get(key.toLowerCase()) ?? key
 }
 
 const MODIFIER_SET = new Set(["control", "ctrl", "alt", "option", "shift", "meta", "cmd", "command", "win", "windows"])
 
 // Context-aware parsing to handle plus key (Playwright-style)
 function parseHotkeyString(hotkey: string): { modifiers: string[]; key: string } {
-  const parts = hotkey.split("+").map((part) => part.trim())
+  const parts = hotkey.split("+")
   const modifiers: string[] = []
   let keyIndex = parts.length - 1 // Start from the end, assume last part is the key
 
   // Process each part except the last one (which we assume is the key)
   for (let i = 0; i < parts.length - 1; i++) {
-    const part = parts[i].toLowerCase()
+    const part = parts[i].trim().toLowerCase()
     const resolved = resolveControlOrMeta(part).toLowerCase()
 
     if (MODIFIER_SET.has(resolved) || resolved === "mod" || resolved === "controlormeta") {
-      modifiers.push(parts[i]) // Keep original casing for processing
+      modifiers.push(parts[i].trim()) // Keep original casing for processing
     } else {
       // This part is not a modifier, so everything from here is the key
       keyIndex = i
@@ -47,7 +43,7 @@ function parseHotkeyString(hotkey: string): { modifiers: string[]; key: string }
   }
 
   // Join remaining parts as the key (handles cases like "Control++" where key is "+")
-  const key = parts.slice(keyIndex).join("+")
+  const key = parts.slice(keyIndex).join("+").trim()
   return { modifiers, key }
 }
 
@@ -57,12 +53,14 @@ export function parseHotkey(hotkey: string): ParsedHotkey {
 
   if (isSequence) {
     // For sequences, parse each step individually to preserve modifiers
-    const sequenceParts = hotkey.split(">").map((part) => part.trim())
+    const sequenceParts = hotkey.split(">")
     const sequenceSteps: SequenceStep[] = []
 
     const allKeys: string[] = []
+    const allCodes: string[] = []
 
-    for (const part of sequenceParts) {
+    for (const rawPart of sequenceParts) {
+      const part = rawPart.trim()
       if (part.includes("+")) {
         // This step has modifiers
         const { modifiers, key } = parseHotkeyString(part)
@@ -96,6 +94,12 @@ export function parseHotkey(hotkey: string): ParsedHotkey {
 
         sequenceSteps.push(step)
         allKeys.push(step.key)
+
+        // Add corresponding physical key code
+        const code = keyToCode(step.key)
+        if (code != null) {
+          allCodes.push(code)
+        }
       } else {
         // Simple key without modifiers
         const key = normalizeKey(part)
@@ -107,11 +111,18 @@ export function parseHotkey(hotkey: string): ParsedHotkey {
           shift: false,
         })
         allKeys.push(key)
+
+        // Add corresponding physical key code
+        const code = keyToCode(key)
+        if (code != null) {
+          allCodes.push(code)
+        }
       }
     }
 
     return {
       keys: allKeys,
+      codes: allCodes.length > 0 ? allCodes : undefined,
       alt: false,
       ctrl: false,
       meta: false,
@@ -125,6 +136,7 @@ export function parseHotkey(hotkey: string): ParsedHotkey {
   const { modifiers, key } = parseHotkeyString(hotkey)
   const result: ParsedHotkey = {
     keys: [],
+    codes: [],
     alt: false,
     ctrl: false,
     meta: false,
@@ -155,7 +167,14 @@ export function parseHotkey(hotkey: string): ParsedHotkey {
 
   // Process the main key (now we can handle "+" as a literal key)
   if (key && key !== ">") {
-    result.keys.push(normalizeKey(key))
+    const normalizedKey = normalizeKey(key)
+    result.keys.push(normalizedKey)
+
+    // Add corresponding physical key code for layout-independent matching
+    const code = keyToCode(normalizedKey)
+    if (code != null) {
+      result.codes?.push(code)
+    }
   }
 
   return result
@@ -169,9 +188,15 @@ export function matchesHotkey(parsed: ParsedHotkey, event: KeyboardEvent): boole
   if (parsed.meta !== event.metaKey) return false
   if (parsed.shift !== event.shiftKey) return false
 
-  // Check main key
+  // Check main key - match EITHER logical key OR physical code for layout independence
   const eventKey = normalizeKey(event.key, event.code)
-  return parsed.keys.some((key) => key === eventKey)
+  const eventCode = event.code
+
+  // Match if either the logical key matches OR the physical code matches
+  const keyMatches = parsed.keys.some((key) => key === eventKey)
+  const codeMatches = parsed.codes ? parsed.codes.some((code) => code === eventCode) : false
+
+  return keyMatches || codeMatches
 }
 
 const FORM_TAGS = new Set(["input", "textarea", "select"])

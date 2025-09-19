@@ -20,6 +20,7 @@ npm i @zag-js/hotkeys
 - 🌗 **Shadow DOM** - Works in both regular DOM and Shadow DOM
 - ⚡ **TypeScript** - Full type safety with generic context support
 - 🧹 **Auto Cleanup** - Automatic event listener management
+- 🌍 **Layout-Aware** - Automatic dual matching for both logical keys and physical positions
 
 ## Quick Start
 
@@ -556,6 +557,70 @@ store.register([
 ])
 ```
 
+## Layout-Aware Matching
+
+The library automatically handles different keyboard layouts by matching both the logical key (what's printed on the key) and the physical key position. This means your hotkeys work consistently across different keyboard layouts without any configuration.
+
+### How It Works
+
+When you define a hotkey like `"Ctrl+Z"`, the library:
+1. Matches the logical key (`event.key === "z"`) - works on QWERTY
+2. Also matches the physical position (`event.code === "KeyZ"`) - works on QWERTZ/AZERTY
+
+This dual matching ensures:
+- **QWERTY users**: Press the "Z" key (bottom left)
+- **QWERTZ users**: Press either "Z" (labeled) OR "Y" (physical Z position)
+- **AZERTY users**: Press either "Z" (labeled) OR "W" (physical Z position)
+
+### Examples
+
+```typescript
+// This automatically works across all keyboard layouts
+store.register({
+  id: "undo",
+  hotkey: "Ctrl+Z",
+  action: () => undo()
+})
+
+// Simple hotkey checking with layout awareness
+if (isHotKey("Ctrl+Z", event)) {
+  // Triggers on:
+  // - QWERTY: Ctrl+Z
+  // - QWERTZ: Ctrl+Z or Ctrl+Y (physical Z position)
+  // - AZERTY: Ctrl+Z or Ctrl+W (physical Z position)
+}
+
+// Sequences also work across layouts
+store.register({
+  id: "goto-line",
+  hotkey: "G > G",
+  action: () => goToLine()
+  // Works with both logical "G" and physical "KeyG" position
+})
+```
+
+### Benefits
+
+- **No Configuration**: Works automatically without any setup
+- **International Users**: Supports users with non-US keyboard layouts
+- **Layout Switching**: Works even when users switch keyboard layouts
+- **Muscle Memory**: Respects physical key positions for consistency
+- **Labeled Keys**: Also respects what's printed on the keys
+
+### Supported Keys
+
+Layout-aware matching works for:
+- Letters (A-Z)
+- Numbers (0-9)
+- Common symbols (-, =, [, ], ;, ', `, \\, ,, ., /)
+- Function keys (F1-F20)
+- Navigation keys (arrows, home, end, page up/down)
+- Special keys (enter, tab, space, escape, backspace, delete)
+
+### Note
+
+Modifier keys (Ctrl, Alt, Shift, Meta/Cmd) are always matched by their logical value, not position, as they are consistent across layouts.
+
 ## Command Palette Integration
 
 The metadata-rich command system is designed for command palette integration:
@@ -630,6 +695,7 @@ const command: CommandDefinition<MyContext> = {
 4. **Clean up properly**: Always call `store.destroy()` when done
 5. **Consider sequences carefully**: Set appropriate timeouts for key sequences
 6. **Test across platforms**: Verify cross-platform shortcuts work as expected
+7. **International users**: The automatic layout-aware matching handles different keyboards
 
 ## Browser Support
 

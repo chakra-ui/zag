@@ -13,6 +13,7 @@ export interface SequenceStep extends KeyboardModifiers {
 
 export interface ParsedHotkey extends KeyboardModifiers {
   keys: string[]
+  codes?: string[] | undefined // Physical key codes for layout-independent matching
   isSequence?: boolean | undefined
   description?: string | undefined
   // For sequences: array of parsed steps, each with modifiers and key
