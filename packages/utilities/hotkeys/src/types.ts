@@ -1,5 +1,7 @@
 export type RootNode = Document | ShadowRoot
 
+export type Platform = "mac" | "windows" | "linux"
+
 export interface KeyboardModifiers {
   alt?: boolean | undefined
   ctrl?: boolean | undefined

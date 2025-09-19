@@ -1,5 +1,7 @@
 export { createHotkeyStore, HotkeyStore } from "./store"
 export { isHotKey, parseHotkey } from "./parser"
+export { formatHotkey } from "./format"
+export type { HotkeyFormatOptions } from "./format"
 export type {
   CommandDefinition,
   FormTagName,

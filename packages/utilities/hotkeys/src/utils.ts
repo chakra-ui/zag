@@ -1,4 +1,4 @@
-import type { RootNode } from "./types"
+import type { FormTagName, Platform, RootNode } from "./types"
 
 const typeOf = (value: unknown) => Object.prototype.toString.call(value).slice(8, -1)
 const isDocument = (value: unknown): value is Document => typeOf(value) === "Document"
@@ -10,6 +10,26 @@ export function getDoc(root: RootNode): Document {
 export function getWin(root: RootNode): Window {
   return getDoc(root).defaultView || window
 }
+
+const FORM_TAGS = new Set(["input", "textarea", "select"])
+export const isFormTag = (tagName: string): tagName is FormTagName => FORM_TAGS.has(tagName)
+
+export const isHTMLElement = (target: unknown): target is HTMLElement => {
+  return (
+    target !== null &&
+    typeof target === "object" &&
+    "localName" in target &&
+    "nodeType" in target &&
+    target.nodeType === 1
+  )
+}
+
+export const getEventTarget = (event: KeyboardEvent): Element | null => {
+  const target = event.composedPath?.()[0] || event.target
+  return isHTMLElement(target) ? target : null
+}
+
+/////////////////////////////////////////////////////////////////////////////
 
 // Detect platform
 const NA_REGEX = /Mac|iPod|iPhone|iPad/
@@ -140,12 +160,13 @@ export function normalizeKey(eventKey: string, _eventCode?: string): string {
 }
 
 // Resolve mod and ControlOrMeta to appropriate modifier based on platform
-export function resolveControlOrMeta(key: string): string {
+export function resolveControlOrMeta(key: string, platform: Platform): string {
   const lower = key.toLowerCase()
-  if (lower === "mod" || lower === "controlormeta") {
-    return isMac() ? "Meta" : "Control"
-  }
-  return key
+  return isModKey(lower) ? (platform === "mac" ? "Meta" : "Control") : key
+}
+
+export function isModKey(key: string): boolean {
+  return key.toLowerCase() === "mod" || key.toLowerCase() === "controlormeta"
 }
 
 // Convert a logical key to its physical key code for layout-independent matching
@@ -164,4 +185,11 @@ export function keyToCode(key: string): string | undefined {
 
   // Special character mappings
   return SPECIAL_KEY_CODES.get(key)
+}
+
+export const toArray = <T>(value: T | T[]): T[] => {
+  if (Array.isArray(value)) {
+    return value.filter((item) => item !== undefined)
+  }
+  return value !== undefined ? [value] : []
 }

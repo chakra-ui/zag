@@ -1,7 +1,6 @@
-import type { ParsedHotkey, HotkeyOptions, SequenceStep, FormTagName } from "./types"
-import { normalizeKey, resolveControlOrMeta, keyToCode } from "./utils"
+import type { HotkeyOptions, ParsedHotkey, Platform, SequenceStep } from "./types"
+import { getEventTarget, isFormTag, isMac, keyToCode, normalizeKey, resolveControlOrMeta, toArray } from "./utils"
 
-// Modifier normalization map for performance
 const MODIFIER_NORMALIZATION_MAP = new Map([
   ["ctrl", "Control"],
   ["control", "Control"],
@@ -15,7 +14,6 @@ const MODIFIER_NORMALIZATION_MAP = new Map([
   ["windows", "Meta"],
 ])
 
-// Normalize user input for modifiers
 function normalizeModifier(key: string): string {
   return MODIFIER_NORMALIZATION_MAP.get(key.toLowerCase()) ?? key
 }
@@ -23,7 +21,7 @@ function normalizeModifier(key: string): string {
 const MODIFIER_SET = new Set(["control", "ctrl", "alt", "option", "shift", "meta", "cmd", "command", "win", "windows"])
 
 // Context-aware parsing to handle plus key (Playwright-style)
-function parseHotkeyString(hotkey: string): { modifiers: string[]; key: string } {
+function parseHotkeyString(hotkey: string, platform: Platform): { modifiers: string[]; key: string } {
   const parts = hotkey.split("+")
   const modifiers: string[] = []
   let keyIndex = parts.length - 1 // Start from the end, assume last part is the key
@@ -31,7 +29,7 @@ function parseHotkeyString(hotkey: string): { modifiers: string[]; key: string }
   // Process each part except the last one (which we assume is the key)
   for (let i = 0; i < parts.length - 1; i++) {
     const part = parts[i].trim().toLowerCase()
-    const resolved = resolveControlOrMeta(part).toLowerCase()
+    const resolved = resolveControlOrMeta(part, platform).toLowerCase()
 
     if (MODIFIER_SET.has(resolved) || resolved === "mod" || resolved === "controlormeta") {
       modifiers.push(parts[i].trim()) // Keep original casing for processing
@@ -48,7 +46,7 @@ function parseHotkeyString(hotkey: string): { modifiers: string[]; key: string }
 }
 
 // Parse hotkey string into structured object
-export function parseHotkey(hotkey: string): ParsedHotkey {
+export function parseHotkey(hotkey: string, platform: Platform): ParsedHotkey {
   const isSequence = hotkey.includes(">")
 
   if (isSequence) {
@@ -63,7 +61,7 @@ export function parseHotkey(hotkey: string): ParsedHotkey {
       const part = rawPart.trim()
       if (part.includes("+")) {
         // This step has modifiers
-        const { modifiers, key } = parseHotkeyString(part)
+        const { modifiers, key } = parseHotkeyString(part, platform)
         const step = {
           key: normalizeKey(key),
           alt: false,
@@ -74,7 +72,7 @@ export function parseHotkey(hotkey: string): ParsedHotkey {
 
         // Process modifiers for this step
         for (const modifier of modifiers) {
-          const resolvedModifier = resolveControlOrMeta(modifier)
+          const resolvedModifier = resolveControlOrMeta(modifier, platform)
           const normalized = normalizeModifier(resolvedModifier)
           switch (normalized) {
             case "Alt":
@@ -133,7 +131,7 @@ export function parseHotkey(hotkey: string): ParsedHotkey {
   }
 
   // Use context-aware parsing for combinations
-  const { modifiers, key } = parseHotkeyString(hotkey)
+  const { modifiers, key } = parseHotkeyString(hotkey, platform)
   const result: ParsedHotkey = {
     keys: [],
     codes: [],
@@ -146,7 +144,7 @@ export function parseHotkey(hotkey: string): ParsedHotkey {
 
   // Process modifiers
   for (const modifier of modifiers) {
-    const resolvedModifier = resolveControlOrMeta(modifier)
+    const resolvedModifier = resolveControlOrMeta(modifier, platform)
     const normalized = normalizeModifier(resolvedModifier)
 
     switch (normalized) {
@@ -199,24 +197,6 @@ export function matchesHotkey(parsed: ParsedHotkey, event: KeyboardEvent): boole
   return keyMatches || codeMatches
 }
 
-const FORM_TAGS = new Set(["input", "textarea", "select"])
-const isFormTag = (tagName: string): tagName is FormTagName => FORM_TAGS.has(tagName)
-
-const isHTMLElement = (target: unknown): target is HTMLElement => {
-  return (
-    target !== null &&
-    typeof target === "object" &&
-    "localName" in target &&
-    "nodeType" in target &&
-    target.nodeType === 1
-  )
-}
-
-const getEventTarget = (event: KeyboardEvent): Element | null => {
-  const target = event.composedPath?.()[0] || event.target
-  return isHTMLElement(target) ? target : null
-}
-
 // Check if hotkey should be enabled in current context
 export function shouldTrigger(event: KeyboardEvent, options: HotkeyOptions): boolean {
   const target = getEventTarget(event)
@@ -245,14 +225,10 @@ export function shouldTrigger(event: KeyboardEvent, options: HotkeyOptions): boo
 // Check if a keyboard event matches a hotkey string or array of hotkey strings
 export function isHotKey(hotkey: string | string[], event: KeyboardEvent, options: HotkeyOptions = {}): boolean {
   // Check if the hotkey should trigger in current context
-  if (!shouldTrigger(event, options)) {
-    return false
-  }
-
-  const hotkeys = Array.isArray(hotkey) ? hotkey : [hotkey]
-
-  return hotkeys.some((h) => {
-    const parsed = parseHotkey(h)
+  if (!shouldTrigger(event, options)) return false
+  const platform = isMac() ? "mac" : "windows"
+  return toArray(hotkey).some((h) => {
+    const parsed = parseHotkey(h, platform)
     return matchesHotkey(parsed, event)
   })
 }

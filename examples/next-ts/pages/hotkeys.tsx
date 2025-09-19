@@ -1,17 +1,180 @@
-import { createHotkeyStore } from "@zag-js/hotkeys"
+import { createHotkeyStore, formatHotkey } from "@zag-js/hotkeys"
 import { useEffect, useState } from "react"
 
-// Define the context type for better TypeScript support
 interface AppContext {
   user: string
   theme: "dark" | "light"
   zoomLevel: number
+  log: (message: string) => void
 }
 
-// Demo: New Store-based API (decoupled instantiation from initialization)
 const store = createHotkeyStore<AppContext>({
-  defaultActiveScopes: ["global", "editor"], // Start with multiple active scopes
+  defaultActiveScopes: ["global", "editor"],
 })
+
+store.register([
+  {
+    id: "store-save",
+    hotkey: "Alt+S",
+    label: "Save Document",
+    description: "Save the current document with context",
+    category: "file",
+    keywords: ["save", "persist", "store"],
+    action: async (ctx) => {
+      ctx.log(`Store API: Save by ${ctx.user} (zoom: ${ctx.zoomLevel})`)
+    },
+  },
+  {
+    id: "store-zoom-in",
+    hotkey: "Alt++",
+    label: "Zoom In",
+    description: "Increase zoom level",
+    category: "view",
+    keywords: ["zoom", "scale", "magnify"],
+    action: async (ctx) => {
+      const newZoom = ctx.zoomLevel * 1.1
+      store.setContext({ ...ctx, zoomLevel: newZoom })
+      ctx.log(`Store API: Zoom in to ${newZoom.toFixed(1)}x`)
+    },
+  },
+  {
+    id: "toggle-theme",
+    hotkey: "Alt+T",
+    label: "Toggle Theme",
+    description: "Switch between dark and light themes",
+    action: async (ctx) => {
+      const newTheme = ctx.theme === "dark" ? "light" : "dark"
+      store.setContext({ ...ctx, theme: newTheme, log: ctx.log })
+      ctx.log(`Theme switched to ${newTheme} (F1 help ${newTheme === "dark" ? "enabled" : "disabled"})`)
+    },
+  },
+  {
+    id: "toggle-editor-scope",
+    hotkey: "Alt+E",
+    label: "Toggle Editor Scope",
+    description: "Enable/disable editor-specific hotkeys",
+    action: (ctx) => {
+      store.toggleScope("editor")
+      const scopes = store.getActiveScopes()
+      const editorActive = scopes.includes("editor")
+      ctx.log(
+        `Editor scope ${editorActive ? "enabled" : "disabled"} (Alt+Shift+F ${editorActive ? "available" : "unavailable"})`,
+      )
+    },
+  },
+  {
+    id: "command-palette",
+    hotkey: "Control+K",
+    label: "Command Palette",
+    description: "Open command palette",
+    action: (ctx) => ctx.log("Ctrl+K - Command palette"),
+  },
+  {
+    id: "close-modal",
+    hotkey: "Escape",
+    label: "Close Modal",
+    description: "Close any open modal or dialog",
+    action: (ctx) => ctx.log("Escape - Close modal"),
+  },
+  {
+    id: "go-home",
+    hotkey: "G > H",
+    label: "Go Home",
+    description: "Navigate to home page (sequence)",
+    action: (ctx) => ctx.log("G then H - Go home"),
+  },
+  {
+    id: "submit",
+    hotkey: "ControlOrMeta+Enter",
+    label: "Submit Form",
+    description: "Submit current form (works in form fields)",
+    action: (ctx) => ctx.log("Ctrl/Cmd+Enter - Submit"),
+    options: { enableOnFormTags: true },
+  },
+  {
+    id: "input-only-hotkey",
+    hotkey: "Control+I",
+    label: "Input Only Action",
+    description: "Special action that only works in input fields",
+    action: (ctx) => ctx.log("Ctrl+I - Input only (works only in input fields)"),
+    options: { enableOnFormTags: ["input"] },
+  },
+  {
+    id: "save",
+    hotkey: "mod+S",
+    label: "Save Document",
+    description: "Save current document",
+    action: (ctx) => ctx.log("Save (Ctrl/Cmd+S)"),
+    options: { preventDefault: true },
+  },
+  {
+    id: "zoom-in",
+    hotkey: "mod++",
+    label: "Zoom In (Alternative)",
+    description: "Increase zoom level using plus key",
+    action: (ctx) => ctx.log("Ctrl/Cmd+Plus - Zoom in"),
+    options: { preventDefault: true },
+  },
+  {
+    id: "plus-key",
+    hotkey: "+",
+    label: "Plus Key",
+    description: "Simple plus key press",
+    action: (ctx) => ctx.log("Plus key pressed"),
+  },
+  {
+    id: "shift-plus",
+    hotkey: "Shift++",
+    label: "Shift + Plus",
+    description: "Shift modifier with plus key",
+    action: (ctx) => ctx.log("Shift+Plus pressed"),
+  },
+  {
+    id: "arrow-up",
+    hotkey: "ArrowUp",
+    label: "Arrow Up",
+    description: "Navigate up",
+    action: (ctx) => ctx.log("Arrow Up pressed"),
+  },
+  {
+    id: "shift-arrow-down",
+    hotkey: "shift+down",
+    label: "Shift + Arrow Down",
+    description: "Navigate down with selection",
+    action: (ctx) => ctx.log("Shift+Arrow Down pressed"),
+  },
+  {
+    id: "help",
+    hotkey: "F1",
+    label: "Help",
+    description: "Show help (only in dark theme)",
+    action: (ctx) => ctx.log("F1 - Help"),
+    scopes: ["global", "help"],
+    enabled: (ctx) => ctx.theme === "dark",
+  },
+  {
+    id: "editor-format",
+    hotkey: "Alt+Shift+F",
+    label: "Format Code",
+    description: "Format code in editor (editor scope only)",
+    action: (ctx) => ctx.log("Alt+Shift+F - Format code (editor scope)"),
+    scopes: ["editor"],
+  },
+  {
+    id: "undo",
+    hotkey: "ctrl+z",
+    label: "Undo",
+    description: "Undo last action",
+    action: (ctx) => ctx.log("Undo"),
+  },
+  {
+    id: "redo",
+    hotkey: "cmd+shift+z",
+    label: "Redo",
+    description: "Redo last undone action",
+    action: (ctx) => ctx.log("Redo"),
+  },
+])
 
 export default function HotkeysPage() {
   const [logs, setLogs] = useState<string[]>([])
@@ -21,149 +184,15 @@ export default function HotkeysPage() {
   }
 
   useEffect(() => {
-    // Initialize with root node and context
-    store.initialize({
+    store.init({
       rootNode: document,
       defaultContext: {
         user: "demo-user",
         theme: "dark",
         zoomLevel: 1.0,
+        log: addLog,
       },
     })
-
-    store.register([
-      {
-        id: "store-save",
-        hotkey: "Alt+S",
-        label: "Save Document",
-        description: "Save the current document with context",
-        category: "file",
-        keywords: ["save", "persist", "store"],
-        action: async (context) => {
-          addLog(`Store API: Save by ${context.user} (zoom: ${context.zoomLevel})`)
-        },
-      },
-      {
-        id: "store-zoom-in",
-        hotkey: "Alt++",
-        label: "Zoom In",
-        description: "Increase zoom level",
-        category: "view",
-        keywords: ["zoom", "scale", "magnify"],
-        action: async (context) => {
-          const newZoom = context.zoomLevel * 1.1
-          store.setContext({ ...context, zoomLevel: newZoom })
-          addLog(`Store API: Zoom in to ${newZoom.toFixed(1)}x`)
-        },
-      },
-      {
-        id: "toggle-theme",
-        hotkey: "Alt+T",
-        action: async (context) => {
-          const newTheme = context.theme === "dark" ? "light" : "dark"
-          store.setContext({ ...context, theme: newTheme })
-          addLog(`Theme switched to ${newTheme} (F1 help ${newTheme === "dark" ? "enabled" : "disabled"})`)
-        },
-      },
-      {
-        id: "toggle-editor-scope",
-        hotkey: "Alt+E",
-        action: () => {
-          store.toggleScope("editor")
-          const scopes = store.getActiveScopes()
-          const editorActive = scopes.includes("editor")
-          addLog(
-            `Editor scope ${editorActive ? "enabled" : "disabled"} (Alt+Shift+F ${editorActive ? "available" : "unavailable"})`,
-          )
-        },
-      },
-      // Playwright-style key naming (preferred)
-      {
-        id: "command-palette",
-        hotkey: "Control+K",
-        action: () => addLog("Ctrl+K - Command palette"),
-      },
-      {
-        id: "close-modal",
-        hotkey: "Escape",
-        action: () => addLog("Escape - Close modal"),
-      },
-      {
-        id: "go-home",
-        hotkey: "G > H",
-        action: () => addLog("G then H - Go home"),
-      },
-      // Cross-platform modifiers
-      {
-        id: "submit",
-        hotkey: "ControlOrMeta+Enter",
-        action: () => addLog("Ctrl/Cmd+Enter - Submit"),
-        options: { enableOnFormTags: true },
-      },
-      {
-        id: "input-only-hotkey",
-        hotkey: "Control+I",
-        action: () => addLog("Ctrl+I - Input only (works only in input fields)"),
-        options: { enableOnFormTags: ["input"] }, // Only works in input elements
-      },
-      {
-        id: "save",
-        hotkey: "mod+S",
-        action: () => addLog("Save (Ctrl/Cmd+S)"),
-      },
-      // Plus key support (NEW!)
-      {
-        id: "zoom-in",
-        hotkey: "Control++",
-        action: () => addLog("Ctrl/Cmd+Plus - Zoom in"),
-      },
-      {
-        id: "plus-key",
-        hotkey: "+",
-        action: () => addLog("Plus key pressed"),
-      },
-      {
-        id: "shift-plus",
-        hotkey: "Shift++",
-        action: () => addLog("Shift+Plus pressed"),
-      },
-      // Arrow keys - both styles work
-      {
-        id: "arrow-up",
-        hotkey: "ArrowUp",
-        action: () => addLog("Arrow Up pressed"),
-      },
-      {
-        id: "shift-arrow-down",
-        hotkey: "shift+down",
-        action: () => addLog("Shift+Arrow Down pressed"), // lowercase also works
-      },
-      // Function keys
-      {
-        id: "help",
-        hotkey: "F1",
-        action: () => addLog("F1 - Help"),
-        scopes: ["global", "help"],
-        enabled: (context) => context.theme === "dark", // Only enabled in dark theme
-      },
-      {
-        id: "editor-format",
-        hotkey: "Alt+Shift+F",
-        action: () => addLog("Alt+Shift+F - Format code (editor scope)"),
-        scopes: ["editor"], // Only works in editor scope
-      },
-      // Common aliases are supported for convenience
-      {
-        id: "undo",
-        hotkey: "ctrl+z",
-        action: () => addLog("Undo"), // lowercase works
-      },
-      {
-        id: "redo",
-        hotkey: "cmd+shift+z",
-        action: () => addLog("Redo"), // cmd = Meta on Mac
-      },
-    ])
 
     return () => {
       store.destroy()
@@ -175,66 +204,16 @@ export default function HotkeysPage() {
       <h1 style={{ fontSize: "1.5rem", fontWeight: "bold", marginBottom: "1.5rem" }}>Hotkeys Example</h1>
 
       <div style={{ marginBottom: "1.5rem", padding: "1rem", backgroundColor: "#f5f5f5", borderRadius: "0.5rem" }}>
-        <h2 style={{ fontSize: "1.2rem", fontWeight: "600", marginBottom: "0.5rem" }}>Try these hotkeys:</h2>
-        <div style={{ fontSize: "0.9rem" }}>
-          <strong>Available Hotkeys:</strong>
-          <ul style={{ margin: "0.5rem 0", paddingLeft: "1.5rem" }}>
-            <li>
-              <code>Alt+S</code> - Save with context
-            </li>
-            <li>
-              <code>Alt++</code> - Zoom in (updates context)
-            </li>
-            <li>
-              <code>Alt+T</code> - Toggle theme (affects F1 availability)
-            </li>
-            <li>
-              <code>Alt+E</code> - Toggle editor scope (affects Alt+Shift+F)
-            </li>
-            <li>
-              <code>Ctrl+K</code> - Command palette
-            </li>
-            <li>
-              <code>Escape</code> - Close modal
-            </li>
-            <li>
-              <code>G then H</code> - Go home (sequence)
-            </li>
-            <li>
-              <code>Ctrl/Cmd+Enter</code> - Submit (works in all form fields)
-            </li>
-            <li>
-              <code>Ctrl+I</code> - Input only (works only in input fields)
-            </li>
-            <li>
-              <code>Ctrl/Cmd+S</code> - Save
-            </li>
-            <li>
-              <code>Ctrl/Cmd++</code> - Zoom in
-            </li>
-            <li>
-              <code>+</code> - Plus key
-            </li>
-            <li>
-              <code>↑</code> - Arrow up
-            </li>
-            <li>
-              <code>Shift+↓</code> - Shift+Arrow down
-            </li>
-            <li>
-              <code>F1</code> - Help (only in dark theme)
-            </li>
-            <li>
-              <code>Alt+Shift+F</code> - Format code (editor scope)
-            </li>
-            <li>
-              <code>Ctrl+Z</code> - Undo
-            </li>
-            <li>
-              <code>Cmd+Shift+Z</code> - Redo
-            </li>
-          </ul>
-        </div>
+        <ul style={{ margin: "0.5rem 0", paddingLeft: "1.5rem" }}>
+          {Array.from(store.getState().commands.values()).map((command) => {
+            const displayHotkey = formatHotkey(command.hotkey, { platform: "mac" })
+            return (
+              <li key={command.id}>
+                <code>{displayHotkey}</code> : {command.label || command.id}
+              </li>
+            )
+          })}
+        </ul>
       </div>
 
       <div style={{ marginBottom: "1.5rem", padding: "1rem", backgroundColor: "#f0f8ff", borderRadius: "0.5rem" }}>

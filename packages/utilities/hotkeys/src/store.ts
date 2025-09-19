@@ -7,9 +7,10 @@ import type {
   HotkeyStoreOptions,
   HotkeyStoreState,
   ParsedHotkey,
+  Platform,
   RootNode,
 } from "./types"
-import { getWin, normalizeKey } from "./utils"
+import { getWin, isMac, isModKey, normalizeKey, toArray } from "./utils"
 
 const defaultOptions: HotkeyOptions = {
   preventDefault: true,
@@ -30,13 +31,6 @@ interface SequenceState {
   timeoutId?: number
 }
 
-const toArray = <T>(value: T | T[]): T[] => {
-  if (Array.isArray(value)) {
-    return value.filter((item) => item !== undefined)
-  }
-  return value !== undefined ? [value] : []
-}
-
 export class HotkeyStore<TContext = any> {
   private state: HotkeyStoreState<TContext>
   private context = {} as TContext
@@ -44,6 +38,7 @@ export class HotkeyStore<TContext = any> {
   private sequenceTimeoutMs = 1000
   private sequenceStates = new Map<string, SequenceState>()
   private registrationOrder = 0 // For deterministic execution order
+  private platform: Platform = "mac"
   private listeners: {
     capture: ListenerRecord
     bubble: ListenerRecord
@@ -71,9 +66,18 @@ export class HotkeyStore<TContext = any> {
   }
 
   // Lifecycle methods
-  initialize(options: HotkeyStoreInit<TContext>): this {
+  init(options: HotkeyStoreInit<TContext>): this {
     this.rootNode = options.rootNode
     this.context = options.defaultContext ?? ({} as TContext)
+
+    // Update platform based on actual environment
+    this.platform = isMac() ? "mac" : "windows"
+
+    // Update parsed hotkeys with mod-like keys with correct platform after DOM is available
+    this.updateParsedHotkeys()
+
+    // Setup listeners for any commands registered before initialization
+    this.updateListeners()
     return this
   }
 
@@ -165,7 +169,7 @@ export class HotkeyStore<TContext = any> {
       const scopes = command.scopes ? toArray(command.scopes) : ["*"]
 
       // Parse and cache hotkey for performance
-      const parsed = parseHotkey(command.hotkey)
+      const parsed = parseHotkey(command.hotkey, this.platform)
       const priority = getHotkeyPriority(parsed)
 
       this.state.commands.set(command.id, {
@@ -254,7 +258,7 @@ export class HotkeyStore<TContext = any> {
         break
       }
     }
-    const parsed = cachedCommand?._parsed ?? parseHotkey(hotkey)
+    const parsed = cachedCommand?._parsed ?? parseHotkey(hotkey, this.platform)
 
     const keysMatch = parsed.keys.every((k) => this.state.pressedKeys.has(k))
 
@@ -269,6 +273,19 @@ export class HotkeyStore<TContext = any> {
 
   getCurrentlyPressed(): readonly string[] {
     return [...this.state.pressedKeys]
+  }
+
+  // Update parsed hotkeys with mod-like keys with correct platform
+  private updateParsedHotkeys(): void {
+    for (const command of this.state.commands.values()) {
+      // Check if hotkey contains mod-like keywords by splitting and checking each part
+      const hasModKey = command.hotkey.split("+").some((part) => isModKey(part.trim()))
+      if (hasModKey) {
+        const parsed = parseHotkey(command.hotkey, this.platform)
+        command._parsed = parsed
+        command._priority = getHotkeyPriority(parsed)
+      }
+    }
   }
 
   // Private methods for event handling
@@ -566,7 +583,7 @@ export function createHotkeyStore<TContext = any>(options?: HotkeyStoreOptions<T
     if (options.context !== undefined) {
       initOptions.defaultContext = options.context
     }
-    store.initialize(initOptions)
+    store.init(initOptions)
   }
 
   return store
