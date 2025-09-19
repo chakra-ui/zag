@@ -1,6 +1,6 @@
-import { getPlatform } from "./utils"
 import { parseHotkey } from "./parser"
 import type { Platform } from "./types"
+import { getPlatform, SEQUENCE_SEPARATOR } from "./utils"
 
 export interface FormatHotkeyOptions {
   /** Platform-specific formatting ('auto' detects current platform) */
@@ -78,9 +78,9 @@ export function formatHotkey(hotkey: string, options: FormatHotkeyOptions = {}):
   const targetPlatform = platform === "auto" ? getPlatform() : platform
 
   // Handle sequences
-  if (hotkey.includes(" > ")) {
+  if (hotkey.includes(SEQUENCE_SEPARATOR)) {
     return hotkey
-      .split(" > ")
+      .split(SEQUENCE_SEPARATOR)
       .map((part) => formatSingleHotkey(part.trim(), targetPlatform, style, separator, useShortNames))
       .join(sequenceSeparator)
   }

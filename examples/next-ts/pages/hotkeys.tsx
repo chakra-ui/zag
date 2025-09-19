@@ -25,6 +25,17 @@ store.register([
     },
   },
   {
+    id: "change-theme",
+    hotkey: "K > T",
+    label: "Change Theme",
+    description: "Change the current theme",
+    category: "file",
+    keywords: ["change", "theme"],
+    action: async (ctx) => {
+      ctx.log(`Store API: Change theme to ${ctx.theme}`)
+    },
+  },
+  {
     id: "store-zoom-in",
     hotkey: "Alt++",
     label: "Zoom In",

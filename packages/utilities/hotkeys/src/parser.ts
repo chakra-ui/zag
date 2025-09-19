@@ -2,11 +2,11 @@ import { keyToCode } from "./key-to-code"
 import { isModifierSet, normalizeModifier, resolveControlOrMeta } from "./modifier"
 import { normalizeKey } from "./normalize"
 import type { HotkeyOptions, ParsedHotkey, Platform, SequenceStep } from "./types"
-import { getEventTarget, getPlatform, isFormTag, toArray } from "./utils"
+import { getEventTarget, getPlatform, isFormTag, toArray, MODIFIER_SEPARATOR, SEQUENCE_SEPARATOR } from "./utils"
 
 // Context-aware parsing to handle plus key (Playwright-style)
 function parseHotkeyString(hotkey: string, platform: Platform): { modifiers: string[]; key: string } {
-  const parts = hotkey.split("+")
+  const parts = hotkey.split(MODIFIER_SEPARATOR)
   const modifiers: string[] = []
   let keyIndex = parts.length - 1 // Start from the end, assume last part is the key
 
@@ -31,17 +31,17 @@ function parseHotkeyString(hotkey: string, platform: Platform): { modifiers: str
   }
 
   // Join remaining parts as the key (handles cases like "Control++" where key is "+")
-  const key = parts.slice(keyIndex).join("+").trim()
+  const key = parts.slice(keyIndex).join(MODIFIER_SEPARATOR).trim()
   return { modifiers, key }
 }
 
 // Parse hotkey string into structured object
 export function parseHotkey(hotkey: string, platform: Platform): ParsedHotkey {
-  const isSequence = hotkey.includes(">")
+  const isSequence = hotkey.includes(SEQUENCE_SEPARATOR)
 
   if (isSequence) {
     // For sequences, parse each step individually to preserve modifiers
-    const sequenceParts = hotkey.split(">")
+    const sequenceParts = hotkey.split(SEQUENCE_SEPARATOR)
     const sequenceSteps: SequenceStep[] = []
 
     const allKeys: string[] = []
@@ -49,7 +49,7 @@ export function parseHotkey(hotkey: string, platform: Platform): ParsedHotkey {
 
     for (const rawPart of sequenceParts) {
       const part = rawPart.trim()
-      if (part.includes("+")) {
+      if (part.includes(MODIFIER_SEPARATOR)) {
         // This step has modifiers
         const { modifiers, key } = parseHotkeyString(part, platform)
         const step = {
@@ -154,7 +154,7 @@ export function parseHotkey(hotkey: string, platform: Platform): ParsedHotkey {
   }
 
   // Process the main key (now we can handle "+" as a literal key)
-  if (key && key !== ">") {
+  if (key && key !== SEQUENCE_SEPARATOR) {
     const normalizedKey = normalizeKey(key)
     result.keys.push(normalizedKey)
 

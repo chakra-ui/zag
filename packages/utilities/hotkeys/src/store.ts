@@ -12,7 +12,7 @@ import type {
   Platform,
   RootNode,
 } from "./types"
-import { getPlatform, getWin, toArray } from "./utils"
+import { getPlatform, getWin, toArray, MODIFIER_SEPARATOR } from "./utils"
 
 const defaultOptions: HotkeyOptions = {
   preventDefault: true,
@@ -281,7 +281,7 @@ export class HotkeyStore<TContext = any> {
   private updateParsedHotkeys(): void {
     for (const command of this.state.commands.values()) {
       // Check if hotkey contains mod-like keywords by splitting and checking each part
-      const hasModKey = command.hotkey.split("+").some((part) => isModKey(part.trim()))
+      const hasModKey = command.hotkey.split(MODIFIER_SEPARATOR).some((part) => isModKey(part.trim()))
       if (hasModKey) {
         const parsed = parseHotkey(command.hotkey, this.platform)
         command._parsed = parsed

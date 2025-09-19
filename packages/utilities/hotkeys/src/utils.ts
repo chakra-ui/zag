@@ -14,6 +14,10 @@ export function getWin(root: RootNode): Window {
 const FORM_TAGS = new Set(["input", "textarea", "select"])
 export const isFormTag = (tagName: string): tagName is FormTagName => FORM_TAGS.has(tagName)
 
+// Hotkey parsing constants
+export const MODIFIER_SEPARATOR = "+"
+export const SEQUENCE_SEPARATOR = ">"
+
 export const isHTMLElement = (target: unknown): target is HTMLElement => {
   return (
     target !== null &&
