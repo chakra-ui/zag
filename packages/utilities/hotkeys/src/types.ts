@@ -88,18 +88,13 @@ export interface HotkeyCommand<TContext = any> {
   _registrationOrder: number
 }
 
-export interface HotkeyStoreInit<TContext = any> {
-  rootNode: RootNode
-  defaultContext?: TContext | undefined
-}
-
 export interface HotkeyStoreOptions<TContext = any> {
   /**
    * The root node to listen for hotkeys
    */
   rootNode?: RootNode | undefined
   /**
-   * The default context to use for the store
+   * The context to use for the store
    */
   context?: TContext | undefined
   /**
@@ -112,10 +107,10 @@ export interface HotkeyStoreOptions<TContext = any> {
    */
   sequenceTimeoutMs?: number | undefined
   /**
-   * The default active scopes when the store is created
+   * The active scopes when the store is created
    * @default ["*"]
    */
-  defaultActiveScopes?: string | string[] | undefined
+  activeScopes?: string | string[] | undefined
 }
 
 export type FormTagName = "input" | "textarea" | "select"

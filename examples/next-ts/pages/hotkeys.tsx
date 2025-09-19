@@ -9,7 +9,7 @@ interface AppContext {
 }
 
 const store = createHotkeyStore<AppContext>({
-  defaultActiveScopes: ["global", "editor"],
+  activeScopes: ["global", "editor"],
 })
 
 store.register([
@@ -197,7 +197,7 @@ export default function HotkeysPage() {
   useEffect(() => {
     store.init({
       rootNode: document,
-      defaultContext: {
+      context: {
         user: "demo-user",
         theme: "dark",
         zoomLevel: 1.0,

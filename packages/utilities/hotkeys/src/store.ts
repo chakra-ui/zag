@@ -5,14 +5,13 @@ import type {
   CommandDefinition,
   HotkeyCommand,
   HotkeyOptions,
-  HotkeyStoreInit,
   HotkeyStoreOptions,
   HotkeyStoreState,
   ParsedHotkey,
   Platform,
   RootNode,
 } from "./types"
-import { getPlatform, getWin, toArray, MODIFIER_SEPARATOR } from "./utils"
+import { getPlatform, getWin, MODIFIER_SEPARATOR, toArray } from "./utils"
 
 const defaultOptions: HotkeyOptions = {
   preventDefault: true,
@@ -28,10 +27,17 @@ interface ListenerRecord {
   blur?: EventListener
 }
 
+interface ListenerPhaseRecord {
+  capture: ListenerRecord
+  bubble: ListenerRecord
+}
+
 interface SequenceState {
   recordedKeys: string[]
   timeoutId?: number
 }
+
+const DEFAULT_SCOPES: string[] = ["*"]
 
 export class HotkeyStore<TContext = any> {
   private state: HotkeyStoreState<TContext>
@@ -41,10 +47,7 @@ export class HotkeyStore<TContext = any> {
   private sequenceStates = new Map<string, SequenceState>()
   private registrationOrder = 0 // For deterministic execution order
   private platform: Platform = "mac"
-  private listeners: {
-    capture: ListenerRecord
-    bubble: ListenerRecord
-  } = { capture: {}, bubble: {} }
+  private listeners: ListenerPhaseRecord = { capture: {}, bubble: {} }
 
   private subscribers = new Set<{
     selector: (state: HotkeyStoreState<TContext>, context: TContext) => any
@@ -53,7 +56,7 @@ export class HotkeyStore<TContext = any> {
   }>()
 
   constructor(options?: HotkeyStoreOptions<TContext>) {
-    const defaultScopes = options?.defaultActiveScopes ? toArray(options.defaultActiveScopes) : ["*"]
+    const defaultScopes = options?.activeScopes ? toArray(options.activeScopes) : DEFAULT_SCOPES
 
     this.state = {
       pressedKeys: new Set<string>(),
@@ -68,9 +71,13 @@ export class HotkeyStore<TContext = any> {
   }
 
   // Lifecycle methods
-  init(options: HotkeyStoreInit<TContext>): this {
+  init(options: HotkeyStoreOptions<TContext>): this {
+    if (!options.rootNode) {
+      throw new Error("rootNode is required for initialization")
+    }
+
     this.rootNode = options.rootNode
-    this.context = options.defaultContext ?? ({} as TContext)
+    this.context = options.context ?? ({} as TContext)
 
     // Update platform based on actual environment
     this.platform = getPlatform()
@@ -168,7 +175,7 @@ export class HotkeyStore<TContext = any> {
     const commandArray = toArray(commands)
 
     for (const command of commandArray) {
-      const scopes = command.scopes ? toArray(command.scopes) : ["*"]
+      const scopes = command.scopes ? toArray(command.scopes) : DEFAULT_SCOPES
 
       // Parse and cache hotkey for performance
       const parsed = parseHotkey(command.hotkey, this.platform)
@@ -573,20 +580,10 @@ export class HotkeyStore<TContext = any> {
   }
 }
 
-// Factory functions
 export function createHotkeyStore<TContext = any>(options?: HotkeyStoreOptions<TContext>): HotkeyStore<TContext> {
   const store = new HotkeyStore<TContext>(options)
-
-  // Auto-initialize if rootNode is provided, otherwise require manual initialization
   if (options?.rootNode) {
-    const initOptions: HotkeyStoreInit<TContext> = {
-      rootNode: options.rootNode,
-    }
-    if (options.context !== undefined) {
-      initOptions.defaultContext = options.context
-    }
-    store.init(initOptions)
+    store.init(options)
   }
-
   return store
 }

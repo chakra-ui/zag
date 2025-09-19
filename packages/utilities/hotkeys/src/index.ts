@@ -8,7 +8,6 @@ export type {
   HotkeyAction,
   HotkeyCommand,
   HotkeyOptions,
-  HotkeyStoreInit,
   HotkeyStoreOptions,
   HotkeyStoreState,
   KeyboardModifiers,
