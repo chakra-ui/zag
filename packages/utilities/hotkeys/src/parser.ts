@@ -1,24 +1,8 @@
+import { keyToCode } from "./key-to-code"
+import { isModifierSet, normalizeModifier, resolveControlOrMeta } from "./modifier"
+import { normalizeKey } from "./normalize"
 import type { HotkeyOptions, ParsedHotkey, Platform, SequenceStep } from "./types"
-import { getEventTarget, isFormTag, isMac, keyToCode, normalizeKey, resolveControlOrMeta, toArray } from "./utils"
-
-const MODIFIER_NORMALIZATION_MAP = new Map([
-  ["ctrl", "Control"],
-  ["control", "Control"],
-  ["alt", "Alt"],
-  ["option", "Alt"],
-  ["shift", "Shift"],
-  ["meta", "Meta"],
-  ["cmd", "Meta"],
-  ["command", "Meta"],
-  ["win", "Meta"],
-  ["windows", "Meta"],
-])
-
-function normalizeModifier(key: string): string {
-  return MODIFIER_NORMALIZATION_MAP.get(key.toLowerCase()) ?? key
-}
-
-const MODIFIER_SET = new Set(["control", "ctrl", "alt", "option", "shift", "meta", "cmd", "command", "win", "windows"])
+import { getEventTarget, getPlatform, isFormTag, toArray } from "./utils"
 
 // Context-aware parsing to handle plus key (Playwright-style)
 function parseHotkeyString(hotkey: string, platform: Platform): { modifiers: string[]; key: string } {
@@ -31,7 +15,13 @@ function parseHotkeyString(hotkey: string, platform: Platform): { modifiers: str
     const part = parts[i].trim().toLowerCase()
     const resolved = resolveControlOrMeta(part, platform).toLowerCase()
 
-    if (MODIFIER_SET.has(resolved) || resolved === "mod" || resolved === "controlormeta") {
+    // Skip empty parts (from consecutive + characters)
+    if (part === "") {
+      keyIndex = i
+      break
+    }
+
+    if (isModifierSet(resolved) || resolved === "mod" || resolved === "controlormeta") {
       modifiers.push(parts[i].trim()) // Keep original casing for processing
     } else {
       // This part is not a modifier, so everything from here is the key
@@ -187,7 +177,7 @@ export function matchesHotkey(parsed: ParsedHotkey, event: KeyboardEvent): boole
   if (parsed.shift !== event.shiftKey) return false
 
   // Check main key - match EITHER logical key OR physical code for layout independence
-  const eventKey = normalizeKey(event.key, event.code)
+  const eventKey = normalizeKey(event.key)
   const eventCode = event.code
 
   // Match if either the logical key matches OR the physical code matches
@@ -226,7 +216,7 @@ export function shouldTrigger(event: KeyboardEvent, options: HotkeyOptions): boo
 export function isHotKey(hotkey: string | string[], event: KeyboardEvent, options: HotkeyOptions = {}): boolean {
   // Check if the hotkey should trigger in current context
   if (!shouldTrigger(event, options)) return false
-  const platform = isMac() ? "mac" : "windows"
+  const platform = getPlatform()
   return toArray(hotkey).some((h) => {
     const parsed = parseHotkey(h, platform)
     return matchesHotkey(parsed, event)

@@ -1,3 +1,5 @@
+import { isModKey } from "./modifier"
+import { normalizeKey } from "./normalize"
 import { getHotkeyPriority, matchesHotkey, parseHotkey, shouldTrigger } from "./parser"
 import type {
   CommandDefinition,
@@ -10,7 +12,7 @@ import type {
   Platform,
   RootNode,
 } from "./types"
-import { getWin, isMac, isModKey, normalizeKey, toArray } from "./utils"
+import { getPlatform, getWin, toArray } from "./utils"
 
 const defaultOptions: HotkeyOptions = {
   preventDefault: true,
@@ -71,7 +73,7 @@ export class HotkeyStore<TContext = any> {
     this.context = options.defaultContext ?? ({} as TContext)
 
     // Update platform based on actual environment
-    this.platform = isMac() ? "mac" : "windows"
+    this.platform = getPlatform()
 
     // Update parsed hotkeys with mod-like keys with correct platform after DOM is available
     this.updateParsedHotkeys()
@@ -407,7 +409,7 @@ export class HotkeyStore<TContext = any> {
   private createKeyUpHandler() {
     return ((event: Event) => {
       const keyEvent = event as KeyboardEvent
-      const eventKey = normalizeKey(keyEvent.key, keyEvent.code)
+      const eventKey = normalizeKey(keyEvent.key)
       this.state.pressedKeys.delete(eventKey)
       this.notifySubscribers()
     }) as EventListener
@@ -425,7 +427,7 @@ export class HotkeyStore<TContext = any> {
   }
 
   private async executeMatchingCommands(event: KeyboardEvent, capture: boolean): Promise<void> {
-    const eventKey = normalizeKey(event.key, event.code)
+    const eventKey = normalizeKey(event.key)
     this.state.pressedKeys.add(eventKey)
     this.notifySubscribers()
 

@@ -1,8 +1,8 @@
-import { isMac } from "./utils"
+import { getPlatform } from "./utils"
 import { parseHotkey } from "./parser"
 import type { Platform } from "./types"
 
-export interface HotkeyFormatOptions {
+export interface FormatHotkeyOptions {
   /** Platform-specific formatting ('auto' detects current platform) */
   platform?: Platform | "auto" | undefined
   /** Display style for keys */
@@ -65,7 +65,7 @@ const KEY_NAMES = new Map([
 /**
  * Format hotkey string for user-friendly display with platform-aware styling
  */
-export function formatHotkey(hotkey: string, options: HotkeyFormatOptions = {}): string {
+export function formatHotkey(hotkey: string, options: FormatHotkeyOptions = {}): string {
   const {
     platform = "auto",
     style = "mixed",
@@ -75,7 +75,7 @@ export function formatHotkey(hotkey: string, options: HotkeyFormatOptions = {}):
   } = options
 
   // Detect platform if auto
-  const targetPlatform = platform === "auto" ? (isMac() ? "mac" : "windows") : platform
+  const targetPlatform = platform === "auto" ? getPlatform() : platform
 
   // Handle sequences
   if (hotkey.includes(" > ")) {

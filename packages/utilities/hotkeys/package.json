@@ -19,6 +19,7 @@
   "scripts": {
     "build": "tsup",
     "lint": "eslint src",
+    "test": "vitest",
     "typecheck": "tsc --noEmit",
     "prepack": "clean-package",
     "postpack": "clean-package restore"
