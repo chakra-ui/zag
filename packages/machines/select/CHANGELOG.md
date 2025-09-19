@@ -1,5 +1,19 @@
 # @zag-js/select
 
+## 1.25.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.25.0
+  - @zag-js/core@1.25.0
+  - @zag-js/types@1.25.0
+  - @zag-js/collection@1.25.0
+  - @zag-js/utils@1.25.0
+  - @zag-js/dismissable@1.25.0
+  - @zag-js/dom-query@1.25.0
+  - @zag-js/popper@1.25.0
+
 ## 1.24.2
 
 ### Patch Changes

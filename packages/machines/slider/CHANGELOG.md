@@ -1,5 +1,22 @@
 # @zag-js/slider
 
+## 1.25.0
+
+### Minor Changes
+
+- [#2726](https://github.com/chakra-ui/zag/pull/2726)
+  [`e53c89e`](https://github.com/chakra-ui/zag/commit/e53c89efcd33bbb3ab60e01ddcbcb37beccc3063) Thanks
+  [@Hugos68](https://github.com/Hugos68)! - feat: Add `splitMarkerProps` helper
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.25.0
+  - @zag-js/core@1.25.0
+  - @zag-js/types@1.25.0
+  - @zag-js/utils@1.25.0
+  - @zag-js/dom-query@1.25.0
+
 ## 1.24.2
 
 ### Patch Changes
