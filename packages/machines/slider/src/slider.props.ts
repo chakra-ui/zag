@@ -1,6 +1,6 @@
 import { createProps } from "@zag-js/types"
 import { createSplitProps } from "@zag-js/utils"
-import { type ThumbProps, type SliderProps, type MarkerProps } from "./slider.types"
+import type { ThumbProps, SliderProps, MarkerProps } from "./slider.types"
 
 export const props = createProps<SliderProps>()([
   "aria-label",
