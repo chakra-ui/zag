@@ -993,14 +993,19 @@ export function connect<T extends PropTypes>(
           event.stopPropagation()
         },
         onBeforeInput(event) {
-          const { data } = getNativeEvent(event)
-          if (!isValidCharacter(data, separator)) {
+          const { data, inputType } = getNativeEvent(event)
+          const allowedInputTypes = ["deleteContentBackward", "deleteContentForward", "deleteByCut", "deleteByDrag"]
+
+          if (allowedInputTypes.includes(inputType)) {
+            return
+          }
+
+          if (data && isValidCharacter(data, separator)) {
+            event.preventDefault()
+            send({ type: "SEGMENT.INPUT", segment, input: data })
+          } else {
             event.preventDefault()
           }
-        },
-        onInput(event) {
-          const { data } = getNativeEvent(event)
-          send({ type: "SEGMENT.INPUT", segment, input: data })
         },
       })
     },
