@@ -437,10 +437,6 @@ export const machine = createMachine<DatePickerSchema>({
             actions: ["focusFirstSelectedDate", "focusActiveCell", "invokeOnOpen"],
           },
         ],
-        "SEGMENT_GROUP.FOCUS": {
-          target: "focused",
-          actions: ["focusFirstSegment"],
-        },
         "SEGMENT.FOCUS": {
           target: "focused",
           actions: ["setActiveSegmentIndex"],
@@ -476,20 +472,26 @@ export const machine = createMachine<DatePickerSchema>({
           },
         ],
         "SEGMENT.FOCUS": {
-          actions: ["setActiveSegmentIndex"],
+          actions: ["setActiveSegmentIndex", "clearEnteredKeys"],
         },
         "SEGMENT.ADJUST": {
           actions: ["invokeOnSegmentAdjust"],
         },
         "SEGMENT.ARROW_LEFT": {
-          actions: ["focusPreviousSegment"],
+          actions: ["setPreviousActiveSegmentIndex", "clearEnteredKeys"],
         },
         "SEGMENT.ARROW_RIGHT": {
-          actions: ["focusNextSegment"],
+          actions: ["setNextActiveSegmentIndex", "clearEnteredKeys"],
         },
-        "SEGMENT.BACKSPACE": {
-          actions: ["clearSegmentValue"],
-        },
+        "SEGMENT.BACKSPACE": [
+          {
+            guard: "isActiveSegmentPlaceholder",
+            actions: ["setPreviousActiveSegmentIndex"],
+          },
+          {
+            actions: ["clearSegmentValue", "clearEnteredKeys"],
+          },
+        ],
         "SEGMENT.INPUT": {
           actions: ["setSegmentValue"],
         },
@@ -796,6 +798,7 @@ export const machine = createMachine<DatePickerSchema>({
       isInteractOutsideEvent: ({ event }) => event.previousEvent?.type === "INTERACT_OUTSIDE",
       isInputValueEmpty: ({ event }) => event.value.trim() === "",
       shouldFixOnBlur: ({ event }) => !!event.fixOnBlur,
+      isActiveSegmentPlaceholder: (ctx) => getActiveSegment(ctx)?.isPlaceholder === true,
     },
 
     effects: {
@@ -1262,33 +1265,28 @@ export const machine = createMachine<DatePickerSchema>({
         context.set("activeSegmentIndex", event.index)
       },
 
-      focusFirstSegment({ scope }) {
-        raf(() => {
-          const segmentEls = dom.getSegmentEls(scope)
-          const firstSegmentEl = segmentEls.find((el) => el.hasAttribute("data-editable"))
-          firstSegmentEl?.focus({ preventScroll: true })
-        })
+      clearEnteredKeys({ refs }) {
+        refs.set("enteredKeys", "")
       },
 
-      focusNextSegment({ scope, context }) {
-        raf(() => {
-          const segmentEls = dom.getSegmentEls(scope)
-          const nextSegmentEl = segmentEls
-            .slice(context.get("activeSegmentIndex") + 1)
-            .find((el) => el.hasAttribute("data-editable"))
-          nextSegmentEl?.focus({ preventScroll: true })
-        })
+      setPreviousActiveSegmentIndex({ context, computed }) {
+        const index = context.get("activeIndex")
+        const activeSegmentIndex = context.get("activeSegmentIndex")
+        const segments = computed("segments")[index]
+        const previousActiveSegmentIndex = segments.findLastIndex(
+          (segment, i) => i < activeSegmentIndex && segment.isEditable,
+        )
+        if (previousActiveSegmentIndex === -1) return
+        context.set("activeSegmentIndex", previousActiveSegmentIndex)
       },
 
-      focusPreviousSegment({ scope, context }) {
-        raf(() => {
-          const segmentEls = dom.getSegmentEls(scope)
-          const prevSegmentEl = segmentEls
-            .slice(0, context.get("activeSegmentIndex"))
-            .reverse()
-            .find((el) => el.hasAttribute("data-editable"))
-          prevSegmentEl?.focus({ preventScroll: true })
-        })
+      setNextActiveSegmentIndex({ context, computed }) {
+        const index = context.get("activeIndex")
+        const activeSegmentIndex = context.get("activeSegmentIndex")
+        const segments = computed("segments")[index]
+        const nextActiveSegmentIndex = segments.findIndex((segment, i) => i > activeSegmentIndex && segment.isEditable)
+        if (nextActiveSegmentIndex === -1) return
+        context.set("activeSegmentIndex", nextActiveSegmentIndex)
       },
 
       focusActiveSegment({ scope, context }) {
@@ -1304,6 +1302,7 @@ export const machine = createMachine<DatePickerSchema>({
         const { segment } = event
         if (segment.isPlaceholder) {
           // TODO: focus previous segment if the current segment is already a placeholder
+
           return
         }
 
@@ -1353,6 +1352,7 @@ export const machine = createMachine<DatePickerSchema>({
         const activeValidSegments = validSegments[index]
         const formatter = prop("formatter")
         const enteredKeys = refs.get("enteredKeys")
+        console.log(enteredKeys)
 
         let newValue = enteredKeys + input
 
@@ -1414,6 +1414,7 @@ export const machine = createMachine<DatePickerSchema>({
               refs.set("enteredKeys", "")
               if (shouldSetValue) {
                 // TODO: focus next segment
+                params.send({ type: "SEGMENT.FOCUS_NEXT" })
               }
             } else {
               refs.set("enteredKeys", newValue)
@@ -1550,4 +1551,11 @@ function setValue(ctx: Params<DatePickerSchema>, value: DateValue) {
 function isNumberString(value: string) {
   if (Number.isNaN(Number.parseInt(value))) return false
   return true
+}
+
+function getActiveSegment(ctx: Params<DatePickerSchema>) {
+  const { context, computed } = ctx
+  const index = context.get("activeIndex")
+  const activeSegmentIndex = context.get("activeSegmentIndex")
+  return computed("segments")[index]?.[activeSegmentIndex]
 }

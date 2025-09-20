@@ -867,9 +867,6 @@ export function connect<T extends PropTypes>(
         style: {
           unicodeBidi: "isolate",
         },
-        onFocus() {
-          send({ type: "SEGMENT_GROUP.FOCUS" })
-        },
       })
     },
 
