@@ -12,8 +12,6 @@ export default function Page() {
     id: useId(),
     selectionMode: "single",
     ...controls.context,
-    locale: "de",
-    defaultPlaceholderValue: datePicker.parse("2022-12-25"),
   })
 
   const api = datePicker.connect(service, normalizeProps)

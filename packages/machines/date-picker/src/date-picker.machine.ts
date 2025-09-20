@@ -1300,11 +1300,6 @@ export const machine = createMachine<DatePickerSchema>({
       clearSegmentValue(params) {
         const { event, prop } = params
         const { segment } = event
-        if (segment.isPlaceholder) {
-          // TODO: focus previous segment if the current segment is already a placeholder
-
-          return
-        }
 
         const displayValue = getDisplayValue(params)
         const formatter = prop("formatter")
@@ -1342,7 +1337,7 @@ export const machine = createMachine<DatePickerSchema>({
       },
 
       setSegmentValue(params) {
-        const { event, prop, refs } = params
+        const { event, prop, refs, context, computed } = params
         const { segment, input } = event
         if (!isNumberString(input)) return
 
@@ -1352,7 +1347,6 @@ export const machine = createMachine<DatePickerSchema>({
         const activeValidSegments = validSegments[index]
         const formatter = prop("formatter")
         const enteredKeys = refs.get("enteredKeys")
-        console.log(enteredKeys)
 
         let newValue = enteredKeys + input
 
@@ -1373,6 +1367,7 @@ export const machine = createMachine<DatePickerSchema>({
             let numberValue = Number.parseInt(newValue)
             let segmentValue = numberValue
             let allowsZero = segment.minValue === 0
+
             if (segment.type === "hour" && formatter.resolvedOptions().hour12) {
               switch (formatter.resolvedOptions().hourCycle) {
                 case "h11":
@@ -1414,7 +1409,14 @@ export const machine = createMachine<DatePickerSchema>({
               refs.set("enteredKeys", "")
               if (shouldSetValue) {
                 // TODO: focus next segment
-                params.send({ type: "SEGMENT.FOCUS_NEXT" })
+                const index = context.get("activeIndex")
+                const activeSegmentIndex = context.get("activeSegmentIndex")
+                const segments = computed("segments")[index]
+                const nextActiveSegmentIndex = segments.findIndex(
+                  (segment, i) => i > activeSegmentIndex && segment.isEditable,
+                )
+                if (nextActiveSegmentIndex === -1) return
+                context.set("activeSegmentIndex", nextActiveSegmentIndex)
               }
             } else {
               refs.set("enteredKeys", newValue)
