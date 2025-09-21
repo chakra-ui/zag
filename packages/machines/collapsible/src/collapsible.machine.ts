@@ -1,5 +1,14 @@
 import { createMachine } from "@zag-js/core"
-import { getComputedStyle, getEventTarget, nextTick, raf, setStyle } from "@zag-js/dom-query"
+import {
+  getComputedStyle,
+  getEventTarget,
+  getTabbables,
+  nextTick,
+  observeChildren,
+  raf,
+  setAttribute,
+  setStyle,
+} from "@zag-js/dom-query"
 import * as dom from "./collapsible.dom"
 import type { CollapsibleSchema } from "./collapsible.types"
 
@@ -38,6 +47,7 @@ export const machine = createMachine<CollapsibleSchema>({
 
   states: {
     closed: {
+      effects: ["trackTabbableElements"],
       on: {
         "controlled.open": {
           target: "open",
@@ -195,6 +205,34 @@ export const machine = createMachine<CollapsibleSchema>({
         return () => {
           rafCleanup()
           cleanup?.()
+        }
+      },
+
+      trackTabbableElements: ({ scope, prop }) => {
+        if (!prop("collapsedHeight") && !prop("collapsedWidth")) return
+        const contentEl = dom.getContentEl(scope)
+        if (!contentEl) return
+
+        const applyInertToTabbables = () => {
+          const tabbables = getTabbables(contentEl)
+          const restoreAttrs = tabbables.map((tabbable) => setAttribute(tabbable, "inert", ""))
+          return () => {
+            restoreAttrs.forEach((attr) => attr())
+          }
+        }
+
+        let restoreInert = applyInertToTabbables()
+
+        const observerCleanup = observeChildren(contentEl, {
+          callback() {
+            restoreInert()
+            restoreInert = applyInertToTabbables()
+          },
+        })
+
+        return () => {
+          restoreInert()
+          observerCleanup()
         }
       },
     },
