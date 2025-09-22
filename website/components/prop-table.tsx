@@ -1,6 +1,6 @@
-import { Box, Stack, StackDivider } from "@chakra-ui/layout"
-import { chakra } from "@chakra-ui/system"
+import { styled, Box, Stack } from "styled-system/jsx"
 import apiJson from "@zag-js/docs"
+import { Code } from "components/ui/code"
 
 interface ApiTableProps {
   type: "api" | "context"
@@ -20,24 +20,19 @@ export const PropTable = (props: ApiTableProps) => {
     <Stack
       as="ul"
       paddingLeft="0!"
-      spacing="5"
+      gap="5"
       listStyleType="none"
       listStylePosition="inside"
-      divider={<StackDivider />}
     >
       {entries.map(([key, item], index) => (
-        <Stack align="flex-start" spacing="2" as="li" key={index}>
-          <chakra.code
-            className="prose"
-            layerStyle="inlineCode"
-            whiteSpace="pre-wrap"
-          >
+        <Stack align="flex-start" gap="2" as="li" key={index}>
+          <Code className="prose" whiteSpace="pre-wrap">
             {key}
-          </chakra.code>
-          <chakra.code fontSize="sm" whiteSpace="pre-wrap">
+          </Code>
+          <styled.code fontSize="sm" whiteSpace="pre-wrap">
             {item.type}
-          </chakra.code>
-          <chakra.span display="block">{item.description}</chakra.span>
+          </styled.code>
+          <styled.span display="block">{item.description}</styled.span>
         </Stack>
       ))}
     </Stack>

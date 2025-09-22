@@ -1,27 +1,29 @@
-import { Icon, type IconProps } from "@chakra-ui/icon"
-import { Link } from "@chakra-ui/layout"
 import React from "react"
+import { styled } from "styled-system/jsx"
 
 export type FooterLinkProps = {
-  icon?: React.ElementType
+  icon?: React.ReactElement
   href?: string
   label?: string
-  fontSize?: IconProps["fontSize"]
 }
 
 export function FooterLink(props: FooterLinkProps) {
-  const { icon, href, label, fontSize = "xl" } = props
+  const { icon, href, label } = props
   return (
-    <Link
+    <styled.a
       display="inline-flex"
-      boxSize="6"
+      width="6"
+      height="6"
       justifyContent="center"
       alignItems="center"
       href={href}
       aria-label={label}
-      isExternal
+      target="_blank"
+      rel="noopener noreferrer"
+      color="gray.400"
+      _hover={{ color: "gray.500" }}
     >
-      <Icon as={icon} fontSize={fontSize} color="gray.400" />
-    </Link>
+      {icon}
+    </styled.a>
   )
 }

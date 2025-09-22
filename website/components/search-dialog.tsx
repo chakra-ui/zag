@@ -1,12 +1,11 @@
-import { Icon } from "@chakra-ui/icon"
-import { Box, Flex, HStack, Text } from "@chakra-ui/layout"
-import { chakra } from "@chakra-ui/system"
 import { Portal } from "@zag-js/react"
+import { Icon } from "components/ui/icon"
 import { useSearch } from "lib/use-search"
 import Link from "next/link"
 import { BiSearch } from "react-icons/bi"
 import { GrReturn } from "react-icons/gr"
 import { HiDocument, HiHashtag } from "react-icons/hi"
+import { Box, HStack, styled } from "styled-system/jsx"
 import { SearchTrigger } from "./search-trigger"
 
 export function Search() {
@@ -17,46 +16,52 @@ export function Search() {
       <SearchTrigger {...dialog_api.getTriggerProps()} />
       {dialog_api.open && (
         <Portal>
-          <Box
+          <styled.div
             position="fixed"
             inset="0"
-            bg="blackAlpha.700"
-            zIndex="modal"
+            bg="rgba(0, 0, 0, 0.7)"
+            zIndex="1000"
             {...dialog_api.getBackdropProps()}
           />
-          <Flex
-            direction="column"
-            align="center"
+          <styled.div
+            display="flex"
+            flexDirection="column"
+            alignItems="center"
             height="100vh"
             width="100vw"
             position="fixed"
-            zIndex="modal"
+            zIndex="1000"
             inset="0"
             {...dialog_api.getPositionerProps()}
           >
-            <Box
+            <styled.div
               mt="90px"
               width="full"
               maxW="600px"
               rounded="md"
-              bg="bg-subtle"
+              bg="bg"
+              borderWidth="1px"
+              borderColor="border"
+              shadow="xl"
               position="relative"
               pointerEvents="auto"
               {...dialog_api.getContentProps()}
             >
-              <chakra.h2 srOnly {...dialog_api.getTitleProps()}>
+              <styled.h2 srOnly {...dialog_api.getTitleProps()}>
                 Search the docs
-              </chakra.h2>
+              </styled.h2>
 
-              <Box
+              <styled.div
                 display="flex"
                 flexDirection="column"
                 {...combobox_api.getRootProps()}
               >
-                <Flex
+                <styled.div
                   height="64px"
-                  align="center"
+                  display="flex"
+                  alignItems="center"
                   borderBottomWidth="1px"
+                  borderBottomColor="border"
                   position="relative"
                   fontSize="lg"
                   px="4"
@@ -67,14 +72,17 @@ export function Search() {
                     mr="4"
                     fontSize="1.3em"
                   />
-                  <chakra.input
+                  <styled.input
                     width="full"
                     outline="0"
-                    bg="bg-subtle"
+                    bg="transparent"
+                    border="none"
+                    fontSize="lg"
+                    color="text"
                     {...combobox_api.getInputProps()}
                   />
-                </Flex>
-                <Box
+                </styled.div>
+                <styled.div
                   flex="1"
                   listStyleType="none"
                   maxHeight="340px"
@@ -91,13 +99,15 @@ export function Search() {
                         key={item.id}
                         href={item.url}
                       >
-                        <chakra.a
+                        <styled.a
                           px="3"
                           py="1"
-                          _selected={{ bg: "bg-primary-subtle" }}
+                          _selected={{ bg: "primary.50" }}
                           display="flex"
                           alignItems="center"
                           minHeight="14"
+                          textDecoration="none"
+                          _hover={{ bg: "bg.subtle" }}
                           key={item.url}
                           {...combobox_api.getItemProps({ item })}
                         >
@@ -119,39 +129,41 @@ export function Search() {
                             <Box fontWeight="semibold">{item.content}</Box>
                           </Box>
 
-                          <Icon opacity={0.4}>
-                            <GrReturn className="icon-gr-return" />
-                          </Icon>
-                        </chakra.a>
+                          <Icon
+                            opacity="0.4"
+                            as={GrReturn}
+                            css={{ "& path": { stroke: "currentColor" } }}
+                          />
+                        </styled.a>
                       </Link>
                     )
                   })}
-                </Box>
+                </styled.div>
 
                 <HStack
                   px="4"
-                  align="center"
+                  alignItems="center"
                   userSelect="none"
                   minHeight="8"
                   fontSize="xs"
                   lineHeight="1"
                   color="gray.500"
-                  spacing="5"
+                  gap="5"
                   borderTopWidth={combobox_api.open ? "1px" : undefined}
                 >
-                  <HStack>
-                    <Box as="span">↑↓</Box>
-                    <Text>Select</Text>
+                  <HStack gap="2">
+                    <styled.span>↑↓</styled.span>
+                    <styled.span>Select</styled.span>
                   </HStack>
-                  <HStack>
-                    <Box as="span">↵</Box>
-                    <Text>Open</Text>
+                  <HStack gap="2">
+                    <styled.span>↵</styled.span>
+                    <styled.span>Open</styled.span>
                   </HStack>
                 </HStack>
-              </Box>
+              </styled.div>
               <div />
-            </Box>
-          </Flex>
+            </styled.div>
+          </styled.div>
         </Portal>
       )}
     </>

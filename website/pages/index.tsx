@@ -1,19 +1,4 @@
-import { Icon } from "@chakra-ui/icon"
-import {
-  Box,
-  Center,
-  Circle,
-  Flex,
-  HStack,
-  List,
-  ListIcon,
-  ListItem,
-  Stack,
-  Text,
-} from "@chakra-ui/layout"
-import { chakra } from "@chakra-ui/system"
 import { Annoucement } from "components/annoucement"
-import { Button } from "components/button"
 import { CodeArea } from "components/code-area"
 import { Footer } from "components/footer"
 import {
@@ -31,11 +16,23 @@ import {
 import { Illustration } from "components/illustration"
 import { MultiframeworkTabs } from "components/multi-framework"
 import { TopNavigation } from "components/top-navigation"
+import { Blockquote } from "components/ui/blockquote"
+import { Button, ButtonLink } from "components/ui/button"
+import { Icon } from "components/ui/icon"
+import { Section } from "components/ui/section"
 import { NextSeo } from "next-seo"
 import Image from "next/image"
-import Link from "next/link"
 import { type ElementType } from "react"
 import siteConfig from "site.config"
+import {
+  Box,
+  Center,
+  Circle,
+  Flex,
+  HStack,
+  Stack,
+  styled,
+} from "styled-system/jsx"
 
 type FeatureItemProps = {
   title: string
@@ -44,13 +41,15 @@ type FeatureItemProps = {
 }
 
 function FeatureItem(props: FeatureItemProps) {
-  const { title, children, icon } = props
+  const { title, children, icon: IconComponent } = props
   return (
     <Box fontSize="lg">
-      <Icon as={icon} fontSize="6xl" />
+      <Box fontSize="6xl">
+        <IconComponent />
+      </Box>
       <Box mt="4">
-        <Text fontWeight="bold">{title}</Text>
-        <Text mt={2}>{children}</Text>
+        <styled.p fontWeight="bold">{title}</styled.p>
+        <styled.p mt={2}>{children}</styled.p>
       </Box>
     </Box>
   )
@@ -64,13 +63,13 @@ export default function Home() {
       <TopNavigation />
 
       <Box as="header" position="relative">
-        <Box layerStyle="contain">
+        <Section>
           <Box pos="relative" maxW="4xl" pt={{ base: "16", md: "24" }}>
             <Annoucement />
-            <chakra.h1 textStyle="display.2xl">
+            <styled.h1 textStyle="display.2xl">
               UI components powered by Finite State Machines
-            </chakra.h1>
-            <chakra.p
+            </styled.h1>
+            <styled.p
               className="has-highlight"
               textStyle="text.xl"
               maxW="xl"
@@ -80,10 +79,10 @@ export default function Home() {
               <mark>accordion</mark>, <mark>menu</mark>, and <mark>dialog</mark>{" "}
               that can be used to build design systems for React, Vue, Solid.js
               and Svelte
-            </chakra.p>
+            </styled.p>
           </Box>
 
-          <chakra.svg
+          <styled.svg
             display={{ base: "none", md: "initial" }}
             as={Illustration}
             pos="absolute"
@@ -98,14 +97,14 @@ export default function Home() {
             align={{ sm: "center" }}
             mt="8"
             mb="12"
-            spacing="5"
+            gap="5"
           >
-            <Button as={Link} href="/overview/introduction" variant="green">
-              <HStack spacing="6">
+            <ButtonLink href="/overview/introduction" variant="green">
+              <HStack gap="6">
                 <span>Get Started</span>
                 <Icon as={ArrowRightIcon} />
               </HStack>
-            </Button>
+            </ButtonLink>
             <Image
               draggable={false}
               src="/oss-nominee.png"
@@ -115,42 +114,39 @@ export default function Home() {
             />
           </Stack>
 
-          <HStack spacing="12">
+          <HStack gap="12">
             <ReactIcon />
             <VueIcon />
             <SolidIcon />
             <SvelteIcon />
           </HStack>
-        </Box>
+        </Section>
       </Box>
 
-      <Box
-        as="section"
-        bg={{ base: "bg-tertiary-bold", md: "unset" }}
-        layerStyle="contain"
+      <Section
+        bg={{ base: "bg-tertiary.bold", md: "unset" }}
         my={{ base: "20", md: "32" }}
       >
         <Box
-          bg="bg-tertiary-bold"
+          bg="bg-tertiary.bold"
           px={{ md: "20" }}
           py={{ base: "10", md: "20" }}
         >
-          <chakra.h2 textStyle="display.xl" mb="8" maxW="24ch">
+          <styled.h2 textStyle="display.xl" mb="8" maxW="24ch">
             Zag provides the component API for the Web
-          </chakra.h2>
+          </styled.h2>
 
-          <Button
-            as={Link}
+          <ButtonLink
             href="/overview/introduction"
             variant="black"
             width={{ base: "full", md: "auto" }}
           >
             Get Started
-          </Button>
+          </ButtonLink>
 
           <Stack
             direction={{ base: "column", lg: "row" }}
-            spacing={{ base: "8", lg: "20" }}
+            gap={{ base: "8", lg: "20" }}
             mt="12"
           >
             <FeatureItem icon={StatechartIcon} title="Powered by Statecharts">
@@ -170,35 +166,37 @@ export default function Home() {
             </FeatureItem>
           </Stack>
         </Box>
-      </Box>
+      </Section>
 
-      <Box as="section" my={{ base: "20", md: "32" }} layerStyle="contain">
+      <Section my={{ base: "20", md: "32" }}>
         <Flex
           gap="64px"
           direction={{ base: "column", xl: "row" }}
           align={{ base: "flex-start", xl: "center" }}
         >
           <Box flex="1">
-            <chakra.h2 mb="8" maxW="24ch" textStyle="display.xl">
+            <styled.h2 mb="8" maxW="24ch" textStyle="display.xl">
               Machines handle the logic. You handle the UI
-            </chakra.h2>
-            <chakra.p maxW="64ch" fontSize="lg">
+            </styled.h2>
+            <styled.p maxW="64ch" fontSize="lg">
               Zag machine APIs are completely headless and unstyled. Use your
               favorite styling solution and get it matching your design system.
-            </chakra.p>
+            </styled.p>
 
-            <List spacing="5" mt="8" fontSize="lg">
+            <styled.ul gap="5" mt="8" fontSize="lg" listStyleType="none">
               {[
                 "Install the machine you need",
                 "Consume the machine",
                 "Connect machine to your UI",
               ].map((item, index) => (
-                <ListItem key={index} display="flex" alignItems="flex-start">
-                  <ListIcon fontSize="3xl" mr="2" as={CheckIcon} />
+                <styled.li key={index} display="flex" alignItems="flex-start">
+                  <Box fontSize="3xl" mr="2">
+                    <CheckIcon />
+                  </Box>
                   <span>{item}</span>
-                </ListItem>
+                </styled.li>
               ))}
-            </List>
+            </styled.ul>
           </Box>
 
           <Center
@@ -218,7 +216,7 @@ export default function Home() {
             <Box
               width={{ base: "full", xl: "max(640px,80%)" }}
               mx="auto"
-              bg="bg-code-block"
+              bg="bg-code.block"
               rounded="2xl"
               shadow="base"
               height="full"
@@ -228,28 +226,28 @@ export default function Home() {
             </Box>
           </Center>
         </Flex>
-      </Box>
+      </Section>
 
-      <Box as="section" my={{ base: "20", md: "32" }} layerStyle="contain">
+      <Section my={{ base: "20", md: "32" }}>
         <Box mb="10">
-          <chakra.h2 maxW={{ md: "24ch" }} textStyle="display.xl">
+          <styled.h2 maxW={{ md: "24ch" }} textStyle="display.xl">
             Work in your favorite JS framework
-          </chakra.h2>
-          <chakra.p textStyle="text.lg" maxW="560px" mt="6">
+          </styled.h2>
+          <styled.p textStyle="text.lg" maxW="560px" mt="6">
             Finite state machines for building accessible design systems and UI
             components. Works with React, Vue and Solid.
-          </chakra.p>
+          </styled.p>
         </Box>
 
         <MultiframeworkTabs />
-      </Box>
+      </Section>
 
-      <Box as="section" my="10" layerStyle="contain">
+      <Section my="10">
         <Box maxW="72ch" mx="auto">
-          <chakra.h2 textStyle="display.xl" mb="10">
+          <styled.h2 textStyle="display.xl" mb="10">
             The better way to model component logic
-          </chakra.h2>
-          <chakra.div fontSize="md" className="x">
+          </styled.h2>
+          <styled.div fontSize="md" className="x">
             Today, design systems are becoming a very popular toolkit for
             companies to create a cohesive and accessible user experience for
             their customers.
@@ -258,19 +256,12 @@ export default function Home() {
             re-implementation of common widgets (tabs, menu, etc.) in multiple
             frameworks. These implementations tend to grow in complexity over
             time and often become hard to understand, debug, improve, or test.
-            <chakra.blockquote
-              layerStyle="blockquote"
-              fontWeight="semibold"
-              borderLeft="2px"
-              borderColor="border-bold"
-              borderLeftColor="border-primary-subtle"
-              bg="bg-tertiary-subtle"
-            >
+            <Blockquote>
               We need a better way to model component logic.
-            </chakra.blockquote>
-            <chakra.mark color="currentColor">
+            </Blockquote>
+            <styled.mark color="currentColor">
               Zag is a new approach
-            </chakra.mark>{" "}
+            </styled.mark>{" "}
             to the component design process, designed to help you avoid
             re-inventing the wheel and build better UI components regardless of
             framework. Heavily inspired by XState, but built to make it easier
@@ -281,12 +272,12 @@ export default function Home() {
             control over styling and providing a thin adapter for your favorite
             framework.
             <br /> <br />
-            <chakra.mark color="currentColor">
+            <styled.mark color="currentColor">
               Welcome to the future of building interactive components!
-            </chakra.mark>
-          </chakra.div>
+            </styled.mark>
+          </styled.div>
 
-          <HStack mt="10" spacing="4">
+          <HStack mt="10" gap="4">
             <Circle overflow="hidden" bg="bg-bold">
               <Image
                 src="/segun-adebayo-headshot.png"
@@ -295,52 +286,49 @@ export default function Home() {
                 alt="Segun Adebayo"
               />
             </Circle>
-            <Stack spacing="1">
-              <chakra.h3 fontSize="lg" fontWeight="semibold">
+            <Stack gap="1">
+              <styled.h3 fontSize="lg" fontWeight="semibold">
                 Segun Adebayo
-              </chakra.h3>
-              <chakra.p fontSize="md" textStyle="text.sm">
+              </styled.h3>
+              <styled.p fontSize="md" textStyle="text.sm">
                 Creator of Zag.js
-              </chakra.p>
+              </styled.p>
             </Stack>
           </HStack>
         </Box>
-      </Box>
+      </Section>
 
-      <Box
-        as="section"
-        bg={{ base: "bg-tertiary-bold", md: "unset" }}
-        layerStyle="contain"
+      <Section
+        bg={{ base: "bg-tertiary.bold", md: "unset" }}
         my={{ base: "20", md: "32" }}
       >
         <Box
-          bg="bg-tertiary-bold"
+          bg="bg-tertiary.bold"
           px={{ md: "20" }}
           py={{ base: "10", md: "20" }}
         >
-          <chakra.h2 textStyle="display.xl" mb="8" maxW="24ch">
+          <styled.h2 textStyle="display.xl" mb="8" maxW="24ch">
             Build your design system with state machines today
-          </chakra.h2>
+          </styled.h2>
 
-          <Stack direction={{ base: "column", sm: "row" }} spacing="5">
-            <Button
-              as={Link}
+          <Stack direction={{ base: "column", sm: "row" }} gap="5">
+            <ButtonLink
               href="/overview/introduction"
               variant="black"
               width={{ base: "full", md: "auto" }}
             >
               Get Started
-            </Button>
+            </ButtonLink>
 
             <Button hidden width={{ base: "full", md: "auto" }}>
-              <HStack spacing="2">
+              <HStack gap="2">
                 <Icon as={PlayIcon} />
                 <span>Watch Demo</span>
               </HStack>
             </Button>
           </Stack>
         </Box>
-      </Box>
+      </Section>
 
       <Footer />
     </Box>

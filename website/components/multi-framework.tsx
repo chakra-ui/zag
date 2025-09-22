@@ -1,14 +1,13 @@
-import { Box, HStack, Stack, Text, VStack } from "@chakra-ui/layout"
-import { chakra } from "@chakra-ui/system"
 import { normalizeProps, useMachine } from "@zag-js/react"
 import * as tabs from "@zag-js/tabs"
-import { CodeArea } from "./code-area"
-import { ReactIcon, SolidIcon, VueIcon, SvelteIcon } from "./icons"
+import { Box, HStack, Stack, styled, VStack } from "styled-system/jsx"
 import { NumberInput } from "../demos/number-input"
+import { CodeArea } from "./code-area"
+import { ReactIcon, SolidIcon, SvelteIcon, VueIcon } from "./icons"
 import { Playground } from "./playground"
 
-const FrameworkButton = chakra("button", {
-  baseStyle: {
+const FrameworkButton = styled("button", {
+  base: {
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
@@ -16,12 +15,12 @@ const FrameworkButton = chakra("button", {
     height: "120px",
     rounded: "md",
     borderWidth: "1px",
-    borderColor: "border-bold",
-    bg: "bg-subtle",
+    borderColor: "border.bold",
+    bg: "bg.subtle",
     _selected: {
-      bg: "bg-tertiary-subtle",
+      bg: "bg.tertiary.subtle",
       borderBottomWidth: "4px",
-      borderBottomColor: "border-primary-subtle",
+      borderBottomColor: "border.primary.subtle",
     },
   },
 })
@@ -39,37 +38,37 @@ export function MultiframeworkTabs() {
         <FrameworkButton {...api.getTriggerProps({ value: "react" })}>
           <VStack>
             <ReactIcon />
-            <Text>React</Text>
+            <Box>React</Box>
           </VStack>
         </FrameworkButton>
         <FrameworkButton {...api.getTriggerProps({ value: "solid" })}>
           <VStack>
             <SolidIcon />
-            <Text>Solid</Text>
+            <Box>Solid</Box>
           </VStack>
         </FrameworkButton>
         <FrameworkButton {...api.getTriggerProps({ value: "vue" })}>
           <VStack>
             <VueIcon />
-            <Text>Vue</Text>
+            <Box>Vue</Box>
           </VStack>
         </FrameworkButton>
         <FrameworkButton {...api.getTriggerProps({ value: "svelte" })}>
           <VStack>
             <SvelteIcon />
-            <Text>Svelte</Text>
+            <Box>Svelte</Box>
           </VStack>
         </FrameworkButton>
       </HStack>
 
-      <Stack direction={{ base: "column", lg: "row" }} spacing="56px" mt="8">
+      <Stack direction={{ base: "column", lg: "row" }} gap="56px" mt="8">
         <Box
           shadow="md"
           width={{ lg: "680px" }}
           flex="1"
           rounded="xl"
           overflow="hidden"
-          bg="bg-code-block"
+          bg="bg-code.block"
         >
           <Box {...api.getContentProps({ value: "react" })}>
             <CodeArea slug="react/number-input/usage" />
@@ -86,11 +85,11 @@ export function MultiframeworkTabs() {
         </Box>
         <Box
           flex="1"
-          sx={{
-            "#playground": {
+          css={{
+            "& #playground": {
               marginY: "0",
             },
-            "[data-part=root]": {
+            "& [data-part=root]": {
               transform: "scale(1.5) translateY(40px)",
             },
           }}

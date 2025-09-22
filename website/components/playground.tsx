@@ -1,5 +1,4 @@
-import { Box, Flex, HStack, Stack } from "@chakra-ui/layout"
-import { chakra } from "@chakra-ui/system"
+import { styled, Box, Flex, HStack, Stack } from "styled-system/jsx"
 import { openInStackblitz } from "lib/open-in-stackblitz"
 import { useState } from "react"
 import { SiStackblitz } from "react-icons/si"
@@ -43,7 +42,7 @@ const OpenInStackblitz = (props: { name: string; defaultProps: any }) => {
 
   return (
     <HStack
-      spacing="1"
+      gap="1"
       as="button"
       bg="#1574ef"
       color="white"
@@ -89,7 +88,7 @@ export function Playground<T extends object>(props: PlaygroundProps<T>) {
       pos="relative"
       minHeight="24em"
       my="16"
-      bg="bg-code-block"
+      bg="bg-code.block"
       borderColor="border-subtle"
     >
       <Box pos="absolute" bottom="2" right="2">
@@ -120,30 +119,31 @@ export function Playground<T extends object>(props: PlaygroundProps<T>) {
         hidden={isEmpty}
       >
         <Header>Properties</Header>
-        <Stack pos="relative" direction="column" spacing="4" px="5" py="4">
+        <Stack pos="relative" direction="column" gap="4" px="5" py="4">
           {Object.keys(state).map((key) => {
             const value = state[key]
             const type = (defaultProps as Partial<T>)[key as keyof T]
 
             if (typeof type === "boolean") {
               return (
-                <Flex
+                <styled.label
                   as="label"
                   htmlFor={key}
-                  justify="space-between"
-                  align="center"
+                  display="flex"
+                  justifyContent="space-between"
+                  alignItems="center"
                   gap="2"
                   key={key}
                 >
                   <div>{key}</div>
-                  <chakra.input
+                  <styled.input
                     id={key}
                     type="checkbox"
                     defaultChecked={value as any}
                     bg="bg-subtle"
                     onChange={() => setState({ ...state, [key]: !value })}
                   />
-                </Flex>
+                </styled.label>
               )
             }
 
@@ -151,7 +151,7 @@ export function Playground<T extends object>(props: PlaygroundProps<T>) {
               return (
                 <div key={key}>
                   <label htmlFor={key}>{key}</label>
-                  <chakra.input
+                  <styled.input
                     mt="1"
                     width="full"
                     borderWidth="1px"
@@ -172,7 +172,7 @@ export function Playground<T extends object>(props: PlaygroundProps<T>) {
               return (
                 <Flex justify="space-between" key={key}>
                   <label htmlFor={key}>{key}</label>
-                  <chakra.input
+                  <styled.input
                     id={key}
                     type="number"
                     maxWidth="6ch"
@@ -193,7 +193,7 @@ export function Playground<T extends object>(props: PlaygroundProps<T>) {
               return (
                 <Flex justify="space-between" key={key}>
                   <label htmlFor={key}>{key}</label>
-                  <chakra.select
+                  <styled.select
                     id={key}
                     borderWidth="1px"
                     fontSize="xs"
@@ -210,7 +210,7 @@ export function Playground<T extends object>(props: PlaygroundProps<T>) {
                         {option}
                       </option>
                     ))}
-                  </chakra.select>
+                  </styled.select>
                 </Flex>
               )
             }

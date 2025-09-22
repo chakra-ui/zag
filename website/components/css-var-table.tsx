@@ -1,6 +1,6 @@
-import { Box, HStack, Stack, StackDivider } from "@chakra-ui/layout"
+import { Box, HStack, Stack } from "styled-system/jsx"
 import { CssVarDocKey, CssVarEntry, getCssVarDoc } from "@zag-js/docs"
-import { Kbd } from "./kbd"
+import { Kbd } from "components/ui/kbd"
 
 interface Props {
   name: CssVarDocKey
@@ -18,19 +18,19 @@ export const CssVarTable = (props: Props) => {
   return (
     <Stack
       paddingLeft="0!"
-      spacing="8"
+      gap="8"
       listStyleType="none"
       listStylePosition="inside"
-      divider={<StackDivider />}
+      divideY="2px"
     >
       {Object.entries(data).map(([part, vars], index) => (
-        <Stack key={index} spacing="4">
+        <Stack key={index} gap="4">
           <Box fontWeight="semibold">{part}</Box>
-          <Stack align="flex-start" spacing="4" maxW="lg">
+          <Stack align="flex-start" gap="4" maxW="lg">
             {Object.entries(vars)
               .filter(([_key, value]) => value !== "")
               .map(([key, value], index) => (
-                <HStack key={index} spacing="8" width="full">
+                <HStack key={index} gap="8" width="full">
                   <Box minW="160px">
                     <Kbd>{key}</Kbd>
                   </Box>

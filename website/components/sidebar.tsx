@@ -1,12 +1,12 @@
-import { Icon } from "@chakra-ui/icon"
-import { Badge, Box, Flex, HStack, Stack } from "@chakra-ui/layout"
-import { chakra } from "@chakra-ui/system"
+import { Link } from "components/ui/link"
 import { formatUrl } from "lib/pagination-utils"
-import Link, { type LinkProps } from "next/link"
+import { type LinkProps } from "next/link"
 import { useRouter } from "next/router"
 import React from "react"
 import sidebar from "sidebar.config"
+import { Box, Flex, HStack, styled } from "styled-system/jsx"
 import { useFramework } from "./framework"
+import { Icon } from "./ui/icon"
 
 interface DocLinkProps {
   href: LinkProps["href"]
@@ -29,14 +29,14 @@ function DocLink(props: DocLinkProps) {
   const current = test(href.toString(), asPath)
   return (
     <Box key={asPath} as="li" fontSize="sm">
-      <chakra.a
+      <styled.a
         as={Link}
         href={href.toString()}
         aria-current={current ? "page" : undefined}
         textStyle="sidebarLink"
       >
         {children}
-      </chakra.a>
+      </styled.a>
     </Box>
   )
 }
@@ -46,20 +46,25 @@ export function Sidebar() {
 
   return (
     <nav aria-label="Sidebar Navigation">
-      <Stack as="ul" listStyleType="none" direction="column" spacing="10">
+      <styled.ul
+        listStyleType="none"
+        display="flex"
+        flexDirection="column"
+        gap="10"
+      >
         {sidebar.docs.map((item) => {
           if (item.type === "category") {
             return (
               <li className="sidebar__category" key={item.id}>
                 <HStack mb="3" color="green.500">
                   <Icon as={item.icon} />
-                  <chakra.h5
+                  <styled.h5
                     fontSize="xs"
                     fontWeight="semibold"
                     textTransform="uppercase"
                   >
                     {item.label}
-                  </chakra.h5>
+                  </styled.h5>
                 </HStack>
 
                 <Flex as="ul" listStyleType="none" direction="column">
@@ -73,35 +78,39 @@ export function Sidebar() {
                         >
                           {subItem.label}{" "}
                           {subItem.new && (
-                            <Badge
+                            <styled.span
                               bg="purple.500"
                               color="white"
                               ms="2"
                               px="1"
+                              py="0.5"
                               rounded="sm"
                               fontSize="xs"
+                              fontWeight="medium"
                             >
                               New
-                            </Badge>
+                            </styled.span>
                           )}
                           {subItem.beta && (
-                            <Badge
+                            <styled.span
                               bg="purple.50"
                               borderWidth="1px"
                               borderColor="purple.200"
                               color="purple.500"
+                              ms="2"
+                              px="1"
+                              py="0.5"
+                              rounded="sm"
+                              fontSize="xs"
+                              fontWeight="medium"
                               _dark={{
                                 bg: "purple.900",
                                 color: "purple.200",
                                 borderColor: "purple.800",
                               }}
-                              ms="2"
-                              px="1"
-                              rounded="sm"
-                              fontSize="xs"
                             >
                               Beta
-                            </Badge>
+                            </styled.span>
                           )}
                         </DocLink>
                       )
@@ -115,7 +124,7 @@ export function Sidebar() {
 
           return null
         })}
-      </Stack>
+      </styled.ul>
     </nav>
   )
 }

@@ -1,11 +1,12 @@
-import { Icon } from "@chakra-ui/icon"
-import { chakra, forwardRef, type HTMLChakraProps } from "@chakra-ui/system"
+import { styled } from "styled-system/jsx"
 import { HiOutlineSearch } from "react-icons/hi"
+import { forwardRef } from "react"
+import { Icon } from "components/ui/icon"
 
-export const SearchTrigger: any = forwardRef(
-  (props: HTMLChakraProps<"button">, ref) => {
+export const SearchTrigger = forwardRef<HTMLButtonElement, any>(
+  function SearchTrigger(props, ref) {
     return (
-      <chakra.button
+      <styled.button
         {...props}
         ref={ref}
         type="button"
@@ -13,21 +14,23 @@ export const SearchTrigger: any = forwardRef(
         display="flex"
         alignItems="center"
         gap="2"
-        bg="bg-subtle"
+        bg="bg.subtle"
         fontSize="sm"
         py="2"
         pl="2"
         pr="3"
-        ring="1px"
-        ringColor="border-bold"
+        borderWidth="1px"
+        borderColor="border"
         color="gray.500"
+        cursor="pointer"
+        _hover={{ bg: "bg.muted" }}
       >
-        <Icon as={HiOutlineSearch} fontSize="md" />
+        <Icon as={HiOutlineSearch} fontSize="1em" />
         Quick search...
-        <chakra.span ml="auto" flex="none" fontWeight="semibold" fontSize="xs">
+        <styled.span ml="auto" flex="none" fontWeight="semibold" fontSize="xs">
           ⌘K
-        </chakra.span>
-      </chakra.button>
+        </styled.span>
+      </styled.button>
     )
   },
 )
