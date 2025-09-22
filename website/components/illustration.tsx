@@ -11,7 +11,14 @@ export function Illustration(props: Props) {
       viewBox="0 0 731 481"
       fill="none"
       className={css({
-        color: { base: "#D1E1DA", _dark: "#283E35" },
+        color: { _light: "#D1E1DA", _dark: "#283E35" },
+        position: "absolute",
+        bottom: 0,
+        right: 0,
+        width: "min(50%,48vw)",
+        height: "auto",
+        maxW: "100%",
+        hideBelow: "md",
       })}
       {...props}
     >

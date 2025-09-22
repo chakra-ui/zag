@@ -17,7 +17,7 @@ export function TopNavigation() {
       position="sticky"
       top="0"
       width="full"
-      zIndex={50}
+      zIndex="50"
       py="4"
       borderBottomWidth="1px"
       borderBottomColor="border.subtle"
@@ -27,6 +27,7 @@ export function TopNavigation() {
         alignItems="center"
         justifyContent="space-between"
         maxW="8xl"
+        w="full"
         mx="auto"
         px={{ base: "4", sm: "6", md: "8" }}
       >

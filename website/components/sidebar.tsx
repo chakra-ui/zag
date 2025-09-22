@@ -4,7 +4,7 @@ import { type LinkProps } from "next/link"
 import { useRouter } from "next/router"
 import React from "react"
 import sidebar from "sidebar.config"
-import { Box, Flex, HStack, styled } from "styled-system/jsx"
+import { Box, Flex, HStack, Stack, styled } from "styled-system/jsx"
 import { useFramework } from "./framework"
 import { Icon } from "./ui/icon"
 
@@ -29,14 +29,9 @@ function DocLink(props: DocLinkProps) {
   const current = test(href.toString(), asPath)
   return (
     <Box key={asPath} as="li" fontSize="sm">
-      <styled.a
-        as={Link}
-        href={href.toString()}
-        aria-current={current ? "page" : undefined}
-        textStyle="sidebarLink"
-      >
+      <Link href={href.toString()} aria-current={current ? "page" : undefined}>
         {children}
-      </styled.a>
+      </Link>
     </Box>
   )
 }
@@ -46,12 +41,7 @@ export function Sidebar() {
 
   return (
     <nav aria-label="Sidebar Navigation">
-      <styled.ul
-        listStyleType="none"
-        display="flex"
-        flexDirection="column"
-        gap="10"
-      >
+      <Stack as="ul" listStyleType="none" direction="column" gap="10">
         {sidebar.docs.map((item) => {
           if (item.type === "category") {
             return (
@@ -67,7 +57,7 @@ export function Sidebar() {
                   </styled.h5>
                 </HStack>
 
-                <Flex as="ul" listStyleType="none" direction="column">
+                <Stack as="ul" listStyleType="none" gap="2">
                   {item.items.map((subItem, index) => {
                     const href = formatUrl(item.id, subItem.id, framework)
                     if (subItem.type === "doc") {
@@ -117,14 +107,14 @@ export function Sidebar() {
                     }
                     return null
                   })}
-                </Flex>
+                </Stack>
               </li>
             )
           }
 
           return null
         })}
-      </styled.ul>
+      </Stack>
     </nav>
   )
 }

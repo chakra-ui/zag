@@ -1,16 +1,10 @@
-import { Link } from "components/ui/link"
+import Link from "next/link"
 import { useRouter } from "next/router"
 import { styled } from "styled-system/jsx"
 
 export function Logo(props: any) {
   return (
-    <styled.svg
-      width="377"
-      height="133"
-      viewBox="0 0 377 133"
-      fill="none"
-      {...props}
-    >
+    <styled.svg viewBox="0 0 377 133" fill="none" {...props}>
       <path
         d="M243.68 67.7895L310.68 13.0287L265.18 112L369.68 7"
         stroke="#00C65E"

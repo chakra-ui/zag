@@ -295,13 +295,13 @@ export default defineConfig({
         "text.xl": {
           value: {
             fontSize: { base: "lg", md: "xl" },
-            lineHeight: "1.825",
+            lineHeight: "relaxed",
           },
         },
         "text.lg": {
           value: {
             fontSize: "lg",
-            lineHeight: "1.825",
+            lineHeight: "relaxed",
           },
         },
         "text.md": {
@@ -360,7 +360,7 @@ export default defineConfig({
       width: "100%",
       marginY: "8",
       th: {
-        bg: "bg-bold",
+        bg: "bg.bold",
       },
       "th, td": {
         borderWidth: "1px",
@@ -394,7 +394,7 @@ export default defineConfig({
         "a:focus": { opacity: 1 },
       },
       "& p, & li:not([role])": {
-        lineHeight: "1.825",
+        lineHeight: "relaxed",
       },
       "& p + p": {
         marginTop: "6",

@@ -2,7 +2,7 @@ import * as menu from "@zag-js/menu"
 import { normalizeProps, Portal, useMachine } from "@zag-js/react"
 import packageJson from "@zag-js/react/package.json"
 import { Icon } from "components/ui/icon"
-import { Link } from "components/ui/link"
+import Link from "next/link"
 import { useId } from "react"
 import { HiChevronDown } from "react-icons/hi"
 import { Box, HStack, Stack, styled } from "styled-system/jsx"
@@ -20,18 +20,15 @@ export const VersionSelector = () => {
         display={{ base: "none", sm: "flex" }}
         alignItems="center"
         gap="1"
-        bg="bg.subtle"
-        color="text"
+        bg={{ base: "orange.100", _dark: "orange.900" }}
+        color={{ base: "orange.800", _dark: "orange.500" }}
         rounded="sm"
         fontSize="xs"
         px="2"
         py="1"
         letterSpacing="wider"
         fontWeight="semibold"
-        borderWidth="1px"
-        borderColor="border.subtle"
         cursor="pointer"
-        _hover={{ bg: "bg.muted" }}
         {...api.getTriggerProps()}
       >
         {items[0].label}
@@ -45,24 +42,12 @@ export const VersionSelector = () => {
               width="180px"
               zIndex="1000"
               fontSize="sm"
-              bg="bg"
-              borderWidth="1px"
-              borderColor="border"
-              rounded="md"
-              shadow="lg"
-              p="2"
-              gap="1"
               {...api.getContentProps()}
             >
               {items.map((item) => (
                 <Link
                   key={item.value}
                   href={item.value}
-                  display="block"
-                  p="2"
-                  rounded="sm"
-                  textDecoration="none"
-                  _hover={{ bg: "bg.subtle" }}
                   {...api.getItemProps({ value: item.value })}
                 >
                   <HStack justify="space-between">

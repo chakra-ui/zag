@@ -110,10 +110,10 @@ export function Playground<T extends object>(props: PlaygroundProps<T>) {
         <Component {...(state as T)} />
       </Flex>
 
-      <Box flexBasis="1px" alignSelf="stretch" bg="bg-bold" />
+      <Box flexBasis="1px" alignSelf="stretch" bg="bg.bold" />
 
       <Box
-        bg="bg-subtle"
+        bg="bg.subtle"
         width={{ md: "240px" }}
         fontSize="sm"
         hidden={isEmpty}
@@ -140,7 +140,7 @@ export function Playground<T extends object>(props: PlaygroundProps<T>) {
                     id={key}
                     type="checkbox"
                     defaultChecked={value as any}
-                    bg="bg-subtle"
+                    bg="bg.subtle"
                     onChange={() => setState({ ...state, [key]: !value })}
                   />
                 </styled.label>
@@ -159,7 +159,7 @@ export function Playground<T extends object>(props: PlaygroundProps<T>) {
                     id={key}
                     type="text"
                     defaultValue={value as any}
-                    bg="bg-subtle"
+                    bg="bg.subtle"
                     onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                       setState({ ...state, [key]: e.target.value })
                     }}
@@ -178,7 +178,7 @@ export function Playground<T extends object>(props: PlaygroundProps<T>) {
                     maxWidth="6ch"
                     borderWidth="1px"
                     px="2"
-                    bg="bg-subtle"
+                    bg="bg.subtle"
                     defaultValue={value as number}
                     onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                       const val = e.currentTarget.valueAsNumber
@@ -198,7 +198,7 @@ export function Playground<T extends object>(props: PlaygroundProps<T>) {
                     borderWidth="1px"
                     fontSize="xs"
                     px="1"
-                    bg="bg-subtle"
+                    bg="bg.subtle"
                     defaultValue={value as string}
                     onChange={(e: React.ChangeEvent<HTMLSelectElement>) => {
                       setState((s) => ({ ...s, [key]: e.target.value }))

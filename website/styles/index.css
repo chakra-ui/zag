@@ -1,5 +1,7 @@
 @layer reset, base, tokens, recipes, utilities;
 
+@import url("./machines/index.css");
+
 @font-face {
   font-family: "Spline Sans";
   src: url("/fonts/spline-sans.woff2") format("woff2");

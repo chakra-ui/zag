@@ -82,15 +82,7 @@ export default function Home() {
             </styled.p>
           </Box>
 
-          <styled.svg
-            display={{ base: "none", md: "initial" }}
-            as={Illustration}
-            pos="absolute"
-            bottom="0"
-            right="0"
-            width="min(50%,48vw)"
-            height="auto"
-          />
+          <Illustration />
 
           <Stack
             direction={{ base: "column", sm: "row" }}

@@ -18,13 +18,12 @@ export const CssVarTable = (props: Props) => {
   return (
     <Stack
       paddingLeft="0!"
-      gap="8"
       listStyleType="none"
       listStylePosition="inside"
-      divideY="2px"
+      divideY="1px"
     >
       {Object.entries(data).map(([part, vars], index) => (
-        <Stack key={index} gap="4">
+        <Stack key={index} gap="4" py="4">
           <Box fontWeight="semibold">{part}</Box>
           <Stack align="flex-start" gap="4" maxW="lg">
             {Object.entries(vars)

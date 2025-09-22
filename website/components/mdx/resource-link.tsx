@@ -1,6 +1,8 @@
 import { Icon } from "components/ui/icon"
 import type { IconType } from "react-icons"
-import { HiCode, HiSparkles } from "react-icons/hi"
+import { HiOutlineCode } from "react-icons/hi"
+import { RiNpmjsFill } from "react-icons/ri"
+import { ImMagicWand } from "react-icons/im"
 import { styled, Wrap } from "styled-system/jsx"
 
 interface ResourceLinkProps {
@@ -52,24 +54,12 @@ export function ResourceLinkGroup(props: ResourceLinkGroupProps) {
       <ResourceLink icon={RiNpmjsFill} href={item.npmUrl} data-id="npm">
         {item.version} (latest)
       </ResourceLink>
-      <ResourceLink icon={HiSparkles} href={item.visualizeUrl} data-id="logic">
+      <ResourceLink icon={ImMagicWand} href={item.visualizeUrl} data-id="logic">
         Visualize Logic
       </ResourceLink>
-      <ResourceLink icon={HiCode} href={item.sourceUrl} data-id="source">
+      <ResourceLink icon={HiOutlineCode} href={item.sourceUrl} data-id="source">
         View Source
       </ResourceLink>
     </Wrap>
   )
 }
-
-const RiNpmjsFill: IconType = ({ size, color, ...rest }) => (
-  <svg
-    width={size || 16}
-    height={size || 16}
-    viewBox="0 0 24 24"
-    fill={color || "currentColor"}
-    {...rest}
-  >
-    <path d="M2 14V9h20v5l-6-1v2l-6-2v-2l6 1v-1H2z" />
-  </svg>
-)

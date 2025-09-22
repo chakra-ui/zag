@@ -35,7 +35,7 @@ export function MobileNavigation() {
         display={{ base: "inline-flex", lg: "none" }}
         size="sm"
         px="2"
-        bg="bg-subtle"
+        bg="bg.subtle"
         {...api.getTriggerProps()}
       >
         <HStack>
@@ -56,7 +56,7 @@ export function MobileNavigation() {
               zIndex="modal"
               pb="10"
               overflowY="auto"
-              bg="bg-subtle"
+              bg="bg.subtle"
             >
               <Flex
                 justify="space-between"
@@ -68,7 +68,7 @@ export function MobileNavigation() {
                   ref={initialRef}
                   size="sm"
                   px="2"
-                  bg="bg-subtle"
+                  bg="bg.subtle"
                   {...api.getCloseTriggerProps()}
                 >
                   <HStack>

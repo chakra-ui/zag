@@ -46,7 +46,7 @@ export default function DocsLayout(props: DocsLayoutProps) {
             overscrollBehavior="contain"
           >
             <Box position="relative">
-              <Box position="sticky" top="0" bg="bg-subtle" pb="8">
+              <Box position="sticky" top="0" bg="bg.subtle" pb="8">
                 <Spacer height="10" bg="transparent" />
                 <Search />
                 <Spacer mt="px" height="5" bg="transparent" />

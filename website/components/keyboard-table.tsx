@@ -13,13 +13,12 @@ export const KeyboardTable = (props: Props) => {
     <Stack
       as="ul"
       paddingLeft="0!"
-      gap="5"
       listStyleType="none"
       listStylePosition="inside"
-      divideY="2px"
+      divideY="1px"
     >
       {data.keyboard.map(({ keys, description }, index) => (
-        <Stack align="flex-start" gap="2" as="li" key={index}>
+        <Stack align="flex-start" gap="2" as="li" key={index} py="4">
           <HStack>
             {keys.map((k) => (
               <Kbd key={k}>{k}</Kbd>
