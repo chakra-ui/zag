@@ -345,7 +345,13 @@ export const machine = createMachine<DatePickerSchema>({
       actions: ["setFocusedDate"],
     },
     "VALUE.CLEAR": {
-      actions: ["clearDateValue", "clearFocusedDate", "focusFirstInputElement"],
+      actions: [
+        "clearDateValue",
+        "clearFocusedDate",
+        "clearPlaceholderDate",
+        "clearEnteredKeys",
+        "focusFirstInputElement",
+      ],
     },
     "INPUT.CHANGE": [
       {
@@ -1263,6 +1269,11 @@ export const machine = createMachine<DatePickerSchema>({
 
       setActiveSegmentIndex({ context, event }) {
         context.set("activeSegmentIndex", event.index)
+      },
+
+      clearPlaceholderDate(params) {
+        const { prop, context } = params
+        context.set("placeholderValue", getTodayDate(prop("timeZone")))
       },
 
       clearEnteredKeys({ refs }) {
