@@ -1,12 +1,11 @@
-import { Box, Flex, HStack, Spacer } from "@chakra-ui/layout"
-import { chakra, useToken } from "@chakra-ui/system"
+import { styled, Box, Flex, HStack, Spacer } from "styled-system/jsx"
 import * as dialog from "@zag-js/dialog"
 import { Portal, normalizeProps, useMachine } from "@zag-js/react"
 import { useRouteChange } from "lib/use-route-change"
 import { useEffect, useRef } from "react"
 import { HiMenu, HiX } from "react-icons/hi"
 import useMatchMedia from "use-match-media-hook"
-import { Button } from "./button"
+import { Button } from "components/ui/button"
 import { FrameworkSelect } from "./framework-select"
 import { LogoWithLink } from "./logo"
 import { Sidebar } from "./sidebar"
@@ -20,8 +19,7 @@ export function MobileNavigation() {
   const api = dialog.connect(service, normalizeProps)
   const initialRef = useRef<HTMLButtonElement>(null)
 
-  const lgBreakpoint = useToken("breakpoints", "lg")
-  const [desktop] = useMatchMedia([`(min-width: ${lgBreakpoint})`])
+  const [desktop] = useMatchMedia([`(min-width: 1024px)`])
 
   useEffect(() => {
     if (desktop) api.setOpen(false)
@@ -37,14 +35,14 @@ export function MobileNavigation() {
         display={{ base: "inline-flex", lg: "none" }}
         size="sm"
         px="2"
-        bg="bg-subtle"
+        bg="bg.subtle"
         {...api.getTriggerProps()}
       >
         <HStack>
           <HiMenu />{" "}
-          <chakra.span display={{ base: "none", xs: "inline" }}>
+          <styled.span display={{ base: "none", sm: "inline" }}>
             Menu
-          </chakra.span>
+          </styled.span>
         </HStack>
       </Button>
 
@@ -58,7 +56,7 @@ export function MobileNavigation() {
               zIndex="modal"
               pb="10"
               overflowY="auto"
-              bg="bg-subtle"
+              bg="bg.subtle"
             >
               <Flex
                 justify="space-between"
@@ -70,7 +68,7 @@ export function MobileNavigation() {
                   ref={initialRef}
                   size="sm"
                   px="2"
-                  bg="bg-subtle"
+                  bg="bg.subtle"
                   {...api.getCloseTriggerProps()}
                 >
                   <HStack>

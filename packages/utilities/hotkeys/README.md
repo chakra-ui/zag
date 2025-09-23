@@ -1,6 +1,7 @@
 # @zag-js/hotkeys
 
-A TypeScript-first hotkey management system with context-aware scoping and command metadata. Built for modern applications that need sophisticated keyboard shortcut management.
+A TypeScript-first hotkey management system with context-aware scoping and command metadata. Built for modern
+applications that need sophisticated keyboard shortcut management.
 
 ## Installation
 
@@ -82,6 +83,7 @@ const parsed4 = parseHotkey("ctrl++") // Plus key
 ```
 
 This is useful for:
+
 - Building custom hotkey UI components
 - Validating hotkey strings
 - Analyzing hotkey complexity
@@ -105,7 +107,7 @@ const store = createHotkeyStore<AppContext>()
 // Initialize with DOM and context
 store.initialize({
   rootNode: document,
-  defaultContext: { user: "john", theme: "dark" }
+  defaultContext: { user: "john", theme: "dark" },
 })
 
 // Register commands
@@ -116,7 +118,7 @@ store.register([
     label: "Save Document",
     action: (context, event) => {
       console.log(`Saving for ${context.user}`)
-    }
+    },
   },
   {
     id: "toggle-theme",
@@ -124,8 +126,8 @@ store.register([
     action: (context) => {
       const newTheme = context.theme === "dark" ? "light" : "dark"
       store.setContext({ ...context, theme: newTheme })
-    }
-  }
+    },
+  },
 ])
 
 // Cleanup when done
@@ -145,7 +147,7 @@ const store = createHotkeyStore()
 // With options
 const store = createHotkeyStore({
   defaultActiveScopes: ["global", "editor"],
-  sequenceTimeoutMs: 1500
+  sequenceTimeoutMs: 1500,
 })
 
 // With typed context
@@ -155,7 +157,7 @@ interface MyContext {
 }
 
 const store = createHotkeyStore<MyContext>({
-  defaultActiveScopes: ["app"]
+  defaultActiveScopes: ["app"],
 })
 ```
 
@@ -165,7 +167,7 @@ const store = createHotkeyStore<MyContext>({
 // Initialize with DOM and context
 store.initialize({
   rootNode: document, // or shadowRoot
-  defaultContext: { userId: "123", permissions: ["read", "write"] }
+  defaultContext: { userId: "123", permissions: ["read", "write"] },
 })
 ```
 
@@ -187,8 +189,8 @@ store.register([
     },
     options: {
       preventDefault: true,
-      enableOnFormTags: false
-    }
+      enableOnFormTags: false,
+    },
   },
   {
     id: "zoom-in",
@@ -196,8 +198,8 @@ store.register([
     label: "Zoom In",
     action: (context) => {
       // Handle zoom
-    }
-  }
+    },
+  },
 ])
 ```
 
@@ -205,16 +207,16 @@ store.register([
 
 ```typescript
 interface CommandDefinition<TContext = any> {
-  id: string                    // Unique identifier
-  hotkey: string               // Key combination
+  id: string // Unique identifier
+  hotkey: string // Key combination
   action: HotkeyAction<TContext> // Function to execute
-  label?: string               // Display name
-  description?: string         // What the command does
-  category?: string           // Grouping (File, Edit, View, etc.)
-  keywords?: string[]         // Search terms
-  scopes?: string | string[]  // When command is active
+  label?: string // Display name
+  description?: string // What the command does
+  category?: string // Grouping (File, Edit, View, etc.)
+  keywords?: string[] // Search terms
+  scopes?: string | string[] // When command is active
   enabled?: boolean | ((context: TContext) => boolean)
-  options?: HotkeyOptions     // Behavior configuration
+  options?: HotkeyOptions // Behavior configuration
 }
 ```
 
@@ -244,6 +246,7 @@ const scopes = store.getActiveScopes() // ["editor", "modal", "debug"]
 ### Scope Use Cases
 
 #### 1. Modal/Overlay Management
+
 ```typescript
 // Register modal-specific hotkeys
 store.register([
@@ -251,14 +254,14 @@ store.register([
     id: "close-modal",
     hotkey: "Escape",
     scopes: ["modal"],
-    action: () => closeModal()
+    action: () => closeModal(),
   },
   {
     id: "confirm-action",
     hotkey: "Enter",
     scopes: ["modal"],
-    action: () => confirmAction()
-  }
+    action: () => confirmAction(),
+  },
 ])
 
 // When modal opens
@@ -275,6 +278,7 @@ function closeModal() {
 ```
 
 #### 2. Application Modes
+
 ```typescript
 // Register mode-specific hotkeys
 store.register([
@@ -282,14 +286,14 @@ store.register([
     id: "vim-movement",
     hotkey: "H",
     scopes: ["vim-mode"],
-    action: () => moveCursorLeft()
+    action: () => moveCursorLeft(),
   },
   {
     id: "normal-backspace",
     hotkey: "Backspace",
     scopes: ["normal-mode"],
-    action: () => deleteCharacter()
-  }
+    action: () => deleteCharacter(),
+  },
 ])
 
 // Switch modes
@@ -303,6 +307,7 @@ function enableNormalMode() {
 ```
 
 #### 3. Feature Gating
+
 ```typescript
 // Pro features
 store.register([
@@ -310,8 +315,8 @@ store.register([
     id: "advanced-search",
     hotkey: "Control+Shift+F",
     scopes: ["pro-features"],
-    action: () => openAdvancedSearch()
-  }
+    action: () => openAdvancedSearch(),
+  },
 ])
 
 // Enable based on user subscription
@@ -321,6 +326,7 @@ if (user.isPro) {
 ```
 
 #### 4. Context-Sensitive Actions
+
 ```typescript
 // Same hotkey, different actions
 store.register([
@@ -328,14 +334,14 @@ store.register([
     id: "save-document",
     hotkey: "Control+S",
     scopes: ["editor"],
-    action: () => saveDocument()
+    action: () => saveDocument(),
   },
   {
     id: "save-settings",
     hotkey: "Control+S",
     scopes: ["settings"],
-    action: () => saveSettings()
-  }
+    action: () => saveSettings(),
+  },
 ])
 ```
 
@@ -370,9 +376,9 @@ store.register([
       // Update context
       store.setContext({
         ...context,
-        document: { ...context.document, modified: false }
+        document: { ...context.document, modified: false },
       })
-    }
+    },
   },
   {
     id: "delete-selection",
@@ -380,8 +386,8 @@ store.register([
     enabled: (context) => context.selection.start !== context.selection.end,
     action: (context) => {
       deleteText(context.selection.start, context.selection.end)
-    }
-  }
+    },
+  },
 ])
 
 // Update context from elsewhere
@@ -389,7 +395,7 @@ function onSelectionChange(start: number, end: number) {
   const context = store.getContext()
   store.setContext({
     ...context,
-    selection: { start, end }
+    selection: { start, end },
   })
 }
 ```
@@ -403,18 +409,18 @@ store.register([
   {
     id: "go-to-line",
     hotkey: "G > G", // Press G, then G within timeout
-    action: () => goToFirstLine()
+    action: () => goToFirstLine(),
   },
   {
     id: "delete-line",
     hotkey: "D > D",
-    action: () => deleteLine()
-  }
+    action: () => deleteLine(),
+  },
 ])
 
 // Configure sequence timeout
 const store = createHotkeyStore({
-  sequenceTimeoutMs: 1500 // 1.5 seconds to complete sequence
+  sequenceTimeoutMs: 1500, // 1.5 seconds to complete sequence
 })
 ```
 
@@ -422,11 +428,11 @@ const store = createHotkeyStore({
 
 ```typescript
 interface HotkeyOptions {
-  preventDefault?: boolean           // Prevent browser default (default: true)
-  stopPropagation?: boolean         // Stop event bubbling (default: false)
+  preventDefault?: boolean // Prevent browser default (default: true)
+  stopPropagation?: boolean // Stop event bubbling (default: false)
   enableOnFormTags?: boolean | FormTagName[] // Allow in form elements
   enableOnContentEditable?: boolean // Allow in contentEditable elements
-  capture?: boolean                 // Use capture phase (default: true)
+  capture?: boolean // Use capture phase (default: true)
 }
 
 store.register([
@@ -436,9 +442,9 @@ store.register([
     action: () => submitForm(),
     options: {
       enableOnFormTags: true, // Works in inputs/textareas
-      preventDefault: false   // Don't block default behavior
-    }
-  }
+      preventDefault: false, // Don't block default behavior
+    },
+  },
 ])
 ```
 
@@ -452,13 +458,13 @@ const unsubscribe = store.subscribe(
   (state, context) => state.commands.size, // Selector
   (commandCount) => {
     console.log(`${commandCount} commands registered`)
-  }
+  },
 )
 
 // Subscribe to active scopes
 store.subscribe(
   (state) => Array.from(state.activeScopes),
-  (scopes) => updateUI(scopes)
+  (scopes) => updateUI(scopes),
 )
 
 // Cleanup subscription
@@ -522,13 +528,17 @@ export function useHotkeyStore<T>(context: Ref<T>) {
   onMounted(() => {
     store.initialize({
       rootNode: document,
-      defaultContext: context.value
+      defaultContext: context.value,
     })
   })
 
-  watch(context, (newContext) => {
-    store.setContext(newContext)
-  }, { deep: true })
+  watch(
+    context,
+    (newContext) => {
+      store.setContext(newContext)
+    },
+    { deep: true },
+  )
 
   onUnmounted(() => {
     store.destroy()
@@ -547,27 +557,31 @@ store.register([
   {
     id: "save",
     hotkey: "ControlOrMeta+S", // Ctrl on Windows/Linux, Cmd on macOS
-    action: () => save()
+    action: () => save(),
   },
   {
     id: "copy",
     hotkey: "mod+C", // Same as ControlOrMeta
-    action: () => copy()
-  }
+    action: () => copy(),
+  },
 ])
 ```
 
 ## Layout-Aware Matching
 
-The library automatically handles different keyboard layouts by matching both the logical key (what's printed on the key) and the physical key position. This means your hotkeys work consistently across different keyboard layouts without any configuration.
+The library automatically handles different keyboard layouts by matching both the logical key (what's printed on the
+key) and the physical key position. This means your hotkeys work consistently across different keyboard layouts without
+any configuration.
 
 ### How It Works
 
 When you define a hotkey like `"Ctrl+Z"`, the library:
+
 1. Matches the logical key (`event.key === "z"`) - works on QWERTY
 2. Also matches the physical position (`event.code === "KeyZ"`) - works on QWERTZ/AZERTY
 
 This dual matching ensures:
+
 - **QWERTY users**: Press the "Z" key (bottom left)
 - **QWERTZ users**: Press either "Z" (labeled) OR "Y" (physical Z position)
 - **AZERTY users**: Press either "Z" (labeled) OR "W" (physical Z position)
@@ -579,7 +593,7 @@ This dual matching ensures:
 store.register({
   id: "undo",
   hotkey: "Ctrl+Z",
-  action: () => undo()
+  action: () => undo(),
 })
 
 // Simple hotkey checking with layout awareness
@@ -594,7 +608,7 @@ if (isHotKey("Ctrl+Z", event)) {
 store.register({
   id: "goto-line",
   hotkey: "G > G",
-  action: () => goToLine()
+  action: () => goToLine(),
   // Works with both logical "G" and physical "KeyG" position
 })
 ```
@@ -610,6 +624,7 @@ store.register({
 ### Supported Keys
 
 Layout-aware matching works for:
+
 - Letters (A-Z)
 - Numbers (0-9)
 - Common symbols (-, =, [, ], ;, ', `, \\, ,, ., /)
@@ -619,7 +634,8 @@ Layout-aware matching works for:
 
 ### Note
 
-Modifier keys (Ctrl, Alt, Shift, Meta/Cmd) are always matched by their logical value, not position, as they are consistent across layouts.
+Modifier keys (Ctrl, Alt, Shift, Meta/Cmd) are always matched by their logical value, not position, as they are
+consistent across layouts.
 
 ## Command Palette Integration
 
@@ -635,24 +651,23 @@ store.register([
     description: "Open a file from disk",
     category: "File",
     keywords: ["open", "load", "import", "file"],
-    action: () => openFile()
-  }
+    action: () => openFile(),
+  },
 ])
 
 // Get all commands for palette
 const commands = Array.from(store.getState().commands.values())
 
 // Filter by category
-const fileCommands = commands.filter(cmd => cmd.category === "File")
+const fileCommands = commands.filter((cmd) => cmd.category === "File")
 
 // Search by keywords
 function searchCommands(query: string) {
-  return commands.filter(cmd =>
-    cmd.label?.toLowerCase().includes(query.toLowerCase()) ||
-    cmd.description?.toLowerCase().includes(query.toLowerCase()) ||
-    cmd.keywords?.some(keyword =>
-      keyword.toLowerCase().includes(query.toLowerCase())
-    )
+  return commands.filter(
+    (cmd) =>
+      cmd.label?.toLowerCase().includes(query.toLowerCase()) ||
+      cmd.description?.toLowerCase().includes(query.toLowerCase()) ||
+      cmd.keywords?.some((keyword) => keyword.toLowerCase().includes(query.toLowerCase())),
   )
 }
 ```
@@ -662,12 +677,7 @@ function searchCommands(query: string) {
 Full type safety with generic context support:
 
 ```typescript
-import type {
-  HotkeyStore,
-  CommandDefinition,
-  HotkeyAction,
-  HotkeyOptions
-} from "@zag-js/hotkeys"
+import type { HotkeyStore, CommandDefinition, HotkeyAction, HotkeyOptions } from "@zag-js/hotkeys"
 
 interface MyContext {
   userId: string
@@ -683,7 +693,7 @@ const command: CommandDefinition<MyContext> = {
     // Fully typed context and event
     const newTheme = context.theme === "light" ? "dark" : "light"
     store.setContext({ ...context, theme: newTheme })
-  }
+  },
 }
 ```
 
