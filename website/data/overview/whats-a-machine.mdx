@@ -57,19 +57,6 @@ const machine = createMachine({
 })
 ```
 
-The `machine` gives you access to these key information:
-
-- `state`: State is a representation of the machine at a specific point in time
-  and contains the following properties:
-  - `value`: the current state value
-  - `context`: the current context or data stored in the machine
-  - `event`: the event object that triggered the transition of this current
-    state
-  - `matches(...)`: the function to check whether the machine is in a specific
-    state. It's similar to `state.value === <state>`
-
-- `send`: A function to send events or signals to the machine.
-
 Now that we've modelled the component logic, let's map that to DOM attributes
 and event handlers following the
 [WAI-ARIA](https://www.w3.org/TR/wai-aria-practices-1.1/examples/checkbox/checkbox-1/checkbox-1.html)
@@ -79,6 +66,7 @@ We'll write a function called `connect` to do this.
 
 ```jsx
 function connect(service) {
+  const { state } = service
   const active = state.matches("active")
   return {
     active,
