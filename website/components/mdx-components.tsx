@@ -181,7 +181,7 @@ const components: Record<string, FC<any>> = {
         maxW="768px"
         borderWidth="1px"
         my="8"
-        bg="bg-code.block"
+        bg="bg.code.block"
         rounded="6px"
         {...api.getRootProps()}
       >

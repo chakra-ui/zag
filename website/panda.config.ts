@@ -251,23 +251,23 @@ export default defineConfig({
           value: {
             fontSize: { base: "4xl", sm: "5xl", md: "7xl" },
             fontWeight: "bold",
-            lineHeight: "shorter",
-            letterSpacing: "tight",
+            lineHeight: "1.25",
+            letterSpacing: "-0.025em",
           },
         },
         "display.xl": {
           value: {
             fontSize: { base: "4xl", md: "6xl" },
             fontWeight: "bold",
-            lineHeight: "shorter",
-            letterSpacing: "tight",
+            lineHeight: "1.25",
+            letterSpacing: "-0.025em",
           },
         },
         "display.lg": {
           value: {
             fontSize: { base: "3xl", md: "4xl" },
             fontWeight: "bold",
-            letterSpacing: "tight",
+            letterSpacing: "-0.025em",
             lineHeight: "1.2",
           },
         },
@@ -276,7 +276,7 @@ export default defineConfig({
             fontSize: { base: "xl", md: "2xl" },
             fontWeight: "bold",
             lineHeight: "1.4",
-            letterSpacing: "tight",
+            letterSpacing: "-0.025em",
           },
         },
         "display.sm": {
@@ -295,13 +295,13 @@ export default defineConfig({
         "text.xl": {
           value: {
             fontSize: { base: "lg", md: "xl" },
-            lineHeight: "relaxed",
+            lineHeight: "1.625",
           },
         },
         "text.lg": {
           value: {
             fontSize: "lg",
-            lineHeight: "relaxed",
+            lineHeight: "1.625",
           },
         },
         "text.md": {
@@ -350,7 +350,7 @@ export default defineConfig({
     },
 
     ".has-highlight": {
-      mark: {
+      "& mark": {
         color: "green.500",
         fontWeight: "semibold",
       },
@@ -359,10 +359,10 @@ export default defineConfig({
     "table:not([role])": {
       width: "100%",
       marginY: "8",
-      th: {
+      "& th": {
         bg: "bg.bold",
       },
-      "th, td": {
+      "& th, & td": {
         borderWidth: "1px",
         py: "3",
         px: "5",
@@ -382,19 +382,19 @@ export default defineConfig({
       "& li:not([role])": {
         marginY: "1",
       },
-      "& ol:not([role]), & ul:not([role], .chakra-wrap__list)": {
+      "& ol:not([role]), & ul:not([role])": {
         marginY: "5",
         paddingLeft: "4",
       },
-      "& h2, & h3, & h4": {
+      "& :is(h2, h3, h4)": {
         scrollMarginTop: "24",
         "&:hover": {
-          "a.anchor": { opacity: 1 },
+          "& a.anchor": { opacity: 1 },
         },
-        "a:focus": { opacity: 1 },
+        "& a:focus": { opacity: 1 },
       },
-      "& p, & li:not([role])": {
-        lineHeight: "relaxed",
+      "&:is(p, li:not([role]))": {
+        lineHeight: "1.625",
       },
       "& p + p": {
         marginTop: "6",

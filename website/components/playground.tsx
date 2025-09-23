@@ -88,7 +88,7 @@ export function Playground<T extends object>(props: PlaygroundProps<T>) {
       pos="relative"
       minHeight="24em"
       my="16"
-      bg="bg-code.block"
+      bg="bg.code.block"
       borderColor="border-subtle"
     >
       <Box pos="absolute" bottom="2" right="2">

@@ -116,11 +116,11 @@ export default function Home() {
       </Box>
 
       <Section
-        bg={{ base: "bg-tertiary.bold", md: "unset" }}
+        bg={{ base: "bg.tertiary.bold", md: "unset" }}
         my={{ base: "20", md: "32" }}
       >
         <Box
-          bg="bg-tertiary.bold"
+          bg="bg.tertiary.bold"
           px={{ md: "20" }}
           py={{ base: "10", md: "20" }}
         >
@@ -208,7 +208,7 @@ export default function Home() {
             <Box
               width={{ base: "full", xl: "max(640px,80%)" }}
               mx="auto"
-              bg="bg-code.block"
+              bg="bg.code.block"
               rounded="2xl"
               shadow="base"
               height="full"
@@ -270,7 +270,7 @@ export default function Home() {
           </styled.div>
 
           <HStack mt="10" gap="4">
-            <Circle overflow="hidden" bg="bg-bold">
+            <Circle overflow="hidden" bg="bg.bold">
               <Image
                 src="/segun-adebayo-headshot.png"
                 width="64"
@@ -291,11 +291,11 @@ export default function Home() {
       </Section>
 
       <Section
-        bg={{ base: "bg-tertiary.bold", md: "unset" }}
+        bg={{ base: "bg.tertiary.bold", md: "unset" }}
         my={{ base: "20", md: "32" }}
       >
         <Box
-          bg="bg-tertiary.bold"
+          bg="bg.tertiary.bold"
           px={{ md: "20" }}
           py={{ base: "10", md: "20" }}
         >
