@@ -6,4 +6,5 @@ packages:
   - website
 
 onlyBuiltDependencies:
+  - '@parcel/watcher'
   - sharp

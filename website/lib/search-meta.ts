@@ -1,4 +1,4 @@
-import { allComponents, allOverviews } from "@/contentlayer"
+import { components as allComponents, overviews as allOverviews } from ".velite"
 
 export type SearchMetaItem = {
   content: string
@@ -17,9 +17,9 @@ export type SearchMetaItem = {
 export type SearchMetaResult = SearchMetaItem[]
 
 type TOC = {
-  content: string
-  slug: string
-  lvl: 1 | 2 | 3
+  title: string
+  url: string
+  items: TOC[]
 }
 
 function getSearchMeta() {
@@ -29,7 +29,7 @@ function getSearchMeta() {
 
   for (const doc of documents) {
     const { title, toc, slug } = doc.frontmatter
-    const params = doc.params
+    const params = [...doc.params]
     params.shift()
 
     result.push({
@@ -37,29 +37,47 @@ function getSearchMeta() {
       id: doc._id,
       type: "lvl1",
       url: slug,
-      pathname: doc.pathname,
+      pathname: doc.pathname || "",
       slug: params,
       hierarchy: {
         lvl1: title,
       },
     })
 
-    toc.forEach((item: TOC, index: number) => {
-      result.push({
-        content: item.content,
-        id: doc._id + item.slug,
-        type: `lvl${item.lvl}` as any,
-        url: slug + `#${item.slug}`,
-        pathname: doc.pathname,
-        slug: params,
-        hierarchy: {
-          lvl1: title,
-          lvl2:
-            item.lvl === 2 ? item.content : (toc[index - 1]?.content ?? null),
-          lvl3: item.lvl === 3 ? item.content : null,
-        },
+    // Process TOC items recursively
+    const processTocItems = (
+      items: TOC[],
+      level: number = 2,
+      parentTitle?: string,
+    ) => {
+      items.forEach((item) => {
+        result.push({
+          content: item.title,
+          id: doc._id + item.url,
+          type: `lvl${Math.min(level, 3)}` as any,
+          url: slug + item.url,
+          pathname: doc.pathname || "",
+          slug: params,
+          hierarchy: {
+            lvl1: title,
+            lvl2: level === 2 ? item.title : parentTitle,
+            lvl3: level === 3 ? item.title : null,
+          },
+        })
+
+        if (item.items && item.items.length > 0) {
+          processTocItems(
+            item.items,
+            level + 1,
+            level === 2 ? item.title : parentTitle,
+          )
+        }
       })
-    })
+    }
+
+    if (toc && Array.isArray(toc)) {
+      processTocItems(toc)
+    }
   }
   return result
 }

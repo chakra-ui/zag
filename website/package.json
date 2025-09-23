@@ -64,12 +64,10 @@
     "@zag-js/tooltip": "workspace:*",
     "@zag-js/tour": "workspace:*",
     "@zag-js/tree-view": "workspace:*",
-    "contentlayer": "0.3.4",
     "hastscript": "9.0.1",
     "markdown-toc": "1.2.0",
     "match-sorter": "8.1.0",
     "next": "15.5.3",
-    "next-contentlayer": "0.3.4",
     "next-seo": "6.8.0",
     "next-themes": "^0.4.6",
     "plop": "4.0.3",
@@ -78,7 +76,8 @@
     "react-icons": "5.5.0",
     "refractor": "^4.9.0",
     "unist-util-visit": "5.0.0",
-    "use-match-media-hook": "1.0.1"
+    "use-match-media-hook": "1.0.1",
+    "velite": "^0.3.0"
   },
   "devDependencies": {
     "@next/eslint-plugin-next": "15.5.3",

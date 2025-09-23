@@ -1,12 +1,11 @@
-import { allComponents, allSnippets } from "@/contentlayer"
+import { components as allComponents, snippets as allSnippets } from ".velite"
 import { allComponents as Anatomies } from "@zag-js/anatomy-icons"
 import { normalizeProps, useMachine } from "@zag-js/react"
 import * as tabs from "@zag-js/tabs"
 import { Blockquote } from "components/ui/blockquote"
 import { Code } from "components/ui/code"
 import { Icon } from "components/ui/icon"
-import { type MDX } from "contentlayer/core"
-import { useMDXComponent } from "next-contentlayer/hooks"
+import * as runtime from "react/jsx-runtime"
 import Image from "next/image"
 import Link from "next/link"
 import { type FC } from "react"
@@ -21,7 +20,13 @@ import { KeyboardTable } from "./keyboard-table"
 import { ResourceLinkGroup } from "./mdx/resource-link"
 import { PropTable } from "./prop-table"
 
-const SnippetItem = ({ body, id }: { body: MDX; id: string }) => {
+const SnippetItem = ({
+  body,
+  id,
+}: {
+  body: { code: string; raw: string }
+  id: string
+}) => {
   const content = useMDX(body.code)
   const textContent = body.raw.split("\n").slice(1, -2).join("\n")
   return (
@@ -267,11 +272,12 @@ const components: Record<string, FC<any>> = {
   },
 }
 
-export function useMDX(code: string | undefined) {
-  const defaultCode = `
-return { default: () => React.createElement('div', null, '') }
-`
-  const pageCode = code && code?.length ? code : defaultCode
-  const MDXComponent = useMDXComponent(pageCode)
+const useMDXComponent = (code: string) => {
+  const fn = new Function(code)
+  return fn({ ...runtime }).default
+}
+
+export function useMDX(code: string) {
+  const MDXComponent = useMDXComponent(code)
   return <MDXComponent components={components as any} />
 }
