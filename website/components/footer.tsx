@@ -30,30 +30,25 @@ const links: FooterLinkProps[] = [
 ]
 
 export const Footer = () => (
-  <Box as="footer">
-    <Section
-      as="div"
-      justifyItems="space-between"
-      flexDirection={{ base: "column", md: "row" }}
-      gap="4"
-      my="20"
-    >
-      <span dangerouslySetInnerHTML={{ __html: siteConfig.copyright }} />
-      <span>
-        A project by{" "}
-        <a
-          href="https://chakra-ui.com"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Chakra Systems
-        </a>
-      </span>
-      <Stack mt="4" direction="row" gap="3" justify="center">
-        {links.map((link) => (
-          <FooterLink key={link.href} {...link} />
-        ))}
-      </Stack>
-    </Section>
-  </Box>
+  <Section
+    as="footer"
+    display="flex"
+    justifyContent="space-between"
+    flexDirection={{ base: "column", md: "row" }}
+    gap="4"
+    py="20"
+  >
+    <span dangerouslySetInnerHTML={{ __html: siteConfig.copyright }} />
+    <span>
+      A project by{" "}
+      <a href="https://chakra-ui.com" target="_blank" rel="noopener noreferrer">
+        Chakra Systems
+      </a>
+    </span>
+    <Stack mt="4" direction="row" gap="3" justify="center">
+      {links.map((link) => (
+        <FooterLink key={link.href} {...link} />
+      ))}
+    </Stack>
+  </Section>
 )

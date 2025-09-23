@@ -23,16 +23,37 @@ function test(href: string, asPath: string) {
   return a[a.length - 1] === b[b.length - 1]
 }
 
-function DocLink(props: DocLinkProps) {
-  const { asPath } = useRouter()
+const StyledLink = styled(Link, {
+  base: {
+    display: "inline-block",
+    paddingY: "1",
+    transition: "color 0.2s ease-in-out",
+    textStyle: "sm",
+    _hover: {
+      textDecoration: "underline",
+      textUnderlineOffset: "2px",
+    },
+    _currentPage: {
+      textDecoration: "underline",
+      textUnderlineOffset: "2px",
+      fontWeight: "bold",
+    },
+  },
+})
+
+const DocLink = (props: DocLinkProps) => {
+  const router = useRouter()
   const { href, children } = props
-  const current = test(href.toString(), asPath)
+  const current = test(href.toString(), router.asPath)
   return (
-    <Box key={asPath} as="li" fontSize="sm">
-      <Link href={href.toString()} aria-current={current ? "page" : undefined}>
+    <li>
+      <StyledLink
+        href={href.toString()}
+        aria-current={current ? "page" : undefined}
+      >
         {children}
-      </Link>
-    </Box>
+      </StyledLink>
+    </li>
   )
 }
 
@@ -57,7 +78,7 @@ export function Sidebar() {
                   </styled.h5>
                 </HStack>
 
-                <Stack as="ul" listStyleType="none" gap="2">
+                <Stack as="ul" listStyleType="none" gap="0.5">
                   {item.items.map((subItem, index) => {
                     const href = formatUrl(item.id, subItem.id, framework)
                     if (subItem.type === "doc") {

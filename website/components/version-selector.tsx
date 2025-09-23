@@ -5,11 +5,15 @@ import { Icon } from "components/ui/icon"
 import Link from "next/link"
 import { useId } from "react"
 import { HiChevronDown } from "react-icons/hi"
+import { css } from "styled-system/css"
 import { Box, HStack, Stack, styled } from "styled-system/jsx"
 
 export const VersionSelector = () => {
   const service = useMachine(menu.machine, {
     id: useId(),
+    positioning: {
+      strategy: "fixed",
+    },
   })
 
   const api = menu.connect(service, normalizeProps)
@@ -20,8 +24,7 @@ export const VersionSelector = () => {
         display={{ base: "none", sm: "flex" }}
         alignItems="center"
         gap="1"
-        bg={{ base: "orange.100", _dark: "orange.900" }}
-        color={{ base: "orange.800", _dark: "orange.500" }}
+        borderWidth="1px"
         rounded="sm"
         fontSize="xs"
         px="2"
@@ -42,6 +45,12 @@ export const VersionSelector = () => {
               width="180px"
               zIndex="1000"
               fontSize="sm"
+              bg="bg"
+              padding="2"
+              isolation="isolate"
+              listStyleType="none"
+              boxShadow="md"
+              outline="0"
               {...api.getContentProps()}
             >
               {items.map((item) => (
@@ -49,6 +58,15 @@ export const VersionSelector = () => {
                   key={item.value}
                   href={item.value}
                   {...api.getItemProps({ value: item.value })}
+                  className={css({
+                    px: "0.5rem",
+                    py: "0.25rem",
+                    cursor: "pointer",
+                    _highlighted: {
+                      bg: "bg.primary.bold",
+                      color: "white",
+                    },
+                  })}
                 >
                   <HStack justify="space-between">
                     <Box>{item.tag}</Box>

@@ -8,7 +8,7 @@
     { title: "Automobiles", content: "Sample accordion content" },
     { title: "Aircraft", content: "Sample accordion content" },
   ]
-  
+
   const id = $props.id()
   const service = useMachine(accordion.machine, ({ id }))
   const api = $derived(accordion.connect(service, normalizeProps))

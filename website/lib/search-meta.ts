@@ -54,7 +54,8 @@ function getSearchMeta() {
         slug: params,
         hierarchy: {
           lvl1: title,
-          lvl2: item.lvl === 2 ? item.content : toc[index - 1]?.content ?? null,
+          lvl2:
+            item.lvl === 2 ? item.content : (toc[index - 1]?.content ?? null),
           lvl3: item.lvl === 3 ? item.content : null,
         },
       })

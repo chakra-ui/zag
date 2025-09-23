@@ -118,48 +118,59 @@ export default defineConfig({
                 _dark: "{colors.gray.700}",
               },
             },
-            "primary.subtle": {
-              value: "{colors.green.500}",
-            },
-            "primary.bold": {
-              value: {
-                _light: "{colors.green.600}",
-                _dark: "{colors.green.400}",
+
+            primary: {
+              subtle: {
+                value: "{colors.green.500}",
+              },
+              bold: {
+                value: {
+                  _light: "{colors.green.600}",
+                  _dark: "{colors.green.400}",
+                },
               },
             },
-            "secondary.subtle": {
-              value: "{colors.black}",
-            },
-            "secondary.bold": {
-              value: {
-                _light: "{colors.gray.700}",
-                _dark: "{colors.gray.900}",
+
+            secondary: {
+              subtle: { value: "{colors.black}" },
+              bold: {
+                value: {
+                  _light: "{colors.gray.700}",
+                  _dark: "{colors.gray.900}",
+                },
               },
             },
-            "tertiary.bold": {
-              value: {
-                _light: "{colors.green.100}",
-                _dark: "{colors.green.900}",
+
+            tertiary: {
+              bold: {
+                value: {
+                  _light: "{colors.green.100}",
+                  _dark: "{colors.green.900}",
+                },
+              },
+              subtle: {
+                value: {
+                  _light: "{colors.green.50}",
+                  _dark: "{colors.green.900}",
+                },
               },
             },
-            "tertiary.subtle": {
-              value: {
-                _light: "{colors.green.50}",
-                _dark: "{colors.green.900}",
+
+            code: {
+              block: {
+                value: {
+                  _light: "hsl(230, 1%, 98%)",
+                  _dark: "{colors.gray.900}",
+                },
+              },
+              inline: {
+                value: {
+                  _light: "rgba(0, 0, 0, 0.1)",
+                  _dark: "rgba(255, 255, 255, 0.1)",
+                },
               },
             },
-            "code.block": {
-              value: {
-                _light: "hsl(230, 1%, 98%)",
-                _dark: "{colors.gray.900}",
-              },
-            },
-            "code.inline": {
-              value: {
-                _light: "rgba(0, 0, 0, 0.1)",
-                _dark: "rgba(255, 255, 255, 0.1)",
-              },
-            },
+
             header: {
               value: {
                 _light: "rgba(255, 255, 255, 0.9)",
@@ -192,19 +203,21 @@ export default defineConfig({
                 _dark: "{colors.gray.400}",
               },
             },
-            "primary.bold": {
-              value: {
-                _light: "{colors.green.500}",
-                _dark: "{colors.green.400}",
-              },
-            },
             inverse: {
               value: { _light: "{colors.white}", _dark: "{colors.gray.800}" },
             },
-            "primary.subtle": {
-              value: {
-                _light: "{colors.green.600}",
-                _dark: "{colors.green.400}",
+            primary: {
+              bold: {
+                value: {
+                  _light: "{colors.green.500}",
+                  _dark: "{colors.green.400}",
+                },
+              },
+              subtle: {
+                value: {
+                  _light: "{colors.green.600}",
+                  _dark: "{colors.green.400}",
+                },
               },
             },
             badge: {
@@ -233,13 +246,15 @@ export default defineConfig({
                 _dark: "{colors.gray.700}",
               },
             },
-            "primary.subtle": {
-              value: "{colors.green.500}",
-            },
-            "primary.bold": {
-              value: {
-                _light: "{colors.green.600}",
-                _dark: "{colors.green.400}",
+            primary: {
+              subtle: {
+                value: "{colors.green.500}",
+              },
+              bold: {
+                value: {
+                  _light: "{colors.green.600}",
+                  _dark: "{colors.green.400}",
+                },
               },
             },
           },
@@ -385,6 +400,7 @@ export default defineConfig({
       "& ol:not([role]), & ul:not([role])": {
         marginY: "5",
         paddingLeft: "4",
+        listStyleType: "revert",
       },
       "& :is(h2, h3, h4)": {
         scrollMarginTop: "24",
@@ -393,7 +409,7 @@ export default defineConfig({
         },
         "& a:focus": { opacity: 1 },
       },
-      "&:is(p, li:not([role]))": {
+      "& :is(p, li:not([role]))": {
         lineHeight: "1.625",
       },
       "& p + p": {

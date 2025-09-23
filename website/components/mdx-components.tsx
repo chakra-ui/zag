@@ -103,7 +103,7 @@ const components: Record<string, FC<any>> = {
       <styled.li
         css={{
           "&::marker": {
-            color: "cyan.default",
+            color: "text.muted",
           },
         }}
         {...props}

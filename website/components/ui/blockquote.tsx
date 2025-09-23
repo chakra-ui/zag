@@ -10,7 +10,6 @@ export const Blockquote = styled("blockquote", {
     borderLeftColor: "border.primary.subtle",
     borderLeftWidth: "2px",
     rounded: "4px",
-    fontWeight: "semibold",
-    borderColor: "border-bold",
+    borderColor: "border.bold",
   },
 })

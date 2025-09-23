@@ -175,7 +175,7 @@ export default function Home() {
               favorite styling solution and get it matching your design system.
             </styled.p>
 
-            <styled.ul gap="5" mt="8" fontSize="lg" listStyleType="none">
+            <Stack as="ul" gap="5" mt="8" fontSize="lg" listStyleType="none">
               {[
                 "Install the machine you need",
                 "Consume the machine",
@@ -188,7 +188,7 @@ export default function Home() {
                   <span>{item}</span>
                 </styled.li>
               ))}
-            </styled.ul>
+            </Stack>
           </Box>
 
           <Center
@@ -210,7 +210,7 @@ export default function Home() {
               mx="auto"
               bg="bg.code.block"
               rounded="2xl"
-              shadow="base"
+              shadow="sm"
               height="full"
               position="relative"
             >
