@@ -3,7 +3,7 @@ import { DiGithubBadge } from "react-icons/di"
 import { IoLogoLinkedin, IoLogoTwitter } from "react-icons/io"
 import { MdEmail } from "react-icons/md"
 import siteConfig from "site.config"
-import { Box, Stack } from "styled-system/jsx"
+import { Stack } from "styled-system/jsx"
 import { FooterLink, type FooterLinkProps } from "./footer-link"
 
 const links: FooterLinkProps[] = [

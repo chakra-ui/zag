@@ -5,7 +5,7 @@ import Link from "next/link"
 import { BiSearch } from "react-icons/bi"
 import { GrReturn } from "react-icons/gr"
 import { HiDocument, HiHashtag } from "react-icons/hi"
-import { Box, HStack, styled } from "styled-system/jsx"
+import { Box, HStack, Stack, styled } from "styled-system/jsx"
 import { SearchTrigger } from "./search-trigger"
 
 export function Search() {
@@ -51,11 +51,7 @@ export function Search() {
                 Search the docs
               </styled.h2>
 
-              <styled.div
-                display="flex"
-                flexDirection="column"
-                {...combobox_api.getRootProps()}
-              >
+              <Stack gap="0" {...combobox_api.getRootProps()}>
                 <styled.div
                   height="64px"
                   display="flex"
@@ -102,7 +98,7 @@ export function Search() {
                         <styled.a
                           px="3"
                           py="1"
-                          _selected={{ bg: "primary.50" }}
+                          _selected={{ bg: "bg.primary.bold" }}
                           display="flex"
                           alignItems="center"
                           minHeight="14"
@@ -153,7 +149,7 @@ export function Search() {
                   <HStack>↑↓ Navigate</HStack>
                   <HStack>↵ Select</HStack>
                 </HStack>
-              </styled.div>
+              </Stack>
               <div />
             </styled.div>
           </styled.div>

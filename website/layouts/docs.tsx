@@ -1,14 +1,13 @@
 import { FrameworkSelect } from "components/framework-select"
 import { MdxFooter } from "components/mdx-footer"
+import { EditPageLink } from "components/mdx/edit-page-link"
 import { Search } from "components/search-dialog"
 import { Sidebar } from "components/sidebar"
 import { SkipNavLink } from "components/skip-nav"
 import { TableOfContents } from "components/toc"
 import { TopNavigation } from "components/top-navigation"
-import { Icon } from "components/ui/icon"
 import React from "react"
-import { HiPencilAlt } from "react-icons/hi"
-import { Box, HStack, Spacer, styled } from "styled-system/jsx"
+import { Box, Spacer, styled } from "styled-system/jsx"
 
 type DocsLayoutProps = {
   children: React.ReactNode
@@ -65,17 +64,9 @@ export default function DocsLayout(props: DocsLayoutProps) {
           >
             <Box mr={{ xl: "15.5rem" }}>
               {children}
-              <HStack
-                as="a"
-                display="inline-flex"
-                href={doc.editUrl}
-                textStyle="a"
-                fontSize="sm"
-                mt="14"
-              >
-                <Icon as={HiPencilAlt} />
-                <p>Edit this page on GitHub</p>
-              </HStack>
+              <EditPageLink href={doc.editUrl}>
+                Edit this page on GitHub
+              </EditPageLink>
               <MdxFooter />
             </Box>
           </Box>
