@@ -14,39 +14,7 @@ export default defineConfig({
   theme: {
     extend: {
       tokens: {
-        fonts: {
-          heading: { value: "'Spline Sans', sans-serif" },
-          body: { value: "'Spline Sans', sans-serif" },
-          mono: {
-            value:
-              "ui-monospace, SFMono-Regular, 'SF Mono', Consolas, 'Liberation Mono', Menlo, monospace",
-          },
-        },
         colors: {
-          primary: {
-            50: { value: "#f0fff4" },
-            100: { value: "#c6f6d5" },
-            200: { value: "#9ae6b4" },
-            300: { value: "#68d391" },
-            400: { value: "#48bb78" },
-            500: { value: "#38a169" },
-            600: { value: "#2f855a" },
-            700: { value: "#276749" },
-            800: { value: "#22543d" },
-            900: { value: "#1a202c" },
-          },
-          green: {
-            50: { value: "#f0fff4" },
-            100: { value: "#c6f6d5" },
-            200: { value: "#9ae6b4" },
-            300: { value: "#68d391" },
-            400: { value: "#48bb78" },
-            500: { value: "#38a169" },
-            600: { value: "#2f855a" },
-            700: { value: "#276749" },
-            800: { value: "#22543d" },
-            900: { value: "#1a202c" },
-          },
           gray: {
             50: { value: "#f7fafc" },
             100: { value: "#edf2f7" },
@@ -59,41 +27,25 @@ export default defineConfig({
             800: { value: "#1a202c" },
             900: { value: "#171923" },
           },
-          orange: {
-            50: { value: "#FFFAF0" },
-            100: { value: "#FEEBC8" },
-            200: { value: "#FBD38D" },
-            300: { value: "#F6AD55" },
-            400: { value: "#ED8936" },
-            500: { value: "#DD6B20" },
-            600: { value: "#C05621" },
-            700: { value: "#9C4221" },
-            800: { value: "#7B341E" },
-            900: { value: "#652B19" },
+          green: {
+            50: { value: "#F0FFF4" },
+            100: { value: "#C6F6D5" },
+            200: { value: "#9AE6B4" },
+            300: { value: "#68D391" },
+            400: { value: "#48BB78" },
+            500: { value: "#38A169" },
+            600: { value: "#2F855A" },
+            700: { value: "#276749" },
+            800: { value: "#22543D" },
+            900: { value: "#1C4532" },
           },
-          purple: {
-            50: { value: "#FAF5FF" },
-            100: { value: "#E9D8FD" },
-            200: { value: "#D6BCFA" },
-            300: { value: "#B794F4" },
-            400: { value: "#9F7AEA" },
-            500: { value: "#805AD5" },
-            600: { value: "#6B46C1" },
-            700: { value: "#553C9A" },
-            800: { value: "#44337A" },
-            900: { value: "#322659" },
-          },
-          pink: {
-            50: { value: "#FFF5F7" },
-            100: { value: "#FED7E2" },
-            200: { value: "#FBB6CE" },
-            300: { value: "#F687B3" },
-            400: { value: "#ED64A6" },
-            500: { value: "#D53F8C" },
-            600: { value: "#B83280" },
-            700: { value: "#97266D" },
-            800: { value: "#702459" },
-            900: { value: "#521B41" },
+        },
+        fonts: {
+          heading: { value: "'Spline Sans', sans-serif" },
+          body: { value: "'Spline Sans', sans-serif" },
+          mono: {
+            value:
+              "ui-monospace, SFMono-Regular, 'SF Mono', Consolas, 'Liberation Mono', Menlo, monospace",
           },
         },
       },
@@ -165,22 +117,16 @@ export default defineConfig({
               },
               inline: {
                 value: {
-                  _light: "rgba(0, 0, 0, 0.1)",
-                  _dark: "rgba(255, 255, 255, 0.1)",
+                  _light: "{colors.blackAlpha.100}",
+                  _dark: "{colors.whiteAlpha.100}",
                 },
               },
             },
 
             header: {
               value: {
-                _light: "rgba(255, 255, 255, 0.9)",
+                _light: "{colors.whiteAlpha.900}",
                 _dark: "rgba(26, 32, 44, 0.92)",
-              },
-            },
-            badge: {
-              value: {
-                _light: "{colors.orange.100}",
-                _dark: "{colors.orange.900}",
               },
             },
           },
@@ -218,12 +164,6 @@ export default defineConfig({
                   _light: "{colors.green.600}",
                   _dark: "{colors.green.400}",
                 },
-              },
-            },
-            badge: {
-              value: {
-                _light: "{colors.orange.700}",
-                _dark: "{colors.orange.300}",
               },
             },
           },

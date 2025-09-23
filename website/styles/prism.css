@@ -20,8 +20,8 @@
     font-size: 13px;
   }
 
-  [data-theme="dark"] code[class*="language-"],
-  [data-theme="dark"] pre[class*="language-"] {
+  .dark code[class*="language-"],
+  .dark pre[class*="language-"] {
     background: #171923;
   }
 
@@ -34,9 +34,9 @@
   }
 
   /* Selection */
-  [data-theme="dark"] code[class*="language-"]::selection,
-  [data-theme="dark"] code[class*="language-"] *::selection,
-  [data-theme="dark"] pre[class*="language-"] *::selection {
+  .dark code[class*="language-"]::selection,
+  .dark code[class*="language-"] *::selection,
+  .dark pre[class*="language-"] *::selection {
     background: var(--colors-gray-700);
   }
 
@@ -80,11 +80,11 @@
     color: hsl(230, 8%, 24%);
   }
 
-  [data-theme="dark"] code[class*="language-"],
-  [data-theme="dark"] pre[class*="language-"],
-  [data-theme="dark"] .token.doctype,
-  [data-theme="dark"] .token.punctuation,
-  [data-theme="dark"] .token.entity {
+  .dark code[class*="language-"],
+  .dark pre[class*="language-"],
+  .dark .token.doctype,
+  .dark .token.punctuation,
+  .dark .token.entity {
     color: white;
   }
 
@@ -136,11 +136,8 @@
     color: hsl(230, 8%, 24%);
   }
 
-  [data-theme="dark"] .token.attr-value > .token.punctuation.attr-equals,
-  [data-theme="dark"]
-    .token.special-attr
-    > .token.attr-value
-    > .token.value.css {
+  .dark .token.attr-value > .token.punctuation.attr-equals,
+  .dark .token.special-attr > .token.attr-value > .token.value.css {
     color: var(--colors-gray-200);
   }
 
@@ -153,7 +150,7 @@
     color: hsl(230, 8%, 24%);
   }
 
-  [data-theme="dark"] .language-css .token.property {
+  .dark .language-css .token.property {
     color: white;
   }
 
@@ -295,7 +292,7 @@
     border-left: 2px solid var(--colors-green-400);
   }
 
-  [data-theme="dark"] .highlight-line.highlight-line {
+  .dark .highlight-line.highlight-line {
     background: hsla(230, 8%, 24%, 0.2);
     border-left: 2px solid var(--colors-green-400);
   }

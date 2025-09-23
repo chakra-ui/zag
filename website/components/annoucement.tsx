@@ -8,7 +8,6 @@ const StyledLink = styled(Link, {
     alignSelf: "flex-start",
     display: "inline-flex",
     alignItems: "center",
-    fontSize: "sm",
     gap: "2.5",
     px: "4",
     py: "2",
