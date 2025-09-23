@@ -25,7 +25,7 @@ export function TableOfContents({
         {title}
       </styled.h5>
 
-      <Stack as="ul" fontSize="0.8rem" listStyleType="none" mt="3">
+      <Stack as="ul" fontSize="0.8rem" listStyleType="none" mt="3" gap="2">
         {data.map((item, index) => (
           <styled.li
             data-selected={activeId === item.slug || undefined}

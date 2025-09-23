@@ -78,7 +78,7 @@ export function Sidebar() {
                   </styled.h5>
                 </HStack>
 
-                <Stack as="ul" listStyleType="none" gap="0.5">
+                <Stack as="ul" listStyleType="none" gap="0">
                   {item.items.map((subItem, index) => {
                     const href = formatUrl(item.id, subItem.id, framework)
                     if (subItem.type === "doc") {
