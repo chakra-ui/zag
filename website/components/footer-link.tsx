@@ -1,4 +1,3 @@
-import React from "react"
 import { styled } from "styled-system/jsx"
 
 export type FooterLinkProps = {
@@ -19,7 +18,7 @@ export function FooterLink(props: FooterLinkProps) {
       href={href}
       aria-label={label}
       target="_blank"
-      rel="noopener noreferrer"
+      rel="noreferrer"
       color="gray.400"
       _hover={{ color: "gray.500" }}
     >

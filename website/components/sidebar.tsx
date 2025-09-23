@@ -2,9 +2,8 @@ import { Link } from "components/ui/link"
 import { formatUrl } from "lib/pagination-utils"
 import { type LinkProps } from "next/link"
 import { useRouter } from "next/router"
-import React from "react"
 import sidebar from "sidebar.config"
-import { Box, Flex, HStack, Stack, styled } from "styled-system/jsx"
+import { HStack, Stack, styled } from "styled-system/jsx"
 import { useFramework } from "./framework"
 import { Icon } from "./ui/icon"
 
@@ -67,7 +66,7 @@ export function Sidebar() {
           if (item.type === "category") {
             return (
               <li className="sidebar__category" key={item.id}>
-                <HStack mb="3" color="green.500">
+                <HStack mb="3" color="green.500" gap="2">
                   <Icon as={item.icon} />
                   <styled.h5
                     fontSize="xs"
@@ -111,11 +110,11 @@ export function Sidebar() {
                               ms="2"
                               px="1"
                               py="0.5"
-                              rounded="sm"
+                              rounded="xs"
                               fontSize="xs"
                               fontWeight="medium"
                               _dark={{
-                                bg: "purple.900",
+                                bg: "purple.900/50",
                                 color: "purple.200",
                                 borderColor: "purple.800",
                               }}

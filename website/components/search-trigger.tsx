@@ -14,18 +14,18 @@ export const SearchTrigger = forwardRef<HTMLButtonElement, any>(
         display="flex"
         alignItems="center"
         gap="2"
-        bg="bg.subtle"
+        bg="bg"
         fontSize="sm"
         py="2"
         pl="2"
         pr="3"
         borderWidth="1px"
-        borderColor="border"
+        borderColor="border.bold"
         color="gray.500"
         cursor="pointer"
-        _hover={{ bg: "bg.muted" }}
+        rounded="sm"
       >
-        <Icon as={HiOutlineSearch} fontSize="1em" />
+        <Icon as={HiOutlineSearch} fontSize="md" />
         Quick search...
         <styled.span ml="auto" flex="none" fontWeight="semibold" fontSize="xs">
           ⌘K

@@ -21,6 +21,7 @@ const StyledLink = styled("a", {
     py: "1",
     fontSize: "sm",
     cursor: "pointer",
+    bg: "bg",
   },
 })
 

@@ -26,7 +26,7 @@ export const PropTable = (props: ApiTableProps) => {
       listStylePosition="inside"
     >
       {entries.map(([key, item], index) => (
-        <Stack align="flex-start" gap="2" as="li" key={index} py="8">
+        <Stack align="flex-start" gap="2" as="li" key={index} py="6">
           <Code className="prose" whiteSpace="pre-wrap">
             {key}
           </Code>

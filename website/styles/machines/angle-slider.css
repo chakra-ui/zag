@@ -35,6 +35,7 @@
     pointer-events: none;
     height: 100%;
     width: 3px;
+    outline: 0;
 
     &::before {
       content: "";

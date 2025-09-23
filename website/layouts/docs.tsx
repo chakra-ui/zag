@@ -6,7 +6,6 @@ import { Sidebar } from "components/sidebar"
 import { SkipNavLink } from "components/skip-nav"
 import { TableOfContents } from "components/toc"
 import { TopNavigation } from "components/top-navigation"
-import React from "react"
 import { Box, Spacer, styled } from "styled-system/jsx"
 
 type DocsLayoutProps = {
