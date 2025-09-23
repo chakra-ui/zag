@@ -37,6 +37,10 @@
     background: var(--colors-bg-bold);
     display: flex;
     justify-content: center;
+
+    &:active {
+      filter: brightness(0.9);
+    }
   }
 
   [data-scope="number-input"]:is(
@@ -44,5 +48,6 @@
       [data-part="decrement-trigger"]
     )[data-disabled] {
     opacity: 0.5;
+    filter: grayscale(100%);
   }
 }

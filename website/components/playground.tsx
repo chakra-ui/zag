@@ -177,7 +177,7 @@ export function Playground<T extends object>(props: PlaygroundProps<T>) {
                     type="number"
                     maxWidth="6ch"
                     borderWidth="1px"
-                    px="2"
+                    ps="2"
                     bg="bg.subtle"
                     defaultValue={value as number}
                     onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
