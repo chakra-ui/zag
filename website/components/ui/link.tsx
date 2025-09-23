@@ -6,12 +6,8 @@ export const Link = styled(NextLink, {
     cursor: "pointer",
     textDecoration: "none",
     outline: "none",
-    transition: "all 0.2s",
     _hover: {
       textDecoration: "underline",
-    },
-    _focus: {
-      boxShadow: "outline",
     },
   },
 })

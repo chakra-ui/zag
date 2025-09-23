@@ -26,7 +26,6 @@ const StyledLink = styled(Link, {
   base: {
     display: "inline-block",
     paddingY: "1",
-    transition: "color 0.2s ease-in-out",
     textStyle: "sm",
     _hover: {
       textDecoration: "underline",
