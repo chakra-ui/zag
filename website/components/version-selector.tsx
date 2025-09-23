@@ -32,6 +32,8 @@ export const VersionSelector = () => {
         letterSpacing="wider"
         fontWeight="semibold"
         cursor="pointer"
+        bg="bg"
+        color="text"
         {...api.getTriggerProps()}
       >
         {items[0].label}

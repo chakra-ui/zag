@@ -142,23 +142,16 @@ export function Search() {
 
                 <HStack
                   px="4"
-                  alignItems="center"
                   userSelect="none"
                   minHeight="8"
                   fontSize="xs"
                   lineHeight="1"
-                  color="gray.500"
+                  color="text.muted"
                   gap="5"
                   borderTopWidth={combobox_api.open ? "1px" : undefined}
                 >
-                  <HStack gap="2">
-                    <styled.span>↑↓</styled.span>
-                    <styled.span>Select</styled.span>
-                  </HStack>
-                  <HStack gap="2">
-                    <styled.span>↵</styled.span>
-                    <styled.span>Open</styled.span>
-                  </HStack>
+                  <HStack>↑↓ Navigate</HStack>
+                  <HStack>↵ Select</HStack>
                 </HStack>
               </styled.div>
               <div />
