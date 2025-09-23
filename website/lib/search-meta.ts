@@ -17,9 +17,9 @@ export type SearchMetaItem = {
 export type SearchMetaResult = SearchMetaItem[]
 
 type TOC = {
-  title: string
-  url: string
-  items: TOC[]
+  content: string
+  slug: string
+  lvl: 1 | 2 | 3
 }
 
 function getSearchMeta() {
@@ -44,39 +44,24 @@ function getSearchMeta() {
       },
     })
 
-    // Process TOC items recursively
-    const processTocItems = (
-      items: TOC[],
-      level: number = 2,
-      parentTitle?: string,
-    ) => {
-      items.forEach((item) => {
+    // The TOC is now already flattened by our transformation in velite.config.ts
+    if (toc && Array.isArray(toc)) {
+      toc.forEach((item: TOC, index: number) => {
         result.push({
-          content: item.title,
-          id: doc._id + item.url,
-          type: `lvl${Math.min(level, 3)}` as any,
-          url: slug + item.url,
+          content: item.content,
+          id: doc._id + item.slug,
+          type: `lvl${item.lvl}` as any,
+          url: slug + `#${item.slug}`,
           pathname: doc.pathname || "",
           slug: params,
           hierarchy: {
             lvl1: title,
-            lvl2: level === 2 ? item.title : parentTitle,
-            lvl3: level === 3 ? item.title : null,
+            lvl2:
+              item.lvl === 2 ? item.content : (toc[index - 1]?.content ?? null),
+            lvl3: item.lvl === 3 ? item.content : null,
           },
         })
-
-        if (item.items && item.items.length > 0) {
-          processTocItems(
-            item.items,
-            level + 1,
-            level === 2 ? item.title : parentTitle,
-          )
-        }
       })
-    }
-
-    if (toc && Array.isArray(toc)) {
-      processTocItems(toc)
     }
   }
   return result
