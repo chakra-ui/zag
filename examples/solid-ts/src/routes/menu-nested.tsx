@@ -96,7 +96,7 @@ export default function Page() {
 
       <Toolbar>
         <StateVisualizer state={service} context={["currentPlacement", "highlightedValue"]} />
-        <StateVisualizer state={subService} computed={["isSubmenu"]} />
+        <StateVisualizer state={subService} />
         <StateVisualizer state={sub2Service} />
       </Toolbar>
     </>
