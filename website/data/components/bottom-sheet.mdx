@@ -62,6 +62,27 @@ bottom sheet machine in your project 🔥
 
 <CodeSnippet id="bottom-sheet/usage.mdx" />
 
+### Controlled bottom sheet
+
+To control the bottom sheet's open state, pass the `open` and `onOpenChange`
+properties.
+
+<CodeSnippet id="bottom-sheet/controlled.mdx" />
+
+### Listening for open state changes
+
+When the bottom sheet state changes, the `onOpenChange` callback is invoked.
+
+```jsx {3-7}
+const service = useMachine(bottomSheet.machine, {
+  id: useId(),
+  onOpenChange(details) {
+    // details => { open: boolean }
+    console.log("bottom sheet open:", details.open)
+  },
+})
+```
+
 ### Configuring snap points
 
 The bottom sheet supports customizable snap points, which determine the heights
