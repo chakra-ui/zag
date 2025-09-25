@@ -7,7 +7,13 @@ export function getScrollOffset(
 ): number {
   if (!element) return 0
   const styles = getComputedStyle(element)
-  const start = axis === "x" ? "Left" : "Top"
-  const end = axis === "x" ? "Right" : "Bottom"
-  return parseFloat(styles[`${prop}${start}`]) + parseFloat(styles[`${prop}${end}`])
+  const propAxis = axis === "x" ? "Inline" : "Block"
+
+  // Safari has a bug with `marginInlineEnd` in RTL layouts.
+  // As a workaround, we double the start value assuming symmetrical margins.
+  if (axis === "x" && prop === "margin") {
+    return parseFloat(styles[`${prop}InlineStart`]) * 2
+  }
+
+  return parseFloat(styles[`${prop}${propAxis}Start`]) + parseFloat(styles[`${prop}${propAxis}End`])
 }
