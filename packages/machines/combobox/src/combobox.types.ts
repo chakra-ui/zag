@@ -205,6 +205,12 @@ export interface ComboboxProps<T extends CollectionItem = CollectionItem>
    */
   allowCustomValue?: boolean | undefined
   /**
+   * Whether to always submit on Enter key press, even if popup is open.
+   * Useful for single-field autocomplete forms where Enter should submit the form.
+   * @default false
+   */
+  alwaysSubmitOnEnter?: boolean | undefined
+  /**
    * Whether to loop the keyboard navigation through the items
    * @default true
    */

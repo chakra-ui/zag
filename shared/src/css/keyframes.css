@@ -1,22 +1,18 @@
 @keyframes expandHeight {
   from {
-    opacity: 0.01;
-    height: 0;
+    height: var(--collapsed-height, 0);
   }
   to {
-    opacity: 1;
     height: var(--height);
   }
 }
 
 @keyframes collapseHeight {
   from {
-    opacity: 1;
     height: var(--height);
   }
   to {
-    opacity: 0.01;
-    height: 0;
+    height: var(--collapsed-height, 0);
   }
 }
 

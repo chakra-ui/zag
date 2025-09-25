@@ -1,5 +1,20 @@
 # @zag-js/date-utils
 
+## 1.24.2
+
+### Patch Changes
+
+- [#2717](https://github.com/chakra-ui/zag/pull/2717)
+  [`05bf37a`](https://github.com/chakra-ui/zag/commit/05bf37aeb332f3666aa8cb4d586481b7a60a9374) Thanks
+  [@colinlienard](https://github.com/colinlienard)! - Fix issue where quarter presets returns incorrect date
+
+- [`9181889`](https://github.com/chakra-ui/zag/commit/91818897e1e1e95b5ebc8b5ea9f73a66c2f96ed0) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix issue where year range picker doesn't show the hovered range
+
+## 1.24.1
+
+## 1.24.0
+
 ## 1.23.0
 
 ## 1.22.1

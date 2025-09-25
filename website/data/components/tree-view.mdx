@@ -108,11 +108,16 @@ By default, the tree view will expand or collapse when clicking the branch
 control. To control the expanded state of the tree view, use the `api.expand`
 and `api.collapse` methods.
 
+> **Note:** The array parameter contains individual node values/IDs, not paths.
+> All nodes specified in the array will be collapsed or expanded.
+
 ```tsx
-api.expand(["node_modules/pandacss"]) // expand a single node
+api.expand(["node_modules/zag-js"]) // expand a single node by its value/ID
+api.expand(["node_modules/zag-js", "node_modules/pandacss"]) // expand multiple nodes by their values/IDs
 api.expand() // expand all nodes
 
-api.collapse(["node_modules/pandacss"]) // collapse a single node
+api.collapse(["node_modules/@types"]) // collapse a single node by its value/ID
+api.collapse(["node_modules/@types", "node_modules/pandacss"]) // collapse multiple nodes by their values/IDs
 api.collapse() // collapse all nodes
 ```
 

@@ -1,4 +1,4 @@
-import type { Component } from "@/contentlayer"
+import type { Component } from ".velite"
 import { FrameworkProvider } from "components/framework"
 import { useMDX } from "components/mdx-components"
 import DocsLayout from "layouts/docs"

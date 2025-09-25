@@ -1,5 +1,54 @@
 # @zag-js/date-picker
 
+## 1.24.2
+
+### Patch Changes
+
+- [`9181889`](https://github.com/chakra-ui/zag/commit/91818897e1e1e95b5ebc8b5ea9f73a66c2f96ed0) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix issue where year range picker doesn't show the hovered range
+
+- Updated dependencies [[`05bf37a`](https://github.com/chakra-ui/zag/commit/05bf37aeb332f3666aa8cb4d586481b7a60a9374),
+  [`9181889`](https://github.com/chakra-ui/zag/commit/91818897e1e1e95b5ebc8b5ea9f73a66c2f96ed0)]:
+  - @zag-js/date-utils@1.24.2
+  - @zag-js/anatomy@1.24.2
+  - @zag-js/core@1.24.2
+  - @zag-js/types@1.24.2
+  - @zag-js/utils@1.24.2
+  - @zag-js/dismissable@1.24.2
+  - @zag-js/dom-query@1.24.2
+  - @zag-js/live-region@1.24.2
+  - @zag-js/popper@1.24.2
+
+## 1.24.1
+
+### Patch Changes
+
+- Updated dependencies [[`ab0d4f7`](https://github.com/chakra-ui/zag/commit/ab0d4f73d6ca0571cb09ebad5bf724fe81e94ef8)]:
+  - @zag-js/core@1.24.1
+  - @zag-js/anatomy@1.24.1
+  - @zag-js/types@1.24.1
+  - @zag-js/utils@1.24.1
+  - @zag-js/date-utils@1.24.1
+  - @zag-js/dismissable@1.24.1
+  - @zag-js/dom-query@1.24.1
+  - @zag-js/live-region@1.24.1
+  - @zag-js/popper@1.24.1
+
+## 1.24.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.24.0
+  - @zag-js/core@1.24.0
+  - @zag-js/types@1.24.0
+  - @zag-js/utils@1.24.0
+  - @zag-js/date-utils@1.24.0
+  - @zag-js/dismissable@1.24.0
+  - @zag-js/dom-query@1.24.0
+  - @zag-js/live-region@1.24.0
+  - @zag-js/popper@1.24.0
+
 ## 1.23.0
 
 ### Minor Changes

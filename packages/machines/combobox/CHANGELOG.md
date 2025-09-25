@@ -1,5 +1,57 @@
 # @zag-js/combobox
 
+## 1.24.2
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.24.2
+  - @zag-js/core@1.24.2
+  - @zag-js/types@1.24.2
+  - @zag-js/aria-hidden@1.24.2
+  - @zag-js/collection@1.24.2
+  - @zag-js/utils@1.24.2
+  - @zag-js/dismissable@1.24.2
+  - @zag-js/dom-query@1.24.2
+  - @zag-js/popper@1.24.2
+
+## 1.24.1
+
+### Patch Changes
+
+- Updated dependencies [[`ab0d4f7`](https://github.com/chakra-ui/zag/commit/ab0d4f73d6ca0571cb09ebad5bf724fe81e94ef8)]:
+  - @zag-js/core@1.24.1
+  - @zag-js/anatomy@1.24.1
+  - @zag-js/types@1.24.1
+  - @zag-js/aria-hidden@1.24.1
+  - @zag-js/collection@1.24.1
+  - @zag-js/utils@1.24.1
+  - @zag-js/dismissable@1.24.1
+  - @zag-js/dom-query@1.24.1
+  - @zag-js/popper@1.24.1
+
+## 1.24.0
+
+### Minor Changes
+
+- [`cd88929`](https://github.com/chakra-ui/zag/commit/cd88929c596bedf21f99dbb39d8a8163f68499a5) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Add `alwaysSubmitOnEnter` prop to allow bypassing the default
+  two-step behavior (Enter to close combobox, then Enter to submit form) and instead submit the form immediately on
+  Enter press. This is useful for single-field autocomplete forms where Enter should submit the form directly.
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.24.0
+  - @zag-js/core@1.24.0
+  - @zag-js/types@1.24.0
+  - @zag-js/aria-hidden@1.24.0
+  - @zag-js/collection@1.24.0
+  - @zag-js/utils@1.24.0
+  - @zag-js/dismissable@1.24.0
+  - @zag-js/dom-query@1.24.0
+  - @zag-js/popper@1.24.0
+
 ## 1.23.0
 
 ### Minor Changes

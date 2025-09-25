@@ -152,5 +152,4 @@ function svelte(Prism) {
 
 refractor.register(svelte)
 
-const svelteGenerator = rehypePrismGenerator(refractor) as any
-export default svelteGenerator
+export const rehypeSvelte = rehypePrismGenerator(refractor) as any

@@ -1,5 +1,48 @@
 # @zag-js/editable
 
+## 1.24.2
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.24.2
+  - @zag-js/core@1.24.2
+  - @zag-js/types@1.24.2
+  - @zag-js/utils@1.24.2
+  - @zag-js/dom-query@1.24.2
+  - @zag-js/interact-outside@1.24.2
+
+## 1.24.1
+
+### Patch Changes
+
+- Updated dependencies [[`ab0d4f7`](https://github.com/chakra-ui/zag/commit/ab0d4f73d6ca0571cb09ebad5bf724fe81e94ef8)]:
+  - @zag-js/core@1.24.1
+  - @zag-js/anatomy@1.24.1
+  - @zag-js/types@1.24.1
+  - @zag-js/utils@1.24.1
+  - @zag-js/dom-query@1.24.1
+  - @zag-js/interact-outside@1.24.1
+
+## 1.24.0
+
+### Patch Changes
+
+- [`90e870a`](https://github.com/chakra-ui/zag/commit/90e870a12ea933ca770ca1b2d380fbc912bb90f7) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Allow text selection in editable preview when `autoResize` is
+  enabled
+
+  Previously, when `autoResize` was set to `true`, the preview element had `userSelect: "none"` applied, preventing
+  users from selecting text. This has been fixed by removing the `userSelect` style property.
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.24.0
+  - @zag-js/core@1.24.0
+  - @zag-js/types@1.24.0
+  - @zag-js/utils@1.24.0
+  - @zag-js/dom-query@1.24.0
+  - @zag-js/interact-outside@1.24.0
+
 ## 1.23.0
 
 ### Patch Changes

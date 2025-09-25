@@ -1,5 +1,5 @@
 {
-  "extends": "@tsconfig/svelte/tsconfig.json",
+  "extends": "./.svelte-kit/tsconfig.json",
   "compilerOptions": {
     "target": "ESNext",
     "useDefineForClassFields": true,
@@ -13,13 +13,8 @@
      */
     "allowJs": true,
     "checkJs": true,
-    "isolatedModules": true,
-    "baseUrl": ".",
-    "paths": {
-      "@zag-js/*": ["../../node_modules/@zag-js/*"],
-      "$lib/*": ["./src/lib/*"],
-    },
+    "isolatedModules": true
   },
   "include": ["src/**/*.ts", "src/**/*.js", "src/**/*.svelte"],
-  "references": [{ "path": "./tsconfig.node.json" }],
+  "references": [{ "path": "./tsconfig.node.json" }]
 }

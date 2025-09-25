@@ -1,4 +1,4 @@
-import { contains, dataAttr, isSelfTarget, visuallyHiddenStyle } from "@zag-js/dom-query"
+import { contains, dataAttr, getEventTarget, visuallyHiddenStyle } from "@zag-js/dom-query"
 import { getFileEntries } from "@zag-js/file-utils"
 import { formatBytes } from "@zag-js/i18n-utils"
 import { type NormalizeProps, type PropTypes } from "@zag-js/types"
@@ -94,7 +94,7 @@ export function connect<T extends PropTypes>(
         onKeyDown(event) {
           if (disabled) return
           if (event.defaultPrevented) return
-          if (!isSelfTarget(event)) return
+          if (event.currentTarget !== getEventTarget(event)) return
           if (props.disableClick) return
           if (event.key !== "Enter" && event.key !== " ") return
           send({ type: "DROPZONE.CLICK", src: "keydown" })
@@ -104,7 +104,7 @@ export function connect<T extends PropTypes>(
           if (event.defaultPrevented) return
           if (props.disableClick) return
           // ensure it's the dropzone that's actually clicked
-          if (!isSelfTarget(event)) return
+          if (event.currentTarget !== getEventTarget(event)) return
           // prevent opening the file dialog when clicking on the label (to avoid double opening)
           if (event.currentTarget.localName === "label") {
             event.preventDefault()
@@ -171,7 +171,6 @@ export function connect<T extends PropTypes>(
           // if trigger is wrapped within the dropzone, stop propagation to avoid double opening
           if (contains(dom.getDropzoneEl(scope), event.currentTarget)) {
             event.stopPropagation()
-            return
           }
           send({ type: "OPEN" })
         },

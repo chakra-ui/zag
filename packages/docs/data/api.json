@@ -172,6 +172,18 @@
         "type": "boolean",
         "description": "Whether the list is loading."
       },
+      "sorting": {
+        "type": "boolean",
+        "description": "Whether the list is sorting."
+      },
+      "empty": {
+        "type": "boolean",
+        "description": "Whether the list is empty."
+      },
+      "hasMore": {
+        "type": "boolean",
+        "description": "Whether there are more items to load."
+      },
       "error": {
         "type": "any",
         "description": "The error instance returned by the last fetch."
@@ -195,6 +207,10 @@
       "setFilterText": {
         "type": "(filterText: string) => void",
         "description": "Function to set the filter text"
+      },
+      "clearFilter": {
+        "type": "VoidFunction",
+        "description": "Function to clear the filter text"
       }
     },
     "context": {
@@ -1667,6 +1683,10 @@
         "type": "(event: KeyboardEvent) => void",
         "description": "Function called when the escape key is pressed"
       },
+      "onRequestDismiss": {
+        "type": "(event: LayerDismissEvent) => void",
+        "description": "Function called when this layer is closed due to a parent layer being closed"
+      },
       "onPointerDownOutside": {
         "type": "(event: PointerDownOutsideEvent) => void",
         "description": "Function called when the pointer is pressed down outside the component"
@@ -1870,7 +1890,7 @@
         "description": "Function to open the file dialog"
       },
       "deleteFile": {
-        "type": "(file: File) => void",
+        "type": "(file: File, type?: ItemType) => void",
         "description": "Function to delete the file from the list"
       },
       "acceptedFiles": {
@@ -2235,6 +2255,10 @@
         "description": "The duration from when the mouse leaves the trigger or content until the hover card closes.",
         "defaultValue": "300"
       },
+      "disabled": {
+        "type": "boolean",
+        "description": "Whether the hover card is disabled"
+      },
       "open": {
         "type": "boolean",
         "description": "The controlled open state of the hover card"
@@ -2342,6 +2366,11 @@
       }
     },
     "context": {
+      "orientation": {
+        "type": "\"horizontal\" | \"vertical\"",
+        "description": "The orientation of the listbox.",
+        "defaultValue": "\"vertical\""
+      },
       "collection": {
         "type": "GridCollection<T>",
         "description": "The item collection"
@@ -2425,11 +2454,6 @@
       "getRootNode": {
         "type": "() => ShadowRoot | Node | Document",
         "description": "A root node to correctly resolve document in custom environments. E.x.: Iframes, Electron."
-      },
-      "orientation": {
-        "type": "\"horizontal\" | \"vertical\"",
-        "description": "The orientation of the element.",
-        "defaultValue": "\"horizontal\""
       }
     }
   },
@@ -2452,11 +2476,11 @@
         "description": "Function to set the highlighted menuitem"
       },
       "setParent": {
-        "type": "(parent: MenuService) => void",
+        "type": "(parent: ParentMenuService) => void",
         "description": "Function to register a parent menu. This is used for submenus"
       },
       "setChild": {
-        "type": "(child: MenuService) => void",
+        "type": "(child: ChildMenuService) => void",
         "description": "Function to register a child menu. This is used for submenus"
       },
       "reposition": {
@@ -2562,6 +2586,10 @@
         "type": "(event: KeyboardEvent) => void",
         "description": "Function called when the escape key is pressed"
       },
+      "onRequestDismiss": {
+        "type": "(event: LayerDismissEvent) => void",
+        "description": "Function called when this layer is closed due to a parent layer being closed"
+      },
       "onPointerDownOutside": {
         "type": "(event: PointerDownOutsideEvent) => void",
         "description": "Function called when the pointer is pressed down outside the component"
@@ -2605,7 +2633,7 @@
     },
     "context": {
       "ids": {
-        "type": "Partial<{ root: string; list: string; item: string; indicator: string; trigger: string; content: string; viewport: string; }>",
+        "type": "Partial<{ root: string; list: string; item: string; indicator: string; trigger: (value: string) => string; content: (value: string) => string; viewport: string; }>",
         "description": "The ids of the elements in the machine."
       },
       "value": {
@@ -3284,6 +3312,10 @@
       "onEscapeKeyDown": {
         "type": "(event: KeyboardEvent) => void",
         "description": "Function called when the escape key is pressed"
+      },
+      "onRequestDismiss": {
+        "type": "(event: LayerDismissEvent) => void",
+        "description": "Function called when this layer is closed due to a parent layer being closed"
       },
       "onPointerDownOutside": {
         "type": "(event: PointerDownOutsideEvent) => void",
@@ -4572,7 +4604,7 @@
     },
     "context": {
       "ids": {
-        "type": "Partial<{ root: string; trigger: string; list: string; content: string; indicator: string; }>",
+        "type": "Partial<{ root: string; trigger: (value: string) => string; list: string; content: (value: string) => string; indicator: string; }>",
         "description": "The ids of the elements in the tabs. Useful for composition."
       },
       "translations": {
@@ -5137,12 +5169,12 @@
       "openDelay": {
         "type": "number",
         "description": "The open delay of the tooltip.",
-        "defaultValue": "1000"
+        "defaultValue": "400"
       },
       "closeDelay": {
         "type": "number",
         "description": "The close delay of the tooltip.",
-        "defaultValue": "500"
+        "defaultValue": "150"
       },
       "closeOnPointerDown": {
         "type": "boolean",

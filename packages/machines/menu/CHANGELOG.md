@@ -1,5 +1,51 @@
 # @zag-js/menu
 
+## 1.24.2
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.24.2
+  - @zag-js/core@1.24.2
+  - @zag-js/types@1.24.2
+  - @zag-js/utils@1.24.2
+  - @zag-js/dismissable@1.24.2
+  - @zag-js/dom-query@1.24.2
+  - @zag-js/popper@1.24.2
+  - @zag-js/rect-utils@1.24.2
+
+## 1.24.1
+
+### Patch Changes
+
+- Updated dependencies [[`ab0d4f7`](https://github.com/chakra-ui/zag/commit/ab0d4f73d6ca0571cb09ebad5bf724fe81e94ef8)]:
+  - @zag-js/core@1.24.1
+  - @zag-js/anatomy@1.24.1
+  - @zag-js/types@1.24.1
+  - @zag-js/utils@1.24.1
+  - @zag-js/dismissable@1.24.1
+  - @zag-js/dom-query@1.24.1
+  - @zag-js/popper@1.24.1
+  - @zag-js/rect-utils@1.24.1
+
+## 1.24.0
+
+### Patch Changes
+
+- [`a87b4f9`](https://github.com/chakra-ui/zag/commit/a87b4f92d7cf3a6f47e51089a02be251a4bdaea1) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix issue where keyboard activation of menu items with
+  `target="_blank"` would open two tabs
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.24.0
+  - @zag-js/core@1.24.0
+  - @zag-js/types@1.24.0
+  - @zag-js/utils@1.24.0
+  - @zag-js/dismissable@1.24.0
+  - @zag-js/dom-query@1.24.0
+  - @zag-js/popper@1.24.0
+  - @zag-js/rect-utils@1.24.0
+
 ## 1.23.0
 
 ### Minor Changes

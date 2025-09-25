@@ -10,7 +10,7 @@ export const machine = createMachine<HoverCardSchema>({
   props({ props }) {
     return {
       disabled: false,
-      openDelay: 700,
+      openDelay: 600,
       closeDelay: 300,
       ...props,
       positioning: {

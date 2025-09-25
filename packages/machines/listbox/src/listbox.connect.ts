@@ -2,6 +2,7 @@ import { isGridCollection, type CollectionItem } from "@zag-js/collection"
 import type { Service } from "@zag-js/core"
 import {
   ariaAttr,
+  contains,
   dataAttr,
   getByTypeahead,
   getEventKey,
@@ -10,7 +11,6 @@ import {
   isComposingEvent,
   isCtrlOrMetaKey,
   isEditableElement,
-  isSelfTarget,
 } from "@zag-js/dom-query"
 import type { EventKeyMap, NormalizeProps, PropTypes } from "@zag-js/types"
 import { ensure } from "@zag-js/utils"
@@ -309,7 +309,7 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
         },
         onKeyDown(event) {
           if (!interactive) return
-          if (!isSelfTarget(event)) return
+          if (!contains(event.currentTarget, getEventTarget(event))) return
 
           const shiftKey = event.shiftKey
 

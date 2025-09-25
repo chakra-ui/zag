@@ -1,5 +1,36 @@
 # @zag-js/svelte
 
+## 1.24.2
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/core@1.24.2
+  - @zag-js/types@1.24.2
+  - @zag-js/utils@1.24.2
+
+## 1.24.1
+
+### Patch Changes
+
+- Updated dependencies [[`ab0d4f7`](https://github.com/chakra-ui/zag/commit/ab0d4f73d6ca0571cb09ebad5bf724fe81e94ef8)]:
+  - @zag-js/core@1.24.1
+  - @zag-js/types@1.24.1
+  - @zag-js/utils@1.24.1
+
+## 1.24.0
+
+### Patch Changes
+
+- [`84360e5`](https://github.com/chakra-ui/zag/commit/84360e589d9f0859e3de32cf6cdcaefd81e050ac) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix Svelte warning about state reference capturing initial value
+  instead of current reactive state
+
+- Updated dependencies []:
+  - @zag-js/core@1.24.0
+  - @zag-js/types@1.24.0
+  - @zag-js/utils@1.24.0
+
 ## 1.23.0
 
 ### Patch Changes

@@ -15,9 +15,10 @@ export function connect<T extends PropTypes>(service: SwitchService, normalize: 
 
   const focused = !disabled && context.get("focused")
   const focusVisible = !disabled && context.get("focusVisible")
+  const active = !disabled && context.get("active")
 
   const dataAttrs = {
-    "data-active": dataAttr(context.get("active")),
+    "data-active": dataAttr(active),
     "data-focus": dataAttr(focused),
     "data-focus-visible": dataAttr(focusVisible),
     "data-readonly": dataAttr(readOnly),

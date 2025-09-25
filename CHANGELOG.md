@@ -4,6 +4,64 @@ All notable changes to this project will be documented in this file.
 
 > For v0.x changelog, see the [v0 branch](https://github.com/chakra-ui/zag/blob/v0/CHANGELOG.md)
 
+## [1.24.2](./#1.24.2) - 2025-09-18
+
+### Fixed
+
+- **Date Picker**: Fix issue where year range picker doesn't show the hovered range
+
+- **Date Utils**:
+  - Fix issue where quarter presets returns incorrect date
+  - Fix issue where year range picker doesn't show the hovered range
+
+- **I18n Utils**:
+  - **formatBytes**: Support `unitSystem` property to allow changing between decimal (1000 bytes) and binary (1024
+    bytes) systems.
+
+- **Number Input**: When `formatOptions` is used (like `style: "currency"`), the cursor would jump to the end of the
+  input when typing in the middle. The cursor now maintains its relative position during formatting changes.
+
+- **Pin Input**: Fix issue where using the keyboard shortcuts `Cmd+Backspace` and `Cmd+Delete` to delete text in pin
+  inputs would insert "undefined" instead of clearing the field.
+
+- **Scroll Area**: Fix issue where resize tracking was not observing the root element, which caused the scrollbar to not
+  update when the root element's size changed.
+
+## [1.24.1](./#1.24.1) - 2025-09-14
+
+### Fixed
+
+- **Core**: Fix issue where `mergeProps` throws when `props` is undefined or null
+
+## [1.24.0](./#1.24.0) - 2025-09-13
+
+### Added
+
+- **Combobox**: Add `alwaysSubmitOnEnter` prop to allow bypassing the default two-step behavior (Enter to close
+  combobox, then Enter to submit form) and instead submit the form immediately on Enter press. This is useful for
+  single-field autocomplete forms where Enter should submit the form directly.
+
+### Fixed
+
+- **Editable**: Allow text selection in editable preview when `autoResize` is enabled
+
+  Previously, when `autoResize` was set to `true`, the preview element had `userSelect: "none"` applied, preventing
+  users from selecting text. This has been fixed by removing the `userSelect` style property.
+
+- **File Upload**: Fix regression where clicking the trigger doesn't open the file picker when used within the dropzone
+
+- **Hover Card**: Change default delay values for hover card to improve accessibility.
+  - `openDelay`: from `700ms` to `600ms`
+
+- **Menu**: Fix issue where keyboard activation of menu items with `target="_blank"` would open two tabs
+
+- **Svelte**: Fix Svelte warning about state reference capturing initial value instead of current reactive state
+
+- **Tooltip**: Change default delay values for tooltip to improve accessibility.
+  [Learn more](https://www.nngroup.com/articles/timing-exposing-content)
+  - `openDelay`: from `1000ms` to `400ms`
+  - `closeDelay`: from `500ms` to `150ms`
+
 ## [1.23.0](./#1.23.0) - 2025-09-11
 
 ### Added

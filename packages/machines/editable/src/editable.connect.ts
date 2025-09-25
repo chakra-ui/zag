@@ -198,7 +198,6 @@ export function connect<T extends PropTypes>(
         style: autoResize
           ? {
               whiteSpace: "pre",
-              userSelect: "none",
               gridArea: "1 / 1 / auto / auto",
               visibility: editing ? "hidden" : undefined,
               // in event the preview overflow's the parent element

@@ -187,7 +187,7 @@ export function connect<T extends PropTypes>(
             send({ type: "SET_ACTIVE", value: null })
           }
         },
-        disabled: itemState.disabled,
+        disabled: itemState.disabled || readOnly,
         defaultChecked: itemState.checked,
         style: visuallyHiddenStyle,
       })
