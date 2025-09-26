@@ -1,6 +1,8 @@
 // Based on https://github.com/theKashey/aria-hidden/blob/master/src/index.ts
 // Licensed under MIT
 
+import { findControlledElements, isHTMLElement } from "@zag-js/dom-query"
+
 let counterMap = new WeakMap<Element, number>()
 let uncontrolledNodes = new WeakMap<Element, boolean>()
 let markerMap: Record<string, WeakMap<Element, number>> = {}
@@ -8,9 +10,6 @@ let lockCount = 0
 
 const unwrapHost = (node: Element | ShadowRoot): Element | null =>
   node && ((node as ShadowRoot).host || unwrapHost(node.parentNode as Element))
-
-const isHTMLElement = (el: any): el is HTMLElement =>
-  "nodeType" in el && el.nodeType === Node.ELEMENT_NODE && typeof el.nodeName === "string"
 
 const correctTargets = (parent: HTMLElement, targets: Element[]): Element[] =>
   targets
@@ -30,6 +29,7 @@ interface WalkTreeOutsideOptions {
   markerName: string
   controlAttribute: string
   explicitBooleanValue: boolean
+  followControlledElements?: boolean
 }
 
 const ignoreableNodes = new Set<string>(["script", "output", "status", "next-route-announcer"])
@@ -41,7 +41,7 @@ const isIgnoredNode = (node: Element) => {
 }
 
 export const walkTreeOutside = (originalTarget: Element | Element[], props: WalkTreeOutsideOptions): VoidFunction => {
-  const { parentNode, markerName, controlAttribute, explicitBooleanValue } = props
+  const { parentNode, markerName, controlAttribute, explicitBooleanValue, followControlledElements = true } = props
   const targets = correctTargets(parentNode, Array.isArray(originalTarget) ? originalTarget : [originalTarget])
 
   markerMap[markerName] ||= new WeakMap()
@@ -57,30 +57,13 @@ export const walkTreeOutside = (originalTarget: Element | Element[], props: Walk
     keep(el.parentNode!)
   }
 
-  // Helper to find and keep controlled elements
-  const keepControlledElements = (container: Element) => {
-    const controllingElements = container.querySelectorAll<Element>("[aria-controls]")
-
-    controllingElements.forEach((controller) => {
-      const controlledIds = controller.getAttribute("aria-controls")?.split(" ") || []
-
-      controlledIds.forEach((id) => {
-        if (!id) return
-
-        const controlledElement = parentNode.ownerDocument.getElementById(id)
-        if (controlledElement) {
-          // Keep the controlled element and its ancestors
-          keep(controlledElement)
-        }
-      })
-    })
-  }
-
   targets.forEach((target) => {
     keep(target)
     // Also keep any elements that are controlled by elements within the target
-    if (isHTMLElement(target)) {
-      keepControlledElements(target)
+    if (followControlledElements && isHTMLElement(target)) {
+      findControlledElements(target, (controlledElement) => {
+        keep(controlledElement)
+      })
     }
   })
 
@@ -92,10 +75,6 @@ export const walkTreeOutside = (originalTarget: Element | Element[], props: Walk
     Array.prototype.forEach.call(parent.children, (node: Element) => {
       if (elementsToKeep.has(node)) {
         deep(node)
-        // After deep traversal, check if this node controls any elements
-        if (isHTMLElement(node)) {
-          keepControlledElements(node)
-        }
       } else {
         try {
           if (isIgnoredNode(node)) return

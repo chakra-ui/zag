@@ -113,3 +113,13 @@ export function getParentNode(node: Node): Node {
     (node as any).assignedSlot || node.parentNode || (isShadowRoot(node) && node.host) || getDocumentElement(node)
   return isShadowRoot(result) ? result.host : result
 }
+
+export function getRootNode(node: Node): Document | ShadowRoot {
+  let result: Node
+  try {
+    result = node.getRootNode({ composed: true })
+    if (isDocument(result) || isShadowRoot(result)) return result
+  } catch {}
+
+  return node.ownerDocument ?? document
+}
