@@ -176,6 +176,16 @@
       "--slide-item-size": "The calculated size of each slide item"
     }
   },
+  "bottom-sheet": {
+    "Content": {
+      "--bottom-sheet-translate": "The bottom sheet translate value for the Content",
+      "--layer-index": "The index of the dismissable in the layer stack",
+      "--nested-layer-count": "The number of nested bottom-sheets"
+    },
+    "Backdrop": {
+      "--layer-index": "The index of the dismissable in the layer stack"
+    }
+  },
   "angle-slider": {
     "Root": {
       "--value": "The current value",

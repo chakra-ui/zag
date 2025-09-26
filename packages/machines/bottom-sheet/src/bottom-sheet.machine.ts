@@ -1,15 +1,15 @@
+import { ariaHidden } from "@zag-js/aria-hidden"
 import { createMachine } from "@zag-js/core"
-import type { BottomSheetSchema, ResolvedSnapPoint } from "./bottom-sheet.types"
-import type { Point } from "@zag-js/types"
-import { addDomEvent, getEventPoint, getEventTarget, raf } from "@zag-js/dom-query"
-import * as dom from "./bottom-sheet.dom"
-import { resolveSnapPoint } from "./utils/resolve-snap-point"
 import { trackDismissableElement } from "@zag-js/dismissable"
-import { findClosestSnapPoint } from "./utils/find-closest-snap-point"
+import { addDomEvent, getEventPoint, getEventTarget, raf } from "@zag-js/dom-query"
 import { trapFocus } from "@zag-js/focus-trap"
 import { preventBodyScroll } from "@zag-js/remove-scroll"
-import { ariaHidden } from "@zag-js/aria-hidden"
+import type { Point } from "@zag-js/types"
+import * as dom from "./bottom-sheet.dom"
+import type { BottomSheetSchema, ResolvedSnapPoint } from "./bottom-sheet.types"
+import { findClosestSnapPoint } from "./utils/find-closest-snap-point"
 import { getScrollInfo } from "./utils/get-scroll-info"
+import { resolveSnapPoint } from "./utils/resolve-snap-point"
 
 export const machine = createMachine<BottomSheetSchema>({
   props({ props, scope }) {
