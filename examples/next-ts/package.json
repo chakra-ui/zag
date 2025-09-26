@@ -48,6 +48,7 @@
     "@zag-js/hotkeys": "workspace:*",
     "@zag-js/hover-card": "workspace:*",
     "@zag-js/i18n-utils": "workspace:*",
+    "@zag-js/image-cropper": "workspace:*",
     "@zag-js/interact-outside": "workspace:*",
     "@zag-js/json-tree-utils": "workspace:*",
     "@zag-js/listbox": "workspace:*",
