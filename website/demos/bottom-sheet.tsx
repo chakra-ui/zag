@@ -2,6 +2,7 @@ import * as bottomSheet from "@zag-js/bottom-sheet"
 import { normalizeProps, useMachine } from "@zag-js/react"
 import { useId } from "react"
 import { HiX } from "react-icons/hi"
+import { Presence } from "../components/presence"
 
 type BottomSheetProps = Omit<bottomSheet.Props, "id">
 
@@ -16,8 +17,8 @@ export function BottomSheet(props: BottomSheetProps) {
   return (
     <>
       <button {...api.getTriggerProps()}>Open Bottom Sheet</button>
-      <div {...api.getBackdropProps()} />
-      <div {...api.getContentProps()}>
+      <Presence {...api.getBackdropProps()} />
+      <Presence {...api.getContentProps()}>
         <div {...api.getGrabberProps()}>
           <div {...api.getGrabberIndicatorProps()} />
         </div>
@@ -39,7 +40,7 @@ export function BottomSheet(props: BottomSheetProps) {
         <button {...api.getCloseTriggerProps()}>
           <HiX />
         </button>
-      </div>
+      </Presence>
     </>
   )
 }
