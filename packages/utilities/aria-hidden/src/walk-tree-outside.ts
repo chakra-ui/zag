@@ -9,6 +9,9 @@ let lockCount = 0
 const unwrapHost = (node: Element | ShadowRoot): Element | null =>
   node && ((node as ShadowRoot).host || unwrapHost(node.parentNode as Element))
 
+const isHTMLElement = (el: any): el is HTMLElement =>
+  "nodeType" in el && el.nodeType === Node.ELEMENT_NODE && typeof el.nodeName === "string"
+
 const correctTargets = (parent: HTMLElement, targets: Element[]): Element[] =>
   targets
     .map((target) => {
@@ -54,7 +57,32 @@ export const walkTreeOutside = (originalTarget: Element | Element[], props: Walk
     keep(el.parentNode!)
   }
 
-  targets.forEach(keep)
+  // Helper to find and keep controlled elements
+  const keepControlledElements = (container: Element) => {
+    const controllingElements = container.querySelectorAll<Element>("[aria-controls]")
+
+    controllingElements.forEach((controller) => {
+      const controlledIds = controller.getAttribute("aria-controls")?.split(" ") || []
+
+      controlledIds.forEach((id) => {
+        if (!id) return
+
+        const controlledElement = parentNode.ownerDocument.getElementById(id)
+        if (controlledElement) {
+          // Keep the controlled element and its ancestors
+          keep(controlledElement)
+        }
+      })
+    })
+  }
+
+  targets.forEach((target) => {
+    keep(target)
+    // Also keep any elements that are controlled by elements within the target
+    if (isHTMLElement(target)) {
+      keepControlledElements(target)
+    }
+  })
 
   const deep = (parent: Element | null) => {
     if (!parent || elementsToStop.has(parent)) {
@@ -64,6 +92,10 @@ export const walkTreeOutside = (originalTarget: Element | Element[], props: Walk
     Array.prototype.forEach.call(parent.children, (node: Element) => {
       if (elementsToKeep.has(node)) {
         deep(node)
+        // After deep traversal, check if this node controls any elements
+        if (isHTMLElement(node)) {
+          keepControlledElements(node)
+        }
       } else {
         try {
           if (isIgnoredNode(node)) return

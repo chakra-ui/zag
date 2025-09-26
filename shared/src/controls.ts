@@ -304,3 +304,7 @@ export const bottomSheetControls = defineControls({
   closeThreshold: { type: "number", defaultValue: 0.25 },
   preventDragOnScroll: { type: "boolean", defaultValue: true },
 })
+
+export const scrollAreaControls = defineControls({
+  dir: { type: "select", options: ["ltr", "rtl"] as const, defaultValue: "ltr" },
+})

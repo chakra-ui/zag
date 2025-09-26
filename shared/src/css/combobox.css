@@ -12,6 +12,7 @@
   max-height: 240px;
   overflow: auto;
   padding: 2px;
+  z-index: var(--layer-index);
 }
 
 [data-scope="combobox"][data-part="item"] {

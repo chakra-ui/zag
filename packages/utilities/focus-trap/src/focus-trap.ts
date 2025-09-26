@@ -110,14 +110,67 @@ export class FocusTrap {
       ({ container, tabbableNodes }) =>
         container.contains(element) ||
         composedPath?.includes(container) ||
-        tabbableNodes.find((node) => node === element),
+        tabbableNodes.find((node) => node === element) ||
+        this.isControlledElement(container, element),
     )
+  }
+
+  private isControlledElement(container: HTMLElement, element: HTMLElement): boolean {
+    // Find all elements with aria-controls within the container
+    const controllingElements = container.querySelectorAll<HTMLElement>("[aria-controls]")
+
+    for (const controller of controllingElements) {
+      const controlledIds = controller.getAttribute("aria-controls")?.split(" ") || []
+
+      for (const id of controlledIds) {
+        if (!id) continue
+
+        // Check if the element is the controlled element or a descendant of it
+        const controlledElement = this.doc.getElementById(id)
+        if (controlledElement && (controlledElement === element || controlledElement.contains(element))) {
+          return true
+        }
+      }
+    }
+
+    return false
+  }
+
+  private getControlledElements(container: HTMLElement): HTMLElement[] {
+    const controlledElements: HTMLElement[] = []
+    const controllingElements = container.querySelectorAll<HTMLElement>("[aria-controls]")
+
+    for (const controller of controllingElements) {
+      const controlledIds = controller.getAttribute("aria-controls")?.split(" ") || []
+
+      for (const id of controlledIds) {
+        if (!id) continue
+
+        const controlledElement = this.doc.getElementById(id)
+        // Only add if the controlled element is outside the container
+        if (controlledElement && !container.contains(controlledElement)) {
+          controlledElements.push(controlledElement)
+        }
+      }
+    }
+
+    return controlledElements
   }
 
   private updateTabbableNodes() {
     this.state.containerGroups = this.state.containers.map((container) => {
-      const tabbableNodes = getTabbables(container)
-      const focusableNodes = getFocusables(container)
+      // Get controlled elements that are outside the container
+      const controlledElements = this.getControlledElements(container)
+
+      // Combine container tabbables with controlled element tabbables
+      const containerTabbables = getTabbables(container)
+      const controlledTabbables = controlledElements.flatMap((el) => getTabbables(el))
+      const tabbableNodes = [...containerTabbables, ...controlledTabbables]
+
+      // Combine container focusables with controlled element focusables
+      const containerFocusables = getFocusables(container)
+      const controlledFocusables = controlledElements.flatMap((el) => getFocusables(el))
+      const focusableNodes = [...containerFocusables, ...controlledFocusables]
 
       const firstTabbableNode = tabbableNodes.length > 0 ? tabbableNodes[0] : undefined
       const lastTabbableNode = tabbableNodes.length > 0 ? tabbableNodes[tabbableNodes.length - 1] : undefined
