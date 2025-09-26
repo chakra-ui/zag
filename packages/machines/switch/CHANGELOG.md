@@ -1,5 +1,22 @@
 # @zag-js/switch
 
+## 1.25.0
+
+### Patch Changes
+
+- [#2734](https://github.com/chakra-ui/zag/pull/2734)
+  [`e92489e`](https://github.com/chakra-ui/zag/commit/e92489e7fe2924e4de64f854f13a7c9928ddc3a5) Thanks
+  [@julienbenac](https://github.com/julienbenac)! - Fix issue where `data-active` is inconsistently applied when
+  `disabled` state changes at runtime
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.25.0
+  - @zag-js/core@1.25.0
+  - @zag-js/types@1.25.0
+  - @zag-js/utils@1.25.0
+  - @zag-js/dom-query@1.25.0
+  - @zag-js/focus-visible@1.25.0
+
 ## 1.24.2
 
 ### Patch Changes

@@ -1,5 +1,19 @@
 # @zag-js/scroll-area
 
+## 1.25.0
+
+### Patch Changes
+
+- [`9b8b354`](https://github.com/chakra-ui/zag/commit/9b8b3544ab4ba12c2d170d55785924430d1b70c0) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix RTL horizontal scrollbar positioning on Safari
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.25.0
+  - @zag-js/core@1.25.0
+  - @zag-js/types@1.25.0
+  - @zag-js/utils@1.25.0
+  - @zag-js/dom-query@1.25.0
+
 ## 1.24.2
 
 ### Patch Changes

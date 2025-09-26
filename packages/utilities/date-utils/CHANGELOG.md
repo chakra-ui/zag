@@ -1,5 +1,7 @@
 # @zag-js/date-utils
 
+## 1.25.0
+
 ## 1.24.2
 
 ### Patch Changes
