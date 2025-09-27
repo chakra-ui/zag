@@ -955,7 +955,7 @@ export function connect<T extends PropTypes>(
               send({
                 type: "SEGMENT.ADJUST",
                 segment,
-                amount: PAGE_STEP[segment.type] || 1,
+                amount: PAGE_STEP[segment.type] ?? 1,
               })
             },
             PageDown() {
@@ -970,6 +970,12 @@ export function connect<T extends PropTypes>(
             },
             Delete() {
               send({ type: "SEGMENT.BACKSPACE", segment })
+            },
+            Home() {
+              send({ type: "SEGMENT.HOME", segment })
+            },
+            End() {
+              send({ type: "SEGMENT.END", segment })
             },
           }
 

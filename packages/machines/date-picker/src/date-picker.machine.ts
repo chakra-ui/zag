@@ -480,6 +480,9 @@ export const machine = createMachine<DatePickerSchema>({
         "SEGMENT.FOCUS": {
           actions: ["setActiveSegmentIndex", "clearEnteredKeys"],
         },
+        "SEGMENT.INPUT": {
+          actions: ["setSegmentValue"],
+        },
         "SEGMENT.ADJUST": {
           actions: ["invokeOnSegmentAdjust"],
         },
@@ -498,8 +501,11 @@ export const machine = createMachine<DatePickerSchema>({
             actions: ["clearSegmentValue", "clearEnteredKeys"],
           },
         ],
-        "SEGMENT.INPUT": {
-          actions: ["setSegmentValue"],
+        "SEGMENT.HOME": {
+          actions: ["setSegmentToLowestValue", "clearEnteredKeys"],
+        },
+        "SEGMENT.END": {
+          actions: ["setSegmentToHighestValue", "clearEnteredKeys"],
         },
       },
     },
@@ -1265,7 +1271,7 @@ export const machine = createMachine<DatePickerSchema>({
         send({ type: prop("open") ? "CONTROLLED.OPEN" : "CONTROLLED.CLOSE", previousEvent: event })
       },
 
-      // SEGMENT
+      // SEGMENT ACTIONS [START] /////////////////////////////////////////////////////////////////////////////
 
       setActiveSegmentIndex({ context, event }) {
         context.set("activeSegmentIndex", event.index)
@@ -1348,94 +1354,27 @@ export const machine = createMachine<DatePickerSchema>({
       },
 
       setSegmentValue(params) {
-        const { event, prop, refs, context, computed } = params
+        const { event } = params
         const { segment, input } = event
-        if (!isNumberString(input)) return
 
-        const type = segment.type as DateSegment["type"]
-        const validSegments = params.context.get("validSegments")
-        const index = params.context.get("activeIndex")
-        const activeValidSegments = validSegments[index]
-        const formatter = prop("formatter")
-        const enteredKeys = refs.get("enteredKeys")
-
-        let newValue = enteredKeys + input
-
-        switch (type) {
-          case "dayPeriod":
-            // todo
-            break
-          case "era": {
-            // todo
-            break
-          }
-          case "day":
-          case "hour":
-          case "minute":
-          case "second":
-          case "month":
-          case "year": {
-            let numberValue = Number.parseInt(newValue)
-            let segmentValue = numberValue
-            let allowsZero = segment.minValue === 0
-
-            if (segment.type === "hour" && formatter.resolvedOptions().hour12) {
-              switch (formatter.resolvedOptions().hourCycle) {
-                case "h11":
-                  if (numberValue > 11) {
-                    segmentValue = Number.parseInt(input)
-                  }
-                  break
-                case "h12":
-                  allowsZero = false
-                  if (numberValue > 12) {
-                    segmentValue = Number.parseInt(input)
-                  }
-                  break
-              }
-
-              if (segment.value !== undefined && segment.value >= 12 && numberValue > 1) {
-                numberValue += 12
-              }
-            } else if (segment.maxValue !== undefined && numberValue > segment.maxValue) {
-              segmentValue = Number.parseInt(input)
-            }
-
-            if (isNaN(numberValue)) {
-              return
-            }
-
-            let shouldSetValue = segmentValue !== 0 || allowsZero
-            if (shouldSetValue) {
-              if (!activeValidSegments?.[type]) {
-                markSegmentValid(params, type)
-              }
-              setValue(params, setSegment(getDisplayValue(params), type, newValue, formatter.resolvedOptions()))
-            }
-
-            if (
-              segment.maxValue !== undefined &&
-              (Number(numberValue + "0") > segment.maxValue || newValue.length >= String(segment.maxValue).length)
-            ) {
-              refs.set("enteredKeys", "")
-              if (shouldSetValue) {
-                // TODO: focus next segment
-                const index = context.get("activeIndex")
-                const activeSegmentIndex = context.get("activeSegmentIndex")
-                const segments = computed("segments")[index]
-                const nextActiveSegmentIndex = segments.findIndex(
-                  (segment, i) => i > activeSegmentIndex && segment.isEditable,
-                )
-                if (nextActiveSegmentIndex === -1) return
-                context.set("activeSegmentIndex", nextActiveSegmentIndex)
-              }
-            } else {
-              refs.set("enteredKeys", newValue)
-            }
-            break
-          }
-        }
+        updateSegmentValue(params, segment, input)
       },
+
+      setSegmentToLowestValue(params) {
+        const { event } = params
+        const { segment } = event
+
+        updateSegmentValue(params, segment, String(segment.minValue))
+      },
+
+      setSegmentToHighestValue(params) {
+        const { event } = params
+        const { segment } = event
+
+        updateSegmentValue(params, segment, String(segment.maxValue))
+      },
+
+      // SEGMENT ACTIONS [END] ///////////////////////////////////////////////////////////////////////////////
     },
   },
 })
@@ -1477,6 +1416,8 @@ function setAdjustedValue(ctx: Params<DatePickerSchema>, value: AdjustDateReturn
   if (isDateEqual(focusedValue, value.focusedDate)) return
   context.set("focusedValue", value.focusedDate)
 }
+
+// SEGMENT UTILS [START] /////////////////////////////////////////////////////////////////////////////
 
 /**
  * If all segments are valid, use return value date, otherwise return the placeholder date.
@@ -1572,3 +1513,93 @@ function getActiveSegment(ctx: Params<DatePickerSchema>) {
   const activeSegmentIndex = context.get("activeSegmentIndex")
   return computed("segments")[index]?.[activeSegmentIndex]
 }
+
+function updateSegmentValue(ctx: Params<DatePickerSchema>, segment: DateSegment, input: string) {
+  const { context, computed, prop, refs } = ctx
+  const type = segment.type as DateSegment["type"]
+  const validSegments = context.get("validSegments")
+  const index = context.get("activeIndex")
+  const activeValidSegments = validSegments[index]
+  const formatter = prop("formatter")
+  const enteredKeys = refs.get("enteredKeys")
+
+  switch (type) {
+    case "dayPeriod":
+      // TODO
+      break
+    case "era": {
+      // TODO
+      break
+    }
+    case "day":
+    case "hour":
+    case "minute":
+    case "second":
+    case "month":
+    case "year": {
+      let newValue = enteredKeys + input
+      let numberValue = Number.parseInt(newValue)
+      let segmentValue = numberValue
+      let allowsZero = segment.minValue === 0
+
+      if (!isNumberString(input)) return
+
+      if (segment.type === "hour" && formatter.resolvedOptions().hour12) {
+        switch (formatter.resolvedOptions().hourCycle) {
+          case "h11":
+            if (numberValue > 11) {
+              segmentValue = Number.parseInt(input)
+            }
+            break
+          case "h12":
+            allowsZero = false
+            if (numberValue > 12) {
+              segmentValue = Number.parseInt(input)
+            }
+            break
+        }
+
+        if (segment.value !== undefined && segment.value >= 12 && numberValue > 1) {
+          numberValue += 12
+        }
+      } else if (segment.maxValue !== undefined && numberValue > segment.maxValue) {
+        segmentValue = Number.parseInt(input)
+      }
+
+      if (isNaN(numberValue)) {
+        return
+      }
+
+      // TODO: `segmentValue` is not used for anything?
+      let shouldSetValue = segmentValue !== 0 || allowsZero
+      if (shouldSetValue) {
+        if (!activeValidSegments?.[type]) {
+          markSegmentValid(ctx, type)
+        }
+        setValue(ctx, setSegment(getDisplayValue(ctx), type, newValue, formatter.resolvedOptions()))
+      }
+
+      if (
+        segment.maxValue !== undefined &&
+        (Number(numberValue + "0") > segment.maxValue || newValue.length >= String(segment.maxValue).length)
+      ) {
+        refs.set("enteredKeys", "")
+        if (shouldSetValue) {
+          const index = context.get("activeIndex")
+          const activeSegmentIndex = context.get("activeSegmentIndex")
+          const segments = computed("segments")[index]
+          const nextActiveSegmentIndex = segments.findIndex(
+            (segment, i) => i > activeSegmentIndex && segment.isEditable,
+          )
+          if (nextActiveSegmentIndex === -1) return
+          context.set("activeSegmentIndex", nextActiveSegmentIndex)
+        }
+      } else {
+        refs.set("enteredKeys", newValue)
+      }
+      break
+    }
+  }
+}
+
+// SEGMENT UTILS [END] /////////////////////////////////////////////////////////////////////////////////
