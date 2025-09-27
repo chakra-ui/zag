@@ -1006,12 +1006,20 @@ export function connect<T extends PropTypes>(
             return
           }
 
+          if (inputType === "insertFromPaste") {
+            event.preventDefault()
+            return
+          }
+
           if (data && isValidCharacter(data, separator)) {
             event.preventDefault()
             send({ type: "SEGMENT.INPUT", segment, input: data })
           } else {
             event.preventDefault()
           }
+        },
+        onPaste(event) {
+          event.preventDefault()
         },
       })
     },
