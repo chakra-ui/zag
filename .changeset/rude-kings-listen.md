@@ -2,4 +2,4 @@
 "@zag-js/slider": minor
 ---
 
-feat: Add `splitMarkerProps` helper
+Export `splitMarkerProps` helper.
