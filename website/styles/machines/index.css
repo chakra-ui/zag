@@ -31,7 +31,6 @@
 @import url(./switch.css);
 @import url(./tabs.css);
 @import url(./tags-input.css);
-
 @import url(./toast.css);
 @import url(./timer.css);
 @import url(./toggle-group.css);
@@ -42,32 +41,3 @@
 @import url(./tour.css);
 @import url(./tree-view.css);
 @import url(./floating-panel.css);
-
-* {
-  border-color: var(--colors-border-bold);
-  border-style: solid;
-}
-
-/* Variables */
-:where(:root, :host) {
-  --colors-text-inverse: #ffffff;
-  --colors-text-subtle: #4a5568;
-  --colors-text-bold: #171923;
-  --colors-border-subtle: #edf2f7;
-  --colors-border-bold: #e2e8f0;
-  --colors-bg-subtle: #ffffff;
-  --colors-bg-bold: #edf2f7;
-  --colors-bg-primary-subtle: #38a169;
-  --colors-bg-primary-bold: #2f855a;
-}
-
-.chakra-ui-dark {
-  --colors-text-inverse: #1a202c;
-  --colors-text-subtle: #a0aec0;
-  --colors-text-bold: #f7fafc;
-  --colors-border-subtle: #2d3748;
-  --colors-border-bold: #2d3748;
-  --colors-bg-subtle: #1a202c;
-  --colors-bg-bold: #2d3748;
-  --colors-bg-primary-bold: #48bb78;
-}

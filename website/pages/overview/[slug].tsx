@@ -1,4 +1,4 @@
-import type { Overview } from "@/contentlayer"
+import type { Overview } from ".velite"
 import { useMDX } from "components/mdx-components"
 import DocsLayout from "layouts/docs"
 import { getOverviewDoc, getOverviewPaths } from "lib/contentlayer-utils"

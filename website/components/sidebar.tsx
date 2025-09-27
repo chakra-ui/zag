@@ -1,12 +1,11 @@
-import { Icon } from "@chakra-ui/icon"
-import { Badge, Box, Flex, HStack, Stack } from "@chakra-ui/layout"
-import { chakra } from "@chakra-ui/system"
+import { Link } from "components/ui/link"
 import { formatUrl } from "lib/pagination-utils"
-import Link, { type LinkProps } from "next/link"
+import { type LinkProps } from "next/link"
 import { useRouter } from "next/router"
-import React from "react"
 import sidebar from "sidebar.config"
+import { HStack, Stack, styled } from "styled-system/jsx"
 import { useFramework } from "./framework"
+import { Icon } from "./ui/icon"
 
 interface DocLinkProps {
   href: LinkProps["href"]
@@ -23,21 +22,36 @@ function test(href: string, asPath: string) {
   return a[a.length - 1] === b[b.length - 1]
 }
 
-function DocLink(props: DocLinkProps) {
-  const { asPath } = useRouter()
+const StyledLink = styled(Link, {
+  base: {
+    display: "inline-block",
+    paddingY: "1",
+    textStyle: "sm",
+    _hover: {
+      textDecoration: "underline",
+      textUnderlineOffset: "2px",
+    },
+    _currentPage: {
+      textDecoration: "underline",
+      textUnderlineOffset: "2px",
+      fontWeight: "bold",
+    },
+  },
+})
+
+const DocLink = (props: DocLinkProps) => {
+  const router = useRouter()
   const { href, children } = props
-  const current = test(href.toString(), asPath)
+  const current = test(href.toString(), router.asPath)
   return (
-    <Box key={asPath} as="li" fontSize="sm">
-      <chakra.a
-        as={Link}
+    <li>
+      <StyledLink
         href={href.toString()}
         aria-current={current ? "page" : undefined}
-        textStyle="sidebarLink"
       >
         {children}
-      </chakra.a>
-    </Box>
+      </StyledLink>
+    </li>
   )
 }
 
@@ -46,23 +60,23 @@ export function Sidebar() {
 
   return (
     <nav aria-label="Sidebar Navigation">
-      <Stack as="ul" listStyleType="none" direction="column" spacing="10">
+      <Stack as="ul" listStyleType="none" direction="column" gap="10">
         {sidebar.docs.map((item) => {
           if (item.type === "category") {
             return (
               <li className="sidebar__category" key={item.id}>
-                <HStack mb="3" color="green.500">
+                <HStack mb="3" color="green.500" gap="2">
                   <Icon as={item.icon} />
-                  <chakra.h5
+                  <styled.h5
                     fontSize="xs"
                     fontWeight="semibold"
                     textTransform="uppercase"
                   >
                     {item.label}
-                  </chakra.h5>
+                  </styled.h5>
                 </HStack>
 
-                <Flex as="ul" listStyleType="none" direction="column">
+                <Stack as="ul" listStyleType="none" gap="0">
                   {item.items.map((subItem, index) => {
                     const href = formatUrl(item.id, subItem.id, framework)
                     if (subItem.type === "doc") {
@@ -73,42 +87,46 @@ export function Sidebar() {
                         >
                           {subItem.label}{" "}
                           {subItem.new && (
-                            <Badge
+                            <styled.span
                               bg="purple.500"
                               color="white"
                               ms="2"
                               px="1"
+                              py="0.5"
                               rounded="sm"
                               fontSize="xs"
+                              fontWeight="medium"
                             >
                               New
-                            </Badge>
+                            </styled.span>
                           )}
                           {subItem.beta && (
-                            <Badge
+                            <styled.span
                               bg="purple.50"
                               borderWidth="1px"
                               borderColor="purple.200"
                               color="purple.500"
+                              ms="2"
+                              px="1"
+                              py="0.5"
+                              rounded="xs"
+                              fontSize="xs"
+                              fontWeight="medium"
                               _dark={{
-                                bg: "purple.900",
+                                bg: "purple.900/50",
                                 color: "purple.200",
                                 borderColor: "purple.800",
                               }}
-                              ms="2"
-                              px="1"
-                              rounded="sm"
-                              fontSize="xs"
                             >
                               Beta
-                            </Badge>
+                            </styled.span>
                           )}
                         </DocLink>
                       )
                     }
                     return null
                   })}
-                </Flex>
+                </Stack>
               </li>
             )
           }

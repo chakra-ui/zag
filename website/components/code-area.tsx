@@ -1,16 +1,23 @@
-import { Box } from "@chakra-ui/layout"
 import { getSnippetDoc } from "lib/contentlayer-utils"
-import * as React from "react"
+import { useMemo } from "react"
+import { Box } from "styled-system/jsx"
 import { useMDX } from "./mdx-components"
 
-export function CodeArea({ slug }: { slug: string }): React.JSX.Element {
-  const doc = getSnippetDoc(slug)
+interface CodeAreaProps {
+  slug: string
+}
+
+export function CodeArea(props: CodeAreaProps) {
+  const { slug } = props
+
+  const doc = useMemo(() => getSnippetDoc(slug), [slug])
   const Component = useMDX(doc?.body.code ?? "")
+
   return (
     <Box
       height="full"
-      sx={{
-        "pre[class*=language-]": {
+      css={{
+        "& pre[class*=language-]": {
           bg: "inherit",
           margin: "0",
           padding: "40px 24px !important",

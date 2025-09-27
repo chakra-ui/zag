@@ -1,18 +1,29 @@
-import { Icon } from "@chakra-ui/icon"
-import { Box, Center } from "@chakra-ui/layout"
-import { type ElementType } from "react"
+import { Icon } from "components/ui/icon"
+import type { IconType } from "react-icons"
+import { Box, styled } from "styled-system/jsx"
 
-type IconLinkProps = {
+interface IconLinkProps {
   label: string
   href: string
-  icon: ElementType
+  icon: IconType
 }
 
-export function IconLink({ label, href, icon }: IconLinkProps) {
+export function IconLink(props: IconLinkProps) {
+  const { label, href, icon } = props
   return (
-    <Center width="6" height="6" as="a" href={href} target="_blank">
+    <styled.a
+      width="6"
+      height="6"
+      display="flex"
+      alignItems="center"
+      justifyContent="center"
+      href={href}
+      target="_blank"
+      color="gray.500"
+      _hover={{ color: "gray.600" }}
+    >
       <Box srOnly>{label}</Box>
       <Icon as={icon} fontSize="lg" color="gray.500" />
-    </Center>
+    </styled.a>
   )
 }

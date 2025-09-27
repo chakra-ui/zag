@@ -1,4 +1,4 @@
-import type { Guide } from "@/contentlayer"
+import type { Guide } from ".velite"
 import { useMDX } from "components/mdx-components"
 import DocsLayout from "layouts/docs"
 import { getGuideDoc, getGuidePaths } from "lib/contentlayer-utils"

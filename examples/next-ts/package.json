@@ -45,6 +45,7 @@
     "@zag-js/focus-trap": "workspace:*",
     "@zag-js/focus-visible": "workspace:*",
     "@zag-js/highlight-word": "workspace:*",
+    "@zag-js/hotkeys": "workspace:*",
     "@zag-js/hover-card": "workspace:*",
     "@zag-js/i18n-utils": "workspace:*",
     "@zag-js/interact-outside": "workspace:*",
@@ -97,15 +98,15 @@
     "next-cloudinary": "6.16.0",
     "react": "19.1.1",
     "react-dom": "19.1.1",
-    "react-hook-form": "7.62.0",
+    "react-hook-form": "7.63.0",
     "react-spinners": "0.17.0",
     "textarea-caret": "^3.1.0",
-    "virtua": "^0.43.1"
+    "virtua": "^0.43.3"
   },
   "devDependencies": {
     "@next/eslint-plugin-next": "15.5.3",
     "@types/form-serialize": "0.7.4",
-    "@types/node": "24.4.0",
+    "@types/node": "24.5.2",
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "eslint-plugin-react": "7.37.5",

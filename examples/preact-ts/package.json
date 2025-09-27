@@ -40,6 +40,7 @@
     "@zag-js/focus-trap": "workspace:*",
     "@zag-js/focus-visible": "workspace:*",
     "@zag-js/highlight-word": "workspace:*",
+    "@zag-js/hotkeys": "workspace:*",
     "@zag-js/hover-card": "workspace:*",
     "@zag-js/i18n-utils": "workspace:*",
     "@zag-js/interact-outside": "workspace:*",
@@ -92,9 +93,9 @@
   },
   "devDependencies": {
     "@preact/preset-vite": "2.10.2",
-    "eslint": "9.35.0",
+    "eslint": "9.36.0",
     "eslint-config-preact": "2.0.0",
     "typescript": "5.9.2",
-    "vite": "7.1.5"
+    "vite": "7.1.7"
   }
 }

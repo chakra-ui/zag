@@ -1,12 +1,12 @@
 ```html
 <script setup>
-import * as scrollArea from "@zag-js/scroll-area"
-import { useMachine, normalizeProps } from "@zag-js/vue"
-import { computed, useId } from "vue"
+  import * as scrollArea from "@zag-js/scroll-area"
+  import { useMachine, normalizeProps } from "@zag-js/vue"
+  import { computed, useId } from "vue"
 
-const service = useMachine(scrollArea.machine, { id: useId() })
+  const service = useMachine(scrollArea.machine, { id: useId() })
 
-const api = computed(() => scrollArea.connect(service, normalizeProps))
+  const api = computed(() => scrollArea.connect(service, normalizeProps))
 </script>
 
 <template>

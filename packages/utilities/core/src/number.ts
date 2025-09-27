@@ -155,4 +155,4 @@ export const incrementValue = (v: number, s: number) => decimalOp(nan(v), "+", s
 
 export const decrementValue = (v: number, s: number) => decimalOp(nan(v), "-", s)
 
-export const toPx = (v: number | undefined) => (v != null ? `${v}px` : undefined)
+export const toPx = (v: number | string | undefined) => (typeof v === "number" ? `${v}px` : v)
