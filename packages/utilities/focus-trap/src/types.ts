@@ -203,6 +203,15 @@ export interface FocusTrapOptions {
    * Default: `[]`. An array of FocusTrap instances that will be managed by this FocusTrap.
    */
   trapStack?: any[] | undefined
+
+  /**
+   * Default: `true`. If `true`, the focus trap will recursively include elements
+   * that are controlled by elements within the trap via `aria-controls`. Only elements
+   * with `aria-expanded="true"` and interactive container roles (menu, listbox, dialog, etc.)
+   * will be included. This allows nested menus, select dropdowns, and other portalled
+   * content to remain within the focus trap.
+   */
+  followControlledElements?: boolean | undefined
 }
 
 interface ContainerGroup {

@@ -23,6 +23,11 @@ export interface ItemLabelDetails {
   totalPages: number
 }
 
+export interface PageUrlDetails {
+  page: number
+  pageSize: number
+}
+
 export interface IntlTranslations {
   rootLabel?: string | undefined
   prevTriggerLabel?: string | undefined
@@ -89,6 +94,11 @@ export interface PaginationProps extends DirectionProperty, CommonProperties {
    * @default "button"
    */
   type?: "button" | "link" | undefined
+  /**
+   * Function to generate href attributes for pagination links.
+   * Only used when `type` is set to "link".
+   */
+  getPageUrl?: ((details: PageUrlDetails) => string) | undefined
 }
 
 type PropsWithDefault = "defaultPageSize" | "defaultPage" | "siblingCount" | "translations" | "type" | "count"

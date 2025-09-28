@@ -12,6 +12,7 @@ export type {
   PaginationMachine as Machine,
   PageChangeDetails,
   PageSizeChangeDetails,
+  PageUrlDetails,
   PaginationProps as Props,
   PaginationService as Service,
 } from "./pagination.types"

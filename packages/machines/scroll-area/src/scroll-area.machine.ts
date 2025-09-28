@@ -1,7 +1,7 @@
 import { createMachine } from "@zag-js/core"
 import { addDomEvent, trackPointerMove } from "@zag-js/dom-query"
 import type { Size } from "@zag-js/types"
-import { callAll, clampValue, isEqual } from "@zag-js/utils"
+import { callAll, clampValue, ensureProps, isEqual } from "@zag-js/utils"
 import * as dom from "./scroll-area.dom"
 import type { ScrollAreaSchema, ScrollbarHiddenState, ScrollRecord } from "./scroll-area.types"
 import { getScrollOffset } from "./utils/scroll-offset"
@@ -13,10 +13,8 @@ const SCROLL_TIMEOUT = 1000
 
 export const machine = createMachine<ScrollAreaSchema>({
   props({ props }) {
-    return {
-      id: "sv",
-      ...props,
-    }
+    ensureProps(props, ["id"])
+    return props
   },
 
   context({ bindable }) {
