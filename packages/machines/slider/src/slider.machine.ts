@@ -101,9 +101,15 @@ export const machine = createMachine<SliderSchema>({
     ),
   },
 
-  watch({ track, action, context }) {
+  watch({ track, action, context, computed, send }) {
     track([() => context.hash("value")], () => {
       action(["syncInputElements", "dispatchChangeEvent"])
+    })
+
+    track([() => computed("isDisabled")], () => {
+      if (computed("isDisabled")) {
+        send({ type: "BLUR" })
+      }
     })
   },
 
@@ -185,6 +191,10 @@ export const machine = createMachine<SliderSchema>({
         },
         POINTER_MOVE: {
           actions: ["setPointerValue"],
+        },
+        BLUR: {
+          target: "idle",
+          actions: ["clearFocusedIndex"],
         },
       },
     },
