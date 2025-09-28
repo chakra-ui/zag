@@ -1,5 +1,31 @@
 # @zag-js/pagination
 
+## 1.25.0
+
+### Minor Changes
+
+- [`cd6918e`](https://github.com/chakra-ui/zag/commit/cd6918e4ea85d2a1a7679822a5813e5d5e8125e7) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Add `getPageUrl` prop for generating `href` attributes when using
+  pagination as links.
+  - Added `getPageUrl` function prop that receives `{ page, pageSize }` and returns a URL string
+  - Only applies when `type="link"` to generate proper href attributes for pagination items and navigation buttons
+
+  ```ts
+  const service = useMachine(pagination.machine, {
+    type: "link",
+    getPageUrl: ({ page, pageSize }) => `/products?page=${page}&size=${pageSize}`,
+  })
+  ```
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.25.0
+  - @zag-js/core@1.25.0
+  - @zag-js/types@1.25.0
+  - @zag-js/utils@1.25.0
+  - @zag-js/dom-query@1.25.0
+
 ## 1.24.2
 
 ### Patch Changes
