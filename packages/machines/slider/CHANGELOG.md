@@ -1,5 +1,26 @@
 # @zag-js/slider
 
+## 1.25.0
+
+### Minor Changes
+
+- [#2726](https://github.com/chakra-ui/zag/pull/2726)
+  [`e53c89e`](https://github.com/chakra-ui/zag/commit/e53c89efcd33bbb3ab60e01ddcbcb37beccc3063) Thanks
+  [@Hugos68](https://github.com/Hugos68)! - Export `splitMarkerProps` helper.
+
+### Patch Changes
+
+- [`60acf60`](https://github.com/chakra-ui/zag/commit/60acf6067631f087396436f1f4fdf922ee9468cb) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix issue where slider continues dragging when disabled during
+  drag operation.
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.25.0
+  - @zag-js/core@1.25.0
+  - @zag-js/types@1.25.0
+  - @zag-js/utils@1.25.0
+  - @zag-js/dom-query@1.25.0
+
 ## 1.24.2
 
 ### Patch Changes

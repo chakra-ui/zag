@@ -1,5 +1,22 @@
 # @zag-js/collapsible
 
+## 1.25.0
+
+### Minor Changes
+
+- [`51b1e91`](https://github.com/chakra-ui/zag/commit/51b1e91dc26aacd7ff4e80250988e8075485ad04) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Add support for `collapsedHeight` and `collapsedWidth` props to
+  control the dimensions of the collapsible content when in its collapsed state.
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.25.0
+  - @zag-js/core@1.25.0
+  - @zag-js/types@1.25.0
+  - @zag-js/utils@1.25.0
+  - @zag-js/dom-query@1.25.0
+
 ## 1.24.2
 
 ### Patch Changes
