@@ -3405,6 +3405,9 @@ importers:
 
   shared:
     dependencies:
+      '@zag-js/image-cropper':
+        specifier: workspace:*
+        version: link:../packages/machines/image-cropper
       '@zag-js/tour':
         specifier: workspace:*
         version: link:../packages/machines/tour

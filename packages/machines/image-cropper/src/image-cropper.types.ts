@@ -1,8 +1,29 @@
 import type { EventObject, Service, Machine } from "@zag-js/core"
-import type { CommonProperties, DirectionProperty, RequiredBy } from "@zag-js/types"
+import type { CommonProperties, DirectionProperty, Point, PropTypes, RequiredBy, Size } from "@zag-js/types"
+
+export type HandlePosition =
+  | "top-left"
+  | "top"
+  | "top-right"
+  | "right"
+  | "bottom-right"
+  | "bottom"
+  | "bottom-left"
+  | "left"
+
+export type CropRect = {
+  x: number
+  y: number
+  width: number
+  height: number
+}
 
 export type ElementIds = Partial<{
   root: string
+  viewport: string
+  selection: string
+  overlay: string
+  handle: (position: string) => string
 }>
 
 export interface ImageCropperProps extends DirectionProperty, CommonProperties {
@@ -10,14 +31,30 @@ export interface ImageCropperProps extends DirectionProperty, CommonProperties {
    * The ids of the image cropper elements
    */
   ids?: ElementIds
+  /**
+   * The initial rectangle of the crop area
+   */
+  initialCrop: CropRect
+  /**
+   * The minimum size of the crop area
+   * @default { width: 40, height: 40 }
+   */
+  minCropSize?: Size
 }
 
-type PropsWithDefault = never
+type PropsWithDefault = "initialCrop" | "minCropSize"
 
 export interface ImageCropperSchema {
-  state: "idle"
+  state: "idle" | "dragging"
   props: RequiredBy<ImageCropperProps, PropsWithDefault>
-  context: {}
+  context: {
+    naturalSize: Size
+    bounds: Size
+    crop: CropRect
+    pointerStart: Point | null
+    cropStart: CropRect | null
+    handlePosition: HandlePosition | null
+  }
   event: EventObject
   action: string
   guard: string
@@ -27,3 +64,19 @@ export interface ImageCropperSchema {
 export type ImageCropperService = Service<ImageCropperSchema>
 
 export type ImageCropperMachine = Machine<ImageCropperSchema>
+
+export interface HandleProps {
+  /**
+   * The position of the handle
+   */
+  position: HandlePosition
+}
+
+export interface ImageCropperApi<T extends PropTypes = PropTypes> {
+  getRootProps: () => T["element"]
+  getViewportProps: () => T["element"]
+  getImageProps: () => T["element"]
+  getSelectionProps: () => T["element"]
+  getOverlayProps: () => T["element"]
+  getHandleProps: (props: HandleProps) => T["element"]
+}

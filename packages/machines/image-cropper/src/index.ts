@@ -2,4 +2,12 @@ export { anatomy } from "./image-cropper.anatomy"
 export { connect } from "./image-cropper.connect"
 export { machine } from "./image-cropper.machine"
 export * from "./image-cropper.props"
-export type { ImageCropperService, ImageCropperSchema } from "./image-cropper.types"
+export type {
+  ImageCropperApi as Api,
+  ImageCropperProps as Props,
+  ImageCropperMachine as Machine,
+  ImageCropperService as Service,
+  ElementIds,
+  HandleProps,
+  HandlePosition,
+} from "./image-cropper.types"
