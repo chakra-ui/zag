@@ -19,9 +19,11 @@ export function computeResizeCrop(options: ResizeOptions): Rect {
   let right = x + width
   let bottom = y + height
 
-  const hasAspect = !!aspectRatio && isFinite(aspectRatio) && aspectRatio! > 0
+  const hasAspect = !!aspectRatio && isFinite(aspectRatio) && aspectRatio > 0
+
   let minWidth = Math.min(minSize.width, bounds.width)
   let minHeight = Math.min(minSize.height, bounds.height)
+
   if (hasAspect) {
     const mw = Math.max(minWidth, minHeight * aspectRatio)
     const mh = mw / aspectRatio
@@ -37,12 +39,15 @@ export function computeResizeCrop(options: ResizeOptions): Rect {
   if (hasLeft) {
     left = clampValue(left + delta.x, 0, right - minWidth)
   }
+
   if (hasRight) {
     right = clampValue(right + delta.x, left + minWidth, bounds.width)
   }
+
   if (hasTop) {
     top = clampValue(top + delta.y, 0, bottom - minHeight)
   }
+
   if (hasBottom) {
     bottom = clampValue(bottom + delta.y, top + minHeight, bounds.height)
   }
@@ -120,6 +125,7 @@ export function computeResizeCrop(options: ResizeOptions): Rect {
       const centerX = (left + right) / 2
 
       let newW = newHeight * aspectRatio
+
       if (newHeight < minHeight) {
         newHeight = minHeight
         newW = newHeight * aspectRatio
@@ -133,10 +139,12 @@ export function computeResizeCrop(options: ResizeOptions): Rect {
       let halfW = newW / 2
       left = centerX - halfW
       right = centerX + halfW
+
       if (left < 0) {
         left = 0
         right = left + newW
       }
+
       if (right > bounds.width) {
         right = bounds.width
         left = right - newW
