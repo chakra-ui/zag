@@ -3,6 +3,7 @@ import { parts } from "./image-cropper.anatomy"
 import * as dom from "./image-cropper.dom"
 import type { ImageCropperApi, ImageCropperService } from "./image-cropper.types"
 import { getEventPoint } from "@zag-js/dom-query"
+import { toPx } from "@zag-js/utils"
 
 export function connect<T extends PropTypes>(
   service: ImageCropperService,
@@ -45,10 +46,14 @@ export function connect<T extends PropTypes>(
         ...parts.selection.attrs,
         id: dom.getSelectionId(scope),
         style: {
-          top: `${crop.y}%`,
-          left: `${crop.x}%`,
-          width: `${crop.width}%`,
-          height: `${crop.height}%`,
+          "--width": toPx(crop.width),
+          "--height": toPx(crop.height),
+          "--x": toPx(crop.x),
+          "--y": toPx(crop.y),
+          top: "var(--y)",
+          left: "var(--x)",
+          width: "var(--width)",
+          height: "var(--height)",
         },
         onPointerDown(event) {
           const point = getEventPoint(event)

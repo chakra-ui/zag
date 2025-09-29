@@ -125,8 +125,8 @@ export const machine = createMachine<ImageCropperSchema>({
 
         if (!pointerStart || !crop) return
 
-        const dx = ((currentPoint.x - pointerStart.x) / bounds.width) * 100
-        const dy = ((currentPoint.y - pointerStart.y) / bounds.height) * 100
+        const dx = currentPoint.x - pointerStart.x
+        const dy = currentPoint.y - pointerStart.y
 
         let nextCrop: CropRect
 
@@ -137,8 +137,8 @@ export const machine = createMachine<ImageCropperSchema>({
           let right = crop.x + crop.width
           let bottom = crop.y + crop.height
 
-          const minWidthPercent = Math.min((minCropSize.width / bounds.width) * 100, 100)
-          const minHeightPercent = Math.min((minCropSize.height / bounds.height) * 100, 100)
+          const minWidth = Math.min(minCropSize.width, bounds.width)
+          const minHeight = Math.min(minCropSize.height, bounds.height)
 
           const hasLeft = handlePosition.includes("left")
           const hasRight = handlePosition.includes("right")
@@ -146,33 +146,33 @@ export const machine = createMachine<ImageCropperSchema>({
           const hasBottom = handlePosition.includes("bottom")
 
           if (hasLeft) {
-            const nextLeft = clampValue(left + dx, 0, right - minWidthPercent)
-            left = Math.min(nextLeft, right - minWidthPercent)
+            const nextLeft = clampValue(left + dx, 0, right - minWidth)
+            left = Math.min(nextLeft, right - minWidth)
           }
 
           if (hasRight) {
-            const nextRight = clampValue(right + dx, left + minWidthPercent, 100)
-            right = Math.max(nextRight, left + minWidthPercent)
+            const nextRight = clampValue(right + dx, left + minWidth, bounds.width)
+            right = Math.max(nextRight, left + minWidth)
           }
 
           if (hasTop) {
-            const nextTop = clampValue(top + dy, 0, bottom - minHeightPercent)
-            top = Math.min(nextTop, bottom - minHeightPercent)
+            const nextTop = clampValue(top + dy, 0, bottom - minHeight)
+            top = Math.min(nextTop, bottom - minHeight)
           }
 
           if (hasBottom) {
-            const nextBottom = clampValue(bottom + dy, top + minHeightPercent, 100)
-            bottom = Math.max(nextBottom, top + minHeightPercent)
+            const nextBottom = clampValue(bottom + dy, top + minHeight, bounds.height)
+            bottom = Math.max(nextBottom, top + minHeight)
           }
 
-          const width = clampValue(right - left, minWidthPercent, 100)
-          const height = clampValue(bottom - top, minHeightPercent, 100)
+          const width = clampValue(right - left, minWidth, bounds.width)
+          const height = clampValue(bottom - top, minHeight, bounds.height)
 
           nextCrop = { x: left, y: top, width, height }
         } else {
           nextCrop = {
-            x: clampValue(crop.x + dx, 0, 100 - crop.width),
-            y: clampValue(crop.y + dy, 0, 100 - crop.height),
+            x: clampValue(crop.x + dx, 0, bounds.width - crop.width),
+            y: clampValue(crop.y + dy, 0, bounds.height - crop.height),
             width: crop.width,
             height: crop.height,
           }
