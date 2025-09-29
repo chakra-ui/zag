@@ -1,18 +1,18 @@
 import * as imageCropper from "@zag-js/image-cropper"
 import { useMachine, normalizeProps } from "@zag-js/react"
-// import { imageCropperControls } from "@zag-js/shared"
+import { imageCropperControls } from "@zag-js/shared"
 import { useId } from "react"
 import { StateVisualizer } from "../components/state-visualizer"
 import { Toolbar } from "../components/toolbar"
 import { handlePositions } from "@zag-js/shared"
-// import { useControls } from "../hooks/use-controls"
+import { useControls } from "../hooks/use-controls"
 
 export default function Page() {
-  // const controls = useControls(imageCropperControls)
+  const controls = useControls(imageCropperControls)
 
   const service = useMachine(imageCropper.machine, {
     id: useId(),
-    // ...controls.context,
+    ...controls.context,
   })
 
   const api = imageCropper.connect(service, normalizeProps)
@@ -33,8 +33,7 @@ export default function Page() {
         </div>
       </main>
 
-      {/* <Toolbar controls={controls.ui}> */}
-      <Toolbar>
+      <Toolbar controls={controls.ui}>
         <StateVisualizer
           state={service}
           context={["naturalSize", "bounds", "crop", "pointerStart", "cropStart", "handlePosition"]}

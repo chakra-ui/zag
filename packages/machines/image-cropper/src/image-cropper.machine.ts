@@ -4,6 +4,7 @@ import type { CropRect, HandlePosition, ImageCropperSchema } from "./image-cropp
 import type { Point, Size } from "@zag-js/types"
 import { addDomEvent, getEventPoint, getEventTarget } from "@zag-js/dom-query"
 import { clampValue } from "@zag-js/utils"
+import { enforceAspectRatio } from "./image-cropper.utils"
 
 export const machine = createMachine<ImageCropperSchema>({
   props({ props }) {
@@ -121,6 +122,7 @@ export const machine = createMachine<ImageCropperSchema>({
         const pointerStart = context.get("pointerStart")
         const crop = context.get("cropStart")
         const bounds = context.get("bounds")
+        const aspectRatio = prop("aspectRatio")
         const currentPoint = event.point
 
         if (!pointerStart || !crop) return
@@ -163,6 +165,18 @@ export const machine = createMachine<ImageCropperSchema>({
           if (hasBottom) {
             const nextBottom = clampValue(bottom + dy, top + minHeight, bounds.height)
             bottom = Math.max(nextBottom, top + minHeight)
+          }
+
+          if (aspectRatio && isFinite(aspectRatio) && aspectRatio > 0) {
+            ;({ left, top, right, bottom } = enforceAspectRatio({
+              left,
+              top,
+              right,
+              bottom,
+              handlePosition,
+              bounds,
+              aspectRatio,
+            }))
           }
 
           const width = clampValue(right - left, minWidth, bounds.width)

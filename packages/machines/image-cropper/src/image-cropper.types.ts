@@ -40,6 +40,12 @@ export interface ImageCropperProps extends DirectionProperty, CommonProperties {
    * @default { width: 40, height: 40 }
    */
   minCropSize?: Size
+  /**
+   * The aspect ratio to maintain for the crop area (width / height).
+   * For example, an aspect ratio of 16 / 9 will maintain a width to height ratio of 16:9.
+   * If not provided, the crop area can be freely resized.
+   */
+  aspectRatio?: number
 }
 
 type PropsWithDefault = "initialCrop" | "minCropSize"
