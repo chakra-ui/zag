@@ -112,7 +112,7 @@ Use CSS animations to animate the collapsible when it expands and collapses. The
 ```css
 @keyframes expand {
   from {
-    height: 0;
+    height: var(--collapsed-height, 0);
   }
   to {
     height: var(--height);
@@ -124,7 +124,7 @@ Use CSS animations to animate the collapsible when it expands and collapses. The
     height: var(--height);
   }
   to {
-    height: 0;
+    height: var(--collapsed-height, 0);
   }
 }
 
