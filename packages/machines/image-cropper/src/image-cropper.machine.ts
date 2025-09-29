@@ -161,7 +161,7 @@ export const machine = createMachine<ImageCropperSchema>({
             }
           }
           nextCrop = computeResizeCrop({
-            cropStart: cropStart,
+            cropStart,
             handlePosition,
             delta,
             bounds,
