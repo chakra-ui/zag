@@ -53,6 +53,8 @@ export interface ImageCropperSchema {
     pointerStart: Point | null
     cropStart: Rect | null
     handlePosition: HandlePosition | null
+    shiftLockRatio: number | null
+    lastShiftKey: boolean
   }
   event: EventObject
   action: string

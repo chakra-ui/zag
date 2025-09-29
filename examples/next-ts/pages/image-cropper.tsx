@@ -36,7 +36,16 @@ export default function Page() {
       <Toolbar controls={controls.ui}>
         <StateVisualizer
           state={service}
-          context={["naturalSize", "bounds", "crop", "pointerStart", "cropStart", "handlePosition"]}
+          context={[
+            "naturalSize",
+            "bounds",
+            "crop",
+            "pointerStart",
+            "cropStart",
+            "handlePosition",
+            "shiftLockRatio",
+            "lastShiftKey",
+          ]}
         />
       </Toolbar>
     </>

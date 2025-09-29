@@ -3,7 +3,7 @@ import { clampValue } from "@zag-js/utils"
 import type { HandlePosition } from "./image-cropper.types"
 
 interface ResizeOptions {
-  crop: Rect
+  cropStart: Rect
   handlePosition: HandlePosition
   delta: { x: number; y: number }
   bounds: Size
@@ -12,15 +12,22 @@ interface ResizeOptions {
 }
 
 export function computeResizeCrop(options: ResizeOptions): Rect {
-  const { crop, handlePosition, delta, bounds, minSize, aspectRatio } = options
-  let { x, y, width, height } = crop
+  const { cropStart, handlePosition, delta, bounds, minSize, aspectRatio } = options
+  let { x, y, width, height } = cropStart
   let left = x
   let top = y
   let right = x + width
   let bottom = y + height
 
-  const minWidth = Math.min(minSize.width, bounds.width)
-  const minHeight = Math.min(minSize.height, bounds.height)
+  const hasAspect = !!aspectRatio && isFinite(aspectRatio) && aspectRatio! > 0
+  let minWidth = Math.min(minSize.width, bounds.width)
+  let minHeight = Math.min(minSize.height, bounds.height)
+  if (hasAspect) {
+    const mw = Math.max(minWidth, minHeight * aspectRatio)
+    const mh = mw / aspectRatio
+    minWidth = Math.min(mw, bounds.width)
+    minHeight = Math.min(mh, bounds.height)
+  }
 
   const hasLeft = handlePosition.includes("left")
   const hasRight = handlePosition.includes("right")
@@ -40,17 +47,26 @@ export function computeResizeCrop(options: ResizeOptions): Rect {
     bottom = clampValue(bottom + delta.y, top + minHeight, bounds.height)
   }
 
-  if (aspectRatio && isFinite(aspectRatio) && aspectRatio > 0) {
+  if (hasAspect) {
     let newWidth = right - left
     let newHeight = bottom - top
 
     // Case: corner handles
     if ((hasLeft || hasRight) && (hasTop || hasBottom)) {
       let tempW = newWidth
-      let tempH = Math.round(tempW / aspectRatio)
+      let tempH = tempW / aspectRatio
       if (tempH > newHeight || top + tempH > bounds.height || left + tempW > bounds.width) {
         tempH = newHeight
-        tempW = Math.round(tempH * aspectRatio)
+        tempW = tempH * aspectRatio
+      }
+
+      if (tempW < minWidth || tempH < minHeight) {
+        tempW = Math.max(tempW, minWidth)
+        tempH = tempW / aspectRatio
+        if (tempH < minHeight) {
+          tempH = minHeight
+          tempW = tempH * aspectRatio
+        }
       }
 
       if (hasRight && hasBottom) {
@@ -70,13 +86,28 @@ export function computeResizeCrop(options: ResizeOptions): Rect {
       // Case: left or right handles
     } else if ((hasLeft || hasRight) && !(hasTop || hasBottom)) {
       const centerY = (top + bottom) / 2
-      let newH = Math.round(newWidth / aspectRatio)
-      const halfH = Math.floor(newH / 2)
+      let newH = newWidth / aspectRatio
+      if (newWidth < minWidth) {
+        newWidth = minWidth
+        newH = newWidth / aspectRatio
+      }
 
-      top = Math.max(0, centerY - halfH)
-      bottom = Math.min(bounds.height, top + newH)
-      newH = bottom - top
-      newWidth = Math.round(newH * aspectRatio)
+      if (newH > bounds.height) {
+        newH = bounds.height
+        newWidth = newH * aspectRatio
+      }
+
+      let halfH = newH / 2
+      top = centerY - halfH
+      bottom = centerY + halfH
+      if (top < 0) {
+        top = 0
+        bottom = top + newH
+      }
+      if (bottom > bounds.height) {
+        bottom = bounds.height
+        top = bottom - newH
+      }
 
       if (hasRight) {
         right = left + newWidth
@@ -87,13 +118,29 @@ export function computeResizeCrop(options: ResizeOptions): Rect {
       // Case: top or bottom handles
     } else if ((hasTop || hasBottom) && !(hasLeft || hasRight)) {
       const centerX = (left + right) / 2
-      let newW = Math.round(newHeight * aspectRatio)
-      const halfW = Math.floor(newW / 2)
 
-      left = Math.max(0, centerX - halfW)
-      right = Math.min(bounds.width, left + newW)
-      newW = right - left
-      newHeight = Math.round(newW / aspectRatio)
+      let newW = newHeight * aspectRatio
+      if (newHeight < minHeight) {
+        newHeight = minHeight
+        newW = newHeight * aspectRatio
+      }
+
+      if (newW > bounds.width) {
+        newW = bounds.width
+        newHeight = newW / aspectRatio
+      }
+
+      let halfW = newW / 2
+      left = centerX - halfW
+      right = centerX + halfW
+      if (left < 0) {
+        left = 0
+        right = left + newW
+      }
+      if (right > bounds.width) {
+        right = bounds.width
+        left = right - newW
+      }
 
       if (hasBottom) {
         bottom = top + newHeight
@@ -105,8 +152,14 @@ export function computeResizeCrop(options: ResizeOptions): Rect {
 
   left = clampValue(left, 0, bounds.width)
   top = clampValue(top, 0, bounds.height)
-  right = clampValue(right, left + minWidth, bounds.width)
-  bottom = clampValue(bottom, top + minHeight, bounds.height)
+
+  if (hasAspect) {
+    right = clampValue(right, left, bounds.width)
+    bottom = clampValue(bottom, top, bounds.height)
+  } else {
+    right = clampValue(right, left + minWidth, bounds.width)
+    bottom = clampValue(bottom, top + minHeight, bounds.height)
+  }
 
   return {
     x: left,
@@ -117,14 +170,14 @@ export function computeResizeCrop(options: ResizeOptions): Rect {
 }
 
 export function computeMoveCrop(
-  crop: Rect,
+  cropStart: Rect,
   delta: { x: number; y: number },
   bounds: { width: number; height: number },
 ): Rect {
   return {
-    x: clampValue(crop.x + delta.x, 0, bounds.width - crop.width),
-    y: clampValue(crop.y + delta.y, 0, bounds.height - crop.height),
-    width: crop.width,
-    height: crop.height,
+    x: clampValue(cropStart.x + delta.x, 0, bounds.width - cropStart.width),
+    y: clampValue(cropStart.y + delta.y, 0, bounds.height - cropStart.height),
+    width: cropStart.width,
+    height: cropStart.height,
   }
 }

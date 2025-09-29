@@ -34,6 +34,12 @@ export const machine = createMachine<ImageCropperSchema>({
       handlePosition: bindable<HandlePosition | null>(() => ({
         defaultValue: null,
       })),
+      shiftLockRatio: bindable<number | null>(() => ({
+        defaultValue: null,
+      })),
+      lastShiftKey: bindable<boolean>(() => ({
+        defaultValue: false,
+      })),
     }
   },
 
@@ -64,7 +70,7 @@ export const machine = createMachine<ImageCropperSchema>({
         },
         POINTER_UP: {
           target: "idle",
-          actions: ["clearPointerStart", "clearCropStart", "clearHandlePosition"],
+          actions: ["clearPointerStart", "clearCropStart", "clearHandlePosition", "clearShiftState"],
         },
       },
     },
@@ -119,19 +125,43 @@ export const machine = createMachine<ImageCropperSchema>({
         const minCropSize = prop("minCropSize")
         const handlePosition = context.get("handlePosition")
         const pointerStart = context.get("pointerStart")
-        const crop = context.get("cropStart")
+        const cropStart = context.get("cropStart")
         const bounds = context.get("bounds")
-        const aspectRatio = prop("aspectRatio")
+        let aspectRatio = prop("aspectRatio")
         const currentPoint = event.point
 
-        if (!pointerStart || !crop) return
+        if (!pointerStart || !cropStart) return
 
         const delta = { x: currentPoint.x - pointerStart.x, y: currentPoint.y - pointerStart.y }
 
         let nextCrop
         if (handlePosition) {
+          if (aspectRatio == null || !Number.isFinite(aspectRatio) || aspectRatio <= 0) {
+            const lastShiftKey = context.get("lastShiftKey")
+
+            if (event.shiftKey && !lastShiftKey) {
+              const currentCrop = context.get("crop")
+              const w = currentCrop.width
+              const h = currentCrop.height
+              if (w > 0 && h > 0) {
+                const ratio = w / h
+                if (Number.isFinite(ratio) && ratio > 0) {
+                  context.set("shiftLockRatio", ratio)
+                }
+              }
+            }
+
+            if (event.shiftKey) {
+              const lock = context.get("shiftLockRatio")
+              if (lock && Number.isFinite(lock) && lock > 0) {
+                aspectRatio = lock
+              }
+            } else {
+              context.set("shiftLockRatio", null)
+            }
+          }
           nextCrop = computeResizeCrop({
-            crop,
+            cropStart: cropStart,
             handlePosition,
             delta,
             bounds,
@@ -139,10 +169,12 @@ export const machine = createMachine<ImageCropperSchema>({
             aspectRatio,
           })
         } else {
-          nextCrop = computeMoveCrop(crop, delta, bounds)
+          nextCrop = computeMoveCrop(cropStart, delta, bounds)
         }
 
         context.set("crop", nextCrop)
+        // Update last observed Shift state
+        context.set("lastShiftKey", !!event.shiftKey)
       },
 
       setHandlePosition({ event, context }) {
@@ -162,6 +194,11 @@ export const machine = createMachine<ImageCropperSchema>({
       clearHandlePosition({ context }) {
         context.set("handlePosition", null)
       },
+
+      clearShiftState({ context }) {
+        context.set("shiftLockRatio", null)
+        context.set("lastShiftKey", false)
+      },
     },
 
     effects: {
@@ -169,7 +206,7 @@ export const machine = createMachine<ImageCropperSchema>({
         function onPointerMove(event: PointerEvent) {
           const point = getEventPoint(event)
           const target = getEventTarget<Element>(event)
-          send({ type: "POINTER_MOVE", point, target })
+          send({ type: "POINTER_MOVE", point, target, shiftKey: event.shiftKey })
         }
 
         function onPointerUp() {
