@@ -1,5 +1,5 @@
 import type { EventObject, Service, Machine } from "@zag-js/core"
-import type { CommonProperties, DirectionProperty, Point, PropTypes, RequiredBy, Size } from "@zag-js/types"
+import type { CommonProperties, DirectionProperty, Point, PropTypes, Rect, RequiredBy, Size } from "@zag-js/types"
 
 export type HandlePosition =
   | "top-left"
@@ -10,13 +10,6 @@ export type HandlePosition =
   | "bottom"
   | "bottom-left"
   | "left"
-
-export type CropRect = {
-  x: number
-  y: number
-  width: number
-  height: number
-}
 
 export type ElementIds = Partial<{
   root: string
@@ -34,7 +27,7 @@ export interface ImageCropperProps extends DirectionProperty, CommonProperties {
   /**
    * The initial rectangle of the crop area
    */
-  initialCrop: CropRect
+  initialCrop: Rect
   /**
    * The minimum size of the crop area
    * @default { width: 40, height: 40 }
@@ -56,9 +49,9 @@ export interface ImageCropperSchema {
   context: {
     naturalSize: Size
     bounds: Size
-    crop: CropRect
+    crop: Rect
     pointerStart: Point | null
-    cropStart: CropRect | null
+    cropStart: Rect | null
     handlePosition: HandlePosition | null
   }
   event: EventObject

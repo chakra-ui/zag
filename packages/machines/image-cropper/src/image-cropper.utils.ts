@@ -1,86 +1,130 @@
-interface EnforceAspectRatioOptions {
-  left: number
-  top: number
-  right: number
-  bottom: number
-  handlePosition: string
-  bounds: { width: number; height: number }
-  aspectRatio?: number
+import type { Rect, Size } from "@zag-js/types"
+import { clampValue } from "@zag-js/utils"
+import type { HandlePosition } from "./image-cropper.types"
+
+interface ResizeOptions {
+  crop: Rect
+  handlePosition: HandlePosition
+  delta: { x: number; y: number }
+  bounds: Size
+  minSize: Size
+  aspectRatio?: number | undefined
 }
 
-export function enforceAspectRatio(options: EnforceAspectRatioOptions) {
-  const { bounds, aspectRatio } = options
-  if (!aspectRatio || aspectRatio <= 0) return options
+export function computeResizeCrop(options: ResizeOptions): Rect {
+  const { crop, handlePosition, delta, bounds, minSize, aspectRatio } = options
+  let { x, y, width, height } = crop
+  let left = x
+  let top = y
+  let right = x + width
+  let bottom = y + height
 
-  let { left, top, right, bottom, handlePosition } = options
-  let w = right - left
-  let h = bottom - top
+  const minWidth = Math.min(minSize.width, bounds.width)
+  const minHeight = Math.min(minSize.height, bounds.height)
 
   const hasLeft = handlePosition.includes("left")
   const hasRight = handlePosition.includes("right")
   const hasTop = handlePosition.includes("top")
   const hasBottom = handlePosition.includes("bottom")
 
-  // Keep the opposite corner fixed,
-  // adjust dragged sides.
-  if ((hasLeft || hasRight) && (hasTop || hasBottom)) {
-    // Try deriving height from width; if it overflows, derive width from height.
-    let newW = w
-    let newH = Math.round(w / aspectRatio)
-    if (newH > h || top + newH > bounds.height || left + newW > bounds.width) {
-      newH = h
-      newW = Math.round(h * aspectRatio)
+  if (hasLeft) {
+    left = clampValue(left + delta.x, 0, right - minWidth)
+  }
+  if (hasRight) {
+    right = clampValue(right + delta.x, left + minWidth, bounds.width)
+  }
+  if (hasTop) {
+    top = clampValue(top + delta.y, 0, bottom - minHeight)
+  }
+  if (hasBottom) {
+    bottom = clampValue(bottom + delta.y, top + minHeight, bounds.height)
+  }
+
+  if (aspectRatio && isFinite(aspectRatio) && aspectRatio > 0) {
+    let newWidth = right - left
+    let newHeight = bottom - top
+
+    // Case: corner handles
+    if ((hasLeft || hasRight) && (hasTop || hasBottom)) {
+      let tempW = newWidth
+      let tempH = Math.round(tempW / aspectRatio)
+      if (tempH > newHeight || top + tempH > bounds.height || left + tempW > bounds.width) {
+        tempH = newHeight
+        tempW = Math.round(tempH * aspectRatio)
+      }
+
+      if (hasRight && hasBottom) {
+        right = left + tempW
+        bottom = top + tempH
+      } else if (hasRight && hasTop) {
+        right = left + tempW
+        top = bottom - tempH
+      } else if (hasLeft && hasBottom) {
+        left = right - tempW
+        bottom = top + tempH
+      } else if (hasLeft && hasTop) {
+        left = right - tempW
+        top = bottom - tempH
+      }
+
+      // Case: left or right handles
+    } else if ((hasLeft || hasRight) && !(hasTop || hasBottom)) {
+      const centerY = (top + bottom) / 2
+      let newH = Math.round(newWidth / aspectRatio)
+      const halfH = Math.floor(newH / 2)
+
+      top = Math.max(0, centerY - halfH)
+      bottom = Math.min(bounds.height, top + newH)
+      newH = bottom - top
+      newWidth = Math.round(newH * aspectRatio)
+
+      if (hasRight) {
+        right = left + newWidth
+      } else {
+        left = right - newWidth
+      }
+
+      // Case: top or bottom handles
+    } else if ((hasTop || hasBottom) && !(hasLeft || hasRight)) {
+      const centerX = (left + right) / 2
+      let newW = Math.round(newHeight * aspectRatio)
+      const halfW = Math.floor(newW / 2)
+
+      left = Math.max(0, centerX - halfW)
+      right = Math.min(bounds.width, left + newW)
+      newW = right - left
+      newHeight = Math.round(newW / aspectRatio)
+
+      if (hasBottom) {
+        bottom = top + newHeight
+      } else {
+        top = bottom - newHeight
+      }
     }
-
-    if (hasRight && hasBottom) {
-      right = left + newW
-      bottom = top + newH
-    } else if (hasRight && hasTop) {
-      right = left + newW
-      top = bottom - newH
-    } else if (hasLeft && hasBottom) {
-      left = right - newW
-      bottom = top + newH
-    } else if (hasLeft && hasTop) {
-      left = right - newW
-      top = bottom - newH
-    }
-  }
-  // Horizontal edge only,
-  // keep vertical center, expand height to match width/aspect.
-  else if ((hasLeft || hasRight) && !(hasTop || hasBottom)) {
-    const cy = (top + bottom) / 2
-    let newH = Math.round(w / aspectRatio)
-    let halfH = Math.floor(newH / 2)
-
-    top = Math.max(0, cy - halfH)
-    bottom = Math.min(bounds.height, top + newH)
-    newH = bottom - top
-
-    const newW = Math.round(newH * aspectRatio)
-    if (hasRight) right = left + newW
-    else left = right - newW
-  }
-  // Vertical edge only,
-  // keep horizontal center, expand width to match height*aspect.
-  else if ((hasTop || hasBottom) && !(hasLeft || hasRight)) {
-    const cx = (left + right) / 2
-    let newW = Math.round(h * aspectRatio)
-    let halfW = Math.floor(newW / 2)
-
-    left = Math.max(0, cx - halfW)
-    right = Math.min(bounds.width, left + newW)
-    newW = right - left
-
-    const newH = Math.round(newW / aspectRatio)
-    if (hasBottom) bottom = top + newH
-    else top = bottom - newH
   }
 
-  left = Math.max(0, Math.min(left, bounds.width))
-  top = Math.max(0, Math.min(top, bounds.height))
-  right = Math.max(left, Math.min(right, bounds.width))
-  bottom = Math.max(top, Math.min(bottom, bounds.height))
+  left = clampValue(left, 0, bounds.width)
+  top = clampValue(top, 0, bounds.height)
+  right = clampValue(right, left + minWidth, bounds.width)
+  bottom = clampValue(bottom, top + minHeight, bounds.height)
 
-  return { left, top, right, bottom }
+  return {
+    x: left,
+    y: top,
+    width: right - left,
+    height: bottom - top,
+  }
+}
+
+export function computeMoveCrop(
+  crop: Rect,
+  delta: { x: number; y: number },
+  bounds: { width: number; height: number },
+): Rect {
+  return {
+    x: clampValue(crop.x + delta.x, 0, bounds.width - crop.width),
+    y: clampValue(crop.y + delta.y, 0, bounds.height - crop.height),
+    width: crop.width,
+    height: crop.height,
+  }
 }

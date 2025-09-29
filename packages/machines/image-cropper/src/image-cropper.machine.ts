@@ -1,10 +1,9 @@
 import { createMachine } from "@zag-js/core"
 import * as dom from "./image-cropper.dom"
-import type { CropRect, HandlePosition, ImageCropperSchema } from "./image-cropper.types"
-import type { Point, Size } from "@zag-js/types"
+import type { HandlePosition, ImageCropperSchema } from "./image-cropper.types"
+import type { Point, Rect, Size } from "@zag-js/types"
 import { addDomEvent, getEventPoint, getEventTarget } from "@zag-js/dom-query"
-import { clampValue } from "@zag-js/utils"
-import { enforceAspectRatio } from "./image-cropper.utils"
+import { computeMoveCrop, computeResizeCrop } from "./image-cropper.utils"
 
 export const machine = createMachine<ImageCropperSchema>({
   props({ props }) {
@@ -23,13 +22,13 @@ export const machine = createMachine<ImageCropperSchema>({
       bounds: bindable<Size>(() => ({
         defaultValue: { width: 0, height: 0 },
       })),
-      crop: bindable<CropRect>(() => ({
+      crop: bindable<Rect>(() => ({
         defaultValue: prop("initialCrop"),
       })),
       pointerStart: bindable<Point | null>(() => ({
         defaultValue: null,
       })),
-      cropStart: bindable<CropRect | null>(() => ({
+      cropStart: bindable<Rect | null>(() => ({
         defaultValue: null,
       })),
       handlePosition: bindable<HandlePosition | null>(() => ({
@@ -127,69 +126,20 @@ export const machine = createMachine<ImageCropperSchema>({
 
         if (!pointerStart || !crop) return
 
-        const dx = currentPoint.x - pointerStart.x
-        const dy = currentPoint.y - pointerStart.y
+        const delta = { x: currentPoint.x - pointerStart.x, y: currentPoint.y - pointerStart.y }
 
-        let nextCrop: CropRect
-
-        // If handlePosition is set, we are resizing the crop area
+        let nextCrop
         if (handlePosition) {
-          let left = crop.x
-          let top = crop.y
-          let right = crop.x + crop.width
-          let bottom = crop.y + crop.height
-
-          const minWidth = Math.min(minCropSize.width, bounds.width)
-          const minHeight = Math.min(minCropSize.height, bounds.height)
-
-          const hasLeft = handlePosition.includes("left")
-          const hasRight = handlePosition.includes("right")
-          const hasTop = handlePosition.includes("top")
-          const hasBottom = handlePosition.includes("bottom")
-
-          if (hasLeft) {
-            const nextLeft = clampValue(left + dx, 0, right - minWidth)
-            left = Math.min(nextLeft, right - minWidth)
-          }
-
-          if (hasRight) {
-            const nextRight = clampValue(right + dx, left + minWidth, bounds.width)
-            right = Math.max(nextRight, left + minWidth)
-          }
-
-          if (hasTop) {
-            const nextTop = clampValue(top + dy, 0, bottom - minHeight)
-            top = Math.min(nextTop, bottom - minHeight)
-          }
-
-          if (hasBottom) {
-            const nextBottom = clampValue(bottom + dy, top + minHeight, bounds.height)
-            bottom = Math.max(nextBottom, top + minHeight)
-          }
-
-          if (aspectRatio && isFinite(aspectRatio) && aspectRatio > 0) {
-            ;({ left, top, right, bottom } = enforceAspectRatio({
-              left,
-              top,
-              right,
-              bottom,
-              handlePosition,
-              bounds,
-              aspectRatio,
-            }))
-          }
-
-          const width = clampValue(right - left, minWidth, bounds.width)
-          const height = clampValue(bottom - top, minHeight, bounds.height)
-
-          nextCrop = { x: left, y: top, width, height }
+          nextCrop = computeResizeCrop({
+            crop,
+            handlePosition,
+            delta,
+            bounds,
+            minSize: minCropSize,
+            aspectRatio,
+          })
         } else {
-          nextCrop = {
-            x: clampValue(crop.x + dx, 0, bounds.width - crop.width),
-            y: clampValue(crop.y + dy, 0, bounds.height - crop.height),
-            width: crop.width,
-            height: crop.height,
-          }
+          nextCrop = computeMoveCrop(crop, delta, bounds)
         }
 
         context.set("crop", nextCrop)
