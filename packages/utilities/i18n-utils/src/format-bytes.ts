@@ -40,13 +40,28 @@ export const formatBytes = (bytes: number, locale = "en-US", options: FormatByte
   const { unitSystem = "decimal", precision = 3, unit = "byte", unitDisplay = "short" } = options
 
   const factor = unitSystem === "binary" ? 1024 : 1000
-
   const prefix = unit === "bit" ? bitPrefixes : bytePrefixes
-  const index = Math.max(0, Math.min(Math.floor(Math.log10(bytes) / 3), prefix.length - 1))
 
-  const v = parseFloat((bytes / Math.pow(factor, index)).toPrecision(precision))
+  // Handle negative values
+  const isNegative = bytes < 0
+  const absoluteBytes = Math.abs(bytes)
 
-  return formatNumber(v, locale, {
+  // Find the appropriate unit using iterative division
+  let value = absoluteBytes
+  let index = 0
+
+  while (value >= factor && index < prefix.length - 1) {
+    value /= factor
+    index++
+  }
+
+  // Apply precision
+  const v = parseFloat(value.toPrecision(precision))
+
+  // Restore sign if negative
+  const finalValue = isNegative ? -v : v
+
+  return formatNumber(finalValue, locale, {
     style: "unit",
     unit: prefix[index] + unit,
     unitDisplay,
