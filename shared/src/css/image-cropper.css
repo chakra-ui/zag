@@ -12,6 +12,7 @@
 }
 
 [data-scope="image-cropper"][data-part="image"] {
+  display: block;
   pointer-events: none;
   user-select: none;
 }

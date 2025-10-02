@@ -39,22 +39,38 @@ export interface ImageCropperProps extends DirectionProperty, CommonProperties {
    * If not provided, the crop area can be freely resized.
    */
   aspectRatio?: number
+  /**
+   * The amount of zoom applied per wheel step.
+   * @default 0.1
+   */
+  zoomStep?: number
+  /**
+   * The minimum zoom factor allowed.
+   * @default 1
+   */
+  minZoom?: number
+  /**
+   * The maximum zoom factor allowed.
+   * @default 5
+   */
+  maxZoom?: number
 }
 
-type PropsWithDefault = "initialCrop" | "minCropSize"
+type PropsWithDefault = "initialCrop" | "minCropSize" | "zoomStep" | "minZoom" | "maxZoom"
 
 export interface ImageCropperSchema {
   state: "idle" | "dragging"
   props: RequiredBy<ImageCropperProps, PropsWithDefault>
   context: {
     naturalSize: Size
-    bounds: Size
     crop: Rect
     pointerStart: Point | null
     cropStart: Rect | null
     handlePosition: HandlePosition | null
     shiftLockRatio: number | null
     lastShiftKey: boolean
+    zoom: number
+    offset: Point
   }
   event: EventObject
   action: string

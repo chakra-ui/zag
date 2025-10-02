@@ -14,3 +14,8 @@ export const getImageEl = (ctx: Scope) => ctx.getById<HTMLImageElement>(getImage
 export const getSelectionEl = (ctx: Scope) => ctx.getById(getSelectionId(ctx))
 export const getOverlayEl = (ctx: Scope) => ctx.getById(getOverlayId(ctx))
 export const getHandleEl = (ctx: Scope, position: string) => ctx.getById(getHandleId(ctx, position))
+
+export const getViewportBounds = (ctx: Scope) => {
+  const viewportEl = getViewportEl(ctx)
+  return viewportEl?.getBoundingClientRect() ?? { width: 0, height: 0, top: 0, left: 0, bottom: 0, right: 0 }
+}

@@ -10,6 +10,9 @@ export const props = createProps<ImageCropperProps>()([
   "initialCrop",
   "minCropSize",
   "aspectRatio",
+  "zoomStep",
+  "minZoom",
+  "maxZoom",
 ])
 
 export const splitProps = createSplitProps<Partial<ImageCropperProps>>(props)

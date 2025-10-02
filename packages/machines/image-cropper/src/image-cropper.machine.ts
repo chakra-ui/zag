@@ -4,12 +4,16 @@ import type { HandlePosition, ImageCropperSchema } from "./image-cropper.types"
 import type { Point, Rect, Size } from "@zag-js/types"
 import { addDomEvent, getEventPoint, getEventTarget } from "@zag-js/dom-query"
 import { computeMoveCrop, computeResizeCrop } from "./image-cropper.utils"
+import { clampValue } from "@zag-js/utils"
 
 export const machine = createMachine<ImageCropperSchema>({
   props({ props }) {
     return {
       initialCrop: { x: 0, y: 0, width: 50, height: 50 },
       minCropSize: { width: 40, height: 40 },
+      zoomStep: 0.1,
+      minZoom: 1,
+      maxZoom: 5,
       ...props,
     }
   },
@@ -17,9 +21,6 @@ export const machine = createMachine<ImageCropperSchema>({
   context({ bindable, prop }) {
     return {
       naturalSize: bindable<Size>(() => ({
-        defaultValue: { width: 0, height: 0 },
-      })),
-      bounds: bindable<Size>(() => ({
         defaultValue: { width: 0, height: 0 },
       })),
       crop: bindable<Rect>(() => ({
@@ -40,6 +41,12 @@ export const machine = createMachine<ImageCropperSchema>({
       lastShiftKey: bindable<boolean>(() => ({
         defaultValue: false,
       })),
+      zoom: bindable<number>(() => ({
+        defaultValue: 1,
+      })),
+      offset: bindable<Point>(() => ({
+        defaultValue: { x: 0, y: 0 },
+      })),
     }
   },
 
@@ -57,7 +64,11 @@ export const machine = createMachine<ImageCropperSchema>({
         POINTER_DOWN: {
           guard: "hasBounds",
           target: "dragging",
-          actions: ["setBounds", "setPointerStart", "setCropStart", "setHandlePosition"],
+          actions: ["setPointerStart", "setCropStart", "setHandlePosition"],
+        },
+        WHEEL: {
+          guard: "hasBounds",
+          actions: ["updateZoom"],
         },
       },
     },
@@ -72,6 +83,9 @@ export const machine = createMachine<ImageCropperSchema>({
           target: "idle",
           actions: ["clearPointerStart", "clearCropStart", "clearHandlePosition", "clearShiftState"],
         },
+        WHEEL: {
+          actions: ["updateZoom"],
+        },
       },
     },
   },
@@ -79,9 +93,7 @@ export const machine = createMachine<ImageCropperSchema>({
   implementations: {
     guards: {
       hasBounds({ scope }) {
-        const viewportEl = dom.getViewportEl(scope)
-        if (!viewportEl) return false
-        const bounds = viewportEl?.getBoundingClientRect()
+        const bounds = dom.getViewportBounds(scope)
         return bounds.width > 0 && bounds.height > 0
       },
     },
@@ -103,13 +115,6 @@ export const machine = createMachine<ImageCropperSchema>({
         context.set("naturalSize", event.size)
       },
 
-      setBounds({ scope, context }) {
-        const viewportEl = dom.getViewportEl(scope)
-        if (!viewportEl) return
-        const bounds = viewportEl?.getBoundingClientRect()
-        context.set("bounds", { width: bounds.width, height: bounds.height })
-      },
-
       setPointerStart({ event, context }) {
         const point = event.point
 
@@ -121,13 +126,15 @@ export const machine = createMachine<ImageCropperSchema>({
         context.set("cropStart", crop)
       },
 
-      updateCrop({ context, event, prop }) {
+      updateCrop({ context, event, prop, scope }) {
         const minCropSize = prop("minCropSize")
         const handlePosition = context.get("handlePosition")
         const pointerStart = context.get("pointerStart")
         const cropStart = context.get("cropStart")
-        const bounds = context.get("bounds")
         let aspectRatio = prop("aspectRatio")
+
+        const bounds = dom.getViewportBounds(scope)
+
         const currentPoint = event.point
 
         if (!pointerStart || !cropStart) return
@@ -198,6 +205,96 @@ export const machine = createMachine<ImageCropperSchema>({
       clearShiftState({ context }) {
         context.set("shiftLockRatio", null)
         context.set("lastShiftKey", false)
+      },
+
+      updateZoom({ context, event, prop, scope }) {
+        const delta = Number(event.deltaY)
+        if (!Number.isFinite(delta) || delta === 0) return
+
+        const stepProp = prop("zoomStep")
+        const step = Math.abs(stepProp)
+
+        let minZoom = prop("minZoom")
+        let maxZoom = prop("maxZoom")
+
+        if (minZoom > maxZoom) {
+          ;[minZoom, maxZoom] = [maxZoom, minZoom]
+        }
+
+        const direction = Math.sign(delta) < 0 ? 1 : -1
+
+        const currentZoom = context.get("zoom")
+        if (!Number.isFinite(currentZoom) || currentZoom <= 0) return
+
+        const nextZoom = clampValue(currentZoom + step * direction, minZoom, maxZoom)
+
+        if (nextZoom === currentZoom) return
+
+        const point = event.point
+
+        const bounds = dom.getViewportBounds(scope)
+        const naturalSize = context.get("naturalSize")
+
+        let viewportWidth = bounds.width
+        let viewportHeight = bounds.height
+
+        const clampOffsetValue = (value: number, viewportSize: number, imageSize: number) => {
+          if (!Number.isFinite(value) || !Number.isFinite(viewportSize) || viewportSize <= 0) return value
+          if (!Number.isFinite(imageSize) || imageSize <= 0) return value
+          const limit = viewportSize - imageSize
+          const min = Math.min(0, limit)
+          const max = Math.max(0, limit)
+          return clampValue(value, min, max)
+        }
+
+        // Keep the translated image within the viewport for a given zoom level.
+        const clampOffset = (offset: Point, zoom: number): Point => {
+          if (!Number.isFinite(zoom) || zoom <= 0) return offset
+          const imageWidth = naturalSize.width * zoom
+          const imageHeight = naturalSize.height * zoom
+          return {
+            x: clampOffsetValue(offset.x, viewportWidth, imageWidth),
+            y: clampOffsetValue(offset.y, viewportHeight, imageHeight),
+          }
+        }
+
+        const currentOffsetRaw = context.get("offset")
+        const currentOffset = clampOffset(
+          {
+            x: Number.isFinite(currentOffsetRaw.x) ? currentOffsetRaw.x : 0,
+            y: Number.isFinite(currentOffsetRaw.y) ? currentOffsetRaw.y : 0,
+          },
+          currentZoom,
+        )
+
+        if (!point) {
+          context.set("zoom", nextZoom)
+          context.set("offset", clampOffset(currentOffset, nextZoom))
+          return
+        }
+
+        const localX = (point.x - currentOffset.x) / currentZoom
+        const localY = (point.y - currentOffset.y) / currentZoom
+
+        if (!Number.isFinite(localX) || !Number.isFinite(localY)) {
+          context.set("zoom", nextZoom)
+          context.set("offset", clampOffset(currentOffset, nextZoom))
+          return
+        }
+
+        const nextOffset = {
+          x: point.x - localX * nextZoom,
+          y: point.y - localY * nextZoom,
+        }
+
+        if (!Number.isFinite(nextOffset.x) || !Number.isFinite(nextOffset.y)) {
+          context.set("zoom", nextZoom)
+          context.set("offset", clampOffset(currentOffset, nextZoom))
+          return
+        }
+
+        context.set("zoom", nextZoom)
+        context.set("offset", clampOffset(nextOffset, nextZoom))
       },
     },
 

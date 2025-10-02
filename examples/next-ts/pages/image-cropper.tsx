@@ -38,13 +38,14 @@ export default function Page() {
           state={service}
           context={[
             "naturalSize",
-            "bounds",
             "crop",
             "pointerStart",
             "cropStart",
             "handlePosition",
             "shiftLockRatio",
             "lastShiftKey",
+            "zoom",
+            "offset",
           ]}
         />
       </Toolbar>

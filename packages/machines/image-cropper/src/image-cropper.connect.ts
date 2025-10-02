@@ -23,10 +23,23 @@ export function connect<T extends PropTypes>(
       return normalize.element({
         ...parts.viewport.attrs,
         id: dom.getViewportId(scope),
+        onWheel(event) {
+          const viewportEl = event.currentTarget
+          if (!viewportEl) return
+          const rect = viewportEl.getBoundingClientRect()
+          const point = {
+            x: event.clientX - rect.left,
+            y: event.clientY - rect.top,
+          }
+          send({ type: "WHEEL", deltaY: event.deltaY, point })
+        },
       })
     },
 
     getImageProps() {
+      const zoom = context.get("zoom")
+      const offset = context.get("offset")
+
       return normalize.element({
         ...parts.image.attrs,
         id: dom.getImageId(scope),
@@ -35,6 +48,10 @@ export function connect<T extends PropTypes>(
           if (!imageEl?.complete) return
           const { naturalWidth: width, naturalHeight: height } = imageEl
           send({ type: "SET_NATURAL_SIZE", src: "element", size: { width, height } })
+        },
+        style: {
+          transform: `translate(${toPx(offset.x)}, ${toPx(offset.y)}) scale(${zoom})`,
+          transformOrigin: "0px 0px",
         },
       })
     },
