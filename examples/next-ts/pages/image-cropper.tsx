@@ -33,7 +33,7 @@ export default function Page() {
         </div>
       </main>
 
-      <Toolbar controls={controls.ui}>
+      <Toolbar controls={controls.ui} viz>
         <StateVisualizer
           state={service}
           context={[
