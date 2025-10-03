@@ -198,6 +198,9 @@ test.describe("bottom-sheet [defaultActiveSnapPoint]", () => {
     await I.pressKey("Escape")
     await I.dontSeeContent()
 
+    // Small delay to ensure state is fully reset
+    await I.wait(100)
+
     await I.clickTrigger()
     await I.seeContent()
     await I.waitForOpenState()
