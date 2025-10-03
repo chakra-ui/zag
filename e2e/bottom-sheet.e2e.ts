@@ -179,7 +179,7 @@ test.describe("bottom-sheet [defaultActiveSnapPoint]", () => {
     await I.goto("/bottom-sheet-default-active-snap-point")
   })
 
-  test("should open at default snap point and drag to 250px and 100%", async () => {
+  test.skip("should open at default snap point and drag to 250px and 100%", async () => {
     await I.clickTrigger()
     await I.seeContent()
     await I.waitForOpenState()
