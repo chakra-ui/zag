@@ -1,5 +1,22 @@
 # @zag-js/listbox
 
+## 1.25.1
+
+### Patch Changes
+
+- [#2746](https://github.com/chakra-ui/zag/pull/2746)
+  [`614fe17`](https://github.com/chakra-ui/zag/commit/614fe17282c0060c825b4a655ca3f4364b5fe24f) Thanks
+  [@julienbenac](https://github.com/julienbenac)! - fix: update `splitProps` to avoid partial
+
+- Updated dependencies [[`9da67a5`](https://github.com/chakra-ui/zag/commit/9da67a5fd8ac5d045fdf12cc0e1be596f6950e2c)]:
+  - @zag-js/focus-visible@1.25.1
+  - @zag-js/anatomy@1.25.1
+  - @zag-js/core@1.25.1
+  - @zag-js/types@1.25.1
+  - @zag-js/collection@1.25.1
+  - @zag-js/utils@1.25.1
+  - @zag-js/dom-query@1.25.1
+
 ## 1.25.0
 
 ### Patch Changes
