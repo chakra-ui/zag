@@ -6,7 +6,7 @@ type RouteData = {
 export const routesData: RouteData[] = [
   { label: "Bottom Sheet", path: "/bottom-sheet" },
   { label: "Bottom Sheet (Snap Points)", path: "/bottom-sheet-snap-points" },
-  { label: "Bottom Sheet (Default Active Snap Point)", path: "/bottom-sheet-default-active-snap-point" },
+  { label: "Bottom Sheet (Active Snap Point)", path: "/bottom-sheet-default-active-snap-point" },
   { label: "Scroll Area", path: "/scroll-area" },
   { label: "Scroll Area (Nested)", path: "/scroll-area-nested" },
   { label: "Async List", path: "/async-list" },

@@ -300,7 +300,7 @@ export const passwordInputControls = defineControls({
 })
 
 export const bottomSheetControls = defineControls({
-  swipeVelocityThreshold: { type: "number", defaultValue: 500 },
+  swipeVelocityThreshold: { type: "number", defaultValue: 700 },
   closeThreshold: { type: "number", defaultValue: 0.25 },
   preventDragOnScroll: { type: "boolean", defaultValue: true },
 })
