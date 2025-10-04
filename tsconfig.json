@@ -12,7 +12,7 @@
     "lib": ["dom", "dom.iterable", "esnext"],
     "target": "esnext",
     "module": "esnext",
-    "moduleResolution": "node",
+    "moduleResolution": "bundler",
     "noImplicitReturns": false,
     "resolveJsonModule": true,
     "exactOptionalPropertyTypes": true,

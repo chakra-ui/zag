@@ -449,3 +449,173 @@ describe("basic", () => {
     vi.useRealTimers()
   })
 })
+
+describe("edge cases", () => {
+  test("reactive props updates", async () => {
+    const actionSpy = vi.fn()
+
+    const machine = createMachine<any>({
+      props({ props }) {
+        return { max: props.max || 0 }
+      },
+      initialState() {
+        return "test"
+      },
+      context({ bindable }) {
+        return {
+          count: bindable(() => ({ defaultValue: 0 })),
+        }
+      },
+      states: {
+        test: {
+          on: {
+            INCREMENT: {
+              actions: ["increment"],
+            },
+            CHECK: {
+              guard: ({ prop, context }: any) => context.get("count") < prop("max"),
+              actions: ["allowAction"],
+            },
+          },
+        },
+      },
+      implementations: {
+        actions: {
+          allowAction: actionSpy,
+          increment: ({ context }) => context.set("count", context.get("count") + 1),
+        },
+      },
+    })
+
+    const { result } = renderHook(() => useMachine(machine, { max: 5 }))
+
+    // Increment count to 3
+    await act(async () => result.current.send({ type: "INCREMENT" }))
+    await act(async () => result.current.send({ type: "INCREMENT" }))
+    await act(async () => result.current.send({ type: "INCREMENT" }))
+
+    // max is 5, count is 3, should allow action
+    await act(async () => result.current.send({ type: "CHECK" }))
+    expect(actionSpy).toHaveBeenCalledTimes(1)
+  })
+
+  test("state.matches() helper", async () => {
+    const machine = createMachine<any>({
+      initialState() {
+        return "idle"
+      },
+      states: {
+        idle: {
+          on: {
+            START: { target: "loading" },
+          },
+        },
+        loading: {
+          on: {
+            SUCCESS: { target: "success" },
+            ERROR: { target: "error" },
+          },
+        },
+        success: {},
+        error: {},
+      },
+    })
+
+    const { result, send } = renderMachine(machine)
+
+    expect(result.current.state.matches("idle")).toBe(true)
+    expect(result.current.state.matches("idle", "loading")).toBe(true)
+    expect(result.current.state.matches("loading", "success")).toBe(false)
+
+    await send({ type: "START" })
+    expect(result.current.state.matches("loading")).toBe(true)
+    expect(result.current.state.matches("idle", "loading", "error")).toBe(true)
+
+    await send({ type: "SUCCESS" })
+    expect(result.current.state.matches("success", "error")).toBe(true)
+    expect(result.current.state.matches("idle", "loading")).toBe(false)
+  })
+
+  test("same-state transitions with actions", async () => {
+    const actionSpy = vi.fn()
+
+    const machine = createMachine<any>({
+      initialState() {
+        return "active"
+      },
+      states: {
+        active: {
+          on: {
+            PING: {
+              target: "active",
+              actions: ["onPing"],
+            },
+          },
+        },
+      },
+      implementations: {
+        actions: {
+          onPing: actionSpy,
+        },
+      },
+    })
+
+    const { result, send } = renderMachine(machine)
+
+    expect(result.current.state.get()).toBe("active")
+
+    await send({ type: "PING" })
+    expect(result.current.state.get()).toBe("active")
+    expect(actionSpy).toHaveBeenCalledTimes(1)
+
+    await send({ type: "PING" })
+    expect(result.current.state.get()).toBe("active")
+    expect(actionSpy).toHaveBeenCalledTimes(2)
+  })
+
+  test("event previous/current tracking", async () => {
+    let capturedPrevious: any = null
+    let capturedCurrent: any = null
+
+    const machine = createMachine<any>({
+      initialState() {
+        return "test"
+      },
+      states: {
+        test: {
+          on: {
+            FIRST: {
+              target: "second",
+            },
+            SECOND: {
+              actions: ["captureEvents"],
+            },
+          },
+        },
+        second: {
+          on: {
+            THIRD: {
+              actions: ["captureEvents"],
+            },
+          },
+        },
+      },
+      implementations: {
+        actions: {
+          captureEvents({ event }) {
+            capturedPrevious = event.previous()
+            capturedCurrent = event.current()
+          },
+        },
+      },
+    })
+
+    const { send } = renderMachine(machine)
+
+    await send({ type: "FIRST", data: "first-data" })
+    await send({ type: "THIRD", data: "third-data" })
+
+    expect(capturedCurrent).toMatchObject({ type: "THIRD", data: "third-data" })
+    expect(capturedPrevious).toMatchObject({ type: "FIRST", data: "first-data" })
+  })
+})
