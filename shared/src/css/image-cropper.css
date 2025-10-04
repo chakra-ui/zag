@@ -1,6 +1,7 @@
 [data-scope="image-cropper"][data-part="viewport"] {
   position: relative;
   overflow: hidden;
+  touch-action: none;
   user-select: none;
 }
 

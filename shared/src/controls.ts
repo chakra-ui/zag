@@ -311,7 +311,7 @@ export const scrollAreaControls = defineControls({
 
 export const imageCropperControls = defineControls({
   aspectRatio: { type: "number" },
-  zoomStep: { type: "number", defaultValue: 0.1 },
+  zoomStep: { type: "number", defaultValue: 0.5 },
   minZoom: { type: "number", defaultValue: 1 },
   maxZoom: { type: "number", defaultValue: 5 },
 })

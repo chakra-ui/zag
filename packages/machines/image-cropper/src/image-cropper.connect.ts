@@ -31,7 +31,35 @@ export function connect<T extends PropTypes>(
             x: event.clientX - rect.left,
             y: event.clientY - rect.top,
           }
-          send({ type: "WHEEL", deltaY: event.deltaY, point })
+          send({ type: "ZOOM", trigger: "wheel", delta: event.deltaY, point })
+        },
+        onTouchStart(event) {
+          if (event.touches.length >= 2) {
+            const touches = Array.from(event.touches).map((touch) => ({
+              x: touch.clientX,
+              y: touch.clientY,
+            }))
+
+            send({ type: "PINCH_START", touches })
+          }
+        },
+        onTouchMove(event) {
+          if (event.touches.length >= 2) {
+            event.preventDefault()
+
+            const touches = Array.from(event.touches).map((touch) => ({
+              x: touch.clientX,
+              y: touch.clientY,
+            }))
+
+            send({ type: "PINCH_MOVE", touches })
+          }
+        },
+
+        onTouchEnd(event) {
+          if (event.touches.length < 2) {
+            send({ type: "PINCH_END" })
+          }
         },
       })
     },
@@ -73,6 +101,11 @@ export function connect<T extends PropTypes>(
           height: "var(--height)",
         },
         onPointerDown(event) {
+          if (event.pointerType === "touch") {
+            const isSecondaryTouch = event.isPrimary === false
+            const pinchActive = context.get("pinchDistance") != null
+            if (isSecondaryTouch || pinchActive) return
+          }
           const point = getEventPoint(event)
           send({ type: "POINTER_DOWN", point })
         },
@@ -92,6 +125,11 @@ export function connect<T extends PropTypes>(
         id: dom.getHandleId(scope, props.position),
         "data-position": props.position,
         onPointerDown(event) {
+          if (event.pointerType === "touch") {
+            const isSecondaryTouch = event.isPrimary === false
+            const pinchActive = context.get("pinchDistance") != null
+            if (isSecondaryTouch || pinchActive) return
+          }
           const point = getEventPoint(event)
 
           send({ type: "POINTER_DOWN", point, handlePosition: props.position })

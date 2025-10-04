@@ -69,6 +69,7 @@ export interface ImageCropperSchema {
     handlePosition: HandlePosition | null
     shiftLockRatio: number | null
     lastShiftKey: boolean
+    pinchDistance: number | null
     zoom: number
     offset: Point
   }

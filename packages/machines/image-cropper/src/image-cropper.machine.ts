@@ -11,7 +11,7 @@ export const machine = createMachine<ImageCropperSchema>({
     return {
       initialCrop: { x: 0, y: 0, width: 50, height: 50 },
       minCropSize: { width: 40, height: 40 },
-      zoomStep: 0.1,
+      zoomStep: 0.5,
       minZoom: 1,
       maxZoom: 5,
       ...props,
@@ -41,6 +41,9 @@ export const machine = createMachine<ImageCropperSchema>({
       lastShiftKey: bindable<boolean>(() => ({
         defaultValue: false,
       })),
+      pinchDistance: bindable<number | null>(() => ({
+        defaultValue: null,
+      })),
       zoom: bindable<number>(() => ({
         defaultValue: 1,
       })),
@@ -52,6 +55,18 @@ export const machine = createMachine<ImageCropperSchema>({
 
   initialState() {
     return "idle"
+  },
+
+  on: {
+    PINCH_START: {
+      actions: ["setPinchDistance"],
+    },
+    PINCH_MOVE: {
+      actions: ["handlePinchMove"],
+    },
+    PINCH_END: {
+      actions: ["clearPinchDistance"],
+    },
   },
 
   states: {
@@ -66,7 +81,7 @@ export const machine = createMachine<ImageCropperSchema>({
           target: "dragging",
           actions: ["setPointerStart", "setCropStart", "setHandlePosition"],
         },
-        WHEEL: {
+        ZOOM: {
           guard: "hasBounds",
           actions: ["updateZoom"],
         },
@@ -82,9 +97,6 @@ export const machine = createMachine<ImageCropperSchema>({
         POINTER_UP: {
           target: "idle",
           actions: ["clearPointerStart", "clearCropStart", "clearHandlePosition", "clearShiftState"],
-        },
-        WHEEL: {
-          actions: ["updateZoom"],
         },
       },
     },
@@ -208,8 +220,7 @@ export const machine = createMachine<ImageCropperSchema>({
       },
 
       updateZoom({ context, event, prop, scope }) {
-        const delta = Number(event.deltaY)
-        if (!Number.isFinite(delta) || delta === 0) return
+        const delta = event.delta
 
         const stepProp = prop("zoomStep")
         const step = Math.abs(stepProp)
@@ -295,6 +306,58 @@ export const machine = createMachine<ImageCropperSchema>({
 
         context.set("zoom", nextZoom)
         context.set("offset", clampOffset(nextOffset, nextZoom))
+      },
+
+      setPinchDistance({ context, event, send }) {
+        const touches = Array.isArray(event.touches) ? event.touches : []
+        if (touches.length < 2) return
+        const hasActivePointer = context.get("pointerStart") !== null
+        if (hasActivePointer) {
+          send({ type: "POINTER_UP", src: "pinch" })
+        }
+        const [first, second] = touches
+        const dx = first.x - second.x
+        const dy = first.y - second.y
+        const distance = Math.hypot(dx, dy)
+        if (!Number.isFinite(distance)) return
+        context.set("pinchDistance", distance)
+      },
+
+      handlePinchMove({ context, event, scope, send }) {
+        const touches = Array.isArray(event.touches) ? event.touches : []
+        if (touches.length < 2) return
+
+        const [first, second] = touches
+        const dx = first.x - second.x
+        const dy = first.y - second.y
+        const distance = Math.hypot(dx, dy)
+        if (!Number.isFinite(distance)) return
+
+        const lastDistance = context.get("pinchDistance")
+
+        const bounds = dom.getViewportBounds(scope)
+        const point = {
+          x: (first.x + second.x) / 2 - bounds.left,
+          y: (first.y + second.y) / 2 - bounds.top,
+        }
+
+        if (
+          lastDistance != null &&
+          Number.isFinite(lastDistance) &&
+          Number.isFinite(point.x) &&
+          Number.isFinite(point.y)
+        ) {
+          const delta = lastDistance - distance
+          if (Number.isFinite(delta)) {
+            send({ type: "ZOOM", trigger: "touch", delta, point })
+          }
+        }
+
+        context.set("pinchDistance", distance)
+      },
+
+      clearPinchDistance({ context }) {
+        context.set("pinchDistance", null)
       },
     },
 
