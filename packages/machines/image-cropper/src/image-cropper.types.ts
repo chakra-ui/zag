@@ -41,7 +41,7 @@ export interface ImageCropperProps extends DirectionProperty, CommonProperties {
   aspectRatio?: number
   /**
    * The amount of zoom applied per wheel step.
-   * @default 0.1
+   * @default 0.25
    */
   zoomStep?: number
   /**
@@ -59,7 +59,7 @@ export interface ImageCropperProps extends DirectionProperty, CommonProperties {
 type PropsWithDefault = "initialCrop" | "minCropSize" | "zoomStep" | "minZoom" | "maxZoom"
 
 export interface ImageCropperSchema {
-  state: "idle" | "dragging"
+  state: "idle" | "dragging" | "panning"
   props: RequiredBy<ImageCropperProps, PropsWithDefault>
   context: {
     naturalSize: Size
@@ -72,6 +72,7 @@ export interface ImageCropperSchema {
     pinchDistance: number | null
     zoom: number
     offset: Point
+    offsetStart: Point | null
   }
   event: EventObject
   action: string

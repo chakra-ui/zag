@@ -2,7 +2,7 @@ import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import { parts } from "./image-cropper.anatomy"
 import * as dom from "./image-cropper.dom"
 import type { ImageCropperApi, ImageCropperService } from "./image-cropper.types"
-import { getEventPoint } from "@zag-js/dom-query"
+import { getEventPoint, contains } from "@zag-js/dom-query"
 import { toPx } from "@zag-js/utils"
 
 export function connect<T extends PropTypes>(
@@ -10,6 +10,13 @@ export function connect<T extends PropTypes>(
   normalize: NormalizeProps<T>,
 ): ImageCropperApi<T> {
   const { scope, send, context } = service
+
+  const shouldIgnoreTouchPointer = (event: { pointerType?: string; isPrimary?: boolean }) => {
+    if (event.pointerType !== "touch") return false
+    const isSecondaryTouch = event.isPrimary === false
+    const pinchActive = context.get("pinchDistance") != null
+    return isSecondaryTouch || pinchActive
+  }
 
   return {
     getRootProps() {
@@ -23,6 +30,27 @@ export function connect<T extends PropTypes>(
       return normalize.element({
         ...parts.viewport.attrs,
         id: dom.getViewportId(scope),
+        onPointerDown(event) {
+          if (event.pointerType === "mouse" && event.button !== 0) return
+
+          if (shouldIgnoreTouchPointer(event)) return
+
+          const zoom = context.get("zoom")
+          if (!Number.isFinite(zoom) || zoom <= 1) return
+
+          const target = event.target as HTMLElement | null
+          const rootEl = dom.getRootEl(scope)
+          if (!target || !rootEl || !contains(rootEl, target)) return
+
+          const selectionEl = dom.getSelectionEl(scope)
+          if (contains(selectionEl, target)) return
+
+          const handleEl = target.closest('[data-scope="image-cropper"][data-part="handle"]') as HTMLElement | null
+          if (handleEl && contains(rootEl, handleEl)) return
+
+          const point = getEventPoint(event)
+          send({ type: "PAN_POINTER_DOWN", point })
+        },
         onWheel(event) {
           const viewportEl = event.currentTarget
           if (!viewportEl) return
@@ -101,11 +129,7 @@ export function connect<T extends PropTypes>(
           height: "var(--height)",
         },
         onPointerDown(event) {
-          if (event.pointerType === "touch") {
-            const isSecondaryTouch = event.isPrimary === false
-            const pinchActive = context.get("pinchDistance") != null
-            if (isSecondaryTouch || pinchActive) return
-          }
+          if (shouldIgnoreTouchPointer(event)) return
           const point = getEventPoint(event)
           send({ type: "POINTER_DOWN", point })
         },
@@ -125,11 +149,7 @@ export function connect<T extends PropTypes>(
         id: dom.getHandleId(scope, props.position),
         "data-position": props.position,
         onPointerDown(event) {
-          if (event.pointerType === "touch") {
-            const isSecondaryTouch = event.isPrimary === false
-            const pinchActive = context.get("pinchDistance") != null
-            if (isSecondaryTouch || pinchActive) return
-          }
+          if (shouldIgnoreTouchPointer(event)) return
           const point = getEventPoint(event)
 
           send({ type: "POINTER_DOWN", point, handlePosition: props.position })

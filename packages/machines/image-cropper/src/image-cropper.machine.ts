@@ -6,12 +6,54 @@ import { addDomEvent, getEventPoint, getEventTarget } from "@zag-js/dom-query"
 import { computeMoveCrop, computeResizeCrop } from "./image-cropper.utils"
 import { clampValue } from "@zag-js/utils"
 
+const normalizeNumber = (value: number | null | undefined) =>
+  typeof value === "number" && Number.isFinite(value) ? value : 0
+
+const normalizePoint = (point: Point) => ({
+  x: normalizeNumber(point?.x),
+  y: normalizeNumber(point?.y),
+})
+
+const clampOffsetValue = (value: number, viewportSize: number, imageSize: number) => {
+  if (!Number.isFinite(value)) return 0
+  if (!Number.isFinite(viewportSize) || viewportSize <= 0) return value
+  if (!Number.isFinite(imageSize) || imageSize <= 0) return value
+  const limit = viewportSize - imageSize
+  const min = Math.min(0, limit)
+  const max = Math.max(0, limit)
+  return clampValue(value, min, max)
+}
+
+interface ClampImageOffsetParams {
+  offset: Point
+  zoom: number
+  viewport: Size
+  naturalSize: Size
+}
+
+const clampImageOffset = ({ offset, zoom, viewport, naturalSize }: ClampImageOffsetParams): Point => {
+  const normalizedOffset = normalizePoint(offset)
+  if (!Number.isFinite(zoom) || zoom <= 0) {
+    return normalizedOffset
+  }
+
+  const viewportWidth = normalizeNumber(viewport?.width)
+  const viewportHeight = normalizeNumber(viewport?.height)
+  const imageWidth = normalizeNumber(naturalSize?.width) * zoom
+  const imageHeight = normalizeNumber(naturalSize?.height) * zoom
+
+  return {
+    x: clampOffsetValue(normalizedOffset.x, viewportWidth, imageWidth),
+    y: clampOffsetValue(normalizedOffset.y, viewportHeight, imageHeight),
+  }
+}
+
 export const machine = createMachine<ImageCropperSchema>({
   props({ props }) {
     return {
       initialCrop: { x: 0, y: 0, width: 50, height: 50 },
       minCropSize: { width: 40, height: 40 },
-      zoomStep: 0.5,
+      zoomStep: 0.25,
       minZoom: 1,
       maxZoom: 5,
       ...props,
@@ -50,6 +92,9 @@ export const machine = createMachine<ImageCropperSchema>({
       offset: bindable<Point>(() => ({
         defaultValue: { x: 0, y: 0 },
       })),
+      offsetStart: bindable<Point | null>(() => ({
+        defaultValue: null,
+      })),
     }
   },
 
@@ -81,6 +126,11 @@ export const machine = createMachine<ImageCropperSchema>({
           target: "dragging",
           actions: ["setPointerStart", "setCropStart", "setHandlePosition"],
         },
+        PAN_POINTER_DOWN: {
+          guard: "canPan",
+          target: "panning",
+          actions: ["setPointerStart", "setOffsetStart", "clearHandlePosition", "clearCropStart", "clearShiftState"],
+        },
         ZOOM: {
           guard: "hasBounds",
           actions: ["updateZoom"],
@@ -96,7 +146,32 @@ export const machine = createMachine<ImageCropperSchema>({
         },
         POINTER_UP: {
           target: "idle",
-          actions: ["clearPointerStart", "clearCropStart", "clearHandlePosition", "clearShiftState"],
+          actions: [
+            "clearPointerStart",
+            "clearCropStart",
+            "clearHandlePosition",
+            "clearOffsetStart",
+            "clearShiftState",
+          ],
+        },
+      },
+    },
+
+    panning: {
+      effects: ["trackPointerMove"],
+      on: {
+        POINTER_MOVE: {
+          actions: ["updateOffsetFromPointer"],
+        },
+        POINTER_UP: {
+          target: "idle",
+          actions: [
+            "clearPointerStart",
+            "clearOffsetStart",
+            "clearHandlePosition",
+            "clearCropStart",
+            "clearShiftState",
+          ],
         },
       },
     },
@@ -105,6 +180,14 @@ export const machine = createMachine<ImageCropperSchema>({
   implementations: {
     guards: {
       hasBounds({ scope }) {
+        const bounds = dom.getViewportBounds(scope)
+        return bounds.width > 0 && bounds.height > 0
+      },
+      canPan({ context, scope }) {
+        const zoom = context.get("zoom")
+        if (!Number.isFinite(zoom) || zoom <= 1) return false
+        const naturalSize = context.get("naturalSize")
+        if (naturalSize.width <= 0 || naturalSize.height <= 0) return false
         const bounds = dom.getViewportBounds(scope)
         return bounds.width > 0 && bounds.height > 0
       },
@@ -129,8 +212,9 @@ export const machine = createMachine<ImageCropperSchema>({
 
       setPointerStart({ event, context }) {
         const point = event.point
+        if (!point) return
 
-        context.set("pointerStart", point)
+        context.set("pointerStart", normalizePoint(point))
       },
 
       setCropStart({ context }) {
@@ -196,6 +280,16 @@ export const machine = createMachine<ImageCropperSchema>({
         context.set("lastShiftKey", !!event.shiftKey)
       },
 
+      setOffsetStart({ context, scope }) {
+        const offset = context.get("offset")
+        const zoom = context.get("zoom")
+        const naturalSize = context.get("naturalSize")
+        const bounds = dom.getViewportBounds(scope)
+        const viewport = { width: bounds.width, height: bounds.height }
+
+        context.set("offsetStart", clampImageOffset({ offset, zoom, viewport, naturalSize }))
+      },
+
       setHandlePosition({ event, context }) {
         const position = event.handlePosition
         if (!position) return
@@ -212,6 +306,10 @@ export const machine = createMachine<ImageCropperSchema>({
 
       clearHandlePosition({ context }) {
         context.set("handlePosition", null)
+      },
+
+      clearOffsetStart({ context }) {
+        context.set("offsetStart", null)
       },
 
       clearShiftState({ context }) {
@@ -246,37 +344,11 @@ export const machine = createMachine<ImageCropperSchema>({
         const bounds = dom.getViewportBounds(scope)
         const naturalSize = context.get("naturalSize")
 
-        let viewportWidth = bounds.width
-        let viewportHeight = bounds.height
-
-        const clampOffsetValue = (value: number, viewportSize: number, imageSize: number) => {
-          if (!Number.isFinite(value) || !Number.isFinite(viewportSize) || viewportSize <= 0) return value
-          if (!Number.isFinite(imageSize) || imageSize <= 0) return value
-          const limit = viewportSize - imageSize
-          const min = Math.min(0, limit)
-          const max = Math.max(0, limit)
-          return clampValue(value, min, max)
-        }
-
-        // Keep the translated image within the viewport for a given zoom level.
-        const clampOffset = (offset: Point, zoom: number): Point => {
-          if (!Number.isFinite(zoom) || zoom <= 0) return offset
-          const imageWidth = naturalSize.width * zoom
-          const imageHeight = naturalSize.height * zoom
-          return {
-            x: clampOffsetValue(offset.x, viewportWidth, imageWidth),
-            y: clampOffsetValue(offset.y, viewportHeight, imageHeight),
-          }
-        }
+        const viewport = { width: bounds.width, height: bounds.height }
+        const clampOffset = (offset: Point, zoom: number) => clampImageOffset({ offset, zoom, viewport, naturalSize })
 
         const currentOffsetRaw = context.get("offset")
-        const currentOffset = clampOffset(
-          {
-            x: Number.isFinite(currentOffsetRaw.x) ? currentOffsetRaw.x : 0,
-            y: Number.isFinite(currentOffsetRaw.y) ? currentOffsetRaw.y : 0,
-          },
-          currentZoom,
-        )
+        const currentOffset = clampOffset(currentOffsetRaw, currentZoom)
 
         if (!point) {
           context.set("zoom", nextZoom)
@@ -306,6 +378,31 @@ export const machine = createMachine<ImageCropperSchema>({
 
         context.set("zoom", nextZoom)
         context.set("offset", clampOffset(nextOffset, nextZoom))
+      },
+
+      updateOffsetFromPointer({ context, event, scope }) {
+        const pointerStart = context.get("pointerStart")
+        const offsetStart = context.get("offsetStart")
+        const currentPoint = event.point
+
+        if (!pointerStart || !offsetStart || !currentPoint) return
+
+        const delta = {
+          x: currentPoint.x - pointerStart.x,
+          y: currentPoint.y - pointerStart.y,
+        }
+
+        const nextOffset = {
+          x: offsetStart.x + delta.x,
+          y: offsetStart.y + delta.y,
+        }
+
+        const bounds = dom.getViewportBounds(scope)
+        const viewport = { width: bounds.width, height: bounds.height }
+        const zoom = context.get("zoom")
+        const naturalSize = context.get("naturalSize")
+
+        context.set("offset", clampImageOffset({ offset: nextOffset, zoom, viewport, naturalSize }))
       },
 
       setPinchDistance({ context, event, send }) {
