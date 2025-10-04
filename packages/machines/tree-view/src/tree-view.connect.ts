@@ -31,6 +31,7 @@ export function connect<T extends PropTypes, V extends TreeNode = TreeNode>(
   const isTypingAhead = computed("isTypingAhead")
   const focusedValue = context.get("focusedValue")
   const loadingStatus = context.get("loadingStatus")
+  const renamingValue = context.get("renamingValue")
 
   function getNodeState(props: NodeProps): NodeState {
     const { node, indexPath } = props
@@ -49,6 +50,7 @@ export function connect<T extends PropTypes, V extends TreeNode = TreeNode>(
       loading: loadingStatus[value] === "loading",
       depth: indexPath.length,
       isBranch: collection.isBranchNode(node),
+      renaming: renamingValue === value,
       get checked() {
         return getCheckedState(collection, node, checkedValue)
       },
@@ -109,6 +111,15 @@ export function connect<T extends PropTypes, V extends TreeNode = TreeNode>(
     setSelectedValue(value) {
       const _selectedValue = uniq(value)
       send({ type: "SELECTED.SET", value: _selectedValue })
+    },
+    startRenaming(value) {
+      send({ type: "NODE.RENAME", value })
+    },
+    submitRenaming(value, label) {
+      send({ type: "RENAME.SUBMIT", value, label })
+    },
+    cancelRenaming() {
+      send({ type: "RENAME.CANCEL" })
     },
 
     getRootProps() {
@@ -217,6 +228,24 @@ export function connect<T extends PropTypes, V extends TreeNode = TreeNode>(
               event.preventDefault()
               send({ type: "SELECTED.ALL", moveFocus: true })
             },
+            F2(event) {
+              if (node.dataset.disabled) return
+
+              // Check canRename callback if provided
+              const canRenameFn = prop("canRename")
+              if (canRenameFn) {
+                const indexPath = collection.getIndexPath(nodeId)
+                if (indexPath) {
+                  const node = collection.at(indexPath)
+                  if (node && !canRenameFn(node, indexPath)) {
+                    return
+                  }
+                }
+              }
+
+              event.preventDefault()
+              send({ type: "NODE.RENAME", value: nodeId })
+            },
           }
 
           const key = getEventKey(event, { dir: prop("dir") })
@@ -254,6 +283,7 @@ export function connect<T extends PropTypes, V extends TreeNode = TreeNode>(
         "data-selected": dataAttr(nodeState.selected),
         "aria-disabled": ariaAttr(nodeState.disabled),
         "data-disabled": dataAttr(nodeState.disabled),
+        "data-renaming": dataAttr(nodeState.renaming),
         "aria-level": nodeState.depth,
         "data-depth": nodeState.depth,
         style: {
@@ -372,6 +402,7 @@ export function connect<T extends PropTypes, V extends TreeNode = TreeNode>(
         "data-disabled": dataAttr(nodeState.disabled),
         "data-selected": dataAttr(nodeState.selected),
         "data-focus": dataAttr(nodeState.focused),
+        "data-renaming": dataAttr(nodeState.renaming),
         "data-value": nodeState.value,
         "data-depth": nodeState.depth,
         "data-loading": dataAttr(nodeState.loading),
@@ -446,6 +477,35 @@ export function connect<T extends PropTypes, V extends TreeNode = TreeNode>(
 
           const node = event.currentTarget.closest("[role=treeitem]") as HTMLElement | null
           node?.focus({ preventScroll: true })
+        },
+      })
+    },
+
+    getNodeRenameInputProps(props) {
+      const nodeState = getNodeState(props)
+      return normalize.input({
+        ...parts.nodeRenameInput.attrs,
+        id: dom.getRenameInputId(scope, nodeState.value),
+        type: "text",
+        "aria-label": "Rename tree item",
+        hidden: !nodeState.renaming,
+        onKeyDown(event) {
+          // CRITICAL: Ignore keyboard events during IME composition
+          if (isComposingEvent(event)) return
+
+          if (event.key === "Escape") {
+            send({ type: "RENAME.CANCEL" })
+            event.preventDefault()
+          }
+          if (event.key === "Enter") {
+            send({ type: "RENAME.SUBMIT", label: event.currentTarget.value })
+            event.preventDefault()
+          }
+          // Stop propagation to prevent tree navigation during renaming
+          event.stopPropagation()
+        },
+        onBlur(event) {
+          send({ type: "RENAME.SUBMIT", label: event.currentTarget.value })
         },
       })
     },
