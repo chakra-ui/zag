@@ -308,3 +308,10 @@ export const bottomSheetControls = defineControls({
 export const scrollAreaControls = defineControls({
   dir: { type: "select", options: ["ltr", "rtl"] as const, defaultValue: "ltr" },
 })
+
+export const imageCropperControls = defineControls({
+  aspectRatio: { type: "number" },
+  zoomStep: { type: "number", defaultValue: 0.25 },
+  minZoom: { type: "number", defaultValue: 1 },
+  maxZoom: { type: "number", defaultValue: 5 },
+})
