@@ -26,6 +26,10 @@ export const props = createProps<TreeViewProps>()([
   "onLoadChildrenComplete",
   "onLoadChildrenError",
   "loadChildren",
+  "canRename",
+  "onRenameStart",
+  "onBeforeRename",
+  "onRenameComplete",
 ])
 
 export const splitProps = createSplitProps<Partial<TreeViewProps>>(props)
