@@ -26,7 +26,9 @@ export default function Page() {
             <div {...api.getSelectionProps()}>
               <div {...api.getOverlayProps()} />
               {handlePositions.map((position) => (
-                <div key={position} {...api.getHandleProps({ position })} />
+                <div key={position} {...api.getHandleProps({ position })}>
+                  <div />
+                </div>
               ))}
             </div>
           </div>

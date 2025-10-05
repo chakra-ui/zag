@@ -8,6 +8,7 @@
 [data-scope="image-cropper"][data-part="selection"] {
   position: absolute;
   box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.5);
+  border: 1px solid rgba(255, 255, 255, 0.5);
   cursor: move;
   touch-action: none;
 }
@@ -20,13 +21,20 @@
 
 [data-scope="image-cropper"][data-part="handle"] {
   position: absolute;
-  width: 12px;
-  height: 12px;
-  border-radius: 9999px;
-  background: #fff;
-  border: 2px solid #000;
+  width: 30px;
+  height: 30px;
   touch-action: none;
   cursor: grab;
+}
+
+[data-scope="image-cropper"][data-part="handle"] > div {
+  width: 10px;
+  height: 10px;
+  background: #fff;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
 }
 
 [data-scope="image-cropper"][data-part="handle"][data-position="top-left"] {
