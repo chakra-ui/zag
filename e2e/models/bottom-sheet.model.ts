@@ -40,6 +40,10 @@ export class BottomSheetModel extends Model {
     return this.page.locator("[data-no-drag]")
   }
 
+  private get scrollable() {
+    return this.page.locator(".scrollable")
+  }
+
   clickTrigger(opts: { delay?: number } = {}) {
     return this.trigger.click(opts)
   }
@@ -85,25 +89,53 @@ export class BottomSheetModel extends Model {
   }
 
   async getContentVisibleHeight() {
+    const isVisible = await this.content.isVisible()
+    if (!isVisible) return 0
+
     const initialHeight = await this.content.evaluate((el) => el.clientHeight)
 
     const translateY = await this.content.evaluate((el) =>
       getComputedStyle(el).getPropertyValue("--bottom-sheet-translate"),
     )
 
-    return initialHeight - parseInt(translateY, 10)
+    const parsedTranslateY = parseInt(translateY, 10)
+    return initialHeight - (isNaN(parsedTranslateY) ? 0 : parsedTranslateY)
+  }
+
+  async getContentFullHeight() {
+    const isVisible = await this.content.isVisible()
+    if (!isVisible) return 0
+
+    return this.content.evaluate((el) => el.clientHeight)
   }
 
   scrollContent(distance: number) {
-    const scrollable = this.page.locator(".scrollable")
-    return scrollable.evaluate((el, dist) => {
+    return this.scrollable.evaluate((el, dist) => {
       el.scrollTop += dist
     }, distance)
   }
 
   async isScrollableAtTop() {
-    const scrollable = this.page.locator(".scrollable")
-    const scrollTop = await scrollable.evaluate((el) => el.scrollTop)
+    const scrollTop = await this.scrollable.evaluate((el) => el.scrollTop)
     return scrollTop === 0
+  }
+
+  clickOutsideSheet() {
+    return this.page.locator("main").click({ position: { x: 5, y: 5 } })
+  }
+
+  async waitForOpenState() {
+    // Wait for element to be visible and animations to complete
+    await expect(this.content).toBeVisible()
+    await this.content.evaluate((el) => Promise.all(el.getAnimations().map((animation) => animation.finished)))
+  }
+
+  waitForClosedState() {
+    return expect(this.content).toHaveAttribute("data-state", "closed")
+  }
+
+  async waitForSnapComplete() {
+    // Wait for snap animation/transition to complete after drag
+    await this.content.evaluate((el) => Promise.all([...el.getAnimations()].map((animation) => animation.finished)))
   }
 }

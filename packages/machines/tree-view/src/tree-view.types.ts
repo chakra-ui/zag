@@ -29,6 +29,36 @@ export interface CheckedChangeDetails {
   checkedValue: string[]
 }
 
+export interface RenameStartDetails<T extends TreeNode = TreeNode> {
+  /**
+   * The value (id) of the node being renamed
+   */
+  value: string
+  /**
+   * The node being renamed
+   */
+  node: T
+  /**
+   * The index path of the node
+   */
+  indexPath: IndexPath
+}
+
+export interface RenameCompleteDetails {
+  /**
+   * The value (id) of the node being renamed
+   */
+  value: string
+  /**
+   * The new label for the node
+   */
+  label: string
+  /**
+   * The index path of the node
+   */
+  indexPath: IndexPath
+}
+
 export interface LoadChildrenDetails<T extends TreeNode = TreeNode> {
   /**
    * The value path of the node whose children are being loaded
@@ -150,6 +180,22 @@ export interface TreeViewProps<T extends TreeNode = TreeNode> extends DirectionP
    */
   onCheckedChange?: ((details: CheckedChangeDetails) => void) | undefined
   /**
+   * Function to determine if a node can be renamed
+   */
+  canRename?: ((node: T, indexPath: IndexPath) => boolean) | undefined
+  /**
+   * Called when a node starts being renamed
+   */
+  onRenameStart?: ((details: RenameStartDetails<T>) => void) | undefined
+  /**
+   * Called before a rename is completed. Return false to prevent the rename.
+   */
+  onBeforeRename?: ((details: RenameCompleteDetails) => boolean) | undefined
+  /**
+   * Called when a node label rename is completed
+   */
+  onRenameComplete?: ((details: RenameCompleteDetails) => void) | undefined
+  /**
    * Called when a node finishes loading children
    */
   onLoadChildrenComplete?: ((details: LoadChildrenCompleteDetails<T>) => void) | undefined
@@ -187,7 +233,7 @@ export type TreeLoadingStatus = "loading" | "loaded"
 export type TreeLoadingStatusMap = Record<string, TreeLoadingStatus>
 
 export interface TreeViewSchema<T extends TreeNode = TreeNode> {
-  state: "idle"
+  state: "idle" | "renaming"
   props: RequiredBy<TreeViewProps<T>, PropsWithDefault>
   context: {
     expandedValue: string[]
@@ -195,6 +241,7 @@ export interface TreeViewSchema<T extends TreeNode = TreeNode> {
     checkedValue: string[]
     focusedValue: string | null
     loadingStatus: TreeLoadingStatusMap
+    renamingValue: string | null
   }
   refs: {
     typeaheadState: TypeaheadState
@@ -280,6 +327,10 @@ export interface NodeState {
    * Whether the tree item is checked
    */
   checked: CheckedState
+  /**
+   * Whether the tree item is currently being renamed
+   */
+  renaming: boolean
 }
 
 export type CheckedValueMap = Map<string, { type: "leaf" | "branch"; checked: CheckedState }>
@@ -361,6 +412,18 @@ export interface TreeViewApi<T extends PropTypes = PropTypes, V extends TreeNode
    * Function to expand the parent node of the focused node
    */
   expandParent: (value: string) => void
+  /**
+   * Function to start renaming a node by value
+   */
+  startRenaming: (value: string) => void
+  /**
+   * Function to submit the rename and update the node label
+   */
+  submitRenaming: (value: string, label: string) => void
+  /**
+   * Function to cancel renaming without changes
+   */
+  cancelRenaming: () => void
 
   getRootProps: () => T["element"]
   getLabelProps: () => T["element"]
@@ -377,6 +440,7 @@ export interface TreeViewApi<T extends PropTypes = PropTypes, V extends TreeNode
   getBranchContentProps: (props: NodeProps) => T["element"]
   getBranchTextProps: (props: NodeProps) => T["element"]
   getBranchIndentGuideProps: (props: NodeProps) => T["element"]
+  getNodeRenameInputProps: (props: NodeProps) => T["input"]
 }
 
 export type { TreeNode } from "@zag-js/collection"

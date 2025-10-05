@@ -1,6 +1,6 @@
 import type { TreeNode } from "@zag-js/collection"
 import { createGuards, createMachine } from "@zag-js/core"
-import { getByTypeahead } from "@zag-js/dom-query"
+import { getByTypeahead, setElementValue } from "@zag-js/dom-query"
 import { addOrRemove, diff, first, isArray, isEqual, last, remove, toArray, uniq } from "@zag-js/utils"
 import { collection } from "./tree-view.collection"
 import * as dom from "./tree-view.dom"
@@ -85,6 +85,10 @@ export const machine = createMachine<TreeViewSchema>({
           prop("onCheckedChange")?.({ checkedValue: value })
         },
       })),
+      renamingValue: bindable<string | null>(() => ({
+        sync: true,
+        defaultValue: null,
+      })),
     }
   },
 
@@ -164,6 +168,10 @@ export const machine = createMachine<TreeViewSchema>({
   states: {
     idle: {
       on: {
+        "NODE.RENAME": {
+          target: "renaming",
+          actions: ["setRenamingValue"],
+        },
         "NODE.FOCUS": {
           actions: ["setFocusedNode"],
         },
@@ -265,6 +273,20 @@ export const machine = createMachine<TreeViewSchema>({
         },
       },
     },
+    renaming: {
+      entry: ["syncRenameInput", "focusRenameInput"],
+      on: {
+        "RENAME.SUBMIT": {
+          guard: "isRenameLabelValid",
+          target: "idle",
+          actions: ["submitRenaming"],
+        },
+        "RENAME.CANCEL": {
+          target: "idle",
+          actions: ["cancelRenaming"],
+        },
+      },
+    },
   },
 
   implementations: {
@@ -277,6 +299,7 @@ export const machine = createMachine<TreeViewSchema>({
       isMultipleSelection: ({ prop }) => prop("selectionMode") === "multiple",
       moveFocus: ({ event }) => !!event.moveFocus,
       expandOnClick: ({ prop }) => !!prop("expandOnClick"),
+      isRenameLabelValid: ({ event }) => event.label.trim() !== "",
     },
     actions: {
       selectNode({ context, event }) {
@@ -528,6 +551,92 @@ export const machine = createMachine<TreeViewSchema>({
       },
       clearChecked({ context }) {
         context.set("checkedValue", [])
+      },
+      setRenamingValue({ context, event, prop }) {
+        context.set("renamingValue", event.value)
+
+        // Call onRenameStart callback if provided
+        const onRenameStartFn = prop("onRenameStart")
+        if (onRenameStartFn) {
+          const collection = prop("collection")
+          const indexPath = collection.getIndexPath(event.value)
+          if (indexPath) {
+            const node = collection.at(indexPath)
+            if (node) {
+              onRenameStartFn({
+                value: event.value,
+                node,
+                indexPath,
+              })
+            }
+          }
+        }
+      },
+      submitRenaming({ context, event, prop, scope }) {
+        const renamingValue = context.get("renamingValue")
+        if (!renamingValue) return
+
+        const collection = prop("collection")
+        const indexPath = collection.getIndexPath(renamingValue)
+        if (!indexPath) return
+
+        // Trim the label before passing to callbacks
+        const trimmedLabel = event.label.trim()
+
+        // Check onBeforeRename callback if provided
+        const onBeforeRenameFn = prop("onBeforeRename")
+        if (onBeforeRenameFn) {
+          const details = {
+            value: renamingValue,
+            label: trimmedLabel,
+            indexPath,
+          }
+          const shouldRename = onBeforeRenameFn(details)
+          if (!shouldRename) {
+            // Cancel rename without calling onRenameComplete
+            context.set("renamingValue", null)
+            dom.focusNode(scope, renamingValue)
+            return
+          }
+        }
+
+        prop("onRenameComplete")?.({
+          value: renamingValue,
+          label: trimmedLabel,
+          indexPath,
+        })
+
+        context.set("renamingValue", null)
+        dom.focusNode(scope, renamingValue)
+      },
+      cancelRenaming({ context, scope }) {
+        const renamingValue = context.get("renamingValue")
+        context.set("renamingValue", null)
+        if (renamingValue) {
+          dom.focusNode(scope, renamingValue)
+        }
+      },
+      syncRenameInput({ context, scope, prop }) {
+        const renamingValue = context.get("renamingValue")
+        if (!renamingValue) return
+
+        const collection = prop("collection")
+        const node = collection.findNode(renamingValue)
+        if (!node) return
+
+        const label = collection.stringifyNode(node)
+
+        const inputEl = dom.getRenameInputEl(scope, renamingValue)
+        setElementValue(inputEl, label)
+      },
+      focusRenameInput({ context, scope }) {
+        const renamingValue = context.get("renamingValue")
+        if (!renamingValue) return
+
+        const inputEl = dom.getRenameInputEl(scope, renamingValue)
+        if (!inputEl) return
+        inputEl.focus()
+        inputEl.select()
       },
     },
   },

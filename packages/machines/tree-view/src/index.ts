@@ -14,6 +14,8 @@ export type {
   LoadChildrenCompleteDetails,
   LoadChildrenDetails,
   LoadChildrenErrorDetails,
+  RenameCompleteDetails,
+  RenameStartDetails,
   TreeViewMachine as Machine,
   NodeProps,
   NodeState,

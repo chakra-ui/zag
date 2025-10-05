@@ -4,11 +4,9 @@ import { trackDismissableElement } from "@zag-js/dismissable"
 import { addDomEvent, getEventPoint, getEventTarget, raf } from "@zag-js/dom-query"
 import { trapFocus } from "@zag-js/focus-trap"
 import { preventBodyScroll } from "@zag-js/remove-scroll"
-import type { Point } from "@zag-js/types"
 import * as dom from "./bottom-sheet.dom"
 import type { BottomSheetSchema, ResolvedSnapPoint } from "./bottom-sheet.types"
-import { findClosestSnapPoint } from "./utils/find-closest-snap-point"
-import { getScrollInfo } from "./utils/get-scroll-info"
+import { DragManager } from "./utils/drag-manager"
 import { resolveSnapPoint } from "./utils/resolve-snap-point"
 
 export const machine = createMachine<BottomSheetSchema>({
@@ -26,7 +24,7 @@ export const machine = createMachine<BottomSheetSchema>({
       initialFocusEl,
       snapPoints: [1],
       defaultActiveSnapPoint: 1,
-      swipeVelocityThreshold: 500,
+      swipeVelocityThreshold: 700,
       closeThreshold: 0.25,
       preventDragOnScroll: true,
       ...props,
@@ -35,9 +33,6 @@ export const machine = createMachine<BottomSheetSchema>({
 
   context({ bindable, prop }) {
     return {
-      pointerStart: bindable<Point | null>(() => ({
-        defaultValue: null,
-      })),
       dragOffset: bindable<number | null>(() => ({
         defaultValue: null,
       })),
@@ -54,15 +49,12 @@ export const machine = createMachine<BottomSheetSchema>({
       contentHeight: bindable<number | null>(() => ({
         defaultValue: null,
       })),
-      lastPoint: bindable<Point | null>(() => ({
-        defaultValue: null,
-      })),
-      lastTimestamp: bindable<number | null>(() => ({
-        defaultValue: null,
-      })),
-      velocity: bindable<number | null>(() => ({
-        defaultValue: null,
-      })),
+    }
+  },
+
+  refs() {
+    return {
+      dragManager: new DragManager(),
     }
   },
 
@@ -94,7 +86,7 @@ export const machine = createMachine<BottomSheetSchema>({
   },
 
   on: {
-    SET_ACTIVE_SNAP_POINT: {
+    "ACTIVE_SNAP_POINT.SET": {
       actions: ["setActiveSnapPoint"],
     },
   },
@@ -114,18 +106,28 @@ export const machine = createMachine<BottomSheetSchema>({
         "CONTROLLED.CLOSE": {
           target: "closed",
         },
-        POINTER_DOWN: [
-          {
-            actions: ["setPointerStart"],
-          },
-        ],
+        POINTER_DOWN: {
+          actions: ["setPointerStart"],
+        },
         POINTER_MOVE: [
           {
+            guard: "isDragging",
+            actions: ["setDragOffset"],
+          },
+          {
             guard: "shouldStartDragging",
-            target: "open:dragging",
+            actions: ["setDragOffset"],
           },
         ],
         POINTER_UP: [
+          {
+            guard: "shouldCloseOnSwipe",
+            target: "closing",
+          },
+          {
+            guard: "isDragging",
+            actions: ["setClosestSnapPoint", "clearPointerStart", "clearDragOffset"],
+          },
           {
             actions: ["clearPointerStart", "clearDragOffset"],
           },
@@ -138,28 +140,6 @@ export const machine = createMachine<BottomSheetSchema>({
           {
             target: "closing",
             actions: ["invokeOnClose"],
-          },
-        ],
-      },
-    },
-
-    "open:dragging": {
-      effects: ["trackDismissableElement", "preventScroll", "trapFocus", "hideContentBelow", "trackPointerMove"],
-      tags: ["open", "dragging"],
-      on: {
-        POINTER_MOVE: [
-          {
-            actions: ["setDragOffset"],
-          },
-        ],
-        POINTER_UP: [
-          {
-            guard: "shouldCloseOnSwipe",
-            target: "closing",
-          },
-          {
-            actions: ["setClosestSnapPoint", "clearPointerStart", "clearDragOffset"],
-            target: "open",
           },
         ],
       },
@@ -207,51 +187,28 @@ export const machine = createMachine<BottomSheetSchema>({
     guards: {
       isOpenControlled: ({ prop }) => prop("open") !== undefined,
 
-      shouldStartDragging({ prop, context, event, scope, send }) {
-        const pointerStart = context.get("pointerStart")
-        const container = dom.getContentEl(scope)
-        if (!pointerStart || !container) return false
-
-        const { point, target } = event
-
-        if (prop("preventDragOnScroll")) {
-          const delta = pointerStart.y - point.y
-
-          if (Math.abs(delta) < 0.3) return false
-
-          const { availableScroll, availableScrollTop } = getScrollInfo(target, container)
-
-          if ((delta > 0 && Math.abs(availableScroll) > 1) || (delta < 0 && Math.abs(availableScrollTop) > 0)) {
-            send({ type: "POINTER_UP", point })
-            return false
-          }
-        }
-
-        return true
+      isDragging({ context }) {
+        return context.get("dragOffset") !== null
       },
 
-      shouldCloseOnSwipe({ prop, context, computed }) {
-        const velocity = context.get("velocity")
-        const dragOffset = context.get("dragOffset")
-        const contentHeight = context.get("contentHeight")
-        const swipeVelocityThreshold = prop("swipeVelocityThreshold")
-        const closeThreshold = prop("closeThreshold")
-        const snapPoints = computed("resolvedSnapPoints")
+      shouldStartDragging({ prop, refs, event, scope }) {
+        const dragManager = refs.get("dragManager")
+        return dragManager.shouldStartDragging(
+          event.point,
+          event.target,
+          dom.getContentEl(scope),
+          prop("preventDragOnScroll"),
+        )
+      },
 
-        if (dragOffset === null || contentHeight === null || velocity === null) return false
-
-        const visibleHeight = contentHeight - dragOffset
-        const smallestSnapPoint = snapPoints.reduce((acc, curr) => (curr.offset > acc.offset ? curr : acc))
-
-        const isFastSwipe = velocity > 0 && velocity >= swipeVelocityThreshold
-
-        const closeThresholdInPixels = contentHeight * (1 - closeThreshold)
-        const isBelowSmallestSnapPoint = visibleHeight < contentHeight - smallestSnapPoint.offset
-        const isBelowCloseThreshold = visibleHeight < closeThresholdInPixels
-
-        const hasEnoughDragToDismiss = (isBelowCloseThreshold && isBelowSmallestSnapPoint) || visibleHeight === 0
-
-        return isFastSwipe || hasEnoughDragToDismiss
+      shouldCloseOnSwipe({ prop, context, computed, refs }) {
+        const dragManager = refs.get("dragManager")
+        return dragManager.shouldDismiss(
+          context.get("contentHeight"),
+          computed("resolvedSnapPoints"),
+          prop("swipeVelocityThreshold"),
+          prop("closeThreshold"),
+        )
       },
     },
 
@@ -268,53 +225,35 @@ export const machine = createMachine<BottomSheetSchema>({
         context.set("activeSnapPoint", event.snapPoint)
       },
 
-      setPointerStart({ event, context }) {
-        context.set("pointerStart", event.point)
+      setPointerStart({ event, refs }) {
+        refs.get("dragManager").setPointerStart(event.point)
       },
 
-      setDragOffset({ context, event }) {
-        const pointerStart = context.get("pointerStart")
-        if (!pointerStart) return
-
-        const { point } = event
-
-        const currentTimestamp = new Date().getTime()
-
-        const lastPoint = context.get("lastPoint")
-        if (lastPoint) {
-          const dy = point.y - lastPoint.y
-
-          const lastTimestamp = context.get("lastTimestamp")
-          if (lastTimestamp) {
-            const dt = currentTimestamp - lastTimestamp
-            if (dt > 0) {
-              context.set("velocity", (dy / dt) * 1000)
-            }
-          }
-        }
-
-        context.set("lastPoint", point)
-        context.set("lastTimestamp", currentTimestamp)
-
-        let delta = pointerStart.y - point.y - (context.get("resolvedActiveSnapPoint")?.offset || 0)
-        if (delta > 0) delta = 0
-
-        context.set("dragOffset", -delta)
+      setDragOffset({ context, event, refs }) {
+        const dragManager = refs.get("dragManager")
+        dragManager.setDragOffset(event.point, context.get("resolvedActiveSnapPoint")?.offset || 0)
+        context.set("dragOffset", dragManager.getDragOffset())
       },
 
-      setClosestSnapPoint({ computed, context }) {
+      setClosestSnapPoint({ computed, context, refs }) {
         const snapPoints = computed("resolvedSnapPoints")
         const contentHeight = context.get("contentHeight")
-        const dragOffset = context.get("dragOffset")
 
-        if (!snapPoints || contentHeight === null || dragOffset === null) return
+        if (!snapPoints.length || contentHeight === null) return
 
-        const closestSnapPoint = findClosestSnapPoint(dragOffset, snapPoints)
+        const dragManager = refs.get("dragManager")
+        const closestSnapPoint = dragManager.findClosestSnapPoint(snapPoints)
 
-        context.set("activeSnapPoint", closestSnapPoint.value)
+        // Set activeSnapPoint
+        context.set("activeSnapPoint", closestSnapPoint)
+
+        // Also resolve and set immediately to prevent visual snap flash
+        const resolved = resolveSnapPoint(closestSnapPoint, contentHeight)
+        context.set("resolvedActiveSnapPoint", resolved)
       },
 
-      clearDragOffset({ context }) {
+      clearDragOffset({ context, refs }) {
+        refs.get("dragManager").clearDragOffset()
         context.set("dragOffset", null)
       },
 
@@ -326,18 +265,16 @@ export const machine = createMachine<BottomSheetSchema>({
         context.set("resolvedActiveSnapPoint", null)
       },
 
-      clearPointerStart({ context }) {
-        context.set("pointerStart", null)
+      clearPointerStart({ refs }) {
+        refs.get("dragManager").clearPointerStart()
       },
 
       clearContentHeight({ context }) {
         context.set("contentHeight", null)
       },
 
-      clearVelocityTracking({ context }) {
-        context.set("lastPoint", null)
-        context.set("lastTimestamp", null)
-        context.set("velocity", null)
+      clearVelocityTracking({ refs }) {
+        refs.get("dragManager").clearVelocityTracking()
       },
 
       toggleVisibility({ event, send, prop }) {
@@ -404,10 +341,9 @@ export const machine = createMachine<BottomSheetSchema>({
         }
 
         function onPointerUp(event: PointerEvent) {
-          if (event.pointerType !== "touch") {
-            const point = getEventPoint(event)
-            send({ type: "POINTER_UP", point })
-          }
+          if (event.pointerType === "touch") return
+          const point = getEventPoint(event)
+          send({ type: "POINTER_UP", point })
         }
 
         function onTouchStart(event: TouchEvent) {
@@ -428,6 +364,7 @@ export const machine = createMachine<BottomSheetSchema>({
           // Prevent overscrolling
           const contentEl = dom.getContentEl(scope)
           if (!contentEl) return
+
           let el: HTMLElement | null = target
           while (el && el !== contentEl && el.scrollHeight <= el.clientHeight) {
             el = el.parentElement
@@ -455,12 +392,14 @@ export const machine = createMachine<BottomSheetSchema>({
           send({ type: "POINTER_UP", point })
         }
 
+        const doc = scope.getDoc()
+
         const cleanups = [
-          addDomEvent(scope.getDoc(), "pointermove", onPointerMove),
-          addDomEvent(scope.getDoc(), "pointerup", onPointerUp),
-          addDomEvent(scope.getDoc(), "touchstart", onTouchStart, { passive: false }),
-          addDomEvent(scope.getDoc(), "touchmove", onTouchMove, { passive: false }),
-          addDomEvent(scope.getDoc(), "touchend", onTouchEnd),
+          addDomEvent(doc, "pointermove", onPointerMove),
+          addDomEvent(doc, "pointerup", onPointerUp),
+          addDomEvent(doc, "touchstart", onTouchStart, { passive: false }),
+          addDomEvent(doc, "touchmove", onTouchMove, { passive: false }),
+          addDomEvent(doc, "touchend", onTouchEnd),
         ]
 
         return () => {

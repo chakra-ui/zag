@@ -1,6 +1,7 @@
 import type { EventObject, Machine, Service } from "@zag-js/core"
 import type { DismissableElementHandlers } from "@zag-js/dismissable"
-import type { CommonProperties, DirectionProperty, MaybeElement, Point, PropTypes, RequiredBy } from "@zag-js/types"
+import type { CommonProperties, DirectionProperty, MaybeElement, PropTypes, RequiredBy } from "@zag-js/types"
+import type { DragManager } from "./utils/drag-manager"
 
 export interface OpenChangeDetails {
   open: boolean
@@ -54,6 +55,7 @@ export interface BottomSheetProps extends DirectionProperty, CommonProperties, D
   finalFocusEl?: (() => MaybeElement) | undefined
   /**
    * Whether to restore focus to the element that had focus before the sheet was opened.
+   * @default true
    */
   restoreFocus?: boolean | undefined
   /**
@@ -62,7 +64,7 @@ export interface BottomSheetProps extends DirectionProperty, CommonProperties, D
    */
   role?: "dialog" | "alertdialog" | undefined
   /**
-   * Whether the bottom sheet is resizable.
+   * Whether the bottom sheet is open.
    */
   open?: boolean | undefined
   /**
@@ -91,7 +93,7 @@ export interface BottomSheetProps extends DirectionProperty, CommonProperties, D
   snapPoints?: (number | string)[] | undefined
   /**
    * The threshold velocity (in pixels/s) for closing the bottom sheet.
-   * @default 5
+   * @default 700
    */
   swipeVelocityThreshold?: number
   /**
@@ -136,17 +138,16 @@ type PropsWithDefault =
 
 export interface BottomSheetSchema {
   props: RequiredBy<BottomSheetProps, PropsWithDefault>
-  state: "open" | "closed" | "closing" | "open:dragging"
-  tag: "open" | "closed" | "dragging"
+  state: "open" | "closed" | "closing"
+  tag: "open" | "closed"
   context: {
-    pointerStart: Point | null
     dragOffset: number | null
     activeSnapPoint: number | string
     resolvedActiveSnapPoint: ResolvedSnapPoint | null
     contentHeight: number | null
-    lastPoint: Point | null
-    lastTimestamp: number | null
-    velocity: number | null
+  }
+  refs: {
+    dragManager: DragManager
   }
   computed: {
     resolvedSnapPoints: ResolvedSnapPoint[]
@@ -176,17 +177,42 @@ export interface BottomSheetApi<T extends PropTypes = PropTypes> {
    */
   open: boolean
   /**
-   * The currently active snap point.
+   * Whether the bottom sheet is currently being dragged.
    */
-  activeSnapPoint: number | string
+  dragging: boolean
   /**
    * Function to open or close the menu.
    */
   setOpen: (open: boolean) => void
   /**
+   * The snap points of the bottom sheet.
+   */
+  snapPoints: (number | string)[]
+  /**
+   * The currently active snap point.
+   */
+  activeSnapPoint: number | string
+  /**
    * Function to set the active snap point.
    */
   setActiveSnapPoint: (snapPoint: number | string) => void
+  /**
+   * Get the current open percentage of the bottom sheet.
+   * @returns A value between 0-1 where:
+   * - 0 = fully closed
+   * - 1 = fully open at current snap point
+   */
+  getOpenPercentage: () => number
+  /**
+   * Get the index of the currently active snap point.
+   * @returns The index in the snapPoints array, or -1 if not found
+   */
+  getActiveSnapIndex: () => number
+  /**
+   * Get the current height of the bottom sheet content.
+   * @returns Height in pixels, or null if not measured yet
+   */
+  getContentHeight: () => number | null
 
   getContentProps: (props?: ContentProps) => T["element"]
   getTitleProps: () => T["element"]

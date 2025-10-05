@@ -12,8 +12,8 @@ export function connect<T extends PropTypes>(
   const { state, send, context, scope, prop } = service
 
   const open = state.hasTag("open")
-  const dragging = state.hasTag("dragging")
   const dragOffset = context.get("dragOffset")
+  const dragging = dragOffset !== null
 
   const activeSnapPoint = context.get("activeSnapPoint")
   const resolvedActiveSnapPoint = context.get("resolvedActiveSnapPoint")
@@ -24,24 +24,44 @@ export function connect<T extends PropTypes>(
     const target = getEventTarget<HTMLElement>(event)
     if (target?.hasAttribute("data-no-drag") || target?.closest("[data-no-drag]")) return
     if (state.matches("closing")) return
-    const point = getEventPoint(event)
-    send({ type: "POINTER_DOWN", point })
+    send({ type: "POINTER_DOWN", point: getEventPoint(event) })
   }
 
   return {
     open,
-    activeSnapPoint,
-
+    dragging,
     setOpen(nextOpen) {
       const open = state.hasTag("open")
       if (open === nextOpen) return
       send({ type: nextOpen ? "OPEN" : "CLOSE" })
     },
 
+    snapPoints: prop("snapPoints"),
+    activeSnapPoint,
     setActiveSnapPoint(snapPoint) {
       const activeSnapPoint = context.get("activeSnapPoint")
       if (activeSnapPoint === snapPoint) return
-      send({ type: "SET_ACTIVE_SNAP_POINT", snapPoint })
+      send({ type: "ACTIVE_SNAP_POINT.SET", snapPoint })
+    },
+
+    getOpenPercentage() {
+      if (!open) return 0
+
+      const contentHeight = context.get("contentHeight")
+      if (!contentHeight) return 0
+
+      const currentOffset = translate ?? 0
+      // Inverted: when offset is 0 (fully open), percentage is 1
+      return Math.max(0, Math.min(1, 1 - currentOffset / contentHeight))
+    },
+
+    getActiveSnapIndex() {
+      const snapPoints = prop("snapPoints")
+      return snapPoints.indexOf(activeSnapPoint)
+    },
+
+    getContentHeight() {
+      return context.get("contentHeight")
     },
 
     getContentProps(props = { draggable: true }) {
