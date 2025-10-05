@@ -109,6 +109,11 @@ export interface HandleProps {
 }
 
 export interface ImageCropperApi<T extends PropTypes = PropTypes> {
+  /**
+   * Function to set the zoom level of the image.
+   */
+  setZoom: (zoom: number) => void
+
   getRootProps: () => T["element"]
   getViewportProps: () => T["element"]
   getImageProps: () => T["element"]

@@ -33,6 +33,14 @@ export default function Page() {
             </div>
           </div>
         </div>
+        <input
+          type="range"
+          min={1}
+          max={5}
+          step={0.25}
+          defaultValue={1}
+          onChange={(e) => api.setZoom(Number(e.currentTarget.value))}
+        />
       </main>
 
       <Toolbar controls={controls.ui} viz>

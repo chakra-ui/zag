@@ -19,6 +19,10 @@ export function connect<T extends PropTypes>(
   }
 
   return {
+    setZoom(zoom) {
+      send({ type: "SET_ZOOM", zoom })
+    },
+
     getRootProps() {
       return normalize.element({
         ...parts.root.attrs,

@@ -117,6 +117,9 @@ export const machine = createMachine<ImageCropperSchema>({
     PINCH_END: {
       actions: ["clearPinchDistance"],
     },
+    SET_ZOOM: {
+      actions: ["setZoom"],
+    },
   },
 
   states: {
@@ -299,6 +302,86 @@ export const machine = createMachine<ImageCropperSchema>({
         const position = event.handlePosition
         if (!position) return
         context.set("handlePosition", position)
+      },
+
+      setZoom({ context, event, prop, scope }) {
+        const nextZoomRaw = event.zoom
+        if (!Number.isFinite(nextZoomRaw)) return
+
+        let minZoom = prop("minZoom")
+        let maxZoom = prop("maxZoom")
+
+        if (minZoom > maxZoom) {
+          ;[minZoom, maxZoom] = [maxZoom, minZoom]
+        }
+
+        const nextZoom = clampValue(nextZoomRaw, minZoom, maxZoom)
+
+        const currentZoom = context.get("zoom")
+        const currentOffsetRaw = context.get("offset")
+
+        const bounds = dom.getViewportBounds(scope)
+        const naturalSize = context.get("naturalSize")
+        const viewport = { width: bounds.width, height: bounds.height }
+        const clampOffset = (offset: Point, zoom: number) => clampImageOffset({ offset, zoom, viewport, naturalSize })
+
+        if (!Number.isFinite(currentZoom) || currentZoom <= 0) {
+          context.set("zoom", nextZoom)
+          context.set("offset", clampOffset(currentOffsetRaw, nextZoom))
+          return
+        }
+
+        const currentOffset = clampOffset(currentOffsetRaw, currentZoom)
+
+        const crop = context.get("crop")
+        const hasValidCrop =
+          Number.isFinite(crop?.x) &&
+          Number.isFinite(crop?.y) &&
+          Number.isFinite(crop?.width) &&
+          Number.isFinite(crop?.height) &&
+          crop.width > 0 &&
+          crop.height > 0
+
+        const fallbackOrigin = {
+          x: Number.isFinite(viewport.width) && viewport.width > 0 ? viewport.width / 2 : 0,
+          y: Number.isFinite(viewport.height) && viewport.height > 0 ? viewport.height / 2 : 0,
+        }
+
+        const origin = hasValidCrop
+          ? {
+              x: crop.x + crop.width / 2,
+              y: crop.y + crop.height / 2,
+            }
+          : fallbackOrigin
+
+        if (!Number.isFinite(origin.x) || !Number.isFinite(origin.y)) {
+          context.set("zoom", nextZoom)
+          context.set("offset", clampOffset(currentOffset, nextZoom))
+          return
+        }
+
+        const localX = (origin.x - currentOffset.x) / currentZoom
+        const localY = (origin.y - currentOffset.y) / currentZoom
+
+        if (!Number.isFinite(localX) || !Number.isFinite(localY)) {
+          context.set("zoom", nextZoom)
+          context.set("offset", clampOffset(currentOffset, nextZoom))
+          return
+        }
+
+        const nextOffset = {
+          x: origin.x - localX * nextZoom,
+          y: origin.y - localY * nextZoom,
+        }
+
+        if (!Number.isFinite(nextOffset.x) || !Number.isFinite(nextOffset.y)) {
+          context.set("zoom", nextZoom)
+          context.set("offset", clampOffset(currentOffset, nextZoom))
+          return
+        }
+
+        context.set("zoom", nextZoom)
+        context.set("offset", clampOffset(nextOffset, nextZoom))
       },
 
       clearPointerStart({ context }) {
