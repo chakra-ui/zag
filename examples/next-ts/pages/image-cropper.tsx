@@ -41,6 +41,14 @@ export default function Page() {
           defaultValue={1}
           onChange={(e) => api.setZoom(Number(e.currentTarget.value))}
         />
+        <input
+          type="range"
+          min={0}
+          max={360}
+          step={1}
+          defaultValue={0}
+          onChange={(e) => api.setRotation(Number(e.currentTarget.value))}
+        />
       </main>
 
       <Toolbar controls={controls.ui} viz>
@@ -55,6 +63,7 @@ export default function Page() {
             "shiftLockRatio",
             "lastShiftKey",
             "zoom",
+            "rotation",
             "offset",
           ]}
         />

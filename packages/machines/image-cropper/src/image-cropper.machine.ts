@@ -15,6 +15,7 @@ export const machine = createMachine<ImageCropperSchema>({
       zoomStep: 0.25,
       minZoom: 1,
       maxZoom: 5,
+      defaultRotation: 0,
       ...props,
     }
   },
@@ -52,6 +53,13 @@ export const machine = createMachine<ImageCropperSchema>({
           prop("onZoomChange")?.({ zoom })
         },
       })),
+      rotation: bindable<number>(() => ({
+        defaultValue: prop("defaultRotation"),
+        value: prop("rotation"),
+        onChange(rotation) {
+          prop("onRotationChange")?.({ rotation })
+        },
+      })),
       offset: bindable<Point>(() => ({
         defaultValue: { x: 0, y: 0 },
       })),
@@ -77,6 +85,9 @@ export const machine = createMachine<ImageCropperSchema>({
     },
     SET_ZOOM: {
       actions: ["setZoom"],
+    },
+    SET_ROTATION: {
+      actions: ["setRotation"],
     },
   },
 
@@ -340,6 +351,13 @@ export const machine = createMachine<ImageCropperSchema>({
 
         context.set("zoom", nextZoom)
         context.set("offset", clampOffset(nextOffset, nextZoom))
+      },
+
+      setRotation({ context, event }) {
+        const rotation = event.rotation
+        if (!Number.isFinite(rotation)) return
+        const nextRotation = clampValue(rotation, 0, 360)
+        context.set("rotation", nextRotation)
       },
 
       clearPointerStart({ context }) {

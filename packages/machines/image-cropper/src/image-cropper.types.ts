@@ -15,6 +15,10 @@ export interface ZoomChangeDetails {
   zoom: number
 }
 
+export interface RotationChangeDetails {
+  rotation: number
+}
+
 export type ElementIds = Partial<{
   root: string
   viewport: string
@@ -48,10 +52,19 @@ export interface ImageCropperProps extends DirectionProperty, CommonProperties {
    */
   zoom?: number
   /**
+   * The controlled rotation of the image in degrees (0 - 360).
+   */
+  rotation?: number
+  /**
    * The initial zoom factor to apply to the image.
    * @default 1
    */
   defaultZoom?: number
+  /**
+   * The initial rotation to apply to the image in degrees.
+   * @default 0
+   */
+  defaultRotation?: number
   /**
    * The amount of zoom applied per wheel step.
    * @default 0.25
@@ -71,9 +84,20 @@ export interface ImageCropperProps extends DirectionProperty, CommonProperties {
    * Callback fired when the zoom level changes.
    */
   onZoomChange?: ((details: ZoomChangeDetails) => void) | undefined
+  /**
+   * Callback fired when the rotation changes.
+   */
+  onRotationChange?: ((details: RotationChangeDetails) => void) | undefined
 }
 
-type PropsWithDefault = "initialCrop" | "minCropSize" | "defaultZoom" | "zoomStep" | "minZoom" | "maxZoom"
+type PropsWithDefault =
+  | "initialCrop"
+  | "minCropSize"
+  | "defaultZoom"
+  | "defaultRotation"
+  | "zoomStep"
+  | "minZoom"
+  | "maxZoom"
 
 export interface ImageCropperSchema {
   state: "idle" | "dragging" | "panning"
@@ -88,6 +112,7 @@ export interface ImageCropperSchema {
     lastShiftKey: boolean
     pinchDistance: number | null
     zoom: number
+    rotation: number
     offset: Point
     offsetStart: Point | null
   }
@@ -113,6 +138,10 @@ export interface ImageCropperApi<T extends PropTypes = PropTypes> {
    * Function to set the zoom level of the image.
    */
   setZoom: (zoom: number) => void
+  /**
+   * Function to set the rotation of the image.
+   */
+  setRotation: (rotation: number) => void
 
   getRootProps: () => T["element"]
   getViewportProps: () => T["element"]

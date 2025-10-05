@@ -23,6 +23,10 @@ export function connect<T extends PropTypes>(
       send({ type: "SET_ZOOM", zoom })
     },
 
+    setRotation(rotation) {
+      send({ type: "SET_ROTATION", rotation })
+    },
+
     getRootProps() {
       return normalize.element({
         ...parts.root.attrs,
@@ -99,6 +103,24 @@ export function connect<T extends PropTypes>(
     getImageProps() {
       const zoom = context.get("zoom")
       const offset = context.get("offset")
+      const rotation = context.get("rotation")
+      const naturalSize = context.get("naturalSize")
+
+      const safeNumber = (value: number) => (Number.isFinite(value) ? value : 0)
+
+      const zoomValue = Number.isFinite(zoom) && zoom > 0 ? zoom : 1
+      const offsetX = safeNumber(offset?.x)
+      const offsetY = safeNumber(offset?.y)
+      const width = safeNumber(naturalSize?.width)
+      const height = safeNumber(naturalSize?.height)
+      const centerX = (width * zoomValue) / 2
+      const centerY = (height * zoomValue) / 2
+      const rotationValue = safeNumber(rotation)
+
+      const translateToPivot = `translate(${toPx(offsetX + centerX)}, ${toPx(offsetY + centerY)})`
+      const rotate = `rotate(${rotationValue}deg)`
+      const translateFromPivot = `translate(${toPx(-centerX)}, ${toPx(-centerY)})`
+      const scale = `scale(${zoomValue})`
 
       return normalize.element({
         ...parts.image.attrs,
@@ -110,7 +132,7 @@ export function connect<T extends PropTypes>(
           send({ type: "SET_NATURAL_SIZE", src: "element", size: { width, height } })
         },
         style: {
-          transform: `translate(${toPx(offset.x)}, ${toPx(offset.y)}) scale(${zoom})`,
+          transform: `${translateToPivot} ${rotate} ${translateFromPivot} ${scale}`,
           transformOrigin: "0px 0px",
         },
       })

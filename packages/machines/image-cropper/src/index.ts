@@ -10,5 +10,6 @@ export type {
   ElementIds,
   HandleProps,
   HandlePosition,
+  RotationChangeDetails,
   ZoomChangeDetails,
 } from "./image-cropper.types"
