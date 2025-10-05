@@ -1,7 +1,7 @@
 import * as imageCropper from "@zag-js/image-cropper"
 import { useMachine, normalizeProps } from "@zag-js/react"
 import { imageCropperControls } from "@zag-js/shared"
-import { useId } from "react"
+import { useId, useState } from "react"
 import { StateVisualizer } from "../components/state-visualizer"
 import { Toolbar } from "../components/toolbar"
 import { handlePositions } from "@zag-js/shared"
@@ -9,9 +9,19 @@ import { useControls } from "../hooks/use-controls"
 
 export default function Page() {
   const controls = useControls(imageCropperControls)
+  const [zoom, setZoom] = useState(1)
+  const [rotation, setRotation] = useState(0)
 
   const service = useMachine(imageCropper.machine, {
     id: useId(),
+    zoom,
+    onZoomChange(details) {
+      setZoom(details.zoom)
+    },
+    rotation,
+    onRotationChange(details) {
+      setRotation(details.rotation)
+    },
     ...controls.context,
   })
 
@@ -38,16 +48,16 @@ export default function Page() {
           min={1}
           max={5}
           step={0.25}
-          defaultValue={1}
-          onChange={(e) => api.setZoom(Number(e.currentTarget.value))}
+          value={zoom}
+          onChange={(e) => setZoom(Number(e.currentTarget.value))}
         />
         <input
           type="range"
           min={0}
           max={360}
           step={1}
-          defaultValue={0}
-          onChange={(e) => api.setRotation(Number(e.currentTarget.value))}
+          value={rotation}
+          onChange={(e) => setRotation(Number(e.currentTarget.value))}
         />
       </main>
 
