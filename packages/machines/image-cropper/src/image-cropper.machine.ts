@@ -53,6 +53,7 @@ export const machine = createMachine<ImageCropperSchema>({
     return {
       initialCrop: { x: 0, y: 0, width: 50, height: 50 },
       minCropSize: { width: 40, height: 40 },
+      defaultZoom: 1,
       zoomStep: 0.25,
       minZoom: 1,
       maxZoom: 5,
@@ -87,7 +88,11 @@ export const machine = createMachine<ImageCropperSchema>({
         defaultValue: null,
       })),
       zoom: bindable<number>(() => ({
-        defaultValue: 1,
+        defaultValue: prop("defaultZoom"),
+        value: prop("zoom"),
+        onChange(zoom) {
+          prop("onZoomChange")?.({ zoom })
+        },
       })),
       offset: bindable<Point>(() => ({
         defaultValue: { x: 0, y: 0 },

@@ -11,6 +11,10 @@ export type HandlePosition =
   | "bottom-left"
   | "left"
 
+export interface ZoomChangeDetails {
+  zoom: number
+}
+
 export type ElementIds = Partial<{
   root: string
   viewport: string
@@ -40,6 +44,15 @@ export interface ImageCropperProps extends DirectionProperty, CommonProperties {
    */
   aspectRatio?: number
   /**
+   * The controlled zoom level of the image.
+   */
+  zoom?: number
+  /**
+   * The initial zoom factor to apply to the image.
+   * @default 1
+   */
+  defaultZoom?: number
+  /**
    * The amount of zoom applied per wheel step.
    * @default 0.25
    */
@@ -54,9 +67,13 @@ export interface ImageCropperProps extends DirectionProperty, CommonProperties {
    * @default 5
    */
   maxZoom?: number
+  /**
+   * Callback fired when the zoom level changes.
+   */
+  onZoomChange?: ((details: ZoomChangeDetails) => void) | undefined
 }
 
-type PropsWithDefault = "initialCrop" | "minCropSize" | "zoomStep" | "minZoom" | "maxZoom"
+type PropsWithDefault = "initialCrop" | "minCropSize" | "defaultZoom" | "zoomStep" | "minZoom" | "maxZoom"
 
 export interface ImageCropperSchema {
   state: "idle" | "dragging" | "panning"
