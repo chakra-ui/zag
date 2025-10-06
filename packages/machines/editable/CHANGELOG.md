@@ -1,5 +1,21 @@
 # @zag-js/editable
 
+## 1.26.0
+
+### Patch Changes
+
+- [`e7eaea9`](https://github.com/chakra-ui/zag/commit/e7eaea93800a3e3625dc28a5ebe78253dc808ec2) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix issue where input value fails to revert after repeated full
+  deletion
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.26.0
+  - @zag-js/core@1.26.0
+  - @zag-js/types@1.26.0
+  - @zag-js/utils@1.26.0
+  - @zag-js/dom-query@1.26.0
+  - @zag-js/interact-outside@1.26.0
+
 ## 1.25.0
 
 ### Patch Changes
