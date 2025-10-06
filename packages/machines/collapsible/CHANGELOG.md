@@ -1,5 +1,16 @@
 # @zag-js/collapsible
 
+## 1.26.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.26.0
+  - @zag-js/core@1.26.0
+  - @zag-js/types@1.26.0
+  - @zag-js/utils@1.26.0
+  - @zag-js/dom-query@1.26.0
+
 ## 1.25.0
 
 ### Minor Changes
