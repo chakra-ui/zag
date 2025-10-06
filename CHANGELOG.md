@@ -4,6 +4,48 @@ All notable changes to this project will be documented in this file.
 
 > For v0.x changelog, see the [v0 branch](https://github.com/chakra-ui/zag/blob/v0/CHANGELOG.md)
 
+## [1.26.0](./#1.26.0) - 2025-10-06
+
+### Added
+
+- **Tree View**: [Experimental] Add support for renaming tree node labels with validation and control features.
+
+  This feature enables users to edit tree node labels inline, unlocking use cases like file explorers, folder management
+  systems, content hierarchies, and any tree-based interface where users need to rename items.
+
+  **Key Features:**
+  - Press `F2` on any node to enter rename mode
+  - Input is automatically focused and synced with current label
+  - Press `Enter` to submit or `Escape` to cancel
+  - Blur event automatically submits changes
+  - IME composition events are properly handled for international input
+
+  **Validation & Control:**
+  - `canRename` - Control which nodes are renameable based on node type or custom logic
+  - `onRenameStart` - Called when rename mode starts (useful for analytics, showing hints)
+  - `onBeforeRename` - Validate rename before accepting (e.g., prevent duplicates, empty names)
+  - Empty name prevention - Automatically stays in rename mode if submitted name is empty/whitespace
+  - Label trimming - Labels are automatically trimmed before being passed to callbacks
+  - `onRenameComplete` - Handle the rename and update your collection
+
+  **Styling & Visual State:**
+  - `data-renaming` attribute - Added to both item and branch elements when in rename mode for easy styling
+  - `nodeState.renaming` - Boolean property to check if a node is currently being renamed
+
+### Fixed
+
+- **Editable**: Fix issue where input value fails to revert after repeated full deletion
+
+- **Focus Visible**: Fix `"Cannot assign to read only property 'focus'"` console error by gracefully handling
+  environments where `HTMLElement.prototype.focus` is non-configurable.
+
+- **Listbox**: Fix `splitProps` to avoid partial
+
+- **Presence**: Fix race condition where dialog remains closed when `open` prop rapidly changes from `true` to `false`
+  to `true`
+
+- **Solid**: Fix issue where transition actions received stale event data
+
 ## [1.25.0](./#1.25.0) - 2025-09-28
 
 ### Added
