@@ -34,7 +34,7 @@
   "devDependencies": {
     "@solidjs/testing-library": "^0.8.10",
     "@testing-library/jest-dom": "^6.8.0",
-    "@types/jsdom": "^21.1.7",
+    "@types/jsdom": "^27.0.0",
     "clean-package": "2.2.0",
     "jsdom": "^27.0.0",
     "solid-js": "1.9.9",

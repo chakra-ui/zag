@@ -73,7 +73,7 @@
     "@octokit/rest": "22.0.0",
     "@playwright/test": "1.55.1",
     "@swc/core": "1.13.5",
-    "@types/jsdom": "^21.1.7",
+    "@types/jsdom": "^27.0.0",
     "@types/node": "24.5.2",
     "@types/signale": "1.4.7",
     "@typescript-eslint/eslint-plugin": "8.45.0",
