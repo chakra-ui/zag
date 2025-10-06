@@ -12,7 +12,7 @@ import type {
 } from "@zag-js/core"
 import { createScope, INIT_STATE, MachineStatus } from "@zag-js/core"
 import { compact, isFunction, isString, toArray, warn, ensure } from "@zag-js/utils"
-import { type Accessor, createMemo, mergeProps, onCleanup, onMount } from "solid-js"
+import { type Accessor, createMemo, mergeProps, onCleanup, onMount, untrack } from "solid-js"
 import { createBindable } from "./bindable"
 import { createRefs } from "./refs"
 import { createTrack } from "./track"
@@ -239,39 +239,41 @@ export function useMachine<T extends MachineSchema>(
   })
 
   const send = (event: any) => {
-    if (status !== MachineStatus.Started) return
+    queueMicrotask(() => {
+      if (status !== MachineStatus.Started) return
 
-    previousEventRef.current = eventRef.current
-    eventRef.current = event
+      previousEventRef.current = eventRef.current
+      eventRef.current = event
 
-    let currentState = state.get()
+      let currentState = untrack(() => state.get())
 
-    const transitions =
-      // @ts-ignore
-      machine.states[currentState].on?.[event.type] ??
-      // @ts-ignore
-      machine.on?.[event.type]
+      const transitions =
+        // @ts-ignore
+        machine.states[currentState].on?.[event.type] ??
+        // @ts-ignore
+        machine.on?.[event.type]
 
-    const transition = choose(transitions)
-    if (!transition) return
+      const transition = choose(transitions)
+      if (!transition) return
 
-    // save current transition
-    transitionRef.current = transition
-    const target = transition.target ?? currentState
+      // save current transition
+      transitionRef.current = transition
+      const target = transition.target ?? currentState
 
-    debug("transition", event.type, transition.target || currentState, `(${transition.actions})`)
+      debug("transition", event.type, transition.target || currentState, `(${transition.actions})`)
 
-    const changed = target !== currentState
-    if (changed) {
-      // state change is high priority
-      state.set(target)
-    } else if (transition.reenter && !changed) {
-      // reenter will re-invoke the current state
-      state.invoke(currentState, currentState)
-    } else {
-      // call transition actions
-      action(transition.actions)
-    }
+      const changed = target !== currentState
+      if (changed) {
+        // state change is high priority
+        state.set(target)
+      } else if (transition.reenter && !changed) {
+        // reenter will re-invoke the current state
+        state.invoke(currentState, currentState)
+      } else {
+        // call transition actions
+        action(transition.actions)
+      }
+    })
   }
 
   machine.watch?.(getParams())
