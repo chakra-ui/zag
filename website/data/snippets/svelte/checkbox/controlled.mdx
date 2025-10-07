@@ -2,13 +2,11 @@
 <script lang="ts">
   let checked = $state(false)
 
-  const service = useMachine(checkbox.machine, {
-    get checked() {
-      return checked
-    },
+  const service = useMachine(checkbox.machine, () => ({
+    checked,
     onCheckedChange(details) {
       checked = details.checked
     },
-  })
+  }))
 </script>
 ```
