@@ -142,13 +142,7 @@ export const machine = createMachine<ImageCropperSchema>({
         },
         POINTER_UP: {
           target: "idle",
-          actions: [
-            "clearPointerStart",
-            "clearOffsetStart",
-            "clearHandlePosition",
-            "clearCropStart",
-            "clearShiftState",
-          ],
+          actions: ["clearPointerStart", "clearOffsetStart"],
         },
       },
     },
