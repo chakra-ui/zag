@@ -84,7 +84,7 @@ export const machine = createMachine<ImageCropperSchema>({
       actions: ["clearPinchDistance"],
     },
     SET_ZOOM: {
-      actions: ["setZoom"],
+      actions: ["updateZoom"],
     },
     SET_ROTATION: {
       actions: ["setRotation"],
@@ -273,86 +273,6 @@ export const machine = createMachine<ImageCropperSchema>({
         context.set("handlePosition", position)
       },
 
-      setZoom({ context, event, prop, scope }) {
-        const nextZoomRaw = event.zoom
-        if (!Number.isFinite(nextZoomRaw)) return
-
-        let minZoom = prop("minZoom")
-        let maxZoom = prop("maxZoom")
-
-        if (minZoom > maxZoom) {
-          ;[minZoom, maxZoom] = [maxZoom, minZoom]
-        }
-
-        const nextZoom = clampValue(nextZoomRaw, minZoom, maxZoom)
-
-        const currentZoom = context.get("zoom")
-        const currentOffsetRaw = context.get("offset")
-
-        const bounds = dom.getViewportBounds(scope)
-        const naturalSize = context.get("naturalSize")
-        const viewport = { width: bounds.width, height: bounds.height }
-        const clampOffset = (offset: Point, zoom: number) => clampImageOffset({ offset, zoom, viewport, naturalSize })
-
-        if (!Number.isFinite(currentZoom) || currentZoom <= 0) {
-          context.set("zoom", nextZoom)
-          context.set("offset", clampOffset(currentOffsetRaw, nextZoom))
-          return
-        }
-
-        const currentOffset = clampOffset(currentOffsetRaw, currentZoom)
-
-        const crop = context.get("crop")
-        const hasValidCrop =
-          Number.isFinite(crop?.x) &&
-          Number.isFinite(crop?.y) &&
-          Number.isFinite(crop?.width) &&
-          Number.isFinite(crop?.height) &&
-          crop.width > 0 &&
-          crop.height > 0
-
-        const fallbackOrigin = {
-          x: Number.isFinite(viewport.width) && viewport.width > 0 ? viewport.width / 2 : 0,
-          y: Number.isFinite(viewport.height) && viewport.height > 0 ? viewport.height / 2 : 0,
-        }
-
-        const origin = hasValidCrop
-          ? {
-              x: crop.x + crop.width / 2,
-              y: crop.y + crop.height / 2,
-            }
-          : fallbackOrigin
-
-        if (!Number.isFinite(origin.x) || !Number.isFinite(origin.y)) {
-          context.set("zoom", nextZoom)
-          context.set("offset", clampOffset(currentOffset, nextZoom))
-          return
-        }
-
-        const localX = (origin.x - currentOffset.x) / currentZoom
-        const localY = (origin.y - currentOffset.y) / currentZoom
-
-        if (!Number.isFinite(localX) || !Number.isFinite(localY)) {
-          context.set("zoom", nextZoom)
-          context.set("offset", clampOffset(currentOffset, nextZoom))
-          return
-        }
-
-        const nextOffset = {
-          x: origin.x - localX * nextZoom,
-          y: origin.y - localY * nextZoom,
-        }
-
-        if (!Number.isFinite(nextOffset.x) || !Number.isFinite(nextOffset.y)) {
-          context.set("zoom", nextZoom)
-          context.set("offset", clampOffset(currentOffset, nextZoom))
-          return
-        }
-
-        context.set("zoom", nextZoom)
-        context.set("offset", clampOffset(nextOffset, nextZoom))
-      },
-
       setRotation({ context, event }) {
         const rotation = event.rotation
         if (!Number.isFinite(rotation)) return
@@ -382,66 +302,44 @@ export const machine = createMachine<ImageCropperSchema>({
       },
 
       updateZoom({ context, event, prop, scope }) {
-        const delta = event.delta
+        let { delta, point, zoom: targetZoom } = event
 
-        const stepProp = prop("zoomStep")
-        const step = Math.abs(stepProp)
-
-        let minZoom = prop("minZoom")
-        let maxZoom = prop("maxZoom")
-
-        if (minZoom > maxZoom) {
-          ;[minZoom, maxZoom] = [maxZoom, minZoom]
+        // If no point is specified, zoom based on the center of the crop area
+        if (!point) {
+          const crop = context.get("crop")
+          point = { x: crop.x + crop.width / 2, y: crop.y + crop.height / 2 }
         }
 
-        const direction = Math.sign(delta) < 0 ? 1 : -1
-
+        const step = Math.abs(prop("zoomStep"))
+        const [minZoom, maxZoom] = [prop("minZoom"), prop("maxZoom")]
         const currentZoom = context.get("zoom")
+
         if (!Number.isFinite(currentZoom) || currentZoom <= 0) return
 
-        const nextZoom = clampValue(currentZoom + step * direction, minZoom, maxZoom)
+        let nextZoom
 
+        if (typeof targetZoom === "number" && Number.isFinite(targetZoom)) {
+          nextZoom = clampValue(targetZoom, minZoom, maxZoom)
+        } else if (typeof delta === "number" && Number.isFinite(delta)) {
+          const direction = Math.sign(delta) < 0 ? 1 : -1
+          nextZoom = clampValue(currentZoom + step * direction, minZoom, maxZoom)
+        } else {
+          return
+        }
         if (nextZoom === currentZoom) return
 
-        const point = event.point
+        const { width, height } = dom.getViewportBounds(scope)
+        const centerX = width / 2
+        const centerY = height / 2
 
-        const bounds = dom.getViewportBounds(scope)
-        const naturalSize = context.get("naturalSize")
-
-        const viewport = { width: bounds.width, height: bounds.height }
-        const clampOffset = (offset: Point, zoom: number) => clampImageOffset({ offset, zoom, viewport, naturalSize })
-
-        const currentOffsetRaw = context.get("offset")
-        const currentOffset = clampOffset(currentOffsetRaw, currentZoom)
-
-        if (!point) {
-          context.set("zoom", nextZoom)
-          context.set("offset", clampOffset(currentOffset, nextZoom))
-          return
-        }
-
-        const localX = (point.x - currentOffset.x) / currentZoom
-        const localY = (point.y - currentOffset.y) / currentZoom
-
-        if (!Number.isFinite(localX) || !Number.isFinite(localY)) {
-          context.set("zoom", nextZoom)
-          context.set("offset", clampOffset(currentOffset, nextZoom))
-          return
-        }
-
+        const k = 1 - nextZoom
         const nextOffset = {
-          x: point.x - localX * nextZoom,
-          y: point.y - localY * nextZoom,
-        }
-
-        if (!Number.isFinite(nextOffset.x) || !Number.isFinite(nextOffset.y)) {
-          context.set("zoom", nextZoom)
-          context.set("offset", clampOffset(currentOffset, nextZoom))
-          return
+          x: k * (point.x - centerX),
+          y: k * (point.y - centerY),
         }
 
         context.set("zoom", nextZoom)
-        context.set("offset", clampOffset(nextOffset, nextZoom))
+        context.set("offset", nextOffset)
       },
 
       updateOffsetFromPointer({ context, event, scope }) {
