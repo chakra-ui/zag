@@ -161,6 +161,105 @@ export const machine = createMachine<TreeViewSchema>({
     "CHECKED.CLEAR": {
       actions: ["clearChecked"],
     },
+    "NODE.FOCUS": {
+      actions: ["setFocusedNode"],
+    },
+    "NODE.ARROW_DOWN": [
+      {
+        guard: and("isShiftKey", "isMultipleSelection"),
+        actions: ["focusTreeNextNode", "extendSelectionToNextNode"],
+      },
+      {
+        actions: ["focusTreeNextNode"],
+      },
+    ],
+    "NODE.ARROW_UP": [
+      {
+        guard: and("isShiftKey", "isMultipleSelection"),
+        actions: ["focusTreePrevNode", "extendSelectionToPrevNode"],
+      },
+      {
+        actions: ["focusTreePrevNode"],
+      },
+    ],
+    "NODE.ARROW_LEFT": {
+      actions: ["focusBranchNode"],
+    },
+    "BRANCH_NODE.ARROW_LEFT": [
+      {
+        guard: "isBranchExpanded",
+        actions: ["collapseBranch"],
+      },
+      {
+        actions: ["focusBranchNode"],
+      },
+    ],
+    "BRANCH_NODE.ARROW_RIGHT": [
+      {
+        guard: and("isBranchFocused", "isBranchExpanded"),
+        actions: ["focusBranchFirstNode"],
+      },
+      {
+        actions: ["expandBranch"],
+      },
+    ],
+    "SIBLINGS.EXPAND": {
+      actions: ["expandSiblingBranches"],
+    },
+    "NODE.HOME": [
+      {
+        guard: and("isShiftKey", "isMultipleSelection"),
+        actions: ["extendSelectionToFirstNode", "focusTreeFirstNode"],
+      },
+      {
+        actions: ["focusTreeFirstNode"],
+      },
+    ],
+    "NODE.END": [
+      {
+        guard: and("isShiftKey", "isMultipleSelection"),
+        actions: ["extendSelectionToLastNode", "focusTreeLastNode"],
+      },
+      {
+        actions: ["focusTreeLastNode"],
+      },
+    ],
+    "NODE.CLICK": [
+      {
+        guard: and("isCtrlKey", "isMultipleSelection"),
+        actions: ["toggleNodeSelection"],
+      },
+      {
+        guard: and("isShiftKey", "isMultipleSelection"),
+        actions: ["extendSelectionToNode"],
+      },
+      {
+        actions: ["selectNode"],
+      },
+    ],
+    "BRANCH_NODE.CLICK": [
+      {
+        guard: and("isCtrlKey", "isMultipleSelection"),
+        actions: ["toggleNodeSelection"],
+      },
+      {
+        guard: and("isShiftKey", "isMultipleSelection"),
+        actions: ["extendSelectionToNode"],
+      },
+      {
+        guard: "expandOnClick",
+        actions: ["selectNode", "toggleBranchNode"],
+      },
+      {
+        actions: ["selectNode"],
+      },
+    ],
+    "BRANCH_TOGGLE.CLICK": {
+      actions: ["toggleBranchNode"],
+    },
+    "TREE.TYPEAHEAD": {
+      actions: ["focusMatchedNode"],
+    },
   },
 
   exit: ["clearPendingAborts"],
@@ -171,105 +270,6 @@ export const machine = createMachine<TreeViewSchema>({
         "NODE.RENAME": {
           target: "renaming",
           actions: ["setRenamingValue"],
-        },
-        "NODE.FOCUS": {
-          actions: ["setFocusedNode"],
-        },
-        "NODE.ARROW_DOWN": [
-          {
-            guard: and("isShiftKey", "isMultipleSelection"),
-            actions: ["focusTreeNextNode", "extendSelectionToNextNode"],
-          },
-          {
-            actions: ["focusTreeNextNode"],
-          },
-        ],
-        "NODE.ARROW_UP": [
-          {
-            guard: and("isShiftKey", "isMultipleSelection"),
-            actions: ["focusTreePrevNode", "extendSelectionToPrevNode"],
-          },
-          {
-            actions: ["focusTreePrevNode"],
-          },
-        ],
-        "NODE.ARROW_LEFT": {
-          actions: ["focusBranchNode"],
-        },
-        "BRANCH_NODE.ARROW_LEFT": [
-          {
-            guard: "isBranchExpanded",
-            actions: ["collapseBranch"],
-          },
-          {
-            actions: ["focusBranchNode"],
-          },
-        ],
-        "BRANCH_NODE.ARROW_RIGHT": [
-          {
-            guard: and("isBranchFocused", "isBranchExpanded"),
-            actions: ["focusBranchFirstNode"],
-          },
-          {
-            actions: ["expandBranch"],
-          },
-        ],
-        "SIBLINGS.EXPAND": {
-          actions: ["expandSiblingBranches"],
-        },
-        "NODE.HOME": [
-          {
-            guard: and("isShiftKey", "isMultipleSelection"),
-            actions: ["extendSelectionToFirstNode", "focusTreeFirstNode"],
-          },
-          {
-            actions: ["focusTreeFirstNode"],
-          },
-        ],
-        "NODE.END": [
-          {
-            guard: and("isShiftKey", "isMultipleSelection"),
-            actions: ["extendSelectionToLastNode", "focusTreeLastNode"],
-          },
-          {
-            actions: ["focusTreeLastNode"],
-          },
-        ],
-        "NODE.CLICK": [
-          {
-            guard: and("isCtrlKey", "isMultipleSelection"),
-            actions: ["toggleNodeSelection"],
-          },
-          {
-            guard: and("isShiftKey", "isMultipleSelection"),
-            actions: ["extendSelectionToNode"],
-          },
-          {
-            actions: ["selectNode"],
-          },
-        ],
-        "BRANCH_NODE.CLICK": [
-          {
-            guard: and("isCtrlKey", "isMultipleSelection"),
-            actions: ["toggleNodeSelection"],
-          },
-          {
-            guard: and("isShiftKey", "isMultipleSelection"),
-            actions: ["extendSelectionToNode"],
-          },
-          {
-            guard: "expandOnClick",
-            actions: ["selectNode", "toggleBranchNode"],
-          },
-          {
-            actions: ["selectNode"],
-          },
-        ],
-        "BRANCH_TOGGLE.CLICK": {
-          actions: ["toggleBranchNode"],
-        },
-        "TREE.TYPEAHEAD": {
-          actions: ["focusMatchedNode"],
         },
       },
     },
