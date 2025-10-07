@@ -43,40 +43,32 @@ export default function Page() {
             </div>
           </div>
         </div>
-        <input
-          type="range"
-          min={1}
-          max={5}
-          step={0.25}
-          value={zoom}
-          onChange={(e) => api.setZoom(Number(e.currentTarget.value))}
-        />
-        <input
-          type="range"
-          min={0}
-          max={360}
-          step={1}
-          value={rotation}
-          onChange={(e) => api.setRotation(Number(e.currentTarget.value))}
-        />
+        <label>
+          Zoom:
+          <input
+            type="range"
+            min={service.prop("minZoom")}
+            max={service.prop("maxZoom")}
+            step={service.prop("zoomStep")}
+            value={zoom}
+            onChange={(e) => api.setZoom(Number(e.currentTarget.value))}
+          />
+        </label>
+        <label>
+          Rotation:
+          <input
+            type="range"
+            min={0}
+            max={360}
+            step={1}
+            value={rotation}
+            onChange={(e) => api.setRotation(Number(e.currentTarget.value))}
+          />
+        </label>
       </main>
 
       <Toolbar controls={controls.ui} viz>
-        <StateVisualizer
-          state={service}
-          context={[
-            "naturalSize",
-            "crop",
-            "pointerStart",
-            "cropStart",
-            "handlePosition",
-            "shiftLockRatio",
-            "lastShiftKey",
-            "zoom",
-            "rotation",
-            "offset",
-          ]}
-        />
+        <StateVisualizer state={service} context={["naturalSize", "crop", "zoom", "rotation", "offset"]} />
       </Toolbar>
     </>
   )

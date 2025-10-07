@@ -67,7 +67,7 @@ export interface ImageCropperProps extends DirectionProperty, CommonProperties {
   defaultRotation?: number
   /**
    * The amount of zoom applied per wheel step.
-   * @default 0.25
+   * @default 0.1
    */
   zoomStep?: number
   /**
