@@ -276,6 +276,33 @@ function Demo() {
 }
 ```
 
+### Transforming files before acceptance
+
+Use the `transformFiles` callback to process files before they're added to
+`acceptedFiles`. This is useful for scenarios like image cropping, compression,
+or format conversion.
+
+The `transformFiles` function receives the selected files and should return a
+promise that resolves with the transformed files.
+
+```jsx
+const service = useMachine(fileUpload.machine, {
+  accept: "image/*",
+  transformFiles: async (files) => {
+    return Promise.all(
+      files.map(async (file) => {
+        // Compress or transform the file
+        const transformedBlob = await processImage(file)
+        return new File([transformedBlob], file.name, { type: file.type })
+      }),
+    )
+  },
+})
+```
+
+While files are being transformed, the `api.transforming` boolean is `true`,
+allowing you to show loading states in your UI.
+
 ## Styling guide
 
 Earlier, we mentioned that each file upload part has a `data-part` attribute
