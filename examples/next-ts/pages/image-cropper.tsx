@@ -49,7 +49,7 @@ export default function Page() {
           max={5}
           step={0.25}
           value={zoom}
-          onChange={(e) => setZoom(Number(e.currentTarget.value))}
+          onChange={(e) => api.setZoom(Number(e.currentTarget.value))}
         />
         <input
           type="range"
@@ -57,7 +57,7 @@ export default function Page() {
           max={360}
           step={1}
           value={rotation}
-          onChange={(e) => setRotation(Number(e.currentTarget.value))}
+          onChange={(e) => api.setRotation(Number(e.currentTarget.value))}
         />
       </main>
 
