@@ -106,7 +106,7 @@ export const machine = createMachine<ImageCropperSchema>({
         PAN_POINTER_DOWN: {
           guard: "canPan",
           target: "panning",
-          // actions: ["setPointerStart", "setOffsetStart", "clearHandlePosition", "clearCropStart", "clearShiftState"],
+          actions: ["setPointerStart", "setOffsetStart"],
         },
         ZOOM: {
           guard: "hasBounds",
@@ -138,7 +138,7 @@ export const machine = createMachine<ImageCropperSchema>({
       effects: ["trackPointerMove"],
       on: {
         POINTER_MOVE: {
-          // actions: ["updateOffsetFromPointer"],
+          actions: ["updatePanOffset"],
         },
         POINTER_UP: {
           target: "idle",
@@ -192,6 +192,11 @@ export const machine = createMachine<ImageCropperSchema>({
         if (!point) return
 
         context.set("pointerStart", point)
+      },
+
+      setOffsetStart({ context }) {
+        const offset = context.get("offset")
+        context.set("offsetStart", { x: offset.x, y: offset.y })
       },
 
       setCropStart({ context }) {
@@ -257,6 +262,38 @@ export const machine = createMachine<ImageCropperSchema>({
         context.set("lastShiftKey", !!event.shiftKey)
       },
 
+      updatePanOffset({ context, event, scope }) {
+        const point = event.point
+        const pointerStart = context.get("pointerStart")
+        const offsetStart = context.get("offsetStart")
+        const zoom = context.get("zoom")
+
+        if (!point || !pointerStart || !offsetStart) return
+        if (!Number.isFinite(zoom) || zoom <= 0) return
+
+        const bounds = dom.getViewportBounds(scope)
+        const deltaX = point.x - pointerStart.x
+        const deltaY = point.y - pointerStart.y
+
+        const extraWidth = Math.max(0, bounds.width * (zoom - 1))
+        const extraHeight = Math.max(0, bounds.height * (zoom - 1))
+
+        const minX = -extraWidth / 2
+        const maxX = extraWidth / 2
+        const minY = -extraHeight / 2
+        const maxY = extraHeight / 2
+
+        const startX = Number.isFinite(offsetStart.x) ? offsetStart.x : 0
+        const startY = Number.isFinite(offsetStart.y) ? offsetStart.y : 0
+
+        const nextOffset = {
+          x: clampValue(startX + deltaX, minX, maxX),
+          y: clampValue(startY + deltaY, minY, maxY),
+        }
+
+        context.set("offset", nextOffset)
+      },
+
       setHandlePosition({ event, context }) {
         const position = event.handlePosition
         if (!position) return
@@ -307,7 +344,6 @@ export const machine = createMachine<ImageCropperSchema>({
         if (!Number.isFinite(currentZoom) || currentZoom <= 0) return
 
         let nextZoom
-
         if (typeof targetZoom === "number" && Number.isFinite(targetZoom)) {
           nextZoom = clampValue(targetZoom, minZoom, maxZoom)
         } else if (typeof delta === "number" && Number.isFinite(delta)) {
@@ -318,14 +354,40 @@ export const machine = createMachine<ImageCropperSchema>({
         }
         if (nextZoom === currentZoom) return
 
-        const { width, height } = dom.getViewportBounds(scope)
-        const centerX = width / 2
-        const centerY = height / 2
+        const { width: vpW, height: vpH } = dom.getViewportBounds(scope)
+        const centerX = vpW / 2
+        const centerY = vpH / 2
 
-        const k = 1 - nextZoom
-        const nextOffset = {
-          x: k * (point.x - centerX),
-          y: k * (point.y - centerY),
+        const currentOffset = context.get("offset")
+
+        const ratio = nextZoom / currentZoom
+        let nextOffset = {
+          x: (1 - ratio) * (point.x - centerX) + ratio * currentOffset.x,
+          y: (1 - ratio) * (point.y - centerY) + ratio * currentOffset.y,
+        }
+
+        if (nextZoom < currentZoom) {
+          const imgSize = context.get("naturalSize")
+          const scaledW = imgSize.width * nextZoom
+          const scaledH = imgSize.height * nextZoom
+
+          if (Number.isFinite(scaledW) && Number.isFinite(scaledH)) {
+            if (scaledW <= vpW) {
+              nextOffset.x = 0
+            } else {
+              const minX = vpW - centerX - scaledW / 2
+              const maxX = scaledW / 2 - centerX
+              nextOffset.x = Math.max(minX, Math.min(maxX, nextOffset.x))
+            }
+
+            if (scaledH <= vpH) {
+              nextOffset.y = 0
+            } else {
+              const minY = vpH - centerY - scaledH / 2
+              const maxY = scaledH / 2 - centerY
+              nextOffset.y = Math.max(minY, Math.min(maxY, nextOffset.y))
+            }
+          }
         }
 
         context.set("zoom", nextZoom)
