@@ -1,5 +1,22 @@
 # @zag-js/tree-view
 
+## 1.26.1
+
+### Patch Changes
+
+- [`2189d00`](https://github.com/chakra-ui/zag/commit/2189d009d758228318fdbea3da2e951d7792f141) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - - Fixed issue where pressing `F2` on any tree node would lock
+  navigation and prevent selecting other nodes.
+  - The rename feature now requires the `canRename` callback to be explicitly provided, making it opt-in rather than
+    opt-out.
+- Updated dependencies []:
+  - @zag-js/anatomy@1.26.1
+  - @zag-js/core@1.26.1
+  - @zag-js/types@1.26.1
+  - @zag-js/collection@1.26.1
+  - @zag-js/utils@1.26.1
+  - @zag-js/dom-query@1.26.1
+
 ## 1.26.0
 
 ### Minor Changes
