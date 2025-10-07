@@ -161,8 +161,6 @@ export const machine = createMachine<ImageCropperSchema>({
         return bounds.width > 0 && bounds.height > 0
       },
       canPan({ context, scope }) {
-        const zoom = context.get("zoom")
-        if (!Number.isFinite(zoom) || zoom <= 1) return false
         const naturalSize = context.get("naturalSize")
         if (naturalSize.width <= 0 || naturalSize.height <= 0) return false
         const bounds = dom.getViewportBounds(scope)
@@ -267,6 +265,7 @@ export const machine = createMachine<ImageCropperSchema>({
         const pointerStart = context.get("pointerStart")
         const offsetStart = context.get("offsetStart")
         const zoom = context.get("zoom")
+        const rotation = context.get("rotation")
 
         if (!point || !pointerStart || !offsetStart) return
         if (!Number.isFinite(zoom) || zoom <= 0) return
@@ -275,9 +274,25 @@ export const machine = createMachine<ImageCropperSchema>({
         const deltaX = point.x - pointerStart.x
         const deltaY = point.y - pointerStart.y
 
-        const extraWidth = Math.max(0, bounds.width * (zoom - 1))
-        const extraHeight = Math.max(0, bounds.height * (zoom - 1))
+        // Convert rotation to radians and take absolute cos/sin for AABB
+        const theta = ((rotation % 360) * Math.PI) / 180
+        const c = Math.abs(Math.cos(theta))
+        const s = Math.abs(Math.sin(theta))
 
+        // Size of the content after zoom (before rotation)
+        const contentW = bounds.width * zoom
+        const contentH = bounds.height * zoom
+
+        // Axis-aligned bounding box of the rotated rect
+        // (classic rotated-rect AABB formula)
+        const aabbW = contentW * c + contentH * s
+        const aabbH = contentW * s + contentH * c
+
+        // How much larger than the viewport the rotated content is
+        const extraWidth = Math.max(0, aabbW - bounds.width)
+        const extraHeight = Math.max(0, aabbH - bounds.height)
+
+        // Pan limits so the viewport always stays within the rotated content
         const minX = -extraWidth / 2
         const maxX = extraWidth / 2
         const minY = -extraHeight / 2

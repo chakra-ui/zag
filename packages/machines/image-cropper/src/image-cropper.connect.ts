@@ -43,9 +43,6 @@ export function connect<T extends PropTypes>(
 
           if (shouldIgnoreTouchPointer(event)) return
 
-          const zoom = context.get("zoom")
-          if (!Number.isFinite(zoom) || zoom <= 1) return
-
           const target = event.target as HTMLElement | null
           const rootEl = dom.getRootEl(scope)
           if (!target || !rootEl || !contains(rootEl, target)) return
