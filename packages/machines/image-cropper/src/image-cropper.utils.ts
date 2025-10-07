@@ -1,4 +1,4 @@
-import type { Point, Rect, Size } from "@zag-js/types"
+import type { Rect, Size } from "@zag-js/types"
 import { clampValue } from "@zag-js/utils"
 import type { HandlePosition } from "./image-cropper.types"
 
@@ -187,47 +187,5 @@ export function computeMoveCrop(
     y: clampValue(cropStart.y + delta.y, 0, bounds.height - cropStart.height),
     width: cropStart.width,
     height: cropStart.height,
-  }
-}
-
-export const normalizeNumber = (value: number | null | undefined) =>
-  typeof value === "number" && Number.isFinite(value) ? value : 0
-
-export const normalizePoint = (point: Point) => ({
-  x: normalizeNumber(point?.x),
-  y: normalizeNumber(point?.y),
-})
-
-export const clampOffsetValue = (value: number, viewportSize: number, imageSize: number) => {
-  if (!Number.isFinite(value)) return 0
-  if (!Number.isFinite(viewportSize) || viewportSize <= 0) return value
-  if (!Number.isFinite(imageSize) || imageSize <= 0) return value
-  const limit = viewportSize - imageSize
-  const min = Math.min(0, limit)
-  const max = Math.max(0, limit)
-  return clampValue(value, min, max)
-}
-
-interface ClampImageOffsetParams {
-  offset: Point
-  zoom: number
-  viewport: Size
-  naturalSize: Size
-}
-
-export const clampImageOffset = ({ offset, zoom, viewport, naturalSize }: ClampImageOffsetParams): Point => {
-  const normalizedOffset = normalizePoint(offset)
-  if (!Number.isFinite(zoom) || zoom <= 0) {
-    return normalizedOffset
-  }
-
-  const viewportWidth = normalizeNumber(viewport?.width)
-  const viewportHeight = normalizeNumber(viewport?.height)
-  const imageWidth = normalizeNumber(naturalSize?.width) * zoom
-  const imageHeight = normalizeNumber(naturalSize?.height) * zoom
-
-  return {
-    x: clampOffsetValue(normalizedOffset.x, viewportWidth, imageWidth),
-    y: clampOffsetValue(normalizedOffset.y, viewportHeight, imageHeight),
   }
 }

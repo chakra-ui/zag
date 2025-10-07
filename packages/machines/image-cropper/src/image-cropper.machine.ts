@@ -3,7 +3,7 @@ import * as dom from "./image-cropper.dom"
 import type { HandlePosition, ImageCropperSchema } from "./image-cropper.types"
 import type { Point, Rect, Size } from "@zag-js/types"
 import { addDomEvent, getEventPoint, getEventTarget } from "@zag-js/dom-query"
-import { clampImageOffset, computeMoveCrop, computeResizeCrop, normalizePoint } from "./image-cropper.utils"
+import { computeMoveCrop, computeResizeCrop } from "./image-cropper.utils"
 import { clampValue } from "@zag-js/utils"
 
 export const machine = createMachine<ImageCropperSchema>({
@@ -106,7 +106,7 @@ export const machine = createMachine<ImageCropperSchema>({
         PAN_POINTER_DOWN: {
           guard: "canPan",
           target: "panning",
-          actions: ["setPointerStart", "setOffsetStart", "clearHandlePosition", "clearCropStart", "clearShiftState"],
+          // actions: ["setPointerStart", "setOffsetStart", "clearHandlePosition", "clearCropStart", "clearShiftState"],
         },
         ZOOM: {
           guard: "hasBounds",
@@ -138,7 +138,7 @@ export const machine = createMachine<ImageCropperSchema>({
       effects: ["trackPointerMove"],
       on: {
         POINTER_MOVE: {
-          actions: ["updateOffsetFromPointer"],
+          // actions: ["updateOffsetFromPointer"],
         },
         POINTER_UP: {
           target: "idle",
@@ -191,7 +191,7 @@ export const machine = createMachine<ImageCropperSchema>({
         const point = event.point
         if (!point) return
 
-        context.set("pointerStart", normalizePoint(point))
+        context.set("pointerStart", point)
       },
 
       setCropStart({ context }) {
@@ -255,16 +255,6 @@ export const machine = createMachine<ImageCropperSchema>({
         context.set("crop", nextCrop)
         // Update last observed Shift state
         context.set("lastShiftKey", !!event.shiftKey)
-      },
-
-      setOffsetStart({ context, scope }) {
-        const offset = context.get("offset")
-        const zoom = context.get("zoom")
-        const naturalSize = context.get("naturalSize")
-        const bounds = dom.getViewportBounds(scope)
-        const viewport = { width: bounds.width, height: bounds.height }
-
-        context.set("offsetStart", clampImageOffset({ offset, zoom, viewport, naturalSize }))
       },
 
       setHandlePosition({ event, context }) {
@@ -340,31 +330,6 @@ export const machine = createMachine<ImageCropperSchema>({
 
         context.set("zoom", nextZoom)
         context.set("offset", nextOffset)
-      },
-
-      updateOffsetFromPointer({ context, event, scope }) {
-        const pointerStart = context.get("pointerStart")
-        const offsetStart = context.get("offsetStart")
-        const currentPoint = event.point
-
-        if (!pointerStart || !offsetStart || !currentPoint) return
-
-        const delta = {
-          x: currentPoint.x - pointerStart.x,
-          y: currentPoint.y - pointerStart.y,
-        }
-
-        const nextOffset = {
-          x: offsetStart.x + delta.x,
-          y: offsetStart.y + delta.y,
-        }
-
-        const bounds = dom.getViewportBounds(scope)
-        const viewport = { width: bounds.width, height: bounds.height }
-        const zoom = context.get("zoom")
-        const naturalSize = context.get("naturalSize")
-
-        context.set("offset", clampImageOffset({ offset: nextOffset, zoom, viewport, naturalSize }))
       },
 
       setPinchDistance({ context, event, send }) {
