@@ -40,9 +40,6 @@ export const machine = createMachine<ImageCropperSchema>({
       shiftLockRatio: bindable<number | null>(() => ({
         defaultValue: null,
       })),
-      lastShiftKey: bindable<boolean>(() => ({
-        defaultValue: false,
-      })),
       pinchDistance: bindable<number | null>(() => ({
         defaultValue: null,
       })),
@@ -128,7 +125,7 @@ export const machine = createMachine<ImageCropperSchema>({
             "clearCropStart",
             "clearHandlePosition",
             "clearOffsetStart",
-            "clearShiftState",
+            "clearShiftRatio",
           ],
         },
       },
@@ -214,9 +211,7 @@ export const machine = createMachine<ImageCropperSchema>({
         let nextCrop
         if (handlePosition) {
           if (aspectRatio == null || !Number.isFinite(aspectRatio) || aspectRatio <= 0) {
-            const lastShiftKey = context.get("lastShiftKey")
-
-            if (event.shiftKey && !lastShiftKey) {
+            if (event.shiftKey) {
               const currentCrop = context.get("crop")
               const w = currentCrop.width
               const h = currentCrop.height
@@ -250,8 +245,6 @@ export const machine = createMachine<ImageCropperSchema>({
         }
 
         context.set("crop", nextCrop)
-        // Update last observed Shift state
-        context.set("lastShiftKey", !!event.shiftKey)
       },
 
       updatePanOffset({ context, event, scope }) {
@@ -332,9 +325,8 @@ export const machine = createMachine<ImageCropperSchema>({
         context.set("offsetStart", null)
       },
 
-      clearShiftState({ context }) {
+      clearShiftRatio({ context }) {
         context.set("shiftLockRatio", null)
-        context.set("lastShiftKey", false)
       },
 
       updateZoom({ context, event, prop, scope }) {
