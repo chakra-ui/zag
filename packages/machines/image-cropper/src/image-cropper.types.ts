@@ -71,6 +71,11 @@ export interface ImageCropperProps extends DirectionProperty, CommonProperties {
    */
   zoomStep?: number
   /**
+   * Controls how responsive pinch-to-zoom is.
+   * @default 2
+   */
+  zoomSensitivity?: number
+  /**
    * The minimum zoom factor allowed.
    * @default 1
    */
@@ -96,6 +101,7 @@ type PropsWithDefault =
   | "defaultZoom"
   | "defaultRotation"
   | "zoomStep"
+  | "zoomSensitivity"
   | "minZoom"
   | "maxZoom"
 

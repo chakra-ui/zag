@@ -102,16 +102,9 @@ export function connect<T extends PropTypes>(
       const offset = context.get("offset")
       const rotation = context.get("rotation")
 
-      const safeNumber = (value: number) => (Number.isFinite(value) ? value : 0)
-
-      const zoomValue = Number.isFinite(zoom) && zoom > 0 ? zoom : 1
-      const offsetX = safeNumber(offset?.x)
-      const offsetY = safeNumber(offset?.y)
-      const rotationValue = safeNumber(rotation)
-
-      const translate = `translate(${toPx(offsetX)}, ${toPx(offsetY)})`
-      const rotate = `rotate(${rotationValue}deg)`
-      const scale = `scale(${zoomValue})`
+      const translate = `translate(${toPx(offset.x)}, ${toPx(offset.y)})`
+      const rotate = `rotate(${rotation}deg)`
+      const scale = `scale(${zoom})`
 
       return normalize.element({
         ...parts.image.attrs,

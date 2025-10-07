@@ -19,7 +19,7 @@ export function computeResizeCrop(options: ResizeOptions): Rect {
   let right = x + width
   let bottom = y + height
 
-  const hasAspect = !!aspectRatio && isFinite(aspectRatio) && aspectRatio > 0
+  const hasAspect = typeof aspectRatio === "number" && aspectRatio > 0
 
   let minWidth = Math.min(minSize.width, bounds.width)
   let minHeight = Math.min(minSize.height, bounds.height)
