@@ -1,6 +1,6 @@
 {
   "name": "@zag-js/hotkeys",
-  "version": "1.26.0",
+  "version": "1.26.1",
   "description": "Utility for managing keyboard shortcuts",
   "keywords": [
     "js",
