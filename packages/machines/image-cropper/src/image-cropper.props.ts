@@ -15,6 +15,7 @@ export const props = createProps<ImageCropperProps>()([
   "defaultZoom",
   "defaultRotation",
   "zoomStep",
+  "zoomSensitivity",
   "minZoom",
   "maxZoom",
   "onZoomChange",
