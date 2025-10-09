@@ -116,6 +116,7 @@ export interface ImageCropperSchema {
     handlePosition: HandlePosition | null
     shiftLockRatio: number | null
     pinchDistance: number | null
+    pinchMidpoint: Point | null
     zoom: number
     rotation: number
     offset: Point

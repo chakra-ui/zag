@@ -3,7 +3,7 @@ import * as dom from "./image-cropper.dom"
 import type { HandlePosition, ImageCropperSchema } from "./image-cropper.types"
 import type { Point, Rect, Size } from "@zag-js/types"
 import { addDomEvent, getEventPoint, getEventTarget } from "@zag-js/dom-query"
-import { computeMoveCrop, computeResizeCrop } from "./image-cropper.utils"
+import { clampOffset, computeMoveCrop, computeResizeCrop } from "./image-cropper.utils"
 import { clampValue } from "@zag-js/utils"
 
 export const machine = createMachine<ImageCropperSchema>({
@@ -42,6 +42,9 @@ export const machine = createMachine<ImageCropperSchema>({
         defaultValue: null,
       })),
       pinchDistance: bindable<number | null>(() => ({
+        defaultValue: null,
+      })),
+      pinchMidpoint: bindable<Point | null>(() => ({
         defaultValue: null,
       })),
       zoom: bindable<number>(() => ({
@@ -248,37 +251,25 @@ export const machine = createMachine<ImageCropperSchema>({
         const point = event.point
         const pointerStart = context.get("pointerStart")
         const offsetStart = context.get("offsetStart")
-        const zoom = context.get("zoom")
-        const rotation = context.get("rotation")
 
         if (!point || !pointerStart || !offsetStart) return
 
+        const zoom = context.get("zoom")
+        const rotation = context.get("rotation")
         const bounds = dom.getViewportBounds(scope)
+
         const deltaX = point.x - pointerStart.x
         const deltaY = point.y - pointerStart.y
 
-        const theta = ((rotation % 360) * Math.PI) / 180
-        const c = Math.abs(Math.cos(theta))
-        const s = Math.abs(Math.sin(theta))
-
-        const contentW = bounds.width * zoom
-        const contentH = bounds.height * zoom
-
-        const aabbW = contentW * c + contentH * s
-        const aabbH = contentW * s + contentH * c
-
-        const extraWidth = Math.max(0, aabbW - bounds.width)
-        const extraHeight = Math.max(0, aabbH - bounds.height)
-
-        const minX = -extraWidth / 2
-        const maxX = extraWidth / 2
-        const minY = -extraHeight / 2
-        const maxY = extraHeight / 2
-
-        const nextOffset = {
-          x: clampValue(offsetStart.x + deltaX, minX, maxX),
-          y: clampValue(offsetStart.y + deltaY, minY, maxY),
-        }
+        const nextOffset = clampOffset({
+          zoom,
+          rotation,
+          bounds,
+          offset: {
+            x: offsetStart.x + deltaX,
+            y: offsetStart.y + deltaY,
+          },
+        })
 
         context.set("offset", nextOffset)
       },
@@ -316,7 +307,7 @@ export const machine = createMachine<ImageCropperSchema>({
       },
 
       updateZoom({ context, event, prop, scope }) {
-        let { delta, point, zoom: targetZoom, scale } = event
+        let { delta, point, zoom: targetZoom, scale, panDelta } = event
 
         // If no point is specified, zoom based on the center of the crop area
         if (!point) {
@@ -346,6 +337,26 @@ export const machine = createMachine<ImageCropperSchema>({
           return
         }
 
+        // Only pan if there's a pan delta from pinch movement
+        if (nextZoom === currentZoom && panDelta) {
+          const currentOffset = context.get("offset")
+          const rotation = context.get("rotation")
+          const bounds = dom.getViewportBounds(scope)
+
+          const nextOffset = clampOffset({
+            zoom: currentZoom,
+            rotation,
+            bounds,
+            offset: {
+              x: currentOffset.x + panDelta.x,
+              y: currentOffset.y + panDelta.y,
+            },
+          })
+
+          context.set("offset", nextOffset)
+          return
+        }
+
         if (nextZoom === currentZoom) return
 
         const { width: vpW, height: vpH } = dom.getViewportBounds(scope)
@@ -360,7 +371,15 @@ export const machine = createMachine<ImageCropperSchema>({
           y: (1 - ratio) * (point.y - centerY) + ratio * currentOffset.y,
         }
 
-        if (nextZoom < currentZoom) {
+        // Apply pan delta from pinch movement if provided
+        if (panDelta) {
+          nextOffset.x += panDelta.x
+          nextOffset.y += panDelta.y
+
+          const rotation = context.get("rotation")
+          const bounds = dom.getViewportBounds(scope)
+          nextOffset = clampOffset({ zoom: nextZoom, rotation, bounds, offset: nextOffset })
+        } else if (nextZoom < currentZoom) {
           const imgSize = context.get("naturalSize")
           const scaledW = imgSize.width * nextZoom
           const scaledH = imgSize.height * nextZoom
@@ -386,7 +405,7 @@ export const machine = createMachine<ImageCropperSchema>({
         context.set("offset", nextOffset)
       },
 
-      setPinchDistance({ context, event, send }) {
+      setPinchDistance({ context, event, send, scope }) {
         const touches = Array.isArray(event.touches) ? event.touches : []
         if (touches.length < 2) return
         if (context.get("pointerStart") !== null) {
@@ -396,7 +415,15 @@ export const machine = createMachine<ImageCropperSchema>({
         const dx = first.x - second.x
         const dy = first.y - second.y
         const distance = Math.hypot(dx, dy)
+
+        const bounds = dom.getViewportBounds(scope)
+        const midpoint = {
+          x: (first.x + second.x) / 2 - bounds.left,
+          y: (first.y + second.y) / 2 - bounds.top,
+        }
+
         context.set("pinchDistance", distance)
+        context.set("pinchMidpoint", midpoint)
       },
 
       handlePinchMove({ context, event, scope, send }) {
@@ -409,25 +436,44 @@ export const machine = createMachine<ImageCropperSchema>({
         const distance = Math.hypot(dx, dy)
 
         const lastDistance = context.get("pinchDistance")
+        const lastMidpoint = context.get("pinchMidpoint")
 
         const bounds = dom.getViewportBounds(scope)
-        const point = {
+        const midpoint = {
           x: (first.x + second.x) / 2 - bounds.left,
           y: (first.y + second.y) / 2 - bounds.top,
         }
 
-        if (lastDistance != null && lastDistance > 0) {
+        if (lastDistance != null && lastDistance > 0 && lastMidpoint != null) {
           const delta = lastDistance - distance
           const scale = distance / lastDistance
+          const distanceChange = Math.abs(delta)
 
-          send({ type: "ZOOM", trigger: "touch", delta, scale, point })
+          // Improve smoothing by ignoring very small changes
+          const hasSignificantZoom = distanceChange > 1
+
+          const panDelta = {
+            x: midpoint.x - lastMidpoint.x,
+            y: midpoint.y - lastMidpoint.y,
+          }
+
+          send({
+            type: "ZOOM",
+            trigger: "touch",
+            delta,
+            scale: hasSignificantZoom ? scale : 1,
+            point: midpoint,
+            panDelta,
+          })
         }
 
         context.set("pinchDistance", distance)
+        context.set("pinchMidpoint", midpoint)
       },
 
       clearPinchDistance({ context }) {
         context.set("pinchDistance", null)
+        context.set("pinchMidpoint", null)
       },
     },
 

@@ -1,4 +1,4 @@
-import type { Rect, Size } from "@zag-js/types"
+import type { Point, Rect, Size } from "@zag-js/types"
 import { clampValue } from "@zag-js/utils"
 import type { HandlePosition } from "./image-cropper.types"
 
@@ -187,5 +187,39 @@ export function computeMoveCrop(
     y: clampValue(cropStart.y + delta.y, 0, bounds.height - cropStart.height),
     width: cropStart.width,
     height: cropStart.height,
+  }
+}
+
+interface ClampOffsetParams {
+  zoom: number
+  rotation: number
+  bounds: { width: number; height: number }
+  offset: Point
+}
+
+export function clampOffset(params: ClampOffsetParams): Point {
+  const { zoom, rotation, bounds, offset } = params
+
+  const theta = ((rotation % 360) * Math.PI) / 180
+  const c = Math.abs(Math.cos(theta))
+  const s = Math.abs(Math.sin(theta))
+
+  const contentW = bounds.width * zoom
+  const contentH = bounds.height * zoom
+
+  const aabbW = contentW * c + contentH * s
+  const aabbH = contentW * s + contentH * c
+
+  const extraWidth = Math.max(0, aabbW - bounds.width)
+  const extraHeight = Math.max(0, aabbH - bounds.height)
+
+  const minX = -extraWidth / 2
+  const maxX = extraWidth / 2
+  const minY = -extraHeight / 2
+  const maxY = extraHeight / 2
+
+  return {
+    x: clampValue(offset.x, minX, maxX),
+    y: clampValue(offset.y, minY, maxY),
   }
 }
