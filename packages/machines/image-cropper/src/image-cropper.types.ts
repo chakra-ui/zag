@@ -33,9 +33,10 @@ export interface ImageCropperProps extends DirectionProperty, CommonProperties {
    */
   ids?: ElementIds
   /**
-   * The initial rectangle of the crop area
+   * The initial rectangle of the crop area.
+   * If not provided, a smart default will be computed based on viewport size and aspect ratio.
    */
-  initialCrop: Rect
+  initialCrop?: Rect
   /**
    * The minimum size of the crop area
    * @default { width: 40, height: 40 }
@@ -101,7 +102,6 @@ export interface ImageCropperProps extends DirectionProperty, CommonProperties {
 }
 
 type PropsWithDefault =
-  | "initialCrop"
   | "minCropSize"
   | "defaultZoom"
   | "defaultRotation"

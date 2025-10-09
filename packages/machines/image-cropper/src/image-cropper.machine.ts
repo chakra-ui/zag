@@ -9,7 +9,6 @@ import { clampValue } from "@zag-js/utils"
 export const machine = createMachine<ImageCropperSchema>({
   props({ props }) {
     return {
-      initialCrop: { x: 0, y: 0, width: 50, height: 50 },
       minCropSize: { width: 40, height: 40 },
       defaultZoom: 1,
       zoomStep: 0.1,
@@ -28,7 +27,7 @@ export const machine = createMachine<ImageCropperSchema>({
         defaultValue: { width: 0, height: 0 },
       })),
       crop: bindable<Rect>(() => ({
-        defaultValue: prop("initialCrop"),
+        defaultValue: { x: 0, y: 0, width: 0, height: 0 },
       })),
       pointerStart: bindable<Point | null>(() => ({
         defaultValue: null,
@@ -99,6 +98,9 @@ export const machine = createMachine<ImageCropperSchema>({
       on: {
         SET_NATURAL_SIZE: {
           actions: ["setNaturalSize"],
+        },
+        SET_DEFAULT_CROP: {
+          actions: ["setDefaultCrop"],
         },
         POINTER_DOWN: {
           guard: "canDragSelection",
@@ -183,21 +185,66 @@ export const machine = createMachine<ImageCropperSchema>({
         }
       },
 
-      setNaturalSize({ event, context, prop, scope }) {
+      setNaturalSize({ event, context, send }) {
         context.set("naturalSize", event.size)
+        send({ type: "SET_DEFAULT_CROP", src: "init" })
+      },
 
-        if (prop("fixedCropArea")) {
-          const bounds = dom.getViewportBounds(scope)
-          if (bounds.height > 0 && bounds.width > 0) {
-            const aspectRatio = prop("aspectRatio") ?? 1
-            const height = bounds.height
-            const width = height * aspectRatio
-            const x = (bounds.width - width) / 2
-            const y = 0
+      setDefaultCrop({ context, prop, scope }) {
+        const bounds = dom.getViewportBounds(scope)
+        if (bounds.height <= 0 || bounds.width <= 0) return
 
-            context.set("crop", { x, y, width, height })
+        const initialCrop = prop("initialCrop")
+        if (initialCrop) {
+          context.set("crop", initialCrop)
+          return
+        }
+
+        const aspectRatio = prop("aspectRatio")
+        const fixedCropArea = prop("fixedCropArea")
+
+        const targetWidth = bounds.width * 0.8
+        const targetHeight = bounds.height * 0.8
+
+        let width: number
+        let height: number
+
+        if (typeof aspectRatio === "number" && aspectRatio > 0) {
+          if (fixedCropArea) {
+            height = bounds.height
+            width = height * aspectRatio
+
+            // If calculated width exceeds viewport, scale down proportionally
+            if (width > bounds.width) {
+              width = bounds.width
+              height = width / aspectRatio
+            }
+          } else {
+            const targetAspect = targetWidth / targetHeight
+
+            if (aspectRatio > targetAspect) {
+              width = targetWidth
+              height = width / aspectRatio
+            } else {
+              height = targetHeight
+              width = height * aspectRatio
+            }
+          }
+        } else {
+          if (fixedCropArea) {
+            const size = Math.min(bounds.width, bounds.height)
+            width = size
+            height = size
+          } else {
+            width = targetWidth
+            height = targetHeight
           }
         }
+
+        const x = (bounds.width - width) / 2
+        const y = (bounds.height - height) / 2
+
+        context.set("crop", { x, y, width, height })
       },
 
       setPointerStart({ event, context }) {
