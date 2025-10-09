@@ -231,15 +231,15 @@ export function connect<T extends PropTypes, V extends TreeNode = TreeNode>(
             F2(event) {
               if (node.dataset.disabled) return
 
-              // Check canRename callback if provided
+              // Check canRename callback - return early if not provided (opt-in)
               const canRenameFn = prop("canRename")
-              if (canRenameFn) {
-                const indexPath = collection.getIndexPath(nodeId)
-                if (indexPath) {
-                  const node = collection.at(indexPath)
-                  if (node && !canRenameFn(node, indexPath)) {
-                    return
-                  }
+              if (!canRenameFn) return
+
+              const indexPath = collection.getIndexPath(nodeId)
+              if (indexPath) {
+                const node = collection.at(indexPath)
+                if (node && !canRenameFn(node, indexPath)) {
+                  return
                 }
               }
 

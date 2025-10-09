@@ -1,20 +1,23 @@
-import { act, renderHook } from "@testing-library/react"
+import { renderHook } from "@solidjs/testing-library"
 import { createGuards, createMachine } from "@zag-js/core"
+import type { Machine } from "@zag-js/core"
+import { createSignal } from "solid-js"
 import { useMachine } from "../src"
 
-function renderMachine(machine: any) {
-  const render = renderHook(() => useMachine<any>(machine))
+function renderMachine(machine: any, props?: any) {
+  const render = renderHook(() => useMachine<any>(machine, props))
   const send = async (event: any) => {
-    await act(async () => render.result.current.send(event))
+    render.result.send(event)
+    await Promise.resolve()
   }
   const advanceTime = async (ms: number) => {
-    await act(async () => vi.advanceTimersByTime(ms))
+    await vi.advanceTimersByTimeAsync(ms)
   }
   return { ...render, send, advanceTime }
 }
 
 describe("basic", () => {
-  test("initial state", () => {
+  test("initial state", async () => {
     const machine = createMachine<any>({
       initialState() {
         return "foo"
@@ -30,8 +33,9 @@ describe("basic", () => {
     })
 
     const { result } = renderMachine(machine)
+    await Promise.resolve()
 
-    expect(result.current.state.get()).toBe("foo")
+    expect(result.state.get()).toBe("foo")
   })
 
   test("initial entry action", async () => {
@@ -63,7 +67,7 @@ describe("basic", () => {
     expect(rootEntry).toHaveBeenCalledOnce()
   })
 
-  test("current state and context", () => {
+  test("current state and context", async () => {
     const machine = createMachine<any>({
       initialState() {
         return "test"
@@ -77,9 +81,10 @@ describe("basic", () => {
     })
 
     const { result } = renderMachine(machine)
+    await Promise.resolve()
 
-    expect(result.current.state.get()).toEqual("test")
-    expect(result.current.context.get("foo")).toEqual("bar")
+    expect(result.state.get()).toEqual("test")
+    expect(result.context.get("foo")).toEqual("bar")
   })
 
   test("send event", async () => {
@@ -146,15 +151,15 @@ describe("basic", () => {
     const { result, send } = renderMachine(machine)
     await Promise.resolve()
 
-    expect(result.current.state.hasTag("go")).toBeTruthy()
+    expect(result.state.hasTag("go")).toBeTruthy()
 
     await send({ type: "TIMER" })
-    expect(result.current.state.get()).toBe("yellow")
-    expect(result.current.state.hasTag("go")).toBeTruthy()
+    expect(result.state.get()).toBe("yellow")
+    expect(result.state.hasTag("go")).toBeTruthy()
 
     await send({ type: "TIMER" })
-    expect(result.current.state.get()).toBe("red")
-    expect(result.current.state.hasTag("go")).toBeFalsy()
+    expect(result.state.get()).toBe("red")
+    expect(result.state.hasTag("go")).toBeFalsy()
   })
 
   test("action order", async () => {
@@ -221,10 +226,10 @@ describe("basic", () => {
     const { result, send } = renderMachine(machine)
     await Promise.resolve()
 
-    expect(result.current.computed("length")).toEqual(3)
+    expect(result.computed("length")).toEqual(3)
 
     await send({ type: "UPDATE" })
-    expect(result.current.computed("length")).toEqual(5)
+    expect(result.computed("length")).toEqual(5)
   })
 
   test("watch", async () => {
@@ -304,10 +309,10 @@ describe("basic", () => {
     await Promise.resolve()
 
     await send({ type: "INCREMENT" })
-    expect(result.current.context.get("count")).toEqual(1)
+    expect(result.context.get("count")).toEqual(1)
 
     await send({ type: "INCREMENT" })
-    expect(result.current.context.get("count")).toEqual(1)
+    expect(result.context.get("count")).toEqual(1)
   })
 
   test("guard: composition", async () => {
@@ -351,15 +356,16 @@ describe("basic", () => {
     })
 
     const { result, send } = renderMachine(machine)
+    await Promise.resolve()
 
     await send({ type: "INCREMENT" })
-    expect(result.current.context.get("count")).toEqual(0)
+    expect(result.context.get("count")).toEqual(0)
 
     await send({ type: "COUNT.SET", value: 2 })
-    expect(result.current.context.get("count")).toEqual(2)
+    expect(result.context.get("count")).toEqual(2)
 
     await send({ type: "INCREMENT" })
-    expect(result.current.context.get("count")).toEqual(3)
+    expect(result.context.get("count")).toEqual(3)
   })
 
   test("context: controlled", async () => {
@@ -402,7 +408,7 @@ describe("basic", () => {
     await send({ type: "VALUE.SET", value: "next" })
 
     // since value is controlled, it should not change
-    expect(result.current.context.get("value")).toEqual("foo")
+    expect(result.context.get("value")).toEqual("foo")
   })
 
   test("effects", async () => {
@@ -440,23 +446,160 @@ describe("basic", () => {
     const { result, send, advanceTime } = renderMachine(machine)
 
     await send({ type: "START" })
-    expect(result.current.state.get()).toEqual("test")
+    expect(result.state.get()).toEqual("test")
 
     await advanceTime(1000)
-    expect(result.current.state.get()).toEqual("success")
+    expect(result.state.get()).toEqual("success")
     expect(cleanup).toHaveBeenCalledOnce()
 
     vi.useRealTimers()
   })
 })
 
+describe("useMachine - transition actions", () => {
+  it("should execute transition actions with correct event data", async () => {
+    const capturedEvents: any[] = []
+
+    const machine: Machine<any> = {
+      id: "test",
+      initial: "idle",
+      initialState: () => "idle",
+      states: {
+        idle: {
+          on: {
+            START: {
+              target: "active",
+              actions: ["captureEvent"],
+            },
+          },
+        },
+        active: {
+          on: {
+            STOP: {
+              target: "idle",
+              actions: ["captureEvent"],
+            },
+          },
+        },
+      },
+      implementations: {
+        actions: {
+          captureEvent(params: any) {
+            capturedEvents.push(params.event)
+          },
+        },
+      },
+    } as any
+
+    const { send } = renderMachine(machine)
+    await Promise.resolve()
+
+    await send({ type: "START", value: "test-1" })
+    await send({ type: "STOP", value: "test-2" })
+
+    expect(capturedEvents).toHaveLength(2)
+    expect(capturedEvents[0]).toMatchObject({ type: "START", value: "test-1" })
+    expect(capturedEvents[1]).toMatchObject({ type: "STOP", value: "test-2" })
+  })
+
+  it("should preserve event data when multiple sends happen before state change", async () => {
+    const capturedEvents: any[] = []
+
+    const machine: Machine<any> = {
+      id: "test",
+      initial: "a",
+      initialState: () => "a",
+      states: {
+        a: {
+          on: {
+            GO_B: {
+              target: "b",
+              actions: ["capture"],
+            },
+          },
+        },
+        b: {
+          on: {
+            GO_C: {
+              target: "c",
+              actions: ["capture"],
+            },
+          },
+        },
+        c: {},
+      },
+      implementations: {
+        actions: {
+          capture(params: any) {
+            capturedEvents.push({ type: params.event.type, data: params.event.data })
+          },
+        },
+      },
+    } as any
+
+    const { send } = renderMachine(machine)
+    await Promise.resolve()
+
+    await send({ type: "GO_B", data: "first" })
+    await send({ type: "GO_C", data: "second" })
+
+    expect(capturedEvents[0]).toMatchObject({ type: "GO_B", data: "first" })
+    expect(capturedEvents[1]).toMatchObject({ type: "GO_C", data: "second" })
+  })
+
+  it("should execute actions in correct order: exit -> transition -> enter", async () => {
+    const executionOrder: string[] = []
+
+    const machine: Machine<any> = {
+      id: "test",
+      initial: "state1",
+      initialState: () => "state1",
+      states: {
+        state1: {
+          exit: ["exitState1"],
+          on: {
+            TRANSITION: {
+              target: "state2",
+              actions: ["transitionAction"],
+            },
+          },
+        },
+        state2: {
+          entry: ["enterState2"],
+        },
+      },
+      implementations: {
+        actions: {
+          exitState1() {
+            executionOrder.push("exit")
+          },
+          transitionAction() {
+            executionOrder.push("transition")
+          },
+          enterState2() {
+            executionOrder.push("enter")
+          },
+        },
+      },
+    } as any
+
+    const { send } = renderMachine(machine)
+    await Promise.resolve()
+
+    await send({ type: "TRANSITION" })
+
+    expect(executionOrder).toEqual(["exit", "transition", "enter"])
+  })
+})
+
 describe("edge cases", () => {
-  test("reactive props updates", async () => {
+  test("reactive props with Solid signals", async () => {
+    const [max, setMax] = createSignal(5)
     const actionSpy = vi.fn()
 
     const machine = createMachine<any>({
       props({ props }) {
-        return { max: props.max || 0 }
+        return { max: props.max }
       },
       initialState() {
         return "test"
@@ -487,16 +630,37 @@ describe("edge cases", () => {
       },
     })
 
-    const { result } = renderHook(() => useMachine(machine, { max: 5 }))
+    const { result } = renderHook(() => useMachine(machine, () => ({ max: max() })))
+    await Promise.resolve()
 
     // Increment count to 3
-    await act(async () => result.current.send({ type: "INCREMENT" }))
-    await act(async () => result.current.send({ type: "INCREMENT" }))
-    await act(async () => result.current.send({ type: "INCREMENT" }))
+    result.send({ type: "INCREMENT" })
+    result.send({ type: "INCREMENT" })
+    result.send({ type: "INCREMENT" })
+    await Promise.resolve()
 
     // max is 5, count is 3, should allow action
-    await act(async () => result.current.send({ type: "CHECK" }))
+    result.send({ type: "CHECK" })
+    await Promise.resolve()
     expect(actionSpy).toHaveBeenCalledTimes(1)
+
+    // Update signal to lower max to 3
+    setMax(3)
+    await Promise.resolve()
+
+    // Now max is 3, count is 3, should NOT allow action
+    result.send({ type: "CHECK" })
+    await Promise.resolve()
+    expect(actionSpy).toHaveBeenCalledTimes(1)
+
+    // Update signal to increase max to 10
+    setMax(10)
+    await Promise.resolve()
+
+    // Now max is 10, count is 3, should allow action
+    result.send({ type: "CHECK" })
+    await Promise.resolve()
+    expect(actionSpy).toHaveBeenCalledTimes(2)
   })
 
   test("state.matches() helper", async () => {
@@ -523,17 +687,17 @@ describe("edge cases", () => {
 
     const { result, send } = renderMachine(machine)
 
-    expect(result.current.state.matches("idle")).toBe(true)
-    expect(result.current.state.matches("idle", "loading")).toBe(true)
-    expect(result.current.state.matches("loading", "success")).toBe(false)
+    expect(result.state.matches("idle")).toBe(true)
+    expect(result.state.matches("idle", "loading")).toBe(true)
+    expect(result.state.matches("loading", "success")).toBe(false)
 
     await send({ type: "START" })
-    expect(result.current.state.matches("loading")).toBe(true)
-    expect(result.current.state.matches("idle", "loading", "error")).toBe(true)
+    expect(result.state.matches("loading")).toBe(true)
+    expect(result.state.matches("idle", "loading", "error")).toBe(true)
 
     await send({ type: "SUCCESS" })
-    expect(result.current.state.matches("success", "error")).toBe(true)
-    expect(result.current.state.matches("idle", "loading")).toBe(false)
+    expect(result.state.matches("success", "error")).toBe(true)
+    expect(result.state.matches("idle", "loading")).toBe(false)
   })
 
   test("same-state transitions with actions", async () => {
@@ -562,15 +726,55 @@ describe("edge cases", () => {
 
     const { result, send } = renderMachine(machine)
 
-    expect(result.current.state.get()).toBe("active")
+    expect(result.state.get()).toBe("active")
 
     await send({ type: "PING" })
-    expect(result.current.state.get()).toBe("active")
+    expect(result.state.get()).toBe("active")
     expect(actionSpy).toHaveBeenCalledTimes(1)
 
     await send({ type: "PING" })
-    expect(result.current.state.get()).toBe("active")
+    expect(result.state.get()).toBe("active")
     expect(actionSpy).toHaveBeenCalledTimes(2)
+  })
+
+  test("cleanup on unmount", async () => {
+    const exitSpy = vi.fn()
+    const effectCleanupSpy = vi.fn()
+
+    const machine = createMachine<any>({
+      initialState() {
+        return "mounted"
+      },
+      exit: ["onMachineExit"],
+      states: {
+        mounted: {
+          exit: ["onStateExit"],
+          effects: ["mountEffect"],
+        },
+      },
+      implementations: {
+        actions: {
+          onMachineExit: exitSpy,
+          onStateExit: exitSpy,
+        },
+        effects: {
+          mountEffect() {
+            return effectCleanupSpy
+          },
+        },
+      },
+    })
+
+    const { cleanup } = renderMachine(machine)
+    await Promise.resolve()
+
+    expect(exitSpy).not.toHaveBeenCalled()
+    expect(effectCleanupSpy).not.toHaveBeenCalled()
+
+    cleanup()
+
+    expect(exitSpy).toHaveBeenCalled()
+    expect(effectCleanupSpy).toHaveBeenCalledOnce()
   })
 
   test("event previous/current tracking", async () => {
