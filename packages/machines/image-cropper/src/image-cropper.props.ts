@@ -20,6 +20,7 @@ export const props = createProps<ImageCropperProps>()([
   "maxZoom",
   "onZoomChange",
   "onRotationChange",
+  "fixedCropArea",
 ])
 
 export const splitProps = createSplitProps<Partial<ImageCropperProps>>(props)
