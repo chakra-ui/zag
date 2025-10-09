@@ -9,7 +9,7 @@ export function connect<T extends PropTypes>(
   service: ImageCropperService,
   normalize: NormalizeProps<T>,
 ): ImageCropperApi<T> {
-  const { scope, send, context } = service
+  const { scope, send, context, prop } = service
 
   const shouldIgnoreTouchPointer = (event: { pointerType?: string; isPrimary?: boolean }) => {
     if (event.pointerType !== "touch") return false
@@ -35,6 +35,8 @@ export function connect<T extends PropTypes>(
     },
 
     getViewportProps() {
+      const fixedCropArea = prop("fixedCropArea")
+
       return normalize.element({
         ...parts.viewport.attrs,
         id: dom.getViewportId(scope),
@@ -48,7 +50,8 @@ export function connect<T extends PropTypes>(
           if (!target || !rootEl || !contains(rootEl, target)) return
 
           const selectionEl = dom.getSelectionEl(scope)
-          if (contains(selectionEl, target)) return
+
+          if (!fixedCropArea && contains(selectionEl, target)) return
 
           const handleEl = target.closest('[data-scope="image-cropper"][data-part="handle"]') as HTMLElement | null
           if (handleEl && contains(rootEl, handleEl)) return

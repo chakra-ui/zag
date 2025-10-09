@@ -17,6 +17,7 @@ export const machine = createMachine<ImageCropperSchema>({
       minZoom: 1,
       maxZoom: 5,
       defaultRotation: 0,
+      fixedCropArea: false,
       ...props,
     }
   },
@@ -100,7 +101,7 @@ export const machine = createMachine<ImageCropperSchema>({
           actions: ["setNaturalSize"],
         },
         POINTER_DOWN: {
-          guard: "hasBounds",
+          guard: "canDragSelection",
           target: "dragging",
           actions: ["setPointerStart", "setCropStart", "setHandlePosition"],
         },
@@ -161,6 +162,12 @@ export const machine = createMachine<ImageCropperSchema>({
         const bounds = dom.getViewportBounds(scope)
         return bounds.width > 0 && bounds.height > 0
       },
+      canDragSelection({ scope, prop }) {
+        const bounds = dom.getViewportBounds(scope)
+        const hasBounds = bounds.width > 0 && bounds.height > 0
+        const isNotFixed = !prop("fixedCropArea")
+        return hasBounds && isNotFixed
+      },
     },
 
     actions: {
@@ -176,8 +183,21 @@ export const machine = createMachine<ImageCropperSchema>({
         }
       },
 
-      setNaturalSize({ event, context }) {
+      setNaturalSize({ event, context, prop, scope }) {
         context.set("naturalSize", event.size)
+
+        if (prop("fixedCropArea")) {
+          const bounds = dom.getViewportBounds(scope)
+          if (bounds.height > 0 && bounds.width > 0) {
+            const aspectRatio = prop("aspectRatio") ?? 1
+            const height = bounds.height
+            const width = height * aspectRatio
+            const x = (bounds.width - width) / 2
+            const y = 0
+
+            context.set("crop", { x, y, width, height })
+          }
+        }
       },
 
       setPointerStart({ event, context }) {
@@ -247,7 +267,7 @@ export const machine = createMachine<ImageCropperSchema>({
         context.set("crop", nextCrop)
       },
 
-      updatePanOffset({ context, event, scope }) {
+      updatePanOffset({ context, event, scope, prop }) {
         const point = event.point
         const pointerStart = context.get("pointerStart")
         const offsetStart = context.get("offsetStart")
@@ -269,6 +289,9 @@ export const machine = createMachine<ImageCropperSchema>({
             x: offsetStart.x + deltaX,
             y: offsetStart.y + deltaY,
           },
+          fixedCropArea: prop("fixedCropArea"),
+          crop: context.get("crop"),
+          naturalSize: context.get("naturalSize"),
         })
 
         context.set("offset", nextOffset)
@@ -351,6 +374,9 @@ export const machine = createMachine<ImageCropperSchema>({
               x: currentOffset.x + panDelta.x,
               y: currentOffset.y + panDelta.y,
             },
+            fixedCropArea: prop("fixedCropArea"),
+            crop: context.get("crop"),
+            naturalSize: context.get("naturalSize"),
           })
 
           context.set("offset", nextOffset)
@@ -378,26 +404,48 @@ export const machine = createMachine<ImageCropperSchema>({
 
           const rotation = context.get("rotation")
           const bounds = dom.getViewportBounds(scope)
-          nextOffset = clampOffset({ zoom: nextZoom, rotation, bounds, offset: nextOffset })
+          nextOffset = clampOffset({
+            zoom: nextZoom,
+            rotation,
+            bounds,
+            offset: nextOffset,
+            fixedCropArea: prop("fixedCropArea"),
+            crop: context.get("crop"),
+            naturalSize: context.get("naturalSize"),
+          })
         } else if (nextZoom < currentZoom) {
-          const imgSize = context.get("naturalSize")
-          const scaledW = imgSize.width * nextZoom
-          const scaledH = imgSize.height * nextZoom
-
-          if (scaledW <= vpW) {
-            nextOffset.x = 0
+          if (prop("fixedCropArea")) {
+            const rotation = context.get("rotation")
+            const bounds = dom.getViewportBounds(scope)
+            nextOffset = clampOffset({
+              zoom: nextZoom,
+              rotation,
+              bounds,
+              offset: nextOffset,
+              fixedCropArea: true,
+              crop: context.get("crop"),
+              naturalSize: context.get("naturalSize"),
+            })
           } else {
-            const minX = vpW - centerX - scaledW / 2
-            const maxX = scaledW / 2 - centerX
-            nextOffset.x = Math.max(minX, Math.min(maxX, nextOffset.x))
-          }
+            const imgSize = context.get("naturalSize")
+            const scaledW = imgSize.width * nextZoom
+            const scaledH = imgSize.height * nextZoom
 
-          if (scaledH <= vpH) {
-            nextOffset.y = 0
-          } else {
-            const minY = vpH - centerY - scaledH / 2
-            const maxY = scaledH / 2 - centerY
-            nextOffset.y = Math.max(minY, Math.min(maxY, nextOffset.y))
+            if (scaledW <= vpW) {
+              nextOffset.x = 0
+            } else {
+              const minX = vpW - centerX - scaledW / 2
+              const maxX = scaledW / 2 - centerX
+              nextOffset.x = Math.max(minX, Math.min(maxX, nextOffset.x))
+            }
+
+            if (scaledH <= vpH) {
+              nextOffset.y = 0
+            } else {
+              const minY = vpH - centerY - scaledH / 2
+              const maxY = scaledH / 2 - centerY
+              nextOffset.y = Math.max(minY, Math.min(maxY, nextOffset.y))
+            }
           }
         }
 

@@ -195,10 +195,43 @@ interface ClampOffsetParams {
   rotation: number
   bounds: { width: number; height: number }
   offset: Point
+  fixedCropArea?: boolean
+  crop?: Rect
+  naturalSize?: Size
 }
 
 export function clampOffset(params: ClampOffsetParams): Point {
-  const { zoom, rotation, bounds, offset } = params
+  const { zoom, rotation, bounds, offset, fixedCropArea, crop, naturalSize } = params
+
+  if (fixedCropArea && crop && naturalSize) {
+    const theta = ((rotation % 360) * Math.PI) / 180
+    const c = Math.abs(Math.cos(theta))
+    const s = Math.abs(Math.sin(theta))
+
+    const imgW = naturalSize.width * zoom
+    const imgH = naturalSize.height * zoom
+
+    const aabbW = imgW * c + imgH * s
+    const aabbH = imgW * s + imgH * c
+
+    const centerX = bounds.width / 2
+    const centerY = bounds.height / 2
+
+    const cropLeft = crop.x
+    const cropRight = crop.x + crop.width
+    const cropTop = crop.y
+    const cropBottom = crop.y + crop.height
+
+    const minX = cropRight - centerX - aabbW / 2
+    const maxX = cropLeft - centerX + aabbW / 2
+    const minY = cropBottom - centerY - aabbH / 2
+    const maxY = cropTop - centerY + aabbH / 2
+
+    return {
+      x: clampValue(offset.x, minX, maxX),
+      y: clampValue(offset.y, minY, maxY),
+    }
+  }
 
   const theta = ((rotation % 360) * Math.PI) / 180
   const c = Math.abs(Math.cos(theta))

@@ -93,6 +93,11 @@ export interface ImageCropperProps extends DirectionProperty, CommonProperties {
    * Callback fired when the rotation changes.
    */
   onRotationChange?: ((details: RotationChangeDetails) => void) | undefined
+  /**
+   * Whether the crop area is fixed in size and position.
+   * @default false
+   */
+  fixedCropArea?: boolean
 }
 
 type PropsWithDefault =
@@ -104,6 +109,7 @@ type PropsWithDefault =
   | "zoomSensitivity"
   | "minZoom"
   | "maxZoom"
+  | "fixedCropArea"
 
 export interface ImageCropperSchema {
   state: "idle" | "dragging" | "panning"
