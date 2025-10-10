@@ -8,3 +8,4 @@ packages:
 onlyBuiltDependencies:
   - '@parcel/watcher'
   - sharp
+  - unrs-resolver
