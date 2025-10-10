@@ -4,6 +4,7 @@ import { imageCropperControls } from "@zag-js/shared"
 import { useId, useState } from "react"
 import { StateVisualizer } from "../components/state-visualizer"
 import { Toolbar } from "../components/toolbar"
+import { handlePositions } from "@zag-js/shared"
 import { useControls } from "../hooks/use-controls"
 
 export default function Page() {
@@ -21,7 +22,10 @@ export default function Page() {
     onRotationChange(details) {
       setRotation(details.rotation)
     },
-    fixedCropArea: true,
+    minCropSize: {
+      width: 80,
+      height: 60,
+    },
     ...controls.context,
   })
 
@@ -35,6 +39,11 @@ export default function Page() {
             <img src="https://picsum.photos/seed/a/500/300" {...api.getImageProps()} />
             <div {...api.getSelectionProps()}>
               <div {...api.getOverlayProps()} />
+              {handlePositions.map((position) => (
+                <div key={position} {...api.getHandleProps({ position })}>
+                  <div />
+                </div>
+              ))}
             </div>
           </div>
         </div>

@@ -51,6 +51,7 @@ export default function Page() {
             max={service.prop("maxZoom")}
             step={service.prop("zoomStep")}
             value={zoom}
+            data-testid="zoom-slider"
             onChange={(e) => api.setZoom(Number(e.currentTarget.value))}
           />
         </label>
@@ -62,12 +63,13 @@ export default function Page() {
             max={360}
             step={1}
             value={rotation}
+            data-testid="rotation-slider"
             onChange={(e) => api.setRotation(Number(e.currentTarget.value))}
           />
         </label>
       </main>
 
-      <Toolbar controls={controls.ui} viz>
+      <Toolbar controls={controls.ui}>
         <StateVisualizer state={service} context={["naturalSize", "crop", "zoom", "rotation", "offset"]} />
       </Toolbar>
     </>

@@ -112,6 +112,8 @@ export function connect<T extends PropTypes>(
       return normalize.element({
         ...parts.image.attrs,
         id: dom.getImageId(scope),
+        draggable: false,
+        "aria-hidden": true,
         onLoad(event) {
           const imageEl = event.currentTarget as HTMLImageElement
           if (!imageEl?.complete) return
