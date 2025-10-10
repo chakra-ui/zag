@@ -143,6 +143,24 @@ test.describe("image-cropper / resizable", () => {
     expect(height).toBe(60)
   })
 
+  test("[maxSize] should respect maximum crop size", async () => {
+    await I.controls.num("maxWidth", "200")
+    await I.controls.num("maxHeight", "150")
+    await I.wait(100)
+
+    await I.dragHandle("bottom-right", 500, 500)
+    await I.wait(100)
+
+    const selectionRect = await I.getSelectionRect()
+    const viewportRect = await I.getViewportRect()
+
+    const expectedWidth = Math.min(200, viewportRect.width)
+    const expectedHeight = Math.min(150, viewportRect.height)
+
+    expect(selectionRect.width).toBe(expectedWidth)
+    expect(selectionRect.height).toBe(expectedHeight)
+  })
+
   test("[zoom] should allow programmatic zoom changes", async () => {
     await I.zoomSlider.fill("2")
 

@@ -48,6 +48,10 @@ export class ImageCropperModel extends Model {
     return bbox
   }
 
+  async getViewportRect() {
+    return rect(this.viewport)
+  }
+
   async getImageTransform() {
     return this.image.evaluate((el) => {
       const style = window.getComputedStyle(el)

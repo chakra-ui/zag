@@ -10,6 +10,8 @@ export const props = createProps<ImageCropperProps>()([
   "initialCrop",
   "minWidth",
   "minHeight",
+  "maxWidth",
+  "maxHeight",
   "aspectRatio",
   "zoom",
   "rotation",

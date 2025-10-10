@@ -11,6 +11,8 @@ export const machine = createMachine<ImageCropperSchema>({
     return {
       minWidth: 40,
       minHeight: 40,
+      maxWidth: Number.POSITIVE_INFINITY,
+      maxHeight: Number.POSITIVE_INFINITY,
       defaultZoom: 1,
       zoomStep: 0.1,
       zoomSensitivity: 2,
@@ -195,13 +197,44 @@ export const machine = createMachine<ImageCropperSchema>({
         const bounds = dom.getViewportBounds(scope)
         if (bounds.height <= 0 || bounds.width <= 0) return
 
+        const aspectRatio = prop("aspectRatio")
+        const minSize = { width: prop("minWidth"), height: prop("minHeight") }
+        const maxSize = { width: prop("maxWidth"), height: prop("maxHeight") }
+
+        const clampSize = (rect: Rect) => {
+          const result = computeResizeCrop({
+            cropStart: rect,
+            handlePosition: "bottom-right",
+            delta: { x: 0, y: 0 },
+            bounds,
+            minSize,
+            maxSize,
+            aspectRatio,
+          })
+
+          return { width: result.width, height: result.height }
+        }
+
         const initialCrop = prop("initialCrop")
         if (initialCrop) {
-          context.set("crop", initialCrop)
+          const constrainedSize = clampSize({
+            x: 0,
+            y: 0,
+            width: initialCrop.width,
+            height: initialCrop.height,
+          })
+
+          const width = constrainedSize.width
+          const height = constrainedSize.height
+          const maxX = Math.max(0, bounds.width - width)
+          const maxY = Math.max(0, bounds.height - height)
+          const x = clampValue(initialCrop.x, 0, maxX)
+          const y = clampValue(initialCrop.y, 0, maxY)
+
+          context.set("crop", { x, y, width, height })
           return
         }
 
-        const aspectRatio = prop("aspectRatio")
         const fixedCropArea = prop("fixedCropArea")
 
         const targetWidth = bounds.width * 0.8
@@ -242,8 +275,18 @@ export const machine = createMachine<ImageCropperSchema>({
           }
         }
 
-        const x = (bounds.width - width) / 2
-        const y = (bounds.height - height) / 2
+        const constrainedSize = clampSize({
+          x: 0,
+          y: 0,
+          width,
+          height,
+        })
+
+        width = constrainedSize.width
+        height = constrainedSize.height
+
+        const x = Math.max(0, (bounds.width - width) / 2)
+        const y = Math.max(0, (bounds.height - height) / 2)
 
         context.set("crop", { x, y, width, height })
       },
@@ -268,6 +311,8 @@ export const machine = createMachine<ImageCropperSchema>({
       updateCrop({ context, event, prop, scope }) {
         const minWidth = prop("minWidth")
         const minHeight = prop("minHeight")
+        const maxWidth = prop("maxWidth")
+        const maxHeight = prop("maxHeight")
         const handlePosition = context.get("handlePosition")
         const pointerStart = context.get("pointerStart")
         const cropStart = context.get("cropStart")
@@ -307,6 +352,7 @@ export const machine = createMachine<ImageCropperSchema>({
             delta,
             bounds,
             minSize: { width: minWidth, height: minHeight },
+            maxSize: { width: maxWidth, height: maxHeight },
             aspectRatio,
           })
         } else {

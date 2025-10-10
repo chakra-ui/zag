@@ -8,11 +8,12 @@ interface ResizeOptions {
   delta: { x: number; y: number }
   bounds: Size
   minSize: Size
+  maxSize?: Size
   aspectRatio?: number | undefined
 }
 
 export function computeResizeCrop(options: ResizeOptions): Rect {
-  const { cropStart, handlePosition, delta, bounds, minSize, aspectRatio } = options
+  const { cropStart, handlePosition, delta, bounds, minSize, maxSize, aspectRatio } = options
   let { x, y, width, height } = cropStart
   let left = x
   let top = y
@@ -24,11 +25,36 @@ export function computeResizeCrop(options: ResizeOptions): Rect {
   let minWidth = Math.min(minSize.width, bounds.width)
   let minHeight = Math.min(minSize.height, bounds.height)
 
+  let maxWidth = maxSize?.width ?? bounds.width
+  if (!Number.isFinite(maxWidth)) maxWidth = bounds.width
+  maxWidth = Math.min(maxWidth, bounds.width)
+
+  let maxHeight = maxSize?.height ?? bounds.height
+  if (!Number.isFinite(maxHeight)) maxHeight = bounds.height
+  maxHeight = Math.min(maxHeight, bounds.height)
+
+  maxWidth = Math.max(minWidth, maxWidth)
+  maxHeight = Math.max(minHeight, maxHeight)
+
   if (hasAspect) {
     const mw = Math.max(minWidth, minHeight * aspectRatio)
     const mh = mw / aspectRatio
     minWidth = Math.min(mw, bounds.width)
     minHeight = Math.min(mh, bounds.height)
+
+    let constrainedMaxWidth = Math.min(maxWidth, maxHeight * aspectRatio, bounds.width)
+    let constrainedMaxHeight = constrainedMaxWidth / aspectRatio
+
+    if (constrainedMaxHeight > maxHeight || constrainedMaxHeight > bounds.height) {
+      constrainedMaxHeight = Math.min(maxHeight, bounds.height)
+      constrainedMaxWidth = constrainedMaxHeight * aspectRatio
+    }
+
+    maxWidth = Math.max(minWidth, Math.min(constrainedMaxWidth, bounds.width))
+    maxHeight = Math.max(minHeight, Math.min(constrainedMaxHeight, bounds.height))
+  } else {
+    maxWidth = Math.max(minWidth, Math.min(maxWidth, bounds.width))
+    maxHeight = Math.max(minHeight, Math.min(maxHeight, bounds.height))
   }
 
   const hasLeft = handlePosition.includes("left")
@@ -37,42 +63,132 @@ export function computeResizeCrop(options: ResizeOptions): Rect {
   const hasBottom = handlePosition.includes("bottom")
 
   if (hasLeft) {
-    left = clampValue(left + delta.x, 0, right - minWidth)
+    const minLeft = Math.max(0, right - maxWidth)
+    const maxLeft = right - minWidth
+    left = clampValue(left + delta.x, minLeft, maxLeft)
   }
 
   if (hasRight) {
-    right = clampValue(right + delta.x, left + minWidth, bounds.width)
+    const minRight = left + minWidth
+    const maxRight = Math.min(bounds.width, left + maxWidth)
+    right = clampValue(right + delta.x, minRight, maxRight)
   }
 
   if (hasTop) {
-    top = clampValue(top + delta.y, 0, bottom - minHeight)
+    const minTop = Math.max(0, bottom - maxHeight)
+    const maxTop = bottom - minHeight
+    top = clampValue(top + delta.y, minTop, maxTop)
   }
 
   if (hasBottom) {
-    bottom = clampValue(bottom + delta.y, top + minHeight, bounds.height)
+    const minBottom = top + minHeight
+    const maxBottom = Math.min(bounds.height, top + maxHeight)
+    bottom = clampValue(bottom + delta.y, minBottom, maxBottom)
   }
 
   if (hasAspect) {
+    const clampAspectSize = (widthValue: number, heightValue: number) => {
+      const clampByWidth = (value: number) => {
+        let w = clampValue(value, minWidth, maxWidth)
+        w = Math.min(w, bounds.width)
+        let h = w / aspectRatio
+
+        if (h < minHeight) {
+          h = minHeight
+          w = clampValue(h * aspectRatio, minWidth, maxWidth)
+          w = Math.min(w, bounds.width)
+          h = w / aspectRatio
+        }
+
+        if (h > maxHeight) {
+          h = Math.min(maxHeight, bounds.height)
+          w = clampValue(h * aspectRatio, minWidth, maxWidth)
+          w = Math.min(w, bounds.width)
+          h = w / aspectRatio
+        }
+
+        if (h > bounds.height) {
+          h = bounds.height
+          w = clampValue(h * aspectRatio, minWidth, maxWidth)
+          w = Math.min(w, bounds.width)
+          h = w / aspectRatio
+          if (h < minHeight) {
+            h = minHeight
+            w = clampValue(h * aspectRatio, minWidth, maxWidth)
+            w = Math.min(w, bounds.width)
+            h = w / aspectRatio
+          }
+        }
+
+        return { width: w, height: h }
+      }
+
+      const clampByHeight = (value: number) => {
+        let h = clampValue(value, minHeight, maxHeight)
+        h = Math.min(h, bounds.height)
+        let w = h * aspectRatio
+        w = clampValue(w, minWidth, maxWidth)
+        w = Math.min(w, bounds.width)
+        let adjustedH = w / aspectRatio
+
+        if (adjustedH < minHeight) {
+          adjustedH = minHeight
+          w = clampValue(adjustedH * aspectRatio, minWidth, maxWidth)
+          w = Math.min(w, bounds.width)
+          adjustedH = w / aspectRatio
+        }
+
+        if (adjustedH > maxHeight) {
+          adjustedH = Math.min(maxHeight, bounds.height)
+          w = clampValue(adjustedH * aspectRatio, minWidth, maxWidth)
+          w = Math.min(w, bounds.width)
+          adjustedH = w / aspectRatio
+        }
+
+        if (w > bounds.width) {
+          w = bounds.width
+          adjustedH = w / aspectRatio
+          if (adjustedH > maxHeight) {
+            adjustedH = Math.min(maxHeight, bounds.height)
+            w = clampValue(adjustedH * aspectRatio, minWidth, maxWidth)
+            w = Math.min(w, bounds.width)
+            adjustedH = w / aspectRatio
+          }
+          if (adjustedH < minHeight) {
+            adjustedH = minHeight
+            w = clampValue(adjustedH * aspectRatio, minWidth, maxWidth)
+            w = Math.min(w, bounds.width)
+            adjustedH = w / aspectRatio
+          }
+        }
+
+        return { width: w, height: adjustedH }
+      }
+
+      const byWidth = clampByWidth(widthValue)
+      const byHeight = clampByHeight(heightValue)
+
+      const deltaWidth = Math.abs(byWidth.width - widthValue) + Math.abs(byWidth.height - heightValue)
+      const deltaHeight = Math.abs(byHeight.width - widthValue) + Math.abs(byHeight.height - heightValue)
+
+      return deltaHeight < deltaWidth ? byHeight : byWidth
+    }
+
     let newWidth = right - left
     let newHeight = bottom - top
 
-    // Case: corner handles
     if ((hasLeft || hasRight) && (hasTop || hasBottom)) {
       let tempW = newWidth
       let tempH = tempW / aspectRatio
+
       if (tempH > newHeight || top + tempH > bounds.height || left + tempW > bounds.width) {
         tempH = newHeight
         tempW = tempH * aspectRatio
       }
 
-      if (tempW < minWidth || tempH < minHeight) {
-        tempW = Math.max(tempW, minWidth)
-        tempH = tempW / aspectRatio
-        if (tempH < minHeight) {
-          tempH = minHeight
-          tempW = tempH * aspectRatio
-        }
-      }
+      const constrained = clampAspectSize(tempW, tempH)
+      tempW = constrained.width
+      tempH = constrained.height
 
       if (hasRight && hasBottom) {
         right = left + tempW
@@ -87,86 +203,78 @@ export function computeResizeCrop(options: ResizeOptions): Rect {
         left = right - tempW
         top = bottom - tempH
       }
-
-      // Case: left or right handles
     } else if ((hasLeft || hasRight) && !(hasTop || hasBottom)) {
       const centerY = (top + bottom) / 2
-      let newH = newWidth / aspectRatio
-      if (newWidth < minWidth) {
-        newWidth = minWidth
-        newH = newWidth / aspectRatio
-      }
+      let nextWidth = newWidth
+      let nextHeight = nextWidth / aspectRatio
 
-      if (newH > bounds.height) {
-        newH = bounds.height
-        newWidth = newH * aspectRatio
-      }
+      const constrained = clampAspectSize(nextWidth, nextHeight)
+      nextWidth = constrained.width
+      nextHeight = constrained.height
 
-      let halfH = newH / 2
+      const halfH = nextHeight / 2
       top = centerY - halfH
       bottom = centerY + halfH
+
       if (top < 0) {
         top = 0
-        bottom = top + newH
+        bottom = nextHeight
       }
+
       if (bottom > bounds.height) {
         bottom = bounds.height
-        top = bottom - newH
+        top = bottom - nextHeight
       }
 
       if (hasRight) {
-        right = left + newWidth
+        right = left + nextWidth
       } else {
-        left = right - newWidth
+        left = right - nextWidth
       }
-
-      // Case: top or bottom handles
     } else if ((hasTop || hasBottom) && !(hasLeft || hasRight)) {
       const centerX = (left + right) / 2
+      let nextHeight = newHeight
+      const constrained = clampAspectSize(newWidth, nextHeight)
+      const nextWidth = constrained.width
+      nextHeight = constrained.height
 
-      let newW = newHeight * aspectRatio
-
-      if (newHeight < minHeight) {
-        newHeight = minHeight
-        newW = newHeight * aspectRatio
-      }
-
-      if (newW > bounds.width) {
-        newW = bounds.width
-        newHeight = newW / aspectRatio
-      }
-
-      let halfW = newW / 2
+      const halfW = nextWidth / 2
       left = centerX - halfW
       right = centerX + halfW
 
       if (left < 0) {
         left = 0
-        right = left + newW
+        right = nextWidth
       }
 
       if (right > bounds.width) {
         right = bounds.width
-        left = right - newW
+        left = right - nextWidth
       }
 
       if (hasBottom) {
-        bottom = top + newHeight
+        bottom = top + nextHeight
       } else {
-        top = bottom - newHeight
+        top = bottom - nextHeight
       }
     }
   }
 
-  left = clampValue(left, 0, bounds.width)
-  top = clampValue(top, 0, bounds.height)
+  const maxLeft = Math.max(0, bounds.width - minWidth)
+  const maxTop = Math.max(0, bounds.height - minHeight)
+  left = clampValue(left, 0, maxLeft)
+  top = clampValue(top, 0, maxTop)
 
   if (hasAspect) {
-    right = clampValue(right, left, bounds.width)
-    bottom = clampValue(bottom, top, bounds.height)
+    const maxRight = Math.min(bounds.width, left + maxWidth)
+    const maxBottom = Math.min(bounds.height, top + maxHeight)
+    right = clampValue(right, left + minWidth, maxRight)
+    bottom = clampValue(bottom, top + minHeight, maxBottom)
   } else {
-    right = clampValue(right, left + minWidth, bounds.width)
-    bottom = clampValue(bottom, top + minHeight, bounds.height)
+    const maxRight = Math.min(bounds.width, left + maxWidth)
+    const maxBottom = Math.min(bounds.height, top + maxHeight)
+    right = clampValue(right, left + minWidth, maxRight)
+    bottom = clampValue(bottom, top + minHeight, maxBottom)
   }
 
   return {

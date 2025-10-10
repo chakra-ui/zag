@@ -48,6 +48,16 @@ export interface ImageCropperProps extends DirectionProperty, CommonProperties {
    */
   minHeight?: number
   /**
+   * The maximum width of the crop area
+   * @default Infinity
+   */
+  maxWidth?: number
+  /**
+   * The maximum height of the crop area
+   * @default Infinity
+   */
+  maxHeight?: number
+  /**
    * The aspect ratio to maintain for the crop area (width / height).
    * For example, an aspect ratio of 16 / 9 will maintain a width to height ratio of 16:9.
    * If not provided, the crop area can be freely resized.
@@ -115,6 +125,8 @@ type PropsWithDefault =
   | "zoomSensitivity"
   | "minZoom"
   | "maxZoom"
+  | "maxWidth"
+  | "maxHeight"
   | "fixedCropArea"
 
 export interface ImageCropperSchema {
