@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import * as imageCropper from "@zag-js/image-cropper"
-import { imageCropperControls, handlePositions } from "@zag-js/shared"
+import { imageCropperControls } from "@zag-js/shared"
 import { normalizeProps, useMachine } from "@zag-js/vue"
 
 const controls = useControls(imageCropperControls)
@@ -21,6 +21,7 @@ const service = useMachine(
     onRotationChange(details) {
       rotation.value = details.rotation
     },
+    fixedCropArea: true,
   })),
 )
 
@@ -34,9 +35,6 @@ const api = computed(() => imageCropper.connect(service, normalizeProps))
         <img src="https://picsum.photos/seed/a/500/300" v-bind="api.getImageProps()" />
         <div v-bind="api.getSelectionProps()">
           <div v-bind="api.getOverlayProps()" />
-          <div v-for="position in handlePositions" :key="position" v-bind="api.getHandleProps({ position })">
-            <div />
-          </div>
         </div>
       </div>
     </div>
@@ -48,7 +46,6 @@ const api = computed(() => imageCropper.connect(service, normalizeProps))
         :max="service.prop('maxZoom')"
         :step="service.prop('zoomStep')"
         :value="zoom"
-        data-testid="zoom-slider"
         @input="(e) => api.setZoom(Number((e.target as HTMLInputElement).value))"
       />
     </label>
@@ -60,7 +57,6 @@ const api = computed(() => imageCropper.connect(service, normalizeProps))
         :max="360"
         :step="1"
         :value="rotation"
-        data-testid="rotation-slider"
         @input="(e) => api.setRotation(Number((e.target as HTMLInputElement).value))"
       />
     </label>

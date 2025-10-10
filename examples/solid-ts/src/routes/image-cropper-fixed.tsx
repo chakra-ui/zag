@@ -1,7 +1,7 @@
 import * as imageCropper from "@zag-js/image-cropper"
 import { normalizeProps, useMachine } from "@zag-js/solid"
-import { imageCropperControls, handlePositions } from "@zag-js/shared"
-import { For, createMemo, createSignal, createUniqueId } from "solid-js"
+import { imageCropperControls } from "@zag-js/shared"
+import { createMemo, createSignal, createUniqueId } from "solid-js"
 import { StateVisualizer } from "~/components/state-visualizer"
 import { Toolbar } from "~/components/toolbar"
 import { useControls } from "~/hooks/use-controls"
@@ -23,6 +23,7 @@ export default function Page() {
       onRotationChange(details) {
         setRotation(details.rotation)
       },
+      fixedCropArea: true,
     })),
   )
 
@@ -36,13 +37,6 @@ export default function Page() {
             <img src="https://picsum.photos/seed/a/500/300" {...api().getImageProps()} />
             <div {...api().getSelectionProps()}>
               <div {...api().getOverlayProps()} />
-              <For each={handlePositions}>
-                {(position) => (
-                  <div {...api().getHandleProps({ position })}>
-                    <div />
-                  </div>
-                )}
-              </For>
             </div>
           </div>
         </div>
@@ -54,7 +48,6 @@ export default function Page() {
             max={service.prop("maxZoom")}
             step={service.prop("zoomStep")}
             value={zoom()}
-            data-testid="zoom-slider"
             onInput={(e) => api().setZoom(Number(e.currentTarget.value))}
           />
         </label>
@@ -66,7 +59,6 @@ export default function Page() {
             max={360}
             step={1}
             value={rotation()}
-            data-testid="rotation-slider"
             onInput={(e) => api().setRotation(Number(e.currentTarget.value))}
           />
         </label>
