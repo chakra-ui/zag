@@ -9,7 +9,8 @@ import { clampValue } from "@zag-js/utils"
 export const machine = createMachine<ImageCropperSchema>({
   props({ props }) {
     return {
-      minCropSize: { width: 40, height: 40 },
+      minWidth: 40,
+      minHeight: 40,
       defaultZoom: 1,
       zoomStep: 0.1,
       zoomSensitivity: 2,
@@ -265,7 +266,8 @@ export const machine = createMachine<ImageCropperSchema>({
       },
 
       updateCrop({ context, event, prop, scope }) {
-        const minCropSize = prop("minCropSize")
+        const minWidth = prop("minWidth")
+        const minHeight = prop("minHeight")
         const handlePosition = context.get("handlePosition")
         const pointerStart = context.get("pointerStart")
         const cropStart = context.get("cropStart")
@@ -304,7 +306,7 @@ export const machine = createMachine<ImageCropperSchema>({
             handlePosition,
             delta,
             bounds,
-            minSize: minCropSize,
+            minSize: { width: minWidth, height: minHeight },
             aspectRatio,
           })
         } else {

@@ -129,6 +129,20 @@ test.describe("image-cropper / resizable", () => {
     expect(newAspectRatio).toBeCloseTo(initialAspectRatio, 2)
   })
 
+  test("[minSize] should respect minimum crop size", async () => {
+    await I.controls.num("minWidth", "80")
+    await I.controls.num("minHeight", "60")
+    await I.wait(100)
+
+    await I.dragHandle("bottom-right", -500, -500)
+    await I.wait(100)
+
+    const { width, height } = await I.getSelectionRect()
+
+    expect(width).toBe(80)
+    expect(height).toBe(60)
+  })
+
   test("[zoom] should allow programmatic zoom changes", async () => {
     await I.zoomSlider.fill("2")
 
@@ -137,24 +151,6 @@ test.describe("image-cropper / resizable", () => {
 
     expect(scaleX).toBe(2)
     expect(scaleY).toBe(2)
-  })
-})
-
-test.describe("image-cropper / minCropSize", () => {
-  test.beforeEach(async ({ page }) => {
-    I = new ImageCropperModel(page)
-    await I.goto("/image-cropper-min-crop-size")
-    await I.waitForImageLoad()
-  })
-
-  test("should respect minimum crop size", async () => {
-    await I.dragHandle("bottom-right", -500, -500)
-    await I.wait(100)
-
-    const { width, height } = await I.getSelectionRect()
-
-    expect(width).toBe(80)
-    expect(height).toBe(60)
   })
 })
 
