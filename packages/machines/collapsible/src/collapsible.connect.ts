@@ -26,7 +26,6 @@ export function connect<T extends PropTypes>(
   const hasCollapsedSize = hasCollapsedHeight || hasCollapsedWidth
 
   const skip = !context.get("initial") && open
-  const dir = "ltr"
 
   return {
     disabled,
@@ -45,7 +44,7 @@ export function connect<T extends PropTypes>(
       return normalize.element({
         ...parts.root.attrs,
         "data-state": open ? "open" : "closed",
-        dir: dir,
+        dir: prop("dir"),
         id: dom.getRootId(scope),
       })
     },
@@ -59,6 +58,7 @@ export function connect<T extends PropTypes>(
         "data-disabled": dataAttr(disabled),
         "data-has-collapsed-size": dataAttr(hasCollapsedSize),
         hidden: !visible && !hasCollapsedSize,
+        dir: prop("dir"),
         style: {
           "--height": toPx(height),
           "--width": toPx(width),
@@ -84,7 +84,7 @@ export function connect<T extends PropTypes>(
       return normalize.element({
         ...parts.trigger.attrs,
         id: dom.getTriggerId(scope),
-        dir: dir,
+        dir: prop("dir"),
         type: "button",
         "data-state": open ? "open" : "closed",
         "data-disabled": dataAttr(disabled),
@@ -101,7 +101,7 @@ export function connect<T extends PropTypes>(
     getIndicatorProps() {
       return normalize.element({
         ...parts.indicator.attrs,
-        dir: dir,
+        dir: prop("dir"),
         "data-state": open ? "open" : "closed",
         "data-disabled": dataAttr(disabled),
       })
