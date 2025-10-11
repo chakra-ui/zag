@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Vite + TS</title>
+    <script type="module" src="./accordion.ts"></script>
+  </head>
+  <body style="padding: 40px">
+    <h1>Accordion</h1>
+
+    <div x-data="{collapsible: true, multiple: false}">
+      <div>
+        <input type="checkbox" name="collapsible" id="collapsible" x-model="collapsible" />
+        <label for="collapsible">collapsible</label>
+      </div>
+      <div>
+        <input type="checkbox" name="multiple" id="multiple" x-model="multiple" />
+        <label for="multiple">multiple</label>
+      </div>
+
+      <div x-id="['accordion']" x-accordion="{collapsible, multiple, id: $id('accordion')}" x-accordion:root>
+        <template x-for="value in ['First', 'Second', 'Third']" :key="value">
+          <div x-accordion:item="{value}">
+            <h3>
+              <button x-accordion:item-trigger="{value}" x-text="value + ' Item'"></button>
+            </h3>
+            <div x-accordion:item-content="{value}" x-text="value + ' Content'"></div>
+          </div>
+        </template>
+      </div>
+    </div>
+  </body>
+</html>

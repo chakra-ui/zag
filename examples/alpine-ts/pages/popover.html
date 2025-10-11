@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Vite + TS</title>
+    <script type="module" src="./popover.ts"></script>
+  </head>
+  <body style="padding: 40px">
+    <h1>Popover</h1>
+
+    <div x-data="{modal: false, portalled: false, autoFocus: true, closeOnInteractOutside: true, closeOnEscape: true}">
+      <div>
+        <input type="checkbox" name="modal" id="modal" x-model="modal" />
+        <label for="modal">modal</label>
+      </div>
+      <div>
+        <input type="checkbox" name="portalled" id="portalled" x-model="portalled" />
+        <label for="portalled">portalled</label>
+      </div>
+      <div>
+        <input type="checkbox" name="autoFocus" id="autoFocus" x-model="autoFocus" />
+        <label for="autoFocus">autoFocus</label>
+      </div>
+      <div>
+        <input
+          type="checkbox"
+          name="closeOnInteractOutside"
+          id="closeOnInteractOutside"
+          x-model="closeOnInteractOutside"
+        />
+        <label for="closeOnInteractOutside">closeOnInteractOutside</label>
+      </div>
+      <div>
+        <input type="checkbox" name="closeOnEscape" id="closeOnEscape" x-model="closeOnEscape" />
+        <label for="closeOnEscape">closeOnEscape</label>
+      </div>
+
+      <div
+        x-id="['popover']"
+        x-popover="{modal, portalled, autoFocus, closeOnInteractOutside, closeOnEscape, id: $id('popover')}"
+      >
+        <button x-popover:trigger>Click me</button>
+        <template x-teleport="body">
+          <div x-popover:positioner>
+            <div x-popover:content>
+              <div x-popover:title>Title</div>
+              <div x-popover:description>Description</div>
+              <button x-popover:close-trigger>X</button>
+            </div>
+          </div>
+        </template>
+      </div>
+    </div>
+  </body>
+</html>

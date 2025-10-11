@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Vite + TS</title>
+    <script type="module" src="./avatar.ts"></script>
+  </head>
+  <body style="padding: 40px">
+    <h1>Avatar</h1>
+
+    <div
+      x-data="{name: 'Segun Adebayo', src: 'https://static.wikia.nocookie.net/naruto/images/d/d6/Naruto_Part_I.png/revision/latest/scale-to-width-down/300?cb=20210223094656'}"
+    >
+      <div>
+        <label for="name">name</label>
+        <input type="text" name="name" id="name" x-model="name" />
+      </div>
+      <div>
+        <label for="src">src</label>
+        <input type="text" name="src" id="src" x-model="src" />
+      </div>
+
+      <div x-id="['avatar']" x-avatar="{id: $id('avatar')}" x-avatar:root>
+        <span x-avatar:fallback x-text="name.split(' ').map((word) => word.at(0)).join('')"></span>
+        <img alt="PA" :src="src" x-avatar:image />
+      </div>
+    </div>
+  </body>
+</html>

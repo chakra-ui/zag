@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Vite + TS</title>
+    <script type="module" src="./combobox.ts"></script>
+  </head>
+  <body style="padding: 40px">
+    <h1>Combobox</h1>
+
+    <div
+      x-data="{disabled: false, readOnly: false, loopFocus: false,
+        inputBehavior: 'autohighlight', selectionBehavior: 'replace',
+        data: ['First', 'Second', 'Third'], options: []}"
+    >
+      <div>
+        <input type="checkbox" name="disabled" id="disabled" x-model="disabled" />
+        <label for="disabled">disabled</label>
+      </div>
+      <div>
+        <input type="checkbox" name="readOnly" id="readOnly" x-model="readOnly" />
+        <label for="readOnly">readOnly</label>
+      </div>
+      <div>
+        <input type="checkbox" name="loopFocus" id="loopFocus" x-model="loopFocus" />
+        <label for="loopFocus">loopFocus</label>
+      </div>
+      <div>
+        <label for="inputBehavior">inputBehavior</label>
+        <select name="inputBehavior" id="inputBehavior" x-model="inputBehavior">
+          <option value="autohighlight">autohighlight</option>
+          <option value="autocomplete">autocomplete</option>
+          <option value="none">none</option>
+        </select>
+      </div>
+      <div>
+        <label for="selectionBehavior">selectionBehavior</label>
+        <select name="selectionBehavior" id="selectionBehavior" x-model="selectionBehavior">
+          <option value="replace">replace</option>
+          <option value="clear">clear</option>
+          <option value="preserve">preserve</option>
+        </select>
+      </div>
+
+      <div
+        x-id="['combobox']"
+        x-combobox:collection="{items: options}"
+        x-combobox="{disabled, readOnly, loopFocus, inputBehavior, selectionBehavior,
+            id: $id('combobox'), collection,
+            onOpenChange() {
+                options = data;
+            },
+            onInputValueChange({inputValue}) {
+                const filtered = data.filter((item) =>
+                    item.toLowerCase().includes(inputValue.toLowerCase()));
+                options = filtered.length > 0 ? filtered : data;
+            }}"
+      >
+        <div x-combobox:root>
+          <label x-combobox:label>Select</label>
+          <div x-combobox:control>
+            <input x-combobox:input />
+            <button x-combobox:trigger>v</button>
+          </div>
+        </div>
+        <div x-combobox:positioner>
+          <ul x-combobox:content>
+            <template x-for="item in options" :key="item">
+              <li x-combobox:item="{item}" x-text="item + ' item'"></li>
+            </template>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

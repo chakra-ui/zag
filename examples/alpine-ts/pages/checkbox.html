@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Vite + TS</title>
+    <script type="module" src="./checkbox.ts"></script>
+  </head>
+  <body style="padding: 40px">
+    <h1>Checkbox</h1>
+
+    <div x-data="{disabled: false, invalid: false}">
+      <div>
+        <input type="checkbox" name="disabled" id="disabled" x-model="disabled" />
+        <label for="disabled">disabled</label>
+      </div>
+      <div>
+        <input type="checkbox" name="invalid" id="invalid" x-model="invalid" />
+        <label for="invalid">invalid</label>
+      </div>
+
+      <label x-id="['checkbox']" x-checkbox="{disabled, invalid, id: $id('checkbox')}" x-checkbox:root>
+        <div x-checkbox:control></div>
+        <span x-checkbox:label x-text="'Input is ' + ($checkbox.checked ? 'checked' : 'unchecked')"></span>
+        <input x-checkbox:hidden-input />
+      </label>
+
+      <label x-id="['checkbox']" x-checkbox="{disabled, invalid, id: $id('checkbox')}" x-checkbox:root>
+        <div x-checkbox:control></div>
+        <span x-checkbox:label x-text="'Input is ' + ($checkbox.checked ? 'checked' : 'unchecked')"></span>
+        <input x-checkbox:hidden-input />
+      </label>
+    </div>
+  </body>
+</html>
