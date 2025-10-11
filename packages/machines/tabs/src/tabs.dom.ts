@@ -33,8 +33,8 @@ export const getOffsetRect = (el: HTMLElement | undefined) => {
   const rect = el.getBoundingClientRect()
   const parent = el.offsetParent?.getBoundingClientRect()
   return {
-    left: parent ? rect.left - parent.left : 0,
-    top: parent ? rect.top - parent.top : 0,
+    left: parent ? rect.left - parent.left : rect.left,
+    top: parent ? rect.top - parent.top : rect.top,
     width: rect.width,
     height: rect.height,
   }
