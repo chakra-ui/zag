@@ -1,5 +1,14 @@
 # @zag-js/preact
 
+## 1.26.2
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/core@1.26.2
+  - @zag-js/store@1.26.2
+  - @zag-js/types@1.26.2
+
 ## 1.26.1
 
 ### Patch Changes
