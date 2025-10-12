@@ -1,8 +1,8 @@
-import type { NormalizeProps, PropTypes } from "@zag-js/types"
+import type { EventKeyMap, NormalizeProps, PropTypes } from "@zag-js/types"
 import { parts } from "./image-cropper.anatomy"
 import * as dom from "./image-cropper.dom"
 import type { ImageCropperApi, ImageCropperService } from "./image-cropper.types"
-import { getEventPoint, contains } from "@zag-js/dom-query"
+import { getEventPoint, contains, getEventKey } from "@zag-js/dom-query"
 import { toPx } from "@zag-js/utils"
 
 export function connect<T extends PropTypes>(
@@ -158,15 +158,47 @@ export function connect<T extends PropTypes>(
     },
 
     getHandleProps(props) {
+      const handlePosition = props.position
+
       return normalize.element({
         ...parts.handle.attrs,
-        id: dom.getHandleId(scope, props.position),
-        "data-position": props.position,
+        id: dom.getHandleId(scope, handlePosition),
+        "data-position": handlePosition,
+        tabIndex: 0,
+        role: "slider",
+        "aria-label": `Resize handle for ${handlePosition} corner`,
         onPointerDown(event) {
           if (shouldIgnoreTouchPointer(event)) return
           const point = getEventPoint(event)
 
-          send({ type: "POINTER_DOWN", point, handlePosition: props.position })
+          send({ type: "POINTER_DOWN", point, handlePosition })
+        },
+        onKeyDown(event) {
+          if (event.defaultPrevented) return
+          const src = "handle"
+          const { shiftKey, ctrlKey, metaKey } = event
+          const keyMap: EventKeyMap = {
+            ArrowUp() {
+              send({ type: "NUDGE_RESIZE_CROP", handlePosition, key: "ArrowUp", src, shiftKey, ctrlKey, metaKey })
+            },
+            ArrowDown() {
+              send({ type: "NUDGE_RESIZE_CROP", handlePosition, key: "ArrowDown", src, shiftKey, ctrlKey, metaKey })
+            },
+            ArrowLeft() {
+              send({ type: "NUDGE_RESIZE_CROP", handlePosition, key: "ArrowLeft", src, shiftKey, ctrlKey, metaKey })
+            },
+            ArrowRight() {
+              send({ type: "NUDGE_RESIZE_CROP", handlePosition, key: "ArrowRight", src, shiftKey, ctrlKey, metaKey })
+            },
+          }
+
+          const key = getEventKey(event, { dir: prop("dir") })
+          const exec = keyMap[key]
+
+          if (exec) {
+            exec(event)
+            event.preventDefault()
+          }
         },
       })
     },

@@ -364,3 +364,174 @@ export function clampOffset(params: ClampOffsetParams): Point {
     y: clampValue(offset.y, minY, maxY),
   }
 }
+
+export function computeKeyboardCrop(
+  key: string,
+  handlePosition: HandlePosition,
+  step: number,
+  crop: Rect,
+  bounds: Size,
+  minSize: Size,
+  maxSize: Size,
+): Rect {
+  const nextCrop = { ...crop }
+
+  const hasLeft = handlePosition.includes("left")
+  const hasRight = handlePosition.includes("right")
+  const hasTop = handlePosition.includes("top")
+  const hasBottom = handlePosition.includes("bottom")
+
+  const minWidth = Math.min(minSize.width, bounds.width)
+  const minHeight = Math.min(minSize.height, bounds.height)
+  let maxWidth = Math.min(maxSize.width, bounds.width)
+  let maxHeight = Math.min(maxSize.height, bounds.height)
+
+  maxWidth = Math.max(minWidth, maxWidth)
+  maxHeight = Math.max(minHeight, maxHeight)
+
+  const isCorner = (hasLeft || hasRight) && (hasTop || hasBottom)
+
+  if (key === "ArrowLeft") {
+    if (hasLeft) {
+      const newX = Math.max(0, nextCrop.x - step)
+      const newWidth = crop.width + (crop.x - newX)
+      if (newWidth <= maxWidth) {
+        nextCrop.x = newX
+        nextCrop.width = newWidth
+      } else {
+        nextCrop.x = crop.x + crop.width - maxWidth
+        nextCrop.width = maxWidth
+      }
+
+      if (isCorner && hasTop) {
+        const newY = Math.max(0, nextCrop.y - step)
+        const newHeight = crop.height + (crop.y - newY)
+        if (newHeight <= maxHeight) {
+          nextCrop.y = newY
+          nextCrop.height = newHeight
+        } else {
+          nextCrop.y = crop.y + crop.height - maxHeight
+          nextCrop.height = maxHeight
+        }
+      } else if (isCorner && hasBottom) {
+        const newHeight = nextCrop.height + step
+        nextCrop.height = Math.min(bounds.height - nextCrop.y, Math.min(maxHeight, newHeight))
+      }
+    } else if (hasRight) {
+      nextCrop.width = Math.max(minWidth, nextCrop.width - step)
+
+      if (isCorner && hasTop) {
+        const newY = Math.min(crop.y + step, crop.y + crop.height - minHeight)
+        nextCrop.y = newY
+        nextCrop.height = crop.height - (newY - crop.y)
+      } else if (isCorner && hasBottom) {
+        nextCrop.height = Math.max(minHeight, nextCrop.height - step)
+      }
+    }
+  } else if (key === "ArrowRight") {
+    if (hasLeft) {
+      const newX = Math.min(crop.x + step, crop.x + crop.width - minWidth)
+      nextCrop.x = newX
+      nextCrop.width = crop.width - (newX - crop.x)
+
+      if (isCorner && hasTop) {
+        const newY = Math.min(crop.y + step, crop.y + crop.height - minHeight)
+        nextCrop.y = newY
+        nextCrop.height = crop.height - (newY - crop.y)
+      } else if (isCorner && hasBottom) {
+        nextCrop.height = Math.max(minHeight, nextCrop.height - step)
+      }
+    } else if (hasRight) {
+      const newWidth = nextCrop.width + step
+      nextCrop.width = Math.min(bounds.width - nextCrop.x, Math.min(maxWidth, newWidth))
+
+      if (isCorner && hasTop) {
+        const newY = Math.max(0, nextCrop.y - step)
+        const newHeight = crop.height + (crop.y - newY)
+        if (newHeight <= maxHeight) {
+          nextCrop.y = newY
+          nextCrop.height = newHeight
+        } else {
+          nextCrop.y = crop.y + crop.height - maxHeight
+          nextCrop.height = maxHeight
+        }
+      } else if (isCorner && hasBottom) {
+        const newHeight = nextCrop.height + step
+        nextCrop.height = Math.min(bounds.height - nextCrop.y, Math.min(maxHeight, newHeight))
+      }
+    }
+  }
+
+  if (key === "ArrowUp") {
+    if (hasTop) {
+      const newY = Math.max(0, nextCrop.y - step)
+      const newHeight = crop.height + (crop.y - newY)
+      if (newHeight <= maxHeight) {
+        nextCrop.y = newY
+        nextCrop.height = newHeight
+      } else {
+        nextCrop.y = crop.y + crop.height - maxHeight
+        nextCrop.height = maxHeight
+      }
+
+      if (isCorner && hasLeft) {
+        const newX = Math.max(0, nextCrop.x - step)
+        const newWidth = crop.width + (crop.x - newX)
+        if (newWidth <= maxWidth) {
+          nextCrop.x = newX
+          nextCrop.width = newWidth
+        } else {
+          nextCrop.x = crop.x + crop.width - maxWidth
+          nextCrop.width = maxWidth
+        }
+      } else if (isCorner && hasRight) {
+        const newWidth = nextCrop.width + step
+        nextCrop.width = Math.min(bounds.width - nextCrop.x, Math.min(maxWidth, newWidth))
+      }
+    } else if (hasBottom) {
+      nextCrop.height = Math.max(minHeight, nextCrop.height - step)
+
+      if (isCorner && hasLeft) {
+        const newX = Math.min(crop.x + step, crop.x + crop.width - minWidth)
+        nextCrop.x = newX
+        nextCrop.width = crop.width - (newX - crop.x)
+      } else if (isCorner && hasRight) {
+        nextCrop.width = Math.max(minWidth, nextCrop.width - step)
+      }
+    }
+  } else if (key === "ArrowDown") {
+    if (hasTop) {
+      const newY = Math.min(crop.y + step, crop.y + crop.height - minHeight)
+      nextCrop.y = newY
+      nextCrop.height = crop.height - (newY - crop.y)
+
+      if (isCorner && hasLeft) {
+        const newX = Math.min(crop.x + step, crop.x + crop.width - minWidth)
+        nextCrop.x = newX
+        nextCrop.width = crop.width - (newX - crop.x)
+      } else if (isCorner && hasRight) {
+        nextCrop.width = Math.max(minWidth, nextCrop.width - step)
+      }
+    } else if (hasBottom) {
+      const newHeight = nextCrop.height + step
+      nextCrop.height = Math.min(bounds.height - nextCrop.y, Math.min(maxHeight, newHeight))
+
+      if (isCorner && hasLeft) {
+        const newX = Math.max(0, nextCrop.x - step)
+        const newWidth = crop.width + (crop.x - newX)
+        if (newWidth <= maxWidth) {
+          nextCrop.x = newX
+          nextCrop.width = newWidth
+        } else {
+          nextCrop.x = crop.x + crop.width - maxWidth
+          nextCrop.width = maxWidth
+        }
+      } else if (isCorner && hasRight) {
+        const newWidth = nextCrop.width + step
+        nextCrop.width = Math.min(bounds.width - nextCrop.x, Math.min(maxWidth, newWidth))
+      }
+    }
+  }
+
+  return nextCrop
+}

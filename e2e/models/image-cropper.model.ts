@@ -200,4 +200,26 @@ export class ImageCropperModel extends Model {
       })
     })
   }
+
+  async focusHandle(position: string) {
+    const handle = this.getHandle(position)
+    await handle.focus()
+  }
+
+  async pressKeyWithModifiers(key: string, options?: { shift?: boolean; ctrl?: boolean; meta?: boolean }) {
+    const modifiers: string[] = []
+    if (options?.shift) modifiers.push("Shift")
+    if (options?.ctrl) modifiers.push("Control")
+    if (options?.meta) modifiers.push("Meta")
+
+    for (const mod of modifiers) {
+      await this.page.keyboard.down(mod)
+    }
+
+    await this.page.keyboard.press(key)
+
+    for (const mod of modifiers.reverse()) {
+      await this.page.keyboard.up(mod)
+    }
+  }
 }

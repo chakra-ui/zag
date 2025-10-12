@@ -3,7 +3,7 @@ import * as dom from "./image-cropper.dom"
 import type { HandlePosition, ImageCropperSchema } from "./image-cropper.types"
 import type { Point, Rect, Size } from "@zag-js/types"
 import { addDomEvent, getEventPoint, getEventTarget } from "@zag-js/dom-query"
-import { clampOffset, computeMoveCrop, computeResizeCrop } from "./image-cropper.utils"
+import { clampOffset, computeKeyboardCrop, computeMoveCrop, computeResizeCrop } from "./image-cropper.utils"
 import { clampValue } from "@zag-js/utils"
 
 export const machine = createMachine<ImageCropperSchema>({
@@ -20,6 +20,9 @@ export const machine = createMachine<ImageCropperSchema>({
       maxZoom: 5,
       defaultRotation: 0,
       fixedCropArea: false,
+      nudgeStep: 1,
+      nudgeStepShift: 10,
+      nudgeStepCtrl: 50,
       ...props,
     }
   },
@@ -118,6 +121,10 @@ export const machine = createMachine<ImageCropperSchema>({
         ZOOM: {
           guard: "hasBounds",
           actions: ["updateZoom"],
+        },
+        NUDGE_RESIZE_CROP: {
+          guard: "hasBounds",
+          actions: ["nudgeResizeCrop"],
         },
       },
     },
@@ -617,6 +624,27 @@ export const machine = createMachine<ImageCropperSchema>({
       clearPinchDistance({ context }) {
         context.set("pinchDistance", null)
         context.set("pinchMidpoint", null)
+      },
+
+      nudgeResizeCrop({ context, event, scope, prop }) {
+        const { key, handlePosition, shiftKey, ctrlKey, metaKey } = event
+        const crop = context.get("crop")
+        const bounds = dom.getViewportBounds(scope)
+
+        // Determine step size based on modifier keys
+        let step = prop("nudgeStep")
+        if (ctrlKey || metaKey) {
+          step = prop("nudgeStepCtrl")
+        } else if (shiftKey) {
+          step = prop("nudgeStepShift")
+        }
+
+        const minSize = { width: prop("minWidth"), height: prop("minHeight") }
+        const maxSize = { width: prop("maxWidth"), height: prop("maxHeight") }
+
+        const nextCrop = computeKeyboardCrop(key, handlePosition, step, crop, bounds, minSize, maxSize)
+
+        context.set("crop", nextCrop)
       },
     },
 

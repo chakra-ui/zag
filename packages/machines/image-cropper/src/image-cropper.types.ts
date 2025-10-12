@@ -102,6 +102,21 @@ export interface ImageCropperProps extends DirectionProperty, CommonProperties {
    */
   maxZoom?: number
   /**
+   * The base nudge step for keyboard arrow keys (in pixels).
+   * @default 1
+   */
+  nudgeStep?: number
+  /**
+   * The nudge step when Shift key is held (in pixels).
+   * @default 10
+   */
+  nudgeStepShift?: number
+  /**
+   * The nudge step when Ctrl/Cmd key is held (in pixels).
+   * @default 50
+   */
+  nudgeStepCtrl?: number
+  /**
    * Callback fired when the zoom level changes.
    */
   onZoomChange?: ((details: ZoomChangeDetails) => void) | undefined
@@ -128,6 +143,9 @@ type PropsWithDefault =
   | "maxWidth"
   | "maxHeight"
   | "fixedCropArea"
+  | "nudgeStep"
+  | "nudgeStepShift"
+  | "nudgeStepCtrl"
 
 export interface ImageCropperSchema {
   state: "idle" | "dragging" | "panning"
