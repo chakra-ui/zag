@@ -24,6 +24,9 @@ export const props = createProps<ImageCropperProps>()([
   "onZoomChange",
   "onRotationChange",
   "fixedCropArea",
+  "nudgeStep",
+  "nudgeStepShift",
+  "nudgeStepCtrl",
 ])
 
 export const splitProps = createSplitProps<Partial<ImageCropperProps>>(props)
