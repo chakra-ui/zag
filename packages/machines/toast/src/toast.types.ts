@@ -246,6 +246,7 @@ export type ToastGroupSchema = {
     dismissableCleanup?: VoidFunction | undefined
     lastFocusedEl: HTMLElement | null
     isFocusWithin: boolean
+    isPointerWithin: boolean
   }
   guard: string
   effect: string
