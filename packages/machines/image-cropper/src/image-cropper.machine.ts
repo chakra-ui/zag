@@ -73,11 +73,16 @@ export const machine = createMachine<ImageCropperSchema>({
       offsetStart: bindable<Point | null>(() => ({
         defaultValue: null,
       })),
-      bounds: bindable<{ width: number; height: number; top: number; left: number; right: number; bottom: number }>(
-        () => ({
-          defaultValue: { width: 0, height: 0, top: 0, left: 0, right: 0, bottom: 0 },
-        }),
-      ),
+      viewportRect: bindable<{
+        width: number
+        height: number
+        top: number
+        left: number
+        right: number
+        bottom: number
+      }>(() => ({
+        defaultValue: { width: 0, height: 0, top: 0, left: 0, right: 0, bottom: 0 },
+      })),
     }
   },
 
@@ -124,11 +129,11 @@ export const machine = createMachine<ImageCropperSchema>({
           actions: ["setPointerStart", "setOffsetStart"],
         },
         ZOOM: {
-          guard: "hasBounds",
+          guard: "hasViewportRect",
           actions: ["updateZoom"],
         },
         NUDGE_RESIZE_CROP: {
-          guard: "hasBounds",
+          guard: "hasViewportRect",
           actions: ["nudgeResizeCrop"],
         },
       },
@@ -169,21 +174,21 @@ export const machine = createMachine<ImageCropperSchema>({
 
   implementations: {
     guards: {
-      hasBounds({ context }) {
-        const bounds = context.get("bounds")
-        return bounds.width > 0 && bounds.height > 0
+      hasViewportRect({ context }) {
+        const viewportRect = context.get("viewportRect")
+        return viewportRect.width > 0 && viewportRect.height > 0
       },
       canPan({ context }) {
         const naturalSize = context.get("naturalSize")
         if (naturalSize.width <= 0 || naturalSize.height <= 0) return false
-        const bounds = context.get("bounds")
-        return bounds.width > 0 && bounds.height > 0
+        const viewportRect = context.get("viewportRect")
+        return viewportRect.width > 0 && viewportRect.height > 0
       },
       canDragSelection({ context, prop }) {
-        const bounds = context.get("bounds")
-        const hasBounds = bounds.width > 0 && bounds.height > 0
+        const viewportRect = context.get("viewportRect")
+        const hasViewportRect = viewportRect.width > 0 && viewportRect.height > 0
         const isNotFixed = !prop("fixedCropArea")
-        return hasBounds && isNotFixed
+        return hasViewportRect && isNotFixed
       },
     },
 
@@ -208,8 +213,8 @@ export const machine = createMachine<ImageCropperSchema>({
       setDefaultCrop({ context, prop, scope }) {
         const viewportEl = dom.getViewportEl(scope)
         if (!viewportEl) return
-        const bounds = viewportEl.getBoundingClientRect()
-        if (bounds.height <= 0 || bounds.width <= 0) return
+        const viewportRect = viewportEl.getBoundingClientRect()
+        if (viewportRect.height <= 0 || viewportRect.width <= 0) return
 
         const aspectRatio = prop("aspectRatio")
         const minSize = { width: prop("minWidth"), height: prop("minHeight") }
@@ -220,7 +225,7 @@ export const machine = createMachine<ImageCropperSchema>({
             cropStart: rect,
             handlePosition: "bottom-right",
             delta: { x: 0, y: 0 },
-            bounds,
+            viewportRect,
             minSize,
             maxSize,
             aspectRatio,
@@ -240,8 +245,8 @@ export const machine = createMachine<ImageCropperSchema>({
 
           const width = constrainedSize.width
           const height = constrainedSize.height
-          const maxX = Math.max(0, bounds.width - width)
-          const maxY = Math.max(0, bounds.height - height)
+          const maxX = Math.max(0, viewportRect.width - width)
+          const maxY = Math.max(0, viewportRect.height - height)
           const x = clampValue(initialCrop.x, 0, maxX)
           const y = clampValue(initialCrop.y, 0, maxY)
 
@@ -251,20 +256,20 @@ export const machine = createMachine<ImageCropperSchema>({
 
         const fixedCropArea = prop("fixedCropArea")
 
-        const targetWidth = bounds.width * 0.8
-        const targetHeight = bounds.height * 0.8
+        const targetWidth = viewportRect.width * 0.8
+        const targetHeight = viewportRect.height * 0.8
 
         let width: number
         let height: number
 
         if (typeof aspectRatio === "number" && aspectRatio > 0) {
           if (fixedCropArea) {
-            height = bounds.height
+            height = viewportRect.height
             width = height * aspectRatio
 
             // If calculated width exceeds viewport, scale down proportionally
-            if (width > bounds.width) {
-              width = bounds.width
+            if (width > viewportRect.width) {
+              width = viewportRect.width
               height = width / aspectRatio
             }
           } else {
@@ -280,7 +285,7 @@ export const machine = createMachine<ImageCropperSchema>({
           }
         } else {
           if (fixedCropArea) {
-            const size = Math.min(bounds.width, bounds.height)
+            const size = Math.min(viewportRect.width, viewportRect.height)
             width = size
             height = size
           } else {
@@ -299,11 +304,11 @@ export const machine = createMachine<ImageCropperSchema>({
         width = constrainedSize.width
         height = constrainedSize.height
 
-        const x = Math.max(0, (bounds.width - width) / 2)
-        const y = Math.max(0, (bounds.height - height) / 2)
+        const x = Math.max(0, (viewportRect.width - width) / 2)
+        const y = Math.max(0, (viewportRect.height - height) / 2)
 
         context.set("crop", { x, y, width, height })
-        context.set("bounds", bounds)
+        context.set("viewportRect", viewportRect)
       },
 
       setPointerStart({ event, context }) {
@@ -331,7 +336,7 @@ export const machine = createMachine<ImageCropperSchema>({
         const handlePosition = context.get("handlePosition")
         const pointerStart = context.get("pointerStart")
         const cropStart = context.get("cropStart")
-        const bounds = context.get("bounds")
+        const viewportRect = context.get("viewportRect")
         let aspectRatio = prop("aspectRatio")
 
         const currentPoint = event.point
@@ -364,13 +369,13 @@ export const machine = createMachine<ImageCropperSchema>({
             cropStart,
             handlePosition,
             delta,
-            bounds,
+            viewportRect: viewportRect,
             minSize: { width: minWidth, height: minHeight },
             maxSize: { width: maxWidth, height: maxHeight },
             aspectRatio,
           })
         } else {
-          nextCrop = computeMoveCrop(cropStart, delta, bounds)
+          nextCrop = computeMoveCrop(cropStart, delta, viewportRect)
         }
 
         context.set("crop", nextCrop)
@@ -385,7 +390,7 @@ export const machine = createMachine<ImageCropperSchema>({
 
         const zoom = context.get("zoom")
         const rotation = context.get("rotation")
-        const bounds = context.get("bounds")
+        const viewportRect = context.get("viewportRect")
 
         const deltaX = point.x - pointerStart.x
         const deltaY = point.y - pointerStart.y
@@ -393,7 +398,7 @@ export const machine = createMachine<ImageCropperSchema>({
         const nextOffset = clampOffset({
           zoom,
           rotation,
-          bounds,
+          viewportRect,
           offset: {
             x: offsetStart.x + deltaX,
             y: offsetStart.y + deltaY,
@@ -451,7 +456,7 @@ export const machine = createMachine<ImageCropperSchema>({
         const sensitivity = Math.max(0, prop("zoomSensitivity"))
         const [minZoom, maxZoom] = [prop("minZoom"), prop("maxZoom")]
         const currentZoom = context.get("zoom")
-        const bounds = context.get("bounds")
+        const viewportRect = context.get("viewportRect")
 
         let nextZoom
 
@@ -478,7 +483,7 @@ export const machine = createMachine<ImageCropperSchema>({
           const nextOffset = clampOffset({
             zoom: currentZoom,
             rotation,
-            bounds,
+            viewportRect: viewportRect,
             offset: {
               x: currentOffset.x + panDelta.x,
               y: currentOffset.y + panDelta.y,
@@ -494,7 +499,7 @@ export const machine = createMachine<ImageCropperSchema>({
 
         if (nextZoom === currentZoom) return
 
-        const { width: vpW, height: vpH } = bounds
+        const { width: vpW, height: vpH } = viewportRect
         const centerX = vpW / 2
         const centerY = vpH / 2
 
@@ -515,7 +520,7 @@ export const machine = createMachine<ImageCropperSchema>({
           nextOffset = clampOffset({
             zoom: nextZoom,
             rotation,
-            bounds,
+            viewportRect: viewportRect,
             offset: nextOffset,
             fixedCropArea: prop("fixedCropArea"),
             crop: context.get("crop"),
@@ -527,7 +532,7 @@ export const machine = createMachine<ImageCropperSchema>({
             nextOffset = clampOffset({
               zoom: nextZoom,
               rotation,
-              bounds,
+              viewportRect: viewportRect,
               offset: nextOffset,
               fixedCropArea: true,
               crop: context.get("crop"),
@@ -571,10 +576,10 @@ export const machine = createMachine<ImageCropperSchema>({
         const dy = first.y - second.y
         const distance = Math.hypot(dx, dy)
 
-        const bounds = context.get("bounds")
+        const viewportRect = context.get("viewportRect")
         const midpoint = {
-          x: (first.x + second.x) / 2 - bounds.left,
-          y: (first.y + second.y) / 2 - bounds.top,
+          x: (first.x + second.x) / 2 - viewportRect.left,
+          y: (first.y + second.y) / 2 - viewportRect.top,
         }
 
         context.set("pinchDistance", distance)
@@ -592,11 +597,11 @@ export const machine = createMachine<ImageCropperSchema>({
 
         const lastDistance = context.get("pinchDistance")
         const lastMidpoint = context.get("pinchMidpoint")
-        const bounds = context.get("bounds")
+        const viewportRect = context.get("viewportRect")
 
         const midpoint = {
-          x: (first.x + second.x) / 2 - bounds.left,
-          y: (first.y + second.y) / 2 - bounds.top,
+          x: (first.x + second.x) / 2 - viewportRect.left,
+          y: (first.y + second.y) / 2 - viewportRect.top,
         }
 
         if (lastDistance != null && lastDistance > 0 && lastMidpoint != null) {
@@ -634,7 +639,7 @@ export const machine = createMachine<ImageCropperSchema>({
       nudgeResizeCrop({ context, event, prop }) {
         const { key, handlePosition, shiftKey, ctrlKey, metaKey } = event
         const crop = context.get("crop")
-        const bounds = context.get("bounds")
+        const viewportRect = context.get("viewportRect")
 
         // Determine step size based on modifier keys
         let step = prop("nudgeStep")
@@ -647,7 +652,7 @@ export const machine = createMachine<ImageCropperSchema>({
         const minSize = { width: prop("minWidth"), height: prop("minHeight") }
         const maxSize = { width: prop("maxWidth"), height: prop("maxHeight") }
 
-        const nextCrop = computeKeyboardCrop(key, handlePosition, step, crop, bounds, minSize, maxSize)
+        const nextCrop = computeKeyboardCrop(key, handlePosition, step, crop, viewportRect, minSize, maxSize)
 
         context.set("crop", nextCrop)
       },

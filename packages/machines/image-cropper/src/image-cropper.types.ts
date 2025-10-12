@@ -163,7 +163,7 @@ export interface ImageCropperSchema {
     rotation: number
     offset: Point
     offsetStart: Point | null
-    bounds: { width: number; height: number; top: number; left: number; right: number; bottom: number }
+    viewportRect: { width: number; height: number; top: number; left: number; right: number; bottom: number }
   }
   event: EventObject
   action: string
