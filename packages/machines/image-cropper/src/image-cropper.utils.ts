@@ -535,3 +535,18 @@ export function computeKeyboardCrop(
 
   return nextCrop
 }
+
+export function getKeyboardMoveDelta(key: string, step: number): { x: number; y: number } {
+  switch (key) {
+    case "ArrowLeft":
+      return { x: -step, y: 0 }
+    case "ArrowRight":
+      return { x: step, y: 0 }
+    case "ArrowUp":
+      return { x: 0, y: -step }
+    case "ArrowDown":
+      return { x: 0, y: step }
+    default:
+      return { x: 0, y: 0 }
+  }
+}

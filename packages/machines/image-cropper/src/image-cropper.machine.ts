@@ -3,7 +3,13 @@ import * as dom from "./image-cropper.dom"
 import type { HandlePosition, ImageCropperSchema } from "./image-cropper.types"
 import type { Point, Rect, Size } from "@zag-js/types"
 import { addDomEvent, getEventPoint, getEventTarget } from "@zag-js/dom-query"
-import { clampOffset, computeKeyboardCrop, computeMoveCrop, computeResizeCrop } from "./image-cropper.utils"
+import {
+  clampOffset,
+  computeKeyboardCrop,
+  computeMoveCrop,
+  computeResizeCrop,
+  getKeyboardMoveDelta,
+} from "./image-cropper.utils"
 import { clampValue } from "@zag-js/utils"
 
 export const machine = createMachine<ImageCropperSchema>({
@@ -135,6 +141,10 @@ export const machine = createMachine<ImageCropperSchema>({
         NUDGE_RESIZE_CROP: {
           guard: "hasViewportRect",
           actions: ["nudgeResizeCrop"],
+        },
+        NUDGE_MOVE_CROP: {
+          guard: "hasViewportRect",
+          actions: ["nudgeMoveCrop"],
         },
       },
     },
@@ -653,6 +663,24 @@ export const machine = createMachine<ImageCropperSchema>({
         const maxSize = { width: prop("maxWidth"), height: prop("maxHeight") }
 
         const nextCrop = computeKeyboardCrop(key, handlePosition, step, crop, viewportRect, minSize, maxSize)
+
+        context.set("crop", nextCrop)
+      },
+
+      nudgeMoveCrop({ context, event, prop }) {
+        const { key, shiftKey, ctrlKey, metaKey } = event
+        const crop = context.get("crop")
+        const viewportRect = context.get("viewportRect")
+
+        let step = prop("nudgeStep")
+        if (ctrlKey || metaKey) {
+          step = prop("nudgeStepCtrl")
+        } else if (shiftKey) {
+          step = prop("nudgeStepShift")
+        }
+
+        const delta = getKeyboardMoveDelta(key, step)
+        const nextCrop = computeMoveCrop(crop, delta, viewportRect)
 
         context.set("crop", nextCrop)
       },

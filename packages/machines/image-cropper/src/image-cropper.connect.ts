@@ -132,6 +132,9 @@ export function connect<T extends PropTypes>(
       return normalize.element({
         ...parts.selection.attrs,
         id: dom.getSelectionId(scope),
+        tabIndex: 0,
+        role: "slider",
+        "aria-label": "Crop selection area",
         style: {
           "--width": toPx(crop.width),
           "--height": toPx(crop.height),
@@ -146,6 +149,33 @@ export function connect<T extends PropTypes>(
           if (shouldIgnoreTouchPointer(event)) return
           const point = getEventPoint(event)
           send({ type: "POINTER_DOWN", point })
+        },
+        onKeyDown(event) {
+          if (event.defaultPrevented) return
+          const src = "selection"
+          const { shiftKey, ctrlKey, metaKey } = event
+          const keyMap: EventKeyMap = {
+            ArrowUp() {
+              send({ type: "NUDGE_MOVE_CROP", key: "ArrowUp", src, shiftKey, ctrlKey, metaKey })
+            },
+            ArrowDown() {
+              send({ type: "NUDGE_MOVE_CROP", key: "ArrowDown", src, shiftKey, ctrlKey, metaKey })
+            },
+            ArrowLeft() {
+              send({ type: "NUDGE_MOVE_CROP", key: "ArrowLeft", src, shiftKey, ctrlKey, metaKey })
+            },
+            ArrowRight() {
+              send({ type: "NUDGE_MOVE_CROP", key: "ArrowRight", src, shiftKey, ctrlKey, metaKey })
+            },
+          }
+
+          const key = getEventKey(event, { dir: prop("dir") })
+          const exec = keyMap[key]
+
+          if (exec) {
+            exec(event)
+            event.preventDefault()
+          }
         },
       })
     },
