@@ -180,13 +180,6 @@ export function connect<T extends PropTypes>(
       })
     },
 
-    getOverlayProps() {
-      return normalize.element({
-        ...parts.overlay.attrs,
-        id: dom.getOverlayId(scope),
-      })
-    },
-
     getHandleProps(props) {
       const handlePosition = props.position
 

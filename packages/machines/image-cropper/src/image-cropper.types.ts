@@ -23,7 +23,6 @@ export type ElementIds = Partial<{
   root: string
   viewport: string
   selection: string
-  overlay: string
   handle: (position: string) => string
 }>
 
@@ -196,6 +195,5 @@ export interface ImageCropperApi<T extends PropTypes = PropTypes> {
   getViewportProps: () => T["element"]
   getImageProps: () => T["element"]
   getSelectionProps: () => T["element"]
-  getOverlayProps: () => T["element"]
   getHandleProps: (props: HandleProps) => T["element"]
 }
