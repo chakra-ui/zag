@@ -33,9 +33,7 @@ export default function Page() {
         <div {...api.getRootProps()}>
           <div {...api.getViewportProps()}>
             <img src="https://picsum.photos/seed/a/500/300" {...api.getImageProps()} />
-            <div {...api.getSelectionProps()}>
-              <div {...api.getOverlayProps()} />
-            </div>
+            <div {...api.getSelectionProps()} />
           </div>
         </div>
         <label>

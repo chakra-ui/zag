@@ -39,7 +39,6 @@
     <div {...api.getViewportProps()}>
       <img src="https://picsum.photos/seed/a/500/300" {...api.getImageProps()} alt="Cropper" />
       <div {...api.getSelectionProps()}>
-        <div {...api.getOverlayProps()}></div>
         {#each handlePositions as position}
           <div {...api.getHandleProps({ position })}>
             <div></div>

@@ -35,7 +35,6 @@ export default function Page() {
           <div {...api().getViewportProps()}>
             <img src="https://picsum.photos/seed/a/500/300" {...api().getImageProps()} />
             <div {...api().getSelectionProps()}>
-              <div {...api().getOverlayProps()} />
               <For each={handlePositions}>
                 {(position) => (
                   <div {...api().getHandleProps({ position })}>

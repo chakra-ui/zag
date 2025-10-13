@@ -33,7 +33,6 @@ const api = computed(() => imageCropper.connect(service, normalizeProps))
       <div v-bind="api.getViewportProps()">
         <img src="https://picsum.photos/seed/a/500/300" v-bind="api.getImageProps()" />
         <div v-bind="api.getSelectionProps()">
-          <div v-bind="api.getOverlayProps()" />
           <div v-for="position in handlePositions" :key="position" v-bind="api.getHandleProps({ position })">
             <div />
           </div>
