@@ -1,5 +1,21 @@
 # @zag-js/checkbox
 
+## 1.26.2
+
+### Patch Changes
+
+- [`bcaf84b`](https://github.com/chakra-ui/zag/commit/bcaf84b3e44dcaf4f56f86586093927fbdbb62b3) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - - Fix issue where setting initial checked state to `indeterminate`
+  doesn't work
+  - Ensure `api.checkedState` returns the correct checked state (`boolean | "indeterminate"`)
+- Updated dependencies []:
+  - @zag-js/anatomy@1.26.2
+  - @zag-js/core@1.26.2
+  - @zag-js/types@1.26.2
+  - @zag-js/utils@1.26.2
+  - @zag-js/dom-query@1.26.2
+  - @zag-js/focus-visible@1.26.2
+
 ## 1.26.1
 
 ### Patch Changes

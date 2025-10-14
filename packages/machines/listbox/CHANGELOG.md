@@ -1,5 +1,22 @@
 # @zag-js/listbox
 
+## 1.26.2
+
+### Patch Changes
+
+- [`2764067`](https://github.com/chakra-ui/zag/commit/2764067f522c6b87ed0453dff0cd3704c53aa466) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix issue where pressing Enter key when no highlighted item still
+  calls `event.preventDefault()`
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.26.2
+  - @zag-js/core@1.26.2
+  - @zag-js/types@1.26.2
+  - @zag-js/collection@1.26.2
+  - @zag-js/utils@1.26.2
+  - @zag-js/dom-query@1.26.2
+  - @zag-js/focus-visible@1.26.2
+
 ## 1.26.1
 
 ### Patch Changes
