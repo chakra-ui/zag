@@ -20,7 +20,9 @@ All notable changes to this project will be documented in this file.
 
 - **Radio Group**: Refactor to use `getBoundingClientRect()` for precise indicator positioning
 
-- **Slider**: Fix issue where slider could stop abruptly when scrubbing thumb
+- **Slider**
+  - Fix issue where slider could stop abruptly when scrubbing thumb
+  - Fix issue where range slider thumbs become stuck when dragged to the same position without `minStepsBetweenThumbs`
 
 - **Tabs**: Refactor to use `getBoundingClientRect()` for precise indicator positioning
 

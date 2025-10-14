@@ -1,12 +1,5 @@
 import type { Params } from "@zag-js/core"
-import {
-  clampValue,
-  getClosestValueIndex,
-  getNextStepValue,
-  getPreviousStepValue,
-  getValueRanges,
-  snapValueToStep,
-} from "@zag-js/utils"
+import { clampValue, getNextStepValue, getPreviousStepValue, getValueRanges, snapValueToStep } from "@zag-js/utils"
 import type { SliderSchema } from "./slider.types"
 
 type Ctx = Params<SliderSchema>
@@ -58,7 +51,48 @@ export function increment(params: Pick<Ctx, "context" | "prop">, index?: number,
 
 export function getClosestIndex(params: Pick<Ctx, "context" | "prop">, pointValue: number) {
   const { context } = params
-  return getClosestValueIndex(context.get("value"), pointValue)
+  const values = context.get("value")
+
+  // Find the closest thumb by distance
+  let closestIndex = 0
+  let minDistance = Math.abs(values[0] - pointValue)
+
+  for (let i = 1; i < values.length; i++) {
+    const distance = Math.abs(values[i] - pointValue)
+    // Use <= to prefer later thumbs when distances are equal
+    if (distance <= minDistance) {
+      closestIndex = i
+      minDistance = distance
+    }
+  }
+
+  return selectMovableThumb(params, closestIndex)
+}
+
+/**
+ * When multiple thumbs are stacked at max, select the one that can actually move.
+ * At max: only the FIRST thumb can move (down/left), others are locked at the boundary.
+ * At other values: all thumbs can move (in different directions), so don't switch.
+ */
+export function selectMovableThumb(params: Pick<Ctx, "context" | "prop">, index: number) {
+  const { context, prop } = params
+  const values = context.get("value")
+  const max = prop("max")
+  const thumbValue = values[index]
+
+  // Only handle collision at max value
+  // At max: walk backwards to find the first thumb (only one that can move down)
+  if (thumbValue === max) {
+    let movableIndex = index
+    while (movableIndex > 0 && values[movableIndex - 1] === max) {
+      movableIndex -= 1
+    }
+    return movableIndex
+  }
+
+  // At other values, both thumbs can move in different directions
+  // User should click the thumb corresponding to their intended direction
+  return index
 }
 
 export function assignArray(current: number[], next: number[]) {
