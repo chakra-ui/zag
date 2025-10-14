@@ -1,5 +1,12 @@
 # @zag-js/remove-scroll
 
+## 1.26.2
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/dom-query@1.26.2
+
 ## 1.26.1
 
 ### Patch Changes
