@@ -13,6 +13,7 @@ export default function Page() {
   const service = useMachine(checkbox.machine, {
     id: useId(),
     name: "checkbox",
+    defaultChecked: "indeterminate",
     ...controls.context,
   })
 
@@ -31,8 +32,7 @@ export default function Page() {
             <label {...api.getRootProps()}>
               <div {...api.getControlProps()} />
               <span {...api.getLabelProps()}>
-                Input{" "}
-                {api.checkedState === "indeterminate" ? "Indeterminate" : api.checkedState ? "Checked" : "Unchecked"}
+                Input {api.indeterminate ? "Indeterminate" : api.checked ? "Checked" : "Unchecked"}
               </span>
               <input {...api.getHiddenInputProps()} data-testid="hidden-input" />
               <div {...api.getIndicatorProps()}>Indicator</div>
