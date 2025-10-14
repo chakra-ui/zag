@@ -108,7 +108,7 @@ export const machine = createMachine<SliderSchema>({
 
     track([() => computed("isDisabled")], () => {
       if (computed("isDisabled")) {
-        send({ type: "BLUR" })
+        send({ type: "POINTER_CANCEL" })
       }
     })
   },
@@ -192,7 +192,7 @@ export const machine = createMachine<SliderSchema>({
         POINTER_MOVE: {
           actions: ["setPointerValue"],
         },
-        BLUR: {
+        POINTER_CANCEL: {
           target: "idle",
           actions: ["clearFocusedIndex"],
         },
