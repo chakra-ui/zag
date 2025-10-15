@@ -1,10 +1,9 @@
 import type { AutoUpdateOptions, Boundary, ComputePositionReturn, Placement, VirtualElement } from "@floating-ui/dom"
+import type { MaybeElement as BaseMaybeElement } from "@zag-js/types"
 
 export type MaybeRectElement = HTMLElement | VirtualElement | null
 
-export type MaybeElement = HTMLElement | null
-
-export type MaybeFn<T> = T | (() => T)
+export type MaybeElement = BaseMaybeElement
 
 export type PlacementSide = "top" | "right" | "bottom" | "left"
 export type PlacementAlign = "start" | "center" | "end"

@@ -5,7 +5,8 @@ import { compact, isNull, noop } from "@zag-js/utils"
 import { getAnchorElement } from "./get-anchor"
 import { createTransformOriginMiddleware, rectMiddleware, shiftArrowMiddleware } from "./middleware"
 import { getPlacementDetails } from "./placement"
-import type { MaybeElement, MaybeFn, MaybeRectElement, PositioningOptions } from "./types"
+import type { MaybeFn } from "@zag-js/types"
+import type { MaybeElement, MaybeRectElement, PositioningOptions } from "./types"
 
 const defaultOptions: PositioningOptions = {
   strategy: "absolute",

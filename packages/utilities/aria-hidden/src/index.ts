@@ -1,13 +1,13 @@
 import { hideOthers } from "./aria-hidden"
+import type { MaybeElement, MaybeFn } from "@zag-js/types"
 
 const raf = (fn: VoidFunction) => {
   const frameId = requestAnimationFrame(() => fn())
   return () => cancelAnimationFrame(frameId)
 }
 
-type MaybeElement = HTMLElement | null
 type Targets = Array<MaybeElement>
-type TargetsOrFn = Targets | (() => Targets)
+type TargetsOrFn = MaybeFn<Targets>
 
 type Options = {
   defer?: boolean | undefined

@@ -5,14 +5,14 @@ import {
   type InteractOutsideHandlers,
   type PointerDownOutsideEvent,
 } from "@zag-js/interact-outside"
-import { isFunction, warn, type MaybeFunction } from "@zag-js/utils"
+import { isFunction, warn } from "@zag-js/utils"
 import { trackEscapeKeydown } from "./escape-keydown"
 import { layerStack, type Layer, type LayerDismissEvent, type LayerType } from "./layer-stack"
 import { assignPointerEventToLayers, clearPointerEvent, disablePointerEventsOutside } from "./pointer-event-outside"
+import type { MaybeElement, MaybeFn } from "@zag-js/types"
 
-type MaybeElement = HTMLElement | null
 type Container = MaybeElement | Array<MaybeElement>
-type NodeOrFn = MaybeFunction<MaybeElement>
+type NodeOrFn = MaybeFn<MaybeElement>
 
 export interface DismissableElementHandlers extends InteractOutsideHandlers {
   /**
@@ -50,7 +50,7 @@ export interface DismissableElementOptions extends DismissableElementHandlers, P
   /**
    * Exclude containers from the interact outside event
    */
-  exclude?: MaybeFunction<Container> | undefined
+  exclude?: MaybeFn<Container> | undefined
   /**
    * Defer the interact outside event to the next frame
    */

@@ -55,10 +55,11 @@ export type PointerDownOutsideEvent = CustomEvent<EventDetails<PointerEvent>>
 
 export type FocusOutsideEvent = CustomEvent<EventDetails<FocusEvent>>
 
+import type { MaybeElement, MaybeFn } from "@zag-js/types"
+
 export type InteractOutsideEvent = PointerDownOutsideEvent | FocusOutsideEvent
 
-export type MaybeElement = HTMLElement | null | undefined
-export type NodeOrFn = MaybeElement | (() => MaybeElement)
+export type NodeOrFn = MaybeFn<MaybeElement>
 
 function isComposedPathFocusable(composedPath: EventTarget[]) {
   for (const node of composedPath) {

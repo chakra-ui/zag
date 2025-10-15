@@ -1,5 +1,6 @@
 import { isIos } from "./platform"
 import { nextTick, raf } from "./raf"
+import type { MaybeElement, MaybeFn } from "@zag-js/types"
 
 type State = "default" | "disabled" | "restoring"
 
@@ -71,9 +72,7 @@ export function restoreTextSelection(options: DisableTextSelectionOptions = {}) 
   }
 }
 
-type MaybeElement = HTMLElement | null | undefined
-
-type NodeOrFn = MaybeElement | (() => MaybeElement)
+type NodeOrFn = MaybeFn<MaybeElement>
 
 export function disableTextSelection(options: DisableTextSelectionOptions<NodeOrFn> = {}) {
   const { defer, target, ...restOptions } = options

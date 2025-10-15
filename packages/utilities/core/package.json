@@ -30,6 +30,9 @@
   },
   "clean-package": "../../../clean-package.config.json",
   "main": "src/index.ts",
+  "dependencies": {
+    "@zag-js/types": "workspace:*"
+  },
   "devDependencies": {
     "clean-package": "2.2.0"
   }

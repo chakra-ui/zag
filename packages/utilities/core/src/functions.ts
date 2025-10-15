@@ -1,9 +1,5 @@
 import { isFunction } from "./guard"
 
-export type MaybeFunction<T> = T | (() => T)
-
-export type Nullable<T> = T | null | undefined
-
 export const runIfFn = <T>(
   v: T | undefined,
   ...a: T extends (...a: any[]) => void ? Parameters<T> : never
