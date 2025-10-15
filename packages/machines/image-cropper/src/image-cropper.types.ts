@@ -63,6 +63,11 @@ export interface ImageCropperProps extends DirectionProperty, CommonProperties {
    */
   aspectRatio?: number
   /**
+   * The shape of the crop area.
+   * @default "rectangle"
+   */
+  cropShape?: "rectangle" | "circle"
+  /**
    * The controlled zoom level of the image.
    */
   zoom?: number
@@ -142,6 +147,7 @@ type PropsWithDefault =
   | "maxWidth"
   | "maxHeight"
   | "fixedCropArea"
+  | "cropShape"
   | "nudgeStep"
   | "nudgeStepShift"
   | "nudgeStepCtrl"

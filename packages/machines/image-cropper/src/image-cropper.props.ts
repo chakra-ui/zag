@@ -13,6 +13,7 @@ export const props = createProps<ImageCropperProps>()([
   "maxWidth",
   "maxHeight",
   "aspectRatio",
+  "cropShape",
   "zoom",
   "rotation",
   "defaultZoom",

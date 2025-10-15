@@ -26,6 +26,7 @@ export const machine = createMachine<ImageCropperSchema>({
       maxZoom: 5,
       defaultRotation: 0,
       fixedCropArea: false,
+      cropShape: "rectangle",
       nudgeStep: 1,
       nudgeStepShift: 10,
       nudgeStepCtrl: 50,
@@ -226,7 +227,13 @@ export const machine = createMachine<ImageCropperSchema>({
         const viewportRect = viewportEl.getBoundingClientRect()
         if (viewportRect.height <= 0 || viewportRect.width <= 0) return
 
-        const aspectRatio = prop("aspectRatio")
+        const cropShape = prop("cropShape")
+        let aspectRatio = prop("aspectRatio")
+
+        if (cropShape === "circle") {
+          aspectRatio = 1
+        }
+
         const minSize = { width: prop("minWidth"), height: prop("minHeight") }
         const maxSize = { width: prop("maxWidth"), height: prop("maxHeight") }
 
@@ -347,7 +354,12 @@ export const machine = createMachine<ImageCropperSchema>({
         const pointerStart = context.get("pointerStart")
         const cropStart = context.get("cropStart")
         const viewportRect = context.get("viewportRect")
+        const cropShape = prop("cropShape")
         let aspectRatio = prop("aspectRatio")
+
+        if (cropShape === "circle") {
+          aspectRatio = 1
+        }
 
         const currentPoint = event.point
 
@@ -357,7 +369,7 @@ export const machine = createMachine<ImageCropperSchema>({
 
         let nextCrop
         if (handlePosition) {
-          if (typeof aspectRatio === "undefined") {
+          if (typeof aspectRatio === "undefined" && cropShape !== "circle") {
             if (event.shiftKey) {
               const currentCrop = context.get("crop")
               const w = currentCrop.width

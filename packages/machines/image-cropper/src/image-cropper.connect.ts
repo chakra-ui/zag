@@ -29,6 +29,7 @@ export function connect<T extends PropTypes>(
 
     getRootProps() {
       const fixedCropArea = !!prop("fixedCropArea")
+      const cropShape = prop("cropShape")
       const crop = context.get("crop")
       const zoom = context.get("zoom")
       const rotation = context.get("rotation")
@@ -54,6 +55,7 @@ export function connect<T extends PropTypes>(
         "aria-busy": isImageReady ? undefined : "true",
         "data-ready": dataAttr(isImageReady),
         "data-fixed": dataAttr(fixedCropArea),
+        "data-shape": cropShape,
         "data-pinch": dataAttr(pinchActive),
         "data-dragging": dataAttr(isDragging),
         "data-panning": dataAttr(isPanning),
@@ -204,6 +206,7 @@ export function connect<T extends PropTypes>(
       const crop = context.get("crop")
       const viewportRect = context.get("viewportRect")
       const disabled = !!prop("fixedCropArea")
+      const cropShape = prop("cropShape")
 
       const roundedX = Math.round(crop.x)
       const roundedY = Math.round(crop.y)
@@ -214,14 +217,18 @@ export function connect<T extends PropTypes>(
       const maxX = hasViewportRect ? Math.max(0, Math.round(viewportRect.width - crop.width)) : undefined
       const ariaValueMax = maxX != null ? maxX : Math.max(roundedX, 0)
 
-      const ariaValueText = `Position X ${roundedX}px, Y ${roundedY}px. Size ${roundedWidth}px by ${roundedHeight}px.`
+      const shapeLabel = cropShape === "circle" ? "circle" : "rectangle"
+      const ariaValueText =
+        cropShape === "circle"
+          ? `Position X ${roundedX}px, Y ${roundedY}px. Diameter ${roundedWidth}px.`
+          : `Position X ${roundedX}px, Y ${roundedY}px. Size ${roundedWidth}px by ${roundedHeight}px.`
 
       return normalize.element({
         ...parts.selection.attrs,
         id: dom.getSelectionId(scope),
         tabIndex: disabled ? undefined : 0,
         role: "slider",
-        "aria-label": "Crop selection area",
+        "aria-label": `Crop selection area (${shapeLabel})`,
         "aria-roledescription": "2d slider",
         "aria-disabled": disabled ? "true" : undefined,
         "aria-valuemin": 0,
@@ -229,6 +236,7 @@ export function connect<T extends PropTypes>(
         "aria-valuenow": roundedX,
         "aria-valuetext": ariaValueText,
         "data-disabled": dataAttr(disabled),
+        "data-shape": cropShape,
         style: {
           "--width": toPx(crop.width),
           "--height": toPx(crop.height),

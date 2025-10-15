@@ -358,3 +358,25 @@ test.describe("image-cropper / fixedCropArea", () => {
     await I.seeSelectionPosition(initialRect.x, initialRect.y)
   })
 })
+
+test.describe("image-cropper / circle", () => {
+  test.beforeEach(async ({ page }) => {
+    I = new ImageCropperModel(page)
+    await I.goto("/image-cropper-circle")
+    await I.waitForImageLoad()
+  })
+
+  test("should display the crop area in 1:1 aspect ratio", async () => {
+    const { width, height } = await I.getSelectionRect()
+    expect(width).toBe(height)
+  })
+
+  test("should keep the crop area in 1:1 aspect ratio when resizing", async () => {
+    await I.dragHandle("bottom-right", 60, 100)
+    await I.wait(100)
+
+    const newRect = await I.getSelectionRect()
+
+    expect(newRect.width).toEqual(newRect.height)
+  })
+})
