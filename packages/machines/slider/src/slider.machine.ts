@@ -13,7 +13,15 @@ import {
 } from "@zag-js/utils"
 import * as dom from "./slider.dom"
 import type { SliderSchema } from "./slider.types"
-import { constrainValue, decrement, getClosestIndex, getRangeAtIndex, increment, normalizeValues } from "./slider.utils"
+import {
+  constrainValue,
+  decrement,
+  getClosestIndex,
+  getRangeAtIndex,
+  increment,
+  normalizeValues,
+  selectMovableThumb,
+} from "./slider.utils"
 
 const isEqualSize = (a: Size | null, b: Size | null) => {
   return a?.width === b?.width && a?.height === b?.height
@@ -108,7 +116,7 @@ export const machine = createMachine<SliderSchema>({
 
     track([() => computed("isDisabled")], () => {
       if (computed("isDisabled")) {
-        send({ type: "BLUR" })
+        send({ type: "POINTER_CANCEL" })
       }
     })
   },
@@ -192,7 +200,7 @@ export const machine = createMachine<SliderSchema>({
         POINTER_MOVE: {
           actions: ["setPointerValue"],
         },
-        BLUR: {
+        POINTER_CANCEL: {
           target: "idle",
           actions: ["clearFocusedIndex"],
         },
@@ -270,8 +278,10 @@ export const machine = createMachine<SliderSchema>({
         const focusedIndex = getClosestIndex(params, pointValue)
         context.set("focusedIndex", focusedIndex)
       },
-      setFocusedIndex({ context, event }) {
-        context.set("focusedIndex", event.index)
+      setFocusedIndex(params) {
+        const { context, event } = params
+        const movableIndex = selectMovableThumb(params, event.index)
+        context.set("focusedIndex", movableIndex)
       },
       clearFocusedIndex({ context }) {
         context.set("focusedIndex", -1)

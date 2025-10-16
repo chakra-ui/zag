@@ -265,6 +265,7 @@ export function connect<T extends PropTypes>(
         id: dom.getItemInputId(scope, props),
         tabIndex: -1,
         hidden: !itemState.editing,
+        maxLength: prop("maxLength"),
         defaultValue: itemState.editing ? context.get("editedTagValue") : "",
         onInput(event) {
           send({ type: "TAG_INPUT_TYPE", value: event.currentTarget.value })
