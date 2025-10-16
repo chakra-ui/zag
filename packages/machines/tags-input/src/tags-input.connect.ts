@@ -182,7 +182,8 @@ export function connect<T extends PropTypes>(
               send({ type: "DELETE" })
             },
             Enter(event) {
-              if (isCombobox && isExpanded) return
+              const hasHighlightedItem = target.getAttribute("aria-activedescendant")
+              if (isCombobox && isExpanded && hasHighlightedItem) return
               send({ type: "ENTER" })
               event.preventDefault()
             },
