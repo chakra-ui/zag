@@ -8,19 +8,47 @@ interface ResizeOptions {
   delta: { x: number; y: number }
   viewportRect: Size
   minSize: Size
-  maxSize?: Size
+  maxSize: Size
   aspectRatio?: number | undefined
 }
 
-export function computeResizeCrop(options: ResizeOptions): Rect {
-  const { cropStart, handlePosition, delta, viewportRect, minSize, maxSize, aspectRatio } = options
-  let { x, y, width, height } = cropStart
-  let left = x
-  let top = y
-  let right = x + width
-  let bottom = y + height
+interface HandleDirections {
+  hasLeft: boolean
+  hasRight: boolean
+  hasTop: boolean
+  hasBottom: boolean
+}
 
-  const hasAspect = typeof aspectRatio === "number" && aspectRatio > 0
+interface SizeLimits {
+  minWidth: number
+  minHeight: number
+  maxWidth: number
+  maxHeight: number
+  hasAspect: boolean
+}
+
+interface ClampAspectParams {
+  widthValue: number
+  heightValue: number
+  limits: SizeLimits
+  viewportRect: Size
+  aspectRatio: number
+}
+
+const getHandleDirections = (handlePosition: HandlePosition): HandleDirections => ({
+  hasLeft: handlePosition.includes("left"),
+  hasRight: handlePosition.includes("right"),
+  hasTop: handlePosition.includes("top"),
+  hasBottom: handlePosition.includes("bottom"),
+})
+
+const resolveSizeLimits = (options: {
+  minSize: Size
+  maxSize: Size
+  viewportRect: Size
+  aspectRatio?: number | undefined
+}): SizeLimits => {
+  const { minSize, maxSize, viewportRect, aspectRatio } = options
 
   let minWidth = Math.min(minSize.width, viewportRect.width)
   let minHeight = Math.min(minSize.height, viewportRect.height)
@@ -36,18 +64,21 @@ export function computeResizeCrop(options: ResizeOptions): Rect {
   maxWidth = Math.max(minWidth, maxWidth)
   maxHeight = Math.max(minHeight, maxHeight)
 
-  if (hasAspect) {
-    const mw = Math.max(minWidth, minHeight * aspectRatio)
-    const mh = mw / aspectRatio
-    minWidth = Math.min(mw, viewportRect.width)
-    minHeight = Math.min(mh, viewportRect.height)
+  const hasAspect = typeof aspectRatio === "number" && aspectRatio > 0
 
-    let constrainedMaxWidth = Math.min(maxWidth, maxHeight * aspectRatio, viewportRect.width)
-    let constrainedMaxHeight = constrainedMaxWidth / aspectRatio
+  if (hasAspect) {
+    const ratio = aspectRatio!
+    const minWidthWithAspect = Math.max(minWidth, minHeight * ratio)
+    const minHeightWithAspect = minWidthWithAspect / ratio
+    minWidth = Math.min(minWidthWithAspect, viewportRect.width)
+    minHeight = Math.min(minHeightWithAspect, viewportRect.height)
+
+    let constrainedMaxWidth = Math.min(maxWidth, maxHeight * ratio, viewportRect.width)
+    let constrainedMaxHeight = constrainedMaxWidth / ratio
 
     if (constrainedMaxHeight > maxHeight || constrainedMaxHeight > viewportRect.height) {
       constrainedMaxHeight = Math.min(maxHeight, viewportRect.height)
-      constrainedMaxWidth = constrainedMaxHeight * aspectRatio
+      constrainedMaxWidth = constrainedMaxHeight * ratio
     }
 
     maxWidth = Math.max(minWidth, Math.min(constrainedMaxWidth, viewportRect.width))
@@ -57,10 +88,115 @@ export function computeResizeCrop(options: ResizeOptions): Rect {
     maxHeight = Math.max(minHeight, Math.min(maxHeight, viewportRect.height))
   }
 
-  const hasLeft = handlePosition.includes("left")
-  const hasRight = handlePosition.includes("right")
-  const hasTop = handlePosition.includes("top")
-  const hasBottom = handlePosition.includes("bottom")
+  return { minWidth, minHeight, maxWidth, maxHeight, hasAspect }
+}
+
+const clampAspectSize = (params: ClampAspectParams): { width: number; height: number } => {
+  const { widthValue, heightValue, limits, viewportRect, aspectRatio } = params
+  const { minWidth, minHeight, maxWidth, maxHeight } = limits
+
+  const clampByWidth = (value: number) => {
+    let width = clampValue(value, minWidth, maxWidth)
+    width = Math.min(width, viewportRect.width)
+    let height = width / aspectRatio
+
+    if (height < minHeight) {
+      height = minHeight
+      width = clampValue(height * aspectRatio, minWidth, maxWidth)
+      width = Math.min(width, viewportRect.width)
+      height = width / aspectRatio
+    }
+
+    if (height > maxHeight) {
+      height = Math.min(maxHeight, viewportRect.height)
+      width = clampValue(height * aspectRatio, minWidth, maxWidth)
+      width = Math.min(width, viewportRect.width)
+      height = width / aspectRatio
+    }
+
+    if (height > viewportRect.height) {
+      height = viewportRect.height
+      width = clampValue(height * aspectRatio, minWidth, maxWidth)
+      width = Math.min(width, viewportRect.width)
+      height = width / aspectRatio
+      if (height < minHeight) {
+        height = minHeight
+        width = clampValue(height * aspectRatio, minWidth, maxWidth)
+        width = Math.min(width, viewportRect.width)
+        height = width / aspectRatio
+      }
+    }
+
+    return { width, height }
+  }
+
+  const clampByHeight = (value: number) => {
+    let height = clampValue(value, minHeight, maxHeight)
+    height = Math.min(height, viewportRect.height)
+    let width = height * aspectRatio
+    width = clampValue(width, minWidth, maxWidth)
+    width = Math.min(width, viewportRect.width)
+    let adjustedHeight = width / aspectRatio
+
+    if (adjustedHeight < minHeight) {
+      adjustedHeight = minHeight
+      width = clampValue(adjustedHeight * aspectRatio, minWidth, maxWidth)
+      width = Math.min(width, viewportRect.width)
+      adjustedHeight = width / aspectRatio
+    }
+
+    if (adjustedHeight > maxHeight) {
+      adjustedHeight = Math.min(maxHeight, viewportRect.height)
+      width = clampValue(adjustedHeight * aspectRatio, minWidth, maxWidth)
+      width = Math.min(width, viewportRect.width)
+      adjustedHeight = width / aspectRatio
+    }
+
+    if (width > viewportRect.width) {
+      width = viewportRect.width
+      adjustedHeight = width / aspectRatio
+      if (adjustedHeight > maxHeight) {
+        adjustedHeight = Math.min(maxHeight, viewportRect.height)
+        width = clampValue(adjustedHeight * aspectRatio, minWidth, maxWidth)
+        width = Math.min(width, viewportRect.width)
+        adjustedHeight = width / aspectRatio
+      }
+      if (adjustedHeight < minHeight) {
+        adjustedHeight = minHeight
+        width = clampValue(adjustedHeight * aspectRatio, minWidth, maxWidth)
+        width = Math.min(width, viewportRect.width)
+        adjustedHeight = width / aspectRatio
+      }
+    }
+
+    return { width, height: adjustedHeight }
+  }
+
+  const byWidth = clampByWidth(widthValue)
+  const byHeight = clampByHeight(heightValue)
+
+  const deltaWidth = Math.abs(byWidth.width - widthValue) + Math.abs(byWidth.height - heightValue)
+  const deltaHeight = Math.abs(byHeight.width - widthValue) + Math.abs(byHeight.height - heightValue)
+
+  return deltaHeight < deltaWidth ? byHeight : byWidth
+}
+
+export function computeResizeCrop(options: ResizeOptions): Rect {
+  const { cropStart, handlePosition, delta, viewportRect, minSize, maxSize, aspectRatio } = options
+  let { x, y, width, height } = cropStart
+  let left = x
+  let top = y
+  let right = x + width
+  let bottom = y + height
+
+  const { minWidth, minHeight, maxWidth, maxHeight, hasAspect } = resolveSizeLimits({
+    minSize,
+    maxSize,
+    viewportRect,
+    aspectRatio,
+  })
+
+  const { hasLeft, hasRight, hasTop, hasBottom } = getHandleDirections(handlePosition)
 
   if (hasLeft) {
     const minLeft = Math.max(0, right - maxWidth)
@@ -87,106 +223,25 @@ export function computeResizeCrop(options: ResizeOptions): Rect {
   }
 
   if (hasAspect) {
-    const clampAspectSize = (widthValue: number, heightValue: number) => {
-      const clampByWidth = (value: number) => {
-        let w = clampValue(value, minWidth, maxWidth)
-        w = Math.min(w, viewportRect.width)
-        let h = w / aspectRatio
-
-        if (h < minHeight) {
-          h = minHeight
-          w = clampValue(h * aspectRatio, minWidth, maxWidth)
-          w = Math.min(w, viewportRect.width)
-          h = w / aspectRatio
-        }
-
-        if (h > maxHeight) {
-          h = Math.min(maxHeight, viewportRect.height)
-          w = clampValue(h * aspectRatio, minWidth, maxWidth)
-          w = Math.min(w, viewportRect.width)
-          h = w / aspectRatio
-        }
-
-        if (h > viewportRect.height) {
-          h = viewportRect.height
-          w = clampValue(h * aspectRatio, minWidth, maxWidth)
-          w = Math.min(w, viewportRect.width)
-          h = w / aspectRatio
-          if (h < minHeight) {
-            h = minHeight
-            w = clampValue(h * aspectRatio, minWidth, maxWidth)
-            w = Math.min(w, viewportRect.width)
-            h = w / aspectRatio
-          }
-        }
-
-        return { width: w, height: h }
-      }
-
-      const clampByHeight = (value: number) => {
-        let h = clampValue(value, minHeight, maxHeight)
-        h = Math.min(h, viewportRect.height)
-        let w = h * aspectRatio
-        w = clampValue(w, minWidth, maxWidth)
-        w = Math.min(w, viewportRect.width)
-        let adjustedH = w / aspectRatio
-
-        if (adjustedH < minHeight) {
-          adjustedH = minHeight
-          w = clampValue(adjustedH * aspectRatio, minWidth, maxWidth)
-          w = Math.min(w, viewportRect.width)
-          adjustedH = w / aspectRatio
-        }
-
-        if (adjustedH > maxHeight) {
-          adjustedH = Math.min(maxHeight, viewportRect.height)
-          w = clampValue(adjustedH * aspectRatio, minWidth, maxWidth)
-          w = Math.min(w, viewportRect.width)
-          adjustedH = w / aspectRatio
-        }
-
-        if (w > viewportRect.width) {
-          w = viewportRect.width
-          adjustedH = w / aspectRatio
-          if (adjustedH > maxHeight) {
-            adjustedH = Math.min(maxHeight, viewportRect.height)
-            w = clampValue(adjustedH * aspectRatio, minWidth, maxWidth)
-            w = Math.min(w, viewportRect.width)
-            adjustedH = w / aspectRatio
-          }
-          if (adjustedH < minHeight) {
-            adjustedH = minHeight
-            w = clampValue(adjustedH * aspectRatio, minWidth, maxWidth)
-            w = Math.min(w, viewportRect.width)
-            adjustedH = w / aspectRatio
-          }
-        }
-
-        return { width: w, height: adjustedH }
-      }
-
-      const byWidth = clampByWidth(widthValue)
-      const byHeight = clampByHeight(heightValue)
-
-      const deltaWidth = Math.abs(byWidth.width - widthValue) + Math.abs(byWidth.height - heightValue)
-      const deltaHeight = Math.abs(byHeight.width - widthValue) + Math.abs(byHeight.height - heightValue)
-
-      return deltaHeight < deltaWidth ? byHeight : byWidth
-    }
-
     let newWidth = right - left
     let newHeight = bottom - top
 
     if ((hasLeft || hasRight) && (hasTop || hasBottom)) {
       let tempW = newWidth
-      let tempH = tempW / aspectRatio
+      let tempH = tempW / aspectRatio!
 
       if (tempH > newHeight || top + tempH > viewportRect.height || left + tempW > viewportRect.width) {
         tempH = newHeight
-        tempW = tempH * aspectRatio
+        tempW = tempH * aspectRatio!
       }
 
-      const constrained = clampAspectSize(tempW, tempH)
+      const constrained = clampAspectSize({
+        widthValue: tempW,
+        heightValue: tempH,
+        limits: { minWidth, minHeight, maxWidth, maxHeight, hasAspect },
+        viewportRect,
+        aspectRatio: aspectRatio!,
+      })
       tempW = constrained.width
       tempH = constrained.height
 
@@ -206,9 +261,15 @@ export function computeResizeCrop(options: ResizeOptions): Rect {
     } else if ((hasLeft || hasRight) && !(hasTop || hasBottom)) {
       const centerY = (top + bottom) / 2
       let nextWidth = newWidth
-      let nextHeight = nextWidth / aspectRatio
+      let nextHeight = nextWidth / aspectRatio!
 
-      const constrained = clampAspectSize(nextWidth, nextHeight)
+      const constrained = clampAspectSize({
+        widthValue: nextWidth,
+        heightValue: nextHeight,
+        limits: { minWidth, minHeight, maxWidth, maxHeight, hasAspect },
+        viewportRect,
+        aspectRatio: aspectRatio!,
+      })
       nextWidth = constrained.width
       nextHeight = constrained.height
 
@@ -234,7 +295,13 @@ export function computeResizeCrop(options: ResizeOptions): Rect {
     } else if ((hasTop || hasBottom) && !(hasLeft || hasRight)) {
       const centerX = (left + right) / 2
       let nextHeight = newHeight
-      const constrained = clampAspectSize(newWidth, nextHeight)
+      const constrained = clampAspectSize({
+        widthValue: newWidth,
+        heightValue: nextHeight,
+        limits: { minWidth, minHeight, maxWidth, maxHeight, hasAspect },
+        viewportRect,
+        aspectRatio: aspectRatio!,
+      })
       const nextWidth = constrained.width
       nextHeight = constrained.height
 
@@ -376,18 +443,13 @@ export function computeKeyboardCrop(
 ): Rect {
   const nextCrop = { ...crop }
 
-  const hasLeft = handlePosition.includes("left")
-  const hasRight = handlePosition.includes("right")
-  const hasTop = handlePosition.includes("top")
-  const hasBottom = handlePosition.includes("bottom")
+  const { hasLeft, hasRight, hasTop, hasBottom } = getHandleDirections(handlePosition)
 
-  const minWidth = Math.min(minSize.width, viewportRect.width)
-  const minHeight = Math.min(minSize.height, viewportRect.height)
-  let maxWidth = Math.min(maxSize.width, viewportRect.width)
-  let maxHeight = Math.min(maxSize.height, viewportRect.height)
-
-  maxWidth = Math.max(minWidth, maxWidth)
-  maxHeight = Math.max(minHeight, maxHeight)
+  const { minWidth, minHeight, maxWidth, maxHeight } = resolveSizeLimits({
+    minSize,
+    maxSize,
+    viewportRect,
+  })
 
   const isCorner = (hasLeft || hasRight) && (hasTop || hasBottom)
 

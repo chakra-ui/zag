@@ -1,6 +1,6 @@
 import { createMachine } from "@zag-js/core"
 import * as dom from "./image-cropper.dom"
-import type { HandlePosition, ImageCropperSchema } from "./image-cropper.types"
+import type { HandlePosition, ImageCropperProps, ImageCropperSchema } from "./image-cropper.types"
 import type { Point, Rect, Size } from "@zag-js/types"
 import { addDomEvent, getEventPoint, getEventTarget } from "@zag-js/dom-query"
 import {
@@ -26,6 +26,72 @@ const resolveResizeDelta = (handlePosition: HandlePosition, delta: { x: number; 
   if (resolved.x === 0 && resolved.y === 0) return null
 
   return resolved
+}
+
+type PropGetter = <K extends keyof ImageCropperSchema["props"]>(key: K) => ImageCropperSchema["props"][K]
+
+const resolveCropAspectRatio = (
+  shape: ImageCropperProps["cropShape"],
+  aspectRatio: ImageCropperProps["aspectRatio"],
+) => (shape === "circle" ? 1 : aspectRatio)
+
+const getCropSizeLimits = (prop: PropGetter) => ({
+  minSize: { width: prop("minWidth"), height: prop("minHeight") },
+  maxSize: { width: prop("maxWidth"), height: prop("maxHeight") },
+})
+
+const getNudgeStep = (prop: PropGetter, modifiers: { shiftKey?: boolean; ctrlKey?: boolean; metaKey?: boolean }) => {
+  if (modifiers.ctrlKey || modifiers.metaKey) {
+    return prop("nudgeStepCtrl")
+  }
+  if (modifiers.shiftKey) {
+    return prop("nudgeStepShift")
+  }
+  return prop("nudgeStep")
+}
+
+const DEFAULT_VIEWPORT_FILL = 0.8
+
+const computeDefaultCropDimensions = (
+  viewportRect: Size,
+  aspectRatio: number | undefined,
+  fixedCropArea: boolean,
+): { width: number; height: number } => {
+  const targetWidth = viewportRect.width * DEFAULT_VIEWPORT_FILL
+  const targetHeight = viewportRect.height * DEFAULT_VIEWPORT_FILL
+
+  if (typeof aspectRatio === "number" && aspectRatio > 0) {
+    if (fixedCropArea) {
+      let height = viewportRect.height
+      let width = height * aspectRatio
+
+      if (width > viewportRect.width) {
+        width = viewportRect.width
+        height = width / aspectRatio
+      }
+
+      return { width, height }
+    }
+
+    const targetAspect = targetWidth / targetHeight
+
+    if (aspectRatio > targetAspect) {
+      const width = targetWidth
+      const height = width / aspectRatio
+      return { width, height }
+    }
+
+    const height = targetHeight
+    const width = height * aspectRatio
+    return { width, height }
+  }
+
+  if (fixedCropArea) {
+    const size = Math.min(viewportRect.width, viewportRect.height)
+    return { width: size, height: size }
+  }
+
+  return { width: targetWidth, height: targetHeight }
 }
 
 export const machine = createMachine<ImageCropperSchema>({
@@ -277,14 +343,8 @@ export const machine = createMachine<ImageCropperSchema>({
         if (viewportRect.height <= 0 || viewportRect.width <= 0) return
 
         const cropShape = prop("cropShape")
-        let aspectRatio = prop("aspectRatio")
-
-        if (cropShape === "circle") {
-          aspectRatio = 1
-        }
-
-        const minSize = { width: prop("minWidth"), height: prop("minHeight") }
-        const maxSize = { width: prop("maxWidth"), height: prop("maxHeight") }
+        const aspectRatio = resolveCropAspectRatio(cropShape, prop("aspectRatio"))
+        const { minSize, maxSize } = getCropSizeLimits(prop)
 
         const clampSize = (rect: Rect) => {
           const result = computeResizeCrop({
@@ -309,8 +369,7 @@ export const machine = createMachine<ImageCropperSchema>({
             height: initialCrop.height,
           })
 
-          const width = constrainedSize.width
-          const height = constrainedSize.height
+          const { width, height } = constrainedSize
           const maxX = Math.max(0, viewportRect.width - width)
           const maxY = Math.max(0, viewportRect.height - height)
           const x = clampValue(initialCrop.x, 0, maxX)
@@ -321,54 +380,16 @@ export const machine = createMachine<ImageCropperSchema>({
         }
 
         const fixedCropArea = prop("fixedCropArea")
-
-        const targetWidth = viewportRect.width * 0.8
-        const targetHeight = viewportRect.height * 0.8
-
-        let width: number
-        let height: number
-
-        if (typeof aspectRatio === "number" && aspectRatio > 0) {
-          if (fixedCropArea) {
-            height = viewportRect.height
-            width = height * aspectRatio
-
-            // If calculated width exceeds viewport, scale down proportionally
-            if (width > viewportRect.width) {
-              width = viewportRect.width
-              height = width / aspectRatio
-            }
-          } else {
-            const targetAspect = targetWidth / targetHeight
-
-            if (aspectRatio > targetAspect) {
-              width = targetWidth
-              height = width / aspectRatio
-            } else {
-              height = targetHeight
-              width = height * aspectRatio
-            }
-          }
-        } else {
-          if (fixedCropArea) {
-            const size = Math.min(viewportRect.width, viewportRect.height)
-            width = size
-            height = size
-          } else {
-            width = targetWidth
-            height = targetHeight
-          }
-        }
-
+        const defaultSize = computeDefaultCropDimensions(viewportRect, aspectRatio, fixedCropArea)
         const constrainedSize = clampSize({
           x: 0,
           y: 0,
-          width,
-          height,
+          width: defaultSize.width,
+          height: defaultSize.height,
         })
 
-        width = constrainedSize.width
-        height = constrainedSize.height
+        const width = constrainedSize.width
+        const height = constrainedSize.height
 
         const x = Math.max(0, (viewportRect.width - width) / 2)
         const y = Math.max(0, (viewportRect.height - height) / 2)
@@ -395,20 +416,14 @@ export const machine = createMachine<ImageCropperSchema>({
       },
 
       updateCrop({ context, event, prop }) {
-        const minWidth = prop("minWidth")
-        const minHeight = prop("minHeight")
-        const maxWidth = prop("maxWidth")
-        const maxHeight = prop("maxHeight")
         const handlePosition = context.get("handlePosition")
         const pointerStart = context.get("pointerStart")
         const cropStart = context.get("cropStart")
         const viewportRect = context.get("viewportRect")
         const cropShape = prop("cropShape")
-        let aspectRatio = prop("aspectRatio")
-
-        if (cropShape === "circle") {
-          aspectRatio = 1
-        }
+        const requestedAspectRatio = prop("aspectRatio")
+        let aspectRatio = resolveCropAspectRatio(cropShape, requestedAspectRatio)
+        const { minSize, maxSize } = getCropSizeLimits(prop)
 
         const currentPoint = event.point
 
@@ -418,7 +433,8 @@ export const machine = createMachine<ImageCropperSchema>({
 
         let nextCrop
         if (handlePosition) {
-          if (typeof aspectRatio === "undefined" && cropShape !== "circle") {
+          const allowShiftLock = typeof requestedAspectRatio === "undefined" && cropShape !== "circle"
+          if (allowShiftLock) {
             if (event.shiftKey) {
               const currentCrop = context.get("crop")
               const w = currentCrop.width
@@ -427,22 +443,22 @@ export const machine = createMachine<ImageCropperSchema>({
                 const ratio = w / h
                 if (ratio > 0) context.set("shiftLockRatio", ratio)
               }
-            }
 
-            if (event.shiftKey) {
               const lockRatio = context.get("shiftLockRatio")
               if (lockRatio !== null && lockRatio > 0) aspectRatio = lockRatio
             } else {
               context.set("shiftLockRatio", null)
             }
+          } else {
+            context.set("shiftLockRatio", null)
           }
           nextCrop = computeResizeCrop({
             cropStart,
             handlePosition,
             delta,
-            viewportRect: viewportRect,
-            minSize: { width: minWidth, height: minHeight },
-            maxSize: { width: maxWidth, height: maxHeight },
+            viewportRect,
+            minSize,
+            maxSize,
             aspectRatio,
           })
         } else {
@@ -503,14 +519,9 @@ export const machine = createMachine<ImageCropperSchema>({
         const viewportRect = context.get("viewportRect")
         if (viewportRect.width <= 0 || viewportRect.height <= 0) return
 
-        const minSize = { width: prop("minWidth"), height: prop("minHeight") }
-        const maxSize = { width: prop("maxWidth"), height: prop("maxHeight") }
-
         const cropShape = prop("cropShape")
-        let aspectRatio = prop("aspectRatio")
-        if (cropShape === "circle") {
-          aspectRatio = 1
-        }
+        const aspectRatio = resolveCropAspectRatio(cropShape, prop("aspectRatio"))
+        const { minSize, maxSize } = getCropSizeLimits(prop)
 
         const crop = context.get("crop")
         const nextCrop = computeResizeCrop({
@@ -744,16 +755,8 @@ export const machine = createMachine<ImageCropperSchema>({
         const crop = context.get("crop")
         const viewportRect = context.get("viewportRect")
 
-        // Determine step size based on modifier keys
-        let step = prop("nudgeStep")
-        if (ctrlKey || metaKey) {
-          step = prop("nudgeStepCtrl")
-        } else if (shiftKey) {
-          step = prop("nudgeStepShift")
-        }
-
-        const minSize = { width: prop("minWidth"), height: prop("minHeight") }
-        const maxSize = { width: prop("maxWidth"), height: prop("maxHeight") }
+        const step = getNudgeStep(prop, { shiftKey, ctrlKey, metaKey })
+        const { minSize, maxSize } = getCropSizeLimits(prop)
 
         const nextCrop = computeKeyboardCrop(key, handlePosition, step, crop, viewportRect, minSize, maxSize)
 
@@ -765,12 +768,7 @@ export const machine = createMachine<ImageCropperSchema>({
         const crop = context.get("crop")
         const viewportRect = context.get("viewportRect")
 
-        let step = prop("nudgeStep")
-        if (ctrlKey || metaKey) {
-          step = prop("nudgeStepCtrl")
-        } else if (shiftKey) {
-          step = prop("nudgeStepShift")
-        }
+        const step = getNudgeStep(prop, { shiftKey, ctrlKey, metaKey })
 
         const delta = getKeyboardMoveDelta(key, step)
         const nextCrop = computeMoveCrop(crop, delta, viewportRect)

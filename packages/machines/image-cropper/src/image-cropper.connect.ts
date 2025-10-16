@@ -1,4 +1,4 @@
-import type { EventKeyMap, NormalizeProps, PropTypes } from "@zag-js/types"
+import type { EventKeyMap, NormalizeProps, PropTypes, Rect } from "@zag-js/types"
 import { parts } from "./image-cropper.anatomy"
 import * as dom from "./image-cropper.dom"
 import type { HandlePosition, ImageCropperApi, ImageCropperService } from "./image-cropper.types"
@@ -24,6 +24,15 @@ const normalizeResizeDelta = (handlePosition: HandlePosition, delta: number) => 
 
   return resolved
 }
+
+const getRoundedCropMetrics = (crop: Rect) => ({
+  x: Math.round(crop.x),
+  y: Math.round(crop.y),
+  width: Math.round(crop.width),
+  height: Math.round(crop.height),
+})
+
+const toFiniteDataValue = (value: number) => (Number.isFinite(value) ? String(value) : undefined)
 
 export function connect<T extends PropTypes>(
   service: ImageCropperService,
@@ -72,11 +81,7 @@ export function connect<T extends PropTypes>(
       const rootId = dom.getRootId(scope)
       const viewportId = dom.getViewportId(scope)
       const selectionId = dom.getSelectionId(scope)
-      const roundedX = Math.round(crop.x)
-      const roundedY = Math.round(crop.y)
-      const roundedWidth = Math.round(crop.width)
-      const roundedHeight = Math.round(crop.height)
-      const cropMetrics = { x: roundedX, y: roundedY, width: roundedWidth, height: roundedHeight }
+      const cropMetrics = getRoundedCropMetrics(crop)
       const previewDescription = isImageReady
         ? translations.previewDescription({
             crop: cropMetrics,
@@ -186,8 +191,8 @@ export function connect<T extends PropTypes>(
       const rotation = context.get("rotation")
       const naturalSize = context.get("naturalSize")
       const isImageReady = naturalSize.width > 0 && naturalSize.height > 0
-      const zoomValue = Number.isFinite(zoom) ? String(zoom) : undefined
-      const rotationValue = Number.isFinite(rotation) ? String(rotation) : undefined
+      const zoomValue = toFiniteDataValue(zoom)
+      const rotationValue = toFiniteDataValue(rotation)
 
       const translate = `translate(${toPx(offset.x)}, ${toPx(offset.y)})`
       const rotate = `rotate(${rotation}deg)`
@@ -222,15 +227,11 @@ export function connect<T extends PropTypes>(
       const disabled = !!prop("fixedCropArea")
       const cropShape = prop("cropShape")
 
-      const roundedX = Math.round(crop.x)
-      const roundedY = Math.round(crop.y)
-      const roundedWidth = Math.round(crop.width)
-      const roundedHeight = Math.round(crop.height)
+      const cropMetrics = getRoundedCropMetrics(crop)
 
       const hasViewportRect = viewportRect.width > 0 && viewportRect.height > 0
       const maxX = hasViewportRect ? Math.max(0, Math.round(viewportRect.width - crop.width)) : undefined
-      const ariaValueMax = maxX != null ? maxX : Math.max(roundedX, 0)
-      const cropMetrics = { x: roundedX, y: roundedY, width: roundedWidth, height: roundedHeight }
+      const ariaValueMax = maxX != null ? maxX : Math.max(cropMetrics.x, 0)
       const ariaValueText = translations.selectionValueText({ shape: cropShape, ...cropMetrics })
       const selectionLabel = translations.selectionLabel({ shape: cropShape })
 
@@ -244,7 +245,7 @@ export function connect<T extends PropTypes>(
         "aria-disabled": disabled ? "true" : undefined,
         "aria-valuemin": 0,
         "aria-valuemax": ariaValueMax,
-        "aria-valuenow": roundedX,
+        "aria-valuenow": cropMetrics.x,
         "aria-valuetext": ariaValueText,
         "aria-description": translations.selectionInstructions,
         "data-disabled": dataAttr(disabled),
