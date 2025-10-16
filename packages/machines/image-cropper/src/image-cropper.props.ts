@@ -28,6 +28,7 @@ export const props = createProps<ImageCropperProps>()([
   "nudgeStep",
   "nudgeStepShift",
   "nudgeStepCtrl",
+  "translations",
 ])
 
 export const splitProps = createSplitProps<Partial<ImageCropperProps>>(props)
