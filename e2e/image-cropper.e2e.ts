@@ -171,138 +171,104 @@ test.describe("image-cropper / resizable", () => {
     expect(scaleY).toBe(2)
   })
 
-  test("[keyboard] should resize corner handle diagonally with left arrow", async () => {
+  test("[keyboard] should move crop selection with arrow keys", async () => {
     const initialRect = await I.getSelectionRect()
 
-    await I.focusHandle("top-left")
-    await I.pressKey("ArrowLeft")
-
-    const newRect = await I.getSelectionRect()
-
-    expect(newRect.x).toBe(initialRect.x - 1)
-    expect(newRect.y).toBe(initialRect.y - 1)
-    expect(newRect.width).toBe(initialRect.width + 1)
-    expect(newRect.height).toBe(initialRect.height + 1)
-  })
-
-  test("[keyboard] should resize corner handle diagonally with up arrow", async () => {
-    const initialRect = await I.getSelectionRect()
-
-    await I.focusHandle("top-left")
-    await I.pressKey("ArrowUp")
-
-    const newRect = await I.getSelectionRect()
-
-    expect(newRect.x).toBe(initialRect.x - 1)
-    expect(newRect.y).toBe(initialRect.y - 1)
-    expect(newRect.width).toBe(initialRect.width + 1)
-    expect(newRect.height).toBe(initialRect.height + 1)
-  })
-
-  test("[keyboard] should resize corner handle diagonally with right arrow", async () => {
-    const initialRect = await I.getSelectionRect()
-
-    await I.focusHandle("top-left")
+    await I.focusSelection()
     await I.pressKey("ArrowRight")
-
-    const newRect = await I.getSelectionRect()
-
-    expect(newRect.x).toBe(initialRect.x + 1)
-    expect(newRect.y).toBe(initialRect.y + 1)
-    expect(newRect.width).toBe(initialRect.width - 1)
-    expect(newRect.height).toBe(initialRect.height - 1)
-  })
-
-  test("[keyboard] should resize corner handle diagonally with down arrow", async () => {
-    const initialRect = await I.getSelectionRect()
-
-    await I.focusHandle("top-left")
     await I.pressKey("ArrowDown")
 
     const newRect = await I.getSelectionRect()
 
     expect(newRect.x).toBe(initialRect.x + 1)
     expect(newRect.y).toBe(initialRect.y + 1)
-    expect(newRect.width).toBe(initialRect.width - 1)
-    expect(newRect.height).toBe(initialRect.height - 1)
-  })
-
-  test("[keyboard] should resize bottom-right corner handle correctly", async () => {
-    const initialRect = await I.getSelectionRect()
-
-    await I.focusHandle("bottom-right")
-    await I.pressKey("ArrowRight")
-
-    const newRect = await I.getSelectionRect()
-
-    expect(newRect.width).toBe(initialRect.width + 1)
-    expect(newRect.height).toBe(initialRect.height + 1)
-    expect(newRect.x).toBe(initialRect.x)
-    expect(newRect.y).toBe(initialRect.y)
-  })
-
-  test("[keyboard] should resize edge handle in single direction", async () => {
-    const initialRect = await I.getSelectionRect()
-
-    await I.focusHandle("right")
-    await I.pressKey("ArrowRight")
-
-    const newRect = await I.getSelectionRect()
-
-    expect(newRect.width).toBe(initialRect.width + 1)
+    expect(newRect.width).toBe(initialRect.width)
     expect(newRect.height).toBe(initialRect.height)
-    expect(newRect.x).toBe(initialRect.x)
-    expect(newRect.y).toBe(initialRect.y)
   })
 
-  test("[keyboard] should use larger step with shift modifier", async () => {
+  test("[keyboard] should resize width using Alt+Arrow keys", async () => {
     const initialRect = await I.getSelectionRect()
 
-    await I.focusHandle("bottom-right")
-    await I.pressKeyWithModifiers("ArrowRight", { shift: true })
+    await I.focusSelection()
+    await I.pressKeyWithModifiers("ArrowRight", { alt: true })
+
+    let rect = await I.getSelectionRect()
+    expect(rect.width).toBe(initialRect.width + 1)
+    expect(rect.x).toBe(initialRect.x)
+
+    await I.pressKeyWithModifiers("ArrowLeft", { alt: true })
+
+    rect = await I.getSelectionRect()
+    expect(rect.width).toBe(initialRect.width)
+    expect(rect.x).toBe(initialRect.x)
+  })
+
+  test("[keyboard] should resize height using Alt+Arrow keys", async () => {
+    const initialRect = await I.getSelectionRect()
+
+    await I.focusSelection()
+    await I.pressKeyWithModifiers("ArrowDown", { alt: true })
+
+    let rect = await I.getSelectionRect()
+    expect(rect.height).toBe(initialRect.height + 1)
+    expect(rect.y).toBe(initialRect.y)
+
+    await I.pressKeyWithModifiers("ArrowUp", { alt: true })
+
+    rect = await I.getSelectionRect()
+    expect(rect.height).toBe(initialRect.height)
+    expect(rect.y).toBe(initialRect.y)
+  })
+
+  test("[keyboard] should use larger step with shift modifier when resizing", async () => {
+    const initialRect = await I.getSelectionRect()
+
+    await I.focusSelection()
+    await I.pressKeyWithModifiers("ArrowRight", { alt: true, shift: true })
 
     const newRect = await I.getSelectionRect()
 
     expect(newRect.width - initialRect.width).toBe(10)
-    expect(newRect.height - initialRect.height).toBe(10)
+    expect(newRect.height).toBe(initialRect.height)
   })
 
-  test("[keyboard] should use largest step with ctrl modifier", async () => {
+  test("[keyboard] should use largest step with ctrl modifier when resizing", async () => {
     const initialRect = await I.getSelectionRect()
 
-    await I.focusHandle("bottom-right")
-
-    await I.pressKeyWithModifiers("ArrowLeft", { ctrl: true })
+    await I.focusSelection()
+    await I.pressKeyWithModifiers("ArrowLeft", { alt: true, ctrl: true })
 
     const newRect = await I.getSelectionRect()
 
-    // Notice that newRect and initialRect are swapped since default crop area size is large
     expect(initialRect.width - newRect.width).toBe(50)
-    expect(initialRect.height - newRect.height).toBe(50)
+    expect(newRect.height).toBe(initialRect.height)
   })
 
-  test("[keyboard] should use largest step with meta modifier", async () => {
+  test("[keyboard] should use largest step with meta modifier when resizing", async () => {
     const initialRect = await I.getSelectionRect()
 
-    await I.focusHandle("bottom-right")
-
-    await I.pressKeyWithModifiers("ArrowLeft", { meta: true })
+    await I.focusSelection()
+    await I.pressKeyWithModifiers("ArrowLeft", { alt: true, meta: true })
 
     const newRect = await I.getSelectionRect()
 
-    // Notice that newRect and initialRect are swapped since default crop area size is large
     expect(initialRect.width - newRect.width).toBe(50)
-    expect(initialRect.height - newRect.height).toBe(50)
+    expect(newRect.height).toBe(initialRect.height)
   })
 
-  test("[keyboard] should respect minimum size constraints", async () => {
+  test("[keyboard] should respect minimum size constraints when resizing", async () => {
     await I.controls.num("minWidth", "100")
     await I.controls.num("minHeight", "80")
+    await I.wait(100)
 
-    await I.focusHandle("bottom-right")
+    await I.focusSelection()
 
     for (let i = 0; i < 10; i++) {
-      await I.pressKeyWithModifiers("ArrowLeft", { ctrl: true })
+      await I.pressKeyWithModifiers("ArrowLeft", { alt: true, ctrl: true })
+    }
+
+    for (let i = 0; i < 10; i++) {
+      await I.pressKeyWithModifiers("ArrowUp", { alt: true, ctrl: true })
     }
 
     const { width, height } = await I.getSelectionRect()
@@ -311,34 +277,46 @@ test.describe("image-cropper / resizable", () => {
     expect(height).toBe(80)
   })
 
-  test("[keyboard] should respect maximum size constraints", async () => {
+  test("[keyboard] should respect maximum size constraints when resizing", async () => {
     await I.controls.num("maxWidth", "250")
     await I.controls.num("maxHeight", "200")
+    await I.wait(100)
 
-    await I.focusHandle("bottom-right")
+    await I.focusSelection()
 
     for (let i = 0; i < 10; i++) {
-      await I.pressKeyWithModifiers("ArrowRight", { ctrl: true })
+      await I.pressKeyWithModifiers("ArrowRight", { alt: true, ctrl: true })
     }
 
-    const { width, height } = await I.getSelectionRect()
-
-    expect(width).toBe(250)
-    expect(height).toBe(200)
-  })
-
-  test("[keyboard] should not move selection outside viewport bounds", async () => {
-    await I.focusHandle("top-left")
-
     for (let i = 0; i < 10; i++) {
-      await I.pressKeyWithModifiers("ArrowLeft", { ctrl: true })
+      await I.pressKeyWithModifiers("ArrowDown", { alt: true, ctrl: true })
     }
 
     const selectionRect = await I.getSelectionRect()
     const viewportRect = await I.getViewportRect()
 
-    expect(viewportRect.x - selectionRect.x).toBe(0)
-    expect(viewportRect.y - selectionRect.y).toBe(0)
+    const expectedWidth = Math.min(250, viewportRect.width)
+    const expectedHeight = Math.min(200, viewportRect.height)
+
+    expect(selectionRect.width).toBe(expectedWidth)
+    expect(selectionRect.height).toBe(expectedHeight)
+  })
+
+  test("[keyboard] should not move selection outside viewport bounds", async () => {
+    await I.focusSelection()
+
+    for (let i = 0; i < 10; i++) {
+      await I.pressKeyWithModifiers("ArrowLeft", { ctrl: true })
+      await I.pressKeyWithModifiers("ArrowUp", { ctrl: true })
+    }
+
+    const selectionRect = await I.getSelectionRect()
+    const viewportRect = await I.getViewportRect()
+    const relativeX = Math.round(selectionRect.x - viewportRect.x)
+    const relativeY = Math.round(selectionRect.y - viewportRect.y)
+
+    expect(relativeX).toBe(0)
+    expect(relativeY).toBe(0)
   })
 })
 

@@ -43,6 +43,17 @@ export function connect<T extends PropTypes>(
       const rootId = dom.getRootId(scope)
       const viewportId = dom.getViewportId(scope)
       const selectionId = dom.getSelectionId(scope)
+      const roundedX = Math.round(crop.x)
+      const roundedY = Math.round(crop.y)
+      const roundedWidth = Math.round(crop.width)
+      const roundedHeight = Math.round(crop.height)
+      const zoomLabel = Number.isFinite(zoom) ? `${zoom.toFixed(2)}x zoom` : "default zoom"
+      const rotationLabel = Number.isFinite(rotation)
+        ? `${Math.round(rotation)} degrees rotation`
+        : "0 degrees rotation"
+      const previewDescription = isImageReady
+        ? `Image cropper preview, ${zoomLabel}, ${rotationLabel}. Crop positioned at ${roundedX}px from the left and ${roundedY}px from the top with a size of ${roundedWidth}px by ${roundedHeight}px.`
+        : "Image cropper preview loading"
 
       return normalize.element({
         ...parts.root.attrs,
@@ -51,6 +62,8 @@ export function connect<T extends PropTypes>(
         role: "group",
         "aria-roledescription": "Image cropper",
         "aria-label": "Image cropper",
+        "aria-description": previewDescription,
+        "aria-live": "polite",
         "aria-controls": `${viewportId} ${selectionId}`,
         "aria-busy": isImageReady ? undefined : "true",
         "data-ready": dataAttr(isImageReady),
@@ -72,22 +85,10 @@ export function connect<T extends PropTypes>(
 
     getViewportProps() {
       const fixedCropArea = prop("fixedCropArea")
-      const crop = context.get("crop")
       const zoom = context.get("zoom")
       const rotation = context.get("rotation")
       const naturalSize = context.get("naturalSize")
       const isImageReady = naturalSize.width > 0 && naturalSize.height > 0
-      const roundedX = Math.round(crop.x)
-      const roundedY = Math.round(crop.y)
-      const roundedWidth = Math.round(crop.width)
-      const roundedHeight = Math.round(crop.height)
-      const zoomLabel = Number.isFinite(zoom) ? `${zoom.toFixed(2)}x zoom` : "default zoom"
-      const rotationLabel = Number.isFinite(rotation)
-        ? `${Math.round(rotation)} degrees rotation`
-        : "0 degrees rotation"
-      const viewportLabel = isImageReady
-        ? `Image cropper preview, ${zoomLabel}, ${rotationLabel}. Crop positioned at ${roundedX}px from the left and ${roundedY}px from the top with a size of ${roundedWidth}px by ${roundedHeight}px.`
-        : "Image cropper preview loading"
       const zoomValue = Number.isFinite(zoom) ? String(zoom) : undefined
       const rotationValue = Number.isFinite(rotation) ? String(rotation) : undefined
       const viewportId = dom.getViewportId(scope)
@@ -95,12 +96,7 @@ export function connect<T extends PropTypes>(
       return normalize.element({
         ...parts.viewport.attrs,
         id: viewportId,
-        role: "img",
-        "aria-roledescription": "Crop preview",
-        "aria-label": viewportLabel,
-        "aria-busy": isImageReady ? undefined : "true",
-        "aria-live": "polite",
-        "aria-controls": dom.getImageId(scope),
+        role: "presentation",
         "data-ownedby": dom.getRootId(scope),
         "data-ready": dataAttr(isImageReady),
         "data-disabled": dataAttr(!!fixedCropArea),
@@ -235,6 +231,8 @@ export function connect<T extends PropTypes>(
         "aria-valuemax": ariaValueMax,
         "aria-valuenow": roundedX,
         "aria-valuetext": ariaValueText,
+        "aria-description":
+          "Use arrow keys to move the crop. Hold Alt with arrow keys to resize width or height. Press plus or minus to zoom.",
         "data-disabled": dataAttr(disabled),
         "data-shape": cropShape,
         style: {
@@ -263,7 +261,34 @@ export function connect<T extends PropTypes>(
           }
           if (event.defaultPrevented) return
           const src = "selection"
-          const { shiftKey, ctrlKey, metaKey } = event
+          const { shiftKey, ctrlKey, metaKey, altKey } = event
+          const key = getEventKey(event, { dir: prop("dir") })
+
+          const isZoomInKey = key === "+" || key === "="
+          const isZoomOutKey = key === "-" || key === "_"
+
+          if (isZoomInKey || isZoomOutKey) {
+            const delta = isZoomInKey ? -1 : 1
+            send({ type: "ZOOM", trigger: "keyboard", delta })
+            event.preventDefault()
+            return
+          }
+
+          if (altKey && (key === "ArrowUp" || key === "ArrowDown" || key === "ArrowLeft" || key === "ArrowRight")) {
+            const handlePosition = key === "ArrowUp" || key === "ArrowDown" ? "bottom" : "right"
+            send({
+              type: "NUDGE_RESIZE_CROP",
+              handlePosition,
+              key,
+              src,
+              shiftKey,
+              ctrlKey,
+              metaKey,
+            })
+            event.preventDefault()
+            return
+          }
+
           const keyMap: EventKeyMap = {
             ArrowUp() {
               send({ type: "NUDGE_MOVE_CROP", key: "ArrowUp", src, shiftKey, ctrlKey, metaKey })
@@ -278,8 +303,6 @@ export function connect<T extends PropTypes>(
               send({ type: "NUDGE_MOVE_CROP", key: "ArrowRight", src, shiftKey, ctrlKey, metaKey })
             },
           }
-
-          const key = getEventKey(event, { dir: prop("dir") })
           const exec = keyMap[key]
 
           if (exec) {
@@ -292,99 +315,15 @@ export function connect<T extends PropTypes>(
 
     getHandleProps(props) {
       const handlePosition = props.position
-      const crop = context.get("crop")
-      const viewportRect = context.get("viewportRect")
       const disabled = !!prop("fixedCropArea")
-
-      const hasLeft = handlePosition.includes("left")
-      const hasRight = handlePosition.includes("right")
-      const hasTop = handlePosition.includes("top")
-      const hasBottom = handlePosition.includes("bottom")
-      const isCorner = (hasLeft || hasRight) && (hasTop || hasBottom)
-      const isHorizontalHandle = !isCorner && (hasLeft || hasRight)
-      const isVerticalHandle = !isCorner && (hasTop || hasBottom)
-
-      const minWidthProp = Math.max(0, prop("minWidth") ?? 0)
-      const minHeightProp = Math.max(0, prop("minHeight") ?? 0)
-      const maxWidthProp = prop("maxWidth")
-      const maxHeightProp = prop("maxHeight")
-
-      const viewportWidth = viewportRect.width > 0 ? viewportRect.width : undefined
-      const viewportHeight = viewportRect.height > 0 ? viewportRect.height : undefined
-
-      const minWidth = viewportWidth ? Math.min(minWidthProp, viewportWidth) : minWidthProp
-      const minHeight = viewportHeight ? Math.min(minHeightProp, viewportHeight) : minHeightProp
-
-      const resolvedMaxWidth = (() => {
-        if (viewportWidth) {
-          if (Number.isFinite(maxWidthProp)) return Math.min(maxWidthProp, viewportWidth)
-          return viewportWidth
-        }
-        if (Number.isFinite(maxWidthProp)) return maxWidthProp
-        return Math.max(minWidth, crop.width)
-      })()
-
-      const resolvedMaxHeight = (() => {
-        if (viewportHeight) {
-          if (Number.isFinite(maxHeightProp)) return Math.min(maxHeightProp, viewportHeight)
-          return viewportHeight
-        }
-        if (Number.isFinite(maxHeightProp)) return maxHeightProp
-        return Math.max(minHeight, crop.height)
-      })()
-
-      const maxWidth = Math.max(minWidth, resolvedMaxWidth)
-      const maxHeight = Math.max(minHeight, resolvedMaxHeight)
-
-      const roundedWidth = Math.round(crop.width)
-      const roundedHeight = Math.round(crop.height)
-
-      const selectionId = dom.getSelectionId(scope)
-
-      const aria: {
-        orientation?: "horizontal" | "vertical"
-        valueNow?: number
-        valueMin?: number
-        valueMax?: number
-        valueText?: string
-        roleDescription?: string
-      } = {}
-
-      if (isCorner) {
-        aria.valueNow = roundedWidth
-        aria.valueMin = Math.round(minWidth)
-        aria.valueMax = Math.round(maxWidth)
-        aria.valueText = `Width ${roundedWidth}px, Height ${roundedHeight}px`
-        aria.roleDescription = "2d slider"
-      } else if (isHorizontalHandle) {
-        aria.orientation = "horizontal"
-        aria.valueNow = roundedWidth
-        aria.valueMin = Math.round(minWidth)
-        aria.valueMax = Math.round(maxWidth)
-        aria.valueText = `Width ${roundedWidth}px`
-      } else if (isVerticalHandle) {
-        aria.orientation = "vertical"
-        aria.valueNow = roundedHeight
-        aria.valueMin = Math.round(minHeight)
-        aria.valueMax = Math.round(maxHeight)
-        aria.valueText = `Height ${roundedHeight}px`
-      }
 
       return normalize.element({
         ...parts.handle.attrs,
         id: dom.getHandleId(scope, handlePosition),
         "data-position": handlePosition,
-        tabIndex: disabled ? undefined : 0,
-        role: "slider",
-        "aria-label": `Resize handle for ${handlePosition} ${isCorner ? "corner" : "edge"}`,
-        "aria-controls": selectionId,
-        "aria-disabled": disabled ? "true" : undefined,
-        "aria-roledescription": aria.roleDescription,
-        "aria-orientation": aria.orientation,
-        "aria-valuemin": aria.valueMin,
-        "aria-valuemax": aria.valueMax,
-        "aria-valuenow": aria.valueNow,
-        "aria-valuetext": aria.valueText,
+        "aria-hidden": "true",
+        role: "presentation",
+        tabIndex: undefined,
         "data-disabled": dataAttr(disabled),
         onPointerDown(event) {
           if (disabled) {
@@ -395,37 +334,6 @@ export function connect<T extends PropTypes>(
           const point = getEventPoint(event)
 
           send({ type: "POINTER_DOWN", point, handlePosition })
-        },
-        onKeyDown(event) {
-          if (disabled) {
-            event.preventDefault()
-            return
-          }
-          if (event.defaultPrevented) return
-          const src = "handle"
-          const { shiftKey, ctrlKey, metaKey } = event
-          const keyMap: EventKeyMap = {
-            ArrowUp() {
-              send({ type: "NUDGE_RESIZE_CROP", handlePosition, key: "ArrowUp", src, shiftKey, ctrlKey, metaKey })
-            },
-            ArrowDown() {
-              send({ type: "NUDGE_RESIZE_CROP", handlePosition, key: "ArrowDown", src, shiftKey, ctrlKey, metaKey })
-            },
-            ArrowLeft() {
-              send({ type: "NUDGE_RESIZE_CROP", handlePosition, key: "ArrowLeft", src, shiftKey, ctrlKey, metaKey })
-            },
-            ArrowRight() {
-              send({ type: "NUDGE_RESIZE_CROP", handlePosition, key: "ArrowRight", src, shiftKey, ctrlKey, metaKey })
-            },
-          }
-
-          const key = getEventKey(event, { dir: prop("dir") })
-          const exec = keyMap[key]
-
-          if (exec) {
-            exec(event)
-            event.preventDefault()
-          }
         },
       })
     },

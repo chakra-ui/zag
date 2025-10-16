@@ -201,16 +201,19 @@ export class ImageCropperModel extends Model {
     })
   }
 
-  async focusHandle(position: string) {
-    const handle = this.getHandle(position)
-    await handle.focus()
+  async focusSelection() {
+    await this.selection.focus()
   }
 
-  async pressKeyWithModifiers(key: string, options?: { shift?: boolean; ctrl?: boolean; meta?: boolean }) {
+  async pressKeyWithModifiers(
+    key: string,
+    options?: { shift?: boolean; ctrl?: boolean; meta?: boolean; alt?: boolean },
+  ) {
     const modifiers: string[] = []
     if (options?.shift) modifiers.push("Shift")
     if (options?.ctrl) modifiers.push("Control")
     if (options?.meta) modifiers.push("Meta")
+    if (options?.alt) modifiers.push("Alt")
 
     for (const mod of modifiers) {
       await this.page.keyboard.down(mod)
