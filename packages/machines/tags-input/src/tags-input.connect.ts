@@ -119,6 +119,7 @@ export function connect<T extends PropTypes>(
         "data-invalid": dataAttr(invalid),
         "aria-invalid": ariaAttr(invalid),
         "data-readonly": dataAttr(readOnly),
+        "data-empty": dataAttr(empty),
         maxLength: prop("maxLength"),
         id: dom.getInputId(scope),
         defaultValue: context.get("inputValue"),
