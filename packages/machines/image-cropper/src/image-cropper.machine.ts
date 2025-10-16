@@ -31,6 +31,30 @@ export const machine = createMachine<ImageCropperSchema>({
       nudgeStepShift: 10,
       nudgeStepCtrl: 50,
       ...props,
+      translations: {
+        rootLabel: "Image cropper",
+        rootRoleDescription: "Image cropper",
+        previewLoading: "Image cropper preview loading",
+        previewDescription({ crop, zoom, rotation }) {
+          const zoomText = zoom != null && Number.isFinite(zoom) ? `${zoom.toFixed(2)}x zoom` : "default zoom"
+          const rotationText =
+            rotation != null && Number.isFinite(rotation)
+              ? `${Math.round(rotation)} degrees rotation`
+              : "0 degrees rotation"
+          return `Image cropper preview, ${zoomText}, ${rotationText}. Crop positioned at ${crop.x}px from the left and ${crop.y}px from the top with a size of ${crop.width}px by ${crop.height}px.`
+        },
+        selectionLabel: ({ shape }) => `Crop selection area (${shape === "circle" ? "circle" : "rectangle"})`,
+        selectionRoleDescription: "2d slider",
+        selectionInstructions:
+          "Use arrow keys to move the crop. Hold Alt with arrow keys to resize width or height. Press plus or minus to zoom.",
+        selectionValueText({ shape, x, y, width, height }) {
+          if (shape === "circle") {
+            return `Position X ${x}px, Y ${y}px. Diameter ${width}px.`
+          }
+          return `Position X ${x}px, Y ${y}px. Size ${width}px by ${height}px.`
+        },
+        ...props.translations,
+      },
     }
   },
 

@@ -19,6 +19,38 @@ export interface RotationChangeDetails {
   rotation: number
 }
 
+export interface CropMetrics {
+  x: number
+  y: number
+  width: number
+  height: number
+}
+
+export interface PreviewDescriptionDetails {
+  zoom: number | null
+  rotation: number | null
+  crop: CropMetrics
+}
+
+export interface SelectionLabelDetails {
+  shape: "rectangle" | "circle"
+}
+
+export interface SelectionValueTextDetails extends CropMetrics {
+  shape: "rectangle" | "circle"
+}
+
+export interface IntlTranslations {
+  rootLabel: string
+  rootRoleDescription: string
+  previewLoading: string
+  previewDescription: (details: PreviewDescriptionDetails) => string
+  selectionLabel: (details: SelectionLabelDetails) => string
+  selectionRoleDescription: string
+  selectionInstructions: string
+  selectionValueText: (details: SelectionValueTextDetails) => string
+}
+
 export type ElementIds = Partial<{
   root: string
   viewport: string
@@ -31,6 +63,10 @@ export interface ImageCropperProps extends DirectionProperty, CommonProperties {
    * The ids of the image cropper elements
    */
   ids?: ElementIds
+  /**
+   * Specifies the localized strings that identify accessibility elements and their states.
+   */
+  translations?: IntlTranslations
   /**
    * The initial rectangle of the crop area.
    * If not provided, a smart default will be computed based on viewport size and aspect ratio.
@@ -151,6 +187,7 @@ type PropsWithDefault =
   | "nudgeStep"
   | "nudgeStepShift"
   | "nudgeStepCtrl"
+  | "translations"
 
 export interface ImageCropperSchema {
   state: "idle" | "dragging" | "panning"

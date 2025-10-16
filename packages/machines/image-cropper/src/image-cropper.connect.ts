@@ -10,6 +10,7 @@ export function connect<T extends PropTypes>(
   normalize: NormalizeProps<T>,
 ): ImageCropperApi<T> {
   const { scope, send, context, prop, state } = service
+  const translations = prop("translations")
 
   const shouldIgnoreTouchPointer = (event: { pointerType?: string; isPrimary?: boolean }) => {
     if (event.pointerType !== "touch") return false
@@ -38,8 +39,6 @@ export function connect<T extends PropTypes>(
       const isImageReady = naturalSize.width > 0 && naturalSize.height > 0
       const isDragging = state.matches("dragging")
       const isPanning = state.matches("panning")
-      const zoomValue = Number.isFinite(zoom) ? String(zoom) : undefined
-      const rotationValue = Number.isFinite(rotation) ? String(rotation) : undefined
       const rootId = dom.getRootId(scope)
       const viewportId = dom.getViewportId(scope)
       const selectionId = dom.getSelectionId(scope)
@@ -47,33 +46,31 @@ export function connect<T extends PropTypes>(
       const roundedY = Math.round(crop.y)
       const roundedWidth = Math.round(crop.width)
       const roundedHeight = Math.round(crop.height)
-      const zoomLabel = Number.isFinite(zoom) ? `${zoom.toFixed(2)}x zoom` : "default zoom"
-      const rotationLabel = Number.isFinite(rotation)
-        ? `${Math.round(rotation)} degrees rotation`
-        : "0 degrees rotation"
+      const cropMetrics = { x: roundedX, y: roundedY, width: roundedWidth, height: roundedHeight }
       const previewDescription = isImageReady
-        ? `Image cropper preview, ${zoomLabel}, ${rotationLabel}. Crop positioned at ${roundedX}px from the left and ${roundedY}px from the top with a size of ${roundedWidth}px by ${roundedHeight}px.`
-        : "Image cropper preview loading"
+        ? translations.previewDescription({
+            crop: cropMetrics,
+            zoom: Number.isFinite(zoom) ? zoom : null,
+            rotation: Number.isFinite(rotation) ? rotation : null,
+          })
+        : translations.previewLoading
 
       return normalize.element({
         ...parts.root.attrs,
         id: rootId,
         dir: prop("dir"),
         role: "group",
-        "aria-roledescription": "Image cropper",
-        "aria-label": "Image cropper",
+        "aria-roledescription": translations.rootRoleDescription,
+        "aria-label": translations.rootLabel,
         "aria-description": previewDescription,
         "aria-live": "polite",
         "aria-controls": `${viewportId} ${selectionId}`,
         "aria-busy": isImageReady ? undefined : "true",
-        "data-ready": dataAttr(isImageReady),
         "data-fixed": dataAttr(fixedCropArea),
         "data-shape": cropShape,
         "data-pinch": dataAttr(pinchActive),
         "data-dragging": dataAttr(isDragging),
         "data-panning": dataAttr(isPanning),
-        "data-zoom": zoomValue,
-        "data-rotation": rotationValue,
         style: {
           "--crop-width": toPx(crop.width),
           "--crop-height": toPx(crop.height),
@@ -85,12 +82,6 @@ export function connect<T extends PropTypes>(
 
     getViewportProps() {
       const fixedCropArea = prop("fixedCropArea")
-      const zoom = context.get("zoom")
-      const rotation = context.get("rotation")
-      const naturalSize = context.get("naturalSize")
-      const isImageReady = naturalSize.width > 0 && naturalSize.height > 0
-      const zoomValue = Number.isFinite(zoom) ? String(zoom) : undefined
-      const rotationValue = Number.isFinite(rotation) ? String(rotation) : undefined
       const viewportId = dom.getViewportId(scope)
 
       return normalize.element({
@@ -98,10 +89,7 @@ export function connect<T extends PropTypes>(
         id: viewportId,
         role: "presentation",
         "data-ownedby": dom.getRootId(scope),
-        "data-ready": dataAttr(isImageReady),
         "data-disabled": dataAttr(!!fixedCropArea),
-        "data-zoom": zoomValue,
-        "data-rotation": rotationValue,
         onPointerDown(event) {
           if (event.pointerType === "mouse" && event.button !== 0) return
 
@@ -212,27 +200,23 @@ export function connect<T extends PropTypes>(
       const hasViewportRect = viewportRect.width > 0 && viewportRect.height > 0
       const maxX = hasViewportRect ? Math.max(0, Math.round(viewportRect.width - crop.width)) : undefined
       const ariaValueMax = maxX != null ? maxX : Math.max(roundedX, 0)
-
-      const shapeLabel = cropShape === "circle" ? "circle" : "rectangle"
-      const ariaValueText =
-        cropShape === "circle"
-          ? `Position X ${roundedX}px, Y ${roundedY}px. Diameter ${roundedWidth}px.`
-          : `Position X ${roundedX}px, Y ${roundedY}px. Size ${roundedWidth}px by ${roundedHeight}px.`
+      const cropMetrics = { x: roundedX, y: roundedY, width: roundedWidth, height: roundedHeight }
+      const ariaValueText = translations.selectionValueText({ shape: cropShape, ...cropMetrics })
+      const selectionLabel = translations.selectionLabel({ shape: cropShape })
 
       return normalize.element({
         ...parts.selection.attrs,
         id: dom.getSelectionId(scope),
         tabIndex: disabled ? undefined : 0,
         role: "slider",
-        "aria-label": `Crop selection area (${shapeLabel})`,
-        "aria-roledescription": "2d slider",
+        "aria-label": selectionLabel,
+        "aria-roledescription": translations.selectionRoleDescription,
         "aria-disabled": disabled ? "true" : undefined,
         "aria-valuemin": 0,
         "aria-valuemax": ariaValueMax,
         "aria-valuenow": roundedX,
         "aria-valuetext": ariaValueText,
-        "aria-description":
-          "Use arrow keys to move the crop. Hold Alt with arrow keys to resize width or height. Press plus or minus to zoom.",
+        "aria-description": translations.selectionInstructions,
         "data-disabled": dataAttr(disabled),
         "data-shape": cropShape,
         style: {
