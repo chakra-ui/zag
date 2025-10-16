@@ -233,6 +233,10 @@ export interface ImageCropperApi<T extends PropTypes = PropTypes> {
    * Function to set the rotation of the image.
    */
   setRotation: (rotation: number) => void
+  /**
+   * Function to resize the crop area from a handle programmatically.
+   */
+  resize: (handlePosition: HandlePosition, delta: number) => void
 
   getRootProps: () => T["element"]
   getViewportProps: () => T["element"]

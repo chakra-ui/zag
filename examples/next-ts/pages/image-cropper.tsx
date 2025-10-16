@@ -11,6 +11,8 @@ export default function Page() {
   const controls = useControls(imageCropperControls)
   const [zoom, setZoom] = useState(1)
   const [rotation, setRotation] = useState(0)
+  const [selectedHandle, setSelectedHandle] = useState<imageCropper.HandlePosition>("right")
+  const [resizeStep, setResizeStep] = useState(10)
 
   const service = useMachine(imageCropper.machine, {
     id: useId(),
@@ -26,6 +28,12 @@ export default function Page() {
   })
 
   const api = imageCropper.connect(service, normalizeProps)
+
+  const applyResize = (direction: "grow" | "shrink") => {
+    const multiplier = direction === "grow" ? 1 : -1
+    const amount = resizeStep * multiplier
+    api.resize(selectedHandle, amount)
+  }
 
   return (
     <>
@@ -66,6 +74,41 @@ export default function Page() {
             onChange={(e) => api.setRotation(Number(e.currentTarget.value))}
           />
         </label>
+        <div className="resize-controls">
+          <label>
+            Resize handle:
+            <select
+              value={selectedHandle}
+              onChange={(event) => setSelectedHandle(event.currentTarget.value as imageCropper.HandlePosition)}
+            >
+              {handlePositions.map((position) => (
+                <option key={position} value={position}>
+                  {position}
+                </option>
+              ))}
+            </select>
+          </label>
+          <label>
+            Resize step (px):
+            <input
+              type="number"
+              min={1}
+              value={resizeStep}
+              onChange={(event) => {
+                const value = Number(event.currentTarget.value)
+                setResizeStep(Number.isFinite(value) && value > 0 ? value : 1)
+              }}
+            />
+          </label>
+          <div className="resize-buttons">
+            <button type="button" onClick={() => applyResize("grow")}>
+              Grow selection
+            </button>
+            <button type="button" onClick={() => applyResize("shrink")}>
+              Shrink selection
+            </button>
+          </div>
+        </div>
       </main>
 
       <Toolbar controls={controls.ui}>

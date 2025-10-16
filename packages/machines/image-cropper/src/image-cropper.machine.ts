@@ -12,6 +12,22 @@ import {
 } from "./image-cropper.utils"
 import { clampValue } from "@zag-js/utils"
 
+const resolveResizeDelta = (handlePosition: HandlePosition, delta: { x: number; y: number } | undefined) => {
+  if (!delta) return null
+
+  const xDirection = handlePosition.includes("left") || handlePosition.includes("right")
+  const yDirection = handlePosition.includes("top") || handlePosition.includes("bottom")
+
+  const resolved = {
+    x: xDirection ? (delta.x ?? 0) : 0,
+    y: yDirection ? (delta.y ?? 0) : 0,
+  }
+
+  if (resolved.x === 0 && resolved.y === 0) return null
+
+  return resolved
+}
+
 export const machine = createMachine<ImageCropperSchema>({
   props({ props }) {
     return {
@@ -137,6 +153,10 @@ export const machine = createMachine<ImageCropperSchema>({
     SET_ROTATION: {
       actions: ["setRotation"],
     },
+    RESIZE_CROP: {
+      guard: "canResizeCrop",
+      actions: ["resizeCrop"],
+    },
   },
 
   states: {
@@ -210,6 +230,11 @@ export const machine = createMachine<ImageCropperSchema>({
   implementations: {
     guards: {
       hasViewportRect({ context }) {
+        const viewportRect = context.get("viewportRect")
+        return viewportRect.width > 0 && viewportRect.height > 0
+      },
+      canResizeCrop({ context, prop }) {
+        if (prop("fixedCropArea")) return false
         const viewportRect = context.get("viewportRect")
         return viewportRect.width > 0 && viewportRect.height > 0
       },
@@ -467,6 +492,38 @@ export const machine = createMachine<ImageCropperSchema>({
         const rotation = event.rotation
         const nextRotation = clampValue(rotation, 0, 360)
         context.set("rotation", nextRotation)
+      },
+      resizeCrop({ context, event, prop }) {
+        const { handlePosition, delta } = event
+        if (!handlePosition) return
+
+        const resolvedDelta = resolveResizeDelta(handlePosition, delta)
+        if (!resolvedDelta) return
+
+        const viewportRect = context.get("viewportRect")
+        if (viewportRect.width <= 0 || viewportRect.height <= 0) return
+
+        const minSize = { width: prop("minWidth"), height: prop("minHeight") }
+        const maxSize = { width: prop("maxWidth"), height: prop("maxHeight") }
+
+        const cropShape = prop("cropShape")
+        let aspectRatio = prop("aspectRatio")
+        if (cropShape === "circle") {
+          aspectRatio = 1
+        }
+
+        const crop = context.get("crop")
+        const nextCrop = computeResizeCrop({
+          cropStart: crop,
+          handlePosition,
+          delta: resolvedDelta,
+          viewportRect,
+          minSize,
+          maxSize,
+          aspectRatio,
+        })
+
+        context.set("crop", nextCrop)
       },
 
       clearPointerStart({ context }) {

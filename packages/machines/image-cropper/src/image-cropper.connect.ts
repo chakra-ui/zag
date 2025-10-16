@@ -1,9 +1,29 @@
 import type { EventKeyMap, NormalizeProps, PropTypes } from "@zag-js/types"
 import { parts } from "./image-cropper.anatomy"
 import * as dom from "./image-cropper.dom"
-import type { ImageCropperApi, ImageCropperService } from "./image-cropper.types"
+import type { HandlePosition, ImageCropperApi, ImageCropperService } from "./image-cropper.types"
 import { getEventPoint, contains, getEventKey, dataAttr } from "@zag-js/dom-query"
 import { toPx } from "@zag-js/utils"
+
+const normalizeResizeDelta = (handlePosition: HandlePosition, delta: number) => {
+  if (delta === 0) return null
+
+  const xDirection = handlePosition.includes("left") ? -1 : handlePosition.includes("right") ? 1 : 0
+  const yDirection = handlePosition.includes("top") ? -1 : handlePosition.includes("bottom") ? 1 : 0
+
+  if (xDirection === 0 && yDirection === 0) {
+    return null
+  }
+
+  const resolved = {
+    x: xDirection * delta,
+    y: yDirection * delta,
+  }
+
+  if (resolved.x === 0 && resolved.y === 0) return null
+
+  return resolved
+}
 
 export function connect<T extends PropTypes>(
   service: ImageCropperService,
@@ -26,6 +46,16 @@ export function connect<T extends PropTypes>(
 
     setRotation(rotation) {
       send({ type: "SET_ROTATION", rotation })
+    },
+
+    resize(handlePosition, delta) {
+      if (!handlePosition) return
+      if (prop("fixedCropArea")) return
+
+      const normalizedDelta = normalizeResizeDelta(handlePosition, delta)
+      if (!normalizedDelta) return
+
+      send({ type: "RESIZE_CROP", handlePosition, delta: normalizedDelta })
     },
 
     getRootProps() {
