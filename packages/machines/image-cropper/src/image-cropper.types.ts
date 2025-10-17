@@ -19,6 +19,15 @@ export interface RotationChangeDetails {
   rotation: number
 }
 
+export interface FlipState {
+  horizontal: boolean
+  vertical: boolean
+}
+
+export interface FlipChangeDetails {
+  flip: FlipState
+}
+
 export interface CropMetrics {
   x: number
   y: number
@@ -112,6 +121,10 @@ export interface ImageCropperProps extends DirectionProperty, CommonProperties {
    */
   rotation?: number
   /**
+   * The controlled flip state of the image.
+   */
+  flip?: FlipState
+  /**
    * The initial zoom factor to apply to the image.
    * @default 1
    */
@@ -121,6 +134,11 @@ export interface ImageCropperProps extends DirectionProperty, CommonProperties {
    * @default 0
    */
   defaultRotation?: number
+  /**
+   * The initial flip state to apply to the image.
+   * @default { horizontal: false, vertical: false }
+   */
+  defaultFlip?: FlipState
   /**
    * The amount of zoom applied per wheel step.
    * @default 0.1
@@ -165,6 +183,10 @@ export interface ImageCropperProps extends DirectionProperty, CommonProperties {
    */
   onRotationChange?: ((details: RotationChangeDetails) => void) | undefined
   /**
+   * Callback fired when the flip state changes.
+   */
+  onFlipChange?: ((details: FlipChangeDetails) => void) | undefined
+  /**
    * Whether the crop area is fixed in size and position.
    * @default false
    */
@@ -176,6 +198,7 @@ type PropsWithDefault =
   | "minHeight"
   | "defaultZoom"
   | "defaultRotation"
+  | "defaultFlip"
   | "zoomStep"
   | "zoomSensitivity"
   | "minZoom"
@@ -203,6 +226,7 @@ export interface ImageCropperSchema {
     pinchMidpoint: Point | null
     zoom: number
     rotation: number
+    flip: FlipState
     offset: Point
     offsetStart: Point | null
     viewportRect: { width: number; height: number; top: number; left: number; right: number; bottom: number }
@@ -233,6 +257,18 @@ export interface ImageCropperApi<T extends PropTypes = PropTypes> {
    * Function to set the rotation of the image.
    */
   setRotation: (rotation: number) => void
+  /**
+   * Function to set the flip state of the image.
+   */
+  setFlip: (flip: Partial<FlipState>) => void
+  /**
+   * Function to flip the image horizontally. Pass a boolean to set explicitly or omit to toggle.
+   */
+  flipHorizontally: (value?: boolean) => void
+  /**
+   * Function to flip the image vertically. Pass a boolean to set explicitly or omit to toggle.
+   */
+  flipVertically: (value?: boolean) => void
   /**
    * Function to resize the crop area from a handle programmatically.
    */

@@ -1,6 +1,6 @@
 import { createMachine } from "@zag-js/core"
 import * as dom from "./image-cropper.dom"
-import type { HandlePosition, ImageCropperProps, ImageCropperSchema } from "./image-cropper.types"
+import type { FlipState, HandlePosition, ImageCropperProps, ImageCropperSchema } from "./image-cropper.types"
 import type { Point, Rect, Size } from "@zag-js/types"
 import { addDomEvent, getEventPoint, getEventTarget } from "@zag-js/dom-query"
 import {
@@ -107,6 +107,7 @@ export const machine = createMachine<ImageCropperSchema>({
       minZoom: 1,
       maxZoom: 5,
       defaultRotation: 0,
+      defaultFlip: { horizontal: false, vertical: false },
       fixedCropArea: false,
       cropShape: "rectangle",
       nudgeStep: 1,
@@ -180,6 +181,16 @@ export const machine = createMachine<ImageCropperSchema>({
           prop("onRotationChange")?.({ rotation })
         },
       })),
+      flip: bindable<FlipState>(() => {
+        const defaultFlip = prop("defaultFlip")
+        return {
+          defaultValue: { ...defaultFlip },
+          value: prop("flip"),
+          onChange(flip) {
+            prop("onFlipChange")?.({ flip })
+          },
+        }
+      }),
       offset: bindable<Point>(() => ({
         defaultValue: { x: 0, y: 0 },
       })),
@@ -218,6 +229,9 @@ export const machine = createMachine<ImageCropperSchema>({
     },
     SET_ROTATION: {
       actions: ["setRotation"],
+    },
+    SET_FLIP: {
+      actions: ["setFlip"],
     },
     RESIZE_CROP: {
       guard: "canResizeCrop",
@@ -508,6 +522,17 @@ export const machine = createMachine<ImageCropperSchema>({
         const rotation = event.rotation
         const nextRotation = clampValue(rotation, 0, 360)
         context.set("rotation", nextRotation)
+      },
+      setFlip({ context, event }) {
+        const nextFlip = event.flip as Partial<FlipState> | undefined
+        if (!nextFlip) return
+        const currentFlip = context.get("flip")
+        const normalized: FlipState = {
+          horizontal: typeof nextFlip.horizontal === "boolean" ? nextFlip.horizontal : currentFlip.horizontal,
+          vertical: typeof nextFlip.vertical === "boolean" ? nextFlip.vertical : currentFlip.vertical,
+        }
+        if (normalized.horizontal === currentFlip.horizontal && normalized.vertical === currentFlip.vertical) return
+        context.set("flip", normalized)
       },
       resizeCrop({ context, event, prop }) {
         const { handlePosition, delta } = event

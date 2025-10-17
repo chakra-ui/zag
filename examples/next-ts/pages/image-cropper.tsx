@@ -11,6 +11,7 @@ export default function Page() {
   const controls = useControls(imageCropperControls)
   const [zoom, setZoom] = useState(1)
   const [rotation, setRotation] = useState(0)
+  const [flip, setFlip] = useState<imageCropper.FlipState>({ horizontal: false, vertical: false })
   const [selectedHandle, setSelectedHandle] = useState<imageCropper.HandlePosition>("right")
   const [resizeStep, setResizeStep] = useState(10)
 
@@ -23,6 +24,10 @@ export default function Page() {
     rotation,
     onRotationChange(details) {
       setRotation(details.rotation)
+    },
+    flip,
+    onFlipChange(details) {
+      setFlip(details.flip)
     },
     ...controls.context,
   })
@@ -74,6 +79,36 @@ export default function Page() {
             onChange={(e) => api.setRotation(Number(e.currentTarget.value))}
           />
         </label>
+        <fieldset className="flip-controls">
+          <legend>Flip</legend>
+          <label>
+            <input
+              type="checkbox"
+              checked={flip.horizontal}
+              onChange={(event) => api.flipHorizontally(event.currentTarget.checked)}
+            />
+            Horizontal
+          </label>
+          <label>
+            <input
+              type="checkbox"
+              checked={flip.vertical}
+              onChange={(event) => api.flipVertically(event.currentTarget.checked)}
+            />
+            Vertical
+          </label>
+          <div className="flip-buttons">
+            <button type="button" onClick={() => api.flipHorizontally()}>
+              Toggle horizontal flip
+            </button>
+            <button type="button" onClick={() => api.flipVertically()}>
+              Toggle vertical flip
+            </button>
+            <button type="button" onClick={() => api.setFlip({ horizontal: false, vertical: false })}>
+              Reset flips
+            </button>
+          </div>
+        </fieldset>
         <div className="resize-controls">
           <label>
             Resize handle:
@@ -112,7 +147,7 @@ export default function Page() {
       </main>
 
       <Toolbar controls={controls.ui}>
-        <StateVisualizer state={service} context={["naturalSize", "crop", "zoom", "rotation", "offset"]} />
+        <StateVisualizer state={service} context={["naturalSize", "crop", "zoom", "rotation", "flip", "offset"]} />
       </Toolbar>
     </>
   )

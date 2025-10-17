@@ -1,7 +1,7 @@
 import type { EventKeyMap, NormalizeProps, PropTypes, Rect } from "@zag-js/types"
 import { parts } from "./image-cropper.anatomy"
 import * as dom from "./image-cropper.dom"
-import type { HandlePosition, ImageCropperApi, ImageCropperService } from "./image-cropper.types"
+import type { FlipState, HandlePosition, ImageCropperApi, ImageCropperService } from "./image-cropper.types"
 import { getEventPoint, contains, getEventKey, dataAttr } from "@zag-js/dom-query"
 import { toPx } from "@zag-js/utils"
 
@@ -55,6 +55,31 @@ export function connect<T extends PropTypes>(
 
     setRotation(rotation) {
       send({ type: "SET_ROTATION", rotation })
+    },
+
+    setFlip(nextFlip) {
+      if (!nextFlip) return
+      const currentFlip = context.get("flip")
+      const normalized: FlipState = {
+        horizontal: typeof nextFlip.horizontal === "boolean" ? nextFlip.horizontal : currentFlip.horizontal,
+        vertical: typeof nextFlip.vertical === "boolean" ? nextFlip.vertical : currentFlip.vertical,
+      }
+      if (normalized.horizontal === currentFlip.horizontal && normalized.vertical === currentFlip.vertical) return
+      send({ type: "SET_FLIP", flip: normalized })
+    },
+
+    flipHorizontally(value) {
+      const currentFlip = context.get("flip")
+      const nextValue = typeof value === "boolean" ? value : !currentFlip.horizontal
+      if (nextValue === currentFlip.horizontal) return
+      send({ type: "SET_FLIP", flip: { horizontal: nextValue } })
+    },
+
+    flipVertically(value) {
+      const currentFlip = context.get("flip")
+      const nextValue = typeof value === "boolean" ? value : !currentFlip.vertical
+      if (nextValue === currentFlip.vertical) return
+      send({ type: "SET_FLIP", flip: { vertical: nextValue } })
     },
 
     resize(handlePosition, delta) {
@@ -189,14 +214,19 @@ export function connect<T extends PropTypes>(
       const zoom = context.get("zoom")
       const offset = context.get("offset")
       const rotation = context.get("rotation")
+      const flip = context.get("flip")
       const naturalSize = context.get("naturalSize")
       const isImageReady = naturalSize.width > 0 && naturalSize.height > 0
       const zoomValue = toFiniteDataValue(zoom)
       const rotationValue = toFiniteDataValue(rotation)
+      const flipHorizontal = !!flip?.horizontal
+      const flipVertical = !!flip?.vertical
 
       const translate = `translate(${toPx(offset.x)}, ${toPx(offset.y)})`
       const rotate = `rotate(${rotation}deg)`
-      const scale = `scale(${zoom})`
+      const scaleX = zoom * (flipHorizontal ? -1 : 1)
+      const scaleY = zoom * (flipVertical ? -1 : 1)
+      const scale = `scale(${scaleX}, ${scaleY})`
 
       return normalize.element({
         ...parts.image.attrs,
@@ -209,6 +239,8 @@ export function connect<T extends PropTypes>(
         "data-ready": dataAttr(isImageReady),
         "data-zoom": zoomValue,
         "data-rotation": rotationValue,
+        "data-flip-horizontal": dataAttr(flipHorizontal),
+        "data-flip-vertical": dataAttr(flipVertical),
         onLoad(event) {
           const imageEl = event.currentTarget as HTMLImageElement
           if (!imageEl?.complete) return

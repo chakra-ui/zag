@@ -116,6 +116,54 @@ test.describe("image-cropper / resizable", () => {
     expect(rotation).toBe(45)
   })
 
+  test("[flip] should set flips via checkboxes", async () => {
+    let flipState = await I.getFlipState()
+    expect(flipState.horizontal).toBe(false)
+    expect(flipState.vertical).toBe(false)
+
+    await I.setFlipCheckbox("horizontal", true)
+    await I.setFlipCheckbox("vertical", true)
+
+    flipState = await I.getFlipState()
+    expect(flipState.horizontal).toBe(true)
+    expect(flipState.vertical).toBe(true)
+    await expect(I.flipHorizontalCheckbox).toBeChecked()
+    await expect(I.flipVerticalCheckbox).toBeChecked()
+
+    await I.setFlipCheckbox("horizontal", false)
+    await I.setFlipCheckbox("vertical", false)
+
+    flipState = await I.getFlipState()
+    expect(flipState.horizontal).toBe(false)
+    expect(flipState.vertical).toBe(false)
+    await expect(I.flipHorizontalCheckbox).not.toBeChecked()
+    await expect(I.flipVerticalCheckbox).not.toBeChecked()
+  })
+
+  test("[flip] should toggle and reset flips with actions", async () => {
+    await I.toggleFlip("horizontal")
+    let flipState = await I.getFlipState()
+    expect(flipState.horizontal).toBe(true)
+    await expect(I.flipHorizontalCheckbox).toBeChecked()
+
+    await I.toggleFlip("horizontal")
+    flipState = await I.getFlipState()
+    expect(flipState.horizontal).toBe(false)
+    await expect(I.flipHorizontalCheckbox).not.toBeChecked()
+
+    await I.toggleFlip("vertical")
+    flipState = await I.getFlipState()
+    expect(flipState.vertical).toBe(true)
+    await expect(I.flipVerticalCheckbox).toBeChecked()
+
+    await I.resetFlip()
+    flipState = await I.getFlipState()
+    expect(flipState.horizontal).toBe(false)
+    expect(flipState.vertical).toBe(false)
+    await expect(I.flipHorizontalCheckbox).not.toBeChecked()
+    await expect(I.flipVerticalCheckbox).not.toBeChecked()
+  })
+
   test("[keyboard + pointer] should lock aspect ratio with shift key during resize", async () => {
     const initialRect = await I.getSelectionRect()
     const initialAspectRatio = initialRect.width / initialRect.height

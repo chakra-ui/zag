@@ -39,6 +39,26 @@ export class ImageCropperModel extends Model {
     return this.page.locator("input[type='range'][data-testid='rotation-slider']")
   }
 
+  get flipHorizontalCheckbox() {
+    return this.page.getByLabel("Horizontal")
+  }
+
+  get flipVerticalCheckbox() {
+    return this.page.getByLabel("Vertical")
+  }
+
+  get toggleHorizontalFlipButton() {
+    return this.page.getByRole("button", { name: "Toggle horizontal flip" })
+  }
+
+  get toggleVerticalFlipButton() {
+    return this.page.getByRole("button", { name: "Toggle vertical flip" })
+  }
+
+  get resetFlipButton() {
+    return this.page.getByRole("button", { name: "Reset flips" })
+  }
+
   getHandle(position: string) {
     return this.page.locator(`[data-scope='image-cropper'][data-part='handle'][data-position='${position}']`)
   }
@@ -104,6 +124,13 @@ export class ImageCropperModel extends Model {
     return { translateX: e, translateY: f }
   }
 
+  async getFlipState() {
+    return this.image.evaluate((el) => ({
+      horizontal: el.dataset.flipHorizontal === "true",
+      vertical: el.dataset.flipVertical === "true",
+    }))
+  }
+
   async dragSelection(deltaX: number, deltaY: number) {
     const selectionBox = await rect(this.selection)
     const startX = selectionBox.midX
@@ -161,6 +188,20 @@ export class ImageCropperModel extends Model {
       await this.page.mouse.move(startX + deltaX, startY + deltaY)
       await this.page.mouse.up()
     }
+  }
+
+  async setFlipCheckbox(axis: "horizontal" | "vertical", checked: boolean) {
+    const checkbox = axis === "horizontal" ? this.flipHorizontalCheckbox : this.flipVerticalCheckbox
+    await checkbox.setChecked(checked)
+  }
+
+  async toggleFlip(axis: "horizontal" | "vertical") {
+    const button = axis === "horizontal" ? this.toggleHorizontalFlipButton : this.toggleVerticalFlipButton
+    await button.click()
+  }
+
+  async resetFlip() {
+    await this.resetFlipButton.click()
   }
 
   async zoomWithWheel(deltaY: number, point?: { x: number; y: number }) {
