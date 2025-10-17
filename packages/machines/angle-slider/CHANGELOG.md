@@ -1,5 +1,21 @@
 # @zag-js/angle-slider
 
+## 1.26.3
+
+### Patch Changes
+
+- [`4d237d6`](https://github.com/chakra-ui/zag/commit/4d237d64ee02ad0f7167dcf1d29cb93620020201) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix accessibility violation where the slider thumb element lacked
+  an accessible name. The thumb now supports `aria-label` and `aria-labelledby` props, and automatically falls back to
+  the label element's ID for proper ARIA labeling.
+- Updated dependencies []:
+  - @zag-js/anatomy@1.26.3
+  - @zag-js/core@1.26.3
+  - @zag-js/types@1.26.3
+  - @zag-js/utils@1.26.3
+  - @zag-js/dom-query@1.26.3
+  - @zag-js/rect-utils@1.26.3
+
 ## 1.26.2
 
 ### Patch Changes
