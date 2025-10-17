@@ -10,12 +10,19 @@ export interface OpenChangeDetails {
   open: boolean
 }
 
+export interface ActiveTriggerChangeDetails {
+  /**
+   * The value of the trigger that activated the tooltip
+   */
+  value: string | null
+}
+
 /* -----------------------------------------------------------------------------
  * Machine context
  * -----------------------------------------------------------------------------*/
 
 export type ElementIds = Partial<{
-  trigger: string
+  trigger: string | ((value?: string) => string)
   content: string
   arrow: string
   positioner: string
@@ -89,6 +96,19 @@ export interface TooltipProps extends DirectionProperty, CommonProperties {
    * Use when you don't need to control the open state of the tooltip.
    */
   defaultOpen?: boolean | undefined
+  /**
+   * The controlled active trigger value
+   */
+  activeTriggerValue?: string | null | undefined
+  /**
+   * The initial active trigger value when rendered.
+   * Use when you don't need to control the active trigger value.
+   */
+  defaultActiveTriggerValue?: string | null | undefined
+  /**
+   * Function to call when the active trigger changes
+   */
+  onActiveTriggerChange?: ((details: ActiveTriggerChangeDetails) => void) | undefined
 }
 
 type PropsWithDefault =
@@ -107,7 +127,8 @@ export interface TooltipSchema {
   props: RequiredBy<TooltipProps, PropsWithDefault>
   context: {
     currentPlacement: Placement | undefined
-    hasPointerMoveOpened: boolean
+    hasPointerMoveOpened: string | null
+    activeTriggerValue: string | null
   }
   event: EventObject
   action: string
@@ -118,6 +139,17 @@ export interface TooltipSchema {
 export type TooltipService = Service<TooltipSchema>
 
 export type TooltipMachine = Machine<TooltipSchema>
+
+/* -----------------------------------------------------------------------------
+ * Component props
+ * -----------------------------------------------------------------------------*/
+
+export interface TriggerProps {
+  /**
+   * The value that identifies this specific trigger
+   */
+  value?: string
+}
 
 /* -----------------------------------------------------------------------------
  * Component API
@@ -133,11 +165,19 @@ export interface TooltipApi<T extends PropTypes = PropTypes> {
    */
   setOpen: (open: boolean) => void
   /**
+   * The active trigger value
+   */
+  activeTriggerValue: string | null
+  /**
+   * Function to set the active trigger value
+   */
+  setActiveTriggerValue: (value: string | null) => void
+  /**
    * Function to reposition the popover
    */
   reposition: (options?: Partial<PositioningOptions>) => void
 
-  getTriggerProps: () => T["button"]
+  getTriggerProps: (props?: TriggerProps) => T["button"]
   getArrowProps: () => T["element"]
   getArrowTipProps: () => T["element"]
   getPositionerProps: () => T["element"]

@@ -9,5 +9,7 @@ export type {
   DialogProps as Props,
   ElementIds,
   OpenChangeDetails,
+  ActiveTriggerChangeDetails,
+  TriggerProps,
   DialogService as Service,
 } from "./dialog.types"

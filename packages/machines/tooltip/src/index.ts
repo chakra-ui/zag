@@ -6,6 +6,8 @@ export type {
   TooltipApi as Api,
   ElementIds,
   OpenChangeDetails,
+  ActiveTriggerChangeDetails,
+  TriggerProps,
   Placement,
   PositioningOptions,
   TooltipMachine as Machine,

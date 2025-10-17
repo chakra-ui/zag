@@ -2,6 +2,7 @@ import { createGuards, createMachine } from "@zag-js/core"
 import { addDomEvent, getOverflowAncestors, isComposingEvent } from "@zag-js/dom-query"
 import { trackFocusVisible as trackFocusVisibleFn } from "@zag-js/focus-visible"
 import { getPlacement } from "@zag-js/popper"
+import { ensureProps } from "@zag-js/utils"
 import * as dom from "./tooltip.dom"
 import { store } from "./tooltip.store"
 import type { Placement, TooltipSchema } from "./tooltip.types"
@@ -15,12 +16,11 @@ export const machine = createMachine<TooltipSchema>({
   },
 
   props({ props }) {
+    ensureProps(props, ["id"])
     // If consumer disables click-to-close, default pointerdown-to-close to follow it
     const closeOnClick = props.closeOnClick ?? true
     const closeOnPointerDown = props.closeOnPointerDown ?? closeOnClick
-
     return {
-      id: "x",
       openDelay: 400,
       closeDelay: 150,
       closeOnEscape: true,
@@ -39,9 +39,16 @@ export const machine = createMachine<TooltipSchema>({
 
   effects: ["trackFocusVisible", "trackStore"],
 
-  context: ({ bindable }) => ({
+  context: ({ bindable, prop }) => ({
     currentPlacement: bindable<Placement | undefined>(() => ({ defaultValue: undefined })),
-    hasPointerMoveOpened: bindable<boolean>(() => ({ defaultValue: false })),
+    hasPointerMoveOpened: bindable<string | null>(() => ({ defaultValue: null })),
+    activeTriggerValue: bindable<string | null>(() => ({
+      defaultValue: prop("defaultActiveTriggerValue") ?? null,
+      value: prop("activeTriggerValue"),
+      onChange(value) {
+        prop("onActiveTriggerChange")?.({ value })
+      },
+    })),
   }),
 
   watch({ track, action, prop }) {
@@ -52,6 +59,16 @@ export const machine = createMachine<TooltipSchema>({
     track([() => prop("open")], () => {
       action(["toggleVisibility"])
     })
+
+    track([() => prop("activeTriggerValue")], () => {
+      action(["reposition"])
+    })
+  },
+
+  on: {
+    "activeTrigger.set": {
+      actions: ["setActiveTrigger"],
+    },
   },
 
   states: {
@@ -78,11 +95,12 @@ export const machine = createMachine<TooltipSchema>({
           {
             guard: and("noVisibleTooltip", not("hasPointerMoveOpened")),
             target: "opening",
+            actions: ["setActiveTrigger"],
           },
           {
             guard: not("hasPointerMoveOpened"),
             target: "open",
-            actions: ["setPointerMoveOpened", "invokeOnOpen"],
+            actions: ["setPointerMoveOpened", "invokeOnOpen", "setActiveTrigger"],
           },
         ],
       },
@@ -218,11 +236,11 @@ export const machine = createMachine<TooltipSchema>({
           {
             guard: "isOpenControlled",
             // We trigger toggleVisibility manually since the `ctx.open` has not changed yet (at this point)
-            actions: ["setPointerMoveOpened", "invokeOnOpen", "toggleVisibility"],
+            actions: ["setPointerMoveOpened", "setActiveTrigger", "invokeOnOpen", "toggleVisibility"],
           },
           {
             target: "open",
-            actions: ["setPointerMoveOpened", "invokeOnOpen"],
+            actions: ["setPointerMoveOpened", "setActiveTrigger", "invokeOnOpen"],
           },
         ],
         "content.pointer.move": {
@@ -241,7 +259,7 @@ export const machine = createMachine<TooltipSchema>({
       noVisibleTooltip: () => store.get("id") === null,
       isVisible: ({ prop }) => prop("id") === store.get("id"),
       isInteractive: ({ prop }) => !!prop("interactive"),
-      hasPointerMoveOpened: ({ context }) => context.get("hasPointerMoveOpened"),
+      hasPointerMoveOpened: ({ context }) => !!context.get("hasPointerMoveOpened"),
       isOpenControlled: ({ prop }) => prop("open") !== undefined,
     },
 
@@ -272,7 +290,8 @@ export const machine = createMachine<TooltipSchema>({
       reposition: ({ context, event, prop, scope }) => {
         if (event.type !== "positioning.set") return
         const getPositionerEl = () => dom.getPositionerEl(scope)
-        return getPlacement(dom.getTriggerEl(scope), getPositionerEl, {
+        const getTriggerEl = () => dom.getActiveTriggerEl(scope, context.get("activeTriggerValue"))
+        return getPlacement(getTriggerEl, getPositionerEl, {
           ...prop("positioning"),
           ...event.options,
           defer: true,
@@ -292,12 +311,17 @@ export const machine = createMachine<TooltipSchema>({
         })
       },
 
-      setPointerMoveOpened: ({ context }) => {
-        context.set("hasPointerMoveOpened", true)
+      setPointerMoveOpened: ({ context, event }) => {
+        const triggerId = event.triggerId ?? event.previousEvent?.triggerId
+        context.set("hasPointerMoveOpened", triggerId ?? null)
       },
 
       clearPointerMoveOpened: ({ context }) => {
-        context.set("hasPointerMoveOpened", false)
+        context.set("hasPointerMoveOpened", null)
+      },
+
+      setActiveTrigger: ({ context, event }) => {
+        context.set("activeTriggerValue", event.value ?? null)
       },
     },
     effects: {
@@ -311,7 +335,8 @@ export const machine = createMachine<TooltipSchema>({
         }
 
         const getPositionerEl = () => dom.getPositionerEl(scope)
-        return getPlacement(dom.getTriggerEl(scope), getPositionerEl, {
+        const getTriggerEl = () => dom.getActiveTriggerEl(scope, context.get("activeTriggerValue"))
+        return getPlacement(getTriggerEl, getPositionerEl, {
           ...prop("positioning"),
           defer: true,
           onComplete(data) {
@@ -326,10 +351,11 @@ export const machine = createMachine<TooltipSchema>({
         return addDomEvent(doc, "pointerlockchange", onChange, false)
       },
 
-      trackScroll: ({ send, prop, scope }) => {
+      trackScroll: ({ send, prop, scope, context }) => {
         if (!prop("closeOnScroll")) return
 
-        const triggerEl = dom.getTriggerEl(scope)
+        const activeTriggerValue = context.get("activeTriggerValue")
+        const triggerEl = dom.getActiveTriggerEl(scope, activeTriggerValue)
         if (!triggerEl) return
 
         const overflowParents = getOverflowAncestors(triggerEl)
@@ -374,16 +400,16 @@ export const machine = createMachine<TooltipSchema>({
         return addDomEvent(document, "keydown", onKeyDown, true)
       },
 
-      waitForOpenDelay: ({ send, prop }) => {
+      waitForOpenDelay: ({ send, prop, event }) => {
         const id = setTimeout(() => {
-          send({ type: "after.openDelay" })
+          send({ type: "after.openDelay", previousEvent: event })
         }, prop("openDelay"))
         return () => clearTimeout(id)
       },
 
-      waitForCloseDelay: ({ send, prop }) => {
+      waitForCloseDelay: ({ send, prop, event }) => {
         const id = setTimeout(() => {
-          send({ type: "after.closeDelay" })
+          send({ type: "after.closeDelay", previousEvent: event })
         }, prop("closeDelay"))
         return () => clearTimeout(id)
       },
