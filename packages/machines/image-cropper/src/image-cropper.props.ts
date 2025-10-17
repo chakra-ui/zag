@@ -27,6 +27,7 @@ export const props = createProps<ImageCropperProps>()([
   "onZoomChange",
   "onRotationChange",
   "onFlipChange",
+  "onCropChange",
   "fixedCropArea",
   "nudgeStep",
   "nudgeStepShift",

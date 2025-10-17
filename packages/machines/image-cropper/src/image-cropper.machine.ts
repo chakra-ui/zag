@@ -148,6 +148,9 @@ export const machine = createMachine<ImageCropperSchema>({
       })),
       crop: bindable<Rect>(() => ({
         defaultValue: { x: 0, y: 0, width: 0, height: 0 },
+        onChange(crop) {
+          prop("onCropChange")?.({ crop })
+        },
       })),
       pointerStart: bindable<Point | null>(() => ({
         defaultValue: null,

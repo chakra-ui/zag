@@ -28,24 +28,21 @@ export interface FlipChangeDetails {
   flip: FlipState
 }
 
-export interface CropMetrics {
-  x: number
-  y: number
-  width: number
-  height: number
+export interface CropChangeDetails {
+  crop: Rect
 }
 
 export interface PreviewDescriptionDetails {
   zoom: number | null
   rotation: number | null
-  crop: CropMetrics
+  crop: Rect
 }
 
 export interface SelectionLabelDetails {
   shape: "rectangle" | "circle"
 }
 
-export interface SelectionValueTextDetails extends CropMetrics {
+export interface SelectionValueTextDetails extends Rect {
   shape: "rectangle" | "circle"
 }
 
@@ -187,6 +184,10 @@ export interface ImageCropperProps extends DirectionProperty, CommonProperties {
    * Callback fired when the flip state changes.
    */
   onFlipChange?: ((details: FlipChangeDetails) => void) | undefined
+  /**
+   * Callback fired when the crop area changes.
+   */
+  onCropChange?: ((details: CropChangeDetails) => void) | undefined
   /**
    * Whether the crop area is fixed in size and position.
    * @default false

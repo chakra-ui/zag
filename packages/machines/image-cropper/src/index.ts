@@ -10,6 +10,7 @@ export type {
   ElementIds,
   HandleProps,
   HandlePosition,
+  CropChangeDetails,
   FlipChangeDetails,
   FlipState,
   RotationChangeDetails,
