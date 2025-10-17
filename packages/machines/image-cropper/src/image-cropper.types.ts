@@ -63,6 +63,7 @@ export interface IntlTranslations {
 export type ElementIds = Partial<{
   root: string
   viewport: string
+  image: string
   selection: string
   handle: (position: string) => string
 }>

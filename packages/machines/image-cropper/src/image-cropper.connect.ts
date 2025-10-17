@@ -1,29 +1,9 @@
 import type { EventKeyMap, NormalizeProps, PropTypes, Rect } from "@zag-js/types"
 import { parts } from "./image-cropper.anatomy"
 import * as dom from "./image-cropper.dom"
-import type { FlipState, HandlePosition, ImageCropperApi, ImageCropperService } from "./image-cropper.types"
+import type { FlipState, ImageCropperApi, ImageCropperService } from "./image-cropper.types"
 import { getEventPoint, contains, getEventKey, dataAttr } from "@zag-js/dom-query"
 import { toPx } from "@zag-js/utils"
-
-const normalizeResizeDelta = (handlePosition: HandlePosition, delta: number) => {
-  if (delta === 0) return null
-
-  const xDirection = handlePosition.includes("left") ? -1 : handlePosition.includes("right") ? 1 : 0
-  const yDirection = handlePosition.includes("top") ? -1 : handlePosition.includes("bottom") ? 1 : 0
-
-  if (xDirection === 0 && yDirection === 0) {
-    return null
-  }
-
-  const resolved = {
-    x: xDirection * delta,
-    y: yDirection * delta,
-  }
-
-  if (resolved.x === 0 && resolved.y === 0) return null
-
-  return resolved
-}
 
 const getRoundedCropMetrics = (crop: Rect) => ({
   x: Math.round(crop.x),
@@ -86,10 +66,7 @@ export function connect<T extends PropTypes>(
       if (!handlePosition) return
       if (prop("fixedCropArea")) return
 
-      const normalizedDelta = normalizeResizeDelta(handlePosition, delta)
-      if (!normalizedDelta) return
-
-      send({ type: "RESIZE_CROP", handlePosition, delta: normalizedDelta })
+      send({ type: "RESIZE_CROP", handlePosition, delta })
     },
 
     getRootProps() {

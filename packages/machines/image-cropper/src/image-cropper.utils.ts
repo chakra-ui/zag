@@ -332,17 +332,10 @@ export function computeResizeCrop(options: ResizeOptions): Rect {
   left = clampValue(left, 0, maxLeft)
   top = clampValue(top, 0, maxTop)
 
-  if (hasAspect) {
-    const maxRight = Math.min(viewportRect.width, left + maxWidth)
-    const maxBottom = Math.min(viewportRect.height, top + maxHeight)
-    right = clampValue(right, left + minWidth, maxRight)
-    bottom = clampValue(bottom, top + minHeight, maxBottom)
-  } else {
-    const maxRight = Math.min(viewportRect.width, left + maxWidth)
-    const maxBottom = Math.min(viewportRect.height, top + maxHeight)
-    right = clampValue(right, left + minWidth, maxRight)
-    bottom = clampValue(bottom, top + minHeight, maxBottom)
-  }
+  const maxRight = Math.min(viewportRect.width, left + maxWidth)
+  const maxBottom = Math.min(viewportRect.height, top + maxHeight)
+  right = clampValue(right, left + minWidth, maxRight)
+  bottom = clampValue(bottom, top + minHeight, maxBottom)
 
   return {
     x: left,
