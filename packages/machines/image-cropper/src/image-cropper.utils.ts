@@ -1,6 +1,7 @@
 import type { Point, Rect, Size } from "@zag-js/types"
 import { clampValue } from "@zag-js/utils"
-import type { HandlePosition } from "./image-cropper.types"
+import type { HandlePosition, ImageCropperProps, ImageCropperSchema } from "./image-cropper.types"
+import type { PropFn } from "@zag-js/core"
 
 interface ResizeOptions {
   cropStart: Rect
@@ -604,4 +605,87 @@ export function getKeyboardMoveDelta(key: string, step: number): { x: number; y:
     default:
       return { x: 0, y: 0 }
   }
+}
+
+export const resolveResizeDelta = (handlePosition: HandlePosition, delta: { x: number; y: number } | undefined) => {
+  if (!delta) return null
+
+  const xDirection = handlePosition.includes("left") || handlePosition.includes("right")
+  const yDirection = handlePosition.includes("top") || handlePosition.includes("bottom")
+
+  const resolved = {
+    x: xDirection ? (delta.x ?? 0) : 0,
+    y: yDirection ? (delta.y ?? 0) : 0,
+  }
+
+  if (resolved.x === 0 && resolved.y === 0) return null
+
+  return resolved
+}
+
+export const resolveCropAspectRatio = (
+  shape: ImageCropperProps["cropShape"],
+  aspectRatio: ImageCropperProps["aspectRatio"],
+) => (shape === "circle" ? 1 : aspectRatio)
+
+export const getCropSizeLimits = (prop: PropFn<ImageCropperSchema>) => ({
+  minSize: { width: prop("minWidth"), height: prop("minHeight") },
+  maxSize: { width: prop("maxWidth"), height: prop("maxHeight") },
+})
+
+export const getNudgeStep = (
+  prop: PropFn<ImageCropperSchema>,
+  modifiers: { shiftKey?: boolean; ctrlKey?: boolean; metaKey?: boolean },
+) => {
+  if (modifiers.ctrlKey || modifiers.metaKey) {
+    return prop("nudgeStepCtrl")
+  }
+  if (modifiers.shiftKey) {
+    return prop("nudgeStepShift")
+  }
+  return prop("nudgeStep")
+}
+
+const DEFAULT_VIEWPORT_FILL = 0.8
+
+export const computeDefaultCropDimensions = (
+  viewportRect: Size,
+  aspectRatio: number | undefined,
+  fixedCropArea: boolean,
+): { width: number; height: number } => {
+  const targetWidth = viewportRect.width * DEFAULT_VIEWPORT_FILL
+  const targetHeight = viewportRect.height * DEFAULT_VIEWPORT_FILL
+
+  if (typeof aspectRatio === "number" && aspectRatio > 0) {
+    if (fixedCropArea) {
+      let height = viewportRect.height
+      let width = height * aspectRatio
+
+      if (width > viewportRect.width) {
+        width = viewportRect.width
+        height = width / aspectRatio
+      }
+
+      return { width, height }
+    }
+
+    const targetAspect = targetWidth / targetHeight
+
+    if (aspectRatio > targetAspect) {
+      const width = targetWidth
+      const height = width / aspectRatio
+      return { width, height }
+    }
+
+    const height = targetHeight
+    const width = height * aspectRatio
+    return { width, height }
+  }
+
+  if (fixedCropArea) {
+    const size = Math.min(viewportRect.width, viewportRect.height)
+    return { width: size, height: size }
+  }
+
+  return { width: targetWidth, height: targetHeight }
 }
