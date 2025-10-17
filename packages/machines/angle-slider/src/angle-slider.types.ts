@@ -20,6 +20,7 @@ export type ElementIds = Partial<{
   hiddenInput: string
   control: string
   valueText: string
+  label: string
 }>
 
 export interface AngleSliderProps extends DirectionProperty, CommonProperties {
@@ -67,6 +68,14 @@ export interface AngleSliderProps extends DirectionProperty, CommonProperties {
    * The name of the slider. Useful for form submission.
    */
   name?: string | undefined
+  /**
+   * The accessible label for the slider thumb.
+   */
+  "aria-label"?: string | undefined
+  /**
+   * The id of the element that labels the slider thumb.
+   */
+  "aria-labelledby"?: string | undefined
 }
 
 type PropsWithDefault = "step" | "defaultValue"

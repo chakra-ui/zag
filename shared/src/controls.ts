@@ -166,6 +166,7 @@ export const toastControls = defineControls({
 export const selectControls = defineControls({
   multiple: { type: "boolean", defaultValue: false },
   disabled: { type: "boolean", defaultValue: false },
+  required: { type: "boolean", defaultValue: false },
   loopFocus: { type: "boolean", defaultValue: true },
   readOnly: { type: "boolean", defaultValue: false },
   deselectable: { type: "boolean", defaultValue: false },

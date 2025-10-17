@@ -11,7 +11,7 @@ export const machine = createMachine<CheckboxSchema>({
     return {
       value: "on",
       ...props,
-      defaultChecked: !!props.defaultChecked,
+      defaultChecked: props.defaultChecked ?? false,
     }
   },
 

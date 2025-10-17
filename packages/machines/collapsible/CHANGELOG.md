@@ -1,5 +1,20 @@
 # @zag-js/collapsible
 
+## 1.26.2
+
+### Patch Changes
+
+- [#2768](https://github.com/chakra-ui/zag/pull/2768)
+  [`0b1663f`](https://github.com/chakra-ui/zag/commit/0b1663f5fce091876cac4d3dff514b4e2d32caaa) Thanks
+  [@Hugos68](https://github.com/Hugos68)! - fix(collapsible): Use `prop` value instead of hardcoded to `ltr`
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.26.2
+  - @zag-js/core@1.26.2
+  - @zag-js/types@1.26.2
+  - @zag-js/utils@1.26.2
+  - @zag-js/dom-query@1.26.2
+
 ## 1.26.1
 
 ### Patch Changes

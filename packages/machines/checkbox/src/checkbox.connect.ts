@@ -21,6 +21,7 @@ export function connect<T extends PropTypes>(
 
   const checked = computed("checked")
   const indeterminate = computed("indeterminate")
+  const checkedState = context.get("checked")
 
   const dataAttrs = {
     "data-active": dataAttr(context.get("active")),
@@ -39,7 +40,7 @@ export function connect<T extends PropTypes>(
     disabled,
     indeterminate,
     focused,
-    checkedState: checked,
+    checkedState,
 
     setChecked(checked) {
       send({ type: "CHECKED.SET", checked, isTrusted: false })

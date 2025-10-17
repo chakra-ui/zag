@@ -1,5 +1,16 @@
 # @zag-js/accordion
 
+## 1.26.2
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.26.2
+  - @zag-js/core@1.26.2
+  - @zag-js/types@1.26.2
+  - @zag-js/utils@1.26.2
+  - @zag-js/dom-query@1.26.2
+
 ## 1.26.1
 
 ### Patch Changes

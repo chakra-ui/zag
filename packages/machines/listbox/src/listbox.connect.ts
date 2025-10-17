@@ -172,8 +172,10 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
             }
 
             case "Enter":
-              event.preventDefault()
-              send({ type: "ITEM.CLICK", value: highlightedValue })
+              if (highlightedValue != null) {
+                event.preventDefault()
+                send({ type: "ITEM.CLICK", value: highlightedValue })
+              }
               break
             default:
               break

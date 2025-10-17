@@ -1,5 +1,24 @@
 # @zag-js/slider
 
+## 1.26.2
+
+### Patch Changes
+
+- [`f1eac6b`](https://github.com/chakra-ui/zag/commit/f1eac6b86ea0305147cc86aef9bec483fe875080) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix issue where range slider thumbs become stuck when dragged to
+  the same position without `minStepsBetweenThumbs`. When both thumbs are at max value, automatically select the movable
+  thumb and add z-index to focused thumb for better visual feedback.
+
+- [`97be748`](https://github.com/chakra-ui/zag/commit/97be74846a2c650dcb4f34858a57592fd7ae6bb6) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix issue where slider could stop abruptly when scrubbing thumb
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.26.2
+  - @zag-js/core@1.26.2
+  - @zag-js/types@1.26.2
+  - @zag-js/utils@1.26.2
+  - @zag-js/dom-query@1.26.2
+
 ## 1.26.1
 
 ### Patch Changes

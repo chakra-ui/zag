@@ -18,6 +18,7 @@ export const machine = createMachine({
       loopFocus: true,
       openOnClick: false,
       defaultValue: [],
+      defaultInputValue: "",
       closeOnSelect: !props.multiple,
       allowCustomValue: false,
       alwaysSubmitOnEnter: false,
@@ -85,8 +86,8 @@ export const machine = createMachine({
         },
       })),
       inputValue: bindable<string>(() => {
-        let inputValue = prop("inputValue") || prop("defaultInputValue") || ""
-        const value = prop("defaultValue") || prop("value") || []
+        let inputValue = prop("inputValue") || prop("defaultInputValue")
+        const value = prop("value") || prop("defaultValue")
 
         if (!inputValue.trim() && !prop("multiple")) {
           const valueAsString = prop("collection").stringifyMany(value)
