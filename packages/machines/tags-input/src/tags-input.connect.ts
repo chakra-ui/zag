@@ -119,6 +119,7 @@ export function connect<T extends PropTypes>(
         "data-invalid": dataAttr(invalid),
         "aria-invalid": ariaAttr(invalid),
         "data-readonly": dataAttr(readOnly),
+        "data-empty": dataAttr(empty),
         maxLength: prop("maxLength"),
         id: dom.getInputId(scope),
         defaultValue: context.get("inputValue"),
@@ -182,7 +183,8 @@ export function connect<T extends PropTypes>(
               send({ type: "DELETE" })
             },
             Enter(event) {
-              if (isCombobox && isExpanded) return
+              const hasHighlightedItem = target.getAttribute("aria-activedescendant")
+              if (isCombobox && isExpanded && hasHighlightedItem) return
               send({ type: "ENTER" })
               event.preventDefault()
             },

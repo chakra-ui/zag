@@ -20,6 +20,9 @@ export function connect<T extends PropTypes>(
   const readOnly = prop("readOnly")
   const interactive = computed("interactive")
 
+  const ariaLabel = prop("aria-label")
+  const ariaLabelledBy = prop("aria-labelledby")
+
   return {
     value,
     valueAsDegree,
@@ -45,6 +48,7 @@ export function connect<T extends PropTypes>(
     getLabelProps() {
       return normalize.label({
         ...parts.label.attrs,
+        id: dom.getLabelId(scope),
         htmlFor: dom.getHiddenInputId(scope),
         "data-disabled": dataAttr(disabled),
         "data-invalid": dataAttr(invalid),
@@ -94,6 +98,8 @@ export function connect<T extends PropTypes>(
         ...parts.thumb.attrs,
         id: dom.getThumbId(scope),
         role: "slider",
+        "aria-label": ariaLabel,
+        "aria-labelledby": ariaLabelledBy ?? dom.getLabelId(scope),
         "aria-valuemax": 360,
         "aria-valuemin": 0,
         "aria-valuenow": value,
