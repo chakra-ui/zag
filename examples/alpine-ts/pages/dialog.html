@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Vite + TS</title>
+    <script type="module" src="./dialog.ts"></script>
+  </head>
+  <body style="padding: 40px">
+    <h1>Popover</h1>
+
+    <div x-data="{preventScroll: true, closeOnInteractOutside: true, closeOnEscape: true, role: 'dialog'}">
+      <div>
+        <input type="checkbox" name="preventScroll" id="preventScroll" x-model="preventScroll" />
+        <label for="preventScroll">preventScroll</label>
+      </div>
+      <div>
+        <input
+          type="checkbox"
+          name="closeOnInteractOutside"
+          id="closeOnInteractOutside"
+          x-model="closeOnInteractOutside"
+        />
+        <label for="closeOnInteractOutside">closeOnInteractOutside</label>
+      </div>
+      <div>
+        <input type="checkbox" name="closeOnEscape" id="closeOnEscape" x-model="closeOnEscape" />
+        <label for="closeOnEscape">closeOnEscape</label>
+      </div>
+      <div>
+        <label for="role">role</label>
+        <select name="role" id="role" x-model="role">
+          <option value="dialog">dialog</option>
+          <option value="alertdialog">alertdialog</option>
+        </select>
+      </div>
+
+      <div x-id="['dialog']" x-dialog="{preventScroll, closeOnInteractOutside, closeOnEscape, role, id: $id('dialog')}">
+        <button x-dialog:trigger>Open Dialog</button>
+        <template x-teleport="body">
+          <div>
+            <div x-dialog:backdrop></div>
+            <div x-dialog:positioner>
+              <div x-dialog:content>
+                <h2 x-dialog:title>Title</h2>
+                <p x-dialog:description>Description</p>
+                <button x-dialog:close-trigger>X</button>
+              </div>
+            </div>
+          </div>
+        </template>
+      </div>
+    </div>
+  </body>
+</html>

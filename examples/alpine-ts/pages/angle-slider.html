@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Vite + TS</title>
+    <script type="module" src="./angle-slider.ts"></script>
+  </head>
+  <body style="padding: 40px">
+    <h1>Angle Slider</h1>
+
+    <div x-data="{disabled: false, readOnly: false, step: 1}">
+      <div>
+        <input type="checkbox" name="disabled" id="disabled" x-model="disabled" />
+        <label for="disabled">disabled</label>
+      </div>
+      <div>
+        <input type="checkbox" name="readOnly" id="readOnly" x-model="readOnly" />
+        <label for="readOnly">readOnly</label>
+      </div>
+      <div>
+        <input type="number" name="step" id="step" x-model="step" />
+        <label for="step">step</label>
+      </div>
+
+      <div
+        x-id="['angle-slider']"
+        x-angle-slider="{disabled,  readOnly, step, id: $id('angle-slider')}"
+        x-angle-slider:root
+      >
+        <label x-angle-slider:label>
+          <div x-angle-slider:value-text x-text="$angleSlider.valueAsDegree"></div>
+        </label>
+        <div x-angle-slider:control>
+          <div x-angle-slider:thumb></div>
+          <div x-angle-slider:marker-group>
+            <template x-for="value in [0, 45, 90, 135, 180, 225, 270, 315]" :key="value">
+              <div x-angle-slider:marker="{value}"></div>
+            </template>
+          </div>
+        </div>
+        <input x-angle-slider:hidden-input />
+      </div>
+    </div>
+  </body>
+</html>
