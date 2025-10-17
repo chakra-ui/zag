@@ -69,6 +69,84 @@ export function connect<T extends PropTypes>(
       send({ type: "RESIZE_CROP", handlePosition, delta })
     },
 
+    async getCroppedImage(options = {}) {
+      const { type = "image/png", quality = 1, output = "blob" } = options
+
+      const imageEl = dom.getImageEl(scope)
+      if (!imageEl || !imageEl.complete) return null
+
+      const naturalSize = context.get("naturalSize")
+      if (naturalSize.width === 0 || naturalSize.height === 0) return null
+
+      const crop = context.get("crop")
+      const zoom = context.get("zoom")
+      const rotation = context.get("rotation")
+      const flip = context.get("flip")
+      const offset = context.get("offset")
+      const viewportRect = context.get("viewportRect")
+
+      const canvas = document.createElement("canvas")
+      canvas.width = crop.width
+      canvas.height = crop.height
+
+      const ctx = canvas.getContext("2d")
+      if (!ctx) return null
+
+      ctx.save()
+
+      ctx.translate(canvas.width / 2, canvas.height / 2)
+      ctx.rotate((rotation * Math.PI) / 180)
+
+      const scaleX = flip.horizontal ? -1 : 1
+      const scaleY = flip.vertical ? -1 : 1
+      ctx.scale(scaleX, scaleY)
+
+      const viewportCenterX = viewportRect.width / 2
+      const viewportCenterY = viewportRect.height / 2
+
+      const cropCenterX = crop.x + crop.width / 2
+      const cropCenterY = crop.y + crop.height / 2
+
+      const deltaX = cropCenterX - viewportCenterX
+      const deltaY = cropCenterY - viewportCenterY
+
+      const imageCenterX = naturalSize.width / 2
+      const imageCenterY = naturalSize.height / 2
+
+      const sourceX = imageCenterX + (deltaX - offset.x) / zoom
+      const sourceY = imageCenterY + (deltaY - offset.y) / zoom
+      const sourceWidth = crop.width / zoom
+      const sourceHeight = crop.height / zoom
+
+      ctx.drawImage(
+        imageEl,
+        sourceX - sourceWidth / 2,
+        sourceY - sourceHeight / 2,
+        sourceWidth,
+        sourceHeight,
+        -canvas.width / 2,
+        -canvas.height / 2,
+        canvas.width,
+        canvas.height,
+      )
+
+      ctx.restore()
+
+      if (output === "dataUrl") {
+        return canvas.toDataURL(type, quality)
+      }
+
+      return new Promise<Blob | null>((resolve) => {
+        canvas.toBlob(
+          (blob) => {
+            resolve(blob)
+          },
+          type,
+          quality,
+        )
+      })
+    },
+
     getRootProps() {
       const fixedCropArea = !!prop("fixedCropArea")
       const cropShape = prop("cropShape")

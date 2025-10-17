@@ -14,6 +14,8 @@ export default function Page() {
   const [flip, setFlip] = useState<imageCropper.FlipState>({ horizontal: false, vertical: false })
   const [selectedHandle, setSelectedHandle] = useState<imageCropper.HandlePosition>("right")
   const [resizeStep, setResizeStep] = useState(10)
+  const [croppedImageUrl, setCroppedImageUrl] = useState<string | null>(null)
+  const [isExporting, setIsExporting] = useState(false)
 
   const service = useMachine(imageCropper.machine, {
     id: useId(),
@@ -40,12 +42,53 @@ export default function Page() {
     api.resize(selectedHandle, amount)
   }
 
+  const handleExportImage = async (output: "blob" | "dataUrl") => {
+    setIsExporting(true)
+    try {
+      const result = await api.getCroppedImage({ output })
+      if (result) {
+        if (output === "dataUrl") {
+          setCroppedImageUrl(result as string)
+        } else {
+          const blob = result as Blob
+          const url = URL.createObjectURL(blob)
+          setCroppedImageUrl(url)
+        }
+      }
+    } catch (error) {
+      console.error("Failed to export image:", error)
+    } finally {
+      setIsExporting(false)
+    }
+  }
+
+  const handleDownloadImage = async () => {
+    setIsExporting(true)
+    try {
+      const blob = await api.getCroppedImage({ type: "image/png" })
+      if (blob && blob instanceof Blob) {
+        const url = URL.createObjectURL(blob)
+        const link = document.createElement("a")
+        link.href = url
+        link.download = `cropped-image-${Date.now()}.png`
+        document.body.appendChild(link)
+        link.click()
+        document.body.removeChild(link)
+        URL.revokeObjectURL(url)
+      }
+    } catch (error) {
+      console.error("Failed to download image:", error)
+    } finally {
+      setIsExporting(false)
+    }
+  }
+
   return (
     <>
       <main className="image-cropper">
         <div {...api.getRootProps()}>
           <div {...api.getViewportProps()}>
-            <img src="https://picsum.photos/seed/a/500/300" {...api.getImageProps()} />
+            <img src="https://picsum.photos/seed/a/500/300" crossOrigin="anonymous" {...api.getImageProps()} />
             <div {...api.getSelectionProps()}>
               {handlePositions.map((position) => (
                 <div key={position} {...api.getHandleProps({ position })}>
@@ -79,7 +122,7 @@ export default function Page() {
             onChange={(e) => api.setRotation(Number(e.currentTarget.value))}
           />
         </label>
-        <fieldset className="flip-controls">
+        <fieldset>
           <legend>Flip</legend>
           <label>
             <input
@@ -97,7 +140,7 @@ export default function Page() {
             />
             Vertical
           </label>
-          <div className="flip-buttons">
+          <div>
             <button type="button" onClick={() => api.flipHorizontally()}>
               Toggle horizontal flip
             </button>
@@ -109,7 +152,7 @@ export default function Page() {
             </button>
           </div>
         </fieldset>
-        <div className="resize-controls">
+        <div>
           <label>
             Resize handle:
             <select
@@ -135,7 +178,7 @@ export default function Page() {
               }}
             />
           </label>
-          <div className="resize-buttons">
+          <div>
             <button type="button" onClick={() => applyResize("grow")}>
               Grow selection
             </button>
@@ -144,6 +187,40 @@ export default function Page() {
             </button>
           </div>
         </div>
+
+        <fieldset>
+          <legend>Export Cropped Image</legend>
+          <div>
+            <button type="button" onClick={() => handleExportImage("blob")} disabled={isExporting}>
+              {isExporting ? "Exporting..." : "Export as Blob"}
+            </button>
+            <button type="button" onClick={() => handleExportImage("dataUrl")} disabled={isExporting}>
+              {isExporting ? "Exporting..." : "Export as Data URL"}
+            </button>
+            <button type="button" onClick={handleDownloadImage} disabled={isExporting}>
+              {isExporting ? "Downloading..." : "Download PNG"}
+            </button>
+            {croppedImageUrl && (
+              <button
+                type="button"
+                onClick={() => {
+                  if (croppedImageUrl.startsWith("blob:")) {
+                    URL.revokeObjectURL(croppedImageUrl)
+                  }
+                  setCroppedImageUrl(null)
+                }}
+              >
+                Clear Preview
+              </button>
+            )}
+          </div>
+          {croppedImageUrl && (
+            <div>
+              <h3>Cropped Image Preview:</h3>
+              <img src={croppedImageUrl} alt="Cropped result" style={{ maxWidth: "100%", border: "1px solid #ccc" }} />
+            </div>
+          )}
+        </fieldset>
       </main>
 
       <Toolbar controls={controls.ui}>

@@ -250,6 +250,24 @@ export interface HandleProps {
   position: HandlePosition
 }
 
+export interface GetCroppedImageOptions {
+  /**
+   * The output format of the cropped image.
+   * @default "image/png"
+   */
+  type?: string
+  /**
+   * The quality of the output image (0-1) for lossy formats like JPEG.
+   * @default 1
+   */
+  quality?: number
+  /**
+   * Whether to return a Blob or a data URL.
+   * @default "blob"
+   */
+  output?: "blob" | "dataUrl"
+}
+
 export interface ImageCropperApi<T extends PropTypes = PropTypes> {
   /**
    * Function to set the zoom level of the image.
@@ -275,6 +293,11 @@ export interface ImageCropperApi<T extends PropTypes = PropTypes> {
    * Function to resize the crop area from a handle programmatically.
    */
   resize: (handlePosition: HandlePosition, delta: number) => void
+  /**
+   * Function to get the cropped image with all transformations applied.
+   * Returns a Promise that resolves to either a Blob or data URL.
+   */
+  getCroppedImage: (options?: GetCroppedImageOptions) => Promise<Blob | string | null>
 
   getRootProps: () => T["element"]
   getViewportProps: () => T["element"]
