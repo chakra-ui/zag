@@ -5,7 +5,7 @@ import type { FlipState, ImageCropperApi, ImageCropperService } from "./image-cr
 import { getEventPoint, contains, getEventKey, dataAttr } from "@zag-js/dom-query"
 import { toPx } from "@zag-js/utils"
 
-const getRoundedCropMetrics = (crop: Rect) => ({
+const getRoundedCrop = (crop: Rect) => ({
   x: Math.round(crop.x),
   y: Math.round(crop.y),
   width: Math.round(crop.width),
@@ -83,10 +83,10 @@ export function connect<T extends PropTypes>(
       const rootId = dom.getRootId(scope)
       const viewportId = dom.getViewportId(scope)
       const selectionId = dom.getSelectionId(scope)
-      const cropMetrics = getRoundedCropMetrics(crop)
+      const roundedCrop = getRoundedCrop(crop)
       const previewDescription = isImageReady
         ? translations.previewDescription({
-            crop: cropMetrics,
+            crop: roundedCrop,
             zoom: Number.isFinite(zoom) ? zoom : null,
             rotation: Number.isFinite(rotation) ? rotation : null,
           })
@@ -236,12 +236,12 @@ export function connect<T extends PropTypes>(
       const disabled = !!prop("fixedCropArea")
       const cropShape = prop("cropShape")
 
-      const cropMetrics = getRoundedCropMetrics(crop)
+      const roundedCrop = getRoundedCrop(crop)
 
       const hasViewportRect = viewportRect.width > 0 && viewportRect.height > 0
       const maxX = hasViewportRect ? Math.max(0, Math.round(viewportRect.width - crop.width)) : undefined
-      const ariaValueMax = maxX != null ? maxX : Math.max(cropMetrics.x, 0)
-      const ariaValueText = translations.selectionValueText({ shape: cropShape, ...cropMetrics })
+      const ariaValueMax = maxX != null ? maxX : Math.max(roundedCrop.x, 0)
+      const ariaValueText = translations.selectionValueText({ shape: cropShape, ...roundedCrop })
       const selectionLabel = translations.selectionLabel({ shape: cropShape })
 
       return normalize.element({
@@ -254,7 +254,7 @@ export function connect<T extends PropTypes>(
         "aria-disabled": disabled ? "true" : undefined,
         "aria-valuemin": 0,
         "aria-valuemax": ariaValueMax,
-        "aria-valuenow": cropMetrics.x,
+        "aria-valuenow": roundedCrop.x,
         "aria-valuetext": ariaValueText,
         "aria-description": translations.selectionInstructions,
         "data-disabled": dataAttr(disabled),
