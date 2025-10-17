@@ -39,10 +39,25 @@ export function groupConnect<T extends PropTypes, O = any>(
         "aria-live": "polite",
         role: "region",
         style: getGroupPlacementStyle(service, placement),
+        onMouseEnter() {
+          // Ignore mouse events briefly after toast removal to prevent spurious events during DOM mutations
+          if (refs.get("ignoringMouseEvents")) {
+            return
+          }
+          send({ type: "REGION.POINTER_ENTER", placement })
+        },
         onMouseMove() {
+          // Ignore mouse events briefly after toast removal to prevent spurious events during DOM mutations
+          if (refs.get("ignoringMouseEvents")) {
+            return
+          }
           send({ type: "REGION.POINTER_ENTER", placement })
         },
         onMouseLeave() {
+          // Ignore mouse events briefly after toast removal to prevent spurious events during DOM mutations
+          if (refs.get("ignoringMouseEvents")) {
+            return
+          }
           send({ type: "REGION.POINTER_LEAVE", placement })
         },
         onFocus(event) {

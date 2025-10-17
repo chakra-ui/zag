@@ -24,6 +24,7 @@ export const groupMachine = createMachine<ToastGroupSchema>({
       lastFocusedEl: null,
       isFocusWithin: false,
       isPointerWithin: false,
+      ignoringMouseEvents: false,
       dismissableCleanup: undefined,
     }
   },
@@ -80,7 +81,7 @@ export const groupMachine = createMachine<ToastGroupSchema>({
       },
     ],
     "TOAST.REMOVE": {
-      actions: ["removeToast", "removeHeight"],
+      actions: ["removeToast", "removeHeight", "ignoreMouseEventsTemporarily"],
     },
     "TOAST.PAUSE": {
       actions: ["pauseToasts"],
@@ -258,6 +259,14 @@ export const groupMachine = createMachine<ToastGroupSchema>({
         refs.get("lastFocusedEl")?.focus({ preventScroll: true })
         refs.set("lastFocusedEl", null)
         refs.set("isFocusWithin", false)
+      },
+      ignoreMouseEventsTemporarily({ refs }) {
+        // Ignore mouse events briefly after toast removal to prevent spurious events
+        // during DOM mutations (particularly in Firefox, but applied universally for consistency)
+        refs.set("ignoringMouseEvents", true)
+        setTimeout(() => {
+          refs.set("ignoringMouseEvents", false)
+        }, 100)
       },
     },
   },
