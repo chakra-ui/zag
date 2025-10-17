@@ -1,8 +1,9 @@
-import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import type { Service } from "@zag-js/core"
+import { dataAttr } from "@zag-js/dom-query"
+import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import { parts } from "./dialog.anatomy"
 import * as dom from "./dialog.dom"
-import type { DialogSchema, DialogApi } from "./dialog.types"
+import type { DialogApi, DialogSchema, TriggerProps } from "./dialog.types"
 
 export function connect<T extends PropTypes>(
   service: Service<DialogSchema>,
@@ -11,6 +12,7 @@ export function connect<T extends PropTypes>(
   const { state, send, context, prop, scope } = service
   const ariaLabel = prop("aria-label")
   const open = state.matches("open")
+  const activeTriggerValue = context.get("activeTriggerValue")
 
   return {
     open,
@@ -20,19 +22,30 @@ export function connect<T extends PropTypes>(
       send({ type: nextOpen ? "OPEN" : "CLOSE" })
     },
 
-    getTriggerProps() {
+    activeTriggerValue,
+    setActiveTriggerValue(value) {
+      send({ type: "ACTIVE_TRIGGER.SET", value })
+    },
+
+    getTriggerProps(props: TriggerProps = {}) {
+      const { value } = props
+      const current = value == null ? false : activeTriggerValue === value
       return normalize.button({
         ...parts.trigger.attrs,
         dir: prop("dir"),
-        id: dom.getTriggerId(scope),
+        id: dom.getTriggerId(scope, value),
+        "data-ownedby": scope.id,
+        "data-value": value,
         "aria-haspopup": "dialog",
         type: "button",
         "aria-expanded": open,
         "data-state": open ? "open" : "closed",
         "aria-controls": dom.getContentId(scope),
+        "data-current": dataAttr(current),
         onClick(event) {
           if (event.defaultPrevented) return
-          send({ type: "TOGGLE" })
+          const shouldSwitch = open && !current
+          send({ type: shouldSwitch ? "ACTIVE_TRIGGER.SET" : "TOGGLE", value })
         },
       })
     },

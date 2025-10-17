@@ -30,10 +30,17 @@ export const machine = createMachine<DialogSchema>({
     return open ? "open" : "closed"
   },
 
-  context({ bindable }) {
+  context({ bindable, prop }) {
     return {
       rendered: bindable<{ title: boolean; description: boolean }>(() => ({
         defaultValue: { title: true, description: true },
+      })),
+      activeTriggerValue: bindable<string | null>(() => ({
+        defaultValue: prop("defaultActiveTriggerValue") ?? null,
+        value: prop("activeTriggerValue"),
+        onChange(value) {
+          prop("onActiveTriggerChange")?.({ value })
+        },
       })),
     }
   },
@@ -72,6 +79,9 @@ export const machine = createMachine<DialogSchema>({
             actions: ["invokeOnClose"],
           },
         ],
+        "ACTIVE_TRIGGER.SET": {
+          actions: ["setActiveTrigger"],
+        },
       },
     },
 
@@ -83,23 +93,26 @@ export const machine = createMachine<DialogSchema>({
         OPEN: [
           {
             guard: "isOpenControlled",
-            actions: ["invokeOnOpen"],
+            actions: ["invokeOnOpen", "setActiveTrigger"],
           },
           {
             target: "open",
-            actions: ["invokeOnOpen"],
+            actions: ["invokeOnOpen", "setActiveTrigger"],
           },
         ],
         TOGGLE: [
           {
             guard: "isOpenControlled",
-            actions: ["invokeOnOpen"],
+            actions: ["invokeOnOpen", "setActiveTrigger"],
           },
           {
             target: "open",
-            actions: ["invokeOnOpen"],
+            actions: ["invokeOnOpen", "setActiveTrigger"],
           },
         ],
+        "ACTIVE_TRIGGER.SET": {
+          actions: ["setActiveTrigger"],
+        },
       },
     },
   },
@@ -116,7 +129,7 @@ export const machine = createMachine<DialogSchema>({
           type: "dialog",
           defer: true,
           pointerBlocking: prop("modal"),
-          exclude: [dom.getTriggerEl(scope)],
+          exclude: dom.getTriggerEls(scope),
           onInteractOutside(event) {
             prop("onInteractOutside")?.(event)
             if (!prop("closeOnInteractOutside")) {
@@ -144,14 +157,28 @@ export const machine = createMachine<DialogSchema>({
         return preventBodyScroll(scope.getDoc())
       },
 
-      trapFocus({ scope, prop }) {
+      trapFocus({ scope, prop, context }) {
         if (!prop("trapFocus")) return
         const contentEl = () => dom.getContentEl(scope)
         return trapFocus(contentEl, {
           preventScroll: true,
           returnFocusOnDeactivate: !!prop("restoreFocus"),
           initialFocus: prop("initialFocusEl"),
-          setReturnFocus: (el) => prop("finalFocusEl")?.() ?? el,
+          setReturnFocus: (el) => {
+            // If finalFocusEl is provided, use it
+            const finalFocusEl = prop("finalFocusEl")?.()
+            if (finalFocusEl) return finalFocusEl
+
+            // If there's an active trigger, focus it
+            const activeTriggerValue = context.get("activeTriggerValue")
+            if (activeTriggerValue) {
+              const activeTriggerEl = dom.getActiveTriggerEl(scope, activeTriggerValue)
+              if (activeTriggerEl) return activeTriggerEl
+            }
+
+            // Otherwise, use default behavior
+            return el
+          },
         })
       },
 
@@ -192,6 +219,10 @@ export const machine = createMachine<DialogSchema>({
 
       invokeOnOpen({ prop }) {
         prop("onOpenChange")?.({ open: true })
+      },
+
+      setActiveTrigger({ context, event }) {
+        context.set("activeTriggerValue", event.value ?? null)
       },
 
       toggleVisibility({ prop, send, event }) {

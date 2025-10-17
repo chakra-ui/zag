@@ -10,12 +10,19 @@ export interface OpenChangeDetails {
   open: boolean
 }
 
+export interface TriggerChangeDetails {
+  /**
+   * The value of the trigger that activated the dialog
+   */
+  value: string | null
+}
+
 /* -----------------------------------------------------------------------------
  * Machine context
  * -----------------------------------------------------------------------------*/
 
 export type ElementIds = Partial<{
-  trigger: string
+  trigger: string | ((value?: string) => string)
   positioner: string
   backdrop: string
   content: string
@@ -93,6 +100,19 @@ export interface DialogProps
    * Function to call when the dialog's open state changes
    */
   onOpenChange?: ((details: OpenChangeDetails) => void) | undefined
+  /**
+   * The controlled active trigger value
+   */
+  activeTriggerValue?: string | null | undefined
+  /**
+   * The initial active trigger value when rendered.
+   * Use when you don't need to control the active trigger value.
+   */
+  defaultActiveTriggerValue?: string | null | undefined
+  /**
+   * Function to call when the active trigger changes
+   */
+  onActiveTriggerChange?: ((details: TriggerChangeDetails) => void) | undefined
 }
 
 type PropsWithDefault =
@@ -110,12 +130,21 @@ export interface DialogSchema {
   state: "open" | "closed"
   context: {
     rendered: { title: boolean; description: boolean }
+    activeTriggerValue: string | null
   }
   guard: "isOpenControlled"
   effect: "trackDismissableElement" | "preventScroll" | "trapFocus" | "hideContentBelow"
-  action: "checkRenderedElements" | "syncZIndex" | "invokeOnClose" | "invokeOnOpen" | "toggleVisibility"
+  action:
+    | "checkRenderedElements"
+    | "syncZIndex"
+    | "invokeOnClose"
+    | "invokeOnOpen"
+    | "toggleVisibility"
+    | "setActiveTrigger"
+
   event: {
-    type: "CONTROLLED.OPEN" | "CONTROLLED.CLOSE" | "OPEN" | "CLOSE" | "TOGGLE"
+    type: "CONTROLLED.OPEN" | "CONTROLLED.CLOSE" | "OPEN" | "CLOSE" | "TOGGLE" | "ACTIVE_TRIGGER.SET"
+    value?: string | null | undefined
   }
 }
 
@@ -127,6 +156,13 @@ export type DialogMachine = Machine<DialogSchema>
  * Component props
  * -----------------------------------------------------------------------------*/
 
+export interface TriggerProps {
+  /**
+   * The value that identifies this specific trigger
+   */
+  value?: string
+}
+
 export interface DialogApi<T extends PropTypes = PropTypes> {
   /**
    * Whether the dialog is open
@@ -136,8 +172,16 @@ export interface DialogApi<T extends PropTypes = PropTypes> {
    * Function to open or close the dialog
    */
   setOpen: (open: boolean) => void
+  /**
+   * The active trigger value
+   */
+  activeTriggerValue: string | null
+  /**
+   * Function to set the active trigger value
+   */
+  setActiveTriggerValue: (value: string | null) => void
 
-  getTriggerProps: () => T["button"]
+  getTriggerProps: (props?: TriggerProps) => T["button"]
   getBackdropProps: () => T["element"]
   getPositionerProps: () => T["element"]
   getContentProps: () => T["element"]
