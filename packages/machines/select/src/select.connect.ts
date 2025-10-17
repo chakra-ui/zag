@@ -171,6 +171,7 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
         "aria-haspopup": "listbox",
         "data-state": open ? "open" : "closed",
         "aria-invalid": invalid,
+        "aria-required": required,
         "aria-labelledby": dom.getLabelId(scope),
         ...parts.trigger.attrs,
         "data-disabled": dataAttr(disabled),
