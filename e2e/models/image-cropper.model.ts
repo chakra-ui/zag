@@ -126,8 +126,8 @@ export class ImageCropperModel extends Model {
 
   async getFlipState() {
     return this.image.evaluate((el) => ({
-      horizontal: el.dataset.flipHorizontal === "true",
-      vertical: el.dataset.flipVertical === "true",
+      horizontal: "flipHorizontal" in el.dataset,
+      vertical: "flipVertical" in el.dataset,
     }))
   }
 
