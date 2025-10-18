@@ -30,6 +30,13 @@ export interface HighlightChangeDetails {
   highlightedValue: string | null
 }
 
+export interface ActiveTriggerChangeDetails {
+  /**
+   * The value of the trigger that activated the menu
+   */
+  value: string | null
+}
+
 export interface NavigateDetails {
   value: string
   node: HTMLAnchorElement
@@ -37,8 +44,8 @@ export interface NavigateDetails {
 }
 
 export type ElementIds = Partial<{
-  trigger: string
-  contextTrigger: string
+  trigger: string | ((value?: string) => string)
+  contextTrigger: string | ((value?: string) => string)
   content: string
   groupLabel: (id: string) => string
   group: (id: string) => string
@@ -121,6 +128,19 @@ export interface MenuProps extends DirectionProperty, CommonProperties, Dismissa
    * Function to navigate to the selected item if it's an anchor element
    */
   navigate?: ((details: NavigateDetails) => void) | null | undefined
+  /**
+   * The controlled active trigger value
+   */
+  activeTriggerValue?: string | null | undefined
+  /**
+   * The initial active trigger value when rendered.
+   * Use when you don't need to control the active trigger value.
+   */
+  defaultActiveTriggerValue?: string | null | undefined
+  /**
+   * Function to call when the active trigger changes
+   */
+  onActiveTriggerChange?: ((details: ActiveTriggerChangeDetails) => void) | undefined
 }
 
 type PropsWithDefault = "closeOnSelect" | "typeahead" | "composite" | "positioning" | "loopFocus"
@@ -135,6 +155,7 @@ export interface MenuSchema {
     anchorPoint: Point | null
     suspendPointer: boolean
     isSubmenu: boolean
+    activeTriggerValue: string | null
   }
   computed: {
     isRtl: boolean
@@ -170,6 +191,17 @@ export type ChildMenuService = Pick<MenuService, "prop" | "send" | "scope">
  * Minimal interface required for parent menu relationship.
  */
 export type ParentMenuService = Pick<MenuService, "prop" | "send" | "refs" | "context">
+
+/* -----------------------------------------------------------------------------
+ * Component props
+ * -----------------------------------------------------------------------------*/
+
+export interface TriggerProps {
+  /**
+   * The value that identifies this specific trigger
+   */
+  value?: string
+}
 
 /* -----------------------------------------------------------------------------
  * Component API
@@ -283,6 +315,14 @@ export interface MenuApi<T extends PropTypes = PropTypes> {
    */
   setOpen: (open: boolean) => void
   /**
+   * The active trigger value
+   */
+  activeTriggerValue: string | null
+  /**
+   * Function to set the active trigger value
+   */
+  setActiveTriggerValue: (value: string | null) => void
+  /**
    * The id of the currently highlighted menuitem
    */
   highlightedValue: string | null
@@ -315,9 +355,9 @@ export interface MenuApi<T extends PropTypes = PropTypes> {
    */
   addItemListener: (props: ItemListenerProps) => VoidFunction | undefined
 
-  getContextTriggerProps: () => T["element"]
+  getContextTriggerProps: (props?: TriggerProps) => T["element"]
   getTriggerItemProps: <A extends Api>(childApi: A) => T["element"]
-  getTriggerProps: () => T["button"]
+  getTriggerProps: (props?: TriggerProps) => T["button"]
   getIndicatorProps: () => T["element"]
   getPositionerProps: () => T["element"]
   getArrowProps: () => T["element"]

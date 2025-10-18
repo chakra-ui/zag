@@ -4,6 +4,7 @@ export { connect } from "./menu.connect"
 export { machine } from "./menu.machine"
 export * from "./menu.props"
 export type {
+  ActiveTriggerChangeDetails,
   MenuApi as Api,
   HighlightChangeDetails,
   ItemGroupLabelProps,
@@ -22,4 +23,5 @@ export type {
   MenuProps as Props,
   SelectionDetails,
   MenuService as Service,
+  TriggerProps,
 } from "./menu.types"
