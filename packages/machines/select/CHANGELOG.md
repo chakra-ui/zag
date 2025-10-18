@@ -1,5 +1,24 @@
 # @zag-js/select
 
+## 1.26.3
+
+### Patch Changes
+
+- [#2787](https://github.com/chakra-ui/zag/pull/2787)
+  [`a52c5a1`](https://github.com/chakra-ui/zag/commit/a52c5a132794958c1c62fe459c5942b30b131191) Thanks
+  [@Hagendorn](https://github.com/Hagendorn)! - Fix accessibility violation where the required state was not set
+  correctly to on the trigger.
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.26.3
+  - @zag-js/core@1.26.3
+  - @zag-js/types@1.26.3
+  - @zag-js/collection@1.26.3
+  - @zag-js/utils@1.26.3
+  - @zag-js/dismissable@1.26.3
+  - @zag-js/dom-query@1.26.3
+  - @zag-js/popper@1.26.3
+
 ## 1.26.2
 
 ### Patch Changes
