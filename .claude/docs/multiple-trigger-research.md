@@ -546,6 +546,284 @@ Compared to other libraries, Zag's approach offers:
 
 ---
 
+## Implementation: Zag.js Menu Multiple Triggers
+
+**Date Implemented:** 2025-10-18
+**Components:** Menu (Dialog and Tooltip completed previously)
+**Status:** ✅ Implemented and tested
+
+### Implementation Overview
+
+Following the recommendations from the research above, we implemented multiple trigger support for Menu using a value-based approach with data attributes.
+
+### Core API
+
+```typescript
+// Types
+export interface ActiveTriggerChangeDetails {
+  value: string | null
+}
+
+export interface TriggerProps {
+  value?: string
+}
+
+// Context
+activeTriggerValue: string | null
+defaultActiveTriggerValue?: string | null
+onActiveTriggerChange?: (details: ActiveTriggerChangeDetails) => void
+
+// API Methods
+api.activeTriggerValue: string | null
+api.setActiveTriggerValue(value: string | null): void
+api.getTriggerProps(props?: TriggerProps)
+api.getContextTriggerProps(props?: TriggerProps)
+```
+
+### Usage Example
+
+```tsx
+function DocumentManager() {
+  const [menu, menuApi] = useMenu({
+    defaultActiveTriggerValue: null,
+    onActiveTriggerChange: (details) => {
+      console.log('Active trigger:', details.value)
+    }
+  })
+
+  return (
+    <table>
+      {documents.map((doc) => (
+        <tr key={doc.id}>
+          <td>{doc.name}</td>
+          <td>
+            <button {...menuApi.getTriggerProps({ value: `${doc.id}` })}>
+              <MoreVerticalIcon />
+            </button>
+          </td>
+        </tr>
+      ))}
+    </table>
+
+    <div {...menuApi.getPositionerProps()}>
+      <div {...menuApi.getContentProps()}>
+        <button {...menuApi.getItemProps({ value: 'rename' })}>
+          Rename
+        </button>
+        <button {...menuApi.getItemProps({ value: 'delete' })}>
+          Delete
+        </button>
+      </div>
+    </div>
+  )
+}
+```
+
+### Technical Implementation
+
+#### 1. State Machine Context (menu.machine.ts)
+
+```typescript
+context({ bindable, prop }) {
+  return {
+    activeTriggerValue: bindable<string | null>(() => ({
+      defaultValue: prop("defaultActiveTriggerValue") ?? null,
+      value: prop("activeTriggerValue"),
+      onChange(value) {
+        prop("onActiveTriggerChange")?.({ value })
+      },
+    })),
+  }
+}
+```
+
+#### 2. Event Handling
+
+```typescript
+// Global event handler
+on: {
+  "ACTIVE_TRIGGER.SET": {
+    actions: ["setActiveTrigger"],
+  },
+}
+
+// Smart switching logic
+onClick(event) {
+  const shouldSwitch = open && !current
+  send({
+    type: shouldSwitch ? "ACTIVE_TRIGGER.SET" : "TRIGGER_CLICK",
+    target: event.currentTarget,
+    value,
+  })
+}
+```
+
+#### 3. DOM Helpers (menu.dom.ts)
+
+```typescript
+// Support function-based IDs
+export const getTriggerId = (ctx: Scope, value?: string) => {
+  const customId = ctx.ids?.trigger
+  if (customId != null) return isFunction(customId) ? customId(value) : customId
+  return value ? `menu:${ctx.id}:trigger:${value}` : `menu:${ctx.id}:trigger`
+}
+
+// Query all triggers
+export const getTriggerEls = (ctx: Scope): HTMLElement[] =>
+  queryAll<HTMLElement>(ctx.getDoc(), `[data-scope="menu"][data-part="trigger"][data-ownedby="${ctx.id}"]`)
+
+// Get active trigger with fallback
+export const getActiveTriggerEl = (ctx: Scope, value: string | null): HTMLElement | null => {
+  return value == null ? getTriggerEls(ctx)[0] : ctx.getById(getTriggerId(ctx, value))
+}
+```
+
+#### 4. Data Attributes (menu.connect.ts)
+
+```typescript
+getTriggerProps(props: TriggerProps = {}) {
+  const { value } = props
+  const current = value == null ? false : activeTriggerValue === value
+
+  return normalize.button({
+    id: dom.getTriggerId(scope, value),
+    "data-ownedby": scope.id,
+    "data-value": value,
+    "data-current": dataAttr(current),
+    // ... event handlers
+  })
+}
+```
+
+#### 5. Positioning
+
+```typescript
+// trackPositioning effect
+const activeTriggerValue = context.get("activeTriggerValue")
+const triggerEl = dom.getActiveTriggerEl(scope, activeTriggerValue)
+return getPlacement(triggerEl, getPositionerEl, { ...positioning })
+```
+
+#### 6. Focus Management
+
+**Challenge:** Tab navigation between triggers was stealing focus back to the active trigger.
+
+**Solution:** Moved `focusTrigger` action from "closed" state entry to specific transitions:
+
+```typescript
+// WRONG: Entry actions fire on ALL transitions to "closed"
+closed: {
+  entry: ["clearHighlightedItem", "focusTrigger", "resumePointer"],  // ❌
+}
+
+// CORRECT: Only on transitions that actually close the menu
+TRIGGER_CLICK: {
+  target: "closed",
+  actions: ["invokeOnClose", "focusTrigger"],  // ✅
+}
+
+// CORRECT: NOT on Tab navigation
+TRIGGER_FOCUS: {
+  target: "closed",
+  // No focusTrigger - trigger already has natural focus ✅
+}
+```
+
+### Issues Encountered and Solutions
+
+#### Issue 1: Event Naming Convention
+**Problem:** Initially used lowercase "activeTrigger.set"
+**Solution:** Changed to uppercase "ACTIVE_TRIGGER.SET" per Zag conventions
+
+#### Issue 2: Outside Click Detection
+**Problem:** Only first trigger was excluded from dismissable
+**Solution:** Exclude all triggers using spread arrays
+```typescript
+exclude: [...dom.getTriggerEls(scope), ...dom.getContextTriggerEls(scope)]
+```
+
+#### Issue 3: Positioning Not Working
+**Problem:** `trackPositioning` and `reposition` used first trigger, not active trigger
+**Solution:** Use `dom.getActiveTriggerEl(scope, activeTriggerValue)` instead of `dom.getTriggerEl(scope)`
+
+#### Issue 4: Tab Navigation Broken
+**Problem:** Tabbing between triggers caused focus to snap back to active trigger
+**Root Cause:** `focusTrigger` in "closed" entry actions fired on ALL transitions to closed, including natural Tab navigation
+**Solution:** Remove from entry actions, add only to transitions that actually close the menu (see Focus Management above)
+
+#### Issue 5: Focus Not Restored on Close
+**Problem:** After fixing Tab navigation, focus wasn't restored when menu closed
+**Solution:** Add `focusTrigger` to global `CLOSE` event handler transition branch
+```typescript
+CLOSE: [
+  { guard: "isOpenControlled", actions: ["invokeOnClose"] },
+  { target: "closed", actions: ["invokeOnClose", "focusTrigger"] },  // ✅
+]
+```
+
+### Files Modified
+
+1. **menu.types.ts** - Added `ActiveTriggerChangeDetails`, `TriggerProps`, updated `ElementIds`
+2. **menu.machine.ts** - Added bindable context, ACTIVE_TRIGGER.SET event, positioning/focus fixes
+3. **menu.dom.ts** - Added helper functions for multiple trigger querying
+4. **menu.connect.ts** - Smart switching logic, data attributes, active trigger tracking
+5. **menu.props.ts** - Registered new props
+6. **menu/index.ts** - Exported new types
+7. **menu-multiple-trigger.tsx** - Example implementation
+
+### Pattern Alignment with Research
+
+Our implementation successfully follows the recommendations from the research:
+
+| Recommendation | Implementation | Status |
+|----------------|----------------|--------|
+| Value-Based Identification | `activeTriggerValue: string \| null` | ✅ |
+| Data Attribute Linking | `data-ownedby`, `data-value`, `data-current` | ✅ |
+| Focus Management | Track active trigger, restore on close | ✅ |
+| Positioning | Use active trigger element for placement | ✅ |
+| Outside Click | Exclude all triggers via data attributes | ✅ |
+| No DOM Element Tracking | Value-based, machine is framework-agnostic | ✅ |
+| No Payload Support | Keep API simple | ✅ |
+| Optional Values | Backward compatible, works without values | ✅ |
+| Function-based IDs | `ids.trigger: (value) => string` | ✅ |
+
+### Key Insights
+
+1. **Entry Actions vs. Transition Actions**
+   - Entry actions fire on ALL transitions to a state
+   - Transition actions fire only on specific paths
+   - Focus restoration belongs in transitions, not entries
+
+2. **Smart Switching**
+   - Different event type when switching vs. opening
+   - `ACTIVE_TRIGGER.SET` for switching
+   - `TRIGGER_CLICK` for opening
+   - Enables seamless trigger switching without closing
+
+3. **Active Trigger Fallback**
+   - When `activeTriggerValue` is null, use first trigger
+   - Maintains backward compatibility
+   - Works for single-trigger use cases
+
+4. **Context Menu Support**
+   - Both regular and context triggers share the same pattern
+   - `getTriggerProps()` and `getContextTriggerProps()` are parallel
+   - Single `activeTriggerValue` tracks both
+
+### Comparison with Other Libraries
+
+| Feature | Zag | Base UI | Radix | React Aria |
+|---------|-----|---------|-------|------------|
+| Multiple triggers | ✅ | ✅ | ❌ | ⚠️ Manual |
+| Framework-agnostic | ✅ | ❌ | ❌ | ❌ |
+| Focus restoration | ✅ | ✅ | ❌ | ⚠️ Manual |
+| Automatic positioning | ✅ | ✅ | N/A | ✅ |
+| Smart switching | ✅ | ❌ | N/A | ❌ |
+| Context menu support | ✅ | ❌ | ❌ | ❌ |
+| No refs/DOM tracking | ✅ | ❌ | ❌ | ❌ |
+
+---
+
 ## References
 
 - **Base UI:** `/Users/segunadebayo/Documents/code/base-ui/packages/react/src/popover/`
@@ -555,3 +833,4 @@ Compared to other libraries, Zag's approach offers:
 - **Ariakit:** GitHub Discussion #1042, CHANGELOG.md
 - **Headless UI:** GitHub Discussion #1926, Issue #1564
 - **Bootstrap:** GitHub Issue #39010
+- **Zag Menu Implementation:** `/Users/segunadebayo/Documents/code/zag/packages/machines/menu/`

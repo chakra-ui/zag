@@ -12,9 +12,26 @@ Add support for multiple triggers with value tracking across Zag components, bas
 - Changeset created
 - Ready for testing and PR
 
+**Phase 2 (Tooltip): ✅ COMPLETED**
+- Multiple trigger support implemented
+- Positioning anchors to active trigger
+- Focus management working
+- Smart switching implemented
+- All triggers excluded from outside click
+
+**Phase 2 (Menu): ✅ COMPLETED**
+- Multiple trigger support implemented (both button and context triggers)
+- Positioning anchors to active trigger
+- Focus management with Tab navigation fix
+- Smart switching implemented
+- All triggers excluded from outside click
+- Context menu support (getContextTriggerProps)
+- Example created: menu-multiple-trigger.tsx
+- Documentation updated in multiple-trigger-research.md
+
 **Next Steps:**
-- Add unit tests
-- Apply pattern to other components (Popover, Menu, Tooltip, etc.)
+- Add unit tests for Dialog, Tooltip, and Menu
+- Apply pattern to remaining components (Popover, Hover Card, Bottom Sheet)
 
 ## Overview
 
@@ -656,39 +673,58 @@ When no value is provided:
     - [ ] Test repositioning when different trigger is activated
     - [ ] Test all triggers excluded from outside click
 
-- [ ] **Menu** (`packages/machines/menu/`) - **Includes positioning + context triggers**
-  - [ ] Update types:
-    - [ ] Update `ElementIds['trigger']` to `string | ((value?: string) => string)`
-    - [ ] Update `ElementIds['contextTrigger']` to `string | ((value?: string) => string)`
-    - [ ] Add `activeTriggerValue`, `defaultActiveTriggerValue`, `onActiveTriggerChange`
-  - [ ] Update machine:
-    - [ ] Add `uid` and `activeTriggerValue` to context
-    - [ ] Update events to accept `value` property
-    - [ ] Add watch to reposition when `activeTriggerValue` changes
-    - [ ] Update positioning effect to anchor to active trigger
-    - [ ] Update dismissable effect to exclude all triggers
-  - [ ] Update dom.ts:
-    - [ ] Add `getAllTriggerEls(scope, uid)` - includes BOTH button and context triggers
-    - [ ] Add `getAllContextTriggerEls(scope, uid)` - context triggers only
-    - [ ] Add `getActiveTriggerEl(scope, uid, value)` with fallback
-    - [ ] Update `getContextTriggerId` to accept optional value parameter
-  - [ ] Update connect:
-    - [ ] Modify `getTriggerProps({ value })` - button triggers
-    - [ ] Modify `getContextTriggerProps({ value })` - context menu triggers
-    - [ ] Add `data-ownedby` and `data-trigger-value` to both trigger types
-    - [ ] Update trigger ID generation for both types
+- [x] **Menu** (`packages/machines/menu/`) - **Includes positioning + context triggers** ✅ COMPLETED
+  - [x] Update types:
+    - [x] Update `ElementIds['trigger']` to `string | ((value?: string) => string)`
+    - [x] Update `ElementIds['contextTrigger']` to `string | ((value?: string) => string)`
+    - [x] Add `activeTriggerValue`, `defaultActiveTriggerValue`, `onActiveTriggerChange`
+    - [x] Add `ActiveTriggerChangeDetails` and `TriggerProps` interfaces
+  - [x] Update machine:
+    - [x] Add `activeTriggerValue` to context (bindable)
+    - [x] Update events to accept `value` property
+    - [x] Add `ACTIVE_TRIGGER.SET` event handler
+    - [x] Add `setActiveTrigger` action
+    - [x] Update positioning effect to anchor to active trigger
+    - [x] Update `reposition` action to use active trigger
+    - [x] Update dismissable effect to exclude all triggers
+    - [x] Fix focus management (moved `focusTrigger` from entry to transitions)
+  - [x] Update dom.ts:
+    - [x] Add `getTriggerEls(scope)` - queries all button triggers
+    - [x] Add `getContextTriggerEls(scope)` - queries all context triggers
+    - [x] Add `getActiveTriggerEl(scope, value)` with fallback
+    - [x] Add `getActiveContextTriggerEl(scope, value)` with fallback
+    - [x] Update `getTriggerId` to accept optional value parameter (function/string/default)
+    - [x] Update `getContextTriggerId` to accept optional value parameter
+  - [x] Update connect:
+    - [x] Modify `getTriggerProps({ value })` - button triggers
+    - [x] Modify `getContextTriggerProps({ value })` - context menu triggers
+    - [x] Add smart switching logic (ACTIVE_TRIGGER.SET vs TRIGGER_CLICK)
+    - [x] Add `data-ownedby`, `data-value`, `data-current` to both trigger types
+    - [x] Update trigger ID generation for both types
+    - [x] Add `activeTriggerValue` to API
+    - [x] Add `setActiveTriggerValue` method to API
+    - [x] Update `aria-labelledby` to use active trigger ID
+  - [x] Update props.ts:
+    - [x] Add `activeTriggerValue`, `defaultActiveTriggerValue`, `onActiveTriggerChange`
+  - [x] Update index.ts:
+    - [x] Export `ActiveTriggerChangeDetails` and `TriggerProps` types
+  - [x] Create example:
+    - [x] Created `menu-multiple-trigger.tsx` with document manager pattern
   - [ ] Add tests:
     - [ ] Test multiple button triggers
     - [ ] Test multiple context triggers (right-click areas)
     - [ ] Test mix of button + context triggers
     - [ ] Test positioning anchors to correct trigger (button or context area)
     - [ ] Test all triggers (both types) excluded from outside click
+    - [ ] Test Tab navigation between triggers
+    - [ ] Test focus restoration to active trigger on close
+    - [ ] Test smart switching (clicking different trigger while open)
 
-- [ ] **Tooltip** (`packages/machines/tooltip/`) - **Includes positioning logic**
-  - [ ] Update types (same as dialog)
-  - [ ] Update machine (similar to popover with positioning)
-  - [ ] Update dom.ts (`getAllTriggerEls` and `getActiveTriggerEl`)
-  - [ ] Update connect (add data attributes)
+- [x] **Tooltip** (`packages/machines/tooltip/`) - **Includes positioning logic** ✅ COMPLETED
+  - [x] Update types (same as dialog)
+  - [x] Update machine (positioning and focus management)
+  - [x] Update dom.ts (`getTriggerEls` and `getActiveTriggerEl`)
+  - [x] Update connect (add data attributes and smart switching)
   - [ ] Add tests (including positioning tests)
 
 - [ ] **Hover Card** (`packages/machines/hover-card/`) - **Includes positioning logic**
@@ -731,12 +767,12 @@ When no value is provided:
     - [ ] Multiple triggers at different positions
     - [ ] Demonstrate repositioning to active trigger
     - [ ] Show outside click excluding all triggers
-  - [ ] Create `pages/composition/menu-multiple-trigger.tsx`
-    - [ ] Multiple button triggers (File, Edit, View menus)
-    - [ ] Multiple context menu triggers (right-click different areas)
-    - [ ] Mix of button + context triggers
-    - [ ] Show menu positioning to active trigger
-    - [ ] Demonstrate context-aware menu items based on `activeTriggerValue`
+  - [x] Create `pages/composition/menu-multiple-trigger.tsx` ✅ COMPLETED
+    - [x] Document manager with multiple menu triggers per row
+    - [x] Shows active trigger value tracking
+    - [x] Demonstrates mergeProps pattern for payload management
+    - [x] Menu items: Rename, Delete
+    - [x] Shows positioning to active trigger
   - [ ] Create `pages/composition/tooltip-multiple-trigger.tsx`
     - [ ] Multiple hover triggers
     - [ ] Positioning to active trigger
