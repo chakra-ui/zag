@@ -57,7 +57,26 @@ const svelteStyleMerge = (existing: any, incoming: any) => {
   return merged
 }
 
-export const mergeProps = createMergeProps({
-  classMerge: svelteClassMerge,
-  styleMerge: svelteStyleMerge,
-})
+type SvelteClassValue =
+  | string
+  | (string | Record<string, boolean> | null | undefined | boolean | (string | Record<string, boolean>)[])[]
+  | Record<string, boolean>
+  | null
+  | undefined
+
+type SvelteProps = Record<string | symbol, any> & {
+  class?: SvelteClassValue
+  style?: string | Record<string, string>
+}
+
+export function mergeProps<T extends SvelteProps[]>(
+  ...args: T
+): Record<string | symbol, any> & {
+  class?: SvelteClassValue
+  style?: string
+} {
+  return createMergeProps({
+    classMerge: svelteClassMerge,
+    styleMerge: svelteStyleMerge,
+  })(...args) as any
+}
