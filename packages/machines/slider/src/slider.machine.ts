@@ -96,6 +96,12 @@ export const machine = createMachine<SliderSchema>({
     }
   },
 
+  refs() {
+    return {
+      thumbDragOffset: null,
+    }
+  },
+
   computed: {
     isHorizontal: ({ prop }) => prop("orientation") === "horizontal",
     isVertical: ({ prop }) => prop("orientation") === "vertical",
@@ -154,7 +160,7 @@ export const machine = createMachine<SliderSchema>({
         },
         THUMB_POINTER_DOWN: {
           target: "dragging",
-          actions: ["setFocusedIndex", "focusActiveThumb"],
+          actions: ["setFocusedIndex", "setThumbDragOffset", "focusActiveThumb"],
         },
       },
     },
@@ -168,7 +174,7 @@ export const machine = createMachine<SliderSchema>({
         },
         THUMB_POINTER_DOWN: {
           target: "dragging",
-          actions: ["setFocusedIndex", "focusActiveThumb"],
+          actions: ["setFocusedIndex", "setThumbDragOffset", "focusActiveThumb"],
         },
         ARROW_DEC: {
           actions: ["decrementThumbAtIndex", "invokeOnChangeEnd"],
@@ -195,14 +201,14 @@ export const machine = createMachine<SliderSchema>({
       on: {
         POINTER_UP: {
           target: "focus",
-          actions: ["invokeOnChangeEnd"],
+          actions: ["invokeOnChangeEnd", "clearThumbDragOffset"],
         },
         POINTER_MOVE: {
           actions: ["setPointerValue"],
         },
         POINTER_CANCEL: {
           target: "idle",
-          actions: ["clearFocusedIndex"],
+          actions: ["clearFocusedIndex", "clearThumbDragOffset"],
         },
       },
     },
@@ -285,6 +291,13 @@ export const machine = createMachine<SliderSchema>({
       },
       clearFocusedIndex({ context }) {
         context.set("focusedIndex", -1)
+      },
+      setThumbDragOffset(params) {
+        const { refs, event } = params
+        refs.set("thumbDragOffset", event.offset ?? null)
+      },
+      clearThumbDragOffset({ refs }) {
+        refs.set("thumbDragOffset", null)
       },
       setPointerValue(params) {
         queueMicrotask(() => {

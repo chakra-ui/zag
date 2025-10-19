@@ -222,6 +222,13 @@ export interface SliderSchema {
   state: "idle" | "dragging" | "focus"
   props: RequiredBy<SliderProps, PropsWithDefault>
   context: Context
+  refs: {
+    /**
+     * The offset from the thumb center when pointer down occurs.
+     * Used to maintain constant offset during drag.
+     */
+    thumbDragOffset: { x: number; y: number } | null
+  }
   computed: Computed
   event: EventObject
   action: string
