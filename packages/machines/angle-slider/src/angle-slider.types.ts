@@ -90,6 +90,9 @@ export interface AngleSliderSchema {
   context: {
     value: number
   }
+  refs: {
+    thumbDragOffset: number | null
+  }
   action: string
   event: EventObject
   effect: string

@@ -30,6 +30,12 @@ export const machine = createMachine<AngleSliderSchema>({
     }
   },
 
+  refs() {
+    return {
+      thumbDragOffset: null,
+    }
+  },
+
   computed: {
     interactive: ({ prop }) => !(prop("disabled") || prop("readOnly")),
     valueAsDegree: ({ context }) => `${context.get("value")}deg`,
@@ -58,6 +64,10 @@ export const machine = createMachine<AngleSliderSchema>({
           target: "dragging",
           actions: ["setPointerValue", "focusThumb"],
         },
+        "THUMB.POINTER_DOWN": {
+          target: "dragging",
+          actions: ["setThumbDragOffset", "focusThumb"],
+        },
         "THUMB.FOCUS": {
           target: "focused",
         },
@@ -69,6 +79,10 @@ export const machine = createMachine<AngleSliderSchema>({
         "CONTROL.POINTER_DOWN": {
           target: "dragging",
           actions: ["setPointerValue", "focusThumb"],
+        },
+        "THUMB.POINTER_DOWN": {
+          target: "dragging",
+          actions: ["setThumbDragOffset", "focusThumb"],
         },
         "THUMB.ARROW_DEC": {
           actions: ["decrementValue", "invokeOnChangeEnd"],
@@ -94,7 +108,7 @@ export const machine = createMachine<AngleSliderSchema>({
       on: {
         "DOC.POINTER_UP": {
           target: "focused",
-          actions: ["invokeOnChangeEnd"],
+          actions: ["invokeOnChangeEnd", "clearThumbDragOffset"],
         },
         "DOC.POINTER_MOVE": {
           actions: ["setPointerValue"],
@@ -128,10 +142,11 @@ export const machine = createMachine<AngleSliderSchema>({
           valueAsDegree: computed("valueAsDegree"),
         })
       },
-      setPointerValue({ scope, event, context, prop }) {
+      setPointerValue({ scope, event, context, prop, refs }) {
         const controlEl = dom.getControlEl(scope)
         if (!controlEl) return
-        const deg = getAngle(controlEl, event.point)
+        const angularOffset = refs.get("thumbDragOffset")
+        const deg = getAngle(controlEl, event.point, angularOffset)
         context.set("value", constrainAngle(deg, prop("step")))
       },
       setValueToMin({ context }) {
@@ -166,13 +181,27 @@ export const machine = createMachine<AngleSliderSchema>({
           dom.getThumbEl(scope)?.focus({ preventScroll: true })
         })
       },
+      setThumbDragOffset(params) {
+        const { refs, event } = params
+        refs.set("thumbDragOffset", event.angularOffset ?? null)
+      },
+      clearThumbDragOffset({ refs }) {
+        refs.set("thumbDragOffset", null)
+      },
     },
   },
 })
 
-function getAngle(controlEl: HTMLElement, point: Point) {
+function getAngle(controlEl: HTMLElement, point: Point, angularOffset?: number | null) {
   const rect = createRect(controlEl.getBoundingClientRect())
-  return getPointAngle(rect, point)
+  const angle = getPointAngle(rect, point)
+
+  // Apply angular offset for relative thumb dragging
+  if (angularOffset != null) {
+    return angle - angularOffset
+  }
+
+  return angle
 }
 
 function clampAngle(degree: number) {

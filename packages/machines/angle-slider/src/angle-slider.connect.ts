@@ -1,8 +1,14 @@
 import { dataAttr, getEventPoint, getEventStep, isLeftClick } from "@zag-js/dom-query"
-import type { NormalizeProps, PropTypes } from "@zag-js/types"
+import { createRect, getPointAngle } from "@zag-js/rect-utils"
+import type { NormalizeProps, PropTypes, Point } from "@zag-js/types"
 import { parts } from "./angle-slider.anatomy"
 import * as dom from "./angle-slider.dom"
 import type { AngleSliderService, AngleSliderApi } from "./angle-slider.types"
+
+function getAngle(controlEl: HTMLElement, point: Point) {
+  const rect = createRect(controlEl.getBoundingClientRect())
+  return getPointAngle(rect, point)
+}
 
 export function connect<T extends PropTypes>(
   service: AngleSliderService,
@@ -107,6 +113,25 @@ export function connect<T extends PropTypes>(
         "data-disabled": dataAttr(disabled),
         "data-invalid": dataAttr(invalid),
         "data-readonly": dataAttr(readOnly),
+        onPointerDown(event) {
+          if (!interactive) return
+          if (!isLeftClick(event)) return
+
+          // Calculate angular offset for relative thumb dragging
+          const point = getEventPoint(event)
+          const controlEl = dom.getControlEl(scope)
+          if (!controlEl) return
+
+          // Get what angle this click position would represent
+          const clickAngle = getAngle(controlEl, point)
+          // Current thumb angle
+          const currentAngle = value
+          // Calculate angular offset (how far off the click is from current position)
+          const angularOffset = clickAngle - currentAngle
+
+          send({ type: "THUMB.POINTER_DOWN", point, angularOffset })
+          event.stopPropagation()
+        },
         onFocus() {
           send({ type: "THUMB.FOCUS" })
         },
