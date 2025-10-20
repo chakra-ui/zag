@@ -1,0 +1,145 @@
+---
+import { colorPickerControls, getControlDefaults } from "@zag-js/shared"
+import Toolbar from "../components/Toolbar.astro"
+import Controls from "../components/Controls.astro"
+import StateVisualizer from "../components/StateVisualizer.astro"
+import Layout from "../layouts/Layout.astro"
+
+const presets = ["#f47373", "#697689"]
+const state = getControlDefaults(colorPickerControls)
+---
+
+<script>
+  import Alpine from "alpinejs"
+  import * as colorPicker from "@zag-js/color-picker"
+  import { createZagPlugin } from "../lib"
+
+  Alpine.magic("parse", () => {
+    return (color: string) => colorPicker.parse(color)
+  })
+  Alpine.plugin(createZagPlugin("color-picker", colorPicker))
+</script>
+
+<Layout>
+  <main
+    class="color-picker"
+    x-data={JSON.stringify(state)}
+    x-id="['color-picker']"
+    x-color-picker={`{
+      id: $id('color-picker'),
+      name: 'color',
+      foramt: 'hsla',
+      defaultValue: $parse('hsl(0, 100%, 50%)'),
+      ${Object.keys(state)}
+    }`}
+  >
+    <form>
+      <input x-color-picker:hidden-input />
+      <div x-color-picker:root>
+        <label x-color-picker:label>
+          Select Color: <span data-testid="value-text" x-text="$colorPicker.valueAsString"></span>
+        </label>
+      </div>
+      <div x-color-picker:control>
+        <button x-color-picker:trigger>
+          <div x-color-picker:transparency-grid="{size: '10px'}"></div>
+          <div x-color-picker:swatch="{value: $colorPicker.value}"></div>
+        </button>
+        <input x-color-picker:channel-input="{channel: 'hex'}" />
+        <input x-color-picker:channel-input="{channel: 'alpha'}" />
+      </div>
+
+      <div x-color-picker:positioner>
+        <div x-color-picker:content>
+          <div class="content__inner">
+            <div x-color-picker:area>
+              <div x-color-picker:area-background></div>
+              <div x-color-picker:area-thumb></div>
+            </div>
+
+            <div x-color-picker:channel-slider="{channel: 'hue'}">
+              <div x-color-picker:channel-slider-track="{channel: 'hue'}"></div>
+              <div x-color-picker:channel-slider-thumb="{channel: 'hue'}"></div>
+            </div>
+
+            <div x-color-picker:channel-slider="{channel: 'alpha'}">
+              <div x-color-picker:transparency-grid="{size: '12px'}"></div>
+              <div x-color-picker:channel-slider-track="{channel: 'alpha'}"></div>
+              <div x-color-picker:channel-slider-thumb="{channel: 'alpha'}"></div>
+            </div>
+
+            <template x-if="$colorPicker.format.startsWith('hsl')">
+              <div style="display: flex; width: 100%;">
+                <span>H</span>
+                <input x-color-picker:channel-input="{channel: 'hue'}" />
+                <span>S</span>
+                <input x-color-picker:channel-input="{channel: 'saturation'}" />
+                <span>L</span>
+                <input x-color-picker:channel-input="{channel: 'lightness'}" />
+                <span>A</span>
+                <input x-color-picker:channel-input="{channel: 'alpha'}" />
+              </div>
+            </template>
+
+            <template x-if="$colorPicker.format.startsWith('rgb')">
+              <div style="display: flex; width: 100%;">
+                <span>R</span>
+                <input x-color-picker:channel-input="{channel: 'red'}" />
+                <span>G</span>
+                <input x-color-picker:channel-input="{channel: 'green'}" />
+                <span>B</span>
+                <input x-color-picker:channel-input="{channel: 'blue'}" />
+                <span>A</span>
+                <input x-color-picker:channel-input="{channel: 'alpha'}" />
+              </div>
+            </template>
+
+            <template x-if="$colorPicker.format.startsWith('hsb')">
+              <div style="display: flex; width: 100%;">
+                <span>H</span>
+                <input x-color-picker:channel-input="{channel: 'hue'}" />
+                <span>S</span>
+                <input x-color-picker:channel-input="{channel: 'saturation'}" />
+                <span>B</span>
+                <input x-color-picker:channel-input="{channel: 'brightness'}" />
+                <span>A</span>
+                <input x-color-picker:channel-input="{channel: 'alpha'}" />
+              </div>
+            </template>
+
+            <div style="display: flex; gap: 10px; align-items: center;">
+              <div style="position: relative;">
+                <div x-color-picker:transparency-grid="{size: '4px'}"></div>
+                <div x-color-picker:swatch="{value: $colorPicker.value}"></div>
+              </div>
+              <p data-testid="value-text" x-text="$colorPicker.valueAsString"></p>
+            </div>
+
+            <input x-color-picker:channel-input="{channel: 'hex'}" />
+
+            <div x-color-picker:swatch-group style="display: flex; gap: 10px;">
+              <template x-for={`preset in ${JSON.stringify(presets)}`} x-bind:key="preset">
+                <button x-color-picker:swatch-trigger="{value: preset}">
+                  <div style="position: relative;">
+                    <div x-color-picker:transparency-grid="{size: '4px'}"></div>
+                    <div x-color-picker:swatch="{value: preset}"></div>
+                  </div>
+                </button>
+              </template>
+            </div>
+
+            <button x-color-picker:eye-dropper-trigger>EyeDropIcon</button>
+          </div>
+        </div>
+      </div>
+
+      <button type="submit">Submit</button>
+      <button type="reset">Reset</button>
+    </form>
+
+    <Toolbar>
+      <Controls config={colorPickerControls} {state} />
+      <StateVisualizer />
+    </Toolbar>
+  </main>
+</Layout>

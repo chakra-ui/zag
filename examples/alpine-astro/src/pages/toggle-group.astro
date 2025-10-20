@@ -1,0 +1,40 @@
+---
+import { getControlDefaults, toggleGroupControls } from "@zag-js/shared"
+import Layout from "../layouts/Layout.astro"
+import Toolbar from "../components/Toolbar.astro"
+import Controls from "../components/Controls.astro"
+import StateVisualizer from "../components/StateVisualizer.astro"
+
+const state = getControlDefaults(toggleGroupControls)
+---
+
+<script>
+  import Alpine from "alpinejs"
+  import * as toggleGroup from "@zag-js/toggle-group"
+  import { createZagPlugin } from "../lib"
+  import { toggleGroupData } from "@zag-js/shared"
+
+  Alpine.magic("toggleGroupData", () => toggleGroupData)
+  Alpine.plugin(createZagPlugin("toggle-group", toggleGroup))
+</script>
+
+<Layout>
+  <main
+    class="toggle-group"
+    x-data={JSON.stringify(state)}
+    x-id="['toggle-group']"
+    x-toggle-group={`{id: $id('toggle-group'), ${Object.keys(state)}}`}
+  >
+    <button>Outside</button>
+    <div x-toggle-group:root>
+      <template x-for="item in $toggleGroupData" x-bind:key="item.value">
+        <button x-toggle-group:item="{value: item.value}" x-text="item.label"></button>
+      </template>
+    </div>
+
+    <Toolbar>
+      <Controls {state} config={toggleGroupControls} />
+      <StateVisualizer />
+    </Toolbar>
+  </main>
+</Layout>

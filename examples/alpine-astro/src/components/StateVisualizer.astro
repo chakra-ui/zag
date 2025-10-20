@@ -1,0 +1,21 @@
+---
+import type { MachineSchema } from "@zag-js/core"
+
+interface Props<T extends MachineSchema> {
+  // state: Service<T>
+  label?: string
+  omit?: string[]
+  context?: Array<keyof T["context"]>
+}
+const { label = "Visualizer", omit, context } = Astro.props
+---
+
+<div class="viz">
+  <pre
+    dir="ltr">
+      <details open>
+        <summary>{label}</summary>
+        <div x-html={`$highlightState(${JSON.stringify({omit, context})})`} />
+      </details>
+  </pre>
+</div>

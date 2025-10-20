@@ -34,6 +34,12 @@ export function getWebServer(): WebServer {
       url: "http://localhost:3003",
       reuseExistingServer: !CI,
     },
+    alpine: {
+      cwd: "./examples/alpine-astro",
+      command: "pnpm astro dev --port 3005",
+      url: "http://localhost:3005",
+      reuseExistingServer: !CI,
+    },
   }
 
   return frameworks[framework]

@@ -1,0 +1,62 @@
+---
+import { carouselControls, carouselData, getControlDefaults } from "@zag-js/shared"
+import Toolbar from "../components/Toolbar.astro"
+import Controls from "../components/Controls.astro"
+import StateVisualizer from "../components/StateVisualizer.astro"
+import Layout from "../layouts/Layout.astro"
+
+const state = getControlDefaults(carouselControls)
+---
+
+<script>
+  import Alpine from "alpinejs"
+  import * as carousel from "@zag-js/carousel"
+  import { createZagPlugin } from "../lib"
+
+  Alpine.plugin(createZagPlugin("carousel", carousel))
+</script>
+
+<Layout>
+  <main class="carousel" x-data={JSON.stringify(state)}>
+    <div
+      x-id="['carousel']"
+      x-carousel={`{
+        id: $id('carousel'),
+        spacing: '20px',
+        slidesPerPage: 2,
+        slideCount: ${carouselData.length},
+        allowMouseDrag: true,
+        ${Object.keys(state)}}`}
+      x-carousel:root
+    >
+      <button x-on:click="$carousel.scrollToIndex(4)">Scroll to 4</button>
+      <div x-carousel:control>
+        <button x-carousel:autoplay-trigger x-text="$carousel.isPlaying ? 'Stop' : 'Play'"></button>
+        <div class="carousel-spacer"></div>
+        <button x-carousel:prev-trigger>Prev</button>
+        <button x-carousel:next-trigger>Next</button>
+      </div>
+
+      <div x-carousel:item-group>
+        {
+          carouselData.map((image, index) => (
+            <div x-carousel:item={JSON.stringify({ index })}>
+              <img src={image} alt="" width="188px" />
+            </div>
+          ))
+        }
+      </div>
+
+      <div x-carousel:indicator-group>
+        <template x-for="(, index) in $carousel.pageSnapPoints" :key="index">
+          <button x-carousel:indicator="{index}"></button>
+        </template>
+      </div>
+
+      <Toolbar>
+        <Controls {state} config={carouselControls} />
+        <StateVisualizer omit={["translations"]} />
+      </Toolbar>
+    </div>
+  </main>
+</Layout>

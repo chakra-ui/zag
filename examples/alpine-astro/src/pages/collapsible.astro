@@ -1,0 +1,39 @@
+---
+import { collapsibleControls, getControlDefaults } from "@zag-js/shared"
+import Toolbar from "../components/Toolbar.astro"
+import Controls from "../components/Controls.astro"
+import StateVisualizer from "../components/StateVisualizer.astro"
+import Layout from "../layouts/Layout.astro"
+
+const state = getControlDefaults(collapsibleControls)
+---
+
+<script>
+  import Alpine from "alpinejs"
+  import * as collapsible from "@zag-js/collapsible"
+  import { createZagPlugin } from "../lib"
+
+  Alpine.plugin(createZagPlugin("collapsible", collapsible))
+</script>
+
+<Layout>
+  <main class="collapsible" x-data={JSON.stringify(state)}>
+    <div x-id="['collapsible']" x-collapsible={`{${Object.keys(state)}, id: $id('collapsible')}`} x-collapsible:root>
+      <button x-collapsible:trigger>Collapsible Trigger<div x-collapsible:indicator>V</div></button>
+      <div x-collapsible:content>
+        <p>
+          Lorem dfd dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore
+          magna sfsd. Ut enim ad minimdfd v eniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea
+          commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat
+          nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim
+          id est laborum. <a href="#">Some Link</a>
+        </p>
+      </div>
+
+      <Toolbar>
+        <Controls config={collapsibleControls} {state} />
+        <StateVisualizer />
+      </Toolbar>
+    </div>
+  </main>
+</Layout>

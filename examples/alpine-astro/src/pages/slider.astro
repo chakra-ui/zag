@@ -1,0 +1,60 @@
+---
+import { getControlDefaults, sliderControls } from "@zag-js/shared"
+import Layout from "../layouts/Layout.astro"
+import Toolbar from "../components/Toolbar.astro"
+import Controls from "../components/Controls.astro"
+import StateVisualizer from "../components/StateVisualizer.astro"
+
+const state = getControlDefaults(sliderControls)
+---
+
+<script>
+  import Alpine from "alpinejs"
+  import * as slider from "@zag-js/slider"
+  import serialize from "form-serialize"
+  import { createZagPlugin } from "../lib"
+
+  Alpine.magic("serialize", () => serialize)
+  Alpine.plugin(createZagPlugin("slider", slider))
+</script>
+
+<Layout>
+  <main
+    class="slider"
+    x-data={JSON.stringify(state)}
+    x-id="['slider']"
+    x-slider={`{id: $id('slider'), name: 'quantity', defaultValue: [0], ${Object.keys(state)}}`}
+  >
+    <form x-on:change="(e) => console.log($serialize(e.currentTarget, { hash: true }))">
+      <div x-slider:root>
+        <div>
+          <label data-testid="label" x-slider:label>Slider Label</label>
+          <output data-testid="output" x-slider:value-text x-text="$slider.value"></output>
+        </div>
+        <div class="control-area">
+          <div x-slider:control>
+            <div data-testid="track" x-slider:track>
+              <div x-slider:range></div>
+            </div>
+            <span x-slider:dragging-indicator="{index: 0}" x-text="$slider.getThumbValue(0)"></span>
+            <template x-for="(, index) in $slider.value" x-bind:key="index">
+              <div x-slider:thumb="{index}">
+                <input x-slider:hidden-input="{index}" />
+              </div>
+            </template>
+          </div>
+          <div x-slider:marker-group>
+            <span x-slider:marker="{value: 10}">*</span>
+            <span x-slider:marker="{value: 30}">*</span>
+            <span x-slider:marker="{value: 90}">*</span>
+          </div>
+        </div>
+      </div>
+    </form>
+
+    <Toolbar>
+      <Controls {state} config={sliderControls} />
+      <StateVisualizer />
+    </Toolbar>
+  </main>
+</Layout>

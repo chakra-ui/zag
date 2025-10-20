@@ -1,0 +1,49 @@
+---
+import Toolbar from "../components/Toolbar.astro"
+import Controls from "../components/Controls.astro"
+import StateVisualizer from "../components/StateVisualizer.astro"
+import Layout from "../layouts/Layout.astro"
+import { getControlDefaults, hoverCardControls } from "@zag-js/shared"
+
+const state = getControlDefaults(hoverCardControls)
+---
+
+<script>
+  import Alpine from "alpinejs"
+  import * as hoverCard from "@zag-js/hover-card"
+  import { createZagPlugin } from "../lib"
+
+  Alpine.plugin(createZagPlugin("hover-card", hoverCard))
+</script>
+
+<Layout>
+  <main
+    class="hover-card"
+    x-id="['hover-card']"
+    x-data={JSON.stringify(state)}
+    x-hover-card={`{id: $id('hover-card'), ${Object.keys(state)}}`}
+  >
+    <div style="display: flex; gap: 50px;">
+      <a href="https://twitter.com/zag_js" target="_blank" rel="noreferrer" x-hover-card:trigger>Twitter</a>
+
+      <template x-teleport="body">
+        <div x-show="$hoverCard.open" x-hover-card:positioner>
+          <div x-hover-card:content>
+            <div x-hover-card:arrow>
+              <div x-hover-card:arrow-tip></div>
+            </div>
+            Twitter Preview
+            <a href="https://twitter.com/zag_js" target="_blank" rel="noreferrer">Twitter</a>
+          </div>
+        </div>
+      </template>
+
+      <div data-part="test-text">Test text</div>
+    </div>
+
+    <Toolbar>
+      <Controls {state} config={hoverCardControls} />
+      <StateVisualizer />
+    </Toolbar>
+  </main>
+</Layout>

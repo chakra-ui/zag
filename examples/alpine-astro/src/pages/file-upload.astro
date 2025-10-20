@@ -1,0 +1,52 @@
+---
+import Toolbar from "../components/Toolbar.astro"
+import Controls from "../components/Controls.astro"
+import StateVisualizer from "../components/StateVisualizer.astro"
+import Layout from "../layouts/Layout.astro"
+import { fileUploadControls, getControlDefaults } from "@zag-js/shared"
+
+const state = getControlDefaults(fileUploadControls)
+---
+
+<script>
+  import Alpine from "alpinejs"
+  import * as fileUpload from "@zag-js/file-upload"
+  import { createZagPlugin } from "../lib"
+
+  Alpine.plugin(createZagPlugin("file-upload", fileUpload))
+</script>
+
+<Layout>
+  <main
+    class="file-upload"
+    x-data={JSON.stringify(state)}
+    x-id="['file-upload']"
+    x-file-upload={`{id: $id('file-upload'), ${Object.keys(state)}}`}
+  >
+    <div x-file-upload:root>
+      <div x-file-upload:dropzone>
+        <input data-testid="input" x-file-upload:hidden-input />
+        Drag your files here
+      </div>
+
+      <button x-file-upload:trigger>Choose Files...</button>
+
+      <ul x-file-upload:item-group>
+        <template x-for="file in $fileUpload.acceptedFiles" x-bind:key="file.name">
+          <li class="file" x-file-upload:item="{file}">
+            <div>
+              <b x-text="file.name"></b>
+            </div>
+            <div x-file-upload:item-size-text="{file}" x-text="$fileUpload.getFileSize(file)"></div>
+            <div x-text="file.type"></div>
+            <button x-file-upload:item-delete-trigger="{file}">X</button>
+          </li>
+        </template>
+      </ul>
+    </div>
+    <Toolbar>
+      <Controls {state} config={fileUploadControls} />
+      <StateVisualizer />
+    </Toolbar>
+  </main>
+</Layout>

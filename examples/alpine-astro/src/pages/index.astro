@@ -1,0 +1,19 @@
+---
+import Layout from "../layouts/Layout.astro"
+import { routesData } from "@zag-js/shared"
+---
+
+<Layout>
+  <div class="index-nav">
+    <h2>Zag.js + Alpine</h2>
+    <ul>
+      {
+        routesData.map((route) => (
+          <li>
+            <a href={route.path}>{route.label}</a>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+</Layout>

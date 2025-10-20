@@ -1,0 +1,32 @@
+---
+import { dataAttr } from "@zag-js/dom-query"
+import { routesData } from "@zag-js/shared"
+import "@zag-js/shared/src/style.css"
+---
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width" />
+    <meta name="generator" content={Astro.generator} />
+    <title>Astro</title>
+  </head>
+  <body>
+    <div class="page">
+      <aside class="nav">
+        <header>Zagjs</header>
+        {
+          routesData
+            .sort((a, b) => a.label.localeCompare(b.label))
+            .map((route) => (
+              <a data-active={dataAttr(Astro.url.pathname === route.path)} href={route.path}>
+                {route.label}
+              </a>
+            ))
+        }
+      </aside>
+      <slot />
+    </div>
+  </body>
+</html>

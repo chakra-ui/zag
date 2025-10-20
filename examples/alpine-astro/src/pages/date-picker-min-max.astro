@@ -1,0 +1,95 @@
+---
+import Toolbar from "../components/Toolbar.astro"
+import StateVisualizer from "../components/StateVisualizer.astro"
+import Layout from "../layouts/Layout.astro"
+---
+
+<script>
+  import Alpine from "alpinejs"
+  import * as datePicker from "@zag-js/date-picker"
+  import { createZagPlugin } from "../lib"
+
+  Alpine.magic("parse", () => {
+    return (date: string) => datePicker.parse(date)
+  })
+  Alpine.plugin(createZagPlugin("date-picker", datePicker))
+</script>
+
+<Layout>
+  <main
+    class="date-picker"
+    x-id="['date-picker']"
+    x-data
+    x-date-picker="{
+      id: $id('date-picker'),
+      locale: 'en',
+      selectionMode: 'single',
+      min: $parse('2025-07-01'),
+      max: $parse('2025-09-30'),
+    }"
+  >
+    <p x-text="'Visible range: ' + $datePicker.visibleRangeText.formatted"></p>
+
+    <output class="date-output">
+      <div x-text="'Selected: ' + ($datePicker.valueAsString ?? '-')"></div>
+      <div x-text="'Focused: ' + $datePicker.focusedValueAsString"></div>
+    </output>
+
+    <div x-date-picker:control>
+      <input x-date-picker:input />
+      <button x-date-picker:clear-trigger>❌</button>
+      <button x-date-picker:trigger>🗓</button>
+    </div>
+
+    <div x-date-picker:positioner>
+      <div x-date-picker:content>
+        <div style="margin-bottom: 20px;">
+          <select x-date-picker:month-select>
+            <template x-for="(month, i) in $datePicker.getMonths()" x-bind:key="i">
+              <option x-bind:value="month.value" x-bind:disabled="month.disabled" x-text="month.label"></option>
+            </template>
+          </select>
+
+          <select x-date-picker:year-select>
+            <template x-for="(year, i) in $datePicker.getYears()" x-bind:key="i">
+              <option x-bind:value="year.value" x-bind:disabled="year.disabled" x-text="year.label"></option>
+            </template>
+          </select>
+        </div>
+
+        <div x-bind:hidden="$datePicker.view !== 'day'">
+          <div x-date-picker:view-control="{view: 'year'}">
+            <button x-date-picker:prev-trigger>Prev</button>
+            <button x-date-picker:view-trigger x-text="$datePicker.visibleRangeText.start"></button>
+            <button x-date-picker:next-trigger>Next</button>
+          </div>
+
+          <table x-date-picker:table="{view: 'day'}">
+            <thead x-date-picker:table-header="{view: 'day'}">
+              <tr x-date-picker:table-row="{view: 'day'}">
+                <template x-for="(day, i) in $datePicker.weekDays" x-bind:key="i">
+                  <th scope="col" x-bind:aria-label="day.long" x-text="day.narrow"> </th>
+                </template>
+              </tr>
+              <tbody x-date-picker:table-body="{view: 'day'}">
+                <template x-for="(week, i) in $datePicker.weeks" x-bind:key="i">
+                  <tr x-date-picker:table-row="{view: 'day'}">
+                    <template x-for="(value, i) in week" x-bind:key="i">
+                      <td x-date-picker:day-table-cell="{value}">
+                        <div x-date-picker:day-table-cell-trigger="{value}" x-text="value.day"></div>
+                      </td>
+                    </template>
+                  </tr>
+                </template>
+              </tbody>
+            </thead>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <Toolbar>
+      <StateVisualizer omit={["weeks"]} />
+    </Toolbar>
+  </main>
+</Layout>

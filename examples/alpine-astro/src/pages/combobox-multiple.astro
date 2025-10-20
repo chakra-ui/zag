@@ -1,0 +1,87 @@
+---
+import { getControlDefaults, type ControlRecord } from "@zag-js/shared"
+import Toolbar from "../components/Toolbar.astro"
+import Controls from "../components/Controls.astro"
+import StateVisualizer from "../components/StateVisualizer.astro"
+import Layout from "../layouts/Layout.astro"
+
+const config: ControlRecord = {
+  removeSelected: {
+    type: "boolean",
+    defaultValue: false,
+  },
+}
+const state = getControlDefaults(config)
+---
+
+<script>
+  import Alpine from "alpinejs"
+  import * as combobox from "@zag-js/combobox"
+  import { comboboxData } from "@zag-js/shared"
+  import { createZagPlugin } from "../lib"
+  import { matchSorter } from "match-sorter"
+
+  Alpine.data("comboboxMultiple", () => ({
+    matchSorter,
+    comboboxData,
+    options: comboboxData,
+    selectedValue: [] as string[],
+    removeSelected: false,
+    get items() {
+      return this.removeSelected ? this.options.filter((item) => !this.selectedValue.includes(item.code)) : this.options
+    },
+  }))
+  Alpine.plugin(createZagPlugin("combobox", combobox))
+</script>
+
+<Layout>
+  <main class="combobox">
+    <div
+      x-id="['combobox']"
+      x-data="comboboxMultiple"
+      x-combobox:collection={`{items, itemToValue: (item) => item.code, itemToString: (item) => item.label}`}
+      x-combobox={`{
+      id: $id('combobox'),
+      collection,
+      onInputValueChange({inputValue}) {
+        const filtered = matchSorter(comboboxData, inputValue, {keys: ['label']});
+        options = filtered.length > 0 ? filtered : comboboxData;
+      },
+      multiple: true,
+      onValueChange({value}) {
+        selectedValue = value
+      },
+      ${Object.keys(state)}}`}
+    >
+      <b x-text="service.state.get()"></b>
+      <b x-text="' / ' + ($combobox.highlightedValue || '-')"></b>
+      <pre data-testid="value-text" x-text="$combobox.valueAsString"></pre>
+      <div x-combobox:root>
+        <label x-combobox:label>Select country</label>
+        <div x-combobox:control>
+          <input data-testid="input" x-combobox:input />
+          <button data-testid="trigger" x-combobox:trigger x-on:click="options = comboboxData">▼</button>
+          <button x-combobox:clear-trigger>X</button>
+        </div>
+      </div>
+
+      <div x-combobox:positioner>
+        <template x-if="options.length > 0">
+          <ul data-testid="combobox-content" x-combobox:content>
+            <template x-for="item in options" x-bind:key="item.code">
+              <li x-bind:data-testid="item.code" x-combobox:item="{item}">
+                <span x-combobox:item-indicator="{item}">✅</span>
+                <span x-text="item.label"></span>
+              </li>
+            </template>
+          </ul>
+        </template>
+      </div>
+
+      <Toolbar>
+        <Controls {state} {config} />
+        <StateVisualizer />
+      </Toolbar>
+    </div>
+  </main>
+</Layout>

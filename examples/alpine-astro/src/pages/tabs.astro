@@ -1,0 +1,47 @@
+---
+import { getControlDefaults, tabsControls, tabsData } from "@zag-js/shared"
+import Layout from "../layouts/Layout.astro"
+import Toolbar from "../components/Toolbar.astro"
+import Controls from "../components/Controls.astro"
+import StateVisualizer from "../components/StateVisualizer.astro"
+
+const state = getControlDefaults(tabsControls)
+---
+
+<script>
+  import Alpine from "alpinejs"
+  import * as tabs from "@zag-js/tabs"
+  import { createZagPlugin } from "../lib"
+
+  Alpine.plugin(createZagPlugin("tabs", tabs))
+</script>
+
+<Layout>
+  <main
+    class="tabs"
+    x-data={JSON.stringify({ ...state, tabsData })}
+    x-id="['tabs']"
+    x-tabs={`{id: $id('tabs'), defaultValue: 'nils', ${Object.keys(state)}}`}
+  >
+    <div x-tabs:root>
+      <div x-tabs:indicator></div>
+      <div x-tabs:list>
+        <template x-for="data in tabsData" x-bind:key="data.id">
+          <button x-tabs:trigger="{value: data.id}" x-bind:data-testid="data.id + '-tab'" x-text="data.label"></button>
+        </template>
+      </div>
+      <template x-for="data in tabsData" x-bind:key="data.id">
+        <div x-tabs:content="{value: data.id}" x-bind:data-testid="data.id+ '-tab-panel'">
+          <p x-text="data.content"></p>
+          <template x-if="data.id === 'agnes'">
+            <input placeholder="Agnes" />
+          </template>
+        </div>
+      </template>
+    </div>
+    <Toolbar>
+      <Controls {state} config={tabsControls} />
+      <StateVisualizer />
+    </Toolbar>
+  </main>
+</Layout>

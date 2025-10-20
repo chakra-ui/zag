@@ -1,0 +1,39 @@
+---
+import { getControlDefaults, switchControls } from "@zag-js/shared"
+import Layout from "../layouts/Layout.astro"
+import Toolbar from "../components/Toolbar.astro"
+import Controls from "../components/Controls.astro"
+import StateVisualizer from "../components/StateVisualizer.astro"
+
+const state = getControlDefaults(switchControls)
+---
+
+<script>
+  import Alpine from "alpinejs"
+  import * as zagSwitch from "@zag-js/switch"
+  import { createZagPlugin } from "../lib"
+
+  Alpine.plugin(createZagPlugin("switch", zagSwitch))
+</script>
+
+<Layout>
+  <main
+    class="switch"
+    x-data={JSON.stringify(state)}
+    x-id="['switch']"
+    x-switch={`{id: $id('switch'), name: 'switch', ${Object.keys(state)}}`}
+  >
+    <label x-switch:root>
+      <input x-switch:hidden-input data-testid="hidden-input" />
+      <span x-switch:control>
+        <span x-switch:thumb></span>
+      </span>
+      <span x-switch:label x-text="'Feature is ' + ($switch.checked ? 'enabled' : 'disabled')"></span>
+    </label>
+
+    <Toolbar>
+      <Controls {state} config={switchControls} />
+      <StateVisualizer />
+    </Toolbar>
+  </main>
+</Layout>

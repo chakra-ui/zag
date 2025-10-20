@@ -1,0 +1,86 @@
+---
+import { getControlDefaults, selectControls, selectData } from "@zag-js/shared"
+import Layout from "../layouts/Layout.astro"
+import Toolbar from "../components/Toolbar.astro"
+import Controls from "../components/Controls.astro"
+import StateVisualizer from "../components/StateVisualizer.astro"
+
+const state = getControlDefaults(selectControls)
+---
+
+<script>
+  import Alpine from "alpinejs"
+  import * as select from "@zag-js/select"
+  import { createZagPlugin } from "../lib"
+  import serialize from "form-serialize"
+
+  Alpine.magic("serialize", () => serialize)
+  Alpine.plugin(createZagPlugin("select", select))
+</script>
+
+<Layout>
+  <main
+    class="select"
+    x-data={JSON.stringify(state)}
+    x-id="['select']"
+    x-select:collection={JSON.stringify({ items: selectData })}
+    x-select={`{
+    collection,
+    id: $id('select'),
+    name: 'country',
+    onHighlightChanges(details) {
+      console.log("onHighlightChange", details)
+    },
+    onValueChange(details) {
+      console.log("onChange", details)
+    },
+    onOpenChange(details) {
+      console.log("onOpenChange", details)
+    },
+    ${Object.keys(state)}
+  }`}
+  >
+    <div x-select:root>
+      <label x-select:label>Label</label>
+      {/* control */}
+      <div x-select:control>
+        <button x-select:trigger>
+          <span x-text="$select.valueAsString || 'Select option'"></span>
+          <span x-select:indicator>▼</span>
+        </button>
+        <button x-select:clear-trigger>X</button>
+      </div>
+
+      <form x-on:change="(e) => console.log($serialize(e.currentTarget, {hash: true}))">
+        {/* Hidden select */}
+        <select x-select:hidden-select>
+          <template x-if="$select.empty">
+            <option value=""></option>
+          </template>
+          {selectData.map((option) => <option value={option.value}>{option.label}</option>)}
+        </select>
+      </form>
+
+      {/* UI select */}
+      <template x-teleport="body">
+        <div x-select:positioner>
+          <ul x-select:content>
+            {
+              selectData.map((item) => (
+                <li x-select:item={JSON.stringify({ item })}>
+                  <span x-select:item-text={JSON.stringify({ item })}>{item.label}</span>
+                  <span x-select:item-indicator={JSON.stringify({ item })}>✓</span>
+                </li>
+              ))
+            }
+          </ul>
+        </div>
+      </template>
+    </div>
+
+    <Toolbar>
+      <Controls {state} config={selectControls} />
+      <StateVisualizer />
+    </Toolbar>
+  </main>
+</Layout>

@@ -1,0 +1,79 @@
+---
+import { getControlDefaults, paginationControls, paginationData } from "@zag-js/shared"
+import Controls from "../components/Controls.astro"
+import Toolbar from "../components/Toolbar.astro"
+import Layout from "../layouts/Layout.astro"
+import StateVisualizer from "../components/StateVisualizer.astro"
+
+const state = getControlDefaults(paginationControls)
+---
+
+<script>
+  import Alpine from "alpinejs"
+  import * as pagination from "@zag-js/pagination"
+  import { createZagPlugin } from "../lib"
+
+  Alpine.plugin(createZagPlugin("pagination", pagination))
+</script>
+
+<Layout>
+  <main
+    class="pagination"
+    x-id="['pagination']"
+    x-data={JSON.stringify({ ...state, paginationData })}
+    x-pagination={`{id: $id('pagination'), count: paginationData.length, onPageChange(value) { details = value }, ${Object.keys(state)}}`}
+  >
+    <table>
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>FIRST NAME</th>
+          <th>LAST NAME</th>
+          <th>EMAIL</th>
+          <th>PHONE</th>
+        </tr>
+      </thead>
+      <tbody>
+        <template x-for="item in $pagination.slice(paginationData)" x-bind:key="item.id">
+          <tr>
+            <td x-text="item.id"></td>
+            <td x-text="item.first_name"></td>
+            <td x-text="item.last_name"></td>
+            <td x-text="item.email"></td>
+            <td x-text="item.phone"></td>
+          </tr>
+        </template>
+      </tbody>
+    </table>
+
+    <template x-if="$pagination.totalPages > 1">
+      <nav x-pagination:root>
+        <ul>
+          <li>
+            <button x-pagination:prev-trigger>Previous</button>
+          </li>
+          <template x-for="(page, i) in $pagination.pages" x-bind:key="i">
+            <template x-if="page.type === 'page'">
+              <li>
+                <button x-bind:data-testid="'item-' + page.value" x-pagination:item="page" x-text="page.value"></button>
+              </li>
+            </template>
+            <template x-if="page.type !== 'page'">
+              <li>
+                <span x-pagination:ellipsis="{index: i}">&#8230;</span>
+              </li>
+            </template>
+          </template>
+          <li>
+            <button x-pagination:next-trigger>Next</button>
+          </li>
+        </ul>
+      </nav>
+    </template>
+
+    <Toolbar>
+      <Controls {state} config={paginationControls} />
+      <StateVisualizer />
+    </Toolbar>
+  </main>
+</Layout>

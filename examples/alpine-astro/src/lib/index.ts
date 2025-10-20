@@ -1,0 +1,1 @@
+export { createZagPlugin } from "./plugin"

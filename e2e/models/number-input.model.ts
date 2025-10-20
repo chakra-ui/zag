@@ -41,7 +41,7 @@ export class NumberInputModel extends Model {
   }
 
   async typeSequentially(value: string, options?: { delay: number }) {
-    return this.input.pressSequentially(value, options)
+    return this.input.pressSequentially(value, options ?? { delay: 10 })
   }
 
   async seeInputHasValue(value: string) {

@@ -1,0 +1,76 @@
+---
+import { getControlDefaults, menuControls } from "@zag-js/shared"
+import Toolbar from "../components/Toolbar.astro"
+import Controls from "../components/Controls.astro"
+import StateVisualizer from "../components/StateVisualizer.astro"
+import Layout from "../layouts/Layout.astro"
+
+const state = getControlDefaults(menuControls)
+---
+
+<script>
+  import Alpine from "alpinejs"
+  import * as menu from "@zag-js/menu"
+  import { createZagPlugin } from "../lib"
+  import { menuOptionData } from "@zag-js/shared"
+
+  Alpine.data("menuOptionData", () => ({ menuOptionData }))
+  Alpine.plugin(createZagPlugin("menu", menu))
+</script>
+
+<Layout>
+  <main x-data={JSON.stringify(state)} x-id="['menu']" x-menu="{id: $id('menu')}">
+    <div>
+      <button data-testid="trigger" x-menu:trigger>
+        Actions <span x-menu:indicator>▾</span>
+      </button>
+
+      <template x-teleport="body">
+        <div x-menu:positioner>
+          <div x-menu:content x-data="menuOptionData">
+            <template
+              x-data="{order: ''}"
+              x-for="item in menuOptionData.order.map((item) => ({
+                type: 'radio',
+                name: 'order',
+                value: item.value,
+                label: item.label,
+                checked: order === item.value,
+                onCheckedChange(checked) { order = checked ? item.value : '' }
+              }))"
+              x-bind:key="item.value"
+            >
+              <div x-menu:option-item="{item}">
+                <span x-menu:item-indicator="{item}">✅</span>
+                <span x-menu:item-text="{item}" x-text="item.label"></span>
+              </div>
+            </template>
+            <hr />
+            <template
+              x-data="type: []"
+              x-for="item in menuOptionData.type.map((item) => ({
+                type: 'checkbox',
+                name: 'type',
+                value: item.value,
+                label: item.label,
+                checked: type.includes(item.value),
+                onCheckedChange(checked) { type = checked ? [...type, item.value] : type.filter((x) => x !== item.value)) }
+              }))"
+              x-bind:key="item.value"
+            >
+              <div x-menu:option-item="{item}">
+                <span x-menu:item-indicator="{item}">✅</span>
+                <span x-menu:item-text="{item}" x-text="item.label"></span>
+              </div>
+            </template>
+          </div>
+        </div>
+      </template>
+    </div>
+
+    <Toolbar>
+      <Controls {state} config={menuControls} />
+      <StateVisualizer />
+    </Toolbar>
+  </main>
+</Layout>

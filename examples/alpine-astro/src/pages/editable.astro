@@ -1,0 +1,49 @@
+---
+import Toolbar from "../components/Toolbar.astro"
+import Controls from "../components/Controls.astro"
+import StateVisualizer from "../components/StateVisualizer.astro"
+import Layout from "../layouts/Layout.astro"
+import { editableControls, getControlDefaults } from "@zag-js/shared"
+
+const state = getControlDefaults(editableControls)
+---
+
+<script>
+  import Alpine from "alpinejs"
+  import * as editable from "@zag-js/editable"
+  import { createZagPlugin } from "../lib"
+
+  Alpine.plugin(createZagPlugin("editable", editable))
+</script>
+
+<Layout>
+  <main
+    class="editable"
+    x-data={JSON.stringify(state)}
+    x-id="['editable']"
+    x-editable={`{id: $id('editable'), defaultValue: 'Hello World', ${Object.keys(state)}}`}
+  >
+    <div x-editable:root>
+      <div x-editable:area>
+        <input data-testid="input" x-editable:input />
+        <span data-testid="preview" x-editable:preview></span>
+      </div>
+      <div x-editable:control>
+        <template x-if="!$editable.editing">
+          <button data-testid="edit-button" x-editable:edit-trigger>Edit</button>
+        </template>
+        <template x-if="$editable.editing">
+          <div>
+            <button data-testid="save-button" x-editable:submit-trigger>Save</button>
+            <button data-testid="cancel-button" x-editable:cancel-trigger>Cancel</button>
+          </div>
+        </template>
+      </div>
+    </div>
+
+    <Toolbar>
+      <Controls {state} config={editableControls} />
+      <StateVisualizer />
+    </Toolbar>
+  </main>
+</Layout>

@@ -1,0 +1,59 @@
+---
+import { getControlDefaults, radioControls, radioData } from "@zag-js/shared"
+import Layout from "../layouts/Layout.astro"
+import Toolbar from "../components/Toolbar.astro"
+import Controls from "../components/Controls.astro"
+import StateVisualizer from "../components/StateVisualizer.astro"
+
+const state = getControlDefaults(radioControls)
+---
+
+<script>
+  import Alpine from "alpinejs"
+  import * as radioGroup from "@zag-js/radio-group"
+  import { createZagPlugin } from "../lib"
+
+  Alpine.plugin(createZagPlugin("radio-group", radioGroup))
+</script>
+
+<Layout>
+  <main
+    class="radio"
+    x-data={JSON.stringify(state)}
+    x-id="['radio-group']"
+    x-radio-group={`{id: $id('radio-group'), name: 'fruit', ${Object.keys(state)}}`}
+  >
+    <form>
+      <fieldset disabled={false}>
+        <div x-radio-group:root>
+          <h3 x-radio-group:label>Fruits</h3>
+          <div x-radio-group:indicator></div>
+          {
+            radioData.map((opt) => (
+              <label data-testid={`radio-${opt.id}`} x-radio-group:item={JSON.stringify({ value: opt.id })}>
+                <div data-testid={`control-${opt.id}`} x-radio-group:item-control={JSON.stringify({ value: opt.id })} />
+                <span data-testid={`label-${opt.id}`} x-radio-group:item-text={JSON.stringify({ value: opt.id })}>
+                  {opt.label}
+                </span>
+                <input
+                  data-testid={`input-${opt.id}`}
+                  x-radio-group:item-hidden-input={JSON.stringify({ value: opt.id })}
+                />
+              </label>
+            ))
+          }
+        </div>
+
+        <button type="reset">Reset</button>
+        <button type="button" x-on:click="$radioGroup.clearValue()">Clear</button>
+        <button type="button" x-on:click="$radioGroup.setValue('mango')">Set to Mangoes</button>
+        <button type="button" x-on:click="$radioGroup.focus()">Focus</button>
+      </fieldset>
+    </form>
+
+    <Toolbar>
+      <Controls {state} config={radioControls} />
+      <StateVisualizer />
+    </Toolbar>
+  </main>
+</Layout>

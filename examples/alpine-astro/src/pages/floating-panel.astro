@@ -1,0 +1,57 @@
+---
+import Toolbar from "../components/Toolbar.astro"
+import Controls from "../components/Controls.astro"
+import StateVisualizer from "../components/StateVisualizer.astro"
+import Layout from "../layouts/Layout.astro"
+import { floatingPanelControls, getControlDefaults } from "@zag-js/shared"
+
+const state = getControlDefaults(floatingPanelControls)
+---
+
+<script>
+  import Alpine from "alpinejs"
+  import * as floatingPanel from "@zag-js/floating-panel"
+  import { createZagPlugin } from "../lib"
+
+  Alpine.plugin(createZagPlugin("floating-panel", floatingPanel))
+</script>
+
+<Layout>
+  <main class="floating-panel" x-data={JSON.stringify(state)}>
+    <div x-id="['floating-panel']" x-floating-panel="{id: $id('floating-panel')}">
+      <button x-floating-panel:trigger>Toggle Panel</button>
+      <div x-floating-panel:positioner>
+        <div x-floating-panel:content>
+          <div x-floating-panel:drag-trigger>
+            <div x-floating-panel:header>
+              <p x-floating-panel:title>Floating Panel</p>
+              <div x-floating-panel:control>
+                <button x-floating-panel:state-trigger="{state: 'minimized'}">Minus</button>
+                <button x-floating-panel:state-trigger="{state: 'maximized'}">Maximize2</button>
+                <button x-floating-panel:state-trigger="{state: 'default'}">ArrowDownLeft</button>
+                <button x-floating-panel:close-trigger>XIcon</button>
+              </div>
+            </div>
+          </div>
+          <div x-floating-panel:body>
+            <p>Some content</p>
+          </div>
+
+          <div x-floating-panel:resize-trigger="{axis: 'n'}"></div>
+          <div x-floating-panel:resize-trigger="{axis: 'e'}"></div>
+          <div x-floating-panel:resize-trigger="{axis: 'w'}"></div>
+          <div x-floating-panel:resize-trigger="{axis: 's'}"></div>
+          <div x-floating-panel:resize-trigger="{axis: 'ne'}"></div>
+          <div x-floating-panel:resize-trigger="{axis: 'se'}"></div>
+          <div x-floating-panel:resize-trigger="{axis: 'sw'}"></div>
+          <div x-floating-panel:resize-trigger="{axis: 'nw'}"></div>
+        </div>
+      </div>
+
+      <Toolbar>
+        <Controls {state} config={floatingPanelControls} />
+        <StateVisualizer />
+      </Toolbar>
+    </div>
+  </main></Layout
+>

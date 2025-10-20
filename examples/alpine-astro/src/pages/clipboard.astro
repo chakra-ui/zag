@@ -1,0 +1,39 @@
+---
+import { clipboardControls, getControlDefaults } from "@zag-js/shared"
+import Toolbar from "../components/Toolbar.astro"
+import Controls from "../components/Controls.astro"
+import StateVisualizer from "../components/StateVisualizer.astro"
+import Layout from "../layouts/Layout.astro"
+
+const state = getControlDefaults(clipboardControls)
+---
+
+<script>
+  import Alpine from "alpinejs"
+  import * as clipboard from "@zag-js/clipboard"
+  import { createZagPlugin } from "../lib"
+
+  Alpine.plugin(createZagPlugin("clipboard", clipboard))
+</script>
+
+<Layout>
+  <main class="clipboard" x-data={JSON.stringify(state)}>
+    <div x-id="['clipboard']" x-clipboard={`${Object.keys(state)}, id: $id('clipboard')}`} x-clipboard:root>
+      <label x-clipboard:label>Copy this link</label>
+      <div x-clipboard:control>
+        <input x-clipboard:input style="width: 100%" />
+        <button x-clipboard:trigger>
+          <template x-if="$clipboard.copied">ClipboardCheck</template>
+          <template x-if="!$clipboard.copied">ClipboardCopyIcon</template>
+        </button>
+      </div>
+      <div x-clipboard:indicator="{copied: true}">Copied!</div>
+      <div x-clipboard:indicator="{copied: false}">Copy</div>
+
+      <Toolbar>
+        <Controls config={clipboardControls} {state} />
+        <StateVisualizer />
+      </Toolbar>
+    </div>
+  </main>
+</Layout>

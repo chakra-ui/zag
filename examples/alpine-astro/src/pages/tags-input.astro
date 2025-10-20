@@ -1,0 +1,60 @@
+---
+import { getControlDefaults, tagsInputControls } from "@zag-js/shared"
+import Layout from "../layouts/Layout.astro"
+import Toolbar from "../components/Toolbar.astro"
+import Controls from "../components/Controls.astro"
+import StateVisualizer from "../components/StateVisualizer.astro"
+
+const state = getControlDefaults(tagsInputControls)
+---
+
+<script>
+  import Alpine from "alpinejs"
+  import * as tagsInput from "@zag-js/tags-input"
+  import { createZagPlugin } from "../lib"
+
+  Alpine.magic("toDashCase", () => {
+    return (str: string) => str.replace(/\s+/g, "-").toLowerCase()
+  })
+  Alpine.plugin(createZagPlugin("tags-input", tagsInput))
+</script>
+
+<Layout>
+  <main
+    class="tags-input"
+    x-data={JSON.stringify(state)}
+    x-id="['tags-input']"
+    x-tags-input={`{id: $id('tags-input'), defaultValue: ['React', 'Vue'], ${Object.keys(state)}}`}
+  >
+    <div x-tags-input:root>
+      <label x-tags-input:label>Enter frameworks:</label>
+      <div x-tags-input:control>
+        <template x-for="(value, index) in $tagsInput.value" x-bind:key="$toDashCase(value) + '-tag-' + index">
+          <span x-tags-input:item="{index, value}">
+            <div x-bind:data-testid="$toDashCase(value) + '-tag'" x-tags-input:item-preview="{index, value}">
+              <span
+                x-bind:data-testid="$toDashCase(value) + '-valuetext'"
+                x-tags-input:item-text="{index, value}"
+                x-text="value"></span>
+              <button
+                x-bind:data-testid="$toDashCase(value) + '-close-button'"
+                x-tags-input:item-delete-trigger="{index, value}"
+              >
+                &#x2715;
+              </button>
+            </div>
+            <input x-bind:data-testid="$toDashCase(value) + '-input'" x-tags-input:item-input="{index, value}" />
+          </span>
+        </template>
+        <input data-testid="input" placeholder="add tag" x-tags-input:input />
+        <button x-tags-input:clear-trigger>X</button>
+      </div>
+      <input x-tags-input:hidden-input />
+    </div>
+
+    <Toolbar>
+      <Controls {state} config={tagsInputControls} />
+      <StateVisualizer />
+    </Toolbar>
+  </main>
+</Layout>

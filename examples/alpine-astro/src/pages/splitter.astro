@@ -1,0 +1,50 @@
+---
+import { getControlDefaults, splitterControls } from "@zag-js/shared"
+import Layout from "../layouts/Layout.astro"
+import Toolbar from "../components/Toolbar.astro"
+import Controls from "../components/Controls.astro"
+import StateVisualizer from "../components/StateVisualizer.astro"
+
+const state = getControlDefaults(splitterControls)
+---
+
+<script>
+  import Alpine from "alpinejs"
+  import * as splitter from "@zag-js/splitter"
+  import { createZagPlugin } from "../lib"
+
+  Alpine.plugin(createZagPlugin("splitter", splitter))
+</script>
+
+<Layout>
+  <main
+    class="splitter"
+    x-data={JSON.stringify(state)}
+    x-id="['splitter']"
+    x-splitter={`{
+      id: $id('splitter'),
+      panels: [{id: 'a'}, {id: 'b'}, {id: 'c'}],
+      ${Object.keys(state)}
+    }`}
+  >
+    <pre x-text="JSON.stringify($splitter.getSizes(), null, 2)"></pre>
+    <div x-splitter:root>
+      <div x-splitter:panel="{id: 'a'}">
+        <p>Left</p>
+      </div>
+      <div data-testid="trigger-a:b" x-splitter:resize-trigger="{id: 'a:b'}"></div>
+      <div x-splitter:panel="{id: 'b'}">
+        <p>Middle</p>
+      </div>
+      <div data-testid="trigger-b:c" x-splitter:resize-trigger="{id: 'b:c'}"></div>
+      <div x-splitter:panel="{id: 'c'}">
+        <p>Right</p>
+      </div>
+    </div>
+
+    <Toolbar>
+      <Controls {state} config={splitterControls} />
+      <StateVisualizer />
+    </Toolbar>
+  </main>
+</Layout>

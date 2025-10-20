@@ -1,0 +1,55 @@
+---
+import { getControlDefaults, popoverControls } from "@zag-js/shared"
+import Toolbar from "../components/Toolbar.astro"
+import Controls from "../components/Controls.astro"
+import StateVisualizer from "../components/StateVisualizer.astro"
+import Layout from "../layouts/Layout.astro"
+
+const state = getControlDefaults(popoverControls)
+---
+
+<script>
+  import Alpine from "alpinejs"
+  import * as popover from "@zag-js/popover"
+  import { createZagPlugin } from "../lib"
+
+  Alpine.plugin(createZagPlugin("popover", popover))
+</script>
+
+<Layout>
+  <main class="popover" x-data={JSON.stringify(state)}>
+    <div data-part="root" x-id="['popover']" x-popover={`{${Object.keys(state)}, id: $id('popover')}`}>
+      <button data-testid="button-before">Button :before</button>
+
+      <button data-testid="popover-trigger" x-popover:trigger>
+        Click me
+        <div x-popover:indicator>{">"}</div>
+      </button>
+
+      <div x-popover:anchor>anchor</div>
+
+      <template x-teleport="body" x-bind:disabled="!$popover.portalled">
+        <div x-popover:positioner>
+          <div data-testid="popover-content" class="popover-content" x-popover:content>
+            <div x-popover:arrow>
+              <div x-popover:arrow-tip></div>
+            </div>
+            <div data-testid="popover-title" x-popover:title>Popover Title</div>
+            <div data-part="body" data-testid="popover-body">
+              <a>Non-focusable Link</a>
+              <a href="#" data-testid="focusable-link"> Focusable Link </a>
+              <input data-testid="input" placeholder="input" />
+              <button data-testid="popover-close-button" x-popover:close-trigger> X </button>
+            </div>
+          </div>
+        </div>
+      </template>
+      <span data-testid="plain-text">I am just text</span>
+      <button data-testid="button-after">Button :after</button>
+      <Toolbar>
+        <Controls state={state} config={popoverControls} />
+        <StateVisualizer />
+      </Toolbar>
+    </div>
+  </main>
+</Layout>

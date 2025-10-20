@@ -1,0 +1,45 @@
+---
+import { checkboxControls, getControlDefaults } from "@zag-js/shared"
+import Toolbar from "../components/Toolbar.astro"
+import Controls from "../components/Controls.astro"
+import StateVisualizer from "../components/StateVisualizer.astro"
+import Layout from "../layouts/Layout.astro"
+
+const state = getControlDefaults(checkboxControls)
+---
+
+<script>
+  import Alpine from "alpinejs"
+  import * as checkbox from "@zag-js/checkbox"
+  import { createZagPlugin } from "../lib"
+
+  Alpine.plugin(createZagPlugin("checkbox", checkbox))
+</script>
+
+<Layout>
+  <main class="checkbox">
+    <form x-data={`${JSON.stringify(state)}`}>
+      <fieldset x-id="['checkbox']" x-checkbox={`{${Object.keys(state)}, id: $id('checkbox')}`}>
+        <label x-checkbox:root>
+          <div x-checkbox:control></div>
+          <span x-checkbox:label x-text="'Input ' + ($checkbox.checked ? 'Checked' : 'Unchecked')"></span>
+          <input x-checkbox:hidden-input data-testid="hidden-input" />
+          <div x-checkbox:indicator></div>
+        </label>
+
+        <button type="button" x-bind:disabled="$checkbox.checked" x-on:click="$checkbox.setChecked(true)">
+          Check
+        </button>
+        <button type="button" x-bind:disabled="!$checkbox.checked" x-on:click="$checkbox.setChecked(false)">
+          Uncheck
+        </button>
+        <button type="reset">Reset Form</button>
+
+        <Toolbar>
+          <Controls state={state} config={checkboxControls} />
+          <StateVisualizer />
+        </Toolbar>
+      </fieldset>
+    </form>
+  </main>
+</Layout>

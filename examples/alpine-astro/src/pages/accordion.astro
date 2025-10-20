@@ -1,0 +1,43 @@
+---
+import { accordionControls, accordionData, getControlDefaults } from "@zag-js/shared"
+import Toolbar from "../components/Toolbar.astro"
+import Controls from "../components/Controls.astro"
+import StateVisualizer from "../components/StateVisualizer.astro"
+import Layout from "../layouts/Layout.astro"
+
+const state = getControlDefaults(accordionControls)
+---
+
+<script>
+  import Alpine from "alpinejs"
+  import * as accordion from "@zag-js/accordion"
+  import { createZagPlugin } from "../lib"
+
+  Alpine.plugin(createZagPlugin("accordion", accordion))
+</script>
+
+<Layout>
+  <main class="accordion" x-data={JSON.stringify(state)}>
+    <div x-id="['accordion']" x-accordion={`{${Object.keys(state)}, id: $id('accordion')}`} x-accordion:root>
+      {
+        accordionData.map((item) => (
+          <div x-accordion:item={`{value: '${item.id}'}`}>
+            <h3>
+              <button data-testid={`${item.id}:trigger`} x-accordion:item-trigger={`{value: '${item.id}'}`}>
+                {item.label}
+                <div x-accordion:item-indicator={`{value: '${item.id}'}`}>{"->"}</div>
+              </button>
+            </h3>
+            <div data-testid={`${item.id}:content`} x-accordion:item-content={`{value: '${item.id}'}`}>
+              {item.label + " Content"}
+            </div>
+          </div>
+        ))
+      }
+      <Toolbar>
+        <Controls state={state} config={accordionControls} />
+        <StateVisualizer />
+      </Toolbar>
+    </div>
+  </main>
+</Layout>

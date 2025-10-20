@@ -1,0 +1,32 @@
+---
+import StateVisualizer from "../components/StateVisualizer.astro"
+import Toolbar from "../components/Toolbar.astro"
+import Layout from "../layouts/Layout.astro"
+---
+
+<script>
+  import Alpine from "alpinejs"
+  import * as menu from "@zag-js/menu"
+  import { createZagPlugin } from "../lib"
+
+  Alpine.plugin(createZagPlugin("menu", menu))
+</script>
+
+<Layout>
+  <main class="context-menu" x-id="['menu']" x-data x-menu="{id: $id('menu'), onSelect: console.log">
+    <div x-menu:context-trigger>Right Click here</div>
+    <template x-teleport="body">
+      <div x-menu:positioner>
+        <ul x-menu:content>
+          <li x-menu:item="{value: 'edit'}">Edit</li>
+          <li x-menu:item="{value: 'duplicate'}">Duplicate</li>
+          <li x-menu:item="{value: 'delete'}">Delete</li>
+          <li x-menu:item="{value: 'export'}">Export...</li>
+        </ul>
+      </div>
+    </template>
+    <Toolbar>
+      <StateVisualizer />
+    </Toolbar>
+  </main>
+</Layout>

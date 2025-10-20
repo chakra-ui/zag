@@ -1,0 +1,42 @@
+---
+import { angleSliderControls, getControlDefaults } from "@zag-js/shared"
+import Toolbar from "../components/Toolbar.astro"
+import Controls from "../components/Controls.astro"
+import StateVisualizer from "../components/StateVisualizer.astro"
+import Layout from "../layouts/Layout.astro"
+
+const state = getControlDefaults(angleSliderControls)
+---
+
+<script>
+  import Alpine from "alpinejs"
+  import * as angleSlider from "@zag-js/angle-slider"
+  import { createZagPlugin } from "../lib"
+
+  Alpine.plugin(createZagPlugin("angle-slider", angleSlider))
+</script>
+
+<Layout>
+  <main class="angle-slider" x-data={JSON.stringify(state)}>
+    <div
+      x-id="['angle-slider']"
+      x-angle-slider={`{${Object.keys(state)}, id: $id('angle-slider')}`}
+      x-angle-slider:root
+    >
+      <label x-angle-slider:label>
+        Angle Slider: <div x-angle-slider:value-text x-text="$angleSlider.valueAsDegree"></div>
+      </label>
+      <div x-angle-slider:control>
+        <div x-angle-slider:thumb></div>
+        <div x-angle-slider:marker-group>
+          {[0, 45, 90, 135, 180, 225, 270, 315].map((value) => <div x-angle-slider:marker={`{value: ${value}}`} />)}
+        </div>
+      </div>
+      <input x-angle-slider:hidden-input />
+      <Toolbar>
+        <Controls state={state} config={angleSliderControls} />
+        <StateVisualizer />
+      </Toolbar>
+    </div>
+  </main>
+</Layout>

@@ -1,0 +1,64 @@
+---
+import { comboboxControls, comboboxData, getControlDefaults } from "@zag-js/shared"
+import Toolbar from "../components/Toolbar.astro"
+import Controls from "../components/Controls.astro"
+import StateVisualizer from "../components/StateVisualizer.astro"
+import Layout from "../layouts/Layout.astro"
+
+const state = getControlDefaults(comboboxControls)
+---
+
+<script>
+  import Alpine from "alpinejs"
+  import * as combobox from "@zag-js/combobox"
+  import { createZagPlugin } from "../lib"
+  import { matchSorter } from "match-sorter"
+
+  Alpine.data("matchSorter", () => ({ matchSorter }))
+  Alpine.plugin(createZagPlugin("combobox", combobox))
+</script>
+
+<Layout>
+  <main class="combobox" x-data={JSON.stringify({ ...state, comboboxData, options: comboboxData })}>
+    <div
+      x-id="['combobox']"
+      x-data="matchSorter"
+      x-combobox:collection={`{items: options, itemToValue: (item) => item.code, itemToString: (item) => item.label}`}
+      x-combobox={`{id: $id('combobox'), collection,
+        onOpenChange() {options = comboboxData},
+        onInputValueChange({inputValue}) {
+          const filtered = matchSorter(comboboxData, inputValue, {keys: ['label']});
+          options = filtered.length > 0 ? filtered : comboboxData;
+        },
+        ${Object.keys(state)}}`}
+    >
+      <button x-on:click="$combobox.setValue(['TG'])">Set to Togo</button>
+      <button data-testid="clear-value-button" x-on:click="$combobox.clearValue()">Clear Value</button>
+      <br />
+      <div x-combobox:root>
+        <label x-combobox:label>Select country</label>
+        <div x-combobox:control>
+          <input data-testid="input" x-combobox:input />
+          <button data-testid="trigger" x-combobox:trigger>▼</button>
+          <button x-combobox:clear-trigger>X</button>
+        </div>
+      </div>
+      <div x-combobox:positioner>
+        <template x-if="options.length > 0">
+          <ul data-testid="combobox-content" x-combobox:content>
+            <template x-for="item in options" x-bind:key="item.code">
+              <li x-bind:data-testid="item.code" x-combobox:item="{item}">
+                <span x-combobox:item-indicator="{item}">✅</span>
+                <span x-text="item.label"></span>
+              </li>
+            </template>
+          </ul>
+        </template>
+      </div>
+      <Toolbar>
+        <Controls state={state} config={comboboxControls} />
+        <StateVisualizer />
+      </Toolbar>
+    </div>
+  </main>
+</Layout>
