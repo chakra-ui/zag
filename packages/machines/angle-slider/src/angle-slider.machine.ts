@@ -1,13 +1,8 @@
 import { raf, setElementValue, trackPointerMove } from "@zag-js/dom-query"
-import { createRect, getPointAngle } from "@zag-js/rect-utils"
-import type { Point } from "@zag-js/types"
-import { snapValueToStep } from "@zag-js/utils"
 import { createMachine } from "@zag-js/core"
 import * as dom from "./angle-slider.dom"
 import type { AngleSliderSchema } from "./angle-slider.types"
-
-const MIN_VALUE = 0
-const MAX_VALUE = 359
+import { clampAngle, constrainAngle, getAngle, MIN_VALUE, MAX_VALUE, snapAngleToStep } from "./angle-slider.utils"
 
 export const machine = createMachine<AngleSliderSchema>({
   props({ props }) {
@@ -27,6 +22,12 @@ export const machine = createMachine<AngleSliderSchema>({
           prop("onValueChange")?.({ value, valueAsDegree: `${value}deg` })
         },
       })),
+    }
+  },
+
+  refs() {
+    return {
+      thumbDragOffset: null,
     }
   },
 
@@ -56,7 +57,7 @@ export const machine = createMachine<AngleSliderSchema>({
       on: {
         "CONTROL.POINTER_DOWN": {
           target: "dragging",
-          actions: ["setPointerValue", "focusThumb"],
+          actions: ["setThumbDragOffset", "setPointerValue", "focusThumb"],
         },
         "THUMB.FOCUS": {
           target: "focused",
@@ -68,7 +69,7 @@ export const machine = createMachine<AngleSliderSchema>({
       on: {
         "CONTROL.POINTER_DOWN": {
           target: "dragging",
-          actions: ["setPointerValue", "focusThumb"],
+          actions: ["setThumbDragOffset", "setPointerValue", "focusThumb"],
         },
         "THUMB.ARROW_DEC": {
           actions: ["decrementValue", "invokeOnChangeEnd"],
@@ -94,7 +95,7 @@ export const machine = createMachine<AngleSliderSchema>({
       on: {
         "DOC.POINTER_UP": {
           target: "focused",
-          actions: ["invokeOnChangeEnd"],
+          actions: ["invokeOnChangeEnd", "clearThumbDragOffset"],
         },
         "DOC.POINTER_MOVE": {
           actions: ["setPointerValue"],
@@ -128,10 +129,11 @@ export const machine = createMachine<AngleSliderSchema>({
           valueAsDegree: computed("valueAsDegree"),
         })
       },
-      setPointerValue({ scope, event, context, prop }) {
+      setPointerValue({ scope, event, context, prop, refs }) {
         const controlEl = dom.getControlEl(scope)
         if (!controlEl) return
-        const deg = getAngle(controlEl, event.point)
+        const angularOffset = refs.get("thumbDragOffset")
+        const deg = getAngle(controlEl, event.point, angularOffset)
         context.set("value", constrainAngle(deg, prop("step")))
       },
       setValueToMin({ context }) {
@@ -144,21 +146,11 @@ export const machine = createMachine<AngleSliderSchema>({
         context.set("value", clampAngle(event.value))
       },
       decrementValue({ context, event, prop }) {
-        const value = snapValueToStep(
-          context.get("value") - event.step,
-          MIN_VALUE,
-          MAX_VALUE,
-          event.step ?? prop("step"),
-        )
+        const value = snapAngleToStep(context.get("value") - event.step, event.step ?? prop("step"))
         context.set("value", value)
       },
       incrementValue({ context, event, prop }) {
-        const value = snapValueToStep(
-          context.get("value") + event.step,
-          MIN_VALUE,
-          MAX_VALUE,
-          event.step ?? prop("step"),
-        )
+        const value = snapAngleToStep(context.get("value") + event.step, event.step ?? prop("step"))
         context.set("value", value)
       },
       focusThumb({ scope }) {
@@ -166,26 +158,12 @@ export const machine = createMachine<AngleSliderSchema>({
           dom.getThumbEl(scope)?.focus({ preventScroll: true })
         })
       },
+      setThumbDragOffset({ refs, event }) {
+        refs.set("thumbDragOffset", event.angularOffset ?? null)
+      },
+      clearThumbDragOffset({ refs }) {
+        refs.set("thumbDragOffset", null)
+      },
     },
   },
 })
-
-function getAngle(controlEl: HTMLElement, point: Point) {
-  const rect = createRect(controlEl.getBoundingClientRect())
-  return getPointAngle(rect, point)
-}
-
-function clampAngle(degree: number) {
-  return Math.min(Math.max(degree, MIN_VALUE), MAX_VALUE)
-}
-
-function constrainAngle(degree: number, step: number) {
-  const clampedDegree = clampAngle(degree)
-  const upperStep = Math.ceil(clampedDegree / step)
-  const nearestStep = Math.round(clampedDegree / step)
-  return upperStep >= clampedDegree / step
-    ? upperStep * step === MAX_VALUE
-      ? MIN_VALUE
-      : upperStep * step
-    : nearestStep * step
-}

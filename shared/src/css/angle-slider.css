@@ -24,10 +24,10 @@
   top: 0;
   right: 0;
   bottom: 0;
-  left: calc(50% - 1.5px);
-  pointer-events: none;
+  --thumb-width: 3px;
+  left: calc(50% - var(--thumb-width) / 2);
   height: 100%;
-  width: 3px;
+  width: var(--thumb-width);
 
   &::before {
     content: "";
@@ -36,7 +36,7 @@
     top: 0;
     height: var(--thumb-indicator-size);
     background: red;
-    width: 3px;
+    width: var(--thumb-width);
   }
 }
 
@@ -80,7 +80,4 @@
   &[data-state="over-value"] {
     --marker-color: lightgray;
   }
-}
-
-[data-scope="angle-slider"][data-part="value-text"] {
 }
