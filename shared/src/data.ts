@@ -391,3 +391,10 @@ export const handlePositions: HandlePosition[] = [
   "bottom-left",
   "left",
 ]
+
+export const marqueeData = [
+  { name: "Apple", logo: "🍎" },
+  { name: "Banana", logo: "🍌" },
+  { name: "Cherry", logo: "🍒" },
+  { name: "Grape", logo: "🍇" },
+]

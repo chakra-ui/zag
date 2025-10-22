@@ -1,0 +1,49 @@
+```tsx
+import * as marquee from "@zag-js/marquee"
+import { normalizeProps, useMachine } from "@zag-js/solid"
+import { createMemo, createUniqueId, For, Index } from "solid-js"
+
+const logos = [
+  { name: "Microsoft", logo: "🏢" },
+  { name: "Apple", logo: "🍎" },
+  { name: "Google", logo: "🔍" },
+  { name: "Amazon", logo: "📦" },
+]
+
+function Marquee() {
+  const service = useMachine(marquee.machine, {
+    id: createUniqueId(),
+    autoFill: true,
+  })
+
+  const api = createMemo(() => marquee.connect(service, normalizeProps))
+
+  return (
+    <div {...api().getRootProps()}>
+      {/* Optional: Add fade gradient at start */}
+      <div {...api().getEdgeProps({ side: "start" })} />
+
+      <div {...api().getViewportProps()}>
+        {/* Render content (original + clones) */}
+        <Index each={Array.from({ length: api().contentCount })}>
+          {(_, index) => (
+            <div {...api().getContentProps({ index })}>
+              <For each={logos}>
+                {(item) => (
+                  <div class="marquee-item">
+                    <span class="logo">{item.logo}</span>
+                    <span class="name">{item.name}</span>
+                  </div>
+                )}
+              </For>
+            </div>
+          )}
+        </Index>
+      </div>
+
+      {/* Optional: Add fade gradient at end */}
+      <div {...api().getEdgeProps({ side: "end" })} />
+    </div>
+  )
+}
+```

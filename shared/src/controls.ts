@@ -320,3 +320,10 @@ export const imageCropperControls = defineControls({
   minZoom: { type: "number", defaultValue: 1 },
   maxZoom: { type: "number", defaultValue: 5 },
 })
+
+export const marqueeControls = defineControls({
+  side: { type: "select", options: ["start", "end", "top", "bottom"] as const, defaultValue: "start" },
+  speed: { type: "number", defaultValue: 50 },
+  pauseOnInteraction: { type: "boolean", defaultValue: false },
+  reverse: { type: "boolean", defaultValue: false },
+})

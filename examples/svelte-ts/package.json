@@ -53,6 +53,7 @@
     "@zag-js/json-tree-utils": "workspace:*",
     "@zag-js/listbox": "workspace:*",
     "@zag-js/live-region": "workspace:*",
+    "@zag-js/marquee": "workspace:*",
     "@zag-js/menu": "workspace:*",
     "@zag-js/navigation-menu": "workspace:*",
     "@zag-js/number-input": "workspace:*",

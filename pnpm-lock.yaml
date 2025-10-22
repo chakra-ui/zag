@@ -260,6 +260,9 @@ importers:
       '@zag-js/live-region':
         specifier: workspace:*
         version: link:../../packages/utilities/live-region
+      '@zag-js/marquee':
+        specifier: workspace:*
+        version: link:../../packages/machines/marquee
       '@zag-js/menu':
         specifier: workspace:*
         version: link:../../packages/machines/menu
@@ -558,6 +561,9 @@ importers:
       '@zag-js/live-region':
         specifier: workspace:*
         version: link:../../packages/utilities/live-region
+      '@zag-js/marquee':
+        specifier: workspace:*
+        version: link:../../packages/machines/marquee
       '@zag-js/menu':
         specifier: workspace:*
         version: link:../../packages/machines/menu
@@ -826,6 +832,9 @@ importers:
       '@zag-js/live-region':
         specifier: workspace:*
         version: link:../../packages/utilities/live-region
+      '@zag-js/marquee':
+        specifier: workspace:*
+        version: link:../../packages/machines/marquee
       '@zag-js/menu':
         specifier: workspace:*
         version: link:../../packages/machines/menu
@@ -1103,6 +1112,9 @@ importers:
       '@zag-js/live-region':
         specifier: workspace:*
         version: link:../../packages/utilities/live-region
+      '@zag-js/marquee':
+        specifier: workspace:*
+        version: link:../../packages/machines/marquee
       '@zag-js/menu':
         specifier: workspace:*
         version: link:../../packages/machines/menu
@@ -1355,6 +1367,9 @@ importers:
       '@zag-js/live-region':
         specifier: workspace:*
         version: link:../../packages/utilities/live-region
+      '@zag-js/marquee':
+        specifier: workspace:*
+        version: link:../../packages/machines/marquee
       '@zag-js/menu':
         specifier: workspace:*
         version: link:../../packages/machines/menu
@@ -1635,6 +1650,9 @@ importers:
       '@zag-js/live-region':
         specifier: workspace:*
         version: link:../../packages/utilities/live-region
+      '@zag-js/marquee':
+        specifier: workspace:*
+        version: link:../../packages/machines/marquee
       '@zag-js/menu':
         specifier: workspace:*
         version: link:../../packages/machines/menu
@@ -2468,6 +2486,28 @@ importers:
       '@zag-js/focus-visible':
         specifier: workspace:*
         version: link:../../utilities/focus-visible
+      '@zag-js/types':
+        specifier: workspace:*
+        version: link:../../types
+      '@zag-js/utils':
+        specifier: workspace:*
+        version: link:../../utilities/core
+    devDependencies:
+      clean-package:
+        specifier: 2.2.0
+        version: 2.2.0
+
+  packages/machines/marquee:
+    dependencies:
+      '@zag-js/anatomy':
+        specifier: workspace:*
+        version: link:../../anatomy
+      '@zag-js/core':
+        specifier: workspace:*
+        version: link:../../core
+      '@zag-js/dom-query':
+        specifier: workspace:*
+        version: link:../../utilities/dom-query
       '@zag-js/types':
         specifier: workspace:*
         version: link:../../types
@@ -16523,7 +16563,7 @@ snapshots:
       '@typescript-eslint/parser': 8.46.1(eslint@9.37.0(jiti@2.6.1))(typescript@5.9.3)
       eslint: 9.37.0(jiti@2.6.1)
       eslint-import-resolver-node: 0.3.9
-      eslint-import-resolver-typescript: 3.10.1(eslint-plugin-import@2.32.0)(eslint@9.37.0(jiti@2.6.1))
+      eslint-import-resolver-typescript: 3.10.1(eslint-plugin-import@2.32.0(@typescript-eslint/parser@8.46.1(eslint@9.37.0(jiti@2.6.1))(typescript@5.9.3))(eslint@9.37.0(jiti@2.6.1)))(eslint@9.37.0(jiti@2.6.1))
       eslint-plugin-import: 2.32.0(@typescript-eslint/parser@8.46.1(eslint@9.37.0(jiti@2.6.1))(typescript@5.9.3))(eslint-import-resolver-typescript@3.10.1)(eslint@9.37.0(jiti@2.6.1))
       eslint-plugin-jsx-a11y: 6.10.2(eslint@9.37.0(jiti@2.6.1))
       eslint-plugin-react: 7.37.5(eslint@9.37.0(jiti@2.6.1))
@@ -16562,7 +16602,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  eslint-import-resolver-typescript@3.10.1(eslint-plugin-import@2.32.0)(eslint@9.37.0(jiti@2.6.1)):
+  eslint-import-resolver-typescript@3.10.1(eslint-plugin-import@2.32.0(@typescript-eslint/parser@8.46.1(eslint@9.37.0(jiti@2.6.1))(typescript@5.9.3))(eslint@9.37.0(jiti@2.6.1)))(eslint@9.37.0(jiti@2.6.1)):
     dependencies:
       '@nolyfill/is-core-module': 1.0.39
       debug: 4.4.3
@@ -16577,14 +16617,14 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  eslint-module-utils@2.12.1(@typescript-eslint/parser@8.46.1(eslint@9.37.0(jiti@2.6.1))(typescript@5.9.3))(eslint-import-resolver-node@0.3.9)(eslint-import-resolver-typescript@3.10.1)(eslint@9.37.0(jiti@2.6.1)):
+  eslint-module-utils@2.12.1(@typescript-eslint/parser@8.46.1(eslint@9.37.0(jiti@2.6.1))(typescript@5.9.3))(eslint-import-resolver-node@0.3.9)(eslint-import-resolver-typescript@3.10.1(eslint-plugin-import@2.32.0(@typescript-eslint/parser@8.46.1(eslint@9.37.0(jiti@2.6.1))(typescript@5.9.3))(eslint@9.37.0(jiti@2.6.1)))(eslint@9.37.0(jiti@2.6.1)))(eslint@9.37.0(jiti@2.6.1)):
     dependencies:
       debug: 3.2.7
     optionalDependencies:
       '@typescript-eslint/parser': 8.46.1(eslint@9.37.0(jiti@2.6.1))(typescript@5.9.3)
       eslint: 9.37.0(jiti@2.6.1)
       eslint-import-resolver-node: 0.3.9
-      eslint-import-resolver-typescript: 3.10.1(eslint-plugin-import@2.32.0)(eslint@9.37.0(jiti@2.6.1))
+      eslint-import-resolver-typescript: 3.10.1(eslint-plugin-import@2.32.0(@typescript-eslint/parser@8.46.1(eslint@9.37.0(jiti@2.6.1))(typescript@5.9.3))(eslint@9.37.0(jiti@2.6.1)))(eslint@9.37.0(jiti@2.6.1))
     transitivePeerDependencies:
       - supports-color
 
@@ -16611,7 +16651,7 @@ snapshots:
       doctrine: 2.1.0
       eslint: 9.37.0(jiti@2.6.1)
       eslint-import-resolver-node: 0.3.9
-      eslint-module-utils: 2.12.1(@typescript-eslint/parser@8.46.1(eslint@9.37.0(jiti@2.6.1))(typescript@5.9.3))(eslint-import-resolver-node@0.3.9)(eslint-import-resolver-typescript@3.10.1)(eslint@9.37.0(jiti@2.6.1))
+      eslint-module-utils: 2.12.1(@typescript-eslint/parser@8.46.1(eslint@9.37.0(jiti@2.6.1))(typescript@5.9.3))(eslint-import-resolver-node@0.3.9)(eslint-import-resolver-typescript@3.10.1(eslint-plugin-import@2.32.0(@typescript-eslint/parser@8.46.1(eslint@9.37.0(jiti@2.6.1))(typescript@5.9.3))(eslint@9.37.0(jiti@2.6.1)))(eslint@9.37.0(jiti@2.6.1)))(eslint@9.37.0(jiti@2.6.1))
       hasown: 2.0.2
       is-core-module: 2.16.1
       is-glob: 4.0.3

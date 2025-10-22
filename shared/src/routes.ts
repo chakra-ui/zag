@@ -4,6 +4,7 @@ type RouteData = {
 }
 
 export const routesData: RouteData[] = [
+  { label: "Marquee", path: "/marquee" },
   { label: "Image Cropper", path: "/image-cropper" },
   { label: "Image Cropper (Circle)", path: "/image-cropper-circle" },
   { label: "Image Cropper (Fixed Crop Area)", path: "/image-cropper-fixed" },
