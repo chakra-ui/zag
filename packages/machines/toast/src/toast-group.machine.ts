@@ -1,11 +1,14 @@
-import { createMachine } from "@zag-js/core"
+import { setup } from "@zag-js/core"
 import { trackDismissableBranch } from "@zag-js/dismissable"
 import { addDomEvent } from "@zag-js/dom-query"
 import { uuid } from "@zag-js/utils"
 import * as dom from "./toast.dom"
 import type { ToastGroupSchema } from "./toast.types"
 
-export const groupMachine = createMachine<ToastGroupSchema>({
+const { guards, createMachine } = setup<ToastGroupSchema>()
+const { and } = guards
+
+export const groupMachine = createMachine({
   props({ props }) {
     return {
       dir: "ltr",
@@ -67,7 +70,7 @@ export const groupMachine = createMachine<ToastGroupSchema>({
     },
     "REGION.BLUR": [
       {
-        guard: "isOverlappingAndPointerOut",
+        guard: and("isOverlapping", "isPointerOut"),
         target: "overlap",
         actions: ["collapseToasts", "resumeToasts", "restoreFocusIfPointerOut"],
       },
@@ -136,7 +139,6 @@ export const groupMachine = createMachine<ToastGroupSchema>({
     guards: {
       isOverlapping: ({ computed }) => computed("overlap"),
       isPointerOut: ({ refs }) => !refs.get("isPointerWithin"),
-      isOverlappingAndPointerOut: ({ computed, refs }) => computed("overlap") && !refs.get("isPointerWithin"),
     },
 
     effects: {
