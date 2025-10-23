@@ -27,7 +27,7 @@ export const groupMachine = createMachine({
       lastFocusedEl: null,
       isFocusWithin: false,
       isPointerWithin: false,
-      ignoringMouseEvents: false,
+      ignoreMouseTimer: null,
       dismissableCleanup: undefined,
     }
   },
@@ -62,7 +62,7 @@ export const groupMachine = createMachine({
     })
   },
 
-  exit: ["clearDismissableBranch", "clearLastFocusedEl"],
+  exit: ["clearDismissableBranch", "clearLastFocusedEl", "clearIgnoreMouseTimer"],
 
   on: {
     "DOC.HOTKEY": {
@@ -263,12 +263,23 @@ export const groupMachine = createMachine({
         refs.set("isFocusWithin", false)
       },
       ignoreMouseEventsTemporarily({ refs }) {
-        // Ignore mouse events briefly after toast removal to prevent spurious events
-        // during DOM mutations (particularly in Firefox, but applied universally for consistency)
-        refs.set("ignoringMouseEvents", true)
-        setTimeout(() => {
-          refs.set("ignoringMouseEvents", false)
-        }, 100)
+        const existingTimer = refs.get("ignoreMouseTimer")
+        if (existingTimer !== null) {
+          cancelAnimationFrame(existingTimer)
+        }
+
+        const timerId = requestAnimationFrame(() => {
+          refs.set("ignoreMouseTimer", null)
+        })
+
+        refs.set("ignoreMouseTimer", timerId)
+      },
+      clearIgnoreMouseTimer({ refs }) {
+        const timerId = refs.get("ignoreMouseTimer")
+        if (timerId !== null) {
+          cancelAnimationFrame(timerId)
+          refs.set("ignoreMouseTimer", null)
+        }
       },
     },
   },

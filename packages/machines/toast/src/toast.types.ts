@@ -247,7 +247,7 @@ export type ToastGroupSchema = {
     lastFocusedEl: HTMLElement | null
     isFocusWithin: boolean
     isPointerWithin: boolean
-    ignoringMouseEvents: boolean
+    ignoreMouseTimer: number | null
   }
   guard: string
   effect: string
