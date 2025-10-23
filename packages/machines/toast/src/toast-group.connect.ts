@@ -40,15 +40,15 @@ export function groupConnect<T extends PropTypes, O = any>(
         role: "region",
         style: getGroupPlacementStyle(service, placement),
         onMouseEnter() {
-          if (refs.get("ignoreMouseTimer") !== null) return
+          if (refs.get("ignoreMouseTimer").isActive()) return
           send({ type: "REGION.POINTER_ENTER", placement })
         },
         onMouseMove() {
-          if (refs.get("ignoreMouseTimer") !== null) return
+          if (refs.get("ignoreMouseTimer").isActive()) return
           send({ type: "REGION.POINTER_ENTER", placement })
         },
         onMouseLeave() {
-          if (refs.get("ignoreMouseTimer") !== null) return
+          if (refs.get("ignoreMouseTimer").isActive()) return
           send({ type: "REGION.POINTER_LEAVE", placement })
         },
         onFocus(event) {

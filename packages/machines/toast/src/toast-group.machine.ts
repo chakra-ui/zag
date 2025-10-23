@@ -1,6 +1,6 @@
 import { setup } from "@zag-js/core"
 import { trackDismissableBranch } from "@zag-js/dismissable"
-import { addDomEvent } from "@zag-js/dom-query"
+import { addDomEvent, AnimationFrame } from "@zag-js/dom-query"
 import { uuid } from "@zag-js/utils"
 import * as dom from "./toast.dom"
 import type { ToastGroupSchema } from "./toast.types"
@@ -27,7 +27,7 @@ export const groupMachine = createMachine({
       lastFocusedEl: null,
       isFocusWithin: false,
       isPointerWithin: false,
-      ignoreMouseTimer: null,
+      ignoreMouseTimer: AnimationFrame.create(),
       dismissableCleanup: undefined,
     }
   },
@@ -62,7 +62,7 @@ export const groupMachine = createMachine({
     })
   },
 
-  exit: ["clearDismissableBranch", "clearLastFocusedEl", "clearIgnoreMouseTimer"],
+  exit: ["clearDismissableBranch", "clearLastFocusedEl", "clearMouseEventTimer"],
 
   on: {
     "DOC.HOTKEY": {
@@ -263,23 +263,10 @@ export const groupMachine = createMachine({
         refs.set("isFocusWithin", false)
       },
       ignoreMouseEventsTemporarily({ refs }) {
-        const existingTimer = refs.get("ignoreMouseTimer")
-        if (existingTimer !== null) {
-          cancelAnimationFrame(existingTimer)
-        }
-
-        const timerId = requestAnimationFrame(() => {
-          refs.set("ignoreMouseTimer", null)
-        })
-
-        refs.set("ignoreMouseTimer", timerId)
+        refs.get("ignoreMouseTimer").request()
       },
-      clearIgnoreMouseTimer({ refs }) {
-        const timerId = refs.get("ignoreMouseTimer")
-        if (timerId !== null) {
-          cancelAnimationFrame(timerId)
-          refs.set("ignoreMouseTimer", null)
-        }
+      clearMouseEventTimer({ refs }) {
+        refs.get("ignoreMouseTimer").cancel()
       },
     },
   },
