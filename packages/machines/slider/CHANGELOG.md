@@ -1,5 +1,20 @@
 # @zag-js/slider
 
+## 1.26.4
+
+### Patch Changes
+
+- [`f2e2d4c`](https://github.com/chakra-ui/zag/commit/f2e2d4cffc78a005ce671a491dc7a6c16fb6087b) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix issue where slider thumb offset changes dynamically during
+  drag, causing unexpected value jumps. The thumb now maintains a constant offset from the pointer throughout the drag
+  operation, matching the initial grab position.
+- Updated dependencies []:
+  - @zag-js/anatomy@1.26.4
+  - @zag-js/core@1.26.4
+  - @zag-js/types@1.26.4
+  - @zag-js/utils@1.26.4
+  - @zag-js/dom-query@1.26.4
+
 ## 1.26.3
 
 ### Patch Changes
