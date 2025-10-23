@@ -4,15 +4,44 @@ All notable changes to this project will be documented in this file.
 
 > For v0.x changelog, see the [v0 branch](https://github.com/chakra-ui/zag/blob/v0/CHANGELOG.md)
 
+## [1.26.4](./#1.26.4) - 2025-10-23
+
+### Added
+
+- **Image Cropper [New]**: Initial release of image cropper state machine
+
+- **Marquee [New]**: Initial release of marquee component for continuously scrolling content
+
+### Fixed
+
+- **Angle Slider**: Fix issue where clicking and dragging the angle-slider thumb from a non-center position causes
+  unexpected value jumps. The thumb now maintains its relative position from the initial click point throughout the drag
+  operation, providing more intuitive dragging behavior.
+
+- **Slider**: Fix issue where slider thumb offset changes dynamically during drag, causing unexpected value jumps. The
+  thumb now maintains a constant offset from the pointer throughout the drag operation, matching the initial grab
+  position.
+
+- **Svelte**: Refactor `mergeProps` to return the class values as an array, this delegates the resolution to Svelte's
+  native class handling, which uses `clsx` internally. This ensures proper support for conditional classes, arrays, and
+  objects.
+
+- **Toast**: Fix issue in Solid.js where toasts collapse immediately when dismissing while hovering, by tracking pointer
+  state and temporarily ignoring spurious mouse events during DOM mutations using requestAnimationFrame.
+
 ## [1.26.3](./#1.26.3) - 2025-10-18
 
 ### Fixed
 
-- **Angle Slider**: Fix accessibility violation where the slider thumb element lacked an accessible name. The thumb now supports `aria-label` and `aria-labelledby` props, and automatically falls back to the label element's ID for proper ARIA labeling.
+- **Angle Slider**: Fix accessibility violation where the slider thumb element lacked an accessible name. The thumb now
+  supports `aria-label` and `aria-labelledby` props, and automatically falls back to the label element's ID for proper
+  ARIA labeling.
 
 - **Select**: Fix accessibility violation where the required state was not set correctly to on the trigger.
 
-- **Tags Input**: Fix issue where entering a custom tag with combobox integration required pressing `Enter` twice. The tags-input now correctly handles custom values when the combobox has no highlighted item (`aria-activedescendant` is empty), allowing the tag to be added on the first `Enter` press.
+- **Tags Input**: Fix issue where entering a custom tag with combobox integration required pressing `Enter` twice. The
+  tags-input now correctly handles custom values when the combobox has no highlighted item (`aria-activedescendant` is
+  empty), allowing the tag to be added on the first `Enter` press.
 
 ## [1.26.2](./#1.26.2) - 2025-10-14
 
