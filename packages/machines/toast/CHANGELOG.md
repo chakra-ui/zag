@@ -1,5 +1,22 @@
 # @zag-js/toast
 
+## 1.26.4
+
+### Patch Changes
+
+- [#2771](https://github.com/chakra-ui/zag/pull/2771)
+  [`2230b5c`](https://github.com/chakra-ui/zag/commit/2230b5c381dc67cfee3b9d747e5a2a8d280b62ff) Thanks
+  [@alii13](https://github.com/alii13)! - Fix issue where toasts collapse immediately when dismissing while hovering, by
+  tracking pointer state and temporarily ignoring spurious mouse events during DOM mutations using
+  requestAnimationFrame.
+- Updated dependencies []:
+  - @zag-js/anatomy@1.26.4
+  - @zag-js/core@1.26.4
+  - @zag-js/types@1.26.4
+  - @zag-js/utils@1.26.4
+  - @zag-js/dismissable@1.26.4
+  - @zag-js/dom-query@1.26.4
+
 ## 1.26.3
 
 ### Patch Changes
