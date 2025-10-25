@@ -1,0 +1,45 @@
+```html
+<script setup>
+  import * as marquee from "@zag-js/marquee"
+  import { useMachine, normalizeProps } from "@zag-js/vue"
+  import { computed } from "vue"
+
+  const logos = [
+    { name: "Microsoft", logo: "🏢" },
+    { name: "Apple", logo: "🍎" },
+    { name: "Google", logo: "🔍" },
+    { name: "Amazon", logo: "📦" },
+  ]
+
+  const service = useMachine(marquee.machine, {
+    id: "1",
+    autoFill: true,
+  })
+
+  const api = computed(() => marquee.connect(service, normalizeProps))
+</script>
+
+<template>
+  <div v-bind="api.getRootProps()">
+    <!-- Optional: Add fade gradient at start -->
+    <div v-bind="api.getEdgeProps({ side: 'start' })" />
+
+    <div v-bind="api.getViewportProps()">
+      <!-- Render content (original + clones) -->
+      <div
+        v-for="index in api.contentCount"
+        :key="index - 1"
+        v-bind="api.getContentProps({ index: index - 1 })"
+      >
+        <div v-for="(item, i) in logos" :key="i" class="marquee-item">
+          <span class="logo">{{ item.logo }}</span>
+          <span class="name">{{ item.name }}</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Optional: Add fade gradient at end -->
+    <div v-bind="api.getEdgeProps({ side: 'end' })" />
+  </div>
+</template>
+```

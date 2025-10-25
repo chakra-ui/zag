@@ -1,5 +1,65 @@
 # @zag-js/svelte
 
+## 1.26.4
+
+### Patch Changes
+
+- [`8795f43`](https://github.com/chakra-ui/zag/commit/8795f4377865e257a535f53161c1c650d0c1adb6) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Refactor `mergeProps` to return the class values as an array, this
+  delegates the resolution to Svelte's native class handling, which uses `clsx` internally.
+
+  > This ensures proper support for conditional classes, arrays, and objects
+
+- Updated dependencies []:
+  - @zag-js/core@1.26.4
+  - @zag-js/types@1.26.4
+  - @zag-js/utils@1.26.4
+
+## 1.26.3
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/core@1.26.3
+  - @zag-js/types@1.26.3
+  - @zag-js/utils@1.26.3
+
+## 1.26.2
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/core@1.26.2
+  - @zag-js/types@1.26.2
+  - @zag-js/utils@1.26.2
+
+## 1.26.1
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/core@1.26.1
+  - @zag-js/types@1.26.1
+  - @zag-js/utils@1.26.1
+
+## 1.26.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/core@1.26.0
+  - @zag-js/types@1.26.0
+  - @zag-js/utils@1.26.0
+
+## 1.25.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/core@1.25.0
+  - @zag-js/types@1.25.0
+  - @zag-js/utils@1.25.0
+
 ## 1.24.2
 
 ### Patch Changes

@@ -1,5 +1,93 @@
 # @zag-js/slider
 
+## 1.26.4
+
+### Patch Changes
+
+- [`f2e2d4c`](https://github.com/chakra-ui/zag/commit/f2e2d4cffc78a005ce671a491dc7a6c16fb6087b) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix issue where slider thumb offset changes dynamically during
+  drag, causing unexpected value jumps. The thumb now maintains a constant offset from the pointer throughout the drag
+  operation, matching the initial grab position.
+- Updated dependencies []:
+  - @zag-js/anatomy@1.26.4
+  - @zag-js/core@1.26.4
+  - @zag-js/types@1.26.4
+  - @zag-js/utils@1.26.4
+  - @zag-js/dom-query@1.26.4
+
+## 1.26.3
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.26.3
+  - @zag-js/core@1.26.3
+  - @zag-js/types@1.26.3
+  - @zag-js/utils@1.26.3
+  - @zag-js/dom-query@1.26.3
+
+## 1.26.2
+
+### Patch Changes
+
+- [`f1eac6b`](https://github.com/chakra-ui/zag/commit/f1eac6b86ea0305147cc86aef9bec483fe875080) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix issue where range slider thumbs become stuck when dragged to
+  the same position without `minStepsBetweenThumbs`. When both thumbs are at max value, automatically select the movable
+  thumb and add z-index to focused thumb for better visual feedback.
+
+- [`97be748`](https://github.com/chakra-ui/zag/commit/97be74846a2c650dcb4f34858a57592fd7ae6bb6) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix issue where slider could stop abruptly when scrubbing thumb
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.26.2
+  - @zag-js/core@1.26.2
+  - @zag-js/types@1.26.2
+  - @zag-js/utils@1.26.2
+  - @zag-js/dom-query@1.26.2
+
+## 1.26.1
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.26.1
+  - @zag-js/core@1.26.1
+  - @zag-js/types@1.26.1
+  - @zag-js/utils@1.26.1
+  - @zag-js/dom-query@1.26.1
+
+## 1.26.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.26.0
+  - @zag-js/core@1.26.0
+  - @zag-js/types@1.26.0
+  - @zag-js/utils@1.26.0
+  - @zag-js/dom-query@1.26.0
+
+## 1.25.0
+
+### Minor Changes
+
+- [#2726](https://github.com/chakra-ui/zag/pull/2726)
+  [`e53c89e`](https://github.com/chakra-ui/zag/commit/e53c89efcd33bbb3ab60e01ddcbcb37beccc3063) Thanks
+  [@Hugos68](https://github.com/Hugos68)! - Export `splitMarkerProps` helper.
+
+### Patch Changes
+
+- [`60acf60`](https://github.com/chakra-ui/zag/commit/60acf6067631f087396436f1f4fdf922ee9468cb) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix issue where slider continues dragging when disabled during
+  drag operation.
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.25.0
+  - @zag-js/core@1.25.0
+  - @zag-js/types@1.25.0
+  - @zag-js/utils@1.25.0
+  - @zag-js/dom-query@1.25.0
+
 ## 1.24.2
 
 ### Patch Changes

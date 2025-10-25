@@ -1,5 +1,100 @@
 # @zag-js/tags-input
 
+## 1.26.4
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.26.4
+  - @zag-js/core@1.26.4
+  - @zag-js/types@1.26.4
+  - @zag-js/auto-resize@1.26.4
+  - @zag-js/utils@1.26.4
+  - @zag-js/dom-query@1.26.4
+  - @zag-js/interact-outside@1.26.4
+  - @zag-js/live-region@1.26.4
+
+## 1.26.3
+
+### Patch Changes
+
+- [`b91f66f`](https://github.com/chakra-ui/zag/commit/b91f66f79a85e72e8c5475d1d2bb9cedc1782e1d) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix issue where entering a custom tag with combobox integration
+  required pressing `Enter` twice.
+
+  The tags-input now correctly handles custom values when the combobox has no highlighted item (`aria-activedescendant`
+  is empty), allowing the tag to be added on the first `Enter` press.
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.26.3
+  - @zag-js/core@1.26.3
+  - @zag-js/types@1.26.3
+  - @zag-js/auto-resize@1.26.3
+  - @zag-js/utils@1.26.3
+  - @zag-js/dom-query@1.26.3
+  - @zag-js/interact-outside@1.26.3
+  - @zag-js/live-region@1.26.3
+
+## 1.26.2
+
+### Patch Changes
+
+- [`7c09d7f`](https://github.com/chakra-ui/zag/commit/7c09d7f1cd99f9ae3b09f6fcbe1c20f559b5fad4) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix issue where `maxLength` doesn't apply to the edit input as
+  well.
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.26.2
+  - @zag-js/core@1.26.2
+  - @zag-js/types@1.26.2
+  - @zag-js/auto-resize@1.26.2
+  - @zag-js/utils@1.26.2
+  - @zag-js/dom-query@1.26.2
+  - @zag-js/interact-outside@1.26.2
+  - @zag-js/live-region@1.26.2
+
+## 1.26.1
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.26.1
+  - @zag-js/core@1.26.1
+  - @zag-js/types@1.26.1
+  - @zag-js/auto-resize@1.26.1
+  - @zag-js/utils@1.26.1
+  - @zag-js/dom-query@1.26.1
+  - @zag-js/interact-outside@1.26.1
+  - @zag-js/live-region@1.26.1
+
+## 1.26.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.26.0
+  - @zag-js/core@1.26.0
+  - @zag-js/types@1.26.0
+  - @zag-js/auto-resize@1.26.0
+  - @zag-js/utils@1.26.0
+  - @zag-js/dom-query@1.26.0
+  - @zag-js/interact-outside@1.26.0
+  - @zag-js/live-region@1.26.0
+
+## 1.25.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.25.0
+  - @zag-js/core@1.25.0
+  - @zag-js/types@1.25.0
+  - @zag-js/auto-resize@1.25.0
+  - @zag-js/utils@1.25.0
+  - @zag-js/dom-query@1.25.0
+  - @zag-js/interact-outside@1.25.0
+  - @zag-js/live-region@1.25.0
+
 ## 1.24.2
 
 ### Patch Changes

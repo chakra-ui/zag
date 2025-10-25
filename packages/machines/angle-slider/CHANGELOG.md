@@ -1,5 +1,85 @@
 # @zag-js/angle-slider
 
+## 1.26.4
+
+### Patch Changes
+
+- [`8ff341a`](https://github.com/chakra-ui/zag/commit/8ff341a9af0b551260fd02efda41c6dee755617f) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix issue where clicking and dragging the angle-slider thumb from
+  a non-center position causes unexpected value jumps. The thumb now maintains its relative position from the initial
+  click point throughout the drag operation, providing more intuitive dragging behavior.
+- Updated dependencies []:
+  - @zag-js/anatomy@1.26.4
+  - @zag-js/core@1.26.4
+  - @zag-js/types@1.26.4
+  - @zag-js/utils@1.26.4
+  - @zag-js/dom-query@1.26.4
+  - @zag-js/rect-utils@1.26.4
+
+## 1.26.3
+
+### Patch Changes
+
+- [`4d237d6`](https://github.com/chakra-ui/zag/commit/4d237d64ee02ad0f7167dcf1d29cb93620020201) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix accessibility violation where the slider thumb element lacked
+  an accessible name. The thumb now supports `aria-label` and `aria-labelledby` props, and automatically falls back to
+  the label element's ID for proper ARIA labeling.
+- Updated dependencies []:
+  - @zag-js/anatomy@1.26.3
+  - @zag-js/core@1.26.3
+  - @zag-js/types@1.26.3
+  - @zag-js/utils@1.26.3
+  - @zag-js/dom-query@1.26.3
+  - @zag-js/rect-utils@1.26.3
+
+## 1.26.2
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.26.2
+  - @zag-js/core@1.26.2
+  - @zag-js/types@1.26.2
+  - @zag-js/utils@1.26.2
+  - @zag-js/dom-query@1.26.2
+  - @zag-js/rect-utils@1.26.2
+
+## 1.26.1
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.26.1
+  - @zag-js/core@1.26.1
+  - @zag-js/types@1.26.1
+  - @zag-js/utils@1.26.1
+  - @zag-js/dom-query@1.26.1
+  - @zag-js/rect-utils@1.26.1
+
+## 1.26.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.26.0
+  - @zag-js/core@1.26.0
+  - @zag-js/types@1.26.0
+  - @zag-js/utils@1.26.0
+  - @zag-js/dom-query@1.26.0
+  - @zag-js/rect-utils@1.26.0
+
+## 1.25.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.25.0
+  - @zag-js/core@1.25.0
+  - @zag-js/types@1.25.0
+  - @zag-js/utils@1.25.0
+  - @zag-js/dom-query@1.25.0
+  - @zag-js/rect-utils@1.25.0
+
 ## 1.24.2
 
 ### Patch Changes

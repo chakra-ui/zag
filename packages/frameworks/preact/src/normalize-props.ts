@@ -1,5 +1,5 @@
 import { createNormalizer } from "@zag-js/types"
-import type { JSX } from "preact"
+import type { JSX, DOMAttributes, CSSProperties } from "preact"
 
 type WithoutRef<T> = Omit<T, "ref">
 
@@ -8,8 +8,8 @@ type ElementsWithoutRef = {
 }
 
 export type PropTypes = ElementsWithoutRef & {
-  element: WithoutRef<JSX.DOMAttributes<HTMLElement>>
-  style: JSX.CSSProperties
+  element: WithoutRef<DOMAttributes<HTMLElement>>
+  style: CSSProperties
 }
 
 const eventMap: Record<string, string> = {

@@ -47,6 +47,7 @@ import { Listbox } from "./listbox"
 import { Playground } from "../components/playground"
 import { FloatingPanel } from "./floating-panel"
 import { PasswordInput } from "./password-input"
+import { BottomSheet } from "./bottom-sheet"
 
 const components = {
   Accordion: () => (
@@ -79,6 +80,9 @@ const components = {
         src: "https://static.wikia.nocookie.net/naruto/images/d/d6/Naruto_Part_I.png/revision/latest/scale-to-width-down/300?cb=20210223094656",
       }}
     />
+  ),
+  BottomSheet: () => (
+    <Playground name="bottom-sheet" component={BottomSheet} defaultProps={{}} />
   ),
   Carousel: () => (
     <Playground

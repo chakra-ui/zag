@@ -13,7 +13,15 @@ import {
 } from "@zag-js/utils"
 import * as dom from "./slider.dom"
 import type { SliderSchema } from "./slider.types"
-import { constrainValue, decrement, getClosestIndex, getRangeAtIndex, increment, normalizeValues } from "./slider.utils"
+import {
+  constrainValue,
+  decrement,
+  getClosestIndex,
+  getRangeAtIndex,
+  increment,
+  normalizeValues,
+  selectMovableThumb,
+} from "./slider.utils"
 
 const isEqualSize = (a: Size | null, b: Size | null) => {
   return a?.width === b?.width && a?.height === b?.height
@@ -88,6 +96,12 @@ export const machine = createMachine<SliderSchema>({
     }
   },
 
+  refs() {
+    return {
+      thumbDragOffset: null,
+    }
+  },
+
   computed: {
     isHorizontal: ({ prop }) => prop("orientation") === "horizontal",
     isVertical: ({ prop }) => prop("orientation") === "vertical",
@@ -101,9 +115,15 @@ export const machine = createMachine<SliderSchema>({
     ),
   },
 
-  watch({ track, action, context }) {
+  watch({ track, action, context, computed, send }) {
     track([() => context.hash("value")], () => {
       action(["syncInputElements", "dispatchChangeEvent"])
+    })
+
+    track([() => computed("isDisabled")], () => {
+      if (computed("isDisabled")) {
+        send({ type: "POINTER_CANCEL" })
+      }
     })
   },
 
@@ -140,7 +160,7 @@ export const machine = createMachine<SliderSchema>({
         },
         THUMB_POINTER_DOWN: {
           target: "dragging",
-          actions: ["setFocusedIndex", "focusActiveThumb"],
+          actions: ["setFocusedIndex", "setThumbDragOffset", "focusActiveThumb"],
         },
       },
     },
@@ -154,7 +174,7 @@ export const machine = createMachine<SliderSchema>({
         },
         THUMB_POINTER_DOWN: {
           target: "dragging",
-          actions: ["setFocusedIndex", "focusActiveThumb"],
+          actions: ["setFocusedIndex", "setThumbDragOffset", "focusActiveThumb"],
         },
         ARROW_DEC: {
           actions: ["decrementThumbAtIndex", "invokeOnChangeEnd"],
@@ -181,10 +201,14 @@ export const machine = createMachine<SliderSchema>({
       on: {
         POINTER_UP: {
           target: "focus",
-          actions: ["invokeOnChangeEnd"],
+          actions: ["invokeOnChangeEnd", "clearThumbDragOffset"],
         },
         POINTER_MOVE: {
           actions: ["setPointerValue"],
+        },
+        POINTER_CANCEL: {
+          target: "idle",
+          actions: ["clearFocusedIndex", "clearThumbDragOffset"],
         },
       },
     },
@@ -260,11 +284,20 @@ export const machine = createMachine<SliderSchema>({
         const focusedIndex = getClosestIndex(params, pointValue)
         context.set("focusedIndex", focusedIndex)
       },
-      setFocusedIndex({ context, event }) {
-        context.set("focusedIndex", event.index)
+      setFocusedIndex(params) {
+        const { context, event } = params
+        const movableIndex = selectMovableThumb(params, event.index)
+        context.set("focusedIndex", movableIndex)
       },
       clearFocusedIndex({ context }) {
         context.set("focusedIndex", -1)
+      },
+      setThumbDragOffset(params) {
+        const { refs, event } = params
+        refs.set("thumbDragOffset", event.offset ?? null)
+      },
+      clearThumbDragOffset({ refs }) {
+        refs.set("thumbDragOffset", null)
       },
       setPointerValue(params) {
         queueMicrotask(() => {

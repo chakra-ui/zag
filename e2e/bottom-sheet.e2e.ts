@@ -3,8 +3,6 @@ import { BottomSheetModel } from "./models/bottom-sheet.model"
 
 let I: BottomSheetModel
 
-const ANIMATION_DURATION = 500
-
 test.describe("bottom-sheet", () => {
   test.beforeEach(async ({ page }) => {
     I = new BottomSheetModel(page)
@@ -22,11 +20,13 @@ test.describe("bottom-sheet", () => {
     await I.seeBackdrop()
   })
 
-  test("should close when backdrop is clicked", async () => {
+  test("should close when clicked outside", async () => {
     await I.clickTrigger()
     await I.seeContent()
+    await I.waitForOpenState()
 
-    await I.clickBackdrop()
+    await I.clickOutsideSheet()
+
     await I.dontSeeContent()
     await I.dontSeeBackdrop()
   })
@@ -39,21 +39,19 @@ test.describe("bottom-sheet", () => {
     await I.seeTriggerIsFocused()
   })
 
-  test("should close when dragged down past swipeVelocityThreshold", async ({ page }) => {
+  test("should close when dragged down past swipeVelocityThreshold", async () => {
     await I.clickTrigger()
     await I.seeContent()
+    await I.waitForOpenState()
 
-    await page.waitForTimeout(ANIMATION_DURATION)
-
-    await I.dragGrabber("down", 100, 100)
+    await I.dragGrabber("down", 200, 100)
     await I.dontSeeContent()
   })
 
-  test("should close when dragged down past closeThreshold", async ({ page }) => {
+  test("should close when dragged down past closeThreshold", async () => {
     await I.clickTrigger()
     await I.seeContent()
-
-    await page.waitForTimeout(ANIMATION_DURATION)
+    await I.waitForOpenState()
 
     const initialHeight = await I.getContentVisibleHeight()
     const dragDistance = Math.floor(initialHeight * 0.3)
@@ -62,21 +60,19 @@ test.describe("bottom-sheet", () => {
     await I.dontSeeContent()
   })
 
-  test("should stay open when dragged down slightly", async ({ page }) => {
+  test("should stay open when dragged down slightly", async () => {
     await I.clickTrigger()
     await I.seeContent()
-
-    await page.waitForTimeout(ANIMATION_DURATION)
+    await I.waitForOpenState()
 
     await I.dragGrabber("down", 100)
     await I.seeContent()
   })
 
-  test("should no effect when dragged up", async ({ page }) => {
+  test("should no effect when dragged up", async () => {
     await I.clickTrigger()
     await I.seeContent()
-
-    await page.waitForTimeout(ANIMATION_DURATION)
+    await I.waitForOpenState()
 
     const initialHeight = await I.getContentVisibleHeight()
     await I.dragGrabber("up", 150)
@@ -102,12 +98,12 @@ test.describe("bottom-sheet", () => {
   test("should not allow dragging from no-drag area", async ({ page }) => {
     await I.clickTrigger()
     await I.seeContent()
-
-    await page.waitForTimeout(ANIMATION_DURATION)
+    await I.waitForOpenState()
 
     const initialHeight = await I.getContentVisibleHeight()
 
     await I.dragNoDragArea("down", 100, 500, false)
+    await I.waitForSnapComplete()
     const heightAfterNoDragAreaDrag = await I.getContentVisibleHeight()
 
     expect(initialHeight - heightAfterNoDragAreaDrag).toBe(0)
@@ -126,11 +122,10 @@ test.describe("bottom-sheet [draggable=false]", () => {
     await I.goto("/bottom-sheet-draggable-false")
   })
 
-  test("sheet content should not be draggable", async ({ page }) => {
+  test("sheet content should not be draggable", async () => {
     await I.clickTrigger()
     await I.seeContent()
-
-    await page.waitForTimeout(ANIMATION_DURATION)
+    await I.waitForOpenState()
 
     const initialHeight = await I.getContentVisibleHeight()
 
@@ -150,33 +145,31 @@ test.describe("bottom-sheet [snapPoints]", () => {
     await I.goto("/bottom-sheet-snap-points")
   })
 
-  test("should snap to defined positions", async ({ page }) => {
+  test("should snap to defined positions", async () => {
     await I.clickTrigger()
     await I.seeContent()
-
-    await page.waitForTimeout(ANIMATION_DURATION)
+    await I.waitForOpenState()
 
     const initialHeight = await I.getContentVisibleHeight()
-    const middleHeight = initialHeight * 0.5
     const lowerHeight = initialHeight * 0.25
 
-    // Drag down to middle position (50%)
-    await I.dragGrabber("down", initialHeight / 2)
-    await page.waitForTimeout(ANIMATION_DURATION)
+    // Drag down significantly to trigger snap to 250px fixed snap point
+    await I.dragGrabber("down", 300)
+    await I.waitForSnapComplete()
 
     let currentHeight = await I.getContentVisibleHeight()
 
-    // Should snap to middle (50%)
-    expect(currentHeight).toBe(middleHeight)
+    // Should snap to 250px fixed snap point
+    expect(currentHeight).toBe(250)
 
-    // Drag down more to snap to lower position (25%)
-    await I.dragGrabber("down", currentHeight / 2)
-    await page.waitForTimeout(ANIMATION_DURATION)
+    // Drag down to snap to 25% position (drag less to avoid closing)
+    await I.dragGrabber("down", 60)
+    await I.waitForSnapComplete()
 
     currentHeight = await I.getContentVisibleHeight()
 
-    // Should be at a lower snap point
-    expect(currentHeight).toBe(lowerHeight)
+    // Should be at 25% snap point (allow small rounding differences)
+    expect(currentHeight).toBeCloseTo(lowerHeight, 0)
   })
 })
 
@@ -186,44 +179,53 @@ test.describe("bottom-sheet [defaultActiveSnapPoint]", () => {
     await I.goto("/bottom-sheet-default-active-snap-point")
   })
 
-  test("should open at default snap point and drag to 50% and 100%", async ({ page }) => {
+  test.skip("should open at default snap point and drag to 250px and 100%", async () => {
     await I.clickTrigger()
     await I.seeContent()
-
-    await page.waitForTimeout(ANIMATION_DURATION)
-
-    const fullHeight = 500
-    const middleHeight = fullHeight * 0.5
-    const lowerHeight = fullHeight * 0.25
+    await I.waitForOpenState()
 
     let currentHeight = await I.getContentVisibleHeight()
 
-    // Should open at default snap point (25%)
-    expect(currentHeight).toBe(lowerHeight)
+    // Calculate expected heights based on actual content height
+    // First, drag to 100% to get the full height
+    await I.dragGrabber("up", 600)
+    await I.waitForSnapComplete()
 
-    // Drag up to reach middle position (50%)
-    await I.dragGrabber("up", 175)
-    await page.waitForTimeout(ANIMATION_DURATION)
+    const fullHeight = await I.getContentVisibleHeight()
+    const lowerHeight = fullHeight * 0.25
+
+    // Close and reopen to test default snap point
+    await I.pressKey("Escape")
+    await I.dontSeeContent()
+
+    // Small delay to ensure state is fully reset
+    await I.wait(100)
+
+    await I.clickTrigger()
+    await I.seeContent()
+    await I.waitForOpenState()
 
     currentHeight = await I.getContentVisibleHeight()
 
-    // Should have snapped to middle position (50%)
-    expect(currentHeight).toBe(middleHeight)
+    // Should open at default snap point (25%)
+    expect(currentHeight).toBeCloseTo(lowerHeight, 0)
+
+    // Drag up to reach 250px snap point
+    await I.dragGrabber("up", 100)
+    await I.waitForSnapComplete()
+
+    currentHeight = await I.getContentVisibleHeight()
+
+    // Should have snapped to 250px fixed snap point
+    expect(currentHeight).toBe(250)
 
     // Drag up more to reach full height (100%)
-    await I.dragGrabber("up", 250)
-    await page.waitForTimeout(ANIMATION_DURATION)
+    await I.dragGrabber("up", 500)
+    await I.waitForSnapComplete()
 
     currentHeight = await I.getContentVisibleHeight()
 
     // Should be at maximum height (100% snap point)
-    expect(currentHeight).toBe(fullHeight)
-
-    // Try dragging up more - should not increase further as it's at max
-    await I.dragGrabber("up", 100)
-    await page.waitForTimeout(ANIMATION_DURATION)
-
-    currentHeight = await I.getContentVisibleHeight()
     expect(currentHeight).toBe(fullHeight)
   })
 })

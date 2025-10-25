@@ -106,14 +106,16 @@ export function getVisibility(params: Pick<Ctx, "computed" | "prop">) {
   return visibility
 }
 
-export function getThumbStyle(params: Pick<Ctx, "computed" | "prop">, index: number): Style {
-  const { computed } = params
+export function getThumbStyle(params: Pick<Ctx, "computed" | "context" | "prop">, index: number): Style {
+  const { computed, context } = params
   const placementProp = computed("isVertical") ? "bottom" : "insetInlineStart"
+  const focusedIndex = context.get("focusedIndex")
   return {
     visibility: getVisibility(params),
     position: "absolute",
     transform: "var(--slider-thumb-transform)",
     [placementProp]: `var(--slider-thumb-offset-${index})`,
+    zIndex: focusedIndex === index ? 1 : undefined,
   }
 }
 

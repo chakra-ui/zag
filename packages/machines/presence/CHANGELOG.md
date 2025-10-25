@@ -1,5 +1,63 @@
 # @zag-js/presence
 
+## 1.26.4
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/core@1.26.4
+  - @zag-js/types@1.26.4
+  - @zag-js/dom-query@1.26.4
+
+## 1.26.3
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/core@1.26.3
+  - @zag-js/types@1.26.3
+  - @zag-js/dom-query@1.26.3
+
+## 1.26.2
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/core@1.26.2
+  - @zag-js/types@1.26.2
+  - @zag-js/dom-query@1.26.2
+
+## 1.26.1
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/core@1.26.1
+  - @zag-js/types@1.26.1
+  - @zag-js/dom-query@1.26.1
+
+## 1.26.0
+
+### Patch Changes
+
+- [`85a582f`](https://github.com/chakra-ui/zag/commit/85a582fb22eaf85fa60390fe2a6743b3e76a311f) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix race condition where dialog remains closed when `open` prop
+  rapidly changes from `true` to `false` to `true`
+
+- Updated dependencies []:
+  - @zag-js/core@1.26.0
+  - @zag-js/types@1.26.0
+  - @zag-js/dom-query@1.26.0
+
+## 1.25.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/core@1.25.0
+  - @zag-js/types@1.25.0
+  - @zag-js/dom-query@1.25.0
+
 ## 1.24.2
 
 ### Patch Changes

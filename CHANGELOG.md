@@ -4,6 +4,149 @@ All notable changes to this project will be documented in this file.
 
 > For v0.x changelog, see the [v0 branch](https://github.com/chakra-ui/zag/blob/v0/CHANGELOG.md)
 
+## [1.26.4](./#1.26.4) - 2025-10-23
+
+### Added
+
+- **Image Cropper [New]**: Initial release of image cropper state machine
+
+- **Marquee [New]**: Initial release of marquee component for continuously scrolling content
+
+### Fixed
+
+- **Angle Slider**: Fix issue where clicking and dragging the angle-slider thumb from a non-center position causes
+  unexpected value jumps. The thumb now maintains its relative position from the initial click point throughout the drag
+  operation, providing more intuitive dragging behavior.
+
+- **Slider**: Fix issue where slider thumb offset changes dynamically during drag, causing unexpected value jumps. The
+  thumb now maintains a constant offset from the pointer throughout the drag operation, matching the initial grab
+  position.
+
+- **Svelte**: Refactor `mergeProps` to return the class values as an array, this delegates the resolution to Svelte's
+  native class handling, which uses `clsx` internally. This ensures proper support for conditional classes, arrays, and
+  objects.
+
+- **Toast**: Fix issue in Solid.js where toasts collapse immediately when dismissing while hovering, by tracking pointer
+  state and temporarily ignoring spurious mouse events during DOM mutations using requestAnimationFrame.
+
+## [1.26.3](./#1.26.3) - 2025-10-18
+
+### Fixed
+
+- **Angle Slider**: Fix accessibility violation where the slider thumb element lacked an accessible name. The thumb now
+  supports `aria-label` and `aria-labelledby` props, and automatically falls back to the label element's ID for proper
+  ARIA labeling.
+
+- **Select**: Fix accessibility violation where the required state was not set correctly to on the trigger.
+
+- **Tags Input**: Fix issue where entering a custom tag with combobox integration required pressing `Enter` twice. The
+  tags-input now correctly handles custom values when the combobox has no highlighted item (`aria-activedescendant` is
+  empty), allowing the tag to be added on the first `Enter` press.
+
+## [1.26.2](./#1.26.2) - 2025-10-14
+
+### Fixed
+
+- **Checkbox**
+  - Fix issue where setting initial checked state to `indeterminate` doesn't work
+  - Ensure `api.checkedState` returns the correct checked state (`boolean | "indeterminate"`)
+
+- **Collapsible**: Fix issue where `dir` prop value was hardcoded to `ltr` instead of using the provided value
+
+- **Combobox**: Fix issue where controlled single-select combobox does not propagate its initial value to `inputValue`
+
+- **Listbox**: Fix issue where pressing Enter key when no highlighted item still calls `event.preventDefault()`
+
+- **Radio Group**: Refactor to use `getBoundingClientRect()` for precise indicator positioning
+
+- **Slider**
+  - Fix issue where slider could stop abruptly when scrubbing thumb
+  - Fix issue where range slider thumbs become stuck when dragged to the same position without `minStepsBetweenThumbs`
+
+- **Tabs**: Refactor to use `getBoundingClientRect()` for precise indicator positioning
+
+- **Tags Input**: Fix issue where `maxLength` doesn't apply to the edit input as well
+
+## [1.26.1](./#1.26.1) - 2025-10-08
+
+### Fixed
+
+- **Tree View**
+  - Fixed issue where pressing `F2` on any tree node would lock navigation and prevent selecting other nodes.
+  - The rename feature now requires the `canRename` callback to be explicitly provided, making it opt-in rather than
+    opt-out.
+
+## [1.26.0](./#1.26.0) - 2025-10-06
+
+### Added
+
+- **Tree View**: [Experimental] Add support for renaming tree node labels with validation and control features.
+
+  This feature enables users to edit tree node labels inline, unlocking use cases like file explorers, folder management
+  systems, content hierarchies, and any tree-based interface where users need to rename items.
+
+  **Key Features:**
+  - Press `F2` on any node to enter rename mode
+  - Input is automatically focused and synced with current label
+  - Press `Enter` to submit or `Escape` to cancel
+  - Blur event automatically submits changes
+  - IME composition events are properly handled for international input
+
+  **Validation & Control:**
+  - `canRename` - Control which nodes are renameable based on node type or custom logic
+  - `onRenameStart` - Called when rename mode starts (useful for analytics, showing hints)
+  - `onBeforeRename` - Validate rename before accepting (e.g., prevent duplicates, empty names)
+  - Empty name prevention - Automatically stays in rename mode if submitted name is empty/whitespace
+  - Label trimming - Labels are automatically trimmed before being passed to callbacks
+  - `onRenameComplete` - Handle the rename and update your collection
+
+  **Styling & Visual State:**
+  - `data-renaming` attribute - Added to both item and branch elements when in rename mode for easy styling
+  - `nodeState.renaming` - Boolean property to check if a node is currently being renamed
+
+### Fixed
+
+- **Editable**: Fix issue where input value fails to revert after repeated full deletion
+
+- **Focus Visible**: Fix `"Cannot assign to read only property 'focus'"` console error by gracefully handling
+  environments where `HTMLElement.prototype.focus` is non-configurable.
+
+- **Listbox**: Fix `splitProps` to avoid partial
+
+- **Presence**: Fix race condition where dialog remains closed when `open` prop rapidly changes from `true` to `false`
+  to `true`
+
+- **Solid**: Fix issue where transition actions received stale event data
+
+## [1.25.0](./#1.25.0) - 2025-09-28
+
+### Added
+
+- **Collapsible**: Add support for `collapsedHeight` and `collapsedWidth` props to control the dimensions of the
+  collapsible content when in its collapsed state.
+
+- **Focus Trap**: Allow elements referenced by `aria-controls` to be included in the trap scope. This makes it possible
+  for menus, popovers, etc. to be portalled and work correctly.
+
+- **Pagination**: Add `getPageUrl` prop for generating `href` attributes when using pagination as links.
+
+```ts
+const service = useMachine(pagination.machine, {
+  type: "link",
+  getPageUrl: ({ page, pageSize }) => `/products?page=${page}&size=${pageSize}`,
+})
+```
+
+- **Slider**: Export `splitMarkerProps` helper.
+
+### Fixed
+
+- **Scroll Area**: Fix RTL horizontal scrollbar positioning on Safari
+
+- **Slider**: Fix issue where slider continues dragging when disabled during drag operation.
+
+- **Switch**: Fix issue where `data-active` is inconsistently applied when `disabled` state changes at runtime
+
 ## [1.24.2](./#1.24.2) - 2025-09-18
 
 ### Fixed

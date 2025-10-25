@@ -3,6 +3,8 @@ import { createSplitProps } from "@zag-js/utils"
 import type { AngleSliderProps } from "./angle-slider.types"
 
 export const props = createProps<AngleSliderProps>()([
+  "aria-label",
+  "aria-labelledby",
   "dir",
   "disabled",
   "getRootNode",

@@ -1,10 +1,9 @@
+import { getEventPoint, getEventTarget, isLeftClick } from "@zag-js/dom-query"
 import type { JSX, NormalizeProps, PropTypes } from "@zag-js/types"
-import type { BottomSheetApi, BottomSheetService } from "./bottom-sheet.types"
+import { toPx } from "@zag-js/utils"
 import { parts } from "./bottom-sheet.anatomy"
 import * as dom from "./bottom-sheet.dom"
-import { getEventPoint, getEventTarget, isLeftClick } from "@zag-js/dom-query"
-
-const tap = <T, R>(v: T | null, fn: (v: T) => R): R | undefined => (v != null ? fn(v) : undefined)
+import type { BottomSheetApi, BottomSheetService } from "./bottom-sheet.types"
 
 export function connect<T extends PropTypes>(
   service: BottomSheetService,
@@ -12,37 +11,57 @@ export function connect<T extends PropTypes>(
 ): BottomSheetApi<T> {
   const { state, send, context, scope, prop } = service
 
+  const open = state.hasTag("open")
+  const dragOffset = context.get("dragOffset")
+  const dragging = dragOffset !== null
+
+  const activeSnapPoint = context.get("activeSnapPoint")
+  const resolvedActiveSnapPoint = context.get("resolvedActiveSnapPoint")
+  const translate = dragOffset ?? resolvedActiveSnapPoint?.offset
+
   function onPointerDown(event: JSX.PointerEvent<HTMLElement>) {
     if (!isLeftClick(event)) return
-
     const target = getEventTarget<HTMLElement>(event)
     if (target?.hasAttribute("data-no-drag") || target?.closest("[data-no-drag]")) return
-
     if (state.matches("closing")) return
-
-    const point = getEventPoint(event)
-    send({ type: "POINTER_DOWN", point })
+    send({ type: "POINTER_DOWN", point: getEventPoint(event) })
   }
-
-  const open = state.hasTag("open")
-  const dragging = state.hasTag("dragging")
-
-  const translate = context.get("dragOffset") ?? context.get("resolvedActiveSnapPoint")?.offset
 
   return {
     open,
-    activeSnapPoint: context.get("activeSnapPoint"),
-
+    dragging,
     setOpen(nextOpen) {
       const open = state.hasTag("open")
       if (open === nextOpen) return
       send({ type: nextOpen ? "OPEN" : "CLOSE" })
     },
 
+    snapPoints: prop("snapPoints"),
+    activeSnapPoint,
     setActiveSnapPoint(snapPoint) {
       const activeSnapPoint = context.get("activeSnapPoint")
       if (activeSnapPoint === snapPoint) return
-      send({ type: "SET_ACTIVE_SNAP_POINT", snapPoint })
+      send({ type: "ACTIVE_SNAP_POINT.SET", snapPoint })
+    },
+
+    getOpenPercentage() {
+      if (!open) return 0
+
+      const contentHeight = context.get("contentHeight")
+      if (!contentHeight) return 0
+
+      const currentOffset = translate ?? 0
+      // Inverted: when offset is 0 (fully open), percentage is 1
+      return Math.max(0, Math.min(1, 1 - currentOffset / contentHeight))
+    },
+
+    getActiveSnapIndex() {
+      const snapPoints = prop("snapPoints")
+      return snapPoints.indexOf(activeSnapPoint)
+    },
+
+    getContentHeight() {
+      return context.get("contentHeight")
     },
 
     getContentProps(props = { draggable: true }) {
@@ -52,14 +71,14 @@ export function connect<T extends PropTypes>(
         id: dom.getContentId(scope),
         tabIndex: -1,
         role: "dialog",
-        "aria-modal": "true",
+        "aria-modal": prop("modal"),
         "aria-labelledby": dom.getTitleId(scope),
         hidden: !open,
         "data-state": open ? "open" : "closed",
         style: {
           transform: "translate3d(0, var(--bottom-sheet-translate, 0), 0)",
           transitionDuration: dragging ? "0s" : undefined,
-          "--bottom-sheet-translate": tap(translate, (v) => `${v}px`),
+          "--bottom-sheet-translate": toPx(translate),
           willChange: "transform",
         },
         onPointerDown(event) {

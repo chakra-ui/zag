@@ -148,10 +148,15 @@ function setupGlobalFocusEvents(root?: RootNode) {
 
   // Overwrite via assignment does not work in happy dom:
   // https://github.com/capricorn86/happy-dom/issues/1214
-  Object.defineProperty(win.HTMLElement.prototype, "focus", {
-    configurable: true,
-    value: patchedFocus,
-  })
+  try {
+    Object.defineProperty(win.HTMLElement.prototype, "focus", {
+      configurable: true,
+      value: patchedFocus,
+    })
+  } catch {
+    // Failed to patch - property may be non-configurable or already patched
+    // The focus tracking will still work via keyboard/pointer event listeners
+  }
 
   doc.addEventListener("keydown", handleKeyboardEvent, true)
   doc.addEventListener("keyup", handleKeyboardEvent, true)
@@ -190,11 +195,19 @@ const tearDownWindowFocusTracking = (root?: RootNode, loadListener?: () => void)
     doc.removeEventListener("DOMContentLoaded", loadListener)
   }
 
-  if (!listenerMap.has(win)) {
+  const listenerData = listenerMap.get(win)
+  if (!listenerData) {
     return
   }
 
-  win.HTMLElement.prototype.focus = listenerMap.get(win)!.focus
+  try {
+    Object.defineProperty(win.HTMLElement.prototype, "focus", {
+      configurable: true,
+      value: listenerData.focus,
+    })
+  } catch {
+    // Failed to restore - ignore silently
+  }
 
   doc.removeEventListener("keydown", handleKeyboardEvent, true)
   doc.removeEventListener("keyup", handleKeyboardEvent, true)

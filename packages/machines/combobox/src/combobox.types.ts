@@ -298,6 +298,8 @@ type PropsWithDefault =
   | "closeOnSelect"
   | "translations"
   | "positioning"
+  | "defaultValue"
+  | "defaultInputValue"
 
 export interface ComboboxSchema<T extends CollectionItem = CollectionItem> {
   props: RequiredBy<ComboboxProps<T>, PropsWithDefault>

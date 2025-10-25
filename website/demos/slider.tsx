@@ -11,6 +11,8 @@ export function Slider(props: SliderProps) {
     max: 50,
     defaultValue: [20],
     ...props,
+    thumbAlignment: "center",
+    thumbSize: { width: 20, height: 20 },
   })
 
   const api = slider.connect(service, normalizeProps)

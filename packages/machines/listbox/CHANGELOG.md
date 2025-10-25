@@ -1,5 +1,91 @@
 # @zag-js/listbox
 
+## 1.26.4
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.26.4
+  - @zag-js/core@1.26.4
+  - @zag-js/types@1.26.4
+  - @zag-js/collection@1.26.4
+  - @zag-js/utils@1.26.4
+  - @zag-js/dom-query@1.26.4
+  - @zag-js/focus-visible@1.26.4
+
+## 1.26.3
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.26.3
+  - @zag-js/core@1.26.3
+  - @zag-js/types@1.26.3
+  - @zag-js/collection@1.26.3
+  - @zag-js/utils@1.26.3
+  - @zag-js/dom-query@1.26.3
+  - @zag-js/focus-visible@1.26.3
+
+## 1.26.2
+
+### Patch Changes
+
+- [`2764067`](https://github.com/chakra-ui/zag/commit/2764067f522c6b87ed0453dff0cd3704c53aa466) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix issue where pressing Enter key when no highlighted item still
+  calls `event.preventDefault()`
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.26.2
+  - @zag-js/core@1.26.2
+  - @zag-js/types@1.26.2
+  - @zag-js/collection@1.26.2
+  - @zag-js/utils@1.26.2
+  - @zag-js/dom-query@1.26.2
+  - @zag-js/focus-visible@1.26.2
+
+## 1.26.1
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.26.1
+  - @zag-js/core@1.26.1
+  - @zag-js/types@1.26.1
+  - @zag-js/collection@1.26.1
+  - @zag-js/utils@1.26.1
+  - @zag-js/dom-query@1.26.1
+  - @zag-js/focus-visible@1.26.1
+
+## 1.26.0
+
+### Patch Changes
+
+- [#2746](https://github.com/chakra-ui/zag/pull/2746)
+  [`614fe17`](https://github.com/chakra-ui/zag/commit/614fe17282c0060c825b4a655ca3f4364b5fe24f) Thanks
+  [@julienbenac](https://github.com/julienbenac)! - fix: update `splitProps` to avoid partial
+
+- Updated dependencies [[`9da67a5`](https://github.com/chakra-ui/zag/commit/9da67a5fd8ac5d045fdf12cc0e1be596f6950e2c)]:
+  - @zag-js/focus-visible@1.26.0
+  - @zag-js/anatomy@1.26.0
+  - @zag-js/core@1.26.0
+  - @zag-js/types@1.26.0
+  - @zag-js/collection@1.26.0
+  - @zag-js/utils@1.26.0
+  - @zag-js/dom-query@1.26.0
+
+## 1.25.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.25.0
+  - @zag-js/core@1.25.0
+  - @zag-js/types@1.25.0
+  - @zag-js/collection@1.25.0
+  - @zag-js/utils@1.25.0
+  - @zag-js/dom-query@1.25.0
+  - @zag-js/focus-visible@1.25.0
+
 ## 1.24.2
 
 ### Patch Changes

@@ -39,10 +39,16 @@ export function groupConnect<T extends PropTypes, O = any>(
         "aria-live": "polite",
         role: "region",
         style: getGroupPlacementStyle(service, placement),
+        onMouseEnter() {
+          if (refs.get("ignoreMouseTimer").isActive()) return
+          send({ type: "REGION.POINTER_ENTER", placement })
+        },
         onMouseMove() {
+          if (refs.get("ignoreMouseTimer").isActive()) return
           send({ type: "REGION.POINTER_ENTER", placement })
         },
         onMouseLeave() {
+          if (refs.get("ignoreMouseTimer").isActive()) return
           send({ type: "REGION.POINTER_LEAVE", placement })
         },
         onFocus(event) {

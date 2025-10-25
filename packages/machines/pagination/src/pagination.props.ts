@@ -17,6 +17,7 @@ export const props = createProps<PaginationProps>()([
   "siblingCount",
   "translations",
   "type",
+  "getPageUrl",
 ])
 export const splitProps = createSplitProps<Partial<PaginationProps>>(props)
 

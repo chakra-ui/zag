@@ -256,6 +256,83 @@ function TreeAsync() {
 }
 ```
 
+### Renaming Nodes
+
+> **Unreleased** — Coming in the next version
+
+The tree view supports renaming node labels inline, perfect for file explorers,
+content management systems, and other applications where users need to edit item
+names.
+
+To enable renaming:
+
+1. Add the rename input to your tree node component
+2. Handle the `onRenameComplete` callback to update your collection
+
+<CodeSnippet id="tree-view/rename.mdx" />
+
+#### Controlling which nodes can be renamed
+
+Use the `canRename` callback to control which nodes are renameable based on node
+type or custom logic.
+
+```tsx {3-6}
+const service = useMachine(tree.machine, {
+  collection,
+  canRename(node, indexPath) {
+    // Only allow renaming leaf nodes (files), not branches (folders)
+    return !node.children
+  },
+})
+```
+
+#### Validating rename input
+
+Use the `onBeforeRename` callback to validate the new name before accepting the
+change. Return `false` to reject the rename.
+
+```tsx {3-14}
+const service = useMachine(tree.machine, {
+  collection,
+  onBeforeRename(details) {
+    // Prevent empty names (label is already trimmed)
+    if (!details.label) return false
+
+    // Prevent duplicate names
+    const parent = getParentNode(details.indexPath)
+    const hasDuplicate = parent.children.some(
+      (child) => child.name === details.label && child.id !== details.value
+    )
+    return !hasDuplicate
+  },
+})
+```
+
+#### Tracking rename events
+
+Use the `onRenameStart` callback to track when users start renaming, useful for
+analytics or showing contextual hints.
+
+```tsx {3-6}
+const service = useMachine(tree.machine, {
+  collection,
+  onRenameStart(details) {
+    console.log("Started renaming:", details.node.name)
+    trackEvent("tree_rename_started")
+  },
+})
+```
+
+**Features:**
+
+- Press `F2` to enter rename mode
+- Press `Enter` to submit or `Escape` to cancel
+- Blur automatically submits changes
+- Empty or whitespace-only names are automatically rejected
+- Labels are automatically trimmed before callbacks
+- IME composition events are properly handled
+- `data-renaming` attribute added for styling
+
 ## Methods and Properties
 
 ### Machine Context

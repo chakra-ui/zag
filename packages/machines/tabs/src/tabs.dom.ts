@@ -27,11 +27,16 @@ export const getPrevTriggerEl = (ctx: Scope, opts: { value: string; loopFocus?: 
   prevById(getElements(ctx), getTriggerId(ctx, opts.value), opts.loopFocus)
 
 export const getOffsetRect = (el: HTMLElement | undefined) => {
+  if (!el) {
+    return { left: 0, top: 0, width: 0, height: 0 }
+  }
+  const rect = el.getBoundingClientRect()
+  const parent = el.offsetParent?.getBoundingClientRect()
   return {
-    left: el?.offsetLeft ?? 0,
-    top: el?.offsetTop ?? 0,
-    width: el?.offsetWidth ?? 0,
-    height: el?.offsetHeight ?? 0,
+    left: parent ? rect.left - parent.left : rect.left,
+    top: parent ? rect.top - parent.top : rect.top,
+    width: rect.width,
+    height: rect.height,
   }
 }
 

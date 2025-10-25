@@ -1,11 +1,14 @@
-import { createMachine } from "@zag-js/core"
+import { setup } from "@zag-js/core"
 import { trackDismissableBranch } from "@zag-js/dismissable"
-import { addDomEvent } from "@zag-js/dom-query"
+import { addDomEvent, AnimationFrame } from "@zag-js/dom-query"
 import { uuid } from "@zag-js/utils"
 import * as dom from "./toast.dom"
 import type { ToastGroupSchema } from "./toast.types"
 
-export const groupMachine = createMachine<ToastGroupSchema>({
+const { guards, createMachine } = setup<ToastGroupSchema>()
+const { and } = guards
+
+export const groupMachine = createMachine({
   props({ props }) {
     return {
       dir: "ltr",
@@ -23,6 +26,8 @@ export const groupMachine = createMachine<ToastGroupSchema>({
     return {
       lastFocusedEl: null,
       isFocusWithin: false,
+      isPointerWithin: false,
+      ignoreMouseTimer: AnimationFrame.create(),
       dismissableCleanup: undefined,
     }
   },
@@ -57,7 +62,7 @@ export const groupMachine = createMachine<ToastGroupSchema>({
     })
   },
 
-  exit: ["clearDismissableBranch", "clearLastFocusedEl"],
+  exit: ["clearDismissableBranch", "clearLastFocusedEl", "clearMouseEventTimer"],
 
   on: {
     "DOC.HOTKEY": {
@@ -65,17 +70,21 @@ export const groupMachine = createMachine<ToastGroupSchema>({
     },
     "REGION.BLUR": [
       {
-        guard: "isOverlapping",
+        guard: and("isOverlapping", "isPointerOut"),
         target: "overlap",
-        actions: ["collapseToasts", "resumeToasts", "restoreLastFocusedEl"],
+        actions: ["collapseToasts", "resumeToasts", "restoreFocusIfPointerOut"],
       },
       {
+        guard: "isPointerOut",
         target: "stack",
-        actions: ["resumeToasts", "restoreLastFocusedEl"],
+        actions: ["resumeToasts", "restoreFocusIfPointerOut"],
+      },
+      {
+        actions: ["clearFocusWithin"],
       },
     ],
     "TOAST.REMOVE": {
-      actions: ["removeToast", "removeHeight"],
+      actions: ["removeToast", "removeHeight", "ignoreMouseEventsTemporarily"],
     },
     "TOAST.PAUSE": {
       actions: ["pauseToasts"],
@@ -89,10 +98,10 @@ export const groupMachine = createMachine<ToastGroupSchema>({
           {
             guard: "isOverlapping",
             target: "overlap",
-            actions: ["resumeToasts", "collapseToasts"],
+            actions: ["clearPointerWithin", "resumeToasts", "collapseToasts"],
           },
           {
-            actions: ["resumeToasts"],
+            actions: ["clearPointerWithin", "resumeToasts"],
           },
         ],
         "REGION.OVERLAP": {
@@ -103,7 +112,7 @@ export const groupMachine = createMachine<ToastGroupSchema>({
           actions: ["setLastFocusedEl", "pauseToasts"],
         },
         "REGION.POINTER_ENTER": {
-          actions: ["pauseToasts"],
+          actions: ["setPointerWithin", "pauseToasts"],
         },
       },
     },
@@ -116,7 +125,7 @@ export const groupMachine = createMachine<ToastGroupSchema>({
         },
         "REGION.POINTER_ENTER": {
           target: "stack",
-          actions: ["pauseToasts", "expandToasts"],
+          actions: ["setPointerWithin", "pauseToasts", "expandToasts"],
         },
         "REGION.FOCUS": {
           target: "stack",
@@ -129,6 +138,7 @@ export const groupMachine = createMachine<ToastGroupSchema>({
   implementations: {
     guards: {
       isOverlapping: ({ computed }) => computed("overlap"),
+      isPointerOut: ({ refs }) => !refs.get("isPointerWithin"),
     },
 
     effects: {
@@ -227,10 +237,23 @@ export const groupMachine = createMachine<ToastGroupSchema>({
         refs.set("isFocusWithin", true)
         refs.set("lastFocusedEl", event.target)
       },
-      restoreLastFocusedEl({ refs }) {
-        if (!refs.get("lastFocusedEl")) return
+      restoreFocusIfPointerOut({ refs }) {
+        if (!refs.get("lastFocusedEl") || refs.get("isPointerWithin")) return
         refs.get("lastFocusedEl")?.focus({ preventScroll: true })
         refs.set("lastFocusedEl", null)
+        refs.set("isFocusWithin", false)
+      },
+      setPointerWithin({ refs }) {
+        refs.set("isPointerWithin", true)
+      },
+      clearPointerWithin({ refs }) {
+        refs.set("isPointerWithin", false)
+        if (refs.get("lastFocusedEl") && !refs.get("isFocusWithin")) {
+          refs.get("lastFocusedEl")?.focus({ preventScroll: true })
+          refs.set("lastFocusedEl", null)
+        }
+      },
+      clearFocusWithin({ refs }) {
         refs.set("isFocusWithin", false)
       },
       clearLastFocusedEl({ refs }) {
@@ -238,6 +261,12 @@ export const groupMachine = createMachine<ToastGroupSchema>({
         refs.get("lastFocusedEl")?.focus({ preventScroll: true })
         refs.set("lastFocusedEl", null)
         refs.set("isFocusWithin", false)
+      },
+      ignoreMouseEventsTemporarily({ refs }) {
+        refs.get("ignoreMouseTimer").request()
+      },
+      clearMouseEventTimer({ refs }) {
+        refs.get("ignoreMouseTimer").cancel()
       },
     },
   },

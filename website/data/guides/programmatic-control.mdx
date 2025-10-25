@@ -44,7 +44,98 @@ const service = useMachine(accordion.machine, {
 })
 ```
 
-## Using exposed methods
+## Reactive Context
+
+Different frameworks handle reactivity differently when working with Zag
+machines. Here's how to ensure your machine context stays reactive to prop
+changes.
+
+### React
+
+React props are natively reactive with Zag machines. Simply pass them directly
+to `useMachine`
+
+```tsx
+function Checkbox(props) {
+  const service = useMachine(checkbox.machine, {
+    checked: props.checked,
+    onCheckedChange: props.onCheckedChange,
+  })
+
+  const api = checkbox.connect(service, normalizeProps)
+  return <label {...api.getRootProps()}>Toggle</label>
+}
+```
+
+### Vue
+
+Use a computed ref or a function that returns the context to make it reactive
+
+```html
+<script setup lang="ts">
+  import { computed } from "vue"
+
+  const service = useMachine(
+    checkbox.machine,
+    computed(() => ({
+      checked: props.checked,
+      onCheckedChange: props.onCheckedChange,
+    })),
+  )
+</script>
+```
+
+### Solid
+
+Use a function that returns the context to make it reactive
+
+```tsx
+function Checkbox(props) {
+  const service = useMachine(checkbox.machine, () => ({
+    checked: props.checked,
+    onCheckedChange: props.onCheckedChange,
+  }))
+
+  const api = createMemo(() => checkbox.connect(service, normalizeProps))
+  return <label {...api().getRootProps()}>Toggle</label>
+}
+```
+
+### Svelte
+
+To make props reactive in Svelte, pass a function that returns the context
+
+```svelte
+<script lang="ts">
+  let checked = $state(machineProps.checked ?? false)
+
+  const service = useMachine(checkbox.machine, () => ({
+    ...machineProps,
+    checked,
+    onCheckedChange(details) {
+      checked = details.checked
+      machineProps.onCheckedChange?.(details)
+    },
+  }))
+
+  const api = $derived(checkbox.connect(service, normalizeProps))
+</script>
+
+<label {...api.getRootProps()}>Toggle</label>
+```
+
+**Why this works:**
+
+1. **Reactive Context**: The function re-evaluates whenever dependencies change,
+   ensuring the machine always has current prop values
+2. **State Preservation**: The machine's internal state remains intact while
+   context gets updated
+3. **Framework Integration**: This pattern aligns with the framework's
+   reactivity model
+
+This approach ensures single-directional data flow while maintaining reactivity.
+
+## Using API methods
 
 The `connect` method of the machines provide helpful methods (APIs) to change
 the machine state or update its context.

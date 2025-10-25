@@ -1,5 +1,50 @@
 # @zag-js/focus-visible
 
+## 1.26.4
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/dom-query@1.26.4
+
+## 1.26.3
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/dom-query@1.26.3
+
+## 1.26.2
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/dom-query@1.26.2
+
+## 1.26.1
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/dom-query@1.26.1
+
+## 1.26.0
+
+### Patch Changes
+
+- [`9da67a5`](https://github.com/chakra-ui/zag/commit/9da67a5fd8ac5d045fdf12cc0e1be596f6950e2c) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix `"Cannot assign to read only property 'focus'"` console error
+  by gracefully handling environments where `HTMLElement.prototype.focus` is non-configurable.
+- Updated dependencies []:
+  - @zag-js/dom-query@1.26.0
+
+## 1.25.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/dom-query@1.25.0
+
 ## 1.24.2
 
 ### Patch Changes

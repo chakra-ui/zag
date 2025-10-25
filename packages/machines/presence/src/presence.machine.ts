@@ -150,7 +150,7 @@ export const machine = createMachine<PresenceSchema>({
     },
 
     effects: {
-      trackAnimationEvents: ({ context, refs, send }) => {
+      trackAnimationEvents: ({ context, refs, send, prop }) => {
         const node = refs.get("node")
         if (!node) return
 
@@ -164,7 +164,7 @@ export const machine = createMachine<PresenceSchema>({
         const onEnd = (event: AnimationEvent) => {
           const animationName = getAnimationName(refs.get("styles"))
           const target = getEventTarget(event)
-          if (target === node && animationName === context.get("unmountAnimationName")) {
+          if (target === node && animationName === context.get("unmountAnimationName") && !prop("present")) {
             send({ type: "UNMOUNT", src: "animationend" })
           }
         }

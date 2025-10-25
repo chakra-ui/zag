@@ -1,0 +1,38 @@
+```tsx
+import * as bottomSheet from "@zag-js/bottom-sheet"
+import { useMachine, normalizeProps } from "@zag-js/solid"
+import { createUniqueId } from "solid-js"
+
+export function BottomSheet() {
+  const service = useMachine(bottomSheet.machine, { id: createUniqueId() })
+
+  const api = bottomSheet.connect(service, normalizeProps)
+
+  return (
+    <>
+      <button {...api().getTriggerProps()}>Open Bottom Sheet</button>
+      <div {...api().getBackdropProps()} />
+      <div {...api().getContentProps()}>
+        <div {...api().getGrabberProps()}>
+          <div {...api().getGrabberIndicatorProps()} />
+        </div>
+        <div>
+          <div {...api().getTitleProps()}>Add New Contact</div>
+          <label>
+            <span>Name</span>
+            <input type="text" />
+          </label>
+          <label>
+            <span>Email</span>
+            <input type="email" />
+          </label>
+          <div>
+            <button>Add Contact</button>
+            <button onClick={() => api().setOpen(false)}>Cancel</button>
+          </div>
+        </div>
+      </div>
+    </>
+  )
+}
+```
