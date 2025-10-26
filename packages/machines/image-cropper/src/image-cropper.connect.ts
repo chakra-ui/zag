@@ -4,6 +4,7 @@ import * as dom from "./image-cropper.dom"
 import type { FlipState, ImageCropperApi, ImageCropperService } from "./image-cropper.types"
 import { getEventPoint, contains, getEventKey, dataAttr } from "@zag-js/dom-query"
 import { toPx } from "@zag-js/utils"
+import { getHandleDirections } from "./image-cropper.utils"
 
 const getRoundedCrop = (crop: Rect) => ({
   x: Math.round(crop.x),
@@ -66,10 +67,7 @@ export function connect<T extends PropTypes>(
       if (!handlePosition) return
       if (prop("fixedCropArea")) return
 
-      const hasLeft = handlePosition.includes("left")
-      const hasRight = handlePosition.includes("right")
-      const hasTop = handlePosition.includes("top")
-      const hasBottom = handlePosition.includes("bottom")
+      const { hasLeft, hasRight, hasTop, hasBottom } = getHandleDirections(handlePosition)
 
       let deltaX = 0
       let deltaY = 0

@@ -36,7 +36,7 @@ interface ClampAspectParams {
   aspectRatio: number
 }
 
-const getHandleDirections = (handlePosition: HandlePosition): HandleDirections => ({
+export const getHandleDirections = (handlePosition: HandlePosition): HandleDirections => ({
   hasLeft: handlePosition.includes("left"),
   hasRight: handlePosition.includes("right"),
   hasTop: handlePosition.includes("top"),
