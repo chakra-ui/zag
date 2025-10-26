@@ -156,6 +156,7 @@ export default function Page() {
           <label>
             Resize handle:
             <select
+              data-testid="resize-handle-select"
               value={selectedHandle}
               onChange={(event) => setSelectedHandle(event.currentTarget.value as imageCropper.HandlePosition)}
             >
@@ -169,6 +170,7 @@ export default function Page() {
           <label>
             Resize step (px):
             <input
+              data-testid="resize-step-input"
               type="number"
               min={1}
               value={resizeStep}
@@ -179,10 +181,10 @@ export default function Page() {
             />
           </label>
           <div>
-            <button type="button" onClick={() => applyResize("grow")}>
+            <button type="button" data-testid="grow-button" onClick={() => applyResize("grow")}>
               Grow selection
             </button>
-            <button type="button" onClick={() => applyResize("shrink")}>
+            <button type="button" data-testid="shrink-button" onClick={() => applyResize("shrink")}>
               Shrink selection
             </button>
           </div>

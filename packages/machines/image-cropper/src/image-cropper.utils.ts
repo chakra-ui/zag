@@ -607,22 +607,6 @@ export function getKeyboardMoveDelta(key: string, step: number): { x: number; y:
   }
 }
 
-export const resolveResizeDelta = (handlePosition: HandlePosition, delta: { x: number; y: number } | undefined) => {
-  if (!delta) return null
-
-  const xDirection = handlePosition.includes("left") || handlePosition.includes("right")
-  const yDirection = handlePosition.includes("top") || handlePosition.includes("bottom")
-
-  const resolved = {
-    x: xDirection ? (delta.x ?? 0) : 0,
-    y: yDirection ? (delta.y ?? 0) : 0,
-  }
-
-  if (resolved.x === 0 && resolved.y === 0) return null
-
-  return resolved
-}
-
 export const resolveCropAspectRatio = (
   shape: ImageCropperProps["cropShape"],
   aspectRatio: ImageCropperProps["aspectRatio"],

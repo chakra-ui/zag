@@ -66,7 +66,27 @@ export function connect<T extends PropTypes>(
       if (!handlePosition) return
       if (prop("fixedCropArea")) return
 
-      send({ type: "RESIZE_CROP", handlePosition, delta })
+      const hasLeft = handlePosition.includes("left")
+      const hasRight = handlePosition.includes("right")
+      const hasTop = handlePosition.includes("top")
+      const hasBottom = handlePosition.includes("bottom")
+
+      let deltaX = 0
+      let deltaY = 0
+
+      if (hasLeft) {
+        deltaX = -delta
+      } else if (hasRight) {
+        deltaX = delta
+      }
+
+      if (hasTop) {
+        deltaY = -delta
+      } else if (hasBottom) {
+        deltaY = delta
+      }
+
+      send({ type: "RESIZE_CROP", handlePosition, delta: { x: deltaX, y: deltaY } })
     },
 
     async getCroppedImage(options = {}) {

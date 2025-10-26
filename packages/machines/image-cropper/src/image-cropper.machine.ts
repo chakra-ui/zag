@@ -13,7 +13,6 @@ import {
   getKeyboardMoveDelta,
   getNudgeStep,
   resolveCropAspectRatio,
-  resolveResizeDelta,
 } from "./image-cropper.utils"
 import { clampValue } from "@zag-js/utils"
 
@@ -464,9 +463,6 @@ export const machine = createMachine<ImageCropperSchema>({
         const { handlePosition, delta } = event
         if (!handlePosition) return
 
-        const resolvedDelta = resolveResizeDelta(handlePosition, delta)
-        if (!resolvedDelta) return
-
         const viewportRect = context.get("viewportRect")
         if (viewportRect.width <= 0 || viewportRect.height <= 0) return
 
@@ -478,7 +474,7 @@ export const machine = createMachine<ImageCropperSchema>({
         const nextCrop = computeResizeCrop({
           cropStart: crop,
           handlePosition,
-          delta: resolvedDelta,
+          delta,
           viewportRect,
           minSize,
           maxSize,
