@@ -385,6 +385,306 @@ test.describe("image-cropper / fixedCropArea", () => {
   })
 })
 
+test.describe("image-cropper / resize API", () => {
+  test.beforeEach(async ({ page }) => {
+    I = new ImageCropperModel(page)
+    await I.goto()
+    await I.waitForImageLoad()
+  })
+
+  test("[api] should grow selection using right handle", async () => {
+    const initialRect = await I.getSelectionRect()
+
+    await I.selectResizeHandle("right")
+    await I.setResizeStep(20)
+    await I.clickGrow()
+    await I.wait(100)
+
+    const newRect = await I.getSelectionRect()
+
+    expect(newRect.width).toBe(initialRect.width + 20)
+    expect(newRect.height).toBe(initialRect.height)
+    expect(newRect.x).toBe(initialRect.x)
+    expect(newRect.y).toBe(initialRect.y)
+  })
+
+  test("[api] should shrink selection using right handle", async () => {
+    const initialRect = await I.getSelectionRect()
+
+    await I.selectResizeHandle("right")
+    await I.setResizeStep(15)
+    await I.clickShrink()
+    await I.wait(100)
+
+    const newRect = await I.getSelectionRect()
+
+    expect(newRect.width).toBe(initialRect.width - 15)
+    expect(newRect.height).toBe(initialRect.height)
+    expect(newRect.x).toBe(initialRect.x)
+    expect(newRect.y).toBe(initialRect.y)
+  })
+
+  test("[api] should grow selection using left handle", async () => {
+    const initialRect = await I.getSelectionRect()
+
+    await I.selectResizeHandle("left")
+    await I.setResizeStep(20)
+    await I.clickGrow()
+    await I.wait(100)
+
+    const newRect = await I.getSelectionRect()
+
+    expect(newRect.width).toBe(initialRect.width + 20)
+    expect(newRect.height).toBe(initialRect.height)
+    expect(newRect.x).toBe(initialRect.x - 20)
+    expect(newRect.y).toBe(initialRect.y)
+  })
+
+  test("[api] should shrink selection using left handle", async () => {
+    const initialRect = await I.getSelectionRect()
+
+    await I.selectResizeHandle("left")
+    await I.setResizeStep(15)
+    await I.clickShrink()
+    await I.wait(100)
+
+    const newRect = await I.getSelectionRect()
+
+    expect(newRect.width).toBe(initialRect.width - 15)
+    expect(newRect.height).toBe(initialRect.height)
+    expect(newRect.x).toBe(initialRect.x + 15)
+    expect(newRect.y).toBe(initialRect.y)
+  })
+
+  test("[api] should grow selection using bottom handle", async () => {
+    const initialRect = await I.getSelectionRect()
+
+    await I.selectResizeHandle("bottom")
+    await I.setResizeStep(25)
+    await I.clickGrow()
+    await I.wait(100)
+
+    const newRect = await I.getSelectionRect()
+
+    expect(newRect.width).toBe(initialRect.width)
+    expect(newRect.height).toBe(initialRect.height + 25)
+    expect(newRect.x).toBe(initialRect.x)
+    expect(newRect.y).toBe(initialRect.y)
+  })
+
+  test("[api] should shrink selection using bottom handle", async () => {
+    const initialRect = await I.getSelectionRect()
+
+    await I.selectResizeHandle("bottom")
+    await I.setResizeStep(20)
+    await I.clickShrink()
+    await I.wait(100)
+
+    const newRect = await I.getSelectionRect()
+
+    expect(newRect.width).toBe(initialRect.width)
+    expect(newRect.height).toBe(initialRect.height - 20)
+    expect(newRect.x).toBe(initialRect.x)
+    expect(newRect.y).toBe(initialRect.y)
+  })
+
+  test("[api] should grow selection using top handle", async () => {
+    const initialRect = await I.getSelectionRect()
+
+    await I.selectResizeHandle("top")
+    await I.setResizeStep(25)
+    await I.clickGrow()
+    await I.wait(100)
+
+    const newRect = await I.getSelectionRect()
+
+    expect(newRect.width).toBe(initialRect.width)
+    expect(newRect.height).toBe(initialRect.height + 25)
+    expect(newRect.x).toBe(initialRect.x)
+    expect(newRect.y).toBe(initialRect.y - 25)
+  })
+
+  test("[api] should shrink selection using top handle", async () => {
+    const initialRect = await I.getSelectionRect()
+
+    await I.selectResizeHandle("top")
+    await I.setResizeStep(20)
+    await I.clickShrink()
+    await I.wait(100)
+
+    const newRect = await I.getSelectionRect()
+
+    expect(newRect.width).toBe(initialRect.width)
+    expect(newRect.height).toBe(initialRect.height - 20)
+    expect(newRect.x).toBe(initialRect.x)
+    expect(newRect.y).toBe(initialRect.y + 20)
+  })
+
+  test("[api] should grow selection using bottom-right corner handle", async () => {
+    const initialRect = await I.getSelectionRect()
+
+    await I.selectResizeHandle("bottom-right")
+    await I.setResizeStep(30)
+    await I.clickGrow()
+    await I.wait(100)
+
+    const newRect = await I.getSelectionRect()
+
+    expect(newRect.width).toBe(initialRect.width + 30)
+    expect(newRect.height).toBe(initialRect.height + 30)
+    expect(newRect.x).toBe(initialRect.x)
+    expect(newRect.y).toBe(initialRect.y)
+  })
+
+  test("[api] should shrink selection using bottom-right corner handle", async () => {
+    const initialRect = await I.getSelectionRect()
+
+    await I.selectResizeHandle("bottom-right")
+    await I.setResizeStep(25)
+    await I.clickShrink()
+    await I.wait(100)
+
+    const newRect = await I.getSelectionRect()
+
+    expect(newRect.width).toBe(initialRect.width - 25)
+    expect(newRect.height).toBe(initialRect.height - 25)
+    expect(newRect.x).toBe(initialRect.x)
+    expect(newRect.y).toBe(initialRect.y)
+  })
+
+  test("[api] should grow selection using top-left corner handle", async () => {
+    const initialRect = await I.getSelectionRect()
+
+    await I.selectResizeHandle("top-left")
+    await I.setResizeStep(30)
+    await I.clickGrow()
+    await I.wait(100)
+
+    const newRect = await I.getSelectionRect()
+
+    expect(newRect.width).toBe(initialRect.width + 30)
+    expect(newRect.height).toBe(initialRect.height + 30)
+    expect(newRect.x).toBe(initialRect.x - 30)
+    expect(newRect.y).toBe(initialRect.y - 30)
+  })
+
+  test("[api] should shrink selection using top-left corner handle", async () => {
+    const initialRect = await I.getSelectionRect()
+
+    await I.selectResizeHandle("top-left")
+    await I.setResizeStep(25)
+    await I.clickShrink()
+    await I.wait(100)
+
+    const newRect = await I.getSelectionRect()
+
+    expect(newRect.width).toBe(initialRect.width - 25)
+    expect(newRect.height).toBe(initialRect.height - 25)
+    expect(newRect.x).toBe(initialRect.x + 25)
+    expect(newRect.y).toBe(initialRect.y + 25)
+  })
+
+  test("[api] should grow selection using top-right corner handle", async () => {
+    const initialRect = await I.getSelectionRect()
+
+    await I.selectResizeHandle("top-right")
+    await I.setResizeStep(30)
+    await I.clickGrow()
+    await I.wait(100)
+
+    const newRect = await I.getSelectionRect()
+
+    expect(newRect.width).toBe(initialRect.width + 30)
+    expect(newRect.height).toBe(initialRect.height + 30)
+    expect(newRect.x).toBe(initialRect.x)
+    expect(newRect.y).toBe(initialRect.y - 30)
+  })
+
+  test("[api] should shrink selection using top-right corner handle", async () => {
+    const initialRect = await I.getSelectionRect()
+
+    await I.selectResizeHandle("top-right")
+    await I.setResizeStep(25)
+    await I.clickShrink()
+    await I.wait(100)
+
+    const newRect = await I.getSelectionRect()
+
+    expect(newRect.width).toBe(initialRect.width - 25)
+    expect(newRect.height).toBe(initialRect.height - 25)
+    expect(newRect.x).toBe(initialRect.x)
+    expect(newRect.y).toBe(initialRect.y + 25)
+  })
+
+  test("[api] should grow selection using bottom-left corner handle", async () => {
+    const initialRect = await I.getSelectionRect()
+
+    await I.selectResizeHandle("bottom-left")
+    await I.setResizeStep(30)
+    await I.clickGrow()
+    await I.wait(100)
+
+    const newRect = await I.getSelectionRect()
+
+    expect(newRect.width).toBe(initialRect.width + 30)
+    expect(newRect.height).toBe(initialRect.height + 30)
+    expect(newRect.x).toBe(initialRect.x - 30)
+    expect(newRect.y).toBe(initialRect.y)
+  })
+
+  test("[api] should shrink selection using bottom-left corner handle", async () => {
+    const initialRect = await I.getSelectionRect()
+
+    await I.selectResizeHandle("bottom-left")
+    await I.setResizeStep(25)
+    await I.clickShrink()
+    await I.wait(100)
+
+    const newRect = await I.getSelectionRect()
+
+    expect(newRect.width).toBe(initialRect.width - 25)
+    expect(newRect.height).toBe(initialRect.height - 25)
+    expect(newRect.x).toBe(initialRect.x + 25)
+    expect(newRect.y).toBe(initialRect.y)
+  })
+
+  test("[api] should respect minimum size when shrinking", async () => {
+    await I.controls.num("minWidth", "100")
+    await I.controls.num("minHeight", "80")
+    await I.wait(100)
+
+    await I.selectResizeHandle("bottom-right")
+    await I.setResizeStep(500)
+    await I.clickShrink()
+    await I.wait(100)
+
+    const { width, height } = await I.getSelectionRect()
+
+    expect(width).toBe(100)
+    expect(height).toBe(80)
+  })
+
+  test("[api] should respect maximum size when growing", async () => {
+    await I.controls.num("maxWidth", "200")
+    await I.controls.num("maxHeight", "150")
+    await I.wait(100)
+
+    await I.selectResizeHandle("bottom-right")
+    await I.setResizeStep(500)
+    await I.clickGrow()
+    await I.wait(100)
+
+    const selectionRect = await I.getSelectionRect()
+    const viewportRect = await I.getViewportRect()
+
+    const expectedWidth = Math.min(200, viewportRect.width)
+    const expectedHeight = Math.min(150, viewportRect.height)
+
+    expect(selectionRect.width).toBe(expectedWidth)
+    expect(selectionRect.height).toBe(expectedHeight)
+  })
+})
+
 test.describe("image-cropper / circle", () => {
   test.beforeEach(async ({ page }) => {
     I = new ImageCropperModel(page)

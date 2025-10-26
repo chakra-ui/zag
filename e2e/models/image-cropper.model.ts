@@ -266,4 +266,36 @@ export class ImageCropperModel extends Model {
       await this.page.keyboard.up(mod)
     }
   }
+
+  get resizeHandleSelect() {
+    return this.page.locator("[data-testid='resize-handle-select']")
+  }
+
+  get resizeStepInput() {
+    return this.page.locator("[data-testid='resize-step-input']")
+  }
+
+  get growButton() {
+    return this.page.locator("[data-testid='grow-button']")
+  }
+
+  get shrinkButton() {
+    return this.page.locator("[data-testid='shrink-button']")
+  }
+
+  async selectResizeHandle(position: string) {
+    await this.resizeHandleSelect.selectOption(position)
+  }
+
+  async setResizeStep(step: number) {
+    await this.resizeStepInput.fill(String(step))
+  }
+
+  async clickGrow() {
+    await this.growButton.click()
+  }
+
+  async clickShrink() {
+    await this.shrinkButton.click()
+  }
 }

@@ -36,7 +36,7 @@ interface ClampAspectParams {
   aspectRatio: number
 }
 
-const getHandleDirections = (handlePosition: HandlePosition): HandleDirections => ({
+export const getHandleDirections = (handlePosition: HandlePosition): HandleDirections => ({
   hasLeft: handlePosition.includes("left"),
   hasRight: handlePosition.includes("right"),
   hasTop: handlePosition.includes("top"),
@@ -605,22 +605,6 @@ export function getKeyboardMoveDelta(key: string, step: number): { x: number; y:
     default:
       return { x: 0, y: 0 }
   }
-}
-
-export const resolveResizeDelta = (handlePosition: HandlePosition, delta: { x: number; y: number } | undefined) => {
-  if (!delta) return null
-
-  const xDirection = handlePosition.includes("left") || handlePosition.includes("right")
-  const yDirection = handlePosition.includes("top") || handlePosition.includes("bottom")
-
-  const resolved = {
-    x: xDirection ? (delta.x ?? 0) : 0,
-    y: yDirection ? (delta.y ?? 0) : 0,
-  }
-
-  if (resolved.x === 0 && resolved.y === 0) return null
-
-  return resolved
 }
 
 export const resolveCropAspectRatio = (
