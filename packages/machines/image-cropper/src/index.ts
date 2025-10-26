@@ -15,4 +15,9 @@ export type {
   FlipState,
   RotationChangeDetails,
   ZoomChangeDetails,
+  GetCroppedImageOptions,
+  IntlTranslations,
+  PreviewDescriptionDetails,
+  SelectionLabelDetails,
+  SelectionValueTextDetails,
 } from "./image-cropper.types"
