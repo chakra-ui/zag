@@ -1,12 +1,4 @@
 {
-  "tree-view": {
-    "Item": {
-      "--depth": "The depth value for the Item"
-    },
-    "Branch": {
-      "--depth": "The depth value for the Branch"
-    }
-  },
   "tour": {
     "Backdrop": {
       "--tour-layer": "The tour layer value for the Backdrop",
@@ -35,6 +27,14 @@
     "Content": {
       "--layer-index": "The index of the dismissable in the layer stack",
       "--nested-layer-count": "The number of nested tours"
+    }
+  },
+  "tree-view": {
+    "Item": {
+      "--depth": "The depth value for the Item"
+    },
+    "Branch": {
+      "--depth": "The depth value for the Branch"
     }
   },
   "timer": {
@@ -103,6 +103,29 @@
       "--column-count": "The column count value for the Content"
     }
   },
+  "image-cropper": {
+    "Root": {
+      "--crop-width": "The width of the Root",
+      "--crop-height": "The height of the Root",
+      "--crop-x": "The crop x value for the Root",
+      "--crop-y": "The crop y value for the Root"
+    },
+    "Selection": {
+      "--width": "The width of the element",
+      "--height": "The height of the element",
+      "--x": "The x position for transform",
+      "--y": "The y position for transform"
+    }
+  },
+  "marquee": {
+    "Root": {
+      "--marquee-duration": "The marquee duration value for the Root",
+      "--marquee-spacing": "The marquee spacing value for the Root",
+      "--marquee-delay": "The marquee delay value for the Root",
+      "--marquee-loop-count": "The marquee loop count value for the Root",
+      "--marquee-translate": "The marquee translate value for the Root"
+    }
+  },
   "floating-panel": {
     "Positioner": {
       "--width": "The width of the element",
@@ -166,7 +189,9 @@
   "collapsible": {
     "Content": {
       "--height": "The height of the element",
-      "--width": "The width of the element"
+      "--width": "The width of the element",
+      "--collapsed-height": "The height of the Content",
+      "--collapsed-width": "The width of the Content"
     }
   },
   "carousel": {
@@ -224,7 +249,6 @@
       "--reference-height": "The height of the root"
     }
   },
-
   "select": {
     "Arrow": {
       "--arrow-size": "The size of the arrow",

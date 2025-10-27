@@ -161,7 +161,8 @@
       "data-hover": "Present when hovered",
       "data-disabled": "Present when disabled",
       "data-state": "\"indeterminate\" | \"checked\" | \"unchecked\"",
-      "data-invalid": "Present when invalid"
+      "data-invalid": "Present when invalid",
+      "data-required": "Present when required"
     },
     "Label": {
       "data-active": "Present when active or pressed",
@@ -171,7 +172,8 @@
       "data-hover": "Present when hovered",
       "data-disabled": "Present when disabled",
       "data-state": "\"indeterminate\" | \"checked\" | \"unchecked\"",
-      "data-invalid": "Present when invalid"
+      "data-invalid": "Present when invalid",
+      "data-required": "Present when required"
     },
     "Control": {
       "data-active": "Present when active or pressed",
@@ -181,7 +183,8 @@
       "data-hover": "Present when hovered",
       "data-disabled": "Present when disabled",
       "data-state": "\"indeterminate\" | \"checked\" | \"unchecked\"",
-      "data-invalid": "Present when invalid"
+      "data-invalid": "Present when invalid",
+      "data-required": "Present when required"
     },
     "Indicator": {
       "data-active": "Present when active or pressed",
@@ -191,7 +194,8 @@
       "data-hover": "Present when hovered",
       "data-disabled": "Present when disabled",
       "data-state": "\"indeterminate\" | \"checked\" | \"unchecked\"",
-      "data-invalid": "Present when invalid"
+      "data-invalid": "Present when invalid",
+      "data-required": "Present when required"
     }
   },
   "clipboard": {
@@ -233,7 +237,8 @@
       "data-part": "content",
       "data-collapsible": "",
       "data-state": "\"open\" | \"closed\"",
-      "data-disabled": "Present when disabled"
+      "data-disabled": "Present when disabled",
+      "data-has-collapsed-size": "Present when the content has collapsed width or height"
     },
     "Trigger": {
       "data-scope": "collapsible",
@@ -262,6 +267,7 @@
       "data-disabled": "Present when disabled",
       "data-readonly": "Present when read-only",
       "data-invalid": "Present when invalid",
+      "data-required": "Present when required",
       "data-focus": "Present when focused"
     },
     "Control": {
@@ -389,6 +395,7 @@
       "data-readonly": "Present when read-only",
       "data-disabled": "Present when disabled",
       "data-invalid": "Present when invalid",
+      "data-required": "Present when required",
       "data-focus": "Present when focused"
     },
     "Control": {
@@ -557,6 +564,7 @@
       "data-disabled": "Present when disabled",
       "data-focus": "Present when focused",
       "data-in-range": "Present when is within the range",
+      "data-outside-range": "Present when is outside the range",
       "data-view": "The view of the monthtablecelltrigger",
       "data-value": "The value of the item"
     },
@@ -573,6 +581,7 @@
       "data-focus": "Present when focused",
       "data-in-range": "Present when is within the range",
       "data-disabled": "Present when disabled",
+      "data-outside-range": "Present when is outside the range",
       "data-value": "The value of the item",
       "data-view": "The view of the yeartablecelltrigger"
     },
@@ -645,7 +654,8 @@
       "data-scope": "editable",
       "data-part": "label",
       "data-focus": "Present when focused",
-      "data-invalid": "Present when invalid"
+      "data-invalid": "Present when invalid",
+      "data-required": "Present when required"
     },
     "Input": {
       "data-scope": "editable",
@@ -688,42 +698,50 @@
     "ItemGroup": {
       "data-scope": "file-upload",
       "data-part": "item-group",
-      "data-disabled": "Present when disabled"
+      "data-disabled": "Present when disabled",
+      "data-type": "The type of the item"
     },
     "Item": {
       "data-scope": "file-upload",
       "data-part": "item",
-      "data-disabled": "Present when disabled"
+      "data-disabled": "Present when disabled",
+      "data-type": "The type of the item"
     },
     "ItemName": {
       "data-scope": "file-upload",
       "data-part": "item-name",
-      "data-disabled": "Present when disabled"
+      "data-disabled": "Present when disabled",
+      "data-type": "The type of the item"
     },
     "ItemSizeText": {
       "data-scope": "file-upload",
       "data-part": "item-size-text",
-      "data-disabled": "Present when disabled"
+      "data-disabled": "Present when disabled",
+      "data-type": "The type of the item"
     },
     "ItemPreview": {
       "data-scope": "file-upload",
       "data-part": "item-preview",
-      "data-disabled": "Present when disabled"
+      "data-disabled": "Present when disabled",
+      "data-type": "The type of the item"
     },
     "ItemPreviewImage": {
       "data-scope": "file-upload",
       "data-part": "item-preview-image",
-      "data-disabled": "Present when disabled"
+      "data-disabled": "Present when disabled",
+      "data-type": "The type of the item"
     },
     "ItemDeleteTrigger": {
       "data-scope": "file-upload",
       "data-part": "item-delete-trigger",
-      "data-disabled": "Present when disabled"
+      "data-disabled": "Present when disabled",
+      "data-type": "The type of the item"
     },
     "Label": {
       "data-scope": "file-upload",
       "data-part": "label",
-      "data-disabled": "Present when disabled"
+      "data-disabled": "Present when disabled",
+      "data-required": "Present when required"
     },
     "ClearTrigger": {
       "data-scope": "file-upload",
@@ -804,6 +822,43 @@
       "data-placement": "The placement of the content"
     }
   },
+  "image-cropper": {
+    "Root": {
+      "data-scope": "image-cropper",
+      "data-part": "root",
+      "data-fixed": "",
+      "data-shape": "",
+      "data-pinch": "",
+      "data-dragging": "Present when in the dragging state",
+      "data-panning": ""
+    },
+    "Viewport": {
+      "data-scope": "image-cropper",
+      "data-part": "viewport",
+      "data-disabled": "Present when disabled"
+    },
+    "Image": {
+      "data-scope": "image-cropper",
+      "data-part": "image",
+      "data-ready": "",
+      "data-zoom": "",
+      "data-rotation": "",
+      "data-flip-horizontal": "",
+      "data-flip-vertical": ""
+    },
+    "Selection": {
+      "data-scope": "image-cropper",
+      "data-part": "selection",
+      "data-disabled": "Present when disabled",
+      "data-shape": ""
+    },
+    "Handle": {
+      "data-scope": "image-cropper",
+      "data-part": "handle",
+      "data-position": "",
+      "data-disabled": "Present when disabled"
+    }
+  },
   "listbox": {
     "Root": {
       "data-scope": "listbox",
@@ -863,6 +918,36 @@
       "data-orientation": "The orientation of the content",
       "data-layout": "",
       "data-empty": "Present when the content is empty"
+    }
+  },
+  "marquee": {
+    "Root": {
+      "data-scope": "marquee",
+      "data-part": "root",
+      "data-state": "\"paused\" | \"idle\"",
+      "data-orientation": "The orientation of the marquee",
+      "data-paused": "Present when paused"
+    },
+    "Viewport": {
+      "data-scope": "marquee",
+      "data-part": "",
+      "data-orientation": "The orientation of the viewport",
+      "data-side": ""
+    },
+    "Content": {
+      "data-scope": "marquee",
+      "data-part": "",
+      "data-index": "The index of the item",
+      "data-orientation": "The orientation of the content",
+      "data-side": "",
+      "data-reverse": "",
+      "data-clone": ""
+    },
+    "Edge": {
+      "data-scope": "marquee",
+      "data-part": "",
+      "data-side": "",
+      "data-orientation": "The orientation of the edge"
     }
   },
   "menu": {
@@ -1010,6 +1095,7 @@
       "data-disabled": "Present when disabled",
       "data-focus": "Present when focused",
       "data-invalid": "Present when invalid",
+      "data-required": "Present when required",
       "data-scrubbing": ""
     },
     "Control": {
@@ -1085,7 +1171,8 @@
       "data-part": "label",
       "data-disabled": "Present when disabled",
       "data-invalid": "Present when invalid",
-      "data-readonly": "Present when read-only"
+      "data-readonly": "Present when read-only",
+      "data-required": "Present when required"
     },
     "Input": {
       "data-scope": "password-input",
@@ -1133,6 +1220,7 @@
       "data-invalid": "Present when invalid",
       "data-disabled": "Present when disabled",
       "data-complete": "Present when the label value is complete",
+      "data-required": "Present when required",
       "data-readonly": "Present when read-only"
     },
     "Input": {
@@ -1233,7 +1321,8 @@
     "Label": {
       "data-scope": "rating-group",
       "data-part": "label",
-      "data-disabled": "Present when disabled"
+      "data-disabled": "Present when disabled",
+      "data-required": "Present when required"
     },
     "Control": {
       "data-scope": "rating-group",
@@ -1312,7 +1401,8 @@
       "data-part": "label",
       "data-disabled": "Present when disabled",
       "data-invalid": "Present when invalid",
-      "data-readonly": "Present when read-only"
+      "data-readonly": "Present when read-only",
+      "data-required": "Present when required"
     },
     "Control": {
       "data-scope": "select",
@@ -1391,7 +1481,8 @@
     "Label": {
       "data-scope": "signature-pad",
       "data-part": "label",
-      "data-disabled": "Present when disabled"
+      "data-disabled": "Present when disabled",
+      "data-required": "Present when required"
     },
     "Root": {
       "data-scope": "signature-pad",
@@ -1576,7 +1667,8 @@
       "data-hover": "Present when hovered",
       "data-disabled": "Present when disabled",
       "data-state": "\"checked\" | \"unchecked\"",
-      "data-invalid": "Present when invalid"
+      "data-invalid": "Present when invalid",
+      "data-required": "Present when required"
     },
     "Label": {
       "data-active": "Present when active or pressed",
@@ -1586,7 +1678,8 @@
       "data-hover": "Present when hovered",
       "data-disabled": "Present when disabled",
       "data-state": "\"checked\" | \"unchecked\"",
-      "data-invalid": "Present when invalid"
+      "data-invalid": "Present when invalid",
+      "data-required": "Present when required"
     },
     "Thumb": {
       "data-active": "Present when active or pressed",
@@ -1596,7 +1689,8 @@
       "data-hover": "Present when hovered",
       "data-disabled": "Present when disabled",
       "data-state": "\"checked\" | \"unchecked\"",
-      "data-invalid": "Present when invalid"
+      "data-invalid": "Present when invalid",
+      "data-required": "Present when required"
     },
     "Control": {
       "data-active": "Present when active or pressed",
@@ -1606,7 +1700,8 @@
       "data-hover": "Present when hovered",
       "data-disabled": "Present when disabled",
       "data-state": "\"checked\" | \"unchecked\"",
-      "data-invalid": "Present when invalid"
+      "data-invalid": "Present when invalid",
+      "data-required": "Present when required"
     }
   },
   "tabs": {
@@ -1659,7 +1754,8 @@
       "data-part": "label",
       "data-disabled": "Present when disabled",
       "data-invalid": "Present when invalid",
-      "data-readonly": "Present when read-only"
+      "data-readonly": "Present when read-only",
+      "data-required": "Present when required"
     },
     "Control": {
       "data-scope": "tags-input",
@@ -1673,7 +1769,8 @@
       "data-scope": "tags-input",
       "data-part": "input",
       "data-invalid": "Present when invalid",
-      "data-readonly": "Present when read-only"
+      "data-readonly": "Present when read-only",
+      "data-empty": "Present when the content is empty"
     },
     "Item": {
       "data-scope": "tags-input",
@@ -1845,6 +1942,7 @@
       "data-focus": "Present when focused",
       "data-selected": "Present when selected",
       "data-disabled": "Present when disabled",
+      "data-renaming": "",
       "data-depth": "The depth of the item"
     },
     "ItemText": {
@@ -1898,6 +1996,7 @@
       "data-disabled": "Present when disabled",
       "data-selected": "Present when selected",
       "data-focus": "Present when focused",
+      "data-renaming": "",
       "data-value": "The value of the item",
       "data-depth": "The depth of the item",
       "data-loading": "Present when loading"

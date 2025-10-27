@@ -1,0 +1,227 @@
+---
+title: Image Cropper
+description: Using the Image Cropper machine in your project.
+package: "@zag-js/image-cropper"
+---
+
+# Image Cropper
+
+The image cropper machine keeps track of the crop rectangle, zoom, rotation, pan
+offset, flip state, and every gesture required to edit them. It exposes a set of
+DOM props so you can render your own viewport, frame, and handles in any
+framework.
+
+<Resources pkg="@zag-js/image-cropper" />
+
+<Showcase id="ImageCropper" />
+
+**Features**
+
+- Pointer, wheel, and pinch gestures that pan, zoom, rotate, and flip the image
+- Handles that resize the crop area with snapping, aspect-ratio locking, and
+  keyboard nudges
+- Supports rectangular or circular crops, fixed crop windows, and constrained
+  min/max dimensions
+- Fully controllable zoom/rotation/flip values with change callbacks
+- Programmatic helpers such as `api.resize` and `api.getCroppedImage`
+- Accessible slider semantics, custom translations, and data attributes for
+  styling
+
+## Installation
+
+To use the image cropper machine in your project, run the following command in
+your command line:
+
+<CodeSnippet id="image-cropper/installation.mdx" />
+
+## Anatomy
+
+To set up the image cropper correctly, you'll need to understand its anatomy and
+how we name its parts.
+
+> Each part includes a `data-part` attribute to help identify them in the DOM.
+
+<Anatomy id="image-cropper" />
+
+## Usage
+
+First, import the image cropper package into your project:
+
+```jsx
+import * as imageCropper from "@zag-js/image-cropper"
+```
+
+The package exports two key functions:
+
+- `machine` — The state machine logic for the cropper.
+- `connect` — The function that translates the machine's state to JSX attributes
+  and event handlers.
+
+Next, import the required hooks and functions for your framework and use the
+tour machine in your project 🔥
+
+<CodeSnippet id="image-cropper/usage.mdx" />
+
+### Locking the crop area
+
+Use the following props to constrain the crop window:
+
+```tsx
+const service = useMachine(imageCropper.machine, {
+  minWidth: 200,
+  minHeight: 200,
+  maxWidth: 400,
+  maxHeight: 400,
+  aspectRatio: 1, // keep the crop square
+  cropShape: "circle",
+  fixedCropArea: true,
+})
+```
+
+- `aspectRatio` forces width/height to stay in sync. It is also applied while
+  dragging handles or via keyboard nudges.
+- `cropShape` can be `"rectangle"` or `"circle"`. When set to `circle`, the
+  selection exposes `data-shape="circle"` so you can add a circular mask.
+- `fixedCropArea` prevents dragging or resizing the selection. Users can still
+  pan the image beneath the crop via the viewport.
+
+### Controlling zoom, rotation, and flip
+
+`zoom`, `rotation`, and `flip` are fully controllable. Provide the value and the
+corresponding `on*Change` callback to keep external state in sync:
+
+```tsx
+const service = useMachine(imageCropper.machine, {
+  id: useId(),
+  zoom,
+  onZoomChange: ({ zoom }) => setZoom(zoom),
+  rotation,
+  onRotationChange: ({ rotation }) => setRotation(rotation),
+  flip,
+  onFlipChange: ({ flip }) => setFlip(flip),
+})
+```
+
+When you need to update these values from UI controls, call the helper methods
+returned by `connect`:
+
+- `api.setZoom(value)` clamps to `minZoom`/`maxZoom` and keeps the cursor or
+  crop center anchored when zooming with the wheel.
+- `api.setRotation(value)` clamps to the `[0, 360]` range.
+- `api.setFlip(partial)` along with `api.flipHorizontally()` and
+  `api.flipVertically()` toggles each axis.
+
+`zoomStep`, `zoomSensitivity`, `minZoom`, and `maxZoom` let you tune how fast
+the wheel/pinch gestures respond. The machine also exposes keyboard zoom
+shortcuts: `+`/`=` to zoom in and `-`/`_` to zoom out.
+
+### Programmatic resizing and keyboard nudges
+
+Every handle can be controlled programmatically with
+`api.resize(handlePosition, delta)`, so you can build presets like “16/9” or
+buttons that grow/shrink the crop by fixed increments. Keyboard users can move
+or resize the selection while the slider-focused selection element is focused:
+
+- Arrow keys move the crop by `nudgeStep` pixels. Hold **Shift** to use
+  `nudgeStepShift` and **Ctrl/Cmd** for `nudgeStepCtrl`.
+- **Alt + Arrow** resizes the crop along the corresponding axis.
+
+Listen to `onCropChange` to persist the latest rectangle, e.g. to submit it with
+an avatar form.
+
+### Exporting the cropped result
+
+Call `api.getCroppedImage({ type, quality, output })` to render the current crop
+to a canvas and retrieve either a `Blob` or a `dataUrl`:
+
+```ts
+const blob = await api.getCroppedImage({
+  type: "image/jpeg",
+  quality: 0.9,
+})
+```
+
+- `type` defaults to `image/png`.
+- `quality` is used for lossy formats.
+- `output` can be set to `"dataUrl"` when you need an inline preview.
+
+## Styling guide
+
+Earlier, we mentioned that each image cropper part has a `data-part` attribute
+added to them to select and style them in the DOM.
+
+```css
+[data-scope="image-cropper"][data-part="root"] {
+  /* styles for the root part */
+}
+
+[data-scope="image-cropper"][data-part="viewport"] {
+  /* styles for the viewport part */
+}
+
+[data-scope="image-cropper"][data-part="image"] {
+  /* styles for the image part */
+}
+
+[data-scope="image-cropper"][data-part="selection"] {
+  /* styles for the selection part */
+}
+
+[data-scope="image-cropper"][data-part="handle"] {
+  /* styles for the handle part */
+}
+```
+
+### Selection shapes
+
+The selection can be styled based on its shape:
+
+```css
+[data-part="selection"][data-shape="circle"] {
+  /* styles for circular selection */
+}
+
+[data-part="selection"][data-shape="rectangle"] {
+  /* styles for rectangular selection */
+}
+```
+
+### States
+
+Various states can be styled using data attributes:
+
+```css
+[data-part="root"][data-dragging] {
+  /* styles when dragging the selection */
+}
+
+[data-part="root"][data-fixed] {
+  /* styles when the crop area is fixed */
+}
+```
+
+## Keyboard Interactions
+
+<KeyboardTable name="image-cropper" />
+
+## Methods and Properties
+
+### Machine Context
+
+The image cropper machine exposes the following context properties:
+
+<ContextTable name="image-cropper" />
+
+### Machine API
+
+The image cropper `api` exposes the following methods:
+
+<ApiTable name="image-cropper" />
+
+### Data Attributes
+
+<DataAttrTable name="image-cropper" />
+
+### CSS Variables
+
+<CssVarTable name="image-cropper" />

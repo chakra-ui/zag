@@ -1,0 +1,41 @@
+```svelte
+<script lang="ts">
+  import * as imageCropper from "@zag-js/image-cropper"
+  import { normalizeProps, useMachine } from "@zag-js/svelte"
+
+  const handles: imageCropper.HandlePosition[] = [
+    "top-left",
+    "top",
+    "top-right",
+    "right",
+    "bottom-right",
+    "bottom",
+    "bottom-left",
+    "left",
+  ]
+
+  const id = $props.id()
+  const service = useMachine(imageCropper.machine, {
+    id,
+  })
+  const api = $derived(imageCropper.connect(service, normalizeProps))
+</script>
+
+<div {...api.getRootProps()}>
+  <div {...api.getViewportProps()}>
+    <img
+      src="https://picsum.photos/seed/crop/640/400"
+      crossorigin="anonymous"
+      {...api.getImageProps()}
+    />
+
+    <div {...api.getSelectionProps()}>
+      {#each handles as position}
+        <div {...api.getHandleProps({ position })}>
+          <span />
+        </div>
+      {/each}
+    </div>
+  </div>
+</div>
+```
