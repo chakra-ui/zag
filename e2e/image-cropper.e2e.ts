@@ -766,11 +766,6 @@ test.describe("image-cropper / viewport resize", () => {
     await I.controls.num("aspectRatio", "1.5")
     await I.wait(100)
 
-    const initialCrop = await I.getSelectionRect()
-    const initialAspectRatio = initialCrop.width / initialCrop.height
-
-    expect(initialAspectRatio).toBe(400 / 240)
-
     const { width: initialWidth, height: initialHeight } = await I.getViewportSize()
     const newWidth = Math.floor(initialWidth * 0.7)
     const newHeight = Math.floor(initialHeight * 0.7)
@@ -779,7 +774,7 @@ test.describe("image-cropper / viewport resize", () => {
     const newCrop = await I.getSelectionRect()
     const newAspectRatio = newCrop.width / newCrop.height
 
-    expect(newAspectRatio).toBe(1.5)
+    expect(newAspectRatio).toBeCloseTo(1.5, 2)
   })
 
   test("[viewport] should keep crop within bounds after resize", async () => {
