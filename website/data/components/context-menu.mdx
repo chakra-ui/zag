@@ -71,18 +71,18 @@ pointer is pen or touch.
 Earlier, we mentioned that each menu part has a `data-part` attribute added to
 them to select and style them in the DOM.
 
-### Focused item state
+### Highlighted item state
 
-When an item is focused, via keyboard navigation or pointer, it is given a
-`data-focus` attribute.
+When an item is highlighted, via keyboard navigation or pointer, it is given a
+`data-highlighted` attribute.
 
 ```css
-[data-part="item"][data-focus] {
-  /* styles for focused state */
+[data-part="item"][data-highlighted] {
+  /* styles for highlighted state */
 }
 
-[data-part="item"][data-type="radio|checkbox"][data-focus] {
-  /* styles for focused state */
+[data-part="item"][data-type="radio|checkbox"][data-highlighted] {
+  /* styles for highlighted state */
 }
 ```
 
@@ -114,10 +114,10 @@ When using arrows within the menu, you can style it using css variables.
 
 ### Checked option item state
 
-When an option item is checked, it is given a `data-checked` attribute.
+When an option item is checked, it is given a `data-state` attribute.
 
 ```css
-[data-part="item"][data-type="radio|checkbox"][data-checked] {
+[data-part="item"][data-type="radio|checkbox"][data-state="checked"] {
   /* styles for checked state */
 }
 ```
