@@ -162,11 +162,15 @@ export const machine = createMachine<ImageCropperSchema>({
       guard: "canResizeCrop",
       actions: ["resizeCrop"],
     },
+    VIEWPORT_RESIZE: {
+      actions: ["handleViewportResize"],
+    },
   },
 
   states: {
     idle: {
       entry: ["checkImageStatus"],
+      effects: ["trackViewportResize"],
       on: {
         SET_NATURAL_SIZE: {
           actions: ["setNaturalSize"],
@@ -722,6 +726,59 @@ export const machine = createMachine<ImageCropperSchema>({
 
         context.set("crop", nextCrop)
       },
+
+      handleViewportResize({ context, prop, scope }) {
+        const viewportEl = dom.getViewportEl(scope)
+        if (!viewportEl) return
+
+        const newViewportRect = viewportEl.getBoundingClientRect()
+        if (newViewportRect.height <= 0 || newViewportRect.width <= 0) return
+
+        const oldViewportRect = context.get("viewportRect")
+
+        if (oldViewportRect.width === newViewportRect.width && oldViewportRect.height === newViewportRect.height) {
+          return
+        }
+
+        context.set("viewportRect", newViewportRect)
+
+        const oldCrop = context.get("crop")
+        const cropShape = prop("cropShape")
+        const aspectRatio = resolveCropAspectRatio(cropShape, prop("aspectRatio"))
+        const { minSize, maxSize } = getCropSizeLimits(prop)
+
+        const scaleX = newViewportRect.width / oldViewportRect.width
+        const scaleY = newViewportRect.height / oldViewportRect.height
+
+        let newCrop = {
+          x: oldCrop.x * scaleX,
+          y: oldCrop.y * scaleY,
+          width: oldCrop.width * scaleX,
+          height: oldCrop.height * scaleY,
+        }
+
+        const constrainedCrop = computeResizeCrop({
+          cropStart: newCrop,
+          handlePosition: "bottom-right",
+          delta: { x: 0, y: 0 },
+          viewportRect: newViewportRect,
+          minSize,
+          maxSize,
+          aspectRatio,
+        })
+
+        const maxX = Math.max(0, newViewportRect.width - constrainedCrop.width)
+        const maxY = Math.max(0, newViewportRect.height - constrainedCrop.height)
+
+        const finalCrop = {
+          x: clampValue(constrainedCrop.x, 0, maxX),
+          y: clampValue(constrainedCrop.y, 0, maxY),
+          width: constrainedCrop.width,
+          height: constrainedCrop.height,
+        }
+
+        context.set("crop", finalCrop)
+      },
     },
 
     effects: {
@@ -743,6 +800,21 @@ export const machine = createMachine<ImageCropperSchema>({
 
         return () => {
           cleanups.forEach((cleanup) => cleanup())
+        }
+      },
+
+      trackViewportResize({ scope, send }) {
+        const viewportEl = dom.getViewportEl(scope)
+        if (!viewportEl) return
+
+        const resizeObserver = new ResizeObserver(() => {
+          send({ type: "VIEWPORT_RESIZE", src: "resize" })
+        })
+
+        resizeObserver.observe(viewportEl)
+
+        return () => {
+          resizeObserver.disconnect()
         }
       },
     },

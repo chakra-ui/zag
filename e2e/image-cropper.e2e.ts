@@ -706,3 +706,165 @@ test.describe("image-cropper / circle", () => {
     expect(newRect.width).toEqual(newRect.height)
   })
 })
+
+test.describe("image-cropper / viewport resize", () => {
+  test.beforeEach(async ({ page }) => {
+    I = new ImageCropperModel(page)
+    await I.goto()
+    await I.waitForImageLoad()
+  })
+
+  test("[viewport] should scale crop proportionally when viewport shrinks", async () => {
+    const { width: initialWidth, height: initialHeight } = await I.getViewportSize()
+    const initialCrop = await I.getSelectionRect()
+
+    const initialWidthRatio = initialCrop.width / initialWidth
+    const initialHeightRatio = initialCrop.height / initialHeight
+
+    const newWidth = Math.floor(initialWidth * 0.8)
+    const newHeight = Math.floor(initialHeight * 0.8)
+    await I.resizeViewport(newWidth, newHeight)
+
+    const newViewport = await I.getViewportSize()
+    const newCrop = await I.getSelectionRect()
+
+    expect(newViewport.width).toBe(newWidth)
+    expect(newViewport.height).toBe(newHeight)
+
+    const newWidthRatio = newCrop.width / newViewport.width
+    const newHeightRatio = newCrop.height / newViewport.height
+
+    expect(newWidthRatio).toBe(initialWidthRatio)
+    expect(newHeightRatio).toBe(initialHeightRatio)
+  })
+
+  test("[viewport] should scale crop proportionally when viewport grows", async () => {
+    const { width: initialWidth, height: initialHeight } = await I.getViewportSize()
+    const initialCrop = await I.getSelectionRect()
+
+    const initialWidthRatio = initialCrop.width / initialWidth
+    const initialHeightRatio = initialCrop.height / initialHeight
+
+    const newWidth = Math.floor(initialWidth * 1.2)
+    const newHeight = Math.floor(initialHeight * 1.2)
+    await I.resizeViewport(newWidth, newHeight)
+
+    const newViewport = await I.getViewportSize()
+    const newCrop = await I.getSelectionRect()
+
+    expect(newViewport.width).toBe(newWidth)
+    expect(newViewport.height).toBe(newHeight)
+
+    const newWidthRatio = newCrop.width / newViewport.width
+    const newHeightRatio = newCrop.height / newViewport.height
+
+    expect(newWidthRatio).toBe(initialWidthRatio)
+    expect(newHeightRatio).toBe(initialHeightRatio)
+  })
+
+  test("[viewport] should maintain aspect ratio during resize when aspectRatio is set", async () => {
+    await I.controls.num("aspectRatio", "1.5")
+    await I.wait(100)
+
+    const initialCrop = await I.getSelectionRect()
+    const initialAspectRatio = initialCrop.width / initialCrop.height
+
+    expect(initialAspectRatio).toBe(400 / 240)
+
+    const { width: initialWidth, height: initialHeight } = await I.getViewportSize()
+    const newWidth = Math.floor(initialWidth * 0.7)
+    const newHeight = Math.floor(initialHeight * 0.7)
+    await I.resizeViewport(newWidth, newHeight)
+
+    const newCrop = await I.getSelectionRect()
+    const newAspectRatio = newCrop.width / newCrop.height
+
+    expect(newAspectRatio).toBe(1.5)
+  })
+
+  test("[viewport] should keep crop within bounds after resize", async () => {
+    const initialViewport = await I.getViewportRect()
+    const initialCrop = await I.getSelectionRect()
+
+    const relativeMaxX = initialViewport.width - initialCrop.width
+    const relativeMaxY = initialViewport.height - initialCrop.height
+    const relativeCropX = initialCrop.x - initialViewport.x
+    const relativeCropY = initialCrop.y - initialViewport.y
+
+    await I.dragSelection(relativeMaxX - relativeCropX, relativeMaxY - relativeCropY)
+    await I.wait(100)
+
+    const newWidth = Math.floor(initialViewport.width * 0.6)
+    const newHeight = Math.floor(initialViewport.height * 0.6)
+    await I.resizeViewport(newWidth, newHeight)
+
+    const newViewport = await I.getViewportRect()
+    const newCrop = await I.getSelectionRect()
+
+    const relativeCropLeft = newCrop.x - newViewport.x
+    const relativeCropTop = newCrop.y - newViewport.y
+    const relativeCropRight = relativeCropLeft + newCrop.width
+    const relativeCropBottom = relativeCropTop + newCrop.height
+
+    expect(relativeCropLeft).toBeGreaterThanOrEqual(0)
+    expect(relativeCropTop).toBeGreaterThanOrEqual(0)
+    expect(relativeCropRight).toBeLessThanOrEqual(newViewport.width)
+    expect(relativeCropBottom).toBeLessThanOrEqual(newViewport.height)
+  })
+
+  test("[viewport] should respect minSize constraints after resize", async () => {
+    await I.controls.num("minWidth", "100")
+    await I.controls.num("minHeight", "80")
+    await I.wait(100)
+
+    const newWidth = 150
+    const newHeight = 120
+    await I.resizeViewport(newWidth, newHeight)
+
+    const newCrop = await I.getSelectionRect()
+
+    expect(newCrop.width).toBeGreaterThanOrEqual(100)
+    expect(newCrop.height).toBeGreaterThanOrEqual(80)
+  })
+
+  test("[viewport] should respect maxSize constraints after resize", async () => {
+    await I.controls.num("maxWidth", "200")
+    await I.controls.num("maxHeight", "150")
+    await I.wait(100)
+
+    const { width: initialWidth, height: initialHeight } = await I.getViewportSize()
+
+    const newWidth = Math.floor(initialWidth * 1.5)
+    const newHeight = Math.floor(initialHeight * 1.5)
+    await I.resizeViewport(newWidth, newHeight)
+
+    const newCrop = await I.getSelectionRect()
+    const newViewport = await I.getViewportRect()
+
+    const expectedMaxWidth = Math.min(200, newViewport.width)
+    const expectedMaxHeight = Math.min(150, newViewport.height)
+
+    expect(newCrop.width).toBeLessThanOrEqual(expectedMaxWidth)
+    expect(newCrop.height).toBeLessThanOrEqual(expectedMaxHeight)
+  })
+
+  test("[viewport] should handle multiple sequential resizes", async () => {
+    const initialCrop = await I.getSelectionRect()
+    const { width: initialWidth, height: initialHeight } = await I.getViewportSize()
+
+    await I.resizeViewport(Math.floor(initialWidth * 0.8), Math.floor(initialHeight * 0.8))
+    const afterShrink = await I.getSelectionRect()
+
+    await I.resizeViewport(Math.floor(initialWidth * 1.1), Math.floor(initialHeight * 1.1))
+    const afterGrow = await I.getSelectionRect()
+
+    await I.resizeViewport(initialWidth, initialHeight)
+    const finalCrop = await I.getSelectionRect()
+
+    expect(afterShrink.width).toBeLessThan(initialCrop.width)
+    expect(afterGrow.width).toBeGreaterThan(afterShrink.width)
+
+    expect(finalCrop.width).toBeCloseTo(initialCrop.width, 0)
+    expect(finalCrop.height).toBeCloseTo(initialCrop.height, 0)
+  })
+})
