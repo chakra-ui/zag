@@ -35,7 +35,7 @@
     "clean-package": "2.2.0",
     "clsx": "^2.1.1",
     "svelte": "5.39.12",
-    "vitest": "3.2.4"
+    "vitest": "4.0.4"
   },
   "peerDependencies": {
     "svelte": ">=5"
