@@ -727,7 +727,7 @@ export const machine = createMachine<ImageCropperSchema>({
         context.set("crop", nextCrop)
       },
 
-      handleViewportResize({ context, prop, scope }) {
+      handleViewportResize({ context, prop, scope, send }) {
         const viewportEl = dom.getViewportEl(scope)
         if (!viewportEl) return
 
@@ -743,6 +743,14 @@ export const machine = createMachine<ImageCropperSchema>({
         context.set("viewportRect", newViewportRect)
 
         const oldCrop = context.get("crop")
+
+        if (oldViewportRect.width === 0 || oldViewportRect.height === 0) {
+          if (oldCrop.width === 0 || oldCrop.height === 0) {
+            send({ type: "SET_DEFAULT_CROP", src: "viewport-resize" })
+            return
+          }
+        }
+
         const cropShape = prop("cropShape")
         const aspectRatio = resolveCropAspectRatio(cropShape, prop("aspectRatio"))
         const { minSize, maxSize } = getCropSizeLimits(prop)
