@@ -21,9 +21,9 @@ const StyledLink = styled(Link, {
 
 export const Annoucement = () => {
   return (
-    <StyledLink href="/components/react/scroll-area">
+    <StyledLink href="/components/react/image-cropper">
       <LuPartyPopper />
-      [New] Scroll Area component
+      [New] Image Cropper component
       <HiArrowRight />
     </StyledLink>
   )
