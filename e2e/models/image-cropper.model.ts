@@ -298,4 +298,20 @@ export class ImageCropperModel extends Model {
   async clickShrink() {
     await this.shrinkButton.click()
   }
+
+  async resizeViewport(width: number, height: number) {
+    await this.viewport.evaluate(
+      (el, { width, height }) => {
+        el.style.width = `${width}px`
+        el.style.height = `${height}px`
+      },
+      { width, height },
+    )
+    await this.wait(100)
+  }
+
+  async getViewportSize() {
+    const rect = await this.getViewportRect()
+    return { width: rect.width, height: rect.height }
+  }
 }
