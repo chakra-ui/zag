@@ -815,7 +815,8 @@ export const machine = createMachine<ImageCropperSchema>({
         const viewportEl = dom.getViewportEl(scope)
         if (!viewportEl) return
 
-        const resizeObserver = new ResizeObserver(() => {
+        const win = scope.getWin()
+        const resizeObserver = new win.ResizeObserver(() => {
           send({ type: "VIEWPORT_RESIZE", src: "resize" })
         })
 
