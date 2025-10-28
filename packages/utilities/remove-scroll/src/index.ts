@@ -12,7 +12,7 @@ function getPaddingProperty(documentElement: HTMLElement) {
 function hasStableScrollbarGutter(element: HTMLElement): boolean {
   const styles = getComputedStyle(element)
   const scrollbarGutter = styles?.scrollbarGutter
-  return scrollbarGutter === "stable" || scrollbarGutter?.startsWith("stable ")
+  return scrollbarGutter === "stable" || (!!scrollbarGutter && scrollbarGutter.startsWith("stable "))
 }
 
 export function preventBodyScroll(_document?: Document) {
