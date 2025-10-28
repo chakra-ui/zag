@@ -217,3 +217,35 @@ test.describe("datepicker [min-max]", () => {
     await I.seeSelectedValue("08/15/2025")
   })
 })
+
+test.describe("datepicker [range]", () => {
+  test.beforeEach(async ({ page }) => {
+    I = new DatePickerModel(page)
+    await I.goto("/date-picker-range")
+  })
+
+  test("should not crash when typing end date first", async () => {
+    // Regression test for issue #2809
+    // Focus the end date input (index 1) first and type a valid date
+    await I.focusInput(1)
+    await I.type("06/15/2024", 1)
+    await I.clickOutsideToBlur()
+
+    // Should not crash and the value should be set
+    await I.seeInputHasValue("06/15/2024", 1)
+  })
+
+  test("should allow selecting dates after typing end date first", async () => {
+    // Type end date first
+    await I.focusInput(1)
+    await I.type("06/20/2024", 1)
+    await I.clickOutsideToBlur()
+    await I.seeInputHasValue("06/20/2024", 1)
+
+    // Open calendar and select a start date - should not crash
+    await I.clickTrigger()
+    await I.seeContent()
+    await I.clickDayCell(10)
+    await I.seeInputHasValue("06/10/2024", 0)
+  })
+})

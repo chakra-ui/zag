@@ -79,7 +79,8 @@ export const defaultTranslations: IntlTranslations = {
     })
   },
   presetTrigger(value) {
-    return Array.isArray(value) ? `select ${value[0].toString()} to ${value[1].toString()}` : `select ${value}`
+    const [start = "", end = ""] = value
+    return `select ${start} to ${end}`
   },
   prevTrigger(view) {
     return match(view, {

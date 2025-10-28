@@ -148,7 +148,7 @@ export function connect<T extends PropTypes>(
       focused: focusedValue.year === props.value,
       selectable: isOutsideVisibleRange || isOutsideRange,
       outsideRange: isOutsideVisibleRange,
-      selected: !!selectedValue.find((date) => date.year === value),
+      selected: !!selectedValue.find((date) => date && date.year === value),
       valueText: value.toString(),
       inRange:
         isRangePicker &&
@@ -168,7 +168,7 @@ export function connect<T extends PropTypes>(
     const cellState = {
       focused: focusedValue.month === props.value,
       selectable: !isDateOutsideRange(dateValue, min, max),
-      selected: !!selectedValue.find((date) => date.month === value && date.year === focusedValue.year),
+      selected: !!selectedValue.find((date) => date && date.month === value && date.year === focusedValue.year),
       valueText: formatter.format(dateValue.toDate(timeZone)),
       inRange:
         isRangePicker &&
@@ -270,7 +270,7 @@ export function connect<T extends PropTypes>(
     weekDays: getWeekDays(getTodayDate(timeZone), startOfWeek, timeZone, locale),
     visibleRangeText: computed("visibleRangeText"),
     value: selectedValue,
-    valueAsDate: selectedValue.map((date) => date.toDate(timeZone)),
+    valueAsDate: selectedValue.filter((date) => date != null).map((date) => date.toDate(timeZone)),
     valueAsString: computed("valueAsString"),
     focusedValue,
     focusedValueAsDate: focusedValue?.toDate(timeZone),
@@ -870,7 +870,7 @@ export function connect<T extends PropTypes>(
 
     getPresetTriggerProps(props) {
       const value = Array.isArray(props.value) ? props.value : getDateRangePreset(props.value, locale, timeZone)
-      const valueAsString = value.map((item) => item.toDate(timeZone).toDateString())
+      const valueAsString = value.filter((item) => item != null).map((item) => item.toDate(timeZone).toDateString())
       return normalize.button({
         ...parts.presetTrigger.attrs,
         "aria-label": translations.presetTrigger(valueAsString),
