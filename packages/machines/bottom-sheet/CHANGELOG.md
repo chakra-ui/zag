@@ -1,5 +1,20 @@
 # @zag-js/bottom-sheet
 
+## 1.26.5
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.26.5
+  - @zag-js/core@1.26.5
+  - @zag-js/types@1.26.5
+  - @zag-js/aria-hidden@1.26.5
+  - @zag-js/utils@1.26.5
+  - @zag-js/dismissable@1.26.5
+  - @zag-js/dom-query@1.26.5
+  - @zag-js/focus-trap@1.26.5
+  - @zag-js/remove-scroll@1.26.5
+
 ## 1.26.4
 
 ### Patch Changes
