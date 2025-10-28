@@ -1,0 +1,44 @@
+```jsx
+import * as imageCropper from "@zag-js/image-cropper"
+import { normalizeProps, useMachine } from "@zag-js/react"
+import { useId } from "react"
+
+const handles: imageCropper.HandlePosition[] = [
+  "top-left",
+  "top",
+  "top-right",
+  "right",
+  "bottom-right",
+  "bottom",
+  "bottom-left",
+  "left",
+]
+
+export function ImageCropper() {
+  const service = useMachine(imageCropper.machine, {
+    id: useId(),
+  })
+
+  const api = imageCropper.connect(service, normalizeProps)
+
+  return (
+    <div {...api.getRootProps()}>
+      <div {...api.getViewportProps()}>
+        <img
+          src="https://picsum.photos/seed/crop/640/400"
+          crossOrigin="anonymous"
+          {...api.getImageProps()}
+        />
+
+        <div {...api.getSelectionProps()}>
+          {handles.map((position) => (
+            <div key={position} {...api.getHandleProps({ position })}>
+              <span />
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  )
+}
+```

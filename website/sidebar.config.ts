@@ -90,6 +90,7 @@ const sidebar: Record<"docs", SidebarItem[]> = {
         { type: "doc", label: "File Upload", id: "file-upload" },
         { type: "doc", label: "Floating Panel", id: "floating-panel" },
         { type: "doc", label: "Hover Card", id: "hover-card" },
+        // { type: "doc", label: "Image Cropper", id: "image-cropper", beta: true },
         { type: "doc", label: "Listbox", id: "listbox" },
         { type: "doc", label: "Menu", id: "menu" },
         { type: "doc", label: "Context Menu", id: "context-menu" },

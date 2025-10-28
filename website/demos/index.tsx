@@ -13,6 +13,7 @@ import { Dialog } from "./dialog"
 import { Editable } from "./editable"
 import { FileUpload } from "./file-upload"
 import { HoverCard } from "./hover-card"
+import { ImageCropper } from "./image-cropper"
 import { Menu } from "./menu"
 import { NestedMenu } from "./nested-menu"
 import { NumberInput } from "./number-input"
@@ -206,6 +207,13 @@ const components = {
         openDelay: 700,
         closeDelay: 300,
       }}
+    />
+  ),
+  ImageCropper: () => (
+    <Playground
+      name="image-cropper"
+      component={ImageCropper}
+      defaultProps={{}}
     />
   ),
   Menu: () => <Playground name="menu" component={Menu} />,
