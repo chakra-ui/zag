@@ -103,7 +103,8 @@ export function connect<T extends PropTypes>(
       const offset = context.get("offset")
       const viewportRect = context.get("viewportRect")
 
-      const canvas = document.createElement("canvas")
+      const doc = scope.getDoc()
+      const canvas = doc.createElement("canvas")
       canvas.width = crop.width
       canvas.height = crop.height
 
@@ -335,6 +336,8 @@ export function connect<T extends PropTypes>(
       const roundedCrop = getRoundedCrop(crop)
 
       const hasViewportRect = viewportRect.width > 0 && viewportRect.height > 0
+      const hasCrop = crop.width > 0 && crop.height > 0
+      const isMeasured = hasViewportRect && hasCrop
       const maxX = hasViewportRect ? Math.max(0, Math.round(viewportRect.width - crop.width)) : undefined
       const ariaValueMax = maxX != null ? maxX : Math.max(roundedCrop.x, 0)
       const ariaValueText = translations.selectionValueText({ shape: cropShape, ...roundedCrop })
@@ -355,6 +358,7 @@ export function connect<T extends PropTypes>(
         "aria-description": translations.selectionInstructions,
         "data-disabled": dataAttr(disabled),
         "data-shape": cropShape,
+        "data-measured": dataAttr(isMeasured),
         style: {
           "--width": toPx(crop.width),
           "--height": toPx(crop.height),
@@ -364,6 +368,7 @@ export function connect<T extends PropTypes>(
           left: "var(--x)",
           width: "var(--width)",
           height: "var(--height)",
+          visibility: isMeasured ? undefined : "hidden",
         },
         onPointerDown(event) {
           if (disabled) {

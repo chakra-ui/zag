@@ -96,3 +96,38 @@
   transform: translate(-50%, -50%);
   cursor: ew-resize;
 }
+
+.image-cropper-container {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 1rem;
+
+  h3 {
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+    font-size: 0.875rem;
+  }
+
+  .preview-button {
+    margin-top: 1rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    cursor: pointer;
+    font-weight: 500;
+    padding-inline: 1rem;
+    padding-block: 0.5rem;
+    background: var(--colors-bg-primary-subtle);
+    color: #ffffff;
+    border: none;
+  }
+
+  .preview-image {
+    width: 100px;
+    height: 100px;
+    object-fit: contain;
+    border: 1px solid var(--colors-border-subtle);
+  }
+}

@@ -3,17 +3,6 @@ import * as imageCropper from "@zag-js/image-cropper"
 import { normalizeProps, useMachine } from "@zag-js/react"
 import { useId } from "react"
 
-const handles: imageCropper.HandlePosition[] = [
-  "top-left",
-  "top",
-  "top-right",
-  "right",
-  "bottom-right",
-  "bottom",
-  "bottom-left",
-  "left",
-]
-
 export function ImageCropper() {
   const service = useMachine(imageCropper.machine, {
     id: useId(),
@@ -31,7 +20,7 @@ export function ImageCropper() {
         />
 
         <div {...api.getSelectionProps()}>
-          {handles.map((position) => (
+          {imageCropper.handles.map((position) => (
             <div key={position} {...api.getHandleProps({ position })}>
               <span />
             </div>

@@ -1,6 +1,6 @@
 import { createProps } from "@zag-js/types"
 import { createSplitProps } from "@zag-js/utils"
-import type { ImageCropperProps } from "./image-cropper.types"
+import type { HandlePosition, ImageCropperProps } from "./image-cropper.types"
 
 export const props = createProps<ImageCropperProps>()([
   "id",
@@ -36,3 +36,14 @@ export const props = createProps<ImageCropperProps>()([
 ])
 
 export const splitProps = createSplitProps<Partial<ImageCropperProps>>(props)
+
+export const handles: HandlePosition[] = [
+  "top-left",
+  "top",
+  "top-right",
+  "right",
+  "bottom-right",
+  "bottom",
+  "bottom-left",
+  "left",
+]

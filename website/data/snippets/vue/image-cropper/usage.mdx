@@ -4,17 +4,6 @@
   import { normalizeProps, useMachine } from "@zag-js/vue"
   import { computed } from "vue"
 
-  const handles = [
-    "top-left",
-    "top",
-    "top-right",
-    "right",
-    "bottom-right",
-    "bottom",
-    "bottom-left",
-    "left",
-  ]
-
   const service = useMachine(imageCropper.machine, {
     id: "image-cropper",
   })
@@ -33,7 +22,7 @@
 
       <div v-bind="api.getSelectionProps()">
         <div
-          v-for="position in handles"
+          v-for="position in imageCropper.handles"
           :key="position"
           v-bind="api.getHandleProps({ position })"
         >
