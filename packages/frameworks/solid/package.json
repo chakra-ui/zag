@@ -36,9 +36,9 @@
     "@testing-library/jest-dom": "^6.9.1",
     "@types/jsdom": "^27.0.0",
     "clean-package": "2.2.0",
-    "jsdom": "^27.0.0",
-    "solid-js": "1.9.9",
-    "vite-plugin-solid": "^2.11.9"
+    "jsdom": "^27.0.1",
+    "solid-js": "1.9.10",
+    "vite-plugin-solid": "^2.11.10"
   },
   "peerDependencies": {
     "solid-js": ">=1.1.3"

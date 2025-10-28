@@ -94,25 +94,25 @@
     "@zag-js/utils": "workspace:*",
     "form-serialize": "0.7.2",
     "image-conversion": "2.1.1",
-    "lucide-react": "0.545.0",
+    "lucide-react": "0.548.0",
     "match-sorter": "8.1.0",
-    "next": "15.5.4",
-    "next-cloudinary": "6.16.0",
+    "next": "16.0.1",
+    "next-cloudinary": "6.17.0",
     "react": "19.2.0",
     "react-dom": "19.2.0",
-    "react-hook-form": "7.64.0",
+    "react-hook-form": "7.65.0",
     "react-spinners": "0.17.0",
     "textarea-caret": "^3.1.0",
-    "virtua": "^0.44.2"
+    "virtua": "^0.46.4"
   },
   "devDependencies": {
-    "@next/eslint-plugin-next": "15.5.4",
+    "@next/eslint-plugin-next": "16.0.1",
     "@types/form-serialize": "0.7.4",
-    "@types/node": "24.7.0",
+    "@types/node": "24.9.2",
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "eslint-plugin-react": "7.37.5",
-    "eslint-plugin-react-hooks": "6.1.1",
+    "eslint-plugin-react-hooks": "7.0.1",
     "typescript": "5.9.3"
   },
   "license": "MIT"

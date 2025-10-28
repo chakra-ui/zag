@@ -63,7 +63,7 @@
     ]
   },
   "dependencies": {
-    "@axe-core/playwright": "4.10.2",
+    "@axe-core/playwright": "4.11.0",
     "@changesets/changelog-github": "0.5.1",
     "@changesets/cli": "2.29.7",
     "@commitlint/cli": "20.1.0",
@@ -71,25 +71,25 @@
     "@eslint/eslintrc": "3.3.1",
     "@internationalized/date": "3.10.0",
     "@octokit/rest": "22.0.0",
-    "@playwright/test": "1.56.0",
+    "@playwright/test": "1.56.1",
     "@swc/core": "1.13.5",
     "@types/jsdom": "^27.0.0",
-    "@types/node": "24.7.2",
+    "@types/node": "24.9.2",
     "@types/signale": "1.4.7",
-    "@typescript-eslint/eslint-plugin": "8.46.1",
-    "@typescript-eslint/parser": "8.46.1",
+    "@typescript-eslint/eslint-plugin": "8.46.2",
+    "@typescript-eslint/parser": "8.46.2",
     "axe-core": "4.11.0",
     "commitlint": "20.1.0",
     "cross-env": "^10.1.0",
     "dotenv": "17.2.3",
-    "eslint": "9.37.0",
+    "eslint": "9.38.0",
     "eslint-config-prettier": "10.1.8",
     "eslint-plugin-import": "2.32.0",
     "eslint-plugin-prettier": "5.5.4",
     "fast-glob": "3.3.3",
     "find-packages": "10.0.4",
     "husky": "9.1.7",
-    "lint-staged": "16.2.4",
+    "lint-staged": "16.2.6",
     "node-fetch": "3.3.2",
     "plop": "4.0.4",
     "prettier": "3.6.2",
@@ -100,13 +100,13 @@
     "tsup": "8.5.0",
     "tsx": "4.20.6",
     "typescript": "5.9.3",
-    "vercel-submodules": "1.0.10",
-    "vite": "7.1.9",
+    "vercel-submodules": "1.1.0",
+    "vite": "7.1.12",
     "vite-plugin-dts": "4.5.4",
-    "vitest": "3.2.4"
+    "vitest": "4.0.4"
   },
   "engines": {
     "node": ">=18.0.0"
   },
-  "packageManager": "pnpm@10.19.0"
+  "packageManager": "pnpm@10.20.0"
 }
