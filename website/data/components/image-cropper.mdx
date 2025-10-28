@@ -58,92 +58,143 @@ The package exports two key functions:
   and event handlers.
 
 Next, import the required hooks and functions for your framework and use the
-tour machine in your project 🔥
+image cropper machine in your project 🔥
 
 <CodeSnippet id="image-cropper/usage.mdx" />
 
-### Locking the crop area
+### Setting the initial crop
 
-Use the following props to constrain the crop window:
+Pass an `initialCrop` to start from a specific rectangle. The size is
+constrained to your min/max and viewport, and the position is clamped within the
+viewport.
 
-```tsx
+```jsx {2-6}
 const service = useMachine(imageCropper.machine, {
-  minWidth: 200,
-  minHeight: 200,
-  maxWidth: 400,
-  maxHeight: 400,
-  aspectRatio: 1, // keep the crop square
-  cropShape: "circle",
+  initialCrop: { x: 40, y: 40, width: 240, height: 240 },
+  aspectRatio: 1, // optional, lock to square
+})
+const api = imageCropper.connect(service, normalizeProps)
+```
+
+### Fixed crop area
+
+Lock the crop window and allow only panning/zooming of the image beneath it by
+setting `fixedCropArea: true`.
+
+```jsx {2}
+const service = useMachine(imageCropper.machine, {
   fixedCropArea: true,
 })
 ```
 
-- `aspectRatio` forces width/height to stay in sync. It is also applied while
-  dragging handles or via keyboard nudges.
-- `cropShape` can be `"rectangle"` or `"circle"`. When set to `circle`, the
-  selection exposes `data-shape="circle"` so you can add a circular mask.
-- `fixedCropArea` prevents dragging or resizing the selection. Users can still
-  pan the image beneath the crop via the viewport.
+### Crop shape and aspect ratio
+
+- `cropShape` can be `"rectangle"` or `"circle"`.
+- `aspectRatio` can lock the crop to a width/height ratio. When `aspectRatio` is
+  not set and `cropShape` is `"rectangle"`, holding Shift while resizing locks
+  to the current ratio.
+
+```jsx {2-3}
+const service = useMachine(imageCropper.machine, {
+  cropShape: "circle",
+  aspectRatio: 1, // ignored for circle
+})
+```
 
 ### Controlling zoom, rotation, and flip
 
-`zoom`, `rotation`, and `flip` are fully controllable. Provide the value and the
-corresponding `on*Change` callback to keep external state in sync:
+You can configure defaults and limits, and also control them programmatically
+using the API.
 
-```tsx
+```jsx {2-6}
 const service = useMachine(imageCropper.machine, {
-  id: useId(),
-  zoom,
-  onZoomChange: ({ zoom }) => setZoom(zoom),
-  rotation,
-  onRotationChange: ({ rotation }) => setRotation(rotation),
-  flip,
-  onFlipChange: ({ flip }) => setFlip(flip),
+  defaultZoom: 1.25,
+  minZoom: 1,
+  maxZoom: 5,
+  defaultRotation: 0,
+  defaultFlip: { horizontal: false, vertical: false },
 })
+const api = imageCropper.connect(service, normalizeProps)
+
+// Programmatic controls
+api.setZoom(2) // zoom to 2x
+api.setRotation(90) // rotate to 90 degrees
+api.flipHorizontally() // toggle horizontal flip
+api.setFlip({ vertical: true }) // set vertical flip on
 ```
 
-When you need to update these values from UI controls, call the helper methods
-returned by `connect`:
+### Programmatic resizing
 
-- `api.setZoom(value)` clamps to `minZoom`/`maxZoom` and keeps the cursor or
-  crop center anchored when zooming with the wheel.
-- `api.setRotation(value)` clamps to the `[0, 360]` range.
-- `api.setFlip(partial)` along with `api.flipHorizontally()` and
-  `api.flipVertically()` toggles each axis.
+Use `api.resize(handle, delta)` to resize from any handle programmatically.
+Positive `delta` grows outward, negative shrinks inward.
 
-`zoomStep`, `zoomSensitivity`, `minZoom`, and `maxZoom` let you tune how fast
-the wheel/pinch gestures respond. The machine also exposes keyboard zoom
-shortcuts: `+`/`=` to zoom in and `-`/`_` to zoom out.
+```jsx
+// Grow the selection by 8px from the right edge
+api.resize("right", 8)
+// Shrink from top-left corner by 4px in both axes
+api.resize("top-left", -4)
+```
 
-### Programmatic resizing and keyboard nudges
+### Getting the cropped image
 
-Every handle can be controlled programmatically with
-`api.resize(handlePosition, delta)`, so you can build presets like “16/9” or
-buttons that grow/shrink the crop by fixed increments. Keyboard users can move
-or resize the selection while the slider-focused selection element is focused:
+Use `api.getCroppedImage` to export the current crop, taking
+zoom/rotation/flip/pan into account.
 
-- Arrow keys move the crop by `nudgeStep` pixels. Hold **Shift** to use
-  `nudgeStepShift` and **Ctrl/Cmd** for `nudgeStepCtrl`.
-- **Alt + Arrow** resizes the crop along the corresponding axis.
+```jsx
+// Blob (default)
+const blob = await api.getCroppedImage({ type: "image/png", quality: 0.92 })
 
-Listen to `onCropChange` to persist the latest rectangle, e.g. to submit it with
-an avatar form.
-
-### Exporting the cropped result
-
-Call `api.getCroppedImage({ type, quality, output })` to render the current crop
-to a canvas and retrieve either a `Blob` or a `dataUrl`:
-
-```ts
-const blob = await api.getCroppedImage({
+// Data URL
+const dataUrl = await api.getCroppedImage({
+  output: "dataUrl",
   type: "image/jpeg",
-  quality: 0.9,
+  quality: 0.85,
+})
+
+// Example usage
+if (blob) {
+  const url = URL.createObjectURL(blob)
+  previewImg.src = url
+}
+```
+
+### Touch and wheel gestures
+
+- Use the mouse wheel over the viewport to zoom at the pointer location.
+- Pinch with two fingers to zoom and pan; the machine smooths tiny changes and
+  tracks the pinch midpoint.
+- Drag on the viewport background to pan the image (when not dragging the
+  selection).
+
+### Keyboard nudges
+
+Configure keyboard nudge steps for move/resize:
+
+```jsx {2-4}
+const service = useMachine(imageCropper.machine, {
+  nudgeStep: 1,
+  nudgeStepShift: 10,
+  nudgeStepCtrl: 50,
 })
 ```
 
-- `type` defaults to `image/png`.
-- `quality` is used for lossy formats.
-- `output` can be set to `"dataUrl"` when you need an inline preview.
+### Accessibility
+
+- The root is a live region with helpful descriptions of crop, zoom, and
+  rotation status.
+- The selection exposes slider-like semantics to assistive tech and supports
+  keyboard movement, resizing (Alt+Arrows), and zooming (+/-).
+- Customize accessible labels and descriptions via `translations`:
+
+```jsx {2-7}
+const service = useMachine(imageCropper.machine, {
+  translations: {
+    rootLabel: "Product image cropper",
+    selectionInstructions:
+      "Use arrow keys to move, Alt+arrows to resize, and +/- to zoom.",
+  },
+})
+```
 
 ## Styling guide
 
