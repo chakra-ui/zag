@@ -20,7 +20,8 @@ import { Blockquote } from "components/ui/blockquote"
 import { Button, ButtonLink } from "components/ui/button"
 import { Icon } from "components/ui/icon"
 import { Section } from "components/ui/section"
-import { NextSeo } from "next-seo"
+import { generateNextSeo } from "next-seo/pages"
+import Head from "next/head"
 import Image from "next/image"
 import { type ElementType } from "react"
 import siteConfig from "site.config"
@@ -58,7 +59,7 @@ function FeatureItem(props: FeatureItemProps) {
 export default function Home() {
   return (
     <Box>
-      <NextSeo title={siteConfig.title} />
+      <Head>{generateNextSeo({ title: siteConfig.title })}</Head>
 
       <TopNavigation />
 

@@ -4,6 +4,27 @@ All notable changes to this project will be documented in this file.
 
 > For v0.x changelog, see the [v0 branch](https://github.com/chakra-ui/zag/blob/v0/CHANGELOG.md)
 
+## [1.26.5](./#1.26.5) - 2025-10-29
+
+### Fixed
+
+- **Date Picker**: Fix crash in range date picker when typing end date first by adding `null`/`undefined` checks when
+  accessing date properties.
+
+- **Image Cropper**
+  - Fix not working resize API
+  - Export missing types
+  - Make the image cropper responsive
+
+- **Radio Group**: Revert to using `offsetLeft`/`offsetTop` to fix indicator positioning in scrollable containers.
+
+- **Tabs**: Revert to using `offsetLeft`/`offsetTop` to fix indicator positioning in scrollable containers.
+
+- **Tour**
+  - Fix issue where effects were not cleanup correct.
+  - Fix issue where wait step doesn't work correctly.
+  - Validate the configured steps on mount to ensure they are valid.
+
 ## [1.26.4](./#1.26.4) - 2025-10-23
 
 ### Added
