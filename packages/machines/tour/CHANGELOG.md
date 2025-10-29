@@ -1,5 +1,24 @@
 # @zag-js/tour
 
+## 1.26.5
+
+### Patch Changes
+
+- [`71f8a73`](https://github.com/chakra-ui/zag/commit/71f8a73ea284d6f863557bec1f3ff8bc4a3f9cd0) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - - Fix issue where effects were not cleanup correct.
+  - Fix issue where wait step doesn't work correctly.
+  - Validate the configured steps on mount to ensure they are valid.
+- Updated dependencies []:
+  - @zag-js/anatomy@1.26.5
+  - @zag-js/core@1.26.5
+  - @zag-js/types@1.26.5
+  - @zag-js/utils@1.26.5
+  - @zag-js/dismissable@1.26.5
+  - @zag-js/dom-query@1.26.5
+  - @zag-js/focus-trap@1.26.5
+  - @zag-js/interact-outside@1.26.5
+  - @zag-js/popper@1.26.5
+
 ## 1.26.4
 
 ### Patch Changes

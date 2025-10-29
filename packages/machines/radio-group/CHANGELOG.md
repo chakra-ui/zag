@@ -1,5 +1,21 @@
 # @zag-js/radio-group
 
+## 1.26.5
+
+### Patch Changes
+
+- [`5cae24c`](https://github.com/chakra-ui/zag/commit/5cae24c39a07c781d9cbc5759e817dafbb3bbe01) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Revert to using `offsetLeft`/`offsetTop` to fix indicator
+  positioning in scrollable containers.
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.26.5
+  - @zag-js/core@1.26.5
+  - @zag-js/types@1.26.5
+  - @zag-js/utils@1.26.5
+  - @zag-js/dom-query@1.26.5
+  - @zag-js/focus-visible@1.26.5
+
 ## 1.26.4
 
 ### Patch Changes

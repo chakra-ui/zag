@@ -1,5 +1,23 @@
 # @zag-js/date-picker
 
+## 1.26.5
+
+### Patch Changes
+
+- [`75f1899`](https://github.com/chakra-ui/zag/commit/75f1899378e0ba6edc43da9ac31a46650ee59e02) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix crash in range date picker when typing end date first by
+  adding `null`/`undefined` checks when accessing date properties.
+- Updated dependencies []:
+  - @zag-js/anatomy@1.26.5
+  - @zag-js/core@1.26.5
+  - @zag-js/types@1.26.5
+  - @zag-js/utils@1.26.5
+  - @zag-js/date-utils@1.26.5
+  - @zag-js/dismissable@1.26.5
+  - @zag-js/dom-query@1.26.5
+  - @zag-js/live-region@1.26.5
+  - @zag-js/popper@1.26.5
+
 ## 1.26.4
 
 ### Patch Changes
