@@ -294,7 +294,7 @@ export const machine = createMachine<ImageCropperSchema>({
         const clampSize = (rect: Rect) => {
           const result = computeResizeCrop({
             cropStart: rect,
-            handlePosition: "bottom-right",
+            handlePosition: "se",
             delta: { x: 0, y: 0 },
             viewportRect,
             minSize,
@@ -766,7 +766,7 @@ export const machine = createMachine<ImageCropperSchema>({
 
         const constrainedCrop = computeResizeCrop({
           cropStart: newCrop,
-          handlePosition: "bottom-right",
+          handlePosition: "se",
           delta: { x: 0, y: 0 },
           viewportRect: newViewportRect,
           minSize,

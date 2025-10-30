@@ -37,13 +37,4 @@ export const props = createProps<ImageCropperProps>()([
 
 export const splitProps = createSplitProps<Partial<ImageCropperProps>>(props)
 
-export const handles: HandlePosition[] = [
-  "top-left",
-  "top",
-  "top-right",
-  "right",
-  "bottom-right",
-  "bottom",
-  "bottom-left",
-  "left",
-]
+export const handles: HandlePosition[] = ["nw", "n", "ne", "e", "se", "s", "sw", "w"]

@@ -1,5 +1,5 @@
 import type { PropFn } from "@zag-js/core"
-import type { Point, Rect, Size, Style } from "@zag-js/types"
+import type { Point, Rect, Size } from "@zag-js/types"
 import { clampValue, isBoolean } from "@zag-js/utils"
 import type { FlipState, HandlePosition, ImageCropperProps, ImageCropperSchema } from "./image-cropper.types"
 
@@ -46,71 +46,11 @@ export const getRoundedCrop = (crop: Rect) => ({
 export const toFiniteDataValue = (value: number) => (Number.isFinite(value) ? String(value) : undefined)
 
 export const getHandleDirections = (handlePosition: HandlePosition): HandleDirections => ({
-  hasLeft: handlePosition.includes("left"),
-  hasRight: handlePosition.includes("right"),
-  hasTop: handlePosition.includes("top"),
-  hasBottom: handlePosition.includes("bottom"),
+  hasLeft: handlePosition === "w" || handlePosition === "nw" || handlePosition === "sw",
+  hasRight: handlePosition === "e" || handlePosition === "ne" || handlePosition === "se",
+  hasTop: handlePosition === "n" || handlePosition === "nw" || handlePosition === "ne",
+  hasBottom: handlePosition === "s" || handlePosition === "sw" || handlePosition === "se",
 })
-
-export const getHandlePositionStyles = (handlePosition: HandlePosition) => {
-  const styles: Style = {
-    position: "absolute",
-    touchAction: "none",
-  }
-
-  switch (handlePosition) {
-    case "top-left":
-      styles.top = "0"
-      styles.left = "0"
-      styles.transform = "translate(-50%, -50%)"
-      styles.cursor = "nwse-resize"
-      break
-    case "top":
-      styles.top = "0"
-      styles.left = "50%"
-      styles.transform = "translate(-50%, -50%)"
-      styles.cursor = "ns-resize"
-      break
-    case "top-right":
-      styles.top = "0"
-      styles.right = "0"
-      styles.transform = "translate(50%, -50%)"
-      styles.cursor = "nesw-resize"
-      break
-    case "right":
-      styles.top = "50%"
-      styles.right = "0"
-      styles.transform = "translate(50%, -50%)"
-      styles.cursor = "ew-resize"
-      break
-    case "bottom-right":
-      styles.bottom = "0"
-      styles.right = "0"
-      styles.transform = "translate(50%, 50%)"
-      styles.cursor = "nwse-resize"
-      break
-    case "bottom":
-      styles.bottom = "0"
-      styles.left = "50%"
-      styles.transform = "translate(-50%, 50%)"
-      styles.cursor = "ns-resize"
-      break
-    case "bottom-left":
-      styles.bottom = "0"
-      styles.left = "0"
-      styles.transform = "translate(-50%, 50%)"
-      styles.cursor = "nesw-resize"
-      break
-    case "left":
-      styles.top = "50%"
-      styles.left = "0"
-      styles.transform = "translate(-50%, -50%)"
-      styles.cursor = "ew-resize"
-      break
-  }
-
-  return styles
-}
 
 const resolveSizeLimits = (options: {
   minSize: Size

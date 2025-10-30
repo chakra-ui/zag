@@ -11,7 +11,7 @@ export default function Page() {
   const [zoom, setZoom] = useState(1)
   const [rotation, setRotation] = useState(0)
   const [flip, setFlip] = useState<imageCropper.FlipState>({ horizontal: false, vertical: false })
-  const [selectedHandle, setSelectedHandle] = useState<imageCropper.HandlePosition>("right")
+  const [selectedHandle, setSelectedHandle] = useState<imageCropper.HandlePosition>("e")
   const [resizeStep, setResizeStep] = useState(10)
   const [croppedImageUrl, setCroppedImageUrl] = useState<string | null>(null)
   const [isExporting, setIsExporting] = useState(false)

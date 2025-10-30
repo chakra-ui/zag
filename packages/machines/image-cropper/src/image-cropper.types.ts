@@ -1,15 +1,7 @@
 import type { EventObject, Service, Machine } from "@zag-js/core"
 import type { CommonProperties, DirectionProperty, Point, PropTypes, Rect, RequiredBy, Size } from "@zag-js/types"
 
-export type HandlePosition =
-  | "top-left"
-  | "top"
-  | "top-right"
-  | "right"
-  | "bottom-right"
-  | "bottom"
-  | "bottom-left"
-  | "left"
+export type HandlePosition = "n" | "e" | "s" | "w" | "ne" | "se" | "sw" | "nw"
 
 export interface BoundingRect {
   width: number

@@ -12,12 +12,23 @@
 }
 
 [data-scope="image-cropper"][data-part="handle"] {
-  width: 30px;
-  height: 30px;
+  --handle-size: 12px;
+  width: var(--handle-size);
+  height: var(--handle-size);
+
+  &[data-position="n"],
+  &[data-position="s"] {
+    height: 6px;
+  }
+
+  &[data-position="e"],
+  &[data-position="w"] {
+    width: 6px;
+  }
 
   & > div {
-    width: 10px;
-    height: 10px;
+    width: calc(var(--handle-size) / 2);
+    height: calc(var(--handle-size) / 2);
     background: #fff;
     position: absolute;
     top: 50%;
@@ -29,7 +40,6 @@
 [data-scope="image-cropper"][data-part="grid"] {
   --grid-color: rgba(255, 255, 255, 0.7);
   --grid-line-width: 1px;
-  box-sizing: border-box;
 
   &[data-axis="vertical"] {
     border-inline: var(--grid-line-width) solid var(--grid-color);

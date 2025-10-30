@@ -1,16 +1,11 @@
 import { contains, dataAttr, getEventKey, getEventPoint, getEventTarget } from "@zag-js/dom-query"
 import type { EventKeyMap, NormalizeProps, PropTypes } from "@zag-js/types"
 import { toPx } from "@zag-js/utils"
+import { getHandlePositionStyles } from "./get-resize-axis-style"
 import { parts } from "./image-cropper.anatomy"
 import * as dom from "./image-cropper.dom"
 import type { ImageCropperApi, ImageCropperService } from "./image-cropper.types"
-import {
-  getHandleDirections,
-  getHandlePositionStyles,
-  getRoundedCrop,
-  isVisibleRect,
-  normalizeFlipState,
-} from "./image-cropper.utils"
+import { getHandleDirections, getRoundedCrop, isVisibleRect, normalizeFlipState } from "./image-cropper.utils"
 
 export function connect<T extends PropTypes>(
   service: ImageCropperService,
