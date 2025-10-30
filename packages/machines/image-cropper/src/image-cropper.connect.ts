@@ -321,6 +321,8 @@ export function connect<T extends PropTypes>(
         "data-disabled": dataAttr(disabled),
         "data-shape": cropShape,
         "data-measured": dataAttr(isMeasured),
+        "data-dragging": dataAttr(dragging),
+        "data-panning": dataAttr(panning),
         style: {
           position: "absolute",
           top: "var(--crop-y)",
@@ -408,7 +410,6 @@ export function connect<T extends PropTypes>(
         "data-position": handlePosition,
         "aria-hidden": "true",
         role: "presentation",
-        tabIndex: undefined,
         "data-disabled": dataAttr(disabled),
         style: getHandlePositionStyles(handlePosition),
         onPointerDown(event) {
@@ -430,8 +431,10 @@ export function connect<T extends PropTypes>(
 
       return normalize.element({
         ...parts.grid.attrs,
-        "data-axis": axis,
         "aria-hidden": "true",
+        "data-axis": axis,
+        "data-dragging": dataAttr(dragging),
+        "data-panning": dataAttr(panning),
         style: {
           position: "absolute",
           inset: axis === "horizontal" ? "33.33% 0" : "0 33.33%",
