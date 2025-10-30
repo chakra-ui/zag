@@ -11,6 +11,15 @@ export type HandlePosition =
   | "bottom-left"
   | "left"
 
+export interface BoundingRect {
+  width: number
+  height: number
+  top: number
+  left: number
+  right: number
+  bottom: number
+}
+
 export interface ZoomChangeDetails {
   zoom: number
 }
@@ -231,7 +240,11 @@ export interface ImageCropperSchema {
     flip: FlipState
     offset: Point
     offsetStart: Point | null
-    viewportRect: { width: number; height: number; top: number; left: number; right: number; bottom: number }
+    viewportRect: BoundingRect
+  }
+  computed: {
+    isImageReady: boolean
+    isMeasured: boolean
   }
   event: EventObject
   action: string
@@ -248,6 +261,44 @@ export interface HandleProps {
    * The position of the handle
    */
   position: HandlePosition
+}
+
+export interface GridProps {
+  /**
+   * The axis of the grid lines to display
+   */
+  axis: "horizontal" | "vertical"
+}
+
+export interface CropData {
+  /**
+   * The x coordinate of the crop area in natural image pixels
+   */
+  x: number
+  /**
+   * The y coordinate of the crop area in natural image pixels
+   */
+  y: number
+  /**
+   * The width of the crop area in natural image pixels
+   */
+  width: number
+  /**
+   * The height of the crop area in natural image pixels
+   */
+  height: number
+  /**
+   * The rotation of the image in degrees
+   */
+  rotate: number
+  /**
+   * Whether the image is flipped horizontally
+   */
+  flipX: boolean
+  /**
+   * Whether the image is flipped vertically
+   */
+  flipY: boolean
 }
 
 export interface GetCroppedImageOptions {
@@ -270,13 +321,61 @@ export interface GetCroppedImageOptions {
 
 export interface ImageCropperApi<T extends PropTypes = PropTypes> {
   /**
+   * The current zoom level of the image.
+   */
+  zoom: number
+  /**
+   * The current rotation of the image in degrees.
+   */
+  rotation: number
+  /**
+   * The current flip state of the image.
+   */
+  flip: FlipState
+  /**
+   * The current crop area rectangle in viewport coordinates.
+   */
+  crop: Rect
+  /**
+   * The current offset (pan position) of the image.
+   */
+  offset: Point
+  /**
+   * The natural (original) size of the image.
+   */
+  naturalSize: Size
+  /**
+   * The viewport rectangle dimensions and position.
+   */
+  viewportRect: BoundingRect
+  /**
+   * Whether the crop area is currently being dragged.
+   */
+  dragging: boolean
+  /**
+   * Whether the image is currently being panned.
+   */
+  panning: boolean
+  /**
    * Function to set the zoom level of the image.
    */
   setZoom: (zoom: number) => void
   /**
+   * Function to zoom the image by a relative amount.
+   * @example zoomBy(0.1) // Zoom in by 10%
+   * @example zoomBy(-0.1) // Zoom out by 10%
+   */
+  zoomBy: (delta: number) => void
+  /**
    * Function to set the rotation of the image.
    */
   setRotation: (rotation: number) => void
+  /**
+   * Function to rotate the image by a relative amount in degrees.
+   * @example rotateBy(90) // Rotate 90 degrees clockwise
+   * @example rotateBy(-90) // Rotate 90 degrees counter-clockwise
+   */
+  rotateBy: (degrees: number) => void
   /**
    * Function to set the flip state of the image.
    */
@@ -294,14 +393,26 @@ export interface ImageCropperApi<T extends PropTypes = PropTypes> {
    */
   resize: (handlePosition: HandlePosition, delta: number) => void
   /**
+   * Function to reset the cropper to its initial state.
+   */
+  reset: () => void
+  /**
    * Function to get the cropped image with all transformations applied.
    * Returns a Promise that resolves to either a Blob or data URL.
    */
   getCroppedImage: (options?: GetCroppedImageOptions) => Promise<Blob | string | null>
+  /**
+   * Function to get the crop data in natural image pixel coordinates.
+   * These coordinates are relative to the original image dimensions,
+   * accounting for zoom, rotation, and flip transformations.
+   * Use this for server-side cropping or state persistence.
+   */
+  getCropData: () => CropData
 
   getRootProps: () => T["element"]
   getViewportProps: () => T["element"]
   getImageProps: () => T["element"]
   getSelectionProps: () => T["element"]
   getHandleProps: (props: HandleProps) => T["element"]
+  getGridProps: (props: GridProps) => T["element"]
 }

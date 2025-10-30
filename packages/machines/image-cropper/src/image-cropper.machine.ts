@@ -1,8 +1,9 @@
 import { createMachine } from "@zag-js/core"
-import * as dom from "./image-cropper.dom"
-import type { FlipState, HandlePosition, ImageCropperSchema } from "./image-cropper.types"
-import type { Point, Rect, Size } from "@zag-js/types"
 import { addDomEvent, getEventPoint, getEventTarget } from "@zag-js/dom-query"
+import type { Point, Rect, Size } from "@zag-js/types"
+import { callAll, clampValue } from "@zag-js/utils"
+import * as dom from "./image-cropper.dom"
+import type { BoundingRect, FlipState, HandlePosition, ImageCropperSchema } from "./image-cropper.types"
 import {
   clampOffset,
   computeDefaultCropDimensions,
@@ -12,9 +13,10 @@ import {
   getCropSizeLimits,
   getKeyboardMoveDelta,
   getNudgeStep,
+  isVisibleRect,
+  normalizeFlipState,
   resolveCropAspectRatio,
 } from "./image-cropper.utils"
-import { clampValue } from "@zag-js/utils"
 
 export const machine = createMachine<ImageCropperSchema>({
   props({ props }) {
@@ -122,14 +124,7 @@ export const machine = createMachine<ImageCropperSchema>({
       offsetStart: bindable<Point | null>(() => ({
         defaultValue: null,
       })),
-      viewportRect: bindable<{
-        width: number
-        height: number
-        top: number
-        left: number
-        right: number
-        bottom: number
-      }>(() => ({
+      viewportRect: bindable<BoundingRect>(() => ({
         defaultValue: { width: 0, height: 0, top: 0, left: 0, right: 0, bottom: 0 },
       })),
     }
@@ -165,6 +160,14 @@ export const machine = createMachine<ImageCropperSchema>({
     VIEWPORT_RESIZE: {
       actions: ["handleViewportResize"],
     },
+    RESET: {
+      actions: ["resetToInitialState"],
+    },
+  },
+
+  computed: {
+    isMeasured: ({ context }) => isVisibleRect(context.get("viewportRect")) && isVisibleRect(context.get("crop")),
+    isImageReady: ({ context }) => isVisibleRect(context.get("naturalSize")),
   },
 
   states: {
@@ -256,8 +259,7 @@ export const machine = createMachine<ImageCropperSchema>({
       canDragSelection({ context, prop }) {
         const viewportRect = context.get("viewportRect")
         const hasViewportRect = viewportRect.width > 0 && viewportRect.height > 0
-        const isNotFixed = !prop("fixedCropArea")
-        return hasViewportRect && isNotFixed
+        return hasViewportRect && !prop("fixedCropArea")
       },
     },
 
@@ -456,10 +458,7 @@ export const machine = createMachine<ImageCropperSchema>({
         const nextFlip = event.flip as Partial<FlipState> | undefined
         if (!nextFlip) return
         const currentFlip = context.get("flip")
-        const normalized: FlipState = {
-          horizontal: typeof nextFlip.horizontal === "boolean" ? nextFlip.horizontal : currentFlip.horizontal,
-          vertical: typeof nextFlip.vertical === "boolean" ? nextFlip.vertical : currentFlip.vertical,
-        }
+        const normalized = normalizeFlipState(nextFlip, currentFlip)
         if (normalized.horizontal === currentFlip.horizontal && normalized.vertical === currentFlip.vertical) return
         context.set("flip", normalized)
       },
@@ -778,14 +777,20 @@ export const machine = createMachine<ImageCropperSchema>({
         const maxX = Math.max(0, newViewportRect.width - constrainedCrop.width)
         const maxY = Math.max(0, newViewportRect.height - constrainedCrop.height)
 
-        const finalCrop = {
+        context.set("crop", {
           x: clampValue(constrainedCrop.x, 0, maxX),
           y: clampValue(constrainedCrop.y, 0, maxY),
           width: constrainedCrop.width,
           height: constrainedCrop.height,
-        }
+        })
+      },
 
-        context.set("crop", finalCrop)
+      resetToInitialState({ context }) {
+        context.set("zoom", context.initial("zoom"))
+        context.set("rotation", context.initial("rotation"))
+        context.set("flip", context.initial("flip"))
+        context.set("offset", { x: 0, y: 0 })
+        context.set("crop", context.initial("crop"))
       },
     },
 
@@ -801,14 +806,10 @@ export const machine = createMachine<ImageCropperSchema>({
           send({ type: "POINTER_UP" })
         }
 
-        const cleanups = [
+        return callAll(
           addDomEvent(scope.getDoc(), "pointermove", onPointerMove),
           addDomEvent(scope.getDoc(), "pointerup", onPointerUp),
-        ]
-
-        return () => {
-          cleanups.forEach((cleanup) => cleanup())
-        }
+        )
       },
 
       trackViewportResize({ scope, send }) {

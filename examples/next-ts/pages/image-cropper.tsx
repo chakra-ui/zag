@@ -1,10 +1,9 @@
 import * as imageCropper from "@zag-js/image-cropper"
-import { useMachine, normalizeProps } from "@zag-js/react"
-import { imageCropperControls } from "@zag-js/shared"
+import { normalizeProps, useMachine } from "@zag-js/react"
+import { handlePositions, imageCropperControls } from "@zag-js/shared"
 import { useId, useState } from "react"
 import { StateVisualizer } from "../components/state-visualizer"
 import { Toolbar } from "../components/toolbar"
-import { handlePositions } from "@zag-js/shared"
 import { useControls } from "../hooks/use-controls"
 
 export default function Page() {
@@ -95,6 +94,8 @@ export default function Page() {
                   <div />
                 </div>
               ))}
+              <div {...api.getGridProps({ axis: "horizontal" })} />
+              <div {...api.getGridProps({ axis: "vertical" })} />
             </div>
           </div>
         </div>

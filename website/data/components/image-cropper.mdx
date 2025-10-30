@@ -158,6 +158,102 @@ if (blob) {
 }
 ```
 
+### Understanding coordinate systems
+
+The image cropper uses two different coordinate systems:
+
+#### 1. Viewport Coordinates (`api.crop`)
+
+These are the coordinates you see in the UI, relative to the visible viewport:
+
+```jsx
+console.log(api.crop)
+// { x: 50, y: 30, width: 200, height: 150 }
+```
+
+**Characteristics:**
+- Relative to the viewport dimensions
+- Changes as you zoom and pan
+- Perfect for UI rendering and controls
+- Used by `initialCrop` and `setCrop()` (when implemented)
+
+#### 2. Natural Image Coordinates (`api.getCropData()`)
+
+These are the absolute pixel coordinates in the original image:
+
+```jsx
+const cropData = api.getCropData()
+console.log(cropData)
+// {
+//   x: 250,
+//   y: 150,
+//   width: 1000,
+//   height: 750,
+//   rotate: 0,
+//   flipX: false,
+//   flipY: false
+// }
+```
+
+**Characteristics:**
+- Relative to the original image dimensions
+- Independent of zoom/pan/viewport size
+- Essential for server-side cropping
+- Perfect for state persistence and undo/redo
+
+#### When to use each
+
+**Use viewport coordinates (`api.crop`)** when:
+- Rendering UI controls (sliders, displays)
+- Setting initial crop area
+- Building custom crop UI
+
+**Use natural coordinates (`api.getCropData()`)** when:
+- Sending crop data to your backend for server-side processing
+- Persisting state (localStorage, database)
+- Implementing undo/redo functionality
+- Exporting crop configuration to external tools
+
+#### Example: Server-side cropping
+
+```jsx
+// Frontend: Get natural coordinates
+const cropData = api.getCropData()
+
+// Send to backend
+await fetch('/api/crop-image', {
+  method: 'POST',
+  body: JSON.stringify({
+    imageId: 'photo-123',
+    crop: cropData, // Natural pixel coordinates
+  })
+})
+
+// Backend: Crop the original image file
+// Use cropData.x, cropData.y, cropData.width, cropData.height
+// to crop the actual image file at full resolution
+```
+
+#### Transformation example
+
+Here's how the coordinates relate with a zoom of 2x:
+
+```jsx
+// Original image: 3000 × 2000 pixels
+// Viewport: 600 × 400 pixels
+// Zoom: 2x
+
+// Viewport coordinates (what you see)
+api.crop
+// { x: 100, y: 80, width: 200, height: 150 }
+
+// Natural coordinates (original image)
+api.getCropData()
+// { x: 500, y: 400, width: 1000, height: 750, ... }
+// Scale factor: 3000 / 600 = 5x
+// So 100px in viewport = 500px in original image
+```
+
 ### Touch and wheel gestures
 
 - Use the mouse wheel over the viewport to zoom at the pointer location.

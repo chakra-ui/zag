@@ -1,7 +1,7 @@
-import type { Point, Rect, Size } from "@zag-js/types"
-import { clampValue } from "@zag-js/utils"
-import type { HandlePosition, ImageCropperProps, ImageCropperSchema } from "./image-cropper.types"
 import type { PropFn } from "@zag-js/core"
+import type { Point, Rect, Size, Style } from "@zag-js/types"
+import { clampValue, isBoolean } from "@zag-js/utils"
+import type { FlipState, HandlePosition, ImageCropperProps, ImageCropperSchema } from "./image-cropper.types"
 
 interface ResizeOptions {
   cropStart: Rect
@@ -36,12 +36,81 @@ interface ClampAspectParams {
   aspectRatio: number
 }
 
+export const getRoundedCrop = (crop: Rect) => ({
+  x: Math.round(crop.x),
+  y: Math.round(crop.y),
+  width: Math.round(crop.width),
+  height: Math.round(crop.height),
+})
+
+export const toFiniteDataValue = (value: number) => (Number.isFinite(value) ? String(value) : undefined)
+
 export const getHandleDirections = (handlePosition: HandlePosition): HandleDirections => ({
   hasLeft: handlePosition.includes("left"),
   hasRight: handlePosition.includes("right"),
   hasTop: handlePosition.includes("top"),
   hasBottom: handlePosition.includes("bottom"),
 })
+
+export const getHandlePositionStyles = (handlePosition: HandlePosition) => {
+  const styles: Style = {
+    position: "absolute",
+    touchAction: "none",
+  }
+
+  switch (handlePosition) {
+    case "top-left":
+      styles.top = "0"
+      styles.left = "0"
+      styles.transform = "translate(-50%, -50%)"
+      styles.cursor = "nwse-resize"
+      break
+    case "top":
+      styles.top = "0"
+      styles.left = "50%"
+      styles.transform = "translate(-50%, -50%)"
+      styles.cursor = "ns-resize"
+      break
+    case "top-right":
+      styles.top = "0"
+      styles.right = "0"
+      styles.transform = "translate(50%, -50%)"
+      styles.cursor = "nesw-resize"
+      break
+    case "right":
+      styles.top = "50%"
+      styles.right = "0"
+      styles.transform = "translate(50%, -50%)"
+      styles.cursor = "ew-resize"
+      break
+    case "bottom-right":
+      styles.bottom = "0"
+      styles.right = "0"
+      styles.transform = "translate(50%, 50%)"
+      styles.cursor = "nwse-resize"
+      break
+    case "bottom":
+      styles.bottom = "0"
+      styles.left = "50%"
+      styles.transform = "translate(-50%, 50%)"
+      styles.cursor = "ns-resize"
+      break
+    case "bottom-left":
+      styles.bottom = "0"
+      styles.left = "0"
+      styles.transform = "translate(-50%, 50%)"
+      styles.cursor = "nesw-resize"
+      break
+    case "left":
+      styles.top = "50%"
+      styles.left = "0"
+      styles.transform = "translate(-50%, -50%)"
+      styles.cursor = "ew-resize"
+      break
+  }
+
+  return styles
+}
 
 const resolveSizeLimits = (options: {
   minSize: Size
@@ -296,14 +365,16 @@ export function computeResizeCrop(options: ResizeOptions): Rect {
     } else if ((hasTop || hasBottom) && !(hasLeft || hasRight)) {
       const centerX = (left + right) / 2
       let nextHeight = newHeight
+      let nextWidth = nextHeight * aspectRatio!
+
       const constrained = clampAspectSize({
-        widthValue: newWidth,
+        widthValue: nextWidth,
         heightValue: nextHeight,
         limits: { minWidth, minHeight, maxWidth, maxHeight, hasAspect },
         viewportRect,
         aspectRatio: aspectRatio!,
       })
-      const nextWidth = constrained.width
+      nextWidth = constrained.width
       nextHeight = constrained.height
 
       const halfW = nextWidth / 2
@@ -621,12 +692,8 @@ export const getNudgeStep = (
   prop: PropFn<ImageCropperSchema>,
   modifiers: { shiftKey?: boolean; ctrlKey?: boolean; metaKey?: boolean },
 ) => {
-  if (modifiers.ctrlKey || modifiers.metaKey) {
-    return prop("nudgeStepCtrl")
-  }
-  if (modifiers.shiftKey) {
-    return prop("nudgeStepShift")
-  }
+  if (modifiers.ctrlKey || modifiers.metaKey) return prop("nudgeStepCtrl")
+  if (modifiers.shiftKey) return prop("nudgeStepShift")
   return prop("nudgeStep")
 }
 
@@ -673,3 +740,13 @@ export const computeDefaultCropDimensions = (
 
   return { width: targetWidth, height: targetHeight }
 }
+
+export const normalizeFlipState = (nextFlip: Partial<FlipState> | undefined, currentFlip: FlipState): FlipState => {
+  if (!nextFlip) return currentFlip
+  return {
+    horizontal: isBoolean(nextFlip.horizontal) ? nextFlip.horizontal : currentFlip.horizontal,
+    vertical: isBoolean(nextFlip.vertical) ? nextFlip.vertical : currentFlip.vertical,
+  }
+}
+
+export const isVisibleRect = (rect: Size) => rect.width > 0 && rect.height > 0
