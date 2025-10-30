@@ -5,17 +5,31 @@ import { callAll, clampValue } from "@zag-js/utils"
 import * as dom from "./image-cropper.dom"
 import type { BoundingRect, FlipState, HandlePosition, ImageCropperSchema } from "./image-cropper.types"
 import {
+  addPoints,
+  centerRect,
   clampOffset,
+  clampPoint,
   computeDefaultCropDimensions,
   computeKeyboardCrop,
   computeMoveCrop,
   computeResizeCrop,
+  getCenterPoint,
   getCropSizeLimits,
   getKeyboardMoveDelta,
+  getMaxBounds,
+  getMidpoint,
   getNudgeStep,
+  getTouchDistance,
+  getViewportCenter,
+  isEqualFlip,
+  isSameSize,
   isVisibleRect,
   normalizeFlipState,
   resolveCropAspectRatio,
+  scaleRect,
+  scaleSize,
+  subtractPoints,
+  ZERO_POINT,
 } from "./image-cropper.utils"
 
 export const machine = createMachine<ImageCropperSchema>({
@@ -119,7 +133,7 @@ export const machine = createMachine<ImageCropperSchema>({
         }
       }),
       offset: bindable<Point>(() => ({
-        defaultValue: { x: 0, y: 0 },
+        defaultValue: ZERO_POINT,
       })),
       offsetStart: bindable<Point | null>(() => ({
         defaultValue: null,
@@ -242,24 +256,16 @@ export const machine = createMachine<ImageCropperSchema>({
   implementations: {
     guards: {
       hasViewportRect({ context }) {
-        const viewportRect = context.get("viewportRect")
-        return viewportRect.width > 0 && viewportRect.height > 0
+        return isVisibleRect(context.get("viewportRect"))
       },
       canResizeCrop({ context, prop }) {
-        if (prop("fixedCropArea")) return false
-        const viewportRect = context.get("viewportRect")
-        return viewportRect.width > 0 && viewportRect.height > 0
+        return !prop("fixedCropArea") && isVisibleRect(context.get("viewportRect"))
       },
       canPan({ context }) {
-        const naturalSize = context.get("naturalSize")
-        if (naturalSize.width <= 0 || naturalSize.height <= 0) return false
-        const viewportRect = context.get("viewportRect")
-        return viewportRect.width > 0 && viewportRect.height > 0
+        return isVisibleRect(context.get("naturalSize")) && isVisibleRect(context.get("viewportRect"))
       },
       canDragSelection({ context, prop }) {
-        const viewportRect = context.get("viewportRect")
-        const hasViewportRect = viewportRect.width > 0 && viewportRect.height > 0
-        return hasViewportRect && !prop("fixedCropArea")
+        return isVisibleRect(context.get("viewportRect")) && !prop("fixedCropArea")
       },
     },
 
@@ -271,7 +277,7 @@ export const machine = createMachine<ImageCropperSchema>({
 
         const { naturalWidth: width, naturalHeight: height } = imageEl
 
-        if (width !== 0 && height !== 0 && naturalSize.width === 0 && naturalSize.height === 0) {
+        if (isVisibleRect({ width, height }) && !isVisibleRect(naturalSize)) {
           send({ type: "SET_NATURAL_SIZE", src: "ssr", size: { width, height } })
         }
       },
@@ -284,8 +290,9 @@ export const machine = createMachine<ImageCropperSchema>({
       setDefaultCrop({ context, prop, scope }) {
         const viewportEl = dom.getViewportEl(scope)
         if (!viewportEl) return
+
         const viewportRect = viewportEl.getBoundingClientRect()
-        if (viewportRect.height <= 0 || viewportRect.width <= 0) return
+        if (!isVisibleRect(viewportRect)) return
 
         const cropShape = prop("cropShape")
         const aspectRatio = resolveCropAspectRatio(cropShape, prop("aspectRatio"))
@@ -295,7 +302,7 @@ export const machine = createMachine<ImageCropperSchema>({
           const result = computeResizeCrop({
             cropStart: rect,
             handlePosition: "se",
-            delta: { x: 0, y: 0 },
+            delta: ZERO_POINT,
             viewportRect,
             minSize,
             maxSize,
@@ -315,10 +322,9 @@ export const machine = createMachine<ImageCropperSchema>({
           })
 
           const { width, height } = constrainedSize
-          const maxX = Math.max(0, viewportRect.width - width)
-          const maxY = Math.max(0, viewportRect.height - height)
-          const x = clampValue(initialCrop.x, 0, maxX)
-          const y = clampValue(initialCrop.y, 0, maxY)
+
+          const max = getMaxBounds({ width, height }, viewportRect)
+          const { x, y } = clampPoint(initialCrop, ZERO_POINT, max)
 
           context.set("crop", { x, y, width, height })
           return
@@ -336,8 +342,7 @@ export const machine = createMachine<ImageCropperSchema>({
         const width = constrainedSize.width
         const height = constrainedSize.height
 
-        const x = Math.max(0, (viewportRect.width - width) / 2)
-        const y = Math.max(0, (viewportRect.height - height) / 2)
+        const { x, y } = centerRect({ width, height }, viewportRect)
 
         context.set("crop", { x, y, width, height })
         context.set("viewportRect", viewportRect)
@@ -352,7 +357,7 @@ export const machine = createMachine<ImageCropperSchema>({
 
       setOffsetStart({ context }) {
         const offset = context.get("offset")
-        context.set("offsetStart", { x: offset.x, y: offset.y })
+        context.set("offsetStart", { ...offset })
       },
 
       setCropStart({ context }) {
@@ -365,20 +370,22 @@ export const machine = createMachine<ImageCropperSchema>({
         const pointerStart = context.get("pointerStart")
         const cropStart = context.get("cropStart")
         const viewportRect = context.get("viewportRect")
-        const cropShape = prop("cropShape")
-        const requestedAspectRatio = prop("aspectRatio")
-        let aspectRatio = resolveCropAspectRatio(cropShape, requestedAspectRatio)
-        const { minSize, maxSize } = getCropSizeLimits(prop)
 
-        const currentPoint = event.point
+        const cropShape = prop("cropShape")
+        const aspectRatioProp = prop("aspectRatio")
+
+        let aspectRatio = resolveCropAspectRatio(cropShape, aspectRatioProp)
+        const { minSize, maxSize } = getCropSizeLimits(prop)
 
         if (!pointerStart || !cropStart) return
 
-        const delta = { x: currentPoint.x - pointerStart.x, y: currentPoint.y - pointerStart.y }
+        const currentPoint = event.point
+        const delta = subtractPoints(currentPoint, pointerStart)
 
-        let nextCrop
+        let nextCrop: Rect
+
         if (handlePosition) {
-          const allowShiftLock = typeof requestedAspectRatio === "undefined" && cropShape !== "circle"
+          const allowShiftLock = typeof aspectRatioProp === "undefined" && cropShape !== "circle"
           if (allowShiftLock) {
             if (event.shiftKey) {
               const currentCrop = context.get("crop")
@@ -424,17 +431,13 @@ export const machine = createMachine<ImageCropperSchema>({
         const rotation = context.get("rotation")
         const viewportRect = context.get("viewportRect")
 
-        const deltaX = point.x - pointerStart.x
-        const deltaY = point.y - pointerStart.y
+        const delta = subtractPoints(point, pointerStart)
 
         const nextOffset = clampOffset({
           zoom,
           rotation,
-          viewportRect,
-          offset: {
-            x: offsetStart.x + deltaX,
-            y: offsetStart.y + deltaY,
-          },
+          viewportSize: viewportRect,
+          offset: addPoints(offsetStart, delta),
           fixedCropArea: prop("fixedCropArea"),
           crop: context.get("crop"),
           naturalSize: context.get("naturalSize"),
@@ -454,20 +457,22 @@ export const machine = createMachine<ImageCropperSchema>({
         const nextRotation = clampValue(rotation, 0, 360)
         context.set("rotation", nextRotation)
       },
+
       setFlip({ context, event }) {
         const nextFlip = event.flip as Partial<FlipState> | undefined
         if (!nextFlip) return
         const currentFlip = context.get("flip")
         const normalized = normalizeFlipState(nextFlip, currentFlip)
-        if (normalized.horizontal === currentFlip.horizontal && normalized.vertical === currentFlip.vertical) return
+        if (isEqualFlip(normalized, currentFlip)) return
         context.set("flip", normalized)
       },
+
       resizeCrop({ context, event, prop }) {
         const { handlePosition, delta } = event
         if (!handlePosition) return
 
         const viewportRect = context.get("viewportRect")
-        if (viewportRect.width <= 0 || viewportRect.height <= 0) return
+        if (!isVisibleRect(viewportRect)) return
 
         const cropShape = prop("cropShape")
         const aspectRatio = resolveCropAspectRatio(cropShape, prop("aspectRatio"))
@@ -513,7 +518,7 @@ export const machine = createMachine<ImageCropperSchema>({
         // If no point is specified, zoom based on the center of the crop area
         if (!point) {
           const crop = context.get("crop")
-          point = { x: crop.x + crop.width / 2, y: crop.y + crop.height / 2 }
+          point = getCenterPoint(crop)
         }
 
         const step = Math.abs(prop("zoomStep"))
@@ -547,11 +552,8 @@ export const machine = createMachine<ImageCropperSchema>({
           const nextOffset = clampOffset({
             zoom: currentZoom,
             rotation,
-            viewportRect: viewportRect,
-            offset: {
-              x: currentOffset.x + panDelta.x,
-              y: currentOffset.y + panDelta.y,
-            },
+            viewportSize: viewportRect,
+            offset: addPoints(currentOffset, panDelta),
             fixedCropArea: prop("fixedCropArea"),
             crop: context.get("crop"),
             naturalSize: context.get("naturalSize"),
@@ -564,8 +566,7 @@ export const machine = createMachine<ImageCropperSchema>({
         if (nextZoom === currentZoom) return
 
         const { width: vpW, height: vpH } = viewportRect
-        const centerX = vpW / 2
-        const centerY = vpH / 2
+        const { x: centerX, y: centerY } = getViewportCenter(viewportRect)
 
         const currentOffset = context.get("offset")
 
@@ -577,14 +578,13 @@ export const machine = createMachine<ImageCropperSchema>({
 
         // Apply pan delta from pinch movement if provided
         if (panDelta) {
-          nextOffset.x += panDelta.x
-          nextOffset.y += panDelta.y
+          nextOffset = addPoints(nextOffset, panDelta)
 
           const rotation = context.get("rotation")
           nextOffset = clampOffset({
             zoom: nextZoom,
             rotation,
-            viewportRect: viewportRect,
+            viewportSize: viewportRect,
             offset: nextOffset,
             fixedCropArea: prop("fixedCropArea"),
             crop: context.get("crop"),
@@ -596,7 +596,7 @@ export const machine = createMachine<ImageCropperSchema>({
             nextOffset = clampOffset({
               zoom: nextZoom,
               rotation,
-              viewportRect: viewportRect,
+              viewportSize: viewportRect,
               offset: nextOffset,
               fixedCropArea: true,
               crop: context.get("crop"),
@@ -604,8 +604,7 @@ export const machine = createMachine<ImageCropperSchema>({
             })
           } else {
             const imgSize = context.get("naturalSize")
-            const scaledW = imgSize.width * nextZoom
-            const scaledH = imgSize.height * nextZoom
+            const { width: scaledW, height: scaledH } = scaleSize(imgSize, nextZoom)
 
             if (scaledW <= vpW) {
               nextOffset.x = 0
@@ -636,15 +635,10 @@ export const machine = createMachine<ImageCropperSchema>({
           send({ type: "POINTER_UP", src: "pinch" })
         }
         const [first, second] = touches
-        const dx = first.x - second.x
-        const dy = first.y - second.y
-        const distance = Math.hypot(dx, dy)
+        const distance = getTouchDistance(first, second)
 
         const viewportRect = context.get("viewportRect")
-        const midpoint = {
-          x: (first.x + second.x) / 2 - viewportRect.left,
-          y: (first.y + second.y) / 2 - viewportRect.top,
-        }
+        const midpoint = getMidpoint(first, second, { x: viewportRect.left, y: viewportRect.top })
 
         context.set("pinchDistance", distance)
         context.set("pinchMidpoint", midpoint)
@@ -655,18 +649,13 @@ export const machine = createMachine<ImageCropperSchema>({
         if (touches.length < 2) return
 
         const [first, second] = touches
-        const dx = first.x - second.x
-        const dy = first.y - second.y
-        const distance = Math.hypot(dx, dy)
+        const distance = getTouchDistance(first, second)
 
         const lastDistance = context.get("pinchDistance")
         const lastMidpoint = context.get("pinchMidpoint")
         const viewportRect = context.get("viewportRect")
 
-        const midpoint = {
-          x: (first.x + second.x) / 2 - viewportRect.left,
-          y: (first.y + second.y) / 2 - viewportRect.top,
-        }
+        const midpoint = getMidpoint(first, second, { x: viewportRect.left, y: viewportRect.top })
 
         if (lastDistance != null && lastDistance > 0 && lastMidpoint != null) {
           const delta = lastDistance - distance
@@ -676,10 +665,7 @@ export const machine = createMachine<ImageCropperSchema>({
           // Improve smoothing by ignoring very small changes
           const hasSignificantZoom = distanceChange > 1
 
-          const panDelta = {
-            x: midpoint.x - lastMidpoint.x,
-            y: midpoint.y - lastMidpoint.y,
-          }
+          const panDelta = subtractPoints(midpoint, lastMidpoint)
 
           send({
             type: "ZOOM",
@@ -731,11 +717,11 @@ export const machine = createMachine<ImageCropperSchema>({
         if (!viewportEl) return
 
         const newViewportRect = viewportEl.getBoundingClientRect()
-        if (newViewportRect.height <= 0 || newViewportRect.width <= 0) return
+        if (!isVisibleRect(newViewportRect)) return
 
         const oldViewportRect = context.get("viewportRect")
 
-        if (oldViewportRect.width === newViewportRect.width && oldViewportRect.height === newViewportRect.height) {
+        if (isSameSize(oldViewportRect, newViewportRect)) {
           return
         }
 
@@ -743,8 +729,8 @@ export const machine = createMachine<ImageCropperSchema>({
 
         const oldCrop = context.get("crop")
 
-        if (oldViewportRect.width === 0 || oldViewportRect.height === 0) {
-          if (oldCrop.width === 0 || oldCrop.height === 0) {
+        if (!isVisibleRect(oldViewportRect)) {
+          if (!isVisibleRect(oldCrop)) {
             send({ type: "SET_DEFAULT_CROP", src: "viewport-resize" })
             return
           }
@@ -754,32 +740,29 @@ export const machine = createMachine<ImageCropperSchema>({
         const aspectRatio = resolveCropAspectRatio(cropShape, prop("aspectRatio"))
         const { minSize, maxSize } = getCropSizeLimits(prop)
 
-        const scaleX = newViewportRect.width / oldViewportRect.width
-        const scaleY = newViewportRect.height / oldViewportRect.height
-
-        let newCrop = {
-          x: oldCrop.x * scaleX,
-          y: oldCrop.y * scaleY,
-          width: oldCrop.width * scaleX,
-          height: oldCrop.height * scaleY,
+        const scale = {
+          x: newViewportRect.width / oldViewportRect.width,
+          y: newViewportRect.height / oldViewportRect.height,
         }
+
+        let newCrop = scaleRect(oldCrop, scale)
 
         const constrainedCrop = computeResizeCrop({
           cropStart: newCrop,
           handlePosition: "se",
-          delta: { x: 0, y: 0 },
+          delta: ZERO_POINT,
           viewportRect: newViewportRect,
           minSize,
           maxSize,
           aspectRatio,
         })
 
-        const maxX = Math.max(0, newViewportRect.width - constrainedCrop.width)
-        const maxY = Math.max(0, newViewportRect.height - constrainedCrop.height)
+        const max = getMaxBounds(constrainedCrop, newViewportRect)
+        const { x, y } = clampPoint(constrainedCrop, ZERO_POINT, max)
 
         context.set("crop", {
-          x: clampValue(constrainedCrop.x, 0, maxX),
-          y: clampValue(constrainedCrop.y, 0, maxY),
+          x,
+          y,
           width: constrainedCrop.width,
           height: constrainedCrop.height,
         })
@@ -789,7 +772,7 @@ export const machine = createMachine<ImageCropperSchema>({
         context.set("zoom", context.initial("zoom"))
         context.set("rotation", context.initial("rotation"))
         context.set("flip", context.initial("flip"))
-        context.set("offset", { x: 0, y: 0 })
+        context.set("offset", ZERO_POINT)
         context.set("crop", context.initial("crop"))
       },
     },

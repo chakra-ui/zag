@@ -5,7 +5,16 @@ import { getHandlePositionStyles } from "./get-resize-axis-style"
 import { parts } from "./image-cropper.anatomy"
 import * as dom from "./image-cropper.dom"
 import type { ImageCropperApi, ImageCropperService } from "./image-cropper.types"
-import { getHandleDirections, getRoundedCrop, isVisibleRect, normalizeFlipState } from "./image-cropper.utils"
+import {
+  roundRect,
+  isEqualFlip,
+  isVisibleRect,
+  normalizeFlipState,
+  isLeftHandle,
+  isRightHandle,
+  isTopHandle,
+  isBottomHandle,
+} from "./image-cropper.utils"
 
 export function connect<T extends PropTypes>(
   service: ImageCropperService,
@@ -30,7 +39,7 @@ export function connect<T extends PropTypes>(
 
   const isImageReady = computed("isImageReady")
   const isMeasured = computed("isMeasured")
-  const roundedCrop = getRoundedCrop(crop)
+  const roundedCrop = roundRect(crop)
 
   const shouldIgnoreTouchPointer = (event: { pointerType?: string; isPrimary?: boolean }) => {
     if (event.pointerType !== "touch") return false
@@ -69,7 +78,7 @@ export function connect<T extends PropTypes>(
     setFlip(nextFlip) {
       if (!nextFlip) return
       const normalized = normalizeFlipState(nextFlip, flip)
-      if (normalized.horizontal === flip.horizontal && normalized.vertical === flip.vertical) return
+      if (isEqualFlip(normalized, flip)) return
       send({ type: "SET_FLIP", flip: normalized })
     },
 
@@ -89,20 +98,18 @@ export function connect<T extends PropTypes>(
       if (!handlePosition) return
       if (fixedCropArea) return
 
-      const { hasLeft, hasRight, hasTop, hasBottom } = getHandleDirections(handlePosition)
-
       let deltaX = 0
       let deltaY = 0
 
-      if (hasLeft) {
+      if (isLeftHandle(handlePosition)) {
         deltaX = -delta
-      } else if (hasRight) {
+      } else if (isRightHandle(handlePosition)) {
         deltaX = delta
       }
 
-      if (hasTop) {
+      if (isTopHandle(handlePosition)) {
         deltaY = -delta
-      } else if (hasBottom) {
+      } else if (isBottomHandle(handlePosition)) {
         deltaY = delta
       }
 
@@ -136,7 +143,7 @@ export function connect<T extends PropTypes>(
 
     async getCroppedImage(options = {}) {
       const { type = "image/png", quality = 1, output = "blob" } = options
-      if (naturalSize.width === 0 || naturalSize.height === 0) return null
+      if (!isVisibleRect(naturalSize)) return null
 
       const canvas = dom.drawCroppedImageToCanvas(service)
       if (!canvas) return null
@@ -362,7 +369,7 @@ export function connect<T extends PropTypes>(
           }
 
           if (altKey && (key === "ArrowUp" || key === "ArrowDown" || key === "ArrowLeft" || key === "ArrowRight")) {
-            const handlePosition = key === "ArrowUp" || key === "ArrowDown" ? "bottom" : "right"
+            const handlePosition = key === "ArrowUp" || key === "ArrowDown" ? "s" : "e"
             send({
               type: "NUDGE_RESIZE_CROP",
               handlePosition,

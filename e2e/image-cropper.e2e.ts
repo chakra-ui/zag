@@ -32,7 +32,7 @@ test.describe("image-cropper / resizable", () => {
   test("[pointer] should resize crop selection using corner handle", async () => {
     const initialRect = await I.getSelectionRect()
 
-    await I.dragHandle("bottom-right", 10, 15)
+    await I.dragHandle("se", 10, 15)
 
     await I.seeSelectionSize(initialRect.width + 10, initialRect.height + 15)
   })
@@ -40,7 +40,7 @@ test.describe("image-cropper / resizable", () => {
   test("[pointer] should resize crop selection using side handle", async () => {
     const initialRect = await I.getSelectionRect()
 
-    await I.dragHandle("right", 20, 0)
+    await I.dragHandle("e", 20, 0)
 
     await I.seeSelectionSize(initialRect.width + 20, initialRect.height)
   })
@@ -48,7 +48,7 @@ test.describe("image-cropper / resizable", () => {
   test("[pointer] should resize crop selection using top handle", async () => {
     const initialRect = await I.getSelectionRect()
 
-    await I.dragHandle("top", 0, -20)
+    await I.dragHandle("n", 0, -20)
 
     await I.seeSelectionSize(initialRect.width, initialRect.height + 20)
   })
@@ -96,7 +96,7 @@ test.describe("image-cropper / resizable", () => {
     await I.controls.num("aspectRatio", "1")
     await I.wait(100)
 
-    await I.dragHandle("bottom-right", 60, 60)
+    await I.dragHandle("se", 60, 60)
     await I.wait(100)
 
     const newRect = await I.getSelectionRect()
@@ -168,7 +168,7 @@ test.describe("image-cropper / resizable", () => {
     const initialRect = await I.getSelectionRect()
     const initialAspectRatio = initialRect.width / initialRect.height
 
-    await I.dragHandle("bottom-right", -60, -100, { shift: true })
+    await I.dragHandle("se", -60, -100, { shift: true })
     await I.wait(100)
 
     const newRect = await I.getSelectionRect()
@@ -182,7 +182,7 @@ test.describe("image-cropper / resizable", () => {
     await I.controls.num("minHeight", "60")
     await I.wait(100)
 
-    await I.dragHandle("bottom-right", -500, -500)
+    await I.dragHandle("se", -500, -500)
     await I.wait(100)
 
     const { width, height } = await I.getSelectionRect()
@@ -196,7 +196,7 @@ test.describe("image-cropper / resizable", () => {
     await I.controls.num("maxHeight", "150")
     await I.wait(100)
 
-    await I.dragHandle("bottom-right", 500, 500)
+    await I.dragHandle("se", 500, 500)
     await I.wait(100)
 
     const selectionRect = await I.getSelectionRect()
@@ -395,7 +395,7 @@ test.describe("image-cropper / resize API", () => {
   test("[api] should grow selection using right handle", async () => {
     const initialRect = await I.getSelectionRect()
 
-    await I.selectResizeHandle("right")
+    await I.selectResizeHandle("e")
     await I.setResizeStep(20)
     await I.clickGrow()
     await I.wait(100)
@@ -411,7 +411,7 @@ test.describe("image-cropper / resize API", () => {
   test("[api] should shrink selection using right handle", async () => {
     const initialRect = await I.getSelectionRect()
 
-    await I.selectResizeHandle("right")
+    await I.selectResizeHandle("e")
     await I.setResizeStep(15)
     await I.clickShrink()
     await I.wait(100)
@@ -427,7 +427,7 @@ test.describe("image-cropper / resize API", () => {
   test("[api] should grow selection using left handle", async () => {
     const initialRect = await I.getSelectionRect()
 
-    await I.selectResizeHandle("left")
+    await I.selectResizeHandle("w")
     await I.setResizeStep(20)
     await I.clickGrow()
     await I.wait(100)
@@ -443,7 +443,7 @@ test.describe("image-cropper / resize API", () => {
   test("[api] should shrink selection using left handle", async () => {
     const initialRect = await I.getSelectionRect()
 
-    await I.selectResizeHandle("left")
+    await I.selectResizeHandle("w")
     await I.setResizeStep(15)
     await I.clickShrink()
     await I.wait(100)
@@ -459,7 +459,7 @@ test.describe("image-cropper / resize API", () => {
   test("[api] should grow selection using bottom handle", async () => {
     const initialRect = await I.getSelectionRect()
 
-    await I.selectResizeHandle("bottom")
+    await I.selectResizeHandle("s")
     await I.setResizeStep(25)
     await I.clickGrow()
     await I.wait(100)
@@ -475,7 +475,7 @@ test.describe("image-cropper / resize API", () => {
   test("[api] should shrink selection using bottom handle", async () => {
     const initialRect = await I.getSelectionRect()
 
-    await I.selectResizeHandle("bottom")
+    await I.selectResizeHandle("s")
     await I.setResizeStep(20)
     await I.clickShrink()
     await I.wait(100)
@@ -491,7 +491,7 @@ test.describe("image-cropper / resize API", () => {
   test("[api] should grow selection using top handle", async () => {
     const initialRect = await I.getSelectionRect()
 
-    await I.selectResizeHandle("top")
+    await I.selectResizeHandle("n")
     await I.setResizeStep(25)
     await I.clickGrow()
     await I.wait(100)
@@ -507,7 +507,7 @@ test.describe("image-cropper / resize API", () => {
   test("[api] should shrink selection using top handle", async () => {
     const initialRect = await I.getSelectionRect()
 
-    await I.selectResizeHandle("top")
+    await I.selectResizeHandle("n")
     await I.setResizeStep(20)
     await I.clickShrink()
     await I.wait(100)
@@ -523,7 +523,7 @@ test.describe("image-cropper / resize API", () => {
   test("[api] should grow selection using bottom-right corner handle", async () => {
     const initialRect = await I.getSelectionRect()
 
-    await I.selectResizeHandle("bottom-right")
+    await I.selectResizeHandle("se")
     await I.setResizeStep(30)
     await I.clickGrow()
     await I.wait(100)
@@ -539,7 +539,7 @@ test.describe("image-cropper / resize API", () => {
   test("[api] should shrink selection using bottom-right corner handle", async () => {
     const initialRect = await I.getSelectionRect()
 
-    await I.selectResizeHandle("bottom-right")
+    await I.selectResizeHandle("se")
     await I.setResizeStep(25)
     await I.clickShrink()
     await I.wait(100)
@@ -555,7 +555,7 @@ test.describe("image-cropper / resize API", () => {
   test("[api] should grow selection using top-left corner handle", async () => {
     const initialRect = await I.getSelectionRect()
 
-    await I.selectResizeHandle("top-left")
+    await I.selectResizeHandle("nw")
     await I.setResizeStep(30)
     await I.clickGrow()
     await I.wait(100)
@@ -571,7 +571,7 @@ test.describe("image-cropper / resize API", () => {
   test("[api] should shrink selection using top-left corner handle", async () => {
     const initialRect = await I.getSelectionRect()
 
-    await I.selectResizeHandle("top-left")
+    await I.selectResizeHandle("nw")
     await I.setResizeStep(25)
     await I.clickShrink()
     await I.wait(100)
@@ -587,7 +587,7 @@ test.describe("image-cropper / resize API", () => {
   test("[api] should grow selection using top-right corner handle", async () => {
     const initialRect = await I.getSelectionRect()
 
-    await I.selectResizeHandle("top-right")
+    await I.selectResizeHandle("ne")
     await I.setResizeStep(30)
     await I.clickGrow()
     await I.wait(100)
@@ -603,7 +603,7 @@ test.describe("image-cropper / resize API", () => {
   test("[api] should shrink selection using top-right corner handle", async () => {
     const initialRect = await I.getSelectionRect()
 
-    await I.selectResizeHandle("top-right")
+    await I.selectResizeHandle("ne")
     await I.setResizeStep(25)
     await I.clickShrink()
     await I.wait(100)
@@ -619,7 +619,7 @@ test.describe("image-cropper / resize API", () => {
   test("[api] should grow selection using bottom-left corner handle", async () => {
     const initialRect = await I.getSelectionRect()
 
-    await I.selectResizeHandle("bottom-left")
+    await I.selectResizeHandle("sw")
     await I.setResizeStep(30)
     await I.clickGrow()
     await I.wait(100)
@@ -635,7 +635,7 @@ test.describe("image-cropper / resize API", () => {
   test("[api] should shrink selection using bottom-left corner handle", async () => {
     const initialRect = await I.getSelectionRect()
 
-    await I.selectResizeHandle("bottom-left")
+    await I.selectResizeHandle("sw")
     await I.setResizeStep(25)
     await I.clickShrink()
     await I.wait(100)
@@ -653,7 +653,7 @@ test.describe("image-cropper / resize API", () => {
     await I.controls.num("minHeight", "80")
     await I.wait(100)
 
-    await I.selectResizeHandle("bottom-right")
+    await I.selectResizeHandle("se")
     await I.setResizeStep(500)
     await I.clickShrink()
     await I.wait(100)
@@ -669,7 +669,7 @@ test.describe("image-cropper / resize API", () => {
     await I.controls.num("maxHeight", "150")
     await I.wait(100)
 
-    await I.selectResizeHandle("bottom-right")
+    await I.selectResizeHandle("se")
     await I.setResizeStep(500)
     await I.clickGrow()
     await I.wait(100)
@@ -698,7 +698,7 @@ test.describe("image-cropper / circle", () => {
   })
 
   test("should keep the crop area in 1:1 aspect ratio when resizing", async () => {
-    await I.dragHandle("bottom-right", 60, 100)
+    await I.dragHandle("se", 60, 100)
     await I.wait(100)
 
     const newRect = await I.getSelectionRect()
