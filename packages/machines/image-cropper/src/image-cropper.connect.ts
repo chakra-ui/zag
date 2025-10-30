@@ -232,43 +232,6 @@ export function connect<T extends PropTypes>(
           const point = getEventPoint(event)
           send({ type: "PAN_POINTER_DOWN", point })
         },
-        onWheel(event) {
-          const viewportEl = event.currentTarget
-          const rect = viewportEl.getBoundingClientRect()
-          const point = {
-            x: event.clientX - rect.left,
-            y: event.clientY - rect.top,
-          }
-          send({ type: "ZOOM", trigger: "wheel", delta: event.deltaY, point })
-        },
-        onTouchStart(event) {
-          if (event.touches.length >= 2) {
-            const touches = Array.from(event.touches).map((touch) => ({
-              x: touch.clientX,
-              y: touch.clientY,
-            }))
-
-            send({ type: "PINCH_START", touches })
-          }
-        },
-        onTouchMove(event) {
-          if (event.touches.length >= 2) {
-            event.preventDefault()
-
-            const touches = Array.from(event.touches).map((touch) => ({
-              x: touch.clientX,
-              y: touch.clientY,
-            }))
-
-            send({ type: "PINCH_MOVE", touches })
-          }
-        },
-
-        onTouchEnd(event) {
-          if (event.touches.length < 2) {
-            send({ type: "PINCH_END" })
-          }
-        },
       })
     },
 

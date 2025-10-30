@@ -187,7 +187,7 @@ export const machine = createMachine<ImageCropperSchema>({
   states: {
     idle: {
       entry: ["checkImageStatus"],
-      effects: ["trackViewportResize"],
+      effects: ["trackViewportResize", "trackWheelEvent", "trackTouchEvents"],
       on: {
         SET_NATURAL_SIZE: {
           actions: ["setNaturalSize"],
@@ -809,6 +809,70 @@ export const machine = createMachine<ImageCropperSchema>({
         return () => {
           resizeObserver.disconnect()
         }
+      },
+
+      trackWheelEvent({ scope, send }) {
+        const viewportEl = dom.getViewportEl(scope)
+        if (!viewportEl) return
+
+        function onWheel(event: WheelEvent) {
+          event.preventDefault()
+
+          if (!viewportEl) return
+
+          const rect = viewportEl.getBoundingClientRect()
+          const point = {
+            x: event.clientX - rect.left,
+            y: event.clientY - rect.top,
+          }
+
+          send({ type: "ZOOM", trigger: "wheel", delta: event.deltaY, point })
+        }
+
+        return addDomEvent(viewportEl, "wheel", onWheel, { passive: false })
+      },
+
+      trackTouchEvents({ scope, send }) {
+        const viewportEl = dom.getViewportEl(scope)
+        if (!viewportEl) return
+
+        function onTouchStart(event: TouchEvent) {
+          if (event.touches.length >= 2) {
+            event.preventDefault()
+
+            const touches = Array.from(event.touches).map((touch) => ({
+              x: touch.clientX,
+              y: touch.clientY,
+            }))
+
+            send({ type: "PINCH_START", touches })
+          }
+        }
+
+        function onTouchMove(event: TouchEvent) {
+          if (event.touches.length >= 2) {
+            event.preventDefault()
+
+            const touches = Array.from(event.touches).map((touch) => ({
+              x: touch.clientX,
+              y: touch.clientY,
+            }))
+
+            send({ type: "PINCH_MOVE", touches })
+          }
+        }
+
+        function onTouchEnd(event: TouchEvent) {
+          if (event.touches.length < 2) {
+            send({ type: "PINCH_END" })
+          }
+        }
+
+        return callAll(
+          addDomEvent(viewportEl, "touchstart", onTouchStart, { passive: false }),
+          addDomEvent(viewportEl, "touchmove", onTouchMove, { passive: false }),
+          addDomEvent(viewportEl, "touchend", onTouchEnd),
+        )
       },
     },
   },
