@@ -133,17 +133,17 @@ export const machine = createMachine<SliderSchema>({
     SET_VALUE: [
       {
         guard: "hasIndex",
-        actions: ["setValueAtIndex"],
+        actions: ["setValueAtIndex", "invokeOnChangeEnd"],
       },
       {
-        actions: ["setValue"],
+        actions: ["setValue", "invokeOnChangeEnd"],
       },
     ],
     INCREMENT: {
-      actions: ["incrementThumbAtIndex"],
+      actions: ["incrementThumbAtIndex", "invokeOnChangeEnd"],
     },
     DECREMENT: {
-      actions: ["decrementThumbAtIndex"],
+      actions: ["decrementThumbAtIndex", "invokeOnChangeEnd"],
     },
   },
 
