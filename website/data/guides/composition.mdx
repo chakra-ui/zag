@@ -156,6 +156,74 @@ function Example() {
 In the example above, you will notice that the popover and tooltip trigger share
 the same id. That's how to compose machines together.
 
+### Important: Customizing IDs and ARIA attributes
+
+#### Always use the `ids` context option
+
+When customizing element IDs, always use the `ids` option in the machine context.
+Never manually set the `id` attribute on elements using the prop functions.
+
+```tsx
+// ❌ Wrong: Manually setting id on the element
+const api = checkbox.connect(service, normalizeProps)
+return <label {...api.getLabelProps()} id="my-custom-id">Label</label>
+
+// ✓ Correct: Use the ids option in machine context
+const service = useMachine(checkbox.machine, {
+  ids: { label: "my-custom-id" },
+})
+const api = checkbox.connect(service, normalizeProps)
+return <label {...api.getLabelProps()}>Label</label>
+```
+
+**Why?** Zag needs to know about custom IDs to properly generate ARIA reference
+attributes across all related elements. When you set IDs manually, the machine
+can't update the corresponding `aria-labelledby`, `aria-describedby`, and other
+reference attributes.
+
+#### Pitfall: Custom IDs with missing elements
+
+When you configure custom IDs via the `ids` option, Zag generates ARIA reference
+attributes (like `aria-labelledby`) based on those IDs, regardless of whether
+the elements exist in the DOM. This can break accessibility if you configure IDs
+for elements you don't render.
+
+```tsx
+// ❌ Wrong: Configuring label ID but not rendering the label
+const service = useMachine(checkbox.machine, {
+  ids: { label: "custom-label-id" },
+})
+return (
+  <div {...api.getControlProps()}>
+    {/* Control has aria-labelledby="custom-label-id" but label doesn't exist */}
+    <input {...api.getHiddenInputProps()} />
+  </div>
+)
+
+// ✓ Correct: Only configure IDs for elements you render
+const service = useMachine(checkbox.machine, {
+  ids: { control: "custom-control-id" },
+  // Don't set label ID if you're not rendering it
+})
+return (
+  <div {...api.getControlProps()} aria-label="Checkbox">
+    <input {...api.getHiddenInputProps()} />
+  </div>
+)
+
+// ✓ Better: Keep the label but hide it visually
+return (
+  <div>
+    <label {...api.getLabelProps()} className="visually-hidden">
+      Checkbox
+    </label>
+    <div {...api.getControlProps()}>
+      <input {...api.getHiddenInputProps()} />
+    </div>
+  </div>
+)
+```
+
 ## Custom window environment
 
 Internally, we use DOM query methods like `document.querySelectorAll` and
