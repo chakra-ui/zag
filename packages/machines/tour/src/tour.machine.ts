@@ -467,6 +467,7 @@ export const machine = createMachine<TourSchema>({
           allowOutsideClick: true,
           preventScroll: true,
           returnFocusOnDeactivate: false,
+          getShadowRoot: true,
         })
       },
 

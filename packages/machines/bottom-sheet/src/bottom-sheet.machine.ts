@@ -322,6 +322,7 @@ export const machine = createMachine<BottomSheetSchema>({
           returnFocusOnDeactivate: !!prop("restoreFocus"),
           initialFocus: prop("initialFocusEl"),
           setReturnFocus: (el) => prop("finalFocusEl")?.() || el,
+          getShadowRoot: true,
         })
       },
 

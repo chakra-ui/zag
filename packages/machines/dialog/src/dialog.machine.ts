@@ -152,6 +152,7 @@ export const machine = createMachine<DialogSchema>({
           returnFocusOnDeactivate: !!prop("restoreFocus"),
           initialFocus: prop("initialFocusEl"),
           setReturnFocus: (el) => prop("finalFocusEl")?.() ?? el,
+          getShadowRoot: true,
         })
       },
 
