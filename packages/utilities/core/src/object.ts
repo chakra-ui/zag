@@ -35,8 +35,9 @@ export function splitProps<T extends Dict>(props: T, keys: (keyof T)[]) {
   const result: Dict = {}
 
   const keySet = new Set(keys)
+  const ownKeys = Reflect.ownKeys(props)
 
-  for (const key of Reflect.ownKeys(props)) {
+  for (const key of ownKeys) {
     if (keySet.has(key)) {
       result[key] = props[key]
     } else {
