@@ -1,5 +1,19 @@
 # @zag-js/remove-scroll
 
+## 1.27.0
+
+### Patch Changes
+
+- [`cf5c238`](https://github.com/chakra-ui/zag/commit/cf5c23893afcccc6e7593fc73346102023245cca) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix issue where setting `scrollbar-gutter: stable` in CSS caused
+  an unwanted gap and layout shift when opening dialogs. Zag now detects when the browser is already reserving space for
+  the scrollbar and skips adding extra padding.
+
+  Fixes #2807
+
+- Updated dependencies [[`cf6fb09`](https://github.com/chakra-ui/zag/commit/cf6fb0956aeacc236531ee90de9169a39cdde3a5)]:
+  - @zag-js/dom-query@1.27.0
+
 ## 1.26.5
 
 ### Patch Changes

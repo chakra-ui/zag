@@ -1,5 +1,14 @@
 # @zag-js/presence
 
+## 1.27.0
+
+### Patch Changes
+
+- Updated dependencies [[`cf6fb09`](https://github.com/chakra-ui/zag/commit/cf6fb0956aeacc236531ee90de9169a39cdde3a5)]:
+  - @zag-js/dom-query@1.27.0
+  - @zag-js/core@1.27.0
+  - @zag-js/types@1.27.0
+
 ## 1.26.5
 
 ### Patch Changes
