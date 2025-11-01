@@ -30,7 +30,7 @@ function Marquee() {
             <div {...api().getContentProps({ index })}>
               <For each={logos}>
                 {(item) => (
-                  <div class="marquee-item">
+                  <div {...api().getItemProps()}>
                     <span class="logo">{item.logo}</span>
                     <span class="name">{item.name}</span>
                   </div>

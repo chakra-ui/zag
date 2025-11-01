@@ -97,6 +97,7 @@ const sidebar: Record<"docs", SidebarItem[]> = {
           beta: true,
         },
         { type: "doc", label: "Listbox", id: "listbox" },
+        { type: "doc", label: "Marquee", id: "marquee", beta: true },
         { type: "doc", label: "Menu", id: "menu" },
         { type: "doc", label: "Context Menu", id: "context-menu" },
         { type: "doc", label: "Nested Menu", id: "nested-menu" },

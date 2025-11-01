@@ -110,7 +110,6 @@ export function connect<T extends PropTypes>(service: MarqueeService, normalize:
         },
         style: {
           display: "flex",
-          gap: "var(--marquee-spacing)",
           [isVertical ? "height" : "width"]: "100%",
           // For bottom/end sides, reverse flex direction so clones appear on the correct side
           flexDirection:
@@ -144,12 +143,15 @@ export function connect<T extends PropTypes>(service: MarqueeService, normalize:
           // Essential layout for marquee content
           display: "flex",
           flexDirection: orientation === "vertical" ? "column" : "row",
-          gap: "var(--marquee-spacing)",
           flexShrink: 0,
-          // Only use will-change when actively animating to save GPU memory
+          // Force compositor layer to prevent flicker during animation reset
+          backfaceVisibility: "hidden",
+          WebkitBackfaceVisibility: "hidden",
           willChange: paused ? "auto" : "transform",
+          transform: "translateZ(0)",
           [isVertical ? "minWidth" : "minHeight"]: "auto",
-          transform: "translate3d(0, 0, 0)",
+          // Prevent subpixel rendering issues that cause flicker in Firefox
+          contain: "paint",
         },
       })
     },
@@ -168,6 +170,16 @@ export function connect<T extends PropTypes>(service: MarqueeService, normalize:
           pointerEvents: "none",
           position: "absolute",
           ...getEdgePositionStyles({ side, dir }),
+        },
+      })
+    },
+
+    getItemProps() {
+      return normalize.element({
+        ...parts.item.attrs,
+        dir: prop("dir"),
+        style: {
+          [isVertical ? "marginBlock" : "marginInline"]: "calc(var(--marquee-spacing) / 2)",
         },
       })
     },

@@ -2342,13 +2342,57 @@
   },
   "image-cropper": {
     "api": {
+      "zoom": {
+        "type": "number",
+        "description": "The current zoom level of the image."
+      },
+      "rotation": {
+        "type": "number",
+        "description": "The current rotation of the image in degrees."
+      },
+      "flip": {
+        "type": "FlipState",
+        "description": "The current flip state of the image."
+      },
+      "crop": {
+        "type": "Rect",
+        "description": "The current crop area rectangle in viewport coordinates."
+      },
+      "offset": {
+        "type": "Point",
+        "description": "The current offset (pan position) of the image."
+      },
+      "naturalSize": {
+        "type": "Size",
+        "description": "The natural (original) size of the image."
+      },
+      "viewportRect": {
+        "type": "BoundingRect",
+        "description": "The viewport rectangle dimensions and position."
+      },
+      "dragging": {
+        "type": "boolean",
+        "description": "Whether the crop area is currently being dragged."
+      },
+      "panning": {
+        "type": "boolean",
+        "description": "Whether the image is currently being panned."
+      },
       "setZoom": {
         "type": "(zoom: number) => void",
         "description": "Function to set the zoom level of the image."
       },
+      "zoomBy": {
+        "type": "(delta: number) => void",
+        "description": "Function to zoom the image by a relative amount."
+      },
       "setRotation": {
         "type": "(rotation: number) => void",
         "description": "Function to set the rotation of the image."
+      },
+      "rotateBy": {
+        "type": "(degrees: number) => void",
+        "description": "Function to rotate the image by a relative amount in degrees."
       },
       "setFlip": {
         "type": "(flip: Partial<FlipState>) => void",
@@ -2366,9 +2410,17 @@
         "type": "(handlePosition: HandlePosition, delta: number) => void",
         "description": "Function to resize the crop area from a handle programmatically."
       },
+      "reset": {
+        "type": "() => void",
+        "description": "Function to reset the cropper to its initial state."
+      },
       "getCroppedImage": {
         "type": "(options?: GetCroppedImageOptions) => Promise<string | Blob>",
         "description": "Function to get the cropped image with all transformations applied.\nReturns a Promise that resolves to either a Blob or data URL."
+      },
+      "getCropData": {
+        "type": "() => CropData",
+        "description": "Function to get the crop data in natural image pixel coordinates.\nThese coordinates are relative to the original image dimensions,\naccounting for zoom, rotation, and flip transformations.\nUse this for server-side cropping or state persistence."
       }
     },
     "context": {

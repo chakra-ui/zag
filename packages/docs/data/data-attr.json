@@ -841,8 +841,6 @@
       "data-scope": "image-cropper",
       "data-part": "image",
       "data-ready": "",
-      "data-zoom": "",
-      "data-rotation": "",
       "data-flip-horizontal": "",
       "data-flip-vertical": ""
     },
@@ -850,13 +848,23 @@
       "data-scope": "image-cropper",
       "data-part": "selection",
       "data-disabled": "Present when disabled",
-      "data-shape": ""
+      "data-shape": "",
+      "data-measured": "",
+      "data-dragging": "Present when in the dragging state",
+      "data-panning": ""
     },
     "Handle": {
       "data-scope": "image-cropper",
       "data-part": "handle",
       "data-position": "",
       "data-disabled": "Present when disabled"
+    },
+    "Grid": {
+      "data-scope": "image-cropper",
+      "data-part": "grid",
+      "data-axis": "The axis to resize",
+      "data-dragging": "Present when in the dragging state",
+      "data-panning": ""
     }
   },
   "listbox": {

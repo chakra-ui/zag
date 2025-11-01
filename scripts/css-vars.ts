@@ -1,6 +1,6 @@
 import { resolve } from "node:path"
 import { writeFileSync, readFileSync } from "node:fs"
-import { glob } from "glob"
+import { glob } from "fast-glob"
 import { Project, Node, SyntaxKind } from "ts-morph"
 
 interface CSSVariable {

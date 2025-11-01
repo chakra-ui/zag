@@ -31,7 +31,7 @@ export default function Page() {
                 <div {...api().getContentProps({ index })}>
                   <For each={marqueeData}>
                     {(item) => (
-                      <div class="marquee-item">
+                      <div {...api().getItemProps()}>
                         <span class="marquee-logo">{item.logo}</span>
                         <span class="marquee-name">{item.name}</span>
                       </div>

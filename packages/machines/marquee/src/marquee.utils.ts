@@ -40,14 +40,14 @@ export const getMarqueeTranslate = (options: PositionOptions): string => {
   const { side, dir } = options
 
   if (side === "top") {
-    return "calc(-100% - var(--marquee-spacing))"
+    return "-100%"
   }
 
   if (side === "bottom") {
-    return "calc(100% + var(--marquee-spacing))"
+    return "100%"
   }
 
   // Horizontal: start/end
   const shouldBeNegative = (side === "start" && dir === "ltr") || (side === "end" && dir === "rtl")
-  return shouldBeNegative ? "calc(-100% - var(--marquee-spacing))" : "calc(100% + var(--marquee-spacing))"
+  return shouldBeNegative ? "-100%" : "100%"
 }

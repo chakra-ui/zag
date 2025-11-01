@@ -24,7 +24,7 @@ const api = computed(() => marquee.connect(service, normalizeProps))
 
       <div v-bind="api.getViewportProps()">
         <div v-for="index in api.contentCount" :key="index - 1" v-bind="api.getContentProps({ index: index - 1 })">
-          <div v-for="(item, i) in marqueeData" :key="i" class="marquee-item">
+          <div v-for="(item, i) in marqueeData" :key="i" v-bind="api.getItemProps()">
             <span class="marquee-logo">{{ item.logo }}</span>
             <span class="marquee-name">{{ item.name }}</span>
           </div>

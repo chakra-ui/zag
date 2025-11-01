@@ -69,6 +69,18 @@ export const machine = createMachine<MarqueeSchema>({
     },
   },
 
+  watch({ track, action, prop }) {
+    // Restart animation when speed changes (for immediate feedback)
+    track([() => prop("speed")], () => {
+      action(["recalculateDuration", "restartAnimation"])
+    })
+
+    // Recalculate on spacing/side changes (takes effect next iteration)
+    track([() => prop("spacing"), () => prop("side")], () => {
+      action(["recalculateDuration"])
+    })
+  },
+
   on: {
     PAUSE: {
       actions: ["setPaused"],
@@ -117,6 +129,21 @@ export const machine = createMachine<MarqueeSchema>({
           el.style.animation = ""
         })
       },
+      recalculateDuration({ refs, computed, context, prop }) {
+        const dimensions = refs.get("dimensions")
+        if (!dimensions) return
+
+        const { rootSize, contentSize } = dimensions
+        const duration = calculateDuration({
+          rootSize,
+          contentSize,
+          speed: Math.max(0.001, prop("speed")),
+          multiplier: computed("multiplier"),
+          autoFill: prop("autoFill"),
+        })
+
+        context.set("duration", duration)
+      },
     },
 
     effects: {
@@ -135,25 +162,24 @@ export const machine = createMachine<MarqueeSchema>({
         }
 
         const exec = () => {
-          if (refs.get("initialDurationSet")) return
-
           const { rootSize, contentSize } = measureDimensions()
 
           if (rootSize > 0 && contentSize > 0) {
             refs.set("dimensions", { rootSize, contentSize })
 
-            // Calculate duration only once
-            const speed = Math.max(0.001, prop("speed"))
-            const multiplier = computed("multiplier")
+            // Calculate duration only once on initial mount
+            if (!refs.get("initialDurationSet")) {
+              const duration = calculateDuration({
+                rootSize,
+                contentSize,
+                speed: Math.max(0.001, prop("speed")),
+                multiplier: computed("multiplier"),
+                autoFill: prop("autoFill"),
+              })
 
-            const calculatedDuration = prop("autoFill")
-              ? (contentSize * multiplier) / speed
-              : contentSize < rootSize
-                ? rootSize / speed
-                : contentSize / speed
-
-            context.set("duration", calculatedDuration)
-            refs.set("initialDurationSet", true)
+              context.set("duration", duration)
+              refs.set("initialDurationSet", true)
+            }
           }
         }
 
@@ -182,3 +208,19 @@ export const machine = createMachine<MarqueeSchema>({
     },
   },
 })
+
+function calculateDuration(options: {
+  rootSize: number
+  contentSize: number
+  speed: number
+  multiplier: number
+  autoFill: boolean
+}): number {
+  const { rootSize, contentSize, speed, multiplier, autoFill } = options
+
+  if (autoFill) {
+    return (contentSize * multiplier) / speed
+  }
+
+  return contentSize < rootSize ? rootSize / speed : contentSize / speed
+}

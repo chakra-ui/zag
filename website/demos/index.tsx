@@ -49,6 +49,7 @@ import { Playground } from "../components/playground"
 import { FloatingPanel } from "./floating-panel"
 import { PasswordInput } from "./password-input"
 import { BottomSheet } from "./bottom-sheet"
+import { Marquee } from "./marquee"
 
 const components = {
   Accordion: () => (
@@ -517,6 +518,20 @@ const components = {
       defaultProps={{
         disabled: false,
         ignorePasswordManagers: true,
+      }}
+    />
+  ),
+  Marquee: () => (
+    <Playground
+      name="marquee"
+      component={Marquee}
+      defaultProps={{
+        side: {
+          default: "start",
+          options: ["start", "end", "top", "bottom"],
+        },
+        speed: 100,
+        pauseOnInteraction: false,
       }}
     />
   ),
