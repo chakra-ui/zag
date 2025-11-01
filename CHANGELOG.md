@@ -4,6 +4,24 @@ All notable changes to this project will be documented in this file.
 
 > For v0.x changelog, see the [v0 branch](https://github.com/chakra-ui/zag/blob/v0/CHANGELOG.md)
 
+## [1.27.0](./#1.27.0) - 2025-11-01
+
+### Added
+
+- **Dialog, Popover**: Improve support for shadow DOM in interact outside and focus trap detection.
+
+### Fixed
+
+- **Marquee**: Fix Firefox flicker, use margin spacing, add GPU acceleration, and add `item` part.
+
+- **Popover**: Improve support for shadow DOM in interact outside and focus trap detection.
+
+- **Dialog**: Fix issue where setting `scrollbar-gutter: stable` in CSS caused an unwanted gap and layout shift when
+  opening dialogs.
+
+- **Slider**: Fix issue where programmatic value changes do not trigger the `onValueChangeEnd` callback. This affects
+  the`setThumbValue`, `setValue`, `increment`, and `decrement` API methods.
+
 ## [1.26.5](./#1.26.5) - 2025-10-29
 
 ### Fixed
