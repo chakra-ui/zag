@@ -47,7 +47,7 @@ describe("compact()", () => {
 })
 
 describe("splitProps()", () => {
-  test("should split props into result and rest", () => {
+  test("should split props", () => {
     const props = { a: 1, b: 2, c: 3 }
     const [result, rest] = splitProps(props, ["a", "c"])
 
