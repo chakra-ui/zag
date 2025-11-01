@@ -1,5 +1,25 @@
 # @zag-js/slider
 
+## 1.27.0
+
+### Patch Changes
+
+- [`48243a4`](https://github.com/chakra-ui/zag/commit/48243a4ce2f1c515e9845e00a46644e1861f99d9) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix issue where programmatic value changes do not trigger the
+  `onValueChangeEnd` callback. This affects the following API methods:
+  - `slider.setThumbValue(index, value)`
+  - `slider.setValue(value)`
+  - `slider.increment(index)`
+  - `slider.decrement(index)`
+
+- Updated dependencies [[`cf6fb09`](https://github.com/chakra-ui/zag/commit/cf6fb0956aeacc236531ee90de9169a39cdde3a5),
+  [`920e727`](https://github.com/chakra-ui/zag/commit/920e727f73940aed3c6d2b886c64200a4a5702d0)]:
+  - @zag-js/dom-query@1.27.0
+  - @zag-js/utils@1.27.0
+  - @zag-js/core@1.27.0
+  - @zag-js/anatomy@1.27.0
+  - @zag-js/types@1.27.0
+
 ## 1.26.5
 
 ### Patch Changes

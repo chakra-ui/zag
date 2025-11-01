@@ -1,5 +1,12 @@
 # @zag-js/collection
 
+## 1.27.0
+
+### Patch Changes
+
+- Updated dependencies [[`920e727`](https://github.com/chakra-ui/zag/commit/920e727f73940aed3c6d2b886c64200a4a5702d0)]:
+  - @zag-js/utils@1.27.0
+
 ## 1.26.5
 
 ### Patch Changes
