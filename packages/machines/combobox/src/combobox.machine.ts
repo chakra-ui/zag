@@ -1,4 +1,3 @@
-import { ariaHidden } from "@zag-js/aria-hidden"
 import { setup } from "@zag-js/core"
 import { trackDismissableElement } from "@zag-js/dismissable"
 import { clickIfLink, nextTick, observeAttributes, raf, scrollIntoView, setCaretToEnd } from "@zag-js/dom-query"
@@ -350,7 +349,7 @@ export const machine = createMachine({
     interacting: {
       tags: ["open", "focused"],
       entry: ["setInitialFocus"],
-      effects: ["scrollToHighlightedItem", "trackDismissableLayer", "trackPlacement", "hideOtherElements"],
+      effects: ["scrollToHighlightedItem", "trackDismissableLayer", "trackPlacement"],
       on: {
         "CONTROLLED.CLOSE": [
           {
@@ -526,7 +525,7 @@ export const machine = createMachine({
 
     suggesting: {
       tags: ["open", "focused"],
-      effects: ["trackDismissableLayer", "scrollToHighlightedItem", "trackPlacement", "hideOtherElements"],
+      effects: ["trackDismissableLayer", "scrollToHighlightedItem", "trackPlacement"],
       entry: ["setInitialFocus"],
       on: {
         "CONTROLLED.CLOSE": [
@@ -696,7 +695,10 @@ export const machine = createMachine({
         if (isBoolean(openOnChange)) return openOnChange
         return !!openOnChange?.({ inputValue: context.get("inputValue") })
       },
-      restoreFocus: ({ event }) => (event.restoreFocus == null ? true : !!event.restoreFocus),
+      restoreFocus: ({ event }) => {
+        const restoreFocus = event.restoreFocus ?? event.previousEvent?.restoreFocus
+        return restoreFocus == null ? true : !!restoreFocus
+      },
       isChangeEvent: ({ event }) => event.previousEvent?.type === "INPUT.CHANGE",
       autoFocus: ({ prop }) => !!prop("autoFocus"),
       isHighlightedItemRemoved: ({ prop, context }) => !prop("collection").has(context.get("highlightedValue")),
@@ -722,14 +724,6 @@ export const machine = createMachine({
             send({ type: "LAYER.INTERACT_OUTSIDE", src: "interact-outside", restoreFocus: false })
           },
         })
-      },
-      hideOtherElements({ scope }) {
-        return ariaHidden([
-          dom.getInputEl(scope),
-          dom.getContentEl(scope),
-          dom.getTriggerEl(scope),
-          dom.getClearTriggerEl(scope),
-        ])
       },
       trackPlacement({ context, prop, scope }) {
         const anchorEl = () => dom.getControlEl(scope) || dom.getTriggerEl(scope)

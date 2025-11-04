@@ -28,6 +28,7 @@ export const machine = createMachine<CarouselSchema>({
         item: (index, count) => `${index + 1} of ${count}`,
         autoplayStart: "Start slide rotation",
         autoplayStop: "Stop slide rotation",
+        progressText: ({ page, totalPages }) => `${page} / ${totalPages}`,
         ...props.translations,
       },
     }

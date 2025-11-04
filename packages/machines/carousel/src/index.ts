@@ -5,14 +5,15 @@ export * from "./carousel.props"
 export type {
   CarouselApi as Api,
   CarouselMachine as Machine,
-  CarouselProps as Props,
   CarouselService as Service,
+  CarouselProps as Props,
   AutoplayStatusDetails,
   DragStatusDetails,
   ElementIds,
   IndicatorProps,
   IntlTranslations,
   ItemProps,
-  PageChangeDetails,
   Orientation,
+  PageChangeDetails,
+  ProgressTextDetails,
 } from "./carousel.types"

@@ -27,6 +27,11 @@ export interface AutoplayStatusDetails {
  * Machine context
  * -----------------------------------------------------------------------------*/
 
+export interface ProgressTextDetails {
+  page: number
+  totalPages: number
+}
+
 export interface IntlTranslations {
   nextTrigger: string
   prevTrigger: string
@@ -34,6 +39,7 @@ export interface IntlTranslations {
   item: (index: number, count: number) => string
   autoplayStart: string
   autoplayStop: string
+  progressText?: ((details: ProgressTextDetails) => string) | undefined
 }
 
 export type ElementIds = Partial<{
@@ -254,6 +260,10 @@ export interface CarouselApi<T extends PropTypes = PropTypes> {
    */
   getProgress: () => number
   /**
+   * Returns the progress text
+   */
+  getProgressText: () => string
+  /**
    * Function to start/resume autoplay
    */
   play: VoidFunction
@@ -280,6 +290,7 @@ export interface CarouselApi<T extends PropTypes = PropTypes> {
   getAutoplayTriggerProps: () => T["button"]
   getIndicatorGroupProps: () => T["element"]
   getIndicatorProps: (props: IndicatorProps) => T["button"]
+  getProgressTextProps: () => T["element"]
 }
 
 /* -----------------------------------------------------------------------------

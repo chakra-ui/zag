@@ -32,6 +32,10 @@ export function connect<T extends PropTypes>(service: CarouselService, normalize
     getProgress() {
       return page / pageSnapPoints.length
     },
+    getProgressText() {
+      const details = { page: page + 1, totalPages: pageSnapPoints.length }
+      return translations.progressText?.(details) ?? ""
+    },
     scrollToIndex(index, instant) {
       send({ type: "INDEX.SET", index, instant })
     },
@@ -277,6 +281,12 @@ export function connect<T extends PropTypes>(service: CarouselService, normalize
           if (event.defaultPrevented) return
           send({ type: isPlaying ? "AUTOPLAY.PAUSE" : "AUTOPLAY.START" })
         },
+      })
+    },
+
+    getProgressTextProps() {
+      return normalize.element({
+        ...parts.progressText.attrs,
       })
     },
   }
