@@ -23,7 +23,4 @@ export type {
   PreviewDescriptionDetails,
   SelectionLabelDetails,
   SelectionValueTextDetails,
-  BoundingRect,
-  CropData,
-  GridProps,
 } from "./image-cropper.types"
