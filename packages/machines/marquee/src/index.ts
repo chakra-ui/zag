@@ -4,15 +4,16 @@ export { machine } from "./marquee.machine"
 export * from "./marquee.props"
 export type {
   MarqueeApi as Api,
+  MarqueeMachine as Machine,
+  MarqueeProps as Props,
+  MarqueeService as Service,
   ContentProps,
   DimensionSnapshot,
   EdgeProps,
   ElementIds,
   IntlTranslations,
-  MarqueeMachine as Machine,
   PauseStatusDetails,
-  MarqueeProps as Props,
-  MarqueeService as Service,
   Side,
   UserDefinedContext,
+  Orientation,
 } from "./marquee.types"

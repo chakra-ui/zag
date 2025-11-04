@@ -6,11 +6,11 @@ export { machine } from "./select.machine"
 export * from "./select.props"
 export type {
   SelectApi as Api,
-  CollectionItem,
-  CollectionOptions,
+  SelectMachine as Machine,
   SelectProps as Props,
   SelectService as Service,
-  SelectMachine as Machine,
+  CollectionItem,
+  CollectionOptions,
   ElementIds,
   HighlightChangeDetails,
   ItemGroupLabelProps,

@@ -5,13 +5,13 @@ export { machine } from "./tour.machine"
 export * from "./tour.props"
 export type {
   TourApi as Api,
+  TourMachine as Machine,
   TourProps as Props,
+  TourService as Service,
   ElementIds,
   IntlTranslations,
   Point,
   ProgressTextDetails,
-  TourMachine as Machine,
-  TourService as Service,
   StatusChangeDetails,
   StepAction,
   StepActionMap,
@@ -23,5 +23,9 @@ export type {
   StepPlacement,
   StepStatus,
   StepType,
+  StepActionType,
+  StepsChangeDetails,
+  StepActionFn,
+  StepEffectCleanup,
 } from "./tour.types"
 export * from "./utils/wait"

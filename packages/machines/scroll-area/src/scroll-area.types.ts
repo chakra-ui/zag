@@ -35,6 +35,7 @@ export interface ScrollbarHiddenState {
   cornerHidden: boolean
 }
 
+// zag-ignore-export
 export interface ScrollAreaContext {
   cornerSize: Size
   thumbSize: Size
@@ -46,6 +47,7 @@ export interface ScrollAreaContext {
   atSides: ScrollRecord<boolean>
 }
 
+// zag-ignore-export
 export interface ScrollAreaRefs {
   orientation: Orientation | null
   scrollPosition: { x: number; y: number }

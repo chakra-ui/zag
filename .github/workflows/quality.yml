@@ -88,3 +88,16 @@ jobs:
 
       - name: Run TypeScript type check
         run: pnpm typecheck
+
+  checks:
+    name: Check for various issues
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+
+      - name: Install
+        uses: ./.github/composite-actions/install
+
+      - name: Check type exports
+        run: pnpm check-type-exports

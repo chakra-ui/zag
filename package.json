@@ -51,6 +51,7 @@
     "document-types": "tsx scripts/typedocs.ts",
     "document-attr": "tsx scripts/data-attr.ts",
     "document-css-vars": "tsx scripts/css-vars.ts",
+    "check-type-exports": "tsx scripts/check-type-exports.ts",
     "website": "pnpm --filter=./website",
     "sync-submodules": "pnpm vercel-submodules --all"
   },

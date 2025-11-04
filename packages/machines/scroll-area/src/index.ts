@@ -4,15 +4,15 @@ export { machine } from "./scroll-area.machine"
 export * from "./scroll-area.props"
 export type {
   ScrollAreaApi as Api,
-  ElementIds,
   ScrollAreaMachine as Machine,
   ScrollAreaProps as Props,
+  ScrollAreaService as Service,
+  ElementIds,
   ScrollbarProps,
   ScrollbarState,
   ScrollToDetails,
   ScrollToEdge,
   ScrollToEdgeDetails,
-  ScrollAreaService as Service,
   ThumbProps,
   ScrollEasingFunction,
   ScrollbarHiddenState,

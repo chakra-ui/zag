@@ -4,15 +4,16 @@ export { machine } from "./pagination.machine"
 export * from "./pagination.props"
 export type {
   PaginationApi as Api,
+  PaginationMachine as Machine,
+  PaginationProps as Props,
+  PaginationService as Service,
   ElementIds,
   EllipsisProps,
   IntlTranslations,
   ItemLabelDetails,
   ItemProps,
-  PaginationMachine as Machine,
   PageChangeDetails,
   PageSizeChangeDetails,
   PageUrlDetails,
-  PaginationProps as Props,
-  PaginationService as Service,
+  Pages,
 } from "./pagination.types"

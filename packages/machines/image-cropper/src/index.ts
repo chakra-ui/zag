@@ -4,8 +4,8 @@ export { machine } from "./image-cropper.machine"
 export * from "./image-cropper.props"
 export type {
   ImageCropperApi as Api,
-  ImageCropperProps as Props,
   ImageCropperMachine as Machine,
+  ImageCropperProps as Props,
   ImageCropperService as Service,
   ElementIds,
   HandleProps,
