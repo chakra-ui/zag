@@ -1,5 +1,12 @@
 # @zag-js/collection
 
+## 1.27.1
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/utils@1.27.1
+
 ## 1.27.0
 
 ### Patch Changes
