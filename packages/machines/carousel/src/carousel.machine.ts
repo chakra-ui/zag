@@ -20,6 +20,7 @@ export const machine = createMachine<CarouselSchema>({
       autoplay: false,
       allowMouseDrag: false,
       inViewThreshold: 0.6,
+      autoSize: false,
       ...props,
       translations: {
         nextTrigger: "Next slide",
@@ -57,7 +58,9 @@ export const machine = createMachine<CarouselSchema>({
       })),
       pageSnapPoints: bindable(() => {
         return {
-          defaultValue: getPageSnapPoints(prop("slideCount"), prop("slidesPerMove"), prop("slidesPerPage")),
+          defaultValue: prop("autoSize")
+            ? Array.from({ length: prop("slideCount") }, (_, i) => i) // Initialize with slide indices for variable width
+            : getPageSnapPoints(prop("slideCount"), prop("slidesPerMove"), prop("slidesPerPage")),
         }
       }),
       slidesInView: bindable<number[]>(() => ({
@@ -85,7 +88,7 @@ export const machine = createMachine<CarouselSchema>({
     track([() => context.get("page")], () => {
       action(["scrollToPage", "focusIndicatorEl"])
     })
-    track([() => prop("orientation")], () => {
+    track([() => prop("orientation"), () => prop("autoSize")], () => {
       action(["setSnapPoints", "scrollToPage"])
     })
     track([() => prop("slideCount")], () => {

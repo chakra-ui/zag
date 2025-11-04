@@ -67,6 +67,11 @@ export interface CarouselProps extends DirectionProperty, CommonProperties, Orie
    */
   slidesPerPage?: number | undefined
   /**
+   * Whether to enable variable width slides.
+   * @default false
+   */
+  autoSize?: boolean | undefined
+  /**
    * The number of slides to scroll at a time.
    *
    * When set to `auto`, the number of slides to scroll is determined by the
@@ -153,6 +158,7 @@ type PropsWithDefault =
   | "inViewThreshold"
   | "translations"
   | "slideCount"
+  | "autoSize"
 
 interface PrivateContext {
   pageSnapPoints: number[]

@@ -22,6 +22,7 @@ export const props = createProps<CarouselProps>()([
   "inViewThreshold",
   "translations",
   "snapType",
+  "autoSize",
   "onDragStatusChange",
   "onAutoplayStatusChange",
 ])
