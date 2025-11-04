@@ -1,5 +1,12 @@
 import { join } from "path"
-import { ModuleResolutionKind, Project, SourceFile } from "ts-morph"
+import {
+  EnumDeclaration,
+  InterfaceDeclaration,
+  ModuleResolutionKind,
+  Project,
+  SourceFile,
+  TypeAliasDeclaration,
+} from "ts-morph"
 import { getMachinePackages } from "./get-packages"
 import { pascalCase } from "scule"
 
@@ -13,29 +20,31 @@ interface TypeExport {
   alias: string | null
 }
 
+function hasIgnoreComment(node: TypeAliasDeclaration | InterfaceDeclaration | EnumDeclaration): boolean {
+  const commentRanges = node.getLeadingCommentRanges()
+  return commentRanges.some((comment) => comment.getText().includes("zag-ignore-export"))
+}
+
 function getExportedTypes(sourceFile: SourceFile | undefined): string[] {
   if (!sourceFile) return []
 
   const types = new Set<string>()
-
   const exportDeclarations = sourceFile.getExportDeclarations()
 
   for (const exportDecl of exportDeclarations) {
     const namedExports = exportDecl.getNamedExports()
 
     // Get named exports: export type { Foo, Bar } from "module"
-    if (namedExports.length > 0) {
-      for (const namedExport of namedExports) {
-        const name = namedExport.getName()
-        types.add(name)
-      }
+    for (const namedExport of namedExports) {
+      const name = namedExport.getName()
+      types.add(name)
     }
   }
 
   // Get exported type aliases: export type Foo = ...
   const typeAliases = sourceFile.getTypeAliases()
   for (const typeAlias of typeAliases) {
-    if (typeAlias.isExported()) {
+    if (typeAlias.isExported() && !hasIgnoreComment(typeAlias)) {
       types.add(typeAlias.getName())
     }
   }
@@ -43,7 +52,7 @@ function getExportedTypes(sourceFile: SourceFile | undefined): string[] {
   // Get exported interfaces: export interface Foo { ... }
   const interfaces = sourceFile.getInterfaces()
   for (const iface of interfaces) {
-    if (iface.isExported()) {
+    if (iface.isExported() && !hasIgnoreComment(iface)) {
       types.add(iface.getName())
     }
   }
@@ -51,7 +60,7 @@ function getExportedTypes(sourceFile: SourceFile | undefined): string[] {
   // Get exported enums: export enum Foo { ... }
   const enums = sourceFile.getEnums()
   for (const enumDecl of enums) {
-    if (enumDecl.isExported()) {
+    if (enumDecl.isExported() && !hasIgnoreComment(enumDecl)) {
       types.add(enumDecl.getName())
     }
   }
@@ -89,7 +98,6 @@ function getIndexTypeExports(sourceFile: SourceFile | undefined): TypeExport[] {
 
 function checkMachine(project: Project, machineDir: string, machineName: string): CheckResult {
   const pascalName = pascalCase(machineName)
-  const schemaType = `${pascalName}Schema`
   const issues: string[] = []
 
   const typesFilePath = join(machineDir, "src", `${machineName}.types.ts`)
@@ -107,12 +115,14 @@ function checkMachine(project: Project, machineDir: string, machineName: string)
       indexExportsMap.set(exp.name, exp.alias)
     }
 
-    // Check 1: Schema should NOT be exported
-    if (indexExportsMap.has(schemaType)) {
-      issues.push(`❌ ${schemaType} should NOT be exported`)
+    // Types ending with Schema should NOT be exported
+    for (const exportedType of indexExportsMap.keys()) {
+      if (exportedType.endsWith("Schema")) {
+        issues.push(`❌ ${exportedType} should NOT be exported`)
+      }
     }
 
-    // Check 2: Required aliased exports
+    // Required aliased exports
     const requiredAliases: Record<string, string> = {
       [`${pascalName}Api`]: "Api",
       [`${pascalName}Machine`]: "Machine",
@@ -137,8 +147,8 @@ function checkMachine(project: Project, machineDir: string, machineName: string)
       }
     }
 
-    // Check 3: All types (except Schema) should be exported
-    const expectedTypes = allTypes.filter((type) => type !== schemaType)
+    // All types (except Schema types and ignored types) should be exported
+    const expectedTypes = allTypes.filter((type) => !type.endsWith("Schema"))
     const exportedTypeNames = Array.from(indexExportsMap.keys())
 
     for (const type of expectedTypes) {
@@ -147,7 +157,7 @@ function checkMachine(project: Project, machineDir: string, machineName: string)
       }
     }
 
-    // Check 4: No unexpected exports
+    // No unexpected exports (unless ignored)
     for (const exportedType of exportedTypeNames) {
       if (!allTypes.includes(exportedType)) {
         issues.push(`⚠️  Exporting type "${exportedType}" that doesn't exist in ${machineName}.types.ts`)
@@ -203,6 +213,7 @@ async function main() {
 
     console.log(`\n`)
     console.error(`Total: ${totalIssues} issue(s) found`)
+    process.exit(1)
   }
 }
 

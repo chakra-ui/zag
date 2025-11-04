@@ -336,22 +336,3 @@ export interface SliderApi<T extends PropTypes = PropTypes> {
   getMarkerProps: (props: MarkerProps) => T["element"]
   getDraggingIndicatorProps: (props: DraggingIndicatorProps) => T["element"]
 }
-
-/* -----------------------------------------------------------------------------
- * Re-exported types
- * -----------------------------------------------------------------------------*/
-
-export interface SharedContext {
-  min: number
-  max: number
-  step: number
-  dir?: "ltr" | "rtl" | undefined
-  isRtl: boolean
-  isVertical: boolean
-  isHorizontal: boolean
-  value: number
-  thumbSize: Size | null
-  thumbAlignment?: "contain" | "center" | undefined
-  orientation?: "horizontal" | "vertical" | undefined
-  readonly hasMeasuredThumbSize: boolean
-}

@@ -148,7 +148,13 @@ export interface FileUploadProps extends LocaleProperties, CommonProperties {
   transformFiles?: ((files: File[]) => Promise<File[]>) | undefined
 }
 
-type PropWithDefault = "minFileSize" | "maxFileSize" | "maxFiles" | "preventDocumentDrop" | "allowDrop" | "translations"
+type PropsWithDefault =
+  | "minFileSize"
+  | "maxFileSize"
+  | "maxFiles"
+  | "preventDocumentDrop"
+  | "allowDrop"
+  | "translations"
 
 interface Context {
   /**
@@ -178,7 +184,7 @@ type Computed = {
 
 export interface FileUploadSchema {
   state: "idle" | "focused" | "dragging"
-  props: RequiredBy<FileUploadProps, PropWithDefault>
+  props: RequiredBy<FileUploadProps, PropsWithDefault>
   context: Context
   computed: Computed
   event: EventObject

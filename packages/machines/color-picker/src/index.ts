@@ -6,6 +6,9 @@ export { parse } from "./color-picker.parse"
 export * from "./color-picker.props"
 export type {
   ColorPickerApi as Api,
+  ColorPickerMachine as Machine,
+  ColorPickerProps as Props,
+  ColorPickerService as Service,
   AreaProps,
   ChannelInputProps,
   ChannelProps,
@@ -19,12 +22,10 @@ export type {
   FormatChangeDetails,
   OpenChangeDetails,
   PositioningOptions,
-  ColorPickerProps as Props,
-  ColorPickerService as Service,
-  ColorPickerMachine as Machine,
   SwatchProps,
   SwatchTriggerProps,
   SwatchTriggerState,
   TransparencyGridProps,
   ValueChangeDetails,
+  ExtendedColorChannel,
 } from "./color-picker.types"

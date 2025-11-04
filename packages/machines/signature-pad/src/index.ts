@@ -4,9 +4,9 @@ export { machine } from "./signature-pad.machine"
 export * from "./signature-pad.props"
 export type {
   SignaturePadApi as Api,
+  SignaturePadMachine as Machine,
   SignaturePadProps as Props,
   SignaturePadService as Service,
-  SignaturePadMachine as Machine,
   DataUrlType,
   DrawDetails,
   DrawEndDetails,
@@ -16,4 +16,6 @@ export type {
   IntlTranslations,
   SegmentPathProps,
   StrokeOptions,
+  DataUrlOptions,
+  Point,
 } from "./signature-pad.types"

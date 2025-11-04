@@ -5,6 +5,9 @@ export { machine } from "./listbox.machine"
 export * from "./listbox.props"
 export type {
   ListboxApi as Api,
+  ListboxMachine as Machine,
+  ListboxProps as Props,
+  ListboxService as Service,
   ElementIds,
   HighlightChangeDetails,
   InputProps,
@@ -12,11 +15,8 @@ export type {
   ItemGroupProps,
   ItemProps,
   ItemState,
-  ListboxMachine as Machine,
-  ListboxProps as Props,
   ScrollToIndexDetails,
   SelectionDetails,
-  ListboxService as Service,
   ValueChangeDetails,
 } from "./listbox.types"
 

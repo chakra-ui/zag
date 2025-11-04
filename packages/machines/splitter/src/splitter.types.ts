@@ -123,7 +123,7 @@ export interface SplitterProps extends DirectionProperty, CommonProperties {
   onExpand?: ((details: ExpandCollapseDetails) => void) | undefined
 }
 
-export type PropWithDefault = "orientation" | "panels"
+type PropsWithDefault = "orientation" | "panels"
 
 export interface DragState {
   resizeTriggerId: string
@@ -151,7 +151,7 @@ interface Refs {
 export interface SplitterSchema {
   state: "idle" | "hover:temp" | "hover" | "dragging" | "focused"
   tag: "focus"
-  props: RequiredBy<SplitterProps, PropWithDefault>
+  props: RequiredBy<SplitterProps, PropsWithDefault>
   context: Context
   computed: {
     horizontal: boolean
