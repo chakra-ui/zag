@@ -4,6 +4,16 @@ All notable changes to this project will be documented in this file.
 
 > For v0.x changelog, see the [v0 branch](https://github.com/chakra-ui/zag/blob/v0/CHANGELOG.md)
 
+## [1.27.1](./#1.27.1) - 2025-11-04
+
+### Fixed
+
+- **Combobox**
+  - Fix focus stealing in controlled open mode
+  - Remove problematic `aria-hidden` behavior to allow interaction with other page elements
+
+- **All Components**: Export missing types across all machine packages
+
 ## [1.27.0](./#1.27.0) - 2025-11-01
 
 ### Added
