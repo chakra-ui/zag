@@ -110,7 +110,6 @@ export const machine = createMachine<ImageCropperSchema>({
       })),
       zoom: bindable<number>(() => ({
         defaultValue: prop("defaultZoom"),
-        value: prop("zoom"),
         onChange(zoom) {
           prop("onZoomChange")?.({ zoom })
         },
@@ -182,6 +181,18 @@ export const machine = createMachine<ImageCropperSchema>({
   computed: {
     isMeasured: ({ context }) => isVisibleRect(context.get("viewportRect")) && isVisibleRect(context.get("crop")),
     isImageReady: ({ context }) => isVisibleRect(context.get("naturalSize")),
+  },
+
+  watch({ track, context, prop, send }) {
+    track([() => prop("zoom")], () => {
+      const propZoom = prop("zoom")
+      if (propZoom === undefined) return
+
+      const currentZoom = context.get("zoom")
+      if (propZoom === currentZoom) return
+
+      send({ type: "SET_ZOOM", zoom: propZoom, src: "prop" })
+    })
   },
 
   states: {
@@ -515,110 +526,101 @@ export const machine = createMachine<ImageCropperSchema>({
       updateZoom({ context, event, prop }) {
         let { delta, point, zoom: targetZoom, scale, panDelta } = event
 
+        const crop = context.get("crop")
+        const currentZoom = context.get("zoom")
+        const currentOffset = context.get("offset")
+        const rotation = context.get("rotation")
+        const viewportRect = context.get("viewportRect")
+        const naturalSize = context.get("naturalSize")
+        const fixedCropArea = prop("fixedCropArea")
+
         // If no point is specified, zoom based on the center of the crop area
         if (!point) {
-          const crop = context.get("crop")
           point = getCenterPoint(crop)
         }
 
         const step = Math.abs(prop("zoomStep"))
         const sensitivity = Math.max(0, prop("zoomSensitivity"))
         const [minZoom, maxZoom] = [prop("minZoom"), prop("maxZoom")]
-        const currentZoom = context.get("zoom")
-        const viewportRect = context.get("viewportRect")
 
-        let nextZoom
+        const calculateNextZoom = (): number | null => {
+          if (typeof targetZoom === "number") {
+            return clampValue(targetZoom, minZoom, maxZoom)
+          }
 
-        if (typeof targetZoom === "number") {
-          nextZoom = clampValue(targetZoom, minZoom, maxZoom)
-        } else if (event.trigger === "touch" && typeof scale === "number") {
-          const minScale = 0.5
-          const maxScale = 2
-          const clampedScale = clampValue(scale, minScale, maxScale)
-          const smoothing = sensitivity > 0 ? Math.pow(clampedScale, sensitivity) : clampedScale
-          nextZoom = clampValue(currentZoom * smoothing, minZoom, maxZoom)
-        } else if (typeof delta === "number") {
-          const direction = Math.sign(delta) < 0 ? 1 : -1
-          nextZoom = clampValue(currentZoom + step * direction, minZoom, maxZoom)
-        } else {
-          return
+          if (event.trigger === "touch" && typeof scale === "number") {
+            const minScale = 0.5
+            const maxScale = 2
+            const clampedScale = clampValue(scale, minScale, maxScale)
+            const smoothing = sensitivity > 0 ? Math.pow(clampedScale, sensitivity) : clampedScale
+            return clampValue(currentZoom * smoothing, minZoom, maxZoom)
+          }
+
+          if (typeof delta === "number") {
+            const direction = Math.sign(delta) < 0 ? 1 : -1
+            return clampValue(currentZoom + step * direction, minZoom, maxZoom)
+          }
+
+          return null
         }
 
-        // Only pan if there's a pan delta from pinch movement
-        if (nextZoom === currentZoom && panDelta) {
-          const currentOffset = context.get("offset")
-          const rotation = context.get("rotation")
-
-          const nextOffset = clampOffset({
-            zoom: currentZoom,
+        const applyClampedOffset = (zoom: number, offset: Point): Point => {
+          return clampOffset({
+            zoom,
             rotation,
             viewportSize: viewportRect,
-            offset: addPoints(currentOffset, panDelta),
-            fixedCropArea: prop("fixedCropArea"),
-            crop: context.get("crop"),
-            naturalSize: context.get("naturalSize"),
+            offset,
+            fixedCropArea,
+            crop,
+            naturalSize,
           })
+        }
 
+        const nextZoom = calculateNextZoom()
+        if (nextZoom === null) return
+
+        // Handle pan-only update
+        if (nextZoom === currentZoom && panDelta) {
+          const nextOffset = applyClampedOffset(currentZoom, addPoints(currentOffset, panDelta))
           context.set("offset", nextOffset)
           return
         }
 
         if (nextZoom === currentZoom) return
 
-        const { width: vpW, height: vpH } = viewportRect
+        const { width: viewportWidth, height: viewportHeight } = viewportRect
         const { x: centerX, y: centerY } = getViewportCenter(viewportRect)
 
-        const currentOffset = context.get("offset")
-
-        const ratio = nextZoom / currentZoom
-        let nextOffset = {
-          x: (1 - ratio) * (point.x - centerX) + ratio * currentOffset.x,
-          y: (1 - ratio) * (point.y - centerY) + ratio * currentOffset.y,
+        const zoomRatio = nextZoom / currentZoom
+        let nextOffset: Point = {
+          x: (1 - zoomRatio) * (point.x - centerX) + zoomRatio * currentOffset.x,
+          y: (1 - zoomRatio) * (point.y - centerY) + zoomRatio * currentOffset.y,
         }
 
         // Apply pan delta from pinch movement if provided
         if (panDelta) {
-          nextOffset = addPoints(nextOffset, panDelta)
-
-          const rotation = context.get("rotation")
-          nextOffset = clampOffset({
-            zoom: nextZoom,
-            rotation,
-            viewportSize: viewportRect,
-            offset: nextOffset,
-            fixedCropArea: prop("fixedCropArea"),
-            crop: context.get("crop"),
-            naturalSize: context.get("naturalSize"),
-          })
+          nextOffset = applyClampedOffset(nextZoom, addPoints(nextOffset, panDelta))
         } else if (nextZoom < currentZoom) {
-          if (prop("fixedCropArea")) {
-            const rotation = context.get("rotation")
-            nextOffset = clampOffset({
-              zoom: nextZoom,
-              rotation,
-              viewportSize: viewportRect,
-              offset: nextOffset,
-              fixedCropArea: true,
-              crop: context.get("crop"),
-              naturalSize: context.get("naturalSize"),
-            })
+          // Handle zoom out - clamp offset to keep image within bounds
+          if (fixedCropArea) {
+            nextOffset = applyClampedOffset(nextZoom, nextOffset)
           } else {
-            const imgSize = context.get("naturalSize")
-            const { width: scaledW, height: scaledH } = scaleSize(imgSize, nextZoom)
+            // Manual clamping for non-fixed crop area
+            const { width: scaledImageWidth, height: scaledImageHeight } = scaleSize(naturalSize, nextZoom)
 
-            if (scaledW <= vpW) {
+            if (scaledImageWidth <= viewportWidth) {
               nextOffset.x = 0
             } else {
-              const minX = vpW - centerX - scaledW / 2
-              const maxX = scaledW / 2 - centerX
+              const minX = viewportWidth - centerX - scaledImageWidth / 2
+              const maxX = scaledImageWidth / 2 - centerX
               nextOffset.x = Math.max(minX, Math.min(maxX, nextOffset.x))
             }
 
-            if (scaledH <= vpH) {
+            if (scaledImageHeight <= viewportHeight) {
               nextOffset.y = 0
             } else {
-              const minY = vpH - centerY - scaledH / 2
-              const maxY = scaledH / 2 - centerY
+              const minY = viewportHeight - centerY - scaledImageHeight / 2
+              const maxY = scaledImageHeight / 2 - centerY
               nextOffset.y = Math.max(minY, Math.min(maxY, nextOffset.y))
             }
           }
