@@ -1,7 +1,7 @@
 import { ariaHidden } from "@zag-js/aria-hidden"
 import { createMachine } from "@zag-js/core"
 import { trackDismissableElement } from "@zag-js/dismissable"
-import { addDomEvent, getEventPoint, getEventTarget, raf } from "@zag-js/dom-query"
+import { addDomEvent, getEventPoint, getEventTarget, raf, resizeObserverBorderBox } from "@zag-js/dom-query"
 import { trapFocus } from "@zag-js/focus-trap"
 import { preventBodyScroll } from "@zag-js/remove-scroll"
 import * as dom from "./bottom-sheet.dom"
@@ -412,23 +412,13 @@ export const machine = createMachine<BottomSheetSchema>({
         const contentEl = dom.getContentEl(scope)
         if (!contentEl) return
 
-        const win = scope.getWin()
-
         const updateHeight = () => {
           const rect = contentEl.getBoundingClientRect()
           context.set("contentHeight", rect.height)
         }
 
         updateHeight()
-
-        const observer = new win.ResizeObserver(() => {
-          updateHeight()
-        })
-        observer.observe(contentEl)
-
-        return () => {
-          observer.disconnect()
-        }
+        return resizeObserverBorderBox.observe(contentEl, updateHeight)
       },
 
       trackExitAnimation({ send, scope }) {

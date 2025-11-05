@@ -1,5 +1,5 @@
 import { createMachine } from "@zag-js/core"
-import { addDomEvent, getEventPoint, getEventTarget } from "@zag-js/dom-query"
+import { addDomEvent, getEventPoint, getEventTarget, resizeObserverBorderBox } from "@zag-js/dom-query"
 import type { Point, Rect, Size } from "@zag-js/types"
 import { callAll, clampValue } from "@zag-js/utils"
 import * as dom from "./image-cropper.dom"
@@ -800,17 +800,9 @@ export const machine = createMachine<ImageCropperSchema>({
       trackViewportResize({ scope, send }) {
         const viewportEl = dom.getViewportEl(scope)
         if (!viewportEl) return
-
-        const win = scope.getWin()
-        const resizeObserver = new win.ResizeObserver(() => {
+        return resizeObserverBorderBox.observe(viewportEl, () => {
           send({ type: "VIEWPORT_RESIZE", src: "resize" })
         })
-
-        resizeObserver.observe(viewportEl)
-
-        return () => {
-          resizeObserver.disconnect()
-        }
       },
 
       trackWheelEvent({ scope, send }) {

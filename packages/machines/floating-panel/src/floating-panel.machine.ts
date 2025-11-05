@@ -1,5 +1,5 @@
 import { createGuards, createMachine } from "@zag-js/core"
-import { addDomEvent, isHTMLElement, raf, trackPointerMove } from "@zag-js/dom-query"
+import { addDomEvent, isHTMLElement, raf, resizeObserverBorderBox, trackPointerMove } from "@zag-js/dom-query"
 import {
   addPoints,
   clampPoint,
@@ -333,9 +333,7 @@ export const machine = createMachine<FloatingPanelSchema>({
         const boundaryEl = prop("getBoundaryEl")?.()
 
         if (isHTMLElement(boundaryEl)) {
-          const obs = new win.ResizeObserver(exec)
-          obs.observe(boundaryEl)
-          return () => obs.disconnect()
+          return resizeObserverBorderBox.observe(boundaryEl, exec)
         }
 
         return addDomEvent(win, "resize", exec)
