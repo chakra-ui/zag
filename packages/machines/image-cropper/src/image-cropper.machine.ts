@@ -171,7 +171,7 @@ export const machine = createMachine<ImageCropperSchema>({
       actions: ["resizeCrop"],
     },
     VIEWPORT_RESIZE: {
-      actions: ["handleViewportResize"],
+      actions: ["resizeViewport"],
     },
     RESET: {
       actions: ["resetToInitialState"],
@@ -302,7 +302,7 @@ export const machine = createMachine<ImageCropperSchema>({
         const viewportEl = dom.getViewportEl(scope)
         if (!viewportEl) return
 
-        const viewportRect = viewportEl.getBoundingClientRect()
+        const viewportRect = getBoundingRect(viewportEl)
         if (!isVisibleRect(viewportRect)) return
 
         const cropShape = prop("cropShape")
@@ -714,11 +714,11 @@ export const machine = createMachine<ImageCropperSchema>({
         context.set("crop", nextCrop)
       },
 
-      handleViewportResize({ context, prop, scope, send }) {
+      resizeViewport({ context, prop, scope, send }) {
         const viewportEl = dom.getViewportEl(scope)
         if (!viewportEl) return
 
-        const newViewportRect = viewportEl.getBoundingClientRect()
+        const newViewportRect = getBoundingRect(viewportEl)
         if (!isVisibleRect(newViewportRect)) return
 
         const oldViewportRect = context.get("viewportRect")
@@ -871,3 +871,15 @@ export const machine = createMachine<ImageCropperSchema>({
     },
   },
 })
+
+const getBoundingRect = (el: Element): BoundingRect => {
+  const rect = el.getBoundingClientRect()
+  return {
+    width: rect.width,
+    height: rect.height,
+    top: rect.top,
+    left: rect.left,
+    right: rect.right,
+    bottom: rect.bottom,
+  }
+}
