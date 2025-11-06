@@ -606,7 +606,7 @@ export const machine = createMachine<ImageCropperSchema>({
             nextOffset = applyClampedOffset(nextZoom, nextOffset)
           } else {
             // Manual clamping for non-fixed crop area
-            const { width: scaledImageWidth, height: scaledImageHeight } = scaleSize(naturalSize, nextZoom)
+            const { width: scaledImageWidth, height: scaledImageHeight } = scaleSize(viewportRect, nextZoom)
 
             if (scaledImageWidth <= viewportWidth) {
               nextOffset.x = 0
