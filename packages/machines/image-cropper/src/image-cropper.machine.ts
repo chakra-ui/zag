@@ -109,7 +109,7 @@ export const machine = createMachine<ImageCropperSchema>({
         defaultValue: null,
       })),
       zoom: bindable<number>(() => ({
-        defaultValue: prop("defaultZoom"),
+        defaultValue: prop("zoom") ?? prop("defaultZoom"),
         onChange(zoom) {
           prop("onZoomChange")?.({ zoom })
         },
