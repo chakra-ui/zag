@@ -31,16 +31,25 @@
       <div {...api.getItemProps({ value: "products" })}>
         <button {...api.getTriggerProps({ value: "products" })}>
           Products
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <svg
+            width="16"
+            height="16"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
             <polyline points="6,9 12,15 18,9"></polyline>
           </svg>
         </button>
         <Presence {...api.getContentProps({ value: "products" })}>
           <Presence {...api.getIndicatorProps()}>
-            <div {...api.getArrowProps()} />
+            <div {...api.getArrowProps()}></div>
           </Presence>
-          {#each renderLinks({ value: "products", items: ["Analytics Platform", "Customer Engagement", "Marketing Automation", "Data Integration", "Enterprise Solutions", "API Documentation"] }) as { item, index, value }}
-            <a href="#" {...api.getLinkProps({ value })} key={`${value}-${item}-${index}`}>
+          {#each renderLinks( { value: "products", items: ["Analytics Platform", "Customer Engagement", "Marketing Automation", "Data Integration", "Enterprise Solutions", "API Documentation"] }, ) as { item, index, value }}
+            <a href="#" {...api.getLinkProps({ value })}>
               {item}
             </a>
           {/each}
@@ -50,16 +59,25 @@
       <div {...api.getItemProps({ value: "company" })}>
         <button {...api.getTriggerProps({ value: "company" })}>
           Company
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <svg
+            width="16"
+            height="16"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
             <polyline points="6,9 12,15 18,9"></polyline>
           </svg>
         </button>
         <Presence {...api.getContentProps({ value: "company" })}>
           <Presence {...api.getIndicatorProps()}>
-            <div {...api.getArrowProps()} />
+            <div {...api.getArrowProps()}></div>
           </Presence>
-          {#each renderLinks({ value: "company", items: ["About Us", "Leadership Team", "Careers", "Press Releases"] }) as { item, index, value }}
-            <a href="#" {...api.getLinkProps({ value })} key={`${value}-${item}-${index}`}>
+          {#each renderLinks( { value: "company", items: ["About Us", "Leadership Team", "Careers", "Press Releases"] }, ) as { item, index, value }}
+            <a href="#" {...api.getLinkProps({ value })}>
               {item}
             </a>
           {/each}
@@ -69,16 +87,25 @@
       <div {...api.getItemProps({ value: "developers" })}>
         <button {...api.getTriggerProps({ value: "developers" })}>
           Developers
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <svg
+            width="16"
+            height="16"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
             <polyline points="6,9 12,15 18,9"></polyline>
           </svg>
         </button>
         <Presence {...api.getContentProps({ value: "developers" })}>
           <Presence {...api.getIndicatorProps()}>
-            <div {...api.getArrowProps()} />
+            <div {...api.getArrowProps()}></div>
           </Presence>
-          {#each renderLinks({ value: "developers", items: ["Investors", "Partners", "Corporate Responsibility"] }) as { item, index, value }}
-            <a href="#" {...api.getLinkProps({ value })} key={`${value}-${item}-${index}`}>
+          {#each renderLinks( { value: "developers", items: ["Investors", "Partners", "Corporate Responsibility"] }, ) as { item, index, value }}
+            <a href="#" {...api.getLinkProps({ value })}>
               {item}
             </a>
           {/each}
@@ -86,9 +113,7 @@
       </div>
 
       <div {...api.getItemProps({ value: "pricing" })}>
-        <a href="#" {...api.getLinkProps({ value: "pricing" })}>
-          Pricing
-        </a>
+        <a href="#" {...api.getLinkProps({ value: "pricing" })}> Pricing </a>
       </div>
     </div>
   </div>

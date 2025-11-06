@@ -149,3 +149,9 @@ export const addDomEvent = <K extends keyof DOMEventMap>(
     node?.removeEventListener(eventName, handler as any, options)
   }
 }
+
+export const isSelfTarget = (event: Partial<Pick<UIEvent, "currentTarget" | "target" | "composedPath">>) => {
+  const composedPath = getComposedPath(event)
+  const target = composedPath?.[0] ?? event.target
+  return event.currentTarget === target
+}
