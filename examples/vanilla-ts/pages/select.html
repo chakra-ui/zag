@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Select</title>
+  </head>
+  <body style="padding: 40px">
+    <a href="/">← Back to examples</a>
+    <h1>Select</h1>
+
+    <main class="select">
+      <div class="select-root">
+        <label class="select-label">Label</label>
+
+        <div class="select-control">
+          <button class="select-trigger">
+            <span class="select-value-text">Select option</span>
+            <span class="select-indicator">▼</span>
+          </button>
+          <button class="select-clear">X</button>
+        </div>
+
+        <form>
+          <select class="select-hidden-select"></select>
+        </form>
+
+        <div class="select-positioner">
+          <ul class="select-content"></ul>
+        </div>
+      </div>
+    </main>
+
+    <script type="module" src="./select.ts"></script>
+  </body>
+</html>
