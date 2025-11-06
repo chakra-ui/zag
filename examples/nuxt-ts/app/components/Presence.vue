@@ -9,12 +9,13 @@ defineOptions({
 })
 
 const attrs = useAttrs()
-
 const present = computed(() => !attrs.hidden)
+
 const service = useMachine(
   presence.machine,
   computed(() => ({ present: present.value })),
 )
+
 const api = computed(() => presence.connect(service, normalizeProps))
 
 const nodeRef = ref<VNodeRef | null>(null)
@@ -23,7 +24,6 @@ watch(nodeRef, () => {
     api.value.setNode(nodeRef.value)
   }
 })
-
 const mergedProps = computed(() =>
   mergeProps({ "data-scope": "presence" }, attrs, {
     hidden: !api.value.present,
