@@ -1,5 +1,85 @@
 # @zag-js/aria-hidden
 
+## 1.27.1
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/dom-query@1.27.1
+
+## 1.27.0
+
+### Patch Changes
+
+- Updated dependencies [[`cf6fb09`](https://github.com/chakra-ui/zag/commit/cf6fb0956aeacc236531ee90de9169a39cdde3a5)]:
+  - @zag-js/dom-query@1.27.0
+
+## 1.26.5
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/dom-query@1.26.5
+
+## 1.26.4
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/dom-query@1.26.4
+
+## 1.26.3
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/dom-query@1.26.3
+
+## 1.26.2
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/dom-query@1.26.2
+
+## 1.26.1
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/dom-query@1.26.1
+
+## 1.26.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/dom-query@1.26.0
+
+## 1.25.0
+
+### Minor Changes
+
+- [`b5460d3`](https://github.com/chakra-ui/zag/commit/b5460d3659635c692e9a0e5ae77b0db32af65d46) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Improve focus trap and aria-hidden to handle `aria-controls`
+  elements
+  - Focus trap now includes elements referenced by `aria-controls` as part of the trap
+  - Aria-hidden now preserves controlled elements when their controller is visible
+  - Makes select/popover components work seamlessly inside modal dialogs
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/dom-query@1.25.0
+
+## 1.24.2
+
+## 1.24.1
+
+## 1.24.0
+
+## 1.23.0
+
 ## 1.22.1
 
 ## 1.22.0

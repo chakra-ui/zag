@@ -24,7 +24,10 @@ export function connect<T extends PropTypes>(
   const { send, context, computed, prop, scope } = service
 
   const complete = computed("isValueComplete")
-  const invalid = prop("invalid")
+  const disabled = !!prop("disabled")
+  const readOnly = !!prop("readOnly")
+  const invalid = !!prop("invalid")
+  const required = !!prop("required")
   const translations = prop("translations")
   const focusedIndex = context.get("focusedIndex")
 
@@ -58,9 +61,9 @@ export function connect<T extends PropTypes>(
         ...parts.root.attrs,
         id: dom.getRootId(scope),
         "data-invalid": dataAttr(invalid),
-        "data-disabled": dataAttr(prop("disabled")),
+        "data-disabled": dataAttr(disabled),
         "data-complete": dataAttr(complete),
-        "data-readonly": dataAttr(prop("readOnly")),
+        "data-readonly": dataAttr(readOnly),
       })
     },
 
@@ -71,9 +74,10 @@ export function connect<T extends PropTypes>(
         htmlFor: dom.getHiddenInputId(scope),
         id: dom.getLabelId(scope),
         "data-invalid": dataAttr(invalid),
-        "data-disabled": dataAttr(prop("disabled")),
+        "data-disabled": dataAttr(disabled),
         "data-complete": dataAttr(complete),
-        "data-readonly": dataAttr(prop("readOnly")),
+        "data-required": dataAttr(required),
+        "data-readonly": dataAttr(readOnly),
         onClick(event) {
           event.preventDefault()
           focus()
@@ -87,9 +91,9 @@ export function connect<T extends PropTypes>(
         type: "text",
         tabIndex: -1,
         id: dom.getHiddenInputId(scope),
-        readOnly: prop("readOnly"),
-        disabled: prop("disabled"),
-        required: prop("required"),
+        readOnly,
+        disabled,
+        required,
         name: prop("name"),
         form: prop("form"),
         style: visuallyHiddenStyle,
@@ -112,8 +116,8 @@ export function connect<T extends PropTypes>(
       return normalize.input({
         ...parts.input.attrs,
         dir: prop("dir"),
-        disabled: prop("disabled"),
-        "data-disabled": dataAttr(prop("disabled")),
+        disabled,
+        "data-disabled": dataAttr(disabled),
         "data-complete": dataAttr(complete),
         id: dom.getInputId(scope, index.toString()),
         "data-index": index,
@@ -124,7 +128,7 @@ export function connect<T extends PropTypes>(
         "data-invalid": dataAttr(invalid),
         type: prop("mask") ? "password" : inputType,
         defaultValue: context.get("value")[index] || "",
-        readOnly: prop("readOnly"),
+        readOnly,
         autoCapitalize: "none",
         autoComplete: prop("otp") ? "one-time-code" : "off",
         placeholder: focusedIndex === index ? "" : prop("placeholder"),

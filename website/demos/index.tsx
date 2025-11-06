@@ -13,6 +13,7 @@ import { Dialog } from "./dialog"
 import { Editable } from "./editable"
 import { FileUpload } from "./file-upload"
 import { HoverCard } from "./hover-card"
+import { ImageCropper } from "./image-cropper"
 import { Menu } from "./menu"
 import { NestedMenu } from "./nested-menu"
 import { NumberInput } from "./number-input"
@@ -47,6 +48,8 @@ import { Listbox } from "./listbox"
 import { Playground } from "../components/playground"
 import { FloatingPanel } from "./floating-panel"
 import { PasswordInput } from "./password-input"
+import { BottomSheet } from "./bottom-sheet"
+import { Marquee } from "./marquee"
 
 const components = {
   Accordion: () => (
@@ -79,6 +82,9 @@ const components = {
         src: "https://static.wikia.nocookie.net/naruto/images/d/d6/Naruto_Part_I.png/revision/latest/scale-to-width-down/300?cb=20210223094656",
       }}
     />
+  ),
+  BottomSheet: () => (
+    <Playground name="bottom-sheet" component={BottomSheet} defaultProps={{}} />
   ),
   Carousel: () => (
     <Playground
@@ -202,6 +208,13 @@ const components = {
         openDelay: 700,
         closeDelay: 300,
       }}
+    />
+  ),
+  ImageCropper: () => (
+    <Playground
+      name="image-cropper"
+      component={ImageCropper}
+      defaultProps={{}}
     />
   ),
   Menu: () => <Playground name="menu" component={Menu} />,
@@ -505,6 +518,20 @@ const components = {
       defaultProps={{
         disabled: false,
         ignorePasswordManagers: true,
+      }}
+    />
+  ),
+  Marquee: () => (
+    <Playground
+      name="marquee"
+      component={Marquee}
+      defaultProps={{
+        side: {
+          default: "start",
+          options: ["start", "end", "top", "bottom"],
+        },
+        speed: 100,
+        pauseOnInteraction: false,
       }}
     />
   ),

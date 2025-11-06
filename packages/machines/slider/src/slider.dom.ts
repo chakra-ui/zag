@@ -25,10 +25,18 @@ export const getControlEl = (ctx: Scope) => ctx.getById(getControlId(ctx))
 export const getRangeEl = (ctx: Scope) => ctx.getById(getRangeId(ctx))
 
 export const getPointValue = (params: Params<SliderSchema>, point: Point) => {
-  const { prop, scope } = params
+  const { prop, scope, refs } = params
   const controlEl = getControlEl(scope)
   if (!controlEl) return
-  const relativePoint = getRelativePoint(point, controlEl)
+
+  // Adjust point by thumb drag offset to maintain constant offset during drag
+  const offset = refs.get("thumbDragOffset")
+  const adjustedPoint = {
+    x: point.x - (offset?.x ?? 0),
+    y: point.y - (offset?.y ?? 0),
+  }
+
+  const relativePoint = getRelativePoint(adjustedPoint, controlEl)
   const percent = relativePoint.getPercentValue({
     orientation: prop("orientation"),
     dir: prop("dir"),

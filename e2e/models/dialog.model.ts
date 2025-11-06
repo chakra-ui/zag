@@ -42,6 +42,10 @@ export class DialogModel extends Model {
     return expect(this.closeTrigger).toBeFocused()
   }
 
+  seeContent() {
+    return expect(this.content).toBeVisible()
+  }
+
   dontSeeContent() {
     return expect(this.content).not.toBeVisible()
   }

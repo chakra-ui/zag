@@ -35,7 +35,7 @@ export class TabsModel extends Model {
     await expect(this.getTabContent(id)).not.toBeVisible()
   }
 
-  setTabIsFocused = async (id: string) => {
+  seeTabIsFocused = async (id: string) => {
     await expect(this.getTabTrigger(id)).toBeFocused()
   }
 }

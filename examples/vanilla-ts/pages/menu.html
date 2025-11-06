@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Vite + TS</title>
+  </head>
+  <body style="padding: 40px">
+    <h1>Menu</h1>
+
+    <div class="menu">
+      <button class="menu-trigger">Actions</button>
+      <div class="menu-positioner" hidden>
+        <div class="menu-content">
+          <div class="menu-item" data-value="edit">Edit</div>
+          <div class="menu-item" data-value="duplicate">Duplicate</div>
+          <div class="menu-item" data-value="delete">Delete</div>
+          <div class="menu-item" data-value="export">Export...</div>
+        </div>
+      </div>
+    </div>
+
+    <script type="module" src="./menu.ts"></script>
+  </body>
+</html>

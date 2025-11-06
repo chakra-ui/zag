@@ -1,5 +1,37 @@
 # @zag-js/utils
 
+## 1.27.1
+
+## 1.27.0
+
+### Patch Changes
+
+- [#2814](https://github.com/chakra-ui/zag/pull/2814)
+  [`920e727`](https://github.com/chakra-ui/zag/commit/920e727f73940aed3c6d2b886c64200a4a5702d0) Thanks
+  [@Hugos68](https://github.com/Hugos68)! - fix: support `Symbol` keys in `splitProps`
+
+## 1.26.5
+
+## 1.26.4
+
+## 1.26.3
+
+## 1.26.2
+
+## 1.26.1
+
+## 1.26.0
+
+## 1.25.0
+
+## 1.24.2
+
+## 1.24.1
+
+## 1.24.0
+
+## 1.23.0
+
 ## 1.22.1
 
 ## 1.22.0

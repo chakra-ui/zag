@@ -4,7 +4,290 @@ All notable changes to this project will be documented in this file.
 
 > For v0.x changelog, see the [v0 branch](https://github.com/chakra-ui/zag/blob/v0/CHANGELOG.md)
 
-## [1.21.11](./#1.21.11) - 2025-08-27
+## [1.27.1](./#1.27.1) - 2025-11-04
+
+### Fixed
+
+- **Combobox**
+  - Fix focus stealing in controlled open mode
+  - Remove problematic `aria-hidden` behavior to allow interaction with other page elements
+
+- **All Components**: Export missing types across all machine packages
+
+## [1.27.0](./#1.27.0) - 2025-11-01
+
+### Added
+
+- **Dialog, Popover**: Improve support for shadow DOM in interact outside and focus trap detection.
+
+### Fixed
+
+- **Marquee**: Fix Firefox flicker, use margin spacing, add GPU acceleration, and add `item` part.
+
+- **Popover**: Improve support for shadow DOM in interact outside and focus trap detection.
+
+- **Dialog**: Fix issue where setting `scrollbar-gutter: stable` in CSS caused an unwanted gap and layout shift when
+  opening dialogs.
+
+- **Slider**: Fix issue where programmatic value changes do not trigger the `onValueChangeEnd` callback. This affects
+  the`setThumbValue`, `setValue`, `increment`, and `decrement` API methods.
+
+## [1.26.5](./#1.26.5) - 2025-10-29
+
+### Fixed
+
+- **Date Picker**: Fix crash in range date picker when typing end date first by adding `null`/`undefined` checks when
+  accessing date properties.
+
+- **Image Cropper**
+  - Fix not working resize API
+  - Export missing types
+  - Make the image cropper responsive
+
+- **Radio Group**: Revert to using `offsetLeft`/`offsetTop` to fix indicator positioning in scrollable containers.
+
+- **Tabs**: Revert to using `offsetLeft`/`offsetTop` to fix indicator positioning in scrollable containers.
+
+- **Tour**
+  - Fix issue where effects were not cleanup correct.
+  - Fix issue where wait step doesn't work correctly.
+  - Validate the configured steps on mount to ensure they are valid.
+
+## [1.26.4](./#1.26.4) - 2025-10-23
+
+### Added
+
+- **Image Cropper [New]**: Initial release of image cropper state machine
+
+- **Marquee [New]**: Initial release of marquee component for continuously scrolling content
+
+### Fixed
+
+- **Angle Slider**: Fix issue where clicking and dragging the angle-slider thumb from a non-center position causes
+  unexpected value jumps. The thumb now maintains its relative position from the initial click point throughout the drag
+  operation, providing more intuitive dragging behavior.
+
+- **Slider**: Fix issue where slider thumb offset changes dynamically during drag, causing unexpected value jumps. The
+  thumb now maintains a constant offset from the pointer throughout the drag operation, matching the initial grab
+  position.
+
+- **Svelte**: Refactor `mergeProps` to return the class values as an array, this delegates the resolution to Svelte's
+  native class handling, which uses `clsx` internally. This ensures proper support for conditional classes, arrays, and
+  objects.
+
+- **Toast**: Fix issue in Solid.js where toasts collapse immediately when dismissing while hovering, by tracking pointer
+  state and temporarily ignoring spurious mouse events during DOM mutations using requestAnimationFrame.
+
+## [1.26.3](./#1.26.3) - 2025-10-18
+
+### Fixed
+
+- **Angle Slider**: Fix accessibility violation where the slider thumb element lacked an accessible name. The thumb now
+  supports `aria-label` and `aria-labelledby` props, and automatically falls back to the label element's ID for proper
+  ARIA labeling.
+
+- **Select**: Fix accessibility violation where the required state was not set correctly to on the trigger.
+
+- **Tags Input**: Fix issue where entering a custom tag with combobox integration required pressing `Enter` twice. The
+  tags-input now correctly handles custom values when the combobox has no highlighted item (`aria-activedescendant` is
+  empty), allowing the tag to be added on the first `Enter` press.
+
+## [1.26.2](./#1.26.2) - 2025-10-14
+
+### Fixed
+
+- **Checkbox**
+  - Fix issue where setting initial checked state to `indeterminate` doesn't work
+  - Ensure `api.checkedState` returns the correct checked state (`boolean | "indeterminate"`)
+
+- **Collapsible**: Fix issue where `dir` prop value was hardcoded to `ltr` instead of using the provided value
+
+- **Combobox**: Fix issue where controlled single-select combobox does not propagate its initial value to `inputValue`
+
+- **Listbox**: Fix issue where pressing Enter key when no highlighted item still calls `event.preventDefault()`
+
+- **Radio Group**: Refactor to use `getBoundingClientRect()` for precise indicator positioning
+
+- **Slider**
+  - Fix issue where slider could stop abruptly when scrubbing thumb
+  - Fix issue where range slider thumbs become stuck when dragged to the same position without `minStepsBetweenThumbs`
+
+- **Tabs**: Refactor to use `getBoundingClientRect()` for precise indicator positioning
+
+- **Tags Input**: Fix issue where `maxLength` doesn't apply to the edit input as well
+
+## [1.26.1](./#1.26.1) - 2025-10-08
+
+### Fixed
+
+- **Tree View**
+  - Fixed issue where pressing `F2` on any tree node would lock navigation and prevent selecting other nodes.
+  - The rename feature now requires the `canRename` callback to be explicitly provided, making it opt-in rather than
+    opt-out.
+
+## [1.26.0](./#1.26.0) - 2025-10-06
+
+### Added
+
+- **Tree View**: [Experimental] Add support for renaming tree node labels with validation and control features.
+
+  This feature enables users to edit tree node labels inline, unlocking use cases like file explorers, folder management
+  systems, content hierarchies, and any tree-based interface where users need to rename items.
+
+  **Key Features:**
+  - Press `F2` on any node to enter rename mode
+  - Input is automatically focused and synced with current label
+  - Press `Enter` to submit or `Escape` to cancel
+  - Blur event automatically submits changes
+  - IME composition events are properly handled for international input
+
+  **Validation & Control:**
+  - `canRename` - Control which nodes are renameable based on node type or custom logic
+  - `onRenameStart` - Called when rename mode starts (useful for analytics, showing hints)
+  - `onBeforeRename` - Validate rename before accepting (e.g., prevent duplicates, empty names)
+  - Empty name prevention - Automatically stays in rename mode if submitted name is empty/whitespace
+  - Label trimming - Labels are automatically trimmed before being passed to callbacks
+  - `onRenameComplete` - Handle the rename and update your collection
+
+  **Styling & Visual State:**
+  - `data-renaming` attribute - Added to both item and branch elements when in rename mode for easy styling
+  - `nodeState.renaming` - Boolean property to check if a node is currently being renamed
+
+### Fixed
+
+- **Editable**: Fix issue where input value fails to revert after repeated full deletion
+
+- **Focus Visible**: Fix `"Cannot assign to read only property 'focus'"` console error by gracefully handling
+  environments where `HTMLElement.prototype.focus` is non-configurable.
+
+- **Listbox**: Fix `splitProps` to avoid partial
+
+- **Presence**: Fix race condition where dialog remains closed when `open` prop rapidly changes from `true` to `false`
+  to `true`
+
+- **Solid**: Fix issue where transition actions received stale event data
+
+## [1.25.0](./#1.25.0) - 2025-09-28
+
+### Added
+
+- **Collapsible**: Add support for `collapsedHeight` and `collapsedWidth` props to control the dimensions of the
+  collapsible content when in its collapsed state.
+
+- **Focus Trap**: Allow elements referenced by `aria-controls` to be included in the trap scope. This makes it possible
+  for menus, popovers, etc. to be portalled and work correctly.
+
+- **Pagination**: Add `getPageUrl` prop for generating `href` attributes when using pagination as links.
+
+```ts
+const service = useMachine(pagination.machine, {
+  type: "link",
+  getPageUrl: ({ page, pageSize }) => `/products?page=${page}&size=${pageSize}`,
+})
+```
+
+- **Slider**: Export `splitMarkerProps` helper.
+
+### Fixed
+
+- **Scroll Area**: Fix RTL horizontal scrollbar positioning on Safari
+
+- **Slider**: Fix issue where slider continues dragging when disabled during drag operation.
+
+- **Switch**: Fix issue where `data-active` is inconsistently applied when `disabled` state changes at runtime
+
+## [1.24.2](./#1.24.2) - 2025-09-18
+
+### Fixed
+
+- **Date Picker**: Fix issue where year range picker doesn't show the hovered range
+
+- **Date Utils**:
+  - Fix issue where quarter presets returns incorrect date
+  - Fix issue where year range picker doesn't show the hovered range
+
+- **I18n Utils**:
+  - **formatBytes**: Support `unitSystem` property to allow changing between decimal (1000 bytes) and binary (1024
+    bytes) systems.
+
+- **Number Input**: When `formatOptions` is used (like `style: "currency"`), the cursor would jump to the end of the
+  input when typing in the middle. The cursor now maintains its relative position during formatting changes.
+
+- **Pin Input**: Fix issue where using the keyboard shortcuts `Cmd+Backspace` and `Cmd+Delete` to delete text in pin
+  inputs would insert "undefined" instead of clearing the field.
+
+- **Scroll Area**: Fix issue where resize tracking was not observing the root element, which caused the scrollbar to not
+  update when the root element's size changed.
+
+## [1.24.1](./#1.24.1) - 2025-09-14
+
+### Fixed
+
+- **Core**: Fix issue where `mergeProps` throws when `props` is undefined or null
+
+## [1.24.0](./#1.24.0) - 2025-09-13
+
+### Added
+
+- **Combobox**: Add `alwaysSubmitOnEnter` prop to allow bypassing the default two-step behavior (Enter to close
+  combobox, then Enter to submit form) and instead submit the form immediately on Enter press. This is useful for
+  single-field autocomplete forms where Enter should submit the form directly.
+
+### Fixed
+
+- **Editable**: Allow text selection in editable preview when `autoResize` is enabled
+
+  Previously, when `autoResize` was set to `true`, the preview element had `userSelect: "none"` applied, preventing
+  users from selecting text. This has been fixed by removing the `userSelect` style property.
+
+- **File Upload**: Fix regression where clicking the trigger doesn't open the file picker when used within the dropzone
+
+- **Hover Card**: Change default delay values for hover card to improve accessibility.
+  - `openDelay`: from `700ms` to `600ms`
+
+- **Menu**: Fix issue where keyboard activation of menu items with `target="_blank"` would open two tabs
+
+- **Svelte**: Fix Svelte warning about state reference capturing initial value instead of current reactive state
+
+- **Tooltip**: Change default delay values for tooltip to improve accessibility.
+  [Learn more](https://www.nngroup.com/articles/timing-exposing-content)
+  - `openDelay`: from `1000ms` to `400ms`
+  - `closeDelay`: from `500ms` to `150ms`
+
+## [1.23.0](./#1.23.0) - 2025-09-11
+
+### Added
+
+- **Dismissable**: Add support for layer types in dismissable layer stack. Layers can now be categorized as `dialog`,
+  `popover`, `menu`, or `listbox`. This enables:
+  - `data-nested` attribute on nested layers of the same type
+  - `data-has-nested` attribute on parent layers with nested children of the same type
+  - `--nested-layer-count` CSS variable indicating the number of nested layers of the same type
+
+### Fixed
+
+- **Core**: Fix issue where `mergeProps` strips symbols after merging
+
+- **Dom Query**:
+  - Fix issue where `isActiveElement` checks don't consider the Shadow DOM
+  - Fix issue where `getActiveElement` returns `activeElement` rather than `null` for focusable web components with no
+    focusable children
+
+- **Menu**: Fix issue where hovering a partially visible item with pointer causes it to scroll into view
+
+- **Tabs**: Fix issue where `ids` for `item` and `content` could not be customized
+
+- **Toast**: Allow creating a toast store without any arguments
+
+  ```tsx
+  // before
+  const store = toast.createStore({})
+
+  // after
+  const store = toast.createStore()
+  ```
+
+## [1.22.1](./#1.22.1) - 2025-08-27
 
 ### Fixed
 
@@ -16,7 +299,7 @@ All notable changes to this project will be documented in this file.
 - **Tags Input**: Fix issue where highlighted item doesn't clear when tabbing out of the input to an external button
   within the `control` part.
 
-## [1.21.10](./#1.21.10) - 2025-08-26
+## [1.22.0](./#1.22.0) - 2025-08-26
 
 ### Added
 

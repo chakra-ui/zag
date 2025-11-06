@@ -15,6 +15,7 @@ export default function Page() {
     name: "quantity",
     defaultValue: [0],
     ...controls.context,
+    thumbSize: { width: 20, height: 20 },
   })
 
   const api = slider.connect(service, normalizeProps)

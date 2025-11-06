@@ -25,10 +25,11 @@ export function connect<T extends PropTypes, V extends CollectionItem>(
   const translations = prop("translations")
   const collection = prop("collection")
 
-  const disabled = prop("disabled")
+  const disabled = !!prop("disabled")
   const interactive = computed("isInteractive")
-  const invalid = prop("invalid")
-  const readOnly = prop("readOnly")
+  const invalid = !!prop("invalid")
+  const required = !!prop("required")
+  const readOnly = !!prop("readOnly")
 
   const open = state.hasTag("open")
   const focused = state.hasTag("focused")
@@ -121,6 +122,7 @@ export function connect<T extends PropTypes, V extends CollectionItem>(
         "data-readonly": dataAttr(readOnly),
         "data-disabled": dataAttr(disabled),
         "data-invalid": dataAttr(invalid),
+        "data-required": dataAttr(required),
         "data-focus": dataAttr(focused),
         onClick(event) {
           if (composite) return
@@ -234,7 +236,12 @@ export function connect<T extends PropTypes, V extends CollectionItem>(
 
               // when there's a form owner, allow submitting custom value if `allowCustomValue` is true
               const submittable = computed("isCustomValue") && prop("allowCustomValue")
-              if (open && !submittable) {
+              // Also allow submission when there's no highlighted item (bug fix)
+              const hasHighlight = highlightedValue != null
+              // Allow submission when alwaysSubmitOnEnter is true
+              const alwaysSubmit = prop("alwaysSubmitOnEnter")
+
+              if (open && !submittable && !alwaysSubmit && hasHighlight) {
                 event.preventDefault()
               }
 

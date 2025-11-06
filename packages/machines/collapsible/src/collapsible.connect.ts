@@ -4,6 +4,7 @@ import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import { parts } from "./collapsible.anatomy"
 import * as dom from "./collapsible.dom"
 import type { CollapsibleApi, CollapsibleSchema } from "./collapsible.types"
+import { toPx } from "@zag-js/utils"
 
 export function connect<T extends PropTypes>(
   service: Service<CollapsibleSchema>,
@@ -12,12 +13,19 @@ export function connect<T extends PropTypes>(
   const { state, send, context, scope, prop } = service
   const visible = state.matches("open") || state.matches("closing")
   const open = state.matches("open")
+  const closed = state.matches("closed")
 
   const { width, height } = context.get("size")
   const disabled = !!prop("disabled")
 
+  const collapsedHeight = prop("collapsedHeight")
+  const collapsedWidth = prop("collapsedWidth")
+
+  const hasCollapsedHeight = collapsedHeight != null
+  const hasCollapsedWidth = collapsedWidth != null
+  const hasCollapsedSize = hasCollapsedHeight || hasCollapsedWidth
+
   const skip = !context.get("initial") && open
-  const dir = "ltr"
 
   return {
     disabled,
@@ -36,7 +44,7 @@ export function connect<T extends PropTypes>(
       return normalize.element({
         ...parts.root.attrs,
         "data-state": open ? "open" : "closed",
-        dir: dir,
+        dir: prop("dir"),
         id: dom.getRootId(scope),
       })
     },
@@ -44,14 +52,30 @@ export function connect<T extends PropTypes>(
     getContentProps() {
       return normalize.element({
         ...parts.content.attrs,
+        id: dom.getContentId(scope),
         "data-collapsible": "",
         "data-state": skip ? undefined : open ? "open" : "closed",
-        id: dom.getContentId(scope),
         "data-disabled": dataAttr(disabled),
-        hidden: !visible,
+        "data-has-collapsed-size": dataAttr(hasCollapsedSize),
+        hidden: !visible && !hasCollapsedSize,
+        dir: prop("dir"),
         style: {
-          "--height": height != null ? `${height}px` : undefined,
-          "--width": width != null ? `${width}px` : undefined,
+          "--height": toPx(height),
+          "--width": toPx(width),
+          "--collapsed-height": toPx(collapsedHeight),
+          "--collapsed-width": toPx(collapsedWidth),
+          ...(closed &&
+            hasCollapsedHeight && {
+              overflow: "hidden",
+              minHeight: toPx(collapsedHeight),
+              maxHeight: toPx(collapsedHeight),
+            }),
+          ...(closed &&
+            hasCollapsedWidth && {
+              overflow: "hidden",
+              minWidth: toPx(collapsedWidth),
+              maxWidth: toPx(collapsedWidth),
+            }),
         },
       })
     },
@@ -60,7 +84,7 @@ export function connect<T extends PropTypes>(
       return normalize.element({
         ...parts.trigger.attrs,
         id: dom.getTriggerId(scope),
-        dir: dir,
+        dir: prop("dir"),
         type: "button",
         "data-state": open ? "open" : "closed",
         "data-disabled": dataAttr(disabled),
@@ -77,7 +101,7 @@ export function connect<T extends PropTypes>(
     getIndicatorProps() {
       return normalize.element({
         ...parts.indicator.attrs,
-        dir: dir,
+        dir: prop("dir"),
         "data-state": open ? "open" : "closed",
         "data-disabled": dataAttr(disabled),
       })

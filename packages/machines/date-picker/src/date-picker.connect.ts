@@ -1,4 +1,12 @@
-import { DateFormatter, isEqualDay, isToday, isWeekend, type DateValue } from "@internationalized/date"
+import {
+  DateFormatter,
+  isEqualDay,
+  isEqualMonth,
+  isEqualYear,
+  isToday,
+  isWeekend,
+  type DateValue,
+} from "@internationalized/date"
 import {
   constrainValue,
   getDateRangePreset,
@@ -23,10 +31,10 @@ import { chunk, isValueWithinRange } from "@zag-js/utils"
 import { parts } from "./date-picker.anatomy"
 import * as dom from "./date-picker.dom"
 import type {
+  DatePickerApi,
   DatePickerService,
   DayTableCellProps,
   DayTableCellState,
-  DatePickerApi,
   TableCellProps,
   TableCellState,
   TableProps,
@@ -106,7 +114,7 @@ export function connect<T extends PropTypes>(
   }
 
   function getDecadeYears(year?: number) {
-    const range = getDecadeRange(year ?? focusedValue.year)
+    const range = getDecadeRange(year ?? startValue.year)
     return range.map((year) => ({
       label: year.toString(),
       value: year,
@@ -132,10 +140,15 @@ export function connect<T extends PropTypes>(
     const { value, disabled } = props
     const dateValue = focusedValue.set({ year: value })
 
+    const decadeYears = getDecadeRange(startValue.year, { strict: true })
+    const isOutsideVisibleRange = !decadeYears.includes(value)
+    const isOutsideRange = isValueWithinRange(value, min?.year, max?.year)
+
     const cellState = {
       focused: focusedValue.year === props.value,
-      selectable: isValueWithinRange(value, min?.year, max?.year),
-      selected: !!selectedValue.find((date) => date.year === value),
+      selectable: isOutsideVisibleRange || isOutsideRange,
+      outsideRange: isOutsideVisibleRange,
+      selected: !!selectedValue.find((date) => date && date.year === value),
       valueText: value.toString(),
       inRange:
         isRangePicker &&
@@ -155,7 +168,7 @@ export function connect<T extends PropTypes>(
     const cellState = {
       focused: focusedValue.month === props.value,
       selectable: !isDateOutsideRange(dateValue, min, max),
-      selected: !!selectedValue.find((date) => date.month === value && date.year === focusedValue.year),
+      selected: !!selectedValue.find((date) => date && date.month === value && date.year === focusedValue.year),
       valueText: formatter.format(dateValue.toDate(timeZone)),
       inRange:
         isRangePicker &&
@@ -257,7 +270,7 @@ export function connect<T extends PropTypes>(
     weekDays: getWeekDays(getTodayDate(timeZone), startOfWeek, timeZone, locale),
     visibleRangeText: computed("visibleRangeText"),
     value: selectedValue,
-    valueAsDate: selectedValue.map((date) => date.toDate(timeZone)),
+    valueAsDate: selectedValue.filter((date) => date != null).map((date) => date.toDate(timeZone)),
     valueAsString: computed("valueAsString"),
     focusedValue,
     focusedValueAsDate: focusedValue?.toDate(timeZone),
@@ -543,7 +556,7 @@ export function connect<T extends PropTypes>(
           ? (event) => {
               if (event.pointerType === "touch") return
               if (!cellState.selectable) return
-              const focus = event.currentTarget.ownerDocument.activeElement !== event.currentTarget
+              const focus = !scope.isActiveElement(event.currentTarget)
               if (hoveredValue && isEqualDay(value, hoveredValue)) return
               send({ type: "CELL.POINTER_MOVE", cell: "day", value, focus })
             }
@@ -581,6 +594,7 @@ export function connect<T extends PropTypes>(
         "data-disabled": dataAttr(!cellState.selectable),
         "data-focus": dataAttr(cellState.focused),
         "data-in-range": dataAttr(cellState.inRange),
+        "data-outside-range": dataAttr(cellState.outsideRange),
         "aria-label": cellState.valueText,
         "data-view": "month",
         "data-value": value,
@@ -594,8 +608,8 @@ export function connect<T extends PropTypes>(
           ? (event) => {
               if (event.pointerType === "touch") return
               if (!cellState.selectable) return
-              const focus = event.currentTarget.ownerDocument.activeElement !== event.currentTarget
-              if (hoveredValue && cellState.value && isEqualDay(cellState.value, hoveredValue)) return
+              const focus = !scope.isActiveElement(event.currentTarget)
+              if (hoveredValue && cellState.value && isEqualMonth(cellState.value, hoveredValue)) return
               send({ type: "CELL.POINTER_MOVE", cell: "month", value: cellState.value, focus })
             }
           : undefined,
@@ -633,6 +647,7 @@ export function connect<T extends PropTypes>(
         "aria-disabled": ariaAttr(!cellState.selectable),
         "data-disabled": dataAttr(!cellState.selectable),
         "aria-label": cellState.valueText,
+        "data-outside-range": dataAttr(cellState.outsideRange),
         "data-value": value,
         "data-view": "year",
         tabIndex: cellState.focused ? 0 : -1,
@@ -641,6 +656,15 @@ export function connect<T extends PropTypes>(
           if (!cellState.selectable) return
           send({ type: "CELL.CLICK", cell: "year", value })
         },
+        onPointerMove: isRangePicker
+          ? (event) => {
+              if (event.pointerType === "touch") return
+              if (!cellState.selectable) return
+              const focus = !scope.isActiveElement(event.currentTarget)
+              if (hoveredValue && cellState.value && isEqualYear(cellState.value, hoveredValue)) return
+              send({ type: "CELL.POINTER_MOVE", cell: "year", value: cellState.value, focus })
+            }
+          : undefined,
       })
     },
 
@@ -846,7 +870,7 @@ export function connect<T extends PropTypes>(
 
     getPresetTriggerProps(props) {
       const value = Array.isArray(props.value) ? props.value : getDateRangePreset(props.value, locale, timeZone)
-      const valueAsString = value.map((item) => item.toDate(timeZone).toDateString())
+      const valueAsString = value.filter((item) => item != null).map((item) => item.toDate(timeZone).toDateString())
       return normalize.button({
         ...parts.presetTrigger.attrs,
         "aria-label": translations.presetTrigger(valueAsString),

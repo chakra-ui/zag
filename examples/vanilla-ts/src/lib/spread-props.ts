@@ -6,6 +6,20 @@ const prevAttrsMap = new WeakMap<HTMLElement, Attrs>()
 
 const assignableProps = new Set<string>(["value", "checked", "htmlFor"])
 
+// SVG attributes that need to preserve case
+const caseSensitiveSvgAttrs = new Set<string>(["viewBox", "preserveAspectRatio"])
+
+// Check if element is SVG
+const isSvgElement = (node: HTMLElement): boolean => {
+  return node.tagName === "svg" || node.namespaceURI === "http://www.w3.org/2000/svg"
+}
+
+// Get the correct attribute name, preserving case for SVG attributes
+const getAttributeName = (node: HTMLElement, attrName: string): string => {
+  const shouldPreserveCase = isSvgElement(node) && caseSensitiveSvgAttrs.has(attrName)
+  return shouldPreserveCase ? attrName : attrName.toLowerCase()
+}
+
 export function spreadProps(node: HTMLElement, attrs: Attrs): () => void {
   const oldAttrs = prevAttrsMap.get(node) || {}
 
@@ -39,19 +53,19 @@ export function spreadProps(node: HTMLElement, attrs: Attrs): () => void {
       if (assignableProps.has(attrName)) {
         ;(node as any)[attrName] = value
       } else {
-        node.setAttribute(attrName.toLowerCase(), value)
+        node.setAttribute(getAttributeName(node, attrName), value)
       }
       return
     }
 
-    node.removeAttribute(attrName.toLowerCase())
+    node.removeAttribute(getAttributeName(node, attrName))
   }
 
   // reconcile old attributes
 
   for (const key in oldAttrs) {
     if (attrs[key] == null) {
-      node.removeAttribute(key.toLowerCase())
+      node.removeAttribute(getAttributeName(node, key))
     }
   }
 

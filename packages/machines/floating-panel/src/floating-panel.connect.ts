@@ -1,10 +1,10 @@
-import { dataAttr, getEventKey, getEventStep, getEventTarget, isLeftClick, isSelfTarget } from "@zag-js/dom-query"
+import { dataAttr, getEventKey, getEventStep, getEventTarget, isLeftClick } from "@zag-js/dom-query"
 import type { EventKeyMap, NormalizeProps, PropTypes } from "@zag-js/types"
+import { match, toPx } from "@zag-js/utils"
 import { parts } from "./floating-panel.anatomy"
 import * as dom from "./floating-panel.dom"
-import type { FloatingPanelService, FloatingPanelApi, ResizeTriggerProps } from "./floating-panel.types"
+import type { FloatingPanelApi, FloatingPanelService, ResizeTriggerProps } from "./floating-panel.types"
 import { getResizeAxisStyle } from "./get-resize-axis-style"
-import { match, toPx } from "@zag-js/utils"
 
 const validStages = new Set(["minimized", "maximized", "default"])
 
@@ -117,7 +117,7 @@ export function connect<T extends PropTypes>(
         },
         onKeyDown(event) {
           if (event.defaultPrevented) return
-          if (!isSelfTarget(event)) return
+          if (event.currentTarget !== getEventTarget(event)) return
 
           const step = getEventStep(event) * prop("gridSize")
           const keyMap: EventKeyMap = {

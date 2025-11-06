@@ -4,14 +4,14 @@ export { machine } from "./floating-panel.machine"
 export * from "./floating-panel.props"
 export type {
   FloatingPanelApi as Api,
-  ElementIds,
   FloatingPanelMachine as Machine,
+  FloatingPanelProps as Props,
+  FloatingPanelService as Service,
+  ElementIds,
   OpenChangeDetails,
   PositionChangeDetails,
-  FloatingPanelProps as Props,
   ResizeTriggerAxis,
   ResizeTriggerProps,
-  FloatingPanelService as Service,
   SizeChangeDetails,
   StageChangeDetails,
   StageTriggerProps,

@@ -1,7 +1,8 @@
 import { createMachine, memo } from "@zag-js/core"
-import { raf, setElementValue, trackElementRect, trackFormControl, trackPointerMove } from "@zag-js/dom-query"
+import { raf, resizeObserverBorderBox, setElementValue, trackFormControl, trackPointerMove } from "@zag-js/dom-query"
 import type { Size } from "@zag-js/types"
 import {
+  callAll,
   clampValue,
   getValuePercent,
   getValueRanges,
@@ -13,7 +14,15 @@ import {
 } from "@zag-js/utils"
 import * as dom from "./slider.dom"
 import type { SliderSchema } from "./slider.types"
-import { constrainValue, decrement, getClosestIndex, getRangeAtIndex, increment, normalizeValues } from "./slider.utils"
+import {
+  constrainValue,
+  decrement,
+  getClosestIndex,
+  getRangeAtIndex,
+  increment,
+  normalizeValues,
+  selectMovableThumb,
+} from "./slider.utils"
 
 const isEqualSize = (a: Size | null, b: Size | null) => {
   return a?.width === b?.width && a?.height === b?.height
@@ -88,6 +97,12 @@ export const machine = createMachine<SliderSchema>({
     }
   },
 
+  refs() {
+    return {
+      thumbDragOffset: null,
+    }
+  },
+
   computed: {
     isHorizontal: ({ prop }) => prop("orientation") === "horizontal",
     isVertical: ({ prop }) => prop("orientation") === "vertical",
@@ -101,9 +116,15 @@ export const machine = createMachine<SliderSchema>({
     ),
   },
 
-  watch({ track, action, context }) {
+  watch({ track, action, context, computed, send }) {
     track([() => context.hash("value")], () => {
       action(["syncInputElements", "dispatchChangeEvent"])
+    })
+
+    track([() => computed("isDisabled")], () => {
+      if (computed("isDisabled")) {
+        send({ type: "POINTER_CANCEL" })
+      }
     })
   },
 
@@ -113,17 +134,17 @@ export const machine = createMachine<SliderSchema>({
     SET_VALUE: [
       {
         guard: "hasIndex",
-        actions: ["setValueAtIndex"],
+        actions: ["setValueAtIndex", "invokeOnChangeEnd"],
       },
       {
-        actions: ["setValue"],
+        actions: ["setValue", "invokeOnChangeEnd"],
       },
     ],
     INCREMENT: {
-      actions: ["incrementThumbAtIndex"],
+      actions: ["incrementThumbAtIndex", "invokeOnChangeEnd"],
     },
     DECREMENT: {
-      actions: ["decrementThumbAtIndex"],
+      actions: ["decrementThumbAtIndex", "invokeOnChangeEnd"],
     },
   },
 
@@ -140,7 +161,7 @@ export const machine = createMachine<SliderSchema>({
         },
         THUMB_POINTER_DOWN: {
           target: "dragging",
-          actions: ["setFocusedIndex", "focusActiveThumb"],
+          actions: ["setFocusedIndex", "setThumbDragOffset", "focusActiveThumb"],
         },
       },
     },
@@ -154,7 +175,7 @@ export const machine = createMachine<SliderSchema>({
         },
         THUMB_POINTER_DOWN: {
           target: "dragging",
-          actions: ["setFocusedIndex", "focusActiveThumb"],
+          actions: ["setFocusedIndex", "setThumbDragOffset", "focusActiveThumb"],
         },
         ARROW_DEC: {
           actions: ["decrementThumbAtIndex", "invokeOnChangeEnd"],
@@ -181,10 +202,14 @@ export const machine = createMachine<SliderSchema>({
       on: {
         POINTER_UP: {
           target: "focus",
-          actions: ["invokeOnChangeEnd"],
+          actions: ["invokeOnChangeEnd", "clearThumbDragOffset"],
         },
         POINTER_MOVE: {
           actions: ["setPointerValue"],
+        },
+        POINTER_CANCEL: {
+          target: "idle",
+          actions: ["clearFocusedIndex", "clearThumbDragOffset"],
         },
       },
     },
@@ -221,18 +246,19 @@ export const machine = createMachine<SliderSchema>({
       trackThumbSize({ context, scope, prop }) {
         if (prop("thumbAlignment") !== "contain" || prop("thumbSize")) return
 
-        return trackElementRect(dom.getThumbEls(scope), {
-          box: "border-box",
-          measure(el) {
-            return dom.getOffsetRect(el)
-          },
-          onEntry({ rects }) {
-            if (rects.length === 0) return
-            const size = pick(rects[0], ["width", "height"])
-            if (isEqualSize(context.get("thumbSize"), size)) return
-            context.set("thumbSize", size)
-          },
-        })
+        const exec = (el: HTMLElement) => {
+          const rect = dom.getOffsetRect(el)
+          const size = pick(rect, ["width", "height"])
+          if (isEqualSize(context.get("thumbSize"), size)) return
+          context.set("thumbSize", size)
+        }
+
+        const thumbEls = dom.getThumbEls(scope)
+        thumbEls.forEach(exec)
+
+        const cleanups = thumbEls.map((el) => resizeObserverBorderBox.observe(el, () => exec(el)))
+
+        return callAll(...cleanups)
       },
     },
 
@@ -260,11 +286,20 @@ export const machine = createMachine<SliderSchema>({
         const focusedIndex = getClosestIndex(params, pointValue)
         context.set("focusedIndex", focusedIndex)
       },
-      setFocusedIndex({ context, event }) {
-        context.set("focusedIndex", event.index)
+      setFocusedIndex(params) {
+        const { context, event } = params
+        const movableIndex = selectMovableThumb(params, event.index)
+        context.set("focusedIndex", movableIndex)
       },
       clearFocusedIndex({ context }) {
         context.set("focusedIndex", -1)
+      },
+      setThumbDragOffset(params) {
+        const { refs, event } = params
+        refs.set("thumbDragOffset", event.offset ?? null)
+      },
+      clearThumbDragOffset({ refs }) {
+        refs.set("thumbDragOffset", null)
       },
       setPointerValue(params) {
         queueMicrotask(() => {

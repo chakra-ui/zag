@@ -1,4 +1,5 @@
 import type { StepDetails } from "@zag-js/tour"
+import type { HandlePosition } from "@zag-js/image-cropper"
 
 import { countryList } from "./country-list"
 export { paginationData } from "./pagination-data"
@@ -379,3 +380,12 @@ export const jsonTreeData = {
   bigint: BigInt(123),
   null: null,
 }
+
+export const handlePositions: HandlePosition[] = ["nw", "n", "ne", "e", "se", "s", "sw", "w"]
+
+export const marqueeData = [
+  { name: "Apple", logo: "🍎" },
+  { name: "Banana", logo: "🍌" },
+  { name: "Cherry", logo: "🍒" },
+  { name: "Grape", logo: "🍇" },
+]

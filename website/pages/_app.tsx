@@ -1,16 +1,16 @@
-import { ChakraProvider } from "@chakra-ui/provider"
-import { DefaultSeo } from "next-seo"
+import { generateDefaultSeo } from "next-seo/pages"
+import { ThemeProvider } from "next-themes"
+import Head from "next/head"
 import siteConfig from "site.config"
-import "../styles/other.css"
+import "../styles/index.css"
 import "../styles/machines/index.css"
 import "../styles/prism.css"
-import theme from "../theme"
 
 export default function App({ Component, pageProps }: any) {
   return (
-    <ChakraProvider theme={theme}>
-      <DefaultSeo {...siteConfig.seo} />
+    <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+      <Head>{generateDefaultSeo(siteConfig.seo)}</Head>
       <Component {...pageProps} />
-    </ChakraProvider>
+    </ThemeProvider>
   )
 }

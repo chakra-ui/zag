@@ -45,6 +45,7 @@ test.describe("color-picker", () => {
   test("should re-focus trigger on outside click", async () => {
     await I.clickTrigger()
     await I.seeColorPicker()
+    await I.seeAreaThumbIsFocused()
 
     await I.clickOutside()
     await I.seeTriggerIsFocused()
@@ -58,6 +59,8 @@ test.describe("color-picker", () => {
 
   test("keyboard focus movement", async () => {
     await I.clickTrigger()
+    await I.seeColorPicker()
+    await I.seeAreaThumbIsFocused()
 
     await I.pressKey("Tab")
     await I.seeChannelThumbIsFocused("hue")

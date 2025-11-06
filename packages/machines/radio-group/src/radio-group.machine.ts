@@ -1,5 +1,5 @@
 import { createGuards, createMachine } from "@zag-js/core"
-import { dispatchInputCheckedEvent, trackElementRect, trackFormControl } from "@zag-js/dom-query"
+import { dispatchInputCheckedEvent, resizeObserverBorderBox, trackFormControl } from "@zag-js/dom-query"
 import { trackFocusVisible } from "@zag-js/focus-visible"
 import { isString } from "@zag-js/utils"
 import * as dom from "./radio-group.dom"
@@ -164,14 +164,13 @@ export const machine = createMachine<RadioGroupSchema>({
           return
         }
 
-        const indicatorCleanup = trackElementRect([radioEl], {
-          measure(el) {
-            return dom.getOffsetRect(el)
-          },
-          onEntry({ rects }) {
-            context.set("indicatorRect", dom.resolveRect(rects[0]))
-          },
-        })
+        const exec = () => {
+          const rect = dom.getOffsetRect(radioEl)
+          context.set("indicatorRect", dom.resolveRect(rect))
+        }
+
+        exec()
+        const indicatorCleanup = resizeObserverBorderBox.observe(radioEl, exec)
 
         refs.set("indicatorCleanup", indicatorCleanup)
       },

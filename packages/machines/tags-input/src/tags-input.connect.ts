@@ -12,8 +12,9 @@ export function connect<T extends PropTypes>(
   const { state, send, computed, prop, scope, context } = service
 
   const interactive = computed("isInteractive")
-  const disabled = prop("disabled")
-  const readOnly = prop("readOnly")
+  const disabled = !!prop("disabled")
+  const readOnly = !!prop("readOnly")
+  const required = !!prop("required")
   const invalid = prop("invalid") || computed("isOverflowing")
 
   const translations = prop("translations")
@@ -91,6 +92,7 @@ export function connect<T extends PropTypes>(
         "data-disabled": dataAttr(disabled),
         "data-invalid": dataAttr(invalid),
         "data-readonly": dataAttr(readOnly),
+        "data-required": dataAttr(required),
         id: dom.getLabelId(scope),
         dir: prop("dir"),
         htmlFor: dom.getInputId(scope),
@@ -117,6 +119,7 @@ export function connect<T extends PropTypes>(
         "data-invalid": dataAttr(invalid),
         "aria-invalid": ariaAttr(invalid),
         "data-readonly": dataAttr(readOnly),
+        "data-empty": dataAttr(empty),
         maxLength: prop("maxLength"),
         id: dom.getInputId(scope),
         defaultValue: context.get("inputValue"),
@@ -180,7 +183,8 @@ export function connect<T extends PropTypes>(
               send({ type: "DELETE" })
             },
             Enter(event) {
-              if (isCombobox && isExpanded) return
+              const hasHighlightedItem = target.getAttribute("aria-activedescendant")
+              if (isCombobox && isExpanded && hasHighlightedItem) return
               send({ type: "ENTER" })
               event.preventDefault()
             },
@@ -263,6 +267,7 @@ export function connect<T extends PropTypes>(
         id: dom.getItemInputId(scope, props),
         tabIndex: -1,
         hidden: !itemState.editing,
+        maxLength: prop("maxLength"),
         defaultValue: itemState.editing ? context.get("editedTagValue") : "",
         onInput(event) {
           send({ type: "TAG_INPUT_TYPE", value: event.currentTarget.value })

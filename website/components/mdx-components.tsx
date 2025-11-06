@@ -1,28 +1,32 @@
-import { allComponents, allSnippets } from "@/contentlayer"
-import { Icon } from "@chakra-ui/icon"
-import { Box, HStack, StackProps, Wrap } from "@chakra-ui/layout"
-import { chakra } from "@chakra-ui/system"
+import { components as allComponents, snippets as allSnippets } from ".velite"
 import { allComponents as Anatomies } from "@zag-js/anatomy-icons"
 import { normalizeProps, useMachine } from "@zag-js/react"
 import * as tabs from "@zag-js/tabs"
-import { type MDX } from "contentlayer/core"
-import { useMDXComponent } from "next-contentlayer/hooks"
+import { Blockquote } from "components/ui/blockquote"
+import { Code } from "components/ui/code"
+import { Icon } from "components/ui/icon"
+import * as runtime from "react/jsx-runtime"
 import Image from "next/image"
 import Link from "next/link"
 import { type FC } from "react"
-import { HiOutlineCode } from "react-icons/hi"
-import { ImMagicWand } from "react-icons/im"
-import { RiNpmjsFill } from "react-icons/ri"
+import { Box, HStack, styled } from "styled-system/jsx"
+import { Showcase } from "../demos"
 import { FRAMEWORKS, frameworks } from "../lib/framework-utils"
 import { CopyButton } from "./copy-button"
+import { CssVarTable } from "./css-var-table"
 import { DataAttrTable } from "./data-attr-table"
 import { useFramework } from "./framework"
 import { KeyboardTable } from "./keyboard-table"
+import { ResourceLinkGroup } from "./mdx/resource-link"
 import { PropTable } from "./prop-table"
-import { CssVarTable } from "./css-var-table"
-import { Showcase } from "../demos"
 
-function SnippetItem({ body, id }: { body: MDX; id: string }) {
+const SnippetItem = ({
+  body,
+  id,
+}: {
+  body: { code: string; raw: string }
+  id: string
+}) => {
   const content = useMDX(body.code)
   const textContent = body.raw.split("\n").slice(1, -2).join("\n")
   return (
@@ -33,45 +37,27 @@ function SnippetItem({ body, id }: { body: MDX; id: string }) {
   )
 }
 
-type ResourceLinkProps = {
-  href?: string | undefined
-  icon: FC
-  children: any
-}
-
-export function ResourceLink({
-  href,
-  icon,
-  children,
-  ...rest
-}: ResourceLinkProps & StackProps) {
-  return (
-    <HStack
-      as="a"
-      href={href}
-      target="_blank"
-      borderWidth="1px"
-      px="2"
-      py="1"
-      fontSize="sm"
-      spacing="1"
-      cursor="pointer"
-      {...rest}
-    >
-      <Icon as={icon} color="green.500" fontSize="lg" />
-      <span>{children}</span>
-    </HStack>
-  )
-}
+const Anchor = styled("a", {
+  base: {
+    color: "green.500",
+    cursor: "pointer",
+    fontWeight: "medium",
+    textDecoration: "underline",
+    textDecorationColor: "cyan.default",
+    textDecorationThickness: "1px",
+    textUnderlineOffset: "2px",
+    _hover: {
+      textDecorationThickness: "2px",
+    },
+  },
+})
 
 const components: Record<string, FC<any>> = {
   LLMsTxtLink(props) {
     return (
-      <chakra.a textStyle="link" target="_blank" rel="noopener" {...props}>
-        <chakra.code className="prose" layerStyle="inlineCode">
-          {props.href}
-        </chakra.code>
-      </chakra.a>
+      <Anchor target="_blank" rel="noopener" {...props}>
+        <Code className="prose">{props.href}</Code>
+      </Anchor>
     )
   },
   Showcase,
@@ -87,36 +73,15 @@ const components: Record<string, FC<any>> = {
   },
   Resources(props) {
     const comp = allComponents.find((c) => c.package === props.pkg)
-
     if (!comp) return null
-    return (
-      <Wrap mt="6" spacingX="4">
-        <ResourceLink icon={RiNpmjsFill} href={comp.npmUrl} data-id="npm">
-          {comp.version} (latest)
-        </ResourceLink>
-        <ResourceLink
-          icon={ImMagicWand}
-          href={comp.visualizeUrl}
-          data-id="logic"
-        >
-          Visualize Logic
-        </ResourceLink>
-        <ResourceLink
-          icon={HiOutlineCode}
-          href={comp.sourceUrl}
-          data-id="source"
-        >
-          View Source
-        </ResourceLink>
-      </Wrap>
-    )
+    return <ResourceLinkGroup item={comp} />
   },
   blockquote(props) {
-    return <chakra.blockquote layerStyle="blockquote" {...props} />
+    return <Blockquote {...props} />
   },
   h1(props) {
     return (
-      <chakra.h1
+      <styled.h1
         id="skip-nav"
         textStyle="display.lg"
         mb="5"
@@ -127,23 +92,23 @@ const components: Record<string, FC<any>> = {
     )
   },
   h2(props) {
-    return <chakra.h2 textStyle="display.md" mt="12" mb="3" {...props} />
+    return <styled.h2 textStyle="display.md" mt="12" mb="3" {...props} />
   },
   h3(props) {
-    return <chakra.h3 textStyle="display.sm" mt="6" mb="4" {...props} />
+    return <styled.h3 textStyle="display.sm" mt="6" mb="4" {...props} />
   },
   h4(props) {
-    return <chakra.h4 textStyle="display.xs" mt="6" mb="2" {...props} />
+    return <styled.h4 textStyle="display.xs" mt="6" mb="2" {...props} />
   },
   pre(props) {
-    return <chakra.pre {...props} className={`prose ${props.className}`} />
+    return <styled.pre {...props} className={`prose ${props.className}`} />
   },
   li(props) {
     return (
-      <chakra.li
-        sx={{
+      <styled.li
+        css={{
           "&::marker": {
-            color: "cyan.default",
+            color: "text.muted",
           },
         }}
         {...props}
@@ -151,7 +116,7 @@ const components: Record<string, FC<any>> = {
     )
   },
   inlineCode(props) {
-    return <chakra.code className="prose" layerStyle="inlineCode" {...props} />
+    return <Code className="prose" {...props} />
   },
   ApiTable(props) {
     return <PropTable type="api" {...props} />
@@ -180,14 +145,12 @@ const components: Record<string, FC<any>> = {
           {data.map(([prop, value], idx) => (
             <tr key={idx}>
               <td>
-                <chakra.code className="prose" layerStyle="inlineCode">
-                  {prop}
-                </chakra.code>
+                <Code className="prose">{prop}</Code>
               </td>
               <td>
-                <chakra.code fontSize="sm" whiteSpace="pre-wrap">
+                <Code fontSize="sm" whiteSpace="pre-wrap">
                   {value}
-                </chakra.code>
+                </Code>
               </td>
             </tr>
           ))}
@@ -223,22 +186,22 @@ const components: Record<string, FC<any>> = {
         maxW="768px"
         borderWidth="1px"
         my="8"
-        bg="bg-code-block"
+        bg="bg.code.block"
         rounded="6px"
         {...api.getRootProps()}
       >
         <Box {...api.getListProps()}>
           {FRAMEWORKS.map((framework) => (
-            <chakra.button
+            <styled.button
               py="2"
               px="8"
               fontSize="sm"
               fontWeight="medium"
               borderBottom="2px solid transparent"
-              bg="bg-code-block"
+              bg="bg.code.block"
               _selected={{
-                borderColor: "border-primary-subtle",
-                color: "text-primary-bold",
+                borderColor: "border.primary.subtle",
+                color: "text.primary.bold",
               }}
               _focusVisible={{ outline: "2px solid blue" }}
               {...api.getTriggerProps({ value: framework })}
@@ -248,7 +211,7 @@ const components: Record<string, FC<any>> = {
                 <Icon as={frameworks[framework].icon} />
                 <p>{frameworks[framework].label}</p>
               </HStack>
-            </chakra.button>
+            </styled.button>
           ))}
         </Box>
         {FRAMEWORKS.map((framework) => {
@@ -281,33 +244,40 @@ const components: Record<string, FC<any>> = {
 
     if (isInternalLink) {
       return (
-        <chakra.a as={Link} href={href} textStyle="link" {...props}>
+        <Anchor as={Link} href={href} {...props}>
           {props.children}
-        </chakra.a>
+        </Anchor>
       )
     }
 
-    return (
-      <chakra.a textStyle="link" target="_blank" rel="noopener" {...props} />
-    )
+    return <Anchor target="_blank" rel="noopener" {...props} />
   },
   Anatomy: ({ id }: { id: string }) => {
     if (!(id in Anatomies)) return <Box>No anatomy available for {id}</Box>
-
-    const Anatomy = chakra(Anatomies[id as keyof typeof Anatomies])
+    const Anatomy = Anatomies[id as keyof typeof Anatomies]
     return (
-      <Box my="8" bg="linear-gradient(90deg, #41B883 -2.23%, #299464 92.64%)">
-        <Anatomy accentColor="#2CFF80" maxW="100%" h="auto" />
+      <Box
+        my="8"
+        bg="linear-gradient(90deg, #41B883 -2.23%, #299464 92.64%)"
+        css={{
+          "& > svg": {
+            maxW: "100%",
+            h: "auto",
+          },
+        }}
+      >
+        <Anatomy accentColor="#2CFF80" />
       </Box>
     )
   },
 }
 
-export function useMDX(code: string | undefined) {
-  const defaultCode = `
-return { default: () => React.createElement('div', null, '') }
-`
-  const pageCode = code && code?.length ? code : defaultCode
-  const MDXComponent = useMDXComponent(pageCode)
+const useMDXComponent = (code: string) => {
+  const fn = new Function(code)
+  return fn({ ...runtime }).default
+}
+
+export function useMDX(code: string) {
+  const MDXComponent = useMDXComponent(code)
   return <MDXComponent components={components as any} />
 }

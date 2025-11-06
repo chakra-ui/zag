@@ -5,6 +5,7 @@ import {
   getEventTarget,
   getNearestOverflowAncestor,
   getWindow,
+  isControlledElement,
   isFocusable,
   isHTMLElement,
   raf,
@@ -30,6 +31,14 @@ export interface InteractOutsideHandlers {
 export interface InteractOutsideOptions extends InteractOutsideHandlers {
   exclude?: ((target: HTMLElement) => boolean) | undefined
   defer?: boolean | undefined
+  /**
+   * Default: `true`. If `true`, the interact outside detection will recursively include elements
+   * that are controlled by elements within the trap via `aria-controls`. Only elements
+   * with `aria-expanded="true"` and interactive container roles (menu, listbox, dialog, etc.)
+   * will be included. This allows nested menus, select dropdowns, and other portalled
+   * content to remain within the interaction boundary.
+   */
+  followControlledElements?: boolean | undefined
 }
 
 export interface EventDetails<T> {
@@ -105,7 +114,14 @@ function isEventWithinScrollbar(event: Event, ancestor: HTMLElement): boolean {
 }
 
 function trackInteractOutsideImpl(node: MaybeElement, options: InteractOutsideOptions) {
-  const { exclude, onFocusOutside, onPointerDownOutside, onInteractOutside, defer } = options
+  const {
+    exclude,
+    onFocusOutside,
+    onPointerDownOutside,
+    onInteractOutside,
+    defer,
+    followControlledElements = true,
+  } = options
 
   if (!node) return
 
@@ -125,6 +141,9 @@ function trackInteractOutsideImpl(node: MaybeElement, options: InteractOutsideOp
 
     // Ex: password manager selection
     if (isEventPointWithin(node, event)) return false
+
+    // Check if target is within a controlled element that should be considered "inside"
+    if (followControlledElements && isControlledElement(node!, target)) return false
 
     // Ex: page content that is scrollable
     const triggerEl = doc.querySelector(`[aria-controls="${node!.id}"]`)
@@ -196,7 +215,8 @@ function trackInteractOutsideImpl(node: MaybeElement, options: InteractOutsideOp
     //
     const func = defer ? raf : (v: any) => v()
     func(() => {
-      const target = getEventTarget<HTMLElement>(event)
+      const composedPath = event?.composedPath?.() ?? [event?.target]
+      const target = isInShadowRoot ? composedPath[0] : getEventTarget<HTMLElement>(event)
       if (!node || !isEventOutside(event, target)) return
 
       if (onFocusOutside || onInteractOutside) {

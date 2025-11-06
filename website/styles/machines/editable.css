@@ -1,64 +1,66 @@
-[data-scope="editable"][data-part="root"] {
-  width: 300px;
-}
-
-[data-scope="editable"][data-part="area"] {
-  margin-bottom: 0.75rem;
-}
-
-[data-scope="editable"][data-part="input"] {
-  background: transparent;
-  &[data-autoresize] {
-    all: unset;
+@layer recipes {
+  [data-scope="editable"][data-part="root"] {
+    width: 300px;
   }
-}
 
-[data-scope="editable"][data-part="input"]:focus {
-  outline: 2px solid hsl(204, 100%, 40%);
-}
+  [data-scope="editable"][data-part="area"] {
+    margin-bottom: 0.75rem;
+  }
 
-[data-scope="editable"]:is(
+  [data-scope="editable"][data-part="input"] {
+    background: transparent;
+    &[data-autoresize] {
+      all: unset;
+    }
+  }
+
+  [data-scope="editable"][data-part="input"]:focus {
+    outline: 2px solid hsl(204, 100%, 40%);
+  }
+
+  [data-scope="editable"]:is(
     [data-part="edit-trigger"],
     [data-part="submit-trigger"],
     [data-part="cancel-trigger"]
   ) {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  text-align: start;
-  cursor: pointer;
-  font-weight: 500;
-  padding-inline: 1rem;
-  padding-block: 0.25rem;
-}
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    text-align: start;
+    cursor: pointer;
+    font-weight: 500;
+    padding-inline: 1rem;
+    padding-block: 0.25rem;
+  }
 
-[data-scope="editable"]:is(
+  [data-scope="editable"]:is(
     [data-part="edit-trigger"],
     [data-part="cancel-trigger"]
   ) {
-  border-width: 1px;
-  background: var(--colors-bg-subtle);
-}
+    border-width: 1px;
+    background: var(--colors-bg-subtle);
+  }
 
-[data-scope="editable"]:is(
-    [data-part="edit-trigger"],
-    [data-part="cancel-trigger"]
-  ):hover {
-  background: var(--colors-bg-bold);
-}
+  [data-scope="editable"]:is(
+      [data-part="edit-trigger"],
+      [data-part="cancel-trigger"]
+    ):hover {
+    background: var(--colors-bg-bold);
+  }
 
-div:has(> [data-scope="editable"][data-part="submit-trigger"]) {
-  display: flex;
-  align-items: center;
-  flex-direction: row;
-  gap: 0.5rem;
-}
+  div:has(> [data-scope="editable"][data-part="submit-trigger"]) {
+    display: flex;
+    align-items: center;
+    flex-direction: row;
+    gap: 0.5rem;
+  }
 
-[data-scope="editable"][data-part="submit-trigger"] {
-  background: var(--colors-bg-primary-subtle);
-  color: #ffffff;
-}
+  [data-scope="editable"][data-part="submit-trigger"] {
+    background: var(--colors-bg-primary-subtle);
+    color: #ffffff;
+  }
 
-[data-scope="editable"][data-part="submit-trigger"]:hover {
-  background: var(--colors-bg-primary-bold);
+  [data-scope="editable"][data-part="submit-trigger"]:hover {
+    background: var(--colors-bg-primary-bold);
+  }
 }

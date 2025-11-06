@@ -1,5 +1,5 @@
 import { setup } from "@zag-js/core"
-import { clickIfLink, getFocusables, isAnchorElement, nextTick, raf, trackElementRect } from "@zag-js/dom-query"
+import { clickIfLink, getFocusables, isAnchorElement, nextTick, raf, resizeObserverBorderBox } from "@zag-js/dom-query"
 import * as dom from "./tabs.dom"
 import type { TabsSchema } from "./tabs.types"
 
@@ -282,15 +282,12 @@ export const machine = createMachine({
         const indicatorEl = dom.getIndicatorEl(scope)
         if (!triggerEl || !indicatorEl) return
 
-        const indicatorCleanup = trackElementRect([triggerEl], {
-          measure(el) {
-            return dom.getOffsetRect(el)
-          },
-          onEntry({ rects }) {
-            const [rect] = rects
-            context.set("indicatorRect", dom.resolveRect(rect))
-          },
-        })
+        const exec = () => {
+          const rect = dom.getOffsetRect(triggerEl)
+          context.set("indicatorRect", dom.resolveRect(rect))
+        }
+        exec()
+        const indicatorCleanup = resizeObserverBorderBox.observe(triggerEl, exec)
 
         refs.set("indicatorCleanup", indicatorCleanup)
       },

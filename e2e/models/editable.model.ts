@@ -31,6 +31,10 @@ export class EditableModel extends Model {
     return this.page.locator("[data-testid=edit-button]")
   }
 
+  get cancelTrigger() {
+    return this.page.locator("[data-testid=cancel-button]")
+  }
+
   async focusPreview() {
     await this.preview.focus()
     await this.page.waitForSelector("input:focus")
@@ -46,6 +50,10 @@ export class EditableModel extends Model {
 
   clickSubmit() {
     return this.submitTrigger.click()
+  }
+
+  clickCancel() {
+    return this.cancelTrigger.click()
   }
 
   dblClickPreview() {

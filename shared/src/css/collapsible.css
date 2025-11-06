@@ -3,11 +3,23 @@
   max-width: 400px;
 
   &[data-state="open"] {
-    animation: expandHeight 200ms ease;
+    animation-name: fadeIn, expandHeight;
+    animation-duration: 200ms;
+    animation-timing-function: ease;
+
+    &[data-has-collapsed-size] {
+      animation-name: expandHeight;
+    }
   }
 
   &[data-state="closed"] {
-    animation: collapseHeight 200ms ease;
+    animation-name: fadeOut, collapseHeight;
+    animation-duration: 200ms;
+    animation-timing-function: ease;
+
+    &[data-has-collapsed-size] {
+      animation-name: collapseHeight;
+    }
   }
 }
 

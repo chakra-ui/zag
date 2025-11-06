@@ -1,5 +1,13 @@
 import type { Service } from "@zag-js/core"
-import { dataAttr, getEventKey, isComposingEvent, isOpeningInNewTab, isSafari, isSelfTarget } from "@zag-js/dom-query"
+import {
+  contains,
+  dataAttr,
+  getEventKey,
+  getEventTarget,
+  isComposingEvent,
+  isOpeningInNewTab,
+  isSafari,
+} from "@zag-js/dom-query"
 import type { EventKeyMap, NormalizeProps, PropTypes } from "@zag-js/types"
 import { parts } from "./tabs.anatomy"
 import * as dom from "./tabs.dom"
@@ -75,9 +83,8 @@ export function connect<T extends PropTypes>(service: Service<TabsSchema>, norma
         "aria-label": translations?.listLabel,
         onKeyDown(event) {
           if (event.defaultPrevented) return
-
-          if (!isSelfTarget(event)) return
           if (isComposingEvent(event)) return
+          if (!contains(event.currentTarget, getEventTarget(event))) return
 
           const keyMap: EventKeyMap = {
             ArrowDown() {

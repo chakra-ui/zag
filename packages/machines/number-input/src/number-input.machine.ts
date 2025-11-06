@@ -18,7 +18,7 @@ import {
   isValueAtMin,
   isValueWithinRange,
 } from "@zag-js/utils"
-import { recordCursor, restoreCursor } from "./cursor"
+import { restoreCursor } from "./cursor"
 import * as dom from "./number-input.dom"
 import type { HintValue, NumberInputSchema } from "./number-input.types"
 import { createFormatter, createParser, formatValue, getDefaultStep, parseValue } from "./number-input.utils"
@@ -432,10 +432,10 @@ export const machine = createMachine({
       syncInputElement({ context, event, computed, scope }) {
         const value = event.type.endsWith("CHANGE") ? context.get("value") : computed("formattedValue")
         const inputEl = dom.getInputEl(scope)
-        const sel = recordCursor(inputEl)
+        const sel = event.selection
         raf(() => {
           setElementValue(inputEl, value)
-          restoreCursor(inputEl, sel)
+          restoreCursor(inputEl, sel, scope)
         })
       },
       setFormattedValue({ context, computed }) {

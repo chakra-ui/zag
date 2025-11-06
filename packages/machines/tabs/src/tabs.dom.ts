@@ -26,14 +26,12 @@ export const getNextTriggerEl = (ctx: Scope, opts: { value: string; loopFocus?: 
 export const getPrevTriggerEl = (ctx: Scope, opts: { value: string; loopFocus?: boolean | undefined }) =>
   prevById(getElements(ctx), getTriggerId(ctx, opts.value), opts.loopFocus)
 
-export const getOffsetRect = (el: HTMLElement | undefined) => {
-  return {
-    left: el?.offsetLeft ?? 0,
-    top: el?.offsetTop ?? 0,
-    width: el?.offsetWidth ?? 0,
-    height: el?.offsetHeight ?? 0,
-  }
-}
+export const getOffsetRect = (el: HTMLElement | undefined) => ({
+  left: el?.offsetLeft ?? 0,
+  top: el?.offsetTop ?? 0,
+  width: el?.offsetWidth ?? 0,
+  height: el?.offsetHeight ?? 0,
+})
 
 export const getRectById = (ctx: Scope, id: string) => {
   const tab = itemById(getElements(ctx), getTriggerId(ctx, id))

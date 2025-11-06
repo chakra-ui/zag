@@ -166,6 +166,7 @@ export const toastControls = defineControls({
 export const selectControls = defineControls({
   multiple: { type: "boolean", defaultValue: false },
   disabled: { type: "boolean", defaultValue: false },
+  required: { type: "boolean", defaultValue: false },
   loopFocus: { type: "boolean", defaultValue: true },
   readOnly: { type: "boolean", defaultValue: false },
   deselectable: { type: "boolean", defaultValue: false },
@@ -297,4 +298,32 @@ export const passwordInputControls = defineControls({
   disabled: { type: "boolean", defaultValue: false },
   readOnly: { type: "boolean", defaultValue: false },
   ignorePasswordManagers: { type: "boolean", defaultValue: false },
+})
+
+export const bottomSheetControls = defineControls({
+  swipeVelocityThreshold: { type: "number", defaultValue: 700 },
+  closeThreshold: { type: "number", defaultValue: 0.25 },
+  preventDragOnScroll: { type: "boolean", defaultValue: true },
+})
+
+export const scrollAreaControls = defineControls({
+  dir: { type: "select", options: ["ltr", "rtl"] as const, defaultValue: "ltr" },
+})
+
+export const imageCropperControls = defineControls({
+  aspectRatio: { type: "number" },
+  minWidth: { type: "number", defaultValue: 40 },
+  minHeight: { type: "number", defaultValue: 40 },
+  maxWidth: { type: "number" },
+  maxHeight: { type: "number" },
+  zoomStep: { type: "number", defaultValue: 0.1 },
+  minZoom: { type: "number", defaultValue: 1 },
+  maxZoom: { type: "number", defaultValue: 5 },
+})
+
+export const marqueeControls = defineControls({
+  side: { type: "select", options: ["start", "end", "top", "bottom"] as const, defaultValue: "start" },
+  speed: { type: "number", defaultValue: 50 },
+  pauseOnInteraction: { type: "boolean", defaultValue: false },
+  reverse: { type: "boolean", defaultValue: false },
 })

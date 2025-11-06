@@ -4,6 +4,7 @@
   "main": "src/index.ts",
   "private": true,
   "dependencies": {
+    "@zag-js/image-cropper": "workspace:*",
     "@zag-js/tour": "workspace:*"
   }
 }

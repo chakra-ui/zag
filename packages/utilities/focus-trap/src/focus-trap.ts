@@ -4,11 +4,15 @@
 import {
   addDomEvent,
   getActiveElement,
+  getControlledElements,
   getDocument,
   getEventTarget,
   getFocusables,
   getTabbables,
   getTabIndex,
+  hasControllerElements,
+  isControlledByExpandedController,
+  isControlledElement,
   isDocument,
   isFocusable,
   isTabbable,
@@ -73,6 +77,43 @@ export class FocusTrap {
     recentNavEvent: undefined,
   }
 
+  // Track portal containers that contain controlled elements
+  private portalContainers = new Set<HTMLElement>()
+
+  private addPortalContainer(controlledElement: HTMLElement) {
+    const portalContainer = controlledElement.parentElement
+
+    if (portalContainer && !this.portalContainers.has(portalContainer)) {
+      this.portalContainers.add(portalContainer)
+
+      // Start observing this new portal container if trap is active
+      if (this.state.active && !this.state.paused) {
+        this.observePortalContainer(portalContainer)
+      }
+    }
+  }
+
+  private observePortalContainer(portalContainer: HTMLElement) {
+    this._mutationObserver?.observe(portalContainer, {
+      subtree: true,
+      childList: true,
+      attributes: true,
+      attributeFilter: ["aria-controls", "aria-expanded"],
+    })
+  }
+
+  private updatePortalContainers() {
+    if (!this.config.followControlledElements) return
+
+    // Find all controlled elements outside our containers and add their portal containers
+    this.state.containers.forEach((container) => {
+      const controlledElements = getControlledElements(container)
+      controlledElements.forEach((controlledElement) => {
+        this.addPortalContainer(controlledElement)
+      })
+    })
+  }
+
   get active() {
     return this.state.active
   }
@@ -88,6 +129,7 @@ export class FocusTrap {
       returnFocusOnDeactivate: true,
       escapeDeactivates: true,
       delayInitialFocus: true,
+      followControlledElements: true,
       isKeyForward(e) {
         return isTabEvent(e) && !e.shiftKey
       },
@@ -110,38 +152,60 @@ export class FocusTrap {
       ({ container, tabbableNodes }) =>
         container.contains(element) ||
         composedPath?.includes(container) ||
-        tabbableNodes.find((node) => node === element),
+        tabbableNodes.find((node) => node === element) ||
+        this.isControlledElement(container, element),
     )
+  }
+
+  private isControlledElement(container: HTMLElement, element: HTMLElement): boolean {
+    if (!this.config.followControlledElements) return false
+    return isControlledElement(container, element)
   }
 
   private updateTabbableNodes() {
     this.state.containerGroups = this.state.containers.map((container) => {
-      const tabbableNodes = getTabbables(container)
-      const focusableNodes = getFocusables(container)
+      const tabbableNodes = getTabbables(container, { getShadowRoot: this.config.getShadowRoot })
+      const focusableNodes = getFocusables(container, { getShadowRoot: this.config.getShadowRoot })
 
-      const firstTabbableNode = tabbableNodes.length > 0 ? tabbableNodes[0] : undefined
-      const lastTabbableNode = tabbableNodes.length > 0 ? tabbableNodes[tabbableNodes.length - 1] : undefined
+      const firstTabbableNode = tabbableNodes[0]
+      const lastTabbableNode = tabbableNodes[tabbableNodes.length - 1]
 
-      const firstDomTabbableNode = focusableNodes.find((node) => isTabbable(node))
-      const lastDomTabbableNode = focusableNodes
-        .slice()
-        .reverse()
-        .find((node) => isTabbable(node))
+      // Use tabbableNodes directly instead of searching through focusableNodes
+      const firstDomTabbableNode = firstTabbableNode
+      const lastDomTabbableNode = lastTabbableNode
 
-      const posTabIndexesFound = !!tabbableNodes.find((node) => getTabIndex(node) > 0)
+      // Optimize: single iteration with early exit
+      let posTabIndexesFound = false
+      for (let i = 0; i < tabbableNodes.length; i++) {
+        if (getTabIndex(tabbableNodes[i]) > 0) {
+          posTabIndexesFound = true
+          break
+        }
+      }
 
       function nextTabbableNode(node: HTMLElement, forward = true) {
         const nodeIdx = tabbableNodes.indexOf(node)
-        if (nodeIdx < 0) {
-          if (forward) {
-            return focusableNodes.slice(focusableNodes.indexOf(node) + 1).find((el) => isTabbable(el))
-          }
-          return focusableNodes
-            .slice(0, focusableNodes.indexOf(node))
-            .reverse()
-            .find((el) => isTabbable(el))
+
+        if (nodeIdx >= 0) {
+          return tabbableNodes[nodeIdx + (forward ? 1 : -1)]
         }
-        return tabbableNodes[nodeIdx + (forward ? 1 : -1)]
+
+        // Node not in tabbableNodes, find it in focusableNodes
+        const focusableIdx = focusableNodes.indexOf(node)
+        if (focusableIdx < 0) return undefined
+
+        // Search for next/prev tabbable without allocations
+        if (forward) {
+          for (let i = focusableIdx + 1; i < focusableNodes.length; i++) {
+            if (isTabbable(focusableNodes[i])) return focusableNodes[i]
+          }
+        } else {
+          for (let i = focusableIdx - 1; i >= 0; i--) {
+            if (isTabbable(focusableNodes[i])) return focusableNodes[i]
+          }
+        }
+
+        return undefined
       }
 
       return {
@@ -378,6 +442,47 @@ export class FocusTrap {
       if (isFocusedNodeRemoved) {
         this.tryFocus(this.getInitialFocusNode())
       }
+
+      // Check if any controlled elements were added or if aria-controls/aria-expanded was modified
+      const hasControlledChanges = mutations.some((mutation) => {
+        // Check for aria-controls or aria-expanded attribute changes
+        if (
+          mutation.type === "attributes" &&
+          (mutation.attributeName === "aria-controls" || mutation.attributeName === "aria-expanded")
+        ) {
+          return true
+        }
+
+        // Check if any added nodes have controllers or might be controlled elements
+        if (mutation.type === "childList" && mutation.addedNodes.length > 0) {
+          return Array.from(mutation.addedNodes).some((node) => {
+            if (node.nodeType !== Node.ELEMENT_NODE) return false
+            const element = node as Element
+
+            // Check if this element or its descendants have controllers
+            if (hasControllerElements(element)) {
+              return true
+            }
+
+            // If this element has an ID and is not inside our containers,
+            // it might be a controlled element (portalled content)
+            if (element.id && !this.state.containers.some((c) => c.contains(element))) {
+              return isControlledByExpandedController(element)
+            }
+
+            return false
+          })
+        }
+
+        return false
+      })
+
+      if (hasControlledChanges && this.state.active && !this.state.paused) {
+        // Update tabbable nodes when controlled elements change
+        this.updateTabbableNodes()
+        // Update portal containers when controlled elements change
+        this.updatePortalContainers()
+      }
     })
   }
 
@@ -385,8 +490,19 @@ export class FocusTrap {
     this._mutationObserver?.disconnect()
 
     if (this.state.active && !this.state.paused) {
+      // Observe containers for changes
       this.state.containers.map((container) => {
-        this._mutationObserver?.observe(container, { subtree: true, childList: true })
+        this._mutationObserver?.observe(container, {
+          subtree: true,
+          childList: true,
+          attributes: true,
+          attributeFilter: ["aria-controls", "aria-expanded"],
+        })
+      })
+
+      // Observe discovered portal containers
+      this.portalContainers.forEach((portalContainer) => {
+        this.observePortalContainer(portalContainer)
       })
     }
   }
@@ -401,8 +517,9 @@ export class FocusTrap {
 
     if (node === undefined || (node && !isFocusable(node))) {
       // option not specified nor focusable: use fallback options
-      if (this.findContainerIndex(this.doc.activeElement as HTMLElement) >= 0) {
-        node = this.doc.activeElement
+      const activeElement = getActiveElement(this.doc)
+      if (activeElement && this.findContainerIndex(activeElement) >= 0) {
+        node = activeElement
       } else {
         const firstTabbableGroup = this.state.tabbableGroups[0]
         const firstTabbableNode = firstTabbableGroup && firstTabbableGroup.firstTabbableNode
@@ -459,7 +576,7 @@ export class FocusTrap {
 
     this.state.active = true
     this.state.paused = false
-    this.state.nodeFocusedBeforeActivation = (this.doc.activeElement as HTMLElement) || null
+    this.state.nodeFocusedBeforeActivation = getActiveElement(this.doc)
 
     onActivate?.()
 
@@ -500,6 +617,9 @@ export class FocusTrap {
     this.updateObservedNodes()
 
     activeFocusTraps.deactivateTrap(this.trapStack, this)
+
+    // Clear portal containers on deactivation
+    this.portalContainers.clear()
 
     const onDeactivate = this.getOption(options, "onDeactivate")
     const onPostDeactivate = this.getOption(options, "onPostDeactivate")

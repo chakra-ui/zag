@@ -1,5 +1,138 @@
 # @zag-js/solid
 
+## 1.27.1
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/core@1.27.1
+  - @zag-js/store@1.27.1
+  - @zag-js/types@1.27.1
+  - @zag-js/utils@1.27.1
+
+## 1.27.0
+
+### Patch Changes
+
+- Updated dependencies [[`920e727`](https://github.com/chakra-ui/zag/commit/920e727f73940aed3c6d2b886c64200a4a5702d0)]:
+  - @zag-js/utils@1.27.0
+  - @zag-js/core@1.27.0
+  - @zag-js/store@1.27.0
+  - @zag-js/types@1.27.0
+
+## 1.26.5
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/core@1.26.5
+  - @zag-js/store@1.26.5
+  - @zag-js/types@1.26.5
+  - @zag-js/utils@1.26.5
+
+## 1.26.4
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/core@1.26.4
+  - @zag-js/store@1.26.4
+  - @zag-js/types@1.26.4
+  - @zag-js/utils@1.26.4
+
+## 1.26.3
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/core@1.26.3
+  - @zag-js/store@1.26.3
+  - @zag-js/types@1.26.3
+  - @zag-js/utils@1.26.3
+
+## 1.26.2
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/core@1.26.2
+  - @zag-js/store@1.26.2
+  - @zag-js/types@1.26.2
+  - @zag-js/utils@1.26.2
+
+## 1.26.1
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/core@1.26.1
+  - @zag-js/store@1.26.1
+  - @zag-js/types@1.26.1
+  - @zag-js/utils@1.26.1
+
+## 1.26.0
+
+### Patch Changes
+
+- [`2adc8a3`](https://github.com/chakra-ui/zag/commit/2adc8a386ff170805878ce2c6eecb7b583fa10fa) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix issue where transition actions received stale event data
+
+- Updated dependencies []:
+  - @zag-js/core@1.26.0
+  - @zag-js/store@1.26.0
+  - @zag-js/types@1.26.0
+  - @zag-js/utils@1.26.0
+
+## 1.25.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/core@1.25.0
+  - @zag-js/store@1.25.0
+  - @zag-js/types@1.25.0
+  - @zag-js/utils@1.25.0
+
+## 1.24.2
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/core@1.24.2
+  - @zag-js/store@1.24.2
+  - @zag-js/types@1.24.2
+  - @zag-js/utils@1.24.2
+
+## 1.24.1
+
+### Patch Changes
+
+- Updated dependencies [[`ab0d4f7`](https://github.com/chakra-ui/zag/commit/ab0d4f73d6ca0571cb09ebad5bf724fe81e94ef8)]:
+  - @zag-js/core@1.24.1
+  - @zag-js/store@1.24.1
+  - @zag-js/types@1.24.1
+  - @zag-js/utils@1.24.1
+
+## 1.24.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/core@1.24.0
+  - @zag-js/store@1.24.0
+  - @zag-js/types@1.24.0
+  - @zag-js/utils@1.24.0
+
+## 1.23.0
+
+### Patch Changes
+
+- Updated dependencies [[`50391e1`](https://github.com/chakra-ui/zag/commit/50391e11eb7f9af1f23f44661a8bc522c591175c)]:
+  - @zag-js/core@1.23.0
+  - @zag-js/store@1.23.0
+  - @zag-js/types@1.23.0
+  - @zag-js/utils@1.23.0
+
 ## 1.22.1
 
 ### Patch Changes

@@ -1,8 +1,8 @@
-import { Box, Flex, HStack } from "@chakra-ui/layout"
 import { GithubIcon } from "components/icons"
 import { ThemeToggle } from "components/theme-toggle"
 import { FaDiscord } from "react-icons/fa"
 import siteConfig from "site.config"
+import { Box, Flex, HStack } from "styled-system/jsx"
 import { IconLink } from "./icon-link"
 import { LogoWithLink } from "./logo"
 import { MobileNavigation } from "./mobile-navigation"
@@ -11,34 +11,35 @@ import { VersionSelector } from "./version-selector"
 export function TopNavigation() {
   return (
     <Box
-      bg="bg-header"
+      bg="bg.header"
       backdropFilter="auto"
       backdropBlur="sm"
       position="sticky"
       top="0"
       width="full"
-      zIndex={50}
+      zIndex="50"
       py="4"
       borderBottomWidth="1px"
-      borderBottomColor="border-subtle"
+      borderBottomColor="border.subtle"
       overflowX="hidden"
     >
       <Flex
-        align="center"
-        justify="space-between"
+        alignItems="center"
+        justifyContent="space-between"
         maxW="8xl"
+        w="full"
         mx="auto"
         px={{ base: "4", sm: "6", md: "8" }}
       >
-        <HStack spacing="3">
+        <HStack gap="3">
           <LogoWithLink />
           <VersionSelector />
         </HStack>
-        <HStack spacing="4">
+        <HStack gap="4">
           <nav hidden>
             <HStack
               as="ul"
-              spacing="8"
+              gap="8"
               listStyleType="none"
               fontWeight="semibold"
               fontSize="sm"
@@ -48,7 +49,7 @@ export function TopNavigation() {
               <li>Components</li>
             </HStack>
           </nav>
-          <HStack spacing="4">
+          <HStack gap="4">
             <IconLink
               href={siteConfig.repo.url}
               icon={GithubIcon}

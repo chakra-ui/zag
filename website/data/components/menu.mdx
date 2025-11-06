@@ -99,10 +99,10 @@ menu items. To achieve this:
 <div {...api.getContentProps()}>
   {/* ... */}
   <hr {...api.getSeparatorProps()} />
-  <p {...api.getLabelProps({ htmlFor: "account" })}>Accounts</p>
-  <div {...api.getGroupProps({ id: "account" })}>
-    <button {...api.getItemProps({ id: "account-1" })}>Account 1</button>
-    <button {...api.getItemProps({ id: "account-2" })}>Account 2</button>
+  <p {...api.getItemGroupLabelProps({ htmlFor: "account" })}>Accounts</p>
+  <div {...api.getItemGroupProps({ id: "account" })}>
+    <button {...api.getItemProps({ value: "account-1" })}>Account 1</button>
+    <button {...api.getItemProps({ value: "account-2" })}>Account 2</button>
   </div>
 </div>
 //...

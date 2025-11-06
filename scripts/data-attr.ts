@@ -68,6 +68,7 @@ const docsMap = {
   "data-ssr": "Present when not rendered in the browser. Useful for ssr styling",
   "data-nested": "Present when the {{widget}} is nested within another {{widget}}",
   "data-has-nested": "Present when the {{widget}} has nested {{widget}}s",
+  "data-has-collapsed-size": "Present when the {{widget}} has collapsed width or height",
 }
 
 const skipAttrs = ["data-ownedby", "data-uid"]

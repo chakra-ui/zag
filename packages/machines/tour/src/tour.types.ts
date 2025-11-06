@@ -8,6 +8,8 @@ import type { Point, Rect, Size } from "./utils/rect"
  * Callback details
  * -----------------------------------------------------------------------------*/
 
+export type StepEffectCleanup = VoidFunction | void
+
 export interface StepEffectArgs {
   next: VoidFunction
   goto: (id: string) => void
@@ -19,7 +21,7 @@ export interface StepEffectArgs {
 
 export type StepType = "tooltip" | "dialog" | "wait" | "floating"
 
-export type StepActionType = "next" | "prev" | "dismiss"
+export type StepActionType = "next" | "prev" | "dismiss" | "skip"
 
 export type StepActionFn = (actionMap: StepActionMap) => void
 
@@ -92,7 +94,7 @@ export interface StepDetails extends StepBaseDetails {
   /**
    * The effect to run before the step is shown
    */
-  effect?: ((args: StepEffectArgs) => VoidFunction) | undefined
+  effect?: ((args: StepEffectArgs) => StepEffectCleanup) | undefined
 }
 
 export interface StepChangeDetails {
@@ -113,6 +115,7 @@ export interface StepActionMap {
   next: VoidFunction
   prev: VoidFunction
   dismiss: VoidFunction
+  skip: VoidFunction
   goto: (id: string) => void
 }
 
@@ -253,7 +256,15 @@ interface Refs {
   /**
    * The function to cleanup the step effects
    */
-  _effectCleanup?: VoidFunction | undefined
+  _effectCleanup?: StepEffectCleanup | undefined
+  /**
+   * Flag to indicate that an effect is currently running
+   */
+  _runningEffect?: boolean | undefined
+  /**
+   * The previous target element to detect changes
+   */
+  _prevTarget?: HTMLElement | null | undefined
 }
 
 type ComputedContext = Readonly<{

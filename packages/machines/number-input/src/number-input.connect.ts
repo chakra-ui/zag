@@ -13,6 +13,7 @@ import { roundToDpr } from "@zag-js/utils"
 import { parts } from "./number-input.anatomy"
 import * as dom from "./number-input.dom"
 import type { NumberInputApi, NumberInputService } from "./number-input.types"
+import { recordCursor } from "./cursor"
 
 export function connect<T extends PropTypes>(
   service: NumberInputService,
@@ -22,7 +23,8 @@ export function connect<T extends PropTypes>(
 
   const focused = state.hasTag("focus")
   const disabled = computed("isDisabled")
-  const readOnly = prop("readOnly")
+  const readOnly = !!prop("readOnly")
+  const required = !!prop("required")
   const scrubbing = state.matches("scrubbing")
 
   const empty = computed("isValueEmpty")
@@ -80,6 +82,7 @@ export function connect<T extends PropTypes>(
         "data-disabled": dataAttr(disabled),
         "data-focus": dataAttr(focused),
         "data-invalid": dataAttr(invalid),
+        "data-required": dataAttr(required),
         "data-scrubbing": dataAttr(scrubbing),
         id: dom.getLabelId(scope),
         htmlFor: dom.getInputId(scope),
@@ -145,7 +148,8 @@ export function connect<T extends PropTypes>(
           send({ type: "INPUT.BLUR" })
         },
         onInput(event) {
-          send({ type: "INPUT.CHANGE", target: event.currentTarget, hint: "set" })
+          const selection = recordCursor(event.currentTarget, scope)
+          send({ type: "INPUT.CHANGE", target: event.currentTarget, hint: "set", selection })
         },
         onBeforeInput(event) {
           try {

@@ -1,4 +1,4 @@
-import { allComponents, allSnippets } from "@/contentlayer"
+import { components as allComponents, snippets as allSnippets } from ".velite"
 import sidebar from "sidebar.config"
 import apiJson, {
   getAccessibilityDoc,
@@ -100,15 +100,18 @@ export function transformComponentDoc(itemId: string, framework?: string) {
   content = content.replace(/<Anatomy\s+id="[^"]*"\s*\/>/g, "")
 
   // Add CodeSnippets
-  content = content.replace(/<CodeSnippet\s+id="([^"]*)"\s*\/>/g, (_, id) => {
-    const snippet = allSnippets.find((s) => {
-      const [_, __, ...rest] = s.params
-      const str = rest.join("/") + ".mdx"
-      return str === id && s.framework === framework
-    })
+  content = content.replace(
+    /<CodeSnippet\s+id="([^"]*)"\s*\/>/g,
+    (_: string, id: string) => {
+      const snippet = allSnippets.find((s) => {
+        const [_, __, ...rest] = s.params
+        const str = rest.join("/") + ".mdx"
+        return str === id && s.framework === framework
+      })
 
-    return snippet?.body.raw ?? ""
-  })
+      return snippet?.body.raw ?? ""
+    },
+  )
 
   return content
 }

@@ -1,22 +1,18 @@
 @keyframes expandHeight {
   from {
-    opacity: 0.01;
-    height: 0;
+    height: var(--collapsed-height, 0);
   }
   to {
-    opacity: 1;
     height: var(--height);
   }
 }
 
 @keyframes collapseHeight {
   from {
-    opacity: 1;
     height: var(--height);
   }
   to {
-    opacity: 0.01;
-    height: 0;
+    height: var(--collapsed-height, 0);
   }
 }
 
@@ -81,5 +77,23 @@
   }
   to {
     opacity: 0;
+  }
+}
+
+@keyframes marqueeX {
+  0% {
+    transform: translateX(0%);
+  }
+  100% {
+    transform: translateX(var(--marquee-translate));
+  }
+}
+
+@keyframes marqueeY {
+  0% {
+    transform: translateY(0%);
+  }
+  100% {
+    transform: translateY(var(--marquee-translate));
   }
 }

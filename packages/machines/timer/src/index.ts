@@ -4,13 +4,13 @@ export { machine } from "./timer.machine"
 export * from "./timer.parse"
 export * from "./timer.props"
 export type {
-  ActionTriggerProps,
   TimerApi as Api,
+  TimerMachine as Machine,
   TimerProps as Props,
+  TimerService as Service,
+  ActionTriggerProps,
   ItemProps,
   ElementIds,
-  TimerService as Service,
-  TimerMachine as Machine,
   TickDetails,
   Time,
   TimePart,

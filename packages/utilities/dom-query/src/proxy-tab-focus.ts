@@ -1,6 +1,7 @@
 import { addDomEvent } from "./event"
+import { isActiveElement } from "./node"
 import { raf } from "./raf"
-import { getNextTabbable, getTabbableEdges } from "./tabbable"
+import { getNextTabbable, getTabbableEdges, type GetShadowRootOption } from "./tabbable"
 import type { MaybeElement, MaybeElementOrFn } from "./types"
 
 export interface ProxyTabFocusOptions<T = MaybeElement> {
@@ -8,10 +9,11 @@ export interface ProxyTabFocusOptions<T = MaybeElement> {
   onFocus?: ((elementToFocus: HTMLElement) => void) | undefined
   onFocusEnter?: VoidFunction | undefined
   defer?: boolean | undefined
+  getShadowRoot?: GetShadowRootOption | undefined
 }
 
 function proxyTabFocusImpl(container: MaybeElement, options: ProxyTabFocusOptions = {}) {
-  const { triggerElement, onFocus, onFocusEnter } = options
+  const { triggerElement, onFocus, onFocusEnter, getShadowRoot } = options
 
   const doc = container?.ownerDocument || document
   const body = doc.body
@@ -22,31 +24,31 @@ function proxyTabFocusImpl(container: MaybeElement, options: ProxyTabFocusOption
     let elementToFocus: MaybeElement | undefined = null
 
     // get all tabbable elements within the container
-    const [firstTabbable, lastTabbable] = getTabbableEdges(container, true)
-    const nextTabbableAfterTrigger = getNextTabbable(body, triggerElement)
+    const [firstTabbable, lastTabbable] = getTabbableEdges(container, { includeContainer: true, getShadowRoot })
+    const nextTabbableAfterTrigger = getNextTabbable(body, { current: triggerElement, getShadowRoot })
 
     const noTabbableElements = !firstTabbable && !lastTabbable
 
     // if we're focused on the element after the reference element and the user tabs backwards
     // we want to focus the last tabbable element
-    if (event.shiftKey && nextTabbableAfterTrigger === doc.activeElement) {
+    if (event.shiftKey && isActiveElement(nextTabbableAfterTrigger)) {
       onFocusEnter?.()
       elementToFocus = lastTabbable
     }
     // if we're focused on the first tabbable element and the user tabs backwards
     // we want to focus the reference element
-    else if (event.shiftKey && (doc.activeElement === firstTabbable || noTabbableElements)) {
+    else if (event.shiftKey && (isActiveElement(firstTabbable) || noTabbableElements)) {
       elementToFocus = triggerElement
     }
     // if we're focused on the reference element and the user tabs forwards
     // we want to focus the first tabbable element
-    else if (!event.shiftKey && doc.activeElement === triggerElement) {
+    else if (!event.shiftKey && isActiveElement(triggerElement)) {
       onFocusEnter?.()
       elementToFocus = firstTabbable
     }
     // if we're focused on the last tabbable element and the user tabs forwards
     // we want to focus the next tabbable element after the reference element
-    else if (!event.shiftKey && (doc.activeElement === lastTabbable || noTabbableElements)) {
+    else if (!event.shiftKey && (isActiveElement(lastTabbable) || noTabbableElements)) {
       elementToFocus = nextTabbableAfterTrigger
     }
 

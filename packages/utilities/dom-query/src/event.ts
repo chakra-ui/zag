@@ -1,11 +1,11 @@
 import type { MaybeFn } from "@zag-js/types"
-import { contains } from "./node"
 import { isAndroid, isMac } from "./platform"
 import type { AnyPointerEvent, EventKeyOptions, NativeEvent } from "./types"
 
 export function getBeforeInputValue(event: Pick<InputEvent, "currentTarget">) {
   const { selectionStart, selectionEnd, value } = event.currentTarget as HTMLInputElement
-  return value.slice(0, selectionStart!) + (event as any).data + value.slice(selectionEnd!)
+  const data = (event as any).data
+  return value.slice(0, selectionStart!) + (data ?? "") + value.slice(selectionEnd!)
 }
 
 function getComposedPath(event: any): EventTarget[] | undefined {
@@ -17,10 +17,6 @@ export function getEventTarget<T extends EventTarget>(
 ): T | null {
   const composedPath = getComposedPath(event)
   return (composedPath?.[0] ?? event.target) as T | null
-}
-
-export const isSelfTarget = (event: Partial<Pick<UIEvent, "currentTarget" | "target" | "composedPath">>) => {
-  return contains(event.currentTarget as Node, getEventTarget(event))
 }
 
 export function isOpeningInNewTab(event: Pick<MouseEvent, "currentTarget" | "metaKey" | "ctrlKey" | "button">) {

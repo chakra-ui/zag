@@ -1,5 +1,186 @@
 # @zag-js/slider
 
+## 1.27.1
+
+### Patch Changes
+
+- [#2822](https://github.com/chakra-ui/zag/pull/2822)
+  [`a372b95`](https://github.com/chakra-ui/zag/commit/a372b955911f78632665c7df86365414f64ac1f0) Thanks
+  [@nelsonlaidev](https://github.com/nelsonlaidev)! - Export missing types
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.27.1
+  - @zag-js/core@1.27.1
+  - @zag-js/types@1.27.1
+  - @zag-js/utils@1.27.1
+  - @zag-js/dom-query@1.27.1
+
+## 1.27.0
+
+### Patch Changes
+
+- [`48243a4`](https://github.com/chakra-ui/zag/commit/48243a4ce2f1c515e9845e00a46644e1861f99d9) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix issue where programmatic value changes do not trigger the
+  `onValueChangeEnd` callback. This affects the following API methods:
+  - `slider.setThumbValue(index, value)`
+  - `slider.setValue(value)`
+  - `slider.increment(index)`
+  - `slider.decrement(index)`
+
+- Updated dependencies [[`cf6fb09`](https://github.com/chakra-ui/zag/commit/cf6fb0956aeacc236531ee90de9169a39cdde3a5),
+  [`920e727`](https://github.com/chakra-ui/zag/commit/920e727f73940aed3c6d2b886c64200a4a5702d0)]:
+  - @zag-js/dom-query@1.27.0
+  - @zag-js/utils@1.27.0
+  - @zag-js/core@1.27.0
+  - @zag-js/anatomy@1.27.0
+  - @zag-js/types@1.27.0
+
+## 1.26.5
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.26.5
+  - @zag-js/core@1.26.5
+  - @zag-js/types@1.26.5
+  - @zag-js/utils@1.26.5
+  - @zag-js/dom-query@1.26.5
+
+## 1.26.4
+
+### Patch Changes
+
+- [`f2e2d4c`](https://github.com/chakra-ui/zag/commit/f2e2d4cffc78a005ce671a491dc7a6c16fb6087b) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix issue where slider thumb offset changes dynamically during
+  drag, causing unexpected value jumps. The thumb now maintains a constant offset from the pointer throughout the drag
+  operation, matching the initial grab position.
+- Updated dependencies []:
+  - @zag-js/anatomy@1.26.4
+  - @zag-js/core@1.26.4
+  - @zag-js/types@1.26.4
+  - @zag-js/utils@1.26.4
+  - @zag-js/dom-query@1.26.4
+
+## 1.26.3
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.26.3
+  - @zag-js/core@1.26.3
+  - @zag-js/types@1.26.3
+  - @zag-js/utils@1.26.3
+  - @zag-js/dom-query@1.26.3
+
+## 1.26.2
+
+### Patch Changes
+
+- [`f1eac6b`](https://github.com/chakra-ui/zag/commit/f1eac6b86ea0305147cc86aef9bec483fe875080) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix issue where range slider thumbs become stuck when dragged to
+  the same position without `minStepsBetweenThumbs`. When both thumbs are at max value, automatically select the movable
+  thumb and add z-index to focused thumb for better visual feedback.
+
+- [`97be748`](https://github.com/chakra-ui/zag/commit/97be74846a2c650dcb4f34858a57592fd7ae6bb6) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix issue where slider could stop abruptly when scrubbing thumb
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.26.2
+  - @zag-js/core@1.26.2
+  - @zag-js/types@1.26.2
+  - @zag-js/utils@1.26.2
+  - @zag-js/dom-query@1.26.2
+
+## 1.26.1
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.26.1
+  - @zag-js/core@1.26.1
+  - @zag-js/types@1.26.1
+  - @zag-js/utils@1.26.1
+  - @zag-js/dom-query@1.26.1
+
+## 1.26.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.26.0
+  - @zag-js/core@1.26.0
+  - @zag-js/types@1.26.0
+  - @zag-js/utils@1.26.0
+  - @zag-js/dom-query@1.26.0
+
+## 1.25.0
+
+### Minor Changes
+
+- [#2726](https://github.com/chakra-ui/zag/pull/2726)
+  [`e53c89e`](https://github.com/chakra-ui/zag/commit/e53c89efcd33bbb3ab60e01ddcbcb37beccc3063) Thanks
+  [@Hugos68](https://github.com/Hugos68)! - Export `splitMarkerProps` helper.
+
+### Patch Changes
+
+- [`60acf60`](https://github.com/chakra-ui/zag/commit/60acf6067631f087396436f1f4fdf922ee9468cb) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix issue where slider continues dragging when disabled during
+  drag operation.
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.25.0
+  - @zag-js/core@1.25.0
+  - @zag-js/types@1.25.0
+  - @zag-js/utils@1.25.0
+  - @zag-js/dom-query@1.25.0
+
+## 1.24.2
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.24.2
+  - @zag-js/core@1.24.2
+  - @zag-js/types@1.24.2
+  - @zag-js/utils@1.24.2
+  - @zag-js/dom-query@1.24.2
+
+## 1.24.1
+
+### Patch Changes
+
+- Updated dependencies [[`ab0d4f7`](https://github.com/chakra-ui/zag/commit/ab0d4f73d6ca0571cb09ebad5bf724fe81e94ef8)]:
+  - @zag-js/core@1.24.1
+  - @zag-js/anatomy@1.24.1
+  - @zag-js/types@1.24.1
+  - @zag-js/utils@1.24.1
+  - @zag-js/dom-query@1.24.1
+
+## 1.24.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.24.0
+  - @zag-js/core@1.24.0
+  - @zag-js/types@1.24.0
+  - @zag-js/utils@1.24.0
+  - @zag-js/dom-query@1.24.0
+
+## 1.23.0
+
+### Patch Changes
+
+- Updated dependencies [[`92c0bf5`](https://github.com/chakra-ui/zag/commit/92c0bf5f5e283451c6be989e63ff02188054be9a),
+  [`47011ad`](https://github.com/chakra-ui/zag/commit/47011add7c99572aaa162846cf01781ea42d35ac),
+  [`92c0bf5`](https://github.com/chakra-ui/zag/commit/92c0bf5f5e283451c6be989e63ff02188054be9a),
+  [`50391e1`](https://github.com/chakra-ui/zag/commit/50391e11eb7f9af1f23f44661a8bc522c591175c)]:
+  - @zag-js/dom-query@1.23.0
+  - @zag-js/core@1.23.0
+  - @zag-js/anatomy@1.23.0
+  - @zag-js/types@1.23.0
+  - @zag-js/utils@1.23.0
+
 ## 1.22.1
 
 ### Patch Changes

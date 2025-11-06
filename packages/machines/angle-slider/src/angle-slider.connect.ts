@@ -1,8 +1,9 @@
-import { dataAttr, getEventPoint, getEventStep, isLeftClick } from "@zag-js/dom-query"
+import { dataAttr, getEventPoint, getEventStep, getNativeEvent, isLeftClick } from "@zag-js/dom-query"
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import { parts } from "./angle-slider.anatomy"
 import * as dom from "./angle-slider.dom"
-import type { AngleSliderService, AngleSliderApi } from "./angle-slider.types"
+import type { AngleSliderApi, AngleSliderService } from "./angle-slider.types"
+import { getAngle } from "./angle-slider.utils"
 
 export function connect<T extends PropTypes>(
   service: AngleSliderService,
@@ -19,6 +20,9 @@ export function connect<T extends PropTypes>(
   const invalid = prop("invalid")
   const readOnly = prop("readOnly")
   const interactive = computed("interactive")
+
+  const ariaLabel = prop("aria-label")
+  const ariaLabelledBy = prop("aria-labelledby")
 
   return {
     value,
@@ -45,6 +49,7 @@ export function connect<T extends PropTypes>(
     getLabelProps() {
       return normalize.label({
         ...parts.label.attrs,
+        id: dom.getLabelId(scope),
         htmlFor: dom.getHiddenInputId(scope),
         "data-disabled": dataAttr(disabled),
         "data-invalid": dataAttr(invalid),
@@ -77,8 +82,22 @@ export function connect<T extends PropTypes>(
         onPointerDown(event) {
           if (!interactive) return
           if (!isLeftClick(event)) return
+
           const point = getEventPoint(event)
-          send({ type: "CONTROL.POINTER_DOWN", point })
+          const controlEl = event.currentTarget
+
+          // Check if pointer is over the thumb (if thumb exists)
+          const thumbEl = dom.getThumbEl(scope)
+          const composedPath = getNativeEvent(event).composedPath()
+          const isOverThumb = thumbEl && composedPath.includes(thumbEl)
+
+          let angularOffset = null
+          if (isOverThumb) {
+            const clickAngle = getAngle(controlEl, point)
+            angularOffset = clickAngle - value
+          }
+
+          send({ type: "CONTROL.POINTER_DOWN", point, angularOffset })
           event.stopPropagation()
         },
         style: {
@@ -94,6 +113,8 @@ export function connect<T extends PropTypes>(
         ...parts.thumb.attrs,
         id: dom.getThumbId(scope),
         role: "slider",
+        "aria-label": ariaLabel,
+        "aria-labelledby": ariaLabelledBy ?? dom.getLabelId(scope),
         "aria-valuemax": 360,
         "aria-valuemin": 0,
         "aria-valuenow": value,

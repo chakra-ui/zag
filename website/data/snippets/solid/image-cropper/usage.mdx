@@ -1,0 +1,35 @@
+```jsx
+import * as imageCropper from "@zag-js/image-cropper"
+import { normalizeProps, useMachine } from "@zag-js/solid"
+import { For, createMemo, createUniqueId } from "solid-js"
+
+export function ImageCropper() {
+  const service = useMachine(imageCropper.machine, {
+    id: createUniqueId(),
+  })
+
+  const api = createMemo(() => imageCropper.connect(service, normalizeProps))
+
+  return (
+    <div {...api().getRootProps()}>
+      <div {...api().getViewportProps()}>
+        <img
+          src="https://picsum.photos/seed/crop/640/400"
+          crossOrigin="anonymous"
+          {...api().getImageProps()}
+        />
+
+        <div {...api().getSelectionProps()}>
+          <For each={imageCropper.handles}>
+            {(position) => (
+              <div {...api().getHandleProps({ position })}>
+                <span />
+              </div>
+            )}
+          </For>
+        </div>
+      </div>
+    </div>
+  )
+}
+```

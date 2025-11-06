@@ -203,6 +203,41 @@ export interface FocusTrapOptions {
    * Default: `[]`. An array of FocusTrap instances that will be managed by this FocusTrap.
    */
   trapStack?: any[] | undefined
+
+  /**
+   * Default: `true`. If `true`, the focus trap will recursively include elements
+   * that are controlled by elements within the trap via `aria-controls`. Only elements
+   * with `aria-expanded="true"` and interactive container roles (menu, listbox, dialog, etc.)
+   * will be included. This allows nested menus, select dropdowns, and other portalled
+   * content to remain within the focus trap.
+   */
+  followControlledElements?: boolean | undefined
+
+  /**
+   * Optional function to support shadow DOM traversal. When provided, it enables
+   * the focus trap to find tabbable elements inside shadow roots (web components).
+   *
+   * - `true`: Enable shadow DOM support for open shadow roots
+   * - `false` or `undefined`: Disable shadow DOM support (default)
+   * - Function: Called with each element; return `true` if it has a shadow root to traverse,
+   *   the `ShadowRoot` instance, or a falsy value if no shadow root exists
+   *
+   * This is required for proper focus management when using web components or custom elements
+   * with shadow DOM.
+   *
+   * @example
+   * ```ts
+   * // Enable for all open shadow roots
+   * getShadowRoot: true
+   *
+   * // Custom function for closed shadow roots
+   * getShadowRoot: (node) => {
+   *   if (node === myCustomElement) return myCustomElement.shadowRoot
+   *   return node.shadowRoot
+   * }
+   * ```
+   */
+  getShadowRoot?: boolean | ((node: FocusableElement) => ShadowRoot | boolean | undefined) | undefined
 }
 
 interface ContainerGroup {

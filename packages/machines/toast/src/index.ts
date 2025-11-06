@@ -6,23 +6,24 @@ export { connect } from "./toast.connect"
 export { machine } from "./toast.machine"
 export { createToastStore as createStore } from "./toast.store"
 export type {
-  ActionOptions,
   ToastApi as Api,
+  ToastMachine as Machine,
+  ToastProps as Props,
+  ToastService as Service,
   ToastGroupApi as GroupApi,
   ToastGroupMachine as GroupMachine,
   ToastGroupProps as GroupProps,
   ToastGroupService as GroupService,
-  ToastMachine as Machine,
-  Options,
-  Placement,
-  PromiseOptions,
-  ToastProps as Props,
-  ToastService as Service,
-  Status,
-  StatusChangeDetails,
   ToastStore as Store,
   ToastStoreProps as StoreProps,
+  Options,
+  ActionOptions,
+  Placement,
+  PromiseOptions,
+  Status,
+  StatusChangeDetails,
   Type,
+  ToastHeight,
 } from "./toast.types"
 
 export const group = {

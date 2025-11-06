@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Vite + TS</title>
+  </head>
+  <body style="padding: 40px">
+    <h1>Dialog</h1>
+
+    <div class="dialog">
+      <button class="dialog-trigger">Open Dialog</button>
+
+      <div class="dialog-backdrop" hidden></div>
+      <div class="dialog-positioner" hidden>
+        <div class="dialog-content">
+          <h2 class="dialog-title">Dialog Title</h2>
+          <p class="dialog-description">
+            This is a dialog example. You can interact with the content here.
+          </p>
+          <button class="dialog-close">Close</button>
+        </div>
+      </div>
+    </div>
+
+    <script type="module" src="./dialog.ts"></script>
+  </body>
+</html>

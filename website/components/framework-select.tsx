@@ -1,5 +1,4 @@
-import { HStack } from "@chakra-ui/layout"
-import { chakra } from "@chakra-ui/system"
+import { styled, HStack } from "styled-system/jsx"
 import { frameworks, type Framework } from "lib/framework-utils"
 import { useRouter } from "next/router"
 import { useFramework } from "./framework"
@@ -10,18 +9,18 @@ export function FrameworkSelect() {
 
   return (
     <HStack>
-      <chakra.label
+      <styled.label
         fontWeight="medium"
         htmlFor="framework-select"
         fontSize="sm"
       >
         Framework:{" "}
-      </chakra.label>
-      <chakra.select
+      </styled.label>
+      <styled.select
         id="framework-select"
         fontSize="sm"
         fontWeight="semibold"
-        color="text-primary-bold"
+        color="text.primary.bold"
         defaultValue={framework}
         onChange={(event: React.ChangeEvent<HTMLSelectElement>) => {
           const newFramework = event.currentTarget.value as Framework
@@ -37,7 +36,7 @@ export function FrameworkSelect() {
             {value.label}
           </option>
         ))}
-      </chakra.select>
+      </styled.select>
     </HStack>
   )
 }

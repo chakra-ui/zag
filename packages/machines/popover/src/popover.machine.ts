@@ -178,6 +178,7 @@ export const machine = createMachine<PopoverSchema>({
         return proxyTabFocus(getContentEl, {
           triggerElement: dom.getTriggerEl(scope),
           defer: true,
+          getShadowRoot: true,
           onFocus(el) {
             el.focus({ preventScroll: true })
           },
@@ -205,6 +206,7 @@ export const machine = createMachine<PopoverSchema>({
               getInitialEl: prop("initialFocusEl"),
               enabled: prop("autoFocus"),
             }),
+          getShadowRoot: true,
         })
       },
     },

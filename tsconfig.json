@@ -12,7 +12,7 @@
     "lib": ["dom", "dom.iterable", "esnext"],
     "target": "esnext",
     "module": "esnext",
-    "moduleResolution": "node",
+    "moduleResolution": "bundler",
     "noImplicitReturns": false,
     "resolveJsonModule": true,
     "exactOptionalPropertyTypes": true,
@@ -21,7 +21,7 @@
     "strictNullChecks": true,
     "stripInternal": true,
     "ignoreDeprecations": "5.0",
-    "types": ["vitest/globals"],
+    "types": ["vitest/globals", "node"],
     "verbatimModuleSyntax": true
   }
 }

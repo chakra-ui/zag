@@ -37,6 +37,13 @@ export const isElementVisible = (el: Node) => {
   return el.offsetWidth > 0 || el.offsetHeight > 0 || el.getClientRects().length > 0
 }
 
+export function isActiveElement(element: Element | null | undefined): boolean {
+  if (!element) return false
+  const rootNode = element.getRootNode() as Document | ShadowRoot
+
+  return getActiveElement(rootNode) === element
+}
+
 const TEXTAREA_SELECT_REGEX = /(textarea|select)/
 
 export function isEditableElement(el: HTMLElement | EventTarget | null) {
@@ -94,7 +101,7 @@ export function getActiveElement(rootNode: Document | ShadowRoot): HTMLElement |
   let activeElement = rootNode.activeElement as HTMLElement | null
   while (activeElement?.shadowRoot) {
     const el = activeElement.shadowRoot.activeElement as HTMLElement | null
-    if (el === activeElement) break
+    if (!el || el === activeElement) break
     else activeElement = el
   }
   return activeElement
@@ -105,4 +112,14 @@ export function getParentNode(node: Node): Node {
   const result =
     (node as any).assignedSlot || node.parentNode || (isShadowRoot(node) && node.host) || getDocumentElement(node)
   return isShadowRoot(result) ? result.host : result
+}
+
+export function getRootNode(node: Node): Document | ShadowRoot {
+  let result: Node
+  try {
+    result = node.getRootNode({ composed: true })
+    if (isDocument(result) || isShadowRoot(result)) return result
+  } catch {}
+
+  return node.ownerDocument ?? document
 }

@@ -5,6 +5,7 @@ export const getThumbId = (ctx: Scope) => ctx.ids?.thumb ?? `angle-slider:${ctx.
 export const getHiddenInputId = (ctx: Scope) => ctx.ids?.hiddenInput ?? `angle-slider:${ctx.id}:input`
 export const getControlId = (ctx: Scope) => ctx.ids?.control ?? `angle-slider:${ctx.id}:control`
 export const getValueTextId = (ctx: Scope) => ctx.ids?.valueText ?? `angle-slider:${ctx.id}:value-text`
+export const getLabelId = (ctx: Scope) => ctx.ids?.label ?? `angle-slider:${ctx.id}:label`
 
 export const getHiddenInputEl = (ctx: Scope) => ctx.getById<HTMLInputElement>(getHiddenInputId(ctx))
 export const getControlEl = (ctx: Scope) => ctx.getById<HTMLElement>(getControlId(ctx))
