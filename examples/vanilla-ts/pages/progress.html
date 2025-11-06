@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Vite + TS</title>
+  </head>
+  <body style="padding: 40px">
+    <h1>Progress</h1>
+
+    <div class="progress">
+      <div class="progress-label">Upload progress</div>
+
+      <svg class="progress-circle" width="120" height="120">
+        <circle class="progress-circle-track" />
+        <circle class="progress-circle-range" />
+      </svg>
+
+      <div class="progress-track">
+        <div class="progress-range"></div>
+      </div>
+
+      <div class="progress-value-text">0%</div>
+
+      <div>
+        <button class="progress-decrease">Decrease</button>
+        <button class="progress-increase">Increase</button>
+        <button class="progress-indeterminate">Indeterminate</button>
+      </div>
+    </div>
+
+    <script type="module" src="./progress.ts"></script>
+  </body>
+</html>

@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Vite + TS</title>
+  </head>
+  <body style="padding: 40px">
+    <h1>File Upload</h1>
+
+    <div class="file-upload">
+      <label class="file-upload-label">File Upload</label>
+      <div class="file-upload-dropzone">
+        <input class="file-upload-hidden-input" />
+        Drag your files here
+      </div>
+      <button class="file-upload-trigger">Choose Files...</button>
+      <ul class="file-upload-item-group"></ul>
+      <button class="file-upload-clear">Clear All</button>
+    </div>
+
+    <script type="module" src="./file-upload.ts"></script>
+  </body>
+</html>
