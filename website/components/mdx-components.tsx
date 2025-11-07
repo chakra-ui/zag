@@ -80,16 +80,7 @@ const components: Record<string, FC<any>> = {
     return <Blockquote {...props} />
   },
   h1(props) {
-    return (
-      <styled.h1
-        id="skip-nav"
-        textStyle="display.lg"
-        mb="5"
-        maxW="85ch"
-        tabIndex={-1}
-        {...props}
-      />
-    )
+    return <styled.h1 textStyle="display.lg" mb="5" maxW="85ch" {...props} />
   },
   h2(props) {
     return <styled.h2 textStyle="display.md" mt="12" mb="3" {...props} />
