@@ -7,11 +7,10 @@ const controls = useControls(marqueeControls)
 
 const service = useMachine(
   marquee.machine,
-  computed(() => ({
+  controls.mergeProps<marquee.Props>({
     id: useId(),
     spacing: "2rem",
-    ...controls.value.context,
-  })),
+  }),
 )
 
 const api = computed(() => marquee.connect(service, normalizeProps))
@@ -42,7 +41,10 @@ const api = computed(() => marquee.connect(service, normalizeProps))
     </div>
   </main>
 
-  <Toolbar :controls="controls.ui">
+  <Toolbar>
     <StateVisualizer :state="service" />
+    <template #controls>
+      <Controls :control="controls" />
+    </template>
   </Toolbar>
 </template>
