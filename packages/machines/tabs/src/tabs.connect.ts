@@ -197,6 +197,11 @@ export function connect<T extends PropTypes>(service: Service<TabsSchema>, norma
         ...parts.indicator.attrs,
         dir: prop("dir"),
         "data-orientation": prop("orientation"),
+        hidden:
+          indicatorRect.left == null ||
+          indicatorRect.top == null ||
+          indicatorRect.width == null ||
+          indicatorRect.height == null,
         style: {
           "--transition-property": "left, right, top, bottom, width, height",
           "--left": indicatorRect.left,
