@@ -1,7 +1,7 @@
 import { createMachine } from "@zag-js/core"
-import type { {{machine}}Schema } from "./{{dashCase machine}}.types"
+import type { {{pascalCase machine}}Schema } from "./{{dashCase machine}}.types"
 
-export const machine = createMachine<{{machine}}Schema>({
+export const machine = createMachine<{{pascalCase machine}}Schema>({
   props({ props }) {
     return props
   },
@@ -14,11 +14,9 @@ export const machine = createMachine<{{machine}}Schema>({
     return "idle"
   },
 
-  context({ props }) {
-    return props
+  states: {
+    idle: {},
   },
-
-  states: {},
 
   implementations: {
     guards: {},

@@ -1,0 +1,24 @@
+<script lang="ts">
+  import StateVisualizer from "$lib/components/state-visualizer.svelte"
+  import Toolbar from "$lib/components/toolbar.svelte"
+  import { useControls } from "$lib/use-controls.svelte"
+  import * as {{camelCase machine}} from "@zag-js/{{machine}}"
+  import { {{camelCase machine}}Controls } from "@zag-js/shared"
+  import { normalizeProps, useMachine } from "@zag-js/svelte"
+
+  const controls = useControls({{camelCase machine}}Controls)
+
+  const id = $props.id()
+  const service = useMachine({{camelCase machine}}.machine, controls.mergeProps<{{camelCase machine}}.Props>({ id }))
+
+  const api = $derived({{camelCase machine}}.connect(service, normalizeProps))
+</script>
+
+<main class="{{machine}}">
+  <div {...api.getRootProps()}>
+  </div>
+</main>
+
+<Toolbar {controls}>
+  <StateVisualizer state={service} />
+</Toolbar>
