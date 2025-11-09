@@ -24,5 +24,8 @@ const api = computed(() => {{camelCase machine}}.connect(service, normalizeProps
 
   <Toolbar>
     <StateVisualizer :state="service" />
+    <template #controls>
+      <Controls :control="controls" />
+    </template>
   </Toolbar>
 </template>
