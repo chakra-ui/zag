@@ -3,4 +3,4 @@
 "@zag-js/tabs": patch
 ---
 
-bugfix: only show indicator once rect has been resolved
+Fix indicator prematurely showing when rect has not been resolved yet
