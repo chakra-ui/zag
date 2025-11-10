@@ -41,3 +41,11 @@ export function clearOpenTimeout(refs: BindableRefs<NavigationMenuSchema>, value
     refs.set("openTimeoutIds", rest)
   }
 }
+
+export function clearAllOpenTimeouts(refs: BindableRefs<NavigationMenuSchema>) {
+  const openTimeoutIds = refs.get("openTimeoutIds")
+  Object.values(openTimeoutIds).forEach((timeoutId) => {
+    if (timeoutId) clearTimeout(timeoutId)
+  })
+  refs.set("openTimeoutIds", {})
+}

@@ -5,7 +5,13 @@ import type { Point, Rect, Size } from "@zag-js/types"
 import { callAll, ensureProps } from "@zag-js/utils"
 import * as dom from "./navigation-menu.dom"
 import type { NavigationMenuSchema } from "./navigation-menu.types"
-import { clearCloseTimeout, clearOpenTimeout, setCloseTimeout, setOpenTimeout } from "./navigation-menu.utils"
+import {
+  clearAllOpenTimeouts,
+  clearCloseTimeout,
+  clearOpenTimeout,
+  setCloseTimeout,
+  setOpenTimeout,
+} from "./navigation-menu.utils"
 
 const { createMachine } = setup<NavigationMenuSchema>()
 
@@ -140,11 +146,8 @@ export const machine = createMachine({
     "ITEM.CLOSE": {
       actions: ["focusTrigger", "deselectValue"],
     },
-    "CONTENT.ESCAPE_KEYDOWN": {
-      actions: ["focusTrigger", "deselectValue"],
-    },
     CLOSE: {
-      actions: ["deselectValue", "focusTriggerIfNeeded", "removeFromTabOrder"],
+      actions: ["clearAllOpenTimeouts", "deselectValue", "focusTriggerIfNeeded", "removeFromTabOrder"],
     },
   },
 
@@ -178,6 +181,9 @@ export const machine = createMachine({
       },
       clearCloseTimeout({ refs }) {
         clearCloseTimeout(refs)
+      },
+      clearAllOpenTimeouts({ refs }) {
+        clearAllOpenTimeouts(refs)
       },
       setCloseTimeout({ refs, context, prop }) {
         setCloseTimeout(refs, context, prop)
@@ -289,13 +295,8 @@ export const machine = createMachine({
               }
             }
           },
-          onEscapeKeyDown(event) {
-            if (!event.defaultPrevented) {
-              send({ type: "CONTENT.ESCAPE_KEYDOWN" })
-            }
-          },
           onDismiss() {
-            send({ type: "CLOSE" })
+            send({ type: "CLOSE", value: context.get("value") })
           },
         })
 
@@ -346,8 +347,8 @@ export const machine = createMachine({
         dom.getTriggerEl(scope, value)?.focus()
       },
 
-      focusTriggerIfNeeded({ context, event, scope }) {
-        const value = event.value ?? context.get("value")
+      focusTriggerIfNeeded({ event, scope }) {
+        const value = event.value
         const contentEl = dom.getContentEl(scope, value)
         if (!contains(contentEl, scope.getActiveElement())) return
         dom.getTriggerEl(scope, value)?.focus()
