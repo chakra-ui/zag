@@ -17,7 +17,7 @@ export function connect<T extends PropTypes>(
   service: NavigationMenuService,
   normalize: NormalizeProps<T>,
 ): NavigationMenuApi<T> {
-  const { context, send, prop, scope, computed, refs } = service
+  const { context, send, prop, scope } = service
 
   const triggerRect = context.get("triggerRect")
 
@@ -60,12 +60,6 @@ export function connect<T extends PropTypes>(
     setValue(value) {
       send({ type: "VALUE.SET", value })
     },
-    setParent(parent) {
-      send({ type: "PARENT.SET", parent })
-    },
-    setChild(child) {
-      send({ type: "CHILD.SET", value: child, id: child.prop("id") })
-    },
 
     getRootProps() {
       return normalize.element({
@@ -73,7 +67,6 @@ export function connect<T extends PropTypes>(
         id: dom.getRootId(scope),
         "aria-label": "Main Navigation",
         "data-orientation": prop("orientation")!,
-        "data-type": computed("isSubmenu") ? "submenu" : "root",
         dir: prop("dir"),
         style: {
           "--trigger-width": toPx(triggerRect?.width),
@@ -94,7 +87,7 @@ export function connect<T extends PropTypes>(
         id: dom.getListId(scope),
         dir: prop("dir"),
         "data-orientation": prop("orientation")!,
-        "data-type": computed("isSubmenu") ? "submenu" : "root",
+        "data-type": "root",
       })
     },
 
@@ -145,7 +138,6 @@ export function connect<T extends PropTypes>(
         hidden: !open,
         "data-state": open ? "open" : "closed",
         "data-orientation": prop("orientation")!,
-        "data-type": computed("isSubmenu") ? "submenu" : "root",
         style: {
           position: "absolute",
           transition: preventTransition ? "none" : undefined,
@@ -173,7 +165,6 @@ export function connect<T extends PropTypes>(
         disabled: props.disabled,
         "data-value": props.value,
         "data-state": itemState.selected ? "open" : "closed",
-        "data-type": computed("isSubmenu") ? "submenu" : "root",
         "data-disabled": dataAttr(props.disabled),
         "aria-controls": itemState.contentId,
         "aria-expanded": itemState.selected,
@@ -272,7 +263,7 @@ export function connect<T extends PropTypes>(
           target.dispatchEvent(linkSelectEvent)
 
           if (!linkSelectEvent.defaultPrevented && !event.metaKey) {
-            send({ type: "ROOT.CLOSE" })
+            send({ type: "CLOSE" })
           }
         },
       })
@@ -292,17 +283,14 @@ export function connect<T extends PropTypes>(
         "aria-labelledby": itemState.triggerId,
         "data-uid": prop("id"),
         "data-state": selected ? "open" : "closed",
-        "data-type": computed("isSubmenu") ? "submenu" : "root",
         "data-orientation": prop("orientation"),
         "data-value": props.value,
         onPointerEnter(event) {
           if (event.pointerType !== "mouse") return
-          if (computed("isSubmenu")) return
           send({ type: "CONTENT.POINTERENTER", value: props.value })
         },
         onPointerLeave(event) {
           if (event.pointerType !== "mouse") return
-          if (computed("isSubmenu")) return
           send({ type: "CONTENT.POINTERLEAVE", value: props.value })
         },
         onKeyDown(event) {
@@ -372,11 +360,10 @@ export function connect<T extends PropTypes>(
         hidden: !open,
         "data-state": open ? "open" : "closed",
         "data-orientation": prop("orientation"),
-        "data-type": computed("isSubmenu") ? "submenu" : "root",
         "data-align": align,
         style: {
           transition: preventTransition ? "none" : undefined,
-          pointerEvents: !open && computed("isRootMenu") ? "none" : undefined,
+          pointerEvents: !open ? "none" : undefined,
           "--viewport-width": toPx(viewportSize?.width),
           "--viewport-height": toPx(viewportSize?.height),
           "--viewport-x": toPx(viewportPosition?.x),
@@ -388,7 +375,6 @@ export function connect<T extends PropTypes>(
         onPointerLeave(event) {
           if (prop("disablePointerLeaveClose")) return
           if (event.pointerType !== "mouse") return
-          if (Object.keys(refs.get("children")).length) return
           send({ type: "CONTENT.POINTERLEAVE" })
         },
       })

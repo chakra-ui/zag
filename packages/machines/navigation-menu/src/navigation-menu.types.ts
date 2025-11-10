@@ -81,8 +81,6 @@ export interface NavigationMenuSchema {
   props: RequiredBy<NavigationMenuProps, PropsWithDefault>
   state: "idle"
   computed: {
-    isRootMenu: boolean
-    isSubmenu: boolean
     open: boolean
   }
   refs: {
@@ -91,9 +89,6 @@ export interface NavigationMenuSchema {
     contentDismissableCleanup: VoidFunction | undefined
     triggerResizeObserverCleanup: VoidFunction | undefined
     contentExitCompleteCleanup: VoidFunction | undefined
-
-    parent: NavigationMenuService | null
-    children: Record<string, NavigationMenuService | null>
 
     closeTimeoutId: number | null
     openTimeoutIds: Record<string, number>
@@ -112,7 +107,6 @@ export interface NavigationMenuSchema {
     contentNode: HTMLElement | null
     triggerRect: Rect | null
     triggerNode: HTMLElement | null
-    isSubmenu: boolean
   }
   action: string
   effect: string
@@ -190,14 +184,6 @@ export interface NavigationMenuApi<T extends PropTypes = PropTypes> {
    * Gets the viewport node element
    */
   getViewportNode: () => HTMLElement | null
-  /**
-   * Sets the parent of the menu
-   */
-  setParent: (parent: NavigationMenuService) => void
-  /**
-   * Sets the child of the menu
-   */
-  setChild: (child: NavigationMenuService) => void
   /**
    * The orientation of the menu
    */

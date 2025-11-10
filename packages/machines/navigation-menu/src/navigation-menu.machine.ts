@@ -4,12 +4,10 @@ import { addDomEvent, contains, navigate, raf } from "@zag-js/dom-query"
 import type { Point, Rect, Size } from "@zag-js/types"
 import { callAll, ensureProps } from "@zag-js/utils"
 import * as dom from "./navigation-menu.dom"
-import type { NavigationMenuSchema, NavigationMenuService } from "./navigation-menu.types"
+import type { NavigationMenuSchema } from "./navigation-menu.types"
 import { clearCloseTimeout, clearOpenTimeout, setCloseTimeout, setOpenTimeout } from "./navigation-menu.utils"
 
-const { createMachine, guards } = setup<NavigationMenuSchema>()
-
-const { not } = guards
+const { createMachine } = setup<NavigationMenuSchema>()
 
 export const machine = createMachine({
   props({ props }) {
@@ -64,10 +62,6 @@ export const machine = createMachine({
         defaultValue: null,
       })),
 
-      isSubmenu: bindable<boolean>(() => ({
-        defaultValue: false,
-      })),
-
       clickCloseValue: bindable<string | null>(() => ({
         defaultValue: null,
       })),
@@ -78,8 +72,6 @@ export const machine = createMachine({
   },
 
   computed: {
-    isRootMenu: ({ refs, context }) => refs.get("parent") == null && !context.get("isSubmenu"),
-    isSubmenu: ({ refs, context }) => refs.get("parent") != null && context.get("isSubmenu"),
     open: ({ context }) => context.get("value") != null,
   },
 
@@ -96,8 +88,6 @@ export const machine = createMachine({
       contentDismissableCleanup: undefined,
       contentExitCompleteCleanup: undefined,
       triggerResizeObserverCleanup: undefined,
-      parent: null,
-      children: {},
       closeTimeoutId: null,
       openTimeoutIds: {},
     }
@@ -115,34 +105,18 @@ export const machine = createMachine({
   },
 
   on: {
-    "PARENT.SET": {
-      actions: ["setParentMenu", "setTriggerNode"],
-    },
-    "CHILD.SET": {
-      actions: ["setChildMenu"],
-    },
     "VIEWPORT.POSITION": {
       actions: ["setViewportPosition"],
     },
-    "TRIGGER.POINTERENTER": [
-      {
-        guard: "isSubmenu",
-        actions: ["setValue"],
-      },
-      {
-        actions: ["clearCloseTimeout", "setValueWithDelay"],
-      },
-    ],
+    "TRIGGER.POINTERENTER": {
+      actions: ["clearCloseTimeout", "setValueWithDelay"],
+    },
     "TRIGGER.POINTERLEAVE": [
       {
         actions: ["setCloseTimeout", "resetValueWithDelay"],
       },
     ],
     "TRIGGER.CLICK": [
-      {
-        guard: "isSubmenu",
-        actions: ["setValue"],
-      },
       {
         guard: "isItemOpen",
         actions: ["deselectValue", "setClickCloseValue"],
@@ -158,11 +132,9 @@ export const machine = createMachine({
       actions: ["removeFromTabOrder"],
     },
     "CONTENT.POINTERENTER": {
-      guard: not("isSubmenu"),
       actions: ["clearCloseTimeout"],
     },
     "CONTENT.POINTERLEAVE": {
-      guard: not("isSubmenu"),
       actions: ["setCloseTimeout"],
     },
     "ITEM.NAVIGATE": {
@@ -173,9 +145,6 @@ export const machine = createMachine({
     },
     "CONTENT.ESCAPE_KEYDOWN": {
       actions: ["focusTrigger", "deselectValue", "setEscapeCloseValue"],
-    },
-    "ROOT.CLOSE": {
-      actions: ["closeRootMenu"],
     },
     CLOSE: {
       actions: ["deselectValue", "focusTriggerIfNeeded", "removeFromTabOrder"],
@@ -188,8 +157,6 @@ export const machine = createMachine({
 
   implementations: {
     guards: {
-      isRootMenu: ({ computed }) => computed("isRootMenu"),
-      isSubmenu: ({ computed }) => computed("isSubmenu"),
       isItemOpen: ({ context, event }) => context.get("value") === event.value,
     },
 
@@ -242,25 +209,17 @@ export const machine = createMachine({
         setOpenTimeout(refs, event.value, openTimeoutId)
       },
       selectValue: ({ context, event }) => {
-        if (context.get("isSubmenu")) {
-          context.set("value", event.value)
-        } else {
-          // When selecting item we trigger update immediately
-          context.set("previousValue", context.get("value"))
-          context.set("value", event.value)
-        }
+        // When selecting item we trigger update immediately
+        context.set("previousValue", context.get("value"))
+        context.set("value", event.value)
       },
       deselectValue: ({ context }) => {
-        if (context.get("isSubmenu")) {
-          context.set("value", "")
-        } else {
-          // When deselecting, clear immediately to prevent overlap
-          context.set("value", "")
-          context.set("previousValue", "")
-        }
+        // When deselecting, clear immediately to prevent overlap
+        context.set("value", "")
+        context.set("previousValue", "")
       },
 
-      syncContentNode({ context, scope, refs, send, computed }) {
+      syncContentNode({ context, scope, refs, send }) {
         refs.get("contentResizeObserverCleanup")?.()
         refs.get("contentDismissableCleanup")?.()
         refs.get("contentExitCompleteCleanup")?.()
@@ -301,8 +260,6 @@ export const machine = createMachine({
 
         /////////////////////////////////////////////////////////////////////////////////////////
 
-        if (context.get("isSubmenu")) return
-
         const getContentEl = () => {
           return dom.getViewportEl(scope) || dom.getContentEl(scope, context.get("value"))
         }
@@ -332,8 +289,8 @@ export const machine = createMachine({
             const target = event.detail.target as HTMLElement
             if (!event.defaultPrevented) {
               const isTrigger = dom.getTriggerEls(scope).some((node) => node.contains(target))
-              const isRootViewport = computed("isRootMenu") && contains(dom.getViewportEl(scope), target)
-              if (isTrigger || isRootViewport || !computed("isRootMenu")) {
+              const isRootViewport = contains(dom.getViewportEl(scope), target)
+              if (isTrigger || isRootViewport) {
                 event.preventDefault()
               }
             }
@@ -368,9 +325,8 @@ export const machine = createMachine({
         const triggerResizeObserver = dom.trackResizeObserver([node, indicatorTrackEl], exec)
         refs.set("triggerResizeObserverCleanup", triggerResizeObserver)
       },
-      syncMotionAttribute({ context, scope, computed }) {
+      syncMotionAttribute({ context, scope }) {
         if (!context.get("isViewportRendered")) return
-        if (computed("isSubmenu")) return
         dom.setMotionAttr(scope, context.get("value"), context.get("previousValue"))
       },
 
@@ -420,18 +376,6 @@ export const machine = createMachine({
         refs.get("contentExitCompleteCleanup")?.()
       },
 
-      setParentMenu({ refs, event, context }) {
-        refs.set("parent", event.parent)
-        context.set("isSubmenu", true)
-      },
-      setChildMenu({ refs, event }) {
-        refs.set("children", { ...refs.get("children"), [event.id]: event.value })
-      },
-      closeRootMenu({ refs, send }) {
-        send({ type: "CLOSE" })
-        closeRootMenu({ parent: refs.get("parent") })
-      },
-
       checkViewportNode({ context, scope }) {
         context.set("isViewportRendered", !!dom.getViewportEl(scope))
       },
@@ -439,7 +383,7 @@ export const machine = createMachine({
       setViewportPosition: ({ context, scope }) => {
         const triggerNode = context.get("triggerNode")
         const contentNode = context.get("contentNode")
-        const rootNavigationMenu = !context.get("isSubmenu") ? dom.getRootEl(scope) : null
+        const rootNavigationMenu = dom.getRootEl(scope)
 
         const viewportEl = dom.getViewportEl(scope)
         const align = viewportEl?.dataset.align || "center"
@@ -519,11 +463,3 @@ export const machine = createMachine({
     },
   },
 })
-
-function closeRootMenu(ctx: { parent: NavigationMenuService | null }) {
-  let parent = ctx.parent
-  while (parent && parent.context.get("isSubmenu")) {
-    parent = parent.refs.get("parent")
-  }
-  parent?.send({ type: "CLOSE" })
-}
