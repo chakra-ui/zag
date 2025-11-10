@@ -5,8 +5,7 @@ import type { Point, Rect, Size } from "@zag-js/types"
 import { callAll, ensureProps } from "@zag-js/utils"
 import * as dom from "./navigation-menu.dom"
 import type { NavigationMenuSchema, NavigationMenuService } from "./navigation-menu.types"
-import { autoReset } from "./utils/auto-reset"
-import { debounceFn } from "./utils/debounce-fn"
+import { clearCloseTimeout, clearOpenTimeout, setCloseTimeout, setOpenTimeout } from "./navigation-menu.utils"
 
 const { createMachine, guards } = setup<NavigationMenuSchema>()
 
@@ -69,17 +68,6 @@ export const machine = createMachine({
         defaultValue: false,
       })),
 
-      // timers + event trackers
-      isDelaySkipped: autoReset(bindable, () => ({
-        defaultValue: false,
-        resetAfter: 300,
-        sync: true,
-      })),
-      pointerMoveOpenedValue: autoReset(bindable, () => ({
-        defaultValue: "",
-        resetAfter: 300,
-        sync: true,
-      })),
       clickCloseValue: bindable<string | null>(() => ({
         defaultValue: null,
       })),
@@ -101,7 +89,7 @@ export const machine = createMachine({
     })
   },
 
-  refs({ context, prop }) {
+  refs() {
     return {
       restoreContentTabOrder: undefined,
       contentResizeObserverCleanup: undefined,
@@ -110,19 +98,8 @@ export const machine = createMachine({
       triggerResizeObserverCleanup: undefined,
       parent: null,
       children: {},
-      setValue: debounceFn(
-        (val) => {
-          // passing `undefined` meant to reset the debounce timer
-          if (typeof val === "string") {
-            context.set("previousValue", context.get("value"))
-            context.set("value", val)
-          }
-        },
-        () => {
-          const open = context.get("value") !== ""
-          return open || context.get("isDelaySkipped") ? 150 : prop("openDelay")
-        },
-      ),
+      closeTimeoutId: null,
+      openTimeoutIds: {},
     }
   },
 
@@ -147,26 +124,18 @@ export const machine = createMachine({
     "VIEWPORT.POSITION": {
       actions: ["setViewportPosition"],
     },
-    "TRIGGER.POINTERENTER": {
-      // actions: ["clearClickCloseValue", "clearEscapeCloseValue", "clearValueWithDelay"],
-      actions: ["clearClickCloseValue", "clearEscapeCloseValue"],
-    },
-    "TRIGGER.POINTERMOVE": [
+    "TRIGGER.POINTERENTER": [
       {
         guard: "isSubmenu",
-        actions: ["setValue", "setPointerMoveOpenedValue"],
+        actions: ["setValue"],
       },
       {
-        actions: ["setValueWithDelay", "setPointerMoveOpenedValue"],
+        actions: ["clearCloseTimeout", "setValueWithDelay"],
       },
     ],
     "TRIGGER.POINTERLEAVE": [
       {
-        guard: "isSubmenu",
-        actions: ["clearPointerMoveOpenedValue"],
-      },
-      {
-        actions: ["setDelaySkipped", "resetValueWithDelay", "clearPointerMoveOpenedValue"],
+        actions: ["setCloseTimeout", "resetValueWithDelay"],
       },
     ],
     "TRIGGER.CLICK": [
@@ -190,11 +159,11 @@ export const machine = createMachine({
     },
     "CONTENT.POINTERENTER": {
       guard: not("isSubmenu"),
-      actions: ["clearValueWithDelay"],
+      actions: ["clearCloseTimeout"],
     },
     "CONTENT.POINTERLEAVE": {
       guard: not("isSubmenu"),
-      actions: ["resetValueWithDelay"],
+      actions: ["setCloseTimeout"],
     },
     "ITEM.NAVIGATE": {
       actions: ["focusNextLink"],
@@ -246,25 +215,31 @@ export const machine = createMachine({
       setValue({ context, event }) {
         context.set("value", event.value)
       },
-      setPointerMoveOpenedValue({ context, event }) {
-        context.set("pointerMoveOpenedValue", event.value)
+      clearCloseTimeout({ refs }) {
+        clearCloseTimeout(refs)
       },
-      clearPointerMoveOpenedValue({ context }) {
-        context.set("pointerMoveOpenedValue", "")
+      setCloseTimeout({ refs, context, prop }) {
+        setCloseTimeout(refs, context, prop)
       },
-      setDelaySkipped({ context }) {
-        context.set("isDelaySkipped", true)
+      resetValueWithDelay({ event, refs }) {
+        clearOpenTimeout(refs, event.value)
       },
-      resetValueWithDelay({ refs }) {
-        refs.get("setValue")("")
-      },
-      setValueWithDelay({ refs, event }) {
-        // Cancel any pending setValue operations before setting new value
-        refs.get("setValue")()
-        refs.get("setValue")(event.value)
-      },
-      clearValueWithDelay({ refs }) {
-        refs.get("setValue")()
+      setValueWithDelay({ event, prop, context, scope, refs }) {
+        // Skip delay if the menu is already open (within grace period)
+        const shouldSkipDelay = context.get("value") !== ""
+
+        const openTimeoutId = window.setTimeout(
+          () => {
+            dom.getTriggerEl(scope, event.value)?.focus()
+            setTimeout(() => {
+              context.set("previousValue", context.get("value"))
+              context.set("value", event.value)
+            })
+          },
+          shouldSkipDelay ? 0 : prop("openDelay"),
+        )
+
+        setOpenTimeout(refs, event.value, openTimeoutId)
       },
       selectValue: ({ context, event }) => {
         if (context.get("isSubmenu")) {

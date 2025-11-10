@@ -31,7 +31,6 @@ export function connect<T extends PropTypes>(
   const isViewportRendered = context.get("isViewportRendered")
   const preventTransition = value && !previousValue
 
-  const pointerMoveOpenedValue = context.get("pointerMoveOpenedValue")
   const clickCloseValue = context.get("clickCloseValue")
   const escapeCloseValue = context.get("escapeCloseValue")
 
@@ -43,7 +42,6 @@ export function connect<T extends PropTypes>(
       contentId: dom.getContentId(scope, props.value),
       wasClickClose: clickCloseValue === props.value,
       wasEscapeClose: escapeCloseValue === props.value,
-      hasPointerMoveOpened: pointerMoveOpenedValue === props.value,
       selected,
       wasSelected,
       open: selected || wasSelected,
@@ -179,18 +177,11 @@ export function connect<T extends PropTypes>(
         "data-disabled": dataAttr(props.disabled),
         "aria-controls": itemState.contentId,
         "aria-expanded": itemState.selected,
-        onPointerEnter() {
-          if (prop("disableHoverTrigger")) return
-          send({ type: "TRIGGER.POINTERENTER", value: props.value })
-        },
-        onPointerMove(event) {
+        onPointerEnter(event) {
           if (prop("disableHoverTrigger")) return
           if (event.pointerType !== "mouse") return
-          if (itemState.disabled) return
-          if (itemState.hasPointerMoveOpened) return
-          if (itemState.wasClickClose) return
-          if (itemState.wasEscapeClose) return
-          send({ type: "TRIGGER.POINTERMOVE", value: props.value })
+          if (props.disabled) return
+          send({ type: "TRIGGER.POINTERENTER", value: props.value })
         },
         onPointerLeave(event) {
           if (prop("disableHoverTrigger")) return
@@ -200,8 +191,6 @@ export function connect<T extends PropTypes>(
         },
         onClick() {
           if (prop("disableClickTrigger")) return
-          // if open via pointer move, prevent click event
-          if (itemState.hasPointerMoveOpened) return
           send({ type: "TRIGGER.CLICK", value: props.value })
         },
         onKeyDown(event) {
@@ -306,7 +295,8 @@ export function connect<T extends PropTypes>(
         "data-type": computed("isSubmenu") ? "submenu" : "root",
         "data-orientation": prop("orientation"),
         "data-value": props.value,
-        onPointerEnter() {
+        onPointerEnter(event) {
+          if (event.pointerType !== "mouse") return
           if (computed("isSubmenu")) return
           send({ type: "CONTENT.POINTERENTER", value: props.value })
         },

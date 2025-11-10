@@ -10,7 +10,6 @@ import type {
   RequiredBy,
   Size,
 } from "@zag-js/types"
-import type { DebounceFnReturn } from "./utils/debounce-fn"
 
 /* -----------------------------------------------------------------------------
  * Callback details
@@ -95,13 +94,14 @@ export interface NavigationMenuSchema {
 
     parent: NavigationMenuService | null
     children: Record<string, NavigationMenuService | null>
-    setValue: DebounceFnReturn<(value: string | void) => void>
+
+    closeTimeoutId: number | null
+    openTimeoutIds: Record<string, number>
   }
   context: {
     value: string
     previousValue: string
 
-    pointerMoveOpenedValue: string
     clickCloseValue: string | null
     escapeCloseValue: string | null
 
@@ -112,7 +112,6 @@ export interface NavigationMenuSchema {
     contentNode: HTMLElement | null
     triggerRect: Rect | null
     triggerNode: HTMLElement | null
-    isDelaySkipped: boolean
     isSubmenu: boolean
   }
   action: string
