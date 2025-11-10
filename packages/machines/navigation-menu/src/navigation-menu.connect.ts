@@ -285,8 +285,14 @@ export function connect<T extends PropTypes>(
         },
         onKeyDown(event) {
           // Handle arrow key navigation between triggers and links
-          const elements = dom.getElements(scope)
           const currentElement = event.currentTarget as HTMLElement
+
+          // Check if this link is inside a content element (vs. direct child of item)
+          const contentEl = currentElement.closest('[data-scope="navigation-menu"][data-part="content"]')
+
+          // If link is inside content, navigate among content links
+          // Otherwise, navigate among top-level elements (triggers and direct child links)
+          const elements = contentEl ? dom.getLinkEls(scope, props.value) : dom.getElements(scope)
 
           const nextElement = navigate(elements, currentElement, {
             key: event.key,
