@@ -65,9 +65,6 @@ export const machine = createMachine({
       clickCloseValue: bindable<string | null>(() => ({
         defaultValue: null,
       })),
-      escapeCloseValue: bindable<string | null>(() => ({
-        defaultValue: null,
-      })),
     }
   },
 
@@ -144,7 +141,7 @@ export const machine = createMachine({
       actions: ["focusTrigger", "deselectValue"],
     },
     "CONTENT.ESCAPE_KEYDOWN": {
-      actions: ["focusTrigger", "deselectValue", "setEscapeCloseValue"],
+      actions: ["focusTrigger", "deselectValue"],
     },
     CLOSE: {
       actions: ["deselectValue", "focusTriggerIfNeeded", "removeFromTabOrder"],
@@ -175,9 +172,6 @@ export const machine = createMachine({
       },
       clearClickCloseValue({ context }) {
         context.set("clickCloseValue", null)
-      },
-      clearEscapeCloseValue({ context }) {
-        context.set("escapeCloseValue", null)
       },
       setValue({ context, event }) {
         context.set("value", event.value)

@@ -98,7 +98,6 @@ export interface NavigationMenuSchema {
     previousValue: string
 
     clickCloseValue: string | null
-    escapeCloseValue: string | null
 
     viewportSize: Size | null
     viewportPosition: Point | null

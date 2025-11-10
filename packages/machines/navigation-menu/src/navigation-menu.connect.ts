@@ -32,7 +32,6 @@ export function connect<T extends PropTypes>(
   const preventTransition = value && !previousValue
 
   const clickCloseValue = context.get("clickCloseValue")
-  const escapeCloseValue = context.get("escapeCloseValue")
 
   function getItemState(props: ItemProps) {
     const selected = value === props.value
@@ -41,7 +40,6 @@ export function connect<T extends PropTypes>(
       triggerId: dom.getTriggerId(scope, props.value),
       contentId: dom.getContentId(scope, props.value),
       wasClickClose: clickCloseValue === props.value,
-      wasEscapeClose: escapeCloseValue === props.value,
       selected,
       wasSelected,
       open: selected || wasSelected,
