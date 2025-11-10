@@ -197,17 +197,22 @@ test.describe("navigation-menu", () => {
     await I.seeTriggerIsFocused("company")
   })
 
-  test("opening with enter vs space key", async () => {
-    // open with Enter
-    await I.focusTrigger("products")
-    await I.pressKey("Enter")
-    await I.seeContent("products")
-    await I.pressKey("Escape")
+  test("Home and End key navigation on triggers", async () => {
+    // start at company trigger (middle)
+    await I.focusTrigger("company")
+    await I.seeTriggerIsFocused("company")
 
-    // open with Space
-    await I.focusTrigger("products")
-    await I.pressKey(" ")
-    await I.seeContent("products")
+    // press Home to jump to first trigger
+    await I.pressKey("Home")
+    await I.seeTriggerIsFocused("products")
+
+    // press End to jump to last element
+    await I.pressKey("End")
+    await I.seeLinkIsFocused("pricing")
+
+    // press Home again to return to first
+    await I.pressKey("Home")
+    await I.seeTriggerIsFocused("products")
   })
 
   test("arrow down navigation within content", async () => {
@@ -243,6 +248,27 @@ test.describe("navigation-menu", () => {
     await I.seeContentLinkIsFocused("products", "Analytics Platform")
   })
 
+  test("Home and End key navigation in content", async () => {
+    // open content and tab to first link, then move to middle
+    await I.focusTrigger("products")
+    await I.pressKey("Enter")
+    await I.pressKey("Tab")
+    await I.pressKey("ArrowDown", 2)
+    await I.seeContentLinkIsFocused("products", "Marketing Automation")
+
+    // press Home to jump to first link
+    await I.pressKey("Home")
+    await I.seeContentLinkIsFocused("products", "Analytics Platform")
+
+    // press End to jump to last link
+    await I.pressKey("End")
+    await I.seeContentLinkIsFocused("products", "API Documentation")
+
+    // press Home again to return to first
+    await I.pressKey("Home")
+    await I.seeContentLinkIsFocused("products", "Analytics Platform")
+  })
+
   test("arrow navigation does not loop in content", async () => {
     // open content and tab to first link
     await I.focusTrigger("products")
@@ -261,6 +287,19 @@ test.describe("navigation-menu", () => {
     // try to navigate down from last link - should stay on last
     await I.pressKey("ArrowDown")
     await I.seeContentLinkIsFocused("products", "API Documentation")
+  })
+
+  test("opening with enter vs space key", async () => {
+    // open with Enter
+    await I.focusTrigger("products")
+    await I.pressKey("Enter")
+    await I.seeContent("products")
+    await I.pressKey("Escape")
+
+    // open with Space
+    await I.focusTrigger("products")
+    await I.pressKey(" ")
+    await I.seeContent("products")
   })
 
   test("switching menus is instant when one is open", async () => {
