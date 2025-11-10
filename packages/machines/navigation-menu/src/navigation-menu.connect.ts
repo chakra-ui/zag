@@ -293,7 +293,6 @@ export function connect<T extends PropTypes>(
         },
         onKeyDown(event) {
           if (event.defaultPrevented) return
-          if (!isSelfTarget(event)) return
 
           // prevent parent menu triggering keydown event
           if (event.currentTarget.closest("[data-scope=navigation-menu][data-part=root]") !== dom.getRootEl(scope))
@@ -316,12 +315,14 @@ export function connect<T extends PropTypes>(
               event.preventDefault()
             } else {
               // If we can't focus that means we're at the edges
-              // so focus the proxy and let browser handle
-              // tab/shift+tab keypress on the proxy instead
+              // Focus the trigger proxy and let the browser's Tab continue
+              // to move focus to the next element in natural tab order
               dom.getTriggerProxyEl(scope, props.value)?.focus()
               return
             }
           }
+
+          if (!isSelfTarget(event)) return
 
           const el = navigate(candidates, scope.getActiveElement(), {
             key: event.key,
