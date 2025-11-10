@@ -1,5 +1,5 @@
 import type { EventObject, Machine, Service } from "@zag-js/core"
-import type { CommonProperties, DirectionProperty, PropTypes, RequiredBy } from "@zag-js/types"
+import type { CommonProperties, DirectionProperty, PropTypes, Rect, RequiredBy } from "@zag-js/types"
 
 /* -----------------------------------------------------------------------------
  * Callback details
@@ -106,8 +106,7 @@ export type TabsSchema = {
     ssr: boolean
     value: string | null
     focusedValue: string | null
-    indicatorTransition: boolean
-    indicatorRect: { left: string; top: string; width: string; height: string }
+    indicatorRect: Rect | null
   }
   refs: {
     indicatorCleanup: VoidFunction | null | undefined

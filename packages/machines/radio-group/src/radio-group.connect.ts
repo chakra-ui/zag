@@ -1,6 +1,7 @@
 import { dataAttr, isLeftClick, isSafari, visuallyHiddenStyle } from "@zag-js/dom-query"
 import { isFocusVisible } from "@zag-js/focus-visible"
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
+import { toPx } from "@zag-js/utils"
 import { parts } from "./radio-group.anatomy"
 import * as dom from "./radio-group.dom"
 import type { ItemProps, ItemState, RadioGroupApi, RadioGroupService } from "./radio-group.types"
@@ -194,29 +195,24 @@ export function connect<T extends PropTypes>(
     },
 
     getIndicatorProps() {
-      const indicatorRect = context.get("indicatorRect")
+      const rect = context.get("indicatorRect")
       return normalize.element({
         id: dom.getIndicatorId(scope),
         ...parts.indicator.attrs,
         dir: prop("dir"),
-        hidden:
-          context.get("value") == null ||
-          indicatorRect.left == null ||
-          indicatorRect.top == null ||
-          indicatorRect.width == null ||
-          indicatorRect.height == null,
+        hidden: context.get("value") == null || rect == null,
         "data-disabled": dataAttr(groupDisabled),
         "data-orientation": prop("orientation"),
         style: {
           "--transition-property": "left, top, width, height",
-          "--left": indicatorRect?.left,
-          "--top": indicatorRect?.top,
-          "--width": indicatorRect?.width,
-          "--height": indicatorRect?.height,
+          "--left": toPx(rect?.x),
+          "--top": toPx(rect?.y),
+          "--width": toPx(rect?.width),
+          "--height": toPx(rect?.height),
           position: "absolute",
           willChange: "var(--transition-property)",
           transitionProperty: "var(--transition-property)",
-          transitionDuration: context.get("canIndicatorTransition") ? "var(--transition-duration, 150ms)" : "0ms",
+          transitionDuration: "var(--transition-duration, 150ms)",
           transitionTimingFunction: "var(--transition-timing-function)",
           [prop("orientation") === "horizontal" ? "left" : "top"]:
             prop("orientation") === "horizontal" ? "var(--left)" : "var(--top)",

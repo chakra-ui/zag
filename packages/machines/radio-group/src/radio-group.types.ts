@@ -1,5 +1,5 @@
 import type { EventObject, Machine, Service } from "@zag-js/core"
-import type { CommonProperties, DirectionProperty, PropTypes, RequiredBy } from "@zag-js/types"
+import type { CommonProperties, DirectionProperty, PropTypes, Rect, RequiredBy } from "@zag-js/types"
 
 export interface ValueChangeDetails {
   value: string | null
@@ -60,13 +60,6 @@ export interface RadioGroupProps extends DirectionProperty, CommonProperties {
   orientation?: "horizontal" | "vertical" | undefined
 }
 
-export interface IndicatorRect {
-  left: string
-  top: string
-  width: string
-  height: string
-}
-
 interface PrivateContext {
   /**
    * The value of the checked radio
@@ -87,11 +80,7 @@ interface PrivateContext {
   /**
    * The active tab indicator's dom rect
    */
-  indicatorRect: Partial<IndicatorRect>
-  /**
-   * Whether the active tab indicator's rect can transition
-   */
-  canIndicatorTransition: boolean
+  indicatorRect: Rect | null
   /**
    * Whether the radio group's fieldset is disabled
    */
