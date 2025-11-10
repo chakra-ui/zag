@@ -86,7 +86,7 @@ test.describe("navigation-menu", () => {
     await I.seeContent("company")
     await I.dontSeeContent("products")
 
-    await I.pressKey("Tab", 5)
+    await I.pressKey("Tab", 6)
     await I.seeLinkIsFocused("pricing")
 
     // focus outside
