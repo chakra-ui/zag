@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Pagination</title>
+    <style>
+      body {
+        overflow: visible !important;
+      }
+      .pagination-root {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        margin: 2rem 0;
+      }
+      .pagination-items {
+        display: flex;
+        gap: 0.25rem;
+      }
+      .pagination-item,
+      .pagination-prev-trigger,
+      .pagination-next-trigger {
+        padding: 0.5rem 0.75rem;
+        border: 1px solid #e0e0e0;
+        background: white;
+        cursor: pointer;
+        border-radius: 0.25rem;
+      }
+      .pagination-item:hover,
+      .pagination-prev-trigger:hover,
+      .pagination-next-trigger:hover {
+        background: #f5f5f5;
+      }
+      .pagination-item:disabled,
+      .pagination-prev-trigger:disabled,
+      .pagination-next-trigger:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+      }
+      .pagination-item[data-selected="true"] {
+        background: #007bff;
+        color: white;
+        border-color: #007bff;
+      }
+      .pagination-ellipsis {
+        padding: 0.5rem 0.75rem;
+      }
+      .pagination-page-info {
+        margin-left: 1rem;
+        font-size: 0.875rem;
+        color: #666;
+      }
+      .data-list {
+        margin-top: 2rem;
+      }
+      .data-item {
+        padding: 1rem;
+        border: 1px solid #e0e0e0;
+        margin-bottom: 0.5rem;
+        border-radius: 0.25rem;
+      }
+    </style>
+  </head>
+  <body style="padding: 40px">
+    <a href="/">← Back to examples</a>
+    <h1>Pagination</h1>
+
+    <main class="pagination">
+      <nav class="pagination-root" aria-label="pagination">
+        <button class="pagination-prev-trigger">Previous</button>
+        <div class="pagination-items"></div>
+        <button class="pagination-next-trigger">Next</button>
+        <span class="pagination-page-info"></span>
+      </nav>
+
+      <div class="data-list"></div>
+    </main>
+
+    <script type="module" src="./pagination.ts"></script>
+  </body>
+</html>

@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Clipboard</title>
+  </head>
+  <body style="padding: 40px">
+    <a href="/">← Back to examples</a>
+    <h1>Clipboard</h1>
+
+    <main class="clipboard">
+      <div class="clipboard-root">
+        <label class="clipboard-label">Clipboard Label</label>
+        <div class="clipboard-control">
+          <input class="clipboard-input" />
+          <button class="clipboard-trigger">Copy</button>
+        </div>
+        <div class="clipboard-indicators">
+          <span class="clipboard-copied-indicator">✓ Copied!</span>
+          <span class="clipboard-idle-indicator">Click to copy</span>
+        </div>
+      </div>
+
+      <div style="margin-top: 2rem">
+        <h2>Example 2: Copy Code Snippet</h2>
+        <div class="clipboard-root" data-value="npm install @zag-js/clipboard">
+          <label class="clipboard-label">Install command</label>
+          <div class="clipboard-control">
+            <input class="clipboard-input" />
+            <button class="clipboard-trigger">Copy</button>
+          </div>
+          <div class="clipboard-indicators">
+            <span class="clipboard-copied-indicator">✓ Copied!</span>
+            <span class="clipboard-idle-indicator">Ready to copy</span>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <script type="module" src="./clipboard.ts"></script>
+  </body>
+</html>

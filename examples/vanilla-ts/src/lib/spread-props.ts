@@ -2,7 +2,7 @@ export interface Attrs {
   [key: string]: any
 }
 
-const prevAttrsMap = new WeakMap<HTMLElement, Attrs>()
+const prevAttrsMap = new WeakMap<Element, Attrs>()
 
 const assignableProps = new Set<string>(["value", "checked", "htmlFor"])
 
@@ -10,17 +10,17 @@ const assignableProps = new Set<string>(["value", "checked", "htmlFor"])
 const caseSensitiveSvgAttrs = new Set<string>(["viewBox", "preserveAspectRatio"])
 
 // Check if element is SVG
-const isSvgElement = (node: HTMLElement): boolean => {
+const isSvgElement = (node: Element): boolean => {
   return node.tagName === "svg" || node.namespaceURI === "http://www.w3.org/2000/svg"
 }
 
 // Get the correct attribute name, preserving case for SVG attributes
-const getAttributeName = (node: HTMLElement, attrName: string): string => {
+const getAttributeName = (node: Element, attrName: string): string => {
   const shouldPreserveCase = isSvgElement(node) && caseSensitiveSvgAttrs.has(attrName)
   return shouldPreserveCase ? attrName : attrName.toLowerCase()
 }
 
-export function spreadProps(node: HTMLElement, attrs: Attrs): () => void {
+export function spreadProps(node: Element, attrs: Attrs): () => void {
   const oldAttrs = prevAttrsMap.get(node) || {}
 
   const attrKeys = Object.keys(attrs)

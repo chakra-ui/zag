@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Vite + TS</title>
+  </head>
+  <body style="padding: 40px">
+    <h1>Timer</h1>
+
+    <div class="timer">
+      <div class="timer-area">
+        <span class="timer-days">00</span>
+        <span class="timer-separator">:</span>
+        <span class="timer-hours">00</span>
+        <span class="timer-separator">:</span>
+        <span class="timer-minutes">00</span>
+        <span class="timer-separator">:</span>
+        <span class="timer-seconds">00</span>
+      </div>
+      <div class="timer-controls">
+        <button class="timer-start">Start</button>
+        <button class="timer-pause">Pause</button>
+        <button class="timer-resume">Resume</button>
+        <button class="timer-reset">Reset</button>
+      </div>
+    </div>
+
+    <script type="module" src="./timer.ts"></script>
+  </body>
+</html>
