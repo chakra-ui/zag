@@ -185,16 +185,16 @@ test.describe("navigation-menu", () => {
     await I.seeTriggerIsFocused("company")
 
     // arrow right to next trigger
-    await I.pressKey("ArrowRight")
+    await I.pressKey("ArrowRight", 2)
     await I.seeLinkIsFocused("pricing")
 
     // arrow left to previous trigger
     await I.pressKey("ArrowLeft")
-    await I.seeTriggerIsFocused("company")
+    await I.seeTriggerIsFocused("developers")
 
     // arrow left to previous trigger
     await I.pressKey("ArrowLeft")
-    await I.seeTriggerIsFocused("products")
+    await I.seeTriggerIsFocused("company")
   })
 
   test("opening with enter vs space key", async () => {

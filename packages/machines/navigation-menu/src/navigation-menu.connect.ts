@@ -189,8 +189,27 @@ export function connect<T extends PropTypes>(
             vertical: verticalEntryKey,
           }[prop("orientation")]
 
+          // Handle entry key (open menu and focus first link)
           if (open && event.key === entryKey) {
             send({ type: "CONTENT.FOCUS", side: "start" })
+            event.preventDefault()
+            event.stopPropagation()
+            return
+          }
+
+          // Handle arrow key navigation between triggers
+          const elements = dom.getElements(scope)
+          const currentElement = event.currentTarget as HTMLElement
+
+          const nextElement = navigate(elements, currentElement, {
+            key: event.key,
+            orientation: prop("orientation"),
+            dir: prop("dir"),
+            loop: false,
+          })
+
+          if (nextElement) {
+            nextElement.focus()
             event.preventDefault()
             event.stopPropagation()
           }
@@ -262,6 +281,24 @@ export function connect<T extends PropTypes>(
 
           if (!linkSelectEvent.defaultPrevented && !event.metaKey) {
             send({ type: "CLOSE" })
+          }
+        },
+        onKeyDown(event) {
+          // Handle arrow key navigation between triggers and links
+          const elements = dom.getElements(scope)
+          const currentElement = event.currentTarget as HTMLElement
+
+          const nextElement = navigate(elements, currentElement, {
+            key: event.key,
+            orientation: prop("orientation"),
+            dir: prop("dir"),
+            loop: false,
+          })
+
+          if (nextElement) {
+            nextElement.focus()
+            event.preventDefault()
+            event.stopPropagation()
           }
         },
       })
