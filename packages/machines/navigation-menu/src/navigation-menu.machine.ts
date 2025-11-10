@@ -295,7 +295,7 @@ export const machine = createMachine({
             }
           },
           onDismiss() {
-            send({ type: "ROOT.CLOSE" })
+            send({ type: "CLOSE" })
           },
         })
 
