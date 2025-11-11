@@ -92,7 +92,6 @@ export const machine = createMachine({
     }
   },
 
-  // entry: ["checkViewportNode", "syncContentNode"],
   entry: ["checkViewportNode"],
 
   exit: ["cleanupObservers"],
@@ -104,6 +103,9 @@ export const machine = createMachine({
   },
 
   on: {
+    "VALUE.SET": {
+      actions: ["setValue"],
+    },
     "VIEWPORT.POSITION": {
       actions: ["setViewportPosition"],
     },

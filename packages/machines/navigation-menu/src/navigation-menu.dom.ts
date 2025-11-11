@@ -1,6 +1,5 @@
 import type { Scope } from "@zag-js/core"
 import { getTabbables, getWindow, queryAll } from "@zag-js/dom-query"
-import type { NavigationMenuService } from "./navigation-menu.types"
 
 export const getRootId = (ctx: Scope) => ctx.ids?.root ?? `nav-menu:${ctx.id}`
 export const getTriggerId = (ctx: Scope, value: string) =>
@@ -12,12 +11,6 @@ export const getContentId = (ctx: Scope, value: string) =>
 export const getViewportId = (ctx: Scope) => ctx.ids?.viewport ?? `nav-menu:${ctx.id}:viewport`
 export const getListId = (ctx: Scope) => ctx.ids?.list ?? `nav-menu:${ctx.id}:list`
 export const getIndicatorTrackId = (ctx: Scope) => ctx.ids?.indicatorTrack ?? `nav-menu:${ctx.id}:indicator-track`
-
-export const getRootMenuEl = (ctx: Scope, parent?: NavigationMenuService) => {
-  let id = ctx.id
-  while (parent != null) id = parent.prop("id")
-  return ctx.getById(`nav-menu:${id}`)
-}
 
 export const getIndicatorTrackEl = (ctx: Scope) => ctx.getById(getIndicatorTrackId(ctx))
 export const getRootEl = (ctx: Scope) => ctx.getById(getRootId(ctx))
