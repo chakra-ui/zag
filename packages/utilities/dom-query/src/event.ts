@@ -139,7 +139,7 @@ interface DOMEventMap extends DocumentEventMap, WindowEventMap, HTMLElementEvent
 
 export const addDomEvent = <K extends keyof DOMEventMap>(
   target: MaybeFn<EventTarget | null>,
-  eventName: K,
+  eventName: K | (string & {}),
   handler: (event: DOMEventMap[K]) => void,
   options?: boolean | AddEventListenerOptions,
 ) => {
@@ -148,4 +148,10 @@ export const addDomEvent = <K extends keyof DOMEventMap>(
   return () => {
     node?.removeEventListener(eventName, handler as any, options)
   }
+}
+
+export const isSelfTarget = (event: Partial<Pick<UIEvent, "currentTarget" | "target" | "composedPath">>) => {
+  const composedPath = getComposedPath(event)
+  const target = composedPath?.[0] ?? event.target
+  return event.currentTarget === target
 }

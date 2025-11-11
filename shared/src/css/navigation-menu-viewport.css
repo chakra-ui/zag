@@ -52,6 +52,7 @@
     display: grid;
     gap: 20px;
     padding: 40px;
+    will-change: transform, opacity;
 
     &[data-motion="from-start"] {
       animation: nav-menu-from-left 250ms ease;
@@ -97,25 +98,28 @@
     padding: 40px;
     background-color: white;
     transition:
-      width,
-      height,
-      300ms ease;
-    width: var(--viewport-width);
+      width 300ms ease,
+      height 300ms ease;
+    width: 100%;
     height: var(--viewport-height);
     transform-origin: top center;
     overflow: hidden;
     margin-top: 15px;
     border-radius: 8px;
-    box-shadow:
-      0 50px 100px -20px rgba(50, 50, 93, 0.25),
-      0 30px 60px -30px rgba(0, 0, 0, 0.3);
+    box-shadow: 
+      hsl(206 22% 7% / 35%) 0px 10px 38px -10px, 
+      hsl(206 22% 7% / 20%) 0px 10px 20px -15px;
+
+    @media (min-width: 600px) {
+      width: var(--viewport-width);
+    }
 
     &[data-state="open"] {
-      animation: nav-menu-scale-in 300ms ease;
+      animation: nav-menu-scale-in 200ms ease;
     }
 
     &[data-state="closed"] {
-      animation: nav-menu-scale-out 300ms ease;
+      animation: nav-menu-scale-out 200ms ease;
     }
   }
 

@@ -1,98 +1,104 @@
 import * as navigationMenu from "@zag-js/navigation-menu"
-import { normalizeProps, useMachine } from "@zag-js/react"
+import { normalizeProps, useMachine } from "@zag-js/solid"
 import { navigationMenuControls } from "@zag-js/shared"
-import { ChevronDown } from "lucide-react"
-import { useId } from "react"
-import { Presence } from "../components/presence"
-import { StateVisualizer } from "../components/state-visualizer"
-import { Toolbar } from "../components/toolbar"
-import { useControls } from "../hooks/use-controls"
+import { ChevronDown } from "lucide-solid"
+import { createMemo, createUniqueId, For } from "solid-js"
+import { Presence } from "~/components/presence"
+import { StateVisualizer } from "~/components/state-visualizer"
+import { Toolbar } from "~/components/toolbar"
+import { useControls } from "~/hooks/use-controls"
 
 export default function Page() {
   const controls = useControls(navigationMenuControls)
 
-  const service = useMachine(navigationMenu.machine, {
-    id: useId(),
-    ...controls.context,
-  })
+  const service = useMachine(
+    navigationMenu.machine,
+    controls.mergeProps<navigationMenu.Props>({
+      id: createUniqueId(),
+    }),
+  )
 
-  const api = navigationMenu.connect(service, normalizeProps)
+  const api = createMemo(() => navigationMenu.connect(service, normalizeProps))
 
   const renderLinks = (opts: { value: string; items: string[] }) => {
     const { value, items } = opts
-    return items.map((item, index) => (
-      <a href="#" key={`${value}-${item}-${index}`} {...api.getLinkProps({ value })}>
-        {item}
-      </a>
-    ))
+    return (
+      <For each={items}>
+        {(item) => (
+          <a href="#" {...api().getLinkProps({ value })}>
+            {item}
+          </a>
+        )}
+      </For>
+    )
   }
 
   return (
     <>
-      <main className="navigation-menu viewport">
+      <main class="navigation-menu viewport">
         <div
           style={{
             position: "relative",
             display: "flex",
-            boxSizing: "border-box",
-            alignItems: "center",
+            "box-sizing": "border-box",
+            "align-items": "center",
             padding: "15px 20px",
-            justifyContent: "space-between",
+            "justify-content": "space-between",
             width: "100%",
-            backgroundColor: "white",
-            boxShadow: "0 50px 100px -20px rgba(50,50,93,0.1),0 30px 60px -30px rgba(0,0,0,0.2)",
+            "background-color": "white",
+            "box-shadow": "0 50px 100px -20px rgba(50,50,93,0.1),0 30px 60px -30px rgba(0,0,0,0.2)",
           }}
         >
           <button>Logo</button>
-          <div {...api.getRootProps()}>
-            <div {...api.getIndicatorTrackProps()}>
-              <div {...api.getListProps()}>
-                <div {...api.getItemProps({ value: "products" })}>
-                  <button {...api.getTriggerProps({ value: "products" })}>
+          <div {...api().getRootProps()}>
+            <div {...api().getIndicatorTrackProps()}>
+              <div {...api().getListProps()}>
+                <div {...api().getItemProps({ value: "products" })}>
+                  <button {...api().getTriggerProps({ value: "products" })}>
                     Products
                     <ChevronDown />
                   </button>
-                  <span {...api.getTriggerProxyProps({ value: "products" })} />
-                  <span {...api.getViewportProxyProps({ value: "products" })} />
+                  <span {...api().getTriggerProxyProps({ value: "products" })} />
+                  <span {...api().getViewportProxyProps({ value: "products" })} />
                 </div>
 
-                <div {...api.getItemProps({ value: "company" })}>
-                  <button {...api.getTriggerProps({ value: "company" })}>
+                <div {...api().getItemProps({ value: "company" })}>
+                  <button {...api().getTriggerProps({ value: "company" })}>
                     Company
                     <ChevronDown />
                   </button>
-                  <span {...api.getTriggerProxyProps({ value: "company" })} />
-                  <span {...api.getViewportProxyProps({ value: "company" })} />
+                  <span {...api().getTriggerProxyProps({ value: "company" })} />
+                  <span {...api().getViewportProxyProps({ value: "company" })} />
                 </div>
 
-                <div {...api.getItemProps({ value: "developers" })}>
-                  <button {...api.getTriggerProps({ value: "developers" })}>
+                <div {...api().getItemProps({ value: "developers" })}>
+                  <button {...api().getTriggerProps({ value: "developers" })}>
                     Developers
                     <ChevronDown />
                   </button>
-                  <span {...api.getTriggerProxyProps({ value: "developers" })} />
-                  <span {...api.getViewportProxyProps({ value: "developers" })} />
+                  <span {...api().getTriggerProxyProps({ value: "developers" })} />
+                  <span {...api().getViewportProxyProps({ value: "developers" })} />
                 </div>
 
-                <div {...api.getItemProps({ value: "pricing" })}>
-                  <a href="#" {...api.getLinkProps({ value: "pricing" })}>
+                <div {...api().getItemProps({ value: "pricing" })}>
+                  <a href="#" {...api().getLinkProps({ value: "pricing" })}>
                     Pricing
                   </a>
                 </div>
 
-                <Presence {...api.getIndicatorProps()}>
-                  <div {...api.getArrowProps()} />
+                <Presence {...api().getIndicatorProps()}>
+                  <div {...api().getArrowProps()} />
                 </Presence>
               </div>
             </div>
 
-            <div {...api.getViewportPositionerProps()}>
-              <Presence {...api.getViewportProps()}>
+            <div {...api().getViewportPositionerProps()}>
+              <Presence {...api().getViewportProps()}>
                 <Presence
-                  {...api.getContentProps({ value: "products" })}
+                  {...api().getContentProps({ value: "products" })}
                   style={{
-                    gridTemplateColumns: "1fr 2fr",
-                    width: 600,
+                    "grid-template-columns": "1fr 2fr",
+                    width: "600px",
                   }}
                 >
                   {renderLinks({
@@ -114,10 +120,10 @@ export default function Page() {
                 </Presence>
 
                 <Presence
-                  {...api.getContentProps({ value: "company" })}
+                  {...api().getContentProps({ value: "company" })}
                   style={{
-                    gridTemplateColumns: "1fr 1fr",
-                    width: 450,
+                    "grid-template-columns": "1fr 1fr",
+                    width: "450px",
                   }}
                 >
                   {renderLinks({
@@ -132,10 +138,10 @@ export default function Page() {
                 </Presence>
 
                 <Presence
-                  {...api.getContentProps({ value: "developers" })}
+                  {...api().getContentProps({ value: "developers" })}
                   style={{
-                    gridTemplateColumns: "1.6fr 1fr",
-                    width: 650,
+                    "grid-template-columns": "1.6fr 1fr",
+                    width: "650px",
                   }}
                 >
                   {renderLinks({
@@ -170,8 +176,8 @@ export default function Page() {
         </header>
       </main>
 
-      <Toolbar controls={controls.ui} viz>
-        <StateVisualizer state={service} context={["value", "previousValue", "triggerRect", "viewportSize"]} />
+      <Toolbar controls={controls} viz>
+        <StateVisualizer state={service} context={["value", "previousValue"]} />
       </Toolbar>
     </>
   )

@@ -9,6 +9,7 @@ export type {
   NavigationMenuService as Service,
   ArrowProps,
   ElementIds,
+  ViewportProps,
   ItemProps,
   LinkProps,
   ValueChangeDetails,
