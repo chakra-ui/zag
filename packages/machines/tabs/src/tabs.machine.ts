@@ -1,5 +1,6 @@
 import { setup } from "@zag-js/core"
-import { clickIfLink, getFocusables, isAnchorElement, nextTick, raf, resizeObserverBorderBox } from "@zag-js/dom-query"
+import { clickIfLink, getFocusables, isAnchorElement, raf, resizeObserverBorderBox } from "@zag-js/dom-query"
+import type { Rect } from "@zag-js/types"
 import * as dom from "./tabs.dom"
 import type { TabsSchema } from "./tabs.types"
 
@@ -42,16 +43,15 @@ export const machine = createMachine({
         },
       })),
       ssr: bindable(() => ({ defaultValue: true })),
-      indicatorTransition: bindable(() => ({ defaultValue: false })),
-      indicatorRect: bindable(() => ({
-        defaultValue: { left: "0px", top: "0px", width: "0px", height: "0px" },
+      indicatorRect: bindable<Rect | null>(() => ({
+        defaultValue: null,
       })),
     }
   },
 
   watch({ context, prop, track, action }) {
     track([() => context.get("value")], () => {
-      action(["allowIndicatorTransition", "syncIndicatorRect", "syncTabIndex", "navigateIfNeeded"])
+      action(["syncIndicatorRect", "syncTabIndex", "navigateIfNeeded"])
     })
     track([() => prop("dir"), () => prop("orientation")], () => {
       action(["syncIndicatorRect"])
@@ -242,28 +242,18 @@ export const machine = createMachine({
         const cleanup = refs.get("indicatorCleanup")
         if (cleanup) cleanup()
       },
-      allowIndicatorTransition({ context }) {
-        context.set("indicatorTransition", true)
-      },
       setIndicatorRect({ context, event, scope }) {
         const value = event.id ?? context.get("value")
 
         const indicatorEl = dom.getIndicatorEl(scope)
         if (!indicatorEl) return
 
-        if (!value) {
-          context.set("indicatorTransition", false)
-          return
-        }
+        if (!value) return
 
         const triggerEl = dom.getTriggerEl(scope, value)
         if (!triggerEl) return
 
-        context.set("indicatorRect", dom.getRectById(scope, value))
-
-        nextTick(() => {
-          context.set("indicatorTransition", false)
-        })
+        context.set("indicatorRect", dom.getRectByValue(scope, value))
       },
       syncSsr({ context }) {
         context.set("ssr", false)
@@ -273,18 +263,14 @@ export const machine = createMachine({
         if (cleanup) cleanup()
 
         const value = context.get("value")
-        if (!value) {
-          context.set("indicatorTransition", false)
-          return
-        }
+        if (!value) return
 
         const triggerEl = dom.getTriggerEl(scope, value)
         const indicatorEl = dom.getIndicatorEl(scope)
         if (!triggerEl || !indicatorEl) return
 
         const exec = () => {
-          const rect = dom.getOffsetRect(triggerEl)
-          context.set("indicatorRect", dom.resolveRect(rect))
+          context.set("indicatorRect", dom.getOffsetRect(triggerEl))
         }
         exec()
         const indicatorCleanup = resizeObserverBorderBox.observe(triggerEl, exec)

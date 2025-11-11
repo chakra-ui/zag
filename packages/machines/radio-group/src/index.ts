@@ -11,5 +11,4 @@ export type {
   ItemProps,
   ItemState,
   ValueChangeDetails,
-  IndicatorRect,
 } from "./radio-group.types"

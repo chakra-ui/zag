@@ -9,6 +9,7 @@ import {
   isSafari,
 } from "@zag-js/dom-query"
 import type { EventKeyMap, NormalizeProps, PropTypes } from "@zag-js/types"
+import { toPx } from "@zag-js/utils"
 import { parts } from "./tabs.anatomy"
 import * as dom from "./tabs.dom"
 import type { TabsApi, TabsSchema, TriggerProps, TriggerState } from "./tabs.types"
@@ -190,23 +191,23 @@ export function connect<T extends PropTypes>(service: Service<TabsSchema>, norma
     },
 
     getIndicatorProps() {
-      const indicatorRect = context.get("indicatorRect")
-      const indicatorTransition = context.get("indicatorTransition")
+      const rect = context.get("indicatorRect")
       return normalize.element({
         id: dom.getIndicatorId(scope),
         ...parts.indicator.attrs,
         dir: prop("dir"),
         "data-orientation": prop("orientation"),
+        hidden: rect == null,
         style: {
           "--transition-property": "left, right, top, bottom, width, height",
-          "--left": indicatorRect.left,
-          "--top": indicatorRect.top,
-          "--width": indicatorRect.width,
-          "--height": indicatorRect.height,
+          "--left": toPx(rect?.x),
+          "--top": toPx(rect?.y),
+          "--width": toPx(rect?.width),
+          "--height": toPx(rect?.height),
           position: "absolute",
           willChange: "var(--transition-property)",
           transitionProperty: "var(--transition-property)",
-          transitionDuration: indicatorTransition ? "var(--transition-duration, 150ms)" : "0ms",
+          transitionDuration: "var(--transition-duration, 150ms)",
           transitionTimingFunction: "var(--transition-timing-function)",
           [isHorizontal ? "left" : "top"]: isHorizontal ? "var(--left)" : "var(--top)",
         },

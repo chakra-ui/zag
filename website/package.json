@@ -92,7 +92,7 @@
     "all-contributors-cli": "6.26.1",
     "eslint": "^9",
     "eslint-config-next": "16.0.1",
-    "npm-run-all2": "^5.0.0",
+    "npm-run-all2": "^8.0.0",
     "prettier": "3.6.2",
     "rehype": "13.0.2",
     "rehype-autolink-headings": "7.1.0",

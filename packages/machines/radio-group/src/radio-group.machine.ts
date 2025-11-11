@@ -1,9 +1,9 @@
 import { createGuards, createMachine } from "@zag-js/core"
 import { dispatchInputCheckedEvent, resizeObserverBorderBox, trackFormControl } from "@zag-js/dom-query"
 import { trackFocusVisible } from "@zag-js/focus-visible"
-import { isString } from "@zag-js/utils"
+import type { Rect } from "@zag-js/types"
 import * as dom from "./radio-group.dom"
-import type { IndicatorRect, RadioGroupSchema } from "./radio-group.types"
+import type { RadioGroupSchema } from "./radio-group.types"
 
 const { not } = createGuards()
 
@@ -37,11 +37,8 @@ export const machine = createMachine<RadioGroupSchema>({
       hoveredValue: bindable<string | null>(() => ({
         defaultValue: null,
       })),
-      indicatorRect: bindable<Partial<IndicatorRect>>(() => ({
-        defaultValue: {},
-      })),
-      canIndicatorTransition: bindable<boolean>(() => ({
-        defaultValue: false,
+      indicatorRect: bindable<Rect | null>(() => ({
+        defaultValue: null,
       })),
       fieldsetDisabled: bindable<boolean>(() => ({
         defaultValue: false,
@@ -71,7 +68,7 @@ export const machine = createMachine<RadioGroupSchema>({
 
   watch({ track, action, context }) {
     track([() => context.get("value")], () => {
-      action(["setIndicatorTransition", "syncIndicatorRect", "syncInputElements"])
+      action(["syncIndicatorRect", "syncInputElements"])
     })
   },
 
@@ -141,9 +138,6 @@ export const machine = createMachine<RadioGroupSchema>({
           input.checked = input.value === context.get("value")
         })
       },
-      setIndicatorTransition({ context }) {
-        context.set("canIndicatorTransition", isString(context.get("value")))
-      },
       cleanupObserver({ refs }) {
         refs.get("indicatorCleanup")?.()
       },
@@ -159,14 +153,12 @@ export const machine = createMachine<RadioGroupSchema>({
         const radioEl = dom.getRadioEl(scope, value)
 
         if (value == null || !radioEl) {
-          context.set("canIndicatorTransition", false)
-          context.set("indicatorRect", {})
+          context.set("indicatorRect", null)
           return
         }
 
         const exec = () => {
-          const rect = dom.getOffsetRect(radioEl)
-          context.set("indicatorRect", dom.resolveRect(rect))
+          context.set("indicatorRect", dom.getOffsetRect(radioEl))
         }
 
         exec()
