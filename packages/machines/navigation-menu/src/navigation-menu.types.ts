@@ -97,8 +97,6 @@ export interface NavigationMenuSchema {
     value: string
     previousValue: string
 
-    clickCloseValue: string | null
-
     viewportSize: Size | null
     viewportPosition: Point | null
     isViewportRendered: boolean

@@ -31,15 +31,12 @@ export function connect<T extends PropTypes>(
   const isViewportRendered = context.get("isViewportRendered")
   const preventTransition = value && !previousValue
 
-  const clickCloseValue = context.get("clickCloseValue")
-
   function getItemState(props: ItemProps) {
     const selected = value === props.value
     const wasSelected = !value && previousValue === props.value
     return {
       triggerId: dom.getTriggerId(scope, props.value),
       contentId: dom.getContentId(scope, props.value),
-      wasClickClose: clickCloseValue === props.value,
       selected,
       wasSelected,
       open: selected || wasSelected,
@@ -160,22 +157,22 @@ export function connect<T extends PropTypes>(
         "data-uid": prop("id"),
         "data-trigger-proxy-id": dom.getTriggerProxyId(scope, props.value),
         dir: prop("dir"),
-        disabled: props.disabled,
+        disabled: itemState.disabled,
         "data-value": props.value,
         "data-state": itemState.selected ? "open" : "closed",
-        "data-disabled": dataAttr(props.disabled),
+        "data-disabled": dataAttr(itemState.disabled),
         "aria-controls": itemState.contentId,
         "aria-expanded": itemState.selected,
         onPointerEnter(event) {
           if (prop("disableHoverTrigger")) return
           if (event.pointerType !== "mouse") return
-          if (props.disabled) return
+          if (itemState.disabled) return
           send({ type: "TRIGGER.POINTERENTER", value: props.value })
         },
         onPointerLeave(event) {
           if (prop("disableHoverTrigger")) return
           if (event.pointerType !== "mouse") return
-          if (props.disabled) return
+          if (itemState.disabled) return
           send({ type: "TRIGGER.POINTERLEAVE", value: props.value })
         },
         onClick() {

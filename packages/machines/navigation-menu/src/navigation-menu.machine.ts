@@ -67,10 +67,6 @@ export const machine = createMachine({
       triggerNode: bindable<HTMLElement | null>(() => ({
         defaultValue: null,
       })),
-
-      clickCloseValue: bindable<string | null>(() => ({
-        defaultValue: null,
-      })),
     }
   },
 
@@ -122,10 +118,10 @@ export const machine = createMachine({
     "TRIGGER.CLICK": [
       {
         guard: "isItemOpen",
-        actions: ["deselectValue", "setClickCloseValue"],
+        actions: ["deselectValue"],
       },
       {
-        actions: ["selectValue", "setClickCloseValue"],
+        actions: ["selectValue"],
       },
     ],
     "CONTENT.FOCUS": {
@@ -170,12 +166,6 @@ export const machine = createMachine({
     },
 
     actions: {
-      setClickCloseValue({ context, event }) {
-        context.set("clickCloseValue", event.value)
-      },
-      clearClickCloseValue({ context }) {
-        context.set("clickCloseValue", null)
-      },
       setValue({ context, event }) {
         context.set("value", event.value)
       },
