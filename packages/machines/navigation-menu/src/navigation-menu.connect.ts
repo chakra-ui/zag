@@ -82,7 +82,6 @@ export function connect<T extends PropTypes>(
         id: dom.getListId(scope),
         dir: prop("dir"),
         "data-orientation": prop("orientation")!,
-        "data-type": "root",
       })
     },
 
