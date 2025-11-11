@@ -59,12 +59,8 @@ export class SliderModel extends Model {
 
   async mousedownAt(percent: { x?: number; y?: number }) {
     const point = await this.getTrackPoint(percent)
-    const eventInit: PointerEventInit = {
-      button: 0,
-      clientX: point.x,
-      clientY: point.y,
-    }
-    await this.track.dispatchEvent("pointerdown", eventInit)
+    await this.page.mouse.move(point.x, point.y)
+    await this.page.mouse.down()
   }
 
   async mousemoveTo(percent: { x?: number; y?: number }) {
