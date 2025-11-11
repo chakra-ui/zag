@@ -35,7 +35,9 @@ export function connect<T extends PropTypes>(
     const selected = value === props.value
     const wasSelected = !value && previousValue === props.value
     return {
+      itemId: dom.getItemId(scope, props.value),
       triggerId: dom.getTriggerId(scope, props.value),
+      triggerProxyId: dom.getTriggerProxyId(scope, props.value),
       contentId: dom.getContentId(scope, props.value),
       selected,
       wasSelected,
@@ -47,7 +49,7 @@ export function connect<T extends PropTypes>(
   return {
     open,
     value,
-    orientation: prop("orientation")!,
+    orientation: prop("orientation"),
     isViewportRendered,
     getViewportNode() {
       return dom.getViewportEl(scope)
@@ -61,7 +63,7 @@ export function connect<T extends PropTypes>(
         ...parts.root.attrs,
         id: dom.getRootId(scope),
         "aria-label": "Main Navigation",
-        "data-orientation": prop("orientation")!,
+        "data-orientation": prop("orientation"),
         dir: prop("dir"),
         style: {
           "--trigger-width": toPx(triggerRect?.width),
@@ -81,7 +83,7 @@ export function connect<T extends PropTypes>(
         ...parts.list.attrs,
         id: dom.getListId(scope),
         dir: prop("dir"),
-        "data-orientation": prop("orientation")!,
+        "data-orientation": prop("orientation"),
       })
     },
 
@@ -89,10 +91,11 @@ export function connect<T extends PropTypes>(
       const itemState = getItemState(props)
       return normalize.element({
         ...parts.item.attrs,
+        id: itemState.itemId,
         dir: prop("dir"),
         "data-value": props.value,
         "data-state": itemState.open ? "open" : "closed",
-        "data-orientation": prop("orientation")!,
+        "data-orientation": prop("orientation"),
         "data-disabled": dataAttr(itemState.disabled),
         onKeyDown(event) {
           switch (event.key) {
@@ -119,7 +122,7 @@ export function connect<T extends PropTypes>(
         ...parts.indicatorTrack.attrs,
         id: dom.getIndicatorTrackId(scope),
         dir: prop("dir"),
-        "data-orientation": prop("orientation")!,
+        "data-orientation": prop("orientation"),
         style: { position: "relative" },
       })
     },
@@ -131,7 +134,7 @@ export function connect<T extends PropTypes>(
         dir: prop("dir"),
         hidden: !open,
         "data-state": open ? "open" : "closed",
-        "data-orientation": prop("orientation")!,
+        "data-orientation": prop("orientation"),
         style: {
           position: "absolute",
           transition: preventTransition ? "none" : undefined,
@@ -144,7 +147,7 @@ export function connect<T extends PropTypes>(
         ...parts.arrow.attrs,
         "aria-hidden": true,
         dir: prop("dir"),
-        "data-orientation": prop("orientation")!,
+        "data-orientation": prop("orientation"),
       })
     },
 
@@ -220,8 +223,8 @@ export function connect<T extends PropTypes>(
         "aria-hidden": true,
         tabIndex: 0,
         "data-trigger-proxy": "",
-        id: dom.getTriggerProxyId(scope, props.value),
-        "data-trigger-id": dom.getTriggerId(scope, props.value),
+        id: itemState.triggerProxyId,
+        "data-trigger-id": itemState.triggerId,
         hidden: !itemState.selected,
         style: visuallyHiddenStyle,
         onFocus(event) {
@@ -314,7 +317,7 @@ export function connect<T extends PropTypes>(
 
       return normalize.element({
         ...parts.content.attrs,
-        id: dom.getContentId(scope, props.value),
+        id: itemState.contentId,
         dir: prop("dir"),
         hidden: !selected,
         "aria-labelledby": itemState.triggerId,

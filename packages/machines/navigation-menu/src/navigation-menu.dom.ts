@@ -11,6 +11,7 @@ export const getContentId = (ctx: Scope, value: string) =>
 export const getViewportId = (ctx: Scope) => ctx.ids?.viewport ?? `nav-menu:${ctx.id}:viewport`
 export const getListId = (ctx: Scope) => ctx.ids?.list ?? `nav-menu:${ctx.id}:list`
 export const getIndicatorTrackId = (ctx: Scope) => ctx.ids?.indicatorTrack ?? `nav-menu:${ctx.id}:indicator-track`
+export const getItemId = (ctx: Scope, value: string) => ctx.ids?.item?.(value) ?? `nav-menu:${ctx.id}:item:${value}`
 
 export const getIndicatorTrackEl = (ctx: Scope) => ctx.getById(getIndicatorTrackId(ctx))
 export const getRootEl = (ctx: Scope) => ctx.getById(getRootId(ctx))
