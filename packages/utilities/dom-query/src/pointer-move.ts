@@ -46,8 +46,9 @@ export function trackPointerMove(doc: Document, handlers: PointerMoveHandlers) {
 
     if (distance < moveBuffer) return
 
-    // Because Safari doesn't trigger mouseup events when it's above a `<select>`
-    if (event.pointerType === "mouse" && event.button === 0) {
+    // Detect if mouse buttons were released during move (e.g., tab switch, scroll)
+    // event.buttons === 0 means no buttons are currently pressed
+    if (event.pointerType === "mouse" && event.buttons === 0) {
       handleUp(event)
       return
     }
