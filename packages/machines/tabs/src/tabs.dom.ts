@@ -12,7 +12,8 @@ export const getIndicatorId = (ctx: Scope) => ctx.ids?.indicator ?? `tabs:${ctx.
 
 export const getListEl = (ctx: Scope) => ctx.getById(getListId(ctx))
 export const getContentEl = (ctx: Scope, value: string) => ctx.getById(getContentId(ctx, value))
-export const getTriggerEl = (ctx: Scope, value: string) => ctx.getById(getTriggerId(ctx, value))
+export const getTriggerEl = (ctx: Scope, value: string | null) =>
+  value != null ? ctx.getById(getTriggerId(ctx, value)) : null
 export const getIndicatorEl = (ctx: Scope) => ctx.getById(getIndicatorId(ctx))
 
 export const getElements = (ctx: Scope) => {

@@ -1,6 +1,7 @@
 import { setup } from "@zag-js/core"
 import { clickIfLink, getFocusables, isAnchorElement, raf, resizeObserverBorderBox } from "@zag-js/dom-query"
 import type { Rect } from "@zag-js/types"
+import { callAll, isEqual } from "@zag-js/utils"
 import * as dom from "./tabs.dom"
 import type { TabsSchema } from "./tabs.types"
 
@@ -262,18 +263,19 @@ export const machine = createMachine({
         const cleanup = refs.get("indicatorCleanup")
         if (cleanup) cleanup()
 
-        const value = context.get("value")
-        if (!value) return
-
-        const triggerEl = dom.getTriggerEl(scope, value)
         const indicatorEl = dom.getIndicatorEl(scope)
-        if (!triggerEl || !indicatorEl) return
+        if (!indicatorEl) return
 
         const exec = () => {
-          context.set("indicatorRect", dom.getOffsetRect(triggerEl))
+          const triggerEl = dom.getTriggerEl(scope, context.get("value"))
+          if (!triggerEl) return
+          const rect = dom.getOffsetRect(triggerEl)
+          context.set("indicatorRect", (prev) => (isEqual(prev, rect) ? prev : rect))
         }
         exec()
-        const indicatorCleanup = resizeObserverBorderBox.observe(triggerEl, exec)
+
+        const triggerEls = dom.getElements(scope)
+        const indicatorCleanup = callAll(...triggerEls.map((el) => resizeObserverBorderBox.observe(el, exec)))
 
         refs.set("indicatorCleanup", indicatorCleanup)
       },
