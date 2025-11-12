@@ -1,5 +1,36 @@
 # @zag-js/image-cropper
 
+## 1.28.0
+
+### Patch Changes
+
+- [#2824](https://github.com/chakra-ui/zag/pull/2824)
+  [`62cc85d`](https://github.com/chakra-ui/zag/commit/62cc85da2e7a0f75b669302904298d428f242b24) Thanks
+  [@nelsonlaidev](https://github.com/nelsonlaidev)! - Fix issues with the controlled `zoom` prop not functioning as
+  expected
+
+- [#2828](https://github.com/chakra-ui/zag/pull/2828)
+  [`daebdc7`](https://github.com/chakra-ui/zag/commit/daebdc7c831be66fffd6f399406ed2ddde2796ee) Thanks
+  [@nelsonlaidev](https://github.com/nelsonlaidev)! - Clamping offset for non-fixed crop area should be based on
+  viewport rectangle
+
+- [`c656df8`](https://github.com/chakra-ui/zag/commit/c656df8846733f7b6241d152d76b515a95d6841a) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Refactor to use shared `ResizeObserver` implementation across all
+  machines. This significantly improves performance by using a single observer instance with `WeakMap` based
+  subscriptions instead of creating separate observers for each component instance.
+
+- [#2827](https://github.com/chakra-ui/zag/pull/2827)
+  [`c1588af`](https://github.com/chakra-ui/zag/commit/c1588af21e173b9f95ed03c391ac7c114a4c1cc7) Thanks
+  [@nelsonlaidev](https://github.com/nelsonlaidev)! - Use `zoom` or `defaultZoom` as default value
+
+- Updated dependencies [[`c59e4f5`](https://github.com/chakra-ui/zag/commit/c59e4f5b9bc43de85649d4de95e8bf270c16acab),
+  [`c656df8`](https://github.com/chakra-ui/zag/commit/c656df8846733f7b6241d152d76b515a95d6841a)]:
+  - @zag-js/dom-query@1.28.0
+  - @zag-js/core@1.28.0
+  - @zag-js/anatomy@1.28.0
+  - @zag-js/types@1.28.0
+  - @zag-js/utils@1.28.0
+
 ## 1.27.1
 
 ### Patch Changes
