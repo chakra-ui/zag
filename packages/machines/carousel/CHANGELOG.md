@@ -1,5 +1,33 @@
 # @zag-js/carousel
 
+## 1.28.0
+
+### Minor Changes
+
+- [`8b7f4da`](https://github.com/chakra-ui/zag/commit/8b7f4daa514e671af12bc872fdcc72589957b9cc) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Add support for `autoSize` prop to allow variable width/height
+  slide items.
+
+### Patch Changes
+
+- [`c59e4f5`](https://github.com/chakra-ui/zag/commit/c59e4f5b9bc43de85649d4de95e8bf270c16acab) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix dragging behavior that stops working after switching browser
+  tabs or scrolling the page. The issue was caused by incorrectly checking `event.button` instead of `event.buttons` to
+  detect interrupted drag operations.
+
+- [`c656df8`](https://github.com/chakra-ui/zag/commit/c656df8846733f7b6241d152d76b515a95d6841a) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Refactor to use shared `ResizeObserver` implementation across all
+  machines. This significantly improves performance by using a single observer instance with `WeakMap` based
+  subscriptions instead of creating separate observers for each component instance.
+- Updated dependencies [[`c59e4f5`](https://github.com/chakra-ui/zag/commit/c59e4f5b9bc43de85649d4de95e8bf270c16acab),
+  [`c656df8`](https://github.com/chakra-ui/zag/commit/c656df8846733f7b6241d152d76b515a95d6841a)]:
+  - @zag-js/dom-query@1.28.0
+  - @zag-js/core@1.28.0
+  - @zag-js/scroll-snap@1.28.0
+  - @zag-js/anatomy@1.28.0
+  - @zag-js/types@1.28.0
+  - @zag-js/utils@1.28.0
+
 ## 1.27.1
 
 ### Patch Changes

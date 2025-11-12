@@ -1,5 +1,13 @@
 # @zag-js/focus-visible
 
+## 1.28.0
+
+### Patch Changes
+
+- Updated dependencies [[`c59e4f5`](https://github.com/chakra-ui/zag/commit/c59e4f5b9bc43de85649d4de95e8bf270c16acab),
+  [`c656df8`](https://github.com/chakra-ui/zag/commit/c656df8846733f7b6241d152d76b515a95d6841a)]:
+  - @zag-js/dom-query@1.28.0
+
 ## 1.27.1
 
 ### Patch Changes

@@ -1,5 +1,27 @@
 # @zag-js/radio-group
 
+## 1.28.0
+
+### Patch Changes
+
+- [`c656df8`](https://github.com/chakra-ui/zag/commit/c656df8846733f7b6241d152d76b515a95d6841a) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Refactor to use shared `ResizeObserver` implementation across all
+  machines. This significantly improves performance by using a single observer instance with `WeakMap` based
+  subscriptions instead of creating separate observers for each component instance.
+
+- [#2834](https://github.com/chakra-ui/zag/pull/2834)
+  [`e0e4676`](https://github.com/chakra-ui/zag/commit/e0e467627cc288ef6d2c21fae6b1fba7b708955c) Thanks
+  [@Hugos68](https://github.com/Hugos68)! - Fix indicator prematurely showing when rect has not been resolved yet
+
+- Updated dependencies [[`c59e4f5`](https://github.com/chakra-ui/zag/commit/c59e4f5b9bc43de85649d4de95e8bf270c16acab),
+  [`c656df8`](https://github.com/chakra-ui/zag/commit/c656df8846733f7b6241d152d76b515a95d6841a)]:
+  - @zag-js/dom-query@1.28.0
+  - @zag-js/core@1.28.0
+  - @zag-js/focus-visible@1.28.0
+  - @zag-js/anatomy@1.28.0
+  - @zag-js/types@1.28.0
+  - @zag-js/utils@1.28.0
+
 ## 1.27.1
 
 ### Patch Changes

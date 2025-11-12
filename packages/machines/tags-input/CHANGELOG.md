@@ -1,5 +1,23 @@
 # @zag-js/tags-input
 
+## 1.28.0
+
+### Patch Changes
+
+- [`8e8a5e3`](https://github.com/chakra-ui/zag/commit/8e8a5e3868f41c44541b67fb994bf0732636d149) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix issue where item delete trigger doesn't have `data-*` attached
+
+- Updated dependencies [[`c59e4f5`](https://github.com/chakra-ui/zag/commit/c59e4f5b9bc43de85649d4de95e8bf270c16acab),
+  [`c656df8`](https://github.com/chakra-ui/zag/commit/c656df8846733f7b6241d152d76b515a95d6841a)]:
+  - @zag-js/dom-query@1.28.0
+  - @zag-js/core@1.28.0
+  - @zag-js/auto-resize@1.28.0
+  - @zag-js/interact-outside@1.28.0
+  - @zag-js/anatomy@1.28.0
+  - @zag-js/types@1.28.0
+  - @zag-js/utils@1.28.0
+  - @zag-js/live-region@1.28.0
+
 ## 1.27.1
 
 ### Patch Changes

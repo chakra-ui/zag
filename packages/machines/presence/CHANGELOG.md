@@ -1,5 +1,20 @@
 # @zag-js/presence
 
+## 1.28.0
+
+### Patch Changes
+
+- [#2678](https://github.com/chakra-ui/zag/pull/2678)
+  [`3171668`](https://github.com/chakra-ui/zag/commit/317166873962b075efa55da85aabe30292c73700) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix a bug where elements get stuck in unmountSuspended state
+  during rapid hovering
+
+- Updated dependencies [[`c59e4f5`](https://github.com/chakra-ui/zag/commit/c59e4f5b9bc43de85649d4de95e8bf270c16acab),
+  [`c656df8`](https://github.com/chakra-ui/zag/commit/c656df8846733f7b6241d152d76b515a95d6841a)]:
+  - @zag-js/dom-query@1.28.0
+  - @zag-js/core@1.28.0
+  - @zag-js/types@1.28.0
+
 ## 1.27.1
 
 ### Patch Changes
