@@ -49,7 +49,10 @@ function isDateArrayEqual(a: DateValue[], b: DateValue[] | undefined) {
 }
 
 function getValueAsString(value: DateValue[], prop: PropFn<DatePickerSchema>) {
-  return value.map((date) => prop("format")(date, { locale: prop("locale"), timeZone: prop("timeZone") }))
+  return value.map((date) => {
+    if (date == null) return ""
+    return prop("format")(date, { locale: prop("locale"), timeZone: prop("timeZone") })
+  })
 }
 
 export const machine = createMachine<DatePickerSchema>({
@@ -137,7 +140,7 @@ export const machine = createMachine<DatePickerSchema>({
         defaultValue: prop("defaultValue"),
         value: prop("value"),
         isEqual: isDateArrayEqual,
-        hash: (v) => v.map((date) => date.toString()).join(","),
+        hash: (v) => v.map((date) => date?.toString() ?? "").join(","),
         onChange(value) {
           const context = getContext()
           const valueAsString = getValueAsString(value, prop)

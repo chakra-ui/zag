@@ -248,4 +248,21 @@ test.describe("datepicker [range]", () => {
     await I.clickDayCell(10)
     await I.seeInputHasValue("06/10/2024", 0)
   })
+
+  test("should not crash when blurring end date input twice after typing end date first", async () => {
+    // Regression test for issue #2840
+    // 1. Type a valid end date first (e.g. 06/15/2024)
+    await I.focusInput(1)
+    await I.type("06/15/2024", 1)
+    await I.clickOutsideToBlur()
+
+    // 2. Focus again on the period end date input
+    await I.focusInput(1)
+
+    // 3. Blur the field again - should not crash
+    await I.clickOutsideToBlur()
+
+    // Should not crash and the value should still be set
+    await I.seeInputHasValue("06/15/2024", 1)
+  })
 })
