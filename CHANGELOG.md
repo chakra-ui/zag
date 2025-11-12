@@ -4,6 +4,35 @@ All notable changes to this project will be documented in this file.
 
 > For v0.x changelog, see the [v0 branch](https://github.com/chakra-ui/zag/blob/v0/CHANGELOG.md)
 
+## [1.28.0](./#1.28.0) - 2025-11-12
+
+### Added
+
+- **Carousel**: Add support for `autoSize` prop to allow variable width/height slide items.
+
+### Fixed
+
+- **Carousel**: Fix dragging behavior that stops working after switching browser tabs or scrolling the page. The issue
+  was caused by incorrectly checking `event.button` instead of `event.buttons` to detect interrupted drag operations.
+
+- **Date Picker**: Fix issue where the range date picker crashes when typing the end date first and blurring the input
+  field multiple times.
+
+- **Image Cropper**
+  - Fix issues with the controlled `zoom` prop not functioning as expected
+  - Clamping offset for non-fixed crop area should be based on viewport rectangle
+
+- **Presence**: Fix a bug where elements get stuck in unmountSuspended state during rapid hovering
+
+- **Radio Group, Tabs**: Fix indicator prematurely showing when rect has not been resolved yet
+
+- **Store**: Fix "Illegal invocation" errors by excluding native objects with special `this` bindings from being
+  proxied.
+
+- **Tabs**: Fix tabs indicator position not updating when inactive tabs change size.
+
+- **Tags Input**: Fix issue where item delete trigger doesn't have `data-*` attached
+
 ## [1.27.1](./#1.27.1) - 2025-11-04
 
 ### Fixed
