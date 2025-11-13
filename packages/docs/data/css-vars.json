@@ -8,6 +8,13 @@
       "--marker-value": "The marker value value for the Marker"
     }
   },
+  "carousel": {
+    "Root": {
+      "--slides-per-page": "The number of slides visible per page",
+      "--slide-spacing": "The spacing between slides",
+      "--slide-item-size": "The calculated size of each slide item"
+    }
+  },
   "bottom-sheet": {
     "Content": {
       "--bottom-sheet-translate": "The bottom sheet translate value for the Content",
@@ -16,13 +23,6 @@
     },
     "Backdrop": {
       "--layer-index": "The index of the dismissable in the layer stack"
-    }
-  },
-  "carousel": {
-    "Root": {
-      "--slides-per-page": "The number of slides visible per page",
-      "--slide-spacing": "The spacing between slides",
-      "--slide-item-size": "The calculated size of each slide item"
     }
   },
   "collapsible": {
@@ -126,7 +126,22 @@
       "--trigger-x": "The trigger x value for the Root",
       "--trigger-y": "The trigger y value for the Root",
       "--viewport-width": "The width of the Root",
-      "--viewport-height": "The height of the Root"
+      "--viewport-height": "The height of the Root",
+      "--viewport-x": "The viewport x value for the Root",
+      "--viewport-y": "The viewport y value for the Root"
+    },
+    "Viewport": {
+      "--viewport-width": "The width of the Viewport",
+      "--viewport-height": "The height of the Viewport",
+      "--viewport-x": "The viewport x value for the Viewport",
+      "--viewport-y": "The viewport y value for the Viewport"
+    },
+    "Content": {
+      "--layer-index": "The index of the dismissable in the layer stack",
+      "--nested-layer-count": "The number of nested navigation-menus"
+    },
+    "Backdrop": {
+      "--layer-index": "The index of the dismissable in the layer stack"
     }
   },
   "progress": {

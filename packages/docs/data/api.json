@@ -516,6 +516,10 @@
         "type": "() => number",
         "description": "Returns the current scroll progress as a percentage"
       },
+      "getProgressText": {
+        "type": "() => string",
+        "description": "Returns the progress text"
+      },
       "play": {
         "type": "VoidFunction",
         "description": "Function to start/resume autoplay"
@@ -546,6 +550,11 @@
         "type": "number",
         "description": "The number of slides to show at a time.",
         "defaultValue": "1"
+      },
+      "autoSize": {
+        "type": "boolean",
+        "description": "Whether to enable variable width slides.",
+        "defaultValue": "false"
       },
       "slidesPerMove": {
         "type": "number | \"auto\"",
@@ -3007,13 +3016,13 @@
         "type": "boolean",
         "description": "Whether the menu is open"
       },
-      "setParent": {
-        "type": "(parent: NavigationMenuService) => void",
-        "description": "Sets the parent of the menu"
+      "isViewportRendered": {
+        "type": "boolean",
+        "description": "Whether the viewport is rendered"
       },
-      "setChild": {
-        "type": "(child: NavigationMenuService) => void",
-        "description": "Sets the child of the menu"
+      "getViewportNode": {
+        "type": "() => HTMLElement",
+        "description": "Gets the viewport node element"
       },
       "orientation": {
         "type": "Orientation",
@@ -3022,7 +3031,7 @@
     },
     "context": {
       "ids": {
-        "type": "Partial<{ root: string; list: string; item: string; indicator: string; trigger: (value: string) => string; content: (value: string) => string; viewport: string; }>",
+        "type": "Partial<{ root: string; list: string; item: string; trigger: (value: string) => string; content: (value: string) => string; viewport: string; }>",
         "description": "The ids of the elements in the machine."
       },
       "value": {
@@ -3054,6 +3063,10 @@
       "disableHoverTrigger": {
         "type": "boolean",
         "description": "Whether to disable the hover trigger"
+      },
+      "disablePointerLeaveClose": {
+        "type": "boolean",
+        "description": "Whether to disable the pointer leave close"
       },
       "dir": {
         "type": "\"ltr\" | \"rtl\"",
