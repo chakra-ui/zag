@@ -11,7 +11,6 @@
     "chakra-ui",
     "navigation-menu"
   ],
-  "private": true,
   "author": "Segun Adebayo <sage@adebayosegun.com>",
   "homepage": "https://github.com/chakra-ui/zag#readme",
   "license": "MIT",

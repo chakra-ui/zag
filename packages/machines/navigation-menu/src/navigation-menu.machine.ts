@@ -189,7 +189,7 @@ export const machine = createMachine({
 
         const openTimeoutId = window.setTimeout(
           () => {
-            dom.getTriggerEl(scope, event.value)?.focus()
+            dom.getTriggerEl(scope, event.value)?.focus({ preventScroll: true })
             setTimeout(() => {
               context.set("previousValue", context.get("value"))
               context.set("value", event.value)
