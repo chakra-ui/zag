@@ -1,0 +1,19 @@
+```svelte
+<script>
+  import { trapFocus } from "@zag-js/focus-trap"
+
+  let dialogEl = $state<HTMLElement | null>(null)
+
+  $effect(() => {
+    return trapFocus(dialogEl, {
+      initialFocus: "[data-autofocus]",
+    })
+  })
+</script>
+
+<div bind:this={dialogEl} class="dialog">
+  <button data-autofocus>Close</button>
+  <input type="text" placeholder="Enter text..." />
+  <button>Submit</button>
+</div>
+```

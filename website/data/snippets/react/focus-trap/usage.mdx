@@ -1,0 +1,23 @@
+```tsx
+import { useEffect, useRef } from "react"
+import { trapFocus } from "@zag-js/focus-trap"
+
+export function Dialog() {
+  const ref = useRef<HTMLDivElement | null>(null)
+
+  useEffect(() => {
+    if (!ref.current) return
+    return trapFocus(ref.current, {
+      initialFocus: "[data-autofocus]",
+    })
+  }, [])
+
+  return (
+    <div ref={ref}>
+      <button data-autofocus>Close</button>
+      <input type="text" placeholder="Enter text..." />
+      <button>Submit</button>
+    </div>
+  )
+}
+```
