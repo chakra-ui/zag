@@ -105,6 +105,8 @@ export const machine = createMachine<SplitterSchema>({
   entry: ["syncSize"],
   exit: ["clearGlobalCursor"],
 
+  effects: ["trackResizeHandles"],
+
   states: {
     idle: {
       entry: ["clearDraggingState", "clearKeyboardState"],
@@ -193,6 +195,37 @@ export const machine = createMachine<SplitterSchema>({
 
   implementations: {
     effects: {
+      trackResizeHandles: ({ prop, scope, send }) => {
+        const registry = prop("registry")
+        if (!registry) return
+
+        const cleanupFns: VoidFunction[] = []
+
+        // Register all resize handles with the registry
+        const resizeTriggers = dom.getResizeTriggerEls(scope)
+        resizeTriggers.forEach((element) => {
+          const id = element.dataset.id
+          if (!id) return
+
+          const unregister = registry.register({
+            id: dom.getResizeTriggerId(scope, id),
+            element: element as HTMLElement,
+            orientation: prop("orientation"),
+            onActivate(point) {
+              send({ type: "POINTER_DOWN", id, point })
+            },
+            onDeactivate() {
+              send({ type: "POINTER_UP" })
+            },
+          })
+
+          cleanupFns.push(unregister)
+        })
+
+        return () => {
+          cleanupFns.forEach((cleanup) => cleanup())
+        }
+      },
       waitForHoverDelay: ({ send }) => {
         return setRafTimeout(() => {
           send({ type: "HOVER_DELAY" })
@@ -519,6 +552,10 @@ export const machine = createMachine<SplitterSchema>({
       },
 
       setGlobalCursor({ context, scope, prop }) {
+        const registry = prop("registry")
+        // Don't set cursor when registry is enabled - registry manages cursor globally
+        if (registry) return
+
         const dragState = context.get("dragState")
         if (!dragState) return
 
@@ -560,8 +597,22 @@ function setSize(params: Params<SplitterSchema>, sizes: number[]) {
   const panelsArray = prop("panels")
   const onCollapse = prop("onCollapse")
   const onExpand = prop("onExpand")
+  const onResizeStart = prop("onResizeStart")
+  const onResizeEnd = prop("onResizeEnd")
 
   const panelIdToLastNotifiedSizeMap = refs.get("panelIdToLastNotifiedSizeMap")
+
+  // Check if this is a programmatic resize (not user interaction)
+  const dragState = context.get("dragState")
+  const keyboardState = context.get("keyboardState")
+  const isProgrammatic = dragState === null && keyboardState === null
+
+  // Call onResizeStart for programmatic resizes
+  if (isProgrammatic && onResizeStart) {
+    queueMicrotask(() => {
+      onResizeStart()
+    })
+  }
 
   context.set("size", sizes)
 
@@ -593,4 +644,14 @@ function setSize(params: Params<SplitterSchema>, sizes: number[]) {
       }
     }
   })
+
+  // Call onResizeEnd for programmatic resizes
+  if (isProgrammatic && onResizeEnd) {
+    queueMicrotask(() => {
+      onResizeEnd({
+        size: sizes,
+        resizeTriggerId: null, // Programmatic changes don't have a resize trigger
+      })
+    })
+  }
 }

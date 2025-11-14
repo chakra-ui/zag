@@ -26,3 +26,5 @@ export type {
   SplitterService as Service,
 } from "./splitter.types"
 export { getPanelLayout as layout } from "./utils/panel"
+export { registry } from "./utils/registry"
+export type { SplitterRegistryOptions, SplitterRegistry, HitAreaMargins } from "./utils/registry"
