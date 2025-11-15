@@ -1,0 +1,705 @@
+---
+title: Building Machines
+description: Deep dive into the key concepts that power Zag machines
+---
+
+# Building Machines
+
+This guide provides a deep dive into the key pieces that make Zag machines
+framework-agnostic and reactive.
+
+## Context
+
+Context holds the reactive state of your machine. Unlike props (which are
+configuration), context represents internal state that changes over time.
+
+Context values are created using the `bindable` pattern, which provides
+controlled/uncontrolled state management.
+
+```tsx
+context({ bindable, prop }) {
+  return {
+    // Uncontrolled state with default value
+    count: bindable<number>(() => ({
+      defaultValue: 0,
+    })),
+
+    // Controlled/uncontrolled state
+    name: bindable<string>(() => ({
+      defaultValue: prop("defaultName") ?? "",
+      value: prop("name"), // When provided, state is controlled
+      onChange(value, prev) {
+        prop("onNameChange")?.({ name: value })
+      },
+    })),
+  }
+}
+```
+
+### Bindable Parameters
+
+- **`defaultValue`**: Initial value for uncontrolled state
+- **`value`**: Controlled value from props (when provided, state becomes
+  controlled)
+- **`onChange`**: Callback fired when value changes
+- **`isEqual`**: Custom equality function (defaults to `Object.is`)
+- **`hash`**: Custom hash function for change detection
+- **`sync`**: Whether to use synchronous updates (framework-specific)
+
+### Accessing Context
+
+In actions, guards, computed, and effects:
+
+```tsx
+actions: {
+  increment({ context }) {
+    const current = context.get("count")
+    context.set("count", current + 1) // Update context
+  },
+
+  reset({ context }) {
+    const initial = context.initial("count") // Get initial value
+    context.set("count", initial)
+  },
+
+  logName({ context }) {
+    const name = context.get("name") // Read current value
+    console.log("Current name:", name)
+  }
+}
+```
+
+### How Bindable Works
+
+The `bindable` pattern automatically:
+
+- Detects controlled vs uncontrolled state (`value !== undefined`)
+- Manages framework-specific reactivity (React hooks, Solid signals, Vue refs,
+  Svelte runes)
+- Handles change notifications with equality checks
+- Provides a consistent API across all frameworks
+
+## Watch
+
+The `watch` function allows you to reactively respond to changes in props or
+context. It uses the `track` function to specify dependencies and trigger
+actions when they change.
+
+```tsx
+watch({ track, action, prop, context }) {
+  // Track prop changes
+  track([() => prop("enabled")], () => {
+    action(["updateEnabledState"])
+  })
+
+  // Track context changes
+  track([() => context.get("count")], () => {
+    action(["logCount", "updateDisplay"])
+  })
+
+  // Track multiple dependencies
+  track([
+    () => context.get("count"),
+    () => prop("multiplier")
+  ], () => {
+    action(["calculateTotal"])
+  })
+}
+```
+
+### How Track Works
+
+1. **Dependency Array**: Array of functions that return values to track
+2. **Effect Function**: Runs when any tracked dependency changes
+3. **Change Detection**: Uses deep equality comparison (or custom `isEqual` from
+   bindable)
+4. **Framework Integration**: Each framework implements track using its
+   reactivity:
+   - React: `useEffect` with dependency tracking
+   - Solid: `createEffect` with reactive signals
+   - Vue: `watch` with computed dependencies
+   - Svelte: Reactive statements
+
+### Common Patterns
+
+```tsx
+// Sync controlled props
+watch({ track, action, prop }) {
+  track([() => prop("enabled")], () => {
+    action(["syncEnabledState"])
+  })
+}
+
+// React to context changes
+watch({ track, action, context }) {
+  track([() => context.get("count")], () => {
+    action(["notifyCountChanged"])
+  })
+}
+
+// Track multiple values
+watch({ track, action, context, prop }) {
+  track([
+    () => context.get("firstName"),
+    () => context.get("lastName")
+  ], () => {
+    action(["updateFullName"])
+  })
+}
+```
+
+## Computed
+
+Computed values are derived from context, props, refs, and other computed
+values. They're recalculated whenever their dependencies change and are memoized
+per framework.
+
+```tsx
+computed: {
+  isEven({ context }) {
+    return context.get("count") % 2 === 0
+  },
+
+  fullName({ context }) {
+    const first = context.get("firstName") || ""
+    const last = context.get("lastName") || ""
+    return `${first} ${last}`.trim()
+  },
+
+  // Computed can depend on other computed values
+  status({ computed, context }) {
+    const isEven = computed("isEven")
+    const count = context.get("count")
+    return isEven ? `Even: ${count}` : `Odd: ${count}`
+  },
+}
+```
+
+### Accessing Computed
+
+```tsx
+// In guards
+guards: {
+  canIncrement({ computed }) {
+    return computed("isEven") // Only increment when count is even
+  }
+}
+
+// In actions
+actions: {
+  logStatus({ computed }) {
+    const status = computed("status")
+    console.log("Status:", status)
+  }
+}
+
+// In other computed values
+computed: {
+  message({ computed }) {
+    return computed("isEven") ? "Count is even" : "Count is odd"
+  }
+}
+```
+
+### Key Points
+
+- Computed values are **lazy** - only calculated when accessed
+- They can depend on props, context, refs, scope, and other computed values
+- They're **memoized** per framework (React `useMemo`, Solid `createMemo`, etc.)
+- Use computed for values that derive from state but don't need to be stored in
+  context
+
+## Refs
+
+Refs hold non-reactive references like class instances, DOM elements, or other
+objects that don't need reactivity. Unlike context, refs don't trigger
+re-renders when changed.
+
+```tsx
+refs() {
+  return {
+    // Simple counter for internal tracking
+    operationCount: 0,
+
+    // Cache for storing previous values
+    previousCount: null,
+
+    // Simple object for tracking state
+    history: [],
+  }
+}
+```
+
+### Accessing Refs
+
+```tsx
+actions: {
+  increment({ refs, context }) {
+    const count = context.get("count")
+
+    // Store previous value in ref
+    refs.set("previousCount", count)
+
+    // Track operation
+    const ops = refs.get("operationCount")
+    refs.set("operationCount", ops + 1)
+
+    // Update context
+    context.set("count", count + 1)
+  },
+
+  saveHistory({ refs, context }) {
+    const history = refs.get("history")
+    const count = context.get("count")
+    history.push(count)
+    refs.set("history", history)
+  }
+}
+```
+
+### When to Use Refs
+
+- Class instances that manage their own state
+- Cached values that don't need reactivity
+- Temporary state that doesn't affect rendering
+- Performance-critical data that shouldn't trigger updates
+
+## Props
+
+Props are the configuration passed to your machine. The `props` function
+normalizes and sets defaults.
+
+```tsx
+props({ props, scope }) {
+  return {
+    // Set defaults
+    step: 1,
+    min: 0,
+    max: 100,
+
+    // Conditional defaults
+    enabled: props.disabled === undefined ? true : !props.disabled,
+
+    // Normalize values
+    initialValue: props.initialValue ?? 0,
+
+    // Merge nested objects
+    settings: {
+      showLabel: true,
+      showButtons: true,
+      ...props.settings,
+    },
+
+    // User props override defaults (spread last)
+    ...props,
+  }
+}
+```
+
+### Key Principles
+
+- Always return defaults **first**, then spread `...props` to allow overrides
+- Use conditional logic for interdependent defaults
+- The `scope` parameter provides access to DOM scope (id, ids, getRootNode)
+
+### Accessing Props
+
+```tsx
+// In guards
+guards: {
+  canIncrement({ prop, context }) {
+    const max = prop("max")
+    const count = context.get("count")
+    return count < max
+  }
+}
+
+// In actions
+actions: {
+  notifyChange({ prop, context }) {
+    const count = context.get("count")
+    prop("onChange")?.({ count })
+  }
+}
+
+// In computed
+computed: {
+  canDecrement({ prop, context }) {
+    const min = prop("min")
+    const count = context.get("count")
+    return count > min
+  }
+}
+```
+
+## Scope
+
+Scope provides access to DOM-related utilities and element queries. It's
+available in props, actions, guards, computed, and effects. Scope helps machines
+interact with the DOM in a framework-agnostic way.
+
+```tsx
+// Scope interface
+interface Scope {
+  id?: string // Unique machine instance ID
+  ids?: Record<string, any> // Map of part IDs
+  getRootNode: () => ShadowRoot | Document | Node
+  getById: <T extends Element = HTMLElement>(id: string) => T | null
+  getActiveElement: () => HTMLElement | null
+  isActiveElement: (elem: HTMLElement | null) => boolean
+  getDoc: () => typeof document
+  getWin: () => typeof window
+}
+```
+
+### Using Scope
+
+Scope is commonly used in effects and actions to interact with DOM elements:
+
+```tsx
+effects: {
+  focusInput({ scope }) {
+    const inputEl = scope.getById("input")
+    inputEl?.focus()
+  },
+
+  trackClickOutside({ scope, send }) {
+    const doc = scope.getDoc()
+
+    function handleClick(event: MouseEvent) {
+      const rootEl = scope.getRootNode()
+      if (!rootEl.contains(event.target as Node)) {
+        send({ type: "CLICK_OUTSIDE" })
+      }
+    }
+
+    doc.addEventListener("click", handleClick)
+    return () => {
+      doc.removeEventListener("click", handleClick)
+    }
+  }
+}
+```
+
+### Common Patterns
+
+```tsx
+// Get element by ID
+actions: {
+  scrollToElement({ scope }) {
+    const element = scope.getById("target")
+    element?.scrollIntoView()
+  }
+}
+
+// Check active element
+guards: {
+  isInputFocused({ scope }) {
+    const inputEl = scope.getById("input")
+    return scope.isActiveElement(inputEl)
+  }
+}
+
+// Access document/window
+effects: {
+  preventScroll({ scope }) {
+    const doc = scope.getDoc()
+    const originalOverflow = doc.body.style.overflow
+    doc.body.style.overflow = "hidden"
+
+    return () => {
+      doc.body.style.overflow = originalOverflow
+    }
+  }
+}
+
+// Use in props for conditional defaults
+props({ props, scope }) {
+  return {
+    // Use scope.id to generate unique IDs
+    id: props.id ?? scope.id ?? `counter-${Math.random()}`,
+    ...props,
+  }
+}
+```
+
+### Key Points
+
+- Scope provides framework-agnostic DOM access
+- Use `getById` to query elements by their generated IDs
+- Use `getRootNode` to get the root container (supports Shadow DOM)
+- Use `getDoc` and `getWin` for document/window access
+- Scope is typically used in effects for DOM manipulation and event listeners
+
+## Actions, Guards, and Effects
+
+These are the implementation details that bring your machine to life.
+
+### Actions
+
+Actions perform state updates and side effects:
+
+```tsx
+actions: {
+  increment({ context, prop }) {
+    const step = prop("step")
+    const current = context.get("count")
+    context.set("count", current + step)
+  },
+
+  notifyChange({ prop, context }) {
+    const count = context.get("count")
+    prop("onChange")?.({ count })
+  },
+
+  reset({ context }) {
+    const initial = context.initial("count")
+    context.set("count", initial)
+  }
+}
+```
+
+### Guards
+
+Guards are boolean conditions that determine if a transition should occur:
+
+```tsx
+guards: {
+  canIncrement({ prop, context }) {
+    const max = prop("max")
+    const count = context.get("count")
+    return count < max
+  },
+
+  canDecrement({ prop, context }) {
+    const min = prop("min")
+    const count = context.get("count")
+    return count > min
+  }
+}
+```
+
+### Effects
+
+Effects are side effects that run while in a state and must return cleanup:
+
+```tsx
+effects: {
+  logCount({ context, send }) {
+    const count = context.get("count")
+    console.log("Count changed to:", count)
+
+    // No cleanup needed for this effect
+    return undefined
+  },
+
+  startTimer({ send }) {
+    const intervalId = setInterval(() => {
+      send({ type: "TICK" })
+    }, 1000)
+
+    // Return cleanup function
+    return () => {
+      clearInterval(intervalId)
+    }
+  }
+}
+```
+
+**Important**: Effects must return a cleanup function (or `undefined` if no
+cleanup needed). Cleanup is called when exiting the state or unmounting.
+
+## Putting It All Together
+
+Here's a complete example showing how these concepts work together in a simple
+counter machine:
+
+```tsx
+export const machine = createMachine<CounterSchema>({
+  // 1. Normalize props
+  props({ props }) {
+    return {
+      step: 1,
+      min: 0,
+      max: 100,
+      defaultValue: 0,
+      ...props,
+    }
+  },
+
+  // 2. Define reactive context
+  context({ prop, bindable }) {
+    return {
+      count: bindable(() => ({
+        defaultValue: prop("defaultValue"),
+        value: prop("value"),
+        onChange(value) {
+          prop("onChange")?.({ count: value })
+        },
+      })),
+    }
+  },
+
+  // 3. Define non-reactive refs
+  refs() {
+    return {
+      previousCount: null,
+      operationCount: 0,
+    }
+  },
+
+  // 4. Define computed values
+  computed: {
+    isEven({ context }) {
+      return context.get("count") % 2 === 0
+    },
+    canIncrement({ prop, context }) {
+      const max = prop("max")
+      const count = context.get("count")
+      return count < max
+    },
+    canDecrement({ prop, context }) {
+      const min = prop("min")
+      const count = context.get("count")
+      return count > min
+    },
+  },
+
+  // 5. Watch for changes
+  watch({ track, action, context, prop }) {
+    track([() => context.get("count")], () => {
+      action(["logCount", "notifyChange"])
+    })
+    track([() => prop("step")], () => {
+      action(["logStepChanged"])
+    })
+  },
+
+  // 6. Define states and transitions
+  states: {
+    idle: {
+      on: {
+        INCREMENT: {
+          guard: "canIncrement",
+          actions: ["increment"],
+        },
+        DECREMENT: {
+          guard: "canDecrement",
+          actions: ["decrement"],
+        },
+        RESET: {
+          actions: ["reset"],
+        },
+      },
+    },
+  },
+
+  // 7. Implement actions, guards, effects
+  implementations: {
+    guards: {
+      canIncrement({ computed }) {
+        return computed("canIncrement")
+      },
+      canDecrement({ computed }) {
+        return computed("canDecrement")
+      },
+    },
+    actions: {
+      increment({ context, prop, refs }) {
+        const step = prop("step")
+        const current = context.get("count")
+
+        // Store previous in ref
+        refs.set("previousCount", current)
+
+        // Update context
+        context.set("count", current + step)
+      },
+      decrement({ context, prop }) {
+        const step = prop("step")
+        const current = context.get("count")
+        context.set("count", current - step)
+      },
+      reset({ context }) {
+        const initial = context.initial("count")
+        context.set("count", initial)
+      },
+      logCount({ context, computed }) {
+        const count = context.get("count")
+        const isEven = computed("isEven")
+        console.log(`Count: ${count} (${isEven ? "even" : "odd"})`)
+      },
+      notifyChange({ prop, context }) {
+        const count = context.get("count")
+        prop("onChange")?.({ count })
+      },
+      logStepChanged({ prop }) {
+        console.log("Step changed to:", prop("step"))
+      },
+    },
+  },
+})
+```
+
+## TypeScript Guide
+
+To make your machine type-safe, define a schema interface that describes all the
+types:
+
+```tsx
+import type { EventObject, Machine, Service } from "@zag-js/core"
+
+// Define props interface
+export interface CounterProps {
+  step?: number
+  min?: number
+  max?: number
+  defaultValue?: number
+  value?: number
+  onChange?: (details: { count: number }) => void
+}
+
+// Define the machine schema
+export interface CounterSchema {
+  state: "idle"
+  props: CounterProps
+  context: {
+    count: number
+  }
+  refs: {
+    previousCount: number | null
+    operationCount: number
+  }
+  computed: {
+    isEven: boolean
+    canIncrement: boolean
+    canDecrement: boolean
+  }
+  event: EventObject
+  action: string
+  guard: string
+  effect: string
+}
+
+// Create typed machine
+export const machine = createMachine<CounterSchema>({
+  // ... machine definition
+})
+
+// Export typed service
+export type CounterService = Service<CounterSchema>
+```
+
+### Schema Properties
+
+- **`state`**: Union of all possible states (`"idle" | "active" | "disabled"`)
+- **`props`**: Props interface (user configuration)
+- **`context`**: Context values (reactive state)
+- **`refs`**: Refs values (non-reactive references)
+- **`computed`**: Computed values (derived state)
+- **`event`**: Event types (usually `EventObject`)
+- **`action`**: Action names (usually `string`)
+- **`guard`**: Guard names (usually `string`)
+- **`effect`**: Effect names (usually `string`)
+
+This provides full type safety throughout your machine implementation.
