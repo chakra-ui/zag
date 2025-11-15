@@ -1,5 +1,18 @@
 # @zag-js/listbox
 
+## 1.28.1
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.28.1
+  - @zag-js/core@1.28.1
+  - @zag-js/types@1.28.1
+  - @zag-js/collection@1.28.1
+  - @zag-js/utils@1.28.1
+  - @zag-js/dom-query@1.28.1
+  - @zag-js/focus-visible@1.28.1
+
 ## 1.28.0
 
 ### Patch Changes
