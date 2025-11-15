@@ -13,6 +13,7 @@ export function connect<T extends PropTypes>(service: SplitterService, normalize
 
   const horizontal = computed("horizontal")
   const dragging = state.matches("dragging")
+  const registry = prop("registry")
 
   const getPanelStyle = (id: string) => {
     const panels = prop("panels")
@@ -151,7 +152,7 @@ export function connect<T extends PropTypes>(service: SplitterService, normalize
           WebkitUserSelect: "none",
           flex: "0 0 auto",
           pointerEvents: dragging && !focused ? "none" : undefined,
-          cursor: horizontal ? "col-resize" : "row-resize",
+          cursor: registry ? undefined : horizontal ? "col-resize" : "row-resize",
           [horizontal ? "minHeight" : "minWidth"]: "0",
         },
         onPointerDown(event) {
@@ -160,6 +161,12 @@ export function connect<T extends PropTypes>(service: SplitterService, normalize
             event.preventDefault()
             return
           }
+
+          // If registry is enabled, it handles pointer events
+          if (registry) {
+            return
+          }
+
           const point = getEventPoint(event)
           send({ type: "POINTER_DOWN", id, point })
           event.currentTarget.setPointerCapture(event.pointerId)
@@ -174,11 +181,11 @@ export function connect<T extends PropTypes>(service: SplitterService, normalize
           }
         },
         onPointerOver() {
-          if (disabled) return
+          if (disabled || registry) return
           send({ type: "POINTER_OVER", id })
         },
         onPointerLeave() {
-          if (disabled) return
+          if (disabled || registry) return
           send({ type: "POINTER_LEAVE", id })
         },
         onBlur() {
