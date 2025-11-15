@@ -5,10 +5,19 @@ import { type NormalizeProps, type PropTypes } from "@zag-js/types"
 import { flatArray } from "@zag-js/utils"
 import { parts } from "./file-upload.anatomy"
 import * as dom from "./file-upload.dom"
-import type { FileUploadApi, FileUploadService } from "./file-upload.types"
+import type { FileUploadApi, FileUploadService, ItemType } from "./file-upload.types"
 import { isEventWithFiles } from "./file-upload.utils"
 
-const DEFAULT_ITEM_TYPE = "accepted" as const
+const DEFAULT_ITEM_TYPE: ItemType = "accepted"
+
+const INTERACTIVE_SELECTOR =
+  "button, a[href], input:not([type='file']), select, textarea, [tabindex], [contenteditable]"
+
+function isInteractiveTarget(element: HTMLElement | null, container: HTMLElement): boolean {
+  if (!element || element.getAttribute("type") === "file") return false
+  const interactive = element.closest(INTERACTIVE_SELECTOR)
+  return interactive != container && contains(container, interactive)
+}
 
 export function connect<T extends PropTypes>(
   service: FileUploadService,
@@ -94,7 +103,11 @@ export function connect<T extends PropTypes>(
         onKeyDown(event) {
           if (disabled) return
           if (event.defaultPrevented) return
-          if (event.currentTarget !== getEventTarget(event)) return
+
+          const target = getEventTarget<HTMLElement>(event)
+          if (!contains(event.currentTarget, target)) return
+          if (isInteractiveTarget(target, event.currentTarget)) return
+
           if (props.disableClick) return
           if (event.key !== "Enter" && event.key !== " ") return
           send({ type: "DROPZONE.CLICK", src: "keydown" })
@@ -103,8 +116,11 @@ export function connect<T extends PropTypes>(
           if (disabled) return
           if (event.defaultPrevented) return
           if (props.disableClick) return
-          // ensure it's the dropzone that's actually clicked
-          if (event.currentTarget !== getEventTarget(event)) return
+
+          const target = getEventTarget<HTMLElement>(event)
+          if (!contains(event.currentTarget, target)) return
+          if (isInteractiveTarget(target, event.currentTarget)) return
+
           // prevent opening the file dialog when clicking on the label (to avoid double opening)
           if (event.currentTarget.localName === "label") {
             event.preventDefault()
