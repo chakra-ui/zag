@@ -11,6 +11,10 @@
   padding: 8px;
   width: 100%;
   text-align: center;
+
+  &[data-focus-visible] {
+    outline: 2px solid royalblue;
+  }
 }
 
 .segmented-control [data-part="indicator"] {

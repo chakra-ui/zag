@@ -10,7 +10,7 @@ export function connect<T extends PropTypes>(
   service: RadioGroupService,
   normalize: NormalizeProps<T>,
 ): RadioGroupApi<T> {
-  const { context, send, computed, prop, scope, refs } = service
+  const { context, send, computed, prop, scope } = service
 
   const groupDisabled = computed("isDisabled")
   const readOnly = prop("readOnly")
@@ -22,7 +22,7 @@ export function connect<T extends PropTypes>(
       disabled: !!props.disabled || groupDisabled,
       checked: context.get("value") === props.value,
       focused: context.get("focusedValue") === props.value,
-      focusVisible: refs.get("focusVisibleValue") === props.value,
+      focusVisible: context.get("focusVisibleValue") === props.value,
       hovered: context.get("hoveredValue") === props.value,
       active: context.get("activeValue") === props.value,
     }
@@ -170,7 +170,7 @@ export function connect<T extends PropTypes>(
           }
         },
         onBlur() {
-          send({ type: "SET_FOCUSED", value: null, focused: false })
+          send({ type: "SET_FOCUSED", value: null, focused: false, focusVisible: false })
         },
         onFocus() {
           const focusVisible = isFocusVisible()
