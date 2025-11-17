@@ -50,6 +50,7 @@ export type OpenChangeReason =
 export interface OpenChangeDetails {
   open: boolean
   reason?: OpenChangeReason | undefined
+  value: string[]
 }
 
 export interface ScrollToIndexDetails {

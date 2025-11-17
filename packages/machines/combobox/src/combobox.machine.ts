@@ -964,13 +964,13 @@ export const machine = createMachine({
           contentEl.scrollTop = 0
         }
       },
-      invokeOnOpen({ prop, event }) {
+      invokeOnOpen({ prop, event, context }) {
         const reason = getOpenChangeReason(event)
-        prop("onOpenChange")?.({ open: true, reason })
+        prop("onOpenChange")?.({ open: true, reason, value: context.get("value") })
       },
-      invokeOnClose({ prop, event }) {
+      invokeOnClose({ prop, event, context }) {
         const reason = getOpenChangeReason(event)
-        prop("onOpenChange")?.({ open: false, reason })
+        prop("onOpenChange")?.({ open: false, reason, value: context.get("value") })
       },
       highlightFirstItem({ context, prop, scope }) {
         const exec = dom.getContentEl(scope) ? queueMicrotask : raf

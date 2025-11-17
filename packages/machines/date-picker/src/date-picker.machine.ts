@@ -1118,14 +1118,14 @@ export const machine = createMachine<DatePickerSchema>({
         context.set("startValue", startValue)
       },
 
-      invokeOnOpen({ prop }) {
+      invokeOnOpen({ prop, context }) {
         if (prop("inline")) return
-        prop("onOpenChange")?.({ open: true })
+        prop("onOpenChange")?.({ open: true, value: context.get("value") })
       },
 
-      invokeOnClose({ prop }) {
+      invokeOnClose({ prop, context }) {
         if (prop("inline")) return
-        prop("onOpenChange")?.({ open: false })
+        prop("onOpenChange")?.({ open: false, value: context.get("value") })
       },
 
       toggleVisibility({ event, send, prop }) {

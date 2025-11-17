@@ -36,6 +36,7 @@ export interface ViewChangeDetails {
 
 export interface OpenChangeDetails {
   open: boolean
+  value: DateValue[]
 }
 
 export interface LocaleDetails {

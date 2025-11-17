@@ -635,13 +635,13 @@ export const machine = createMachine<ColorPickerSchema>({
       syncFormatSelectElement({ context, scope }) {
         syncFormatSelect(scope, context.get("format"))
       },
-      invokeOnOpen({ prop }) {
+      invokeOnOpen({ prop, context }) {
         if (prop("inline")) return
-        prop("onOpenChange")?.({ open: true })
+        prop("onOpenChange")?.({ open: true, value: context.get("value") })
       },
-      invokeOnClose({ prop }) {
+      invokeOnClose({ prop, context }) {
         if (prop("inline")) return
-        prop("onOpenChange")?.({ open: false })
+        prop("onOpenChange")?.({ open: false, value: context.get("value") })
       },
       toggleVisibility({ prop, event, send }) {
         send({ type: prop("open") ? "CONTROLLED.OPEN" : "CONTROLLED.CLOSE", previousEvent: event })

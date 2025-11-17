@@ -22,6 +22,7 @@ export interface HighlightChangeDetails<T extends CollectionItem = CollectionIte
 
 export interface OpenChangeDetails {
   open: boolean
+  value: string[]
 }
 
 export interface ScrollToIndexDetails {
