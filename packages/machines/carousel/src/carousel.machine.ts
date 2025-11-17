@@ -191,6 +191,10 @@ export const machine = createMachine<CarouselSchema>({
     userScroll: {
       effects: ["trackScroll"],
       on: {
+        "DRAGGING.START": {
+          target: "dragging",
+          actions: ["invokeDragStart"],
+        },
         "SCROLL.END": [
           {
             guard: "isFocused",
