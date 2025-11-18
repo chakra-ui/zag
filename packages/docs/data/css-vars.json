@@ -144,19 +144,19 @@
       "--layer-index": "The index of the dismissable in the layer stack"
     }
   },
+  "qr-code": {
+    "Root": {
+      "--qrcode-pixel-size": "The size of the Root",
+      "--qrcode-width": "The width of the Root",
+      "--qrcode-height": "The height of the Root"
+    }
+  },
   "progress": {
     "Root": {
       "--percent": "The percent value for the root",
       "--radius": "The border radius value",
       "--circumference": "The circumference value for the root",
       "--offset": "The offset position of the element"
-    }
-  },
-  "qr-code": {
-    "Root": {
-      "--qrcode-pixel-size": "The size of the Root",
-      "--qrcode-width": "The width of the Root",
-      "--qrcode-height": "The height of the Root"
     }
   },
   "radio-group": {
@@ -428,6 +428,14 @@
     },
     "Backdrop": {
       "--layer-index": "The index of the dismissable in the layer stack"
+    },
+    "Group": {
+      "--viewport-offset-left": "The left offset from the viewport",
+      "--viewport-offset-right": "The right offset from the viewport",
+      "--viewport-offset-top": "The top offset from the viewport",
+      "--viewport-offset-bottom": "The bottom offset from the viewport",
+      "--gap": "The gap between elements",
+      "--first-height": "The height of the first toast"
     }
   }
 }
