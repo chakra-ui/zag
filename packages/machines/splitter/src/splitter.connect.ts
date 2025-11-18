@@ -3,7 +3,7 @@ import type { EventKeyMap, NormalizeProps, PropTypes } from "@zag-js/types"
 import { ensure } from "@zag-js/utils"
 import { parts } from "./splitter.anatomy"
 import * as dom from "./splitter.dom"
-import type { SplitterApi, SplitterService } from "./splitter.types"
+import type { ResizeTriggerProps, ResizeTriggerState, SplitterApi, SplitterService } from "./splitter.types"
 import { getAriaValue } from "./utils/aria"
 import { fuzzyCompareNumbers, fuzzyNumbersEqual } from "./utils/fuzzy"
 import { findPanelIndex, getPanelById, getPanelFlexBoxStyle, getPanelLayout, panelDataHelper } from "./utils/panel"
@@ -13,6 +13,8 @@ export function connect<T extends PropTypes>(service: SplitterService, normalize
 
   const horizontal = computed("horizontal")
   const dragging = state.matches("dragging")
+
+  const orientation = prop("orientation")
 
   const getPanelStyle = (id: string) => {
     const panels = prop("panels")
@@ -28,8 +30,20 @@ export function connect<T extends PropTypes>(service: SplitterService, normalize
     })
   }
 
+  const getResizeTriggerState = (props: ResizeTriggerProps): ResizeTriggerState => {
+    const { id, disabled } = props
+    const dragging = context.get("dragState")?.resizeTriggerId === id
+    const focused = dragging || context.get("keyboardState")?.resizeTriggerId === id
+    return {
+      dragging,
+      focused,
+      disabled: !!disabled,
+    }
+  }
+
   return {
     dragging,
+    orientation,
     getItems() {
       return prop("panels").flatMap((panel, index, arr) => {
         const nextPanel = arr[index + 1]
@@ -96,7 +110,8 @@ export function connect<T extends PropTypes>(service: SplitterService, normalize
     getRootProps() {
       return normalize.element({
         ...parts.root.attrs,
-        "data-orientation": prop("orientation"),
+        "data-orientation": orientation,
+        "data-dragging": dataAttr(dragging),
         id: dom.getRootId(scope),
         dir: prop("dir"),
         style: {
@@ -113,7 +128,8 @@ export function connect<T extends PropTypes>(service: SplitterService, normalize
       const { id } = props
       return normalize.element({
         ...parts.panel.attrs,
-        "data-orientation": prop("orientation"),
+        "data-orientation": orientation,
+        "data-dragging": dataAttr(dragging),
         dir: prop("dir"),
         "data-id": id,
         "data-index": findPanelIndex(prop("panels"), id),
@@ -123,11 +139,24 @@ export function connect<T extends PropTypes>(service: SplitterService, normalize
       })
     },
 
+    getResizeTriggerState,
+
+    getResizeTriggerIndicator(props) {
+      const triggerState = getResizeTriggerState(props)
+      return normalize.element({
+        ...parts.resizeTriggerIndicator.attrs,
+        "data-orientation": orientation,
+        "data-focus": dataAttr(triggerState.focused),
+        "data-dragging": dataAttr(triggerState.dragging),
+        "data-disabled": dataAttr(triggerState.disabled),
+        "data-ownedby": dom.getRootId(scope),
+      })
+    },
+
     getResizeTriggerProps(props) {
-      const { id, disabled } = props
+      const { id } = props
+      const triggerState = getResizeTriggerState(props)
       const aria = getAriaValue(context.get("size"), prop("panels"), id)
-      const dragging = context.get("dragState")?.resizeTriggerId === id
-      const focused = dragging || context.get("keyboardState")?.resizeTriggerId === id
 
       return normalize.element({
         ...parts.resizeTrigger.attrs,
@@ -136,27 +165,32 @@ export function connect<T extends PropTypes>(service: SplitterService, normalize
         role: "separator",
         "data-id": id,
         "data-ownedby": dom.getRootId(scope),
-        tabIndex: disabled ? undefined : 0,
+        tabIndex: triggerState.disabled ? undefined : 0,
         "aria-valuenow": aria.valueNow,
         "aria-valuemin": aria.valueMin,
         "aria-valuemax": aria.valueMax,
-        "data-orientation": prop("orientation"),
-        "aria-orientation": prop("orientation"),
+        "data-orientation": orientation,
+        "aria-orientation": orientation,
         "aria-controls": `${dom.getPanelId(scope, aria.beforeId)} ${dom.getPanelId(scope, aria.afterId)}`,
-        "data-focus": dataAttr(focused),
-        "data-disabled": dataAttr(disabled),
+        "data-focus": dataAttr(triggerState.focused),
+        "data-dragging": dataAttr(triggerState.dragging),
+        "data-disabled": dataAttr(triggerState.disabled),
         style: {
           touchAction: "none",
           userSelect: "none",
           WebkitUserSelect: "none",
           flex: "0 0 auto",
-          pointerEvents: disabled ? "none" : dragging && !focused ? "none" : undefined,
-          cursor: disabled ? undefined : horizontal ? "col-resize" : "row-resize",
+          pointerEvents: triggerState.disabled
+            ? "none"
+            : triggerState.dragging && !triggerState.focused
+              ? "none"
+              : undefined,
+          cursor: triggerState.disabled ? undefined : horizontal ? "col-resize" : "row-resize",
           [horizontal ? "minHeight" : "minWidth"]: "0",
         },
         onPointerDown(event) {
           if (!isLeftClick(event)) return
-          if (disabled) {
+          if (triggerState.disabled) {
             event.preventDefault()
             return
           }
@@ -168,30 +202,30 @@ export function connect<T extends PropTypes>(service: SplitterService, normalize
           event.stopPropagation()
         },
         onPointerUp(event) {
-          if (disabled) return
+          if (triggerState.disabled) return
           if (event.currentTarget.hasPointerCapture(event.pointerId)) {
             event.currentTarget.releasePointerCapture(event.pointerId)
           }
         },
         onPointerOver() {
-          if (disabled) return
+          if (triggerState.disabled) return
           send({ type: "POINTER_OVER", id })
         },
         onPointerLeave() {
-          if (disabled) return
+          if (triggerState.disabled) return
           send({ type: "POINTER_LEAVE", id })
         },
         onBlur() {
-          if (disabled) return
+          if (triggerState.disabled) return
           send({ type: "BLUR" })
         },
         onFocus() {
-          if (disabled) return
+          if (triggerState.disabled) return
           send({ type: "FOCUS", id })
         },
         onKeyDown(event) {
           if (event.defaultPrevented) return
-          if (disabled) return
+          if (triggerState.disabled) return
 
           const keyboardResizeBy = prop("keyboardResizeBy")
 
@@ -233,7 +267,7 @@ export function connect<T extends PropTypes>(service: SplitterService, normalize
 
           const key = getEventKey(event, {
             dir: prop("dir"),
-            orientation: prop("orientation"),
+            orientation: orientation,
           })
 
           const exec = keyMap[key]
