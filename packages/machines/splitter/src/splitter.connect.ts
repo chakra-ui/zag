@@ -150,8 +150,8 @@ export function connect<T extends PropTypes>(service: SplitterService, normalize
           userSelect: "none",
           WebkitUserSelect: "none",
           flex: "0 0 auto",
-          pointerEvents: dragging && !focused ? "none" : undefined,
-          cursor: horizontal ? "col-resize" : "row-resize",
+          pointerEvents: disabled ? "none" : dragging && !focused ? "none" : undefined,
+          cursor: disabled ? undefined : horizontal ? "col-resize" : "row-resize",
           [horizontal ? "minHeight" : "minWidth"]: "0",
         },
         onPointerDown(event) {
