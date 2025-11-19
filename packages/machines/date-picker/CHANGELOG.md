@@ -1,5 +1,24 @@
 # @zag-js/date-picker
 
+## 1.29.0
+
+### Patch Changes
+
+- [`2190620`](https://github.com/chakra-ui/zag/commit/2190620fa1ae9da11256ed5145a4f15979a947e6) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Add `value` to `OpenChangeDetails` for combobox, select,
+  color-picker, and date-picker components.
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.29.0
+  - @zag-js/core@1.29.0
+  - @zag-js/types@1.29.0
+  - @zag-js/utils@1.29.0
+  - @zag-js/date-utils@1.29.0
+  - @zag-js/dismissable@1.29.0
+  - @zag-js/dom-query@1.29.0
+  - @zag-js/live-region@1.29.0
+  - @zag-js/popper@1.29.0
+
 ## 1.28.0
 
 ### Patch Changes

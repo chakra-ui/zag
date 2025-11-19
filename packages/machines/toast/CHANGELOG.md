@@ -1,5 +1,20 @@
 # @zag-js/toast
 
+## 1.29.0
+
+### Patch Changes
+
+- [`ec8bb98`](https://github.com/chakra-ui/zag/commit/ec8bb980c500e580c1502f6f3671326cf6a68dca) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Expose viewport offset as CSS variables (`--viewport-offset-left`,
+  `--viewport-offset-right`, `--viewport-offset-top`, `--viewport-offset-bottom`) on the toast group element.
+- Updated dependencies []:
+  - @zag-js/anatomy@1.29.0
+  - @zag-js/core@1.29.0
+  - @zag-js/types@1.29.0
+  - @zag-js/utils@1.29.0
+  - @zag-js/dismissable@1.29.0
+  - @zag-js/dom-query@1.29.0
+
 ## 1.28.0
 
 ### Patch Changes

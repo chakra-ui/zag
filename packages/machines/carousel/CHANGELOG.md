@@ -1,5 +1,21 @@
 # @zag-js/carousel
 
+## 1.29.0
+
+### Patch Changes
+
+- [`e77d2e3`](https://github.com/chakra-ui/zag/commit/e77d2e351a9e381607210a5b29cf58d3cd283f5e) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - - Fix dragging not working after scrolling with mouse wheel when
+  `allowMouseDrag` is enabled.
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.29.0
+  - @zag-js/core@1.29.0
+  - @zag-js/types@1.29.0
+  - @zag-js/utils@1.29.0
+  - @zag-js/dom-query@1.29.0
+  - @zag-js/scroll-snap@1.29.0
+
 ## 1.28.0
 
 ### Minor Changes

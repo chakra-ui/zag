@@ -1,5 +1,28 @@
 # @zag-js/combobox
 
+## 1.29.0
+
+### Patch Changes
+
+- [`2190620`](https://github.com/chakra-ui/zag/commit/2190620fa1ae9da11256ed5145a4f15979a947e6) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Add `value` to `OpenChangeDetails` for combobox, select,
+  color-picker, and date-picker components.
+
+- [`0f17746`](https://github.com/chakra-ui/zag/commit/0f17746be88080253b0609d8dbbc48766d07c0ca) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix `onHighlightChange` not being invoked when collection is
+  filtered to empty results. The callback now correctly receives `{ highlightedValue: null, highlightedItem: null }`
+  when the collection becomes empty.
+- Updated dependencies []:
+  - @zag-js/anatomy@1.29.0
+  - @zag-js/core@1.29.0
+  - @zag-js/types@1.29.0
+  - @zag-js/aria-hidden@1.29.0
+  - @zag-js/collection@1.29.0
+  - @zag-js/utils@1.29.0
+  - @zag-js/dismissable@1.29.0
+  - @zag-js/dom-query@1.29.0
+  - @zag-js/popper@1.29.0
+
 ## 1.28.0
 
 ### Patch Changes
