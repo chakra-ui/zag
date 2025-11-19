@@ -540,12 +540,16 @@ export const machine = createMachine({
         ],
         CHILDREN_CHANGE: [
           {
-            guard: "autoHighlight",
-            actions: ["highlightFirstItem"],
+            guard: and("isHighlightedItemRemoved", "hasCollectionItems", "autoHighlight"),
+            actions: ["clearHighlightedValue", "highlightFirstItem"],
           },
           {
             guard: "isHighlightedItemRemoved",
             actions: ["clearHighlightedValue"],
+          },
+          {
+            guard: "autoHighlight",
+            actions: ["highlightFirstItem"],
           },
         ],
         "INPUT.ARROW_DOWN": {
@@ -702,6 +706,7 @@ export const machine = createMachine({
       isChangeEvent: ({ event }) => event.previousEvent?.type === "INPUT.CHANGE",
       autoFocus: ({ prop }) => !!prop("autoFocus"),
       isHighlightedItemRemoved: ({ prop, context }) => !prop("collection").has(context.get("highlightedValue")),
+      hasCollectionItems: ({ prop }) => prop("collection").size > 0,
     },
 
     effects: {
