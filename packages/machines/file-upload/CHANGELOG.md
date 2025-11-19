@@ -1,5 +1,22 @@
 # @zag-js/file-upload
 
+## 1.29.0
+
+### Patch Changes
+
+- [`8dfdda6`](https://github.com/chakra-ui/zag/commit/8dfdda6b60a77da572b4fc5f3af1428d8f3f6fe0) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix issue where clicking on non-interactive children (icons, text)
+  inside the dropzone doesn't open the file picker.
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.29.0
+  - @zag-js/core@1.29.0
+  - @zag-js/types@1.29.0
+  - @zag-js/utils@1.29.0
+  - @zag-js/dom-query@1.29.0
+  - @zag-js/file-utils@1.29.0
+  - @zag-js/i18n-utils@1.29.0
+
 ## 1.28.0
 
 ### Patch Changes

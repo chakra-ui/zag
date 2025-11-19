@@ -1,5 +1,7 @@
 # @zag-js/store
 
+## 1.29.0
+
 ## 1.28.0
 
 ### Patch Changes
