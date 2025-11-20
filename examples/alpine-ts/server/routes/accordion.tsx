@@ -1,11 +1,14 @@
 import { defineHandler } from "nitro/h3"
 import { accordionControls, accordionData, getControlDefaults } from "@zag-js/shared"
 import { ArrowRight } from "lucide-static"
-import Head from "~/server/components/Head"
-import Nav from "~/server/components/Nav"
+import { Controls } from "../components/controls"
+import { Head } from "../components/head"
+import { Nav } from "../components/nav"
+import { StateVisualizer } from "../components/state-visualizer"
+import { Toolbar } from "../components/toolbar"
 
 export default defineHandler((event) => {
-  const controls = getControlDefaults(accordionControls)
+  const state = getControlDefaults(accordionControls)
 
   return (
     <html>
@@ -16,9 +19,9 @@ export default defineHandler((event) => {
       <body>
         <div
           class="page"
-          x-data={JSON.stringify(controls)}
+          x-data={JSON.stringify(state)}
           x-id="['accordion']"
-          x-accordion={`{id: $id('accordion'), ${Object.keys(controls)}}`}
+          x-accordion={`{id: $id('accordion'), ${Object.keys(state)}}`}
         >
           <Nav pathname={event.url.pathname} />
 
@@ -40,6 +43,11 @@ export default defineHandler((event) => {
               ))}
             </div>
           </main>
+
+          <Toolbar>
+            <Controls config={accordionControls} state={state} slot="controls" />
+            <StateVisualizer label="accordion" />
+          </Toolbar>
         </div>
       </body>
     </html>
