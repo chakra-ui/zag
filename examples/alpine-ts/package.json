@@ -12,6 +12,8 @@
   },
   "dependencies": {
     "@zag-js/accordion": "workspace:*",
+    "@zag-js/anatomy-icons": "workspace:*",
+    "@zag-js/angle-slider": "workspace:*",
     "@zag-js/core": "workspace:*",
     "@zag-js/dom-query": "workspace:*",
     "@zag-js/shared": "workspace:*",
