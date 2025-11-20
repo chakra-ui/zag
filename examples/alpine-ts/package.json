@@ -17,6 +17,7 @@
     "@zag-js/avatar": "workspace:*",
     "@zag-js/core": "workspace:*",
     "@zag-js/dom-query": "workspace:*",
+    "@zag-js/presence": "workspace:*",
     "@zag-js/shared": "workspace:*",
     "@zag-js/stringify-state": "workspace:*",
     "@zag-js/types": "workspace:*",
