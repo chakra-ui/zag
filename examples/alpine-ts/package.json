@@ -22,6 +22,7 @@
     "@zag-js/presence": "workspace:*",
     "@zag-js/shared": "workspace:*",
     "@zag-js/stringify-state": "workspace:*",
+    "@zag-js/switch": "workspace:*",
     "@zag-js/types": "workspace:*",
     "@zag-js/utils": "workspace:*",
     "alpinejs": "^3.15.2",
