@@ -1,7 +1,7 @@
 import { dataAttr } from "@zag-js/dom-query"
 import { routesData } from "@zag-js/shared"
 
-export default function Nav({ pathname }: { pathname: string }) {
+export function Nav({ pathname }: { pathname: string }) {
   return (
     <aside class="nav">
       <header>Zagjs</header>
