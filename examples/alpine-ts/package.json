@@ -7,6 +7,7 @@
   },
   "devDependencies": {
     "@types/alpinejs": "^3.13.11",
+    "@types/form-serialize": "0.7.4",
     "nitro": "latest",
     "vite": "npm:rolldown-vite"
   },
@@ -15,6 +16,7 @@
     "@zag-js/anatomy-icons": "workspace:*",
     "@zag-js/angle-slider": "workspace:*",
     "@zag-js/avatar": "workspace:*",
+    "@zag-js/checkbox": "workspace:*",
     "@zag-js/core": "workspace:*",
     "@zag-js/dom-query": "workspace:*",
     "@zag-js/presence": "workspace:*",
@@ -23,6 +25,7 @@
     "@zag-js/types": "workspace:*",
     "@zag-js/utils": "workspace:*",
     "alpinejs": "^3.15.2",
+    "form-serialize": "0.7.2",
     "lucide-static": "^0.554.0",
     "mono-jsx": "0.8.0-beta.4"
   }
