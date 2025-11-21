@@ -745,7 +745,16 @@ export const machine = createMachine<DatePickerSchema>({
 
         let announceText: string
         if (prop("selectionMode") === "range") {
-          announceText = formatSelectedDate(value[0], value[1], locale, timeZone)
+          const [startDate, endDate] = value
+          if (startDate && endDate) {
+            announceText = formatSelectedDate(startDate, endDate, locale, timeZone)
+          } else if (startDate) {
+            announceText = formatSelectedDate(startDate, null, locale, timeZone)
+          } else if (endDate) {
+            announceText = formatSelectedDate(endDate, null, locale, timeZone)
+          } else {
+            announceText = ""
+          }
         } else {
           announceText = value
             .map((date) => formatSelectedDate(date, null, locale, timeZone))
