@@ -32,6 +32,7 @@
     "@zag-js/rating-group": "workspace:*",
     "@zag-js/select": "workspace:*",
     "@zag-js/shared": "workspace:*",
+    "@zag-js/slider": "workspace:*",
     "@zag-js/stringify-state": "workspace:*",
     "@zag-js/switch": "workspace:*",
     "@zag-js/tags-input": "workspace:*",
