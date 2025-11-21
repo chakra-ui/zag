@@ -20,6 +20,7 @@
     "@zag-js/core": "workspace:*",
     "@zag-js/dom-query": "workspace:*",
     "@zag-js/editable": "workspace:*",
+    "@zag-js/hover-card": "workspace:*",
     "@zag-js/number-input": "workspace:*",
     "@zag-js/presence": "workspace:*",
     "@zag-js/rating-group": "workspace:*",
