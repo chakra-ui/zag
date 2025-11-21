@@ -30,6 +30,7 @@
     "@zag-js/presence": "workspace:*",
     "@zag-js/radio-group": "workspace:*",
     "@zag-js/rating-group": "workspace:*",
+    "@zag-js/select": "workspace:*",
     "@zag-js/shared": "workspace:*",
     "@zag-js/stringify-state": "workspace:*",
     "@zag-js/switch": "workspace:*",
