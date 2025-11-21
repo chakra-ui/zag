@@ -35,6 +35,7 @@
     "@zag-js/slider": "workspace:*",
     "@zag-js/stringify-state": "workspace:*",
     "@zag-js/switch": "workspace:*",
+    "@zag-js/tabs": "workspace:*",
     "@zag-js/tags-input": "workspace:*",
     "@zag-js/tooltip": "workspace:*",
     "@zag-js/types": "workspace:*",
