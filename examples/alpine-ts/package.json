@@ -17,6 +17,7 @@
     "@zag-js/angle-slider": "workspace:*",
     "@zag-js/avatar": "workspace:*",
     "@zag-js/checkbox": "workspace:*",
+    "@zag-js/clipboard": "workspace:*",
     "@zag-js/core": "workspace:*",
     "@zag-js/dom-query": "workspace:*",
     "@zag-js/editable": "workspace:*",
