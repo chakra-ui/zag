@@ -1,6 +1,5 @@
 import { defineHandler } from "nitro/h3"
 import { clipboardControls, getControlDefaults } from "@zag-js/shared"
-import { ClipboardCheck, ClipboardCopy } from "lucide-static"
 import { Controls } from "../components/controls"
 import { Head } from "../components/head"
 import { Nav } from "../components/nav"
@@ -30,10 +29,7 @@ export default defineHandler((event) => {
               <label x-clipboard:label>Copy this link</label>
               <div x-clipboard:control>
                 <input x-clipboard:input />
-                <button x-clipboard:trigger>
-                  <template x-if="$clipboard.copied">{html(ClipboardCheck)}</template>
-                  <template x-if="! $clipboard.copied">{html(ClipboardCopy)}</template>
-                </button>
+                <button x-clipboard:trigger x-html="$clipboard.copied ? $ClipboardCheck : $ClipboardCopy"></button>
               </div>
               <div x-clipboard:indicator="{copied: true}">Copied!</div>
               <div x-clipboard:indicator="{copied: false}">Copy</div>
