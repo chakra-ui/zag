@@ -23,6 +23,7 @@
     "@zag-js/editable": "workspace:*",
     "@zag-js/hover-card": "workspace:*",
     "@zag-js/number-input": "workspace:*",
+    "@zag-js/password-input": "workspace:*",
     "@zag-js/presence": "workspace:*",
     "@zag-js/rating-group": "workspace:*",
     "@zag-js/shared": "workspace:*",
