@@ -22,6 +22,7 @@
     "@zag-js/editable": "workspace:*",
     "@zag-js/number-input": "workspace:*",
     "@zag-js/presence": "workspace:*",
+    "@zag-js/rating-group": "workspace:*",
     "@zag-js/shared": "workspace:*",
     "@zag-js/stringify-state": "workspace:*",
     "@zag-js/switch": "workspace:*",
