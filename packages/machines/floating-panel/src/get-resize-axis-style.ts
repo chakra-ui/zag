@@ -7,6 +7,7 @@ export function getResizeAxisStyle(axis: ResizeTriggerAxis): JSX.CSSProperties {
       return {
         cursor: "n-resize",
         width: "100%",
+        top: 0,
         left: "50%",
         translate: "-50%",
       }
