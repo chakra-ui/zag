@@ -265,4 +265,20 @@ test.describe("datepicker [range]", () => {
     // Should not crash and the value should still be set
     await I.seeInputHasValue("06/15/2024", 1)
   })
+
+  test("should not crash when changing end date after typing end date first", async () => {
+    // Regression test for issue #2864
+    // 1. Type a valid end date first (e.g. 06/15/2024)
+    await I.focusInput(1)
+    await I.type("06/15/2024", 1)
+    await I.clickOutsideToBlur()
+
+    // 2. Change the end date by typing a new value (e.g., 06/15/2025)
+    await I.focusInput(1)
+    await I.type("06/15/2025", 1)
+    await I.clickOutsideToBlur()
+
+    // Should not crash and the new value should be set
+    await I.seeInputHasValue("06/15/2025", 1)
+  })
 })

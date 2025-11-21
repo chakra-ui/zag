@@ -2,7 +2,7 @@ import { DateFormatter, type DateValue } from "@internationalized/date"
 import { clampValue, match } from "@zag-js/utils"
 import type { DateView, IntlTranslations } from "./date-picker.types"
 
-export function adjustStartAndEndDate(value: DateValue[]) {
+export function adjustStartAndEndDate(value: Array<DateValue | null | undefined>) {
   const [startDate, endDate] = value
   if (!startDate || !endDate) return value
   return startDate.compare(endDate) <= 0 ? value : [endDate, startDate]
@@ -14,8 +14,11 @@ export function isDateWithinRange(date: DateValue, value: (DateValue | null)[]) 
   return startDate.compare(date) <= 0 && endDate.compare(date) >= 0
 }
 
-export function sortDates(values: DateValue[]) {
-  return values.slice().sort((a, b) => a.compare(b))
+export function sortDates(values: Array<DateValue | null | undefined>) {
+  return values
+    .slice()
+    .filter((date): date is DateValue => date != null)
+    .sort((a, b) => a.compare(b))
 }
 
 export function getRoleDescription(view: DateView) {
