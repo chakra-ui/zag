@@ -4,6 +4,16 @@ All notable changes to this project will be documented in this file.
 
 > For v0.x changelog, see the [v0 branch](https://github.com/chakra-ui/zag/blob/v0/CHANGELOG.md)
 
+## [1.29.1](./#1.29.1) - 2025-11-22
+
+### Fixed
+
+- **Floating Panel**
+  - Fix issue where resize trigger with `n` axis was not explicitly set to `top: 0`
+  - Fix issue where `draggable` and `resizable` options were not respected when set to `false`
+
+- **Presence**: Fix regression where UNMOUNT transition might not be called consistently
+
 ## [1.29.0](./#1.29.0) - 2025-11-19
 
 ### Added
