@@ -44,6 +44,12 @@ export function connect<T extends PropTypes>(service: SplitterService, normalize
   return {
     dragging,
     orientation,
+    getPanels() {
+      return prop("panels")
+    },
+    getPanelById(id) {
+      return getPanelById(prop("panels"), id)
+    },
     getItems() {
       return prop("panels").flatMap((panel, index, arr) => {
         const nextPanel = arr[index + 1]

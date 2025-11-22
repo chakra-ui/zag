@@ -1,8 +1,9 @@
 import { type DateValue, isSameDay } from "@internationalized/date"
 import type { DateAvailableFn } from "./types"
 
-export function isDateEqual(dateA: DateValue, dateB?: DateValue | null) {
-  return dateB != null && isSameDay(dateA, dateB)
+export function isDateEqual(dateA: DateValue | null | undefined, dateB?: DateValue | null) {
+  if (dateA == null || dateB == null) return dateA === dateB
+  return isSameDay(dateA, dateB)
 }
 
 export function isDateUnavailable(

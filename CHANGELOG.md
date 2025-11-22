@@ -4,6 +4,28 @@ All notable changes to this project will be documented in this file.
 
 > For v0.x changelog, see the [v0 branch](https://github.com/chakra-ui/zag/blob/v0/CHANGELOG.md)
 
+## [1.29.0](./#1.29.0) - 2025-11-19
+
+### Added
+
+- **Carousel, Color Picker, Combobox, Date Picker, Select**: Add `value` to `OpenChangeDetails` for better context in change handlers
+
+- **Splitter**: Add `getResizeTriggerIndicator` to render an indicator when resizing
+
+- **Toast**: Expose viewport offset as CSS variables (`--viewport-offset-left`, `--viewport-offset-right`, `--viewport-offset-top`, `--viewport-offset-bottom`) on the toast group element
+
+### Fixed
+
+- **Carousel**: Fix dragging not working after scrolling with mouse wheel when `allowMouseDrag` is enabled
+
+- **Combobox**: Fix `onHighlightChange` not being invoked when collection is filtered to empty results. The callback now correctly receives `{ highlightedValue: null, highlightedItem: null }` when the collection becomes empty
+
+- **File Upload**: Fix issue where clicking on non-interactive children (icons, text) inside the dropzone doesn't open the file picker
+
+- **Radio Group**: Fix inconsistent application of `data-focus-visible` and `data-focus` attributes
+
+- **Splitter**: Fix disabled splitter showing resize cursor and allowing dragging
+
 ## [1.28.0](./#1.28.0) - 2025-11-12
 
 ### Added

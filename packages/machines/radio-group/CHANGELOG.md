@@ -1,5 +1,21 @@
 # @zag-js/radio-group
 
+## 1.29.0
+
+### Patch Changes
+
+- [`834d605`](https://github.com/chakra-ui/zag/commit/834d6057f08f36f61f4f1714a613d8efd3e11788) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - - **RadioGroup, SegmentControl:** Fix inconsistent application of
+  `data-focus-visible` and `data-focus` attributes.
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.29.0
+  - @zag-js/core@1.29.0
+  - @zag-js/types@1.29.0
+  - @zag-js/utils@1.29.0
+  - @zag-js/dom-query@1.29.0
+  - @zag-js/focus-visible@1.29.0
+
 ## 1.28.0
 
 ### Patch Changes

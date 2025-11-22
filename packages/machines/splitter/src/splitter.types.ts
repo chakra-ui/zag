@@ -220,6 +220,14 @@ export interface SplitterApi<T extends PropTypes = PropTypes> {
    */
   getItems: () => SplitterItem[]
   /**
+   * Returns the panels of the splitter.
+   */
+  getPanels: () => PanelData[]
+  /**
+   * Returns the panel with the specified id.
+   */
+  getPanelById: (id: PanelId) => PanelData
+  /**
    * Returns the size of the specified panel.
    */
   getPanelSize: (id: PanelId) => number

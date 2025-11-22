@@ -156,7 +156,7 @@ export const machine = createMachine<DatePickerSchema>({
       })),
       hoveredValue: bindable<DateValue | null>(() => ({
         defaultValue: null,
-        isEqual: (a, b) => b !== null && a !== null && isDateEqual(a, b),
+        isEqual: isDateEqual,
       })),
       view: bindable(() => ({
         defaultValue: prop("defaultView"),
@@ -739,10 +739,30 @@ export const machine = createMachine<DatePickerSchema>({
         context.set("restoreFocus", true)
       },
       announceValueText({ context, prop, refs }) {
-        const announceText = context
-          .get("value")
-          .map((date) => formatSelectedDate(date, null, prop("locale"), prop("timeZone")))
-        refs.get("announcer")?.announce(announceText.join(","), 3000)
+        const value = context.get("value")
+        const locale = prop("locale")
+        const timeZone = prop("timeZone")
+
+        let announceText: string
+        if (prop("selectionMode") === "range") {
+          const [startDate, endDate] = value
+          if (startDate && endDate) {
+            announceText = formatSelectedDate(startDate, endDate, locale, timeZone)
+          } else if (startDate) {
+            announceText = formatSelectedDate(startDate, null, locale, timeZone)
+          } else if (endDate) {
+            announceText = formatSelectedDate(endDate, null, locale, timeZone)
+          } else {
+            announceText = ""
+          }
+        } else {
+          announceText = value
+            .map((date) => formatSelectedDate(date, null, locale, timeZone))
+            .filter(Boolean)
+            .join(",")
+        }
+
+        refs.get("announcer")?.announce(announceText, 3000)
       },
       announceVisibleRange({ computed, refs }) {
         const { formatted } = computed("visibleRangeText")

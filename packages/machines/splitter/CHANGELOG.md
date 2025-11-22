@@ -1,5 +1,23 @@
 # @zag-js/splitter
 
+## 1.29.0
+
+### Minor Changes
+
+- [`0d3b9a0`](https://github.com/chakra-ui/zag/commit/0d3b9a0047eae2a4c42a82d1f385f52127a15913) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - - Fix disabled splitter showing resize cursor and allowing
+  dragging.
+  - Add `getResizeTriggerIndicator` to render an indicator when resizing.
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.29.0
+  - @zag-js/core@1.29.0
+  - @zag-js/types@1.29.0
+  - @zag-js/utils@1.29.0
+  - @zag-js/dom-query@1.29.0
+
 ## 1.28.0
 
 ### Patch Changes
