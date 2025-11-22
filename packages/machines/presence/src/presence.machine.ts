@@ -170,20 +170,28 @@ export const machine = createMachine<PresenceSchema>({
         }
 
         const onEnd = (event: AnimationEvent) => {
+          const animationName = getAnimationName(refs.get("styles"))
           const target = getEventTarget(event)
-          if (target === node && event.animationName === context.get("unmountAnimationName") && !prop("present")) {
+          if (target === node && animationName === context.get("unmountAnimationName") && !prop("present")) {
             send({ type: "UNMOUNT", src: "animationend" })
           }
         }
 
+        const onCancel = (event: AnimationEvent) => {
+          const target = getEventTarget(event)
+          if (target === node && !prop("present")) {
+            send({ type: "UNMOUNT", src: "animationcancel" })
+          }
+        }
+
         node.addEventListener("animationstart", onStart)
-        node.addEventListener("animationcancel", onEnd)
+        node.addEventListener("animationcancel", onCancel)
         node.addEventListener("animationend", onEnd)
         const cleanupStyles = setStyle(node, { animationFillMode: "forwards" })
 
         return () => {
           node.removeEventListener("animationstart", onStart)
-          node.removeEventListener("animationcancel", onEnd)
+          node.removeEventListener("animationcancel", onCancel)
           node.removeEventListener("animationend", onEnd)
           nextTick(() => cleanupStyles())
         }
