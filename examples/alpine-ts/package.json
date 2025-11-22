@@ -37,6 +37,7 @@
     "@zag-js/switch": "workspace:*",
     "@zag-js/tabs": "workspace:*",
     "@zag-js/tags-input": "workspace:*",
+    "@zag-js/toggle": "workspace:*",
     "@zag-js/tooltip": "workspace:*",
     "@zag-js/types": "workspace:*",
     "@zag-js/utils": "workspace:*",
