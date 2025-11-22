@@ -23,6 +23,7 @@
     "@zag-js/dialog": "workspace:*",
     "@zag-js/dom-query": "workspace:*",
     "@zag-js/editable": "workspace:*",
+    "@zag-js/floating-panel": "workspace:*",
     "@zag-js/hover-card": "workspace:*",
     "@zag-js/number-input": "workspace:*",
     "@zag-js/pagination": "workspace:*",
