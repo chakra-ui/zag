@@ -4,9 +4,7 @@ import serialize from "form-serialize"
 import Alpine from "alpinejs"
 import { usePlugin } from "~/lib"
 
-Alpine.magic("serialize", () => {
-  return (form: HTMLFormElement, options: any) => serialize(form, options)
-})
+Alpine.magic("serialize", () => serialize)
 Alpine.magic("selectData", () => selectData)
 Alpine.plugin(usePlugin("select", select))
 Alpine.start()
