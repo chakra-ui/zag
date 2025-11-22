@@ -1,6 +1,6 @@
 {
   "name": "@zag-js/password-input",
-  "version": "1.29.0",
+  "version": "1.29.1",
   "description": "Core logic for the password-input widget implemented as a state machine",
   "keywords": [
     "js",

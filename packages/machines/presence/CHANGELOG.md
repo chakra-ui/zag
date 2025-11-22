@@ -1,5 +1,18 @@
 # @zag-js/presence
 
+## 1.29.1
+
+### Patch Changes
+
+- [`a298e26`](https://github.com/chakra-ui/zag/commit/a298e26f731f82bf1119d03f7ef33312bd1ad9ec) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix regression in presence where UNMOUNT transition might not be
+  called in consistently
+
+- Updated dependencies []:
+  - @zag-js/core@1.29.1
+  - @zag-js/types@1.29.1
+  - @zag-js/dom-query@1.29.1
+
 ## 1.29.0
 
 ### Patch Changes

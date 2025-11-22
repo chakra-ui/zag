@@ -1,5 +1,28 @@
 # @zag-js/floating-panel
 
+## 1.29.1
+
+### Patch Changes
+
+- [#2863](https://github.com/chakra-ui/zag/pull/2863)
+  [`f3d2626`](https://github.com/chakra-ui/zag/commit/f3d2626a52b73698f91507dd26a783a151e4f1fe) Thanks
+  [@Hugos68](https://github.com/Hugos68)! - fix: floating panel, set resize trigger with `n` axis to `top: 0`
+  explicitely
+
+- [#2861](https://github.com/chakra-ui/zag/pull/2861)
+  [`ccc62cc`](https://github.com/chakra-ui/zag/commit/ccc62ccd6f5d9a7c0182dc65ae8a69187f054fc2) Thanks
+  [@Hugos68](https://github.com/Hugos68)! - bugfix: `draggable` and `resizable` were not respected when set to `false`
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.29.1
+  - @zag-js/core@1.29.1
+  - @zag-js/store@1.29.1
+  - @zag-js/types@1.29.1
+  - @zag-js/utils@1.29.1
+  - @zag-js/dom-query@1.29.1
+  - @zag-js/popper@1.29.1
+  - @zag-js/rect-utils@1.29.1
+
 ## 1.29.0
 
 ### Patch Changes
