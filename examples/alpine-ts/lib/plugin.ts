@@ -12,24 +12,23 @@ export function usePlugin<T extends MachineSchema>(
     collection?: (options: any) => any
   },
 ) {
-  const underscore = name.replaceAll("-", "_")
-  const serviceName = `_x_${underscore}_service` as const
-  const api = `_x_${underscore}_api` as const
+  const _x_snake_case = "_x_" + name.replaceAll("-", "_")
 
   return function (Alpine: Alpine) {
-    Alpine.directive(name, (el, { expression, value }, { cleanup, effect, evaluateLater }) => {
+    Alpine.directive(name, (el, { expression, value, modifiers }, { cleanup, effect, evaluateLater }) => {
+      const _modifier = modifiers.at(0) ? "_" + modifiers.at(0) : ""
       if (!value) {
         const evaluateProps = evaluateLater(expression) as any
         const service = useMachine(component.machine, evaluateProps)
         Alpine.bind(el, {
           "x-data"() {
             return {
-              [serviceName]: service, // dev only, for state visualization
-              [api]: component.connect(service, normalizeProps),
+              [_x_snake_case + _modifier + "_service"]: service, // dev only, for state visualization
+              [_x_snake_case + _modifier]: component.connect(service, normalizeProps),
               init() {
                 queueMicrotask(() => {
                   effect(() => {
-                    this[api] = component.connect(service, normalizeProps)
+                    this[_x_snake_case + _modifier] = component.connect(service, normalizeProps)
                   })
                 })
                 service.init()
@@ -63,7 +62,7 @@ export function usePlugin<T extends MachineSchema>(
 
         let props = {}
         evaluateProps && evaluateProps((value: any) => (props = value))
-        const ref = Alpine.reactive({ ...(Alpine.$data(el) as any)[api][getProps](props) })
+        const ref = Alpine.reactive({ ...(Alpine.$data(el) as any)[_x_snake_case + _modifier][getProps](props) })
 
         const binding: Record<string, () => any> = {}
         for (const prop in ref) {
@@ -74,7 +73,7 @@ export function usePlugin<T extends MachineSchema>(
         effect(() => {
           let props = {}
           evaluateProps && evaluateProps((value: any) => (props = value))
-          const next = (Alpine.$data(el) as any)[api][getProps](props)
+          const next = (Alpine.$data(el) as any)[_x_snake_case + _modifier][getProps](props)
           for (const prop in next) {
             if (prop.startsWith("@") || next[prop]() !== ref[prop]()) {
               ref[prop] = next[prop]
@@ -88,7 +87,9 @@ export function usePlugin<T extends MachineSchema>(
         .split("-")
         .map((str, i) => (i === 0 ? str : str.at(0)?.toUpperCase() + str.substring(1).toLowerCase()))
         .join(""),
-      (el) => (Alpine.$data(el) as any)[api],
+      (el) => {
+        return (modifier?: string) => (Alpine.$data(el) as any)[_x_snake_case + (modifier ? "_" + modifier : "")]
+      },
     )
   }
 }
