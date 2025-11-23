@@ -49,7 +49,6 @@ export default defineConfig(
       "**/.svelte-kit/",
       "**/.next/",
       "**/.nuxt/",
-      "**/.contentlayer",
       "**/styled-system",
       "**/build/",
       "examples/vue-ts",
