@@ -544,7 +544,7 @@ export const machine = createMachine<MenuSchema>({
         return () => clearTimeout(timer)
       },
       trackPositioning({ context, prop, scope, refs }) {
-        if (!!dom.getContextTriggerEl(scope)) return
+        if (dom.getContextTriggerEl(scope)) return
         const positioning = {
           ...prop("positioning"),
           ...refs.get("positioningOverride"),

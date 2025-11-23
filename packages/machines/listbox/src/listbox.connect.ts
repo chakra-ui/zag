@@ -157,12 +157,14 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
               if (!isGridCollection(collection)) return
               if (event.ctrlKey) return
               forwardEvent()
+              break
             }
 
             case "Home":
             case "End": {
               if (highlightedValue == null && event.shiftKey) return
               forwardEvent()
+              break
             }
 
             case "ArrowDown":

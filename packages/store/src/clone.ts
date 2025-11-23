@@ -12,7 +12,7 @@ function set(obj: any, key: string | symbol, val: PropertyDescriptor) {
 
 export function clone<T>(x: T): T {
   if (typeof x !== "object") return x
-  var i = 0,
+  let i = 0,
     k: string,
     list: Array<string | symbol>,
     tmp: any,

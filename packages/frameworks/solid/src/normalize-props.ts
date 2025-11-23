@@ -77,6 +77,6 @@ const cache: Record<string, any> = {}
 
 function hyphenateStyleName(name: string) {
   if (cache.hasOwnProperty(name)) return cache[name]
-  var hName = name.replace(uppercasePattern, toHyphenLower)
+  const hName = name.replace(uppercasePattern, toHyphenLower)
   return (cache[name] = msPattern.test(hName) ? "-" + hName : hName)
 }

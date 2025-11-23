@@ -27,6 +27,7 @@ export class Select extends Component<select.Props, select.Api> {
   }
 
   initMachine(props: select.Props) {
+    // eslint-disable-next-line @typescript-eslint/no-this-alias
     const self = this
     return new VanillaMachine(select.machine, {
       ...props,

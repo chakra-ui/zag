@@ -2,7 +2,7 @@ import { getDocument, getWindow } from "@zag-js/dom-query"
 import { getVisualStyles } from "./visual-style"
 
 function createGhostElement(doc: Document) {
-  var el = doc.createElement("div")
+  const el = doc.createElement("div")
   el.id = "ghost"
   el.style.cssText =
     "display:inline-block;height:0;overflow:hidden;position:absolute;top:0;visibility:hidden;white-space:nowrap;"

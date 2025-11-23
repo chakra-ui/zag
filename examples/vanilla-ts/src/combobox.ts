@@ -25,6 +25,7 @@ export class Combobox extends Component<combobox.Props, combobox.Api> {
   }
 
   initMachine(props: combobox.Props) {
+    // eslint-disable-next-line @typescript-eslint/no-this-alias
     const self = this
     return new VanillaMachine(combobox.machine, {
       ...props,

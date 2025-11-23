@@ -166,6 +166,7 @@ describe("formatBytes", () => {
   describe("locale variations", () => {
     test("should format with different locales", () => {
       expect(formatBytes(1500, "de-DE")).toMatchInlineSnapshot(`"1,5 kB"`)
+      // eslint-disable-next-line no-irregular-whitespace
       expect(formatBytes(1500, "fr-FR")).toMatchInlineSnapshot(`"1,5 ko"`)
       expect(formatBytes(1500000, "ja-JP")).toMatchInlineSnapshot(`"1.5 MB"`)
     })
