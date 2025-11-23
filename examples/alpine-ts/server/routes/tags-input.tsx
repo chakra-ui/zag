@@ -28,7 +28,10 @@ export default defineHandler((event) => {
             <div x-tags-input:root>
               <label x-tags-input:label>Enter frameworks:</label>
               <div x-tags-input:control>
-                <template x-for="(value, index) in $tagsInput.value" x-bind:key="$toDashCase(value) + '-tag-' + index">
+                <template
+                  x-for="(value, index) in $tagsInput().value"
+                  x-bind:key="$toDashCase(value) + '-tag-' + index"
+                >
                   <span x-tags-input:item="{index, value}">
                     <div x-bind:data-testid="$toDashCase(value) + '-tag'" x-tags-input:item-preview="{index, value}">
                       <span

@@ -43,7 +43,7 @@ export default defineHandler((event) => {
                 </tr>
               </thead>
               <tbody>
-                <template x-for="item in $pagination.slice($paginationData)">
+                <template x-for="item in $pagination().slice($paginationData)">
                   <tr>
                     <td x-text="item.id"></td>
                     <td x-text="item.first_name"></td>
@@ -54,14 +54,14 @@ export default defineHandler((event) => {
                 </template>
               </tbody>
             </table>
-            <template x-if="$pagination.totalPages > 1">
+            <template x-if="$pagination().totalPages > 1">
               <nav x-pagination:root>
                 <ul>
                   <li>
                     <button x-pagination:prev-trigger>Previous</button>
                   </li>
                   <template
-                    x-for="(page, i) in $pagination.pages"
+                    x-for="(page, i) in $pagination().pages"
                     x-bind:key="page.type === 'page' ? page.value : ('ellipsis-' + i)"
                   >
                     <li>

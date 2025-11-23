@@ -27,7 +27,7 @@ export default defineHandler((event) => {
           <main class="angle-slider">
             <div x-angle-slider:root>
               <label x-angle-slider:label>
-                Angle Slider: <div x-angle-slider:value-text x-text="$angleSlider.valueAsDegree"></div>
+                Angle Slider: <div x-angle-slider:value-text x-text="$angleSlider().valueAsDegree"></div>
               </label>
               <div x-angle-slider:control>
                 <div x-angle-slider:thumb></div>

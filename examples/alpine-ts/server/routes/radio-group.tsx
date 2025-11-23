@@ -47,13 +47,13 @@ export default defineHandler((event) => {
                 </div>
 
                 <button type="reset">Reset</button>
-                <button type="button" x-on:click="$radio.clearValue()">
+                <button type="button" x-on:click="$radio().clearValue()">
                   Clear
                 </button>
-                <button type="button" x-on:click="$radio.setValue('mango')">
+                <button type="button" x-on:click="$radio().setValue('mango')">
                   Set to Mangoes
                 </button>
-                <button type="button" x-on:click="$radio.focus()">
+                <button type="button" x-on:click="$radio().focus()">
                   Focus
                 </button>
               </fieldset>

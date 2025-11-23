@@ -31,7 +31,7 @@ export default defineHandler((event) => {
               </a>
 
               <template x-teleport="body">
-                <template x-if="$hoverCard.open">
+                <template x-if="$hoverCard().open">
                   <div x-hover-card:positioner>
                     <div x-hover-card:content>
                       <div x-hover-card:arrow>

@@ -43,15 +43,15 @@ export default defineHandler((event) => {
                   <label data-testid="label" x-slider:label>
                     Slider Label
                   </label>
-                  <output data-testid="output" x-slider:value-text x-text="$slider.value"></output>
+                  <output data-testid="output" x-slider:value-text x-text="$slider().value"></output>
                 </div>
                 <div class="control-area">
                   <div x-slider:control>
                     <div data-testid="track" x-slider:track>
                       <div x-slider:range />
                     </div>
-                    <span x-slider:dragging-indicator="{index: 0}" x-text="$slider.getThumbValue(0)"></span>
-                    <template x-for="(_, index) in $slider.value" x-bind:key="index">
+                    <span x-slider:dragging-indicator="{index: 0}" x-text="$slider().getThumbValue(0)"></span>
+                    <template x-for="(_, index) in $slider().value" x-bind:key="index">
                       <div x-slider:thumb="{ index }">
                         <input x-slider:hidden-input="{ index }" />
                       </div>

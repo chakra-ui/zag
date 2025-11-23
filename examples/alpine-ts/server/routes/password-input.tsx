@@ -30,7 +30,7 @@ export default defineHandler((event) => {
               <div x-password-input:control>
                 <input x-password-input:input />
                 <button x-password-input:visibility-trigger>
-                  <span x-password-input:indicator x-html="$passwordInput.visible ? $EyeIcon : $EyeOffIcon"></span>
+                  <span x-password-input:indicator x-html="$passwordInput().visible ? $EyeIcon : $EyeOffIcon"></span>
                 </button>
               </div>
             </div>

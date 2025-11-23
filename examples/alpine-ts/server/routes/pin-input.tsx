@@ -35,16 +35,16 @@ export default defineHandler((event) => {
               <div x-pin-input:root>
                 <label x-pin-input:label>Enter code:</label>
                 <div x-pin-input:control>
-                  <template x-for="index in $pinInput.items" x-bind:key="index">
+                  <template x-for="index in $pinInput().items" x-bind:key="index">
                     <input x-bind:data-testid="'input-' + (index + 1)" x-pin-input:input="{ index }" />
                   </template>
                 </div>
                 <input x-pin-input:hidden-input />
               </div>
-              <button data-testid="clear-button" x-on:click="$pinInput.clearValue">
+              <button data-testid="clear-button" x-on:click="$pinInput().clearValue">
                 Clear
               </button>
-              <button x-on:click="$pinInput.focus">Focus</button>
+              <button x-on:click="$pinInput().focus">Focus</button>
             </form>
           </main>
 

@@ -59,12 +59,12 @@ export default defineHandler((event) => {
               <div x-rating:root>
                 <label x-rating:label>Rate:</label>
                 <div x-rating:control>
-                  <template x-for="index in $rating.items" x-bind:key="index">
+                  <template x-for="index in $rating().items" x-bind:key="index">
                     <span x-rating:item="{ index }">
-                      <template x-if="$rating.getItemState({ index }).half">
+                      <template x-if="$rating().getItemState({ index }).half">
                         <HalfStar />
                       </template>
-                      <template x-if="! $rating.getItemState({ index }).half">
+                      <template x-if="! $rating().getItemState({ index }).half">
                         <Star />
                       </template>
                     </span>

@@ -18,13 +18,13 @@ export default defineHandler((event) => {
           <main class="timer">
             <div x-timer:root>
               <div x-timer:area>
-                <div x-timer:item="{type: 'days'}" x-text="$timer.formattedTime.days"></div>
+                <div x-timer:item="{type: 'days'}" x-text="$timer().formattedTime.days"></div>
                 <div x-timer:separator>:</div>
-                <div x-timer:item="{type: 'hours'}" x-text="$timer.formattedTime.hours"></div>
+                <div x-timer:item="{type: 'hours'}" x-text="$timer().formattedTime.hours"></div>
                 <div x-timer:separator>:</div>
-                <div x-timer:item="{type: 'minutes'}" x-text="$timer.formattedTime.minutes"></div>
+                <div x-timer:item="{type: 'minutes'}" x-text="$timer().formattedTime.minutes"></div>
                 <div x-timer:separator>:</div>
-                <div x-timer:item="{type: 'seconds'}" x-text="$timer.formattedTime.seconds"></div>
+                <div x-timer:item="{type: 'seconds'}" x-text="$timer().formattedTime.seconds"></div>
               </div>
 
               <div x-timer:control>

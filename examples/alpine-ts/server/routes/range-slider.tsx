@@ -40,14 +40,14 @@ export default defineHandler((event) => {
               <div x-slider:root>
                 <div>
                   <label x-slider:label>Quantity:</label>
-                  <output x-slider:value-text x-text="$slider.value.join(' - ')"></output>
+                  <output x-slider:value-text x-text="$slider().value.join(' - ')"></output>
                 </div>
                 <div class="control-area">
                   <div x-slider:control>
                     <div x-slider:track>
                       <div x-slider:range />
                     </div>
-                    <template x-for="(_, index) in $slider.value" x-bind:key="index">
+                    <template x-for="(_, index) in $slider().value" x-bind:key="index">
                       <div x-slider:thumb="{ index }">
                         <input x-slider:hidden-input="{ index }" />
                       </div>

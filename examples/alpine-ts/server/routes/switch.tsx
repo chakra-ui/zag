@@ -30,7 +30,7 @@ export default defineHandler((event) => {
               <span x-switch:control>
                 <span x-switch:thumb />
               </span>
-              <span x-switch:label x-text="'Feature is ' + ($switch.checked ? 'enabled' : 'disabled')"></span>
+              <span x-switch:label x-text="'Feature is ' + ($switch().checked ? 'enabled' : 'disabled')"></span>
             </label>
           </main>
 

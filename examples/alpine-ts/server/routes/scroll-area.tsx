@@ -25,7 +25,7 @@ export default defineHandler((event) => {
           <Nav pathname={event.url.pathname} />
 
           <main class="scroll-area">
-            <button x-on:click="$scrollArea.scrollToEdge({edge: 'bottom'})">Scroll to bottom</button>
+            <button x-on:click="$scrollArea().scrollToEdge({edge: 'bottom'})">Scroll to bottom</button>
             <div x-scroll-area:root>
               <div x-scroll-area:viewport>
                 <div x-scroll-area:content style={{ minWidth: "800px" }}>
@@ -34,12 +34,12 @@ export default defineHandler((event) => {
                   ))}
                 </div>
               </div>
-              <template x-if="$scrollArea.hasOverflowY">
+              <template x-if="$scrollArea().hasOverflowY">
                 <div x-scroll-area:scrollbar="{orientation: 'vertical'}">
                   <div x-scroll-area:thumb="{orientation: 'vertical'}" />
                 </div>
               </template>
-              <template x-if="$scrollArea.hasOverFlowX">
+              <template x-if="$scrollArea().hasOverFlowX">
                 <div x-scroll-area:scrollbar="{orientation: 'horizontal'}">
                   <div x-scroll-area:thumb="{orientation: 'horizontal'}" />
                 </div>

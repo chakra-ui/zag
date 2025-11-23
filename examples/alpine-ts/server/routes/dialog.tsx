@@ -15,7 +15,7 @@ export default defineHandler((event) => {
 
           <main>
             <button x-dialog:trigger> Click me</button>
-            <template x-if="$dialog.open" x-teleport="body">
+            <template x-if="$dialog().open" x-teleport="body">
               <div>
                 <div x-dialog:backdrop />
                 <div x-dialog:positioner>

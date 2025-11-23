@@ -37,12 +37,12 @@ export default defineHandler((event) => {
                 <div x-progress:range />
               </div>
 
-              <div x-progress:value-text x-text="$progress.valueAsString"></div>
+              <div x-progress:value-text x-text="$progress().valueAsString"></div>
 
               <div>
-                <button x-on:click="$progress.setValue(($progress.value ?? 0) - 20)">Decrease</button>
-                <button x-on:click="$progress.setValue(($progress.value ?? 0) + 20)">Increase</button>
-                <button x-on:click="$progress.setValue(null)">Indeterminate</button>
+                <button x-on:click="$progress().setValue(($progress().value ?? 0) - 20)">Decrease</button>
+                <button x-on:click="$progress().setValue(($progress().value ?? 0) + 20)">Increase</button>
+                <button x-on:click="$progress().setValue(null)">Indeterminate</button>
               </div>
             </div>
           </main>
