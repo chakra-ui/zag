@@ -131,7 +131,7 @@ export const SymbolType = dataType<symbol>({
 
 ///////////////////////////////////////////////////////////////////////////////////////////
 
-export const BigIntType = dataType<BigInt>({
+export const BigIntType = dataType<bigint>({
   type: "bigint",
   description(node) {
     return `${node.value}n`

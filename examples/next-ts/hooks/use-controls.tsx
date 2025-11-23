@@ -1,4 +1,3 @@
-/* eslint-disable jsx-a11y/no-onchange */
 import { ControlRecord, deepGet, deepSet, getControlDefaults } from "@zag-js/shared"
 import { useState } from "react"
 

@@ -1,57 +1,36 @@
-import tsParser from "@typescript-eslint/parser"
-import tsPlugin from "@typescript-eslint/eslint-plugin"
+import globals from "globals"
+import eslint from "@eslint/js"
+import tseslint from "typescript-eslint"
+import { defineConfig, globalIgnores } from "eslint/config"
 
-/** @type {import('eslint').Linter.Config[]} */
-export default [
+export default defineConfig(
+  eslint.configs.recommended,
+  tseslint.configs.recommended,
   {
+    name: "Zag Overrides",
     languageOptions: {
-      parser: tsParser,
-      globals: {
-        node: true,
-      },
+      globals: globals.node,
     },
-    plugins: {
-      "@typescript-eslint": tsPlugin,
+
+    linterOptions: {
+      reportUnusedDisableDirectives: "error",
     },
-    files: ["**/*.ts", "**/*.tsx"],
-    ignores: ["dist", "node_modules", "coverage", ".next", "build", "examples/vue-ts", "plop-templates", "**/*.d.ts"],
 
     rules: {
-      "@typescript-eslint/ban-ts-comment": "off",
-      "@typescript-eslint/no-use-before-define": "off",
-      "@typescript-eslint/no-explicit-any": "off",
-      "@typescript-eslint/no-non-null-assertion": "off",
-      "no-param-reassign": "off",
-      "prefer-spread": "off",
-      "no-console": "off",
+      "no-case-declarations": "off",
+      "no-empty": "off",
       "prefer-const": "off",
-      "jsx-a11y/no-autofocus": "off",
-      "import/named": "off",
-      "import/prefer-default-export": "off",
-      "no-underscore-dangle": "off",
-      "no-shadow": "off",
-      "no-plusplus": "off",
-      "spaced-comment": "off",
-      "guard-for-in": "off",
-      "operator-assignment": "off",
-      "prefer-destructuring": "off",
-      "consistent-return": "off",
-      "no-restricted-syntax": "off",
-      "no-continue": "off",
-      eqeqeq: "off",
-      "@typescript-eslint/dot-notation": "off",
-      "no-bitwise": "off",
-      "no-redeclare": "off",
-      "@typescript-eslint/naming-convention": "off",
-      "import/no-extraneous-dependencies": "off",
-      "@typescript-eslint/lines-between-class-members": "off",
-      "no-alert": "off",
-      "@typescript-eslint/no-shadow": "off",
-      "import/no-named-as-default": "off",
-      "prefer-object-spread": "off",
-      "arrow-body-style": "off",
-      "import/namespace": "off",
-      "jsx-a11y/label-has-associated-control": "off",
+      "prefer-rest-params": "off",
+      "prefer-spread": "off",
+      "no-prototype-builtins": "off",
+
+      "@typescript-eslint/ban-ts-comment": "off",
+      "@typescript-eslint/no-empty-object-type": "off",
+      "@typescript-eslint/no-explicit-any": "off",
+      "@typescript-eslint/no-namespace": "off",
+      "@typescript-eslint/no-non-null-asserted-optional-chain": "off",
+      "@typescript-eslint/no-unsafe-function-type": "off",
+      "@typescript-eslint/no-unused-expressions": "off",
       "@typescript-eslint/no-unused-vars": [
         "error",
         {
@@ -60,14 +39,22 @@ export default [
           ignoreRestSiblings: true,
         },
       ],
-      "default-case": "off",
     },
   },
 
-  {
-    files: ["*.js", "*.jsx"],
-    parserOptions: {
-      project: "tsconfig.eslint.json",
-    },
-  },
-]
+  globalIgnores(
+    [
+      "**/dist/",
+      "**/coverage/",
+      "**/.svelte-kit/",
+      "**/.next/",
+      "**/.nuxt/",
+      "**/.contentlayer",
+      "**/styled-system",
+      "**/build/",
+      "examples/vue-ts",
+      "**/*.d.ts",
+    ],
+    "Zag Ignores",
+  ),
+)

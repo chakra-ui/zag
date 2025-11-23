@@ -1,18 +1,12 @@
 import { normalizeProps, useMachine } from "@zag-js/solid"
 import * as tagsInput from "@zag-js/tags-input"
 import { createMemo, createUniqueId, For } from "solid-js"
-import { tagsInputControls } from "@zag-js/shared"
-import { StateVisualizer } from "~/components/state-visualizer"
-import { Toolbar } from "~/components/toolbar"
-import { useControls } from "~/hooks/use-controls"
 
 function toDashCase(str: string) {
   return str.replace(/\s+/g, "-").toLowerCase()
 }
 
 export default function Page() {
-  const controls = useControls(tagsInputControls)
-
   const service = useMachine(tagsInput.machine, {
     id: createUniqueId(),
     defaultValue: ["React", "Vue"],

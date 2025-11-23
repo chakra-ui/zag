@@ -7,6 +7,7 @@ import type { CommonProperties, DirectionProperty, Orientation, PropTypes, Requi
 export type ExtendedColorChannel = ColorChannel | "hex" | "css"
 
 interface EyeDropper {
+  // eslint-disable-next-line @typescript-eslint/no-misused-new
   new (): EyeDropper
   open: (options?: { signal?: AbortSignal | undefined }) => Promise<{ sRGBHex: string }>
   [Symbol.toStringTag]: "EyeDropper"

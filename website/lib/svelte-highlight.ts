@@ -1,4 +1,5 @@
 // @ts-nocheck
+/* eslint-disable no-useless-escape */
 import markdown from "refractor/lang/markdown.js"
 import { refractor } from "refractor/lib/core.js"
 import rehypePrismGenerator from "rehype-prism-plus/generator"
