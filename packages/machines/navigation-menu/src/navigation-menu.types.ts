@@ -219,11 +219,14 @@ export interface NavigationMenuApi<T extends PropTypes = PropTypes> {
    * The orientation of the menu
    */
   orientation: Orientation
+  /**
+   * Function to reposition the viewport
+   */
+  reposition: VoidFunction
 
   getRootProps: () => T["element"]
   getListProps: () => T["element"]
   getItemProps: (props: ItemProps) => T["element"]
-  getIndicatorTrackProps: () => T["element"]
   getIndicatorProps: () => T["element"]
   getItemIndicatorProps: (props: ItemProps) => T["element"]
   getArrowProps: (props?: ArrowProps) => T["element"]

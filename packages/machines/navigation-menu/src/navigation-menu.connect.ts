@@ -57,6 +57,9 @@ export function connect<T extends PropTypes>(
     setValue(value) {
       send({ type: "VALUE.SET", value })
     },
+    reposition() {
+      send({ type: "VIEWPORT.POSITION" })
+    },
 
     getRootProps() {
       return normalize.element({
@@ -84,6 +87,7 @@ export function connect<T extends PropTypes>(
         id: dom.getListId(scope),
         dir: prop("dir"),
         "data-orientation": prop("orientation"),
+        style: { position: "relative" },
       })
     },
 
@@ -114,16 +118,6 @@ export function connect<T extends PropTypes>(
               break
           }
         },
-      })
-    },
-
-    getIndicatorTrackProps() {
-      return normalize.element({
-        ...parts.indicatorTrack.attrs,
-        id: dom.getIndicatorTrackId(scope),
-        dir: prop("dir"),
-        "data-orientation": prop("orientation"),
-        style: { position: "relative" },
       })
     },
 

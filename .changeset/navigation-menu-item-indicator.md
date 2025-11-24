@@ -2,11 +2,20 @@
 "@zag-js/navigation-menu": minor
 ---
 
-Add `getItemIndicatorProps` part
+- Add `getItemIndicatorProps` part
+
+- **BREAKING**: Removed `getIndicatorTrackProps` - use `getListProps` instead (list now includes `position: relative`)
 
 ```tsx
-<div {...api.getItemProps({ value: "products" })}>
-  <button {...api.getTriggerProps({ value: "products" })}>Products</button>
-  <div {...api.getItemIndicatorProps({ value: "products" })} />
+// Before
+<div {...api.getIndicatorTrackProps()}>
+  <div {...api.getListProps()}>
+    {/* items */}
+  </div>
+</div>
+
+// After
+<div {...api.getListProps()}> {/* now acts as indicator track */}
+  {/* items */}
 </div>
 ```

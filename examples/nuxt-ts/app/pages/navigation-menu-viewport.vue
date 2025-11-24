@@ -31,8 +31,7 @@ const api = computed(() => navigationMenu.connect(service, normalizeProps))
     >
       <button>Logo</button>
       <div v-bind="api.getRootProps()">
-        <div v-bind="api.getIndicatorTrackProps()">
-          <div v-bind="api.getListProps()">
+        <div v-bind="api.getListProps()">
             <div v-bind="api.getItemProps({ value: 'products' })">
               <button v-bind="api.getTriggerProps({ value: 'products' })">
                 Products
@@ -168,7 +167,6 @@ const api = computed(() => navigationMenu.connect(service, normalizeProps))
               <div v-bind="api.getArrowProps()" />
             </Presence>
           </div>
-        </div>
 
         <div v-bind="api.getViewportPositionerProps()">
           <Presence v-bind="api.getViewportProps()"> </Presence>
