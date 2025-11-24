@@ -16,6 +16,7 @@
     "@zag-js/anatomy-icons": "workspace:*",
     "@zag-js/angle-slider": "workspace:*",
     "@zag-js/avatar": "workspace:*",
+    "@zag-js/bottom-sheet": "workspace:*",
     "@zag-js/checkbox": "workspace:*",
     "@zag-js/clipboard": "workspace:*",
     "@zag-js/color-picker": "workspace:*",
