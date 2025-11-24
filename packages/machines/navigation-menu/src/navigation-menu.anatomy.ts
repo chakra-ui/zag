@@ -11,6 +11,7 @@ export const anatomy = createAnatomy("navigation-menu").parts(
   "link",
   "indicator",
   "indicatorTrack",
+  "itemIndicator",
   "arrow",
 )
 

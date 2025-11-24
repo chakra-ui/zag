@@ -129,6 +129,41 @@ export interface ItemProps {
   disabled?: boolean | undefined
 }
 
+export interface ItemState {
+  /**
+   * The id of the item element
+   */
+  itemId: string
+  /**
+   * The id of the trigger element
+   */
+  triggerId: string
+  /**
+   * The id of the trigger proxy element
+   */
+  triggerProxyId: string
+  /**
+   * The id of the content element
+   */
+  contentId: string
+  /**
+   * Whether the item is currently selected
+   */
+  selected: boolean
+  /**
+   * Whether the item was previously selected (for animation)
+   */
+  wasSelected: boolean
+  /**
+   * Whether the item's content is open
+   */
+  open: boolean
+  /**
+   * Whether the item is disabled
+   */
+  disabled: boolean
+}
+
 export interface ArrowProps {
   /**
    * The value of the item
@@ -190,6 +225,7 @@ export interface NavigationMenuApi<T extends PropTypes = PropTypes> {
   getItemProps: (props: ItemProps) => T["element"]
   getIndicatorTrackProps: () => T["element"]
   getIndicatorProps: () => T["element"]
+  getItemIndicatorProps: (props: ItemProps) => T["element"]
   getArrowProps: (props?: ArrowProps) => T["element"]
 
   getTriggerProps: (props: ItemProps) => T["button"]
@@ -200,4 +236,6 @@ export interface NavigationMenuApi<T extends PropTypes = PropTypes> {
   getContentProps: (props: LinkProps) => T["element"]
   getViewportPositionerProps: (props?: ViewportProps) => T["element"]
   getViewportProps: (props?: ViewportProps) => T["element"]
+
+  getItemState: (props: ItemProps) => ItemState
 }

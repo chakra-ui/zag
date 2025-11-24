@@ -11,6 +11,7 @@ export type {
   ElementIds,
   ViewportProps,
   ItemProps,
+  ItemState,
   LinkProps,
   ValueChangeDetails,
 } from "./navigation-menu.types"
