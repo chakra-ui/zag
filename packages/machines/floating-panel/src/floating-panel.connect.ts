@@ -191,6 +191,7 @@ export function connect<T extends PropTypes>(
         type: "button",
         onClick(event) {
           if (event.defaultPrevented) return
+          if (!prop("resizable")) return
           const type = match(props.stage, {
             minimized: () => "MINIMIZE",
             maximized: () => "MAXIMIZE",
@@ -263,7 +264,9 @@ export function connect<T extends PropTypes>(
             node.releasePointerCapture(event.pointerId)
           }
         },
-        onDoubleClick() {
+        onDoubleClick(event) {
+          if (event.defaultPrevented) return
+          if (!prop("resizable")) return
           send({ type: isMaximized ? "RESTORE" : "MAXIMIZE" })
         },
         style: {
