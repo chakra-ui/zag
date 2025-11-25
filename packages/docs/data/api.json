@@ -1333,6 +1333,14 @@
         "type": "boolean",
         "description": "Whether the date picker is open"
       },
+      "disabled": {
+        "type": "boolean",
+        "description": "Whether the date picker is disabled"
+      },
+      "invalid": {
+        "type": "boolean",
+        "description": "Whether the date picker is invalid"
+      },
       "inline": {
         "type": "boolean",
         "description": "Whether the date picker is rendered inline"
@@ -1508,6 +1516,14 @@
       "readOnly": {
         "type": "boolean",
         "description": "Whether the calendar is read-only."
+      },
+      "required": {
+        "type": "boolean",
+        "description": "Whether the date picker is required"
+      },
+      "invalid": {
+        "type": "boolean",
+        "description": "Whether the date picker is invalid"
       },
       "outsideDaySelectable": {
         "type": "boolean",
@@ -3027,6 +3043,10 @@
       "orientation": {
         "type": "Orientation",
         "description": "The orientation of the menu"
+      },
+      "reposition": {
+        "type": "VoidFunction",
+        "description": "Function to reposition the viewport"
       }
     },
     "context": {
@@ -4671,6 +4691,10 @@
         "type": "boolean",
         "description": "Whether the splitter is currently being resized."
       },
+      "orientation": {
+        "type": "\"horizontal\" | \"vertical\"",
+        "description": "The orientation of the splitter."
+      },
       "getSizes": {
         "type": "() => number[]",
         "description": "Returns the current sizes of the panels."
@@ -4682,6 +4706,14 @@
       "getItems": {
         "type": "() => SplitterItem[]",
         "description": "Returns the items of the splitter."
+      },
+      "getPanels": {
+        "type": "() => PanelData[]",
+        "description": "Returns the panels of the splitter."
+      },
+      "getPanelById": {
+        "type": "(id: string) => PanelData",
+        "description": "Returns the panel with the specified id."
       },
       "getPanelSize": {
         "type": "(id: string) => number",
@@ -4714,6 +4746,10 @@
       "resetSizes": {
         "type": "VoidFunction",
         "description": "Resets the splitter to its initial state."
+      },
+      "getResizeTriggerState": {
+        "type": "(props: ResizeTriggerProps) => ResizeTriggerState",
+        "description": "Returns the state of the resize trigger."
       }
     },
     "context": {
