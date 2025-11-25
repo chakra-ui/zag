@@ -438,8 +438,9 @@ export const machine = createMachine({
           restoreCursor(inputEl, sel, scope)
         })
       },
-      setFormattedValue({ context, computed }) {
+      setFormattedValue({ context, computed, action }) {
         context.set("value", computed("formattedValue"))
+        action(["syncInputElement"])
       },
       setCursorPoint({ context, event }) {
         context.set("scrubberCursorPoint", event.point)
