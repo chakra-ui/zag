@@ -250,6 +250,7 @@ export function connect<T extends PropTypes>(
     },
 
     getLinkProps(props) {
+      const { closeOnClick = true } = props
       return normalize.element({
         ...parts.link.attrs,
         dir: prop("dir"),
@@ -272,7 +273,7 @@ export function connect<T extends PropTypes>(
 
           target.dispatchEvent(linkSelectEvent)
 
-          if (!linkSelectEvent.defaultPrevented && !event.metaKey) {
+          if (closeOnClick && !linkSelectEvent.defaultPrevented && !event.metaKey) {
             send({ type: "CLOSE" })
           }
         },

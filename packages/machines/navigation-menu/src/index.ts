@@ -8,6 +8,7 @@ export type {
   NavigationMenuProps as Props,
   NavigationMenuService as Service,
   ArrowProps,
+  ContentProps,
   ElementIds,
   ViewportProps,
   ItemProps,

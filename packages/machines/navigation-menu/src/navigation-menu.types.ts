@@ -171,6 +171,13 @@ export interface ArrowProps {
   value: string
 }
 
+export interface ContentProps {
+  /**
+   * The value of the item this content belongs to
+   */
+  value: string
+}
+
 export interface LinkProps {
   /**
    * The value of the item this link belongs to
@@ -184,6 +191,11 @@ export interface LinkProps {
    * Function called when the link is selected
    */
   onSelect?: ((event: CustomEvent) => void) | undefined
+  /**
+   * Whether to close the navigation menu when the link is clicked.
+   * @default true
+   */
+  closeOnClick?: boolean | undefined
 }
 
 export interface ViewportProps {
@@ -236,7 +248,7 @@ export interface NavigationMenuApi<T extends PropTypes = PropTypes> {
   getViewportProxyProps: (props: ItemProps) => T["element"]
 
   getLinkProps: (props: LinkProps) => T["element"]
-  getContentProps: (props: LinkProps) => T["element"]
+  getContentProps: (props: ContentProps) => T["element"]
   getViewportPositionerProps: (props?: ViewportProps) => T["element"]
   getViewportProps: (props?: ViewportProps) => T["element"]
 

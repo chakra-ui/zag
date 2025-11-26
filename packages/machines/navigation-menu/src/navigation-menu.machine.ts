@@ -183,13 +183,12 @@ export const machine = createMachine({
       resetValueWithDelay({ event, refs }) {
         clearOpenTimeout(refs, event.value)
       },
-      setValueWithDelay({ event, prop, context, scope, refs }) {
+      setValueWithDelay({ event, prop, context, refs }) {
         // Skip delay if the menu is already open (within grace period)
         const shouldSkipDelay = context.get("value") !== ""
 
         const openTimeoutId = window.setTimeout(
           () => {
-            dom.getTriggerEl(scope, event.value)?.focus({ preventScroll: true })
             setTimeout(() => {
               context.set("previousValue", context.get("value"))
               context.set("value", event.value)
