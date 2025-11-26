@@ -1,5 +1,27 @@
 # @zag-js/date-picker
 
+## 1.30.0
+
+### Patch Changes
+
+- [`fd6aaae`](https://github.com/chakra-ui/zag/commit/fd6aaae0897507d6292c75e1d29caac7f91fdead) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Add support for `required` and `invalid` props in date-picker
+  - Add `required` prop to mark the date picker as required for form validation
+  - Add `invalid` prop to mark the date picker as invalid
+  - Both props are now properly passed to the input element with appropriate ARIA attributes
+  - Exposed `disabled` and `invalid` in the date picker API for better state access
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.30.0
+  - @zag-js/core@1.30.0
+  - @zag-js/types@1.30.0
+  - @zag-js/utils@1.30.0
+  - @zag-js/date-utils@1.30.0
+  - @zag-js/dismissable@1.30.0
+  - @zag-js/dom-query@1.30.0
+  - @zag-js/live-region@1.30.0
+  - @zag-js/popper@1.30.0
+
 ## 1.29.1
 
 ### Patch Changes
