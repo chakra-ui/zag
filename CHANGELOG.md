@@ -4,6 +4,52 @@ All notable changes to this project will be documented in this file.
 
 > For v0.x changelog, see the [v0 branch](https://github.com/chakra-ui/zag/blob/v0/CHANGELOG.md)
 
+## [1.30.0](./#1.30.0) - 2025-11-26
+
+### Added
+
+- **Date Picker**
+  - Add support for `required` and `invalid` props
+  - Exposed `disabled` and `invalid` in the date picker API for better state access
+
+- **Navigation Menu**
+  - Add `getItemIndicatorProps` part for indicator styling
+  - Add `closeOnClick` prop to `getLinkProps` to control whether the navigation menu closes when a link is clicked
+    (defaults to `true`)
+
+### Fixed
+
+- **Floating Panel**
+  - Fix issue where `dir` prop is ignored. The `dir` attribute is now properly delegated to all floating panel parts
+  - Ensure double-click behavior doesn't trigger when `resizable={false}` is set
+  - Double-click behavior now checks `event.defaultPrevented` to allow users to prevent the default behavior by calling
+    `event.preventDefault()`
+
+- **Navigation Menu**
+  - Avoid focusing the trigger when hovering over it
+  - Separate `ContentProps` from `LinkProps` for `getContentProps` - previously it incorrectly used `LinkProps`
+
+- **Number Input**: Improve controlled usage by ensuring input element stays synced with controlled value
+
+### Changed
+
+- **Navigation Menu**: Removed `getIndicatorTrackProps` - use `getListProps` instead (list now includes
+  `position: relative`)
+
+  ```tsx
+  // Before
+  <div {...api.getIndicatorTrackProps()}>
+    <div {...api.getListProps()}>
+      {/* items */}
+    </div>
+  </div>
+
+  // After
+  <div {...api.getListProps()}> {/* now acts as indicator track */}
+    {/* items */}
+  </div>
+  ```
+
 ## [1.29.1](./#1.29.1) - 2025-11-22
 
 ### Fixed
@@ -18,19 +64,23 @@ All notable changes to this project will be documented in this file.
 
 ### Added
 
-- **Carousel, Color Picker, Combobox, Date Picker, Select**: Add `value` to `OpenChangeDetails` for better context in change handlers
+- **Carousel, Color Picker, Combobox, Date Picker, Select**: Add `value` to `OpenChangeDetails` for better context in
+  change handlers
 
 - **Splitter**: Add `getResizeTriggerIndicator` to render an indicator when resizing
 
-- **Toast**: Expose viewport offset as CSS variables (`--viewport-offset-left`, `--viewport-offset-right`, `--viewport-offset-top`, `--viewport-offset-bottom`) on the toast group element
+- **Toast**: Expose viewport offset as CSS variables (`--viewport-offset-left`, `--viewport-offset-right`,
+  `--viewport-offset-top`, `--viewport-offset-bottom`) on the toast group element
 
 ### Fixed
 
 - **Carousel**: Fix dragging not working after scrolling with mouse wheel when `allowMouseDrag` is enabled
 
-- **Combobox**: Fix `onHighlightChange` not being invoked when collection is filtered to empty results. The callback now correctly receives `{ highlightedValue: null, highlightedItem: null }` when the collection becomes empty
+- **Combobox**: Fix `onHighlightChange` not being invoked when collection is filtered to empty results. The callback now
+  correctly receives `{ highlightedValue: null, highlightedItem: null }` when the collection becomes empty
 
-- **File Upload**: Fix issue where clicking on non-interactive children (icons, text) inside the dropzone doesn't open the file picker
+- **File Upload**: Fix issue where clicking on non-interactive children (icons, text) inside the dropzone doesn't open
+  the file picker
 
 - **Radio Group**: Fix inconsistent application of `data-focus-visible` and `data-focus` attributes
 
