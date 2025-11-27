@@ -246,7 +246,7 @@
     position: relative;
     width: var(--arrow-size);
     height: var(--arrow-size);
-    background-color: white;
+    background-color: var(--colors-bg-subtle);
     rotate: 45deg;
 
     &[data-orientation="horizontal"] {
