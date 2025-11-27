@@ -10,12 +10,13 @@ export function usePlugin<T extends MachineSchema>(
     machine: Machine<T>
     connect: (service: Service<T>, normalizeProps: NormalizeProps<PropTypes>) => any
     collection?: (options: any) => any
+    gridCollection?: (options: any) => any
   },
 ) {
   const _x_snake_case = "_x_" + name.replaceAll("-", "_")
 
   return function (Alpine: Alpine) {
-    Alpine.directive(name, (el, { expression, value, modifiers }, { cleanup, effect, evaluateLater }) => {
+    Alpine.directive(name, (el, { expression, value, modifiers }, { effect, evaluateLater }) => {
       const _modifier = modifiers.at(0) ? "_" + modifiers.at(0) : ""
       if (!value) {
         const evaluateProps = evaluateLater(expression) as any
@@ -41,7 +42,7 @@ export function usePlugin<T extends MachineSchema>(
         })
       } else if (value === "collection") {
         const evaluateCollection = evaluateLater(expression)
-        const cleanupBinding = Alpine.bind(el, {
+        Alpine.bind(el, {
           "x-data"() {
             return {
               get collection() {
@@ -52,7 +53,19 @@ export function usePlugin<T extends MachineSchema>(
             }
           },
         })
-        cleanup(() => cleanupBinding())
+      } else if (value === "grid-collection") {
+        const evaluateCollection = evaluateLater(expression)
+        Alpine.bind(el, {
+          "x-data"() {
+            return {
+              get collection() {
+                let options: any = {}
+                evaluateCollection((value) => (options = value))
+                return component.gridCollection?.(options)
+              },
+            }
+          },
+        })
       } else {
         const getProps = `get${value
           .split("-")
