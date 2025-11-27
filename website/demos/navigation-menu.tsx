@@ -71,7 +71,11 @@ export function NavigationMenu(props: NavigationMenuProps) {
         </div>
 
         <div {...api.getItemProps({ value: "github" })}>
-          <a href="https://github.com/chakra-ui/zag" target="_blank">
+          <a
+            {...api.getLinkProps({ value: "github" })}
+            href="https://github.com/chakra-ui/zag"
+            target="_blank"
+          >
             GitHub
           </a>
         </div>
