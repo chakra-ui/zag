@@ -102,7 +102,15 @@ properties to the machine.
 When the open item changes, the `onValueChange` callback is invoked with the new
 value.
 
-<CodeSnippet id="navigation-menu/listening-for-events.mdx" />
+```jsx {3-6}
+const service = useMachine(navigationMenu.machine, {
+  id: "nav",
+  onValueChange(details) {
+    // details => { value: string }
+    console.log("Current open item:", details.value)
+  },
+})
+```
 
 ### Adding an animated indicator
 
@@ -150,7 +158,11 @@ const service = useMachine(navigationMenu.machine, {
 
 The default orientation is horizontal. To create a vertical navigation menu:
 
-<CodeSnippet id="navigation-menu/vertical-orientation.mdx" />
+```jsx {2}
+const service = useMachine(navigationMenu.machine, {
+  orientation: "vertical",
+})
+```
 
 This affects keyboard navigation (arrow keys) and indicator positioning.
 
@@ -183,7 +195,11 @@ This adds `data-current` attribute and `aria-current="page"` for accessibility.
 The navigation menu supports right-to-left languages. Set the `dir` property to
 `rtl`:
 
-<CodeSnippet id="navigation-menu/rtl-support.mdx" />
+```jsx {2}
+const service = useMachine(navigationMenu.machine, {
+  dir: "rtl",
+})
+```
 
 ## Styling guide
 
