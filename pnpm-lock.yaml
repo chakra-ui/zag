@@ -3761,6 +3761,9 @@ importers:
       '@zag-js/menu':
         specifier: workspace:*
         version: link:../packages/machines/menu
+      '@zag-js/navigation-menu':
+        specifier: workspace:*
+        version: link:../packages/machines/navigation-menu
       '@zag-js/number-input':
         specifier: workspace:*
         version: link:../packages/machines/number-input

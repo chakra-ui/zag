@@ -1,0 +1,9 @@
+```jsx {3-6}
+const service = useMachine(navigationMenu.machine, {
+  id: createUniqueId(),
+  onValueChange(details) {
+    // details => { value: string }
+    console.log("Current open item:", details.value)
+  },
+})
+```
