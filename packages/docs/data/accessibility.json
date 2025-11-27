@@ -794,5 +794,33 @@
         "description": "Closes the dialog and moves focus to trigger or the defined final focus element"
       }
     ]
+  },
+  "navigation-menu": {
+    "keyboard": [
+      {
+        "keys": ["ArrowDown"],
+        "description": "When focus is on trigger (vertical orientation), moves focus to the next trigger."
+      },
+      {
+        "keys": ["ArrowUp"],
+        "description": "When focus is on trigger (vertical orientation), moves focus to the previous trigger."
+      },
+      {
+        "keys": ["ArrowRight"],
+        "description": "<span>When focus is on trigger (horizontal orientation), moves focus to the next trigger.<br />When focus is on content, moves focus to the next link.</span>"
+      },
+      {
+        "keys": ["ArrowLeft"],
+        "description": "<span>When focus is on trigger (horizontal orientation), moves focus to the previous trigger.<br />When focus is on content, moves focus to the previous link.</span>"
+      },
+      {
+        "keys": ["Home"],
+        "description": "<span>When focus is on trigger, moves focus to the first trigger.<br />When focus is on content, moves focus to the first link.</span>"
+      },
+      {
+        "keys": ["End"],
+        "description": "<span>When focus is on trigger, moves focus to the last trigger.<br />When focus is on content, moves focus to the last link.</span>"
+      }
+    ]
   }
 }
