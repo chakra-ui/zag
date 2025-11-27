@@ -101,7 +101,7 @@ export const machine = createMachine({
   },
 
   watch({ track, action, context, computed, prop }) {
-    track([() => context.get("value"), () => prop("locale")], () => {
+    track([() => context.get("value"), () => prop("locale"), () => JSON.stringify(prop("formatOptions"))], () => {
       action(["syncInputElement"])
     })
 
