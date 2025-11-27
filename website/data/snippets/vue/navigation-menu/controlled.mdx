@@ -1,0 +1,28 @@
+```html {4,6-11}
+<script setup lang="ts">
+import { ref, computed } from "vue"
+
+const value = ref("")
+
+const service = useMachine(navigationMenu.machine, {
+  id: "nav",
+  value: value.value,
+  onValueChange(details) {
+    value.value = details.value
+  },
+})
+
+const api = computed(() => navigationMenu.connect(service, normalizeProps))
+</script>
+
+<template>
+  <div>
+    <button @click="value = 'products'">Open Products</button>
+    <button @click="value = ''">Close All</button>
+
+    <nav v-bind="api.getRootProps()">
+      <!-- ... navigation items ... -->
+    </nav>
+  </div>
+</template>
+```
