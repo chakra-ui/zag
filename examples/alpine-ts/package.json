@@ -21,6 +21,7 @@
     "@zag-js/checkbox": "workspace:*",
     "@zag-js/clipboard": "workspace:*",
     "@zag-js/color-picker": "workspace:*",
+    "@zag-js/combobox": "workspace:*",
     "@zag-js/core": "workspace:*",
     "@zag-js/dialog": "workspace:*",
     "@zag-js/dom-query": "workspace:*",
@@ -54,6 +55,7 @@
     "alpinejs": "^3.15.2",
     "form-serialize": "0.7.2",
     "lucide-static": "^0.554.0",
+    "match-sorter": "8.1.0",
     "mono-jsx": "0.8.0-beta.4"
   }
 }
