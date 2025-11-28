@@ -1,5 +1,22 @@
 # @zag-js/radio-group
 
+## 1.30.1
+
+### Patch Changes
+
+- [#2877](https://github.com/chakra-ui/zag/pull/2877)
+  [`3e745c1`](https://github.com/chakra-ui/zag/commit/3e745c1ab29a62da36e44d5ba19e6ddaaf2619d8) Thanks
+  [@Hugos68](https://github.com/Hugos68)! - bugfix: `tabs` and `radio-group` machine no longer show the `indicator`
+  prematurely
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.30.1
+  - @zag-js/core@1.30.1
+  - @zag-js/types@1.30.1
+  - @zag-js/utils@1.30.1
+  - @zag-js/dom-query@1.30.1
+  - @zag-js/focus-visible@1.30.1
+
 ## 1.30.0
 
 ### Patch Changes
