@@ -30,6 +30,7 @@
     "@zag-js/floating-panel": "workspace:*",
     "@zag-js/hover-card": "workspace:*",
     "@zag-js/listbox": "workspace:*",
+    "@zag-js/marquee": "workspace:*",
     "@zag-js/number-input": "workspace:*",
     "@zag-js/pagination": "workspace:*",
     "@zag-js/password-input": "workspace:*",
