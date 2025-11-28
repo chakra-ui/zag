@@ -1,5 +1,20 @@
 # @zag-js/number-input
 
+## 1.30.1
+
+### Patch Changes
+
+- [`42f5b8e`](https://github.com/chakra-ui/zag/commit/42f5b8ebeb17647e7d0980b9efa76fcc3b0e1fee) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - - Fixed issue where input element doesn't sync when
+  `formatOptions` changes dynamically.
+  - Ensure cursor position is preserved when `Enter` key is pressed and formatting is triggered.
+- Updated dependencies []:
+  - @zag-js/anatomy@1.30.1
+  - @zag-js/core@1.30.1
+  - @zag-js/types@1.30.1
+  - @zag-js/utils@1.30.1
+  - @zag-js/dom-query@1.30.1
+
 ## 1.30.0
 
 ### Patch Changes
