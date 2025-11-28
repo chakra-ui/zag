@@ -35,6 +35,7 @@
     "@zag-js/pagination": "workspace:*",
     "@zag-js/password-input": "workspace:*",
     "@zag-js/pin-input": "workspace:*",
+    "@zag-js/popper": "workspace:*",
     "@zag-js/presence": "workspace:*",
     "@zag-js/progress": "workspace:*",
     "@zag-js/qr-code": "workspace:*",
