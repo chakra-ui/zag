@@ -28,7 +28,7 @@ const SnippetItem = ({
   id: string
 }) => {
   const content = useMDX(body.code)
-  const textContent = body.raw.split("\n").slice(1, -2).join("\n")
+  const textContent = body.raw.split("\n").slice(1, -1).join("\n")
   return (
     <div className="prose" id="snippet" data-framework={id}>
       {content}
