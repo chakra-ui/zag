@@ -8,10 +8,11 @@ import type {
   ZonedDateTime,
 } from "@internationalized/date"
 import type { Machine, Service } from "@zag-js/core"
-import type { DateRangePreset } from "@zag-js/date-utils"
+import type { DateRangePreset, DateGranularity } from "@zag-js/date-utils"
 import type { LiveRegion } from "@zag-js/live-region"
 import type { Placement, PositioningOptions } from "@zag-js/popper"
 import type { CommonProperties, DirectionProperty, PropTypes, RequiredBy } from "@zag-js/types"
+import type { EDITABLE_SEGMENTS } from "./date-picker.utils"
 
 /* -----------------------------------------------------------------------------
  * Callback details
@@ -28,6 +29,10 @@ export interface ValueChangeDetails {
 export interface FocusChangeDetails extends ValueChangeDetails {
   focusedValue: DateValue
   view: DateView
+}
+
+export interface PlaceholderChangeDetails extends ValueChangeDetails {
+  placeholderValue: DateValue
 }
 
 export interface ViewChangeDetails {
@@ -61,7 +66,7 @@ export interface IntlTranslations {
   clearTrigger: string
   trigger: (open: boolean) => string
   content: string
-  placeholder: (locale: string) => { year: string; month: string; day: string }
+  placeholder: (locale: string) => Record<EditableSegmentType, string>
 }
 
 export type ElementIds = Partial<{
@@ -162,6 +167,15 @@ export interface DatePickerProps extends DirectionProperty, CommonProperties {
    */
   defaultFocusedValue?: DateValue | undefined
   /**
+   * The controlled placeholder date.
+   */
+  placeholderValue?: DateValue | undefined
+  /**
+   * The initial placeholder date when rendered.
+   * The date that is used when the date picker is empty to determine what point in time the calendar should start at.
+   */
+  defaultPlaceholderValue?: DateValue | undefined
+  /**
    * The number of months to display.
    */
   numOfMonths?: number | undefined
@@ -189,6 +203,10 @@ export interface DatePickerProps extends DirectionProperty, CommonProperties {
    * Function called when the focused date changes.
    */
   onFocusChange?: ((details: FocusChangeDetails) => void) | undefined
+  /**
+   * A function called when the placeholder value changes.
+   */
+  onPlaceholderChange?: ((details: PlaceholderChangeDetails) => void) | undefined
   /**
    * Function called when the view changes.
    */
@@ -258,6 +276,15 @@ export interface DatePickerProps extends DirectionProperty, CommonProperties {
    * Whether to render the date picker inline
    */
   inline?: boolean | undefined
+  /**
+   * Determines the smallest unit that is displayed in the date picker. By default, this is `"day"`.
+   */
+  granularity?: DateGranularity | undefined
+  formatter?: DateFormatter | undefined
+  /**
+   *
+   */
+  allSegments?: Segments | undefined
 }
 
 type PropsWithDefault =
@@ -274,6 +301,10 @@ type PropsWithDefault =
   | "parse"
   | "defaultFocusedValue"
   | "outsideDaySelectable"
+  | "granularity"
+  | "translations"
+  | "formatter"
+  | "allSegments"
 
 interface PrivateContext {
   /**
@@ -298,6 +329,10 @@ interface PrivateContext {
    */
   activeIndex: number
   /**
+   * The index of the currently active segment.
+   */
+  activeSegmentIndex: number
+  /**
    * The computed placement (maybe different from initial placement)
    */
   currentPlacement?: Placement | undefined
@@ -317,6 +352,14 @@ interface PrivateContext {
    * The focused date.
    */
   focusedValue: DateValue
+  /**
+   * The placeholder date.
+   */
+  placeholderValue: DateValue
+  /**
+   * The valid segments for each date value (tracks which segments have been filled).
+   */
+  validSegments: Segments[]
 }
 
 type ComputedContext = Readonly<{
@@ -352,6 +395,10 @@ type ComputedContext = Readonly<{
    * The value text to display in the input.
    */
   valueAsString: string[]
+  /**
+   * A list of segments for the selected date(s).
+   */
+  segments: DateSegment[][]
 }>
 
 type Refs = {
@@ -359,6 +406,10 @@ type Refs = {
    * The live region to announce changes
    */
   announcer?: LiveRegion | undefined
+  /**
+   * Accumulated keys entered in the focused segment
+   */
+  enteredKeys: string
 }
 
 export interface DatePickerSchema {
@@ -411,6 +462,77 @@ export interface TableCellState {
   readonly disabled: boolean
 }
 
+export interface SegmentGroupProps {
+  index?: number | undefined
+}
+
+export interface SegmentsProps {
+  index?: number | undefined
+}
+
+export type SegmentType =
+  | "era"
+  | "year"
+  | "month"
+  | "day"
+  | "hour"
+  | "minute"
+  | "second"
+  | "dayPeriod"
+  | "literal"
+  | "timeZoneName"
+
+export type Segments = Partial<{
+  -readonly [K in keyof typeof EDITABLE_SEGMENTS]: boolean
+}>
+
+export type EditableSegmentType = {
+  [K in keyof typeof EDITABLE_SEGMENTS]: (typeof EDITABLE_SEGMENTS)[K] extends true ? K : never
+}[keyof typeof EDITABLE_SEGMENTS]
+
+export interface DateSegment {
+  /**
+   * The type of segment.
+   */
+  type: SegmentType
+  /**
+   * The formatted text for the segment.
+   */
+  text: string
+  /**
+   * The numeric value for the segment, if applicable.
+   */
+  value?: number
+  /**
+   * The minimum numeric value for the segment, if applicable.
+   */
+  minValue?: number
+  /**
+   * The maximum numeric value for the segment, if applicable.
+   */
+  maxValue?: number
+  /**
+   * Whether the value is a placeholder.
+   */
+  isPlaceholder: boolean
+  /**
+   * A placeholder string for the segment.
+   */
+  placeholder: string
+  /**
+   * Whether the segment is editable.
+   */
+  isEditable: boolean
+}
+
+export interface SegmentProps {
+  segment: DateSegment
+  index?: number | undefined
+}
+
+export interface SegmentState {
+  editable: boolean
+}
 export interface DayTableCellProps {
   value: DateValue
   disabled?: boolean | undefined
@@ -531,7 +653,7 @@ export interface DatePickerApi<T extends PropTypes = PropTypes> {
   /**
    * Returns an array of days in the week index counted from the provided start date, or the first visible date if not given.
    */
-  getDaysInWeek: (week: number, from?: DateValue) => DateValue[]
+  getDaysInWeek: (week: number, from?: DateValue | undefined) => DateValue[]
   /**
    * Returns the offset of the month based on the provided number of months.
    */
@@ -543,7 +665,7 @@ export interface DatePickerApi<T extends PropTypes = PropTypes> {
   /**
    * Returns the weeks of the month from the provided date. Represented as an array of arrays of dates.
    */
-  getMonthWeeks: (from?: DateValue) => DateValue[][]
+  getMonthWeeks: (from?: DateValue | undefined) => DateValue[][]
   /**
    * Returns whether the provided date is available (or can be selected)
    */
@@ -589,6 +711,18 @@ export interface DatePickerApi<T extends PropTypes = PropTypes> {
    */
   focusedValueAsString: string
   /**
+   * The placeholder date.
+   */
+  placeholderValue: DateValue
+  /**
+   * The placeholder date as a Date object.
+   */
+  placeholderValueAsDate: Date
+  /**
+   * The placeholder date as a string.
+   */
+  placeholderValueAsString: string
+  /**
    * Sets the selected date to today.
    */
   selectToday: VoidFunction
@@ -624,7 +758,7 @@ export interface DatePickerApi<T extends PropTypes = PropTypes> {
    * Returns the years of the decade based on the columns.
    * Represented as an array of arrays of years.
    */
-  getYearsGrid: (props?: YearGridProps) => YearGridValue
+  getYearsGrid: (props?: YearGridProps | undefined) => YearGridValue
   /**
    * Returns the start and end years of the decade.
    */
@@ -632,16 +766,16 @@ export interface DatePickerApi<T extends PropTypes = PropTypes> {
   /**
    * Returns the months of the year
    */
-  getMonths: (props?: MonthFormatOptions) => Cell[]
+  getMonths: (props?: MonthFormatOptions | undefined) => Cell[]
   /**
    * Returns the months of the year based on the columns.
    * Represented as an array of arrays of months.
    */
-  getMonthsGrid: (props?: MonthGridProps) => MonthGridValue
+  getMonthsGrid: (props?: MonthGridProps | undefined) => MonthGridValue
   /**
    * Formats the given date value based on the provided options.
    */
-  format: (value: DateValue, opts?: Intl.DateTimeFormatOptions) => string
+  format: (value: DateValue, opts?: Intl.DateTimeFormatOptions | undefined) => string
   /**
    * Sets the view of the date picker.
    */
@@ -666,6 +800,18 @@ export interface DatePickerApi<T extends PropTypes = PropTypes> {
    * Returns the state details for a given year cell.
    */
   getYearTableCellState: (props: TableCellProps) => TableCellState
+  /**
+   * Returns the props for the segment group container.
+   */
+  getSegmentGroupProps: (props?: SegmentGroupProps | undefined) => T["element"]
+  /**
+   * Returns the props for a given segment.
+   */
+  getSegments: (props?: SegmentsProps | undefined) => DateSegment[]
+  /**
+   * Returns the state details for a given segment.
+   */
+  getSegmentState: (props: SegmentProps) => SegmentState
 
   getRootProps: () => T["element"]
   getLabelProps: (props?: LabelProps) => T["label"]
@@ -700,6 +846,7 @@ export interface DatePickerApi<T extends PropTypes = PropTypes> {
   getViewTriggerProps: (props?: ViewProps) => T["button"]
   getViewControlProps: (props?: ViewProps) => T["element"]
   getInputProps: (props?: InputProps) => T["input"]
+  getSegmentProps: (props: SegmentProps) => T["element"]
   getMonthSelectProps: () => T["select"]
   getYearSelectProps: () => T["select"]
 }

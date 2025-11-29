@@ -30,6 +30,7 @@ export const props = createProps<DatePickerProps>()([
   "name",
   "numOfMonths",
   "onFocusChange",
+  "onPlaceholderChange",
   "onOpenChange",
   "onValueChange",
   "onViewChange",
@@ -50,6 +51,11 @@ export const props = createProps<DatePickerProps>()([
   "outsideDaySelectable",
   "minView",
   "maxView",
+  "granularity",
+  "allSegments",
+  "formatter",
+  "placeholderValue",
+  "defaultPlaceholderValue",
 ])
 export const splitProps = createSplitProps<Partial<DatePickerProps>>(props)
 
