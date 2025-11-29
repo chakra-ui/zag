@@ -8,13 +8,6 @@
       "--marker-value": "The marker value value for the Marker"
     }
   },
-  "carousel": {
-    "Root": {
-      "--slides-per-page": "The number of slides visible per page",
-      "--slide-spacing": "The spacing between slides",
-      "--slide-item-size": "The calculated size of each slide item"
-    }
-  },
   "bottom-sheet": {
     "Content": {
       "--bottom-sheet-translate": "The bottom sheet translate value for the Content",
@@ -23,6 +16,13 @@
     },
     "Backdrop": {
       "--layer-index": "The index of the dismissable in the layer stack"
+    }
+  },
+  "carousel": {
+    "Root": {
+      "--slides-per-page": "The number of slides visible per page",
+      "--slide-spacing": "The spacing between slides",
+      "--slide-item-size": "The calculated size of each slide item"
     }
   },
   "collapsible": {
@@ -144,19 +144,19 @@
       "--layer-index": "The index of the dismissable in the layer stack"
     }
   },
-  "qr-code": {
-    "Root": {
-      "--qrcode-pixel-size": "The size of the Root",
-      "--qrcode-width": "The width of the Root",
-      "--qrcode-height": "The height of the Root"
-    }
-  },
   "progress": {
     "Root": {
       "--percent": "The percent value for the root",
       "--radius": "The border radius value",
       "--circumference": "The circumference value for the root",
       "--offset": "The offset position of the element"
+    }
+  },
+  "qr-code": {
+    "Root": {
+      "--qrcode-pixel-size": "The size of the Root",
+      "--qrcode-width": "The width of the Root",
+      "--qrcode-height": "The height of the Root"
     }
   },
   "radio-group": {

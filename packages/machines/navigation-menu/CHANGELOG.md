@@ -1,5 +1,54 @@
 # @zag-js/navigation-menu
 
+## 1.30.0
+
+### Minor Changes
+
+- [`87964a7`](https://github.com/chakra-ui/zag/commit/87964a7f0a5221a4a7cf8d5b0897e022b0b64b4e) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - - Add `getItemIndicatorProps` part
+  - **BREAKING**: Removed `getIndicatorTrackProps` - use `getListProps` instead (list now includes `position: relative`)
+
+  ```tsx
+  // Before
+  <div {...api.getIndicatorTrackProps()}>
+    <div {...api.getListProps()}>
+      {/* items */}
+    </div>
+  </div>
+
+  // After
+  <div {...api.getListProps()}> {/* now acts as indicator track */}
+    {/* items */}
+  </div>
+  ```
+
+### Patch Changes
+
+- [`5dad198`](https://github.com/chakra-ui/zag/commit/5dad198be95983e9493e68d418c8f3c35e66e650) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - - Avoid focusing the trigger when hovering over it.
+  - Add `closeOnClick` prop to `getLinkProps` to control whether the navigation menu closes when a link is clicked.
+    Defaults to `true` (current behavior).
+  - Separate `ContentProps` from `LinkProps` for `getContentProps` - previously it incorrectly used `LinkProps`.
+- Updated dependencies []:
+  - @zag-js/anatomy@1.30.0
+  - @zag-js/core@1.30.0
+  - @zag-js/types@1.30.0
+  - @zag-js/utils@1.30.0
+  - @zag-js/dismissable@1.30.0
+  - @zag-js/dom-query@1.30.0
+
+## 1.29.1
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.29.1
+  - @zag-js/core@1.29.1
+  - @zag-js/types@1.29.1
+  - @zag-js/utils@1.29.1
+  - @zag-js/dismissable@1.29.1
+  - @zag-js/dom-query@1.29.1
+
 ## 1.29.0
 
 ### Patch Changes

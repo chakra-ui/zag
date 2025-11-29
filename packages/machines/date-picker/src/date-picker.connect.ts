@@ -64,8 +64,9 @@ export function connect<T extends PropTypes>(
   const hoveredValue = context.get("hoveredValue")
   const hoveredRangeValue = hoveredValue ? adjustStartAndEndDate([selectedValue[0], hoveredValue]) : []
 
-  const disabled = prop("disabled")
-  const readOnly = prop("readOnly")
+  const disabled = Boolean(prop("disabled"))
+  const readOnly = Boolean(prop("readOnly"))
+  const invalid = Boolean(prop("invalid"))
   const interactive = computed("isInteractive")
 
   const min = prop("min")
@@ -243,6 +244,8 @@ export function connect<T extends PropTypes>(
   return {
     focused,
     open,
+    disabled,
+    invalid,
     inline: !!prop("inline"),
     view: context.get("view"),
     getRangePresetValue(preset) {
@@ -790,6 +793,9 @@ export function connect<T extends PropTypes>(
         "data-state": open ? "open" : "closed",
         readOnly,
         disabled,
+        required: prop("required"),
+        "aria-invalid": ariaAttr(invalid),
+        "data-invalid": dataAttr(invalid),
         placeholder: prop("placeholder") || getInputPlaceholder(locale),
         defaultValue: computed("valueAsString")[index],
         onBeforeInput(event) {

@@ -1,5 +1,52 @@
 # @zag-js/floating-panel
 
+## 1.30.0
+
+### Patch Changes
+
+- [#2874](https://github.com/chakra-ui/zag/pull/2874)
+  [`d3ff8df`](https://github.com/chakra-ui/zag/commit/d3ff8df0102f26e3766798c17438772c0e7f7f12) Thanks
+  [@copilot-swe-agent](https://github.com/apps/copilot-swe-agent)! - Fix issue where `dir` prop is ignored. The `dir`
+  attribute is now properly delegated to all floating panel parts.
+
+- [`8e85a18`](https://github.com/chakra-ui/zag/commit/8e85a1814a32fb9066dfce449021603f024eca70) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - - Ensure double-click behavior doesn't trigger when
+  `resizable={false}` is set.
+  - Double-click behavior now checks `event.defaultPrevented` to allow users to prevent the default behavior by calling
+    `event.preventDefault()`.
+- Updated dependencies []:
+  - @zag-js/anatomy@1.30.0
+  - @zag-js/core@1.30.0
+  - @zag-js/store@1.30.0
+  - @zag-js/types@1.30.0
+  - @zag-js/utils@1.30.0
+  - @zag-js/dom-query@1.30.0
+  - @zag-js/popper@1.30.0
+  - @zag-js/rect-utils@1.30.0
+
+## 1.29.1
+
+### Patch Changes
+
+- [#2863](https://github.com/chakra-ui/zag/pull/2863)
+  [`f3d2626`](https://github.com/chakra-ui/zag/commit/f3d2626a52b73698f91507dd26a783a151e4f1fe) Thanks
+  [@Hugos68](https://github.com/Hugos68)! - fix: floating panel, set resize trigger with `n` axis to `top: 0`
+  explicitely
+
+- [#2861](https://github.com/chakra-ui/zag/pull/2861)
+  [`ccc62cc`](https://github.com/chakra-ui/zag/commit/ccc62ccd6f5d9a7c0182dc65ae8a69187f054fc2) Thanks
+  [@Hugos68](https://github.com/Hugos68)! - bugfix: `draggable` and `resizable` were not respected when set to `false`
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.29.1
+  - @zag-js/core@1.29.1
+  - @zag-js/store@1.29.1
+  - @zag-js/types@1.29.1
+  - @zag-js/utils@1.29.1
+  - @zag-js/dom-query@1.29.1
+  - @zag-js/popper@1.29.1
+  - @zag-js/rect-utils@1.29.1
+
 ## 1.29.0
 
 ### Patch Changes

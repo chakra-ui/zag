@@ -11,7 +11,7 @@ import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import { toPx } from "@zag-js/utils"
 import { parts } from "./navigation-menu.anatomy"
 import * as dom from "./navigation-menu.dom"
-import type { ItemProps, NavigationMenuApi, NavigationMenuService } from "./navigation-menu.types"
+import type { ItemProps, ItemState, NavigationMenuApi, NavigationMenuService } from "./navigation-menu.types"
 
 export function connect<T extends PropTypes>(
   service: NavigationMenuService,
@@ -31,7 +31,7 @@ export function connect<T extends PropTypes>(
   const isViewportRendered = context.get("isViewportRendered")
   const preventTransition = value && !previousValue
 
-  function getItemState(props: ItemProps) {
+  function getItemState(props: ItemProps): ItemState {
     const selected = value === props.value
     const wasSelected = !value && previousValue === props.value
     return {
@@ -56,6 +56,9 @@ export function connect<T extends PropTypes>(
     },
     setValue(value) {
       send({ type: "VALUE.SET", value })
+    },
+    reposition() {
+      send({ type: "VIEWPORT.POSITION" })
     },
 
     getRootProps() {
@@ -84,6 +87,7 @@ export function connect<T extends PropTypes>(
         id: dom.getListId(scope),
         dir: prop("dir"),
         "data-orientation": prop("orientation"),
+        style: { position: "relative" },
       })
     },
 
@@ -114,16 +118,6 @@ export function connect<T extends PropTypes>(
               break
           }
         },
-      })
-    },
-
-    getIndicatorTrackProps() {
-      return normalize.element({
-        ...parts.indicatorTrack.attrs,
-        id: dom.getIndicatorTrackId(scope),
-        dir: prop("dir"),
-        "data-orientation": prop("orientation"),
-        style: { position: "relative" },
       })
     },
 
@@ -256,6 +250,7 @@ export function connect<T extends PropTypes>(
     },
 
     getLinkProps(props) {
+      const { closeOnClick = true } = props
       return normalize.element({
         ...parts.link.attrs,
         dir: prop("dir"),
@@ -278,7 +273,7 @@ export function connect<T extends PropTypes>(
 
           target.dispatchEvent(linkSelectEvent)
 
-          if (!linkSelectEvent.defaultPrevented && !event.metaKey) {
+          if (closeOnClick && !linkSelectEvent.defaultPrevented && !event.metaKey) {
             send({ type: "CLOSE" })
           }
         },
@@ -418,6 +413,21 @@ export function connect<T extends PropTypes>(
           if (event.pointerType !== "mouse") return
           send({ type: "CONTENT.POINTERLEAVE" })
         },
+      })
+    },
+
+    getItemState,
+
+    getItemIndicatorProps(props) {
+      const itemState = getItemState(props)
+      return normalize.element({
+        ...parts.itemIndicator.attrs,
+        "aria-hidden": true,
+        dir: prop("dir"),
+        hidden: !itemState.selected,
+        "data-state": itemState.selected ? "open" : "closed",
+        "data-orientation": prop("orientation"),
+        "data-value": props.value,
       })
     },
   }

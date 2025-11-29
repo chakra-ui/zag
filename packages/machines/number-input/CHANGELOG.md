@@ -1,5 +1,31 @@
 # @zag-js/number-input
 
+## 1.30.0
+
+### Patch Changes
+
+- [`da6b295`](https://github.com/chakra-ui/zag/commit/da6b295e6edb3e692ef1622ebc770a4e151d7dc3) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Improve controlled usage by ensuring input element stays synced
+  with controlled value
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.30.0
+  - @zag-js/core@1.30.0
+  - @zag-js/types@1.30.0
+  - @zag-js/utils@1.30.0
+  - @zag-js/dom-query@1.30.0
+
+## 1.29.1
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.29.1
+  - @zag-js/core@1.29.1
+  - @zag-js/types@1.29.1
+  - @zag-js/utils@1.29.1
+  - @zag-js/dom-query@1.29.1
+
 ## 1.29.0
 
 ### Patch Changes

@@ -30,8 +30,7 @@
     <button>Logo</button>
 
     <div {...api.getRootProps()}>
-      <div {...api.getIndicatorTrackProps()}>
-        <div {...api.getListProps()}>
+      <div {...api.getListProps()}>
           <div {...api.getItemProps({ value: "products" })}>
             <button {...api.getTriggerProps({ value: "products" })}>
               Products
@@ -100,7 +99,6 @@
             <div {...api.getArrowProps()}></div>
           </Presence>
         </div>
-      </div>
 
       <div {...api.getViewportPositionerProps()}>
         <Presence {...api.getViewportProps()}>

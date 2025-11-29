@@ -620,7 +620,8 @@
       "data-scope": "date-picker",
       "data-part": "input",
       "data-index": "The index of the item",
-      "data-state": "\"open\" | \"closed\""
+      "data-state": "\"open\" | \"closed\"",
+      "data-invalid": "Present when invalid"
     }
   },
   "dialog": {
@@ -1035,11 +1036,6 @@
       "data-orientation": "The orientation of the item",
       "data-disabled": "Present when disabled"
     },
-    "IndicatorTrack": {
-      "data-scope": "navigation-menu",
-      "data-part": "indicator-track",
-      "data-orientation": "The orientation of the indicatortrack"
-    },
     "Indicator": {
       "data-scope": "navigation-menu",
       "data-part": "indicator",
@@ -1090,6 +1086,13 @@
       "data-state": "\"open\" | \"closed\"",
       "data-orientation": "The orientation of the viewport",
       "data-align": ""
+    },
+    "ItemIndicator": {
+      "data-scope": "navigation-menu",
+      "data-part": "item-indicator",
+      "data-state": "\"open\" | \"closed\"",
+      "data-orientation": "The orientation of the item",
+      "data-value": "The value of the item"
     }
   },
   "number-input": {
@@ -1600,12 +1603,14 @@
     "Root": {
       "data-scope": "splitter",
       "data-part": "root",
-      "data-orientation": "The orientation of the splitter"
+      "data-orientation": "The orientation of the splitter",
+      "data-dragging": "Present when in the dragging state"
     },
     "Panel": {
       "data-scope": "splitter",
       "data-part": "panel",
       "data-orientation": "The orientation of the panel",
+      "data-dragging": "Present when in the dragging state",
       "data-id": "",
       "data-index": "The index of the item"
     },
@@ -1615,6 +1620,7 @@
       "data-id": "",
       "data-orientation": "The orientation of the resizetrigger",
       "data-focus": "Present when focused",
+      "data-dragging": "Present when in the dragging state",
       "data-disabled": "Present when disabled"
     }
   },

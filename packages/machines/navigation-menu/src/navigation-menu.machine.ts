@@ -183,13 +183,12 @@ export const machine = createMachine({
       resetValueWithDelay({ event, refs }) {
         clearOpenTimeout(refs, event.value)
       },
-      setValueWithDelay({ event, prop, context, scope, refs }) {
+      setValueWithDelay({ event, prop, context, refs }) {
         // Skip delay if the menu is already open (within grace period)
         const shouldSkipDelay = context.get("value") !== ""
 
         const openTimeoutId = window.setTimeout(
           () => {
-            dom.getTriggerEl(scope, event.value)?.focus({ preventScroll: true })
             setTimeout(() => {
               context.set("previousValue", context.get("value"))
               context.set("value", event.value)
@@ -308,8 +307,8 @@ export const machine = createMachine({
           context.set("triggerRect", rect)
         }
 
-        const indicatorTrackEl = dom.getIndicatorTrackEl(scope)
-        const triggerResizeObserver = dom.trackResizeObserver([node, indicatorTrackEl], exec)
+        const listEl = dom.getListEl(scope)
+        const triggerResizeObserver = dom.trackResizeObserver([node, listEl], exec)
         refs.set("triggerResizeObserverCleanup", triggerResizeObserver)
       },
       syncMotionAttribute({ context, scope }) {
@@ -367,24 +366,28 @@ export const machine = createMachine({
         context.set("isViewportRendered", !!dom.getViewportEl(scope))
       },
 
-      setViewportPosition: ({ context, scope }) => {
+      setViewportPosition({ context, scope }) {
         const triggerNode = context.get("triggerNode")
         const contentNode = context.get("contentNode")
-        const rootNavigationMenu = dom.getRootEl(scope)
+
+        const rootEl = dom.getRootEl(scope)
+        const doc = scope.getDoc()
 
         const viewportEl = dom.getViewportEl(scope)
         const align = viewportEl?.dataset.align || "center"
 
-        if (contentNode && triggerNode && rootNavigationMenu) {
-          const bodyWidth = document.documentElement.offsetWidth
-          const bodyHeight = document.documentElement.offsetHeight
-          const rootRect = rootNavigationMenu.getBoundingClientRect()
-          const rect = triggerNode.getBoundingClientRect()
+        if (contentNode && triggerNode && rootEl) {
+          const bodyWidth = doc.documentElement.offsetWidth
+          const bodyHeight = doc.documentElement.offsetHeight
+
+          const rootRect = rootEl.getBoundingClientRect()
+          const triggerRect = triggerNode.getBoundingClientRect()
+
           const { offsetWidth, offsetHeight } = contentNode
 
           // Find the beginning of the position of the menu item
-          const startPositionLeft = rect.left - rootRect.left
-          const startPositionTop = rect.top - rootRect.top
+          const startPositionLeft = triggerRect.left - rootRect.left
+          const startPositionTop = triggerRect.top - rootRect.top
 
           // Aligning to specified alignment
           let x = null
@@ -395,13 +398,13 @@ export const machine = createMachine({
               y = startPositionTop
               break
             case "end":
-              x = startPositionLeft - offsetWidth + rect.width
-              y = startPositionTop - offsetHeight + rect.height
+              x = startPositionLeft - offsetWidth + triggerRect.width
+              y = startPositionTop - offsetHeight + triggerRect.height
               break
             default:
               // center
-              x = startPositionLeft - offsetWidth / 2 + rect.width / 2
-              y = startPositionTop - offsetHeight / 2 + rect.height / 2
+              x = startPositionLeft - offsetWidth / 2 + triggerRect.width / 2
+              y = startPositionTop - offsetHeight / 2 + triggerRect.height / 2
           }
 
           const screenOffset = 10

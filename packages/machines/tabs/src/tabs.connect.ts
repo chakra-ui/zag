@@ -192,12 +192,13 @@ export function connect<T extends PropTypes>(service: Service<TabsSchema>, norma
 
     getIndicatorProps() {
       const rect = context.get("indicatorRect")
+      const rectIsEmpty = rect == null || (rect.width === 0 && rect.height === 0 && rect.x === 0 && rect.y === 0)
       return normalize.element({
         id: dom.getIndicatorId(scope),
         ...parts.indicator.attrs,
         dir: prop("dir"),
         "data-orientation": prop("orientation"),
-        hidden: rect == null,
+        hidden: rectIsEmpty,
         style: {
           "--transition-property": "left, right, top, bottom, width, height",
           "--left": toPx(rect?.x),

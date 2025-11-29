@@ -45,45 +45,43 @@ export default function Page() {
         >
           <button>Logo</button>
           <div {...api.getRootProps()}>
-            <div {...api.getIndicatorTrackProps()}>
-              <div {...api.getListProps()}>
-                <div {...api.getItemProps({ value: "products" })}>
-                  <button {...api.getTriggerProps({ value: "products" })}>
-                    Products
-                    <ChevronDown />
-                  </button>
-                  <span {...api.getTriggerProxyProps({ value: "products" })} />
-                  <span {...api.getViewportProxyProps({ value: "products" })} />
-                </div>
-
-                <div {...api.getItemProps({ value: "company" })}>
-                  <button {...api.getTriggerProps({ value: "company" })}>
-                    Company
-                    <ChevronDown />
-                  </button>
-                  <span {...api.getTriggerProxyProps({ value: "company" })} />
-                  <span {...api.getViewportProxyProps({ value: "company" })} />
-                </div>
-
-                <div {...api.getItemProps({ value: "developers" })}>
-                  <button {...api.getTriggerProps({ value: "developers" })}>
-                    Developers
-                    <ChevronDown />
-                  </button>
-                  <span {...api.getTriggerProxyProps({ value: "developers" })} />
-                  <span {...api.getViewportProxyProps({ value: "developers" })} />
-                </div>
-
-                <div {...api.getItemProps({ value: "pricing" })}>
-                  <a href="#" {...api.getLinkProps({ value: "pricing" })}>
-                    Pricing
-                  </a>
-                </div>
-
-                <Presence {...api.getIndicatorProps()}>
-                  <div {...api.getArrowProps()} />
-                </Presence>
+            <div {...api.getListProps()}>
+              <div {...api.getItemProps({ value: "products" })}>
+                <button {...api.getTriggerProps({ value: "products" })}>
+                  Products
+                  <ChevronDown />
+                </button>
+                <span {...api.getTriggerProxyProps({ value: "products" })} />
+                <span {...api.getViewportProxyProps({ value: "products" })} />
               </div>
+
+              <div {...api.getItemProps({ value: "company" })}>
+                <button {...api.getTriggerProps({ value: "company" })}>
+                  Company
+                  <ChevronDown />
+                </button>
+                <span {...api.getTriggerProxyProps({ value: "company" })} />
+                <span {...api.getViewportProxyProps({ value: "company" })} />
+              </div>
+
+              <div {...api.getItemProps({ value: "developers" })}>
+                <button {...api.getTriggerProps({ value: "developers" })}>
+                  Developers
+                  <ChevronDown />
+                </button>
+                <span {...api.getTriggerProxyProps({ value: "developers" })} />
+                <span {...api.getViewportProxyProps({ value: "developers" })} />
+              </div>
+
+              <div {...api.getItemProps({ value: "pricing" })}>
+                <a href="#" {...api.getLinkProps({ value: "pricing" })}>
+                  Pricing
+                </a>
+              </div>
+
+              <Presence {...api.getIndicatorProps()}>
+                <div {...api.getArrowProps()} />
+              </Presence>
             </div>
 
             <div {...api.getViewportPositionerProps()}>

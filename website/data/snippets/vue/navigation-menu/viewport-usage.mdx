@@ -1,0 +1,55 @@
+```html
+<script setup lang="ts">
+import * as navigationMenu from "@zag-js/navigation-menu"
+import { useMachine, normalizeProps } from "@zag-js/vue"
+import { computed } from "vue"
+
+const service = useMachine(navigationMenu.machine, { id: "nav" })
+const api = computed(() => navigationMenu.connect(service, normalizeProps))
+</script>
+
+<template>
+  <nav v-bind="api.getRootProps()">
+    <div v-bind="api.getIndicatorTrackProps()">
+      <ul v-bind="api.getListProps()">
+        <!-- Item with trigger -->
+        <li v-bind="api.getItemProps({ value: 'products' })">
+          <button v-bind="api.getTriggerProps({ value: 'products' })">
+            Products
+          </button>
+          <!-- Focus management proxies -->
+          <span v-bind="api.getTriggerProxyProps({ value: 'products' })" />
+          <span v-bind="api.getViewportProxyProps({ value: 'products' })" />
+        </li>
+
+        <!-- Simple link -->
+        <li v-bind="api.getItemProps({ value: 'pricing' })">
+          <a v-bind="api.getLinkProps({ value: 'pricing' })" href="/pricing">
+            Pricing
+          </a>
+        </li>
+
+        <!-- Indicator -->
+        <div v-bind="api.getIndicatorProps()">
+          <div v-bind="api.getArrowProps()" />
+        </div>
+      </ul>
+    </div>
+
+    <!-- Shared viewport for all content -->
+    <div v-bind="api.getViewportPositionerProps()">
+      <div v-bind="api.getViewportProps()">
+        <!-- Content for products -->
+        <div v-bind="api.getContentProps({ value: 'products' })">
+          <a v-bind="api.getLinkProps({ value: 'products' })" href="/analytics">
+            Analytics
+          </a>
+          <a v-bind="api.getLinkProps({ value: 'products' })" href="/marketing">
+            Marketing
+          </a>
+        </div>
+      </div>
+    </div>
+  </nav>
+</template>
+```

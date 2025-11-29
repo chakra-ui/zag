@@ -101,7 +101,7 @@ export const machine = createMachine({
   },
 
   watch({ track, action, context, computed, prop }) {
-    track([() => context.get("value"), () => prop("locale")], () => {
+    track([() => context.get("value"), () => prop("locale"), () => JSON.stringify(prop("formatOptions"))], () => {
       action(["syncInputElement"])
     })
 
@@ -438,8 +438,9 @@ export const machine = createMachine({
           restoreCursor(inputEl, sel, scope)
         })
       },
-      setFormattedValue({ context, computed }) {
+      setFormattedValue({ context, computed, action }) {
         context.set("value", computed("formattedValue"))
+        action(["syncInputElement"])
       },
       setCursorPoint({ context, event }) {
         context.set("scrubberCursorPoint", event.point)

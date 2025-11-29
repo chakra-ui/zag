@@ -15,6 +15,7 @@ import { FileUpload } from "./file-upload"
 import { HoverCard } from "./hover-card"
 import { ImageCropper } from "./image-cropper"
 import { Menu } from "./menu"
+import { NavigationMenu } from "./navigation-menu"
 import { NestedMenu } from "./nested-menu"
 import { NumberInput } from "./number-input"
 import { Pagination } from "./pagination"
@@ -532,6 +533,20 @@ const components = {
         },
         speed: 100,
         pauseOnInteraction: false,
+      }}
+    />
+  ),
+  NavigationMenu: () => (
+    <Playground
+      name="navigation-menu"
+      component={NavigationMenu}
+      defaultProps={{
+        openDelay: 200,
+        closeDelay: 300,
+        orientation: {
+          default: "horizontal",
+          options: ["horizontal", "vertical"],
+        },
       }}
     />
   ),
