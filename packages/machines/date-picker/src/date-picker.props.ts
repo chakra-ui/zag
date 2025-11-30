@@ -30,6 +30,7 @@ export const props = createProps<UserDefinedContext>()([
   "numOfMonths",
   "onFocusChange",
   "onOpenChange",
+  "onPageChange",
   "onValueChange",
   "onViewChange",
   "open",

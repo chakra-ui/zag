@@ -105,21 +105,21 @@ const fetchMachine = createMachine({
     }],
     "GOTO.NEXT": [{
       cond: "isYearView",
-      actions: ["focusNextDecade", "announceVisibleRange"]
+      actions: ["focusNextDecade", "announceVisibleRange", "invokeOnPageChange"]
     }, {
       cond: "isMonthView",
-      actions: ["focusNextYear", "announceVisibleRange"]
+      actions: ["focusNextYear", "announceVisibleRange", "invokeOnPageChange"]
     }, {
-      actions: ["focusNextPage"]
+      actions: ["focusNextPage", "invokeOnPageChange"]
     }],
     "GOTO.PREV": [{
       cond: "isYearView",
-      actions: ["focusPreviousDecade", "announceVisibleRange"]
+      actions: ["focusPreviousDecade", "announceVisibleRange", "invokeOnPageChange"]
     }, {
       cond: "isMonthView",
-      actions: ["focusPreviousYear", "announceVisibleRange"]
+      actions: ["focusPreviousYear", "announceVisibleRange", "invokeOnPageChange"]
     }, {
-      actions: ["focusPreviousPage"]
+      actions: ["focusPreviousPage", "invokeOnPageChange"]
     }]
   },
   on: {

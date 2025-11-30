@@ -191,27 +191,27 @@ export function machine(userContext: UserDefinedContext) {
         "GOTO.NEXT": [
           {
             guard: "isYearView",
-            actions: ["focusNextDecade", "announceVisibleRange"],
+            actions: ["focusNextDecade", "announceVisibleRange", "invokeOnPageChange"],
           },
           {
             guard: "isMonthView",
-            actions: ["focusNextYear", "announceVisibleRange"],
+            actions: ["focusNextYear", "announceVisibleRange", "invokeOnPageChange"],
           },
           {
-            actions: ["focusNextPage"],
+            actions: ["focusNextPage", "invokeOnPageChange"],
           },
         ],
         "GOTO.PREV": [
           {
             guard: "isYearView",
-            actions: ["focusPreviousDecade", "announceVisibleRange"],
+            actions: ["focusPreviousDecade", "announceVisibleRange", "invokeOnPageChange"],
           },
           {
             guard: "isMonthView",
-            actions: ["focusPreviousYear", "announceVisibleRange"],
+            actions: ["focusPreviousYear", "announceVisibleRange", "invokeOnPageChange"],
           },
           {
-            actions: ["focusPreviousPage"],
+            actions: ["focusPreviousPage", "invokeOnPageChange"],
           },
         ],
       },
@@ -933,6 +933,14 @@ export function machine(userContext: UserDefinedContext) {
         },
         invokeOnClose(ctx) {
           ctx.onOpenChange?.({ open: false })
+        },
+        invokeOnPageChange(ctx, evt) {
+          const direction = evt.type === "GOTO.NEXT" ? "next" : "prev"
+          ctx.onPageChange?.({
+            direction,
+            view: ctx.view,
+            visibleRange: ctx.visibleRange,
+          })
         },
         toggleVisibility(ctx, evt, { send }) {
           send({ type: ctx.open ? "CONTROLLED.OPEN" : "CONTROLLED.CLOSE", previousEvent: evt })
