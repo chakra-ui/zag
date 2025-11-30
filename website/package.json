@@ -8,6 +8,7 @@
     "dev": "next dev",
     "start": "next start",
     "lint": "eslint .",
+    "typecheck": "tsc --noEmit",
     "prepare": "panda codegen",
     "gen:snippet": "plop snippet",
     "gen:component": "plop component",
