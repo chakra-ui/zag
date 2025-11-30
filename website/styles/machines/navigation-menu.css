@@ -103,7 +103,7 @@
   [data-scope="navigation-menu"][data-part="trigger"],
   [data-scope="navigation-menu"][data-part="item"] > a {
     padding: 10px 16px;
-    font-weight: bold;
+    font-weight: 500;
     display: flex;
     align-items: center;
     border: 0;
@@ -248,6 +248,7 @@
     height: var(--arrow-size);
     background-color: var(--colors-bg-subtle);
     rotate: 45deg;
+    filter: drop-shadow(0 4px 6px #00000026);
 
     &[data-orientation="horizontal"] {
       top: 4px;

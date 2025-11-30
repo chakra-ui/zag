@@ -2,6 +2,7 @@ import { normalizeProps, useMachine } from "@zag-js/react"
 import * as navigationMenu from "@zag-js/navigation-menu"
 import { useId } from "react"
 import { BiChevronDown } from "react-icons/bi"
+import { Presence } from "../components/presence"
 
 const solutionLinks = [
   {
@@ -52,13 +53,13 @@ export function NavigationMenu(props: NavigationMenuProps) {
   return (
     <nav className="navigation-menu" {...api.getRootProps()}>
       <div {...api.getListProps()}>
-        <div {...api.getItemProps({ value: "solutions" })}>
-          <button {...api.getTriggerProps({ value: "solutions" })}>
-            Solutions
+        <div {...api.getItemProps({ value: "products" })}>
+          <button {...api.getTriggerProps({ value: "products" })}>
+            Products
             <BiChevronDown />
           </button>
-          <span {...api.getTriggerProxyProps({ value: "solutions" })} />
-          <span {...api.getViewportProxyProps({ value: "solutions" })} />
+          <span {...api.getTriggerProxyProps({ value: "products" })} />
+          <span {...api.getViewportProxyProps({ value: "products" })} />
         </div>
 
         <div {...api.getItemProps({ value: "learn" })}>
@@ -80,21 +81,21 @@ export function NavigationMenu(props: NavigationMenuProps) {
           </a>
         </div>
 
-        <div {...api.getIndicatorProps()}>
+        <Presence keepMounted {...api.getIndicatorProps()}>
           <div {...api.getArrowProps()} />
-        </div>
+        </Presence>
       </div>
 
       <div {...api.getViewportPositionerProps()}>
-        <div {...api.getViewportProps()}>
-          <div {...api.getContentProps({ value: "solutions" })}>
+        <Presence keepMounted {...api.getViewportProps()}>
+          <Presence keepMounted {...api.getContentProps({ value: "products" })}>
             <ul className="grid-link-list">
               {solutionLinks.map((item) => (
                 <li key={item.title}>
                   <a
                     href={item.href}
                     className="link-card"
-                    {...api.getLinkProps({ value: "solutions" })}
+                    {...api.getLinkProps({ value: "products" })}
                   >
                     <h3>{item.title}</h3>
                     <p>{item.description}</p>
@@ -102,9 +103,9 @@ export function NavigationMenu(props: NavigationMenuProps) {
                 </li>
               ))}
             </ul>
-          </div>
+          </Presence>
 
-          <div {...api.getContentProps({ value: "learn" })}>
+          <Presence keepMounted {...api.getContentProps({ value: "learn" })}>
             <ul className="flex-link-list">
               {learnLinks.map((item) => (
                 <li key={item.title}>
@@ -119,8 +120,8 @@ export function NavigationMenu(props: NavigationMenuProps) {
                 </li>
               ))}
             </ul>
-          </div>
-        </div>
+          </Presence>
+        </Presence>
       </div>
     </nav>
   )
