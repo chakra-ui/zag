@@ -96,7 +96,7 @@
     "image-conversion": "2.1.1",
     "lucide-react": "0.548.0",
     "match-sorter": "8.1.0",
-    "next": "16.0.1",
+    "next": "16.0.6",
     "next-cloudinary": "6.17.0",
     "react": "19.2.0",
     "react-dom": "19.2.0",
@@ -106,7 +106,7 @@
     "virtua": "^0.46.4"
   },
   "devDependencies": {
-    "@next/eslint-plugin-next": "16.0.1",
+    "@next/eslint-plugin-next": "16.0.6",
     "@types/form-serialize": "0.7.4",
     "@types/node": "24.9.2",
     "@types/react": "^19",

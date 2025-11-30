@@ -1,7 +1,6 @@
 import { frameworks } from "lib/framework-utils"
 import { formatUrl } from "lib/pagination-utils"
-import type { GetServerSideProps } from "next"
-import sidebar from "sidebar.config"
+import sidebar from "../../sidebar.config"
 
 function formatDocItem(categoryId: string, docItem: any, framework?: string) {
   const href = formatUrl(categoryId, docItem.id, framework)
@@ -35,22 +34,15 @@ function formatCategory(category: any) {
   return `${header}\n${items.join("\n")}`
 }
 
-export const getServerSideProps: GetServerSideProps = async ({ res }) => {
-  res.setHeader("Content-Type", "text/plain")
-
+export function GET() {
   const text = sidebar.docs
     .map((item) => (item.type === "category" ? formatCategory(item) : ""))
     .filter(Boolean)
     .join("\n\n")
 
-  res.write(text)
-  res.end()
-
-  return {
-    props: {},
-  }
-}
-
-export default function LLMsText() {
-  return null
+  return new Response(text, {
+    headers: {
+      "Content-Type": "text/plain",
+    },
+  })
 }

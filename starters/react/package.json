@@ -71,18 +71,18 @@
     "form-serialize": "0.7.2",
     "match-sorter": "8.1.0",
     "lucide-react": "0.548.0",
-    "next": "16.0.1",
+    "next": "16.0.6",
     "react": "19.2.0",
     "react-dom": "19.2.0",
     "react-spinners": "0.17.0"
   },
   "devDependencies": {
-    "@next/eslint-plugin-next": "16.0.1",
+    "@next/eslint-plugin-next": "16.0.6",
     "@types/node": "24.9.2",
     "@types/react": "^19",
     "@types/react-dom": "^19",
-    "eslint": "9.38.0",
-    "eslint-config-next": "16.0.1",
+    "eslint": "9.39.1",
+    "eslint-config-next": "16.0.6",
     "typescript": "5.9.3"
   }
 }

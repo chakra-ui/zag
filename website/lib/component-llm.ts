@@ -1,11 +1,13 @@
 import { components as allComponents, snippets as allSnippets } from ".velite"
-import sidebar from "sidebar.config"
 import apiJson, {
   getAccessibilityDoc,
-  type AccessibilityDocKey,
   getDataAttrDoc,
+  type AccessibilityDocKey,
   type DataAttrDocKey,
 } from "@zag-js/docs"
+import sidebar from "sidebar.config"
+import { getOverviewDoc } from "./contentlayer-utils"
+import { frameworks } from "./framework-utils"
 
 export function transformComponentDoc(itemId: string, framework?: string) {
   const comp = allComponents.find((c) => c.slug === itemId)
@@ -132,6 +134,56 @@ export function getComponentsPerFramework(framework: string) {
       }
       return ""
     })
+    .filter(Boolean)
+    .join("\n\n")
+}
+
+function formatDocItemForFull(
+  categoryId: string,
+  docItem: any,
+  framework?: string,
+) {
+  if (categoryId === "components") {
+    const content = transformComponentDoc(docItem.id, framework)
+    return content
+  }
+
+  const doc = getOverviewDoc(docItem.id)
+  const content = doc?.body.raw
+  return content
+}
+
+function formatCategoryForFull(category: any) {
+  if (category.id === "components") {
+    const itemsPerFramework = Object.entries(frameworks).map(
+      ([framework, { label }]) => {
+        const items = category.items
+          .map((item: any) =>
+            item.type === "doc"
+              ? formatDocItemForFull(category.id, item, framework)
+              : "",
+          )
+          .filter(Boolean)
+        return `\n## ${label}\n\n${items.join("\n")}`
+      },
+    )
+    return itemsPerFramework.join("\n\n")
+  }
+
+  const items = category.items
+    .map((item: any) =>
+      item.type === "doc" ? formatDocItemForFull(category.id, item) : "",
+    )
+    .filter(Boolean)
+
+  return items.join("\n")
+}
+
+export function getFullComponentsText() {
+  return sidebar.docs
+    .map((item) =>
+      item.type === "category" ? formatCategoryForFull(item) : "",
+    )
     .filter(Boolean)
     .join("\n\n")
 }

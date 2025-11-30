@@ -45,9 +45,7 @@ export function getComponentPaths() {
 }
 
 export function getComponentDoc(slug: string): Component | undefined {
-  return components.find(
-    (post) => post.frontmatter.slug === `/components/${slug}`,
-  )
+  return components.find((post) => post.slug === slug)
 }
 
 /* -----------------------------------------------------------------------------
@@ -55,12 +53,12 @@ export function getComponentDoc(slug: string): Component | undefined {
  * -----------------------------------------------------------------------------*/
 
 export function getOverviewPaths() {
-  return overviews.map((doc) => `/overview/${doc.slug}`)
+  return overviews.map((doc) => ({ slug: doc.slug }))
 }
 
 export function getOverviewDoc(_slug: string | string[]): Overview | undefined {
   const slug = Array.isArray(_slug) ? _slug[0] : _slug
-  return overviews.find((post) => post.frontmatter.slug === `/overview/${slug}`)
+  return overviews.find((post) => post.slug === slug)
 }
 
 /* -----------------------------------------------------------------------------
@@ -68,11 +66,12 @@ export function getOverviewDoc(_slug: string | string[]): Overview | undefined {
  * -----------------------------------------------------------------------------*/
 
 export function getGuidePaths() {
-  return guides.map((doc) => `/guides/${doc.slug}`)
+  return guides.map((doc) => ({ slug: doc.slug }))
 }
 
 export function getGuideDoc(slug: string | string[]): Guide | undefined {
-  return guides.find((post) => post.frontmatter.slug === `/guides/${slug}`)
+  const cleanSlug = Array.isArray(slug) ? slug[0] : slug
+  return guides.find((post) => post.slug === cleanSlug)
 }
 
 /* -----------------------------------------------------------------------------
@@ -94,11 +93,10 @@ export function getSnippetDoc(slug: string | string[]): Snippet | undefined {
  * -----------------------------------------------------------------------------*/
 
 export function getUtilityPaths() {
-  return utilities.map((doc) => `/utilities/${doc.slug}`)
+  return utilities.map((doc) => ({ slug: doc.slug }))
 }
 
 export function getUtilityDoc(slug: string | string[]): Utility | undefined {
-  return utilities.find(
-    (utility) => utility.frontmatter.slug === `/utilities/${slug}`,
-  )
+  const cleanSlug = Array.isArray(slug) ? slug[0] : slug
+  return utilities.find((utility) => utility.slug === cleanSlug)
 }

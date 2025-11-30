@@ -3,7 +3,7 @@ import { defineConfig } from "@pandacss/dev"
 export default defineConfig({
   preflight: true,
   include: [
-    "./pages/**/*.{js,jsx,ts,tsx}",
+    "./app/**/*.{js,jsx,ts,tsx}",
     "./components/**/*.{js,jsx,ts,tsx}",
     "./layouts/**/*.{js,jsx,ts,tsx}",
     "./demos/**/*.{js,jsx,ts,tsx}",
@@ -69,8 +69,8 @@ export default defineConfig({
           },
         },
         fonts: {
-          heading: { value: "'Spline Sans', sans-serif" },
-          body: { value: "'Spline Sans', sans-serif" },
+          heading: { value: "var(--font-inter), sans-serif" },
+          body: { value: "var(--font-inter), sans-serif" },
           mono: {
             value:
               "ui-monospace, SFMono-Regular, 'SF Mono', Consolas, 'Liberation Mono', Menlo, monospace",
