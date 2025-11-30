@@ -289,27 +289,27 @@ export const machine = createMachine<DatePickerSchema>({
     "GOTO.NEXT": [
       {
         guard: "isYearView",
-        actions: ["focusNextDecade", "announceVisibleRange"],
+        actions: ["focusNextDecade", "announceVisibleRange", "invokeOnPageChange"],
       },
       {
         guard: "isMonthView",
-        actions: ["focusNextYear", "announceVisibleRange"],
+        actions: ["focusNextYear", "announceVisibleRange", "invokeOnPageChange"],
       },
       {
-        actions: ["focusNextPage"],
+        actions: ["focusNextPage", "invokeOnPageChange"],
       },
     ],
     "GOTO.PREV": [
       {
         guard: "isYearView",
-        actions: ["focusPreviousDecade", "announceVisibleRange"],
+        actions: ["focusPreviousDecade", "announceVisibleRange", "invokeOnPageChange"],
       },
       {
         guard: "isMonthView",
-        actions: ["focusPreviousYear", "announceVisibleRange"],
+        actions: ["focusPreviousYear", "announceVisibleRange", "invokeOnPageChange"],
       },
       {
-        actions: ["focusPreviousPage"],
+        actions: ["focusPreviousPage", "invokeOnPageChange"],
       },
     ],
   },
@@ -1146,6 +1146,14 @@ export const machine = createMachine<DatePickerSchema>({
       invokeOnClose({ prop, context }) {
         if (prop("inline")) return
         prop("onOpenChange")?.({ open: false, value: context.get("value") })
+      },
+      invokeOnPageChange({ event, prop, context, computed }) {
+        const direction = event.type === "GOTO.NEXT" ? "next" : "prev"
+        prop("onPageChange")?.({
+          direction,
+          view: context.get("view"),
+          visibleRange: computed("visibleRange"),
+        })
       },
 
       toggleVisibility({ event, send, prop }) {
