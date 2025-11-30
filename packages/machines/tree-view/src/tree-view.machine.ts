@@ -1,6 +1,7 @@
 import type { TreeNode } from "@zag-js/collection"
+import type { Params } from "@zag-js/core"
 import { createGuards, createMachine } from "@zag-js/core"
-import { getByTypeahead, setElementValue } from "@zag-js/dom-query"
+import { getByTypeahead, raf, setElementValue } from "@zag-js/dom-query"
 import { addOrRemove, diff, first, isArray, isEqual, last, remove, toArray, uniq } from "@zag-js/utils"
 import { collection } from "./tree-view.collection"
 import * as dom from "./tree-view.dom"
@@ -358,25 +359,33 @@ export const machine = createMachine<TreeViewSchema>({
       clearSelected({ context }) {
         context.set("selectedValue", [])
       },
-      focusTreeFirstNode({ prop, scope }) {
+      focusTreeFirstNode(params) {
+        const { prop, scope } = params
         const collection = prop("collection")
         const firstNode = collection.getFirstNode()
         const firstValue = collection.getNodeValue(firstNode)
-        dom.focusNode(scope, firstValue)
+        const scrolled = scrollToNode(params, firstValue)
+        if (scrolled) raf(() => dom.focusNode(scope, firstValue))
+        else dom.focusNode(scope, firstValue)
       },
       focusTreeLastNode(params) {
         const { prop, scope } = params
         const collection = prop("collection")
         const lastNode = collection.getLastNode(undefined, { skip: skipFn(params) })
         const lastValue = collection.getNodeValue(lastNode)
-        dom.focusNode(scope, lastValue)
+        const scrolled = scrollToNode(params, lastValue)
+        if (scrolled) raf(() => dom.focusNode(scope, lastValue))
+        else dom.focusNode(scope, lastValue)
       },
-      focusBranchFirstNode({ event, prop, scope }) {
+      focusBranchFirstNode(params) {
+        const { event, prop, scope } = params
         const collection = prop("collection")
         const branchNode = collection.findNode(event.id)
         const firstNode = collection.getFirstNode(branchNode)
         const firstValue = collection.getNodeValue(firstNode)
-        dom.focusNode(scope, firstValue)
+        const scrolled = scrollToNode(params, firstValue)
+        if (scrolled) raf(() => dom.focusNode(scope, firstValue))
+        else dom.focusNode(scope, firstValue)
       },
       focusTreeNextNode(params) {
         const { event, prop, scope } = params
@@ -384,7 +393,9 @@ export const machine = createMachine<TreeViewSchema>({
         const nextNode = collection.getNextNode(event.id, { skip: skipFn(params) })
         if (!nextNode) return
         const nextValue = collection.getNodeValue(nextNode)
-        dom.focusNode(scope, nextValue)
+        const scrolled = scrollToNode(params, nextValue)
+        if (scrolled) raf(() => dom.focusNode(scope, nextValue))
+        else dom.focusNode(scope, nextValue)
       },
       focusTreePrevNode(params) {
         const { event, prop, scope } = params
@@ -392,13 +403,19 @@ export const machine = createMachine<TreeViewSchema>({
         const prevNode = collection.getPreviousNode(event.id, { skip: skipFn(params) })
         if (!prevNode) return
         const prevValue = collection.getNodeValue(prevNode)
-        dom.focusNode(scope, prevValue)
+        const scrolled = scrollToNode(params, prevValue)
+        if (scrolled) raf(() => dom.focusNode(scope, prevValue))
+        else dom.focusNode(scope, prevValue)
       },
-      focusBranchNode({ event, prop, scope }) {
+      focusBranchNode(params) {
+        const { event, prop, scope } = params
         const collection = prop("collection")
         const parentNode = collection.getParentNode(event.id)
         const parentValue = parentNode ? collection.getNodeValue(parentNode) : undefined
-        dom.focusNode(scope, parentValue)
+        if (!parentValue) return
+        const scrolled = scrollToNode(params, parentValue)
+        if (scrolled) raf(() => dom.focusNode(scope, parentValue))
+        else dom.focusNode(scope, parentValue)
       },
       selectAllNodes({ context, prop }) {
         context.set("selectedValue", prop("collection").getValues())
@@ -416,7 +433,10 @@ export const machine = createMachine<TreeViewSchema>({
           key: event.key,
         })
 
-        dom.focusNode(scope, node?.id)
+        if (!node?.id) return
+        const scrolled = scrollToNode(params, node.id)
+        if (scrolled) raf(() => dom.focusNode(scope, node.id))
+        else dom.focusNode(scope, node.id)
       },
       toggleNodeSelection({ context, event }) {
         const selectedValue = addOrRemove(context.get("selectedValue"), event.id)
@@ -641,3 +661,26 @@ export const machine = createMachine<TreeViewSchema>({
     },
   },
 })
+
+function scrollToNode(params: Params<TreeViewSchema>, value: string): boolean {
+  const { prop, scope, computed } = params
+  const scrollToIndexFn = prop("scrollToIndexFn")
+  if (!scrollToIndexFn) return false
+
+  const collection = prop("collection")
+  const visibleNodes = computed("visibleNodes")
+
+  for (let i = 0; i < visibleNodes.length; i++) {
+    const { node, indexPath } = visibleNodes[i]
+    if (collection.getNodeValue(node) !== value) continue
+    scrollToIndexFn({
+      index: i,
+      node,
+      indexPath,
+      getElement: () => scope.getById(dom.getNodeId(scope, value)),
+    })
+    return true
+  }
+
+  return false
+}

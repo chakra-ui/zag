@@ -22,8 +22,10 @@ export type {
   NodeProps,
   NodeState,
   NodeWithError,
+  ScrollToIndexDetails,
   SelectionChangeDetails,
   TreeLoadingStatus,
   TreeLoadingStatusMap,
   TreeNode,
+  VisibleNode,
 } from "./tree-view.types"
