@@ -1,5 +1,6 @@
 "use client"
 
+import { CopyPageWidget } from "components/copy-page-widget"
 import { FrameworkSelect } from "components/framework-select"
 import { MdxFooter } from "components/mdx-footer"
 import { EditPageLink } from "components/mdx/edit-page-link"
@@ -8,7 +9,8 @@ import { Sidebar } from "components/sidebar"
 import { SkipNavContent, SkipNavLink } from "components/skip-nav"
 import { TableOfContents } from "components/toc"
 import { TopNavigation } from "components/top-navigation"
-import { Box, Spacer, styled } from "styled-system/jsx"
+import { usePathname } from "next/navigation"
+import { Box, Flex, Spacer, styled } from "styled-system/jsx"
 
 type DocsLayoutProps = {
   children: React.ReactNode
@@ -24,6 +26,7 @@ export default function DocsLayout(props: DocsLayoutProps) {
   const { children, doc, toc } = props
   const tableOfContent = toc?.data ?? doc.frontmatter?.toc ?? []
   const hideToc = tableOfContent.length < 2
+  const pathname = usePathname()
 
   return (
     <Box>
@@ -65,6 +68,20 @@ export default function DocsLayout(props: DocsLayoutProps) {
             pr={{ xl: "16" }}
           >
             <Box mr={{ xl: "15.5rem" }}>
+              {doc?.title && (
+                <Flex alignItems="center" gap="4" mb="6">
+                  <styled.h1 textStyle="display.lg" maxW="85ch" flex="1">
+                    {doc.title}
+                  </styled.h1>
+                  {doc?.body?.raw && (
+                    <CopyPageWidget
+                      slug={pathname}
+                      content={doc.body.raw}
+                      title={doc.title}
+                    />
+                  )}
+                </Flex>
+              )}
               {children}
               {doc?.editUrl && (
                 <EditPageLink href={doc.editUrl}>
