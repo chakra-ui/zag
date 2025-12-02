@@ -30,7 +30,7 @@ export const machine = createMachine<PresenceSchema>({
     }
   },
 
-  exit: ["clearInitial", "cleanupNode"],
+  exit: ["cleanupNode"],
 
   watch({ track, prop, send }) {
     track([() => prop("present")], () => {
@@ -89,10 +89,6 @@ export const machine = createMachine<PresenceSchema>({
         queueMicrotask(() => {
           context.set("initial", true)
         })
-      },
-
-      clearInitial: ({ context }) => {
-        context.set("initial", false)
       },
 
       invokeOnExitComplete: ({ prop, refs }) => {

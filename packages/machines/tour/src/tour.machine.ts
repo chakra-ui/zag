@@ -561,7 +561,7 @@ class StepManager {
    * Use when completely tearing down the tour or transitioning between steps.
    */
   cleanupAll() {
-    const { refs, context } = this.params
+    const { refs } = this.params
 
     refs.get("_targetCleanup")?.()
     refs.set("_targetCleanup", undefined)
@@ -569,9 +569,6 @@ class StepManager {
 
     refs.get("_effectCleanup")?.()
     refs.set("_effectCleanup", undefined)
-
-    // Clear resolved target to prevent stale DOM references
-    context.set("resolvedTarget", null)
   }
 
   /**
