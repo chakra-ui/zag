@@ -384,6 +384,35 @@ const siblingCount2Tests = [
   },
 ]
 
+// Tests for boundaryCount=2 to ensure itemCount calculation is correct
+// totalPageNumbers = siblingCount*2 + 3 + boundaryCount*2 = 1*2 + 3 + 2*2 = 9
+const boundaryCount2Tests = [
+  // Right ellipsis only (page near start)
+  {
+    siblingCount: 1,
+    boundaryCount: 2,
+    pages: [1, 2, 3],
+    totalPages: 15,
+    expected: [1, 2, 3, 4, 5, 6, "ellipsis", 14, 15],
+  },
+  // Left ellipsis only (page near end)
+  {
+    siblingCount: 1,
+    boundaryCount: 2,
+    pages: [13, 14, 15],
+    totalPages: 15,
+    expected: [1, 2, "ellipsis", 10, 11, 12, 13, 14, 15],
+  },
+  // Both ellipsis (page in middle)
+  {
+    siblingCount: 1,
+    boundaryCount: 2,
+    pages: [8],
+    totalPages: 15,
+    expected: [1, 2, "ellipsis", 7, 8, 9, "ellipsis", 14, 15],
+  },
+]
+
 export const getRangeTestCases: GetRangeTestCase[] = [
   {
     siblingCount: 1,
@@ -394,4 +423,5 @@ export const getRangeTestCases: GetRangeTestCase[] = [
   },
   ...siblingCount1Tests,
   ...siblingCount2Tests,
+  ...boundaryCount2Tests,
 ]

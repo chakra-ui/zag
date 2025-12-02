@@ -41,7 +41,7 @@ export const getRange = (ctx: PageContext) => {
     return range(firstPageIndex, lastPageIndex)
   }
 
-  const itemCount = totalPageNumbers - 2
+  const itemCount = totalPageNumbers - 1 - boundaryCount
 
   const showLeftEllipsis =
     leftSiblingIndex > firstPageIndex + boundaryCount + 1 &&
