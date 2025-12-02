@@ -84,6 +84,12 @@ export function connect<P extends PropTypes>(
           if (event.pointerType === "touch") return
           send({ type: "pointer.move" })
         },
+        onPointerOver(event) {
+          if (event.defaultPrevented) return
+          if (disabled) return
+          if (event.pointerType === "touch") return
+          send({ type: "pointer.move" })
+        },
         onPointerLeave() {
           if (disabled) return
           send({ type: "pointer.leave" })
