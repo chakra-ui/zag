@@ -1,3 +1,4 @@
+import { isNumber } from "@zag-js/utils"
 import type { Pages } from "./pagination.types"
 
 export const range = (start: number, end: number) => {
@@ -7,7 +8,7 @@ export const range = (start: number, end: number) => {
 
 export const transform = (items: (string | number)[]): Pages => {
   return items.map((value) => {
-    if (typeof value === "number") return { type: "page", value }
+    if (isNumber(value)) return { type: "page", value }
     return { type: "ellipsis" }
   })
 }
@@ -18,20 +19,14 @@ export type PageContext = {
   page: number
   totalPages: number
   siblingCount: number
+  boundaryCount: number
 }
 
 export const getRange = (ctx: PageContext) => {
-  const { page, totalPages, siblingCount } = ctx
-  /**
-   * `2 * ctx.siblingCount + 5` explanation:
-   * 2 * ctx.siblingCount for left/right siblings
-   * 5 for 2x left/right ellipsis, 2x first/last page + 1x current page
-   *
-   * For some page counts (e.g. totalPages: 8, siblingCount: 2),
-   * calculated max page is higher than total pages,
-   * so we need to take the minimum of both.
-   */
-  const totalPageNumbers = Math.min(2 * siblingCount + 5, totalPages)
+  const { page, totalPages, siblingCount, boundaryCount = 1 } = ctx
+
+  if (totalPages <= 0) return []
+  if (totalPages === 1) return [1]
 
   const firstPageIndex = 1
   const lastPageIndex = totalPages
@@ -39,28 +34,58 @@ export const getRange = (ctx: PageContext) => {
   const leftSiblingIndex = Math.max(page - siblingCount, firstPageIndex)
   const rightSiblingIndex = Math.min(page + siblingCount, lastPageIndex)
 
-  const showLeftEllipsis = leftSiblingIndex > firstPageIndex + 1
-  const showRightEllipsis = rightSiblingIndex < lastPageIndex - 1
+  // Calculate max displayable pages for consistent UI
+  const totalPageNumbers = Math.min(siblingCount * 2 + 3 + boundaryCount * 2, totalPages)
 
-  const itemCount = totalPageNumbers - 2 // 2 stands for one ellipsis and either first or last page
+  if (totalPages <= totalPageNumbers) {
+    return range(firstPageIndex, lastPageIndex)
+  }
+
+  const itemCount = totalPageNumbers - 2
+
+  const showLeftEllipsis =
+    leftSiblingIndex > firstPageIndex + boundaryCount + 1 &&
+    Math.abs(leftSiblingIndex - firstPageIndex) > boundaryCount + 1
+
+  const showRightEllipsis =
+    rightSiblingIndex < lastPageIndex - boundaryCount - 1 &&
+    Math.abs(lastPageIndex - rightSiblingIndex) > boundaryCount + 1
+
+  let pages: (number | string)[] = []
 
   if (!showLeftEllipsis && showRightEllipsis) {
     const leftRange = range(1, itemCount)
-    return [...leftRange, ELLIPSIS, lastPageIndex]
-  }
-
-  if (showLeftEllipsis && !showRightEllipsis) {
+    pages.push(...leftRange, ELLIPSIS)
+    pages.push(...range(lastPageIndex - boundaryCount + 1, lastPageIndex))
+  } else if (showLeftEllipsis && !showRightEllipsis) {
+    pages.push(...range(firstPageIndex, firstPageIndex + boundaryCount - 1))
+    pages.push(ELLIPSIS)
     const rightRange = range(lastPageIndex - itemCount + 1, lastPageIndex)
-    return [firstPageIndex, ELLIPSIS, ...rightRange]
-  }
-
-  if (showLeftEllipsis && showRightEllipsis) {
+    pages.push(...rightRange)
+  } else if (showLeftEllipsis && showRightEllipsis) {
+    pages.push(...range(firstPageIndex, firstPageIndex + boundaryCount - 1))
+    pages.push(ELLIPSIS)
     const middleRange = range(leftSiblingIndex, rightSiblingIndex)
-    return [firstPageIndex, ELLIPSIS, ...middleRange, ELLIPSIS, lastPageIndex]
+    pages.push(...middleRange)
+    pages.push(ELLIPSIS)
+    pages.push(...range(lastPageIndex - boundaryCount + 1, lastPageIndex))
+  } else {
+    pages.push(...range(firstPageIndex, lastPageIndex))
   }
 
-  const fullRange = range(firstPageIndex, lastPageIndex)
-  return fullRange
+  // Replace ellipsis that would only hide 1 page
+  for (let i = 0; i < pages.length; i++) {
+    if (pages[i] === ELLIPSIS) {
+      const prevPage = isNumber(pages[i - 1]) ? (pages[i - 1] as number) : 0
+      const nextPage = isNumber(pages[i + 1]) ? (pages[i + 1] as number) : totalPages + 1
+
+      if (nextPage - prevPage === 2) {
+        pages[i] = prevPage + 1
+      }
+    }
+  }
+
+  return pages
 }
 
 export const getTransformedRange = (ctx: PageContext) => transform(getRange(ctx))

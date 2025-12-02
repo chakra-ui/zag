@@ -6,14 +6,17 @@ export const machine = createMachine<PaginationSchema>({
     return {
       defaultPageSize: 10,
       siblingCount: 1,
+      boundaryCount: 1,
       defaultPage: 1,
       type: "button",
       count: 1,
       ...props,
       translations: {
         rootLabel: "pagination",
+        firstTriggerLabel: "first page",
         prevTriggerLabel: "previous page",
         nextTriggerLabel: "next page",
+        lastTriggerLabel: "last page",
         itemLabel({ page, totalPages }) {
           const isLastPage = totalPages > 1 && page === totalPages
           return `${isLastPage ? "last page, " : ""}page ${page}`
