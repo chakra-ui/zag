@@ -183,20 +183,20 @@ export const machine = createMachine({
           {
             guard: and("clampValueOnBlur", not("isInRange")),
             target: "idle",
-            actions: ["setClampedValue", "clearHint", "invokeOnBlur"],
+            actions: ["setClampedValue", "clearHint", "invokeOnBlur", "invokeOnValueCommit"],
           },
           {
             guard: not("isInRange"),
             target: "idle",
-            actions: ["setFormattedValue", "clearHint", "invokeOnBlur", "invokeOnInvalid"],
+            actions: ["setFormattedValue", "clearHint", "invokeOnBlur", "invokeOnInvalid", "invokeOnValueCommit"],
           },
           {
             target: "idle",
-            actions: ["setFormattedValue", "clearHint", "invokeOnBlur"],
+            actions: ["setFormattedValue", "clearHint", "invokeOnBlur", "invokeOnValueCommit"],
           },
         ],
         "INPUT.ENTER": {
-          actions: ["setFormattedValue", "clearHint", "invokeOnBlur"],
+          actions: ["setFormattedValue", "clearHint", "invokeOnBlur", "invokeOnValueCommit"],
         },
       },
     },
@@ -425,6 +425,12 @@ export const machine = createMachine({
         const reason = computed("valueAsNumber") > prop("max") ? "rangeOverflow" : "rangeUnderflow"
         prop("onValueInvalid")?.({
           reason,
+          value: computed("formattedValue"),
+          valueAsNumber: computed("valueAsNumber"),
+        })
+      },
+      invokeOnValueCommit({ computed, prop }) {
+        prop("onValueCommit")?.({
           value: computed("formattedValue"),
           valueAsNumber: computed("valueAsNumber"),
         })
