@@ -18,7 +18,7 @@ import {
   isValueAtMin,
   isValueWithinRange,
 } from "@zag-js/utils"
-import { restoreCursor } from "./cursor"
+import { recordCursor, restoreCursor } from "./cursor"
 import * as dom from "./number-input.dom"
 import type { HintValue, NumberInputSchema } from "./number-input.types"
 import { createFormatter, createParser, formatValue, getDefaultStep, parseValue } from "./number-input.utils"
@@ -432,7 +432,9 @@ export const machine = createMachine({
       syncInputElement({ context, event, computed, scope }) {
         const value = event.type.endsWith("CHANGE") ? context.get("value") : computed("formattedValue")
         const inputEl = dom.getInputEl(scope)
-        const sel = event.selection
+        // Record cursor position before sync if not provided in event
+        // This handles external value changes while user is typing
+        const sel = event.selection ?? recordCursor(inputEl, scope)
         raf(() => {
           setElementValue(inputEl, value)
           restoreCursor(inputEl, sel, scope)
