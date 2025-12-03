@@ -151,6 +151,7 @@ export interface ListboxSchema<T extends CollectionItem = CollectionItem> {
   refs: {
     typeahead: TypeaheadState
     focusVisible: boolean
+    inputState: { autoHighlight: boolean; focused: boolean }
   }
   action: string
   guard: string
