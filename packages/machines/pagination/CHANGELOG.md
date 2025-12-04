@@ -1,5 +1,26 @@
 # @zag-js/pagination
 
+## 1.31.0
+
+### Minor Changes
+
+- [`853e344`](https://github.com/chakra-ui/zag/commit/853e3448173397af50a35b0af5a43fb8a0fdc3f5) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - **Pagination**: Add first/last triggers and improve visual balance
+  - Add `getFirstTriggerProps()` and `getLastTriggerProps()` methods for navigating to first/last page
+  - Add `boundaryCount` parameter for controlling boundary pages (start/end)
+  - Fix ellipsis showing when only 1 page gap
+  - Implement balanced pagination algorithm for consistent UI elements
+  - Maintain visual consistency with max 7 elements regardless of total pages
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.31.0
+  - @zag-js/core@1.31.0
+  - @zag-js/types@1.31.0
+  - @zag-js/utils@1.31.0
+  - @zag-js/dom-query@1.31.0
+
 ## 1.30.0
 
 ### Patch Changes

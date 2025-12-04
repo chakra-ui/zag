@@ -1,6 +1,6 @@
 {
   "name": "@zag-js/marquee",
-  "version": "1.30.0",
+  "version": "1.31.0",
   "description": "Core logic for the marquee widget implemented as a state machine",
   "keywords": [
     "js",
