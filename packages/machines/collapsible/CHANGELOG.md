@@ -1,5 +1,21 @@
 # @zag-js/collapsible
 
+## 1.31.0
+
+### Patch Changes
+
+- [`3dbfe4a`](https://github.com/chakra-ui/zag/commit/3dbfe4ab5d2eaa9756f2897c92b9b560da9ef9ae) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix machines setting reactive state in exit actions.
+
+  > **Affected machines:** Presence, Collapsible, and Tour.
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.31.0
+  - @zag-js/core@1.31.0
+  - @zag-js/types@1.31.0
+  - @zag-js/utils@1.31.0
+  - @zag-js/dom-query@1.31.0
+
 ## 1.30.0
 
 ### Patch Changes

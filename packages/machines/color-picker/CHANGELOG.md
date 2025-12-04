@@ -1,5 +1,23 @@
 # @zag-js/color-picker
 
+## 1.31.0
+
+### Patch Changes
+
+- [`2a32c73`](https://github.com/chakra-ui/zag/commit/2a32c731a4f275c324ca17faf41ceb492638c7b2) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - - Add `role="dialog"` to color picker content when not inline to
+  ensure proper `aria-controls` detection
+  - Add `aria-haspopup="dialog"` to color picker trigger when not inline for better accessibility
+- Updated dependencies []:
+  - @zag-js/anatomy@1.31.0
+  - @zag-js/core@1.31.0
+  - @zag-js/types@1.31.0
+  - @zag-js/color-utils@1.31.0
+  - @zag-js/utils@1.31.0
+  - @zag-js/dismissable@1.31.0
+  - @zag-js/dom-query@1.31.0
+  - @zag-js/popper@1.31.0
+
 ## 1.30.0
 
 ### Patch Changes

@@ -1,5 +1,37 @@
 # @zag-js/tree-view
 
+## 1.31.0
+
+### Minor Changes
+
+- [`57478b8`](https://github.com/chakra-ui/zag/commit/57478b87d44e82b3553e131a090d3bc80faacd7c) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - - Added `scrollToIndexFn` prop to enable keyboard navigation in
+  virtualized trees
+  - **[Breaking]:** `getVisibleNodes()` now returns `{ node, indexPath }[]` instead of `node[]`. Returning the index
+    path perhaps the most useful use of this function, hence the change.
+
+  **Migration:**
+
+  ```tsx
+  // Before
+  const nodes = api.getVisibleNodes()
+  nodes.forEach((node) => console.log(node.id))
+
+  // After
+  const visibleNodes = api.getVisibleNodes()
+  visibleNodes.forEach(({ node }) => console.log(node.id))
+  ```
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.31.0
+  - @zag-js/core@1.31.0
+  - @zag-js/types@1.31.0
+  - @zag-js/collection@1.31.0
+  - @zag-js/utils@1.31.0
+  - @zag-js/dom-query@1.31.0
+
 ## 1.30.0
 
 ### Patch Changes
