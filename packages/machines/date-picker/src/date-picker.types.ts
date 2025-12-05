@@ -34,6 +34,12 @@ export interface ViewChangeDetails {
   view: DateView
 }
 
+export interface PageChangeDetails {
+  direction: "next" | "prev"
+  view: DateView
+  visibleRange: { start: DateValue; end: DateValue }
+}
+
 export interface OpenChangeDetails {
   open: boolean
   value: DateValue[]
@@ -189,6 +195,10 @@ export interface DatePickerProps extends DirectionProperty, CommonProperties {
    * Function called when the focused date changes.
    */
   onFocusChange?: ((details: FocusChangeDetails) => void) | undefined
+  /**
+   * Function called when the page changes (next/prev navigation).
+   */
+  onPageChange?: ((details: PageChangeDetails) => void) | undefined
   /**
    * Function called when the view changes.
    */

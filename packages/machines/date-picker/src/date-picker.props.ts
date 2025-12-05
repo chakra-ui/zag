@@ -31,6 +31,7 @@ export const props = createProps<DatePickerProps>()([
   "numOfMonths",
   "onFocusChange",
   "onOpenChange",
+  "onPageChange",
   "onValueChange",
   "onViewChange",
   "open",

@@ -28,6 +28,7 @@ export type {
   LocaleDetails,
   MonthGridProps,
   OpenChangeDetails,
+  PageChangeDetails,
   PositioningOptions,
   PresetTriggerProps,
   SelectionMode,
