@@ -4,6 +4,66 @@ All notable changes to this project will be documented in this file.
 
 > For v0.x changelog, see the [v0 branch](https://github.com/chakra-ui/zag/blob/v0/CHANGELOG.md)
 
+## [1.31.0](./#1.31.0) - 2025-12-05
+
+### Added
+
+- **Number Input**: Add `onValueCommit` callback that fires when the input loses focus or Enter is pressed
+
+- **Pagination**
+  - Add `getFirstTriggerProps()` and `getLastTriggerProps()` methods for navigating to first/last page
+  - Add `boundaryCount` parameter for controlling boundary pages (start/end)
+  - Implement balanced pagination algorithm for consistent UI elements
+  - Maintain visual consistency with max 7 elements regardless of total pages
+
+- **Tree View**: Added `scrollToIndexFn` prop to enable keyboard navigation in virtualized trees
+
+### Fixed
+
+- **Color Picker**
+  - Add `role="dialog"` to color picker content when not inline to ensure proper `aria-controls` detection
+  - Add `aria-haspopup="dialog"` to color picker trigger when not inline for better accessibility
+
+- **Date Picker**: Fix issue where date picker input does not update format when locale changes
+
+- **Listbox**
+  - Fix issue in React where filtering items with an input would throw a
+    `flushSync was called from inside a lifecycle method` warning
+  - Fix issue where `data-highlighted` wasn't applied to the first item when using `autoHighlight` with input filtering
+
+- **Number Input**
+  - Fixed issue where input element doesn't sync when `formatOptions` changes dynamically
+  - Ensure cursor position is preserved when `Enter` key is pressed and formatting is triggered
+  - Fix cursor jumping to start when value is changed externally via props while user is typing
+
+- **Pagination**: Fix ellipsis showing when only 1 page gap
+
+- **Radio Group**
+  - Fix issue where `radio-group` machine no longer shows the `indicator` prematurely
+  - Improve accessibility of radio group by adding `invalid` and `required` props with corresponding `data-*` and
+    `aria-*` attributes
+
+- **Tabs**: Fix issue where `tabs` machine no longer shows the `indicator` prematurely
+
+- **Tooltip**: Fix tooltip not showing when scrolling with pointer over trigger
+
+- **Collapsible, Presence, Tour**: Fix machines setting reactive state in exit actions
+
+### Changed
+
+- **Tree View**: `getVisibleNodes()` now returns `{ node, indexPath }[]` instead of `node[]`. Returning the index path
+  perhaps the most useful use of this function, hence the change.
+
+  ```tsx
+  // Before
+  const nodes = api.getVisibleNodes()
+  nodes.forEach((node) => console.log(node.id))
+
+  // After
+  const visibleNodes = api.getVisibleNodes()
+  visibleNodes.forEach(({ node }) => console.log(node.id))
+  ```
+
 ## [1.30.0](./#1.30.0) - 2025-11-26
 
 ### Added
