@@ -6,23 +6,23 @@ const generateItems = (count: number) =>
   Array.from({ length: count }, (_, i) => ({
     id: i,
     name: `Item ${i + 1}`,
-    description: `This is the description for item ${i + 1}. It contains some sample text to demonstrate variable content length.`,
+    description: `This is the description for item ${i + 1}`,
     value: Math.floor(Math.random() * 1000),
   }))
 
 export default function Page() {
   const scrollElementRef = useRef<HTMLDivElement>(null)
-  const [items] = useState(() => generateItems(10000)) // Back to 10k items
+
+  const [items] = useState(() => generateItems(10000))
   const [virtualizer, setVirtualizer] = useState<ListVirtualizer | null>(null)
-  // Use useReducer like TanStack Virtual for stable rerender function
+
   const rerender = useReducer(() => ({}), {})[1]
 
-  // Initialize virtualizer after DOM is ready
   useLayoutEffect(() => {
     const virtualizer = new ListVirtualizer({
       count: items.length,
       estimatedSize: 80,
-      overscan: 5, // TanStack default is 1, but we use 5 for smoother scrolling
+      overscan: 5,
       gap: 0,
       paddingStart: 0,
       paddingEnd: 0,

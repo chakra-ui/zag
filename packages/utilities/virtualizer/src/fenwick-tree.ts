@@ -7,10 +7,8 @@ export class FenwickTree {
   private size: number
 
   constructor(length: number) {
-    console.log("🌳 FenwickTree constructor called", { length })
     this.size = length
     this.tree = new Float64Array(length + 1) // 1-based indexing
-    console.log("✅ FenwickTree created successfully", { size: this.size, treeLength: this.tree.length })
   }
 
   /**

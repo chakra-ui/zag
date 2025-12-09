@@ -262,29 +262,44 @@ export abstract class Virtualizer<O extends BaseVirtualizerOptions = BaseVirtual
     const { startIndex, endIndex } = this.range
 
     // Cache key based on range - if range hasn't changed, return cached items
-    const cacheKey = `${startIndex}:${endIndex}`
-    if (cacheKey === this.virtualItemsCacheKey) {
+    const newCacheKey = `${startIndex}:${endIndex}`
+    if (newCacheKey === this.virtualItemsCacheKey) {
       return this.cachedVirtualItems
     }
 
     const startTime = this.perfMonitor?.startFrame() ?? now()
-    const virtualItems: VirtualItem[] = []
+
+    const oldVirtualItems = this.cachedVirtualItems
+    const newVirtualItems: VirtualItem[] = []
+
+    // Index map for quick lookups of old items
+    const oldItemsIndexMap = new Map<number, VirtualItem>()
+    for (const item of oldVirtualItems) {
+      oldItemsIndexMap.set(item.index, item)
+    }
 
     for (let i = startIndex; i <= endIndex; i++) {
       const measurement = this.getMeasurement(i)
+      const oldItem = oldItemsIndexMap.get(i)
 
-      virtualItems.push({
-        index: i,
-        start: measurement.start,
-        end: measurement.end,
-        size: measurement.size,
-        lane: this.getItemLane(i),
-      })
+      if (oldItem && oldItem.start === measurement.start && oldItem.size === measurement.size) {
+        // Reuse old item if it's unchanged
+        newVirtualItems.push(oldItem)
+      } else {
+        // Create new item
+        newVirtualItems.push({
+          index: i,
+          start: measurement.start,
+          end: measurement.end,
+          size: measurement.size,
+          lane: this.getItemLane(i),
+        })
+      }
     }
 
     // Cache the result
-    this.cachedVirtualItems = virtualItems
-    this.virtualItemsCacheKey = cacheKey
+    this.cachedVirtualItems = newVirtualItems
+    this.virtualItemsCacheKey = newCacheKey
 
     this.lastCalcTime = this.perfMonitor?.endFrame(startTime) ?? now() - startTime
 
@@ -294,13 +309,13 @@ export abstract class Virtualizer<O extends BaseVirtualizerOptions = BaseVirtual
         renderTime: this.lastCalcTime,
         cacheSize: this.measureCache.size,
         scrollVelocity: this.velocityTracker?.getAverageVelocity() ?? 0,
-        visibleCount: virtualItems.length,
+        visibleCount: newVirtualItems.length,
         totalSize: this.getTotalSize(),
       })
       this.options.onPerfMetrics?.(metrics)
     }
 
-    return virtualItems
+    return newVirtualItems
   }
 
   // ============================================
@@ -351,7 +366,7 @@ export abstract class Virtualizer<O extends BaseVirtualizerOptions = BaseVirtual
     // Try to attach scroll listener if not already attached (lazy initialization)
     this.attachScrollListener()
 
-    const { count, overscan } = this.options
+    const { count, overscan, horizontal, rtl, enableAdvancedOverscan, enableDirectionalOverscan } = this.options
 
     if (count === 0 || this.viewportSize === 0) {
       this.range = { startIndex: 0, endIndex: -1 }
@@ -359,14 +374,42 @@ export abstract class Virtualizer<O extends BaseVirtualizerOptions = BaseVirtual
       return
     }
 
+    if (enableAdvancedOverscan) {
+      this.velocityTracker?.update(this.scrollOffset, horizontal && rtl)
+    }
+
     // Calculate the visible range
     const viewportStart = this.scrollOffset
     const viewportEnd = this.scrollOffset + this.viewportSize
     let { startIndex, endIndex } = this.findVisibleRange(viewportStart, viewportEnd)
 
-    // Simple overscan: just add fixed items on each side
-    startIndex = Math.max(0, startIndex - overscan)
-    endIndex = Math.min(count - 1, endIndex + overscan)
+    // Apply overscan
+    let leadingOverscan = overscan
+    let trailingOverscan = overscan
+
+    if (enableAdvancedOverscan && this.velocityTracker) {
+      const overscanResult = this.getCurrentOverscan()
+      if (overscanResult) {
+        leadingOverscan = overscanResult.leading
+        trailingOverscan = overscanResult.trailing
+      }
+    }
+
+    let overscanStart = leadingOverscan
+    let overscanEnd = trailingOverscan
+
+    if (enableDirectionalOverscan) {
+      if (this.scrollDirection === "forward") {
+        overscanEnd = leadingOverscan
+        overscanStart = trailingOverscan
+      } else if (this.scrollDirection === "backward") {
+        overscanStart = leadingOverscan
+        overscanEnd = trailingOverscan
+      }
+    }
+
+    startIndex = Math.max(0, startIndex - overscanStart)
+    endIndex = Math.min(count - 1, endIndex + overscanEnd)
 
     const rangeChanged = startIndex !== this.range.startIndex || endIndex !== this.range.endIndex
     this.range = { startIndex, endIndex }
