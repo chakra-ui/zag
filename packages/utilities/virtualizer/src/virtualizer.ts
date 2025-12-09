@@ -1,44 +1,56 @@
 import type {
-  BaseVirtualizerOptions,
-  Range,
-  ScrollState,
-  VirtualItem,
-  PerformanceMetrics,
   CSSProperties,
   ItemState,
+  OverscanConfig,
+  PerformanceMetrics,
+  Range,
+  ScrollHistoryEntry,
+  ScrollRestorationConfig,
+  ScrollState,
   ScrollToIndexOptions,
   ScrollToIndexResult,
-  AsyncScrollProgress,
-  ScrollHistoryEntry,
+  VirtualItem,
+  VirtualizerOptions,
 } from "./types"
-import { VelocityTracker, type OverscanCalculationResult, type VelocityState } from "./velocity-tracker"
-import { ResizeObserverManager } from "./resize-observer-manager"
-import { IntersectionObserverManager } from "./intersection-observer-manager"
-import { PerformanceMonitor } from "./performance-monitor"
-import { ViewPool } from "./view-pool"
-import { AutoSizer } from "./auto-sizer"
-import { ScrollRestorationManager } from "./scroll-restoration-manager"
-import { DOMOrderManager } from "./dom-order-manager"
-import { smoothScrollTo, easingFunctions, type SmoothScrollResult } from "./smooth-scroll"
+import { SizeObserver } from "./utils/size-observer"
+import { DOMOrderManager } from "./utils/dom-order-manager"
+import { IntersectionObserverManager } from "./utils/intersection-observer-manager"
+import { resolveOverscanConfig, SCROLL_END_DELAY_MS } from "./utils/overscan"
+import { PerformanceMonitor } from "./utils/performance-monitor"
+import { ResizeObserverManager } from "./utils/resize-observer-manager"
+import { getScrollPositionFromEvent } from "./utils/scroll-helpers"
+import { ScrollRestorationManager } from "./utils/scroll-restoration-manager"
+import { easingFunctions, smoothScrollTo, type SmoothScrollResult } from "./utils/smooth-scroll"
+import { VelocityTracker, type OverscanCalculationResult, type VelocityState } from "./utils/velocity-tracker"
+import { ViewPool } from "./utils/view-pool"
 
 const now = typeof performance !== "undefined" ? () => performance.now() : () => Date.now()
 
 type ResolvedBaseOptions = Required<
   Omit<
-    BaseVirtualizerOptions,
-    "onScroll" | "onRangeChange" | "onVisibilityChange" | "onPerfMetrics" | "onContainerResize"
+    VirtualizerOptions,
+    | "onScroll"
+    | "onRangeChange"
+    | "onVisibilityChange"
+    | "onPerfMetrics"
+    | "onContainerResize"
+    | "overscan"
+    | "scrollRestoration"
   >
 > &
   Pick<
-    BaseVirtualizerOptions,
+    VirtualizerOptions,
     "onScroll" | "onRangeChange" | "onVisibilityChange" | "onPerfMetrics" | "onContainerResize"
-  >
+  > & {
+    overscan: Required<OverscanConfig>
+    scrollRestoration?: ScrollRestorationConfig
+  }
 
 /**
  * Shared logic for all virtualizer variants (list, grid, table, masonry).
  * Layout-specific classes implement measurement and range calculation details.
  */
-export abstract class Virtualizer<O extends BaseVirtualizerOptions = BaseVirtualizerOptions> {
+export abstract class Virtualizer<O extends VirtualizerOptions = VirtualizerOptions> {
   protected options: ResolvedBaseOptions & O
 
   // Measurements
@@ -70,7 +82,7 @@ export abstract class Virtualizer<O extends BaseVirtualizerOptions = BaseVirtual
   private intersectionObserver?: IntersectionObserverManager
   private perfMonitor?: PerformanceMonitor
   private viewPool?: ViewPool<HTMLElement>
-  private autoSizer?: AutoSizer
+  private sizeObserver?: SizeObserver
   private scrollRestoration?: ScrollRestorationManager
   private domOrderManager?: DOMOrderManager
 
@@ -78,9 +90,8 @@ export abstract class Virtualizer<O extends BaseVirtualizerOptions = BaseVirtual
   private pendingSizeUpdates = new Map<number, number>()
   private sizeUpdateScheduled = false
 
-  // Async scroll state
-  private asyncScrollController: AbortController | null = null
-  private asyncScrollPromise: Promise<ScrollToIndexResult> | null = null
+  // Element tracking for proper cleanup
+  private elementsByIndex = new Map<number, Element>()
 
   // Smooth scroll state
   private currentSmoothScroll: SmoothScrollResult | null = null
@@ -89,32 +100,23 @@ export abstract class Virtualizer<O extends BaseVirtualizerOptions = BaseVirtual
   private scrollElement: Element | Window | null = null
 
   constructor(options: O) {
+    const overscan = resolveOverscanConfig(options.overscan)
+
     this.options = {
-      overscan: 3,
       horizontal: false,
       gap: 0,
       paddingStart: 0,
       paddingEnd: 0,
       initialOffset: 0,
-      dynamicOverscan: false,
-      maxOverscanMultiplier: 3,
-      useWindowScroll: false,
       rootMargin: "50px",
       enableViewRecycling: false,
       preserveScrollAnchor: true,
       enablePerfMonitoring: false,
       enableAutoSizing: false,
-      enableScrollRestoration: false,
-      maxHistoryEntries: 10,
-      restorationKey: "default",
-      restorationTolerance: 5,
       enableDOMOrderOptimization: false,
       domReorderDelay: 50,
-      enableAdvancedOverscan: false,
-      overscanStrategy: "adaptive",
-      enablePredictiveOverscan: true,
-      enableDirectionalOverscan: true,
       ...options,
+      overscan,
     } as ResolvedBaseOptions & O
 
     this.scrollOffset = this.options.initialOffset
@@ -125,7 +127,7 @@ export abstract class Virtualizer<O extends BaseVirtualizerOptions = BaseVirtual
 
   private initializeAdvancedFeatures(): void {
     // Initialize velocity tracker for dynamic overscan
-    if (this.options.dynamicOverscan) {
+    if (this.options.overscan.dynamic) {
       this.velocityTracker = new VelocityTracker()
     }
 
@@ -153,7 +155,7 @@ export abstract class Virtualizer<O extends BaseVirtualizerOptions = BaseVirtual
 
     // Initialize auto-sizing
     if (this.options.enableAutoSizing) {
-      this.autoSizer = new AutoSizer({
+      this.sizeObserver = new SizeObserver({
         onResize: (size) => {
           const { horizontal } = this.options
           const viewportSize = horizontal ? size.width : size.height
@@ -170,17 +172,18 @@ export abstract class Virtualizer<O extends BaseVirtualizerOptions = BaseVirtual
         },
       })
 
-      // Auto-observe container if getContainerEl is provided
-      this.initializeContainer()
+      // Auto-observe scrolling element if getScrollingEl is provided
+      this.initializeScrollingElement()
     }
 
     // Initialize scroll restoration if enabled
-    if (this.options.enableScrollRestoration) {
+    if (this.options.scrollRestoration) {
+      const { scrollRestoration } = this.options
       this.scrollRestoration = new ScrollRestorationManager({
-        enableScrollRestoration: this.options.enableScrollRestoration,
-        maxHistoryEntries: this.options.maxHistoryEntries,
-        restorationKey: this.options.restorationKey,
-        restorationTolerance: this.options.restorationTolerance,
+        enableScrollRestoration: true,
+        maxHistoryEntries: scrollRestoration.maxEntries ?? 10,
+        restorationKey: scrollRestoration.key ?? "default",
+        restorationTolerance: scrollRestoration.tolerance ?? 5,
       })
     }
 
@@ -225,28 +228,21 @@ export abstract class Virtualizer<O extends BaseVirtualizerOptions = BaseVirtual
   }
 
   /**
-   * Get item state data (position, size, etc.)
-   */
-  getItemState(virtualItem: VirtualItem): ItemState {
-    return this.getItemStateData(virtualItem)
-  }
-
-  /**
-   * Get item element styles
-   */
-  getItemStyle(virtualItem: VirtualItem): CSSProperties {
-    return this.getItemStyleData(virtualItem)
-  }
-
-  /**
    * Get scroll handler for container
    */
   getScrollHandler() {
     return this.handleScroll
   }
 
-  protected abstract getItemStateData(virtualItem: VirtualItem): ItemState
-  protected abstract getItemStyleData(virtualItem: VirtualItem): CSSProperties
+  /**
+   * Get item state data (position, size, etc.)
+   */
+  abstract getItemState(virtualItem: VirtualItem): ItemState
+
+  /**
+   * Get item element styles
+   */
+  abstract getItemStyle(virtualItem: VirtualItem): CSSProperties
 
   // ============================================
   // Virtual Items
@@ -293,6 +289,7 @@ export abstract class Virtualizer<O extends BaseVirtualizerOptions = BaseVirtual
           end: measurement.end,
           size: measurement.size,
           lane: this.getItemLane(i),
+          measureElement: this.createMeasureElement(i),
         })
       }
     }
@@ -332,11 +329,25 @@ export abstract class Virtualizer<O extends BaseVirtualizerOptions = BaseVirtual
   protected onItemsChanged(): void {
     // Optionally overridden by subclasses that need to rebuild caches when data changes
   }
-  protected onItemMeasured(_index: number, _size: number): void {
+  protected onItemMeasured(_index: number, _size: number): boolean {
     // Optionally overridden by subclasses that persist measured sizes
+    // Returns true if the size actually changed, false otherwise
+    return false
   }
   protected onContainerSizeChange(_size: number): void {
     // Optionally overridden by subclasses that depend on container size (e.g., masonry)
+  }
+  protected getKnownItemSize(_index: number): number | undefined {
+    // Optionally overridden by subclasses to return the currently known size for an item
+    // Used to skip redundant size updates
+    return undefined
+  }
+
+  /**
+   * Get the estimated size for an item at the given index
+   */
+  protected getEstimatedSize(index: number): number {
+    return this.options.estimatedSize(index)
   }
 
   protected invalidateMeasurements(fromIndex: number = 0) {
@@ -366,7 +377,7 @@ export abstract class Virtualizer<O extends BaseVirtualizerOptions = BaseVirtual
     // Try to attach scroll listener if not already attached (lazy initialization)
     this.attachScrollListener()
 
-    const { count, overscan, horizontal, rtl, enableAdvancedOverscan, enableDirectionalOverscan } = this.options
+    const { count, overscan, horizontal, rtl } = this.options
 
     if (count === 0 || this.viewportSize === 0) {
       this.range = { startIndex: 0, endIndex: -1 }
@@ -374,7 +385,7 @@ export abstract class Virtualizer<O extends BaseVirtualizerOptions = BaseVirtual
       return
     }
 
-    if (enableAdvancedOverscan) {
+    if (overscan.dynamic) {
       this.velocityTracker?.update(this.scrollOffset, horizontal && rtl)
     }
 
@@ -384,10 +395,10 @@ export abstract class Virtualizer<O extends BaseVirtualizerOptions = BaseVirtual
     let { startIndex, endIndex } = this.findVisibleRange(viewportStart, viewportEnd)
 
     // Apply overscan
-    let leadingOverscan = overscan
-    let trailingOverscan = overscan
+    let leadingOverscan = overscan.count
+    let trailingOverscan = overscan.count
 
-    if (enableAdvancedOverscan && this.velocityTracker) {
+    if (overscan.dynamic && this.velocityTracker) {
       const overscanResult = this.getCurrentOverscan()
       if (overscanResult) {
         leadingOverscan = overscanResult.leading
@@ -398,7 +409,7 @@ export abstract class Virtualizer<O extends BaseVirtualizerOptions = BaseVirtual
     let overscanStart = leadingOverscan
     let overscanEnd = trailingOverscan
 
-    if (enableDirectionalOverscan) {
+    if (overscan.directional) {
       if (this.scrollDirection === "forward") {
         overscanEnd = leadingOverscan
         overscanStart = trailingOverscan
@@ -425,7 +436,7 @@ export abstract class Virtualizer<O extends BaseVirtualizerOptions = BaseVirtual
    * Uses estimatedSize for performance - accurate enough for overscan
    */
   private getAverageItemSize(): number {
-    return this.options.estimatedSize
+    return this.getEstimatedSize(0)
   }
 
   // ============================================
@@ -434,22 +445,8 @@ export abstract class Virtualizer<O extends BaseVirtualizerOptions = BaseVirtual
 
   handleScroll = (event: Event | { currentTarget: { scrollTop: number; scrollLeft: number } }): void => {
     const { horizontal } = this.options
-
-    // Handle both native DOM events and React-style events
-    let offset: number
-    if ("currentTarget" in event && event.currentTarget && "scrollTop" in event.currentTarget) {
-      // React-style event
-      offset = horizontal ? event.currentTarget.scrollLeft : event.currentTarget.scrollTop
-    } else {
-      // Native DOM event
-      const target = (event as Event).target as HTMLElement | Window
-      if (target === window) {
-        offset = horizontal ? window.scrollX : window.scrollY
-      } else {
-        const element = target as HTMLElement
-        offset = horizontal ? element.scrollLeft : element.scrollTop
-      }
-    }
+    const { scrollTop, scrollLeft } = getScrollPositionFromEvent(event)
+    const offset = horizontal ? scrollLeft : scrollTop
 
     this.prevScrollOffset = this.scrollOffset
     this.scrollOffset = offset
@@ -486,7 +483,7 @@ export abstract class Virtualizer<O extends BaseVirtualizerOptions = BaseVirtual
 
       // Flush any pending DOM reorders when scrolling stops
       this.domOrderManager?.onScrollStop()
-    }, 150)
+    }, SCROLL_END_DELAY_MS)
 
     this.notifyScroll()
   }
@@ -520,6 +517,29 @@ export abstract class Virtualizer<O extends BaseVirtualizerOptions = BaseVirtual
       this.onContainerSizeChange(size)
       this.calculateRange()
     }
+  }
+
+  /**
+   * Resolve and cache the scroll element
+   */
+  private resolveScrollElement(): Element | Window | null {
+    if (this.scrollElement) return this.scrollElement
+    this.scrollElement = this.options.getScrollingEl?.() ?? null
+    return this.scrollElement
+  }
+
+  /**
+   * Measure the scroll container and set viewport/container sizes.
+   */
+  measure(): void {
+    const scrollEl = this.resolveScrollElement()
+    if (!scrollEl || scrollEl === window) return
+
+    const rect = (scrollEl as Element).getBoundingClientRect()
+    const { horizontal } = this.options
+
+    this.setViewportSize(horizontal ? rect.width : rect.height)
+    this.setContainerSize(horizontal ? rect.height : rect.width)
   }
 
   scrollTo(offset: number): { scrollTop?: number; scrollLeft?: number } {
@@ -560,198 +580,6 @@ export abstract class Virtualizer<O extends BaseVirtualizerOptions = BaseVirtual
     }
 
     return this.scrollTo(targetOffset)
-  }
-
-  /**
-   * Scroll to index asynchronously with progress tracking and cancellation support
-   * Useful for large lists where calculation might block the main thread
-   */
-  async scrollToIndexAsync(index: number, options: ScrollToIndexOptions = {}): Promise<ScrollToIndexResult> {
-    const { align = "start", signal } = options
-    const { count } = this.options
-
-    // Cancel any pending async scroll
-    this.cancelAsyncScroll()
-
-    // Create new abort controller if none provided
-    const controller = new AbortController()
-    this.asyncScrollController = controller
-
-    // Chain signals if user provided one
-    if (signal) {
-      signal.addEventListener("abort", () => controller.abort())
-    }
-
-    if (index < 0 || index >= count) {
-      return this.scrollTo(this.scrollOffset)
-    }
-
-    // For small lists or close indices, use sync version
-    const currentIndex = this.findIndexAtOffset(this.scrollOffset)
-    const distance = Math.abs(index - currentIndex)
-
-    if (distance < 1000 && !this.shouldUseAsyncForIndex(index)) {
-      return this.scrollToIndex(index, options)
-    }
-
-    try {
-      // Create and store the promise
-      this.asyncScrollPromise = this.performAsyncScroll(index, align, options.smooth, controller.signal)
-      const result = await this.asyncScrollPromise
-
-      // Clear references on success
-      this.asyncScrollController = null
-      this.asyncScrollPromise = null
-
-      return result
-    } catch (error) {
-      // Clear references on error
-      this.asyncScrollController = null
-      this.asyncScrollPromise = null
-
-      if (error instanceof DOMException && error.name === "AbortError") {
-        throw new Error("Async scroll was cancelled")
-      }
-      throw error
-    }
-  }
-
-  /**
-   * Cancel any pending async scroll operation
-   */
-  cancelAsyncScroll(): void {
-    if (this.asyncScrollController) {
-      this.asyncScrollController.abort()
-      this.asyncScrollController = null
-      this.asyncScrollPromise = null
-    }
-  }
-
-  /**
-   * Check if async scrolling is recommended for the given index
-   */
-  private shouldUseAsyncForIndex(index: number): boolean {
-    // Use async if:
-    // 1. Very large list (10K+ items)
-    // 2. Many unmeasured items between current and target
-    // 3. Dynamic sizing enabled
-
-    const { count } = this.options
-    if (count < 10000) return false
-
-    const currentIndex = this.findIndexAtOffset(this.scrollOffset)
-    const distance = Math.abs(index - currentIndex)
-
-    // Check how many items in the range are unmeasured
-    const start = Math.min(currentIndex, index)
-    const end = Math.max(currentIndex, index)
-    let unmeasuredCount = 0
-
-    for (let i = start; i <= end && unmeasuredCount < 100; i++) {
-      if (!this.measureCache.has(i)) {
-        unmeasuredCount++
-      }
-    }
-
-    return distance > 5000 || unmeasuredCount > 50
-  }
-
-  /**
-   * Perform the actual async scroll with yielding and progress updates
-   */
-  private async performAsyncScroll(
-    index: number,
-    align: "start" | "center" | "end",
-    smooth: boolean | NonNullable<ScrollToIndexOptions["smooth"]> | undefined,
-    signal: AbortSignal,
-  ): Promise<ScrollToIndexResult> {
-    const startTime = performance.now()
-    const batchSize = 100 // Process measurements in batches
-
-    // Stage 1: Ensure measurements are available
-    this.reportAsyncProgress({ completed: 0, total: 100, stage: "measuring" })
-
-    const currentIndex = this.findIndexAtOffset(this.scrollOffset)
-    const start = Math.min(currentIndex, index)
-    const end = Math.max(currentIndex, index)
-
-    // Pre-calculate measurements in batches to avoid blocking
-    for (let batchStart = start; batchStart <= end; batchStart += batchSize) {
-      if (signal.aborted) throw new DOMException("Aborted", "AbortError")
-
-      const batchEnd = Math.min(batchStart + batchSize - 1, end)
-
-      // Process batch
-      for (let i = batchStart; i <= batchEnd; i++) {
-        if (!this.measureCache.has(i)) {
-          this.getMeasurement(i)
-        }
-      }
-
-      // Report progress and yield control
-      const progress = Math.min(100, ((batchStart - start) / (end - start)) * 100)
-      this.reportAsyncProgress({ completed: progress, total: 100, stage: "measuring" })
-
-      // Yield control to prevent blocking
-      await this.yieldControl()
-    }
-
-    // Stage 2: Calculate scroll position
-    this.reportAsyncProgress({ completed: 0, total: 100, stage: "calculating" })
-
-    if (signal.aborted) throw new DOMException("Aborted", "AbortError")
-
-    const measurement = this.getMeasurement(index)
-    let offset = measurement.start
-
-    switch (align) {
-      case "center":
-        offset -= (this.viewportSize - measurement.size) / 2
-        break
-      case "end":
-        offset -= this.viewportSize - measurement.size
-        break
-    }
-
-    // Stage 3: Perform scroll
-    this.reportAsyncProgress({ completed: 50, total: 100, stage: "scrolling" })
-
-    if (signal.aborted) throw new DOMException("Aborted", "AbortError")
-
-    const targetOffset = Math.max(0, offset)
-
-    // Use smooth scrolling if requested
-    const result = smooth ? this.performSmoothScroll(targetOffset, smooth) : this.scrollTo(targetOffset)
-
-    // Final progress update
-    this.reportAsyncProgress({ completed: 100, total: 100, stage: "scrolling" })
-
-    const duration = performance.now() - startTime
-    console.debug(`Async scroll completed in ${duration.toFixed(2)}ms`)
-
-    return result
-  }
-
-  /**
-   * Yield control to the event loop
-   */
-  private async yieldControl(): Promise<void> {
-    return new Promise((resolve) => {
-      // Use scheduler.postTask if available for better performance
-      const globalScheduler = (globalThis as any).scheduler
-      if (globalScheduler && typeof globalScheduler.postTask === "function") {
-        globalScheduler.postTask(resolve, { priority: "user-blocking" })
-      } else {
-        setTimeout(resolve, 0)
-      }
-    })
-  }
-
-  /**
-   * Report async scroll progress
-   */
-  private reportAsyncProgress(progress: AsyncScrollProgress): void {
-    this.options.onAsyncScrollProgress?.(progress)
   }
 
   /**
@@ -888,23 +716,47 @@ export abstract class Virtualizer<O extends BaseVirtualizerOptions = BaseVirtual
       return
     }
 
+    // Capture range before updates
+    const prevRange = { ...this.range }
+    let anySizeChanged = false
+
     if (this.options.preserveScrollAnchor) {
       this.preserveScrollPosition(() => {
         for (const [index, size] of this.pendingSizeUpdates) {
-          this.onItemMeasured(index, size)
+          if (this.onItemMeasured(index, size)) {
+            anySizeChanged = true
+          }
         }
-        this.invalidateMeasurements(Math.min(...this.pendingSizeUpdates.keys()))
+        if (anySizeChanged) {
+          this.invalidateMeasurements(Math.min(...this.pendingSizeUpdates.keys()))
+        }
       })
     } else {
       for (const [index, size] of this.pendingSizeUpdates) {
-        this.onItemMeasured(index, size)
+        if (this.onItemMeasured(index, size)) {
+          anySizeChanged = true
+        }
       }
-      this.invalidateMeasurements(Math.min(...this.pendingSizeUpdates.keys()))
+      if (anySizeChanged) {
+        this.invalidateMeasurements(Math.min(...this.pendingSizeUpdates.keys()))
+      }
     }
 
     this.pendingSizeUpdates.clear()
     this.sizeUpdateScheduled = false
-    this.calculateRange()
+
+    // Only recalculate and notify if sizes actually changed
+    if (anySizeChanged) {
+      this.calculateRange()
+
+      // Notify after measurements change so consumers can re-render
+      // calculateRange only notifies when range indices change, but we need to
+      // notify even when just sizes change (same indices, different measurements)
+      const rangeNotified = prevRange.startIndex !== this.range.startIndex || prevRange.endIndex !== this.range.endIndex
+      if (!rangeNotified) {
+        this.options.onRangeChange?.(this.range)
+      }
+    }
   }
 
   /**
@@ -963,14 +815,57 @@ export abstract class Virtualizer<O extends BaseVirtualizerOptions = BaseVirtual
   }
 
   /**
+   * Create a measureElement callback for a virtual item
+   * Handles both observing new elements and cleaning up old ones
+   */
+  private createMeasureElement(index: number): (element: HTMLElement | null) => void {
+    return (element: HTMLElement | null) => {
+      // Get the previously tracked element for this index
+      const prevElement = this.elementsByIndex.get(index)
+
+      // Clean up previous element if it exists and is different
+      if (prevElement && prevElement !== element) {
+        this.unobserveElement(prevElement)
+        this.elementsByIndex.delete(index)
+      }
+
+      if (element) {
+        // Track and observe the new element
+        this.elementsByIndex.set(index, element)
+
+        // Immediately measure and update size (only if changed)
+        const { horizontal } = this.options
+        const rect = element.getBoundingClientRect()
+        const size = horizontal ? rect.width : rect.height
+        if (size > 0) {
+          const knownSize = this.getKnownItemSize(index)
+          if (knownSize === undefined || knownSize !== size) {
+            this.scheduleSizeUpdate(index, size)
+          }
+        }
+
+        // Set up observer for future size changes
+        this.observeElementSize(element, index)
+      } else {
+        // Element is null (unmounting), cleanup tracking
+        this.elementsByIndex.delete(index)
+      }
+    }
+  }
+
+  /**
    * Observe element for size changes
    */
   observeElementSize(element: Element, index: number): void {
     if (!this.resizeObserver) return
 
     this.resizeObserver.observe(element, (size) => {
-      const currentSize = this.options.horizontal ? size.width : size.height
-      this.scheduleSizeUpdate(index, currentSize)
+      const measuredSize = this.options.horizontal ? size.width : size.height
+      // Only schedule update if size actually changed
+      const knownSize = this.getKnownItemSize(index)
+      if (knownSize === undefined || knownSize !== measuredSize) {
+        this.scheduleSizeUpdate(index, measuredSize)
+      }
     })
   }
 
@@ -994,47 +889,29 @@ export abstract class Virtualizer<O extends BaseVirtualizerOptions = BaseVirtual
   }
 
   /**
-   * Initialize container observation using getContainerEl
+   * Initialize scrolling element observation
    */
-  private initializeContainer(): void {
-    if (!this.options.getContainerEl || !this.autoSizer) return
+  private initializeScrollingElement(): void {
+    if (!this.sizeObserver) return
 
-    try {
-      const container = this.options.getContainerEl()
-      if (container) {
-        this.autoSizer.observe(container)
-      }
-    } catch (error) {
-      console.warn("Failed to initialize container from getContainerEl:", error)
+    const scrollEl = this.resolveScrollElement()
+    if (scrollEl && scrollEl !== window) {
+      this.sizeObserver.observe(scrollEl as Element)
     }
   }
 
   /**
-   * Attach scroll listener to container element
+   * Attach scroll listener to scrolling element
    */
+  private scrollListenerAttached = false
   private attachScrollListener(): void {
-    // Skip if already attached
-    if (this.scrollElement) {
-      return
-    }
+    if (this.scrollListenerAttached) return
+    if (typeof window === "undefined") return
 
-    // Try to get container element if getContainerEl is provided
-    if (this.options.getContainerEl) {
-      try {
-        this.scrollElement = this.options.getContainerEl()
-      } catch (error) {
-        console.warn("Failed to get container element for scroll listener:", error)
-        return
-      }
-    } else {
-      // Fallback to window if no container specified
-      this.scrollElement = window
-    }
-
-    if (this.scrollElement) {
-      // Add passive listener for better scroll performance
-      this.scrollElement.addEventListener("scroll", this.handleScroll, { passive: true })
-    }
+    const scrollEl = this.resolveScrollElement() ?? window
+    this.scrollElement = scrollEl
+    this.scrollElement.addEventListener("scroll", this.handleScroll, { passive: true })
+    this.scrollListenerAttached = true
   }
 
   /**
@@ -1044,6 +921,7 @@ export abstract class Virtualizer<O extends BaseVirtualizerOptions = BaseVirtual
     if (this.scrollElement) {
       this.scrollElement.removeEventListener("scroll", this.handleScroll)
       this.scrollElement = null
+      this.scrollListenerAttached = false
     }
   }
 
@@ -1051,8 +929,8 @@ export abstract class Virtualizer<O extends BaseVirtualizerOptions = BaseVirtual
    * Get current container size (auto-sizing only)
    */
   getContainerSize(): { width: number; height: number } | null {
-    if (!this.autoSizer) return null
-    return this.autoSizer.getCurrentSize()
+    if (!this.sizeObserver) return null
+    return this.sizeObserver.getCurrentSize()
   }
 
   /**
@@ -1217,41 +1095,27 @@ export abstract class Virtualizer<O extends BaseVirtualizerOptions = BaseVirtual
    * Get current overscan calculation result
    */
   getCurrentOverscan(): OverscanCalculationResult | null {
-    const { overscan, enableAdvancedOverscan, overscanStrategy, enablePredictiveOverscan } = this.options
+    const { overscan } = this.options
 
-    if (!this.velocityTracker || !enableAdvancedOverscan) return null
+    if (!this.velocityTracker || !overscan.dynamic) return null
 
     const averageItemSize = this.getAverageItemSize()
-    return this.velocityTracker.calculateAdvancedOverscan(overscan, this.viewportSize, averageItemSize, {
-      maxMultiplier: this.options.maxOverscanMultiplier,
-      strategy: overscanStrategy,
-      enablePredictive: enablePredictiveOverscan,
+    return this.velocityTracker.calculateAdvancedOverscan(overscan.count, this.viewportSize, averageItemSize, {
+      maxMultiplier: overscan.maxMultiplier,
+      strategy: overscan.strategy,
+      enablePredictive: overscan.predictive,
     })
   }
 
   /**
-   * Update overscan strategy dynamically
+   * Update overscan configuration dynamically
    */
-  setOverscanStrategy(strategy: "adaptive" | "conservative" | "aggressive"): void {
-    this.options.overscanStrategy = strategy
-    // Trigger range recalculation
-    this.calculateRange()
-  }
-
-  /**
-   * Enable/disable advanced overscan features
-   */
-  setAdvancedOverscanEnabled(enabled: boolean): void {
-    this.options.enableAdvancedOverscan = enabled
-    // Trigger range recalculation
-    this.calculateRange()
-  }
-
-  /**
-   * Enable/disable directional overscan
-   */
-  setDirectionalOverscanEnabled(enabled: boolean): void {
-    this.options.enableDirectionalOverscan = enabled
+  setOverscan(overscan: OverscanConfig): void {
+    this.options.overscan = resolveOverscanConfig(overscan)
+    // Initialize velocity tracker if dynamic overscan is now enabled
+    if (this.options.overscan.dynamic && !this.velocityTracker) {
+      this.velocityTracker = new VelocityTracker()
+    }
     // Trigger range recalculation
     this.calculateRange()
   }
@@ -1285,17 +1149,15 @@ export abstract class Virtualizer<O extends BaseVirtualizerOptions = BaseVirtual
     this.viewPool?.clear()
     this.velocityTracker?.reset()
     this.perfMonitor?.reset()
-    this.autoSizer?.destroy()
+    this.sizeObserver?.destroy()
     this.scrollRestoration?.destroy()
     this.domOrderManager?.destroy()
-
-    // Cancel any pending async scroll
-    this.cancelAsyncScroll()
 
     // Cancel any ongoing smooth scroll
     this.cancelSmoothScroll()
 
     this.measureCache.clear()
     this.pendingSizeUpdates.clear()
+    this.elementsByIndex.clear()
   }
 }

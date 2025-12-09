@@ -1,4 +1,4 @@
-import type { VirtualItem } from "./types"
+import type { VirtualItem } from "../types"
 
 interface DOMElement {
   element: HTMLElement

@@ -1,5 +1,5 @@
 import { ListVirtualizer } from "@zag-js/virtualizer"
-import { useLayoutEffect, useReducer, useRef, useState } from "react"
+import { useCallback, useLayoutEffect, useReducer, useRef, useState } from "react"
 import { flushSync } from "react-dom"
 
 const generateItems = (count: number) =>
@@ -7,48 +7,51 @@ const generateItems = (count: number) =>
     id: i,
     name: `Item ${i + 1}`,
     description: `This is the description for item ${i + 1}`,
-    value: Math.floor(Math.random() * 1000),
   }))
 
 export default function Page() {
   const scrollElementRef = useRef<HTMLDivElement>(null)
+  const isInitializedRef = useRef(false)
+  const virtualizerRef = useRef<ListVirtualizer | null>(null)
+  const [, rerender] = useReducer(() => ({}), {})
 
   const [items] = useState(() => generateItems(10000))
-  const [virtualizer, setVirtualizer] = useState<ListVirtualizer | null>(null)
 
-  const rerender = useReducer(() => ({}), {})[1]
+  virtualizerRef.current ||= new ListVirtualizer({
+    count: items.length,
+    estimatedSize: () => 80,
+    overscan: { count: 10 },
+    gap: 0,
+    paddingStart: 0,
+    paddingEnd: 0,
+    initialSize: 400, // Set initial viewport size to match container height
+    getScrollingEl: () => scrollElementRef.current,
+    onRangeChange: () => {
+      if (!isInitializedRef.current) return
+      flushSync(rerender)
+    },
+  })
 
-  useLayoutEffect(() => {
-    const virtualizer = new ListVirtualizer({
-      count: items.length,
-      estimatedSize: 80,
-      overscan: 5,
-      gap: 0,
-      paddingStart: 0,
-      paddingEnd: 0,
-      getContainerEl: () => scrollElementRef.current,
-      onRangeChange: () => {
-        flushSync(rerender)
-      },
-    })
+  const virtualizer = virtualizerRef.current
 
-    // Set viewport size immediately - this is the key!
-    virtualizer.setViewportSize(400)
-    virtualizer.setContainerSize(300)
-
-    // Use setTimeout to ensure DOM is ready before force update
-    requestAnimationFrame(() => {
-      virtualizer.forceUpdate()
-    })
-
-    setVirtualizer(virtualizer)
-
-    return () => {
-      virtualizer.destroy?.()
+  // Callback ref to measure when element mounts
+  const setScrollElementRef = useCallback((element: HTMLDivElement | null) => {
+    scrollElementRef.current = element
+    if (element) {
+      virtualizer.measure()
+      isInitializedRef.current = true
+      rerender()
     }
-  }, [items.length])
+  }, [])
 
-  if (!virtualizer) return <div>Loading...</div>
+  // Cleanup on unmount
+  useLayoutEffect(() => {
+    return () => {
+      virtualizerRef.current?.destroy()
+      virtualizerRef.current = null
+      isInitializedRef.current = false
+    }
+  }, [])
 
   const virtualItems = virtualizer.getVirtualItems()
   const totalSize = virtualizer.getTotalSize()
@@ -60,7 +63,12 @@ export default function Page() {
         <p>Scrolling through {items.length.toLocaleString()} items efficiently</p>
 
         <div
-          ref={scrollElementRef}
+          ref={setScrollElementRef}
+          onScroll={(e) => {
+            flushSync(() => {
+              virtualizer.handleScroll(e)
+            })
+          }}
           style={{
             height: "400px",
             overflow: "auto",
@@ -105,14 +113,9 @@ export default function Page() {
                       color: "#1a1a1a",
                     }}
                   >
-                    <span>{item.name}</span>
-                    <span>{item.value}</span>
+                    {item.name}
                   </div>
-                  <p>
-                    {item.description}{" "}
-                    {virtualItem.index % 3 === 0 &&
-                      "This item has some extra content to demonstrate dynamic sizing and how the virtualizer handles variable height items efficiently."}
-                  </p>
+                  <p>{item.description}</p>
                   <div
                     style={{
                       fontSize: "12px",

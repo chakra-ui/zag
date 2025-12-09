@@ -4,6 +4,7 @@ export interface VirtualItem {
   end: number
   size: number
   lane: number
+  measureElement: (element: HTMLElement | null) => void
 }
 
 export interface ItemState {
@@ -58,12 +59,6 @@ export interface ScrollToIndexResult {
   scrollLeft?: number
 }
 
-export interface AsyncScrollProgress {
-  completed: number
-  total: number
-  stage: "measuring" | "calculating" | "scrolling"
-}
-
 export interface ScrollHistoryEntry {
   offset: number
   timestamp: number
@@ -71,14 +66,20 @@ export interface ScrollHistoryEntry {
   reason: "user" | "programmatic" | "resize" | "data-change"
 }
 
-export interface ScrollRestorationOptions {
-  /** Enable scroll position restoration */
-  enableScrollRestoration?: boolean
-  /** Maximum number of history entries to keep */
-  maxHistoryEntries?: number
+export interface ScrollRestorationConfig {
+  /** Maximum number of history entries to keep (default: 10) */
+  maxEntries?: number
   /** Key to identify scroll position for restoration */
+  key?: string
+  /** Tolerance for considering positions equal in pixels (default: 5) */
+  tolerance?: number
+}
+
+/** Internal options for ScrollRestorationManager */
+export interface ScrollRestorationOptions {
+  enableScrollRestoration?: boolean
+  maxHistoryEntries?: number
   restorationKey?: string
-  /** Tolerance for considering positions equal (in pixels) */
   restorationTolerance?: number
 }
 
@@ -89,21 +90,24 @@ export interface DOMOrderOptions {
   domReorderDelay?: number
 }
 
-export interface AdvancedOverscanOptions {
-  /** Enable advanced overscan with velocity and direction awareness */
-  enableAdvancedOverscan?: boolean
+export interface OverscanConfig {
+  /** Base number of items to render outside viewport (default: 3) */
+  count?: number
+  /** Enable dynamic overscan based on scroll velocity */
+  dynamic?: boolean
   /**
-   * Overscan strategy to use:
+   * Strategy for calculating overscan:
    * - "adaptive": Dynamically adjusts based on scroll behavior (default)
    * - "conservative": Limits overscan to 2x base for memory efficiency
    * - "aggressive": Maximizes overscan to prevent white space during fast scroll
-   * - "velocity": Same as aggressive, optimized for velocity-based calculations
    */
-  overscanStrategy?: "adaptive" | "conservative" | "aggressive" | "velocity"
+  strategy?: "adaptive" | "conservative" | "aggressive"
+  /** Maximum multiplier for dynamic overscan (default: 3) */
+  maxMultiplier?: number
+  /** Add more overscan in scroll direction */
+  directional?: boolean
   /** Enable predictive overscan based on scroll patterns */
-  enablePredictiveOverscan?: boolean
-  /** Use directional overscan (more overscan in scroll direction) */
-  enableDirectionalOverscan?: boolean
+  predictive?: boolean
 }
 
 export interface Range {
@@ -117,27 +121,28 @@ export interface MeasureCache {
   end: number
 }
 
-export interface BaseVirtualizerOptions extends ScrollRestorationOptions, DOMOrderOptions, AdvancedOverscanOptions {
-  /** Function to get the container element - called when virtualizer needs it */
-  getContainerEl?: () => HTMLElement | null
+export interface VirtualizerBaseOptions extends DOMOrderOptions {
+  /** Function to get the scrolling element - called when virtualizer needs it */
+  getScrollingEl?: () => HTMLElement | null
 
   /** Total number of items */
   count: number
 
   /** Estimated item size (height for vertical, width for horizontal) */
-  estimatedSize: number
+  estimatedSize: (index: number) => number
 
   /** Gap between items */
   gap?: number
 
-  /** Overscan count - extra items to render outside viewport */
-  overscan?: number
+  /**
+   * Overscan configuration - extra items to render outside viewport.
+   */
+  overscan?: OverscanConfig
 
-  /** Enable dynamic overscan based on scroll velocity */
-  dynamicOverscan?: boolean
-
-  /** Maximum overscan multiplier when scrolling fast */
-  maxOverscanMultiplier?: number
+  /**
+   * Scroll restoration configuration - enables saving and restoring scroll position.
+   */
+  scrollRestoration?: ScrollRestorationConfig
 
   /** Horizontal scrolling */
   horizontal?: boolean
@@ -153,9 +158,6 @@ export interface BaseVirtualizerOptions extends ScrollRestorationOptions, DOMOrd
 
   /** Initial scroll offset */
   initialOffset?: number
-
-  /** Use window scrolling instead of container */
-  useWindowScroll?: boolean
 
   /** Root margin for intersection observer */
   rootMargin?: string
@@ -186,17 +188,26 @@ export interface BaseVirtualizerOptions extends ScrollRestorationOptions, DOMOrd
 
   /** Callback when container is resized (auto-sizing only) */
   onContainerResize?: (size: { width: number; height: number }) => void
-
-  /** Callback for async scroll progress */
-  onAsyncScrollProgress?: (progress: AsyncScrollProgress) => void
 }
 
-export interface ListVirtualizerOptions extends BaseVirtualizerOptions {
+/** Alias for VirtualizerBaseOptions */
+export type VirtualizerOptions = VirtualizerBaseOptions
+
+export interface ListVirtualizerOptions extends VirtualizerBaseOptions {
   /** Get item size dynamically */
   getItemSize?: (index: number) => number
 
+  /** Number of lanes (columns for vertical, rows for horizontal). Defaults to 1. */
+  lanes?: number
+
   /** Optional grouping info for sticky headers */
   groups?: GroupMeta[]
+
+  /**
+   * The initial size of the viewport for server-side rendering.
+   * This should be the height for vertical lists or the width for horizontal lists.
+   */
+  initialSize?: number
 }
 
 export interface GroupMeta {
@@ -208,17 +219,48 @@ export interface GroupMeta {
   headerSize?: number
 }
 
-export interface TableVirtualizerOptions extends ListVirtualizerOptions {
-  /** Optional sticky header height */
-  headerHeight?: number
+export interface GridVirtualizerOptions extends Omit<VirtualizerBaseOptions, "count" | "estimatedSize"> {
+  /** Number of rows in the grid */
+  rowCount: number
+
+  /** Number of columns in the grid */
+  columnCount: number
+
+  /** Estimated row height for each row */
+  estimatedRowSize: (rowIndex: number) => number
+
+  /** Estimated column width for each column */
+  estimatedColumnSize: (columnIndex: number) => number
+
+  /** Callback when horizontal scroll changes */
+  onHorizontalScroll?: (offset: number) => void
+
+  /**
+   * The initial size of the viewport for server-side rendering.
+   * @see https://tanstack.com/virtual/v3/docs/framework/react/ssr
+   */
+  initialSize?: { width: number; height: number }
 }
 
-export interface GridVirtualizerOptions extends BaseVirtualizerOptions {
-  /** Number of lanes (columns) */
-  lanes: number
+/** Virtual cell for grid virtualizer */
+export interface VirtualCell {
+  /** Row index */
+  row: number
+  /** Column index */
+  column: number
+  /** X position (left offset) */
+  x: number
+  /** Y position (top offset) */
+  y: number
+  /** Cell width */
+  width: number
+  /** Cell height */
+  height: number
+  /** Ref callback for measuring cell */
+  measureElement: (element: HTMLElement | null) => void
 }
 
-export interface MasonryVirtualizerOptions extends BaseVirtualizerOptions {
+export interface MasonryVirtualizerOptions extends VirtualizerBaseOptions {
   /** Number of lanes (columns) */
   lanes: number
 

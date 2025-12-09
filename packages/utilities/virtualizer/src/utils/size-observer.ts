@@ -1,20 +1,19 @@
 import { resizeObserverBorderBox } from "@zag-js/dom-query"
 
-export interface AutoSizerCallbacks {
+export interface SizeObserverCallbacks {
   onResize?: (size: { width: number; height: number }) => void
 }
 
 /**
- * Automatically measures and tracks container size
- * Similar to React Spectrum's auto-sizing capability
+ * Observes and tracks container size changes
  */
-export class AutoSizer {
+export class SizeObserver {
   private element: Element | null = null
   private unobserveCallback: (() => void) | undefined = undefined
-  private callbacks: AutoSizerCallbacks = {}
+  private callbacks: SizeObserverCallbacks = {}
   private lastSize = { width: 0, height: 0 }
 
-  constructor(callbacks: AutoSizerCallbacks = {}) {
+  constructor(callbacks: SizeObserverCallbacks = {}) {
     this.callbacks = callbacks
   }
 

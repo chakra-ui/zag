@@ -1,9 +1,10 @@
+import type { CSSProperties, ItemState, ListVirtualizerOptions, Range, VirtualItem } from "./types"
+import { FenwickTree } from "./utils/fenwick-tree"
 import { Virtualizer } from "./virtualizer"
-import { FenwickTree } from "./fenwick-tree"
-import type { ListVirtualizerOptions, Range, VirtualItem, CSSProperties, ItemState } from "./types"
 
 /**
  * Virtualizer for one-dimensional lists (vertical or horizontal).
+ * Supports optional lanes for grid-like layouts.
  * Uses incremental measurement with caching for dynamic item sizes.
  */
 export class ListVirtualizer extends Virtualizer<ListVirtualizerOptions> {
@@ -11,6 +12,21 @@ export class ListVirtualizer extends Virtualizer<ListVirtualizerOptions> {
   private fenwick: FenwickTree | null = null
   private sizeCache: Float64Array | null = null
   private groups: ListVirtualizerOptions["groups"] | null = null
+
+  constructor(options: ListVirtualizerOptions) {
+    super(options)
+    if (options.initialSize) {
+      this.setViewportSize(options.initialSize)
+    }
+  }
+
+  private get lanes(): number {
+    return this.options.lanes ?? 1
+  }
+
+  private get isGrid(): boolean {
+    return this.lanes > 1
+  }
 
   protected initializeMeasurements(): void {
     this.resetMeasurements()
@@ -34,23 +50,46 @@ export class ListVirtualizer extends Virtualizer<ListVirtualizerOptions> {
     this.resetMeasurements()
   }
 
-  protected onItemMeasured(index: number, size: number): void {
+  protected getKnownItemSize(index: number): number | undefined {
+    return this.measuredSizes.get(index)
+  }
+
+  protected onItemMeasured(index: number, size: number): boolean {
+    const currentSize = this.getItemSize(index)
+    if (currentSize === size) return false
+
     this.measuredSizes.set(index, size)
-    if (!this.fenwick || !this.sizeCache) return
-    const current = this.sizeCache[index]
+
+    if (!this.fenwick || !this.sizeCache) return true
+
+    const delta = size - this.sizeCache[index]
     this.sizeCache[index] = size
-    const delta = size - current
-    this.fenwick.add(index, delta)
+
+    if (delta !== 0) {
+      this.fenwick.add(index, delta)
+    }
+
+    return true
   }
 
   protected getMeasurement(index: number): { start: number; size: number; end: number } {
     const cached = this.measureCache.get(index)
     if (cached) return cached
 
-    const { paddingStart } = this.options
+    const { paddingStart, gap } = this.options
     const size = this.getItemSize(index)
-    const prefix = this.getPrefixSize(index - 1)
-    const start = paddingStart + prefix
+
+    let start: number
+    if (this.isGrid) {
+      // For grid mode, calculate row-based positioning
+      const row = Math.floor(index / this.lanes)
+      const rowHeight = this.getEstimatedSize(0) + gap
+      start = paddingStart + row * rowHeight
+    } else {
+      // For list mode, use prefix sum
+      const prefix = this.getPrefixSize(index - 1)
+      start = paddingStart + prefix
+    }
 
     const measurement: { start: number; size: number; end: number } = {
       start,
@@ -62,33 +101,57 @@ export class ListVirtualizer extends Virtualizer<ListVirtualizerOptions> {
     return measurement
   }
 
-  protected getItemLane(): number {
-    return 0
+  protected getItemLane(index: number): number {
+    return this.isGrid ? index % this.lanes : 0
   }
 
   protected findVisibleRange(viewportStart: number, viewportEnd: number): Range {
-    const { count, paddingStart } = this.options
+    const { count, paddingStart, gap } = this.options
     if (count === 0) return { startIndex: 0, endIndex: -1 }
 
-    // Use binary search to find start index - O(log n)
+    if (this.isGrid) {
+      // Grid mode: calculate based on rows
+      const rowHeight = this.getEstimatedSize(0) + gap
+      const startRow = Math.max(0, Math.floor((viewportStart - paddingStart) / rowHeight))
+      const endRow = Math.ceil((viewportEnd - paddingStart) / rowHeight)
+
+      const startIndex = startRow * this.lanes
+      const endIndex = Math.min(endRow * this.lanes + this.lanes - 1, count - 1)
+
+      return { startIndex, endIndex }
+    }
+
+    // List mode: use binary search with fenwick tree
     const startIndex = this.findIndexAtOffset(viewportStart)
 
     // Find end index efficiently using prefix sums
-    // Instead of calling getMeasurement in a loop, calculate end position directly
     let endIndex = startIndex
     let endPos = paddingStart + this.getPrefixSize(startIndex) + this.getItemSize(startIndex)
 
     while (endIndex < count - 1 && endPos < viewportEnd) {
       endIndex++
-      endPos += this.options.gap + this.getItemSize(endIndex)
+      endPos += gap + this.getItemSize(endIndex)
     }
 
     return { startIndex, endIndex }
   }
 
-  protected getItemStateData(virtualItem: VirtualItem): ItemState {
-    const { horizontal } = this.options
-    const { index, start, size } = virtualItem
+  getItemState(virtualItem: VirtualItem): ItemState {
+    const { horizontal, gap } = this.options
+    const { index, start, size, lane } = virtualItem
+
+    if (this.isGrid) {
+      const laneSize = this.getLaneSize()
+      const laneOffset = lane * (laneSize + gap)
+
+      return {
+        index,
+        key: index,
+        position: horizontal ? { x: start, y: laneOffset } : { x: laneOffset, y: start },
+        size: { width: laneSize, height: size },
+        isScrolling: this.isScrolling,
+      }
+    }
 
     return {
       index,
@@ -102,21 +165,42 @@ export class ListVirtualizer extends Virtualizer<ListVirtualizerOptions> {
     }
   }
 
-  protected getItemStyleData(virtualItem: VirtualItem): CSSProperties {
-    const { horizontal, rtl } = this.options
-    const { start, size } = virtualItem
+  getItemStyle(virtualItem: VirtualItem): CSSProperties {
+    const { horizontal, rtl, gap } = this.options
+    const { start, lane } = virtualItem
 
-    // For RTL horizontal mode, we need to position from the right
+    if (this.isGrid) {
+      const laneSize = this.getLaneSize()
+      let x = lane * (laneSize + gap)
+      const y = start
+
+      // For RTL mode, reverse the lane positioning
+      if (rtl) {
+        x = (this.lanes - 1 - lane) * (laneSize + gap)
+      }
+
+      let transform: string
+      if (horizontal) {
+        transform = rtl ? `translate3d(-${y}px, ${x}px, 0)` : `translate3d(${y}px, ${x}px, 0)`
+      } else {
+        transform = `translate3d(${x}px, ${y}px, 0)`
+      }
+
+      return {
+        position: "absolute",
+        top: 0,
+        left: 0,
+        width: laneSize,
+        height: undefined,
+        transform,
+      }
+    }
+
+    // List mode
     let transform: string
     if (horizontal) {
-      if (rtl) {
-        // In RTL mode, items are positioned from the right
-        transform = `translate3d(-${start}px, 0, 0)`
-      } else {
-        transform = `translate3d(${start}px, 0, 0)`
-      }
+      transform = rtl ? `translate3d(-${start}px, 0, 0)` : `translate3d(${start}px, 0, 0)`
     } else {
-      // Vertical mode is not affected by RTL
       transform = `translate3d(0, ${start}px, 0)`
     }
 
@@ -124,28 +208,48 @@ export class ListVirtualizer extends Virtualizer<ListVirtualizerOptions> {
       position: "absolute",
       top: 0,
       left: 0,
-      width: horizontal ? size : "100%",
-      height: horizontal ? "100%" : size,
+      width: horizontal ? undefined : "100%",
+      height: horizontal ? "100%" : undefined,
       transform,
-      contain: "layout style paint",
     }
   }
 
   getTotalSize(): number {
-    const { count, paddingStart, paddingEnd } = this.options
+    const { count, paddingStart, paddingEnd, gap } = this.options
 
     if (count === 0) return paddingStart + paddingEnd
 
-    // Use fenwick tree for O(log n) total size calculation instead of O(n) iteration
-    // getPrefixSize(count - 1) gives us the position of the last item
-    // Add the size of the last item to get total content size
+    if (this.isGrid) {
+      // Grid mode: calculate based on rows
+      const rows = Math.ceil(count / this.lanes)
+      const rowHeight = this.getEstimatedSize(0)
+      return paddingStart + rows * rowHeight + (rows - 1) * gap + paddingEnd
+    }
+
+    // List mode: use fenwick tree for O(log n) total size calculation
     const lastItemStart = this.getPrefixSize(count - 1)
     const lastItemSize = this.getItemSize(count - 1)
 
     return paddingStart + lastItemStart + lastItemSize + paddingEnd
   }
 
+  private getLaneSize(): number {
+    const { gap } = this.options
+    if (this.containerSize <= 0) return 200
+    return (this.containerSize - (this.lanes - 1) * gap) / this.lanes
+  }
+
+  protected onContainerSizeChange(): void {
+    // Grid measurement depends on container width for lane sizing
+    if (this.isGrid) {
+      this.measureCache.clear()
+    }
+  }
+
   private getItemSize(index: number): number {
+    const measuredSize = this.measuredSizes?.get(index)
+    if (measuredSize !== undefined) return measuredSize
+
     // Fast path: use sizeCache if available and populated (O(1) array access)
     // Note: sizeCache values are > 0 when populated, 0 means uninitialized
     if (this.sizeCache && index < this.sizeCache.length && this.sizeCache[index] > 0) {
@@ -153,13 +257,11 @@ export class ListVirtualizer extends Virtualizer<ListVirtualizerOptions> {
     }
 
     // Fallback: check measured sizes, then getItemSize callback, then estimate
-    const { estimatedSize, getItemSize } = this.options
-    return this.measuredSizes?.get(index) ?? getItemSize?.(index) ?? estimatedSize
+    const { getItemSize } = this.options
+    return getItemSize?.(index) ?? this.getEstimatedSize(index)
   }
 
   private getPrefixSize(index: number): number {
-    if (index < 0) return 0
-
     // Lazy initialization: recreate fenwick if null
     if (!this.fenwick) {
       const count = this.options.count
@@ -172,17 +274,22 @@ export class ListVirtualizer extends Virtualizer<ListVirtualizerOptions> {
       }
     }
 
-    const total = this.fenwick.prefixSum(index)
-    // Only subtract gap if there's actually a gap configured
-    const { gap } = this.options
-    return gap > 0 ? total - gap : total
+    return this.fenwick.prefixSumWithGap(index, this.options.gap)
   }
 
   protected findIndexAtOffset(offset: number): number {
-    if (!this.fenwick) return 0
-    const { paddingStart } = this.options
-    const target = Math.max(0, offset - paddingStart)
-    return this.fenwick.lowerBound(target)
+    const { paddingStart, gap } = this.options
+
+    if (this.isGrid) {
+      // Grid mode: calculate based on rows
+      const adjustedOffset = Math.max(0, offset - paddingStart)
+      const rowHeight = this.getEstimatedSize(0) + gap
+      const row = Math.floor(adjustedOffset / rowHeight)
+      return Math.min(row * this.lanes, this.options.count - 1)
+    }
+
+    // List mode: use fenwick tree
+    return this.fenwick?.lowerBoundWithPadding(offset, paddingStart) ?? 0
   }
 
   /**
@@ -233,6 +340,31 @@ export class ListVirtualizer extends Virtualizer<ListVirtualizerOptions> {
       headerSize: currentHeaderSize,
       translateY,
       offset: viewportOffset - currentStart,
+    }
+  }
+
+  /**
+   * Get ARIA attributes for the list container
+   */
+  getContainerAriaAttrs() {
+    const { count, horizontal } = this.options
+    return {
+      role: "list" as const,
+      "aria-orientation": horizontal ? ("horizontal" as const) : ("vertical" as const),
+      "aria-rowcount": horizontal ? undefined : count,
+      "aria-colcount": horizontal ? count : undefined,
+    }
+  }
+
+  /**
+   * Get ARIA attributes for a list item
+   */
+  getItemAriaAttrs(index: number) {
+    const { count } = this.options
+    return {
+      role: "listitem" as const,
+      "aria-posinset": index + 1,
+      "aria-setsize": count,
     }
   }
 }

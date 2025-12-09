@@ -24,11 +24,19 @@ export class MasonryVirtualizer extends Virtualizer<MasonryVirtualizerOptions> {
     this.resetMeasurements()
   }
 
-  protected onItemMeasured(index: number, size: number): void {
+  protected getKnownItemSize(index: number): number | undefined {
+    return this.measuredSizes.get(index)
+  }
+
+  protected onItemMeasured(index: number, size: number): boolean {
+    const currentSize = this.getMasonryItemSize(index)
+    if (currentSize === size) return false
+
     this.measuredSizes.set(index, size)
 
     // Use incremental updates instead of full recalculation
     this.updatePositionsFrom(index)
+    return true
   }
 
   protected onContainerSizeChange(): void {
@@ -94,7 +102,7 @@ export class MasonryVirtualizer extends Virtualizer<MasonryVirtualizerOptions> {
     return result
   }
 
-  protected getItemStateData(virtualItem: VirtualItem): ItemState {
+  getItemState(virtualItem: VirtualItem): ItemState {
     const { gap } = this.options
     const { index, start, size, lane } = virtualItem
     const laneSize = this.getLaneSize()
@@ -109,9 +117,9 @@ export class MasonryVirtualizer extends Virtualizer<MasonryVirtualizerOptions> {
     }
   }
 
-  protected getItemStyleData(virtualItem: VirtualItem): CSSProperties {
+  getItemStyle(virtualItem: VirtualItem): CSSProperties {
     const { gap, rtl } = this.options
-    const { start, size, lane } = virtualItem
+    const { start, lane } = virtualItem
     const laneSize = this.getLaneSize()
 
     let x = lane * (laneSize + gap)
@@ -122,14 +130,14 @@ export class MasonryVirtualizer extends Virtualizer<MasonryVirtualizerOptions> {
       x = (totalLanes - 1 - lane) * (laneSize + gap)
     }
 
+    // Don't constrain height - let items size naturally for measurement
     return {
       position: "absolute",
       top: 0,
       left: 0,
       width: laneSize,
-      height: size,
+      height: undefined,
       transform: `translate3d(${x}px, ${start}px, 0)`,
-      contain: "layout style paint",
     }
   }
 
@@ -177,9 +185,9 @@ export class MasonryVirtualizer extends Virtualizer<MasonryVirtualizerOptions> {
   }
 
   private getMasonryItemSize(index: number): number {
-    const { estimatedSize, getMasonryItemSize } = this.options
+    const { getMasonryItemSize } = this.options
     const laneSize = this.getLaneSize()
-    return this.measuredSizes.get(index) ?? getMasonryItemSize?.(index, laneSize) ?? estimatedSize
+    return this.measuredSizes.get(index) ?? getMasonryItemSize?.(index, laneSize) ?? this.getEstimatedSize(index)
   }
 
   private getLaneSize(): number {

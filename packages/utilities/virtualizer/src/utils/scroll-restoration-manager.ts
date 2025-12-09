@@ -1,4 +1,4 @@
-import type { ScrollHistoryEntry, ScrollRestorationOptions } from "./types"
+import type { ScrollHistoryEntry, ScrollRestorationOptions } from "../types"
 
 /**
  * Manages scroll position history and restoration

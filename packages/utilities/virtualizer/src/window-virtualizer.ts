@@ -3,8 +3,6 @@ import { ListVirtualizer } from "./list-virtualizer"
 import type { ListVirtualizerOptions } from "./types"
 
 interface WindowVirtualizerOptions extends ListVirtualizerOptions {
-  /** Use window scrolling instead of container scrolling */
-  useWindowScroll: true
   /** Element to measure scroll offset against (defaults to window) */
   scrollingElement?: Element
   /** Offset from window top/left where content starts */

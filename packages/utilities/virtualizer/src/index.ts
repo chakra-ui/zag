@@ -1,35 +1,37 @@
 // Core virtualizer types that users need
 export type {
-  VirtualItem,
-  ItemState,
   CSSProperties,
+  DOMOrderOptions,
+  GridVirtualizerOptions,
+  ItemState,
+  ListVirtualizerOptions,
+  MasonryVirtualizerOptions,
+  OverscanConfig,
+  PerformanceMetrics,
+  Range,
+  ScrollHistoryEntry,
+  ScrollRestorationConfig,
   ScrollState,
   ScrollToIndexOptions,
   ScrollToIndexResult,
-  AsyncScrollProgress,
-  ScrollHistoryEntry,
-  ScrollRestorationOptions,
-  DOMOrderOptions,
-  AdvancedOverscanOptions,
-  Range,
-  PerformanceMetrics,
   StickyConfig,
   ViewRecyclingStats,
-  BaseVirtualizerOptions,
-  ListVirtualizerOptions,
-  GridVirtualizerOptions,
-  MasonryVirtualizerOptions,
-  TableVirtualizerOptions,
+  VirtualCell,
+  VirtualItem,
+  VirtualizerOptions,
 } from "./types"
 
-export * from "./list-virtualizer"
 export * from "./grid-virtualizer"
+export * from "./list-virtualizer"
 export * from "./masonry-virtualizer"
-export * from "./table-virtualizer"
 export * from "./window-virtualizer"
 
 // Advanced types for velocity tracking
-export type { VelocityState, OverscanCalculationResult } from "./velocity-tracker"
+export type { OverscanCalculationResult, VelocityState } from "./utils/velocity-tracker"
 
 // Utility classes for advanced use cases
-export { AutoSizer } from "./auto-sizer"
+export { SizeObserver } from "./utils/size-observer"
+
+// Shared utilities
+export { resolveOverscanConfig, DEFAULT_OVERSCAN_CONFIG, SCROLL_END_DELAY_MS } from "./utils/overscan"
+export { getScrollPositionFromEvent, type ScrollPosition } from "./utils/scroll-helpers"

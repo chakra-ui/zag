@@ -1,4 +1,4 @@
-import type { ViewRecyclingStats } from "./types"
+import type { ViewRecyclingStats } from "../types"
 
 type ViewFactory<T = HTMLElement> = () => T
 type ViewInitializer<T = HTMLElement> = (view: T, index: number, data: unknown) => void
