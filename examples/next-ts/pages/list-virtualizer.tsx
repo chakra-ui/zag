@@ -17,39 +17,45 @@ export default function Page() {
 
   const [items] = useState(() => generateItems(10000))
 
-  virtualizerRef.current ||= new ListVirtualizer({
-    count: items.length,
-    estimatedSize: () => 80,
-    overscan: { count: 10 },
-    gap: 0,
-    paddingStart: 0,
-    paddingEnd: 0,
-    initialSize: 400, // Set initial viewport size to match container height
-    getScrollingEl: () => scrollElementRef.current,
-    onRangeChange: () => {
-      if (!isInitializedRef.current) return
-      flushSync(rerender)
-    },
-  })
+  if (!virtualizerRef.current) {
+    virtualizerRef.current = new ListVirtualizer({
+      count: items.length,
+      estimatedSize: () => 80,
+      overscan: { count: 5 },
+      gap: 0,
+      paddingStart: 0,
+      paddingEnd: 0,
+      initialSize: 400, // Set initial viewport size to match container height
+      getScrollingEl: () => scrollElementRef.current,
+      onRangeChange: () => {
+        if (!isInitializedRef.current) return
+        flushSync(rerender)
+      },
+    })
+    // Trigger re-render after creating virtualizer
+    rerender()
+  }
 
   const virtualizer = virtualizerRef.current
 
   // Callback ref to measure when element mounts
-  const setScrollElementRef = useCallback((element: HTMLDivElement | null) => {
-    scrollElementRef.current = element
-    if (element) {
-      virtualizer.measure()
-      isInitializedRef.current = true
-      rerender()
-    }
-  }, [])
+  const setScrollElementRef = useCallback(
+    (element: HTMLDivElement | null) => {
+      scrollElementRef.current = element
+      if (element && virtualizer) {
+        virtualizer.measure()
+        isInitializedRef.current = true
+        rerender()
+      }
+    },
+    [virtualizer],
+  )
 
   // Cleanup on unmount
   useLayoutEffect(() => {
+    const virtualizer = virtualizerRef.current
     return () => {
-      virtualizerRef.current?.destroy()
-      virtualizerRef.current = null
-      isInitializedRef.current = false
+      virtualizer?.destroy()
     }
   }, [])
 
