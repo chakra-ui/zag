@@ -34,7 +34,7 @@
     "@sveltejs/package": "2.5.7",
     "clean-package": "2.2.0",
     "clsx": "^2.1.1",
-    "svelte": "5.45.3",
+    "svelte": "5.45.8",
     "vitest": "4.0.15"
   },
   "peerDependencies": {
