@@ -1,5 +1,12 @@
 # @zag-js/scroll-snap
 
+## 1.32.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/dom-query@1.32.0
+
 ## 1.31.1
 
 ### Patch Changes
