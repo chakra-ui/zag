@@ -4,6 +4,14 @@ All notable changes to this project will be documented in this file.
 
 > For v0.x changelog, see the [v0 branch](https://github.com/chakra-ui/zag/blob/v0/CHANGELOG.md)
 
+## [1.31.1](./#1.31.1) - 2025-12-10
+
+### Fixed
+
+- **Accordion, Menu**: Fix issue where querying elements by `aria-controls` attribute could fail when lazy mounting the
+  content
+- **Rating Group**: Fix issue where rating group becomes unfocusable via keyboard when value is 0
+
 ## [1.31.0](./#1.31.0) - 2025-12-05
 
 ### Added
