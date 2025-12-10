@@ -1,5 +1,26 @@
 # @zag-js/file-upload
 
+## 1.32.0
+
+### Minor Changes
+
+- [`33393b7`](https://github.com/chakra-ui/zag/commit/33393b7f5698192e2330b5f35b17710edf8c7b6e) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - - Add `readOnly` prop to prevent file modifications while keeping
+  component visually active
+  - Add `maxFilesReached` and `remainingFiles` to exposed API
+  - Fix item element IDs to use `name-size` combination for uniqueness (prevents ID collisions with same-named files)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.32.0
+  - @zag-js/core@1.32.0
+  - @zag-js/types@1.32.0
+  - @zag-js/utils@1.32.0
+  - @zag-js/dom-query@1.32.0
+  - @zag-js/file-utils@1.32.0
+  - @zag-js/i18n-utils@1.32.0
+
 ## 1.31.1
 
 ### Patch Changes
