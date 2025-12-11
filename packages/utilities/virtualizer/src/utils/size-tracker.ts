@@ -106,6 +106,33 @@ export class SizeTracker {
   }
 
   /**
+   * Reindex internal measurements when items are inserted/removed before existing indices.
+   * Used for chat-style prepend without losing measured sizes.
+   *
+   * Example: prepend N items => old index i becomes i + N.
+   *
+   * Note: This is an O(m) operation over the number of measured items and is
+   * intended for relatively infrequent structural changes (not per-scroll).
+   */
+  reindex(delta: number, newCount: number): void {
+    if (delta === 0 && newCount === this.count) return
+
+    const nextMeasured = new Map<number, number>()
+    for (const [index, size] of this.measuredSizes) {
+      const nextIndex = index + delta
+      if (nextIndex >= 0 && nextIndex < newCount) {
+        nextMeasured.set(nextIndex, size)
+      }
+    }
+
+    this.count = newCount
+    this.measuredSizes = nextMeasured
+    this.fenwick = new FenwickTree(newCount)
+    this.sizes = new Float64Array(newCount)
+    this.initialized = false
+  }
+
+  /**
    * Clear only measured sizes, keep estimates
    */
   clearMeasurements(): void {

@@ -25,7 +25,6 @@ export default function Page() {
       gap: 0,
       paddingStart: 0,
       paddingEnd: 0,
-      initialSize: 400, // Set initial viewport size to match container height
       getScrollingEl: () => scrollElementRef.current,
       onRangeChange: () => {
         if (!isInitializedRef.current) return

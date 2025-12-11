@@ -10,6 +10,7 @@ export type {
   PerformanceMetrics,
   Range,
   ScrollHistoryEntry,
+  ScrollAnchor,
   ScrollRestorationConfig,
   ScrollState,
   ScrollToIndexOptions,

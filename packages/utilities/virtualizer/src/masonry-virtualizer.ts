@@ -1,34 +1,49 @@
+import type { CSSProperties, ItemState, MasonryVirtualizerOptions, Range, VirtualItem } from "./types"
+import { CacheManager } from "./utils/cache-manager"
 import { Virtualizer } from "./virtualizer"
-import type { MasonryVirtualizerOptions, Range, VirtualItem, CSSProperties, ItemState } from "./types"
 
 /**
  * Virtualizer for masonry layouts (Pinterest-style multi-lane columns).
  */
 export class MasonryVirtualizer extends Virtualizer<MasonryVirtualizerOptions> {
-  private laneOffsets: number[] = []
-  private masonryPositions: Map<number, { start: number; lane: number }> = new Map()
-  private measuredSizes: Map<number, number> = new Map()
+  // NOTE:
+  // Virtualizer's base constructor calls `initializeMeasurements()` before subclass
+  // field initializers run. To avoid runtime crashes, all subclass state is
+  // lazily initialized in methods (no reliance on field initializers).
+  private laneItems!: Array<Array<{ index: number; start: number; end: number }>>
+  private laneOffsets!: number[]
+  private masonryPositions!: Map<number, { start: number; lane: number }>
+  private measuredSizes!: Map<number, number>
+  private rangeCache!: CacheManager<string, Range>
 
   protected initializeMeasurements(): void {
     this.recalculatePositions()
   }
 
   protected resetMeasurements(): void {
+    if (!this.masonryPositions) this.masonryPositions = new Map()
+    if (!this.measuredSizes) this.measuredSizes = new Map()
+    if (!this.laneOffsets) this.laneOffsets = []
+    if (!this.laneItems) this.laneItems = []
     this.measureCache.clear()
     this.masonryPositions.clear()
+    this.laneItems = []
+    if (!this.rangeCache) this.rangeCache = new CacheManager<string, Range>(50)
+    this.rangeCache.clear()
     this.recalculatePositions()
   }
 
   protected onItemsChanged(): void {
-    this.measuredSizes.clear()
+    this.measuredSizes?.clear()
     this.resetMeasurements()
   }
 
   protected getKnownItemSize(index: number): number | undefined {
-    return this.measuredSizes.get(index)
+    return this.measuredSizes?.get(index)
   }
 
   protected onItemMeasured(index: number, size: number): boolean {
+    if (!this.measuredSizes) this.measuredSizes = new Map()
     const currentSize = this.getMasonryItemSize(index)
     if (currentSize === size) return false
 
@@ -53,53 +68,75 @@ export class MasonryVirtualizer extends Virtualizer<MasonryVirtualizerOptions> {
   }
 
   protected getItemLane(index: number): number {
-    return this.masonryPositions.get(index)?.lane ?? 0
+    return this.masonryPositions?.get(index)?.lane ?? 0
   }
 
   protected findVisibleRange(viewportStart: number, viewportEnd: number): Range {
-    const { count, lanes } = this.options
+    const { count, lanes, gap, paddingStart = 0 } = this.options
+    if (count === 0) return { startIndex: 0, endIndex: -1 }
+
+    // Ensure lane index is available
+    if (!this.laneItems || this.laneItems.length === 0) this.recalculatePositions()
+
+    if (!this.rangeCache) this.rangeCache = new CacheManager<string, Range>(50)
+    const cacheKey = `${viewportStart}:${viewportEnd}:${count}:${lanes}:${gap}:${paddingStart}:${this.containerSize}`
+    const cached = this.rangeCache.get(cacheKey)
+    if (cached) return cached
 
     let startIndex = count
     let endIndex = -1
 
-    for (let i = 0; i < count; i++) {
-      const measurement = this.getMeasurement(i)
-      if (measurement.end >= viewportStart && measurement.start <= viewportEnd) {
-        startIndex = Math.min(startIndex, i)
-        endIndex = Math.max(endIndex, i)
-      }
+    for (let lane = 0; lane < lanes; lane++) {
+      const items = this.laneItems[lane]
+      if (!items || items.length === 0) continue
+
+      const firstPos = this.findFirstLaneItemIntersecting(items, viewportStart)
+      if (firstPos === -1) continue
+
+      const lastPos = this.findLastLaneItemStartingBefore(items, viewportEnd)
+      if (lastPos === -1) continue
+
+      startIndex = Math.min(startIndex, items[firstPos].index)
+      endIndex = Math.max(endIndex, items[lastPos].index)
     }
 
     if (startIndex > endIndex) {
-      return { startIndex: 0, endIndex: Math.min(lanes - 1, count - 1) }
+      const near = this.findIndexAtOffset(viewportStart)
+      const range = { startIndex: near, endIndex: near }
+      this.rangeCache.set(cacheKey, range)
+      return range
     }
 
-    return { startIndex, endIndex }
+    const range = { startIndex, endIndex }
+    this.rangeCache.set(cacheKey, range)
+    return range
   }
 
   protected findIndexAtOffset(offset: number): number {
-    // For masonry, we need to search through items since positions are irregular
-    // Use binary search for better performance than linear search
-    const { count, paddingStart } = this.options
-    const targetOffset = Math.max(0, offset - paddingStart)
+    const { count, lanes } = this.options
+    if (count === 0) return 0
 
-    let low = 0
-    let high = count - 1
-    let result = 0
+    // Ensure lane index is available
+    if (!this.laneItems || this.laneItems.length === 0) this.recalculatePositions()
 
-    while (low <= high) {
-      const mid = Math.floor((low + high) / 2)
-      const measurement = this.getMeasurement(mid)
+    let bestIndex = 0
+    let bestStart = -Infinity
 
-      if (measurement.start <= targetOffset) {
-        result = mid
-        low = mid + 1
-      } else {
-        high = mid - 1
+    for (let lane = 0; lane < lanes; lane++) {
+      const items = this.laneItems[lane]
+      if (!items || items.length === 0) continue
+
+      const pos = this.findLastLaneItemStartingBefore(items, offset)
+      if (pos === -1) continue
+
+      const candidate = items[pos]
+      if (candidate.start > bestStart) {
+        bestStart = candidate.start
+        bestIndex = candidate.index
       }
     }
 
-    return result
+    return bestIndex
   }
 
   getItemState(virtualItem: VirtualItem): ItemState {
@@ -110,7 +147,7 @@ export class MasonryVirtualizer extends Virtualizer<MasonryVirtualizerOptions> {
 
     return {
       index,
-      key: index,
+      key: virtualItem.key,
       position: { x, y: start },
       size: { width: laneSize, height: size },
       isScrolling: this.isScrolling,
@@ -142,7 +179,7 @@ export class MasonryVirtualizer extends Virtualizer<MasonryVirtualizerOptions> {
   }
 
   getTotalSize(): number {
-    if (this.laneOffsets.length === 0) {
+    if (!this.laneOffsets || this.laneOffsets.length === 0) {
       this.recalculatePositions()
     }
 
@@ -152,25 +189,36 @@ export class MasonryVirtualizer extends Virtualizer<MasonryVirtualizerOptions> {
   }
 
   private recalculatePositions(): void {
-    const { count, lanes, gap, paddingStart } = this.options
+    const { count, lanes, gap, paddingStart = 0 } = this.options
+
+    if (!this.masonryPositions) this.masonryPositions = new Map()
+    if (!this.measuredSizes) this.measuredSizes = new Map()
+    if (!this.laneOffsets) this.laneOffsets = []
+    if (!this.laneItems) this.laneItems = []
+    if (!this.rangeCache) this.rangeCache = new CacheManager<string, Range>(50)
 
     this.laneOffsets = new Array(lanes).fill(paddingStart)
+    this.laneItems = new Array(lanes).fill(null).map(() => [] as Array<{ index: number; start: number; end: number }>)
     this.masonryPositions.clear()
     this.measureCache.clear()
+    this.rangeCache.clear()
 
     for (let i = 0; i < count; i++) {
       const lane = this.getShortestLane()
       const start = this.laneOffsets[lane]
       const size = this.getMasonryItemSize(i)
+      const end = start + size
 
       this.masonryPositions.set(i, { start, lane })
-      this.measureCache.set(i, { start, size, end: start + size })
+      this.measureCache.set(i, { start, size, end })
+      this.laneItems[lane].push({ index: i, start, end })
 
       this.laneOffsets[lane] += size + gap
     }
   }
 
   private getShortestLane(): number {
+    if (!this.laneOffsets || this.laneOffsets.length === 0) return 0
     let shortestLane = 0
     let shortestOffset = this.laneOffsets[0] ?? 0
 
@@ -187,7 +235,7 @@ export class MasonryVirtualizer extends Virtualizer<MasonryVirtualizerOptions> {
   private getMasonryItemSize(index: number): number {
     const { getMasonryItemSize } = this.options
     const laneSize = this.getLaneSize()
-    return this.measuredSizes.get(index) ?? getMasonryItemSize?.(index, laneSize) ?? this.getEstimatedSize(index)
+    return this.measuredSizes?.get(index) ?? getMasonryItemSize?.(index, laneSize) ?? this.getEstimatedSize(index)
   }
 
   private getLaneSize(): number {
@@ -204,21 +252,30 @@ export class MasonryVirtualizer extends Virtualizer<MasonryVirtualizerOptions> {
    * Incremental update: recalculate positions from a specific index onwards
    */
   private updatePositionsFrom(fromIndex: number): void {
-    const { count, lanes, gap } = this.options
+    const { count, lanes, gap, paddingStart = 0 } = this.options
 
     if (fromIndex === 0) {
       this.recalculatePositions()
       return
     }
 
+    if (!this.masonryPositions) this.masonryPositions = new Map()
+    if (!this.measuredSizes) this.measuredSizes = new Map()
+    if (!this.laneOffsets) this.laneOffsets = new Array(lanes).fill(paddingStart)
+    if (!this.laneItems) this.laneItems = new Array(lanes).fill(null).map(() => [])
+
     // Find the lane heights at the point where we're starting the update
-    const laneHeights = new Array(lanes).fill(0)
+    const laneHeights = new Array(lanes).fill(paddingStart)
+    const nextLaneItems = new Array(lanes)
+      .fill(null)
+      .map(() => [] as Array<{ index: number; start: number; end: number }>)
 
     // Calculate lane heights up to fromIndex
     for (let i = 0; i < fromIndex; i++) {
       const position = this.masonryPositions.get(i)
       const cached = this.measureCache.get(i)
       if (position && cached) {
+        nextLaneItems[position.lane].push({ index: i, start: cached.start, end: cached.end })
         laneHeights[position.lane] = Math.max(laneHeights[position.lane], cached.end + gap)
       }
     }
@@ -227,7 +284,7 @@ export class MasonryVirtualizer extends Virtualizer<MasonryVirtualizerOptions> {
     for (let i = fromIndex; i < count; i++) {
       // Find shortest lane
       let shortestLane = 0
-      let shortestHeight = laneHeights[0]
+      let shortestHeight = laneHeights[0] ?? paddingStart
       for (let lane = 1; lane < lanes; lane++) {
         if (laneHeights[lane] < shortestHeight) {
           shortestLane = lane
@@ -242,12 +299,61 @@ export class MasonryVirtualizer extends Virtualizer<MasonryVirtualizerOptions> {
       // Update position and measurement cache
       this.masonryPositions.set(i, { start, lane: shortestLane })
       this.measureCache.set(i, { start, size, end })
+      nextLaneItems[shortestLane].push({ index: i, start, end })
 
       // Update lane height
       laneHeights[shortestLane] = end + gap
     }
 
     // Update lane offsets for total size calculation
-    this.laneOffsets = laneHeights.map((h) => h - gap) // Remove trailing gap
+    this.laneOffsets = laneHeights.map((h) => Math.max(paddingStart, h - gap)) // Remove trailing gap
+    this.laneItems = nextLaneItems
+    this.rangeCache?.clear()
+  }
+
+  /**
+   * Binary search for the first item in a lane whose end >= viewportStart.
+   * Returns the position in the lane array, or -1 if none.
+   */
+  private findFirstLaneItemIntersecting(
+    items: Array<{ index: number; start: number; end: number }>,
+    viewportStart: number,
+  ): number {
+    let lo = 0
+    let hi = items.length - 1
+    let res = -1
+    while (lo <= hi) {
+      const mid = (lo + hi) >> 1
+      if (items[mid].end >= viewportStart) {
+        res = mid
+        hi = mid - 1
+      } else {
+        lo = mid + 1
+      }
+    }
+    return res
+  }
+
+  /**
+   * Binary search for the last item in a lane whose start <= viewportEnd.
+   * Returns the position in the lane array, or -1 if none.
+   */
+  private findLastLaneItemStartingBefore(
+    items: Array<{ index: number; start: number; end: number }>,
+    viewportEnd: number,
+  ): number {
+    let lo = 0
+    let hi = items.length - 1
+    let res = -1
+    while (lo <= hi) {
+      const mid = (lo + hi) >> 1
+      if (items[mid].start <= viewportEnd) {
+        res = mid
+        lo = mid + 1
+      } else {
+        hi = mid - 1
+      }
+    }
+    return res
   }
 }

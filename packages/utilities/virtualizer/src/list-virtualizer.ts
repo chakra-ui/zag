@@ -181,7 +181,7 @@ export class ListVirtualizer extends Virtualizer<ListVirtualizerOptions> {
 
       return {
         index,
-        key: index,
+        key: virtualItem.key,
         position: horizontal ? { x: start, y: laneOffset } : { x: laneOffset, y: start },
         size: { width: laneSize, height: size },
         isScrolling: this.isScrolling,
@@ -190,7 +190,7 @@ export class ListVirtualizer extends Virtualizer<ListVirtualizerOptions> {
 
     return {
       index,
-      key: index,
+      key: virtualItem.key,
       position: horizontal ? { x: start, y: 0 } : { x: 0, y: start },
       size: {
         width: horizontal ? size : "100%",
@@ -410,6 +410,45 @@ export class ListVirtualizer extends Virtualizer<ListVirtualizerOptions> {
       role: "listitem" as const,
       "aria-posinset": index + 1,
       "aria-setsize": count,
+    }
+  }
+
+  /**
+   * Prepend items while preserving the current viewport (chat "load older" UX).
+   *
+   * This method:
+   * - captures a keyed anchor (first visible item + intra-item offset)
+   * - increases `count` by `addedCount`
+   * - shifts internal measured sizes forward by `addedCount`
+   * - clears measurement caches (start/end offsets change)
+   * - restores scroll based on the anchor key
+   *
+   * For best results, provide `getItemKey` and preferably `getIndexForKey`.
+   */
+  prependItems(addedCount: number): void {
+    if (addedCount <= 0) return
+
+    const anchor = this.getScrollAnchor()
+
+    // Update count (most callers prepend in data then call this once)
+    this.options.count = this.options.count + addedCount
+
+    // Shift group metadata if present (sticky headers)
+    if (this.groups) {
+      this.groups = this.groups.map((g) => ({ ...g, startIndex: g.startIndex + addedCount }))
+    }
+
+    // Shift measured sizes forward (index re-mapping) and rebuild size tracker
+    this.sizeTracker.reindex(addedCount, this.options.count)
+
+    // Item starts/ends have changed; drop all cached measurements/ranges
+    this.rangeCache?.clear()
+    this.invalidateMeasurements(0)
+    this.calculateRange()
+
+    // Restore anchor if possible (keyed)
+    if (anchor) {
+      this.restoreScrollAnchor(anchor)
     }
   }
 }

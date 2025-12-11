@@ -1,5 +1,6 @@
 export interface VirtualItem {
   index: number
+  key: string | number
   start: number
   end: number
   size: number
@@ -22,6 +23,13 @@ export interface ScrollState {
   offset: number
   direction: "forward" | "backward"
   isScrolling: boolean
+}
+
+export interface ScrollAnchor {
+  /** Key of the anchor (usually the first visible item) */
+  key: string | number
+  /** Offset inside the anchor item (px) */
+  offset: number
 }
 
 export interface ScrollToIndexOptions {
@@ -124,6 +132,21 @@ export interface MeasureCache {
 export interface VirtualizerBaseOptions extends DOMOrderOptions {
   /** Function to get the scrolling element - called when virtualizer needs it */
   getScrollingEl?: () => HTMLElement | null
+
+  /**
+   * Get a stable key for an item at an index. This is critical for:
+   * - preserving scroll position across insertions/removals
+   * - chat-style "prepend older items" without scroll jump
+   *
+   * If omitted, `index` is used as the key.
+   */
+  getItemKey?: (index: number) => string | number
+
+  /**
+   * Optional inverse mapping for `getItemKey`.
+   * If provided, enables O(1) anchor restoration by key.
+   */
+  getIndexForKey?: (key: string | number) => number | undefined
 
   /** Total number of items */
   count: number

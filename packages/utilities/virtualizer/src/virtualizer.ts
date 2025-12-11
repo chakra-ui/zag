@@ -4,6 +4,7 @@ import type {
   OverscanConfig,
   PerformanceMetrics,
   Range,
+  ScrollAnchor,
   ScrollHistoryEntry,
   ScrollRestorationConfig,
   ScrollState,
@@ -54,6 +55,7 @@ type ResolvedBaseOptions = Required<
  */
 export abstract class Virtualizer<O extends VirtualizerOptions = VirtualizerOptions> {
   protected options: ResolvedBaseOptions & O
+  private readonly hasScrollingElGetter: boolean
 
   // Measurements
   protected measureCache: Map<number, { start: number; size: number; end: number }> = new Map()
@@ -78,6 +80,7 @@ export abstract class Virtualizer<O extends VirtualizerOptions = VirtualizerOpti
   private cachedVirtualItems: VirtualItem[] = []
   private virtualItemsCacheKey: string = ""
   private virtualItemObjectCache: Map<number, VirtualItem> = new Map()
+  private keyIndexCache: Map<string | number, number> = new Map()
 
   // Performance tracking
   protected lastCalcTime = 0
@@ -107,6 +110,7 @@ export abstract class Virtualizer<O extends VirtualizerOptions = VirtualizerOpti
 
   constructor(options: O) {
     const overscan = resolveOverscanConfig(options.overscan)
+    this.hasScrollingElGetter = typeof options.getScrollingEl === "function"
 
     this.options = {
       horizontal: false,
@@ -301,12 +305,17 @@ export abstract class Virtualizer<O extends VirtualizerOptions = VirtualizerOpti
     for (let i = startIndex; i <= endIndex; i++) {
       const measurement = this.getMeasurement(i)
       const lane = this.getItemLane(i)
+      const key = this.getItemKey(i)
+
+      // Track key -> index mapping for fast anchor restoration in common cases
+      this.keyIndexCache.set(key, i)
 
       // Try to reuse cached virtual item object
       let cachedItem = this.virtualItemObjectCache.get(i)
 
       if (
         cachedItem &&
+        cachedItem.key === key &&
         cachedItem.start === measurement.start &&
         cachedItem.size === measurement.size &&
         cachedItem.lane === lane
@@ -317,6 +326,7 @@ export abstract class Virtualizer<O extends VirtualizerOptions = VirtualizerOpti
         // Create or update virtual item
         const virtualItem: VirtualItem = cachedItem || {
           index: i,
+          key,
           start: measurement.start,
           end: measurement.end,
           size: measurement.size,
@@ -326,6 +336,7 @@ export abstract class Virtualizer<O extends VirtualizerOptions = VirtualizerOpti
 
         // Update properties if reusing object
         if (cachedItem) {
+          virtualItem.key = key
           virtualItem.start = measurement.start
           virtualItem.end = measurement.end
           virtualItem.size = measurement.size
@@ -408,6 +419,34 @@ export abstract class Virtualizer<O extends VirtualizerOptions = VirtualizerOpti
         this.virtualItemObjectCache.delete(key)
       }
     }
+    // Key cache is no longer trustworthy after invalidation
+    this.keyIndexCache.clear()
+  }
+
+  /**
+   * Resolve the stable key for an index.
+   */
+  protected getItemKey(index: number): string | number {
+    return this.options.getItemKey?.(index) ?? index
+  }
+
+  /**
+   * Attempt to resolve an index for a key.
+   * - Prefers user-provided inverse map
+   * - Falls back to recent key cache
+   * - Finally falls back to a linear scan (correct but O(n))
+   */
+  protected getIndexForKey(key: string | number): number | undefined {
+    const byUser = this.options.getIndexForKey?.(key)
+    if (byUser !== undefined) return byUser
+
+    const cached = this.keyIndexCache.get(key)
+    if (cached !== undefined) return cached
+
+    for (let i = 0; i < this.options.count; i++) {
+      if (this.getItemKey(i) === key) return i
+    }
+    return undefined
   }
 
   // ============================================
@@ -574,9 +613,14 @@ export abstract class Virtualizer<O extends VirtualizerOptions = VirtualizerOpti
    * Resolve and cache the scroll element
    */
   private resolveScrollElement(): Element | Window | null {
+    // Important: do NOT cache null.
+    // `getScrollingEl()` often returns null on initial render before the ref mounts.
+    // If we cache null here, `measure()` and `attachScrollListener()` will never see
+    // the real element later.
     if (this.scrollElement) return this.scrollElement
-    this.scrollElement = this.options.getScrollingEl?.() ?? null
-    return this.scrollElement
+    const el = this.options.getScrollingEl?.() ?? null
+    if (el) this.scrollElement = el
+    return el
   }
 
   /**
@@ -845,6 +889,36 @@ export abstract class Virtualizer<O extends VirtualizerOptions = VirtualizerOpti
     }
   }
 
+  /**
+   * Capture an anchor representing "what the user is looking at".
+   * This is key-based, so it can survive insertions/removals if keys are stable.
+   */
+  getScrollAnchor(): ScrollAnchor | null {
+    this.calculateRange()
+    if (this.range.startIndex < 0 || this.range.endIndex < 0) return null
+
+    const anchorIndex = this.range.startIndex
+    const measurement = this.getMeasurement(anchorIndex)
+    const key = this.getItemKey(anchorIndex)
+
+    return {
+      key,
+      offset: this.scrollOffset - measurement.start,
+    }
+  }
+
+  /**
+   * Restore scroll position so that the anchor item is at the same intra-item offset.
+   */
+  restoreScrollAnchor(anchor: ScrollAnchor): ScrollToIndexResult | null {
+    const index = this.getIndexForKey(anchor.key)
+    if (index === undefined) return null
+
+    const measurement = this.getMeasurement(index)
+    const targetOffset = measurement.start + anchor.offset
+    return this.scrollTo(Math.max(0, targetOffset))
+  }
+
   getRange(): Range {
     return { ...this.range }
   }
@@ -959,7 +1033,17 @@ export abstract class Virtualizer<O extends VirtualizerOptions = VirtualizerOpti
     if (this.scrollListenerAttached) return
     if (typeof window === "undefined") return
 
-    const scrollEl = this.resolveScrollElement() ?? window
+    // If the consumer provided a scrolling element getter, don't fall back to
+    // window while it's still null (e.g. before a ref mounts). Otherwise we'll
+    // cache/attach to window and never attach to the real element.
+    let scrollEl: Element | Window | null = null
+    if (this.hasScrollingElGetter) {
+      scrollEl = this.resolveScrollElement()
+      if (!scrollEl) return
+    } else {
+      scrollEl = window
+    }
+
     this.scrollElement = scrollEl
     this.scrollElement.addEventListener("scroll", this.handleScroll, { passive: true })
     this.scrollListenerAttached = true

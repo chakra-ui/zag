@@ -32,7 +32,6 @@ export default function Page() {
       gap: 0,
       paddingStart: 0,
       paddingEnd: 0,
-      initialSize: { width: 900, height: 500 }, // Set initial viewport size
       enableAutoSizing: true,
       getScrollingEl: () => scrollElementRef.current,
       onRangeChange: () => {

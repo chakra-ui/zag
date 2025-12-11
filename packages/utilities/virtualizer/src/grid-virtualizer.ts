@@ -255,9 +255,11 @@ export class GridVirtualizer {
    * Resolve and cache the scroll element
    */
   private resolveScrollElement(): Element | Window | null {
+    // Do NOT cache null - refs can mount after first read.
     if (this.scrollElement) return this.scrollElement
-    this.scrollElement = this.options.getScrollingEl?.() ?? null
-    return this.scrollElement
+    const el = this.options.getScrollingEl?.() ?? null
+    if (el) this.scrollElement = el
+    return el
   }
 
   /**
@@ -582,7 +584,14 @@ export class GridVirtualizer {
     if (this.scrollListenerAttached) return
     if (typeof window === "undefined") return
 
-    const scrollEl = this.resolveScrollElement() ?? window
+    let scrollEl: Element | Window | null = null
+    if (this.options.getScrollingEl) {
+      scrollEl = this.resolveScrollElement()
+      if (!scrollEl) return
+    } else {
+      scrollEl = window
+    }
+
     this.scrollElement = scrollEl
     this.scrollElement.addEventListener("scroll", this.handleScroll, { passive: true })
     this.scrollListenerAttached = true
