@@ -23,6 +23,8 @@ import { ScrollRestorationManager } from "./utils/scroll-restoration-manager"
 import { easingFunctions, smoothScrollTo, type SmoothScrollResult } from "./utils/smooth-scroll"
 import { VelocityTracker, type OverscanCalculationResult, type VelocityState } from "./utils/velocity-tracker"
 import { ViewPool } from "./utils/view-pool"
+import { debounce, rafThrottle } from "./utils/debounce"
+import { shallowCompare } from "./utils/shallow-compare"
 
 const now = typeof performance !== "undefined" ? () => performance.now() : () => Date.now()
 
@@ -55,6 +57,7 @@ export abstract class Virtualizer<O extends VirtualizerOptions = VirtualizerOpti
 
   // Measurements
   protected measureCache: Map<number, { start: number; size: number; end: number }> = new Map()
+  protected itemSizeCache: Map<number, number> = new Map()
 
   // Scroll state
   protected scrollOffset = 0
@@ -62,6 +65,8 @@ export abstract class Virtualizer<O extends VirtualizerOptions = VirtualizerOpti
   protected scrollDirection: "forward" | "backward" = "forward"
   protected isScrolling = false
   protected scrollEndTimer: ReturnType<typeof setTimeout> | null = null
+  private debouncedScrollEnd: ReturnType<typeof debounce> | null = null
+  private rafUpdateRange: ReturnType<typeof rafThrottle> | null = null
 
   // Viewport
   protected viewportSize = 0
@@ -72,6 +77,7 @@ export abstract class Virtualizer<O extends VirtualizerOptions = VirtualizerOpti
   private lastCalculatedOffset: number = -1
   private cachedVirtualItems: VirtualItem[] = []
   private virtualItemsCacheKey: string = ""
+  private virtualItemObjectCache: Map<number, VirtualItem> = new Map()
 
   // Performance tracking
   protected lastCalcTime = 0
@@ -120,9 +126,27 @@ export abstract class Virtualizer<O extends VirtualizerOptions = VirtualizerOpti
     } as ResolvedBaseOptions & O
 
     this.scrollOffset = this.options.initialOffset
+    this.initializeScrollHandlers()
     this.initializeAdvancedFeatures()
     this.initializeMeasurements()
     // Don't attach scroll listener in constructor since DOM may not be ready
+  }
+
+  private initializeScrollHandlers(): void {
+    // Create debounced scroll end handler
+    this.debouncedScrollEnd = debounce(() => {
+      this.isScrolling = false
+      this.notifyScroll()
+
+      // Record scroll position when scrolling stops (user interaction)
+      this.scrollRestoration?.recordScrollPosition(this.scrollOffset, "user")
+
+      // Flush any pending DOM reorders when scrolling stops
+      this.domOrderManager?.onScrollStop()
+    }, SCROLL_END_DELAY_MS)
+
+    // Create RAF-throttled range update for smooth scrolling
+    this.rafUpdateRange = rafThrottle((fn: () => void) => fn())
   }
 
   private initializeAdvancedFeatures(): void {
@@ -265,32 +289,51 @@ export abstract class Virtualizer<O extends VirtualizerOptions = VirtualizerOpti
 
     const startTime = this.perfMonitor?.startFrame() ?? now()
 
-    const oldVirtualItems = this.cachedVirtualItems
     const newVirtualItems: VirtualItem[] = []
 
-    // Index map for quick lookups of old items
-    const oldItemsIndexMap = new Map<number, VirtualItem>()
-    for (const item of oldVirtualItems) {
-      oldItemsIndexMap.set(item.index, item)
+    // Clean up virtual item cache for items outside new range
+    for (const [index] of this.virtualItemObjectCache) {
+      if (index < startIndex - 100 || index > endIndex + 100) {
+        this.virtualItemObjectCache.delete(index)
+      }
     }
 
     for (let i = startIndex; i <= endIndex; i++) {
       const measurement = this.getMeasurement(i)
-      const oldItem = oldItemsIndexMap.get(i)
+      const lane = this.getItemLane(i)
 
-      if (oldItem && oldItem.start === measurement.start && oldItem.size === measurement.size) {
-        // Reuse old item if it's unchanged
-        newVirtualItems.push(oldItem)
+      // Try to reuse cached virtual item object
+      let cachedItem = this.virtualItemObjectCache.get(i)
+
+      if (
+        cachedItem &&
+        cachedItem.start === measurement.start &&
+        cachedItem.size === measurement.size &&
+        cachedItem.lane === lane
+      ) {
+        // Reuse cached item object - no allocation
+        newVirtualItems.push(cachedItem)
       } else {
-        // Create new item
-        newVirtualItems.push({
+        // Create or update virtual item
+        const virtualItem: VirtualItem = cachedItem || {
           index: i,
           start: measurement.start,
           end: measurement.end,
           size: measurement.size,
-          lane: this.getItemLane(i),
+          lane,
           measureElement: this.createMeasureElement(i),
-        })
+        }
+
+        // Update properties if reusing object
+        if (cachedItem) {
+          virtualItem.start = measurement.start
+          virtualItem.end = measurement.end
+          virtualItem.size = measurement.size
+          virtualItem.lane = lane
+        }
+
+        this.virtualItemObjectCache.set(i, virtualItem)
+        newVirtualItems.push(virtualItem)
       }
     }
 
@@ -329,10 +372,15 @@ export abstract class Virtualizer<O extends VirtualizerOptions = VirtualizerOpti
   protected onItemsChanged(): void {
     // Optionally overridden by subclasses that need to rebuild caches when data changes
   }
-  protected onItemMeasured(_index: number, _size: number): boolean {
-    // Optionally overridden by subclasses that persist measured sizes
-    // Returns true if the size actually changed, false otherwise
-    return false
+  protected onItemMeasured(index: number, size: number): boolean {
+    // Cache the measured size for future use
+    const prevSize = this.itemSizeCache.get(index)
+    if (prevSize === size) return false
+
+    this.itemSizeCache.set(index, size)
+    // Invalidate virtual item cache for this index
+    this.virtualItemObjectCache.delete(index)
+    return true
   }
   protected onContainerSizeChange(_size: number): void {
     // Optionally overridden by subclasses that depend on container size (e.g., masonry)
@@ -356,6 +404,8 @@ export abstract class Virtualizer<O extends VirtualizerOptions = VirtualizerOpti
     for (const key of this.measureCache.keys()) {
       if (key >= fromIndex) {
         this.measureCache.delete(key)
+        this.itemSizeCache.delete(key)
+        this.virtualItemObjectCache.delete(key)
       }
     }
   }
@@ -366,7 +416,7 @@ export abstract class Virtualizer<O extends VirtualizerOptions = VirtualizerOpti
 
   /**
    * Calculate visible range and apply overscan
-   * Simple and fast: fixed overscan
+   * Optimized with caching and shallow comparison
    */
   protected calculateRange(): void {
     // Skip if already calculated for this scroll offset (avoid double calculation)
@@ -422,13 +472,15 @@ export abstract class Virtualizer<O extends VirtualizerOptions = VirtualizerOpti
     startIndex = Math.max(0, startIndex - overscanStart)
     endIndex = Math.min(count - 1, endIndex + overscanEnd)
 
-    const rangeChanged = startIndex !== this.range.startIndex || endIndex !== this.range.endIndex
-    this.range = { startIndex, endIndex }
-    this.lastCalculatedOffset = this.scrollOffset
+    const newRange = { startIndex, endIndex }
+    const rangeChanged = !shallowCompare(this.range, newRange)
 
     if (rangeChanged) {
+      this.range = newRange
       this.options.onRangeChange?.(this.range)
     }
+
+    this.lastCalculatedOffset = this.scrollOffset
   }
 
   /**
@@ -448,6 +500,9 @@ export abstract class Virtualizer<O extends VirtualizerOptions = VirtualizerOpti
     const { scrollTop, scrollLeft } = getScrollPositionFromEvent(event)
     const offset = horizontal ? scrollLeft : scrollTop
 
+    // Quick exit if offset hasn't changed
+    if (offset === this.scrollOffset) return
+
     this.prevScrollOffset = this.scrollOffset
     this.scrollOffset = offset
 
@@ -460,32 +515,28 @@ export abstract class Virtualizer<O extends VirtualizerOptions = VirtualizerOpti
       this.scrollDirection = rawDirection
     }
 
+    const wasScrolling = this.isScrolling
     this.isScrolling = true
 
-    // Calculate range immediately - no throttling
-    // This ensures items are always in sync with scroll position
-    // This ensures we always have the correct items rendered
-    // (TanStack Virtual also calculates synchronously on every scroll)
-    this.calculateRange()
-
-    // Clear existing timer
-    if (this.scrollEndTimer) {
-      clearTimeout(this.scrollEndTimer)
+    // Use RAF throttling for smoother updates during fast scrolling
+    if (this.rafUpdateRange) {
+      this.rafUpdateRange(() => {
+        this.calculateRange()
+        this.notifyScroll()
+      })
+    } else {
+      // Fallback to immediate calculation
+      this.calculateRange()
+      this.notifyScroll()
     }
 
-    // Set scroll end timer
-    this.scrollEndTimer = setTimeout(() => {
-      this.isScrolling = false
+    // Debounced scroll end detection
+    if (this.debouncedScrollEnd) {
+      this.debouncedScrollEnd()
+    } else if (!wasScrolling) {
+      // First scroll event - notify immediately
       this.notifyScroll()
-
-      // Record scroll position when scrolling stops (user interaction)
-      this.scrollRestoration?.recordScrollPosition(this.scrollOffset, "user")
-
-      // Flush any pending DOM reorders when scrolling stops
-      this.domOrderManager?.onScrollStop()
-    }, SCROLL_END_DELAY_MS)
-
-    this.notifyScroll()
+    }
   }
 
   private notifyScroll(): void {

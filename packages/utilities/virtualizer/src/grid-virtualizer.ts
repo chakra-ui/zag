@@ -1,9 +1,12 @@
 import type { CSSProperties, GridVirtualizerOptions, OverscanConfig, Range, VirtualCell } from "./types"
 import { SizeObserver } from "./utils/size-observer"
-import { FenwickTree } from "./utils/fenwick-tree"
 import { ScrollRestorationManager } from "./utils/scroll-restoration-manager"
 import { resolveOverscanConfig, SCROLL_END_DELAY_MS } from "./utils/overscan"
 import { getScrollPositionFromEvent } from "./utils/scroll-helpers"
+import { debounce, rafThrottle } from "./utils/debounce"
+import { shallowCompare } from "./utils/shallow-compare"
+import { CacheManager } from "./utils/cache-manager"
+import { SizeTracker } from "./utils/size-tracker"
 
 interface GridRange {
   startRow: number
@@ -52,6 +55,8 @@ export class GridVirtualizer {
   private scrollLeft = 0
   private isScrolling = false
   private scrollEndTimer: ReturnType<typeof setTimeout> | null = null
+  private debouncedScrollEnd: ReturnType<typeof debounce> | null = null
+  private rafUpdateRange: ReturnType<typeof rafThrottle> | null = null
 
   // Viewport dimensions
   private viewportWidth = 0
@@ -61,14 +66,12 @@ export class GridVirtualizer {
   private range: GridRange = { startRow: 0, endRow: -1, startColumn: 0, endColumn: -1 }
   private lastScrollTop = -1
   private lastScrollLeft = -1
+  private rangeCache!: CacheManager<string, GridRange>
+  private virtualCellCache!: CacheManager<string, VirtualCell>
 
-  // Measurement caches
-  private measuredRowSizes: Map<number, number> = new Map()
-  private measuredColumnSizes: Map<number, number> = new Map()
-  private rowFenwick: FenwickTree | null = null
-  private columnFenwick: FenwickTree | null = null
-  private rowSizeCache: Float64Array | null = null
-  private columnSizeCache: Float64Array | null = null
+  // Size tracking with Fenwick tree optimization
+  private rowSizeTracker!: SizeTracker
+  private columnSizeTracker!: SizeTracker
 
   // Scroll element
   private scrollElement: Element | Window | null = null
@@ -106,9 +109,28 @@ export class GridVirtualizer {
       this.viewportHeight = options.initialSize.height
     }
 
+    this.initializeScrollHandlers()
     this.initializeMeasurements()
     this.initializeAutoSizing()
     this.initializeScrollRestoration()
+  }
+
+  private initializeScrollHandlers(): void {
+    // Create debounced scroll end handler
+    this.debouncedScrollEnd = debounce(() => {
+      this.isScrolling = false
+      this.scrollTopRestoration?.recordScrollPosition(this.scrollTop, "user")
+      this.scrollLeftRestoration?.recordScrollPosition(this.scrollLeft, "user")
+
+      this.options.onScroll?.({
+        offset: this.scrollTop,
+        direction: this.scrollTop > this.lastScrollTop ? "forward" : "backward",
+        isScrolling: false,
+      })
+    }, SCROLL_END_DELAY_MS)
+
+    // Create RAF-throttled range update for smooth scrolling
+    this.rafUpdateRange = rafThrottle((fn: () => void) => fn())
   }
 
   private initializeScrollRestoration(): void {
@@ -140,60 +162,71 @@ export class GridVirtualizer {
   private resetMeasurements(): void {
     const { rowCount, columnCount, gap } = this.options
 
-    this.measuredRowSizes.clear()
-    this.rowFenwick = new FenwickTree(rowCount)
-    this.rowSizeCache = new Float64Array(rowCount)
-    for (let i = 0; i < rowCount; i++) {
-      const size = this.getRowSize(i)
-      this.rowSizeCache[i] = size
-      this.rowFenwick.add(i, size + (i < rowCount - 1 ? gap : 0))
+    // Lazy initialize caches if not already created
+    if (!this.rangeCache) {
+      this.rangeCache = new CacheManager<string, GridRange>(100)
+    }
+    if (!this.virtualCellCache) {
+      this.virtualCellCache = new CacheManager<string, VirtualCell>(200)
     }
 
-    this.measuredColumnSizes.clear()
-    this.columnFenwick = new FenwickTree(columnCount)
-    this.columnSizeCache = new Float64Array(columnCount)
-    for (let i = 0; i < columnCount; i++) {
-      const size = this.getColumnSize(i)
-      this.columnSizeCache[i] = size
-      this.columnFenwick.add(i, size + (i < columnCount - 1 ? gap : 0))
+    // Initialize or reset size trackers with Fenwick tree optimization
+    if (!this.rowSizeTracker) {
+      this.rowSizeTracker = new SizeTracker(rowCount, gap, (i) => this.options.estimatedRowSize(i))
+    } else {
+      this.rowSizeTracker.reset(rowCount)
+    }
+
+    if (!this.columnSizeTracker) {
+      this.columnSizeTracker = new SizeTracker(columnCount, gap, (i) => this.options.estimatedColumnSize(i))
+    } else {
+      this.columnSizeTracker.reset(columnCount)
     }
   }
 
   private onItemsChanged(): void {
+    if (this.rowSizeTracker) {
+      this.rowSizeTracker.clearMeasurements()
+    }
+    if (this.columnSizeTracker) {
+      this.columnSizeTracker.clearMeasurements()
+    }
     this.resetMeasurements()
   }
 
   private onRowMeasured(index: number, size: number): boolean {
-    const currentSize = this.getRowSize(index)
-    if (size <= currentSize) return false
+    // Initialize size tracker if needed
+    if (!this.rowSizeTracker) {
+      this.rowSizeTracker = new SizeTracker(this.options.rowCount, this.options.gap, (i) =>
+        this.options.estimatedRowSize(i),
+      )
+    }
 
-    this.measuredRowSizes.set(index, size)
+    const changed = this.rowSizeTracker.setMeasuredSize(index, size)
+    if (!changed) return false
 
-    if (!this.rowFenwick || !this.rowSizeCache) return true
-
-    const delta = size - this.rowSizeCache[index]
-    this.rowSizeCache[index] = size
-
-    if (delta !== 0) {
-      this.rowFenwick.add(index, delta)
+    // Clear range cache as measurements changed
+    if (this.rangeCache) {
+      this.rangeCache.clear()
     }
 
     return true
   }
 
   private onColumnMeasured(index: number, size: number): boolean {
-    const currentSize = this.getColumnSize(index)
-    if (size <= currentSize) return false
+    // Initialize size tracker if needed
+    if (!this.columnSizeTracker) {
+      this.columnSizeTracker = new SizeTracker(this.options.columnCount, this.options.gap, (i) =>
+        this.options.estimatedColumnSize(i),
+      )
+    }
 
-    this.measuredColumnSizes.set(index, size)
+    const changed = this.columnSizeTracker.setMeasuredSize(index, size)
+    if (!changed) return false
 
-    if (!this.columnFenwick || !this.columnSizeCache) return true
-
-    const delta = size - this.columnSizeCache[index]
-    this.columnSizeCache[index] = size
-
-    if (delta !== 0) {
-      this.columnFenwick.add(index, delta)
+    // Clear range cache as measurements changed
+    if (this.rangeCache) {
+      this.rangeCache.clear()
     }
 
     return true
@@ -243,40 +276,72 @@ export class GridVirtualizer {
    * Get estimated row size for a specific row
    */
   private getRowSize(rowIndex: number): number {
-    const measuredSize = this.measuredRowSizes?.get(rowIndex)
-    if (measuredSize !== undefined) return measuredSize
-    if (this.rowSizeCache && rowIndex < this.rowSizeCache.length && this.rowSizeCache[rowIndex] > 0) {
-      return this.rowSizeCache[rowIndex]
+    // Initialize size tracker if needed
+    if (!this.rowSizeTracker) {
+      this.rowSizeTracker = new SizeTracker(this.options.rowCount, this.options.gap, (i) =>
+        this.options.estimatedRowSize(i),
+      )
     }
-    return this.options.estimatedRowSize(rowIndex)
+    return this.rowSizeTracker.getSize(rowIndex)
   }
 
   /**
    * Get estimated column size for a specific column
    */
   private getColumnSize(columnIndex: number): number {
-    const measuredSize = this.measuredColumnSizes?.get(columnIndex)
-    if (measuredSize !== undefined) return measuredSize
-    if (this.columnSizeCache && columnIndex < this.columnSizeCache.length && this.columnSizeCache[columnIndex] > 0) {
-      return this.columnSizeCache[columnIndex]
+    // Initialize size tracker if needed
+    if (!this.columnSizeTracker) {
+      this.columnSizeTracker = new SizeTracker(this.options.columnCount, this.options.gap, (i) =>
+        this.options.estimatedColumnSize(i),
+      )
     }
-    return this.options.estimatedColumnSize(columnIndex)
+    return this.columnSizeTracker.getSize(columnIndex)
   }
 
   private getPrefixRowSize(index: number): number {
-    return this.rowFenwick?.prefixSumWithGap(index, this.options.gap) ?? 0
+    // Initialize size tracker if needed
+    if (!this.rowSizeTracker) {
+      this.rowSizeTracker = new SizeTracker(this.options.rowCount, this.options.gap, (i) =>
+        this.options.estimatedRowSize(i),
+      )
+    }
+    return this.rowSizeTracker.getPrefixSum(index)
   }
 
   private getPrefixColumnSize(index: number): number {
-    return this.columnFenwick?.prefixSumWithGap(index, this.options.gap) ?? 0
+    // Initialize size tracker if needed
+    if (!this.columnSizeTracker) {
+      this.columnSizeTracker = new SizeTracker(this.options.columnCount, this.options.gap, (i) =>
+        this.options.estimatedColumnSize(i),
+      )
+    }
+    return this.columnSizeTracker.getPrefixSum(index)
   }
 
-  private findRowIndexAtOffset(offset: number): number {
-    return this.rowFenwick?.lowerBoundWithPadding(offset, this.options.paddingStart) ?? 0
+  /**
+   * Optimized binary search for finding row index at offset
+   */
+  private findRowIndexAtOffsetBinary(targetOffset: number): number {
+    // Initialize size tracker if needed
+    if (!this.rowSizeTracker) {
+      this.rowSizeTracker = new SizeTracker(this.options.rowCount, this.options.gap, (i) =>
+        this.options.estimatedRowSize(i),
+      )
+    }
+    return this.rowSizeTracker.findIndexAtOffset(targetOffset, this.options.paddingStart)
   }
 
-  private findColumnIndexAtOffset(offset: number): number {
-    return this.columnFenwick?.lowerBoundWithPadding(offset, this.options.paddingStart) ?? 0
+  /**
+   * Optimized binary search for finding column index at offset
+   */
+  private findColumnIndexAtOffsetBinary(targetOffset: number): number {
+    // Initialize size tracker if needed
+    if (!this.columnSizeTracker) {
+      this.columnSizeTracker = new SizeTracker(this.options.columnCount, this.options.gap, (i) =>
+        this.options.estimatedColumnSize(i),
+      )
+    }
+    return this.columnSizeTracker.findIndexAtOffset(targetOffset, this.options.paddingStart)
   }
 
   /**
@@ -299,13 +364,23 @@ export class GridVirtualizer {
       return
     }
 
-    // Find visible rows
-    const startRow = this.findRowIndexAtOffset(this.scrollTop)
-    const endRow = this.findRowIndexAtOffset(this.scrollTop + this.viewportHeight)
+    // Check cache first
+    const cacheKey = `${this.scrollTop}:${this.scrollLeft}:${this.viewportHeight}:${this.viewportWidth}`
+    const cached = this.rangeCache.get(cacheKey)
+    if (cached) {
+      this.range = cached
+      this.lastScrollTop = this.scrollTop
+      this.lastScrollLeft = this.scrollLeft
+      return
+    }
 
-    // Find visible columns
-    const startColumn = this.findColumnIndexAtOffset(this.scrollLeft)
-    const endColumn = this.findColumnIndexAtOffset(this.scrollLeft + this.viewportWidth)
+    // Find visible rows using binary search
+    const startRow = this.findRowIndexAtOffsetBinary(this.scrollTop)
+    const endRow = this.findRowIndexAtOffsetBinary(this.scrollTop + this.viewportHeight)
+
+    // Find visible columns using binary search
+    const startColumn = this.findColumnIndexAtOffsetBinary(this.scrollLeft)
+    const endColumn = this.findColumnIndexAtOffsetBinary(this.scrollLeft + this.viewportWidth)
 
     // Apply overscan
     const newRange: GridRange = {
@@ -315,19 +390,18 @@ export class GridVirtualizer {
       endColumn: Math.min(columnCount - 1, endColumn + overscan.count),
     }
 
-    const rangeChanged =
-      newRange.startRow !== this.range.startRow ||
-      newRange.endRow !== this.range.endRow ||
-      newRange.startColumn !== this.range.startColumn ||
-      newRange.endColumn !== this.range.endColumn
+    const rangeChanged = !shallowCompare(this.range, newRange)
 
-    this.range = newRange
+    if (rangeChanged) {
+      this.range = newRange
+      this.options.onRangeChange?.({ startIndex: newRange.startRow, endIndex: newRange.endRow })
+    }
+
     this.lastScrollTop = this.scrollTop
     this.lastScrollLeft = this.scrollLeft
 
-    if (rangeChanged) {
-      this.options.onRangeChange?.({ startIndex: newRange.startRow, endIndex: newRange.endRow })
-    }
+    // Cache the result (CacheManager handles LRU eviction automatically)
+    this.rangeCache.set(cacheKey, newRange)
   }
 
   /**
@@ -339,19 +413,60 @@ export class GridVirtualizer {
     const { startRow, endRow, startColumn, endColumn } = this.range
     const cells: VirtualCell[] = []
 
+    // Clean up virtual cell cache for cells outside new range
+    for (const [key] of this.virtualCellCache) {
+      const [row, col] = key.split(",").map(Number)
+      if (row < startRow - 10 || row > endRow + 10 || col < startColumn - 10 || col > endColumn + 10) {
+        this.virtualCellCache.delete(key)
+      }
+    }
+
     for (let row = startRow; row <= endRow; row++) {
       for (let col = startColumn; col <= endColumn; col++) {
-        cells.push({
-          row,
-          column: col,
-          x: this.getPrefixColumnSize(col - 1) + this.options.paddingStart,
-          y: this.getPrefixRowSize(row - 1) + this.options.paddingStart,
-          width: this.getColumnSize(col),
-          height: this.getRowSize(row),
-          measureElement: (el: HTMLElement | null) => {
-            if (el) this.measureCell(el, row, col)
-          },
-        })
+        const cellKey = `${row},${col}`
+
+        // Try to reuse cached virtual cell
+        let cachedCell = this.virtualCellCache.get(cellKey)
+
+        const x = this.getPrefixColumnSize(col - 1) + this.options.paddingStart
+        const y = this.getPrefixRowSize(row - 1) + this.options.paddingStart
+        const width = this.getColumnSize(col)
+        const height = this.getRowSize(row)
+
+        if (
+          cachedCell &&
+          cachedCell.x === x &&
+          cachedCell.y === y &&
+          cachedCell.width === width &&
+          cachedCell.height === height
+        ) {
+          // Reuse cached cell object - no allocation
+          cells.push(cachedCell)
+        } else {
+          // Create or update virtual cell
+          const virtualCell: VirtualCell = cachedCell || {
+            row,
+            column: col,
+            x,
+            y,
+            width,
+            height,
+            measureElement: (el: HTMLElement | null) => {
+              if (el) this.measureCell(el, row, col)
+            },
+          }
+
+          // Update properties if reusing object
+          if (cachedCell) {
+            virtualCell.x = x
+            virtualCell.y = y
+            virtualCell.width = width
+            virtualCell.height = height
+          }
+
+          this.virtualCellCache.set(cellKey, virtualCell)
+          cells.push(virtualCell)
+        }
       }
     }
 
@@ -412,28 +527,44 @@ export class GridVirtualizer {
    */
   handleScroll = (event: Event | { currentTarget: { scrollTop: number; scrollLeft: number } }): void => {
     const { scrollTop, scrollLeft } = getScrollPositionFromEvent(event)
+
+    // Quick exit if nothing changed
+    if (scrollTop === this.scrollTop && scrollLeft === this.scrollLeft) return
+
     const scrollLeftChanged = this.scrollLeft !== scrollLeft
+    const wasScrolling = this.isScrolling
+
     this.scrollTop = scrollTop
     this.scrollLeft = scrollLeft
     this.isScrolling = true
 
-    this.calculateRange()
-
-    if (scrollLeftChanged) {
-      this.options.onHorizontalScroll?.(scrollLeft)
+    // Use RAF throttling for smoother updates during fast scrolling
+    if (this.rafUpdateRange) {
+      this.rafUpdateRange(() => {
+        this.calculateRange()
+        if (scrollLeftChanged) {
+          this.options.onHorizontalScroll?.(scrollLeft)
+        }
+      })
+    } else {
+      // Fallback to immediate calculation
+      this.calculateRange()
+      if (scrollLeftChanged) {
+        this.options.onHorizontalScroll?.(scrollLeft)
+      }
     }
 
-    // Clear existing timer
-    if (this.scrollEndTimer) {
-      clearTimeout(this.scrollEndTimer)
+    // Debounced scroll end detection
+    if (this.debouncedScrollEnd) {
+      this.debouncedScrollEnd()
+    } else if (!wasScrolling) {
+      // First scroll event - notify immediately
+      this.options.onScroll?.({
+        offset: scrollTop,
+        direction: scrollTop > this.lastScrollTop ? "forward" : "backward",
+        isScrolling: true,
+      })
     }
-
-    // Set scroll end timer
-    this.scrollEndTimer = setTimeout(() => {
-      this.isScrolling = false
-      this.scrollTopRestoration?.recordScrollPosition(this.scrollTop, "user")
-      this.scrollLeftRestoration?.recordScrollPosition(this.scrollLeft, "user")
-    }, SCROLL_END_DELAY_MS)
   }
 
   /**
@@ -496,9 +627,15 @@ export class GridVirtualizer {
   getTotalWidth(): number {
     const { columnCount, paddingStart, paddingEnd } = this.options
     if (columnCount === 0) return paddingStart + paddingEnd
-    const lastItemStart = this.getPrefixColumnSize(columnCount - 1)
-    const lastItemSize = this.getColumnSize(columnCount - 1)
-    return paddingStart + lastItemStart + lastItemSize + paddingEnd
+
+    // Initialize size tracker if needed
+    if (!this.columnSizeTracker) {
+      this.columnSizeTracker = new SizeTracker(this.options.columnCount, this.options.gap, (i) =>
+        this.options.estimatedColumnSize(i),
+      )
+    }
+
+    return this.columnSizeTracker.getTotalSize(paddingStart, paddingEnd)
   }
 
   /**
@@ -507,9 +644,15 @@ export class GridVirtualizer {
   getTotalHeight(): number {
     const { rowCount, paddingStart, paddingEnd } = this.options
     if (rowCount === 0) return paddingStart + paddingEnd
-    const lastItemStart = this.getPrefixRowSize(rowCount - 1)
-    const lastItemSize = this.getRowSize(rowCount - 1)
-    return paddingStart + lastItemStart + lastItemSize + paddingEnd
+
+    // Initialize size tracker if needed
+    if (!this.rowSizeTracker) {
+      this.rowSizeTracker = new SizeTracker(this.options.rowCount, this.options.gap, (i) =>
+        this.options.estimatedRowSize(i),
+      )
+    }
+
+    return this.rowSizeTracker.getTotalSize(paddingStart, paddingEnd)
   }
 
   /**

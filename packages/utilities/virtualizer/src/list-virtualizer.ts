@@ -1,6 +1,7 @@
 import type { CSSProperties, ItemState, ListVirtualizerOptions, Range, VirtualItem } from "./types"
-import { FenwickTree } from "./utils/fenwick-tree"
 import { Virtualizer } from "./virtualizer"
+import { CacheManager } from "./utils/cache-manager"
+import { SizeTracker } from "./utils/size-tracker"
 
 /**
  * Virtualizer for one-dimensional lists (vertical or horizontal).
@@ -8,13 +9,13 @@ import { Virtualizer } from "./virtualizer"
  * Uses incremental measurement with caching for dynamic item sizes.
  */
 export class ListVirtualizer extends Virtualizer<ListVirtualizerOptions> {
-  private measuredSizes: Map<number, number> = new Map()
-  private fenwick: FenwickTree | null = null
-  private sizeCache: Float64Array | null = null
+  private sizeTracker!: SizeTracker
   private groups: ListVirtualizerOptions["groups"] | null = null
+  private rangeCache!: CacheManager<string, Range>
 
   constructor(options: ListVirtualizerOptions) {
     super(options)
+    // These will be initialized lazily if needed
     if (options.initialSize) {
       this.setViewportSize(options.initialSize)
     }
@@ -36,37 +37,53 @@ export class ListVirtualizer extends Virtualizer<ListVirtualizerOptions> {
     this.measureCache.clear()
     this.groups = this.options.groups?.slice().sort((a, b) => a.startIndex - b.startIndex) ?? null
     const count = this.options.count
-    this.fenwick = new FenwickTree(count)
-    this.sizeCache = new Float64Array(count)
-    for (let i = 0; i < count; i++) {
-      const size = this.getItemSize(i)
-      this.sizeCache[i] = size
-      this.fenwick.add(i, size + (i < count - 1 ? this.options.gap : 0))
+
+    // Initialize or reset size tracker
+    if (!this.sizeTracker) {
+      this.sizeTracker = new SizeTracker(
+        count,
+        this.options.gap,
+        (i) => this.options.getItemSize?.(i) ?? this.getEstimatedSize(i),
+      )
+    } else {
+      this.sizeTracker.reset(count)
+    }
+
+    if (!this.rangeCache) {
+      this.rangeCache = new CacheManager<string, Range>(50)
     }
   }
 
   protected onItemsChanged(): void {
-    this.measuredSizes.clear()
+    if (this.sizeTracker) {
+      this.sizeTracker.clearMeasurements()
+    }
     this.resetMeasurements()
   }
 
   protected getKnownItemSize(index: number): number | undefined {
-    return this.measuredSizes.get(index)
+    return this.getItemSize(index)
   }
 
   protected onItemMeasured(index: number, size: number): boolean {
-    const currentSize = this.getItemSize(index)
-    if (currentSize === size) return false
+    // Initialize size tracker if needed
+    if (!this.sizeTracker) {
+      this.sizeTracker = new SizeTracker(
+        this.options.count,
+        this.options.gap,
+        (i) => this.options.getItemSize?.(i) ?? this.getEstimatedSize(i),
+      )
+    }
 
-    this.measuredSizes.set(index, size)
+    const changed = this.sizeTracker.setMeasuredSize(index, size)
+    if (!changed) return false
 
-    if (!this.fenwick || !this.sizeCache) return true
+    // Also update parent's cache
+    this.itemSizeCache.set(index, size)
 
-    const delta = size - this.sizeCache[index]
-    this.sizeCache[index] = size
-
-    if (delta !== 0) {
-      this.fenwick.add(index, delta)
+    // Clear range cache as measurements changed
+    if (this.rangeCache) {
+      this.rangeCache.clear()
     }
 
     return true
@@ -109,6 +126,18 @@ export class ListVirtualizer extends Virtualizer<ListVirtualizerOptions> {
     const { count, paddingStart, gap } = this.options
     if (count === 0) return { startIndex: 0, endIndex: -1 }
 
+    // Initialize cache if needed
+    if (!this.rangeCache) {
+      this.rangeCache = new CacheManager<string, Range>(50)
+    }
+
+    // Check range cache first
+    const cacheKey = `${viewportStart}:${viewportEnd}:${count}`
+    const cached = this.rangeCache.get(cacheKey)
+    if (cached) return cached
+
+    let range: Range
+
     if (this.isGrid) {
       // Grid mode: calculate based on rows
       const rowHeight = this.getEstimatedSize(0) + gap
@@ -118,22 +147,28 @@ export class ListVirtualizer extends Virtualizer<ListVirtualizerOptions> {
       const startIndex = startRow * this.lanes
       const endIndex = Math.min(endRow * this.lanes + this.lanes - 1, count - 1)
 
-      return { startIndex, endIndex }
+      range = { startIndex, endIndex }
+    } else {
+      // List mode: use size tracker's optimized binary search
+      // Initialize size tracker if needed
+      if (!this.sizeTracker) {
+        this.sizeTracker = new SizeTracker(
+          this.options.count,
+          this.options.gap,
+          (i) => this.options.getItemSize?.(i) ?? this.getEstimatedSize(i),
+        )
+      }
+
+      const startIndex = this.sizeTracker.findIndexAtOffset(viewportStart, paddingStart)
+      const endIndex = this.sizeTracker.findIndexAtOffset(viewportEnd, paddingStart)
+
+      range = { startIndex, endIndex }
     }
 
-    // List mode: use binary search with fenwick tree
-    const startIndex = this.findIndexAtOffset(viewportStart)
+    // Cache the result (CacheManager handles LRU eviction automatically)
+    this.rangeCache.set(cacheKey, range)
 
-    // Find end index efficiently using prefix sums
-    let endIndex = startIndex
-    let endPos = paddingStart + this.getPrefixSize(startIndex) + this.getItemSize(startIndex)
-
-    while (endIndex < count - 1 && endPos < viewportEnd) {
-      endIndex++
-      endPos += gap + this.getItemSize(endIndex)
-    }
-
-    return { startIndex, endIndex }
+    return range
   }
 
   getItemState(virtualItem: VirtualItem): ItemState {
@@ -226,11 +261,17 @@ export class ListVirtualizer extends Virtualizer<ListVirtualizerOptions> {
       return paddingStart + rows * rowHeight + (rows - 1) * gap + paddingEnd
     }
 
-    // List mode: use fenwick tree for O(log n) total size calculation
-    const lastItemStart = this.getPrefixSize(count - 1)
-    const lastItemSize = this.getItemSize(count - 1)
+    // Initialize size tracker if needed
+    if (!this.sizeTracker) {
+      this.sizeTracker = new SizeTracker(
+        this.options.count,
+        this.options.gap,
+        (i) => this.options.getItemSize?.(i) ?? this.getEstimatedSize(i),
+      )
+    }
 
-    return paddingStart + lastItemStart + lastItemSize + paddingEnd
+    // List mode: use size tracker's optimized total size calculation
+    return this.sizeTracker.getTotalSize(paddingStart, paddingEnd)
   }
 
   private getLaneSize(): number {
@@ -247,34 +288,29 @@ export class ListVirtualizer extends Virtualizer<ListVirtualizerOptions> {
   }
 
   private getItemSize(index: number): number {
-    const measuredSize = this.measuredSizes?.get(index)
-    if (measuredSize !== undefined) return measuredSize
-
-    // Fast path: use sizeCache if available and populated (O(1) array access)
-    // Note: sizeCache values are > 0 when populated, 0 means uninitialized
-    if (this.sizeCache && index < this.sizeCache.length && this.sizeCache[index] > 0) {
-      return this.sizeCache[index]
+    // Initialize size tracker if needed
+    if (!this.sizeTracker) {
+      this.sizeTracker = new SizeTracker(
+        this.options.count,
+        this.options.gap,
+        (i) => this.options.getItemSize?.(i) ?? this.getEstimatedSize(i),
+      )
     }
 
-    // Fallback: check measured sizes, then getItemSize callback, then estimate
-    const { getItemSize } = this.options
-    return getItemSize?.(index) ?? this.getEstimatedSize(index)
+    return this.sizeTracker.getSize(index)
   }
 
   private getPrefixSize(index: number): number {
-    // Lazy initialization: recreate fenwick if null
-    if (!this.fenwick) {
-      const count = this.options.count
-      this.fenwick = new FenwickTree(count)
-      this.sizeCache = new Float64Array(count)
-      for (let i = 0; i < count; i++) {
-        const size = this.getItemSize(i)
-        this.sizeCache[i] = size
-        this.fenwick.add(i, size + (i < count - 1 ? this.options.gap : 0))
-      }
+    // Initialize size tracker if needed
+    if (!this.sizeTracker) {
+      this.sizeTracker = new SizeTracker(
+        this.options.count,
+        this.options.gap,
+        (i) => this.options.getItemSize?.(i) ?? this.getEstimatedSize(i),
+      )
     }
 
-    return this.fenwick.prefixSumWithGap(index, this.options.gap)
+    return this.sizeTracker.getPrefixSum(index)
   }
 
   protected findIndexAtOffset(offset: number): number {
@@ -288,8 +324,17 @@ export class ListVirtualizer extends Virtualizer<ListVirtualizerOptions> {
       return Math.min(row * this.lanes, this.options.count - 1)
     }
 
-    // List mode: use fenwick tree
-    return this.fenwick?.lowerBoundWithPadding(offset, paddingStart) ?? 0
+    // Initialize size tracker if needed
+    if (!this.sizeTracker) {
+      this.sizeTracker = new SizeTracker(
+        this.options.count,
+        this.options.gap,
+        (i) => this.options.getItemSize?.(i) ?? this.getEstimatedSize(i),
+      )
+    }
+
+    // List mode: use size tracker's optimized binary search
+    return this.sizeTracker.findIndexAtOffset(offset, paddingStart)
   }
 
   /**
