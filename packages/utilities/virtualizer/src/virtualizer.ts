@@ -68,9 +68,6 @@ export abstract class Virtualizer<O extends VirtualizerOptions = VirtualizerOpti
   private virtualItemObjectCache: Map<number, VirtualItem> = new Map()
   private keyIndexCache: Map<string | number, number> = new Map()
 
-  // Performance tracking
-  // (removed) lastCalcTime: previously used only for debug stats
-
   // Advanced features
   private velocityTracker?: VelocityTracker
   private resizeObserver?: ResizeObserverManager
@@ -462,18 +459,8 @@ export abstract class Virtualizer<O extends VirtualizerOptions = VirtualizerOpti
       }
     }
 
-    let overscanStart = leadingOverscan
-    let overscanEnd = trailingOverscan
-
-    if (overscan.directional) {
-      if (this.scrollDirection === "forward") {
-        overscanEnd = leadingOverscan
-        overscanStart = trailingOverscan
-      } else if (this.scrollDirection === "backward") {
-        overscanStart = leadingOverscan
-        overscanEnd = trailingOverscan
-      }
-    }
+    const overscanStart = leadingOverscan
+    const overscanEnd = trailingOverscan
 
     startIndex = Math.max(0, startIndex - overscanStart)
     endIndex = Math.min(count - 1, endIndex + overscanEnd)
@@ -1129,13 +1116,6 @@ export abstract class Virtualizer<O extends VirtualizerOptions = VirtualizerOpti
   }
 
   /**
-   * Get detailed velocity statistics
-   */
-  getVelocityStats() {
-    return this.velocityTracker?.getVelocityStats() ?? null
-  }
-
-  /**
    * Get current overscan calculation result
    */
   getCurrentOverscan(): OverscanCalculationResult | null {
@@ -1144,17 +1124,13 @@ export abstract class Virtualizer<O extends VirtualizerOptions = VirtualizerOpti
     if (!this.velocityTracker || !overscan.dynamic) return null
 
     const averageItemSize = this.getAverageItemSize()
-    return this.velocityTracker.calculateAdvancedOverscan(overscan.count, this.viewportSize, averageItemSize, {
-      maxMultiplier: overscan.maxMultiplier,
-      strategy: overscan.strategy,
-      enablePredictive: overscan.predictive,
-    })
+    return this.velocityTracker.calculateDynamicOverscan(overscan.count, this.viewportSize, averageItemSize)
   }
 
   /**
    * Update overscan configuration dynamically
    */
-  setOverscan(overscan: OverscanConfig): void {
+  setOverscan(overscan: OverscanConfig | number): void {
     this.options.overscan = resolveOverscanConfig(overscan)
     // Initialize velocity tracker if dynamic overscan is now enabled
     if (this.options.overscan.dynamic && !this.velocityTracker) {

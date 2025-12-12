@@ -28,7 +28,7 @@ export default function Page() {
       paddingEnd: 12,
       estimatedSize: () => 180,
       observeScrollElementSize: true,
-      overscan: { count: 3 },
+      overscan: { count: 16 },
       indexToKey: (index) => items[index]?.id ?? index,
       onRangeChange: () => {
         if (!isInitializedRef.current) return
@@ -73,11 +73,12 @@ export default function Page() {
             virtualizer.handleScroll(e)
           })
         }}
+        {...virtualizer.getContainerAriaAttrs()}
         style={{
+          ...virtualizer.getContainerStyle(),
           height: 650,
           width: "100%",
           maxWidth: 1100,
-          overflow: "auto",
           border: "1px solid #ddd",
           borderRadius: 10,
           marginTop: 16,
@@ -98,6 +99,7 @@ export default function Page() {
               <div
                 key={virtualItem.key}
                 ref={virtualItem.measureElement}
+                {...virtualizer.getItemAriaAttrs(virtualItem.index)}
                 style={{
                   ...style,
                   boxSizing: "border-box",

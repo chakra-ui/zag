@@ -88,11 +88,12 @@ export default function Page() {
               virtualizer.handleScroll(e)
             })
           }}
+          {...virtualizer.getContainerAriaAttrs()}
           style={{
             height: "500px",
             width: "100%",
             maxWidth: "900px",
-            overflow: "auto",
+            ...virtualizer.getContainerStyle(),
             border: "1px solid #ccc",
             borderRadius: "8px",
             marginTop: "16px",
@@ -114,6 +115,7 @@ export default function Page() {
               return (
                 <div
                   key={data.id}
+                  {...virtualizer.getCellAriaAttrs(cell.row, cell.column)}
                   style={{
                     ...style,
                     backgroundColor: data.color,

@@ -11,12 +11,12 @@ export interface OverscanCalculationResult {
   leading: number
   trailing: number
   total: number
-  strategy: "static" | "velocity" | "acceleration" | "predictive"
 }
 
 /**
- * Enhanced velocity tracker with directional awareness and sophisticated overscan strategies
- * Based on React Spectrum's velocity tracking approach
+ * Velocity tracker for dynamic overscan.
+ * Tracks recent scroll deltas to estimate velocity, direction, and acceleration,
+ * then converts that into leading/trailing overscan counts.
  */
 export class VelocityTracker {
   private lastOffset = 0
@@ -146,19 +146,11 @@ export class VelocityTracker {
   }
 
   /**
-   * Enhanced overscan calculation with multiple strategies
+   * Dynamic overscan calculation based on current velocity/acceleration.
    */
-  calculateAdvancedOverscan(
-    baseOverscan: number,
-    viewportSize: number,
-    itemSize: number,
-    options: {
-      maxMultiplier?: number
-      strategy?: "adaptive" | "conservative" | "aggressive" | "velocity"
-      enablePredictive?: boolean
-    } = {},
-  ): OverscanCalculationResult {
-    const { maxMultiplier = 4, strategy = "adaptive", enablePredictive = true } = options
+  calculateDynamicOverscan(baseOverscan: number, viewportSize: number, itemSize: number): OverscanCalculationResult {
+    // Internal max multiplier to prevent runaway overscan.
+    const maxMultiplier = 4
 
     const state = this.getCurrentVelocityState()
     const { velocity, direction, acceleration, isStable } = state
@@ -176,7 +168,6 @@ export class VelocityTracker {
         leading: minOverscan,
         trailing: minOverscan,
         total: minOverscan * 2,
-        strategy: "static",
       }
     }
 
@@ -224,64 +215,16 @@ export class VelocityTracker {
       trailing = Math.ceil(baseOverscan * velocityMultiplier)
     }
 
-    // Strategy 5: Predictive overscan - calculate how many items we need to pre-render
-    if (enablePredictive && velocity > this.lowVelocityThreshold) {
-      // How many frames until we scroll past current viewport?
-      const msPerFrame = 16.67 // 60fps
-      const pxPerFrame = velocity * msPerFrame
-      const framesToScrollViewport = viewportSize / pxPerFrame
-
-      // Pre-render enough items to cover 3-5 frames of scrolling
-      const framesToPrerender = Math.min(5, Math.max(3, framesToScrollViewport * 0.5))
-      const pxToPrerender = pxPerFrame * framesToPrerender
-      const predictiveOverscan = Math.ceil(pxToPrerender / itemSize)
-
-      if (direction === "forward") {
-        leading = Math.max(leading, predictiveOverscan)
-      } else if (direction === "backward") {
-        trailing = Math.max(trailing, predictiveOverscan)
-      } else {
-        // Unknown direction - boost both
-        leading = Math.max(leading, predictiveOverscan)
-        trailing = Math.max(trailing, predictiveOverscan)
-      }
-    }
-
-    // Apply strategy constraints
-    if (strategy === "conservative") {
-      leading = Math.min(leading, baseOverscan * 2)
-      trailing = Math.min(trailing, baseOverscan * 2)
-    } else if (strategy === "aggressive" || strategy === "velocity") {
-      // Aggressive/velocity: use higher multiplier and ensure minimum
-      const aggressiveMin = Math.ceil(itemsInViewport * 0.75)
-      leading = Math.max(aggressiveMin, Math.min(leading, baseOverscan * maxMultiplier))
-      trailing = Math.max(aggressiveMin, Math.min(trailing, baseOverscan * maxMultiplier))
-    }
-    // "adaptive" (default) - no additional constraints, use calculated values
+    // Cap at max multiplier
+    leading = Math.min(leading, baseOverscan * maxMultiplier)
+    trailing = Math.min(trailing, baseOverscan * maxMultiplier)
 
     // Ensure we never return less than minimum overscan
     return {
       leading: Math.max(minOverscan, leading),
       trailing: Math.max(minOverscan, trailing),
       total: Math.max(minOverscan, leading) + Math.max(minOverscan, trailing),
-      strategy: enablePredictive ? "predictive" : Math.abs(acceleration) > 0.05 ? "acceleration" : "velocity",
     }
-  }
-
-  /**
-   * Legacy method for backward compatibility
-   */
-  calculateOverscan(baseOverscan: number, maxMultiplier: number = 3): number {
-    const result = this.calculateAdvancedOverscan(baseOverscan, 800, 50, { maxMultiplier })
-    return Math.max(result.leading, result.trailing)
-  }
-
-  /**
-   * Get simple average velocity for backward compatibility
-   */
-  getAverageVelocity(): number {
-    const state = this.getCurrentVelocityState()
-    return state.velocity
   }
 
   /**
@@ -291,29 +234,5 @@ export class VelocityTracker {
     this.velocityHistory.length = 0
     this.lastTime = now()
     this.lastOffset = 0
-  }
-
-  /**
-   * Get detailed velocity statistics for debugging
-   */
-  getVelocityStats() {
-    const state = this.getCurrentVelocityState()
-    return {
-      ...state,
-      historyLength: this.velocityHistory.length,
-      variance: this.calculateVelocityVariance(),
-      velocityCategory: this.getVelocityCategory(state.velocity),
-    }
-  }
-
-  /**
-   * Categorize velocity for easier debugging
-   */
-  private getVelocityCategory(velocity: number): "idle" | "slow" | "medium" | "fast" | "very-fast" {
-    if (velocity < 0.05) return "idle"
-    if (velocity < this.lowVelocityThreshold) return "slow"
-    if (velocity < this.mediumVelocityThreshold) return "medium"
-    if (velocity < this.highVelocityThreshold) return "fast"
-    return "very-fast"
   }
 }

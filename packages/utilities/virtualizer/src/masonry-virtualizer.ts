@@ -189,6 +189,31 @@ export class MasonryVirtualizer extends Virtualizer<MasonryVirtualizerOptions> {
     return maxOffset + paddingEnd
   }
 
+  /**
+   * Get ARIA attributes for the masonry container
+   */
+  getContainerAriaAttrs() {
+    const { count, horizontal } = this.options
+    return {
+      role: "list" as const,
+      "aria-orientation": horizontal ? ("horizontal" as const) : ("vertical" as const),
+      "aria-rowcount": horizontal ? undefined : count,
+      "aria-colcount": horizontal ? count : undefined,
+    }
+  }
+
+  /**
+   * Get ARIA attributes for a masonry item
+   */
+  getItemAriaAttrs(index: number) {
+    const { count } = this.options
+    return {
+      role: "listitem" as const,
+      "aria-posinset": index + 1,
+      "aria-setsize": count,
+    }
+  }
+
   private recalculatePositions(): void {
     const { count, lanes, gap, paddingStart = 0 } = this.options
 

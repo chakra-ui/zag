@@ -73,9 +73,10 @@ export default function Page() {
               virtualizer.handleScroll(e)
             })
           }}
+          {...virtualizer.getContainerAriaAttrs()}
           style={{
+            ...virtualizer.getContainerStyle(),
             height: "400px",
-            overflow: "auto",
             border: "1px solid #ccc",
             borderRadius: "8px",
             marginTop: "16px",
@@ -96,6 +97,7 @@ export default function Page() {
                 <div
                   key={virtualItem.index}
                   data-index={virtualItem.index}
+                  {...virtualizer.getItemAriaAttrs(virtualItem.index)}
                   style={{
                     ...style,
                     padding: "16px",

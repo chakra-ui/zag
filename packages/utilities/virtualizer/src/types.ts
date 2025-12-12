@@ -98,19 +98,6 @@ export interface OverscanConfig {
   count?: number
   /** Enable dynamic overscan based on scroll velocity */
   dynamic?: boolean
-  /**
-   * Strategy for calculating overscan:
-   * - "adaptive": Dynamically adjusts based on scroll behavior (default)
-   * - "conservative": Limits overscan to 2x base for memory efficiency
-   * - "aggressive": Maximizes overscan to prevent white space during fast scroll
-   */
-  strategy?: "adaptive" | "conservative" | "aggressive"
-  /** Maximum multiplier for dynamic overscan (default: 3) */
-  maxMultiplier?: number
-  /** Add more overscan in scroll direction */
-  directional?: boolean
-  /** Enable predictive overscan based on scroll patterns */
-  predictive?: boolean
 }
 
 export interface Range {
@@ -159,7 +146,7 @@ export interface VirtualizerBaseOptions {
   /**
    * Overscan configuration - extra items to render outside viewport.
    */
-  overscan?: OverscanConfig
+  overscan?: OverscanConfig | number
 
   /**
    * Scroll restoration configuration - enables saving and restoring scroll position.
