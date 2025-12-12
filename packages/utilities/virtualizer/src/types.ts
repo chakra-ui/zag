@@ -113,10 +113,6 @@ export interface MeasureCache {
 
 export interface VirtualizerBaseOptions {
   /**
-   * Function to get the scroll element - called when the virtualizer needs it.
-   */
-  getScrollElement?: () => HTMLElement | null
-  /**
    * Get a stable key for an item at an index. This is critical for:
    * - preserving scroll position across insertions/removals
    * - chat-style "prepend older items" without scroll jump

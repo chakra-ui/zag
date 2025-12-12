@@ -26,6 +26,16 @@ export class WindowVirtualizer extends ListVirtualizer {
     this.setupWindowScrolling()
   }
 
+  protected attachScrollListener(): void {
+    // WindowVirtualizer manages scroll listeners itself (window scroll/resize),
+    // so the base Virtualizer listener wiring is intentionally skipped.
+    this.scrollListenerAttached = true
+  }
+
+  protected detachScrollListener(): void {
+    this.scrollListenerAttached = false
+  }
+
   private setupWindowScrolling(): void {
     this.windowScrollHandler = () => {
       const offset = this.getWindowScrollOffset()

@@ -23,19 +23,13 @@ type ResolvedOptions = Required<
     | "onHorizontalScroll"
     | "onVisibilityChange"
     | "onScrollElementResize"
-    | "getScrollElement"
     | "overscan"
     | "scrollRestoration"
   >
 > &
   Pick<
     GridVirtualizerOptions,
-    | "onScroll"
-    | "onRangeChange"
-    | "onHorizontalScroll"
-    | "onVisibilityChange"
-    | "onScrollElementResize"
-    | "getScrollElement"
+    "onScroll" | "onRangeChange" | "onHorizontalScroll" | "onVisibilityChange" | "onScrollElementResize"
   > & {
     overscan: Required<OverscanConfig>
     scrollRestoration?: GridVirtualizerOptions["scrollRestoration"]
@@ -262,19 +256,8 @@ export class GridVirtualizer {
       },
     })
 
-    // Auto-observe scroll element if getScrollElement is provided
+    // Scroll element size observation is wired during `init(element)`
     this.initializeScrollingElement()
-  }
-
-  /**
-   * Resolve and cache the scroll element
-   */
-  private resolveScrollElement(): Element | Window | null {
-    // Do NOT cache null - refs can mount after first read.
-    if (this.scrollElement) return this.scrollElement
-    const el = this.options.getScrollElement?.() ?? null
-    if (el) this.scrollElement = el
-    return el
   }
 
   /**
@@ -283,9 +266,8 @@ export class GridVirtualizer {
   private initializeScrollingElement(): void {
     if (!this.sizeObserver) return
 
-    const scrollEl = this.resolveScrollElement()
-    if (scrollEl && scrollEl !== window) {
-      this.sizeObserver.observe(scrollEl as Element)
+    if (this.scrollElement) {
+      this.sizeObserver.observe(this.scrollElement as Element)
     }
   }
 
@@ -370,8 +352,6 @@ export class GridVirtualizer {
       return
     }
 
-    this.attachScrollListener()
-
     const { rowCount, columnCount, overscan } = this.options
 
     if (rowCount === 0 || columnCount === 0 || this.viewportHeight === 0 || this.viewportWidth === 0) {
@@ -380,6 +360,8 @@ export class GridVirtualizer {
       this.lastScrollLeft = this.scrollLeft
       return
     }
+
+    this.attachScrollListener()
 
     // Check cache first
     const cacheKey = `${this.scrollTop}:${this.scrollLeft}:${this.viewportHeight}:${this.viewportWidth}`
@@ -599,19 +581,15 @@ export class GridVirtualizer {
     if (this.scrollListenerAttached) return
     if (typeof window === "undefined") return
 
-    const resolved = this.resolveScrollElement()
-    let scrollEl: Element | Window | null = resolved
-    if (!scrollEl) {
-      // If a getter exists but is still null, do NOT fall back to window.
-      if (this.options.getScrollElement) return
-      scrollEl = window
+    if (!this.scrollElement) {
+      throw new Error(
+        "[@zag-js/virtualizer] Missing scroll element. Call `virtualizer.init(element)` before reading virtual cells.",
+      )
     }
 
-    this.scrollElement = scrollEl
     this.scrollElement.addEventListener("scroll", this.handleScroll, { passive: true })
     this.scrollListenerAttached = true
   }
-
   /**
    * Detach scroll listener
    */
@@ -638,10 +616,8 @@ export class GridVirtualizer {
    * Measure the scroll container and set viewport size.
    */
   measure(): void {
-    const scrollEl = this.resolveScrollElement()
-    if (!scrollEl || scrollEl === window) return
-
-    const rect = (scrollEl as Element).getBoundingClientRect()
+    if (!this.scrollElement) return
+    const rect = (this.scrollElement as Element).getBoundingClientRect()
     this.setViewportSize(rect.width, rect.height)
   }
 

@@ -40,7 +40,6 @@ type ResolvedBaseOptions = Required<
  */
 export abstract class Virtualizer<O extends VirtualizerOptions = VirtualizerOptions> {
   protected options: ResolvedBaseOptions & O
-  private readonly hasScrollElementGetter: boolean
 
   // Measurements
   protected measureCache: Map<number, { start: number; size: number; end: number }> = new Map()
@@ -86,11 +85,10 @@ export abstract class Virtualizer<O extends VirtualizerOptions = VirtualizerOpti
   private currentSmoothScroll: SmoothScrollResult | null = null
 
   // Scroll listener management
-  private scrollElement: Element | Window | null = null
+  protected scrollElement: Element | null = null
 
   constructor(options: O) {
     const overscan = resolveOverscanConfig(options.overscan)
-    this.hasScrollElementGetter = typeof options.getScrollElement === "function"
 
     this.options = {
       horizontal: false,
@@ -187,7 +185,7 @@ export abstract class Virtualizer<O extends VirtualizerOptions = VirtualizerOpti
         },
       })
 
-      // Auto-observe scroll element if getScrollElement is provided
+      // Scroll element size observation is wired during `init(element)`
       this.initializeScrollingElement()
     }
 
@@ -427,9 +425,6 @@ export abstract class Virtualizer<O extends VirtualizerOptions = VirtualizerOpti
       return
     }
 
-    // Try to attach scroll listener if not already attached (lazy initialization)
-    this.attachScrollListener()
-
     const { count, overscan, horizontal, rtl } = this.options
 
     if (count === 0 || this.viewportSize === 0) {
@@ -437,6 +432,9 @@ export abstract class Virtualizer<O extends VirtualizerOptions = VirtualizerOpti
       this.lastCalculatedOffset = this.scrollOffset
       return
     }
+
+    // Try to attach scroll listener if not already attached (lazy initialization)
+    this.attachScrollListener()
 
     if (overscan.dynamic) {
       this.velocityTracker?.update(this.scrollOffset, horizontal && rtl)
@@ -564,27 +562,12 @@ export abstract class Virtualizer<O extends VirtualizerOptions = VirtualizerOpti
   }
 
   /**
-   * Resolve and cache the scroll element
-   */
-  private resolveScrollElement(): Element | Window | null {
-    // Important: do NOT cache null.
-    // `getScrollElement()` often returns null on initial render before the ref mounts.
-    // If we cache null here, `measure()` and `attachScrollListener()` will never see
-    // the real element later.
-    if (this.scrollElement) return this.scrollElement
-    const el = this.options.getScrollElement?.() ?? null
-    if (el) this.scrollElement = el
-    return el
-  }
-
-  /**
    * Measure the scroll container and set viewport/container sizes.
    */
   measure(): void {
-    const scrollEl = this.resolveScrollElement()
-    if (!scrollEl || scrollEl === window) return
+    if (!this.scrollElement) return
 
-    const rect = (scrollEl as Element).getBoundingClientRect()
+    const rect = this.scrollElement.getBoundingClientRect()
     const { horizontal } = this.options
 
     this.setViewportSize(horizontal ? rect.width : rect.height)
@@ -695,10 +678,13 @@ export abstract class Virtualizer<O extends VirtualizerOptions = VirtualizerOpti
     // Create target position object
     const target = horizontal ? { x: targetOffset } : { y: targetOffset }
 
-    // Use the container element if available, otherwise use window
-    const scrollElement = this.getScrollElement() || window
+    if (!this.scrollElement) {
+      throw new Error(
+        "[@zag-js/virtualizer] Missing scroll element. Call `virtualizer.init(element)` before using smooth scrolling.",
+      )
+    }
 
-    this.currentSmoothScroll = smoothScrollTo(scrollElement, target, {
+    this.currentSmoothScroll = smoothScrollTo(this.scrollElement, target, {
       duration: options.duration,
       easing: easingFn,
       scrollFunction: customScrollFunction,
@@ -718,15 +704,6 @@ export abstract class Virtualizer<O extends VirtualizerOptions = VirtualizerOpti
     })
 
     return horizontal ? { scrollLeft: targetOffset } : { scrollTop: targetOffset }
-  }
-
-  /**
-   * Get the scroll element for smooth scrolling
-   */
-  private getScrollElement(): Element | null {
-    // This should be overridden by implementations that have a specific scroll container
-    // For now, return null to use window scrolling
-    return null
   }
 
   measureItem(index: number, size: number): void {
@@ -964,30 +941,25 @@ export abstract class Virtualizer<O extends VirtualizerOptions = VirtualizerOpti
   private initializeScrollingElement(): void {
     if (!this.sizeObserver) return
 
-    const scrollEl = this.resolveScrollElement()
-    if (scrollEl && scrollEl !== window) {
-      this.sizeObserver.observe(scrollEl as Element)
+    if (this.scrollElement) {
+      this.sizeObserver.observe(this.scrollElement)
     }
   }
 
   /**
    * Attach scroll listener to scrolling element
    */
-  private scrollListenerAttached = false
-  private attachScrollListener(): void {
+  protected scrollListenerAttached = false
+  protected attachScrollListener(): void {
     if (this.scrollListenerAttached) return
     if (typeof window === "undefined") return
 
-    // Prefer an explicitly initialized scroll element (via init) or a non-null getter result.
-    // If a getter exists but is still null, do NOT fall back to window.
-    const resolved = this.resolveScrollElement()
-    let scrollEl: Element | Window | null = resolved
-    if (!scrollEl) {
-      if (this.hasScrollElementGetter) return
-      scrollEl = window
+    if (!this.scrollElement) {
+      throw new Error(
+        "[@zag-js/virtualizer] Missing scroll element. Call `virtualizer.init(element)` before reading virtual items. For window scrolling, use `WindowVirtualizer`.",
+      )
     }
 
-    this.scrollElement = scrollEl
     this.scrollElement.addEventListener("scroll", this.handleScroll, { passive: true })
     this.scrollListenerAttached = true
   }
@@ -995,7 +967,7 @@ export abstract class Virtualizer<O extends VirtualizerOptions = VirtualizerOpti
   /**
    * Remove scroll listener from container element
    */
-  private detachScrollListener(): void {
+  protected detachScrollListener(): void {
     if (this.scrollElement) {
       this.scrollElement.removeEventListener("scroll", this.handleScroll)
       this.scrollElement = null
