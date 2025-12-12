@@ -13,6 +13,7 @@ const items = generateItems(10000)
 
 export default function Page() {
   const isInitializedRef = useRef(false)
+  const [isSmooth, setIsSmooth] = useState(true)
   const [virtualizer] = useState<ListVirtualizer | null>(() => {
     return new ListVirtualizer({
       count: items.length,
@@ -48,6 +49,37 @@ export default function Page() {
       <div style={{ padding: "20px" }}>
         <h1>List Virtualizer Example</h1>
         <p>Scrolling through {items.length.toLocaleString()} items efficiently</p>
+
+        <label style={{ display: "flex", alignItems: "center", gap: 8, marginTop: 12, userSelect: "none" }}>
+          <input type="checkbox" checked={isSmooth} onChange={(e) => setIsSmooth(e.currentTarget.checked)} />
+          Smooth scroll
+        </label>
+
+        <div style={{ display: "flex", gap: 8, flexWrap: "wrap", marginTop: 12 }}>
+          <button
+            type="button"
+            onClick={() => virtualizer?.scrollToIndex(0, { smooth: isSmooth })}
+            disabled={!isInitializedRef.current}
+          >
+            Scroll to Top
+          </button>
+          <button
+            type="button"
+            onClick={() =>
+              virtualizer?.scrollToIndex(Math.floor(items.length / 2), { align: "center", smooth: isSmooth })
+            }
+            disabled={!isInitializedRef.current}
+          >
+            Scroll to Middle
+          </button>
+          <button
+            type="button"
+            onClick={() => virtualizer?.scrollToIndex(items.length - 1, { smooth: isSmooth })}
+            disabled={!isInitializedRef.current}
+          >
+            Scroll to Bottom
+          </button>
+        </div>
 
         <div
           ref={setScrollElementRef}

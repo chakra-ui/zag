@@ -16,7 +16,7 @@ import { SizeObserver } from "./utils/size-observer"
 import { IntersectionObserverManager } from "./utils/intersection-observer-manager"
 import { resolveOverscanConfig, SCROLL_END_DELAY_MS } from "./utils/overscan"
 import { ResizeObserverManager } from "./utils/resize-observer-manager"
-import { getScrollPositionFromEvent } from "./utils/scroll-helpers"
+import { getScrollPosition, getScrollPositionFromEvent, setScrollPosition } from "./utils/scroll-helpers"
 import { ScrollRestorationManager } from "./utils/scroll-restoration-manager"
 import { easingFunctions, smoothScrollTo, type SmoothScrollResult } from "./utils/smooth-scroll"
 import { VelocityTracker, type OverscanCalculationResult, type VelocityState } from "./utils/velocity-tracker"
@@ -82,7 +82,7 @@ export abstract class Virtualizer<O extends VirtualizerOptions = VirtualizerOpti
   private currentSmoothScroll: SmoothScrollResult | null = null
 
   // Scroll listener management
-  protected scrollElement: Element | null = null
+  protected scrollElement: HTMLElement | null = null
 
   constructor(options: O) {
     const overscan = resolveOverscanConfig(options.overscan)
@@ -564,12 +564,36 @@ export abstract class Virtualizer<O extends VirtualizerOptions = VirtualizerOpti
 
   scrollTo(offset: number): { scrollTop?: number; scrollLeft?: number } {
     const { horizontal } = this.options
+    const existing = this.scrollElement ? getScrollPosition(this.scrollElement) : { scrollTop: 0, scrollLeft: 0 }
+
+    // Apply to scroll element if available (container-based virtualizers)
+    if (this.scrollElement) {
+      setScrollPosition(this.scrollElement, horizontal ? { scrollLeft: offset } : { scrollTop: offset })
+    }
+
+    this.prevScrollOffset = this.scrollOffset
     this.scrollOffset = offset
+
+    // Calculate scroll direction (considering RTL for horizontal scroll)
+    const rawDirection = offset > this.prevScrollOffset ? "forward" : "backward"
+    if (this.options.horizontal && this.options.rtl) {
+      // In RTL horizontal mode, increasing offset means moving backward
+      this.scrollDirection = rawDirection === "forward" ? "backward" : "forward"
+    } else {
+      this.scrollDirection = rawDirection
+    }
+
+    // Programmatic scroll should update range/scroll callbacks immediately,
+    // even if the consumer doesn't wire `onScroll` to `handleScroll`.
+    this.calculateRange()
+    this.notifyScroll()
 
     // Record programmatic scroll
     this.scrollRestoration?.recordScrollPosition(offset, "programmatic")
 
-    return horizontal ? { scrollLeft: offset } : { scrollTop: offset }
+    // Return the updated axis + preserve other axis (useful for consumers)
+    if (horizontal) return { scrollLeft: offset, scrollTop: existing.scrollTop }
+    return { scrollTop: offset, scrollLeft: existing.scrollLeft }
   }
 
   scrollToIndex(index: number, options: ScrollToIndexOptions = {}): ScrollToIndexResult {
@@ -638,6 +662,13 @@ export abstract class Virtualizer<O extends VirtualizerOptions = VirtualizerOpti
           ? (position.scrollLeft ?? this.scrollOffset)
           : (position.scrollTop ?? this.scrollOffset)
 
+        // Apply to the real scroll container.
+        // NOTE: When we provide a scrollFunction to `smoothScrollTo`, it will NOT
+        // apply scrolling itself, so we must do it here.
+        if (this.scrollElement) {
+          setScrollPosition(this.scrollElement, { scrollTop: position.scrollTop, scrollLeft: position.scrollLeft })
+        }
+
         // Update our internal scroll state
         this.prevScrollOffset = this.scrollOffset
         this.scrollOffset = newOffset
@@ -658,9 +689,9 @@ export abstract class Virtualizer<O extends VirtualizerOptions = VirtualizerOpti
           this.velocityTracker.update(newOffset, this.options.horizontal && this.options.rtl)
         }
 
-        // Notify scroll change and recalculate range
-        this.notifyScroll()
+        // Recalculate range & notify scroll (even if consumer doesn't wire onScroll)
         this.calculateRange()
+        this.notifyScroll()
       })
 
     // Create target position object

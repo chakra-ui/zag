@@ -1,3 +1,6 @@
+import { AnimationFrame } from "@zag-js/dom-query"
+import { getScrollPosition, setScrollPosition, type ScrollTarget } from "./scroll-helpers"
+
 export type EasingFunction = (t: number) => number
 
 export interface SmoothScrollOptions {
@@ -58,16 +61,16 @@ export function smoothScrollTo(
   const { duration = 600, easing = easingFunctions.easeOutCubic, scrollFunction, onComplete, onCancel } = options
 
   let cancelled = false
-  let animationId: number | null = null
+  const hasRAF =
+    typeof globalThis.requestAnimationFrame === "function" && typeof globalThis.cancelAnimationFrame === "function"
+  const frame = hasRAF ? AnimationFrame.create() : null
+
+  const targetEl = element as ScrollTarget
 
   // Get current scroll position
-  const isWindow = element === window || element === document.documentElement
-  const currentX = isWindow
-    ? window.pageXOffset || document.documentElement.scrollLeft
-    : (element as HTMLElement).scrollLeft
-  const currentY = isWindow
-    ? window.pageYOffset || document.documentElement.scrollTop
-    : (element as HTMLElement).scrollTop
+  const current = getScrollPosition(targetEl)
+  const currentX = current.scrollLeft
+  const currentY = current.scrollTop
 
   const startX = currentX
   const startY = currentY
@@ -76,6 +79,21 @@ export function smoothScrollTo(
 
   const deltaX = targetX - startX
   const deltaY = targetY - startY
+
+  // If RAF isn't available, fall back to an instant scroll (no polyfill).
+  if (!hasRAF) {
+    if (scrollFunction) {
+      scrollFunction({ scrollLeft: targetX, scrollTop: targetY })
+    } else {
+      setScrollPosition(targetEl, { scrollLeft: targetX, scrollTop: targetY })
+    }
+
+    onComplete?.()
+    return {
+      promise: Promise.resolve(),
+      cancel: () => {},
+    }
+  }
 
   // If no movement needed, complete immediately
   if (Math.abs(deltaX) < 1 && Math.abs(deltaY) < 1) {
@@ -89,17 +107,17 @@ export function smoothScrollTo(
   const startTime = performance.now()
 
   let resolvePromise: (() => void) | null = null
-  let rejectPromise: ((error: Error) => void) | null = null
 
-  const promise = new Promise<void>((resolve, reject) => {
+  const promise = new Promise<void>((resolve) => {
     resolvePromise = resolve
-    rejectPromise = reject
   })
 
   const animate = (currentTime: number) => {
     if (cancelled) {
       onCancel?.()
-      rejectPromise?.(new Error("Smooth scroll was cancelled"))
+      // Cancellation is an expected control-flow event (e.g. starting a new scroll).
+      // Treat it as a normal completion to avoid unhandled promise rejections.
+      resolvePromise?.()
       return
     }
 
@@ -117,17 +135,14 @@ export function smoothScrollTo(
         scrollTop: newY,
       })
     } else {
-      // Use native scrollTo
-      if (isWindow) {
-        window.scrollTo(newX, newY)
-      } else {
-        ;(element as HTMLElement).scrollLeft = newX
-        ;(element as HTMLElement).scrollTop = newY
-      }
+      setScrollPosition(targetEl, { scrollLeft: newX, scrollTop: newY })
     }
 
     if (progress < 1) {
-      animationId = requestAnimationFrame(animate)
+      frame!.request(() => {
+        // `AnimationFrame` doesn't pass a timestamp. Use `performance.now()`.
+        animate(performance.now())
+      })
     } else {
       onComplete?.()
       resolvePromise?.()
@@ -135,15 +150,16 @@ export function smoothScrollTo(
   }
 
   // Start animation
-  animationId = requestAnimationFrame(animate)
+  frame!.request(() => {
+    animate(performance.now())
+  })
 
   const cancel = () => {
     cancelled = true
-    if (animationId !== null) {
-      cancelAnimationFrame(animationId)
-      animationId = null
-    }
-    rejectPromise?.(new Error("Smooth scroll was cancelled"))
+    frame!.cancel()
+    onCancel?.()
+    // See note above: cancellation is not exceptional.
+    resolvePromise?.()
   }
 
   return { promise, cancel }

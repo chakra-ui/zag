@@ -19,6 +19,7 @@ const items = makeItems(8000)
 
 export default function Page() {
   const isInitializedRef = useRef(false)
+  const [isSmooth, setIsSmooth] = useState(true)
   const [, rerender] = useReducer(() => ({}), {})
   const [virtualizer] = useState<MasonryVirtualizer | null>(() => {
     return new MasonryVirtualizer({
@@ -54,6 +55,35 @@ export default function Page() {
     <main style={{ padding: 20 }}>
       <h1>Masonry Virtualizer Example</h1>
       <p style={{ color: "#666", marginTop: 4 }}>{items.length.toLocaleString()} items, variable heights, 4 lanes</p>
+
+      <label style={{ display: "flex", alignItems: "center", gap: 8, marginTop: 12, userSelect: "none" }}>
+        <input type="checkbox" checked={isSmooth} onChange={(e) => setIsSmooth(e.currentTarget.checked)} />
+        Smooth scroll
+      </label>
+
+      <div style={{ display: "flex", gap: 8, flexWrap: "wrap", marginTop: 12 }}>
+        <button
+          type="button"
+          onClick={() => virtualizer.scrollToIndex(0, { smooth: isSmooth })}
+          disabled={!isInitializedRef.current}
+        >
+          Scroll to Top
+        </button>
+        <button
+          type="button"
+          onClick={() => virtualizer.scrollToIndex(Math.floor(items.length / 2), { align: "center", smooth: isSmooth })}
+          disabled={!isInitializedRef.current}
+        >
+          Scroll to Middle
+        </button>
+        <button
+          type="button"
+          onClick={() => virtualizer.scrollToIndex(items.length - 1, { smooth: isSmooth })}
+          disabled={!isInitializedRef.current}
+        >
+          Scroll to Bottom
+        </button>
+      </div>
 
       <div
         ref={setScrollElementRef}

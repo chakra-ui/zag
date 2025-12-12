@@ -17,6 +17,8 @@ const generateCellData = (row: number, col: number) => ({
 
 export default function Page() {
   const isInitializedRef = useRef(false)
+  const scrollElementRef = useRef<HTMLDivElement | null>(null)
+  const [isSmooth, setIsSmooth] = useState(true)
   const [, rerender] = useReducer(() => ({}), {})
   const [virtualizer] = useState(() => {
     return new GridVirtualizer({
@@ -38,6 +40,7 @@ export default function Page() {
 
   const setScrollElementRef = useCallback((element: HTMLDivElement | null) => {
     if (!element) return
+    scrollElementRef.current = element
     virtualizer.init(element)
     isInitializedRef.current = true
     rerender()
@@ -63,6 +66,56 @@ export default function Page() {
         <p style={{ fontSize: "14px", color: "#666" }}>
           Scroll both horizontally and vertically - only visible cells are rendered!
         </p>
+
+        <label style={{ display: "flex", alignItems: "center", gap: 8, marginTop: 12, userSelect: "none" }}>
+          <input type="checkbox" checked={isSmooth} onChange={(e) => setIsSmooth(e.currentTarget.checked)} />
+          Smooth scroll
+        </label>
+
+        <div style={{ display: "flex", gap: 8, flexWrap: "wrap", marginTop: 12 }}>
+          <button
+            type="button"
+            disabled={!isInitializedRef.current}
+            onClick={() => {
+              const pos = virtualizer.scrollToCell(0, 0)
+              scrollElementRef.current?.scrollTo({
+                top: pos.scrollTop,
+                left: pos.scrollLeft,
+                behavior: isSmooth ? "smooth" : "auto",
+              })
+            }}
+          >
+            Scroll to Top-Left
+          </button>
+          <button
+            type="button"
+            disabled={!isInitializedRef.current}
+            onClick={() => {
+              const pos = virtualizer.scrollToCell(Math.floor(TOTAL_ROWS / 2), Math.floor(TOTAL_COLUMNS / 2))
+              scrollElementRef.current?.scrollTo({
+                top: pos.scrollTop,
+                left: pos.scrollLeft,
+                behavior: isSmooth ? "smooth" : "auto",
+              })
+            }}
+          >
+            Scroll to Center
+          </button>
+          <button
+            type="button"
+            disabled={!isInitializedRef.current}
+            onClick={() => {
+              const pos = virtualizer.scrollToCell(TOTAL_ROWS - 1, TOTAL_COLUMNS - 1)
+              scrollElementRef.current?.scrollTo({
+                top: pos.scrollTop,
+                left: pos.scrollLeft,
+                behavior: isSmooth ? "smooth" : "auto",
+              })
+            }}
+          >
+            Scroll to Bottom-Right
+          </button>
+        </div>
 
         <div
           ref={setScrollElementRef}
