@@ -642,16 +642,36 @@ export class GridVirtualizer {
   /**
    * Scroll to specific row and column
    */
-  scrollToCell(row: number, column: number): { scrollTop: number; scrollLeft: number } {
+  scrollToCell(
+    row: number,
+    column: number,
+    options: { behavior?: ScrollBehavior } = {},
+  ): { scrollTop: number; scrollLeft: number } {
     const { rowCount, columnCount } = this.options
     const scrollTop = this.getPrefixRowSize(Math.min(row, rowCount - 1) - 1) + this.options.paddingStart
     const scrollLeft = this.getPrefixColumnSize(Math.min(column, columnCount - 1) - 1) + this.options.paddingStart
 
-    this.scrollTop = scrollTop
-    this.scrollLeft = scrollLeft
+    const behavior = options.behavior ?? "auto"
 
-    this.scrollTopRestoration?.recordScrollPosition(scrollTop, "programmatic")
-    this.scrollLeftRestoration?.recordScrollPosition(scrollLeft, "programmatic")
+    // If we have a scroll element, perform the DOM scroll and let scroll events
+    // drive internal state during smooth scrolling.
+    if (this.scrollElement && typeof (this.scrollElement as any).scrollTo === "function") {
+      ;(this.scrollElement as any).scrollTo({ top: scrollTop, left: scrollLeft, behavior })
+
+      // For instant scroll, sync internal state immediately to avoid a blank frame.
+      if (behavior !== "smooth") {
+        this.handleScroll({ currentTarget: { scrollTop, scrollLeft } })
+        this.scrollTopRestoration?.recordScrollPosition(scrollTop, "programmatic")
+        this.scrollLeftRestoration?.recordScrollPosition(scrollLeft, "programmatic")
+      }
+    } else {
+      // Fallback: no scroll element yet (or no scrollTo). Update internal state.
+      this.scrollTop = scrollTop
+      this.scrollLeft = scrollLeft
+      this.forceUpdate()
+      this.scrollTopRestoration?.recordScrollPosition(scrollTop, "programmatic")
+      this.scrollLeftRestoration?.recordScrollPosition(scrollLeft, "programmatic")
+    }
 
     return { scrollTop, scrollLeft }
   }
@@ -659,22 +679,44 @@ export class GridVirtualizer {
   /**
    * Scroll to specific row
    */
-  scrollToRow(row: number): { scrollTop: number } {
+  scrollToRow(row: number, options: { behavior?: ScrollBehavior } = {}): { scrollTop: number } {
     const { rowCount } = this.options
     const scrollTop = this.getPrefixRowSize(Math.min(row, rowCount - 1) - 1) + this.options.paddingStart
-    this.scrollTop = scrollTop
-    this.scrollTopRestoration?.recordScrollPosition(scrollTop, "programmatic")
+    const behavior = options.behavior ?? "auto"
+
+    if (this.scrollElement && typeof (this.scrollElement as any).scrollTo === "function") {
+      ;(this.scrollElement as any).scrollTo({ top: scrollTop, behavior })
+      if (behavior !== "smooth") {
+        this.handleScroll({ currentTarget: { scrollTop, scrollLeft: this.scrollLeft } })
+        this.scrollTopRestoration?.recordScrollPosition(scrollTop, "programmatic")
+      }
+    } else {
+      this.scrollTop = scrollTop
+      this.forceUpdate()
+      this.scrollTopRestoration?.recordScrollPosition(scrollTop, "programmatic")
+    }
     return { scrollTop }
   }
 
   /**
    * Scroll to specific column
    */
-  scrollToColumn(column: number): { scrollLeft: number } {
+  scrollToColumn(column: number, options: { behavior?: ScrollBehavior } = {}): { scrollLeft: number } {
     const { columnCount } = this.options
     const scrollLeft = this.getPrefixColumnSize(Math.min(column, columnCount - 1) - 1) + this.options.paddingStart
-    this.scrollLeft = scrollLeft
-    this.scrollLeftRestoration?.recordScrollPosition(scrollLeft, "programmatic")
+    const behavior = options.behavior ?? "auto"
+
+    if (this.scrollElement && typeof (this.scrollElement as any).scrollTo === "function") {
+      ;(this.scrollElement as any).scrollTo({ left: scrollLeft, behavior })
+      if (behavior !== "smooth") {
+        this.handleScroll({ currentTarget: { scrollTop: this.scrollTop, scrollLeft } })
+        this.scrollLeftRestoration?.recordScrollPosition(scrollLeft, "programmatic")
+      }
+    } else {
+      this.scrollLeft = scrollLeft
+      this.forceUpdate()
+      this.scrollLeftRestoration?.recordScrollPosition(scrollLeft, "programmatic")
+    }
     return { scrollLeft }
   }
 

@@ -17,7 +17,6 @@ const generateCellData = (row: number, col: number) => ({
 
 export default function Page() {
   const isInitializedRef = useRef(false)
-  const scrollElementRef = useRef<HTMLDivElement | null>(null)
   const [isSmooth, setIsSmooth] = useState(true)
   const [, rerender] = useReducer(() => ({}), {})
   const [virtualizer] = useState(() => {
@@ -40,7 +39,6 @@ export default function Page() {
 
   const setScrollElementRef = useCallback((element: HTMLDivElement | null) => {
     if (!element) return
-    scrollElementRef.current = element
     virtualizer.init(element)
     isInitializedRef.current = true
     rerender()
@@ -77,12 +75,7 @@ export default function Page() {
             type="button"
             disabled={!isInitializedRef.current}
             onClick={() => {
-              const pos = virtualizer.scrollToCell(0, 0)
-              scrollElementRef.current?.scrollTo({
-                top: pos.scrollTop,
-                left: pos.scrollLeft,
-                behavior: isSmooth ? "smooth" : "auto",
-              })
+              virtualizer.scrollToCell(0, 0, { behavior: isSmooth ? "smooth" : "auto" })
             }}
           >
             Scroll to Top-Left
@@ -91,10 +84,7 @@ export default function Page() {
             type="button"
             disabled={!isInitializedRef.current}
             onClick={() => {
-              const pos = virtualizer.scrollToCell(Math.floor(TOTAL_ROWS / 2), Math.floor(TOTAL_COLUMNS / 2))
-              scrollElementRef.current?.scrollTo({
-                top: pos.scrollTop,
-                left: pos.scrollLeft,
+              virtualizer.scrollToCell(Math.floor(TOTAL_ROWS / 2), Math.floor(TOTAL_COLUMNS / 2), {
                 behavior: isSmooth ? "smooth" : "auto",
               })
             }}
@@ -105,12 +95,7 @@ export default function Page() {
             type="button"
             disabled={!isInitializedRef.current}
             onClick={() => {
-              const pos = virtualizer.scrollToCell(TOTAL_ROWS - 1, TOTAL_COLUMNS - 1)
-              scrollElementRef.current?.scrollTo({
-                top: pos.scrollTop,
-                left: pos.scrollLeft,
-                behavior: isSmooth ? "smooth" : "auto",
-              })
+              virtualizer.scrollToCell(TOTAL_ROWS - 1, TOTAL_COLUMNS - 1, { behavior: isSmooth ? "smooth" : "auto" })
             }}
           >
             Scroll to Bottom-Right
