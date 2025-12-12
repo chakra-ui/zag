@@ -1,5 +1,6 @@
 import type { CSSProperties, ItemState, MasonryVirtualizerOptions, Range, VirtualItem } from "./types"
 import { CacheManager } from "./utils/cache-manager"
+import { findInsertionIndex, findInsertionIndexRight } from "./utils/binary-search"
 import { Virtualizer } from "./virtualizer"
 
 /**
@@ -88,11 +89,13 @@ export class MasonryVirtualizer extends Virtualizer<MasonryVirtualizerOptions> {
       const items = this.laneItems[lane]
       if (!items || items.length === 0) continue
 
-      const firstPos = this.findFirstLaneItemIntersecting(items, viewportStart)
-      if (firstPos === -1) continue
+      // First item whose end >= viewportStart
+      const firstPos = findInsertionIndex(items, viewportStart, (item) => item.end)
+      if (firstPos >= items.length) continue
 
-      const lastPos = this.findLastLaneItemStartingBefore(items, viewportEnd)
-      if (lastPos === -1) continue
+      // Last item whose start <= viewportEnd
+      const lastPos = findInsertionIndexRight(items, viewportEnd, (item) => item.start) - 1
+      if (lastPos < firstPos) continue
 
       startIndex = Math.min(startIndex, items[firstPos].index)
       endIndex = Math.max(endIndex, items[lastPos].index)
@@ -124,8 +127,8 @@ export class MasonryVirtualizer extends Virtualizer<MasonryVirtualizerOptions> {
       const items = this.laneItems[lane]
       if (!items || items.length === 0) continue
 
-      const pos = this.findLastLaneItemStartingBefore(items, offset)
-      if (pos === -1) continue
+      const pos = findInsertionIndexRight(items, offset, (item) => item.start) - 1
+      if (pos < 0) continue
 
       const candidate = items[pos]
       if (candidate.start > bestStart) {
@@ -306,51 +309,5 @@ export class MasonryVirtualizer extends Virtualizer<MasonryVirtualizerOptions> {
     this.laneOffsets = laneHeights.map((h) => Math.max(paddingStart, h - gap)) // Remove trailing gap
     this.laneItems = nextLaneItems
     this.rangeCache?.clear()
-  }
-
-  /**
-   * Binary search for the first item in a lane whose end >= viewportStart.
-   * Returns the position in the lane array, or -1 if none.
-   */
-  private findFirstLaneItemIntersecting(
-    items: Array<{ index: number; start: number; end: number }>,
-    viewportStart: number,
-  ): number {
-    let lo = 0
-    let hi = items.length - 1
-    let res = -1
-    while (lo <= hi) {
-      const mid = (lo + hi) >> 1
-      if (items[mid].end >= viewportStart) {
-        res = mid
-        hi = mid - 1
-      } else {
-        lo = mid + 1
-      }
-    }
-    return res
-  }
-
-  /**
-   * Binary search for the last item in a lane whose start <= viewportEnd.
-   * Returns the position in the lane array, or -1 if none.
-   */
-  private findLastLaneItemStartingBefore(
-    items: Array<{ index: number; start: number; end: number }>,
-    viewportEnd: number,
-  ): number {
-    let lo = 0
-    let hi = items.length - 1
-    let res = -1
-    while (lo <= hi) {
-      const mid = (lo + hi) >> 1
-      if (items[mid].start <= viewportEnd) {
-        res = mid
-        lo = mid + 1
-      } else {
-        hi = mid - 1
-      }
-    }
-    return res
   }
 }

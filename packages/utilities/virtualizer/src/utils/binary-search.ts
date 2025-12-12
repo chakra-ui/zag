@@ -62,7 +62,7 @@ export function findVisibleRangeBinary(
 /**
  * Binary search for finding exact or nearest match
  */
-export function binarySearchNearest<T>(items: T[], target: number, getValue: (item: T) => number): number {
+export function findNearestIndex<T>(items: T[], target: number, getValue: (item: T) => number): number {
   if (items.length === 0) return -1
 
   let left = 0
@@ -102,6 +102,26 @@ export function findInsertionIndex<T>(items: T[], value: number, getValue: (item
   while (left < right) {
     const mid = Math.floor((left + right) / 2)
     if (getValue(items[mid]) < value) {
+      left = mid + 1
+    } else {
+      right = mid
+    }
+  }
+
+  return left
+}
+
+/**
+ * Find insertion index to the right of existing matches in a sorted array (upper bound).
+ * Returns the first index where `getValue(item) > value`.
+ */
+export function findInsertionIndexRight<T>(items: T[], value: number, getValue: (item: T) => number): number {
+  let left = 0
+  let right = items.length
+
+  while (left < right) {
+    const mid = Math.floor((left + right) / 2)
+    if (getValue(items[mid]) <= value) {
       left = mid + 1
     } else {
       right = mid
