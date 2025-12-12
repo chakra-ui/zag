@@ -108,20 +108,13 @@ export class GridVirtualizer {
    * This avoids the common "ref is null during construction" issue.
    */
   init(scrollElement: HTMLElement): void {
-    if (this.scrollElement && this.scrollElement !== scrollElement) {
-      this.detachScrollListener()
-    }
     this.scrollElement = scrollElement
-    this.scrollListenerAttached = false
 
     // Observe size if enabled
     this.initializeScrollingElement()
 
     // Prime measurements
     this.measure()
-
-    // Attach listener eagerly now that we have the element
-    this.attachScrollListener()
   }
 
   private initializeScrollHandlers(): void {
@@ -361,8 +354,6 @@ export class GridVirtualizer {
       return
     }
 
-    this.attachScrollListener()
-
     // Check cache first
     const cacheKey = `${this.scrollTop}:${this.scrollLeft}:${this.viewportHeight}:${this.viewportWidth}`
     const cached = this.rangeCache.get(cacheKey)
@@ -574,32 +565,12 @@ export class GridVirtualizer {
   }
 
   /**
-   * Attach scroll listener
+   * Scroll wiring
+   *
+   * React-first: Consumers should call `handleScroll` from their framework scroll handler.
+   * We intentionally do NOT attach native `scroll` listeners inside the virtualizer to avoid
+   * double-handling (native listener + framework onScroll).
    */
-  private scrollListenerAttached = false
-  private attachScrollListener(): void {
-    if (this.scrollListenerAttached) return
-    if (typeof window === "undefined") return
-
-    if (!this.scrollElement) {
-      throw new Error(
-        "[@zag-js/virtualizer] Missing scroll element. Call `virtualizer.init(element)` before reading virtual cells.",
-      )
-    }
-
-    this.scrollElement.addEventListener("scroll", this.handleScroll, { passive: true })
-    this.scrollListenerAttached = true
-  }
-  /**
-   * Detach scroll listener
-   */
-  private detachScrollListener(): void {
-    if (this.scrollElement) {
-      this.scrollElement.removeEventListener("scroll", this.handleScroll)
-      this.scrollElement = null
-      this.scrollListenerAttached = false
-    }
-  }
 
   /**
    * Set viewport dimensions
@@ -753,7 +724,6 @@ export class GridVirtualizer {
     if (this.scrollEndTimer) {
       clearTimeout(this.scrollEndTimer)
     }
-    this.detachScrollListener()
     this.sizeObserver?.destroy()
     this.scrollTopRestoration?.destroy()
     this.scrollLeftRestoration?.destroy()

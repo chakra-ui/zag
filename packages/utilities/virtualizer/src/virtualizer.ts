@@ -117,22 +117,13 @@ export abstract class Virtualizer<O extends VirtualizerOptions = VirtualizerOpti
    * consumers to wire the element explicitly once it mounts.
    */
   init(scrollElement: HTMLElement): void {
-    // If we were previously attached to a different element (or window), detach first.
-    if (this.scrollElement && this.scrollElement !== scrollElement) {
-      this.detachScrollListener()
-    }
-
     this.scrollElement = scrollElement
-    this.scrollListenerAttached = false
 
     // Observe size if enabled
     this.initializeScrollingElement()
 
     // Prime measurements
     this.measure()
-
-    // Attach listener eagerly now that we have the element
-    this.attachScrollListener()
   }
 
   private initializeScrollHandlers(): void {
@@ -432,9 +423,6 @@ export abstract class Virtualizer<O extends VirtualizerOptions = VirtualizerOpti
       this.lastCalculatedOffset = this.scrollOffset
       return
     }
-
-    // Try to attach scroll listener if not already attached (lazy initialization)
-    this.attachScrollListener()
 
     if (overscan.dynamic) {
       this.velocityTracker?.update(this.scrollOffset, horizontal && rtl)
@@ -947,35 +935,6 @@ export abstract class Virtualizer<O extends VirtualizerOptions = VirtualizerOpti
   }
 
   /**
-   * Attach scroll listener to scrolling element
-   */
-  protected scrollListenerAttached = false
-  protected attachScrollListener(): void {
-    if (this.scrollListenerAttached) return
-    if (typeof window === "undefined") return
-
-    if (!this.scrollElement) {
-      throw new Error(
-        "[@zag-js/virtualizer] Missing scroll element. Call `virtualizer.init(element)` before reading virtual items. For window scrolling, use `WindowVirtualizer`.",
-      )
-    }
-
-    this.scrollElement.addEventListener("scroll", this.handleScroll, { passive: true })
-    this.scrollListenerAttached = true
-  }
-
-  /**
-   * Remove scroll listener from container element
-   */
-  protected detachScrollListener(): void {
-    if (this.scrollElement) {
-      this.scrollElement.removeEventListener("scroll", this.handleScroll)
-      this.scrollElement = null
-      this.scrollListenerAttached = false
-    }
-  }
-
-  /**
    * Get current scroll element size (observeScrollElementSize only)
    */
   getScrollElementSize(): { width: number; height: number } | null {
@@ -1116,9 +1075,6 @@ export abstract class Virtualizer<O extends VirtualizerOptions = VirtualizerOpti
     if (this.scrollEndTimer) {
       clearTimeout(this.scrollEndTimer)
     }
-
-    // Cleanup scroll listener
-    this.detachScrollListener()
 
     // Cleanup advanced features
     this.resizeObserver?.disconnect()
