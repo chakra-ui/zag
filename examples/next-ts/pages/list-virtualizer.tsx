@@ -16,7 +16,7 @@ export default function Page() {
   const [virtualizer] = useState<ListVirtualizer | null>(() => {
     return new ListVirtualizer({
       count: items.length,
-      estimatedSize: () => 80,
+      estimatedSize: () => 142,
       overscan: { count: 5 },
       gap: 0,
       paddingStart: 0,
@@ -61,7 +61,6 @@ export default function Page() {
             ...virtualizer.getContainerStyle(),
             height: "400px",
             border: "1px solid #ccc",
-            borderRadius: "8px",
             marginTop: "16px",
           }}
         >
@@ -85,8 +84,7 @@ export default function Page() {
                     ...style,
                     padding: "16px",
                     backgroundColor: virtualItem.index % 2 === 0 ? "#f8f9fa" : "#ffffff",
-                    border: "1px solid #e1e5e9",
-                    borderRadius: "6px",
+                    borderBottom: "1px solid #e1e5e9",
                     display: "flex",
                     flexDirection: "column",
                     gap: "8px",

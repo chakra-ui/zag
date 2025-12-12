@@ -83,16 +83,6 @@ export class FenwickTree {
   }
 
   /**
-   * Prefix sum with gap adjustment.
-   * Useful when items are stored with gaps between them.
-   */
-  prefixSumWithGap(index: number, gap: number): number {
-    if (index < 0) return 0
-    const total = this.prefixSum(index)
-    return gap > 0 ? total - gap : total
-  }
-
-  /**
    * Find index at offset with padding adjustment.
    * Subtracts padding before searching.
    */

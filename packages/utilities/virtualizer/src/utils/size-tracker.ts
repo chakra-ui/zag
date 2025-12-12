@@ -83,7 +83,8 @@ export class SizeTracker {
    */
   getPrefixSum(index: number): number {
     this.ensureInitialized()
-    return this.fenwick.prefixSumWithGap(index, this.gap)
+    if (index < 0) return 0
+    return this.fenwick.prefixSum(index)
   }
 
   /**
@@ -147,9 +148,9 @@ export class SizeTracker {
     if (this.count === 0) return paddingStart + paddingEnd
     this.ensureInitialized()
 
-    const lastItemStart = this.getPrefixSum(this.count - 1)
-    const lastItemSize = this.getSize(this.count - 1)
-
-    return paddingStart + lastItemStart + lastItemSize + paddingEnd
+    // Prefix sum at the last index already represents the total content size
+    // (sizes + inter-item gaps, no trailing gap).
+    const total = this.getPrefixSum(this.count - 1)
+    return paddingStart + total + paddingEnd
   }
 }
