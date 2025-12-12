@@ -16,21 +16,9 @@ interface GridRange {
 }
 
 type ResolvedOptions = Required<
-  Omit<
-    GridVirtualizerOptions,
-    | "onScroll"
-    | "onRangeChange"
-    | "onHorizontalScroll"
-    | "onVisibilityChange"
-    | "onScrollElementResize"
-    | "overscan"
-    | "scrollRestoration"
-  >
+  Omit<GridVirtualizerOptions, "onScroll" | "onRangeChange" | "onVisibilityChange" | "overscan" | "scrollRestoration">
 > &
-  Pick<
-    GridVirtualizerOptions,
-    "onScroll" | "onRangeChange" | "onHorizontalScroll" | "onVisibilityChange" | "onScrollElementResize"
-  > & {
+  Pick<GridVirtualizerOptions, "onScroll" | "onRangeChange" | "onVisibilityChange"> & {
     overscan: Required<OverscanConfig>
     scrollRestoration?: GridVirtualizerOptions["scrollRestoration"]
   }
@@ -125,8 +113,17 @@ export class GridVirtualizer {
       this.scrollLeftRestoration?.recordScrollPosition(this.scrollLeft, "user")
 
       this.options.onScroll?.({
-        offset: this.scrollTop,
-        direction: this.scrollTop > this.lastScrollTop ? "forward" : "backward",
+        offset: { x: this.scrollLeft, y: this.scrollTop },
+        direction: {
+          x:
+            this.scrollLeft > this.lastScrollLeft
+              ? "forward"
+              : this.scrollLeft < this.lastScrollLeft
+                ? "backward"
+                : "idle",
+          y:
+            this.scrollTop > this.lastScrollTop ? "forward" : this.scrollTop < this.lastScrollTop ? "backward" : "idle",
+        },
         isScrolling: false,
       })
     }, SCROLL_END_DELAY_MS)
@@ -243,7 +240,6 @@ export class GridVirtualizer {
     this.sizeObserver = new SizeObserver({
       onResize: (size) => {
         this.setViewportSize(size.width, size.height)
-        this.options.onScrollElementResize?.(size)
         this.scrollTopRestoration?.handleResize(this.scrollTop)
         this.scrollLeftRestoration?.handleResize(this.scrollLeft)
       },
@@ -521,7 +517,6 @@ export class GridVirtualizer {
     // Quick exit if nothing changed
     if (scrollTop === this.scrollTop && scrollLeft === this.scrollLeft) return
 
-    const scrollLeftChanged = this.scrollLeft !== scrollLeft
     const wasScrolling = this.isScrolling
 
     this.scrollTop = scrollTop
@@ -532,16 +527,10 @@ export class GridVirtualizer {
     if (this.rafUpdateRange) {
       this.rafUpdateRange(() => {
         this.calculateRange()
-        if (scrollLeftChanged) {
-          this.options.onHorizontalScroll?.(scrollLeft)
-        }
       })
     } else {
       // Fallback to immediate calculation
       this.calculateRange()
-      if (scrollLeftChanged) {
-        this.options.onHorizontalScroll?.(scrollLeft)
-      }
     }
 
     // Debounced scroll end detection
@@ -550,8 +539,11 @@ export class GridVirtualizer {
     } else if (!wasScrolling) {
       // First scroll event - notify immediately
       this.options.onScroll?.({
-        offset: scrollTop,
-        direction: scrollTop > this.lastScrollTop ? "forward" : "backward",
+        offset: { x: scrollLeft, y: scrollTop },
+        direction: {
+          x: scrollLeft > this.lastScrollLeft ? "forward" : scrollLeft < this.lastScrollLeft ? "backward" : "idle",
+          y: scrollTop > this.lastScrollTop ? "forward" : scrollTop < this.lastScrollTop ? "backward" : "idle",
+        },
         isScrolling: true,
       })
     }

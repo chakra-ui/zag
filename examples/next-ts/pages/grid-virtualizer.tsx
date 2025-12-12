@@ -1,5 +1,5 @@
 import { GridVirtualizer } from "@zag-js/virtualizer"
-import { useCallback, useLayoutEffect, useReducer, useRef } from "react"
+import { useCallback, useReducer, useRef, useState } from "react"
 import { flushSync } from "react-dom"
 
 // Grid configuration
@@ -16,14 +16,10 @@ const generateCellData = (row: number, col: number) => ({
 })
 
 export default function Page() {
-  const scrollElementRef = useRef<HTMLDivElement>(null)
   const isInitializedRef = useRef(false)
-  const virtualizerRef = useRef<GridVirtualizer | null>(null)
   const [, rerender] = useReducer(() => ({}), {})
-
-  // Create virtualizer once
-  if (!virtualizerRef.current) {
-    virtualizerRef.current = new GridVirtualizer({
+  const [virtualizer] = useState(() => {
+    return new GridVirtualizer({
       rowCount: TOTAL_ROWS,
       columnCount: TOTAL_COLUMNS,
       estimatedRowSize: () => CELL_HEIGHT,
@@ -38,27 +34,14 @@ export default function Page() {
         flushSync(rerender)
       },
     })
-  }
+  })
 
-  const virtualizer = virtualizerRef.current
-
-  // Callback ref to measure when element mounts
   const setScrollElementRef = useCallback((element: HTMLDivElement | null) => {
-    scrollElementRef.current = element
-    if (element && virtualizer) {
-      virtualizer.init(element)
-      isInitializedRef.current = true
-      rerender()
-    }
-  }, [])
-
-  // Cleanup on unmount
-  useLayoutEffect(() => {
-    return () => {
-      virtualizerRef.current?.destroy()
-      virtualizerRef.current = null
-      isInitializedRef.current = false
-    }
+    if (!element) return
+    virtualizer.init(element)
+    isInitializedRef.current = true
+    rerender()
+    return () => virtualizer.destroy()
   }, [])
 
   const virtualCells = virtualizer.getVirtualCells()

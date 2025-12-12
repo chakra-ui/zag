@@ -24,12 +24,9 @@ import { debounce, rafThrottle } from "./utils/debounce"
 import { shallowCompare } from "./utils/shallow-compare"
 
 type ResolvedBaseOptions = Required<
-  Omit<
-    VirtualizerOptions,
-    "onScroll" | "onRangeChange" | "onVisibilityChange" | "onScrollElementResize" | "overscan" | "scrollRestoration"
-  >
+  Omit<VirtualizerOptions, "onScroll" | "onRangeChange" | "onVisibilityChange" | "overscan" | "scrollRestoration">
 > &
-  Pick<VirtualizerOptions, "onScroll" | "onRangeChange" | "onVisibilityChange" | "onScrollElementResize"> & {
+  Pick<VirtualizerOptions, "onScroll" | "onRangeChange" | "onVisibilityChange"> & {
     overscan: Required<OverscanConfig>
     scrollRestoration?: ScrollRestorationConfig
   }
@@ -170,9 +167,6 @@ export abstract class Virtualizer<O extends VirtualizerOptions = VirtualizerOpti
 
           // Record resize in scroll restoration
           this.scrollRestoration?.handleResize(this.scrollOffset)
-
-          // Notify user of scroll element resize
-          this.options.onScrollElementResize?.(size)
         },
       })
 
@@ -519,9 +513,15 @@ export abstract class Virtualizer<O extends VirtualizerOptions = VirtualizerOpti
   }
 
   private notifyScroll(): void {
+    const { horizontal } = this.options
+    const offset: ScrollState["offset"] = horizontal ? { x: this.scrollOffset, y: 0 } : { x: 0, y: this.scrollOffset }
+    const direction: ScrollState["direction"] = horizontal
+      ? { x: this.scrollDirection, y: "idle" }
+      : { x: "idle", y: this.scrollDirection }
+
     this.options.onScroll?.({
-      offset: this.scrollOffset,
-      direction: this.scrollDirection,
+      offset,
+      direction,
       isScrolling: this.isScrolling,
     })
   }
@@ -801,9 +801,14 @@ export abstract class Virtualizer<O extends VirtualizerOptions = VirtualizerOpti
   }
 
   getScrollState(): ScrollState {
+    const { horizontal } = this.options
+    const offset: ScrollState["offset"] = horizontal ? { x: this.scrollOffset, y: 0 } : { x: 0, y: this.scrollOffset }
+    const direction: ScrollState["direction"] = horizontal
+      ? { x: this.scrollDirection, y: "idle" }
+      : { x: "idle", y: this.scrollDirection }
     return {
-      offset: this.scrollOffset,
-      direction: this.scrollDirection,
+      offset,
+      direction,
       isScrolling: this.isScrolling,
     }
   }

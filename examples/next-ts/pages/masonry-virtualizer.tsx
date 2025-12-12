@@ -1,26 +1,27 @@
 import { MasonryVirtualizer } from "@zag-js/virtualizer"
-import { useCallback, useLayoutEffect, useMemo, useReducer, useRef } from "react"
+import { useCallback, useReducer, useRef, useState } from "react"
 import { flushSync } from "react-dom"
 
-type Item = { id: number; title: string; height: number }
+interface Item {
+  id: number
+  title: string
+  height: number
+}
 
 const makeItems = (count: number): Item[] =>
   Array.from({ length: count }, (_, i) => ({
     id: i,
     title: `Card ${i + 1}`,
-    height: 80 + ((i * 37) % 220), // deterministic “random” height
+    height: 80 + ((i * 37) % 220),
   }))
 
+const items = makeItems(8000)
+
 export default function Page() {
-  const scrollElementRef = useRef<HTMLDivElement>(null)
   const isInitializedRef = useRef(false)
-  const virtualizerRef = useRef<MasonryVirtualizer | null>(null)
   const [, rerender] = useReducer(() => ({}), {})
-
-  const items = useMemo(() => makeItems(8000), [])
-
-  if (!virtualizerRef.current) {
-    virtualizerRef.current = new MasonryVirtualizer({
+  const [virtualizer] = useState<MasonryVirtualizer | null>(() => {
+    return new MasonryVirtualizer({
       count: items.length,
       lanes: 4,
       gap: 12,
@@ -35,26 +36,14 @@ export default function Page() {
         flushSync(rerender)
       },
     })
+  })
+
+  const setScrollElementRef = useCallback((element: HTMLDivElement | null) => {
+    if (!element) return
+    virtualizer.init(element)
+    isInitializedRef.current = true
     rerender()
-  }
-
-  const virtualizer = virtualizerRef.current
-
-  const setScrollElementRef = useCallback(
-    (element: HTMLDivElement | null) => {
-      scrollElementRef.current = element
-      if (element && virtualizer) {
-        virtualizer.init(element)
-        isInitializedRef.current = true
-        rerender()
-      }
-    },
-    [virtualizer],
-  )
-
-  useLayoutEffect(() => {
-    const v = virtualizerRef.current
-    return () => v?.destroy()
+    return () => virtualizer.destroy()
   }, [])
 
   const virtualItems = virtualizer.getVirtualItems()

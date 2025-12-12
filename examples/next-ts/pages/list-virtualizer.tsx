@@ -1,5 +1,5 @@
 import { ListVirtualizer } from "@zag-js/virtualizer"
-import { useCallback, useLayoutEffect, useReducer, useRef, useState } from "react"
+import { useCallback, useReducer, useRef, useState } from "react"
 import { flushSync } from "react-dom"
 
 const generateItems = (count: number) =>
@@ -9,16 +9,12 @@ const generateItems = (count: number) =>
     description: `This is the description for item ${i + 1}`,
   }))
 
+const items = generateItems(10000)
+
 export default function Page() {
-  const scrollElementRef = useRef<HTMLDivElement>(null)
   const isInitializedRef = useRef(false)
-  const virtualizerRef = useRef<ListVirtualizer | null>(null)
-  const [, rerender] = useReducer(() => ({}), {})
-
-  const [items] = useState(() => generateItems(10000))
-
-  if (!virtualizerRef.current) {
-    virtualizerRef.current = new ListVirtualizer({
+  const [virtualizer] = useState<ListVirtualizer | null>(() => {
+    return new ListVirtualizer({
       count: items.length,
       estimatedSize: () => 80,
       overscan: { count: 5 },
@@ -30,30 +26,17 @@ export default function Page() {
         flushSync(rerender)
       },
     })
-    // Trigger re-render after creating virtualizer
-    rerender()
-  }
-
-  const virtualizer = virtualizerRef.current
+  })
+  const [, rerender] = useReducer(() => ({}), {})
 
   // Callback ref to measure when element mounts
-  const setScrollElementRef = useCallback(
-    (element: HTMLDivElement | null) => {
-      scrollElementRef.current = element
-      if (element && virtualizer) {
-        virtualizer.init(element)
-        isInitializedRef.current = true
-        rerender()
-      }
-    },
-    [virtualizer],
-  )
-
-  // Cleanup on unmount
-  useLayoutEffect(() => {
-    const virtualizer = virtualizerRef.current
-    return () => {
-      virtualizer?.destroy()
+  const setScrollElementRef = useCallback((element: HTMLDivElement | null) => {
+    if (!element) return
+    if (virtualizer) {
+      virtualizer.init(element)
+      isInitializedRef.current = true
+      rerender()
+      return () => virtualizer.destroy()
     }
   }, [])
 

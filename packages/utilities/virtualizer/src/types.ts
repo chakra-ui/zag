@@ -19,9 +19,11 @@ export interface ItemState {
 
 export type CSSProperties = Record<string, string | number | undefined>
 
+export type ScrollAxisDirection = "forward" | "backward" | "idle"
+
 export interface ScrollState {
-  offset: number
-  direction: "forward" | "backward"
+  offset: { x: number; y: number }
+  direction: { x: ScrollAxisDirection; y: ScrollAxisDirection }
   isScrolling: boolean
 }
 
@@ -181,9 +183,6 @@ export interface VirtualizerBaseOptions {
 
   /** Callback when item visibility changes */
   onVisibilityChange?: (index: number, isVisible: boolean) => void
-
-  /** Callback when scroll element is resized (observeScrollElementSize only) */
-  onScrollElementResize?: (size: { width: number; height: number }) => void
 }
 
 /** Alias for VirtualizerBaseOptions */
@@ -224,9 +223,6 @@ export interface GridVirtualizerOptions extends Omit<VirtualizerBaseOptions, "co
 
   /** Estimated column width for each column */
   estimatedColumnSize: (columnIndex: number) => number
-
-  /** Callback when horizontal scroll changes */
-  onHorizontalScroll?: (offset: number) => void
 
   /**
    * The initial size of the viewport for server-side rendering.
