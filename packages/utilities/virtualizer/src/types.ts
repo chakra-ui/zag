@@ -32,10 +32,25 @@ export interface ScrollAnchor {
   offset: number
 }
 
+type ScrollAlignment = "start" | "center" | "end"
+type ScrollEasingFunction = (t: number) => number
+export type ScrollEasing =
+  | ScrollEasingFunction
+  | "linear"
+  | "easeInQuad"
+  | "easeOutQuad"
+  | "easeInOutQuad"
+  | "easeInCubic"
+  | "easeOutCubic"
+  | "easeInOutCubic"
+  | "easeInQuart"
+  | "easeOutQuart"
+  | "easeInOutQuart"
+  | "easeOutExpo"
+  | "easeOutBack"
+
 export interface ScrollToIndexOptions {
-  align?: "start" | "center" | "end"
-  behavior?: ScrollBehavior
-  signal?: AbortSignal
+  align?: ScrollAlignment
   /** Enable smooth scrolling with custom options */
   smooth?:
     | boolean
@@ -43,20 +58,7 @@ export interface ScrollToIndexOptions {
         /** Duration of the scroll animation in milliseconds */
         duration?: number
         /** Easing function name or custom function */
-        easing?:
-          | "linear"
-          | "easeInQuad"
-          | "easeOutQuad"
-          | "easeInOutQuad"
-          | "easeInCubic"
-          | "easeOutCubic"
-          | "easeInOutCubic"
-          | "easeInQuart"
-          | "easeOutQuart"
-          | "easeInOutQuart"
-          | "easeOutExpo"
-          | "easeOutBack"
-          | ((t: number) => number)
+        easing?: ScrollEasing
         /** Custom scroll function */
         scrollFunction?: (position: { scrollTop?: number; scrollLeft?: number }) => void
       }
@@ -91,13 +93,6 @@ export interface ScrollRestorationOptions {
   restorationTolerance?: number
 }
 
-export interface DOMOrderOptions {
-  /** Enable DOM order optimization to prevent layout thrashing */
-  enableDOMOrderOptimization?: boolean
-  /** Delay before reordering DOM elements (ms) */
-  domReorderDelay?: number
-}
-
 export interface OverscanConfig {
   /** Base number of items to render outside viewport (default: 3) */
   count?: number
@@ -129,10 +124,11 @@ export interface MeasureCache {
   end: number
 }
 
-export interface VirtualizerBaseOptions extends DOMOrderOptions {
-  /** Function to get the scrolling element - called when virtualizer needs it */
-  getScrollingEl?: () => HTMLElement | null
-
+export interface VirtualizerBaseOptions {
+  /**
+   * Function to get the scroll element - called when the virtualizer needs it.
+   */
+  getScrollElement?: () => HTMLElement | null
   /**
    * Get a stable key for an item at an index. This is critical for:
    * - preserving scroll position across insertions/removals
@@ -140,19 +136,22 @@ export interface VirtualizerBaseOptions extends DOMOrderOptions {
    *
    * If omitted, `index` is used as the key.
    */
-  getItemKey?: (index: number) => string | number
-
+  indexToKey?: (index: number) => string | number
   /**
-   * Optional inverse mapping for `getItemKey`.
+   * Optional inverse mapping for `indexToKey`.
    * If provided, enables O(1) anchor restoration by key.
    */
-  getIndexForKey?: (key: string | number) => number | undefined
+  keyToIndex?: ((key: string | number) => number) | undefined
 
   /** Total number of items */
   count: number
 
-  /** Estimated item size (height for vertical, width for horizontal) */
-  estimatedSize: (index: number) => number
+  /**
+   * Estimated item size (height for vertical, width for horizontal).
+   *
+   * For masonry layouts, the estimate may depend on the current `laneWidth`.
+   */
+  estimatedSize: (index: number, laneWidth?: number) => number
 
   /** Gap between items */
   gap?: number
@@ -185,17 +184,11 @@ export interface VirtualizerBaseOptions extends DOMOrderOptions {
   /** Root margin for intersection observer */
   rootMargin?: string
 
-  /** Enable view recycling for better performance */
-  enableViewRecycling?: boolean
-
   /** Enable scroll anchor preservation during updates */
   preserveScrollAnchor?: boolean
 
-  /** Enable performance monitoring */
-  enablePerfMonitoring?: boolean
-
-  /** Enable automatic container size detection */
-  enableAutoSizing?: boolean
+  /** Observe the scroll element size and automatically update virtualizer measurements */
+  observeScrollElementSize?: boolean
 
   /** Callback when scroll state changes */
   onScroll?: (state: ScrollState) => void
@@ -206,20 +199,14 @@ export interface VirtualizerBaseOptions extends DOMOrderOptions {
   /** Callback when item visibility changes */
   onVisibilityChange?: (index: number, isVisible: boolean) => void
 
-  /** Callback for performance metrics */
-  onPerfMetrics?: (metrics: PerformanceMetrics) => void
-
-  /** Callback when container is resized (auto-sizing only) */
-  onContainerResize?: (size: { width: number; height: number }) => void
+  /** Callback when scroll element is resized (observeScrollElementSize only) */
+  onScrollElementResize?: (size: { width: number; height: number }) => void
 }
 
 /** Alias for VirtualizerBaseOptions */
 export type VirtualizerOptions = VirtualizerBaseOptions
 
 export interface ListVirtualizerOptions extends VirtualizerBaseOptions {
-  /** Get item size dynamically */
-  getItemSize?: (index: number) => number
-
   /** Number of lanes (columns for vertical, rows for horizontal). Defaults to 1. */
   lanes?: number
 
@@ -286,42 +273,4 @@ export interface VirtualCell {
 export interface MasonryVirtualizerOptions extends VirtualizerBaseOptions {
   /** Number of lanes (columns) */
   lanes: number
-
-  /** Get masonry item size based on lane width */
-  getMasonryItemSize?: (index: number, laneWidth: number) => number
-}
-
-export interface PerformanceMetrics {
-  /** Time taken for last calculation (ms) */
-  renderTime: number
-  /** Current scroll frames per second */
-  scrollFPS: number
-  /** Number of items in measurement cache */
-  cacheSize: number
-  /** Cache hit rate percentage */
-  cacheHitRate: number
-  /** Current scroll velocity (px/ms) */
-  scrollVelocity: number
-  /** Number of visible items */
-  visibleCount: number
-  /** Total virtualized content size */
-  totalSize: number
-}
-
-export interface StickyConfig {
-  /** Indices that should stick during scroll */
-  stickyIndices?: number[]
-  /** How sticky items behave when scrolling */
-  stickyBehavior?: "stack" | "push" | "overlay"
-}
-
-export interface ViewRecyclingStats {
-  /** Total views in pool */
-  poolSize: number
-  /** Views currently in use */
-  activeViews: number
-  /** Views available for reuse */
-  availableViews: number
-  /** Total view reuses */
-  reuseCount: number
 }

@@ -22,9 +22,8 @@ type ResolvedOptions = Required<
     | "onRangeChange"
     | "onHorizontalScroll"
     | "onVisibilityChange"
-    | "onPerfMetrics"
-    | "onContainerResize"
-    | "getScrollingEl"
+    | "onScrollElementResize"
+    | "getScrollElement"
     | "overscan"
     | "scrollRestoration"
   >
@@ -35,9 +34,8 @@ type ResolvedOptions = Required<
     | "onRangeChange"
     | "onHorizontalScroll"
     | "onVisibilityChange"
-    | "onPerfMetrics"
-    | "onContainerResize"
-    | "getScrollingEl"
+    | "onScrollElementResize"
+    | "getScrollElement"
   > & {
     overscan: Required<OverscanConfig>
     scrollRestoration?: GridVirtualizerOptions["scrollRestoration"]
@@ -94,12 +92,8 @@ export class GridVirtualizer {
       horizontal: false,
       rtl: false,
       rootMargin: "50px",
-      enableViewRecycling: false,
       preserveScrollAnchor: true,
-      enablePerfMonitoring: false,
-      enableAutoSizing: false,
-      enableDOMOrderOptimization: false,
-      domReorderDelay: 50,
+      observeScrollElementSize: false,
       ...options,
       overscan,
     } as ResolvedOptions
@@ -113,6 +107,27 @@ export class GridVirtualizer {
     this.initializeMeasurements()
     this.initializeAutoSizing()
     this.initializeScrollRestoration()
+  }
+
+  /**
+   * Initialize the grid virtualizer with a concrete scroll element.
+   * This avoids the common "ref is null during construction" issue.
+   */
+  init(scrollElement: HTMLElement): void {
+    if (this.scrollElement && this.scrollElement !== scrollElement) {
+      this.detachScrollListener()
+    }
+    this.scrollElement = scrollElement
+    this.scrollListenerAttached = false
+
+    // Observe size if enabled
+    this.initializeScrollingElement()
+
+    // Prime measurements
+    this.measure()
+
+    // Attach listener eagerly now that we have the element
+    this.attachScrollListener()
   }
 
   private initializeScrollHandlers(): void {
@@ -236,18 +251,18 @@ export class GridVirtualizer {
    * Initialize auto-sizing if enabled
    */
   private initializeAutoSizing(): void {
-    if (!this.options.enableAutoSizing) return
+    if (!this.options.observeScrollElementSize) return
 
     this.sizeObserver = new SizeObserver({
       onResize: (size) => {
         this.setViewportSize(size.width, size.height)
-        this.options.onContainerResize?.(size)
+        this.options.onScrollElementResize?.(size)
         this.scrollTopRestoration?.handleResize(this.scrollTop)
         this.scrollLeftRestoration?.handleResize(this.scrollLeft)
       },
     })
 
-    // Auto-observe scrolling element if getScrollingEl is provided
+    // Auto-observe scroll element if getScrollElement is provided
     this.initializeScrollingElement()
   }
 
@@ -257,7 +272,7 @@ export class GridVirtualizer {
   private resolveScrollElement(): Element | Window | null {
     // Do NOT cache null - refs can mount after first read.
     if (this.scrollElement) return this.scrollElement
-    const el = this.options.getScrollingEl?.() ?? null
+    const el = this.options.getScrollElement?.() ?? null
     if (el) this.scrollElement = el
     return el
   }
@@ -584,11 +599,11 @@ export class GridVirtualizer {
     if (this.scrollListenerAttached) return
     if (typeof window === "undefined") return
 
-    let scrollEl: Element | Window | null = null
-    if (this.options.getScrollingEl) {
-      scrollEl = this.resolveScrollElement()
-      if (!scrollEl) return
-    } else {
+    const resolved = this.resolveScrollElement()
+    let scrollEl: Element | Window | null = resolved
+    if (!scrollEl) {
+      // If a getter exists but is still null, do NOT fall back to window.
+      if (this.options.getScrollElement) return
       scrollEl = window
     }
 

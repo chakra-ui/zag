@@ -32,8 +32,7 @@ export default function Page() {
       gap: 0,
       paddingStart: 0,
       paddingEnd: 0,
-      enableAutoSizing: true,
-      getScrollingEl: () => scrollElementRef.current,
+      observeScrollElementSize: true,
       onRangeChange: () => {
         if (!isInitializedRef.current) return
         flushSync(rerender)
@@ -47,7 +46,7 @@ export default function Page() {
   const setScrollElementRef = useCallback((element: HTMLDivElement | null) => {
     scrollElementRef.current = element
     if (element && virtualizer) {
-      virtualizer.measure()
+      virtualizer.init(element)
       isInitializedRef.current = true
       rerender()
     }

@@ -27,10 +27,9 @@ export default function Page() {
       paddingStart: 12,
       paddingEnd: 12,
       estimatedSize: () => 180,
-      enableAutoSizing: true,
+      observeScrollElementSize: true,
       overscan: { count: 3 },
-      getScrollingEl: () => scrollElementRef.current,
-      getItemKey: (index) => items[index]?.id ?? index,
+      indexToKey: (index) => items[index]?.id ?? index,
       onRangeChange: () => {
         if (!isInitializedRef.current) return
         flushSync(rerender)
@@ -45,7 +44,7 @@ export default function Page() {
     (element: HTMLDivElement | null) => {
       scrollElementRef.current = element
       if (element && virtualizer) {
-        virtualizer.measure()
+        virtualizer.init(element)
         isInitializedRef.current = true
         rerender()
       }

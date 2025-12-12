@@ -25,7 +25,6 @@ export default function Page() {
       gap: 0,
       paddingStart: 0,
       paddingEnd: 0,
-      getScrollingEl: () => scrollElementRef.current,
       onRangeChange: () => {
         if (!isInitializedRef.current) return
         flushSync(rerender)
@@ -42,7 +41,7 @@ export default function Page() {
     (element: HTMLDivElement | null) => {
       scrollElementRef.current = element
       if (element && virtualizer) {
-        virtualizer.measure()
+        virtualizer.init(element)
         isInitializedRef.current = true
         rerender()
       }

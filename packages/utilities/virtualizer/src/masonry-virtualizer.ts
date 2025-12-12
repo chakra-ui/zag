@@ -6,10 +6,6 @@ import { Virtualizer } from "./virtualizer"
  * Virtualizer for masonry layouts (Pinterest-style multi-lane columns).
  */
 export class MasonryVirtualizer extends Virtualizer<MasonryVirtualizerOptions> {
-  // NOTE:
-  // Virtualizer's base constructor calls `initializeMeasurements()` before subclass
-  // field initializers run. To avoid runtime crashes, all subclass state is
-  // lazily initialized in methods (no reliance on field initializers).
   private laneItems!: Array<Array<{ index: number; start: number; end: number }>>
   private laneOffsets!: number[]
   private masonryPositions!: Map<number, { start: number; lane: number }>
@@ -25,9 +21,11 @@ export class MasonryVirtualizer extends Virtualizer<MasonryVirtualizerOptions> {
     if (!this.measuredSizes) this.measuredSizes = new Map()
     if (!this.laneOffsets) this.laneOffsets = []
     if (!this.laneItems) this.laneItems = []
+
     this.measureCache.clear()
     this.masonryPositions.clear()
     this.laneItems = []
+
     if (!this.rangeCache) this.rangeCache = new CacheManager<string, Range>(50)
     this.rangeCache.clear()
     this.recalculatePositions()
@@ -44,7 +42,7 @@ export class MasonryVirtualizer extends Virtualizer<MasonryVirtualizerOptions> {
 
   protected onItemMeasured(index: number, size: number): boolean {
     if (!this.measuredSizes) this.measuredSizes = new Map()
-    const currentSize = this.getMasonryItemSize(index)
+    const currentSize = this.getItemSize(index)
     if (currentSize === size) return false
 
     this.measuredSizes.set(index, size)
@@ -54,7 +52,7 @@ export class MasonryVirtualizer extends Virtualizer<MasonryVirtualizerOptions> {
     return true
   }
 
-  protected onContainerSizeChange(): void {
+  protected onCrossAxisSizeChange(): void {
     this.resetMeasurements()
   }
 
@@ -79,7 +77,7 @@ export class MasonryVirtualizer extends Virtualizer<MasonryVirtualizerOptions> {
     if (!this.laneItems || this.laneItems.length === 0) this.recalculatePositions()
 
     if (!this.rangeCache) this.rangeCache = new CacheManager<string, Range>(50)
-    const cacheKey = `${viewportStart}:${viewportEnd}:${count}:${lanes}:${gap}:${paddingStart}:${this.containerSize}`
+    const cacheKey = `${viewportStart}:${viewportEnd}:${count}:${lanes}:${gap}:${paddingStart}:${this.crossAxisSize}`
     const cached = this.rangeCache.get(cacheKey)
     if (cached) return cached
 
@@ -206,7 +204,7 @@ export class MasonryVirtualizer extends Virtualizer<MasonryVirtualizerOptions> {
     for (let i = 0; i < count; i++) {
       const lane = this.getShortestLane()
       const start = this.laneOffsets[lane]
-      const size = this.getMasonryItemSize(i)
+      const size = this.getItemSize(i)
       const end = start + size
 
       this.masonryPositions.set(i, { start, lane })
@@ -232,16 +230,15 @@ export class MasonryVirtualizer extends Virtualizer<MasonryVirtualizerOptions> {
     return shortestLane
   }
 
-  private getMasonryItemSize(index: number): number {
-    const { getMasonryItemSize } = this.options
+  private getItemSize(index: number): number {
     const laneSize = this.getLaneSize()
-    return this.measuredSizes?.get(index) ?? getMasonryItemSize?.(index, laneSize) ?? this.getEstimatedSize(index)
+    return this.measuredSizes?.get(index) ?? this.getEstimatedSize(index, laneSize)
   }
 
   private getLaneSize(): number {
     const { lanes, gap } = this.options
-    if (this.containerSize <= 0) return 200
-    return (this.containerSize - (lanes - 1) * gap) / lanes
+    if (this.crossAxisSize <= 0) return 200
+    return (this.crossAxisSize - (lanes - 1) * gap) / lanes
   }
 
   private getTotalLanes(): number {
@@ -293,7 +290,7 @@ export class MasonryVirtualizer extends Virtualizer<MasonryVirtualizerOptions> {
       }
 
       const start = laneHeights[shortestLane]
-      const size = this.getMasonryItemSize(i)
+      const size = this.getItemSize(i)
       const end = start + size
 
       // Update position and measurement cache

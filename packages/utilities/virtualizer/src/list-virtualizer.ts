@@ -40,11 +40,7 @@ export class ListVirtualizer extends Virtualizer<ListVirtualizerOptions> {
 
     // Initialize or reset size tracker
     if (!this.sizeTracker) {
-      this.sizeTracker = new SizeTracker(
-        count,
-        this.options.gap,
-        (i) => this.options.getItemSize?.(i) ?? this.getEstimatedSize(i),
-      )
+      this.sizeTracker = new SizeTracker(count, this.options.gap, (i) => this.getEstimatedSize(i))
     } else {
       this.sizeTracker.reset(count)
     }
@@ -62,17 +58,13 @@ export class ListVirtualizer extends Virtualizer<ListVirtualizerOptions> {
   }
 
   protected getKnownItemSize(index: number): number | undefined {
-    return this.getItemSize(index)
+    return this.itemSizeCache.get(index)
   }
 
   protected onItemMeasured(index: number, size: number): boolean {
     // Initialize size tracker if needed
     if (!this.sizeTracker) {
-      this.sizeTracker = new SizeTracker(
-        this.options.count,
-        this.options.gap,
-        (i) => this.options.getItemSize?.(i) ?? this.getEstimatedSize(i),
-      )
+      this.sizeTracker = new SizeTracker(this.options.count, this.options.gap, (i) => this.getEstimatedSize(i))
     }
 
     const changed = this.sizeTracker.setMeasuredSize(index, size)
@@ -152,11 +144,7 @@ export class ListVirtualizer extends Virtualizer<ListVirtualizerOptions> {
       // List mode: use size tracker's optimized binary search
       // Initialize size tracker if needed
       if (!this.sizeTracker) {
-        this.sizeTracker = new SizeTracker(
-          this.options.count,
-          this.options.gap,
-          (i) => this.options.getItemSize?.(i) ?? this.getEstimatedSize(i),
-        )
+        this.sizeTracker = new SizeTracker(this.options.count, this.options.gap, (i) => this.getEstimatedSize(i))
       }
 
       const startIndex = this.sizeTracker.findIndexAtOffset(viewportStart, paddingStart)
@@ -263,11 +251,7 @@ export class ListVirtualizer extends Virtualizer<ListVirtualizerOptions> {
 
     // Initialize size tracker if needed
     if (!this.sizeTracker) {
-      this.sizeTracker = new SizeTracker(
-        this.options.count,
-        this.options.gap,
-        (i) => this.options.getItemSize?.(i) ?? this.getEstimatedSize(i),
-      )
+      this.sizeTracker = new SizeTracker(this.options.count, this.options.gap, (i) => this.getEstimatedSize(i))
     }
 
     // List mode: use size tracker's optimized total size calculation
@@ -276,12 +260,12 @@ export class ListVirtualizer extends Virtualizer<ListVirtualizerOptions> {
 
   private getLaneSize(): number {
     const { gap } = this.options
-    if (this.containerSize <= 0) return 200
-    return (this.containerSize - (this.lanes - 1) * gap) / this.lanes
+    if (this.crossAxisSize <= 0) return 200
+    return (this.crossAxisSize - (this.lanes - 1) * gap) / this.lanes
   }
 
-  protected onContainerSizeChange(): void {
-    // Grid measurement depends on container width for lane sizing
+  protected onCrossAxisSizeChange(): void {
+    // Grid measurement depends on scroll element cross-axis size for lane sizing
     if (this.isGrid) {
       this.measureCache.clear()
     }
@@ -290,11 +274,7 @@ export class ListVirtualizer extends Virtualizer<ListVirtualizerOptions> {
   private getItemSize(index: number): number {
     // Initialize size tracker if needed
     if (!this.sizeTracker) {
-      this.sizeTracker = new SizeTracker(
-        this.options.count,
-        this.options.gap,
-        (i) => this.options.getItemSize?.(i) ?? this.getEstimatedSize(i),
-      )
+      this.sizeTracker = new SizeTracker(this.options.count, this.options.gap, (i) => this.getEstimatedSize(i))
     }
 
     return this.sizeTracker.getSize(index)
@@ -303,11 +283,7 @@ export class ListVirtualizer extends Virtualizer<ListVirtualizerOptions> {
   private getPrefixSize(index: number): number {
     // Initialize size tracker if needed
     if (!this.sizeTracker) {
-      this.sizeTracker = new SizeTracker(
-        this.options.count,
-        this.options.gap,
-        (i) => this.options.getItemSize?.(i) ?? this.getEstimatedSize(i),
-      )
+      this.sizeTracker = new SizeTracker(this.options.count, this.options.gap, (i) => this.getEstimatedSize(i))
     }
 
     return this.sizeTracker.getPrefixSum(index)
@@ -326,11 +302,7 @@ export class ListVirtualizer extends Virtualizer<ListVirtualizerOptions> {
 
     // Initialize size tracker if needed
     if (!this.sizeTracker) {
-      this.sizeTracker = new SizeTracker(
-        this.options.count,
-        this.options.gap,
-        (i) => this.options.getItemSize?.(i) ?? this.getEstimatedSize(i),
-      )
+      this.sizeTracker = new SizeTracker(this.options.count, this.options.gap, (i) => this.getEstimatedSize(i))
     }
 
     // List mode: use size tracker's optimized binary search
@@ -423,7 +395,7 @@ export class ListVirtualizer extends Virtualizer<ListVirtualizerOptions> {
    * - clears measurement caches (start/end offsets change)
    * - restores scroll based on the anchor key
    *
-   * For best results, provide `getItemKey` and preferably `getIndexForKey`.
+   * For best results, provide `indexToKey` and preferably `keyToIndex`.
    */
   prependItems(addedCount: number): void {
     if (addedCount <= 0) return

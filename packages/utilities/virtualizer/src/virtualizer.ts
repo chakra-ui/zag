@@ -2,7 +2,6 @@ import type {
   CSSProperties,
   ItemState,
   OverscanConfig,
-  PerformanceMetrics,
   Range,
   ScrollAnchor,
   ScrollHistoryEntry,
@@ -14,37 +13,23 @@ import type {
   VirtualizerOptions,
 } from "./types"
 import { SizeObserver } from "./utils/size-observer"
-import { DOMOrderManager } from "./utils/dom-order-manager"
 import { IntersectionObserverManager } from "./utils/intersection-observer-manager"
 import { resolveOverscanConfig, SCROLL_END_DELAY_MS } from "./utils/overscan"
-import { PerformanceMonitor } from "./utils/performance-monitor"
 import { ResizeObserverManager } from "./utils/resize-observer-manager"
 import { getScrollPositionFromEvent } from "./utils/scroll-helpers"
 import { ScrollRestorationManager } from "./utils/scroll-restoration-manager"
 import { easingFunctions, smoothScrollTo, type SmoothScrollResult } from "./utils/smooth-scroll"
 import { VelocityTracker, type OverscanCalculationResult, type VelocityState } from "./utils/velocity-tracker"
-import { ViewPool } from "./utils/view-pool"
 import { debounce, rafThrottle } from "./utils/debounce"
 import { shallowCompare } from "./utils/shallow-compare"
-
-const now = typeof performance !== "undefined" ? () => performance.now() : () => Date.now()
 
 type ResolvedBaseOptions = Required<
   Omit<
     VirtualizerOptions,
-    | "onScroll"
-    | "onRangeChange"
-    | "onVisibilityChange"
-    | "onPerfMetrics"
-    | "onContainerResize"
-    | "overscan"
-    | "scrollRestoration"
+    "onScroll" | "onRangeChange" | "onVisibilityChange" | "onScrollElementResize" | "overscan" | "scrollRestoration"
   >
 > &
-  Pick<
-    VirtualizerOptions,
-    "onScroll" | "onRangeChange" | "onVisibilityChange" | "onPerfMetrics" | "onContainerResize"
-  > & {
+  Pick<VirtualizerOptions, "onScroll" | "onRangeChange" | "onVisibilityChange" | "onScrollElementResize"> & {
     overscan: Required<OverscanConfig>
     scrollRestoration?: ScrollRestorationConfig
   }
@@ -55,7 +40,7 @@ type ResolvedBaseOptions = Required<
  */
 export abstract class Virtualizer<O extends VirtualizerOptions = VirtualizerOptions> {
   protected options: ResolvedBaseOptions & O
-  private readonly hasScrollingElGetter: boolean
+  private readonly hasScrollElementGetter: boolean
 
   // Measurements
   protected measureCache: Map<number, { start: number; size: number; end: number }> = new Map()
@@ -72,7 +57,8 @@ export abstract class Virtualizer<O extends VirtualizerOptions = VirtualizerOpti
 
   // Viewport
   protected viewportSize = 0
-  protected containerSize = 0
+  // Cross-axis size of the scroll element (width for vertical, height for horizontal).
+  protected crossAxisSize = 0
 
   // Visible range
   protected range: Range = { startIndex: 0, endIndex: -1 }
@@ -83,17 +69,14 @@ export abstract class Virtualizer<O extends VirtualizerOptions = VirtualizerOpti
   private keyIndexCache: Map<string | number, number> = new Map()
 
   // Performance tracking
-  protected lastCalcTime = 0
+  // (removed) lastCalcTime: previously used only for debug stats
 
   // Advanced features
   private velocityTracker?: VelocityTracker
   private resizeObserver?: ResizeObserverManager
   private intersectionObserver?: IntersectionObserverManager
-  private perfMonitor?: PerformanceMonitor
-  private viewPool?: ViewPool<HTMLElement>
   private sizeObserver?: SizeObserver
   private scrollRestoration?: ScrollRestorationManager
-  private domOrderManager?: DOMOrderManager
 
   // Dynamic sizing
   private pendingSizeUpdates = new Map<number, number>()
@@ -110,7 +93,7 @@ export abstract class Virtualizer<O extends VirtualizerOptions = VirtualizerOpti
 
   constructor(options: O) {
     const overscan = resolveOverscanConfig(options.overscan)
-    this.hasScrollingElGetter = typeof options.getScrollingEl === "function"
+    this.hasScrollElementGetter = typeof options.getScrollElement === "function"
 
     this.options = {
       horizontal: false,
@@ -119,12 +102,8 @@ export abstract class Virtualizer<O extends VirtualizerOptions = VirtualizerOpti
       paddingEnd: 0,
       initialOffset: 0,
       rootMargin: "50px",
-      enableViewRecycling: false,
       preserveScrollAnchor: true,
-      enablePerfMonitoring: false,
-      enableAutoSizing: false,
-      enableDOMOrderOptimization: false,
-      domReorderDelay: 50,
+      observeScrollElementSize: false,
       ...options,
       overscan,
     } as ResolvedBaseOptions & O
@@ -136,6 +115,31 @@ export abstract class Virtualizer<O extends VirtualizerOptions = VirtualizerOpti
     // Don't attach scroll listener in constructor since DOM may not be ready
   }
 
+  /**
+   * Initialize the virtualizer with a concrete scroll element.
+   *
+   * This avoids the common "ref is null during construction" issue by allowing
+   * consumers to wire the element explicitly once it mounts.
+   */
+  init(scrollElement: HTMLElement): void {
+    // If we were previously attached to a different element (or window), detach first.
+    if (this.scrollElement && this.scrollElement !== scrollElement) {
+      this.detachScrollListener()
+    }
+
+    this.scrollElement = scrollElement
+    this.scrollListenerAttached = false
+
+    // Observe size if enabled
+    this.initializeScrollingElement()
+
+    // Prime measurements
+    this.measure()
+
+    // Attach listener eagerly now that we have the element
+    this.attachScrollListener()
+  }
+
   private initializeScrollHandlers(): void {
     // Create debounced scroll end handler
     this.debouncedScrollEnd = debounce(() => {
@@ -144,9 +148,6 @@ export abstract class Virtualizer<O extends VirtualizerOptions = VirtualizerOpti
 
       // Record scroll position when scrolling stops (user interaction)
       this.scrollRestoration?.recordScrollPosition(this.scrollOffset, "user")
-
-      // Flush any pending DOM reorders when scrolling stops
-      this.domOrderManager?.onScrollStop()
     }, SCROLL_END_DELAY_MS)
 
     // Create RAF-throttled range update for smooth scrolling
@@ -154,8 +155,10 @@ export abstract class Virtualizer<O extends VirtualizerOptions = VirtualizerOpti
   }
 
   private initializeAdvancedFeatures(): void {
+    const { horizontal, overscan } = this.options
+
     // Initialize velocity tracker for dynamic overscan
-    if (this.options.overscan.dynamic) {
+    if (overscan.dynamic) {
       this.velocityTracker = new VelocityTracker()
     }
 
@@ -169,38 +172,25 @@ export abstract class Virtualizer<O extends VirtualizerOptions = VirtualizerOpti
       })
     }
 
-    // Initialize performance monitoring
-    if (this.options.enablePerfMonitoring && this.options.onPerfMetrics) {
-      this.perfMonitor = new PerformanceMonitor({
-        onMetrics: this.options.onPerfMetrics,
-      })
-    }
-
-    // Initialize view recycling
-    if (this.options.enableViewRecycling) {
-      this.viewPool = new ViewPool<HTMLElement>(() => document.createElement("div"))
-    }
-
-    // Initialize auto-sizing
-    if (this.options.enableAutoSizing) {
+    // Observe scroll element size
+    if (this.options.observeScrollElementSize) {
       this.sizeObserver = new SizeObserver({
         onResize: (size) => {
-          const { horizontal } = this.options
           const viewportSize = horizontal ? size.width : size.height
-          const containerSize = horizontal ? size.height : size.width
+          const crossAxisSize = horizontal ? size.height : size.width
 
           this.setViewportSize(viewportSize)
-          this.setContainerSize(containerSize)
+          this.setCrossAxisSize(crossAxisSize)
 
           // Record resize in scroll restoration
           this.scrollRestoration?.handleResize(this.scrollOffset)
 
-          // Notify user of container resize
-          this.options.onContainerResize?.(size)
+          // Notify user of scroll element resize
+          this.options.onScrollElementResize?.(size)
         },
       })
 
-      // Auto-observe scrolling element if getScrollingEl is provided
+      // Auto-observe scroll element if getScrollElement is provided
       this.initializeScrollingElement()
     }
 
@@ -212,13 +202,6 @@ export abstract class Virtualizer<O extends VirtualizerOptions = VirtualizerOpti
         maxHistoryEntries: scrollRestoration.maxEntries ?? 10,
         restorationKey: scrollRestoration.key ?? "default",
         restorationTolerance: scrollRestoration.tolerance ?? 5,
-      })
-    }
-
-    // Initialize DOM order optimization if enabled
-    if (this.options.enableDOMOrderOptimization) {
-      this.domOrderManager = new DOMOrderManager({
-        reorderDelay: this.options.domReorderDelay,
       })
     }
   }
@@ -291,8 +274,6 @@ export abstract class Virtualizer<O extends VirtualizerOptions = VirtualizerOpti
       return this.cachedVirtualItems
     }
 
-    const startTime = this.perfMonitor?.startFrame() ?? now()
-
     const newVirtualItems: VirtualItem[] = []
 
     // Clean up virtual item cache for items outside new range
@@ -352,20 +333,6 @@ export abstract class Virtualizer<O extends VirtualizerOptions = VirtualizerOpti
     this.cachedVirtualItems = newVirtualItems
     this.virtualItemsCacheKey = newCacheKey
 
-    this.lastCalcTime = this.perfMonitor?.endFrame(startTime) ?? now() - startTime
-
-    // Emit performance metrics if monitoring enabled
-    if (this.perfMonitor && this.options.enablePerfMonitoring) {
-      const metrics = this.perfMonitor.createMetrics({
-        renderTime: this.lastCalcTime,
-        cacheSize: this.measureCache.size,
-        scrollVelocity: this.velocityTracker?.getAverageVelocity() ?? 0,
-        visibleCount: newVirtualItems.length,
-        totalSize: this.getTotalSize(),
-      })
-      this.options.onPerfMetrics?.(metrics)
-    }
-
     return newVirtualItems
   }
 
@@ -393,8 +360,8 @@ export abstract class Virtualizer<O extends VirtualizerOptions = VirtualizerOpti
     this.virtualItemObjectCache.delete(index)
     return true
   }
-  protected onContainerSizeChange(_size: number): void {
-    // Optionally overridden by subclasses that depend on container size (e.g., masonry)
+  protected onCrossAxisSizeChange(_size: number): void {
+    // Optionally overridden by subclasses that depend on cross-axis size (e.g., masonry)
   }
   protected getKnownItemSize(_index: number): number | undefined {
     // Optionally overridden by subclasses to return the currently known size for an item
@@ -405,8 +372,8 @@ export abstract class Virtualizer<O extends VirtualizerOptions = VirtualizerOpti
   /**
    * Get the estimated size for an item at the given index
    */
-  protected getEstimatedSize(index: number): number {
-    return this.options.estimatedSize(index)
+  protected getEstimatedSize(index: number, laneWidth?: number): number {
+    return this.options.estimatedSize(index, laneWidth)
   }
 
   protected invalidateMeasurements(fromIndex: number = 0) {
@@ -427,7 +394,7 @@ export abstract class Virtualizer<O extends VirtualizerOptions = VirtualizerOpti
    * Resolve the stable key for an index.
    */
   protected getItemKey(index: number): string | number {
-    return this.options.getItemKey?.(index) ?? index
+    return this.options.indexToKey?.(index) ?? index
   }
 
   /**
@@ -437,7 +404,7 @@ export abstract class Virtualizer<O extends VirtualizerOptions = VirtualizerOpti
    * - Finally falls back to a linear scan (correct but O(n))
    */
   protected getIndexForKey(key: string | number): number | undefined {
-    const byUser = this.options.getIndexForKey?.(key)
+    const byUser = this.options.keyToIndex?.(key)
     if (byUser !== undefined) return byUser
 
     const cached = this.keyIndexCache.get(key)
@@ -597,14 +564,14 @@ export abstract class Virtualizer<O extends VirtualizerOptions = VirtualizerOpti
     this.calculateRange()
   }
 
-  setContainerSize(size: number): void {
-    const sizeChanged = this.containerSize !== size
-    this.containerSize = size
+  setCrossAxisSize(size: number): void {
+    const sizeChanged = this.crossAxisSize !== size
+    this.crossAxisSize = size
 
     if (sizeChanged) {
       this.lastCalculatedOffset = -1 // Invalidate range cache
       this.virtualItemsCacheKey = "" // Invalidate items cache
-      this.onContainerSizeChange(size)
+      this.onCrossAxisSizeChange(size)
       this.calculateRange()
     }
   }
@@ -614,11 +581,11 @@ export abstract class Virtualizer<O extends VirtualizerOptions = VirtualizerOpti
    */
   private resolveScrollElement(): Element | Window | null {
     // Important: do NOT cache null.
-    // `getScrollingEl()` often returns null on initial render before the ref mounts.
+    // `getScrollElement()` often returns null on initial render before the ref mounts.
     // If we cache null here, `measure()` and `attachScrollListener()` will never see
     // the real element later.
     if (this.scrollElement) return this.scrollElement
-    const el = this.options.getScrollingEl?.() ?? null
+    const el = this.options.getScrollElement?.() ?? null
     if (el) this.scrollElement = el
     return el
   }
@@ -634,7 +601,7 @@ export abstract class Virtualizer<O extends VirtualizerOptions = VirtualizerOpti
     const { horizontal } = this.options
 
     this.setViewportSize(horizontal ? rect.width : rect.height)
-    this.setContainerSize(horizontal ? rect.height : rect.width)
+    this.setCrossAxisSize(horizontal ? rect.height : rect.width)
   }
 
   scrollTo(offset: number): { scrollTop?: number; scrollLeft?: number } {
@@ -923,15 +890,6 @@ export abstract class Virtualizer<O extends VirtualizerOptions = VirtualizerOpti
     return { ...this.range }
   }
 
-  getStats() {
-    return {
-      lastCalcTime: this.lastCalcTime,
-      cacheSize: this.measureCache.size,
-      visibleCount: this.range.endIndex - this.range.startIndex + 1,
-      totalSize: this.getTotalSize(),
-    }
-  }
-
   forceUpdate(): void {
     this.lastCalculatedOffset = -1 // Invalidate range cache
     this.virtualItemsCacheKey = "" // Invalidate items cache
@@ -1033,14 +991,12 @@ export abstract class Virtualizer<O extends VirtualizerOptions = VirtualizerOpti
     if (this.scrollListenerAttached) return
     if (typeof window === "undefined") return
 
-    // If the consumer provided a scrolling element getter, don't fall back to
-    // window while it's still null (e.g. before a ref mounts). Otherwise we'll
-    // cache/attach to window and never attach to the real element.
-    let scrollEl: Element | Window | null = null
-    if (this.hasScrollingElGetter) {
-      scrollEl = this.resolveScrollElement()
-      if (!scrollEl) return
-    } else {
+    // Prefer an explicitly initialized scroll element (via init) or a non-null getter result.
+    // If a getter exists but is still null, do NOT fall back to window.
+    const resolved = this.resolveScrollElement()
+    let scrollEl: Element | Window | null = resolved
+    if (!scrollEl) {
+      if (this.hasScrollElementGetter) return
       scrollEl = window
     }
 
@@ -1061,21 +1017,14 @@ export abstract class Virtualizer<O extends VirtualizerOptions = VirtualizerOpti
   }
 
   /**
-   * Get current container size (auto-sizing only)
+   * Get current scroll element size (observeScrollElementSize only)
    */
-  getContainerSize(): { width: number; height: number } | null {
+  getScrollElementSize(): { width: number; height: number } | null {
     if (!this.sizeObserver) return null
     return this.sizeObserver.getCurrentSize()
   }
 
   /**
-   * Get view recycling stats
-   */
-  getViewRecyclingStats() {
-    return this.viewPool?.getStats() ?? null
-  }
-
-  // ============================================
   // Scroll Restoration API
   // ============================================
 
@@ -1127,49 +1076,6 @@ export abstract class Virtualizer<O extends VirtualizerOptions = VirtualizerOpti
   }
 
   // ============================================
-  // DOM Order Optimization API
-  // ============================================
-
-  /**
-   * Register a DOM element for order optimization
-   */
-  registerDOMElement(element: HTMLElement, virtualItem: VirtualItem): void {
-    this.domOrderManager?.registerElement(element, virtualItem)
-  }
-
-  /**
-   * Unregister a DOM element from order optimization
-   */
-  unregisterDOMElement(index: number): void {
-    this.domOrderManager?.unregisterElement(index)
-  }
-
-  /**
-   * Force immediate DOM reordering
-   */
-  flushDOMReorder(): void {
-    this.domOrderManager?.flushReorder()
-  }
-
-  /**
-   * Enable/disable DOM order optimization
-   */
-  setDOMOrderOptimization(enabled: boolean): void {
-    this.domOrderManager?.setEnabled(enabled)
-  }
-
-  /**
-   * Get DOM order optimization statistics
-   */
-  getDOMOrderStats(): {
-    managedElements: number
-    pendingReorder: boolean
-    outOfOrderElements: number
-  } | null {
-    return this.domOrderManager?.getStats() ?? null
-  }
-
-  // ============================================
   // Smooth Scrolling API
   // ============================================
 
@@ -1204,8 +1110,11 @@ export abstract class Virtualizer<O extends VirtualizerOptions = VirtualizerOpti
   /**
    * Set scroll element for smooth scrolling (for subclasses to override)
    */
-  setScrollElement(_element: Element): void {
-    // Override in subclasses to set scroll container
+  setScrollElement(element: Element): void {
+    // Backwards-compatible alias for init()
+    if (element instanceof HTMLElement) {
+      this.init(element)
+    }
   }
 
   // ============================================
@@ -1255,21 +1164,6 @@ export abstract class Virtualizer<O extends VirtualizerOptions = VirtualizerOpti
     this.calculateRange()
   }
 
-  /**
-   * Get performance metrics
-   */
-  getPerformanceMetrics(): PerformanceMetrics | null {
-    if (!this.perfMonitor) return null
-
-    return this.perfMonitor.createMetrics({
-      renderTime: this.lastCalcTime,
-      cacheSize: this.measureCache.size,
-      scrollVelocity: this.velocityTracker?.getAverageVelocity() ?? 0,
-      visibleCount: this.range.endIndex - this.range.startIndex + 1,
-      totalSize: this.getTotalSize(),
-    })
-  }
-
   destroy(): void {
     if (this.scrollEndTimer) {
       clearTimeout(this.scrollEndTimer)
@@ -1281,12 +1175,9 @@ export abstract class Virtualizer<O extends VirtualizerOptions = VirtualizerOpti
     // Cleanup advanced features
     this.resizeObserver?.disconnect()
     this.intersectionObserver?.disconnect()
-    this.viewPool?.clear()
     this.velocityTracker?.reset()
-    this.perfMonitor?.reset()
     this.sizeObserver?.destroy()
     this.scrollRestoration?.destroy()
-    this.domOrderManager?.destroy()
 
     // Cancel any ongoing smooth scroll
     this.cancelSmoothScroll()

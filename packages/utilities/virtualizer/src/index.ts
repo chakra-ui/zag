@@ -1,13 +1,11 @@
 // Core virtualizer types that users need
 export type {
   CSSProperties,
-  DOMOrderOptions,
   GridVirtualizerOptions,
   ItemState,
   ListVirtualizerOptions,
   MasonryVirtualizerOptions,
   OverscanConfig,
-  PerformanceMetrics,
   Range,
   ScrollHistoryEntry,
   ScrollAnchor,
@@ -15,8 +13,6 @@ export type {
   ScrollState,
   ScrollToIndexOptions,
   ScrollToIndexResult,
-  StickyConfig,
-  ViewRecyclingStats,
   VirtualCell,
   VirtualItem,
   VirtualizerOptions,
