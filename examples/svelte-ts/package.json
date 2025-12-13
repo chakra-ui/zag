@@ -92,6 +92,7 @@
     "@zag-js/tree-view": "workspace:*",
     "@zag-js/types": "workspace:*",
     "@zag-js/utils": "workspace:*",
+    "@zag-js/virtualizer": "workspace:*",
     "form-serialize": "0.7.2",
     "lucide-svelte": "0.548.0",
     "match-sorter": "8.1.0"

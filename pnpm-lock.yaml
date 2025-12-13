@@ -377,6 +377,9 @@ importers:
       '@zag-js/utils':
         specifier: workspace:*
         version: link:../../packages/utilities/core
+      '@zag-js/virtualizer':
+        specifier: workspace:*
+        version: link:../../packages/utilities/virtualizer
       form-serialize:
         specifier: 0.7.2
         version: 0.7.2
@@ -675,6 +678,9 @@ importers:
       '@zag-js/utils':
         specifier: workspace:*
         version: link:../../packages/utilities/core
+      '@zag-js/virtualizer':
+        specifier: workspace:*
+        version: link:../../packages/utilities/virtualizer
       '@zag-js/vue':
         specifier: workspace:*
         version: link:../../packages/frameworks/vue
@@ -949,6 +955,9 @@ importers:
       '@zag-js/utils':
         specifier: workspace:*
         version: link:../../packages/utilities/core
+      '@zag-js/virtualizer':
+        specifier: workspace:*
+        version: link:../../packages/utilities/virtualizer
       lucide-preact:
         specifier: 0.548.0
         version: 0.548.0(preact@10.27.2)
@@ -1229,6 +1238,9 @@ importers:
       '@zag-js/utils':
         specifier: workspace:*
         version: link:../../packages/utilities/core
+      '@zag-js/virtualizer':
+        specifier: workspace:*
+        version: link:../../packages/utilities/virtualizer
       form-serialize:
         specifier: 0.7.2
         version: 0.7.2
@@ -1484,6 +1496,9 @@ importers:
       '@zag-js/utils':
         specifier: workspace:*
         version: link:../../packages/utilities/core
+      '@zag-js/virtualizer':
+        specifier: workspace:*
+        version: link:../../packages/utilities/virtualizer
       form-serialize:
         specifier: 0.7.2
         version: 0.7.2
@@ -1764,6 +1779,9 @@ importers:
       '@zag-js/utils':
         specifier: workspace:*
         version: link:../../packages/utilities/core
+      '@zag-js/virtualizer':
+        specifier: workspace:*
+        version: link:../../packages/utilities/virtualizer
       form-serialize:
         specifier: 0.7.2
         version: 0.7.2
@@ -3444,6 +3462,19 @@ importers:
       json-format-highlight:
         specifier: 1.0.4
         version: 1.0.4
+    devDependencies:
+      clean-package:
+        specifier: 2.2.0
+        version: 2.2.0
+
+  packages/utilities/virtualizer:
+    dependencies:
+      '@zag-js/dom-query':
+        specifier: workspace:*
+        version: link:../dom-query
+      '@zag-js/types':
+        specifier: workspace:*
+        version: link:../../types
     devDependencies:
       clean-package:
         specifier: 2.2.0
