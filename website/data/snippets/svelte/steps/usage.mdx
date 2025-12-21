@@ -17,32 +17,32 @@
   const api = $derived(steps.connect(service, normalizeProps))
 </script>
 
-<div {...api().getRootProps()}>
-  <div {...api().getListProps()}>
+<div {...api.getRootProps()}>
+  <div {...api.getListProps()}>
     {#each stepsData as step, index}
-      <div {...api().getItemProps({ index })}>
-        <button {...api().getTriggerProps({ index })}>
-          <div {...api().getIndicatorProps({ index })}>{index + 1}</div>
-          <span>{step().title}</span>
+      <div {...api.getItemProps({ index })}>
+        <button {...api.getTriggerProps({ index })}>
+          <div {...api.getIndicatorProps({ index })}>{index + 1}</div>
+          <span>{step.title}</span>
         </button>
-        <div {...api().getSeparatorProps({ index })} />
+        <div {...api.getSeparatorProps({ index })} />
       </div>
     {/each}
   </div>
 
     {#each stepsData as step, index}
-      <div {...api().getContentProps({ index })}>
-        {step().title} - {step().description}
+      <div {...api.getContentProps({ index })}>
+        {step.title} - {step.description}
       </div>
     {/each}
 
-  <div {...api().getContentProps({ index: stepsData.length })}>
+  <div {...api.getContentProps({ index: stepsData.length })}>
     Steps Complete - Thank you for filling out the form!
   </div>
 
   <div>
-    <button {...api().getPrevTriggerProps()}>Back</button>
-    <button {...api().getNextTriggerProps()}>Next</button>
+    <button {...api.getPrevTriggerProps()}>Back</button>
+    <button {...api.getNextTriggerProps()}>Next</button>
   </div>
 </div>
 ```
