@@ -30,11 +30,11 @@
     {/each}
   </div>
 
-    {#each stepsData as step, index}
-      <div {...api.getContentProps({ index })}>
-        {step.title} - {step.description}
-      </div>
-    {/each}
+  {#each stepsData as step, index}
+    <div {...api.getContentProps({ index })}>
+      {step.title} - {step.description}
+    </div>
+  {/each}
 
   <div {...api.getContentProps({ index: stepsData.length })}>
     Steps Complete - Thank you for filling out the form!
