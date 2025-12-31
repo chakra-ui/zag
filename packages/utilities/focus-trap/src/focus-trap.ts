@@ -130,12 +130,8 @@ export class FocusTrap {
       escapeDeactivates: true,
       delayInitialFocus: true,
       followControlledElements: true,
-      isKeyForward(e) {
-        return isTabEvent(e) && !e.shiftKey
-      },
-      isKeyBackward(e) {
-        return isTabEvent(e) && e.shiftKey
-      },
+      isKeyForward,
+      isKeyBackward,
       ...options,
     }
 
@@ -865,7 +861,11 @@ export class FocusTrap {
   }
 }
 
-const isTabEvent = (event: KeyboardEvent) => event.key === "Tab"
+const isKeyboardEvent = (event: Event): event is KeyboardEvent => event.type === "keydown"
+const isTabEvent = (event: Event) => isKeyboardEvent(event) && event?.key === "Tab"
+
+const isKeyForward = (e: Event) => isKeyboardEvent(e) && e.key === "Tab" && !e?.shiftKey
+const isKeyBackward = (e: Event) => isKeyboardEvent(e) && e.key === "Tab" && e?.shiftKey
 
 const valueOrHandler = (value: any, ...params: any[]) => (typeof value === "function" ? value(...params) : value)
 
