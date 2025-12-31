@@ -3400,7 +3400,7 @@ importers:
   packages/utilities/popper:
     dependencies:
       '@floating-ui/dom':
-        specifier: 1.7.4
+        specifier: ^1.7.4
         version: 1.7.4
       '@zag-js/dom-query':
         specifier: workspace:*
