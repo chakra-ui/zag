@@ -85,7 +85,7 @@ export function connect<T extends PropTypes>(
         return [...acc, file]
       }, [])
       if (!files.length) return false
-      send({ type: "FILES.SET", files })
+      send({ type: "FILE.SELECT", files })
       return true
     },
 
