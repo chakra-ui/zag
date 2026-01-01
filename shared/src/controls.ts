@@ -209,6 +209,7 @@ export const transitionControls = defineControls({
 })
 
 export const carouselControls = defineControls({
+  dir: { type: "select", options: ["ltr", "rtl"] as const, defaultValue: "ltr" },
   orientation: { type: "select", options: ["horizontal", "vertical"] as const, defaultValue: "horizontal" },
   slidesPerPage: { type: "number", defaultValue: 2 },
   loop: { type: "boolean", defaultValue: false },
