@@ -1,5 +1,5 @@
 import * as checkbox from "@zag-js/checkbox"
-import { normalizeProps, spreadProps, VanillaMachine } from "./lib"
+import { normalizeProps, spreadProps, VanillaMachine } from "@zag-js/vanilla"
 import { Component } from "./component"
 
 export class Checkbox extends Component<checkbox.Props, checkbox.Api> {

@@ -1,6 +1,6 @@
 import * as carousel from "@zag-js/carousel"
 import { Component } from "./component"
-import { normalizeProps, spreadProps, VanillaMachine } from "./lib"
+import { normalizeProps, spreadProps, VanillaMachine } from "@zag-js/vanilla"
 
 export class Carousel extends Component<carousel.Props, carousel.Api> {
   images: string[] = []

@@ -13,6 +13,7 @@ import type {
   PropFn,
   Scope,
   Service,
+  Transition,
 } from "@zag-js/core"
 import { createScope, INIT_STATE, MachineStatus } from "@zag-js/core"
 import { subscribe } from "@zag-js/store"
@@ -22,17 +23,17 @@ import { createRefs } from "./refs"
 
 export class VanillaMachine<T extends MachineSchema> {
   scope: Scope
-  ctx: BindableContext<T>
+  context: BindableContext<T>
   prop: PropFn<T>
   state: Bindable<T["state"]>
   refs: BindableRefs<T>
   computed: ComputedFn<T>
 
-  private event: any = { type: "" }
-  private previousEvent: any
+  private event: T["event"] = { type: "" } as T["event"]
+  private previousEvent: T["event"] = { type: "" } as T["event"]
 
   private effects = new Map<string, VoidFunction>()
-  private transition: any = null
+  private transition: Transition<T> | null = null
 
   private cleanups: VoidFunction[] = []
   private subscriptions: Array<(service: Service<T>) => void> = []
@@ -43,17 +44,21 @@ export class VanillaMachine<T extends MachineSchema> {
     previous: () => this.previousEvent,
   })
 
+  private getStateConfig = (state: T["state"]) => {
+    return (this.machine.states as Record<string, any>)[state as string]
+  }
+
   private getState = () => ({
     ...this.state,
     matches: (...values: T["state"][]) => values.includes(this.state.get()),
-    hasTag: (tag: T["tag"]) => !!this.machine.states[this.state.get() as T["state"]]?.tags?.includes(tag),
+    hasTag: (tag: T["tag"]) => !!this.getStateConfig(this.state.get())?.tags?.includes(tag),
   })
 
-  debug = (...args: any[]) => {
+  private debug = (...args: any[]) => {
     if (this.machine.debug) console.log(...args)
   }
 
-  notify = () => {
+  private notify = () => {
     this.publish()
   }
 
@@ -117,7 +122,7 @@ export class VanillaMachine<T extends MachineSchema> {
         return context?.[key].hash(current)
       },
     }
-    this.ctx = ctx
+    this.context = ctx
 
     const computed: ComputedFn<T> = (key) => {
       return (
@@ -151,16 +156,14 @@ export class VanillaMachine<T extends MachineSchema> {
 
         // exit actions
         if (prevState) {
-          // @ts-ignore
-          this.action(machine.states[prevState]?.exit)
+          this.action(this.getStateConfig(prevState)?.exit)
         }
 
         // transition actions
         this.action(this.transition?.actions)
 
         // enter effect
-        // @ts-ignore
-        const cleanup = this.effect(machine.states[nextState]?.effects)
+        const cleanup = this.effect(this.getStateConfig(nextState)?.effects)
         if (cleanup) this.effects.set(nextState as string, cleanup)
 
         // root entry actions
@@ -171,18 +174,19 @@ export class VanillaMachine<T extends MachineSchema> {
         }
 
         // enter actions
-        // @ts-ignore
-        this.action(machine.states[nextState]?.entry)
+        this.action(this.getStateConfig(nextState)?.entry)
       },
     }))
     this.state = state
     this.cleanups.push(subscribe(this.state.ref, () => this.notify()))
   }
 
-  send = (event: any) => {
+  send = (event: T["event"]) => {
     if (this.status !== MachineStatus.Started) return
 
     queueMicrotask(() => {
+      if (!event) return
+
       this.previousEvent = this.event
       this.event = event
 
@@ -190,11 +194,9 @@ export class VanillaMachine<T extends MachineSchema> {
 
       let currentState = this.state.get()
 
+      const eventType = event.type as string
       const transitions =
-        // @ts-ignore
-        this.machine.states[currentState].on?.[event.type] ??
-        // @ts-ignore
-        this.machine.on?.[event.type]
+        this.getStateConfig(currentState)?.on?.[eventType] ?? (this.machine.on as Record<string, any>)?.[eventType]
 
       const transition = this.choose(transitions)
       if (!transition) return
@@ -209,6 +211,9 @@ export class VanillaMachine<T extends MachineSchema> {
       if (changed) {
         // state change is high priority
         this.state.set(target)
+      } else if (transition.reenter && !changed) {
+        // reenter will re-invoke the current state
+        this.state.invoke(currentState, currentState)
       } else {
         // call transition actions
         this.action(transition.actions)
@@ -276,6 +281,7 @@ export class VanillaMachine<T extends MachineSchema> {
     // unsubscribe from all subscriptions
     this.cleanups.forEach((unsub) => unsub())
     this.cleanups = []
+    this.subscriptions = []
 
     this.status = MachineStatus.Stopped
     this.debug("unmounting...")
@@ -283,6 +289,10 @@ export class VanillaMachine<T extends MachineSchema> {
 
   subscribe = (fn: (service: Service<T>) => void) => {
     this.subscriptions.push(fn)
+    return () => {
+      const index = this.subscriptions.indexOf(fn)
+      if (index > -1) this.subscriptions.splice(index, 1)
+    }
   }
 
   private status = MachineStatus.NotStarted
@@ -291,14 +301,14 @@ export class VanillaMachine<T extends MachineSchema> {
     return {
       state: this.getState(),
       send: this.send,
-      context: this.ctx,
+      context: this.context,
       prop: this.prop,
       scope: this.scope,
       refs: this.refs,
       computed: this.computed,
       event: this.getEvent(),
       getStatus: () => this.status,
-    }
+    } as Service<T>
   }
 
   private publish = () => {
@@ -322,22 +332,23 @@ export class VanillaMachine<T extends MachineSchema> {
     })
   }
 
-  getParams = (): Params<T> => ({
-    state: this.getState(),
-    context: this.ctx,
-    event: this.getEvent(),
-    prop: this.prop,
-    send: this.send,
-    action: this.action,
-    guard: this.guard,
-    track: (deps: any[], fn: any) => {
-      fn.prev = deps.map((dep) => dep())
-      this.trackers.push({ deps, fn })
-    },
-    refs: this.refs,
-    computed: this.computed,
-    flush: identity,
-    scope: this.scope,
-    choose: this.choose,
-  })
+  getParams = (): Params<T> =>
+    ({
+      state: this.getState(),
+      context: this.context,
+      event: this.getEvent(),
+      prop: this.prop,
+      send: this.send,
+      action: this.action,
+      guard: this.guard,
+      track: (deps: any[], fn: any) => {
+        fn.prev = deps.map((dep) => dep())
+        this.trackers.push({ deps, fn })
+      },
+      refs: this.refs,
+      computed: this.computed,
+      flush: identity,
+      scope: this.scope,
+      choose: this.choose,
+    }) as Params<T>
 }

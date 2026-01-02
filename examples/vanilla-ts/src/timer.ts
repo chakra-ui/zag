@@ -1,6 +1,6 @@
 import * as timer from "@zag-js/timer"
 import { Component } from "./component"
-import { normalizeProps, spreadProps, VanillaMachine } from "./lib"
+import { normalizeProps, spreadProps, VanillaMachine } from "@zag-js/vanilla"
 
 export class Timer extends Component<timer.Props, timer.Api> {
   initMachine(props: timer.Props) {

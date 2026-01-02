@@ -1,6 +1,6 @@
 import * as marquee from "@zag-js/marquee"
 import { Component } from "./component"
-import { normalizeProps, spreadProps, VanillaMachine } from "./lib"
+import { normalizeProps, spreadProps, VanillaMachine } from "@zag-js/vanilla"
 
 const marqueeData = [
   { name: "Apple", logo: "🍎" },

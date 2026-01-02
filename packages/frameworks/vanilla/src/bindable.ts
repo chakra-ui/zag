@@ -44,7 +44,7 @@ export function bindable<T>(props: () => BindableParams<T>): Bindable<T> {
 }
 
 bindable.cleanup = (_fn: VoidFunction) => {
-  // No-op in vanilla implementation
+  // No-op in vanilla: cleanup is handled manually via machine.stop()
 }
 
 bindable.ref = <T>(defaultValue: T) => {

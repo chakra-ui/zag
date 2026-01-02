@@ -1,6 +1,6 @@
 import * as passwordInput from "@zag-js/password-input"
 import { Component } from "./component"
-import { normalizeProps, spreadProps, VanillaMachine } from "./lib"
+import { normalizeProps, spreadProps, VanillaMachine } from "@zag-js/vanilla"
 
 export class PasswordInput extends Component<passwordInput.Props, passwordInput.Api> {
   initMachine(props: passwordInput.Props) {

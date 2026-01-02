@@ -1,6 +1,6 @@
 import * as slider from "@zag-js/slider"
 import { Component } from "./component"
-import { normalizeProps, spreadProps, VanillaMachine } from "./lib"
+import { normalizeProps, spreadProps, VanillaMachine } from "@zag-js/vanilla"
 
 export class Slider extends Component<slider.Props, slider.Api> {
   initMachine(props: slider.Props) {
