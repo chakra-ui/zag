@@ -4,6 +4,57 @@ All notable changes to this project will be documented in this file.
 
 > For v0.x changelog, see the [v0 branch](https://github.com/chakra-ui/zag/blob/v0/CHANGELOG.md)
 
+## [1.32.0](./#1.32.0) - 2026-01-02
+
+### Added
+
+- **Date Picker**: Add `onVisibleRangeChange` callback to notify when the visible date range changes. This callback
+  fires when:
+  - Clicking next/prev triggers
+  - Selecting a month from the month dropdown
+  - Selecting a year from the year dropdown
+  - Focusing a date outside the current visible range
+  - Any other action that changes the visible range
+
+- **File Upload**
+  - Add `readOnly` prop to prevent file modifications while keeping component visually active
+  - Add `maxFilesReached` and `remainingFiles` to exposed API
+
+- **Vanilla**: Initial release of the vanilla JavaScript adapter for Zag.js
+  - `VanillaMachine` - Class-based wrapper for zag machines with start/stop lifecycle
+  - `normalizeProps` - Converts React-style props to vanilla DOM attributes
+  - `spreadProps` - Spreads props onto DOM elements with event listener management
+
+  ```typescript
+  import { VanillaMachine, normalizeProps, spreadProps } from "@zag-js/vanilla"
+  import * as toggle from "@zag-js/toggle"
+
+  const machine = new VanillaMachine(toggle.machine, { id: "toggle" })
+  machine.start()
+
+  const api = toggle.connect(machine.service, normalizeProps)
+  spreadProps(buttonEl, api.buttonProps)
+
+  machine.stop()
+  ```
+
+### Fixed
+
+- **Carousel**: Fix issue where next/prev carousel buttons and indicators don't work when `dir="rtl"` is set
+
+- **File Upload**
+  - Fix issue where using `api.setClipboardFiles` doesn't run `transformFiles` and validation functions
+  - Fix item element IDs to use `name-size` combination for uniqueness (prevents ID collisions with same-named files)
+
+- **Focus Trap**: Fix focus trap crash when clicking labels in dialogs
+
+- **Pin Input**: Fix issue in Vanilla.js where paste does not work due to `maxlength="1"` truncating clipboard data
+  before the input event
+
+- **Tour**: Fix issue where input elements inside the spotlight target were not interactive. The focus trap now includes
+  both the tour content and the spotlight target as containers, allowing users to interact with elements inside the
+  highlighted area
+
 ## [1.31.1](./#1.31.1) - 2025-12-10
 
 ### Fixed
