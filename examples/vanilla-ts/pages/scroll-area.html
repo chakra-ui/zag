@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Scroll Area</title>
+  </head>
+  <body style="padding: 40px">
+    <a href="/">← Back to examples</a>
+    <h1>Scroll Area</h1>
+
+    <main class="scroll-area">
+      <button class="scroll-to-bottom-btn">Scroll to bottom</button>
+
+      <div class="scroll-area-root">
+        <div class="scroll-area-viewport">
+          <div class="scroll-area-content" style="min-width: 800px">
+            <!-- Content will be generated dynamically -->
+          </div>
+        </div>
+
+        <div class="scroll-area-scrollbar-y" hidden>
+          <div class="scroll-area-thumb-y"></div>
+        </div>
+
+        <div class="scroll-area-scrollbar-x" hidden>
+          <div class="scroll-area-thumb-x"></div>
+        </div>
+      </div>
+    </main>
+
+    <script type="module" src="./scroll-area.ts"></script>
+  </body>
+</html>
+

@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Context Menu</title>
+  </head>
+  <body style="padding: 40px">
+    <a href="/">← Back to examples</a>
+    <h1>Context Menu</h1>
+
+    <main class="context-menu">
+      <div class="context-menu-root">
+        <div class="context-menu-trigger">
+          Right click here
+        </div>
+
+        <div class="context-menu-positioner" hidden>
+          <ul class="context-menu-content">
+            <li class="context-menu-item" data-value="edit">Edit</li>
+            <li class="context-menu-item" data-value="duplicate">Duplicate</li>
+            <li class="context-menu-item" data-value="delete">Delete</li>
+            <li class="context-menu-item" data-value="export">Export...</li>
+          </ul>
+        </div>
+      </div>
+    </main>
+
+    <script type="module" src="./context-menu.ts"></script>
+  </body>
+</html>
+
