@@ -1,5 +1,19 @@
 # @zag-js/pin-input
 
+## 1.32.0
+
+### Patch Changes
+
+- [`19975c3`](https://github.com/chakra-ui/zag/commit/19975c3e49bceefdedbd78c400bdf0aae0c9ed18) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix issue in Vanilla.js where paste does not work due to
+  `maxlength="1"` truncating clipboard data before the input event.
+- Updated dependencies []:
+  - @zag-js/anatomy@1.32.0
+  - @zag-js/core@1.32.0
+  - @zag-js/types@1.32.0
+  - @zag-js/utils@1.32.0
+  - @zag-js/dom-query@1.32.0
+
 ## 1.31.1
 
 ### Patch Changes
