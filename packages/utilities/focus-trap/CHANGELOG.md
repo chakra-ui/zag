@@ -1,5 +1,20 @@
 # @zag-js/focus-trap
 
+## 1.32.0
+
+### Patch Changes
+
+- [`99e18ef`](https://github.com/chakra-ui/zag/commit/99e18ef42866febf205c226ecad3d9210081cdbb) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix focus trap crash when clicking labels in dialogs
+
+- [`f824bea`](https://github.com/chakra-ui/zag/commit/f824beac2dcb4c21bdad7520a678d3ae8d208923) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix issue where input elements inside the spotlight target were
+  not interactive. The focus trap now includes both the tour content and the spotlight target as containers, allowing
+  users to interact with elements inside the highlighted area.
+
+- Updated dependencies []:
+  - @zag-js/dom-query@1.32.0
+
 ## 1.31.1
 
 ### Patch Changes

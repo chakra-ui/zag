@@ -1,5 +1,16 @@
 # @zag-js/pagination
 
+## 1.32.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.32.0
+  - @zag-js/core@1.32.0
+  - @zag-js/types@1.32.0
+  - @zag-js/utils@1.32.0
+  - @zag-js/dom-query@1.32.0
+
 ## 1.31.1
 
 ### Patch Changes
