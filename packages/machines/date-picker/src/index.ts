@@ -37,6 +37,7 @@ export type {
   ValueChangeDetails,
   ViewChangeDetails,
   ViewProps,
+  VisibleRangeChangeDetails,
   VisibleRangeText,
   WeekDay,
   YearGridProps,
