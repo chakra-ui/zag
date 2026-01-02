@@ -61,6 +61,10 @@ export class RatingGroupModel extends Model {
     await expect(this.getRating(value)).toHaveAttribute("data-disabled", "")
   }
 
+  async seeRatingIsFocusable(value: number) {
+    await expect(this.getRating(value)).toHaveAttribute("tabindex", "0")
+  }
+
   async seeControlIsDisabled() {
     await expect(this.control).toHaveAttribute("data-disabled", "")
   }

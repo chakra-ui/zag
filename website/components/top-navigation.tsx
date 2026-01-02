@@ -1,4 +1,4 @@
-import { GithubIcon } from "components/icons"
+import { GithubIcon, HeartIcon } from "components/icons"
 import { ThemeToggle } from "components/theme-toggle"
 import { FaDiscord } from "react-icons/fa"
 import siteConfig from "site.config"
@@ -50,6 +50,12 @@ export function TopNavigation() {
             </HStack>
           </nav>
           <HStack gap="4">
+            <IconLink
+              variant="solid"
+              href={siteConfig.openCollective.url}
+              icon={HeartIcon}
+              label="Sponsor on OpenCollective"
+            />
             <IconLink
               href={siteConfig.repo.url}
               icon={GithubIcon}

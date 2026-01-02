@@ -1,4 +1,4 @@
-import { VanillaMachine } from "./lib"
+import { VanillaMachine } from "@zag-js/vanilla"
 
 interface ComponentInterface<Api> {
   rootEl: HTMLElement

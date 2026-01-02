@@ -1,5 +1,31 @@
 # @zag-js/rating-group
 
+## 1.31.1
+
+### Patch Changes
+
+- [`89f81ee`](https://github.com/chakra-ui/zag/commit/89f81ee73fce62ac6eaeb3f423ba8f23a84fcce9) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix issue where rating group becomes unfocusable via keyboard when
+  value is 0
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.31.1
+  - @zag-js/core@1.31.1
+  - @zag-js/types@1.31.1
+  - @zag-js/utils@1.31.1
+  - @zag-js/dom-query@1.31.1
+
+## 1.31.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.31.0
+  - @zag-js/core@1.31.0
+  - @zag-js/types@1.31.0
+  - @zag-js/utils@1.31.0
+  - @zag-js/dom-query@1.31.0
+
 ## 1.30.0
 
 ### Patch Changes

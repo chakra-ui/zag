@@ -1,6 +1,6 @@
 import * as angleSlider from "@zag-js/angle-slider"
 import { Component } from "./component"
-import { normalizeProps, spreadProps, VanillaMachine } from "./lib"
+import { normalizeProps, spreadProps, VanillaMachine } from "@zag-js/vanilla"
 
 export class AngleSlider extends Component<angleSlider.Props, angleSlider.Api> {
   initMachine(props: angleSlider.Props) {

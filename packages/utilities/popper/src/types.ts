@@ -90,7 +90,13 @@ export interface PositioningOptions {
    */
   onPositioned?: ((data: { placed: boolean }) => void) | undefined
   /**
+   * Function that returns the anchor element.
+   * Useful when you want to use a different element as the anchor.
+   */
+  getAnchorElement?: (() => HTMLElement | VirtualElement | null) | undefined
+  /**
    *  Function that returns the anchor rect
+   * @deprecated Use `getAnchorElement` instead
    */
   getAnchorRect?: ((element: HTMLElement | VirtualElement | null) => AnchorRect | null) | undefined
   /**

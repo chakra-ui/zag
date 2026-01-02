@@ -132,6 +132,21 @@ export function connect<T extends PropTypes>(
         autoCapitalize: "none",
         autoComplete: prop("otp") ? "one-time-code" : "off",
         placeholder: focusedIndex === index ? "" : prop("placeholder"),
+        onPaste(event) {
+          const pastedValue = event.clipboardData?.getData("text/plain")
+          if (!pastedValue) return
+
+          const isValid = isValidValue(pastedValue, prop("type"), prop("pattern"))
+          if (!isValid) {
+            send({ type: "VALUE.INVALID", value: pastedValue })
+            event.preventDefault()
+            return
+          }
+
+          // Send paste event with full clipboard data
+          event.preventDefault()
+          send({ type: "INPUT.PASTE", value: pastedValue })
+        },
         onBeforeInput(event) {
           try {
             const value = getBeforeInputValue(event)
@@ -141,9 +156,9 @@ export function connect<T extends PropTypes>(
               event.preventDefault()
             }
 
-            // select the text so paste always replaces the
-            // current input's value regardless of cursor position
-            if (value.length > 2) {
+            // Select existing text so new input replaces it
+            // This is needed because maxlength="1" would otherwise prevent new chars
+            if (value.length > 1) {
               event.currentTarget.setSelectionRange(0, 1, "forward")
             }
           } catch {
@@ -154,12 +169,15 @@ export function connect<T extends PropTypes>(
           const evt = getNativeEvent(event)
           const { value } = event.currentTarget
 
-          if (evt.inputType === "insertFromPaste" || value.length > 2) {
-            send({ type: "INPUT.PASTE", value })
-            // prevent multiple characters being pasted
-            // into a single input
-            event.currentTarget.value = value[0]
+          // Skip if this was a paste - already handled by onPaste
+          if (evt.inputType === "insertFromPaste") {
+            event.currentTarget.value = value[0] || ""
+            return
+          }
 
+          if (value.length > 2) {
+            send({ type: "INPUT.PASTE", value })
+            event.currentTarget.value = value[0]
             event.preventDefault()
             return
           }

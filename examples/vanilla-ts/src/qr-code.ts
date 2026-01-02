@@ -1,6 +1,6 @@
 import * as qrCode from "@zag-js/qr-code"
 import { Component } from "./component"
-import { normalizeProps, spreadProps, VanillaMachine } from "./lib"
+import { normalizeProps, spreadProps, VanillaMachine } from "@zag-js/vanilla"
 
 export class QrCode extends Component<qrCode.Props, qrCode.Api> {
   initMachine(props: qrCode.Props) {

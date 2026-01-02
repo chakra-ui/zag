@@ -1,5 +1,5 @@
 import * as avatar from "@zag-js/avatar"
-import { normalizeProps, spreadProps, VanillaMachine } from "./lib"
+import { normalizeProps, spreadProps, VanillaMachine } from "@zag-js/vanilla"
 import { Component } from "./component"
 
 export class Avatar extends Component<avatar.Props, avatar.Api> {

@@ -1,5 +1,37 @@
 # @zag-js/tooltip
 
+## 1.31.1
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.31.1
+  - @zag-js/core@1.31.1
+  - @zag-js/types@1.31.1
+  - @zag-js/utils@1.31.1
+  - @zag-js/dom-query@1.31.1
+  - @zag-js/focus-visible@1.31.1
+  - @zag-js/popper@1.31.1
+
+## 1.31.0
+
+### Patch Changes
+
+- [`37a6759`](https://github.com/chakra-ui/zag/commit/37a6759bd3861eef8bb8c382ae9e73a45c5c3d51) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix tooltip not showing when scrolling with pointer over trigger
+  - Added `onPointerOver` handler to complement `onPointerMove` for better hover detection during scroll events
+  - This ensures tooltips properly appear when the pointer enters the trigger element via scrolling, not just via
+    pointer movement
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.31.0
+  - @zag-js/core@1.31.0
+  - @zag-js/types@1.31.0
+  - @zag-js/utils@1.31.0
+  - @zag-js/dom-query@1.31.0
+  - @zag-js/focus-visible@1.31.0
+  - @zag-js/popper@1.31.0
+
 ## 1.30.0
 
 ### Patch Changes

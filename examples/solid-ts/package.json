@@ -9,10 +9,10 @@
     "version": "vinxi version"
   },
   "dependencies": {
-    "@internationalized/date": "3.10.0",
+    "@internationalized/date": "3.10.1",
     "@solidjs/meta": "0.29.4",
-    "@solidjs/router": "0.15.3",
-    "@solidjs/start": "1.2.0",
+    "@solidjs/router": "0.15.4",
+    "@solidjs/start": "1.2.1",
     "@zag-js/accordion": "workspace:*",
     "@zag-js/anatomy": "workspace:*",
     "@zag-js/anatomy-icons": "workspace:*",
@@ -92,10 +92,10 @@
     "@zag-js/types": "workspace:*",
     "@zag-js/utils": "workspace:*",
     "form-serialize": "0.7.2",
-    "lucide-solid": "0.548.0",
-    "match-sorter": "8.1.0",
+    "lucide-solid": "0.562.0",
+    "match-sorter": "8.2.0",
     "solid-js": "1.9.10",
-    "vinxi": "0.5.8"
+    "vinxi": "0.5.10"
   },
   "engines": {
     "node": ">=18"

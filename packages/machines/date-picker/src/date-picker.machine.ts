@@ -206,7 +206,7 @@ export const machine = createMachine<DatePickerSchema>({
 
   watch({ track, prop, context, action, computed }) {
     track([() => prop("locale")], () => {
-      action(["setStartValue"])
+      action(["setStartValue", "syncInputElement"])
     })
 
     track([() => context.hash("focusedValue")], () => {

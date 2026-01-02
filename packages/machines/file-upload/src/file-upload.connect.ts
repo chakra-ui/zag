@@ -25,6 +25,7 @@ export function connect<T extends PropTypes>(
 ): FileUploadApi<T> {
   const { state, send, prop, computed, scope, context } = service
   const disabled = !!prop("disabled")
+  const readOnly = !!prop("readOnly")
   const required = !!prop("required")
   const allowDrop = prop("allowDrop")
   const translations = prop("translations")
@@ -32,27 +33,37 @@ export function connect<T extends PropTypes>(
   const dragging = state.matches("dragging")
   const focused = state.matches("focused") && !disabled
 
+  const acceptedFiles = context.get("acceptedFiles")
+  const maxFiles = prop("maxFiles")
+
   return {
     dragging,
     focused,
-    disabled: !!disabled,
+    disabled,
+    readOnly,
     transforming: context.get("transforming"),
+    maxFilesReached: acceptedFiles.length >= maxFiles,
+    remainingFiles: Math.max(0, maxFiles - acceptedFiles.length),
     openFilePicker() {
-      if (disabled) return
+      if (disabled || readOnly) return
       send({ type: "OPEN" })
     },
     deleteFile(file, type = DEFAULT_ITEM_TYPE) {
+      if (disabled || readOnly) return
       send({ type: "FILE.DELETE", file, itemType: type })
     },
-    acceptedFiles: context.get("acceptedFiles"),
+    acceptedFiles,
     rejectedFiles: context.get("rejectedFiles"),
     setFiles(files) {
+      if (disabled || readOnly) return
       send({ type: "FILES.SET", files, count: files.length })
     },
     clearRejectedFiles() {
+      if (disabled || readOnly) return
       send({ type: "REJECTED_FILES.CLEAR" })
     },
     clearFiles() {
+      if (disabled || readOnly) return
       send({ type: "FILES.CLEAR" })
     },
     getFileSize(file) {
@@ -65,7 +76,7 @@ export function connect<T extends PropTypes>(
       return () => win.URL.revokeObjectURL(url)
     },
     setClipboardFiles(dt) {
-      if (disabled) return false
+      if (disabled || readOnly) return false
       const items = Array.from(dt?.items ?? [])
       const files = items.reduce<File[]>((acc, item) => {
         if (item.kind !== "file") return acc
@@ -74,7 +85,7 @@ export function connect<T extends PropTypes>(
         return [...acc, file]
       }, [])
       if (!files.length) return false
-      send({ type: "FILES.SET", files })
+      send({ type: "FILE.SELECT", files })
       return true
     },
 
@@ -84,6 +95,7 @@ export function connect<T extends PropTypes>(
         dir: prop("dir"),
         id: dom.getRootId(scope),
         "data-disabled": dataAttr(disabled),
+        "data-readonly": dataAttr(readOnly),
         "data-dragging": dataAttr(dragging),
       })
     },
@@ -93,15 +105,17 @@ export function connect<T extends PropTypes>(
         ...parts.dropzone.attrs,
         dir: prop("dir"),
         id: dom.getDropzoneId(scope),
-        tabIndex: disabled || props.disableClick ? undefined : 0,
+        tabIndex: disabled || readOnly || props.disableClick ? undefined : 0,
         role: props.disableClick ? "application" : "button",
         "aria-label": translations.dropzone,
         "aria-disabled": disabled,
+        "aria-readonly": readOnly,
         "data-invalid": dataAttr(prop("invalid")),
         "data-disabled": dataAttr(disabled),
+        "data-readonly": dataAttr(readOnly),
         "data-dragging": dataAttr(dragging),
         onKeyDown(event) {
-          if (disabled) return
+          if (disabled || readOnly) return
           if (event.defaultPrevented) return
 
           const target = getEventTarget<HTMLElement>(event)
@@ -113,7 +127,7 @@ export function connect<T extends PropTypes>(
           send({ type: "DROPZONE.CLICK", src: "keydown" })
         },
         onClick(event) {
-          if (disabled) return
+          if (disabled || readOnly) return
           if (event.defaultPrevented) return
           if (props.disableClick) return
 
@@ -128,7 +142,7 @@ export function connect<T extends PropTypes>(
           send({ type: "DROPZONE.CLICK" })
         },
         onDragOver(event) {
-          if (disabled) return
+          if (disabled || readOnly) return
           if (!allowDrop) return
           event.preventDefault()
           event.stopPropagation()
@@ -143,31 +157,31 @@ export function connect<T extends PropTypes>(
           send({ type: "DROPZONE.DRAG_OVER", count })
         },
         onDragLeave(event) {
-          if (disabled) return
+          if (disabled || readOnly) return
           if (!allowDrop) return
           if (contains(event.currentTarget, event.relatedTarget)) return
           send({ type: "DROPZONE.DRAG_LEAVE" })
         },
         onDrop(event) {
-          if (disabled) return
+          if (disabled || readOnly) return
           if (allowDrop) {
             event.preventDefault()
             event.stopPropagation()
           }
 
           const hasFiles = isEventWithFiles(event)
-          if (disabled || !hasFiles) return
+          if (!hasFiles) return
 
           getFileEntries(event.dataTransfer.items, prop("directory")).then((files) => {
             send({ type: "DROPZONE.DROP", files: flatArray(files) })
           })
         },
         onFocus() {
-          if (disabled) return
+          if (disabled || readOnly) return
           send({ type: "DROPZONE.FOCUS" })
         },
         onBlur() {
-          if (disabled) return
+          if (disabled || readOnly) return
           send({ type: "DROPZONE.BLUR" })
         },
       })
@@ -178,12 +192,13 @@ export function connect<T extends PropTypes>(
         ...parts.trigger.attrs,
         dir: prop("dir"),
         id: dom.getTriggerId(scope),
-        disabled,
+        disabled: disabled || readOnly,
         "data-disabled": dataAttr(disabled),
+        "data-readonly": dataAttr(readOnly),
         "data-invalid": dataAttr(prop("invalid")),
         type: "button",
         onClick(event) {
-          if (disabled) return
+          if (disabled || readOnly) return
           // if trigger is wrapped within the dropzone, stop propagation to avoid double opening
           if (contains(dom.getDropzoneEl(scope), event.currentTarget)) {
             event.stopPropagation()
@@ -197,7 +212,7 @@ export function connect<T extends PropTypes>(
       return normalize.input({
         id: dom.getHiddenInputId(scope),
         tabIndex: -1,
-        disabled,
+        disabled: disabled || readOnly,
         type: "file",
         required: prop("required"),
         capture: prop("capture"),
@@ -211,7 +226,7 @@ export function connect<T extends PropTypes>(
           event.currentTarget.value = ""
         },
         onInput(event) {
-          if (disabled) return
+          if (disabled || readOnly) return
           const { files } = event.currentTarget
           send({ type: "FILE.SELECT", files: files ? Array.from(files) : [] })
         },
@@ -234,7 +249,7 @@ export function connect<T extends PropTypes>(
       return normalize.element({
         ...parts.item.attrs,
         dir: prop("dir"),
-        id: dom.getItemId(scope, file.name),
+        id: dom.getItemId(scope, dom.getFileId(file)),
         "data-disabled": dataAttr(disabled),
         "data-type": type,
       })
@@ -245,7 +260,7 @@ export function connect<T extends PropTypes>(
       return normalize.element({
         ...parts.itemName.attrs,
         dir: prop("dir"),
-        id: dom.getItemNameId(scope, file.name),
+        id: dom.getItemNameId(scope, dom.getFileId(file)),
         "data-disabled": dataAttr(disabled),
         "data-type": type,
       })
@@ -256,7 +271,7 @@ export function connect<T extends PropTypes>(
       return normalize.element({
         ...parts.itemSizeText.attrs,
         dir: prop("dir"),
-        id: dom.getItemSizeTextId(scope, file.name),
+        id: dom.getItemSizeTextId(scope, dom.getFileId(file)),
         "data-disabled": dataAttr(disabled),
         "data-type": type,
       })
@@ -267,7 +282,7 @@ export function connect<T extends PropTypes>(
       return normalize.element({
         ...parts.itemPreview.attrs,
         dir: prop("dir"),
-        id: dom.getItemPreviewId(scope, file.name),
+        id: dom.getItemPreviewId(scope, dom.getFileId(file)),
         "data-disabled": dataAttr(disabled),
         "data-type": type,
       })
@@ -293,13 +308,15 @@ export function connect<T extends PropTypes>(
       return normalize.button({
         ...parts.itemDeleteTrigger.attrs,
         dir: prop("dir"),
+        id: dom.getItemDeleteTriggerId(scope, dom.getFileId(file)),
         type: "button",
-        disabled,
+        disabled: disabled || readOnly,
         "data-disabled": dataAttr(disabled),
+        "data-readonly": dataAttr(readOnly),
         "data-type": type,
         "aria-label": translations.deleteFile?.(file),
         onClick() {
-          if (disabled) return
+          if (disabled || readOnly) return
           send({ type: "FILE.DELETE", file, itemType: type })
         },
       })
@@ -321,12 +338,13 @@ export function connect<T extends PropTypes>(
         ...parts.clearTrigger.attrs,
         dir: prop("dir"),
         type: "button",
-        disabled,
-        hidden: context.get("acceptedFiles").length === 0,
+        disabled: disabled || readOnly,
+        hidden: acceptedFiles.length === 0,
         "data-disabled": dataAttr(disabled),
+        "data-readonly": dataAttr(readOnly),
         onClick(event) {
           if (event.defaultPrevented) return
-          if (disabled) return
+          if (disabled || readOnly) return
           send({ type: "FILES.CLEAR" })
         },
       })

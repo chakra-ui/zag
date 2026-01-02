@@ -1,6 +1,6 @@
 import * as toggleGroup from "@zag-js/toggle-group"
 import { Component } from "./component"
-import { normalizeProps, spreadProps, VanillaMachine } from "./lib"
+import { normalizeProps, spreadProps, VanillaMachine } from "@zag-js/vanilla"
 
 export class ToggleGroup extends Component<toggleGroup.Props, toggleGroup.Api> {
   initMachine(props: toggleGroup.Props) {

@@ -1,5 +1,39 @@
 # @zag-js/date-picker
 
+## 1.31.1
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.31.1
+  - @zag-js/core@1.31.1
+  - @zag-js/types@1.31.1
+  - @zag-js/utils@1.31.1
+  - @zag-js/date-utils@1.31.1
+  - @zag-js/dismissable@1.31.1
+  - @zag-js/dom-query@1.31.1
+  - @zag-js/live-region@1.31.1
+  - @zag-js/popper@1.31.1
+
+## 1.31.0
+
+### Patch Changes
+
+- [`2c61aac`](https://github.com/chakra-ui/zag/commit/2c61aac0a3a6f9ee02b8ba29bd9a8eff7b8ea3c2) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix issue where date picker input does not update format when
+  locale changes.
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.31.0
+  - @zag-js/core@1.31.0
+  - @zag-js/types@1.31.0
+  - @zag-js/utils@1.31.0
+  - @zag-js/date-utils@1.31.0
+  - @zag-js/dismissable@1.31.0
+  - @zag-js/dom-query@1.31.0
+  - @zag-js/live-region@1.31.0
+  - @zag-js/popper@1.31.0
+
 ## 1.30.0
 
 ### Patch Changes

@@ -1,6 +1,6 @@
 import * as select from "@zag-js/select"
 import { Component } from "./component"
-import { normalizeProps, spreadProps, VanillaMachine } from "./lib"
+import { normalizeProps, spreadProps, VanillaMachine } from "@zag-js/vanilla"
 
 interface Item {
   label: string

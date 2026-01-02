@@ -13,12 +13,13 @@ export function connect<T extends PropTypes>(
   const { context, send, computed, prop, scope } = service
 
   const groupDisabled = computed("isDisabled")
+  const groupInvalid = prop("invalid")
   const readOnly = prop("readOnly")
 
   function getItemState(props: ItemProps): ItemState {
     return {
       value: props.value,
-      invalid: !!props.invalid,
+      invalid: !!props.invalid || !!groupInvalid,
       disabled: !!props.disabled || groupDisabled,
       checked: context.get("value") === props.value,
       focused: context.get("focusedValue") === props.value,
@@ -64,8 +65,13 @@ export function connect<T extends PropTypes>(
         role: "radiogroup",
         id: dom.getRootId(scope),
         "aria-labelledby": dom.getLabelId(scope),
+        "aria-required": prop("required") || undefined,
+        "aria-disabled": groupDisabled || undefined,
+        "aria-readonly": readOnly || undefined,
         "data-orientation": prop("orientation"),
         "data-disabled": dataAttr(groupDisabled),
+        "data-invalid": dataAttr(groupInvalid),
+        "data-required": dataAttr(prop("required")),
         "aria-orientation": prop("orientation"),
         dir: prop("dir"),
         style: {
@@ -80,6 +86,8 @@ export function connect<T extends PropTypes>(
         dir: prop("dir"),
         "data-orientation": prop("orientation"),
         "data-disabled": dataAttr(groupDisabled),
+        "data-invalid": dataAttr(groupInvalid),
+        "data-required": dataAttr(prop("required")),
         id: dom.getLabelId(scope),
         onClick: focus,
       })
@@ -159,6 +167,8 @@ export function connect<T extends PropTypes>(
         name: prop("name") || prop("id"),
         form: prop("form"),
         value: props.value,
+        required: prop("required"),
+        "aria-invalid": itemState.invalid || undefined,
         onClick(event) {
           if (readOnly) {
             event.preventDefault()

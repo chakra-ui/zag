@@ -1,6 +1,6 @@
 import * as dialog from "@zag-js/dialog"
 import { Component } from "./component"
-import { normalizeProps, spreadProps, VanillaMachine } from "./lib"
+import { normalizeProps, spreadProps, VanillaMachine } from "@zag-js/vanilla"
 
 export class Dialog extends Component<dialog.Props, dialog.Api> {
   initMachine(props: dialog.Props) {

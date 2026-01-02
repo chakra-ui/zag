@@ -2,7 +2,7 @@ import * as combobox from "@zag-js/combobox"
 import { comboboxData } from "@zag-js/shared"
 import { matchSorter } from "match-sorter"
 import { Component } from "./component"
-import { normalizeProps, spreadProps, VanillaMachine } from "./lib"
+import { normalizeProps, spreadProps, VanillaMachine } from "@zag-js/vanilla"
 
 interface Item {
   code: string

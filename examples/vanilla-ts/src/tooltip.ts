@@ -1,6 +1,6 @@
 import * as tooltip from "@zag-js/tooltip"
 import { Component } from "./component"
-import { normalizeProps, spreadProps, VanillaMachine } from "./lib"
+import { normalizeProps, spreadProps, VanillaMachine } from "@zag-js/vanilla"
 
 export class Tooltip extends Component<tooltip.Props, tooltip.Api> {
   initMachine(props: tooltip.Props) {

@@ -1,7 +1,8 @@
 import { Link } from "components/ui/link"
 import { formatUrl } from "lib/pagination-utils"
 import { type LinkProps } from "next/link"
-import { useRouter } from "next/router"
+import { usePathname } from "next/navigation"
+import { useLayoutEffect, useRef } from "react"
 import sidebar from "sidebar.config"
 import { HStack, Stack, styled } from "styled-system/jsx"
 import { useFramework } from "./framework"
@@ -40,12 +41,21 @@ const StyledLink = styled(Link, {
 })
 
 const DocLink = (props: DocLinkProps) => {
-  const router = useRouter()
+  const asPath = usePathname()
   const { href, children } = props
-  const current = test(href.toString(), router.asPath)
+  const current = test(href.toString(), asPath)
+  const linkRef = useRef<HTMLAnchorElement>(null)
+
+  useLayoutEffect(() => {
+    if (current && linkRef.current) {
+      linkRef.current.scrollIntoView({ block: "center" })
+    }
+  }, [current, asPath])
+
   return (
     <li>
       <StyledLink
+        ref={linkRef}
         href={href.toString()}
         aria-current={current ? "page" : undefined}
       >

@@ -1,5 +1,41 @@
 # @zag-js/number-input
 
+## 1.31.1
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.31.1
+  - @zag-js/core@1.31.1
+  - @zag-js/types@1.31.1
+  - @zag-js/utils@1.31.1
+  - @zag-js/dom-query@1.31.1
+
+## 1.31.0
+
+### Minor Changes
+
+- [`15fd93e`](https://github.com/chakra-ui/zag/commit/15fd93eb12003cfe9b2bada3cb9088204ef0810a) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Add `onValueCommit` callback that fires when the input loses focus
+  or Enter is pressed
+
+### Patch Changes
+
+- [`c59c574`](https://github.com/chakra-ui/zag/commit/c59c5741e525a6c67ac8fe6d632effa0adee8f3b) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix cursor jumping to start when value is changed externally via
+  props while user is typing
+
+- [`42f5b8e`](https://github.com/chakra-ui/zag/commit/42f5b8ebeb17647e7d0980b9efa76fcc3b0e1fee) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - - Fixed issue where input element doesn't sync when
+  `formatOptions` changes dynamically.
+  - Ensure cursor position is preserved when `Enter` key is pressed and formatting is triggered.
+- Updated dependencies []:
+  - @zag-js/anatomy@1.31.0
+  - @zag-js/core@1.31.0
+  - @zag-js/types@1.31.0
+  - @zag-js/utils@1.31.0
+  - @zag-js/dom-query@1.31.0
+
 ## 1.30.0
 
 ### Patch Changes

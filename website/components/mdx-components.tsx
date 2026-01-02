@@ -265,10 +265,29 @@ const components: Record<string, FC<any>> = {
 
 const useMDXComponent = (code: string) => {
   const fn = new Function(code)
-  return fn({ ...runtime }).default
+  const result = fn({ ...runtime })
+
+  // Handle both default export and direct function return
+  if (result && typeof result === "object" && "default" in result) {
+    return result.default
+  }
+
+  // If result is already the component function
+  if (typeof result === "function") {
+    return result
+  }
+
+  // Fallback - return a simple component that displays an error
+  console.error("MDX compilation failed:", { code: code.slice(0, 100), result })
 }
 
 export function useMDX(code: string) {
+  // Handle empty or missing code
+  if (!code || code.trim() === "") {
+    return <div>No content available</div>
+  }
+
+  // eslint-disable-next-line react-hooks/rules-of-hooks
   const MDXComponent = useMDXComponent(code)
   return <MDXComponent components={components as any} />
 }

@@ -458,11 +458,13 @@ export const machine = createMachine<TourSchema>({
         return trackDismissableBranch(contentEl, { defer: true })
       },
 
-      trapFocus({ computed, scope }) {
+      trapFocus({ computed, scope, context }) {
         const step = computed("step")
         if (step == null) return
         const contentEl = () => dom.getContentEl(scope)
-        return trapFocus(contentEl, {
+        const targetEl = () => context.get("resolvedTarget")
+        // Include both content and target in focus trap so users can interact with the spotlight target
+        return trapFocus([contentEl, targetEl], {
           escapeDeactivates: false,
           allowOutsideClick: true,
           preventScroll: true,
@@ -561,7 +563,7 @@ class StepManager {
    * Use when completely tearing down the tour or transitioning between steps.
    */
   cleanupAll() {
-    const { refs, context } = this.params
+    const { refs } = this.params
 
     refs.get("_targetCleanup")?.()
     refs.set("_targetCleanup", undefined)
@@ -569,9 +571,6 @@ class StepManager {
 
     refs.get("_effectCleanup")?.()
     refs.set("_effectCleanup", undefined)
-
-    // Clear resolved target to prevent stale DOM references
-    context.set("resolvedTarget", null)
   }
 
   /**

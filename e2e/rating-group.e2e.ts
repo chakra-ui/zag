@@ -84,4 +84,16 @@ test.describe("rating / keyboard", () => {
     await I.seeRatingIsFocused(5)
     await I.seeRatingIsHighlighted(5)
   })
+
+  test("should remain focusable when value is 0", async () => {
+    await I.focusRating(3)
+
+    // decrease value to 0
+    await I.pressKey("ArrowLeft", 5)
+    await I.seeInputHasValue("0")
+
+    // blur and verify first item is still focusable
+    await I.pressKey("Tab")
+    await I.seeRatingIsFocusable(1)
+  })
 })
