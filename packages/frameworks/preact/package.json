@@ -32,7 +32,7 @@
   },
   "devDependencies": {
     "@zag-js/utils": "workspace:*",
-    "preact": "10.28.0",
+    "preact": "10.28.1",
     "clean-package": "2.2.0"
   },
   "peerDependencies": {

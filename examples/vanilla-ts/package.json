@@ -10,10 +10,10 @@
   },
   "devDependencies": {
     "typescript": "^5.9.3",
-    "vite": "^7.1.12"
+    "vite": "^7.3.0"
   },
   "dependencies": {
-    "@internationalized/date": "3.10.0",
+    "@internationalized/date": "3.10.1",
     "@zag-js/accordion": "workspace:*",
     "@zag-js/anatomy": "workspace:*",
     "@zag-js/anatomy-icons": "workspace:*",
@@ -92,7 +92,7 @@
     "@zag-js/types": "workspace:*",
     "@zag-js/utils": "workspace:*",
     "form-serialize": "0.7.2",
-    "match-sorter": "8.1.0",
+    "match-sorter": "8.2.0",
     "nanoid": "^5.1.6"
   }
 }
