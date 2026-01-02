@@ -199,12 +199,12 @@ export interface DatePickerProps extends DirectionProperty, CommonProperties {
    */
   onViewChange?: ((details: ViewChangeDetails) => void) | undefined
   /**
-   * Function called when the calendar opens or closes.
-   */
-  /**
    * Function called when the visible range changes.
    */
   onVisibleRangeChange?: ((details: VisibleRangeChangeDetails) => void) | undefined
+  /**
+   * Function called when the calendar opens or closes.
+   */
   onOpenChange?: ((details: OpenChangeDetails) => void) | undefined
   /**
    * Returns whether a date of the calendar is available.

@@ -215,7 +215,7 @@ export const machine = createMachine<DatePickerSchema>({
 
     // Ensure the month/year select reflect the actual visible start value
     track([() => context.hash("startValue")], () => {
-      action(["syncMonthSelectElement", "syncYearSelectElement"])
+      action(["syncMonthSelectElement", "syncYearSelectElement", "invokeOnVisibleRangeChange"])
     })
 
     track([() => context.get("inputValue")], () => {
@@ -289,27 +289,27 @@ export const machine = createMachine<DatePickerSchema>({
     "GOTO.NEXT": [
       {
         guard: "isYearView",
-        actions: ["focusNextDecade", "announceVisibleRange", "invokeOnVisibleRangeChange"],
+        actions: ["focusNextDecade", "announceVisibleRange"],
       },
       {
         guard: "isMonthView",
-        actions: ["focusNextYear", "announceVisibleRange", "invokeOnVisibleRangeChange"],
+        actions: ["focusNextYear", "announceVisibleRange"],
       },
       {
-        actions: ["focusNextPage", "invokeOnVisibleRangeChange"],
+        actions: ["focusNextPage"],
       },
     ],
     "GOTO.PREV": [
       {
         guard: "isYearView",
-        actions: ["focusPreviousDecade", "announceVisibleRange", "invokeOnVisibleRangeChange"],
+        actions: ["focusPreviousDecade", "announceVisibleRange"],
       },
       {
         guard: "isMonthView",
-        actions: ["focusPreviousYear", "announceVisibleRange", "invokeOnVisibleRangeChange"],
+        actions: ["focusPreviousYear", "announceVisibleRange"],
       },
       {
-        actions: ["focusPreviousPage", "invokeOnVisibleRangeChange"],
+        actions: ["focusPreviousPage"],
       },
     ],
   },
