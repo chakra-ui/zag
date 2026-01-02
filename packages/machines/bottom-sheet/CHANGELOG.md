@@ -1,5 +1,151 @@
 # @zag-js/bottom-sheet
 
+## 1.31.1
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.31.1
+  - @zag-js/core@1.31.1
+  - @zag-js/types@1.31.1
+  - @zag-js/aria-hidden@1.31.1
+  - @zag-js/utils@1.31.1
+  - @zag-js/dismissable@1.31.1
+  - @zag-js/dom-query@1.31.1
+  - @zag-js/focus-trap@1.31.1
+  - @zag-js/remove-scroll@1.31.1
+
+## 1.31.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.31.0
+  - @zag-js/core@1.31.0
+  - @zag-js/types@1.31.0
+  - @zag-js/aria-hidden@1.31.0
+  - @zag-js/utils@1.31.0
+  - @zag-js/dismissable@1.31.0
+  - @zag-js/dom-query@1.31.0
+  - @zag-js/focus-trap@1.31.0
+  - @zag-js/remove-scroll@1.31.0
+
+## 1.30.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.30.0
+  - @zag-js/core@1.30.0
+  - @zag-js/types@1.30.0
+  - @zag-js/aria-hidden@1.30.0
+  - @zag-js/utils@1.30.0
+  - @zag-js/dismissable@1.30.0
+  - @zag-js/dom-query@1.30.0
+  - @zag-js/focus-trap@1.30.0
+  - @zag-js/remove-scroll@1.30.0
+
+## 1.29.1
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.29.1
+  - @zag-js/core@1.29.1
+  - @zag-js/types@1.29.1
+  - @zag-js/aria-hidden@1.29.1
+  - @zag-js/utils@1.29.1
+  - @zag-js/dismissable@1.29.1
+  - @zag-js/dom-query@1.29.1
+  - @zag-js/focus-trap@1.29.1
+  - @zag-js/remove-scroll@1.29.1
+
+## 1.29.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.29.0
+  - @zag-js/core@1.29.0
+  - @zag-js/types@1.29.0
+  - @zag-js/aria-hidden@1.29.0
+  - @zag-js/utils@1.29.0
+  - @zag-js/dismissable@1.29.0
+  - @zag-js/dom-query@1.29.0
+  - @zag-js/focus-trap@1.29.0
+  - @zag-js/remove-scroll@1.29.0
+
+## 1.28.0
+
+### Patch Changes
+
+- [`c656df8`](https://github.com/chakra-ui/zag/commit/c656df8846733f7b6241d152d76b515a95d6841a) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Refactor to use shared `ResizeObserver` implementation across all
+  machines. This significantly improves performance by using a single observer instance with `WeakMap` based
+  subscriptions instead of creating separate observers for each component instance.
+- Updated dependencies [[`c59e4f5`](https://github.com/chakra-ui/zag/commit/c59e4f5b9bc43de85649d4de95e8bf270c16acab),
+  [`c656df8`](https://github.com/chakra-ui/zag/commit/c656df8846733f7b6241d152d76b515a95d6841a)]:
+  - @zag-js/dom-query@1.28.0
+  - @zag-js/core@1.28.0
+  - @zag-js/aria-hidden@1.28.0
+  - @zag-js/dismissable@1.28.0
+  - @zag-js/focus-trap@1.28.0
+  - @zag-js/remove-scroll@1.28.0
+  - @zag-js/anatomy@1.28.0
+  - @zag-js/types@1.28.0
+  - @zag-js/utils@1.28.0
+
+## 1.27.1
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.27.1
+  - @zag-js/core@1.27.1
+  - @zag-js/types@1.27.1
+  - @zag-js/aria-hidden@1.27.1
+  - @zag-js/utils@1.27.1
+  - @zag-js/dismissable@1.27.1
+  - @zag-js/dom-query@1.27.1
+  - @zag-js/focus-trap@1.27.1
+  - @zag-js/remove-scroll@1.27.1
+
+## 1.27.0
+
+### Patch Changes
+
+- [`cf6fb09`](https://github.com/chakra-ui/zag/commit/cf6fb0956aeacc236531ee90de9169a39cdde3a5) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Improve support for shadow DOM in all focus trap components
+  (dialog, popover, tour, etc.)
+
+- Updated dependencies [[`cf5c238`](https://github.com/chakra-ui/zag/commit/cf5c23893afcccc6e7593fc73346102023245cca),
+  [`cf6fb09`](https://github.com/chakra-ui/zag/commit/cf6fb0956aeacc236531ee90de9169a39cdde3a5),
+  [`920e727`](https://github.com/chakra-ui/zag/commit/920e727f73940aed3c6d2b886c64200a4a5702d0)]:
+  - @zag-js/remove-scroll@1.27.0
+  - @zag-js/focus-trap@1.27.0
+  - @zag-js/dom-query@1.27.0
+  - @zag-js/utils@1.27.0
+  - @zag-js/core@1.27.0
+  - @zag-js/aria-hidden@1.27.0
+  - @zag-js/dismissable@1.27.0
+  - @zag-js/anatomy@1.27.0
+  - @zag-js/types@1.27.0
+
+## 1.26.5
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.26.5
+  - @zag-js/core@1.26.5
+  - @zag-js/types@1.26.5
+  - @zag-js/aria-hidden@1.26.5
+  - @zag-js/utils@1.26.5
+  - @zag-js/dismissable@1.26.5
+  - @zag-js/dom-query@1.26.5
+  - @zag-js/focus-trap@1.26.5
+  - @zag-js/remove-scroll@1.26.5
+
 ## 1.26.4
 
 ### Patch Changes

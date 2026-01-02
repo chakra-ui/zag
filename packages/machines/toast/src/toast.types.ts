@@ -366,6 +366,7 @@ export interface PromiseOptions<V, O = any> {
   finally?: (() => void | Promise<void>) | undefined
 }
 
+// zag-ignore-export
 export interface GroupProps {
   /**
    * The human-readable label for the toast region

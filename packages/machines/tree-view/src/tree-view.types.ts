@@ -99,6 +99,36 @@ export interface LoadChildrenErrorDetails<T extends TreeNode = TreeNode> {
   nodes: NodeWithError<T>[]
 }
 
+export interface ScrollToIndexDetails<T extends TreeNode = TreeNode> {
+  /**
+   * The index of the node in the visible nodes array
+   */
+  index: number
+  /**
+   * The node being scrolled to
+   */
+  node: T
+  /**
+   * The index path of the node
+   */
+  indexPath: IndexPath
+  /**
+   * Function to get the DOM element for the node
+   */
+  getElement: () => HTMLElement | null
+}
+
+export interface VisibleNode<T extends TreeNode = TreeNode> {
+  /**
+   * The tree node
+   */
+  node: T
+  /**
+   * The index path of the node
+   */
+  indexPath: IndexPath
+}
+
 export type ElementIds = Partial<{
   root: string
   tree: string
@@ -218,6 +248,11 @@ export interface TreeViewProps<T extends TreeNode = TreeNode> extends DirectionP
    * When provided, branches will wait for this promise to resolve before expanding.
    */
   loadChildren?: ((details: LoadChildrenDetails<T>) => Promise<T[]>) | undefined
+  /**
+   * Function to scroll to a specific index.
+   * Useful for virtualized tree views.
+   */
+  scrollToIndexFn?: ((details: ScrollToIndexDetails<T>) => void) | undefined
 }
 
 type PropsWithDefault =
@@ -377,9 +412,10 @@ export interface TreeViewApi<T extends PropTypes = PropTypes, V extends TreeNode
    */
   getCheckedMap: () => CheckedValueMap
   /**
-   * Returns the visible nodes as a flat array of nodes and their index path
+   * Returns the visible nodes as a flat array of nodes and their index path.
+   * Useful for rendering virtualized tree views.
    */
-  getVisibleNodes: () => V[]
+  getVisibleNodes: () => VisibleNode<V>[]
   /**
    * Function to expand nodes.
    * If no value is provided, all nodes will be expanded

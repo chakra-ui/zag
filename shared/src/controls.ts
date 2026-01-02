@@ -134,6 +134,7 @@ export const tabsControls = defineControls({
 export const paginationControls = defineControls({
   pageSize: { type: "number", defaultValue: 10 },
   siblingCount: { type: "number", defaultValue: 1 },
+  boundaryCount: { type: "number", defaultValue: 1 },
 })
 
 export const tagsInputControls = defineControls({

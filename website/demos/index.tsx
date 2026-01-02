@@ -13,7 +13,9 @@ import { Dialog } from "./dialog"
 import { Editable } from "./editable"
 import { FileUpload } from "./file-upload"
 import { HoverCard } from "./hover-card"
+import { ImageCropper } from "./image-cropper"
 import { Menu } from "./menu"
+import { NavigationMenu } from "./navigation-menu"
 import { NestedMenu } from "./nested-menu"
 import { NumberInput } from "./number-input"
 import { Pagination } from "./pagination"
@@ -48,6 +50,7 @@ import { Playground } from "../components/playground"
 import { FloatingPanel } from "./floating-panel"
 import { PasswordInput } from "./password-input"
 import { BottomSheet } from "./bottom-sheet"
+import { Marquee } from "./marquee"
 
 const components = {
   Accordion: () => (
@@ -206,6 +209,13 @@ const components = {
         openDelay: 700,
         closeDelay: 300,
       }}
+    />
+  ),
+  ImageCropper: () => (
+    <Playground
+      name="image-cropper"
+      component={ImageCropper}
+      defaultProps={{}}
     />
   ),
   Menu: () => <Playground name="menu" component={Menu} />,
@@ -509,6 +519,34 @@ const components = {
       defaultProps={{
         disabled: false,
         ignorePasswordManagers: true,
+      }}
+    />
+  ),
+  Marquee: () => (
+    <Playground
+      name="marquee"
+      component={Marquee}
+      defaultProps={{
+        side: {
+          default: "start",
+          options: ["start", "end", "top", "bottom"],
+        },
+        speed: 100,
+        pauseOnInteraction: false,
+      }}
+    />
+  ),
+  NavigationMenu: () => (
+    <Playground
+      name="navigation-menu"
+      component={NavigationMenu}
+      defaultProps={{
+        openDelay: 200,
+        closeDelay: 300,
+        orientation: {
+          default: "horizontal",
+          options: ["horizontal", "vertical"],
+        },
       }}
     />
   ),

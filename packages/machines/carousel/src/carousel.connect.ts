@@ -14,6 +14,7 @@ export function connect<T extends PropTypes>(service: CarouselService, normalize
   const canScrollNext = computed("canScrollNext")
   const canScrollPrev = computed("canScrollPrev")
   const horizontal = computed("isHorizontal")
+  const autoSize = prop("autoSize")
 
   const pageSnapPoints = Array.from(context.get("pageSnapPoints"))
   const page = context.get("page")
@@ -31,6 +32,10 @@ export function connect<T extends PropTypes>(service: CarouselService, normalize
     canScrollPrev,
     getProgress() {
       return page / pageSnapPoints.length
+    },
+    getProgressText() {
+      const details = { page: page + 1, totalPages: pageSnapPoints.length }
+      return translations.progressText?.(details) ?? ""
     },
     scrollToIndex(index, instant) {
       send({ type: "INDEX.SET", index, instant })
@@ -68,8 +73,9 @@ export function connect<T extends PropTypes>(service: CarouselService, normalize
         style: {
           "--slides-per-page": slidesPerPage,
           "--slide-spacing": prop("spacing"),
-          "--slide-item-size":
-            "calc(100% / var(--slides-per-page) - var(--slide-spacing) * (var(--slides-per-page) - 1) / var(--slides-per-page))",
+          "--slide-item-size": autoSize
+            ? "auto"
+            : "calc(100% / var(--slides-per-page) - var(--slide-spacing) * (var(--slides-per-page) - 1) / var(--slides-per-page))",
         },
       })
     },
@@ -116,13 +122,13 @@ export function connect<T extends PropTypes>(service: CarouselService, normalize
           send({ type: "USER.SCROLL" })
         },
         style: {
-          display: "grid",
+          display: autoSize ? "flex" : "grid",
           gap: "var(--slide-spacing)",
           scrollSnapType: [horizontal ? "x" : "y", prop("snapType")].join(" "),
           gridAutoFlow: horizontal ? "column" : "row",
           scrollbarWidth: "none",
           overscrollBehaviorX: "contain",
-          [horizontal ? "gridAutoColumns" : "gridAutoRows"]: "var(--slide-item-size)",
+          [horizontal ? "gridAutoColumns" : "gridAutoRows"]: autoSize ? undefined : "var(--slide-item-size)",
           [horizontal ? "scrollPaddingInline" : "scrollPaddingBlock"]: padding,
           [horizontal ? "paddingInline" : "paddingBlock"]: padding,
           [horizontal ? "overflowX" : "overflowY"]: "auto",
@@ -144,6 +150,8 @@ export function connect<T extends PropTypes>(service: CarouselService, normalize
         "aria-label": translations.item(props.index, prop("slideCount")),
         "aria-hidden": ariaAttr(!isInView),
         style: {
+          flex: "0 0 auto",
+          [horizontal ? "maxWidth" : "maxHeight"]: "100%",
           scrollSnapAlign: (() => {
             const snapAlign = props.snapAlign ?? "start"
             const slidesPerMove = prop("slidesPerMove")
@@ -277,6 +285,12 @@ export function connect<T extends PropTypes>(service: CarouselService, normalize
           if (event.defaultPrevented) return
           send({ type: isPlaying ? "AUTOPLAY.PAUSE" : "AUTOPLAY.START" })
         },
+      })
+    },
+
+    getProgressTextProps() {
+      return normalize.element({
+        ...parts.progressText.attrs,
       })
     },
   }

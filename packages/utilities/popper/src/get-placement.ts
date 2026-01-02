@@ -24,21 +24,20 @@ const defaultOptions: PositioningOptions = {
 type NonNullable<T> = T extends null | undefined ? never : T
 type RequiredBy<T, K extends keyof T> = Omit<T, K> & { [P in K]-?: NonNullable<T[P]> }
 
-interface Options
-  extends RequiredBy<
-    PositioningOptions,
-    | "strategy"
-    | "placement"
-    | "listeners"
-    | "gutter"
-    | "flip"
-    | "slide"
-    | "overlap"
-    | "sameWidth"
-    | "fitViewport"
-    | "overflowPadding"
-    | "arrowPadding"
-  > {}
+interface Options extends RequiredBy<
+  PositioningOptions,
+  | "strategy"
+  | "placement"
+  | "listeners"
+  | "gutter"
+  | "flip"
+  | "slide"
+  | "overlap"
+  | "sameWidth"
+  | "fitViewport"
+  | "overflowPadding"
+  | "arrowPadding"
+> {}
 
 function roundByDpr(win: Window, value: number) {
   const dpr = win.devicePixelRatio || 1
@@ -131,7 +130,8 @@ function getAutoUpdateOptions(opts?: boolean | AutoUpdateOptions): AutoUpdateOpt
 }
 
 function getPlacementImpl(referenceOrVirtual: MaybeRectElement, floating: MaybeElement, opts: PositioningOptions = {}) {
-  const reference = getAnchorElement(referenceOrVirtual, opts.getAnchorRect)
+  const anchor = opts.getAnchorElement?.() ?? referenceOrVirtual
+  const reference = getAnchorElement(anchor, opts.getAnchorRect)
   if (!floating || !reference) return
   const options = Object.assign({}, defaultOptions, opts) as Options
 

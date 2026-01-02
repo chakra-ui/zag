@@ -27,7 +27,7 @@ export default function Page() {
             {Array.from({ length: api.contentCount }).map((_, index) => (
               <div key={index} {...api.getContentProps({ index })}>
                 {marqueeData.map((item, i) => (
-                  <div key={i} className="marquee-item">
+                  <div key={i} {...api.getItemProps()}>
                     <span className="marquee-logo">{item.logo}</span>
                     <span className="marquee-name">{item.name}</span>
                   </div>

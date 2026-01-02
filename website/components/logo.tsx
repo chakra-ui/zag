@@ -1,5 +1,5 @@
 import Link from "next/link"
-import { useRouter } from "next/router"
+import { usePathname } from "next/navigation"
 import { styled } from "styled-system/jsx"
 
 export function Logo(props: any) {
@@ -27,7 +27,7 @@ export function Logo(props: any) {
 }
 
 export function LogoWithLink() {
-  const { asPath } = useRouter()
+  const asPath = usePathname()
   return (
     <Link
       href="/"

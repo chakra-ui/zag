@@ -3,8 +3,6 @@ title: What is a machine?
 description: A brief explanation of the state machine concept
 ---
 
-# What is a state machine?
-
 A state machine is a tool for modeling stateful, reactive systems. It is useful
 for declaratively describing the behavior of an application or component.
 
@@ -13,7 +11,7 @@ To model any logic as using the state machine pattern, it must have:
 - A finite number of states.
 - A finite number of transitions between states.
 
-## Example of state machine
+## Creating a state machine
 
 Consider a simple toggle or switch component that consists of two states,
 `active` and `inactive`. The initial state will be `active`
@@ -57,6 +55,27 @@ const machine = createMachine({
 })
 ```
 
+### TypeScript Guide
+
+For TypeScript projects, you can add type definitions to make your machine
+type-safe:
+
+```tsx
+import { createMachine, type Service } from "@zag-js/core"
+import type { NormalizeProps, PropTypes } from "@zag-js/types"
+
+interface ToggleSchema {
+  state: "active" | "inactive"
+  event: { type: "CLICK" }
+}
+
+export const machine = createMachine<ToggleSchema>({
+  // ... same as above
+})
+```
+
+## Writing the connect function
+
 Now that we've modelled the component logic, let's map that to DOM attributes
 and event handlers following the
 [WAI-ARIA](https://www.w3.org/TR/wai-aria-practices-1.1/examples/checkbox/checkbox-1/checkbox-1.html)
@@ -65,24 +84,62 @@ specification for the switch component.
 We'll write a function called `connect` to do this.
 
 ```jsx
-function connect(service) {
-  const { state } = service
+function connect(service, normalize) {
+  const { state, send } = service
   const active = state.matches("active")
   return {
     active,
     getButtonProps() {
-      return {
+      return normalize.button({
         type: "button",
         role: "switch",
         "aria-checked": active,
         onClick() {
-          send("CLICK")
+          send({ type: "CLICK" })
         },
-      }
+      })
     },
   }
 }
 ```
+
+### TypeScript Guide
+
+For TypeScript projects, you can add type definitions to make your connect
+function type-safe:
+
+```tsx
+import { type Service } from "@zag-js/core"
+import type { NormalizeProps, PropTypes } from "@zag-js/types"
+
+interface ToggleSchema {
+  state: "active" | "inactive"
+  event: { type: "CLICK" }
+}
+
+export function connect<T extends PropTypes>(
+  service: Service<ToggleSchema>,
+  normalize: NormalizeProps<T>,
+) {
+  const { state, send } = service
+  const active = state.matches("active")
+  return {
+    active,
+    getButtonProps() {
+      return normalize.button({
+        type: "button",
+        role: "switch",
+        "aria-checked": active,
+        onClick() {
+          send({ type: "CLICK" })
+        },
+      })
+    },
+  }
+}
+```
+
+## Consuming the state machine
 
 Here's how to consume the toggle machine logic and connect in React.js.
 
@@ -111,3 +168,9 @@ function Toggle() {
 ```
 
 That's it! Now you've learned the fundamentals of a component state machine.
+
+## Next Steps
+
+Now that you understand the basics, learn about the advanced concepts that power Zag machines:
+
+- [Building Machines Guide](/guides/building-machines) - Deep dive into context (bindable), watch/track, computed, refs, and more

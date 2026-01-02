@@ -1,6 +1,6 @@
 import { resolve } from "node:path"
 import { writeFileSync, readFileSync } from "node:fs"
-import { glob } from "glob"
+import { glob } from "fast-glob"
 import { Project, Node, SyntaxKind } from "ts-morph"
 
 interface CSSVariable {
@@ -39,6 +39,10 @@ const cssVarDescriptions: Record<string, string> = {
   "--offset": "The offset position of the element",
   "--offset-x": "The horizontal offset position",
   "--offset-y": "The vertical offset position",
+  "--viewport-offset-left": "The left offset from the viewport",
+  "--viewport-offset-right": "The right offset from the viewport",
+  "--viewport-offset-top": "The top offset from the viewport",
+  "--viewport-offset-bottom": "The bottom offset from the viewport",
   "--transform": "The CSS transform value",
   "--translate-x": "The horizontal translation value",
   "--translate-y": "The vertical translation value",
@@ -537,6 +541,17 @@ async function extractAllCSSVariables(): Promise<AllCSSVars> {
     // Also add --layer-index to Backdrop part if the component has one
     allVariables[dismissableComponent]["Backdrop"] ||= {}
     allVariables[dismissableComponent]["Backdrop"]["--layer-index"] = "The index of the dismissable in the layer stack"
+  }
+
+  // Add toast group CSS variables (these are set in getGroupPlacementStyle function)
+  if (allVariables["toast"]) {
+    allVariables["toast"]["Group"] ||= {}
+    allVariables["toast"]["Group"]["--viewport-offset-left"] = cssVarDescriptions["--viewport-offset-left"]
+    allVariables["toast"]["Group"]["--viewport-offset-right"] = cssVarDescriptions["--viewport-offset-right"]
+    allVariables["toast"]["Group"]["--viewport-offset-top"] = cssVarDescriptions["--viewport-offset-top"]
+    allVariables["toast"]["Group"]["--viewport-offset-bottom"] = cssVarDescriptions["--viewport-offset-bottom"]
+    allVariables["toast"]["Group"]["--gap"] = cssVarDescriptions["--gap"]
+    allVariables["toast"]["Group"]["--first-height"] = "The height of the first toast"
   }
 
   return allVariables

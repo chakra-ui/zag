@@ -1,4 +1,3 @@
-import { ariaHidden } from "@zag-js/aria-hidden"
 import { setup } from "@zag-js/core"
 import { trackDismissableElement } from "@zag-js/dismissable"
 import { clickIfLink, nextTick, observeAttributes, raf, scrollIntoView, setCaretToEnd } from "@zag-js/dom-query"
@@ -350,7 +349,7 @@ export const machine = createMachine({
     interacting: {
       tags: ["open", "focused"],
       entry: ["setInitialFocus"],
-      effects: ["scrollToHighlightedItem", "trackDismissableLayer", "trackPlacement", "hideOtherElements"],
+      effects: ["scrollToHighlightedItem", "trackDismissableLayer", "trackPlacement"],
       on: {
         "CONTROLLED.CLOSE": [
           {
@@ -526,7 +525,7 @@ export const machine = createMachine({
 
     suggesting: {
       tags: ["open", "focused"],
-      effects: ["trackDismissableLayer", "scrollToHighlightedItem", "trackPlacement", "hideOtherElements"],
+      effects: ["trackDismissableLayer", "scrollToHighlightedItem", "trackPlacement"],
       entry: ["setInitialFocus"],
       on: {
         "CONTROLLED.CLOSE": [
@@ -541,12 +540,16 @@ export const machine = createMachine({
         ],
         CHILDREN_CHANGE: [
           {
-            guard: "autoHighlight",
-            actions: ["highlightFirstItem"],
+            guard: and("isHighlightedItemRemoved", "hasCollectionItems", "autoHighlight"),
+            actions: ["clearHighlightedValue", "highlightFirstItem"],
           },
           {
             guard: "isHighlightedItemRemoved",
             actions: ["clearHighlightedValue"],
+          },
+          {
+            guard: "autoHighlight",
+            actions: ["highlightFirstItem"],
           },
         ],
         "INPUT.ARROW_DOWN": {
@@ -696,10 +699,14 @@ export const machine = createMachine({
         if (isBoolean(openOnChange)) return openOnChange
         return !!openOnChange?.({ inputValue: context.get("inputValue") })
       },
-      restoreFocus: ({ event }) => (event.restoreFocus == null ? true : !!event.restoreFocus),
+      restoreFocus: ({ event }) => {
+        const restoreFocus = event.restoreFocus ?? event.previousEvent?.restoreFocus
+        return restoreFocus == null ? true : !!restoreFocus
+      },
       isChangeEvent: ({ event }) => event.previousEvent?.type === "INPUT.CHANGE",
       autoFocus: ({ prop }) => !!prop("autoFocus"),
       isHighlightedItemRemoved: ({ prop, context }) => !prop("collection").has(context.get("highlightedValue")),
+      hasCollectionItems: ({ prop }) => prop("collection").size > 0,
     },
 
     effects: {
@@ -722,14 +729,6 @@ export const machine = createMachine({
             send({ type: "LAYER.INTERACT_OUTSIDE", src: "interact-outside", restoreFocus: false })
           },
         })
-      },
-      hideOtherElements({ scope }) {
-        return ariaHidden([
-          dom.getInputEl(scope),
-          dom.getContentEl(scope),
-          dom.getTriggerEl(scope),
-          dom.getClearTriggerEl(scope),
-        ])
       },
       trackPlacement({ context, prop, scope }) {
         const anchorEl = () => dom.getControlEl(scope) || dom.getTriggerEl(scope)
@@ -970,13 +969,13 @@ export const machine = createMachine({
           contentEl.scrollTop = 0
         }
       },
-      invokeOnOpen({ prop, event }) {
+      invokeOnOpen({ prop, event, context }) {
         const reason = getOpenChangeReason(event)
-        prop("onOpenChange")?.({ open: true, reason })
+        prop("onOpenChange")?.({ open: true, reason, value: context.get("value") })
       },
-      invokeOnClose({ prop, event }) {
+      invokeOnClose({ prop, event, context }) {
         const reason = getOpenChangeReason(event)
-        prop("onOpenChange")?.({ open: false, reason })
+        prop("onOpenChange")?.({ open: false, reason, value: context.get("value") })
       },
       highlightFirstItem({ context, prop, scope }) {
         const exec = dom.getContentEl(scope) ? queueMicrotask : raf

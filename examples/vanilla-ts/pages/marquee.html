@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Marquee</title>
+  </head>
+  <body style="padding: 40px">
+    <a href="/">← Back to examples</a>
+    <h1>Marquee</h1>
+
+    <main class="marquee">
+      <div class="marquee-root">
+        <div class="marquee-edge-start"></div>
+        <div class="marquee-viewport"></div>
+        <div class="marquee-edge-end"></div>
+      </div>
+
+      <div class="controls">
+        <button class="marquee-pause">Pause</button>
+        <button class="marquee-resume">Resume</button>
+        <button class="marquee-toggle">Toggle</button>
+        <span class="marquee-status">Status: Playing</span>
+      </div>
+    </main>
+
+    <script type="module" src="./marquee.ts"></script>
+  </body>
+</html>

@@ -1,10 +1,9 @@
 import * as imageCropper from "@zag-js/image-cropper"
-import { useMachine, normalizeProps } from "@zag-js/react"
-import { imageCropperControls } from "@zag-js/shared"
+import { normalizeProps, useMachine } from "@zag-js/react"
+import { handlePositions, imageCropperControls } from "@zag-js/shared"
 import { useId, useState } from "react"
 import { StateVisualizer } from "../components/state-visualizer"
 import { Toolbar } from "../components/toolbar"
-import { handlePositions } from "@zag-js/shared"
 import { useControls } from "../hooks/use-controls"
 
 export default function Page() {
@@ -12,7 +11,7 @@ export default function Page() {
   const [zoom, setZoom] = useState(1)
   const [rotation, setRotation] = useState(0)
   const [flip, setFlip] = useState<imageCropper.FlipState>({ horizontal: false, vertical: false })
-  const [selectedHandle, setSelectedHandle] = useState<imageCropper.HandlePosition>("right")
+  const [selectedHandle, setSelectedHandle] = useState<imageCropper.HandlePosition>("e")
   const [resizeStep, setResizeStep] = useState(10)
   const [croppedImageUrl, setCroppedImageUrl] = useState<string | null>(null)
   const [isExporting, setIsExporting] = useState(false)
@@ -95,6 +94,8 @@ export default function Page() {
                   <div />
                 </div>
               ))}
+              <div {...api.getGridProps({ axis: "horizontal" })} />
+              <div {...api.getGridProps({ axis: "vertical" })} />
             </div>
           </div>
         </div>
@@ -156,6 +157,7 @@ export default function Page() {
           <label>
             Resize handle:
             <select
+              data-testid="resize-handle-select"
               value={selectedHandle}
               onChange={(event) => setSelectedHandle(event.currentTarget.value as imageCropper.HandlePosition)}
             >
@@ -169,6 +171,7 @@ export default function Page() {
           <label>
             Resize step (px):
             <input
+              data-testid="resize-step-input"
               type="number"
               min={1}
               value={resizeStep}
@@ -179,10 +182,10 @@ export default function Page() {
             />
           </label>
           <div>
-            <button type="button" onClick={() => applyResize("grow")}>
+            <button type="button" data-testid="grow-button" onClick={() => applyResize("grow")}>
               Grow selection
             </button>
-            <button type="button" onClick={() => applyResize("shrink")}>
+            <button type="button" data-testid="shrink-button" onClick={() => applyResize("shrink")}>
               Shrink selection
             </button>
           </div>

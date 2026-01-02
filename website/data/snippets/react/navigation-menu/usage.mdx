@@ -1,0 +1,41 @@
+```jsx
+import * as navigationMenu from "@zag-js/navigation-menu"
+import { useMachine, normalizeProps } from "@zag-js/react"
+import { useId } from "react"
+
+export function NavigationMenu() {
+  const service = useMachine(navigationMenu.machine, {
+    id: useId(),
+  })
+
+  const api = navigationMenu.connect(service, normalizeProps)
+
+  return (
+    <nav {...api.getRootProps()}>
+      <ul {...api.getListProps()}>
+        {/* Item with dropdown content */}
+        <li {...api.getItemProps({ value: "products" })}>
+          <button {...api.getTriggerProps({ value: "products" })}>
+            Products
+          </button>
+          <div {...api.getContentProps({ value: "products" })}>
+            <a {...api.getLinkProps({ value: "products" })} href="/analytics">
+              Analytics
+            </a>
+            <a {...api.getLinkProps({ value: "products" })} href="/marketing">
+              Marketing
+            </a>
+          </div>
+        </li>
+
+        {/* Simple link item */}
+        <li {...api.getItemProps({ value: "pricing" })}>
+          <a {...api.getLinkProps({ value: "pricing" })} href="/pricing">
+            Pricing
+          </a>
+        </li>
+      </ul>
+    </nav>
+  )
+}
+```

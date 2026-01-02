@@ -172,7 +172,7 @@ export function connect<T extends PropTypes>(
 
           const step = getEventStep(event) * prop("step")
 
-          const keyMap: EventKeyMap = {
+          const keyMap: EventKeyMap<HTMLInputElement> = {
             ArrowUp() {
               send({ type: "INPUT.ARROW_UP", step })
               event.preventDefault()
@@ -191,8 +191,9 @@ export function connect<T extends PropTypes>(
               send({ type: "INPUT.END" })
               event.preventDefault()
             },
-            Enter() {
-              send({ type: "INPUT.ENTER" })
+            Enter(event) {
+              const selection = recordCursor(event.currentTarget, scope)
+              send({ type: "INPUT.ENTER", selection })
             },
           }
 

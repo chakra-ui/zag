@@ -28,7 +28,7 @@ function Marquee() {
         {Array.from({ length: api.contentCount }).map((_, index) => (
           <div key={index} {...api.getContentProps({ index })}>
             {logos.map((item, i) => (
-              <div key={i} className="marquee-item">
+              <div key={i} {...api.getItemProps()}>
                 <span className="logo">{item.logo}</span>
                 <span className="name">{item.name}</span>
               </div>

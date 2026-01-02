@@ -29,6 +29,7 @@ export interface ValueChangeDetails {
 
 export interface OpenChangeDetails {
   open: boolean
+  value: Color
 }
 
 export interface FormatChangeDetails {

@@ -19,7 +19,6 @@ export const routesData: RouteData[] = [
   { label: "Listbox (Grid)", path: "/listbox-grid" },
   { label: "Navigation Menu", path: "/navigation-menu" },
   { label: "Navigation Menu (Viewport)", path: "/navigation-menu-viewport" },
-  { label: "Navigation Menu (Nested)", path: "/navigation-menu-nested" },
   { label: "Toggle", path: "/toggle" },
   { label: "Angle Slider", path: "/angle-slider" },
   { label: "Steps", path: "/steps" },

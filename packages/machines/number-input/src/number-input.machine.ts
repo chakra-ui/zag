@@ -18,7 +18,7 @@ import {
   isValueAtMin,
   isValueWithinRange,
 } from "@zag-js/utils"
-import { restoreCursor } from "./cursor"
+import { recordCursor, restoreCursor } from "./cursor"
 import * as dom from "./number-input.dom"
 import type { HintValue, NumberInputSchema } from "./number-input.types"
 import { createFormatter, createParser, formatValue, getDefaultStep, parseValue } from "./number-input.utils"
@@ -101,7 +101,7 @@ export const machine = createMachine({
   },
 
   watch({ track, action, context, computed, prop }) {
-    track([() => context.get("value"), () => prop("locale")], () => {
+    track([() => context.get("value"), () => prop("locale"), () => JSON.stringify(prop("formatOptions"))], () => {
       action(["syncInputElement"])
     })
 
@@ -183,20 +183,20 @@ export const machine = createMachine({
           {
             guard: and("clampValueOnBlur", not("isInRange")),
             target: "idle",
-            actions: ["setClampedValue", "clearHint", "invokeOnBlur"],
+            actions: ["setClampedValue", "clearHint", "invokeOnBlur", "invokeOnValueCommit"],
           },
           {
             guard: not("isInRange"),
             target: "idle",
-            actions: ["setFormattedValue", "clearHint", "invokeOnBlur", "invokeOnInvalid"],
+            actions: ["setFormattedValue", "clearHint", "invokeOnBlur", "invokeOnInvalid", "invokeOnValueCommit"],
           },
           {
             target: "idle",
-            actions: ["setFormattedValue", "clearHint", "invokeOnBlur"],
+            actions: ["setFormattedValue", "clearHint", "invokeOnBlur", "invokeOnValueCommit"],
           },
         ],
         "INPUT.ENTER": {
-          actions: ["setFormattedValue", "clearHint", "invokeOnBlur"],
+          actions: ["setFormattedValue", "clearHint", "invokeOnBlur", "invokeOnValueCommit"],
         },
       },
     },
@@ -429,17 +429,26 @@ export const machine = createMachine({
           valueAsNumber: computed("valueAsNumber"),
         })
       },
+      invokeOnValueCommit({ computed, prop }) {
+        prop("onValueCommit")?.({
+          value: computed("formattedValue"),
+          valueAsNumber: computed("valueAsNumber"),
+        })
+      },
       syncInputElement({ context, event, computed, scope }) {
         const value = event.type.endsWith("CHANGE") ? context.get("value") : computed("formattedValue")
         const inputEl = dom.getInputEl(scope)
-        const sel = event.selection
+        // Record cursor position before sync if not provided in event
+        // This handles external value changes while user is typing
+        const sel = event.selection ?? recordCursor(inputEl, scope)
         raf(() => {
           setElementValue(inputEl, value)
           restoreCursor(inputEl, sel, scope)
         })
       },
-      setFormattedValue({ context, computed }) {
+      setFormattedValue({ context, computed, action }) {
         context.set("value", computed("formattedValue"))
+        action(["syncInputElement"])
       },
       setCursorPoint({ context, event }) {
         context.set("scrubberCursorPoint", event.point)

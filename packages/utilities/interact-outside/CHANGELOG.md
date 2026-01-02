@@ -1,5 +1,83 @@
 # @zag-js/interact-outside
 
+## 1.31.1
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/utils@1.31.1
+  - @zag-js/dom-query@1.31.1
+
+## 1.31.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/utils@1.31.0
+  - @zag-js/dom-query@1.31.0
+
+## 1.30.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/utils@1.30.0
+  - @zag-js/dom-query@1.30.0
+
+## 1.29.1
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/utils@1.29.1
+  - @zag-js/dom-query@1.29.1
+
+## 1.29.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/utils@1.29.0
+  - @zag-js/dom-query@1.29.0
+
+## 1.28.0
+
+### Patch Changes
+
+- Updated dependencies [[`c59e4f5`](https://github.com/chakra-ui/zag/commit/c59e4f5b9bc43de85649d4de95e8bf270c16acab),
+  [`c656df8`](https://github.com/chakra-ui/zag/commit/c656df8846733f7b6241d152d76b515a95d6841a)]:
+  - @zag-js/dom-query@1.28.0
+  - @zag-js/utils@1.28.0
+
+## 1.27.1
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/utils@1.27.1
+  - @zag-js/dom-query@1.27.1
+
+## 1.27.0
+
+### Patch Changes
+
+- [`cf6fb09`](https://github.com/chakra-ui/zag/commit/cf6fb0956aeacc236531ee90de9169a39cdde3a5) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Improve support for shadow DOM in all focus trap components
+  (dialog, popover, tour, etc.)
+
+- Updated dependencies [[`cf6fb09`](https://github.com/chakra-ui/zag/commit/cf6fb0956aeacc236531ee90de9169a39cdde3a5),
+  [`920e727`](https://github.com/chakra-ui/zag/commit/920e727f73940aed3c6d2b886c64200a4a5702d0)]:
+  - @zag-js/dom-query@1.27.0
+  - @zag-js/utils@1.27.0
+
+## 1.26.5
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/utils@1.26.5
+  - @zag-js/dom-query@1.26.5
+
 ## 1.26.4
 
 ### Patch Changes

@@ -235,6 +235,7 @@ export interface MarqueeApi<T extends PropTypes = PropTypes> {
   getViewportProps: () => T["element"]
   getContentProps: (props: ContentProps) => T["element"]
   getEdgeProps: (props: EdgeProps) => T["element"]
+  getItemProps: () => T["element"]
 }
 
 /* -----------------------------------------------------------------------------

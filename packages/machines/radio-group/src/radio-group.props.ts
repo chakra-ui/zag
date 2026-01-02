@@ -9,10 +9,12 @@ export const props = createProps<RadioGroupProps>()([
   "getRootNode",
   "id",
   "ids",
+  "invalid",
   "name",
   "onValueChange",
   "orientation",
   "readOnly",
+  "required",
   "value",
   "defaultValue",
 ])

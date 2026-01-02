@@ -6,7 +6,7 @@ import { parts } from "./tour.anatomy"
 import * as dom from "./tour.dom"
 import type { StepActionMap, TourApi, TourService } from "./tour.types"
 import { getClipPath } from "./utils/clip-path"
-import { findStepIndex, isTooltipPlacement, isTooltipStep } from "./utils/step"
+import { getEffectiveStepIndex, getEffectiveSteps, isTooltipPlacement, isTooltipStep } from "./utils/step"
 
 export function connect<T extends PropTypes>(service: TourService, normalize: NormalizeProps<T>): TourApi<T> {
   const { state, context, computed, send, prop, scope } = service
@@ -47,6 +47,9 @@ export function connect<T extends PropTypes>(service: TourService, normalize: No
     },
     dismiss() {
       send({ type: "DISMISS", src: "actionTrigger" })
+    },
+    skip() {
+      send({ type: "SKIP", src: "actionTrigger" })
     },
     goto(id) {
       send({ type: "STEP.SET", value: id, src: "actionTrigger" })
@@ -96,12 +99,14 @@ export function connect<T extends PropTypes>(service: TourService, normalize: No
       send({ type: "STEP.PREV" })
     },
     getProgressPercent() {
-      return (stepIndex / steps.length) * 100
+      const index = getEffectiveStepIndex(steps, step?.id)
+      const total = getEffectiveSteps(steps).length
+      return ((index + 1) / total) * 100
     },
     getProgressText() {
-      const effectiveSteps = steps.filter((step) => step.type !== "wait")
-      const index = findStepIndex(effectiveSteps, step?.id)
-      const details = { current: index, total: effectiveSteps.length }
+      const index = getEffectiveStepIndex(steps, step?.id)
+      const total = getEffectiveSteps(steps).length
+      const details = { current: index, total }
       return prop("translations").progressText?.(details) ?? ""
     },
 

@@ -4,8 +4,6 @@ description: Using the marquee machine in your project.
 package: "@zag-js/marquee"
 ---
 
-# Marquee
-
 An accessible auto-scrolling marquee component for displaying scrolling content
 like logos, announcements, or featured items.
 
@@ -15,15 +13,11 @@ like logos, announcements, or featured items.
 
 **Features**
 
-- Smooth GPU-accelerated animations using CSS transforms
-- Supports horizontal and vertical scrolling directions
-- RTL language support with proper directional handling
-- Auto-fill content to prevent gaps in the animation
-- Pause on user interaction (hover and keyboard focus)
-- Customizable animation speed and spacing
-- Accessible with proper ARIA attributes
-- Respects `prefers-reduced-motion` for users with vestibular disorders
-- Clone identification for styling duplicated content
+- Smooth GPU-accelerated animations with seamless looping
+- Horizontal and vertical scrolling with RTL support
+- Pause on hover and keyboard focus
+- Customizable speed and spacing
+- Accessible and respects `prefers-reduced-motion`
 
 ## Installation
 
@@ -289,51 +283,32 @@ Style the edge gradients using CSS:
 
 ### Required keyframe animations
 
-For the marquee to work, you **must** include the required keyframe animations in
-your CSS. These animations control the scrolling behavior:
+For the marquee to work, you **must** include the required keyframe animations
+in your CSS. These animations control the scrolling behavior:
 
 ```css
-@keyframes marqueeLeft {
-  from {
+@keyframes marqueeX {
+  0% {
     transform: translateX(0%);
   }
-  to {
-    transform: translateX(calc(-100% - var(--marquee-spacing)));
+  100% {
+    transform: translateX(var(--marquee-translate));
   }
 }
 
-@keyframes marqueeRight {
-  from {
-    transform: translateX(0%);
-  }
-  to {
-    transform: translateX(calc(100% + var(--marquee-spacing)));
-  }
-}
-
-@keyframes marqueeUp {
-  from {
+@keyframes marqueeY {
+  0% {
     transform: translateY(0%);
   }
-  to {
-    transform: translateY(calc(-100% - var(--marquee-spacing)));
-  }
-}
-
-@keyframes marqueeDown {
-  from {
-    transform: translateY(0%);
-  }
-  to {
-    transform: translateY(calc(100% + var(--marquee-spacing)));
+  100% {
+    transform: translateY(var(--marquee-translate));
   }
 }
 ```
 
-**Important:** The animations use CSS custom properties (`--marquee-spacing`)
-that are automatically set by the machine. Make sure to include all four keyframe
-definitions, as the marquee will select the appropriate one based on the `side`
-prop.
+**Important:** The animations use the `--marquee-translate` CSS variable which
+is automatically set by the machine based on the `side` and `dir` props. This
+enables seamless looping when combined with the cloned content.
 
 ### Base content styles
 
@@ -341,50 +316,26 @@ To apply the animations, add these base styles to your content elements:
 
 ```css
 [data-scope="marquee"][data-part="content"] {
-  display: flex;
-  gap: var(--marquee-spacing, 1rem);
-  flex-shrink: 0;
   animation-timing-function: linear;
-  animation-fill-mode: forwards;
   animation-duration: var(--marquee-duration);
   animation-delay: var(--marquee-delay);
   animation-iteration-count: var(--marquee-loop-count);
-  transform: translate3d(0, 0, 0);
 }
 
-/* Horizontal scrolling animations */
-[data-part="content"][data-side="start"] {
-  animation-name: marqueeLeft;
-}
-
+[data-part="content"][data-side="start"],
 [data-part="content"][data-side="end"] {
-  animation-name: marqueeRight;
+  animation-name: marqueeX;
 }
 
-/* Vertical scrolling animations */
-[data-part="content"][data-side="top"] {
-  animation-name: marqueeUp;
-}
-
+[data-part="content"][data-side="top"],
 [data-part="content"][data-side="bottom"] {
-  animation-name: marqueeDown;
+  animation-name: marqueeY;
 }
 
-/* RTL support */
-[data-part="content"][dir="rtl"][data-side="start"] {
-  animation-name: marqueeRight;
-}
-
-[data-part="content"][dir="rtl"][data-side="end"] {
-  animation-name: marqueeLeft;
-}
-
-/* Reverse animation */
 [data-part="content"][data-reverse] {
   animation-direction: reverse;
 }
 
-/* Respect user motion preferences */
 @media (prefers-reduced-motion: reduce) {
   [data-part="content"] {
     animation: none !important;
@@ -392,12 +343,20 @@ To apply the animations, add these base styles to your content elements:
 }
 ```
 
+**Note:** The machine automatically handles layout styles (`display`,
+`flex-direction`, `flex-shrink`) and performance optimizations
+(`backface-visibility`, `will-change`, `transform: translateZ(0)`), so you only
+need to add the animation properties.
+
+### CSS variables
+
 The machine automatically sets these CSS variables:
 
 - `--marquee-duration` — Animation duration in seconds
-- `--marquee-spacing` — Gap between items
+- `--marquee-spacing` — Spacing between items
 - `--marquee-delay` — Delay before animation starts
 - `--marquee-loop-count` — Number of iterations (or "infinite")
+- `--marquee-translate` — Transform value for animations
 
 ### Styling parts
 
@@ -415,6 +374,10 @@ to them to select and style them in the DOM.
 
 [data-scope="marquee"][data-part="content"] {
   /* styles for each content container */
+}
+
+[data-scope="marquee"][data-part="item"] {
+  /* styles for individual marquee items */
 }
 
 [data-scope="marquee"][data-part="edge"] {

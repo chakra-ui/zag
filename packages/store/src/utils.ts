@@ -24,6 +24,9 @@ export const canProxy = (x: unknown) =>
   !(x instanceof String) &&
   !(x instanceof RegExp) &&
   !(x instanceof ArrayBuffer) &&
-  !(x instanceof Promise)
+  !(x instanceof Promise) &&
+  !(x instanceof File) &&
+  !(x instanceof Blob) &&
+  !(x instanceof AbortController)
 
 export const isDev = () => process.env.NODE_ENV !== "production"

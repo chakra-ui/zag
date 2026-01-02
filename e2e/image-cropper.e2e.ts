@@ -32,7 +32,7 @@ test.describe("image-cropper / resizable", () => {
   test("[pointer] should resize crop selection using corner handle", async () => {
     const initialRect = await I.getSelectionRect()
 
-    await I.dragHandle("bottom-right", 10, 15)
+    await I.dragHandle("se", 10, 15)
 
     await I.seeSelectionSize(initialRect.width + 10, initialRect.height + 15)
   })
@@ -40,7 +40,7 @@ test.describe("image-cropper / resizable", () => {
   test("[pointer] should resize crop selection using side handle", async () => {
     const initialRect = await I.getSelectionRect()
 
-    await I.dragHandle("right", 20, 0)
+    await I.dragHandle("e", 20, 0)
 
     await I.seeSelectionSize(initialRect.width + 20, initialRect.height)
   })
@@ -48,7 +48,7 @@ test.describe("image-cropper / resizable", () => {
   test("[pointer] should resize crop selection using top handle", async () => {
     const initialRect = await I.getSelectionRect()
 
-    await I.dragHandle("top", 0, -20)
+    await I.dragHandle("n", 0, -20)
 
     await I.seeSelectionSize(initialRect.width, initialRect.height + 20)
   })
@@ -96,7 +96,7 @@ test.describe("image-cropper / resizable", () => {
     await I.controls.num("aspectRatio", "1")
     await I.wait(100)
 
-    await I.dragHandle("bottom-right", 60, 60)
+    await I.dragHandle("se", 60, 60)
     await I.wait(100)
 
     const newRect = await I.getSelectionRect()
@@ -168,7 +168,7 @@ test.describe("image-cropper / resizable", () => {
     const initialRect = await I.getSelectionRect()
     const initialAspectRatio = initialRect.width / initialRect.height
 
-    await I.dragHandle("bottom-right", -60, -100, { shift: true })
+    await I.dragHandle("se", -60, -100, { shift: true })
     await I.wait(100)
 
     const newRect = await I.getSelectionRect()
@@ -182,7 +182,7 @@ test.describe("image-cropper / resizable", () => {
     await I.controls.num("minHeight", "60")
     await I.wait(100)
 
-    await I.dragHandle("bottom-right", -500, -500)
+    await I.dragHandle("se", -500, -500)
     await I.wait(100)
 
     const { width, height } = await I.getSelectionRect()
@@ -196,7 +196,7 @@ test.describe("image-cropper / resizable", () => {
     await I.controls.num("maxHeight", "150")
     await I.wait(100)
 
-    await I.dragHandle("bottom-right", 500, 500)
+    await I.dragHandle("se", 500, 500)
     await I.wait(100)
 
     const selectionRect = await I.getSelectionRect()
@@ -385,6 +385,306 @@ test.describe("image-cropper / fixedCropArea", () => {
   })
 })
 
+test.describe("image-cropper / resize API", () => {
+  test.beforeEach(async ({ page }) => {
+    I = new ImageCropperModel(page)
+    await I.goto()
+    await I.waitForImageLoad()
+  })
+
+  test("[api] should grow selection using right handle", async () => {
+    const initialRect = await I.getSelectionRect()
+
+    await I.selectResizeHandle("e")
+    await I.setResizeStep(20)
+    await I.clickGrow()
+    await I.wait(100)
+
+    const newRect = await I.getSelectionRect()
+
+    expect(newRect.width).toBe(initialRect.width + 20)
+    expect(newRect.height).toBe(initialRect.height)
+    expect(newRect.x).toBe(initialRect.x)
+    expect(newRect.y).toBe(initialRect.y)
+  })
+
+  test("[api] should shrink selection using right handle", async () => {
+    const initialRect = await I.getSelectionRect()
+
+    await I.selectResizeHandle("e")
+    await I.setResizeStep(15)
+    await I.clickShrink()
+    await I.wait(100)
+
+    const newRect = await I.getSelectionRect()
+
+    expect(newRect.width).toBe(initialRect.width - 15)
+    expect(newRect.height).toBe(initialRect.height)
+    expect(newRect.x).toBe(initialRect.x)
+    expect(newRect.y).toBe(initialRect.y)
+  })
+
+  test("[api] should grow selection using left handle", async () => {
+    const initialRect = await I.getSelectionRect()
+
+    await I.selectResizeHandle("w")
+    await I.setResizeStep(20)
+    await I.clickGrow()
+    await I.wait(100)
+
+    const newRect = await I.getSelectionRect()
+
+    expect(newRect.width).toBe(initialRect.width + 20)
+    expect(newRect.height).toBe(initialRect.height)
+    expect(newRect.x).toBe(initialRect.x - 20)
+    expect(newRect.y).toBe(initialRect.y)
+  })
+
+  test("[api] should shrink selection using left handle", async () => {
+    const initialRect = await I.getSelectionRect()
+
+    await I.selectResizeHandle("w")
+    await I.setResizeStep(15)
+    await I.clickShrink()
+    await I.wait(100)
+
+    const newRect = await I.getSelectionRect()
+
+    expect(newRect.width).toBe(initialRect.width - 15)
+    expect(newRect.height).toBe(initialRect.height)
+    expect(newRect.x).toBe(initialRect.x + 15)
+    expect(newRect.y).toBe(initialRect.y)
+  })
+
+  test("[api] should grow selection using bottom handle", async () => {
+    const initialRect = await I.getSelectionRect()
+
+    await I.selectResizeHandle("s")
+    await I.setResizeStep(25)
+    await I.clickGrow()
+    await I.wait(100)
+
+    const newRect = await I.getSelectionRect()
+
+    expect(newRect.width).toBe(initialRect.width)
+    expect(newRect.height).toBe(initialRect.height + 25)
+    expect(newRect.x).toBe(initialRect.x)
+    expect(newRect.y).toBe(initialRect.y)
+  })
+
+  test("[api] should shrink selection using bottom handle", async () => {
+    const initialRect = await I.getSelectionRect()
+
+    await I.selectResizeHandle("s")
+    await I.setResizeStep(20)
+    await I.clickShrink()
+    await I.wait(100)
+
+    const newRect = await I.getSelectionRect()
+
+    expect(newRect.width).toBe(initialRect.width)
+    expect(newRect.height).toBe(initialRect.height - 20)
+    expect(newRect.x).toBe(initialRect.x)
+    expect(newRect.y).toBe(initialRect.y)
+  })
+
+  test("[api] should grow selection using top handle", async () => {
+    const initialRect = await I.getSelectionRect()
+
+    await I.selectResizeHandle("n")
+    await I.setResizeStep(25)
+    await I.clickGrow()
+    await I.wait(100)
+
+    const newRect = await I.getSelectionRect()
+
+    expect(newRect.width).toBe(initialRect.width)
+    expect(newRect.height).toBe(initialRect.height + 25)
+    expect(newRect.x).toBe(initialRect.x)
+    expect(newRect.y).toBe(initialRect.y - 25)
+  })
+
+  test("[api] should shrink selection using top handle", async () => {
+    const initialRect = await I.getSelectionRect()
+
+    await I.selectResizeHandle("n")
+    await I.setResizeStep(20)
+    await I.clickShrink()
+    await I.wait(100)
+
+    const newRect = await I.getSelectionRect()
+
+    expect(newRect.width).toBe(initialRect.width)
+    expect(newRect.height).toBe(initialRect.height - 20)
+    expect(newRect.x).toBe(initialRect.x)
+    expect(newRect.y).toBe(initialRect.y + 20)
+  })
+
+  test("[api] should grow selection using bottom-right corner handle", async () => {
+    const initialRect = await I.getSelectionRect()
+
+    await I.selectResizeHandle("se")
+    await I.setResizeStep(30)
+    await I.clickGrow()
+    await I.wait(100)
+
+    const newRect = await I.getSelectionRect()
+
+    expect(newRect.width).toBe(initialRect.width + 30)
+    expect(newRect.height).toBe(initialRect.height + 30)
+    expect(newRect.x).toBe(initialRect.x)
+    expect(newRect.y).toBe(initialRect.y)
+  })
+
+  test("[api] should shrink selection using bottom-right corner handle", async () => {
+    const initialRect = await I.getSelectionRect()
+
+    await I.selectResizeHandle("se")
+    await I.setResizeStep(25)
+    await I.clickShrink()
+    await I.wait(100)
+
+    const newRect = await I.getSelectionRect()
+
+    expect(newRect.width).toBe(initialRect.width - 25)
+    expect(newRect.height).toBe(initialRect.height - 25)
+    expect(newRect.x).toBe(initialRect.x)
+    expect(newRect.y).toBe(initialRect.y)
+  })
+
+  test("[api] should grow selection using top-left corner handle", async () => {
+    const initialRect = await I.getSelectionRect()
+
+    await I.selectResizeHandle("nw")
+    await I.setResizeStep(30)
+    await I.clickGrow()
+    await I.wait(100)
+
+    const newRect = await I.getSelectionRect()
+
+    expect(newRect.width).toBe(initialRect.width + 30)
+    expect(newRect.height).toBe(initialRect.height + 30)
+    expect(newRect.x).toBe(initialRect.x - 30)
+    expect(newRect.y).toBe(initialRect.y - 30)
+  })
+
+  test("[api] should shrink selection using top-left corner handle", async () => {
+    const initialRect = await I.getSelectionRect()
+
+    await I.selectResizeHandle("nw")
+    await I.setResizeStep(25)
+    await I.clickShrink()
+    await I.wait(100)
+
+    const newRect = await I.getSelectionRect()
+
+    expect(newRect.width).toBe(initialRect.width - 25)
+    expect(newRect.height).toBe(initialRect.height - 25)
+    expect(newRect.x).toBe(initialRect.x + 25)
+    expect(newRect.y).toBe(initialRect.y + 25)
+  })
+
+  test("[api] should grow selection using top-right corner handle", async () => {
+    const initialRect = await I.getSelectionRect()
+
+    await I.selectResizeHandle("ne")
+    await I.setResizeStep(30)
+    await I.clickGrow()
+    await I.wait(100)
+
+    const newRect = await I.getSelectionRect()
+
+    expect(newRect.width).toBe(initialRect.width + 30)
+    expect(newRect.height).toBe(initialRect.height + 30)
+    expect(newRect.x).toBe(initialRect.x)
+    expect(newRect.y).toBe(initialRect.y - 30)
+  })
+
+  test("[api] should shrink selection using top-right corner handle", async () => {
+    const initialRect = await I.getSelectionRect()
+
+    await I.selectResizeHandle("ne")
+    await I.setResizeStep(25)
+    await I.clickShrink()
+    await I.wait(100)
+
+    const newRect = await I.getSelectionRect()
+
+    expect(newRect.width).toBe(initialRect.width - 25)
+    expect(newRect.height).toBe(initialRect.height - 25)
+    expect(newRect.x).toBe(initialRect.x)
+    expect(newRect.y).toBe(initialRect.y + 25)
+  })
+
+  test("[api] should grow selection using bottom-left corner handle", async () => {
+    const initialRect = await I.getSelectionRect()
+
+    await I.selectResizeHandle("sw")
+    await I.setResizeStep(30)
+    await I.clickGrow()
+    await I.wait(100)
+
+    const newRect = await I.getSelectionRect()
+
+    expect(newRect.width).toBe(initialRect.width + 30)
+    expect(newRect.height).toBe(initialRect.height + 30)
+    expect(newRect.x).toBe(initialRect.x - 30)
+    expect(newRect.y).toBe(initialRect.y)
+  })
+
+  test("[api] should shrink selection using bottom-left corner handle", async () => {
+    const initialRect = await I.getSelectionRect()
+
+    await I.selectResizeHandle("sw")
+    await I.setResizeStep(25)
+    await I.clickShrink()
+    await I.wait(100)
+
+    const newRect = await I.getSelectionRect()
+
+    expect(newRect.width).toBe(initialRect.width - 25)
+    expect(newRect.height).toBe(initialRect.height - 25)
+    expect(newRect.x).toBe(initialRect.x + 25)
+    expect(newRect.y).toBe(initialRect.y)
+  })
+
+  test("[api] should respect minimum size when shrinking", async () => {
+    await I.controls.num("minWidth", "100")
+    await I.controls.num("minHeight", "80")
+    await I.wait(100)
+
+    await I.selectResizeHandle("se")
+    await I.setResizeStep(500)
+    await I.clickShrink()
+    await I.wait(100)
+
+    const { width, height } = await I.getSelectionRect()
+
+    expect(width).toBe(100)
+    expect(height).toBe(80)
+  })
+
+  test("[api] should respect maximum size when growing", async () => {
+    await I.controls.num("maxWidth", "200")
+    await I.controls.num("maxHeight", "150")
+    await I.wait(100)
+
+    await I.selectResizeHandle("se")
+    await I.setResizeStep(500)
+    await I.clickGrow()
+    await I.wait(100)
+
+    const selectionRect = await I.getSelectionRect()
+    const viewportRect = await I.getViewportRect()
+
+    const expectedWidth = Math.min(200, viewportRect.width)
+    const expectedHeight = Math.min(150, viewportRect.height)
+
+    expect(selectionRect.width).toBe(expectedWidth)
+    expect(selectionRect.height).toBe(expectedHeight)
+  })
+})
+
 test.describe("image-cropper / circle", () => {
   test.beforeEach(async ({ page }) => {
     I = new ImageCropperModel(page)
@@ -398,11 +698,168 @@ test.describe("image-cropper / circle", () => {
   })
 
   test("should keep the crop area in 1:1 aspect ratio when resizing", async () => {
-    await I.dragHandle("bottom-right", 60, 100)
+    await I.dragHandle("se", 60, 100)
     await I.wait(100)
 
     const newRect = await I.getSelectionRect()
 
     expect(newRect.width).toEqual(newRect.height)
+  })
+})
+
+test.describe("image-cropper / viewport resize", () => {
+  test.beforeEach(async ({ page }) => {
+    I = new ImageCropperModel(page)
+    await I.goto()
+    await I.waitForImageLoad()
+  })
+
+  test("[viewport] should scale crop proportionally when viewport shrinks", async () => {
+    const { width: initialWidth, height: initialHeight } = await I.getViewportSize()
+    const initialCrop = await I.getSelectionRect()
+
+    const initialWidthRatio = initialCrop.width / initialWidth
+    const initialHeightRatio = initialCrop.height / initialHeight
+
+    const newWidth = Math.floor(initialWidth * 0.8)
+    const newHeight = Math.floor(initialHeight * 0.8)
+    await I.resizeViewport(newWidth, newHeight)
+
+    const newViewport = await I.getViewportSize()
+    const newCrop = await I.getSelectionRect()
+
+    expect(newViewport.width).toBe(newWidth)
+    expect(newViewport.height).toBe(newHeight)
+
+    const newWidthRatio = newCrop.width / newViewport.width
+    const newHeightRatio = newCrop.height / newViewport.height
+
+    expect(newWidthRatio).toBe(initialWidthRatio)
+    expect(newHeightRatio).toBe(initialHeightRatio)
+  })
+
+  test("[viewport] should scale crop proportionally when viewport grows", async () => {
+    const { width: initialWidth, height: initialHeight } = await I.getViewportSize()
+    const initialCrop = await I.getSelectionRect()
+
+    const initialWidthRatio = initialCrop.width / initialWidth
+    const initialHeightRatio = initialCrop.height / initialHeight
+
+    const newWidth = Math.floor(initialWidth * 1.2)
+    const newHeight = Math.floor(initialHeight * 1.2)
+    await I.resizeViewport(newWidth, newHeight)
+
+    const newViewport = await I.getViewportSize()
+    const newCrop = await I.getSelectionRect()
+
+    expect(newViewport.width).toBe(newWidth)
+    expect(newViewport.height).toBe(newHeight)
+
+    const newWidthRatio = newCrop.width / newViewport.width
+    const newHeightRatio = newCrop.height / newViewport.height
+
+    expect(newWidthRatio).toBe(initialWidthRatio)
+    expect(newHeightRatio).toBe(initialHeightRatio)
+  })
+
+  test("[viewport] should maintain aspect ratio during resize when aspectRatio is set", async () => {
+    await I.controls.num("aspectRatio", "1.5")
+    await I.wait(100)
+
+    const { width: initialWidth, height: initialHeight } = await I.getViewportSize()
+    const newWidth = Math.floor(initialWidth * 0.7)
+    const newHeight = Math.floor(initialHeight * 0.7)
+    await I.resizeViewport(newWidth, newHeight)
+
+    const newCrop = await I.getSelectionRect()
+    const newAspectRatio = newCrop.width / newCrop.height
+
+    expect(newAspectRatio).toBeCloseTo(1.5, 2)
+  })
+
+  test("[viewport] should keep crop within bounds after resize", async () => {
+    const initialViewport = await I.getViewportRect()
+    const initialCrop = await I.getSelectionRect()
+
+    const relativeMaxX = initialViewport.width - initialCrop.width
+    const relativeMaxY = initialViewport.height - initialCrop.height
+    const relativeCropX = initialCrop.x - initialViewport.x
+    const relativeCropY = initialCrop.y - initialViewport.y
+
+    await I.dragSelection(relativeMaxX - relativeCropX, relativeMaxY - relativeCropY)
+    await I.wait(100)
+
+    const newWidth = Math.floor(initialViewport.width * 0.6)
+    const newHeight = Math.floor(initialViewport.height * 0.6)
+    await I.resizeViewport(newWidth, newHeight)
+
+    const newViewport = await I.getViewportRect()
+    const newCrop = await I.getSelectionRect()
+
+    const relativeCropLeft = newCrop.x - newViewport.x
+    const relativeCropTop = newCrop.y - newViewport.y
+    const relativeCropRight = relativeCropLeft + newCrop.width
+    const relativeCropBottom = relativeCropTop + newCrop.height
+
+    expect(relativeCropLeft).toBeGreaterThanOrEqual(0)
+    expect(relativeCropTop).toBeGreaterThanOrEqual(0)
+    expect(relativeCropRight).toBeLessThanOrEqual(newViewport.width)
+    expect(relativeCropBottom).toBeLessThanOrEqual(newViewport.height)
+  })
+
+  test("[viewport] should respect minSize constraints after resize", async () => {
+    await I.controls.num("minWidth", "100")
+    await I.controls.num("minHeight", "80")
+    await I.wait(100)
+
+    const newWidth = 150
+    const newHeight = 120
+    await I.resizeViewport(newWidth, newHeight)
+
+    const newCrop = await I.getSelectionRect()
+
+    expect(newCrop.width).toBeGreaterThanOrEqual(100)
+    expect(newCrop.height).toBeGreaterThanOrEqual(80)
+  })
+
+  test("[viewport] should respect maxSize constraints after resize", async () => {
+    await I.controls.num("maxWidth", "200")
+    await I.controls.num("maxHeight", "150")
+    await I.wait(100)
+
+    const { width: initialWidth, height: initialHeight } = await I.getViewportSize()
+
+    const newWidth = Math.floor(initialWidth * 1.5)
+    const newHeight = Math.floor(initialHeight * 1.5)
+    await I.resizeViewport(newWidth, newHeight)
+
+    const newCrop = await I.getSelectionRect()
+    const newViewport = await I.getViewportRect()
+
+    const expectedMaxWidth = Math.min(200, newViewport.width)
+    const expectedMaxHeight = Math.min(150, newViewport.height)
+
+    expect(newCrop.width).toBeLessThanOrEqual(expectedMaxWidth)
+    expect(newCrop.height).toBeLessThanOrEqual(expectedMaxHeight)
+  })
+
+  test("[viewport] should handle multiple sequential resizes", async () => {
+    const initialCrop = await I.getSelectionRect()
+    const { width: initialWidth, height: initialHeight } = await I.getViewportSize()
+
+    await I.resizeViewport(Math.floor(initialWidth * 0.8), Math.floor(initialHeight * 0.8))
+    const afterShrink = await I.getSelectionRect()
+
+    await I.resizeViewport(Math.floor(initialWidth * 1.1), Math.floor(initialHeight * 1.1))
+    const afterGrow = await I.getSelectionRect()
+
+    await I.resizeViewport(initialWidth, initialHeight)
+    const finalCrop = await I.getSelectionRect()
+
+    expect(afterShrink.width).toBeLessThan(initialCrop.width)
+    expect(afterGrow.width).toBeGreaterThan(afterShrink.width)
+
+    expect(finalCrop.width).toBeCloseTo(initialCrop.width, 0)
+    expect(finalCrop.height).toBeCloseTo(initialCrop.height, 0)
   })
 })

@@ -28,7 +28,7 @@
       {#each Array.from({ length: api.contentCount }) as _, index}
         <div {...api.getContentProps({ index })}>
           {#each marqueeData as item}
-            <div class="marquee-item">
+            <div {...api.getItemProps()}>
               <span class="marquee-logo">{item.logo}</span>
               <span class="marquee-name">{item.name}</span>
             </div>

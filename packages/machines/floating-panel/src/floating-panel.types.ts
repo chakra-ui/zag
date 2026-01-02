@@ -168,7 +168,7 @@ export interface FloatingPanelProps extends DirectionProperty, CommonProperties 
   onStageChange?: ((details: StageChangeDetails) => void) | undefined
 }
 
-type PropWithDefault =
+type PropsWithDefault =
   | "strategy"
   | "gridSize"
   | "defaultSize"
@@ -219,7 +219,7 @@ type ComputedContext = Readonly<{
 }>
 
 export interface FloatingPanelSchema {
-  props: RequiredBy<FloatingPanelProps, PropWithDefault> & {
+  props: RequiredBy<FloatingPanelProps, PropsWithDefault> & {
     hasSpecifiedPosition: boolean
   }
   context: PrivateContext

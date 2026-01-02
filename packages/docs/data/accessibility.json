@@ -607,6 +607,50 @@
       }
     ]
   },
+  "image-cropper": {
+    "keyboard": [
+      {
+        "keys": ["ArrowUp"],
+        "description": "Moves the crop selection upward by the configured nudge step. Hold Shift for the `nudgeStepShift` value or Ctrl/Cmd for `nudgeStepCtrl`."
+      },
+      {
+        "keys": ["ArrowDown"],
+        "description": "Moves the crop selection downward by the configured nudge step. Hold Shift for the `nudgeStepShift` value or Ctrl/Cmd for `nudgeStepCtrl`."
+      },
+      {
+        "keys": ["ArrowLeft"],
+        "description": "Moves the crop selection to the left by the configured nudge step. Hold Shift for the `nudgeStepShift` value or Ctrl/Cmd for `nudgeStepCtrl`."
+      },
+      {
+        "keys": ["ArrowRight"],
+        "description": "Moves the crop selection to the right by the configured nudge step. Hold Shift for the `nudgeStepShift` value or Ctrl/Cmd for `nudgeStepCtrl`."
+      },
+      {
+        "keys": ["Alt + ArrowUp"],
+        "description": "Resizes the crop vertically from the bottom handle, reducing the height. Hold Shift or Ctrl/Cmd for the larger nudge steps."
+      },
+      {
+        "keys": ["Alt + ArrowDown"],
+        "description": "Resizes the crop vertically from the bottom handle, increasing the height. Hold Shift or Ctrl/Cmd for the larger nudge steps."
+      },
+      {
+        "keys": ["Alt + ArrowLeft"],
+        "description": "Resizes the crop horizontally from the right handle, reducing the width. Hold Shift or Ctrl/Cmd for the larger nudge steps."
+      },
+      {
+        "keys": ["Alt + ArrowRight"],
+        "description": "Resizes the crop horizontally from the right handle, increasing the width. Hold Shift or Ctrl/Cmd for the larger nudge steps."
+      },
+      {
+        "keys": ["+"],
+        "description": "Zooms in on the image. The `=` key performs the same action on keyboards where both symbols share a key."
+      },
+      {
+        "keys": ["-"],
+        "description": "Zooms out of the image. The `_` key performs the same action on keyboards where both symbols share a key."
+      }
+    ]
+  },
   "number-input": {
     "keyboard": [
       {
@@ -748,6 +792,34 @@
       {
         "keys": ["Esc"],
         "description": "Closes the dialog and moves focus to trigger or the defined final focus element"
+      }
+    ]
+  },
+  "navigation-menu": {
+    "keyboard": [
+      {
+        "keys": ["ArrowDown"],
+        "description": "When focus is on trigger (vertical orientation), moves focus to the next trigger."
+      },
+      {
+        "keys": ["ArrowUp"],
+        "description": "When focus is on trigger (vertical orientation), moves focus to the previous trigger."
+      },
+      {
+        "keys": ["ArrowRight"],
+        "description": "<span>When focus is on trigger (horizontal orientation), moves focus to the next trigger.<br />When focus is on content, moves focus to the next link.</span>"
+      },
+      {
+        "keys": ["ArrowLeft"],
+        "description": "<span>When focus is on trigger (horizontal orientation), moves focus to the previous trigger.<br />When focus is on content, moves focus to the previous link.</span>"
+      },
+      {
+        "keys": ["Home"],
+        "description": "<span>When focus is on trigger, moves focus to the first trigger.<br />When focus is on content, moves focus to the first link.</span>"
+      },
+      {
+        "keys": ["End"],
+        "description": "<span>When focus is on trigger, moves focus to the last trigger.<br />When focus is on content, moves focus to the last link.</span>"
       }
     ]
   }

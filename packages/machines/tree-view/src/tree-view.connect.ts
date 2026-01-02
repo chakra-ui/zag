@@ -87,7 +87,7 @@ export function connect<T extends PropTypes, V extends TreeNode = TreeNode>(
       send({ type: value ? "NODE.SELECT" : "SELECTED.ALL", value, isTrusted: false })
     },
     getVisibleNodes() {
-      return computed("visibleNodes").map(({ node }) => node)
+      return computed("visibleNodes")
     },
     focus(value) {
       dom.focusNode(scope, value)

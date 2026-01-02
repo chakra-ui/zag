@@ -25,7 +25,6 @@
 
 [data-scope="marquee"][data-part="content"] {
   animation-timing-function: linear;
-  animation-fill-mode: forwards;
   animation-duration: var(--marquee-duration);
   animation-delay: var(--marquee-delay);
   animation-iteration-count: var(--marquee-loop-count);
@@ -83,7 +82,7 @@
 }
 
 /* Demo-specific styles */
-.marquee-item {
+[data-scope="marquee"][data-part="item"] {
   display: flex;
   align-items: center;
   gap: 12px;

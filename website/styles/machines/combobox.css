@@ -6,7 +6,8 @@
   }
 
   [data-scope="combobox"][data-part="label"] {
-    font-size: 1.125rem;
+    font-size: 1rem;
+    font-weight: 500;
   }
 
   [data-scope="combobox"][data-part="label"][data-disabled] {
@@ -47,6 +48,7 @@
     isolation: isolate;
     padding: 0.5rem;
     background: var(--colors-bg-subtle);
+    z-index: calc(var(--layer-index) + 10);
   }
 
   [data-scope="combobox"][data-part="item"] {

@@ -1,0 +1,372 @@
+---
+title: Image Cropper
+description: Using the Image Cropper machine in your project.
+package: "@zag-js/image-cropper"
+---
+
+The image cropper machine keeps track of the crop rectangle, zoom, rotation, pan
+offset, flip state, and every gesture required to edit them. It exposes a set of
+DOM props so you can render your own viewport, frame, and handles in any
+framework.
+
+<Resources pkg="@zag-js/image-cropper" />
+
+<Showcase id="ImageCropper" />
+
+**Features**
+
+- Pointer, wheel, and pinch gestures that pan, zoom, rotate, and flip the image
+- Handles that resize the crop area with snapping, aspect-ratio locking, and
+  keyboard nudges
+- Supports rectangular or circular crops, fixed crop windows, and constrained
+  min/max dimensions
+- Fully controllable zoom/rotation/flip values with change callbacks
+- Programmatic helpers such as `api.resize` and `api.getCroppedImage`
+- Accessible slider semantics, custom translations, and data attributes for
+  styling
+
+## Installation
+
+To use the image cropper machine in your project, run the following command in
+your command line:
+
+<CodeSnippet id="image-cropper/installation.mdx" />
+
+## Anatomy
+
+To set up the image cropper correctly, you'll need to understand its anatomy and
+how we name its parts.
+
+> Each part includes a `data-part` attribute to help identify them in the DOM.
+
+<Anatomy id="image-cropper" />
+
+## Usage
+
+First, import the image cropper package into your project:
+
+```jsx
+import * as imageCropper from "@zag-js/image-cropper"
+```
+
+The package exports two key functions:
+
+- `machine` — The state machine logic for the cropper.
+- `connect` — The function that translates the machine's state to JSX attributes
+  and event handlers.
+
+Next, import the required hooks and functions for your framework and use the
+image cropper machine in your project 🔥
+
+<CodeSnippet id="image-cropper/usage.mdx" />
+
+### Setting the initial crop
+
+Pass an `initialCrop` to start from a specific rectangle. The size is
+constrained to your min/max and viewport, and the position is clamped within the
+viewport.
+
+```jsx {2-6}
+const service = useMachine(imageCropper.machine, {
+  initialCrop: { x: 40, y: 40, width: 240, height: 240 },
+  aspectRatio: 1, // optional, lock to square
+})
+const api = imageCropper.connect(service, normalizeProps)
+```
+
+### Fixed crop area
+
+Lock the crop window and allow only panning/zooming of the image beneath it by
+setting `fixedCropArea: true`.
+
+```jsx {2}
+const service = useMachine(imageCropper.machine, {
+  fixedCropArea: true,
+})
+```
+
+### Crop shape and aspect ratio
+
+- `cropShape` can be `"rectangle"` or `"circle"`.
+- `aspectRatio` can lock the crop to a width/height ratio. When `aspectRatio` is
+  not set and `cropShape` is `"rectangle"`, holding Shift while resizing locks
+  to the current ratio.
+
+```jsx {2-3}
+const service = useMachine(imageCropper.machine, {
+  cropShape: "circle",
+  aspectRatio: 1, // ignored for circle
+})
+```
+
+### Controlling zoom, rotation, and flip
+
+You can configure defaults and limits, and also control them programmatically
+using the API.
+
+```jsx {2-6}
+const service = useMachine(imageCropper.machine, {
+  defaultZoom: 1.25,
+  minZoom: 1,
+  maxZoom: 5,
+  defaultRotation: 0,
+  defaultFlip: { horizontal: false, vertical: false },
+})
+const api = imageCropper.connect(service, normalizeProps)
+
+// Programmatic controls
+api.setZoom(2) // zoom to 2x
+api.setRotation(90) // rotate to 90 degrees
+api.flipHorizontally() // toggle horizontal flip
+api.setFlip({ vertical: true }) // set vertical flip on
+```
+
+### Programmatic resizing
+
+Use `api.resize(handle, delta)` to resize from any handle programmatically.
+Positive `delta` grows outward, negative shrinks inward.
+
+```jsx
+// Grow the selection by 8px from the right edge
+api.resize("right", 8)
+// Shrink from top-left corner by 4px in both axes
+api.resize("top-left", -4)
+```
+
+### Getting the cropped image
+
+Use `api.getCroppedImage` to export the current crop, taking
+zoom/rotation/flip/pan into account.
+
+```jsx
+// Blob (default)
+const blob = await api.getCroppedImage({ type: "image/png", quality: 0.92 })
+
+// Data URL
+const dataUrl = await api.getCroppedImage({
+  output: "dataUrl",
+  type: "image/jpeg",
+  quality: 0.85,
+})
+
+// Example usage
+if (blob) {
+  const url = URL.createObjectURL(blob)
+  previewImg.src = url
+}
+```
+
+### Understanding coordinate systems
+
+The image cropper uses two different coordinate systems:
+
+#### 1. Viewport Coordinates (`api.crop`)
+
+These are the coordinates you see in the UI, relative to the visible viewport:
+
+```jsx
+console.log(api.crop)
+// { x: 50, y: 30, width: 200, height: 150 }
+```
+
+**Characteristics:**
+- Relative to the viewport dimensions
+- Changes as you zoom and pan
+- Perfect for UI rendering and controls
+- Used by `initialCrop` and `setCrop()` (when implemented)
+
+#### 2. Natural Image Coordinates (`api.getCropData()`)
+
+These are the absolute pixel coordinates in the original image:
+
+```jsx
+const cropData = api.getCropData()
+console.log(cropData)
+// {
+//   x: 250,
+//   y: 150,
+//   width: 1000,
+//   height: 750,
+//   rotate: 0,
+//   flipX: false,
+//   flipY: false
+// }
+```
+
+**Characteristics:**
+- Relative to the original image dimensions
+- Independent of zoom/pan/viewport size
+- Essential for server-side cropping
+- Perfect for state persistence and undo/redo
+
+#### When to use each
+
+**Use viewport coordinates (`api.crop`)** when:
+- Rendering UI controls (sliders, displays)
+- Setting initial crop area
+- Building custom crop UI
+
+**Use natural coordinates (`api.getCropData()`)** when:
+- Sending crop data to your backend for server-side processing
+- Persisting state (localStorage, database)
+- Implementing undo/redo functionality
+- Exporting crop configuration to external tools
+
+#### Example: Server-side cropping
+
+```jsx
+// Frontend: Get natural coordinates
+const cropData = api.getCropData()
+
+// Send to backend
+await fetch('/api/crop-image', {
+  method: 'POST',
+  body: JSON.stringify({
+    imageId: 'photo-123',
+    crop: cropData, // Natural pixel coordinates
+  })
+})
+
+// Backend: Crop the original image file
+// Use cropData.x, cropData.y, cropData.width, cropData.height
+// to crop the actual image file at full resolution
+```
+
+#### Transformation example
+
+Here's how the coordinates relate with a zoom of 2x:
+
+```jsx
+// Original image: 3000 × 2000 pixels
+// Viewport: 600 × 400 pixels
+// Zoom: 2x
+
+// Viewport coordinates (what you see)
+api.crop
+// { x: 100, y: 80, width: 200, height: 150 }
+
+// Natural coordinates (original image)
+api.getCropData()
+// { x: 500, y: 400, width: 1000, height: 750, ... }
+// Scale factor: 3000 / 600 = 5x
+// So 100px in viewport = 500px in original image
+```
+
+### Touch and wheel gestures
+
+- Use the mouse wheel over the viewport to zoom at the pointer location.
+- Pinch with two fingers to zoom and pan; the machine smooths tiny changes and
+  tracks the pinch midpoint.
+- Drag on the viewport background to pan the image (when not dragging the
+  selection).
+
+### Keyboard nudges
+
+Configure keyboard nudge steps for move/resize:
+
+```jsx {2-4}
+const service = useMachine(imageCropper.machine, {
+  nudgeStep: 1,
+  nudgeStepShift: 10,
+  nudgeStepCtrl: 50,
+})
+```
+
+### Accessibility
+
+- The root is a live region with helpful descriptions of crop, zoom, and
+  rotation status.
+- The selection exposes slider-like semantics to assistive tech and supports
+  keyboard movement, resizing (Alt+Arrows), and zooming (+/-).
+- Customize accessible labels and descriptions via `translations`:
+
+```jsx {2-7}
+const service = useMachine(imageCropper.machine, {
+  translations: {
+    rootLabel: "Product image cropper",
+    selectionInstructions:
+      "Use arrow keys to move, Alt+arrows to resize, and +/- to zoom.",
+  },
+})
+```
+
+## Styling guide
+
+Earlier, we mentioned that each image cropper part has a `data-part` attribute
+added to them to select and style them in the DOM.
+
+```css
+[data-scope="image-cropper"][data-part="root"] {
+  /* styles for the root part */
+}
+
+[data-scope="image-cropper"][data-part="viewport"] {
+  /* styles for the viewport part */
+}
+
+[data-scope="image-cropper"][data-part="image"] {
+  /* styles for the image part */
+}
+
+[data-scope="image-cropper"][data-part="selection"] {
+  /* styles for the selection part */
+}
+
+[data-scope="image-cropper"][data-part="handle"] {
+  /* styles for the handle part */
+}
+```
+
+### Selection shapes
+
+The selection can be styled based on its shape:
+
+```css
+[data-part="selection"][data-shape="circle"] {
+  /* styles for circular selection */
+}
+
+[data-part="selection"][data-shape="rectangle"] {
+  /* styles for rectangular selection */
+}
+```
+
+### States
+
+Various states can be styled using data attributes:
+
+```css
+[data-part="root"][data-dragging] {
+  /* styles when dragging the selection */
+}
+
+[data-part="root"][data-fixed] {
+  /* styles when the crop area is fixed */
+}
+```
+
+## Keyboard Interactions
+
+<KeyboardTable name="image-cropper" />
+
+## Methods and Properties
+
+### Machine Context
+
+The image cropper machine exposes the following context properties:
+
+<ContextTable name="image-cropper" />
+
+### Machine API
+
+The image cropper `api` exposes the following methods:
+
+<ApiTable name="image-cropper" />
+
+### Data Attributes
+
+<DataAttrTable name="image-cropper" />
+
+### CSS Variables
+
+<CssVarTable name="image-cropper" />

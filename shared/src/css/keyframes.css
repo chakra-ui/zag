@@ -81,19 +81,19 @@
 }
 
 @keyframes marqueeX {
-  from {
+  0% {
     transform: translateX(0%);
   }
-  to {
+  100% {
     transform: translateX(var(--marquee-translate));
   }
 }
 
 @keyframes marqueeY {
-  from {
+  0% {
     transform: translateY(0%);
   }
-  to {
+  100% {
     transform: translateY(var(--marquee-translate));
   }
 }

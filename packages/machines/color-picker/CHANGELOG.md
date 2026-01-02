@@ -1,5 +1,149 @@
 # @zag-js/color-picker
 
+## 1.31.1
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.31.1
+  - @zag-js/core@1.31.1
+  - @zag-js/types@1.31.1
+  - @zag-js/color-utils@1.31.1
+  - @zag-js/utils@1.31.1
+  - @zag-js/dismissable@1.31.1
+  - @zag-js/dom-query@1.31.1
+  - @zag-js/popper@1.31.1
+
+## 1.31.0
+
+### Patch Changes
+
+- [`2a32c73`](https://github.com/chakra-ui/zag/commit/2a32c731a4f275c324ca17faf41ceb492638c7b2) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - - Add `role="dialog"` to color picker content when not inline to
+  ensure proper `aria-controls` detection
+  - Add `aria-haspopup="dialog"` to color picker trigger when not inline for better accessibility
+- Updated dependencies []:
+  - @zag-js/anatomy@1.31.0
+  - @zag-js/core@1.31.0
+  - @zag-js/types@1.31.0
+  - @zag-js/color-utils@1.31.0
+  - @zag-js/utils@1.31.0
+  - @zag-js/dismissable@1.31.0
+  - @zag-js/dom-query@1.31.0
+  - @zag-js/popper@1.31.0
+
+## 1.30.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.30.0
+  - @zag-js/core@1.30.0
+  - @zag-js/types@1.30.0
+  - @zag-js/color-utils@1.30.0
+  - @zag-js/utils@1.30.0
+  - @zag-js/dismissable@1.30.0
+  - @zag-js/dom-query@1.30.0
+  - @zag-js/popper@1.30.0
+
+## 1.29.1
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.29.1
+  - @zag-js/core@1.29.1
+  - @zag-js/types@1.29.1
+  - @zag-js/color-utils@1.29.1
+  - @zag-js/utils@1.29.1
+  - @zag-js/dismissable@1.29.1
+  - @zag-js/dom-query@1.29.1
+  - @zag-js/popper@1.29.1
+
+## 1.29.0
+
+### Patch Changes
+
+- [`2190620`](https://github.com/chakra-ui/zag/commit/2190620fa1ae9da11256ed5145a4f15979a947e6) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Add `value` to `OpenChangeDetails` for combobox, select,
+  color-picker, and date-picker components.
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.29.0
+  - @zag-js/core@1.29.0
+  - @zag-js/types@1.29.0
+  - @zag-js/color-utils@1.29.0
+  - @zag-js/utils@1.29.0
+  - @zag-js/dismissable@1.29.0
+  - @zag-js/dom-query@1.29.0
+  - @zag-js/popper@1.29.0
+
+## 1.28.0
+
+### Patch Changes
+
+- [`c59e4f5`](https://github.com/chakra-ui/zag/commit/c59e4f5b9bc43de85649d4de95e8bf270c16acab) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix dragging behavior that stops working after switching browser
+  tabs or scrolling the page. The issue was caused by incorrectly checking `event.button` instead of `event.buttons` to
+  detect interrupted drag operations.
+- Updated dependencies [[`c59e4f5`](https://github.com/chakra-ui/zag/commit/c59e4f5b9bc43de85649d4de95e8bf270c16acab),
+  [`c656df8`](https://github.com/chakra-ui/zag/commit/c656df8846733f7b6241d152d76b515a95d6841a)]:
+  - @zag-js/dom-query@1.28.0
+  - @zag-js/core@1.28.0
+  - @zag-js/dismissable@1.28.0
+  - @zag-js/popper@1.28.0
+  - @zag-js/anatomy@1.28.0
+  - @zag-js/types@1.28.0
+  - @zag-js/color-utils@1.28.0
+  - @zag-js/utils@1.28.0
+
+## 1.27.1
+
+### Patch Changes
+
+- [#2822](https://github.com/chakra-ui/zag/pull/2822)
+  [`a372b95`](https://github.com/chakra-ui/zag/commit/a372b955911f78632665c7df86365414f64ac1f0) Thanks
+  [@nelsonlaidev](https://github.com/nelsonlaidev)! - Export missing types
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.27.1
+  - @zag-js/core@1.27.1
+  - @zag-js/types@1.27.1
+  - @zag-js/color-utils@1.27.1
+  - @zag-js/utils@1.27.1
+  - @zag-js/dismissable@1.27.1
+  - @zag-js/dom-query@1.27.1
+  - @zag-js/popper@1.27.1
+
+## 1.27.0
+
+### Patch Changes
+
+- Updated dependencies [[`cf6fb09`](https://github.com/chakra-ui/zag/commit/cf6fb0956aeacc236531ee90de9169a39cdde3a5),
+  [`920e727`](https://github.com/chakra-ui/zag/commit/920e727f73940aed3c6d2b886c64200a4a5702d0)]:
+  - @zag-js/dom-query@1.27.0
+  - @zag-js/utils@1.27.0
+  - @zag-js/core@1.27.0
+  - @zag-js/dismissable@1.27.0
+  - @zag-js/popper@1.27.0
+  - @zag-js/color-utils@1.27.0
+  - @zag-js/anatomy@1.27.0
+  - @zag-js/types@1.27.0
+
+## 1.26.5
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.26.5
+  - @zag-js/core@1.26.5
+  - @zag-js/types@1.26.5
+  - @zag-js/color-utils@1.26.5
+  - @zag-js/utils@1.26.5
+  - @zag-js/dismissable@1.26.5
+  - @zag-js/dom-query@1.26.5
+  - @zag-js/popper@1.26.5
+
 ## 1.26.4
 
 ### Patch Changes

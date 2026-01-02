@@ -1,0 +1,390 @@
+---
+title: Navigation Menu
+description: Using the navigation menu machine in your project.
+package: "@zag-js/navigation-menu"
+---
+
+An accessible navigation menu component that provides a list of links with
+optional dropdown content. Supports keyboard navigation, hover/click
+interactions, animated indicators, and follows WAI-ARIA practices.
+
+<Resources pkg="@zag-js/navigation-menu" />
+
+<Showcase id="NavigationMenu" />
+
+**Features**
+
+- Support for basic (inline content) and viewport (shared viewport) patterns
+- Hover and click trigger support with configurable delays
+- Keyboard navigation with arrow keys, Tab, Home/End
+- Animated indicator that follows the active trigger
+- Smooth content animations with viewport positioning
+- Support for nested links within dropdown content
+- Horizontal and vertical orientation
+- RTL (right-to-left) support
+- Fully managed focus and tab order
+- Dismissible with click outside or Escape key
+
+## Installation
+
+To use the navigation menu machine in your project, run the following command in
+your command line:
+
+<CodeSnippet id="navigation-menu/installation.mdx" />
+
+## Anatomy
+
+To set up the navigation menu correctly, you'll need to understand its anatomy
+and how we name its parts.
+
+> Each part includes a `data-part` attribute to help identify them in the DOM.
+
+<Anatomy id="navigation-menu" />
+
+## Usage
+
+First, import the navigation menu package into your project
+
+```jsx
+import * as navigationMenu from "@zag-js/navigation-menu"
+```
+
+The navigation menu package exports two key functions:
+
+- `machine` — The state machine logic for the navigation menu widget.
+- `connect` — The function that translates the machine's state to JSX attributes
+  and event handlers.
+
+> You'll need to provide a unique `id` to the `useMachine` hook. This is used to
+> ensure that every part has a unique identifier.
+
+Next, import the required hooks and functions for your framework and use the
+navigation menu machine in your project 🔥
+
+<CodeSnippet id="navigation-menu/usage.mdx" />
+
+The basic pattern places content directly within each item. This is suitable for
+simple dropdown menus where each dropdown appears below its trigger.
+
+### Advanced pattern with viewport
+
+The viewport pattern uses a shared viewport container for all content. This
+enables smooth transitions and better performance for complex navigation
+layouts.
+
+In this pattern:
+
+- Content is rendered inside a shared `viewport` element
+- The viewport automatically positions itself relative to the active trigger
+- You must include `triggerProxy` and `viewportProxy` for proper focus
+  management
+
+<CodeSnippet id="navigation-menu/viewport-usage.mdx" />
+
+**When to use viewport pattern:**
+
+- Complex navigation with varying content sizes
+- Smooth animated transitions between different content
+- Header navigation bars (like on e-commerce sites)
+- When you want a single shared container for all dropdowns
+
+### Controlling the navigation menu
+
+To control which item is currently open, pass the `value` and `onValueChange`
+properties to the machine.
+
+<CodeSnippet id="navigation-menu/controlled.mdx" />
+
+### Listening for value changes
+
+When the open item changes, the `onValueChange` callback is invoked with the new
+value.
+
+```jsx {3-6}
+const service = useMachine(navigationMenu.machine, {
+  id: "nav",
+  onValueChange(details) {
+    // details => { value: string }
+    console.log("Current open item:", details.value)
+  },
+})
+```
+
+### Adding an animated indicator
+
+To show a visual indicator that animates to the active trigger, render the
+indicator within the list container:
+
+<CodeSnippet id="navigation-menu/with-indicator.mdx" />
+
+The indicator automatically transitions to match the active trigger's position
+and size using CSS variables.
+
+### Configuring hover delays
+
+You can customize the delay before opening and closing on hover:
+
+```jsx {2-3}
+const service = useMachine(navigationMenu.machine, {
+  openDelay: 300, // Delay before opening on hover (default: 200ms)
+  closeDelay: 400, // Delay before closing on pointer leave (default: 300ms)
+})
+```
+
+**Tip**: Longer delays provide a more forgiving user experience but can feel
+less responsive.
+
+### Disabling hover or click triggers
+
+You can disable hover or click triggers independently:
+
+```jsx {2-6}
+const service = useMachine(navigationMenu.machine, {
+  disableHoverTrigger: true, // Only open on click
+  // OR
+  disableClickTrigger: true, // Only open on hover
+  // OR
+  disablePointerLeaveClose: true, // Prevents closing when pointer leaves
+})
+```
+
+- `disableHoverTrigger` — Prevents opening on hover (click only)
+- `disableClickTrigger` — Prevents opening on click (hover only)
+- `disablePointerLeaveClose` — Prevents closing when pointer leaves
+
+### Changing orientation
+
+The default orientation is horizontal. To create a vertical navigation menu:
+
+```jsx {2}
+const service = useMachine(navigationMenu.machine, {
+  orientation: "vertical",
+})
+```
+
+This affects keyboard navigation (arrow keys) and indicator positioning.
+
+### Disabling items
+
+To disable a navigation item, pass `disabled: true` to the item props:
+
+```jsx
+<div {...api.getItemProps({ value: "products", disabled: true })}>
+  <button {...api.getTriggerProps({ value: "products", disabled: true })}>
+    Products
+  </button>
+</div>
+```
+
+Disabled items cannot be opened and are skipped during keyboard navigation.
+
+### Indicating current page
+
+To highlight the current page link, use the `current` prop:
+
+```jsx
+<a {...api.getLinkProps({ value: "products", current: true })}>Products</a>
+```
+
+This adds `data-current` attribute and `aria-current="page"` for accessibility.
+
+### RTL support
+
+The navigation menu supports right-to-left languages. Set the `dir` property to
+`rtl`:
+
+```jsx {2}
+const service = useMachine(navigationMenu.machine, {
+  dir: "rtl",
+})
+```
+
+## Styling guide
+
+Earlier, we mentioned that each navigation menu part has a `data-part` attribute
+added to them to select and style them in the DOM.
+
+### Open and closed states
+
+When content is open or closed, it receives a `data-state` attribute:
+
+```css
+[data-part="content"][data-state="open|closed"] {
+  /* Styles for open or closed content */
+}
+
+[data-part="trigger"][data-state="open|closed"] {
+  /* Styles for open or closed trigger */
+}
+
+[data-part="viewport"][data-state="open|closed"] {
+  /* Styles for viewport open/closed state */
+}
+```
+
+### Selected item state
+
+When an item is selected (open), it receives `data-state="open"`:
+
+```css
+[data-part="item"][data-state="open"] {
+  /* Styles for open item */
+}
+```
+
+### Disabled state
+
+Disabled items have a `data-disabled` attribute:
+
+```css
+[data-part="item"][data-disabled] {
+  /* Styles for disabled items */
+}
+
+[data-part="trigger"][data-disabled] {
+  /* Styles for disabled triggers */
+}
+```
+
+### Orientation styles
+
+All parts have a `data-orientation` attribute:
+
+```css
+[data-part="root"][data-orientation="horizontal|vertical"] {
+  /* Orientation-specific styles */
+}
+
+[data-part="list"][data-orientation="horizontal"] {
+  display: flex;
+  flex-direction: row;
+}
+
+[data-part="list"][data-orientation="vertical"] {
+  display: flex;
+  flex-direction: column;
+}
+```
+
+### Current link state
+
+Links marked as current have a `data-current` attribute:
+
+```css
+[data-part="link"][data-current] {
+  /* Styles for current page link */
+}
+```
+
+### Styling the indicator
+
+The indicator uses CSS variables for positioning and sizing:
+
+```css
+[data-part="indicator"] {
+  position: absolute;
+  transition:
+    translate 250ms ease,
+    width 250ms ease,
+    height 250ms ease;
+}
+
+[data-part="indicator"][data-orientation="horizontal"] {
+  left: 0;
+  translate: var(--trigger-x) 0;
+  width: var(--trigger-width);
+}
+
+[data-part="indicator"][data-orientation="vertical"] {
+  top: 0;
+  translate: 0 var(--trigger-y);
+  height: var(--trigger-height);
+}
+```
+
+### Styling the viewport
+
+The viewport uses CSS variables for positioning and sizing:
+
+```css
+[data-part="viewport"] {
+  position: absolute;
+  width: var(--viewport-width);
+  height: var(--viewport-height);
+  transition:
+    width 300ms ease,
+    height 300ms ease;
+}
+```
+
+### Arrow styling
+
+The arrow can be styled using CSS variables:
+
+```css
+[data-part="root"] {
+  --arrow-size: 20px;
+}
+
+[data-part="arrow"] {
+  width: var(--arrow-size);
+  height: var(--arrow-size);
+  background: white;
+  rotate: 45deg;
+}
+```
+
+### Motion attributes
+
+When using the viewport pattern, content elements receive `data-motion`
+attributes for directional animations:
+
+```css
+[data-part="content"][data-motion="from-start"] {
+  animation: slideFromStart 250ms ease;
+}
+
+[data-part="content"][data-motion="from-end"] {
+  animation: slideFromEnd 250ms ease;
+}
+
+[data-part="content"][data-motion="to-start"] {
+  animation: slideToStart 250ms ease;
+}
+
+[data-part="content"][data-motion="to-end"] {
+  animation: slideToEnd 250ms ease;
+}
+```
+
+**Tip**: The motion direction indicates where the content is coming from
+(from-start/from-end) or going to (to-start/to-end), enabling context-aware
+animations when switching between items.
+
+## Methods and Properties
+
+### Machine Context
+
+The navigation menu machine exposes the following context properties:
+
+<ContextTable name="navigation-menu" />
+
+### Machine API
+
+The navigation menu `api` exposes the following methods:
+
+<ApiTable name="navigation-menu" />
+
+### Data Attributes
+
+<DataAttrTable name="navigation-menu" />
+
+### CSS Variables
+
+<CssVarTable name="navigation-menu" />
+
+## Accessibility
+
+### Keyboard Interactions
+
+<KeyboardTable name="navigation-menu" />

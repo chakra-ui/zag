@@ -11,6 +11,24 @@ export const isDialogStep = (step: StepDetails | null) => {
   return step?.type === "dialog"
 }
 
+export const isWaitStep = (step: StepDetails | null) => {
+  return step?.type === "wait"
+}
+
+export const getEffectiveSteps = (steps: StepDetails[]) => {
+  return steps.filter((step) => step.type !== "wait")
+}
+
+export const getProgress = (steps: StepDetails[], stepIndex: number) => {
+  const effectiveLength = getEffectiveSteps(steps).length
+  return (stepIndex + 1) / effectiveLength
+}
+
+export const getEffectiveStepIndex = (steps: StepDetails[], stepId: string | null | undefined) => {
+  const effectiveSteps = getEffectiveSteps(steps)
+  return findStepIndex(effectiveSteps, stepId)
+}
+
 export const isTooltipPlacement = (placement: StepPlacement | undefined): placement is Placement => {
   return placement != null && placement != "center"
 }

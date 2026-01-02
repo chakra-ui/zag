@@ -1,5 +1,144 @@
 # @zag-js/radio-group
 
+## 1.31.1
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.31.1
+  - @zag-js/core@1.31.1
+  - @zag-js/types@1.31.1
+  - @zag-js/utils@1.31.1
+  - @zag-js/dom-query@1.31.1
+  - @zag-js/focus-visible@1.31.1
+
+## 1.31.0
+
+### Patch Changes
+
+- [#2877](https://github.com/chakra-ui/zag/pull/2877)
+  [`3e745c1`](https://github.com/chakra-ui/zag/commit/3e745c1ab29a62da36e44d5ba19e6ddaaf2619d8) Thanks
+  [@Hugos68](https://github.com/Hugos68)! - Fix issue where `tabs` and `radio-group` machine no longer show the
+  `indicator` prematurely
+
+- [`2b17dd5`](https://github.com/chakra-ui/zag/commit/2b17dd57d18be96866bbb2b07047dd4ac95ae88c) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Improve accessibility of radio group by adding `invalid` and
+  `required` props with corresponding `data-*` and `aria-*` attributes
+- Updated dependencies []:
+  - @zag-js/anatomy@1.31.0
+  - @zag-js/core@1.31.0
+  - @zag-js/types@1.31.0
+  - @zag-js/utils@1.31.0
+  - @zag-js/dom-query@1.31.0
+  - @zag-js/focus-visible@1.31.0
+
+## 1.30.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.30.0
+  - @zag-js/core@1.30.0
+  - @zag-js/types@1.30.0
+  - @zag-js/utils@1.30.0
+  - @zag-js/dom-query@1.30.0
+  - @zag-js/focus-visible@1.30.0
+
+## 1.29.1
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.29.1
+  - @zag-js/core@1.29.1
+  - @zag-js/types@1.29.1
+  - @zag-js/utils@1.29.1
+  - @zag-js/dom-query@1.29.1
+  - @zag-js/focus-visible@1.29.1
+
+## 1.29.0
+
+### Patch Changes
+
+- [`834d605`](https://github.com/chakra-ui/zag/commit/834d6057f08f36f61f4f1714a613d8efd3e11788) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - - **RadioGroup, SegmentControl:** Fix inconsistent application of
+  `data-focus-visible` and `data-focus` attributes.
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.29.0
+  - @zag-js/core@1.29.0
+  - @zag-js/types@1.29.0
+  - @zag-js/utils@1.29.0
+  - @zag-js/dom-query@1.29.0
+  - @zag-js/focus-visible@1.29.0
+
+## 1.28.0
+
+### Patch Changes
+
+- [`c656df8`](https://github.com/chakra-ui/zag/commit/c656df8846733f7b6241d152d76b515a95d6841a) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Refactor to use shared `ResizeObserver` implementation across all
+  machines. This significantly improves performance by using a single observer instance with `WeakMap` based
+  subscriptions instead of creating separate observers for each component instance.
+
+- [#2834](https://github.com/chakra-ui/zag/pull/2834)
+  [`e0e4676`](https://github.com/chakra-ui/zag/commit/e0e467627cc288ef6d2c21fae6b1fba7b708955c) Thanks
+  [@Hugos68](https://github.com/Hugos68)! - Fix indicator prematurely showing when rect has not been resolved yet
+
+- Updated dependencies [[`c59e4f5`](https://github.com/chakra-ui/zag/commit/c59e4f5b9bc43de85649d4de95e8bf270c16acab),
+  [`c656df8`](https://github.com/chakra-ui/zag/commit/c656df8846733f7b6241d152d76b515a95d6841a)]:
+  - @zag-js/dom-query@1.28.0
+  - @zag-js/core@1.28.0
+  - @zag-js/focus-visible@1.28.0
+  - @zag-js/anatomy@1.28.0
+  - @zag-js/types@1.28.0
+  - @zag-js/utils@1.28.0
+
+## 1.27.1
+
+### Patch Changes
+
+- [#2822](https://github.com/chakra-ui/zag/pull/2822)
+  [`a372b95`](https://github.com/chakra-ui/zag/commit/a372b955911f78632665c7df86365414f64ac1f0) Thanks
+  [@nelsonlaidev](https://github.com/nelsonlaidev)! - Export missing types
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.27.1
+  - @zag-js/core@1.27.1
+  - @zag-js/types@1.27.1
+  - @zag-js/utils@1.27.1
+  - @zag-js/dom-query@1.27.1
+  - @zag-js/focus-visible@1.27.1
+
+## 1.27.0
+
+### Patch Changes
+
+- Updated dependencies [[`cf6fb09`](https://github.com/chakra-ui/zag/commit/cf6fb0956aeacc236531ee90de9169a39cdde3a5),
+  [`920e727`](https://github.com/chakra-ui/zag/commit/920e727f73940aed3c6d2b886c64200a4a5702d0)]:
+  - @zag-js/dom-query@1.27.0
+  - @zag-js/utils@1.27.0
+  - @zag-js/core@1.27.0
+  - @zag-js/focus-visible@1.27.0
+  - @zag-js/anatomy@1.27.0
+  - @zag-js/types@1.27.0
+
+## 1.26.5
+
+### Patch Changes
+
+- [`5cae24c`](https://github.com/chakra-ui/zag/commit/5cae24c39a07c781d9cbc5759e817dafbb3bbe01) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Revert to using `offsetLeft`/`offsetTop` to fix indicator
+  positioning in scrollable containers.
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.26.5
+  - @zag-js/core@1.26.5
+  - @zag-js/types@1.26.5
+  - @zag-js/utils@1.26.5
+  - @zag-js/dom-query@1.26.5
+  - @zag-js/focus-visible@1.26.5
+
 ## 1.26.4
 
 ### Patch Changes

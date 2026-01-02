@@ -3,9 +3,8 @@ export { connect } from "./toggle.connect"
 export { machine } from "./toggle.machine"
 export * from "./toggle.props"
 export type {
-  ToggleProps as Props,
   ToggleApi as Api,
-  ToggleService as Service,
-  ToggleSchema as Schema,
   ToggleMachine as Machine,
+  ToggleProps as Props,
+  ToggleService as Service,
 } from "./toggle.types"

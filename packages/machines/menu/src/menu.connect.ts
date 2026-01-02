@@ -191,6 +191,7 @@ export function connect<T extends PropTypes>(service: Service<MenuSchema>, norma
         "data-uid": prop("id"),
         "aria-haspopup": composite ? "menu" : "dialog",
         "aria-controls": dom.getContentId(scope),
+        "data-controls": dom.getContentId(scope),
         "aria-expanded": open || undefined,
         "data-state": open ? "open" : "closed",
         onPointerMove(event) {

@@ -4,9 +4,9 @@ export { machine } from "./progress.machine"
 export * from "./progress.props"
 export type {
   ProgressApi as Api,
-  ProgressService as Service,
-  ProgressProps as Props,
   ProgressMachine as Machine,
+  ProgressProps as Props,
+  ProgressService as Service,
   ElementIds,
   IntlTranslations,
   Orientation,

@@ -31,7 +31,7 @@
         :key="index - 1"
         v-bind="api.getContentProps({ index: index - 1 })"
       >
-        <div v-for="(item, i) in logos" :key="i" class="marquee-item">
+        <div v-for="(item, i) in logos" :key="i" v-bind="api.getItemProps()">
           <span class="logo">{{ item.logo }}</span>
           <span class="name">{{ item.name }}</span>
         </div>

@@ -148,6 +148,10 @@ export class DatePickerModel extends Model {
     return this.getInput(index).focus()
   }
 
+  selectInput(index = 0) {
+    return this.getInput(index).selectText()
+  }
+
   async clearInput(index = 0) {
     await this.focusInput(index)
     await this.pressKey("ControlOrMeta+A")

@@ -1,7 +1,8 @@
 import { createMachine, memo } from "@zag-js/core"
-import { raf, setElementValue, trackElementRect, trackFormControl, trackPointerMove } from "@zag-js/dom-query"
+import { raf, resizeObserverBorderBox, setElementValue, trackFormControl, trackPointerMove } from "@zag-js/dom-query"
 import type { Size } from "@zag-js/types"
 import {
+  callAll,
   clampValue,
   getValuePercent,
   getValueRanges,
@@ -133,17 +134,17 @@ export const machine = createMachine<SliderSchema>({
     SET_VALUE: [
       {
         guard: "hasIndex",
-        actions: ["setValueAtIndex"],
+        actions: ["setValueAtIndex", "invokeOnChangeEnd"],
       },
       {
-        actions: ["setValue"],
+        actions: ["setValue", "invokeOnChangeEnd"],
       },
     ],
     INCREMENT: {
-      actions: ["incrementThumbAtIndex"],
+      actions: ["incrementThumbAtIndex", "invokeOnChangeEnd"],
     },
     DECREMENT: {
-      actions: ["decrementThumbAtIndex"],
+      actions: ["decrementThumbAtIndex", "invokeOnChangeEnd"],
     },
   },
 
@@ -245,18 +246,19 @@ export const machine = createMachine<SliderSchema>({
       trackThumbSize({ context, scope, prop }) {
         if (prop("thumbAlignment") !== "contain" || prop("thumbSize")) return
 
-        return trackElementRect(dom.getThumbEls(scope), {
-          box: "border-box",
-          measure(el) {
-            return dom.getOffsetRect(el)
-          },
-          onEntry({ rects }) {
-            if (rects.length === 0) return
-            const size = pick(rects[0], ["width", "height"])
-            if (isEqualSize(context.get("thumbSize"), size)) return
-            context.set("thumbSize", size)
-          },
-        })
+        const exec = (el: HTMLElement) => {
+          const rect = dom.getOffsetRect(el)
+          const size = pick(rect, ["width", "height"])
+          if (isEqualSize(context.get("thumbSize"), size)) return
+          context.set("thumbSize", size)
+        }
+
+        const thumbEls = dom.getThumbEls(scope)
+        thumbEls.forEach(exec)
+
+        const cleanups = thumbEls.map((el) => resizeObserverBorderBox.observe(el, () => exec(el)))
+
+        return callAll(...cleanups)
       },
     },
 

@@ -165,16 +165,19 @@ export type MenuMachine = Machine<MenuSchema>
 /**
  * Minimal interface required for child menu relationship.
  */
+// zag-ignore-export
 export type ChildMenuService = Pick<MenuService, "prop" | "send" | "scope">
 /**
  * Minimal interface required for parent menu relationship.
  */
+// zag-ignore-export
 export type ParentMenuService = Pick<MenuService, "prop" | "send" | "refs" | "context">
 
 /* -----------------------------------------------------------------------------
  * Component API
  * -----------------------------------------------------------------------------*/
 
+// zag-ignore-export
 export interface Api {
   getItemProps: (props: ItemProps) => Record<string, any>
   getTriggerProps: () => Record<string, any>

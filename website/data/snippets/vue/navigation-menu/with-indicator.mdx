@@ -1,0 +1,11 @@
+```html {3-5}
+<nav v-bind="api.getRootProps()">
+  <div v-bind="api.getListProps()">
+    <!-- ... items ... -->
+
+    <div v-bind="api.getIndicatorProps()">
+      <div v-bind="api.getArrowProps()" />
+    </div>
+  </div>
+</nav>
+```

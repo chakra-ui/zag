@@ -38,6 +38,7 @@
   "@zag-js/json-tree-utils": "../../packages/utilities/json-tree-utils/src",
   "@zag-js/listbox": "../../packages/machines/listbox/src",
   "@zag-js/live-region": "../../packages/utilities/live-region/src",
+  "@zag-js/marquee": "../../packages/machines/marquee/src",
   "@zag-js/menu": "../../packages/machines/menu/src",
   "@zag-js/navigation-menu": "../../packages/machines/navigation-menu/src",
   "@zag-js/number-input": "../../packages/machines/number-input/src",

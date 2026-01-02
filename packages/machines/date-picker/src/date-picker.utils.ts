@@ -10,20 +10,25 @@ import type {
 } from "./date-picker.types"
 import type { DateGranularity } from "@zag-js/date-utils"
 
-export function adjustStartAndEndDate(value: DateValue[]) {
+export function adjustStartAndEndDate(value: Array<DateValue | null | undefined>): DateValue[] {
   const [startDate, endDate] = value
-  if (!startDate || !endDate) return value
-  return startDate.compare(endDate) <= 0 ? value : [endDate, startDate]
+  let result: Array<DateValue | null | undefined>
+  if (!startDate || !endDate) result = value
+  else result = startDate.compare(endDate) <= 0 ? value : [endDate, startDate]
+  return result as DateValue[]
 }
 
-export function isDateWithinRange(date: DateValue, value: (DateValue | null)[]) {
+export function isDateWithinRange(date: DateValue, value: Array<DateValue | null | undefined>) {
   const [startDate, endDate] = value
   if (!startDate || !endDate) return false
   return startDate.compare(date) <= 0 && endDate.compare(date) >= 0
 }
 
-export function sortDates(values: DateValue[]) {
-  return values.slice().sort((a, b) => a.compare(b))
+export function sortDates(values: Array<DateValue | null | undefined>) {
+  return values
+    .slice()
+    .filter((date): date is DateValue => date != null)
+    .sort((a, b) => a.compare(b))
 }
 
 export function getRoleDescription(view: DateView) {
@@ -87,7 +92,8 @@ export const defaultTranslations: IntlTranslations = {
     })
   },
   presetTrigger(value) {
-    return Array.isArray(value) ? `select ${value[0].toString()} to ${value[1].toString()}` : `select ${value}`
+    const [start = "", end = ""] = value
+    return `select ${start} to ${end}`
   },
   prevTrigger(view) {
     return match(view, {

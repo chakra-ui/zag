@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Signature Pad</title>
+  </head>
+  <body style="padding: 40px">
+    <a href="/">← Back to examples</a>
+    <h1>Signature Pad</h1>
+
+    <main class="signature-pad">
+      <div class="signature-pad-root">
+        <input type="hidden" class="signature-pad-hidden-input" />
+        <label class="signature-pad-label">Signature Pad</label>
+
+        <div class="signature-pad-control">
+          <svg class="signature-pad-segment"></svg>
+          <div class="signature-pad-guide"></div>
+        </div>
+
+        <button class="signature-pad-clear">Clear</button>
+      </div>
+
+      <div class="controls">
+        <button class="signature-pad-show-image">Show Image</button>
+        <img class="signature-pad-preview" alt="signature" style="display: none" />
+      </div>
+    </main>
+
+    <script type="module" src="./signature-pad.ts"></script>
+  </body>
+</html>

@@ -41,6 +41,7 @@ export interface ViewChangeDetails {
 
 export interface OpenChangeDetails {
   open: boolean
+  value: DateValue[]
 }
 
 export interface LocaleDetails {
@@ -120,6 +121,14 @@ export interface DatePickerProps extends DirectionProperty, CommonProperties {
    * Whether the calendar is read-only.
    */
   readOnly?: boolean | undefined
+  /**
+   * Whether the date picker is required
+   */
+  required?: boolean | undefined
+  /**
+   * Whether the date picker is invalid
+   */
+  invalid?: boolean | undefined
   /**
    * Whether day outside the visible range can be selected.
    * @default false
@@ -625,6 +634,14 @@ export interface DatePickerApi<T extends PropTypes = PropTypes> {
    * Whether the date picker is open
    */
   open: boolean
+  /**
+   * Whether the date picker is disabled
+   */
+  disabled: boolean
+  /**
+   * Whether the date picker is invalid
+   */
+  invalid: boolean
   /**
    * Whether the date picker is rendered inline
    */

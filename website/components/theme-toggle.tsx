@@ -1,4 +1,4 @@
-import { styled } from "styled-system/jsx"
+import { Square, styled } from "styled-system/jsx"
 import { useTheme } from "next-themes"
 import { FaMoon, FaSun } from "react-icons/fa"
 import { useEffect, useState } from "react"
@@ -11,7 +11,7 @@ export function ThemeToggle() {
     setMounted(true)
   }, [])
 
-  if (!mounted) return null
+  if (!mounted) return <Square size="8" bg="text.muted/20" animation="pulse" />
 
   const isDark = theme === "dark"
   const text = isDark ? "light" : "dark"
@@ -20,8 +20,8 @@ export function ThemeToggle() {
 
   return (
     <styled.button
-      width="6"
-      height="6"
+      width="8"
+      height="8"
       display="flex"
       alignItems="center"
       justifyContent="center"
@@ -31,6 +31,7 @@ export function ThemeToggle() {
       color="gray.500"
       _hover={{ color: "gray.600" }}
       onClick={toggleMode}
+      _icon={{ fill: "currentcolor" }}
     >
       <styled.span srOnly>{`Switch to ${text} mode`}</styled.span>
       <SwitchIcon size={16} />

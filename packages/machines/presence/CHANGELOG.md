@@ -1,5 +1,101 @@
 # @zag-js/presence
 
+## 1.31.1
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/core@1.31.1
+  - @zag-js/types@1.31.1
+  - @zag-js/dom-query@1.31.1
+
+## 1.31.0
+
+### Patch Changes
+
+- [`3dbfe4a`](https://github.com/chakra-ui/zag/commit/3dbfe4ab5d2eaa9756f2897c92b9b560da9ef9ae) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix machines setting reactive state in exit actions.
+
+  > **Affected machines:** Presence, Collapsible, and Tour.
+
+- Updated dependencies []:
+  - @zag-js/core@1.31.0
+  - @zag-js/types@1.31.0
+  - @zag-js/dom-query@1.31.0
+
+## 1.30.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/core@1.30.0
+  - @zag-js/types@1.30.0
+  - @zag-js/dom-query@1.30.0
+
+## 1.29.1
+
+### Patch Changes
+
+- [`a298e26`](https://github.com/chakra-ui/zag/commit/a298e26f731f82bf1119d03f7ef33312bd1ad9ec) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix regression in presence where UNMOUNT transition might not be
+  called in consistently
+
+- Updated dependencies []:
+  - @zag-js/core@1.29.1
+  - @zag-js/types@1.29.1
+  - @zag-js/dom-query@1.29.1
+
+## 1.29.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/core@1.29.0
+  - @zag-js/types@1.29.0
+  - @zag-js/dom-query@1.29.0
+
+## 1.28.0
+
+### Patch Changes
+
+- [#2678](https://github.com/chakra-ui/zag/pull/2678)
+  [`3171668`](https://github.com/chakra-ui/zag/commit/317166873962b075efa55da85aabe30292c73700) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix a bug where elements get stuck in unmountSuspended state
+  during rapid hovering
+
+- Updated dependencies [[`c59e4f5`](https://github.com/chakra-ui/zag/commit/c59e4f5b9bc43de85649d4de95e8bf270c16acab),
+  [`c656df8`](https://github.com/chakra-ui/zag/commit/c656df8846733f7b6241d152d76b515a95d6841a)]:
+  - @zag-js/dom-query@1.28.0
+  - @zag-js/core@1.28.0
+  - @zag-js/types@1.28.0
+
+## 1.27.1
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/core@1.27.1
+  - @zag-js/types@1.27.1
+  - @zag-js/dom-query@1.27.1
+
+## 1.27.0
+
+### Patch Changes
+
+- Updated dependencies [[`cf6fb09`](https://github.com/chakra-ui/zag/commit/cf6fb0956aeacc236531ee90de9169a39cdde3a5)]:
+  - @zag-js/dom-query@1.27.0
+  - @zag-js/core@1.27.0
+  - @zag-js/types@1.27.0
+
+## 1.26.5
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/core@1.26.5
+  - @zag-js/types@1.26.5
+  - @zag-js/dom-query@1.26.5
+
 ## 1.26.4
 
 ### Patch Changes

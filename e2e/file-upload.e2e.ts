@@ -1,53 +1,100 @@
 import { test, expect } from "@playwright/test"
-import { a11y, part, controls, testid } from "./_utils"
 import path from "node:path"
+import { FileUploadModel } from "./models/file-upload.model"
 
-const trigger = part("trigger")
-const input = testid("input")
+let I: FileUploadModel
 
 test.describe("file-upload", () => {
   test.beforeEach(async ({ page }) => {
-    await page.goto("/file-upload")
+    I = new FileUploadModel(page)
+    await I.goto()
   })
 
   // TBD: fix a11y complaints
-  test.skip("should have no accessibility violations", async ({ page }) => {
-    await a11y(page)
+  test.skip("should have no accessibility violations", async () => {
+    await I.checkAccessibility()
   })
 
-  test("should be focused when page is tabbed", async ({ page }) => {
-    const dropzone = part("dropzone")
-
-    await page.click("main")
-    await page.keyboard.press("Tab")
-
-    await expect(page.locator(dropzone)).toBeFocused()
+  test("should be focused when page is tabbed", async () => {
+    await I.page.click("main")
+    await I.pressKey("Tab")
+    await I.seeDropzoneIsFocused()
   })
 
-  test("should open file picker on trigger click", async ({ page }) => {
-    const fileChooserPromise = page.waitForEvent("filechooser")
-    await page.locator(trigger).click()
-    const prom = await fileChooserPromise
-    expect(prom).toBeDefined()
+  test("should open file picker on trigger click", async () => {
+    const fileChooser = await I.openFilePicker()
+    expect(fileChooser).toBeDefined()
   })
 
-  test("should display chosen file", async ({ page }) => {
-    const fileChooserPromise = page.waitForEvent("filechooser")
-    await page.locator(trigger).click()
-    const fileChooser = await fileChooserPromise
+  test("should display chosen file", async () => {
+    const fileChooser = await I.openFilePicker()
     await fileChooser.setFiles(path.join(__dirname, "fixtures/text.txt"))
 
-    const item = page.locator(part("item"))
-    const deleteTrigger = page.locator(part("item-delete-trigger"))
-
-    expect(item).toBeVisible()
-    expect(await item.innerText()).toContain("text.txt")
-    expect(deleteTrigger).toBeVisible()
+    await I.seeItem("text.txt")
+    await I.seeDeleteTrigger()
   })
 
-  test("should have disabled attributes when disabled", async ({ page }) => {
-    await controls(page).bool("disabled")
-    await expect(page.locator(trigger)).toBeDisabled()
-    await expect(page.locator(input)).toBeDisabled()
+  test("should upload file via trigger click", async () => {
+    const filePath = path.join(__dirname, "fixtures/text.txt")
+    await I.uploadFile(filePath)
+
+    await I.seeFileDetails("text.txt")
+    await I.seeDeleteTrigger()
+  })
+
+  test("should upload file via dropzone click", async () => {
+    const filePath = path.join(__dirname, "fixtures/text.txt")
+    await I.uploadFileViaDropzone(filePath)
+
+    await I.seeFileDetails("text.txt")
+    await I.seeDeleteTrigger()
+  })
+
+  test("should upload file via drag and drop", async () => {
+    const filePath = path.join(__dirname, "fixtures/text.txt")
+    await I.uploadFileViaDragAndDrop(filePath)
+
+    await I.seeFileDetails("text.txt")
+    await I.seeDeleteTrigger()
+  })
+
+  test("should delete uploaded file", async () => {
+    const filePath = path.join(__dirname, "fixtures/text.txt")
+    await I.uploadFile(filePath)
+
+    await I.seeFileDetails("text.txt")
+    await I.deleteFile()
+    await I.seeNoFiles()
+  })
+
+  test("should have disabled attributes when disabled", async () => {
+    await I.controls.bool("disabled")
+    await I.seeTriggerIsDisabled()
+    await I.seeHiddenInputIsDisabled()
+  })
+
+  test("should not reopen file picker after ESC key", async () => {
+    await I.page.click("main")
+    await I.pressKey("Tab")
+
+    const tracker = I.trackFileChooserEvents()
+    const fileChooser = await I.openFilePickerWithKeyboard()
+    expect(fileChooser).toBeDefined()
+    expect(tracker.count).toBe(1)
+
+    await I.pressKey("Escape")
+    await I.waitForNextFrame()
+
+    expect(tracker.count).toBe(1)
+  })
+
+  test("should not open file picker twice when clicking trigger inside dropzone", async () => {
+    const tracker = I.trackFileChooserEvents()
+    const fileChooser = await I.openFilePicker()
+    expect(fileChooser).toBeDefined()
+
+    await I.waitForNextFrame()
+
+    expect(tracker.count).toBe(1)
   })
 })

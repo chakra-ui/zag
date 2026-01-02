@@ -123,4 +123,17 @@ test.describe("tabs", () => {
 
     await I.seeTabIsFocused("joke")
   })
+
+  test("indicator position updates when inactive tab changes size", async () => {
+    await I.clickTab("agnes")
+    await I.seeTabContent("agnes")
+
+    const agnesTabBefore = await I.getTabRect("agnes")
+    const indicatorBefore = await I.getIndicatorRect()
+
+    await I.modifyTabLabel("nils", "Nils Frahm - Very Long Text That Changes Size")
+
+    await I.waitForIndicatorToUpdate("agnes")
+    await I.seeIndicatorMovedWithTab("agnes", agnesTabBefore, indicatorBefore)
+  })
 })
