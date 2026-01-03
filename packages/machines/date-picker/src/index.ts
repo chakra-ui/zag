@@ -49,4 +49,12 @@ export type {
   MonthFormatOptions,
   Range,
   Cell,
+  Segments,
+  EditableSegmentType,
+  PlaceholderChangeDetails,
+  SegmentGroupProps,
+  SegmentsProps,
+  DateSegment,
+  SegmentProps,
+  SegmentState,
 } from "./date-picker.types"
