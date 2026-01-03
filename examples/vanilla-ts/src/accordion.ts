@@ -1,5 +1,5 @@
 import * as accordion from "@zag-js/accordion"
-import { normalizeProps, spreadProps, VanillaMachine } from "./lib"
+import { normalizeProps, spreadProps, VanillaMachine } from "@zag-js/vanilla"
 import { Component } from "./component"
 
 export class Accordion extends Component<accordion.Props, accordion.Api> {

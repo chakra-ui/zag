@@ -4,10 +4,22 @@ export interface Attrs {
 
 const prevAttrsMap = new WeakMap<Element, Attrs>()
 
-const assignableProps = new Set<string>(["value", "checked", "htmlFor"])
+const assignableProps = new Set<string>(["value", "checked", "selected"])
 
 // SVG attributes that need to preserve case
-const caseSensitiveSvgAttrs = new Set<string>(["viewBox", "preserveAspectRatio"])
+const caseSensitiveSvgAttrs = new Set<string>([
+  "viewBox",
+  "preserveAspectRatio",
+  "clipPath",
+  "clipRule",
+  "fillRule",
+  "strokeWidth",
+  "strokeLinecap",
+  "strokeLinejoin",
+  "strokeDasharray",
+  "strokeDashoffset",
+  "strokeMiterlimit",
+])
 
 // Check if element is SVG
 const isSvgElement = (node: Element): boolean => {
@@ -40,32 +52,47 @@ export function spreadProps(node: Element, attrs: Attrs): () => void {
   const teardown = (attr: string) => remEvt(attr.substring(2), attrs[attr])
 
   const apply = (attrName: string) => {
-    let value = attrs[attrName]
+    const value = attrs[attrName]
 
     const oldValue = oldAttrs[attrName]
     if (value === oldValue) return
 
+    // Handle class as property (faster than setAttribute)
+    if (attrName === "class") {
+      ;(node as HTMLElement).className = value ?? ""
+      return
+    }
+
+    // Handle DOM properties (value, checked, etc.) - must come before boolean check
+    if (assignableProps.has(attrName)) {
+      ;(node as any)[attrName] = value ?? ""
+      return
+    }
+
+    // Handle boolean attributes with toggleAttribute (for non-property booleans like disabled, hidden)
     if (typeof value === "boolean") {
-      value = value || undefined
+      ;(node as HTMLElement).toggleAttribute(getAttributeName(node, attrName), value)
+      return
     }
 
     if (value != null) {
-      if (assignableProps.has(attrName)) {
-        ;(node as any)[attrName] = value
-      } else {
-        node.setAttribute(getAttributeName(node, attrName), value)
-      }
+      node.setAttribute(getAttributeName(node, attrName), value)
       return
     }
 
     node.removeAttribute(getAttributeName(node, attrName))
   }
 
-  // reconcile old attributes
-
+  // reconcile old attributes (must match apply logic)
   for (const key in oldAttrs) {
     if (attrs[key] == null) {
-      node.removeAttribute(getAttributeName(node, key))
+      if (key === "class") {
+        ;(node as HTMLElement).className = ""
+      } else if (assignableProps.has(key)) {
+        ;(node as any)[key] = ""
+      } else {
+        node.removeAttribute(getAttributeName(node, key))
+      }
     }
   }
 

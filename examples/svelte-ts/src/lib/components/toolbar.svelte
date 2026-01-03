@@ -2,7 +2,7 @@
   import type { UseControlsReturn } from "$lib/use-controls.svelte"
   import { dataAttr } from "@zag-js/dom-query"
   import Controls from "./controls.svelte"
-  import type { Snippet } from "svelte"
+  import { untrack, type Snippet } from "svelte"
 
   interface Props {
     controls?: UseControlsReturn | null
@@ -12,7 +12,8 @@
 
   const { controls, viz, children }: Props = $props()
 
-  let active = $state(viz ? 1 : !controls ? 1 : 0)
+  const init = untrack(() => (viz ? 1 : !controls ? 1 : 0))
+  let active = $state(init)
 </script>
 
 <div class="toolbar">

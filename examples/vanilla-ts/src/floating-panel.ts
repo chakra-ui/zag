@@ -1,6 +1,6 @@
 import * as floating from "@zag-js/floating-panel"
 import { Component } from "./component"
-import { normalizeProps, spreadProps, VanillaMachine } from "./lib"
+import { normalizeProps, spreadProps, VanillaMachine } from "@zag-js/vanilla"
 
 export class FloatingPanel extends Component<floating.Props, floating.Api> {
   initMachine(props: floating.Props) {

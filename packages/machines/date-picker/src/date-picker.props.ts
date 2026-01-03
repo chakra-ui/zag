@@ -34,6 +34,7 @@ export const props = createProps<DatePickerProps>()([
   "onOpenChange",
   "onValueChange",
   "onViewChange",
+  "onVisibleRangeChange",
   "open",
   "defaultOpen",
   "positioning",

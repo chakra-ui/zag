@@ -1,6 +1,6 @@
 import * as tabs from "@zag-js/tabs"
 import { Component } from "./component"
-import { normalizeProps, spreadProps, VanillaMachine } from "./lib"
+import { normalizeProps, spreadProps, VanillaMachine } from "@zag-js/vanilla"
 
 export class Tabs extends Component<tabs.Props, tabs.Api> {
   initMachine(props: tabs.Props) {

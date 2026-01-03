@@ -1,6 +1,6 @@
 import * as clipboard from "@zag-js/clipboard"
 import { Component } from "./component"
-import { normalizeProps, spreadProps, VanillaMachine } from "./lib"
+import { normalizeProps, spreadProps, VanillaMachine } from "@zag-js/vanilla"
 
 export class Clipboard extends Component<clipboard.Props, clipboard.Api> {
   initMachine(props: clipboard.Props) {

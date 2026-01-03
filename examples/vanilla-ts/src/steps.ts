@@ -1,6 +1,6 @@
 import * as steps from "@zag-js/steps"
 import { Component } from "./component"
-import { normalizeProps, spreadProps, VanillaMachine } from "./lib"
+import { normalizeProps, spreadProps, VanillaMachine } from "@zag-js/vanilla"
 
 export class Steps extends Component<steps.Props, steps.Api> {
   initMachine(props: steps.Props) {

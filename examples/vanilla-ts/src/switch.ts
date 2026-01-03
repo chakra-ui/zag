@@ -1,6 +1,6 @@
 import * as switchMachine from "@zag-js/switch"
 import { Component } from "./component"
-import { normalizeProps, spreadProps, VanillaMachine } from "./lib"
+import { normalizeProps, spreadProps, VanillaMachine } from "@zag-js/vanilla"
 
 export class Switch extends Component<switchMachine.Props, switchMachine.Api> {
   initMachine(props: switchMachine.Props) {

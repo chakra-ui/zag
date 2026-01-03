@@ -1,6 +1,6 @@
 import * as tagsInput from "@zag-js/tags-input"
 import { Component } from "./component"
-import { normalizeProps, spreadProps, VanillaMachine } from "./lib"
+import { normalizeProps, spreadProps, VanillaMachine } from "@zag-js/vanilla"
 
 export class TagsInput extends Component<tagsInput.Props, tagsInput.Api> {
   initMachine(props: tagsInput.Props) {

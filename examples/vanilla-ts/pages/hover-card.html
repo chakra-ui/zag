@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Hover Card</title>
+  </head>
+  <body style="padding: 40px">
+    <a href="/">← Back to examples</a>
+    <h1>Hover Card</h1>
+
+    <main class="hover-card">
+      <div class="hover-card-root">
+        <a href="https://twitter.com/zag_js" target="_blank" rel="noreferrer" class="hover-card-trigger">
+          @zag_js
+        </a>
+
+        <div class="hover-card-positioner" hidden>
+          <div class="hover-card-content">
+            <div class="hover-card-arrow">
+              <div class="hover-card-arrow-tip"></div>
+            </div>
+            <div class="hover-card-header">
+              <img
+                src="https://pbs.twimg.com/profile_images/1516812048/logo-zag_400x400.png"
+                alt="Zag.js"
+                class="hover-card-avatar"
+              />
+              <div>
+                <h3 class="hover-card-title">Zag.js</h3>
+                <p class="hover-card-handle">@zag_js</p>
+              </div>
+            </div>
+            <p class="hover-card-description">
+              UI components powered by Finite State Machines.
+              Framework agnostic and delightfully designed.
+            </p>
+            <a href="https://twitter.com/zag_js" target="_blank" rel="noreferrer" class="hover-card-link">
+              Follow on Twitter
+            </a>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <script type="module" src="./hover-card.ts"></script>
+  </body>
+</html>
+

@@ -1,5 +1,21 @@
 # @zag-js/carousel
 
+## 1.32.0
+
+### Patch Changes
+
+- [`335b1c7`](https://github.com/chakra-ui/zag/commit/335b1c7eea94036f89709b42ffa7a13347503e9a) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix issue where next/prev carousel buttons and indicators don't
+  work when `dir="rtl"` is set.
+
+- Updated dependencies [[`335b1c7`](https://github.com/chakra-ui/zag/commit/335b1c7eea94036f89709b42ffa7a13347503e9a)]:
+  - @zag-js/scroll-snap@1.32.0
+  - @zag-js/anatomy@1.32.0
+  - @zag-js/core@1.32.0
+  - @zag-js/types@1.32.0
+  - @zag-js/utils@1.32.0
+  - @zag-js/dom-query@1.32.0
+
 ## 1.31.1
 
 ### Patch Changes

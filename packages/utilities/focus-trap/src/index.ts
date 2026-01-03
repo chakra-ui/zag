@@ -3,24 +3,31 @@ import { FocusTrap } from "./focus-trap"
 import type { FocusTrapOptions } from "./types"
 
 type ElementOrGetter = HTMLElement | null | (() => HTMLElement | null)
+type ElementsOrGetter = ElementOrGetter | ElementOrGetter[]
 
 export interface TrapFocusOptions extends Omit<FocusTrapOptions, "document"> {}
 
-export function trapFocus(el: ElementOrGetter, options: TrapFocusOptions = {}) {
+export function trapFocus(el: ElementsOrGetter, options: TrapFocusOptions = {}) {
   let trap: FocusTrap | undefined
   const cleanup = raf(() => {
-    const contentEl = typeof el === "function" ? el() : el
-    if (!contentEl) return
+    const elements = Array.isArray(el) ? el : [el]
+    const resolvedElements = elements
+      .map((e) => (typeof e === "function" ? e() : e))
+      .filter((e): e is HTMLElement => e != null)
 
-    trap = new FocusTrap(contentEl, {
+    if (resolvedElements.length === 0) return
+
+    const primaryEl = resolvedElements[0]
+
+    trap = new FocusTrap(resolvedElements, {
       escapeDeactivates: false,
       allowOutsideClick: true,
       preventScroll: true,
       returnFocusOnDeactivate: true,
       delayInitialFocus: false,
-      fallbackFocus: contentEl,
+      fallbackFocus: primaryEl,
       ...options,
-      document: getDocument(contentEl),
+      document: getDocument(primaryEl),
     })
 
     try {

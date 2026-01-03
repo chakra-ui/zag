@@ -1,6 +1,6 @@
 import * as menu from "@zag-js/menu"
 import { Component } from "./component"
-import { normalizeProps, spreadProps, VanillaMachine } from "./lib"
+import { normalizeProps, spreadProps, VanillaMachine } from "@zag-js/vanilla"
 
 export class Menu extends Component<menu.Props, menu.Api> {
   initMachine(props: menu.Props) {

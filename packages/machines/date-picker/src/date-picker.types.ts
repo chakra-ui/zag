@@ -39,6 +39,11 @@ export interface ViewChangeDetails {
   view: DateView
 }
 
+export interface VisibleRangeChangeDetails {
+  view: DateView
+  visibleRange: { start: DateValue; end: DateValue }
+}
+
 export interface OpenChangeDetails {
   open: boolean
   value: DateValue[]
@@ -211,6 +216,10 @@ export interface DatePickerProps extends DirectionProperty, CommonProperties {
    * Function called when the view changes.
    */
   onViewChange?: ((details: ViewChangeDetails) => void) | undefined
+  /**
+   * Function called when the visible range changes.
+   */
+  onVisibleRangeChange?: ((details: VisibleRangeChangeDetails) => void) | undefined
   /**
    * Function called when the calendar opens or closes.
    */

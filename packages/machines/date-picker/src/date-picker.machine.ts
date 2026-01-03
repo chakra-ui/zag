@@ -309,7 +309,7 @@ export const machine = createMachine<DatePickerSchema>({
 
     // Ensure the month/year select reflect the actual visible start value
     track([() => context.hash("startValue")], () => {
-      action(["syncMonthSelectElement", "syncYearSelectElement"])
+      action(["syncMonthSelectElement", "syncYearSelectElement", "invokeOnVisibleRangeChange"])
     })
 
     track([() => context.get("inputValue")], () => {
@@ -1288,6 +1288,12 @@ export const machine = createMachine<DatePickerSchema>({
       invokeOnClose({ prop, context }) {
         if (prop("inline")) return
         prop("onOpenChange")?.({ open: false, value: context.get("value") })
+      },
+      invokeOnVisibleRangeChange({ prop, context, computed }) {
+        prop("onVisibleRangeChange")?.({
+          view: context.get("view"),
+          visibleRange: computed("visibleRange"),
+        })
       },
 
       toggleVisibility({ event, send, prop }) {

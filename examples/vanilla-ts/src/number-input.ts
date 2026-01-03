@@ -1,6 +1,6 @@
 import * as numberInput from "@zag-js/number-input"
 import { Component } from "./component"
-import { normalizeProps, spreadProps, VanillaMachine } from "./lib"
+import { normalizeProps, spreadProps, VanillaMachine } from "@zag-js/vanilla"
 
 export class NumberInput extends Component<numberInput.Props, numberInput.Api> {
   initMachine(props: numberInput.Props) {

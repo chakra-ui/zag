@@ -98,7 +98,7 @@ const sidebar: Record<"docs", SidebarItem[]> = {
           beta: true,
         },
         { type: "doc", label: "Listbox", id: "listbox" },
-        { type: "doc", label: "Marquee", id: "marquee", beta: true },
+        { type: "doc", label: "Marquee", id: "marquee" },
         { type: "doc", label: "Menu", id: "menu" },
         { type: "doc", label: "Context Menu", id: "context-menu" },
         {
@@ -132,7 +132,7 @@ const sidebar: Record<"docs", SidebarItem[]> = {
         { type: "doc", label: "Radio Group", id: "radio-group" },
         { type: "doc", label: "Range Slider", id: "range-slider" },
         { type: "doc", label: "Rating Group", id: "rating-group" },
-        { type: "doc", label: "Scroll Area", id: "scroll-area", beta: true },
+        { type: "doc", label: "Scroll Area", id: "scroll-area" },
         { type: "doc", label: "Segmented Control", id: "segmented-control" },
         { type: "doc", label: "Select", id: "select" },
         { type: "doc", label: "Signature Pad", id: "signature-pad" },
