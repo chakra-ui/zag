@@ -30,9 +30,9 @@
     "@zag-js/utils": "workspace:*"
   },
   "devDependencies": {
-    "@types/jsdom": "^21.1.7",
+    "@types/jsdom": "^27.0.0",
     "clean-package": "2.2.0",
-    "jsdom": "^26.1.0",
+    "jsdom": "^27.0.0",
     "vitest": "^3.2.4"
   },
   "scripts": {
