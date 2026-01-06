@@ -173,7 +173,11 @@
       "--corner-width": "The width of the Root",
       "--corner-height": "The height of the Root",
       "--thumb-width": "The width of the slider thumb",
-      "--thumb-height": "The height of the slider thumb"
+      "--thumb-height": "The height of the slider thumb",
+      "--overflow-x-end": "The distance from the horizontal end edge in pixels",
+      "--overflow-x-start": "The distance from the horizontal start edge in pixels",
+      "--overflow-y-end": "The distance from the vertical end edge in pixels",
+      "--overflow-y-start": "The distance from the vertical start edge in pixels"
     }
   },
   "steps": {
