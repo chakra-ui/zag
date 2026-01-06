@@ -50,6 +50,7 @@ export function connect<T extends PropTypes>(
     },
 
     getRootProps() {
+      const viewportEl = dom.getViewportEl(scope)
       return normalize.element({
         ...parts.root.attrs,
         id: dom.getRootId(scope),
@@ -80,6 +81,10 @@ export function connect<T extends PropTypes>(
           "--corner-height": toPx(cornerSize?.height),
           "--thumb-width": toPx(thumbSize?.width),
           "--thumb-height": toPx(thumbSize?.height),
+          "--overflow-x-start": toPx(!hiddenState.scrollbarXHidden ? viewportEl.scrollLeft : 0),
+          "--overflow-x-end": toPx(!hiddenState.scrollbarXHidden ? viewportEl.scrollWidth - viewportEl.scrollLeft - viewportEl.clientWidth : 0),
+          "--overflow-y-start": toPx(!hiddenState.scrollbarYHidden ? viewportEl.scrollTop : 0),
+          "--overflow-y-end": toPx(!hiddenState.scrollbarYHidden ? viewportEl.scrollHeight - viewportEl.scrollTop - viewportEl.clientHeight : 0),
         },
       })
     },
