@@ -7,6 +7,8 @@ import type { CommonProperties, DirectionProperty, PropTypes, RequiredBy } from 
 
 export type ThumbCollisionBehavior = "none" | "push" | "swap"
 
+export type ThumbAlignment = "contain" | "center"
+
 export interface ValueChangeDetails {
   value: number[]
 }
