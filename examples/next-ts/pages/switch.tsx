@@ -20,6 +20,7 @@ export default function Page() {
   return (
     <>
       <main className="switch">
+        <button onClick={() => api.toggleChecked()}>Toggle</button>
         <label {...api.getRootProps()}>
           <input {...api.getHiddenInputProps()} data-testid="hidden-input" />
           <span {...api.getControlProps()}>
