@@ -14,4 +14,6 @@ export type {
   ThumbProps,
   ValueChangeDetails,
   ValueTextDetails,
+  ThumbAlignment,
+  ThumbCollisionBehavior,
 } from "./slider.types"
