@@ -116,6 +116,7 @@ export const sliderControls = defineControls({
   readOnly: { type: "boolean", defaultValue: false },
   orientation: { type: "select", options: ["horizontal", "vertical"] as const, defaultValue: "horizontal" },
   thumbAlignment: { type: "select", options: ["contain", "center"] as const, defaultValue: "contain" },
+  thumbCollisionBehavior: { type: "select", options: ["none", "push", "swap"] as const, defaultValue: "none" },
   dir: { type: "select", options: ["ltr", "rtl"] as const, defaultValue: "ltr" },
   origin: { type: "select", options: ["center", "start", "end"] as const, defaultValue: "start" },
   min: { type: "number", defaultValue: 0 },
