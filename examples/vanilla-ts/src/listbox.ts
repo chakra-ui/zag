@@ -1,6 +1,6 @@
 import * as listbox from "@zag-js/listbox"
 import { Component } from "./component"
-import { normalizeProps, spreadProps, VanillaMachine } from "@zag-js/vanilla"
+import { normalizeProps, VanillaMachine } from "@zag-js/vanilla"
 
 interface Item {
   label: string
@@ -76,29 +76,29 @@ export class Listbox extends Component<ListboxComponentProps, listbox.Api> {
       }
 
       // Always spread props
-      spreadProps(itemEl, this.api.getItemProps({ item }))
+      this.spreadProps(itemEl, this.api.getItemProps({ item }))
 
       const textEl = itemEl.querySelector<HTMLElement>(".listbox-item-text")
       if (textEl) {
-        spreadProps(textEl, this.api.getItemTextProps({ item }))
+        this.spreadProps(textEl, this.api.getItemTextProps({ item }))
         textEl.textContent = item.label
       }
 
       const indicatorEl = itemEl.querySelector<HTMLElement>(".listbox-item-indicator")
       if (indicatorEl) {
-        spreadProps(indicatorEl, this.api.getItemIndicatorProps({ item }))
+        this.spreadProps(indicatorEl, this.api.getItemIndicatorProps({ item }))
       }
     })
   }
 
   render() {
-    spreadProps(this.rootEl, this.api.getRootProps())
+    this.spreadProps(this.rootEl, this.api.getRootProps())
 
     const label = this.rootEl.querySelector<HTMLElement>(".listbox-label")
-    if (label) spreadProps(label, this.api.getLabelProps())
+    if (label) this.spreadProps(label, this.api.getLabelProps())
 
     const content = this.rootEl.querySelector<HTMLElement>(".listbox-content")
-    if (content) spreadProps(content, this.api.getContentProps())
+    if (content) this.spreadProps(content, this.api.getContentProps())
 
     // Sync items after all other props are set
     this.syncItems()

@@ -1,6 +1,6 @@
 import * as angleSlider from "@zag-js/angle-slider"
 import { Component } from "./component"
-import { normalizeProps, spreadProps, VanillaMachine } from "@zag-js/vanilla"
+import { normalizeProps, VanillaMachine } from "@zag-js/vanilla"
 
 export class AngleSlider extends Component<angleSlider.Props, angleSlider.Api> {
   initMachine(props: angleSlider.Props) {
@@ -36,33 +36,33 @@ export class AngleSlider extends Component<angleSlider.Props, angleSlider.Api> {
         markerGroup.appendChild(markerEl)
       }
 
-      spreadProps(markerEl, this.api.getMarkerProps({ value }))
+      this.spreadProps(markerEl, this.api.getMarkerProps({ value }))
     })
   }
 
   render() {
-    spreadProps(this.rootEl, this.api.getRootProps())
+    this.spreadProps(this.rootEl, this.api.getRootProps())
 
     const label = this.rootEl.querySelector<HTMLElement>(".angle-slider-label")
-    if (label) spreadProps(label, this.api.getLabelProps())
+    if (label) this.spreadProps(label, this.api.getLabelProps())
 
     const valueText = this.rootEl.querySelector<HTMLElement>(".angle-slider-value-text")
     if (valueText) {
-      spreadProps(valueText, this.api.getValueTextProps())
+      this.spreadProps(valueText, this.api.getValueTextProps())
       valueText.textContent = this.api.valueAsDegree
     }
 
     const control = this.rootEl.querySelector<HTMLElement>(".angle-slider-control")
-    if (control) spreadProps(control, this.api.getControlProps())
+    if (control) this.spreadProps(control, this.api.getControlProps())
 
     const thumb = this.rootEl.querySelector<HTMLElement>(".angle-slider-thumb")
-    if (thumb) spreadProps(thumb, this.api.getThumbProps())
+    if (thumb) this.spreadProps(thumb, this.api.getThumbProps())
 
     const markerGroup = this.rootEl.querySelector<HTMLElement>(".angle-slider-marker-group")
-    if (markerGroup) spreadProps(markerGroup, this.api.getMarkerGroupProps())
+    if (markerGroup) this.spreadProps(markerGroup, this.api.getMarkerGroupProps())
 
     const hiddenInput = this.rootEl.querySelector<HTMLInputElement>(".angle-slider-hidden-input")
-    if (hiddenInput) spreadProps(hiddenInput, this.api.getHiddenInputProps())
+    if (hiddenInput) this.spreadProps(hiddenInput, this.api.getHiddenInputProps())
 
     // Sync markers
     this.syncMarkers()
