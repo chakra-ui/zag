@@ -1,5 +1,25 @@
 # @zag-js/tags-input
 
+## 1.33.0
+
+### Minor Changes
+
+- [`31126b6`](https://github.com/chakra-ui/zag/commit/31126b630524f45fdcfc5c4a16f884fb06aba2c7) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Add `placeholder` prop that is applied to the input only when
+  there are no tags
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.33.0
+  - @zag-js/core@1.33.0
+  - @zag-js/types@1.33.0
+  - @zag-js/auto-resize@1.33.0
+  - @zag-js/utils@1.33.0
+  - @zag-js/dom-query@1.33.0
+  - @zag-js/interact-outside@1.33.0
+  - @zag-js/live-region@1.33.0
+
 ## 1.32.0
 
 ### Patch Changes
