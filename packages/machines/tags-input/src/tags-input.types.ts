@@ -179,6 +179,10 @@ export interface TagsInputProps extends DirectionProperty, CommonProperties, Int
    * The associate form of the underlying input element.
    */
   form?: string | undefined
+  /**
+   * The placeholder text for the input
+   */
+  placeholder?: string | undefined
 }
 
 type PropsWithDefault =

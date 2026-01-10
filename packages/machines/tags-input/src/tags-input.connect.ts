@@ -127,6 +127,7 @@ export function connect<T extends PropTypes>(
         autoCorrect: "off",
         autoCapitalize: "none",
         disabled: disabled || readOnly,
+        placeholder: empty ? prop("placeholder") : undefined,
         onInput(event) {
           const evt = getNativeEvent(event)
           const value = event.currentTarget.value
