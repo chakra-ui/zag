@@ -1,8 +1,10 @@
+import { uuid } from "@zag-js/utils"
+
 export interface Attrs {
   [key: string]: any
 }
 
-const prevAttrsMap = new WeakMap<Element, Attrs>()
+const prevAttrsMap = new Map<string, Attrs>()
 
 const assignableProps = new Set<string>(["value", "checked", "selected"])
 
@@ -32,8 +34,19 @@ const getAttributeName = (node: Element, attrName: string): string => {
   return shouldPreserveCase ? attrName : attrName.toLowerCase()
 }
 
-export function spreadProps(node: Element, attrs: Attrs): () => void {
-  const oldAttrs = prevAttrsMap.get(node) || {}
+export function spreadProps(node: Element, attrs: Attrs, machineId?: string): () => void {
+  if (!(node as any).__spreadId) {
+    ;(node as any).__spreadId = `spread_${uuid()}`
+  }
+
+  let machineElementKey = ""
+  if (!machineId) {
+    machineElementKey = `${(node as any).__spreadId}`
+  } else {
+    machineElementKey = `${(node as any).__spreadId}_${machineId}`
+  }
+
+  const oldAttrs = prevAttrsMap.get(machineElementKey) || {}
 
   const attrKeys = Object.keys(attrs)
 
@@ -70,8 +83,15 @@ export function spreadProps(node: Element, attrs: Attrs): () => void {
     }
 
     // Handle boolean attributes with toggleAttribute (for non-property booleans like disabled, hidden)
-    if (typeof value === "boolean") {
+    // Also skip aria- attributes to preserve their string values
+    if (typeof value === "boolean" && !attrName.includes("aria-")) {
       ;(node as HTMLElement).toggleAttribute(getAttributeName(node, attrName), value)
+      return
+    }
+
+    // Special handling for children attribute
+    if (attrName === "children") {
+      node.innerHTML = value
       return
     }
 
@@ -104,7 +124,7 @@ export function spreadProps(node: Element, attrs: Attrs): () => void {
   attrKeys.filter(onEvents).forEach(setup)
   attrKeys.filter(others).forEach(apply)
 
-  prevAttrsMap.set(node, attrs)
+  prevAttrsMap.set(machineElementKey, attrs)
 
   return function cleanup() {
     attrKeys.filter(onEvents).forEach(teardown)

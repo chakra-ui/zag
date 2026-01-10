@@ -1,6 +1,6 @@
 import * as tabs from "@zag-js/tabs"
 import { Component } from "./component"
-import { normalizeProps, spreadProps, VanillaMachine } from "@zag-js/vanilla"
+import { normalizeProps, VanillaMachine } from "@zag-js/vanilla"
 
 export class Tabs extends Component<tabs.Props, tabs.Api> {
   initMachine(props: tabs.Props) {
@@ -18,19 +18,19 @@ export class Tabs extends Component<tabs.Props, tabs.Api> {
     const listProps = this.api.getListProps()
     const indicatorProps = this.api.getIndicatorProps()
 
-    spreadProps(this.rootEl, rootProps)
+    this.spreadProps(this.rootEl, rootProps)
 
     const tablist = this.rootEl.querySelector<HTMLElement>(".tabs-list")
-    if (tablist) spreadProps(tablist, listProps)
+    if (tablist) this.spreadProps(tablist, listProps)
 
     const indicator = this.rootEl.querySelector<HTMLElement>(".tabs-indicator")
-    if (indicator) spreadProps(indicator, indicatorProps)
+    if (indicator) this.spreadProps(indicator, indicatorProps)
 
     const tabs = this.rootEl.querySelectorAll<HTMLElement>(".tabs-trigger")
     tabs.forEach((tab) => {
       const value = tab.dataset.value
       if (value) {
-        spreadProps(tab, this.api.getTriggerProps({ value }))
+        this.spreadProps(tab, this.api.getTriggerProps({ value }))
       }
     })
 
@@ -38,7 +38,7 @@ export class Tabs extends Component<tabs.Props, tabs.Api> {
     panels.forEach((panel) => {
       const value = panel.dataset.value
       if (value) {
-        spreadProps(panel, this.api.getContentProps({ value }))
+        this.spreadProps(panel, this.api.getContentProps({ value }))
       }
     })
   }

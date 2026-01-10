@@ -1,6 +1,6 @@
 import * as tooltip from "@zag-js/tooltip"
 import { Component } from "./component"
-import { normalizeProps, spreadProps, VanillaMachine } from "@zag-js/vanilla"
+import { normalizeProps, VanillaMachine } from "@zag-js/vanilla"
 
 export class Tooltip extends Component<tooltip.Props, tooltip.Api> {
   initMachine(props: tooltip.Props) {
@@ -22,8 +22,8 @@ export class Tooltip extends Component<tooltip.Props, tooltip.Api> {
     const positioner = this.rootEl.querySelector<HTMLElement>(".tooltip-positioner")
     const content = this.rootEl.querySelector<HTMLElement>(".tooltip-content")
 
-    if (trigger) spreadProps(trigger, triggerProps)
-    if (positioner) spreadProps(positioner, positionerProps)
-    if (content) spreadProps(content, contentProps)
+    if (trigger) this.spreadProps(trigger, triggerProps)
+    if (positioner) this.spreadProps(positioner, positionerProps)
+    if (content) this.spreadProps(content, contentProps)
   }
 }

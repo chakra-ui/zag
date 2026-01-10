@@ -1,6 +1,6 @@
 import * as imageCropper from "@zag-js/image-cropper"
 import { Component } from "./component"
-import { normalizeProps, spreadProps, VanillaMachine } from "@zag-js/vanilla"
+import { normalizeProps, VanillaMachine } from "@zag-js/vanilla"
 
 export class ImageCropper extends Component<imageCropper.Props, imageCropper.Api> {
   initMachine(props: imageCropper.Props) {
@@ -41,7 +41,7 @@ export class ImageCropper extends Component<imageCropper.Props, imageCropper.Api
         selection.appendChild(handleEl)
       }
 
-      spreadProps(handleEl, this.api.getHandleProps({ position }))
+      this.spreadProps(handleEl, this.api.getHandleProps({ position }))
     })
   }
 
@@ -56,7 +56,7 @@ export class ImageCropper extends Component<imageCropper.Props, imageCropper.Api
       horizontalGrid.className = "image-cropper-grid-horizontal"
       selection.appendChild(horizontalGrid)
     }
-    spreadProps(horizontalGrid, this.api.getGridProps({ axis: "horizontal" }))
+    this.spreadProps(horizontalGrid, this.api.getGridProps({ axis: "horizontal" }))
 
     // Vertical grid
     let verticalGrid = selection.querySelector<HTMLElement>(".image-cropper-grid-vertical")
@@ -65,20 +65,20 @@ export class ImageCropper extends Component<imageCropper.Props, imageCropper.Api
       verticalGrid.className = "image-cropper-grid-vertical"
       selection.appendChild(verticalGrid)
     }
-    spreadProps(verticalGrid, this.api.getGridProps({ axis: "vertical" }))
+    this.spreadProps(verticalGrid, this.api.getGridProps({ axis: "vertical" }))
   }
 
   render() {
-    spreadProps(this.rootEl, this.api.getRootProps())
+    this.spreadProps(this.rootEl, this.api.getRootProps())
 
     const viewport = this.rootEl.querySelector<HTMLElement>(".image-cropper-viewport")
-    if (viewport) spreadProps(viewport, this.api.getViewportProps())
+    if (viewport) this.spreadProps(viewport, this.api.getViewportProps())
 
     const image = this.rootEl.querySelector<HTMLElement>(".image-cropper-image")
-    if (image) spreadProps(image, this.api.getImageProps())
+    if (image) this.spreadProps(image, this.api.getImageProps())
 
     const selection = this.rootEl.querySelector<HTMLElement>(".image-cropper-selection")
-    if (selection) spreadProps(selection, this.api.getSelectionProps())
+    if (selection) this.spreadProps(selection, this.api.getSelectionProps())
 
     // Sync handles and grid
     this.syncHandles()
