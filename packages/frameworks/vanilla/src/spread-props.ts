@@ -1,10 +1,8 @@
-import { uuid } from "@zag-js/utils"
-
 export interface Attrs {
   [key: string]: any
 }
 
-const prevAttrsMap = new Map<string, Attrs>()
+const prevAttrsMap = new WeakMap<Element, Map<string, Attrs>>()
 
 const assignableProps = new Set<string>(["value", "checked", "selected"])
 
@@ -35,18 +33,15 @@ const getAttributeName = (node: Element, attrName: string): string => {
 }
 
 export function spreadProps(node: Element, attrs: Attrs, machineId?: string): () => void {
-  if (!(node as any).__spreadId) {
-    ;(node as any).__spreadId = `spread_${uuid()}`
+  const scopeKey = machineId || "default"
+
+  let machineMap = prevAttrsMap.get(node)
+  if (!machineMap) {
+    machineMap = new Map<string, Attrs>()
+    prevAttrsMap.set(node, machineMap)
   }
 
-  let machineElementKey = ""
-  if (!machineId) {
-    machineElementKey = `${(node as any).__spreadId}`
-  } else {
-    machineElementKey = `${(node as any).__spreadId}_${machineId}`
-  }
-
-  const oldAttrs = prevAttrsMap.get(machineElementKey) || {}
+  const oldAttrs = machineMap.get(scopeKey) || {}
 
   const attrKeys = Object.keys(attrs)
 
@@ -124,9 +119,16 @@ export function spreadProps(node: Element, attrs: Attrs, machineId?: string): ()
   attrKeys.filter(onEvents).forEach(setup)
   attrKeys.filter(others).forEach(apply)
 
-  prevAttrsMap.set(machineElementKey, attrs)
+  machineMap.set(scopeKey, attrs)
 
   return function cleanup() {
     attrKeys.filter(onEvents).forEach(teardown)
+    const currentMachineMap = prevAttrsMap.get(node)
+    if (currentMachineMap) {
+      currentMachineMap.delete(scopeKey)
+      if (currentMachineMap.size === 0) {
+        prevAttrsMap.delete(node)
+      }
+    }
   }
 }
