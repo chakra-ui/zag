@@ -47,5 +47,9 @@ export abstract class Component<Props, Api> implements ComponentInterface<Api> {
     spreadProps(node, attrs, this.machine.scope.id)
   }
 
+  updateProps = (newProps: Partial<Props>) => {
+    this.machine.updateProps(newProps)
+  }
+
   abstract render(): void
 }
