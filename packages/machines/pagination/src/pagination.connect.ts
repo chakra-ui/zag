@@ -25,7 +25,7 @@ export function connect<T extends PropTypes>(
   const pageRange = computed("pageRange")
 
   const isFirstPage = page === 1
-  const isLastPage = page === totalPages
+  const isLastPage = page >= totalPages
 
   const pages = getTransformedRange({
     page,
