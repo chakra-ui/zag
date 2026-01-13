@@ -1,6 +1,6 @@
 import * as pagination from "@zag-js/pagination"
 import { Component } from "./component"
-import { normalizeProps, spreadProps, VanillaMachine } from "@zag-js/vanilla"
+import { normalizeProps, VanillaMachine } from "@zag-js/vanilla"
 
 export class Pagination extends Component<pagination.Props, pagination.Api> {
   initMachine(props: pagination.Props) {
@@ -25,13 +25,13 @@ export class Pagination extends Component<pagination.Props, pagination.Api> {
       if (page.type === "ellipsis") {
         const ellipsis = this.doc.createElement("span")
         ellipsis.className = "pagination-ellipsis"
-        spreadProps(ellipsis, this.api.getEllipsisProps({ index }))
+        this.spreadProps(ellipsis, this.api.getEllipsisProps({ index }))
         ellipsis.textContent = "..."
         itemsContainer.appendChild(ellipsis)
       } else {
         const button = this.doc.createElement("button")
         button.className = "pagination-item"
-        spreadProps(button, this.api.getItemProps({ type: "page", value: page.value }))
+        this.spreadProps(button, this.api.getItemProps({ type: "page", value: page.value }))
         button.textContent = String(page.value)
         if (page.value === this.api.page) {
           button.setAttribute("data-selected", "true")
@@ -42,13 +42,13 @@ export class Pagination extends Component<pagination.Props, pagination.Api> {
   }
 
   render() {
-    spreadProps(this.rootEl, this.api.getRootProps())
+    this.spreadProps(this.rootEl, this.api.getRootProps())
 
     const prevButton = this.rootEl.querySelector<HTMLElement>(".pagination-prev-trigger")
-    if (prevButton) spreadProps(prevButton, this.api.getPrevTriggerProps())
+    if (prevButton) this.spreadProps(prevButton, this.api.getPrevTriggerProps())
 
     const nextButton = this.rootEl.querySelector<HTMLElement>(".pagination-next-trigger")
-    if (nextButton) spreadProps(nextButton, this.api.getNextTriggerProps())
+    if (nextButton) this.spreadProps(nextButton, this.api.getNextTriggerProps())
 
     // Update page info
     const pageInfo = this.rootEl.querySelector<HTMLElement>(".pagination-page-info")

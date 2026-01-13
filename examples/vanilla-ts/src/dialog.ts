@@ -1,6 +1,6 @@
 import * as dialog from "@zag-js/dialog"
 import { Component } from "./component"
-import { normalizeProps, spreadProps, VanillaMachine } from "@zag-js/vanilla"
+import { normalizeProps, VanillaMachine } from "@zag-js/vanilla"
 
 export class Dialog extends Component<dialog.Props, dialog.Api> {
   initMachine(props: dialog.Props) {
@@ -17,7 +17,7 @@ export class Dialog extends Component<dialog.Props, dialog.Api> {
     const triggerProps = this.api.getTriggerProps()
 
     const trigger = this.rootEl.querySelector<HTMLElement>(".dialog-trigger")
-    if (trigger) spreadProps(trigger, triggerProps)
+    if (trigger) this.spreadProps(trigger, triggerProps)
 
     // Handle portal content
     const backdrop = this.rootEl.querySelector<HTMLElement>(".dialog-backdrop")
@@ -30,18 +30,18 @@ export class Dialog extends Component<dialog.Props, dialog.Api> {
         positioner.hidden = false
 
         // Apply props
-        spreadProps(backdrop, this.api.getBackdropProps())
-        spreadProps(positioner, this.api.getPositionerProps())
+        this.spreadProps(backdrop, this.api.getBackdropProps())
+        this.spreadProps(positioner, this.api.getPositionerProps())
 
         const content = positioner.querySelector<HTMLElement>(".dialog-content")
         const title = positioner.querySelector<HTMLElement>(".dialog-title")
         const description = positioner.querySelector<HTMLElement>(".dialog-description")
         const closeTrigger = positioner.querySelector<HTMLElement>(".dialog-close")
 
-        if (content) spreadProps(content, this.api.getContentProps())
-        if (title) spreadProps(title, this.api.getTitleProps())
-        if (description) spreadProps(description, this.api.getDescriptionProps())
-        if (closeTrigger) spreadProps(closeTrigger, this.api.getCloseTriggerProps())
+        if (content) this.spreadProps(content, this.api.getContentProps())
+        if (title) this.spreadProps(title, this.api.getTitleProps())
+        if (description) this.spreadProps(description, this.api.getDescriptionProps())
+        if (closeTrigger) this.spreadProps(closeTrigger, this.api.getCloseTriggerProps())
       } else {
         backdrop.hidden = true
         positioner.hidden = true

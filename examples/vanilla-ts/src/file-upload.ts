@@ -1,6 +1,6 @@
 import * as fileUpload from "@zag-js/file-upload"
 import { Component } from "./component"
-import { normalizeProps, spreadProps, VanillaMachine } from "@zag-js/vanilla"
+import { normalizeProps, VanillaMachine } from "@zag-js/vanilla"
 
 export class FileUpload extends Component<fileUpload.Props, fileUpload.Api> {
   initMachine(props: fileUpload.Props) {
@@ -55,17 +55,17 @@ export class FileUpload extends Component<fileUpload.Props, fileUpload.Api> {
       }
 
       // Always update props and content for all items (both new and existing)
-      spreadProps(itemEl, this.api.getItemProps({ file }))
+      this.spreadProps(itemEl, this.api.getItemProps({ file }))
 
       const nameEl = itemEl.querySelector<HTMLElement>(".file-upload-item-name")
       if (nameEl) {
-        spreadProps(nameEl, this.api.getItemNameProps({ file }))
+        this.spreadProps(nameEl, this.api.getItemNameProps({ file }))
         nameEl.textContent = file.name
       }
 
       const sizeEl = itemEl.querySelector<HTMLElement>(".file-upload-item-size")
       if (sizeEl) {
-        spreadProps(sizeEl, this.api.getItemSizeTextProps({ file }))
+        this.spreadProps(sizeEl, this.api.getItemSizeTextProps({ file }))
         sizeEl.textContent = this.api.getFileSize(file)
       }
 
@@ -73,30 +73,30 @@ export class FileUpload extends Component<fileUpload.Props, fileUpload.Api> {
       if (typeEl) typeEl.textContent = file.type
 
       const deleteBtn = itemEl.querySelector<HTMLElement>(".file-upload-item-delete")
-      if (deleteBtn) spreadProps(deleteBtn, this.api.getItemDeleteTriggerProps({ file }))
+      if (deleteBtn) this.spreadProps(deleteBtn, this.api.getItemDeleteTriggerProps({ file }))
     })
   }
 
   render() {
-    spreadProps(this.rootEl, this.api.getRootProps())
+    this.spreadProps(this.rootEl, this.api.getRootProps())
 
     const label = this.rootEl.querySelector<HTMLElement>(".file-upload-label")
-    if (label) spreadProps(label, this.api.getLabelProps())
+    if (label) this.spreadProps(label, this.api.getLabelProps())
 
     const dropzone = this.rootEl.querySelector<HTMLElement>(".file-upload-dropzone")
-    if (dropzone) spreadProps(dropzone, this.api.getDropzoneProps())
+    if (dropzone) this.spreadProps(dropzone, this.api.getDropzoneProps())
 
     const hiddenInput = this.rootEl.querySelector<HTMLInputElement>(".file-upload-hidden-input")
-    if (hiddenInput) spreadProps(hiddenInput, this.api.getHiddenInputProps())
+    if (hiddenInput) this.spreadProps(hiddenInput, this.api.getHiddenInputProps())
 
     const trigger = this.rootEl.querySelector<HTMLElement>(".file-upload-trigger")
-    if (trigger) spreadProps(trigger, this.api.getTriggerProps())
+    if (trigger) this.spreadProps(trigger, this.api.getTriggerProps())
 
     const itemGroup = this.rootEl.querySelector<HTMLElement>(".file-upload-item-group")
-    if (itemGroup) spreadProps(itemGroup, this.api.getItemGroupProps())
+    if (itemGroup) this.spreadProps(itemGroup, this.api.getItemGroupProps())
 
     const clearBtn = this.rootEl.querySelector<HTMLElement>(".file-upload-clear")
-    if (clearBtn) spreadProps(clearBtn, this.api.getClearTriggerProps())
+    if (clearBtn) this.spreadProps(clearBtn, this.api.getClearTriggerProps())
 
     // Sync files after all other props are set
     this.syncFiles()

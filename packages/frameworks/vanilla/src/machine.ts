@@ -20,6 +20,7 @@ import { subscribe } from "@zag-js/store"
 import { compact, identity, isEqual, isFunction, isString, runIfFn, toArray, warn } from "@zag-js/utils"
 import { bindable } from "./bindable"
 import { createRefs } from "./refs"
+import { mergeMachineProps } from "./merge-machine-props"
 
 export class VanillaMachine<T extends MachineSchema> {
   scope: Scope
@@ -37,6 +38,8 @@ export class VanillaMachine<T extends MachineSchema> {
 
   private cleanups: VoidFunction[] = []
   private subscriptions: Array<(service: Service<T>) => void> = []
+
+  private userPropsRef: { current: Partial<T["props"]> | (() => Partial<T["props"]>) }
 
   private getEvent = () => ({
     ...this.event,
@@ -66,13 +69,15 @@ export class VanillaMachine<T extends MachineSchema> {
     private machine: Machine<T>,
     userProps: Partial<T["props"]> | (() => Partial<T["props"]>) = {},
   ) {
+    this.userPropsRef = { current: userProps }
+
     // create scope
     const { id, ids, getRootNode } = runIfFn(userProps) as any
     this.scope = createScope({ id, ids, getRootNode })
 
     // create prop
     const prop: PropFn<T> = (key) => {
-      const __props = runIfFn(userProps)
+      const __props = runIfFn(this.userPropsRef.current)
       const props: any = machine.props?.({ props: compact(__props), scope: this.scope }) ?? __props
       return props[key] as any
     }
@@ -179,6 +184,18 @@ export class VanillaMachine<T extends MachineSchema> {
     }))
     this.state = state
     this.cleanups.push(subscribe(this.state.ref, () => this.notify()))
+  }
+
+  updateProps(newProps: Partial<T["props"]> | (() => Partial<T["props"]>)) {
+    const prevSource = this.userPropsRef.current
+
+    this.userPropsRef.current = () => {
+      const prev = runIfFn(prevSource)
+      const next = runIfFn(newProps)
+      return mergeMachineProps(prev, next)
+    }
+
+    this.notify()
   }
 
   send = (event: T["event"]) => {
