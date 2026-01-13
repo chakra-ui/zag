@@ -10,7 +10,7 @@
   },
   "dependencies": {
     "@internationalized/date": "3.10.1",
-    "@tanstack/react-virtual": "3.13.14",
+    "@tanstack/react-virtual": "3.13.18",
     "@zag-js/accordion": "workspace:*",
     "@zag-js/anatomy": "workspace:*",
     "@zag-js/anatomy-icons": "workspace:*",
@@ -78,7 +78,7 @@
   },
   "devDependencies": {
     "@next/eslint-plugin-next": "16.1.1",
-    "@types/node": "25.0.3",
+    "@types/node": "25.0.7",
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "eslint": "9.39.2",
