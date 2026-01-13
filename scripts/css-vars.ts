@@ -117,6 +117,12 @@ const cssVarDescriptions: Record<string, string> = {
   "--rating-value": "The rating value",
   "--star-size": "The size of rating stars",
 
+  // Scroll area specific
+  "--scroll-area-overflow-x-start": "The distance from the horizontal start edge in pixels",
+  "--scroll-area-overflow-x-end": "The distance from the horizontal end edge in pixels",
+  "--scroll-area-overflow-y-start": "The distance from the vertical start edge in pixels",
+  "--scroll-area-overflow-y-end": "The distance from the vertical end edge in pixels",
+
   // Avatar specific
   "--avatar-size": "The size of the avatar",
 
@@ -553,6 +559,18 @@ async function extractAllCSSVariables(): Promise<AllCSSVars> {
     allVariables["toast"]["Group"]["--gap"] = cssVarDescriptions["--gap"]
     allVariables["toast"]["Group"]["--first-height"] = "The height of the first toast"
   }
+
+  // Add scroll-area viewport CSS variables (these are set directly on the element in the machine)
+  allVariables["scroll-area"] ||= {}
+  allVariables["scroll-area"]["Viewport"] ||= {}
+  allVariables["scroll-area"]["Viewport"]["--scroll-area-overflow-x-start"] =
+    cssVarDescriptions["--scroll-area-overflow-x-start"]
+  allVariables["scroll-area"]["Viewport"]["--scroll-area-overflow-x-end"] =
+    cssVarDescriptions["--scroll-area-overflow-x-end"]
+  allVariables["scroll-area"]["Viewport"]["--scroll-area-overflow-y-start"] =
+    cssVarDescriptions["--scroll-area-overflow-y-start"]
+  allVariables["scroll-area"]["Viewport"]["--scroll-area-overflow-y-end"] =
+    cssVarDescriptions["--scroll-area-overflow-y-end"]
 
   return allVariables
 }
