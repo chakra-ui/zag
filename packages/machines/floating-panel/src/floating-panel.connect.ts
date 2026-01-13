@@ -192,6 +192,7 @@ export function connect<T extends PropTypes>(
         ...parts.stageTrigger.attrs,
         dir: prop("dir"),
         disabled: prop("disabled"),
+        "data-stage": props.stage,
         ...actionProps,
         type: "button",
         onClick(event) {
@@ -274,7 +275,7 @@ export function connect<T extends PropTypes>(
         onDoubleClick(event) {
           if (event.defaultPrevented) return
           if (!prop("resizable")) return
-          send({ type: isMaximized ? "RESTORE" : "MAXIMIZE" })
+          send({ type: isStaged ? "RESTORE" : "MAXIMIZE" })
         },
         style: {
           WebkitUserSelect: "none",

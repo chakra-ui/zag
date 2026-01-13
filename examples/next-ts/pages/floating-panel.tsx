@@ -10,7 +10,10 @@ import { useControls } from "../hooks/use-controls"
 export default function Page() {
   const controls = useControls(floatingPanelControls)
 
-  const service = useMachine(floating.machine, { id: useId() })
+  const service = useMachine(floating.machine, {
+    id: useId(),
+    ...controls.context,
+  })
 
   const api = floating.connect(service, normalizeProps)
 
