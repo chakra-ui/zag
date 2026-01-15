@@ -7,6 +7,7 @@ import {
   isComposingEvent,
   isLeftClick,
   isModifierKey,
+  setCaretToEnd,
 } from "@zag-js/dom-query"
 import type { EventKeyMap, NormalizeProps, PropTypes } from "@zag-js/types"
 import { roundToDpr } from "@zag-js/utils"
@@ -141,8 +142,9 @@ export function connect<T extends PropTypes>(
         "aria-valuenow": Number.isNaN(computed("valueAsNumber")) ? undefined : computed("valueAsNumber"),
         "aria-valuetext": computed("valueText"),
         "data-scrubbing": dataAttr(scrubbing),
-        onFocus() {
+        onFocus(event) {
           send({ type: "INPUT.FOCUS" })
+          setCaretToEnd(event.currentTarget)
         },
         onBlur() {
           send({ type: "INPUT.BLUR" })
