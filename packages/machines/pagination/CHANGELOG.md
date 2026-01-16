@@ -1,5 +1,19 @@
 # @zag-js/pagination
 
+## 1.33.0
+
+### Patch Changes
+
+- [`8137436`](https://github.com/chakra-ui/zag/commit/8137436f98d2994c7150c7308261be04850854e9) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix issue where next trigger was not disabled when `count` is `0`
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.33.0
+  - @zag-js/core@1.33.0
+  - @zag-js/types@1.33.0
+  - @zag-js/utils@1.33.0
+  - @zag-js/dom-query@1.33.0
+
 ## 1.32.0
 
 ### Patch Changes
