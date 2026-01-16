@@ -1,5 +1,20 @@
 # @zag-js/switch
 
+## 1.33.0
+
+### Patch Changes
+
+- [`690554d`](https://github.com/chakra-ui/zag/commit/690554dc0b7746c0a52773c5c93e23878ae4373d) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix issue where `api.toggleChecked()` doesn't work as expected
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.33.0
+  - @zag-js/core@1.33.0
+  - @zag-js/types@1.33.0
+  - @zag-js/utils@1.33.0
+  - @zag-js/dom-query@1.33.0
+  - @zag-js/focus-visible@1.33.0
+
 ## 1.32.0
 
 ### Patch Changes
