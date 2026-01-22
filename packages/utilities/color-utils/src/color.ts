@@ -18,7 +18,7 @@ const isEqualObject = (a: Record<string, number>, b: Record<string, number>): bo
 export abstract class Color implements ColorType {
   abstract toFormat(format: ColorFormat): ColorType
   abstract toJSON(): Record<string, number>
-  abstract toString(format: ColorStringFormat): string
+  abstract toString(format?: ColorStringFormat): string
   abstract clone(): ColorType
   abstract getChannelRange(channel: ColorChannel): ColorChannelRange
   abstract getFormat(): ColorFormat
