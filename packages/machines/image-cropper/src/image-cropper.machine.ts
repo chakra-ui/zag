@@ -6,6 +6,7 @@ import * as dom from "./image-cropper.dom"
 import type { BoundingRect, FlipState, HandlePosition, ImageCropperSchema } from "./image-cropper.types"
 import {
   addPoints,
+  centerCropOnPoint,
   centerRect,
   clampOffset,
   clampPoint,
@@ -21,9 +22,11 @@ import {
   getNudgeStep,
   getTouchDistance,
   getViewportCenter,
+  isAspectRatioEqual,
   isEqualFlip,
   isSameSize,
   isVisibleRect,
+  MIN_PINCH_DISTANCE,
   normalizeFlipState,
   resolveCropAspectRatio,
   scaleRect,
@@ -176,6 +179,10 @@ export const machine = createMachine<ImageCropperSchema>({
     RESET: {
       actions: ["resetToInitialState"],
     },
+    ADJUST_ASPECT_RATIO: {
+      guard: "hasViewportRect",
+      actions: ["adjustCropAspectRatio"],
+    },
   },
 
   computed: {
@@ -192,6 +199,10 @@ export const machine = createMachine<ImageCropperSchema>({
       if (propZoom === currentZoom) return
 
       send({ type: "SET_ZOOM", zoom: propZoom, src: "prop" })
+    })
+
+    track([() => prop("aspectRatio"), () => prop("cropShape")], () => {
+      send({ type: "ADJUST_ASPECT_RATIO", src: "prop" })
     })
   },
 
@@ -391,7 +402,7 @@ export const machine = createMachine<ImageCropperSchema>({
         if (!pointerStart || !cropStart) return
 
         const currentPoint = event.point
-        const delta = subtractPoints(currentPoint, pointerStart)
+        let delta = subtractPoints(currentPoint, pointerStart)
 
         let nextCrop: Rect
 
@@ -415,6 +426,12 @@ export const machine = createMachine<ImageCropperSchema>({
           } else {
             context.set("shiftLockRatio", null)
           }
+
+          // Symmetric resize: double the delta when Alt is pressed
+          if (event.altKey) {
+            delta = { x: delta.x * 2, y: delta.y * 2 }
+          }
+
           nextCrop = computeResizeCrop({
             cropStart,
             handlePosition,
@@ -424,6 +441,13 @@ export const machine = createMachine<ImageCropperSchema>({
             maxSize,
             aspectRatio,
           })
+
+          // Symmetric resize: re-center on original crop center
+          if (event.altKey) {
+            const originalCenter = getCenterPoint(cropStart)
+            const pos = centerCropOnPoint(nextCrop, originalCenter, viewportRect)
+            nextCrop = { ...nextCrop, x: pos.x, y: pos.y }
+          }
         } else {
           nextCrop = computeMoveCrop(cropStart, delta, viewportRect)
         }
@@ -451,7 +475,6 @@ export const machine = createMachine<ImageCropperSchema>({
           offset: addPoints(offsetStart, delta),
           fixedCropArea: prop("fixedCropArea"),
           crop: context.get("crop"),
-          naturalSize: context.get("naturalSize"),
         })
 
         context.set("offset", nextOffset)
@@ -531,7 +554,6 @@ export const machine = createMachine<ImageCropperSchema>({
         const currentOffset = context.get("offset")
         const rotation = context.get("rotation")
         const viewportRect = context.get("viewportRect")
-        const naturalSize = context.get("naturalSize")
         const fixedCropArea = prop("fixedCropArea")
 
         // If no point is specified, zoom based on the center of the crop area
@@ -572,7 +594,6 @@ export const machine = createMachine<ImageCropperSchema>({
             offset,
             fixedCropArea,
             crop,
-            naturalSize,
           })
         }
 
@@ -665,7 +686,7 @@ export const machine = createMachine<ImageCropperSchema>({
           const distanceChange = Math.abs(delta)
 
           // Improve smoothing by ignoring very small changes
-          const hasSignificantZoom = distanceChange > 1
+          const hasSignificantZoom = distanceChange > MIN_PINCH_DISTANCE
 
           const panDelta = subtractPoints(midpoint, lastMidpoint)
 
@@ -770,12 +791,55 @@ export const machine = createMachine<ImageCropperSchema>({
         })
       },
 
-      resetToInitialState({ context }) {
+      resetToInitialState({ context, send }) {
         context.set("zoom", context.initial("zoom"))
         context.set("rotation", context.initial("rotation"))
         context.set("flip", context.initial("flip"))
         context.set("offset", ZERO_POINT)
-        context.set("crop", context.initial("crop"))
+        send({ type: "SET_DEFAULT_CROP", src: "reset" })
+      },
+
+      adjustCropAspectRatio({ context, prop }) {
+        const viewportRect = context.get("viewportRect")
+        if (!isVisibleRect(viewportRect)) return
+
+        const crop = context.get("crop")
+        if (!isVisibleRect(crop)) return
+
+        const cropShape = prop("cropShape")
+        const aspectRatio = resolveCropAspectRatio(cropShape, prop("aspectRatio"))
+
+        // Skip if no aspect ratio constraint or crop already matches
+        if (aspectRatio === undefined) return
+        const currentAspect = crop.width / crop.height
+        if (isAspectRatioEqual(currentAspect, aspectRatio)) return
+
+        const { minSize, maxSize } = getCropSizeLimits(prop)
+
+        // Use existing computeResizeCrop to constrain to new aspect ratio
+        const constrainedCrop = computeResizeCrop({
+          cropStart: crop,
+          handlePosition: "se",
+          delta: ZERO_POINT,
+          viewportRect,
+          minSize,
+          maxSize,
+          aspectRatio,
+        })
+
+        // Skip if dimensions unchanged
+        if (isSameSize(crop, constrainedCrop)) return
+
+        // Re-center the constrained crop on the original center
+        const center = getCenterPoint(crop)
+        const pos = centerCropOnPoint(constrainedCrop, center, viewportRect)
+
+        context.set("crop", {
+          x: pos.x,
+          y: pos.y,
+          width: constrainedCrop.width,
+          height: constrainedCrop.height,
+        })
       },
     },
 
@@ -784,7 +848,7 @@ export const machine = createMachine<ImageCropperSchema>({
         function onPointerMove(event: PointerEvent) {
           const point = getEventPoint(event)
           const target = getEventTarget<Element>(event)
-          send({ type: "POINTER_MOVE", point, target, shiftKey: event.shiftKey })
+          send({ type: "POINTER_MOVE", point, target, shiftKey: event.shiftKey, altKey: event.altKey })
         }
 
         function onPointerUp() {

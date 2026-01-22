@@ -63,6 +63,9 @@ const api = computed(() => imageCropper.connect(service, normalizeProps))
         @input="(e) => api.setRotation(Number((e.target as HTMLInputElement).value))"
       />
     </label>
+    <div>
+      <button type="button" data-testid="reset-button" @click="api.reset()">Reset</button>
+    </div>
   </main>
 
   <Toolbar>
