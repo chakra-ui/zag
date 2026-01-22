@@ -752,11 +752,15 @@ export const machine = createMachine<ImageCropperSchema>({
 
         const oldCrop = context.get("crop")
 
+        // If crop isn't set yet, always try to set default crop
+        if (!isVisibleRect(oldCrop)) {
+          send({ type: "SET_DEFAULT_CROP", src: "viewport-resize" })
+          return
+        }
+
+        // Only scale existing crop if oldViewportRect was valid
         if (!isVisibleRect(oldViewportRect)) {
-          if (!isVisibleRect(oldCrop)) {
-            send({ type: "SET_DEFAULT_CROP", src: "viewport-resize" })
-            return
-          }
+          return
         }
 
         const cropShape = prop("cropShape")
