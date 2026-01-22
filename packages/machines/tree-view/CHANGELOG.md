@@ -1,5 +1,21 @@
 # @zag-js/tree-view
 
+## 1.33.0
+
+### Patch Changes
+
+- [`a908644`](https://github.com/chakra-ui/zag/commit/a9086445116a272c7ac7b761fec3873c43c41a96) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix initial focus issue when the first node or branch is disabled.
+  Added `skip` option to `getFirstNode()` (matching `getLastNode()`) to respect collapsed branches. The initial focus
+  now correctly targets the first visible non-disabled node.
+- Updated dependencies [[`a908644`](https://github.com/chakra-ui/zag/commit/a9086445116a272c7ac7b761fec3873c43c41a96)]:
+  - @zag-js/collection@1.33.0
+  - @zag-js/anatomy@1.33.0
+  - @zag-js/core@1.33.0
+  - @zag-js/types@1.33.0
+  - @zag-js/utils@1.33.0
+  - @zag-js/dom-query@1.33.0
+
 ## 1.32.0
 
 ### Patch Changes
