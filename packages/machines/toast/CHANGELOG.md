@@ -1,5 +1,21 @@
 # @zag-js/toast
 
+## 1.33.0
+
+### Patch Changes
+
+- [`02ad5f7`](https://github.com/chakra-ui/zag/commit/02ad5f7d15fd5240b60de7f9acb69bf27c1ba330) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix issue where toasts created before the state machine connects
+  are not shown
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.33.0
+  - @zag-js/core@1.33.0
+  - @zag-js/types@1.33.0
+  - @zag-js/utils@1.33.0
+  - @zag-js/dismissable@1.33.0
+  - @zag-js/dom-query@1.33.0
+
 ## 1.32.0
 
 ### Patch Changes

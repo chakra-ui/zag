@@ -1,5 +1,25 @@
 # @zag-js/tour
 
+## 1.33.0
+
+### Patch Changes
+
+- [`1e2abab`](https://github.com/chakra-ui/zag/commit/1e2abab021f9d5ed3ab89fac3536ba5c40b89afd) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix janky scroll behavior when navigating between tour steps.
+  Changed `scrollIntoView` to use `block: "nearest"` instead of `block: "center"` so the page only scrolls when the
+  target element is not already visible.
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.33.0
+  - @zag-js/core@1.33.0
+  - @zag-js/types@1.33.0
+  - @zag-js/utils@1.33.0
+  - @zag-js/dismissable@1.33.0
+  - @zag-js/dom-query@1.33.0
+  - @zag-js/focus-trap@1.33.0
+  - @zag-js/interact-outside@1.33.0
+  - @zag-js/popper@1.33.0
+
 ## 1.32.0
 
 ### Patch Changes

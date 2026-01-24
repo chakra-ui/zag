@@ -1,5 +1,22 @@
 # @zag-js/image-cropper
 
+## 1.33.0
+
+### Patch Changes
+
+- [`50c1c01`](https://github.com/chakra-ui/zag/commit/50c1c013a645d3d1315ca03ae39de29607a6cfd2) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - - Fix issue where `reset()` destroys the cropper area
+  - Fix issue where changing `aspectRatio` or `cropShape` props doesn't update the crop instantly
+  - Add symmetric resize support when holding `Alt` key during pointer drag
+  - Fix panning bounds in fixed crop mode at various zoom levels
+  - Fix race condition where initial crop may not compute on page reload
+- Updated dependencies []:
+  - @zag-js/anatomy@1.33.0
+  - @zag-js/core@1.33.0
+  - @zag-js/types@1.33.0
+  - @zag-js/utils@1.33.0
+  - @zag-js/dom-query@1.33.0
+
 ## 1.32.0
 
 ### Patch Changes
