@@ -28,7 +28,7 @@ const SnippetItem = ({
   id: string
 }) => {
   const content = useMDX(body.code)
-  const textContent = body.raw.split("\n").slice(1, -2).join("\n")
+  const textContent = body.raw.split("\n").slice(1, -1).join("\n")
   return (
     <div className="prose" id="snippet" data-framework={id}>
       {content}
@@ -80,16 +80,7 @@ const components: Record<string, FC<any>> = {
     return <Blockquote {...props} />
   },
   h1(props) {
-    return (
-      <styled.h1
-        id="skip-nav"
-        textStyle="display.lg"
-        mb="5"
-        maxW="85ch"
-        tabIndex={-1}
-        {...props}
-      />
-    )
+    return <styled.h1 textStyle="display.lg" mb="5" maxW="85ch" {...props} />
   },
   h2(props) {
     return <styled.h2 textStyle="display.md" mt="12" mb="3" {...props} />
@@ -274,10 +265,29 @@ const components: Record<string, FC<any>> = {
 
 const useMDXComponent = (code: string) => {
   const fn = new Function(code)
-  return fn({ ...runtime }).default
+  const result = fn({ ...runtime })
+
+  // Handle both default export and direct function return
+  if (result && typeof result === "object" && "default" in result) {
+    return result.default
+  }
+
+  // If result is already the component function
+  if (typeof result === "function") {
+    return result
+  }
+
+  // Fallback - return a simple component that displays an error
+  console.error("MDX compilation failed:", { code: code.slice(0, 100), result })
 }
 
 export function useMDX(code: string) {
+  // Handle empty or missing code
+  if (!code || code.trim() === "") {
+    return <div>No content available</div>
+  }
+
+  // eslint-disable-next-line react-hooks/rules-of-hooks
   const MDXComponent = useMDXComponent(code)
   return <MDXComponent components={components as any} />
 }

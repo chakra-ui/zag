@@ -49,7 +49,10 @@ function isDateArrayEqual(a: DateValue[], b: DateValue[] | undefined) {
 }
 
 function getValueAsString(value: DateValue[], prop: PropFn<DatePickerSchema>) {
-  return value.map((date) => prop("format")(date, { locale: prop("locale"), timeZone: prop("timeZone") }))
+  return value.map((date) => {
+    if (date == null) return ""
+    return prop("format")(date, { locale: prop("locale"), timeZone: prop("timeZone") })
+  })
 }
 
 export const machine = createMachine<DatePickerSchema>({
@@ -137,7 +140,7 @@ export const machine = createMachine<DatePickerSchema>({
         defaultValue: prop("defaultValue"),
         value: prop("value"),
         isEqual: isDateArrayEqual,
-        hash: (v) => v.map((date) => date.toString()).join(","),
+        hash: (v) => v.map((date) => date?.toString() ?? "").join(","),
         onChange(value) {
           const context = getContext()
           const valueAsString = getValueAsString(value, prop)
@@ -153,7 +156,7 @@ export const machine = createMachine<DatePickerSchema>({
       })),
       hoveredValue: bindable<DateValue | null>(() => ({
         defaultValue: null,
-        isEqual: (a, b) => b !== null && a !== null && isDateEqual(a, b),
+        isEqual: isDateEqual,
       })),
       view: bindable(() => ({
         defaultValue: prop("defaultView"),
@@ -203,7 +206,7 @@ export const machine = createMachine<DatePickerSchema>({
 
   watch({ track, prop, context, action, computed }) {
     track([() => prop("locale")], () => {
-      action(["setStartValue"])
+      action(["setStartValue", "syncInputElement"])
     })
 
     track([() => context.hash("focusedValue")], () => {
@@ -212,7 +215,7 @@ export const machine = createMachine<DatePickerSchema>({
 
     // Ensure the month/year select reflect the actual visible start value
     track([() => context.hash("startValue")], () => {
-      action(["syncMonthSelectElement", "syncYearSelectElement"])
+      action(["syncMonthSelectElement", "syncYearSelectElement", "invokeOnVisibleRangeChange"])
     })
 
     track([() => context.get("inputValue")], () => {
@@ -736,10 +739,30 @@ export const machine = createMachine<DatePickerSchema>({
         context.set("restoreFocus", true)
       },
       announceValueText({ context, prop, refs }) {
-        const announceText = context
-          .get("value")
-          .map((date) => formatSelectedDate(date, null, prop("locale"), prop("timeZone")))
-        refs.get("announcer")?.announce(announceText.join(","), 3000)
+        const value = context.get("value")
+        const locale = prop("locale")
+        const timeZone = prop("timeZone")
+
+        let announceText: string
+        if (prop("selectionMode") === "range") {
+          const [startDate, endDate] = value
+          if (startDate && endDate) {
+            announceText = formatSelectedDate(startDate, endDate, locale, timeZone)
+          } else if (startDate) {
+            announceText = formatSelectedDate(startDate, null, locale, timeZone)
+          } else if (endDate) {
+            announceText = formatSelectedDate(endDate, null, locale, timeZone)
+          } else {
+            announceText = ""
+          }
+        } else {
+          announceText = value
+            .map((date) => formatSelectedDate(date, null, locale, timeZone))
+            .filter(Boolean)
+            .join(",")
+        }
+
+        refs.get("announcer")?.announce(announceText, 3000)
       },
       announceVisibleRange({ computed, refs }) {
         const { formatted } = computed("visibleRangeText")
@@ -1115,14 +1138,20 @@ export const machine = createMachine<DatePickerSchema>({
         context.set("startValue", startValue)
       },
 
-      invokeOnOpen({ prop }) {
+      invokeOnOpen({ prop, context }) {
         if (prop("inline")) return
-        prop("onOpenChange")?.({ open: true })
+        prop("onOpenChange")?.({ open: true, value: context.get("value") })
       },
 
-      invokeOnClose({ prop }) {
+      invokeOnClose({ prop, context }) {
         if (prop("inline")) return
-        prop("onOpenChange")?.({ open: false })
+        prop("onOpenChange")?.({ open: false, value: context.get("value") })
+      },
+      invokeOnVisibleRangeChange({ prop, context, computed }) {
+        prop("onVisibleRangeChange")?.({
+          view: context.get("view"),
+          visibleRange: computed("visibleRange"),
+        })
       },
 
       toggleVisibility({ event, send, prop }) {

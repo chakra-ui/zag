@@ -523,7 +523,7 @@ export const machine = createMachine<MenuSchema>({
       // whether the trigger item is the active item
       isTriggerItemHighlighted: ({ event, scope, computed }) => {
         const target = (event.target ?? scope.getById(computed("highlightedId")!)) as HTMLElement | null
-        return !!target?.hasAttribute("aria-controls")
+        return !!target?.hasAttribute("data-controls")
       },
       isSubmenu: ({ context }) => context.get("isSubmenu"),
       isPointerSuspended: ({ context }) => context.get("suspendPointer"),

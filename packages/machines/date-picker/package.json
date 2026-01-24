@@ -1,6 +1,6 @@
 {
   "name": "@zag-js/date-picker",
-  "version": "1.26.2",
+  "version": "1.33.0",
   "description": "Core logic for the date-picker widget implemented as a state machine",
   "keywords": [
     "js",
@@ -48,7 +48,7 @@
     "@internationalized/date": ">=3.0.0"
   },
   "devDependencies": {
-    "@internationalized/date": "3.10.0",
+    "@internationalized/date": "3.10.1",
     "clean-package": "2.2.0"
   },
   "clean-package": "../../../clean-package.config.json"

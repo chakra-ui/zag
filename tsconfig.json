@@ -21,7 +21,7 @@
     "strictNullChecks": true,
     "stripInternal": true,
     "ignoreDeprecations": "5.0",
-    "types": ["vitest/globals"],
+    "types": ["vitest/globals", "node"],
     "verbatimModuleSyntax": true
   }
 }

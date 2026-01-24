@@ -27,7 +27,7 @@ export function connect<T extends PropTypes>(
     return {
       highlighted,
       half,
-      checked: equal || (value === -1 && props.index === 1),
+      checked: equal || (value <= 0 && props.index === 1),
     }
   }
 

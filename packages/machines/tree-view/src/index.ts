@@ -5,6 +5,9 @@ export { machine } from "./tree-view.machine"
 export * from "./tree-view.props"
 export type {
   TreeViewApi as Api,
+  TreeViewMachine as Machine,
+  TreeViewProps as Props,
+  TreeViewService as Service,
   CheckedChangeDetails,
   CheckedState,
   CheckedValueMap,
@@ -16,14 +19,13 @@ export type {
   LoadChildrenErrorDetails,
   RenameCompleteDetails,
   RenameStartDetails,
-  TreeViewMachine as Machine,
   NodeProps,
   NodeState,
   NodeWithError,
-  TreeViewProps as Props,
+  ScrollToIndexDetails,
   SelectionChangeDetails,
-  TreeViewService as Service,
   TreeLoadingStatus,
   TreeLoadingStatusMap,
   TreeNode,
+  VisibleNode,
 } from "./tree-view.types"

@@ -4,8 +4,6 @@ description: Using the tags input machine in your project.
 package: "@zag-js/tags-input"
 ---
 
-# Tags Input
-
 Tag inputs render tags inside an input, followed by an actual text input. By
 default, tags are added when text is typed in the input field and the `Enter` or
 `Comma` key is pressed. Throughout the interaction, DOM focus remains on the
@@ -148,13 +146,17 @@ const service = useMachine(tagsInput.machine, {
 Before a tag is added, the machine provides a `validate` function you can use to
 determine whether to accept or reject a tag.
 
-A common use-case for validating tags is preventing duplicates or validating the
-data type.
+> **Note:** Duplicate tags are automatically prevented by design. You don't need
+> to handle this in your `validate` function.
 
-```jsx {2-3}
+Common use-cases for validating tags include enforcing format, length, or
+content rules.
+
+```jsx {2-4}
 const service = useMachine(tagsInput.machine, {
   validate(details) {
-    return !details.values.includes(details.inputValue)
+    // Example: only allow lowercase alphabetic tags
+    return /^[a-z]+$/.test(details.inputValue)
   },
 })
 ```

@@ -1,5 +1,37 @@
 # @zag-js/store
 
+## 1.33.0
+
+## 1.32.0
+
+## 1.31.1
+
+## 1.31.0
+
+## 1.30.0
+
+## 1.29.1
+
+## 1.29.0
+
+## 1.28.0
+
+### Patch Changes
+
+- [`3e55dac`](https://github.com/chakra-ui/zag/commit/3e55dac84f37741cfef965fb6ae7e43d2860f3d5) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix "Illegal invocation" errors by excluding native objects with
+  special `this` bindings from being proxied.
+
+## 1.27.1
+
+## 1.27.0
+
+## 1.26.5
+
+## 1.26.4
+
+## 1.26.3
+
 ## 1.26.2
 
 ## 1.26.1

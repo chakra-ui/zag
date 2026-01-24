@@ -1,4 +1,5 @@
-import { describe, it, expect, vi } from "vitest"
+import { clsx } from "clsx"
+import { describe, expect, it, vi } from "vitest"
 import { mergeProps } from "../src"
 
 describe("mergeProps for Svelte", () => {
@@ -33,10 +34,8 @@ describe("mergeProps for Svelte", () => {
     const className3 = "focus"
 
     const props = mergeProps({ class: className1 }, { class: className2 }, { class: className3 })
-    expect(props.class).toBe("primary hover focus")
-
-    const props2 = mergeProps({ className: className1 }, { className: className2 }, { className: className3 })
-    expect(props2.className).toBe("primary hover focus")
+    // mergeProps returns an array, clsx simulates what Svelte does at render time
+    expect(clsx(props.class)).toBe("primary hover focus")
   })
 
   it("combines styles", () => {
@@ -100,7 +99,7 @@ describe("mergeProps for Svelte", () => {
 
     expect(props[attachmentKey1]).toBe(attachmentFn1)
     expect(props[attachmentKey2]).toBe(attachmentFn2)
-    expect(props.class).toBe("base additional")
+    expect(clsx(props.class)).toBe("base additional")
 
     // Test that symbols are enumerable with getOwnPropertySymbols
     const symbols = Object.getOwnPropertySymbols(props)
@@ -117,7 +116,7 @@ describe("mergeProps for Svelte", () => {
     )
 
     expect(props[attachmentKey]).toBe("second")
-    expect(props.class).toBe("base additional")
+    expect(clsx(props.class)).toBe("base additional")
   })
 
   it("overwrites same symbol key with last value for functions", () => {
@@ -128,6 +127,57 @@ describe("mergeProps for Svelte", () => {
     const props = mergeProps({ [attachmentKey]: fn1, class: "base" }, { [attachmentKey]: fn2, class: "additional" })
 
     expect(props[attachmentKey]).toBe(fn2)
-    expect(props.class).toBe("base additional")
+    expect(clsx(props.class)).toBe("base additional")
+  })
+
+  describe("ClassValue handling (Svelte 5.15+)", () => {
+    it("handles array class values", () => {
+      const props = mergeProps({ class: "base" }, { class: ["foo", "bar"] })
+      expect(clsx(props.class)).toBe("base foo bar")
+    })
+
+    it("handles object class values", () => {
+      const props = mergeProps({ class: "base" }, { class: { active: true, disabled: false, "hover:bg-blue": true } })
+      expect(clsx(props.class)).toBe("base active hover:bg-blue")
+    })
+
+    it("handles mixed arrays and strings", () => {
+      const props = mergeProps({ class: ["foo", "bar"] }, { class: "baz" }, { class: ["qux"] })
+      expect(clsx(props.class)).toBe("foo bar baz qux")
+    })
+
+    it("handles nested arrays in class values", () => {
+      const props = mergeProps({ class: "base" }, { class: ["foo", ["bar", "baz"]] })
+      expect(clsx(props.class)).toBe("base foo bar baz")
+    })
+
+    it("filters falsy values in arrays", () => {
+      const props = mergeProps({ class: "base" }, { class: ["foo", false, "bar", null, "baz", undefined, ""] })
+      expect(clsx(props.class)).toBe("base foo bar baz")
+    })
+
+    it("handles falsy values in objects", () => {
+      const props = mergeProps({ class: "base" }, { class: { active: true, disabled: false, visible: true } })
+      expect(clsx(props.class)).toBe("base active visible")
+    })
+
+    it("preserves Svelte falsy value behavior for primitives", () => {
+      // When null/undefined is provided, it's filtered out and Svelte uses remaining classes
+      const props1 = mergeProps({ class: "base" }, { class: null })
+      expect(clsx(props1.class)).toBe("base")
+
+      const props2 = mergeProps({ class: "base" }, { class: undefined })
+      expect(clsx(props2.class)).toBe("base")
+    })
+
+    it("handles complex real-world scenario", () => {
+      // Simulates a component accepting class prop and merging with internal classes
+      const userProps = { class: ["rounded", { "border-blue": true, "bg-gray": false }] }
+      const internalProps = { class: "component-base" }
+      const conditionalProps = { class: { active: true } }
+
+      const props = mergeProps(internalProps, userProps, conditionalProps)
+      expect(clsx(props.class)).toBe("component-base rounded border-blue active")
+    })
   })
 })

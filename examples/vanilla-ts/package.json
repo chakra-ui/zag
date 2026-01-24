@@ -10,10 +10,10 @@
   },
   "devDependencies": {
     "typescript": "^5.9.3",
-    "vite": "^7.1.9"
+    "vite": "^7.3.0"
   },
   "dependencies": {
-    "@internationalized/date": "3.10.0",
+    "@internationalized/date": "3.10.1",
     "@zag-js/accordion": "workspace:*",
     "@zag-js/anatomy": "workspace:*",
     "@zag-js/anatomy-icons": "workspace:*",
@@ -48,10 +48,12 @@
     "@zag-js/hotkeys": "workspace:*",
     "@zag-js/hover-card": "workspace:*",
     "@zag-js/i18n-utils": "workspace:*",
+    "@zag-js/image-cropper": "workspace:*",
     "@zag-js/interact-outside": "workspace:*",
     "@zag-js/json-tree-utils": "workspace:*",
     "@zag-js/listbox": "workspace:*",
     "@zag-js/live-region": "workspace:*",
+    "@zag-js/marquee": "workspace:*",
     "@zag-js/menu": "workspace:*",
     "@zag-js/navigation-menu": "workspace:*",
     "@zag-js/number-input": "workspace:*",
@@ -67,8 +69,8 @@
     "@zag-js/rating-group": "workspace:*",
     "@zag-js/rect-utils": "workspace:*",
     "@zag-js/remove-scroll": "workspace:*",
-    "@zag-js/scroll-snap": "workspace:*",
     "@zag-js/scroll-area": "workspace:*",
+    "@zag-js/scroll-snap": "workspace:*",
     "@zag-js/select": "workspace:*",
     "@zag-js/shared": "workspace:*",
     "@zag-js/signature-pad": "workspace:*",
@@ -89,8 +91,9 @@
     "@zag-js/tree-view": "workspace:*",
     "@zag-js/types": "workspace:*",
     "@zag-js/utils": "workspace:*",
+    "@zag-js/vanilla": "workspace:*",
     "form-serialize": "0.7.2",
-    "match-sorter": "8.1.0",
+    "match-sorter": "8.2.0",
     "nanoid": "^5.1.6"
   }
 }

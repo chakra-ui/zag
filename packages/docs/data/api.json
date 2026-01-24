@@ -94,7 +94,7 @@
     },
     "context": {
       "ids": {
-        "type": "Partial<{ root: string; thumb: string; hiddenInput: string; control: string; valueText: string; }>",
+        "type": "Partial<{ root: string; thumb: string; hiddenInput: string; control: string; valueText: string; label: string; }>",
         "description": "The ids of the elements in the machine.\nUseful for composition."
       },
       "step": {
@@ -134,6 +134,14 @@
       "name": {
         "type": "string",
         "description": "The name of the slider. Useful for form submission."
+      },
+      "aria-label": {
+        "type": "string",
+        "description": "The accessible label for the slider thumb."
+      },
+      "aria-labelledby": {
+        "type": "string",
+        "description": "The id of the element that labels the slider thumb."
       },
       "dir": {
         "type": "\"ltr\" | \"rtl\"",
@@ -301,17 +309,37 @@
         "type": "boolean",
         "description": "Whether the bottom sheet is open."
       },
-      "activeSnapPoint": {
-        "type": "string | number",
-        "description": "The currently active snap point."
+      "dragging": {
+        "type": "boolean",
+        "description": "Whether the bottom sheet is currently being dragged."
       },
       "setOpen": {
         "type": "(open: boolean) => void",
         "description": "Function to open or close the menu."
       },
+      "snapPoints": {
+        "type": "(string | number)[]",
+        "description": "The snap points of the bottom sheet."
+      },
+      "activeSnapPoint": {
+        "type": "string | number",
+        "description": "The currently active snap point."
+      },
       "setActiveSnapPoint": {
         "type": "(snapPoint: string | number) => void",
         "description": "Function to set the active snap point."
+      },
+      "getOpenPercentage": {
+        "type": "() => number",
+        "description": "Get the current open percentage of the bottom sheet."
+      },
+      "getActiveSnapIndex": {
+        "type": "() => number",
+        "description": "Get the index of the currently active snap point."
+      },
+      "getContentHeight": {
+        "type": "() => number",
+        "description": "Get the current height of the bottom sheet content."
       }
     },
     "context": {
@@ -344,7 +372,8 @@
       },
       "restoreFocus": {
         "type": "boolean",
-        "description": "Whether to restore focus to the element that had focus before the sheet was opened."
+        "description": "Whether to restore focus to the element that had focus before the sheet was opened.",
+        "defaultValue": "true"
       },
       "role": {
         "type": "\"dialog\" | \"alertdialog\"",
@@ -353,7 +382,7 @@
       },
       "open": {
         "type": "boolean",
-        "description": "Whether the bottom sheet is resizable."
+        "description": "Whether the bottom sheet is open."
       },
       "defaultOpen": {
         "type": "boolean",
@@ -381,7 +410,7 @@
       "swipeVelocityThreshold": {
         "type": "number",
         "description": "The threshold velocity (in pixels/s) for closing the bottom sheet.",
-        "defaultValue": "5"
+        "defaultValue": "700"
       },
       "closeThreshold": {
         "type": "number",
@@ -487,6 +516,10 @@
         "type": "() => number",
         "description": "Returns the current scroll progress as a percentage"
       },
+      "getProgressText": {
+        "type": "() => string",
+        "description": "Returns the progress text"
+      },
       "play": {
         "type": "VoidFunction",
         "description": "Function to start/resume autoplay"
@@ -517,6 +550,11 @@
         "type": "number",
         "description": "The number of slides to show at a time.",
         "defaultValue": "1"
+      },
+      "autoSize": {
+        "type": "boolean",
+        "description": "Whether to enable variable width slides.",
+        "defaultValue": "false"
       },
       "slidesPerMove": {
         "type": "number | \"auto\"",
@@ -796,6 +834,14 @@
       "disabled": {
         "type": "boolean",
         "description": "Whether the collapsible is disabled."
+      },
+      "collapsedHeight": {
+        "type": "string | number",
+        "description": "The height of the content when collapsed."
+      },
+      "collapsedWidth": {
+        "type": "string | number",
+        "description": "The width of the content when collapsed."
       },
       "id": {
         "type": "string",
@@ -1177,6 +1223,11 @@
         "type": "boolean",
         "description": "Whether to allow typing custom values in the input"
       },
+      "alwaysSubmitOnEnter": {
+        "type": "boolean",
+        "description": "Whether to always submit on Enter key press, even if popup is open.\nUseful for single-field autocomplete forms where Enter should submit the form.",
+        "defaultValue": "false"
+      },
       "loopFocus": {
         "type": "boolean",
         "description": "Whether to loop the keyboard navigation through the items",
@@ -1281,6 +1332,14 @@
       "open": {
         "type": "boolean",
         "description": "Whether the date picker is open"
+      },
+      "disabled": {
+        "type": "boolean",
+        "description": "Whether the date picker is disabled"
+      },
+      "invalid": {
+        "type": "boolean",
+        "description": "Whether the date picker is invalid"
       },
       "inline": {
         "type": "boolean",
@@ -1457,6 +1516,14 @@
       "readOnly": {
         "type": "boolean",
         "description": "Whether the calendar is read-only."
+      },
+      "required": {
+        "type": "boolean",
+        "description": "Whether the date picker is required"
+      },
+      "invalid": {
+        "type": "boolean",
+        "description": "Whether the date picker is invalid"
       },
       "outsideDaySelectable": {
         "type": "boolean",
@@ -2248,7 +2315,7 @@
       "openDelay": {
         "type": "number",
         "description": "The duration from when the mouse enters the trigger until the hover card opens.",
-        "defaultValue": "700"
+        "defaultValue": "600"
       },
       "closeDelay": {
         "type": "number",
@@ -2295,6 +2362,229 @@
       "onInteractOutside": {
         "type": "(event: InteractOutsideEvent) => void",
         "description": "Function called when an interaction happens outside the component"
+      }
+    }
+  },
+  "image-cropper": {
+    "api": {
+      "zoom": {
+        "type": "number",
+        "description": "The current zoom level of the image."
+      },
+      "rotation": {
+        "type": "number",
+        "description": "The current rotation of the image in degrees."
+      },
+      "flip": {
+        "type": "FlipState",
+        "description": "The current flip state of the image."
+      },
+      "crop": {
+        "type": "Rect",
+        "description": "The current crop area rectangle in viewport coordinates."
+      },
+      "offset": {
+        "type": "Point",
+        "description": "The current offset (pan position) of the image."
+      },
+      "naturalSize": {
+        "type": "Size",
+        "description": "The natural (original) size of the image."
+      },
+      "viewportRect": {
+        "type": "BoundingRect",
+        "description": "The viewport rectangle dimensions and position."
+      },
+      "dragging": {
+        "type": "boolean",
+        "description": "Whether the crop area is currently being dragged."
+      },
+      "panning": {
+        "type": "boolean",
+        "description": "Whether the image is currently being panned."
+      },
+      "setZoom": {
+        "type": "(zoom: number) => void",
+        "description": "Function to set the zoom level of the image."
+      },
+      "zoomBy": {
+        "type": "(delta: number) => void",
+        "description": "Function to zoom the image by a relative amount."
+      },
+      "setRotation": {
+        "type": "(rotation: number) => void",
+        "description": "Function to set the rotation of the image."
+      },
+      "rotateBy": {
+        "type": "(degrees: number) => void",
+        "description": "Function to rotate the image by a relative amount in degrees."
+      },
+      "setFlip": {
+        "type": "(flip: Partial<FlipState>) => void",
+        "description": "Function to set the flip state of the image."
+      },
+      "flipHorizontally": {
+        "type": "(value?: boolean) => void",
+        "description": "Function to flip the image horizontally. Pass a boolean to set explicitly or omit to toggle."
+      },
+      "flipVertically": {
+        "type": "(value?: boolean) => void",
+        "description": "Function to flip the image vertically. Pass a boolean to set explicitly or omit to toggle."
+      },
+      "resize": {
+        "type": "(handlePosition: HandlePosition, delta: number) => void",
+        "description": "Function to resize the crop area from a handle programmatically."
+      },
+      "reset": {
+        "type": "() => void",
+        "description": "Function to reset the cropper to its initial state."
+      },
+      "getCroppedImage": {
+        "type": "(options?: GetCroppedImageOptions) => Promise<string | Blob>",
+        "description": "Function to get the cropped image with all transformations applied.\nReturns a Promise that resolves to either a Blob or data URL."
+      },
+      "getCropData": {
+        "type": "() => CropData",
+        "description": "Function to get the crop data in natural image pixel coordinates.\nThese coordinates are relative to the original image dimensions,\naccounting for zoom, rotation, and flip transformations.\nUse this for server-side cropping or state persistence."
+      }
+    },
+    "context": {
+      "ids": {
+        "type": "Partial<{ root: string; viewport: string; image: string; selection: string; handle: (position: string) => string; }>",
+        "description": "The ids of the image cropper elements"
+      },
+      "translations": {
+        "type": "IntlTranslations",
+        "description": "Specifies the localized strings that identify accessibility elements and their states."
+      },
+      "initialCrop": {
+        "type": "Rect",
+        "description": "The initial rectangle of the crop area.\nIf not provided, a smart default will be computed based on viewport size and aspect ratio."
+      },
+      "minWidth": {
+        "type": "number",
+        "description": "The minimum width of the crop area",
+        "defaultValue": "40"
+      },
+      "minHeight": {
+        "type": "number",
+        "description": "The minimum height of the crop area",
+        "defaultValue": "40"
+      },
+      "maxWidth": {
+        "type": "number",
+        "description": "The maximum width of the crop area",
+        "defaultValue": "Infinity"
+      },
+      "maxHeight": {
+        "type": "number",
+        "description": "The maximum height of the crop area",
+        "defaultValue": "Infinity"
+      },
+      "aspectRatio": {
+        "type": "number",
+        "description": "The aspect ratio to maintain for the crop area (width / height).\nFor example, an aspect ratio of 16 / 9 will maintain a width to height ratio of 16:9.\nIf not provided, the crop area can be freely resized."
+      },
+      "cropShape": {
+        "type": "\"rectangle\" | \"circle\"",
+        "description": "The shape of the crop area.",
+        "defaultValue": "\"rectangle\""
+      },
+      "zoom": {
+        "type": "number",
+        "description": "The controlled zoom level of the image."
+      },
+      "rotation": {
+        "type": "number",
+        "description": "The controlled rotation of the image in degrees (0 - 360)."
+      },
+      "flip": {
+        "type": "FlipState",
+        "description": "The controlled flip state of the image."
+      },
+      "defaultZoom": {
+        "type": "number",
+        "description": "The initial zoom factor to apply to the image.",
+        "defaultValue": "1"
+      },
+      "defaultRotation": {
+        "type": "number",
+        "description": "The initial rotation to apply to the image in degrees.",
+        "defaultValue": "0"
+      },
+      "defaultFlip": {
+        "type": "FlipState",
+        "description": "The initial flip state to apply to the image.",
+        "defaultValue": "{ horizontal: false, vertical: false }"
+      },
+      "zoomStep": {
+        "type": "number",
+        "description": "The amount of zoom applied per wheel step.",
+        "defaultValue": "0.1"
+      },
+      "zoomSensitivity": {
+        "type": "number",
+        "description": "Controls how responsive pinch-to-zoom is.",
+        "defaultValue": "2"
+      },
+      "minZoom": {
+        "type": "number",
+        "description": "The minimum zoom factor allowed.",
+        "defaultValue": "1"
+      },
+      "maxZoom": {
+        "type": "number",
+        "description": "The maximum zoom factor allowed.",
+        "defaultValue": "5"
+      },
+      "nudgeStep": {
+        "type": "number",
+        "description": "The base nudge step for keyboard arrow keys (in pixels).",
+        "defaultValue": "1"
+      },
+      "nudgeStepShift": {
+        "type": "number",
+        "description": "The nudge step when Shift key is held (in pixels).",
+        "defaultValue": "10"
+      },
+      "nudgeStepCtrl": {
+        "type": "number",
+        "description": "The nudge step when Ctrl/Cmd key is held (in pixels).",
+        "defaultValue": "50"
+      },
+      "onZoomChange": {
+        "type": "(details: ZoomChangeDetails) => void",
+        "description": "Callback fired when the zoom level changes."
+      },
+      "onRotationChange": {
+        "type": "(details: RotationChangeDetails) => void",
+        "description": "Callback fired when the rotation changes."
+      },
+      "onFlipChange": {
+        "type": "(details: FlipChangeDetails) => void",
+        "description": "Callback fired when the flip state changes."
+      },
+      "onCropChange": {
+        "type": "(details: CropChangeDetails) => void",
+        "description": "Callback fired when the crop area changes."
+      },
+      "fixedCropArea": {
+        "type": "boolean",
+        "description": "Whether the crop area is fixed in size and position.",
+        "defaultValue": "false"
+      },
+      "dir": {
+        "type": "\"ltr\" | \"rtl\"",
+        "description": "The document's text/writing direction.",
+        "defaultValue": "\"ltr\""
+      },
+      "id": {
+        "type": "string",
+        "description": "The unique identifier of the machine."
+      },
+      "getRootNode": {
+        "type": "() => ShadowRoot | Node | Document",
+        "description": "A root node to correctly resolve document in custom environments. E.x.: Iframes, Electron."
       }
     }
   },
@@ -2441,6 +2731,130 @@
       "onSelect": {
         "type": "(details: SelectionDetails) => void",
         "description": "Function called when an item is selected"
+      },
+      "dir": {
+        "type": "\"ltr\" | \"rtl\"",
+        "description": "The document's text/writing direction.",
+        "defaultValue": "\"ltr\""
+      },
+      "id": {
+        "type": "string",
+        "description": "The unique identifier of the machine."
+      },
+      "getRootNode": {
+        "type": "() => ShadowRoot | Node | Document",
+        "description": "A root node to correctly resolve document in custom environments. E.x.: Iframes, Electron."
+      }
+    }
+  },
+  "marquee": {
+    "api": {
+      "paused": {
+        "type": "boolean",
+        "description": "Whether the marquee is currently paused."
+      },
+      "orientation": {
+        "type": "\"horizontal\" | \"vertical\"",
+        "description": "The current orientation of the marquee."
+      },
+      "side": {
+        "type": "Side",
+        "description": "The current side/direction of the marquee."
+      },
+      "multiplier": {
+        "type": "number",
+        "description": "The multiplier for auto-fill. Indicates how many times to duplicate content.\nWhen autoFill is enabled and content is smaller than container, this returns\nthe number of additional copies needed. Otherwise returns 1."
+      },
+      "contentCount": {
+        "type": "number",
+        "description": "The total number of content elements to render (original + clones).\nUse this value when rendering your content in a loop."
+      },
+      "pause": {
+        "type": "VoidFunction",
+        "description": "Pause the marquee animation."
+      },
+      "resume": {
+        "type": "VoidFunction",
+        "description": "Resume the marquee animation."
+      },
+      "togglePause": {
+        "type": "VoidFunction",
+        "description": "Toggle the pause state."
+      },
+      "restart": {
+        "type": "VoidFunction",
+        "description": "Restart the marquee animation from the beginning."
+      }
+    },
+    "context": {
+      "ids": {
+        "type": "Partial<{ root: string; viewport: string; content: (index: number) => string; }>",
+        "description": "The ids of the elements in the marquee. Useful for composition."
+      },
+      "translations": {
+        "type": "IntlTranslations",
+        "description": "The localized messages to use."
+      },
+      "side": {
+        "type": "Side",
+        "description": "The side/direction the marquee scrolls towards.",
+        "defaultValue": "\"start\""
+      },
+      "speed": {
+        "type": "number",
+        "description": "The speed of the marquee animation in pixels per second.",
+        "defaultValue": "50"
+      },
+      "delay": {
+        "type": "number",
+        "description": "The delay before the animation starts (in seconds).",
+        "defaultValue": "0"
+      },
+      "loopCount": {
+        "type": "number",
+        "description": "The number of times to loop the animation (0 = infinite).",
+        "defaultValue": "0"
+      },
+      "spacing": {
+        "type": "string",
+        "description": "The spacing between marquee items.",
+        "defaultValue": "\"1rem\""
+      },
+      "autoFill": {
+        "type": "boolean",
+        "description": "Whether to automatically duplicate content to fill the container.",
+        "defaultValue": "false"
+      },
+      "pauseOnInteraction": {
+        "type": "boolean",
+        "description": "Whether to pause the marquee on user interaction (hover, focus).",
+        "defaultValue": "false"
+      },
+      "reverse": {
+        "type": "boolean",
+        "description": "Whether to reverse the animation direction.",
+        "defaultValue": "false"
+      },
+      "paused": {
+        "type": "boolean",
+        "description": "Whether the marquee is paused."
+      },
+      "defaultPaused": {
+        "type": "boolean",
+        "description": "Whether the marquee is paused by default.",
+        "defaultValue": "false"
+      },
+      "onPauseChange": {
+        "type": "(details: PauseStatusDetails) => void",
+        "description": "Function called when the pause status changes."
+      },
+      "onLoopComplete": {
+        "type": "() => void",
+        "description": "Function called when the marquee completes one loop iteration."
+      },
+      "onComplete": {
+        "type": "() => void",
+        "description": "Function called when the marquee completes all loops and stops.\nOnly fires for finite loops (loopCount > 0)."
       },
       "dir": {
         "type": "\"ltr\" | \"rtl\"",
@@ -2618,22 +3032,26 @@
         "type": "boolean",
         "description": "Whether the menu is open"
       },
-      "setParent": {
-        "type": "(parent: NavigationMenuService) => void",
-        "description": "Sets the parent of the menu"
+      "isViewportRendered": {
+        "type": "boolean",
+        "description": "Whether the viewport is rendered"
       },
-      "setChild": {
-        "type": "(child: NavigationMenuService) => void",
-        "description": "Sets the child of the menu"
+      "getViewportNode": {
+        "type": "() => HTMLElement",
+        "description": "Gets the viewport node element"
       },
       "orientation": {
         "type": "Orientation",
         "description": "The orientation of the menu"
+      },
+      "reposition": {
+        "type": "VoidFunction",
+        "description": "Function to reposition the viewport"
       }
     },
     "context": {
       "ids": {
-        "type": "Partial<{ root: string; list: string; item: string; indicator: string; trigger: (value: string) => string; content: (value: string) => string; viewport: string; }>",
+        "type": "Partial<{ root: string; list: string; item: string; trigger: (value: string) => string; content: (value: string) => string; viewport: string; }>",
         "description": "The ids of the elements in the machine."
       },
       "value": {
@@ -2665,6 +3083,10 @@
       "disableHoverTrigger": {
         "type": "boolean",
         "description": "Whether to disable the hover trigger"
+      },
+      "disablePointerLeaveClose": {
+        "type": "boolean",
+        "description": "Whether to disable the pointer leave close"
       },
       "dir": {
         "type": "\"ltr\" | \"rtl\"",
@@ -2974,6 +3396,10 @@
         "type": "\"button\" | \"link\"",
         "description": "The type of the trigger element",
         "defaultValue": "\"button\""
+      },
+      "getPageUrl": {
+        "type": "(details: PageUrlDetails) => string",
+        "description": "Function to generate href attributes for pagination links.\nOnly used when `type` is set to \"link\"."
       },
       "dir": {
         "type": "\"ltr\" | \"rtl\"",
@@ -4265,6 +4691,10 @@
         "type": "boolean",
         "description": "Whether the splitter is currently being resized."
       },
+      "orientation": {
+        "type": "\"horizontal\" | \"vertical\"",
+        "description": "The orientation of the splitter."
+      },
       "getSizes": {
         "type": "() => number[]",
         "description": "Returns the current sizes of the panels."
@@ -4276,6 +4706,14 @@
       "getItems": {
         "type": "() => SplitterItem[]",
         "description": "Returns the items of the splitter."
+      },
+      "getPanels": {
+        "type": "() => PanelData[]",
+        "description": "Returns the panels of the splitter."
+      },
+      "getPanelById": {
+        "type": "(id: string) => PanelData",
+        "description": "Returns the panel with the specified id."
       },
       "getPanelSize": {
         "type": "(id: string) => number",
@@ -4308,6 +4746,10 @@
       "resetSizes": {
         "type": "VoidFunction",
         "description": "Resets the splitter to its initial state."
+      },
+      "getResizeTriggerState": {
+        "type": "(props: ResizeTriggerProps) => ResizeTriggerState",
+        "description": "Returns the state of the resize trigger."
       }
     },
     "context": {
@@ -5482,6 +5924,18 @@
       "expandParent": {
         "type": "(value: string) => void",
         "description": "Function to expand the parent node of the focused node"
+      },
+      "startRenaming": {
+        "type": "(value: string) => void",
+        "description": "Function to start renaming a node by value"
+      },
+      "submitRenaming": {
+        "type": "(value: string, label: string) => void",
+        "description": "Function to submit the rename and update the node label"
+      },
+      "cancelRenaming": {
+        "type": "() => void",
+        "description": "Function to cancel renaming without changes"
       }
     },
     "context": {
@@ -5545,6 +5999,22 @@
       "onCheckedChange": {
         "type": "(details: CheckedChangeDetails) => void",
         "description": "Called when the checked value changes"
+      },
+      "canRename": {
+        "type": "(node: T, indexPath: IndexPath) => boolean",
+        "description": "Function to determine if a node can be renamed"
+      },
+      "onRenameStart": {
+        "type": "(details: RenameStartDetails<T>) => void",
+        "description": "Called when a node starts being renamed"
+      },
+      "onBeforeRename": {
+        "type": "(details: RenameCompleteDetails) => boolean",
+        "description": "Called before a rename is completed. Return false to prevent the rename."
+      },
+      "onRenameComplete": {
+        "type": "(details: RenameCompleteDetails) => void",
+        "description": "Called when a node label rename is completed"
       },
       "onLoadChildrenComplete": {
         "type": "(details: LoadChildrenCompleteDetails<T>) => void",

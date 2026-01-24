@@ -27,7 +27,7 @@ export function Listbox(props: ListboxProps) {
     <div {...api.getRootProps()}>
       <ul {...api.getContentProps()}>
         {groups.map(([group, items]) => (
-          <div {...api.getItemGroupProps({ id: group })}>
+          <div key={group} {...api.getItemGroupProps({ id: group })}>
             <p {...api.getItemGroupLabelProps({ htmlFor: group })}>{group}</p>
             {items.map((item) => (
               <div key={item.id} {...api.getItemProps({ item })}>

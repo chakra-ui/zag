@@ -1,9 +1,9 @@
 module.exports = {
-  eslint: { ignoreDuringBuilds: true },
   typescript: { ignoreBuildErrors: true },
   experimental: {
     externalDir: true,
   },
+  turbopack: {},
   webpack: (config) => {
     config.module.rules.push({
       test: /\.m?js$/,

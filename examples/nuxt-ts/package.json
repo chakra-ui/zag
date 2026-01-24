@@ -9,7 +9,7 @@
     "postinstall": "nuxt prepare"
   },
   "dependencies": {
-    "@internationalized/date": "3.10.0",
+    "@internationalized/date": "3.10.1",
     "@zag-js/accordion": "workspace:*",
     "@zag-js/anatomy": "workspace:*",
     "@zag-js/anatomy-icons": "workspace:*",
@@ -44,10 +44,12 @@
     "@zag-js/hotkeys": "workspace:*",
     "@zag-js/hover-card": "workspace:*",
     "@zag-js/i18n-utils": "workspace:*",
+    "@zag-js/image-cropper": "workspace:*",
     "@zag-js/interact-outside": "workspace:*",
     "@zag-js/json-tree-utils": "workspace:*",
     "@zag-js/listbox": "workspace:*",
     "@zag-js/live-region": "workspace:*",
+    "@zag-js/marquee": "workspace:*",
     "@zag-js/menu": "workspace:*",
     "@zag-js/navigation-menu": "workspace:*",
     "@zag-js/number-input": "workspace:*",
@@ -63,8 +65,8 @@
     "@zag-js/rating-group": "workspace:*",
     "@zag-js/rect-utils": "workspace:*",
     "@zag-js/remove-scroll": "workspace:*",
-    "@zag-js/scroll-snap": "workspace:*",
     "@zag-js/scroll-area": "workspace:*",
+    "@zag-js/scroll-snap": "workspace:*",
     "@zag-js/select": "workspace:*",
     "@zag-js/shared": "workspace:*",
     "@zag-js/signature-pad": "workspace:*",
@@ -88,15 +90,15 @@
     "@zag-js/vue": "workspace:*",
     "epic-spinners": "2.0.0",
     "form-serialize": "0.7.2",
-    "lucide-vue-next": "0.545.0",
-    "match-sorter": "8.1.0",
-    "vue": "3.5.22",
-    "vue-router": "4.5.1"
+    "lucide-vue-next": "0.562.0",
+    "match-sorter": "8.2.0",
+    "vue": "3.5.26",
+    "vue-router": "4.6.4"
   },
   "devDependencies": {
-    "@nuxt/devtools": "^2.6.5",
+    "@nuxt/devtools": "^3.1.1",
     "@types/form-serialize": "0.7.4",
-    "@types/node": "24.7.0",
-    "nuxt": "4.1.3"
+    "@types/node": "25.0.3",
+    "nuxt": "4.2.2"
   }
 }

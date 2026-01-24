@@ -22,6 +22,7 @@ export interface HighlightChangeDetails<T extends CollectionItem = CollectionIte
 
 export interface OpenChangeDetails {
   open: boolean
+  value: string[]
 }
 
 export interface ScrollToIndexDetails {
@@ -53,9 +54,7 @@ export type ElementIds = Partial<{
 }>
 
 export interface SelectProps<T extends CollectionItem = CollectionItem>
-  extends DirectionProperty,
-    CommonProperties,
-    InteractOutsideHandlers {
+  extends DirectionProperty, CommonProperties, InteractOutsideHandlers {
   /**
    * The item collection
    */

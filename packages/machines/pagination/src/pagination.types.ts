@@ -30,16 +30,20 @@ export interface PageUrlDetails {
 
 export interface IntlTranslations {
   rootLabel?: string | undefined
+  firstTriggerLabel?: string | undefined
   prevTriggerLabel?: string | undefined
   nextTriggerLabel?: string | undefined
+  lastTriggerLabel?: string | undefined
   itemLabel?: ((details: ItemLabelDetails) => string) | undefined
 }
 
 export type ElementIds = Partial<{
   root: string
   ellipsis: (index: number) => string
+  firstTrigger: string
   prevTrigger: string
   nextTrigger: string
+  lastTrigger: string
   item: (page: number) => string
 }>
 
@@ -72,6 +76,11 @@ export interface PaginationProps extends DirectionProperty, CommonProperties {
    */
   siblingCount?: number | undefined
   /**
+   * Number of pages to show at the beginning and end
+   * @default 1
+   */
+  boundaryCount?: number | undefined
+  /**
    * The controlled active page
    */
   page?: number | undefined
@@ -101,7 +110,14 @@ export interface PaginationProps extends DirectionProperty, CommonProperties {
   getPageUrl?: ((details: PageUrlDetails) => string) | undefined
 }
 
-type PropsWithDefault = "defaultPageSize" | "defaultPage" | "siblingCount" | "translations" | "type" | "count"
+type PropsWithDefault =
+  | "defaultPageSize"
+  | "defaultPage"
+  | "siblingCount"
+  | "boundaryCount"
+  | "translations"
+  | "type"
+  | "count"
 
 interface PrivateContext {
   page: number
@@ -231,6 +247,8 @@ export interface PaginationApi<T extends PropTypes = PropTypes> {
   getRootProps: () => T["element"]
   getEllipsisProps: (props: EllipsisProps) => T["element"]
   getItemProps: (props: ItemProps) => T["element"]
+  getFirstTriggerProps: () => T["element"]
   getPrevTriggerProps: () => T["element"]
   getNextTriggerProps: () => T["element"]
+  getLastTriggerProps: () => T["element"]
 }

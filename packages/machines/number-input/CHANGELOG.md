@@ -1,5 +1,180 @@
 # @zag-js/number-input
 
+## 1.33.0
+
+### Patch Changes
+
+- [`c60fca8`](https://github.com/chakra-ui/zag/commit/c60fca80f309dafe7eca48d8ca780650466246f3) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix cursor positioning when clicking label or after scrubbing. The
+  cursor now moves to the end of the input value instead of the start.
+
+  This ensures consistent behavior when:
+  - Clicking the label to focus the input
+  - Completing a scrub gesture to adjust the value
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.33.0
+  - @zag-js/core@1.33.0
+  - @zag-js/types@1.33.0
+  - @zag-js/utils@1.33.0
+  - @zag-js/dom-query@1.33.0
+
+## 1.32.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.32.0
+  - @zag-js/core@1.32.0
+  - @zag-js/types@1.32.0
+  - @zag-js/utils@1.32.0
+  - @zag-js/dom-query@1.32.0
+
+## 1.31.1
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.31.1
+  - @zag-js/core@1.31.1
+  - @zag-js/types@1.31.1
+  - @zag-js/utils@1.31.1
+  - @zag-js/dom-query@1.31.1
+
+## 1.31.0
+
+### Minor Changes
+
+- [`15fd93e`](https://github.com/chakra-ui/zag/commit/15fd93eb12003cfe9b2bada3cb9088204ef0810a) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Add `onValueCommit` callback that fires when the input loses focus
+  or Enter is pressed
+
+### Patch Changes
+
+- [`c59c574`](https://github.com/chakra-ui/zag/commit/c59c5741e525a6c67ac8fe6d632effa0adee8f3b) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix cursor jumping to start when value is changed externally via
+  props while user is typing
+
+- [`42f5b8e`](https://github.com/chakra-ui/zag/commit/42f5b8ebeb17647e7d0980b9efa76fcc3b0e1fee) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - - Fixed issue where input element doesn't sync when
+  `formatOptions` changes dynamically.
+  - Ensure cursor position is preserved when `Enter` key is pressed and formatting is triggered.
+- Updated dependencies []:
+  - @zag-js/anatomy@1.31.0
+  - @zag-js/core@1.31.0
+  - @zag-js/types@1.31.0
+  - @zag-js/utils@1.31.0
+  - @zag-js/dom-query@1.31.0
+
+## 1.30.0
+
+### Patch Changes
+
+- [`da6b295`](https://github.com/chakra-ui/zag/commit/da6b295e6edb3e692ef1622ebc770a4e151d7dc3) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Improve controlled usage by ensuring input element stays synced
+  with controlled value
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.30.0
+  - @zag-js/core@1.30.0
+  - @zag-js/types@1.30.0
+  - @zag-js/utils@1.30.0
+  - @zag-js/dom-query@1.30.0
+
+## 1.29.1
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.29.1
+  - @zag-js/core@1.29.1
+  - @zag-js/types@1.29.1
+  - @zag-js/utils@1.29.1
+  - @zag-js/dom-query@1.29.1
+
+## 1.29.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.29.0
+  - @zag-js/core@1.29.0
+  - @zag-js/types@1.29.0
+  - @zag-js/utils@1.29.0
+  - @zag-js/dom-query@1.29.0
+
+## 1.28.0
+
+### Patch Changes
+
+- Updated dependencies [[`c59e4f5`](https://github.com/chakra-ui/zag/commit/c59e4f5b9bc43de85649d4de95e8bf270c16acab),
+  [`c656df8`](https://github.com/chakra-ui/zag/commit/c656df8846733f7b6241d152d76b515a95d6841a)]:
+  - @zag-js/dom-query@1.28.0
+  - @zag-js/core@1.28.0
+  - @zag-js/anatomy@1.28.0
+  - @zag-js/types@1.28.0
+  - @zag-js/utils@1.28.0
+
+## 1.27.1
+
+### Patch Changes
+
+- [#2822](https://github.com/chakra-ui/zag/pull/2822)
+  [`a372b95`](https://github.com/chakra-ui/zag/commit/a372b955911f78632665c7df86365414f64ac1f0) Thanks
+  [@nelsonlaidev](https://github.com/nelsonlaidev)! - Export missing types
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.27.1
+  - @zag-js/core@1.27.1
+  - @zag-js/types@1.27.1
+  - @zag-js/utils@1.27.1
+  - @zag-js/dom-query@1.27.1
+
+## 1.27.0
+
+### Patch Changes
+
+- Updated dependencies [[`cf6fb09`](https://github.com/chakra-ui/zag/commit/cf6fb0956aeacc236531ee90de9169a39cdde3a5),
+  [`920e727`](https://github.com/chakra-ui/zag/commit/920e727f73940aed3c6d2b886c64200a4a5702d0)]:
+  - @zag-js/dom-query@1.27.0
+  - @zag-js/utils@1.27.0
+  - @zag-js/core@1.27.0
+  - @zag-js/anatomy@1.27.0
+  - @zag-js/types@1.27.0
+
+## 1.26.5
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.26.5
+  - @zag-js/core@1.26.5
+  - @zag-js/types@1.26.5
+  - @zag-js/utils@1.26.5
+  - @zag-js/dom-query@1.26.5
+
+## 1.26.4
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.26.4
+  - @zag-js/core@1.26.4
+  - @zag-js/types@1.26.4
+  - @zag-js/utils@1.26.4
+  - @zag-js/dom-query@1.26.4
+
+## 1.26.3
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.26.3
+  - @zag-js/core@1.26.3
+  - @zag-js/types@1.26.3
+  - @zag-js/utils@1.26.3
+  - @zag-js/dom-query@1.26.3
+
 ## 1.26.2
 
 ### Patch Changes

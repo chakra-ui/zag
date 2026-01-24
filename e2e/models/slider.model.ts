@@ -19,6 +19,10 @@ export class SliderModel extends Model {
     return this.page.locator(`[data-scope='slider'][data-part='thumb'][data-index='${index}']`)
   }
 
+  get control() {
+    return this.page.locator("[data-scope='slider'][data-part='control']")
+  }
+
   get track() {
     return this.page.locator("[data-scope='slider'][data-part='track']")
   }
@@ -35,23 +39,39 @@ export class SliderModel extends Model {
     return expect(this.output).toHaveText(value)
   }
 
+  /**
+   * Calculate a point on the track for a given value percentage.
+   * Accounts for thumb inset in "contain" alignment mode.
+   */
   private async getTrackPoint(percent: { x?: number; y?: number }) {
     const orientation = await this.track.getAttribute("data-orientation")
     const vertical = orientation === "vertical"
 
-    const bbox = await rect(this.track)
+    const controlBbox = await rect(this.control)
+    const thumbBbox = await rect(this.getThumb(0))
+
+    // Get thumb size for inset calculation (contain mode)
+    const thumbSize = vertical ? thumbBbox.height : thumbBbox.width
+    const thumbInset = thumbSize / 2
+
+    // Calculate effective range (accounting for thumb inset in contain mode)
+    const effectiveStart = vertical ? controlBbox.y + thumbInset : controlBbox.x + thumbInset
+    const effectiveSize = vertical ? controlBbox.height - thumbSize : controlBbox.width - thumbSize
+
     let x: number, y: number
 
     if (percent.x != null && !vertical) {
-      x = bbox.x + bbox.width * percent.x
+      // Map value percentage to actual position accounting for thumb inset
+      x = effectiveStart + effectiveSize * percent.x
     } else {
-      x = bbox.midX
+      x = controlBbox.midX
     }
 
     if (percent.y != null && vertical) {
-      y = bbox.y + bbox.height * percent.y
+      // For vertical, y=0 is at the bottom (max value)
+      y = effectiveStart + effectiveSize * (1 - percent.y)
     } else {
-      y = bbox.midY
+      y = controlBbox.midY
     }
 
     return { x, y }
@@ -59,12 +79,8 @@ export class SliderModel extends Model {
 
   async mousedownAt(percent: { x?: number; y?: number }) {
     const point = await this.getTrackPoint(percent)
-    const eventInit: PointerEventInit = {
-      button: 0,
-      clientX: point.x,
-      clientY: point.y,
-    }
-    await this.track.dispatchEvent("pointerdown", eventInit)
+    await this.page.mouse.move(point.x, point.y)
+    await this.page.mouse.down()
   }
 
   async mousemoveTo(percent: { x?: number; y?: number }) {

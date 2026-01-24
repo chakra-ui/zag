@@ -4,11 +4,12 @@ export { machine } from "./steps.machine"
 export * from "./steps.props"
 export type {
   StepsApi as Api,
+  StepsMachine as Machine,
   StepsProps as Props,
+  StepsService as Service,
   ElementIds,
   ItemProps,
   ItemState,
-  StepsMachine as Machine,
-  StepsService as Service,
   StepChangeDetails,
+  StepInvalidDetails,
 } from "./steps.types"

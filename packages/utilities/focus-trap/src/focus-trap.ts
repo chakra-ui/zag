@@ -130,12 +130,8 @@ export class FocusTrap {
       escapeDeactivates: true,
       delayInitialFocus: true,
       followControlledElements: true,
-      isKeyForward(e) {
-        return isTabEvent(e) && !e.shiftKey
-      },
-      isKeyBackward(e) {
-        return isTabEvent(e) && e.shiftKey
-      },
+      isKeyForward,
+      isKeyBackward,
       ...options,
     }
 
@@ -164,32 +160,48 @@ export class FocusTrap {
 
   private updateTabbableNodes() {
     this.state.containerGroups = this.state.containers.map((container) => {
-      const tabbableNodes = getTabbables(container)
-      const focusableNodes = getFocusables(container)
+      const tabbableNodes = getTabbables(container, { getShadowRoot: this.config.getShadowRoot })
+      const focusableNodes = getFocusables(container, { getShadowRoot: this.config.getShadowRoot })
 
-      const firstTabbableNode = tabbableNodes.length > 0 ? tabbableNodes[0] : undefined
-      const lastTabbableNode = tabbableNodes.length > 0 ? tabbableNodes[tabbableNodes.length - 1] : undefined
+      const firstTabbableNode = tabbableNodes[0]
+      const lastTabbableNode = tabbableNodes[tabbableNodes.length - 1]
 
-      const firstDomTabbableNode = focusableNodes.find((node) => isTabbable(node))
-      const lastDomTabbableNode = focusableNodes
-        .slice()
-        .reverse()
-        .find((node) => isTabbable(node))
+      // Use tabbableNodes directly instead of searching through focusableNodes
+      const firstDomTabbableNode = firstTabbableNode
+      const lastDomTabbableNode = lastTabbableNode
 
-      const posTabIndexesFound = !!tabbableNodes.find((node) => getTabIndex(node) > 0)
+      // Optimize: single iteration with early exit
+      let posTabIndexesFound = false
+      for (let i = 0; i < tabbableNodes.length; i++) {
+        if (getTabIndex(tabbableNodes[i]) > 0) {
+          posTabIndexesFound = true
+          break
+        }
+      }
 
       function nextTabbableNode(node: HTMLElement, forward = true) {
         const nodeIdx = tabbableNodes.indexOf(node)
-        if (nodeIdx < 0) {
-          if (forward) {
-            return focusableNodes.slice(focusableNodes.indexOf(node) + 1).find((el) => isTabbable(el))
-          }
-          return focusableNodes
-            .slice(0, focusableNodes.indexOf(node))
-            .reverse()
-            .find((el) => isTabbable(el))
+
+        if (nodeIdx >= 0) {
+          return tabbableNodes[nodeIdx + (forward ? 1 : -1)]
         }
-        return tabbableNodes[nodeIdx + (forward ? 1 : -1)]
+
+        // Node not in tabbableNodes, find it in focusableNodes
+        const focusableIdx = focusableNodes.indexOf(node)
+        if (focusableIdx < 0) return undefined
+
+        // Search for next/prev tabbable without allocations
+        if (forward) {
+          for (let i = focusableIdx + 1; i < focusableNodes.length; i++) {
+            if (isTabbable(focusableNodes[i])) return focusableNodes[i]
+          }
+        } else {
+          for (let i = focusableIdx - 1; i >= 0; i--) {
+            if (isTabbable(focusableNodes[i])) return focusableNodes[i]
+          }
+        }
+
+        return undefined
       }
 
       return {
@@ -849,7 +861,11 @@ export class FocusTrap {
   }
 }
 
-const isTabEvent = (event: KeyboardEvent) => event.key === "Tab"
+const isKeyboardEvent = (event: Event): event is KeyboardEvent => event.type === "keydown"
+const isTabEvent = (event: Event) => isKeyboardEvent(event) && event?.key === "Tab"
+
+const isKeyForward = (e: Event) => isKeyboardEvent(e) && e.key === "Tab" && !e?.shiftKey
+const isKeyBackward = (e: Event) => isKeyboardEvent(e) && e.key === "Tab" && e?.shiftKey
 
 const valueOrHandler = (value: any, ...params: any[]) => (typeof value === "function" ? value(...params) : value)
 

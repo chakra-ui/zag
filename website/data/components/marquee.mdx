@@ -1,0 +1,519 @@
+---
+title: Marquee
+description: Using the marquee machine in your project.
+package: "@zag-js/marquee"
+---
+
+An accessible auto-scrolling marquee component for displaying scrolling content
+like logos, announcements, or featured items.
+
+<Resources pkg="@zag-js/marquee" />
+
+<Showcase id="Marquee" />
+
+**Features**
+
+- Smooth GPU-accelerated animations with seamless looping
+- Horizontal and vertical scrolling with RTL support
+- Pause on hover and keyboard focus
+- Customizable speed and spacing
+- Accessible and respects `prefers-reduced-motion`
+
+## Installation
+
+To use the marquee machine in your project, run the following command in your
+command line:
+
+<CodeSnippet id="marquee/installation.mdx" />
+
+## Anatomy
+
+To set up the marquee correctly, you'll need to understand its anatomy and how
+we name its parts.
+
+> Each part includes a `data-part` attribute to help identify them in the DOM.
+
+<Anatomy id="marquee" />
+
+## Usage
+
+First, import the marquee package into your project
+
+```jsx
+import * as marquee from "@zag-js/marquee"
+```
+
+The marquee package exports two key functions:
+
+- `machine` — The state machine logic for the marquee widget.
+- `connect` — The function that translates the machine's state to JSX attributes
+  and event handlers.
+
+> You'll also need to provide a unique `id` to the `useMachine` hook. This is
+> used to ensure that every part has a unique identifier.
+
+Next, import the required hooks and functions for your framework and use the
+marquee machine in your project 🔥
+
+<CodeSnippet id="marquee/usage.mdx" />
+
+### Auto-filling content
+
+To automatically duplicate content to fill the container and prevent gaps during
+animation, set the `autoFill` property in the machine's context to `true`.
+
+```jsx {2}
+const service = useMachine(marquee.machine, {
+  autoFill: true,
+})
+```
+
+The `api.contentCount` property tells you the total number of content elements
+to render (original + clones). Use this value in your loop:
+
+```jsx
+{
+  Array.from({ length: api.contentCount }).map((_, index) => (
+    <div key={index} {...api.getContentProps({ index })}>
+      {/* Your content */}
+    </div>
+  ))
+}
+```
+
+> **Note:** The `api.multiplier` property is also available if you need to know
+> the duplication factor specifically (number of clones excluding the original).
+
+### Changing the scroll direction
+
+To change the scroll direction, set the `side` property in the machine's context
+to one of: `"start"`, `"end"`, `"top"`, or `"bottom"`.
+
+```jsx {2}
+const service = useMachine(marquee.machine, {
+  side: "end", // scrolls from right to left in LTR
+})
+```
+
+**Directional behavior:**
+
+- `"start"` — Scrolls from inline-start to inline-end (respects RTL)
+- `"end"` — Scrolls from inline-end to inline-start (respects RTL)
+- `"top"` — Scrolls from bottom to top (vertical)
+- `"bottom"` — Scrolls from top to bottom (vertical)
+
+### Adjusting animation speed
+
+To control how fast the marquee scrolls, set the `speed` property in the
+machine's context. The value is in pixels per second.
+
+```jsx {2}
+const service = useMachine(marquee.machine, {
+  speed: 100, // 100 pixels per second
+})
+```
+
+**Considerations:**
+
+- Higher values create faster scrolling
+- Lower values create slower, more readable scrolling
+- Speed is automatically adjusted based on content and container size
+
+### Setting spacing between items
+
+To customize the gap between marquee items, set the `spacing` property in the
+machine's context to a valid CSS unit.
+
+```jsx {2}
+const service = useMachine(marquee.machine, {
+  spacing: "2rem",
+})
+```
+
+### Reversing the animation direction
+
+To reverse the animation direction without changing the scroll side, set the
+`reverse` property in the machine's context to `true`.
+
+```jsx {2}
+const service = useMachine(marquee.machine, {
+  reverse: true,
+})
+```
+
+### Pausing on user interaction
+
+To pause the marquee when the user hovers or focuses any element inside it, set
+the `pauseOnInteraction` property in the machine's context to `true`.
+
+```jsx {2}
+const service = useMachine(marquee.machine, {
+  pauseOnInteraction: true,
+})
+```
+
+This is especially important for accessibility when your marquee contains
+interactive elements like links or buttons.
+
+### Setting initial paused state
+
+To start the marquee in a paused state, set the `defaultPaused` property in the
+machine's context to `true`.
+
+```jsx {2}
+const service = useMachine(marquee.machine, {
+  defaultPaused: true,
+})
+```
+
+### Delaying the animation start
+
+To add a delay before the animation starts, set the `delay` property in the
+machine's context to a value in seconds.
+
+```jsx {2}
+const service = useMachine(marquee.machine, {
+  delay: 2, // 2 second delay
+})
+```
+
+### Limiting loop iterations
+
+By default, the marquee loops infinitely. To limit the number of loops, set the
+`loopCount` property in the machine's context.
+
+```jsx {2}
+const service = useMachine(marquee.machine, {
+  loopCount: 3, // stops after 3 complete loops
+})
+```
+
+> Setting `loopCount` to `0` (default) creates an infinite loop.
+
+### Listening for loop completion
+
+When the marquee completes a single loop iteration, the `onLoopComplete`
+callback is invoked.
+
+```jsx {2-4}
+const service = useMachine(marquee.machine, {
+  onLoopComplete() {
+    console.log("Completed one loop")
+  },
+})
+```
+
+### Listening for animation completion
+
+When the marquee completes all loops and stops (only for finite loops), the
+`onComplete` callback is invoked.
+
+```jsx {2-4}
+const service = useMachine(marquee.machine, {
+  loopCount: 3,
+  onComplete() {
+    console.log("Marquee finished all loops")
+  },
+})
+```
+
+### Controlling the marquee programmatically
+
+The marquee API provides methods to control playback:
+
+```jsx
+// Pause the marquee
+api.pause()
+
+// Resume the marquee
+api.resume()
+
+// Toggle pause state
+api.togglePause()
+
+// Restart the animation from the beginning
+api.restart()
+```
+
+### Monitoring pause state changes
+
+When the marquee pause state changes, the `onPauseChange` callback is invoked.
+
+```jsx {2-5}
+const service = useMachine(marquee.machine, {
+  onPauseChange(details) {
+    // details => { paused: boolean }
+    console.log("Marquee is now:", details.paused ? "paused" : "playing")
+  },
+})
+```
+
+### Adding fade gradients at edges
+
+To add fade gradients at the edges of the marquee, use the `getEdgeProps`
+method:
+
+```jsx
+<div {...api.getRootProps()}>
+  {/* Fade gradient at start */}
+  <div {...api.getEdgeProps({ side: "start" })} />
+
+  <div {...api.getViewportProps()}>{/* Content */}</div>
+
+  {/* Fade gradient at end */}
+  <div {...api.getEdgeProps({ side: "end" })} />
+</div>
+```
+
+Style the edge gradients using CSS:
+
+```css
+[data-part="edge"][data-side="start"] {
+  width: 100px;
+  background: linear-gradient(to right, white, transparent);
+}
+
+[data-part="edge"][data-side="end"] {
+  width: 100px;
+  background: linear-gradient(to left, white, transparent);
+}
+```
+
+## Styling guide
+
+### Required keyframe animations
+
+For the marquee to work, you **must** include the required keyframe animations
+in your CSS. These animations control the scrolling behavior:
+
+```css
+@keyframes marqueeX {
+  0% {
+    transform: translateX(0%);
+  }
+  100% {
+    transform: translateX(var(--marquee-translate));
+  }
+}
+
+@keyframes marqueeY {
+  0% {
+    transform: translateY(0%);
+  }
+  100% {
+    transform: translateY(var(--marquee-translate));
+  }
+}
+```
+
+**Important:** The animations use the `--marquee-translate` CSS variable which
+is automatically set by the machine based on the `side` and `dir` props. This
+enables seamless looping when combined with the cloned content.
+
+### Base content styles
+
+To apply the animations, add these base styles to your content elements:
+
+```css
+[data-scope="marquee"][data-part="content"] {
+  animation-timing-function: linear;
+  animation-duration: var(--marquee-duration);
+  animation-delay: var(--marquee-delay);
+  animation-iteration-count: var(--marquee-loop-count);
+}
+
+[data-part="content"][data-side="start"],
+[data-part="content"][data-side="end"] {
+  animation-name: marqueeX;
+}
+
+[data-part="content"][data-side="top"],
+[data-part="content"][data-side="bottom"] {
+  animation-name: marqueeY;
+}
+
+[data-part="content"][data-reverse] {
+  animation-direction: reverse;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [data-part="content"] {
+    animation: none !important;
+  }
+}
+```
+
+**Note:** The machine automatically handles layout styles (`display`,
+`flex-direction`, `flex-shrink`) and performance optimizations
+(`backface-visibility`, `will-change`, `transform: translateZ(0)`), so you only
+need to add the animation properties.
+
+### CSS variables
+
+The machine automatically sets these CSS variables:
+
+- `--marquee-duration` — Animation duration in seconds
+- `--marquee-spacing` — Spacing between items
+- `--marquee-delay` — Delay before animation starts
+- `--marquee-loop-count` — Number of iterations (or "infinite")
+- `--marquee-translate` — Transform value for animations
+
+### Styling parts
+
+Earlier, we mentioned that each marquee part has a `data-part` attribute added
+to them to select and style them in the DOM.
+
+```css
+[data-scope="marquee"][data-part="root"] {
+  /* styles for the root container */
+}
+
+[data-scope="marquee"][data-part="viewport"] {
+  /* styles for the viewport */
+}
+
+[data-scope="marquee"][data-part="content"] {
+  /* styles for each content container */
+}
+
+[data-scope="marquee"][data-part="item"] {
+  /* styles for individual marquee items */
+}
+
+[data-scope="marquee"][data-part="edge"] {
+  /* styles for fade edge gradients */
+}
+```
+
+### Orientation-specific styles
+
+The marquee adds a `data-orientation` attribute for orientation-specific
+styling:
+
+```css
+[data-part="root"][data-orientation="horizontal"] {
+  /* styles for horizontal marquee */
+}
+
+[data-part="root"][data-orientation="vertical"] {
+  /* styles for vertical marquee */
+}
+```
+
+### Paused state
+
+When the marquee is paused, a `data-paused` attribute is set on the root:
+
+```css
+[data-part="root"][data-paused] {
+  /* styles for paused state */
+}
+```
+
+### Clone identification
+
+Cloned content elements have a `data-clone` attribute for styling duplicates
+differently:
+
+```css
+[data-part="content"][data-clone] {
+  /* styles for cloned content */
+}
+```
+
+### Side-specific styles
+
+Each content element has a `data-side` attribute indicating the scroll
+direction:
+
+```css
+[data-part="content"][data-side="start"] {
+  /* styles for content scrolling to inline-end */
+}
+
+[data-part="content"][data-side="end"] {
+  /* styles for content scrolling to inline-start */
+}
+
+[data-part="content"][data-side="top"] {
+  /* styles for content scrolling up */
+}
+
+[data-part="content"][data-side="bottom"] {
+  /* styles for content scrolling down */
+}
+```
+
+## Accessibility
+
+### ARIA attributes
+
+The marquee component includes proper ARIA attributes:
+
+- `role="region"` with `aria-roledescription="marquee"` for proper semantics
+- `aria-label` describing the marquee content
+- `aria-hidden="true"` on cloned content to prevent duplicate announcements
+
+### Keyboard interaction
+
+When `pauseOnInteraction` is enabled:
+
+- **Focus** — Pauses the marquee when any child element receives focus
+- **Blur** — Resumes the marquee when focus leaves the component
+
+### Motion preferences
+
+The marquee automatically respects the user's motion preferences via the
+`prefers-reduced-motion` media query, disabling animations when requested.
+
+### Best practices
+
+1. **Use descriptive labels** — Set a meaningful `aria-label` via the
+   `translations.root` property:
+
+   ```jsx
+   const service = useMachine(marquee.machine, {
+     translations: {
+       root: "Featured partner logos", // instead of generic "Marquee content"
+     },
+   })
+   ```
+
+2. **Enable pause on interaction** — Essential for accessibility when content
+   contains links or important information:
+
+   ```jsx
+   const service = useMachine(marquee.machine, {
+     pauseOnInteraction: true,
+   })
+   ```
+
+3. **Consider infinite loops carefully** — Infinite animations can cause
+   discomfort for users with vestibular disorders. Consider providing pause
+   controls or limiting loop iterations for critical content.
+
+4. **Decorative vs. informational** — Marquees work best for decorative content
+   (logos, testimonials). For important information, consider static displays or
+   user-controlled carousels instead.
+
+## Methods and Properties
+
+### Machine Context
+
+The marquee machine exposes the following context properties:
+
+<ContextTable name="marquee" />
+
+### Machine API
+
+The marquee `api` exposes the following methods:
+
+<ApiTable name="marquee" />
+
+### Data Attributes
+
+<DataAttrTable name="marquee" />
+
+### CSS Variables
+
+<CssVarTable name="marquee" />

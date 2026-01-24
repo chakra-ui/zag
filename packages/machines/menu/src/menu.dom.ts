@@ -91,7 +91,7 @@ export const isTargetDisabled = (v: EventTarget | null) => {
 }
 
 export const isTriggerItem = (el: HTMLElement | null) => {
-  return !!el?.getAttribute("role")?.startsWith("menuitem") && !!el?.hasAttribute("aria-controls")
+  return !!el?.getAttribute("role")?.startsWith("menuitem") && !!el?.hasAttribute("data-controls")
 }
 
 export const getOptionFromItemEl = (el: HTMLElement) => {

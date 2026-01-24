@@ -73,6 +73,7 @@ export const machine = createMachine({
     return {
       typeahead: { ...getByTypeahead.defaultOptions },
       focusVisible: false,
+      inputState: { autoHighlight: false, focused: false },
     }
   },
 
@@ -131,7 +132,7 @@ export const machine = createMachine({
       effects: ["scrollToHighlightedItem"],
       on: {
         "INPUT.FOCUS": {
-          actions: ["setFocused"],
+          actions: ["setFocused", "setInputState"],
         },
         "CONTENT.FOCUS": [
           {
@@ -143,7 +144,7 @@ export const machine = createMachine({
           },
         ],
         "CONTENT.BLUR": {
-          actions: ["clearFocused"],
+          actions: ["clearFocused", "clearInputState"],
         },
         "ITEM.CLICK": {
           actions: ["setHighlightedItem", "selectHighlightedItem"],
@@ -326,11 +327,24 @@ export const machine = createMachine({
         context.set("highlightedItem", highlightedItem)
       },
 
-      syncHighlightedValue({ context, prop }) {
+      syncHighlightedValue({ context, prop, refs }) {
         const collection = prop("collection")
         const highlightedValue = context.get("highlightedValue")
+        const { autoHighlight } = refs.get("inputState")
+
+        // when autoHighlight is enabled, always highlight first item on collection change
+        if (autoHighlight) {
+          queueMicrotask(() => {
+            context.set("highlightedValue", prop("collection").firstValue ?? null)
+          })
+          return
+        }
+
+        // if highlighted value is no longer in collection, clear it
         if (highlightedValue != null && !collection.has(highlightedValue)) {
-          context.set("highlightedValue", null)
+          queueMicrotask(() => {
+            context.set("highlightedValue", null)
+          })
         }
       },
 
@@ -348,6 +362,14 @@ export const machine = createMachine({
 
       clearFocused({ context }) {
         context.set("focused", false)
+      },
+
+      setInputState({ refs, event }) {
+        refs.set("inputState", { autoHighlight: !!event.autoHighlight, focused: true })
+      },
+
+      clearInputState({ refs }) {
+        refs.set("inputState", { autoHighlight: false, focused: false })
       },
     },
   },

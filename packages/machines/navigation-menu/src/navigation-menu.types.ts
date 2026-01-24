@@ -4,26 +4,25 @@ import type {
   DirectionProperty,
   Orientation,
   OrientationProperty,
+  Point,
   PropTypes,
   Rect,
   RequiredBy,
   Size,
 } from "@zag-js/types"
-import type { AutoReset } from "./auto-reset"
 
 /* -----------------------------------------------------------------------------
  * Callback details
  * -----------------------------------------------------------------------------*/
 
 export interface ValueChangeDetails {
-  value: string | null
+  value: string
 }
 
 export type ElementIds = Partial<{
   root: string
   list: string
   item: string
-  indicator: string
   trigger: (value: string) => string
   content: (value: string) => string
   viewport: string
@@ -41,12 +40,12 @@ export interface NavigationMenuProps extends DirectionProperty, CommonProperties
   /**
    * The controlled value of the navigation menu
    */
-  value?: string | null | undefined
+  value?: string | undefined
   /**
    * The default value of the navigation menu.
    * Use when you don't want to control the value of the menu.
    */
-  defaultValue?: string | null | undefined
+  defaultValue?: string | undefined
   /**
    * Function called when the value of the menu changes
    */
@@ -69,32 +68,38 @@ export interface NavigationMenuProps extends DirectionProperty, CommonProperties
    * Whether to disable the hover trigger
    */
   disableHoverTrigger?: boolean | undefined
+  /**
+   * Whether to disable the pointer leave close
+   */
+  disablePointerLeaveClose?: boolean | undefined
 }
 
-type PropsWithDefault = "openDelay" | "closeDelay" | "dir" | "id"
+type PropsWithDefault = "openDelay" | "closeDelay" | "dir" | "id" | "orientation"
 
 export interface NavigationMenuSchema {
   props: RequiredBy<NavigationMenuProps, PropsWithDefault>
-  state: "opening" | "open" | "closing" | "closed"
+  state: "idle"
   computed: {
-    isRootMenu: boolean
-    isSubmenu: boolean
+    open: boolean
   }
   refs: {
-    contentCleanup: VoidFunction | null
-    triggerCleanup: VoidFunction | null
-    tabOrderCleanup: VoidFunction | null
-    pointerMoveOpenedRef: AutoReset<string | null>
-    clickCloseRef: string | null
-    wasEscapeClose: boolean
-    parent: NavigationMenuService | null
-    children: Record<string, NavigationMenuService | null>
+    restoreContentTabOrder: VoidFunction | undefined
+    contentResizeObserverCleanup: VoidFunction | undefined
+    contentDismissableCleanup: VoidFunction | undefined
+    triggerResizeObserverCleanup: VoidFunction | undefined
+    contentExitCompleteCleanup: VoidFunction | undefined
+
+    closeTimeoutId: number | null
+    openTimeoutIds: Record<string, number>
   }
   context: {
-    value: string | null
-    previousValue: string | null
+    value: string
+    previousValue: string
+
     viewportSize: Size | null
+    viewportPosition: Point | null
     isViewportRendered: boolean
+
     contentNode: HTMLElement | null
     triggerRect: Rect | null
     triggerNode: HTMLElement | null
@@ -124,9 +129,51 @@ export interface ItemProps {
   disabled?: boolean | undefined
 }
 
+export interface ItemState {
+  /**
+   * The id of the item element
+   */
+  itemId: string
+  /**
+   * The id of the trigger element
+   */
+  triggerId: string
+  /**
+   * The id of the trigger proxy element
+   */
+  triggerProxyId: string
+  /**
+   * The id of the content element
+   */
+  contentId: string
+  /**
+   * Whether the item is currently selected
+   */
+  selected: boolean
+  /**
+   * Whether the item was previously selected (for animation)
+   */
+  wasSelected: boolean
+  /**
+   * Whether the item's content is open
+   */
+  open: boolean
+  /**
+   * Whether the item is disabled
+   */
+  disabled: boolean
+}
+
 export interface ArrowProps {
   /**
    * The value of the item
+   */
+  value: string
+}
+
+export interface ContentProps {
+  /**
+   * The value of the item this content belongs to
    */
   value: string
 }
@@ -144,6 +191,19 @@ export interface LinkProps {
    * Function called when the link is selected
    */
   onSelect?: ((event: CustomEvent) => void) | undefined
+  /**
+   * Whether to close the navigation menu when the link is clicked.
+   * @default true
+   */
+  closeOnClick?: boolean | undefined
+}
+
+export interface ViewportProps {
+  /**
+   * Placement of the viewport for css variables `(--viewport-x, --viewport-y)`.
+   * @defaultValue 'center'
+   */
+  align?: "start" | "center" | "end"
 }
 
 export interface NavigationMenuApi<T extends PropTypes = PropTypes> {
@@ -160,27 +220,37 @@ export interface NavigationMenuApi<T extends PropTypes = PropTypes> {
    */
   open: boolean
   /**
-   * Sets the parent of the menu
+   * Whether the viewport is rendered
    */
-  setParent: (parent: NavigationMenuService) => void
+  isViewportRendered: boolean
   /**
-   * Sets the child of the menu
+   * Gets the viewport node element
    */
-  setChild: (child: NavigationMenuService) => void
+  getViewportNode: () => HTMLElement | null
   /**
    * The orientation of the menu
    */
   orientation: Orientation
+  /**
+   * Function to reposition the viewport
+   */
+  reposition: VoidFunction
 
   getRootProps: () => T["element"]
   getListProps: () => T["element"]
   getItemProps: (props: ItemProps) => T["element"]
-  getIndicatorTrackProps: () => T["element"]
   getIndicatorProps: () => T["element"]
+  getItemIndicatorProps: (props: ItemProps) => T["element"]
   getArrowProps: (props?: ArrowProps) => T["element"]
+
   getTriggerProps: (props: ItemProps) => T["button"]
+  getTriggerProxyProps: (props: ItemProps) => T["element"]
+  getViewportProxyProps: (props: ItemProps) => T["element"]
+
   getLinkProps: (props: LinkProps) => T["element"]
-  getContentProps: (props: LinkProps) => T["element"]
-  getViewportPositionerProps: () => T["element"]
-  getViewportProps: () => T["element"]
+  getContentProps: (props: ContentProps) => T["element"]
+  getViewportPositionerProps: (props?: ViewportProps) => T["element"]
+  getViewportProps: (props?: ViewportProps) => T["element"]
+
+  getItemState: (props: ItemProps) => ItemState
 }

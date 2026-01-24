@@ -215,7 +215,8 @@ function trackInteractOutsideImpl(node: MaybeElement, options: InteractOutsideOp
     //
     const func = defer ? raf : (v: any) => v()
     func(() => {
-      const target = getEventTarget<HTMLElement>(event)
+      const composedPath = event?.composedPath?.() ?? [event?.target]
+      const target = isInShadowRoot ? composedPath[0] : getEventTarget<HTMLElement>(event)
       if (!node || !isEventOutside(event, target)) return
 
       if (onFocusOutside || onInteractOutside) {

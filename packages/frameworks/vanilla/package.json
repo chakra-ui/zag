@@ -1,0 +1,48 @@
+{
+  "name": "@zag-js/vanilla",
+  "version": "1.33.0",
+  "description": "The vanilla wrapper for zag",
+  "keywords": [
+    "ui-machines",
+    "state-machines",
+    "zag",
+    "vanilla",
+    "vanilla-js"
+  ],
+  "author": "Segun Adebayo <sage@adebayosegun.com>",
+  "homepage": "https://github.com/chakra-ui/zag#readme",
+  "license": "MIT",
+  "repository": "https://github.com/chakra-ui/zag/tree/main/packages/frameworks/vanilla",
+  "sideEffects": false,
+  "files": [
+    "dist"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "bugs": {
+    "url": "https://github.com/chakra-ui/zag/issues"
+  },
+  "dependencies": {
+    "@zag-js/core": "workspace:*",
+    "@zag-js/store": "workspace:*",
+    "@zag-js/types": "workspace:*",
+    "@zag-js/utils": "workspace:*"
+  },
+  "devDependencies": {
+    "@types/jsdom": "^27.0.0",
+    "clean-package": "2.2.0",
+    "jsdom": "^27.0.0",
+    "vitest": "^4.0.0"
+  },
+  "scripts": {
+    "build": "tsup",
+    "lint": "eslint src",
+    "typecheck": "tsc --noEmit",
+    "prepack": "clean-package",
+    "postpack": "clean-package restore",
+    "test": "vitest"
+  },
+  "clean-package": "../../../clean-package.config.json",
+  "main": "src/index.ts"
+}

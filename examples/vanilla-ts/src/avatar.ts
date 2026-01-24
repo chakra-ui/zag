@@ -1,5 +1,5 @@
 import * as avatar from "@zag-js/avatar"
-import { normalizeProps, spreadProps, VanillaMachine } from "./lib"
+import { normalizeProps, VanillaMachine } from "@zag-js/vanilla"
 import { Component } from "./component"
 
 export class Avatar extends Component<avatar.Props, avatar.Api> {
@@ -13,10 +13,10 @@ export class Avatar extends Component<avatar.Props, avatar.Api> {
 
   render = () => {
     const rootEl = this.rootEl
-    spreadProps(this.rootEl, this.api.getRootProps())
+    this.spreadProps(this.rootEl, this.api.getRootProps())
     const imageEl = rootEl.querySelector<HTMLElement>(".avatar-image")
-    if (imageEl) spreadProps(imageEl, this.api.getImageProps())
+    if (imageEl) this.spreadProps(imageEl, this.api.getImageProps())
     const fallbackEl = rootEl.querySelector<HTMLElement>(".avatar-fallback")
-    if (fallbackEl) spreadProps(fallbackEl, this.api.getFallbackProps())
+    if (fallbackEl) this.spreadProps(fallbackEl, this.api.getFallbackProps())
   }
 }

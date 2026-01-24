@@ -1,5 +1,209 @@
 # @zag-js/tags-input
 
+## 1.33.0
+
+### Minor Changes
+
+- [`31126b6`](https://github.com/chakra-ui/zag/commit/31126b630524f45fdcfc5c4a16f884fb06aba2c7) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Add `placeholder` prop that is applied to the input only when
+  there are no tags
+
+### Patch Changes
+
+- Updated dependencies [[`5bd226d`](https://github.com/chakra-ui/zag/commit/5bd226d4f1aede9a43f4d63bc32d78ffbcc19c4c)]:
+  - @zag-js/auto-resize@1.33.0
+  - @zag-js/anatomy@1.33.0
+  - @zag-js/core@1.33.0
+  - @zag-js/types@1.33.0
+  - @zag-js/utils@1.33.0
+  - @zag-js/dom-query@1.33.0
+  - @zag-js/interact-outside@1.33.0
+  - @zag-js/live-region@1.33.0
+
+## 1.32.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.32.0
+  - @zag-js/core@1.32.0
+  - @zag-js/types@1.32.0
+  - @zag-js/auto-resize@1.32.0
+  - @zag-js/utils@1.32.0
+  - @zag-js/dom-query@1.32.0
+  - @zag-js/interact-outside@1.32.0
+  - @zag-js/live-region@1.32.0
+
+## 1.31.1
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.31.1
+  - @zag-js/core@1.31.1
+  - @zag-js/types@1.31.1
+  - @zag-js/auto-resize@1.31.1
+  - @zag-js/utils@1.31.1
+  - @zag-js/dom-query@1.31.1
+  - @zag-js/interact-outside@1.31.1
+  - @zag-js/live-region@1.31.1
+
+## 1.31.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.31.0
+  - @zag-js/core@1.31.0
+  - @zag-js/types@1.31.0
+  - @zag-js/auto-resize@1.31.0
+  - @zag-js/utils@1.31.0
+  - @zag-js/dom-query@1.31.0
+  - @zag-js/interact-outside@1.31.0
+  - @zag-js/live-region@1.31.0
+
+## 1.30.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.30.0
+  - @zag-js/core@1.30.0
+  - @zag-js/types@1.30.0
+  - @zag-js/auto-resize@1.30.0
+  - @zag-js/utils@1.30.0
+  - @zag-js/dom-query@1.30.0
+  - @zag-js/interact-outside@1.30.0
+  - @zag-js/live-region@1.30.0
+
+## 1.29.1
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.29.1
+  - @zag-js/core@1.29.1
+  - @zag-js/types@1.29.1
+  - @zag-js/auto-resize@1.29.1
+  - @zag-js/utils@1.29.1
+  - @zag-js/dom-query@1.29.1
+  - @zag-js/interact-outside@1.29.1
+  - @zag-js/live-region@1.29.1
+
+## 1.29.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.29.0
+  - @zag-js/core@1.29.0
+  - @zag-js/types@1.29.0
+  - @zag-js/auto-resize@1.29.0
+  - @zag-js/utils@1.29.0
+  - @zag-js/dom-query@1.29.0
+  - @zag-js/interact-outside@1.29.0
+  - @zag-js/live-region@1.29.0
+
+## 1.28.0
+
+### Patch Changes
+
+- [`8e8a5e3`](https://github.com/chakra-ui/zag/commit/8e8a5e3868f41c44541b67fb994bf0732636d149) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix issue where item delete trigger doesn't have `data-*` attached
+
+- Updated dependencies [[`c59e4f5`](https://github.com/chakra-ui/zag/commit/c59e4f5b9bc43de85649d4de95e8bf270c16acab),
+  [`c656df8`](https://github.com/chakra-ui/zag/commit/c656df8846733f7b6241d152d76b515a95d6841a)]:
+  - @zag-js/dom-query@1.28.0
+  - @zag-js/core@1.28.0
+  - @zag-js/auto-resize@1.28.0
+  - @zag-js/interact-outside@1.28.0
+  - @zag-js/anatomy@1.28.0
+  - @zag-js/types@1.28.0
+  - @zag-js/utils@1.28.0
+  - @zag-js/live-region@1.28.0
+
+## 1.27.1
+
+### Patch Changes
+
+- [#2822](https://github.com/chakra-ui/zag/pull/2822)
+  [`a372b95`](https://github.com/chakra-ui/zag/commit/a372b955911f78632665c7df86365414f64ac1f0) Thanks
+  [@nelsonlaidev](https://github.com/nelsonlaidev)! - Export missing types
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.27.1
+  - @zag-js/core@1.27.1
+  - @zag-js/types@1.27.1
+  - @zag-js/auto-resize@1.27.1
+  - @zag-js/utils@1.27.1
+  - @zag-js/dom-query@1.27.1
+  - @zag-js/interact-outside@1.27.1
+  - @zag-js/live-region@1.27.1
+
+## 1.27.0
+
+### Patch Changes
+
+- Updated dependencies [[`cf6fb09`](https://github.com/chakra-ui/zag/commit/cf6fb0956aeacc236531ee90de9169a39cdde3a5),
+  [`920e727`](https://github.com/chakra-ui/zag/commit/920e727f73940aed3c6d2b886c64200a4a5702d0)]:
+  - @zag-js/dom-query@1.27.0
+  - @zag-js/interact-outside@1.27.0
+  - @zag-js/utils@1.27.0
+  - @zag-js/core@1.27.0
+  - @zag-js/auto-resize@1.27.0
+  - @zag-js/anatomy@1.27.0
+  - @zag-js/types@1.27.0
+  - @zag-js/live-region@1.27.0
+
+## 1.26.5
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.26.5
+  - @zag-js/core@1.26.5
+  - @zag-js/types@1.26.5
+  - @zag-js/auto-resize@1.26.5
+  - @zag-js/utils@1.26.5
+  - @zag-js/dom-query@1.26.5
+  - @zag-js/interact-outside@1.26.5
+  - @zag-js/live-region@1.26.5
+
+## 1.26.4
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.26.4
+  - @zag-js/core@1.26.4
+  - @zag-js/types@1.26.4
+  - @zag-js/auto-resize@1.26.4
+  - @zag-js/utils@1.26.4
+  - @zag-js/dom-query@1.26.4
+  - @zag-js/interact-outside@1.26.4
+  - @zag-js/live-region@1.26.4
+
+## 1.26.3
+
+### Patch Changes
+
+- [`b91f66f`](https://github.com/chakra-ui/zag/commit/b91f66f79a85e72e8c5475d1d2bb9cedc1782e1d) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix issue where entering a custom tag with combobox integration
+  required pressing `Enter` twice.
+
+  The tags-input now correctly handles custom values when the combobox has no highlighted item (`aria-activedescendant`
+  is empty), allowing the tag to be added on the first `Enter` press.
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.26.3
+  - @zag-js/core@1.26.3
+  - @zag-js/types@1.26.3
+  - @zag-js/auto-resize@1.26.3
+  - @zag-js/utils@1.26.3
+  - @zag-js/dom-query@1.26.3
+  - @zag-js/interact-outside@1.26.3
+  - @zag-js/live-region@1.26.3
+
 ## 1.26.2
 
 ### Patch Changes

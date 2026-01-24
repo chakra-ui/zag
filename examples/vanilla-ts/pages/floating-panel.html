@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Floating Panel</title>
+  </head>
+  <body style="padding: 40px">
+    <a href="/">← Back to examples</a>
+    <h1>Floating Panel</h1>
+
+    <main class="floating-panel">
+      <button class="floating-panel-trigger">Toggle Panel</button>
+
+      <div class="floating-panel-positioner">
+        <div class="floating-panel-content">
+          <div class="floating-panel-drag-trigger">
+            <div class="floating-panel-header">
+              <p class="floating-panel-title">Floating Panel</p>
+              <div class="floating-panel-control">
+                <button class="floating-panel-minimize">−</button>
+                <button class="floating-panel-maximize">□</button>
+                <button class="floating-panel-default">↙</button>
+                <button class="floating-panel-close">×</button>
+              </div>
+            </div>
+          </div>
+          <div class="floating-panel-body">
+            <p>Some content</p>
+          </div>
+
+          <div class="floating-panel-resize-n"></div>
+          <div class="floating-panel-resize-e"></div>
+          <div class="floating-panel-resize-w"></div>
+          <div class="floating-panel-resize-s"></div>
+          <div class="floating-panel-resize-ne"></div>
+          <div class="floating-panel-resize-se"></div>
+          <div class="floating-panel-resize-sw"></div>
+          <div class="floating-panel-resize-nw"></div>
+        </div>
+      </div>
+    </main>
+
+    <script type="module" src="./floating-panel.ts"></script>
+  </body>
+</html>

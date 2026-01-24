@@ -127,6 +127,7 @@ export function connect<T extends PropTypes>(
         autoCorrect: "off",
         autoCapitalize: "none",
         disabled: disabled || readOnly,
+        placeholder: empty ? prop("placeholder") : undefined,
         onInput(event) {
           const evt = getNativeEvent(event)
           const value = event.currentTarget.value
@@ -301,13 +302,16 @@ export function connect<T extends PropTypes>(
     },
 
     getItemDeleteTriggerProps(props) {
-      const id = dom.getItemId(scope, props)
+      const itemState = getItemState(props)
       return normalize.button({
         ...parts.itemDeleteTrigger.attrs,
         dir: prop("dir"),
+        "data-disabled": dataAttr(itemState.disabled),
+        "aria-disabled": itemState.disabled,
+        "data-highlighted": dataAttr(itemState.highlighted),
         id: dom.getItemDeleteTriggerId(scope, props),
         type: "button",
-        disabled: disabled,
+        disabled: itemState.disabled,
         "aria-label": translations?.deleteTagTriggerLabel?.(props.value),
         tabIndex: -1,
         onPointerDown(event) {
@@ -327,7 +331,7 @@ export function connect<T extends PropTypes>(
         onClick(event) {
           if (event.defaultPrevented) return
           if (!interactive) return
-          send({ type: "CLICK_DELETE_TAG", id })
+          send({ type: "CLICK_DELETE_TAG", id: itemState.id })
         },
       })
     },

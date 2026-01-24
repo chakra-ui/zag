@@ -34,8 +34,14 @@ export interface ViewChangeDetails {
   view: DateView
 }
 
+export interface VisibleRangeChangeDetails {
+  view: DateView
+  visibleRange: { start: DateValue; end: DateValue }
+}
+
 export interface OpenChangeDetails {
   open: boolean
+  value: DateValue[]
 }
 
 export interface LocaleDetails {
@@ -116,6 +122,14 @@ export interface DatePickerProps extends DirectionProperty, CommonProperties {
    */
   readOnly?: boolean | undefined
   /**
+   * Whether the date picker is required
+   */
+  required?: boolean | undefined
+  /**
+   * Whether the date picker is invalid
+   */
+  invalid?: boolean | undefined
+  /**
    * Whether day outside the visible range can be selected.
    * @default false
    */
@@ -184,6 +198,10 @@ export interface DatePickerProps extends DirectionProperty, CommonProperties {
    * Function called when the view changes.
    */
   onViewChange?: ((details: ViewChangeDetails) => void) | undefined
+  /**
+   * Function called when the visible range changes.
+   */
+  onVisibleRangeChange?: ((details: VisibleRangeChangeDetails) => void) | undefined
   /**
    * Function called when the calendar opens or closes.
    */
@@ -503,6 +521,14 @@ export interface DatePickerApi<T extends PropTypes = PropTypes> {
    * Whether the date picker is open
    */
   open: boolean
+  /**
+   * Whether the date picker is disabled
+   */
+  disabled: boolean
+  /**
+   * Whether the date picker is invalid
+   */
+  invalid: boolean
   /**
    * Whether the date picker is rendered inline
    */

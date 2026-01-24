@@ -1,8 +1,9 @@
-import { dataAttr, getEventPoint, getEventStep, isLeftClick } from "@zag-js/dom-query"
+import { dataAttr, getEventPoint, getEventStep, getNativeEvent, isLeftClick } from "@zag-js/dom-query"
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import { parts } from "./angle-slider.anatomy"
 import * as dom from "./angle-slider.dom"
-import type { AngleSliderService, AngleSliderApi } from "./angle-slider.types"
+import type { AngleSliderApi, AngleSliderService } from "./angle-slider.types"
+import { getAngle } from "./angle-slider.utils"
 
 export function connect<T extends PropTypes>(
   service: AngleSliderService,
@@ -81,8 +82,22 @@ export function connect<T extends PropTypes>(
         onPointerDown(event) {
           if (!interactive) return
           if (!isLeftClick(event)) return
+
           const point = getEventPoint(event)
-          send({ type: "CONTROL.POINTER_DOWN", point })
+          const controlEl = event.currentTarget
+
+          // Check if pointer is over the thumb (if thumb exists)
+          const thumbEl = dom.getThumbEl(scope)
+          const composedPath = getNativeEvent(event).composedPath()
+          const isOverThumb = thumbEl && composedPath.includes(thumbEl)
+
+          let angularOffset = null
+          if (isOverThumb) {
+            const clickAngle = getAngle(controlEl, point)
+            angularOffset = clickAngle - value
+          }
+
+          send({ type: "CONTROL.POINTER_DOWN", point, angularOffset })
           event.stopPropagation()
         },
         style: {

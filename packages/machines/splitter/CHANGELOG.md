@@ -1,5 +1,165 @@
 # @zag-js/splitter
 
+## 1.33.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.33.0
+  - @zag-js/core@1.33.0
+  - @zag-js/types@1.33.0
+  - @zag-js/utils@1.33.0
+  - @zag-js/dom-query@1.33.0
+
+## 1.32.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.32.0
+  - @zag-js/core@1.32.0
+  - @zag-js/types@1.32.0
+  - @zag-js/utils@1.32.0
+  - @zag-js/dom-query@1.32.0
+
+## 1.31.1
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.31.1
+  - @zag-js/core@1.31.1
+  - @zag-js/types@1.31.1
+  - @zag-js/utils@1.31.1
+  - @zag-js/dom-query@1.31.1
+
+## 1.31.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.31.0
+  - @zag-js/core@1.31.0
+  - @zag-js/types@1.31.0
+  - @zag-js/utils@1.31.0
+  - @zag-js/dom-query@1.31.0
+
+## 1.30.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.30.0
+  - @zag-js/core@1.30.0
+  - @zag-js/types@1.30.0
+  - @zag-js/utils@1.30.0
+  - @zag-js/dom-query@1.30.0
+
+## 1.29.1
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.29.1
+  - @zag-js/core@1.29.1
+  - @zag-js/types@1.29.1
+  - @zag-js/utils@1.29.1
+  - @zag-js/dom-query@1.29.1
+
+## 1.29.0
+
+### Minor Changes
+
+- [`0d3b9a0`](https://github.com/chakra-ui/zag/commit/0d3b9a0047eae2a4c42a82d1f385f52127a15913) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - - Fix disabled splitter showing resize cursor and allowing
+  dragging.
+  - Add `getResizeTriggerIndicator` to render an indicator when resizing.
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.29.0
+  - @zag-js/core@1.29.0
+  - @zag-js/types@1.29.0
+  - @zag-js/utils@1.29.0
+  - @zag-js/dom-query@1.29.0
+
+## 1.28.0
+
+### Patch Changes
+
+- [`c59e4f5`](https://github.com/chakra-ui/zag/commit/c59e4f5b9bc43de85649d4de95e8bf270c16acab) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix dragging behavior that stops working after switching browser
+  tabs or scrolling the page. The issue was caused by incorrectly checking `event.button` instead of `event.buttons` to
+  detect interrupted drag operations.
+- Updated dependencies [[`c59e4f5`](https://github.com/chakra-ui/zag/commit/c59e4f5b9bc43de85649d4de95e8bf270c16acab),
+  [`c656df8`](https://github.com/chakra-ui/zag/commit/c656df8846733f7b6241d152d76b515a95d6841a)]:
+  - @zag-js/dom-query@1.28.0
+  - @zag-js/core@1.28.0
+  - @zag-js/anatomy@1.28.0
+  - @zag-js/types@1.28.0
+  - @zag-js/utils@1.28.0
+
+## 1.27.1
+
+### Patch Changes
+
+- [#2822](https://github.com/chakra-ui/zag/pull/2822)
+  [`a372b95`](https://github.com/chakra-ui/zag/commit/a372b955911f78632665c7df86365414f64ac1f0) Thanks
+  [@nelsonlaidev](https://github.com/nelsonlaidev)! - Export missing types
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.27.1
+  - @zag-js/core@1.27.1
+  - @zag-js/types@1.27.1
+  - @zag-js/utils@1.27.1
+  - @zag-js/dom-query@1.27.1
+
+## 1.27.0
+
+### Patch Changes
+
+- Updated dependencies [[`cf6fb09`](https://github.com/chakra-ui/zag/commit/cf6fb0956aeacc236531ee90de9169a39cdde3a5),
+  [`920e727`](https://github.com/chakra-ui/zag/commit/920e727f73940aed3c6d2b886c64200a4a5702d0)]:
+  - @zag-js/dom-query@1.27.0
+  - @zag-js/utils@1.27.0
+  - @zag-js/core@1.27.0
+  - @zag-js/anatomy@1.27.0
+  - @zag-js/types@1.27.0
+
+## 1.26.5
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.26.5
+  - @zag-js/core@1.26.5
+  - @zag-js/types@1.26.5
+  - @zag-js/utils@1.26.5
+  - @zag-js/dom-query@1.26.5
+
+## 1.26.4
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.26.4
+  - @zag-js/core@1.26.4
+  - @zag-js/types@1.26.4
+  - @zag-js/utils@1.26.4
+  - @zag-js/dom-query@1.26.4
+
+## 1.26.3
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.26.3
+  - @zag-js/core@1.26.3
+  - @zag-js/types@1.26.3
+  - @zag-js/utils@1.26.3
+  - @zag-js/dom-query@1.26.3
+
 ## 1.26.2
 
 ### Patch Changes

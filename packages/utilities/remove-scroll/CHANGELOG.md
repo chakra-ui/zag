@@ -1,5 +1,104 @@
 # @zag-js/remove-scroll
 
+## 1.33.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/dom-query@1.33.0
+
+## 1.32.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/dom-query@1.32.0
+
+## 1.31.1
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/dom-query@1.31.1
+
+## 1.31.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/dom-query@1.31.0
+
+## 1.30.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/dom-query@1.30.0
+
+## 1.29.1
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/dom-query@1.29.1
+
+## 1.29.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/dom-query@1.29.0
+
+## 1.28.0
+
+### Patch Changes
+
+- Updated dependencies [[`c59e4f5`](https://github.com/chakra-ui/zag/commit/c59e4f5b9bc43de85649d4de95e8bf270c16acab),
+  [`c656df8`](https://github.com/chakra-ui/zag/commit/c656df8846733f7b6241d152d76b515a95d6841a)]:
+  - @zag-js/dom-query@1.28.0
+
+## 1.27.1
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/dom-query@1.27.1
+
+## 1.27.0
+
+### Patch Changes
+
+- [`cf5c238`](https://github.com/chakra-ui/zag/commit/cf5c23893afcccc6e7593fc73346102023245cca) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix issue where setting `scrollbar-gutter: stable` in CSS caused
+  an unwanted gap and layout shift when opening dialogs. Zag now detects when the browser is already reserving space for
+  the scrollbar and skips adding extra padding.
+
+  Fixes #2807
+
+- Updated dependencies [[`cf6fb09`](https://github.com/chakra-ui/zag/commit/cf6fb0956aeacc236531ee90de9169a39cdde3a5)]:
+  - @zag-js/dom-query@1.27.0
+
+## 1.26.5
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/dom-query@1.26.5
+
+## 1.26.4
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/dom-query@1.26.4
+
+## 1.26.3
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/dom-query@1.26.3
+
 ## 1.26.2
 
 ### Patch Changes

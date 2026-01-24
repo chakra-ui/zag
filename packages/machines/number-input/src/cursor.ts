@@ -39,8 +39,8 @@ export function restoreCursor(inputEl: HTMLInputElement | null, selection: Selec
     }
 
     // Calculate new cursor position based on text changes
-    const newStart = getNewCursorPosition(oldValue, newValue, start)
-    const newEnd = start === end ? newStart : getNewCursorPosition(oldValue, newValue, end)
+    const newStart = getNextCursorPosition(oldValue, newValue, start)
+    const newEnd = start === end ? newStart : getNextCursorPosition(oldValue, newValue, end)
 
     // Ensure positions are within bounds
     const clampedStart = Math.max(0, Math.min(newStart, newValue.length))
@@ -54,7 +54,7 @@ export function restoreCursor(inputEl: HTMLInputElement | null, selection: Selec
   }
 }
 
-function getNewCursorPosition(oldValue: string, newValue: string, oldPosition: number): number {
+export function getNextCursorPosition(oldValue: string, newValue: string, oldPosition: number): number {
   // Split the old value into before and after the cursor
   const beforeCursor = oldValue.slice(0, oldPosition)
   const afterCursor = oldValue.slice(oldPosition)
@@ -87,8 +87,8 @@ function getNewCursorPosition(oldValue: string, newValue: string, oldPosition: n
   }
 
   // Calculate the new position
-  // If we have a good prefix match, use it
-  if (prefixLength >= beforeCursor.length) {
+  // If we have a good prefix match, use it (only if there was something to match)
+  if (beforeCursor.length > 0 && prefixLength >= beforeCursor.length) {
     return prefixLength
   }
 
@@ -105,6 +105,11 @@ function getNewCursorPosition(oldValue: string, newValue: string, oldPosition: n
   // If we have partial suffix match
   if (suffixLength > 0) {
     return newValue.length - suffixLength
+  }
+
+  // If cursor was at start and value completely changed, move to end
+  if (oldPosition === 0 && prefixLength === 0 && suffixLength === 0) {
+    return newValue.length
   }
 
   // Fallback: maintain relative position

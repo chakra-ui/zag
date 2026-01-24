@@ -1,10 +1,11 @@
 <script lang="ts">
+  import Presence from "$lib/components/presence.svelte"
+  import StateVisualizer from "$lib/components/state-visualizer.svelte"
+  import Toolbar from "$lib/components/toolbar.svelte"
   import { useControls } from "$lib/use-controls.svelte"
   import * as popover from "@zag-js/popover"
-  import { normalizeProps, portal, useMachine } from "@zag-js/svelte"
   import { popoverControls } from "@zag-js/shared"
-  import Toolbar from "$lib/components/toolbar.svelte"
-  import StateVisualizer from "$lib/components/state-visualizer.svelte"
+  import { normalizeProps, portal, useMachine } from "@zag-js/svelte"
 
   const controls = useControls(popoverControls)
 
@@ -26,7 +27,7 @@
     <div {...api.getAnchorProps()}>anchor</div>
 
     <div use:portal={{ disabled: !api.portalled }} {...api.getPositionerProps()}>
-      <div data-testid="popover-content" class="popover-content" {...api.getContentProps()}>
+      <Presence class="popover-content" data-testid="popover-content" {...api.getContentProps()}>
         <div {...api.getArrowProps()}>
           <div {...api.getArrowTipProps()}></div>
         </div>
@@ -38,7 +39,7 @@
           <input data-testid="input" placeholder="input" />
           <button data-testid="popover-close-button" {...api.getCloseTriggerProps()}> X </button>
         </div>
-      </div>
+      </Presence>
     </div>
 
     <span data-testid="plain-text">I am just text</span>

@@ -4,6 +4,10 @@ type RouteData = {
 }
 
 export const routesData: RouteData[] = [
+  { label: "Marquee", path: "/marquee" },
+  { label: "Image Cropper", path: "/image-cropper" },
+  { label: "Image Cropper (Circle)", path: "/image-cropper-circle" },
+  { label: "Image Cropper (Fixed Crop Area)", path: "/image-cropper-fixed" },
   { label: "Bottom Sheet", path: "/bottom-sheet" },
   { label: "Bottom Sheet (Snap Points)", path: "/bottom-sheet-snap-points" },
   { label: "Bottom Sheet (Active Snap Point)", path: "/bottom-sheet-default-active-snap-point" },
@@ -15,7 +19,6 @@ export const routesData: RouteData[] = [
   { label: "Listbox (Grid)", path: "/listbox-grid" },
   { label: "Navigation Menu", path: "/navigation-menu" },
   { label: "Navigation Menu (Viewport)", path: "/navigation-menu-viewport" },
-  { label: "Navigation Menu (Nested)", path: "/navigation-menu-nested" },
   { label: "Toggle", path: "/toggle" },
   { label: "Angle Slider", path: "/angle-slider" },
   { label: "Steps", path: "/steps" },

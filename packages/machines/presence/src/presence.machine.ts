@@ -1,5 +1,5 @@
-import { getComputedStyle, getEventTarget, nextTick, raf, setStyle } from "@zag-js/dom-query"
 import { createMachine } from "@zag-js/core"
+import { getComputedStyle, getEventTarget, getWindow, nextTick, raf, setStyle } from "@zag-js/dom-query"
 import type { PresenceSchema } from "./presence.types"
 
 export const machine = createMachine<PresenceSchema>({
@@ -30,7 +30,7 @@ export const machine = createMachine<PresenceSchema>({
     }
   },
 
-  exit: ["clearInitial", "cleanupNode"],
+  exit: ["cleanupNode"],
 
   watch({ track, prop, send }) {
     track([() => prop("present")], () => {
@@ -91,12 +91,16 @@ export const machine = createMachine<PresenceSchema>({
         })
       },
 
-      clearInitial: ({ context }) => {
-        context.set("initial", false)
-      },
-
-      invokeOnExitComplete: ({ prop }) => {
+      invokeOnExitComplete: ({ prop, refs }) => {
         prop("onExitComplete")?.()
+
+        // Emit exitcomplete event on the node
+        const node = refs.get("node")
+        if (!node) return
+
+        const win = getWindow(node)
+        const event = new win.CustomEvent("exitcomplete", { bubbles: false })
+        node.dispatchEvent(event)
       },
 
       setupNode: ({ refs, event }) => {
@@ -169,14 +173,21 @@ export const machine = createMachine<PresenceSchema>({
           }
         }
 
+        const onCancel = (event: AnimationEvent) => {
+          const target = getEventTarget(event)
+          if (target === node && !prop("present")) {
+            send({ type: "UNMOUNT", src: "animationcancel" })
+          }
+        }
+
         node.addEventListener("animationstart", onStart)
-        node.addEventListener("animationcancel", onEnd)
+        node.addEventListener("animationcancel", onCancel)
         node.addEventListener("animationend", onEnd)
         const cleanupStyles = setStyle(node, { animationFillMode: "forwards" })
 
         return () => {
           node.removeEventListener("animationstart", onStart)
-          node.removeEventListener("animationcancel", onEnd)
+          node.removeEventListener("animationcancel", onCancel)
           node.removeEventListener("animationend", onEnd)
           nextTick(() => cleanupStyles())
         }

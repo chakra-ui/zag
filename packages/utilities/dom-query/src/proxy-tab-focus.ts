@@ -1,7 +1,7 @@
 import { addDomEvent } from "./event"
 import { isActiveElement } from "./node"
 import { raf } from "./raf"
-import { getNextTabbable, getTabbableEdges } from "./tabbable"
+import { getNextTabbable, getTabbableEdges, type GetShadowRootOption } from "./tabbable"
 import type { MaybeElement, MaybeElementOrFn } from "./types"
 
 export interface ProxyTabFocusOptions<T = MaybeElement> {
@@ -9,10 +9,11 @@ export interface ProxyTabFocusOptions<T = MaybeElement> {
   onFocus?: ((elementToFocus: HTMLElement) => void) | undefined
   onFocusEnter?: VoidFunction | undefined
   defer?: boolean | undefined
+  getShadowRoot?: GetShadowRootOption | undefined
 }
 
 function proxyTabFocusImpl(container: MaybeElement, options: ProxyTabFocusOptions = {}) {
-  const { triggerElement, onFocus, onFocusEnter } = options
+  const { triggerElement, onFocus, onFocusEnter, getShadowRoot } = options
 
   const doc = container?.ownerDocument || document
   const body = doc.body
@@ -23,8 +24,8 @@ function proxyTabFocusImpl(container: MaybeElement, options: ProxyTabFocusOption
     let elementToFocus: MaybeElement | undefined = null
 
     // get all tabbable elements within the container
-    const [firstTabbable, lastTabbable] = getTabbableEdges(container, true)
-    const nextTabbableAfterTrigger = getNextTabbable(body, triggerElement)
+    const [firstTabbable, lastTabbable] = getTabbableEdges(container, { includeContainer: true, getShadowRoot })
+    const nextTabbableAfterTrigger = getNextTabbable(body, { current: triggerElement, getShadowRoot })
 
     const noTabbableElements = !firstTabbable && !lastTabbable
 

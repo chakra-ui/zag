@@ -21,9 +21,9 @@ const StyledLink = styled(Link, {
 
 export const Annoucement = () => {
   return (
-    <StyledLink href="/components/react/scroll-area">
+    <StyledLink href="/components/react/navigation-menu">
       <LuPartyPopper />
-      [New] Scroll Area component
+      [New] Navigation Menu component
       <HiArrowRight />
     </StyledLink>
   )

@@ -212,6 +212,32 @@ export interface FocusTrapOptions {
    * content to remain within the focus trap.
    */
   followControlledElements?: boolean | undefined
+
+  /**
+   * Optional function to support shadow DOM traversal. When provided, it enables
+   * the focus trap to find tabbable elements inside shadow roots (web components).
+   *
+   * - `true`: Enable shadow DOM support for open shadow roots
+   * - `false` or `undefined`: Disable shadow DOM support (default)
+   * - Function: Called with each element; return `true` if it has a shadow root to traverse,
+   *   the `ShadowRoot` instance, or a falsy value if no shadow root exists
+   *
+   * This is required for proper focus management when using web components or custom elements
+   * with shadow DOM.
+   *
+   * @example
+   * ```ts
+   * // Enable for all open shadow roots
+   * getShadowRoot: true
+   *
+   * // Custom function for closed shadow roots
+   * getShadowRoot: (node) => {
+   *   if (node === myCustomElement) return myCustomElement.shadowRoot
+   *   return node.shadowRoot
+   * }
+   * ```
+   */
+  getShadowRoot?: boolean | ((node: FocusableElement) => ShadowRoot | boolean | undefined) | undefined
 }
 
 interface ContainerGroup {
@@ -245,8 +271,10 @@ export interface FocusTrapState {
   recentNavEvent: KeyboardEvent | undefined
 }
 
-export interface DeactivateOptions
-  extends Pick<FocusTrapOptions, "onDeactivate" | "onPostDeactivate" | "checkCanReturnFocus"> {
+export interface DeactivateOptions extends Pick<
+  FocusTrapOptions,
+  "onDeactivate" | "onPostDeactivate" | "checkCanReturnFocus"
+> {
   returnFocus?: boolean | undefined
 }
 

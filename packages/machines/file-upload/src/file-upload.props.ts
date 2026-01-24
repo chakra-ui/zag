@@ -24,6 +24,7 @@ export const props = createProps<FileUploadProps>()([
   "onFileChange",
   "onFileReject",
   "preventDocumentDrop",
+  "readOnly",
   "required",
   "transformFiles",
   "translations",

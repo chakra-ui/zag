@@ -33,29 +33,15 @@ export const getRadioEl = (ctx: Scope, value: string | null) => {
   return ctx.getById(getItemId(ctx, value))
 }
 
-export const getOffsetRect = (el: HTMLElement | undefined) => {
-  if (!el) {
-    return { left: 0, top: 0, width: 0, height: 0 }
-  }
-  const rect = el.getBoundingClientRect()
-  const parent = el.offsetParent?.getBoundingClientRect()
-  return {
-    left: parent ? rect.left - parent.left : rect.left,
-    top: parent ? rect.top - parent.top : rect.top,
-    width: rect.width,
-    height: rect.height,
-  }
-}
+export const getOffsetRect = (el: HTMLElement | undefined) => ({
+  x: el?.offsetLeft ?? 0,
+  y: el?.offsetTop ?? 0,
+  width: el?.offsetWidth ?? 0,
+  height: el?.offsetHeight ?? 0,
+})
 
 export const getRectById = (ctx: Scope, id: string) => {
   const radioEl = ctx.getById(getItemId(ctx, id))
   if (!radioEl) return
-  return resolveRect(getOffsetRect(radioEl))
+  return getOffsetRect(radioEl)
 }
-
-export const resolveRect = (rect: Record<"width" | "height" | "left" | "top", number>) => ({
-  width: `${rect.width}px`,
-  height: `${rect.height}px`,
-  left: `${rect.left}px`,
-  top: `${rect.top}px`,
-})

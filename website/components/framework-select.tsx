@@ -1,11 +1,12 @@
-import { styled, HStack } from "styled-system/jsx"
 import { frameworks, type Framework } from "lib/framework-utils"
-import { useRouter } from "next/router"
+import { usePathname, useRouter } from "next/navigation"
+import { HStack, styled } from "styled-system/jsx"
 import { useFramework } from "./framework"
 
 export function FrameworkSelect() {
   const { framework, setFramework } = useFramework()
-  const { replace, asPath } = useRouter()
+  const router = useRouter()
+  const asPath = usePathname()
 
   return (
     <HStack>
@@ -27,7 +28,7 @@ export function FrameworkSelect() {
           setFramework?.(newFramework)
           if (asPath.includes(framework) && newFramework !== framework) {
             const url = asPath.replace(framework, newFramework)
-            replace(url)
+            router.replace(url)
           }
         }}
       >

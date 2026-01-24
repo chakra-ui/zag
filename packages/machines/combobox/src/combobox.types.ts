@@ -50,6 +50,7 @@ export type OpenChangeReason =
 export interface OpenChangeDetails {
   open: boolean
   reason?: OpenChangeReason | undefined
+  value: string[]
 }
 
 export interface ScrollToIndexDetails {
@@ -93,9 +94,7 @@ export type ElementIds = Partial<{
 }>
 
 export interface ComboboxProps<T extends CollectionItem = CollectionItem>
-  extends DirectionProperty,
-    CommonProperties,
-    InteractOutsideHandlers {
+  extends DirectionProperty, CommonProperties, InteractOutsideHandlers {
   /**
    * The controlled open state of the combobox
    */

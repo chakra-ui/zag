@@ -2,7 +2,7 @@ import * as combobox from "@zag-js/combobox"
 import { comboboxData } from "@zag-js/shared"
 import { matchSorter } from "match-sorter"
 import { Component } from "./component"
-import { normalizeProps, spreadProps, VanillaMachine } from "./lib"
+import { normalizeProps, VanillaMachine } from "@zag-js/vanilla"
 
 interface Item {
   code: string
@@ -65,27 +65,27 @@ export class Combobox extends Component<combobox.Props, combobox.Api> {
       }
 
       itemEl.innerText = item.label
-      spreadProps(itemEl, this.api.getItemProps({ item }))
+      this.spreadProps(itemEl, this.api.getItemProps({ item }))
     })
   }
 
   render = () => {
-    spreadProps(this.rootEl, this.api.getRootProps())
+    this.spreadProps(this.rootEl, this.api.getRootProps())
 
     const inputEl = this.rootEl?.querySelector<HTMLElement>(".combobox-input")
-    if (inputEl) spreadProps(inputEl, this.api.getInputProps())
+    if (inputEl) this.spreadProps(inputEl, this.api.getInputProps())
 
     const triggerEl = this.rootEl?.querySelector<HTMLElement>(".combobox-trigger")
-    if (triggerEl) spreadProps(triggerEl, this.api.getTriggerProps())
+    if (triggerEl) this.spreadProps(triggerEl, this.api.getTriggerProps())
 
     const clearTriggerEl = this.rootEl?.querySelector<HTMLElement>(".combobox-clear-trigger")
-    if (clearTriggerEl) spreadProps(clearTriggerEl, this.api.getClearTriggerProps())
+    if (clearTriggerEl) this.spreadProps(clearTriggerEl, this.api.getClearTriggerProps())
 
     const controlEl = this.rootEl?.querySelector<HTMLElement>(".combobox-control")
-    if (controlEl) spreadProps(controlEl, this.api.getControlProps())
+    if (controlEl) this.spreadProps(controlEl, this.api.getControlProps())
 
     const contentEl = this.getOrCreateContentEl()
-    spreadProps(contentEl, this.api.getContentProps())
+    this.spreadProps(contentEl, this.api.getContentProps())
 
     this.renderItems()
   }

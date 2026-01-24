@@ -265,12 +265,14 @@ export const machine = createMachine<TooltipSchema>({
 
     actions: {
       setGlobalId: ({ prop }) => {
-        store.set("id", prop("id"))
+        const prevId = store.get("id")
+        const isInstant = prevId !== null && prevId !== prop("id")
+        store.update({ id: prop("id"), prevId: isInstant ? prevId : null, instant: isInstant })
       },
 
       clearGlobalId: ({ prop }) => {
         if (prop("id") === store.get("id")) {
-          store.set("id", null)
+          store.update({ id: null, prevId: null, instant: false })
         }
       },
 

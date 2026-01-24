@@ -1,5 +1,111 @@
 # @zag-js/dom-query
 
+## 1.33.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/types@1.33.0
+
+## 1.32.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/types@1.32.0
+
+## 1.31.1
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/types@1.31.1
+
+## 1.31.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/types@1.31.0
+
+## 1.30.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/types@1.30.0
+
+## 1.29.1
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/types@1.29.1
+
+## 1.29.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/types@1.29.0
+
+## 1.28.0
+
+### Patch Changes
+
+- [`c59e4f5`](https://github.com/chakra-ui/zag/commit/c59e4f5b9bc43de85649d4de95e8bf270c16acab) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix dragging behavior that stops working after switching browser
+  tabs or scrolling the page. The issue was caused by incorrectly checking `event.button` instead of `event.buttons` to
+  detect interrupted drag operations.
+
+- [`c656df8`](https://github.com/chakra-ui/zag/commit/c656df8846733f7b6241d152d76b515a95d6841a) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Refactor to use shared `ResizeObserver` implementation across all
+  machines. This significantly improves performance by using a single observer instance with `WeakMap` based
+  subscriptions instead of creating separate observers for each component instance.
+- Updated dependencies []:
+  - @zag-js/types@1.28.0
+
+## 1.27.1
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/types@1.27.1
+
+## 1.27.0
+
+### Minor Changes
+
+- [`cf6fb09`](https://github.com/chakra-ui/zag/commit/cf6fb0956aeacc236531ee90de9169a39cdde3a5) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Improve support for shadow DOM in all focus trap components
+  (dialog, popover, tour, etc.)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/types@1.27.0
+
+## 1.26.5
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/types@1.26.5
+
+## 1.26.4
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/types@1.26.4
+
+## 1.26.3
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/types@1.26.3
+
 ## 1.26.2
 
 ### Patch Changes

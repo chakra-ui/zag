@@ -72,11 +72,13 @@ export class TreeCollection<T = TreeNode> {
     return this.options.nodeToString?.(node) ?? fallbackMethods.nodeToString(node)
   }
 
-  getFirstNode = (rootNode = this.rootNode): T | undefined => {
+  getFirstNode = (rootNode = this.rootNode, opts: TreeSkipOptions<T> = {}): T | undefined => {
     let firstChild: T | undefined
     visit(rootNode, {
       getChildren: this.getNodeChildren,
       onEnter: (node, indexPath) => {
+        if (this.isSameNode(node, rootNode)) return
+        if (opts.skip?.({ value: this.getNodeValue(node), node, indexPath })) return "skip"
         if (!firstChild && indexPath.length > 0 && !this.getNodeDisabled(node)) {
           firstChild = node
           return "stop"

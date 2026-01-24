@@ -1,5 +1,6 @@
 import type { CommonProperties, Direction, DirectionProperty, PropTypes, Required, RequiredBy } from "@zag-js/types"
 import type { EventObject, Machine, Service } from "@zag-js/core"
+import type { AnimationFrame } from "@zag-js/dom-query"
 
 /* -----------------------------------------------------------------------------
  * Base types
@@ -246,6 +247,8 @@ export type ToastGroupSchema = {
     dismissableCleanup?: VoidFunction | undefined
     lastFocusedEl: HTMLElement | null
     isFocusWithin: boolean
+    isPointerWithin: boolean
+    ignoreMouseTimer: AnimationFrame
   }
   guard: string
   effect: string
@@ -363,6 +366,7 @@ export interface PromiseOptions<V, O = any> {
   finally?: (() => void | Promise<void>) | undefined
 }
 
+// zag-ignore-export
 export interface GroupProps {
   /**
    * The human-readable label for the toast region

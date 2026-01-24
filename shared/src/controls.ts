@@ -116,6 +116,7 @@ export const sliderControls = defineControls({
   readOnly: { type: "boolean", defaultValue: false },
   orientation: { type: "select", options: ["horizontal", "vertical"] as const, defaultValue: "horizontal" },
   thumbAlignment: { type: "select", options: ["contain", "center"] as const, defaultValue: "contain" },
+  thumbCollisionBehavior: { type: "select", options: ["none", "push", "swap"] as const, defaultValue: "none" },
   dir: { type: "select", options: ["ltr", "rtl"] as const, defaultValue: "ltr" },
   origin: { type: "select", options: ["center", "start", "end"] as const, defaultValue: "start" },
   min: { type: "number", defaultValue: 0 },
@@ -134,6 +135,7 @@ export const tabsControls = defineControls({
 export const paginationControls = defineControls({
   pageSize: { type: "number", defaultValue: 10 },
   siblingCount: { type: "number", defaultValue: 1 },
+  boundaryCount: { type: "number", defaultValue: 1 },
 })
 
 export const tagsInputControls = defineControls({
@@ -208,6 +210,7 @@ export const transitionControls = defineControls({
 })
 
 export const carouselControls = defineControls({
+  dir: { type: "select", options: ["ltr", "rtl"] as const, defaultValue: "ltr" },
   orientation: { type: "select", options: ["horizontal", "vertical"] as const, defaultValue: "horizontal" },
   slidesPerPage: { type: "number", defaultValue: 2 },
   loop: { type: "boolean", defaultValue: false },
@@ -308,4 +311,22 @@ export const bottomSheetControls = defineControls({
 
 export const scrollAreaControls = defineControls({
   dir: { type: "select", options: ["ltr", "rtl"] as const, defaultValue: "ltr" },
+})
+
+export const imageCropperControls = defineControls({
+  aspectRatio: { type: "number" },
+  minWidth: { type: "number", defaultValue: 40 },
+  minHeight: { type: "number", defaultValue: 40 },
+  maxWidth: { type: "number" },
+  maxHeight: { type: "number" },
+  zoomStep: { type: "number", defaultValue: 0.1 },
+  minZoom: { type: "number", defaultValue: 1 },
+  maxZoom: { type: "number", defaultValue: 5 },
+})
+
+export const marqueeControls = defineControls({
+  side: { type: "select", options: ["start", "end", "top", "bottom"] as const, defaultValue: "start" },
+  speed: { type: "number", defaultValue: 50 },
+  pauseOnInteraction: { type: "boolean", defaultValue: false },
+  reverse: { type: "boolean", defaultValue: false },
 })

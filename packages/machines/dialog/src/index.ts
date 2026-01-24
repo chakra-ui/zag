@@ -7,9 +7,9 @@ export type {
   DialogApi as Api,
   DialogMachine as Machine,
   DialogProps as Props,
+  DialogService as Service,
   ElementIds,
   OpenChangeDetails,
   ActiveTriggerChangeDetails,
   TriggerProps,
-  DialogService as Service,
 } from "./dialog.types"

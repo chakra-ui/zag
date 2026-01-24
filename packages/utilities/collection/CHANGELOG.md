@@ -1,5 +1,100 @@
 # @zag-js/collection
 
+## 1.33.0
+
+### Patch Changes
+
+- [`a908644`](https://github.com/chakra-ui/zag/commit/a9086445116a272c7ac7b761fec3873c43c41a96) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix initial focus issue when the first node or branch is disabled.
+  Added `skip` option to `getFirstNode()` (matching `getLastNode()`) to respect collapsed branches. The initial focus
+  now correctly targets the first visible non-disabled node.
+- Updated dependencies []:
+  - @zag-js/utils@1.33.0
+
+## 1.32.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/utils@1.32.0
+
+## 1.31.1
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/utils@1.31.1
+
+## 1.31.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/utils@1.31.0
+
+## 1.30.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/utils@1.30.0
+
+## 1.29.1
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/utils@1.29.1
+
+## 1.29.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/utils@1.29.0
+
+## 1.28.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/utils@1.28.0
+
+## 1.27.1
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/utils@1.27.1
+
+## 1.27.0
+
+### Patch Changes
+
+- Updated dependencies [[`920e727`](https://github.com/chakra-ui/zag/commit/920e727f73940aed3c6d2b886c64200a4a5702d0)]:
+  - @zag-js/utils@1.27.0
+
+## 1.26.5
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/utils@1.26.5
+
+## 1.26.4
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/utils@1.26.4
+
+## 1.26.3
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/utils@1.26.3
+
 ## 1.26.2
 
 ### Patch Changes

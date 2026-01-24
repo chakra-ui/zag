@@ -1,0 +1,25 @@
+import * as qrCode from "@zag-js/qr-code"
+import { Component } from "./component"
+import { normalizeProps, VanillaMachine } from "@zag-js/vanilla"
+
+export class QrCode extends Component<qrCode.Props, qrCode.Api> {
+  initMachine(props: qrCode.Props) {
+    return new VanillaMachine(qrCode.machine, {
+      ...props,
+    })
+  }
+
+  initApi() {
+    return qrCode.connect(this.machine.service, normalizeProps)
+  }
+
+  render() {
+    this.spreadProps(this.rootEl, this.api.getRootProps())
+
+    const frame = this.rootEl.querySelector<HTMLElement>(".qr-code-frame")
+    if (frame) this.spreadProps(frame, this.api.getFrameProps())
+
+    const pattern = this.rootEl.querySelector<HTMLElement>(".qr-code-pattern")
+    if (pattern) this.spreadProps(pattern, this.api.getPatternProps())
+  }
+}

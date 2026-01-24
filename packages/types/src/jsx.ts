@@ -60,8 +60,10 @@ export namespace JSX {
     isPrimary: boolean
   }
 
-  export interface FocusEvent<Target = Element, RelatedTarget = Element>
-    extends SyntheticEvent<Target, NativeFocusEvent> {
+  export interface FocusEvent<Target = Element, RelatedTarget = Element> extends SyntheticEvent<
+    Target,
+    NativeFocusEvent
+  > {
     relatedTarget: (EventTarget & RelatedTarget) | null
     target: EventTarget & Target
   }
@@ -202,14 +204,28 @@ export namespace JSX {
     onCut?: ClipboardEventHandler<T> | undefined
     onPaste?: ClipboardEventHandler<T> | undefined
 
+    // Clipboard Events (Capture Phase)
+    onCopyCapture?: ClipboardEventHandler<T> | undefined
+    onCutCapture?: ClipboardEventHandler<T> | undefined
+    onPasteCapture?: ClipboardEventHandler<T> | undefined
+
     // Composition Events
     onCompositionEnd?: CompositionEventHandler<T> | undefined
     onCompositionStart?: CompositionEventHandler<T> | undefined
     onCompositionUpdate?: CompositionEventHandler<T> | undefined
 
+    // Composition Events (Capture Phase)
+    onCompositionEndCapture?: CompositionEventHandler<T> | undefined
+    onCompositionStartCapture?: CompositionEventHandler<T> | undefined
+    onCompositionUpdateCapture?: CompositionEventHandler<T> | undefined
+
     // Focus Events
     onFocus?: FocusEventHandler<T> | undefined
     onBlur?: FocusEventHandler<T> | undefined
+
+    // Focus Events (Capture Phase)
+    onFocusCapture?: FocusEventHandler<T> | undefined
+    onBlurCapture?: FocusEventHandler<T> | undefined
 
     // Form Events
     onChange?: FormEventHandler<T> | undefined
@@ -219,11 +235,25 @@ export namespace JSX {
     onSubmit?: FormEventHandler<T> | undefined
     onInvalid?: FormEventHandler<T> | undefined
 
+    // Form Events (Capture Phase)
+    onChangeCapture?: FormEventHandler<T> | undefined
+    onBeforeInputCapture?: FormEventHandler<T> | undefined
+    onInputCapture?: FormEventHandler<T> | undefined
+    onResetCapture?: FormEventHandler<T> | undefined
+    onSubmitCapture?: FormEventHandler<T> | undefined
+    onInvalidCapture?: FormEventHandler<T> | undefined
+
     // Image Events
     onLoad?: ZagEventHandler<T> | undefined
     onError?: ZagEventHandler<T> | undefined
     onKeyDown?: KeyboardEventHandler<T> | undefined
     onKeyUp?: KeyboardEventHandler<T> | undefined
+
+    // Image Events (Capture Phase)
+    onLoadCapture?: ZagEventHandler<T> | undefined
+    onErrorCapture?: ZagEventHandler<T> | undefined
+    onKeyDownCapture?: KeyboardEventHandler<T> | undefined
+    onKeyUpCapture?: KeyboardEventHandler<T> | undefined
 
     // Media Events
     onAbort?: ZagEventHandler<T> | undefined
@@ -249,6 +279,30 @@ export namespace JSX {
     onVolumeChange?: ZagEventHandler<T> | undefined
     onWaiting?: ZagEventHandler<T> | undefined
 
+    // Media Events (Capture Phase)
+    onAbortCapture?: ZagEventHandler<T> | undefined
+    onCanPlayCapture?: ZagEventHandler<T> | undefined
+    onCanPlayThroughCapture?: ZagEventHandler<T> | undefined
+    onDurationChangeCapture?: ZagEventHandler<T> | undefined
+    onEmptiedCapture?: ZagEventHandler<T> | undefined
+    onEncryptedCapture?: ZagEventHandler<T> | undefined
+    onEndedCapture?: ZagEventHandler<T> | undefined
+    onLoadedDataCapture?: ZagEventHandler<T> | undefined
+    onLoadedMetadataCapture?: ZagEventHandler<T> | undefined
+    onLoadStartCapture?: ZagEventHandler<T> | undefined
+    onPauseCapture?: ZagEventHandler<T> | undefined
+    onPlayCapture?: ZagEventHandler<T> | undefined
+    onPlayingCapture?: ZagEventHandler<T> | undefined
+    onProgressCapture?: ZagEventHandler<T> | undefined
+    onRateChangeCapture?: ZagEventHandler<T> | undefined
+    onSeekedCapture?: ZagEventHandler<T> | undefined
+    onSeekingCapture?: ZagEventHandler<T> | undefined
+    onStalledCapture?: ZagEventHandler<T> | undefined
+    onSuspendCapture?: ZagEventHandler<T> | undefined
+    onTimeUpdateCapture?: ZagEventHandler<T> | undefined
+    onVolumeChangeCapture?: ZagEventHandler<T> | undefined
+    onWaitingCapture?: ZagEventHandler<T> | undefined
+
     // MouseEvents
     onAuxClick?: MouseEventHandler<T> | undefined
     onClick?: MouseEventHandler<T> | undefined
@@ -270,14 +324,44 @@ export namespace JSX {
     onMouseOver?: MouseEventHandler<T> | undefined
     onMouseUp?: MouseEventHandler<T> | undefined
 
+    // MouseEvents (Capture Phase)
+    onAuxClickCapture?: MouseEventHandler<T> | undefined
+    onClickCapture?: MouseEventHandler<T> | undefined
+    onContextMenuCapture?: MouseEventHandler<T> | undefined
+    onDoubleClickCapture?: MouseEventHandler<T> | undefined
+    onDragCapture?: DragEventHandler<T> | undefined
+    onDragEndCapture?: DragEventHandler<T> | undefined
+    onDragEnterCapture?: DragEventHandler<T> | undefined
+    onDragExitCapture?: DragEventHandler<T> | undefined
+    onDragLeaveCapture?: DragEventHandler<T> | undefined
+    onDragOverCapture?: DragEventHandler<T> | undefined
+    onDragStartCapture?: DragEventHandler<T> | undefined
+    onDropCapture?: DragEventHandler<T> | undefined
+    onMouseDownCapture?: MouseEventHandler<T> | undefined
+    onMouseEnterCapture?: MouseEventHandler<T> | undefined
+    onMouseLeaveCapture?: MouseEventHandler<T> | undefined
+    onMouseMoveCapture?: MouseEventHandler<T> | undefined
+    onMouseOutCapture?: MouseEventHandler<T> | undefined
+    onMouseOverCapture?: MouseEventHandler<T> | undefined
+    onMouseUpCapture?: MouseEventHandler<T> | undefined
+
     // Selection Events
     onSelect?: ZagEventHandler<T> | undefined
+
+    // Selection Events (Capture Phase)
+    onSelectCapture?: ZagEventHandler<T> | undefined
 
     // Touch Events
     onTouchCancel?: TouchEventHandler<T> | undefined
     onTouchEnd?: TouchEventHandler<T> | undefined
     onTouchMove?: TouchEventHandler<T> | undefined
     onTouchStart?: TouchEventHandler<T> | undefined
+
+    // Touch Events (Capture Phase)
+    onTouchCancelCapture?: TouchEventHandler<T> | undefined
+    onTouchEndCapture?: TouchEventHandler<T> | undefined
+    onTouchMoveCapture?: TouchEventHandler<T> | undefined
+    onTouchStartCapture?: TouchEventHandler<T> | undefined
 
     // Pointer Events
     onPointerDown?: PointerEventHandler<T> | undefined
@@ -289,19 +373,43 @@ export namespace JSX {
     onPointerOver?: PointerEventHandler<T> | undefined
     onPointerOut?: PointerEventHandler<T> | undefined
 
+    // Pointer Events (Capture Phase)
+    onPointerDownCapture?: PointerEventHandler<T> | undefined
+    onPointerMoveCapture?: PointerEventHandler<T> | undefined
+    onPointerUpCapture?: PointerEventHandler<T> | undefined
+    onPointerCancelCapture?: PointerEventHandler<T> | undefined
+    onPointerEnterCapture?: PointerEventHandler<T> | undefined
+    onPointerLeaveCapture?: PointerEventHandler<T> | undefined
+    onPointerOverCapture?: PointerEventHandler<T> | undefined
+    onPointerOutCapture?: PointerEventHandler<T> | undefined
+
     // UI Events
     onScroll?: UIEventHandler<T> | undefined
 
+    // UI Events (Capture Phase)
+    onScrollCapture?: UIEventHandler<T> | undefined
+
     // Wheel Events
     onWheel?: WheelEventHandler<T> | undefined
+
+    // Wheel Events (Capture Phase)
+    onWheelCapture?: WheelEventHandler<T> | undefined
 
     // Animation Events
     onAnimationStart?: AnimationEventHandler<T> | undefined
     onAnimationEnd?: AnimationEventHandler<T> | undefined
     onAnimationIteration?: AnimationEventHandler<T> | undefined
 
+    // Animation Events (Capture Phase)
+    onAnimationStartCapture?: AnimationEventHandler<T> | undefined
+    onAnimationEndCapture?: AnimationEventHandler<T> | undefined
+    onAnimationIterationCapture?: AnimationEventHandler<T> | undefined
+
     // Transition Events
     onTransitionEnd?: TransitionEventHandler<T> | undefined
+
+    // Transition Events (Capture Phase)
+    onTransitionEndCapture?: TransitionEventHandler<T> | undefined
   }
 
   export interface CSSProperties extends CSS.Properties<string | number> {

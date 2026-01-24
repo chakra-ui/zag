@@ -3,7 +3,7 @@ import { MdxFooter } from "components/mdx-footer"
 import { EditPageLink } from "components/mdx/edit-page-link"
 import { Search } from "components/search-dialog"
 import { Sidebar } from "components/sidebar"
-import { SkipNavLink } from "components/skip-nav"
+import { SkipNavContent, SkipNavLink } from "components/skip-nav"
 import { TableOfContents } from "components/toc"
 import { TopNavigation } from "components/top-navigation"
 import { Box, Spacer, styled } from "styled-system/jsx"
@@ -28,6 +28,7 @@ export default function DocsLayout(props: DocsLayoutProps) {
       <SkipNavLink>Skip to main content</SkipNavLink>
       <TopNavigation />
       <styled.div pt="10">
+        <SkipNavContent />
         <Box maxW="8xl" mx="auto" px={{ sm: "6", base: "4", md: "8" }}>
           <Box
             display={{ base: "none", lg: "block" }}

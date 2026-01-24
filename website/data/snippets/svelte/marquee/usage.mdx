@@ -1,0 +1,43 @@
+```svelte
+<script lang="ts">
+  import * as marquee from "@zag-js/marquee"
+  import { useMachine, normalizeProps } from "@zag-js/svelte"
+
+  const logos = [
+    { name: "Microsoft", logo: "🏢" },
+    { name: "Apple", logo: "🍎" },
+    { name: "Google", logo: "🔍" },
+    { name: "Amazon", logo: "📦" },
+  ]
+
+  const id = $props.id()
+  const service = useMachine(marquee.machine, {
+    id: id,
+    autoFill: true,
+  })
+
+  const api = $derived(marquee.connect(service, normalizeProps))
+</script>
+
+<div {...api.getRootProps()}>
+  <!-- Optional: Add fade gradient at start -->
+  <div {...api.getEdgeProps({ side: "start" })} />
+
+  <div {...api.getViewportProps()}>
+    <!-- Render content (original + clones) -->
+    {#each Array.from({ length: api.contentCount }) as _, index}
+      <div {...api.getContentProps({ index })}>
+        {#each logos as item}
+          <div {...api.getItemProps()}>
+            <span class="logo">{item.logo}</span>
+            <span class="name">{item.name}</span>
+          </div>
+        {/each}
+      </div>
+    {/each}
+  </div>
+
+  <!-- Optional: Add fade gradient at end -->
+  <div {...api.getEdgeProps({ side: "end" })} />
+</div>
+```

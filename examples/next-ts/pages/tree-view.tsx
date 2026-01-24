@@ -11,6 +11,7 @@ interface Node {
   id: string
   name: string
   children?: Node[]
+  disabled?: boolean
 }
 
 const collection = tree.collection<Node>({

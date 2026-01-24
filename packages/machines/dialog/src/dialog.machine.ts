@@ -179,6 +179,7 @@ export const machine = createMachine<DialogSchema>({
             // Otherwise, use default behavior
             return el
           },
+          getShadowRoot: true,
         })
       },
 

@@ -7,13 +7,15 @@ import {
   isComposingEvent,
   isLeftClick,
   isModifierKey,
+  raf,
+  setCaretToEnd,
 } from "@zag-js/dom-query"
 import type { EventKeyMap, NormalizeProps, PropTypes } from "@zag-js/types"
 import { roundToDpr } from "@zag-js/utils"
+import { recordCursor } from "./cursor"
 import { parts } from "./number-input.anatomy"
 import * as dom from "./number-input.dom"
 import type { NumberInputApi, NumberInputService } from "./number-input.types"
-import { recordCursor } from "./cursor"
 
 export function connect<T extends PropTypes>(
   service: NumberInputService,
@@ -86,6 +88,11 @@ export function connect<T extends PropTypes>(
         "data-scrubbing": dataAttr(scrubbing),
         id: dom.getLabelId(scope),
         htmlFor: dom.getInputId(scope),
+        onClick() {
+          raf(() => {
+            setCaretToEnd(dom.getInputEl(scope))
+          })
+        },
       })
     },
 
@@ -172,7 +179,7 @@ export function connect<T extends PropTypes>(
 
           const step = getEventStep(event) * prop("step")
 
-          const keyMap: EventKeyMap = {
+          const keyMap: EventKeyMap<HTMLInputElement> = {
             ArrowUp() {
               send({ type: "INPUT.ARROW_UP", step })
               event.preventDefault()
@@ -191,8 +198,9 @@ export function connect<T extends PropTypes>(
               send({ type: "INPUT.END" })
               event.preventDefault()
             },
-            Enter() {
-              send({ type: "INPUT.ENTER" })
+            Enter(event) {
+              const selection = recordCursor(event.currentTarget, scope)
+              send({ type: "INPUT.ENTER", selection })
             },
           }
 
@@ -287,6 +295,9 @@ export function connect<T extends PropTypes>(
 
           send({ type: "SCRUBBER.PRESS_DOWN", point })
           event.preventDefault()
+          raf(() => {
+            setCaretToEnd(dom.getInputEl(scope))
+          })
         },
         style: {
           cursor: disabled ? undefined : "ew-resize",

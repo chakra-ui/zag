@@ -1,0 +1,30 @@
+<script setup lang="ts">
+import * as {{camelCase machine}} from "@zag-js/{{machine}}"
+import { {{camelCase machine}}Controls } from "@zag-js/shared"
+import { normalizeProps, useMachine } from "@zag-js/vue"
+
+const controls = useControls({{camelCase machine}}Controls)
+
+const service = useMachine(
+  {{camelCase machine}}.machine,
+  controls.mergeProps<{{camelCase machine}}.Props>({
+    id: useId(),
+  }),
+)
+
+const api = computed(() => {{camelCase machine}}.connect(service, normalizeProps))
+</script>
+
+<template>
+  <main className="{{machine}}">
+    <div v-bind="api.getRootProps()">
+    </div>
+  </main>
+
+  <Toolbar>
+    <StateVisualizer :state="service" />
+    <template #controls>
+      <Controls :control="controls" />
+    </template>
+  </Toolbar>
+</template>

@@ -676,12 +676,12 @@ export const machine = createMachine<SelectSchema>({
         }
       },
 
-      invokeOnOpen({ prop }) {
-        prop("onOpenChange")?.({ open: true })
+      invokeOnOpen({ prop, context }) {
+        prop("onOpenChange")?.({ open: true, value: context.get("value") })
       },
 
-      invokeOnClose({ prop }) {
-        prop("onOpenChange")?.({ open: false })
+      invokeOnClose({ prop, context }) {
+        prop("onOpenChange")?.({ open: false, value: context.get("value") })
       },
 
       syncSelectElement({ context, prop, scope }) {

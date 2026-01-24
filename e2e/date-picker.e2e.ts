@@ -217,3 +217,67 @@ test.describe("datepicker [min-max]", () => {
     await I.seeSelectedValue("08/15/2025")
   })
 })
+
+test.describe("datepicker [range]", () => {
+  test.beforeEach(async ({ page }) => {
+    I = new DatePickerModel(page)
+    await I.goto("/date-picker-range")
+  })
+
+  test("should not crash when typing end date first", async () => {
+    // Regression test for issue #2809
+    // Focus the end date input (index 1) first and type a valid date
+    await I.focusInput(1)
+    await I.type("06/15/2024", 1)
+    await I.clickOutsideToBlur()
+
+    // Should not crash and the value should be set
+    await I.seeInputHasValue("06/15/2024", 1)
+  })
+
+  test("should allow selecting dates after typing end date first", async () => {
+    // Type end date first
+    await I.focusInput(1)
+    await I.type("06/20/2024", 1)
+    await I.clickOutsideToBlur()
+    await I.seeInputHasValue("06/20/2024", 1)
+
+    // Open calendar and select a start date - should not crash
+    await I.clickTrigger()
+    await I.seeContent()
+    await I.clickDayCell(10)
+    await I.seeInputHasValue("06/10/2024", 0)
+  })
+
+  test("should not crash when blurring end date input twice after typing end date first", async () => {
+    // Regression test for issue #2840
+    // 1. Type a valid end date first (e.g. 06/15/2024)
+    await I.focusInput(1)
+    await I.type("06/15/2024", 1)
+    await I.clickOutsideToBlur()
+
+    // 2. Focus again on the period end date input
+    await I.focusInput(1)
+
+    // 3. Blur the field again - should not crash
+    await I.clickOutsideToBlur()
+
+    // Should not crash and the value should still be set
+    await I.seeInputHasValue("06/15/2024", 1)
+  })
+
+  test("should not crash when changing end date after typing end date first", async () => {
+    // Regression test for issue #2864
+    // 1. Type a valid end date first (e.g. 06/15/2024)
+    await I.type("06/15/2024", 1)
+    await I.clickOutsideToBlur()
+
+    // 2. Change the end date by typing a new value (e.g., 06/15/2025)
+    await I.selectInput(1)
+    await I.type("06/15/2025", 1)
+    await I.clickOutsideToBlur()
+
+    // Should not crash and the new value should be set
+    await I.seeInputHasValue("06/15/2025", 1)
+  })
+})

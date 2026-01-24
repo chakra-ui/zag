@@ -4,6 +4,395 @@ All notable changes to this project will be documented in this file.
 
 > For v0.x changelog, see the [v0 branch](https://github.com/chakra-ui/zag/blob/v0/CHANGELOG.md)
 
+## [1.33.0](./#1.33.0) - 2026-01-24
+
+### Added
+
+- **Scroll Area**: Add overflow CSS variables to the viewport element for creating scroll fade effects:
+  - `--scroll-area-overflow-x-start`: Distance from horizontal start edge in pixels
+  - `--scroll-area-overflow-x-end`: Distance from horizontal end edge in pixels
+  - `--scroll-area-overflow-y-start`: Distance from vertical start edge in pixels
+  - `--scroll-area-overflow-y-end`: Distance from vertical end edge in pixels
+
+- **Slider**: Add `thumbCollisionBehavior` prop to control how thumbs behave when they collide during pointer
+  interactions:
+  - `none` (default): Thumbs cannot move past each other; excess movement is ignored.
+  - `push`: Thumbs push each other without restoring their previous positions when dragged back.
+  - `swap`: Thumbs swap places when dragged past each other.
+
+- **Steps**: Add validation and skippable step support:
+  - `isStepValid(index)`: Block forward navigation when step is invalid (linear mode)
+  - `isStepSkippable(index)`: Mark steps as optional, bypassing validation
+  - `onStepInvalid({ step, action, targetStep })`: Callback when navigation is blocked
+  - `api.isStepValid(index)` / `api.isStepSkippable(index)`: Check step state
+  - `itemState.isValid()`: Lazy validation check per step
+
+- **Tags Input**: Add `placeholder` prop that is applied to the input only when there are no tags
+
+- **Tooltip**: Add `data-instant` attribute to tooltip content to indicate when animations should be instant (e.g., when
+  switching between tooltips quickly)
+
+### Fixed
+
+- **Auto Resize**: Fix issue where change event is not emitted after clearing a controlled textarea programmatically
+
+- **Collection, Tree View**: Fix initial focus issue when the first node or branch is disabled. Added `skip` option to
+  `getFirstNode()` (matching `getLastNode()`) to respect collapsed branches. The initial focus now correctly targets the
+  first visible non-disabled node.
+
+- **Color Picker, Color Utils**: Fix color not updating in controlled mode when selecting black shades.
+  - Fixed equality check to compare actual channel values instead of CSS string output
+  - Auto-detect `defaultFormat` from initial color value instead of hardcoding `"rgba"`
+
+- **Floating Panel**: Fix issue where double-clicking title bar while minimized would incorrectly maximize instead of
+  restore
+
+- **Image Cropper**
+  - Fix issue where `reset()` destroys the cropper area
+  - Fix issue where changing `aspectRatio` or `cropShape` props doesn't update the crop instantly
+  - Add symmetric resize support when holding `Alt` key during pointer drag
+  - Fix panning bounds in fixed crop mode at various zoom levels
+  - Fix race condition where initial crop may not compute on page reload
+
+- **Number Input**: Fix cursor positioning when clicking label or after scrubbing. The cursor now moves to the end of
+  the input value instead of the start.
+
+- **Pagination**: Fix issue where next trigger was not disabled when `count` is `0`
+
+- **Slider**: Fix pointer movement when dragging slider thumb from its edge in `thumbAlignment="contain"` mode. The
+  value calculation now correctly accounts for thumb inset, ensuring consistent behavior when clicking on the track to
+  set a value or dragging the thumb from any position.
+
+- **Switch**: Fix issue where `api.toggleChecked()` doesn't work as expected
+
+- **Toast**: Fix issue where toasts created before the state machine connects are not shown
+
+- **Tour**: Fix janky scroll behavior when navigating between tour steps. Changed `scrollIntoView` to use
+  `block: "nearest"` instead of `block: "center"` so the page only scrolls when the target element is not already
+  visible.
+
+- **Vanilla**
+  - Fix issue where vanilla machines do not have the option to change their props during runtime
+  - Fix issue where some `aria-` attributes were toggled as boolean attributes and not as attributes with value strings
+
+## [1.32.0](./#1.32.0) - 2026-01-02
+
+### Added
+
+- **Date Picker**: Add `onVisibleRangeChange` callback to notify when the visible date range changes. This callback
+  fires when:
+  - Clicking next/prev triggers
+  - Selecting a month from the month dropdown
+  - Selecting a year from the year dropdown
+  - Focusing a date outside the current visible range
+  - Any other action that changes the visible range
+
+- **File Upload**
+  - Add `readOnly` prop to prevent file modifications while keeping component visually active
+  - Add `maxFilesReached` and `remainingFiles` to exposed API
+
+- **Vanilla**: Initial release of the vanilla JavaScript adapter for Zag.js
+  - `VanillaMachine` - Class-based wrapper for zag machines with start/stop lifecycle
+  - `normalizeProps` - Converts React-style props to vanilla DOM attributes
+  - `spreadProps` - Spreads props onto DOM elements with event listener management
+
+  ```typescript
+  import { VanillaMachine, normalizeProps, spreadProps } from "@zag-js/vanilla"
+  import * as toggle from "@zag-js/toggle"
+
+  const machine = new VanillaMachine(toggle.machine, { id: "toggle" })
+  machine.start()
+
+  const api = toggle.connect(machine.service, normalizeProps)
+  spreadProps(buttonEl, api.buttonProps)
+
+  machine.stop()
+  ```
+
+### Fixed
+
+- **Carousel**: Fix issue where next/prev carousel buttons and indicators don't work when `dir="rtl"` is set
+
+- **File Upload**
+  - Fix issue where using `api.setClipboardFiles` doesn't run `transformFiles` and validation functions
+  - Fix item element IDs to use `name-size` combination for uniqueness (prevents ID collisions with same-named files)
+
+- **Focus Trap**: Fix focus trap crash when clicking labels in dialogs
+
+- **Pin Input**: Fix issue in Vanilla.js where paste does not work due to `maxlength="1"` truncating clipboard data
+  before the input event
+
+- **Tour**: Fix issue where input elements inside the spotlight target were not interactive. The focus trap now includes
+  both the tour content and the spotlight target as containers, allowing users to interact with elements inside the
+  highlighted area
+
+## [1.31.1](./#1.31.1) - 2025-12-10
+
+### Fixed
+
+- **Accordion, Menu**: Fix issue where querying elements by `aria-controls` attribute could fail when lazy mounting the
+  content
+- **Rating Group**: Fix issue where rating group becomes unfocusable via keyboard when value is 0
+
+## [1.31.0](./#1.31.0) - 2025-12-05
+
+### Added
+
+- **Number Input**: Add `onValueCommit` callback that fires when the input loses focus or Enter is pressed
+
+- **Pagination**
+  - Add `getFirstTriggerProps()` and `getLastTriggerProps()` methods for navigating to first/last page
+  - Add `boundaryCount` parameter for controlling boundary pages (start/end)
+  - Implement balanced pagination algorithm for consistent UI elements
+  - Maintain visual consistency with max 7 elements regardless of total pages
+
+- **Tree View**: Added `scrollToIndexFn` prop to enable keyboard navigation in virtualized trees
+
+### Fixed
+
+- **Color Picker**
+  - Add `role="dialog"` to color picker content when not inline to ensure proper `aria-controls` detection
+  - Add `aria-haspopup="dialog"` to color picker trigger when not inline for better accessibility
+
+- **Date Picker**: Fix issue where date picker input does not update format when locale changes
+
+- **Listbox**
+  - Fix issue in React where filtering items with an input would throw a
+    `flushSync was called from inside a lifecycle method` warning
+  - Fix issue where `data-highlighted` wasn't applied to the first item when using `autoHighlight` with input filtering
+
+- **Number Input**
+  - Fixed issue where input element doesn't sync when `formatOptions` changes dynamically
+  - Ensure cursor position is preserved when `Enter` key is pressed and formatting is triggered
+  - Fix cursor jumping to start when value is changed externally via props while user is typing
+
+- **Pagination**: Fix ellipsis showing when only 1 page gap
+
+- **Radio Group**
+  - Fix issue where `radio-group` machine no longer shows the `indicator` prematurely
+  - Improve accessibility of radio group by adding `invalid` and `required` props with corresponding `data-*` and
+    `aria-*` attributes
+
+- **Tabs**: Fix issue where `tabs` machine no longer shows the `indicator` prematurely
+
+- **Tooltip**: Fix tooltip not showing when scrolling with pointer over trigger
+
+- **Collapsible, Presence, Tour**: Fix machines setting reactive state in exit actions
+
+### Changed
+
+- **Tree View**: `getVisibleNodes()` now returns `{ node, indexPath }[]` instead of `node[]`. Returning the index path
+  perhaps the most useful use of this function, hence the change.
+
+  ```tsx
+  // Before
+  const nodes = api.getVisibleNodes()
+  nodes.forEach((node) => console.log(node.id))
+
+  // After
+  const visibleNodes = api.getVisibleNodes()
+  visibleNodes.forEach(({ node }) => console.log(node.id))
+  ```
+
+## [1.30.0](./#1.30.0) - 2025-11-26
+
+### Added
+
+- **Date Picker**
+  - Add support for `required` and `invalid` props
+  - Exposed `disabled` and `invalid` in the date picker API for better state access
+
+- **Navigation Menu**
+  - Add `getItemIndicatorProps` part for indicator styling
+  - Add `closeOnClick` prop to `getLinkProps` to control whether the navigation menu closes when a link is clicked
+    (defaults to `true`)
+
+### Fixed
+
+- **Floating Panel**
+  - Fix issue where `dir` prop is ignored. The `dir` attribute is now properly delegated to all floating panel parts
+  - Ensure double-click behavior doesn't trigger when `resizable={false}` is set
+  - Double-click behavior now checks `event.defaultPrevented` to allow users to prevent the default behavior by calling
+    `event.preventDefault()`
+
+- **Navigation Menu**
+  - Avoid focusing the trigger when hovering over it
+  - Separate `ContentProps` from `LinkProps` for `getContentProps` - previously it incorrectly used `LinkProps`
+
+- **Number Input**: Improve controlled usage by ensuring input element stays synced with controlled value
+
+### Changed
+
+- **Navigation Menu**: Removed `getIndicatorTrackProps` - use `getListProps` instead (list now includes
+  `position: relative`)
+
+  ```tsx
+  // Before
+  <div {...api.getIndicatorTrackProps()}>
+    <div {...api.getListProps()}>
+      {/* items */}
+    </div>
+  </div>
+
+  // After
+  <div {...api.getListProps()}> {/* now acts as indicator track */}
+    {/* items */}
+  </div>
+  ```
+
+## [1.29.1](./#1.29.1) - 2025-11-22
+
+### Fixed
+
+- **Floating Panel**
+  - Fix issue where resize trigger with `n` axis was not explicitly set to `top: 0`
+  - Fix issue where `draggable` and `resizable` options were not respected when set to `false`
+
+- **Presence**: Fix regression where UNMOUNT transition might not be called consistently
+
+## [1.29.0](./#1.29.0) - 2025-11-19
+
+### Added
+
+- **Carousel, Color Picker, Combobox, Date Picker, Select**: Add `value` to `OpenChangeDetails` for better context in
+  change handlers
+
+- **Splitter**: Add `getResizeTriggerIndicator` to render an indicator when resizing
+
+- **Toast**: Expose viewport offset as CSS variables (`--viewport-offset-left`, `--viewport-offset-right`,
+  `--viewport-offset-top`, `--viewport-offset-bottom`) on the toast group element
+
+### Fixed
+
+- **Carousel**: Fix dragging not working after scrolling with mouse wheel when `allowMouseDrag` is enabled
+
+- **Combobox**: Fix `onHighlightChange` not being invoked when collection is filtered to empty results. The callback now
+  correctly receives `{ highlightedValue: null, highlightedItem: null }` when the collection becomes empty
+
+- **File Upload**: Fix issue where clicking on non-interactive children (icons, text) inside the dropzone doesn't open
+  the file picker
+
+- **Radio Group**: Fix inconsistent application of `data-focus-visible` and `data-focus` attributes
+
+- **Splitter**: Fix disabled splitter showing resize cursor and allowing dragging
+
+## [1.28.0](./#1.28.0) - 2025-11-12
+
+### Added
+
+- **Carousel**: Add support for `autoSize` prop to allow variable width/height slide items.
+
+### Fixed
+
+- **Carousel**: Fix dragging behavior that stops working after switching browser tabs or scrolling the page. The issue
+  was caused by incorrectly checking `event.button` instead of `event.buttons` to detect interrupted drag operations.
+
+- **Date Picker**: Fix issue where the range date picker crashes when typing the end date first and blurring the input
+  field multiple times.
+
+- **Image Cropper**
+  - Fix issues with the controlled `zoom` prop not functioning as expected
+  - Clamping offset for non-fixed crop area should be based on viewport rectangle
+
+- **Presence**: Fix a bug where elements get stuck in unmountSuspended state during rapid hovering
+
+- **Radio Group, Tabs**: Fix indicator prematurely showing when rect has not been resolved yet
+
+- **Store**: Fix "Illegal invocation" errors by excluding native objects with special `this` bindings from being
+  proxied.
+
+- **Tabs**: Fix tabs indicator position not updating when inactive tabs change size.
+
+- **Tags Input**: Fix issue where item delete trigger doesn't have `data-*` attached
+
+## [1.27.1](./#1.27.1) - 2025-11-04
+
+### Fixed
+
+- **Combobox**
+  - Fix focus stealing in controlled open mode
+  - Remove problematic `aria-hidden` behavior to allow interaction with other page elements
+
+- **All Components**: Export missing types across all machine packages
+
+## [1.27.0](./#1.27.0) - 2025-11-01
+
+### Added
+
+- **Dialog, Popover**: Improve support for shadow DOM in interact outside and focus trap detection.
+
+### Fixed
+
+- **Marquee**: Fix Firefox flicker, use margin spacing, add GPU acceleration, and add `item` part.
+
+- **Popover**: Improve support for shadow DOM in interact outside and focus trap detection.
+
+- **Dialog**: Fix issue where setting `scrollbar-gutter: stable` in CSS caused an unwanted gap and layout shift when
+  opening dialogs.
+
+- **Slider**: Fix issue where programmatic value changes do not trigger the `onValueChangeEnd` callback. This affects
+  the`setThumbValue`, `setValue`, `increment`, and `decrement` API methods.
+
+## [1.26.5](./#1.26.5) - 2025-10-29
+
+### Fixed
+
+- **Date Picker**: Fix crash in range date picker when typing end date first by adding `null`/`undefined` checks when
+  accessing date properties.
+
+- **Image Cropper**
+  - Fix not working resize API
+  - Export missing types
+  - Make the image cropper responsive
+
+- **Radio Group**: Revert to using `offsetLeft`/`offsetTop` to fix indicator positioning in scrollable containers.
+
+- **Tabs**: Revert to using `offsetLeft`/`offsetTop` to fix indicator positioning in scrollable containers.
+
+- **Tour**
+  - Fix issue where effects were not cleanup correct.
+  - Fix issue where wait step doesn't work correctly.
+  - Validate the configured steps on mount to ensure they are valid.
+
+## [1.26.4](./#1.26.4) - 2025-10-23
+
+### Added
+
+- **Image Cropper [New]**: Initial release of image cropper state machine
+
+- **Marquee [New]**: Initial release of marquee component for continuously scrolling content
+
+### Fixed
+
+- **Angle Slider**: Fix issue where clicking and dragging the angle-slider thumb from a non-center position causes
+  unexpected value jumps. The thumb now maintains its relative position from the initial click point throughout the drag
+  operation, providing more intuitive dragging behavior.
+
+- **Slider**: Fix issue where slider thumb offset changes dynamically during drag, causing unexpected value jumps. The
+  thumb now maintains a constant offset from the pointer throughout the drag operation, matching the initial grab
+  position.
+
+- **Svelte**: Refactor `mergeProps` to return the class values as an array, this delegates the resolution to Svelte's
+  native class handling, which uses `clsx` internally. This ensures proper support for conditional classes, arrays, and
+  objects.
+
+- **Toast**: Fix issue in Solid.js where toasts collapse immediately when dismissing while hovering, by tracking pointer
+  state and temporarily ignoring spurious mouse events during DOM mutations using requestAnimationFrame.
+
+## [1.26.3](./#1.26.3) - 2025-10-18
+
+### Fixed
+
+- **Angle Slider**: Fix accessibility violation where the slider thumb element lacked an accessible name. The thumb now
+  supports `aria-label` and `aria-labelledby` props, and automatically falls back to the label element's ID for proper
+  ARIA labeling.
+
+- **Select**: Fix accessibility violation where the required state was not set correctly to on the trigger.
+
+- **Tags Input**: Fix issue where entering a custom tag with combobox integration required pressing `Enter` twice. The
+  tags-input now correctly handles custom values when the combobox has no highlighted item (`aria-activedescendant` is
+  empty), allowing the tag to be added on the first `Enter` press.
+
 ## [1.26.2](./#1.26.2) - 2025-10-14
 
 ### Fixed

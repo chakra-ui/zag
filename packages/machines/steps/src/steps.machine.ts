@@ -41,17 +41,29 @@ export const machine = createMachine<StepsSchema>({
     return "idle"
   },
 
-  entry: ["validateStep"],
+  entry: ["validateStepIndex"],
 
   states: {
     idle: {
       on: {
-        "STEP.SET": {
-          actions: ["setStep"],
-        },
-        "STEP.NEXT": {
-          actions: ["goToNextStep"],
-        },
+        "STEP.SET": [
+          {
+            guard: "isValidStepNavigation",
+            actions: ["setStep"],
+          },
+          {
+            actions: ["invokeOnStepInvalid"],
+          },
+        ],
+        "STEP.NEXT": [
+          {
+            guard: "isCurrentStepValid",
+            actions: ["goToNextStep"],
+          },
+          {
+            actions: ["invokeOnStepInvalid"],
+          },
+        ],
         "STEP.PREV": {
           actions: ["goToPrevStep"],
         },
@@ -63,14 +75,35 @@ export const machine = createMachine<StepsSchema>({
   },
 
   implementations: {
+    guards: {
+      isCurrentStepValid({ context, prop }) {
+        const current = context.get("step")
+        // Skippable steps bypass validation
+        if (prop("isStepSkippable")?.(current)) return true
+        const isStepValid = prop("isStepValid")
+        if (!isStepValid) return true
+        return isStepValid(current)
+      },
+      isValidStepNavigation({ context, event, prop }) {
+        const current = context.get("step")
+        // Always allow backward navigation
+        if (event.value <= current) return true
+        // Skippable steps bypass validation
+        if (prop("isStepSkippable")?.(current)) return true
+        // For forward navigation, validate current step
+        const isStepValid = prop("isStepValid")
+        if (!isStepValid) return true
+        return isStepValid(current)
+      },
+    },
+
     actions: {
       goToNextStep({ context, prop }) {
-        const value = Math.min(context.get("step") + 1, prop("count"))
-        context.set("step", value)
+        const count = prop("count")
+        context.set("step", Math.min(context.get("step") + 1, count))
       },
       goToPrevStep({ context }) {
-        const value = Math.max(context.get("step") - 1, 0)
-        context.set("step", value)
+        context.set("step", Math.max(context.get("step") - 1, 0))
       },
       resetStep({ context }) {
         context.set("step", 0)
@@ -78,14 +111,21 @@ export const machine = createMachine<StepsSchema>({
       setStep({ context, event }) {
         context.set("step", event.value)
       },
-      validateStep({ context, prop }) {
-        validateStep(prop("count"), context.get("step"))
+      validateStepIndex({ context, prop }) {
+        validateStepIndex(prop("count"), context.get("step"))
+      },
+      invokeOnStepInvalid({ context, event, prop }) {
+        prop("onStepInvalid")?.({
+          step: context.get("step"),
+          action: event.type === "STEP.NEXT" ? "next" : "set",
+          targetStep: event.value,
+        })
       },
     },
   },
 })
 
-const validateStep = (count: number, step: number) => {
+const validateStepIndex = (count: number, step: number) => {
   if (!isValueWithinRange(step, 0, count)) {
     throw new RangeError(`[zag-js/steps] step index ${step} is out of bounds`)
   }
