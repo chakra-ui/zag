@@ -69,8 +69,8 @@ export default defineConfig({
           },
         },
         fonts: {
-          heading: { value: "var(--font-inter), sans-serif" },
-          body: { value: "var(--font-inter), sans-serif" },
+          heading: { value: "var(--font-body), sans-serif" },
+          body: { value: "var(--font-body), sans-serif" },
           mono: {
             value:
               "ui-monospace, SFMono-Regular, 'SF Mono', Consolas, 'Liberation Mono', Menlo, monospace",
