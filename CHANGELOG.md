@@ -4,6 +4,77 @@ All notable changes to this project will be documented in this file.
 
 > For v0.x changelog, see the [v0 branch](https://github.com/chakra-ui/zag/blob/v0/CHANGELOG.md)
 
+## [1.33.0](./#1.33.0) - 2026-01-24
+
+### Added
+
+- **Scroll Area**: Add overflow CSS variables to the viewport element for creating scroll fade effects:
+  - `--scroll-area-overflow-x-start`: Distance from horizontal start edge in pixels
+  - `--scroll-area-overflow-x-end`: Distance from horizontal end edge in pixels
+  - `--scroll-area-overflow-y-start`: Distance from vertical start edge in pixels
+  - `--scroll-area-overflow-y-end`: Distance from vertical end edge in pixels
+
+- **Slider**: Add `thumbCollisionBehavior` prop to control how thumbs behave when they collide during pointer
+  interactions:
+  - `none` (default): Thumbs cannot move past each other; excess movement is ignored.
+  - `push`: Thumbs push each other without restoring their previous positions when dragged back.
+  - `swap`: Thumbs swap places when dragged past each other.
+
+- **Steps**: Add validation and skippable step support:
+  - `isStepValid(index)`: Block forward navigation when step is invalid (linear mode)
+  - `isStepSkippable(index)`: Mark steps as optional, bypassing validation
+  - `onStepInvalid({ step, action, targetStep })`: Callback when navigation is blocked
+  - `api.isStepValid(index)` / `api.isStepSkippable(index)`: Check step state
+  - `itemState.isValid()`: Lazy validation check per step
+
+- **Tags Input**: Add `placeholder` prop that is applied to the input only when there are no tags
+
+- **Tooltip**: Add `data-instant` attribute to tooltip content to indicate when animations should be instant (e.g., when
+  switching between tooltips quickly)
+
+### Fixed
+
+- **Auto Resize**: Fix issue where change event is not emitted after clearing a controlled textarea programmatically
+
+- **Collection, Tree View**: Fix initial focus issue when the first node or branch is disabled. Added `skip` option to
+  `getFirstNode()` (matching `getLastNode()`) to respect collapsed branches. The initial focus now correctly targets the
+  first visible non-disabled node.
+
+- **Color Picker, Color Utils**: Fix color not updating in controlled mode when selecting black shades.
+  - Fixed equality check to compare actual channel values instead of CSS string output
+  - Auto-detect `defaultFormat` from initial color value instead of hardcoding `"rgba"`
+
+- **Floating Panel**: Fix issue where double-clicking title bar while minimized would incorrectly maximize instead of
+  restore
+
+- **Image Cropper**
+  - Fix issue where `reset()` destroys the cropper area
+  - Fix issue where changing `aspectRatio` or `cropShape` props doesn't update the crop instantly
+  - Add symmetric resize support when holding `Alt` key during pointer drag
+  - Fix panning bounds in fixed crop mode at various zoom levels
+  - Fix race condition where initial crop may not compute on page reload
+
+- **Number Input**: Fix cursor positioning when clicking label or after scrubbing. The cursor now moves to the end of
+  the input value instead of the start.
+
+- **Pagination**: Fix issue where next trigger was not disabled when `count` is `0`
+
+- **Slider**: Fix pointer movement when dragging slider thumb from its edge in `thumbAlignment="contain"` mode. The
+  value calculation now correctly accounts for thumb inset, ensuring consistent behavior when clicking on the track to
+  set a value or dragging the thumb from any position.
+
+- **Switch**: Fix issue where `api.toggleChecked()` doesn't work as expected
+
+- **Toast**: Fix issue where toasts created before the state machine connects are not shown
+
+- **Tour**: Fix janky scroll behavior when navigating between tour steps. Changed `scrollIntoView` to use
+  `block: "nearest"` instead of `block: "center"` so the page only scrolls when the target element is not already
+  visible.
+
+- **Vanilla**
+  - Fix issue where vanilla machines do not have the option to change their props during runtime
+  - Fix issue where some `aria-` attributes were toggled as boolean attributes and not as attributes with value strings
+
 ## [1.32.0](./#1.32.0) - 2026-01-02
 
 ### Added
