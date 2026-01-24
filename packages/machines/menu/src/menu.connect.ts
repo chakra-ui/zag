@@ -42,7 +42,7 @@ export function connect<T extends PropTypes>(service: Service<MenuSchema>, norma
   const currentPlacement = context.get("currentPlacement")
   const anchorPoint = context.get("anchorPoint")
   const highlightedValue = context.get("highlightedValue")
-  const activeTriggerValue = context.get("activeTriggerValue")
+  const triggerValue = context.get("triggerValue")
 
   const popperStyles = getPlacementStyles({
     ...prop("positioning"),
@@ -129,9 +129,9 @@ export function connect<T extends PropTypes>(service: Service<MenuSchema>, norma
       if (open === nextOpen) return
       send({ type: nextOpen ? "OPEN" : "CLOSE" })
     },
-    activeTriggerValue,
-    setActiveTriggerValue(value) {
-      send({ type: "ACTIVE_TRIGGER.SET", value })
+    triggerValue,
+    setTriggerValue(value) {
+      send({ type: "TRIGGER_VALUE.SET", value })
     },
     setHighlightedValue(value) {
       send({ type: "HIGHLIGHTED.SET", value })
@@ -155,7 +155,7 @@ export function connect<T extends PropTypes>(service: Service<MenuSchema>, norma
 
     getContextTriggerProps(props: TriggerProps = {}) {
       const { value } = props
-      const current = value == null ? false : activeTriggerValue === value
+      const current = value == null ? false : triggerValue === value
       const contextTriggerId = dom.getContextTriggerId(scope, value)
       return normalize.element({
         ...parts.contextTrigger.attrs,
@@ -186,7 +186,7 @@ export function connect<T extends PropTypes>(service: Service<MenuSchema>, norma
           const point = getEventPoint(event)
           const shouldSwitch = open && !current
           send({
-            type: shouldSwitch ? "ACTIVE_TRIGGER.SET" : "CONTEXT_MENU",
+            type: shouldSwitch ? "TRIGGER_VALUE.SET" : "CONTEXT_MENU",
             point,
             value,
           })
@@ -207,7 +207,7 @@ export function connect<T extends PropTypes>(service: Service<MenuSchema>, norma
 
     getTriggerProps(props: TriggerProps = {}) {
       const { value } = props
-      const current = value == null ? false : activeTriggerValue === value
+      const current = value == null ? false : triggerValue === value
       const triggerId = dom.getTriggerId(scope, value)
       return normalize.button({
         ...(isSubmenu ? parts.triggerItem.attrs : parts.trigger.attrs),
@@ -252,7 +252,7 @@ export function connect<T extends PropTypes>(service: Service<MenuSchema>, norma
           if (dom.isTargetDisabled(event.currentTarget)) return
           const shouldSwitch = open && !current
           send({
-            type: shouldSwitch ? "ACTIVE_TRIGGER.SET" : "TRIGGER_CLICK",
+            type: shouldSwitch ? "TRIGGER_VALUE.SET" : "TRIGGER_CLICK",
             target: event.currentTarget,
             value,
           })
@@ -339,7 +339,7 @@ export function connect<T extends PropTypes>(service: Service<MenuSchema>, norma
         tabIndex: 0,
         dir: prop("dir"),
         "aria-activedescendant": computed("highlightedId") || undefined,
-        "aria-labelledby": dom.getTriggerId(scope, activeTriggerValue ?? undefined),
+        "aria-labelledby": dom.getTriggerId(scope, triggerValue ?? undefined),
         "data-placement": currentPlacement,
         onPointerEnter(event) {
           if (event.pointerType !== "mouse") return

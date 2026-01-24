@@ -3,14 +3,13 @@ import { createSplitProps } from "@zag-js/utils"
 import type { ItemGroupLabelProps, ItemGroupProps, ItemProps, OptionItemProps, MenuProps } from "./menu.types"
 
 export const props = createProps<MenuProps>()([
-  "activeTriggerValue",
   "anchorPoint",
   "aria-label",
   "closeOnSelect",
   "composite",
-  "defaultActiveTriggerValue",
   "defaultHighlightedValue",
   "defaultOpen",
+  "defaultTriggerValue",
   "dir",
   "getRootNode",
   "highlightedValue",
@@ -18,7 +17,6 @@ export const props = createProps<MenuProps>()([
   "ids",
   "loopFocus",
   "navigate",
-  "onActiveTriggerChange",
   "onEscapeKeyDown",
   "onFocusOutside",
   "onHighlightChange",
@@ -27,8 +25,10 @@ export const props = createProps<MenuProps>()([
   "onPointerDownOutside",
   "onRequestDismiss",
   "onSelect",
+  "onTriggerValueChange",
   "open",
   "positioning",
+  "triggerValue",
   "typeahead",
 ])
 

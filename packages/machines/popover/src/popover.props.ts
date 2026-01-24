@@ -6,6 +6,8 @@ export const props = createProps<PopoverProps>()([
   "autoFocus",
   "closeOnEscape",
   "closeOnInteractOutside",
+  "defaultOpen",
+  "defaultTriggerValue",
   "dir",
   "getRootNode",
   "id",
@@ -17,12 +19,13 @@ export const props = createProps<PopoverProps>()([
   "onInteractOutside",
   "onOpenChange",
   "onPointerDownOutside",
+  "onTriggerValueChange",
   "onRequestDismiss",
-  "defaultOpen",
   "open",
   "persistentElements",
   "portalled",
   "positioning",
+  "triggerValue",
 ])
 
 export const splitProps = createSplitProps<Partial<PopoverProps>>(props)

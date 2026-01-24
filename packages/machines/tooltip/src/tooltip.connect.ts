@@ -17,7 +17,7 @@ export function connect<P extends PropTypes>(
   const hasAriaLabel = !!prop("aria-label")
 
   const open = state.matches("open", "closing")
-  const activeTriggerValue = context.get("activeTriggerValue")
+  const triggerValue = context.get("triggerValue")
 
   const contentId = dom.getContentId(scope)
 
@@ -36,9 +36,9 @@ export function connect<P extends PropTypes>(
       send({ type: nextOpen ? "open" : "close" })
     },
 
-    activeTriggerValue,
-    setActiveTriggerValue(value) {
-      send({ type: "activeTrigger.set", value: value ?? undefined })
+    triggerValue,
+    setTriggerValue(value) {
+      send({ type: "triggerValue.set", value: value ?? undefined })
     },
 
     reposition(options = {}) {
@@ -47,7 +47,7 @@ export function connect<P extends PropTypes>(
 
     getTriggerProps(props: TriggerProps = {}) {
       const { value } = props
-      const current = value == null ? false : activeTriggerValue === value
+      const current = value == null ? false : triggerValue === value
       const triggerId = dom.getTriggerId(scope, value)
       return normalize.button({
         ...parts.trigger.attrs,
@@ -64,7 +64,7 @@ export function connect<P extends PropTypes>(
           if (disabled) return
           if (!prop("closeOnClick")) return
           const shouldSwitch = open && !current
-          send({ type: shouldSwitch ? "activeTrigger.set" : "close", src: "trigger.click", value, triggerId })
+          send({ type: shouldSwitch ? "triggerValue.set" : "close", src: "trigger.click", value, triggerId })
         },
         onFocus(event) {
           queueMicrotask(() => {
@@ -73,7 +73,7 @@ export function connect<P extends PropTypes>(
             if (_event.src === "trigger.pointerdown") return
             if (!isFocusVisible()) return
             const shouldSwitch = open && !current
-            send({ type: shouldSwitch ? "activeTrigger.set" : "open", src: "trigger.focus", value, triggerId })
+            send({ type: shouldSwitch ? "triggerValue.set" : "open", src: "trigger.focus", value, triggerId })
           })
         },
         onBlur(event) {
@@ -97,13 +97,13 @@ export function connect<P extends PropTypes>(
           if (disabled) return
           if (event.pointerType === "touch") return
           const shouldSwitch = open && !current
-          send({ type: shouldSwitch ? "activeTrigger.set" : "pointer.move", value, triggerId })
+          send({ type: shouldSwitch ? "triggerValue.set" : "pointer.move", value, triggerId })
         },
         onPointerOver(event) {
           if (event.defaultPrevented) return
           if (disabled) return
           if (event.pointerType === "touch") return
-          send({ type: "pointer.move" })
+          send({ type: "pointer.move", value, triggerId })
         },
         onPointerLeave() {
           if (disabled) return

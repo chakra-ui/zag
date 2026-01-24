@@ -42,11 +42,11 @@ export const machine = createMachine<TooltipSchema>({
   context: ({ bindable, prop }) => ({
     currentPlacement: bindable<Placement | undefined>(() => ({ defaultValue: undefined })),
     hasPointerMoveOpened: bindable<string | null>(() => ({ defaultValue: null })),
-    activeTriggerValue: bindable<string | null>(() => ({
-      defaultValue: prop("defaultActiveTriggerValue") ?? null,
-      value: prop("activeTriggerValue"),
+    triggerValue: bindable<string | null>(() => ({
+      defaultValue: prop("defaultTriggerValue") ?? null,
+      value: prop("triggerValue"),
       onChange(value) {
-        prop("onActiveTriggerChange")?.({ value })
+        prop("onTriggerValueChange")?.({ value })
       },
     })),
   }),
@@ -60,14 +60,14 @@ export const machine = createMachine<TooltipSchema>({
       action(["toggleVisibility"])
     })
 
-    track([() => prop("activeTriggerValue")], () => {
+    track([() => prop("triggerValue")], () => {
       action(["reposition"])
     })
   },
 
   on: {
-    "activeTrigger.set": {
-      actions: ["setActiveTrigger"],
+    "triggerValue.set": {
+      actions: ["setTriggerValue", "repositionImmediate"],
     },
   },
 
@@ -95,12 +95,12 @@ export const machine = createMachine<TooltipSchema>({
           {
             guard: and("noVisibleTooltip", not("hasPointerMoveOpened")),
             target: "opening",
-            actions: ["setActiveTrigger"],
+            actions: ["setTriggerValue"],
           },
           {
             guard: not("hasPointerMoveOpened"),
             target: "open",
-            actions: ["setPointerMoveOpened", "invokeOnOpen", "setActiveTrigger"],
+            actions: ["setPointerMoveOpened", "invokeOnOpen", "setTriggerValue"],
           },
         ],
       },
@@ -236,13 +236,17 @@ export const machine = createMachine<TooltipSchema>({
           {
             guard: "isOpenControlled",
             // We trigger toggleVisibility manually since the `ctx.open` has not changed yet (at this point)
-            actions: ["setPointerMoveOpened", "setActiveTrigger", "invokeOnOpen", "toggleVisibility"],
+            actions: ["setPointerMoveOpened", "setTriggerValue", "invokeOnOpen", "toggleVisibility"],
           },
           {
             target: "open",
-            actions: ["setPointerMoveOpened", "setActiveTrigger", "invokeOnOpen"],
+            actions: ["setPointerMoveOpened", "setTriggerValue", "invokeOnOpen"],
           },
         ],
+        "triggerValue.set": {
+          target: "open",
+          actions: ["setTriggerValue", "repositionImmediate"],
+        },
         "content.pointer.move": {
           guard: "isInteractive",
           target: "open",
@@ -276,12 +280,12 @@ export const machine = createMachine<TooltipSchema>({
         }
       },
 
-      invokeOnOpen: ({ prop }) => {
-        prop("onOpenChange")?.({ open: true })
+      invokeOnOpen: ({ prop, context }) => {
+        prop("onOpenChange")?.({ open: true, triggerValue: context.get("triggerValue") })
       },
 
-      invokeOnClose: ({ prop }) => {
-        prop("onOpenChange")?.({ open: false })
+      invokeOnClose: ({ prop, context }) => {
+        prop("onOpenChange")?.({ open: false, triggerValue: context.get("triggerValue") })
       },
 
       closeIfDisabled: ({ prop, send }) => {
@@ -292,10 +296,25 @@ export const machine = createMachine<TooltipSchema>({
       reposition: ({ context, event, prop, scope }) => {
         if (event.type !== "positioning.set") return
         const getPositionerEl = () => dom.getPositionerEl(scope)
-        const getTriggerEl = () => dom.getActiveTriggerEl(scope, context.get("activeTriggerValue"))
+        const getTriggerEl = () => dom.getActiveTriggerEl(scope, context.get("triggerValue"))
         return getPlacement(getTriggerEl, getPositionerEl, {
           ...prop("positioning"),
           ...event.options,
+          defer: true,
+          listeners: false,
+          onComplete(data) {
+            context.set("currentPlacement", data.placement)
+          },
+        })
+      },
+
+      repositionImmediate: ({ context, event, prop, scope }) => {
+        // Use event.value (new trigger) instead of context (might still have old value)
+        const triggerValue = event.value ?? context.get("triggerValue")
+        const getPositionerEl = () => dom.getPositionerEl(scope)
+        const getTriggerEl = () => dom.getActiveTriggerEl(scope, triggerValue)
+        return getPlacement(getTriggerEl, getPositionerEl, {
+          ...prop("positioning"),
           defer: true,
           listeners: false,
           onComplete(data) {
@@ -322,8 +341,8 @@ export const machine = createMachine<TooltipSchema>({
         context.set("hasPointerMoveOpened", null)
       },
 
-      setActiveTrigger: ({ context, event }) => {
-        context.set("activeTriggerValue", event.value ?? null)
+      setTriggerValue: ({ context, event }) => {
+        context.set("triggerValue", event.value ?? null)
       },
     },
     effects: {
@@ -337,7 +356,7 @@ export const machine = createMachine<TooltipSchema>({
         }
 
         const getPositionerEl = () => dom.getPositionerEl(scope)
-        const getTriggerEl = () => dom.getActiveTriggerEl(scope, context.get("activeTriggerValue"))
+        const getTriggerEl = () => dom.getActiveTriggerEl(scope, context.get("triggerValue"))
         return getPlacement(getTriggerEl, getPositionerEl, {
           ...prop("positioning"),
           defer: true,
@@ -356,8 +375,8 @@ export const machine = createMachine<TooltipSchema>({
       trackScroll: ({ send, prop, scope, context }) => {
         if (!prop("closeOnScroll")) return
 
-        const activeTriggerValue = context.get("activeTriggerValue")
-        const triggerEl = dom.getActiveTriggerEl(scope, activeTriggerValue)
+        const triggerValue = context.get("triggerValue")
+        const triggerEl = dom.getActiveTriggerEl(scope, triggerValue)
         if (!triggerEl) return
 
         const overflowParents = getOverflowAncestors(triggerEl)

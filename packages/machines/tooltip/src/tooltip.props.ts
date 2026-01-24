@@ -3,26 +3,26 @@ import { createSplitProps } from "@zag-js/utils"
 import type { TooltipProps } from "./tooltip.types"
 
 export const props = createProps<TooltipProps>()([
-  "activeTriggerValue",
   "aria-label",
   "closeDelay",
+  "closeOnClick",
   "closeOnEscape",
   "closeOnPointerDown",
   "closeOnScroll",
-  "closeOnClick",
-  "defaultActiveTriggerValue",
   "defaultOpen",
+  "defaultTriggerValue",
   "dir",
   "disabled",
   "getRootNode",
   "id",
   "ids",
   "interactive",
-  "onActiveTriggerChange",
   "onOpenChange",
+  "onTriggerValueChange",
   "open",
   "openDelay",
   "positioning",
+  "triggerValue",
 ])
 
 export const splitProps = createSplitProps<Partial<TooltipProps>>(props)

@@ -1,9 +1,10 @@
+import { Portal, normalizeProps, useMachine } from "@zag-js/react"
 import * as tooltip from "@zag-js/tooltip"
-import { Portal, mergeProps, normalizeProps, useMachine } from "@zag-js/react"
 import { InfoIcon } from "lucide-react"
 import { useId, useState } from "react"
-import { Toolbar } from "../components/toolbar"
+import { Presence } from "../components/presence"
 import { StateVisualizer } from "../components/state-visualizer"
+import { Toolbar } from "../components/toolbar"
 
 interface Product {
   id: number
@@ -27,6 +28,10 @@ export default function TooltipMultipleTrigger() {
   const service = useMachine(tooltip.machine, {
     id: useId(),
     positioning: { placement: "right" },
+    onTriggerValueChange({ value }) {
+      const product = products.find((p) => `${p.id}` === value) ?? null
+      setActiveProduct(product)
+    },
   })
 
   const api = tooltip.connect(service, normalizeProps)
@@ -53,12 +58,7 @@ export default function TooltipMultipleTrigger() {
                   <td style={{ padding: "12px" }}>${product.price}</td>
                   <td style={{ padding: "12px" }}>{product.stock} units</td>
                   <td style={{ padding: "12px" }}>
-                    <button
-                      {...mergeProps(api.getTriggerProps({ value: `${product.id}` }), {
-                        onPointerEnter: () => setActiveProduct(product),
-                        onFocus: () => setActiveProduct(product),
-                      })}
-                    >
+                    <button {...api.getTriggerProps({ value: `${product.id}` })}>
                       <InfoIcon size={18} />
                     </button>
                   </td>
@@ -68,14 +68,14 @@ export default function TooltipMultipleTrigger() {
           </table>
 
           <div style={{ marginTop: "20px", padding: "12px", backgroundColor: "#f9fafb", borderRadius: "6px" }}>
-            <strong>Active Trigger:</strong> {api.activeTriggerValue || "-"} <br />
+            <strong>Active Trigger:</strong> {api.triggerValue || "-"} <br />
             <strong>Active Product:</strong> {activeProduct ? `${activeProduct.name} ($${activeProduct.price})` : "-"}
           </div>
         </section>
 
         <Portal>
           <div {...api.getPositionerProps()}>
-            <div {...api.getContentProps()}>
+            <Presence {...api.getContentProps()}>
               {activeProduct ? (
                 <div>
                   <strong>{activeProduct.name}</strong>
@@ -84,13 +84,13 @@ export default function TooltipMultipleTrigger() {
               ) : (
                 <div>No product selected</div>
               )}
-            </div>
+            </Presence>
           </div>
         </Portal>
       </main>
 
       <Toolbar viz>
-        <StateVisualizer state={service} context={["activeTriggerValue", "hasPointerMoveOpened"]} />
+        <StateVisualizer state={service} context={["triggerValue", "hasPointerMoveOpened"]} />
       </Toolbar>
     </>
   )

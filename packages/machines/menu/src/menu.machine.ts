@@ -74,11 +74,11 @@ export const machine = createMachine<MenuSchema>({
       isSubmenu: bindable<boolean>(() => ({
         defaultValue: false,
       })),
-      activeTriggerValue: bindable<string | null>(() => ({
-        defaultValue: prop("defaultActiveTriggerValue") ?? null,
-        value: prop("activeTriggerValue"),
+      triggerValue: bindable<string | null>(() => ({
+        defaultValue: prop("defaultTriggerValue") ?? null,
+        value: prop("triggerValue"),
         onChange(value) {
-          prop("onActiveTriggerChange")?.({ value })
+          prop("onTriggerValueChange")?.({ value })
         },
       })),
     }
@@ -114,8 +114,8 @@ export const machine = createMachine<MenuSchema>({
   },
 
   on: {
-    "ACTIVE_TRIGGER.SET": {
-      actions: ["setActiveTrigger"],
+    "TRIGGER_VALUE.SET": {
+      actions: ["setTriggerValue", "setAnchorPoint", "reposition", "focusMenu"],
     },
     "PARENT.SET": {
       actions: ["setParentMenu"],
@@ -189,11 +189,11 @@ export const machine = createMachine<MenuSchema>({
         TRIGGER_CLICK: [
           {
             guard: "isOpenControlled",
-            actions: ["invokeOnOpen", "setActiveTrigger"],
+            actions: ["invokeOnOpen", "setTriggerValue"],
           },
           {
             target: "open",
-            actions: ["invokeOnOpen", "setActiveTrigger"],
+            actions: ["invokeOnOpen", "setTriggerValue"],
           },
         ],
         TRIGGER_FOCUS: {
@@ -355,11 +355,11 @@ export const machine = createMachine<MenuSchema>({
         TRIGGER_CLICK: [
           {
             guard: "isOpenControlled",
-            actions: ["invokeOnOpen", "setActiveTrigger"],
+            actions: ["invokeOnOpen", "setTriggerValue"],
           },
           {
             target: "open",
-            actions: ["invokeOnOpen", "setActiveTrigger"],
+            actions: ["invokeOnOpen", "setTriggerValue"],
           },
         ],
         TRIGGER_POINTERMOVE: {
@@ -556,14 +556,16 @@ export const machine = createMachine<MenuSchema>({
         return () => clearTimeout(timer)
       },
       trackPositioning({ context, prop, scope, refs }) {
-        if (!!dom.getContextTriggerEl(scope)) return
+        // Context menus use anchorPoint-based positioning via watch, not trigger-based
+        const hasContextTrigger = dom.getContextTriggerEl(scope) || dom.getContextTriggerEls(scope).length > 0
+        if (hasContextTrigger) return
         const positioning = {
           ...prop("positioning"),
           ...refs.get("positioningOverride"),
         }
         context.set("currentPlacement", positioning.placement!)
         const getPositionerEl = () => dom.getPositionerEl(scope)
-        const getTriggerEl = () => dom.getActiveTriggerEl(scope, context.get("activeTriggerValue"))
+        const getTriggerEl = () => dom.getActiveTriggerEl(scope, context.get("triggerValue"))
         return getPlacement(getTriggerEl, getPositionerEl, {
           ...positioning,
           defer: true,
@@ -665,7 +667,8 @@ export const machine = createMachine<MenuSchema>({
       },
       reposition({ context, scope, prop, event, refs }) {
         const getPositionerEl = () => dom.getPositionerEl(scope)
-        const anchorPoint = context.get("anchorPoint")
+        // Use event.point if available for immediate repositioning (context menu)
+        const anchorPoint = event.point ?? context.get("anchorPoint")
 
         const getAnchorRect = anchorPoint ? () => ({ width: 0, height: 0, ...anchorPoint }) : undefined
 
@@ -674,7 +677,9 @@ export const machine = createMachine<MenuSchema>({
           ...refs.get("positioningOverride"),
         }
 
-        const getTriggerEl = () => dom.getActiveTriggerEl(scope, context.get("activeTriggerValue"))
+        // Use event.value if available for immediate repositioning (avoids lag)
+        const triggerValue = event.value ?? context.get("triggerValue")
+        const getTriggerEl = () => dom.getActiveTriggerEl(scope, triggerValue)
         getPlacement(getTriggerEl, getPositionerEl, {
           ...positioning,
           defer: true,
@@ -800,7 +805,7 @@ export const machine = createMachine<MenuSchema>({
       focusTrigger({ scope, context, event }) {
         if (context.get("isSubmenu") || context.get("anchorPoint") || event.restoreFocus === false) return
         queueMicrotask(() => {
-          const triggerEl = dom.getActiveTriggerEl(scope, context.get("activeTriggerValue"))
+          const triggerEl = dom.getActiveTriggerEl(scope, context.get("triggerValue"))
           triggerEl?.focus({ preventScroll: true })
         })
       },
@@ -847,12 +852,12 @@ export const machine = createMachine<MenuSchema>({
         refs.get("parent")?.send({ type: "HIGHLIGHTED.RESTORE" })
       },
       invokeOnOpen({ prop, context, event }) {
-        prop("onOpenChange")?.({ open: true })
         const value = event.value ?? event.previousEvent?.value
-        context.set("activeTriggerValue", value)
+        context.set("triggerValue", value)
+        prop("onOpenChange")?.({ open: true, triggerValue: context.get("triggerValue") })
       },
-      invokeOnClose({ prop }) {
-        prop("onOpenChange")?.({ open: false })
+      invokeOnClose({ prop, context }) {
+        prop("onOpenChange")?.({ open: false, triggerValue: context.get("triggerValue") })
       },
       toggleVisibility({ prop, event, send }) {
         send({
@@ -860,8 +865,8 @@ export const machine = createMachine<MenuSchema>({
           previousEvent: event,
         })
       },
-      setActiveTrigger({ context, event }) {
-        context.set("activeTriggerValue", event.value ?? null)
+      setTriggerValue({ context, event }) {
+        context.set("triggerValue", event.value ?? null)
       },
     },
   },

@@ -8,11 +8,15 @@ import type { CommonProperties, DirectionProperty, PropTypes, RequiredBy } from 
 
 export interface OpenChangeDetails {
   open: boolean
+  /**
+   * The value of the trigger that opened the tooltip
+   */
+  triggerValue: string | null
 }
 
-export interface ActiveTriggerChangeDetails {
+export interface TriggerValueChangeDetails {
   /**
-   * The value of the trigger that activated the tooltip
+   * The value of the trigger
    */
   value: string | null
 }
@@ -97,18 +101,18 @@ export interface TooltipProps extends DirectionProperty, CommonProperties {
    */
   defaultOpen?: boolean | undefined
   /**
-   * The controlled active trigger value
+   * The controlled trigger value
    */
-  activeTriggerValue?: string | null | undefined
+  triggerValue?: string | null | undefined
   /**
-   * The initial active trigger value when rendered.
-   * Use when you don't need to control the active trigger value.
+   * The initial trigger value when rendered.
+   * Use when you don't need to control the trigger value.
    */
-  defaultActiveTriggerValue?: string | null | undefined
+  defaultTriggerValue?: string | null | undefined
   /**
-   * Function to call when the active trigger changes
+   * Function called when the trigger value changes.
    */
-  onActiveTriggerChange?: ((details: ActiveTriggerChangeDetails) => void) | undefined
+  onTriggerValueChange?: ((details: TriggerValueChangeDetails) => void) | undefined
 }
 
 type PropsWithDefault =
@@ -128,7 +132,7 @@ export interface TooltipSchema {
   context: {
     currentPlacement: Placement | undefined
     hasPointerMoveOpened: string | null
-    activeTriggerValue: string | null
+    triggerValue: string | null
   }
   event: EventObject
   action: string
@@ -165,13 +169,13 @@ export interface TooltipApi<T extends PropTypes = PropTypes> {
    */
   setOpen: (open: boolean) => void
   /**
-   * The active trigger value
+   * The trigger value
    */
-  activeTriggerValue: string | null
+  triggerValue: string | null
   /**
-   * Function to set the active trigger value
+   * Function to set the trigger value
    */
-  setActiveTriggerValue: (value: string | null) => void
+  setTriggerValue: (value: string | null) => void
   /**
    * Function to reposition the popover
    */

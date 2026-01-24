@@ -1,4 +1,4 @@
-import * as menu from "@zag-js/menu"
+import * as popover from "@zag-js/popover"
 import { normalizeProps, Portal, useMachine } from "@zag-js/react"
 import { MoreVerticalIcon } from "lucide-react"
 import { useId, useState } from "react"
@@ -19,10 +19,10 @@ const documents: Document[] = [
   { id: 5, name: "Code Review.md", type: "Markdown", size: "45 KB", modified: "2024-01-11" },
 ]
 
-export default function MenuMultipleTrigger() {
+export default function PopoverMultipleTrigger() {
   const [activeDocument, setActiveDocument] = useState<Document | null>(null)
 
-  const service = useMachine(menu.machine, {
+  const service = useMachine(popover.machine, {
     id: useId(),
     onTriggerValueChange({ value }) {
       const doc = documents.find((d) => `${d.id}` === value) ?? null
@@ -30,12 +30,12 @@ export default function MenuMultipleTrigger() {
     },
   })
 
-  const api = menu.connect(service, normalizeProps)
+  const api = popover.connect(service, normalizeProps)
 
   return (
     <main>
       <section style={{ marginBottom: "40px" }}>
-        <h2>Document Manager</h2>
+        <h2>Document Manager - Popover with Multiple Triggers</h2>
 
         <table style={{ width: "100%", borderCollapse: "collapse", marginTop: "20px" }}>
           <thead>
@@ -72,9 +72,60 @@ export default function MenuMultipleTrigger() {
 
       <Portal>
         <div {...api.getPositionerProps()}>
-          <div {...api.getContentProps()}>
-            <div {...api.getItemProps({ value: "rename" })}>Rename (value: {api.triggerValue})</div>
-            <div {...api.getItemProps({ value: "delete" })}>Delete (value: {api.triggerValue})</div>
+          <div
+            {...api.getContentProps()}
+            style={{
+              position: "relative",
+              backgroundColor: "white",
+              border: "1px solid #e5e7eb",
+              borderRadius: "8px",
+              boxShadow: "0 4px 6px -1px rgba(0, 0, 0, 0.1)",
+              padding: "12px",
+              minWidth: "200px",
+            }}
+          >
+            <div {...api.getTitleProps()} style={{ fontWeight: "bold", marginBottom: "8px" }}>
+              {activeDocument?.name}
+            </div>
+            <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+              <button
+                style={{ textAlign: "left", padding: "8px", borderRadius: "4px", border: "none", cursor: "pointer" }}
+              >
+                Open
+              </button>
+              <button
+                style={{ textAlign: "left", padding: "8px", borderRadius: "4px", border: "none", cursor: "pointer" }}
+              >
+                Rename
+              </button>
+              <button
+                style={{
+                  textAlign: "left",
+                  padding: "8px",
+                  borderRadius: "4px",
+                  border: "none",
+                  cursor: "pointer",
+                  color: "red",
+                }}
+              >
+                Delete
+              </button>
+              <button
+                {...api.getCloseTriggerProps()}
+                style={{
+                  position: "absolute",
+                  top: "8px",
+                  right: "8px",
+                  padding: "4px",
+                  border: "none",
+                  background: "none",
+                  cursor: "pointer",
+                  fontSize: "16px",
+                }}
+              >
+                ✕
+              </button>
+            </div>
           </div>
         </div>
       </Portal>

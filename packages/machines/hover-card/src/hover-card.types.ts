@@ -9,6 +9,17 @@ import type { CommonProperties, DirectionProperty, PropTypes, RequiredBy } from 
 
 export interface OpenChangeDetails {
   open: boolean
+  /**
+   * The value of the trigger that activated the hover card
+   */
+  triggerValue: string | null
+}
+
+export interface TriggerValueChangeDetails {
+  /**
+   * The value of the trigger
+   */
+  value: string | null
 }
 
 /* -----------------------------------------------------------------------------
@@ -16,7 +27,7 @@ export interface OpenChangeDetails {
  * -----------------------------------------------------------------------------*/
 
 export type ElementIds = Partial<{
-  trigger: string
+  trigger: string | ((value?: string) => string)
   content: string
   positioner: string
   arrow: string
@@ -58,6 +69,19 @@ export interface HoverCardProps extends DirectionProperty, CommonProperties, Int
    * The user provided options used to position the popover content
    */
   positioning?: PositioningOptions | undefined
+  /**
+   * The controlled trigger value
+   */
+  triggerValue?: string | null | undefined
+  /**
+   * The initial trigger value when rendered.
+   * Use when you don't need to control the trigger value.
+   */
+  defaultTriggerValue?: string | null | undefined
+  /**
+   * Function called when the trigger value changes.
+   */
+  onTriggerValueChange?: ((details: TriggerValueChangeDetails) => void) | undefined
 }
 
 type PropsWithDefault = "openDelay" | "closeDelay" | "positioning"
@@ -75,6 +99,10 @@ interface PrivateContext {
    * Whether the hover card is open
    */
   open: boolean
+  /**
+   * The trigger value
+   */
+  triggerValue: string | null
 }
 
 export interface HoverCardSchema {
@@ -93,6 +121,17 @@ export type HoverCardService = Service<HoverCardSchema>
 export type HoverCardMachine = Machine<HoverCardSchema>
 
 /* -----------------------------------------------------------------------------
+ * Component props
+ * -----------------------------------------------------------------------------*/
+
+export interface TriggerProps {
+  /**
+   * The value that identifies this specific trigger
+   */
+  value?: string
+}
+
+/* -----------------------------------------------------------------------------
  * Component API
  * -----------------------------------------------------------------------------*/
 
@@ -106,13 +145,21 @@ export interface HoverCardApi<T extends PropTypes = PropTypes> {
    */
   setOpen: (open: boolean) => void
   /**
+   * The trigger value
+   */
+  triggerValue: string | null
+  /**
+   * Function to set the trigger value
+   */
+  setTriggerValue: (value: string | null) => void
+  /**
    * Function to reposition the popover
    */
   reposition: (options?: Partial<PositioningOptions>) => void
 
   getArrowProps: () => T["element"]
   getArrowTipProps: () => T["element"]
-  getTriggerProps: () => T["element"]
+  getTriggerProps: (props?: TriggerProps) => T["element"]
   getPositionerProps: () => T["element"]
   getContentProps: () => T["element"]
 }

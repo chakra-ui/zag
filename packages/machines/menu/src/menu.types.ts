@@ -14,6 +14,17 @@ export interface OpenChangeDetails {
    * Whether the menu is open
    */
   open: boolean
+  /**
+   * The value of the trigger that opened the menu
+   */
+  triggerValue: string | null
+}
+
+export interface TriggerValueChangeDetails {
+  /**
+   * The value of the trigger
+   */
+  value: string | null
 }
 
 export interface SelectionDetails {
@@ -28,13 +39,6 @@ export interface HighlightChangeDetails {
    * The value of the highlighted menu item
    */
   highlightedValue: string | null
-}
-
-export interface ActiveTriggerChangeDetails {
-  /**
-   * The value of the trigger that activated the menu
-   */
-  value: string | null
 }
 
 export interface NavigateDetails {
@@ -129,18 +133,18 @@ export interface MenuProps extends DirectionProperty, CommonProperties, Dismissa
    */
   navigate?: ((details: NavigateDetails) => void) | null | undefined
   /**
-   * The controlled active trigger value
+   * The controlled trigger value
    */
-  activeTriggerValue?: string | null | undefined
+  triggerValue?: string | null | undefined
   /**
-   * The initial active trigger value when rendered.
-   * Use when you don't need to control the active trigger value.
+   * The initial trigger value when rendered.
+   * Use when you don't need to control the trigger value.
    */
-  defaultActiveTriggerValue?: string | null | undefined
+  defaultTriggerValue?: string | null | undefined
   /**
-   * Function to call when the active trigger changes
+   * Function called when the trigger value changes.
    */
-  onActiveTriggerChange?: ((details: ActiveTriggerChangeDetails) => void) | undefined
+  onTriggerValueChange?: ((details: TriggerValueChangeDetails) => void) | undefined
 }
 
 type PropsWithDefault = "closeOnSelect" | "typeahead" | "composite" | "positioning" | "loopFocus"
@@ -155,7 +159,7 @@ export interface MenuSchema {
     anchorPoint: Point | null
     suspendPointer: boolean
     isSubmenu: boolean
-    activeTriggerValue: string | null
+    triggerValue: string | null
   }
   computed: {
     isRtl: boolean
@@ -318,13 +322,13 @@ export interface MenuApi<T extends PropTypes = PropTypes> {
    */
   setOpen: (open: boolean) => void
   /**
-   * The active trigger value
+   * The trigger value
    */
-  activeTriggerValue: string | null
+  triggerValue: string | null
   /**
-   * Function to set the active trigger value
+   * Function to set the trigger value
    */
-  setActiveTriggerValue: (value: string | null) => void
+  setTriggerValue: (value: string | null) => void
   /**
    * The id of the currently highlighted menuitem
    */
