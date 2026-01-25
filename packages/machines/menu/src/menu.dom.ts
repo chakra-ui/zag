@@ -38,7 +38,12 @@ export const getContextTriggerEls = (ctx: Scope): HTMLElement[] =>
   queryAll<HTMLElement>(ctx.getDoc(), `[data-scope="menu"][data-part="context-trigger"][data-ownedby="${ctx.id}"]`)
 
 export const getActiveTriggerEl = (ctx: Scope, value: string | null): HTMLElement | null => {
-  return value == null ? getTriggerEls(ctx)[0] : ctx.getById(getTriggerId(ctx, value))
+  // When value is null, use ID-based lookup (works for submenus with trigger-item)
+  // Fall back to query-based lookup for multi-trigger cases with no active value
+  if (value == null) {
+    return getTriggerEl(ctx) ?? getTriggerEls(ctx)[0]
+  }
+  return ctx.getById(getTriggerId(ctx, value))
 }
 
 export const getActiveContextTriggerEl = (ctx: Scope, value: string | null): HTMLElement | null => {

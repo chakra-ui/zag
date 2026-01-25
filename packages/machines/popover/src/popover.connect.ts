@@ -85,7 +85,7 @@ export function connect<T extends PropTypes>(service: PopoverService, normalize:
         },
         onClick(event) {
           if (event.defaultPrevented) return
-          const shouldSwitch = open && !current
+          const shouldSwitch = open && value != null && !current
           send({ type: shouldSwitch ? "TRIGGER_VALUE.SET" : "TOGGLE", value })
         },
         onBlur(event) {

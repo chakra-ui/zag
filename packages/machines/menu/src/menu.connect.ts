@@ -215,9 +215,12 @@ export function connect<T extends PropTypes>(service: Service<MenuSchema>, norma
         type: "button",
         dir: prop("dir"),
         id: triggerId,
-        "data-ownedby": scope.id,
-        "data-value": value,
-        "data-current": dataAttr(current),
+        // Multi-trigger attributes - only included when value is provided
+        ...(value != null && {
+          "data-ownedby": scope.id,
+          "data-value": value,
+          "data-current": dataAttr(current),
+        }),
         "data-uid": prop("id"),
         "aria-haspopup": composite ? "menu" : "dialog",
         "aria-controls": dom.getContentId(scope),

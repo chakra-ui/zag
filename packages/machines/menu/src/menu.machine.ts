@@ -577,18 +577,23 @@ export const machine = createMachine<MenuSchema>({
       trackInteractOutside({ refs, scope, prop, context, send }) {
         const getContentEl = () => dom.getContentEl(scope)
         let restoreFocus = true
+
+        // Helper to check if target is within any context trigger
+        const isWithinAnyContextTrigger = (target: EventTarget | null) => {
+          return dom.getContextTriggerEls(scope).some((el) => contains(el, target as Element | null))
+        }
+
         return trackDismissableElement(getContentEl, {
           type: "menu",
           defer: true,
-          exclude: [...dom.getTriggerEls(scope), ...dom.getContextTriggerEls(scope)],
+          exclude: dom.getTriggerEls(scope),
           onInteractOutside: prop("onInteractOutside"),
           onRequestDismiss: prop("onRequestDismiss"),
           onFocusOutside(event) {
             prop("onFocusOutside")?.(event)
 
             const target = getEventTarget(event.detail.originalEvent)
-            const isWithinContextTrigger = contains(dom.getContextTriggerEl(scope), target)
-            if (isWithinContextTrigger) {
+            if (isWithinAnyContextTrigger(target)) {
               event.preventDefault()
               return
             }
@@ -602,8 +607,9 @@ export const machine = createMachine<MenuSchema>({
             prop("onPointerDownOutside")?.(event)
 
             const target = getEventTarget(event.detail.originalEvent)
-            const isWithinContextTrigger = contains(dom.getContextTriggerEl(scope), target)
-            if (isWithinContextTrigger && event.detail.contextmenu) {
+            // Only prevent dismissal for right-clicks on context triggers
+            // Left-clicks should dismiss the menu normally
+            if (isWithinAnyContextTrigger(target) && event.detail.contextmenu) {
               event.preventDefault()
               return
             }
