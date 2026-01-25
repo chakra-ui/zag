@@ -10,8 +10,7 @@ test.describe("file-upload", () => {
     await I.goto()
   })
 
-  // TBD: fix a11y complaints
-  test.skip("should have no accessibility violations", async () => {
+  test("should have no accessibility violations", async () => {
     await I.checkAccessibility()
   })
 
