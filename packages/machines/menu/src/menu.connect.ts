@@ -253,7 +253,7 @@ export function connect<T extends PropTypes>(service: Service<MenuSchema>, norma
         onClick(event) {
           if (event.defaultPrevented) return
           if (dom.isTargetDisabled(event.currentTarget)) return
-          const shouldSwitch = open && !current
+          const shouldSwitch = open && value != null && !current
           send({
             type: shouldSwitch ? "TRIGGER_VALUE.SET" : "TRIGGER_CLICK",
             target: event.currentTarget,
