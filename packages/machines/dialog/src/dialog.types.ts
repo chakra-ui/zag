@@ -32,10 +32,7 @@ export type ElementIds = Partial<{
 }>
 
 export interface DialogProps
-  extends DirectionProperty,
-    CommonProperties,
-    DismissableElementHandlers,
-    PersistentElementOptions {
+  extends DirectionProperty, CommonProperties, DismissableElementHandlers, PersistentElementOptions {
   /**
    * The ids of the elements in the dialog. Useful for composition.
    */
@@ -103,16 +100,16 @@ export interface DialogProps
   /**
    * The controlled active trigger value
    */
-  activeTriggerValue?: string | null | undefined
+  triggerValue?: string | null | undefined
   /**
    * The initial active trigger value when rendered.
    * Use when you don't need to control the active trigger value.
    */
-  defaultActiveTriggerValue?: string | null | undefined
+  defaultTriggerValue?: string | null | undefined
   /**
    * Function to call when the active trigger changes
    */
-  onActiveTriggerChange?: ((details: ActiveTriggerChangeDetails) => void) | undefined
+  onTriggerValueChange?: ((details: ActiveTriggerChangeDetails) => void) | undefined
 }
 
 type PropsWithDefault =
@@ -130,7 +127,7 @@ export interface DialogSchema {
   state: "open" | "closed"
   context: {
     rendered: { title: boolean; description: boolean }
-    activeTriggerValue: string | null
+    triggerValue: string | null
   }
   guard: "isOpenControlled"
   effect: "trackDismissableElement" | "preventScroll" | "trapFocus" | "hideContentBelow"
@@ -175,11 +172,11 @@ export interface DialogApi<T extends PropTypes = PropTypes> {
   /**
    * The active trigger value
    */
-  activeTriggerValue: string | null
+  triggerValue: string | null
   /**
    * Function to set the active trigger value
    */
-  setActiveTriggerValue: (value: string | null) => void
+  setTriggerValue: (value: string | null) => void
 
   getTriggerProps: (props?: TriggerProps) => T["button"]
   getBackdropProps: () => T["element"]

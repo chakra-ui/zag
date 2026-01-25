@@ -12,7 +12,7 @@ export function connect<T extends PropTypes>(
   const { state, send, context, prop, scope } = service
   const ariaLabel = prop("aria-label")
   const open = state.matches("open")
-  const activeTriggerValue = context.get("activeTriggerValue")
+  const triggerValue = context.get("triggerValue")
 
   return {
     open,
@@ -22,14 +22,14 @@ export function connect<T extends PropTypes>(
       send({ type: nextOpen ? "OPEN" : "CLOSE" })
     },
 
-    activeTriggerValue,
-    setActiveTriggerValue(value) {
+    triggerValue,
+    setTriggerValue(value) {
       send({ type: "ACTIVE_TRIGGER.SET", value })
     },
 
     getTriggerProps(props: TriggerProps = {}) {
       const { value } = props
-      const current = value == null ? false : activeTriggerValue === value
+      const current = value == null ? false : triggerValue === value
       return normalize.button({
         ...parts.trigger.attrs,
         dir: prop("dir"),

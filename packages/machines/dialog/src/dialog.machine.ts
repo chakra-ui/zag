@@ -35,11 +35,11 @@ export const machine = createMachine<DialogSchema>({
       rendered: bindable<{ title: boolean; description: boolean }>(() => ({
         defaultValue: { title: true, description: true },
       })),
-      activeTriggerValue: bindable<string | null>(() => ({
-        defaultValue: prop("defaultActiveTriggerValue") ?? null,
-        value: prop("activeTriggerValue"),
+      triggerValue: bindable<string | null>(() => ({
+        defaultValue: prop("defaultTriggerValue") ?? null,
+        value: prop("triggerValue"),
         onChange(value) {
-          prop("onActiveTriggerChange")?.({ value })
+          prop("onTriggerValueChange")?.({ value })
         },
       })),
     }
@@ -170,9 +170,9 @@ export const machine = createMachine<DialogSchema>({
             if (finalFocusEl) return finalFocusEl
 
             // If there's an active trigger, focus it
-            const activeTriggerValue = context.get("activeTriggerValue")
-            if (activeTriggerValue) {
-              const activeTriggerEl = dom.getActiveTriggerEl(scope, activeTriggerValue)
+            const triggerValue = context.get("triggerValue")
+            if (triggerValue) {
+              const activeTriggerEl = dom.getActiveTriggerEl(scope, triggerValue)
               if (activeTriggerEl) return activeTriggerEl
             }
 
@@ -223,7 +223,7 @@ export const machine = createMachine<DialogSchema>({
       },
 
       setActiveTrigger({ context, event }) {
-        context.set("activeTriggerValue", event.value ?? null)
+        context.set("triggerValue", event.value ?? null)
       },
 
       toggleVisibility({ prop, send, event }) {

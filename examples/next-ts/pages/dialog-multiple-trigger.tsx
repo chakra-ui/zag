@@ -26,7 +26,7 @@ export default function DialogMultipleTrigger() {
 
   const service = useMachine(dialog.machine, {
     id: useId(),
-    onActiveTriggerChange({ value }) {
+    onTriggerValueChange({ value }) {
       const user = users.find((u) => `${u.id}` === value) ?? null
       setActiveUser(user)
     },
@@ -64,7 +64,7 @@ export default function DialogMultipleTrigger() {
           </table>
 
           <div style={{ marginTop: "20px", padding: "12px", backgroundColor: "#f9fafb", borderRadius: "6px" }}>
-            <strong>Active Trigger:</strong> {api.activeTriggerValue || "-"} <br />
+            <strong>Active Trigger:</strong> {api.triggerValue || "-"} <br />
             <strong>Active User:</strong> {activeUser ? `${activeUser.name} (${activeUser.email})` : "-"}
           </div>
         </section>
@@ -111,7 +111,7 @@ export default function DialogMultipleTrigger() {
       </main>
 
       <Toolbar viz>
-        <StateVisualizer state={service} context={["activeTriggerValue"]} />
+        <StateVisualizer state={service} context={["triggerValue"]} />
       </Toolbar>
     </>
   )

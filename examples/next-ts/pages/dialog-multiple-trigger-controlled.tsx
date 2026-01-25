@@ -32,8 +32,8 @@ export default function DialogMultipleTriggerControlled() {
     onOpenChange(details) {
       setOpen(details.open)
     },
-    activeTriggerValue: activeTrigger,
-    onActiveTriggerChange(details) {
+    triggerValue: activeTrigger,
+    onTriggerValueChange(details) {
       setActiveTrigger(details.value)
     },
   })
@@ -74,7 +74,7 @@ export default function DialogMultipleTriggerControlled() {
             <br />
             <strong>local open:</strong> {String(open)} <br />
             <hr />
-            <strong>api.activeTriggerValue:</strong> {api.activeTriggerValue || "-"} <br />
+            <strong>api.triggerValue:</strong> {api.triggerValue || "-"} <br />
             <strong>local activeTrigger:</strong> {activeTrigger || "-"} <br />
             <hr />
             <strong>activeUser:</strong> {activeUser ? `${activeUser.name} (${activeUser.email})` : "-"}
@@ -118,7 +118,7 @@ export default function DialogMultipleTriggerControlled() {
       </main>
 
       <Toolbar viz>
-        <StateVisualizer state={service} context={["activeTriggerValue"]} />
+        <StateVisualizer state={service} context={["triggerValue"]} />
       </Toolbar>
     </>
   )
