@@ -62,4 +62,16 @@ test.describe("menu", () => {
     await I.clickOutside()
     await I.dontSeeDropdown()
   })
+
+  test("click trigger to toggle menu", async () => {
+    // click to open
+    await I.clickTrigger()
+    await I.seeDropdown()
+    // click again to close
+    await I.clickTrigger()
+    await I.dontSeeDropdown()
+    // click again to open
+    await I.clickTrigger()
+    await I.seeDropdown()
+  })
 })

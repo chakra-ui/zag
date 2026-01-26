@@ -586,7 +586,7 @@ export const machine = createMachine<MenuSchema>({
         return trackDismissableElement(getContentEl, {
           type: "menu",
           defer: true,
-          exclude: dom.getTriggerEls(scope),
+          exclude: [dom.getTriggerEl(scope), ...dom.getTriggerEls(scope)].filter(Boolean) as HTMLElement[],
           onInteractOutside: prop("onInteractOutside"),
           onRequestDismiss: prop("onRequestDismiss"),
           onFocusOutside(event) {
