@@ -1,4 +1,4 @@
-import { contains } from "@zag-js/dom-query"
+import { contains, nextTick } from "@zag-js/dom-query"
 
 export type LayerType = "dialog" | "popover" | "menu" | "listbox" | (string & {})
 
@@ -24,6 +24,7 @@ const LAYER_REQUEST_DISMISS_EVENT = "layer:request-dismiss"
 export const layerStack = {
   layers: [] as Layer[],
   branches: [] as HTMLElement[],
+  recentlyRemoved: new Set<HTMLElement>(),
   count(): number {
     return this.layers.length
   },
@@ -70,7 +71,16 @@ export const layerStack = {
     return this.getNestedLayersByType(node, type).length
   },
   isInNestedLayer(node: HTMLElement, target: HTMLElement | EventTarget | null) {
-    return this.getNestedLayers(node).some((layer) => contains(layer.node, target))
+    // Check active nested layers
+    const inNested = this.getNestedLayers(node).some((layer) => contains(layer.node, target))
+    if (inNested) return true
+
+    // During layer removal, treat all focus events as "inside" to prevent cascading dismissals.
+    // This handles the race condition where focus moves during cleanup - we don't want parent
+    // layers to dismiss just because focus is transitioning from a closing nested layer.
+    if (this.recentlyRemoved.size > 0) return true
+
+    return false
   },
   isInBranch(target: HTMLElement | EventTarget | null) {
     return Array.from(this.branches).some((branch) => contains(branch, target))
@@ -85,6 +95,15 @@ export const layerStack = {
   remove(node: HTMLElement) {
     const index = this.indexOf(node)
     if (index < 0) return
+
+    // Track this node as recently removed to handle focus race conditions
+    // during layer cleanup. This prevents parent layers from incorrectly
+    // dismissing when focus moves from a closing nested layer.
+    this.recentlyRemoved.add(node)
+
+    // Schedule cleanup after two frames to ensure it outlasts any deferred
+    // focusin handlers (which also use requestAnimationFrame)
+    nextTick(() => this.recentlyRemoved.delete(node))
 
     // dismiss nested layers
     if (index < this.count() - 1) {
