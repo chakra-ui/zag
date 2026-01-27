@@ -108,8 +108,7 @@ export function connect<T extends PropTypes>(
         tabIndex: disabled || readOnly || props.disableClick ? undefined : 0,
         role: props.disableClick ? "application" : "button",
         "aria-label": translations.dropzone,
-        "aria-disabled": disabled,
-        "aria-readonly": readOnly,
+        "aria-disabled": disabled || readOnly || undefined,
         "data-invalid": dataAttr(prop("invalid")),
         "data-disabled": dataAttr(disabled),
         "data-readonly": dataAttr(readOnly),
@@ -220,6 +219,8 @@ export function connect<T extends PropTypes>(
         accept: computed("acceptAttr"),
         webkitdirectory: prop("directory") ? "" : undefined,
         multiple: computed("multiple") || prop("maxFiles") > 1,
+        // exclude from accessibility tree since the dropzone/trigger provides the accessible interface
+        "aria-hidden": true,
         onClick(event) {
           event.stopPropagation()
           // allow for re-selection of the same file

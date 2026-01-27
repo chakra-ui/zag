@@ -1,9 +1,18 @@
 import type { Scope } from "@zag-js/core"
 import { getByTypeahead, getWindow, isHTMLElement, queryAll, type TypeaheadState } from "@zag-js/dom-query"
-import { first, last, next, prev } from "@zag-js/utils"
+import { first, isFunction, last, next, prev } from "@zag-js/utils"
 
-export const getTriggerId = (ctx: Scope) => ctx.ids?.trigger ?? `menu:${ctx.id}:trigger`
-export const getContextTriggerId = (ctx: Scope) => ctx.ids?.contextTrigger ?? `menu:${ctx.id}:ctx-trigger`
+export const getTriggerId = (ctx: Scope, value?: string) => {
+  const customId = ctx.ids?.trigger
+  if (customId != null) return isFunction(customId) ? customId(value) : customId
+  return value ? `menu:${ctx.id}:trigger:${value}` : `menu:${ctx.id}:trigger`
+}
+
+export const getContextTriggerId = (ctx: Scope, value?: string) => {
+  const customId = ctx.ids?.contextTrigger
+  if (customId != null) return isFunction(customId) ? customId(value) : customId
+  return value ? `menu:${ctx.id}:ctx-trigger:${value}` : `menu:${ctx.id}:ctx-trigger`
+}
 export const getContentId = (ctx: Scope) => ctx.ids?.content ?? `menu:${ctx.id}:content`
 export const getArrowId = (ctx: Scope) => ctx.ids?.arrow ?? `menu:${ctx.id}:arrow`
 export const getPositionerId = (ctx: Scope) => ctx.ids?.positioner ?? `menu:${ctx.id}:popper`
@@ -21,6 +30,25 @@ export const getTriggerEl = (ctx: Scope) => ctx.getById(getTriggerId(ctx))
 export const getItemEl = (ctx: Scope, value: string | null) => (value ? ctx.getById(getItemId(ctx, value)) : null)
 export const getArrowEl = (ctx: Scope) => ctx.getById(getArrowId(ctx))
 export const getContextTriggerEl = (ctx: Scope) => ctx.getById(getContextTriggerId(ctx))
+
+export const getTriggerEls = (ctx: Scope): HTMLElement[] =>
+  queryAll<HTMLElement>(ctx.getDoc(), `[data-scope="menu"][data-part="trigger"][data-ownedby="${ctx.id}"]`)
+
+export const getContextTriggerEls = (ctx: Scope): HTMLElement[] =>
+  queryAll<HTMLElement>(ctx.getDoc(), `[data-scope="menu"][data-part="context-trigger"][data-ownedby="${ctx.id}"]`)
+
+export const getActiveTriggerEl = (ctx: Scope, value: string | null): HTMLElement | null => {
+  // When value is null, use ID-based lookup (works for submenus with trigger-item)
+  // Fall back to query-based lookup for multi-trigger cases with no active value
+  if (value == null) {
+    return getTriggerEl(ctx) ?? getTriggerEls(ctx)[0]
+  }
+  return ctx.getById(getTriggerId(ctx, value))
+}
+
+export const getActiveContextTriggerEl = (ctx: Scope, value: string | null): HTMLElement | null => {
+  return value == null ? getContextTriggerEls(ctx)[0] : ctx.getById(getContextTriggerId(ctx, value))
+}
 
 export const getElements = (ctx: Scope) => {
   const ownerId = CSS.escape(getContentId(ctx))

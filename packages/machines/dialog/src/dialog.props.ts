@@ -3,9 +3,12 @@ import { createSplitProps } from "@zag-js/utils"
 import type { DialogProps } from "./dialog.types"
 
 export const props = createProps<DialogProps>()([
+  "triggerValue",
   "aria-label",
   "closeOnEscape",
   "closeOnInteractOutside",
+  "defaultTriggerValue",
+  "defaultOpen",
   "dir",
   "finalFocusEl",
   "getRootNode",
@@ -15,13 +18,13 @@ export const props = createProps<DialogProps>()([
   "ids",
   "initialFocusEl",
   "modal",
+  "onTriggerValueChange",
   "onEscapeKeyDown",
   "onFocusOutside",
   "onInteractOutside",
   "onOpenChange",
   "onPointerDownOutside",
   "onRequestDismiss",
-  "defaultOpen",
   "open",
   "persistentElements",
   "preventScroll",

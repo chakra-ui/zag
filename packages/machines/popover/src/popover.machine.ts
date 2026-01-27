@@ -29,13 +29,20 @@ export const machine = createMachine<PopoverSchema>({
     return open ? "open" : "closed"
   },
 
-  context({ bindable }) {
+  context({ bindable, prop }) {
     return {
       currentPlacement: bindable<Placement | undefined>(() => ({
         defaultValue: undefined,
       })),
       renderedElements: bindable<{ title: boolean; description: boolean }>(() => ({
         defaultValue: { title: true, description: true },
+      })),
+      triggerValue: bindable<string | null>(() => ({
+        defaultValue: prop("defaultTriggerValue") ?? null,
+        value: prop("triggerValue"),
+        onChange(value) {
+          prop("onTriggerValueChange")?.({ value })
+        },
       })),
     }
   },
@@ -52,6 +59,12 @@ export const machine = createMachine<PopoverSchema>({
 
   entry: ["checkRenderedElements"],
 
+  on: {
+    "TRIGGER_VALUE.SET": {
+      actions: ["setTriggerValue", "reposition"],
+    },
+  },
+
   states: {
     closed: {
       on: {
@@ -62,21 +75,21 @@ export const machine = createMachine<PopoverSchema>({
         TOGGLE: [
           {
             guard: "isOpenControlled",
-            actions: ["invokeOnOpen"],
+            actions: ["invokeOnOpen", "setTriggerValue"],
           },
           {
             target: "open",
-            actions: ["invokeOnOpen", "setInitialFocus"],
+            actions: ["invokeOnOpen", "setTriggerValue", "setInitialFocus"],
           },
         ],
         OPEN: [
           {
             guard: "isOpenControlled",
-            actions: ["invokeOnOpen"],
+            actions: ["invokeOnOpen", "setTriggerValue"],
           },
           {
             target: "open",
-            actions: ["invokeOnOpen", "setInitialFocus"],
+            actions: ["invokeOnOpen", "setTriggerValue", "setInitialFocus"],
           },
         ],
       },
@@ -130,9 +143,10 @@ export const machine = createMachine<PopoverSchema>({
     effects: {
       trackPositioning({ context, prop, scope }) {
         context.set("currentPlacement", prop("positioning").placement)
-        const anchorEl = dom.getAnchorEl(scope) ?? dom.getTriggerEl(scope)
+        const anchorEl = dom.getAnchorEl(scope)
         const getPositionerEl = () => dom.getPositionerEl(scope)
-        return getPlacement(anchorEl, getPositionerEl, {
+        const getTriggerEl = () => anchorEl ?? dom.getActiveTriggerEl(scope, context.get("triggerValue"))
+        return getPlacement(getTriggerEl, getPositionerEl, {
           ...prop("positioning"),
           defer: true,
           onComplete(data) {
@@ -147,7 +161,7 @@ export const machine = createMachine<PopoverSchema>({
         return trackDismissableElement(getContentEl, {
           type: "popover",
           pointerBlocking: prop("modal"),
-          exclude: dom.getTriggerEl(scope),
+          exclude: dom.getTriggerEls(scope),
           defer: true,
           onEscapeKeyDown(event) {
             prop("onEscapeKeyDown")?.(event)
@@ -172,11 +186,11 @@ export const machine = createMachine<PopoverSchema>({
         })
       },
 
-      proxyTabFocus({ prop, scope }) {
+      proxyTabFocus({ prop, scope, context }) {
         if (prop("modal") || !prop("portalled")) return
         const getContentEl = () => dom.getContentEl(scope)
         return proxyTabFocus(getContentEl, {
-          triggerElement: dom.getTriggerEl(scope),
+          triggerElement: dom.getActiveTriggerEl(scope, context.get("triggerValue")),
           defer: true,
           getShadowRoot: true,
           onFocus(el) {
@@ -185,9 +199,9 @@ export const machine = createMachine<PopoverSchema>({
         })
       },
 
-      hideContentBelow({ prop, scope }) {
+      hideContentBelow({ prop, scope, context }) {
         if (!prop("modal")) return
-        const getElements = () => [dom.getContentEl(scope), dom.getTriggerEl(scope)]
+        const getElements = () => [dom.getContentEl(scope), dom.getActiveTriggerEl(scope, context.get("triggerValue"))]
         return ariaHidden(getElements, { defer: true })
       },
 
@@ -213,9 +227,10 @@ export const machine = createMachine<PopoverSchema>({
 
     actions: {
       reposition({ event, prop, scope, context }) {
-        const anchorEl = dom.getAnchorEl(scope) ?? dom.getTriggerEl(scope)
+        const anchorEl = dom.getAnchorEl(scope)
         const getPositionerEl = () => dom.getPositionerEl(scope)
-        getPlacement(anchorEl, getPositionerEl, {
+        const getTriggerEl = () => anchorEl ?? dom.getActiveTriggerEl(scope, context.get("triggerValue"))
+        getPlacement(getTriggerEl, getPositionerEl, {
           ...prop("positioning"),
           ...event.options,
           defer: true,
@@ -224,6 +239,10 @@ export const machine = createMachine<PopoverSchema>({
             context.set("currentPlacement", data.placement)
           },
         })
+      },
+
+      setTriggerValue({ context, event }) {
+        context.set("triggerValue", event.value ?? null)
       },
 
       checkRenderedElements({ context, scope }) {
@@ -248,22 +267,22 @@ export const machine = createMachine<PopoverSchema>({
         })
       },
 
-      setFinalFocus({ event, scope }) {
+      setFinalFocus({ event, scope, context }) {
         const restoreFocus = event.restoreFocus ?? event.previousEvent?.restoreFocus
         if (restoreFocus != null && !restoreFocus) return
         raf(() => {
-          const element = dom.getTriggerEl(scope)
+          const element = dom.getActiveTriggerEl(scope, context.get("triggerValue"))
           element?.focus({ preventScroll: true })
         })
       },
-      invokeOnOpen({ prop, flush }) {
+      invokeOnOpen({ prop, flush, context }) {
         flush(() => {
-          prop("onOpenChange")?.({ open: true })
+          prop("onOpenChange")?.({ open: true, triggerValue: context.get("triggerValue") })
         })
       },
-      invokeOnClose({ prop, flush }) {
+      invokeOnClose({ prop, flush, context }) {
         flush(() => {
-          prop("onOpenChange")?.({ open: false })
+          prop("onOpenChange")?.({ open: false, triggerValue: context.get("triggerValue") })
         })
       },
       toggleVisibility({ event, send, prop }) {

@@ -18,10 +18,8 @@ const api = computed(() => fileUpload.connect(service, normalizeProps))
 <template>
   <main class="file-upload">
     <div v-bind="api.getRootProps()">
-      <div v-bind="api.getDropzoneProps()">
-        <input v-bind="api.getHiddenInputProps()" />
-        Drag your files here
-      </div>
+      <input v-bind="api.getHiddenInputProps()" />
+      <div v-bind="api.getDropzoneProps()">Drag your files here</div>
 
       <button v-bind="api.getTriggerProps()">Choose Files...</button>
 

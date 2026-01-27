@@ -60,8 +60,10 @@ export namespace JSX {
     isPrimary: boolean
   }
 
-  export interface FocusEvent<Target = Element, RelatedTarget = Element>
-    extends SyntheticEvent<Target, NativeFocusEvent> {
+  export interface FocusEvent<Target = Element, RelatedTarget = Element> extends SyntheticEvent<
+    Target,
+    NativeFocusEvent
+  > {
     relatedTarget: (EventTarget & RelatedTarget) | null
     target: EventTarget & Target
   }
