@@ -1,5 +1,24 @@
 # @zag-js/date-picker
 
+## 1.33.1
+
+### Patch Changes
+
+- [`18e0812`](https://github.com/chakra-ui/zag/commit/18e0812292dc03f76284c058efa385de324c7d71) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix `visibleRangeText` to show correct format based on current
+  view (year/month/day).
+
+- Updated dependencies [[`9817e4c`](https://github.com/chakra-ui/zag/commit/9817e4cb3b18d93408b95e7c827d35801b01a267)]:
+  - @zag-js/dismissable@1.33.1
+  - @zag-js/anatomy@1.33.1
+  - @zag-js/core@1.33.1
+  - @zag-js/types@1.33.1
+  - @zag-js/utils@1.33.1
+  - @zag-js/date-utils@1.33.1
+  - @zag-js/dom-query@1.33.1
+  - @zag-js/live-region@1.33.1
+  - @zag-js/popper@1.33.1
+
 ## 1.33.0
 
 ### Patch Changes
