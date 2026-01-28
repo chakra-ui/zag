@@ -122,7 +122,7 @@ test.describe("bottom-sheet [draggable=false]", () => {
     await I.goto("/bottom-sheet-draggable-false")
   })
 
-  test("sheet content should not be draggable", async () => {
+  test("sheet content should not be draggable", async ({ page }) => {
     await I.clickTrigger()
     await I.seeContent()
     await I.waitForOpenState()
@@ -132,6 +132,9 @@ test.describe("bottom-sheet [draggable=false]", () => {
     await I.dragContent("down", 100, 500, false)
     const heightAfterContentDrag = await I.getContentVisibleHeight()
     expect(initialHeight - heightAfterContentDrag).toBe(0)
+
+    // Release mouse before starting a new drag gesture
+    await page.mouse.up()
 
     await I.dragGrabber("down", 100, 500, false)
     const heightAfterGrabberDrag = await I.getContentVisibleHeight()
