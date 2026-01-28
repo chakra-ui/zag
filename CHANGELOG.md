@@ -4,6 +4,20 @@ All notable changes to this project will be documented in this file.
 
 > For v0.x changelog, see the [v0 branch](https://github.com/chakra-ui/zag/blob/v0/CHANGELOG.md)
 
+## [1.33.1](./#1.33.1) - 2026-01-28
+
+### Fixed
+
+- **Date Picker**: Fix `visibleRangeText` to show correct format based on current view (year/month/day)
+
+- **Dismissable**: Fix issue where closing a nested dialog/popover would incorrectly close its parent layers
+
+- **File Upload**: Fix accessibility violations in file upload component
+  - Remove invalid `aria-readonly` from dropzone (not valid for `role="button"`)
+  - Add `aria-hidden` to hidden input to exclude from accessibility tree
+
+- **Menu**: Fix glitchy submenu behavior when hovering between trigger items quickly
+
 ## [1.33.0](./#1.33.0) - 2026-01-24
 
 ### Added
