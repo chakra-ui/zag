@@ -530,9 +530,21 @@ export interface DatePickerApi<T extends PropTypes = PropTypes> {
    */
   invalid: boolean
   /**
+   * Whether the date picker is read-only
+   */
+  readOnly: boolean
+  /**
    * Whether the date picker is rendered inline
    */
   inline: boolean
+  /**
+   * The number of months to display
+   */
+  numOfMonths: number
+  /**
+   * The selection mode (single, multiple, or range)
+   */
+  selectionMode: SelectionMode
   /**
    * The current view of the date picker
    */

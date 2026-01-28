@@ -1341,9 +1341,21 @@
         "type": "boolean",
         "description": "Whether the date picker is invalid"
       },
+      "readOnly": {
+        "type": "boolean",
+        "description": "Whether the date picker is read-only"
+      },
       "inline": {
         "type": "boolean",
         "description": "Whether the date picker is rendered inline"
+      },
+      "numOfMonths": {
+        "type": "number",
+        "description": "The number of months to display"
+      },
+      "selectionMode": {
+        "type": "SelectionMode",
+        "description": "The selection mode (single, multiple, or range)"
       },
       "view": {
         "type": "DateView",

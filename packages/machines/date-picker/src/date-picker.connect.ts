@@ -69,6 +69,8 @@ export function connect<T extends PropTypes>(
   const invalid = Boolean(prop("invalid"))
   const interactive = computed("isInteractive")
 
+  const empty = selectedValue.length === 0
+
   const min = prop("min")
   const max = prop("max")
   const locale = prop("locale")
@@ -246,7 +248,10 @@ export function connect<T extends PropTypes>(
     open,
     disabled,
     invalid,
+    readOnly,
     inline: !!prop("inline"),
+    numOfMonths: prop("numOfMonths"),
+    selectionMode: prop("selectionMode"),
     view: context.get("view"),
     getRangePresetValue(preset) {
       return getDateRangePreset(preset, locale, timeZone)
@@ -336,6 +341,7 @@ export function connect<T extends PropTypes>(
         "data-state": open ? "open" : "closed",
         "data-disabled": dataAttr(disabled),
         "data-readonly": dataAttr(readOnly),
+        "data-empty": dataAttr(empty),
       })
     },
 
@@ -359,6 +365,7 @@ export function connect<T extends PropTypes>(
         dir: prop("dir"),
         id: dom.getControlId(scope),
         "data-disabled": dataAttr(disabled),
+        "data-placeholder-shown": dataAttr(empty),
       })
     },
 
@@ -732,6 +739,7 @@ export function connect<T extends PropTypes>(
         "aria-label": translations.trigger(open),
         "aria-controls": dom.getContentId(scope),
         "data-state": open ? "open" : "closed",
+        "data-placeholder-shown": dataAttr(empty),
         "aria-haspopup": "grid",
         disabled,
         onClick(event) {
@@ -791,6 +799,7 @@ export function connect<T extends PropTypes>(
         name: prop("name"),
         "data-index": index,
         "data-state": open ? "open" : "closed",
+        "data-placeholder-shown": dataAttr(empty),
         readOnly,
         disabled,
         required: prop("required"),
