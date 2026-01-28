@@ -1,3 +1,7 @@
+"use client"
+
+import { useEffect, useState } from "react"
+import { usePathname } from "next/navigation"
 import { Accordion } from "./accordion"
 import { AngleSlider } from "./angle-slider"
 import { Avatar } from "./avatar"
@@ -553,6 +557,14 @@ const components = {
 }
 
 export function Showcase(props: { id: keyof typeof components }) {
+  const pathname = usePathname()
+  const [mountKey, setMountKey] = useState(0)
+
+  // Force remount when navigating (including back) so demos with portals/machines get a fresh instance
+  useEffect(() => {
+    setMountKey((k) => k + 1)
+  }, [pathname])
+
   const Component = components[props.id] ?? "span"
-  return <Component />
+  return <Component key={`${pathname}-${mountKey}`} />
 }
