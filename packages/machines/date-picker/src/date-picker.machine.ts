@@ -31,6 +31,7 @@ import {
   eachView,
   getNextView,
   getPreviousView,
+  getVisibleRangeText,
   isAboveMinView,
   isBelowMinView,
   isValidDate,
@@ -187,14 +188,15 @@ export const machine = createMachine<DatePickerSchema>({
     visibleDuration: ({ prop }) => ({ months: prop("numOfMonths") }),
     endValue: ({ context, computed }) => getEndDate(context.get("startValue"), computed("visibleDuration")),
     visibleRange: ({ context, computed }) => ({ start: context.get("startValue"), end: computed("endValue") }),
-    visibleRangeText({ context, prop, computed }) {
-      const timeZone = prop("timeZone")
-      const formatter = new DateFormatter(prop("locale"), { month: "long", year: "numeric", timeZone })
-      const start = formatter.format(context.get("startValue").toDate(timeZone))
-      const end = formatter.format(computed("endValue").toDate(timeZone))
-      const formatted = prop("selectionMode") === "range" ? `${start} - ${end}` : start
-      return { start, end, formatted }
-    },
+    visibleRangeText: ({ context, prop, computed }) =>
+      getVisibleRangeText({
+        view: context.get("view"),
+        startValue: context.get("startValue"),
+        endValue: computed("endValue"),
+        locale: prop("locale"),
+        timeZone: prop("timeZone"),
+        selectionMode: prop("selectionMode"),
+      }),
     isPrevVisibleRangeValid: ({ context, prop }) =>
       !isPreviousRangeInvalid(context.get("startValue"), prop("min"), prop("max")),
     isNextVisibleRangeValid: ({ prop, computed }) =>

@@ -116,15 +116,6 @@ export function connect<T extends PropTypes>(
     }))
   }
 
-  function getDecadeYears(year?: number) {
-    const range = getDecadeRange(year ?? startValue.year)
-    return range.map((year) => ({
-      label: year.toString(),
-      value: year,
-      disabled: !isValueWithinRange(year, min?.year, max?.year),
-    }))
-  }
-
   function isUnavailable(date: DateValue) {
     return isDateUnavailable(date, isDateUnavailableFn, locale, min, max)
   }
@@ -310,10 +301,15 @@ export function connect<T extends PropTypes>(
     getMonths,
     getYearsGrid(props = {}) {
       const { columns = 1 } = props
-      return chunk(getDecadeYears(), columns)
+      const years = getDecadeRange(startValue.year, { strict: true }).map((year) => ({
+        label: year.toString(),
+        value: year,
+        disabled: !isValueWithinRange(year, min?.year, max?.year),
+      }))
+      return chunk(years, columns)
     },
     getDecade() {
-      const years = getDecadeRange(focusedValue.year)
+      const years = getDecadeRange(startValue.year, { strict: true })
       return { start: years.at(0), end: years.at(-1) }
     },
     getMonthsGrid(props = {}) {

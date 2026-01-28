@@ -50,7 +50,7 @@ export default function Page() {
         <p>{`Visible range: ${api.visibleRangeText.formatted}`}</p>
 
         <output className="date-output">
-          <div>Selected: {api.valueAsString ?? "-"}</div>
+          <div>Selected: {api.valueAsString.length ? api.valueAsString : "-"}</div>
           <div>Focused: {api.focusedValueAsString}</div>
         </output>
 
