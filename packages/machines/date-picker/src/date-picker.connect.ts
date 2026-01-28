@@ -38,16 +38,18 @@ import type {
   TableCellProps,
   TableCellState,
   TableProps,
+  SegmentProps,
+  SegmentState,
 } from "./date-picker.types"
 import {
   adjustStartAndEndDate,
-  defaultTranslations,
   ensureValidCharacters,
   getInputPlaceholder,
   getLocaleSeparator,
   getRoleDescription,
   isDateWithinRange,
   isValidCharacter,
+  PAGE_STEP,
 } from "./date-picker.utils"
 
 export function connect<T extends PropTypes>(
@@ -60,6 +62,7 @@ export function connect<T extends PropTypes>(
   const endValue = computed("endValue")
   const selectedValue = context.get("value")
   const focusedValue = context.get("focusedValue")
+  const placeholderValue = context.get("placeholderValue")
 
   const hoveredValue = context.get("hoveredValue")
   const hoveredRangeValue = hoveredValue ? adjustStartAndEndDate([selectedValue[0], hoveredValue]) : []
@@ -90,7 +93,7 @@ export function connect<T extends PropTypes>(
   })
 
   const separator = getLocaleSeparator(locale)
-  const translations = { ...defaultTranslations, ...prop("translations") }
+  const translations = prop("translations")
 
   function getMonthWeeks(from = startValue) {
     const numOfWeeks = prop("fixedWeeks") ? 6 : undefined
@@ -243,6 +246,16 @@ export function connect<T extends PropTypes>(
     return [view, id].filter(Boolean).join(" ")
   }
 
+  function getSegmentState(props: SegmentProps): SegmentState {
+    const { segment } = props
+
+    const isEditable = !disabled && !readOnly && segment.isEditable
+
+    return {
+      editable: isEditable,
+    }
+  }
+
   return {
     focused,
     open,
@@ -283,6 +296,9 @@ export function connect<T extends PropTypes>(
     focusedValue,
     focusedValueAsDate: focusedValue?.toDate(timeZone),
     focusedValueAsString: prop("format")(focusedValue, { locale, timeZone }),
+    placeholderValue: placeholderValue,
+    placeholderValueAsDate: placeholderValue?.toDate(timeZone),
+    placeholderValueAsString: prop("format")(placeholderValue, { locale, timeZone }),
     visibleRange: computed("visibleRange"),
     selectToday() {
       const value = constrainValue(getTodayDate(timeZone), min, max)
@@ -742,6 +758,7 @@ export function connect<T extends PropTypes>(
         "data-placeholder-shown": dataAttr(empty),
         "aria-haspopup": "grid",
         disabled,
+        "data-readonly": dataAttr(readOnly),
         onClick(event) {
           if (event.defaultPrevented) return
           if (!interactive) return
@@ -842,6 +859,182 @@ export function connect<T extends PropTypes>(
         onInput(event) {
           const value = event.currentTarget.value
           send({ type: "INPUT.CHANGE", value: ensureValidCharacters(value, separator), index })
+        },
+      })
+    },
+
+    getSegments(props = {}) {
+      const { index = 0 } = props
+      return computed("segments")[index] ?? []
+    },
+
+    getSegmentGroupProps(props = {}) {
+      const { index = 0 } = props
+
+      return normalize.element({
+        ...parts.segmentGroup.attrs,
+        id: dom.getSegmentGroupId(scope, index),
+        dir: prop("dir"),
+        "data-state": open ? "open" : "closed",
+        role: "presentation",
+        readOnly,
+        disabled,
+        style: {
+          unicodeBidi: "isolate",
+        },
+      })
+    },
+
+    getSegmentState,
+
+    getSegmentProps(props) {
+      const { segment, index = 0 } = props
+      const segmentState = getSegmentState(props)
+
+      if (segment.type === "literal") {
+        return normalize.element({
+          ...parts.segment.attrs,
+          dir: prop("dir"),
+          "aria-hidden": true, // Literal segments should not be visible to screen readers.
+          "data-type": segment.type,
+          "data-readonly": dataAttr(true),
+          "data-disabled": dataAttr(true),
+        })
+      }
+
+      return normalize.element({
+        ...parts.segment.attrs,
+        dir: prop("dir"),
+        role: "spinbutton",
+        tabIndex: disabled ? undefined : 0,
+        autoComplete: "off",
+        spellCheck: segmentState.editable ? "false" : undefined,
+        autoCorrect: segmentState.editable ? "off" : undefined,
+        contentEditable: segmentState.editable,
+        suppressContentEditableWarning: segmentState.editable,
+        inputMode:
+          disabled || segment.type === "dayPeriod" || segment.type === "era" || !segmentState.editable
+            ? undefined
+            : "numeric",
+        enterKeyHint: "next",
+        "aria-labelledby": dom.getSegmentGroupId(scope, index),
+        // "aria-label": translations.segmentLabel(segment),
+        "aria-valuenow": segment.value,
+        "aria-valuetext": segment.text,
+        "aria-valuemin": segment.minValue,
+        "aria-valuemax": segment.maxValue,
+        "aria-readonly": ariaAttr(!segment.isEditable || readOnly),
+        "aria-disabled": ariaAttr(disabled),
+        "data-value": segment.value,
+        "data-type": segment.type,
+        "data-readonly": dataAttr(!segment.isEditable || readOnly),
+        "data-disabled": dataAttr(disabled),
+        "data-editable": dataAttr(segment.isEditable && !readOnly && !disabled),
+        "data-placeholder": dataAttr(segment.isPlaceholder),
+        style: {
+          caretColor: "transparent",
+        },
+        onFocus() {
+          send({ type: "SEGMENT.FOCUS", index })
+        },
+        onBlur() {
+          send({ type: "SEGMENT.BLUR", index: -1 })
+        },
+        onKeyDown(event) {
+          if (
+            event.defaultPrevented ||
+            event.ctrlKey ||
+            event.metaKey ||
+            event.shiftKey ||
+            event.altKey ||
+            readOnly ||
+            event.nativeEvent.isComposing
+          ) {
+            return
+          }
+
+          const keyMap: EventKeyMap = {
+            ArrowLeft() {
+              send({ type: "SEGMENT.ARROW_LEFT" })
+            },
+            ArrowRight() {
+              send({ type: "SEGMENT.ARROW_RIGHT" })
+            },
+            ArrowUp() {
+              send({ type: "SEGMENT.ADJUST", segment, amount: 1 })
+            },
+            ArrowDown() {
+              send({ type: "SEGMENT.ADJUST", segment, amount: -1 })
+            },
+            PageUp() {
+              send({
+                type: "SEGMENT.ADJUST",
+                segment,
+                amount: PAGE_STEP[segment.type] ?? 1,
+              })
+            },
+            PageDown() {
+              send({
+                type: "SEGMENT.ADJUST",
+                segment,
+                amount: -(PAGE_STEP[segment.type] ?? 1),
+              })
+            },
+            Backspace() {
+              send({ type: "SEGMENT.BACKSPACE", segment })
+            },
+            Delete() {
+              send({ type: "SEGMENT.BACKSPACE", segment })
+            },
+            Home() {
+              send({ type: "SEGMENT.HOME", segment })
+            },
+            End() {
+              send({ type: "SEGMENT.END", segment })
+            },
+          }
+
+          const exec =
+            keyMap[
+              getEventKey(event, {
+                dir: prop("dir"),
+              })
+            ]
+
+          if (exec) {
+            exec(event)
+            event.preventDefault()
+            event.stopPropagation()
+          }
+        },
+        onPointerDown(event) {
+          event.stopPropagation()
+        },
+        onMouseDown(event) {
+          event.stopPropagation()
+        },
+        onBeforeInput(event) {
+          const { data, inputType } = getNativeEvent(event)
+          const allowedInputTypes = ["deleteContentBackward", "deleteContentForward", "deleteByCut", "deleteByDrag"]
+
+          if (allowedInputTypes.includes(inputType)) {
+            return
+          }
+
+          if (inputType === "insertFromPaste") {
+            event.preventDefault()
+            return
+          }
+
+          if (data && isValidCharacter(data, separator)) {
+            event.preventDefault()
+            send({ type: "SEGMENT.INPUT", segment, input: data })
+          } else {
+            event.preventDefault()
+          }
+        },
+        onPaste(event) {
+          event.preventDefault()
         },
       })
     },
