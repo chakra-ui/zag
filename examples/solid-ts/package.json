@@ -92,10 +92,10 @@
     "@zag-js/types": "workspace:*",
     "@zag-js/utils": "workspace:*",
     "form-serialize": "0.7.2",
-    "lucide-solid": "0.562.0",
+    "lucide-solid": "0.563.0",
     "match-sorter": "8.2.0",
-    "solid-js": "1.9.10",
-    "vinxi": "0.5.10"
+    "solid-js": "1.9.11",
+    "vinxi": "0.5.11"
   },
   "engines": {
     "node": ">=18"
