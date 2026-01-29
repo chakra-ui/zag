@@ -91,6 +91,16 @@ export interface MenuProps extends DirectionProperty, CommonProperties, Dismissa
    */
   closeOnSelect?: boolean | undefined
   /**
+   * Whether the menu should be modal. When set to `true`:
+   * - interaction with outside elements will be disabled
+   * - only menu content will be visible to screen readers
+   * - scrolling is blocked
+   * - focus is trapped within the menu
+   *
+   * @default false
+   */
+  modal?: boolean | undefined
+  /**
    * The accessibility label for the menu
    */
   "aria-label"?: string | undefined
@@ -123,7 +133,7 @@ export interface MenuProps extends DirectionProperty, CommonProperties, Dismissa
   navigate?: ((details: NavigateDetails) => void) | null | undefined
 }
 
-type PropsWithDefault = "closeOnSelect" | "typeahead" | "composite" | "positioning" | "loopFocus"
+type PropsWithDefault = "closeOnSelect" | "typeahead" | "composite" | "positioning" | "loopFocus" | "modal"
 
 export interface MenuSchema {
   props: RequiredBy<MenuProps, PropsWithDefault>
