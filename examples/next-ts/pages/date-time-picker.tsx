@@ -4,6 +4,8 @@ import { useId } from "react"
 import { StateVisualizer } from "../components/state-visualizer"
 import { Toolbar } from "../components/toolbar"
 
+const pad = (value: number) => String(value).padStart(2, "0")
+
 export default function Page() {
   const service = useMachine(datePicker.machine, {
     id: useId(),
@@ -15,24 +17,22 @@ export default function Page() {
   const api = datePicker.connect(service, normalizeProps)
 
   // Get time from the selected value (if it has time components)
-  const selectedValue = api.value[0]
-  const hasTime = selectedValue && "hour" in selectedValue
-  const timeValue = hasTime
-    ? `${String(selectedValue.hour).padStart(2, "0")}:${String(selectedValue.minute).padStart(2, "0")}`
-    : "12:00"
+  const value = api.value[0]
+  const hasTime = value && "hour" in value
+  const timeValue = hasTime ? `${pad(value.hour)}:${pad(value.minute)}` : "12:00"
 
   const handleTimeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const [hours, minutes] = e.target.value.split(":").map(Number)
+    const [hours, minutes] = e.currentTarget.value.split(":").map(Number)
     if (!isNaN(hours) && !isNaN(minutes)) {
       api.setTime({ hour: hours, minute: minutes, second: 0 })
     }
   }
 
   // Format the full date-time string
-  const dateTimeString = selectedValue
+  const dateTimeString = value
     ? hasTime
-      ? `${selectedValue.year}-${String(selectedValue.month).padStart(2, "0")}-${String(selectedValue.day).padStart(2, "0")} ${String(selectedValue.hour).padStart(2, "0")}:${String(selectedValue.minute).padStart(2, "0")}`
-      : `${selectedValue.year}-${String(selectedValue.month).padStart(2, "0")}-${String(selectedValue.day).padStart(2, "0")}`
+      ? `${value.year}-${pad(value.month)}-${pad(value.day)} ${pad(value.hour)}:${pad(value.minute)}`
+      : `${value.year}-${pad(value.month)}-${pad(value.day)}`
     : "-"
 
   return (
@@ -54,10 +54,10 @@ export default function Page() {
         >
           {/* Date-Time Trigger */}
           <button {...api.getTriggerProps()}>
-            {selectedValue
+            {value
               ? hasTime
-                ? `${selectedValue.year}-${String(selectedValue.month).padStart(2, "0")}-${String(selectedValue.day).padStart(2, "0")} ${String(selectedValue.hour).padStart(2, "0")}:${String(selectedValue.minute).padStart(2, "0")}`
-                : `${selectedValue.year}-${String(selectedValue.month).padStart(2, "0")}-${String(selectedValue.day).padStart(2, "0")}`
+                ? `${value.year}-${String(value.month).padStart(2, "0")}-${String(value.day).padStart(2, "0")} ${String(value.hour).padStart(2, "0")}:${String(value.minute).padStart(2, "0")}`
+                : `${value.year}-${String(value.month).padStart(2, "0")}-${String(value.day).padStart(2, "0")}`
               : "Select Date & Time"}
           </button>
 
@@ -114,7 +114,7 @@ export default function Page() {
                   type="time"
                   value={timeValue}
                   onChange={handleTimeChange}
-                  disabled={!selectedValue}
+                  disabled={!value}
                   style={{
                     padding: "6px 8px",
                     fontSize: "14px",
