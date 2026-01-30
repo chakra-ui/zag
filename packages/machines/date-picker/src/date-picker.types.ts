@@ -44,6 +44,13 @@ export interface OpenChangeDetails {
   value: DateValue[]
 }
 
+export interface Time {
+  hour?: number
+  minute?: number
+  second?: number
+  millisecond?: number
+}
+
 export interface LocaleDetails {
   locale: string
   timeZone: string
@@ -219,6 +226,11 @@ export interface DatePickerProps extends DirectionProperty, CommonProperties {
    * @default "single"
    */
   selectionMode?: SelectionMode | undefined
+  /**
+   * The maximum number of dates that can be selected.
+   * This is only applicable when `selectionMode` is `multiple`.
+   */
+  maxSelectedDates?: number | undefined
   /**
    * The format of the date to display in the input.
    */
@@ -546,6 +558,14 @@ export interface DatePickerApi<T extends PropTypes = PropTypes> {
    */
   selectionMode: SelectionMode
   /**
+   * The maximum number of dates that can be selected (only for multiple selection mode).
+   */
+  maxSelectedDates: number | undefined
+  /**
+   * Whether the maximum number of selected dates has been reached.
+   */
+  isMaxSelected: boolean
+  /**
    * The current view of the date picker
    */
   view: DateView
@@ -618,13 +638,18 @@ export interface DatePickerApi<T extends PropTypes = PropTypes> {
    */
   setValue: (values: DateValue[]) => void
   /**
+   * Sets the time for a specific date value.
+   * Converts CalendarDate to CalendarDateTime if needed.
+   */
+  setTime: (time: Time, index?: number) => void
+  /**
    * Sets the focused date to the given date.
    */
   setFocusedValue: (value: DateValue) => void
   /**
    * Clears the selected date(s).
    */
-  clearValue: VoidFunction
+  clearValue: (options?: { focus?: boolean }) => void
   /**
    * Function to open or close the calendar.
    */

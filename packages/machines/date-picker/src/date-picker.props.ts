@@ -26,6 +26,7 @@ export const props = createProps<DatePickerProps>()([
   "isDateUnavailable",
   "locale",
   "max",
+  "maxSelectedDates",
   "min",
   "name",
   "numOfMonths",
