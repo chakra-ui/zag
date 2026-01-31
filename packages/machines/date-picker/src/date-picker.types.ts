@@ -156,6 +156,11 @@ export interface DatePickerProps extends DirectionProperty, CommonProperties {
    */
   closeOnSelect?: boolean | undefined
   /**
+   * Whether to open the calendar when the input is clicked.
+   * @default false
+   */
+  openOnClick?: boolean | undefined
+  /**
    * The controlled selected date(s).
    */
   value?: DateValue[] | undefined

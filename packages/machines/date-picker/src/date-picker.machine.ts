@@ -1041,7 +1041,8 @@ export const machine = createMachine<DatePickerSchema>({
       setActiveIndexToStart({ context }) {
         context.set("activeIndex", 0)
       },
-      focusActiveCell({ scope, context }) {
+      focusActiveCell({ scope, context, event }) {
+        if (event.src === "input.click") return
         raf(() => {
           const view = context.get("view")
           dom.getFocusedCell(scope, view)?.focus({ preventScroll: true })

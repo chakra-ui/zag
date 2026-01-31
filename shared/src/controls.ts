@@ -193,6 +193,7 @@ export const datePickerControls = defineControls({
   dir: { type: "select", options: ["ltr", "rtl"] as const, defaultValue: "ltr" },
   startOfWeek: { type: "number", defaultValue: 0 },
   fixedWeeks: { type: "boolean", defaultValue: false },
+  openOnClick: { type: "boolean", defaultValue: false },
   locale: {
     type: "select",
     options: ["en-US", "en-GB", "fr-FR", "de-DE", "ja-JP", "mk-MK", "zh-CN"] as const,

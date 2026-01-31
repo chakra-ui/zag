@@ -847,6 +847,12 @@ export function connect<T extends PropTypes>(
             event.preventDefault()
           }
         },
+        onClick(event) {
+          if (event.defaultPrevented) return
+          if (!prop("openOnClick")) return
+          if (!interactive) return
+          send({ type: "OPEN", src: "input.click" })
+        },
         onFocus() {
           send({ type: "INPUT.FOCUS", index })
         },
