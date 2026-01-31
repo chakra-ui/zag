@@ -1,5 +1,35 @@
 # @zag-js/date-picker
 
+## 1.34.0
+
+### Minor Changes
+
+- [`26ffbba`](https://github.com/chakra-ui/zag/commit/26ffbbae442c03cb211ec6dc1b801b5aa79a9cd8) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - **DatePicker**
+  - Fix `api.selectToday()` sending incorrect value format to state machine
+  - Add `focus` option to `api.clearValue({ focus?: boolean })`
+  - Add `api.setTime(time, index?)` for date-time picker support
+  - Preserve time/timezone when selecting new dates (`CalendarDateTime` and `ZonedDateTime`)
+  - Add `maxSelectedDates` prop to limit the number of selected dates in `multiple` selection mode
+  - Add `api.isMaxSelected` to check if the maximum number of dates has been selected
+  - Add `openOnClick` prop to open the calendar when clicking the input field (defaults to `false`)
+
+  **Date utils**
+  - Fix `constrainValue` stripping time from `CalendarDateTime`/`ZonedDateTime` values
+
+### Patch Changes
+
+- Updated dependencies [[`26ffbba`](https://github.com/chakra-ui/zag/commit/26ffbbae442c03cb211ec6dc1b801b5aa79a9cd8)]:
+  - @zag-js/date-utils@1.34.0
+  - @zag-js/anatomy@1.34.0
+  - @zag-js/core@1.34.0
+  - @zag-js/types@1.34.0
+  - @zag-js/utils@1.34.0
+  - @zag-js/dismissable@1.34.0
+  - @zag-js/dom-query@1.34.0
+  - @zag-js/live-region@1.34.0
+  - @zag-js/popper@1.34.0
+
 ## 1.33.1
 
 ### Patch Changes
