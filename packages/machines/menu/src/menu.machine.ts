@@ -16,6 +16,9 @@ import {
 import { getPlacement, getPlacementSide, type Placement } from "@zag-js/popper"
 import { getElementPolygon, isPointInPolygon, type Point } from "@zag-js/rect-utils"
 import { isEqual } from "@zag-js/utils"
+import { ariaHidden } from "@zag-js/aria-hidden"
+import { trapFocus } from "@zag-js/focus-trap"
+import { preventBodyScroll } from "@zag-js/remove-scroll"
 import * as dom from "./menu.dom"
 import type { ChildMenuService, MenuSchema, ParentMenuService } from "./menu.types"
 
@@ -28,6 +31,7 @@ export const machine = createMachine<MenuSchema>({
       typeahead: true,
       composite: true,
       loopFocus: false,
+      modal: false,
       navigate(details) {
         clickIfLink(details.node)
       },
@@ -381,7 +385,14 @@ export const machine = createMachine<MenuSchema>({
 
     open: {
       tags: ["open"],
-      effects: ["trackInteractOutside", "trackPositioning", "scrollToHighlightedItem"],
+      effects: [
+        "trackInteractOutside",
+        "trackPositioning",
+        "scrollToHighlightedItem",
+        "trapFocus",
+        "preventScroll",
+        "hideContentBelow",
+      ],
       entry: ["focusMenu", "resumePointer"],
       on: {
         "CONTROLLED.CLOSE": [
@@ -565,6 +576,7 @@ export const machine = createMachine<MenuSchema>({
         let restoreFocus = true
         return trackDismissableElement(getContentEl, {
           type: "menu",
+          pointerBlocking: prop("modal"),
           defer: true,
           exclude: [dom.getTriggerEl(scope)],
           onInteractOutside: prop("onInteractOutside"),
@@ -638,6 +650,27 @@ export const machine = createMachine<MenuSchema>({
           defer: true,
           attributes: ["aria-activedescendant"],
           callback: exec,
+        })
+      },
+      hideContentBelow({ prop, scope }) {
+        if (!prop("modal")) return
+        const getElements = () => [dom.getContentEl(scope), dom.getTriggerEl(scope)]
+        return ariaHidden(getElements, { defer: true })
+      },
+      preventScroll({ prop, scope }) {
+        if (!prop("modal")) return
+        return preventBodyScroll(scope.getDoc())
+      },
+      trapFocus({ prop, scope }) {
+        if (!prop("modal")) return
+        const contentEl = () => dom.getContentEl(scope)
+        return trapFocus(contentEl, {
+          initialFocus: () =>
+            getInitialFocus({
+              root: dom.getContentEl(scope),
+              enabled: true,
+            }),
+          getShadowRoot: true,
         })
       },
     },
