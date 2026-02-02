@@ -195,4 +195,4 @@ what to work on.
 
 ## License
 
-MIT © [Segun Adebayo](https://github.com/segunadebayo)
+MIT © [Chakra Systems Inc.](https://github.com/chakra-ui)
