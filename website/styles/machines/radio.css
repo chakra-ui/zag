@@ -3,6 +3,7 @@
     [data-scope="radio-group"][data-part="root"] {
       display: flex;
       gap: 0.75rem;
+      margin-top: -24px;
     }
 
     [data-scope="radio-group"][data-part="root"][data-orientation="vertical"] {
@@ -25,7 +26,8 @@
 
     [data-scope="radio-group"][data-part="item"][data-disabled] {
       cursor: not-allowed;
-      opacity: 0.4;
+      opacity: 0.5;
+      filter: grayscale(100%);
     }
 
     [data-scope="radio-group"][data-part="item-text"] {
@@ -37,8 +39,8 @@
       width: 25px;
       height: 25px;
       border-radius: 9999px;
-      border: solid 2px;
-      border-color: #a0aec0;
+      border: solid 1px;
+      border-color: var(--colors-border-bold);
       color: #ffffff;
       padding: 1px;
     }
@@ -49,17 +51,19 @@
 
     [data-peer]:focus-visible
       ~ [data-scope="radio-group"][data-part="item-control"] {
-      outline: 2px solid royalblue;
+      outline: 2px solid var(--colors-bg-primary-bold);
+      outline-offset: 2px;
     }
 
     [data-scope="radio-group"][data-part="item-control"][data-state="checked"] {
-      background: #3182ce;
-      border-color: #3182ce;
+      background: var(--colors-bg-primary-bold);
+      border-color: var(--colors-bg-primary-bold);
     }
 
     [data-scope="radio-group"][data-part="item-control"][data-disabled] {
-      background: #a0aec0;
-      border-color: #a0aec0;
+      background: var(--colors-bg-bold);
+      border-color: var(--colors-border-bold);
+      filter: grayscale(100%);
     }
   }
 }

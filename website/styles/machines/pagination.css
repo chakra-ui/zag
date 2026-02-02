@@ -44,8 +44,8 @@
       [data-part="next-trigger"],
       [data-part="item"]
     ):focus {
-    outline: 2px solid royalblue;
-    outline-offset: 1px;
+    outline: 2px solid var(--colors-bg-primary-bold);
+    outline-offset: 2px;
   }
 
   [data-scope="pagination"]:is(
@@ -62,9 +62,10 @@
       [data-part="next-trigger"],
       [data-part="item"]
     )[data-disabled] {
-    opacity: 0.6;
+    opacity: 0.5;
     cursor: not-allowed;
     background: none;
+    filter: grayscale(100%);
   }
 
   [data-scope="pagination"][data-part="ellipsis"] {

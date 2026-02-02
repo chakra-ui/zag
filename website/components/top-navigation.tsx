@@ -11,7 +11,7 @@ import { VersionSelector } from "./version-selector"
 export function TopNavigation() {
   return (
     <Box
-      bg="bg.header"
+      bg="bg.subtle"
       backdropFilter="auto"
       backdropBlur="sm"
       position="sticky"

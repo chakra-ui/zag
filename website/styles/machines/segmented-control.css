@@ -39,9 +39,14 @@
       z-index: 2;
     }
 
+    [data-scope="radio-group"][data-part="item"][data-state="checked"] {
+      color: var(--colors-text-primary-bold);
+    }
+
     [data-scope="radio-group"][data-part="item"][data-disabled] {
       cursor: not-allowed;
-      opacity: 0.4;
+      opacity: 0.5;
+      filter: grayscale(100%);
     }
   }
 }

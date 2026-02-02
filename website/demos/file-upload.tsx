@@ -22,8 +22,8 @@ export function FileUpload(props: FileUploadProps) {
       </div>
 
       <div>
-        {api.acceptedFiles.map((file) => (
-          <div {...api.getItemProps({ file })} key={file.name}>
+        {api.acceptedFiles.map((file, index) => (
+          <div {...api.getItemProps({ file })} key={`${file.name}-${index}`}>
             <div>
               {file.name} {api.getFileSize(file)}
             </div>

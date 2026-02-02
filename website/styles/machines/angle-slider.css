@@ -4,6 +4,7 @@
     flex-direction: column;
     gap: 0.5rem;
     margin-bottom: 1rem;
+    margin-top: -24px;
     align-items: center;
   }
 
@@ -14,7 +15,8 @@
     width: var(--size);
     height: var(--size);
     border-radius: 100%;
-    background-color: var(--colors-bg-subtle);
+    background-color: var(--colors-bg-bold);
+    border: 1px solid var(--colors-border-bold);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -23,7 +25,8 @@
   }
 
   [data-scope="angle-slider"][data-part="control"][data-disabled] {
-    opacity: 0.4;
+    opacity: 0.5;
+    filter: grayscale(100%);
   }
 
   [data-scope="angle-slider"][data-part="thumb"] {

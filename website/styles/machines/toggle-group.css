@@ -4,7 +4,10 @@
     align-items: center;
     flex-direction: row;
     gap: 0px;
-    margin-top: 2.5rem;
+
+    & > * {
+      margin-left: -1px;
+    }
   }
 
   [data-scope="toggle-group"][data-part="item"] {
@@ -16,19 +19,27 @@
     background: var(--colors-bg-subtle);
     border-width: 1px;
     font-size: 1.25rem;
-  }
+    position: relative;
 
-  [data-scope="toggle-group"][data-part="item"]:hover {
-    background: var(--colors-bg-bold);
-  }
+    &:hover {
+      background: var(--colors-bg-bold);
+    }
 
-  [data-scope="toggle-group"][data-part="item"][data-state="on"] {
-    background: var(--colors-bg-primary-bold);
-    color: var(--colors-text-inverse);
-  }
+    &[data-state="on"] {
+      background: var(--colors-bg-primary-bold);
+      color: var(--colors-text-inverse);
+    }
 
-  [data-scope="toggle-group"][data-part="item"][data-disabled] {
-    opacity: 0.5;
-    cursor: not-allowed;
+    &[data-disabled] {
+      opacity: 0.5;
+      cursor: not-allowed;
+      filter: grayscale(100%);
+    }
+
+    &[data-focus] {
+      outline: 2px solid var(--colors-bg-primary-bold);
+      outline-offset: 2px;
+      z-index: 1;
+    }
   }
 }

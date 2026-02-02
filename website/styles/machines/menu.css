@@ -5,6 +5,11 @@
     justify-content: center;
     text-align: start;
     cursor: pointer;
+
+    &:focus-visible {
+      outline: 2px solid var(--colors-bg-primary-bold);
+      outline-offset: 2px;
+    }
     font-weight: 500;
     padding-inline: 1rem;
     padding-block: 0.25rem;
@@ -20,6 +25,7 @@
     padding: 1rem;
     border-width: 2px;
     border-style: dashed;
+    border-color: var(--colors-border-bold);
   }
 
   [data-scope="menu"][data-part="indicator"] {
@@ -27,18 +33,16 @@
   }
 
   [data-scope="menu"][data-part="content"] {
-    background: var(--colors-bg-subtle);
-    width: 240px;
+    background: var(--colors-bg-popover);
+    width: 12rem;
     padding: 0.5rem;
     isolation: isolate;
     list-style-type: none;
-    box-shadow:
-      0 1px 3px 0 rgba(0, 0, 0, 0.1),
-      0 1px 2px 0 rgba(0, 0, 0, 0.06);
+    filter: drop-shadow(0 1px 2px var(--colors-shadow));
   }
 
   [data-scope="menu"][data-part="content"]:is(:focus, [data-focus]) {
-    outline: 2px solid hsl(204, 100%, 40%);
+    outline: none;
   }
 
   [data-scope="menu"]:is([data-part="item"], [data-part="trigger-item"]) {

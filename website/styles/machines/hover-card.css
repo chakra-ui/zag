@@ -9,11 +9,10 @@
   }
 
   [data-scope="hover-card"][data-part="content"] {
-    --background: var(--colors-bg-subtle);
+    --background: var(--colors-bg-popover);
     background: var(--background);
     padding: 1rem;
-    border-width: 1px;
-    filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 15%));
+    filter: drop-shadow(0 1px 2px var(--colors-shadow));
     z-index: 50;
     position: relative;
     max-width: min(calc(100vw - 16px), 360px);
@@ -51,14 +50,14 @@
     height: 3.5rem;
   }
 
-  .header p:first-child,
-  .stats > div p:first-child {
-    font-weight: 700;
+  .header span:first-child,
+  .stats > div span:first-child {
+    font-weight: 600;
   }
 
-  .header p:nth-child(2),
-  .stats > div p:nth-child(2) {
-    color: #718096;
+  .header span:nth-child(2),
+  .stats > div span:nth-child(2) {
+    color: var(--colors-fg-subtle);
   }
 
   .stats,

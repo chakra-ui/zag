@@ -1,4 +1,8 @@
 @layer recipes {
+  [data-scope="color-picker"][data-part="root"] {
+    margin-top: -24px;
+  }
+
   [data-scope="color-picker"][data-part="label"] {
     font-size: 0.875rem;
     display: block;
@@ -6,7 +10,8 @@
   }
 
   [data-scope="color-picker"][data-part="label"][data-disabled] {
-    opacity: 0.6;
+    opacity: 0.5;
+    filter: grayscale(100%);
   }
 
   [data-scope="color-picker"][data-part="label"] > span:first-child {
@@ -36,6 +41,11 @@
   [data-scope="color-picker"][data-part="trigger"] {
     display: flex;
     background: var(--colors-bg-subtle);
+
+    &:focus-visible {
+      outline: 2px solid var(--colors-bg-primary-bold);
+      outline-offset: 2px;
+    }
   }
 
   [data-scope="color-picker"][data-part="transparency-grid"] {
@@ -71,12 +81,10 @@
   }
 
   [data-scope="color-picker"][data-part="content"] {
-    box-shadow:
-      0 1px 3px 0 rgba(0, 0, 0, 0.1),
-      0 1px 2px 0 rgba(0, 0, 0, 0.06);
+    filter: drop-shadow(0 1px 2px var(--colors-shadow));
     isolation: isolate;
     padding: 1rem;
-    background: var(--colors-bg-subtle);
+    background: var(--colors-bg-popover);
   }
 
   [data-scope="color-picker"][data-part="area"]

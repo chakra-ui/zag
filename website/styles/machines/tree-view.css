@@ -31,6 +31,11 @@
       background: var(--colors-border-bold);
     }
 
+    &:focus-visible {
+      outline: 2px solid var(--colors-bg-primary-bold);
+      outline-offset: -2px;
+    }
+
     &[data-selected] {
       background: var(--colors-bg-primary-bold);
       color: var(--colors-text-inverse);

@@ -3,6 +3,7 @@
     display: flex;
     flex-direction: column;
     gap: 0.25rem;
+    margin-top: -24px;
   }
 
   [data-scope="combobox"][data-part="label"] {
@@ -11,7 +12,8 @@
   }
 
   [data-scope="combobox"][data-part="label"][data-disabled] {
-    opacity: 0.6;
+    opacity: 0.5;
+    filter: grayscale(100%);
   }
 
   [data-scope="combobox"][data-part="control"] {
@@ -19,12 +21,14 @@
     width: 300px;
     background: var(--colors-bg-subtle);
     border-width: 1px;
+    border-color: var(--colors-border-bold);
     padding-block: 0.25rem;
     padding-inline: 0.75rem;
   }
 
   [data-scope="combobox"][data-part="control"][data-disabled] {
-    opacity: 0.6;
+    opacity: 0.5;
+    filter: grayscale(100%);
   }
 
   [data-scope="combobox"][data-part="input"] {
@@ -42,12 +46,10 @@
     margin: 0px;
     max-height: 14rem;
     overflow: auto;
-    box-shadow:
-      0 1px 3px 0 rgba(0, 0, 0, 0.1),
-      0 1px 2px 0 rgba(0, 0, 0, 0.06);
+    filter: drop-shadow(0 1px 2px var(--colors-shadow));
     isolation: isolate;
     padding: 0.5rem;
-    background: var(--colors-bg-subtle);
+    background: var(--colors-bg-popover);
     z-index: calc(var(--layer-index) + 10);
   }
 
@@ -71,5 +73,6 @@
   [data-scope="combobox"][data-part="item"][data-disabled] {
     opacity: 0.5;
     cursor: unset;
+    filter: grayscale(100%);
   }
 }

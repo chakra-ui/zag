@@ -80,7 +80,7 @@
       border-width: 2px;
       border-color: var(--colors-bg-primary-subtle);
       color: white;
-      outline: 2px solid var(--colors-bg-primary-subtle);
+      outline: 2px solid var(--colors-bg-primary-bold);
       outline-offset: 2px;
     }
 
@@ -119,6 +119,11 @@
     gap: 12px;
     text-align: start;
     border-radius: 5px;
+
+    &:focus-visible {
+      outline: 2px solid var(--colors-bg-primary-bold);
+      outline-offset: 2px;
+    }
   }
 
   [data-scope="steps"][data-part="content"] {
@@ -142,8 +147,14 @@
     color: #ffffff;
     margin-inline-end: 6px;
 
+    &:focus-visible {
+      outline: 2px solid var(--colors-bg-primary-bold);
+      outline-offset: 2px;
+    }
+
     &[disabled] {
       opacity: 0.5;
+      filter: grayscale(100%);
     }
   }
 }

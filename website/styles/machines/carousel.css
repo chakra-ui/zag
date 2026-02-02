@@ -54,8 +54,17 @@
   [data-scope="carousel"]:is(
       [data-part="prev-trigger"],
       [data-part="next-trigger"]
+    ):focus-visible {
+    outline: 2px solid var(--colors-bg-primary-bold);
+    outline-offset: 2px;
+  }
+
+  [data-scope="carousel"]:is(
+      [data-part="prev-trigger"],
+      [data-part="next-trigger"]
     ):disabled {
     opacity: 0.5;
+    filter: grayscale(100%);
   }
 
   [data-scope="carousel"][data-part="indicator-group"] {

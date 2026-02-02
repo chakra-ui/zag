@@ -3,6 +3,8 @@
   overflow: hidden;
   touch-action: none;
   user-select: none;
+  min-width: 500px;
+  min-height: 280px;
 }
 
 [data-scope="image-cropper"][data-part="selection"] {
@@ -21,6 +23,7 @@
   display: block;
   pointer-events: none;
   user-select: none;
+  background: var(--colors-bg);
 }
 
 [data-scope="image-cropper"][data-part="handle"] {

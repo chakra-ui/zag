@@ -112,6 +112,11 @@
     gap: 4px;
     cursor: pointer;
 
+    &:focus-visible {
+      outline: 2px solid var(--colors-bg-primary-bold);
+      outline-offset: 2px;
+    }
+
     & svg {
       transition: rotate 200ms ease;
       width: 14px;
@@ -178,7 +183,7 @@
     position: relative;
     top: 0;
     left: 0;
-    background-color: var(--colors-bg-subtle);
+    background-color: var(--colors-bg-popover);
     transition:
       width 300ms ease,
       height 300ms ease;
@@ -188,7 +193,7 @@
     transform-origin: top center;
     overflow: hidden;
     border-radius: 8px;
-    filter: drop-shadow(0 4px 6px #00000026);
+    filter: drop-shadow(0 1px 2px var(--colors-shadow));
     z-index: 1;
 
     &[data-orientation="horizontal"] {
@@ -246,9 +251,10 @@
     position: relative;
     width: var(--arrow-size);
     height: var(--arrow-size);
-    background-color: var(--colors-bg-subtle);
+    background-color: var(--colors-bg-popover);
     rotate: 45deg;
-    filter: drop-shadow(0 4px 6px #00000026);
+    box-shadow: -1px -1px 1px
+      color-mix(in srgb, var(--colors-shadow) 40%, transparent);
 
     &[data-orientation="horizontal"] {
       top: 4px;

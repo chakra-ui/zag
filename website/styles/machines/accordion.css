@@ -4,7 +4,8 @@
   }
 
   [data-scope="accordion"][data-part="item"] {
-    border-width: 1px;
+    border-bottom-width: 1px;
+    border-color: var(--colors-border-bold);
     font-size: 0.875rem;
     background: var(--colors-bg-subtle);
   }
@@ -26,7 +27,8 @@
   }
 
   [data-scope="accordion"][data-part="item-trigger"]:focus-visible {
-    outline: 2px solid #0070f3;
+    outline: 2px solid var(--colors-bg-primary-bold);
+    outline-offset: 2px;
   }
 
   [data-scope="accordion"][data-part="item-content"] {

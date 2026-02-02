@@ -2,7 +2,8 @@
   [data-scope="rating-group"][data-part="root"] {
     display: flex;
     flex-direction: column;
-    gap: 2.5rem;
+    gap: 0.5rem;
+    margin-top: -24px;
   }
 
   [data-scope="rating-group"][data-part="root"][dir="rtl"]
@@ -19,19 +20,26 @@
     width: 2rem;
     height: 2rem;
     padding: 0.25rem;
+    border-radius: 4px;
+
+    &:focus-visible {
+      outline: 2px solid var(--colors-bg-primary-bold);
+      outline-offset: 2px;
+    }
   }
 
   [data-scope="rating-group"][data-part="item"] [data-part="star"] {
-    color: #bdbdbd;
+    color: var(--colors-border-bold);
   }
 
   [data-scope="rating-group"][data-part="item"][data-highlighted]
     [data-part="star"] {
-    color: #ffb400;
+    color: var(--colors-bg-primary-bold);
   }
 
   [data-scope="rating-group"][data-part="item"][data-highlighted][data-disabled]
     [data-part="star"] {
-    color: #a1a1a1;
+    color: var(--colors-fg-subtle);
+    filter: grayscale(100%);
   }
 }

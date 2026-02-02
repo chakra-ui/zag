@@ -1,6 +1,7 @@
 @layer recipes {
   [data-scope="slider"][data-part="root"] {
-    width: 200px;
+    width: 16rem;
+    margin-top: -24px;
   }
 
   [data-scope="slider"][data-part="root"] > div:first-child {
@@ -15,7 +16,7 @@
   [data-scope="slider"][data-part="control"] {
     display: flex;
     align-items: center;
-    margin-top: 1.25rem;
+    margin-top: 0.5rem;
     position: relative;
     padding-block: 0.625rem;
   }
@@ -35,6 +36,7 @@
 
   [data-scope="slider"][data-part="range"][data-disabled] {
     background: #9ae6b4;
+    filter: grayscale(100%);
   }
 
   [data-scope="slider"][data-part="thumb"] {
@@ -51,10 +53,12 @@
   }
 
   [data-scope="slider"][data-part="thumb"]:is(:focus, [data-focus]) {
-    outline: 2px solid hsl(204, 100%, 40%);
+    outline: 2px solid var(--colors-bg-primary-bold);
+    outline-offset: 2px;
   }
 
   [data-scope="slider"][data-part="thumb"][data-disabled] {
     background: #e2e8f0;
+    filter: grayscale(100%);
   }
 }

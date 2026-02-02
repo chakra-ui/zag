@@ -15,7 +15,8 @@
   }
 
   [data-scope="editable"][data-part="input"]:focus {
-    outline: 2px solid hsl(204, 100%, 40%);
+    outline: 2px solid var(--colors-bg-primary-bold);
+    outline-offset: 2px;
   }
 
   [data-scope="editable"]:is(
@@ -31,6 +32,11 @@
     font-weight: 500;
     padding-inline: 1rem;
     padding-block: 0.25rem;
+
+    &:focus-visible {
+      outline: 2px solid var(--colors-bg-primary-bold);
+      outline-offset: 2px;
+    }
   }
 
   [data-scope="editable"]:is(
@@ -38,6 +44,7 @@
     [data-part="cancel-trigger"]
   ) {
     border-width: 1px;
+    border-color: var(--colors-border-bold);
     background: var(--colors-bg-subtle);
   }
 

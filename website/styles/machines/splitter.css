@@ -28,6 +28,11 @@
     border-radius: 4px;
     margin: 0.5rem;
     display: flex;
+
+    &:focus-visible {
+      outline: 2px solid var(--colors-bg-primary-bold);
+      outline-offset: 2px;
+    }
   }
 
   [data-scope="splitter"][data-part="resize-trigger"][data-orientation="horizontal"] {

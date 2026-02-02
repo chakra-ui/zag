@@ -24,6 +24,11 @@
     font-weight: 500;
     padding-inline: 1rem;
     padding-block: 0.25rem;
+
+    &:focus-visible {
+      outline: 2px solid var(--colors-bg-primary-bold);
+      outline-offset: 2px;
+    }
   }
 
   [data-scope="bottom-sheet"][data-part="content"]
@@ -50,7 +55,7 @@
   }
 
   [data-scope="bottom-sheet"][data-part="content"] {
-    background: var(--colors-bg-subtle);
+    background: var(--colors-bg-popover);
     transition: transform 0.5s cubic-bezier(0.32, 0.72, 0, 1);
     animation-duration: 0.5s;
     animation-timing-function: cubic-bezier(0.32, 0.72, 0, 1);

@@ -38,13 +38,12 @@ export function HoverCard(props: HoverCardProps) {
                 />
 
                 <div className="card-content">
-                  <p className="header">
-                    <p>Zag JS</p>
-                    <p> @zag_js</p>
-                  </p>
+                  <div className="header">
+                    <span>Zag JS</span>
+                    <span> @zag_js</span>
+                  </div>
                   <p>
-                    <p>UI components powered by Finite State Machines.</p>
-                    Created by{" "}
+                    UI components powered by Finite State Machines. Created by{" "}
                     <a
                       href="https://twitter.com/thesegunadebayo"
                       target="_blank"
@@ -55,10 +54,10 @@ export function HoverCard(props: HoverCardProps) {
                   </p>
                   <div className="stats">
                     <div>
-                      <p>2</p> <p>Following</p>
+                      <span>2</span> <span>Following</span>
                     </div>
                     <div>
-                      <p>4,000</p> <p>Followers</p>
+                      <span>4,000</span> <span>Followers</span>
                     </div>
                   </div>
                 </div>

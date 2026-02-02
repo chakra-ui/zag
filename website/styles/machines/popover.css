@@ -16,12 +16,16 @@
     background: var(--colors-bg-primary-bold);
   }
 
+  [data-scope="popover"][data-part="trigger"]:focus-visible {
+    outline: 2px solid var(--colors-bg-primary-bold);
+    outline-offset: 2px;
+  }
+
   [data-scope="popover"][data-part="content"] {
-    --background: var(--colors-bg-subtle);
+    --background: var(--colors-bg-popover);
     background: var(--background);
     padding: 1rem;
-    border-width: 1px;
-    filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 15%));
+    filter: drop-shadow(0 1px 2px var(--colors-shadow));
     z-index: 50;
     position: relative;
     max-width: min(calc(100vw - 16px), 320px);
@@ -29,7 +33,7 @@
   }
 
   [data-scope="popover"][data-part="content"]:is(:focus, [data-focus]) {
-    outline: 2px solid hsl(204, 100%, 40%);
+    outline: none;
   }
 
   [data-scope="popover"][data-part="arrow"] {
@@ -52,10 +56,12 @@
     padding-inline: 1rem;
     padding-block: 0.5rem;
     border-width: 1px;
+    border-color: var(--colors-border-bold);
   }
 
   [data-scope="popover"][data-part="description"] + button:focus {
-    outline: 2px solid hsl(204, 100%, 40%);
+    outline: 2px solid var(--colors-bg-primary-bold);
+    outline-offset: 2px;
   }
 
   [data-scope="popover"][data-part="close-trigger"] {

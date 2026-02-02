@@ -23,9 +23,13 @@ export function Marquee(props: MarqueeProps) {
 
   const api = marquee.connect(service, normalizeProps)
 
+  const isVertical = api.orientation === "vertical"
+  const startSide = isVertical ? "top" : "start"
+  const endSide = isVertical ? "bottom" : "end"
+
   return (
     <div {...api.getRootProps()}>
-      <div {...api.getEdgeProps({ side: "start" })} />
+      <div {...api.getEdgeProps({ side: startSide })} />
 
       <div {...api.getViewportProps()}>
         {Array.from({ length: api.contentCount }).map((_, index) => (
@@ -40,7 +44,7 @@ export function Marquee(props: MarqueeProps) {
         ))}
       </div>
 
-      <div {...api.getEdgeProps({ side: "end" })} />
+      <div {...api.getEdgeProps({ side: endSide })} />
     </div>
   )
 }

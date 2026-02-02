@@ -42,7 +42,7 @@ export function Combobox(props: ComboboxProps) {
   })
 
   return (
-    <div>
+    <>
       <div {...api.getRootProps()}>
         <label {...api.getLabelProps()}>Nationality</label>
         <div {...api.getControlProps()}>
@@ -68,7 +68,7 @@ export function Combobox(props: ComboboxProps) {
           )}
         </div>
       </Portal>
-    </div>
+    </>
   )
 }
 

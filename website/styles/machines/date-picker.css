@@ -44,11 +44,12 @@
 
   [data-scope="date-picker"][data-part="table-cell-trigger"][data-unavailable] {
     text-decoration: line-through;
-    opacity: 0.4;
+    opacity: 0.5;
   }
 
   [data-scope="date-picker"][data-part="table-cell-trigger"][data-disabled] {
-    opacity: 0.4;
+    opacity: 0.5;
+    filter: grayscale(100%);
   }
 
   [data-scope="date-picker"][data-part="input"] {
@@ -57,7 +58,7 @@
     padding-right: 1.25rem;
     padding-left: 0.75rem;
     background: var(--colors-bg-subtle);
-    border-color: var(--colors-border-subtle);
+    border-color: var(--colors-border-bold);
   }
 
   [data-scope="date-picker"][data-part="trigger"] {
@@ -67,15 +68,19 @@
     background: var(--colors-bg-subtle);
     min-width: 40px;
     border-width: 1px;
+    border-color: var(--colors-border-bold);
+
+    &:focus-visible {
+      outline: 2px solid var(--colors-bg-primary-bold);
+      outline-offset: 2px;
+    }
   }
 
   [data-scope="date-picker"][data-part="content"] {
-    box-shadow:
-      0 1px 3px 0 rgba(0, 0, 0, 0.1),
-      0 1px 2px 0 rgba(0, 0, 0, 0.06);
+    filter: drop-shadow(0 1px 2px var(--colors-shadow));
     isolation: isolate;
     padding: 1rem;
-    background: var(--colors-bg-subtle);
+    background: var(--colors-bg-popover);
   }
 
   [data-scope="date-picker"][data-part="table"] {
@@ -92,6 +97,10 @@
     &:hover {
       background: var(--colors-bg-bold);
     }
+    &:focus-visible {
+      outline: 2px solid var(--colors-bg-primary-bold);
+      outline-offset: 2px;
+    }
   }
 
   [data-scope="date-picker"]:is(
@@ -106,6 +115,10 @@
     height: 32px;
     &:hover {
       background: var(--colors-bg-bold);
+    }
+    &:focus-visible {
+      outline: 2px solid var(--colors-bg-primary-bold);
+      outline-offset: 2px;
     }
   }
 

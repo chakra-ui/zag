@@ -24,6 +24,11 @@
     background: var(--colors-bg-primary-bold);
   }
 
+  [data-scope="collapsible"][data-part="trigger"]:focus-visible {
+    outline: 2px solid var(--colors-bg-primary-bold);
+    outline-offset: 2px;
+  }
+
   [data-scope="collapsible"][data-part="content"] {
     display: flex;
     flex-direction: column;

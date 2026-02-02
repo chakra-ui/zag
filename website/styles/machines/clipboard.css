@@ -3,6 +3,7 @@
     display: flex;
     flex-direction: column;
     gap: 0.25rem;
+    margin-top: -24px;
   }
 
   [data-scope="clipboard"][data-part="label"] {
@@ -41,5 +42,10 @@
 
   [data-scope="clipboard"][data-part="trigger"]:hover {
     background: var(--colors-bg-bold);
+  }
+
+  [data-scope="clipboard"][data-part="trigger"]:focus-visible {
+    outline: 2px solid var(--colors-bg-primary-bold);
+    outline-offset: 2px;
   }
 }

@@ -4,6 +4,7 @@
       width: 100%;
       max-width: 400px;
       border-width: 1px;
+      border-color: var(--colors-border-bold);
       font-size: 0.875rem;
     }
 
@@ -17,6 +18,11 @@
       padding-block: 0.5rem;
       border-bottom-width: 2px;
       border-bottom-color: transparent;
+
+      &:focus-visible {
+        outline: 2px solid var(--colors-bg-primary-bold);
+        outline-offset: -2px;
+      }
     }
 
     [data-scope="tabs"][data-part="trigger"][data-selected] {

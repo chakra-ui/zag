@@ -45,6 +45,8 @@ export function ImageCropper(props: ImageCropperProps) {
             src="https://placedog.net/500/280?id=2"
             alt="Dog to be cropped"
             crossOrigin="anonymous"
+            width={500}
+            height={280}
             {...api.getImageProps()}
           />
           <div {...api.getSelectionProps()}>

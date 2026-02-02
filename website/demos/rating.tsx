@@ -8,7 +8,7 @@ export function Rating(props: RatingProps) {
   const service = useMachine(rating.machine, {
     id: useId(),
     name: "service",
-    defaultValue: 2.5,
+    defaultValue: 3,
     ...props,
   })
 
@@ -17,7 +17,7 @@ export function Rating(props: RatingProps) {
   return (
     <div>
       <div {...api.getRootProps()}>
-        <label {...api.getLabelProps()}>Rate Us:</label>
+        <label {...api.getLabelProps()}>Rate our service</label>
         <div {...api.getControlProps()}>
           {api.items.map((index) => {
             const state = api.getItemState({ index })

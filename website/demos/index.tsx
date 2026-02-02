@@ -335,10 +335,9 @@ const components = {
       name="rating"
       component={Rating}
       defaultProps={{
-        allowHalf: true,
+        allowHalf: false,
         disabled: false,
         readOnly: false,
-        count: 5,
         dir: {
           options: ["ltr", "rtl"],
           default: "ltr",
@@ -535,7 +534,7 @@ const components = {
           default: "start",
           options: ["start", "end", "top", "bottom"],
         },
-        speed: 100,
+        // speed: 100,
         pauseOnInteraction: false,
       }}
     />

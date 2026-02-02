@@ -9,15 +9,16 @@
 
   [data-scope="checkbox"][data-part="root"][data-disabled] {
     cursor: not-allowed;
-    opacity: 0.4;
+    opacity: 0.5;
+    filter: grayscale(100%);
   }
 
   [data-scope="checkbox"][data-part="control"] {
     width: 24px;
     height: 24px;
     border-radius: 0.275rem;
-    border: solid 2px;
-    border-color: #a0aec0;
+    border: solid 1px;
+    border-color: var(--colors-border-bold);
     color: #ffffff;
   }
 
@@ -26,13 +27,14 @@
   }
 
   [data-scope="checkbox"][data-part="control"][data-focus] {
-    outline: 2px solid var(--colors-bg-primary-subtle);
+    outline: 2px solid var(--colors-bg-primary-bold);
     outline-offset: 2px;
   }
 
   [data-scope="checkbox"][data-part="control"][data-disabled] {
-    background: #a0aec0 !important;
-    border-color: #a0aec0 !important;
+    background: var(--colors-bg-bold) !important;
+    border-color: var(--colors-border-bold) !important;
+    filter: grayscale(100%);
   }
 
   [data-scope="checkbox"][data-part="control"][data-invalid] {

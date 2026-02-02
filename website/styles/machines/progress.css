@@ -12,9 +12,9 @@
 
   [data-scope="progress"][data-part="track"] {
     border-width: 1px;
-    height: 20px;
+    height: 12px;
     border-radius: 0.125rem;
-    background: var(--colors-bg-subtle);
+    background: var(--colors-bg-muted);
     overflow: hidden;
   }
 
@@ -55,7 +55,7 @@
   }
 
   [data-scope="progress"][data-part="circle-track"] {
-    stroke: var(--colors-bg-subtle);
+    stroke: var(--colors-bg-muted);
   }
 
   [data-scope="progress"][data-part="root"] + div {

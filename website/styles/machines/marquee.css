@@ -1,17 +1,18 @@
 @layer recipes {
   [data-scope="marquee"][data-part="root"] {
     width: 100%;
-    max-width: 600px;
     overflow: hidden;
   }
 
   [data-scope="marquee"][data-orientation="vertical"][data-part="root"] {
-    height: 400px;
+    height: 20rem;
+    max-width: 20rem;
   }
 
   [data-scope="marquee"][data-orientation="horizontal"][data-part="root"] {
     width: 100%;
     height: 120px;
+    max-width: 32rem;
   }
 
   [data-scope="marquee"][data-paused] {
@@ -74,14 +75,14 @@
       width: 20%;
       background: linear-gradient(
         to right,
-        var(--colors-bg-code-block),
+        var(--colors-bg-subtle),
         transparent
       );
 
       &[dir="rtl"] {
         background: linear-gradient(
           to left,
-          var(--colors-bg-code-block),
+          var(--colors-bg-subtle),
           transparent
         );
       }
@@ -91,14 +92,14 @@
       width: 20%;
       background: linear-gradient(
         to left,
-        var(--colors-bg-code-block),
+        var(--colors-bg-subtle),
         transparent
       );
 
       &[dir="rtl"] {
         background: linear-gradient(
           to right,
-          var(--colors-bg-code-block),
+          var(--colors-bg-subtle),
           transparent
         );
       }
@@ -108,18 +109,14 @@
       height: 20%;
       background: linear-gradient(
         to bottom,
-        var(--colors-bg-code-block),
+        var(--colors-bg-subtle),
         transparent
       );
     }
 
     &[data-side="bottom"] {
       height: 20%;
-      background: linear-gradient(
-        to top,
-        var(--colors-bg-code-block),
-        transparent
-      );
+      background: linear-gradient(to top, var(--colors-bg-subtle), transparent);
     }
   }
 

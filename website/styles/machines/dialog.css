@@ -12,6 +12,11 @@
       padding-block: 0.25rem;
       background: var(--colors-bg-primary-subtle);
       color: #ffffff;
+
+      &:focus-visible {
+        outline: 2px solid var(--colors-bg-primary-bold);
+        outline-offset: 2px;
+      }
     }
 
     &[data-scope="dialog"][data-part="description"] + div > button:hover {
@@ -41,6 +46,7 @@
       max-width: 400px;
       border-radius: 0.375rem;
       background: var(--colors-bg-subtle);
+      border: 1px solid var(--colors-border-bold);
       padding: 1.25rem;
       position: relative;
       pointer-events: auto;
