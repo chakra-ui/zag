@@ -3,7 +3,6 @@ import { type Metadata } from "next"
 import { Wix_Madefor_Text } from "next/font/google"
 import siteConfig from "site.config"
 import "../styles/index.css"
-import "../styles/machines/index.css"
 import "../styles/prism.css"
 
 const wixMadeforText = Wix_Madefor_Text({

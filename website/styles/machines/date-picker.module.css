@@ -1,0 +1,137 @@
+@layer recipes {
+  .TableCellTrigger {
+    padding: 4px;
+    border-radius: 4px;
+    text-align: center;
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
+
+    &:hover {
+      background: rgba(126, 126, 126, 0.171);
+    }
+
+    &[data-focus] {
+      background: rgba(165, 151, 165, 0.085);
+      color: var(--colors-text-primary-bold);
+    }
+
+    &[data-outside-range] {
+      visibility: hidden;
+    }
+
+    &[data-selected] {
+      background: var(--colors-text-primary-bold) !important;
+      color: white !important;
+    }
+
+    &[data-in-range]:not([data-selected]) {
+      background: rgb(240, 219, 240);
+    }
+
+    &[data-today] {
+      color: var(--colors-text-primary-bold);
+    }
+
+    &[data-unavailable] {
+      text-decoration: line-through;
+      opacity: 0.5;
+    }
+
+    &[data-disabled] {
+      opacity: 0.5;
+      filter: grayscale(100%);
+    }
+  }
+
+  .Control {
+    display: flex;
+    gap: 10px;
+    margin-top: 20px;
+    margin-bottom: 16px;
+  }
+
+  .Input {
+    border-width: 1px;
+    height: 2.5rem;
+    padding-right: 1.25rem;
+    padding-left: 0.75rem;
+    background: var(--colors-bg-subtle);
+    border-color: var(--colors-border-bold);
+  }
+
+  .Trigger {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--colors-bg-subtle);
+    min-width: 40px;
+    border-width: 1px;
+    border-color: var(--colors-border-bold);
+
+    &:focus-visible {
+      outline: 2px solid var(--colors-bg-primary-bold);
+      outline-offset: 2px;
+    }
+  }
+
+  .Content {
+    filter: drop-shadow(0 1px 2px var(--colors-shadow));
+    isolation: isolate;
+    padding: 1rem;
+    background: var(--colors-bg-popover);
+    z-index: calc(var(--layer-index) + 50);
+  }
+
+  .Table {
+    min-width: 240px;
+    width: 100%;
+    border-collapse: collapse;
+  }
+
+  .ViewTrigger {
+    border: 0;
+    padding: 4px 20px;
+    border-radius: 4px;
+    flex: 1;
+
+    &:hover {
+      background: var(--colors-bg-bold);
+    }
+
+    &:focus-visible {
+      outline: 2px solid var(--colors-bg-primary-bold);
+      outline-offset: 2px;
+    }
+  }
+
+  .PrevTrigger,
+  .NextTrigger {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 4px;
+    width: 32px;
+    height: 32px;
+
+    &:hover {
+      background: var(--colors-bg-bold);
+    }
+
+    &:focus-visible {
+      outline: 2px solid var(--colors-bg-primary-bold);
+      outline-offset: 2px;
+    }
+  }
+
+  .ViewControl {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+    gap: 10px;
+
+    & svg {
+      font-size: 1.5rem;
+    }
+  }
+}

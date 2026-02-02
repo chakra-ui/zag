@@ -1,0 +1,138 @@
+@layer recipes {
+  .Container {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+
+    & h3 {
+      margin-bottom: 0.5rem;
+      font-weight: 500;
+      font-size: 0.875rem;
+    }
+  }
+
+  .Viewport {
+    position: relative;
+    overflow: hidden;
+    touch-action: none;
+    user-select: none;
+    min-width: 500px;
+    min-height: 280px;
+  }
+
+  .Selection {
+    position: absolute;
+    box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.5);
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    cursor: move;
+    touch-action: none;
+
+    &[data-shape="circle"] {
+      border-radius: 50%;
+    }
+  }
+
+  .Image {
+    display: block;
+    pointer-events: none;
+    user-select: none;
+    background: var(--colors-bg);
+  }
+
+  .Handle {
+    position: absolute;
+    width: 30px;
+    height: 30px;
+    touch-action: none;
+    cursor: grab;
+
+    & > div {
+      width: 10px;
+      height: 10px;
+      background: #fff;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+    }
+
+    &[data-position="top-left"] {
+      top: 0;
+      left: 0;
+      transform: translate(-50%, -50%);
+      cursor: nwse-resize;
+    }
+
+    &[data-position="top"] {
+      top: 0;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      cursor: ns-resize;
+    }
+
+    &[data-position="top-right"] {
+      top: 0;
+      right: 0;
+      transform: translate(50%, -50%);
+      cursor: nesw-resize;
+    }
+
+    &[data-position="right"] {
+      top: 50%;
+      right: 0;
+      transform: translate(50%, -50%);
+      cursor: ew-resize;
+    }
+
+    &[data-position="bottom-right"] {
+      bottom: 0;
+      right: 0;
+      transform: translate(50%, 50%);
+      cursor: nwse-resize;
+    }
+
+    &[data-position="bottom"] {
+      bottom: 0;
+      left: 50%;
+      transform: translate(-50%, 50%);
+      cursor: ns-resize;
+    }
+
+    &[data-position="bottom-left"] {
+      bottom: 0;
+      left: 0;
+      transform: translate(-50%, 50%);
+      cursor: nesw-resize;
+    }
+
+    &[data-position="left"] {
+      top: 50%;
+      left: 0;
+      transform: translate(-50%, -50%);
+      cursor: ew-resize;
+    }
+  }
+
+  .PreviewButton {
+    margin-top: 1rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    cursor: pointer;
+    font-weight: 500;
+    padding-inline: 1rem;
+    padding-block: 0.5rem;
+    background: var(--colors-bg-primary-subtle);
+    color: #ffffff;
+    border: none;
+  }
+
+  .PreviewImage {
+    width: 100px;
+    height: 100px;
+    object-fit: contain;
+    border: 1px solid var(--colors-border-subtle);
+  }
+}

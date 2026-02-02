@@ -2,6 +2,7 @@ import * as select from "@zag-js/select"
 import { normalizeProps, useMachine, Portal } from "@zag-js/react"
 import { useId } from "react"
 import { MdCheck } from "react-icons/md"
+import styles from "../styles/machines/select.module.css"
 
 interface SelectProps extends Omit<select.Props, "id" | "collection"> {}
 
@@ -17,20 +18,31 @@ export function Select(props: SelectProps) {
   const api = select.connect(service, normalizeProps)
 
   return (
-    <div {...api.getRootProps()}>
-      <label {...api.getLabelProps()}>Label</label>
+    <div className={styles.Root} {...api.getRootProps()}>
+      <label className={styles.Label} {...api.getLabelProps()}>
+        Label
+      </label>
       <div {...api.getControlProps()}>
-        <button {...api.getTriggerProps()}>
+        <button className={styles.Trigger} {...api.getTriggerProps()}>
           <span>{api.valueAsString || "Select option"}</span>
           <CaretIcon />
         </button>
       </div>
       <Portal>
         <div {...api.getPositionerProps()}>
-          <ul {...api.getContentProps()}>
+          <ul className={styles.Content} {...api.getContentProps()}>
             {data.map((item) => (
-              <li key={item.value} {...api.getItemProps({ item })}>
-                <span {...api.getItemTextProps({ item })}>{item.label}</span>
+              <li
+                className={styles.Item}
+                key={item.value}
+                {...api.getItemProps({ item })}
+              >
+                <span
+                  className={styles.ItemText}
+                  {...api.getItemTextProps({ item })}
+                >
+                  {item.label}
+                </span>
                 <span {...api.getItemIndicatorProps({ item })}>
                   <MdCheck />
                 </span>

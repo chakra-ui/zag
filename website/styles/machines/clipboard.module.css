@@ -1,0 +1,50 @@
+@layer recipes {
+  .Root {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    margin-top: -24px;
+  }
+
+  .Label {
+    font-size: 0.875rem;
+    font-weight: 500;
+  }
+
+  .Control {
+    display: flex;
+    align-items: stretch;
+    flex-direction: row;
+    gap: 0.5rem;
+  }
+
+  .Input {
+    border-width: 1px;
+    height: 2.5rem;
+    padding-right: 1.25rem;
+    padding-left: 0.75rem;
+    background: var(--colors-bg-subtle);
+  }
+
+  .Trigger {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    text-align: start;
+    cursor: pointer;
+    font-weight: 500;
+    padding-block: 0.25rem;
+    background: var(--colors-bg-subtle);
+    border-width: 1px;
+    padding-inline: 0.75rem;
+
+    &:hover {
+      background: var(--colors-bg-bold);
+    }
+
+    &:focus-visible {
+      outline: 2px solid var(--colors-bg-primary-bold);
+      outline-offset: 2px;
+    }
+  }
+}

@@ -3,6 +3,7 @@ import { normalizeProps, useMachine } from "@zag-js/react"
 import { useId } from "react"
 import { HiX } from "react-icons/hi"
 import { Presence } from "../components/presence"
+import styles from "../styles/machines/bottom-sheet.module.css"
 
 type BottomSheetProps = Omit<bottomSheet.Props, "id">
 
@@ -16,14 +17,21 @@ export function BottomSheet(props: BottomSheetProps) {
 
   return (
     <>
-      <button {...api.getTriggerProps()}>Open Bottom Sheet</button>
-      <Presence {...api.getBackdropProps()} />
-      <Presence {...api.getContentProps()}>
-        <div {...api.getGrabberProps()}>
-          <div {...api.getGrabberIndicatorProps()} />
+      <button className={styles.Trigger} {...api.getTriggerProps()}>
+        Open Bottom Sheet
+      </button>
+      <Presence className={styles.Backdrop} {...api.getBackdropProps()} />
+      <Presence className={styles.Content} {...api.getContentProps()}>
+        <div className={styles.Grabber} {...api.getGrabberProps()}>
+          <div
+            className={styles.GrabberIndicator}
+            {...api.getGrabberIndicatorProps()}
+          />
         </div>
-        <div>
-          <div {...api.getTitleProps()}>Add New Contact</div>
+        <div className={styles.ContentInner}>
+          <div className={styles.Title} {...api.getTitleProps()}>
+            Add New Contact
+          </div>
           <label>
             <span>Name</span>
             <input type="text" />
@@ -32,12 +40,12 @@ export function BottomSheet(props: BottomSheetProps) {
             <span>Email</span>
             <input type="email" />
           </label>
-          <div>
+          <div className={styles.ContentButtons}>
             <button>Add Contact</button>
             <button onClick={() => api.setOpen(false)}>Cancel</button>
           </div>
         </div>
-        <button {...api.getCloseTriggerProps()}>
+        <button className={styles.CloseTrigger} {...api.getCloseTriggerProps()}>
           <HiX />
         </button>
       </Presence>

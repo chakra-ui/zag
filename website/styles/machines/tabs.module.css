@@ -1,0 +1,37 @@
+@layer recipes {
+  .Root {
+    width: 100%;
+    max-width: 400px;
+    border-width: 1px;
+    border-color: var(--colors-border-bold);
+    font-size: 0.875rem;
+  }
+
+  .List {
+    background: var(--colors-bg-subtle);
+    border-bottom-width: 1px;
+  }
+
+  .Trigger {
+    padding-inline: 1rem;
+    padding-block: 0.5rem;
+    border-bottom-width: 2px;
+    border-bottom-color: transparent;
+
+    &:focus-visible {
+      outline: 2px solid var(--colors-bg-primary-bold);
+      outline-offset: -2px;
+    }
+
+    &[data-selected] {
+      color: var(--colors-text-primary-bold);
+      border-bottom-color: var(--colors-border-primary-subtle);
+    }
+  }
+
+  .Content {
+    padding: 1rem;
+    background: var(--colors-bg-subtle);
+    min-height: 20px;
+  }
+}

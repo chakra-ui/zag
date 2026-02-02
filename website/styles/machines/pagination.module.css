@@ -1,0 +1,70 @@
+@layer recipes {
+  .List {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.25rem;
+    list-style-type: none;
+  }
+
+  .PrevTrigger,
+  .NextTrigger,
+  .Item {
+    padding-inline: 0.75rem;
+    height: 2rem;
+    text-align: center;
+    margin: auto 4px;
+    color: var(--colors-text-bold);
+    display: flex;
+    box-sizing: border-box;
+    align-items: center;
+    letter-spacing: 0.01071em;
+    line-height: 1.43;
+    font-size: 13px;
+    user-select: none;
+    text-decoration: none;
+    border: solid 1px;
+    border-color: var(--colors-border-bold);
+    background: var(--colors-bg-subtle);
+    cursor: pointer;
+
+    &:hover {
+      background: var(--colors-bg-bold);
+    }
+
+    &:focus {
+      outline: 2px solid var(--colors-bg-primary-bold);
+      outline-offset: 2px;
+    }
+
+    &[data-selected] {
+      background: #38a169;
+      color: #ffffff;
+    }
+
+    &[data-disabled] {
+      opacity: 0.5;
+
+      background: none;
+      filter: grayscale(100%);
+    }
+  }
+
+  .PrevTrigger,
+  .NextTrigger {
+    & span {
+      border: 0px;
+      clip: rect(0, 0, 0, 0);
+      width: 1px;
+      height: 1px;
+      margin: -1px;
+      padding: 0px;
+      overflow: hidden;
+      white-space: nowrap;
+      position: absolute;
+    }
+  }
+
+  .Ellipsis {
+    cursor: default;
+  }
+}

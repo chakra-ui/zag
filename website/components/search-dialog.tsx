@@ -96,12 +96,14 @@ export function Search() {
                         className={css({
                           px: "3",
                           py: "1",
-                          _selected: { bg: "bg.primary.bold" },
+                          _selected: {
+                            bg: "bg.primary.bold",
+                            color: "text.inverse",
+                          },
                           display: "flex",
                           alignItems: "center",
                           minHeight: "14",
                           textDecoration: "none",
-                          _hover: { bg: "bg.subtle" },
                         })}
                         {...combobox_api.getItemProps({ item })}
                       >

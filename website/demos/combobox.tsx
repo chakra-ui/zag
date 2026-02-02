@@ -2,6 +2,7 @@ import * as combobox from "@zag-js/combobox"
 import { Portal, mergeProps, normalizeProps, useMachine } from "@zag-js/react"
 import { useId, useMemo, useState } from "react"
 import { createFilter } from "@zag-js/i18n-utils"
+import styles from "../styles/machines/combobox.module.css"
 
 interface ComboboxProps extends Omit<combobox.Props, "id" | "collection"> {}
 
@@ -43,10 +44,12 @@ export function Combobox(props: ComboboxProps) {
 
   return (
     <>
-      <div {...api.getRootProps()}>
-        <label {...api.getLabelProps()}>Nationality</label>
-        <div {...api.getControlProps()}>
-          <input {...api.getInputProps()} />
+      <div className={styles.Root} {...api.getRootProps()}>
+        <label className={styles.Label} {...api.getLabelProps()}>
+          Nationality
+        </label>
+        <div className={styles.Control} {...api.getControlProps()}>
+          <input className={styles.Input} {...api.getInputProps()} />
           <button {...triggerProps}>
             <CaretIcon />
           </button>
@@ -55,9 +58,10 @@ export function Combobox(props: ComboboxProps) {
       <Portal>
         <div {...api.getPositionerProps()}>
           {options.length > 0 && (
-            <ul {...api.getContentProps()}>
+            <ul className={styles.Content} {...api.getContentProps()}>
               {options.map((item, index) => (
                 <li
+                  className={styles.Item}
                   key={`${item.code}:${index}`}
                   {...api.getItemProps({ item })}
                 >

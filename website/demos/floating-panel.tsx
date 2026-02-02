@@ -2,6 +2,7 @@ import * as floating from "@zag-js/floating-panel"
 import { normalizeProps, useMachine, Portal } from "@zag-js/react"
 import { LuArrowDownLeft, LuMaximize2, LuMinus, LuX } from "react-icons/lu"
 import { useId } from "react"
+import styles from "../styles/machines/floating-panel.module.css"
 
 interface FloatingPanelProps extends Omit<floating.Props, "id"> {}
 
@@ -15,15 +16,19 @@ export function FloatingPanel(props: FloatingPanelProps) {
 
   return (
     <>
-      <button {...api.getTriggerProps()}>Open Panel</button>
+      <button className={styles.Trigger} {...api.getTriggerProps()}>
+        Open Panel
+      </button>
       {api.open && (
         <Portal>
-          <div {...api.getPositionerProps()}>
-            <div {...api.getContentProps()}>
+          <div className={styles.Positioner} {...api.getPositionerProps()}>
+            <div className={styles.Content} {...api.getContentProps()}>
               <div {...api.getDragTriggerProps()}>
-                <div {...api.getHeaderProps()}>
-                  <p {...api.getTitleProps()}>Variables</p>
-                  <div {...api.getControlProps()}>
+                <div className={styles.Header} {...api.getHeaderProps()}>
+                  <p className={styles.Title} {...api.getTitleProps()}>
+                    Variables
+                  </p>
+                  <div className={styles.Control} {...api.getControlProps()}>
                     <button
                       {...api.getStageTriggerProps({ stage: "minimized" })}
                     >
@@ -43,7 +48,7 @@ export function FloatingPanel(props: FloatingPanelProps) {
                   </div>
                 </div>
               </div>
-              <div {...api.getBodyProps()}>
+              <div className={styles.Body} {...api.getBodyProps()}>
                 <label>
                   <span>Font Family</span>
                   <select defaultValue="sans-serif">
@@ -59,14 +64,38 @@ export function FloatingPanel(props: FloatingPanelProps) {
                 </label>
               </div>
 
-              <div {...api.getResizeTriggerProps({ axis: "n" })} />
-              <div {...api.getResizeTriggerProps({ axis: "e" })} />
-              <div {...api.getResizeTriggerProps({ axis: "w" })} />
-              <div {...api.getResizeTriggerProps({ axis: "s" })} />
-              <div {...api.getResizeTriggerProps({ axis: "ne" })} />
-              <div {...api.getResizeTriggerProps({ axis: "se" })} />
-              <div {...api.getResizeTriggerProps({ axis: "sw" })} />
-              <div {...api.getResizeTriggerProps({ axis: "nw" })} />
+              <div
+                className={styles.ResizeTrigger}
+                {...api.getResizeTriggerProps({ axis: "n" })}
+              />
+              <div
+                className={styles.ResizeTrigger}
+                {...api.getResizeTriggerProps({ axis: "e" })}
+              />
+              <div
+                className={styles.ResizeTrigger}
+                {...api.getResizeTriggerProps({ axis: "w" })}
+              />
+              <div
+                className={styles.ResizeTrigger}
+                {...api.getResizeTriggerProps({ axis: "s" })}
+              />
+              <div
+                className={styles.ResizeTrigger}
+                {...api.getResizeTriggerProps({ axis: "ne" })}
+              />
+              <div
+                className={styles.ResizeTrigger}
+                {...api.getResizeTriggerProps({ axis: "se" })}
+              />
+              <div
+                className={styles.ResizeTrigger}
+                {...api.getResizeTriggerProps({ axis: "sw" })}
+              />
+              <div
+                className={styles.ResizeTrigger}
+                {...api.getResizeTriggerProps({ axis: "nw" })}
+              />
             </div>
           </div>
         </Portal>

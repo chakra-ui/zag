@@ -1,7 +1,6 @@
 "use client"
 
-import { useEffect, useState } from "react"
-import { usePathname } from "next/navigation"
+import { useSyncExternalStore } from "react"
 import { Accordion } from "./accordion"
 import { AngleSlider } from "./angle-slider"
 import { Avatar } from "./avatar"
@@ -43,18 +42,31 @@ import { Switch } from "./switch"
 import { Tabs } from "./tabs"
 import { TagsInput } from "./tags-input"
 
+// Prevents SSR to avoid hydration mismatch with useId()
+const emptySubscribe = () => () => {}
+function useIsClient() {
+  return useSyncExternalStore(
+    emptySubscribe,
+    () => true,
+    () => false,
+  )
+}
+
+import { ImSpinner3 } from "react-icons/im"
+import { css } from "styled-system/css"
+import { center } from "styled-system/patterns"
+import { Playground } from "../components/playground"
+import { BottomSheet } from "./bottom-sheet"
+import { FloatingPanel } from "./floating-panel"
+import { Listbox } from "./listbox"
+import { Marquee } from "./marquee"
+import { PasswordInput } from "./password-input"
 import { TimerCountdown } from "./timer-countdown"
 import { ToastGroup } from "./toast"
 import { ToggleGroup } from "./toggle-group"
 import { Tooltip } from "./tooltip"
 import { Tour } from "./tour"
 import { TreeView } from "./tree-view"
-import { Listbox } from "./listbox"
-import { Playground } from "../components/playground"
-import { FloatingPanel } from "./floating-panel"
-import { PasswordInput } from "./password-input"
-import { BottomSheet } from "./bottom-sheet"
-import { Marquee } from "./marquee"
 
 const components = {
   Accordion: () => (
@@ -555,15 +567,30 @@ const components = {
   ),
 }
 
-export function Showcase(props: { id: keyof typeof components }) {
-  const pathname = usePathname()
-  const [mountKey, setMountKey] = useState(0)
+export const Showcase = (props: { id: keyof typeof components }) => {
+  const isClient = useIsClient()
 
-  // Force remount when navigating (including back) so demos with portals/machines get a fresh instance
-  useEffect(() => {
-    setMountKey((k) => k + 1)
-  }, [pathname])
+  if (!isClient) {
+    return (
+      <div
+        className={center({
+          minHeight: "24em",
+          borderWidth: "1px",
+          my: "16",
+          gap: "2.5",
+        })}
+      >
+        <ImSpinner3
+          className={css({
+            boxSize: "4",
+            animation: "spin 0.75s linear infinite",
+          })}
+        />
+        Loading...
+      </div>
+    )
+  }
 
   const Component = components[props.id] ?? "span"
-  return <Component key={`${pathname}-${mountKey}`} />
+  return <Component />
 }
