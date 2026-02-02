@@ -1,6 +1,5 @@
 "use client"
 
-import { Annoucement } from "components/annoucement"
 import { CodeArea } from "components/code-area"
 import { Footer } from "components/footer"
 import {
@@ -63,7 +62,6 @@ export default function Home() {
       <Box as="header" position="relative">
         <Section>
           <Box pos="relative" maxW="4xl" pt={{ base: "16", md: "24" }}>
-            <Annoucement />
             <styled.h1 textStyle="display.2xl">
               UI components powered by Finite State Machines
             </styled.h1>
