@@ -1,4 +1,6 @@
-import type { DateFormatter, DateValue } from "@internationalized/date"
+import type { CalendarDate, CalendarDateTime, DateFormatter, ZonedDateTime } from "@internationalized/date"
+
+export type DateValue = CalendarDate | CalendarDateTime | ZonedDateTime
 
 export type DateGranularity = "day" | "hour" | "minute" | "second" | "year" | "month"
 export type DateAlignment = "start" | "end" | "center"

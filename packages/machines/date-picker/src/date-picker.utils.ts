@@ -1,5 +1,6 @@
-import { DateFormatter, type DateValue } from "@internationalized/date"
+import { DateFormatter } from "@internationalized/date"
 import { memo } from "@zag-js/core"
+import type { DateValue } from "@zag-js/date-utils"
 import { getDecadeRange } from "@zag-js/date-utils"
 import { clampValue, match } from "@zag-js/utils"
 import type { DateView, IntlTranslations, SelectionMode, VisibleRangeText } from "./date-picker.types"

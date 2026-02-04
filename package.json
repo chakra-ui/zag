@@ -73,7 +73,7 @@
     "@commitlint/cli": "20.4.1",
     "@commitlint/config-conventional": "20.4.1",
     "@eslint/eslintrc": "3.3.3",
-    "@internationalized/date": "3.10.1",
+    "@internationalized/date": "3.11.0",
     "@octokit/rest": "22.0.1",
     "@playwright/test": "1.58.1",
     "@swc/core": "1.15.11",

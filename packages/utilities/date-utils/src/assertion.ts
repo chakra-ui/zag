@@ -1,5 +1,5 @@
-import { type DateValue, isSameDay } from "@internationalized/date"
-import type { DateAvailableFn } from "./types"
+import { isSameDay } from "@internationalized/date"
+import type { DateAvailableFn, DateValue } from "./types"
 
 export function isDateEqual(dateA: DateValue | null | undefined, dateB?: DateValue | null) {
   if (dateA == null || dateB == null) return dateA === dateB

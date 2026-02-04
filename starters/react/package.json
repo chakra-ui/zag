@@ -9,7 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@internationalized/date": "3.10.1",
+    "@internationalized/date": "3.11.0",
     "@tanstack/react-virtual": "3.13.18",
     "@zag-js/accordion": "workspace:*",
     "@zag-js/anatomy": "workspace:*",

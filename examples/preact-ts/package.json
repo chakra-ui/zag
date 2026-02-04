@@ -8,7 +8,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@internationalized/date": "3.10.1",
+    "@internationalized/date": "3.11.0",
     "@zag-js/accordion": "workspace:*",
     "@zag-js/anatomy": "workspace:*",
     "@zag-js/anatomy-icons": "workspace:*",
