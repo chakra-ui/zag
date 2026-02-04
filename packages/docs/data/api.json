@@ -1595,6 +1595,10 @@
         "type": "(details: ViewChangeDetails) => void",
         "description": "Function called when the view changes."
       },
+      "onVisibleRangeChange": {
+        "type": "(details: VisibleRangeChangeDetails) => void",
+        "description": "Function called when the visible range changes."
+      },
       "onOpenChange": {
         "type": "(details: OpenChangeDetails) => void",
         "description": "Function called when the calendar opens or closes."
