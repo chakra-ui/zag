@@ -3712,6 +3712,31 @@ importers:
         specifier: 5.9.3
         version: 5.9.3
 
+  starters/svelte-kit:
+    dependencies:
+      '@zag-js/svelte':
+        specifier: workspace:*
+        version: link:../../packages/frameworks/svelte
+      '@zag-js/switch':
+        specifier: workspace:*
+        version: link:../../packages/machines/switch
+    devDependencies:
+      '@sveltejs/adapter-auto':
+        specifier: 7.0.0
+        version: 7.0.0(@sveltejs/kit@2.50.1(@sveltejs/vite-plugin-svelte@6.2.4(svelte@5.48.5)(vite@7.3.1(@types/node@25.2.0)(jiti@2.6.1)(lightningcss@1.30.2)(terser@5.46.0)(tsx@4.21.0)(yaml@2.8.2)))(svelte@5.48.5)(typescript@5.9.3)(vite@7.3.1(@types/node@25.2.0)(jiti@2.6.1)(lightningcss@1.30.2)(terser@5.46.0)(tsx@4.21.0)(yaml@2.8.2)))
+      '@sveltejs/kit':
+        specifier: 2.50.1
+        version: 2.50.1(@sveltejs/vite-plugin-svelte@6.2.4(svelte@5.48.5)(vite@7.3.1(@types/node@25.2.0)(jiti@2.6.1)(lightningcss@1.30.2)(terser@5.46.0)(tsx@4.21.0)(yaml@2.8.2)))(svelte@5.48.5)(typescript@5.9.3)(vite@7.3.1(@types/node@25.2.0)(jiti@2.6.1)(lightningcss@1.30.2)(terser@5.46.0)(tsx@4.21.0)(yaml@2.8.2))
+      '@sveltejs/vite-plugin-svelte':
+        specifier: 6.2.4
+        version: 6.2.4(svelte@5.48.5)(vite@7.3.1(@types/node@25.2.0)(jiti@2.6.1)(lightningcss@1.30.2)(terser@5.46.0)(tsx@4.21.0)(yaml@2.8.2))
+      svelte:
+        specifier: 5.48.5
+        version: 5.48.5
+      vite:
+        specifier: 7.3.1
+        version: 7.3.1(@types/node@25.2.0)(jiti@2.6.1)(lightningcss@1.30.2)(terser@5.46.0)(tsx@4.21.0)(yaml@2.8.2)
+
   website:
     dependencies:
       '@internationalized/date':

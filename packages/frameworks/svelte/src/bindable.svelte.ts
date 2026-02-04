@@ -41,7 +41,7 @@ export function bindable<T>(props: () => BindableParams<T>): Bindable<T> {
     get,
     set(val: T | ((prev: T) => T)) {
       const exec = props().sync ? flushSync : identity
-      exec(() => setValueFn(val))
+      untrack(() => exec(() => setValueFn(val)))
     },
     invoke(nextValue: T, prevValue: T) {
       props().onChange?.(nextValue, prevValue)
