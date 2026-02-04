@@ -30,7 +30,7 @@ export function connect<T extends PropTypes>(
   const scrubbing = state.matches("scrubbing")
 
   const empty = computed("isValueEmpty")
-  const invalid = computed("isOutOfRange") || !!prop("invalid")
+  const invalid = prop("invalid") !== undefined ? !!prop("invalid") : computed("isOutOfRange")
 
   const isIncrementDisabled = disabled || !computed("canIncrement") || readOnly
   const isDecrementDisabled = disabled || !computed("canDecrement") || readOnly
