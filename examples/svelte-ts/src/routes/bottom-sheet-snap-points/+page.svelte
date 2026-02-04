@@ -14,6 +14,7 @@
     bottomSheet.machine,
     controls.mergeProps<bottomSheet.Props>({
       id,
+      snapPoints: [0.25, "250px", 1],
     }),
   )
 

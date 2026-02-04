@@ -23,7 +23,7 @@
 <main class="bottom-sheet">
   <button {...api.getTriggerProps()}>Open</button>
   <Presence {...api.getBackdropProps()}></Presence>
-  <Presence {...api.getContentProps()}>
+  <Presence {...api.getContentProps({ draggable: false })}>
     <div {...api.getGrabberProps()}>
       <div {...api.getGrabberIndicatorProps()}></div>
     </div>
