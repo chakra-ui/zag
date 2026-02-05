@@ -39,14 +39,17 @@ export const machine = createMachine<TooltipSchema>({
 
   effects: ["trackFocusVisible", "trackStore"],
 
-  context: ({ bindable, prop }) => ({
+  context: ({ bindable, prop, scope }) => ({
     currentPlacement: bindable<Placement | undefined>(() => ({ defaultValue: undefined })),
     hasPointerMoveOpened: bindable<string | null>(() => ({ defaultValue: null })),
     triggerValue: bindable<string | null>(() => ({
       defaultValue: prop("defaultTriggerValue") ?? null,
       value: prop("triggerValue"),
       onChange(value) {
-        prop("onTriggerValueChange")?.({ value })
+        const onTriggerValueChange = prop("onTriggerValueChange")
+        if (!onTriggerValueChange) return
+        const triggerElement = dom.getActiveTriggerEl(scope, value)
+        onTriggerValueChange({ value, triggerElement })
       },
     })),
   }),

@@ -44,7 +44,7 @@ export const machine = createMachine<MenuSchema>({
     return open ? "open" : "idle"
   },
 
-  context({ bindable, prop }) {
+  context({ bindable, prop, scope }) {
     return {
       suspendPointer: bindable<boolean>(() => ({
         defaultValue: false,
@@ -78,7 +78,10 @@ export const machine = createMachine<MenuSchema>({
         defaultValue: prop("defaultTriggerValue") ?? null,
         value: prop("triggerValue"),
         onChange(value) {
-          prop("onTriggerValueChange")?.({ value })
+          const onTriggerValueChange = prop("onTriggerValueChange")
+          if (!onTriggerValueChange) return
+          const triggerElement = dom.getActiveTriggerEl(scope, value)
+          onTriggerValueChange({ value, triggerElement })
         },
       })),
     }

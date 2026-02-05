@@ -25,7 +25,7 @@ export const machine = createMachine<HoverCardSchema>({
     return open ? "open" : "closed"
   },
 
-  context({ prop, bindable }) {
+  context({ prop, bindable, scope }) {
     return {
       open: bindable<boolean>(() => ({
         defaultValue: prop("defaultOpen"),
@@ -41,7 +41,10 @@ export const machine = createMachine<HoverCardSchema>({
         defaultValue: prop("defaultTriggerValue") ?? null,
         value: prop("triggerValue"),
         onChange(value) {
-          prop("onTriggerValueChange")?.({ value })
+          const onTriggerValueChange = prop("onTriggerValueChange")
+          if (!onTriggerValueChange) return
+          const triggerElement = dom.getActiveTriggerEl(scope, value)
+          onTriggerValueChange({ value, triggerElement })
         },
       })),
     }

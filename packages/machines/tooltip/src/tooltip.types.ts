@@ -19,6 +19,10 @@ export interface TriggerValueChangeDetails {
    * The value of the trigger
    */
   value: string | null
+  /**
+   * The trigger element
+   */
+  triggerElement: HTMLElement | null
 }
 
 /* -----------------------------------------------------------------------------

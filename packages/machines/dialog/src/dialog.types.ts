@@ -10,11 +10,15 @@ export interface OpenChangeDetails {
   open: boolean
 }
 
-export interface ActiveTriggerChangeDetails {
+export interface TriggerValueChangeDetails {
   /**
    * The value of the trigger that activated the dialog
    */
   value: string | null
+  /**
+   * The trigger element
+   */
+  triggerElement: HTMLElement | null
 }
 
 /* -----------------------------------------------------------------------------
@@ -109,7 +113,7 @@ export interface DialogProps
   /**
    * Function to call when the active trigger changes
    */
-  onTriggerValueChange?: ((details: ActiveTriggerChangeDetails) => void) | undefined
+  onTriggerValueChange?: ((details: TriggerValueChangeDetails) => void) | undefined
 }
 
 type PropsWithDefault =

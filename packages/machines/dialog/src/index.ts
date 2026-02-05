@@ -10,6 +10,6 @@ export type {
   DialogService as Service,
   ElementIds,
   OpenChangeDetails,
-  ActiveTriggerChangeDetails,
+  TriggerValueChangeDetails,
   TriggerProps,
 } from "./dialog.types"

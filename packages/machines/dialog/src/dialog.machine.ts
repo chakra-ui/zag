@@ -30,7 +30,7 @@ export const machine = createMachine<DialogSchema>({
     return open ? "open" : "closed"
   },
 
-  context({ bindable, prop }) {
+  context({ bindable, prop, scope }) {
     return {
       rendered: bindable<{ title: boolean; description: boolean }>(() => ({
         defaultValue: { title: true, description: true },
@@ -39,7 +39,10 @@ export const machine = createMachine<DialogSchema>({
         defaultValue: prop("defaultTriggerValue") ?? null,
         value: prop("triggerValue"),
         onChange(value) {
-          prop("onTriggerValueChange")?.({ value })
+          const onTriggerValueChange = prop("onTriggerValueChange")
+          if (!onTriggerValueChange) return
+          const triggerElement = dom.getActiveTriggerEl(scope, value)
+          onTriggerValueChange({ value, triggerElement })
         },
       })),
     }
@@ -175,6 +178,10 @@ export const machine = createMachine<DialogSchema>({
               const activeTriggerEl = dom.getActiveTriggerEl(scope, triggerValue)
               if (activeTriggerEl) return activeTriggerEl
             }
+
+            // Fallback: try first available trigger
+            const fallbackTrigger = dom.getTriggerEls(scope)[0]
+            if (fallbackTrigger) return fallbackTrigger
 
             // Otherwise, use default behavior
             return el

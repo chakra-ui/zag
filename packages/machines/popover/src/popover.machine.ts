@@ -29,7 +29,7 @@ export const machine = createMachine<PopoverSchema>({
     return open ? "open" : "closed"
   },
 
-  context({ bindable, prop }) {
+  context({ bindable, prop, scope }) {
     return {
       currentPlacement: bindable<Placement | undefined>(() => ({
         defaultValue: undefined,
@@ -41,7 +41,10 @@ export const machine = createMachine<PopoverSchema>({
         defaultValue: prop("defaultTriggerValue") ?? null,
         value: prop("triggerValue"),
         onChange(value) {
-          prop("onTriggerValueChange")?.({ value })
+          const onTriggerValueChange = prop("onTriggerValueChange")
+          if (!onTriggerValueChange) return
+          const triggerElement = dom.getActiveTriggerEl(scope, value)
+          onTriggerValueChange({ value, triggerElement })
         },
       })),
     }
