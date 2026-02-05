@@ -1,5 +1,23 @@
 # @zag-js/number-input
 
+## 1.34.0
+
+### Patch Changes
+
+- [`ec0f37a`](https://github.com/chakra-ui/zag/commit/ec0f37aee54b79e548d0315bf9532151d4720055) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix issue where explicit `invalid` prop was ignored when value is
+  out of range.
+
+  The `invalid` prop now takes precedence over the internal `isOutOfRange` computation, allowing consumers to fully
+  control the error state (e.g., when using form libraries like `react-hook-form`).
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.34.0
+  - @zag-js/core@1.34.0
+  - @zag-js/types@1.34.0
+  - @zag-js/utils@1.34.0
+  - @zag-js/dom-query@1.34.0
+
 ## 1.33.1
 
 ### Patch Changes
