@@ -3,6 +3,7 @@ import * as navigationMenu from "@zag-js/navigation-menu"
 import { useId } from "react"
 import { BiChevronDown } from "react-icons/bi"
 import { Presence } from "../components/presence"
+import styles from "../styles/machines/navigation-menu.module.css"
 
 const solutionLinks = [
   {
@@ -51,10 +52,13 @@ export function NavigationMenu(props: NavigationMenuProps) {
   const api = navigationMenu.connect(service, normalizeProps)
 
   return (
-    <nav className="navigation-menu" {...api.getRootProps()}>
-      <div {...api.getListProps()}>
+    <nav className={styles.Root} {...api.getRootProps()}>
+      <div className={styles.List} {...api.getListProps()}>
         <div {...api.getItemProps({ value: "products" })}>
-          <button {...api.getTriggerProps({ value: "products" })}>
+          <button
+            className={styles.Trigger}
+            {...api.getTriggerProps({ value: "products" })}
+          >
             Products
             <BiChevronDown />
           </button>
@@ -63,7 +67,10 @@ export function NavigationMenu(props: NavigationMenuProps) {
         </div>
 
         <div {...api.getItemProps({ value: "learn" })}>
-          <button {...api.getTriggerProps({ value: "learn" })}>
+          <button
+            className={styles.Trigger}
+            {...api.getTriggerProps({ value: "learn" })}
+          >
             Learn
             <BiChevronDown />
           </button>
@@ -73,6 +80,7 @@ export function NavigationMenu(props: NavigationMenuProps) {
 
         <div {...api.getItemProps({ value: "github" })}>
           <a
+            className={styles.Link}
             {...api.getLinkProps({ value: "github" })}
             href="https://github.com/chakra-ui/zag"
             target="_blank"
@@ -81,20 +89,35 @@ export function NavigationMenu(props: NavigationMenuProps) {
           </a>
         </div>
 
-        <Presence keepMounted {...api.getIndicatorProps()}>
-          <div {...api.getArrowProps()} />
+        <Presence
+          className={styles.Indicator}
+          keepMounted
+          {...api.getIndicatorProps()}
+        >
+          <div className={styles.Arrow} {...api.getArrowProps()} />
         </Presence>
       </div>
 
-      <div {...api.getViewportPositionerProps()}>
-        <Presence keepMounted {...api.getViewportProps()}>
-          <Presence keepMounted {...api.getContentProps({ value: "products" })}>
-            <ul className="grid-link-list">
+      <div
+        className={styles.ViewportPositioner}
+        {...api.getViewportPositionerProps()}
+      >
+        <Presence
+          className={styles.Viewport}
+          keepMounted
+          {...api.getViewportProps()}
+        >
+          <Presence
+            className={styles.Content}
+            keepMounted
+            {...api.getContentProps({ value: "products" })}
+          >
+            <ul className={styles.GridLinkList}>
               {solutionLinks.map((item) => (
                 <li key={item.title}>
                   <a
                     href={item.href}
-                    className="link-card"
+                    className={styles.LinkCard}
                     {...api.getLinkProps({ value: "products" })}
                   >
                     <h3>{item.title}</h3>
@@ -105,13 +128,17 @@ export function NavigationMenu(props: NavigationMenuProps) {
             </ul>
           </Presence>
 
-          <Presence keepMounted {...api.getContentProps({ value: "learn" })}>
-            <ul className="flex-link-list">
+          <Presence
+            className={styles.Content}
+            keepMounted
+            {...api.getContentProps({ value: "learn" })}
+          >
+            <ul className={styles.FlexLinkList}>
               {learnLinks.map((item) => (
                 <li key={item.title}>
                   <a
                     href={item.href}
-                    className="link-card"
+                    className={styles.LinkCard}
                     {...api.getLinkProps({ value: "learn" })}
                   >
                     <h3>{item.title}</h3>

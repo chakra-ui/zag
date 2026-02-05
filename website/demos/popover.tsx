@@ -3,6 +3,7 @@ import { normalizeProps, useMachine, Portal } from "@zag-js/react"
 import * as React from "react"
 import { HiX } from "react-icons/hi"
 import { useId } from "react"
+import styles from "../styles/machines/popover.module.css"
 
 interface PopoverProps extends Omit<popover.Props, "id"> {}
 
@@ -17,16 +18,18 @@ export function Popover(props: PopoverProps) {
   const Wrapper = api.portalled ? Portal : React.Fragment
 
   return (
-    <div>
-      <button {...api.getTriggerProps()}>Click me</button>
+    <>
+      <button className={styles.Trigger} {...api.getTriggerProps()}>
+        Click me
+      </button>
       <Wrapper>
         <div {...api.getPositionerProps()}>
-          <div {...api.getContentProps()}>
-            <div {...api.getArrowProps()}>
-              <div {...api.getArrowTipProps()} />
+          <div className={styles.Content} {...api.getContentProps()}>
+            <div className={styles.Arrow} {...api.getArrowProps()}>
+              <div className={styles.ArrowTip} {...api.getArrowTipProps()} />
             </div>
 
-            <div>
+            <div className={styles.Body}>
               <div {...api.getTitleProps()}>
                 <b>About Tabs</b>
               </div>
@@ -34,14 +37,17 @@ export function Popover(props: PopoverProps) {
                 Tabs are used to organize and group content into sections that
                 the user can navigate between.
               </div>
-              <button>Action Button</button>
+              <button className={styles.ActionButton}>Action Button</button>
             </div>
-            <button {...api.getCloseTriggerProps()}>
+            <button
+              className={styles.CloseTrigger}
+              {...api.getCloseTriggerProps()}
+            >
               <HiX />
             </button>
           </div>
         </div>
       </Wrapper>
-    </div>
+    </>
   )
 }

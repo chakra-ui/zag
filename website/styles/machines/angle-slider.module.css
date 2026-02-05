@@ -1,0 +1,97 @@
+@layer recipes {
+  .Root {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+    margin-top: -24px;
+    align-items: center;
+  }
+
+  .Control {
+    --size: 120px;
+    --thumb-size: 40px;
+    --thumb-indicator-size: min(var(--thumb-size), calc(var(--size) / 2));
+    width: var(--size);
+    height: var(--size);
+    border-radius: 100%;
+    background-color: var(--colors-bg-bold);
+    border: 1px solid var(--colors-border-bold);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    user-select: none;
+    position: relative;
+
+    &[data-disabled] {
+      opacity: 0.5;
+      filter: grayscale(100%);
+    }
+  }
+
+  .Thumb {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    --thumb-width: 3px;
+    left: calc(50% - var(--thumb-width) / 2);
+    height: 100%;
+    width: var(--thumb-width);
+    outline: 0;
+
+    &::before {
+      content: "";
+      position: absolute;
+      right: 0;
+      top: 0;
+      height: var(--thumb-indicator-size);
+      background: var(--colors-border-primary-subtle);
+      width: var(--thumb-width);
+    }
+  }
+
+  .Label {
+    font-size: 0.875rem;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .MarkerGroup {
+    position: absolute;
+    inset: 1px;
+    border-radius: var(--size);
+    pointer-events: none;
+  }
+
+  .Marker {
+    width: 2px;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: calc(50% - 1px);
+    --marker-color: var(--marker-color, var(--colors-border-primary-subtle));
+
+    &::before {
+      content: "";
+      position: absolute;
+      top: calc(var(--thumb-size) / 3);
+      left: 0.5px;
+      width: 1px;
+      height: calc(var(--thumb-size) / 1.5);
+      transform: translate(-50%, -50%);
+      background-color: var(--marker-color);
+    }
+
+    &[data-state="under-value"],
+    &[data-state="at-value"] {
+      --marker-color: var(--colors-border-primary-subtle);
+    }
+
+    &[data-state="over-value"] {
+      --marker-color: var(--colors-border-bold);
+    }
+  }
+}

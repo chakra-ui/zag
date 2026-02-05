@@ -60,6 +60,10 @@ have one in mind. -->
 | Browser          |            |
 | Operating System |            |
 
+## 🧢 Your Company/Team
+
+<!-- Optional: Which company or team is this bug impacting? (e.g., Acme/Dashboard) -->
+
 ## 📝 Additional information
 
 <!-- Use this section to provide any additional information you might have,

@@ -49,7 +49,7 @@ const OpenInStackblitz = (props: { name: string; defaultProps: any }) => {
       fontSize="sm"
       px="2"
       py="1"
-      shadow="rgba(255, 255, 255, 0.14) 0px 0px 0px 1px inset"
+      shadow="inset 0 0 0 1px var(--colors-white-alpha-300)"
       onClick={() => {
         openInStackblitz(name, defaultProps)
       }}
@@ -88,25 +88,13 @@ export function Playground<T extends object>(props: PlaygroundProps<T>) {
       pos="relative"
       minHeight="24em"
       my="16"
-      bg="bg.code.block"
       borderColor="border-subtle"
     >
       <Box pos="absolute" bottom="2" right="2">
         <OpenInStackblitz name={componentName} defaultProps={defaultProps} />
       </Box>
 
-      <Flex
-        align="flex-start"
-        justify="center"
-        py="20"
-        flex="1"
-        bgImage="radial-gradient(circle,var(--colors-gray-200) 1px, transparent 1px);"
-        bgSize="16px 16px"
-        _dark={{
-          bgImage:
-            "radial-gradient(circle,var(--colors-gray-700) 1px, transparent 1px);",
-        }}
-      >
+      <Flex align="center" justify="center" py="20" flex="1">
         <Component {...(state as T)} />
       </Flex>
 

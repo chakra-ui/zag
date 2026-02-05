@@ -1341,9 +1341,29 @@
         "type": "boolean",
         "description": "Whether the date picker is invalid"
       },
+      "readOnly": {
+        "type": "boolean",
+        "description": "Whether the date picker is read-only"
+      },
       "inline": {
         "type": "boolean",
         "description": "Whether the date picker is rendered inline"
+      },
+      "numOfMonths": {
+        "type": "number",
+        "description": "The number of months to display"
+      },
+      "selectionMode": {
+        "type": "SelectionMode",
+        "description": "The selection mode (single, multiple, or range)"
+      },
+      "maxSelectedDates": {
+        "type": "number",
+        "description": "The maximum number of dates that can be selected (only for multiple selection mode)."
+      },
+      "isMaxSelected": {
+        "type": "boolean",
+        "description": "Whether the maximum number of selected dates has been reached."
       },
       "view": {
         "type": "DateView",
@@ -1417,12 +1437,16 @@
         "type": "(values: DateValue[]) => void",
         "description": "Sets the selected date to the given date."
       },
+      "setTime": {
+        "type": "(time: Time, index?: number) => void",
+        "description": "Sets the time for a specific date value.\nConverts CalendarDate to CalendarDateTime if needed."
+      },
       "setFocusedValue": {
         "type": "(value: DateValue) => void",
         "description": "Sets the focused date to the given date."
       },
       "clearValue": {
-        "type": "VoidFunction",
+        "type": "(options?: { focus?: boolean; }) => void",
         "description": "Clears the selected date(s)."
       },
       "setOpen": {
@@ -1543,6 +1567,11 @@
         "description": "Whether the calendar should close after the date selection is complete.\nThis is ignored when the selection mode is `multiple`.",
         "defaultValue": "true"
       },
+      "openOnClick": {
+        "type": "boolean",
+        "description": "Whether to open the calendar when the input is clicked.",
+        "defaultValue": "false"
+      },
       "value": {
         "type": "DateValue[]",
         "description": "The controlled selected date(s)."
@@ -1583,6 +1612,10 @@
         "type": "(details: ViewChangeDetails) => void",
         "description": "Function called when the view changes."
       },
+      "onVisibleRangeChange": {
+        "type": "(details: VisibleRangeChangeDetails) => void",
+        "description": "Function called when the visible range changes."
+      },
       "onOpenChange": {
         "type": "(details: OpenChangeDetails) => void",
         "description": "Function called when the calendar opens or closes."
@@ -1595,6 +1628,10 @@
         "type": "SelectionMode",
         "description": "The selection mode of the calendar.\n- `single` - only one date can be selected\n- `multiple` - multiple dates can be selected\n- `range` - a range of dates can be selected",
         "defaultValue": "\"single\""
+      },
+      "maxSelectedDates": {
+        "type": "number",
+        "description": "The maximum number of dates that can be selected.\nThis is only applicable when `selectionMode` is `multiple`."
       },
       "format": {
         "type": "(date: LocaleDetails) => string",
@@ -1948,9 +1985,21 @@
         "type": "boolean",
         "description": "Whether the file input is disabled"
       },
+      "readOnly": {
+        "type": "boolean",
+        "description": "Whether the file input is in read-only mode"
+      },
       "transforming": {
         "type": "boolean",
         "description": "Whether files are currently being transformed via `transformFiles`"
+      },
+      "maxFilesReached": {
+        "type": "boolean",
+        "description": "Whether the maximum number of files has been reached"
+      },
+      "remainingFiles": {
+        "type": "number",
+        "description": "The number of files that can still be added"
       },
       "openFilePicker": {
         "type": "VoidFunction",
@@ -1999,7 +2048,7 @@
         "description": "The name of the underlying file input"
       },
       "ids": {
-        "type": "Partial<{ root: string; dropzone: string; hiddenInput: string; trigger: string; label: string; item: (id: string) => string; itemName: (id: string) => string; itemSizeText: (id: string) => string; itemPreview: (id: string) => string; }>",
+        "type": "Partial<{ root: string; dropzone: string; hiddenInput: string; trigger: string; label: string; item: (id: string) => string; itemName: (id: string) => string; itemSizeText: (id: string) => string; itemPreview: (id: string) => string; itemDeleteTrigger: (id: string) => string; }>",
         "description": "The ids of the elements. Useful for composition."
       },
       "translations": {
@@ -2078,6 +2127,10 @@
       "invalid": {
         "type": "boolean",
         "description": "Whether the file input is invalid"
+      },
+      "readOnly": {
+        "type": "boolean",
+        "description": "Whether the file input is read-only"
       },
       "transformFiles": {
         "type": "(files: File[]) => Promise<File[]>",
@@ -3260,6 +3313,10 @@
         "type": "(details: FocusChangeDetails) => void",
         "description": "Function invoked when the number input is focused"
       },
+      "onValueCommit": {
+        "type": "(details: ValueChangeDetails) => void",
+        "description": "Function invoked when the value is committed (when the input is blurred or the Enter key is pressed)"
+      },
       "spinOnPress": {
         "type": "boolean",
         "description": "Whether to spin the value when the increment/decrement button is pressed",
@@ -3350,7 +3407,7 @@
     },
     "context": {
       "ids": {
-        "type": "Partial<{ root: string; ellipsis: (index: number) => string; prevTrigger: string; nextTrigger: string; item: (page: number) => string; }>",
+        "type": "Partial<{ root: string; ellipsis: (index: number) => string; firstTrigger: string; prevTrigger: string; nextTrigger: string; lastTrigger: string; item: (page: number) => string; }>",
         "description": "The ids of the elements in the accordion. Useful for composition."
       },
       "translations": {
@@ -3373,6 +3430,11 @@
       "siblingCount": {
         "type": "number",
         "description": "Number of pages to show beside active page",
+        "defaultValue": "1"
+      },
+      "boundaryCount": {
+        "type": "number",
+        "description": "Number of pages to show at the beginning and end",
         "defaultValue": "1"
       },
       "page": {
@@ -4003,9 +4065,17 @@
         "type": "boolean",
         "description": "If `true`, the radio group will be disabled"
       },
+      "invalid": {
+        "type": "boolean",
+        "description": "If `true`, the radio group is marked as invalid."
+      },
+      "required": {
+        "type": "boolean",
+        "description": "If `true`, the radio group is marked as required."
+      },
       "readOnly": {
         "type": "boolean",
-        "description": "Whether the checkbox is read-only"
+        "description": "Whether the radio group is read-only"
       },
       "onValueChange": {
         "type": "(details: ValueChangeDetails) => void",
@@ -4670,6 +4740,11 @@
         "type": "{ width: number; height: number; }",
         "description": "The slider thumbs dimensions"
       },
+      "thumbCollisionBehavior": {
+        "type": "\"none\" | \"push\" | \"swap\"",
+        "description": "Controls how thumbs behave when they collide during pointer interactions.\n- `none` (default): Thumbs cannot move past each other; excess movement is ignored.\n- `push`: Thumbs push each other without restoring their previous positions when dragged back.\n- `swap`: Thumbs swap places when dragged past each other.",
+        "defaultValue": "\"none\""
+      },
       "dir": {
         "type": "\"ltr\" | \"rtl\"",
         "description": "The document's text/writing direction.",
@@ -4843,6 +4918,14 @@
         "type": "boolean",
         "description": "Whether the stepper is completed."
       },
+      "isStepValid": {
+        "type": "(index: number) => boolean",
+        "description": "Check if a specific step is valid (lazy evaluation)"
+      },
+      "isStepSkippable": {
+        "type": "(index: number) => boolean",
+        "description": "Check if a specific step can be skipped"
+      },
       "setStep": {
         "type": "(step: number) => void",
         "description": "Function to set the value of the stepper."
@@ -4897,6 +4980,20 @@
       "count": {
         "type": "number",
         "description": "The total number of steps"
+      },
+      "isStepValid": {
+        "type": "(index: number) => boolean",
+        "description": "Whether a step is valid. Invalid steps block forward navigation in linear mode.",
+        "defaultValue": "() => true"
+      },
+      "isStepSkippable": {
+        "type": "(index: number) => boolean",
+        "description": "Whether a step can be skipped during navigation.\nSkippable steps are bypassed when using next/prev.",
+        "defaultValue": "() => false"
+      },
+      "onStepInvalid": {
+        "type": "(details: StepInvalidDetails) => void",
+        "description": "Called when navigation is blocked due to an invalid step."
       },
       "dir": {
         "type": "\"ltr\" | \"rtl\"",
@@ -5274,6 +5371,10 @@
       "form": {
         "type": "string",
         "description": "The associate form of the underlying input element."
+      },
+      "placeholder": {
+        "type": "string",
+        "description": "The placeholder text for the input"
       },
       "dir": {
         "type": "\"ltr\" | \"rtl\"",
@@ -5894,8 +5995,8 @@
         "description": "Returns the checked details of branch and leaf nodes"
       },
       "getVisibleNodes": {
-        "type": "() => V[]",
-        "description": "Returns the visible nodes as a flat array of nodes and their index path"
+        "type": "() => VisibleNode<V>[]",
+        "description": "Returns the visible nodes as a flat array of nodes and their index path.\nUseful for rendering virtualized tree views."
       },
       "expand": {
         "type": "(value?: string[]) => void",
@@ -6037,6 +6138,10 @@
       "loadChildren": {
         "type": "(details: LoadChildrenDetails<T>) => Promise<T[]>",
         "description": "Function to load children for a node asynchronously.\nWhen provided, branches will wait for this promise to resolve before expanding."
+      },
+      "scrollToIndexFn": {
+        "type": "(details: ScrollToIndexDetails<T>) => void",
+        "description": "Function to scroll to a specific index.\nUseful for virtualized tree views."
       },
       "dir": {
         "type": "\"ltr\" | \"rtl\"",

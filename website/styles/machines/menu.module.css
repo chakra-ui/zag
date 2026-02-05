@@ -1,0 +1,61 @@
+@layer recipes {
+  .Trigger {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    text-align: start;
+    cursor: pointer;
+    font-weight: 500;
+    padding-inline: 1rem;
+    padding-block: 0.25rem;
+    background: var(--colors-bg-primary-subtle);
+    color: #ffffff;
+
+    &:focus-visible {
+      outline: 2px solid var(--colors-bg-primary-bold);
+      outline-offset: 2px;
+    }
+
+    &:hover {
+      background: var(--colors-bg-primary-bold);
+    }
+  }
+
+  .ContextTrigger {
+    background: var(--colors-bg-subtle);
+    padding: 1rem;
+    border-width: 2px;
+    border-style: dashed;
+    border-color: var(--colors-border-bold);
+  }
+
+  .Indicator {
+    margin-left: 0.5rem;
+  }
+
+  .Content {
+    background: var(--colors-bg-popover);
+    width: 12rem;
+    padding: 0.5rem;
+    isolation: isolate;
+    list-style-type: none;
+    filter: drop-shadow(0 1px 2px var(--colors-shadow));
+    z-index: calc(var(--layer-index) + 50);
+
+    &:is(:focus, [data-focus]) {
+      outline: none;
+    }
+  }
+
+  .Item,
+  .TriggerItem {
+    padding-inline: 0.5rem;
+    padding-block: 0.25rem;
+    cursor: pointer;
+
+    &[data-highlighted] {
+      background: var(--colors-bg-primary-bold);
+      color: #ffffff;
+    }
+  }
+}

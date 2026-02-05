@@ -459,10 +459,10 @@ export const machine = createMachine<MenuSchema>({
         ITEM_POINTERMOVE: [
           {
             guard: not("isPointerSuspended"),
-            actions: ["setHighlightedItem", "focusMenu"],
+            actions: ["setHighlightedItem", "focusMenu", "closeSiblingMenus"],
           },
           {
-            actions: ["setLastHighlightedItem"],
+            actions: ["setLastHighlightedItem", "closeSiblingMenus"],
           },
         ],
         ITEM_POINTERLEAVE: {
@@ -498,6 +498,7 @@ export const machine = createMachine<MenuSchema>({
         },
         TRIGGER_POINTERLEAVE: {
           target: "closing",
+          actions: ["setIntentPolygon"],
         },
         ITEM_POINTERDOWN: {
           actions: ["setHighlightedItem"],
@@ -540,13 +541,13 @@ export const machine = createMachine<MenuSchema>({
       waitForOpenDelay({ send }) {
         const timer = setTimeout(() => {
           send({ type: "DELAY.OPEN" })
-        }, 100)
+        }, 200)
         return () => clearTimeout(timer)
       },
       waitForCloseDelay({ send }) {
         const timer = setTimeout(() => {
           send({ type: "DELAY.CLOSE" })
-        }, 300)
+        }, 100)
         return () => clearTimeout(timer)
       },
       waitForLongPress({ send }) {
@@ -832,6 +833,25 @@ export const machine = createMachine<MenuSchema>({
         const children = refs.get("children")
         children[event.id] = event.value
         refs.set("children", children)
+      },
+      closeSiblingMenus({ refs, event, scope }) {
+        const target = event.target
+        if (!dom.isTriggerItem(target)) return
+        const hoveredChildId = target?.getAttribute("data-uid")
+        const children = refs.get("children")
+        for (const id in children) {
+          if (id === hoveredChildId) continue
+          const child = children[id]
+          // Don't close if pointer is within the child's intent polygon (user moving toward submenu)
+          const intentPolygon = child.context.get("intentPolygon")
+          if (intentPolygon && event.point && isPointInPolygon(intentPolygon, event.point)) {
+            continue
+          }
+          // Focus parent menu before closing to prevent focus from escaping
+          // (fixes issue where submenus with focusable elements cause parent to close)
+          dom.getContentEl(scope)?.focus({ preventScroll: true })
+          child.send({ type: "CLOSE" })
+        }
       },
       closeRootMenu({ refs }) {
         closeRootMenu({ parent: refs.get("parent") })

@@ -1,4 +1,5 @@
-import type { DateDuration, DateValue } from "@internationalized/date"
+import type { DateDuration } from "@internationalized/date"
+import type { DateValue } from "./types"
 
 export function getUnitDuration(duration: DateDuration) {
   let clone = { ...duration }

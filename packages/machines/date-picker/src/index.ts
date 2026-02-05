@@ -34,6 +34,7 @@ export type {
   TableCellProps,
   TableCellState,
   TableProps,
+  Time,
   ValueChangeDetails,
   ViewChangeDetails,
   ViewProps,

@@ -5,6 +5,7 @@
   import StateVisualizer from "$lib/components/state-visualizer.svelte"
   import { useControls } from "$lib/use-controls.svelte"
   import { bottomSheetControls } from "@zag-js/shared"
+  import Presence from "$lib/components/presence.svelte"
 
   const controls = useControls(bottomSheetControls)
 
@@ -21,21 +22,21 @@
 
 <main class="bottom-sheet">
   <button {...api.getTriggerProps()}>Open</button>
-  <div {...api.getBackdropProps()}></div>
-  <div {...api.getContentProps()}>
+  <Presence {...api.getBackdropProps()}></Presence>
+  <Presence {...api.getContentProps()}>
     <div {...api.getGrabberProps()}>
       <div {...api.getGrabberIndicatorProps()}></div>
     </div>
-    <div>Bottom Sheet</div>
+    <div {...api.getTitleProps()}>Bottom Sheet</div>
     <div data-no-drag="true">No drag area</div>
     <div class="scrollable">
       {#each Array.from({ length: 100 }) as _, index}
         <div>Item {index}</div>
       {/each}
     </div>
-  </div>
+  </Presence>
 </main>
 
 <Toolbar {controls}>
-  <StateVisualizer state={service} />
+  <StateVisualizer state={service} context={["dragOffset", "activeSnapPoint", "resolvedActiveSnapPoint"]} />
 </Toolbar>

@@ -1,6 +1,6 @@
 {
   "name": "@zag-js/react",
-  "version": "1.33.0",
+  "version": "1.33.1",
   "description": "The react wrapper for zag",
   "keywords": [
     "ui-machines",
@@ -34,10 +34,10 @@
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "@types/jsdom": "^27.0.0",
-    "react": "19.2.3",
-    "react-dom": "19.2.3",
+    "react": "19.2.4",
+    "react-dom": "19.2.4",
     "clean-package": "2.2.0",
-    "@testing-library/react": "^16.3.1",
+    "@testing-library/react": "^16.3.2",
     "@testing-library/jest-dom": "^6.9.1",
     "@vitejs/plugin-react": "^5.1.2",
     "jsdom": "^27.4.0"

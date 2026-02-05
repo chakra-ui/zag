@@ -1,6 +1,7 @@
 import * as marquee from "@zag-js/marquee"
 import { normalizeProps, useMachine } from "@zag-js/react"
 import { useId } from "react"
+import styles from "../styles/machines/marquee.module.css"
 
 const logos = [
   { name: "Apple", logo: "🍎" },
@@ -23,24 +24,32 @@ export function Marquee(props: MarqueeProps) {
 
   const api = marquee.connect(service, normalizeProps)
 
+  const isVertical = api.orientation === "vertical"
+  const startSide = isVertical ? "top" : "start"
+  const endSide = isVertical ? "bottom" : "end"
+
   return (
-    <div {...api.getRootProps()}>
-      <div {...api.getEdgeProps({ side: "start" })} />
+    <div className={styles.Root} {...api.getRootProps()}>
+      <div className={styles.Edge} {...api.getEdgeProps({ side: startSide })} />
 
       <div {...api.getViewportProps()}>
         {Array.from({ length: api.contentCount }).map((_, index) => (
-          <div key={index} {...api.getContentProps({ index })}>
+          <div
+            className={styles.Content}
+            key={index}
+            {...api.getContentProps({ index })}
+          >
             {logos.map((item, i) => (
-              <div key={i} {...api.getItemProps()}>
-                <span className="marquee-logo">{item.logo}</span>
-                <span className="marquee-name">{item.name}</span>
+              <div className={styles.Item} key={i} {...api.getItemProps()}>
+                <span className={styles.Logo}>{item.logo}</span>
+                <span className={styles.Name}>{item.name}</span>
               </div>
             ))}
           </div>
         ))}
       </div>
 
-      <div {...api.getEdgeProps({ side: "end" })} />
+      <div className={styles.Edge} {...api.getEdgeProps({ side: endSide })} />
     </div>
   )
 }

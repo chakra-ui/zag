@@ -473,7 +473,8 @@
       "data-part": "root",
       "data-state": "\"open\" | \"closed\"",
       "data-disabled": "Present when disabled",
-      "data-readonly": "Present when read-only"
+      "data-readonly": "Present when read-only",
+      "data-empty": "Present when no value is selected"
     },
     "Label": {
       "data-scope": "date-picker",
@@ -486,7 +487,8 @@
     "Control": {
       "data-scope": "date-picker",
       "data-part": "control",
-      "data-disabled": "Present when disabled"
+      "data-disabled": "Present when disabled",
+      "data-placeholder-shown": "Present when placeholder is shown"
     },
     "Content": {
       "data-scope": "date-picker",
@@ -599,7 +601,8 @@
       "data-scope": "date-picker",
       "data-part": "trigger",
       "data-placement": "The placement of the trigger",
-      "data-state": "\"open\" | \"closed\""
+      "data-state": "\"open\" | \"closed\"",
+      "data-placeholder-shown": "Present when placeholder is shown"
     },
     "View": {
       "data-scope": "date-picker",
@@ -621,6 +624,7 @@
       "data-part": "input",
       "data-index": "The index of the item",
       "data-state": "\"open\" | \"closed\"",
+      "data-placeholder-shown": "Present when placeholder is shown",
       "data-invalid": "Present when invalid"
     }
   },
