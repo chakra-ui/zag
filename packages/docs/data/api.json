@@ -640,6 +640,217 @@
       }
     }
   },
+  "cascade-select": {
+    "api": {
+      "collection": {
+        "type": "TreeCollection<V>",
+        "description": "The tree collection data"
+      },
+      "open": {
+        "type": "boolean",
+        "description": "Whether the cascade-select is open"
+      },
+      "focused": {
+        "type": "boolean",
+        "description": "Whether the cascade-select is focused"
+      },
+      "multiple": {
+        "type": "boolean",
+        "description": "Whether the cascade-select allows multiple selections"
+      },
+      "disabled": {
+        "type": "boolean",
+        "description": "Whether the cascade-select is disabled"
+      },
+      "highlightedValue": {
+        "type": "string[]",
+        "description": "The value of the highlighted item"
+      },
+      "highlightedItem": {
+        "type": "V[]",
+        "description": "The highlighted item"
+      },
+      "selectedItems": {
+        "type": "V[][]",
+        "description": "The selected items"
+      },
+      "hasSelectedItems": {
+        "type": "boolean",
+        "description": "Whether there's a selected option"
+      },
+      "value": {
+        "type": "string[][]",
+        "description": "The current value of the cascade-select"
+      },
+      "valueAsString": {
+        "type": "string",
+        "description": "The current value as text"
+      },
+      "focus": {
+        "type": "{ (): void; (): void; }",
+        "description": "Function to focus on the select input"
+      },
+      "reposition": {
+        "type": "(options?: Partial<PositioningOptions>) => void",
+        "description": "Function to set the positioning options of the cascade-select"
+      },
+      "setOpen": {
+        "type": "(open: boolean) => void",
+        "description": "Function to open the cascade-select"
+      },
+      "highlightValue": {
+        "type": "(value: string) => void",
+        "description": "Function to highlight a value"
+      },
+      "selectValue": {
+        "type": "(value: string[]) => void",
+        "description": "Function to select a value"
+      },
+      "setValue": {
+        "type": "(value: string[][]) => void",
+        "description": "Function to set the value"
+      },
+      "clearValue": {
+        "type": "(value?: string[]) => void",
+        "description": "Function to clear the value"
+      },
+      "getItemState": {
+        "type": "(props: ItemProps<V>) => ItemState<V>",
+        "description": "Returns the state of a cascade-select item"
+      }
+    },
+    "context": {
+      "collection": {
+        "type": "TreeCollection<T>",
+        "description": "The tree collection data"
+      },
+      "ids": {
+        "type": "Partial<{ root: string; label: string; control: string; trigger: string; indicator: string; clearTrigger: string; positioner: string; content: string; hiddenInput: string; list(value: number): string; item(value: string): string; }>",
+        "description": "The ids of the cascade-select elements. Useful for composition."
+      },
+      "name": {
+        "type": "string",
+        "description": "The name attribute of the underlying input element"
+      },
+      "form": {
+        "type": "string",
+        "description": "The form attribute of the underlying input element"
+      },
+      "value": {
+        "type": "string[][]",
+        "description": "The controlled value of the cascade-select"
+      },
+      "defaultValue": {
+        "type": "string[][]",
+        "description": "The initial value of the cascade-select when rendered.\nUse when you don't need to control the value."
+      },
+      "highlightedValue": {
+        "type": "string[]",
+        "description": "The controlled highlighted value of the cascade-select"
+      },
+      "defaultHighlightedValue": {
+        "type": "string[]",
+        "description": "The initial highlighted value of the cascade-select when rendered."
+      },
+      "multiple": {
+        "type": "boolean",
+        "description": "Whether to allow multiple selections",
+        "defaultValue": "false"
+      },
+      "open": {
+        "type": "boolean",
+        "description": "The controlled open state of the cascade-select"
+      },
+      "defaultOpen": {
+        "type": "boolean",
+        "description": "The initial open state of the cascade-select when rendered.\nUse when you don't need to control the open state."
+      },
+      "highlightTrigger": {
+        "type": "\"click\" | \"hover\"",
+        "description": "What triggers highlighting of items",
+        "defaultValue": "\"click\""
+      },
+      "closeOnSelect": {
+        "type": "boolean",
+        "description": "Whether the cascade-select should close when an item is selected",
+        "defaultValue": "true"
+      },
+      "loopFocus": {
+        "type": "boolean",
+        "description": "Whether the cascade-select should loop focus when navigating with keyboard",
+        "defaultValue": "false"
+      },
+      "disabled": {
+        "type": "boolean",
+        "description": "Whether the cascade-select is disabled"
+      },
+      "readOnly": {
+        "type": "boolean",
+        "description": "Whether the cascade-select is read-only"
+      },
+      "required": {
+        "type": "boolean",
+        "description": "Whether the cascade-select is required"
+      },
+      "invalid": {
+        "type": "boolean",
+        "description": "Whether the cascade-select is invalid"
+      },
+      "positioning": {
+        "type": "PositioningOptions",
+        "description": "The positioning options for the cascade-select content"
+      },
+      "scrollToIndexFn": {
+        "type": "(details: ScrollToIndexDetails) => void",
+        "description": "Function to scroll to a specific index in a list"
+      },
+      "formatValue": {
+        "type": "(selectedItems: T[][]) => string",
+        "description": "Function to format the display value"
+      },
+      "onValueChange": {
+        "type": "(details: ValueChangeDetails<T>) => void",
+        "description": "Called when the value changes"
+      },
+      "onHighlightChange": {
+        "type": "(details: HighlightChangeDetails<T>) => void",
+        "description": "Called when the highlighted value changes"
+      },
+      "onOpenChange": {
+        "type": "(details: OpenChangeDetails) => void",
+        "description": "Called when the open state changes"
+      },
+      "allowParentSelection": {
+        "type": "boolean",
+        "description": "Whether parent (branch) items can be selectable"
+      },
+      "dir": {
+        "type": "\"ltr\" | \"rtl\"",
+        "description": "The document's text/writing direction.",
+        "defaultValue": "\"ltr\""
+      },
+      "id": {
+        "type": "string",
+        "description": "The unique identifier of the machine."
+      },
+      "getRootNode": {
+        "type": "() => ShadowRoot | Node | Document",
+        "description": "A root node to correctly resolve document in custom environments. E.x.: Iframes, Electron."
+      },
+      "onPointerDownOutside": {
+        "type": "(event: PointerDownOutsideEvent) => void",
+        "description": "Function called when the pointer is pressed down outside the component"
+      },
+      "onFocusOutside": {
+        "type": "(event: FocusOutsideEvent) => void",
+        "description": "Function called when the focus is moved outside the component"
+      },
+      "onInteractOutside": {
+        "type": "(event: InteractOutsideEvent) => void",
+        "description": "Function called when an interaction happens outside the component"
+      }
+    }
+  },
   "checkbox": {
     "api": {
       "checked": {

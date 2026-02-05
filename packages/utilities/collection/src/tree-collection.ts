@@ -135,11 +135,49 @@ export class TreeCollection<T = TreeNode> {
       .map(({ value }) => value)
   }
 
-  getIndexPath = (value: string): IndexPath | undefined => {
-    return findIndexPath(this.rootNode, {
-      getChildren: this.getNodeChildren,
-      predicate: (node) => this.getNodeValue(node) === value,
-    })
+  /**
+   * Get the index path for a value or value path.
+   * @param value - A single value string to find in the tree
+   * @returns The index path to the node, or undefined if not found
+   */
+  getIndexPath(value: string): IndexPath | undefined
+  /**
+   * Get the index path for a value path (array of values representing ancestors).
+   * @param valuePath - An array of values representing the path from root to target
+   * @returns The index path to the node
+   */
+  getIndexPath(valuePath: string[]): IndexPath
+  getIndexPath(valueOrValuePath: string | string[]): IndexPath | undefined {
+    if (Array.isArray(valueOrValuePath)) {
+      // Handle value path (array of strings)
+      if (valueOrValuePath.length === 0) return []
+
+      const indexPath: IndexPath = []
+      let currentChildren = this.getNodeChildren(this.rootNode)
+
+      for (let i = 0; i < valueOrValuePath.length; i++) {
+        const currentValue = valueOrValuePath[i]
+        const matchingChildIndex = currentChildren.findIndex((child) => this.getNodeValue(child) === currentValue)
+
+        if (matchingChildIndex === -1) break
+
+        indexPath.push(matchingChildIndex)
+
+        // Only get children if we're not at the last element
+        if (i < valueOrValuePath.length - 1) {
+          const currentNode = currentChildren[matchingChildIndex]
+          currentChildren = this.getNodeChildren(currentNode)
+        }
+      }
+
+      return indexPath
+    } else {
+      // Handle single value (string)
+      return findIndexPath(this.rootNode, {
+        getChildren: this.getNodeChildren,
+        predicate: (node) => this.getNodeValue(node) === valueOrValuePath,
+      })
+    }
   }
 
   getValue = (indexPath: IndexPath): string | undefined => {

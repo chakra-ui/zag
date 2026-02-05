@@ -173,6 +173,9 @@ importers:
       '@zag-js/carousel':
         specifier: workspace:*
         version: link:../../packages/machines/carousel
+      '@zag-js/cascade-select':
+        specifier: workspace:*
+        version: link:../../packages/machines/cascade-select
       '@zag-js/checkbox':
         specifier: workspace:*
         version: link:../../packages/machines/checkbox
@@ -2150,6 +2153,40 @@ importers:
       '@zag-js/scroll-snap':
         specifier: workspace:*
         version: link:../../utilities/scroll-snap
+      '@zag-js/types':
+        specifier: workspace:*
+        version: link:../../types
+      '@zag-js/utils':
+        specifier: workspace:*
+        version: link:../../utilities/core
+    devDependencies:
+      clean-package:
+        specifier: 2.2.0
+        version: 2.2.0
+
+  packages/machines/cascade-select:
+    dependencies:
+      '@zag-js/anatomy':
+        specifier: workspace:*
+        version: link:../../anatomy
+      '@zag-js/collection':
+        specifier: workspace:*
+        version: link:../../utilities/collection
+      '@zag-js/core':
+        specifier: workspace:*
+        version: link:../../core
+      '@zag-js/dismissable':
+        specifier: workspace:*
+        version: link:../../utilities/dismissable
+      '@zag-js/dom-query':
+        specifier: workspace:*
+        version: link:../../utilities/dom-query
+      '@zag-js/popper':
+        specifier: workspace:*
+        version: link:../../utilities/popper
+      '@zag-js/rect-utils':
+        specifier: workspace:*
+        version: link:../../utilities/rect
       '@zag-js/types':
         specifier: workspace:*
         version: link:../../types
