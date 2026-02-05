@@ -1,6 +1,7 @@
 import * as hoverCard from "@zag-js/hover-card"
 import { normalizeProps, Portal, useMachine } from "@zag-js/react"
 import { useId, useState } from "react"
+import { Presence } from "../components/presence"
 
 interface User {
   id: number
@@ -106,7 +107,7 @@ export default function HoverCardMultipleTrigger() {
 
       <Portal>
         <div {...api.getPositionerProps()}>
-          <div
+          <Presence
             {...api.getContentProps()}
             style={{
               backgroundColor: "white",
@@ -141,7 +142,7 @@ export default function HoverCardMultipleTrigger() {
                 </div>
               </>
             )}
-          </div>
+          </Presence>
         </div>
       </Portal>
     </main>

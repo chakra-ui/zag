@@ -70,7 +70,7 @@ export default function DialogMultipleTrigger() {
         </section>
 
         <Portal>
-          <div {...api.getBackdropProps()} />
+          <Presence {...api.getBackdropProps()} />
           <div {...api.getPositionerProps()}>
             <Presence {...api.getContentProps()}>
               {activeUser ? (

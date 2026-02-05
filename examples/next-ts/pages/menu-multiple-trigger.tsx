@@ -2,6 +2,7 @@ import * as menu from "@zag-js/menu"
 import { normalizeProps, Portal, useMachine } from "@zag-js/react"
 import { MoreVerticalIcon } from "lucide-react"
 import { useId, useState } from "react"
+import { Presence } from "../components/presence"
 
 interface Document {
   id: number
@@ -72,10 +73,10 @@ export default function MenuMultipleTrigger() {
 
       <Portal>
         <div {...api.getPositionerProps()}>
-          <div {...api.getContentProps()}>
+          <Presence {...api.getContentProps()}>
             <div {...api.getItemProps({ value: "rename" })}>Rename (value: {api.triggerValue})</div>
             <div {...api.getItemProps({ value: "delete" })}>Delete (value: {api.triggerValue})</div>
-          </div>
+          </Presence>
         </div>
       </Portal>
     </main>

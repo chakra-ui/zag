@@ -2,6 +2,7 @@ import * as popover from "@zag-js/popover"
 import { normalizeProps, Portal, useMachine } from "@zag-js/react"
 import { MoreVerticalIcon } from "lucide-react"
 import { useId, useState } from "react"
+import { Presence } from "../components/presence"
 
 interface Document {
   id: number
@@ -72,7 +73,7 @@ export default function PopoverMultipleTrigger() {
 
       <Portal>
         <div {...api.getPositionerProps()}>
-          <div
+          <Presence
             {...api.getContentProps()}
             style={{
               position: "relative",
@@ -126,7 +127,7 @@ export default function PopoverMultipleTrigger() {
                 ✕
               </button>
             </div>
-          </div>
+          </Presence>
         </div>
       </Portal>
     </main>
