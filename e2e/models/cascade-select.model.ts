@@ -32,7 +32,11 @@ export class CascadeSelectModel extends Model {
   }
 
   getItem = (text: string) => {
-    return this.page.locator(`[data-part=item]`).filter({ hasText: new RegExp(`^${text}$`) })
+    // Use item-text element for exact text matching to avoid partial matches
+    // e.g., "Africa" should not match "South Africa" or "Central African Republic"
+    return this.page.locator(`[data-part=item]`).filter({
+      has: this.page.locator(`[data-part=item-text]`, { hasText: new RegExp(`^${text}$`) }),
+    })
   }
 
   getList = (depth: number) => {

@@ -71,10 +71,17 @@ test.describe("navigation and lists", () => {
   })
 
   test("should show item indicators for parent items", async () => {
+    await I.controls.bool("allowParentSelection", true)
+    await I.controls.bool("multiple", true)
+    await I.controls.bool("closeOnSelect", false)
+
     await I.clickTrigger()
 
-    // Continents should have indicators
+    // Select parent items to show their indicators
+    await I.clickItem("Africa")
     await I.seeItemHasIndicator("Africa")
+
+    await I.clickItem("Asia")
     await I.seeItemHasIndicator("Asia")
 
     // Antarctica (disabled continent) should not have indicator

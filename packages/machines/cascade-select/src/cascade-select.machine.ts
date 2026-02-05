@@ -791,7 +791,9 @@ export const machine = createMachine<CascadeSelectSchema>({
           parentNode = collection.getParentNode(indexPath) ?? collection.rootNode
         }
 
-        const firstChild = collection.getFirstNode(parentNode)
+        // Get direct children only (not deep traversal) and find first non-disabled
+        const children = collection.getNodeChildren(parentNode)
+        const firstChild = children.find((child) => !collection.getNodeDisabled(child))
         if (!firstChild) return
 
         const firstValue = collection.getNodeValue(firstChild)
@@ -820,7 +822,9 @@ export const machine = createMachine<CascadeSelectSchema>({
           parentNode = collection.getParentNode(indexPath) ?? collection.rootNode
         }
 
-        const lastChild = collection.getLastNode(parentNode)
+        // Get direct children only (not deep traversal) and find last non-disabled
+        const children = collection.getNodeChildren(parentNode)
+        const lastChild = children.findLast((child) => !collection.getNodeDisabled(child))
         if (!lastChild) return
 
         const lastValue = collection.getNodeValue(lastChild)
