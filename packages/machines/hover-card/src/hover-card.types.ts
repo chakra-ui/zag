@@ -9,10 +9,6 @@ import type { CommonProperties, DirectionProperty, PropTypes, RequiredBy } from 
 
 export interface OpenChangeDetails {
   open: boolean
-  /**
-   * The value of the trigger that activated the hover card
-   */
-  triggerValue: string | null
 }
 
 export interface TriggerValueChangeDetails {

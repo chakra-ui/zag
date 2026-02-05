@@ -67,19 +67,21 @@ export function connect<P extends PropTypes>(
           send({ type: shouldSwitch ? "triggerValue.set" : "close", src: "trigger.click", value, triggerId })
         },
         onFocus(event) {
-          queueMicrotask(() => {
-            if (event.defaultPrevented) return
-            if (disabled) return
-            if (_event.src === "trigger.pointerdown") return
-            if (!isFocusVisible()) return
-            const shouldSwitch = open && !current
-            send({ type: shouldSwitch ? "triggerValue.set" : "open", src: "trigger.focus", value, triggerId })
-          })
+          if (event.defaultPrevented) return
+          if (disabled) return
+          if (!isFocusVisible()) return
+          const shouldSwitch = open && !current
+          send({ type: shouldSwitch ? "triggerValue.set" : "open", src: "trigger.focus", value, triggerId })
         },
         onBlur(event) {
           if (event.defaultPrevented) return
           if (disabled) return
-          if (id === store.get("id")) {
+          if (id !== store.get("id")) return
+          // Check if focus moved to another trigger in the same tooltip.
+          // If so, don't close - the focus handler will handle the switch.
+          const activeEl = event.relatedTarget ?? scope.getDoc().activeElement
+          const focusedAnotherTrigger = activeEl?.closest(`[data-ownedby="${scope.id}"]`) != null
+          if (!focusedAnotherTrigger) {
             send({ type: "close", src: "trigger.blur", value, triggerId })
           }
         },

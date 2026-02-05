@@ -58,4 +58,34 @@ test.describe("popover / multiple triggers", () => {
     await page.keyboard.press("Escape")
     await expect(page.locator(content)).toBeHidden()
   })
+
+  test("should open popover with Enter key", async ({ page }) => {
+    await page.locator(trigger(2)).focus()
+    await page.keyboard.press("Enter")
+    await expect(page.locator(content)).toBeVisible()
+    await expect(page.locator(content)).toContainText("Budget 2024.xlsx")
+  })
+
+  test("should open popover with Space key", async ({ page }) => {
+    await page.locator(trigger(3)).focus()
+    await page.keyboard.press(" ")
+    await expect(page.locator(content)).toBeVisible()
+    await expect(page.locator(content)).toContainText("Meeting Notes.docx")
+  })
+
+  test("should return focus to correct trigger after keyboard navigation", async ({ page }) => {
+    // Focus first trigger, tab to second, open with Enter
+    await page.locator(trigger(1)).focus()
+    await page.keyboard.press("Tab")
+    await expect(page.locator(trigger(2))).toBeFocused()
+
+    await page.keyboard.press("Enter")
+    await expect(page.locator(content)).toBeVisible()
+    await expect(page.locator(content)).toContainText("Budget 2024.xlsx")
+
+    // Close and verify focus returns to trigger 2
+    await page.keyboard.press("Escape")
+    await expect(page.locator(content)).toBeHidden()
+    await expect(page.locator(trigger(2))).toBeFocused()
+  })
 })

@@ -883,10 +883,10 @@ export const machine = createMachine<MenuSchema>({
       invokeOnOpen({ prop, context, event }) {
         const value = event.value ?? event.previousEvent?.value
         context.set("triggerValue", value)
-        prop("onOpenChange")?.({ open: true, triggerValue: context.get("triggerValue") })
+        prop("onOpenChange")?.({ open: true })
       },
-      invokeOnClose({ prop, context }) {
-        prop("onOpenChange")?.({ open: false, triggerValue: context.get("triggerValue") })
+      invokeOnClose({ prop }) {
+        prop("onOpenChange")?.({ open: false })
       },
       toggleVisibility({ prop, event, send }) {
         send({

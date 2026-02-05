@@ -14,10 +14,6 @@ export interface OpenChangeDetails {
    * Whether the menu is open
    */
   open: boolean
-  /**
-   * The value of the trigger that opened the menu
-   */
-  triggerValue: string | null
 }
 
 export interface TriggerValueChangeDetails {

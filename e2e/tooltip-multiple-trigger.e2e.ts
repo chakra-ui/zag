@@ -51,4 +51,34 @@ test.describe("tooltip / multiple triggers", () => {
     await page.mouse.move(0, 0)
     await expect(page.locator(content)).toBeHidden()
   })
+
+  test("should open tooltip on keyboard focus", async ({ page }) => {
+    // Focus trigger 2 directly, then Shift+Tab to trigger 1
+    // This establishes keyboard modality via Tab navigation
+    await page.locator(trigger(2)).focus()
+    await page.keyboard.press("Shift+Tab")
+    await expect(page.locator(trigger(1))).toBeFocused()
+    await expect(page.locator(content)).toBeVisible()
+    await expect(page.locator(content)).toContainText("Laptop")
+  })
+
+  test("should close tooltip on escape", async ({ page }) => {
+    await page.hover(trigger(1))
+    await expect(page.locator(content)).toBeVisible()
+
+    await page.keyboard.press("Escape")
+    await expect(page.locator(content)).toBeHidden()
+  })
+
+  test("should switch triggers on keyboard navigation", async ({ page }) => {
+    // Click first trigger then use Tab to navigate
+    await page.click(trigger(1))
+    await expect(page.locator(trigger(1))).toBeFocused()
+
+    // Tab to next trigger - tooltip should switch (trigger 2 = Mouse)
+    await page.keyboard.press("Tab")
+    await expect(page.locator(trigger(2))).toBeFocused()
+    await expect(page.locator(content)).toBeVisible()
+    await expect(page.locator(content)).toContainText("Mouse")
+  })
 })

@@ -84,11 +84,11 @@ export const machine = createMachine<TooltipSchema>({
         open: [
           {
             guard: "isOpenControlled",
-            actions: ["invokeOnOpen"],
+            actions: ["setTriggerValue", "invokeOnOpen"],
           },
           {
             target: "open",
-            actions: ["invokeOnOpen"],
+            actions: ["setTriggerValue", "invokeOnOpen"],
           },
         ],
         "pointer.leave": {
@@ -131,11 +131,11 @@ export const machine = createMachine<TooltipSchema>({
         open: [
           {
             guard: "isOpenControlled",
-            actions: ["invokeOnOpen"],
+            actions: ["setTriggerValue", "invokeOnOpen"],
           },
           {
             target: "open",
-            actions: ["invokeOnOpen"],
+            actions: ["setTriggerValue", "invokeOnOpen"],
           },
         ],
         "pointer.leave": [
@@ -203,6 +203,12 @@ export const machine = createMachine<TooltipSchema>({
         "positioning.set": {
           actions: ["reposition"],
         },
+        "triggerValue.set": {
+          // Transition to closing (which cleans up trackPositioning) then immediately back to open
+          // This re-creates the positioning effect with the new trigger
+          target: "closing",
+          actions: ["setTriggerValue", "immediateReopen"],
+        },
       },
     },
 
@@ -250,6 +256,9 @@ export const machine = createMachine<TooltipSchema>({
           target: "open",
           actions: ["setTriggerValue", "repositionImmediate"],
         },
+        reopen: {
+          target: "open",
+        },
         "content.pointer.move": {
           guard: "isInteractive",
           target: "open",
@@ -283,12 +292,12 @@ export const machine = createMachine<TooltipSchema>({
         }
       },
 
-      invokeOnOpen: ({ prop, context }) => {
-        prop("onOpenChange")?.({ open: true, triggerValue: context.get("triggerValue") })
+      invokeOnOpen: ({ prop }) => {
+        prop("onOpenChange")?.({ open: true })
       },
 
-      invokeOnClose: ({ prop, context }) => {
-        prop("onOpenChange")?.({ open: false, triggerValue: context.get("triggerValue") })
+      invokeOnClose: ({ prop }) => {
+        prop("onOpenChange")?.({ open: false })
       },
 
       closeIfDisabled: ({ prop, send }) => {
@@ -300,10 +309,9 @@ export const machine = createMachine<TooltipSchema>({
         if (event.type !== "positioning.set") return
         const getPositionerEl = () => dom.getPositionerEl(scope)
         const getTriggerEl = () => dom.getActiveTriggerEl(scope, context.get("triggerValue"))
-        return getPlacement(getTriggerEl, getPositionerEl, {
+        getPlacement(getTriggerEl, getPositionerEl, {
           ...prop("positioning"),
           ...event.options,
-          defer: true,
           listeners: false,
           onComplete(data) {
             context.set("currentPlacement", data.placement)
@@ -318,8 +326,6 @@ export const machine = createMachine<TooltipSchema>({
         const getTriggerEl = () => dom.getActiveTriggerEl(scope, triggerValue)
         return getPlacement(getTriggerEl, getPositionerEl, {
           ...prop("positioning"),
-          defer: true,
-          listeners: false,
           onComplete(data) {
             context.set("currentPlacement", data.placement)
           },
@@ -346,6 +352,13 @@ export const machine = createMachine<TooltipSchema>({
 
       setTriggerValue: ({ context, event }) => {
         context.set("triggerValue", event.value ?? null)
+      },
+
+      immediateReopen: ({ send }) => {
+        // Immediately transition back to open to re-create the positioning effect
+        queueMicrotask(() => {
+          send({ type: "reopen" })
+        })
       },
     },
     effects: {

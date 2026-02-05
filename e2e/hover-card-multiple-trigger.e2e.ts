@@ -51,4 +51,33 @@ test.describe("hover-card / multiple triggers", () => {
     await page.mouse.move(0, 0)
     await expect(page.locator(content)).toBeHidden()
   })
+
+  test("should open hover card on keyboard focus", async ({ page }) => {
+    // Focus trigger 2, then Shift+Tab to trigger 1 to establish keyboard modality
+    await page.locator(trigger(2)).focus()
+    await page.keyboard.press("Shift+Tab")
+    await expect(page.locator(trigger(1))).toBeFocused()
+    await expect(page.locator(content)).toBeVisible()
+    await expect(page.locator(content)).toContainText("Alice Johnson")
+  })
+
+  test("should close hover card on escape", async ({ page }) => {
+    await page.hover(trigger(1))
+    await expect(page.locator(content)).toBeVisible()
+
+    await page.keyboard.press("Escape")
+    await expect(page.locator(content)).toBeHidden()
+  })
+
+  test("should switch triggers on keyboard navigation", async ({ page }) => {
+    // Focus trigger 1 then Tab to trigger 2
+    await page.locator(trigger(1)).focus()
+    await expect(page.locator(trigger(1))).toBeFocused()
+
+    // Tab to next trigger - hover card should switch (trigger 2 = Bob Smith)
+    await page.keyboard.press("Tab")
+    await expect(page.locator(trigger(2))).toBeFocused()
+    await expect(page.locator(content)).toBeVisible()
+    await expect(page.locator(content)).toContainText("Bob Smith")
+  })
 })

@@ -8,10 +8,6 @@ import type { CommonProperties, DirectionProperty, PropTypes, RequiredBy } from 
 
 export interface OpenChangeDetails {
   open: boolean
-  /**
-   * The value of the trigger that opened the tooltip
-   */
-  triggerValue: string | null
 }
 
 export interface TriggerValueChangeDetails {

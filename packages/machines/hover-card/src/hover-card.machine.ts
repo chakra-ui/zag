@@ -282,11 +282,11 @@ export const machine = createMachine<HoverCardSchema>({
     },
 
     actions: {
-      invokeOnClose({ prop, context }) {
-        prop("onOpenChange")?.({ open: false, triggerValue: context.get("triggerValue") })
+      invokeOnClose({ prop }) {
+        prop("onOpenChange")?.({ open: false })
       },
-      invokeOnOpen({ prop, context }) {
-        prop("onOpenChange")?.({ open: true, triggerValue: context.get("triggerValue") })
+      invokeOnOpen({ prop }) {
+        prop("onOpenChange")?.({ open: true })
       },
       setIsPointer({ context }) {
         context.set("isPointer", true)
