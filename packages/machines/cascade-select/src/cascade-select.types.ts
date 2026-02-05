@@ -29,8 +29,6 @@ export interface ScrollToIndexDetails {
   depth: number
 }
 
-export type { TreeNode }
-
 export type ElementIds = Partial<{
   root: string
   label: string
@@ -339,4 +337,4 @@ export interface CascadeSelectApi<T extends PropTypes = PropTypes, V = TreeNode>
   getHiddenInputProps(): T["input"]
 }
 
-export type { IndexPath }
+export type { IndexPath, PositioningOptions, Placement, TreeNode }
