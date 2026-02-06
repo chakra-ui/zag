@@ -11,13 +11,24 @@ export interface OpenChangeDetails {
   open: boolean
 }
 
+export interface TriggerValueChangeDetails {
+  /**
+   * The value of the trigger
+   */
+  value: string | null
+  /**
+   * The trigger element
+   */
+  triggerElement: HTMLElement | null
+}
+
 /* -----------------------------------------------------------------------------
  * Machine context
  * -----------------------------------------------------------------------------*/
 
 export type ElementIds = Partial<{
   anchor: string
-  trigger: string
+  trigger: string | ((value?: string) => string)
   content: string
   title: string
   description: string
@@ -27,10 +38,7 @@ export type ElementIds = Partial<{
 }>
 
 export interface PopoverProps
-  extends CommonProperties,
-    DirectionProperty,
-    DismissableElementHandlers,
-    PersistentElementOptions {
+  extends CommonProperties, DirectionProperty, DismissableElementHandlers, PersistentElementOptions {
   /**
    * The ids of the elements in the popover. Useful for composition.
    */
@@ -90,6 +98,19 @@ export interface PopoverProps
    * Use when you don't need to control the open state of the popover.
    */
   defaultOpen?: boolean | undefined
+  /**
+   * The controlled trigger value
+   */
+  triggerValue?: string | null | undefined
+  /**
+   * The initial trigger value when rendered.
+   * Use when you don't need to control the trigger value.
+   */
+  defaultTriggerValue?: string | null | undefined
+  /**
+   * Function called when the trigger value changes.
+   */
+  onTriggerValueChange?: ((details: TriggerValueChangeDetails) => void) | undefined
 }
 
 type PropsWithDefault = "closeOnInteractOutside" | "closeOnEscape" | "modal" | "portalled" | "autoFocus" | "positioning"
@@ -113,6 +134,10 @@ interface PrivateContext {
    * The computed placement (maybe different from initial placement)
    */
   currentPlacement?: Placement | undefined
+  /**
+   * The trigger value
+   */
+  triggerValue: string | null
 }
 
 export interface PopoverSchema {
@@ -129,6 +154,17 @@ export interface PopoverSchema {
 export type PopoverService = Service<PopoverSchema>
 
 export type PopoverMachine = Machine<PopoverSchema>
+
+/* -----------------------------------------------------------------------------
+ * Component props
+ * -----------------------------------------------------------------------------*/
+
+export interface TriggerProps {
+  /**
+   * The value that identifies this specific trigger
+   */
+  value?: string
+}
 
 /* -----------------------------------------------------------------------------
  * Component API
@@ -148,6 +184,14 @@ export interface PopoverApi<T extends PropTypes = PropTypes> {
    */
   setOpen: (open: boolean) => void
   /**
+   * The trigger value
+   */
+  triggerValue: string | null
+  /**
+   * Function to set the trigger value
+   */
+  setTriggerValue: (value: string | null) => void
+  /**
    * Function to reposition the popover
    */
   reposition: (options?: Partial<PositioningOptions>) => void
@@ -155,7 +199,7 @@ export interface PopoverApi<T extends PropTypes = PropTypes> {
   getArrowProps: () => T["element"]
   getArrowTipProps: () => T["element"]
   getAnchorProps: () => T["element"]
-  getTriggerProps: () => T["button"]
+  getTriggerProps: (props?: TriggerProps) => T["button"]
   getIndicatorProps: () => T["element"]
   getPositionerProps: () => T["element"]
   getContentProps: () => T["element"]

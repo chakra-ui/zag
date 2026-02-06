@@ -54,9 +54,7 @@ export type ElementIds = Partial<{
 }>
 
 export interface SelectProps<T extends CollectionItem = CollectionItem>
-  extends DirectionProperty,
-    CommonProperties,
-    InteractOutsideHandlers {
+  extends DirectionProperty, CommonProperties, InteractOutsideHandlers {
   /**
    * The item collection
    */
