@@ -60,6 +60,7 @@ export const editableControls = defineControls({
 export const menuControls = defineControls({
   closeOnSelect: { type: "boolean", defaultValue: true },
   loopFocus: { type: "boolean", defaultValue: false },
+  modal: { type: "boolean", defaultValue: false },
 })
 
 export const hoverCardControls = defineControls({
