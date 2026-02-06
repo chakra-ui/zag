@@ -394,7 +394,7 @@ export function connect<T extends PropTypes, V extends CollectionItem>(
         tabIndex: -1,
         "data-highlighted": dataAttr(itemState.highlighted),
         "data-state": itemState.selected ? "checked" : "unchecked",
-        "aria-selected": ariaAttr(itemState.highlighted),
+        "aria-selected": itemState.selected,
         "aria-disabled": ariaAttr(itemState.disabled),
         "data-disabled": dataAttr(itemState.disabled),
         "data-value": itemState.value,
