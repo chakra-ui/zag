@@ -71,7 +71,7 @@
   </section>
 
   {#if api.open}
-    <Presence use:portal {...api.getBackdropProps()} />
+    <div use:portal {...api.getBackdropProps()}></div>
     <div use:portal {...api.getPositionerProps()}>
       <Presence {...api.getContentProps()}>
         {#if activeUser}
