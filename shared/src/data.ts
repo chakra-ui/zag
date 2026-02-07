@@ -3,6 +3,7 @@ import type { HandlePosition } from "@zag-js/image-cropper"
 
 import { countryList } from "./country-list"
 export { paginationData } from "./pagination-data"
+export { cascadeSelectData } from "./cascade-select-data"
 
 export const selectData = countryList.map((country) => ({
   label: `${country.name} (${country.code})`,
