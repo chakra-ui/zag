@@ -245,7 +245,8 @@ export const machine = createMachine<PopoverSchema>({
       },
 
       setTriggerValue({ context, event }) {
-        context.set("triggerValue", event.value ?? null)
+        if (event.value === undefined) return
+        context.set("triggerValue", event.value)
       },
 
       checkRenderedElements({ context, scope }) {

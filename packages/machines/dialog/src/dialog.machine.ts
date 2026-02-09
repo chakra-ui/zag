@@ -230,7 +230,8 @@ export const machine = createMachine<DialogSchema>({
       },
 
       setActiveTrigger({ context, event }) {
-        context.set("triggerValue", event.value ?? null)
+        if (event.value === undefined) return
+        context.set("triggerValue", event.value)
       },
 
       toggleVisibility({ prop, send, event }) {

@@ -308,7 +308,8 @@ export const machine = createMachine<HoverCardSchema>({
         })
       },
       setTriggerValue({ context, event }) {
-        context.set("triggerValue", event.value ?? null)
+        if (event.value === undefined) return
+        context.set("triggerValue", event.value)
       },
       toggleVisibility({ prop, event, send }) {
         queueMicrotask(() => {

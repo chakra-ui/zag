@@ -129,22 +129,22 @@ export const machine = createMachine<MenuSchema>({
     OPEN: [
       {
         guard: "isOpenControlled",
-        actions: ["invokeOnOpen"],
+        actions: ["setTriggerValue", "invokeOnOpen"],
       },
       {
         target: "open",
-        actions: ["invokeOnOpen"],
+        actions: ["setTriggerValue", "invokeOnOpen"],
       },
     ],
     OPEN_AUTOFOCUS: [
       {
         guard: "isOpenControlled",
-        actions: ["invokeOnOpen"],
+        actions: ["setTriggerValue", "invokeOnOpen"],
       },
       {
         // internal: true,
         target: "open",
-        actions: ["highlightFirstItem", "invokeOnOpen"],
+        actions: ["setTriggerValue", "highlightFirstItem", "invokeOnOpen"],
       },
     ],
     CLOSE: [
@@ -880,9 +880,7 @@ export const machine = createMachine<MenuSchema>({
       restoreParentHighlightedItem({ refs }) {
         refs.get("parent")?.send({ type: "HIGHLIGHTED.RESTORE" })
       },
-      invokeOnOpen({ prop, context, event }) {
-        const value = event.value ?? event.previousEvent?.value
-        context.set("triggerValue", value)
+      invokeOnOpen({ prop }) {
         prop("onOpenChange")?.({ open: true })
       },
       invokeOnClose({ prop }) {
@@ -895,7 +893,8 @@ export const machine = createMachine<MenuSchema>({
         })
       },
       setTriggerValue({ context, event }) {
-        context.set("triggerValue", event.value ?? null)
+        if (event.value === undefined) return
+        context.set("triggerValue", event.value)
       },
     },
   },
