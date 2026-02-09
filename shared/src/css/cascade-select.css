@@ -1,0 +1,129 @@
+[data-scope="cascade-select"][data-part="control"] {
+  display: flex;
+  flex-direction: column;
+  row-gap: 6px;
+  align-items: flex-start;
+}
+
+[data-scope="cascade-select"][data-part="label"] {
+  font-size: 14px;
+}
+
+[data-scope="cascade-select"][data-part="label"][data-disabled] {
+  cursor: default;
+  color: gray;
+}
+
+[data-scope="cascade-select"][data-part="label"][data-invalid] {
+  color: red;
+}
+
+[data-scope="cascade-select"][data-part="trigger"] {
+  padding: 4px 12px;
+  border-radius: 4px;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  column-gap: 6px;
+  cursor: default;
+  background: #eeeeee;
+  font-size: 14px;
+  border: 1px solid slategray;
+
+  & svg {
+    width: 14px;
+    height: 14px;
+  }
+}
+
+.cascade-select svg {
+  position: relative;
+  top: 1px;
+}
+
+[data-scope="cascade-select"][data-part="trigger"]:disabled {
+  cursor: default;
+}
+
+[data-scope="cascade-select"][data-part="trigger"][data-invalid] {
+  border: 2px solid red;
+}
+
+[data-scope="cascade-select"][data-part="clear-trigger"] {
+  padding: 4px;
+  border: none;
+  background: none;
+  cursor: pointer;
+  border-radius: 4px;
+  transition: background 0.15s ease;
+}
+
+[data-scope="cascade-select"][data-part="clear-trigger"]:hover {
+  background: #f0f0f0;
+}
+
+[data-scope="cascade-select"][data-part="positioner"] {
+  width: max-content;
+}
+
+[data-scope="cascade-select"][data-part="content"] {
+  display: flex;
+  margin-top: 4px;
+  background: #efefef;
+  max-height: min(var(--available-height), 200px);
+}
+
+[data-scope="cascade-select"][data-part="list"] {
+  width: 200px;
+  list-style: none;
+  padding: 4px;
+  margin: 0;
+  position: relative;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  overflow-x: hidden;
+}
+
+/* Add a subtle separator line between levels */
+[data-scope="cascade-select"][data-part="list"]:not(:last-child)::after {
+  content: "";
+  position: absolute;
+  right: 0px;
+  top: 6px;
+  bottom: 6px;
+  width: 1px;
+  background: #d4d5d8;
+  opacity: 0.6;
+}
+
+[data-scope="cascade-select"][data-part="item"] {
+  padding: 4px 8px;
+  cursor: default;
+  display: flex;
+  align-items: center;
+  border-radius: 4px;
+}
+
+[data-scope="cascade-select"][data-part="item-text"] {
+  margin-right: auto;
+}
+
+[data-scope="cascade-select"][data-part="item"][data-disabled] {
+  color: #777;
+}
+
+[data-scope="cascade-select"][data-part="item"][data-state="checked"] {
+  background: blue;
+  color: white;
+}
+
+[data-scope="cascade-select"][data-part="item"]:hover {
+  background: #e2e8f0;
+  border-color: #cbd5e1;
+}
+
+[data-scope="cascade-select"][data-part="item"][data-highlighted] {
+  background: rgb(0, 0, 195);
+  color: white;
+}

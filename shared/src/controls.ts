@@ -6,6 +6,21 @@ export const accordionControls = defineControls({
   orientation: { type: "select", options: ["horizontal", "vertical"] as const, defaultValue: "vertical" },
 })
 
+export const cascadeSelectControls = defineControls({
+  disabled: { type: "boolean", defaultValue: false },
+  readOnly: { type: "boolean", defaultValue: false },
+  loopFocus: { type: "boolean", defaultValue: false },
+  multiple: { type: "boolean", defaultValue: false },
+  dir: { type: "select", options: ["ltr", "rtl"] as const, defaultValue: "ltr" },
+  closeOnSelect: { type: "boolean", defaultValue: true },
+  allowParentSelection: { type: "boolean", defaultValue: false },
+  highlightTrigger: {
+    type: "select",
+    options: ["click", "hover"] as const,
+    defaultValue: "click",
+  },
+})
+
 export const checkboxControls = defineControls({
   name: { type: "string", defaultValue: "checkbox" },
   disabled: { type: "boolean", defaultValue: false },
