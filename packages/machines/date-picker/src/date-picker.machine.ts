@@ -1073,12 +1073,20 @@ export const machine = createMachine<DatePickerSchema>({
         if (event.focus === false) return
         raf(() => {
           const [inputEl] = dom.getInputEls(scope)
-          inputEl?.focus({ preventScroll: true })
+          // if no input elements exist (trigger-only mode), focus the trigger instead
+          const elementToFocus = inputEl ?? dom.getTriggerEl(scope)
+          elementToFocus?.focus({ preventScroll: true })
         })
       },
       focusInputElement({ scope }) {
         raf(() => {
           const inputEls = dom.getInputEls(scope)
+
+          // If no input elements exist (trigger-only mode), focus the trigger instead
+          if (inputEls.length === 0) {
+            dom.getTriggerEl(scope)?.focus({ preventScroll: true })
+            return
+          }
 
           const lastIndexWithValue = inputEls.findLastIndex((inputEl) => inputEl.value !== "")
           const indexToFocus = Math.max(lastIndexWithValue, 0)
