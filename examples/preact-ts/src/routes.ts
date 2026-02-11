@@ -21,6 +21,7 @@ export const routes: RouteDefinition[] = [
     component: lazy(() => import("./pages/home")),
   },
   { path: "/accordion", component: lazy(() => import("./pages/accordion")) },
+  { path: "/cascade-select", component: lazy(() => import("./pages/cascade-select")) },
   // { path: "/checkbox", component: lazy(() => import("./pages/checkbox")) },
   // { path: "/combobox", component: lazy(() => import("./pages/combobox")) },
   // { path: "/dialog", component: lazy(() => import("./pages/dialog")) },
