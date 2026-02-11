@@ -1,5 +1,5 @@
 ---
-"@zag-js/cascade-select": patch
+"@zag-js/cascade-select": minor
 ---
 
-Add cascade select machine
+**Cascade Select [New]**: Initial release of cascade select state machine
