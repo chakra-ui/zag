@@ -12,5 +12,5 @@ export function parse(value: any) {
     return new CalendarDate(value.getFullYear(), value.getMonth() + 1, value.getDate()) as DateValue
   }
 
-  return parseDate(value)
+  return parseDate(value) as DateValue
 }

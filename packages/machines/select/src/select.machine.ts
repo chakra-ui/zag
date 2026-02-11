@@ -3,6 +3,7 @@ import { trackDismissableElement } from "@zag-js/dismissable"
 import {
   getByTypeahead,
   getInitialFocus,
+  markAsInternalChangeEvent,
   observeAttributes,
   raf,
   scrollIntoView,
@@ -733,8 +734,8 @@ export const machine = createMachine<SelectSchema>({
           const node = dom.getHiddenSelectEl(scope)
           if (!node) return
           const win = scope.getWin()
-          const changeEvent = new win.Event("change", { bubbles: true, composed: true })
-          node.dispatchEvent(changeEvent)
+          const evt = new win.Event("change", { bubbles: true, composed: true })
+          node.dispatchEvent(markAsInternalChangeEvent(evt))
         })
       },
     },

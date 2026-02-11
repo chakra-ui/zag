@@ -1,12 +1,14 @@
 import type { Service } from "@zag-js/core"
 import {
   ariaAttr,
+  contains,
   dataAttr,
   getByTypeahead,
   getEventKey,
   getEventTarget,
+  getNativeEvent,
   isEditableElement,
-  contains,
+  isInternalChangeEvent,
   isValidTabEvent,
   visuallyHiddenStyle,
 } from "@zag-js/dom-query"
@@ -358,6 +360,13 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
     getHiddenSelectProps() {
       const value = context.get("value")
       const defaultValue = prop("multiple") ? value : value?.[0]
+
+      const handleChange = (e: { currentTarget: HTMLSelectElement; nativeEvent?: Event }) => {
+        const evt = getNativeEvent(e)
+        if (isInternalChangeEvent(evt)) return
+        send({ type: "VALUE.SET", value: getSelectedValues(e.currentTarget) })
+      }
+
       return normalize.select({
         name: prop("name"),
         form: prop("form"),
@@ -369,6 +378,9 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
         defaultValue,
         style: visuallyHiddenStyle,
         tabIndex: -1,
+        autoComplete: prop("autoComplete"),
+        onChange: handleChange,
+        onInput: handleChange,
         // Some browser extensions will focus the hidden select.
         // Let's forward the focus to the trigger.
         onFocus() {
@@ -474,4 +486,8 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
       })
     },
   }
+}
+
+const getSelectedValues = (el: HTMLSelectElement) => {
+  return el.multiple ? Array.from(el.selectedOptions, (o) => o.value) : el.value ? [el.value] : []
 }
