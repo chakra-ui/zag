@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Cascade Select</title>
+  </head>
+  <body style="padding: 40px">
+    <a href="/">← Back to examples</a>
+    <h1>Cascade Select</h1>
+
+    <main class="cascade-select">
+      <div class="cascade-select-root">
+        <label class="cascade-select-label">Select a location</label>
+
+        <div class="cascade-select-control">
+          <button class="cascade-select-trigger">
+            <span class="cascade-select-value-text">Select a location</span>
+            <span class="cascade-select-indicator">▼</span>
+          </button>
+          <button class="cascade-select-clear">X</button>
+        </div>
+
+        <input class="cascade-select-hidden-input" />
+
+        <div class="cascade-select-positioner">
+          <div class="cascade-select-content"></div>
+        </div>
+      </div>
+    </main>
+
+    <script type="module" src="./cascade-select.ts"></script>
+  </body>
+</html>
