@@ -72,6 +72,15 @@ export interface PositioningOptions {
    */
   fitViewport?: boolean | undefined
   /**
+   * Whether to use the size middleware from Floating UI.
+   * It computes and sets CSS variables (`--reference-width`, `--reference-height`, `--available-width`, `--available-height`) used by `sameWidth` and `fitViewport`.
+   *
+   * Disabling it improves scroll performance with heavy content by avoiding layout thrashing on each update.
+   * Only applies when both `sameWidth` and `fitViewport` are false — the middleware is always used when either is enabled.
+   * @default true
+   */
+  sizeMiddleware?: boolean | undefined
+  /**
    * The overflow boundary of the reference element
    * Accepts a function returning a Boundary, a Boundary directly,
    * or the shorthand string 'clipping-ancestors' which maps to Floating UI's 'clippingAncestors'.
