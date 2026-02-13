@@ -96,7 +96,7 @@
     "rehype": "13.0.2",
     "rehype-autolink-headings": "7.1.0",
     "rehype-code-titles": "1.2.1",
-    "rehype-prism-plus": "2.0.1",
+    "rehype-prism-plus": "2.0.2",
     "rehype-slug": "6.0.0",
     "remark-directive": "4.0.0",
     "typescript": "5.9.3"
