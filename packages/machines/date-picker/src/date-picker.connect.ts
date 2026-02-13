@@ -20,6 +20,7 @@ import {
   getTodayDate,
   getUnitDuration,
   getWeekDays,
+  getWeekOfYear,
   getYearsRange,
   isDateEqual,
   isDateOutsideRange,
@@ -39,6 +40,7 @@ import type {
   TableCellProps,
   TableCellState,
   TableProps,
+  WeekNumberCellProps,
 } from "./date-picker.types"
 import {
   adjustStartAndEndDate,
@@ -254,12 +256,17 @@ export function connect<T extends PropTypes>(
     readOnly,
     inline: !!prop("inline"),
     numOfMonths: prop("numOfMonths"),
+    showWeekNumbers: !!prop("showWeekNumbers"),
     selectionMode: prop("selectionMode"),
     maxSelectedDates,
     isMaxSelected,
     view: context.get("view"),
     getRangePresetValue(preset) {
       return getDateRangePreset(preset, locale, timeZone)
+    },
+    getWeekNumber(week: DateValue[]) {
+      const firstDay = week[0]
+      return firstDay ? getWeekOfYear(firstDay, locale) : 0
     },
     getDaysInWeek(week, from = startValue) {
       return getDaysInWeek(week, from, locale, startOfWeek)
@@ -545,6 +552,30 @@ export function connect<T extends PropTypes>(
         "aria-disabled": ariaAttr(disabled),
         "data-disabled": dataAttr(disabled),
         "data-view": view,
+      })
+    },
+
+    getWeekNumberHeaderCellProps(props = {}) {
+      const { view = "day" } = props
+      return normalize.element({
+        ...parts.tableCell.attrs,
+        scope: "col",
+        "aria-label": translations.weekColumnHeader,
+        "data-view": view,
+        "data-disabled": dataAttr(disabled),
+      })
+    },
+
+    getWeekNumberCellProps(props: WeekNumberCellProps) {
+      const { weekIndex, week } = props
+      const weekNumber = week[0] ? getWeekOfYear(week[0], locale) : 0
+      return normalize.element({
+        ...parts.tableCell.attrs,
+        role: "rowheader",
+        "aria-label": translations.weekNumberCell?.(weekNumber),
+        "data-view": "day",
+        "data-week-index": weekIndex,
+        "data-disabled": dataAttr(disabled),
       })
     },
 

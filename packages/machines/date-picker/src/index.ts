@@ -41,6 +41,7 @@ export type {
   VisibleRangeChangeDetails,
   VisibleRangeText,
   WeekDay,
+  WeekNumberCellProps,
   YearGridProps,
   ZonedDateTime,
   PresetTriggerValue,

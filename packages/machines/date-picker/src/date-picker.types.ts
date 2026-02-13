@@ -73,6 +73,8 @@ export interface IntlTranslations {
   trigger: (open: boolean) => string
   content: string
   placeholder: (locale: string) => { year: string; month: string; day: string }
+  weekColumnHeader?: string | undefined
+  weekNumberCell?: ((weekNumber: number) => string) | undefined
 }
 
 export type ElementIds = Partial<{
@@ -197,6 +199,10 @@ export interface DatePickerProps extends DirectionProperty, CommonProperties {
    * This renders the calendar with 6 weeks instead of 5 or 6.
    */
   fixedWeeks?: boolean | undefined
+  /**
+   * Whether to show the week number column in the day view.
+   */
+  showWeekNumbers?: boolean | undefined
   /**
    * Function called when the value changes.
    */
@@ -442,6 +448,11 @@ export interface DayTableCellProps {
   visibleRange?: VisibleRange | undefined
 }
 
+export interface WeekNumberCellProps {
+  weekIndex: number
+  week: DateValue[]
+}
+
 export interface DayTableCellState {
   invalid: boolean
   disabled: boolean
@@ -558,6 +569,10 @@ export interface DatePickerApi<T extends PropTypes = PropTypes> {
    */
   numOfMonths: number
   /**
+   * Whether the week number column is shown in the day view
+   */
+  showWeekNumbers: boolean
+  /**
    * The selection mode (single, multiple, or range)
    */
   selectionMode: SelectionMode
@@ -573,6 +588,10 @@ export interface DatePickerApi<T extends PropTypes = PropTypes> {
    * The current view of the date picker
    */
   view: DateView
+  /**
+   * Returns the ISO 8601 week number (1-53) for the given week (array of dates).
+   */
+  getWeekNumber: (week: DateValue[]) => number
   /**
    * Returns an array of days in the week index counted from the provided start date, or the first visible date if not given.
    */
@@ -729,6 +748,9 @@ export interface DatePickerApi<T extends PropTypes = PropTypes> {
   getTableHeaderProps: (props?: TableProps) => T["element"]
   getTableBodyProps: (props?: TableProps) => T["element"]
   getTableRowProps: (props?: TableProps) => T["element"]
+
+  getWeekNumberHeaderCellProps: (props?: TableProps) => T["element"]
+  getWeekNumberCellProps: (props: WeekNumberCellProps) => T["element"]
 
   getDayTableCellProps: (props: DayTableCellProps) => T["element"]
   getDayTableCellTriggerProps: (props: DayTableCellProps) => T["element"]

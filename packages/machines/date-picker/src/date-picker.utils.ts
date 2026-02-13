@@ -112,6 +112,10 @@ export const defaultTranslations: IntlTranslations = {
   monthSelect: "Select month",
   yearSelect: "Select year",
   clearTrigger: "Clear selected dates",
+  weekColumnHeader: "Wk",
+  weekNumberCell(weekNumber) {
+    return `Week ${weekNumber}`
+  },
 }
 
 // 0 – day, 1 – month, 2 – year;

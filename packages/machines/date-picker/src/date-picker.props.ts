@@ -42,6 +42,7 @@ export const props = createProps<DatePickerProps>()([
   "readOnly",
   "required",
   "selectionMode",
+  "showWeekNumbers",
   "startOfWeek",
   "timeZone",
   "translations",
