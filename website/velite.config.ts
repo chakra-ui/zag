@@ -2,7 +2,6 @@ import fs from "node:fs"
 import { join } from "node:path"
 import rehypeAutolinkHeadings from "rehype-autolink-headings"
 import rehypeCodeTitles from "rehype-code-titles"
-import rehypePrism from "rehype-prism-plus"
 import rehypeSlug from "rehype-slug"
 import remarkDirective from "remark-directive"
 import { defineCollection, defineConfig, s } from "velite"
@@ -299,8 +298,7 @@ export default defineConfig({
     rehypePlugins: [
       rehypeSlug,
       rehypeCodeTitles,
-      rehypeSvelte,
-      rehypePrism,
+      [rehypeSvelte, { ignoreMissing: true }],
       [
         rehypeAutolinkHeadings,
         {
