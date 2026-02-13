@@ -90,7 +90,7 @@
     "@pandacss/dev": "^1.8.1",
     "@types/react": "^19",
     "all-contributors-cli": "6.26.1",
-    "eslint": "^9",
+    "eslint": "^10.0.0",
     "eslint-config-next": "16.1.6",
     "prettier": "3.8.1",
     "rehype": "13.0.2",
