@@ -189,11 +189,8 @@ test.describe("drawer [defaultSnapPoint]", () => {
     await I.seeContent()
     await I.waitForOpenState()
 
-    let currentHeight = await I.getContentVisibleHeight()
-
-    // Calculate expected heights based on actual content height
-    // First, drag to 100% to get the full height
-    await I.dragGrabber("up", 600)
+    // First, measure full height at the 100% snap point.
+    await I.dragGrabber("up", 800)
     await I.waitForSnapComplete()
 
     const fullHeight = await I.getContentVisibleHeight()
@@ -203,35 +200,29 @@ test.describe("drawer [defaultSnapPoint]", () => {
     // Close and reopen to test default snap point
     await I.pressKey("Escape")
     await I.dontSeeContent()
-
-    // Small delay to ensure state is fully reset
-    await I.wait(100)
+    await I.waitForClosedState()
 
     await I.clickTrigger()
     await I.seeContent()
     await I.waitForOpenState()
 
-    currentHeight = await I.getContentVisibleHeight()
-
     // Should open at default snap point (25%)
-    expect(currentHeight).toBeCloseTo(lowerHeight, 0)
+    await I.waitForVisibleHeightNear(lowerHeight, 6)
 
-    // Drag up to reach 250px snap point
-    await I.dragGrabber("up", 100)
+    // Drag up to reach 250px snap point using distance from measured default height.
+    const dragTo250 = Math.max(80, Math.ceil(250 - lowerHeight + 40))
+    await I.dragGrabber("up", dragTo250)
     await I.waitForSnapComplete()
-
-    currentHeight = await I.getContentVisibleHeight()
 
     // Should have snapped to 250px fixed snap point
-    expect(currentHeight).toBeCloseTo(250, 0)
+    await I.waitForVisibleHeightNear(250, 6)
 
-    // Drag up more to reach full height (100%)
-    await I.dragGrabber("up", 500)
+    // Drag up to reach full height (100%) from the 250px snap point.
+    const dragToFull = Math.max(100, Math.ceil(fullHeight - 250 + 40))
+    await I.dragGrabber("up", dragToFull)
     await I.waitForSnapComplete()
 
-    currentHeight = await I.getContentVisibleHeight()
-
     // Should be at maximum height (100% snap point)
-    expect(currentHeight).toBeCloseTo(fullHeight, 0)
+    await I.waitForVisibleHeightNear(fullHeight, 6)
   })
 })

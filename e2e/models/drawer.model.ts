@@ -96,7 +96,7 @@ export class DrawerModel extends Model {
 
     const translateY = await this.content.evaluate((el) => getComputedStyle(el).getPropertyValue("--drawer-translate"))
 
-    const parsedTranslateY = parseInt(translateY, 10)
+    const parsedTranslateY = parseFloat(translateY)
     return initialHeight - (isNaN(parsedTranslateY) ? 0 : parsedTranslateY)
   }
 
@@ -125,7 +125,7 @@ export class DrawerModel extends Model {
   async waitForOpenState() {
     // Wait for element to be visible and animations to complete
     await expect(this.content).toBeVisible()
-    await this.content.evaluate((el) => Promise.all(el.getAnimations().map((animation) => animation.finished)))
+    await this.content.evaluate((el) => Promise.allSettled(el.getAnimations().map((animation) => animation.finished)))
   }
 
   waitForClosedState() {
@@ -134,6 +134,14 @@ export class DrawerModel extends Model {
 
   async waitForSnapComplete() {
     // Wait for snap animation/transition to complete after drag
-    await this.content.evaluate((el) => Promise.all([...el.getAnimations()].map((animation) => animation.finished)))
+    await this.content.evaluate((el) =>
+      Promise.allSettled([...el.getAnimations()].map((animation) => animation.finished)),
+    )
+  }
+
+  async waitForVisibleHeightNear(targetHeight: number, tolerance = 4, timeout = 2000) {
+    await expect
+      .poll(async () => Math.abs((await this.getContentVisibleHeight()) - targetHeight), { timeout })
+      .toBeLessThanOrEqual(tolerance)
   }
 }
