@@ -63,21 +63,21 @@
   transition-property: opacity;
   transition-duration: 0.5s;
   transition-timing-function: cubic-bezier(0.32, 0.72, 0, 1);
-}
 
-.backdrop[data-state="open"] {
-  animation: fadeInBackdrop 0.5s cubic-bezier(0.32, 0.72, 0, 1);
-  opacity: calc(var(--backdrop-opacity) * (1 - var(--drawer-swipe-progress, 0)));
-}
+  &[data-state="open"] {
+    animation: fadeInBackdrop 0.5s cubic-bezier(0.32, 0.72, 0, 1);
+    opacity: calc(var(--backdrop-opacity) * (1 - var(--drawer-swipe-progress, 0)));
+  }
 
-.backdrop[data-state="closed"] {
-  animation: fadeOutBackdrop 0.5s cubic-bezier(0.32, 0.72, 0, 1);
-  opacity: 0;
-}
+  &[data-state="closed"] {
+    animation: fadeOutBackdrop 0.5s cubic-bezier(0.32, 0.72, 0, 1);
+    opacity: 0;
+  }
 
-.backdrop[data-swiping] {
-  animation: none;
-  transition-duration: 0ms;
+  &[data-swiping] {
+    animation: none;
+    transition-duration: 0ms;
+  }
 }
 
 .positioner {
@@ -86,20 +86,20 @@
   display: flex;
   align-items: flex-end;
   justify-content: center;
-}
 
-.positioner[data-swipe-direction="up"] {
-  align-items: flex-start;
-}
+  &[data-swipe-direction="up"] {
+    align-items: flex-start;
+  }
 
-.positioner[data-swipe-direction="left"] {
-  justify-content: flex-start;
-  align-items: stretch;
-}
+  &[data-swipe-direction="left"] {
+    justify-content: flex-start;
+    align-items: stretch;
+  }
 
-.positioner[data-swipe-direction="right"] {
-  justify-content: flex-end;
-  align-items: stretch;
+  &[data-swipe-direction="right"] {
+    justify-content: flex-end;
+    align-items: stretch;
+  }
 }
 
 .content {
@@ -119,62 +119,62 @@
   right: auto;
   top: auto;
   bottom: auto;
-}
 
-.content[data-state="open"] {
-  animation-name: slideInDown;
-}
+  &[data-state="open"] {
+    animation-name: slideInDown;
+  }
 
-.content[data-state="closed"] {
-  animation-name: slideOutDown;
-}
+  &[data-state="closed"] {
+    animation-name: slideOutDown;
+  }
 
-.content[data-swipe-direction="up"] {
-  border-top-left-radius: 0;
-  border-top-right-radius: 0;
-  border-bottom-left-radius: 16px;
-  border-bottom-right-radius: 16px;
-}
+  &[data-swipe-direction="up"] {
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
+    border-bottom-left-radius: 16px;
+    border-bottom-right-radius: 16px;
 
-.content[data-swipe-direction="up"][data-state="open"] {
-  animation-name: slideInUp;
-}
+    &[data-state="open"] {
+      animation-name: slideInUp;
+    }
 
-.content[data-swipe-direction="up"][data-state="closed"] {
-  animation-name: slideOutUp;
-}
+    &[data-state="closed"] {
+      animation-name: slideOutUp;
+    }
+  }
 
-.content[data-swipe-direction="left"],
-.content[data-swipe-direction="right"] {
-  height: 100%;
-  max-height: none;
-  width: min(420px, 90vw);
-  border-top-left-radius: 0;
-  border-top-right-radius: 0;
-}
+  &[data-swipe-direction="left"],
+  &[data-swipe-direction="right"] {
+    height: 100%;
+    max-height: none;
+    width: min(420px, 90vw);
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
+  }
 
-.content[data-swipe-direction="left"] {
-  border-bottom-right-radius: 16px;
-}
+  &[data-swipe-direction="left"] {
+    border-bottom-right-radius: 16px;
 
-.content[data-swipe-direction="right"] {
-  border-bottom-left-radius: 16px;
-}
+    &[data-state="open"] {
+      animation-name: slideInLeft;
+    }
 
-.content[data-swipe-direction="left"][data-state="open"] {
-  animation-name: slideInLeft;
-}
+    &[data-state="closed"] {
+      animation-name: slideOutLeft;
+    }
+  }
 
-.content[data-swipe-direction="left"][data-state="closed"] {
-  animation-name: slideOutLeft;
-}
+  &[data-swipe-direction="right"] {
+    border-bottom-left-radius: 16px;
 
-.content[data-swipe-direction="right"][data-state="open"] {
-  animation-name: slideInRight;
-}
+    &[data-state="open"] {
+      animation-name: slideInRight;
+    }
 
-.content[data-swipe-direction="right"][data-state="closed"] {
-  animation-name: slideOutRight;
+    &[data-state="closed"] {
+      animation-name: slideOutRight;
+    }
+  }
 }
 
 .grabber {

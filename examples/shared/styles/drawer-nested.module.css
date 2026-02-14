@@ -125,25 +125,25 @@
   width: 100%;
 
   &[data-nested-drawer-open] {
-    > .popup {
+    & > .popup {
       height: calc(var(--stack-height) + var(--bleed));
       overflow: hidden;
     }
 
-    > .popup::after {
+    & > .popup::after {
       background-color: rgb(0 0 0 / 0.05);
     }
 
-    > .popup > .content,
-    > .popup > .handle {
+    & > .popup > .content,
+    & > .popup > .handle {
       opacity: 0;
     }
   }
 
   &[data-nested-drawer-open][data-swiping],
   &[data-nested-drawer-open][data-nested-drawer-swiping] {
-    > .popup > .content,
-    > .popup > .handle {
+    & > .popup > .content,
+    & > .popup > .handle {
       opacity: 1;
     }
   }
@@ -159,13 +159,14 @@
   &[data-swiping],
   &[data-nested-drawer-swiping] {
     animation: none;
-    > .popup {
+
+    & > .popup {
       transition-duration: 0ms;
     }
   }
 
   &[data-swiping] {
-    > .popup {
+    & > .popup {
       user-select: none;
     }
   }
@@ -207,16 +208,16 @@
     box-shadow calc(var(--drawer-swipe-strength, 1) * 450ms) cubic-bezier(0.32, 0.72, 0, 1);
   will-change: transform;
   transform: translateY(var(--translate-y)) scale(var(--stack-scale));
-}
 
-.popup::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  border-radius: inherit;
-  background-color: transparent;
-  pointer-events: none;
-  transition: background-color 450ms cubic-bezier(0.32, 0.72, 0, 1);
+  &::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    background-color: transparent;
+    pointer-events: none;
+    transition: background-color 450ms cubic-bezier(0.32, 0.72, 0, 1);
+  }
 }
 
 .content {
@@ -292,16 +293,15 @@
   color: #111827;
   padding: 0.5rem 0.625rem;
   font: inherit;
+
+  &:focus-visible {
+    outline: 2px solid #2563eb;
+    outline-offset: -1px;
+  }
 }
 
 .textarea {
   resize: vertical;
-}
-
-.input:focus-visible,
-.textarea:focus-visible {
-  outline: 2px solid #2563eb;
-  outline-offset: -1px;
 }
 
 @keyframes slideInContentHost {

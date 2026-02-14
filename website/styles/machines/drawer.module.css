@@ -145,13 +145,13 @@
     display: flex;
     justify-content: center;
     align-items: center;
-  }
 
-  .grabberIndicator {
-    height: 4px;
-    width: 40px;
-    background-color: gray;
-    border-radius: 1000px;
+    .grabberIndicator {
+      height: 4px;
+      width: 40px;
+      background-color: gray;
+      border-radius: 1000px;
+    }
   }
 }
 
