@@ -167,9 +167,9 @@ importers:
       '@zag-js/avatar':
         specifier: workspace:*
         version: link:../../packages/machines/avatar
-      '@zag-js/bottom-sheet':
+      '@zag-js/drawer':
         specifier: workspace:*
-        version: link:../../packages/machines/bottom-sheet
+        version: link:../../packages/machines/drawer
       '@zag-js/carousel':
         specifier: workspace:*
         version: link:../../packages/machines/carousel
@@ -471,9 +471,9 @@ importers:
       '@zag-js/avatar':
         specifier: workspace:*
         version: link:../../packages/machines/avatar
-      '@zag-js/bottom-sheet':
+      '@zag-js/drawer':
         specifier: workspace:*
-        version: link:../../packages/machines/bottom-sheet
+        version: link:../../packages/machines/drawer
       '@zag-js/carousel':
         specifier: workspace:*
         version: link:../../packages/machines/carousel
@@ -745,9 +745,9 @@ importers:
       '@zag-js/avatar':
         specifier: workspace:*
         version: link:../../packages/machines/avatar
-      '@zag-js/bottom-sheet':
+      '@zag-js/drawer':
         specifier: workspace:*
-        version: link:../../packages/machines/bottom-sheet
+        version: link:../../packages/machines/drawer
       '@zag-js/carousel':
         specifier: workspace:*
         version: link:../../packages/machines/carousel
@@ -1028,9 +1028,9 @@ importers:
       '@zag-js/avatar':
         specifier: workspace:*
         version: link:../../packages/machines/avatar
-      '@zag-js/bottom-sheet':
+      '@zag-js/drawer':
         specifier: workspace:*
-        version: link:../../packages/machines/bottom-sheet
+        version: link:../../packages/machines/drawer
       '@zag-js/carousel':
         specifier: workspace:*
         version: link:../../packages/machines/carousel
@@ -1286,9 +1286,9 @@ importers:
       '@zag-js/avatar':
         specifier: workspace:*
         version: link:../../packages/machines/avatar
-      '@zag-js/bottom-sheet':
+      '@zag-js/drawer':
         specifier: workspace:*
-        version: link:../../packages/machines/bottom-sheet
+        version: link:../../packages/machines/drawer
       '@zag-js/carousel':
         specifier: workspace:*
         version: link:../../packages/machines/carousel
@@ -1572,9 +1572,9 @@ importers:
       '@zag-js/avatar':
         specifier: workspace:*
         version: link:../../packages/machines/avatar
-      '@zag-js/bottom-sheet':
+      '@zag-js/drawer':
         specifier: workspace:*
-        version: link:../../packages/machines/bottom-sheet
+        version: link:../../packages/machines/drawer
       '@zag-js/carousel':
         specifier: workspace:*
         version: link:../../packages/machines/carousel
@@ -2120,7 +2120,7 @@ importers:
         specifier: 2.2.0
         version: 2.2.0
 
-  packages/machines/bottom-sheet:
+  packages/machines/drawer:
     dependencies:
       '@zag-js/anatomy':
         specifier: workspace:*
@@ -3809,9 +3809,9 @@ importers:
       '@zag-js/avatar':
         specifier: workspace:*
         version: link:../packages/machines/avatar
-      '@zag-js/bottom-sheet':
+      '@zag-js/drawer':
         specifier: workspace:*
-        version: link:../packages/machines/bottom-sheet
+        version: link:../packages/machines/drawer
       '@zag-js/carousel':
         specifier: workspace:*
         version: link:../packages/machines/carousel

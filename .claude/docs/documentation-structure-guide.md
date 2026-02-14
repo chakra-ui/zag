@@ -42,7 +42,7 @@ Defines the component's parts (elements) using the anatomy API.
 ```typescript
 import { createAnatomy } from "@zag-js/anatomy"
 
-export const anatomy = createAnatomy("bottom-sheet").parts(
+export const anatomy = createAnatomy("drawer").parts(
   "content",
   "title",
   "trigger",
@@ -65,7 +65,7 @@ export const parts = anatomy.build()
 
 ```typescript
 parts.content.attrs
-// => { "data-scope": "bottom-sheet", "data-part": "content" }
+// => { "data-scope": "drawer", "data-part": "content" }
 ```
 
 ### 2. DOM File (`{component}.dom.ts`)
@@ -85,13 +85,13 @@ import { queryAll } from "@zag-js/dom-query"
 
 // ID Generators
 export const getContentId = (ctx: Scope) =>
-  ctx.ids?.content ?? `bottom-sheet:${ctx.id}:content`
+  ctx.ids?.content ?? `drawer:${ctx.id}:content`
 
 export const getTitleId = (ctx: Scope) =>
-  ctx.ids?.title ?? `bottom-sheet:${ctx.id}:title`
+  ctx.ids?.title ?? `drawer:${ctx.id}:title`
 
 export const getTriggerId = (ctx: Scope) =>
-  ctx.ids?.trigger ?? `bottom-sheet:${ctx.id}:trigger`
+  ctx.ids?.trigger ?? `drawer:${ctx.id}:trigger`
 
 // Element Getters
 export const getContentEl = (ctx: Scope) =>
@@ -130,13 +130,13 @@ export const getScrollEls = (scope: Scope) => {
 {component}:{instance-id}:{part}
 ```
 
-Example: `bottom-sheet:my-sheet-1:content`
+Example: `drawer:my-sheet-1:content`
 
 **Custom IDs:**
 Users can override IDs via the `ids` prop:
 
 ```typescript
-useMachine(bottomSheet.machine, {
+useMachine(drawer.machine, {
   id: "my-sheet",
   ids: {
     content: "custom-content-id",
@@ -177,11 +177,11 @@ export type ElementIds = Partial<{
 }>
 
 // Component props
-export interface BottomSheetProps
+export interface DrawerProps
   extends DirectionProperty,
           CommonProperties {
   /**
-   * The ids of the elements in the bottom sheet. Useful for composition.
+   * The ids of the elements in the drawer. Useful for composition.
    */
   ids?: ElementIds
 
@@ -192,12 +192,12 @@ export interface BottomSheetProps
   trapFocus?: boolean | undefined
 
   /**
-   * Whether the bottom sheet is open.
+   * Whether the drawer is open.
    */
   open?: boolean | undefined
 
   /**
-   * The initial open state of the bottom sheet.
+   * The initial open state of the drawer.
    */
   defaultOpen?: boolean | undefined
 
@@ -214,8 +214,8 @@ type PropsWithDefault =
   | "closeOnEscape"
 
 // Machine schema
-export interface BottomSheetSchema {
-  props: RequiredBy<BottomSheetProps, PropsWithDefault>
+export interface DrawerSchema {
+  props: RequiredBy<DrawerProps, PropsWithDefault>
   state: "open" | "closed" | "closing"
   tag: "open" | "closed"
   context: {
@@ -235,13 +235,13 @@ export interface BottomSheetSchema {
 }
 
 // Service types
-export type BottomSheetService = Service<BottomSheetSchema>
-export type BottomSheetMachine = Machine<BottomSheetSchema>
+export type DrawerService = Service<DrawerSchema>
+export type DrawerMachine = Machine<DrawerSchema>
 
 // Connect API
-export interface BottomSheetApi<T extends PropTypes = PropTypes> {
+export interface DrawerApi<T extends PropTypes = PropTypes> {
   /**
-   * Whether the bottom sheet is open.
+   * Whether the drawer is open.
    */
   open: boolean
 
@@ -443,11 +443,11 @@ export function connect<T extends PropTypes>(
 Main export file for the package.
 
 ```typescript
-export { anatomy } from "./bottom-sheet.anatomy"
-export { connect } from "./bottom-sheet.connect"
-export { machine } from "./bottom-sheet.machine"
-export * as dom from "./bottom-sheet.dom"
-export type * from "./bottom-sheet.types"
+export { anatomy } from "./drawer.anatomy"
+export { connect } from "./drawer.connect"
+export { machine } from "./drawer.machine"
+export * as dom from "./drawer.dom"
+export type * from "./drawer.types"
 ```
 
 **Export Conventions:**
@@ -503,10 +503,10 @@ export class DragManager {
 
 ```json
 {
-  "name": "@zag-js/bottom-sheet",
+  "name": "@zag-js/drawer",
   "version": "0.1.0",
-  "description": "Core logic for the bottom sheet widget",
-  "keywords": ["js", "machine", "xstate", "statechart", "bottom-sheet"],
+  "description": "Core logic for the drawer widget",
+  "keywords": ["js", "machine", "xstate", "statechart", "drawer"],
   "author": "Segun Adebayo <sage@adebayosegun.com>",
   "license": "MIT",
   "repository": {
@@ -557,9 +557,9 @@ export class DragManager {
 ### Component Files
 
 ```
-bottom-sheet.anatomy.ts     ✓ Correct
-bottomSheet.anatomy.ts      ✗ Wrong
-BottomSheet.anatomy.ts      ✗ Wrong
+drawer.anatomy.ts     ✓ Correct
+drawer.anatomy.ts      ✗ Wrong
+Drawer.anatomy.ts      ✗ Wrong
 ```
 
 ### Utility Files

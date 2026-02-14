@@ -303,15 +303,15 @@
       }
     }
   },
-  "bottom-sheet": {
+  "drawer": {
     "api": {
       "open": {
         "type": "boolean",
-        "description": "Whether the bottom sheet is open."
+        "description": "Whether the drawer is open."
       },
       "dragging": {
         "type": "boolean",
-        "description": "Whether the bottom sheet is currently being dragged."
+        "description": "Whether the drawer is currently being dragged."
       },
       "setOpen": {
         "type": "(open: boolean) => void",
@@ -319,33 +319,33 @@
       },
       "snapPoints": {
         "type": "(string | number)[]",
-        "description": "The snap points of the bottom sheet."
+        "description": "The snap points of the drawer."
       },
-      "activeSnapPoint": {
+      "snapPoint": {
         "type": "string | number",
         "description": "The currently active snap point."
       },
-      "setActiveSnapPoint": {
+      "setSnapPoint": {
         "type": "(snapPoint: string | number) => void",
         "description": "Function to set the active snap point."
       },
       "getOpenPercentage": {
         "type": "() => number",
-        "description": "Get the current open percentage of the bottom sheet."
+        "description": "Get the current open percentage of the drawer."
       },
-      "getActiveSnapIndex": {
+      "getSnapPointIndex": {
         "type": "() => number",
         "description": "Get the index of the currently active snap point."
       },
-      "getContentHeight": {
+      "getContentSize": {
         "type": "() => number",
-        "description": "Get the current height of the bottom sheet content."
+        "description": "Get the current height of the drawer content."
       }
     },
     "context": {
       "ids": {
         "type": "Partial<{ backdrop: string; content: string; trigger: string; grabber: string; grabberIndicator: string; closeTrigger: string; }>",
-        "description": "The ids of the elements in the bottom sheet. Useful for composition."
+        "description": "The ids of the elements in the drawer. Useful for composition."
       },
       "trapFocus": {
         "type": "boolean",
@@ -382,11 +382,11 @@
       },
       "open": {
         "type": "boolean",
-        "description": "Whether the bottom sheet is open."
+        "description": "Whether the drawer is open."
       },
       "defaultOpen": {
         "type": "boolean",
-        "description": "The initial open state of the bottom sheet."
+        "description": "The initial open state of the drawer."
       },
       "onOpenChange": {
         "type": "(details: OpenChangeDetails) => void",
@@ -394,27 +394,27 @@
       },
       "closeOnInteractOutside": {
         "type": "boolean",
-        "description": "Whether to close the bottom sheet when the outside is clicked.",
+        "description": "Whether to close the drawer when the outside is clicked.",
         "defaultValue": "true"
       },
       "closeOnEscape": {
         "type": "boolean",
-        "description": "Whether to close the bottom sheet when the escape key is pressed.",
+        "description": "Whether to close the drawer when the escape key is pressed.",
         "defaultValue": "true"
       },
       "snapPoints": {
         "type": "(string | number)[]",
-        "description": "The snap points of the bottom sheet.\nArray of numbers or strings representing the snap points.",
+        "description": "The snap points of the drawer.\nArray of numbers or strings representing the snap points.",
         "defaultValue": "[1]"
       },
       "swipeVelocityThreshold": {
         "type": "number",
-        "description": "The threshold velocity (in pixels/s) for closing the bottom sheet.",
+        "description": "The threshold velocity (in pixels/s) for closing the drawer.",
         "defaultValue": "700"
       },
       "closeThreshold": {
         "type": "number",
-        "description": "The threshold distance for dismissing the bottom sheet.",
+        "description": "The threshold distance for dismissing the drawer.",
         "defaultValue": "0.25"
       },
       "preventDragOnScroll": {
@@ -422,16 +422,16 @@
         "description": "Whether to prevent dragging on scrollable elements.\nWhen enabled, the sheet will not start dragging if the user is interacting with a scrollable element.",
         "defaultValue": "true"
       },
-      "activeSnapPoint": {
+      "snapPoint": {
         "type": "string | number",
         "description": "The currently active snap point."
       },
-      "defaultActiveSnapPoint": {
+      "defaultSnapPoint": {
         "type": "string | number",
-        "description": "The default active snap point of the bottom sheet.",
+        "description": "The default active snap point of the drawer.",
         "defaultValue": "1"
       },
-      "onActiveSnapPointChange": {
+      "onSnapPointChange": {
         "type": "(details: SnapPointChangeDetails) => void",
         "description": "Callback fired when the active snap point changes."
       },

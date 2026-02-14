@@ -56,7 +56,7 @@ import { ImSpinner3 } from "react-icons/im"
 import { css } from "styled-system/css"
 import { center } from "styled-system/patterns"
 import { Playground } from "../components/playground"
-import { BottomSheet } from "./bottom-sheet"
+import { Drawer } from "./drawer"
 import { FloatingPanel } from "./floating-panel"
 import { Listbox } from "./listbox"
 import { Marquee } from "./marquee"
@@ -100,8 +100,8 @@ const components = {
       }}
     />
   ),
-  BottomSheet: () => (
-    <Playground name="bottom-sheet" component={BottomSheet} defaultProps={{}} />
+  Drawer: () => (
+    <Playground name="drawer" component={Drawer} defaultProps={{}} />
   ),
   Carousel: () => (
     <Playground

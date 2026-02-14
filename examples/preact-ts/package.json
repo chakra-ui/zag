@@ -17,7 +17,7 @@
     "@zag-js/async-list": "workspace:*",
     "@zag-js/auto-resize": "workspace:*",
     "@zag-js/avatar": "workspace:*",
-    "@zag-js/bottom-sheet": "workspace:*",
+    "@zag-js/drawer": "workspace:*",
     "@zag-js/cascade-select": "workspace:*",
     "@zag-js/carousel": "workspace:*",
     "@zag-js/checkbox": "workspace:*",

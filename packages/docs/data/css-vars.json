@@ -8,11 +8,11 @@
       "--marker-value": "The marker value value for the Marker"
     }
   },
-  "bottom-sheet": {
+  "drawer": {
     "Content": {
-      "--bottom-sheet-translate": "The bottom sheet translate value for the Content",
+      "--drawer-translate": "The drawer translate value for the Content",
       "--layer-index": "The index of the dismissable in the layer stack",
-      "--nested-layer-count": "The number of nested bottom-sheets"
+      "--nested-layer-count": "The number of nested drawers"
     },
     "Backdrop": {
       "--layer-index": "The index of the dismissable in the layer stack"

@@ -78,7 +78,7 @@ const sidebar: Record<"docs", SidebarItem[]> = {
         { type: "doc", label: "Accordion", id: "accordion" },
         { type: "doc", label: "Angle Slider", id: "angle-slider" },
         { type: "doc", label: "Avatar", id: "avatar" },
-        // { type: "doc", label: "Bottom Sheet", id: "bottom-sheet", beta: true },
+        // { type: "doc", label: "Drawer", id: "drawer", beta: true },
         { type: "doc", label: "Carousel", id: "carousel" },
         { type: "doc", label: "Checkbox", id: "checkbox" },
         { type: "doc", label: "Clipboard", id: "clipboard" },

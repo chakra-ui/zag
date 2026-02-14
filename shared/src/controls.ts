@@ -319,10 +319,12 @@ export const passwordInputControls = defineControls({
   ignorePasswordManagers: { type: "boolean", defaultValue: false },
 })
 
-export const bottomSheetControls = defineControls({
+export const drawerControls = defineControls({
   swipeVelocityThreshold: { type: "number", defaultValue: 700 },
   closeThreshold: { type: "number", defaultValue: 0.25 },
   preventDragOnScroll: { type: "boolean", defaultValue: true },
+  swipeDirection: { type: "select", options: ["down", "up", "left", "right"] as const, defaultValue: "down" },
+  snapToSequentialPoints: { type: "boolean", defaultValue: false },
 })
 
 export const scrollAreaControls = defineControls({

@@ -87,14 +87,14 @@
       "data-state": "\"hidden\" | \"visible\""
     }
   },
-  "bottom-sheet": {
+  "drawer": {
     "Content": {
-      "data-scope": "bottom-sheet",
+      "data-scope": "drawer",
       "data-part": "content",
       "data-state": "\"open\" | \"closed\""
     },
     "Backdrop": {
-      "data-scope": "bottom-sheet",
+      "data-scope": "drawer",
       "data-part": "backdrop",
       "data-state": "\"open\" | \"closed\""
     }

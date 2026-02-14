@@ -22,7 +22,7 @@
     "@zag-js/anatomy-icons": "workspace:*",
     "@zag-js/angle-slider": "workspace:*",
     "@zag-js/avatar": "workspace:*",
-    "@zag-js/bottom-sheet": "workspace:*",
+    "@zag-js/drawer": "workspace:*",
     "@zag-js/carousel": "workspace:*",
     "@zag-js/checkbox": "workspace:*",
     "@zag-js/clipboard": "workspace:*",
