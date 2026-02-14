@@ -2,22 +2,21 @@ export type { FocusOutsideEvent, InteractOutsideEvent, PointerDownOutsideEvent }
 export { anatomy } from "./drawer.anatomy"
 export { connect } from "./drawer.connect"
 export { machine } from "./drawer.machine"
-export { connectStack, createStack } from "./drawer.stack"
 export * from "./drawer.props"
+export { connectStack, createStack } from "./drawer.stack"
 export type {
   DrawerApi as Api,
-  DrawerMachine as Machine,
-  DrawerProps as Props,
+  ContentProps,
+  DrawerStack,
   DrawerStackApi,
-  DrawerStackApiDetails,
-  DrawerService as Service,
+  DrawerStackSnapshot,
   ElementIds,
+  DrawerMachine as Machine,
   OpenChangeDetails,
+  DrawerProps as Props,
   ResolvedSnapPoint,
+  DrawerService as Service,
   SnapPoint,
   SnapPointChangeDetails,
   SwipeDirection,
-  ContentProps,
-  DrawerStack,
-  DrawerStackSnapshot,
 } from "./drawer.types"

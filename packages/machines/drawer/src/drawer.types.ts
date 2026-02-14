@@ -42,10 +42,6 @@ export interface DrawerStackApi<T extends PropTypes = PropTypes> {
   getIndentBackgroundProps(): T["element"]
 }
 
-export interface DrawerStackApiDetails {
-  snapshot: DrawerStackSnapshot
-}
-
 export type ElementIds = Partial<{
   backdrop: string
   positioner: string
