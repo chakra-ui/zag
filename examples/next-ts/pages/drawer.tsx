@@ -34,7 +34,7 @@ export default function Page() {
             <div data-no-drag className={styles.noDrag}>
               No drag area
             </div>
-            <div className={styles.scrollable}>
+            <div className={styles.scrollable} data-testid="scrollable">
               {Array.from({ length: 100 }).map((_element, index) => (
                 <div key={index}>Item {index}</div>
               ))}

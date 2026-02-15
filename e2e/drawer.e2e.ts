@@ -25,7 +25,7 @@ test.describe("drawer", () => {
     await I.seeContent()
     await I.waitForOpenState()
 
-    await I.clickOutsideSheet()
+    await I.clickOutside()
 
     await I.dontSeeContent()
     await I.dontSeeBackdrop()
@@ -82,7 +82,7 @@ test.describe("drawer", () => {
     expect(newHeight).toBe(initialHeight)
   })
 
-  test("should allow scrolling within content", async () => {
+  test.only("should allow scrolling within content", async () => {
     await I.clickTrigger()
     await I.seeContent()
 

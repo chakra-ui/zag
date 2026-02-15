@@ -41,7 +41,7 @@ export class DrawerModel extends Model {
   }
 
   private get scrollable() {
-    return this.page.locator(".scrollable")
+    return this.page.locator("[data-testid=scrollable]")
   }
 
   clickTrigger(opts: { delay?: number } = {}) {
@@ -118,8 +118,8 @@ export class DrawerModel extends Model {
     return scrollTop === 0
   }
 
-  clickOutsideSheet() {
-    return this.page.locator("main").click({ position: { x: 5, y: 5 } })
+  override clickOutside() {
+    return this.page.locator("body").click({ force: true, position: { x: 5, y: 5 } })
   }
 
   async waitForOpenState() {
