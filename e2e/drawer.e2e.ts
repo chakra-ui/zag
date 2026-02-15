@@ -82,7 +82,7 @@ test.describe("drawer", () => {
     expect(newHeight).toBe(initialHeight)
   })
 
-  test.only("should allow scrolling within content", async () => {
+  test("should allow scrolling within content", async () => {
     await I.clickTrigger()
     await I.seeContent()
 
