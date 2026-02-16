@@ -299,6 +299,7 @@ export function connect<T extends PropTypes>(service: Service<MenuSchema>, norma
         ...parts.content.attrs,
         id: dom.getContentId(scope),
         "aria-label": prop("aria-label"),
+        "aria-modal": ariaAttr(prop("modal")),
         hidden: !open,
         "data-state": open ? "open" : "closed",
         role: composite ? "menu" : "dialog",

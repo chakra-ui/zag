@@ -15,6 +15,7 @@ export const props = createProps<MenuProps>()([
   "id",
   "ids",
   "loopFocus",
+  "modal",
   "navigate",
   "onEscapeKeyDown",
   "onFocusOutside",
