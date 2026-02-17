@@ -12,4 +12,16 @@
   background: #f0f0f0;
   color: #444;
   border: solid 1px #ccc;
+
+  &[data-state="open"] {
+    animation: scaleFadeIn 0.15s ease-in-out;
+  }
+
+  &[data-state="closed"] {
+    animation: scaleFadeOut 0.1s ease-in-out;
+  }
+
+  &[data-instant] {
+    animation-duration: 0ms;
+  }
 }

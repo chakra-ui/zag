@@ -25,12 +25,13 @@ export function connect<T extends PropTypes>(
   const pageRange = computed("pageRange")
 
   const isFirstPage = page === 1
-  const isLastPage = page === totalPages
+  const isLastPage = page >= totalPages
 
   const pages = getTransformedRange({
     page,
     totalPages,
     siblingCount: prop("siblingCount"),
+    boundaryCount: prop("boundaryCount"),
   })
 
   return {
@@ -123,6 +124,24 @@ export function connect<T extends PropTypes>(
       })
     },
 
+    getFirstTriggerProps() {
+      return normalize.element({
+        id: dom.getFirstTriggerId(scope),
+        ...parts.firstTrigger.attrs,
+        dir: prop("dir"),
+        "data-disabled": dataAttr(isFirstPage),
+        "aria-label": translations.firstTriggerLabel,
+        onClick() {
+          send({ type: "FIRST_PAGE" })
+        },
+        ...(type === "button" && { disabled: isFirstPage, type: "button" }),
+        ...(type === "link" &&
+          getPageUrl && {
+            href: getPageUrl({ page: 1, pageSize }),
+          }),
+      })
+    },
+
     getNextTriggerProps() {
       return normalize.element({
         id: dom.getNextTriggerId(scope),
@@ -138,6 +157,24 @@ export function connect<T extends PropTypes>(
           getPageUrl &&
           nextPage && {
             href: getPageUrl({ page: nextPage, pageSize }),
+          }),
+      })
+    },
+
+    getLastTriggerProps() {
+      return normalize.element({
+        id: dom.getLastTriggerId(scope),
+        ...parts.lastTrigger.attrs,
+        dir: prop("dir"),
+        "data-disabled": dataAttr(isLastPage),
+        "aria-label": translations.lastTriggerLabel,
+        onClick() {
+          send({ type: "LAST_PAGE" })
+        },
+        ...(type === "button" && { disabled: isLastPage, type: "button" }),
+        ...(type === "link" &&
+          getPageUrl && {
+            href: getPageUrl({ page: totalPages, pageSize }),
           }),
       })
     },

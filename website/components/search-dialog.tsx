@@ -5,6 +5,7 @@ import Link from "next/link"
 import { BiSearch } from "react-icons/bi"
 import { GrReturn } from "react-icons/gr"
 import { HiDocument, HiHashtag } from "react-icons/hi"
+import { css } from "styled-system/css"
 import { Box, HStack, Stack, styled } from "styled-system/jsx"
 import { SearchTrigger } from "./search-trigger"
 
@@ -19,7 +20,7 @@ export function Search() {
           <styled.div
             position="fixed"
             inset="0"
-            bg="rgba(0, 0, 0, 0.7)"
+            bg="blackAlpha.700"
             zIndex="1000"
             {...dialog_api.getBackdropProps()}
           />
@@ -90,47 +91,45 @@ export function Search() {
                     const isLvl1 = item.type === "lvl1"
                     return (
                       <Link
-                        legacyBehavior
-                        passHref
                         key={item.id}
                         href={item.url}
+                        className={css({
+                          px: "3",
+                          py: "1",
+                          _selected: {
+                            bg: "bg.primary.bold",
+                            color: "text.inverse",
+                          },
+                          display: "flex",
+                          alignItems: "center",
+                          minHeight: "14",
+                          textDecoration: "none",
+                        })}
+                        {...combobox_api.getItemProps({ item })}
                       >
-                        <styled.a
-                          px="3"
-                          py="1"
-                          _selected={{ bg: "bg.primary.bold" }}
-                          display="flex"
-                          alignItems="center"
-                          minHeight="14"
-                          textDecoration="none"
-                          _hover={{ bg: "bg.subtle" }}
-                          key={item.url}
-                          {...combobox_api.getItemProps({ item })}
-                        >
-                          <Icon
-                            as={isLvl1 ? HiDocument : HiHashtag}
-                            opacity={0.4}
-                          />
+                        <Icon
+                          as={isLvl1 ? HiDocument : HiHashtag}
+                          opacity={0.4}
+                        />
 
-                          <Box flex="1" ml="4">
-                            {!isLvl1 && (
-                              <Box
-                                fontWeight="medium"
-                                fontSize="xs"
-                                opacity={0.7}
-                              >
-                                {item.hierarchy.lvl1}
-                              </Box>
-                            )}
-                            <Box fontWeight="semibold">{item.content}</Box>
-                          </Box>
+                        <Box flex="1" ml="4">
+                          {!isLvl1 && (
+                            <Box
+                              fontWeight="medium"
+                              fontSize="xs"
+                              opacity={0.7}
+                            >
+                              {item.hierarchy.lvl1}
+                            </Box>
+                          )}
+                          <Box fontWeight="semibold">{item.content}</Box>
+                        </Box>
 
-                          <Icon
-                            opacity="0.4"
-                            as={GrReturn}
-                            css={{ "& path": { stroke: "currentColor" } }}
-                          />
-                        </styled.a>
+                        <Icon
+                          opacity="0.4"
+                          as={GrReturn}
+                          css={{ "& path": { stroke: "currentColor" } }}
+                        />
                       </Link>
                     )
                   })}

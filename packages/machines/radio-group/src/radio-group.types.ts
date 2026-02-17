@@ -47,7 +47,15 @@ export interface RadioGroupProps extends DirectionProperty, CommonProperties {
    */
   disabled?: boolean | undefined
   /**
-   * Whether the checkbox is read-only
+   * If `true`, the radio group is marked as invalid.
+   */
+  invalid?: boolean | undefined
+  /**
+   * If `true`, the radio group is marked as required.
+   */
+  required?: boolean | undefined
+  /**
+   * Whether the radio group is read-only
    */
   readOnly?: boolean | undefined
   /**

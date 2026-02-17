@@ -33,18 +33,24 @@ export function connect<T extends PropTypes, V extends TreeNode = TreeNode>(
   const loadingStatus = context.get("loadingStatus")
   const renamingValue = context.get("renamingValue")
 
+  const skip = ({ indexPath }: { indexPath: number[] }) => {
+    const paths = collection.getValuePath(indexPath).slice(0, -1)
+    return paths.some((value) => !expandedValue.includes(value))
+  }
+
+  const firstNode = collection.getFirstNode(undefined, { skip })
+  const firstNodeValue = firstNode ? collection.getNodeValue(firstNode) : null
+
   function getNodeState(props: NodeProps): NodeState {
     const { node, indexPath } = props
     const value = collection.getNodeValue(node)
-    const firstNode = collection.getFirstNode()
-    const firstNodeValue = firstNode ? collection.getNodeValue(firstNode) : null
     return {
       id: dom.getNodeId(scope, value),
       value,
       indexPath,
       valuePath: collection.getValuePath(indexPath),
       disabled: Boolean(node.disabled),
-      focused: focusedValue == null ? firstNodeValue == value : focusedValue === value,
+      focused: focusedValue == null ? firstNodeValue === value : focusedValue === value,
       selected: selectedValue.includes(value),
       expanded: expandedValue.includes(value),
       loading: loadingStatus[value] === "loading",
@@ -87,7 +93,7 @@ export function connect<T extends PropTypes, V extends TreeNode = TreeNode>(
       send({ type: value ? "NODE.SELECT" : "SELECTED.ALL", value, isTrusted: false })
     },
     getVisibleNodes() {
-      return computed("visibleNodes").map(({ node }) => node)
+      return computed("visibleNodes")
     },
     focus(value) {
       dom.focusNode(scope, value)

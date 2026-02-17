@@ -1,0 +1,111 @@
+@layer recipes {
+  .Root {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+
+    &.Centre {
+      align-items: center;
+    }
+  }
+
+  .Track {
+    border-width: 1px;
+    height: 12px;
+    border-radius: 0.125rem;
+    background: var(--colors-bg-muted);
+    overflow: hidden;
+  }
+
+  .Range {
+    --translate-x: -100%;
+    height: 100%;
+    transition: width 0.2s ease-in-out;
+    background: #38a169;
+
+    &[dir="rtl"] {
+      --translate-x: 100%;
+    }
+
+    &[data-state="indeterminate"] {
+      width: 210%;
+      animation: 1s cubic-bezier(0.694, 0.0482, 0.335, 1) 0s infinite normal none
+        running linear_range;
+    }
+  }
+
+  .Circle {
+    --size: 120px;
+    --thickness: 12px;
+
+    &[data-state="indeterminate"] {
+      animation: circle 2s linear infinite;
+    }
+  }
+
+  .CircleRange {
+    stroke: #38a169;
+    transition-property: stroke-dasharray, stroke;
+    transition-duration: 0.6s;
+
+    &[data-state="indeterminate"] {
+      animation: circle_range 1.5s ease-in-out infinite;
+    }
+  }
+
+  .CircleTrack {
+    stroke: var(--colors-bg-muted);
+  }
+
+  .ButtonGroup {
+    display: flex;
+    gap: 0.5rem;
+  }
+
+  .Button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    text-align: start;
+    cursor: pointer;
+    font-weight: 500;
+    padding-inline: 1rem;
+    padding-block: 0.25rem;
+    background: var(--colors-bg-subtle);
+    border-width: 1px;
+
+    &:hover {
+      background: var(--colors-bg-bold);
+    }
+  }
+
+  @keyframes linear_range {
+    from {
+      transform: scaleX(1) translateX(var(--translate-x));
+    }
+    to {
+      transform: scaleX(0) translateX(var(--translate-x));
+    }
+  }
+
+  @keyframes circle {
+    from {
+      transform: rotate(0deg);
+    }
+    to {
+      transform: rotate(360deg);
+    }
+  }
+
+  @keyframes circle_range {
+    0% {
+      stroke-dasharray: 1, 400;
+      stroke-dashoffset: 0;
+    }
+    100% {
+      stroke-dasharray: 400, 400;
+      stroke-dashoffset: -260;
+    }
+  }
+}

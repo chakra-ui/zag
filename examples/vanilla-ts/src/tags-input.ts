@@ -1,6 +1,6 @@
 import * as tagsInput from "@zag-js/tags-input"
 import { Component } from "./component"
-import { normalizeProps, spreadProps, VanillaMachine } from "./lib"
+import { normalizeProps, VanillaMachine } from "@zag-js/vanilla"
 
 export class TagsInput extends Component<tagsInput.Props, tagsInput.Api> {
   initMachine(props: tagsInput.Props) {
@@ -66,34 +66,34 @@ export class TagsInput extends Component<tagsInput.Props, tagsInput.Api> {
       }
 
       // Always update props for item and its children (both new and existing)
-      spreadProps(itemEl, this.api.getItemProps(itemProps))
+      this.spreadProps(itemEl, this.api.getItemProps(itemProps))
 
       const itemPreview = itemEl.querySelector<HTMLElement>(".tags-input-item-preview")
-      if (itemPreview) spreadProps(itemPreview, this.api.getItemPreviewProps(itemProps))
+      if (itemPreview) this.spreadProps(itemPreview, this.api.getItemPreviewProps(itemProps))
 
       const itemText = itemEl.querySelector<HTMLElement>(".tags-input-item-text")
       if (itemText) {
-        spreadProps(itemText, this.api.getItemTextProps(itemProps))
+        this.spreadProps(itemText, this.api.getItemTextProps(itemProps))
         itemText.textContent = value
       }
 
       const itemInput = itemEl.querySelector<HTMLInputElement>(".tags-input-item-input")
-      if (itemInput) spreadProps(itemInput, this.api.getItemInputProps(itemProps))
+      if (itemInput) this.spreadProps(itemInput, this.api.getItemInputProps(itemProps))
 
       const itemDeleteBtn = itemEl.querySelector<HTMLElement>(".tags-input-item-delete")
-      if (itemDeleteBtn) spreadProps(itemDeleteBtn, this.api.getItemDeleteTriggerProps(itemProps))
+      if (itemDeleteBtn) this.spreadProps(itemDeleteBtn, this.api.getItemDeleteTriggerProps(itemProps))
     })
   }
 
   render() {
-    spreadProps(this.rootEl, this.api.getRootProps())
+    this.spreadProps(this.rootEl, this.api.getRootProps())
 
     const label = this.rootEl.querySelector<HTMLElement>(".tags-input-label")
-    if (label) spreadProps(label, this.api.getLabelProps())
+    if (label) this.spreadProps(label, this.api.getLabelProps())
 
     const control = this.rootEl.querySelector<HTMLElement>(".tags-input-control")
     if (control) {
-      spreadProps(control, this.api.getControlProps())
+      this.spreadProps(control, this.api.getControlProps())
 
       // Ensure input exists first (tags will be inserted before it)
       let input = control.querySelector<HTMLInputElement>(".tags-input-input")
@@ -114,13 +114,13 @@ export class TagsInput extends Component<tagsInput.Props, tagsInput.Api> {
       this.syncItems()
 
       // Update input props after items are synced
-      spreadProps(input, this.api.getInputProps())
+      this.spreadProps(input, this.api.getInputProps())
 
       // Update clear button props
-      if (clearBtn) spreadProps(clearBtn, this.api.getClearTriggerProps())
+      if (clearBtn) this.spreadProps(clearBtn, this.api.getClearTriggerProps())
     }
 
     const hiddenInput = this.rootEl.querySelector<HTMLInputElement>(".tags-input-hidden")
-    if (hiddenInput) spreadProps(hiddenInput, this.api.getHiddenInputProps())
+    if (hiddenInput) this.spreadProps(hiddenInput, this.api.getHiddenInputProps())
   }
 }

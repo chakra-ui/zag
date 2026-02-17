@@ -43,7 +43,7 @@ export const machine = createMachine<CollapsibleSchema>({
     })
   },
 
-  exit: ["clearInitial", "cleanupNode"],
+  exit: ["cleanupNode"],
 
   states: {
     closed: {

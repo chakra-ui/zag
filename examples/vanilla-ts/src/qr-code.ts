@@ -1,6 +1,6 @@
 import * as qrCode from "@zag-js/qr-code"
 import { Component } from "./component"
-import { normalizeProps, spreadProps, VanillaMachine } from "./lib"
+import { normalizeProps, VanillaMachine } from "@zag-js/vanilla"
 
 export class QrCode extends Component<qrCode.Props, qrCode.Api> {
   initMachine(props: qrCode.Props) {
@@ -14,12 +14,12 @@ export class QrCode extends Component<qrCode.Props, qrCode.Api> {
   }
 
   render() {
-    spreadProps(this.rootEl, this.api.getRootProps())
+    this.spreadProps(this.rootEl, this.api.getRootProps())
 
     const frame = this.rootEl.querySelector<HTMLElement>(".qr-code-frame")
-    if (frame) spreadProps(frame, this.api.getFrameProps())
+    if (frame) this.spreadProps(frame, this.api.getFrameProps())
 
     const pattern = this.rootEl.querySelector<HTMLElement>(".qr-code-pattern")
-    if (pattern) spreadProps(pattern, this.api.getPatternProps())
+    if (pattern) this.spreadProps(pattern, this.api.getPatternProps())
   }
 }

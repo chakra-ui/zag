@@ -1,6 +1,6 @@
 import * as numberInput from "@zag-js/number-input"
 import { Component } from "./component"
-import { normalizeProps, spreadProps, VanillaMachine } from "./lib"
+import { normalizeProps, VanillaMachine } from "@zag-js/vanilla"
 
 export class NumberInput extends Component<numberInput.Props, numberInput.Api> {
   initMachine(props: numberInput.Props) {
@@ -14,21 +14,21 @@ export class NumberInput extends Component<numberInput.Props, numberInput.Api> {
   }
 
   render() {
-    spreadProps(this.rootEl, this.api.getRootProps())
+    this.spreadProps(this.rootEl, this.api.getRootProps())
 
     const label = this.rootEl.querySelector<HTMLElement>(".number-input-label")
-    if (label) spreadProps(label, this.api.getLabelProps())
+    if (label) this.spreadProps(label, this.api.getLabelProps())
 
     const input = this.rootEl.querySelector<HTMLInputElement>(".number-input-input")
-    if (input) spreadProps(input, this.api.getInputProps())
+    if (input) this.spreadProps(input, this.api.getInputProps())
 
     const incrementBtn = this.rootEl.querySelector<HTMLElement>(".number-input-increment")
-    if (incrementBtn) spreadProps(incrementBtn, this.api.getIncrementTriggerProps())
+    if (incrementBtn) this.spreadProps(incrementBtn, this.api.getIncrementTriggerProps())
 
     const decrementBtn = this.rootEl.querySelector<HTMLElement>(".number-input-decrement")
-    if (decrementBtn) spreadProps(decrementBtn, this.api.getDecrementTriggerProps())
+    if (decrementBtn) this.spreadProps(decrementBtn, this.api.getDecrementTriggerProps())
 
     const scrubber = this.rootEl.querySelector<HTMLElement>(".number-input-scrubber")
-    if (scrubber) spreadProps(scrubber, this.api.getScrubberProps())
+    if (scrubber) this.spreadProps(scrubber, this.api.getScrubberProps())
   }
 }

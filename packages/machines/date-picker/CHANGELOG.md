@@ -1,5 +1,102 @@
 # @zag-js/date-picker
 
+## 1.33.1
+
+### Patch Changes
+
+- [`18e0812`](https://github.com/chakra-ui/zag/commit/18e0812292dc03f76284c058efa385de324c7d71) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix `visibleRangeText` to show correct format based on current
+  view (year/month/day).
+
+- Updated dependencies [[`9817e4c`](https://github.com/chakra-ui/zag/commit/9817e4cb3b18d93408b95e7c827d35801b01a267)]:
+  - @zag-js/dismissable@1.33.1
+  - @zag-js/anatomy@1.33.1
+  - @zag-js/core@1.33.1
+  - @zag-js/types@1.33.1
+  - @zag-js/utils@1.33.1
+  - @zag-js/date-utils@1.33.1
+  - @zag-js/dom-query@1.33.1
+  - @zag-js/live-region@1.33.1
+  - @zag-js/popper@1.33.1
+
+## 1.33.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.33.0
+  - @zag-js/core@1.33.0
+  - @zag-js/types@1.33.0
+  - @zag-js/utils@1.33.0
+  - @zag-js/date-utils@1.33.0
+  - @zag-js/dismissable@1.33.0
+  - @zag-js/dom-query@1.33.0
+  - @zag-js/live-region@1.33.0
+  - @zag-js/popper@1.33.0
+
+## 1.32.0
+
+### Minor Changes
+
+- [#2881](https://github.com/chakra-ui/zag/pull/2881)
+  [`7ba60aa`](https://github.com/chakra-ui/zag/commit/7ba60aa89c8ba03fbe8e5c6e5a94597141476d31) Thanks
+  [@IvanKalinin](https://github.com/IvanKalinin)! - Add `onVisibleRangeChange` callback to notify when the visible date
+  range changes.
+
+  This callback fires when:
+  - Clicking next/prev triggers
+  - Selecting a month from the month dropdown
+  - Selecting a year from the year dropdown
+  - Focusing a date outside the current visible range
+  - Any other action that changes the visible range
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.32.0
+  - @zag-js/core@1.32.0
+  - @zag-js/types@1.32.0
+  - @zag-js/utils@1.32.0
+  - @zag-js/date-utils@1.32.0
+  - @zag-js/dismissable@1.32.0
+  - @zag-js/dom-query@1.32.0
+  - @zag-js/live-region@1.32.0
+  - @zag-js/popper@1.32.0
+
+## 1.31.1
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.31.1
+  - @zag-js/core@1.31.1
+  - @zag-js/types@1.31.1
+  - @zag-js/utils@1.31.1
+  - @zag-js/date-utils@1.31.1
+  - @zag-js/dismissable@1.31.1
+  - @zag-js/dom-query@1.31.1
+  - @zag-js/live-region@1.31.1
+  - @zag-js/popper@1.31.1
+
+## 1.31.0
+
+### Patch Changes
+
+- [`2c61aac`](https://github.com/chakra-ui/zag/commit/2c61aac0a3a6f9ee02b8ba29bd9a8eff7b8ea3c2) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix issue where date picker input does not update format when
+  locale changes.
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.31.0
+  - @zag-js/core@1.31.0
+  - @zag-js/types@1.31.0
+  - @zag-js/utils@1.31.0
+  - @zag-js/date-utils@1.31.0
+  - @zag-js/dismissable@1.31.0
+  - @zag-js/dom-query@1.31.0
+  - @zag-js/live-region@1.31.0
+  - @zag-js/popper@1.31.0
+
 ## 1.30.0
 
 ### Patch Changes

@@ -8,11 +8,11 @@
       "--marker-value": "The marker value value for the Marker"
     }
   },
-  "bottom-sheet": {
+  "drawer": {
     "Content": {
-      "--bottom-sheet-translate": "The bottom sheet translate value for the Content",
+      "--drawer-translate": "The drawer translate value for the Content",
       "--layer-index": "The index of the dismissable in the layer stack",
-      "--nested-layer-count": "The number of nested bottom-sheets"
+      "--nested-layer-count": "The number of nested drawers"
     },
     "Backdrop": {
       "--layer-index": "The index of the dismissable in the layer stack"
@@ -152,13 +152,6 @@
       "--offset": "The offset position of the element"
     }
   },
-  "qr-code": {
-    "Root": {
-      "--qrcode-pixel-size": "The size of the Root",
-      "--qrcode-width": "The width of the Root",
-      "--qrcode-height": "The height of the Root"
-    }
-  },
   "radio-group": {
     "Indicator": {
       "--transition-property": "The transition property value for the Indicator",
@@ -168,12 +161,25 @@
       "--height": "The height of the element"
     }
   },
+  "qr-code": {
+    "Root": {
+      "--qrcode-pixel-size": "The size of the Root",
+      "--qrcode-width": "The width of the Root",
+      "--qrcode-height": "The height of the Root"
+    }
+  },
   "scroll-area": {
     "Root": {
       "--corner-width": "The width of the Root",
       "--corner-height": "The height of the Root",
       "--thumb-width": "The width of the slider thumb",
       "--thumb-height": "The height of the slider thumb"
+    },
+    "Viewport": {
+      "--scroll-area-overflow-x-start": "The distance from the horizontal start edge in pixels",
+      "--scroll-area-overflow-x-end": "The distance from the horizontal end edge in pixels",
+      "--scroll-area-overflow-y-start": "The distance from the vertical start edge in pixels",
+      "--scroll-area-overflow-y-end": "The distance from the vertical end edge in pixels"
     }
   },
   "steps": {
@@ -242,6 +248,31 @@
       "--slider-range-end": "The range end of the slider",
       "--translate-x": "The horizontal translation value",
       "--translate-y": "The vertical translation value"
+    }
+  },
+  "cascade-select": {
+    "Arrow": {
+      "--arrow-size": "The size of the arrow",
+      "--arrow-size-half": "Half the size of the arrow",
+      "--arrow-background": "Use this variable to style the arrow background",
+      "--arrow-offset": "The offset position of the arrow"
+    },
+    "Positioner": {
+      "--reference-width": "The width of the reference element",
+      "--reference-height": "The height of the root",
+      "--available-width": "The available width in viewport",
+      "--available-height": "The available height in viewport",
+      "--x": "The x position for transform",
+      "--y": "The y position for transform",
+      "--z-index": "The z-index value",
+      "--transform-origin": "The transform origin for animations"
+    },
+    "Content": {
+      "--layer-index": "The index of the dismissable in the layer stack",
+      "--nested-layer-count": "The number of nested cascade-selects"
+    },
+    "Backdrop": {
+      "--layer-index": "The index of the dismissable in the layer stack"
     }
   },
   "combobox": {

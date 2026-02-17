@@ -25,7 +25,7 @@ export const props = createProps<SliderProps>()([
   "readOnly",
   "step",
   "thumbAlignment",
-  "thumbAlignment",
+  "thumbCollisionBehavior",
   "thumbSize",
   "value",
   "defaultValue",

@@ -54,9 +54,7 @@ export type ElementIds = Partial<{
 }>
 
 export interface SelectProps<T extends CollectionItem = CollectionItem>
-  extends DirectionProperty,
-    CommonProperties,
-    InteractOutsideHandlers {
+  extends DirectionProperty, CommonProperties, InteractOutsideHandlers {
   /**
    * The item collection
    */
@@ -73,6 +71,10 @@ export interface SelectProps<T extends CollectionItem = CollectionItem>
    * The associate form of the underlying select.
    */
   form?: string | undefined
+  /**
+   * The autocomplete attribute for the hidden select. Enables browser autofill (e.g. "address-level1" for state).
+   */
+  autoComplete?: string | undefined
   /**
    * Whether the select is disabled
    */

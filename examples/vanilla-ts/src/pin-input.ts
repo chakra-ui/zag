@@ -1,6 +1,6 @@
 import * as pinInput from "@zag-js/pin-input"
 import { Component } from "./component"
-import { normalizeProps, spreadProps, VanillaMachine } from "./lib"
+import { normalizeProps, VanillaMachine } from "@zag-js/vanilla"
 
 export class PinInput extends Component<pinInput.Props, pinInput.Api> {
   initMachine(props: pinInput.Props) {
@@ -14,20 +14,20 @@ export class PinInput extends Component<pinInput.Props, pinInput.Api> {
   }
 
   render() {
-    spreadProps(this.rootEl, this.api.getRootProps())
+    this.spreadProps(this.rootEl, this.api.getRootProps())
 
     const label = this.rootEl.querySelector<HTMLElement>(".pin-input-label")
-    if (label) spreadProps(label, this.api.getLabelProps())
+    if (label) this.spreadProps(label, this.api.getLabelProps())
 
     const inputs = this.rootEl.querySelectorAll<HTMLInputElement>(".pin-input-field")
     inputs.forEach((input, index) => {
-      spreadProps(input, this.api.getInputProps({ index }))
+      this.spreadProps(input, this.api.getInputProps({ index }))
     })
 
     const hiddenInput = this.rootEl.querySelector<HTMLInputElement>(".pin-input-hidden")
-    if (hiddenInput) spreadProps(hiddenInput, this.api.getHiddenInputProps())
+    if (hiddenInput) this.spreadProps(hiddenInput, this.api.getHiddenInputProps())
 
     const control = this.rootEl.querySelector<HTMLElement>(".pin-input-control")
-    if (control) spreadProps(control, this.api.getControlProps())
+    if (control) this.spreadProps(control, this.api.getControlProps())
   }
 }

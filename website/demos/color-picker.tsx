@@ -1,6 +1,7 @@
 import * as colorPicker from "@zag-js/color-picker"
 import { Portal, normalizeProps, useMachine } from "@zag-js/react"
 import { useId } from "react"
+import styles from "../styles/machines/color-picker.module.css"
 
 interface ColorPickerProps extends Omit<colorPicker.Props, "id"> {}
 
@@ -15,77 +16,111 @@ export function ColorPicker(props: ColorPickerProps) {
   const api = colorPicker.connect(service, normalizeProps)
 
   return (
-    <div {...api.getRootProps()}>
-      <label {...api.getLabelProps()}>
+    <div className={styles.Root} {...api.getRootProps()}>
+      <label className={styles.Label} {...api.getLabelProps()}>
         <span>Color</span>: {api.value.toString("hex")}
       </label>
 
-      <div {...api.getControlProps()}>
-        <div>
-          <button {...api.getTriggerProps()}>
-            <div {...api.getTransparencyGridProps({ size: "10px" })} />
-            <div {...api.getSwatchProps({ value: api.value })} />
+      <div className={styles.Control} {...api.getControlProps()}>
+        <div className={styles.TriggerWrapper}>
+          <button className={styles.Trigger} {...api.getTriggerProps()}>
+            <div
+              className={styles.TransparencyGrid}
+              {...api.getTransparencyGridProps({ size: "10px" })}
+            />
+            <div
+              className={styles.Swatch}
+              {...api.getSwatchProps({ value: api.value })}
+            />
           </button>
         </div>
-        <input {...api.getChannelInputProps({ channel: "hex" })} />
-        <input {...api.getChannelInputProps({ channel: "alpha" })} />
+        <input
+          className={styles.ChannelInput}
+          {...api.getChannelInputProps({ channel: "hex" })}
+        />
+        <input
+          className={styles.ChannelInput}
+          {...api.getChannelInputProps({ channel: "alpha" })}
+        />
       </div>
 
       <Portal>
         <div {...api.getPositionerProps()}>
-          <div {...api.getContentProps()}>
+          <div className={styles.Content} {...api.getContentProps()}>
             <div>
-              <div {...api.getAreaProps()}>
-                <div {...api.getAreaBackgroundProps()} />
-                <div {...api.getAreaThumbProps()} />
+              <div className={styles.Area} {...api.getAreaProps()}>
+                <div
+                  className={styles.AreaBackground}
+                  {...api.getAreaBackgroundProps()}
+                />
+                <div
+                  className={styles.AreaThumb}
+                  {...api.getAreaThumbProps()}
+                />
               </div>
 
-              <div>
-                <div>
+              <div className={styles.SliderGroup}>
+                <div className={styles.Sliders}>
                   <div {...api.getChannelSliderProps({ channel: "hue" })}>
                     <div
+                      className={styles.ChannelSliderTrack}
                       {...api.getChannelSliderTrackProps({ channel: "hue" })}
                     />
                     <div
+                      className={styles.ChannelSliderThumb}
                       {...api.getChannelSliderThumbProps({ channel: "hue" })}
                     />
                   </div>
 
                   <div {...api.getChannelSliderProps({ channel: "alpha" })}>
-                    <div {...api.getTransparencyGridProps({ size: "12px" })} />
                     <div
+                      className={styles.TransparencyGrid}
+                      {...api.getTransparencyGridProps({ size: "12px" })}
+                    />
+                    <div
+                      className={styles.ChannelSliderTrack}
                       {...api.getChannelSliderTrackProps({ channel: "alpha" })}
                     />
                     <div
+                      className={styles.ChannelSliderThumb}
                       {...api.getChannelSliderThumbProps({ channel: "alpha" })}
                     />
                   </div>
                 </div>
-                <button {...api.getEyeDropperTriggerProps()}>
+                <button
+                  className={styles.EyeDropperTrigger}
+                  {...api.getEyeDropperTriggerProps()}
+                >
                   <EyeDropIcon />
                 </button>
               </div>
 
               <Show when={api.format.startsWith("hsl")}>
-                <div>
-                  <div>
-                    <input {...api.getChannelInputProps({ channel: "hue" })} />
+                <div className={styles.ChannelInputs}>
+                  <div className={styles.ChannelInputWrapper}>
+                    <input
+                      className={styles.ChannelInput}
+                      {...api.getChannelInputProps({ channel: "hue" })}
+                    />
                     <span>H</span>
                   </div>
-                  <div>
+                  <div className={styles.ChannelInputWrapper}>
                     <input
+                      className={styles.ChannelInput}
                       {...api.getChannelInputProps({ channel: "saturation" })}
                     />
                     <span>S</span>
                   </div>
-                  <div>
+                  <div className={styles.ChannelInputWrapper}>
                     <input
+                      className={styles.ChannelInput}
                       {...api.getChannelInputProps({ channel: "lightness" })}
                     />
                     <span>L</span>
                   </div>
-                  <div>
+                  <div className={styles.ChannelInputWrapper}>
                     <input
+                      className={styles.ChannelInput}
                       {...api.getChannelInputProps({ channel: "alpha" })}
                     />
                     <span>A</span>
@@ -94,23 +129,31 @@ export function ColorPicker(props: ColorPickerProps) {
               </Show>
 
               <Show when={api.format.startsWith("rgb")}>
-                <div>
-                  <div>
-                    <input {...api.getChannelInputProps({ channel: "red" })} />
+                <div className={styles.ChannelInputs}>
+                  <div className={styles.ChannelInputWrapper}>
+                    <input
+                      className={styles.ChannelInput}
+                      {...api.getChannelInputProps({ channel: "red" })}
+                    />
                     <span>R</span>
                   </div>
-                  <div>
+                  <div className={styles.ChannelInputWrapper}>
                     <input
+                      className={styles.ChannelInput}
                       {...api.getChannelInputProps({ channel: "green" })}
                     />
                     <span>G</span>
                   </div>
-                  <div>
-                    <input {...api.getChannelInputProps({ channel: "blue" })} />
+                  <div className={styles.ChannelInputWrapper}>
+                    <input
+                      className={styles.ChannelInput}
+                      {...api.getChannelInputProps({ channel: "blue" })}
+                    />
                     <span>B</span>
                   </div>
-                  <div>
+                  <div className={styles.ChannelInputWrapper}>
                     <input
+                      className={styles.ChannelInput}
                       {...api.getChannelInputProps({ channel: "alpha" })}
                     />
                     <span>A</span>
@@ -119,25 +162,31 @@ export function ColorPicker(props: ColorPickerProps) {
               </Show>
 
               <Show when={api.format.startsWith("hsb")}>
-                <div>
-                  <div>
-                    <input {...api.getChannelInputProps({ channel: "hue" })} />
+                <div className={styles.ChannelInputs}>
+                  <div className={styles.ChannelInputWrapper}>
+                    <input
+                      className={styles.ChannelInput}
+                      {...api.getChannelInputProps({ channel: "hue" })}
+                    />
                     <span>H</span>
                   </div>
-                  <div>
+                  <div className={styles.ChannelInputWrapper}>
                     <input
+                      className={styles.ChannelInput}
                       {...api.getChannelInputProps({ channel: "saturation" })}
                     />
                     <span>S</span>
                   </div>
-                  <div>
+                  <div className={styles.ChannelInputWrapper}>
                     <input
+                      className={styles.ChannelInput}
                       {...api.getChannelInputProps({ channel: "brightness" })}
                     />
                     <span>B</span>
                   </div>
-                  <div>
+                  <div className={styles.ChannelInputWrapper}>
                     <input
+                      className={styles.ChannelInput}
                       {...api.getChannelInputProps({ channel: "alpha" })}
                     />
                     <span>A</span>
@@ -145,18 +194,28 @@ export function ColorPicker(props: ColorPickerProps) {
                 </div>
               </Show>
 
-              <hr />
+              <hr className={styles.Separator} />
 
-              <div {...api.getSwatchGroupProps()}>
+              <div
+                className={styles.SwatchGroup}
+                {...api.getSwatchGroupProps()}
+              >
                 <p>Swatches</p>
                 {presets.map((preset) => (
                   <button
+                    className={styles.SwatchTrigger}
                     key={preset}
                     {...api.getSwatchTriggerProps({ value: preset })}
                   >
                     <div>
-                      <div {...api.getTransparencyGridProps({ size: "4px" })} />
-                      <div {...api.getSwatchProps({ value: preset })} />
+                      <div
+                        className={styles.TransparencyGrid}
+                        {...api.getTransparencyGridProps({ size: "4px" })}
+                      />
+                      <div
+                        className={styles.Swatch}
+                        {...api.getSwatchProps({ value: preset })}
+                      />
                     </div>
                   </button>
                 ))}

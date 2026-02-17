@@ -1,6 +1,7 @@
 import * as pagination from "@zag-js/pagination"
 import { normalizeProps, useMachine } from "@zag-js/react"
 import { useId } from "react"
+import styles from "../styles/machines/pagination.module.css"
 
 interface PaginationProps extends Omit<pagination.Props, "id"> {}
 
@@ -17,9 +18,13 @@ export function Pagination(props: PaginationProps) {
     <>
       {api.totalPages > 1 && (
         <nav {...api.getRootProps()}>
-          <ul role="pagination">
+          <ul className={styles.List} role="pagination">
             <li>
-              <a href="#previous" {...api.getPrevTriggerProps()}>
+              <a
+                className={styles.PrevTrigger}
+                href="#previous"
+                {...api.getPrevTriggerProps()}
+              >
                 &lt; <span>Previous Page</span>
               </a>
             </li>
@@ -27,7 +32,11 @@ export function Pagination(props: PaginationProps) {
               if (page.type === "page")
                 return (
                   <li key={page.value}>
-                    <a href={`#${page.value}`} {...api.getItemProps(page)}>
+                    <a
+                      className={styles.Item}
+                      href={`#${page.value}`}
+                      {...api.getItemProps(page)}
+                    >
                       {page.value}
                     </a>
                   </li>
@@ -35,12 +44,21 @@ export function Pagination(props: PaginationProps) {
               else
                 return (
                   <li key={`ellipsis-${i}`}>
-                    <span {...api.getEllipsisProps({ index: i })}>&#8230;</span>
+                    <span
+                      className={styles.Ellipsis}
+                      {...api.getEllipsisProps({ index: i })}
+                    >
+                      &#8230;
+                    </span>
                   </li>
                 )
             })}
             <li>
-              <a href="#next" {...api.getNextTriggerProps()}>
+              <a
+                className={styles.NextTrigger}
+                href="#next"
+                {...api.getNextTriggerProps()}
+              >
                 &gt; <span>Next Page</span>
               </a>
             </li>

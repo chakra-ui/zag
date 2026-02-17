@@ -88,7 +88,7 @@ export const machine = createMachine<CarouselSchema>({
     track([() => context.get("page")], () => {
       action(["scrollToPage", "focusIndicatorEl"])
     })
-    track([() => prop("orientation"), () => prop("autoSize")], () => {
+    track([() => prop("orientation"), () => prop("autoSize"), () => prop("dir")], () => {
       action(["setSnapPoints", "scrollToPage"])
     })
     track([() => prop("slideCount")], () => {

@@ -1,6 +1,6 @@
 import * as carousel from "@zag-js/carousel"
 import { Component } from "./component"
-import { normalizeProps, spreadProps, VanillaMachine } from "./lib"
+import { normalizeProps, VanillaMachine } from "@zag-js/vanilla"
 
 export class Carousel extends Component<carousel.Props, carousel.Api> {
   images: string[] = []
@@ -52,7 +52,7 @@ export class Carousel extends Component<carousel.Props, carousel.Api> {
       }
 
       // Update props
-      spreadProps(itemEl, this.api.getItemProps({ index }))
+      this.spreadProps(itemEl, this.api.getItemProps({ index }))
 
       const img = itemEl.querySelector("img")
       if (img) img.src = image
@@ -83,33 +83,33 @@ export class Carousel extends Component<carousel.Props, carousel.Api> {
       }
 
       // Update props
-      spreadProps(indicatorEl, this.api.getIndicatorProps({ index }))
+      this.spreadProps(indicatorEl, this.api.getIndicatorProps({ index }))
     })
   }
 
   render() {
-    spreadProps(this.rootEl, this.api.getRootProps())
+    this.spreadProps(this.rootEl, this.api.getRootProps())
 
     const control = this.rootEl.querySelector<HTMLElement>(".carousel-control")
-    if (control) spreadProps(control, this.api.getControlProps())
+    if (control) this.spreadProps(control, this.api.getControlProps())
 
     const autoplayBtn = this.rootEl.querySelector<HTMLElement>(".carousel-autoplay")
     if (autoplayBtn) {
-      spreadProps(autoplayBtn, this.api.getAutoplayTriggerProps())
+      this.spreadProps(autoplayBtn, this.api.getAutoplayTriggerProps())
       autoplayBtn.textContent = this.api.isPlaying ? "Stop" : "Play"
     }
 
     const prevBtn = this.rootEl.querySelector<HTMLElement>(".carousel-prev")
-    if (prevBtn) spreadProps(prevBtn, this.api.getPrevTriggerProps())
+    if (prevBtn) this.spreadProps(prevBtn, this.api.getPrevTriggerProps())
 
     const nextBtn = this.rootEl.querySelector<HTMLElement>(".carousel-next")
-    if (nextBtn) spreadProps(nextBtn, this.api.getNextTriggerProps())
+    if (nextBtn) this.spreadProps(nextBtn, this.api.getNextTriggerProps())
 
     const itemGroup = this.rootEl.querySelector<HTMLElement>(".carousel-item-group")
-    if (itemGroup) spreadProps(itemGroup, this.api.getItemGroupProps())
+    if (itemGroup) this.spreadProps(itemGroup, this.api.getItemGroupProps())
 
     const indicatorGroup = this.rootEl.querySelector<HTMLElement>(".carousel-indicator-group")
-    if (indicatorGroup) spreadProps(indicatorGroup, this.api.getIndicatorGroupProps())
+    if (indicatorGroup) this.spreadProps(indicatorGroup, this.api.getIndicatorGroupProps())
 
     // Sync items and indicators
     this.syncItems()

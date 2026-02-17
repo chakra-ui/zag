@@ -45,6 +45,7 @@ export type ElementIds = Partial<{
   itemName: (id: string) => string
   itemSizeText: (id: string) => string
   itemPreview: (id: string) => string
+  itemDeleteTrigger: (id: string) => string
 }>
 
 export interface IntlTranslations {
@@ -143,6 +144,10 @@ export interface FileUploadProps extends LocaleProperties, CommonProperties {
    */
   invalid?: boolean | undefined
   /**
+   * Whether the file input is read-only
+   */
+  readOnly?: boolean | undefined
+  /**
    * Function to transform the accepted files to apply transformations
    */
   transformFiles?: ((files: File[]) => Promise<File[]>) | undefined
@@ -238,9 +243,21 @@ export interface FileUploadApi<T extends PropTypes = PropTypes> {
    */
   disabled: boolean
   /**
+   * Whether the file input is in read-only mode
+   */
+  readOnly: boolean
+  /**
    * Whether files are currently being transformed via `transformFiles`
    */
   transforming: boolean
+  /**
+   * Whether the maximum number of files has been reached
+   */
+  maxFilesReached: boolean
+  /**
+   * The number of files that can still be added
+   */
+  remainingFiles: number
   /**
    * Function to open the file dialog
    */

@@ -3,7 +3,7 @@ import { defineConfig } from "@pandacss/dev"
 export default defineConfig({
   preflight: true,
   include: [
-    "./pages/**/*.{js,jsx,ts,tsx}",
+    "./app/**/*.{js,jsx,ts,tsx}",
     "./components/**/*.{js,jsx,ts,tsx}",
     "./layouts/**/*.{js,jsx,ts,tsx}",
     "./demos/**/*.{js,jsx,ts,tsx}",
@@ -15,19 +15,21 @@ export default defineConfig({
     extend: {
       tokens: {
         colors: {
+          // Neutral grays - minimal chroma for clean borders
           gray: {
-            50: { value: "#f7fafc" },
-            100: { value: "#edf2f7" },
-            200: { value: "#e2e8f0" },
-            300: { value: "#cbd5e0" },
-            400: { value: "#a0aec0" },
-            500: { value: "#718096" },
-            600: { value: "#4a5568" },
-            700: { value: "#2d3748" },
-            800: { value: "#1a202c" },
-            900: { value: "#171923" },
-            950: { value: "#0f172a" },
+            50: { value: "#fafafa" },
+            100: { value: "#f4f4f5" },
+            200: { value: "#e4e4e7" },
+            300: { value: "#d4d4d8" },
+            400: { value: "#a1a1aa" },
+            500: { value: "#71717a" },
+            600: { value: "#52525b" },
+            700: { value: "#3f3f46" },
+            800: { value: "#27272a" },
+            900: { value: "#18181b" },
+            950: { value: "#09090b" },
           },
+          // Original Chakra green palette
           green: {
             50: { value: "#F0FFF4" },
             100: { value: "#C6F6D5" },
@@ -39,7 +41,7 @@ export default defineConfig({
             700: { value: "#276749" },
             800: { value: "#22543D" },
             900: { value: "#1C4532" },
-            950: { value: "#064e3b" },
+            950: { value: "#0d2818" },
           },
           whiteAlpha: {
             50: { value: "rgba(255, 255, 255, 0.04)" },
@@ -69,8 +71,8 @@ export default defineConfig({
           },
         },
         fonts: {
-          heading: { value: "'Spline Sans', sans-serif" },
-          body: { value: "'Spline Sans', sans-serif" },
+          heading: { value: "var(--font-body), sans-serif" },
+          body: { value: "var(--font-body), sans-serif" },
           mono: {
             value:
               "ui-monospace, SFMono-Regular, 'SF Mono', Consolas, 'Liberation Mono', Menlo, monospace",
@@ -84,63 +86,65 @@ export default defineConfig({
               value: { _light: "{colors.white}", _dark: "{colors.gray.900}" },
             },
             subtle: {
-              value: { _light: "{colors.white}", _dark: "{colors.gray.800}" },
+              value: { _light: "{colors.white}", _dark: "{colors.gray.900}" },
             },
             bold: {
               value: {
                 _light: "{colors.gray.100}",
-                _dark: "{colors.gray.700}",
+                _dark: "{colors.gray.800}",
               },
             },
             muted: {
               value: {
                 _light: "{colors.gray.100}",
-                _dark: "{colors.gray.700}",
+                _dark: "{colors.gray.800}",
               },
             },
-
+            popover: {
+              value: { _light: "{colors.white}", _dark: "{colors.gray.800}" },
+            },
             primary: {
               subtle: {
-                value: "{colors.green.500}",
+                value: {
+                  _light: "{colors.green.500}",
+                  _dark: "{colors.green.400}",
+                },
               },
               bold: {
                 value: {
                   _light: "{colors.green.600}",
-                  _dark: "{colors.green.400}",
+                  _dark: "{colors.green.500}",
                 },
               },
             },
-
             secondary: {
               subtle: { value: "{colors.black}" },
               bold: {
                 value: {
                   _light: "{colors.gray.700}",
-                  _dark: "{colors.gray.900}",
+                  _dark: "{colors.gray.800}",
                 },
               },
             },
-
             tertiary: {
               bold: {
                 value: {
                   _light: "{colors.green.100}",
-                  _dark: "{colors.green.900}",
+                  _dark: "{colors.green.950}",
                 },
               },
               subtle: {
                 value: {
                   _light: "{colors.green.50}",
-                  _dark: "{colors.green.900}",
+                  _dark: "{colors.green.950}",
                 },
               },
             },
-
             code: {
               block: {
                 value: {
-                  _light: "hsl(230, 1%, 98%)",
-                  _dark: "{colors.gray.900}",
+                  _light: "{colors.gray.50}",
+                  _dark: "{colors.gray.800/20}",
                 },
               },
               inline: {
@@ -150,20 +154,13 @@ export default defineConfig({
                 },
               },
             },
-
-            header: {
-              value: {
-                _light: "{colors.whiteAlpha.900}",
-                _dark: "rgba(26, 32, 44, 0.92)",
-              },
-            },
           },
           text: {
             DEFAULT: {
               value: { _light: "{colors.gray.900}", _dark: "{colors.gray.50}" },
             },
             bold: {
-              value: { _light: "{colors.gray.900}", _dark: "{colors.gray.50}" },
+              value: { _light: "{colors.gray.950}", _dark: "{colors.white}" },
             },
             subtle: {
               value: {
@@ -173,24 +170,24 @@ export default defineConfig({
             },
             muted: {
               value: {
-                _light: "{colors.gray.600}",
-                _dark: "{colors.gray.400}",
+                _light: "{colors.gray.500}",
+                _dark: "{colors.gray.500}",
               },
             },
             inverse: {
-              value: { _light: "{colors.white}", _dark: "{colors.gray.800}" },
+              value: { _light: "{colors.white}", _dark: "{colors.gray.950}" },
             },
             primary: {
               bold: {
                 value: {
-                  _light: "{colors.green.500}",
+                  _light: "{colors.green.600}",
                   _dark: "{colors.green.400}",
                 },
               },
               subtle: {
                 value: {
-                  _light: "{colors.green.600}",
-                  _dark: "{colors.green.400}",
+                  _light: "{colors.green.700}",
+                  _dark: "{colors.green.300}",
                 },
               },
             },
@@ -199,30 +196,41 @@ export default defineConfig({
             DEFAULT: {
               value: {
                 _light: "{colors.gray.200}",
-                _dark: "{colors.gray.700}",
+                _dark: "{colors.whiteAlpha.100}",
               },
             },
             subtle: {
               value: {
                 _light: "{colors.gray.100}",
-                _dark: "{colors.gray.700}",
+                _dark: "{colors.whiteAlpha.50}",
               },
             },
             bold: {
               value: {
-                _light: "{colors.gray.200}",
-                _dark: "{colors.gray.700}",
+                _light: "{colors.gray.300}",
+                _dark: "{colors.whiteAlpha.200}",
               },
             },
             primary: {
               subtle: {
-                value: "{colors.green.500}",
+                value: {
+                  _light: "{colors.green.500}",
+                  _dark: "{colors.green.400}",
+                },
               },
               bold: {
                 value: {
                   _light: "{colors.green.600}",
-                  _dark: "{colors.green.400}",
+                  _dark: "{colors.green.500}",
                 },
+              },
+            },
+          },
+          shadow: {
+            DEFAULT: {
+              value: {
+                _light: "{colors.blackAlpha.400}",
+                _dark: "{colors.blackAlpha.700}",
               },
             },
           },
@@ -232,7 +240,7 @@ export default defineConfig({
       textStyles: {
         "display.2xl": {
           value: {
-            fontSize: { base: "4xl", sm: "5xl", md: "7xl" },
+            fontSize: { base: "4xl", md: "5xl" },
             fontWeight: "bold",
             lineHeight: "1.25",
             letterSpacing: "-0.025em",
@@ -240,7 +248,7 @@ export default defineConfig({
         },
         "display.xl": {
           value: {
-            fontSize: { base: "4xl", md: "6xl" },
+            fontSize: { base: "3xl", md: "4xl" },
             fontWeight: "bold",
             lineHeight: "1.25",
             letterSpacing: "-0.025em",
@@ -248,7 +256,7 @@ export default defineConfig({
         },
         "display.lg": {
           value: {
-            fontSize: { base: "3xl", md: "4xl" },
+            fontSize: { base: "2xl", md: "3xl" },
             fontWeight: "bold",
             letterSpacing: "-0.025em",
             lineHeight: "1.2",
@@ -322,7 +330,7 @@ export default defineConfig({
     },
 
     "*": {
-      borderColor: "border.bold",
+      borderColor: "border",
       borderStyle: "solid",
     },
 

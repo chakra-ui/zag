@@ -1,6 +1,6 @@
 import * as toggleGroup from "@zag-js/toggle-group"
 import { Component } from "./component"
-import { normalizeProps, spreadProps, VanillaMachine } from "./lib"
+import { normalizeProps, VanillaMachine } from "@zag-js/vanilla"
 
 export class ToggleGroup extends Component<toggleGroup.Props, toggleGroup.Api> {
   initMachine(props: toggleGroup.Props) {
@@ -16,13 +16,13 @@ export class ToggleGroup extends Component<toggleGroup.Props, toggleGroup.Api> {
   render() {
     const rootProps = this.api.getRootProps()
 
-    spreadProps(this.rootEl, rootProps)
+    this.spreadProps(this.rootEl, rootProps)
 
     const items = this.rootEl.querySelectorAll<HTMLElement>(".toggle-group-item")
     items.forEach((item) => {
       const value = item.dataset.value
       if (value) {
-        spreadProps(item, this.api.getItemProps({ value }))
+        this.spreadProps(item, this.api.getItemProps({ value }))
       }
     })
   }

@@ -117,4 +117,13 @@ export class SelectModel extends Model {
     const item = this.getItem(text)
     expect(await isInViewport(this.content, item)).toBe(true)
   }
+
+  autofill = async (value: string) => {
+    await this.page.evaluate((value) => {
+      const select = document.querySelector<HTMLSelectElement>("[data-scope='select'] select[aria-hidden]")
+      if (!select) throw new Error("Hidden select not found")
+      select.value = value
+      select.dispatchEvent(new Event("change", { bubbles: true }))
+    }, value)
+  }
 }

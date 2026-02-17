@@ -1,6 +1,6 @@
 import * as marquee from "@zag-js/marquee"
 import { Component } from "./component"
-import { normalizeProps, spreadProps, VanillaMachine } from "./lib"
+import { normalizeProps, VanillaMachine } from "@zag-js/vanilla"
 
 const marqueeData = [
   { name: "Apple", logo: "🍎" },
@@ -61,7 +61,7 @@ export class Marquee extends Component<marquee.Props, marquee.Api> {
       }
 
       // Always spread props
-      spreadProps(contentEl, this.api.getContentProps({ index }))
+      this.spreadProps(contentEl, this.api.getContentProps({ index }))
 
       // Update items
       const items = Array.from(contentEl.querySelectorAll<HTMLElement>(".marquee-item"))
@@ -69,7 +69,7 @@ export class Marquee extends Component<marquee.Props, marquee.Api> {
         const item = marqueeData[i]
         if (!item) return
 
-        spreadProps(itemEl, this.api.getItemProps())
+        this.spreadProps(itemEl, this.api.getItemProps())
 
         const logoEl = itemEl.querySelector<HTMLElement>(".marquee-logo")
         if (logoEl) logoEl.textContent = item.logo
@@ -81,16 +81,16 @@ export class Marquee extends Component<marquee.Props, marquee.Api> {
   }
 
   render() {
-    spreadProps(this.rootEl, this.api.getRootProps())
+    this.spreadProps(this.rootEl, this.api.getRootProps())
 
     const edgeStart = this.rootEl.querySelector<HTMLElement>(".marquee-edge-start")
-    if (edgeStart) spreadProps(edgeStart, this.api.getEdgeProps({ side: "start" }))
+    if (edgeStart) this.spreadProps(edgeStart, this.api.getEdgeProps({ side: "start" }))
 
     const viewport = this.rootEl.querySelector<HTMLElement>(".marquee-viewport")
-    if (viewport) spreadProps(viewport, this.api.getViewportProps())
+    if (viewport) this.spreadProps(viewport, this.api.getViewportProps())
 
     const edgeEnd = this.rootEl.querySelector<HTMLElement>(".marquee-edge-end")
-    if (edgeEnd) spreadProps(edgeEnd, this.api.getEdgeProps({ side: "end" }))
+    if (edgeEnd) this.spreadProps(edgeEnd, this.api.getEdgeProps({ side: "end" }))
 
     // Control buttons (query from document since they're outside root)
     const pauseBtn = this.doc.querySelector<HTMLElement>(".marquee-pause")

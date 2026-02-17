@@ -1,0 +1,117 @@
+"use client"
+
+import { CopyPageWidget } from "components/copy-page-widget"
+import { FrameworkSelect } from "components/framework-select"
+import { MdxFooter } from "components/mdx-footer"
+import { EditPageLink } from "components/mdx/edit-page-link"
+import { Search } from "components/search-dialog"
+import { Sidebar } from "components/sidebar"
+import { SkipNavContent, SkipNavLink } from "components/skip-nav"
+import { TableOfContents } from "components/toc"
+import { TopNavigation } from "components/top-navigation"
+import { usePathname } from "next/navigation"
+import { Box, Flex, Spacer, styled } from "styled-system/jsx"
+
+type DocsLayoutProps = {
+  children: React.ReactNode
+  doc: any
+  toc?: {
+    title?: string
+    data?: any[]
+    getSlug?: (slug: string) => string
+  }
+}
+
+export default function DocsLayout(props: DocsLayoutProps) {
+  const { children, doc, toc } = props
+  const tableOfContent = toc?.data ?? doc.frontmatter?.toc ?? []
+  const hideToc = tableOfContent.length < 2
+  const pathname = usePathname()
+
+  return (
+    <Box>
+      <SkipNavLink>Skip to main content</SkipNavLink>
+      <TopNavigation />
+      <styled.div pt="10">
+        <SkipNavContent />
+        <Box maxW="8xl" mx="auto" px={{ sm: "6", base: "4", md: "8" }}>
+          <Box
+            display={{ base: "none", lg: "block" }}
+            position="fixed"
+            zIndex={20}
+            bottom="0"
+            top="4rem"
+            left="max(0px, calc(50% - 45rem - calc(var(--scrollbar-width, 0px) / 2)))"
+            right="auto"
+            width="19.5rem"
+            pb="10"
+            px="8"
+            overflowY="auto"
+            overscrollBehavior="contain"
+          >
+            <Box position="relative">
+              <Box position="sticky" top="0" bg="bg.subtle" pb="8">
+                <Spacer height="10" bg="transparent" />
+                <Search />
+                <Spacer mt="px" height="5" bg="transparent" />
+                <FrameworkSelect />
+              </Box>
+              <Sidebar />
+            </Box>
+          </Box>
+
+          <Box
+            as="main"
+            className="mdx-content"
+            pl={{ lg: "19.5rem" }}
+            pt="4"
+            pr={{ xl: "16" }}
+          >
+            <Box mr={{ xl: "15.5rem" }}>
+              {doc?.title && (
+                <Flex alignItems="center" gap="4" mb="6">
+                  <styled.h1 textStyle="display.lg" maxW="85ch" flex="1">
+                    {doc.title}
+                  </styled.h1>
+                  {doc?.body?.raw && (
+                    <CopyPageWidget
+                      slug={pathname}
+                      content={doc.body.raw}
+                      title={doc.title}
+                    />
+                  )}
+                </Flex>
+              )}
+              {children}
+              {doc?.editUrl && (
+                <EditPageLink href={doc.editUrl}>
+                  Edit this page on GitHub
+                </EditPageLink>
+              )}
+              <MdxFooter />
+            </Box>
+          </Box>
+
+          <Box
+            py="10"
+            px="8"
+            overflowY="auto"
+            position="fixed"
+            top="3.8rem"
+            bottom="0"
+            right="max(0px,calc(50% - 45rem + calc(var(--scrollbar-width, 0px) / 2)))"
+            display={{ base: "none", xl: "block" }}
+            width="19.5rem"
+            visibility={hideToc ? "hidden" : undefined}
+          >
+            <TableOfContents
+              title={toc?.title}
+              data={tableOfContent}
+              getSlug={toc?.getSlug}
+            />
+          </Box>
+        </Box>
+      </styled.div>
+    </Box>
+  )
+}

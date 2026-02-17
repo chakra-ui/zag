@@ -1,5 +1,87 @@
 # @zag-js/file-upload
 
+## 1.33.1
+
+### Patch Changes
+
+- [`e847201`](https://github.com/chakra-ui/zag/commit/e847201a3d0b98d3b109d702f9942f0bfa25b97f) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix accessibility violations in file upload component
+  - Remove invalid `aria-readonly` from dropzone (not valid for `role="button"`)
+  - Add `aria-hidden` to hidden input to exclude from accessibility tree
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.33.1
+  - @zag-js/core@1.33.1
+  - @zag-js/types@1.33.1
+  - @zag-js/utils@1.33.1
+  - @zag-js/dom-query@1.33.1
+  - @zag-js/file-utils@1.33.1
+  - @zag-js/i18n-utils@1.33.1
+
+## 1.33.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.33.0
+  - @zag-js/core@1.33.0
+  - @zag-js/types@1.33.0
+  - @zag-js/utils@1.33.0
+  - @zag-js/dom-query@1.33.0
+  - @zag-js/file-utils@1.33.0
+  - @zag-js/i18n-utils@1.33.0
+
+## 1.32.0
+
+### Minor Changes
+
+- [`33393b7`](https://github.com/chakra-ui/zag/commit/33393b7f5698192e2330b5f35b17710edf8c7b6e) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - - Add `readOnly` prop to prevent file modifications while keeping
+  component visually active
+  - Add `maxFilesReached` and `remainingFiles` to exposed API
+  - Fix item element IDs to use `name-size` combination for uniqueness (prevents ID collisions with same-named files)
+
+### Patch Changes
+
+- [`b2f7e08`](https://github.com/chakra-ui/zag/commit/b2f7e083141bc9ac2c76d2158492a0ec7ab01098) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix issue where using `api.setClipboardFiles` doesn't run
+  `transformFiles` and validation functions
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.32.0
+  - @zag-js/core@1.32.0
+  - @zag-js/types@1.32.0
+  - @zag-js/utils@1.32.0
+  - @zag-js/dom-query@1.32.0
+  - @zag-js/file-utils@1.32.0
+  - @zag-js/i18n-utils@1.32.0
+
+## 1.31.1
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.31.1
+  - @zag-js/core@1.31.1
+  - @zag-js/types@1.31.1
+  - @zag-js/utils@1.31.1
+  - @zag-js/dom-query@1.31.1
+  - @zag-js/file-utils@1.31.1
+  - @zag-js/i18n-utils@1.31.1
+
+## 1.31.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.31.0
+  - @zag-js/core@1.31.0
+  - @zag-js/types@1.31.0
+  - @zag-js/utils@1.31.0
+  - @zag-js/dom-query@1.31.0
+  - @zag-js/file-utils@1.31.0
+  - @zag-js/i18n-utils@1.31.0
+
 ## 1.30.0
 
 ### Patch Changes

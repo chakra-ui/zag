@@ -1,5 +1,44 @@
 # @zag-js/auto-resize
 
+## 1.33.1
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/dom-query@1.33.1
+
+## 1.33.0
+
+### Patch Changes
+
+- [`5bd226d`](https://github.com/chakra-ui/zag/commit/5bd226d4f1aede9a43f4d63bc32d78ffbcc19c4c) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix issue where change event is not emitted after clearing a
+  controlled textarea programmatically.
+
+- Updated dependencies []:
+  - @zag-js/dom-query@1.33.0
+
+## 1.32.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/dom-query@1.32.0
+
+## 1.31.1
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/dom-query@1.31.1
+
+## 1.31.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/dom-query@1.31.0
+
 ## 1.30.0
 
 ### Patch Changes

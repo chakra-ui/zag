@@ -1,11 +1,13 @@
-import { styled, Box, Flex, HStack, Spacer } from "styled-system/jsx"
+import { styled, Box, Flex, HStack, Spacer, Stack } from "styled-system/jsx"
 import * as dialog from "@zag-js/dialog"
 import { Portal, normalizeProps, useMachine } from "@zag-js/react"
 import { useRouteChange } from "lib/use-route-change"
+import Link from "next/link"
 import { useEffect, useRef } from "react"
 import { HiMenu, HiX } from "react-icons/hi"
 import useMatchMedia from "use-match-media-hook"
 import { Button } from "components/ui/button"
+import { css } from "styled-system/css"
 import { FrameworkSelect } from "./framework-select"
 import { LogoWithLink } from "./logo"
 import { Sidebar } from "./sidebar"
@@ -78,9 +80,19 @@ export function MobileNavigation() {
               </Flex>
               <Box px="8">
                 <Spacer height="10" bg="transparent" />
-                <Box mb="8">
+                <Stack gap="6" mb="8">
                   <FrameworkSelect />
-                </Box>
+                  <Link
+                    href="/showcase"
+                    className={css({
+                      fontWeight: "medium",
+                      color: "fg.muted",
+                      _hover: { color: "fg" },
+                    })}
+                  >
+                    Showcase
+                  </Link>
+                </Stack>
                 <Sidebar />
               </Box>
             </Box>

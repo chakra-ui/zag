@@ -1,6 +1,6 @@
 import * as signaturePad from "@zag-js/signature-pad"
 import { Component } from "./component"
-import { normalizeProps, spreadProps, VanillaMachine } from "./lib"
+import { normalizeProps, VanillaMachine } from "@zag-js/vanilla"
 
 export class SignaturePad extends Component<signaturePad.Props, signaturePad.Api> {
   initMachine(props: signaturePad.Props) {
@@ -40,7 +40,7 @@ export class SignaturePad extends Component<signaturePad.Props, signaturePad.Api
         segment.appendChild(pathEl)
       }
 
-      spreadProps(pathEl, this.api.getSegmentPathProps({ path: pathData }))
+      this.spreadProps(pathEl, this.api.getSegmentPathProps({ path: pathData }))
     })
 
     // Handle current path
@@ -54,7 +54,7 @@ export class SignaturePad extends Component<signaturePad.Props, signaturePad.Api
         segment.appendChild(currentPathEl)
       }
 
-      spreadProps(currentPathEl, this.api.getSegmentPathProps({ path: this.api.currentPath }))
+      this.spreadProps(currentPathEl, this.api.getSegmentPathProps({ path: this.api.currentPath }))
     } else {
       // Remove current path element if it exists but there's no current path
       const currentPathEl = segment.querySelector(".signature-pad-current-path")
@@ -63,27 +63,27 @@ export class SignaturePad extends Component<signaturePad.Props, signaturePad.Api
   }
 
   render() {
-    spreadProps(this.rootEl, this.api.getRootProps())
+    this.spreadProps(this.rootEl, this.api.getRootProps())
 
     const label = this.rootEl.querySelector<HTMLElement>(".signature-pad-label")
-    if (label) spreadProps(label, this.api.getLabelProps())
+    if (label) this.spreadProps(label, this.api.getLabelProps())
 
     const control = this.rootEl.querySelector<HTMLElement>(".signature-pad-control")
-    if (control) spreadProps(control, this.api.getControlProps())
+    if (control) this.spreadProps(control, this.api.getControlProps())
 
     const segment = this.rootEl.querySelector<SVGSVGElement>(".signature-pad-segment")
-    if (segment) spreadProps(segment, this.api.getSegmentProps())
+    if (segment) this.spreadProps(segment, this.api.getSegmentProps())
 
     const guide = this.rootEl.querySelector<HTMLElement>(".signature-pad-guide")
-    if (guide) spreadProps(guide, this.api.getGuideProps())
+    if (guide) this.spreadProps(guide, this.api.getGuideProps())
 
     const clearBtn = this.rootEl.querySelector<HTMLElement>(".signature-pad-clear")
-    if (clearBtn) spreadProps(clearBtn, this.api.getClearTriggerProps())
+    if (clearBtn) this.spreadProps(clearBtn, this.api.getClearTriggerProps())
 
     const hiddenInput = this.rootEl.querySelector<HTMLInputElement>(".signature-pad-hidden-input")
     if (hiddenInput) {
       this.api.getDataUrl("image/png").then((url) => {
-        spreadProps(hiddenInput, this.api.getHiddenInputProps({ value: url }))
+        this.spreadProps(hiddenInput, this.api.getHiddenInputProps({ value: url }))
       })
     }
 

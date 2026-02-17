@@ -1,6 +1,6 @@
 import * as select from "@zag-js/select"
 import { Component } from "./component"
-import { normalizeProps, spreadProps, VanillaMachine } from "./lib"
+import { normalizeProps, VanillaMachine } from "@zag-js/vanilla"
 
 interface Item {
   label: string
@@ -75,17 +75,17 @@ export class Select extends Component<select.Props, select.Api> {
       }
 
       // Always spread props
-      spreadProps(itemEl, this.api.getItemProps({ item }))
+      this.spreadProps(itemEl, this.api.getItemProps({ item }))
 
       const textEl = itemEl.querySelector<HTMLElement>(".select-item-text")
       if (textEl) {
-        spreadProps(textEl, this.api.getItemTextProps({ item }))
+        this.spreadProps(textEl, this.api.getItemTextProps({ item }))
         textEl.textContent = item.label
       }
 
       const indicatorEl = itemEl.querySelector<HTMLElement>(".select-item-indicator")
       if (indicatorEl) {
-        spreadProps(indicatorEl, this.api.getItemIndicatorProps({ item }))
+        this.spreadProps(indicatorEl, this.api.getItemIndicatorProps({ item }))
       }
     })
 
@@ -124,16 +124,16 @@ export class Select extends Component<select.Props, select.Api> {
   }
 
   render() {
-    spreadProps(this.rootEl, this.api.getRootProps())
+    this.spreadProps(this.rootEl, this.api.getRootProps())
 
     const label = this.rootEl.querySelector<HTMLElement>(".select-label")
-    if (label) spreadProps(label, this.api.getLabelProps())
+    if (label) this.spreadProps(label, this.api.getLabelProps())
 
     const control = this.rootEl.querySelector<HTMLElement>(".select-control")
-    if (control) spreadProps(control, this.api.getControlProps())
+    if (control) this.spreadProps(control, this.api.getControlProps())
 
     const trigger = this.rootEl.querySelector<HTMLElement>(".select-trigger")
-    if (trigger) spreadProps(trigger, this.api.getTriggerProps())
+    if (trigger) this.spreadProps(trigger, this.api.getTriggerProps())
 
     const valueText = this.rootEl.querySelector<HTMLElement>(".select-value-text")
     if (valueText) {
@@ -141,19 +141,19 @@ export class Select extends Component<select.Props, select.Api> {
     }
 
     const indicator = this.rootEl.querySelector<HTMLElement>(".select-indicator")
-    if (indicator) spreadProps(indicator, this.api.getIndicatorProps())
+    if (indicator) this.spreadProps(indicator, this.api.getIndicatorProps())
 
     const clearBtn = this.rootEl.querySelector<HTMLElement>(".select-clear")
-    if (clearBtn) spreadProps(clearBtn, this.api.getClearTriggerProps())
+    if (clearBtn) this.spreadProps(clearBtn, this.api.getClearTriggerProps())
 
     const hiddenSelect = this.rootEl.querySelector<HTMLSelectElement>(".select-hidden-select")
-    if (hiddenSelect) spreadProps(hiddenSelect, this.api.getHiddenSelectProps())
+    if (hiddenSelect) this.spreadProps(hiddenSelect, this.api.getHiddenSelectProps())
 
     const positioner = this.rootEl.querySelector<HTMLElement>(".select-positioner")
-    if (positioner) spreadProps(positioner, this.api.getPositionerProps())
+    if (positioner) this.spreadProps(positioner, this.api.getPositionerProps())
 
     const content = this.rootEl.querySelector<HTMLElement>(".select-content")
-    if (content) spreadProps(content, this.api.getContentProps())
+    if (content) this.spreadProps(content, this.api.getContentProps())
 
     // Sync items after all other props are set
     this.syncItems()

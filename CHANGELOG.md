@@ -4,6 +4,210 @@ All notable changes to this project will be documented in this file.
 
 > For v0.x changelog, see the [v0 branch](https://github.com/chakra-ui/zag/blob/v0/CHANGELOG.md)
 
+## [1.33.1](./#1.33.1) - 2026-01-28
+
+### Fixed
+
+- **Date Picker**: Fix `visibleRangeText` to show correct format based on current view (year/month/day)
+
+- **Dismissable**: Fix issue where closing a nested dialog/popover would incorrectly close its parent layers
+
+- **File Upload**: Fix accessibility violations in file upload component
+  - Remove invalid `aria-readonly` from dropzone (not valid for `role="button"`)
+  - Add `aria-hidden` to hidden input to exclude from accessibility tree
+
+- **Menu**: Fix glitchy submenu behavior when hovering between trigger items quickly
+
+## [1.33.0](./#1.33.0) - 2026-01-24
+
+### Added
+
+- **Scroll Area**: Add overflow CSS variables to the viewport element for creating scroll fade effects:
+  - `--scroll-area-overflow-x-start`: Distance from horizontal start edge in pixels
+  - `--scroll-area-overflow-x-end`: Distance from horizontal end edge in pixels
+  - `--scroll-area-overflow-y-start`: Distance from vertical start edge in pixels
+  - `--scroll-area-overflow-y-end`: Distance from vertical end edge in pixels
+
+- **Slider**: Add `thumbCollisionBehavior` prop to control how thumbs behave when they collide during pointer
+  interactions:
+  - `none` (default): Thumbs cannot move past each other; excess movement is ignored.
+  - `push`: Thumbs push each other without restoring their previous positions when dragged back.
+  - `swap`: Thumbs swap places when dragged past each other.
+
+- **Steps**: Add validation and skippable step support:
+  - `isStepValid(index)`: Block forward navigation when step is invalid (linear mode)
+  - `isStepSkippable(index)`: Mark steps as optional, bypassing validation
+  - `onStepInvalid({ step, action, targetStep })`: Callback when navigation is blocked
+  - `api.isStepValid(index)` / `api.isStepSkippable(index)`: Check step state
+  - `itemState.isValid()`: Lazy validation check per step
+
+- **Tags Input**: Add `placeholder` prop that is applied to the input only when there are no tags
+
+- **Tooltip**: Add `data-instant` attribute to tooltip content to indicate when animations should be instant (e.g., when
+  switching between tooltips quickly)
+
+### Fixed
+
+- **Auto Resize**: Fix issue where change event is not emitted after clearing a controlled textarea programmatically
+
+- **Collection, Tree View**: Fix initial focus issue when the first node or branch is disabled. Added `skip` option to
+  `getFirstNode()` (matching `getLastNode()`) to respect collapsed branches. The initial focus now correctly targets the
+  first visible non-disabled node.
+
+- **Color Picker, Color Utils**: Fix color not updating in controlled mode when selecting black shades.
+  - Fixed equality check to compare actual channel values instead of CSS string output
+  - Auto-detect `defaultFormat` from initial color value instead of hardcoding `"rgba"`
+
+- **Floating Panel**: Fix issue where double-clicking title bar while minimized would incorrectly maximize instead of
+  restore
+
+- **Image Cropper**
+  - Fix issue where `reset()` destroys the cropper area
+  - Fix issue where changing `aspectRatio` or `cropShape` props doesn't update the crop instantly
+  - Add symmetric resize support when holding `Alt` key during pointer drag
+  - Fix panning bounds in fixed crop mode at various zoom levels
+  - Fix race condition where initial crop may not compute on page reload
+
+- **Number Input**: Fix cursor positioning when clicking label or after scrubbing. The cursor now moves to the end of
+  the input value instead of the start.
+
+- **Pagination**: Fix issue where next trigger was not disabled when `count` is `0`
+
+- **Slider**: Fix pointer movement when dragging slider thumb from its edge in `thumbAlignment="contain"` mode. The
+  value calculation now correctly accounts for thumb inset, ensuring consistent behavior when clicking on the track to
+  set a value or dragging the thumb from any position.
+
+- **Switch**: Fix issue where `api.toggleChecked()` doesn't work as expected
+
+- **Toast**: Fix issue where toasts created before the state machine connects are not shown
+
+- **Tour**: Fix janky scroll behavior when navigating between tour steps. Changed `scrollIntoView` to use
+  `block: "nearest"` instead of `block: "center"` so the page only scrolls when the target element is not already
+  visible.
+
+- **Vanilla**
+  - Fix issue where vanilla machines do not have the option to change their props during runtime
+  - Fix issue where some `aria-` attributes were toggled as boolean attributes and not as attributes with value strings
+
+## [1.32.0](./#1.32.0) - 2026-01-02
+
+### Added
+
+- **Date Picker**: Add `onVisibleRangeChange` callback to notify when the visible date range changes. This callback
+  fires when:
+  - Clicking next/prev triggers
+  - Selecting a month from the month dropdown
+  - Selecting a year from the year dropdown
+  - Focusing a date outside the current visible range
+  - Any other action that changes the visible range
+
+- **File Upload**
+  - Add `readOnly` prop to prevent file modifications while keeping component visually active
+  - Add `maxFilesReached` and `remainingFiles` to exposed API
+
+- **Vanilla**: Initial release of the vanilla JavaScript adapter for Zag.js
+  - `VanillaMachine` - Class-based wrapper for zag machines with start/stop lifecycle
+  - `normalizeProps` - Converts React-style props to vanilla DOM attributes
+  - `spreadProps` - Spreads props onto DOM elements with event listener management
+
+  ```typescript
+  import { VanillaMachine, normalizeProps, spreadProps } from "@zag-js/vanilla"
+  import * as toggle from "@zag-js/toggle"
+
+  const machine = new VanillaMachine(toggle.machine, { id: "toggle" })
+  machine.start()
+
+  const api = toggle.connect(machine.service, normalizeProps)
+  spreadProps(buttonEl, api.buttonProps)
+
+  machine.stop()
+  ```
+
+### Fixed
+
+- **Carousel**: Fix issue where next/prev carousel buttons and indicators don't work when `dir="rtl"` is set
+
+- **File Upload**
+  - Fix issue where using `api.setClipboardFiles` doesn't run `transformFiles` and validation functions
+  - Fix item element IDs to use `name-size` combination for uniqueness (prevents ID collisions with same-named files)
+
+- **Focus Trap**: Fix focus trap crash when clicking labels in dialogs
+
+- **Pin Input**: Fix issue in Vanilla.js where paste does not work due to `maxlength="1"` truncating clipboard data
+  before the input event
+
+- **Tour**: Fix issue where input elements inside the spotlight target were not interactive. The focus trap now includes
+  both the tour content and the spotlight target as containers, allowing users to interact with elements inside the
+  highlighted area
+
+## [1.31.1](./#1.31.1) - 2025-12-10
+
+### Fixed
+
+- **Accordion, Menu**: Fix issue where querying elements by `aria-controls` attribute could fail when lazy mounting the
+  content
+- **Rating Group**: Fix issue where rating group becomes unfocusable via keyboard when value is 0
+
+## [1.31.0](./#1.31.0) - 2025-12-05
+
+### Added
+
+- **Number Input**: Add `onValueCommit` callback that fires when the input loses focus or Enter is pressed
+
+- **Pagination**
+  - Add `getFirstTriggerProps()` and `getLastTriggerProps()` methods for navigating to first/last page
+  - Add `boundaryCount` parameter for controlling boundary pages (start/end)
+  - Implement balanced pagination algorithm for consistent UI elements
+  - Maintain visual consistency with max 7 elements regardless of total pages
+
+- **Tree View**: Added `scrollToIndexFn` prop to enable keyboard navigation in virtualized trees
+
+### Fixed
+
+- **Color Picker**
+  - Add `role="dialog"` to color picker content when not inline to ensure proper `aria-controls` detection
+  - Add `aria-haspopup="dialog"` to color picker trigger when not inline for better accessibility
+
+- **Date Picker**: Fix issue where date picker input does not update format when locale changes
+
+- **Listbox**
+  - Fix issue in React where filtering items with an input would throw a
+    `flushSync was called from inside a lifecycle method` warning
+  - Fix issue where `data-highlighted` wasn't applied to the first item when using `autoHighlight` with input filtering
+
+- **Number Input**
+  - Fixed issue where input element doesn't sync when `formatOptions` changes dynamically
+  - Ensure cursor position is preserved when `Enter` key is pressed and formatting is triggered
+  - Fix cursor jumping to start when value is changed externally via props while user is typing
+
+- **Pagination**: Fix ellipsis showing when only 1 page gap
+
+- **Radio Group**
+  - Fix issue where `radio-group` machine no longer shows the `indicator` prematurely
+  - Improve accessibility of radio group by adding `invalid` and `required` props with corresponding `data-*` and
+    `aria-*` attributes
+
+- **Tabs**: Fix issue where `tabs` machine no longer shows the `indicator` prematurely
+
+- **Tooltip**: Fix tooltip not showing when scrolling with pointer over trigger
+
+- **Collapsible, Presence, Tour**: Fix machines setting reactive state in exit actions
+
+### Changed
+
+- **Tree View**: `getVisibleNodes()` now returns `{ node, indexPath }[]` instead of `node[]`. Returning the index path
+  perhaps the most useful use of this function, hence the change.
+
+  ```tsx
+  // Before
+  const nodes = api.getVisibleNodes()
+  nodes.forEach((node) => console.log(node.id))
+
+  // After
+  const visibleNodes = api.getVisibleNodes()
+  visibleNodes.forEach(({ node }) => console.log(node.id))
+  ```
+
 ## [1.30.0](./#1.30.0) - 2025-11-26
 
 ### Added

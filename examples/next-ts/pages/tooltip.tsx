@@ -2,6 +2,7 @@ import { normalizeProps, Portal, useMachine } from "@zag-js/react"
 import * as tooltip from "@zag-js/tooltip"
 import { StateVisualizer } from "../components/state-visualizer"
 import { Toolbar } from "../components/toolbar"
+import { Presence } from "../components/presence"
 
 export default function Page() {
   const id = "tip-1"
@@ -19,26 +20,24 @@ export default function Page() {
             <button data-testid={`${id}-trigger`} {...api.getTriggerProps()}>
               Hover me
             </button>
-            {api.open && (
+            <Portal>
               <div {...api.getPositionerProps()}>
-                <div className="tooltip-content" data-testid={`${id}-tooltip`} {...api.getContentProps()}>
+                <Presence className="tooltip-content" data-testid={`${id}-tooltip`} {...api.getContentProps()}>
                   Tooltip
-                </div>
+                </Presence>
               </div>
-            )}
+            </Portal>
           </>
           <button data-testid={`${id2}-trigger`} {...api2.getTriggerProps()}>
             Over me
           </button>
-          {api2.open && (
-            <Portal>
-              <div {...api2.getPositionerProps()}>
-                <div className="tooltip-content" data-testid={`${id2}-tooltip`} {...api2.getContentProps()}>
-                  Tooltip 2
-                </div>
-              </div>
-            </Portal>
-          )}
+          <Portal>
+            <div {...api2.getPositionerProps()}>
+              <Presence className="tooltip-content" data-testid={`${id2}-tooltip`} {...api2.getContentProps()}>
+                Tooltip 2
+              </Presence>
+            </div>
+          </Portal>
         </div>
       </main>
       <Toolbar controls={null}>

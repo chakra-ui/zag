@@ -20,9 +20,9 @@ e2e/
 ├── _utils.ts                    # Shared utilities
 ├── models/
 │   ├── model.ts                 # Base model class
-│   ├── bottom-sheet.model.ts    # Component-specific model
+│   ├── drawer.model.ts    # Component-specific model
 │   └── dialog.model.ts
-├── bottom-sheet.e2e.ts          # Test file
+├── drawer.e2e.ts          # Test file
 ├── dialog.e2e.ts
 └── ...
 ```
@@ -31,13 +31,13 @@ e2e/
 
 ```typescript
 import { expect, test } from "@playwright/test"
-import { BottomSheetModel } from "./models/bottom-sheet.model"
+import { DrawerModel } from "./models/drawer.model"
 
-let I: BottomSheetModel
+let I: DrawerModel
 
-test.describe("bottom-sheet", () => {
+test.describe("drawer", () => {
   test.beforeEach(async ({ page }) => {
-    I = new BottomSheetModel(page)
+    I = new DrawerModel(page)
     await I.goto()
   })
 
@@ -76,13 +76,13 @@ const content = part("content")
 const trigger = part("trigger")
 const backdrop = part("backdrop")
 
-export class BottomSheetModel extends Model {
+export class DrawerModel extends Model {
   constructor(public page: Page) {
     super(page)
   }
 
   // Navigation
-  goto(url = "/bottom-sheet") {
+  goto(url = "/drawer") {
     return this.page.goto(url)
   }
 
@@ -134,7 +134,7 @@ Use descriptive, action-oriented names:
 
 - **Actions**: `clickTrigger()`, `dragGrabber()`, `typeInInput()`
 - **Assertions**: `seeContent()`, `dontSeeBackdrop()`, `seeContentIsFocused()`
-- **Getters**: `getContentHeight()`, `getActiveIndex()`
+- **Getters**: `getContentSize()`, `getActiveIndex()`
 - **Checks**: `checkAccessibility()`, `isScrollableAtTop()`
 
 ## Utility Functions
@@ -323,7 +323,7 @@ test("should stay open when dragged slightly", async () => {
 
 ```typescript
 test("should sync with controlled prop", async () => {
-  await I.goto("/bottom-sheet-controlled")
+  await I.goto("/drawer-controlled")
 
   // Initial state from prop
   await I.seeContent()
@@ -339,10 +339,10 @@ test("should sync with controlled prop", async () => {
 Use `test.describe` blocks for different variants:
 
 ```typescript
-test.describe("bottom-sheet [snapPoints]", () => {
+test.describe("drawer [snapPoints]", () => {
   test.beforeEach(async ({ page }) => {
-    I = new BottomSheetModel(page)
-    await I.goto("/bottom-sheet-snap-points")
+    I = new DrawerModel(page)
+    await I.goto("/drawer-snap-points")
   })
 
   test("should snap to defined positions", async () => {
@@ -355,10 +355,10 @@ test.describe("bottom-sheet [snapPoints]", () => {
   })
 })
 
-test.describe("bottom-sheet [draggable=false]", () => {
+test.describe("drawer [draggable=false]", () => {
   test.beforeEach(async ({ page }) => {
-    I = new BottomSheetModel(page)
-    await I.goto("/bottom-sheet-draggable-false")
+    I = new DrawerModel(page)
+    await I.goto("/drawer-draggable-false")
   })
 
   test("sheet content should not be draggable", async () => {
@@ -386,7 +386,7 @@ async getContentVisibleHeight() {
   const initialHeight = await this.content.evaluate((el) => el.clientHeight)
 
   const translateY = await this.content.evaluate((el) =>
-    getComputedStyle(el).getPropertyValue("--bottom-sheet-translate"),
+    getComputedStyle(el).getPropertyValue("--drawer-translate"),
   )
 
   const parsedTranslateY = parseInt(translateY, 10)
@@ -507,7 +507,7 @@ pnpm e2e-svelte
 ### Run Specific Test File
 
 ```bash
-pnpm pw-test bottom-sheet.e2e.ts
+pnpm pw-test drawer.e2e.ts
 ```
 
 ### Run in UI Mode
@@ -534,7 +534,7 @@ test.skip("should handle edge case", async () => {
 
 ```bash
 # Run with debug flag
-pnpm pw-test bottom-sheet.e2e.ts --debug
+pnpm pw-test drawer.e2e.ts --debug
 
 # Use pause in test
 test("should do something", async ({ page }) => {
@@ -651,7 +651,7 @@ Wrap timing-sensitive assertions in retry:
 
 ```typescript
 await retry(async () => {
-  const height = await I.getContentHeight()
+  const height = await I.getContentSize()
   expect(height).toBe(250)
 })
 ```
@@ -661,7 +661,7 @@ await retry(async () => {
 Use `test.describe` to organize tests:
 
 ```typescript
-test.describe("bottom-sheet", () => {
+test.describe("drawer", () => {
   test.describe("opening and closing", () => {
     // Open/close tests
   })
@@ -693,7 +693,7 @@ Each test should be able to run in isolation:
 
 ```typescript
 test.beforeEach(async ({ page }) => {
-  I = new BottomSheetModel(page)
+  I = new DrawerModel(page)
   await I.goto() // Fresh page for each test
 })
 ```
@@ -750,7 +750,7 @@ await page.waitForSelector(part("content"))
 
 ```bash
 # Visit manually
-open http://localhost:3000/bottom-sheet
+open http://localhost:3000/drawer
 ```
 
 ### Animation Issues

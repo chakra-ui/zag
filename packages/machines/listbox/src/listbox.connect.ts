@@ -30,6 +30,7 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
 
   const focused = context.get("focused")
   const focusVisible = refs.get("focusVisible") && focused
+  const inputState = refs.get("inputState")
 
   const value = context.get("value")
   const selectedItems = context.get("selectedItems")
@@ -53,7 +54,7 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
       focused: highlighted && focused,
       focusVisible: highlighted && focusVisible,
       // deprecated
-      highlighted: highlighted && focusVisible,
+      highlighted: highlighted && (inputState.focused ? focused : focusVisible),
       selected: context.get("value").includes(value),
     }
   }
@@ -122,21 +123,17 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
         enterKeyHint: "go",
         onFocus() {
           queueMicrotask(() => {
-            send({ type: "INPUT.FOCUS" })
+            send({ type: "INPUT.FOCUS", autoHighlight: !!props?.autoHighlight })
           })
         },
         onBlur() {
           send({ type: "CONTENT.BLUR", src: "input" })
         },
         onInput(event) {
-          if (!props.autoHighlight) return
-          const node = event.currentTarget
+          if (!props?.autoHighlight) return
+          if (event.currentTarget.value.trim()) return
           queueMicrotask(() => {
-            if (!node.isConnected) return
-            send({
-              type: "HIGHLIGHTED_VALUE.SET",
-              value: node.value ? prop("collection").firstValue : null,
-            })
+            send({ type: "HIGHLIGHTED_VALUE.SET", value: null })
           })
         },
         onKeyDown(event) {

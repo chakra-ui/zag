@@ -1,6 +1,7 @@
 import * as imageCropper from "@zag-js/image-cropper"
 import { normalizeProps, useMachine } from "@zag-js/react"
 import { useId, useState } from "react"
+import styles from "../styles/machines/image-cropper.module.css"
 
 interface ImageCropperProps extends Omit<imageCropper.Props, "id"> {}
 
@@ -38,18 +39,25 @@ export function ImageCropper(props: ImageCropperProps) {
   }
 
   return (
-    <div className="image-cropper-container">
+    <div className={styles.Container}>
       <div {...api.getRootProps()}>
-        <div {...api.getViewportProps()}>
+        <div className={styles.Viewport} {...api.getViewportProps()}>
           <img
             src="https://placedog.net/500/280?id=2"
             alt="Dog to be cropped"
             crossOrigin="anonymous"
+            width={500}
+            height={280}
+            className={styles.Image}
             {...api.getImageProps()}
           />
-          <div {...api.getSelectionProps()}>
+          <div className={styles.Selection} {...api.getSelectionProps()}>
             {imageCropper.handles.map((position) => (
-              <div key={position} {...api.getHandleProps({ position })}>
+              <div
+                className={styles.Handle}
+                key={position}
+                {...api.getHandleProps({ position })}
+              >
                 <div />
               </div>
             ))}
@@ -57,7 +65,7 @@ export function ImageCropper(props: ImageCropperProps) {
         </div>
       </div>
 
-      <button className="preview-button" onClick={handleShowPreview}>
+      <button className={styles.PreviewButton} onClick={handleShowPreview}>
         Show Preview
       </button>
 
@@ -65,7 +73,7 @@ export function ImageCropper(props: ImageCropperProps) {
         <div>
           <h3>Cropped Image Preview</h3>
           <img
-            className="preview-image"
+            className={styles.PreviewImage}
             src={previewUrl}
             alt="Cropped preview"
             onLoad={revokePreview}

@@ -1,5 +1,96 @@
 # @zag-js/tour
 
+## 1.33.1
+
+### Patch Changes
+
+- Updated dependencies [[`9817e4c`](https://github.com/chakra-ui/zag/commit/9817e4cb3b18d93408b95e7c827d35801b01a267)]:
+  - @zag-js/dismissable@1.33.1
+  - @zag-js/anatomy@1.33.1
+  - @zag-js/core@1.33.1
+  - @zag-js/types@1.33.1
+  - @zag-js/utils@1.33.1
+  - @zag-js/dom-query@1.33.1
+  - @zag-js/focus-trap@1.33.1
+  - @zag-js/interact-outside@1.33.1
+  - @zag-js/popper@1.33.1
+
+## 1.33.0
+
+### Patch Changes
+
+- [`1e2abab`](https://github.com/chakra-ui/zag/commit/1e2abab021f9d5ed3ab89fac3536ba5c40b89afd) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix janky scroll behavior when navigating between tour steps.
+  Changed `scrollIntoView` to use `block: "nearest"` instead of `block: "center"` so the page only scrolls when the
+  target element is not already visible.
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.33.0
+  - @zag-js/core@1.33.0
+  - @zag-js/types@1.33.0
+  - @zag-js/utils@1.33.0
+  - @zag-js/dismissable@1.33.0
+  - @zag-js/dom-query@1.33.0
+  - @zag-js/focus-trap@1.33.0
+  - @zag-js/interact-outside@1.33.0
+  - @zag-js/popper@1.33.0
+
+## 1.32.0
+
+### Patch Changes
+
+- [`f824bea`](https://github.com/chakra-ui/zag/commit/f824beac2dcb4c21bdad7520a678d3ae8d208923) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix issue where input elements inside the spotlight target were
+  not interactive. The focus trap now includes both the tour content and the spotlight target as containers, allowing
+  users to interact with elements inside the highlighted area.
+
+- Updated dependencies [[`99e18ef`](https://github.com/chakra-ui/zag/commit/99e18ef42866febf205c226ecad3d9210081cdbb),
+  [`f824bea`](https://github.com/chakra-ui/zag/commit/f824beac2dcb4c21bdad7520a678d3ae8d208923)]:
+  - @zag-js/focus-trap@1.32.0
+  - @zag-js/anatomy@1.32.0
+  - @zag-js/core@1.32.0
+  - @zag-js/types@1.32.0
+  - @zag-js/utils@1.32.0
+  - @zag-js/dismissable@1.32.0
+  - @zag-js/dom-query@1.32.0
+  - @zag-js/interact-outside@1.32.0
+  - @zag-js/popper@1.32.0
+
+## 1.31.1
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.31.1
+  - @zag-js/core@1.31.1
+  - @zag-js/types@1.31.1
+  - @zag-js/utils@1.31.1
+  - @zag-js/dismissable@1.31.1
+  - @zag-js/dom-query@1.31.1
+  - @zag-js/focus-trap@1.31.1
+  - @zag-js/interact-outside@1.31.1
+  - @zag-js/popper@1.31.1
+
+## 1.31.0
+
+### Patch Changes
+
+- [`3dbfe4a`](https://github.com/chakra-ui/zag/commit/3dbfe4ab5d2eaa9756f2897c92b9b560da9ef9ae) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix machines setting reactive state in exit actions.
+
+  > **Affected machines:** Presence, Collapsible, and Tour.
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.31.0
+  - @zag-js/core@1.31.0
+  - @zag-js/types@1.31.0
+  - @zag-js/utils@1.31.0
+  - @zag-js/dismissable@1.31.0
+  - @zag-js/dom-query@1.31.0
+  - @zag-js/focus-trap@1.31.0
+  - @zag-js/interact-outside@1.31.0
+  - @zag-js/popper@1.31.0
+
 ## 1.30.0
 
 ### Patch Changes

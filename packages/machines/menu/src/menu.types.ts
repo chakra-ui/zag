@@ -166,7 +166,7 @@ export type MenuMachine = Machine<MenuSchema>
  * Minimal interface required for child menu relationship.
  */
 // zag-ignore-export
-export type ChildMenuService = Pick<MenuService, "prop" | "send" | "scope">
+export type ChildMenuService = Pick<MenuService, "prop" | "send" | "scope" | "context">
 /**
  * Minimal interface required for parent menu relationship.
  */

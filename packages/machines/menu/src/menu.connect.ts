@@ -84,7 +84,8 @@ export function connect<T extends PropTypes>(service: Service<MenuSchema>, norma
         if (event.pointerType !== "mouse") return
         const target = event.currentTarget
         if (itemState.highlighted) return
-        send({ type: "ITEM_POINTERMOVE", id, target, closeOnSelect })
+        const point = getEventPoint(event)
+        send({ type: "ITEM_POINTERMOVE", id, target, closeOnSelect, point })
       },
       onPointerLeave(event) {
         if (itemState.disabled) return
@@ -191,6 +192,7 @@ export function connect<T extends PropTypes>(service: Service<MenuSchema>, norma
         "data-uid": prop("id"),
         "aria-haspopup": composite ? "menu" : "dialog",
         "aria-controls": dom.getContentId(scope),
+        "data-controls": dom.getContentId(scope),
         "aria-expanded": open || undefined,
         "data-state": open ? "open" : "closed",
         onPointerMove(event) {

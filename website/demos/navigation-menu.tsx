@@ -2,6 +2,8 @@ import { normalizeProps, useMachine } from "@zag-js/react"
 import * as navigationMenu from "@zag-js/navigation-menu"
 import { useId } from "react"
 import { BiChevronDown } from "react-icons/bi"
+import { Presence } from "../components/presence"
+import styles from "../styles/machines/navigation-menu.module.css"
 
 const solutionLinks = [
   {
@@ -50,19 +52,25 @@ export function NavigationMenu(props: NavigationMenuProps) {
   const api = navigationMenu.connect(service, normalizeProps)
 
   return (
-    <nav className="navigation-menu" {...api.getRootProps()}>
-      <div {...api.getListProps()}>
-        <div {...api.getItemProps({ value: "solutions" })}>
-          <button {...api.getTriggerProps({ value: "solutions" })}>
-            Solutions
+    <nav className={styles.Root} {...api.getRootProps()}>
+      <div className={styles.List} {...api.getListProps()}>
+        <div {...api.getItemProps({ value: "products" })}>
+          <button
+            className={styles.Trigger}
+            {...api.getTriggerProps({ value: "products" })}
+          >
+            Products
             <BiChevronDown />
           </button>
-          <span {...api.getTriggerProxyProps({ value: "solutions" })} />
-          <span {...api.getViewportProxyProps({ value: "solutions" })} />
+          <span {...api.getTriggerProxyProps({ value: "products" })} />
+          <span {...api.getViewportProxyProps({ value: "products" })} />
         </div>
 
         <div {...api.getItemProps({ value: "learn" })}>
-          <button {...api.getTriggerProps({ value: "learn" })}>
+          <button
+            className={styles.Trigger}
+            {...api.getTriggerProps({ value: "learn" })}
+          >
             Learn
             <BiChevronDown />
           </button>
@@ -72,6 +80,7 @@ export function NavigationMenu(props: NavigationMenuProps) {
 
         <div {...api.getItemProps({ value: "github" })}>
           <a
+            className={styles.Link}
             {...api.getLinkProps({ value: "github" })}
             href="https://github.com/chakra-ui/zag"
             target="_blank"
@@ -80,21 +89,36 @@ export function NavigationMenu(props: NavigationMenuProps) {
           </a>
         </div>
 
-        <div {...api.getIndicatorProps()}>
-          <div {...api.getArrowProps()} />
-        </div>
+        <Presence
+          className={styles.Indicator}
+          keepMounted
+          {...api.getIndicatorProps()}
+        >
+          <div className={styles.Arrow} {...api.getArrowProps()} />
+        </Presence>
       </div>
 
-      <div {...api.getViewportPositionerProps()}>
-        <div {...api.getViewportProps()}>
-          <div {...api.getContentProps({ value: "solutions" })}>
-            <ul className="grid-link-list">
+      <div
+        className={styles.ViewportPositioner}
+        {...api.getViewportPositionerProps()}
+      >
+        <Presence
+          className={styles.Viewport}
+          keepMounted
+          {...api.getViewportProps()}
+        >
+          <Presence
+            className={styles.Content}
+            keepMounted
+            {...api.getContentProps({ value: "products" })}
+          >
+            <ul className={styles.GridLinkList}>
               {solutionLinks.map((item) => (
                 <li key={item.title}>
                   <a
                     href={item.href}
-                    className="link-card"
-                    {...api.getLinkProps({ value: "solutions" })}
+                    className={styles.LinkCard}
+                    {...api.getLinkProps({ value: "products" })}
                   >
                     <h3>{item.title}</h3>
                     <p>{item.description}</p>
@@ -102,15 +126,19 @@ export function NavigationMenu(props: NavigationMenuProps) {
                 </li>
               ))}
             </ul>
-          </div>
+          </Presence>
 
-          <div {...api.getContentProps({ value: "learn" })}>
-            <ul className="flex-link-list">
+          <Presence
+            className={styles.Content}
+            keepMounted
+            {...api.getContentProps({ value: "learn" })}
+          >
+            <ul className={styles.FlexLinkList}>
               {learnLinks.map((item) => (
                 <li key={item.title}>
                   <a
                     href={item.href}
-                    className="link-card"
+                    className={styles.LinkCard}
                     {...api.getLinkProps({ value: "learn" })}
                   >
                     <h3>{item.title}</h3>
@@ -119,8 +147,8 @@ export function NavigationMenu(props: NavigationMenuProps) {
                 </li>
               ))}
             </ul>
-          </div>
-        </div>
+          </Presence>
+        </Presence>
       </div>
     </nav>
   )

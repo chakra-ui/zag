@@ -2,6 +2,7 @@ import * as datePicker from "@zag-js/date-picker"
 import { normalizeProps, useMachine } from "@zag-js/react"
 import { useId } from "react"
 import { BiCalendar, BiChevronLeft, BiChevronRight } from "react-icons/bi"
+import styles from "../styles/machines/date-picker.module.css"
 
 interface DatePickerMultipleMonthsProps extends Omit<datePicker.Props, "id"> {}
 
@@ -18,16 +19,16 @@ export function DatePickerMultipleMonths(props: DatePickerMultipleMonthsProps) {
 
   return (
     <>
-      <main className="date-picker">
-        <div {...api.getControlProps()}>
-          <input {...api.getInputProps()} />
-          <button {...api.getTriggerProps()}>
+      <main className={styles.Root}>
+        <div className={styles.Control} {...api.getControlProps()}>
+          <input className={styles.Input} {...api.getInputProps()} />
+          <button className={styles.Trigger} {...api.getTriggerProps()}>
             <BiCalendar />
           </button>
         </div>
 
         <div {...api.getPositionerProps()}>
-          <div {...api.getContentProps()}>
+          <div className={styles.Content} {...api.getContentProps()}>
             <div {...api.getViewProps({ view: "day" })}>
               <Header api={api} />
               <div style={{ display: "flex", gap: "40px" }}>

@@ -1,6 +1,6 @@
 import { Link } from "components/ui/link"
 import { paginate } from "lib/pagination-utils"
-import { useRouter } from "next/router"
+import { usePathname } from "next/navigation"
 import { useEffect, useState } from "react"
 import { HiChevronLeft, HiChevronRight } from "react-icons/hi"
 import { Box, HStack } from "styled-system/jsx"
@@ -10,7 +10,7 @@ import { Icon } from "./ui/icon"
 
 export function usePagination() {
   const { framework } = useFramework()
-  const { asPath } = useRouter()
+  const asPath = usePathname()
   const { prev, next } = paginate({ framework, current: asPath })
   return {
     prev,

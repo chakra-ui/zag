@@ -110,17 +110,38 @@ export function constrainStart(
   return aligned
 }
 
-export function constrainValue(date: DateValue, minValue?: DateValue, maxValue?: DateValue): DateValue {
-  // Convert all dates to CalendarDate for consistent comparison without time components
-  // This prevents issues when comparing dates with different time information
-  let constrainedDate = toCalendarDate(date)
+export function constrainValue<T extends DateValue>(date: T, minValue?: DateValue, maxValue?: DateValue): T {
+  // Convert to CalendarDate for consistent date-only comparison
+  const dateOnly = toCalendarDate(date)
+  const minOnly = minValue ? toCalendarDate(minValue) : undefined
+  const maxOnly = maxValue ? toCalendarDate(maxValue) : undefined
 
-  if (minValue) {
-    constrainedDate = maxDate(constrainedDate, toCalendarDate(minValue))!
-  }
-  if (maxValue) {
-    constrainedDate = minDate(constrainedDate, toCalendarDate(maxValue))!
+  // Determine if date needs adjustment
+  let constrainedDateOnly = dateOnly
+
+  if (minOnly) {
+    constrainedDateOnly = maxDate(constrainedDateOnly, minOnly)!
   }
 
-  return constrainedDate
+  if (maxOnly) {
+    constrainedDateOnly = minDate(constrainedDateOnly, maxOnly)!
+  }
+
+  // If date didn't change, return original to preserve time components
+  if (constrainedDateOnly.compare(dateOnly) === 0) {
+    return date
+  }
+
+  // Date changed - apply the date portion while preserving time if present
+  // Check if original date has time components (CalendarDateTime or ZonedDateTime)
+  if ("hour" in date) {
+    return date.set({
+      year: constrainedDateOnly.year,
+      month: constrainedDateOnly.month,
+      day: constrainedDateOnly.day,
+    }) as T
+  }
+
+  // Original was CalendarDate, return the constrained CalendarDate
+  return constrainedDateOnly as T
 }

@@ -24,25 +24,28 @@ const defaultOptions: PositioningOptions = {
 type NonNullable<T> = T extends null | undefined ? never : T
 type RequiredBy<T, K extends keyof T> = Omit<T, K> & { [P in K]-?: NonNullable<T[P]> }
 
-interface Options
-  extends RequiredBy<
-    PositioningOptions,
-    | "strategy"
-    | "placement"
-    | "listeners"
-    | "gutter"
-    | "flip"
-    | "slide"
-    | "overlap"
-    | "sameWidth"
-    | "fitViewport"
-    | "overflowPadding"
-    | "arrowPadding"
-  > {}
+interface Options extends RequiredBy<
+  PositioningOptions,
+  | "strategy"
+  | "placement"
+  | "listeners"
+  | "gutter"
+  | "flip"
+  | "slide"
+  | "overlap"
+  | "sameWidth"
+  | "fitViewport"
+  | "overflowPadding"
+  | "arrowPadding"
+> {}
 
 function roundByDpr(win: Window, value: number) {
   const dpr = win.devicePixelRatio || 1
   return Math.round(value * dpr) / dpr
+}
+
+function isApproximatelyEqual(a: number | undefined, b: number): boolean {
+  return a != null && Math.abs(a - b) < 0.5
 }
 
 function resolveBoundaryOption(boundary: Options["boundary"]) {
@@ -99,6 +102,14 @@ function getShiftMiddleware(opts: Options) {
 }
 
 function getSizeMiddleware(opts: Options) {
+  // Skip when explicitly disabled, unless sameWidth or fitViewport require it
+  if (opts.sizeMiddleware === false && !opts.sameWidth && !opts.fitViewport) return
+
+  let lastReferenceWidth: number | undefined
+  let lastReferenceHeight: number | undefined
+  let lastAvailableWidth: number | undefined
+  let lastAvailableHeight: number | undefined
+
   return size({
     padding: opts.overflowPadding,
     apply({ elements, rects, availableHeight, availableWidth }) {
@@ -109,10 +120,22 @@ function getSizeMiddleware(opts: Options) {
       availableWidth = Math.floor(availableWidth)
       availableHeight = Math.floor(availableHeight)
 
-      floating.style.setProperty("--reference-width", `${referenceWidth}px`)
-      floating.style.setProperty("--reference-height", `${referenceHeight}px`)
-      floating.style.setProperty("--available-width", `${availableWidth}px`)
-      floating.style.setProperty("--available-height", `${availableHeight}px`)
+      if (!isApproximatelyEqual(lastReferenceWidth, referenceWidth)) {
+        floating.style.setProperty("--reference-width", `${referenceWidth}px`)
+        lastReferenceWidth = referenceWidth
+      }
+      if (!isApproximatelyEqual(lastReferenceHeight, referenceHeight)) {
+        floating.style.setProperty("--reference-height", `${referenceHeight}px`)
+        lastReferenceHeight = referenceHeight
+      }
+      if (!isApproximatelyEqual(lastAvailableWidth, availableWidth)) {
+        floating.style.setProperty("--available-width", `${availableWidth}px`)
+        lastAvailableWidth = availableWidth
+      }
+      if (!isApproximatelyEqual(lastAvailableHeight, availableHeight)) {
+        floating.style.setProperty("--available-height", `${availableHeight}px`)
+        lastAvailableHeight = availableHeight
+      }
     },
   })
 }
@@ -131,7 +154,8 @@ function getAutoUpdateOptions(opts?: boolean | AutoUpdateOptions): AutoUpdateOpt
 }
 
 function getPlacementImpl(referenceOrVirtual: MaybeRectElement, floating: MaybeElement, opts: PositioningOptions = {}) {
-  const reference = getAnchorElement(referenceOrVirtual, opts.getAnchorRect)
+  const anchor = opts.getAnchorElement?.() ?? referenceOrVirtual
+  const reference = getAnchorElement(anchor, opts.getAnchorRect)
   if (!floating || !reference) return
   const options = Object.assign({}, defaultOptions, opts) as Options
 
@@ -162,6 +186,10 @@ function getPlacementImpl(referenceOrVirtual: MaybeRectElement, floating: MaybeE
 
   const { placement, strategy, onComplete, onPositioned } = options
 
+  let lastX: number | undefined
+  let lastY: number | undefined
+  let zIndexComputed = false
+
   const updatePosition = async () => {
     if (!reference || !floating) return
 
@@ -172,14 +200,23 @@ function getPlacementImpl(referenceOrVirtual: MaybeRectElement, floating: MaybeE
     })
 
     onComplete?.(pos)
-    onPositioned?.({ placed: true })
 
     const win = getWindow(floating)
     const x = roundByDpr(win, pos.x)
     const y = roundByDpr(win, pos.y)
 
-    floating.style.setProperty("--x", `${x}px`)
-    floating.style.setProperty("--y", `${y}px`)
+    // apply transform directly to avoid expensive CSS variable cascade
+    floating.style.transform = `translate3d(${x}px, ${y}px, 0)`
+
+    // still set --x/--y for backward compat, but only when changed
+    if (!isApproximatelyEqual(lastX, x)) {
+      floating.style.setProperty("--x", `${x}px`)
+      lastX = x
+    }
+    if (!isApproximatelyEqual(lastY, y)) {
+      floating.style.setProperty("--y", `${y}px`)
+      lastY = y
+    }
 
     if (options.hideWhenDetached) {
       const isHidden = pos.middlewareData.hide?.referenceHidden
@@ -192,11 +229,13 @@ function getPlacementImpl(referenceOrVirtual: MaybeRectElement, floating: MaybeE
       }
     }
 
-    const contentEl = floating.firstElementChild
-
-    if (contentEl) {
-      const styles = getComputedStyle(contentEl)
-      floating.style.setProperty("--z-index", styles.zIndex)
+    // compute z-index only once to avoid forced reflow on every update
+    if (!zIndexComputed) {
+      const contentEl = floating.firstElementChild
+      if (contentEl) {
+        floating.style.setProperty("--z-index", getComputedStyle(contentEl).zIndex)
+        zIndexComputed = true
+      }
     }
   }
 

@@ -30,7 +30,7 @@ export function getAnchorElement(
   getAnchorRect?: (anchor: MaybeRectElement) => AnchorRect | null,
 ): VirtualElement {
   return {
-    contextElement: isHTMLElement(anchorElement) ? anchorElement : undefined,
+    contextElement: isHTMLElement(anchorElement) ? anchorElement : anchorElement?.contextElement,
     getBoundingClientRect: () => {
       const anchor = anchorElement
       const anchorRect = getAnchorRect?.(anchor)

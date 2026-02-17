@@ -21,12 +21,21 @@ import { prefixHex } from "./utils/is-valid-hex"
 
 const { and } = createGuards<ColorPickerSchema>()
 
+const hashObject = (obj: Record<string, number>): string => {
+  let hash = ""
+  for (const key in obj) hash += `${key}:${obj[key] ?? ""};`
+  return hash
+}
+
+const DEFAULT_COLOR = parse("#000000")
+
 export const machine = createMachine<ColorPickerSchema>({
   props({ props }) {
+    const color = props.value ?? props.defaultValue ?? DEFAULT_COLOR
     return {
       dir: "ltr",
-      defaultValue: parse("#000000"),
-      defaultFormat: "rgba",
+      defaultValue: DEFAULT_COLOR,
+      defaultFormat: color.getFormat(),
       openAutoFocus: true,
       ...props,
       positioning: {
@@ -47,15 +56,17 @@ export const machine = createMachine<ColorPickerSchema>({
         defaultValue: prop("defaultValue"),
         value: prop("value"),
         isEqual(a, b) {
-          return a.toString("css") === b?.toString("css")
+          return b != null && a.isEqual(b)
         },
         hash(a) {
-          return a.toString("css")
+          return hashObject(a.toJSON())
         },
         onChange(value) {
           const ctx = getContext()
-          const valueAsString = value.toString(ctx.get("format"))
-          prop("onValueChange")?.({ value, valueAsString })
+          const format = ctx.get("format")
+          // Pass value as-is to preserve channel info (e.g., HSB saturation at black)
+          // valueAsString is converted to the desired format for display
+          prop("onValueChange")?.({ value, valueAsString: value.toString(format) })
         },
       })),
       format: bindable<ColorFormat>(() => ({
@@ -95,7 +106,7 @@ export const machine = createMachine<ColorPickerSchema>({
     })
 
     track([() => context.get("format")], () => {
-      action(["syncFormatSelectElement"])
+      action(["syncFormatSelectElement", "syncValueWithFormat"])
     })
 
     track([() => prop("open")], () => {
@@ -634,6 +645,12 @@ export const machine = createMachine<ColorPickerSchema>({
       },
       syncFormatSelectElement({ context, scope }) {
         syncFormatSelect(scope, context.get("format"))
+      },
+      syncValueWithFormat({ context }) {
+        const value = context.get("value")
+        const newValue = value.toFormat(context.get("format"))
+        if (newValue.isEqual(value)) return
+        context.set("value", newValue)
       },
       invokeOnOpen({ prop, context }) {
         if (prop("inline")) return

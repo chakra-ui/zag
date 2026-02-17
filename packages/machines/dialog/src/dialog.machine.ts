@@ -17,7 +17,7 @@ export const machine = createMachine<DialogSchema>({
       modal,
       trapFocus: modal,
       preventScroll: modal,
-      closeOnInteractOutside: !alertDialog,
+      closeOnInteractOutside: modal && !alertDialog,
       closeOnEscape: true,
       restoreFocus: true,
       initialFocusEl,

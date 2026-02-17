@@ -1,6 +1,9 @@
-import { DateFormatter, type DateValue } from "@internationalized/date"
+import { DateFormatter } from "@internationalized/date"
+import { memo } from "@zag-js/core"
+import type { DateValue } from "@zag-js/date-utils"
+import { getDecadeRange } from "@zag-js/date-utils"
 import { clampValue, match } from "@zag-js/utils"
-import type { DateView, IntlTranslations } from "./date-picker.types"
+import type { DateView, IntlTranslations, SelectionMode, VisibleRangeText } from "./date-picker.types"
 
 export function adjustStartAndEndDate(value: Array<DateValue | null | undefined>): DateValue[] {
   const [startDate, endDate] = value
@@ -109,6 +112,10 @@ export const defaultTranslations: IntlTranslations = {
   monthSelect: "Select month",
   yearSelect: "Select year",
   clearTrigger: "Clear selected dates",
+  weekColumnHeader: "Wk",
+  weekNumberCell(weekNumber) {
+    return `Week ${weekNumber}`
+  },
 }
 
 // 0 – day, 1 – month, 2 – year;
@@ -155,3 +162,40 @@ const views: DateView[] = ["day", "month", "year"]
 export function eachView(cb: (view: DateView) => void) {
   views.forEach((view) => cb(view))
 }
+
+interface VisibleRangeTextOptions {
+  view: DateView
+  startValue: DateValue
+  endValue: DateValue
+  locale: string
+  timeZone: string
+  selectionMode: SelectionMode
+}
+
+export const getVisibleRangeText = memo(
+  (opts: VisibleRangeTextOptions) => [opts.view, opts.startValue.toString(), opts.endValue.toString(), opts.locale],
+  ([view], opts): VisibleRangeText => {
+    const { startValue, endValue, locale, timeZone, selectionMode } = opts
+
+    if (view === "year") {
+      const years = getDecadeRange(startValue.year, { strict: true })
+      const start = years.at(0)!.toString()
+      const end = years.at(-1)!.toString()
+      return { start, end, formatted: `${start} - ${end}` }
+    }
+
+    if (view === "month") {
+      const formatter = new DateFormatter(locale, { year: "numeric", timeZone })
+      const start = formatter.format(startValue.toDate(timeZone))
+      const end = formatter.format(endValue.toDate(timeZone))
+      const formatted = selectionMode === "range" ? `${start} - ${end}` : start
+      return { start, end, formatted }
+    }
+
+    const formatter = new DateFormatter(locale, { month: "long", year: "numeric", timeZone })
+    const start = formatter.format(startValue.toDate(timeZone))
+    const end = formatter.format(endValue.toDate(timeZone))
+    const formatted = selectionMode === "range" ? `${start} - ${end}` : start
+    return { start, end, formatted }
+  },
+)

@@ -9,9 +9,9 @@ export function isCaretAtStart(input: HTMLInputElement | HTMLTextAreaElement | n
 
 export function setCaretToEnd(input: HTMLInputElement | HTMLTextAreaElement | null) {
   if (!input) return
-  const start = input.selectionStart ?? 0
-  const end = input.selectionEnd ?? 0
-  if (Math.abs(end - start) !== 0) return
-  if (start !== 0) return
-  input.setSelectionRange(input.value.length, input.value.length)
+  try {
+    if (input.ownerDocument.activeElement !== input) return
+    const len = input.value.length
+    input.setSelectionRange(len, len)
+  } catch {}
 }

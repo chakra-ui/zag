@@ -11,4 +11,5 @@ export type {
   ItemProps,
   ItemState,
   StepChangeDetails,
+  StepInvalidDetails,
 } from "./steps.types"

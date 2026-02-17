@@ -10,7 +10,8 @@
     "jsx": "preserve",
     "exactOptionalPropertyTypes": false,
     "paths": {
-      "@/*": ["src/*"]
+      "@/*": ["src/*"],
+      ".velite": ["./.velite"]
     },
     "verbatimModuleSyntax": false,
     "isolatedModules": true,
