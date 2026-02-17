@@ -20,7 +20,15 @@ import type { EventKeyMap, NormalizeProps, PropTypes } from "@zag-js/types"
 import { cast, hasProp } from "@zag-js/utils"
 import { parts } from "./menu.anatomy"
 import * as dom from "./menu.dom"
-import type { ItemProps, ItemState, MenuApi, MenuSchema, OptionItemProps, OptionItemState } from "./menu.types"
+import type {
+  ItemProps,
+  ItemState,
+  MenuApi,
+  MenuSchema,
+  OptionItemProps,
+  OptionItemState,
+  TriggerProps,
+} from "./menu.types"
 
 export function connect<T extends PropTypes>(service: Service<MenuSchema>, normalize: NormalizeProps<T>): MenuApi<T> {
   const { context, send, state, computed, prop, scope } = service
@@ -34,6 +42,7 @@ export function connect<T extends PropTypes>(service: Service<MenuSchema>, norma
   const currentPlacement = context.get("currentPlacement")
   const anchorPoint = context.get("anchorPoint")
   const highlightedValue = context.get("highlightedValue")
+  const triggerValue = context.get("triggerValue")
 
   const popperStyles = getPlacementStyles({
     ...prop("positioning"),
@@ -121,6 +130,10 @@ export function connect<T extends PropTypes>(service: Service<MenuSchema>, norma
       if (open === nextOpen) return
       send({ type: nextOpen ? "OPEN" : "CLOSE" })
     },
+    triggerValue,
+    setTriggerValue(value) {
+      send({ type: "TRIGGER_VALUE.SET", value })
+    },
     setHighlightedValue(value) {
       send({ type: "HIGHLIGHTED.SET", value })
     },
@@ -141,11 +154,17 @@ export function connect<T extends PropTypes>(service: Service<MenuSchema>, norma
       return () => node.removeEventListener(dom.itemSelectEvent, listener)
     },
 
-    getContextTriggerProps() {
+    getContextTriggerProps(props: TriggerProps = {}) {
+      const { value } = props
+      const current = value == null ? false : triggerValue === value
+      const contextTriggerId = dom.getContextTriggerId(scope, value)
       return normalize.element({
         ...parts.contextTrigger.attrs,
         dir: prop("dir"),
-        id: dom.getContextTriggerId(scope),
+        id: contextTriggerId,
+        "data-ownedby": scope.id,
+        "data-value": value,
+        "data-current": dataAttr(current),
         "data-state": open ? "open" : "closed",
         onPointerDown(event) {
           if (event.pointerType === "mouse") return
@@ -166,7 +185,12 @@ export function connect<T extends PropTypes>(service: Service<MenuSchema>, norma
         },
         onContextMenu(event) {
           const point = getEventPoint(event)
-          send({ type: "CONTEXT_MENU", point })
+          const shouldSwitch = open && !current
+          send({
+            type: shouldSwitch ? "TRIGGER_VALUE.SET" : "CONTEXT_MENU",
+            point,
+            value,
+          })
           event.preventDefault()
         },
         style: {
@@ -182,13 +206,22 @@ export function connect<T extends PropTypes>(service: Service<MenuSchema>, norma
       return mergeProps(getItemProps({ value: triggerProps.id }), triggerProps) as T["element"]
     },
 
-    getTriggerProps() {
+    getTriggerProps(props: TriggerProps = {}) {
+      const { value } = props
+      const current = value == null ? false : triggerValue === value
+      const triggerId = dom.getTriggerId(scope, value)
       return normalize.button({
         ...(isSubmenu ? parts.triggerItem.attrs : parts.trigger.attrs),
         "data-placement": context.get("currentPlacement"),
         type: "button",
         dir: prop("dir"),
-        id: dom.getTriggerId(scope),
+        id: triggerId,
+        // Multi-trigger attributes - only included when value is provided
+        ...(value != null && {
+          "data-ownedby": scope.id,
+          "data-value": value,
+          "data-current": dataAttr(current),
+        }),
         "data-uid": prop("id"),
         "aria-haspopup": composite ? "menu" : "dialog",
         "aria-controls": dom.getContentId(scope),
@@ -221,7 +254,12 @@ export function connect<T extends PropTypes>(service: Service<MenuSchema>, norma
         onClick(event) {
           if (event.defaultPrevented) return
           if (dom.isTargetDisabled(event.currentTarget)) return
-          send({ type: "TRIGGER_CLICK", target: event.currentTarget })
+          const shouldSwitch = open && value != null && !current
+          send({
+            type: shouldSwitch ? "TRIGGER_VALUE.SET" : "TRIGGER_CLICK",
+            target: event.currentTarget,
+            value,
+          })
         },
         onBlur() {
           send({ type: "TRIGGER_BLUR" })
@@ -233,16 +271,16 @@ export function connect<T extends PropTypes>(service: Service<MenuSchema>, norma
           if (event.defaultPrevented) return
           const keyMap: EventKeyMap = {
             ArrowDown() {
-              send({ type: "ARROW_DOWN" })
+              send({ type: "ARROW_DOWN", value })
             },
             ArrowUp() {
-              send({ type: "ARROW_UP" })
+              send({ type: "ARROW_UP", value })
             },
             Enter() {
-              send({ type: "ARROW_DOWN", src: "enter" })
+              send({ type: "ARROW_DOWN", src: "enter", value })
             },
             Space() {
-              send({ type: "ARROW_DOWN", src: "space" })
+              send({ type: "ARROW_DOWN", src: "space", value })
             },
           }
 
@@ -305,7 +343,7 @@ export function connect<T extends PropTypes>(service: Service<MenuSchema>, norma
         tabIndex: 0,
         dir: prop("dir"),
         "aria-activedescendant": computed("highlightedId") || undefined,
-        "aria-labelledby": dom.getTriggerId(scope),
+        "aria-labelledby": dom.getTriggerId(scope, triggerValue ?? undefined),
         "data-placement": currentPlacement,
         onPointerEnter(event) {
           if (event.pointerType !== "mouse") return

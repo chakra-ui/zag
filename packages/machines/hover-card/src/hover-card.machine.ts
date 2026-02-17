@@ -25,20 +25,27 @@ export const machine = createMachine<HoverCardSchema>({
     return open ? "open" : "closed"
   },
 
-  context({ prop, bindable }) {
+  context({ prop, bindable, scope }) {
     return {
       open: bindable<boolean>(() => ({
         defaultValue: prop("defaultOpen"),
         value: prop("open"),
-        onChange(value) {
-          prop("onOpenChange")?.({ open: value })
-        },
       })),
       currentPlacement: bindable<Placement | undefined>(() => ({
         defaultValue: undefined,
       })),
       isPointer: bindable<boolean>(() => ({
         defaultValue: false,
+      })),
+      triggerValue: bindable<string | null>(() => ({
+        defaultValue: prop("defaultTriggerValue") ?? null,
+        value: prop("triggerValue"),
+        onChange(value) {
+          const onTriggerValueChange = prop("onTriggerValueChange")
+          if (!onTriggerValueChange) return
+          const triggerElement = dom.getActiveTriggerEl(scope, value)
+          onTriggerValueChange({ value, triggerElement })
+        },
       })),
     }
   },
@@ -54,6 +61,12 @@ export const machine = createMachine<HoverCardSchema>({
     })
   },
 
+  on: {
+    "TRIGGER_VALUE.SET": {
+      actions: ["setTriggerValue", "reposition"],
+    },
+  },
+
   states: {
     closed: {
       tags: ["closed"],
@@ -64,13 +77,15 @@ export const machine = createMachine<HoverCardSchema>({
         },
         POINTER_ENTER: {
           target: "opening",
-          actions: ["setIsPointer"],
+          actions: ["setIsPointer", "setTriggerValue"],
         },
         TRIGGER_FOCUS: {
           target: "opening",
+          actions: ["setTriggerValue"],
         },
         OPEN: {
           target: "opening",
+          actions: ["setTriggerValue"],
         },
       },
     },
@@ -129,6 +144,10 @@ export const machine = createMachine<HoverCardSchema>({
             actions: ["invokeOnClose"],
           },
         ],
+        "TRIGGER_VALUE.SET": {
+          // Stay in opening state but update trigger value (will reposition when opened)
+          actions: ["setTriggerValue"],
+        },
       },
     },
 
@@ -197,6 +216,10 @@ export const machine = createMachine<HoverCardSchema>({
           // no need to invokeOnOpen here because it's still open (but about to close)
           actions: ["setIsPointer"],
         },
+        "TRIGGER_VALUE.SET": {
+          target: "open",
+          actions: ["setTriggerValue", "reposition"],
+        },
       },
     },
   },
@@ -229,7 +252,8 @@ export const machine = createMachine<HoverCardSchema>({
           context.set("currentPlacement", prop("positioning").placement)
         }
         const getPositionerEl = () => dom.getPositionerEl(scope)
-        return getPlacement(dom.getTriggerEl(scope), getPositionerEl, {
+        const getTriggerEl = () => dom.getActiveTriggerEl(scope, context.get("triggerValue"))
+        return getPlacement(getTriggerEl, getPositionerEl, {
           ...prop("positioning"),
           defer: true,
           onComplete(data) {
@@ -243,7 +267,7 @@ export const machine = createMachine<HoverCardSchema>({
         return trackDismissableElement(getContentEl, {
           type: "popover",
           defer: true,
-          exclude: [dom.getTriggerEl(scope)],
+          exclude: dom.getTriggerEls(scope),
           onDismiss() {
             send({ type: "CLOSE", src: "interact-outside" })
           },
@@ -272,7 +296,8 @@ export const machine = createMachine<HoverCardSchema>({
       },
       reposition({ context, prop, scope, event }) {
         const getPositionerEl = () => dom.getPositionerEl(scope)
-        getPlacement(dom.getTriggerEl(scope), getPositionerEl, {
+        const getTriggerEl = () => dom.getActiveTriggerEl(scope, context.get("triggerValue"))
+        getPlacement(getTriggerEl, getPositionerEl, {
           ...prop("positioning"),
           ...event.options,
           defer: true,
@@ -281,6 +306,10 @@ export const machine = createMachine<HoverCardSchema>({
             context.set("currentPlacement", data.placement)
           },
         })
+      },
+      setTriggerValue({ context, event }) {
+        if (event.value === undefined) return
+        context.set("triggerValue", event.value)
       },
       toggleVisibility({ prop, event, send }) {
         queueMicrotask(() => {

@@ -5,10 +5,12 @@ import type { TooltipProps } from "./tooltip.types"
 export const props = createProps<TooltipProps>()([
   "aria-label",
   "closeDelay",
+  "closeOnClick",
   "closeOnEscape",
   "closeOnPointerDown",
   "closeOnScroll",
-  "closeOnClick",
+  "defaultOpen",
+  "defaultTriggerValue",
   "dir",
   "disabled",
   "getRootNode",
@@ -16,10 +18,11 @@ export const props = createProps<TooltipProps>()([
   "ids",
   "interactive",
   "onOpenChange",
-  "defaultOpen",
+  "onTriggerValueChange",
   "open",
   "openDelay",
   "positioning",
+  "triggerValue",
 ])
 
 export const splitProps = createSplitProps<Partial<TooltipProps>>(props)

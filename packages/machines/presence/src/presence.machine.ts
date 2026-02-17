@@ -127,6 +127,9 @@ export const machine = createMachine<PresenceSchema>({
         }
 
         raf(() => {
+          // Re-check present prop - it may have changed back to true during the raf delay
+          if (prop("present")) return
+
           const animationName = getAnimationName(refs.get("styles"))
           context.set("unmountAnimationName", animationName)
           if (

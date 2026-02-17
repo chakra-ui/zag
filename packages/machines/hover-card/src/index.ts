@@ -5,11 +5,13 @@ export { machine } from "./hover-card.machine"
 export * from "./hover-card.props"
 export type {
   HoverCardApi as Api,
-  HoverCardMachine as Machine,
-  HoverCardProps as Props,
-  HoverCardService as Service,
   ElementIds,
+  HoverCardMachine as Machine,
   OpenChangeDetails,
   Placement,
   PositioningOptions,
+  HoverCardProps as Props,
+  HoverCardService as Service,
+  TriggerProps,
+  TriggerValueChangeDetails,
 } from "./hover-card.types"

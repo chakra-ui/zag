@@ -6,7 +6,7 @@ import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import { parts } from "./tooltip.anatomy"
 import * as dom from "./tooltip.dom"
 import { store } from "./tooltip.store"
-import type { TooltipApi, TooltipSchema } from "./tooltip.types"
+import type { TooltipApi, TooltipSchema, TriggerProps } from "./tooltip.types"
 
 export function connect<P extends PropTypes>(
   service: Service<TooltipSchema>,
@@ -17,8 +17,8 @@ export function connect<P extends PropTypes>(
   const hasAriaLabel = !!prop("aria-label")
 
   const open = state.matches("open", "closing")
+  const triggerValue = context.get("triggerValue")
 
-  const triggerId = dom.getTriggerId(scope)
   const contentId = dom.getContentId(scope)
 
   const disabled = prop("disabled")
@@ -35,14 +35,26 @@ export function connect<P extends PropTypes>(
       if (open === nextOpen) return
       send({ type: nextOpen ? "open" : "close" })
     },
+
+    triggerValue,
+    setTriggerValue(value) {
+      send({ type: "triggerValue.set", value: value ?? undefined })
+    },
+
     reposition(options = {}) {
       send({ type: "positioning.set", options })
     },
 
-    getTriggerProps() {
+    getTriggerProps(props: TriggerProps = {}) {
+      const { value } = props
+      const current = value == null ? false : triggerValue === value
+      const triggerId = dom.getTriggerId(scope, value)
       return normalize.button({
         ...parts.trigger.attrs,
         id: triggerId,
+        "data-ownedby": scope.id,
+        "data-value": value,
+        "data-current": dataAttr(current),
         dir: prop("dir"),
         "data-expanded": dataAttr(open),
         "data-state": open ? "open" : "closed",
@@ -51,22 +63,26 @@ export function connect<P extends PropTypes>(
           if (event.defaultPrevented) return
           if (disabled) return
           if (!prop("closeOnClick")) return
-          send({ type: "close", src: "trigger.click" })
+          const shouldSwitch = open && !current
+          send({ type: shouldSwitch ? "triggerValue.set" : "close", src: "trigger.click", value, triggerId })
         },
         onFocus(event) {
-          queueMicrotask(() => {
-            if (event.defaultPrevented) return
-            if (disabled) return
-            if (_event.src === "trigger.pointerdown") return
-            if (!isFocusVisible()) return
-            send({ type: "open", src: "trigger.focus" })
-          })
+          if (event.defaultPrevented) return
+          if (disabled) return
+          if (!isFocusVisible()) return
+          const shouldSwitch = open && !current
+          send({ type: shouldSwitch ? "triggerValue.set" : "open", src: "trigger.focus", value, triggerId })
         },
         onBlur(event) {
           if (event.defaultPrevented) return
           if (disabled) return
-          if (id === store.get("id")) {
-            send({ type: "close", src: "trigger.blur" })
+          if (id !== store.get("id")) return
+          // Check if focus moved to another trigger in the same tooltip.
+          // If so, don't close - the focus handler will handle the switch.
+          const activeEl = event.relatedTarget ?? scope.getDoc().activeElement
+          const focusedAnotherTrigger = activeEl?.closest(`[data-ownedby="${scope.id}"]`) != null
+          if (!focusedAnotherTrigger) {
+            send({ type: "close", src: "trigger.blur", value, triggerId })
           }
         },
         onPointerDown(event) {
@@ -75,20 +91,21 @@ export function connect<P extends PropTypes>(
           if (!isLeftClick(event)) return
           if (!prop("closeOnPointerDown")) return
           if (id === store.get("id")) {
-            send({ type: "close", src: "trigger.pointerdown" })
+            send({ type: "close", src: "trigger.pointerdown", value, triggerId })
           }
         },
         onPointerMove(event) {
           if (event.defaultPrevented) return
           if (disabled) return
           if (event.pointerType === "touch") return
-          send({ type: "pointer.move" })
+          const shouldSwitch = open && !current
+          send({ type: shouldSwitch ? "triggerValue.set" : "pointer.move", value, triggerId })
         },
         onPointerOver(event) {
           if (event.defaultPrevented) return
           if (disabled) return
           if (event.pointerType === "touch") return
-          send({ type: "pointer.move" })
+          send({ type: "pointer.move", value, triggerId })
         },
         onPointerLeave() {
           if (disabled) return
