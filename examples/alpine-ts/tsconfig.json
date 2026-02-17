@@ -1,0 +1,10 @@
+{
+  "extends": ["nitro/tsconfig"],
+  "compilerOptions": {
+    "paths": {
+      "~/*": ["./*"]
+    },
+    "jsx": "react-jsx",
+    "jsxImportSource": "mono-jsx"
+  }
+}
