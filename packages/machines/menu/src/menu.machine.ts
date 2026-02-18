@@ -13,7 +13,7 @@ import {
   raf,
   scrollIntoView,
 } from "@zag-js/dom-query"
-import { getInteractionModality, trackFocusVisible } from "@zag-js/focus-visible"
+import { getInteractionModality, setInteractionModality, trackFocusVisible } from "@zag-js/focus-visible"
 import { getPlacement, getPlacementSide, type Placement } from "@zag-js/popper"
 import { getElementPolygon, isPointInPolygon, type Point } from "@zag-js/rect-utils"
 import { isEqual } from "@zag-js/utils"
@@ -630,14 +630,17 @@ export const machine = createMachine<MenuSchema>({
         const exec = () => {
           // don't scroll into view if we're using the pointer (or null when focus-trap autofocuses)
           const modality = getInteractionModality()
-          if (modality !== "keyboard") return
+          if (modality === "pointer") return
 
           const itemEl = scope.getById(computed("highlightedId")!)
           const contentEl = dom.getContentEl(scope)
 
           scrollIntoView(itemEl, { rootEl: contentEl, block: "nearest" })
         }
-        raf(() => exec())
+        raf(() => {
+          setInteractionModality("virtual")
+          exec()
+        })
 
         const contentEl = () => dom.getContentEl(scope)
         return observeAttributes(contentEl, {

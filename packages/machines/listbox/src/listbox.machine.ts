@@ -2,7 +2,7 @@ import type { CollectionItem } from "@zag-js/collection"
 import { Selection } from "@zag-js/collection"
 import { setup } from "@zag-js/core"
 import { getByTypeahead, observeAttributes, raf, scrollIntoView } from "@zag-js/dom-query"
-import { getInteractionModality, trackFocusVisible } from "@zag-js/focus-visible"
+import { getInteractionModality, setInteractionModality, trackFocusVisible } from "@zag-js/focus-visible"
 import { isEqual } from "@zag-js/utils"
 import { collection } from "./listbox.collection"
 import * as dom from "./listbox.dom"
@@ -189,7 +189,7 @@ export const machine = createMachine({
           const modality = getInteractionModality()
 
           // don't scroll into view if we're using the pointer
-          if (modality !== "keyboard") return
+          if (modality === "pointer") return
 
           const contentEl = dom.getContentEl(scope)
 
@@ -210,7 +210,10 @@ export const machine = createMachine({
           scrollIntoView(itemEl, { rootEl: contentEl, block: "nearest" })
         }
 
-        raf(() => exec(true))
+        raf(() => {
+          setInteractionModality("virtual")
+          exec(true)
+        })
 
         const contentEl = () => dom.getContentEl(scope)
         return observeAttributes(contentEl, {

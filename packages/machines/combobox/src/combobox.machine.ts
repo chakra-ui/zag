@@ -1,7 +1,7 @@
 import { setup } from "@zag-js/core"
 import { trackDismissableElement } from "@zag-js/dismissable"
 import { clickIfLink, nextTick, observeAttributes, raf, scrollIntoView, setCaretToEnd } from "@zag-js/dom-query"
-import { getInteractionModality, trackFocusVisible } from "@zag-js/focus-visible"
+import { getInteractionModality, setInteractionModality, trackFocusVisible } from "@zag-js/focus-visible"
 import { getPlacement } from "@zag-js/popper"
 import { addOrRemove, isBoolean, isEqual, match, remove } from "@zag-js/utils"
 import { collection } from "./combobox.collection"
@@ -755,7 +755,7 @@ export const machine = createMachine({
         const exec = (immediate: boolean) => {
           // don't scroll into view if we're using the pointer (or null when focus-trap autofocuses)
           const modality = getInteractionModality()
-          if (modality !== "keyboard") return
+          if (modality === "pointer") return
 
           const highlightedValue = context.get("highlightedValue")
           if (!highlightedValue) return
@@ -780,7 +780,10 @@ export const machine = createMachine({
           cleanups.push(raf_cleanup)
         }
 
-        const rafCleanup = raf(() => exec(true))
+        const rafCleanup = raf(() => {
+          setInteractionModality("virtual")
+          exec(true)
+        })
         cleanups.push(rafCleanup)
 
         const observerCleanup = observeAttributes(inputEl, {

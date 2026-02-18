@@ -27,4 +27,11 @@ test.describe("listbox", () => {
     await I.pressKey("ArrowUp")
     await I.seeItemIsHighlighted("Zimbabwe")
   })
+
+  test.only("should scroll selected option into view", async () => {
+    await I.tabToContent()
+    await I.pressKey("End")
+    await I.seeItemIsHighlighted("Zimbabwe")
+    await I.seeItemInViewport("Zimbabwe")
+  })
 })

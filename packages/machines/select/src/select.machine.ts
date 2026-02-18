@@ -9,7 +9,7 @@ import {
   scrollIntoView,
   trackFormControl,
 } from "@zag-js/dom-query"
-import { getInteractionModality, trackFocusVisible } from "@zag-js/focus-visible"
+import { getInteractionModality, setInteractionModality, trackFocusVisible } from "@zag-js/focus-visible"
 import { getPlacement, type Placement } from "@zag-js/popper"
 import { addOrRemove, isEqual } from "@zag-js/utils"
 import { collection } from "./select.collection"
@@ -466,7 +466,7 @@ export const machine = createMachine<SelectSchema>({
 
           // don't scroll into view if we're using the pointer (or null when focus-trap autofocuses)
           const modality = getInteractionModality()
-          if (modality !== "keyboard") return
+          if (modality === "pointer") return
 
           const contentEl = dom.getContentEl(scope)
 
@@ -485,7 +485,10 @@ export const machine = createMachine<SelectSchema>({
           scrollIntoView(itemEl, { rootEl: contentEl, block: "nearest" })
         }
 
-        raf(() => exec(true))
+        raf(() => {
+          setInteractionModality("virtual")
+          exec(true)
+        })
 
         const contentEl = () => dom.getContentEl(scope)
         return observeAttributes(contentEl, {

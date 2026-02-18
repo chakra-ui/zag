@@ -8,7 +8,7 @@ import {
   dispatchInputValueEvent,
   setElementValue,
 } from "@zag-js/dom-query"
-import { getInteractionModality, trackFocusVisible } from "@zag-js/focus-visible"
+import { getInteractionModality, setInteractionModality, trackFocusVisible } from "@zag-js/focus-visible"
 import { getPlacement, type Placement } from "@zag-js/popper"
 import type { Point } from "@zag-js/rect-utils"
 import { last, isEmpty, isEqual } from "@zag-js/utils"
@@ -634,7 +634,7 @@ export const machine = createMachine<CascadeSelectSchema>({
 
           // don't scroll into view if we're using the pointer (or null when focus-trap autofocuses)
           const modality = getInteractionModality()
-          if (modality !== "keyboard") return
+          if (modality === "pointer") return
 
           const listEls = dom.getListEls(scope)
           listEls.forEach((listEl, index) => {
@@ -656,7 +656,10 @@ export const machine = createMachine<CascadeSelectSchema>({
           })
         }
 
-        raf(() => exec(true))
+        raf(() => {
+          setInteractionModality("virtual")
+          exec(true)
+        })
 
         const rafCleanup = raf(() => exec(true))
         cleanups.push(rafCleanup)
