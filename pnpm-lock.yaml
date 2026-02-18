@@ -2162,6 +2162,9 @@ importers:
       '@zag-js/dom-query':
         specifier: workspace:*
         version: link:../../utilities/dom-query
+      '@zag-js/focus-visible':
+        specifier: workspace:*
+        version: link:../../utilities/focus-visible
       '@zag-js/popper':
         specifier: workspace:*
         version: link:../../utilities/popper
@@ -2300,8 +2303,8 @@ importers:
         specifier: workspace:*
         version: link:../../utilities/dom-query
       '@zag-js/focus-visible':
-        specifier: ^1.33.1
-        version: 1.33.1
+        specifier: workspace:*
+        version: link:../../utilities/focus-visible
       '@zag-js/popper':
         specifier: workspace:*
         version: link:../../utilities/popper
@@ -7168,15 +7171,6 @@ packages:
 
   '@vue/shared@3.5.28':
     resolution: {integrity: sha512-cfWa1fCGBxrvaHRhvV3Is0MgmrbSCxYTXCSCau2I0a1Xw1N1pHAvkWCiXPRAqjvToILvguNyEwjevUqAuBQWvQ==}
-
-  '@zag-js/dom-query@1.33.1':
-    resolution: {integrity: sha512-Iyl0D3nLvJuMkkuRy22xhj4pkzexUCDlRpCzqIrOMDKsmFka/WV9PIclZKVpMECTi9dEQmJuGTjBVaCOReLu+Q==}
-
-  '@zag-js/focus-visible@1.33.1':
-    resolution: {integrity: sha512-xnk2BwO6jYuudj4jMzNYD4AxgaD2sqnLHkwmHImOnVa5frbYziGzevo9iJWC+2THyqQjUXLQ6Zfo6J/Hi3KyNQ==}
-
-  '@zag-js/types@1.33.1':
-    resolution: {integrity: sha512-huJdwaeyptKDuZqhhFQRWNiMAJEdei4fTAQ3xIBw07GW27zKwust4Bn0y+8PYlnVVQn2auH4lpIXXwPccFRclQ==}
 
   abbrev@3.0.1:
     resolution: {integrity: sha512-AO2ac6pjRB3SJmGJo+v5/aK6Omggp6fsLrs6wN9bd35ulu4cCwaAU9+7ZhXjeqHVkaHThLuzH0nZr0YpCDhygg==}
@@ -16547,18 +16541,6 @@ snapshots:
   '@vue/shared@3.5.27': {}
 
   '@vue/shared@3.5.28': {}
-
-  '@zag-js/dom-query@1.33.1':
-    dependencies:
-      '@zag-js/types': 1.33.1
-
-  '@zag-js/focus-visible@1.33.1':
-    dependencies:
-      '@zag-js/dom-query': 1.33.1
-
-  '@zag-js/types@1.33.1':
-    dependencies:
-      csstype: 3.2.3
 
   abbrev@3.0.1: {}
 
