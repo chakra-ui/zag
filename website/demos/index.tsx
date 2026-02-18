@@ -4,6 +4,7 @@ import { useSyncExternalStore } from "react"
 import { Accordion } from "./accordion"
 import { AngleSlider } from "./angle-slider"
 import { Avatar } from "./avatar"
+import { CascadeSelect } from "./cascade-select"
 import { Carousel } from "./carousel"
 import { Checkbox } from "./checkbox"
 import { Clipboard } from "./clipboard"
@@ -102,6 +103,24 @@ const components = {
   ),
   Drawer: () => (
     <Playground name="drawer" component={Drawer} defaultProps={{}} />
+  ),
+  CascadeSelect: () => (
+    <Playground
+      name="cascade-select"
+      component={CascadeSelect}
+      defaultProps={{
+        disabled: false,
+        readOnly: false,
+        multiple: false,
+        closeOnSelect: true,
+        loopFocus: false,
+        allowParentSelection: false,
+        highlightTrigger: {
+          default: "click",
+          options: ["click", "hover"],
+        },
+      }}
+    />
   ),
   Carousel: () => (
     <Playground

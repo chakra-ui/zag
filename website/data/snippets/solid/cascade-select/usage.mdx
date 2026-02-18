@@ -1,0 +1,93 @@
+```tsx
+import * as cascadeSelect from "@zag-js/cascade-select"
+import { normalizeProps, useMachine } from "@zag-js/solid"
+import { Index, createMemo, createUniqueId, JSX } from "solid-js"
+import { Portal } from "solid-js/web"
+
+// 1. Create the collection (see above)
+const collection = cascadeSelect.collection<Node>({
+  // ...
+})
+
+// 2. Create the recursive tree node
+
+interface TreeNodeProps {
+  node: Node
+  indexPath?: number[]
+  value?: string[]
+  api: cascadeSelect.Api
+}
+
+function TreeNode(props: TreeNodeProps): JSX.Element {
+  const indexPath = () => props.indexPath ?? []
+  const value = () => props.value ?? []
+
+  const nodeProps = () => ({ indexPath: indexPath(), value: value(), item: props.node })
+  const nodeState = () => props.api.getItemState(nodeProps())
+  const children = () => collection.getNodeChildren(props.node)
+
+  return (
+    <>
+      <ul {...props.api.getListProps(nodeProps())}>
+        <Index each={children()}>
+          {(item, index) => {
+            const itemProps = () => ({
+              indexPath: [...indexPath(), index],
+              value: [...value(), collection.getNodeValue(item())],
+              item: item(),
+            })
+            const itemState = () => props.api.getItemState(itemProps())
+            return (
+              <li {...props.api.getItemProps(itemProps())}>
+                <span {...props.api.getItemTextProps(itemProps())}>{item().label}</span>
+                {itemState().hasChildren && <span>›</span>}
+                <span {...props.api.getItemIndicatorProps(itemProps())}>✓</span>
+              </li>
+            )
+          }}
+        </Index>
+      </ul>
+      {nodeState().highlightedChild &&
+        collection.isBranchNode(nodeState().highlightedChild) && (
+          <TreeNode
+            node={nodeState().highlightedChild}
+            api={props.api}
+            indexPath={[...indexPath(), nodeState().highlightedIndex]}
+            value={[...value(), collection.getNodeValue(nodeState().highlightedChild)]}
+          />
+        )}
+    </>
+  )
+}
+
+// 3. Create the cascade select
+
+export function CascadeSelect() {
+  const service = useMachine(cascadeSelect.machine, {
+    id: createUniqueId(),
+    collection,
+  })
+
+  const api = createMemo(() => cascadeSelect.connect(service, normalizeProps))
+
+  return (
+    <div {...api().getRootProps()}>
+      <label {...api().getLabelProps()}>Location</label>
+      <div {...api().getControlProps()}>
+        <button {...api().getTriggerProps()}>
+          <span>{api().valueAsString || "Select location"}</span>
+          <span {...api().getIndicatorProps()}>▼</span>
+        </button>
+        <button {...api().getClearTriggerProps()}>✕</button>
+      </div>
+      <Portal>
+        <div {...api().getPositionerProps()}>
+          <div {...api().getContentProps()}>
+            <TreeNode node={collection.rootNode} api={api()} />
+          </div>
+        </div>
+      </Portal>
+    </div>
+  )
+}
+```
