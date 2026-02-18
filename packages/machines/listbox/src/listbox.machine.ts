@@ -2,7 +2,7 @@ import type { CollectionItem } from "@zag-js/collection"
 import { Selection } from "@zag-js/collection"
 import { setup } from "@zag-js/core"
 import { getByTypeahead, observeAttributes, raf, scrollIntoView } from "@zag-js/dom-query"
-import { getInteractionModality, trackFocusVisible as trackFocusVisibleFn } from "@zag-js/focus-visible"
+import { getInteractionModality, trackFocusVisible } from "@zag-js/focus-visible"
 import { isEqual } from "@zag-js/utils"
 import { collection } from "./listbox.collection"
 import * as dom from "./listbox.dom"
@@ -173,7 +173,7 @@ export const machine = createMachine({
 
     effects: {
       trackFocusVisible: ({ scope, refs }) => {
-        return trackFocusVisibleFn({
+        return trackFocusVisible({
           root: scope.getRootNode?.(),
           onChange(details) {
             refs.set("focusVisible", details.isFocusVisible)

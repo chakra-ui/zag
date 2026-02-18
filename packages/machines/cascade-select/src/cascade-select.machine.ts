@@ -8,6 +8,7 @@ import {
   dispatchInputValueEvent,
   setElementValue,
 } from "@zag-js/dom-query"
+import { getInteractionModality, trackFocusVisible } from "@zag-js/focus-visible"
 import { getPlacement, type Placement } from "@zag-js/popper"
 import type { Point } from "@zag-js/rect-utils"
 import { last, isEmpty, isEqual } from "@zag-js/utils"
@@ -295,7 +296,7 @@ export const machine = createMachine<CascadeSelectSchema>({
     open: {
       tags: ["open"],
       exit: ["clearHighlightedValue", "scrollContentToTop"],
-      effects: ["trackDismissableElement", "computePlacement", "scrollToHighlightedItems"],
+      effects: ["trackDismissableElement", "trackFocusVisible", "computePlacement", "scrollToHighlightedItems"],
       on: {
         "CONTROLLED.CLOSE": [
           {
@@ -592,6 +593,9 @@ export const machine = createMachine<CascadeSelectSchema>({
           },
         })
       },
+      trackFocusVisible({ scope }) {
+        return trackFocusVisible({ root: scope.getRootNode?.() })
+      },
       trackDismissableElement({ scope, send, prop }) {
         const contentEl = () => dom.getContentEl(scope)
         let restoreFocus = true
@@ -620,7 +624,7 @@ export const machine = createMachine<CascadeSelectSchema>({
           },
         })
       },
-      scrollToHighlightedItems({ context, prop, scope, event }) {
+      scrollToHighlightedItems({ context, prop, scope }) {
         let cleanups: VoidFunction[] = []
 
         const exec = (immediate: boolean) => {
@@ -628,8 +632,9 @@ export const machine = createMachine<CascadeSelectSchema>({
           const highlightedIndexPath = context.get("highlightedIndexPath")
           if (!highlightedIndexPath.length) return
 
-          // Don't scroll into view if we're using the pointer
-          if (event.current().type.includes("POINTER")) return
+          // don't scroll into view if we're using the pointer (or null when focus-trap autofocuses)
+          const modality = getInteractionModality()
+          if (modality !== "keyboard") return
 
           const listEls = dom.getListEls(scope)
           listEls.forEach((listEl, index) => {

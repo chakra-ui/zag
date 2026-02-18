@@ -2,7 +2,7 @@
  * Credit: Huge props to the team at Adobe for inspiring this implementation.
  * https://github.com/adobe/react-spectrum/blob/main/packages/%40react-aria/interactions/src/useFocusVisible.ts
  */
-import { getDocument, getEventTarget, getWindow, isMac, isVirtualClick } from "@zag-js/dom-query"
+import { getActiveElement, getDocument, getEventTarget, getWindow, isMac, isVirtualClick } from "@zag-js/dom-query"
 
 function isValidKey(e: KeyboardEvent) {
   return !(
@@ -18,14 +18,19 @@ function isValidKey(e: KeyboardEvent) {
 const nonTextInputTypes = new Set(["checkbox", "radio", "range", "color", "file", "image", "button", "submit", "reset"])
 
 function isKeyboardFocusEvent(isTextInput: boolean, modality: Modality, e: HandlerEvent) {
-  const target = e ? getEventTarget<Element>(e) : null
-  const win = getWindow(target)
+  const eventTarget = e ? getEventTarget<Element>(e) : null
+  const doc = getDocument(eventTarget)
+  const win = getWindow(eventTarget)
 
+  // For keyboard events that occur on a non-input element that will move focus into input element
+  // (e.g. ArrowLeft going from Datepicker button to the main input group), we need to rely on the
+  // user passing isTextInput. Use activeElement to detect the element that will receive focus.
+  const activeElement = getActiveElement(doc)
   isTextInput =
     isTextInput ||
-    (target instanceof win.HTMLInputElement && !nonTextInputTypes.has(target?.type)) ||
-    target instanceof win.HTMLTextAreaElement ||
-    (target instanceof win.HTMLElement && target.isContentEditable)
+    (activeElement instanceof win.HTMLInputElement && !nonTextInputTypes.has(activeElement?.type)) ||
+    activeElement instanceof win.HTMLTextAreaElement ||
+    (activeElement instanceof win.HTMLElement && activeElement.isContentEditable)
 
   return !(
     isTextInput &&
@@ -59,6 +64,12 @@ export let listenerMap = new Map<Window, GlobalListenerData>()
 
 let hasEventBeforeFocus = false
 let hasBlurredWindowRecently = false
+
+/**
+ * When true, the next focus event will be ignored. Used by preventFocus() to avoid
+ * focus rings when programmatically reverting focus.
+ */
+export let ignoreFocusEvent = false
 
 // Only Tab or Esc keys will make focus visible on text input elements
 const FOCUS_VISIBLE_INPUT_KEYS = {
@@ -101,7 +112,12 @@ function handleFocusEvent(e: FocusEvent) {
   // cause keyboard focus rings to appear.
   const target = getEventTarget(e)
 
-  if (target === getWindow(target as Element) || target === getDocument(target as Element)) {
+  if (
+    target === getWindow(target as Element) ||
+    target === getDocument(target as Element) ||
+    ignoreFocusEvent ||
+    !e.isTrusted
+  ) {
     return
   }
 
@@ -117,6 +133,8 @@ function handleFocusEvent(e: FocusEvent) {
 }
 
 function handleWindowBlur() {
+  if (ignoreFocusEvent) return
+
   // When the window is blurred, reset state. This is necessary when tabbing out of the window,
   // for example, since a subsequent focus event won't be fired.
   hasEventBeforeFocus = false
@@ -136,12 +154,11 @@ function setupGlobalFocusEvents(root?: RootNode) {
 
   let focus = win.HTMLElement.prototype.focus
   function patchedFocus(this: HTMLElement) {
-    // For programmatic focus, we remove the focus visible state to prevent showing focus rings
-    // When `options.focusVisible` is supported in most browsers, we can remove this
+    // For programmatic focus, we set hasEventBeforeFocus so the subsequent focus event
+    // doesn't switch to virtual modality. This keeps modality as-is (e.g. "pointer" when
+    // user clicked to open a dialog), preventing focus rings on autofocus/focus-trap.
+    // When `options.focusVisible` is supported in most browsers, we can remove this.
     // @see https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement/focus#focusvisible
-    currentModality = "virtual"
-    triggerChangeHandlers("virtual", null)
-
     hasEventBeforeFocus = true
     focus.apply(this, arguments as unknown as [options?: FocusOptions | undefined])
   }
@@ -269,7 +286,9 @@ export function trackInteractionModality(props: InteractionModalityProps): VoidF
 /////////////////////////////////////////////////////////////////////////////////////////////
 
 export function isFocusVisible(): boolean {
-  return currentModality === "keyboard"
+  // Focus is visible for keyboard and virtual (e.g. screen reader) modalities only.
+  // Excludes pointer (click/touch) and null (no prior interaction, e.g. focus-trap autofocus).
+  return currentModality === "keyboard" || currentModality === "virtual"
 }
 
 export interface FocusVisibleChangeDetails {

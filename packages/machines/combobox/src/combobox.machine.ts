@@ -1,6 +1,7 @@
 import { setup } from "@zag-js/core"
 import { trackDismissableElement } from "@zag-js/dismissable"
 import { clickIfLink, nextTick, observeAttributes, raf, scrollIntoView, setCaretToEnd } from "@zag-js/dom-query"
+import { getInteractionModality, trackFocusVisible } from "@zag-js/focus-visible"
 import { getPlacement } from "@zag-js/popper"
 import { addOrRemove, isBoolean, isEqual, match, remove } from "@zag-js/utils"
 import { collection } from "./combobox.collection"
@@ -349,7 +350,7 @@ export const machine = createMachine({
     interacting: {
       tags: ["open", "focused"],
       entry: ["setInitialFocus"],
-      effects: ["scrollToHighlightedItem", "trackDismissableLayer", "trackPlacement"],
+      effects: ["trackFocusVisible", "scrollToHighlightedItem", "trackDismissableLayer", "trackPlacement"],
       on: {
         "CONTROLLED.CLOSE": [
           {
@@ -525,7 +526,7 @@ export const machine = createMachine({
 
     suggesting: {
       tags: ["open", "focused"],
-      effects: ["trackDismissableLayer", "scrollToHighlightedItem", "trackPlacement"],
+      effects: ["trackFocusVisible", "trackDismissableLayer", "scrollToHighlightedItem", "trackPlacement"],
       entry: ["setInitialFocus"],
       on: {
         "CONTROLLED.CLOSE": [
@@ -710,6 +711,9 @@ export const machine = createMachine({
     },
 
     effects: {
+      trackFocusVisible({ scope }) {
+        return trackFocusVisible({ root: scope.getRootNode?.() })
+      },
       trackDismissableLayer({ send, prop, scope }) {
         if (prop("disableLayer")) return
         const contentEl = () => dom.getContentEl(scope)
@@ -743,15 +747,18 @@ export const machine = createMachine({
           },
         })
       },
-      scrollToHighlightedItem({ context, prop, scope, event }) {
+      scrollToHighlightedItem({ context, prop, scope }) {
         const inputEl = dom.getInputEl(scope)
 
         let cleanups: VoidFunction[] = []
 
         const exec = (immediate: boolean) => {
-          const pointer = event.current().type.includes("POINTER")
+          // don't scroll into view if we're using the pointer (or null when focus-trap autofocuses)
+          const modality = getInteractionModality()
+          if (modality !== "keyboard") return
+
           const highlightedValue = context.get("highlightedValue")
-          if (pointer || !highlightedValue) return
+          if (!highlightedValue) return
 
           const contentEl = dom.getContentEl(scope)
 

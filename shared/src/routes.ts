@@ -53,6 +53,7 @@ export const routesData: RouteData[] = [
   { label: "Dialog", path: "/dialog" },
   { label: "Hover Card", path: "/hover-card" },
   { label: "Menu", path: "/menu" },
+  { label: "Menu Overflow", path: "/menu-overflow" },
   { label: "Menu Nested", path: "/menu-nested" },
   { label: "Menu With options", path: "/menu-options" },
   { label: "Context Menu", path: "/context-menu" },
