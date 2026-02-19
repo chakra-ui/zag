@@ -49,6 +49,7 @@ export const routesData: RouteData[] = [
   { label: "Accordion", path: "/accordion" },
   { label: "Checkbox", path: "/checkbox" },
   { label: "Combobox", path: "/combobox" },
+  { label: "Combobox (Multiple)", path: "/combobox-multiple" },
   { label: "Editable", path: "/editable" },
   { label: "Dialog", path: "/dialog" },
   { label: "Hover Card", path: "/hover-card" },

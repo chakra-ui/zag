@@ -67,7 +67,10 @@ export const machine = createMachine({
           const prevSelectedItems = context.get("selectedItems")
           const collection = prop("collection")
 
-          const nextItems = value.map((v) => {
+          // When controlled, use prop value for selectedItems so they stay in sync when controller ignores selection
+          const effectiveValue = prop("value") || value
+
+          const nextItems = effectiveValue.map((v) => {
             const item = prevSelectedItems.find((item) => collection.getItemValue(item) === v)
             return item || collection.find(v)
           })
@@ -312,8 +315,7 @@ export const machine = createMachine({
         "INPUT.ARROW_UP": [
           // == group 1 ==
           {
-            guard: "autoComplete",
-            target: "interacting",
+            guard: and("isOpenControlled", "autoComplete"),
             actions: ["invokeOnOpen"],
           },
           {
@@ -323,7 +325,7 @@ export const machine = createMachine({
           },
           // == group 2 ==
           {
-            target: "interacting",
+            guard: "isOpenControlled",
             actions: ["highlightLastOrSelectedItem", "invokeOnOpen"],
           },
           {
