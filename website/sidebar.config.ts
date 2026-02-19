@@ -84,7 +84,7 @@ const sidebar: Record<"docs", SidebarItem[]> = {
           type: "doc",
           label: "Cascade Select",
           id: "cascade-select",
-          new: true,
+          beta: true,
         },
         { type: "doc", label: "Checkbox", id: "checkbox" },
         { type: "doc", label: "Clipboard", id: "clipboard" },
