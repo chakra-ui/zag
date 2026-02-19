@@ -5,17 +5,8 @@
       "--angle": "The angle in degrees"
     },
     "Marker": {
-      "--marker-value": "The marker value value for the Marker"
-    }
-  },
-  "drawer": {
-    "Content": {
-      "--drawer-translate": "The drawer translate value for the Content",
-      "--layer-index": "The index of the dismissable in the layer stack",
-      "--nested-layer-count": "The number of nested drawers"
-    },
-    "Backdrop": {
-      "--layer-index": "The index of the dismissable in the layer stack"
+      "--marker-value": "The logical marker value (e.g. 0, 45, 90)",
+      "--marker-display-value": "The rotation angle for display (mirrored in RTL)"
     }
   },
   "carousel": {
@@ -73,6 +64,37 @@
       "--layer-index": "The index of the dismissable in the layer stack"
     }
   },
+  "drawer": {
+    "Content": {
+      "--drawer-translate": "The drawer translate value for the Content",
+      "--drawer-translate-x": "The drawer translate x value for the Content",
+      "--drawer-translate-y": "The drawer translate y value for the Content",
+      "--drawer-snap-point-offset-x": "The offset position for drawer snap point",
+      "--drawer-snap-point-offset-y": "The offset position for drawer snap point",
+      "--drawer-swipe-movement-x": "The drawer swipe movement x value for the Content",
+      "--drawer-swipe-movement-y": "The drawer swipe movement y value for the Content",
+      "--drawer-swipe-strength": "The drawer swipe strength value for the Content",
+      "--layer-index": "The index of the dismissable in the layer stack",
+      "--nested-layer-count": "The number of nested drawers"
+    },
+    "Backdrop": {
+      "--drawer-swipe-progress": "The drawer swipe progress value for the Backdrop",
+      "--drawer-swipe-strength": "The drawer swipe strength value for the Backdrop",
+      "--layer-index": "The index of the dismissable in the layer stack"
+    }
+  },
+  "image-cropper": {
+    "Root": {
+      "--crop-width": "The width of the Root",
+      "--crop-height": "The height of the Root",
+      "--crop-x": "The crop x value for the Root",
+      "--crop-y": "The crop y value for the Root",
+      "--image-zoom": "The image zoom value for the Root",
+      "--image-rotation": "The image rotation value for the Root",
+      "--image-offset-x": "The offset position for image",
+      "--image-offset-y": "The offset position for image"
+    }
+  },
   "floating-panel": {
     "Positioner": {
       "--width": "The width of the element",
@@ -93,23 +115,6 @@
       "--arrow-offset": "The offset position of the arrow"
     }
   },
-  "image-cropper": {
-    "Root": {
-      "--crop-width": "The width of the Root",
-      "--crop-height": "The height of the Root",
-      "--crop-x": "The crop x value for the Root",
-      "--crop-y": "The crop y value for the Root",
-      "--image-zoom": "The image zoom value for the Root",
-      "--image-rotation": "The image rotation value for the Root",
-      "--image-offset-x": "The offset position for image",
-      "--image-offset-y": "The offset position for image"
-    }
-  },
-  "listbox": {
-    "Content": {
-      "--column-count": "The column count value for the Content"
-    }
-  },
   "marquee": {
     "Root": {
       "--marquee-duration": "The marquee duration value for the Root",
@@ -117,6 +122,11 @@
       "--marquee-delay": "The marquee delay value for the Root",
       "--marquee-loop-count": "The marquee loop count value for the Root",
       "--marquee-translate": "The marquee translate value for the Root"
+    }
+  },
+  "listbox": {
+    "Content": {
+      "--column-count": "The column count value for the Content"
     }
   },
   "navigation-menu": {
@@ -152,6 +162,13 @@
       "--offset": "The offset position of the element"
     }
   },
+  "qr-code": {
+    "Root": {
+      "--qrcode-pixel-size": "The size of the Root",
+      "--qrcode-width": "The width of the Root",
+      "--qrcode-height": "The height of the Root"
+    }
+  },
   "radio-group": {
     "Indicator": {
       "--transition-property": "The transition property value for the Indicator",
@@ -159,13 +176,6 @@
       "--top": "The top position value",
       "--width": "The width of the element",
       "--height": "The height of the element"
-    }
-  },
-  "qr-code": {
-    "Root": {
-      "--qrcode-pixel-size": "The size of the Root",
-      "--qrcode-width": "The width of the Root",
-      "--qrcode-height": "The height of the Root"
     }
   },
   "scroll-area": {
