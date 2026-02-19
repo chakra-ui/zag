@@ -1,5 +1,16 @@
 # @zag-js/i18n-utils
 
+## 1.34.0
+
+### Patch Changes
+
+- [`687ea36`](https://github.com/chakra-ui/zag/commit/687ea366ed0204c57686b4f581e1a4e2413b0f19) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Add `formatTime` utility for locale-aware 12h/24h time formatting
+  with optional seconds.
+
+- Updated dependencies []:
+  - @zag-js/dom-query@1.34.0
+
 ## 1.33.1
 
 ### Patch Changes
