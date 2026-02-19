@@ -1,5 +1,21 @@
 # @zag-js/toast
 
+## 1.34.0
+
+### Patch Changes
+
+- [`b8da95e`](https://github.com/chakra-ui/zag/commit/b8da95ed7fb99a3563277445619b8ee9e1358a5a) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix TypeScript compilation errors when building projects that use
+  `@zag-js/toast`.
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.34.0
+  - @zag-js/core@1.34.0
+  - @zag-js/types@1.34.0
+  - @zag-js/utils@1.34.0
+  - @zag-js/dismissable@1.34.0
+  - @zag-js/dom-query@1.34.0
+
 ## 1.33.1
 
 ### Patch Changes

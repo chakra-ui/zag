@@ -1,5 +1,25 @@
 # @zag-js/popover
 
+## 1.34.0
+
+### Patch Changes
+
+- [`a20094f`](https://github.com/chakra-ui/zag/commit/a20094f6816a8a7899c82f7c866c632bb922b53c) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Improve performance by reducing the number of style recalculations
+  when scrolling with heavy content. Add `sizeMiddleware` positioning option to optionally disable the size middleware
+  for better scroll performance when not using `sameWidth` or `fitViewport`.
+- Updated dependencies [[`a20094f`](https://github.com/chakra-ui/zag/commit/a20094f6816a8a7899c82f7c866c632bb922b53c)]:
+  - @zag-js/popper@1.34.0
+  - @zag-js/anatomy@1.34.0
+  - @zag-js/core@1.34.0
+  - @zag-js/types@1.34.0
+  - @zag-js/aria-hidden@1.34.0
+  - @zag-js/utils@1.34.0
+  - @zag-js/dismissable@1.34.0
+  - @zag-js/dom-query@1.34.0
+  - @zag-js/focus-trap@1.34.0
+  - @zag-js/remove-scroll@1.34.0
+
 ## 1.33.1
 
 ### Patch Changes
