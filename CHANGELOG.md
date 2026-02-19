@@ -4,6 +4,63 @@ All notable changes to this project will be documented in this file.
 
 > For v0.x changelog, see the [v0 branch](https://github.com/chakra-ui/zag/blob/v0/CHANGELOG.md)
 
+## [1.34.0](./#1.34.0) - 2026-02-19
+
+### Added
+
+- **Cascade Select [New]**: Initial release of cascade select state machine
+
+- **Date Picker**
+  - Add `focus` option to `api.clearValue({ focus?: boolean })`
+  - Add `api.setTime(time, index?)` for date-time picker support
+  - Add `maxSelectedDates` prop to limit the number of selected dates in `multiple` selection mode
+  - Add `api.isMaxSelected` to check if the maximum number of dates has been selected
+  - Add `openOnClick` prop to open the calendar when clicking the input field (defaults to `false`)
+  - Add `showWeekNumbers` support to display an ISO 8601 week number column in the day view
+
+- **Date Utils**: Add `getWeekOfYear` utility for week number calculation
+
+- **Drawer [New]**: Initial release of the drawer state machine. Replaces the previous `bottom-sheet` implementation and
+  API naming
+
+- **I18n Utils**: Add `formatTime` utility for locale-aware 12h/24h time formatting with optional seconds
+
+- **Popover**: Add `sizeMiddleware` positioning option to optionally disable the size middleware for better scroll
+  performance
+
+- **Select**: Add `autoComplete` prop for browser autofill hints (e.g., `"address-level1"` for state fields)
+
+### Fixed
+
+- **Combobox**
+  - Fix `aria-selected` being set on highlighted items instead of selected items, improving screen reader announcements
+  - Fix `selectedItems` getting out of sync with `value` when controller ignores selection in controlled mode
+  - Fix item disabled state not accounting for root-level `disabled` prop
+
+- **Date Picker**
+  - Fix `api.selectToday()` sending incorrect value format to state machine
+  - Preserve time/timezone when selecting new dates (`CalendarDateTime` and `ZonedDateTime`)
+  - Export `DateValue` type locally instead of re-exporting from `@internationalized/date` (v3.10.0+ compatibility)
+  - Improve focus management in trigger-only mode: focus now correctly returns to the trigger element after selecting a
+    date or clearing the value
+
+- **Date Utils**: Fix `constrainValue` stripping time from `CalendarDateTime`/`ZonedDateTime` values
+
+- **Dialog**: Fix issue where non-modal dialog closes on outside click even when `modal` is set to `false`
+
+- **Listbox**: Fix DOM IDs
+
+- **Number Input**: Fix issue where explicit `invalid` prop was ignored when value is out of range. The `invalid` prop
+  now takes precedence over the internal `isOutOfRange` computation
+
+- **Popover**: Improve performance by reducing style recalculations when scrolling with heavy content
+
+- **Select**: Fix issue where autofill does not update value when the hidden select value changes
+
+- **Svelte**: Fix `state_unsafe_mutation` warning that occurs due to state transition during component teardown
+
+- **Toast**: Fix TypeScript compilation errors when building projects that use `@zag-js/toast`
+
 ## [1.33.1](./#1.33.1) - 2026-01-28
 
 ### Fixed
