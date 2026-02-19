@@ -24,7 +24,7 @@ export function connect<T extends PropTypes, V = TreeNode>(
   const interactive = computed("isInteractive")
   const valueAsString = computed("valueAsString")
 
-  const highlightedItem = context.get("highlightedItem")
+  const highlightedItems = context.get("highlightedItems")
   const selectedItems = context.get("selectedItems")
 
   const popperStyles = getPlacementStyles({
@@ -55,6 +55,7 @@ export function connect<T extends PropTypes, V = TreeNode>(
   }
 
   const hasSelectedItems = value.length > 0
+  const empty = value.length === 0
 
   return {
     collection,
@@ -64,9 +65,10 @@ export function connect<T extends PropTypes, V = TreeNode>(
     disabled,
     value,
     highlightedValue,
-    highlightedItem,
+    highlightedItems,
     selectedItems,
     hasSelectedItems,
+    empty,
     valueAsString,
 
     reposition(options = {}) {
@@ -82,8 +84,12 @@ export function connect<T extends PropTypes, V = TreeNode>(
       send({ type: nextOpen ? "OPEN" : "CLOSE" })
     },
 
-    highlightValue(value) {
+    setHighlightValue(value) {
       send({ type: "HIGHLIGHTED_VALUE.SET", value })
+    },
+
+    clearHighlightValue() {
+      send({ type: "HIGHLIGHTED_VALUE.CLEAR" })
     },
 
     setValue(value) {
@@ -431,6 +437,16 @@ export function connect<T extends PropTypes, V = TreeNode>(
       })
     },
 
+    getValueTextProps() {
+      return normalize.element({
+        ...parts.valueText.attrs,
+        dir: prop("dir"),
+        "data-disabled": dataAttr(disabled),
+        "data-invalid": dataAttr(prop("invalid")),
+        "data-focused": dataAttr(focused),
+      })
+    },
+
     getHiddenInputProps() {
       const defaultValue = context.hash("value")
 
@@ -444,7 +460,6 @@ export function connect<T extends PropTypes, V = TreeNode>(
         hidden: true,
         "aria-hidden": true,
         id: dom.getHiddenInputId(scope),
-
         defaultValue,
         "aria-labelledby": dom.getLabelId(scope),
       })

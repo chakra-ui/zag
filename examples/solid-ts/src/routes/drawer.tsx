@@ -31,7 +31,7 @@ export default function Page() {
             <div class={styles.grabber} {...api().getGrabberProps()}>
               <div class={styles.grabberIndicator} {...api().getGrabberIndicatorProps()} />
             </div>
-            <div>Drawer</div>
+            <div {...api().getTitleProps()}>Drawer</div>
             <div data-no-drag="true" class={styles.noDrag}>
               No drag area
             </div>

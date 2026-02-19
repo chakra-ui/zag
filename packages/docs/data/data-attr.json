@@ -214,6 +214,13 @@
       "data-readonly": "Present when read-only",
       "data-invalid": "Present when invalid"
     },
+    "ValueText": {
+      "data-scope": "cascade-select",
+      "data-part": "value-text",
+      "data-disabled": "Present when disabled",
+      "data-invalid": "Present when invalid",
+      "data-focused": "Present when focused"
+    },
     "Item": {
       "data-scope": "cascade-select",
       "data-part": "item",

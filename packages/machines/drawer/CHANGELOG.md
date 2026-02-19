@@ -1,5 +1,26 @@
 # @zag-js/drawer
 
+## 1.34.0
+
+### Minor Changes
+
+- [`76c9a83`](https://github.com/chakra-ui/zag/commit/76c9a832e249929d685659225eeab062f383a4aa) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - **Drawer [New]**: Initial release of the drawer state machine.
+  This replaces the previous `bottom-sheet` implementation and API naming.
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.34.0
+  - @zag-js/core@1.34.0
+  - @zag-js/types@1.34.0
+  - @zag-js/aria-hidden@1.34.0
+  - @zag-js/utils@1.34.0
+  - @zag-js/dismissable@1.34.0
+  - @zag-js/dom-query@1.34.0
+  - @zag-js/focus-trap@1.34.0
+  - @zag-js/remove-scroll@1.34.0
+
 ## 1.33.1
 
 ### Patch Changes

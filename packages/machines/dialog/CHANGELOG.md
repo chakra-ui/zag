@@ -1,5 +1,24 @@
 # @zag-js/dialog
 
+## 1.34.0
+
+### Patch Changes
+
+- [`9fa3b6a`](https://github.com/chakra-ui/zag/commit/9fa3b6a9747803895f40677d913955c0f5a41dcd) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix issue where non-modal dialog closes on outside click even when
+  `modal` is set to `false`
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.34.0
+  - @zag-js/core@1.34.0
+  - @zag-js/types@1.34.0
+  - @zag-js/aria-hidden@1.34.0
+  - @zag-js/utils@1.34.0
+  - @zag-js/dismissable@1.34.0
+  - @zag-js/dom-query@1.34.0
+  - @zag-js/focus-trap@1.34.0
+  - @zag-js/remove-scroll@1.34.0
+
 ## 1.33.1
 
 ### Patch Changes

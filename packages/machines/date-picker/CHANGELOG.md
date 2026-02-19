@@ -1,5 +1,49 @@
 # @zag-js/date-picker
 
+## 1.34.0
+
+### Minor Changes
+
+- [`26ffbba`](https://github.com/chakra-ui/zag/commit/26ffbbae442c03cb211ec6dc1b801b5aa79a9cd8) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - **DatePicker**
+  - Fix `api.selectToday()` sending incorrect value format to state machine
+  - Add `focus` option to `api.clearValue({ focus?: boolean })`
+  - Add `api.setTime(time, index?)` for date-time picker support
+  - Preserve time/timezone when selecting new dates (`CalendarDateTime` and `ZonedDateTime`)
+  - Add `maxSelectedDates` prop to limit the number of selected dates in `multiple` selection mode
+  - Add `api.isMaxSelected` to check if the maximum number of dates has been selected
+  - Add `openOnClick` prop to open the calendar when clicking the input field (defaults to `false`)
+
+  **Date utils**
+  - Fix `constrainValue` stripping time from `CalendarDateTime`/`ZonedDateTime` values
+
+- [`75788b9`](https://github.com/chakra-ui/zag/commit/75788b974d75812f13862990da3ddc1715a9849d) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Add `showWeekNumbers` support to the date picker. When enabled,
+  the day view displays an ISO 8601 week number column. Added `getWeekOfYear` to date-utils for week number calculation.
+
+### Patch Changes
+
+- [`10b4211`](https://github.com/chakra-ui/zag/commit/10b4211f6365a497f37dbf37bcff0802bf1ac9ea) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Improve focus management in trigger-only mode. When no input
+  elements exist, focus now correctly returns to the trigger element after selecting a date or clearing the value.
+
+- [`8a02d5c`](https://github.com/chakra-ui/zag/commit/8a02d5c2785a4c1359204c092de3d63445257203) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - **Date Picker**: Export `DateValue` type locally instead of
+  re-exporting from `@internationalized/date`, since that package doesn't export this type in v3.10.0+
+- Updated dependencies [[`26ffbba`](https://github.com/chakra-ui/zag/commit/26ffbbae442c03cb211ec6dc1b801b5aa79a9cd8),
+  [`8a02d5c`](https://github.com/chakra-ui/zag/commit/8a02d5c2785a4c1359204c092de3d63445257203),
+  [`75788b9`](https://github.com/chakra-ui/zag/commit/75788b974d75812f13862990da3ddc1715a9849d),
+  [`a20094f`](https://github.com/chakra-ui/zag/commit/a20094f6816a8a7899c82f7c866c632bb922b53c)]:
+  - @zag-js/date-utils@1.34.0
+  - @zag-js/popper@1.34.0
+  - @zag-js/anatomy@1.34.0
+  - @zag-js/core@1.34.0
+  - @zag-js/types@1.34.0
+  - @zag-js/utils@1.34.0
+  - @zag-js/dismissable@1.34.0
+  - @zag-js/dom-query@1.34.0
+  - @zag-js/live-region@1.34.0
+
 ## 1.33.1
 
 ### Patch Changes

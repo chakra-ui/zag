@@ -1,6 +1,7 @@
 import { setup } from "@zag-js/core"
 import { trackDismissableElement } from "@zag-js/dismissable"
 import { clickIfLink, nextTick, observeAttributes, raf, scrollIntoView, setCaretToEnd } from "@zag-js/dom-query"
+import { getInteractionModality, setInteractionModality, trackFocusVisible } from "@zag-js/focus-visible"
 import { getPlacement } from "@zag-js/popper"
 import { addOrRemove, isBoolean, isEqual, match, remove } from "@zag-js/utils"
 import { collection } from "./combobox.collection"
@@ -66,7 +67,10 @@ export const machine = createMachine({
           const prevSelectedItems = context.get("selectedItems")
           const collection = prop("collection")
 
-          const nextItems = value.map((v) => {
+          // When controlled, use prop value for selectedItems so they stay in sync when controller ignores selection
+          const effectiveValue = prop("value") || value
+
+          const nextItems = effectiveValue.map((v) => {
             const item = prevSelectedItems.find((item) => collection.getItemValue(item) === v)
             return item || collection.find(v)
           })
@@ -311,8 +315,7 @@ export const machine = createMachine({
         "INPUT.ARROW_UP": [
           // == group 1 ==
           {
-            guard: "autoComplete",
-            target: "interacting",
+            guard: and("isOpenControlled", "autoComplete"),
             actions: ["invokeOnOpen"],
           },
           {
@@ -322,7 +325,7 @@ export const machine = createMachine({
           },
           // == group 2 ==
           {
-            target: "interacting",
+            guard: "isOpenControlled",
             actions: ["highlightLastOrSelectedItem", "invokeOnOpen"],
           },
           {
@@ -349,7 +352,7 @@ export const machine = createMachine({
     interacting: {
       tags: ["open", "focused"],
       entry: ["setInitialFocus"],
-      effects: ["scrollToHighlightedItem", "trackDismissableLayer", "trackPlacement"],
+      effects: ["trackFocusVisible", "scrollToHighlightedItem", "trackDismissableLayer", "trackPlacement"],
       on: {
         "CONTROLLED.CLOSE": [
           {
@@ -525,7 +528,7 @@ export const machine = createMachine({
 
     suggesting: {
       tags: ["open", "focused"],
-      effects: ["trackDismissableLayer", "scrollToHighlightedItem", "trackPlacement"],
+      effects: ["trackFocusVisible", "trackDismissableLayer", "scrollToHighlightedItem", "trackPlacement"],
       entry: ["setInitialFocus"],
       on: {
         "CONTROLLED.CLOSE": [
@@ -710,6 +713,9 @@ export const machine = createMachine({
     },
 
     effects: {
+      trackFocusVisible({ scope }) {
+        return trackFocusVisible({ root: scope.getRootNode?.() })
+      },
       trackDismissableLayer({ send, prop, scope }) {
         if (prop("disableLayer")) return
         const contentEl = () => dom.getContentEl(scope)
@@ -743,15 +749,18 @@ export const machine = createMachine({
           },
         })
       },
-      scrollToHighlightedItem({ context, prop, scope, event }) {
+      scrollToHighlightedItem({ context, prop, scope }) {
         const inputEl = dom.getInputEl(scope)
 
         let cleanups: VoidFunction[] = []
 
         const exec = (immediate: boolean) => {
-          const pointer = event.current().type.includes("POINTER")
+          // don't scroll into view if we're using the pointer (or null when focus-trap autofocuses)
+          const modality = getInteractionModality()
+          if (modality === "pointer") return
+
           const highlightedValue = context.get("highlightedValue")
-          if (pointer || !highlightedValue) return
+          if (!highlightedValue) return
 
           const contentEl = dom.getContentEl(scope)
 
@@ -773,7 +782,10 @@ export const machine = createMachine({
           cleanups.push(raf_cleanup)
         }
 
-        const rafCleanup = raf(() => exec(true))
+        const rafCleanup = raf(() => {
+          setInteractionModality("virtual")
+          exec(true)
+        })
         cleanups.push(rafCleanup)
 
         const observerCleanup = observeAttributes(inputEl, {

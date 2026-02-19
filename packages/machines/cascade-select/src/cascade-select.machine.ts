@@ -8,6 +8,7 @@ import {
   dispatchInputValueEvent,
   setElementValue,
 } from "@zag-js/dom-query"
+import { getInteractionModality, setInteractionModality, trackFocusVisible } from "@zag-js/focus-visible"
 import { getPlacement, type Placement } from "@zag-js/popper"
 import type { Point } from "@zag-js/rect-utils"
 import { last, isEmpty, isEqual } from "@zag-js/utils"
@@ -67,8 +68,8 @@ export const machine = createMachine<CascadeSelectSchema>({
           defaultValue: value ? prop("collection").getIndexPath(value) : [],
         }
       }),
-      highlightedItem: bindable<TreeNode[] | null>(() => ({
-        defaultValue: null,
+      highlightedItems: bindable<TreeNode[]>(() => ({
+        defaultValue: [],
       })),
       selectedItems: bindable<TreeNode[][]>(() => ({
         defaultValue: [],
@@ -140,6 +141,9 @@ export const machine = createMachine<CascadeSelectSchema>({
     },
     "HIGHLIGHTED_VALUE.SET": {
       actions: ["setHighlightedValue"],
+    },
+    "HIGHLIGHTED_VALUE.CLEAR": {
+      actions: ["clearHighlightedValue"],
     },
     "ITEM.SELECT": {
       actions: ["selectItem"],
@@ -295,7 +299,7 @@ export const machine = createMachine<CascadeSelectSchema>({
     open: {
       tags: ["open"],
       exit: ["clearHighlightedValue", "scrollContentToTop"],
-      effects: ["trackDismissableElement", "computePlacement", "scrollToHighlightedItems"],
+      effects: ["trackDismissableElement", "trackFocusVisible", "computePlacement", "scrollToHighlightedItems"],
       on: {
         "CONTROLLED.CLOSE": [
           {
@@ -488,8 +492,9 @@ export const machine = createMachine<CascadeSelectSchema>({
       },
       shouldCloseOnSelectHighlighted: ({ prop, context }) => {
         const collection = prop("collection")
-        const node = context.get("highlightedItem")
-        return prop("closeOnSelect") && !collection.isBranchNode(node)
+        const items = context.get("highlightedItems")
+        const node = last(items)
+        return prop("closeOnSelect") && node != null && !collection.isBranchNode(node)
       },
 
       canSelectItem: ({ prop, event }) => {
@@ -592,6 +597,9 @@ export const machine = createMachine<CascadeSelectSchema>({
           },
         })
       },
+      trackFocusVisible({ scope }) {
+        return trackFocusVisible({ root: scope.getRootNode?.() })
+      },
       trackDismissableElement({ scope, send, prop }) {
         const contentEl = () => dom.getContentEl(scope)
         let restoreFocus = true
@@ -620,7 +628,7 @@ export const machine = createMachine<CascadeSelectSchema>({
           },
         })
       },
-      scrollToHighlightedItems({ context, prop, scope, event }) {
+      scrollToHighlightedItems({ context, prop, scope }) {
         let cleanups: VoidFunction[] = []
 
         const exec = (immediate: boolean) => {
@@ -628,8 +636,9 @@ export const machine = createMachine<CascadeSelectSchema>({
           const highlightedIndexPath = context.get("highlightedIndexPath")
           if (!highlightedIndexPath.length) return
 
-          // Don't scroll into view if we're using the pointer
-          if (event.current().type.includes("POINTER")) return
+          // don't scroll into view if we're using the pointer (or null when focus-trap autofocuses)
+          const modality = getInteractionModality()
+          if (modality === "pointer") return
 
           const listEls = dom.getListEls(scope)
           listEls.forEach((listEl, index) => {
@@ -651,7 +660,10 @@ export const machine = createMachine<CascadeSelectSchema>({
           })
         }
 
-        raf(() => exec(true))
+        raf(() => {
+          setInteractionModality("virtual")
+          exec(true)
+        })
 
         const rafCleanup = raf(() => exec(true))
         cleanups.push(rafCleanup)
@@ -918,11 +930,11 @@ export const machine = createMachine<CascadeSelectSchema>({
           triggerEl?.focus({ preventScroll: true })
         })
       },
-      invokeOnOpen({ prop }) {
-        prop("onOpenChange")?.({ open: true })
+      invokeOnOpen({ prop, context }) {
+        prop("onOpenChange")?.({ open: true, value: context.get("value") })
       },
-      invokeOnClose({ prop }) {
-        prop("onOpenChange")?.({ open: false })
+      invokeOnClose({ prop, context }) {
+        prop("onOpenChange")?.({ open: false, value: context.get("value") })
       },
       toggleVisibility({ send, prop }) {
         if (prop("open") != null) {
@@ -1050,19 +1062,20 @@ const set = {
     // Set Value
     context.set("highlightedValue", value)
 
-    // Set Index Path
-    const highlightedIndexPath = value == null ? [] : collection.getIndexPath(value)
+    // Set Index Path (getIndexPath returns undefined for single string when not found)
+    const rawPath = value == null ? [] : collection.getIndexPath(value)
+    const highlightedIndexPath = rawPath ?? []
     context.set("highlightedIndexPath", highlightedIndexPath)
 
     // Set Items
-    const highlightedItem = highlightedIndexPath.map((_, index) => {
+    const highlightedItems = highlightedIndexPath.map((_, index) => {
       const partialPath = highlightedIndexPath.slice(0, index + 1)
       return collection.at(partialPath)
     })
-    context.set("highlightedItem", highlightedItem)
+    context.set("highlightedItems", highlightedItems)
 
     // Invoke onHighlightChange
-    prop("onHighlightChange")?.({ value, items: highlightedItem })
+    prop("onHighlightChange")?.({ highlightedValue: value, highlightedItems })
   },
 }
 
