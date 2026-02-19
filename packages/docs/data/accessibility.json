@@ -267,6 +267,46 @@
       }
     ]
   },
+  "cascade-select": {
+    "keyboard": [
+      {
+        "keys": ["Space"],
+        "description": "<span>When focus is on trigger, opens the cascade select and focuses the first item.<br />When focus is on the content, selects the highlighted item.</span>"
+      },
+      {
+        "keys": ["Enter"],
+        "description": "<span>When focus is on trigger, opens the cascade select and focuses the first item.<br />When focus is on content, selects the highlighted item.</span>"
+      },
+      {
+        "keys": ["ArrowDown"],
+        "description": "<span>When focus is on trigger, opens the cascade select.<br />When focus is on content, moves focus to the next item in the current level.</span>"
+      },
+      {
+        "keys": ["ArrowUp"],
+        "description": "<span>When focus is on trigger, opens the cascade select and focuses the last item.<br />When focus is on content, moves focus to the previous item in the current level.</span>"
+      },
+      {
+        "keys": ["ArrowRight"],
+        "description": "<span>When focus is on a branch item, expands the next level and moves focus into it.</span>"
+      },
+      {
+        "keys": ["ArrowLeft"],
+        "description": "<span>When focus is on a nested level, collapses it and moves focus back to the parent.<br />When focus is at the root level, closes the cascade select.</span>"
+      },
+      {
+        "keys": ["Home"],
+        "description": "<span>Moves focus to the first item in the current level.</span>"
+      },
+      {
+        "keys": ["End"],
+        "description": "<span>Moves focus to the last item in the current level.</span>"
+      },
+      {
+        "keys": ["Esc"],
+        "description": "<span>Closes the cascade select and moves focus to trigger.</span>"
+      }
+    ]
+  },
   "switch": {
     "keyboard": [
       {

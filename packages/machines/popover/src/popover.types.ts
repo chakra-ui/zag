@@ -27,10 +27,7 @@ export type ElementIds = Partial<{
 }>
 
 export interface PopoverProps
-  extends CommonProperties,
-    DirectionProperty,
-    DismissableElementHandlers,
-    PersistentElementOptions {
+  extends CommonProperties, DirectionProperty, DismissableElementHandlers, PersistentElementOptions {
   /**
    * The ids of the elements in the popover. Useful for composition.
    */

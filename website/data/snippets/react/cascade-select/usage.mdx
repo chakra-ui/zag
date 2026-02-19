@@ -1,0 +1,89 @@
+```tsx
+import * as cascadeSelect from "@zag-js/cascade-select"
+import { normalizeProps, Portal, useMachine } from "@zag-js/react"
+import { JSX, useId } from "react"
+
+// 1. Create the collection (see above)
+const collection = cascadeSelect.collection<Node>({
+  // ...
+})
+
+// 2. Create the recursive tree node
+
+interface TreeNodeProps {
+  node: Node
+  indexPath?: number[]
+  value?: string[]
+  api: cascadeSelect.Api
+}
+
+const TreeNode = (props: TreeNodeProps): JSX.Element => {
+  const { node, indexPath = [], value = [], api } = props
+
+  const nodeProps = { indexPath, value, item: node }
+  const nodeState = api.getItemState(nodeProps)
+  const children = collection.getNodeChildren(node)
+
+  return (
+    <>
+      <ul {...api.getListProps(nodeProps)}>
+        {children.map((item, index) => {
+          const itemProps = {
+            indexPath: [...indexPath, index],
+            value: [...value, collection.getNodeValue(item)],
+            item,
+          }
+          const itemState = api.getItemState(itemProps)
+          return (
+            <li key={collection.getNodeValue(item)} {...api.getItemProps(itemProps)}>
+              <span {...api.getItemTextProps(itemProps)}>{item.label}</span>
+              {itemState.hasChildren && <span>›</span>}
+              <span {...api.getItemIndicatorProps(itemProps)}>✓</span>
+            </li>
+          )
+        })}
+      </ul>
+      {nodeState.highlightedChild &&
+        collection.isBranchNode(nodeState.highlightedChild) && (
+          <TreeNode
+            node={nodeState.highlightedChild}
+            api={api}
+            indexPath={[...indexPath, nodeState.highlightedIndex]}
+            value={[...value, collection.getNodeValue(nodeState.highlightedChild)]}
+          />
+        )}
+    </>
+  )
+}
+
+// 3. Create the cascade select
+
+export function CascadeSelect() {
+  const service = useMachine(cascadeSelect.machine, {
+    id: useId(),
+    collection,
+  })
+
+  const api = cascadeSelect.connect(service, normalizeProps)
+
+  return (
+    <div {...api.getRootProps()}>
+      <label {...api.getLabelProps()}>Location</label>
+      <div {...api.getControlProps()}>
+        <button {...api.getTriggerProps()}>
+          <span>{api.valueAsString || "Select location"}</span>
+          <span {...api.getIndicatorProps()}>▼</span>
+        </button>
+        <button {...api.getClearTriggerProps()}>✕</button>
+      </div>
+      <Portal>
+        <div {...api.getPositionerProps()}>
+          <div {...api.getContentProps()}>
+            <TreeNode node={collection.rootNode} api={api} />
+          </div>
+        </div>
+      </Portal>
+    </div>
+  )
+}
+```

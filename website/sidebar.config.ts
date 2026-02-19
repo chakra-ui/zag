@@ -80,6 +80,12 @@ const sidebar: Record<"docs", SidebarItem[]> = {
         { type: "doc", label: "Avatar", id: "avatar" },
         // { type: "doc", label: "Drawer", id: "drawer", beta: true },
         { type: "doc", label: "Carousel", id: "carousel" },
+        {
+          type: "doc",
+          label: "Cascade Select",
+          id: "cascade-select",
+          beta: true,
+        },
         { type: "doc", label: "Checkbox", id: "checkbox" },
         { type: "doc", label: "Clipboard", id: "clipboard" },
         { type: "doc", label: "Collapsible", id: "collapsible" },

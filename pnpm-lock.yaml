@@ -3824,6 +3824,9 @@ importers:
       '@zag-js/carousel':
         specifier: workspace:*
         version: link:../packages/machines/carousel
+      '@zag-js/cascade-select':
+        specifier: workspace:*
+        version: link:../packages/machines/cascade-select
       '@zag-js/checkbox':
         specifier: workspace:*
         version: link:../packages/machines/checkbox
