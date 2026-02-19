@@ -666,9 +666,9 @@
         "type": "string[]",
         "description": "The value of the highlighted item"
       },
-      "highlightedItem": {
+      "highlightedItems": {
         "type": "V[]",
-        "description": "The highlighted item"
+        "description": "The items along the highlighted path"
       },
       "selectedItems": {
         "type": "V[][]",
@@ -677,6 +677,10 @@
       "hasSelectedItems": {
         "type": "boolean",
         "description": "Whether there's a selected option"
+      },
+      "empty": {
+        "type": "boolean",
+        "description": "Whether the cascade-select value is empty"
       },
       "value": {
         "type": "string[][]",
@@ -687,7 +691,7 @@
         "description": "The current value as text"
       },
       "focus": {
-        "type": "{ (): void; (): void; }",
+        "type": "() => void",
         "description": "Function to focus on the select input"
       },
       "reposition": {
@@ -698,9 +702,13 @@
         "type": "(open: boolean) => void",
         "description": "Function to open the cascade-select"
       },
-      "highlightValue": {
-        "type": "(value: string) => void",
-        "description": "Function to highlight a value"
+      "setHighlightValue": {
+        "type": "(value: string | string[]) => void",
+        "description": "Function to set the highlighted value (path or single value to find)"
+      },
+      "clearHighlightValue": {
+        "type": "() => void",
+        "description": "Function to clear the highlighted value"
       },
       "selectValue": {
         "type": "(value: string[]) => void",
@@ -717,6 +725,10 @@
       "getItemState": {
         "type": "(props: ItemProps<V>) => ItemState<V>",
         "description": "Returns the state of a cascade-select item"
+      },
+      "getValueTextProps": {
+        "type": "() => T[\"element\"]",
+        "description": "Returns the props for the value text element"
       }
     },
     "context": {
@@ -725,7 +737,7 @@
         "description": "The tree collection data"
       },
       "ids": {
-        "type": "Partial<{ root: string; label: string; control: string; trigger: string; indicator: string; clearTrigger: string; positioner: string; content: string; hiddenInput: string; list(value: number): string; item(value: string): string; }>",
+        "type": "Partial<{ root: string; label: string; control: string; trigger: string; indicator: string; clearTrigger: string; positioner: string; content: string; hiddenInput: string; list(valuePath: string): string; item(valuePath: string): string; }>",
         "description": "The ids of the cascade-select elements. Useful for composition."
       },
       "name": {

@@ -15,12 +15,16 @@ export interface ValueChangeDetails<T = TreeNode> {
 }
 
 export interface HighlightChangeDetails<T = TreeNode> {
-  value: string[]
-  items: T[]
+  /** The value path of the highlighted item */
+  highlightedValue: string[]
+  /** The items along the highlighted path */
+  highlightedItems: T[]
 }
 
 export interface OpenChangeDetails {
   open: boolean
+  /** The current value when open state changes - for consistency with select */
+  value: string[][]
 }
 
 export interface ScrollToIndexDetails {
@@ -39,8 +43,10 @@ export type ElementIds = Partial<{
   positioner: string
   content: string
   hiddenInput: string
-  list(value: number): string
-  item(value: string): string
+  /** Value path of the parent whose children this list displays (e.g. "asia,india") */
+  list(valuePath: string): string
+  /** Value path of the item (e.g. "asia,india,haryana") */
+  item(valuePath: string): string
 }>
 
 /* -----------------------------------------------------------------------------
@@ -169,7 +175,7 @@ export interface CascadeSelectSchema<T extends TreeNode = TreeNode> {
     graceArea: Point[] | null
     valueIndexPath: IndexPath[]
     highlightedIndexPath: IndexPath
-    highlightedItem: T[] | null
+    highlightedItems: T[]
     selectedItems: T[][]
   }
   computed: {
@@ -266,9 +272,9 @@ export interface CascadeSelectApi<T extends PropTypes = PropTypes, V = TreeNode>
    */
   highlightedValue: string[]
   /**
-   * The highlighted item
+   * The items along the highlighted path
    */
-  highlightedItem: V[] | null
+  highlightedItems: V[]
   /**
    * The selected items
    */
@@ -277,6 +283,10 @@ export interface CascadeSelectApi<T extends PropTypes = PropTypes, V = TreeNode>
    * Whether there's a selected option
    */
   hasSelectedItems: boolean
+  /**
+   * Whether the cascade-select value is empty
+   */
+  empty: boolean
   /**
    * The current value of the cascade-select
    */
@@ -290,10 +300,6 @@ export interface CascadeSelectApi<T extends PropTypes = PropTypes, V = TreeNode>
    */
   focus(): void
   /**
-   * Function to focus on the select input
-   */
-  focus(): void
-  /**
    * Function to set the positioning options of the cascade-select
    */
   reposition(options?: Partial<PositioningOptions>): void
@@ -302,9 +308,13 @@ export interface CascadeSelectApi<T extends PropTypes = PropTypes, V = TreeNode>
    */
   setOpen(open: boolean): void
   /**
-   * Function to highlight a value
+   * Function to set the highlighted value (path or single value to find)
    */
-  highlightValue(value: string): void
+  setHighlightValue(value: string | string[]): void
+  /**
+   * Function to clear the highlighted value
+   */
+  clearHighlightValue(): void
   /**
    * Function to select a value
    */
@@ -334,6 +344,7 @@ export interface CascadeSelectApi<T extends PropTypes = PropTypes, V = TreeNode>
   getItemProps(props: ItemProps<V>): T["element"]
   getItemTextProps(props: ItemProps<V>): T["element"]
   getItemIndicatorProps(props: ItemProps<V>): T["element"]
+  getValueTextProps(): T["element"]
   getHiddenInputProps(): T["input"]
 }
 

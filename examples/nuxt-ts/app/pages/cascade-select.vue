@@ -40,7 +40,7 @@ const api = computed(() => cascadeSelect.connect(service, normalizeProps))
 
       <div v-bind="api.getControlProps()">
         <button v-bind="api.getTriggerProps()">
-          <span>{{ api.valueAsString || "Select a location" }}</span>
+          <span v-bind="api.getValueTextProps()">{{ api.valueAsString || "Select a location" }}</span>
           <span v-bind="api.getIndicatorProps()">▼</span>
         </button>
         <button v-bind="api.getClearTriggerProps()">X</button>

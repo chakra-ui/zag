@@ -84,7 +84,7 @@
 
     <div {...api.getControlProps()}>
       <button {...api.getTriggerProps()}>
-        <span>{api.valueAsString || "Select a location"}</span>
+        <span {...api.getValueTextProps()}>{api.valueAsString || "Select a location"}</span>
         <span {...api.getIndicatorProps()}>▼</span>
       </button>
       <button {...api.getClearTriggerProps()}>X</button>
