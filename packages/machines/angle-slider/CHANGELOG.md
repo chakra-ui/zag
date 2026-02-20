@@ -1,5 +1,21 @@
 # @zag-js/angle-slider
 
+## 1.34.1
+
+### Patch Changes
+
+- [`0accecc`](https://github.com/chakra-ui/zag/commit/0acceccbb9393379ed7592e702eb21ef947560e1) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Add RTL support: `dir` attribute on all parts, mirrored click/drag
+  behavior, and `--marker-display-value` CSS var for correct thumb/marker placement.
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.34.1
+  - @zag-js/core@1.34.1
+  - @zag-js/types@1.34.1
+  - @zag-js/utils@1.34.1
+  - @zag-js/dom-query@1.34.1
+  - @zag-js/rect-utils@1.34.1
+
 ## 1.34.0
 
 ### Patch Changes
