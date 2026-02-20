@@ -24,8 +24,10 @@ export function markSegmentInvalid(ctx: Params<DateFieldSchema>, segmentType: Se
   const activeValidSegments = validSegments[index]
 
   if (activeValidSegments?.[segmentType]) {
-    delete activeValidSegments[segmentType]
-    context.set("validSegments", validSegments)
+    const next = [...validSegments]
+    next[index] = { ...activeValidSegments }
+    delete next[index][segmentType]
+    context.set("validSegments", next)
   }
 }
 
@@ -37,11 +39,12 @@ export function markSegmentValid(ctx: Params<DateFieldSchema>, segmentType: Segm
   const activeValidSegments = validSegments[index]
 
   if (!activeValidSegments?.[segmentType]) {
-    activeValidSegments[segmentType] = true
+    const next = [...validSegments]
+    next[index] = { ...activeValidSegments, [segmentType]: true }
     if (segmentType === "year" && allSegments.era) {
-      activeValidSegments.era = true
+      next[index].era = true
     }
-    context.set("validSegments", validSegments)
+    context.set("validSegments", next)
   }
 }
 

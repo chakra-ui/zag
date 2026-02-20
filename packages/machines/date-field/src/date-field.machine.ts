@@ -384,10 +384,8 @@ export const machine = createMachine<DateFieldSchema>({
 
         if (!activeValidSegments?.[type]) {
           markSegmentValid(params, type)
-          setValue(params, displayValue)
-        } else {
-          setValue(params, addSegment(displayValue, type, amount, formatter.resolvedOptions()))
         }
+        setValue(params, addSegment(displayValue, type, amount, formatter.resolvedOptions()))
       },
 
       setSegmentValue(params) {
