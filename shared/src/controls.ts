@@ -225,6 +225,11 @@ export const dateFieldControls = defineControls({
     options: ["en-US", "en-GB", "fr-FR", "de-DE", "ja-JP", "mk-MK", "zh-CN"] as const,
     defaultValue: "en-US",
   },
+  granularity: {
+    type: "select",
+    options: ["day", "hour", "minute", "second"] as const,
+    defaultValue: "day",
+  },
 })
 
 export const transitionControls = defineControls({

@@ -103,7 +103,11 @@ export function processSegments({
     }
 
     const isPlaceholder = isEditable && !validSegments[type]
-    const placeholder = isEditableSegment(type) ? getPlaceholder(type, translations, locale) : null
+    let placeholder = isEditableSegment(type) ? getPlaceholder(type, translations, locale) : null
+    // For dayPeriod and era, use the formatted value from the display date to avoid layout shift
+    if ((type === "dayPeriod" || type === "era") && segment.value) {
+      placeholder = segment.value
+    }
 
     const dateSegment = {
       type,

@@ -110,7 +110,7 @@ export function updateSegmentValue(ctx: Params<DateFieldSchema>, segment: DateSe
         if (!activeValidSegments?.[type]) {
           markSegmentValid(ctx, type)
         }
-        setValue(ctx, setSegment(getDisplayValue(ctx), type, newValue, formatter.resolvedOptions()))
+        setValue(ctx, setSegment(getDisplayValue(ctx), type, segmentValue, formatter.resolvedOptions()))
       }
 
       if (

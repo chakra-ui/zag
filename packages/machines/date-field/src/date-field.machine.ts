@@ -37,15 +37,24 @@ export const machine = createMachine<DateFieldSchema>({
 
     const hourCycle = props.hourCycle === 12 ? "h12" : props.hourCycle === 24 ? "h23" : undefined
 
-    const formatter =
-      props.formatter ??
-      new DateFormatter(locale, {
-        timeZone: timeZone,
-        day: "2-digit",
-        month: "2-digit",
-        year: "numeric",
-        hourCycle,
-      })
+    const formatterOptions: Intl.DateTimeFormatOptions = {
+      timeZone: timeZone,
+      day: "2-digit",
+      month: "2-digit",
+      year: "numeric",
+      hourCycle,
+    }
+    if (granularity === "hour" || granularity === "minute" || granularity === "second") {
+      formatterOptions.hour = "2-digit"
+    }
+    if (granularity === "minute" || granularity === "second") {
+      formatterOptions.minute = "2-digit"
+    }
+    if (granularity === "second") {
+      formatterOptions.second = "2-digit"
+    }
+
+    const formatter = props.formatter ?? new DateFormatter(locale, formatterOptions)
 
     const allSegments =
       props.allSegments ??
