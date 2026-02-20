@@ -2336,6 +2336,9 @@ importers:
       '@zag-js/dom-query':
         specifier: workspace:*
         version: link:../../utilities/dom-query
+      '@zag-js/live-region':
+        specifier: workspace:*
+        version: link:../../utilities/live-region
       '@zag-js/types':
         specifier: workspace:*
         version: link:../../types

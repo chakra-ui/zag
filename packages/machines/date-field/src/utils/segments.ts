@@ -34,6 +34,22 @@ export const PAGE_STEP = {
   fractionalSecond: undefined,
 } as const satisfies Record<keyof Segments, number | undefined>
 
+const SEGMENT_LABELS: Record<string, string> = {
+  era: "Era",
+  year: "Year",
+  month: "Month",
+  day: "Day",
+  hour: "Hour",
+  minute: "Minute",
+  second: "Second",
+  dayPeriod: "AM/PM",
+  timeZoneName: "Time zone",
+}
+
+export function getSegmentLabel(type: string): string {
+  return SEGMENT_LABELS[type] ?? type
+}
+
 export const TYPE_MAPPING = {
   // Node seems to convert everything to lowercase...
   dayperiod: "dayPeriod",

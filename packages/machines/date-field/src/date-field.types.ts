@@ -8,6 +8,7 @@ import type {
 } from "@internationalized/date"
 import type { Machine, Service } from "@zag-js/core"
 import type { DateGranularity } from "@zag-js/date-utils"
+import type { LiveRegion } from "@zag-js/live-region"
 import type { CommonProperties, DirectionProperty, PropTypes, RequiredBy } from "@zag-js/types"
 import type { EDITABLE_SEGMENTS } from "./utils/segments"
 
@@ -217,7 +218,11 @@ type ComputedContext = Readonly<{
   segments: DateSegment[][]
 }>
 
-type Refs = Record<string, never>
+type Refs = {
+  announcer: LiveRegion | null
+  /** Segment index to announce (for SEGMENT.INPUT with auto-advance). Set before advance, used after. */
+  segmentToAnnounceIndex: number | null
+}
 
 export interface DateFieldSchema {
   state: "idle" | "focused"
@@ -227,6 +232,7 @@ export interface DateFieldSchema {
   refs: Refs
   guard: string
   action: string
+  effect: string
 }
 
 export type DateFieldService = Service<DateFieldSchema>

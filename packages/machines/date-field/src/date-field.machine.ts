@@ -2,13 +2,14 @@ import { DateFormatter } from "@internationalized/date"
 import { createMachine } from "@zag-js/core"
 import { constrainValue, getTodayDate, isDateEqual } from "@zag-js/date-utils"
 import { raf } from "@zag-js/dom-query"
+import { createLiveRegion } from "@zag-js/live-region"
 import * as dom from "./date-field.dom"
 import type { DateFieldSchema, DateSegment, DateValue, Segments } from "./date-field.types"
 import { addSegment, getDefaultValidSegments, setSegment } from "./utils/adjusters"
 import { getValueAsString } from "./utils/formatting"
 import { updateSegmentValue } from "./utils/input"
 import { defaultTranslations } from "./utils/placeholders"
-import { EDITABLE_SEGMENTS, processSegments, TYPE_MAPPING } from "./utils/segments"
+import { EDITABLE_SEGMENTS, getSegmentLabel, processSegments, TYPE_MAPPING } from "./utils/segments"
 import { getActiveSegment, getDisplayValue, markSegmentInvalid, markSegmentValid, setValue } from "./utils/validity"
 
 export const machine = createMachine<DateFieldSchema>({
@@ -81,8 +82,13 @@ export const machine = createMachine<DateFieldSchema>({
   },
 
   refs() {
-    return {}
+    return {
+      announcer: null,
+      segmentToAnnounceIndex: null,
+    }
   },
+
+  effects: ["setupLiveRegion"],
 
   context({ prop, bindable, getContext }) {
     return {
@@ -211,10 +217,10 @@ export const machine = createMachine<DateFieldSchema>({
           actions: ["confirmPlaceholder", "clearEnteredKeys", "invokeOnBlur"],
         },
         "SEGMENT.INPUT": {
-          actions: ["setSegmentValue"],
+          actions: ["setSegmentValue", "announceSegmentValue"],
         },
         "SEGMENT.ADJUST": {
-          actions: ["invokeOnSegmentAdjust", "clearEnteredKeys"],
+          actions: ["invokeOnSegmentAdjust", "clearEnteredKeys", "announceSegmentValue"],
         },
         "SEGMENT.ARROW_LEFT": {
           actions: ["setPreviousActiveSegmentIndex", "clearEnteredKeys"],
@@ -228,20 +234,31 @@ export const machine = createMachine<DateFieldSchema>({
             actions: ["setPreviousActiveSegmentIndex", "clearEnteredKeys"],
           },
           {
-            actions: ["clearSegmentValue", "clearEnteredKeys"],
+            actions: ["clearSegmentValue", "clearEnteredKeys", "announceSegmentValue"],
           },
         ],
         "SEGMENT.HOME": {
-          actions: ["setSegmentToLowestValue", "clearEnteredKeys"],
+          actions: ["setSegmentToLowestValue", "clearEnteredKeys", "announceSegmentValue"],
         },
         "SEGMENT.END": {
-          actions: ["setSegmentToHighestValue", "clearEnteredKeys"],
+          actions: ["setSegmentToHighestValue", "clearEnteredKeys", "announceSegmentValue"],
         },
       },
     },
   },
 
   implementations: {
+    effects: {
+      setupLiveRegion({ scope, refs }) {
+        const liveRegion = createLiveRegion({
+          level: "assertive",
+          document: scope.getDoc(),
+        })
+        refs.set("announcer", liveRegion)
+        return () => liveRegion.destroy()
+      },
+    },
+
     guards: {
       isActiveSegmentPlaceholder: (ctx) => {
         const hasEnteredKeys = ctx.context.get("enteredKeys") !== ""
@@ -374,8 +391,10 @@ export const machine = createMachine<DateFieldSchema>({
       },
 
       setSegmentValue(params) {
-        const { event } = params
+        const { event, context, refs } = params
         const { segment, input } = event
+        // Save segment index before updateSegmentValue may advance (announce the updated segment, not the one we move to)
+        refs.set("segmentToAnnounceIndex", context.get("activeSegmentIndex"))
         updateSegmentValue(params, segment, input)
       },
 
@@ -403,6 +422,24 @@ export const machine = createMachine<DateFieldSchema>({
 
       syncValidSegments({ context, prop }) {
         context.set("validSegments", getDefaultValidSegments(context.get("value"), prop("allSegments")))
+      },
+
+      announceSegmentValue({ refs, computed, context }) {
+        const announcer = refs.get("announcer")
+        if (!announcer) return
+
+        const index = context.get("activeIndex")
+        const activeSegmentIndex = context.get("activeSegmentIndex")
+        // Use saved index when SEGMENT.INPUT advanced (we updated that segment, not the one we moved to)
+        const segmentIndexToUse = refs.get("segmentToAnnounceIndex") ?? activeSegmentIndex
+        refs.set("segmentToAnnounceIndex", null)
+        const segments = computed("segments")[index]
+        const segment = segments?.[segmentIndexToUse]
+
+        if (!segment || segment.type === "literal") return
+
+        const valueText = segment.isPlaceholder ? "Empty" : segment.text
+        announcer.announce(`${getSegmentLabel(segment.type)}, ${valueText}`)
       },
 
       // On blur, if only dayPeriod is unfilled, auto-fill it and commit the value

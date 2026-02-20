@@ -4,19 +4,7 @@ import { parts } from "./date-field.anatomy"
 import * as dom from "./date-field.dom"
 import type { DateFieldApi, DateFieldService, SegmentProps, SegmentState } from "./date-field.types"
 import { getLocaleSeparator, isValidCharacter } from "./utils/locale"
-import { PAGE_STEP } from "./utils/segments"
-
-const SEGMENT_LABELS: Record<string, string> = {
-  era: "era",
-  year: "year",
-  month: "month",
-  day: "day",
-  hour: "hour",
-  minute: "minute",
-  second: "second",
-  dayPeriod: "AM/PM",
-  timeZoneName: "time zone",
-}
+import { getSegmentLabel, PAGE_STEP } from "./utils/segments"
 
 export function connect<T extends PropTypes>(service: DateFieldService, normalize: NormalizeProps<T>): DateFieldApi<T> {
   const { state, context, prop, send, computed, scope } = service
@@ -161,7 +149,7 @@ export function connect<T extends PropTypes>(service: DateFieldService, normaliz
             ? undefined
             : "numeric",
         enterKeyHint: "next",
-        "aria-label": SEGMENT_LABELS[segment.type] || segment.type,
+        "aria-label": getSegmentLabel(segment.type),
         "aria-valuenow": segment.isPlaceholder ? undefined : segment.value,
         "aria-valuetext": segment.isPlaceholder ? segment.placeholder : segment.text,
         "aria-valuemin": segment.minValue,
