@@ -104,6 +104,10 @@ export const defaultTranslations: IntlTranslations = {
       day: "Switch to next month",
     })
   },
+  // TODO: Revisit this
+  placeholder() {
+    return { day: "dd", month: "mm", year: "yyyy" }
+  },
   content: "calendar",
   monthSelect: "Select month",
   yearSelect: "Select year",

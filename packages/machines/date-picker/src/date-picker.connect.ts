@@ -44,6 +44,7 @@ import type {
 } from "./date-picker.types"
 import {
   adjustStartAndEndDate,
+  defaultTranslations,
   ensureValidCharacters,
   getInputPlaceholder,
   getLocaleSeparator,
@@ -79,6 +80,7 @@ export function connect<T extends PropTypes>(
   const timeZone = prop("timeZone")
   const startOfWeek = prop("startOfWeek")
 
+  const focused = state.matches("focused")
   const open = state.matches("open")
 
   const isRangePicker = prop("selectionMode") === "range"
@@ -94,7 +96,7 @@ export function connect<T extends PropTypes>(
   })
 
   const separator = getLocaleSeparator(locale)
-  const translations = prop("translations")
+  const translations = { ...defaultTranslations, ...prop("translations") }
 
   function getMonthWeeks(from = startValue) {
     const numOfWeeks = prop("fixedWeeks") ? 6 : undefined
@@ -247,6 +249,7 @@ export function connect<T extends PropTypes>(
   }
 
   return {
+    focused,
     open,
     disabled,
     invalid,
@@ -804,7 +807,6 @@ export function connect<T extends PropTypes>(
         "data-placeholder-shown": dataAttr(empty),
         "aria-haspopup": "grid",
         disabled,
-        "data-readonly": dataAttr(readOnly),
         onClick(event) {
           if (event.defaultPrevented) return
           if (!interactive) return
@@ -894,6 +896,7 @@ export function connect<T extends PropTypes>(
           if (!interactive) return
           const keyMap: EventKeyMap<HTMLInputElement> = {
             Enter(event) {
+              // TODO: consider form submission (with enter key)
               if (isComposingEvent(event)) return
               if (isUnavailable(focusedValue)) return
               if (event.currentTarget.value.trim() === "") return

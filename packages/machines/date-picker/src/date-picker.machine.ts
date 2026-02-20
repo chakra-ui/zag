@@ -28,7 +28,6 @@ import type { DatePickerSchema, DateValue, DateView } from "./date-picker.types"
 import {
   adjustStartAndEndDate,
   clampView,
-  defaultTranslations,
   eachView,
   getNextView,
   getPreviousView,
@@ -81,14 +80,6 @@ export const machine = createMachine<DatePickerSchema>({
     const minView: DateView = "day"
     const maxView: DateView = "year"
     const defaultView = clampView(props.view || minView, minView, maxView)
-    const translations = { ...defaultTranslations, ...props.translations }
-
-    const formatter = new DateFormatter(locale, {
-      timeZone: timeZone,
-      day: "2-digit",
-      month: "2-digit",
-      year: "numeric",
-    })
 
     return {
       locale,
@@ -100,14 +91,14 @@ export const machine = createMachine<DatePickerSchema>({
       maxView,
       outsideDaySelectable: false,
       closeOnSelect: true,
-      format(date, { timeZone }) {
+      format(date, { locale, timeZone }) {
+        const formatter = new DateFormatter(locale, { timeZone, day: "2-digit", month: "2-digit", year: "numeric" })
         return formatter.format(date.toDate(timeZone))
       },
       parse(value, { locale, timeZone }) {
         return parseDateString(value, locale, timeZone)
       },
       ...props,
-      translations,
       focusedValue: typeof props.focusedValue === "undefined" ? undefined : focusedValue,
       defaultFocusedValue: focusedValue,
       value,
@@ -293,7 +284,7 @@ export const machine = createMachine<DatePickerSchema>({
         actions: ["setDateValue", "setFocusedDate", "invokeOnClose"],
       },
       {
-        target: "idle",
+        target: "focused",
         actions: ["setDateValue", "setFocusedDate", "focusInputElement"],
       },
     ],
@@ -356,6 +347,36 @@ export const machine = createMachine<DatePickerSchema>({
       },
     },
 
+    focused: {
+      tags: ["closed"],
+      on: {
+        "CONTROLLED.OPEN": {
+          target: "open",
+          actions: ["focusFirstSelectedDate", "focusActiveCell"],
+        },
+        "TRIGGER.CLICK": [
+          {
+            guard: "isOpenControlled",
+            actions: ["invokeOnOpen"],
+          },
+          {
+            target: "open",
+            actions: ["focusFirstSelectedDate", "focusActiveCell", "invokeOnOpen"],
+          },
+        ],
+        OPEN: [
+          {
+            guard: "isOpenControlled",
+            actions: ["invokeOnOpen"],
+          },
+          {
+            target: "open",
+            actions: ["focusFirstSelectedDate", "focusActiveCell", "invokeOnOpen"],
+          },
+        ],
+      },
+    },
+
     open: {
       tags: ["open"],
       effects: ["trackDismissableElement", "trackPositioning"],
@@ -364,12 +385,12 @@ export const machine = createMachine<DatePickerSchema>({
         "CONTROLLED.CLOSE": [
           {
             guard: and("shouldRestoreFocus", "isInteractOutsideEvent"),
-            target: "idle",
+            target: "focused",
             actions: ["focusTriggerElement"],
           },
           {
             guard: "shouldRestoreFocus",
-            target: "idle",
+            target: "focused",
             actions: ["focusInputElement"],
           },
           {
@@ -399,7 +420,7 @@ export const machine = createMachine<DatePickerSchema>({
           },
           {
             guard: and("isRangePicker", "isSelectingEndDate", "closeOnSelect"),
-            target: "idle",
+            target: "focused",
             actions: [
               "setFocusedDate",
               "setSelectedDate",
@@ -433,7 +454,7 @@ export const machine = createMachine<DatePickerSchema>({
           },
           {
             guard: "closeOnSelect",
-            target: "idle",
+            target: "focused",
             actions: ["setFocusedDate", "setSelectedDate", "invokeOnClose", "focusInputElement"],
           },
           {
@@ -461,7 +482,7 @@ export const machine = createMachine<DatePickerSchema>({
             actions: ["focusFirstSelectedDate", "invokeOnClose"],
           },
           {
-            target: "idle",
+            target: "focused",
             actions: ["focusFirstSelectedDate", "invokeOnClose", "focusTriggerElement"],
           },
         ],
@@ -481,7 +502,7 @@ export const machine = createMachine<DatePickerSchema>({
           },
           {
             guard: and("isRangePicker", "isSelectingEndDate", "closeOnSelect"),
-            target: "idle",
+            target: "focused",
             actions: [
               "setSelectedDate",
               "setActiveIndexToStart",
@@ -513,7 +534,7 @@ export const machine = createMachine<DatePickerSchema>({
           },
           {
             guard: "closeOnSelect",
-            target: "idle",
+            target: "focused",
             actions: ["selectFocusedDate", "invokeOnClose", "focusInputElement"],
           },
           {
@@ -611,7 +632,7 @@ export const machine = createMachine<DatePickerSchema>({
             actions: ["invokeOnClose"],
           },
           {
-            target: "idle",
+            target: "focused",
             actions: ["invokeOnClose"],
           },
         ],
@@ -625,7 +646,7 @@ export const machine = createMachine<DatePickerSchema>({
           },
           {
             guard: "shouldRestoreFocus",
-            target: "idle",
+            target: "focused",
             actions: ["setActiveIndexToStart", "invokeOnClose", "focusTriggerElement"],
           },
           {

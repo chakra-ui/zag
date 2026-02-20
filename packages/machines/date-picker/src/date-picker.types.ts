@@ -305,7 +305,6 @@ type PropsWithDefault =
   | "parse"
   | "defaultFocusedValue"
   | "outsideDaySelectable"
-  | "translations"
 
 interface PrivateContext {
   /**
@@ -394,7 +393,7 @@ type Refs = {
 }
 
 export interface DatePickerSchema {
-  state: "idle" | "open"
+  state: "idle" | "focused" | "open"
   tag: "open" | "closed"
   props: RequiredBy<DatePickerProps, PropsWithDefault>
   context: PrivateContext
@@ -542,6 +541,10 @@ export interface VisibleRangeText extends Range<string> {
 
 export interface DatePickerApi<T extends PropTypes = PropTypes> {
   /**
+   * Whether the input is focused
+   */
+  focused: boolean
+  /**
    * Whether the date picker is open
    */
   open: boolean
@@ -592,7 +595,7 @@ export interface DatePickerApi<T extends PropTypes = PropTypes> {
   /**
    * Returns an array of days in the week index counted from the provided start date, or the first visible date if not given.
    */
-  getDaysInWeek: (week: number, from?: DateValue | undefined) => DateValue[]
+  getDaysInWeek: (week: number, from?: DateValue) => DateValue[]
   /**
    * Returns the offset of the month based on the provided number of months.
    */
@@ -604,7 +607,7 @@ export interface DatePickerApi<T extends PropTypes = PropTypes> {
   /**
    * Returns the weeks of the month from the provided date. Represented as an array of arrays of dates.
    */
-  getMonthWeeks: (from?: DateValue | undefined) => DateValue[][]
+  getMonthWeeks: (from?: DateValue) => DateValue[][]
   /**
    * Returns whether the provided date is available (or can be selected)
    */
@@ -690,7 +693,7 @@ export interface DatePickerApi<T extends PropTypes = PropTypes> {
    * Returns the years of the decade based on the columns.
    * Represented as an array of arrays of years.
    */
-  getYearsGrid: (props?: YearGridProps | undefined) => YearGridValue
+  getYearsGrid: (props?: YearGridProps) => YearGridValue
   /**
    * Returns the start and end years of the decade.
    */
@@ -698,16 +701,16 @@ export interface DatePickerApi<T extends PropTypes = PropTypes> {
   /**
    * Returns the months of the year
    */
-  getMonths: (props?: MonthFormatOptions | undefined) => Cell[]
+  getMonths: (props?: MonthFormatOptions) => Cell[]
   /**
    * Returns the months of the year based on the columns.
    * Represented as an array of arrays of months.
    */
-  getMonthsGrid: (props?: MonthGridProps | undefined) => MonthGridValue
+  getMonthsGrid: (props?: MonthGridProps) => MonthGridValue
   /**
    * Formats the given date value based on the provided options.
    */
-  format: (value: DateValue, opts?: Intl.DateTimeFormatOptions | undefined) => string
+  format: (value: DateValue, opts?: Intl.DateTimeFormatOptions) => string
   /**
    * Sets the view of the date picker.
    */
