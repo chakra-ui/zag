@@ -1,5 +1,12 @@
 # @zag-js/color-utils
 
+## 1.34.1
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/utils@1.34.1
+
 ## 1.34.0
 
 ### Patch Changes
