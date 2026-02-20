@@ -1,6 +1,6 @@
 import * as hoverCard from "@zag-js/hover-card"
 import { Component } from "./component"
-import { normalizeProps, spreadProps, VanillaMachine } from "@zag-js/vanilla"
+import { normalizeProps, VanillaMachine } from "@zag-js/vanilla"
 
 export class HoverCard extends Component<hoverCard.Props, hoverCard.Api> {
   initMachine(props: hoverCard.Props) {
@@ -15,7 +15,7 @@ export class HoverCard extends Component<hoverCard.Props, hoverCard.Api> {
 
   render() {
     const trigger = this.rootEl.querySelector<HTMLElement>(".hover-card-trigger")
-    if (trigger) spreadProps(trigger, this.api.getTriggerProps())
+    if (trigger) this.spreadProps(trigger, this.api.getTriggerProps())
 
     const positioner = this.rootEl.querySelector<HTMLElement>(".hover-card-positioner")
     const content = this.rootEl.querySelector<HTMLElement>(".hover-card-content")
@@ -25,11 +25,11 @@ export class HoverCard extends Component<hoverCard.Props, hoverCard.Api> {
     if (positioner && content) {
       if (this.api.open) {
         positioner.hidden = false
-        spreadProps(positioner, this.api.getPositionerProps())
-        spreadProps(content, this.api.getContentProps())
+        this.spreadProps(positioner, this.api.getPositionerProps())
+        this.spreadProps(content, this.api.getContentProps())
 
-        if (arrow) spreadProps(arrow, this.api.getArrowProps())
-        if (arrowTip) spreadProps(arrowTip, this.api.getArrowTipProps())
+        if (arrow) this.spreadProps(arrow, this.api.getArrowProps())
+        if (arrowTip) this.spreadProps(arrowTip, this.api.getArrowTipProps())
       } else {
         positioner.hidden = true
       }

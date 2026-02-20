@@ -1,5 +1,52 @@
 # @zag-js/menu
 
+## 1.34.0
+
+### Patch Changes
+
+- Updated dependencies [[`a20094f`](https://github.com/chakra-ui/zag/commit/a20094f6816a8a7899c82f7c866c632bb922b53c)]:
+  - @zag-js/popper@1.34.0
+  - @zag-js/anatomy@1.34.0
+  - @zag-js/core@1.34.0
+  - @zag-js/types@1.34.0
+  - @zag-js/utils@1.34.0
+  - @zag-js/dismissable@1.34.0
+  - @zag-js/dom-query@1.34.0
+  - @zag-js/focus-visible@1.34.0
+  - @zag-js/rect-utils@1.34.0
+
+## 1.33.1
+
+### Patch Changes
+
+- [`729499c`](https://github.com/chakra-ui/zag/commit/729499c6d8f06def95d34458e5b42548ffa974ed) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix glitchy submenu behavior when hovering between trigger items
+  quickly.
+
+- Updated dependencies [[`9817e4c`](https://github.com/chakra-ui/zag/commit/9817e4cb3b18d93408b95e7c827d35801b01a267)]:
+  - @zag-js/dismissable@1.33.1
+  - @zag-js/anatomy@1.33.1
+  - @zag-js/core@1.33.1
+  - @zag-js/types@1.33.1
+  - @zag-js/utils@1.33.1
+  - @zag-js/dom-query@1.33.1
+  - @zag-js/popper@1.33.1
+  - @zag-js/rect-utils@1.33.1
+
+## 1.33.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.33.0
+  - @zag-js/core@1.33.0
+  - @zag-js/types@1.33.0
+  - @zag-js/utils@1.33.0
+  - @zag-js/dismissable@1.33.0
+  - @zag-js/dom-query@1.33.0
+  - @zag-js/popper@1.33.0
+  - @zag-js/rect-utils@1.33.0
+
 ## 1.32.0
 
 ### Patch Changes

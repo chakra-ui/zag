@@ -141,7 +141,7 @@ export interface ToastProps<T = any> extends Omit<CommonProperties, "id">, Optio
 type ToastPropsWithDefault = "type" | "parent" | "duration" | "id" | "removeDelay"
 
 export type ToastSchema<O = any> = {
-  props: RequiredBy<ToastProps<O>, ToastPropsWithDefault>
+  props: RequiredBy<ToastProps<O>, Extract<ToastPropsWithDefault, keyof ToastProps<O>>>
   context: {
     mounted: boolean
     initialHeight: number
@@ -235,7 +235,7 @@ export type ToastGroupSchema = {
   state: "stack" | "overlap"
   props: ToastGroupProps
   context: {
-    toasts: RequiredBy<ToastProps, ToastPropsWithDefault>[]
+    toasts: RequiredBy<ToastProps, Extract<ToastPropsWithDefault, keyof ToastProps>>[]
     heights: ToastHeight[]
   }
   computed: {

@@ -251,6 +251,18 @@ test.describe("closed state + keyboard selection", () => {
   })
 })
 
+test.describe("hidden select / autofill", () => {
+  test("should sync value when hidden select changes externally (e.g. autofill)", async () => {
+    await I.seeTriggerHasText("Select option")
+
+    // Simulate browser autofill: native select value changes + change event fires
+    await I.autofill("AL")
+
+    // Component should sync and display the new value
+    await I.seeTriggerHasText("Albania (AL)")
+  })
+})
+
 test.describe("multiple", () => {
   test("should select multiple items", async () => {
     await I.controls.bool("multiple", true)

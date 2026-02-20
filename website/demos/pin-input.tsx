@@ -1,6 +1,7 @@
 import * as pinInput from "@zag-js/pin-input"
 import { normalizeProps, useMachine } from "@zag-js/react"
 import { useId } from "react"
+import styles from "../styles/machines/pin-input.module.css"
 
 interface PinInputProps extends Omit<pinInput.Props, "id"> {}
 
@@ -14,12 +15,18 @@ export function PinInput(props: PinInputProps) {
 
   return (
     <div>
-      <div {...api.getRootProps()}>
+      <div className={styles.Root} {...api.getRootProps()}>
         {[1, 2, 3].map((_, index) => (
-          <input key={index} {...api.getInputProps({ index })} />
+          <input
+            className={styles.Input}
+            key={index}
+            {...api.getInputProps({ index })}
+          />
         ))}
       </div>
-      <button onClick={api.clearValue}>Clear</button>
+      <button className={styles.ClearButton} onClick={api.clearValue}>
+        Clear
+      </button>
     </div>
   )
 }

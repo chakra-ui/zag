@@ -5,6 +5,7 @@ import {
   isEqualYear,
   isToday,
   isWeekend,
+  toCalendarDateTime,
   type DateValue,
 } from "@internationalized/date"
 import {
@@ -19,6 +20,7 @@ import {
   getTodayDate,
   getUnitDuration,
   getWeekDays,
+  getWeekOfYear,
   getYearsRange,
   isDateEqual,
   isDateOutsideRange,
@@ -38,6 +40,7 @@ import type {
   TableCellProps,
   TableCellState,
   TableProps,
+  WeekNumberCellProps,
 } from "./date-picker.types"
 import {
   adjustStartAndEndDate,
@@ -68,6 +71,8 @@ export function connect<T extends PropTypes>(
   const invalid = Boolean(prop("invalid"))
   const interactive = computed("isInteractive")
 
+  const empty = selectedValue.length === 0
+
   const min = prop("min")
   const max = prop("max")
   const locale = prop("locale")
@@ -77,7 +82,10 @@ export function connect<T extends PropTypes>(
   const open = state.matches("open")
 
   const isRangePicker = prop("selectionMode") === "range"
+  const isMultiPicker = prop("selectionMode") === "multiple"
   const isDateUnavailableFn = prop("isDateUnavailable")
+  const maxSelectedDates = prop("maxSelectedDates")
+  const isMaxSelected = isMultiPicker && maxSelectedDates != null && selectedValue.length >= maxSelectedDates
 
   const currentPlacement = context.get("currentPlacement")
   const popperStyles = getPlacementStyles({
@@ -105,15 +113,6 @@ export function connect<T extends PropTypes>(
 
   function getYears() {
     const range = getYearsRange({ from: min?.year ?? 1900, to: max?.year ?? 2100 })
-    return range.map((year) => ({
-      label: year.toString(),
-      value: year,
-      disabled: !isValueWithinRange(year, min?.year, max?.year),
-    }))
-  }
-
-  function getDecadeYears(year?: number) {
-    const range = getDecadeRange(year ?? startValue.year)
     return range.map((year) => ({
       label: year.toString(),
       value: year,
@@ -201,10 +200,18 @@ export function connect<T extends PropTypes>(
     const isFirstInHoveredRange = hasHoveredRange && isDateEqual(value, hoveredRangeValue[0])
     const isLastInHoveredRange = hasHoveredRange && isDateEqual(value, hoveredRangeValue[1])
 
+    // Check if max number of dates has been reached (for multiple selection mode)
+    const isSelected = selectedValue.some((date) => isDateEqual(value, date))
+
     const cellState = {
       invalid: isDateOutsideRange(value, min, max),
-      disabled: disabled || (!outsideDaySelectable && isOutsideRange) || isDateOutsideRange(value, min, max),
-      selected: selectedValue.some((date) => isDateEqual(value, date)),
+      disabled:
+        disabled ||
+        (!outsideDaySelectable && isOutsideRange) ||
+        isDateOutsideRange(value, min, max) ||
+        // Disable unselected dates when max is reached in multiple selection mode
+        (isMaxSelected && !isSelected),
+      selected: isSelected,
       unavailable: isDateUnavailable(value, isDateUnavailableFn, locale, min, max) && !disabled,
       outsideRange: isOutsideRange,
       today: isToday(value, timeZone),
@@ -243,10 +250,20 @@ export function connect<T extends PropTypes>(
     open,
     disabled,
     invalid,
+    readOnly,
     inline: !!prop("inline"),
+    numOfMonths: prop("numOfMonths"),
+    showWeekNumbers: !!prop("showWeekNumbers"),
+    selectionMode: prop("selectionMode"),
+    maxSelectedDates,
+    isMaxSelected,
     view: context.get("view"),
     getRangePresetValue(preset) {
       return getDateRangePreset(preset, locale, timeZone)
+    },
+    getWeekNumber(week: DateValue[]) {
+      const firstDay = week[0]
+      return firstDay ? getWeekOfYear(firstDay, locale) : 0
     },
     getDaysInWeek(week, from = startValue) {
       return getDaysInWeek(week, from, locale, startOfWeek)
@@ -278,14 +295,38 @@ export function connect<T extends PropTypes>(
     visibleRange: computed("visibleRange"),
     selectToday() {
       const value = constrainValue(getTodayDate(timeZone), min, max)
-      send({ type: "VALUE.SET", value })
+      send({ type: "VALUE.SET", value: [value] })
     },
     setValue(values) {
       const computedValue = values.map((date) => constrainValue(date, min, max))
       send({ type: "VALUE.SET", value: computedValue })
     },
-    clearValue() {
-      send({ type: "VALUE.CLEAR" })
+    setTime(time, index = 0) {
+      const values = Array.from(selectedValue)
+      let dateValue = values[index]
+      if (!dateValue) return
+
+      // Convert CalendarDate to CalendarDateTime/ZonedDateTime if needed
+      if (!("hour" in dateValue)) {
+        // Use the machine's timeZone prop if we need to create a ZonedDateTime
+        // For now, default to CalendarDateTime (no timezone)
+        dateValue = toCalendarDateTime(dateValue)
+      }
+
+      // Set time components
+      dateValue = dateValue.set({
+        hour: time.hour ?? ("hour" in dateValue ? dateValue.hour : 0),
+        minute: time.minute ?? ("minute" in dateValue ? dateValue.minute : 0),
+        second: time.second ?? ("second" in dateValue ? dateValue.second : 0),
+        millisecond: time.millisecond ?? ("millisecond" in dateValue ? dateValue.millisecond : 0),
+      })
+
+      values[index] = constrainValue(dateValue, min, max)
+      send({ type: "VALUE.SET", value: values })
+    },
+    clearValue(options = {}) {
+      const { focus = true } = options
+      send({ type: "VALUE.CLEAR", focus })
     },
     setFocusedValue(value) {
       send({ type: "FOCUS.SET", value })
@@ -302,10 +343,15 @@ export function connect<T extends PropTypes>(
     getMonths,
     getYearsGrid(props = {}) {
       const { columns = 1 } = props
-      return chunk(getDecadeYears(), columns)
+      const years = getDecadeRange(startValue.year, { strict: true }).map((year) => ({
+        label: year.toString(),
+        value: year,
+        disabled: !isValueWithinRange(year, min?.year, max?.year),
+      }))
+      return chunk(years, columns)
     },
     getDecade() {
-      const years = getDecadeRange(focusedValue.year)
+      const years = getDecadeRange(startValue.year, { strict: true })
       return { start: years.at(0), end: years.at(-1) }
     },
     getMonthsGrid(props = {}) {
@@ -333,6 +379,7 @@ export function connect<T extends PropTypes>(
         "data-state": open ? "open" : "closed",
         "data-disabled": dataAttr(disabled),
         "data-readonly": dataAttr(readOnly),
+        "data-empty": dataAttr(empty),
       })
     },
 
@@ -356,6 +403,7 @@ export function connect<T extends PropTypes>(
         dir: prop("dir"),
         id: dom.getControlId(scope),
         "data-disabled": dataAttr(disabled),
+        "data-placeholder-shown": dataAttr(empty),
       })
     },
 
@@ -501,6 +549,30 @@ export function connect<T extends PropTypes>(
         "aria-disabled": ariaAttr(disabled),
         "data-disabled": dataAttr(disabled),
         "data-view": view,
+      })
+    },
+
+    getWeekNumberHeaderCellProps(props = {}) {
+      const { view = "day" } = props
+      return normalize.element({
+        ...parts.tableCell.attrs,
+        scope: "col",
+        "aria-label": translations.weekColumnHeader,
+        "data-view": view,
+        "data-disabled": dataAttr(disabled),
+      })
+    },
+
+    getWeekNumberCellProps(props: WeekNumberCellProps) {
+      const { weekIndex, week } = props
+      const weekNumber = week[0] ? getWeekOfYear(week[0], locale) : 0
+      return normalize.element({
+        ...parts.tableCell.attrs,
+        role: "rowheader",
+        "aria-label": translations.weekNumberCell?.(weekNumber),
+        "data-view": "day",
+        "data-week-index": weekIndex,
+        "data-disabled": dataAttr(disabled),
       })
     },
 
@@ -729,6 +801,7 @@ export function connect<T extends PropTypes>(
         "aria-label": translations.trigger(open),
         "aria-controls": dom.getContentId(scope),
         "data-state": open ? "open" : "closed",
+        "data-placeholder-shown": dataAttr(empty),
         "aria-haspopup": "grid",
         disabled,
         "data-readonly": dataAttr(readOnly),
@@ -789,6 +862,7 @@ export function connect<T extends PropTypes>(
         name: prop("name"),
         "data-index": index,
         "data-state": open ? "open" : "closed",
+        "data-placeholder-shown": dataAttr(empty),
         readOnly,
         disabled,
         required: prop("required"),
@@ -801,6 +875,12 @@ export function connect<T extends PropTypes>(
           if (!isValidCharacter(data, separator)) {
             event.preventDefault()
           }
+        },
+        onClick(event) {
+          if (event.defaultPrevented) return
+          if (!prop("openOnClick")) return
+          if (!interactive) return
+          send({ type: "OPEN", src: "input.click" })
         },
         onFocus() {
           send({ type: "INPUT.FOCUS", index })

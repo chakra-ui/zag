@@ -1,5 +1,49 @@
 # @zag-js/file-upload
 
+## 1.34.0
+
+### Patch Changes
+
+- Updated dependencies [[`687ea36`](https://github.com/chakra-ui/zag/commit/687ea366ed0204c57686b4f581e1a4e2413b0f19)]:
+  - @zag-js/i18n-utils@1.34.0
+  - @zag-js/file-utils@1.34.0
+  - @zag-js/anatomy@1.34.0
+  - @zag-js/core@1.34.0
+  - @zag-js/types@1.34.0
+  - @zag-js/utils@1.34.0
+  - @zag-js/dom-query@1.34.0
+
+## 1.33.1
+
+### Patch Changes
+
+- [`e847201`](https://github.com/chakra-ui/zag/commit/e847201a3d0b98d3b109d702f9942f0bfa25b97f) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix accessibility violations in file upload component
+  - Remove invalid `aria-readonly` from dropzone (not valid for `role="button"`)
+  - Add `aria-hidden` to hidden input to exclude from accessibility tree
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.33.1
+  - @zag-js/core@1.33.1
+  - @zag-js/types@1.33.1
+  - @zag-js/utils@1.33.1
+  - @zag-js/dom-query@1.33.1
+  - @zag-js/file-utils@1.33.1
+  - @zag-js/i18n-utils@1.33.1
+
+## 1.33.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.33.0
+  - @zag-js/core@1.33.0
+  - @zag-js/types@1.33.0
+  - @zag-js/utils@1.33.0
+  - @zag-js/dom-query@1.33.0
+  - @zag-js/file-utils@1.33.0
+  - @zag-js/i18n-utils@1.33.0
+
 ## 1.32.0
 
 ### Minor Changes

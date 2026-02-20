@@ -1,6 +1,10 @@
+"use client"
+
+import { useSyncExternalStore } from "react"
 import { Accordion } from "./accordion"
 import { AngleSlider } from "./angle-slider"
 import { Avatar } from "./avatar"
+import { CascadeSelect } from "./cascade-select"
 import { Carousel } from "./carousel"
 import { Checkbox } from "./checkbox"
 import { Clipboard } from "./clipboard"
@@ -39,18 +43,31 @@ import { Switch } from "./switch"
 import { Tabs } from "./tabs"
 import { TagsInput } from "./tags-input"
 
+// Prevents SSR to avoid hydration mismatch with useId()
+const emptySubscribe = () => () => {}
+function useIsClient() {
+  return useSyncExternalStore(
+    emptySubscribe,
+    () => true,
+    () => false,
+  )
+}
+
+import { ImSpinner3 } from "react-icons/im"
+import { css } from "styled-system/css"
+import { center } from "styled-system/patterns"
+import { Playground } from "../components/playground"
+import { Drawer } from "./drawer"
+import { FloatingPanel } from "./floating-panel"
+import { Listbox } from "./listbox"
+import { Marquee } from "./marquee"
+import { PasswordInput } from "./password-input"
 import { TimerCountdown } from "./timer-countdown"
 import { ToastGroup } from "./toast"
 import { ToggleGroup } from "./toggle-group"
 import { Tooltip } from "./tooltip"
 import { Tour } from "./tour"
 import { TreeView } from "./tree-view"
-import { Listbox } from "./listbox"
-import { Playground } from "../components/playground"
-import { FloatingPanel } from "./floating-panel"
-import { PasswordInput } from "./password-input"
-import { BottomSheet } from "./bottom-sheet"
-import { Marquee } from "./marquee"
 
 const components = {
   Accordion: () => (
@@ -84,8 +101,26 @@ const components = {
       }}
     />
   ),
-  BottomSheet: () => (
-    <Playground name="bottom-sheet" component={BottomSheet} defaultProps={{}} />
+  Drawer: () => (
+    <Playground name="drawer" component={Drawer} defaultProps={{}} />
+  ),
+  CascadeSelect: () => (
+    <Playground
+      name="cascade-select"
+      component={CascadeSelect}
+      defaultProps={{
+        disabled: false,
+        readOnly: false,
+        multiple: false,
+        closeOnSelect: true,
+        loopFocus: false,
+        allowParentSelection: false,
+        highlightTrigger: {
+          default: "click",
+          options: ["click", "hover"],
+        },
+      }}
+    />
   ),
   Carousel: () => (
     <Playground
@@ -331,10 +366,9 @@ const components = {
       name="rating"
       component={Rating}
       defaultProps={{
-        allowHalf: true,
+        allowHalf: false,
         disabled: false,
         readOnly: false,
-        count: 5,
         dir: {
           options: ["ltr", "rtl"],
           default: "ltr",
@@ -531,7 +565,7 @@ const components = {
           default: "start",
           options: ["start", "end", "top", "bottom"],
         },
-        speed: 100,
+        // speed: 100,
         pauseOnInteraction: false,
       }}
     />
@@ -552,7 +586,30 @@ const components = {
   ),
 }
 
-export function Showcase(props: { id: keyof typeof components }) {
+export const Showcase = (props: { id: keyof typeof components }) => {
+  const isClient = useIsClient()
+
+  if (!isClient) {
+    return (
+      <div
+        className={center({
+          minHeight: "24em",
+          borderWidth: "1px",
+          my: "16",
+          gap: "2.5",
+        })}
+      >
+        <ImSpinner3
+          className={css({
+            boxSize: "4",
+            animation: "spin 0.75s linear infinite",
+          })}
+        />
+        Loading...
+      </div>
+    )
+  }
+
   const Component = components[props.id] ?? "span"
   return <Component />
 }

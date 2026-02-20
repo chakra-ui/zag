@@ -9,7 +9,7 @@
     "version": "vinxi version"
   },
   "dependencies": {
-    "@internationalized/date": "3.10.1",
+    "@internationalized/date": "3.11.0",
     "@solidjs/meta": "0.29.4",
     "@solidjs/router": "0.15.4",
     "@solidjs/start": "1.2.1",
@@ -21,7 +21,8 @@
     "@zag-js/async-list": "workspace:*",
     "@zag-js/auto-resize": "workspace:*",
     "@zag-js/avatar": "workspace:*",
-    "@zag-js/bottom-sheet": "workspace:*",
+    "@zag-js/drawer": "workspace:*",
+    "@zag-js/cascade-select": "workspace:*",
     "@zag-js/carousel": "workspace:*",
     "@zag-js/checkbox": "workspace:*",
     "@zag-js/clipboard": "workspace:*",
@@ -92,10 +93,10 @@
     "@zag-js/types": "workspace:*",
     "@zag-js/utils": "workspace:*",
     "form-serialize": "0.7.2",
-    "lucide-solid": "0.562.0",
+    "lucide-solid": "0.563.0",
     "match-sorter": "8.2.0",
-    "solid-js": "1.9.10",
-    "vinxi": "0.5.10"
+    "solid-js": "1.9.11",
+    "vinxi": "0.5.11"
   },
   "engines": {
     "node": ">=18"

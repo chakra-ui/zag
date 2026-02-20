@@ -1,6 +1,6 @@
 {
   "name": "@zag-js/combobox",
-  "version": "1.32.0",
+  "version": "1.34.0",
   "description": "Core logic for the combobox widget implemented as a state machine",
   "keywords": [
     "js",
@@ -32,9 +32,10 @@
     "@zag-js/core": "workspace:*",
     "@zag-js/dismissable": "workspace:*",
     "@zag-js/dom-query": "workspace:*",
-    "@zag-js/utils": "workspace:*",
+    "@zag-js/focus-visible": "workspace:*",
     "@zag-js/popper": "workspace:*",
-    "@zag-js/types": "workspace:*"
+    "@zag-js/types": "workspace:*",
+    "@zag-js/utils": "workspace:*"
   },
   "devDependencies": {
     "clean-package": "2.2.0"

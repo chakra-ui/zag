@@ -1,0 +1,75 @@
+@layer recipes {
+  .Root {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    margin-top: -24px;
+  }
+
+  .Label {
+    font-size: 0.875rem;
+    font-weight: 500;
+
+    &[data-disabled] {
+      opacity: 0.5;
+      filter: grayscale(100%);
+    }
+  }
+
+  .Content {
+    background: var(--colors-bg-popover);
+    width: 240px;
+    padding: 0.5rem;
+    isolation: isolate;
+    list-style-type: none;
+    outline: 0;
+    border: 1px solid var(--colors-border);
+  }
+
+  .Item {
+    padding-inline: 0.5rem;
+    padding-block: 0.25rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 2px;
+    border-radius: 4px;
+
+    &:hover {
+      background: var(--colors-bg-bold);
+    }
+
+    &[data-highlighted] {
+      outline: 2px solid var(--colors-bg-primary-bold);
+      outline-offset: -2px;
+    }
+
+    &[data-selected] {
+      background: var(--colors-bg-primary-bold);
+      color: #ffffff;
+    }
+
+    & img {
+      width: 24px;
+      height: 24px;
+      border-radius: 4px;
+    }
+  }
+
+  .ItemText {
+    flex: 1;
+  }
+
+  .ItemGroup {
+    padding-inline: 0.5rem;
+    padding-block: 0.25rem;
+  }
+
+  .ItemGroupLabel {
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--colors-text-subtle);
+    margin-bottom: 0.25rem;
+  }
+}

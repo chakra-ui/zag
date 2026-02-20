@@ -56,7 +56,9 @@ export function dispatchInputValueEvent(el: HTMLElementWithValue | null, options
   if (!(el instanceof win.HTMLInputElement)) return
 
   setElementValue(el, `${value}`)
-  el.dispatchEvent(new win.Event("input", { bubbles }))
+
+  const event = new win.Event("input", { bubbles })
+  el.dispatchEvent(markAsInternalChangeEvent(event))
 }
 
 export interface CheckedEventOptions {
@@ -67,14 +69,14 @@ export interface CheckedEventOptions {
 export function dispatchInputCheckedEvent(el: HTMLInputElement | null, options: CheckedEventOptions) {
   const { checked, bubbles = true } = options
   if (!el) return
+
   const win = getWindow(el)
   if (!(el instanceof win.HTMLInputElement)) return
-  setElementChecked(el, checked)
-  el.dispatchEvent(new win.Event("click", { bubbles }))
-}
 
-function getClosestForm(el: HTMLElement) {
-  return isFormElement(el) ? el.form : el.closest("form")
+  setElementChecked(el, checked)
+
+  const event = new win.Event("click", { bubbles })
+  el.dispatchEvent(markAsInternalChangeEvent(event))
 }
 
 function isFormElement(el: HTMLElement): el is HTMLElementWithValue {
@@ -83,7 +85,7 @@ function isFormElement(el: HTMLElement): el is HTMLElementWithValue {
 
 function trackFormReset(el: HTMLElement | null | undefined, callback: VoidFunction) {
   if (!el) return
-  const form = getClosestForm(el)
+  const form = isFormElement(el) ? el.form : el.closest("form")
   const onReset = (e: Event) => {
     if (e.defaultPrevented) return
     callback()
@@ -115,4 +117,20 @@ export function trackFormControl(el: HTMLElement | null, options: TrackFormContr
   const { onFieldsetDisabledChange, onFormReset } = options
   const cleanups = [trackFormReset(el, onFormReset), trackFieldsetDisabled(el, onFieldsetDisabledChange)]
   return () => cleanups.forEach((cleanup) => cleanup?.())
+}
+
+//////////////// INTERNAL CHANGE EVENT ////////////////
+
+const INTERNAL_CHANGE_EVENT = Symbol.for("zag.changeEvent")
+
+type InternalChangeEventProps = { [INTERNAL_CHANGE_EVENT]?: boolean }
+
+export function isInternalChangeEvent<T extends Event>(e: T): e is T & InternalChangeEventProps {
+  return Object.prototype.hasOwnProperty.call(e, INTERNAL_CHANGE_EVENT)
+}
+
+export function markAsInternalChangeEvent<T extends Event>(event: T): T & InternalChangeEventProps {
+  if (isInternalChangeEvent(event)) return event
+  Object.defineProperty(event, INTERNAL_CHANGE_EVENT, { value: true })
+  return event
 }

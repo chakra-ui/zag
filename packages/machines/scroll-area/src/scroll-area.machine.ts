@@ -1,5 +1,5 @@
 import { createMachine } from "@zag-js/core"
-import { addDomEvent, trackPointerMove } from "@zag-js/dom-query"
+import { addDomEvent, setStyleProperty, trackPointerMove } from "@zag-js/dom-query"
 import type { Size } from "@zag-js/types"
 import { callAll, clampValue, ensureProps, isEqual } from "@zag-js/utils"
 import * as dom from "./scroll-area.dom"
@@ -258,6 +258,29 @@ export const machine = createMachine<ScrollAreaSchema>({
           if (isEqual(prev, next)) return prev
           return next
         })
+
+        // Set overflow CSS variables on the viewport element
+        const maxScrollTop = Math.max(0, scrollableContentHeight - viewportHeight)
+        const maxScrollLeft = Math.max(0, scrollableContentWidth - viewportWidth)
+
+        let scrollLeftFromStart = 0
+        let scrollLeftFromEnd = 0
+        if (!scrollbarXHidden) {
+          if (prop("dir") === "rtl") {
+            scrollLeftFromStart = clampValue(-scrollLeft, 0, maxScrollLeft)
+          } else {
+            scrollLeftFromStart = clampValue(scrollLeft, 0, maxScrollLeft)
+          }
+          scrollLeftFromEnd = maxScrollLeft - scrollLeftFromStart
+        }
+
+        const scrollTopFromStart = !scrollbarYHidden ? clampValue(scrollTop, 0, maxScrollTop) : 0
+        const scrollTopFromEnd = !scrollbarYHidden ? maxScrollTop - scrollTopFromStart : 0
+
+        setStyleProperty(viewportEl, "--scroll-area-overflow-x-start", `${scrollLeftFromStart}px`)
+        setStyleProperty(viewportEl, "--scroll-area-overflow-x-end", `${scrollLeftFromEnd}px`)
+        setStyleProperty(viewportEl, "--scroll-area-overflow-y-start", `${scrollTopFromStart}px`)
+        setStyleProperty(viewportEl, "--scroll-area-overflow-y-end", `${scrollTopFromEnd}px`)
       },
 
       checkHovering({ scope, context }) {

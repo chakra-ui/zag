@@ -1,5 +1,48 @@
 # @zag-js/steps
 
+## 1.34.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.34.0
+  - @zag-js/core@1.34.0
+  - @zag-js/types@1.34.0
+  - @zag-js/utils@1.34.0
+  - @zag-js/dom-query@1.34.0
+
+## 1.33.1
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.33.1
+  - @zag-js/core@1.33.1
+  - @zag-js/types@1.33.1
+  - @zag-js/utils@1.33.1
+  - @zag-js/dom-query@1.33.1
+
+## 1.33.0
+
+### Minor Changes
+
+- [`b1948be`](https://github.com/chakra-ui/zag/commit/b1948be6c60fdfc2263151170542b384fdab2007) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Add validation and skippable step support:
+  - `isStepValid(index)`: Block forward navigation when step is invalid (linear mode)
+  - `isStepSkippable(index)`: Mark steps as optional, bypassing validation
+  - `onStepInvalid({ step, action, targetStep })`: Callback when navigation is blocked
+  - `api.isStepValid(index)` / `api.isStepSkippable(index)`: Check step state
+  - `itemState.isValid()`: Lazy validation check per step
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.33.0
+  - @zag-js/core@1.33.0
+  - @zag-js/types@1.33.0
+  - @zag-js/utils@1.33.0
+  - @zag-js/dom-query@1.33.0
+
 ## 1.32.0
 
 ### Patch Changes

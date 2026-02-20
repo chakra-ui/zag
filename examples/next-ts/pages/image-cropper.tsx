@@ -191,6 +191,12 @@ export default function Page() {
           </div>
         </div>
 
+        <div>
+          <button type="button" data-testid="reset-button" onClick={() => api.reset()}>
+            Reset
+          </button>
+        </div>
+
         <fieldset>
           <legend>Export Cropped Image</legend>
           <div>

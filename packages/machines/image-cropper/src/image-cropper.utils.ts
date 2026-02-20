@@ -6,32 +6,36 @@ import type { FlipState, HandlePosition, ImageCropperProps, ImageCropperSchema }
 const { min, max, abs, round, hypot, PI, cos, sin } = Math
 
 /* -----------------------------------------------------------------------------
+ * Constants
+ * ---------------------------------------------------------------------------*/
+
+const ASPECT_RATIO_TOLERANCE = 0.001
+export const MIN_PINCH_DISTANCE = 1
+
+export const isAspectRatioEqual = (a: number, b: number): boolean => {
+  return abs(a - b) < ASPECT_RATIO_TOLERANCE
+}
+
+/* -----------------------------------------------------------------------------
  * Handle Direction Utilities
  * ---------------------------------------------------------------------------*/
 
-export const isLeftHandle = (handlePosition: HandlePosition): boolean =>
-  handlePosition === "w" || handlePosition === "nw" || handlePosition === "sw"
+export const isLeftHandle = (v: HandlePosition): boolean => v === "w" || v === "nw" || v === "sw"
 
-export const isRightHandle = (handlePosition: HandlePosition): boolean =>
-  handlePosition === "e" || handlePosition === "ne" || handlePosition === "se"
+export const isRightHandle = (v: HandlePosition): boolean => v === "e" || v === "ne" || v === "se"
 
-export const isTopHandle = (handlePosition: HandlePosition): boolean =>
-  handlePosition === "n" || handlePosition === "nw" || handlePosition === "ne"
+export const isTopHandle = (v: HandlePosition): boolean => v === "n" || v === "nw" || v === "ne"
 
-export const isBottomHandle = (handlePosition: HandlePosition): boolean =>
-  handlePosition === "s" || handlePosition === "sw" || handlePosition === "se"
+export const isBottomHandle = (v: HandlePosition): boolean => v === "s" || v === "sw" || v === "se"
 
-export const isCornerHandle = (handlePosition: HandlePosition): boolean =>
-  (isLeftHandle(handlePosition) || isRightHandle(handlePosition)) &&
-  (isTopHandle(handlePosition) || isBottomHandle(handlePosition))
+export const isCornerHandle = (v: HandlePosition): boolean =>
+  (isLeftHandle(v) || isRightHandle(v)) && (isTopHandle(v) || isBottomHandle(v))
 
-export const isHorizontalEdgeHandle = (handlePosition: HandlePosition): boolean =>
-  (isLeftHandle(handlePosition) || isRightHandle(handlePosition)) &&
-  !(isTopHandle(handlePosition) || isBottomHandle(handlePosition))
+export const isHorizontalEdgeHandle = (v: HandlePosition): boolean =>
+  (isLeftHandle(v) || isRightHandle(v)) && !(isTopHandle(v) || isBottomHandle(v))
 
-export const isVerticalEdgeHandle = (handlePosition: HandlePosition): boolean =>
-  (isTopHandle(handlePosition) || isBottomHandle(handlePosition)) &&
-  !(isLeftHandle(handlePosition) || isRightHandle(handlePosition))
+export const isVerticalEdgeHandle = (v: HandlePosition): boolean =>
+  (isTopHandle(v) || isBottomHandle(v)) && !(isLeftHandle(v) || isRightHandle(v))
 
 /* -----------------------------------------------------------------------------
  * Size Limit Utilities
@@ -501,16 +505,15 @@ interface ClampOffsetParams {
   offset: Point
   fixedCropArea?: boolean
   crop?: Rect
-  naturalSize?: Size
 }
 
 export function clampOffset(params: ClampOffsetParams): Point {
-  const { zoom, rotation, viewportSize, offset, fixedCropArea, crop, naturalSize } = params
+  const { zoom, rotation, viewportSize, offset, fixedCropArea, crop } = params
 
   const { cos, sin } = getRotationTransform(rotation)
 
-  if (fixedCropArea && crop && naturalSize) {
-    const aabb = computeAABB(naturalSize, zoom, cos, sin)
+  if (fixedCropArea && crop) {
+    const aabb = computeAABB(viewportSize, zoom, cos, sin)
     const center = getViewportCenter(viewportSize)
 
     const cropRight = crop.x + crop.width
@@ -828,6 +831,15 @@ export const getMaxBounds = (cropSize: Size, viewportSize: Size): Point => ({
   x: max(0, viewportSize.width - cropSize.width),
   y: max(0, viewportSize.height - cropSize.height),
 })
+
+export const centerCropOnPoint = (cropSize: Size, center: Point, viewportSize: Size): Point => {
+  const newPos = {
+    x: center.x - cropSize.width / 2,
+    y: center.y - cropSize.height / 2,
+  }
+  const maxBounds = getMaxBounds(cropSize, viewportSize)
+  return clampPoint(newPos, ZERO_POINT, maxBounds)
+}
 
 export const isSameSize = (a: Size, b: Size): boolean => {
   return a.width === b.width && a.height === b.height

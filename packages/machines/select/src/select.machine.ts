@@ -3,11 +3,13 @@ import { trackDismissableElement } from "@zag-js/dismissable"
 import {
   getByTypeahead,
   getInitialFocus,
+  markAsInternalChangeEvent,
   observeAttributes,
   raf,
   scrollIntoView,
   trackFormControl,
 } from "@zag-js/dom-query"
+import { getInteractionModality, setInteractionModality, trackFocusVisible } from "@zag-js/focus-visible"
 import { getPlacement, type Placement } from "@zag-js/popper"
 import { addOrRemove, isEqual } from "@zag-js/utils"
 import { collection } from "./select.collection"
@@ -290,7 +292,7 @@ export const machine = createMachine<SelectSchema>({
     open: {
       tags: ["open"],
       exit: ["scrollContentToTop"],
-      effects: ["trackDismissableElement", "computePlacement", "scrollToHighlightedItem"],
+      effects: ["trackDismissableElement", "trackFocusVisible", "computePlacement", "scrollToHighlightedItem"],
       on: {
         "CONTROLLED.CLOSE": [
           {
@@ -409,6 +411,9 @@ export const machine = createMachine<SelectSchema>({
     },
 
     effects: {
+      trackFocusVisible({ scope }) {
+        return trackFocusVisible({ root: scope.getRootNode?.() })
+      },
       trackFormControlState({ context, scope }) {
         return trackFormControl(dom.getHiddenSelectEl(scope), {
           onFieldsetDisabledChange(disabled) {
@@ -454,13 +459,14 @@ export const machine = createMachine<SelectSchema>({
         })
       },
 
-      scrollToHighlightedItem({ context, prop, scope, event }) {
+      scrollToHighlightedItem({ context, prop, scope }) {
         const exec = (immediate: boolean) => {
           const highlightedValue = context.get("highlightedValue")
           if (highlightedValue == null) return
 
-          // don't scroll into view if we're using the pointer
-          if (event.current().type.includes("POINTER")) return
+          // don't scroll into view if we're using the pointer (or null when focus-trap autofocuses)
+          const modality = getInteractionModality()
+          if (modality === "pointer") return
 
           const contentEl = dom.getContentEl(scope)
 
@@ -479,7 +485,10 @@ export const machine = createMachine<SelectSchema>({
           scrollIntoView(itemEl, { rootEl: contentEl, block: "nearest" })
         }
 
-        raf(() => exec(true))
+        raf(() => {
+          setInteractionModality("virtual")
+          exec(true)
+        })
 
         const contentEl = () => dom.getContentEl(scope)
         return observeAttributes(contentEl, {
@@ -733,8 +742,8 @@ export const machine = createMachine<SelectSchema>({
           const node = dom.getHiddenSelectEl(scope)
           if (!node) return
           const win = scope.getWin()
-          const changeEvent = new win.Event("change", { bubbles: true, composed: true })
-          node.dispatchEvent(changeEvent)
+          const evt = new win.Event("change", { bubbles: true, composed: true })
+          node.dispatchEvent(markAsInternalChangeEvent(evt))
         })
       },
     },

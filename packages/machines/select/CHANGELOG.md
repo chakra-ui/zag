@@ -1,5 +1,52 @@
 # @zag-js/select
 
+## 1.34.0
+
+### Patch Changes
+
+- [`11c3a5c`](https://github.com/chakra-ui/zag/commit/11c3a5c6786ba5bc1766b7e4c82fe3eb71165f5d) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - - Added `autoComplete` prop for browser autofill hints (e.g.
+  "address-level1" for state fields)
+  - Fix issue where autofill does not update value when the hidden select value changes
+- Updated dependencies [[`a20094f`](https://github.com/chakra-ui/zag/commit/a20094f6816a8a7899c82f7c866c632bb922b53c)]:
+  - @zag-js/popper@1.34.0
+  - @zag-js/anatomy@1.34.0
+  - @zag-js/core@1.34.0
+  - @zag-js/types@1.34.0
+  - @zag-js/collection@1.34.0
+  - @zag-js/utils@1.34.0
+  - @zag-js/dismissable@1.34.0
+  - @zag-js/dom-query@1.34.0
+  - @zag-js/focus-visible@1.34.0
+
+## 1.33.1
+
+### Patch Changes
+
+- Updated dependencies [[`9817e4c`](https://github.com/chakra-ui/zag/commit/9817e4cb3b18d93408b95e7c827d35801b01a267)]:
+  - @zag-js/dismissable@1.33.1
+  - @zag-js/anatomy@1.33.1
+  - @zag-js/core@1.33.1
+  - @zag-js/types@1.33.1
+  - @zag-js/collection@1.33.1
+  - @zag-js/utils@1.33.1
+  - @zag-js/dom-query@1.33.1
+  - @zag-js/popper@1.33.1
+
+## 1.33.0
+
+### Patch Changes
+
+- Updated dependencies [[`a908644`](https://github.com/chakra-ui/zag/commit/a9086445116a272c7ac7b761fec3873c43c41a96)]:
+  - @zag-js/collection@1.33.0
+  - @zag-js/anatomy@1.33.0
+  - @zag-js/core@1.33.0
+  - @zag-js/types@1.33.0
+  - @zag-js/utils@1.33.0
+  - @zag-js/dismissable@1.33.0
+  - @zag-js/dom-query@1.33.0
+  - @zag-js/popper@1.33.0
+
 ## 1.32.0
 
 ### Patch Changes

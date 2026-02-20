@@ -32,7 +32,6 @@ const api = computed(() => datePicker.connect(service, normalizeProps))
 
     <div v-bind="api.getControlProps()">
       <input v-bind="api.getInputProps()" />
-      <input v-bind="api.getInputProps()" />
       <button v-bind="api.getClearTriggerProps()">❌</button>
       <button v-bind="api.getTriggerProps()">🗓</button>
     </div>

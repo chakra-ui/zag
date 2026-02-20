@@ -1,5 +1,48 @@
 # @zag-js/listbox
 
+## 1.34.0
+
+### Patch Changes
+
+- [#2965](https://github.com/chakra-ui/zag/pull/2965)
+  [`deb145a`](https://github.com/chakra-ui/zag/commit/deb145aacb8ee0a7d1488e829f35d28df94af203) Thanks
+  [@anubra266](https://github.com/anubra266)! - Fix listbox dom ids.
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.34.0
+  - @zag-js/core@1.34.0
+  - @zag-js/types@1.34.0
+  - @zag-js/collection@1.34.0
+  - @zag-js/utils@1.34.0
+  - @zag-js/dom-query@1.34.0
+  - @zag-js/focus-visible@1.34.0
+
+## 1.33.1
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.33.1
+  - @zag-js/core@1.33.1
+  - @zag-js/types@1.33.1
+  - @zag-js/collection@1.33.1
+  - @zag-js/utils@1.33.1
+  - @zag-js/dom-query@1.33.1
+  - @zag-js/focus-visible@1.33.1
+
+## 1.33.0
+
+### Patch Changes
+
+- Updated dependencies [[`a908644`](https://github.com/chakra-ui/zag/commit/a9086445116a272c7ac7b761fec3873c43c41a96)]:
+  - @zag-js/collection@1.33.0
+  - @zag-js/anatomy@1.33.0
+  - @zag-js/core@1.33.0
+  - @zag-js/types@1.33.0
+  - @zag-js/utils@1.33.0
+  - @zag-js/dom-query@1.33.0
+  - @zag-js/focus-visible@1.33.0
+
 ## 1.32.0
 
 ### Patch Changes

@@ -1,14 +1,13 @@
 import { ThemeProvider } from "next-themes"
 import { type Metadata } from "next"
-import { Inter } from "next/font/google"
+import { Wix_Madefor_Text } from "next/font/google"
 import siteConfig from "site.config"
 import "../styles/index.css"
-import "../styles/machines/index.css"
 import "../styles/prism.css"
 
-const inter = Inter({
+const wixMadeforText = Wix_Madefor_Text({
   subsets: ["latin"],
-  variable: "--font-inter",
+  variable: "--font-body",
 })
 
 export const metadata: Metadata = {
@@ -71,7 +70,11 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="en" suppressHydrationWarning className={inter.variable}>
+    <html
+      lang="en"
+      suppressHydrationWarning
+      className={wixMadeforText.variable}
+    >
       <head>
         {process.env.NODE_ENV === "production" && (
           <script
@@ -83,7 +86,12 @@ export default function RootLayout({
         )}
       </head>
       <body suppressHydrationWarning>
-        <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="system"
+          enableSystem
+          disableTransitionOnChange
+        >
           {children}
         </ThemeProvider>
       </body>

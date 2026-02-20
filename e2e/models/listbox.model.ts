@@ -61,7 +61,8 @@ export class ListboxModel extends Model {
     return expect(this.content.locator(`[data-selected]`).all()).toHaveLength(0)
   }
 
-  seeItemInViewport(value: string) {
-    return isInViewport(this.content, this.getItem(value))
+  seeItemInViewport = async (text: string) => {
+    const item = this.getItem(text)
+    expect(await isInViewport(this.content, item)).toBe(true)
   }
 }

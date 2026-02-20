@@ -1,5 +1,48 @@
 # @zag-js/scroll-area
 
+## 1.34.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.34.0
+  - @zag-js/core@1.34.0
+  - @zag-js/types@1.34.0
+  - @zag-js/utils@1.34.0
+  - @zag-js/dom-query@1.34.0
+
+## 1.33.1
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.33.1
+  - @zag-js/core@1.33.1
+  - @zag-js/types@1.33.1
+  - @zag-js/utils@1.33.1
+  - @zag-js/dom-query@1.33.1
+
+## 1.33.0
+
+### Minor Changes
+
+- [`5d8f638`](https://github.com/chakra-ui/zag/commit/5d8f638ac85bc8957720647e76aac5d016e8cb58) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Add overflow CSS variables to the viewport element for creating
+  scroll fade effects:
+  - `--scroll-area-overflow-x-start`: Distance from horizontal start edge in pixels
+  - `--scroll-area-overflow-x-end`: Distance from horizontal end edge in pixels
+  - `--scroll-area-overflow-y-start`: Distance from vertical start edge in pixels
+  - `--scroll-area-overflow-y-end`: Distance from vertical end edge in pixels
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.33.0
+  - @zag-js/core@1.33.0
+  - @zag-js/types@1.33.0
+  - @zag-js/utils@1.33.0
+  - @zag-js/dom-query@1.33.0
+
 ## 1.32.0
 
 ### Patch Changes

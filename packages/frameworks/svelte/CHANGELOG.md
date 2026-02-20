@@ -1,5 +1,36 @@
 # @zag-js/svelte
 
+## 1.34.0
+
+### Patch Changes
+
+- [`7ba2e80`](https://github.com/chakra-ui/zag/commit/7ba2e8094ce766f0d807284dd04b92f082f8d673) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix `state_unsafe_mutation` warning that occurs due to state
+  transition during component teardown.
+
+- Updated dependencies []:
+  - @zag-js/core@1.34.0
+  - @zag-js/types@1.34.0
+  - @zag-js/utils@1.34.0
+
+## 1.33.1
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/core@1.33.1
+  - @zag-js/types@1.33.1
+  - @zag-js/utils@1.33.1
+
+## 1.33.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/core@1.33.0
+  - @zag-js/types@1.33.0
+  - @zag-js/utils@1.33.0
+
 ## 1.32.0
 
 ### Patch Changes

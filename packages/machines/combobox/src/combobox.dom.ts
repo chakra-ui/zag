@@ -1,5 +1,5 @@
 import type { Scope } from "@zag-js/core"
-import { query } from "@zag-js/dom-query"
+import { query, setCaretToEnd } from "@zag-js/dom-query"
 
 export const getRootId = (ctx: Scope) => ctx.ids?.root ?? `combobox:${ctx.id}`
 export const getLabelId = (ctx: Scope) => ctx.ids?.label ?? `combobox:${ctx.id}:label`
@@ -29,8 +29,10 @@ export const getItemEl = (ctx: Scope, value: string | null) => {
 
 export const focusInputEl = (ctx: Scope) => {
   const inputEl = getInputEl(ctx)
-  if (ctx.isActiveElement(inputEl)) return
-  inputEl?.focus({ preventScroll: true })
+  if (!ctx.isActiveElement(inputEl)) {
+    inputEl?.focus({ preventScroll: true })
+  }
+  setCaretToEnd(inputEl)
 }
 export const focusTriggerEl = (ctx: Scope) => {
   const triggerEl = getTriggerEl(ctx)

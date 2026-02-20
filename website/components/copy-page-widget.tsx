@@ -4,7 +4,7 @@ import * as menu from "@zag-js/menu"
 import { normalizeProps, Portal, useMachine } from "@zag-js/react"
 import { Icon } from "components/ui/icon"
 import type { JSX } from "react"
-import { useId, useState } from "react"
+import { useState } from "react"
 import { FaMarkdown } from "react-icons/fa"
 import { HiChevronDown, HiExternalLink } from "react-icons/hi"
 import { LuCopy, LuCopyCheck } from "react-icons/lu"
@@ -72,8 +72,10 @@ type MenuItem = {
 }
 
 const ActionMenu = ({ slug, title }: { slug: string; title?: string }) => {
+  // Use a stable ID based on slug to avoid hydration mismatch
+  const stableId = `action-menu-${slug.replace(/[^a-z0-9]/gi, "-")}`
   const service = useMachine(menu.machine, {
-    id: useId(),
+    id: stableId,
     positioning: {
       placement: "bottom-end",
     },

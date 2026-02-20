@@ -2,81 +2,116 @@ import { readFileSync } from "fs"
 import { join } from "path"
 import { normalizeComponentName } from "./normalize"
 
-const baseStyle = `@layer reset, base, tokens, recipes, utilities;
-
-@layer reset {
-  * {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen,
-      Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
-  }
-
-  *,
-  *::before,
-  *::after {
-    border: 0;
-    border-style: solid;
-    border-color: var(--colors-border-subtle);
-  }
+const baseStyle = `* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen,
+    Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
 }
 
-@layer tokens {
-  html {
-    --colors-bg-subtle: #ffffff;
-    --colors-bg-bold: #edf2f7;
-    --colors-bg-primary-subtle: #38a169;
-    --colors-bg-primary-bold: #2f855a;
-    --colors-bg-secondary-subtle: #000000;
-    --colors-bg-secondary-bold: #2d3748;
-    --colors-bg-tertiary-bold: #c6f6d5;
-    --colors-bg-tertiary-subtle: #f0fff4;
-    --colors-bg-code-block: hsl(230, 1%, 98%);
-    --colors-bg-code-inline: rgba(0, 0, 0, 0.04);
-    --colors-bg-header: rgba(255, 255, 255, 0.92);
-    --colors-bg-badge: #feebc8;
-    --colors-text-bold: #171923;
-    --colors-text-subtle: #4a5568;
-    --colors-text-primary-bold: #38a169;
-    --colors-text-inverse: #ffffff;
-    --colors-text-primary-subtle: #2f855a;
-    --colors-text-badge: #c05621;
-    --colors-border-subtle: #edf2f7;
-    --colors-border-bold: #e2e8f0;
-    --colors-border-primary-subtle: #38a169;
-    --colors-border-primary-bold: #2f855a;
-  }
+*,
+*::before,
+*::after {
+  border: 0;
+  border-style: solid;
+  border-color: var(--colors-border);
 }
 
-@layer base {
-  body {
-    padding: 24px;
-    background-color: var(--colors-bg-code-block);
-    min-height: 100dvh;
-  }
+:root {
+  /* Gray palette */
+  --colors-gray-50: #fafafa;
+  --colors-gray-100: #f4f4f5;
+  --colors-gray-200: #e4e4e7;
+  --colors-gray-300: #d4d4d8;
+  --colors-gray-400: #a1a1aa;
+  --colors-gray-500: #71717a;
+  --colors-gray-600: #52525b;
+  --colors-gray-700: #3f3f46;
+  --colors-gray-800: #27272a;
+  --colors-gray-900: #18181b;
+  --colors-gray-950: #09090b;
 
-  #root {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-  }
+  /* Green palette */
+  --colors-green-50: #F0FFF4;
+  --colors-green-100: #C6F6D5;
+  --colors-green-200: #9AE6B4;
+  --colors-green-300: #68D391;
+  --colors-green-400: #48BB78;
+  --colors-green-500: #38A169;
+  --colors-green-600: #2F855A;
+  --colors-green-700: #276749;
+  --colors-green-800: #22543D;
+  --colors-green-900: #1C4532;
+
+  /* Background semantic tokens */
+  --colors-bg: white;
+  --colors-bg-subtle: white;
+  --colors-bg-bold: var(--colors-gray-100);
+  --colors-bg-muted: var(--colors-gray-100);
+  --colors-bg-popover: white;
+  --colors-bg-primary-subtle: var(--colors-green-500);
+  --colors-bg-primary-bold: var(--colors-green-600);
+  --colors-bg-secondary-subtle: black;
+  --colors-bg-secondary-bold: var(--colors-gray-700);
+  --colors-bg-tertiary-bold: var(--colors-green-100);
+  --colors-bg-tertiary-subtle: var(--colors-green-50);
+  --colors-bg-code-block: var(--colors-gray-50);
+  --colors-bg-code-inline: rgba(0, 0, 0, 0.06);
+
+  /* Text semantic tokens */
+  --colors-text: var(--colors-gray-900);
+  --colors-text-bold: var(--colors-gray-950);
+  --colors-text-subtle: var(--colors-gray-600);
+  --colors-text-muted: var(--colors-gray-500);
+  --colors-text-inverse: white;
+  --colors-text-primary-bold: var(--colors-green-600);
+  --colors-text-primary-subtle: var(--colors-green-700);
+
+  /* Border semantic tokens */
+  --colors-border: var(--colors-gray-200);
+  --colors-border-subtle: var(--colors-gray-100);
+  --colors-border-bold: var(--colors-gray-300);
+  --colors-border-primary-subtle: var(--colors-green-500);
+  --colors-border-primary-bold: var(--colors-green-600);
+
+  /* Shadow semantic tokens */
+  --colors-shadow: rgba(0, 0, 0, 0.24);
+}
+
+body {
+  padding: 24px;
+  background-color: var(--colors-bg-code-block);
+  min-height: 100dvh;
+}
+
+#root {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
 }
 `
 
 export async function getComponentStyle(component: string) {
   const cssName = normalizeComponentName(component)
-  const filePath = join(process.cwd(), "styles", "machines", `${cssName}.css`)
-  const code = readFileSync(filePath, "utf-8")
-  return [baseStyle, code].join("\n")
+  const filePath = join(
+    process.cwd(),
+    "styles",
+    "machines",
+    `${cssName}.module.css`,
+  )
+  const moduleStyle = readFileSync(filePath, "utf-8")
+  return { baseStyle, moduleStyle }
 }
 
 export async function getComponentCode(component: string) {
   const filePath = join(process.cwd(), "demos", `${component}.tsx`)
-  return readFileSync(filePath, "utf-8").replace(
-    "export function",
-    "export default function",
-  )
+  return readFileSync(filePath, "utf-8")
+    .replace(
+      /import styles from ["']\.\.\/styles\/machines\/[\w-]+\.module\.css["']/,
+      'import styles from "./styles.module.css"',
+    )
+    .replace("export function", "export default function")
 }
 
 const toCamelCase = (str: string) =>
@@ -92,10 +127,12 @@ export async function getComponentDemo(component: string, defaultProps: any) {
     .join(" ")
   const jsxName = toComponentName(component)
   const usage = `<${jsxName} ${propString} />`
+  const { baseStyle: base, moduleStyle } = await getComponentStyle(component)
 
   return {
     jsxName,
-    style: await getComponentStyle(component),
+    baseStyle: base,
+    moduleStyle,
     code: await getComponentCode(component),
     usage,
   }

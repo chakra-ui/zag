@@ -1,7 +1,7 @@
 import { Section } from "components/ui/section"
 import { DiGithubBadge } from "react-icons/di"
-import { IoLogoLinkedin, IoLogoTwitter } from "react-icons/io"
-import { MdEmail } from "react-icons/md"
+import { FaDiscord } from "react-icons/fa"
+import { IoLogoTwitter } from "react-icons/io"
 import siteConfig from "site.config"
 import { Stack } from "styled-system/jsx"
 import { FooterLink, type FooterLinkProps } from "./footer-link"
@@ -9,23 +9,18 @@ import { FooterLink, type FooterLinkProps } from "./footer-link"
 const links: FooterLinkProps[] = [
   {
     icon: <DiGithubBadge size={40} />,
-    label: "Go to Segun's GitHub",
-    href: siteConfig.author.github,
+    label: "Zag.js on GitHub",
+    href: siteConfig.repo.url,
   },
   {
     icon: <IoLogoTwitter size={20} />,
-    label: "Go to Segun's Twitter",
-    href: siteConfig.author.twitter,
+    label: "Zag.js on Twitter",
+    href: "https://twitter.com/zag_js",
   },
   {
-    icon: <IoLogoLinkedin size={20} />,
-    label: "Go to Segun's LinkedIn",
-    href: siteConfig.author.linkedin,
-  },
-  {
-    icon: <MdEmail size={20} />,
-    label: "Send email to Segun",
-    href: `mailto:${siteConfig.author.email}`,
+    icon: <FaDiscord size={20} />,
+    label: "Join the Discord server",
+    href: siteConfig.discord.url,
   },
 ]
 

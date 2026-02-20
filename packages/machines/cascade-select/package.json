@@ -1,0 +1,52 @@
+{
+  "name": "@zag-js/cascade-select",
+  "version": "1.34.0",
+  "description": "Core logic for the cascade-select widget implemented as a state machine",
+  "keywords": [
+    "js",
+    "machine",
+    "xstate",
+    "statechart",
+    "component",
+    "chakra ui",
+    "cascade-select"
+  ],
+  "author": "Abraham Aremu <anubra266@gmail.com>",
+  "homepage": "https://github.com/chakra-ui/zag#readme",
+  "license": "MIT",
+  "repository": "https://github.com/chakra-ui/zag/tree/main/packages/machines/cascade-select",
+  "sideEffects": false,
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsup",
+    "lint": "eslint src",
+    "typecheck": "tsc --noEmit",
+    "prepack": "clean-package",
+    "postpack": "clean-package restore"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "bugs": {
+    "url": "https://github.com/chakra-ui/zag/issues"
+  },
+  "dependencies": {
+    "@zag-js/anatomy": "workspace:*",
+    "@zag-js/collection": "workspace:*",
+    "@zag-js/core": "workspace:*",
+    "@zag-js/dismissable": "workspace:*",
+    "@zag-js/dom-query": "workspace:*",
+    "@zag-js/focus-visible": "workspace:*",
+    "@zag-js/popper": "workspace:*",
+    "@zag-js/rect-utils": "workspace:*",
+    "@zag-js/types": "workspace:*",
+    "@zag-js/utils": "workspace:*"
+  },
+  "devDependencies": {
+    "clean-package": "2.2.0"
+  },
+  "clean-package": "../../../clean-package.config.json",
+  "main": "src/index.ts"
+}

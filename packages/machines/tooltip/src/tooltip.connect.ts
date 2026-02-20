@@ -128,11 +128,16 @@ export function connect<P extends PropTypes>(
     },
 
     getContentProps() {
+      const isCurrentTooltip = store.get("id") === id
+      const isPrevTooltip = store.get("prevId") === id
+      const instant = store.get("instant") && ((open && isCurrentTooltip) || isPrevTooltip)
+
       return normalize.element({
         ...parts.content.attrs,
         dir: prop("dir"),
         hidden: !open,
         "data-state": open ? "open" : "closed",
+        "data-instant": dataAttr(instant),
         role: hasAriaLabel ? undefined : "tooltip",
         id: hasAriaLabel ? undefined : contentId,
         "data-placement": context.get("currentPlacement"),

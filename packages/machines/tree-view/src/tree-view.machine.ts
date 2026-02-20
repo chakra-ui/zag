@@ -362,7 +362,8 @@ export const machine = createMachine<TreeViewSchema>({
       focusTreeFirstNode(params) {
         const { prop, scope } = params
         const collection = prop("collection")
-        const firstNode = collection.getFirstNode()
+        const firstNode = collection.getFirstNode(undefined, { skip: skipFn(params) })
+        if (!firstNode) return
         const firstValue = collection.getNodeValue(firstNode)
         const scrolled = scrollToNode(params, firstValue)
         if (scrolled) raf(() => dom.focusNode(scope, firstValue))
@@ -381,7 +382,8 @@ export const machine = createMachine<TreeViewSchema>({
         const { event, prop, scope } = params
         const collection = prop("collection")
         const branchNode = collection.findNode(event.id)
-        const firstNode = collection.getFirstNode(branchNode)
+        const firstNode = collection.getFirstNode(branchNode, { skip: skipFn(params) })
+        if (!firstNode) return
         const firstValue = collection.getNodeValue(firstNode)
         const scrolled = scrollToNode(params, firstValue)
         if (scrolled) raf(() => dom.focusNode(scope, firstValue))

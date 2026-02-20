@@ -3,6 +3,7 @@ import { createSplitProps } from "@zag-js/utils"
 import type { ItemGroupLabelProps, ItemGroupProps, ItemProps, SelectProps } from "./select.types"
 
 export const props = createProps<SelectProps>()([
+  "autoComplete",
   "closeOnSelect",
   "collection",
   "composite",

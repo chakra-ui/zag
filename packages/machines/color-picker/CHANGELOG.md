@@ -1,5 +1,53 @@
 # @zag-js/color-picker
 
+## 1.34.0
+
+### Patch Changes
+
+- Updated dependencies [[`a20094f`](https://github.com/chakra-ui/zag/commit/a20094f6816a8a7899c82f7c866c632bb922b53c)]:
+  - @zag-js/popper@1.34.0
+  - @zag-js/anatomy@1.34.0
+  - @zag-js/core@1.34.0
+  - @zag-js/types@1.34.0
+  - @zag-js/color-utils@1.34.0
+  - @zag-js/utils@1.34.0
+  - @zag-js/dismissable@1.34.0
+  - @zag-js/dom-query@1.34.0
+
+## 1.33.1
+
+### Patch Changes
+
+- Updated dependencies [[`9817e4c`](https://github.com/chakra-ui/zag/commit/9817e4cb3b18d93408b95e7c827d35801b01a267)]:
+  - @zag-js/dismissable@1.33.1
+  - @zag-js/anatomy@1.33.1
+  - @zag-js/core@1.33.1
+  - @zag-js/types@1.33.1
+  - @zag-js/color-utils@1.33.1
+  - @zag-js/utils@1.33.1
+  - @zag-js/dom-query@1.33.1
+  - @zag-js/popper@1.33.1
+
+## 1.33.0
+
+### Patch Changes
+
+- [`9038836`](https://github.com/chakra-ui/zag/commit/9038836103dbdb695036ddbfbcaafd7251b0a909) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix color not updating in controlled mode when selecting black
+  shades.
+  - Fixed equality check to compare actual channel values instead of CSS string output
+  - Auto-detect `defaultFormat` from initial color value instead of hardcoding `"rgba"`
+
+- Updated dependencies [[`9038836`](https://github.com/chakra-ui/zag/commit/9038836103dbdb695036ddbfbcaafd7251b0a909)]:
+  - @zag-js/color-utils@1.33.0
+  - @zag-js/anatomy@1.33.0
+  - @zag-js/core@1.33.0
+  - @zag-js/types@1.33.0
+  - @zag-js/utils@1.33.0
+  - @zag-js/dismissable@1.33.0
+  - @zag-js/dom-query@1.33.0
+  - @zag-js/popper@1.33.0
+
 ## 1.32.0
 
 ### Patch Changes

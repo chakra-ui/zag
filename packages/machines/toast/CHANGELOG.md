@@ -1,5 +1,49 @@
 # @zag-js/toast
 
+## 1.34.0
+
+### Patch Changes
+
+- [`b8da95e`](https://github.com/chakra-ui/zag/commit/b8da95ed7fb99a3563277445619b8ee9e1358a5a) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix TypeScript compilation errors when building projects that use
+  `@zag-js/toast`.
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.34.0
+  - @zag-js/core@1.34.0
+  - @zag-js/types@1.34.0
+  - @zag-js/utils@1.34.0
+  - @zag-js/dismissable@1.34.0
+  - @zag-js/dom-query@1.34.0
+
+## 1.33.1
+
+### Patch Changes
+
+- Updated dependencies [[`9817e4c`](https://github.com/chakra-ui/zag/commit/9817e4cb3b18d93408b95e7c827d35801b01a267)]:
+  - @zag-js/dismissable@1.33.1
+  - @zag-js/anatomy@1.33.1
+  - @zag-js/core@1.33.1
+  - @zag-js/types@1.33.1
+  - @zag-js/utils@1.33.1
+  - @zag-js/dom-query@1.33.1
+
+## 1.33.0
+
+### Patch Changes
+
+- [`02ad5f7`](https://github.com/chakra-ui/zag/commit/02ad5f7d15fd5240b60de7f9acb69bf27c1ba330) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix issue where toasts created before the state machine connects
+  are not shown
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.33.0
+  - @zag-js/core@1.33.0
+  - @zag-js/types@1.33.0
+  - @zag-js/utils@1.33.0
+  - @zag-js/dismissable@1.33.0
+  - @zag-js/dom-query@1.33.0
+
 ## 1.32.0
 
 ### Patch Changes

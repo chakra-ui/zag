@@ -1,7 +1,10 @@
+"use client"
+
 import { GithubIcon, HeartIcon } from "components/icons"
 import { ThemeToggle } from "components/theme-toggle"
-import { FaDiscord } from "react-icons/fa"
+import Link from "next/link"
 import siteConfig from "site.config"
+import { css } from "styled-system/css"
 import { Box, Flex, HStack } from "styled-system/jsx"
 import { IconLink } from "./icon-link"
 import { LogoWithLink } from "./logo"
@@ -11,7 +14,7 @@ import { VersionSelector } from "./version-selector"
 export function TopNavigation() {
   return (
     <Box
-      bg="bg.header"
+      bg="bg.subtle"
       backdropFilter="auto"
       backdropBlur="sm"
       position="sticky"
@@ -36,17 +39,26 @@ export function TopNavigation() {
           <VersionSelector />
         </HStack>
         <HStack gap="4">
-          <nav hidden>
+          <nav>
             <HStack
               as="ul"
-              gap="8"
+              gap="6"
               listStyleType="none"
-              fontWeight="semibold"
+              fontWeight="medium"
               fontSize="sm"
+              display={{ base: "none", md: "flex" }}
             >
-              <li>Tutorials</li>
-              <li>API</li>
-              <li>Components</li>
+              <li>
+                <Link
+                  href="/showcase"
+                  className={css({
+                    color: "fg.muted",
+                    _hover: { color: "fg" },
+                  })}
+                >
+                  Showcase
+                </Link>
+              </li>
             </HStack>
           </nav>
           <HStack gap="4">
@@ -60,11 +72,6 @@ export function TopNavigation() {
               href={siteConfig.repo.url}
               icon={GithubIcon}
               label="View Zag.js on Github"
-            />
-            <IconLink
-              href={siteConfig.discord.url}
-              icon={FaDiscord}
-              label="Join the Discord server"
             />
             <ThemeToggle />
             <MobileNavigation />

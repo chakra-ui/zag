@@ -1,4 +1,5 @@
-import { VanillaMachine } from "@zag-js/vanilla"
+import { spreadProps, VanillaMachine } from "@zag-js/vanilla"
+import type { Attrs } from "@zag-js/vanilla"
 
 interface ComponentInterface<Api> {
   rootEl: HTMLElement
@@ -40,6 +41,14 @@ export abstract class Component<Props, Api> implements ComponentInterface<Api> {
 
   destroy = () => {
     this.machine.stop()
+  }
+
+  spreadProps = (node: HTMLElement, attrs: Attrs) => {
+    spreadProps(node, attrs, this.machine.scope.id)
+  }
+
+  updateProps = (newProps: Partial<Props>) => {
+    this.machine.updateProps(newProps)
   }
 
   abstract render(): void

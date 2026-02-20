@@ -1,8 +1,141 @@
 import type { Params } from "@zag-js/core"
 import { clampValue, getNextStepValue, getPreviousStepValue, getValueRanges, snapValueToStep } from "@zag-js/utils"
-import type { SliderSchema } from "./slider.types"
+import type { SliderSchema, ThumbCollisionBehavior } from "./slider.types"
 
 type Ctx = Params<SliderSchema>
+
+interface ThumbCollisionContext {
+  behavior: ThumbCollisionBehavior
+  index: number
+  value: number
+  values: number[]
+  min: number
+  max: number
+  gap: number
+}
+
+interface ThumbCollisionResult {
+  values: number[]
+  index: number
+  swapped: boolean
+}
+
+function getThumbBounds(ctx: ThumbCollisionContext) {
+  const { index, values, min, max, gap } = ctx
+  const prevThumb = values[index - 1]
+  const nextThumb = values[index + 1]
+  return {
+    min: prevThumb != null ? prevThumb + gap : min,
+    max: nextThumb != null ? nextThumb - gap : max,
+  }
+}
+
+function round(value: number) {
+  return Math.round(value * 1e10) / 1e10
+}
+
+function handleNone(ctx: ThumbCollisionContext): ThumbCollisionResult {
+  const { index, value, values } = ctx
+  const bounds = getThumbBounds(ctx)
+  const nextValues = values.slice()
+  nextValues[index] = round(clampValue(value, bounds.min, bounds.max))
+  return { values: nextValues, index, swapped: false }
+}
+
+function handlePush(ctx: ThumbCollisionContext): ThumbCollisionResult {
+  const { index, value, values, min, max, gap } = ctx
+  const nextValues = values.slice()
+
+  // clamp the dragged thumb within absolute bounds (accounting for other thumbs' space)
+  const absoluteMin = min + index * gap
+  const absoluteMax = max - (values.length - 1 - index) * gap
+  nextValues[index] = round(clampValue(value, absoluteMin, absoluteMax))
+
+  // push thumbs to the right if they overlap
+  for (let i = index + 1; i < values.length; i++) {
+    const minAllowed = nextValues[i - 1] + gap
+    if (nextValues[i] < minAllowed) {
+      nextValues[i] = round(minAllowed)
+    }
+  }
+
+  // push thumbs to the left if they overlap
+  for (let i = index - 1; i >= 0; i--) {
+    const maxAllowed = nextValues[i + 1] - gap
+    if (nextValues[i] > maxAllowed) {
+      nextValues[i] = round(maxAllowed)
+    }
+  }
+
+  return { values: nextValues, index, swapped: false }
+}
+
+function handleSwap(ctx: ThumbCollisionContext, startValue: number): ThumbCollisionResult {
+  const { index, value, values, gap } = ctx
+
+  const prevThumb = values[index - 1]
+  const nextThumb = values[index + 1]
+
+  // check if we're crossing over a neighbor
+  const crossingNext = nextThumb != null && value >= nextThumb && value > startValue
+  const crossingPrev = prevThumb != null && value <= prevThumb && value < startValue
+
+  if (!crossingNext && !crossingPrev) {
+    // no swap needed, just clamp within bounds
+    return handleNone(ctx)
+  }
+
+  // determine which thumb we're swapping with
+  const swapIndex = crossingNext ? index + 1 : index - 1
+  const nextValues = values.slice()
+
+  // the dragged thumb takes the neighbor's position (clamped)
+  const newCtx = { ...ctx, index: swapIndex }
+  const bounds = getThumbBounds(newCtx)
+  nextValues[swapIndex] = round(clampValue(value, bounds.min, bounds.max))
+
+  // the neighbor thumb stays at its current position (becomes the "other" thumb)
+  nextValues[index] = values[swapIndex]
+
+  // ensure proper ordering after swap
+  if (crossingNext && nextValues[index] > nextValues[swapIndex] - gap) {
+    nextValues[index] = round(nextValues[swapIndex] - gap)
+  } else if (crossingPrev && nextValues[index] < nextValues[swapIndex] + gap) {
+    nextValues[index] = round(nextValues[swapIndex] + gap)
+  }
+
+  return { values: nextValues, index: swapIndex, swapped: true }
+}
+
+export function resolveThumbCollision(
+  behavior: ThumbCollisionBehavior,
+  index: number,
+  value: number,
+  values: number[],
+  min: number,
+  max: number,
+  step: number,
+  minStepsBetweenThumbs: number,
+  startValue?: number,
+): ThumbCollisionResult {
+  // single thumb - no collision possible
+  if (values.length === 1) {
+    return { values: [round(clampValue(value, min, max))], index: 0, swapped: false }
+  }
+
+  const gap = step * minStepsBetweenThumbs
+  const ctx: ThumbCollisionContext = { behavior, index, value, values, min, max, gap }
+
+  switch (behavior) {
+    case "push":
+      return handlePush(ctx)
+    case "swap":
+      return handleSwap(ctx, startValue ?? values[index])
+    case "none":
+    default:
+      return handleNone(ctx)
+  }
+}
 
 export function normalizeValues(params: Ctx, nextValues: number[]) {
   return nextValues.map((value, index) => {
@@ -53,13 +186,12 @@ export function getClosestIndex(params: Pick<Ctx, "context" | "prop">, pointValu
   const { context } = params
   const values = context.get("value")
 
-  // Find the closest thumb by distance
   let closestIndex = 0
   let minDistance = Math.abs(values[0] - pointValue)
 
   for (let i = 1; i < values.length; i++) {
     const distance = Math.abs(values[i] - pointValue)
-    // Use <= to prefer later thumbs when distances are equal
+    // use <= to prefer later thumbs when distances are equal
     if (distance <= minDistance) {
       closestIndex = i
       minDistance = distance
@@ -69,19 +201,13 @@ export function getClosestIndex(params: Pick<Ctx, "context" | "prop">, pointValu
   return selectMovableThumb(params, closestIndex)
 }
 
-/**
- * When multiple thumbs are stacked at max, select the one that can actually move.
- * At max: only the FIRST thumb can move (down/left), others are locked at the boundary.
- * At other values: all thumbs can move (in different directions), so don't switch.
- */
 export function selectMovableThumb(params: Pick<Ctx, "context" | "prop">, index: number) {
   const { context, prop } = params
   const values = context.get("value")
   const max = prop("max")
   const thumbValue = values[index]
 
-  // Only handle collision at max value
-  // At max: walk backwards to find the first thumb (only one that can move down)
+  // when multiple thumbs are stacked at max, select the first thumb (only one that can move)
   if (thumbValue === max) {
     let movableIndex = index
     while (movableIndex > 0 && values[movableIndex - 1] === max) {
@@ -90,8 +216,6 @@ export function selectMovableThumb(params: Pick<Ctx, "context" | "prop">, index:
     return movableIndex
   }
 
-  // At other values, both thumbs can move in different directions
-  // User should click the thumb corresponding to their intended direction
   return index
 }
 

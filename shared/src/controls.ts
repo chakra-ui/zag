@@ -6,6 +6,21 @@ export const accordionControls = defineControls({
   orientation: { type: "select", options: ["horizontal", "vertical"] as const, defaultValue: "vertical" },
 })
 
+export const cascadeSelectControls = defineControls({
+  disabled: { type: "boolean", defaultValue: false },
+  readOnly: { type: "boolean", defaultValue: false },
+  loopFocus: { type: "boolean", defaultValue: false },
+  multiple: { type: "boolean", defaultValue: false },
+  dir: { type: "select", options: ["ltr", "rtl"] as const, defaultValue: "ltr" },
+  closeOnSelect: { type: "boolean", defaultValue: true },
+  allowParentSelection: { type: "boolean", defaultValue: false },
+  highlightTrigger: {
+    type: "select",
+    options: ["click", "hover"] as const,
+    defaultValue: "click",
+  },
+})
+
 export const checkboxControls = defineControls({
   name: { type: "string", defaultValue: "checkbox" },
   disabled: { type: "boolean", defaultValue: false },
@@ -116,6 +131,7 @@ export const sliderControls = defineControls({
   readOnly: { type: "boolean", defaultValue: false },
   orientation: { type: "select", options: ["horizontal", "vertical"] as const, defaultValue: "horizontal" },
   thumbAlignment: { type: "select", options: ["contain", "center"] as const, defaultValue: "contain" },
+  thumbCollisionBehavior: { type: "select", options: ["none", "push", "swap"] as const, defaultValue: "none" },
   dir: { type: "select", options: ["ltr", "rtl"] as const, defaultValue: "ltr" },
   origin: { type: "select", options: ["center", "start", "end"] as const, defaultValue: "start" },
   min: { type: "number", defaultValue: 0 },
@@ -192,6 +208,7 @@ export const datePickerControls = defineControls({
   dir: { type: "select", options: ["ltr", "rtl"] as const, defaultValue: "ltr" },
   startOfWeek: { type: "number", defaultValue: 0 },
   fixedWeeks: { type: "boolean", defaultValue: false },
+  openOnClick: { type: "boolean", defaultValue: false },
   locale: {
     type: "select",
     options: ["en-US", "en-GB", "fr-FR", "de-DE", "ja-JP", "mk-MK", "zh-CN"] as const,
@@ -312,6 +329,7 @@ export const angleSliderControls = defineControls({
   disabled: { type: "boolean", defaultValue: false },
   readOnly: { type: "boolean", defaultValue: false },
   step: { type: "number", defaultValue: 1 },
+  dir: { type: "select", options: ["ltr", "rtl"] as const, defaultValue: "ltr" },
 })
 
 export const navigationMenuControls = defineControls({
@@ -326,10 +344,12 @@ export const passwordInputControls = defineControls({
   ignorePasswordManagers: { type: "boolean", defaultValue: false },
 })
 
-export const bottomSheetControls = defineControls({
+export const drawerControls = defineControls({
   swipeVelocityThreshold: { type: "number", defaultValue: 700 },
   closeThreshold: { type: "number", defaultValue: 0.25 },
   preventDragOnScroll: { type: "boolean", defaultValue: true },
+  swipeDirection: { type: "select", options: ["down", "up", "left", "right"] as const, defaultValue: "down" },
+  snapToSequentialPoints: { type: "boolean", defaultValue: false },
 })
 
 export const scrollAreaControls = defineControls({

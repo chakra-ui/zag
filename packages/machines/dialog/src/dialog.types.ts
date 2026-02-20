@@ -25,10 +25,7 @@ export type ElementIds = Partial<{
 }>
 
 export interface DialogProps
-  extends DirectionProperty,
-    CommonProperties,
-    DismissableElementHandlers,
-    PersistentElementOptions {
+  extends DirectionProperty, CommonProperties, DismissableElementHandlers, PersistentElementOptions {
   /**
    * The ids of the elements in the dialog. Useful for composition.
    */

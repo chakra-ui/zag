@@ -2,7 +2,7 @@ export interface Attrs {
   [key: string]: any
 }
 
-const prevAttrsMap = new WeakMap<Element, Attrs>()
+const prevAttrsMap = new WeakMap<Element, Map<string, Attrs>>()
 
 const assignableProps = new Set<string>(["value", "checked", "selected"])
 
@@ -32,8 +32,16 @@ const getAttributeName = (node: Element, attrName: string): string => {
   return shouldPreserveCase ? attrName : attrName.toLowerCase()
 }
 
-export function spreadProps(node: Element, attrs: Attrs): () => void {
-  const oldAttrs = prevAttrsMap.get(node) || {}
+export function spreadProps(node: Element, attrs: Attrs, machineId?: string): () => void {
+  const scopeKey = machineId || "default"
+
+  let machineMap = prevAttrsMap.get(node)
+  if (!machineMap) {
+    machineMap = new Map<string, Attrs>()
+    prevAttrsMap.set(node, machineMap)
+  }
+
+  const oldAttrs = machineMap.get(scopeKey) || {}
 
   const attrKeys = Object.keys(attrs)
 
@@ -70,8 +78,15 @@ export function spreadProps(node: Element, attrs: Attrs): () => void {
     }
 
     // Handle boolean attributes with toggleAttribute (for non-property booleans like disabled, hidden)
-    if (typeof value === "boolean") {
+    // Also skip aria- attributes to preserve their string values
+    if (typeof value === "boolean" && !attrName.includes("aria-")) {
       ;(node as HTMLElement).toggleAttribute(getAttributeName(node, attrName), value)
+      return
+    }
+
+    // Special handling for children attribute
+    if (attrName === "children") {
+      node.innerHTML = value
       return
     }
 
@@ -104,9 +119,16 @@ export function spreadProps(node: Element, attrs: Attrs): () => void {
   attrKeys.filter(onEvents).forEach(setup)
   attrKeys.filter(others).forEach(apply)
 
-  prevAttrsMap.set(node, attrs)
+  machineMap.set(scopeKey, attrs)
 
   return function cleanup() {
     attrKeys.filter(onEvents).forEach(teardown)
+    const currentMachineMap = prevAttrsMap.get(node)
+    if (currentMachineMap) {
+      currentMachineMap.delete(scopeKey)
+      if (currentMachineMap.size === 0) {
+        prevAttrsMap.delete(node)
+      }
+    }
   }
 }

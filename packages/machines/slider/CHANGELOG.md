@@ -1,5 +1,55 @@
 # @zag-js/slider
 
+## 1.34.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.34.0
+  - @zag-js/core@1.34.0
+  - @zag-js/types@1.34.0
+  - @zag-js/utils@1.34.0
+  - @zag-js/dom-query@1.34.0
+
+## 1.33.1
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.33.1
+  - @zag-js/core@1.33.1
+  - @zag-js/types@1.33.1
+  - @zag-js/utils@1.33.1
+  - @zag-js/dom-query@1.33.1
+
+## 1.33.0
+
+### Minor Changes
+
+- [`b29ba49`](https://github.com/chakra-ui/zag/commit/b29ba49316c17397da08e28e769658de0417f5de) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Add `thumbCollisionBehavior` prop to control how thumbs behave
+  when they collide during pointer interactions:
+  - `none` (default): Thumbs cannot move past each other; excess movement is ignored.
+  - `push`: Thumbs push each other without restoring their previous positions when dragged back.
+  - `swap`: Thumbs swap places when dragged past each other.
+
+### Patch Changes
+
+- [`14ce903`](https://github.com/chakra-ui/zag/commit/14ce903007d2a20a8dd427870474ac361e965bd8) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix pointer movement when dragging slider thumb from its edge in
+  `thumbAlignment="contain"` mode.
+
+  The value calculation now correctly accounts for thumb inset, ensuring consistent behavior when:
+  - Clicking on the track to set a value
+  - Dragging the thumb from any position (center, left edge, or right edge)
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.33.0
+  - @zag-js/core@1.33.0
+  - @zag-js/types@1.33.0
+  - @zag-js/utils@1.33.0
+  - @zag-js/dom-query@1.33.0
+
 ## 1.32.0
 
 ### Patch Changes

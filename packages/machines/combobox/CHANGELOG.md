@@ -1,5 +1,59 @@
 # @zag-js/combobox
 
+## 1.34.0
+
+### Patch Changes
+
+- [`0427c74`](https://github.com/chakra-ui/zag/commit/0427c7420b861858fa1ed8cd4ebc60aa3eea8d58) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix `aria-selected` being set on highlighted items instead of
+  selected items. This improves accessibility by allowing screen readers to correctly announce selected options.
+
+- [`6a15f96`](https://github.com/chakra-ui/zag/commit/6a15f96e70323a66fa3ac5f32ebc01bdc4be9cd8) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - - Fix `selectedItems` getting out of sync with `value` when
+  controller ignores selection in controlled mode.
+  - Fix item disabled state not accounting for root-level `disabled` prop.
+- Updated dependencies [[`a20094f`](https://github.com/chakra-ui/zag/commit/a20094f6816a8a7899c82f7c866c632bb922b53c)]:
+  - @zag-js/popper@1.34.0
+  - @zag-js/anatomy@1.34.0
+  - @zag-js/core@1.34.0
+  - @zag-js/types@1.34.0
+  - @zag-js/aria-hidden@1.34.0
+  - @zag-js/collection@1.34.0
+  - @zag-js/utils@1.34.0
+  - @zag-js/dismissable@1.34.0
+  - @zag-js/dom-query@1.34.0
+  - @zag-js/focus-visible@1.34.0
+
+## 1.33.1
+
+### Patch Changes
+
+- Updated dependencies [[`9817e4c`](https://github.com/chakra-ui/zag/commit/9817e4cb3b18d93408b95e7c827d35801b01a267)]:
+  - @zag-js/dismissable@1.33.1
+  - @zag-js/anatomy@1.33.1
+  - @zag-js/core@1.33.1
+  - @zag-js/types@1.33.1
+  - @zag-js/aria-hidden@1.33.1
+  - @zag-js/collection@1.33.1
+  - @zag-js/utils@1.33.1
+  - @zag-js/dom-query@1.33.1
+  - @zag-js/popper@1.33.1
+
+## 1.33.0
+
+### Patch Changes
+
+- Updated dependencies [[`a908644`](https://github.com/chakra-ui/zag/commit/a9086445116a272c7ac7b761fec3873c43c41a96)]:
+  - @zag-js/collection@1.33.0
+  - @zag-js/anatomy@1.33.0
+  - @zag-js/core@1.33.0
+  - @zag-js/types@1.33.0
+  - @zag-js/aria-hidden@1.33.0
+  - @zag-js/utils@1.33.0
+  - @zag-js/dismissable@1.33.0
+  - @zag-js/dom-query@1.33.0
+  - @zag-js/popper@1.33.0
+
 ## 1.32.0
 
 ### Patch Changes

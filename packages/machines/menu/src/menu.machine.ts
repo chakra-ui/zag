@@ -13,6 +13,7 @@ import {
   raf,
   scrollIntoView,
 } from "@zag-js/dom-query"
+import { getInteractionModality, setInteractionModality, trackFocusVisible } from "@zag-js/focus-visible"
 import { getPlacement, getPlacementSide, type Placement } from "@zag-js/popper"
 import { getElementPolygon, isPointInPolygon, type Point } from "@zag-js/rect-utils"
 import { isEqual } from "@zag-js/utils"
@@ -381,7 +382,7 @@ export const machine = createMachine<MenuSchema>({
 
     open: {
       tags: ["open"],
-      effects: ["trackInteractOutside", "trackPositioning", "scrollToHighlightedItem"],
+      effects: ["trackInteractOutside", "trackFocusVisible", "trackPositioning", "scrollToHighlightedItem"],
       entry: ["focusMenu", "resumePointer"],
       on: {
         "CONTROLLED.CLOSE": [
@@ -447,10 +448,10 @@ export const machine = createMachine<MenuSchema>({
         ITEM_POINTERMOVE: [
           {
             guard: not("isPointerSuspended"),
-            actions: ["setHighlightedItem", "focusMenu"],
+            actions: ["setHighlightedItem", "focusMenu", "closeSiblingMenus"],
           },
           {
-            actions: ["setLastHighlightedItem"],
+            actions: ["setLastHighlightedItem", "closeSiblingMenus"],
           },
         ],
         ITEM_POINTERLEAVE: {
@@ -486,6 +487,7 @@ export const machine = createMachine<MenuSchema>({
         },
         TRIGGER_POINTERLEAVE: {
           target: "closing",
+          actions: ["setIntentPolygon"],
         },
         ITEM_POINTERDOWN: {
           actions: ["setHighlightedItem"],
@@ -528,13 +530,13 @@ export const machine = createMachine<MenuSchema>({
       waitForOpenDelay({ send }) {
         const timer = setTimeout(() => {
           send({ type: "DELAY.OPEN" })
-        }, 100)
+        }, 200)
         return () => clearTimeout(timer)
       },
       waitForCloseDelay({ send }) {
         const timer = setTimeout(() => {
           send({ type: "DELAY.CLOSE" })
-        }, 300)
+        }, 100)
         return () => clearTimeout(timer)
       },
       waitForLongPress({ send }) {
@@ -542,6 +544,9 @@ export const machine = createMachine<MenuSchema>({
           send({ type: "LONG_PRESS.OPEN" })
         }, 700)
         return () => clearTimeout(timer)
+      },
+      trackFocusVisible({ scope }) {
+        return trackFocusVisible({ root: scope.getRootNode?.() })
       },
       trackPositioning({ context, prop, scope, refs }) {
         if (!!dom.getContextTriggerEl(scope)) return
@@ -621,16 +626,21 @@ export const machine = createMachine<MenuSchema>({
           }
         })
       },
-      scrollToHighlightedItem({ event, scope, computed }) {
+      scrollToHighlightedItem({ scope, computed }) {
         const exec = () => {
-          if (event.current().type.startsWith("ITEM_POINTER")) return
+          // don't scroll into view if we're using the pointer (or null when focus-trap autofocuses)
+          const modality = getInteractionModality()
+          if (modality === "pointer") return
 
           const itemEl = scope.getById(computed("highlightedId")!)
           const contentEl = dom.getContentEl(scope)
 
           scrollIntoView(itemEl, { rootEl: contentEl, block: "nearest" })
         }
-        raf(() => exec())
+        raf(() => {
+          setInteractionModality("virtual")
+          exec()
+        })
 
         const contentEl = () => dom.getContentEl(scope)
         return observeAttributes(contentEl, {
@@ -804,6 +814,25 @@ export const machine = createMachine<MenuSchema>({
         const children = refs.get("children")
         children[event.id] = event.value
         refs.set("children", children)
+      },
+      closeSiblingMenus({ refs, event, scope }) {
+        const target = event.target
+        if (!dom.isTriggerItem(target)) return
+        const hoveredChildId = target?.getAttribute("data-uid")
+        const children = refs.get("children")
+        for (const id in children) {
+          if (id === hoveredChildId) continue
+          const child = children[id]
+          // Don't close if pointer is within the child's intent polygon (user moving toward submenu)
+          const intentPolygon = child.context.get("intentPolygon")
+          if (intentPolygon && event.point && isPointInPolygon(intentPolygon, event.point)) {
+            continue
+          }
+          // Focus parent menu before closing to prevent focus from escaping
+          // (fixes issue where submenus with focusable elements cause parent to close)
+          dom.getContentEl(scope)?.focus({ preventScroll: true })
+          child.send({ type: "CLOSE" })
+        }
       },
       closeRootMenu({ refs }) {
         closeRootMenu({ parent: refs.get("parent") })

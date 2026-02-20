@@ -9,6 +9,12 @@ export interface StepChangeDetails {
   step: number
 }
 
+export interface StepInvalidDetails {
+  step: number
+  action: "next" | "set"
+  targetStep?: number
+}
+
 /* -----------------------------------------------------------------------------
  * Machine context
  * -----------------------------------------------------------------------------*/
@@ -55,6 +61,21 @@ export interface StepsProps extends DirectionProperty, CommonProperties {
    * The total number of steps
    */
   count?: number | undefined
+  /**
+   * Whether a step is valid. Invalid steps block forward navigation in linear mode.
+   * @default () => true
+   */
+  isStepValid?: ((index: number) => boolean) | undefined
+  /**
+   * Whether a step can be skipped during navigation.
+   * Skippable steps are bypassed when using next/prev.
+   * @default () => false
+   */
+  isStepSkippable?: ((index: number) => boolean) | undefined
+  /**
+   * Called when navigation is blocked due to an invalid step.
+   */
+  onStepInvalid?: ((details: StepInvalidDetails) => void) | undefined
 }
 
 type PropsWithDefault = "orientation" | "linear" | "count"
@@ -94,14 +115,46 @@ export interface ItemProps {
 }
 
 export interface ItemState {
+  /**
+   * The index of the step
+   */
   index: number
+  /**
+   * The id of the trigger element
+   */
   triggerId: string
+  /**
+   * The id of the content element
+   */
   contentId: string
+  /**
+   * Whether the step is the current step
+   */
   current: boolean
+  /**
+   * Whether the step is completed (index < current step)
+   */
   completed: boolean
+  /**
+   * Whether the step is incomplete (index > current step)
+   */
   incomplete: boolean
+  /**
+   * Whether the step is the last step
+   */
   last: boolean
+  /**
+   * Whether the step is the first step
+   */
   first: boolean
+  /**
+   * Whether the step can be skipped (based on `isStepSkippable` callback)
+   */
+  skippable: boolean
+  /**
+   * Lazy validation check - only evaluated when called
+   */
+  isValid: () => boolean
 }
 
 export interface StepsApi<T extends PropTypes = PropTypes> {
@@ -129,6 +182,14 @@ export interface StepsApi<T extends PropTypes = PropTypes> {
    * Whether the stepper is completed.
    */
   isCompleted: boolean
+  /**
+   * Check if a specific step is valid (lazy evaluation)
+   */
+  isStepValid: (index: number) => boolean
+  /**
+   * Check if a specific step can be skipped
+   */
+  isStepSkippable: (index: number) => boolean
   /**
    * Function to set the value of the stepper.
    */

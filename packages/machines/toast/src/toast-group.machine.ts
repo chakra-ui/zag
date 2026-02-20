@@ -143,7 +143,9 @@ export const groupMachine = createMachine({
 
     effects: {
       subscribeToStore({ context, prop }) {
-        return prop("store").subscribe((toast) => {
+        const store = prop("store")
+        context.set("toasts", store.getVisibleToasts() as any)
+        return store.subscribe((toast) => {
           if (toast.dismiss) {
             context.set("toasts", (prev) => prev.filter((t) => t.id !== toast.id))
             return

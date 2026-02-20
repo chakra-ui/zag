@@ -1,5 +1,5 @@
 import * as popover from "@zag-js/popover"
-import { normalizeProps, spreadProps, VanillaMachine } from "@zag-js/vanilla"
+import { normalizeProps, VanillaMachine } from "@zag-js/vanilla"
 import { Component } from "./component"
 
 export class Popover extends Component<popover.Props, popover.Api> {
@@ -14,10 +14,10 @@ export class Popover extends Component<popover.Props, popover.Api> {
   render = () => {
     const rootEl = this.rootEl
     const triggerEl = rootEl.querySelector<HTMLElement>(".popover-trigger")
-    if (triggerEl) spreadProps(triggerEl, this.api.getTriggerProps())
+    if (triggerEl) this.spreadProps(triggerEl, this.api.getTriggerProps())
     const contentEl = rootEl.querySelector<HTMLElement>(".popover-content")
-    if (contentEl) spreadProps(contentEl, this.api.getContentProps())
+    if (contentEl) this.spreadProps(contentEl, this.api.getContentProps())
     const positionerEl = rootEl.querySelector<HTMLElement>(".popover-positioner")
-    if (positionerEl) spreadProps(positionerEl, this.api.getPositionerProps())
+    if (positionerEl) this.spreadProps(positionerEl, this.api.getPositionerProps())
   }
 }

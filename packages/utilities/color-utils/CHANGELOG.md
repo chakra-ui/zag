@@ -1,5 +1,32 @@
 # @zag-js/color-utils
 
+## 1.34.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/utils@1.34.0
+
+## 1.33.1
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/utils@1.33.1
+
+## 1.33.0
+
+### Patch Changes
+
+- [`9038836`](https://github.com/chakra-ui/zag/commit/9038836103dbdb695036ddbfbcaafd7251b0a909) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix color not updating in controlled mode when selecting black
+  shades.
+  - Fixed equality check to compare actual channel values instead of CSS string output
+  - Auto-detect `defaultFormat` from initial color value instead of hardcoding `"rgba"`
+
+- Updated dependencies []:
+  - @zag-js/utils@1.33.0
+
 ## 1.32.0
 
 ### Patch Changes

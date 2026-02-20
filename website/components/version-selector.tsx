@@ -3,14 +3,13 @@ import { normalizeProps, Portal, useMachine } from "@zag-js/react"
 import packageJson from "@zag-js/react/package.json"
 import { Icon } from "components/ui/icon"
 import Link from "next/link"
-import { useId } from "react"
 import { HiChevronDown } from "react-icons/hi"
 import { css } from "styled-system/css"
 import { Box, HStack, Stack, styled } from "styled-system/jsx"
 
 export const VersionSelector = () => {
   const service = useMachine(menu.machine, {
-    id: useId(),
+    id: "version-selector",
     positioning: {
       strategy: "fixed",
     },

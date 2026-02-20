@@ -21,6 +21,7 @@ import {
   getRangeAtIndex,
   increment,
   normalizeValues,
+  resolveThumbCollision,
   selectMovableThumb,
 } from "./slider.utils"
 
@@ -54,6 +55,7 @@ export const machine = createMachine<SliderSchema>({
       thumbAlignment: "contain",
       origin: "start",
       orientation: "horizontal",
+      thumbCollisionBehavior: "none",
       minStepsBetweenThumbs,
       ...props,
       defaultValue: normalize(defaultValue, min, max, step, minStepsBetweenThumbs),
@@ -100,6 +102,7 @@ export const machine = createMachine<SliderSchema>({
   refs() {
     return {
       thumbDragOffset: null,
+      thumbDragStartValue: null,
     }
   },
 
@@ -153,7 +156,7 @@ export const machine = createMachine<SliderSchema>({
       on: {
         POINTER_DOWN: {
           target: "dragging",
-          actions: ["setClosestThumbIndex", "setPointerValue", "focusActiveThumb"],
+          actions: ["setClosestThumbIndex", "setThumbDragStartValue", "setPointerValue", "focusActiveThumb"],
         },
         FOCUS: {
           target: "focus",
@@ -161,7 +164,7 @@ export const machine = createMachine<SliderSchema>({
         },
         THUMB_POINTER_DOWN: {
           target: "dragging",
-          actions: ["setFocusedIndex", "setThumbDragOffset", "focusActiveThumb"],
+          actions: ["setFocusedIndex", "setThumbDragOffset", "setThumbDragStartValue", "focusActiveThumb"],
         },
       },
     },
@@ -171,11 +174,11 @@ export const machine = createMachine<SliderSchema>({
       on: {
         POINTER_DOWN: {
           target: "dragging",
-          actions: ["setClosestThumbIndex", "setPointerValue", "focusActiveThumb"],
+          actions: ["setClosestThumbIndex", "setThumbDragStartValue", "setPointerValue", "focusActiveThumb"],
         },
         THUMB_POINTER_DOWN: {
           target: "dragging",
-          actions: ["setFocusedIndex", "setThumbDragOffset", "focusActiveThumb"],
+          actions: ["setFocusedIndex", "setThumbDragOffset", "setThumbDragStartValue", "focusActiveThumb"],
         },
         ARROW_DEC: {
           actions: ["decrementThumbAtIndex", "invokeOnChangeEnd"],
@@ -202,14 +205,14 @@ export const machine = createMachine<SliderSchema>({
       on: {
         POINTER_UP: {
           target: "focus",
-          actions: ["invokeOnChangeEnd", "clearThumbDragOffset"],
+          actions: ["invokeOnChangeEnd", "clearThumbDragOffset", "clearThumbDragStartValue"],
         },
         POINTER_MOVE: {
           actions: ["setPointerValue"],
         },
         POINTER_CANCEL: {
           target: "idle",
-          actions: ["clearFocusedIndex", "clearThumbDragOffset"],
+          actions: ["clearFocusedIndex", "clearThumbDragOffset", "clearThumbDragStartValue"],
         },
       },
     },
@@ -301,15 +304,38 @@ export const machine = createMachine<SliderSchema>({
       clearThumbDragOffset({ refs }) {
         refs.set("thumbDragOffset", null)
       },
+      setThumbDragStartValue({ refs, context }) {
+        refs.set("thumbDragStartValue", context.get("value").slice())
+      },
+      clearThumbDragStartValue({ refs }) {
+        refs.set("thumbDragStartValue", null)
+      },
       setPointerValue(params) {
         queueMicrotask(() => {
-          const { context, event } = params
+          const { context, event, prop, refs } = params
           const pointValue = dom.getPointValue(params, event.point)
           if (pointValue == null) return
 
           const focusedIndex = context.get("focusedIndex")
-          const value = constrainValue(params, pointValue, focusedIndex)
-          context.set("value", (prev) => setValueAtIndex(prev, focusedIndex, value))
+          const startValues = refs.get("thumbDragStartValue")
+
+          const result = resolveThumbCollision(
+            prop("thumbCollisionBehavior"),
+            focusedIndex,
+            pointValue,
+            context.get("value"),
+            prop("min"),
+            prop("max"),
+            prop("step"),
+            prop("minStepsBetweenThumbs"),
+            startValues?.[focusedIndex],
+          )
+
+          if (result.swapped) {
+            context.set("focusedIndex", result.index)
+          }
+
+          context.set("value", result.values)
         })
       },
       focusActiveThumb({ scope, context }) {

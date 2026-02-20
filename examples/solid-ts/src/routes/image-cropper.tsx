@@ -69,6 +69,11 @@ export default function Page() {
             onInput={(e) => api().setRotation(Number(e.currentTarget.value))}
           />
         </label>
+        <div>
+          <button type="button" data-testid="reset-button" onClick={() => api().reset()}>
+            Reset
+          </button>
+        </div>
       </main>
 
       <Toolbar controls={controls}>
