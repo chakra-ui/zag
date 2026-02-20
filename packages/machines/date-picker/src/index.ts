@@ -2,7 +2,6 @@ export type { FocusOutsideEvent, InteractOutsideEvent, PointerDownOutsideEvent }
 export { anatomy } from "./date-picker.anatomy"
 export { connect } from "./date-picker.connect"
 export { machine } from "./date-picker.machine"
-export { parse } from "./date-picker.parse"
 export * from "./date-picker.props"
 export type {
   DatePickerApi as Api,
@@ -49,12 +48,4 @@ export type {
   MonthFormatOptions,
   Range,
   Cell,
-  Segments,
-  EditableSegmentType,
-  PlaceholderChangeDetails,
-  SegmentGroupProps,
-  SegmentsProps,
-  DateSegment,
-  SegmentProps,
-  SegmentState,
 } from "./date-picker.types"

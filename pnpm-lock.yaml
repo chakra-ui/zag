@@ -197,6 +197,9 @@ importers:
       '@zag-js/core':
         specifier: workspace:*
         version: link:../../packages/core
+      '@zag-js/date-field':
+        specifier: workspace:*
+        version: link:../../packages/machines/date-field
       '@zag-js/date-picker':
         specifier: workspace:*
         version: link:../../packages/machines/date-picker
@@ -2291,6 +2294,34 @@ importers:
         specifier: workspace:*
         version: link:../../utilities/core
     devDependencies:
+      clean-package:
+        specifier: 2.2.0
+        version: 2.2.0
+
+  packages/machines/date-field:
+    dependencies:
+      '@zag-js/anatomy':
+        specifier: workspace:*
+        version: link:../../anatomy
+      '@zag-js/core':
+        specifier: workspace:*
+        version: link:../../core
+      '@zag-js/date-utils':
+        specifier: workspace:*
+        version: link:../../utilities/date-utils
+      '@zag-js/dom-query':
+        specifier: workspace:*
+        version: link:../../utilities/dom-query
+      '@zag-js/types':
+        specifier: workspace:*
+        version: link:../../types
+      '@zag-js/utils':
+        specifier: workspace:*
+        version: link:../../utilities/core
+    devDependencies:
+      '@internationalized/date':
+        specifier: 3.10.1
+        version: 3.10.1
       clean-package:
         specifier: 2.2.0
         version: 2.2.0

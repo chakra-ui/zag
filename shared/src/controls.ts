@@ -212,6 +212,17 @@ export const datePickerWithSegmentsControls = defineControls({
   },
 })
 
+export const dateFieldControls = defineControls({
+  readOnly: { type: "boolean", defaultValue: false },
+  disabled: { type: "boolean", defaultValue: false },
+  dir: { type: "select", options: ["ltr", "rtl"] as const, defaultValue: "ltr" },
+  locale: {
+    type: "select",
+    options: ["en-US", "en-GB", "fr-FR", "de-DE", "ja-JP", "mk-MK", "zh-CN"] as const,
+    defaultValue: "en-US",
+  },
+})
+
 export const transitionControls = defineControls({
   duration: { type: "number", defaultValue: 200 },
   easing: {
