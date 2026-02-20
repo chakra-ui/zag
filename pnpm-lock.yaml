@@ -2344,8 +2344,8 @@ importers:
         version: link:../../utilities/core
     devDependencies:
       '@internationalized/date':
-        specifier: 3.10.1
-        version: 3.10.1
+        specifier: 3.11.0
+        version: 3.11.0
       clean-package:
         specifier: 2.2.0
         version: 2.2.0
