@@ -207,7 +207,7 @@ test.describe("date-input [single]", () => {
     await I.pressKey("Backspace", 4)
     await I.seeSegmentIsPlaceholder("year")
 
-    // Hot backspace to go to day segment
+    // Hit backspace to go to day segment
     await I.pressKey("Backspace")
 
     // Now clear day - should work
