@@ -216,6 +216,23 @@ export const datePickerControls = defineControls({
   },
 })
 
+export const dateInputControls = defineControls({
+  readOnly: { type: "boolean", defaultValue: false },
+  disabled: { type: "boolean", defaultValue: false },
+  dir: { type: "select", options: ["ltr", "rtl"] as const, defaultValue: "ltr" },
+  locale: {
+    type: "select",
+    options: ["en-US", "en-GB", "fr-FR", "de-DE", "ja-JP", "mk-MK", "zh-CN"] as const,
+    defaultValue: "en-US",
+  },
+  granularity: {
+    type: "select",
+    options: ["day", "hour", "minute", "second"] as const,
+    defaultValue: "day",
+  },
+  placeholderValue: { type: "date", defaultValue: "" },
+})
+
 export const transitionControls = defineControls({
   duration: { type: "number", defaultValue: 200 },
   easing: {

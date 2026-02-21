@@ -33,6 +33,7 @@
     "@zag-js/color-utils": "workspace:*",
     "@zag-js/combobox": "workspace:*",
     "@zag-js/core": "workspace:*",
+    "@zag-js/date-input": "workspace:*",
     "@zag-js/date-picker": "workspace:*",
     "@zag-js/date-utils": "workspace:*",
     "@zag-js/dialog": "workspace:*",
