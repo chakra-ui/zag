@@ -170,6 +170,7 @@ export function connect<T extends PropTypes, V = TreeNode>(
         "data-invalid": dataAttr(prop("invalid")),
         "data-focused": dataAttr(focused),
         "data-placement": currentPlacement,
+        "data-placeholder-shown": dataAttr(!hasSelectedItems),
         disabled,
         onClick(event) {
           if (event.defaultPrevented) return
