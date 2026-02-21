@@ -12,7 +12,7 @@ export default function Page() {
     id: useId(),
     ...controls.context,
     placeholderValue: controls.context.placeholderValue
-      ? dateField.parse(controls.context.placeholderValue)
+      ? dateInput.parse(controls.context.placeholderValue)
       : undefined,
   })
 

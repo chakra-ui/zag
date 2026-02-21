@@ -13,7 +13,7 @@ export default function Page() {
     selectionMode: "range",
     ...controls.context,
     placeholderValue: controls.context.placeholderValue
-      ? dateField.parse(controls.context.placeholderValue)
+      ? dateInput.parse(controls.context.placeholderValue)
       : undefined,
   })
 
