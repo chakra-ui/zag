@@ -11,6 +11,7 @@ import type {
 
 export const props = createProps<DatePickerProps>()([
   "closeOnSelect",
+  "createCalendar",
   "dir",
   "disabled",
   "fixedWeeks",

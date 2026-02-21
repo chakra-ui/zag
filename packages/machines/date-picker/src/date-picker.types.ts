@@ -2,6 +2,7 @@ import type {
   Calendar,
   CalendarDate,
   CalendarDateTime,
+  CalendarIdentifier,
   DateDuration,
   DateFormatter,
   ZonedDateTime,
@@ -104,6 +105,16 @@ export interface DatePickerProps extends DirectionProperty, CommonProperties {
    * @default "en-US"
    */
   locale?: string | undefined
+  /**
+   * A function that creates a Calendar object for a given calendar identifier.
+   * Enables non-Gregorian calendar support (Persian, Buddhist, Islamic, etc.)
+   * without bundling all calendars by default.
+   *
+   * @example
+   * import { createCalendar } from "@internationalized/date"
+   * { locale: "fa-IR", createCalendar }
+   */
+  createCalendar?: ((identifier: CalendarIdentifier) => Calendar) | undefined
   /**
    * The localized messages to use.
    */
@@ -784,6 +795,7 @@ export type {
   Calendar,
   CalendarDate,
   CalendarDateTime,
+  CalendarIdentifier,
   DateDuration,
   DateFormatter,
   DateRangePreset,

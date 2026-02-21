@@ -185,14 +185,23 @@ export const getVisibleRangeText = memo(
     }
 
     if (view === "month") {
-      const formatter = new DateFormatter(locale, { year: "numeric", timeZone })
+      const formatter = new DateFormatter(locale, {
+        year: "numeric",
+        timeZone,
+        calendar: startValue.calendar.identifier,
+      })
       const start = formatter.format(startValue.toDate(timeZone))
       const end = formatter.format(endValue.toDate(timeZone))
       const formatted = selectionMode === "range" ? `${start} - ${end}` : start
       return { start, end, formatted }
     }
 
-    const formatter = new DateFormatter(locale, { month: "long", year: "numeric", timeZone })
+    const formatter = new DateFormatter(locale, {
+      month: "long",
+      year: "numeric",
+      timeZone,
+      calendar: startValue.calendar.identifier,
+    })
     const start = formatter.format(startValue.toDate(timeZone))
     const end = formatter.format(endValue.toDate(timeZone))
     const formatted = selectionMode === "range" ? `${start} - ${end}` : start

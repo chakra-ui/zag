@@ -1,3 +1,4 @@
+import { CalendarDate, PersianCalendar, toCalendar } from "@internationalized/date"
 import { getMonthNames } from "../src"
 
 describe("getMonthNames", () => {
@@ -52,5 +53,22 @@ describe("getMonthNames", () => {
         "декабрь",
       ]
     `)
+  })
+
+  it("fa-IR / returns Persian month names when given a Persian referenceDate", () => {
+    const persianDate = toCalendar(new CalendarDate(2024, 3, 20), new PersianCalendar())
+    const months = getMonthNames("fa-IR", "long", persianDate)
+    expect(months).toHaveLength(12)
+    // Should not contain Gregorian month names
+    expect(months[0]).not.toBe("January")
+    // First Persian month is Farvardin
+    expect(months[0]).toContain("فروردین")
+  })
+
+  it("en / returns 12 Gregorian months when referenceDate is Gregorian", () => {
+    const gregorianDate = new CalendarDate(2024, 6, 15)
+    const months = getMonthNames("en", "long", gregorianDate)
+    expect(months).toHaveLength(12)
+    expect(months[0]).toBe("January")
   })
 })

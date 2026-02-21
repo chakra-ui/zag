@@ -1,4 +1,11 @@
-import { DateFormatter, toCalendarDateTime, toZoned } from "@internationalized/date"
+import {
+  DateFormatter,
+  toCalendar,
+  toCalendarDateTime,
+  toZoned,
+  type Calendar,
+  type CalendarIdentifier,
+} from "@internationalized/date"
 import { createGuards, createMachine, type Params, type PropFn } from "@zag-js/core"
 import {
   alignDate,
@@ -63,18 +70,39 @@ export const machine = createMachine<DatePickerSchema>({
     const selectionMode = props.selectionMode || "single"
     const numOfMonths = props.numOfMonths || 1
 
+    // Resolve calendar from locale when createCalendar is provided
+    let calendar: Calendar | undefined
+    if (props.createCalendar) {
+      const resolved = new Intl.DateTimeFormat(locale).resolvedOptions()
+      const calendarId = resolved.calendar as CalendarIdentifier
+      if (calendarId !== "gregory" && calendarId !== "iso8601") {
+        calendar = props.createCalendar(calendarId)
+      }
+    }
+
+    // Helper to convert dates to resolved calendar
+    const toTargetCalendar = (date: DateValue) => {
+      if (!calendar) return date
+      if (date.calendar.identifier === calendar.identifier) return date
+      return toCalendar(date, calendar)
+    }
+
     // sort and constrain dates
     const defaultValue = props.defaultValue
-      ? sortDates(props.defaultValue).map((date) => constrainValue(date, props.min, props.max))
+      ? sortDates(props.defaultValue).map((date) => constrainValue(toTargetCalendar(date), props.min, props.max))
       : undefined
     const value = props.value
-      ? sortDates(props.value).map((date) => constrainValue(date, props.min, props.max))
+      ? sortDates(props.value).map((date) => constrainValue(toTargetCalendar(date), props.min, props.max))
       : undefined
 
     // get initial focused value
     let focusedValue =
-      props.focusedValue || props.defaultFocusedValue || value?.[0] || defaultValue?.[0] || getTodayDate(timeZone)
-    focusedValue = constrainValue(focusedValue, props.min, props.max)
+      props.focusedValue ||
+      props.defaultFocusedValue ||
+      value?.[0] ||
+      defaultValue?.[0] ||
+      getTodayDate(timeZone, calendar)
+    focusedValue = constrainValue(toTargetCalendar(focusedValue), props.min, props.max)
 
     // get the initial view
     const minView: DateView = "day"
@@ -92,7 +120,13 @@ export const machine = createMachine<DatePickerSchema>({
       outsideDaySelectable: false,
       closeOnSelect: true,
       format(date, { locale, timeZone }) {
-        const formatter = new DateFormatter(locale, { timeZone, day: "2-digit", month: "2-digit", year: "numeric" })
+        const formatter = new DateFormatter(locale, {
+          timeZone,
+          day: "2-digit",
+          month: "2-digit",
+          year: "numeric",
+          calendar: calendar?.identifier,
+        })
         return formatter.format(date.toDate(timeZone))
       },
       parse(value, { locale, timeZone }) {
@@ -987,8 +1021,9 @@ export const machine = createMachine<DatePickerSchema>({
         setFocusedValue(params, nextValue)
       },
       clearFocusedDate(params) {
-        const { prop } = params
-        setFocusedValue(params, getTodayDate(prop("timeZone")))
+        const { context, prop } = params
+        const calendar = context.get("focusedValue").calendar
+        setFocusedValue(params, getTodayDate(prop("timeZone"), calendar))
       },
       focusPreviousMonthColumn(params) {
         const { context, event } = params
@@ -1012,13 +1047,15 @@ export const machine = createMachine<DatePickerSchema>({
       },
       focusFirstMonth(params) {
         const { context } = params
-        const nextValue = context.get("focusedValue").set({ month: 1 })
-        setFocusedValue(params, nextValue)
+        const focused = context.get("focusedValue")
+        const minMonth = focused.calendar.getMinimumMonthInYear?.(focused) ?? 1
+        setFocusedValue(params, focused.set({ month: minMonth }))
       },
       focusLastMonth(params) {
         const { context } = params
-        const nextValue = context.get("focusedValue").set({ month: 12 })
-        setFocusedValue(params, nextValue)
+        const focused = context.get("focusedValue")
+        const maxMonth = focused.calendar.getMonthsInYear(focused)
+        setFocusedValue(params, focused.set({ month: maxMonth }))
       },
       focusFirstYear(params) {
         const { context } = params
