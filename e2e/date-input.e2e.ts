@@ -201,12 +201,16 @@ test.describe("date-input [single]", () => {
     await I.type("25")
     await I.type("2025")
     await I.seeSelectedValue("01/25/2025")
+
     // Clear year
     await I.focusSegment("year")
     await I.pressKey("Backspace", 4)
     await I.seeSegmentIsPlaceholder("year")
+
+    // Hot backspace to go to day segment
+    await I.pressKey("Backspace")
+
     // Now clear day - should work
-    await I.focusSegment("day")
     await I.pressKey("Backspace", 2)
     await I.seeSegmentIsPlaceholder("day")
     await I.seeSegmentFocused("day")
@@ -285,21 +289,13 @@ test.describe("date-input [range]", () => {
     await I.type("1111")
 
     // delete year
-    await I.pressKey("Backspace")
-    await I.pressKey("Backspace")
-    await I.pressKey("Backspace")
-    await I.pressKey("Backspace")
-    await I.pressKey("Backspace")
+    await I.pressKey("Backspace", 5)
 
     // delete days
-    await I.pressKey("Backspace")
-    await I.pressKey("Backspace")
-    await I.pressKey("Backspace")
+    await I.pressKey("Backspace", 3)
 
     // delete month
-    await I.pressKey("Backspace")
-    await I.pressKey("Backspace")
-    await I.pressKey("Backspace")
+    await I.pressKey("Backspace", 3)
 
     // delete last number of the first input year
     await I.pressKey("Backspace")
