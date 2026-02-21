@@ -159,6 +159,7 @@ export const machine = createMachine<DateFieldSchema>({
       const selectionMode = prop("selectionMode")
       const placeholderValue = context.get("placeholderValue")
       const validSegments = context.get("validSegments")
+      const allSegments = prop("allSegments")
       const timeZone = prop("timeZone")
       const translations = prop("translations") || defaultTranslations
       const granularity = prop("granularity")
@@ -170,13 +171,18 @@ export const machine = createMachine<DateFieldSchema>({
         dates = value?.length ? value : [placeholderValue, placeholderValue]
       }
 
+      const allKeys = Object.keys(allSegments)
+
       return dates.map((date, i) => {
-        const displayValue = date || placeholderValue
         const currentValidSegments = validSegments?.[i] || {}
+        const validKeys = Object.keys(currentValidSegments)
+        // When not all segments are valid (e.g. year cleared), use placeholderValue so edits are reflected
+        const useValue = date && validKeys.length >= allKeys.length
+        const displayValue = useValue ? date : placeholderValue
 
         return processSegments({
           dateValue: displayValue.toDate(timeZone),
-          displayValue,
+          displayValue: displayValue || placeholderValue,
           validSegments: currentValidSegments,
           formatter,
           locale: prop("locale"),
@@ -370,7 +376,10 @@ export const machine = createMachine<DateFieldSchema>({
           return
         }
 
-        const newValue = segment.text.slice(0, -1)
+        // Use enteredKeys when user has partial input; otherwise use segment.text (committed value)
+        const enteredKeys = context.get("enteredKeys")
+        const textToUse = enteredKeys !== "" ? enteredKeys : segment.text
+        const newValue = textToUse.slice(0, -1)
 
         if (newValue === "" || newValue === "0") {
           markSegmentInvalid(params, type)

@@ -257,6 +257,7 @@ export function connect<T extends PropTypes>(service: DateFieldService, normaliz
           const allowedInputTypes = ["deleteContentBackward", "deleteContentForward", "deleteByCut", "deleteByDrag"]
 
           if (allowedInputTypes.includes(inputType)) {
+            event.preventDefault()
             return
           }
 

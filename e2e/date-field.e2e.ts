@@ -163,6 +163,55 @@ test.describe("date-field [single]", () => {
     await I.seeSegmentIsPlaceholder("month")
   })
 
+  test("[input] Backspace removes last character (12 -> 1)", async () => {
+    await I.focusSegment("month")
+    await I.type("12")
+    await I.seeSegmentText("month", "12")
+    // Typing "12" auto-advances to day, so refocus month
+    await I.focusSegment("month")
+    await I.pressKey("Backspace")
+    // Month 1 displays as "01" in 2-digit format
+    await I.seeSegmentText("month", "01")
+    await I.seeSegmentFocused("month")
+  })
+
+  test("[input] Backspace on first segment when empty stays on first segment", async () => {
+    await I.focusSegment("month")
+    await I.seeSegmentIsPlaceholder("month")
+    await I.pressKey("Backspace")
+    await I.seeSegmentFocused("month")
+    await I.seeSegmentIsPlaceholder("month")
+  })
+
+  test("[input] Backspace twice clears two digits (12 -> 1 -> placeholder)", async () => {
+    await I.focusSegment("month")
+    await I.type("12")
+    await I.seeSegmentText("month", "12")
+    await I.focusSegment("month")
+    await I.pressKey("Backspace")
+    await I.seeSegmentText("month", "01")
+    await I.pressKey("Backspace")
+    await I.seeSegmentIsPlaceholder("month")
+    await I.seeSegmentFocused("month")
+  })
+
+  test("[input] Backspace clears day after clearing year", async () => {
+    await I.focusSegment("month")
+    await I.type("01")
+    await I.type("25")
+    await I.type("2025")
+    await I.seeSelectedValue("01/25/2025")
+    // Clear year
+    await I.focusSegment("year")
+    await I.pressKey("Backspace", 4)
+    await I.seeSegmentIsPlaceholder("year")
+    // Now clear day - should work
+    await I.focusSegment("day")
+    await I.pressKey("Backspace", 2)
+    await I.seeSegmentIsPlaceholder("day")
+    await I.seeSegmentFocused("day")
+  })
+
   test("[input] typing non-numeric input is ignored", async () => {
     await I.focusSegment("month")
     await I.type("abc")
