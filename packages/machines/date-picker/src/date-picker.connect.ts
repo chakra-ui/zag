@@ -21,6 +21,7 @@ import {
   getUnitDuration,
   getWeekDays,
   getWeekOfYear,
+  getDefaultYearRange,
   getYearsRange,
   isDateEqual,
   isDateOutsideRange,
@@ -105,7 +106,7 @@ export function connect<T extends PropTypes>(
 
   function getMonths(props: { format?: "short" | "long" | undefined } = {}) {
     const { format } = props
-    return getMonthNames(locale, format).map((label, index) => {
+    return getMonthNames(locale, format, focusedValue).map((label, index) => {
       const value = index + 1
       const dateValue = focusedValue.set({ month: value })
       const disabled = isDateOutsideRange(dateValue, min, max)
@@ -114,7 +115,8 @@ export function connect<T extends PropTypes>(
   }
 
   function getYears() {
-    const range = getYearsRange({ from: min?.year ?? 1900, to: max?.year ?? 2100 })
+    const defaultRange = getDefaultYearRange(focusedValue, min, max)
+    const range = getYearsRange(defaultRange)
     return range.map((year) => ({
       label: year.toString(),
       value: year,
@@ -127,12 +129,12 @@ export function connect<T extends PropTypes>(
   }
 
   function focusMonth(month: number) {
-    const date = startValue ?? getTodayDate(timeZone)
+    const date = startValue ?? getTodayDate(timeZone, focusedValue.calendar)
     send({ type: "FOCUS.SET", value: date.set({ month }) })
   }
 
   function focusYear(year: number) {
-    const date = startValue ?? getTodayDate(timeZone)
+    const date = startValue ?? getTodayDate(timeZone, focusedValue.calendar)
     send({ type: "FOCUS.SET", value: date.set({ year }) })
   }
 
@@ -164,7 +166,7 @@ export function connect<T extends PropTypes>(
   function getMonthTableCellState(props: TableCellProps): TableCellState {
     const { value, disabled } = props
     const dateValue = focusedValue.set({ month: value })
-    const formatter = getMonthFormatter(locale, timeZone)
+    const formatter = getMonthFormatter(locale, timeZone, focusedValue)
     const cellState = {
       focused: focusedValue.month === props.value,
       selectable: !isDateOutsideRange(dateValue, min, max),
@@ -184,7 +186,7 @@ export function connect<T extends PropTypes>(
   function getDayTableCellState(props: DayTableCellProps): DayTableCellState {
     const { value, disabled, visibleRange = computed("visibleRange") } = props
 
-    const formatter = getDayFormatter(locale, timeZone)
+    const formatter = getDayFormatter(locale, timeZone, focusedValue)
     const unitDuration = getUnitDuration(computed("visibleDuration"))
     const outsideDaySelectable = prop("outsideDaySelectable")
 
@@ -274,7 +276,7 @@ export function connect<T extends PropTypes>(
     getOffset(duration) {
       const from = startValue.add(duration)
       const end = endValue.add(duration)
-      const formatter = getMonthFormatter(locale, timeZone)
+      const formatter = getMonthFormatter(locale, timeZone, focusedValue)
       return {
         visibleRange: { start: from, end },
         weeks: getMonthWeeks(from),
@@ -287,7 +289,7 @@ export function connect<T extends PropTypes>(
     getMonthWeeks,
     isUnavailable,
     weeks: getMonthWeeks(),
-    weekDays: getWeekDays(getTodayDate(timeZone), startOfWeek, timeZone, locale),
+    weekDays: getWeekDays(startValue, startOfWeek, timeZone, locale),
     visibleRangeText: computed("visibleRangeText"),
     value: selectedValue,
     valueAsDate: selectedValue.filter((date) => date != null).map((date) => date.toDate(timeZone)),
@@ -297,7 +299,7 @@ export function connect<T extends PropTypes>(
     focusedValueAsString: prop("format")(focusedValue, { locale, timeZone }),
     visibleRange: computed("visibleRange"),
     selectToday() {
-      const value = constrainValue(getTodayDate(timeZone), min, max)
+      const value = constrainValue(getTodayDate(timeZone, focusedValue.calendar), min, max)
       send({ type: "VALUE.SET", value: [value] })
     },
     setValue(values) {
@@ -362,7 +364,10 @@ export function connect<T extends PropTypes>(
       return chunk(getMonths({ format }), columns)
     },
     format(value, opts = { month: "long", year: "numeric" }) {
-      return new DateFormatter(locale, opts).format(value.toDate(timeZone))
+      return new DateFormatter(locale, {
+        ...opts,
+        calendar: value.calendar.identifier,
+      }).format(value.toDate(timeZone))
     },
     setView(view) {
       send({ type: "VIEW.SET", view })
