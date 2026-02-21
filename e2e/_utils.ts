@@ -34,11 +34,7 @@ export const controls = (page: Page) => {
     },
     date: async (id: string, value: string) => {
       const el = page.locator(testid(id))
-      await el.evaluate((input, val) => {
-        const setter = Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, "value")?.set
-        setter?.call(input, val)
-        input.dispatchEvent(new Event("change", { bubbles: true }))
-      }, value)
+      await el.fill(value)
     },
   }
 }
