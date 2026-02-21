@@ -98,6 +98,26 @@ export function useControls<T extends ControlRecord>(config: T) {
                   />
                 </div>
               )
+            case "date":
+              return (
+                <div key={key} className="text">
+                  <label htmlFor={label} style={{ marginRight: "10px" }}>
+                    {label}
+                  </label>
+                  <input
+                    data-testid={key}
+                    id={label}
+                    type="date"
+                    placeholder={placeholder}
+                    defaultValue={value}
+                    onChange={(e) => {
+                      setState(key, e.currentTarget.value)
+                    }}
+                  />
+                </div>
+              )
+            default:
+              return null
           }
         })}
       </div>

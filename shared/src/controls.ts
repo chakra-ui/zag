@@ -230,6 +230,7 @@ export const dateInputControls = defineControls({
     options: ["day", "hour", "minute", "second"] as const,
     defaultValue: "day",
   },
+  placeholderValue: { type: "date", defaultValue: "" },
 })
 
 export const transitionControls = defineControls({
