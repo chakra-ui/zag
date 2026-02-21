@@ -219,7 +219,7 @@ test.describe("date-input [single]", () => {
     await I.seeSegmentFocused("month")
   })
 
-  test("[placeholder] ArrowUp value starts from placeholder date", async () => {
+  test("[input] ArrowUp value starts from the placeholder date", async () => {
     await I.clickControls()
     await I.controls.date("placeholderValue", "2019-04-10")
     await I.seePlaceholderValue("2019-04-10")
@@ -260,5 +260,53 @@ test.describe("date-input [range]", () => {
     await I.type("15")
     await I.type("2025")
     await I.seeSelectedValue("01/15/2025")
+  })
+
+  test("[input] completing start date moves focus to end date, backspace returns focus to start date", async () => {
+    await I.focusFirstSegment()
+    await I.type("01")
+    await I.type("15")
+    await I.type("2025")
+    await I.seeSegmentInGroupFocused("month", 1)
+    // Backspace on empty end date segment moves back to start date year
+    await I.pressKey("Backspace")
+    await I.seeSegmentInGroupFocused("year", 0)
+  })
+
+  test("[issue] backspacing end date should not leave partial values in end date segments", async () => {
+    await I.focusFirstSegment()
+    await I.type("11")
+    await I.type("11")
+    await I.type("1111")
+    await I.seeSegmentInGroupFocused("month", 1)
+
+    await I.type("11")
+    await I.type("11")
+    await I.type("1111")
+
+    // delete year
+    await I.pressKey("Backspace")
+    await I.pressKey("Backspace")
+    await I.pressKey("Backspace")
+    await I.pressKey("Backspace")
+    await I.pressKey("Backspace")
+
+    // delete days
+    await I.pressKey("Backspace")
+    await I.pressKey("Backspace")
+    await I.pressKey("Backspace")
+
+    // delete month
+    await I.pressKey("Backspace")
+    await I.pressKey("Backspace")
+    await I.pressKey("Backspace")
+
+    // delete last number of the first input year
+    await I.pressKey("Backspace")
+
+    // second segment month and day and year should not have 11/11/1 value
+    await I.seeSegmentInGroupIsPlaceholder("month", 1)
+    await I.seeSegmentInGroupIsPlaceholder("day", 1)
+    await I.seeSegmentInGroupIsPlaceholder("year", 1)
   })
 })

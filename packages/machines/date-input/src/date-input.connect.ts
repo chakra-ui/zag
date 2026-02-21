@@ -5,6 +5,7 @@ import * as dom from "./date-input.dom"
 import type { DateInputApi, DateInputService, SegmentProps, SegmentState } from "./date-input.types"
 import { getLocaleSeparator, isValidCharacter } from "./utils/locale"
 import { getSegmentLabel, PAGE_STEP } from "./utils/segments"
+import { getGroupOffset } from "./utils/validity"
 
 export function connect<T extends PropTypes>(service: DateInputService, normalize: NormalizeProps<T>): DateInputApi<T> {
   const { state, context, prop, send, computed, scope } = service
@@ -46,15 +47,17 @@ export function connect<T extends PropTypes>(service: DateInputService, normaliz
 
     getSegments(props = {}) {
       const { index = 0 } = props
-      const segments = computed("segments")[index] ?? []
+      const allSegments = computed("segments")
+      const segments = allSegments[index] ?? []
       const enteredKeys = context.get("enteredKeys")
       const activeIndex = context.get("activeIndex")
       const activeSegmentIndex = context.get("activeSegmentIndex")
 
       // Show entered keys as segment text while user is typing
       if (focused && enteredKeys && index === activeIndex && activeSegmentIndex >= 0) {
+        const localActiveSegmentIndex = activeSegmentIndex - getGroupOffset(allSegments, index)
         return segments.map((seg, i) => {
-          if (i !== activeSegmentIndex) return seg
+          if (i !== localActiveSegmentIndex) return seg
           return { ...seg, text: enteredKeys, isPlaceholder: false }
         })
       }

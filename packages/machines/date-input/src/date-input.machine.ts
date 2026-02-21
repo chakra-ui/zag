@@ -10,7 +10,15 @@ import { getValueAsString } from "./utils/formatting"
 import { updateSegmentValue } from "./utils/input"
 import { defaultTranslations } from "./utils/placeholders"
 import { EDITABLE_SEGMENTS, getSegmentLabel, processSegments, TYPE_MAPPING } from "./utils/segments"
-import { getActiveSegment, getDisplayValue, markSegmentInvalid, markSegmentValid, setValue } from "./utils/validity"
+import {
+  getActiveSegment,
+  getDisplayValue,
+  getGroupOffset,
+  markSegmentInvalid,
+  markSegmentValid,
+  resolveActiveSegment,
+  setValue,
+} from "./utils/validity"
 
 export const machine = createMachine<DateInputSchema>({
   props({ props }) {
@@ -168,7 +176,7 @@ export const machine = createMachine<DateInputSchema>({
       let dates: DateValue[] = value?.length ? value : [placeholderValue]
 
       if (selectionMode === "range") {
-        dates = value?.length ? value : [placeholderValue, placeholderValue]
+        dates = [value?.[0] ?? placeholderValue, value?.[1] ?? placeholderValue]
       }
 
       const allKeys = Object.keys(allSegments)
@@ -306,24 +314,34 @@ export const machine = createMachine<DateInputSchema>({
         context.set("enteredKeys", "")
       },
 
-      setPreviousActiveSegmentIndex({ context, computed }) {
+      setPreviousActiveSegmentIndex(ctx) {
+        const { context } = ctx
         const index = context.get("activeIndex")
-        const activeSegmentIndex = context.get("activeSegmentIndex")
-        const segments = computed("segments")[index]
-        const previousActiveSegmentIndex = segments.findLastIndex(
-          (segment, i) => i < activeSegmentIndex && segment.isEditable,
-        )
-        if (previousActiveSegmentIndex === -1) return
-        context.set("activeSegmentIndex", previousActiveSegmentIndex)
+        const { allSegments, segments, offset, localIndex } = resolveActiveSegment(ctx)
+        const prevLocalIndex = segments.findLastIndex((segment, i) => i < localIndex && segment.isEditable)
+
+        if (prevLocalIndex !== -1) {
+          context.set("activeSegmentIndex", offset + prevLocalIndex)
+          return
+        }
+
+        // Go to previous group's last editable segment (e.g. range mode)
+        const prevGroupIndex = index - 1
+        if (prevGroupIndex < 0) return
+        const prevGroupSegments = allSegments[prevGroupIndex]
+        if (!prevGroupSegments) return
+        const lastPrevGroupEditableLocalIndex = prevGroupSegments.findLastIndex((s) => s.isEditable)
+        if (lastPrevGroupEditableLocalIndex === -1) return
+        context.set("activeIndex", prevGroupIndex)
+        context.set("activeSegmentIndex", getGroupOffset(allSegments, prevGroupIndex) + lastPrevGroupEditableLocalIndex)
       },
 
-      setNextActiveSegmentIndex({ context, computed }) {
-        const index = context.get("activeIndex")
-        const activeSegmentIndex = context.get("activeSegmentIndex")
-        const segments = computed("segments")[index]
-        const nextActiveSegmentIndex = segments.findIndex((segment, i) => i > activeSegmentIndex && segment.isEditable)
-        if (nextActiveSegmentIndex === -1) return
-        context.set("activeSegmentIndex", nextActiveSegmentIndex)
+      setNextActiveSegmentIndex(ctx) {
+        const { context } = ctx
+        const { segments, offset, localIndex } = resolveActiveSegment(ctx)
+        const nextLocalIndex = segments.findIndex((segment, i) => i > localIndex && segment.isEditable)
+        if (nextLocalIndex === -1) return
+        context.set("activeSegmentIndex", offset + nextLocalIndex)
       },
 
       focusActiveSegment({ scope, context }) {
@@ -449,8 +467,8 @@ export const machine = createMachine<DateInputSchema>({
         // Use saved index when SEGMENT.INPUT advanced (we updated that segment, not the one we moved to)
         const segmentIndexToUse = refs.get("segmentToAnnounceIndex") ?? activeSegmentIndex
         refs.set("segmentToAnnounceIndex", null)
-        const segments = computed("segments")[index]
-        const segment = segments?.[segmentIndexToUse]
+        const allSegments = computed("segments")
+        const segment = allSegments[index]?.[segmentIndexToUse - getGroupOffset(allSegments, index)]
 
         if (!segment || segment.type === "literal") return
 

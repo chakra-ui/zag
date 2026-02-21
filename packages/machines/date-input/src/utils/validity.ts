@@ -12,7 +12,7 @@ export function getDisplayValue(ctx: Params<DateInputSchema>) {
   const allSegments = prop("allSegments")
   const value = context.get("value")[index]
   const placeholderValue = context.get("placeholderValue")
-  const activeValidSegments = validSegments[index]
+  const activeValidSegments = validSegments[index] ?? {}
 
   return value && Object.keys(activeValidSegments).length >= Object.keys(allSegments).length ? value : placeholderValue
 }
@@ -53,7 +53,7 @@ export function isAllSegmentsCompleted(ctx: Params<DateInputSchema>) {
   const validSegments = context.get("validSegments")
   const allSegments = prop("allSegments")
   const index = context.get("activeIndex")
-  const activeValidSegments = validSegments[index]
+  const activeValidSegments = validSegments[index] ?? {}
   const validKeys = Object.keys(activeValidSegments)
   const allKeys = Object.keys(allSegments)
 
@@ -69,7 +69,7 @@ export function setValue(ctx: Params<DateInputSchema>, value: DateValue) {
   const validSegments = context.get("validSegments")
   const allSegments = prop("allSegments")
   const index = context.get("activeIndex")
-  const activeValidSegments = validSegments[index]
+  const activeValidSegments = validSegments[index] ?? {}
   const validKeys = Object.keys(activeValidSegments)
   const date = constrainValue(value, prop("min"), prop("max"))
 
@@ -87,20 +87,51 @@ export function setValue(ctx: Params<DateInputSchema>, value: DateValue) {
   }
 }
 
-export function getActiveSegment(ctx: Params<DateInputSchema>) {
+/**
+ * Returns the cumulative segment count for all groups before `index`.
+ * Used to convert between global (DOM) and local (per-group) segment indices.
+ */
+export function getGroupOffset(allSegments: unknown[][], index: number) {
+  return allSegments.slice(0, index).reduce<number>((acc, segs) => acc + (segs as unknown[]).length, 0)
+}
+
+/**
+ * Resolves the active segment context: all segment groups, the current group,
+ * the global-to-local offset, and the local index within the group.
+ */
+export function resolveActiveSegment(ctx: Params<DateInputSchema>) {
   const { context, computed } = ctx
   const index = context.get("activeIndex")
   const activeSegmentIndex = context.get("activeSegmentIndex")
-  return computed("segments")[index]?.[activeSegmentIndex]
+  const allSegments = computed("segments")
+  const offset = getGroupOffset(allSegments, index)
+  return { allSegments, segments: allSegments[index], offset, localIndex: activeSegmentIndex - offset }
+}
+
+export function getActiveSegment(ctx: Params<DateInputSchema>) {
+  const { allSegments, localIndex } = resolveActiveSegment(ctx)
+  const index = ctx.context.get("activeIndex")
+  return allSegments[index]?.[localIndex]
 }
 
 export function advanceToNextSegment(ctx: Params<DateInputSchema>) {
-  const { context, computed } = ctx
+  const { context } = ctx
   const index = context.get("activeIndex")
-  const activeSegmentIndex = context.get("activeSegmentIndex")
-  const segments = computed("segments")[index]
-  const nextActiveSegmentIndex = segments.findIndex((s, i) => i > activeSegmentIndex && s.isEditable)
-  if (nextActiveSegmentIndex !== -1) {
-    context.set("activeSegmentIndex", nextActiveSegmentIndex)
+  const { allSegments, segments, offset, localIndex } = resolveActiveSegment(ctx)
+  const nextLocalIndex = segments.findIndex((s, i) => i > localIndex && s.isEditable)
+
+  if (nextLocalIndex !== -1) {
+    context.set("activeSegmentIndex", offset + nextLocalIndex)
+    return
   }
+
+  // Advance to the first editable segment of the next date group (e.g. range mode)
+  const nextGroupSegments = allSegments[index + 1]
+  if (!nextGroupSegments) return
+
+  const firstNextGroupEditableLocalIndex = nextGroupSegments.findIndex((s) => s.isEditable)
+  if (firstNextGroupEditableLocalIndex === -1) return
+
+  context.set("activeIndex", index + 1)
+  context.set("activeSegmentIndex", offset + segments.length + firstNextGroupEditableLocalIndex)
 }

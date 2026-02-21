@@ -31,11 +31,11 @@ export class DateInputModel extends Model {
     return this.page.locator(this.scope("control"))
   }
 
-  getSegmentGroup(index = 0) {
+  getSegmentGroup() {
     return this.page.locator(`${this.scope("segment-group")}`)
   }
 
-  getEditableSegments(index = 0) {
+  getEditableSegments() {
     return this.page.locator(`${this.scope("segment")}[data-editable]`)
   }
 
@@ -45,6 +45,14 @@ export class DateInputModel extends Model {
 
   get output() {
     return this.page.locator(".date-output")
+  }
+
+  getSegmentGroupAt(groupIndex: number) {
+    return this.page.locator(this.scope("segment-group")).nth(groupIndex)
+  }
+
+  getSegmentInGroup(type: string, groupIndex: number) {
+    return this.getSegmentGroupAt(groupIndex).locator(`${this.scope("segment")}[data-type=${type}]`)
   }
 
   // --- Actions ---
@@ -68,6 +76,10 @@ export class DateInputModel extends Model {
     return expect(this.getSegmentByType(type)).toBeFocused()
   }
 
+  seeSegmentInGroupFocused(type: string, groupIndex: number) {
+    return expect(this.getSegmentInGroup(type, groupIndex)).toBeFocused()
+  }
+
   seeSegmentText(type: string, text: string) {
     return expect(this.getSegmentByType(type)).toHaveText(text)
   }
@@ -78,6 +90,10 @@ export class DateInputModel extends Model {
 
   seeSegmentIsNotPlaceholder(type: string) {
     return expect(this.getSegmentByType(type)).not.toHaveAttribute("data-placeholder")
+  }
+
+  seeSegmentInGroupIsPlaceholder(type: string, groupIndex: number) {
+    return expect(this.getSegmentInGroup(type, groupIndex)).toHaveAttribute("data-placeholder", "")
   }
 
   seeSelectedValue(value: string) {
