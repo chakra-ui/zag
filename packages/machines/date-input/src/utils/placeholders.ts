@@ -1,4 +1,4 @@
-import type { IntlTranslations } from "../date-field.types"
+import type { IntlTranslations } from "../date-input.types"
 
 // Locale-aware placeholders for date segments
 // Adapted from reka-ui / melt-ui (MIT license)

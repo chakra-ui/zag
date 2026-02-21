@@ -1,6 +1,6 @@
 import { DateFormatter } from "@internationalized/date"
 import type { Params } from "@zag-js/core"
-import type { DateFieldSchema, DateSegment } from "../date-field.types"
+import type { DateInputSchema, DateSegment } from "../date-input.types"
 import { setSegment } from "./adjusters"
 import { advanceToNextSegment, getDisplayValue, markSegmentValid, setValue } from "./validity"
 
@@ -8,7 +8,7 @@ export function isNumberString(value: string) {
   return !Number.isNaN(Number.parseInt(value))
 }
 
-export function updateSegmentValue(ctx: Params<DateFieldSchema>, segment: DateSegment, input: string) {
+export function updateSegmentValue(ctx: Params<DateInputSchema>, segment: DateSegment, input: string) {
   const { context, prop } = ctx
   const type = segment.type as DateSegment["type"]
   const validSegments = context.get("validSegments")

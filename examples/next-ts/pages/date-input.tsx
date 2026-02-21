@@ -1,23 +1,23 @@
-import * as dateField from "@zag-js/date-field"
+import * as dateInput from "@zag-js/date-input"
 import { normalizeProps, useMachine } from "@zag-js/react"
-import { dateFieldControls } from "@zag-js/shared"
+import { dateInputControls } from "@zag-js/shared"
 import { useId } from "react"
 import { StateVisualizer } from "../components/state-visualizer"
 import { Toolbar } from "../components/toolbar"
 import { useControls } from "../hooks/use-controls"
 
 export default function Page() {
-  const controls = useControls(dateFieldControls)
-  const service = useMachine(dateField.machine, {
+  const controls = useControls(dateInputControls)
+  const service = useMachine(dateInput.machine, {
     id: useId(),
     ...controls.context,
   })
 
-  const api = dateField.connect(service, normalizeProps)
+  const api = dateInput.connect(service, normalizeProps)
 
   return (
     <>
-      <main className="date-field">
+      <main className="date-input">
         <div {...api.getRootProps()}>
           <label {...api.getLabelProps()}>Date</label>
 

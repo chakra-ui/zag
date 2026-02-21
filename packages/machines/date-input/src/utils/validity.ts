@@ -1,11 +1,11 @@
 import type { Params } from "@zag-js/core"
 import { constrainValue } from "@zag-js/date-utils"
-import type { DateFieldSchema, DateValue, SegmentType } from "../date-field.types"
+import type { DateInputSchema, DateValue, SegmentType } from "../date-input.types"
 
 /**
  * If all segments are valid, return the actual value date, otherwise return the placeholder date.
  */
-export function getDisplayValue(ctx: Params<DateFieldSchema>) {
+export function getDisplayValue(ctx: Params<DateInputSchema>) {
   const { context, prop } = ctx
   const index = context.get("activeIndex")
   const validSegments = context.get("validSegments")
@@ -17,7 +17,7 @@ export function getDisplayValue(ctx: Params<DateFieldSchema>) {
   return value && Object.keys(activeValidSegments).length >= Object.keys(allSegments).length ? value : placeholderValue
 }
 
-export function markSegmentInvalid(ctx: Params<DateFieldSchema>, segmentType: SegmentType) {
+export function markSegmentInvalid(ctx: Params<DateInputSchema>, segmentType: SegmentType) {
   const { context } = ctx
   const validSegments = context.get("validSegments")
   const index = context.get("activeIndex")
@@ -31,7 +31,7 @@ export function markSegmentInvalid(ctx: Params<DateFieldSchema>, segmentType: Se
   }
 }
 
-export function markSegmentValid(ctx: Params<DateFieldSchema>, segmentType: SegmentType) {
+export function markSegmentValid(ctx: Params<DateInputSchema>, segmentType: SegmentType) {
   const { context, prop } = ctx
   const validSegments = context.get("validSegments")
   const allSegments = prop("allSegments")
@@ -48,7 +48,7 @@ export function markSegmentValid(ctx: Params<DateFieldSchema>, segmentType: Segm
   }
 }
 
-export function isAllSegmentsCompleted(ctx: Params<DateFieldSchema>) {
+export function isAllSegmentsCompleted(ctx: Params<DateInputSchema>) {
   const { context, prop } = ctx
   const validSegments = context.get("validSegments")
   const allSegments = prop("allSegments")
@@ -63,7 +63,7 @@ export function isAllSegmentsCompleted(ctx: Params<DateFieldSchema>) {
   )
 }
 
-export function setValue(ctx: Params<DateFieldSchema>, value: DateValue) {
+export function setValue(ctx: Params<DateInputSchema>, value: DateValue) {
   const { context, prop } = ctx
   if (prop("disabled") || prop("readOnly")) return
   const validSegments = context.get("validSegments")
@@ -87,14 +87,14 @@ export function setValue(ctx: Params<DateFieldSchema>, value: DateValue) {
   }
 }
 
-export function getActiveSegment(ctx: Params<DateFieldSchema>) {
+export function getActiveSegment(ctx: Params<DateInputSchema>) {
   const { context, computed } = ctx
   const index = context.get("activeIndex")
   const activeSegmentIndex = context.get("activeSegmentIndex")
   return computed("segments")[index]?.[activeSegmentIndex]
 }
 
-export function advanceToNextSegment(ctx: Params<DateFieldSchema>) {
+export function advanceToNextSegment(ctx: Params<DateInputSchema>) {
   const { context, computed } = ctx
   const index = context.get("activeIndex")
   const activeSegmentIndex = context.get("activeSegmentIndex")

@@ -1,5 +1,5 @@
 ---
-"@zag-js/date-field": patch
+"@zag-js/date-input": patch
 ---
 
-Initial release of date field machine
+Initial release of date input machine

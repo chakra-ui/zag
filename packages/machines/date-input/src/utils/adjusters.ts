@@ -1,5 +1,5 @@
 import { toCalendarDateTime, type DateValue } from "@internationalized/date"
-import type { Segments, SegmentType } from "../date-field.types"
+import type { Segments, SegmentType } from "../date-input.types"
 
 export function addSegment(
   value: DateValue,

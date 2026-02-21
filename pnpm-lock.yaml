@@ -197,9 +197,9 @@ importers:
       '@zag-js/core':
         specifier: workspace:*
         version: link:../../packages/core
-      '@zag-js/date-field':
+      '@zag-js/date-input':
         specifier: workspace:*
-        version: link:../../packages/machines/date-field
+        version: link:../../packages/machines/date-input
       '@zag-js/date-picker':
         specifier: workspace:*
         version: link:../../packages/machines/date-picker
@@ -2322,7 +2322,7 @@ importers:
         specifier: 2.2.0
         version: 2.2.0
 
-  packages/machines/date-field:
+  packages/machines/date-input:
     dependencies:
       '@zag-js/anatomy':
         specifier: workspace:*

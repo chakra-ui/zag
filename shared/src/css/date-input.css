@@ -1,4 +1,4 @@
-[data-scope="date-field"][data-part="label"] {
+[data-scope="date-input"][data-part="label"] {
   display: block;
   margin-bottom: 6px;
   font-size: 14px;
@@ -6,21 +6,21 @@
   color: #333;
 }
 
-[data-scope="date-field"][data-part="label"][data-disabled] {
+[data-scope="date-input"][data-part="label"][data-disabled] {
   opacity: 0.5;
 }
 
-[data-scope="date-field"][data-part="control"] {
+[data-scope="date-input"][data-part="control"] {
   display: inline-flex;
   align-items: center;
   gap: 8px;
 }
 
-[data-scope="date-field"][data-part="control"][data-disabled] {
+[data-scope="date-input"][data-part="control"][data-disabled] {
   opacity: 0.5;
 }
 
-[data-scope="date-field"][data-part="segment-group"] {
+[data-scope="date-input"][data-part="segment-group"] {
   display: inline-flex;
   align-items: center;
   padding-block: 4px;
@@ -32,21 +32,21 @@
   min-width: 154px;
 }
 
-[data-scope="date-field"][data-part="segment-group"][data-focus] {
+[data-scope="date-input"][data-part="segment-group"][data-focus] {
   border-color: rgba(102, 175, 233, 0.8);
   box-shadow: 0 0 0 1px rgba(102, 175, 233, 0.6);
 }
 
-[data-scope="date-field"][data-part="segment-group"][data-invalid] {
+[data-scope="date-input"][data-part="segment-group"][data-invalid] {
   border-color: #e53e3e;
 }
 
-[data-scope="date-field"][data-part="segment-group"][data-disabled] {
+[data-scope="date-input"][data-part="segment-group"][data-disabled] {
   background-color: #f5f5f5;
   cursor: not-allowed;
 }
 
-[data-scope="date-field"][data-part="segment"] {
+[data-scope="date-input"][data-part="segment"] {
   font-variant-numeric: tabular-nums;
   text-align: end;
   font-size: 13.3333px;
@@ -63,10 +63,10 @@
   }
 }
 
-[data-scope="date-field"][data-part="segment"][data-placeholder] {
+[data-scope="date-input"][data-part="segment"][data-placeholder] {
   color: #a0a0a0;
 }
 
-[data-scope="date-field"][data-part="segment"][data-readonly] {
+[data-scope="date-input"][data-part="segment"][data-readonly] {
   color: #666;
 }

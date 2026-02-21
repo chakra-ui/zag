@@ -1,11 +1,11 @@
 import { test } from "@playwright/test"
-import { DateFieldModel } from "./models/date-field.model"
+import { DateInputModel } from "./models/date-input.model"
 
-let I: DateFieldModel
+let I: DateInputModel
 
-test.describe("date-field [single]", () => {
+test.describe("date-input [single]", () => {
   test.beforeEach(async ({ page }) => {
-    I = new DateFieldModel(page)
+    I = new DateInputModel(page)
     await I.goto()
   })
 
@@ -220,10 +220,10 @@ test.describe("date-field [single]", () => {
   })
 })
 
-test.describe("date-field [range]", () => {
+test.describe("date-input [range]", () => {
   test.beforeEach(async ({ page }) => {
-    I = new DateFieldModel(page)
-    await I.goto("/date-field-range")
+    I = new DateInputModel(page)
+    await I.goto("/date-input-range")
   })
 
   test("should have no accessibility violation", async () => {

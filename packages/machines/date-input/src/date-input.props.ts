@@ -1,15 +1,15 @@
 import { createProps } from "@zag-js/types"
 import { createSplitProps } from "@zag-js/utils"
 import type {
-  DateFieldProps,
+  DateInputProps,
   HiddenInputProps,
   LabelProps,
   SegmentGroupProps,
   SegmentProps,
   SegmentsProps,
-} from "./date-field.types"
+} from "./date-input.types"
 
-export const props = createProps<DateFieldProps>()([
+export const props = createProps<DateInputProps>()([
   "dir",
   "disabled",
   "getRootNode",
@@ -40,7 +40,7 @@ export const props = createProps<DateFieldProps>()([
   "format",
 ])
 
-export const splitProps = createSplitProps<Partial<DateFieldProps>>(props)
+export const splitProps = createSplitProps<Partial<DateInputProps>>(props)
 
 export const segmentProps = createProps<SegmentProps>()(["segment", "index"])
 export const splitSegmentProps = createSplitProps<SegmentProps>(segmentProps)

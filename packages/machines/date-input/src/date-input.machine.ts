@@ -3,8 +3,8 @@ import { createMachine } from "@zag-js/core"
 import { constrainValue, getTodayDate, isDateEqual } from "@zag-js/date-utils"
 import { raf } from "@zag-js/dom-query"
 import { createLiveRegion } from "@zag-js/live-region"
-import * as dom from "./date-field.dom"
-import type { DateFieldSchema, DateSegment, DateValue, Segments } from "./date-field.types"
+import * as dom from "./date-input.dom"
+import type { DateInputSchema, DateSegment, DateValue, Segments } from "./date-input.types"
 import { addSegment, getDefaultValidSegments, setSegment } from "./utils/adjusters"
 import { getValueAsString } from "./utils/formatting"
 import { updateSegmentValue } from "./utils/input"
@@ -12,7 +12,7 @@ import { defaultTranslations } from "./utils/placeholders"
 import { EDITABLE_SEGMENTS, getSegmentLabel, processSegments, TYPE_MAPPING } from "./utils/segments"
 import { getActiveSegment, getDisplayValue, markSegmentInvalid, markSegmentValid, setValue } from "./utils/validity"
 
-export const machine = createMachine<DateFieldSchema>({
+export const machine = createMachine<DateInputSchema>({
   props({ props }) {
     const locale = props.locale || "en-US"
     const timeZone = props.timeZone || "UTC"

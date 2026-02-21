@@ -54,7 +54,7 @@ export type ElementIds = Partial<{
   hiddenInput: (index: number) => string
 }>
 
-export interface DateFieldProps extends DirectionProperty, CommonProperties {
+export interface DateInputProps extends DirectionProperty, CommonProperties {
   /**
    * The locale (BCP 47 language tag) to use when formatting the date.
    * @default "en-US"
@@ -65,7 +65,7 @@ export interface DateFieldProps extends DirectionProperty, CommonProperties {
    */
   translations?: IntlTranslations | undefined
   /**
-   * The ids of the elements in the date field. Useful for composition.
+   * The ids of the elements in the date input. Useful for composition.
    */
   ids?: ElementIds | undefined
   /**
@@ -82,19 +82,19 @@ export interface DateFieldProps extends DirectionProperty, CommonProperties {
    */
   timeZone?: string | undefined
   /**
-   * Whether the date field is disabled.
+   * Whether the date input is disabled.
    */
   disabled?: boolean | undefined
   /**
-   * Whether the date field is read-only.
+   * Whether the date input is read-only.
    */
   readOnly?: boolean | undefined
   /**
-   * Whether the date field is required
+   * Whether the date input is required
    */
   required?: boolean | undefined
   /**
-   * Whether the date field is invalid
+   * Whether the date input is invalid
    */
   invalid?: boolean | undefined
   /**
@@ -131,11 +131,11 @@ export interface DateFieldProps extends DirectionProperty, CommonProperties {
    */
   onPlaceholderChange?: ((details: PlaceholderChangeDetails) => void) | undefined
   /**
-   * A function called when the date field gains or loses focus.
+   * A function called when the date input gains or loses focus.
    */
   onFocusChange?: ((details: FocusChangeDetails) => void) | undefined
   /**
-   * The selection mode of the date field.
+   * The selection mode of the date input.
    * - `single` - only one date can be entered
    * - `range` - a range of dates can be entered (start and end)
    *
@@ -148,7 +148,7 @@ export interface DateFieldProps extends DirectionProperty, CommonProperties {
    */
   hourCycle?: HourCycle | undefined
   /**
-   * Determines the smallest unit that is displayed in the date field.
+   * Determines the smallest unit that is displayed in the date input.
    * @default "day"
    */
   granularity?: DateGranularity | undefined
@@ -205,7 +205,7 @@ interface PrivateContext {
 
 type ComputedContext = Readonly<{
   /**
-   * Whether the date field is interactive.
+   * Whether the date input is interactive.
    */
   isInteractive: boolean
   /**
@@ -224,9 +224,9 @@ type Refs = {
   segmentToAnnounceIndex: number | null
 }
 
-export interface DateFieldSchema {
+export interface DateInputSchema {
   state: "idle" | "focused"
-  props: RequiredBy<DateFieldProps, PropsWithDefault>
+  props: RequiredBy<DateInputProps, PropsWithDefault>
   context: PrivateContext
   computed: ComputedContext
   refs: Refs
@@ -235,9 +235,9 @@ export interface DateFieldSchema {
   effect: string
 }
 
-export type DateFieldService = Service<DateFieldSchema>
+export type DateInputService = Service<DateInputSchema>
 
-export type DateFieldMachine = Machine<DateFieldSchema>
+export type DateInputMachine = Machine<DateInputSchema>
 
 /* -----------------------------------------------------------------------------
  * Component API
@@ -324,17 +324,17 @@ export interface HiddenInputProps {
   name?: string | undefined
 }
 
-export interface DateFieldApi<T extends PropTypes = PropTypes> {
+export interface DateInputApi<T extends PropTypes = PropTypes> {
   /**
-   * Whether the date field is focused
+   * Whether the date input is focused
    */
   focused: boolean
   /**
-   * Whether the date field is disabled
+   * Whether the date input is disabled
    */
   disabled: boolean
   /**
-   * Whether the date field is invalid
+   * Whether the date input is invalid
    */
   invalid: boolean
   /**

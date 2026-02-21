@@ -1,12 +1,12 @@
 import { ariaAttr, dataAttr, getEventKey, getNativeEvent, visuallyHiddenStyle } from "@zag-js/dom-query"
 import type { EventKeyMap, NormalizeProps, PropTypes } from "@zag-js/types"
-import { parts } from "./date-field.anatomy"
-import * as dom from "./date-field.dom"
-import type { DateFieldApi, DateFieldService, SegmentProps, SegmentState } from "./date-field.types"
+import { parts } from "./date-input.anatomy"
+import * as dom from "./date-input.dom"
+import type { DateInputApi, DateInputService, SegmentProps, SegmentState } from "./date-input.types"
 import { getLocaleSeparator, isValidCharacter } from "./utils/locale"
 import { getSegmentLabel, PAGE_STEP } from "./utils/segments"
 
-export function connect<T extends PropTypes>(service: DateFieldService, normalize: NormalizeProps<T>): DateFieldApi<T> {
+export function connect<T extends PropTypes>(service: DateInputService, normalize: NormalizeProps<T>): DateInputApi<T> {
   const { state, context, prop, send, computed, scope } = service
 
   const disabled = Boolean(prop("disabled"))

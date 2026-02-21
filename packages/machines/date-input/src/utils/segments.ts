@@ -1,6 +1,6 @@
 import { DateFormatter, getMinimumDayInMonth, getMinimumMonthInYear, type DateValue } from "@internationalized/date"
 import type { DateGranularity } from "@zag-js/date-utils"
-import type { DateSegment, EditableSegmentType, IntlTranslations, Segments } from "../date-field.types"
+import type { DateSegment, EditableSegmentType, IntlTranslations, Segments } from "../date-input.types"
 
 export const EDITABLE_SEGMENTS = {
   year: true,

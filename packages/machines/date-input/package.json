@@ -1,7 +1,7 @@
 {
-  "name": "@zag-js/date-field",
+  "name": "@zag-js/date-input",
   "version": "1.32.0",
-  "description": "Core logic for the date-field widget implemented as a state machine",
+  "description": "Core logic for the date-input widget implemented as a state machine",
   "keywords": [
     "js",
     "machine",
@@ -9,13 +9,13 @@
     "statechart",
     "component",
     "chakra-ui",
-    "date-field"
+    "date-input"
   ],
   "author": "Segun Adebayo <sage@adebayosegun.com>",
   "homepage": "https://github.com/chakra-ui/zag#readme",
   "license": "MIT",
   "main": "src/index.ts",
-  "repository": "https://github.com/chakra-ui/zag/tree/main/packages/date-field",
+  "repository": "https://github.com/chakra-ui/zag/tree/main/packages/date-input",
   "sideEffects": false,
   "files": [
     "dist"

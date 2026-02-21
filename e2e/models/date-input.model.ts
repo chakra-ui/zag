@@ -2,12 +2,12 @@ import { type Page, expect } from "@playwright/test"
 import { a11y, part } from "../_utils"
 import { Model } from "./model"
 
-export class DateFieldModel extends Model {
+export class DateInputModel extends Model {
   constructor(public page: Page) {
     super(page)
   }
 
-  goto(url = "/date-field") {
+  goto(url = "/date-input") {
     return this.page.goto(url)
   }
 
@@ -16,7 +16,7 @@ export class DateFieldModel extends Model {
   }
 
   private scope(p: string) {
-    return `[data-scope=date-field]${part(p)}`
+    return `[data-scope=date-input]${part(p)}`
   }
 
   get root() {

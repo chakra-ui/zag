@@ -1,13 +1,13 @@
-export { anatomy } from "./date-field.anatomy"
-export { connect } from "./date-field.connect"
-export { machine } from "./date-field.machine"
-export { parse } from "./date-field.parse"
-export * from "./date-field.props"
+export { anatomy } from "./date-input.anatomy"
+export { connect } from "./date-input.connect"
+export { machine } from "./date-input.machine"
+export { parse } from "./date-input.parse"
+export * from "./date-input.props"
 export type {
-  DateFieldApi as Api,
-  DateFieldMachine as Machine,
-  DateFieldProps as Props,
-  DateFieldService as Service,
+  DateInputApi as Api,
+  DateInputMachine as Machine,
+  DateInputProps as Props,
+  DateInputService as Service,
   Calendar,
   CalendarDate,
   CalendarDateTime,
@@ -32,4 +32,4 @@ export type {
   SelectionMode,
   ValueChangeDetails,
   ZonedDateTime,
-} from "./date-field.types"
+} from "./date-input.types"
