@@ -223,6 +223,48 @@ test.describe("date-input [single]", () => {
     await I.seeSegmentFocused("month")
   })
 
+  test("[input] hour granularity", async () => {
+    await I.clickControls()
+    await I.controls.select("granularity", "hour")
+
+    // Hour segment should be present and focusable
+    await I.focusSegment("hour")
+    await I.seeSegmentFocused("hour")
+    await I.seeSegmentIsPlaceholder("hour")
+
+    // ArrowUp should initialize hour from placeholder
+    await I.pressKey("ArrowUp")
+    await I.seeSegmentIsNotPlaceholder("hour")
+  })
+
+  test("[input] minute granularity", async () => {
+    await I.clickControls()
+    await I.controls.select("granularity", "minute")
+
+    // Minute segment should be present and focusable
+    await I.focusSegment("minute")
+    await I.seeSegmentFocused("minute")
+    await I.seeSegmentIsPlaceholder("minute")
+
+    // Type 30 for minute - two digits completes the segment
+    await I.type("30")
+    await I.seeSegmentText("minute", "30")
+  })
+
+  test("[input] seconds granularity", async () => {
+    await I.clickControls()
+    await I.controls.select("granularity", "second")
+
+    // Second segment should be present and focusable
+    await I.focusSegment("second")
+    await I.seeSegmentFocused("second")
+    await I.seeSegmentIsPlaceholder("second")
+
+    // Type 45 for second - two digits completes the segment
+    await I.type("45")
+    await I.seeSegmentText("second", "45")
+  })
+
   test("[input] ArrowUp value starts from the placeholder date", async () => {
     await I.clickControls()
     await I.controls.date("placeholderValue", "2019-04-10")
