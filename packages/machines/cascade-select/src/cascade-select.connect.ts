@@ -146,7 +146,7 @@ export function connect<T extends PropTypes, V = TreeNode>(
         dir: prop("dir"),
         id: dom.getControlId(scope),
         "data-disabled": dataAttr(disabled),
-        "data-focused": dataAttr(focused),
+        "data-focus": dataAttr(focused),
         "data-readonly": dataAttr(prop("readOnly")),
         "data-invalid": dataAttr(prop("invalid")),
         "data-state": open ? "open" : "closed",
@@ -168,7 +168,7 @@ export function connect<T extends PropTypes, V = TreeNode>(
         "data-disabled": dataAttr(disabled),
         "data-readonly": dataAttr(prop("readOnly")),
         "data-invalid": dataAttr(prop("invalid")),
-        "data-focused": dataAttr(focused),
+        "data-focus": dataAttr(focused),
         "data-placement": currentPlacement,
         "data-placeholder-shown": dataAttr(!hasSelectedItems),
         disabled,
@@ -444,7 +444,7 @@ export function connect<T extends PropTypes, V = TreeNode>(
         dir: prop("dir"),
         "data-disabled": dataAttr(disabled),
         "data-invalid": dataAttr(prop("invalid")),
-        "data-focused": dataAttr(focused),
+        "data-focus": dataAttr(focused),
       })
     },
 
