@@ -1,5 +1,30 @@
 # @zag-js/date-picker
 
+## 1.35.0
+
+### Minor Changes
+
+- [`4ac700a`](https://github.com/chakra-ui/zag/commit/4ac700a89ae1150aef9d0cd2a878e724052d4828) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Add non-Gregorian calendar support via `createCalendar` prop
+  - Support Persian, Buddhist, Islamic, Hebrew, and other calendar systems
+  - Month names, year ranges, formatters, and navigation now respect the active calendar
+
+### Patch Changes
+
+- [`d99e182`](https://github.com/chakra-ui/zag/commit/d99e182f3beb6da1d1fb16da2602705c0765bf91) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Add `data-type` to weekend table header and cell
+
+- Updated dependencies [[`4ac700a`](https://github.com/chakra-ui/zag/commit/4ac700a89ae1150aef9d0cd2a878e724052d4828)]:
+  - @zag-js/date-utils@1.35.0
+  - @zag-js/anatomy@1.35.0
+  - @zag-js/core@1.35.0
+  - @zag-js/types@1.35.0
+  - @zag-js/utils@1.35.0
+  - @zag-js/dismissable@1.35.0
+  - @zag-js/dom-query@1.35.0
+  - @zag-js/live-region@1.35.0
+  - @zag-js/popper@1.35.0
+
 ## 1.34.1
 
 ### Patch Changes
