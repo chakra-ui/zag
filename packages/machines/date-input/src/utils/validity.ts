@@ -88,6 +88,23 @@ export function setValue(ctx: Params<DateInputSchema>, value: DateValue) {
 }
 
 /**
+ * When all segments of a group become invalid, remove that group's date from value.
+ * This prevents syncValidSegments from falsely re-validating the group when another
+ * group's value changes (since syncValidSegments marks all segments valid for any non-null date).
+ */
+export function clearValueIfAllSegmentsInvalid(ctx: Params<DateInputSchema>) {
+  const { context } = ctx
+  const index = context.get("activeIndex")
+  const activeValidSegments = context.get("validSegments")[index] ?? {}
+  if (Object.keys(activeValidSegments).length === 0) {
+    const values = context.get("value")
+    if (index < values.length) {
+      context.set("value", values.slice(0, index))
+    }
+  }
+}
+
+/**
  * Returns the cumulative segment count for all groups before `index`.
  * Used to convert between global (DOM) and local (per-group) segment indices.
  */

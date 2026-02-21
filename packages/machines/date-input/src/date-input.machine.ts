@@ -11,6 +11,7 @@ import { updateSegmentValue } from "./utils/input"
 import { defaultTranslations } from "./utils/placeholders"
 import { EDITABLE_SEGMENTS, getSegmentLabel, processSegments, TYPE_MAPPING } from "./utils/segments"
 import {
+  clearValueIfAllSegmentsInvalid,
   getActiveSegment,
   getDisplayValue,
   getGroupOffset,
@@ -402,6 +403,7 @@ export const machine = createMachine<DateInputSchema>({
         if (newValue === "" || newValue === "0") {
           markSegmentInvalid(params, type)
           setValue(params, displayValue)
+          clearValueIfAllSegmentsInvalid(params)
         } else {
           setValue(params, setSegment(displayValue, type, newValue, formatter.resolvedOptions()))
         }
