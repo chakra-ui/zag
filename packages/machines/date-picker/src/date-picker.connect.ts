@@ -562,6 +562,7 @@ export function connect<T extends PropTypes>(
         scope: "col",
         "aria-label": translations.weekColumnHeader,
         "data-view": view,
+        "data-type": "week-number",
         "data-disabled": dataAttr(disabled),
       })
     },
@@ -575,6 +576,7 @@ export function connect<T extends PropTypes>(
         "aria-label": translations.weekNumberCell?.(weekNumber),
         "data-view": "day",
         "data-week-index": weekIndex,
+        "data-type": "week-number",
         "data-disabled": dataAttr(disabled),
       })
     },
