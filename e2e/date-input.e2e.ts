@@ -226,15 +226,21 @@ test.describe("date-input [single]", () => {
 
     await I.focusSegment("month")
     await I.pressKey("ArrowUp")
-    await I.seeSegmentText("month", "04")
+    await I.seeSegmentText("month", "05")
+    await I.pressKey("ArrowUp")
+    await I.seeSegmentText("month", "06")
 
     await I.focusSegment("day")
     await I.pressKey("ArrowUp")
-    await I.seeSegmentText("day", "10")
+    await I.seeSegmentText("day", "11")
+    await I.pressKey("ArrowUp")
+    await I.seeSegmentText("day", "12")
 
     await I.focusSegment("year")
     await I.pressKey("ArrowUp")
-    await I.seeSegmentText("year", "2019")
+    await I.seeSegmentText("year", "2020")
+    await I.pressKey("ArrowUp")
+    await I.seeSegmentText("year", "2021")
   })
 })
 
