@@ -84,6 +84,10 @@ export class DateInputModel extends Model {
     return expect(this.output).toContainText(`Selected: ${value || "-"}`)
   }
 
+  seePlaceholderValue(value: string) {
+    return expect(this.output).toContainText(`Placeholder: ${value}`)
+  }
+
   seeControlFocused() {
     return expect(this.control).toHaveAttribute("data-focus", "")
   }

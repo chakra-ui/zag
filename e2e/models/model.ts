@@ -1,5 +1,5 @@
 import { expect, type Page } from "@playwright/test"
-import { a11y, clickOutside, clickViz, controls, repeat, retry } from "../_utils"
+import { a11y, clickControls, clickOutside, clickViz, controls, repeat, retry } from "../_utils"
 
 export class Model {
   constructor(public page: Page) {}
@@ -10,6 +10,10 @@ export class Model {
 
   clickViz() {
     return clickViz(this.page)
+  }
+
+  clickControls() {
+    return clickControls(this.page)
   }
 
   clickOutside() {

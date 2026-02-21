@@ -218,6 +218,24 @@ test.describe("date-input [single]", () => {
     await I.seeSegmentIsPlaceholder("month")
     await I.seeSegmentFocused("month")
   })
+
+  test("[placeholder] ArrowUp value starts from placeholder date", async () => {
+    await I.clickControls()
+    await I.controls.date("placeholderValue", "2019-04-10")
+    await I.seePlaceholderValue("2019-04-10")
+
+    await I.focusSegment("month")
+    await I.pressKey("ArrowUp")
+    await I.seeSegmentText("month", "04")
+
+    await I.focusSegment("day")
+    await I.pressKey("ArrowUp")
+    await I.seeSegmentText("day", "10")
+
+    await I.focusSegment("year")
+    await I.pressKey("ArrowUp")
+    await I.seeSegmentText("year", "2019")
+  })
 })
 
 test.describe("date-input [range]", () => {
