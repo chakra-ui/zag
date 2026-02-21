@@ -11,6 +11,9 @@ export default function Page() {
   const service = useMachine(dateInput.machine, {
     id: useId(),
     ...controls.context,
+    placeholderValue: controls.context.placeholderValue
+      ? dateField.parse(controls.context.placeholderValue)
+      : undefined,
   })
 
   const api = dateInput.connect(service, normalizeProps)
@@ -36,6 +39,7 @@ export default function Page() {
 
         <output className="date-output">
           <div>Selected: {api.valueAsString.join(", ") || "-"}</div>
+          <div>Placeholder: {api.placeholderValue.toString()}</div>
         </output>
       </main>
 
