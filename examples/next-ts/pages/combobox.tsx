@@ -17,6 +17,7 @@ export default function Page() {
   const controls = useControls(comboboxControls)
 
   const [options, setOptions] = useState(comboboxData)
+  const [selectedItems, setSelectedItems] = useState<Item[]>([])
 
   const collection = combobox.collection({
     items: options,
@@ -34,6 +35,9 @@ export default function Page() {
       const filtered = matchSorter(comboboxData, inputValue, { keys: ["label"] })
       setOptions(filtered.length > 0 ? filtered : comboboxData)
     },
+    onValueChange({ items }) {
+      setSelectedItems(items as Item[])
+    },
     ...controls.context,
   })
 
@@ -47,6 +51,7 @@ export default function Page() {
           <button data-testid="clear-value-button" onClick={() => api.clearValue()}>
             Clear Value
           </button>
+          <pre data-testid="on-value-change-items">{selectedItems.map((item) => item.label).join(", ")}</pre>
           <br />
           <div {...api.getRootProps()}>
             <label {...api.getLabelProps()}>Select country</label>
