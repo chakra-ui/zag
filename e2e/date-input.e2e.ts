@@ -288,6 +288,51 @@ test.describe("date-input [single]", () => {
     await I.pressKey("ArrowUp")
     await I.seeSegmentText("year", "2021")
   })
+
+  test("[input] ArrowDown value starts from the placeholder date", async () => {
+    await I.clickControls()
+    await I.controls.date("placeholderValue", "2019-04-10")
+    await I.seePlaceholderValue("2019-04-10")
+
+    await I.focusSegment("month")
+    await I.pressKey("ArrowDown")
+    await I.seeSegmentText("month", "03")
+    await I.pressKey("ArrowDown")
+    await I.seeSegmentText("month", "02")
+
+    await I.focusSegment("day")
+    await I.pressKey("ArrowDown")
+    await I.seeSegmentText("day", "09")
+    await I.pressKey("ArrowDown")
+    await I.seeSegmentText("day", "08")
+
+    await I.focusSegment("year")
+    await I.pressKey("ArrowDown")
+    await I.seeSegmentText("year", "2018")
+    await I.pressKey("ArrowDown")
+    await I.seeSegmentText("year", "2017")
+  })
+
+  test("[input] changing placeholderValue prop updates the base date for editing", async () => {
+    await I.clickControls()
+    await I.controls.date("placeholderValue", "2019-04-10")
+    await I.seePlaceholderValue("2019-04-10")
+
+    await I.controls.date("placeholderValue", "2020-06-15")
+    await I.seePlaceholderValue("2020-06-15")
+
+    await I.focusSegment("month")
+    await I.pressKey("ArrowUp")
+    await I.seeSegmentText("month", "07")
+
+    await I.focusSegment("day")
+    await I.pressKey("ArrowUp")
+    await I.seeSegmentText("day", "16")
+
+    await I.focusSegment("year")
+    await I.pressKey("ArrowUp")
+    await I.seeSegmentText("year", "2021")
+  })
 })
 
 test.describe("date-input [range]", () => {

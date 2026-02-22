@@ -137,7 +137,6 @@ export const machine = createMachine<DateInputSchema>({
       })),
       placeholderValue: bindable<DateValue>(() => ({
         defaultValue: prop("defaultPlaceholderValue"),
-        value: prop("placeholderValue"),
         isEqual: isDateEqual,
         hash: (v) => v.toString(),
         sync: true,
@@ -202,13 +201,17 @@ export const machine = createMachine<DateInputSchema>({
     },
   },
 
-  watch({ track, context, action }) {
+  watch({ track, context, prop, action }) {
     track([() => context.hash("value")], () => {
       action(["syncValidSegments"])
     })
 
     track([() => context.get("activeSegmentIndex")], () => {
       action(["focusActiveSegment"])
+    })
+
+    track([() => prop("placeholderValue")?.toString()], () => {
+      action(["syncPlaceholderProp"])
     })
   },
 
@@ -458,6 +461,13 @@ export const machine = createMachine<DateInputSchema>({
 
       syncValidSegments({ context, prop }) {
         context.set("validSegments", getDefaultValidSegments(context.get("value"), prop("allSegments")))
+      },
+
+      syncPlaceholderProp({ prop, context }) {
+        const propValue = prop("placeholderValue")
+        if (propValue) {
+          context.set("placeholderValue", propValue)
+        }
       },
 
       announceSegmentValue({ refs, computed, context }) {
