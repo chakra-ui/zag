@@ -81,6 +81,37 @@ interface ProcessSegmentsProps {
   granularity: DateGranularity
 }
 
+/**
+ * Calls formatter.formatToParts(dateValue), with a fallback for environments
+ * where very old dates (e.g. year < 100 CE) throw RangeError in Intl.DateTimeFormat.
+ */
+function getSafeFormatParts(
+  formatter: DateFormatter,
+  dateValue: Date,
+  displayValue: DateValue,
+): Intl.DateTimeFormatPart[] {
+  try {
+    return formatter.formatToParts(dateValue)
+  } catch {
+    // dateValue is out of the safe range for Intl.DateTimeFormat (e.g. year < 100 CE or NaN).
+    // Use today's date to get the correct segment structure (guaranteed safe), then patch
+    // the actual field values so the user sees what they typed.
+    return formatter.formatToParts(new Date()).map((part) => {
+      const type = part.type as string
+      switch (type) {
+        case "year":
+        case "relatedYear":
+          return { ...part, value: String(displayValue.year) }
+        case "month":
+          return { ...part, value: String(displayValue.month) }
+        case "day":
+          return { ...part, value: String(displayValue.day) }
+      }
+      return part
+    })
+  }
+}
+
 export function processSegments({
   dateValue,
   displayValue,
@@ -91,7 +122,7 @@ export function processSegments({
   granularity,
 }: ProcessSegmentsProps): DateSegment[] {
   const timeValue = ["hour", "minute", "second"]
-  const segments = formatter.formatToParts(dateValue)
+  const segments = getSafeFormatParts(formatter, dateValue, displayValue)
   const resolvedOptions = formatter.resolvedOptions()
   const processedSegments: DateSegment[] = []
 

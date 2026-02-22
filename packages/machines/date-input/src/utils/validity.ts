@@ -1,5 +1,5 @@
 import type { Params } from "@zag-js/core"
-import { constrainValue } from "@zag-js/date-utils"
+import { constrainValue, getTodayDate } from "@zag-js/date-utils"
 import type { DateInputSchema, DateValue, SegmentType } from "../date-input.types"
 
 /**
@@ -88,12 +88,18 @@ export function setValue(ctx: Params<DateInputSchema>, value: DateValue) {
 }
 
 /**
- * When all segments of a group become invalid, remove that group's date from value.
- * This prevents syncValidSegments from falsely re-validating the group when another
- * group's value changes (since syncValidSegments marks all segments valid for any non-null date).
+ * When all segments of a group become invalid, remove that group's date from value
+ * and reset the placeholderValue to a safe default.
+ *
+ * Removing from value prevents syncValidSegments from falsely re-validating the group
+ * when another group's value changes (since syncValidSegments marks all segments valid
+ * for any non-null date).
+ *
+ * Resetting placeholderValue prevents formatToParts from receiving unusual edge-case
+ * dates (e.g. year=1) that can throw RangeError in some environments.
  */
 export function clearValueIfAllSegmentsInvalid(ctx: Params<DateInputSchema>) {
-  const { context } = ctx
+  const { context, prop } = ctx
   const index = context.get("activeIndex")
   const activeValidSegments = context.get("validSegments")[index] ?? {}
   if (Object.keys(activeValidSegments).length === 0) {
@@ -101,6 +107,7 @@ export function clearValueIfAllSegmentsInvalid(ctx: Params<DateInputSchema>) {
     if (index < values.length) {
       context.set("value", values.slice(0, index))
     }
+    context.set("placeholderValue", getTodayDate(prop("timeZone")))
   }
 }
 
