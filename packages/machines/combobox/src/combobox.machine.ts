@@ -67,15 +67,14 @@ export const machine = createMachine({
           const prevSelectedItems = context.get("selectedItems")
           const collection = prop("collection")
 
+          const findItems = (vals: string[]) =>
+            vals.map((v) => prevSelectedItems.find((item) => collection.getItemValue(item) === v) || collection.find(v))
+
+          const nextItems = findItems(value)
+
           // When controlled, use prop value for selectedItems so they stay in sync when controller ignores selection
           const effectiveValue = prop("value") || value
-
-          const nextItems = effectiveValue.map((v) => {
-            const item = prevSelectedItems.find((item) => collection.getItemValue(item) === v)
-            return item || collection.find(v)
-          })
-
-          context.set("selectedItems", nextItems)
+          context.set("selectedItems", findItems(effectiveValue))
 
           prop("onValueChange")?.({ value, items: nextItems })
         },

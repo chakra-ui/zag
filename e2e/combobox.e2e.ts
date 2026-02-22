@@ -198,6 +198,21 @@ test.describe("combobox", () => {
     await I.seeInputHasValue("")
   })
 
+  test("[callback] onValueChange should include selected item in items", async () => {
+    await I.clickTrigger()
+    await I.clickItem("Zambia")
+    await I.seeOnValueChangeItems("Zambia")
+  })
+
+  test("[callback] onValueChange items should be empty after clearing", async () => {
+    await I.clickTrigger()
+    await I.clickItem("Zambia")
+    await I.seeOnValueChangeItems("Zambia")
+    await I.clickTrigger()
+    await I.clickClearTrigger()
+    await I.seeOnValueChangeItemsIsEmpty()
+  })
+
   test("[no value] enter behavior for custom values", async () => {
     await I.controls.select("inputBehavior", "none")
     await I.type("foo")
