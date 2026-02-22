@@ -358,10 +358,17 @@ export const machine = createMachine<DateInputSchema>({
 
       clearSegmentValue(params) {
         const { event, prop, context } = params
-        const { segment } = event
 
         const displayValue = getDisplayValue(params)
         const formatter = prop("formatter")
+
+        // Use the machine's current active segment instead of the event's segment to fix two issues:
+        // 1. RAF timing: DOM focus may not have moved yet (requestAnimationFrame is pending), so the
+        //    keydown event fires on the previously focused element with a stale/wrong segment type.
+        // 2. Stale React render: segment.text in the event closure reflects the previous render,
+        //    so rapid keypresses can see outdated text values before React re-renders.
+        // getActiveSegment uses computed("segments") which always reflects current machine state.
+        const segment = getActiveSegment(params) ?? event.segment
         const type = segment.type as DateSegment["type"]
 
         // dayPeriod: reset to placeholder's AM/PM
