@@ -549,7 +549,7 @@ export const machine = createMachine<MenuSchema>({
         return trackFocusVisible({ root: scope.getRootNode?.() })
       },
       trackPositioning({ context, prop, scope, refs }) {
-        if (!!dom.getContextTriggerEl(scope)) return
+        if (dom.getContextTriggerEl(scope)) return
         const positioning = {
           ...prop("positioning"),
           ...refs.get("positioningOverride"),
