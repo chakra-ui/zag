@@ -86,6 +86,7 @@
     "cross-env": "^10.1.0",
     "dotenv": "17.3.1",
     "eslint": "10.0.0",
+    "esbuild-plugin-file-path-extensions": "^2.1.4",
     "fast-glob": "3.3.3",
     "find-packages": "10.0.4",
     "globals": "^17.3.0",
