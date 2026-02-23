@@ -1,57 +1,58 @@
-import tsParser from "@typescript-eslint/parser"
-import tsPlugin from "@typescript-eslint/eslint-plugin"
+import eslint from "@eslint/js"
+import { defineConfig, globalIgnores } from "eslint/config"
+import globals from "globals"
+import tseslint from "typescript-eslint"
 
-/** @type {import('eslint').Linter.Config[]} */
-export default [
+export default defineConfig([
+  globalIgnores([
+    "dist",
+    "node_modules",
+    "coverage",
+    ".next",
+    "**/.svelte-kit",
+    "**/.vercel",
+    "build",
+    "examples/next-ts",
+    "examples/vue-ts",
+    "plop-templates",
+    "starters",
+    "website",
+    "**/*.d.ts",
+  ]),
   {
-    languageOptions: {
-      parser: tsParser,
-      globals: {
-        node: true,
-      },
-    },
-    plugins: {
-      "@typescript-eslint": tsPlugin,
-    },
     files: ["**/*.ts", "**/*.tsx"],
-    ignores: ["dist", "node_modules", "coverage", ".next", "build", "examples/vue-ts", "plop-templates", "**/*.d.ts"],
-
+    extends: [eslint.configs.recommended, ...tseslint.configs.recommended],
+    languageOptions: {
+      globals: globals.node,
+    },
     rules: {
-      "@typescript-eslint/ban-ts-comment": "off",
-      "@typescript-eslint/no-use-before-define": "off",
-      "@typescript-eslint/no-explicit-any": "off",
-      "@typescript-eslint/no-non-null-assertion": "off",
-      "no-param-reassign": "off",
-      "prefer-spread": "off",
-      "no-console": "off",
-      "prefer-const": "off",
-      "jsx-a11y/no-autofocus": "off",
-      "import/named": "off",
-      "import/prefer-default-export": "off",
-      "no-underscore-dangle": "off",
-      "no-shadow": "off",
-      "no-plusplus": "off",
-      "spaced-comment": "off",
-      "guard-for-in": "off",
-      "operator-assignment": "off",
-      "prefer-destructuring": "off",
-      "consistent-return": "off",
-      "no-restricted-syntax": "off",
-      "no-continue": "off",
-      eqeqeq: "off",
-      "@typescript-eslint/dot-notation": "off",
-      "no-bitwise": "off",
+      // Suppress eslint:recommended rules that don't apply
+      "no-case-declarations": "off",
+      "no-empty": "off",
+      "no-prototype-builtins": "off",
+      "no-undef": "off",
       "no-redeclare": "off",
-      "@typescript-eslint/naming-convention": "off",
-      "import/no-extraneous-dependencies": "off",
-      "@typescript-eslint/lines-between-class-members": "off",
-      "no-alert": "off",
-      "@typescript-eslint/no-shadow": "off",
-      "import/no-named-as-default": "off",
-      "prefer-object-spread": "off",
-      "arrow-body-style": "off",
-      "import/namespace": "off",
-      "jsx-a11y/label-has-associated-control": "off",
+      "no-unassigned-vars": "off",
+      "no-useless-assignment": "off",
+      "prefer-const": "off",
+      "prefer-rest-params": "off",
+      "prefer-spread": "off",
+      "preserve-caught-error": "off",
+
+      // Suppress typescript-eslint:recommended rules that don't apply
+      "@typescript-eslint/ban-ts-comment": "off",
+      "@typescript-eslint/no-empty-object-type": "off",
+      "@typescript-eslint/no-explicit-any": "off",
+      "@typescript-eslint/no-namespace": "off",
+      "@typescript-eslint/no-non-null-asserted-optional-chain": "off",
+      "@typescript-eslint/no-non-null-assertion": "off",
+      "@typescript-eslint/no-require-imports": "off",
+      "@typescript-eslint/no-unsafe-function-type": "off",
+      "@typescript-eslint/no-this-alias": "off",
+      "@typescript-eslint/no-unused-expressions": "off",
+      "@typescript-eslint/no-wrapper-object-types": "off",
+
+      // Custom rules
       "@typescript-eslint/no-unused-vars": [
         "error",
         {
@@ -60,14 +61,6 @@ export default [
           ignoreRestSiblings: true,
         },
       ],
-      "default-case": "off",
     },
   },
-
-  {
-    files: ["*.js", "*.jsx"],
-    parserOptions: {
-      project: "tsconfig.eslint.json",
-    },
-  },
-]
+])

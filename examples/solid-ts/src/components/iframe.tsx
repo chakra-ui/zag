@@ -1,4 +1,3 @@
-/* eslint-disable prefer-const */
 import { JSX, ParentProps, children, createSignal, createUniqueId, onCleanup, onMount, splitProps } from "solid-js"
 import { render } from "solid-js/web"
 
