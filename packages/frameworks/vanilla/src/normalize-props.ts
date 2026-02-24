@@ -18,7 +18,7 @@ export const propMap: AttrMap = {
 // SVG attributes that should preserve their case
 const caseSensitiveSvgAttrs = new Set<string>(["viewBox", "preserveAspectRatio"])
 
-const toStyleString = (style: any) => {
+export const toStyleString = (style: any) => {
   let string = ""
   for (let key in style) {
     const value = style[key]
