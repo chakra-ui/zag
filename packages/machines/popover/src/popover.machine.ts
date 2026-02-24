@@ -87,8 +87,8 @@ export const machine = createMachine<PopoverSchema>({
         "trapFocus",
         "preventScroll",
         "hideContentBelow",
-        "trackPositioning",
         "trackDismissableElement",
+        "trackPositioning",
         "proxyTabFocus",
       ],
       on: {
