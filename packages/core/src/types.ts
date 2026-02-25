@@ -128,7 +128,7 @@ export interface Transition<T extends Dict> {
 type MaybeArray<T> = T | T[]
 
 export type ChooseFn<T extends Dict> = (
-  transitions: MaybeArray<Omit<Transition<T>, "target">>,
+  transitions: MaybeArray<Omit<Transition<T>, "target">> | null | undefined,
 ) => Transition<T> | undefined
 
 interface PropsParams<T extends Dict> {
