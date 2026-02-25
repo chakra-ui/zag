@@ -9,7 +9,16 @@ import type {
   MachineSchema,
   Service,
 } from "@zag-js/core"
-import { createScope, INIT_STATE, MachineStatus } from "@zag-js/core"
+import {
+  createScope,
+  findTransition,
+  getExitEnterStates,
+  hasTag,
+  INIT_STATE,
+  MachineStatus,
+  matchesState,
+  resolveStateValue,
+} from "@zag-js/core"
 import { compact, ensure, isFunction, isString, toArray, warn } from "@zag-js/utils"
 import { computed as __computed, nextTick, onBeforeUnmount, onMounted, toValue, type ComputedRef, type Ref } from "vue"
 import { bindable } from "./bindable"
@@ -100,11 +109,11 @@ export function useMachine<T extends MachineSchema>(
     ...state,
     matches(...values: T["state"][]) {
       const currentState = state.get()
-      return values.includes(currentState)
+      return values.some((value) => matchesState(currentState as string, value as string))
     },
     hasTag(tag: T["tag"]) {
       const currentState = state.get()
-      return !!machine.states[currentState as T["state"]]?.tags?.includes(tag)
+      return hasTag(machine, currentState, tag)
     },
   })
 
@@ -186,38 +195,36 @@ export function useMachine<T extends MachineSchema>(
   }
 
   const state = bindable(() => ({
-    defaultValue: machine.initialState({ prop }),
+    defaultValue: resolveStateValue(machine, machine.initialState({ prop })),
     onChange(nextState, prevState) {
-      // compute effects: exit -> transition -> enter
+      const { exiting, entering } = getExitEnterStates(machine, prevState, nextState, transitionRef?.reenter)
 
-      // exit effects
-      if (prevState) {
-        const exitEffects = effects.get(prevState)
+      exiting.forEach((item) => {
+        const exitEffects = effects.get(item.path)
         exitEffects?.()
-        effects.delete(prevState)
-      }
+        effects.delete(item.path)
+      })
 
-      // exit actions
-      if (prevState) {
-        action(machine.states[prevState]?.exit)
-      }
+      exiting.forEach((item) => {
+        action(item.state?.exit)
+      })
 
-      // transition actions
       action(transitionRef?.actions)
 
-      // enter effect
-      const cleanup = effect(machine.states[nextState]?.effects)
-      if (cleanup) effects.set(nextState as string, cleanup)
+      entering.forEach((item) => {
+        const cleanup = effect(item.state?.effects)
+        if (cleanup) effects.set(item.path, cleanup)
+      })
 
-      // root entry actions
       if (prevState === INIT_STATE) {
         action(machine.entry)
         const cleanup = effect(machine.effects)
         if (cleanup) effects.set(INIT_STATE, cleanup)
       }
 
-      // enter actions
-      action(machine.states[nextState]?.entry)
+      entering.forEach((item) => {
+        action(item.state?.entry)
+      })
     },
   }))
 
@@ -248,16 +255,14 @@ export function useMachine<T extends MachineSchema>(
 
     let currentState = state.get()
 
-    const transitions =
-      //@ts-expect-error
-      machine.states[currentState].on?.[event.type] ?? machine.on?.[event.type]
+    const transitions = findTransition(machine, currentState, event.type as string)
 
     const transition = choose(transitions)
     if (!transition) return
 
     // save current transition
     transitionRef = transition
-    const target = transition.target ?? currentState
+    const target = resolveStateValue(machine, transition.target ?? currentState)
 
     debug("transition", event.type, transition.target || currentState, `(${transition.actions})`)
 

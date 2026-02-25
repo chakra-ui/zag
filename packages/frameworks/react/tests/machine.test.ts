@@ -34,6 +34,80 @@ describe("basic", () => {
     expect(result.current.state.get()).toBe("foo")
   })
 
+  test("nested states", async () => {
+    const order: string[] = []
+    const record = (value: string) => () => order.push(value)
+
+    const machine = createMachine<any>({
+      initialState() {
+        return "dialog"
+      },
+      states: {
+        dialog: {
+          tags: ["overlay"],
+          initial: "closed",
+          states: {
+            closed: {
+              entry: ["enterClosed"],
+              exit: ["exitClosed"],
+              on: {
+                OPEN: { target: "dialog.open" },
+              },
+            },
+            open: {
+              entry: ["enterOpen"],
+              exit: ["exitOpen"],
+              on: {
+                CLOSE: { target: "dialog.closed", actions: ["onClose"] },
+              },
+            },
+          },
+          on: {
+            RESET: { target: "dialog.closed" },
+          },
+        },
+      },
+      implementations: {
+        actions: {
+          enterClosed: record("enter-closed"),
+          exitClosed: record("exit-closed"),
+          enterOpen: record("enter-open"),
+          exitOpen: record("exit-open"),
+          onClose: record("transition"),
+        },
+      },
+    })
+
+    const { result, send } = renderMachine(machine)
+
+    expect(result.current.state.get()).toBe("dialog.closed")
+    expect(result.current.state.matches("dialog")).toBe(true)
+    expect(result.current.state.hasTag("overlay")).toBe(true)
+
+    await send({ type: "OPEN" })
+    expect(result.current.state.get()).toBe("dialog.open")
+
+    await send({ type: "RESET" })
+    expect(result.current.state.get()).toBe("dialog.closed")
+
+    await send({ type: "OPEN" })
+    await send({ type: "CLOSE" })
+
+    expect(result.current.state.get()).toBe("dialog.closed")
+    expect(order).toEqual([
+      "enter-closed",
+      "exit-closed",
+      "enter-open",
+      "exit-open",
+      "enter-closed",
+      "exit-closed",
+      "enter-open",
+      "exit-open",
+      "transition",
+      "enter-closed",
+    ])
+  })
+
   test("initial entry action", async () => {
     const fooEntry = vi.fn()
     const rootEntry = vi.fn()

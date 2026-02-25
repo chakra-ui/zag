@@ -302,6 +302,92 @@ describe("basic", () => {
 
     service.stop()
   })
+
+  test("nested states", async () => {
+    const order: string[] = []
+    const record = (value: string) => () => order.push(value)
+
+    const machine = createMachine<any>({
+      initialState() {
+        return "dialog"
+      },
+      states: {
+        dialog: {
+          tags: ["overlay"],
+          initial: "closed",
+          states: {
+            closed: {
+              entry: ["enterClosed"],
+              exit: ["exitClosed"],
+              on: {
+                OPEN: { target: "dialog.open" },
+              },
+            },
+            open: {
+              entry: ["enterOpen"],
+              exit: ["exitOpen"],
+              on: {
+                CLOSE: { target: "dialog.closed", actions: ["onClose"] },
+              },
+            },
+          },
+          on: {
+            RESET: { target: "dialog.closed" },
+          },
+        },
+      },
+      implementations: {
+        actions: {
+          enterClosed: record("enter-closed"),
+          exitClosed: record("exit-closed"),
+          enterOpen: record("enter-open"),
+          exitOpen: record("exit-open"),
+          onClose: record("transition"),
+        },
+      },
+    })
+
+    const service = new VanillaMachine(machine)
+    service.start()
+    await tick()
+
+    expect(service.state.get()).toBe("dialog.closed")
+    expect(service.service.state.matches("dialog")).toBe(true)
+    expect(service.service.state.hasTag("overlay")).toBe(true)
+
+    service.send({ type: "OPEN" })
+    await tick()
+
+    expect(service.state.get()).toBe("dialog.open")
+    expect(service.service.state.matches("dialog.open")).toBe(true)
+
+    service.send({ type: "RESET" })
+    await tick()
+
+    expect(service.state.get()).toBe("dialog.closed")
+
+    service.send({ type: "OPEN" })
+    await tick()
+
+    service.send({ type: "CLOSE" })
+    await tick()
+
+    expect(service.state.get()).toBe("dialog.closed")
+    expect(order).toEqual([
+      "enter-closed",
+      "exit-closed",
+      "enter-open",
+      "exit-open",
+      "enter-closed",
+      "exit-closed",
+      "enter-open",
+      "exit-open",
+      "transition",
+      "enter-closed",
+    ])
+
+    service.stop()
+  })
 })
 
 describe("lifecycle", () => {

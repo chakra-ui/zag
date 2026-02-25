@@ -145,6 +145,24 @@ export type ActionsOrFn<T extends Dict> = T["action"][] | ((params: Params<T>) =
 
 export type EffectsOrFn<T extends Dict> = T["effect"][] | ((params: Params<T>) => T["effect"][] | undefined)
 
+export interface MachineState<T extends Dict> {
+  tags?: T["tag"][] | undefined
+  entry?: ActionsOrFn<T> | undefined
+  exit?: ActionsOrFn<T> | undefined
+  effects?: EffectsOrFn<T> | undefined
+  initial?: T["state"] | undefined
+  states?:
+    | {
+        [K in T["state"]]?: MachineState<T>
+      }
+    | undefined
+  on?:
+    | {
+        [E in T["event"]["type"]]?: Transition<T> | Array<Transition<T>>
+      }
+    | undefined
+}
+
 export interface Machine<T extends Dict> {
   debug?: boolean | undefined
   props?: ((params: PropsParams<T>) => T["props"]) | undefined
@@ -170,17 +188,7 @@ export interface Machine<T extends Dict> {
       }
     | undefined
   states: {
-    [K in T["state"]]: {
-      tags?: T["tag"][] | undefined
-      entry?: ActionsOrFn<T> | undefined
-      exit?: ActionsOrFn<T> | undefined
-      effects?: EffectsOrFn<T> | undefined
-      on?:
-        | {
-            [E in T["event"]["type"]]?: Transition<T> | Array<Transition<T>>
-          }
-        | undefined
-    }
+    [K in T["state"]]: MachineState<T>
   }
   implementations?:
     | {
