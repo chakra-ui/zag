@@ -5,7 +5,7 @@ machines** with addition of extra features we need for our components.
 
 ## Features
 
-- Finite states (non-nested)
+- Finite states with optional nested (hierarchical) states
 - Initial state
 - Transitions (object or strings)
 - Context
@@ -72,6 +72,32 @@ toggleService.subscribe((state) => {
 toggleService.send("TOGGLE")
 toggleService.send("TOGGLE")
 toggleService.stop()
+```
+
+### Nested states (dot notation)
+
+```ts
+import { createMachine } from "@zag-js/core"
+
+const machine = createMachine({
+  initialState() {
+    return "dialog"
+  },
+  states: {
+    dialog: {
+      tags: ["overlay"],
+      initial: "closed",
+      states: {
+        closed: { on: { OPEN: { target: "dialog.open" } } },
+        open: { on: { CLOSE: { target: "dialog.closed" } } },
+      },
+      // parent-level transitions still work
+      on: { RESET: { target: "dialog.closed" } },
+    },
+  },
+})
+
+// service.state.matches("dialog.open") === true when nested state is active
 ```
 
 ## API
