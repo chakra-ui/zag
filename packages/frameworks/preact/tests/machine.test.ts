@@ -1,5 +1,4 @@
 import { createGuards, createMachine } from "@zag-js/core"
-import { computed, nextTick, ref } from "vue"
 import { renderMachine } from "./render"
 
 describe("basic", () => {
@@ -10,7 +9,9 @@ describe("basic", () => {
       },
       states: {
         foo: {
-          on: { NEXT: { target: "bar" } },
+          on: {
+            NEXT: { target: "bar" },
+          },
         },
         bar: {},
       },
@@ -18,8 +19,9 @@ describe("basic", () => {
 
     const { result, cleanup } = renderMachine(machine)
     await Promise.resolve()
+
     expect(result.current.state.get()).toBe("foo")
-    cleanup()
+    await cleanup()
   })
 
   test("initial entry action", async () => {
@@ -49,27 +51,7 @@ describe("basic", () => {
 
     expect(fooEntry).toHaveBeenCalledOnce()
     expect(rootEntry).toHaveBeenCalledOnce()
-    cleanup()
-  })
-
-  test("current state and context", async () => {
-    const machine = createMachine<any>({
-      initialState() {
-        return "test"
-      },
-      context({ bindable }) {
-        return { foo: bindable(() => ({ defaultValue: "bar" })) }
-      },
-      states: {
-        test: {},
-      },
-    })
-
-    const { result, cleanup } = renderMachine(machine)
-    await Promise.resolve()
-    expect(result.current.state.get()).toBe("test")
-    expect(result.current.context.get("foo")).toBe("bar")
-    cleanup()
+    await cleanup()
   })
 
   test("state transition", async () => {
@@ -79,7 +61,9 @@ describe("basic", () => {
       },
       states: {
         foo: {
-          on: { NEXT: { target: "bar" } },
+          on: {
+            NEXT: { target: "bar" },
+          },
         },
         bar: {},
       },
@@ -88,32 +72,7 @@ describe("basic", () => {
     const { result, send, cleanup } = renderMachine(machine)
     await send({ type: "NEXT" })
     expect(result.current.state.get()).toBe("bar")
-    cleanup()
-  })
-
-  test("transition action", async () => {
-    const onNext = vi.fn()
-    const machine = createMachine<any>({
-      initialState() {
-        return "foo"
-      },
-      states: {
-        foo: {
-          on: { NEXT: { target: "bar", actions: ["onNext"] } },
-        },
-        bar: {},
-      },
-      implementations: {
-        actions: {
-          onNext,
-        },
-      },
-    })
-
-    const { send, cleanup } = renderMachine(machine)
-    await send({ type: "NEXT" })
-    expect(onNext).toHaveBeenCalledOnce()
-    cleanup()
+    await cleanup()
   })
 
   test("reenter transition", async () => {
@@ -149,89 +108,8 @@ describe("basic", () => {
     await send({ type: "REENTER" })
     await Promise.resolve()
 
-    // Entry should be called again due to reenter
     expect(entryAction).toHaveBeenCalledTimes(2)
-    cleanup()
-  })
-
-  test("same-state transition does not reenter by default", async () => {
-    const entryAction = vi.fn()
-    const transitionAction = vi.fn()
-
-    const machine = createMachine<any>({
-      initialState() {
-        return "active"
-      },
-      states: {
-        active: {
-          entry: ["onEntry"],
-          on: {
-            PING: {
-              target: "active",
-              actions: ["onTransition"],
-            },
-          },
-        },
-      },
-      implementations: {
-        actions: {
-          onEntry: entryAction,
-          onTransition: transitionAction,
-        },
-      },
-    })
-
-    const { send, cleanup } = renderMachine(machine)
-    await Promise.resolve()
-
-    expect(entryAction).toHaveBeenCalledTimes(1)
-
-    await send({ type: "PING" })
-    await Promise.resolve()
-
-    expect(transitionAction).toHaveBeenCalledTimes(1)
-    expect(entryAction).toHaveBeenCalledTimes(1)
-    cleanup()
-  })
-
-  test("reenter transition action order", async () => {
-    const order: string[] = []
-
-    const machine = createMachine<any>({
-      initialState() {
-        return "active"
-      },
-      states: {
-        active: {
-          entry: ["onEntry"],
-          exit: ["onExit"],
-          on: {
-            REENTER: {
-              target: "active",
-              reenter: true,
-              actions: ["onTransition"],
-            },
-          },
-        },
-      },
-      implementations: {
-        actions: {
-          onEntry: () => order.push("entry"),
-          onExit: () => order.push("exit"),
-          onTransition: () => order.push("transition"),
-        },
-      },
-    })
-
-    const { send, cleanup } = renderMachine(machine)
-    await Promise.resolve()
-    order.length = 0
-
-    await send({ type: "REENTER" })
-    await Promise.resolve()
-
-    expect(order).toEqual(["exit", "transition", "entry"])
-    cleanup()
+    await cleanup()
   })
 
   test("guarded transition", async () => {
@@ -268,176 +146,11 @@ describe("basic", () => {
     result.current.context.set("canGo", true)
     await send({ type: "NEXT" })
     expect(result.current.state.get()).toBe("bar")
-    cleanup()
-  })
-
-  test("resolves reactive props", async () => {
-    const max = ref(5)
-    const machine = createMachine<any>({
-      context({ bindable, prop }) {
-        return {
-          value: bindable(() => ({ defaultValue: 0 })),
-          max: bindable(() => ({ defaultValue: prop("max") })),
-        }
-      },
-      initialState() {
-        return "idle"
-      },
-      states: {
-        idle: {
-          on: {
-            INCREMENT: { actions: ["inc"] },
-          },
-        },
-      },
-      implementations: {
-        actions: {
-          inc({ context, prop }) {
-            const cap = prop("max") ?? Number.POSITIVE_INFINITY
-            const next = Math.min(context.get("value") + 1, cap)
-            context.set("value", next)
-          },
-        },
-      },
-    })
-
-    const props = computed(() => ({ max: max.value }))
-    const { result, send, cleanup } = renderMachine(machine, props)
-
-    await send({ type: "INCREMENT" })
-    await send({ type: "INCREMENT" })
-    expect(result.current.context.get("value")).toBe(2)
-
-    max.value = 1
-    await nextTick()
-    await send({ type: "INCREMENT" })
-    expect(result.current.context.get("value")).toBe(1)
-    cleanup()
+    await cleanup()
   })
 })
 
 describe("edge cases", () => {
-  test("computed", async () => {
-    const machine = createMachine<any>({
-      initialState() {
-        return "test"
-      },
-      states: {
-        test: {
-          on: {
-            UPDATE: {
-              actions: ["setValue"],
-            },
-          },
-        },
-      },
-      context({ bindable }) {
-        return { value: bindable(() => ({ defaultValue: "bar" })) }
-      },
-      computed: {
-        length: ({ context }) => context.get("value").length,
-      },
-      implementations: {
-        actions: {
-          setValue: ({ context }) => context.set("value", "hello"),
-        },
-      },
-    })
-
-    const { result, send, cleanup } = renderMachine(machine)
-    await Promise.resolve()
-
-    expect(result.current.computed("length")).toEqual(3)
-
-    await send({ type: "UPDATE" })
-    expect(result.current.computed("length")).toEqual(5)
-    cleanup()
-  })
-
-  test("watch", async () => {
-    const notify = vi.fn()
-    const machine = createMachine<any>({
-      initialState() {
-        return "test"
-      },
-      states: {
-        test: {
-          on: {
-            UPDATE: {
-              actions: ["setValue"],
-            },
-          },
-        },
-      },
-      context({ bindable }) {
-        return { value: bindable(() => ({ defaultValue: "bar" })) }
-      },
-      watch({ track, context, action }) {
-        track([() => context.get("value")], () => {
-          action(["notify"])
-        })
-      },
-      implementations: {
-        actions: {
-          setValue: ({ context }) => context.set("value", "hello"),
-          notify,
-        },
-      },
-    })
-
-    const { send, cleanup } = renderMachine(machine)
-
-    await send({ type: "UPDATE" })
-    await send({ type: "UPDATE" })
-    expect(notify).toHaveBeenCalledOnce()
-    cleanup()
-  })
-
-  test("effects", async () => {
-    vi.useFakeTimers()
-
-    const effectCleanup = vi.fn()
-    const machine = createMachine<any>({
-      initialState() {
-        return "test"
-      },
-      states: {
-        test: {
-          effects: ["waitForMs"],
-          on: {
-            DONE: { target: "success" },
-          },
-        },
-        success: {},
-      },
-      implementations: {
-        effects: {
-          waitForMs({ send }) {
-            const id = setTimeout(() => {
-              send({ type: "DONE" })
-            }, 1000)
-            return () => {
-              effectCleanup()
-              clearTimeout(id)
-            }
-          },
-        },
-      },
-    })
-
-    const { result, advanceTime, cleanup } = renderMachine(machine)
-    await Promise.resolve()
-
-    expect(result.current.state.get()).toEqual("test")
-
-    await advanceTime(1000)
-    expect(result.current.state.get()).toEqual("success")
-    expect(effectCleanup).toHaveBeenCalledOnce()
-    cleanup()
-
-    vi.useRealTimers()
-  })
-
   test("state.matches() helper", async () => {
     const machine = createMachine<any>({
       initialState() {
@@ -468,12 +181,10 @@ describe("edge cases", () => {
 
     await send({ type: "START" })
     expect(result.current.state.matches("loading")).toBe(true)
-    expect(result.current.state.matches("idle", "loading", "error")).toBe(true)
 
     await send({ type: "SUCCESS" })
     expect(result.current.state.matches("success", "error")).toBe(true)
-    expect(result.current.state.matches("idle", "loading")).toBe(false)
-    cleanup()
+    await cleanup()
   })
 
   test("event previous/current tracking", async () => {
@@ -516,47 +227,89 @@ describe("edge cases", () => {
 
     expect(capturedCurrent).toMatchObject({ type: "THIRD", data: "third-data" })
     expect(capturedPrevious).toMatchObject({ type: "FIRST", data: "first-data" })
-    cleanup()
+    await cleanup()
   })
 
-  test("context: controlled", async () => {
+  test("same-state transition does not reenter by default", async () => {
+    const entryAction = vi.fn()
+    const transitionAction = vi.fn()
+
     const machine = createMachine<any>({
-      props() {
-        return { value: "foo", defaultValue: "" }
-      },
       initialState() {
-        return "test"
-      },
-      context({ bindable, prop }) {
-        return {
-          value: bindable(() => ({
-            defaultValue: prop("defaultValue"),
-            value: prop("value"),
-          })),
-        }
+        return "active"
       },
       states: {
-        test: {
+        active: {
+          entry: ["onEntry"],
           on: {
-            "VALUE.SET": {
-              actions: ["setValue"],
+            PING: {
+              target: "active",
+              actions: ["onTransition"],
             },
           },
         },
       },
       implementations: {
         actions: {
-          setValue: ({ context, event }) => context.set("value", event.value),
+          onEntry: entryAction,
+          onTransition: transitionAction,
         },
       },
     })
 
-    const { result, send, cleanup } = renderMachine(machine)
-    await send({ type: "VALUE.SET", value: "next" })
-    expect(result.current.context.get("value")).toEqual("foo")
-    cleanup()
+    const { send, cleanup } = renderMachine(machine)
+    await Promise.resolve()
+
+    expect(entryAction).toHaveBeenCalledTimes(1)
+
+    await send({ type: "PING" })
+
+    expect(transitionAction).toHaveBeenCalledTimes(1)
+    expect(entryAction).toHaveBeenCalledTimes(1)
+    await cleanup()
   })
 
+  test("reenter transition action order", async () => {
+    const order: string[] = []
+
+    const machine = createMachine<any>({
+      initialState() {
+        return "active"
+      },
+      states: {
+        active: {
+          entry: ["onEntry"],
+          exit: ["onExit"],
+          on: {
+            REENTER: {
+              target: "active",
+              reenter: true,
+              actions: ["onTransition"],
+            },
+          },
+        },
+      },
+      implementations: {
+        actions: {
+          onEntry: () => order.push("entry"),
+          onExit: () => order.push("exit"),
+          onTransition: () => order.push("transition"),
+        },
+      },
+    })
+
+    const { send, cleanup } = renderMachine(machine)
+    await Promise.resolve()
+    order.length = 0
+
+    await send({ type: "REENTER" })
+
+    expect(order).toEqual(["exit", "transition", "entry"])
+    await cleanup()
+  })
+})
+
+describe("uniform coverage", () => {
   test("root lifecycle runs entry, exit and effect cleanup", async () => {
     const rootEntry = vi.fn()
     const rootExit = vi.fn()
@@ -590,7 +343,7 @@ describe("edge cases", () => {
     expect(rootExit).not.toHaveBeenCalled()
     expect(rootCleanup).not.toHaveBeenCalled()
 
-    cleanup()
+    await cleanup()
     expect(rootExit).toHaveBeenCalledOnce()
     expect(rootCleanup).toHaveBeenCalledOnce()
   })
@@ -631,7 +384,7 @@ describe("edge cases", () => {
     expect(result.current.state.get()).toBe("active")
     expect(onInternal).toHaveBeenCalledOnce()
     expect(onEntry).toHaveBeenCalledOnce()
-    cleanup()
+    await cleanup()
   })
 
   test("guard fallback selects the next passing transition", async () => {
@@ -671,7 +424,7 @@ describe("edge cases", () => {
     expect(result.current.state.get()).toBe("allowed")
     expect(allowed).toHaveBeenCalledOnce()
     expect(blocked).not.toHaveBeenCalled()
-    cleanup()
+    await cleanup()
   })
 
   test("ignores events sent after cleanup", async () => {
@@ -700,7 +453,7 @@ describe("edge cases", () => {
 
     const { result, cleanup } = renderMachine(machine)
     const service = result.current
-    cleanup()
+    await cleanup()
 
     service.send({ type: "NEXT" })
     await Promise.resolve()

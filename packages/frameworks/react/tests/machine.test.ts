@@ -147,6 +147,43 @@ describe("basic", () => {
     expect(result.current.state.hasTag("go")).toBeFalsy()
   })
 
+  test("reenter transition", async () => {
+    const entryAction = vi.fn()
+
+    const machine = createMachine<any>({
+      initialState() {
+        return "active"
+      },
+      states: {
+        active: {
+          entry: ["onEntry"],
+          on: {
+            REENTER: {
+              target: "active",
+              reenter: true,
+            },
+          },
+        },
+      },
+      implementations: {
+        actions: {
+          onEntry: entryAction,
+        },
+      },
+    })
+
+    const { send } = renderMachine(machine)
+    await Promise.resolve()
+
+    expect(entryAction).toHaveBeenCalledTimes(1)
+
+    await send({ type: "REENTER" })
+    await Promise.resolve()
+
+    // Entry should be called again due to reenter
+    expect(entryAction).toHaveBeenCalledTimes(2)
+  })
+
   test("action order", async () => {
     const order = new Set<string>()
     const call = (key: string) => () => order.add(key)
@@ -528,6 +565,7 @@ describe("edge cases", () => {
 
   test("same-state transitions with actions", async () => {
     const actionSpy = vi.fn()
+    const entrySpy = vi.fn()
 
     const machine = createMachine<any>({
       initialState() {
@@ -535,6 +573,7 @@ describe("edge cases", () => {
       },
       states: {
         active: {
+          entry: ["onEntry"],
           on: {
             PING: {
               target: "active",
@@ -545,22 +584,66 @@ describe("edge cases", () => {
       },
       implementations: {
         actions: {
+          onEntry: entrySpy,
           onPing: actionSpy,
         },
       },
     })
 
     const { result, send } = renderMachine(machine)
+    await Promise.resolve()
 
     expect(result.current.state.get()).toBe("active")
+    expect(entrySpy).toHaveBeenCalledTimes(1)
 
     await send({ type: "PING" })
     expect(result.current.state.get()).toBe("active")
     expect(actionSpy).toHaveBeenCalledTimes(1)
+    expect(entrySpy).toHaveBeenCalledTimes(1)
 
     await send({ type: "PING" })
     expect(result.current.state.get()).toBe("active")
     expect(actionSpy).toHaveBeenCalledTimes(2)
+    expect(entrySpy).toHaveBeenCalledTimes(1)
+  })
+
+  test("reenter transition action order", async () => {
+    const order: string[] = []
+
+    const machine = createMachine<any>({
+      initialState() {
+        return "active"
+      },
+      states: {
+        active: {
+          entry: ["onEntry"],
+          exit: ["onExit"],
+          on: {
+            REENTER: {
+              target: "active",
+              reenter: true,
+              actions: ["onTransition"],
+            },
+          },
+        },
+      },
+      implementations: {
+        actions: {
+          onEntry: () => order.push("entry"),
+          onExit: () => order.push("exit"),
+          onTransition: () => order.push("transition"),
+        },
+      },
+    })
+
+    const { send } = renderMachine(machine)
+    await Promise.resolve()
+    order.length = 0
+
+    await send({ type: "REENTER" })
+    await Promise.resolve()
+
+    expect(order).toEqual(["exit", "transition", "entry"])
   })
 
   test("event previous/current tracking", async () => {
@@ -607,5 +690,123 @@ describe("edge cases", () => {
 
     expect(capturedCurrent).toMatchObject({ type: "THIRD", data: "third-data" })
     expect(capturedPrevious).toMatchObject({ type: "FIRST", data: "first-data" })
+  })
+})
+
+describe("uniform coverage", () => {
+  test("root lifecycle runs entry, exit and effect cleanup", async () => {
+    const rootEntry = vi.fn()
+    const rootExit = vi.fn()
+    const rootCleanup = vi.fn()
+
+    const machine = createMachine<any>({
+      initialState() {
+        return "idle"
+      },
+      entry: ["rootEntry"],
+      exit: ["rootExit"],
+      effects: ["rootEffect"],
+      states: {
+        idle: {},
+      },
+      implementations: {
+        actions: {
+          rootEntry,
+          rootExit,
+        },
+        effects: {
+          rootEffect: () => rootCleanup,
+        },
+      },
+    })
+
+    const { unmount } = renderMachine(machine)
+    await Promise.resolve()
+
+    expect(rootEntry).toHaveBeenCalledOnce()
+    expect(rootExit).not.toHaveBeenCalled()
+    expect(rootCleanup).not.toHaveBeenCalled()
+
+    await act(async () => unmount())
+    await Promise.resolve()
+    expect(rootExit).toHaveBeenCalledOnce()
+    expect(rootCleanup).toHaveBeenCalledOnce()
+  })
+
+  test("internal transition without target runs actions without reentry", async () => {
+    const onEntry = vi.fn()
+    const onInternal = vi.fn()
+    const machine = createMachine<any>({
+      initialState() {
+        return "active"
+      },
+      states: {
+        active: {
+          entry: ["onEntry"],
+          on: {
+            INTERNAL: {
+              actions: ["onInternal"],
+            },
+          },
+        },
+      },
+      implementations: {
+        actions: {
+          onEntry,
+          onInternal,
+        },
+      },
+    })
+
+    const { result, send } = renderMachine(machine)
+    await Promise.resolve()
+
+    expect(result.current.state.get()).toBe("active")
+    expect(onEntry).toHaveBeenCalledOnce()
+
+    await send({ type: "INTERNAL" })
+
+    expect(result.current.state.get()).toBe("active")
+    expect(onInternal).toHaveBeenCalledOnce()
+    expect(onEntry).toHaveBeenCalledOnce()
+  })
+
+  test("guard fallback selects the next passing transition", async () => {
+    const blocked = vi.fn()
+    const allowed = vi.fn()
+
+    const machine = createMachine<any>({
+      initialState() {
+        return "idle"
+      },
+      states: {
+        idle: {
+          on: {
+            NEXT: [
+              { guard: "allowBlocked", target: "blocked", actions: ["onBlocked"] },
+              { target: "allowed", actions: ["onAllowed"] },
+            ],
+          },
+        },
+        blocked: {},
+        allowed: {},
+      },
+      implementations: {
+        guards: {
+          allowBlocked: () => false,
+        },
+        actions: {
+          onBlocked: blocked,
+          onAllowed: allowed,
+        },
+      },
+    })
+
+    const { result, send } = renderMachine(machine)
+    await send({ type: "NEXT" })
+
+    expect(result.current.state.get()).toBe("allowed")
+    expect(allowed).toHaveBeenCalledOnce()
+    expect(blocked).not.toHaveBeenCalled()
   })
 })

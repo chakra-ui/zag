@@ -271,7 +271,7 @@ export function useMachine<T extends MachineSchema>(
       if (changed) {
         // state change is high priority
         flushSync(() => state.set(target))
-      } else if (transition.reenter && !changed) {
+      } else if (transition.reenter) {
         state.invoke(currentState, currentState)
       } else {
         // call transition actions

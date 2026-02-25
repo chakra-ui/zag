@@ -230,7 +230,7 @@ export class VanillaMachine<T extends MachineSchema> {
       if (changed) {
         // state change is high priority
         this.state.set(target)
-      } else if (transition.reenter && !changed) {
+      } else if (transition.reenter) {
         // reenter will re-invoke the current state
         this.state.invoke(currentState, currentState)
       } else {

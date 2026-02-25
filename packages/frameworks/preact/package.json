@@ -32,6 +32,7 @@
   },
   "devDependencies": {
     "@zag-js/utils": "workspace:*",
+    "@testing-library/preact": "^3.2.4",
     "preact": "10.28.4",
     "clean-package": "2.2.0"
   },

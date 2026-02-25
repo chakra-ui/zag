@@ -598,6 +598,7 @@ describe("effects", () => {
 describe("edge cases", () => {
   test("same-state transitions with actions", async () => {
     const actionSpy = vi.fn()
+    const entrySpy = vi.fn()
 
     const machine = createMachine<any>({
       initialState() {
@@ -605,6 +606,7 @@ describe("edge cases", () => {
       },
       states: {
         active: {
+          entry: ["onEntry"],
           on: {
             PING: {
               target: "active",
@@ -615,6 +617,7 @@ describe("edge cases", () => {
       },
       implementations: {
         actions: {
+          onEntry: entrySpy,
           onPing: actionSpy,
         },
       },
@@ -625,16 +628,19 @@ describe("edge cases", () => {
     await tick()
 
     expect(service.state.get()).toBe("active")
+    expect(entrySpy).toHaveBeenCalledTimes(1)
 
     service.send({ type: "PING" })
     await tick()
     expect(service.state.get()).toBe("active")
     expect(actionSpy).toHaveBeenCalledTimes(1)
+    expect(entrySpy).toHaveBeenCalledTimes(1)
 
     service.send({ type: "PING" })
     await tick()
     expect(service.state.get()).toBe("active")
     expect(actionSpy).toHaveBeenCalledTimes(2)
+    expect(entrySpy).toHaveBeenCalledTimes(1)
 
     service.stop()
   })
@@ -774,6 +780,47 @@ describe("edge cases", () => {
     service.stop()
   })
 
+  test("reenter transition action order", async () => {
+    const order: string[] = []
+
+    const machine = createMachine<any>({
+      initialState() {
+        return "active"
+      },
+      states: {
+        active: {
+          entry: ["onEntry"],
+          exit: ["onExit"],
+          on: {
+            REENTER: {
+              target: "active",
+              reenter: true,
+              actions: ["onTransition"],
+            },
+          },
+        },
+      },
+      implementations: {
+        actions: {
+          onEntry: () => order.push("entry"),
+          onExit: () => order.push("exit"),
+          onTransition: () => order.push("transition"),
+        },
+      },
+    })
+
+    const service = new VanillaMachine(machine)
+    service.start()
+    await tick()
+    order.length = 0
+
+    service.send({ type: "REENTER" })
+    await tick()
+
+    expect(order).toEqual(["exit", "transition", "entry"])
+    service.stop()
+  })
+
   test("context controlled mode", async () => {
     const machine = createMachine<any>({
       props() {
@@ -817,5 +864,130 @@ describe("edge cases", () => {
     expect(service.context.get("value")).toEqual("foo")
 
     service.stop()
+  })
+
+  test("internal transition without target runs actions without reentry", async () => {
+    const onEntry = vi.fn()
+    const onInternal = vi.fn()
+
+    const machine = createMachine<any>({
+      initialState() {
+        return "active"
+      },
+      states: {
+        active: {
+          entry: ["onEntry"],
+          on: {
+            INTERNAL: {
+              actions: ["onInternal"],
+            },
+          },
+        },
+      },
+      implementations: {
+        actions: {
+          onEntry,
+          onInternal,
+        },
+      },
+    })
+
+    const service = new VanillaMachine(machine)
+    service.start()
+    await tick()
+
+    expect(service.state.get()).toBe("active")
+    expect(onEntry).toHaveBeenCalledOnce()
+
+    service.send({ type: "INTERNAL" })
+    await tick()
+
+    expect(service.state.get()).toBe("active")
+    expect(onInternal).toHaveBeenCalledOnce()
+    expect(onEntry).toHaveBeenCalledOnce()
+
+    service.stop()
+  })
+
+  test("guard fallback selects the next passing transition", async () => {
+    const blocked = vi.fn()
+    const allowed = vi.fn()
+
+    const machine = createMachine<any>({
+      initialState() {
+        return "idle"
+      },
+      states: {
+        idle: {
+          on: {
+            NEXT: [
+              { guard: "allowBlocked", target: "blocked", actions: ["onBlocked"] },
+              { target: "allowed", actions: ["onAllowed"] },
+            ],
+          },
+        },
+        blocked: {},
+        allowed: {},
+      },
+      implementations: {
+        guards: {
+          allowBlocked: () => false,
+        },
+        actions: {
+          onBlocked: blocked,
+          onAllowed: allowed,
+        },
+      },
+    })
+
+    const service = new VanillaMachine(machine)
+    service.start()
+    await tick()
+
+    service.send({ type: "NEXT" })
+    await tick()
+
+    expect(service.state.get()).toBe("allowed")
+    expect(allowed).toHaveBeenCalledOnce()
+    expect(blocked).not.toHaveBeenCalled()
+
+    service.stop()
+  })
+
+  test("ignores events sent after stop", async () => {
+    const actionSpy = vi.fn()
+
+    const machine = createMachine<any>({
+      initialState() {
+        return "idle"
+      },
+      states: {
+        idle: {
+          on: {
+            NEXT: {
+              target: "done",
+              actions: ["onNext"],
+            },
+          },
+        },
+        done: {},
+      },
+      implementations: {
+        actions: {
+          onNext: actionSpy,
+        },
+      },
+    })
+
+    const service = new VanillaMachine(machine)
+    service.start()
+    await tick()
+
+    service.stop()
+    service.send({ type: "NEXT" })
+    await tick()
+
+    expect(service.state.get()).toBe("idle")
+    expect(actionSpy).not.toHaveBeenCalled()
   })
 })
