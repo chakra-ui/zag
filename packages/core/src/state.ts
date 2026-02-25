@@ -2,6 +2,15 @@ import type { Machine, MachineSchema, MachineState, Transition } from "./types"
 
 const STATE_DELIMITER = "."
 
+function getProp<T>(obj: object | null | undefined, paths: string[]): T | undefined {
+  let current: unknown = obj
+  for (const key of paths) {
+    if (current == null || typeof current !== "object") return undefined
+    current = (current as Record<string, unknown>)[key]
+  }
+  return current as T
+}
+
 function toSegments(value: string | undefined) {
   if (!value) return []
   return String(value).split(STATE_DELIMITER).filter(Boolean)
@@ -14,18 +23,21 @@ export function getStateChain<T extends MachineSchema>(
   state: T["state"] | undefined,
 ): StateChain<T> {
   if (!state) return []
-  const segments = toSegments(state as string)
-  let currentStates: Record<string, MachineState<T>> | undefined = machine.states as any
+  const segments = toSegments(state)
+
   const chain: StateChain<T> = []
-  const currentPath: string[] = []
+  const pathSegments: string[] = []
+  const statePath: string[] = []
 
   for (const segment of segments) {
-    if (!currentStates) break
-    const current = currentStates[segment]
+    if (pathSegments.length > 0) pathSegments.push("states")
+    pathSegments.push(segment)
+
+    const current = getProp<MachineState<T>>(machine.states, pathSegments)
     if (!current) break
-    currentPath.push(segment)
-    chain.push({ path: currentPath.join(STATE_DELIMITER), state: current })
-    currentStates = current.states as any
+
+    statePath.push(segment)
+    chain.push({ path: statePath.join(STATE_DELIMITER), state: current })
   }
 
   return chain
@@ -33,22 +45,22 @@ export function getStateChain<T extends MachineSchema>(
 
 export function resolveStateValue<T extends MachineSchema>(machine: Machine<T>, value: T["state"]): T["state"] {
   const segments = toSegments(value as string)
-  let currentStates: Record<string, MachineState<T>> | undefined = machine.states as any
-  let current: MachineState<T> | undefined
+  const pathSegments: string[] = []
   const resolved: string[] = []
 
   for (const segment of segments) {
-    if (!currentStates) break
-    const next = currentStates[segment]
-    if (!next) return value
+    if (pathSegments.length > 0) pathSegments.push("states")
+    pathSegments.push(segment)
+    if (!getProp<MachineState<T>>(machine.states, pathSegments)) return value
     resolved.push(segment)
-    current = next
-    currentStates = next.states as any
   }
 
-  while (current?.initial && current.states?.[current.initial as string]) {
-    resolved.push(current.initial as string)
-    current = current.states[current.initial as string]
+  let current = getProp<MachineState<T>>(machine.states, pathSegments)
+  while (current?.initial) {
+    pathSegments.push("states", current.initial as string)
+    current = getProp<MachineState<T>>(machine.states, pathSegments)
+    if (!current) break
+    resolved.push(pathSegments[pathSegments.length - 1])
   }
 
   return resolved.join(STATE_DELIMITER) as T["state"]
@@ -67,11 +79,11 @@ export function findTransition<T extends MachineSchema>(
   const chain = getStateChain(machine, state)
 
   for (let index = chain.length - 1; index >= 0; index--) {
-    const transition = chain[index]?.state.on?.[eventType]
+    const transition = getProp<Transition<T> | Transition<T>[]>(chain[index], ["state", "on", eventType])
     if (transition) return transition
   }
 
-  return (machine.on as Record<string, any> | undefined)?.[eventType]
+  return getProp<Transition<T> | Transition<T>[]>(machine, ["on", eventType])
 }
 
 export function getExitEnterStates<T extends MachineSchema>(
