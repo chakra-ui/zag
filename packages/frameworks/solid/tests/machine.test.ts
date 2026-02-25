@@ -1045,4 +1045,302 @@ describe("uniform coverage", () => {
     expect(service.state.get()).toBe("idle")
     expect(actionSpy).not.toHaveBeenCalled()
   })
+
+  test("reenter transition works without explicit target", async () => {
+    const order: string[] = []
+
+    const machine = createMachine<any>({
+      initialState() {
+        return "active"
+      },
+      states: {
+        active: {
+          entry: ["onEntry"],
+          exit: ["onExit"],
+          on: {
+            REENTER: {
+              reenter: true,
+              actions: ["onTransition"],
+            },
+          },
+        },
+      },
+      implementations: {
+        actions: {
+          onEntry: () => order.push("entry"),
+          onExit: () => order.push("exit"),
+          onTransition: () => order.push("transition"),
+        },
+      },
+    })
+
+    const { send } = renderMachine(machine)
+    await Promise.resolve()
+    order.length = 0
+
+    await send({ type: "REENTER" })
+    expect(order).toEqual(["exit", "transition", "entry"])
+  })
+
+  test("unknown events are no-ops", async () => {
+    const actionSpy = vi.fn()
+    const machine = createMachine<any>({
+      initialState() {
+        return "idle"
+      },
+      states: {
+        idle: {
+          on: {
+            KNOWN: { target: "done", actions: ["onKnown"] },
+          },
+        },
+        done: {},
+      },
+      implementations: {
+        actions: {
+          onKnown: actionSpy,
+        },
+      },
+    })
+
+    const { result, send } = renderMachine(machine)
+
+    await send({ type: "UNKNOWN" })
+    expect(result.state.get()).toBe("idle")
+    expect(actionSpy).not.toHaveBeenCalled()
+
+    await send({ type: "KNOWN" })
+    expect(result.state.get()).toBe("done")
+    expect(actionSpy).toHaveBeenCalledOnce()
+  })
+
+  test("effect setup and cleanup stay balanced during state churn", async () => {
+    const setupSpy = vi.fn()
+    const cleanupSpy = vi.fn()
+
+    const machine = createMachine<any>({
+      initialState() {
+        return "on"
+      },
+      states: {
+        on: {
+          effects: ["trackOn"],
+          on: {
+            TOGGLE: { target: "off" },
+          },
+        },
+        off: {
+          on: {
+            TOGGLE: { target: "on" },
+          },
+        },
+      },
+      implementations: {
+        effects: {
+          trackOn() {
+            setupSpy()
+            return () => cleanupSpy()
+          },
+        },
+      },
+    })
+
+    const { send, cleanup } = renderMachine(machine)
+    await Promise.resolve()
+
+    for (let i = 0; i < 6; i++) {
+      await send({ type: "TOGGLE" })
+    }
+    cleanup()
+
+    expect(setupSpy.mock.calls.length).toBeGreaterThan(0)
+    expect(cleanupSpy).toHaveBeenCalledTimes(setupSpy.mock.calls.length)
+  })
+
+  test("reenter restarts state effects exactly once per reenter", async () => {
+    const setupSpy = vi.fn()
+    const cleanupSpy = vi.fn()
+
+    const machine = createMachine<any>({
+      initialState() {
+        return "active"
+      },
+      states: {
+        active: {
+          effects: ["trackEffect"],
+          on: {
+            REENTER: {
+              target: "active",
+              reenter: true,
+            },
+          },
+        },
+      },
+      implementations: {
+        effects: {
+          trackEffect() {
+            setupSpy()
+            return () => cleanupSpy()
+          },
+        },
+      },
+    })
+
+    const { send, cleanup } = renderMachine(machine)
+    await Promise.resolve()
+
+    expect(setupSpy).toHaveBeenCalledTimes(1)
+    expect(cleanupSpy).not.toHaveBeenCalled()
+
+    await send({ type: "REENTER" })
+    expect(setupSpy).toHaveBeenCalledTimes(2)
+    expect(cleanupSpy).toHaveBeenCalledTimes(1)
+
+    await send({ type: "REENTER" })
+    expect(setupSpy).toHaveBeenCalledTimes(3)
+    expect(cleanupSpy).toHaveBeenCalledTimes(2)
+
+    cleanup()
+    expect(cleanupSpy).toHaveBeenCalledTimes(3)
+  })
+
+  test("event baseline before first send", async () => {
+    let currentType = "unset"
+    let previousEvent: any = "unset"
+
+    const machine = createMachine<any>({
+      initialState() {
+        return "idle"
+      },
+      entry: ["capture"],
+      states: {
+        idle: {},
+      },
+      implementations: {
+        actions: {
+          capture({ event }) {
+            currentType = event.current().type
+            previousEvent = event.previous()
+          },
+        },
+      },
+    })
+
+    renderMachine(machine)
+    await Promise.resolve()
+
+    expect(currentType).toBe("")
+    expect(previousEvent == null || previousEvent.type === "").toBe(true)
+  })
+
+  test("multi-action transition order is deterministic", async () => {
+    const order: string[] = []
+
+    const machine = createMachine<any>({
+      initialState() {
+        return "idle"
+      },
+      states: {
+        idle: {
+          exit: ["onExit"],
+          on: {
+            NEXT: { target: "done", actions: ["a1", "a2", "a3"] },
+          },
+        },
+        done: {
+          entry: ["onEntry"],
+        },
+      },
+      implementations: {
+        actions: {
+          onExit: () => order.push("exit"),
+          a1: () => order.push("a1"),
+          a2: () => order.push("a2"),
+          a3: () => order.push("a3"),
+          onEntry: () => order.push("entry"),
+        },
+      },
+    })
+
+    const { send } = renderMachine(machine)
+    await send({ type: "NEXT" })
+
+    expect(order).toEqual(["exit", "a1", "a2", "a3", "entry"])
+  })
+
+  test("all guards false results in no transition and no actions", async () => {
+    const actionSpy = vi.fn()
+    const machine = createMachine<any>({
+      initialState() {
+        return "idle"
+      },
+      states: {
+        idle: {
+          on: {
+            NEXT: [
+              { guard: "g1", target: "blocked1", actions: ["onAttempt"] },
+              { guard: "g2", target: "blocked2", actions: ["onAttempt"] },
+            ],
+          },
+        },
+        blocked1: {},
+        blocked2: {},
+      },
+      implementations: {
+        guards: {
+          g1: () => false,
+          g2: () => false,
+        },
+        actions: {
+          onAttempt: actionSpy,
+        },
+      },
+    })
+
+    const { result, send } = renderMachine(machine)
+    await send({ type: "NEXT" })
+
+    expect(result.state.get()).toBe("idle")
+    expect(actionSpy).not.toHaveBeenCalled()
+  })
+
+  test("rapid sends in same tick are processed deterministically", async () => {
+    const seen: string[] = []
+    const machine = createMachine<any>({
+      initialState() {
+        return "a"
+      },
+      states: {
+        a: {
+          on: {
+            GO_B: { target: "b", actions: ["record"] },
+          },
+        },
+        b: {
+          on: {
+            GO_C: { target: "c", actions: ["record"] },
+          },
+        },
+        c: {},
+      },
+      implementations: {
+        actions: {
+          record({ event }) {
+            seen.push(event.type)
+          },
+        },
+      },
+    })
+
+    const { result } = renderMachine(machine)
+    await Promise.resolve()
+
+    result.send({ type: "GO_B" })
+    result.send({ type: "GO_C" })
+    await Promise.resolve()
+    await Promise.resolve()
+
+    expect(result.state.get()).toBe("c")
+    expect(seen).toEqual(["GO_B", "GO_C"])
+  })
 })

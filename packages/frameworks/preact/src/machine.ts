@@ -1,6 +1,5 @@
 import type {
   ActionsOrFn,
-  Bindable,
   BindableContext,
   BindableRefs,
   ChooseFn,
@@ -186,6 +185,7 @@ export function useMachine<T extends MachineSchema>(
   const state = useBindable(() => ({
     defaultValue: resolveStateValue(machine, machine.initialState({ prop })),
     onChange(nextState, prevState) {
+      currentStateRef.current = nextState as string
       const { exiting, entering } = getExitEnterStates(machine, prevState, nextState, transitionRef.current?.reenter)
 
       exiting.forEach((item) => {
@@ -216,6 +216,7 @@ export function useMachine<T extends MachineSchema>(
       })
     },
   }))
+  const currentStateRef = useRef<string>(state.initial as string)
 
   // improve HMR (to restart effects)
   const hydratedStateRef = useRef<string | undefined>(undefined)
@@ -246,8 +247,7 @@ export function useMachine<T extends MachineSchema>(
   }, [])
 
   const getCurrentState = () => {
-    if ("ref" in state) return state.ref.current
-    return (state as Bindable<string>).get()
+    return currentStateRef.current
   }
 
   const send = (event: any) => {
@@ -269,6 +269,7 @@ export function useMachine<T extends MachineSchema>(
 
       const changed = target !== currentState
       if (changed) {
+        currentStateRef.current = target as string
         // state change is high priority
         flushSync(() => state.set(target))
       } else if (transition.reenter) {
