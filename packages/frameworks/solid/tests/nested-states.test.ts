@@ -139,6 +139,91 @@ describe("nested states", () => {
     expect(cleanup).toHaveBeenCalledTimes(1)
   })
 
+  test("ancestor matches and parent transition fallback", async () => {
+    const machine = createMachine<any>({
+      initialState() {
+        return "dialog"
+      },
+      states: {
+        dialog: {
+          initial: "open",
+          on: { ESC: { target: "dialog.closed" } },
+          states: {
+            open: {},
+            closed: {},
+          },
+        },
+      },
+    })
+
+    const { result, send } = renderMachine(machine)
+    await Promise.resolve()
+
+    expect(result.state.matches("dialog")).toBe(true)
+    expect(result.state.matches("dialog.open")).toBe(true)
+
+    await send({ type: "ESC" })
+
+    expect(result.state.matches("dialog.closed")).toBe(true)
+    expect(result.state.matches("dialog")).toBe(true)
+  })
+
+  test("exit/enter order for deep sibling transition", async () => {
+    const order: string[] = []
+    const record = (val: string) => () => order.push(val)
+
+    const machine = createMachine<any>({
+      initialState() {
+        return "root"
+      },
+      states: {
+        root: {
+          initial: "left",
+          states: {
+            left: {
+              initial: "leaf1",
+              states: {
+                leaf1: {
+                  entry: ["enter-leaf1"],
+                  exit: ["exit-leaf1"],
+                  on: { NEXT: { target: "root.right.leaf2" } },
+                },
+              },
+              entry: ["enter-left"],
+              exit: ["exit-left"],
+            },
+            right: {
+              initial: "leaf2",
+              states: {
+                leaf2: {
+                  entry: ["enter-leaf2"],
+                },
+              },
+              entry: ["enter-right"],
+            },
+          },
+        },
+      },
+      implementations: {
+        actions: {
+          "enter-leaf1": record("enter-leaf1"),
+          "exit-leaf1": record("exit-leaf1"),
+          "enter-left": record("enter-left"),
+          "exit-left": record("exit-left"),
+          "enter-right": record("enter-right"),
+          "enter-leaf2": record("enter-leaf2"),
+        },
+      },
+    })
+
+    const { send } = renderMachine(machine)
+    await Promise.resolve()
+    order.length = 0
+    await send({ type: "NEXT" })
+
+    expect(order).toEqual(["exit-leaf1", "exit-left", "enter-right", "enter-leaf2"])
+  })
+
   test("deeply nested state smoke (3 levels)", async () => {
     const visited: string[] = []
     const record = (value: string) => () => visited.push(value)
