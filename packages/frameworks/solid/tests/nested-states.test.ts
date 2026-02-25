@@ -1,15 +1,5 @@
-import { renderHook } from "@solidjs/testing-library"
 import { createMachine } from "@zag-js/core"
-import { useMachine } from "../src"
-
-function renderMachine(machine: any, props?: any) {
-  const render = renderHook(() => useMachine<any>(machine, props))
-  const send = async (event: any) => {
-    render.result.send(event)
-    await Promise.resolve()
-  }
-  return { ...render, send }
-}
+import { renderMachine } from "./render"
 
 describe("nested states", () => {
   test("basic nested transitions and actions", async () => {

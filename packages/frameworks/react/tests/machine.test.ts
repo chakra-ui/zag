@@ -1,17 +1,7 @@
 import { act, renderHook } from "@testing-library/react"
 import { createGuards, createMachine } from "@zag-js/core"
 import { useMachine } from "../src"
-
-function renderMachine(machine: any) {
-  const render = renderHook(() => useMachine<any>(machine))
-  const send = async (event: any) => {
-    await act(async () => render.result.current.send(event))
-  }
-  const advanceTime = async (ms: number) => {
-    await act(async () => vi.advanceTimersByTime(ms))
-  }
-  return { ...render, send, advanceTime }
-}
+import { renderMachine } from "./render"
 
 describe("basic", () => {
   test("initial state", () => {

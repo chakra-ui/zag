@@ -3,18 +3,7 @@ import { createGuards, createMachine } from "@zag-js/core"
 import type { Machine } from "@zag-js/core"
 import { createSignal } from "solid-js"
 import { useMachine } from "../src"
-
-function renderMachine(machine: any, props?: any) {
-  const render = renderHook(() => useMachine<any>(machine, props))
-  const send = async (event: any) => {
-    render.result.send(event)
-    await Promise.resolve()
-  }
-  const advanceTime = async (ms: number) => {
-    await vi.advanceTimersByTimeAsync(ms)
-  }
-  return { ...render, send, advanceTime }
-}
+import { renderMachine } from "./render"
 
 describe("basic", () => {
   test("initial state", async () => {

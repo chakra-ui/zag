@@ -1,14 +1,5 @@
-import { renderHook, act } from "@testing-library/react"
 import { createMachine } from "@zag-js/core"
-import { useMachine } from "../src"
-
-function renderMachine(machine: any) {
-  const render = renderHook(() => useMachine<any>(machine))
-  const send = async (event: any) => {
-    await act(async () => render.result.current.send(event))
-  }
-  return { ...render, send }
-}
+import { renderMachine } from "./render"
 
 describe("nested states", () => {
   test("basic nested transitions and actions", async () => {
