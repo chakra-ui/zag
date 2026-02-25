@@ -224,6 +224,67 @@ describe("nested states", () => {
     expect(order).toEqual(["exit-leaf1", "exit-left", "enter-right", "enter-leaf2"])
   })
 
+  test("supports relative nested targets from the transition source state", async () => {
+    const machine = createMachine<any>({
+      initialState() {
+        return "dialog"
+      },
+      states: {
+        dialog: {
+          initial: "open",
+          on: {
+            RESET: { target: "closed" },
+          },
+          states: {
+            open: {
+              initial: "viewing",
+              on: {
+                CLOSE: { target: "closed" },
+                VIEW: { target: "viewing" },
+              },
+              states: {
+                viewing: {
+                  on: {
+                    EDIT: { target: "editing" },
+                  },
+                },
+                editing: {
+                  on: {},
+                },
+              },
+            },
+            closed: {
+              on: {
+                REOPEN: { target: "open" },
+              },
+            },
+          },
+        },
+      },
+    })
+
+    const { result, send } = renderMachine(machine)
+    await Promise.resolve()
+
+    expect(result.state.get()).toBe("dialog.open.viewing")
+
+    await send({ type: "EDIT" })
+    expect(result.state.get()).toBe("dialog.open.editing")
+
+    await send({ type: "VIEW" })
+    expect(result.state.get()).toBe("dialog.open.viewing")
+
+    await send({ type: "CLOSE" })
+    expect(result.state.get()).toBe("dialog.closed")
+
+    await send({ type: "REOPEN" })
+    expect(result.state.get()).toBe("dialog.open.viewing")
+
+    await send({ type: "EDIT" })
+    await send({ type: "RESET" })
+    expect(result.state.get()).toBe("dialog.closed")
+  })
+
   test("deeply nested state smoke (3 levels)", async () => {
     const visited: string[] = []
     const record = (value: string) => () => visited.push(value)

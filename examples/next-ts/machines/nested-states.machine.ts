@@ -1,6 +1,13 @@
 import { createMachine } from "@zag-js/core"
 
-export const nestedStatesMachine = createMachine({
+interface NestedStatesSchema {
+  state: "idle" | "open" | "open.viewing" | "open.editing"
+  context: {}
+  effect: "trackOpen"
+  event: { type: "OPEN" } | { type: "EDIT" } | { type: "SAVE" } | { type: "CANCEL" } | { type: "CLOSE" }
+}
+
+export const nestedStatesMachine = createMachine<NestedStatesSchema>({
   initialState() {
     return "idle"
   },
@@ -25,17 +32,17 @@ export const nestedStatesMachine = createMachine({
         viewing: {
           on: {
             EDIT: {
-              target: "open.editing",
+              target: "editing",
             },
           },
         },
         editing: {
           on: {
             SAVE: {
-              target: "open.viewing",
+              target: "viewing",
             },
             CANCEL: {
-              target: "open.viewing",
+              target: "viewing",
             },
           },
         },

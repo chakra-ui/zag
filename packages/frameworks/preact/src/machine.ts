@@ -259,14 +259,13 @@ export function useMachine<T extends MachineSchema>(
 
       let currentState = getCurrentState()
 
-      const transitions = findTransition(machine, currentState, event.type as string)
-
+      const { transitions, source } = findTransition(machine, currentState, event.type as string)
       const transition = choose(transitions)
       if (!transition) return
 
       // save current transition
       transitionRef.current = transition
-      const target = resolveStateValue(machine, transition.target ?? currentState)
+      const target = resolveStateValue(machine, transition.target ?? currentState, source)
 
       const changed = target !== currentState
       if (changed) {

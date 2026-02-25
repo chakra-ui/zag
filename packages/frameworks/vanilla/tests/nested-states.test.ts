@@ -240,6 +240,76 @@ describe("nested states", () => {
     service.stop()
   })
 
+  test("supports relative nested targets from the transition source state", async () => {
+    const machine = createMachine<any>({
+      initialState() {
+        return "dialog"
+      },
+      states: {
+        dialog: {
+          initial: "open",
+          on: {
+            RESET: { target: "closed" },
+          },
+          states: {
+            open: {
+              initial: "viewing",
+              on: {
+                CLOSE: { target: "closed" },
+                VIEW: { target: "viewing" },
+              },
+              states: {
+                viewing: {
+                  on: {
+                    EDIT: { target: "editing" },
+                  },
+                },
+                editing: {
+                  on: {},
+                },
+              },
+            },
+            closed: {
+              on: {
+                REOPEN: { target: "open" },
+              },
+            },
+          },
+        },
+      },
+    })
+
+    const service = new VanillaMachine(machine)
+    service.start()
+    await tick()
+
+    expect(service.state.get()).toBe("dialog.open.viewing")
+
+    service.send({ type: "EDIT" })
+    await tick()
+    expect(service.state.get()).toBe("dialog.open.editing")
+
+    service.send({ type: "VIEW" })
+    await tick()
+    expect(service.state.get()).toBe("dialog.open.viewing")
+
+    service.send({ type: "CLOSE" })
+    await tick()
+    expect(service.state.get()).toBe("dialog.closed")
+
+    service.send({ type: "REOPEN" })
+    await tick()
+    expect(service.state.get()).toBe("dialog.open.viewing")
+
+    service.send({ type: "EDIT" })
+    await tick()
+    service.send({ type: "RESET" })
+    await tick()
+    expect(service.state.get()).toBe("dialog.closed")
+
+    service.stop()
+  })
+
   test("deeply nested state smoke (3 levels)", async () => {
     const visited: string[] = []
     const record = (value: string) => () => visited.push(value)

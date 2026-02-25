@@ -216,14 +216,13 @@ export class VanillaMachine<T extends MachineSchema> {
       let currentState = this.state.get()
 
       const eventType = event.type as string
-      const transitions = findTransition(this.machine, currentState, eventType)
-
+      const { transitions, source } = findTransition(this.machine, currentState, eventType)
       const transition = this.choose(transitions)
       if (!transition) return
 
       // save current transition
       this.transition = transition
-      const target = resolveStateValue(this.machine, transition.target ?? currentState)
+      const target = resolveStateValue(this.machine, transition.target ?? currentState, source)
 
       this.debug("transition", transition)
 

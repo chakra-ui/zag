@@ -1,14 +1,50 @@
-import type { Machine, MachineSchema, MachineState, Transition } from "./types"
+import type { Machine, MachineSchema, MachineState, TransitionMatch, TransitionMap } from "./types"
 
 const STATE_DELIMITER = "."
+const stateIndexCache = new WeakMap<object, Map<string, MachineState<any>>>()
 
-function getProp<T>(obj: object | null | undefined, paths: string[]): T | undefined {
-  let current: unknown = obj
-  for (const key of paths) {
-    if (current == null || typeof current !== "object") return undefined
-    current = (current as Record<string, unknown>)[key]
+function joinStatePath(parts: string[]) {
+  return parts.join(STATE_DELIMITER)
+}
+
+function isAbsoluteStatePath(value: string) {
+  return value.includes(STATE_DELIMITER)
+}
+
+function appendStatePath(base: string, segment: string) {
+  return base ? `${base}${STATE_DELIMITER}${segment}` : segment
+}
+
+function buildStateIndex<T extends MachineSchema>(machine: Machine<T>) {
+  const index = new Map<string, MachineState<T>>()
+
+  const visit = (basePath: string, state: MachineState<T>) => {
+    index.set(basePath, state)
+    const childStates = state.states
+    if (!childStates) return
+
+    for (const [childKey, childState] of Object.entries(childStates)) {
+      if (!childState) continue
+      const childPath = appendStatePath(basePath, childKey)
+      visit(childPath, childState)
+    }
   }
-  return current as T
+
+  for (const [topKey, topState] of Object.entries(machine.states)) {
+    if (!topState) continue
+    visit(topKey, topState)
+  }
+
+  return index
+}
+
+export function ensureStateIndex<T extends MachineSchema>(machine: Machine<T>) {
+  const cached = stateIndexCache.get(machine)
+  if (cached) return cached as Map<string, MachineState<T>>
+
+  const index = buildStateIndex(machine)
+  stateIndexCache.set(machine, index as Map<string, MachineState<any>>)
+  return index
 }
 
 function toSegments(value: string | undefined) {
@@ -23,47 +59,74 @@ export function getStateChain<T extends MachineSchema>(
   state: T["state"] | undefined,
 ): StateChain<T> {
   if (!state) return []
+  const stateIndex = ensureStateIndex(machine)
   const segments = toSegments(state)
 
   const chain: StateChain<T> = []
-  const pathSegments: string[] = []
   const statePath: string[] = []
 
   for (const segment of segments) {
-    if (pathSegments.length > 0) pathSegments.push("states")
-    pathSegments.push(segment)
-
-    const current = getProp<MachineState<T>>(machine.states, pathSegments)
+    statePath.push(segment)
+    const path = joinStatePath(statePath)
+    const current = stateIndex.get(path)
     if (!current) break
 
-    statePath.push(segment)
-    chain.push({ path: statePath.join(STATE_DELIMITER), state: current })
+    chain.push({ path, state: current })
   }
 
   return chain
 }
 
-export function resolveStateValue<T extends MachineSchema>(machine: Machine<T>, value: T["state"]): T["state"] {
+function resolveAbsoluteStateValue<T extends MachineSchema>(machine: Machine<T>, value: string): T["state"] {
+  const stateIndex = ensureStateIndex(machine)
   const segments = toSegments(value as string)
-  const pathSegments: string[] = []
+  if (!segments.length) return value as T["state"]
+
   const resolved: string[] = []
 
   for (const segment of segments) {
-    if (pathSegments.length > 0) pathSegments.push("states")
-    pathSegments.push(segment)
-    if (!getProp<MachineState<T>>(machine.states, pathSegments)) return value
     resolved.push(segment)
+    const path = joinStatePath(resolved)
+    if (!stateIndex.has(path)) return value as T["state"]
   }
 
-  let current = getProp<MachineState<T>>(machine.states, pathSegments)
+  let resolvedPath = joinStatePath(resolved)
+  let current = stateIndex.get(resolvedPath)
   while (current?.initial) {
-    pathSegments.push("states", current.initial as string)
-    current = getProp<MachineState<T>>(machine.states, pathSegments)
-    if (!current) break
-    resolved.push(pathSegments[pathSegments.length - 1])
+    const nextPath = `${resolvedPath}${STATE_DELIMITER}${current.initial as string}`
+    const nextState = stateIndex.get(nextPath)
+    if (!nextState) break
+    resolvedPath = nextPath
+    current = nextState
   }
 
-  return resolved.join(STATE_DELIMITER) as T["state"]
+  return resolvedPath as T["state"]
+}
+
+function hasStatePath<T extends MachineSchema>(machine: Machine<T>, value: string) {
+  const stateIndex = ensureStateIndex(machine)
+  return stateIndex.has(value)
+}
+
+export function resolveStateValue<T extends MachineSchema>(
+  machine: Machine<T>,
+  value: T["state"] | string,
+  source?: string,
+): T["state"] {
+  const stateValue = String(value)
+
+  // Relative sibling target (e.g. "editing") is resolved from the state node
+  // where the transition is declared, not from the current leaf state.
+  if (!isAbsoluteStatePath(stateValue) && source) {
+    const sourceSegments = toSegments(source)
+    for (let index = sourceSegments.length; index >= 1; index--) {
+      const base = sourceSegments.slice(0, index).join(STATE_DELIMITER)
+      const candidate = appendStatePath(base, stateValue)
+      if (hasStatePath(machine, candidate)) return resolveAbsoluteStateValue(machine, candidate)
+    }
+  }
+
+  return resolveAbsoluteStateValue(machine, stateValue)
 }
 
 export function getStateDefinition<T extends MachineSchema>(machine: Machine<T>, state: T["state"]) {
@@ -75,15 +138,17 @@ export function findTransition<T extends MachineSchema>(
   machine: Machine<T>,
   state: T["state"],
   eventType: string,
-): Transition<T> | Transition<T>[] | undefined {
+): TransitionMatch<T> {
   const chain = getStateChain(machine, state)
 
   for (let index = chain.length - 1; index >= 0; index--) {
-    const transition = getProp<Transition<T> | Transition<T>[]>(chain[index], ["state", "on", eventType])
-    if (transition) return transition
+    const transitionMap = chain[index]?.state.on as TransitionMap<T> | undefined
+    const transition = transitionMap?.[eventType]
+    if (transition) return { transitions: transition, source: chain[index]?.path }
   }
 
-  return getProp<Transition<T> | Transition<T>[]>(machine, ["on", eventType])
+  const rootTransitionMap = machine.on as TransitionMap<T> | undefined
+  return { transitions: rootTransitionMap?.[eventType], source: undefined }
 }
 
 export function getExitEnterStates<T extends MachineSchema>(

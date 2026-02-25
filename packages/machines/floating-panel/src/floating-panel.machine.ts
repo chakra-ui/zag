@@ -164,12 +164,12 @@ export const machine = createMachine<FloatingPanelSchema>({
       on: {
         DRAG_START: {
           guard: not("isMaximized"),
-          target: "open.dragging",
+          target: "openDragging",
           actions: ["setPrevPosition"],
         },
         RESIZE_START: {
           guard: not("isMinimized"),
-          target: "open.resizing",
+          target: "openResizing",
           actions: ["setPrevSize"],
         },
         "CONTROLLED.CLOSE": {
@@ -213,7 +213,7 @@ export const machine = createMachine<FloatingPanelSchema>({
       },
     },
 
-    "open.dragging": {
+    openDragging: {
       tags: ["open"],
       effects: ["trackPointerMove"],
       exit: ["clearPrevPosition"],
@@ -246,7 +246,7 @@ export const machine = createMachine<FloatingPanelSchema>({
       },
     },
 
-    "open.resizing": {
+    openResizing: {
       tags: ["open"],
       effects: ["trackPointerMove"],
       exit: ["clearPrevSize"],
