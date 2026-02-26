@@ -8,5 +8,5 @@ export default defineConfig({
   target: "es2020",
   format: ["esm", "cjs"],
   bundle: true,
-  esbuildPlugins: [esbuildPluginFilePathExtensions()],
+  esbuildPlugins: [esbuildPluginFilePathExtensions({ cjsExtension: "js" })],
 })
