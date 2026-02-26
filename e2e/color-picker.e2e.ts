@@ -42,6 +42,24 @@ test.describe("color-picker", () => {
     await I.seeColorPicker()
   })
 
+  test("clicking trigger twice should close picker", async () => {
+    await I.clickTrigger()
+    await I.seeColorPicker()
+
+    await I.clickTrigger()
+    await I.dontSeeColorPicker()
+    await I.seeTriggerIsFocused()
+  })
+
+  test("should close picker on Escape after opening with trigger", async () => {
+    await I.clickTrigger()
+    await I.seeColorPicker()
+
+    await I.pressKey("Escape")
+    await I.dontSeeColorPicker()
+    await I.seeTriggerIsFocused()
+  })
+
   test("should re-focus trigger on outside click", async () => {
     await I.clickTrigger()
     await I.seeColorPicker()

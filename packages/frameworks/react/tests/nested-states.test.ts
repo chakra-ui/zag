@@ -273,6 +273,48 @@ describe("nested states", () => {
     expect(result.current.state.get()).toBe("dialog.closed")
   })
 
+  test("supports #id targets for explicit cross-level transitions", async () => {
+    const machine = createMachine<any>({
+      initialState() {
+        return "dialog"
+      },
+      states: {
+        dialog: {
+          initial: "open",
+          states: {
+            focused: {
+              id: "dialogFocused",
+              on: {
+                REOPEN: { target: "open" },
+              },
+            },
+            open: {
+              initial: "idle",
+              states: {
+                idle: {
+                  on: {
+                    CLOSE: { target: "#dialogFocused" },
+                  },
+                },
+                focused: {},
+              },
+            },
+          },
+        },
+      },
+    })
+
+    const { result, send } = renderMachine(machine)
+
+    expect(result.current.state.get()).toBe("dialog.open.idle")
+
+    await send({ type: "CLOSE" })
+    expect(result.current.state.get()).toBe("dialog.focused")
+
+    await send({ type: "REOPEN" })
+    expect(result.current.state.get()).toBe("dialog.open.idle")
+  })
+
   test("deeply nested state smoke (3 levels)", async () => {
     const visited: string[] = []
     const record = (value: string) => () => visited.push(value)
