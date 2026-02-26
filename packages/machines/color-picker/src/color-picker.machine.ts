@@ -339,7 +339,7 @@ export const machine = createMachine<ColorPickerSchema>({
         dragging: {
           tags: ["dragging"],
           exit: ["clearActiveChannel"],
-          effects: ["trackPointerMove", "disableTextSelection", "trackPositioning", "trackDismissableElement"],
+          effects: ["trackPointerMove", "disableTextSelection"],
           on: {
             "AREA.POINTER_MOVE": {
               actions: ["setAreaColorFromPoint", "focusAreaThumb"],

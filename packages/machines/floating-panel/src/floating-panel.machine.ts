@@ -160,10 +160,10 @@ export const machine = createMachine<FloatingPanelSchema>({
     open: {
       tags: ["open"],
       entry: ["bringToFrontOfPanelStack"],
-      effects: ["trackBoundaryRect"],
       initial: "idle",
       states: {
         idle: {
+          effects: ["trackBoundaryRect"],
           on: {
             DRAG_START: {
               guard: not("isMaximized"),
