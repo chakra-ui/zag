@@ -1,4 +1,5 @@
 import type { MachineSchema, GuardFn, Machine, Params, Transition } from "./types"
+import { ensureStateIndex } from "./state"
 
 export function createGuards<T extends MachineSchema>() {
   return {
@@ -21,6 +22,7 @@ export function createGuards<T extends MachineSchema>() {
 }
 
 export function createMachine<T extends MachineSchema>(config: Machine<T>) {
+  ensureStateIndex(config)
   return config
 }
 

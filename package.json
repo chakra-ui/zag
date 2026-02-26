@@ -48,6 +48,7 @@
     "test-svelte": "cd packages/frameworks/svelte && pnpm exec vitest --passWithNoTests",
     "test-solid": "cd packages/frameworks/solid && pnpm exec vitest --passWithNoTests",
     "test-vue": "cd packages/frameworks/vue && pnpm exec vitest --passWithNoTests",
+    "test-preact": "cd packages/frameworks/preact && pnpm exec vitest --passWithNoTests",
     "test-vanilla": "cd packages/frameworks/vanilla && pnpm exec vitest --passWithNoTests",
     "test": "pnpm test-js --run && pnpm test-react --run && pnpm test-svelte --run && pnpm test-solid --run && pnpm test-vue --run && pnpm test-vanilla --run",
     "slack": "tsx scripts/slack.ts",
