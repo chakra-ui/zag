@@ -83,18 +83,6 @@
       "--layer-index": "The index of the dismissable in the layer stack"
     }
   },
-  "image-cropper": {
-    "Root": {
-      "--crop-width": "The width of the Root",
-      "--crop-height": "The height of the Root",
-      "--crop-x": "The crop x value for the Root",
-      "--crop-y": "The crop y value for the Root",
-      "--image-zoom": "The image zoom value for the Root",
-      "--image-rotation": "The image rotation value for the Root",
-      "--image-offset-x": "The offset position for image",
-      "--image-offset-y": "The offset position for image"
-    }
-  },
   "floating-panel": {
     "Positioner": {
       "--width": "The width of the element",
@@ -115,6 +103,23 @@
       "--arrow-offset": "The offset position of the arrow"
     }
   },
+  "image-cropper": {
+    "Root": {
+      "--crop-width": "The width of the Root",
+      "--crop-height": "The height of the Root",
+      "--crop-x": "The crop x value for the Root",
+      "--crop-y": "The crop y value for the Root",
+      "--image-zoom": "The image zoom value for the Root",
+      "--image-rotation": "The image rotation value for the Root",
+      "--image-offset-x": "The offset position for image",
+      "--image-offset-y": "The offset position for image"
+    }
+  },
+  "listbox": {
+    "Content": {
+      "--column-count": "The column count value for the Content"
+    }
+  },
   "marquee": {
     "Root": {
       "--marquee-duration": "The marquee duration value for the Root",
@@ -122,11 +127,6 @@
       "--marquee-delay": "The marquee delay value for the Root",
       "--marquee-loop-count": "The marquee loop count value for the Root",
       "--marquee-translate": "The marquee translate value for the Root"
-    }
-  },
-  "listbox": {
-    "Content": {
-      "--column-count": "The column count value for the Content"
     }
   },
   "navigation-menu": {
@@ -162,13 +162,6 @@
       "--offset": "The offset position of the element"
     }
   },
-  "qr-code": {
-    "Root": {
-      "--qrcode-pixel-size": "The size of the Root",
-      "--qrcode-width": "The width of the Root",
-      "--qrcode-height": "The height of the Root"
-    }
-  },
   "radio-group": {
     "Indicator": {
       "--transition-property": "The transition property value for the Indicator",
@@ -176,6 +169,13 @@
       "--top": "The top position value",
       "--width": "The width of the element",
       "--height": "The height of the element"
+    }
+  },
+  "qr-code": {
+    "Root": {
+      "--qrcode-pixel-size": "The size of the Root",
+      "--qrcode-width": "The width of the Root",
+      "--qrcode-height": "The height of the Root"
     }
   },
   "scroll-area": {
