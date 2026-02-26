@@ -15,7 +15,7 @@ hovered.
 **Features**
 
 - Show tooltip on hover and focus
-- Hide tooltip on esc or pointer down
+- Hide tooltip on Esc, click, pointer down, or scroll
 - Only one tooltip shows at a time
 - Labeling support for screen readers via `aria-describedby`
 - Custom show and hide delay support
@@ -24,15 +24,13 @@ hovered.
 
 ## Installation
 
-To use the tooltip machine in your project, run the following command in your
-command line:
+Install the tooltip package:
 
 <CodeSnippet id="tooltip/installation.mdx" />
 
 ## Anatomy
 
-To set up the tooltip correctly, you'll need to understand its anatomy and how
-we name its parts.
+Check the tooltip anatomy and part names.
 
 > Each part includes a `data-part` attribute to help identify them in the DOM.
 
@@ -40,7 +38,7 @@ we name its parts.
 
 ## Usage
 
-First, import the tooltip package into your project
+Import the tooltip package:
 
 ```jsx
 import * as tooltip from "@zag-js/tooltip"
@@ -48,28 +46,22 @@ import * as tooltip from "@zag-js/tooltip"
 
 The tooltip package exports two key functions:
 
-- `machine` — The state machine logic for the tooltip widget.
-- `connect` — The function that translates the machine's state to JSX attributes
-  and event handlers.
+- `machine` - State machine logic.
+- `connect` - Maps machine state to JSX props and event handlers.
 
-To get the tooltip working correct, you'll need to:
+To get tooltip working, you'll need to:
 
-- Setup the tooltip portal, this is a shared container for all tooltips
-- Add the `triggerProps`, and `tooltipProps` to the elements
+- Set up the tooltip portal (shared container for tooltips)
+- Add `triggerProps` and `tooltipProps` to the right elements
 
-> You'll also need to provide a unique `id` to the `useMachine` hook. This is
-> used to ensure that every part has a unique identifier.
-
-Next, import the required hooks and functions for your framework and use the
-tooltip machine in your project 🔥
+Then use the framework integration helpers:
 
 <CodeSnippet id="tooltip/usage.mdx" />
 
 ### Customizing the timings
 
-By default, the tooltip is designed to open after `1000ms` and close after
-`500ms`. You can customize this by passing the `openDelay` and `closeDelay`
-context properties.
+By default, the tooltip opens after `400ms` and closes after `150ms`. You can
+customize this by passing the `openDelay` and `closeDelay` context properties.
 
 ```jsx {2-3}
 const service = useMachine(tooltip.machine, {
@@ -92,46 +84,6 @@ const service = useMachine(tooltip.machine, {
 })
 ```
 
-You can configure other position-related properties in the `positioning` object.
-Here's what the positioning API looks like:
-
-```ts
-export type PositioningOptions = {
-  /**
-   * The strategy to use for positioning
-   */
-  strategy?: "absolute" | "fixed"
-  /**
-   * The initial placement of the floating element
-   */
-  placement?: Placement
-  /**
-   * The offset of the floating element
-   */
-  offset?: { mainAxis?: number; crossAxis?: number }
-  /**
-   * The main axis offset or gap between the reference and floating elements
-   */
-  gutter?: number
-  /**
-   * Whether to flip the placement
-   */
-  flip?: boolean
-  /**
-   * Whether to make the floating element same width as the reference element
-   */
-  sameWidth?: boolean
-  /**
-   * The overflow boundary of the reference element
-   */
-  boundary?: Boundary
-  /**
-   * Options to activate auto-update listeners
-   */
-  listeners?: boolean | AutoUpdateOptions
-}
-```
-
 ### Adding an arrow
 
 To render an arrow within the tooltip, use the `api.getArrowProps()` and
@@ -139,7 +91,7 @@ To render an arrow within the tooltip, use the `api.getArrowProps()` and
 
 ```jsx {6-8}
 //...
-const api = popover.connect(service, normalizeProps)
+const api = tooltip.connect(service, normalizeProps)
 //...
 return (
   <div {...api.getPositionerProps()}>
@@ -152,35 +104,28 @@ return (
 //...
 ```
 
-### Pointerdown behavior
+### Dismiss behavior
 
-By default, the tooltip will close when the pointer is down on its trigger. To
-prevent this behavior, pass the `closeOnPointerDown` context property and set it
-to `false`.
+Tooltips close on Escape, click, pointer down, and scroll by default. Configure
+these with `closeOnEscape`, `closeOnClick`, `closeOnPointerDown`, and
+`closeOnScroll`.
 
-```jsx {2}
+```jsx {2-5}
 const service = useMachine(tooltip.machine, {
+  closeOnEscape: false,
+  closeOnClick: false,
   closeOnPointerDown: false,
-})
-```
-
-### Closing on Esc
-
-The tooltip is designed to close when the escape key is pressed. To prevent
-this, pass the `closeOnEscape` context property and set it to `false`.
-
-```jsx {2}
-const service = useMachine(tooltip.machine, {
-  closeOnEsc: false,
+  closeOnScroll: false,
 })
 ```
 
 ### Making the tooltip interactive
 
-Set the `interactive` context property to `true` to make them interactive.
+Set the `interactive` context property to `true` to make the tooltip
+interactive.
 
-When a tooltip is interactive, it'll remain open even the pointer leaves the
-trigger and move into the tooltip's content.
+When a tooltip is interactive, it remains open as the pointer moves from the
+trigger into the content.
 
 ```jsx {2}
 const service = useMachine(tooltip.machine, {
@@ -201,10 +146,30 @@ const service = useMachine(tooltip.machine, {
 })
 ```
 
+### Controlled tooltip
+
+Use `open` and `onOpenChange` for controlled usage.
+
+```jsx
+const service = useMachine(tooltip.machine, {
+  open,
+  onOpenChange(details) {
+    setOpen(details.open)
+  },
+})
+```
+
+### Programmatic open
+
+Use the connected API for imperative control.
+
+```jsx
+api.setOpen(true)
+```
+
 ## Styling guide
 
-Earlier, we mentioned that each tooltip part has a `data-part` attribute added
-to them to select and style them in the DOM.
+Each part includes a `data-part` attribute you can target in CSS.
 
 ```css
 [data-part="trigger"] {

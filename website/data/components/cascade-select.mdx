@@ -4,7 +4,7 @@ description: Using the cascade select machine in your project.
 package: "@zag-js/cascade-select"
 ---
 
-A Cascade Select component allows users to select from hierarchical data through
+A cascade select component allows users to select from hierarchical data through
 multiple linked levels of dropdown menus.
 
 <Resources pkg="@zag-js/cascade-select" />
@@ -13,27 +13,25 @@ multiple linked levels of dropdown menus.
 
 **Features**
 
-- Support for hierarchical data with unlimited depth levels
+- Supports hierarchical data with unlimited depth levels
 - Full keyboard navigation across all levels with arrow keys
-- Support for single and multiple selections
-- Support for both click and hover triggering modes
-- Support for looping keyboard navigation
+- Supports single and multiple selections
+- Supports both click and hover triggering modes
+- Supports looping keyboard navigation
 - Built-in accessibility with ARIA roles and keyboard interactions
-- Support for disabled items and read-only state
+- Supports disabled items and read-only state
 - Form integration with hidden input element
-- Support for Right to Left direction.
+- Supports right-to-left direction
 
 ## Installation
 
-To use the cascade select machine in your project, run the following command in
-your command line:
+Install the cascade select package:
 
 <CodeSnippet id="cascade-select/installation.mdx" />
 
 ## Anatomy
 
-To set up the cascade select correctly, you'll need to understand its anatomy
-and how we name its parts.
+Check the cascade select anatomy and part names.
 
 > Each part includes a `data-part` attribute to help identify them in the DOM.
 
@@ -41,18 +39,17 @@ and how we name its parts.
 
 ## Usage
 
-First, import the cascade select package into your project
+Import the cascade select package:
 
 ```jsx
 import * as cascadeSelect from "@zag-js/cascade-select"
 ```
 
-The cascade select package exports these functions:
+These are the key exports:
 
-- `machine` — The state machine logic for the cascade select.
-- `connect` — The function that translates the machine's state to JSX
-  attributes and event handlers.
-- `collection` - The function that creates a tree collection from a tree node.
+- `machine` - State machine logic.
+- `connect` - Maps machine state to JSX props and event handlers.
+- `collection` - Creates a tree collection from your hierarchical data.
 
 ### Create the collection
 
@@ -107,10 +104,9 @@ const collection = cascadeSelect.collection<Node>({
 
 ### Create the cascade select
 
-> You'll need to provide a unique `id` to the `useMachine` hook. This is used
-> to ensure that every part has a unique identifier.
+> Pass a unique `id` to `useMachine` so generated element ids stay predictable.
 
-Pass the collection to the machine to create the cascade select 🔥
+Then use the framework integration helpers:
 
 <CodeSnippet id="cascade-select/usage.mdx" />
 
@@ -126,6 +122,21 @@ const service = useMachine(cascadeSelect.machine, {
   id: useId(),
   collection,
   defaultValue: [["north-america", "us", "ny"]],
+})
+```
+
+### Controlled selection
+
+Use `value` and `onValueChange` for controlled selection state.
+
+```jsx
+const service = useMachine(cascadeSelect.machine, {
+  id: useId(),
+  collection,
+  value,
+  onValueChange(details) {
+    setValue(details.value)
+  },
 })
 ```
 
@@ -171,9 +182,8 @@ const service = useMachine(cascadeSelect.machine, {
 
 ### Close on select
 
-This behaviour ensures that the menu is closed when an item is selected and is
-`true` by default. To keep the dropdown open after selection, set the
-`closeOnSelect` property to `false`.
+By default, the menu closes when you select an item. Set `closeOnSelect` to
+`false` to keep it open.
 
 ```jsx {4}
 const service = useMachine(cascadeSelect.machine, {
@@ -185,9 +195,8 @@ const service = useMachine(cascadeSelect.machine, {
 
 ### Looping the keyboard navigation
 
-When navigating with the cascade select using the arrow down and up keys, the
-navigation stops at the first and last items. To loop navigation back to the
-first or last item, set `loopFocus: true` in the machine's context.
+By default, arrow-key navigation stops at the first and last items. Set
+`loopFocus: true` to loop back around.
 
 ```jsx {4}
 const service = useMachine(cascadeSelect.machine, {
@@ -206,8 +215,36 @@ When an item is highlighted with the pointer or keyboard, use the
 const service = useMachine(cascadeSelect.machine, {
   id: useId(),
   onHighlightChange(details) {
-    // details => { value: string[], items: Item[] }
+    // details => { highlightedValue: string[], highlightedItems: Item[] }
     console.log(details)
+  },
+})
+```
+
+### Setting the initial highlighted path
+
+Use `defaultHighlightedValue` to set the initially highlighted path.
+
+```jsx
+const service = useMachine(cascadeSelect.machine, {
+  id: useId(),
+  collection,
+  defaultHighlightedValue: ["north-america", "us"],
+})
+```
+
+### Controlled highlighted path
+
+Use `highlightedValue` and `onHighlightChange` to control highlighting
+externally.
+
+```jsx
+const service = useMachine(cascadeSelect.machine, {
+  id: useId(),
+  collection,
+  highlightedValue,
+  onHighlightChange(details) {
+    setHighlightedValue(details.highlightedValue)
   },
 })
 ```
@@ -230,24 +267,93 @@ const service = useMachine(cascadeSelect.machine, {
 
 ### Listening for open and close events
 
-When the cascade select is opened or closed, the `onOpenChange` callback is
-called. You can listen for these events and do something with it.
+Use `onOpenChange` to listen for open and close events.
 
 ```jsx {4-7}
 const service = useMachine(cascadeSelect.machine, {
   id: useId(),
   collection,
   onOpenChange(details) {
-    // details => { open: boolean }
+    // details => { open: boolean, value: string[][] }
     console.log(details)
+  },
+})
+```
+
+### Controlling open state
+
+Use `open` and `onOpenChange` for controlled open state, or `defaultOpen` for an
+uncontrolled initial state.
+
+```jsx
+const service = useMachine(cascadeSelect.machine, {
+  id: useId(),
+  collection,
+  open,
+  onOpenChange({ open }) {
+    setOpen(open)
+  },
+})
+```
+
+```jsx
+const service = useMachine(cascadeSelect.machine, {
+  id: useId(),
+  collection,
+  defaultOpen: true,
+})
+```
+
+### Positioning submenu panels
+
+Use `positioning` to configure placement and collision behavior.
+
+```jsx
+const service = useMachine(cascadeSelect.machine, {
+  id: useId(),
+  collection,
+  positioning: {
+    placement: "right-start",
+    gutter: 4,
+  },
+})
+```
+
+### Custom scroll behavior
+
+Use `scrollToIndexFn` to customize how each level scrolls highlighted items into
+view.
+
+```jsx
+const service = useMachine(cascadeSelect.machine, {
+  id: useId(),
+  collection,
+  scrollToIndexFn(details) {
+    // details => { index, depth, immediate? }
+    customScroll(details)
+  },
+})
+```
+
+### Customizing the trigger label
+
+Use `formatValue` to control how selected paths are rendered in the trigger.
+
+```jsx
+const service = useMachine(cascadeSelect.machine, {
+  id: useId(),
+  collection,
+  formatValue(selectedItems) {
+    return selectedItems
+      .map((path) => path.map((item) => item.label).join(" / "))
+      .join(", ")
   },
 })
 ```
 
 ### Usage within a form
 
-To use cascade select within a form, pass the `name` property to the machine
-context. A hidden input element is automatically rendered using
+To use cascade select in a form, pass `name`. A hidden input is rendered with
 `getHiddenInputProps()`.
 
 ```jsx {4}
@@ -261,10 +367,34 @@ const service = useMachine(cascadeSelect.machine, {
 <input {...api.getHiddenInputProps()} />
 ```
 
+If the hidden input belongs to a different form element, also set `form`.
+
+```jsx
+const service = useMachine(cascadeSelect.machine, {
+  id: useId(),
+  collection,
+  name: "location",
+  form: "checkout-form",
+})
+```
+
+### Validation and read-only state
+
+Use `readOnly`, `required`, and `invalid` to control interaction and form state.
+
+```jsx
+const service = useMachine(cascadeSelect.machine, {
+  id: useId(),
+  collection,
+  readOnly: true,
+  required: true,
+  invalid: false,
+})
+```
+
 ## Styling guide
 
-Earlier, we mentioned that each cascade select part has a `data-part` attribute
-added to them to select and style them in the DOM.
+Each cascade select part includes a `data-part` attribute you can target in CSS.
 
 ### Open and closed state
 

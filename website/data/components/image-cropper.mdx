@@ -4,10 +4,8 @@ description: Using the Image Cropper machine in your project.
 package: "@zag-js/image-cropper"
 ---
 
-The image cropper machine keeps track of the crop rectangle, zoom, rotation, pan
-offset, flip state, and every gesture required to edit them. It exposes a set of
-DOM props so you can render your own viewport, frame, and handles in any
-framework.
+Image cropper lets users select and edit an image crop area with pan, zoom,
+rotation, and flip controls.
 
 <Resources pkg="@zag-js/image-cropper" />
 
@@ -15,20 +13,16 @@ framework.
 
 **Features**
 
-- Pointer, wheel, and pinch gestures that pan, zoom, rotate, and flip the image
-- Handles that resize the crop area with snapping, aspect-ratio locking, and
-  keyboard nudges
-- Supports rectangular or circular crops, fixed crop windows, and constrained
-  min/max dimensions
-- Fully controllable zoom/rotation/flip values with change callbacks
-- Programmatic helpers such as `api.resize` and `api.getCroppedImage`
-- Accessible slider semantics, custom translations, and data attributes for
-  styling
+- Pan, zoom, rotate, and flip with pointer, wheel, and pinch gestures
+- Rectangle or circle crops with optional fixed area and aspect ratio
+- Min/max crop dimensions and keyboard nudging
+- Controlled zoom/rotation/flip with change callbacks
+- Programmatic helpers like `api.resize` and `api.getCroppedImage`
+- Accessibility labels, translations, and styling data attributes
 
 ## Installation
 
-To use the image cropper machine in your project, run the following command in
-your command line:
+Install the image cropper package:
 
 <CodeSnippet id="image-cropper/installation.mdx" />
 
@@ -43,7 +37,7 @@ how we name its parts.
 
 ## Usage
 
-First, import the image cropper package into your project:
+Import the image cropper package:
 
 ```jsx
 import * as imageCropper from "@zag-js/image-cropper"
@@ -51,12 +45,10 @@ import * as imageCropper from "@zag-js/image-cropper"
 
 The package exports two key functions:
 
-- `machine` — The state machine logic for the cropper.
-- `connect` — The function that translates the machine's state to JSX attributes
-  and event handlers.
+- `machine` - State machine logic.
+- `connect` - Maps machine state to JSX props and event handlers.
 
-Next, import the required hooks and functions for your framework and use the
-image cropper machine in your project 🔥
+Then use the framework integration helpers:
 
 <CodeSnippet id="image-cropper/usage.mdx" />
 
@@ -121,6 +113,41 @@ api.flipHorizontally() // toggle horizontal flip
 api.setFlip({ vertical: true }) // set vertical flip on
 ```
 
+### Controlled transform values
+
+Use controlled props and callbacks when transform values are managed by your
+state.
+
+```jsx
+const service = useMachine(imageCropper.machine, {
+  zoom,
+  rotation,
+  flip,
+  onZoomChange(details) {
+    setZoom(details.zoom)
+  },
+  onRotationChange(details) {
+    setRotation(details.rotation)
+  },
+  onFlipChange(details) {
+    setFlip(details.flip)
+  },
+})
+```
+
+### Listening for crop changes
+
+Use `onCropChange` to react when the crop rectangle changes.
+
+```jsx
+const service = useMachine(imageCropper.machine, {
+  onCropChange(details) {
+    // details => { crop: Rect }
+    console.log(details.crop)
+  },
+})
+```
+
 ### Programmatic resizing
 
 Use `api.resize(handle, delta)` to resize from any handle programmatically.
@@ -170,10 +197,11 @@ console.log(api.crop)
 ```
 
 **Characteristics:**
+
 - Relative to the viewport dimensions
 - Changes as you zoom and pan
 - Perfect for UI rendering and controls
-- Used by `initialCrop` and `setCrop()` (when implemented)
+- Used by `initialCrop`
 
 #### 2. Natural Image Coordinates (`api.getCropData()`)
 
@@ -194,6 +222,7 @@ console.log(cropData)
 ```
 
 **Characteristics:**
+
 - Relative to the original image dimensions
 - Independent of zoom/pan/viewport size
 - Essential for server-side cropping
@@ -202,11 +231,13 @@ console.log(cropData)
 #### When to use each
 
 **Use viewport coordinates (`api.crop`)** when:
+
 - Rendering UI controls (sliders, displays)
 - Setting initial crop area
 - Building custom crop UI
 
 **Use natural coordinates (`api.getCropData()`)** when:
+
 - Sending crop data to your backend for server-side processing
 - Persisting state (localStorage, database)
 - Implementing undo/redo functionality
@@ -219,12 +250,12 @@ console.log(cropData)
 const cropData = api.getCropData()
 
 // Send to backend
-await fetch('/api/crop-image', {
-  method: 'POST',
+await fetch("/api/crop-image", {
+  method: "POST",
   body: JSON.stringify({
-    imageId: 'photo-123',
+    imageId: "photo-123",
     crop: cropData, // Natural pixel coordinates
-  })
+  }),
 })
 
 // Backend: Crop the original image file
@@ -292,8 +323,7 @@ const service = useMachine(imageCropper.machine, {
 
 ## Styling guide
 
-Earlier, we mentioned that each image cropper part has a `data-part` attribute
-added to them to select and style them in the DOM.
+Each part includes a `data-part` attribute you can target in CSS.
 
 ```css
 [data-scope="image-cropper"][data-part="root"] {

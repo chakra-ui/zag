@@ -4,9 +4,7 @@ description: Using the tabs machine in your project.
 package: "@zag-js/tabs"
 ---
 
-An accessible tabs component that follows the WAI-ARIA Tabs Design Pattern. Each
-tab in the tab list has associated content, with only the selected tab's content
-being displayed.
+Tabs organize related content into selectable panels.
 
 <Resources pkg="@zag-js/tabs" />
 
@@ -14,23 +12,21 @@ being displayed.
 
 **Features**
 
-- Support for mouse, touch, and keyboard interactions on tabs
-- Support for LTR and RTL keyboard navigation
+- Supports mouse, touch, and keyboard interactions on tabs
+- Supports LTR and RTL keyboard navigation
 - Follows the tabs ARIA pattern, semantically linking tabs and their associated
   tab panels
 - Focus management for tab panels without any focusable children
 
 ## Installation
 
-To use the tabs machine in your project, run the following command in your
-command line:
+Install the tabs package:
 
 <CodeSnippet id="tabs/installation.mdx" />
 
 ## Anatomy
 
-To set up the tabs correctly, you'll need to understand its anatomy and how we
-name its parts.
+Check the tabs anatomy and part names.
 
 > Each part includes a `data-part` attribute to help identify them in the DOM.
 
@@ -38,7 +34,7 @@ name its parts.
 
 ## Usage
 
-First, import the tabs package into your project
+Import the tabs package:
 
 ```jsx
 import * as tabs from "@zag-js/tabs"
@@ -46,15 +42,10 @@ import * as tabs from "@zag-js/tabs"
 
 The tabs package exports two key functions:
 
-- `machine` — The state machine logic for the tabs widget.
-- `connect` — The function that translates the machine's state to JSX attributes
-  and event handlers.
+- `machine` - State machine logic.
+- `connect` - Maps machine state to JSX props and event handlers.
 
-> You'll need to provide a unique `id` to the `useMachine` hook. This is used to
-> ensure that every part has a unique identifier.
-
-Next, import the required hooks and functions for your framework and use the
-tabs machine in your project 🔥
+Then use the framework integration helpers:
 
 <CodeSnippet id="tabs/usage.mdx" />
 
@@ -69,11 +60,17 @@ const service = useMachine(tabs.machine, {
 })
 ```
 
-Subsequently, you can use the `api.setValue` function to programatically set the
-selected tab.
+Subsequently, you can use the `api.setValue` function to programmatically set
+the selected tab.
 
 ```jsx
 api.setValue("tab-2")
+```
+
+To clear selection (when `deselectable` is enabled), use:
+
+```jsx
+api.clearValue()
 ```
 
 ### Controlled tabs
@@ -123,8 +120,8 @@ clickable.
 ```jsx {2-7}
 const service = useMachine(tabs.machine, {
   onFocusChange(details) {
-    // details => { value: string | null }
-    console.log("focused tab:", details.value)
+    // details => { focusedValue: string }
+    console.log("focused tab:", details.focusedValue)
   },
   onValueChange(details) {
     // details => { value: string }
@@ -133,10 +130,33 @@ const service = useMachine(tabs.machine, {
 })
 ```
 
+### Allowing deselection
+
+Set `deselectable` to allow clicking the active tab to clear the current value.
+
+```jsx
+const service = useMachine(tabs.machine, {
+  deselectable: true,
+})
+```
+
+### Custom navigation for link tabs
+
+Use `navigate` when your tab triggers are rendered as links.
+
+```jsx
+const service = useMachine(tabs.machine, {
+  navigate(details) {
+    // details => { value: string, node: HTMLAnchorElement, href: string }
+    router.push(details.href)
+  },
+})
+```
+
 ### Manual tab activation
 
-By default, the tab can be selected when the receive focus from either the
-keyboard or pointer interaction. This is called "automatic tab activation".
+By default, a tab is selected when it receives focus from either keyboard or
+pointer interaction. This is called "automatic tab activation".
 
 The other approach is "manual tab activation" which means the tab is selected
 with the Enter key or by clicking on the tab.
@@ -144,6 +164,16 @@ with the Enter key or by clicking on the tab.
 ```jsx {2}
 const service = useMachine(tabs.machine, {
   activationMode: "manual",
+})
+```
+
+### Looping keyboard navigation
+
+Set `loopFocus` to control whether arrow-key navigation wraps at the ends.
+
+```jsx
+const service = useMachine(tabs.machine, {
+  loopFocus: false,
 })
 ```
 
@@ -158,6 +188,17 @@ To enable RTL support, set the `dir` property in the machine's context to `rtl`.
 const service = useMachine(tabs.machine, {
   dir: "rtl",
 })
+```
+
+### Programmatic tab control
+
+Use the connected API for imperative navigation and focus.
+
+```jsx
+api.setValue("tab-2")
+api.selectNext()
+api.selectPrev()
+api.focus()
 ```
 
 ## Styling guide
@@ -237,15 +278,6 @@ The tab indicator styles have CSS variables for the `transitionDuration` and
 
 The transition definition is applied when the selected tab changes to allow the
 indicator move smoothly to the new selected tab.
-
-```css
-[data-part="indicator"] {
-  --transition-duration: 0.2s;
-  --transition-timing-function: ease-in-out;
-}
-```
-
-You'll also need to set the styles for the indicator to match your design.
 
 ```css
 [data-part="indicator"] {
