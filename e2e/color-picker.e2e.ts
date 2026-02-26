@@ -121,4 +121,17 @@ test.describe("color-picker", () => {
     await I.clickChannelSlider("alpha")
     await I.seeValueText("hsla(0, 100%, 50%, 0.5)")
   })
+
+  test("[pointer] pointer up after area scrub should not close picker", async () => {
+    await I.clickTrigger()
+    await I.seeColorPicker()
+
+    const area = await I.getAreaBounds()
+    await I.dragAreaToPoint({
+      x: area.x + area.width + 40,
+      y: area.y + area.height + 40,
+    })
+
+    await I.seeColorPicker()
+  })
 })
