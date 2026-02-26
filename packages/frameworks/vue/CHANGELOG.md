@@ -1,5 +1,21 @@
 # @zag-js/vue
 
+## 1.35.0
+
+### Patch Changes
+
+- [#2985](https://github.com/chakra-ui/zag/pull/2985)
+  [`b0149ce`](https://github.com/chakra-ui/zag/commit/b0149cea73d2d975d0920d1a69561b6a85c9baa0) Thanks
+  [@copilot-swe-agent](https://github.com/apps/copilot-swe-agent)! - Add comprehensive nested state support and
+  coverage. Document hierarchical states in core README, ensure effects/entry/exit ordering for nested transitions, and
+  add deep nesting smoke tests across adapters.
+
+- Updated dependencies [[`b0149ce`](https://github.com/chakra-ui/zag/commit/b0149cea73d2d975d0920d1a69561b6a85c9baa0)]:
+  - @zag-js/core@1.35.0
+  - @zag-js/store@1.35.0
+  - @zag-js/types@1.35.0
+  - @zag-js/utils@1.35.0
+
 ## 1.34.1
 
 ### Patch Changes
