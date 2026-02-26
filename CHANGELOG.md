@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 
 > For v0.x changelog, see the [v0 branch](https://github.com/chakra-ui/zag/blob/v0/CHANGELOG.md)
 
+## [1.35.2](./#1.35.2) - 2026-02-26
+
+### Fixed
+
+- Fix CJS build issues across all packages
+
 ## [1.35.1](./#1.35.1) - 2026-02-26
 
 ### Added
