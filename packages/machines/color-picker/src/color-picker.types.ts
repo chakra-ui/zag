@@ -157,7 +157,7 @@ type PropsWithDefault = "defaultFormat" | "defaultValue" | "openAutoFocus" | "di
 
 export type ColorPickerSchema = {
   tag: "open" | "closed" | "dragging" | "focused"
-  state: "idle" | "focused" | "open" | "open:dragging"
+  state: "idle" | "focused" | "open" | "open.idle" | "open.dragging"
   props: RequiredBy<ColorPickerProps, PropsWithDefault>
   computed: {
     disabled: boolean

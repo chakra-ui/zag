@@ -42,7 +42,7 @@ export const machine = createMachine<TourSchema>({
   },
 
   initialState() {
-    return "tour.inactive"
+    return "tourInactive"
   },
 
   context({ prop, bindable, getContext }) {
@@ -122,44 +122,44 @@ export const machine = createMachine<TourSchema>({
     "STEP.CHANGED": [
       {
         guard: and("isValidStep", "hasResolvedTarget"),
-        target: "target.scrolling",
+        target: "running.scrolling",
         actions: ["cleanupStepEffect"],
       },
       {
         guard: and("isValidStep", "hasTarget"),
-        target: "target.resolving",
+        target: "running.resolving",
         actions: ["cleanupStepEffect"],
       },
       {
         guard: and("isValidStep", "isWaitingStep"),
-        target: "step.waiting",
+        target: "running.waiting",
         actions: ["cleanupStepEffect"],
       },
       {
         guard: "isValidStep",
-        target: "tour.active",
+        target: "running.active",
         actions: ["cleanupStepEffect"],
       },
     ],
     DISMISS: [
       {
         guard: "isLastStep",
-        target: "tour.inactive",
+        target: "tourInactive",
         actions: ["cleanupAll", "invokeOnDismiss", "invokeOnComplete", "clearStep"],
       },
       {
-        target: "tour.inactive",
+        target: "tourInactive",
         actions: ["cleanupAll", "invokeOnDismiss", "clearStep"],
       },
     ],
     SKIP: {
-      target: "tour.inactive",
+      target: "tourInactive",
       actions: ["cleanupAll", "invokeOnSkip", "clearStep"],
     },
   },
 
   states: {
-    "tour.inactive": {
+    tourInactive: {
       tags: ["closed"],
       entry: ["validateSteps"],
       on: {
@@ -169,47 +169,57 @@ export const machine = createMachine<TourSchema>({
       },
     },
 
-    "target.resolving": {
-      tags: ["closed"],
-      effects: ["waitForTarget", "waitForTargetTimeout"],
+    running: {
+      states: {
+        resolving: {
+          tags: ["closed"],
+          effects: ["waitForTarget", "waitForTargetTimeout"],
 
-      on: {
-        "TARGET.NOT_FOUND": {
-          target: "tour.inactive",
-          actions: ["invokeOnNotFound", "clearStep"],
+          on: {
+            "TARGET.NOT_FOUND": {
+              target: "tourInactive",
+              actions: ["invokeOnNotFound", "clearStep"],
+            },
+            "TARGET.RESOLVED": {
+              target: "scrolling",
+              actions: ["setResolvedTarget"],
+            },
+          },
         },
-        "TARGET.RESOLVED": {
-          target: "target.scrolling",
-          actions: ["setResolvedTarget"],
+
+        scrolling: {
+          tags: ["open"],
+          entry: ["scrollToTarget"],
+          effects: [
+            "waitForScrollEnd",
+            "trapFocus",
+            "trackPlacement",
+            "trackDismissableBranch",
+            "trackInteractOutside",
+            "trackEscapeKeydown",
+          ],
+          on: {
+            "SCROLL.END": {
+              target: "active",
+            },
+          },
+        },
+
+        waiting: {
+          tags: ["closed"],
+        },
+
+        active: {
+          tags: ["open"],
+          effects: [
+            "trapFocus",
+            "trackPlacement",
+            "trackDismissableBranch",
+            "trackInteractOutside",
+            "trackEscapeKeydown",
+          ],
         },
       },
-    },
-
-    "target.scrolling": {
-      tags: ["open"],
-      entry: ["scrollToTarget"],
-      effects: [
-        "waitForScrollEnd",
-        "trapFocus",
-        "trackPlacement",
-        "trackDismissableBranch",
-        "trackInteractOutside",
-        "trackEscapeKeydown",
-      ],
-      on: {
-        "SCROLL.END": {
-          target: "tour.active",
-        },
-      },
-    },
-
-    "step.waiting": {
-      tags: ["closed"],
-    },
-
-    "tour.active": {
-      tags: ["open"],
-      effects: ["trapFocus", "trackPlacement", "trackDismissableBranch", "trackInteractOutside", "trackEscapeKeydown"],
     },
   },
 
@@ -722,7 +732,7 @@ class StepManager {
     refs.set("_effectCleanup", cleanup)
 
     // For wait-type steps, automatically set the stepId so the state machine
-    // can transition to step.waiting state, but don't call show() from the effect
+    // can transition to running.waiting state, but don't call show() from the effect
     if (isWaitStep(step)) {
       utilities.show()
     }

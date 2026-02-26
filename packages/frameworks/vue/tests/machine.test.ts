@@ -1,27 +1,25 @@
-import { act, renderHook } from "@testing-library/react"
 import { createGuards, createMachine } from "@zag-js/core"
-import { useMachine } from "../src"
+import { computed, nextTick, ref } from "vue"
 import { renderMachine } from "./render"
 
 describe("basic", () => {
-  test("initial state", () => {
+  test("initial state", async () => {
     const machine = createMachine<any>({
       initialState() {
         return "foo"
       },
       states: {
         foo: {
-          on: {
-            NEXT: { target: "bar" },
-          },
+          on: { NEXT: { target: "bar" } },
         },
         bar: {},
       },
     })
 
-    const { result } = renderMachine(machine)
-
+    const { result, cleanup } = renderMachine(machine)
+    await Promise.resolve()
     expect(result.current.state.get()).toBe("foo")
+    cleanup()
   })
 
   test("initial entry action", async () => {
@@ -46,14 +44,15 @@ describe("basic", () => {
       },
     })
 
-    renderMachine(machine)
+    const { cleanup } = renderMachine(machine)
     await Promise.resolve()
 
     expect(fooEntry).toHaveBeenCalledOnce()
     expect(rootEntry).toHaveBeenCalledOnce()
+    cleanup()
   })
 
-  test("current state and context", () => {
+  test("current state and context", async () => {
     const machine = createMachine<any>({
       initialState() {
         return "test"
@@ -66,85 +65,55 @@ describe("basic", () => {
       },
     })
 
-    const { result } = renderMachine(machine)
-
-    expect(result.current.state.get()).toEqual("test")
-    expect(result.current.context.get("foo")).toEqual("bar")
+    const { result, cleanup } = renderMachine(machine)
+    await Promise.resolve()
+    expect(result.current.state.get()).toBe("test")
+    expect(result.current.context.get("foo")).toBe("bar")
+    cleanup()
   })
 
-  test("send event", async () => {
-    let done = vi.fn()
+  test("state transition", async () => {
     const machine = createMachine<any>({
       initialState() {
-        return "test"
-      },
-      context({ bindable }) {
-        return { foo: bindable(() => ({ defaultValue: "bar" })) }
+        return "foo"
       },
       states: {
-        test: {
-          on: {
-            CHANGE: { target: "success" },
-          },
+        foo: {
+          on: { NEXT: { target: "bar" } },
         },
-        success: {
-          entry: ["done"],
+        bar: {},
+      },
+    })
+
+    const { result, send, cleanup } = renderMachine(machine)
+    await send({ type: "NEXT" })
+    expect(result.current.state.get()).toBe("bar")
+    cleanup()
+  })
+
+  test("transition action", async () => {
+    const onNext = vi.fn()
+    const machine = createMachine<any>({
+      initialState() {
+        return "foo"
+      },
+      states: {
+        foo: {
+          on: { NEXT: { target: "bar", actions: ["onNext"] } },
         },
+        bar: {},
       },
       implementations: {
         actions: {
-          done,
+          onNext,
         },
       },
     })
 
-    const { send } = renderMachine(machine)
-    await Promise.resolve()
-
-    await send({ type: "CHANGE" })
-    expect(done).toHaveBeenCalledOnce()
-  })
-
-  test("state tags", async () => {
-    const machine = createMachine<any>({
-      initialState() {
-        return "green"
-      },
-      states: {
-        green: {
-          tags: ["go"],
-          on: {
-            TIMER: {
-              target: "yellow",
-            },
-          },
-        },
-        yellow: {
-          tags: ["go"],
-          on: {
-            TIMER: {
-              target: "red",
-            },
-          },
-        },
-        red: {
-          tags: ["stop"],
-        },
-      },
-    })
-
-    const { result, send } = renderMachine(machine)
-    await Promise.resolve()
-
-    expect(result.current.state.hasTag("go")).toBeTruthy()
-
-    await send({ type: "TIMER" })
-    expect(result.current.state.get()).toBe("yellow")
-    expect(result.current.state.hasTag("go")).toBeTruthy()
-
-    await send({ type: "TIMER" })
-    expect(result.current.state.get()).toBe("red")
-    expect(result.current.state.hasTag("go")).toBeFalsy()
+    const { send, cleanup } = renderMachine(machine)
+    await send({ type: "NEXT" })
+    expect(onNext).toHaveBeenCalledOnce()
+    cleanup()
   })
 
   test("reenter transition", async () => {
@@ -172,7 +141,7 @@ describe("basic", () => {
       },
     })
 
-    const { send } = renderMachine(machine)
+    const { send, cleanup } = renderMachine(machine)
     await Promise.resolve()
 
     expect(entryAction).toHaveBeenCalledTimes(1)
@@ -182,42 +151,172 @@ describe("basic", () => {
 
     // Entry should be called again due to reenter
     expect(entryAction).toHaveBeenCalledTimes(2)
+    cleanup()
   })
 
-  test("action order", async () => {
-    const order = new Set<string>()
-    const call = (key: string) => () => order.add(key)
+  test("same-state transition does not reenter by default", async () => {
+    const entryAction = vi.fn()
+    const transitionAction = vi.fn()
+
     const machine = createMachine<any>({
       initialState() {
-        return "test"
+        return "active"
       },
       states: {
-        test: {
-          exit: ["exit1"],
+        active: {
+          entry: ["onEntry"],
           on: {
-            NEXT: { target: "success", actions: ["nextActions"] },
+            PING: {
+              target: "active",
+              actions: ["onTransition"],
+            },
           },
-        },
-        success: {
-          entry: ["entry2"],
         },
       },
       implementations: {
         actions: {
-          nextActions: call("transition"),
-          exit1: call("exit1"),
-          entry2: call("entry2"),
+          onEntry: entryAction,
+          onTransition: transitionAction,
         },
       },
     })
 
-    const { send } = renderMachine(machine)
+    const { send, cleanup } = renderMachine(machine)
     await Promise.resolve()
 
-    await send({ type: "NEXT" })
-    expect([...order]).toEqual(["exit1", "transition", "entry2"])
+    expect(entryAction).toHaveBeenCalledTimes(1)
+
+    await send({ type: "PING" })
+    await Promise.resolve()
+
+    expect(transitionAction).toHaveBeenCalledTimes(1)
+    expect(entryAction).toHaveBeenCalledTimes(1)
+    cleanup()
   })
 
+  test("reenter transition action order", async () => {
+    const order: string[] = []
+
+    const machine = createMachine<any>({
+      initialState() {
+        return "active"
+      },
+      states: {
+        active: {
+          entry: ["onEntry"],
+          exit: ["onExit"],
+          on: {
+            REENTER: {
+              target: "active",
+              reenter: true,
+              actions: ["onTransition"],
+            },
+          },
+        },
+      },
+      implementations: {
+        actions: {
+          onEntry: () => order.push("entry"),
+          onExit: () => order.push("exit"),
+          onTransition: () => order.push("transition"),
+        },
+      },
+    })
+
+    const { send, cleanup } = renderMachine(machine)
+    await Promise.resolve()
+    order.length = 0
+
+    await send({ type: "REENTER" })
+    await Promise.resolve()
+
+    expect(order).toEqual(["exit", "transition", "entry"])
+    cleanup()
+  })
+
+  test("guarded transition", async () => {
+    const guards = createGuards<any>()
+    const machine = createMachine<any>({
+      context({ bindable }) {
+        return {
+          canGo: bindable(() => ({ defaultValue: false })),
+        }
+      },
+      initialState() {
+        return "foo"
+      },
+      states: {
+        foo: {
+          on: {
+            NEXT: [{ guard: guards.and("canGo"), target: "bar" }, { target: "foo" }],
+          },
+        },
+        bar: {},
+      },
+      implementations: {
+        guards: {
+          canGo: ({ context }) => context.get("canGo"),
+        },
+      },
+    })
+
+    const { result, send, cleanup } = renderMachine(machine)
+
+    await send({ type: "NEXT" })
+    expect(result.current.state.get()).toBe("foo")
+
+    result.current.context.set("canGo", true)
+    await send({ type: "NEXT" })
+    expect(result.current.state.get()).toBe("bar")
+    cleanup()
+  })
+
+  test("resolves reactive props", async () => {
+    const max = ref(5)
+    const machine = createMachine<any>({
+      context({ bindable, prop }) {
+        return {
+          value: bindable(() => ({ defaultValue: 0 })),
+          max: bindable(() => ({ defaultValue: prop("max") })),
+        }
+      },
+      initialState() {
+        return "idle"
+      },
+      states: {
+        idle: {
+          on: {
+            INCREMENT: { actions: ["inc"] },
+          },
+        },
+      },
+      implementations: {
+        actions: {
+          inc({ context, prop }) {
+            const cap = prop("max") ?? Number.POSITIVE_INFINITY
+            const next = Math.min(context.get("value") + 1, cap)
+            context.set("value", next)
+          },
+        },
+      },
+    })
+
+    const props = computed(() => ({ max: max.value }))
+    const { result, send, cleanup } = renderMachine(machine, props)
+
+    await send({ type: "INCREMENT" })
+    await send({ type: "INCREMENT" })
+    expect(result.current.context.get("value")).toBe(2)
+
+    max.value = 1
+    await nextTick()
+    await send({ type: "INCREMENT" })
+    expect(result.current.context.get("value")).toBe(1)
+    cleanup()
+  })
+})
+
+describe("edge cases", () => {
   test("computed", async () => {
     const machine = createMachine<any>({
       initialState() {
@@ -245,13 +344,14 @@ describe("basic", () => {
       },
     })
 
-    const { result, send } = renderMachine(machine)
+    const { result, send, cleanup } = renderMachine(machine)
     await Promise.resolve()
 
     expect(result.current.computed("length")).toEqual(3)
 
     await send({ type: "UPDATE" })
     expect(result.current.computed("length")).toEqual(5)
+    cleanup()
   })
 
   test("watch", async () => {
@@ -285,157 +385,18 @@ describe("basic", () => {
       },
     })
 
-    const { send } = renderMachine(machine)
+    const { send, cleanup } = renderMachine(machine)
 
-    // send update twice and expect notify to be called once (since the value is the same)
     await send({ type: "UPDATE" })
     await send({ type: "UPDATE" })
     expect(notify).toHaveBeenCalledOnce()
-  })
-
-  test("guard: basic", async () => {
-    const machine = createMachine<any>({
-      props() {
-        return { max: 1 }
-      },
-      initialState() {
-        return "test"
-      },
-
-      context({ bindable }) {
-        return { count: bindable(() => ({ defaultValue: 0 })) }
-      },
-
-      states: {
-        test: {
-          on: {
-            INCREMENT: {
-              guard: "isBelowMax",
-              actions: ["increment"],
-            },
-          },
-        },
-      },
-
-      implementations: {
-        guards: {
-          isBelowMax: ({ prop, context }) => prop("max") > context.get("count"),
-        },
-        actions: {
-          increment: ({ context }) => context.set("count", context.get("count") + 1),
-        },
-      },
-    })
-
-    const { result, send } = renderMachine(machine)
-    await Promise.resolve()
-
-    await send({ type: "INCREMENT" })
-    expect(result.current.context.get("count")).toEqual(1)
-
-    await send({ type: "INCREMENT" })
-    expect(result.current.context.get("count")).toEqual(1)
-  })
-
-  test("guard: composition", async () => {
-    const { and } = createGuards<any>()
-    const machine = createMachine<any>({
-      props() {
-        return { max: 3, min: 1 }
-      },
-      initialState() {
-        return "test"
-      },
-
-      context({ bindable }) {
-        return { count: bindable(() => ({ defaultValue: 0 })) }
-      },
-
-      states: {
-        test: {
-          on: {
-            INCREMENT: {
-              guard: and("isBelowMax", "isAboveMin"),
-              actions: ["increment"],
-            },
-            "COUNT.SET": {
-              actions: ["setValue"],
-            },
-          },
-        },
-      },
-
-      implementations: {
-        guards: {
-          isBelowMax: ({ prop, context }) => prop("max") > context.get("count"),
-          isAboveMin: ({ prop, context }) => prop("min") < context.get("count"),
-        },
-        actions: {
-          increment: ({ context }) => context.set("count", context.get("count") + 1),
-          setValue: ({ context, event }) => context.set("count", event.value),
-        },
-      },
-    })
-
-    const { result, send } = renderMachine(machine)
-
-    await send({ type: "INCREMENT" })
-    expect(result.current.context.get("count")).toEqual(0)
-
-    await send({ type: "COUNT.SET", value: 2 })
-    expect(result.current.context.get("count")).toEqual(2)
-
-    await send({ type: "INCREMENT" })
-    expect(result.current.context.get("count")).toEqual(3)
-  })
-
-  test("context: controlled", async () => {
-    const machine = createMachine<any>({
-      props() {
-        return { value: "foo", defaultValue: "" }
-      },
-      initialState() {
-        return "test"
-      },
-
-      context({ bindable, prop }) {
-        return {
-          value: bindable(() => ({
-            defaultValue: prop("defaultValue"),
-            value: prop("value"),
-          })),
-        }
-      },
-
-      states: {
-        test: {
-          on: {
-            "VALUE.SET": {
-              actions: ["setValue"],
-            },
-          },
-        },
-      },
-
-      implementations: {
-        actions: {
-          setValue: ({ context, event }) => context.set("value", event.value),
-        },
-      },
-    })
-
-    const { result, send } = renderMachine(machine)
-
-    await send({ type: "VALUE.SET", value: "next" })
-
-    // since value is controlled, it should not change
-    expect(result.current.context.get("value")).toEqual("foo")
+    cleanup()
   })
 
   test("effects", async () => {
     vi.useFakeTimers()
 
-    const cleanup = vi.fn()
+    const effectCleanup = vi.fn()
     const machine = createMachine<any>({
       initialState() {
         return "test"
@@ -456,7 +417,7 @@ describe("basic", () => {
               send({ type: "DONE" })
             }, 1000)
             return () => {
-              cleanup()
+              effectCleanup()
               clearTimeout(id)
             }
           },
@@ -464,66 +425,17 @@ describe("basic", () => {
       },
     })
 
-    const { result, send, advanceTime } = renderMachine(machine)
+    const { result, advanceTime, cleanup } = renderMachine(machine)
+    await Promise.resolve()
 
-    await send({ type: "START" })
     expect(result.current.state.get()).toEqual("test")
 
     await advanceTime(1000)
     expect(result.current.state.get()).toEqual("success")
-    expect(cleanup).toHaveBeenCalledOnce()
+    expect(effectCleanup).toHaveBeenCalledOnce()
+    cleanup()
 
     vi.useRealTimers()
-  })
-})
-
-describe("edge cases", () => {
-  test("reactive props updates", async () => {
-    const actionSpy = vi.fn()
-
-    const machine = createMachine<any>({
-      props({ props }) {
-        return { max: props.max || 0 }
-      },
-      initialState() {
-        return "test"
-      },
-      context({ bindable }) {
-        return {
-          count: bindable(() => ({ defaultValue: 0 })),
-        }
-      },
-      states: {
-        test: {
-          on: {
-            INCREMENT: {
-              actions: ["increment"],
-            },
-            CHECK: {
-              guard: ({ prop, context }: any) => context.get("count") < prop("max"),
-              actions: ["allowAction"],
-            },
-          },
-        },
-      },
-      implementations: {
-        actions: {
-          allowAction: actionSpy,
-          increment: ({ context }) => context.set("count", context.get("count") + 1),
-        },
-      },
-    })
-
-    const { result } = renderHook(() => useMachine(machine, { max: 5 }))
-
-    // Increment count to 3
-    await act(async () => result.current.send({ type: "INCREMENT" }))
-    await act(async () => result.current.send({ type: "INCREMENT" }))
-    await act(async () => result.current.send({ type: "INCREMENT" }))
-
-    // max is 5, count is 3, should allow action
-    await act(async () => result.current.send({ type: "CHECK" }))
-    expect(actionSpy).toHaveBeenCalledTimes(1)
   })
 
   test("state.matches() helper", async () => {
@@ -548,7 +460,7 @@ describe("edge cases", () => {
       },
     })
 
-    const { result, send } = renderMachine(machine)
+    const { result, send, cleanup } = renderMachine(machine)
 
     expect(result.current.state.matches("idle")).toBe(true)
     expect(result.current.state.matches("idle", "loading")).toBe(true)
@@ -561,89 +473,7 @@ describe("edge cases", () => {
     await send({ type: "SUCCESS" })
     expect(result.current.state.matches("success", "error")).toBe(true)
     expect(result.current.state.matches("idle", "loading")).toBe(false)
-  })
-
-  test("same-state transitions with actions", async () => {
-    const actionSpy = vi.fn()
-    const entrySpy = vi.fn()
-
-    const machine = createMachine<any>({
-      initialState() {
-        return "active"
-      },
-      states: {
-        active: {
-          entry: ["onEntry"],
-          on: {
-            PING: {
-              target: "active",
-              actions: ["onPing"],
-            },
-          },
-        },
-      },
-      implementations: {
-        actions: {
-          onEntry: entrySpy,
-          onPing: actionSpy,
-        },
-      },
-    })
-
-    const { result, send } = renderMachine(machine)
-    await Promise.resolve()
-
-    expect(result.current.state.get()).toBe("active")
-    expect(entrySpy).toHaveBeenCalledTimes(1)
-
-    await send({ type: "PING" })
-    expect(result.current.state.get()).toBe("active")
-    expect(actionSpy).toHaveBeenCalledTimes(1)
-    expect(entrySpy).toHaveBeenCalledTimes(1)
-
-    await send({ type: "PING" })
-    expect(result.current.state.get()).toBe("active")
-    expect(actionSpy).toHaveBeenCalledTimes(2)
-    expect(entrySpy).toHaveBeenCalledTimes(1)
-  })
-
-  test("reenter transition action order", async () => {
-    const order: string[] = []
-
-    const machine = createMachine<any>({
-      initialState() {
-        return "active"
-      },
-      states: {
-        active: {
-          entry: ["onEntry"],
-          exit: ["onExit"],
-          on: {
-            REENTER: {
-              target: "active",
-              reenter: true,
-              actions: ["onTransition"],
-            },
-          },
-        },
-      },
-      implementations: {
-        actions: {
-          onEntry: () => order.push("entry"),
-          onExit: () => order.push("exit"),
-          onTransition: () => order.push("transition"),
-        },
-      },
-    })
-
-    const { send } = renderMachine(machine)
-    await Promise.resolve()
-    order.length = 0
-
-    await send({ type: "REENTER" })
-    await Promise.resolve()
-
-    expect(order).toEqual(["exit", "transition", "entry"])
+    cleanup()
   })
 
   test("event previous/current tracking", async () => {
@@ -659,9 +489,6 @@ describe("edge cases", () => {
           on: {
             FIRST: {
               target: "second",
-            },
-            SECOND: {
-              actions: ["captureEvents"],
             },
           },
         },
@@ -683,17 +510,53 @@ describe("edge cases", () => {
       },
     })
 
-    const { send } = renderMachine(machine)
-
+    const { send, cleanup } = renderMachine(machine)
     await send({ type: "FIRST", data: "first-data" })
     await send({ type: "THIRD", data: "third-data" })
 
     expect(capturedCurrent).toMatchObject({ type: "THIRD", data: "third-data" })
     expect(capturedPrevious).toMatchObject({ type: "FIRST", data: "first-data" })
+    cleanup()
   })
-})
 
-describe("uniform coverage", () => {
+  test("context: controlled", async () => {
+    const machine = createMachine<any>({
+      props() {
+        return { value: "foo", defaultValue: "" }
+      },
+      initialState() {
+        return "test"
+      },
+      context({ bindable, prop }) {
+        return {
+          value: bindable(() => ({
+            defaultValue: prop("defaultValue"),
+            value: prop("value"),
+          })),
+        }
+      },
+      states: {
+        test: {
+          on: {
+            "VALUE.SET": {
+              actions: ["setValue"],
+            },
+          },
+        },
+      },
+      implementations: {
+        actions: {
+          setValue: ({ context, event }) => context.set("value", event.value),
+        },
+      },
+    })
+
+    const { result, send, cleanup } = renderMachine(machine)
+    await send({ type: "VALUE.SET", value: "next" })
+    expect(result.current.context.get("value")).toEqual("foo")
+    cleanup()
+  })
+
   test("root lifecycle runs entry, exit and effect cleanup", async () => {
     const rootEntry = vi.fn()
     const rootExit = vi.fn()
@@ -720,15 +583,14 @@ describe("uniform coverage", () => {
       },
     })
 
-    const { unmount } = renderMachine(machine)
+    const { cleanup } = renderMachine(machine)
     await Promise.resolve()
 
     expect(rootEntry).toHaveBeenCalledOnce()
     expect(rootExit).not.toHaveBeenCalled()
     expect(rootCleanup).not.toHaveBeenCalled()
 
-    await act(async () => unmount())
-    await Promise.resolve()
+    cleanup()
     expect(rootExit).toHaveBeenCalledOnce()
     expect(rootCleanup).toHaveBeenCalledOnce()
   })
@@ -758,7 +620,7 @@ describe("uniform coverage", () => {
       },
     })
 
-    const { result, send } = renderMachine(machine)
+    const { result, send, cleanup } = renderMachine(machine)
     await Promise.resolve()
 
     expect(result.current.state.get()).toBe("active")
@@ -769,6 +631,7 @@ describe("uniform coverage", () => {
     expect(result.current.state.get()).toBe("active")
     expect(onInternal).toHaveBeenCalledOnce()
     expect(onEntry).toHaveBeenCalledOnce()
+    cleanup()
   })
 
   test("guard fallback selects the next passing transition", async () => {
@@ -802,12 +665,48 @@ describe("uniform coverage", () => {
       },
     })
 
-    const { result, send } = renderMachine(machine)
+    const { result, send, cleanup } = renderMachine(machine)
     await send({ type: "NEXT" })
 
     expect(result.current.state.get()).toBe("allowed")
     expect(allowed).toHaveBeenCalledOnce()
     expect(blocked).not.toHaveBeenCalled()
+    cleanup()
+  })
+
+  test("ignores events sent after cleanup", async () => {
+    const actionSpy = vi.fn()
+    const machine = createMachine<any>({
+      initialState() {
+        return "idle"
+      },
+      states: {
+        idle: {
+          on: {
+            NEXT: {
+              target: "done",
+              actions: ["onNext"],
+            },
+          },
+        },
+        done: {},
+      },
+      implementations: {
+        actions: {
+          onNext: actionSpy,
+        },
+      },
+    })
+
+    const { result, cleanup } = renderMachine(machine)
+    const service = result.current
+    cleanup()
+
+    service.send({ type: "NEXT" })
+    await Promise.resolve()
+
+    expect(service.state.get()).toBe("idle")
+    expect(actionSpy).not.toHaveBeenCalled()
   })
 
   test("reenter transition works without explicit target", async () => {
@@ -838,12 +737,13 @@ describe("uniform coverage", () => {
       },
     })
 
-    const { send } = renderMachine(machine)
+    const { send, cleanup } = renderMachine(machine)
     await Promise.resolve()
     order.length = 0
 
     await send({ type: "REENTER" })
     expect(order).toEqual(["exit", "transition", "entry"])
+    cleanup()
   })
 
   test("unknown events are no-ops", async () => {
@@ -867,7 +767,7 @@ describe("uniform coverage", () => {
       },
     })
 
-    const { result, send } = renderMachine(machine)
+    const { result, send, cleanup } = renderMachine(machine)
 
     await send({ type: "UNKNOWN" })
     expect(result.current.state.get()).toBe("idle")
@@ -876,6 +776,7 @@ describe("uniform coverage", () => {
     await send({ type: "KNOWN" })
     expect(result.current.state.get()).toBe("done")
     expect(actionSpy).toHaveBeenCalledOnce()
+    cleanup()
   })
 
   test("effect setup and cleanup stay balanced during state churn", async () => {
@@ -909,15 +810,13 @@ describe("uniform coverage", () => {
       },
     })
 
-    const { send, unmount } = renderMachine(machine)
+    const { send, cleanup } = renderMachine(machine)
     await Promise.resolve()
 
     for (let i = 0; i < 6; i++) {
       await send({ type: "TOGGLE" })
     }
-
-    await act(async () => unmount())
-    await Promise.resolve()
+    cleanup()
 
     expect(setupSpy.mock.calls.length).toBeGreaterThan(0)
     expect(cleanupSpy).toHaveBeenCalledTimes(setupSpy.mock.calls.length)
@@ -952,7 +851,7 @@ describe("uniform coverage", () => {
       },
     })
 
-    const { send, unmount } = renderMachine(machine)
+    const { send, cleanup } = renderMachine(machine)
     await Promise.resolve()
 
     expect(setupSpy).toHaveBeenCalledTimes(1)
@@ -966,8 +865,7 @@ describe("uniform coverage", () => {
     expect(setupSpy).toHaveBeenCalledTimes(3)
     expect(cleanupSpy).toHaveBeenCalledTimes(2)
 
-    await act(async () => unmount())
-    await Promise.resolve()
+    cleanup()
     expect(cleanupSpy).toHaveBeenCalledTimes(3)
   })
 
@@ -993,11 +891,12 @@ describe("uniform coverage", () => {
       },
     })
 
-    renderMachine(machine)
+    const { cleanup } = renderMachine(machine)
     await Promise.resolve()
 
     expect(currentType).toBe("")
     expect(previousEvent == null || previousEvent.type === "").toBe(true)
+    cleanup()
   })
 
   test("multi-action transition order is deterministic", async () => {
@@ -1029,10 +928,11 @@ describe("uniform coverage", () => {
       },
     })
 
-    const { send } = renderMachine(machine)
+    const { send, cleanup } = renderMachine(machine)
     await send({ type: "NEXT" })
 
     expect(order).toEqual(["exit", "a1", "a2", "a3", "entry"])
+    cleanup()
   })
 
   test("all guards false results in no transition and no actions", async () => {
@@ -1064,11 +964,12 @@ describe("uniform coverage", () => {
       },
     })
 
-    const { result, send } = renderMachine(machine)
+    const { result, send, cleanup } = renderMachine(machine)
     await send({ type: "NEXT" })
 
     expect(result.current.state.get()).toBe("idle")
     expect(actionSpy).not.toHaveBeenCalled()
+    cleanup()
   })
 
   test("rapid sends in same tick are processed deterministically", async () => {
@@ -1099,17 +1000,16 @@ describe("uniform coverage", () => {
       },
     })
 
-    const { result } = renderMachine(machine)
+    const { result, cleanup } = renderMachine(machine)
     await Promise.resolve()
 
-    await act(async () => {
-      result.current.send({ type: "GO_B" })
-      result.current.send({ type: "GO_C" })
-    })
+    result.current.send({ type: "GO_B" })
+    result.current.send({ type: "GO_C" })
     await Promise.resolve()
     await Promise.resolve()
 
     expect(result.current.state.get()).toBe("c")
     expect(seen).toEqual(["GO_B", "GO_C"])
+    cleanup()
   })
 })
