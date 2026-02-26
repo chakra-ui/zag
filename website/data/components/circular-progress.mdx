@@ -14,20 +14,18 @@ progress of a task such as downloading a file, uploading an image, etc.
 
 **Features**
 
-- Support for minimum and maximum values
-- Support for indeterminate progress bars
+- Supports minimum and maximum values
+- Supports indeterminate progress bars
 
 ## Installation
 
-To use the progress machine in your project, run the following command in your
-command line:
+Install the progress package:
 
 <CodeSnippet id="progress/installation.mdx" />
 
 ## Anatomy
 
-To set up the progress correctly, you'll need to understand its anatomy and how
-we name its parts.
+Check the progress anatomy and part names.
 
 > Each part includes a `data-part` attribute to help identify them in the DOM.
 
@@ -35,7 +33,7 @@ we name its parts.
 
 ## Usage
 
-First, import the progress package into your project
+Import the progress package:
 
 ```jsx
 import * as progress from "@zag-js/progress"
@@ -43,22 +41,18 @@ import * as progress from "@zag-js/progress"
 
 The progress package exports two key functions:
 
-- `machine` — The state machine logic for the progress widget.
-- `connect` — The function that translates the machine's state to JSX attributes
-  and event handlers.
+- `machine` - State machine logic.
+- `connect` - Maps machine state to JSX props and event handlers.
 
-> You'll also need to provide a unique `id` to the `useMachine` hook. This is
-> used to ensure that every part has a unique identifier.
+> Pass a unique `id` to `useMachine` so generated element ids stay predictable.
 
-Next, import the required hooks and functions for your framework and use the
-progress machine in your project 🔥
+Then use the framework integration helpers:
 
 <CodeSnippet id="progress/circular.mdx" />
 
 ### Setting the value
 
-Pass the `defaultValue` or `value` property to the machine function to set the
-initial value of the progress bar.
+Use `defaultValue` for uncontrolled state, or `value` for controlled state.
 
 ```jsx {2}
 const service = useMachine(progress.machine, {
@@ -71,6 +65,19 @@ progress bar.
 
 ```jsx
 api.setValue(50)
+```
+
+### Listening for value changes
+
+Use `onValueChange` to react to progress updates.
+
+```jsx
+const service = useMachine(progress.machine, {
+  onValueChange(details) {
+    // details => { value: number | null }
+    console.log(details.value)
+  },
+})
 ```
 
 ### Setting the minimum and maximum values
@@ -100,7 +107,7 @@ const service = useMachine(progress.machine, {
 })
 ```
 
-### Showing a value text
+### Customizing value text
 
 Progress bars can only be interpreted by sighted users. To include a text
 description to support assistive technologies like screen readers, use the
@@ -109,7 +116,7 @@ description to support assistive technologies like screen readers, use the
 ```jsx
 const service = useMachine(progress.machine, {
   translations: {
-    valueText: ({ value, max }) =>
+    value: ({ value, max }) =>
       value == null ? "Loading..." : `${value} of ${max} items loaded`,
   },
 })
@@ -141,10 +148,20 @@ Then you need to render the `valueText` part in your component.
 <div {...api.getValueTextProps()}>{api.valueAsString}</div>
 ```
 
+### Localizing percentage formatting
+
+Use `locale` and `formatOptions` to customize number formatting.
+
+```jsx
+const service = useMachine(progress.machine, {
+  locale: "fr-FR",
+  formatOptions: { style: "percent", maximumFractionDigits: 1 },
+})
+```
+
 ## Styling guide
 
-Earlier, we mentioned that each menu part has a `data-part` attribute added to
-them to select and style them in the DOM.
+Each part includes a `data-part` attribute you can target in CSS.
 
 ```css
 [data-scope="progress"][data-part="root"] {

@@ -4,8 +4,7 @@ description: Using the scroll area machine in your project.
 package: "@zag-js/scroll-area"
 ---
 
-A scroll area provides a scrollable viewport with customizable scrollbars for
-content that exceeds the container's dimensions.
+A scroll area provides a custom-scrollbar viewport for overflow content.
 
 <Resources pkg="@zag-js/scroll-area" />
 
@@ -13,17 +12,14 @@ content that exceeds the container's dimensions.
 
 **Features**
 
-- Custom scrollbar styling and behavior
-- Smooth scrolling with easing functions
-- Touch and keyboard navigation support
-- Automatic scrollbar hiding when not needed
-- Nested scroll area support
 - Programmatic scrolling to edges or coordinates
+- Scroll position and overflow state helpers
+- Scrollbar state for styling (`hovering`, `scrolling`, `hidden`)
+- Horizontal and vertical scrollbar support
 
 ## Installation
 
-To use the scroll area machine in your project, run the following command in
-your command line:
+Install the scroll area package:
 
 <CodeSnippet id="scroll-area/installation.mdx" />
 
@@ -53,7 +49,7 @@ applied to the viewport element to hide the scrollbar:
 
 ## Usage
 
-First, import the scroll area package into your project
+Import the scroll area package:
 
 ```jsx
 import * as scrollArea from "@zag-js/scroll-area"
@@ -61,19 +57,14 @@ import * as scrollArea from "@zag-js/scroll-area"
 
 The scroll area package exports two key functions:
 
-- `machine` — The state machine logic for the scroll area widget.
-- `connect` — The function that translates the machine's state to JSX attributes
-  and event handlers.
+- `machine` - State machine logic.
+- `connect` - Maps machine state to JSX props and event handlers.
 
-> You'll also need to provide a unique `id` to the `useMachine` hook. This is
-> used to ensure that every part has a unique identifier.
-
-Next, import the required hooks and functions for your framework and use the
-scroll area machine in your project 🔥
+Then use the framework integration helpers:
 
 <CodeSnippet id="scroll-area/usage.mdx" />
 
-### Scrolling to edges
+### Programmatic scrolling to edges
 
 You can programmatically scroll to any edge of the scroll area using the
 `scrollToEdge` method:
@@ -90,7 +81,7 @@ api.scrollToEdge({
 })
 ```
 
-### Scrolling to coordinates
+### Programmatic scrolling to coordinates
 
 Use the `scrollTo` method to scroll to specific coordinates:
 
@@ -109,7 +100,7 @@ api.scrollTo({
 })
 ```
 
-### Checking scroll position
+### Reading scroll position and overflow
 
 The API provides several properties to check the current scroll state:
 
@@ -128,7 +119,7 @@ console.log(api.hasOverflowY) // boolean
 const progress = api.getScrollProgress() // { x: number, y: number }
 ```
 
-### Conditional scrollbar rendering
+### Rendering scrollbars only when needed
 
 Only render scrollbars when there's overflow content:
 
@@ -159,27 +150,9 @@ const verticalState = api.getScrollbarState({ orientation: "vertical" })
 // Returns: { hovering: boolean, scrolling: boolean, hidden: boolean }
 ```
 
-### Nested scroll areas
-
-Scroll areas can be nested within each other for complex layouts:
-
-```jsx
-<div {...api.getRootProps()}>
-  <div {...api.getViewportProps()}>
-    <div {...api.getContentProps()}>
-      {/* Nested scroll area */}
-      <ScrollAreaComponent style={{ maxHeight: 200 }}>
-        {/* Inner content */}
-      </ScrollAreaComponent>
-    </div>
-  </div>
-</div>
-```
-
 ## Styling guide
 
-Earlier, we mentioned that each scroll area part has a `data-part` attribute
-added to them to select and style them in the DOM.
+Each part includes a `data-part` attribute you can target in CSS.
 
 ### Scrolling state
 

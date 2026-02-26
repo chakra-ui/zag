@@ -4,8 +4,7 @@ description: Using the steps machine in your project.
 package: "@zag-js/steps"
 ---
 
-Steps are used to guide users through a series of steps in a process. It's a
-great way to break down a complex process into smaller, more manageable steps.
+Steps guide users through a multi-step process.
 
 <Resources pkg="@zag-js/steps" />
 
@@ -14,20 +13,18 @@ great way to break down a complex process into smaller, more manageable steps.
 **Features**
 
 - Supports horizontal and vertical orientations
-- Support for changing the active step with the keyboard and pointer
-- Support for linear and non-linear steps
+- Supports changing the active step with the keyboard and pointer
+- Supports linear and non-linear steps
 
 ## Installation
 
-To use the steps machine in your project, run the following command in your
-command line:
+Install the steps package:
 
 <CodeSnippet id="steps/installation.mdx" />
 
 ## Anatomy
 
-To set up the steps correctly, you'll need to understand its anatomy and how we
-name its parts.
+Check the steps anatomy and part names.
 
 > Each part includes a `data-part` attribute to help identify them in the DOM.
 
@@ -35,7 +32,7 @@ name its parts.
 
 ## Usage
 
-First, import the steps package into your project
+Import the steps package:
 
 ```jsx
 import * as steps from "@zag-js/steps"
@@ -43,27 +40,35 @@ import * as steps from "@zag-js/steps"
 
 The steps package exports two key functions:
 
-- `machine` — The state machine logic for the steps widget.
-- `connect` — The function that translates the machine's state to JSX attributes
-  and event handlers.
+- `machine` - State machine logic.
+- `connect` - Maps machine state to JSX props and event handlers.
 
-> You'll also need to provide a unique `id` to the `useMachine` hook. This is
-> used to ensure that every part has a unique identifier.
-
-Next, import the required hooks and functions for your framework and use the
-steps machine in your project 🔥
+Then use the framework integration helpers:
 
 <CodeSnippet id="steps/usage.mdx" />
 
 ## Setting the initial step
 
-Set the initial step by passing the `step` property to the machine context.
+Set the initial step by passing `defaultStep` to the machine context.
 
 > The value of the `step` property is zero-based index.
 
 ```jsx {2}
 const service = useMachine(steps.machine, {
   defaultStep: 1,
+})
+```
+
+## Controlled current step
+
+Use `step` and `onStepChange` for controlled usage.
+
+```jsx
+const service = useMachine(steps.machine, {
+  step,
+  onStepChange(details) {
+    setStep(details.step)
+  },
 })
 ```
 
@@ -103,6 +108,36 @@ const service = useMachine(steps.machine, {
 })
 ```
 
+## Validating steps in linear mode
+
+Use `isStepValid` to block forward navigation when a step is incomplete.
+
+```jsx
+const service = useMachine(steps.machine, {
+  linear: true,
+  isStepValid(index) {
+    return completedSteps.has(index)
+  },
+  onStepInvalid(details) {
+    // details => { step: number, action: "next" | "set", targetStep?: number }
+    console.log("blocked at step", details.step)
+  },
+})
+```
+
+## Skipping optional steps
+
+Use `isStepSkippable` when some steps should be bypassed by next/prev
+navigation.
+
+```jsx
+const service = useMachine(steps.machine, {
+  isStepSkippable(index) {
+    return index === 2
+  },
+})
+```
+
 ## Changing the orientation
 
 The steps machine supports both horizontal and vertical orientations. You can
@@ -115,10 +150,20 @@ const service = useMachine(steps.machine, {
 })
 ```
 
+## Programmatic navigation
+
+Use the API methods to move through the flow in code.
+
+```jsx
+api.setStep(2)
+api.goToNextStep()
+api.goToPrevStep()
+api.resetStep()
+```
+
 ## Styling guide
 
-Earlier, we mentioned that each steps part has a `data-part` attribute added to
-them to select and style them in the DOM.
+Each part includes a `data-part` attribute you can target in CSS.
 
 ```css
 [data-scope="steps"][data-part="root"] {
