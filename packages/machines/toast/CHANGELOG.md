@@ -1,5 +1,21 @@
 # @zag-js/toast
 
+## 1.35.0
+
+### Patch Changes
+
+- [`d0ce632`](https://github.com/chakra-ui/zag/commit/d0ce632a98eeca4784d240c0391cc13a840e5d2a) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix toast types to ensure `parent`/`index` are exposed as props
+  and `expand`/`collapse` are exposed on the store
+
+- Updated dependencies [[`b0149ce`](https://github.com/chakra-ui/zag/commit/b0149cea73d2d975d0920d1a69561b6a85c9baa0)]:
+  - @zag-js/core@1.35.0
+  - @zag-js/anatomy@1.35.0
+  - @zag-js/types@1.35.0
+  - @zag-js/utils@1.35.0
+  - @zag-js/dismissable@1.35.0
+  - @zag-js/dom-query@1.35.0
+
 ## 1.34.1
 
 ### Patch Changes
