@@ -4,6 +4,21 @@ All notable changes to this project will be documented in this file.
 
 > For v0.x changelog, see the [v0 branch](https://github.com/chakra-ui/zag/blob/v0/CHANGELOG.md)
 
+## [1.35.1](./#1.35.1) - 2026-02-26
+
+### Added
+
+- **Core**: Add support for XState-style `#id` transition targets. `#...` targets now resolve by state node `id`, making
+  cross-level transitions explicit.
+
+### Fixed
+
+- **Color Picker**: Fix a regression where clicking the color picker trigger while open did not close the popover
+
+- **Docs**: Fix ESM JSON imports for Node loader compatibility. Add `with { type: "json" }` import attributes and set
+  build target to `node20.10` so the ESM output works when loaded in `next.config.mjs`, velite, or other Node ESM
+  contexts without `ERR_IMPORT_ATTRIBUTE_MISSING`
+
 ## [1.35.0](./#1.35.0) - 2026-02-26
 
 ### Added
