@@ -2,16 +2,15 @@
 
 import { GithubIcon, HeartIcon } from "components/icons"
 import { ThemeToggle } from "components/theme-toggle"
-import Link from "next/link"
 import siteConfig from "site.config"
-import { css } from "styled-system/css"
 import { Box, Flex, HStack } from "styled-system/jsx"
-import { IconLink } from "./icon-link"
-import { LogoWithLink } from "./logo"
-import { MobileNavigation } from "./mobile-navigation"
-import { VersionSelector } from "./version-selector"
+import { IconLink } from "../icon-link"
+import { LogoWithLink } from "../logo"
+import { MobileNav } from "./mobile-nav"
+import { NavLinks } from "./nav-links"
+import { VersionSelect } from "./version-select"
 
-export function TopNavigation() {
+export function TopNav() {
   return (
     <Box
       bg="bg.subtle"
@@ -36,31 +35,12 @@ export function TopNavigation() {
       >
         <HStack gap="3">
           <LogoWithLink />
-          <VersionSelector />
+          <VersionSelect />
         </HStack>
         <HStack gap="4">
-          <nav>
-            <HStack
-              as="ul"
-              gap="6"
-              listStyleType="none"
-              fontWeight="medium"
-              fontSize="sm"
-              display={{ base: "none", md: "flex" }}
-            >
-              <li>
-                <Link
-                  href="/showcase"
-                  className={css({
-                    color: "fg.muted",
-                    _hover: { color: "fg" },
-                  })}
-                >
-                  Showcase
-                </Link>
-              </li>
-            </HStack>
-          </nav>
+          <HStack as="nav" hideBelow="md" gap="6" me="6">
+            <NavLinks />
+          </HStack>
           <HStack gap="4">
             <IconLink
               variant="solid"
@@ -74,7 +54,7 @@ export function TopNavigation() {
               label="View Zag.js on Github"
             />
             <ThemeToggle />
-            <MobileNavigation />
+            <MobileNav />
           </HStack>
         </HStack>
       </Flex>

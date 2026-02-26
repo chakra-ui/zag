@@ -1,25 +1,24 @@
-import { styled, Box, Flex, HStack, Spacer, Stack } from "styled-system/jsx"
 import * as dialog from "@zag-js/dialog"
 import { Portal, normalizeProps, useMachine } from "@zag-js/react"
+import { Button } from "components/ui/button"
 import { useRouteChange } from "lib/use-route-change"
-import Link from "next/link"
 import { useEffect, useRef } from "react"
 import { HiMenu, HiX } from "react-icons/hi"
+import { Box, Flex, HStack, Spacer, Stack, styled } from "styled-system/jsx"
 import useMatchMedia from "use-match-media-hook"
-import { Button } from "components/ui/button"
-import { css } from "styled-system/css"
-import { FrameworkSelect } from "./framework-select"
-import { LogoWithLink } from "./logo"
-import { Sidebar } from "./sidebar"
+import { FrameworkSelect } from "../framework-select"
+import { LogoWithLink } from "../logo"
+import { Sidebar } from "../sidebar"
+import { NavLinks } from "./nav-links"
 
-export function MobileNavigation() {
+export function MobileNav() {
   const service = useMachine(dialog.machine, {
     id: "m1",
     initialFocusEl: () => initialRef.current,
   })
 
   const api = dialog.connect(service, normalizeProps)
-  const initialRef = useRef<HTMLButtonElement>(null)
+  const initialRef = useRef<HTMLButtonElement | null>(null)
 
   const [desktop] = useMatchMedia([`(min-width: 1024px)`])
 
@@ -78,20 +77,12 @@ export function MobileNavigation() {
                   </HStack>
                 </Button>
               </Flex>
+
               <Box px="8">
                 <Spacer height="10" bg="transparent" />
-                <Stack gap="6" mb="8">
+                <Stack gap="3" mb="8">
                   <FrameworkSelect />
-                  <Link
-                    href="/showcase"
-                    className={css({
-                      fontWeight: "medium",
-                      color: "fg.muted",
-                      _hover: { color: "fg" },
-                    })}
-                  >
-                    Showcase
-                  </Link>
+                  <NavLinks />
                 </Stack>
                 <Sidebar />
               </Box>
