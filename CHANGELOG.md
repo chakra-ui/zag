@@ -4,6 +4,26 @@ All notable changes to this project will be documented in this file.
 
 > For v0.x changelog, see the [v0 branch](https://github.com/chakra-ui/zag/blob/v0/CHANGELOG.md)
 
+## [1.35.0](./#1.35.0) - 2026-02-26
+
+### Added
+
+- **Date Picker**
+  - Add non-Gregorian calendar support via `createCalendar` prop
+    - Support Persian, Buddhist, Islamic, Hebrew, and other calendar systems
+    - Month names, year ranges, formatters, and navigation now respect the active calendar
+  - Add `data-type` attribute to weekend table header and cell
+
+### Fixed
+
+- **Combobox**: Fix `onValueChange` returning empty `items` array when using controlled value
+
+- **Popover**: Fix nested popover z-index layering by running `trackDismissableElement` before `trackPositioning`
+
+- **Toast**: Fix types to ensure `parent`/`index` are exposed as props and `expand`/`collapse` are exposed on the store
+
+- **Vanilla**: Fix `mergeProps` to ensure the `style` prop is always a string
+
 ## [1.34.0](./#1.34.0) - 2026-02-19
 
 ### Added
