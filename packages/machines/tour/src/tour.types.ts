@@ -300,7 +300,7 @@ type ComputedContext = Readonly<{
 
 export interface TourSchema {
   tag: "open" | "closed"
-  state: "tourInactive" | "tourActive" | "stepWaiting" | "targetResolving" | "targetScrolling"
+  state: "tourInactive" | "running.resolving" | "running.scrolling" | "running.waiting" | "running.active"
   props: RequiredBy<TourProps, PropsWithDefault>
   context: PrivateContext
   refs: Refs

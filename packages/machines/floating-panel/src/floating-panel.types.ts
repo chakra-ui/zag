@@ -225,7 +225,7 @@ export interface FloatingPanelSchema {
   context: PrivateContext
   computed: ComputedContext
   tag: "open" | "closed"
-  state: "open" | "openDragging" | "openResizing" | "closed"
+  state: "open" | "open.idle" | "open.dragging" | "open.resizing" | "closed"
   event: EventObject
   action: string
   effect: string

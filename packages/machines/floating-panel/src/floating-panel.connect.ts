@@ -16,8 +16,8 @@ export function connect<T extends PropTypes>(
 
   const open = state.hasTag("open")
 
-  const dragging = state.matches("openDragging")
-  const resizing = state.matches("openResizing")
+  const dragging = state.matches("open.dragging")
+  const resizing = state.matches("open.resizing")
 
   const isTopmost = context.get("isTopmost")
   const size = context.get("size")
