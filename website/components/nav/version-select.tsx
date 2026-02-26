@@ -7,7 +7,7 @@ import { HiChevronDown } from "react-icons/hi"
 import { css } from "styled-system/css"
 import { Box, HStack, Stack, styled } from "styled-system/jsx"
 
-export const VersionSelector = () => {
+export const VersionSelect = () => {
   const service = useMachine(menu.machine, {
     id: "version-selector",
     positioning: {
