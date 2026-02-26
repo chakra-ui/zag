@@ -128,9 +128,14 @@ type ChildStateKey<S extends string, Parent extends string> = S extends `${Paren
 type ParentPath<S extends string> = S extends `${infer Parent}.${string}` ? Parent : never
 type AncestorPaths<S extends string> = S | (ParentPath<S> extends never ? never : AncestorPaths<ParentPath<S>>)
 type RelativeStateTarget<S extends string, Source extends string> = ChildStateKey<S, AncestorPaths<Source>>
+type StateIdTarget = `#${string}`
 
 export interface Transition<T extends Dict, Source extends string | undefined = string | undefined> {
-  target?: T["state"] | (Source extends string ? RelativeStateTarget<T["state"], Source> : never) | undefined
+  target?:
+    | T["state"]
+    | StateIdTarget
+    | (Source extends string ? RelativeStateTarget<T["state"], Source> : never)
+    | undefined
   actions?: T["action"][] | undefined
   guard?: T["guard"] | GuardFn<T> | undefined
   reenter?: boolean | undefined
@@ -161,6 +166,7 @@ export type ActionsOrFn<T extends Dict> = T["action"][] | ((params: Params<T>) =
 export type EffectsOrFn<T extends Dict> = T["effect"][] | ((params: Params<T>) => T["effect"][] | undefined)
 
 export interface MachineState<T extends Dict, Parent extends string = string> {
+  id?: string | undefined
   tags?: T["tag"][] | undefined
   entry?: ActionsOrFn<T> | undefined
   exit?: ActionsOrFn<T> | undefined

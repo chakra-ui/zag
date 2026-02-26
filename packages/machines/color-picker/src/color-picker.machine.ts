@@ -168,6 +168,7 @@ export const machine = createMachine<ColorPickerSchema>({
     },
 
     focused: {
+      id: "color-picker-focused",
       tags: ["closed", "focused"],
       on: {
         "CONTROLLED.OPEN": {
@@ -257,7 +258,7 @@ export const machine = createMachine<ColorPickerSchema>({
                 actions: ["invokeOnClose"],
               },
               {
-                target: "idle",
+                target: "#color-picker-focused",
                 actions: ["invokeOnClose"],
               },
             ],

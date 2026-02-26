@@ -139,4 +139,48 @@ describe("nested states", () => {
 
     await cleanup()
   })
+
+  test("supports #id targets for explicit cross-level transitions", async () => {
+    const machine = createMachine<any>({
+      initialState() {
+        return "dialog"
+      },
+      states: {
+        dialog: {
+          initial: "open",
+          states: {
+            focused: {
+              id: "dialogFocused",
+              on: {
+                REOPEN: { target: "open" },
+              },
+            },
+            open: {
+              initial: "idle",
+              states: {
+                idle: {
+                  on: {
+                    CLOSE: { target: "#dialogFocused" },
+                  },
+                },
+                focused: {},
+              },
+            },
+          },
+        },
+      },
+    })
+
+    const { result, send, cleanup } = renderMachine(machine)
+
+    expect(result.current.state.get()).toBe("dialog.open.idle")
+
+    await send({ type: "CLOSE" })
+    expect(result.current.state.get()).toBe("dialog.focused")
+
+    await send({ type: "REOPEN" })
+    expect(result.current.state.get()).toBe("dialog.open.idle")
+
+    await cleanup()
+  })
 })

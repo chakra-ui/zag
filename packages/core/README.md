@@ -102,6 +102,45 @@ const machine = createMachine({
 // service.state.matches("dialog.open") === true when nested state is active
 ```
 
+### State IDs and `#id` targets
+
+Use `id` on a state node when you want to target it explicitly from anywhere in the machine.
+
+```ts
+import { createMachine } from "@zag-js/core"
+
+const machine = createMachine({
+  initialState() {
+    return "dialog"
+  },
+  states: {
+    dialog: {
+      initial: "open",
+      states: {
+        focused: {
+          id: "dialogFocused",
+        },
+        open: {
+          initial: "idle",
+          states: {
+            idle: {
+              on: {
+                CLOSE: { target: "#dialogFocused" },
+              },
+            },
+          },
+        },
+      },
+    },
+  },
+})
+```
+
+Notes:
+
+- `#id` targets resolve by state node `id` (XState-style).
+- State IDs must be unique within a machine.
+
 ## API
 
 ### `createMachine(config, options)`

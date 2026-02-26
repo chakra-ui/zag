@@ -1,7 +1,9 @@
 import type { Machine, MachineSchema, MachineState, TransitionMatch, TransitionMap } from "./types"
 
 const STATE_DELIMITER = "."
+const ABSOLUTE_PREFIX = "#"
 const stateIndexCache = new WeakMap<object, Map<string, MachineState<any>>>()
+const stateIdIndexCache = new WeakMap<object, Map<string, string>>()
 
 function joinStatePath(parts: string[]) {
   return parts.join(STATE_DELIMITER)
@@ -11,15 +13,31 @@ function isAbsoluteStatePath(value: string) {
   return value.includes(STATE_DELIMITER)
 }
 
+function isExplicitAbsoluteStatePath(value: string) {
+  return value.startsWith(ABSOLUTE_PREFIX)
+}
+
+function stripAbsolutePrefix(value: string) {
+  return isExplicitAbsoluteStatePath(value) ? value.slice(ABSOLUTE_PREFIX.length) : value
+}
+
 function appendStatePath(base: string, segment: string) {
   return base ? `${base}${STATE_DELIMITER}${segment}` : segment
 }
 
 function buildStateIndex<T extends MachineSchema>(machine: Machine<T>) {
   const index = new Map<string, MachineState<T>>()
+  const idIndex = new Map<string, string>()
 
   const visit = (basePath: string, state: MachineState<T>) => {
     index.set(basePath, state)
+    const stateId = state.id
+    if (stateId) {
+      if (idIndex.has(stateId)) {
+        throw new Error(`Duplicate state id: ${stateId}`)
+      }
+      idIndex.set(stateId, basePath)
+    }
     const childStates = state.states
     if (!childStates) return
 
@@ -35,16 +53,22 @@ function buildStateIndex<T extends MachineSchema>(machine: Machine<T>) {
     visit(topKey, topState)
   }
 
-  return index
+  return { index, idIndex }
 }
 
 export function ensureStateIndex<T extends MachineSchema>(machine: Machine<T>) {
   const cached = stateIndexCache.get(machine)
   if (cached) return cached as Map<string, MachineState<T>>
 
-  const index = buildStateIndex(machine)
+  const { index, idIndex } = buildStateIndex(machine)
   stateIndexCache.set(machine, index as Map<string, MachineState<any>>)
+  stateIdIndexCache.set(machine, idIndex)
   return index
+}
+
+function getStatePathById<T extends MachineSchema>(machine: Machine<T>, stateId: string) {
+  ensureStateIndex(machine)
+  return stateIdIndexCache.get(machine)?.get(stateId)
 }
 
 function toSegments(value: string | undefined) {
@@ -114,6 +138,15 @@ export function resolveStateValue<T extends MachineSchema>(
   source?: string,
 ): T["state"] {
   const stateValue = String(value)
+
+  if (isExplicitAbsoluteStatePath(stateValue)) {
+    const stateId = stripAbsolutePrefix(stateValue)
+    const statePath = getStatePathById(machine, stateId)
+    if (!statePath) {
+      throw new Error(`Unknown state id: ${stateId}`)
+    }
+    return resolveAbsoluteStateValue(machine, statePath)
+  }
 
   // Relative sibling target (e.g. "editing") is resolved from the state node
   // where the transition is declared, not from the current leaf state.
