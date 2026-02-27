@@ -59,8 +59,59 @@ export class CarouselModel extends Model {
     await this.getIndicator(index).focus()
   }
 
-  async swipeCarousel(direction: SwipeDirection, distance: number = 100, duration: number = 500) {
-    await swipe(this.page, this.carousel, direction, distance, duration)
+  async swipeCarousel(direction: SwipeDirection, distance: number = 100, duration: number = 500, release = true) {
+    await swipe(this.page, this.carousel, direction, distance, duration, release)
+  }
+
+  async holdDrag(ms: number) {
+    await this.page.waitForTimeout(ms)
+  }
+
+  async releaseDrag() {
+    await this.page.mouse.up()
+  }
+
+  async wheelCarousel(deltaX: number, deltaY = 0) {
+    const box = await this.carousel.boundingBox()
+    if (!box) throw new Error("Could not determine carousel bounding box.")
+    await this.page.mouse.move(box.x + box.width / 2, box.y + box.height / 2)
+    await this.page.mouse.wheel(deltaX, deltaY)
+  }
+
+  async waitForScrollSettle(timeout = 1500) {
+    await this.carousel.evaluate(async (el, timeoutMs) => {
+      const wait = (ms: number) => new Promise<void>((resolve) => setTimeout(resolve, ms))
+
+      if ("onscrollend" in el) {
+        await new Promise<void>((resolve) => {
+          const id = window.setTimeout(resolve, timeoutMs)
+          const done = () => {
+            window.clearTimeout(id)
+            resolve()
+          }
+          el.addEventListener("scrollend", done, { once: true })
+        })
+        return
+      }
+
+      let previous = Number.NaN
+      let stableFrames = 0
+      const maxFrames = Math.ceil(timeoutMs / 16)
+      const orientation = (el as HTMLElement).dataset.orientation
+      const axis = orientation === "vertical" ? "y" : "x"
+
+      for (let frame = 0; frame < maxFrames; frame++) {
+        await wait(16)
+        const current = axis === "x" ? (el as HTMLElement).scrollLeft : (el as HTMLElement).scrollTop
+        if (Math.abs(current - previous) < 0.5) {
+          stableFrames += 1
+          if (stableFrames >= 3) return
+        } else {
+          stableFrames = 0
+        }
+        previous = current
+      }
+    }, timeout)
   }
 
   async clickScrollToButton(index: number) {

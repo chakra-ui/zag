@@ -1,6 +1,6 @@
 import { ariaAttr, contains, dataAttr, getEventKey, getEventTarget, isFocusable, isLeftClick } from "@zag-js/dom-query"
 import type { EventKeyMap, NormalizeProps, PropTypes } from "@zag-js/types"
-import { throttle } from "@zag-js/utils"
+import { clampValue, throttle } from "@zag-js/utils"
 import { parts } from "./carousel.anatomy"
 import * as dom from "./carousel.dom"
 import type { CarouselApi, CarouselService } from "./carousel.types"
@@ -18,6 +18,7 @@ export function connect<T extends PropTypes>(service: CarouselService, normalize
 
   const pageSnapPoints = Array.from(context.get("pageSnapPoints"))
   const page = context.get("page")
+  const activePage = pageSnapPoints.length ? clampValue(page, 0, pageSnapPoints.length - 1) : 0
   const slidesPerPage = prop("slidesPerPage")
 
   const padding = prop("padding")
@@ -26,15 +27,15 @@ export function connect<T extends PropTypes>(service: CarouselService, normalize
   return {
     isPlaying,
     isDragging,
-    page,
+    page: activePage,
     pageSnapPoints,
     canScrollNext,
     canScrollPrev,
     getProgress() {
-      return page / pageSnapPoints.length
+      return activePage / pageSnapPoints.length
     },
     getProgressText() {
-      const details = { page: page + 1, totalPages: pageSnapPoints.length }
+      const details = { page: activePage + 1, totalPages: pageSnapPoints.length }
       return translations.progressText?.(details) ?? ""
     },
     scrollToIndex(index, instant) {
@@ -264,7 +265,7 @@ export function connect<T extends PropTypes>(service: CarouselService, normalize
         "data-orientation": prop("orientation"),
         "data-index": props.index,
         "data-readonly": dataAttr(props.readOnly),
-        "data-current": dataAttr(props.index === page),
+        "data-current": dataAttr(props.index === activePage),
         "aria-label": translations.indicator(props.index),
         onClick(event) {
           if (event.defaultPrevented) return

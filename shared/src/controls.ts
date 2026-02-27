@@ -246,6 +246,14 @@ export const carouselControls = defineControls({
   dir: { type: "select", options: ["ltr", "rtl"] as const, defaultValue: "ltr" },
   orientation: { type: "select", options: ["horizontal", "vertical"] as const, defaultValue: "horizontal" },
   slidesPerPage: { type: "number", defaultValue: 2 },
+  slidesPerMove: {
+    type: "select",
+    options: ["auto", "1", "2"] as const,
+    defaultValue: "auto",
+    transformValue(value) {
+      return value === "auto" ? "auto" : Number(value)
+    },
+  },
   loop: { type: "boolean", defaultValue: false },
 })
 
