@@ -1,4 +1,4 @@
-import { DateFormatter } from "@internationalized/date"
+import { DateFormatter, toCalendarDateTime } from "@internationalized/date"
 import { createMachine, type Params } from "@zag-js/core"
 import { constrainValue, getTodayDate, isDateEqual } from "@zag-js/date-utils"
 import { raf } from "@zag-js/dom-query"
@@ -79,6 +79,13 @@ export const machine = createMachine<DateInputSchema>({
       defaultValue?.[0] ||
       getTodayDate(timeZone)
     placeholderValue = constrainValue(placeholderValue, props.min, props.max)
+
+    // When granularity requires time fields, ensure the placeholder is a CalendarDateTime
+    // so that IncompleteDate.cycle() and toValue() can properly handle hour/minute/second.
+    const needsTime = granularity === "hour" || granularity === "minute" || granularity === "second"
+    if (needsTime && !("hour" in placeholderValue)) {
+      placeholderValue = toCalendarDateTime(placeholderValue)
+    }
 
     const hourCycle = props.hourCycle === 12 ? "h12" : props.hourCycle === 24 ? "h23" : undefined
 
