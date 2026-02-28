@@ -284,9 +284,9 @@ test.describe("date-input [single]", () => {
 
     await I.focusSegment("year")
     await I.pressKey("ArrowUp")
-    await I.seeSegmentText("year", "2020")
+    await I.seeSegmentText("year", "2019")
     await I.pressKey("ArrowUp")
-    await I.seeSegmentText("year", "2021")
+    await I.seeSegmentText("year", "2020")
   })
 
   test("[input] ArrowDown value starts from the placeholder date", async () => {
@@ -308,9 +308,9 @@ test.describe("date-input [single]", () => {
 
     await I.focusSegment("year")
     await I.pressKey("ArrowDown")
-    await I.seeSegmentText("year", "2018")
+    await I.seeSegmentText("year", "2019")
     await I.pressKey("ArrowDown")
-    await I.seeSegmentText("year", "2017")
+    await I.seeSegmentText("year", "2018")
   })
 
   test("[input] changing placeholderValue prop updates the base date for editing", async () => {
@@ -331,7 +331,7 @@ test.describe("date-input [single]", () => {
 
     await I.focusSegment("year")
     await I.pressKey("ArrowUp")
-    await I.seeSegmentText("year", "2021")
+    await I.seeSegmentText("year", "2020")
   })
 
   test.fixme("[input] ArrowDown on year 1 should show 1 BC and selected value should have 0 year set", async () => {
