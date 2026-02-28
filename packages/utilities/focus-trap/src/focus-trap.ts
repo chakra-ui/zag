@@ -861,7 +861,7 @@ export class FocusTrap {
   }
 }
 
-const isKeyboardEvent = (event: Event): event is KeyboardEvent => event.type === "keydown"
+const isKeyboardEvent = (event?: Event | null): event is KeyboardEvent => event?.type === "keydown"
 const isTabEvent = (event: Event) => isKeyboardEvent(event) && event?.key === "Tab"
 
 const isKeyForward = (e: Event) => isKeyboardEvent(e) && e.key === "Tab" && !e?.shiftKey

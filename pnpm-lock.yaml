@@ -3431,6 +3431,9 @@ importers:
       clean-package:
         specifier: 2.2.0
         version: 2.2.0
+      jsdom:
+        specifier: 28.1.0
+        version: 28.1.0
 
   packages/utilities/focus-visible:
     dependencies:
