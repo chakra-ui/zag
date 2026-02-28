@@ -147,6 +147,11 @@ export const machine = createMachine<DateInputSchema>({
           prop("onPlaceholderChange")?.({ value, valueAsString, placeholderValue })
         },
       })),
+      editingValue: bindable<DateValue | null>(() => ({
+        defaultValue: null,
+        isEqual: (a, b) => a === b || (a != null && b != null && isDateEqual(a, b)),
+        hash: (v) => v?.toString() ?? "null",
+      })),
       validSegments: bindable<Segments[]>(() => {
         return {
           defaultValue: getDefaultValidSegments(prop("value") || prop("defaultValue"), prop("allSegments")),
@@ -166,6 +171,7 @@ export const machine = createMachine<DateInputSchema>({
       const value = context.get("value")
       const selectionMode = prop("selectionMode")
       const placeholderValue = context.get("placeholderValue")
+      const editingValue = context.get("editingValue")
       const validSegments = context.get("validSegments")
       const allSegments = prop("allSegments")
       const timeZone = prop("timeZone")
@@ -173,10 +179,14 @@ export const machine = createMachine<DateInputSchema>({
       const granularity = prop("granularity")
       const formatter = prop("formatter")
 
-      let dates: DateValue[] = value?.length ? value : [placeholderValue]
+      // editingValue tracks the partial date being assembled during editing;
+      // fall back to the stable placeholderValue when no editing is in progress.
+      const displayFallback = editingValue ?? placeholderValue
+
+      let dates: DateValue[] = value?.length ? value : [displayFallback]
 
       if (selectionMode === "range") {
-        dates = [value?.[0] ?? placeholderValue, value?.[1] ?? placeholderValue]
+        dates = [value?.[0] ?? displayFallback, value?.[1] ?? displayFallback]
       }
 
       const allKeys = Object.keys(allSegments)
@@ -184,9 +194,9 @@ export const machine = createMachine<DateInputSchema>({
       return dates.map((date, i) => {
         const currentValidSegments = validSegments?.[i] || {}
         const validKeys = Object.keys(currentValidSegments)
-        // When not all segments are valid (e.g. year cleared), use placeholderValue so edits are reflected
+        // When not all segments are valid (e.g. year cleared), use displayFallback so edits are reflected
         const useValue = date && validKeys.length >= allKeys.length
-        const displayValue = useValue ? date : placeholderValue
+        const displayValue = useValue ? date : displayFallback
 
         return processSegments({
           dateValue: displayValue.toDate(timeZone),
@@ -310,8 +320,8 @@ export const machine = createMachine<DateInputSchema>({
         context.set("activeSegmentIndex", event.segmentIndex)
       },
 
-      clearPlaceholderDate({ prop, context }) {
-        context.set("placeholderValue", getTodayDate(prop("timeZone")))
+      clearPlaceholderDate({ context }) {
+        context.set("editingValue", null)
       },
 
       clearEnteredKeys({ context }) {
@@ -428,11 +438,19 @@ export const machine = createMachine<DateInputSchema>({
         const index = context.get("activeIndex")
         const activeValidSegments = validSegments[index]
 
-        const displayValue = getDisplayValue(params)
+        let displayValue = getDisplayValue(params)
 
         if (!activeValidSegments?.[type]) {
           markSegmentValid(params, type)
+          // Seed this specific empty field from the stable placeholderValue (not from the
+          // editing accumulator which may hold stale values from a previous edit session).
+          const placeholderValue = context.get("placeholderValue")
+          const fieldValue = (placeholderValue as unknown as Record<string, number | string>)[type]
+          if (fieldValue != null) {
+            displayValue = setSegment(displayValue, type, fieldValue, formatter.resolvedOptions())
+          }
         }
+
         setValue(params, addSegment(displayValue, type, amount, formatter.resolvedOptions()))
       },
 
@@ -467,13 +485,21 @@ export const machine = createMachine<DateInputSchema>({
       },
 
       syncValidSegments({ context, prop }) {
-        context.set("validSegments", getDefaultValidSegments(context.get("value"), prop("allSegments")))
+        const value = context.get("value")
+        const activeIndex = context.get("activeIndex")
+        context.set("validSegments", getDefaultValidSegments(value, prop("allSegments")))
+        // Mirror editingValue to the committed date for the active index.
+        // This ensures that when user edits a single segment after a commit, the other
+        // segments retain the user's typed values rather than falling back to placeholderValue.
+        // Falls back to null when value is empty (e.g. after VALUE.CLEAR).
+        context.set("editingValue", value[activeIndex] ?? null)
       },
 
       syncPlaceholderProp({ prop, context }) {
         const propValue = prop("placeholderValue")
         if (propValue) {
           context.set("placeholderValue", propValue)
+          context.set("editingValue", null)
         }
       },
 

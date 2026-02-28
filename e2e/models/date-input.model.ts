@@ -111,4 +111,12 @@ export class DateInputModel extends Model {
   seeControlNotFocused() {
     return expect(this.control).not.toHaveAttribute("data-focus")
   }
+
+  seeEditingValue(value: string) {
+    return expect(this.output).toContainText(`Editing: ${value}`)
+  }
+
+  seeNoEditingValue() {
+    return expect(this.output).toContainText("Editing: -")
+  }
 }

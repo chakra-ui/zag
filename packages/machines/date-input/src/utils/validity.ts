@@ -1,9 +1,10 @@
 import type { Params } from "@zag-js/core"
-import { constrainValue, getTodayDate } from "@zag-js/date-utils"
+import { constrainValue } from "@zag-js/date-utils"
 import type { DateInputSchema, DateValue, SegmentType } from "../date-input.types"
 
 /**
- * If all segments are valid, return the actual value date, otherwise return the placeholder date.
+ * If all segments are valid, return the actual value date, otherwise return the editing
+ * accumulator (editingValue) if one exists, falling back to the stable placeholderValue.
  */
 export function getDisplayValue(ctx: Params<DateInputSchema>) {
   const { context, prop } = ctx
@@ -11,10 +12,12 @@ export function getDisplayValue(ctx: Params<DateInputSchema>) {
   const validSegments = context.get("validSegments")
   const allSegments = prop("allSegments")
   const value = context.get("value")[index]
+  const editingValue = context.get("editingValue")
   const placeholderValue = context.get("placeholderValue")
   const activeValidSegments = validSegments[index] ?? {}
 
-  return value && Object.keys(activeValidSegments).length >= Object.keys(allSegments).length ? value : placeholderValue
+  const displayFallback = editingValue ?? placeholderValue
+  return value && Object.keys(activeValidSegments).length >= Object.keys(allSegments).length ? value : displayFallback
 }
 
 export function markSegmentInvalid(ctx: Params<DateInputSchema>, segmentType: SegmentType) {
@@ -82,24 +85,30 @@ export function setValue(ctx: Params<DateInputSchema>, value: DateValue) {
     const values = Array.from(context.get("value"))
     values[index] = date
     context.set("value", values)
+    // Keep editingValue as the committed date (never null it on commit).
+    // This mirrors React Spectrum's approach: displayValue is re-initialized FROM
+    // the committed value so that when user edits a single segment, the other
+    // segments still reflect their typed values rather than falling back to placeholderValue.
+    context.set("editingValue", date)
   } else {
-    context.set("placeholderValue", date)
+    // Store partial editing state in editingValue so placeholderValue is never mutated.
+    context.set("editingValue", date)
   }
 }
 
 /**
  * When all segments of a group become invalid, remove that group's date from value
- * and reset the placeholderValue to a safe default.
+ * and clear the editing accumulator.
  *
  * Removing from value prevents syncValidSegments from falsely re-validating the group
  * when another group's value changes (since syncValidSegments marks all segments valid
  * for any non-null date).
  *
- * Resetting placeholderValue prevents formatToParts from receiving unusual edge-case
- * dates (e.g. year=1) that can throw RangeError in some environments.
+ * Clearing editingValue ensures getDisplayValue falls back to the stable placeholderValue,
+ * which is always a safe date to pass to formatToParts.
  */
 export function clearValueIfAllSegmentsInvalid(ctx: Params<DateInputSchema>) {
-  const { context, prop } = ctx
+  const { context } = ctx
   const index = context.get("activeIndex")
   const activeValidSegments = context.get("validSegments")[index] ?? {}
   if (Object.keys(activeValidSegments).length === 0) {
@@ -107,7 +116,9 @@ export function clearValueIfAllSegmentsInvalid(ctx: Params<DateInputSchema>) {
     if (index < values.length) {
       context.set("value", values.slice(0, index))
     }
-    context.set("placeholderValue", getTodayDate(prop("timeZone")))
+    // Clear the editing accumulator so getDisplayValue falls back to the stable placeholderValue.
+    // No need to reset placeholderValue itself — it was never mutated during editing.
+    context.set("editingValue", null)
   }
 }
 

@@ -194,6 +194,12 @@ interface PrivateContext {
    */
   placeholderValue: DateValue
   /**
+   * The transient date being assembled during partial segment editing.
+   * Replaces placeholderValue as the editing accumulator so that placeholderValue
+   * stays stable (never mutated by user input).
+   */
+  editingValue: DateValue | null
+  /**
    * The valid segments for each date value (tracks which segments have been filled).
    */
   validSegments: Segments[]
@@ -353,6 +359,11 @@ export interface DateInputApi<T extends PropTypes = PropTypes> {
    * The placeholder date.
    */
   placeholderValue: DateValue
+  /**
+   * The transient date being assembled during partial segment editing.
+   * Null when no editing is in progress (all segments valid or all cleared).
+   */
+  editingValue: DateValue | null
   /**
    * Sets the selected date(s) to the given values.
    */

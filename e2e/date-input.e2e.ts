@@ -333,6 +333,174 @@ test.describe("date-input [single]", () => {
     await I.pressKey("ArrowUp")
     await I.seeSegmentText("year", "2021")
   })
+
+  test("[input] ArrowDown on year 1 should show 1 BC", async () => {})
+
+  // --- placeholderValue stability (editingValue behaviour) ---
+
+  test("[placeholderValue] is not changed after a complete valid input", async () => {
+    await I.clickControls()
+    await I.controls.date("placeholderValue", "2019-04-10")
+    await I.seePlaceholderValue("2019-04-10")
+
+    await I.focusSegment("month")
+    await I.type("01")
+    await I.type("25")
+    await I.type("2025")
+    await I.seeSelectedValue("01/25/2025")
+
+    // Committing a value must not mutate the placeholderValue
+    await I.seePlaceholderValue("2019-04-10")
+  })
+
+  test("[placeholderValue] is not changed while typing partial segments", async () => {
+    await I.clickControls()
+    await I.controls.date("placeholderValue", "2019-04-10")
+    await I.seePlaceholderValue("2019-04-10")
+
+    // Type only the month segment – editing accumulator (editingValue) absorbs the partial state
+    await I.focusSegment("month")
+    await I.type("05")
+    await I.seeSegmentText("month", "05")
+    // Other segments remain as placeholder text
+    await I.seeSegmentIsPlaceholder("day")
+    await I.seeSegmentIsPlaceholder("year")
+    // The stable placeholderValue must not be affected by the ongoing edit
+    await I.seePlaceholderValue("2019-04-10")
+  })
+
+  test("[placeholderValue] is not changed after clearing all segments via backspace", async () => {
+    await I.clickControls()
+    await I.controls.date("placeholderValue", "2019-04-10")
+    await I.seePlaceholderValue("2019-04-10")
+
+    await I.focusSegment("month")
+    await I.type("06")
+    await I.type("15")
+    await I.type("2022")
+    await I.seeSelectedValue("06/15/2022")
+
+    // Clear year (4 digits)
+    await I.focusSegment("year")
+    await I.pressKey("Backspace", 4)
+    await I.seeSegmentIsPlaceholder("year")
+
+    // Backspace on placeholder year moves to day
+    await I.pressKey("Backspace")
+
+    // Clear day (15 → 1 → 0 → placeholder)
+    await I.pressKey("Backspace", 2)
+    await I.seeSegmentIsPlaceholder("day")
+
+    // Backspace on placeholder day moves to month
+    await I.pressKey("Backspace")
+
+    // Clear month (06 → 0 → placeholder)
+    await I.pressKey("Backspace")
+    await I.seeSegmentIsPlaceholder("month")
+
+    // Clearing all segments must not mutate placeholderValue
+    await I.seePlaceholderValue("2019-04-10")
+  })
+
+  test("[editingValue] clearing one segment preserves the other typed segments", async () => {
+    // Regression: after typing 11/11/1111 and clearing only year, month and day must
+    // still display the user's typed values (11/11) and NOT fall back to placeholderValue.
+    await I.clickControls()
+    await I.controls.date("placeholderValue", "2019-04-10")
+    await I.seePlaceholderValue("2019-04-10")
+
+    await I.focusSegment("month")
+    await I.type("11")
+    await I.type("11")
+    await I.type("1111")
+    await I.seeSelectedValue("11/11/1111")
+
+    // Clear only the year
+    await I.focusSegment("year")
+    await I.pressKey("Backspace", 4)
+    await I.seeSegmentIsPlaceholder("year")
+
+    // Month and day must retain the user's typed values, not the placeholder (04/10)
+    await I.seeSegmentText("month", "11")
+    await I.seeSegmentText("day", "11")
+    await I.seeSegmentIsNotPlaceholder("month")
+    await I.seeSegmentIsNotPlaceholder("day")
+  })
+
+  test("[placeholderValue] ArrowUp after clearing a previously typed year starts from placeholder year", async () => {
+    // Regression: before the editingValue fix, clearing year after a full commit left
+    // a stale edited year in the context, causing ArrowUp to start from year 1 instead
+    // of the configured placeholder year.
+    await I.clickControls()
+    await I.controls.date("placeholderValue", "2019-04-10")
+    await I.seePlaceholderValue("2019-04-10")
+
+    // Enter a full date with an unusual year
+    await I.focusSegment("month")
+    await I.type("11")
+    await I.type("11")
+    await I.type("1111")
+    await I.seeSegmentIsNotPlaceholder("year")
+
+    // Clear the year completely (4 backspaces: 1111 → 111 → 11 → 1 → placeholder)
+    await I.focusSegment("year")
+    await I.pressKey("Backspace", 4)
+    await I.seeSegmentIsPlaceholder("year")
+
+    // ArrowUp must seed from placeholderValue.year (2019), not from stale year 1
+    await I.pressKey("ArrowUp")
+    await I.seeSegmentText("year", "2020")
+    // Month and day must still reflect the typed values, not the placeholder
+    await I.seeSegmentText("month", "11")
+    await I.seeSegmentText("day", "11")
+  })
+
+  test("[placeholderValue] ArrowDown after clearing a previously typed year starts from placeholder year", async () => {
+    await I.clickControls()
+    await I.controls.date("placeholderValue", "2019-04-10")
+    await I.seePlaceholderValue("2019-04-10")
+
+    await I.focusSegment("month")
+    await I.type("11")
+    await I.type("11")
+    await I.type("1111")
+    await I.seeSegmentIsNotPlaceholder("year")
+
+    await I.focusSegment("year")
+    await I.pressKey("Backspace", 4)
+    await I.seeSegmentIsPlaceholder("year")
+
+    // ArrowDown from placeholder year must seed from placeholderValue.year (2019)
+    await I.pressKey("ArrowDown")
+    await I.seeSegmentText("year", "2018")
+  })
+
+  test("[placeholderValue] ArrowUp after clearing a previously typed day starts from placeholder day", async () => {})
+  test("[placeholderValue] ArrowDown after clearing a previously typed day starts from placeholder day", async () => {})
+
+  test("[placeholderValue] ArrowUp after clearing a previously typed month starts from placeholder month", async () => {})
+  test("[placeholderValue] ArrowDown after clearing a previously typed month starts from placeholder month", async () => {})
+
+  test("[placeholderValue] changing the prop while mid-edit resets the editing base", async () => {
+    await I.clickControls()
+    await I.controls.date("placeholderValue", "2019-04-10")
+    await I.seePlaceholderValue("2019-04-10")
+
+    // Partially edit month
+    await I.focusSegment("month")
+    await I.type("05")
+    await I.seeSegmentText("month", "05")
+
+    // Change the placeholder prop while editing is in progress
+    await I.controls.date("placeholderValue", "2025-08-20")
+    await I.seePlaceholderValue("2025-08-20")
+
+    // ArrowUp on the now-empty day must start from new placeholder (day=20)
+    await I.focusSegment("day")
+    await I.pressKey("ArrowUp")
+    await I.seeSegmentText("day", "21")
+  })
 })
 
 test.describe("date-input [range]", () => {
