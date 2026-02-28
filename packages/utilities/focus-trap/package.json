@@ -34,7 +34,6 @@
     "@zag-js/dom-query": "workspace:*"
   },
   "devDependencies": {
-    "clean-package": "2.2.0",
-    "jsdom": "28.1.0"
+    "clean-package": "2.2.0"
   }
 }
