@@ -4,6 +4,16 @@ All notable changes to this project will be documented in this file.
 
 > For v0.x changelog, see the [v0 branch](https://github.com/chakra-ui/zag/blob/v0/CHANGELOG.md)
 
+## [1.35.3](./#1.35.3) - 2026-02-28
+
+### Fixed
+
+- **Carousel**
+  - Keep page and indicators in sync after drag release and scroll settling
+  - Handle rapid mixed interactions (drag, wheel, buttons, indicators) more consistently
+  - Maintain valid page state when `slidesPerPage`, `slidesPerMove`, direction, or orientation change
+  - Make `slidesPerMove` progression more predictable across values (`auto`, `1`, `2`)
+
 ## [1.35.2](./#1.35.2) - 2026-02-26
 
 ### Fixed
