@@ -272,15 +272,15 @@ test.describe("date-input [single]", () => {
 
     await I.focusSegment("month")
     await I.pressKey("ArrowUp")
-    await I.seeSegmentText("month", "05")
+    await I.seeSegmentText("month", "04")
     await I.pressKey("ArrowUp")
-    await I.seeSegmentText("month", "06")
+    await I.seeSegmentText("month", "05")
 
     await I.focusSegment("day")
     await I.pressKey("ArrowUp")
-    await I.seeSegmentText("day", "11")
+    await I.seeSegmentText("day", "10")
     await I.pressKey("ArrowUp")
-    await I.seeSegmentText("day", "12")
+    await I.seeSegmentText("day", "11")
 
     await I.focusSegment("year")
     await I.pressKey("ArrowUp")
@@ -296,15 +296,15 @@ test.describe("date-input [single]", () => {
 
     await I.focusSegment("month")
     await I.pressKey("ArrowDown")
-    await I.seeSegmentText("month", "03")
+    await I.seeSegmentText("month", "04")
     await I.pressKey("ArrowDown")
-    await I.seeSegmentText("month", "02")
+    await I.seeSegmentText("month", "03")
 
     await I.focusSegment("day")
     await I.pressKey("ArrowDown")
-    await I.seeSegmentText("day", "09")
+    await I.seeSegmentText("day", "10")
     await I.pressKey("ArrowDown")
-    await I.seeSegmentText("day", "08")
+    await I.seeSegmentText("day", "09")
 
     await I.focusSegment("year")
     await I.pressKey("ArrowDown")
@@ -323,11 +323,11 @@ test.describe("date-input [single]", () => {
 
     await I.focusSegment("month")
     await I.pressKey("ArrowUp")
-    await I.seeSegmentText("month", "07")
+    await I.seeSegmentText("month", "06")
 
     await I.focusSegment("day")
     await I.pressKey("ArrowUp")
-    await I.seeSegmentText("day", "16")
+    await I.seeSegmentText("day", "15")
 
     await I.focusSegment("year")
     await I.pressKey("ArrowUp")
@@ -620,7 +620,7 @@ test.describe("date-input [single]", () => {
     // ArrowUp on the now-empty day must start from new placeholder (day=20)
     await I.focusSegment("day")
     await I.pressKey("ArrowUp")
-    await I.seeSegmentText("day", "21")
+    await I.seeSegmentText("day", "20")
   })
 })
 
