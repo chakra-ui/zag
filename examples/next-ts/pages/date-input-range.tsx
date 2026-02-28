@@ -52,6 +52,11 @@ export default function Page() {
         <output className="date-output">
           <div>Selected: {api.valueAsString.join(" - ") || "-"}</div>
           <div>Placeholder: {api.placeholderValue.toString()}</div>
+          {api.displayValues?.map((date, index) => (
+            <div>
+              Editing input {index + 1}: {date.toString() ?? "-"}
+            </div>
+          ))}
         </output>
       </main>
 
