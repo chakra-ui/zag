@@ -292,7 +292,7 @@ export const machine = createMachine<CarouselSchema>({
 
         const itemEls = dom.getItemEls(scope)
         itemEls.forEach(exec)
-        const cleanups = itemEls.map((el) => resizeObserverBorderBox.observe(el, exec))
+        const cleanups = [resizeObserverBorderBox.observe(el, exec), ...itemEls.map((el) => resizeObserverBorderBox.observe(el, exec))]
         return callAll(...cleanups)
       },
 
