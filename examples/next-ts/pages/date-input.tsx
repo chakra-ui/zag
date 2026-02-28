@@ -11,9 +11,6 @@ export default function Page() {
   const service = useMachine(dateInput.machine, {
     id: useId(),
     ...controls.context,
-    placeholderValue: controls.context.placeholderValue
-      ? dateInput.parse(controls.context.placeholderValue)
-      : undefined,
   })
 
   const api = dateInput.connect(service, normalizeProps)

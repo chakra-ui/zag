@@ -5,6 +5,7 @@
   "private": true,
   "dependencies": {
     "@zag-js/image-cropper": "workspace:*",
-    "@zag-js/tour": "workspace:*"
+    "@zag-js/tour": "workspace:*",
+    "@zag-js/date-input": "workspace:*"
   }
 }

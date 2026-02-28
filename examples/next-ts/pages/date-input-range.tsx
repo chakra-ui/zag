@@ -12,9 +12,6 @@ export default function Page() {
     id: useId(),
     selectionMode: "range",
     ...controls.context,
-    placeholderValue: controls.context.placeholderValue
-      ? dateInput.parse(controls.context.placeholderValue)
-      : undefined,
   })
 
   const api = dateInput.connect(service, normalizeProps)

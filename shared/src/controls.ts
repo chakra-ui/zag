@@ -1,4 +1,5 @@
 import { defineControls } from "./define-controls"
+import * as dateInput from "@zag-js/date-input"
 
 export const accordionControls = defineControls({
   collapsible: { type: "boolean", defaultValue: false },
@@ -230,7 +231,11 @@ export const dateInputControls = defineControls({
     options: ["day", "hour", "minute", "second"] as const,
     defaultValue: "day",
   },
-  placeholderValue: { type: "date", defaultValue: "" },
+  placeholderValue: {
+    type: "date",
+    defaultValue: "",
+    transformValue: (value) => value !== "" && dateInput.parse(value),
+  },
 })
 
 export const transitionControls = defineControls({

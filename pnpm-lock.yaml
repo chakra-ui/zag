@@ -3580,6 +3580,9 @@ importers:
 
   shared:
     dependencies:
+      '@zag-js/date-input':
+        specifier: workspace:*
+        version: link:../packages/machines/date-input
       '@zag-js/image-cropper':
         specifier: workspace:*
         version: link:../packages/machines/image-cropper
