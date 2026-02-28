@@ -334,7 +334,32 @@ test.describe("date-input [single]", () => {
     await I.seeSegmentText("year", "2021")
   })
 
-  test("[input] ArrowDown on year 1 should show 1 BC", async () => {})
+  test.fixme("[input] ArrowDown on year 1 should show 1 BC and selected value should have 0 year set", async () => {
+    await I.clickControls()
+    await I.controls.date("placeholderValue", "0001-04-10")
+    await I.seePlaceholderValue("0001-04-10")
+
+    await I.focusSegment("year")
+    await I.pressKey("ArrowDown")
+    await I.seeSegmentText("year", "1 BC")
+
+    await I.focusSegment("month")
+    await I.type("01")
+    await I.type("01")
+    await I.seeSelectedValue("01/01/0000")
+  })
+
+  test.fixme("[input] ArrowDown on year 1 BC should show 2 BC and selected value should have -1 year set", async () => {
+    await I.clickControls()
+    await I.controls.date("placeholderValue", "0001-04-10")
+    await I.seePlaceholderValue("0001-04-10")
+
+    await I.focusSegment("year")
+    await I.pressKey("ArrowDown")
+    await I.seeSegmentText("year", "1 BC")
+    await I.pressKey("ArrowDown")
+    await I.seeSegmentText("year", "2 BC")
+  })
 
   // --- placeholderValue stability (editingValue behaviour) ---
 
@@ -450,7 +475,7 @@ test.describe("date-input [single]", () => {
 
     // ArrowUp must seed from placeholderValue.year (2019), not from stale year 1
     await I.pressKey("ArrowUp")
-    await I.seeSegmentText("year", "2020")
+    await I.seeSegmentText("year", "2019")
     // Month and day must still reflect the typed values, not the placeholder
     await I.seeSegmentText("month", "11")
     await I.seeSegmentText("day", "11")
@@ -473,14 +498,110 @@ test.describe("date-input [single]", () => {
 
     // ArrowDown from placeholder year must seed from placeholderValue.year (2019)
     await I.pressKey("ArrowDown")
-    await I.seeSegmentText("year", "2018")
+    await I.seeSegmentText("year", "2019")
   })
 
-  test("[placeholderValue] ArrowUp after clearing a previously typed day starts from placeholder day", async () => {})
-  test("[placeholderValue] ArrowDown after clearing a previously typed day starts from placeholder day", async () => {})
+  test("[placeholderValue] ArrowUp after clearing a previously typed day starts from placeholder day", async () => {
+    await I.clickControls()
+    await I.controls.date("placeholderValue", "2019-04-10")
+    await I.seePlaceholderValue("2019-04-10")
 
-  test("[placeholderValue] ArrowUp after clearing a previously typed month starts from placeholder month", async () => {})
-  test("[placeholderValue] ArrowDown after clearing a previously typed month starts from placeholder month", async () => {})
+    await I.focusSegment("month")
+    await I.type("11")
+    await I.type("11")
+    await I.type("1111")
+    await I.seeSegmentIsNotPlaceholder("day")
+
+    // Clear only the day
+    await I.focusSegment("day")
+    await I.pressKey("Backspace", 2)
+    await I.seeSegmentIsPlaceholder("day")
+
+    // First ArrowUp seeds from placeholderValue.day (10)
+    await I.pressKey("ArrowUp")
+    await I.seeSegmentText("day", "10")
+    // Second ArrowUp increments from there
+    await I.pressKey("ArrowUp")
+    await I.seeSegmentText("day", "11")
+    // Month and year must still reflect the typed values
+    await I.seeSegmentText("month", "11")
+    await I.seeSegmentText("year", "1111")
+  })
+
+  test("[placeholderValue] ArrowDown after clearing a previously typed day starts from placeholder day", async () => {
+    await I.clickControls()
+    await I.controls.date("placeholderValue", "2019-04-10")
+    await I.seePlaceholderValue("2019-04-10")
+
+    await I.focusSegment("month")
+    await I.type("11")
+    await I.type("11")
+    await I.type("1111")
+    await I.seeSegmentIsNotPlaceholder("day")
+
+    // Clear only the day
+    await I.focusSegment("day")
+    await I.pressKey("Backspace", 2)
+    await I.seeSegmentIsPlaceholder("day")
+
+    // First ArrowDown seeds from placeholderValue.day (10)
+    await I.pressKey("ArrowDown")
+    await I.seeSegmentText("day", "10")
+    // Second ArrowDown decrements from there
+    await I.pressKey("ArrowDown")
+    await I.seeSegmentText("day", "09")
+  })
+
+  test("[placeholderValue] ArrowUp after clearing a previously typed month starts from placeholder month", async () => {
+    await I.clickControls()
+    await I.controls.date("placeholderValue", "2019-04-10")
+    await I.seePlaceholderValue("2019-04-10")
+
+    await I.focusSegment("month")
+    await I.type("11")
+    await I.type("11")
+    await I.type("1111")
+    await I.seeSegmentIsNotPlaceholder("month")
+
+    // Clear only the month
+    await I.focusSegment("month")
+    await I.pressKey("Backspace", 2)
+    await I.seeSegmentIsPlaceholder("month")
+
+    // First ArrowUp seeds from placeholderValue.month (4)
+    await I.pressKey("ArrowUp")
+    await I.seeSegmentText("month", "04")
+    // Second ArrowUp increments from there
+    await I.pressKey("ArrowUp")
+    await I.seeSegmentText("month", "05")
+    // Day and year must still reflect the typed values
+    await I.seeSegmentText("day", "11")
+    await I.seeSegmentText("year", "1111")
+  })
+
+  test("[placeholderValue] ArrowDown after clearing a previously typed month starts from placeholder month", async () => {
+    await I.clickControls()
+    await I.controls.date("placeholderValue", "2019-04-10")
+    await I.seePlaceholderValue("2019-04-10")
+
+    await I.focusSegment("month")
+    await I.type("11")
+    await I.type("11")
+    await I.type("1111")
+    await I.seeSegmentIsNotPlaceholder("month")
+
+    // Clear only the month
+    await I.focusSegment("month")
+    await I.pressKey("Backspace", 2)
+    await I.seeSegmentIsPlaceholder("month")
+
+    // First ArrowDown seeds from placeholderValue.month (4)
+    await I.pressKey("ArrowDown")
+    await I.seeSegmentText("month", "04")
+    // Second ArrowDown decrements from there
+    await I.pressKey("ArrowDown")
+    await I.seeSegmentText("month", "03")
+  })
 
   test("[placeholderValue] changing the prop while mid-edit resets the editing base", async () => {
     await I.clickControls()
