@@ -33,8 +33,12 @@ export type ControlProp =
       max?: number
       transformValue?: TransformValueFn<number>
     }
-  | { type: "date"; label?: string; defaultValue?: string; transformValue?: TransformValueFn<string> }
-
+  | {
+      type: "date"
+      label?: string
+      defaultValue?: string
+      transformValue?: TransformValueFn<string>
+    }
 
 export type ControlRecord = Record<string, ControlProp>
 
