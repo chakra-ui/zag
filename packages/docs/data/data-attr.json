@@ -554,6 +554,48 @@
       "data-empty": "Present when the content is empty"
     }
   },
+  "date-input": {
+    "Root": {
+      "data-scope": "date-input",
+      "data-part": "root",
+      "data-disabled": "Present when disabled",
+      "data-readonly": "Present when read-only",
+      "data-invalid": "Present when invalid"
+    },
+    "Label": {
+      "data-scope": "date-input",
+      "data-part": "label",
+      "data-disabled": "Present when disabled",
+      "data-readonly": "Present when read-only",
+      "data-invalid": "Present when invalid"
+    },
+    "Control": {
+      "data-scope": "date-input",
+      "data-part": "control",
+      "data-disabled": "Present when disabled",
+      "data-readonly": "Present when read-only",
+      "data-invalid": "Present when invalid",
+      "data-focus": "Present when focused"
+    },
+    "SegmentGroup": {
+      "data-scope": "date-input",
+      "data-part": "segment-group",
+      "data-disabled": "Present when disabled",
+      "data-readonly": "Present when read-only",
+      "data-invalid": "Present when invalid",
+      "data-focus": "Present when focused"
+    },
+    "Segment": {
+      "data-scope": "date-input",
+      "data-part": "segment",
+      "data-type": "The type of the item",
+      "data-readonly": "Present when read-only",
+      "data-disabled": "Present when disabled",
+      "data-value": "The value of the item",
+      "data-editable": "",
+      "data-placeholder": ""
+    }
+  },
   "date-picker": {
     "Root": {
       "data-scope": "date-picker",

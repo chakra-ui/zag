@@ -1375,6 +1375,177 @@
       }
     }
   },
+  "date-input": {
+    "api": {
+      "focused": {
+        "type": "boolean",
+        "description": "Whether the date input is focused"
+      },
+      "disabled": {
+        "type": "boolean",
+        "description": "Whether the date input is disabled"
+      },
+      "invalid": {
+        "type": "boolean",
+        "description": "Whether the date input is invalid"
+      },
+      "value": {
+        "type": "DateValue[]",
+        "description": "The selected date(s)."
+      },
+      "valueAsDate": {
+        "type": "Date[]",
+        "description": "The selected date(s) as Date objects."
+      },
+      "valueAsString": {
+        "type": "string[]",
+        "description": "The selected date(s) as strings."
+      },
+      "placeholderValue": {
+        "type": "DateValue",
+        "description": "The placeholder date."
+      },
+      "displayValues": {
+        "type": "IncompleteDate[]",
+        "description": "Per-group editing state. Each IncompleteDate tracks which segments have been\nfilled in by the user (non-null = entered, null = placeholder)."
+      },
+      "setValue": {
+        "type": "(values: DateValue[]) => void",
+        "description": "Sets the selected date(s) to the given values."
+      },
+      "clearValue": {
+        "type": "VoidFunction",
+        "description": "Clears the selected date(s)."
+      },
+      "getSegments": {
+        "type": "(props?: SegmentsProps) => DateSegment[]",
+        "description": "Returns the segments for the given index."
+      },
+      "getSegmentState": {
+        "type": "(props: SegmentProps) => SegmentState",
+        "description": "Returns the state details for a given segment."
+      }
+    },
+    "context": {
+      "locale": {
+        "type": "string",
+        "description": "The locale (BCP 47 language tag) to use when formatting the date.",
+        "defaultValue": "\"en-US\""
+      },
+      "translations": {
+        "type": "IntlTranslations",
+        "description": "The localized messages to use."
+      },
+      "ids": {
+        "type": "Partial<{ root: string; label: (index: number) => string; control: string; segmentGroup: (index: number) => string; hiddenInput: (index: number) => string; }>",
+        "description": "The ids of the elements in the date input. Useful for composition."
+      },
+      "name": {
+        "type": "string",
+        "description": "The `name` attribute of the input element."
+      },
+      "form": {
+        "type": "string",
+        "description": "The `form` attribute of the hidden input element."
+      },
+      "timeZone": {
+        "type": "string",
+        "description": "The time zone to use",
+        "defaultValue": "\"UTC\""
+      },
+      "disabled": {
+        "type": "boolean",
+        "description": "Whether the date input is disabled."
+      },
+      "readOnly": {
+        "type": "boolean",
+        "description": "Whether the date input is read-only."
+      },
+      "required": {
+        "type": "boolean",
+        "description": "Whether the date input is required"
+      },
+      "invalid": {
+        "type": "boolean",
+        "description": "Whether the date input is invalid"
+      },
+      "min": {
+        "type": "DateValue",
+        "description": "The minimum date that can be selected."
+      },
+      "max": {
+        "type": "DateValue",
+        "description": "The maximum date that can be selected."
+      },
+      "value": {
+        "type": "DateValue[]",
+        "description": "The controlled selected date(s)."
+      },
+      "defaultValue": {
+        "type": "DateValue[]",
+        "description": "The initial selected date(s) when rendered.\nUse when you don't need to control the selected date(s)."
+      },
+      "placeholderValue": {
+        "type": "DateValue",
+        "description": "The controlled placeholder date."
+      },
+      "defaultPlaceholderValue": {
+        "type": "DateValue",
+        "description": "The initial placeholder date when rendered."
+      },
+      "onValueChange": {
+        "type": "(details: ValueChangeDetails) => void",
+        "description": "Function called when the value changes."
+      },
+      "onPlaceholderChange": {
+        "type": "(details: PlaceholderChangeDetails) => void",
+        "description": "A function called when the placeholder value changes."
+      },
+      "onFocusChange": {
+        "type": "(details: FocusChangeDetails) => void",
+        "description": "A function called when the date input gains or loses focus."
+      },
+      "selectionMode": {
+        "type": "SelectionMode",
+        "description": "The selection mode of the date input.\n- `single` - only one date can be entered\n- `range` - a range of dates can be entered (start and end)",
+        "defaultValue": "\"single\""
+      },
+      "hourCycle": {
+        "type": "HourCycle",
+        "description": "Whether to use 12-hour or 24-hour time format.\nBy default, this is determined by the locale."
+      },
+      "granularity": {
+        "type": "DateGranularity",
+        "description": "Determines the smallest unit that is displayed in the date input.",
+        "defaultValue": "\"day\""
+      },
+      "formatter": {
+        "type": "DateFormatter",
+        "description": "The date formatter to use."
+      },
+      "allSegments": {
+        "type": "Partial<{ year: boolean; month: boolean; day: boolean; hour: boolean; minute: boolean; second: boolean; dayPeriod: boolean; era: boolean; literal: boolean; timeZoneName: boolean; weekday: boolean; unknown: boolean; fractionalSecond: boolean; }>",
+        "description": "The computed segments map for the formatter."
+      },
+      "format": {
+        "type": "(date: FormatDateDetails) => string",
+        "description": "The format function for converting a DateValue to a string."
+      },
+      "dir": {
+        "type": "\"ltr\" | \"rtl\"",
+        "description": "The document's text/writing direction.",
+        "defaultValue": "\"ltr\""
+      },
+      "id": {
+        "type": "string",
+        "description": "The unique identifier of the machine."
+      },
+      "getRootNode": {
+        "type": "() => ShadowRoot | Node | Document",
+        "description": "A root node to correctly resolve document in custom environments. E.x.: Iframes, Electron."
+      }
+    }
+  },
   "date-picker": {
     "api": {
       "focused": {
