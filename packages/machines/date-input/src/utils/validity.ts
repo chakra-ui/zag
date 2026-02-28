@@ -1,126 +1,10 @@
 import type { Params } from "@zag-js/core"
-import { constrainValue } from "@zag-js/date-utils"
-import type { DateInputSchema, DateValue, SegmentType } from "../date-input.types"
+import type { DateInputSchema } from "../date-input.types"
+import type { IncompleteDate } from "./incomplete-date"
 
-/**
- * If all segments are valid, return the actual value date, otherwise return the editing
- * accumulator (editingValue) if one exists, falling back to the stable placeholderValue.
- */
-export function getDisplayValue(ctx: Params<DateInputSchema>) {
-  const { context, prop } = ctx
-  const index = context.get("activeIndex")
-  const validSegments = context.get("validSegments")
-  const allSegments = prop("allSegments")
-  const value = context.get("value")[index]
-  const editingValue = context.get("editingValue")
-  const placeholderValue = context.get("placeholderValue")
-  const activeValidSegments = validSegments[index] ?? {}
-
-  const displayFallback = editingValue ?? placeholderValue
-  return value && Object.keys(activeValidSegments).length >= Object.keys(allSegments).length ? value : displayFallback
-}
-
-export function markSegmentInvalid(ctx: Params<DateInputSchema>, segmentType: SegmentType) {
-  const { context } = ctx
-  const validSegments = context.get("validSegments")
-  const index = context.get("activeIndex")
-  const activeValidSegments = validSegments[index]
-
-  if (activeValidSegments?.[segmentType]) {
-    const next = [...validSegments]
-    next[index] = { ...activeValidSegments }
-    delete next[index][segmentType]
-    context.set("validSegments", next)
-  }
-}
-
-export function markSegmentValid(ctx: Params<DateInputSchema>, segmentType: SegmentType) {
-  const { context, prop } = ctx
-  const validSegments = context.get("validSegments")
-  const allSegments = prop("allSegments")
-  const index = context.get("activeIndex")
-  const activeValidSegments = validSegments[index]
-
-  if (!activeValidSegments?.[segmentType]) {
-    const next = [...validSegments]
-    next[index] = { ...activeValidSegments, [segmentType]: true }
-    if (segmentType === "year" && allSegments.era) {
-      next[index].era = true
-    }
-    context.set("validSegments", next)
-  }
-}
-
-export function isAllSegmentsCompleted(ctx: Params<DateInputSchema>) {
-  const { context, prop } = ctx
-  const validSegments = context.get("validSegments")
-  const allSegments = prop("allSegments")
-  const index = context.get("activeIndex")
-  const activeValidSegments = validSegments[index] ?? {}
-  const validKeys = Object.keys(activeValidSegments)
-  const allKeys = Object.keys(allSegments)
-
-  return (
-    validKeys.length >= allKeys.length ||
-    (validKeys.length === allKeys.length - 1 && allSegments.dayPeriod && !activeValidSegments.dayPeriod)
-  )
-}
-
-export function setValue(ctx: Params<DateInputSchema>, value: DateValue) {
-  const { context, prop } = ctx
-  if (prop("disabled") || prop("readOnly")) return
-  const validSegments = context.get("validSegments")
-  const allSegments = prop("allSegments")
-  const index = context.get("activeIndex")
-  const activeValidSegments = validSegments[index] ?? {}
-  const validKeys = Object.keys(activeValidSegments)
-  const date = constrainValue(value, prop("min"), prop("max"))
-
-  if (isAllSegmentsCompleted(ctx)) {
-    if (validKeys.length === 0) {
-      validSegments[index] = { ...allSegments }
-      context.set("validSegments", validSegments)
-    }
-
-    const values = Array.from(context.get("value"))
-    values[index] = date
-    context.set("value", values)
-    // Keep editingValue as the committed date (never null it on commit).
-    // This mirrors React Spectrum's approach: displayValue is re-initialized FROM
-    // the committed value so that when user edits a single segment, the other
-    // segments still reflect their typed values rather than falling back to placeholderValue.
-    context.set("editingValue", date)
-  } else {
-    // Store partial editing state in editingValue so placeholderValue is never mutated.
-    context.set("editingValue", date)
-  }
-}
-
-/**
- * When all segments of a group become invalid, remove that group's date from value
- * and clear the editing accumulator.
- *
- * Removing from value prevents syncValidSegments from falsely re-validating the group
- * when another group's value changes (since syncValidSegments marks all segments valid
- * for any non-null date).
- *
- * Clearing editingValue ensures getDisplayValue falls back to the stable placeholderValue,
- * which is always a safe date to pass to formatToParts.
- */
-export function clearValueIfAllSegmentsInvalid(ctx: Params<DateInputSchema>) {
-  const { context } = ctx
-  const index = context.get("activeIndex")
-  const activeValidSegments = context.get("validSegments")[index] ?? {}
-  if (Object.keys(activeValidSegments).length === 0) {
-    const values = context.get("value")
-    if (index < values.length) {
-      context.set("value", values.slice(0, index))
-    }
-    // Clear the editing accumulator so getDisplayValue falls back to the stable placeholderValue.
-    // No need to reset placeholderValue itself — it was never mutated during editing.
-    context.set("editingValue", null)
-  }
-}
+// ---------------------------------------------------------------------------
+// Active segment helpers
+// ---------------------------------------------------------------------------
 
 /**
  * Returns the cumulative segment count for all groups before `index`.
@@ -169,4 +53,21 @@ export function advanceToNextSegment(ctx: Params<DateInputSchema>) {
 
   context.set("activeIndex", index + 1)
   context.set("activeSegmentIndex", offset + segments.length + firstNextGroupEditableLocalIndex)
+}
+
+// ---------------------------------------------------------------------------
+// displayValues helpers
+// ---------------------------------------------------------------------------
+
+/** Returns the IncompleteDate for the currently active group. */
+export function getActiveDisplayValue(ctx: Params<DateInputSchema>): IncompleteDate {
+  const index = ctx.context.get("activeIndex")
+  return ctx.context.get("displayValues")[index]
+}
+
+/** Replaces the IncompleteDate for the given group index and persists it. */
+export function setDisplayValue(ctx: Params<DateInputSchema>, index: number, dv: IncompleteDate) {
+  const displayValues = [...ctx.context.get("displayValues")]
+  displayValues[index] = dv
+  ctx.context.set("displayValues", displayValues)
 }

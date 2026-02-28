@@ -37,7 +37,7 @@ export function connect<T extends PropTypes>(service: DateInputService, normaliz
       .map((date) => date.toDate(prop("timeZone"))),
     valueAsString: computed("valueAsString"),
     placeholderValue: context.get("placeholderValue"),
-    editingValue: context.get("editingValue"),
+    displayValues: context.get("displayValues"),
 
     setValue(values) {
       send({ type: "VALUE.SET", value: values })

@@ -40,7 +40,7 @@ export default function Page() {
         <output className="date-output">
           <div>Selected: {api.valueAsString.join(", ") || "-"}</div>
           <div>Placeholder: {api.placeholderValue.toString()}</div>
-          <div>Editing: {api.editingValue?.toString() ?? "-"}</div>
+          <div>Editing: {api.displayValues?.[0]?.toString() ?? "-"}</div>
         </output>
       </main>
 

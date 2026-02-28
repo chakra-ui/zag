@@ -1,6 +1,7 @@
-import { DateFormatter, getMinimumDayInMonth, getMinimumMonthInYear, type DateValue } from "@internationalized/date"
+import { DateFormatter } from "@internationalized/date"
 import type { DateGranularity } from "@zag-js/date-utils"
-import type { DateSegment, EditableSegmentType, IntlTranslations, Segments } from "../date-input.types"
+import type { DateSegment, EditableSegmentType, IntlTranslations } from "../date-input.types"
+import type { IncompleteDate } from "./incomplete-date"
 
 export const EDITABLE_SEGMENTS = {
   year: true,
@@ -32,7 +33,7 @@ export const PAGE_STEP = {
   weekday: undefined,
   unknown: undefined,
   fractionalSecond: undefined,
-} as const satisfies Record<keyof Segments, number | undefined>
+} as const satisfies Record<keyof typeof EDITABLE_SEGMENTS, number | undefined>
 
 const SEGMENT_LABELS: Record<string, string> = {
   era: "Era",
@@ -73,8 +74,7 @@ function isEditableSegment(type: keyof Intl.DateTimeFormatPartTypesRegistry): ty
 
 interface ProcessSegmentsProps {
   dateValue: Date
-  displayValue: DateValue
-  validSegments: Segments
+  displayValue: IncompleteDate
   formatter: DateFormatter
   locale: string
   translations: IntlTranslations
@@ -88,7 +88,7 @@ interface ProcessSegmentsProps {
 function getSafeFormatParts(
   formatter: DateFormatter,
   dateValue: Date,
-  displayValue: DateValue,
+  displayValue: IncompleteDate,
 ): Intl.DateTimeFormatPart[] {
   try {
     return formatter.formatToParts(dateValue)
@@ -101,11 +101,11 @@ function getSafeFormatParts(
       switch (type) {
         case "year":
         case "relatedYear":
-          return { ...part, value: String(displayValue.year) }
+          return { ...part, value: String(displayValue.year ?? 0) }
         case "month":
-          return { ...part, value: String(displayValue.month) }
+          return { ...part, value: String(displayValue.month ?? 0) }
         case "day":
-          return { ...part, value: String(displayValue.day) }
+          return { ...part, value: String(displayValue.day ?? 0) }
       }
       return part
     })
@@ -115,7 +115,6 @@ function getSafeFormatParts(
 export function processSegments({
   dateValue,
   displayValue,
-  validSegments,
   formatter,
   locale,
   translations,
@@ -123,7 +122,6 @@ export function processSegments({
 }: ProcessSegmentsProps): DateSegment[] {
   const timeValue = ["hour", "minute", "second"]
   const segments = getSafeFormatParts(formatter, dateValue, displayValue)
-  const resolvedOptions = formatter.resolvedOptions()
   const processedSegments: DateSegment[] = []
 
   for (const segment of segments) {
@@ -133,7 +131,9 @@ export function processSegments({
       isEditable = false
     }
 
-    const isPlaceholder = isEditable && !validSegments[type]
+    // A segment is a placeholder when the user hasn't typed a value for it yet
+    // (the corresponding field in IncompleteDate is null).
+    const isPlaceholder = isEditable && displayValue[type as keyof typeof displayValue] == null
     let placeholder = isEditableSegment(type) ? getPlaceholder(type, translations, locale) : null
     // For dayPeriod and era, use the formatted value from the display date to avoid layout shift
     if ((type === "dayPeriod" || type === "era") && segment.value) {
@@ -143,7 +143,7 @@ export function processSegments({
     const dateSegment = {
       type,
       text: isPlaceholder ? placeholder : segment.value,
-      ...getSegmentLimits(displayValue, type, resolvedOptions),
+      ...(displayValue.getSegmentLimits(type) ?? {}),
       isPlaceholder,
       placeholder,
       isEditable,
@@ -156,7 +156,6 @@ export function processSegments({
       processedSegments.push({
         type: "literal",
         text: "\u2066",
-        ...getSegmentLimits(displayValue, "literal", resolvedOptions),
         isPlaceholder: false,
         placeholder: "",
         isEditable: false,
@@ -166,7 +165,6 @@ export function processSegments({
         processedSegments.push({
           type: "literal",
           text: "\u2069",
-          ...getSegmentLimits(displayValue, "literal", resolvedOptions),
           isPlaceholder: false,
           placeholder: "",
           isEditable: false,
@@ -177,7 +175,6 @@ export function processSegments({
       processedSegments.push({
         type: "literal",
         text: "\u2069",
-        ...getSegmentLimits(displayValue, "literal", resolvedOptions),
         isPlaceholder: false,
         placeholder: "",
         isEditable: false,
@@ -188,75 +185,4 @@ export function processSegments({
   }
 
   return processedSegments
-}
-
-function getSegmentLimits(date: DateValue, type: string, options: Intl.ResolvedDateTimeFormatOptions) {
-  switch (type) {
-    case "era": {
-      const eras = date.calendar.getEras()
-      return {
-        value: eras.indexOf(date.era),
-        minValue: 0,
-        maxValue: eras.length - 1,
-      }
-    }
-    case "year":
-      return {
-        value: date.year,
-        minValue: 1,
-        maxValue: date.calendar.getYearsInEra(date),
-      }
-    case "month":
-      return {
-        value: date.month,
-        minValue: getMinimumMonthInYear(date),
-        maxValue: date.calendar.getMonthsInYear(date),
-      }
-    case "day":
-      return {
-        value: date.day,
-        minValue: getMinimumDayInMonth(date),
-        maxValue: date.calendar.getDaysInMonth(date),
-      }
-  }
-
-  if ("hour" in date) {
-    switch (type) {
-      case "dayPeriod":
-        return {
-          value: date.hour >= 12 ? 12 : 0,
-          minValue: 0,
-          maxValue: 12,
-        }
-      case "hour":
-        if (options.hour12) {
-          const isPM = date.hour >= 12
-          return {
-            value: date.hour,
-            minValue: isPM ? 12 : 0,
-            maxValue: isPM ? 23 : 11,
-          }
-        }
-
-        return {
-          value: date.hour,
-          minValue: 0,
-          maxValue: 23,
-        }
-      case "minute":
-        return {
-          value: date.minute,
-          minValue: 0,
-          maxValue: 59,
-        }
-      case "second":
-        return {
-          value: date.second,
-          minValue: 0,
-          maxValue: 59,
-        }
-    }
-  }
-
-  return {}
 }

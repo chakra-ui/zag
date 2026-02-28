@@ -1,25 +1,61 @@
 import { DateFormatter } from "@internationalized/date"
-import { createMachine } from "@zag-js/core"
+import { createMachine, type Params } from "@zag-js/core"
 import { constrainValue, getTodayDate, isDateEqual } from "@zag-js/date-utils"
 import { raf } from "@zag-js/dom-query"
 import { createLiveRegion } from "@zag-js/live-region"
 import * as dom from "./date-input.dom"
-import type { DateInputSchema, DateSegment, DateValue, Segments } from "./date-input.types"
-import { addSegment, getDefaultValidSegments, setSegment } from "./utils/adjusters"
-import { getValueAsString } from "./utils/formatting"
+import type { DateInputSchema, DateSegment, DateValue, SegmentType } from "./date-input.types"
+import { IncompleteDate, type HourCycle } from "./utils/incomplete-date"
 import { updateSegmentValue } from "./utils/input"
 import { defaultTranslations } from "./utils/placeholders"
 import { EDITABLE_SEGMENTS, getSegmentLabel, processSegments, TYPE_MAPPING } from "./utils/segments"
+import type { Segments } from "./date-input.types"
 import {
-  clearValueIfAllSegmentsInvalid,
+  getActiveDisplayValue,
   getActiveSegment,
-  getDisplayValue,
   getGroupOffset,
-  markSegmentInvalid,
-  markSegmentValid,
   resolveActiveSegment,
-  setValue,
+  setDisplayValue,
 } from "./utils/validity"
+import { getValueAsString } from "./utils/formatting"
+
+// ---------------------------------------------------------------------------
+// Helpers
+// ---------------------------------------------------------------------------
+
+function resolvedHourCycle(formatter: DateFormatter): HourCycle {
+  const hc = formatter.resolvedOptions().hourCycle
+  if (hc === "h11" || hc === "h12" || hc === "h23" || hc === "h24") return hc
+  return "h23"
+}
+
+/**
+ * Build the initial displayValues array.
+ * If a value is committed, initialise each IncompleteDate from it (all fields non-null).
+ * Otherwise create an empty IncompleteDate (all fields null = all segments are placeholders).
+ */
+function initDisplayValues(
+  value: DateValue[] | undefined,
+  placeholderValue: DateValue,
+  hourCycle: HourCycle,
+  count: number,
+): IncompleteDate[] {
+  const calendar = placeholderValue.calendar
+  if (value?.length) {
+    return Array.from({ length: count }, (_, i) =>
+      value[i] ? new IncompleteDate(calendar, hourCycle, value[i]) : new IncompleteDate(calendar, hourCycle),
+    )
+  }
+  return Array.from({ length: count }, () => new IncompleteDate(calendar, hourCycle))
+}
+
+function incompleteDateHash(dv: IncompleteDate): string {
+  return `${dv.year}|${dv.month}|${dv.day}|${dv.hour}|${dv.dayPeriod}|${dv.minute}|${dv.second}|${dv.era}`
+}
+
+function incompleteDateEqual(a: IncompleteDate, b: IncompleteDate): boolean {
+  return incompleteDateHash(a) === incompleteDateHash(b)
+}
 
 export const machine = createMachine<DateInputSchema>({
   props({ props }) {
@@ -108,7 +144,14 @@ export const machine = createMachine<DateInputSchema>({
 
   effects: ["setupLiveRegion"],
 
-  context({ prop, bindable, getContext }) {
+  context({ prop, bindable }) {
+    const formatter = prop("formatter")
+    const hc = resolvedHourCycle(formatter)
+    const placeholderValue = prop("defaultPlaceholderValue")
+    const selectionMode = prop("selectionMode")
+    const groupCount = selectionMode === "range" ? 2 : 1
+    const initialValue = prop("value") || prop("defaultValue")
+
     return {
       value: bindable(() => ({
         defaultValue: prop("defaultValue"),
@@ -141,22 +184,19 @@ export const machine = createMachine<DateInputSchema>({
         hash: (v) => v.toString(),
         sync: true,
         onChange(placeholderValue) {
-          const context = getContext()
-          const value = context.get("value")
-          const valueAsString = getValueAsString(value, prop)
-          prop("onPlaceholderChange")?.({ value, valueAsString, placeholderValue })
+          prop("onPlaceholderChange")?.({ value: prop("value") ?? [], valueAsString: [], placeholderValue })
         },
       })),
-      editingValue: bindable<DateValue | null>(() => ({
-        defaultValue: null,
-        isEqual: (a, b) => a === b || (a != null && b != null && isDateEqual(a, b)),
-        hash: (v) => v?.toString() ?? "null",
+      displayValues: bindable<IncompleteDate[]>(() => ({
+        defaultValue: initDisplayValues(
+          initialValue,
+          placeholderValue ?? getTodayDate(prop("timeZone")),
+          hc,
+          groupCount,
+        ),
+        isEqual: (a, b) => b != null && a.length === b.length && a.every((d, i) => incompleteDateEqual(d, b[i]!)),
+        hash: (v) => v.map(incompleteDateHash).join("||"),
       })),
-      validSegments: bindable<Segments[]>(() => {
-        return {
-          defaultValue: getDefaultValidSegments(prop("value") || prop("defaultValue"), prop("allSegments")),
-        }
-      }),
       enteredKeys: bindable(() => ({
         defaultValue: "",
         sync: true,
@@ -171,37 +211,27 @@ export const machine = createMachine<DateInputSchema>({
       const value = context.get("value")
       const selectionMode = prop("selectionMode")
       const placeholderValue = context.get("placeholderValue")
-      const editingValue = context.get("editingValue")
-      const validSegments = context.get("validSegments")
+      const displayValues = context.get("displayValues")
       const allSegments = prop("allSegments")
       const timeZone = prop("timeZone")
       const translations = prop("translations") || defaultTranslations
       const granularity = prop("granularity")
       const formatter = prop("formatter")
+      const allSegmentTypes = Object.keys(allSegments) as SegmentType[]
 
-      // editingValue tracks the partial date being assembled during editing;
-      // fall back to the stable placeholderValue when no editing is in progress.
-      const displayFallback = editingValue ?? placeholderValue
+      const groupCount = selectionMode === "range" ? 2 : 1
 
-      let dates: DateValue[] = value?.length ? value : [displayFallback]
-
-      if (selectionMode === "range") {
-        dates = [value?.[0] ?? displayFallback, value?.[1] ?? displayFallback]
-      }
-
-      const allKeys = Object.keys(allSegments)
-
-      return dates.map((date, i) => {
-        const currentValidSegments = validSegments?.[i] || {}
-        const validKeys = Object.keys(currentValidSegments)
-        // When not all segments are valid (e.g. year cleared), use displayFallback so edits are reflected
-        const useValue = date && validKeys.length >= allKeys.length
-        const displayValue = useValue ? date : displayFallback
+      return Array.from({ length: groupCount }, (_, i) => {
+        const dv = displayValues[i] ?? new IncompleteDate(placeholderValue.calendar, resolvedHourCycle(formatter))
+        // When all segments are filled, use the committed value for display; otherwise
+        // fall back through the IncompleteDate's toValue() which fills missing fields from placeholderValue.
+        const committedValue = value?.[i]
+        const isFullyCommitted = committedValue && dv.isComplete(allSegmentTypes)
+        const displayDate = isFullyCommitted ? committedValue : dv.toValue(placeholderValue)
 
         return processSegments({
-          dateValue: displayValue.toDate(timeZone),
-          displayValue: displayValue || placeholderValue,
-          validSegments: currentValidSegments,
+          dateValue: displayDate.toDate(timeZone),
+          displayValue: dv,
           formatter,
           locale: prop("locale"),
           translations,
@@ -213,7 +243,7 @@ export const machine = createMachine<DateInputSchema>({
 
   watch({ track, context, prop, action }) {
     track([() => context.hash("value")], () => {
-      action(["syncValidSegments"])
+      action(["syncDisplayValues"])
     })
 
     track([() => context.get("activeSegmentIndex")], () => {
@@ -230,7 +260,7 @@ export const machine = createMachine<DateInputSchema>({
       actions: ["setDateValue"],
     },
     "VALUE.CLEAR": {
-      actions: ["clearDateValue", "clearPlaceholderDate", "clearEnteredKeys"],
+      actions: ["clearDateValue", "clearDisplayValues", "clearEnteredKeys"],
     },
   },
 
@@ -320,8 +350,16 @@ export const machine = createMachine<DateInputSchema>({
         context.set("activeSegmentIndex", event.segmentIndex)
       },
 
-      clearPlaceholderDate({ context }) {
-        context.set("editingValue", null)
+      clearDisplayValues({ context, prop }) {
+        const formatter = prop("formatter")
+        const hc = resolvedHourCycle(formatter)
+        const placeholderValue = context.get("placeholderValue")
+        const selectionMode = prop("selectionMode")
+        const count = selectionMode === "range" ? 2 : 1
+        context.set(
+          "displayValues",
+          Array.from({ length: count }, () => new IncompleteDate(placeholderValue.calendar, hc)),
+        )
       },
 
       clearEnteredKeys({ context }) {
@@ -367,91 +405,68 @@ export const machine = createMachine<DateInputSchema>({
       },
 
       clearSegmentValue(params) {
-        const { event, prop, context } = params
+        const { context, prop, event } = params
+        const index = context.get("activeIndex")
+        const allSegments = prop("allSegments")
+        const allSegmentTypes = Object.keys(allSegments) as SegmentType[]
+        const placeholderValue = context.get("placeholderValue")
 
-        const displayValue = getDisplayValue(params)
-        const formatter = prop("formatter")
-
-        // Use the machine's current active segment instead of the event's segment to fix two issues:
-        // 1. RAF timing: DOM focus may not have moved yet (requestAnimationFrame is pending), so the
-        //    keydown event fires on the previously focused element with a stale/wrong segment type.
-        // 2. Stale React render: segment.text in the event closure reflects the previous render,
-        //    so rapid keypresses can see outdated text values before React re-renders.
-        // getActiveSegment uses computed("segments") which always reflects current machine state.
         const segment = getActiveSegment(params) ?? event.segment
         const type = segment.type as DateSegment["type"]
 
-        // dayPeriod: reset to placeholder's AM/PM
+        let dv = getActiveDisplayValue(params)
+
+        // dayPeriod: toggle AM/PM
         if (type === "dayPeriod") {
-          markSegmentInvalid(params, type)
-          if ("hour" in displayValue) {
-            const placeholderValue = context.get("placeholderValue")
-            const isPM = displayValue.hour >= 12
-            const shouldBePM = "hour" in placeholderValue && placeholderValue.hour >= 12
-            if (isPM && !shouldBePM) {
-              setValue(params, displayValue.set({ hour: displayValue.hour - 12 }))
-            } else if (!isPM && shouldBePM) {
-              setValue(params, displayValue.set({ hour: displayValue.hour + 12 }))
-            } else {
-              setValue(params, displayValue)
-            }
-          }
+          const cleared = dv.clear(type)
+          setDisplayValue(params, index, cleared)
+          if (cleared.isCleared(allSegmentTypes)) commitClear(params, index)
           return
         }
 
-        // hour: when clearing in 12h mode, preserve AM/PM context
-        if (type === "hour" && "hour" in displayValue && formatter.resolvedOptions().hour12) {
-          const validSegments = context.get("validSegments")
-          const index = context.get("activeIndex")
-          const activeValidSegments = validSegments[index]
-          const placeholderValue = context.get("placeholderValue")
-
-          markSegmentInvalid(params, type)
-          if (displayValue.hour >= 12 && activeValidSegments?.dayPeriod && "hour" in placeholderValue) {
-            setValue(params, displayValue.set({ hour: placeholderValue.hour + 12 }))
-          } else {
-            setValue(params, displayValue)
-          }
+        // hour: when clearing in 12h mode, preserve AM/PM context via clear
+        if (type === "hour") {
+          const cleared = dv.clear(type)
+          setDisplayValue(params, index, cleared)
+          if (cleared.isCleared(allSegmentTypes)) commitClear(params, index)
           return
         }
 
-        // Use enteredKeys when user has partial input; otherwise use segment.text (committed value)
         const enteredKeys = context.get("enteredKeys")
         const textToUse = enteredKeys !== "" ? enteredKeys : segment.text
         const newValue = textToUse.slice(0, -1)
 
         if (newValue === "" || newValue === "0") {
-          markSegmentInvalid(params, type)
-          setValue(params, displayValue)
-          clearValueIfAllSegmentsInvalid(params)
+          const cleared = dv.clear(type)
+          setDisplayValue(params, index, cleared)
+          if (cleared.isCleared(allSegmentTypes)) commitClear(params, index)
         } else {
-          setValue(params, setSegment(displayValue, type, newValue, formatter.resolvedOptions()))
+          dv = dv.set(type, Number(newValue), placeholderValue)
+          setDisplayValue(params, index, dv)
+          // Re-check: if now complete, commit
+          if (dv.isComplete(allSegmentTypes)) {
+            commitValue(params, index, dv)
+          }
         }
       },
 
       invokeOnSegmentAdjust(params) {
-        const { event, context, prop } = params
+        const { context, prop, event } = params
         const { segment, amount } = event
         const type = segment.type as DateSegment["type"]
-        const validSegments = context.get("validSegments")
-        const formatter = prop("formatter")
         const index = context.get("activeIndex")
-        const activeValidSegments = validSegments[index]
+        const allSegments = prop("allSegments")
+        const allSegmentTypes = Object.keys(allSegments) as SegmentType[]
+        const placeholderValue = context.get("placeholderValue")
+        const displaySegmentTypes = allSegmentTypes
 
-        let displayValue = getDisplayValue(params)
+        const dv = getActiveDisplayValue(params)
+        const next = dv.cycle(type, amount, placeholderValue, displaySegmentTypes)
+        setDisplayValue(params, index, next)
 
-        if (!activeValidSegments?.[type]) {
-          markSegmentValid(params, type)
-          // Seed this specific empty field from the stable placeholderValue (not from the
-          // editing accumulator which may hold stale values from a previous edit session).
-          const placeholderValue = context.get("placeholderValue")
-          const fieldValue = (placeholderValue as unknown as Record<string, number | string>)[type]
-          if (fieldValue != null) {
-            displayValue = setSegment(displayValue, type, fieldValue, formatter.resolvedOptions())
-          }
+        if (next.isComplete(allSegmentTypes)) {
+          commitValue(params, index, next)
         }
-
-        setValue(params, addSegment(displayValue, type, amount, formatter.resolvedOptions()))
       },
 
       setSegmentValue(params) {
@@ -459,19 +474,39 @@ export const machine = createMachine<DateInputSchema>({
         const { segment, input } = event
         // Save segment index before updateSegmentValue may advance (announce the updated segment, not the one we move to)
         refs.set("segmentToAnnounceIndex", context.get("activeSegmentIndex"))
+        // Capture the active group index BEFORE updateSegmentValue, which may advance to the next group
+        const index = context.get("activeIndex")
         updateSegmentValue(params, segment, input)
+        // After the set, check if we should commit (using the original group, not the one we may have advanced to)
+        const allSegmentTypes = Object.keys(params.prop("allSegments")) as SegmentType[]
+        const dv = context.get("displayValues")[index]
+        if (dv && dv.isComplete(allSegmentTypes)) {
+          commitValue(params, index, dv)
+        }
       },
 
       setSegmentToLowestValue(params) {
-        const { event } = params
+        const { event, context, prop } = params
         const { segment } = event
-        updateSegmentValue(params, segment, String(segment.minValue))
+        const index = context.get("activeIndex")
+        const allSegmentTypes = Object.keys(prop("allSegments")) as SegmentType[]
+        const placeholderValue = context.get("placeholderValue")
+        if (segment.minValue == null) return
+        const dv = getActiveDisplayValue(params).set(segment.type as SegmentType, segment.minValue, placeholderValue)
+        setDisplayValue(params, index, dv)
+        if (dv.isComplete(allSegmentTypes)) commitValue(params, index, dv)
       },
 
       setSegmentToHighestValue(params) {
-        const { event } = params
+        const { event, context, prop } = params
         const { segment } = event
-        updateSegmentValue(params, segment, String(segment.maxValue))
+        const index = context.get("activeIndex")
+        const allSegmentTypes = Object.keys(prop("allSegments")) as SegmentType[]
+        const placeholderValue = context.get("placeholderValue")
+        if (segment.maxValue == null) return
+        const dv = getActiveDisplayValue(params).set(segment.type as SegmentType, segment.maxValue, placeholderValue)
+        setDisplayValue(params, index, dv)
+        if (dv.isComplete(allSegmentTypes)) commitValue(params, index, dv)
       },
 
       setDateValue({ context, event, prop }) {
@@ -484,22 +519,31 @@ export const machine = createMachine<DateInputSchema>({
         context.set("value", [])
       },
 
-      syncValidSegments({ context, prop }) {
+      syncDisplayValues({ context, prop }) {
         const value = context.get("value")
-        const activeIndex = context.get("activeIndex")
-        context.set("validSegments", getDefaultValidSegments(value, prop("allSegments")))
-        // Mirror editingValue to the committed date for the active index.
-        // This ensures that when user edits a single segment after a commit, the other
-        // segments retain the user's typed values rather than falling back to placeholderValue.
-        // Falls back to null when value is empty (e.g. after VALUE.CLEAR).
-        context.set("editingValue", value[activeIndex] ?? null)
+        const formatter = prop("formatter")
+        const hc = resolvedHourCycle(formatter)
+        const placeholderValue = context.get("placeholderValue")
+        const selectionMode = prop("selectionMode")
+        const count = selectionMode === "range" ? 2 : 1
+        // Re-initialise displayValues from the committed value so that each
+        // IncompleteDate reflects all the user's typed fields.
+        context.set("displayValues", initDisplayValues(value?.length ? value : undefined, placeholderValue, hc, count))
       },
 
       syncPlaceholderProp({ prop, context }) {
         const propValue = prop("placeholderValue")
         if (propValue) {
           context.set("placeholderValue", propValue)
-          context.set("editingValue", null)
+          // Reset displayValues to empty so seeding restarts from the new placeholder.
+          const formatter = prop("formatter")
+          const hc = resolvedHourCycle(formatter)
+          const selectionMode = prop("selectionMode")
+          const count = selectionMode === "range" ? 2 : 1
+          context.set(
+            "displayValues",
+            Array.from({ length: count }, () => new IncompleteDate(propValue.calendar, hc)),
+          )
         }
       },
 
@@ -525,26 +569,51 @@ export const machine = createMachine<DateInputSchema>({
       confirmPlaceholder(params) {
         const { context, prop } = params
         const allSegments = prop("allSegments")
-        const validSegments = context.get("validSegments")
+        const allSegmentTypes = Object.keys(allSegments) as SegmentType[]
         const selectionMode = prop("selectionMode")
         const dateCount = selectionMode === "range" ? 2 : 1
+        const placeholderValue = context.get("placeholderValue")
 
         for (let i = 0; i < dateCount; i++) {
-          const activeValidSegments = validSegments[i] || {}
-          const validKeys = Object.keys(activeValidSegments)
-          const allKeys = Object.keys(allSegments)
+          const dv = context.get("displayValues")[i]
+          if (!dv) continue
 
-          if (validKeys.length === allKeys.length - 1 && allSegments.dayPeriod && !activeValidSegments.dayPeriod) {
-            activeValidSegments.dayPeriod = true
-            context.set("validSegments", validSegments)
-
-            const displayValue = context.get("value")[i] || context.get("placeholderValue")
-            const values = Array.from(context.get("value"))
-            values[i] = constrainValue(displayValue, prop("min"), prop("max"))
-            context.set("value", values)
+          // If only dayPeriod is missing and all other segments are filled, auto-commit
+          const allExceptDayPeriod = allSegmentTypes.filter((s) => s !== "dayPeriod")
+          if (allSegments.dayPeriod && dv.isComplete(allExceptDayPeriod) && dv.dayPeriod == null) {
+            const filled = dv.set(
+              "dayPeriod",
+              placeholderValue && "hour" in placeholderValue ? (placeholderValue.hour >= 12 ? 1 : 0) : 0,
+              placeholderValue,
+            )
+            setDisplayValue(params, i, filled)
+            commitValue(params, i, filled)
           }
         }
       },
     },
   },
 })
+
+// ---------------------------------------------------------------------------
+// Internal commit helpers (not exported — only used by actions above)
+// ---------------------------------------------------------------------------
+
+type ActionParams = Params<DateInputSchema>
+
+function commitValue(params: ActionParams, index: number, dv: IncompleteDate) {
+  const { context, prop } = params
+  const placeholderValue = context.get("placeholderValue")
+  const date = constrainValue(dv.toValue(placeholderValue), prop("min"), prop("max"))
+  const values = Array.from(context.get("value"))
+  values[index] = date
+  context.set("value", values)
+}
+
+function commitClear(params: ActionParams, index: number) {
+  const { context } = params
+  const values = context.get("value")
+  if (index < values.length) {
+    context.set("value", values.slice(0, index))
+  }
+}

@@ -10,6 +10,7 @@ import type { Machine, Service } from "@zag-js/core"
 import type { DateGranularity } from "@zag-js/date-utils"
 import type { LiveRegion } from "@zag-js/live-region"
 import type { CommonProperties, DirectionProperty, PropTypes, RequiredBy } from "@zag-js/types"
+import type { IncompleteDate } from "./utils/incomplete-date"
 import type { EDITABLE_SEGMENTS } from "./utils/segments"
 
 /* -----------------------------------------------------------------------------
@@ -194,15 +195,11 @@ interface PrivateContext {
    */
   placeholderValue: DateValue
   /**
-   * The transient date being assembled during partial segment editing.
-   * Replaces placeholderValue as the editing accumulator so that placeholderValue
-   * stays stable (never mutated by user input).
+   * Per-group editing state. Each IncompleteDate tracks which segments have been
+   * filled in by the user (non-null = entered, null = placeholder). Replaces the
+   * previous editingValue + validSegments pair.
    */
-  editingValue: DateValue | null
-  /**
-   * The valid segments for each date value (tracks which segments have been filled).
-   */
-  validSegments: Segments[]
+  displayValues: IncompleteDate[]
   /**
    * Accumulated keys entered in the focused segment.
    */
@@ -360,10 +357,10 @@ export interface DateInputApi<T extends PropTypes = PropTypes> {
    */
   placeholderValue: DateValue
   /**
-   * The transient date being assembled during partial segment editing.
-   * Null when no editing is in progress (all segments valid or all cleared).
+   * Per-group editing state. Each IncompleteDate tracks which segments have been
+   * filled in by the user (non-null = entered, null = placeholder).
    */
-  editingValue: DateValue | null
+  displayValues: IncompleteDate[]
   /**
    * Sets the selected date(s) to the given values.
    */

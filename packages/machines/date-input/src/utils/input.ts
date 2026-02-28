@@ -1,8 +1,7 @@
 import { DateFormatter } from "@internationalized/date"
 import type { Params } from "@zag-js/core"
 import type { DateInputSchema, DateSegment } from "../date-input.types"
-import { setSegment } from "./adjusters"
-import { advanceToNextSegment, getDisplayValue, markSegmentValid, setValue } from "./validity"
+import { advanceToNextSegment, getActiveDisplayValue, setDisplayValue } from "./validity"
 
 export function isNumberString(value: string) {
   return !Number.isNaN(Number.parseInt(value))
@@ -11,16 +10,16 @@ export function isNumberString(value: string) {
 export function updateSegmentValue(ctx: Params<DateInputSchema>, segment: DateSegment, input: string) {
   const { context, prop } = ctx
   const type = segment.type as DateSegment["type"]
-  const validSegments = context.get("validSegments")
   const index = context.get("activeIndex")
-  const activeValidSegments = validSegments[index]
   const formatter = prop("formatter")
   const enteredKeys = context.get("enteredKeys")
+  const placeholderValue = context.get("placeholderValue")
+
+  let dv = getActiveDisplayValue(ctx)
 
   switch (type) {
     case "dayPeriod": {
-      const displayValue = getDisplayValue(ctx)
-      if (!("hour" in displayValue)) return
+      if (!("hour" in dv.toValue(placeholderValue))) return
 
       // Get locale-aware AM/PM strings
       const amPmFormatter = new DateFormatter(prop("locale"), { hour: "numeric", hour12: true })
@@ -34,11 +33,9 @@ export function updateSegmentValue(ctx: Params<DateInputSchema>, segment: DateSe
 
       const lowerInput = input.toLowerCase()
       if (am.toLowerCase().startsWith(lowerInput)) {
-        markSegmentValid(ctx, type)
-        setValue(ctx, setSegment(displayValue, "dayPeriod", 0, formatter.resolvedOptions()))
+        setDisplayValue(ctx, index, dv.set("dayPeriod", 0, placeholderValue))
       } else if (pm.toLowerCase().startsWith(lowerInput)) {
-        markSegmentValid(ctx, type)
-        setValue(ctx, setSegment(displayValue, "dayPeriod", 12, formatter.resolvedOptions()))
+        setDisplayValue(ctx, index, dv.set("dayPeriod", 12, placeholderValue))
       } else {
         break
       }
@@ -47,19 +44,17 @@ export function updateSegmentValue(ctx: Params<DateInputSchema>, segment: DateSe
       break
     }
     case "era": {
-      const displayValue = getDisplayValue(ctx)
-      const eras = displayValue.calendar.getEras()
+      const eras = dv.calendar.getEras()
 
       // Try to match input against formatted era names
       const eraFormatter = new DateFormatter(prop("locale"), { era: "short" })
       const lowerInput = input.toLowerCase()
 
       for (let i = 0; i < eras.length; i++) {
-        const eraDate = displayValue.set({ year: 1 }).toDate(prop("timeZone"))
+        const eraDate = dv.toValue(placeholderValue).set({ year: 1 }).toDate(prop("timeZone"))
         const formattedEra = eraFormatter.formatToParts(eraDate).find((p) => p.type === "era")?.value
         if (formattedEra && formattedEra.toLowerCase().startsWith(lowerInput)) {
-          markSegmentValid(ctx, type)
-          setValue(ctx, displayValue.set({ era: eras[i] }))
+          setDisplayValue(ctx, index, dv.set("era", eras[i], placeholderValue))
           advanceToNextSegment(ctx)
           break
         }
@@ -105,12 +100,10 @@ export function updateSegmentValue(ctx: Params<DateInputSchema>, segment: DateSe
         return
       }
 
-      let shouldSetValue = segmentValue !== 0 || allowsZero
+      const shouldSetValue = segmentValue !== 0 || allowsZero
       if (shouldSetValue) {
-        if (!activeValidSegments?.[type]) {
-          markSegmentValid(ctx, type)
-        }
-        setValue(ctx, setSegment(getDisplayValue(ctx), type, segmentValue, formatter.resolvedOptions()))
+        dv = dv.set(type, segmentValue, placeholderValue)
+        setDisplayValue(ctx, index, dv)
       }
 
       if (
