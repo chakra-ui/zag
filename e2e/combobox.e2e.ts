@@ -269,7 +269,7 @@ test.describe("combobox", () => {
   })
 
   test("[composition] controlled-ignore should keep selectedItems aligned with controlled value", async ({ page }) => {
-    await I.goto("/compositions/combobox-controlled-ignore")
+    await I.goto("/combobox-controlled-ignore")
     await I.clickTrigger()
     await I.clickItem("Vue")
 
@@ -279,7 +279,7 @@ test.describe("combobox", () => {
   })
 
   test("[composition] external value change should keep item selection in sync", async ({ page }) => {
-    await I.goto("/compositions/combobox-external-value-change")
+    await I.goto("/combobox-external-value-change")
     await I.clickInput()
     await I.type("vu")
     await I.seeDropdown()
@@ -294,7 +294,7 @@ test.describe("combobox", () => {
   test("[composition] async list should filter server results as user types", async ({ page }) => {
     await mockSwapiPeople(page)
 
-    await I.goto("/compositions/combobox-async")
+    await I.goto("/combobox-async")
     await I.clickInput()
     await I.type("lan")
     await I.seeDropdown()
@@ -307,7 +307,7 @@ test.describe("combobox", () => {
   test("[composition] async list should select fetched item", async ({ page }) => {
     await mockSwapiPeople(page)
 
-    await I.goto("/compositions/combobox-async")
+    await I.goto("/combobox-async")
     await I.clickInput()
     await I.type("luk")
     await I.seeDropdown()
