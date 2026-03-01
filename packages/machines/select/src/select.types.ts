@@ -179,13 +179,14 @@ export interface SelectSchema<T extends CollectionItem = CollectionItem> {
     highlightedValue: string | null
     fieldsetDisabled: boolean
     highlightedItem: T | null
-    selectedItems: T[]
+    selectedItemMap: Map<string, T>
   }
   computed: {
     hasSelectedItems: boolean
     isTypingAhead: boolean
     isInteractive: boolean
     isDisabled: boolean
+    selectedItems: T[]
     valueAsString: string
   }
   refs: {

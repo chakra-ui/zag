@@ -1,4 +1,4 @@
-import { test } from "@playwright/test"
+import { expect, test } from "@playwright/test"
 import { SelectModel } from "./models/select.model"
 
 let I: SelectModel
@@ -273,5 +273,27 @@ test.describe("multiple", () => {
     await I.clickItem("Algeria")
 
     await I.seeTriggerHasText("Andorra (AD), Algeria (DZ)")
+  })
+})
+
+test.describe("compositions", () => {
+  test("controlled-ignore should keep selectedItems aligned with controlled value", async ({ page }) => {
+    await I.goto("/compositions/select-controlled-ignore")
+    await I.clickTrigger()
+    await I.clickItem("Vue")
+
+    const selectedItems = page.getByTestId("selected-items")
+    await expect(selectedItems).toContainText("React")
+    await expect(selectedItems).not.toContainText("Vue")
+  })
+
+  test("external value change should keep item selection in sync", async ({ page }) => {
+    await I.goto("/compositions/select-external-value-change")
+    await page.getByTestId("filter-vue-button").click()
+    await page.getByTestId("set-solid-button").click()
+
+    await I.seeTriggerHasText("Solid")
+    await I.clickTrigger()
+    await expect(page.locator("[data-part=item]", { hasText: "Solid" })).toHaveAttribute("data-state", "checked")
   })
 })

@@ -37,7 +37,7 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
 
   const highlightedValue = context.get("highlightedValue")
   const highlightedItem = context.get("highlightedItem")
-  const selectedItems = context.get("selectedItems")
+  const selectedItems = computed("selectedItems")
   const currentPlacement = context.get("currentPlacement")
 
   const isTypingAhead = computed("isTypingAhead")

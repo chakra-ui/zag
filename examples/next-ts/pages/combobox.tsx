@@ -51,7 +51,9 @@ export default function Page() {
           <button data-testid="clear-value-button" onClick={() => api.clearValue()}>
             Clear Value
           </button>
-          <pre data-testid="on-value-change-items">{selectedItems.map((item) => item.label).join(", ")}</pre>
+          <pre data-testid="on-value-change-items">
+            selectedItems: {selectedItems.map((item) => item.label).join(", ") || "N/A"}
+          </pre>
           <br />
           <div {...api.getRootProps()}>
             <label {...api.getLabelProps()}>Select country</label>
