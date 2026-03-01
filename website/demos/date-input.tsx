@@ -15,20 +15,14 @@ export function DateInput(props: DateInputProps) {
 
   const api = dateInput.connect(service, normalizeProps)
 
-  const groupCount = api.displayValues.length
-
   return (
     <div className={styles.Root}>
+      <label className={styles.Label} {...api.getLabelProps()}>
+        Select a date
+      </label>
       <div className={styles.Control} {...api.getControlProps()}>
-        {Array.from({ length: groupCount }, (_, index) => (
+        {Array.from({ length: api.groupCount }, (_, index) => (
           <div key={index} className={styles.FieldGroup}>
-            <label className={styles.Label} {...api.getLabelProps({ index })}>
-              {groupCount > 1
-                ? index === 0
-                  ? "Start date"
-                  : "End date"
-                : "Select a date"}
-            </label>
             <div
               className={styles.SegmentGroup}
               {...api.getSegmentGroupProps({ index })}

@@ -14,19 +14,13 @@
 
   .Control {
     display: inline-flex;
-    align-items: flex-end;
-    gap: 1rem;
+    align-items: center;
+    gap: 0.5rem;
 
     &[data-disabled] {
       opacity: 0.5;
       cursor: not-allowed;
     }
-  }
-
-  .FieldGroup {
-    display: flex;
-    flex-direction: column;
-    gap: 0.25rem;
   }
 
   .SegmentGroup {

@@ -26,10 +26,13 @@ export function connect<T extends PropTypes>(service: DateInputService, normaliz
     }
   }
 
+  const groupCount = computed("segments").length
+
   return {
     focused,
     disabled,
     invalid,
+    groupCount,
     value: context.get("value"),
     valueAsDate: context
       .get("value")

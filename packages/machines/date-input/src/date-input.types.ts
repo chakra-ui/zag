@@ -348,6 +348,10 @@ export interface DateInputApi<T extends PropTypes = PropTypes> {
    */
   invalid: boolean
   /**
+   * The number of segment groups rendered by the date input.
+   */
+  groupCount: number
+  /**
    * The selected date(s).
    */
   value: DateValue[]
