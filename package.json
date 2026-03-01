@@ -29,6 +29,7 @@
     "pw-report": "playwright show-report e2e/report",
     "pw-test": "cross-env FRAMEWORK=react playwright test",
     "pw-test-debug": "cross-env FRAMEWORK=react playwright test --debug",
+    "pw-test-ui": "cross-env FRAMEWORK=react playwright test --ui",
     "e2e-react": "cross-env FRAMEWORK=react playwright test",
     "e2e-vue": "cross-env FRAMEWORK=vue playwright test",
     "e2e-solid": "cross-env FRAMEWORK=solid playwright test",

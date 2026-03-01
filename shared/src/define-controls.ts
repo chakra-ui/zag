@@ -33,6 +33,12 @@ export type ControlProp =
       max?: number
       transformValue?: TransformValueFn<number>
     }
+  | {
+      type: "date"
+      label?: string
+      defaultValue?: string
+      transformValue?: TransformValueFn<string>
+    }
 
 export type ControlRecord = Record<string, ControlProp>
 
@@ -47,7 +53,9 @@ export type ControlValue<T extends ControlRecord> = {
           ? T[K]["options"][number][]
           : T[K] extends { type: "number" }
             ? number
-            : never
+            : T[K] extends { type: "date" }
+              ? string
+              : never
 }
 
 export function defineControls<T extends ControlRecord>(config: T) {

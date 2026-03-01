@@ -1,4 +1,5 @@
 import { defineControls } from "./define-controls"
+import * as dateInput from "@zag-js/date-input"
 
 export const accordionControls = defineControls({
   collapsible: { type: "boolean", defaultValue: false },
@@ -213,6 +214,28 @@ export const datePickerControls = defineControls({
     type: "select",
     options: ["en-US", "en-GB", "fr-FR", "de-DE", "ja-JP", "mk-MK", "zh-CN"] as const,
     defaultValue: "en-US",
+  },
+})
+
+export const dateInputControls = defineControls({
+  readOnly: { type: "boolean", defaultValue: false },
+  disabled: { type: "boolean", defaultValue: false },
+  shouldForceLeadingZeros: { type: "boolean", defaultValue: false },
+  dir: { type: "select", options: ["ltr", "rtl"] as const, defaultValue: "ltr" },
+  locale: {
+    type: "select",
+    options: ["en-US", "en-GB", "fr-FR", "de-DE", "ja-JP", "mk-MK", "zh-CN"] as const,
+    defaultValue: "en-US",
+  },
+  granularity: {
+    type: "select",
+    options: ["day", "hour", "minute", "second"] as const,
+    defaultValue: "day",
+  },
+  placeholderValue: {
+    type: "date",
+    defaultValue: "",
+    transformValue: (value) => value !== "" && dateInput.parse(value),
   },
 })
 
