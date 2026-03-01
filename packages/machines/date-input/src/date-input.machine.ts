@@ -1,5 +1,5 @@
 import { DateFormatter, toCalendarDateTime } from "@internationalized/date"
-import { createMachine, type Params } from "@zag-js/core"
+import { createMachine, memo, type Params } from "@zag-js/core"
 import { constrainValue, getTodayDate, isDateEqual } from "@zag-js/date-utils"
 import { raf } from "@zag-js/dom-query"
 import { createLiveRegion } from "@zag-js/live-region"
@@ -233,46 +233,63 @@ export const machine = createMachine<DateInputSchema>({
   computed: {
     isInteractive: ({ prop }) => !prop("disabled") && !prop("readOnly"),
     valueAsString: ({ context, prop }) => getValueAsString(context.get("value"), prop),
-    segments: ({ context, prop }) => {
-      const value = context.get("value")
-      const selectionMode = prop("selectionMode")
-      const placeholderValue = context.get("placeholderValue")
-      const displayValues = context.get("displayValues")
-      const allSegments = prop("allSegments")
-      const timeZone = prop("timeZone")
-      const translations = prop("translations") || defaultTranslations
-      const granularity = prop("granularity")
-      const formatter = prop("formatter")
-      const allSegmentTypes = Object.keys(allSegments) as SegmentType[]
-      const locale = prop("locale")
+    segments: memo(
+      ({ context, prop }) => [
+        context.hash("value"),
+        prop("selectionMode"),
+        context.hash("placeholderValue"),
+        context.hash("displayValues"),
+        prop("allSegments"),
+        prop("timeZone"),
+        prop("translations"),
+        prop("granularity"),
+        prop("formatter"),
+        prop("locale"),
+      ],
+      (_deps, { context, prop }) => {
+        const value = context.get("value")
+        const selectionMode = prop("selectionMode")
+        const placeholderValue = context.get("placeholderValue")
+        const displayValues = context.get("displayValues")
+        const allSegments = prop("allSegments")
+        const timeZone = prop("timeZone")
+        const translations = prop("translations") || defaultTranslations
+        const granularity = prop("granularity")
+        const formatter = prop("formatter")
+        const locale = prop("locale")
+        const allSegmentTypes = Object.keys(allSegments) as SegmentType[]
 
-      const groupCount = selectionMode === "range" ? 2 : 1
+        const groupCount = selectionMode === "range" ? 2 : 1
 
-      return Array.from({ length: groupCount }, (_, i) => {
-        const dv = displayValues[i] ?? new IncompleteDate(placeholderValue.calendar, resolvedHourCycle(formatter))
-        // When all segments are filled, use the committed value for display; otherwise
-        // fall back through the IncompleteDate's toValue() which fills missing fields from placeholderValue.
-        const committedValue = value?.[i]
-        const isFullyCommitted = committedValue && dv.isComplete(allSegmentTypes)
-        const displayDate = isFullyCommitted ? committedValue : dv.toValue(placeholderValue)
+        return Array.from({ length: groupCount }, (_, i) => {
+          const dv = displayValues[i] ?? new IncompleteDate(placeholderValue.calendar, resolvedHourCycle(formatter))
+          // When all segments are filled, use the committed value for display; otherwise
+          // fall back through the IncompleteDate's toValue() which fills missing fields from placeholderValue.
+          const committedValue = value?.[i]
+          const isFullyCommitted = committedValue && dv.isComplete(allSegmentTypes)
+          const displayDate = isFullyCommitted ? committedValue : dv.toValue(placeholderValue)
 
-        // Show the era segment when the display value is in BC era (Gregorian calendar).
-        // Create the era formatter inline (React Aria pattern) — no dedicated prop needed.
-        const showEra = dv.era === "BC" && dv.calendar.identifier === "gregory"
-        const segmentFormatter = showEra
-          ? new DateFormatter(locale, { ...(formatter.resolvedOptions() as Intl.DateTimeFormatOptions), era: "short" })
-          : formatter
+          // Show the era segment when the display value is in BC era (Gregorian calendar).
+          // Create the era formatter inline (React Aria pattern) — no dedicated prop needed.
+          const showEra = dv.era === "BC" && dv.calendar.identifier === "gregory"
+          const segmentFormatter = showEra
+            ? new DateFormatter(locale, {
+                ...(formatter.resolvedOptions() as Intl.DateTimeFormatOptions),
+                era: "short",
+              })
+            : formatter
 
-        return processSegments({
-          dateValue: displayDate.toDate(timeZone),
-          displayValue: dv,
-          formatter: segmentFormatter,
-          locale: prop("locale"),
-          translations,
-          granularity,
+          return processSegments({
+            dateValue: displayDate.toDate(timeZone),
+            displayValue: dv,
+            formatter: segmentFormatter,
+            locale,
+            translations,
+            granularity,
+          })
         })
-      })
-    },
+      },
+    ),
   },
 
   watch({ track, context, prop, action }) {
