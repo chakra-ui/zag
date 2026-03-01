@@ -154,6 +154,12 @@ export interface DateInputProps extends DirectionProperty, CommonProperties {
    */
   granularity?: DateGranularity | undefined
   /**
+   * Whether to always show leading zeros in month, day, and hour fields.
+   * When false, formatting follows the locale default (e.g. "1" instead of "01").
+   * @default false
+   */
+  shouldForceLeadingZeros?: boolean | undefined
+  /**
    * The date formatter to use.
    */
   formatter?: DateFormatter | undefined
@@ -173,6 +179,7 @@ type PropsWithDefault =
   | "timeZone"
   | "granularity"
   | "translations"
+  | "shouldForceLeadingZeros"
   | "formatter"
   | "allSegments"
   | "format"

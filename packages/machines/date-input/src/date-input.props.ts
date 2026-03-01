@@ -33,6 +33,7 @@ export const props = createProps<DateInputProps>()([
   "defaultValue",
   "hourCycle",
   "granularity",
+  "shouldForceLeadingZeros",
   "allSegments",
   "formatter",
   "placeholderValue",

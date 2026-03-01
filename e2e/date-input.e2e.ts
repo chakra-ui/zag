@@ -60,7 +60,7 @@ test.describe("date-input [single]", () => {
     await I.focusSegment("month")
     await I.type("01")
     await I.seeSegmentFocused("day")
-    await I.seeSegmentText("month", "01")
+    await I.seeSegmentText("month", "1")
   })
 
   test("[input] typing a complete day advances to year segment", async () => {
@@ -75,10 +75,10 @@ test.describe("date-input [single]", () => {
     await I.type("01")
     await I.type("25")
     await I.type("2025")
-    await I.seeSegmentText("month", "01")
+    await I.seeSegmentText("month", "1")
     await I.seeSegmentText("day", "25")
     await I.seeSegmentText("year", "2025")
-    await I.seeSelectedValue("01/25/2025")
+    await I.seeSelectedValue("1/25/2025")
   })
 
   test("[input] typing a high first digit auto-advances (e.g. month=2 pads to 02)", async () => {
@@ -87,7 +87,7 @@ test.describe("date-input [single]", () => {
     // 2 followed by 0 would be 20 > 12, so next digit starts fresh
     // but first "2" alone: 20 > 12, so it should set month to 02 and advance
     await I.seeSegmentFocused("day")
-    await I.seeSegmentText("month", "02")
+    await I.seeSegmentText("month", "2")
   })
 
   test("[input] ArrowUp increments the segment value", async () => {
@@ -95,7 +95,7 @@ test.describe("date-input [single]", () => {
     await I.type("01")
     await I.focusSegment("month")
     await I.pressKey("ArrowUp")
-    await I.seeSegmentText("month", "02")
+    await I.seeSegmentText("month", "2")
   })
 
   test("[input] ArrowDown decrements the segment value", async () => {
@@ -103,7 +103,7 @@ test.describe("date-input [single]", () => {
     await I.type("03")
     await I.focusSegment("month")
     await I.pressKey("ArrowDown")
-    await I.seeSegmentText("month", "02")
+    await I.seeSegmentText("month", "2")
   })
 
   test("[input] ArrowUp on placeholder sets the value", async () => {
@@ -142,7 +142,7 @@ test.describe("date-input [single]", () => {
   test("[input] Home sets segment to minimum value", async () => {
     await I.focusSegment("month")
     await I.pressKey("Home")
-    await I.seeSegmentText("month", "01")
+    await I.seeSegmentText("month", "1")
   })
 
   test("[input] End sets segment to maximum value", async () => {
@@ -155,7 +155,7 @@ test.describe("date-input [single]", () => {
     // Type only month, then clear it
     await I.focusSegment("month")
     await I.type("06")
-    await I.seeSegmentText("month", "06")
+    await I.seeSegmentText("month", "6")
     await I.seeSegmentIsNotPlaceholder("month")
 
     await I.focusSegment("month")
@@ -170,8 +170,8 @@ test.describe("date-input [single]", () => {
     // Typing "12" auto-advances to day, so refocus month
     await I.focusSegment("month")
     await I.pressKey("Backspace")
-    // Month 1 displays as "01" in 2-digit format
-    await I.seeSegmentText("month", "01")
+    // Month 1 displays as "1" in numeric (locale-default) format
+    await I.seeSegmentText("month", "1")
     await I.seeSegmentFocused("month")
   })
 
@@ -189,7 +189,7 @@ test.describe("date-input [single]", () => {
     await I.seeSegmentText("month", "12")
     await I.focusSegment("month")
     await I.pressKey("Backspace")
-    await I.seeSegmentText("month", "01")
+    await I.seeSegmentText("month", "1")
     await I.pressKey("Backspace")
     await I.seeSegmentIsPlaceholder("month")
     await I.seeSegmentFocused("month")
@@ -200,7 +200,7 @@ test.describe("date-input [single]", () => {
     await I.type("01")
     await I.type("25")
     await I.type("2025")
-    await I.seeSelectedValue("01/25/2025")
+    await I.seeSelectedValue("1/25/2025")
 
     // Clear year
     await I.focusSegment("year")
@@ -272,9 +272,9 @@ test.describe("date-input [single]", () => {
 
     await I.focusSegment("month")
     await I.pressKey("ArrowUp")
-    await I.seeSegmentText("month", "04")
+    await I.seeSegmentText("month", "4")
     await I.pressKey("ArrowUp")
-    await I.seeSegmentText("month", "05")
+    await I.seeSegmentText("month", "5")
 
     await I.focusSegment("day")
     await I.pressKey("ArrowUp")
@@ -296,15 +296,15 @@ test.describe("date-input [single]", () => {
 
     await I.focusSegment("month")
     await I.pressKey("ArrowDown")
-    await I.seeSegmentText("month", "04")
+    await I.seeSegmentText("month", "4")
     await I.pressKey("ArrowDown")
-    await I.seeSegmentText("month", "03")
+    await I.seeSegmentText("month", "3")
 
     await I.focusSegment("day")
     await I.pressKey("ArrowDown")
     await I.seeSegmentText("day", "10")
     await I.pressKey("ArrowDown")
-    await I.seeSegmentText("day", "09")
+    await I.seeSegmentText("day", "9")
 
     await I.focusSegment("year")
     await I.pressKey("ArrowDown")
@@ -323,7 +323,7 @@ test.describe("date-input [single]", () => {
 
     await I.focusSegment("month")
     await I.pressKey("ArrowUp")
-    await I.seeSegmentText("month", "06")
+    await I.seeSegmentText("month", "6")
 
     await I.focusSegment("day")
     await I.pressKey("ArrowUp")
@@ -334,31 +334,42 @@ test.describe("date-input [single]", () => {
     await I.seeSegmentText("year", "2020")
   })
 
-  test.fixme("[input] ArrowDown on year 1 should show 1 BC and selected value should have 0 year set", async () => {
+  test("[input] ArrowDown on year:1 should show year:1 era:BC and selected value should have 0 year set", async () => {
     await I.clickControls()
     await I.controls.date("placeholderValue", "0001-04-10")
     await I.seePlaceholderValue("0001-04-10")
 
     await I.focusSegment("year")
-    await I.pressKey("ArrowDown")
-    await I.seeSegmentText("year", "1 BC")
+    await I.pressKey("ArrowDown") // seed year=1, era=AD from placeholder
+    await I.seeSegmentText("year", "1")
+    await I.pressKey("ArrowDown") // cycle year 1 AD → year 1 BC
+    await I.seeSegmentText("year", "1")
+    await I.seeSegmentText("era", "BC")
 
     await I.focusSegment("month")
     await I.type("01")
     await I.type("01")
-    await I.seeSelectedValue("01/01/0000")
+    await I.seeSelectedValue("1/1/0")
   })
 
-  test.fixme("[input] ArrowDown on year 1 BC should show 2 BC and selected value should have -1 year set", async () => {
+  test("[input] ArrowDown on year:1 era:BC should show year:2 era:BC and selected value should have -1 year set", async () => {
     await I.clickControls()
     await I.controls.date("placeholderValue", "0001-04-10")
     await I.seePlaceholderValue("0001-04-10")
 
     await I.focusSegment("year")
-    await I.pressKey("ArrowDown")
-    await I.seeSegmentText("year", "1 BC")
-    await I.pressKey("ArrowDown")
-    await I.seeSegmentText("year", "2 BC")
+    await I.pressKey("ArrowDown") // seed year=1, era=AD from placeholder
+    await I.pressKey("ArrowDown") // cycle year 1 AD → year 1 BC
+    await I.seeSegmentText("year", "1")
+    await I.seeSegmentText("era", "BC")
+    await I.pressKey("ArrowDown") // cycle year 1 BC → year 2 BC
+    await I.seeSegmentText("year", "2")
+    await I.seeSegmentText("era", "BC")
+
+    await I.focusSegment("month")
+    await I.type("01")
+    await I.type("01")
+    await I.seeSelectedValue("1/1/-1")
   })
 
   // --- placeholderValue stability (editingValue behaviour) ---
@@ -372,7 +383,7 @@ test.describe("date-input [single]", () => {
     await I.type("01")
     await I.type("25")
     await I.type("2025")
-    await I.seeSelectedValue("01/25/2025")
+    await I.seeSelectedValue("1/25/2025")
 
     // Committing a value must not mutate the placeholderValue
     await I.seePlaceholderValue("2019-04-10")
@@ -386,7 +397,7 @@ test.describe("date-input [single]", () => {
     // Type only the month segment – editing accumulator (editingValue) absorbs the partial state
     await I.focusSegment("month")
     await I.type("05")
-    await I.seeSegmentText("month", "05")
+    await I.seeSegmentText("month", "5")
     // Other segments remain as placeholder text
     await I.seeSegmentIsPlaceholder("day")
     await I.seeSegmentIsPlaceholder("year")
@@ -403,7 +414,7 @@ test.describe("date-input [single]", () => {
     await I.type("06")
     await I.type("15")
     await I.type("2022")
-    await I.seeSelectedValue("06/15/2022")
+    await I.seeSelectedValue("6/15/2022")
 
     // Clear year (4 digits)
     await I.focusSegment("year")
@@ -549,7 +560,7 @@ test.describe("date-input [single]", () => {
     await I.seeSegmentText("day", "10")
     // Second ArrowDown decrements from there
     await I.pressKey("ArrowDown")
-    await I.seeSegmentText("day", "09")
+    await I.seeSegmentText("day", "9")
   })
 
   test("[placeholderValue] ArrowUp after clearing a previously typed month starts from placeholder month", async () => {
@@ -570,10 +581,10 @@ test.describe("date-input [single]", () => {
 
     // First ArrowUp seeds from placeholderValue.month (4)
     await I.pressKey("ArrowUp")
-    await I.seeSegmentText("month", "04")
+    await I.seeSegmentText("month", "4")
     // Second ArrowUp increments from there
     await I.pressKey("ArrowUp")
-    await I.seeSegmentText("month", "05")
+    await I.seeSegmentText("month", "5")
     // Day and year must still reflect the typed values
     await I.seeSegmentText("day", "11")
     await I.seeSegmentText("year", "1111")
@@ -597,10 +608,10 @@ test.describe("date-input [single]", () => {
 
     // First ArrowDown seeds from placeholderValue.month (4)
     await I.pressKey("ArrowDown")
-    await I.seeSegmentText("month", "04")
+    await I.seeSegmentText("month", "4")
     // Second ArrowDown decrements from there
     await I.pressKey("ArrowDown")
-    await I.seeSegmentText("month", "03")
+    await I.seeSegmentText("month", "3")
   })
 
   test("[placeholderValue] changing the prop while mid-edit resets the editing base", async () => {
@@ -611,7 +622,7 @@ test.describe("date-input [single]", () => {
     // Partially edit month
     await I.focusSegment("month")
     await I.type("05")
-    await I.seeSegmentText("month", "05")
+    await I.seeSegmentText("month", "5")
 
     // Change the placeholder prop while editing is in progress
     await I.controls.date("placeholderValue", "2025-08-20")
@@ -639,7 +650,7 @@ test.describe("date-input [range]", () => {
     await I.type("01")
     await I.type("15")
     await I.type("2025")
-    await I.seeSelectedValue("01/15/2025")
+    await I.seeSelectedValue("1/15/2025")
   })
 
   test("[input] completing start date moves focus to end date, backspace returns focus to start date", async () => {

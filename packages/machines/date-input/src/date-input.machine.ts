@@ -88,16 +88,18 @@ export const machine = createMachine<DateInputSchema>({
     }
 
     const hourCycle = props.hourCycle === 12 ? "h12" : props.hourCycle === 24 ? "h23" : undefined
+    const shouldForceLeadingZeros = props.shouldForceLeadingZeros ?? false
+    const digitStyle = shouldForceLeadingZeros ? "2-digit" : "numeric"
 
     const formatterOptions: Intl.DateTimeFormatOptions = {
       timeZone: timeZone,
-      day: "2-digit",
-      month: "2-digit",
+      day: digitStyle,
+      month: digitStyle,
       year: "numeric",
       hourCycle,
     }
     if (granularity === "hour" || granularity === "minute" || granularity === "second") {
-      formatterOptions.hour = "2-digit"
+      formatterOptions.hour = digitStyle
     }
     if (granularity === "minute" || granularity === "second") {
       formatterOptions.minute = "2-digit"
@@ -108,29 +110,47 @@ export const machine = createMachine<DateInputSchema>({
 
     const formatter = props.formatter ?? new DateFormatter(locale, formatterOptions)
 
+    // Always include 'era' for BC date support. Era is auto-set alongside year,
+    // and the era segment is only rendered when the display value is in BC era.
     const allSegments =
       props.allSegments ??
-      formatter
-        .formatToParts(new Date())
-        .filter((seg) => EDITABLE_SEGMENTS[seg.type])
-        .reduce<Segments>((p, seg) => {
-          const key = TYPE_MAPPING[seg.type as keyof typeof TYPE_MAPPING] || seg.type
-          p[key] = true
-          return p
-        }, {})
+      (() => {
+        const segs = formatter
+          .formatToParts(new Date())
+          .filter((seg) => EDITABLE_SEGMENTS[seg.type])
+          .reduce<Segments>((p, seg) => {
+            const key = TYPE_MAPPING[seg.type as keyof typeof TYPE_MAPPING] || seg.type
+            p[key] = true
+            return p
+          }, {})
+        segs.era = true
+        return segs
+      })()
 
     return {
       locale,
       timeZone,
       selectionMode,
       format(date, { timeZone }) {
-        return formatter.format(date.toDate(timeZone))
+        const jsd = date.toDate(timeZone)
+        const isBC = date.calendar?.identifier === "gregory" && date.era === "BC"
+        if (isBC) {
+          // Use proleptic Gregorian year: 0 for 1 BC, -1 for 2 BC, etc.
+          const prolYear = jsd.getUTCFullYear()
+          const safeDate = new Date(Date.UTC(2000, jsd.getUTCMonth(), jsd.getUTCDate()))
+          return formatter
+            .formatToParts(safeDate)
+            .map((p) => (p.type === "year" ? String(prolYear) : p.value))
+            .join("")
+        }
+        return formatter.format(jsd)
       },
       ...props,
       translations,
       value,
       defaultValue: defaultValue ?? [],
       granularity,
+      shouldForceLeadingZeros,
       formatter,
       placeholderValue: typeof props.placeholderValue === "undefined" ? undefined : placeholderValue,
       defaultPlaceholderValue: placeholderValue,
@@ -225,6 +245,7 @@ export const machine = createMachine<DateInputSchema>({
       const granularity = prop("granularity")
       const formatter = prop("formatter")
       const allSegmentTypes = Object.keys(allSegments) as SegmentType[]
+      const locale = prop("locale")
 
       const groupCount = selectionMode === "range" ? 2 : 1
 
@@ -236,10 +257,17 @@ export const machine = createMachine<DateInputSchema>({
         const isFullyCommitted = committedValue && dv.isComplete(allSegmentTypes)
         const displayDate = isFullyCommitted ? committedValue : dv.toValue(placeholderValue)
 
+        // Show the era segment when the display value is in BC era (Gregorian calendar).
+        // Create the era formatter inline (React Aria pattern) — no dedicated prop needed.
+        const showEra = dv.era === "BC" && dv.calendar.identifier === "gregory"
+        const segmentFormatter = showEra
+          ? new DateFormatter(locale, { ...(formatter.resolvedOptions() as Intl.DateTimeFormatOptions), era: "short" })
+          : formatter
+
         return processSegments({
           dateValue: displayDate.toDate(timeZone),
           displayValue: dv,
-          formatter,
+          formatter: segmentFormatter,
           locale: prop("locale"),
           translations,
           granularity,
