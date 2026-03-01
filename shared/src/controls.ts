@@ -220,6 +220,7 @@ export const datePickerControls = defineControls({
 export const dateInputControls = defineControls({
   readOnly: { type: "boolean", defaultValue: false },
   disabled: { type: "boolean", defaultValue: false },
+  shouldForceLeadingZeros: { type: "boolean", defaultValue: false },
   dir: { type: "select", options: ["ltr", "rtl"] as const, defaultValue: "ltr" },
   locale: {
     type: "select",

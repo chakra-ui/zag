@@ -633,6 +633,43 @@ test.describe("date-input [single]", () => {
     await I.pressKey("ArrowUp")
     await I.seeSegmentText("day", "20")
   })
+
+  // --- shouldForceLeadingZeros ---
+
+  test("[shouldForceLeadingZeros] when true, single-digit month shows leading zero", async () => {
+    await I.clickControls()
+    await I.controls.bool("shouldForceLeadingZeros", true)
+
+    await I.focusSegment("month")
+    await I.type("01")
+    await I.seeSegmentText("month", "01")
+  })
+
+  test("[shouldForceLeadingZeros] when true, single-digit day shows leading zero", async () => {
+    await I.clickControls()
+    await I.controls.bool("shouldForceLeadingZeros", true)
+
+    await I.focusSegment("day")
+    await I.type("05")
+    await I.seeSegmentText("day", "05")
+  })
+
+  test("[shouldForceLeadingZeros] when true, selected value has leading zeros", async () => {
+    await I.clickControls()
+    await I.controls.bool("shouldForceLeadingZeros", true)
+
+    await I.focusSegment("month")
+    await I.type("01")
+    await I.type("05")
+    await I.type("2025")
+    await I.seeSelectedValue("01/05/2025")
+  })
+
+  test("[shouldForceLeadingZeros] when false (default), single-digit month has no leading zero", async () => {
+    await I.focusSegment("month")
+    await I.type("01")
+    await I.seeSegmentText("month", "1")
+  })
 })
 
 test.describe("date-input [range]", () => {
