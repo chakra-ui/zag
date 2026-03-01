@@ -570,15 +570,18 @@ export const machine = createMachine<DateInputSchema>({
         const propValue = prop("placeholderValue")
         if (propValue) {
           context.set("placeholderValue", propValue)
-          // Reset displayValues to empty so seeding restarts from the new placeholder.
-          const formatter = prop("formatter")
-          const hc = resolvedHourCycle(formatter)
-          const selectionMode = prop("selectionMode")
-          const count = selectionMode === "range" ? 2 : 1
-          context.set(
-            "displayValues",
-            Array.from({ length: count }, () => new IncompleteDate(propValue.calendar, hc)),
-          )
+          // Preserve entered segments: reinitialize from the committed value when available
+          // so that granularity/placeholder changes don't wipe user-typed fields.
+          // For partial entries (nothing committed yet), keep existing displayValues as-is —
+          // their null fields will naturally use the updated placeholderValue.
+          const value = context.get("value")
+          if (value?.length) {
+            const formatter = prop("formatter")
+            const hc = resolvedHourCycle(formatter)
+            const selectionMode = prop("selectionMode")
+            const count = selectionMode === "range" ? 2 : 1
+            context.set("displayValues", initDisplayValues(value, propValue, hc, count))
+          }
         }
       },
 

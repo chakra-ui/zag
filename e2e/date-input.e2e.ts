@@ -634,6 +634,78 @@ test.describe("date-input [single]", () => {
     await I.seeSegmentText("day", "20")
   })
 
+  test("[placeholderValue] changing the prop preserves already-entered segments", async () => {
+    await I.clickControls()
+    await I.controls.date("placeholderValue", "2019-04-10")
+
+    // Enter month and day but leave year as placeholder
+    await I.focusSegment("month")
+    await I.type("05")
+    await I.type("15")
+    await I.seeSegmentText("month", "5")
+    await I.seeSegmentText("day", "15")
+    await I.seeSegmentIsPlaceholder("year")
+
+    // Change the placeholder prop
+    await I.controls.date("placeholderValue", "2025-08-20")
+    await I.seePlaceholderValue("2025-08-20")
+
+    // Entered segments must be preserved — NOT reset to placeholder
+    await I.seeSegmentIsNotPlaceholder("month")
+    await I.seeSegmentIsNotPlaceholder("day")
+    await I.seeSegmentText("month", "5")
+    await I.seeSegmentText("day", "15")
+  })
+
+  test("[granularity] changing granularity preserves already-entered segments", async () => {
+    // Enter month and day (partial — year left as placeholder)
+    await I.focusSegment("month")
+    await I.type("03")
+    await I.type("20")
+    // Wait for auto-advance to year to confirm both entries were processed
+    await I.seeSegmentFocused("year")
+    await I.seeSegmentText("month", "3")
+    await I.seeSegmentText("day", "20")
+    await I.seeSegmentIsPlaceholder("year")
+
+    // Change granularity — this triggers a placeholderValue conversion internally
+    await I.clickControls()
+    await I.controls.select("granularity", "minute")
+
+    // Previously entered segments must remain visible, NOT wiped to placeholders
+    await I.seeSegmentIsNotPlaceholder("month")
+    await I.seeSegmentIsNotPlaceholder("day")
+    await I.seeSegmentText("month", "3")
+    await I.seeSegmentText("day", "20")
+    // New time segments must show as placeholder
+    await I.seeSegmentIsPlaceholder("hour")
+    await I.seeSegmentIsPlaceholder("minute")
+  })
+
+  test("[granularity] changing granularity preserves a fully committed date", async () => {
+    // Enter a complete date so it is committed to value
+    await I.focusSegment("month")
+    await I.type("01")
+    await I.type("25")
+    await I.type("2025")
+    await I.seeSelectedValue("1/25/2025")
+
+    // Change granularity
+    await I.clickControls()
+    await I.controls.select("granularity", "minute")
+
+    // Date segments must still show the committed values
+    await I.seeSegmentIsNotPlaceholder("month")
+    await I.seeSegmentIsNotPlaceholder("day")
+    await I.seeSegmentIsNotPlaceholder("year")
+    await I.seeSegmentText("month", "1")
+    await I.seeSegmentText("day", "25")
+    await I.seeSegmentText("year", "2025")
+    // Time segments must show as placeholder
+    await I.seeSegmentIsPlaceholder("hour")
+    await I.seeSegmentIsPlaceholder("minute")
+  })
+
   // --- shouldForceLeadingZeros ---
 
   test("[shouldForceLeadingZeros] when true, single-digit month shows leading zero", async () => {
