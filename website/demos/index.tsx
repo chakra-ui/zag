@@ -12,6 +12,7 @@ import { Collapsible } from "./collapsible"
 import { ColorPicker } from "./color-picker"
 import { Combobox } from "./combobox"
 import { ContextMenu } from "./context-menu"
+import { DateInput } from "./date-input"
 import { DatePicker } from "./date-picker"
 import { Dialog } from "./dialog"
 import { Editable } from "./editable"
@@ -486,6 +487,24 @@ const components = {
   Presence: () => <Playground name="presence" component={Presence} />,
   TimerCountdown: () => (
     <Playground name="timer-countdown" component={TimerCountdown} />
+  ),
+  DateInput: () => (
+    <Playground
+      name="date-input"
+      component={DateInput}
+      defaultProps={{
+        disabled: false,
+        readOnly: false,
+        required: false,
+        invalid: false,
+        granularity: {
+          default: "day",
+          options: ["day", "month", "year", "hour", "minute", "second"],
+        },
+        selectionMode: { default: "single", options: ["single", "range"] },
+        shouldForceLeadingZeros: false,
+      }}
+    />
   ),
   DatePicker: () => <Playground name="date-picker" component={DatePicker} />,
   QRCode: () => (
