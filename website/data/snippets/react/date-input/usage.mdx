@@ -1,0 +1,29 @@
+```jsx
+import * as dateInput from "@zag-js/date-input"
+import { useMachine, normalizeProps } from "@zag-js/react"
+import { useId } from "react"
+
+function DateInput() {
+  const service = useMachine(dateInput.machine, { id: useId() })
+
+  const api = dateInput.connect(service, normalizeProps)
+
+  return (
+    <div {...api.getRootProps()}>
+      <label {...api.getLabelProps()}>Enter a date</label>
+
+      <div {...api.getControlProps()}>
+        <div {...api.getSegmentGroupProps()}>
+          {api.getSegments().map((segment, i) => (
+            <span key={i} {...api.getSegmentProps({ segment })}>
+              {segment.text}
+            </span>
+          ))}
+        </div>
+      </div>
+
+      <input {...api.getHiddenInputProps()} />
+    </div>
+  )
+}
+```
