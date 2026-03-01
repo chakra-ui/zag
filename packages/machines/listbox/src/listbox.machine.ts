@@ -1,5 +1,10 @@
-import type { CollectionItem } from "@zag-js/collection"
-import { Selection } from "@zag-js/collection"
+import {
+  Selection,
+  createSelectedItemMap,
+  deriveSelectionState,
+  resolveSelectedItems,
+  type CollectionItem,
+} from "@zag-js/collection"
 import { setup } from "@zag-js/core"
 import { getByTypeahead, observeAttributes, raf, scrollIntoView } from "@zag-js/dom-query"
 import { getInteractionModality, setInteractionModality, trackFocusVisible } from "@zag-js/focus-visible"
@@ -27,15 +32,39 @@ export const machine = createMachine({
     }
   },
 
-  context({ prop, bindable }) {
+  context({ prop, bindable, getContext }) {
+    const initialValue = prop("value") ?? prop("defaultValue") ?? []
+    const initialSelectedItems = prop("collection").findMany(initialValue)
+
     return {
       value: bindable(() => ({
         defaultValue: prop("defaultValue"),
         value: prop("value"),
         isEqual,
         onChange(value) {
-          const items = prop("collection").findMany(value)
-          return prop("onValueChange")?.({ value, items })
+          const context = getContext()
+          const collection = prop("collection")
+          const selectedItemMap = context.get("selectedItemMap")
+
+          const proposed = deriveSelectionState({
+            values: value,
+            collection,
+            selectedItemMap,
+          })
+
+          // When controlled, use prop value so cache stays in sync when controller ignores selection
+          const effectiveValue = prop("value") ?? value
+          const effective =
+            effectiveValue === value
+              ? proposed
+              : deriveSelectionState({
+                  values: effectiveValue,
+                  collection,
+                  selectedItemMap: proposed.nextSelectedItemMap,
+                })
+
+          context.set("selectedItemMap", effective.nextSelectedItemMap)
+          return prop("onValueChange")?.({ value, items: proposed.selectedItems })
         },
       })),
 
@@ -56,10 +85,13 @@ export const machine = createMachine({
         defaultValue: null,
       })),
 
-      selectedItems: bindable<CollectionItem[]>(() => {
-        const value = prop("value") ?? prop("defaultValue") ?? []
-        const items = prop("collection").findMany(value)
-        return { defaultValue: items }
+      selectedItemMap: bindable<Map<string, CollectionItem>>(() => {
+        return {
+          defaultValue: createSelectedItemMap({
+            selectedItems: initialSelectedItems,
+            collection: prop("collection"),
+          }),
+        }
       }),
 
       focused: bindable(() => ({
@@ -88,7 +120,13 @@ export const machine = createMachine({
       return selection
     },
     multiple: ({ prop }) => prop("selectionMode") === "multiple" || prop("selectionMode") === "extended",
-    valueAsString: ({ context, prop }) => prop("collection").stringifyItems(context.get("selectedItems")),
+    selectedItems: ({ context, prop }) =>
+      resolveSelectedItems({
+        values: context.get("value"),
+        collection: prop("collection"),
+        selectedItemMap: context.get("selectedItemMap"),
+      }),
+    valueAsString: ({ computed, prop }) => prop("collection").stringifyItems(computed("selectedItems")),
   },
 
   initialState() {
@@ -311,16 +349,12 @@ export const machine = createMachine({
       },
 
       syncSelectedItems({ context, prop }) {
-        const collection = prop("collection")
-        const prevSelectedItems = context.get("selectedItems")
-
-        const value = context.get("value")
-        const selectedItems = value.map((value) => {
-          const item = prevSelectedItems.find((item) => collection.getItemValue(item) === value)
-          return item || collection.find(value)
+        const next = deriveSelectionState({
+          values: context.get("value"),
+          collection: prop("collection"),
+          selectedItemMap: context.get("selectedItemMap"),
         })
-
-        context.set("selectedItems", selectedItems)
+        context.set("selectedItemMap", next.nextSelectedItemMap)
       },
 
       syncHighlightedItem({ context, prop }) {

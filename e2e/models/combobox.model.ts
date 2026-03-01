@@ -129,15 +129,15 @@ export class ComboboxModel extends Model {
     await expect(this.valueText).toHaveText("")
   }
 
-  get onValueChangeItems() {
+  get valueChangeText() {
     return this.page.locator("[data-testid=on-value-change-items]")
   }
 
   seeOnValueChangeItems = async (text: string) => {
-    await expect(this.onValueChangeItems).toContainText(text)
+    await expect(this.valueChangeText).toContainText(text)
   }
 
   seeOnValueChangeItemsIsEmpty = async () => {
-    await expect(this.onValueChangeItems).toHaveText("")
+    await expect(this.valueChangeText).toContainText("N/A")
   }
 }
