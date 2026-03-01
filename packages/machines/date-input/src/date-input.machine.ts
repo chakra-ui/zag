@@ -209,7 +209,6 @@ export const machine = createMachine<DateInputSchema>({
         defaultValue: prop("defaultPlaceholderValue"),
         isEqual: isDateEqual,
         hash: (v) => v.toString(),
-        sync: true,
         onChange(placeholderValue) {
           prop("onPlaceholderChange")?.({ value: prop("value") ?? [], valueAsString: [], placeholderValue })
         },
