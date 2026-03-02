@@ -1,5 +1,19 @@
 # @zag-js/i18n-utils
 
+## 1.35.3
+
+### Patch Changes
+
+- [`104b197`](https://github.com/chakra-ui/zag/commit/104b197c1976a0ef424a5340470d7b4cd83f4e83) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - `formatTime` now accepts `amLabel` and `pmLabel` as separate
+  options instead of the previous `amPmLabels` object.
+
+  This is a breaking API change for consumers using the old option shape. It also allows overriding AM and PM labels
+  independently.
+
+- Updated dependencies []:
+  - @zag-js/dom-query@1.35.3
+
 ## 1.35.2
 
 ### Patch Changes

@@ -1,5 +1,32 @@
 # @zag-js/carousel
 
+## 1.35.3
+
+### Patch Changes
+
+- [`ed1f1bb`](https://github.com/chakra-ui/zag/commit/ed1f1bb59c4b68ec61a4b96ae4cda783b10e00d8) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Improved carousel reliability during drag, scroll, and runtime
+  config changes.
+  - Keeps page and indicators in sync after drag release and scroll settling.
+  - Handles rapid mixed interactions (drag, wheel, buttons, indicators) more consistently.
+  - Keeps page state valid when `slidesPerPage`, `slidesPerMove`, direction, or orientation change.
+  - Makes `slidesPerMove` (`auto`, `1`, `2`) progression more predictable.
+
+- [#2997](https://github.com/chakra-ui/zag/pull/2997)
+  [`06ffe77`](https://github.com/chakra-ui/zag/commit/06ffe77a950c364652ad6cc824164ed5f31b0370) Thanks
+  [@copilot-swe-agent](https://github.com/apps/copilot-swe-agent)! - Fix issue where carousel inside a Portal (e.g.,
+  Dialog) computes incorrect page count due to incomplete DOM layout at mount time. The item-group container is now
+  observed with a `ResizeObserver`, so snap points are recalculated when the container resizes (e.g., when a dialog
+  opens and layout is complete).
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.35.3
+  - @zag-js/core@1.35.3
+  - @zag-js/types@1.35.3
+  - @zag-js/utils@1.35.3
+  - @zag-js/dom-query@1.35.3
+  - @zag-js/scroll-snap@1.35.3
+
 ## 1.35.2
 
 ### Patch Changes
