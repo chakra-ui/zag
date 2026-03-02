@@ -1,5 +1,24 @@
 # @zag-js/combobox
 
+## 1.35.3
+
+### Patch Changes
+
+- [`a3932f8`](https://github.com/chakra-ui/zag/commit/a3932f8232dd2634a1707d3cbc47199880690d1c) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Improve controlled-mode synchronization and keep callback/item
+  resolution behavior consistent across filtered collections.
+- Updated dependencies []:
+  - @zag-js/anatomy@1.35.3
+  - @zag-js/core@1.35.3
+  - @zag-js/types@1.35.3
+  - @zag-js/aria-hidden@1.35.3
+  - @zag-js/collection@1.35.3
+  - @zag-js/utils@1.35.3
+  - @zag-js/dismissable@1.35.3
+  - @zag-js/dom-query@1.35.3
+  - @zag-js/focus-visible@1.35.3
+  - @zag-js/popper@1.35.3
+
 ## 1.35.2
 
 ### Patch Changes
