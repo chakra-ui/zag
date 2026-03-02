@@ -1,18 +1,17 @@
 import * as combobox from "@zag-js/combobox"
+import { createFilter } from "@zag-js/i18n-utils"
 import * as menu from "@zag-js/menu"
 import { Portal, normalizeProps, useMachine } from "@zag-js/react"
 import { comboboxData } from "@zag-js/shared"
-import { matchSorter } from "match-sorter"
 import { useId, useMemo, useState } from "react"
+
+const { contains } = createFilter({ sensitivity: "base" })
 
 function Combobox(props: Omit<combobox.Props, "id" | "collection">) {
   const [inputValue, setInputValue] = useState("")
 
   const items = useMemo(() => {
-    return matchSorter(comboboxData, inputValue, {
-      keys: ["label", "code"],
-      baseSort: (a, b) => (a.index < b.index ? -1 : 1),
-    })
+    return comboboxData.filter((item) => contains(item.label, inputValue) || contains(item.code, inputValue))
   }, [inputValue])
 
   const collection = useMemo(

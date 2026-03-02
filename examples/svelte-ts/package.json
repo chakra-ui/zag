@@ -94,8 +94,7 @@
     "@zag-js/types": "workspace:*",
     "@zag-js/utils": "workspace:*",
     "form-serialize": "0.7.2",
-    "lucide-svelte": "0.575.0",
-    "match-sorter": "8.2.0"
+    "lucide-svelte": "0.575.0"
   },
   "devDependencies": {
     "@sveltejs/adapter-auto": "7.0.1",

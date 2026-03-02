@@ -1,11 +1,12 @@
 <script setup lang="ts">
 import * as combobox from "@zag-js/combobox"
+import { createFilter } from "@zag-js/i18n-utils"
 import { comboboxControls, comboboxData } from "@zag-js/shared"
 import { normalizeProps, useMachine } from "@zag-js/vue"
 import { XIcon } from "lucide-vue-next"
-import { matchSorter } from "match-sorter"
 
 const controls = useControls(comboboxControls)
+const { contains } = createFilter({ sensitivity: "base" })
 
 const options = ref(comboboxData)
 const collectionRef = computed(() =>
@@ -27,7 +28,7 @@ const service = useMachine(
       options.value = comboboxData
     },
     onInputValueChange({ inputValue }) {
-      const filtered = matchSorter(comboboxData, inputValue, { keys: ["label"] })
+      const filtered = comboboxData.filter((item) => contains(item.label, inputValue))
       options.value = filtered.length > 0 ? filtered : comboboxData
     },
   }),

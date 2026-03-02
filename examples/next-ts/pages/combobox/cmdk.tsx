@@ -1,11 +1,12 @@
 import * as combobox from "@zag-js/combobox"
 import * as dialog from "@zag-js/dialog"
+import { createFilter } from "@zag-js/i18n-utils"
 import { Portal, normalizeProps, useMachine } from "@zag-js/react"
 import { commandData } from "@zag-js/shared"
-import { matchSorter } from "match-sorter"
 import { useEffect, useId, useMemo, useState } from "react"
 
 const { allItems, commands, applications, suggestions } = commandData
+const { contains } = createFilter({ sensitivity: "base" })
 
 function filter(value: string): Record<string, commandData.Command[]> {
   if (!value) {
@@ -16,9 +17,7 @@ function filter(value: string): Record<string, commandData.Command[]> {
     }
   }
 
-  const results = matchSorter(allItems, value, {
-    keys: ["name", "title"],
-  })
+  const results = allItems.filter((item) => contains(item.name, value) || contains(item.title, value))
 
   if (!results.length) return {}
 

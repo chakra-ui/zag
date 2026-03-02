@@ -383,9 +383,6 @@ importers:
       lucide-react:
         specifier: 0.575.0
         version: 0.575.0(react@19.2.4)
-      match-sorter:
-        specifier: 8.2.0
-        version: 8.2.0
       next:
         specifier: 16.1.6
         version: 16.1.6(@babel/core@7.29.0)(@playwright/test@1.58.2)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
@@ -687,9 +684,6 @@ importers:
       lucide-vue-next:
         specifier: 0.575.0
         version: 0.575.0(vue@3.5.29(typescript@5.9.3))
-      match-sorter:
-        specifier: 8.2.0
-        version: 8.2.0
       vue:
         specifier: 3.5.29
         version: 3.5.29(typescript@5.9.3)
@@ -955,9 +949,6 @@ importers:
       lucide-preact:
         specifier: 0.575.0
         version: 0.575.0(preact@10.28.4)
-      match-sorter:
-        specifier: 8.2.0
-        version: 8.2.0
       preact:
         specifier: 10.28.4
         version: 10.28.4
@@ -1241,9 +1232,6 @@ importers:
       lucide-solid:
         specifier: 0.575.0
         version: 0.575.0(solid-js@1.9.11)
-      match-sorter:
-        specifier: 8.2.0
-        version: 8.2.0
       solid-js:
         specifier: 1.9.11
         version: 1.9.11
@@ -1499,9 +1487,6 @@ importers:
       lucide-svelte:
         specifier: 0.575.0
         version: 0.575.0(svelte@5.53.6)
-      match-sorter:
-        specifier: 8.2.0
-        version: 8.2.0
     devDependencies:
       '@sveltejs/adapter-auto':
         specifier: 7.0.1
@@ -1782,9 +1767,6 @@ importers:
       form-serialize:
         specifier: 0.7.2
         version: 0.7.2
-      match-sorter:
-        specifier: 8.2.0
-        version: 8.2.0
       nanoid:
         specifier: ^5.1.6
         version: 5.1.6

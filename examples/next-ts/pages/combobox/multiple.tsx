@@ -1,8 +1,8 @@
 import * as combobox from "@zag-js/combobox"
+import { createFilter } from "@zag-js/i18n-utils"
 import { mergeProps, normalizeProps, useMachine } from "@zag-js/react"
 import { comboboxData } from "@zag-js/shared"
 import { XIcon } from "lucide-react"
-import { matchSorter } from "match-sorter"
 import { useId, useMemo, useRef, useState } from "react"
 import { useControls } from "../../hooks/use-controls"
 import { Toolbar } from "../../components/toolbar"
@@ -12,6 +12,8 @@ interface Item {
   code: string
   label: string
 }
+
+const { contains } = createFilter({ sensitivity: "base" })
 
 export default function Page() {
   const controls = useControls({
@@ -40,7 +42,7 @@ export default function Page() {
     id: useId(),
     collection,
     onInputValueChange({ inputValue }) {
-      const filtered = matchSorter(comboboxData, inputValue, { keys: ["label"] })
+      const filtered = comboboxData.filter((item) => contains(item.label, inputValue))
       setOptions(filtered.length > 0 ? filtered : comboboxData)
     },
     multiple: true,

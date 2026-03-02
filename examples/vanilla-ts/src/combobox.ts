@@ -1,6 +1,6 @@
 import * as combobox from "@zag-js/combobox"
+import { createFilter } from "@zag-js/i18n-utils"
 import { comboboxData } from "@zag-js/shared"
-import { matchSorter } from "match-sorter"
 import { Component } from "./component"
 import { normalizeProps, VanillaMachine } from "@zag-js/vanilla"
 
@@ -8,6 +8,7 @@ interface Item {
   code: string
   label: string
 }
+const { contains } = createFilter({ sensitivity: "base" })
 export class Combobox extends Component<combobox.Props, combobox.Api> {
   options: Item[] = comboboxData.slice()
 
@@ -35,7 +36,7 @@ export class Combobox extends Component<combobox.Props, combobox.Api> {
         self.options = comboboxData
       },
       onInputValueChange: ({ inputValue }) => {
-        const filtered = matchSorter(comboboxData, inputValue, { keys: ["label"] })
+        const filtered = comboboxData.filter((item) => contains(item.label, inputValue))
         self.options = filtered.length > 0 ? filtered : comboboxData
       },
     })
