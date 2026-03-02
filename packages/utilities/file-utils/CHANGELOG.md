@@ -1,5 +1,12 @@
 # @zag-js/file-utils
 
+## 1.35.3
+
+### Patch Changes
+
+- Updated dependencies [[`104b197`](https://github.com/chakra-ui/zag/commit/104b197c1976a0ef424a5340470d7b4cd83f4e83)]:
+  - @zag-js/i18n-utils@1.35.3
+
 ## 1.35.2
 
 ### Patch Changes
