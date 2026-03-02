@@ -40,7 +40,6 @@ const sidebar: Record<"docs", SidebarItem[]> = {
       items: [
         { type: "doc", label: "Introduction", id: "introduction" },
         { type: "doc", label: "Installation", id: "installation" },
-        { type: "doc", label: "State machine", id: "whats-a-machine" },
         { type: "doc", label: "FAQ", id: "faq" },
         {
           type: "doc",

@@ -17,6 +17,11 @@ const nextConfig = {
   },
   redirects: async () => [
     {
+      source: "/overview/whats-a-machine",
+      destination: "/guides/building-machines",
+      permanent: true,
+    },
+    {
       source: "/discord",
       destination: "https://discord.gg/ww6HE5xaZ2",
       permanent: true,
