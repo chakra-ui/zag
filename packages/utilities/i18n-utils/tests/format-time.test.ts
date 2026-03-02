@@ -22,7 +22,7 @@ describe("formatTime", () => {
   test("uses custom AM/PM labels when provided", () => {
     const value = new Date(2024, 0, 1, 13, 5, 6)
     expect(
-      normalize(formatTime(value, "en-US", { format: "12h", amPmLabels: { am: "morning", pm: "evening" } })),
+      normalize(formatTime(value, "en-US", { format: "12h", amLabel: "morning", pmLabel: "evening" })),
     ).toMatchInlineSnapshot(`"1:05 evening"`)
   })
 
