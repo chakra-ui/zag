@@ -16,7 +16,7 @@ export class TabsModel extends Model {
   }
 
   goto() {
-    return this.page.goto("/tabs")
+    return this.page.goto("/tabs/basic")
   }
 
   private getTabTrigger = (id: string) => {

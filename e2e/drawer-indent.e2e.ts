@@ -6,7 +6,7 @@ let I: DrawerModel
 test.describe("drawer [indent-background]", () => {
   test.beforeEach(async ({ page }) => {
     I = new DrawerModel(page)
-    await I.goto("/drawer-indent-background")
+    await I.goto("/drawer/indent-background")
   })
 
   test("should orchestrate indent/background visual state during swipe", async ({ page }) => {

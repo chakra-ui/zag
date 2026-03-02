@@ -6,7 +6,7 @@ let I: ToggleGroupModel
 test.describe("toggle-group", () => {
   test.beforeEach(async ({ page }) => {
     I = new ToggleGroupModel(page)
-    await page.goto("/toggle-group")
+    await page.goto("/toggle-group/basic")
   })
 
   test("should have no accessibility violation", async () => {

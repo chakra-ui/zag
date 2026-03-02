@@ -7,7 +7,7 @@ export class TagsInputModel extends Model {
   }
 
   goto() {
-    return this.page.goto("/tags-input")
+    return this.page.goto("/tags-input/basic")
   }
 
   private get input() {

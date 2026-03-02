@@ -278,7 +278,7 @@ test.describe("multiple", () => {
 
 test.describe("compositions", () => {
   test("controlled-ignore should keep selectedItems aligned with controlled value", async ({ page }) => {
-    await I.goto("/select-controlled-ignore")
+    await I.goto("/select/controlled-ignore")
     await I.clickTrigger()
     await I.clickItem("Vue")
 
@@ -288,7 +288,7 @@ test.describe("compositions", () => {
   })
 
   test("external value change should keep item selection in sync", async ({ page }) => {
-    await I.goto("/select-external-value-change")
+    await I.goto("/select/external-value-change")
     await page.getByTestId("filter-vue-button").click()
     await page.getByTestId("set-solid-button").click()
 

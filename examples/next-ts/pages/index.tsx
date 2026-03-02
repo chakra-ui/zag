@@ -1,14 +1,14 @@
-import { routesData } from "@zag-js/shared"
+import { componentRoutesData } from "@zag-js/shared"
 import Link from "next/link"
 
 const Page = () => {
   return (
     <div className="index-nav">
-      <h2>Zag.js + React</h2>
+      <h2>Zag.js + React Components</h2>
       <ul>
-        {routesData.map((route) => (
-          <li key={route.path}>
-            <Link href={route.path}>{route.label}</Link>
+        {componentRoutesData.map((component) => (
+          <li key={component.slug}>
+            <Link href={`/${component.slug}`}>{component.label}</Link>
           </li>
         ))}
       </ul>

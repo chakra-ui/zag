@@ -12,7 +12,7 @@ export class NumberInputModel extends Model {
   }
 
   goto() {
-    return this.page.goto("/number-input")
+    return this.page.goto("/number-input/basic")
   }
 
   private get input() {

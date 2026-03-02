@@ -11,7 +11,7 @@ export class MenuModel extends Model {
     return a11y(this.page, "main")
   }
 
-  goto(url = "/menu") {
+  goto(url = "/menu/basic") {
     return this.page.goto(url)
   }
 

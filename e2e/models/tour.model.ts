@@ -12,7 +12,7 @@ export class TourModel extends Model {
   }
 
   goto() {
-    return this.page.goto("/tour")
+    return this.page.goto("/tour/basic")
   }
 
   private get content() {

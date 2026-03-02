@@ -36,7 +36,7 @@ test.describe("listbox", () => {
   })
 
   test("[composition] controlled-ignore should keep selectedItems aligned with controlled value", async ({ page }) => {
-    await I.goto("/listbox-controlled-ignore")
+    await I.goto("/listbox/controlled-ignore")
     await I.clickItem("Vue")
 
     const selectedItems = page.getByTestId("selected-items")
@@ -45,7 +45,7 @@ test.describe("listbox", () => {
   })
 
   test("[composition] external value change should keep item selection in sync", async ({ page }) => {
-    await I.goto("/listbox-external-value-change")
+    await I.goto("/listbox/external-value-change")
     await page.getByTestId("filter-vue-button").click()
     await page.getByTestId("set-solid-button").click()
 

@@ -6,7 +6,7 @@ export class RadioGroupModel extends Model {
     super(page)
   }
 
-  goto(url = "/radio-group") {
+  goto(url = "/radio-group/basic") {
     return this.page.goto(url)
   }
 

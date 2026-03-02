@@ -11,7 +11,7 @@ export class ComboboxModel extends Model {
     return a11y(this.page)
   }
 
-  goto(url = "/combobox") {
+  goto(url = "/combobox/basic") {
     return this.page.goto(url)
   }
 

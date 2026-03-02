@@ -16,7 +16,7 @@ export class DrawerModel extends Model {
     return a11y(this.page, "[data-part=content]", ["scrollable-region-focusable"])
   }
 
-  goto(url = "/drawer") {
+  goto(url = "/drawer/basic") {
     return this.page.goto(url)
   }
 

@@ -74,8 +74,18 @@ export function getControlDefaults<T extends ControlRecord>(obj: T) {
   return deepExpand(result)
 }
 
+function cloneValues<T>(values: T): T {
+  try {
+    return structuredClone(values) as T
+  } catch {
+    // Vue/Svelte reactivity wraps objects in Proxy, which structuredClone cannot clone.
+    // Control values are JSON-serializable (primitives, arrays of strings).
+    return JSON.parse(JSON.stringify(values)) as T
+  }
+}
+
 export function getTransformedControlValues<T extends ControlRecord>(config: T, values: ControlValue<T>) {
-  const result = structuredClone(values) as any
+  const result = cloneValues(values) as any
   for (const key of Object.keys(config)) {
     const control = config[key]
     if (!control) continue

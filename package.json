@@ -57,8 +57,7 @@
     "document-attr": "tsx scripts/data-attr.ts",
     "document-css-vars": "tsx scripts/css-vars.ts",
     "check-type-exports": "tsx scripts/check-type-exports.ts",
-    "website": "pnpm --filter=./website",
-    "sync-submodules": "pnpm vercel-submodules --all"
+    "website": "pnpm --filter=./website"
   },
   "lint-staged": {
     "**/*.{ts,tsx,js,jsx}": "prettier --write"
@@ -104,7 +103,6 @@
     "tsx": "4.21.0",
     "typescript": "5.9.3",
     "typescript-eslint": "^8.56.1",
-    "vercel-submodules": "1.1.0",
     "vite": "7.3.1",
     "vite-plugin-dts": "4.5.4",
     "vitest": "4.0.18"

@@ -11,7 +11,7 @@ export class ListboxModel extends Model {
     return a11y(this.page)
   }
 
-  goto(url = "/listbox") {
+  goto(url = "/listbox/basic") {
     return this.page.goto(url)
   }
 

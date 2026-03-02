@@ -12,7 +12,7 @@ export class ToastModel extends Model {
   }
 
   goto(type: "stacked" | "overlap") {
-    return this.page.goto(`/toast-${type}`)
+    return this.page.goto(`/toast/${type}`)
   }
 
   private get region() {

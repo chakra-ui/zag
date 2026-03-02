@@ -14,7 +14,7 @@ export class DialogModel extends Model {
     return a11y(this.page, "[role=dialog]")
   }
 
-  goto(url = "/dialog-nested") {
+  goto(url = "/dialog/nested") {
     return this.page.goto(url)
   }
 

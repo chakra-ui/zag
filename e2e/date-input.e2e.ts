@@ -747,7 +747,7 @@ test.describe("date-input [single]", () => {
 test.describe("date-input [range]", () => {
   test.beforeEach(async ({ page }) => {
     I = new DateInputModel(page)
-    await I.goto("/date-input-range")
+    await I.goto("/date-input/range")
   })
 
   test("should have no accessibility violation", async () => {
