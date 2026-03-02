@@ -1,7 +1,7 @@
 import * as combobox from "@zag-js/combobox"
+import { createFilter } from "@zag-js/i18n-utils"
 import { mergeProps, normalizeProps, useMachine } from "@zag-js/react"
 import * as tabs from "@zag-js/tabs"
-import { matchSorter } from "match-sorter"
 import { useId, useMemo, useRef, useState } from "react"
 import { flushSync } from "react-dom"
 
@@ -41,13 +41,14 @@ function groupBy<T>(items: T[], key: keyof T): any {
 
 type SelectedTab = "Page" | "Component" | "All"
 const categories: SelectedTab[] = ["All", "Page", "Component"]
+const { contains } = createFilter({ sensitivity: "base" })
 
 export default function Page() {
   const [selectedTab, setSelectedTab] = useState<SelectedTab>("All")
   const [inputValue, setInputValue] = useState("")
 
   const matches = useMemo(() => {
-    const allMatches = matchSorter(flatPages, inputValue, { keys: ["label"] })
+    const allMatches = flatPages.filter((item) => contains(item.label, inputValue))
     const groups = groupBy(allMatches, "category")
     groups.All = allMatches
     return groups as Record<SelectedTab, typeof flatPages>

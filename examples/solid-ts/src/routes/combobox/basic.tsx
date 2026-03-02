@@ -1,12 +1,14 @@
 import * as combobox from "@zag-js/combobox"
+import { createFilter } from "@zag-js/i18n-utils"
 import { comboboxControls, comboboxData } from "@zag-js/shared"
 import { normalizeProps, useMachine } from "@zag-js/solid"
 import { XIcon } from "lucide-solid"
-import { matchSorter } from "match-sorter"
 import { Index, Show, createMemo, createSignal, createUniqueId } from "solid-js"
 import { StateVisualizer } from "~/components/state-visualizer"
 import { Toolbar } from "~/components/toolbar"
 import { useControls } from "~/hooks/use-controls"
+
+const { contains } = createFilter({ sensitivity: "base" })
 
 export default function Page() {
   const controls = useControls(comboboxControls)
@@ -36,7 +38,7 @@ export default function Page() {
         setOptions(comboboxData)
       },
       onInputValueChange({ inputValue }) {
-        const filtered = matchSorter(comboboxData, inputValue, { keys: ["label"] })
+        const filtered = comboboxData.filter((item) => contains(item.label, inputValue))
         setOptions(filtered.length > 0 ? filtered : comboboxData)
       },
     })),

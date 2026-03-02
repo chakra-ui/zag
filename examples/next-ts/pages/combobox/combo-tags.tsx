@@ -1,10 +1,12 @@
 import * as combobox from "@zag-js/combobox"
 import { contains } from "@zag-js/dom-query"
+import { createFilter } from "@zag-js/i18n-utils"
 import { mergeProps, normalizeProps, useMachine } from "@zag-js/react"
 import { comboboxData } from "@zag-js/shared"
 import * as tagsInput from "@zag-js/tags-input"
-import { matchSorter } from "match-sorter"
 import { useId, useRef, useState } from "react"
+
+const { contains: matchContains } = createFilter({ sensitivity: "base" })
 
 export default function Page() {
   // id composition for tags input and combobox
@@ -41,10 +43,7 @@ export default function Page() {
       setOptions(comboboxData.filter((item) => !value.includes(item.code)))
     },
     onInputValueChange({ inputValue }) {
-      const result = matchSorter(comboboxData, inputValue, {
-        keys: ["label"],
-        baseSort: (a, b) => (a.index < b.index ? -1 : 1),
-      })
+      const result = comboboxData.filter((item) => matchContains(item.label, inputValue))
       setOptions(result)
     },
     onValueChange(details) {

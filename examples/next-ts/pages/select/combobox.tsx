@@ -1,8 +1,10 @@
 import * as combobox from "@zag-js/combobox"
+import { createFilter } from "@zag-js/i18n-utils"
 import { normalizeProps, Portal, useMachine } from "@zag-js/react"
 import { selectData } from "@zag-js/shared"
-import { matchSorter } from "match-sorter"
 import { useId, useMemo, useState } from "react"
+
+const { contains } = createFilter({ sensitivity: "base" })
 
 export default function Page() {
   const [options, setOptions] = useState(selectData)
@@ -19,7 +21,7 @@ export default function Page() {
       setOptions(selectData)
     },
     onInputValueChange({ inputValue }) {
-      const filtered = matchSorter(selectData, inputValue, { keys: ["label"] })
+      const filtered = selectData.filter((item) => contains(item.label, inputValue))
       setOptions(filtered.length > 0 ? filtered : selectData)
     },
   })

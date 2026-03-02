@@ -3,12 +3,13 @@
   import Toolbar from "$lib/components/toolbar.svelte"
   import { useControls } from "$lib/use-controls.svelte"
   import * as combobox from "@zag-js/combobox"
+  import { createFilter } from "@zag-js/i18n-utils"
   import { comboboxControls, comboboxData } from "@zag-js/shared"
   import { normalizeProps, useMachine } from "@zag-js/svelte"
-  import { matchSorter } from "match-sorter"
   import { XIcon } from "lucide-svelte"
 
   const controls = useControls(comboboxControls)
+  const { contains } = createFilter({ sensitivity: "base" })
 
   let options = $state.raw(comboboxData)
 
@@ -32,7 +33,7 @@
         options = comboboxData
       },
       onInputValueChange({ inputValue }) {
-        const filtered = matchSorter(comboboxData, inputValue, { keys: ["label"] })
+        const filtered = comboboxData.filter((item) => contains(item.label, inputValue))
         const newOptions = filtered.length > 0 ? filtered : comboboxData
         options = newOptions
       },

@@ -1,12 +1,14 @@
 import * as combobox from "@zag-js/combobox"
 import { raf } from "@zag-js/dom-query"
+import { createFilter } from "@zag-js/i18n-utils"
 import { mergeProps, normalizeProps, useMachine } from "@zag-js/react"
 import { comboboxData } from "@zag-js/shared"
-import { matchSorter } from "match-sorter"
 import { useEffect, useId, useMemo, useRef, useState } from "react"
 import getCaretCoordinates from "textarea-caret"
 import { StateVisualizer } from "../../components/state-visualizer"
 import { Toolbar } from "../../components/toolbar"
+
+const { contains } = createFilter({ sensitivity: "base" })
 
 export default function Page() {
   const [options, setOptions] = useState(comboboxData)
@@ -27,10 +29,7 @@ export default function Page() {
   const ref = useRef<HTMLTextAreaElement>(null)
 
   useEffect(() => {
-    const result = matchSorter(comboboxData, searchValue, {
-      keys: ["label"],
-      baseSort: (a, b) => (a.index < b.index ? -1 : 1),
-    })
+    const result = comboboxData.filter((item) => contains(item.label, searchValue))
     setOptions(result)
   }, [searchValue])
 

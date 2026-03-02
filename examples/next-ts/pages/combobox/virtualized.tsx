@@ -1,15 +1,17 @@
 import { useVirtualizer } from "@tanstack/react-virtual"
 import * as combobox from "@zag-js/combobox"
+import { createFilter } from "@zag-js/i18n-utils"
 import { normalizeProps, useMachine } from "@zag-js/react"
 import { comboboxData } from "@zag-js/shared"
 import { XIcon } from "lucide-react"
-import { matchSorter } from "match-sorter"
 import { useId, useRef, useState } from "react"
 
 interface Item {
   code: string
   label: string
 }
+
+const { contains } = createFilter({ sensitivity: "base" })
 
 export default function Page() {
   const contentRef = useRef<HTMLDivElement>(null)
@@ -38,7 +40,7 @@ export default function Page() {
       setOptions(comboboxData)
     },
     onInputValueChange({ inputValue }) {
-      const filtered = matchSorter(comboboxData, inputValue, { keys: ["label"] })
+      const filtered = comboboxData.filter((item) => contains(item.label, inputValue))
       setOptions(filtered.length > 0 ? filtered : comboboxData)
     },
   })
