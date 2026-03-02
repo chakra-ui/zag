@@ -4,6 +4,37 @@ All notable changes to this project will be documented in this file.
 
 > For v0.x changelog, see the [v0 branch](https://github.com/chakra-ui/zag/blob/v0/CHANGELOG.md)
 
+## [1.35.3](./#1.35.3) - 2026-03-02
+
+### Added
+
+- **Date Input**: Initial release of date input machine
+
+### Fixed
+
+- **Carousel**
+  - Fix issue where carousel inside a Portal (e.g., Dialog) computes incorrect page count due to incomplete DOM layout
+    at mount time. The item-group container is now observed with a `ResizeObserver`, so snap points are recalculated
+    when the container resizes
+  - Keep page and indicators in sync after drag release and scroll settling
+  - Handle rapid mixed interactions (drag, wheel, buttons, indicators) more consistently
+  - Keep page state valid when `slidesPerPage`, `slidesPerMove`, direction, or orientation change
+  - Make `slidesPerMove` (`auto`, `1`, `2`) progression more predictable
+
+- **Combobox**: Improve controlled-mode synchronization and keep callback/item resolution behavior consistent across
+  filtered collections
+
+- **Listbox**: Improve controlled-mode synchronization and keep callback/item resolution behavior consistent across
+  filtered collections
+
+- **Select**: Improve controlled-mode synchronization and keep callback/item resolution behavior consistent across
+  filtered collections
+
+### Changed
+
+- **I18n Utils**: `formatTime` now accepts `amLabel` and `pmLabel` as separate options instead of the previous
+  `amPmLabels` object
+
 ## [1.35.2](./#1.35.2) - 2026-02-26
 
 ### Fixed
