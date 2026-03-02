@@ -2,14 +2,10 @@ import { i18nCache } from "./cache"
 
 export type TimeFormat = "12h" | "24h"
 
-export interface AmPmLabels {
-  am: string
-  pm: string
-}
-
 export interface FormatTimeOptions {
   format?: TimeFormat
-  amPmLabels?: AmPmLabels
+  amLabel?: string
+  pmLabel?: string
   withSeconds?: boolean
 }
 
@@ -52,7 +48,7 @@ function getTimeParts(value: string | Date) {
 }
 
 export function formatTime(value: string | Date, locale: string, options: FormatTimeOptions = {}) {
-  const { format = "24h", amPmLabels, withSeconds = false } = options
+  const { format = "24h", amLabel, pmLabel, withSeconds = false } = options
   const parts = getTimeParts(value)
   if (!parts) return null
 
@@ -63,13 +59,17 @@ export function formatTime(value: string | Date, locale: string, options: Format
     hour12: format === "12h",
   })
 
-  if (format !== "12h" || !amPmLabels) {
+  if (format !== "12h") {
     return formatter.format(parts.date)
   }
 
   const isPm = parts.hours >= 12
   const tokens = formatter.formatToParts(parts.date)
   return tokens
-    .map((token) => (token.type === "dayPeriod" ? (isPm ? amPmLabels.pm : amPmLabels.am) : token.value))
+    .map((token) => {
+      if (token.type !== "dayPeriod") return token.value
+      if (isPm) return pmLabel ?? token.value
+      return amLabel ?? token.value
+    })
     .join("")
 }
