@@ -7,7 +7,7 @@ export class DateInputModel extends Model {
     super(page)
   }
 
-  goto(url = "/date-input") {
+  goto(url = "/date-input/basic") {
     return this.page.goto(url)
   }
 

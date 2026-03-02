@@ -11,7 +11,7 @@ export class SelectModel extends Model {
     return a11y(this.page, ".select")
   }
 
-  goto(url = "/select") {
+  goto(url = "/select/basic") {
     return this.page.goto(url)
   }
 

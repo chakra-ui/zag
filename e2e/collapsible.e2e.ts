@@ -6,7 +6,7 @@ const content = part("content")
 
 test.describe("collapsible", () => {
   test.beforeEach(async ({ page }) => {
-    await page.goto("/collapsible")
+    await page.goto("/collapsible/basic")
   })
 
   test("should have no accessibility violation", async ({ page }) => {

@@ -11,7 +11,7 @@ export class TooltipModel extends Model {
     return a11y(this.page, "main")
   }
 
-  goto(url = "/tooltip") {
+  goto(url = "/tooltip/basic") {
     return this.page.goto(url)
   }
 

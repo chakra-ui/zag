@@ -6,7 +6,7 @@ let I: MenuModel
 test.describe("menu option", () => {
   test.beforeEach(async ({ page }) => {
     I = new MenuModel(page)
-    await I.goto("/menu-options")
+    await I.goto("/menu/options")
   })
 
   test("mouse, should check/uncheck radio item", async () => {

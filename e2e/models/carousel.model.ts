@@ -7,7 +7,7 @@ export class CarouselModel extends Model {
     super(page)
   }
 
-  goto(url = "/carousel") {
+  goto(url = "/carousel/basic") {
     return this.page.goto(url)
   }
 

@@ -11,7 +11,7 @@ export class PasswordInputModel extends Model {
     return a11y(this.page)
   }
 
-  goto(url = "/password-input") {
+  goto(url = "/password-input/basic") {
     return this.page.goto(url)
   }
 

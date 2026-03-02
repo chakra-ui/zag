@@ -18,6 +18,7 @@ export default defineConfig([
     "starters",
     "website",
     "**/*.d.ts",
+    "**/.output",
   ]),
   {
     files: ["**/*.ts", "**/*.tsx"],

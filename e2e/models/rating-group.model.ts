@@ -8,7 +8,7 @@ export class RatingGroupModel extends Model {
   }
 
   goto() {
-    return this.page.goto("/rating-group")
+    return this.page.goto("/rating-group/basic")
   }
 
   checkAccessibility(selector?: string): Promise<void> {

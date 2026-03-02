@@ -11,7 +11,7 @@ export class AngleSliderModel extends Model {
     return a11y(this.page)
   }
 
-  goto(url = "/angle-slider") {
+  goto(url = "/angle-slider/basic") {
     return this.page.goto(url)
   }
 

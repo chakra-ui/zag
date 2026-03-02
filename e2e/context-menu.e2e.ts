@@ -6,7 +6,7 @@ let I: MenuModel
 test.describe("context menu", () => {
   test.beforeEach(async ({ page }) => {
     I = new MenuModel(page)
-    await I.goto("/context-menu")
+    await I.goto("/context-menu/basic")
   })
 
   test("should open on right click", async () => {

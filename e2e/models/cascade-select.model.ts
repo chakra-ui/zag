@@ -11,7 +11,7 @@ export class CascadeSelectModel extends Model {
     return a11y(this.page, ".cascade-select")
   }
 
-  goto(url = "/cascade-select") {
+  goto(url = "/cascade-select/basic") {
     return this.page.goto(url)
   }
 

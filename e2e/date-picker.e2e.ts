@@ -163,7 +163,7 @@ test.describe("datepicker [single]", () => {
 test.describe("datepicker [min-max]", () => {
   test.beforeEach(async ({ page }) => {
     I = new DatePickerModel(page)
-    await I.goto("/date-picker-min-max")
+    await I.goto("/date-picker/min-max")
   })
 
   test("constrains date to max value on blur when out-of-range date entered", async () => {
@@ -221,7 +221,7 @@ test.describe("datepicker [min-max]", () => {
 test.describe("datepicker [range]", () => {
   test.beforeEach(async ({ page }) => {
     I = new DatePickerModel(page)
-    await I.goto("/date-picker-range")
+    await I.goto("/date-picker/range")
   })
 
   test("should not crash when typing end date first", async () => {

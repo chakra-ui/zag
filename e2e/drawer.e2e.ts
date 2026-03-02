@@ -119,7 +119,7 @@ test.describe("drawer", () => {
 test.describe("drawer [draggable=false]", () => {
   test.beforeEach(async ({ page }) => {
     I = new DrawerModel(page)
-    await I.goto("/drawer-draggable-false")
+    await I.goto("/drawer/draggable-false")
   })
 
   test("sheet content should not be draggable", async ({ page }) => {
@@ -145,7 +145,7 @@ test.describe("drawer [draggable=false]", () => {
 test.describe("drawer [snapPoints]", () => {
   test.beforeEach(async ({ page }) => {
     I = new DrawerModel(page)
-    await I.goto("/drawer-snap-points")
+    await I.goto("/drawer/snap-points")
   })
 
   test("should snap to defined positions", async () => {

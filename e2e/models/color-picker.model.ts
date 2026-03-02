@@ -10,7 +10,7 @@ export class ColorPickerModel extends Model {
   }
 
   goto() {
-    return this.page.goto("/color-picker")
+    return this.page.goto("/color-picker/basic")
   }
 
   private get trigger() {
