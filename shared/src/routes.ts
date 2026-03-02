@@ -1,16 +1,16 @@
-export type ExampleRoute = {
+export interface ExampleRoute {
   component: string
   componentLabel: string
   title: string
   path: `/${string}`
 }
 
-export type ExampleNode = {
+export interface ExampleNode {
   slug: string
   title: string
 }
 
-export type ComponentRoute = {
+export interface ComponentRoute {
   slug: string
   label: string
   examples: ExampleNode[]
