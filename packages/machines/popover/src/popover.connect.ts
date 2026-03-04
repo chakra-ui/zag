@@ -7,6 +7,7 @@ import type { PopoverApi, PopoverService } from "./popover.types"
 
 export function connect<T extends PropTypes>(service: PopoverService, normalize: NormalizeProps<T>): PopoverApi<T> {
   const { state, context, send, computed, prop, scope } = service
+  const translations = prop("translations")
   const open = state.matches("open")
 
   const currentPlacement = context.get("currentPlacement")
@@ -138,7 +139,7 @@ export function connect<T extends PropTypes>(service: PopoverService, normalize:
         dir: prop("dir"),
         id: dom.getCloseTriggerId(scope),
         type: "button",
-        "aria-label": "close",
+        "aria-label": translations.closeTriggerLabel,
         onClick(event) {
           if (event.defaultPrevented) return
           event.stopPropagation()

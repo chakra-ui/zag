@@ -17,6 +17,10 @@ export const machine = createMachine<PopoverSchema>({
       modal: false,
       portalled: true,
       ...props,
+      translations: {
+        closeTriggerLabel: "close",
+        ...props.translations,
+      },
       positioning: {
         placement: "bottom",
         ...props.positioning,

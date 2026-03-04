@@ -10,6 +10,7 @@ export type {
   ArrowProps,
   ContentProps,
   ElementIds,
+  IntlTranslations,
   ViewportProps,
   ItemProps,
   ItemState,

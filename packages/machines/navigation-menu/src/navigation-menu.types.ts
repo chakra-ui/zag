@@ -32,7 +32,15 @@ export type ElementIds = Partial<{
  * Machine context
  * -----------------------------------------------------------------------------*/
 
+export interface IntlTranslations {
+  rootLabel?: string | undefined
+}
+
 export interface NavigationMenuProps extends DirectionProperty, CommonProperties, OrientationProperty {
+  /**
+   * Specifies the localized strings that identifies the accessibility elements and their states
+   */
+  translations?: IntlTranslations | undefined
   /**
    * The ids of the elements in the machine.
    */
@@ -74,7 +82,7 @@ export interface NavigationMenuProps extends DirectionProperty, CommonProperties
   disablePointerLeaveClose?: boolean | undefined
 }
 
-type PropsWithDefault = "openDelay" | "closeDelay" | "dir" | "id" | "orientation"
+type PropsWithDefault = "openDelay" | "closeDelay" | "dir" | "id" | "orientation" | "translations"
 
 export interface NavigationMenuSchema {
   props: RequiredBy<NavigationMenuProps, PropsWithDefault>

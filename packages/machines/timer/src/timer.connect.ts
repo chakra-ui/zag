@@ -8,7 +8,8 @@ import type { TimerApi, TimerSchema } from "./timer.types"
 const validActions = new Set(["start", "pause", "resume", "reset", "restart"])
 
 export function connect<T extends PropTypes>(service: Service<TimerSchema>, normalize: NormalizeProps<T>): TimerApi<T> {
-  const { state, send, computed, scope } = service
+  const { state, send, computed, scope, prop } = service
+  const translations = prop("translations")
 
   const running = state.matches("running")
   const paused = state.matches("paused")
@@ -50,7 +51,7 @@ export function connect<T extends PropTypes>(service: Service<TimerSchema>, norm
       return normalize.element({
         role: "timer",
         id: dom.getAreaId(scope),
-        "aria-label": `${time.days} days ${formattedTime.hours}:${formattedTime.minutes}:${formattedTime.seconds}`,
+        "aria-label": translations.areaLabel?.(time, formattedTime),
         "aria-atomic": true,
         ...parts.area.attrs,
       })

@@ -23,6 +23,7 @@ export function connect<T extends PropTypes, V extends TreeNode = TreeNode>(
 ): TreeViewApi<T, V> {
   const { context, scope, computed, prop, send } = service
   const collection = prop("collection")
+  const translations = prop("translations")
 
   const expandedValue = Array.from(context.get("expandedValue"))
   const selectedValue = Array.from(context.get("selectedValue"))
@@ -150,7 +151,7 @@ export function connect<T extends PropTypes, V extends TreeNode = TreeNode>(
         id: dom.getTreeId(scope),
         dir: prop("dir"),
         role: "tree",
-        "aria-label": "Tree View",
+        "aria-label": translations.treeLabel,
         "aria-labelledby": dom.getLabelId(scope),
         "aria-multiselectable": prop("selectionMode") === "multiple" || undefined,
         tabIndex: -1,
@@ -493,7 +494,7 @@ export function connect<T extends PropTypes, V extends TreeNode = TreeNode>(
         ...parts.nodeRenameInput.attrs,
         id: dom.getRenameInputId(scope, nodeState.value),
         type: "text",
-        "aria-label": "Rename tree item",
+        "aria-label": translations.renameInputLabel,
         hidden: !nodeState.renaming,
         onKeyDown(event) {
           // CRITICAL: Ignore keyboard events during IME composition

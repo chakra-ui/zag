@@ -22,6 +22,11 @@ export const machine = createMachine<TreeViewSchema>({
       defaultExpandedValue: [],
       defaultSelectedValue: [],
       ...props,
+      translations: {
+        treeLabel: "Tree View",
+        renameInputLabel: "Rename tree item",
+        ...props.translations,
+      },
     }
   },
 

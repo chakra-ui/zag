@@ -39,6 +39,10 @@ export interface SelectionDetails {
  * Machine context
  * -----------------------------------------------------------------------------*/
 
+export interface IntlTranslations {
+  clearTriggerLabel?: string | undefined
+}
+
 export type ElementIds = Partial<{
   root: string
   content: string
@@ -55,6 +59,10 @@ export type ElementIds = Partial<{
 
 export interface SelectProps<T extends CollectionItem = CollectionItem>
   extends DirectionProperty, CommonProperties, InteractOutsideHandlers {
+  /**
+   * Specifies the localized strings that identifies the accessibility elements and their states
+   */
+  translations?: IntlTranslations | undefined
   /**
    * The item collection
    */
@@ -168,7 +176,7 @@ export interface SelectProps<T extends CollectionItem = CollectionItem>
   deselectable?: boolean | undefined
 }
 
-type PropsWithDefault = "positioning" | "closeOnSelect" | "loopFocus" | "composite" | "collection"
+type PropsWithDefault = "positioning" | "closeOnSelect" | "loopFocus" | "composite" | "collection" | "translations"
 
 export interface SelectSchema<T extends CollectionItem = CollectionItem> {
   state: "idle" | "focused" | "open"

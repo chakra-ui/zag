@@ -23,6 +23,7 @@ export const props = createProps<PopoverProps>()([
   "persistentElements",
   "portalled",
   "positioning",
+  "translations",
 ])
 
 export const splitProps = createSplitProps<Partial<PopoverProps>>(props)
