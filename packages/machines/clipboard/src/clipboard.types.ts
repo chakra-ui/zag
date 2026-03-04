@@ -17,6 +17,10 @@ export interface ValueChangeDetails {
  * Machine context
  * -----------------------------------------------------------------------------*/
 
+export interface IntlTranslations {
+  triggerLabel?: ((copied: boolean) => string) | undefined
+}
+
 export type ElementIds = Partial<{
   root: string
   input: string
@@ -24,6 +28,10 @@ export type ElementIds = Partial<{
 }>
 
 export interface ClipboardProps extends CommonProperties {
+  /**
+   * Specifies the localized strings that identifies the accessibility elements and their states
+   */
+  translations?: IntlTranslations | undefined
   /**
    * The ids of the elements in the clipboard. Useful for composition.
    */
@@ -54,7 +62,7 @@ export interface ClipboardProps extends CommonProperties {
 
 export interface ClipboardSchema {
   state: "idle" | "copied"
-  props: RequiredBy<ClipboardProps, "timeout">
+  props: RequiredBy<ClipboardProps, "timeout" | "translations">
   context: {
     value: string
   }

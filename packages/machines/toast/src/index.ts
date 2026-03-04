@@ -16,6 +16,7 @@ export type {
   ToastGroupService as GroupService,
   ToastStore as Store,
   ToastStoreProps as StoreProps,
+  IntlTranslations,
   Options,
   ActionOptions,
   Placement,

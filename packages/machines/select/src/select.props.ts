@@ -34,6 +34,7 @@ export const props = createProps<SelectProps>()([
   "readOnly",
   "required",
   "scrollToIndexFn",
+  "translations",
   "value",
 ])
 export const splitProps = createSplitProps<Partial<SelectProps>>(props)

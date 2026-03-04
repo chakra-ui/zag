@@ -5,8 +5,9 @@ import type { ClipboardService, ClipboardApi } from "./clipboard.types"
 import * as dom from "./clipboard.dom"
 
 export function connect<T extends PropTypes>(service: ClipboardService, normalize: NormalizeProps<T>): ClipboardApi<T> {
-  const { state, send, context, scope } = service
+  const { state, send, context, scope, prop } = service
   const copied = state.matches("copied")
+  const translations = prop("translations")
 
   return {
     copied,
@@ -63,7 +64,7 @@ export function connect<T extends PropTypes>(service: ClipboardService, normaliz
       return normalize.button({
         ...parts.trigger.attrs,
         type: "button",
-        "aria-label": copied ? "Copied to clipboard" : "Copy to clipboard",
+        "aria-label": translations.triggerLabel?.(copied),
         "data-copied": dataAttr(copied),
         onClick() {
           send({ type: "COPY" })

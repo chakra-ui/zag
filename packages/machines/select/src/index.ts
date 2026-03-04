@@ -13,6 +13,7 @@ export type {
   CollectionOptions,
   ElementIds,
   HighlightChangeDetails,
+  IntlTranslations,
   ItemGroupLabelProps,
   ItemGroupProps,
   ItemProps,

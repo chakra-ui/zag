@@ -46,6 +46,14 @@ export interface ActionOptions {
 }
 
 /* -----------------------------------------------------------------------------
+ * Toast Translations
+ * -----------------------------------------------------------------------------*/
+
+export interface IntlTranslations {
+  closeTriggerLabel?: string | undefined
+}
+
+/* -----------------------------------------------------------------------------
  * Toast Options
  * -----------------------------------------------------------------------------*/
 
@@ -103,6 +111,10 @@ export interface Options<T = any> {
  * -----------------------------------------------------------------------------*/
 
 export interface ToastProps<T = any> extends Omit<CommonProperties, "id">, Options<T> {
+  /**
+   * Specifies the localized strings that identifies the accessibility elements and their states
+   */
+  translations?: IntlTranslations | undefined
   /**
    * The direction of the toast
    */

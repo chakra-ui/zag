@@ -9,6 +9,7 @@ export type {
   PopoverProps as Props,
   PopoverService as Service,
   ElementIds,
+  IntlTranslations,
   OpenChangeDetails,
   Placement,
   PositioningOptions,

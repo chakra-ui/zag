@@ -11,6 +11,7 @@ export type {
   ActionTriggerProps,
   ItemProps,
   ElementIds,
+  IntlTranslations,
   TickDetails,
   Time,
   TimePart,

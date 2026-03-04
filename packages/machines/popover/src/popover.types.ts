@@ -15,6 +15,10 @@ export interface OpenChangeDetails {
  * Machine context
  * -----------------------------------------------------------------------------*/
 
+export interface IntlTranslations {
+  closeTriggerLabel?: string | undefined
+}
+
 export type ElementIds = Partial<{
   anchor: string
   trigger: string
@@ -28,6 +32,10 @@ export type ElementIds = Partial<{
 
 export interface PopoverProps
   extends CommonProperties, DirectionProperty, DismissableElementHandlers, PersistentElementOptions {
+  /**
+   * Specifies the localized strings that identifies the accessibility elements and their states
+   */
+  translations?: IntlTranslations | undefined
   /**
    * The ids of the elements in the popover. Useful for composition.
    */
@@ -89,7 +97,14 @@ export interface PopoverProps
   defaultOpen?: boolean | undefined
 }
 
-type PropsWithDefault = "closeOnInteractOutside" | "closeOnEscape" | "modal" | "portalled" | "autoFocus" | "positioning"
+type PropsWithDefault =
+  | "closeOnInteractOutside"
+  | "closeOnEscape"
+  | "modal"
+  | "portalled"
+  | "autoFocus"
+  | "positioning"
+  | "translations"
 
 type ComputedContext = Readonly<{
   /**
