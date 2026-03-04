@@ -5,11 +5,11 @@ export { machine } from "./popover.machine"
 export * from "./popover.props"
 export type {
   PopoverApi as Api,
-  ElementIds,
   PopoverMachine as Machine,
+  PopoverProps as Props,
+  PopoverService as Service,
+  ElementIds,
   OpenChangeDetails,
   Placement,
   PositioningOptions,
-  PopoverProps as Props,
-  PopoverService as Service,
 } from "./popover.types"

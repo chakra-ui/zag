@@ -5,8 +5,6 @@ package: "@zag-js/slider"
 slugAlias: "slider"
 ---
 
-# Range Slider
-
 A range slider is a multi-thumb slider used to select a range between two
 numbers.
 
@@ -19,20 +17,18 @@ numbers.
 - Fully managed keyboard navigation
 - Supports touch or click on track to update value
 - Supports Right-to-Left directionality
-- Support for horizontal and vertical orientations
+- Supports horizontal and vertical orientations
 - Prevents text selection while dragging
 
 ## Installation
 
-To use the range slider machine in your project, run the following command in
-your command line:
+Install the range slider package:
 
 <CodeSnippet id="range-slider/installation.mdx" />
 
 ## Anatomy
 
-To set up the slider correctly, you'll need to understand its anatomy and how we
-name its parts.
+Check the slider anatomy and part names.
 
 > Each part includes a `data-part` attribute to help identify them in the DOM.
 
@@ -40,7 +36,7 @@ name its parts.
 
 ## Usage
 
-First, import the range slider package into your project
+Import the range slider package:
 
 ```jsx
 import * as rangeSlider from "@zag-js/slider"
@@ -48,16 +44,12 @@ import * as rangeSlider from "@zag-js/slider"
 
 The range slider package exports two key functions:
 
-- `machine` — The state machine logic for the slider widget as described in the
-  WAI-ARIA spec.
-- `connect` — The function that translates the machine's state to JSX attributes
-  and event handlers.
+- `machine` - State machine logic.
+- `connect` - Maps machine state to JSX props and event handlers.
 
-> You'll need to provide a unique `id` to the `useMachine` hook. This is used to
-> ensure that every part has a unique identifier.
+> Pass a unique `id` to `useMachine` so generated element ids stay predictable.
 
-Next, import the required hooks and functions for your framework and use the
-range slider machine in your project 🔥
+Then use the framework integration helpers:
 
 <CodeSnippet id="range-slider/usage.mdx" />
 
@@ -73,7 +65,7 @@ increment/decrement its value.
 > height
 
 ```jsx {2}
-const service = useMachine(slider.machine, {
+const service = useMachine(rangeSlider.machine, {
   orientation: "vertical",
 })
 ```
@@ -81,8 +73,21 @@ const service = useMachine(slider.machine, {
 ## Setting the initial value
 
 ```jsx {2}
-const service = useMachine(slider.machine, {
+const service = useMachine(rangeSlider.machine, {
   defaultValue: [30, 60],
+})
+```
+
+## Controlled range value
+
+Use `value` and `onValueChange` to control both thumb values externally.
+
+```jsx
+const service = useMachine(rangeSlider.machine, {
+  value,
+  onValueChange(details) {
+    setValue(details.value)
+  },
 })
 ```
 
@@ -95,7 +100,7 @@ and/or max attributes.
 For example, to ask the user for a value between `-10` and `10`, you can use:
 
 ```jsx {2-3}
-const service = useMachine(slider.machine, {
+const service = useMachine(rangeSlider.machine, {
   min: -10,
   max: 10,
 })
@@ -110,7 +115,7 @@ For example, If you need a value between `5` and `10`, accurate to two decimal
 places, you should set the value of step to `0.01`:
 
 ```jsx {4}
-const service = useMachine(slider.machine, {
+const service = useMachine(rangeSlider.machine, {
   min: 5,
   max: 10,
   step: 0.01,
@@ -123,14 +128,27 @@ When the slider value changes, the `onValueChange` and `onValueChangeEnd`
 callbacks are invoked. You can use this to setup custom behaviors in your app.
 
 ```jsx {2-7}
-const service = useMachine(slider.machine, {
+const service = useMachine(rangeSlider.machine, {
   onValueChange(details) {
-    // details => { values: number[] }
-    console.log("value changing to:", details)
+    // details => { value: number[] }
+    console.log("value changing to:", details.value)
   },
   onValueChangeEnd(details) {
-    // details => { values: number[] }
-    console.log("value has changed to:", details)
+    // details => { value: number[] }
+    console.log("value has changed to:", details.value)
+  },
+})
+```
+
+## Listening for thumb focus changes
+
+Use `onFocusChange` to track which thumb is currently focused.
+
+```jsx
+const service = useMachine(rangeSlider.machine, {
+  onFocusChange(details) {
+    // details => { focusedIndex: number, value: number[] }
+    console.log("focused thumb:", details.focusedIndex)
   },
 })
 ```
@@ -142,20 +160,29 @@ equal. To prevent this, use the `minStepsBetweenThumbs` to avoid thumbs with
 equal values.
 
 ```jsx {2}
-const service = useMachine(slider.machine, {
+const service = useMachine(rangeSlider.machine, {
   minStepsBetweenThumbs: 1,
+})
+```
+
+## Thumb collision behavior
+
+Use `thumbCollisionBehavior` to control how thumbs behave on collision.
+
+```jsx
+const service = useMachine(rangeSlider.machine, {
+  defaultValue: [20, 80],
+  thumbCollisionBehavior: "push", // "none" | "push" | "swap"
 })
 ```
 
 ## Usage within forms
 
-To use slider within forms, use the exposed `getInputProps` from the `connect`
-function and ensure you pass `name` value to the machine's context. It will
-render a hidden input for each value and ensure the value changes get propagated
-to the form correctly.
+To use range slider in forms, set `name` and render
+`api.getHiddenInputProps({ index })` for each thumb.
 
 ```jsx {2}
-const service = useMachine(slider.machine, {
+const service = useMachine(rangeSlider.machine, {
   name: "quantity",
 })
 ```
@@ -169,7 +196,7 @@ will increment and the right arrow key will decrement.
 To enable RTL support, pass the `dir: rtl` context property
 
 ```jsx {2}
-const service = useMachine(slider.machine, {
+const service = useMachine(rangeSlider.machine, {
   dir: "rtl",
 })
 ```
@@ -179,8 +206,7 @@ const service = useMachine(slider.machine, {
 
 ## Styling guide
 
-Earlier, we mentioned that each slider part has a `data-part` attribute added to
-them to select and style them in the DOM.
+Each slider part includes a `data-part` attribute you can target in CSS.
 
 ### Focused State
 

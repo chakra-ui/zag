@@ -2,6 +2,58 @@ import * as select from "@zag-js/select"
 import { normalizeProps, useMachine, Portal } from "@zag-js/react"
 import { useId } from "react"
 import { MdCheck } from "react-icons/md"
+import styles from "../styles/machines/select.module.css"
+
+interface SelectProps extends Omit<select.Props, "id" | "collection"> {}
+
+export function Select(props: SelectProps) {
+  const service = useMachine(select.machine, {
+    id: useId(),
+    collection: select.collection({
+      items: data,
+    }),
+    ...props,
+  })
+
+  const api = select.connect(service, normalizeProps)
+
+  return (
+    <div className={styles.Root} {...api.getRootProps()}>
+      <label className={styles.Label} {...api.getLabelProps()}>
+        Label
+      </label>
+      <div {...api.getControlProps()}>
+        <button className={styles.Trigger} {...api.getTriggerProps()}>
+          <span>{api.valueAsString || "Select option"}</span>
+          <CaretIcon />
+        </button>
+      </div>
+      <Portal>
+        <div {...api.getPositionerProps()}>
+          <ul className={styles.Content} {...api.getContentProps()}>
+            {data.map((item) => (
+              <li
+                className={styles.Item}
+                key={item.value}
+                {...api.getItemProps({ item })}
+              >
+                <span
+                  className={styles.ItemText}
+                  {...api.getItemTextProps({ item })}
+                >
+                  {item.label}
+                </span>
+                <span {...api.getItemIndicatorProps({ item })}>
+                  <MdCheck />
+                </span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </Portal>
+    </div>
+  )
+}
 
 const data = [
   { label: "Nigeria", value: "NG" },
@@ -24,45 +76,3 @@ const CaretIcon = () => (
     <path d="M840.4 300H183.6c-19.7 0-30.7 20.8-18.5 35l328.4 380.8c9.4 10.9 27.5 10.9 37 0L858.9 335c12.2-14.2 1.2-35-18.5-35z"></path>
   </svg>
 )
-
-type SelectProps = {
-  controls: {}
-}
-
-export function Select(props: SelectProps) {
-  const service = useMachine(select.machine, {
-    id: useId(),
-    collection: select.collection({
-      items: data,
-    }),
-    ...props.controls,
-  })
-
-  const api = select.connect(service, normalizeProps)
-
-  return (
-    <div {...api.getRootProps()}>
-      <label {...api.getLabelProps()}>Label</label>
-      <div {...api.getControlProps()}>
-        <button {...api.getTriggerProps()}>
-          <span>{api.valueAsString || "Select option"}</span>
-          <CaretIcon />
-        </button>
-      </div>
-      <Portal>
-        <div {...api.getPositionerProps()}>
-          <ul {...api.getContentProps()}>
-            {data.map((item) => (
-              <li key={item.value} {...api.getItemProps({ item })}>
-                <span {...api.getItemTextProps({ item })}>{item.label}</span>
-                <span {...api.getItemIndicatorProps({ item })}>
-                  <MdCheck />
-                </span>
-              </li>
-            ))}
-          </ul>
-        </div>
-      </Portal>
-    </div>
-  )
-}

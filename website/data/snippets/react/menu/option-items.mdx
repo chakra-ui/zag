@@ -24,7 +24,7 @@ export function Menu() {
 
   const api = menu.connect(service, normalizeProps)
 
-  const radios = menuOptionData.order.map((item) => ({
+  const radios = data.order.map((item) => ({
     type: "radio",
     name: "order",
     value: item.value,
@@ -33,7 +33,7 @@ export function Menu() {
     onCheckedChange: (checked) => setOrder(checked ? item.value : ""),
   }))
 
-  const checkboxes = menuOptionData.type.map((item) => ({
+  const checkboxes = data.type.map((item) => ({
     type: "checkbox",
     name: "type",
     value: item.value,

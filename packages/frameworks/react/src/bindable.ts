@@ -1,3 +1,5 @@
+"use client"
+
 import type { Bindable, BindableParams } from "@zag-js/core"
 import { identity, isFunction } from "@zag-js/utils"
 import { useEffect, useRef, useState } from "react"

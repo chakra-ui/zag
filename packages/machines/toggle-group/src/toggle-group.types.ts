@@ -15,7 +15,7 @@ export interface ValueChangeDetails {
 
 export type ElementIds = Partial<{
   root: string
-  item(value: string): string
+  item: (value: string) => string
 }>
 
 export interface ToggleGroupProps extends DirectionProperty, CommonProperties {
@@ -147,15 +147,15 @@ export interface ToggleGroupApi<T extends PropTypes = PropTypes> {
    */
   value: string[]
   /**
-   * Function to set the value of the toggle group.
+   * Sets the value of the toggle group.
    */
-  setValue: (values: string[]) => void
+  setValue: (value: string[]) => void
   /**
    * Returns the state of the toggle item.
    */
-  getItemState(props: ItemProps): ItemState
-  getRootProps(): T["element"]
-  getItemProps(props: ItemProps): T["button"]
+  getItemState: (props: ItemProps) => ItemState
+  getRootProps: () => T["element"]
+  getItemProps: (props: ItemProps) => T["button"]
 }
 
 /* -----------------------------------------------------------------------------

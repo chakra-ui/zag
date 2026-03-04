@@ -1,0 +1,69 @@
+@layer recipes {
+  .Root {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    width: 80%;
+  }
+
+  .Dropzone {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    gap: 0.5rem;
+    border-width: 2px;
+    border-style: dashed;
+    border-color: var(--colors-border-bold);
+    padding-block: 2rem;
+    padding-inline: 0.5rem;
+
+    &[data-dragging] {
+      background: var(--colors-bg-primary-bold);
+    }
+  }
+
+  .Trigger {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    text-align: start;
+    cursor: pointer;
+    font-weight: 500;
+    padding-inline: 1rem;
+    padding-block: 0.25rem;
+    background: var(--colors-bg-primary-subtle);
+    color: #ffffff;
+
+    &:hover {
+      background: var(--colors-bg-primary-bold);
+    }
+
+    &:focus-visible {
+      outline: 2px solid var(--colors-bg-primary-bold);
+      outline-offset: 2px;
+    }
+  }
+
+  .ItemGroup {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .Item {
+    display: flex;
+    align-items: center;
+    flex-direction: row;
+    gap: 0.5rem;
+    padding-inline: 0.75rem;
+    padding-block: 0.5rem;
+    background: var(--colors-bg-subtle);
+    border-width: 1px;
+    border-color: var(--colors-border-bold);
+
+    & > div {
+      flex: 1;
+      font-size: 0.875rem;
+    }
+  }
+}

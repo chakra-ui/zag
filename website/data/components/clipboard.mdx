@@ -4,9 +4,7 @@ description: Using the clipboard machine in your project.
 package: "@zag-js/clipboard"
 ---
 
-# Clipboard
-
-The clipboard machine allows users to quickly copy content to clipboard.
+The clipboard machine lets users quickly copy content to the clipboard.
 
 <Resources pkg="@zag-js/clipboard" />
 
@@ -14,23 +12,21 @@ The clipboard machine allows users to quickly copy content to clipboard.
 
 ## Installation
 
-To use the clipboard machine in your project, run the following command in your
-command line:
+Install the clipboard package:
 
 <CodeSnippet id="clipboard/installation.mdx" />
 
 ## Anatomy
 
-To set up the clipboard correctly, you'll need to understand its anatomy and how
-we name its parts.
+Check the clipboard anatomy and part names.
 
-> Each part includes a `data-part` attribute to help identify them in the DOM`.
+> Each part includes a `data-part` attribute to help identify them in the DOM.
 
 <Anatomy id="clipboard" />
 
 ## Usage
 
-First, import the clipboard package into your project
+Import the clipboard package:
 
 ```jsx
 import * as clipboard from "@zag-js/clipboard"
@@ -38,22 +34,18 @@ import * as clipboard from "@zag-js/clipboard"
 
 The clipboard package exports two key functions:
 
-- `machine` — The state machine logic for the clipboard widget.
-- `connect` — The function that translates the machine's state to JSX attributes
-  and event handlers.
+- `machine` - State machine logic.
+- `connect` - Maps machine state to JSX props and event handlers.
 
-> You'll also need to provide a unique `id` to the `useMachine` hook. This is
-> used to ensure that every part has a unique identifier.
+> Pass a unique `id` to `useMachine` so generated element ids stay predictable.
 
-Next, import the required hooks and functions for your framework and use the
-clipboard machine in your project 🔥
+Then use the framework integration helpers:
 
 <CodeSnippet id="clipboard/usage.mdx" />
 
 ### Setting the clipboard value
 
-You can set the value to copy by passing a `value` prop to the `machine`
-context.
+Set `value` to control what gets copied.
 
 ```jsx {2}
 const service = useMachine(clipboard.machine, {
@@ -61,10 +53,31 @@ const service = useMachine(clipboard.machine, {
 })
 ```
 
+### Setting an initial value
+
+Use `defaultValue` for uncontrolled initial value.
+
+```jsx
+const service = useMachine(clipboard.machine, {
+  defaultValue: "Hello, world!",
+})
+```
+
+### Listening for value changes
+
+Use `onValueChange` to react when the clipboard value changes.
+
+```jsx
+const service = useMachine(clipboard.machine, {
+  onValueChange(details) {
+    console.log("Value changed to", details.value)
+  },
+})
+```
+
 ### Listening to copy events
 
-When the value is copied to the clipboard, the `onStatusChange` event is fired.
-You can listen to this event and perform any action you want.
+When the value is copied, `onStatusChange` is fired.
 
 ```jsx {2}
 const service = useMachine(clipboard.machine, {
@@ -76,7 +89,7 @@ const service = useMachine(clipboard.machine, {
 
 ### Checking if the value is copied
 
-Use the `api.copied` property to check if the value is copied to the clipboard.
+Use `api.copied` to check if the value was copied.
 
 ```jsx {2}
 const api = clipboard.connect(service)
@@ -88,9 +101,8 @@ if (api.copied) {
 
 ### Changing the timeout
 
-By default, the clipboard machine will automatically reset the state to `idle`
-after `3000ms`. You can change this timeout by passing a `timeout` option to the
-`machine` context.
+By default, the copied feedback resets after `3000ms`. Set `timeout` to change
+this delay.
 
 ```jsx {2}
 const service = useMachine(clipboard.machine, {
@@ -100,8 +112,7 @@ const service = useMachine(clipboard.machine, {
 
 ## Styling guide
 
-Earlier, we mentioned that each clipboard part has a `data-part` attribute added
-to them to select and style them in the DOM.
+Each part includes a `data-part` attribute you can target in CSS.
 
 ```css
 [data-scope="clipboard"][data-part="root"] {

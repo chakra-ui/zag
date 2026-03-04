@@ -5,6 +5,10 @@ import type { CommonProperties, DirectionProperty, PropTypes, RequiredBy } from 
  * Callback details
  * -----------------------------------------------------------------------------*/
 
+export type ThumbCollisionBehavior = "none" | "push" | "swap"
+
+export type ThumbAlignment = "contain" | "center"
+
 export interface ValueChangeDetails {
   value: number[]
 }
@@ -25,14 +29,14 @@ export interface ValueTextDetails {
 
 export type ElementIds = Partial<{
   root: string
-  thumb(index: number): string
-  hiddenInput(index: number): string
+  thumb: (index: number) => string
+  hiddenInput: (index: number) => string
   control: string
   track: string
   range: string
   label: string
   valueText: string
-  marker(index: number): string
+  marker: (index: number) => string
 }>
 
 export interface SliderProps extends DirectionProperty, CommonProperties {
@@ -80,19 +84,19 @@ export interface SliderProps extends DirectionProperty, CommonProperties {
   /**
    * Function invoked when the value of the slider changes
    */
-  onValueChange?(details: ValueChangeDetails): void
+  onValueChange?: ((details: ValueChangeDetails) => void) | undefined
   /**
    * Function invoked when the slider value change is done
    */
-  onValueChangeEnd?(details: ValueChangeDetails): void
+  onValueChangeEnd?: ((details: ValueChangeDetails) => void) | undefined
   /**
    * Function invoked when the slider's focused index changes
    */
-  onFocusChange?(details: FocusChangeDetails): void
+  onFocusChange?: ((details: FocusChangeDetails) => void) | undefined
   /**
    * Function that returns a human readable value for the slider thumb
    */
-  getAriaValueText?(details: ValueTextDetails): string
+  getAriaValueText?: ((details: ValueTextDetails) => string) | undefined
   /**
    * The minimum value of the slider
    * @default 0
@@ -110,6 +114,12 @@ export interface SliderProps extends DirectionProperty, CommonProperties {
   step?: number | undefined
   /**
    * The minimum permitted steps between multiple thumbs.
+   *
+   * `minStepsBetweenThumbs` * `step` should reflect the gap between the thumbs.
+   *
+   * - `step: 1` and `minStepsBetweenThumbs: 10` => gap is `10`
+   * - `step: 10` and `minStepsBetweenThumbs: 2` => gap is `20`
+   *
    * @default 0
    */
   minStepsBetweenThumbs?: number | undefined
@@ -140,6 +150,15 @@ export interface SliderProps extends DirectionProperty, CommonProperties {
    * The slider thumbs dimensions
    */
   thumbSize?: { width: number; height: number } | undefined
+  /**
+   * Controls how thumbs behave when they collide during pointer interactions.
+   * - `none` (default): Thumbs cannot move past each other; excess movement is ignored.
+   * - `push`: Thumbs push each other without restoring their previous positions when dragged back.
+   * - `swap`: Thumbs swap places when dragged past each other.
+   *
+   * @default "none"
+   */
+  thumbCollisionBehavior?: "none" | "push" | "swap" | undefined
 }
 
 type PropsWithDefault =
@@ -152,6 +171,7 @@ type PropsWithDefault =
   | "origin"
   | "thumbAlignment"
   | "minStepsBetweenThumbs"
+  | "thumbCollisionBehavior"
 
 type Computed = Readonly<{
   /**
@@ -216,6 +236,18 @@ export interface SliderSchema {
   state: "idle" | "dragging" | "focus"
   props: RequiredBy<SliderProps, PropsWithDefault>
   context: Context
+  refs: {
+    /**
+     * The offset from the thumb center when pointer down occurs.
+     * Used to maintain constant offset during drag.
+     */
+    thumbDragOffset: { x: number; y: number } | null
+    /**
+     * The values when a thumb drag starts.
+     * Used for swap collision behavior to determine swap direction.
+     */
+    thumbDragStartValue: number[] | null
+  }
   computed: Computed
   event: EventObject
   action: string
@@ -265,15 +297,15 @@ export interface SliderApi<T extends PropTypes = PropTypes> {
   /**
    * Function to set the value of the slider.
    */
-  setValue(value: number[]): void
+  setValue: (value: number[]) => void
   /**
    * Returns the value of the thumb at the given index.
    */
-  getThumbValue(index: number): number
+  getThumbValue: (index: number) => number
   /**
    * Sets the value of the thumb at the given index.
    */
-  setThumbValue(index: number, value: number): void
+  setThumbValue: (index: number, value: number) => void
   /**
    * Returns the percent of the thumb at the given index.
    */
@@ -285,59 +317,41 @@ export interface SliderApi<T extends PropTypes = PropTypes> {
   /**
    * Returns the percent of the thumb at the given index.
    */
-  getThumbPercent(index: number): number
+  getThumbPercent: (index: number) => number
   /**
    * Sets the percent of the thumb at the given index.
    */
-  setThumbPercent(index: number, percent: number): void
+  setThumbPercent: (index: number, percent: number) => void
   /**
    * Returns the min value of the thumb at the given index.
    */
-  getThumbMin(index: number): number
+  getThumbMin: (index: number) => number
   /**
    * Returns the max value of the thumb at the given index.
    */
-  getThumbMax(index: number): number
+  getThumbMax: (index: number) => number
   /**
    * Function to increment the value of the slider at the given index.
    */
-  increment(index: number): void
+  increment: (index: number) => void
   /**
    * Function to decrement the value of the slider at the given index.
    */
-  decrement(index: number): void
+  decrement: (index: number) => void
   /**
    * Function to focus the slider. This focuses the first thumb.
    */
-  focus(): void
-  getLabelProps(): T["label"]
-  getRootProps(): T["element"]
-  getValueTextProps(): T["element"]
-  getTrackProps(): T["element"]
-  getThumbProps(props: ThumbProps): T["element"]
-  getHiddenInputProps(props: ThumbProps): T["input"]
-  getRangeProps(): T["element"]
-  getControlProps(): T["element"]
-  getMarkerGroupProps(): T["element"]
-  getMarkerProps(props: MarkerProps): T["element"]
-  getDraggingIndicatorProps(props: DraggingIndicatorProps): T["element"]
-}
+  focus: VoidFunction
 
-/* -----------------------------------------------------------------------------
- * Re-exported types
- * -----------------------------------------------------------------------------*/
-
-export interface SharedContext {
-  min: number
-  max: number
-  step: number
-  dir?: "ltr" | "rtl" | undefined
-  isRtl: boolean
-  isVertical: boolean
-  isHorizontal: boolean
-  value: number
-  thumbSize: Size | null
-  thumbAlignment?: "contain" | "center" | undefined
-  orientation?: "horizontal" | "vertical" | undefined
-  readonly hasMeasuredThumbSize: boolean
+  getLabelProps: () => T["label"]
+  getRootProps: () => T["element"]
+  getValueTextProps: () => T["element"]
+  getTrackProps: () => T["element"]
+  getThumbProps: (props: ThumbProps) => T["element"]
+  getHiddenInputProps: (props: ThumbProps) => T["input"]
+  getRangeProps: () => T["element"]
+  getControlProps: () => T["element"]
+  getMarkerGroupProps: () => T["element"]
+  getMarkerProps: (props: MarkerProps) => T["element"]
+  getDraggingIndicatorProps: (props: DraggingIndicatorProps) => T["element"]
 }

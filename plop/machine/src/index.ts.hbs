@@ -2,4 +2,9 @@ export { anatomy } from "./{{dashCase machine}}.anatomy"
 export { connect } from "./{{dashCase machine}}.connect"
 export { machine } from "./{{dashCase machine}}.machine"
 export * from "./{{dashCase machine}}.props"
-export type { {{pascalCase machine}}Service, {{pascalCase machine}}Schema } from "./{{dashCase machine}}.types"
+export type {
+  {{pascalCase machine}}Api as Api,
+  {{pascalCase machine}}Machine as Machine,
+  {{pascalCase machine}}Props as Props,
+  {{pascalCase machine}}Service as Service,
+} from "./{{dashCase machine}}.types"

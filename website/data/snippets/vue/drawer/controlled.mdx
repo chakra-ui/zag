@@ -1,0 +1,16 @@
+```html
+<script lang="ts" setup>
+  import { ref } from "vue"
+
+  const openRef = ref(false)
+
+  const service = useMachine(drawer.machine, {
+    get open() {
+      return openRef.value
+    },
+    onOpenChange(details) {
+      openRef.value = details.open
+    },
+  })
+</script>
+```

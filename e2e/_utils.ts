@@ -1,11 +1,11 @@
 import AxeBuilder from "@axe-core/playwright"
 import { expect, type Locator, type Page } from "@playwright/test"
 
-export async function a11y(page: Page, selector = "[data-part=root]") {
+export async function a11y(page: Page, selector = "[data-part=root]", disableRules: string[] = []) {
   await page.waitForSelector(selector)
 
   const results = await new AxeBuilder({ page: page as any })
-    .disableRules(["color-contrast"])
+    .disableRules(["color-contrast", ...disableRules])
     .include(selector)
     .analyze()
 
@@ -32,6 +32,10 @@ export const controls = (page: Page) => {
       const el = page.locator(testid(id))
       await el.selectOption(value)
     },
+    date: async (id: string, value: string) => {
+      const el = page.locator(testid(id))
+      await el.fill(value)
+    },
   }
 }
 
@@ -41,7 +45,8 @@ const esc = (str: string) => str.replace(/[-[\]{}()*+?:.,\\^$|#\s]/g, "\\$&")
 
 export const clickViz = (page: Page) => page.locator("text=Visualizer").first().click()
 
-export const clickControls = (page: Page) => page.locator("text=Controls").first().click()
+export const clickControls = (page: Page) =>
+  page.locator(".toolbar nav > button", { hasText: "Controls" }).first().click()
 
 export const paste = (node: HTMLElement, value: string) => {
   const clipboardData = new DataTransfer()
@@ -123,14 +128,17 @@ export const textSelection = (page: Page) => {
 
 export type SwipeDirection = "left" | "right" | "up" | "down"
 
+const swipeDirections = new Set<SwipeDirection>(["left", "right", "up", "down"])
+
 export async function swipe(
   page: Page,
   locator: Locator,
   direction: SwipeDirection,
   distance: number = 100,
   duration: number = 500,
+  release: boolean = true,
 ): Promise<void> {
-  if (!["left", "right", "up", "down"].includes(direction)) {
+  if (!swipeDirections.has(direction)) {
     throw new Error("Invalid direction. Use 'left', 'right', 'up', or 'down'.")
   }
 
@@ -165,5 +173,61 @@ export async function swipe(
   await page.mouse.move(startX, startY)
   await page.mouse.down()
   await page.mouse.move(endX, endY, { steps: Math.max(duration / 10, 1) }) // Smoothness based on duration
-  await page.mouse.up()
+  if (release) {
+    await page.mouse.up()
+  }
+}
+
+export function moveCaret(input: Locator, start: number, end = start) {
+  return input.evaluate((el) => {
+    if (el instanceof HTMLInputElement || el instanceof HTMLTextAreaElement) {
+      el.setSelectionRange(start, end)
+    }
+
+    throw new Error("Element is not an input or textarea")
+  })
+}
+
+export function getCaret(input: Locator) {
+  return input.evaluate((el) => {
+    if (el instanceof HTMLInputElement || el instanceof HTMLTextAreaElement) {
+      return {
+        start: el.selectionStart,
+        end: el.selectionEnd,
+      }
+    }
+
+    throw new Error("Element is not an input or textarea")
+  })
+}
+
+export async function retry<T>(
+  fn: () => Promise<T>,
+  options: {
+    maxAttempts?: number
+    delay?: number
+    backoffMultiplier?: number
+  } = {},
+): Promise<T> {
+  const { maxAttempts = 3, delay = 100, backoffMultiplier = 1.5 } = options
+  let currentDelay = delay
+  let lastError: Error
+
+  for (let attempt = 1; attempt <= maxAttempts; attempt++) {
+    try {
+      return await fn()
+    } catch (error) {
+      lastError = error as Error
+
+      if (attempt === maxAttempts) {
+        throw lastError
+      }
+
+      // Wait before retrying
+      await new Promise((resolve) => setTimeout(resolve, currentDelay))
+      currentDelay = Math.floor(currentDelay * backoffMultiplier)
+    }
+  }
+
+  throw lastError!
 }

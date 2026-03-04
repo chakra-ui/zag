@@ -19,6 +19,7 @@ export function connect<T extends PropTypes>(service: HoverCardService, normaliz
     setOpen(nextOpen) {
       const open = state.hasTag("open")
       if (open === nextOpen) return
+      if (prop("disabled")) return
       send({ type: nextOpen ? "OPEN" : "CLOSE" })
     },
     reposition(options = {}) {
@@ -51,16 +52,20 @@ export function connect<T extends PropTypes>(service: HoverCardService, normaliz
         "data-state": open ? "open" : "closed",
         onPointerEnter(event) {
           if (event.pointerType === "touch") return
+          if (prop("disabled")) return
           send({ type: "POINTER_ENTER", src: "trigger" })
         },
         onPointerLeave(event) {
           if (event.pointerType === "touch") return
+          if (prop("disabled")) return
           send({ type: "POINTER_LEAVE", src: "trigger" })
         },
         onFocus() {
+          if (prop("disabled")) return
           send({ type: "TRIGGER_FOCUS" })
         },
         onBlur() {
+          if (prop("disabled")) return
           send({ type: "TRIGGER_BLUR" })
         },
       })
@@ -86,10 +91,12 @@ export function connect<T extends PropTypes>(service: HoverCardService, normaliz
         "data-placement": context.get("currentPlacement"),
         onPointerEnter(event) {
           if (event.pointerType === "touch") return
+          if (prop("disabled")) return
           send({ type: "POINTER_ENTER", src: "content" })
         },
         onPointerLeave(event) {
           if (event.pointerType === "touch") return
+          if (prop("disabled")) return
           send({ type: "POINTER_LEAVE", src: "content" })
         },
       })

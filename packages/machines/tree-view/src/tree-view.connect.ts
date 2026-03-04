@@ -1,38 +1,65 @@
 import {
+  ariaAttr,
   dataAttr,
+  getByTypeahead,
   getEventKey,
   getEventTarget,
+  isAnchorElement,
   isComposingEvent,
   isEditableElement,
+  isLeftClick,
   isModifierKey,
 } from "@zag-js/dom-query"
 import type { EventKeyMap, NormalizeProps, PropTypes } from "@zag-js/types"
-import { add, isEqual, remove, uniq } from "@zag-js/utils"
+import { add, uniq } from "@zag-js/utils"
 import { parts } from "./tree-view.anatomy"
 import * as dom from "./tree-view.dom"
-import type { NodeProps, NodeState, TreeViewApi, TreeViewService } from "./tree-view.types"
-import { getVisibleNodes } from "./tree-view.utils"
+import type { NodeProps, NodeState, TreeNode, TreeViewApi, TreeViewService } from "./tree-view.types"
+import { getCheckedState, getCheckedValueMap } from "./utils/checked-state"
 
-export function connect<T extends PropTypes>(service: TreeViewService, normalize: NormalizeProps<T>): TreeViewApi<T> {
+export function connect<T extends PropTypes, V extends TreeNode = TreeNode>(
+  service: TreeViewService<V>,
+  normalize: NormalizeProps<T>,
+): TreeViewApi<T, V> {
   const { context, scope, computed, prop, send } = service
   const collection = prop("collection")
+
   const expandedValue = Array.from(context.get("expandedValue"))
   const selectedValue = Array.from(context.get("selectedValue"))
+  const checkedValue = Array.from(context.get("checkedValue"))
+
   const isTypingAhead = computed("isTypingAhead")
   const focusedValue = context.get("focusedValue")
+  const loadingStatus = context.get("loadingStatus")
+  const renamingValue = context.get("renamingValue")
+
+  const skip = ({ indexPath }: { indexPath: number[] }) => {
+    const paths = collection.getValuePath(indexPath).slice(0, -1)
+    return paths.some((value) => !expandedValue.includes(value))
+  }
+
+  const firstNode = collection.getFirstNode(undefined, { skip })
+  const firstNodeValue = firstNode ? collection.getNodeValue(firstNode) : null
 
   function getNodeState(props: NodeProps): NodeState {
     const { node, indexPath } = props
     const value = collection.getNodeValue(node)
     return {
+      id: dom.getNodeId(scope, value),
       value,
+      indexPath,
       valuePath: collection.getValuePath(indexPath),
       disabled: Boolean(node.disabled),
-      focused: focusedValue == null ? isEqual(indexPath, [0]) : focusedValue === value,
+      focused: focusedValue == null ? firstNodeValue === value : focusedValue === value,
       selected: selectedValue.includes(value),
       expanded: expandedValue.includes(value),
+      loading: loadingStatus[value] === "loading",
       depth: indexPath.length,
       isBranch: collection.isBranchNode(node),
+      renaming: renamingValue === value,
+      get checked() {
+        return getCheckedState(collection, node, checkedValue)
+      },
     }
   }
 
@@ -40,35 +67,33 @@ export function connect<T extends PropTypes>(service: TreeViewService, normalize
     collection,
     expandedValue,
     selectedValue,
+    checkedValue,
+    toggleChecked(value, isBranch) {
+      send({ type: "CHECKED.TOGGLE", value, isBranch })
+    },
+    setChecked(value) {
+      send({ type: "CHECKED.SET", value })
+    },
+    clearChecked() {
+      send({ type: "CHECKED.CLEAR" })
+    },
+    getCheckedMap() {
+      return getCheckedValueMap(collection, checkedValue)
+    },
     expand(value) {
-      if (!value) return send({ type: "EXPANDED.ALL" })
-      const _expandedValue = uniq(expandedValue.concat(...value))
-      send({ type: "EXPANDED.SET", value: _expandedValue, src: "expand" })
+      send({ type: value ? "BRANCH.EXPAND" : "EXPANDED.ALL", value })
     },
     collapse(value) {
-      if (!value) return send({ type: "EXPANDED.SET", value: [], src: "collapseAll" })
-      const _expandedValue = uniq(remove(expandedValue, ...value))
-      send({ type: "EXPANDED.SET", value: _expandedValue, src: "collapse" })
+      send({ type: value ? "BRANCH.COLLAPSE" : "EXPANDED.CLEAR", value })
     },
     deselect(value) {
-      if (!value) return send({ type: "SELECTED.SET", value: [], src: "deselectAll" })
-      const _selectedValue = uniq(remove(selectedValue, ...value))
-      send({ type: "SELECTED.SET", value: _selectedValue, src: "deselect" })
+      send({ type: value ? "NODE.DESELECT" : "SELECTED.CLEAR", value })
     },
     select(value) {
-      if (!value) return send({ type: "SELECTED.ALL" })
-      const nextValue: string[] = []
-      if (prop("selectionMode") === "single") {
-        // For single selection, only add the last item
-        if (value.length > 0) nextValue.push(value[value.length - 1])
-      } else {
-        // For multiple selection, add all items
-        nextValue.push(...selectedValue, ...value)
-      }
-      send({ type: "SELECTED.SET", value: nextValue, src: "select" })
+      send({ type: value ? "NODE.SELECT" : "SELECTED.ALL", value, isTrusted: false })
     },
     getVisibleNodes() {
-      return getVisibleNodes(service)
+      return computed("visibleNodes")
     },
     focus(value) {
       dom.focusNode(scope, value)
@@ -92,6 +117,15 @@ export function connect<T extends PropTypes>(service: TreeViewService, normalize
     setSelectedValue(value) {
       const _selectedValue = uniq(value)
       send({ type: "SELECTED.SET", value: _selectedValue })
+    },
+    startRenaming(value) {
+      send({ type: "NODE.RENAME", value })
+    },
+    submitRenaming(value, label) {
+      send({ type: "RENAME.SUBMIT", value, label })
+    },
+    cancelRenaming() {
+      send({ type: "RENAME.CANCEL" })
     },
 
     getRootProps() {
@@ -182,11 +216,13 @@ export function connect<T extends PropTypes>(service: TreeViewService, normalize
             },
             Enter(event) {
               if (node.dataset.disabled) return
-
-              const isLink = target?.closest("a[href]")
-              if (!isLink) event.preventDefault()
+              if (isAnchorElement(target) && isModifierKey(event)) return
 
               send({ type: isBranchNode ? "BRANCH_NODE.CLICK" : "NODE.CLICK", id: nodeId, src: "keyboard" })
+
+              if (!isAnchorElement(target)) {
+                event.preventDefault()
+              }
             },
             "*"(event) {
               if (node.dataset.disabled) return
@@ -198,6 +234,24 @@ export function connect<T extends PropTypes>(service: TreeViewService, normalize
               event.preventDefault()
               send({ type: "SELECTED.ALL", moveFocus: true })
             },
+            F2(event) {
+              if (node.dataset.disabled) return
+
+              // Check canRename callback - return early if not provided (opt-in)
+              const canRenameFn = prop("canRename")
+              if (!canRenameFn) return
+
+              const indexPath = collection.getIndexPath(nodeId)
+              if (indexPath) {
+                const node = collection.at(indexPath)
+                if (node && !canRenameFn(node, indexPath)) {
+                  return
+                }
+              }
+
+              event.preventDefault()
+              send({ type: "NODE.RENAME", value: nodeId })
+            },
           }
 
           const key = getEventKey(event, { dir: prop("dir") })
@@ -208,10 +262,7 @@ export function connect<T extends PropTypes>(service: TreeViewService, normalize
             return
           }
 
-          if (!isTypingAhead) return
-
-          const isValidTypeahead = event.key.length === 1 && !isModifierKey(event)
-          if (!isValidTypeahead) return
+          if (!getByTypeahead.isValidEvent(event)) return
 
           send({ type: "TREE.TYPEAHEAD", key: event.key, id: nodeId })
           event.preventDefault()
@@ -222,39 +273,44 @@ export function connect<T extends PropTypes>(service: TreeViewService, normalize
     getNodeState,
 
     getItemProps(props) {
-      const itemState = getNodeState(props)
+      const nodeState = getNodeState(props)
       return normalize.element({
         ...parts.item.attrs,
-        id: dom.getNodeId(scope, itemState.value),
+        id: nodeState.id,
         dir: prop("dir"),
         "data-ownedby": dom.getTreeId(scope),
         "data-path": props.indexPath.join("/"),
-        "data-value": itemState.value,
-        tabIndex: itemState.focused ? 0 : -1,
-        "data-focus": dataAttr(itemState.focused),
+        "data-value": nodeState.value,
+        tabIndex: nodeState.focused ? 0 : -1,
+        "data-focus": dataAttr(nodeState.focused),
         role: "treeitem",
-        "aria-current": itemState.selected ? "true" : undefined,
-        "aria-selected": itemState.disabled ? undefined : itemState.selected,
-        "data-selected": dataAttr(itemState.selected),
-        "aria-disabled": itemState.disabled,
-        "data-disabled": dataAttr(itemState.disabled),
-        "aria-level": itemState.depth,
-        "data-depth": itemState.depth,
+        "aria-current": nodeState.selected ? "true" : undefined,
+        "aria-selected": nodeState.disabled ? undefined : nodeState.selected,
+        "data-selected": dataAttr(nodeState.selected),
+        "aria-disabled": ariaAttr(nodeState.disabled),
+        "data-disabled": dataAttr(nodeState.disabled),
+        "data-renaming": dataAttr(nodeState.renaming),
+        "aria-level": nodeState.depth,
+        "data-depth": nodeState.depth,
         style: {
-          "--depth": itemState.depth,
+          "--depth": nodeState.depth,
         },
         onFocus(event) {
           event.stopPropagation()
-          send({ type: "NODE.FOCUS", id: itemState.value })
+          send({ type: "NODE.FOCUS", id: nodeState.value })
         },
         onClick(event) {
-          if (itemState.disabled) return
+          if (nodeState.disabled) return
+          if (!isLeftClick(event)) return
+          if (isAnchorElement(event.currentTarget) && isModifierKey(event)) return
+
           const isMetaKey = event.metaKey || event.ctrlKey
-          send({ type: "NODE.CLICK", id: itemState.value, shiftKey: event.shiftKey, ctrlKey: isMetaKey })
+          send({ type: "NODE.CLICK", id: nodeState.value, shiftKey: event.shiftKey, ctrlKey: isMetaKey })
           event.stopPropagation()
 
-          const isLink = event.currentTarget.matches("a[href]")
-          if (!isLink) event.preventDefault()
+          if (!isAnchorElement(event.currentTarget)) {
+            event.preventDefault()
+          }
         },
       })
     },
@@ -297,8 +353,10 @@ export function connect<T extends PropTypes>(service: TreeViewService, normalize
         "data-selected": dataAttr(nodeState.selected),
         "aria-expanded": nodeState.expanded,
         "data-state": nodeState.expanded ? "open" : "closed",
-        "aria-disabled": nodeState.disabled,
+        "aria-disabled": ariaAttr(nodeState.disabled),
         "data-disabled": dataAttr(nodeState.disabled),
+        "data-loading": dataAttr(nodeState.loading),
+        "aria-busy": ariaAttr(nodeState.loading),
         style: {
           "--depth": nodeState.depth,
         },
@@ -314,6 +372,7 @@ export function connect<T extends PropTypes>(service: TreeViewService, normalize
         "data-disabled": dataAttr(nodeState.disabled),
         "data-selected": dataAttr(nodeState.selected),
         "data-focus": dataAttr(nodeState.focused),
+        "data-loading": dataAttr(nodeState.loading),
       })
     },
 
@@ -326,8 +385,10 @@ export function connect<T extends PropTypes>(service: TreeViewService, normalize
         "data-disabled": dataAttr(nodeState.disabled),
         "data-state": nodeState.expanded ? "open" : "closed",
         "data-value": nodeState.value,
+        "data-loading": dataAttr(nodeState.loading),
+        disabled: nodeState.loading,
         onClick(event) {
-          if (nodeState.disabled) return
+          if (nodeState.disabled || nodeState.loading) return
           send({ type: "BRANCH_TOGGLE.CLICK", id: nodeState.value })
           event.stopPropagation()
         },
@@ -339,7 +400,7 @@ export function connect<T extends PropTypes>(service: TreeViewService, normalize
       return normalize.element({
         ...parts.branchControl.attrs,
         role: "button",
-        id: dom.getNodeId(scope, nodeState.value),
+        id: nodeState.id,
         dir: prop("dir"),
         tabIndex: nodeState.focused ? 0 : -1,
         "data-path": props.indexPath.join("/"),
@@ -347,14 +408,21 @@ export function connect<T extends PropTypes>(service: TreeViewService, normalize
         "data-disabled": dataAttr(nodeState.disabled),
         "data-selected": dataAttr(nodeState.selected),
         "data-focus": dataAttr(nodeState.focused),
+        "data-renaming": dataAttr(nodeState.renaming),
         "data-value": nodeState.value,
         "data-depth": nodeState.depth,
+        "data-loading": dataAttr(nodeState.loading),
+        "aria-busy": ariaAttr(nodeState.loading),
         onFocus(event) {
           send({ type: "NODE.FOCUS", id: nodeState.value })
           event.stopPropagation()
         },
         onClick(event) {
           if (nodeState.disabled) return
+          if (nodeState.loading) return
+          if (!isLeftClick(event)) return
+          if (isAnchorElement(event.currentTarget) && isModifierKey(event)) return
+
           const isMetaKey = event.metaKey || event.ctrlKey
           send({ type: "BRANCH_NODE.CLICK", id: nodeState.value, shiftKey: event.shiftKey, ctrlKey: isMetaKey })
           event.stopPropagation()
@@ -369,6 +437,7 @@ export function connect<T extends PropTypes>(service: TreeViewService, normalize
         dir: prop("dir"),
         "data-disabled": dataAttr(nodeState.disabled),
         "data-state": nodeState.expanded ? "open" : "closed",
+        "data-loading": dataAttr(nodeState.loading),
       })
     },
 
@@ -391,6 +460,59 @@ export function connect<T extends PropTypes>(service: TreeViewService, normalize
       return normalize.element({
         ...parts.branchIndentGuide.attrs,
         "data-depth": nodeState.depth,
+      })
+    },
+
+    getNodeCheckboxProps(props) {
+      const nodeState = getNodeState(props)
+      const checkedState = nodeState.checked
+      return normalize.element({
+        ...parts.nodeCheckbox.attrs,
+        tabIndex: -1,
+        role: "checkbox",
+        "data-state": checkedState === true ? "checked" : checkedState === false ? "unchecked" : "indeterminate",
+        "aria-checked": checkedState === true ? "true" : checkedState === false ? "false" : "mixed",
+        "data-disabled": dataAttr(nodeState.disabled),
+        onClick(event) {
+          if (event.defaultPrevented) return
+          if (nodeState.disabled) return
+          if (!isLeftClick(event)) return
+
+          send({ type: "CHECKED.TOGGLE", value: nodeState.value, isBranch: nodeState.isBranch })
+          event.stopPropagation()
+
+          const node = event.currentTarget.closest("[role=treeitem]") as HTMLElement | null
+          node?.focus({ preventScroll: true })
+        },
+      })
+    },
+
+    getNodeRenameInputProps(props) {
+      const nodeState = getNodeState(props)
+      return normalize.input({
+        ...parts.nodeRenameInput.attrs,
+        id: dom.getRenameInputId(scope, nodeState.value),
+        type: "text",
+        "aria-label": "Rename tree item",
+        hidden: !nodeState.renaming,
+        onKeyDown(event) {
+          // CRITICAL: Ignore keyboard events during IME composition
+          if (isComposingEvent(event)) return
+
+          if (event.key === "Escape") {
+            send({ type: "RENAME.CANCEL" })
+            event.preventDefault()
+          }
+          if (event.key === "Enter") {
+            send({ type: "RENAME.SUBMIT", label: event.currentTarget.value })
+            event.preventDefault()
+          }
+          // Stop propagation to prevent tree navigation during renaming
+          event.stopPropagation()
+        },
+        onBlur(event) {
+          send({ type: "RENAME.SUBMIT", label: event.currentTarget.value })
+        },
       })
     },
   }

@@ -1,5 +1,5 @@
 import * as accordion from "@zag-js/accordion"
-import { normalizeProps, spreadProps, VanillaMachine } from "./lib"
+import { normalizeProps, VanillaMachine } from "@zag-js/vanilla"
 import { Component } from "./component"
 
 export class Accordion extends Component<accordion.Props, accordion.Api> {
@@ -12,7 +12,7 @@ export class Accordion extends Component<accordion.Props, accordion.Api> {
   }
 
   render = () => {
-    spreadProps(this.rootEl, this.api.getRootProps())
+    this.spreadProps(this.rootEl, this.api.getRootProps())
     this.items.forEach((itemEl) => {
       this.renderItem(itemEl)
     })
@@ -29,8 +29,8 @@ export class Accordion extends Component<accordion.Props, accordion.Api> {
     const itemContentEl = itemEl.querySelector<HTMLElement>(".accordion-content")
     if (!itemTriggerEl) throw new Error("Expected triggerEl to be defined")
     if (!itemContentEl) throw new Error("Expected contentEl to be defined")
-    spreadProps(itemEl, this.api.getItemProps({ value }))
-    spreadProps(itemTriggerEl, this.api.getItemTriggerProps({ value }))
-    spreadProps(itemContentEl, this.api.getItemContentProps({ value }))
+    this.spreadProps(itemEl, this.api.getItemProps({ value }))
+    this.spreadProps(itemTriggerEl, this.api.getItemTriggerProps({ value }))
+    this.spreadProps(itemContentEl, this.api.getItemContentProps({ value }))
   }
 }

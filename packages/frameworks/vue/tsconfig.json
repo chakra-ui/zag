@@ -1,6 +1,6 @@
 {
   "extends": "../../../tsconfig.json",
-  "include": ["src"],
+  "include": ["src", "tests"],
   "compilerOptions": {
     "jsx": "preserve",
     "tsBuildInfoFile": "node_modules/.cache/.tsbuildinfo"

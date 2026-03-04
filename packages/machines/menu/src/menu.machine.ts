@@ -1,4 +1,4 @@
-import { createGuards, createMachine, type Service, type Scope } from "@zag-js/core"
+import { createGuards, createMachine, type Scope } from "@zag-js/core"
 import { trackDismissableElement } from "@zag-js/dismissable"
 import {
   addDomEvent,
@@ -7,15 +7,18 @@ import {
   getByTypeahead,
   getEventTarget,
   getInitialFocus,
+  isAnchorElement,
   isEditableElement,
   observeAttributes,
   raf,
   scrollIntoView,
 } from "@zag-js/dom-query"
+import { getInteractionModality, setInteractionModality, trackFocusVisible } from "@zag-js/focus-visible"
 import { getPlacement, getPlacementSide, type Placement } from "@zag-js/popper"
 import { getElementPolygon, isPointInPolygon, type Point } from "@zag-js/rect-utils"
+import { isEqual } from "@zag-js/utils"
 import * as dom from "./menu.dom"
-import type { MenuSchema, MenuService } from "./menu.types"
+import type { ChildMenuService, MenuSchema, ParentMenuService } from "./menu.types"
 
 const { not, and, or } = createGuards<MenuSchema>()
 
@@ -69,6 +72,9 @@ export const machine = createMachine<MenuSchema>({
           return `x: ${value?.x}, y: ${value?.y}`
         },
       })),
+      isSubmenu: bindable<boolean>(() => ({
+        defaultValue: false,
+      })),
     }
   },
 
@@ -82,18 +88,18 @@ export const machine = createMachine<MenuSchema>({
   },
 
   computed: {
-    isSubmenu: ({ refs }) => refs.get("parent") != null,
     isRtl: ({ prop }) => prop("dir") === "rtl",
     isTypingAhead: ({ refs }) => refs.get("typeaheadState").keysSoFar !== "",
     highlightedId: ({ context, scope, refs }) =>
       resolveItemId(refs.get("children"), context.get("highlightedValue"), scope),
   },
 
-  watch({ track, action, context, computed, prop }) {
-    track([() => computed("isSubmenu")], () => {
+  watch({ track, action, context, prop }) {
+    track([() => context.get("isSubmenu")], () => {
       action(["setSubmenuPlacement"])
     })
     track([() => context.hash("anchorPoint")], () => {
+      if (!context.get("anchorPoint")) return
       action(["reposition"])
     })
     track([() => prop("open")], () => {
@@ -305,7 +311,7 @@ export const machine = createMachine<MenuSchema>({
 
     closed: {
       tags: ["closed"],
-      entry: ["clearHighlightedItem", "focusTrigger", "resumePointer"],
+      entry: ["clearHighlightedItem", "focusTrigger", "resumePointer", "clearAnchorPoint"],
       on: {
         "CONTROLLED.OPEN": [
           {
@@ -376,7 +382,7 @@ export const machine = createMachine<MenuSchema>({
 
     open: {
       tags: ["open"],
-      effects: ["trackInteractOutside", "trackPositioning", "scrollToHighlightedItem"],
+      effects: ["trackInteractOutside", "trackFocusVisible", "trackPositioning", "scrollToHighlightedItem"],
       entry: ["focusMenu", "resumePointer"],
       on: {
         "CONTROLLED.CLOSE": [
@@ -442,10 +448,10 @@ export const machine = createMachine<MenuSchema>({
         ITEM_POINTERMOVE: [
           {
             guard: not("isPointerSuspended"),
-            actions: ["setHighlightedItem", "focusMenu"],
+            actions: ["setHighlightedItem", "focusMenu", "closeSiblingMenus"],
           },
           {
-            actions: ["setLastHighlightedItem"],
+            actions: ["setLastHighlightedItem", "closeSiblingMenus"],
           },
         ],
         ITEM_POINTERLEAVE: {
@@ -481,6 +487,7 @@ export const machine = createMachine<MenuSchema>({
         },
         TRIGGER_POINTERLEAVE: {
           target: "closing",
+          actions: ["setIntentPolygon"],
         },
         ITEM_POINTERDOWN: {
           actions: ["setHighlightedItem"],
@@ -506,9 +513,9 @@ export const machine = createMachine<MenuSchema>({
       // whether the trigger item is the active item
       isTriggerItemHighlighted: ({ event, scope, computed }) => {
         const target = (event.target ?? scope.getById(computed("highlightedId")!)) as HTMLElement | null
-        return !!target?.hasAttribute("aria-controls")
+        return !!target?.hasAttribute("data-controls")
       },
-      isSubmenu: ({ computed }) => computed("isSubmenu"),
+      isSubmenu: ({ context }) => context.get("isSubmenu"),
       isPointerSuspended: ({ context }) => context.get("suspendPointer"),
       isHighlightedItemEditable: ({ scope, computed }) => isEditableElement(scope.getById(computed("highlightedId")!)),
       // guard assertions (for controlled mode)
@@ -523,13 +530,13 @@ export const machine = createMachine<MenuSchema>({
       waitForOpenDelay({ send }) {
         const timer = setTimeout(() => {
           send({ type: "DELAY.OPEN" })
-        }, 100)
+        }, 200)
         return () => clearTimeout(timer)
       },
       waitForCloseDelay({ send }) {
         const timer = setTimeout(() => {
           send({ type: "DELAY.CLOSE" })
-        }, 300)
+        }, 100)
         return () => clearTimeout(timer)
       },
       waitForLongPress({ send }) {
@@ -538,8 +545,11 @@ export const machine = createMachine<MenuSchema>({
         }, 700)
         return () => clearTimeout(timer)
       },
+      trackFocusVisible({ scope }) {
+        return trackFocusVisible({ root: scope.getRootNode?.() })
+      },
       trackPositioning({ context, prop, scope, refs }) {
-        if (!!dom.getContextTriggerEl(scope)) return
+        if (dom.getContextTriggerEl(scope)) return
         const positioning = {
           ...prop("positioning"),
           ...refs.get("positioningOverride"),
@@ -554,20 +564,33 @@ export const machine = createMachine<MenuSchema>({
           },
         })
       },
-      trackInteractOutside({ refs, scope, prop, computed, send }) {
+      trackInteractOutside({ refs, scope, prop, context, send }) {
         const getContentEl = () => dom.getContentEl(scope)
         let restoreFocus = true
         return trackDismissableElement(getContentEl, {
+          type: "menu",
           defer: true,
           exclude: [dom.getTriggerEl(scope)],
           onInteractOutside: prop("onInteractOutside"),
-          onFocusOutside: prop("onFocusOutside"),
+          onRequestDismiss: prop("onRequestDismiss"),
+          onFocusOutside(event) {
+            prop("onFocusOutside")?.(event)
+
+            const target = getEventTarget(event.detail.originalEvent)
+            const isWithinContextTrigger = contains(dom.getContextTriggerEl(scope), target)
+            if (isWithinContextTrigger) {
+              event.preventDefault()
+              return
+            }
+          },
           onEscapeKeyDown(event) {
             prop("onEscapeKeyDown")?.(event)
-            if (computed("isSubmenu")) event.preventDefault()
+            if (context.get("isSubmenu")) event.preventDefault()
             closeRootMenu({ parent: refs.get("parent") })
           },
           onPointerDownOutside(event) {
+            prop("onPointerDownOutside")?.(event)
+
             const target = getEventTarget(event.detail.originalEvent)
             const isWithinContextTrigger = contains(dom.getContextTriggerEl(scope), target)
             if (isWithinContextTrigger && event.detail.contextmenu) {
@@ -575,7 +598,6 @@ export const machine = createMachine<MenuSchema>({
               return
             }
             restoreFocus = !event.detail.focusable
-            prop("onPointerDownOutside")?.(event)
           },
           onDismiss() {
             send({ type: "CLOSE", src: "interact-outside", restoreFocus })
@@ -604,16 +626,21 @@ export const machine = createMachine<MenuSchema>({
           }
         })
       },
-      scrollToHighlightedItem({ event, scope, computed }) {
+      scrollToHighlightedItem({ scope, computed }) {
         const exec = () => {
-          if (event.type.startsWith("ITEM_POINTER")) return
+          // don't scroll into view if we're using the pointer (or null when focus-trap autofocuses)
+          const modality = getInteractionModality()
+          if (modality === "pointer") return
 
           const itemEl = scope.getById(computed("highlightedId")!)
           const contentEl = dom.getContentEl(scope)
 
           scrollIntoView(itemEl, { rootEl: contentEl, block: "nearest" })
         }
-        raf(() => exec())
+        raf(() => {
+          setInteractionModality("virtual")
+          exec()
+        })
 
         const contentEl = () => dom.getContentEl(scope)
         return observeAttributes(contentEl, {
@@ -626,16 +653,17 @@ export const machine = createMachine<MenuSchema>({
 
     actions: {
       setAnchorPoint({ context, event }) {
-        context.set("anchorPoint", event.point)
+        context.set("anchorPoint", (prev) => (isEqual(prev, event.point) ? prev : event.point))
       },
-      setSubmenuPlacement({ computed, refs }) {
-        if (!computed("isSubmenu")) return
+      setSubmenuPlacement({ context, computed, refs }) {
+        if (!context.get("isSubmenu")) return
         const placement = computed("isRtl") ? "left-start" : "right-start"
         refs.set("positioningOverride", { placement, gutter: 0 })
       },
       reposition({ context, scope, prop, event, refs }) {
         const getPositionerEl = () => dom.getPositionerEl(scope)
         const anchorPoint = context.get("anchorPoint")
+
         const getAnchorRect = anchorPoint ? () => ({ width: 0, height: 0, ...anchorPoint }) : undefined
 
         const positioning = {
@@ -663,10 +691,16 @@ export const machine = createMachine<MenuSchema>({
           onCheckedChange?.(!checked)
         }
       },
-      clickHighlightedItem({ scope, computed }) {
+      clickHighlightedItem({ scope, computed, prop, context }) {
         const itemEl = scope.getById(computed("highlightedId")!)
         if (!itemEl || itemEl.dataset.disabled) return
-        queueMicrotask(() => itemEl.click())
+        const highlightedValue = context.get("highlightedValue")
+
+        if (isAnchorElement(itemEl)) {
+          prop("navigate")?.({ value: highlightedValue!, node: itemEl, href: itemEl.href })
+        } else {
+          queueMicrotask(() => itemEl.click())
+        }
       },
       setIntentPolygon({ context, scope, event }) {
         const menu = dom.getContentEl(scope)
@@ -685,6 +719,9 @@ export const machine = createMachine<MenuSchema>({
       },
       clearIntentPolygon({ context }) {
         context.set("intentPolygon", null)
+      },
+      clearAnchorPoint({ context }) {
+        context.set("anchorPoint", null)
       },
       resumePointer({ refs, flush }) {
         const parent = refs.get("parent")
@@ -756,8 +793,8 @@ export const machine = createMachine<MenuSchema>({
 
         prop("onSelect")?.({ value })
       },
-      focusTrigger({ scope, context, event, computed }) {
-        if (computed("isSubmenu") || context.get("anchorPoint") || event.restoreFocus === false) return
+      focusTrigger({ scope, context, event }) {
+        if (context.get("isSubmenu") || context.get("anchorPoint") || event.restoreFocus === false) return
         queueMicrotask(() => dom.getTriggerEl(scope)?.focus({ preventScroll: true }))
       },
       highlightMatchedItem({ scope, context, event, refs }) {
@@ -769,13 +806,33 @@ export const machine = createMachine<MenuSchema>({
         if (!node) return
         context.set("highlightedValue", dom.getItemValue(node))
       },
-      setParentMenu({ refs, event }) {
+      setParentMenu({ refs, event, context }) {
         refs.set("parent", event.value)
+        context.set("isSubmenu", true)
       },
       setChildMenu({ refs, event }) {
         const children = refs.get("children")
         children[event.id] = event.value
         refs.set("children", children)
+      },
+      closeSiblingMenus({ refs, event, scope }) {
+        const target = event.target
+        if (!dom.isTriggerItem(target)) return
+        const hoveredChildId = target?.getAttribute("data-uid")
+        const children = refs.get("children")
+        for (const id in children) {
+          if (id === hoveredChildId) continue
+          const child = children[id]
+          // Don't close if pointer is within the child's intent polygon (user moving toward submenu)
+          const intentPolygon = child.context.get("intentPolygon")
+          if (intentPolygon && event.point && isPointInPolygon(intentPolygon, event.point)) {
+            continue
+          }
+          // Focus parent menu before closing to prevent focus from escaping
+          // (fixes issue where submenus with focusable elements cause parent to close)
+          dom.getContentEl(scope)?.focus({ preventScroll: true })
+          child.send({ type: "CLOSE" })
+        }
       },
       closeRootMenu({ refs }) {
         closeRootMenu({ parent: refs.get("parent") })
@@ -817,9 +874,9 @@ export const machine = createMachine<MenuSchema>({
   },
 })
 
-function closeRootMenu(ctx: { parent: Service<MenuSchema> | null }) {
+function closeRootMenu(ctx: { parent: ParentMenuService | null }) {
   let parent = ctx.parent
-  while (parent && parent.computed("isSubmenu")) {
+  while (parent && parent.context.get("isSubmenu")) {
     parent = parent.refs.get("parent")
   }
   parent?.send({ type: "CLOSE" })
@@ -830,7 +887,7 @@ function isWithinPolygon(polygon: Point[] | null, point: Point) {
   return isPointInPolygon(polygon, point)
 }
 
-function resolveItemId(children: Record<string, MenuService>, value: string | null, scope: Scope) {
+function resolveItemId(children: Record<string, ChildMenuService>, value: string | null, scope: Scope) {
   const hasChildren = Object.keys(children).length > 0
   if (!value) return null
   if (!hasChildren) {

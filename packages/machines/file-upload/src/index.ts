@@ -4,7 +4,9 @@ export { machine } from "./file-upload.machine"
 export * from "./file-upload.props"
 export type {
   FileUploadApi as Api,
+  FileUploadMachine as Machine,
   FileUploadProps as Props,
+  FileUploadService as Service,
   DropzoneProps,
   ElementIds,
   FileAcceptDetails,
@@ -15,8 +17,9 @@ export type {
   FileRejection,
   FileValidateDetails,
   IntlTranslations,
+  ItemGroupProps,
   ItemPreviewImageProps,
   ItemProps,
-  FileUploadService as Service,
-  FileUploadMachine as Machine,
+  ItemType,
+  ItemTypeProps,
 } from "./file-upload.types"

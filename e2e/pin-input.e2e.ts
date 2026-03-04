@@ -8,7 +8,7 @@ const clear = testid("clear-button")
 
 test.describe("pin input", () => {
   test.beforeEach(async ({ page }) => {
-    await page.goto("/pin-input")
+    await page.goto("/pin-input/basic")
   })
 
   test("on type: should move focus to the next input", async ({ page }) => {
@@ -115,5 +115,31 @@ test.describe("pin input", () => {
     await expect(page.locator(second)).toHaveValue("4")
     await expect(page.locator(third)).toHaveValue("3")
     await expect(page.locator(third)).toBeFocused()
+  })
+
+  test("native delete keyboard behavior", async ({ page }) => {
+    // Fill the pin input with values
+    await page.locator(first).fill("1")
+    await page.locator(second).fill("2")
+    await page.locator(third).fill("3")
+
+    // Focus on the second input
+    await page.locator(third).focus()
+
+    // Press ctrl/cmd+backspace (delete to start of line - cross-platform)
+    await page.keyboard.press("ControlOrMeta+Backspace")
+
+    // The input should be cleared
+    await expect(page.locator(third)).toHaveValue("")
+
+    // Test fn+delete (forward delete) - refill first
+    await page.locator(third).fill("2")
+    await page.locator(third).focus()
+    // Move cursor to start of input to test forward delete
+    await page.keyboard.press("Home")
+    await page.keyboard.press("Delete")
+
+    // The input should be cleared
+    await expect(page.locator(third)).toHaveValue("")
   })
 })

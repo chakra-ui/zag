@@ -11,12 +11,13 @@ export const machine = createMachine<DialogSchema>({
   props({ props, scope }) {
     const alertDialog = props.role === "alertdialog"
     const initialFocusEl: any = alertDialog ? () => dom.getCloseTriggerEl(scope) : undefined
+    const modal = typeof props.modal === "boolean" ? props.modal : true
     return {
       role: "dialog",
-      modal: true,
-      trapFocus: true,
-      preventScroll: true,
-      closeOnInteractOutside: !alertDialog,
+      modal,
+      trapFocus: modal,
+      preventScroll: modal,
+      closeOnInteractOutside: modal && !alertDialog,
       closeOnEscape: true,
       restoreFocus: true,
       initialFocusEl,
@@ -112,6 +113,7 @@ export const machine = createMachine<DialogSchema>({
       trackDismissableElement({ scope, send, prop }) {
         const getContentEl = () => dom.getContentEl(scope)
         return trackDismissableElement(getContentEl, {
+          type: "dialog",
           defer: true,
           pointerBlocking: prop("modal"),
           exclude: [dom.getTriggerEl(scope)],
@@ -124,6 +126,7 @@ export const machine = createMachine<DialogSchema>({
           persistentElements: prop("persistentElements"),
           onFocusOutside: prop("onFocusOutside"),
           onPointerDownOutside: prop("onPointerDownOutside"),
+          onRequestDismiss: prop("onRequestDismiss"),
           onEscapeKeyDown(event) {
             prop("onEscapeKeyDown")?.(event)
             if (!prop("closeOnEscape")) {
@@ -142,13 +145,14 @@ export const machine = createMachine<DialogSchema>({
       },
 
       trapFocus({ scope, prop }) {
-        if (!prop("trapFocus") || !prop("modal")) return
+        if (!prop("trapFocus")) return
         const contentEl = () => dom.getContentEl(scope)
         return trapFocus(contentEl, {
           preventScroll: true,
           returnFocusOnDeactivate: !!prop("restoreFocus"),
           initialFocus: prop("initialFocusEl"),
           setReturnFocus: (el) => prop("finalFocusEl")?.() ?? el,
+          getShadowRoot: true,
         })
       },
 
@@ -178,6 +182,7 @@ export const machine = createMachine<DialogSchema>({
           const elems = [dom.getPositionerEl(scope), dom.getBackdropEl(scope)]
           elems.forEach((node) => {
             node?.style.setProperty("--z-index", styles.zIndex)
+            node?.style.setProperty("--layer-index", styles.getPropertyValue("--layer-index"))
           })
         })
       },

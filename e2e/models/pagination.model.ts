@@ -11,7 +11,7 @@ export class PaginationModel extends Model {
     return a11y(this.page)
   }
 
-  goto(url = "/pagination") {
+  goto(url = "/pagination/basic") {
     return this.page.goto(url)
   }
 

@@ -10,9 +10,18 @@ import type {
   BindableContext,
   Params,
 } from "@zag-js/core"
-import { createScope, INIT_STATE, MachineStatus } from "@zag-js/core"
+import {
+  createScope,
+  findTransition,
+  getExitEnterStates,
+  hasTag,
+  INIT_STATE,
+  MachineStatus,
+  matchesState,
+  resolveStateValue,
+} from "@zag-js/core"
 import { compact, isFunction, isString, toArray, warn, ensure } from "@zag-js/utils"
-import { type Accessor, createMemo, mergeProps, onCleanup, onMount } from "solid-js"
+import { type Accessor, createMemo, mergeProps, onCleanup, onMount, untrack } from "solid-js"
 import { createBindable } from "./bindable"
 import { createRefs } from "./refs"
 import { createTrack } from "./track"
@@ -56,6 +65,9 @@ export function useMachine<T extends MachineSchema>(
     getRefs() {
       return refs as any
     },
+    getEvent() {
+      return getEvent()
+    },
   })
 
   const ctx: BindableContext<T> = {
@@ -94,11 +106,11 @@ export function useMachine<T extends MachineSchema>(
     mergeProps(state, {
       matches(...values: T["state"][]) {
         const current = state.get()
-        return values.includes(current)
+        return values.some((value) => matchesState(current as string, value as string))
       },
       hasTag(tag: T["tag"]) {
         const current = state.get()
-        return !!machine.states[current as T["state"]]?.tags?.includes(tag)
+        return hasTag(machine, current, tag)
       },
     })
 
@@ -179,38 +191,36 @@ export function useMachine<T extends MachineSchema>(
   }
 
   const state = createBindable(() => ({
-    defaultValue: machine.initialState({ prop }),
+    defaultValue: resolveStateValue(machine, machine.initialState({ prop })),
     onChange(nextState, prevState) {
-      // compute effects: exit -> transition -> enter
+      const { exiting, entering } = getExitEnterStates(machine, prevState, nextState, transitionRef.current?.reenter)
 
-      // exit effects
-      if (prevState) {
-        const exitEffects = effects.current.get(prevState)
+      exiting.forEach((item) => {
+        const exitEffects = effects.current.get(item.path)
         exitEffects?.()
-        effects.current.delete(prevState)
-      }
+        effects.current.delete(item.path)
+      })
 
-      // exit actions
-      if (prevState) {
-        action(machine.states[prevState]?.exit)
-      }
+      exiting.forEach((item) => {
+        action(item.state?.exit)
+      })
 
-      // transition actions
       action(transitionRef.current?.actions)
 
-      // enter effect
-      const cleanup = effect(machine.states[nextState]?.effects)
-      if (cleanup) effects.current.set(nextState as string, cleanup)
+      entering.forEach((item) => {
+        const cleanup = effect(item.state?.effects)
+        if (cleanup) effects.current.set(item.path, cleanup)
+      })
 
-      // root entry actions
       if (prevState === INIT_STATE) {
         action(machine.entry)
         const cleanup = effect(machine.effects)
         if (cleanup) effects.current.set(INIT_STATE, cleanup)
       }
 
-      // enter actions
-      action(machine.states[nextState]?.entry)
+      entering.forEach((item) => {
+        action(item.state?.entry)
+      })
     },
   }))
 
@@ -236,41 +246,36 @@ export function useMachine<T extends MachineSchema>(
   })
 
   const send = (event: any) => {
-    if (status !== MachineStatus.Started) return
+    queueMicrotask(() => {
+      if (status !== MachineStatus.Started) return
 
-    previousEventRef.current = eventRef.current
-    eventRef.current = event
+      previousEventRef.current = eventRef.current
+      eventRef.current = event
 
-    debug("send", event)
+      let currentState = untrack(() => state.get())
 
-    let currentState = state.get()
+      const { transitions, source } = findTransition(machine, currentState, event.type as string)
+      const transition = choose(transitions)
+      if (!transition) return
 
-    const transitions =
-      // @ts-ignore
-      machine.states[currentState].on?.[event.type] ??
-      // @ts-ignore
-      machine.on?.[event.type]
+      // save current transition
+      transitionRef.current = transition
+      const target = resolveStateValue(machine, transition.target ?? currentState, source)
 
-    const transition = choose(transitions)
-    if (!transition) return
+      debug("transition", event.type, transition.target || currentState, `(${transition.actions})`)
 
-    debug("transition", transition)
-
-    // save current transition
-    transitionRef.current = transition
-    const target = transition.target ?? currentState
-
-    const changed = target !== currentState
-    if (changed) {
-      // state change is high priority
-      state.set(target)
-    } else if (transition.reenter && !changed) {
-      // reenter will re-invoke the current state
-      state.invoke(currentState, currentState)
-    } else {
-      // call transition actions
-      action(transition.actions)
-    }
+      const changed = target !== currentState
+      if (changed) {
+        // state change is high priority
+        state.set(target)
+      } else if (transition.reenter) {
+        // reenter will re-invoke the current state
+        state.invoke(currentState, currentState)
+      } else {
+        // call transition actions
+        action(transition.actions)
+      }
+    })
   }
 
   machine.watch?.(getParams())

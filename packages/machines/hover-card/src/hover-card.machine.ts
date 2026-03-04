@@ -9,7 +9,8 @@ const { not, and } = createGuards<HoverCardSchema>()
 export const machine = createMachine<HoverCardSchema>({
   props({ props }) {
     return {
-      openDelay: 700,
+      disabled: false,
+      openDelay: 600,
       closeDelay: 300,
       ...props,
       positioning: {
@@ -42,7 +43,12 @@ export const machine = createMachine<HoverCardSchema>({
     }
   },
 
-  watch({ track, context, action }) {
+  watch({ track, context, action, prop, send }) {
+    track([() => prop("disabled")], () => {
+      if (prop("disabled")) {
+        send({ type: "CLOSE", src: "disabled.change" })
+      }
+    })
     track([() => context.get("open")], () => {
       action(["toggleVisibility"])
     })
@@ -235,6 +241,7 @@ export const machine = createMachine<HoverCardSchema>({
       trackDismissableElement({ send, scope, prop }) {
         const getContentEl = () => dom.getContentEl(scope)
         return trackDismissableElement(getContentEl, {
+          type: "popover",
           defer: true,
           exclude: [dom.getTriggerEl(scope)],
           onDismiss() {

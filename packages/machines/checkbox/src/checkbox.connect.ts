@@ -11,15 +11,17 @@ export function connect<T extends PropTypes>(
   normalize: NormalizeProps<T>,
 ): CheckboxApi<T> {
   const { send, context, prop, computed, scope } = service
-  const disabled = prop("disabled")
-  const readOnly = prop("readOnly")
-  const invalid = prop("invalid")
+  const disabled = !!prop("disabled")
+  const readOnly = !!prop("readOnly")
+  const required = !!prop("required")
+  const invalid = !!prop("invalid")
 
   const focused = !disabled && context.get("focused")
   const focusVisible = !disabled && context.get("focusVisible")
 
   const checked = computed("checked")
   const indeterminate = computed("indeterminate")
+  const checkedState = context.get("checked")
 
   const dataAttrs = {
     "data-active": dataAttr(context.get("active")),
@@ -30,6 +32,7 @@ export function connect<T extends PropTypes>(
     "data-disabled": dataAttr(disabled),
     "data-state": indeterminate ? "indeterminate" : checked ? "checked" : "unchecked",
     "data-invalid": dataAttr(invalid),
+    "data-required": dataAttr(required),
   }
 
   return {
@@ -37,7 +40,7 @@ export function connect<T extends PropTypes>(
     disabled,
     indeterminate,
     focused,
-    checkedState: checked,
+    checkedState,
 
     setChecked(checked) {
       send({ type: "CHECKED.SET", checked, isTrusted: false })

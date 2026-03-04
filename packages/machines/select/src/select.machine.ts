@@ -3,13 +3,16 @@ import { trackDismissableElement } from "@zag-js/dismissable"
 import {
   getByTypeahead,
   getInitialFocus,
+  markAsInternalChangeEvent,
   observeAttributes,
   raf,
   scrollIntoView,
   trackFormControl,
 } from "@zag-js/dom-query"
+import { getInteractionModality, setInteractionModality, trackFocusVisible } from "@zag-js/focus-visible"
 import { getPlacement, type Placement } from "@zag-js/popper"
 import { addOrRemove, isEqual } from "@zag-js/utils"
+import { createSelectedItemMap, deriveSelectionState, resolveSelectedItems } from "@zag-js/collection"
 import { collection } from "./select.collection"
 import * as dom from "./select.dom"
 import type { CollectionItem, SelectSchema } from "./select.types"
@@ -33,15 +36,39 @@ export const machine = createMachine<SelectSchema>({
     }
   },
 
-  context({ prop, bindable }) {
+  context({ prop, bindable, getContext }) {
+    const initialValue = prop("value") ?? prop("defaultValue") ?? []
+    const initialSelectedItems = prop("collection").findMany(initialValue)
+
     return {
       value: bindable(() => ({
         defaultValue: prop("defaultValue"),
         value: prop("value"),
         isEqual,
         onChange(value) {
-          const items = prop("collection").findMany(value)
-          return prop("onValueChange")?.({ value, items })
+          const context = getContext()
+          const collection = prop("collection")
+          const selectedItemMap = context.get("selectedItemMap")
+
+          const proposed = deriveSelectionState({
+            values: value,
+            collection,
+            selectedItemMap,
+          })
+
+          // When controlled, use prop value so cache stays in sync when controller ignores selection
+          const effectiveValue = prop("value") ?? value
+          const effective =
+            effectiveValue === value
+              ? proposed
+              : deriveSelectionState({
+                  values: effectiveValue,
+                  collection,
+                  selectedItemMap: proposed.nextSelectedItemMap,
+                })
+
+          context.set("selectedItemMap", effective.nextSelectedItemMap)
+          return prop("onValueChange")?.({ value, items: proposed.selectedItems })
         },
       })),
       highlightedValue: bindable<string | null>(() => ({
@@ -64,14 +91,13 @@ export const machine = createMachine<SelectSchema>({
       highlightedItem: bindable<CollectionItem | null>(() => ({
         defaultValue: null,
       })),
-      selectedItems: bindable<CollectionItem[]>(() => {
-        const value = prop("value") ?? prop("defaultValue") ?? []
-        const items = prop("collection").findMany(value)
-        return { defaultValue: items }
-      }),
-      valueAsString: bindable(() => {
-        const value = prop("value") ?? prop("defaultValue") ?? []
-        return { defaultValue: prop("collection").stringifyMany(value) }
+      selectedItemMap: bindable<Map<string, CollectionItem>>(() => {
+        return {
+          defaultValue: createSelectedItemMap({
+            selectedItems: initialSelectedItems,
+            collection: prop("collection"),
+          }),
+        }
       }),
     }
   },
@@ -87,6 +113,13 @@ export const machine = createMachine<SelectSchema>({
     isTypingAhead: ({ refs }) => refs.get("typeahead").keysSoFar !== "",
     isDisabled: ({ prop, context }) => !!prop("disabled") || !!context.get("fieldsetDisabled"),
     isInteractive: ({ prop }) => !(prop("disabled") || prop("readOnly")),
+    selectedItems: ({ context, prop }) =>
+      resolveSelectedItems({
+        values: context.get("value"),
+        collection: prop("collection"),
+        selectedItemMap: context.get("selectedItemMap"),
+      }),
+    valueAsString: ({ computed, prop }) => prop("collection").stringifyItems(computed("selectedItems")),
   },
 
   initialState({ prop }) {
@@ -114,6 +147,9 @@ export const machine = createMachine<SelectSchema>({
   on: {
     "HIGHLIGHTED_VALUE.SET": {
       actions: ["setHighlightedItem"],
+    },
+    "HIGHLIGHTED_VALUE.CLEAR": {
+      actions: ["clearHighlightedItem"],
     },
     "ITEM.SELECT": {
       actions: ["selectItem"],
@@ -290,7 +326,7 @@ export const machine = createMachine<SelectSchema>({
     open: {
       tags: ["open"],
       exit: ["scrollContentToTop"],
-      effects: ["trackDismissableElement", "computePlacement", "scrollToHighlightedItem"],
+      effects: ["trackDismissableElement", "trackFocusVisible", "computePlacement", "scrollToHighlightedItem"],
       on: {
         "CONTROLLED.CLOSE": [
           {
@@ -409,6 +445,9 @@ export const machine = createMachine<SelectSchema>({
     },
 
     effects: {
+      trackFocusVisible({ scope }) {
+        return trackFocusVisible({ root: scope.getRootNode?.() })
+      },
       trackFormControlState({ context, scope }) {
         return trackFormControl(dom.getHiddenSelectEl(scope), {
           onFieldsetDisabledChange(disabled) {
@@ -425,6 +464,7 @@ export const machine = createMachine<SelectSchema>({
         const contentEl = () => dom.getContentEl(scope)
         let restoreFocus = true
         return trackDismissableElement(contentEl, {
+          type: "listbox",
           defer: true,
           exclude: [dom.getTriggerEl(scope), dom.getClearTriggerEl(scope)],
           onFocusOutside: prop("onFocusOutside"),
@@ -453,28 +493,36 @@ export const machine = createMachine<SelectSchema>({
         })
       },
 
-      scrollToHighlightedItem({ context, prop, scope, event }) {
+      scrollToHighlightedItem({ context, prop, scope }) {
         const exec = (immediate: boolean) => {
           const highlightedValue = context.get("highlightedValue")
           if (highlightedValue == null) return
 
-          // don't scroll into view if we're using the pointer
-          if (event.current().type.includes("POINTER")) return
+          // don't scroll into view if we're using the pointer (or null when focus-trap autofocuses)
+          const modality = getInteractionModality()
+          if (modality === "pointer") return
 
-          const optionEl = dom.getItemEl(scope, highlightedValue)
           const contentEl = dom.getContentEl(scope)
 
           const scrollToIndexFn = prop("scrollToIndexFn")
           if (scrollToIndexFn) {
             const highlightedIndex = prop("collection").indexOf(highlightedValue)
-            scrollToIndexFn?.({ index: highlightedIndex, immediate })
+            scrollToIndexFn?.({
+              index: highlightedIndex,
+              immediate,
+              getElement: () => dom.getItemEl(scope, highlightedValue),
+            })
             return
           }
 
-          scrollIntoView(optionEl, { rootEl: contentEl, block: "nearest" })
+          const itemEl = dom.getItemEl(scope, highlightedValue)
+          scrollIntoView(itemEl, { rootEl: contentEl, block: "nearest" })
         }
 
-        raf(() => exec(true))
+        raf(() => {
+          setInteractionModality("virtual")
+          exec(true)
+        })
 
         const contentEl = () => dom.getContentEl(scope)
         return observeAttributes(contentEl, {
@@ -509,6 +557,7 @@ export const machine = createMachine<SelectSchema>({
         const highlightedValue = context.get("highlightedValue")
         if (highlightedValue == null) return
         const value = prop("collection").getPreviousValue(highlightedValue, 1, prop("loopFocus"))
+        if (value == null) return
         context.set("highlightedValue", value)
       },
 
@@ -516,6 +565,7 @@ export const machine = createMachine<SelectSchema>({
         const highlightedValue = context.get("highlightedValue")
         if (highlightedValue == null) return
         const value = prop("collection").getNextValue(highlightedValue, 1, prop("loopFocus"))
+        if (value == null) return
         context.set("highlightedValue", value)
       },
 
@@ -548,7 +598,9 @@ export const machine = createMachine<SelectSchema>({
 
       selectHighlightedItem({ context, prop, event }) {
         let value = event.value ?? context.get("highlightedValue")
-        if (value == null) return
+        if (value == null || !prop("collection").has(value)) return
+
+        prop("onSelect")?.({ value })
 
         const nullable = prop("deselectable") && !prop("multiple") && context.get("value").includes(value)
         value = nullable ? null : value
@@ -600,6 +652,8 @@ export const machine = createMachine<SelectSchema>({
       },
 
       selectItem({ context, prop, event }) {
+        prop("onSelect")?.({ value: event.value })
+
         const nullable = prop("deselectable") && !prop("multiple") && context.get("value").includes(event.value)
         const value = nullable ? null : event.value
         context.set("value", (prev) => {
@@ -654,18 +708,23 @@ export const machine = createMachine<SelectSchema>({
 
       scrollContentToTop({ prop, scope }) {
         if (prop("scrollToIndexFn")) {
-          prop("scrollToIndexFn")?.({ index: 0, immediate: true })
+          const firstValue = prop("collection").firstValue
+          prop("scrollToIndexFn")?.({
+            index: 0,
+            immediate: true,
+            getElement: () => dom.getItemEl(scope, firstValue),
+          })
         } else {
           dom.getContentEl(scope)?.scrollTo(0, 0)
         }
       },
 
-      invokeOnOpen({ prop }) {
-        prop("onOpenChange")?.({ open: true })
+      invokeOnOpen({ prop, context }) {
+        prop("onOpenChange")?.({ open: true, value: context.get("value") })
       },
 
-      invokeOnClose({ prop }) {
-        prop("onOpenChange")?.({ open: false })
+      invokeOnClose({ prop, context }) {
+        prop("onOpenChange")?.({ open: false, value: context.get("value") })
       },
 
       syncSelectElement({ context, prop, scope }) {
@@ -688,25 +747,21 @@ export const machine = createMachine<SelectSchema>({
         const highlightedItem = collection.find(context.get("highlightedValue"))
         if (highlightedItem) context.set("highlightedItem", highlightedItem)
 
-        const selectedItems = collection.findMany(context.get("value"))
-        context.set("selectedItems", selectedItems)
-
-        const valueAsString = collection.stringifyItems(selectedItems)
-        context.set("valueAsString", valueAsString)
+        const next = deriveSelectionState({
+          values: context.get("value"),
+          collection,
+          selectedItemMap: context.get("selectedItemMap"),
+        })
+        context.set("selectedItemMap", next.nextSelectedItemMap)
       },
 
       syncSelectedItems({ context, prop }) {
-        const collection = prop("collection")
-        const prevSelectedItems = context.get("selectedItems")
-
-        const value = context.get("value")
-        const selectedItems = value.map((value) => {
-          const item = prevSelectedItems.find((item) => collection.getItemValue(item) === value)
-          return item || collection.find(value)
+        const next = deriveSelectionState({
+          values: context.get("value"),
+          collection: prop("collection"),
+          selectedItemMap: context.get("selectedItemMap"),
         })
-
-        context.set("selectedItems", selectedItems)
-        context.set("valueAsString", collection.stringifyItems(selectedItems))
+        context.set("selectedItemMap", next.nextSelectedItemMap)
       },
 
       syncHighlightedItem({ context, prop }) {
@@ -721,8 +776,8 @@ export const machine = createMachine<SelectSchema>({
           const node = dom.getHiddenSelectEl(scope)
           if (!node) return
           const win = scope.getWin()
-          const changeEvent = new win.Event("change", { bubbles: true, composed: true })
-          node.dispatchEvent(changeEvent)
+          const evt = new win.Event("change", { bubbles: true, composed: true })
+          node.dispatchEvent(markAsInternalChangeEvent(evt))
         })
       },
     },

@@ -10,7 +10,7 @@ type Targets = Array<MaybeElement>
 type TargetsOrFn = Targets | (() => Targets)
 
 type Options = {
-  defer?: boolean
+  defer?: boolean | undefined
 }
 
 export function ariaHidden(targetsOrFn: TargetsOrFn, options: Options = {}) {

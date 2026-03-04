@@ -1,5 +1,5 @@
 import type { EventObject, Machine, Service } from "@zag-js/core"
-import type { CommonProperties, DirectionProperty, PropTypes, RequiredBy } from "@zag-js/types"
+import type { CommonProperties, DirectionProperty, PropTypes, Rect, RequiredBy } from "@zag-js/types"
 
 export interface ValueChangeDetails {
   value: string | null
@@ -13,10 +13,10 @@ export type ElementIds = Partial<{
   root: string
   label: string
   indicator: string
-  item(value: string): string
-  itemLabel(value: string): string
-  itemControl(value: string): string
-  itemHiddenInput(value: string): string
+  item: (value: string) => string
+  itemLabel: (value: string) => string
+  itemControl: (value: string) => string
+  itemHiddenInput: (value: string) => string
 }>
 
 export interface RadioGroupProps extends DirectionProperty, CommonProperties {
@@ -47,7 +47,15 @@ export interface RadioGroupProps extends DirectionProperty, CommonProperties {
    */
   disabled?: boolean | undefined
   /**
-   * Whether the checkbox is read-only
+   * If `true`, the radio group is marked as invalid.
+   */
+  invalid?: boolean | undefined
+  /**
+   * If `true`, the radio group is marked as required.
+   */
+  required?: boolean | undefined
+  /**
+   * Whether the radio group is read-only
    */
   readOnly?: boolean | undefined
   /**
@@ -58,13 +66,6 @@ export interface RadioGroupProps extends DirectionProperty, CommonProperties {
    * Orientation of the radio group
    */
   orientation?: "horizontal" | "vertical" | undefined
-}
-
-export interface IndicatorRect {
-  left: string
-  top: string
-  width: string
-  height: string
 }
 
 interface PrivateContext {
@@ -81,17 +82,17 @@ interface PrivateContext {
    */
   focusedValue: string | null
   /**
+   * The id of the radio that has focus-visible
+   */
+  focusVisibleValue: string | null
+  /**
    * The id of the hovered radio
    */
   hoveredValue: string | null
   /**
    * The active tab indicator's dom rect
    */
-  indicatorRect: Partial<IndicatorRect>
-  /**
-   * Whether the active tab indicator's rect can transition
-   */
-  canIndicatorTransition: boolean
+  indicatorRect: Rect | null
   /**
    * Whether the radio group's fieldset is disabled
    */
@@ -191,25 +192,25 @@ export interface RadioGroupApi<T extends PropTypes = PropTypes> {
   /**
    * Function to set the value of the radio group
    */
-  setValue(value: string): void
+  setValue: (value: string) => void
   /**
    * Function to clear the value of the radio group
    */
-  clearValue(): void
+  clearValue: VoidFunction
   /**
    * Function to focus the radio group
    */
-  focus(): void
+  focus: VoidFunction
   /**
    * Returns the state details of a radio input
    */
-  getItemState(props: ItemProps): ItemState
+  getItemState: (props: ItemProps) => ItemState
 
-  getRootProps(): T["element"]
-  getLabelProps(): T["element"]
-  getItemProps(props: ItemProps): T["label"]
-  getItemTextProps(props: ItemProps): T["element"]
-  getItemControlProps(props: ItemProps): T["element"]
-  getItemHiddenInputProps(props: ItemProps): T["input"]
-  getIndicatorProps(): T["element"]
+  getRootProps: () => T["element"]
+  getLabelProps: () => T["element"]
+  getItemProps: (props: ItemProps) => T["label"]
+  getItemTextProps: (props: ItemProps) => T["element"]
+  getItemControlProps: (props: ItemProps) => T["element"]
+  getItemHiddenInputProps: (props: ItemProps) => T["input"]
+  getIndicatorProps: () => T["element"]
 }

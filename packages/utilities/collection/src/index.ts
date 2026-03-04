@@ -1,17 +1,27 @@
-export { GridCollection, type GridCollectionOptions, isGridCollection } from "./grid-collection"
-export { TreeCollection, filePathToTree, flattenedToTree } from "./tree-collection"
-export { ListCollection, isListCollection } from "./list-collection"
+export { GridCollection, isGridCollection, type GridCollectionOptions } from "./grid-collection"
+export { isListCollection, ListCollection } from "./list-collection"
+export {
+  createSelectedItemMap,
+  deriveSelectionState,
+  resolveSelectedItems,
+  updateSelectedItemMap,
+  type SelectionMapCollection,
+} from "./selection-map"
+export { Selection, type SelectionMode } from "./selection"
+export { filePathToTree, flattenedToTree, TreeCollection } from "./tree-collection"
 export type {
   CollectionItem,
   CollectionMethods,
   CollectionOptions,
   CollectionSearchOptions,
   CollectionSearchState,
-  TreeCollectionOptions,
-  TreeCollectionMethods,
-  TreeNode,
-  FlatTreeNode,
   FilePathTreeNode,
+  FlatTreeNode,
+  FlatTreeNodeMeta,
+  IndexPath,
+  TreeCollectionMethods,
+  TreeCollectionOptions,
+  TreeNode,
   TreeSkipFn,
+  ValuePath,
 } from "./types"
-export { Selection, type SelectionMode } from "./selection"

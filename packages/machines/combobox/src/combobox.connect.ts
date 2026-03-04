@@ -25,10 +25,11 @@ export function connect<T extends PropTypes, V extends CollectionItem>(
   const translations = prop("translations")
   const collection = prop("collection")
 
-  const disabled = prop("disabled")
+  const disabled = !!prop("disabled")
   const interactive = computed("isInteractive")
-  const invalid = prop("invalid")
-  const readOnly = prop("readOnly")
+  const invalid = !!prop("invalid")
+  const required = !!prop("required")
+  const readOnly = !!prop("readOnly")
 
   const open = state.hasTag("open")
   const focused = state.hasTag("focused")
@@ -41,12 +42,12 @@ export function connect<T extends PropTypes, V extends CollectionItem>(
   })
 
   function getItemState(props: ItemProps): ItemState {
-    const disabled = collection.getItemDisabled(props.item)
+    const itemDisabled = collection.getItemDisabled(props.item)
     const value = collection.getItemValue(props.item)
     ensure(value, () => `[zag-js] No value found for item ${JSON.stringify(props.item)}`)
     return {
       value,
-      disabled: Boolean(disabled || disabled),
+      disabled: Boolean(disabled || itemDisabled),
       highlighted: highlightedValue === value,
       selected: context.get("value").includes(value),
     }
@@ -59,9 +60,9 @@ export function connect<T extends PropTypes, V extends CollectionItem>(
     highlightedValue,
     highlightedItem: context.get("highlightedItem"),
     value: context.get("value"),
-    valueAsString: context.get("valueAsString"),
+    valueAsString: computed("valueAsString"),
     hasSelectedItems: computed("hasSelectedItems"),
-    selectedItems: context.get("selectedItems"),
+    selectedItems: computed("selectedItems"),
     collection: prop("collection"),
     multiple: !!prop("multiple"),
     disabled: !!disabled,
@@ -74,14 +75,17 @@ export function connect<T extends PropTypes, V extends CollectionItem>(
     setHighlightValue(value) {
       send({ type: "HIGHLIGHTED_VALUE.SET", value })
     },
+    clearHighlightValue() {
+      send({ type: "HIGHLIGHTED_VALUE.CLEAR" })
+    },
     selectValue(value) {
       send({ type: "ITEM.SELECT", value })
     },
     setValue(value) {
       send({ type: "VALUE.SET", value })
     },
-    setInputValue(value) {
-      send({ type: "INPUT_VALUE.SET", value })
+    setInputValue(value, reason = "script") {
+      send({ type: "INPUT_VALUE.SET", value, src: reason })
     },
     clearValue(value) {
       if (value != null) {
@@ -93,10 +97,10 @@ export function connect<T extends PropTypes, V extends CollectionItem>(
     focus() {
       dom.getInputEl(scope)?.focus()
     },
-    setOpen(nextOpen) {
+    setOpen(nextOpen, reason = "script") {
       const open = state.hasTag("open")
       if (open === nextOpen) return
-      send({ type: nextOpen ? "OPEN" : "CLOSE" })
+      send({ type: nextOpen ? "OPEN" : "CLOSE", src: reason })
     },
 
     getRootProps() {
@@ -118,6 +122,7 @@ export function connect<T extends PropTypes, V extends CollectionItem>(
         "data-readonly": dataAttr(readOnly),
         "data-disabled": dataAttr(disabled),
         "data-invalid": dataAttr(invalid),
+        "data-required": dataAttr(required),
         "data-focus": dataAttr(focused),
         onClick(event) {
           if (composite) return
@@ -154,10 +159,10 @@ export function connect<T extends PropTypes, V extends CollectionItem>(
         dir: prop("dir"),
         "aria-invalid": ariaAttr(invalid),
         "data-invalid": dataAttr(invalid),
+        "data-autofocus": dataAttr(prop("autoFocus")),
         name: prop("name"),
         form: prop("form"),
         disabled: disabled,
-        autoFocus: prop("autoFocus"),
         required: prop("required"),
         autoComplete: "off",
         autoCorrect: "off",
@@ -178,7 +183,7 @@ export function connect<T extends PropTypes, V extends CollectionItem>(
           if (event.defaultPrevented) return
           if (!prop("openOnClick")) return
           if (!interactive) return
-          send({ type: "INPUT.CLICK" })
+          send({ type: "INPUT.CLICK", src: "input-click" })
         },
         onFocus() {
           if (disabled) return
@@ -189,7 +194,7 @@ export function connect<T extends PropTypes, V extends CollectionItem>(
           send({ type: "INPUT.BLUR" })
         },
         onChange(event) {
-          send({ type: "INPUT.CHANGE", value: event.currentTarget.value })
+          send({ type: "INPUT.CHANGE", value: event.currentTarget.value, src: "input-change" })
         },
         onKeyDown(event) {
           if (event.defaultPrevented) return
@@ -204,12 +209,12 @@ export function connect<T extends PropTypes, V extends CollectionItem>(
           const keymap: EventKeyMap = {
             ArrowDown(event) {
               if (!openOnKeyPress && !open) return
-              send({ type: event.altKey ? "OPEN" : "INPUT.ARROW_DOWN", keypress })
+              send({ type: event.altKey ? "OPEN" : "INPUT.ARROW_DOWN", keypress, src: "arrow-key" })
               event.preventDefault()
             },
             ArrowUp() {
               if (!openOnKeyPress && !open) return
-              send({ type: event.altKey ? "CLOSE" : "INPUT.ARROW_UP", keypress })
+              send({ type: event.altKey ? "CLOSE" : "INPUT.ARROW_UP", keypress, src: "arrow-key" })
               event.preventDefault()
             },
             Home(event) {
@@ -227,8 +232,16 @@ export function connect<T extends PropTypes, V extends CollectionItem>(
               }
             },
             Enter(event) {
-              send({ type: "INPUT.ENTER", keypress })
-              if (open) {
+              send({ type: "INPUT.ENTER", keypress, src: "item-select" })
+
+              // when there's a form owner, allow submitting custom value if `allowCustomValue` is true
+              const submittable = computed("isCustomValue") && prop("allowCustomValue")
+              // Also allow submission when there's no highlighted item (bug fix)
+              const hasHighlight = highlightedValue != null
+              // Allow submission when alwaysSubmitOnEnter is true
+              const alwaysSubmit = prop("alwaysSubmitOnEnter")
+
+              if (open && !submittable && !alwaysSubmit && hasHighlight) {
                 event.preventDefault()
               }
 
@@ -240,7 +253,7 @@ export function connect<T extends PropTypes, V extends CollectionItem>(
               }
             },
             Escape() {
-              send({ type: "INPUT.ESCAPE", keypress })
+              send({ type: "INPUT.ESCAPE", keypress, src: "escape-key" })
               event.preventDefault()
             },
           }
@@ -277,14 +290,15 @@ export function connect<T extends PropTypes, V extends CollectionItem>(
           if (event.defaultPrevented) return
           if (!interactive) return
           if (!isLeftClick(event)) return
-          send({ type: "TRIGGER.CLICK" })
+          send({ type: "TRIGGER.CLICK", src: "trigger-click" })
         },
         onPointerDown(event) {
           if (!interactive) return
           if (event.pointerType === "touch") return
+          if (!isLeftClick(event)) return
           event.preventDefault()
           queueMicrotask(() => {
-            dom.getInputEl(scope)?.focus({ preventScroll: true })
+            dom.focusInputEl(scope)
           })
         },
         onKeyDown(event) {
@@ -293,10 +307,10 @@ export function connect<T extends PropTypes, V extends CollectionItem>(
 
           const keyMap: EventKeyMap = {
             ArrowDown() {
-              send({ type: "INPUT.ARROW_DOWN", src: "trigger" })
+              send({ type: "INPUT.ARROW_DOWN", src: "arrow-key" })
             },
             ArrowUp() {
-              send({ type: "INPUT.ARROW_UP", src: "trigger" })
+              send({ type: "INPUT.ARROW_UP", src: "arrow-key" })
             },
           }
 
@@ -325,6 +339,7 @@ export function connect<T extends PropTypes, V extends CollectionItem>(
         "aria-multiselectable": prop("multiple") && composite ? true : undefined,
         "data-empty": dataAttr(collection.size === 0),
         onPointerDown(event) {
+          if (!isLeftClick(event)) return
           // prevent options or elements within listbox from taking focus
           event.preventDefault()
         },
@@ -354,6 +369,7 @@ export function connect<T extends PropTypes, V extends CollectionItem>(
         "aria-controls": dom.getInputId(scope),
         hidden: !context.get("value").length,
         onPointerDown(event) {
+          if (!isLeftClick(event)) return
           event.preventDefault()
         },
         onClick(event) {
@@ -378,7 +394,7 @@ export function connect<T extends PropTypes, V extends CollectionItem>(
         tabIndex: -1,
         "data-highlighted": dataAttr(itemState.highlighted),
         "data-state": itemState.selected ? "checked" : "unchecked",
-        "aria-selected": ariaAttr(itemState.highlighted),
+        "aria-selected": ariaAttr(itemState.selected),
         "aria-disabled": ariaAttr(itemState.disabled),
         "data-disabled": dataAttr(itemState.disabled),
         "data-value": itemState.value,
@@ -400,7 +416,7 @@ export function connect<T extends PropTypes, V extends CollectionItem>(
           if (isOpeningInNewTab(event)) return
           if (isContextMenuEvent(event)) return
           if (itemState.disabled) return
-          send({ type: "ITEM.CLICK", src: "click", value })
+          send({ type: "ITEM.CLICK", src: "item-select", value })
         },
       })
     },

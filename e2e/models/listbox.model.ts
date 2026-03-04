@@ -11,7 +11,7 @@ export class ListboxModel extends Model {
     return a11y(this.page)
   }
 
-  goto(url = "/listbox") {
+  goto(url = "/listbox/basic") {
     return this.page.goto(url)
   }
 
@@ -31,8 +31,9 @@ export class ListboxModel extends Model {
     return this.page.locator("[data-scope=listbox][data-part=content]")
   }
 
-  async focusContent() {
-    await this.content.focus()
+  async tabToContent() {
+    await this.page.click("main.listbox", { position: { x: 300, y: 30 }, force: true })
+    await this.page.keyboard.press("Tab")
     await expect(this.content).toBeFocused()
   }
 
@@ -60,7 +61,8 @@ export class ListboxModel extends Model {
     return expect(this.content.locator(`[data-selected]`).all()).toHaveLength(0)
   }
 
-  seeItemInViewport(value: string) {
-    return isInViewport(this.content, this.getItem(value))
+  seeItemInViewport = async (text: string) => {
+    const item = this.getItem(text)
+    expect(await isInViewport(this.content, item)).toBe(true)
   }
 }

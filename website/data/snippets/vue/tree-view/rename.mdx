@@ -1,0 +1,123 @@
+```html
+<!-- TreeNode.vue -->
+<script setup lang="ts">
+  import { FileIcon, FolderIcon, ChevronRightIcon } from "lucide-vue-next"
+  import type { Api } from "@zag-js/tree-view"
+
+  interface Node {
+    id: string
+    name: string
+    children?: Node[]
+  }
+
+  interface Props {
+    node: Node
+    indexPath: number[]
+    api: Api
+  }
+
+  const props = defineProps<Props>()
+
+  const nodeProps = computed(() => ({
+    indexPath: props.indexPath,
+    node: props.node,
+  }))
+
+  const nodeState = computed(() => props.api.getNodeState(nodeProps.value))
+</script>
+
+<template>
+  <template v-if="nodeState.isBranch">
+    <div v-bind="api.getBranchProps(nodeProps)">
+      <div v-bind="api.getBranchControlProps(nodeProps)">
+        <FolderIcon />
+        <span v-bind="api.getBranchTextProps(nodeProps)" :style="{ display: nodeState.renaming ? 'none' : 'inline' }">
+          {{ node.name }}
+        </span>
+        <input v-bind="api.getNodeRenameInputProps(nodeProps)" />
+        <span v-bind="api.getBranchIndicatorProps(nodeProps)">
+          <ChevronRightIcon />
+        </span>
+      </div>
+      <div v-bind="api.getBranchContentProps(nodeProps)">
+        <div v-bind="api.getBranchIndentGuideProps(nodeProps)" />
+        <TreeNode
+          v-for="(childNode, index) in node.children"
+          :key="childNode.id"
+          :node="childNode"
+          :index-path="[...indexPath, index]"
+          :api="api"
+        />
+      </div>
+    </div>
+  </template>
+  <template v-else>
+    <div v-bind="api.getItemProps(nodeProps)">
+      <FileIcon />
+      <span v-bind="api.getItemTextProps(nodeProps)" :style="{ display: nodeState.renaming ? 'none' : 'inline' }">
+        {{ node.name }}
+      </span>
+      <input v-bind="api.getNodeRenameInputProps(nodeProps)" />
+    </div>
+  </template>
+</template>
+
+<!-- App.vue -->
+<script setup lang="ts">
+  import { normalizeProps, useMachine } from "@zag-js/vue"
+  import * as tree from "@zag-js/tree-view"
+
+  interface Node {
+    id: string
+    name: string
+    children?: Node[]
+  }
+
+  const initialCollection = tree.collection<Node>({
+    nodeToValue: (node) => node.id,
+    nodeToString: (node) => node.name,
+    rootNode: {
+      id: "ROOT",
+      name: "",
+      children: [
+        { id: "README.md", name: "README.md" },
+        { id: "package.json", name: "package.json" },
+      ],
+    },
+  })
+
+  const collection = ref(initialCollection)
+
+  const service = useMachine(tree.machine, {
+    id: useId(),
+    collection: computed(() => collection.value),
+    onRenameComplete: (details) => {
+      // Update the collection with the new label
+      const node = collection.value.at(details.indexPath)
+      const updatedCollection = collection.value.replace(details.indexPath, {
+        ...node,
+        name: details.label,
+      })
+      collection.value = updatedCollection
+    },
+  })
+
+  const api = computed(() => tree.connect(service, normalizeProps))
+</script>
+
+<template>
+  <div v-bind="api.getRootProps()">
+    <h3 v-bind="api.getLabelProps()">My Documents</h3>
+    <p>Press F2 to rename any file or folder</p>
+    <div v-bind="api.getTreeProps()">
+      <TreeNode
+        v-for="(node, index) in api.collection.rootNode.children"
+        :key="node.id"
+        :node="node"
+        :index-path="[index]"
+        :api="api"
+      />
+    </div>
+  </div>
+</template>
+```

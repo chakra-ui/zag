@@ -20,6 +20,7 @@ export type ElementIds = Partial<{
   hiddenInput: string
   control: string
   valueText: string
+  label: string
 }>
 
 export interface AngleSliderProps extends DirectionProperty, CommonProperties {
@@ -67,6 +68,14 @@ export interface AngleSliderProps extends DirectionProperty, CommonProperties {
    * The name of the slider. Useful for form submission.
    */
   name?: string | undefined
+  /**
+   * The accessible label for the slider thumb.
+   */
+  "aria-label"?: string | undefined
+  /**
+   * The id of the element that labels the slider thumb.
+   */
+  "aria-labelledby"?: string | undefined
 }
 
 type PropsWithDefault = "step" | "defaultValue"
@@ -80,6 +89,9 @@ export interface AngleSliderSchema {
   }
   context: {
     value: number
+  }
+  refs: {
+    thumbDragOffset: number | null
   }
   action: string
   event: EventObject
@@ -114,18 +126,18 @@ export interface AngleSliderApi<T extends PropTypes = PropTypes> {
   /**
    * Sets the value of the angle slider
    */
-  setValue(value: number): void
+  setValue: (value: number) => void
   /**
    * Whether the slider is being dragged.
    */
   dragging: boolean
 
-  getRootProps(): T["element"]
-  getLabelProps(): T["label"]
-  getHiddenInputProps(): T["element"]
-  getControlProps(): T["element"]
-  getThumbProps(): T["element"]
-  getValueTextProps(): T["element"]
-  getMarkerGroupProps(): T["element"]
-  getMarkerProps(props: MarkerProps): T["element"]
+  getRootProps: () => T["element"]
+  getLabelProps: () => T["label"]
+  getHiddenInputProps: () => T["element"]
+  getControlProps: () => T["element"]
+  getThumbProps: () => T["element"]
+  getValueTextProps: () => T["element"]
+  getMarkerGroupProps: () => T["element"]
+  getMarkerProps: (props: MarkerProps) => T["element"]
 }

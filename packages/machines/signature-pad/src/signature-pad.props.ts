@@ -3,6 +3,7 @@ import { createSplitProps } from "@zag-js/utils"
 import type { SignaturePadProps } from "./signature-pad.types"
 
 export const props = createProps<SignaturePadProps>()([
+  "defaultPaths",
   "dir",
   "disabled",
   "drawing",
@@ -12,6 +13,7 @@ export const props = createProps<SignaturePadProps>()([
   "name",
   "onDraw",
   "onDrawEnd",
+  "paths",
   "readOnly",
   "required",
   "translations",

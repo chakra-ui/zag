@@ -16,7 +16,7 @@ const propMap: Record<string, string> = {
 
 export type PropTypes = SvelteHTMLElements & {
   element: HTMLAttributes<HTMLElement>
-  style?: HTMLAttributes<HTMLElement>["style"]
+  style?: HTMLAttributes<HTMLElement>["style"] | undefined
 }
 
 export function toStyleString(style: Record<string, number | string>) {
@@ -40,21 +40,20 @@ export function toStyleString(style: Record<string, number | string>) {
   return string
 }
 
-const preserveKeys =
+const preserveKeys = new Set<string>(
   "viewBox,className,preserveAspectRatio,fillRule,clipPath,clipRule,strokeWidth,strokeLinecap,strokeLinejoin,strokeDasharray,strokeDashoffset,strokeMiterlimit".split(
     ",",
-  )
+  ),
+)
 
 function toSvelteProp(key: string) {
   if (key in propMap) return propMap[key]
-  if (preserveKeys.includes(key)) return key
+  if (preserveKeys.has(key)) return key
   return key.toLowerCase()
 }
 
 function toSveltePropValue(key: string, value: Dict[string]) {
   if (key === "style" && typeof value === "object") return toStyleString(value)
-  if (value === false) return
-
   return value
 }
 

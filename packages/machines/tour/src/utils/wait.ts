@@ -1,86 +1,11 @@
-import { getDocument, getWindow } from "@zag-js/dom-query"
-
-export interface WaitOptions {
-  timeout: number
-  rootNode?: Document | ShadowRoot | undefined
-}
-
-type WaitForPromiseReturn<T> = [Promise<T>, () => void]
-
-function waitForPromise<T>(promise: Promise<T>, controller: AbortController, timeout: number): WaitForPromiseReturn<T> {
-  const { signal } = controller
-
-  const wrappedPromise = new Promise<T>((resolve, reject) => {
-    const timeoutId = setTimeout(() => {
-      reject(new Error(`Timeout of ${timeout}ms exceeded`))
-    }, timeout)
-
-    signal.addEventListener("abort", () => {
-      clearTimeout(timeoutId)
-      reject(new Error("Promise aborted"))
-    })
-
-    promise
-      .then((result) => {
-        if (!signal.aborted) {
-          clearTimeout(timeoutId)
-          resolve(result)
-        }
-      })
-      .catch((error) => {
-        if (!signal.aborted) {
-          clearTimeout(timeoutId)
-          reject(error)
-        }
-      })
-  })
-
-  const abort = () => controller.abort()
-
-  return [wrappedPromise, abort]
-}
-
-export function waitForElement(target: () => HTMLElement, options: WaitOptions): WaitForPromiseReturn<HTMLElement> {
-  const { timeout, rootNode } = options
-
-  const win = getWindow(rootNode)
-  const doc = getDocument(rootNode)
-  const controller = new win.AbortController()
-
-  return waitForPromise(
-    new Promise<HTMLElement>((resolve) => {
-      const el = target()
-
-      if (el) {
-        resolve(el)
-        return
-      }
-
-      const observer = new win.MutationObserver(() => {
-        const el = target()
-
-        if (el) {
-          observer.disconnect()
-          resolve(el)
-        }
-      })
-
-      observer.observe(doc.body, {
-        childList: true,
-        subtree: true,
-      })
-    }),
-    controller,
-    timeout,
-  )
-}
+import { getWindow, waitForPromise, type WaitForOptions, type WaitForPromiseReturn } from "@zag-js/dom-query"
 
 type EditableElement = HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement
 
 export function waitForElementValue(
   target: () => EditableElement | null,
   value: string,
-  options: WaitOptions,
+  options: WaitForOptions,
 ): WaitForPromiseReturn<void> {
   const { timeout, rootNode } = options
 
@@ -107,3 +32,7 @@ export function waitForElementValue(
     timeout,
   )
 }
+
+export { waitForElement, waitForPromise } from "@zag-js/dom-query"
+
+export type { WaitForOptions as WaitOptions }

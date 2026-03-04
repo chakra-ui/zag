@@ -27,6 +27,7 @@ export const props = createProps<TagsInputProps>()([
   "onPointerDownOutside",
   "onValueChange",
   "onValueInvalid",
+  "placeholder",
   "required",
   "readOnly",
   "translations",

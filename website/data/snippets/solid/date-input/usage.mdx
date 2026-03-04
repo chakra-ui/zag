@@ -1,0 +1,31 @@
+```jsx
+import * as dateInput from "@zag-js/date-input"
+import { normalizeProps, useMachine } from "@zag-js/solid"
+import { createUniqueId } from "solid-js"
+
+function DateInput() {
+  const service = useMachine(dateInput.machine, { id: createUniqueId() })
+
+  const api = () => dateInput.connect(service(), normalizeProps)
+
+  return (
+    <div {...api().getRootProps()}>
+      <label {...api().getLabelProps()}>Enter a date</label>
+
+      <div {...api().getControlProps()}>
+        <div {...api().getSegmentGroupProps()}>
+          {api()
+            .getSegments()
+            .map((segment, i) => (
+              <span {...api().getSegmentProps({ segment })}>
+                {segment.text}
+              </span>
+            ))}
+        </div>
+      </div>
+
+      <input {...api().getHiddenInputProps()} />
+    </div>
+  )
+}
+```

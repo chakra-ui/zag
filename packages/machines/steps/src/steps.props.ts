@@ -4,16 +4,19 @@ import type { StepsProps } from "./steps.types"
 
 export const props = createProps<StepsProps>()([
   "count",
+  "defaultStep",
   "dir",
   "getRootNode",
   "id",
   "ids",
+  "isStepSkippable",
+  "isStepValid",
   "linear",
   "onStepChange",
   "onStepComplete",
+  "onStepInvalid",
   "orientation",
   "step",
-  "defaultStep",
 ])
 
 export const splitProps = createSplitProps<Partial<StepsProps>>(props)

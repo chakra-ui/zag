@@ -1,7 +1,7 @@
 import type { CollectionItem, GridCollection, ListCollection, Selection, SelectionMode } from "@zag-js/collection"
 import type { EventObject, Machine, Service } from "@zag-js/core"
 import type { TypeaheadState } from "@zag-js/dom-query"
-import type { CommonProperties, DirectionProperty, OrientationProperty, PropTypes, RequiredBy } from "@zag-js/types"
+import type { CommonProperties, DirectionProperty, PropTypes, RequiredBy } from "@zag-js/types"
 
 /* -----------------------------------------------------------------------------
  * Callback details
@@ -21,6 +21,7 @@ export interface HighlightChangeDetails<T extends CollectionItem = CollectionIte
 export interface ScrollToIndexDetails {
   index: number
   immediate?: boolean | undefined
+  getElement: () => HTMLElement | null
 }
 
 export interface SelectionDetails {
@@ -35,15 +36,17 @@ export type ElementIds = Partial<{
   root: string
   content: string
   label: string
-  item(id: string | number): string
-  itemGroup(id: string | number): string
-  itemGroupLabel(id: string | number): string
+  item: (id: string | number) => string
+  itemGroup: (id: string | number) => string
+  itemGroupLabel: (id: string | number) => string
 }>
 
-export interface ListboxProps<T extends CollectionItem = CollectionItem>
-  extends DirectionProperty,
-    CommonProperties,
-    OrientationProperty {
+export interface ListboxProps<T extends CollectionItem = CollectionItem> extends DirectionProperty, CommonProperties {
+  /**
+   * The orientation of the listbox.
+   * @default "vertical"
+   */
+  orientation?: "horizontal" | "vertical" | undefined
   /**
    * The item collection
    */
@@ -82,7 +85,7 @@ export interface ListboxProps<T extends CollectionItem = CollectionItem>
   /**
    * The controlled key of the highlighted item
    */
-  highlightedValue?: string | null
+  highlightedValue?: string | null | undefined
   /**
    * The initial value of the highlighted item when opened.
    * Use when you don't need to control the highlighted value of the listbox.
@@ -134,8 +137,7 @@ export interface ListboxSchema<T extends CollectionItem = CollectionItem> {
     value: string[]
     highlightedValue: string | null
     highlightedItem: T | null
-    selectedItems: T[]
-    valueAsString: string
+    selectedItemMap: Map<string, T>
     focused: boolean
   }
   computed: {
@@ -144,10 +146,13 @@ export interface ListboxSchema<T extends CollectionItem = CollectionItem> {
     isInteractive: boolean
     selection: Selection
     multiple: boolean
+    selectedItems: T[]
+    valueAsString: string
   }
   refs: {
     typeahead: TypeaheadState
-    prevCollection: ListCollection<T> | null
+    focusVisible: boolean
+    inputState: { autoHighlight: boolean; focused: boolean }
   }
   action: string
   guard: string
@@ -189,8 +194,17 @@ export interface ItemState {
   selected: boolean
   /**
    * Whether the item is highlighted
+   * @deprecated Use `focused` and `focusVisible` instead
    */
   highlighted: boolean
+  /**
+   * Whether the item is focused
+   */
+  focused: boolean
+  /**
+   * Whether the item is focus visible
+   */
+  focusVisible: boolean
 }
 
 export interface ItemGroupProps {
@@ -225,11 +239,11 @@ export interface ListboxApi<T extends PropTypes = PropTypes, V extends Collectio
   /**
    * Function to highlight a value
    */
-  highlightValue(value: string): void
+  highlightValue: (value: string) => void
   /**
    * Function to clear the highlighted value
    */
-  clearHighlightedValue(): void
+  clearHighlightedValue: VoidFunction
   /**
    * The selected items
    */
@@ -249,27 +263,27 @@ export interface ListboxApi<T extends PropTypes = PropTypes, V extends Collectio
   /**
    * Function to select a value
    */
-  selectValue(value: string): void
+  selectValue: (value: string) => void
   /**
    * Function to select all values.
    *
    * **Note**: This should only be called when the selectionMode is `multiple` or `extended`.
    * Otherwise, an exception will be thrown.
    */
-  selectAll(): void
+  selectAll: VoidFunction
   /**
    * Function to set the value of the select
    */
-  setValue(value: string[]): void
+  setValue: (value: string[]) => void
   /**
    * Function to clear the value of the select.
    * If a value is provided, it will only clear that value, otherwise, it will clear all values.
    */
-  clearValue(value?: string): void
+  clearValue: (value?: string) => void
   /**
    * Returns the state of a select item
    */
-  getItemState(props: ItemProps): ItemState
+  getItemState: (props: ItemProps) => ItemState
   /**
    * Function to toggle the select
    */
@@ -279,14 +293,14 @@ export interface ListboxApi<T extends PropTypes = PropTypes, V extends Collectio
    */
   disabled: boolean
 
-  getInputProps(props?: InputProps): T["input"]
-  getRootProps(): T["element"]
-  getLabelProps(): T["label"]
-  getValueTextProps(): T["element"]
-  getContentProps(): T["element"]
-  getItemProps(props: ItemProps): T["element"]
-  getItemTextProps(props: ItemProps): T["element"]
-  getItemIndicatorProps(props: ItemProps): T["element"]
-  getItemGroupProps(props: ItemGroupProps): T["element"]
-  getItemGroupLabelProps(props: ItemGroupLabelProps): T["element"]
+  getInputProps: (props?: InputProps) => T["input"]
+  getRootProps: () => T["element"]
+  getLabelProps: () => T["label"]
+  getValueTextProps: () => T["element"]
+  getContentProps: () => T["element"]
+  getItemProps: (props: ItemProps) => T["element"]
+  getItemTextProps: (props: ItemProps) => T["element"]
+  getItemIndicatorProps: (props: ItemProps) => T["element"]
+  getItemGroupProps: (props: ItemGroupProps) => T["element"]
+  getItemGroupLabelProps: (props: ItemGroupLabelProps) => T["element"]
 }

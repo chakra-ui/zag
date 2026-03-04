@@ -1,5 +1,5 @@
 import { createGuards, createMachine } from "@zag-js/core"
-import { addDomEvent, isHTMLElement, raf, trackPointerMove } from "@zag-js/dom-query"
+import { addDomEvent, isHTMLElement, raf, resizeObserverBorderBox, trackPointerMove } from "@zag-js/dom-query"
 import {
   addPoints,
   clampPoint,
@@ -104,8 +104,8 @@ export const machine = createMachine<FloatingPanelSchema>({
     isMaximized: ({ context }) => context.get("stage") === "maximized",
     isMinimized: ({ context }) => context.get("stage") === "minimized",
     isStaged: ({ context }) => context.get("stage") !== "default",
-    canResize: ({ context, prop }) => (prop("resizable") || !prop("disabled")) && context.get("stage") === "default",
-    canDrag: ({ prop, computed }) => (prop("draggable") || !prop("disabled")) && !computed("isMaximized"),
+    canResize: ({ context, prop }) => prop("resizable") && !prop("disabled") && context.get("stage") === "default",
+    canDrag: ({ prop, computed }) => prop("draggable") && !prop("disabled") && !computed("isMaximized"),
   },
 
   watch({ track, context, action, prop }) {
@@ -160,121 +160,122 @@ export const machine = createMachine<FloatingPanelSchema>({
     open: {
       tags: ["open"],
       entry: ["bringToFrontOfPanelStack"],
-      effects: ["trackBoundaryRect"],
-      on: {
-        DRAG_START: {
-          guard: not("isMaximized"),
-          target: "open.dragging",
-          actions: ["setPrevPosition"],
-        },
-        RESIZE_START: {
-          guard: not("isMinimized"),
-          target: "open.resizing",
-          actions: ["setPrevSize"],
-        },
-        "CONTROLLED.CLOSE": {
-          target: "closed",
-          actions: ["resetRect", "focusTriggerEl"],
-        },
-        CLOSE: [
-          {
-            guard: "isOpenControlled",
-            target: "closed",
-            actions: ["invokeOnClose"],
+      initial: "idle",
+      states: {
+        idle: {
+          effects: ["trackBoundaryRect"],
+          on: {
+            DRAG_START: {
+              guard: not("isMaximized"),
+              target: "dragging",
+              actions: ["setPrevPosition"],
+            },
+            RESIZE_START: {
+              guard: not("isMinimized"),
+              target: "resizing",
+              actions: ["setPrevSize"],
+            },
+            "CONTROLLED.CLOSE": {
+              target: "closed",
+              actions: ["resetRect", "focusTriggerEl"],
+            },
+            CLOSE: [
+              {
+                guard: "isOpenControlled",
+                target: "closed",
+                actions: ["invokeOnClose"],
+              },
+              {
+                target: "closed",
+                actions: ["invokeOnClose", "resetRect", "focusTriggerEl"],
+              },
+            ],
+            ESCAPE: [
+              {
+                guard: and("isOpenControlled", "closeOnEsc"),
+                actions: ["invokeOnClose"],
+              },
+              {
+                guard: "closeOnEsc",
+                target: "closed",
+                actions: ["invokeOnClose", "resetRect", "focusTriggerEl"],
+              },
+            ],
+            MINIMIZE: {
+              actions: ["setMinimized"],
+            },
+            MAXIMIZE: {
+              actions: ["setMaximized"],
+            },
+            RESTORE: {
+              actions: ["setRestored"],
+            },
+            MOVE: {
+              actions: ["setPositionFromKeyboard"],
+            },
           },
-          {
-            target: "closed",
-            actions: ["invokeOnClose", "resetRect", "focusTriggerEl"],
+        },
+        dragging: {
+          effects: ["trackPointerMove"],
+          exit: ["clearPrevPosition"],
+          on: {
+            DRAG: {
+              actions: ["setPosition"],
+            },
+            DRAG_END: {
+              target: "idle",
+              actions: ["invokeOnDragEnd"],
+            },
+            "CONTROLLED.CLOSE": {
+              target: "closed",
+              actions: ["resetRect"],
+            },
+            CLOSE: [
+              {
+                guard: "isOpenControlled",
+                target: "closed",
+                actions: ["invokeOnClose"],
+              },
+              {
+                target: "closed",
+                actions: ["invokeOnClose", "resetRect"],
+              },
+            ],
+            ESCAPE: {
+              target: "idle",
+            },
           },
-        ],
-        ESCAPE: [
-          {
-            guard: and("isOpenControlled", "closeOnEsc"),
-            actions: ["invokeOnClose"],
+        },
+        resizing: {
+          effects: ["trackPointerMove"],
+          exit: ["clearPrevSize"],
+          on: {
+            DRAG: {
+              actions: ["setSize"],
+            },
+            DRAG_END: {
+              target: "idle",
+              actions: ["invokeOnResizeEnd"],
+            },
+            "CONTROLLED.CLOSE": {
+              target: "closed",
+              actions: ["resetRect"],
+            },
+            CLOSE: [
+              {
+                guard: "isOpenControlled",
+                target: "closed",
+                actions: ["invokeOnClose"],
+              },
+              {
+                target: "closed",
+                actions: ["invokeOnClose", "resetRect"],
+              },
+            ],
+            ESCAPE: {
+              target: "idle",
+            },
           },
-          {
-            guard: "closeOnEsc",
-            target: "closed",
-            actions: ["invokeOnClose", "resetRect", "focusTriggerEl"],
-          },
-        ],
-        MINIMIZE: {
-          actions: ["setMinimized"],
-        },
-        MAXIMIZE: {
-          actions: ["setMaximized"],
-        },
-        RESTORE: {
-          actions: ["setRestored"],
-        },
-        MOVE: {
-          actions: ["setPositionFromKeyboard"],
-        },
-      },
-    },
-
-    "open.dragging": {
-      tags: ["open"],
-      effects: ["trackPointerMove"],
-      exit: ["clearPrevPosition"],
-      on: {
-        DRAG: {
-          actions: ["setPosition"],
-        },
-        DRAG_END: {
-          target: "open",
-          actions: ["invokeOnDragEnd"],
-        },
-        "CONTROLLED.CLOSE": {
-          target: "closed",
-          actions: ["resetRect"],
-        },
-        CLOSE: [
-          {
-            guard: "isOpenControlled",
-            target: "closed",
-            actions: ["invokeOnClose"],
-          },
-          {
-            target: "closed",
-            actions: ["invokeOnClose", "resetRect"],
-          },
-        ],
-        ESCAPE: {
-          target: "open",
-        },
-      },
-    },
-
-    "open.resizing": {
-      tags: ["open"],
-      effects: ["trackPointerMove"],
-      exit: ["clearPrevSize"],
-      on: {
-        DRAG: {
-          actions: ["setSize"],
-        },
-        DRAG_END: {
-          target: "open",
-          actions: ["invokeOnResizeEnd"],
-        },
-        "CONTROLLED.CLOSE": {
-          target: "closed",
-          actions: ["resetRect"],
-        },
-        CLOSE: [
-          {
-            guard: "isOpenControlled",
-            target: "closed",
-            actions: ["invokeOnClose"],
-          },
-          {
-            target: "closed",
-            actions: ["invokeOnClose", "resetRect"],
-          },
-        ],
-        ESCAPE: {
-          target: "open",
         },
       },
     },
@@ -333,9 +334,7 @@ export const machine = createMachine<FloatingPanelSchema>({
         const boundaryEl = prop("getBoundaryEl")?.()
 
         if (isHTMLElement(boundaryEl)) {
-          const obs = new win.ResizeObserver(exec)
-          obs.observe(boundaryEl)
-          return () => obs.disconnect()
+          return resizeObserverBorderBox.observe(boundaryEl, exec)
         }
 
         return addDomEvent(win, "resize", exec)

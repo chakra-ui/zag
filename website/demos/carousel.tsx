@@ -2,6 +2,7 @@ import * as carousel from "@zag-js/carousel"
 import { normalizeProps, useMachine } from "@zag-js/react"
 import { useId } from "react"
 import { HiChevronLeft, HiChevronRight } from "react-icons/hi"
+import styles from "../styles/machines/carousel.module.css"
 
 const items = [
   "https://tinyurl.com/5b6ka8jd",
@@ -11,42 +12,51 @@ const items = [
   "https://tinyurl.com/yp4rfum7",
 ]
 
-export function Carousel(props: any) {
+interface CarouselProps extends Omit<carousel.Props, "id" | "slideCount"> {}
+
+export function Carousel(props: CarouselProps) {
   const service = useMachine(carousel.machine, {
     id: useId(),
+    ...props,
     slideCount: items.length,
-    ...props.controls,
   })
 
   const api = carousel.connect(service, normalizeProps)
 
   return (
-    <>
-      <main className="carousel">
-        <div {...api.getRootProps()}>
-          <div {...api.getItemGroupProps()}>
-            {items.map((image, index) => (
-              <div {...api.getItemProps({ index })} key={index}>
-                <img src={image} alt={`Slide Image ${index}`} />
-              </div>
-            ))}
+    <div className={styles.Root} {...api.getRootProps()}>
+      <div className={styles.ItemGroup} {...api.getItemGroupProps()}>
+        {items.map((image, index) => (
+          <div
+            className={styles.Item}
+            {...api.getItemProps({ index })}
+            key={index}
+          >
+            <img src={image} alt={`Slide Image ${index}`} />
           </div>
+        ))}
+      </div>
 
-          <div {...api.getControlProps()}>
-            <button {...api.getPrevTriggerProps()}>
-              <HiChevronLeft />
-            </button>
-            <div {...api.getIndicatorGroupProps()}>
-              {api.pageSnapPoints.map((_, index) => (
-                <button key={index} {...api.getIndicatorProps({ index })} />
-              ))}
-            </div>
-            <button {...api.getNextTriggerProps()}>
-              <HiChevronRight />
-            </button>
-          </div>
+      <div className={styles.Control} {...api.getControlProps()}>
+        <button className={styles.PrevTrigger} {...api.getPrevTriggerProps()}>
+          <HiChevronLeft />
+        </button>
+        <div
+          className={styles.IndicatorGroup}
+          {...api.getIndicatorGroupProps()}
+        >
+          {api.pageSnapPoints.map((_, index) => (
+            <button
+              className={styles.Indicator}
+              key={index}
+              {...api.getIndicatorProps({ index })}
+            />
+          ))}
         </div>
-      </main>
-    </>
+        <button className={styles.NextTrigger} {...api.getNextTriggerProps()}>
+          <HiChevronRight />
+        </button>
+      </div>
+    </div>
   )
 }

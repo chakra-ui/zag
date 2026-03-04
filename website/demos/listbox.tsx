@@ -1,21 +1,9 @@
 import * as listbox from "@zag-js/listbox"
 import { normalizeProps, useMachine } from "@zag-js/react"
 import { useId, useMemo } from "react"
+import styles from "../styles/machines/listbox.module.css"
 
-interface ListboxProps {
-  controls: {
-    disabled: boolean
-    selectionMode: "single" | "multiple" | "extended"
-  }
-}
-
-interface Item {
-  id: number
-  image_url: string
-  name: string
-  username: string
-  favorite?: boolean
-}
+interface ListboxProps extends Omit<listbox.Props, "id" | "collection"> {}
 
 export function Listbox(props: ListboxProps) {
   const collection = listbox.collection({
@@ -29,7 +17,7 @@ export function Listbox(props: ListboxProps) {
   const service = useMachine(listbox.machine as listbox.Machine<Item>, {
     collection,
     id: useId(),
-    ...props.controls,
+    ...props,
   })
 
   const api = listbox.connect(service, normalizeProps)
@@ -37,22 +25,43 @@ export function Listbox(props: ListboxProps) {
   const groups = useMemo(() => collection.group(), [])
 
   return (
-    <div {...api.getRootProps()}>
-      <ul {...api.getContentProps()}>
+    <div className={styles.Root} {...api.getRootProps()}>
+      <div className={styles.Content} {...api.getContentProps()}>
         {groups.map(([group, items]) => (
-          <div {...api.getItemGroupProps({ id: group })}>
-            <p {...api.getItemGroupLabelProps({ htmlFor: group })}>{group}</p>
+          <div
+            className={styles.ItemGroup}
+            key={group}
+            {...api.getItemGroupProps({ id: group })}
+          >
+            <p
+              className={styles.ItemGroupLabel}
+              {...api.getItemGroupLabelProps({ htmlFor: group })}
+            >
+              {group}
+            </p>
             {items.map((item) => (
-              <div key={item.id} {...api.getItemProps({ item })}>
-                <img src={item.image_url} alt={item.name} />
+              <div
+                className={styles.Item}
+                key={item.id}
+                {...api.getItemProps({ item })}
+              >
+                <img src={item.image_url} alt="" />
                 {item.name}
               </div>
             ))}
           </div>
         ))}
-      </ul>
+      </div>
     </div>
   )
+}
+
+interface Item {
+  id: number
+  image_url: string
+  name: string
+  username: string
+  favorite?: boolean
 }
 
 const people: Item[] = [

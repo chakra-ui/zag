@@ -1,10 +1,10 @@
-import { dataAttr, getEventKey, getEventStep, getEventTarget, isSelfTarget } from "@zag-js/dom-query"
+import { dataAttr, getEventKey, getEventStep, getEventTarget, isLeftClick } from "@zag-js/dom-query"
 import type { EventKeyMap, NormalizeProps, PropTypes } from "@zag-js/types"
+import { match, toPx } from "@zag-js/utils"
 import { parts } from "./floating-panel.anatomy"
 import * as dom from "./floating-panel.dom"
-import type { FloatingPanelService, FloatingPanelApi, ResizeTriggerProps } from "./floating-panel.types"
+import type { FloatingPanelApi, FloatingPanelService, ResizeTriggerProps } from "./floating-panel.types"
 import { getResizeAxisStyle } from "./get-resize-axis-style"
-import { match, toPx } from "@zag-js/utils"
 
 const validStages = new Set(["minimized", "maximized", "default"])
 
@@ -61,6 +61,7 @@ export function connect<T extends PropTypes>(
     getTriggerProps() {
       return normalize.button({
         ...parts.trigger.attrs,
+        dir: prop("dir"),
         type: "button",
         disabled: prop("disabled"),
         id: dom.getTriggerId(scope),
@@ -79,6 +80,7 @@ export function connect<T extends PropTypes>(
     getPositionerProps() {
       return normalize.element({
         ...parts.positioner.attrs,
+        dir: prop("dir"),
         id: dom.getPositionerId(scope),
         style: {
           "--width": toPx(size?.width),
@@ -95,6 +97,7 @@ export function connect<T extends PropTypes>(
     getContentProps() {
       return normalize.element({
         ...parts.content.attrs,
+        dir: prop("dir"),
         role: "dialog",
         tabIndex: 0,
         hidden: !open,
@@ -104,6 +107,9 @@ export function connect<T extends PropTypes>(
         "data-dragging": dataAttr(dragging),
         "data-topmost": dataAttr(isTopmost),
         "data-behind": dataAttr(!isTopmost),
+        "data-minimized": dataAttr(isMinimized),
+        "data-maximized": dataAttr(isMaximized),
+        "data-staged": dataAttr(isStaged),
         style: {
           width: "var(--width)",
           height: "var(--height)",
@@ -114,7 +120,7 @@ export function connect<T extends PropTypes>(
         },
         onKeyDown(event) {
           if (event.defaultPrevented) return
-          if (!isSelfTarget(event)) return
+          if (event.currentTarget !== getEventTarget(event)) return
 
           const step = getEventStep(event) * prop("gridSize")
           const keyMap: EventKeyMap = {
@@ -149,6 +155,7 @@ export function connect<T extends PropTypes>(
     getCloseTriggerProps() {
       return normalize.button({
         ...parts.closeTrigger.attrs,
+        dir: prop("dir"),
         disabled: prop("disabled"),
         "aria-label": "Close Window",
         type: "button",
@@ -183,11 +190,14 @@ export function connect<T extends PropTypes>(
 
       return normalize.button({
         ...parts.stageTrigger.attrs,
+        dir: prop("dir"),
         disabled: prop("disabled"),
+        "data-stage": props.stage,
         ...actionProps,
         type: "button",
         onClick(event) {
           if (event.defaultPrevented) return
+          if (!prop("resizable")) return
           const type = match(props.stage, {
             minimized: () => "MINIMIZE",
             maximized: () => "MAXIMIZE",
@@ -201,10 +211,12 @@ export function connect<T extends PropTypes>(
     getResizeTriggerProps(props: ResizeTriggerProps) {
       return normalize.element({
         ...parts.resizeTrigger.attrs,
+        dir: prop("dir"),
         "data-disabled": dataAttr(!canResize),
         "data-axis": props.axis,
         onPointerDown(event) {
-          if (!canResize || event.button == 2) return
+          if (!canResize) return
+          if (!isLeftClick(event)) return
 
           event.currentTarget.setPointerCapture(event.pointerId)
           event.stopPropagation()
@@ -233,9 +245,11 @@ export function connect<T extends PropTypes>(
     getDragTriggerProps() {
       return normalize.element({
         ...parts.dragTrigger.attrs,
+        dir: prop("dir"),
         "data-disabled": dataAttr(!canDrag),
         onPointerDown(event) {
-          if (!canDrag || event.button == 2) return
+          if (!canDrag) return
+          if (!isLeftClick(event)) return
 
           const target = getEventTarget<HTMLElement>(event)
           if (target?.closest("button") || target?.closest("[data-no-drag]")) {
@@ -258,8 +272,10 @@ export function connect<T extends PropTypes>(
             node.releasePointerCapture(event.pointerId)
           }
         },
-        onDoubleClick() {
-          send({ type: isMaximized ? "RESTORE" : "MAXIMIZE" })
+        onDoubleClick(event) {
+          if (event.defaultPrevented) return
+          if (!prop("resizable")) return
+          send({ type: isStaged ? "RESTORE" : "MAXIMIZE" })
         },
         style: {
           WebkitUserSelect: "none",
@@ -273,14 +289,19 @@ export function connect<T extends PropTypes>(
     getControlProps() {
       return normalize.element({
         ...parts.control.attrs,
+        dir: prop("dir"),
         "data-disabled": dataAttr(prop("disabled")),
         "data-stage": context.get("stage"),
+        "data-minimized": dataAttr(isMinimized),
+        "data-maximized": dataAttr(isMaximized),
+        "data-staged": dataAttr(isStaged),
       })
     },
 
     getTitleProps() {
       return normalize.element({
         ...parts.title.attrs,
+        dir: prop("dir"),
         id: dom.getTitleId(scope),
       })
     },
@@ -288,17 +309,25 @@ export function connect<T extends PropTypes>(
     getHeaderProps() {
       return normalize.element({
         ...parts.header.attrs,
+        dir: prop("dir"),
         id: dom.getHeaderId(scope),
         "data-dragging": dataAttr(dragging),
         "data-topmost": dataAttr(isTopmost),
         "data-behind": dataAttr(!isTopmost),
+        "data-minimized": dataAttr(isMinimized),
+        "data-maximized": dataAttr(isMaximized),
+        "data-staged": dataAttr(isStaged),
       })
     },
 
     getBodyProps() {
       return normalize.element({
         ...parts.body.attrs,
+        dir: prop("dir"),
         "data-dragging": dataAttr(dragging),
+        "data-minimized": dataAttr(isMinimized),
+        "data-maximized": dataAttr(isMaximized),
+        "data-staged": dataAttr(isStaged),
         hidden: isMinimized,
       })
     },

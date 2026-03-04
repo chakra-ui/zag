@@ -5,18 +5,18 @@ machines** with addition of extra features we need for our components.
 
 ## Features
 
-- Finite states (non-nested)
+- Finite states with optional nested (hierarchical) states
 - Initial state
 - Transitions (object or strings)
 - Context
 - Entry actions
 - Exit actions
-- Delayed timeout actions (basically `setTimeout`)
-- Delayed interval actions (basically `setInterval`)
 - Transition actions
+- Effects
 - Boolean guard helpers (`and`, `or`, `not`)
-- Basic spawn helpers
-- Activities (for state nodes)
+
+> Note: The core package is intentionally minimal. It doesn't include delayed transitions, interval scheduling, spawn
+> helpers, or activities. Use actions/effects to perform side effects.
 
 > To better understand the state machines, we strongly recommend going though the
 > [xstate docs](https://xstate.js.org/docs/) and videos. It'll give you the foundations you need.
@@ -46,33 +46,100 @@ const toggleMachine = createMachine({
     active: { on: { TOGGLE: "inactive" } },
   },
 })
-
-toggleMachine.start()
-console.log(toggleMachine.state.value) // => "inactive"
-
-toggleMachine.send("TOGGLE")
-console.log(toggleMachine.state.value) // => "active"
-
-toggleMachine.send("TOGGLE")
-console.log(toggleMachine.state.value) // => "inactive"
 ```
 
-**Usage (service):**
+**Usage (service via adapter):**
 
 ```js
 import { createMachine } from "@zag-js/core"
+import { VanillaMachine } from "@zag-js/vanilla"
 
-const toggleMachine = createMachine({...})
-toggleMachine.start()
-
-toggleService.subscribe((state) => {
-  console.log(state.value)
+const machine = createMachine({
+  initialState() {
+    return "inactive"
+  },
+  states: {
+    inactive: { on: { TOGGLE: "active" } },
+    active: { on: { TOGGLE: "inactive" } },
+  },
 })
 
-toggleService.send("TOGGLE")
-toggleService.send("TOGGLE")
-toggleService.stop()
+const service = new VanillaMachine(machine)
+service.start()
+
+service.subscribe(() => {
+  console.log(service.state.get())
+})
+
+service.send({ type: "TOGGLE" })
+service.send({ type: "TOGGLE" })
+service.stop()
 ```
+
+### Nested states (dot notation)
+
+```ts
+import { createMachine } from "@zag-js/core"
+
+const machine = createMachine({
+  initialState() {
+    return "dialog"
+  },
+  states: {
+    dialog: {
+      tags: ["overlay"],
+      initial: "closed",
+      states: {
+        closed: { on: { OPEN: { target: "dialog.open" } } },
+        open: { on: { CLOSE: { target: "dialog.closed" } } },
+      },
+      // parent-level transitions still work
+      on: { RESET: { target: "dialog.closed" } },
+    },
+  },
+})
+
+// service.state.matches("dialog.open") === true when nested state is active
+```
+
+### State IDs and `#id` targets
+
+Use `id` on a state node when you want to target it explicitly from anywhere in the machine.
+
+```ts
+import { createMachine } from "@zag-js/core"
+
+const machine = createMachine({
+  initialState() {
+    return "dialog"
+  },
+  states: {
+    dialog: {
+      initial: "open",
+      states: {
+        focused: {
+          id: "dialogFocused",
+        },
+        open: {
+          initial: "idle",
+          states: {
+            idle: {
+              on: {
+                CLOSE: { target: "#dialogFocused" },
+              },
+            },
+          },
+        },
+      },
+    },
+  },
+})
+```
+
+Notes:
+
+- `#id` targets resolve by state node `id` (XState-style).
+- State IDs must be unique within a machine.
 
 ## API
 
@@ -87,39 +154,20 @@ Creates a new finite state machine from the config.
 
 **Returns:**
 
-A `Machine`, which provides:
-
-- `machine.initialState`: the machine's resolved initial state
-- `machine.start()`: the function to start the machine in the specified initial state.
-- `machine.stop()`: the function to stop the machine completely. It also cleans up all scheduled actions and timeouts.
-- `machine.transition(state, event)`: a transition function that returns the next state given the current `state` and
-  `event`. It also performs any delayed, entry or exit side-effects.
-- `machine.send(event)`: a transition function instructs the machine to execute a transition based on the event.
-- `machine.onTransition(fn)`: a function that gets called when the machine transition function instructs the machine to
-  execute a transition based on the event.
-- `machine.onChange(fn)`: a function that gets called when the machine's context value changes.
-- `machine.state`: the state object that describes the machine at a specific point in time. It contains the following
-  properties:
-  - `value`: the current state value
-  - `previousValue`: the previous state value
-  - `event`: the event that triggered the transition to the current state
-  - `nextEvents`: the list of events the machine can respond to at its current state
-  - `tags`: the tags associated with this state
-  - `done`: whether the machine that reached its final state
-  - `context`: the current context value
-  - `matches(...)`: a function used to test whether the current state matches one or more state values
+A machine definition object consumed by framework adapters (React, Solid, Svelte, Vue, Preact, Vanilla) to create a
+runtime service.
 
 The machine config has this schema:
 
 ### Machine config
 
-- `id` (string) - an identifier for the type of machine this is. Useful for debugging.
-- `context` (object) - the extended state data that represents quantitative data (string, number, objects, etc) that can
-  be modified in the machine.
-- `initial` (string) - the key of the initial state.
-- `states` (object) - an object mapping state names (keys) to states
-- `on` (object) - an global mapping of event types to transitions. If specified, this event will called if the state
-  node doesn't handle the emitted event.
+- `initialState` (function) - returns the machine's initial state value.
+- `states` (object) - mapping of state names to state configs. Supports nested `states` and `initial` for child states.
+- `on` (object) - optional global transitions available from any state.
+- `context` (function) - returns bindable context fields.
+- `computed` (object) - derived values based on context, props, refs.
+- `entry` / `exit` / `effects` - root-level actions/effects.
+- `implementations` (object) - lookup tables for `actions`, `guards`, `effects`.
 
 ### State config
 

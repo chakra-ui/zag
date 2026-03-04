@@ -19,6 +19,7 @@ export interface ValueTranslationDetails {
   max: number
   min: number
   percent: number
+  formatter: Intl.NumberFormat
 }
 
 export interface ValueChangeDetails {
@@ -26,7 +27,7 @@ export interface ValueChangeDetails {
 }
 
 export interface IntlTranslations {
-  value(details: ValueTranslationDetails): string
+  value: (details: ValueTranslationDetails) => string
 }
 
 export type ElementIds = Partial<{
@@ -76,6 +77,8 @@ export interface ProgressProps extends DirectionProperty, CommonProperties, Orie
   /**
    * The options to use for formatting the value.
    * @default { style: "percent" }
+   *
+   * @see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/NumberFormat/NumberFormat
    */
   formatOptions?: Intl.NumberFormatOptions | undefined
   /**
@@ -131,15 +134,15 @@ export interface ProgressApi<T extends PropTypes = PropTypes> {
   /**
    * Sets the current value of the progress bar.
    */
-  setValue(value: number | null): void
+  setValue: (value: number | null) => void
   /**
    * Sets the current value of the progress bar to the max value.
    */
-  setToMax(): void
+  setToMax: VoidFunction
   /**
    * Sets the current value of the progress bar to the min value.
    */
-  setToMin(): void
+  setToMin: VoidFunction
   /**
    * The percentage of the progress bar's value.
    */
@@ -161,15 +164,15 @@ export interface ProgressApi<T extends PropTypes = PropTypes> {
    */
   indeterminate: boolean
 
-  getRootProps(): T["element"]
-  getLabelProps(): T["element"]
-  getTrackProps(): T["element"]
-  getValueTextProps(): T["element"]
-  getRangeProps(): T["element"]
-  getViewProps(props: ViewProps): T["element"]
-  getCircleProps(): T["svg"]
-  getCircleTrackProps(): T["circle"]
-  getCircleRangeProps(): T["circle"]
+  getRootProps: () => T["element"]
+  getLabelProps: () => T["element"]
+  getTrackProps: () => T["element"]
+  getValueTextProps: () => T["element"]
+  getRangeProps: () => T["element"]
+  getViewProps: (props: ViewProps) => T["element"]
+  getCircleProps: () => T["svg"]
+  getCircleTrackProps: () => T["circle"]
+  getCircleRangeProps: () => T["circle"]
 }
 
 /* -----------------------------------------------------------------------------

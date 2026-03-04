@@ -1,8 +1,9 @@
-import { ControlRecord, deepGet, deepSet, getControlDefaults } from "@zag-js/shared"
-import { useState } from "preact/hooks"
+import { ControlRecord, deepGet, deepSet, getControlDefaults, getTransformedControlValues } from "@zag-js/shared"
+import { useMemo, useState } from "preact/hooks"
 
 export function useControls<T extends ControlRecord>(config: T) {
   const [state, __setState] = useState(getControlDefaults(config))
+  const context = useMemo(() => getTransformedControlValues(config, state), [config, state])
 
   const setState = (key: string, value: any) => {
     __setState((s) => {
@@ -13,7 +14,7 @@ export function useControls<T extends ControlRecord>(config: T) {
   }
 
   return {
-    context: state,
+    context,
     ui: () => (
       <div className="controls-container">
         {Object.keys(config).map((key) => {

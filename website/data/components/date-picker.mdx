@@ -4,13 +4,12 @@ description: Using the date-picker machine in your project.
 package: "@zag-js/date-picker"
 ---
 
-# Date Picker
+A date picker lets you enter a date through text input or pick one from a
+calendar.
 
-A datepicker allows users to enter a date either through text input, or by
-choosing a date from the calendar.
-
-> **Good to know**: The date picker machine is built around the
-> [ISO 8601 date format](https://www.iso.org/iso-8601-date-and-time-format.html)
+> **Good to know**: The date picker is built on top of the
+> [`@internationalized/date`](https://react-spectrum.adobe.com/internationalized/date/CalendarDate.html)
+> library.
 
 <Resources pkg="@zag-js/date-picker" />
 
@@ -19,22 +18,23 @@ choosing a date from the calendar.
 **Features**
 
 - Displays a calendar view for date selection
-- Support for date range selection
-- Support for disabling specific dates
-- Localization support
+- Supports `single`, `multiple`, and `range` selection modes
+- Supports disabling specific dates
+- Supports date range presets
+- Supports week numbers
+- Supports custom format and parse logic
+- Works with localization, timezone, and custom calendar systems
 - Provides keyboard accessibility for navigating the calendar.
 
 ## Installation
 
-To use the date-picker machine in your project, run the following command in
-your command line:
+Install the date-picker package:
 
 <CodeSnippet id="date-picker/installation.mdx" />
 
 ## Anatomy
 
-To set up the date-picker correctly, you'll need to understand its anatomy and
-how we name its parts.
+Check the date-picker anatomy and part names.
 
 > Each part includes a `data-part` attribute to help identify them in the DOM.
 
@@ -42,36 +42,30 @@ how we name its parts.
 
 ## Usage
 
-First, import the date picker package into your project
+Import the package:
 
-```jsx
+```tsx
 import * as datepicker from "@zag-js/date-picker"
 ```
 
-The date picker package exports these key functions:
+These are the key exports:
 
-- `machine` — The state machine logic for the date-picker widget.
-- `connect` — The function that translates the machine's state to JSX attributes
-  and event handlers.
-- `parse` - The function that parses the date string into a date object. This
-  function uses
-  [`@internationalized/date`](https://react-spectrum.adobe.com/internationalized/date/CalendarDate.html)
-  under the hood.
+- `machine` - Behavior logic.
+- `connect` - Maps behavior to JSX props and event handlers.
+- `parse` - Parses an ISO 8601 date string.
 
 > You'll also need to provide a unique `id` to the `useMachine` hook. This is
 > used to ensure that every part has a unique identifier.
 
-Next, import the required hooks and functions for your framework and use the
-date-picker machine in your project 🔥
+Then use the framework integration helpers:
 
 <CodeSnippet id="date-picker/usage.mdx" />
 
 ### Setting the initial date
 
-To set the initial value that is rendered by the date picker, set the `value`
-property in the machine context.
+To set the initial value rendered by the date picker, set `defaultValue`.
 
-```jsx
+```tsx
 const service = useMachine(datepicker.machine, {
   defaultValue: [datepicker.parse("2022-01-01")],
 })
@@ -79,26 +73,43 @@ const service = useMachine(datepicker.machine, {
 
 ### Controlling the selected date
 
-Use the `api.setValue` method to control the selected date in the DatePicker
-component.
+Use the `value` and `onValueChange` properties to programmatically control the
+selected date.
 
-```jsx
-// parse the date string into a date object
-const nextValue = datepicker.parse("2022-01-01")
-
-// set the new value
-api.setValue(nextValue)
+```tsx
+const service = useMachine(datepicker.machine, {
+  value: [datepicker.parse("2022-01-01")],
+  onValueChange(details) {
+    // details => { value: DateValue[], valueAsString: string[], view: "day" | "month" | "year" }
+    console.log("selected date:", details.valueAsString)
+  },
+})
 ```
 
-> Alternatively, you can also use the `value` and `onValueChange` callbacks to
-> programmatically control the selected date.
+You can also set it with `api.setValue`.
+
+```tsx
+const nextValue = datepicker.parse("2022-01-01")
+api.setValue([nextValue])
+```
 
 ### Controlling the open state
 
-To manage the open state of the datepicker's dialog, we recommended using
-`api.setOpen` method.
+Use `open` and `onOpenChange` to control the popup state.
 
-```jsx
+```tsx
+const service = useMachine(datepicker.machine, {
+  open: true,
+  onOpenChange(details) {
+    // details => { open: boolean, value: DateValue[] }
+    console.log("open state changed to:", details.open)
+  },
+})
+```
+
+You can also manage it with `api.setOpen`.
+
+```tsx
 // open the date picker
 api.setOpen(true)
 
@@ -106,31 +117,25 @@ api.setOpen(true)
 api.setOpen(false)
 ```
 
-> Alternatively, you can also use the `open` and `onOpenChange` callbacks to
-> programmatically control the open state.
-
 ### Setting the min and max dates
 
 To constrain the date range that can be selected by the user, set the `min` and
-`max` properties in the machine context.
+`max` properties.
 
-```jsx
+```tsx
 const service = useMachine(datepicker.machine, {
   min: datepicker.parse("2022-01-01"),
   max: datepicker.parse("2022-12-31"),
 })
 ```
 
-When the min or max date value is reached, the next and prev triggers will be
-disabled.
+When min or max is reached, previous/next triggers are disabled.
 
 ### Changing the start of the week
 
-Set the `startOfWeek` property in the machine context to change the start of the
-week. The property accepts a number from `0` to `6`, where `0` is Sunday and `6`
-is Saturday.
+Set `startOfWeek` from `0` to `6` (`0` is Sunday, `6` is Saturday).
 
-```jsx
+```tsx
 const service = useMachine(datepicker.machine, {
   startOfWeek: 1, // Monday
 })
@@ -138,10 +143,9 @@ const service = useMachine(datepicker.machine, {
 
 ### Disabling the date picker
 
-To disable the date picker, set the `disabled` property in the machine context
-to `true`.
+Set `disabled` to `true` to disable the picker.
 
-```jsx
+```tsx
 const service = useMachine(datepicker.machine, {
   disabled: true,
 })
@@ -149,10 +153,10 @@ const service = useMachine(datepicker.machine, {
 
 ### Rendering month and year pickers
 
-To render the month and year pickers, use the `api.getMonthSelectProps` and
-`api.getYearSelectProps` prop getters.
+Render month and year selects with `api.getMonthSelectProps` and
+`api.getYearSelectProps`.
 
-```jsx
+```tsx
 <div>
   <select {...api.getMonthSelectProps()}>
     {api.getMonths().map((month, i) => (
@@ -174,24 +178,9 @@ To render the month and year pickers, use the `api.getMonthSelectProps` and
 
 ### Marking unavailable dates
 
-To mark specific dates as unavailable, set the `isDateUnavailable` function in
-the machine context. This function should return `true` for dates that are
-unavailable.
+Set `isDateUnavailable` and return `true` for blocked dates.
 
-```jsx
-const service = useMachine(datepicker.machine, {
-  isDateUnavailable: (date, locale) => {
-    // mark weekends as unavailable
-    return date.day === 0 || date.day === 6
-  },
-})
-```
-
-You can also leverage the numerous helpers from
-[`@internationalized/date`](https://react-spectrum.adobe.com/internationalized/date/CalendarDate.html)
-to create more complex date availability rules.
-
-```jsx
+```tsx
 import { isWeekend } from "@internationalized/date"
 
 const service = useMachine(datepicker.machine, {
@@ -204,59 +193,62 @@ const service = useMachine(datepicker.machine, {
 
 ### Setting the calendar starting view
 
-The calendar view is set to `day` by default. To change the starting view of the
-calendar, set the `view` property in the machine context to either `day`,
-`month`, or `year`.
+The default view is `day`. Set `defaultView` to `day`, `month`, or `year` to
+change it.
 
-```jsx
+```tsx
 const service = useMachine(datepicker.machine, {
-  view: "month",
+  defaultView: "month",
 })
 ```
 
 ### Setting the read-only mode
 
-Set the `readOnly` property in the machine context to `true` to make the date
-picker read-only. This means that users can't change the selected date.
+Set `readOnly` to `true` to prevent value changes.
 
-```jsx
+```tsx
 const service = useMachine(datepicker.machine, {
   readOnly: true,
 })
 ```
 
+### Required and invalid state
+
+Use `required` and `invalid` for form validation and UI state.
+
+```tsx
+const service = useMachine(datepicker.machine, {
+  required: true,
+  invalid: false,
+})
+```
+
 ### Setting the focused date
 
-The datepicker's focused date is set to either the first selected date or
-today's date by default.
+By default, focused date is the first selected date or today. Set
+`defaultFocusedValue` to override it.
 
-To change the focused date, set the `focusedDate` property in the machine
-context.
-
-```jsx
+```tsx
 const service = useMachine(datepicker.machine, {
-  focusedDate: datepicker.parse("2022-01-01"),
+  defaultFocusedValue: datepicker.parse("2022-01-01"),
 })
 ```
 
 ### Rendering the calendar inline
 
-To render the calendar inline, we recommended setting the `open` property to
-`true` and `closeOnSelect` to `false`.
+To render the calendar inline, set `inline` to `true`.
 
-```jsx
+```tsx
 const service = useMachine(datepicker.machine, {
-  open: true,
-  closeOnSelect: false,
+  inline: true,
 })
 ```
 
 ### Usage within a form
 
-To use the date picker within a form, set the `name` property in the machine
-context. This property is used to identify the date picker in the form data.
+Set `name` to include the picker in form data.
 
-```jsx
+```tsx
 const service = useMachine(datepicker.machine, {
   name: "date",
 })
@@ -264,28 +256,260 @@ const service = useMachine(datepicker.machine, {
 
 ### Rendering fixed number of weeks
 
-The datepicker's calendar will render the weeks needed to display all of the
-days in the month. Sometimes this can result in a jump in the UI when navigating
-between different sized months (e.g., February vs. March).
+Set `fixedWeeks` to `true` to always render 6 weeks and avoid layout jumps
+between months.
 
-To ensure the calendar renders the maximum number of weeks (6), you can set the
-`fixedWeeks` prop to `true`.
-
-```jsx
+```tsx
 const service = useMachine(datepicker.machine, {
   fixedWeeks: true,
 })
 ```
 
+### Showing week numbers
+
+Set `showWeekNumbers` to `true` to enable a week-number column in day view.
+
+```tsx
+const service = useMachine(datepicker.machine, {
+  showWeekNumbers: true,
+})
+```
+
+Then render the week-number header and cells in your day table.
+
+```tsx
+<table {...api.getTableProps({ view: "day" })}>
+  <thead {...api.getTableHeaderProps({ view: "day" })}>
+    <tr {...api.getTableRowProps({ view: "day" })}>
+      {api.showWeekNumbers && (
+        <th {...api.getWeekNumberHeaderCellProps({ view: "day" })}>Wk</th>
+      )}
+      {api.weekDays.map((day, i) => (
+        <th scope="col" key={i} aria-label={day.long}>
+          {day.narrow}
+        </th>
+      ))}
+    </tr>
+  </thead>
+  <tbody {...api.getTableBodyProps({ view: "day" })}>
+    {api.weeks.map((week, weekIndex) => (
+      <tr key={weekIndex} {...api.getTableRowProps({ view: "day" })}>
+        {api.showWeekNumbers && (
+          <td {...api.getWeekNumberCellProps({ weekIndex, week })}>
+            {api.getWeekNumber(week)}
+          </td>
+        )}
+        {week.map((value, i) => (
+          <td key={i} {...api.getDayTableCellProps({ value })}>
+            <div {...api.getDayTableCellTriggerProps({ value })}>
+              {value.day}
+            </div>
+          </td>
+        ))}
+      </tr>
+    ))}
+  </tbody>
+</table>
+```
+
+### Choosing a selection mode
+
+Use `selectionMode` to switch between `single`, `multiple`, and `range`.
+
+```tsx
+const service = useMachine(datepicker.machine, {
+  selectionMode: "multiple",
+})
+```
+
+If you use `multiple`, you can cap selections with `maxSelectedDates`.
+
+```tsx
+const service = useMachine(datepicker.machine, {
+  selectionMode: "multiple",
+  maxSelectedDates: 3,
+})
+```
+
+### Using range presets
+
+In range mode, `api.getPresetTriggerProps` accepts a preset key like
+`"last7Days"` or a custom `DateValue[]`.
+
+```tsx
+const service = useMachine(datepicker.machine, {
+  selectionMode: "range",
+})
+```
+
+```tsx
+<button {...api.getPresetTriggerProps({ value: "last7Days" })}>
+  Last 7 days
+</button>
+<button {...api.getPresetTriggerProps({ value: "last30Days" })}>
+  Last 30 days
+</button>
+```
+
+```tsx
+<button
+  {...api.getPresetTriggerProps({
+    value: [datepicker.parse("2024-01-01"), datepicker.parse("2024-01-15")],
+  })}
+>
+  First half of Jan
+</button>
+```
+
+### Customizing format and parse behavior
+
+Use `format` and `parse` to control how input text is displayed and parsed.
+
+```tsx
+const service = useMachine(datepicker.machine, {
+  format: (date, details) =>
+    date
+      .toDate(details.timeZone)
+      .toLocaleDateString(details.locale, { dateStyle: "short" }),
+  parse: (value) => datepicker.parse(value),
+})
+```
+
+You can also build specialized pickers:
+
+- Month-year picker: use `minView: "month"` and `placeholder: "mm/yyyy"`
+- Year picker: use `minView: "year"`, `defaultView: "year"`, and
+  `placeholder: "yyyy"`
+
+```tsx
+import { CalendarDate } from "@internationalized/date"
+
+const service = useMachine(datepicker.machine, {
+  minView: "month",
+  view: "month",
+  placeholder: "mm/yyyy",
+  format: (date) => `${String(date.month).padStart(2, "0")}/${date.year}`,
+  parse: (value) => {
+    const match = value.match(/^(\d{1,2})\/(\d{4})$/)
+    if (!match) return undefined
+    const [_, month, year] = match.map(Number)
+    return new CalendarDate(year, month, 1)
+  },
+})
+```
+
+```tsx
+import { CalendarDate } from "@internationalized/date"
+
+const service = useMachine(datepicker.machine, {
+  selectionMode: "range",
+  minView: "year",
+  defaultView: "year",
+  placeholder: "yyyy",
+  format: (date) => String(date.year),
+  parse: (value) => {
+    const match = value.match(/^(\d{4})$/)
+    if (!match) return undefined
+    const [_, year] = match.map(Number)
+    return new CalendarDate(year, 1, 1)
+  },
+})
+```
+
+### Setting locale and timezone
+
+Set `locale` and `timeZone` to control date rendering.
+
+```tsx
+const service = useMachine(datepicker.machine, {
+  locale: "en-GB",
+  timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+})
+```
+
+### Using custom calendar systems
+
+Pass a dedicated `createCalendar` function so you only ship the calendar your
+locale needs.
+
+```tsx
+import { PersianCalendar } from "@internationalized/date"
+
+function createPersianCalendar(identifier: string) {
+  if (identifier === "persian") return new PersianCalendar()
+  throw new Error(`Unsupported calendar: ${identifier}`)
+}
+
+const service = useMachine(datepicker.machine, {
+  locale: "fa-IR",
+  createCalendar: createPersianCalendar,
+})
+```
+
+```tsx
+import { BuddhistCalendar } from "@internationalized/date"
+
+function createBuddhistCalendar(identifier: string) {
+  if (identifier === "buddhist") return new BuddhistCalendar()
+  throw new Error(`Unsupported calendar: ${identifier}`)
+}
+
+const service = useMachine(datepicker.machine, {
+  locale: "th-TH",
+  createCalendar: createBuddhistCalendar,
+})
+```
+
+### Restricting available views
+
+Use `minView` and `maxView` to limit view navigation.
+
+```tsx
+const service = useMachine(datepicker.machine, {
+  minView: "month",
+  maxView: "year",
+})
+```
+
+### Controlling open behavior
+
+By default, the picker closes after selection and does not open on input click.
+You can change both behaviors.
+
+```tsx
+const service = useMachine(datepicker.machine, {
+  openOnClick: true,
+  closeOnSelect: false,
+})
+```
+
+Use `defaultOpen` if you want the calendar to start open in uncontrolled mode.
+
+```tsx
+const service = useMachine(datepicker.machine, {
+  defaultOpen: true,
+})
+```
+
+### Allowing outside-day selection
+
+Days outside the visible month are disabled by default. Set
+`outsideDaySelectable` to `true` if you want them selectable.
+
+```tsx
+const service = useMachine(datepicker.machine, {
+  outsideDaySelectable: true,
+})
+```
+
 ### Listening to date changes
 
-To listen to date changes, use the `onValueChange` callback in the machine
-context.
+Use `onValueChange` to listen for date changes.
 
-```jsx
+```tsx
 const service = useMachine(datepicker.machine, {
   onValueChange(details) {
-    // details => { value: DateValue[], valueAsString: string[], view: string }
+    // details => { value: DateValue[], valueAsString: string[], view: "day" | "month" | "year" }
     console.log("selected date:", details.valueAsString)
   },
 })
@@ -293,21 +517,50 @@ const service = useMachine(datepicker.machine, {
 
 ### Listening to view changes
 
-When the calendar view changes by click on the view controls, the `onViewChange`
-callback is invoked.
+Use `onViewChange` to listen for view changes.
 
-```jsx
+```tsx
 const service = useMachine(datepicker.machine, {
   onViewChange(details) {
-    // details => { view: string }
+    // details => { view: "day" | "month" | "year" }
     console.log("view changed to:", details.view)
+  },
+})
+```
+
+### Controlling the focused date
+
+Use `focusedValue` and `onFocusChange` to control keyboard focus in the
+calendar.
+
+```tsx
+const service = useMachine(datepicker.machine, {
+  focusedValue: datepicker.parse("2022-01-01"),
+  onFocusChange(details) {
+    console.log("focused date:", details.focusedValue)
+  },
+})
+```
+
+### Listening to focus and visible range changes
+
+Use `onFocusChange` for focused-date changes and `onVisibleRangeChange` for
+visible-range changes.
+
+```tsx
+const service = useMachine(datepicker.machine, {
+  onFocusChange(details) {
+    console.log("focused date:", details.focusedValue)
+  },
+  onVisibleRangeChange(details) {
+    console.log("visible range:", details.visibleRange)
   },
 })
 ```
 
 ### Rendering multiple months
 
-To display multiple months in the calendar
+To display multiple months:
 
 - set the `numOfMonths` prop to the desired number of months
 - generate the weeks for the offset months using `api.getOffset({ months: 1 })`
@@ -321,7 +574,7 @@ const service = useMachine(datepicker.machine, {
 const offset = api.getOffset({ months: 1 })
 ```
 
-Next, render the calendar for the offset months.
+Then render the offset months.
 
 ```tsx
 <tbody {...api.getTableBodyProps({ view: "day" })}>
@@ -350,10 +603,31 @@ Next, render the calendar for the offset months.
 </tbody>
 ```
 
+### Positioning
+
+Use `positioning` to customize popup placement.
+
+```tsx
+const service = useMachine(datepicker.machine, {
+  positioning: { placement: "bottom-start" },
+})
+```
+
+### Localization
+
+Use `translations` to customize accessibility labels and messages.
+
+```tsx
+const service = useMachine(datepicker.machine, {
+  translations: {
+    clearTrigger: "Clear date",
+  },
+})
+```
+
 ## Styling guide
 
-Earlier, we mentioned that each date-picker part has a `data-part` attribute
-added to them to select and style them in the DOM.
+Each date-picker part includes a `data-part` attribute you can target in CSS.
 
 ```css
 [data-scope="date-picker"][data-part="root"] {
@@ -432,3 +706,11 @@ The date picker machine exposes the following context properties:
 The date picker `api` exposes the following methods:
 
 <ApiTable name="date-picker" />
+
+### Data Attributes
+
+<DataAttrTable name="date-picker" />
+
+### CSS Variables
+
+<CssVarTable name="date-picker" />

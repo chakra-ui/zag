@@ -10,7 +10,16 @@ import type {
   Params,
   Service,
 } from "@zag-js/core"
-import { createScope, INIT_STATE, MachineStatus } from "@zag-js/core"
+import {
+  createScope,
+  findTransition,
+  getExitEnterStates,
+  hasTag,
+  INIT_STATE,
+  MachineStatus,
+  matchesState,
+  resolveStateValue,
+} from "@zag-js/core"
 import { compact, ensure, isFunction, isString, toArray, warn } from "@zag-js/utils"
 import { flushSync, onDestroy, onMount } from "svelte"
 import { bindable } from "./bindable.svelte"
@@ -54,6 +63,9 @@ export function useMachine<T extends MachineSchema>(
     getRefs() {
       return refs as any
     },
+    getEvent() {
+      return getEvent()
+    },
   })
 
   const ctx: BindableContext<T> = {
@@ -92,11 +104,11 @@ export function useMachine<T extends MachineSchema>(
     ...state,
     hasTag(tag: T["tag"]) {
       const currentState = state.get()
-      return !!machine.states[currentState as T["state"]]?.tags?.includes(tag)
+      return hasTag(machine, currentState, tag)
     },
     matches(...values: T["state"][]) {
       const currentState = state.get()
-      return values.includes(currentState)
+      return values.some((value) => matchesState(currentState as string, value as string))
     },
   })
 
@@ -175,38 +187,36 @@ export function useMachine<T extends MachineSchema>(
   }
 
   const state = bindable(() => ({
-    defaultValue: machine.initialState({ prop }),
+    defaultValue: resolveStateValue(machine, machine.initialState({ prop })),
     onChange(nextState, prevState) {
-      // compute effects: exit -> transition -> enter
+      const { exiting, entering } = getExitEnterStates(machine, prevState, nextState, transitionRef.current?.reenter)
 
-      // exit effects
-      if (prevState) {
-        const exitEffects = effects.get(prevState)
+      exiting.forEach((item) => {
+        const exitEffects = effects.get(item.path)
         exitEffects?.()
-        effects.delete(prevState)
-      }
+        effects.delete(item.path)
+      })
 
-      // exit actions
-      if (prevState) {
-        action(machine.states[prevState]?.exit)
-      }
+      exiting.forEach((item) => {
+        action(item.state?.exit)
+      })
 
-      // transition actions
       action(transitionRef.current?.actions)
 
-      // enter effect
-      const cleanup = effect(machine.states[nextState]?.effects)
-      if (cleanup) effects.set(nextState as string, cleanup)
+      entering.forEach((item) => {
+        const cleanup = effect(item.state?.effects)
+        if (cleanup) effects.set(item.path, cleanup)
+      })
 
-      // root entry actions
       if (prevState === INIT_STATE) {
         action(machine.entry)
         const cleanup = effect(machine.effects)
         if (cleanup) effects.set(INIT_STATE, cleanup)
       }
 
-      // enter actions
-      action(machine.states[nextState]?.entry)
+      entering.forEach((item) => {
+        action(item.state?.entry)
+      })
     },
   }))
 
@@ -238,21 +248,21 @@ export function useMachine<T extends MachineSchema>(
 
     let currentState = state.get()
 
-    // @ts-ignore
-    const transitions = machine.states[currentState].on?.[event.type] ?? machine.on?.[event.type]
-
+    const { transitions, source } = findTransition(machine, currentState, event.type as string)
     const transition = choose(transitions)
     if (!transition) return
 
     // save current transition
     transitionRef.current = transition
-    const target = transition.target ?? currentState
+    const target = resolveStateValue(machine, transition.target ?? currentState, source)
+
+    debug("transition", event.type, transition.target || currentState, `(${transition.actions})`)
 
     const changed = target !== currentState
     if (changed) {
       // state change is high priority
       state.set(target)
-    } else if (transition.reenter && !changed) {
+    } else if (transition.reenter) {
       // reenter will re-invoke the current state
       state.invoke(currentState, currentState)
     } else {
@@ -264,14 +274,20 @@ export function useMachine<T extends MachineSchema>(
   machine.watch?.(getParams())
 
   return {
-    state: getState(),
+    get state() {
+      return getState()
+    },
     send,
     context: ctx,
     prop,
-    scope,
+    get scope() {
+      return scope
+    },
     refs,
     computed,
-    event: getEvent(),
+    get event() {
+      return getEvent()
+    },
     getStatus: () => status,
   } as Service<T>
 }
@@ -283,5 +299,7 @@ function useProp<T>(value: () => T) {
 }
 
 function flush(fn: VoidFunction) {
-  flushSync(() => fn())
+  flushSync(() => {
+    queueMicrotask(() => fn())
+  })
 }

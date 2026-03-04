@@ -3,7 +3,7 @@ import { ListCollection } from "../src"
 interface Item {
   label: string
   value: string
-  disabled?: boolean
+  disabled?: boolean | undefined
 }
 
 interface GroupItem extends Item {
@@ -194,7 +194,12 @@ describe("list collection", () => {
   })
 
   test("group entries", () => {
-    const collection = new ListCollection<{ label: string; value: string; type: string; disabled?: boolean }>({
+    const collection = new ListCollection<{
+      label: string
+      value: string
+      type: string
+      disabled?: boolean | undefined
+    }>({
       items: [
         { label: "React", value: "react", type: "framework" },
         { label: "Vue", value: "vue", type: "framework" },
@@ -409,6 +414,97 @@ describe("list collection", () => {
         "label": "Solid",
         "type": "framework",
         "value": "solid",
+      }
+    `)
+  })
+
+  test("upsert / update existing item", () => {
+    const updatedItem = { label: "React 18", value: "react", disabled: false }
+    const next = list.upsert("react", updatedItem)
+
+    expect(next.getValues()).toMatchInlineSnapshot(`
+      [
+        "react",
+        "vue",
+        "solid",
+        "angular",
+      ]
+    `)
+
+    expect(next.find("react")).toMatchInlineSnapshot(`
+      {
+        "disabled": false,
+        "label": "React 18",
+        "value": "react",
+      }
+    `)
+
+    expect(next.size).toBe(4)
+  })
+
+  test("upsert / insert new item", () => {
+    const newItem = { label: "Svelte", value: "svelte", disabled: false }
+    const next = list.upsert("svelte", newItem)
+
+    expect(next.getValues()).toMatchInlineSnapshot(`
+      [
+        "react",
+        "vue",
+        "solid",
+        "angular",
+        "svelte",
+      ]
+    `)
+
+    expect(next.find("svelte")).toMatchInlineSnapshot(`
+      {
+        "disabled": false,
+        "label": "Svelte",
+        "value": "svelte",
+      }
+    `)
+
+    expect(next.size).toBe(5)
+  })
+
+  test("upsert / preserves original collection", () => {
+    const originalSize = list.size
+    const originalValues = list.getValues()
+
+    const newItem = { label: "Svelte", value: "svelte", disabled: false }
+    const next = list.upsert("svelte", newItem)
+
+    // Original collection should be unchanged
+    expect(list.size).toBe(originalSize)
+    expect(list.getValues()).toEqual(originalValues)
+    expect(list.has("svelte")).toBe(false)
+
+    // New collection should have the upserted item
+    expect(next.size).toBe(originalSize + 1)
+    expect(next.has("svelte")).toBe(true)
+  })
+
+  test("upsert / update with different value should not work", () => {
+    // This test ensures that upsert uses the value parameter to find the item,
+    // not the item's value property
+    const updatedItem = { label: "React 18", value: "react-new", disabled: false }
+    const next = list.upsert("react", updatedItem)
+
+    expect(next.getValues()).toMatchInlineSnapshot(`
+      [
+        "react-new",
+        "vue",
+        "solid",
+        "angular",
+      ]
+    `)
+
+    expect(next.find("react")).toBe(null)
+    expect(next.find("react-new")).toMatchInlineSnapshot(`
+      {
+        "disabled": false,
+        "label": "React 18",
+        "value": "react-new",
       }
     `)
   })

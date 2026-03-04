@@ -4,8 +4,6 @@ description: Using the accordion machine in your project.
 package: "@zag-js/accordion"
 ---
 
-# Accordion
-
 An accordion is a vertically stacked set of interactive headings containing a
 title, content snippet, or thumbnail representing a section of content.
 
@@ -16,20 +14,19 @@ title, content snippet, or thumbnail representing a section of content.
 **Features**
 
 - Full keyboard navigation
-- Can expand one or multiple items
-- Collapse each accordion item
+- Supports single and multiple expanded items
+- Supports collapsible items
+- Supports horizontal and vertical orientation
 
 ## Installation
 
-To use the accordion machine in your project, run the following command in your
-command line:
+Install the accordion package:
 
 <CodeSnippet id="accordion/installation.mdx" />
 
 ## Anatomy
 
-To set up the accordion correctly, you'll need to understand its anatomy and how
-we name its parts.
+Check the accordion anatomy and part names.
 
 > Each part includes a `data-part` attribute to help identify them in the DOM.
 
@@ -37,7 +34,7 @@ we name its parts.
 
 ## Usage
 
-First, import the accordion package into your project
+Import the accordion package:
 
 ```jsx
 import * as accordion from "@zag-js/accordion"
@@ -45,15 +42,12 @@ import * as accordion from "@zag-js/accordion"
 
 The accordion package exports two key functions:
 
-- `machine` — The state machine logic for the accordion widget.
-- `connect` — The function that translates the machine's state to JSX attributes
-  and event handlers.
+- `machine` - State machine logic.
+- `connect` - Maps machine state to JSX props and event handlers.
 
-> You'll also need to provide a unique `id` to the `useMachine` hook. This is
-> used to ensure that every part has a unique identifier.
+> Pass a unique `id` to `useMachine` so generated element ids stay predictable.
 
-Next, import the required hooks and functions for your framework and use the
-accordion machine in your project 🔥
+Then use the framework integration helpers:
 
 <CodeSnippet id="accordion/usage.mdx" />
 
@@ -63,11 +57,9 @@ recommended by the
 design pattern to ensure the accordion has the appropriate hierarchy on the
 page.
 
-### Opening multiple accordions at once
+### Opening multiple items
 
-To allow multiple items to be expanded at once, set `multiple` to `true`. This
-mode implicitly sets `collapsible` to `true` and ensures that each accordion can
-be expanded.
+Set `multiple` to `true` to allow more than one expanded item at a time.
 
 ```jsx {2}
 const service = useMachine(accordion.machine, {
@@ -75,19 +67,18 @@ const service = useMachine(accordion.machine, {
 })
 ```
 
-### Opening accordions by default
+### Setting the initial value
 
-To set the value of the accordion(s) that should be opened initially, pass the
-`defaultValue` property to the machine function.
+Set `defaultValue` to define expanded items on first render.
 
-```jsx {3,4,9}
-// for multiple accordions
+```jsx
+// multiple mode
 const service = useMachine(accordion.machine, {
   multiple: true,
-  defaultValue: ["home"],
+  defaultValue: ["home", "about"],
 })
 
-// for single accordions
+// single mode
 const service = useMachine(accordion.machine, {
   defaultValue: ["home"],
 })
@@ -95,15 +86,14 @@ const service = useMachine(accordion.machine, {
 
 ### Controlled accordions
 
-To control the accordion's value, pass the `value` and `onValueChange`
-properties to the machine function.
+Use `value` and `onValueChange` to control expanded items externally.
 
 <CodeSnippet id="accordion/controlled.mdx" />
 
-### Toggle each accordion item
+### Making items collapsible
 
-To collapse an already expanded accordion item by clicking on it, set the
-context's `collapsible` property to `true`.
+Set `collapsible` to `true` to allow closing an expanded item by clicking it
+again.
 
 > Note: If `multiple` is `true`, we internally set `collapsible` to be `true`.
 
@@ -113,7 +103,7 @@ const service = useMachine(accordion.machine, {
 })
 ```
 
-#### Listening for changes
+### Listening for value changes
 
 When the accordion value changes, the `onValueChange` callback is invoked.
 
@@ -123,6 +113,29 @@ const service = useMachine(accordion.machine, {
     // details => { value: string[] }
     console.log("selected accordion:", details.value)
   },
+})
+```
+
+### Listening for focus changes
+
+Use `onFocusChange` to react when keyboard focus moves between item triggers.
+
+```jsx
+const service = useMachine(accordion.machine, {
+  onFocusChange(details) {
+    // details => { value: string | null }
+    console.log("focused item:", details.value)
+  },
+})
+```
+
+### Horizontal orientation
+
+Set `orientation` to `horizontal` when rendering items side by side.
+
+```jsx {2}
+const service = useMachine(accordion.machine, {
+  orientation: "horizontal",
 })
 ```
 
@@ -149,8 +162,7 @@ can't be interacted with.
 //...
 ```
 
-You can also disable the entire accordion items by passing `disabled` to the
-machine's context.
+You can also disable the entire accordion by setting `disabled` on the machine.
 
 ```jsx {2}
 const service = useMachine(accordion.machine, {
@@ -160,14 +172,12 @@ const service = useMachine(accordion.machine, {
 
 ## Styling guide
 
-Earlier, we mentioned that each accordion part has a `data-part` attribute added
-to them to select and style them in the DOM.
+Each part includes a `data-part` attribute you can target in CSS.
 
 ### Open and closed state
 
-When an accordion item is expanded or collapsed, a `data-state` attribute is set
-on the item, trigger and content elements. This attribute is removed when it is
-closed.
+When an accordion item expands or collapses, `data-state` is set to `open` or
+`closed` on the item, trigger, and content elements.
 
 ```css
 [data-part="item"][data-state="open|closed"] {
@@ -202,7 +212,7 @@ the item and content.
 }
 ```
 
-## Creating Component
+## Creating a component
 
 Create your accordion component by abstracting the machine into your own
 component.
@@ -213,7 +223,7 @@ component.
 
 ### Implementation
 
-Use the the `splitProps` utility to separate the machine's props from the
+Use the `splitProps` utility to separate the machine's props from the
 component's props.
 
 <CodeSnippet id="accordion/component.api.mdx" />

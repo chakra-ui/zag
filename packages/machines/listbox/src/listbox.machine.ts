@@ -1,14 +1,23 @@
-import type { CollectionItem, ListCollection } from "@zag-js/collection"
-import { Selection } from "@zag-js/collection"
-import { createMachine } from "@zag-js/core"
+import {
+  Selection,
+  createSelectedItemMap,
+  deriveSelectionState,
+  resolveSelectedItems,
+  type CollectionItem,
+} from "@zag-js/collection"
+import { setup } from "@zag-js/core"
 import { getByTypeahead, observeAttributes, raf, scrollIntoView } from "@zag-js/dom-query"
-import { getInteractionModality, trackFocusVisible as trackFocusVisibleFn } from "@zag-js/focus-visible"
+import { getInteractionModality, setInteractionModality, trackFocusVisible } from "@zag-js/focus-visible"
 import { isEqual } from "@zag-js/utils"
 import { collection } from "./listbox.collection"
 import * as dom from "./listbox.dom"
 import type { ListboxSchema, SelectionDetails } from "./listbox.types"
 
-export const machine = createMachine<ListboxSchema>({
+const { guards, createMachine } = setup<ListboxSchema>()
+
+const { or } = guards
+
+export const machine = createMachine({
   props({ props }) {
     return {
       loopFocus: false,
@@ -23,15 +32,39 @@ export const machine = createMachine<ListboxSchema>({
     }
   },
 
-  context({ prop, bindable }) {
+  context({ prop, bindable, getContext }) {
+    const initialValue = prop("value") ?? prop("defaultValue") ?? []
+    const initialSelectedItems = prop("collection").findMany(initialValue)
+
     return {
       value: bindable(() => ({
         defaultValue: prop("defaultValue"),
         value: prop("value"),
         isEqual,
         onChange(value) {
-          const items = prop("collection").findMany(value)
-          return prop("onValueChange")?.({ value, items })
+          const context = getContext()
+          const collection = prop("collection")
+          const selectedItemMap = context.get("selectedItemMap")
+
+          const proposed = deriveSelectionState({
+            values: value,
+            collection,
+            selectedItemMap,
+          })
+
+          // When controlled, use prop value so cache stays in sync when controller ignores selection
+          const effectiveValue = prop("value") ?? value
+          const effective =
+            effectiveValue === value
+              ? proposed
+              : deriveSelectionState({
+                  values: effectiveValue,
+                  collection,
+                  selectedItemMap: proposed.nextSelectedItemMap,
+                })
+
+          context.set("selectedItemMap", effective.nextSelectedItemMap)
+          return prop("onValueChange")?.({ value, items: proposed.selectedItems })
         },
       })),
 
@@ -52,27 +85,27 @@ export const machine = createMachine<ListboxSchema>({
         defaultValue: null,
       })),
 
-      selectedItems: bindable<CollectionItem[]>(() => {
-        const value = prop("value") ?? prop("defaultValue") ?? []
-        const items = prop("collection").findMany(value)
-        return { defaultValue: items }
-      }),
-
-      valueAsString: bindable(() => {
-        const value = prop("value") ?? prop("defaultValue") ?? []
-        return { defaultValue: prop("collection").stringifyMany(value) }
+      selectedItemMap: bindable<Map<string, CollectionItem>>(() => {
+        return {
+          defaultValue: createSelectedItemMap({
+            selectedItems: initialSelectedItems,
+            collection: prop("collection"),
+          }),
+        }
       }),
 
       focused: bindable(() => ({
+        sync: true,
         defaultValue: false,
       })),
     }
   },
 
-  refs({ prop }) {
+  refs() {
     return {
       typeahead: { ...getByTypeahead.defaultOptions },
-      prevCollection: prop("collection"),
+      focusVisible: false,
+      inputState: { autoHighlight: false, focused: false },
     }
   },
 
@@ -87,6 +120,13 @@ export const machine = createMachine<ListboxSchema>({
       return selection
     },
     multiple: ({ prop }) => prop("selectionMode") === "multiple" || prop("selectionMode") === "extended",
+    selectedItems: ({ context, prop }) =>
+      resolveSelectedItems({
+        values: context.get("value"),
+        collection: prop("collection"),
+        selectedItemMap: context.get("selectedItemMap"),
+      }),
+    valueAsString: ({ computed, prop }) => prop("collection").stringifyItems(computed("selectedItems")),
   },
 
   initialState() {
@@ -101,7 +141,7 @@ export const machine = createMachine<ListboxSchema>({
       action(["syncHighlightedItem"])
     })
     track([() => prop("collection").toString()], () => {
-      action(["syncCollection"])
+      action(["syncHighlightedValue"])
     })
   },
 
@@ -123,26 +163,32 @@ export const machine = createMachine<ListboxSchema>({
     "VALUE.CLEAR": {
       actions: ["clearSelectedItems"],
     },
-    "CLEAR.CLICK": {
-      actions: ["clearSelectedItems"],
-    },
   },
 
   states: {
     idle: {
       effects: ["scrollToHighlightedItem"],
       on: {
-        "CONTENT.FOCUS": {
-          actions: ["setFocused"],
+        "INPUT.FOCUS": {
+          actions: ["setFocused", "setInputState"],
         },
+        "CONTENT.FOCUS": [
+          {
+            guard: or("hasSelectedValue", "hasHighlightedValue"),
+            actions: ["setFocused"],
+          },
+          {
+            actions: ["setFocused", "setDefaultHighlightedValue"],
+          },
+        ],
         "CONTENT.BLUR": {
-          actions: ["clearFocused"],
+          actions: ["clearFocused", "clearInputState"],
         },
         "ITEM.CLICK": {
           actions: ["setHighlightedItem", "selectHighlightedItem"],
         },
         "CONTENT.TYPEAHEAD": {
-          actions: ["highlightMatchingItem"],
+          actions: ["setFocused", "highlightMatchingItem"],
         },
         "ITEM.POINTER_MOVE": {
           actions: ["highlightItem"],
@@ -151,16 +197,26 @@ export const machine = createMachine<ListboxSchema>({
           actions: ["clearHighlightedItem"],
         },
         NAVIGATE: {
-          actions: ["setHighlightedItem", "selectWithKeyboard"],
+          actions: ["setFocused", "setHighlightedItem", "selectWithKeyboard"],
         },
       },
     },
   },
 
   implementations: {
+    guards: {
+      hasSelectedValue: ({ context }) => context.get("value").length > 0,
+      hasHighlightedValue: ({ context }) => context.get("highlightedValue") != null,
+    },
+
     effects: {
-      trackFocusVisible: ({ scope }) => {
-        return trackFocusVisibleFn({ root: scope.getRootNode?.() })
+      trackFocusVisible: ({ scope, refs }) => {
+        return trackFocusVisible({
+          root: scope.getRootNode?.(),
+          onChange(details) {
+            refs.set("focusVisible", details.isFocusVisible)
+          },
+        })
       },
 
       scrollToHighlightedItem({ context, prop, scope }) {
@@ -171,22 +227,31 @@ export const machine = createMachine<ListboxSchema>({
           const modality = getInteractionModality()
 
           // don't scroll into view if we're using the pointer
-          if (modality !== "keyboard") return
+          if (modality === "pointer") return
 
-          const itemEl = dom.getItemEl(scope, highlightedValue)
           const contentEl = dom.getContentEl(scope)
 
           const scrollToIndexFn = prop("scrollToIndexFn")
           if (scrollToIndexFn) {
             const highlightedIndex = prop("collection").indexOf(highlightedValue)
-            scrollToIndexFn?.({ index: highlightedIndex, immediate })
+            scrollToIndexFn?.({
+              index: highlightedIndex,
+              immediate,
+              getElement() {
+                return dom.getItemEl(scope, highlightedValue)
+              },
+            })
             return
           }
 
+          const itemEl = dom.getItemEl(scope, highlightedValue)
           scrollIntoView(itemEl, { rootEl: contentEl, block: "nearest" })
         }
 
-        raf(() => exec(true))
+        raf(() => {
+          setInteractionModality("virtual")
+          exec(true)
+        })
 
         const contentEl = () => dom.getContentEl(scope)
         return observeAttributes(contentEl, {
@@ -202,10 +267,11 @@ export const machine = createMachine<ListboxSchema>({
     actions: {
       selectHighlightedItem({ context, prop, event, computed }) {
         const value = event.value ?? context.get("highlightedValue")
-        if (value == null) return
+
+        const collection = prop("collection")
+        if (value == null || !collection.has(value)) return
 
         const selection = computed("selection")
-        const collection = prop("collection")
 
         if (event.shiftKey && computed("multiple") && event.anchorValue) {
           const next = selection.extendSelection(collection, event.anchorValue, value)
@@ -282,42 +348,13 @@ export const machine = createMachine<ListboxSchema>({
         context.set("value", [])
       },
 
-      syncCollection({ context, prop, refs }) {
-        const collection = prop("collection")
-
-        const highlightedItem = collection.find(context.get("highlightedValue"))
-        if (highlightedItem) context.set("highlightedItem", highlightedItem)
-
-        const selectedItems = collection.findMany(context.get("value"))
-        context.set("selectedItems", selectedItems)
-
-        const valueAsString = collection.stringifyItems(selectedItems)
-        context.set("valueAsString", valueAsString)
-
-        const highlightedValue = syncHighlightedValue(
-          collection,
-          refs.get("prevCollection"),
-          context.get("highlightedValue"),
-        )
-
-        queueMicrotask(() => {
-          context.set("highlightedValue", highlightedValue)
-          refs.set("prevCollection", collection)
-        })
-      },
-
       syncSelectedItems({ context, prop }) {
-        const collection = prop("collection")
-        const prevSelectedItems = context.get("selectedItems")
-
-        const value = context.get("value")
-        const selectedItems = value.map((value) => {
-          const item = prevSelectedItems.find((item) => collection.getItemValue(item) === value)
-          return item || collection.find(value)
+        const next = deriveSelectionState({
+          values: context.get("value"),
+          collection: prop("collection"),
+          selectedItemMap: context.get("selectedItemMap"),
         })
-
-        context.set("selectedItems", selectedItems)
-        context.set("valueAsString", collection.stringifyItems(selectedItems))
+        context.set("selectedItemMap", next.nextSelectedItemMap)
       },
 
       syncHighlightedItem({ context, prop }) {
@@ -327,12 +364,49 @@ export const machine = createMachine<ListboxSchema>({
         context.set("highlightedItem", highlightedItem)
       },
 
+      syncHighlightedValue({ context, prop, refs }) {
+        const collection = prop("collection")
+        const highlightedValue = context.get("highlightedValue")
+        const { autoHighlight } = refs.get("inputState")
+
+        // when autoHighlight is enabled, always highlight first item on collection change
+        if (autoHighlight) {
+          queueMicrotask(() => {
+            context.set("highlightedValue", prop("collection").firstValue ?? null)
+          })
+          return
+        }
+
+        // if highlighted value is no longer in collection, clear it
+        if (highlightedValue != null && !collection.has(highlightedValue)) {
+          queueMicrotask(() => {
+            context.set("highlightedValue", null)
+          })
+        }
+      },
+
       setFocused({ context }) {
         context.set("focused", true)
       },
 
+      setDefaultHighlightedValue({ context, prop }) {
+        const collection = prop("collection")
+        const firstValue = collection.firstValue
+        if (firstValue != null) {
+          context.set("highlightedValue", firstValue)
+        }
+      },
+
       clearFocused({ context }) {
         context.set("focused", false)
+      },
+
+      setInputState({ refs, event }) {
+        refs.set("inputState", { autoHighlight: !!event.autoHighlight, focused: true })
+      },
+
+      clearInputState({ refs }) {
+        refs.set("inputState", { autoHighlight: false, focused: false })
       },
     },
   },
@@ -349,48 +423,4 @@ function invokeOnSelect(current: Set<string>, next: Set<string>, onSelect?: (det
   for (const item of added) {
     onSelect?.({ value: item })
   }
-}
-
-function syncHighlightedValue<T>(
-  collection: ListCollection<T>,
-  prevCollection: ListCollection<T> | null,
-  highlightedValue: string | null,
-) {
-  if (highlightedValue != null && !collection.find(highlightedValue) && prevCollection) {
-    const startIndex = prevCollection.indexOf(highlightedValue)
-
-    const prevItems = [...prevCollection.items]
-    const items = [...collection.items]
-
-    const diff: number = (prevItems?.length ?? 0) - (items?.length ?? 0)
-    let index = Math.min(
-      diff > 1 ? Math.max((startIndex ?? 0) - diff + 1, 0) : (startIndex ?? 0),
-      (items?.length ?? 0) - 1,
-    )
-
-    let newValue: string | null = null
-    let isReverseSearching = false
-
-    while (index >= 0) {
-      if (!collection.getItemDisabled(items[index])) {
-        newValue = collection.getItemValue(items[index])
-        break
-      }
-      // Find next, not disabled item.
-      if (index < items.length - 1 && !isReverseSearching) {
-        index++
-        // Otherwise, find previous, not disabled item.
-      } else {
-        isReverseSearching = true
-        if (index > (startIndex ?? 0)) {
-          index = startIndex ?? 0
-        }
-        index--
-      }
-    }
-
-    return newValue
-  }
-
-  return null
 }

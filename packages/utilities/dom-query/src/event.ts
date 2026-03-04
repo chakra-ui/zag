@@ -1,11 +1,11 @@
 import type { MaybeFn } from "@zag-js/types"
-import { contains } from "./node"
-import { isAndroid, isApple, isMac } from "./platform"
+import { isAndroid, isMac } from "./platform"
 import type { AnyPointerEvent, EventKeyOptions, NativeEvent } from "./types"
 
 export function getBeforeInputValue(event: Pick<InputEvent, "currentTarget">) {
   const { selectionStart, selectionEnd, value } = event.currentTarget as HTMLInputElement
-  return value.slice(0, selectionStart!) + (event as any).data + value.slice(selectionEnd!)
+  const data = (event as any).data
+  return value.slice(0, selectionStart!) + (data ?? "") + value.slice(selectionEnd!)
 }
 
 function getComposedPath(event: any): EventTarget[] | undefined {
@@ -19,25 +19,17 @@ export function getEventTarget<T extends EventTarget>(
   return (composedPath?.[0] ?? event.target) as T | null
 }
 
-export const isSelfTarget = (event: Partial<Pick<UIEvent, "currentTarget" | "target" | "composedPath">>) => {
-  return contains(event.currentTarget as Node, getEventTarget(event))
-}
-
-export function isOpeningInNewTab(event: Pick<MouseEvent, "currentTarget" | "metaKey" | "ctrlKey">) {
+export function isOpeningInNewTab(event: Pick<MouseEvent, "currentTarget" | "metaKey" | "ctrlKey" | "button">) {
   const element = event.currentTarget as HTMLAnchorElement | HTMLButtonElement | HTMLInputElement | null
   if (!element) return false
 
-  const isAppleDevice = isApple()
-  if (isAppleDevice && !event.metaKey) return false
-  if (!isAppleDevice && !event.ctrlKey) return false
+  const validElement = element.matches("a[href], button[type='submit'], input[type='submit']")
+  if (!validElement) return false
 
-  const localName = element.localName
+  const isMiddleClick = event.button === 1
+  const isModKeyClick = isCtrlOrMetaKey(event)
 
-  if (localName === "a") return true
-  if (localName === "button" && element.type === "submit") return true
-  if (localName === "input" && element.type === "submit") return true
-
-  return false
+  return isMiddleClick || isModKeyClick
 }
 
 export function isDownloadingEvent(event: Pick<MouseEvent, "altKey" | "currentTarget">) {
@@ -76,9 +68,11 @@ export function isVirtualPointerEvent(e: PointerEvent) {
 }
 
 export function isVirtualClick(e: MouseEvent | PointerEvent): boolean {
-  if ((e as any).mozInputSource === 0 && e.isTrusted) return true
+  // Firefox used to expose `mozInputSource === 0` for virtual clicks.
+  // Modern, safer check: in Firefox, PointerEvent.pointerType can be an empty string for virtual clicks.
+  if ((e as PointerEvent).pointerType === "" && (e as any).isTrusted) return true
   if (isAndroid() && (e as PointerEvent).pointerType) {
-    return e.type === "click" && e.buttons === 1
+    return e.type === "click" && (e as MouseEvent).buttons === 1
   }
   return e.detail === 0 && !(e as PointerEvent).pointerType
 }
@@ -145,7 +139,7 @@ interface DOMEventMap extends DocumentEventMap, WindowEventMap, HTMLElementEvent
 
 export const addDomEvent = <K extends keyof DOMEventMap>(
   target: MaybeFn<EventTarget | null>,
-  eventName: K,
+  eventName: K | (string & {}),
   handler: (event: DOMEventMap[K]) => void,
   options?: boolean | AddEventListenerOptions,
 ) => {
@@ -154,4 +148,10 @@ export const addDomEvent = <K extends keyof DOMEventMap>(
   return () => {
     node?.removeEventListener(eventName, handler as any, options)
   }
+}
+
+export const isSelfTarget = (event: Partial<Pick<UIEvent, "currentTarget" | "target" | "composedPath">>) => {
+  const composedPath = getComposedPath(event)
+  const target = composedPath?.[0] ?? event.target
+  return event.currentTarget === target
 }

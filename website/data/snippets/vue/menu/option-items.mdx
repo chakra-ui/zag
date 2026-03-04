@@ -2,15 +2,30 @@
 <script setup>
   import * as menu from "@zag-js/menu"
   import { normalizeProps, useMachine } from "@zag-js/vue"
-  import { computed } from "vue"
-  import { data } from "./data"
+  import { computed, ref } from "vue"
+
+  const data = {
+    order: [
+      { label: "Ascending", value: "asc" },
+      { label: "Descending", value: "desc" },
+      { label: "None", value: "none" },
+    ],
+    type: [
+      { label: "Email", value: "email" },
+      { label: "Phone", value: "phone" },
+      { label: "Address", value: "address" },
+    ],
+  }
+
+  const orderRef = ref("")
+  const typeRef = ref([])
 
   const service = useMachine(menu.machine, { id: "1" })
 
   const api = computed(() => menu.connect(service, normalizeProps))
 
   const radios = computed(() =>
-    menuOptionData.order.map((item) => ({
+    data.order.map((item) => ({
       label: item.label,
       id: item.value,
       type: "radio",
@@ -23,7 +38,7 @@
   )
 
   const checkboxes = computed(() =>
-    menuOptionData.type.map((item) => ({
+    data.type.map((item) => ({
       id: item.value,
       label: item.label,
       type: "checkbox",

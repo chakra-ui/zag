@@ -9,7 +9,7 @@ export interface Locale {
 
 declare global {
   interface Navigator {
-    userLanguage?: string
+    userLanguage?: string | undefined
   }
 }
 

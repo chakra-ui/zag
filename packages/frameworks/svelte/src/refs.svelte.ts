@@ -1,5 +1,5 @@
 export function useRefs<T>(refs: T) {
-  const ref = $state({ current: refs })
+  const ref = { current: refs }
   return {
     get<K extends keyof T>(key: K): T[K] {
       return ref.current[key]

@@ -1,15 +1,17 @@
-import { useRouter } from "next/router"
-import { useEffect } from "react"
+import { usePathname } from "next/navigation"
+import { useEffect, useRef } from "react"
 
 export function useRouteChange(fn: (url: string) => void) {
-  const router = useRouter()
+  const pathname = usePathname()
+  const previousPathnameRef = useRef<string | null>(null)
+
   useEffect(() => {
-    const handleRouteChange = (url: string) => {
-      fn(url)
+    if (
+      previousPathnameRef.current !== undefined &&
+      previousPathnameRef.current !== pathname
+    ) {
+      fn(pathname)
     }
-    router.events.on("routeChangeComplete", handleRouteChange)
-    return () => {
-      router.events.off("routeChangeComplete", handleRouteChange)
-    }
-  }, [])
+    previousPathnameRef.current = pathname
+  }, [pathname, fn])
 }

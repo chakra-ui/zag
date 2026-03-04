@@ -23,19 +23,28 @@ export interface ItemLabelDetails {
   totalPages: number
 }
 
+export interface PageUrlDetails {
+  page: number
+  pageSize: number
+}
+
 export interface IntlTranslations {
   rootLabel?: string | undefined
+  firstTriggerLabel?: string | undefined
   prevTriggerLabel?: string | undefined
   nextTriggerLabel?: string | undefined
-  itemLabel?(details: ItemLabelDetails): string
+  lastTriggerLabel?: string | undefined
+  itemLabel?: ((details: ItemLabelDetails) => string) | undefined
 }
 
 export type ElementIds = Partial<{
   root: string
-  ellipsis(index: number): string
+  ellipsis: (index: number) => string
+  firstTrigger: string
   prevTrigger: string
   nextTrigger: string
-  item(page: number): string
+  lastTrigger: string
+  item: (page: number) => string
 }>
 
 export interface PaginationProps extends DirectionProperty, CommonProperties {
@@ -67,6 +76,11 @@ export interface PaginationProps extends DirectionProperty, CommonProperties {
    */
   siblingCount?: number | undefined
   /**
+   * Number of pages to show at the beginning and end
+   * @default 1
+   */
+  boundaryCount?: number | undefined
+  /**
    * The controlled active page
    */
   page?: number | undefined
@@ -89,9 +103,21 @@ export interface PaginationProps extends DirectionProperty, CommonProperties {
    * @default "button"
    */
   type?: "button" | "link" | undefined
+  /**
+   * Function to generate href attributes for pagination links.
+   * Only used when `type` is set to "link".
+   */
+  getPageUrl?: ((details: PageUrlDetails) => string) | undefined
 }
 
-type PropsWithDefault = "defaultPageSize" | "defaultPage" | "siblingCount" | "translations" | "type" | "count"
+type PropsWithDefault =
+  | "defaultPageSize"
+  | "defaultPage"
+  | "siblingCount"
+  | "boundaryCount"
+  | "translations"
+  | "type"
+  | "count"
 
 interface PrivateContext {
   page: number
@@ -192,35 +218,37 @@ export interface PaginationApi<T extends PropTypes = PropTypes> {
   /**
    * Function to slice an array of data based on the current page.
    */
-  slice<V>(data: V[]): V[]
+  slice: <V>(data: V[]) => V[]
   /**
    * Function to set the page size.
    */
-  setPageSize(size: number): void
+  setPageSize: (size: number) => void
   /**
    * Function to set the current page.
    */
-  setPage(page: number): void
+  setPage: (page: number) => void
   /**
    * Function to go to the next page.
    */
-  goToNextPage(): void
+  goToNextPage: VoidFunction
   /**
    * Function to go to the previous page.
    */
-  goToPrevPage(): void
+  goToPrevPage: VoidFunction
   /**
    * Function to go to the first page.
    */
-  goToFirstPage(): void
+  goToFirstPage: VoidFunction
   /**
    * Function to go to the last page.
    */
-  goToLastPage(): void
+  goToLastPage: VoidFunction
 
-  getRootProps(): T["element"]
-  getEllipsisProps(props: EllipsisProps): T["element"]
-  getItemProps(page: ItemProps): T["element"]
-  getPrevTriggerProps(): T["element"]
-  getNextTriggerProps(): T["element"]
+  getRootProps: () => T["element"]
+  getEllipsisProps: (props: EllipsisProps) => T["element"]
+  getItemProps: (props: ItemProps) => T["element"]
+  getFirstTriggerProps: () => T["element"]
+  getPrevTriggerProps: () => T["element"]
+  getNextTriggerProps: () => T["element"]
+  getLastTriggerProps: () => T["element"]
 }

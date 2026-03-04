@@ -18,7 +18,7 @@ export interface EditChangeDetails {
  * Machine context
  * -----------------------------------------------------------------------------*/
 
-export type ActivationMode = "focus" | "dblclick" | "click"
+export type ActivationMode = "focus" | "dblclick" | "click" | "none"
 
 export type SubmitMode = "enter" | "blur" | "both" | "none"
 
@@ -68,6 +68,7 @@ export interface EditableProps extends DirectionProperty, CommonProperties, Inte
    * - "focus" - Enter edit mode when the preview is focused
    * - "dblclick" - Enter edit mode when the preview is double-clicked
    * - "click" - Enter edit mode when the preview is clicked
+   * - "none" - Edit can be triggered programmatically only
    *
    * @default "focus"
    */
@@ -199,31 +200,31 @@ export interface EditableApi<T extends PropTypes = PropTypes> {
   /**
    * Function to set the value of the editable
    */
-  setValue(value: string): void
+  setValue: (value: string) => void
   /**
    * Function to clear the value of the editable
    */
-  clearValue(): void
+  clearValue: VoidFunction
   /**
    * Function to enter edit mode
    */
-  edit(): void
+  edit: VoidFunction
   /**
    * Function to exit edit mode, and discard any changes
    */
-  cancel(): void
+  cancel: VoidFunction
   /**
    * Function to exit edit mode, and submit any changes
    */
-  submit(): void
+  submit: VoidFunction
 
-  getRootProps(): T["element"]
-  getAreaProps(): T["element"]
-  getLabelProps(): T["label"]
-  getInputProps(): T["input"]
-  getPreviewProps(): T["element"]
-  getEditTriggerProps(): T["button"]
-  getControlProps(): T["element"]
-  getSubmitTriggerProps(): T["button"]
-  getCancelTriggerProps(): T["button"]
+  getRootProps: () => T["element"]
+  getAreaProps: () => T["element"]
+  getLabelProps: () => T["label"]
+  getInputProps: () => T["input"]
+  getPreviewProps: () => T["element"]
+  getEditTriggerProps: () => T["button"]
+  getControlProps: () => T["element"]
+  getSubmitTriggerProps: () => T["button"]
+  getCancelTriggerProps: () => T["button"]
 }

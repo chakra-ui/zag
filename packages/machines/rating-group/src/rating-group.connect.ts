@@ -12,7 +12,8 @@ export function connect<T extends PropTypes>(
 
   const interactive = computed("isInteractive")
   const disabled = computed("isDisabled")
-  const readOnly = prop("readOnly")
+  const readOnly = !!prop("readOnly")
+  const required = !!prop("required")
   const value = context.get("value")
   const hoveredValue = context.get("hoveredValue")
   const translations = prop("translations")
@@ -26,7 +27,7 @@ export function connect<T extends PropTypes>(
     return {
       highlighted,
       half,
-      checked: equal || (value === -1 && props.index === 1),
+      checked: equal || (value <= 0 && props.index === 1),
     }
   }
 
@@ -72,6 +73,7 @@ export function connect<T extends PropTypes>(
         dir: prop("dir"),
         id: dom.getLabelId(scope),
         "data-disabled": dataAttr(disabled),
+        "data-required": dataAttr(required),
         htmlFor: dom.getHiddenInputId(scope),
         onClick(event) {
           if (event.defaultPrevented) return

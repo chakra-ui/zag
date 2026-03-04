@@ -27,10 +27,7 @@ export type ElementIds = Partial<{
 }>
 
 export interface PopoverProps
-  extends CommonProperties,
-    DirectionProperty,
-    DismissableElementHandlers,
-    PersistentElementOptions {
+  extends CommonProperties, DirectionProperty, DismissableElementHandlers, PersistentElementOptions {
   /**
    * The ids of the elements in the popover. Useful for composition.
    */
@@ -146,22 +143,22 @@ export interface PopoverApi<T extends PropTypes = PropTypes> {
   /**
    * Function to open or close the popover
    */
-  setOpen(open: boolean): void
+  setOpen: (open: boolean) => void
   /**
    * Function to reposition the popover
    */
-  reposition(options?: Partial<PositioningOptions>): void
+  reposition: (options?: Partial<PositioningOptions>) => void
 
-  getArrowProps(): T["element"]
-  getArrowTipProps(): T["element"]
-  getAnchorProps(): T["element"]
-  getTriggerProps(): T["button"]
-  getIndicatorProps(): T["element"]
-  getPositionerProps(): T["element"]
-  getContentProps(): T["element"]
-  getTitleProps(): T["element"]
-  getDescriptionProps(): T["element"]
-  getCloseTriggerProps(): T["button"]
+  getArrowProps: () => T["element"]
+  getArrowTipProps: () => T["element"]
+  getAnchorProps: () => T["element"]
+  getTriggerProps: () => T["button"]
+  getIndicatorProps: () => T["element"]
+  getPositionerProps: () => T["element"]
+  getContentProps: () => T["element"]
+  getTitleProps: () => T["element"]
+  getDescriptionProps: () => T["element"]
+  getCloseTriggerProps: () => T["button"]
 }
 
 /* -----------------------------------------------------------------------------

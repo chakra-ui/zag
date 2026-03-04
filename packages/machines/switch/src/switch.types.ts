@@ -86,23 +86,23 @@ type ComputedContext = Readonly<{
 
 interface PrivateContext {
   /**
-   * Whether the checkbox is pressed
+   * Whether the switch is pressed
    */
   active: boolean
   /**
-   * Whether the checkbox has focus
+   * Whether the switch has focus
    */
   focused: boolean
   /**
-   * Whether the checkbox has focus visible
+   * Whether the switch has focus visible
    */
   focusVisible: boolean
   /**
-   * Whether the checkbox is hovered
+   * Whether the switch is hovered
    */
   hovered: boolean
   /**
-   * Whether the checkbox fieldset is disabled
+   * Whether the switch fieldset is disabled
    */
   fieldsetDisabled: boolean
   /**
@@ -132,29 +132,29 @@ export type SwitchMachine = Machine<SwitchSchema>
 
 export interface SwitchApi<T extends PropTypes = PropTypes> {
   /**
-   * Whether the checkbox is checked
+   * Whether the switch is checked
    */
   checked: boolean
   /**
-   * Whether the checkbox is disabled
+   * Whether the switch is disabled
    */
   disabled: boolean | undefined
   /**
-   * Whether the checkbox is focused
+   * Whether the switch is focused
    */
   focused: boolean | undefined
   /**
-   * Function to set the checked state of the switch.
+   * Sets the checked state of the switch.
    */
-  setChecked(checked: boolean): void
+  setChecked: (checked: boolean) => void
   /**
-   * Function to toggle the checked state of the checkbox
+   * Toggles the checked state of the switch.
    */
-  toggleChecked(): void
+  toggleChecked: VoidFunction
 
-  getRootProps(): T["label"]
-  getLabelProps(): T["element"]
-  getThumbProps(): T["element"]
-  getControlProps(): T["element"]
-  getHiddenInputProps(): T["input"]
+  getRootProps: () => T["label"]
+  getLabelProps: () => T["element"]
+  getThumbProps: () => T["element"]
+  getControlProps: () => T["element"]
+  getHiddenInputProps: () => T["input"]
 }

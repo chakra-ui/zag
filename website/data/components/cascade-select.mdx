@@ -1,0 +1,520 @@
+---
+title: Cascade Select
+description: Using the cascade select machine in your project.
+package: "@zag-js/cascade-select"
+---
+
+A cascade select component allows users to select from hierarchical data through
+multiple linked levels of dropdown menus.
+
+<Resources pkg="@zag-js/cascade-select" />
+
+<Showcase id="CascadeSelect" />
+
+**Features**
+
+- Supports hierarchical data with unlimited depth levels
+- Full keyboard navigation across all levels with arrow keys
+- Supports single and multiple selections
+- Supports both click and hover triggering modes
+- Supports looping keyboard navigation
+- Built-in accessibility with ARIA roles and keyboard interactions
+- Supports disabled items and read-only state
+- Form integration with hidden input element
+- Supports right-to-left direction
+
+## Installation
+
+Install the cascade select package:
+
+<CodeSnippet id="cascade-select/installation.mdx" />
+
+## Anatomy
+
+Check the cascade select anatomy and part names.
+
+> Each part includes a `data-part` attribute to help identify them in the DOM.
+
+<Anatomy id="cascade-select" />
+
+## Usage
+
+Import the cascade select package:
+
+```jsx
+import * as cascadeSelect from "@zag-js/cascade-select"
+```
+
+These are the key exports:
+
+- `machine` - State machine logic.
+- `connect` - Maps machine state to JSX props and event handlers.
+- `collection` - Creates a tree collection from your hierarchical data.
+
+### Create the collection
+
+Use the `collection` function to create a tree collection from your hierarchical
+data. Pass a `rootNode` along with functions to extract each node's value,
+string label, and children.
+
+```ts
+import * as cascadeSelect from "@zag-js/cascade-select"
+
+interface Node {
+  label: string
+  value: string
+  children?: Node[]
+}
+
+const collection = cascadeSelect.collection<Node>({
+  nodeToValue: (node) => node.value,
+  nodeToString: (node) => node.label,
+  nodeToChildren: (node) => node.children,
+  rootNode: {
+    label: "ROOT",
+    value: "ROOT",
+    children: [
+      {
+        label: "North America",
+        value: "north-america",
+        children: [
+          {
+            label: "United States",
+            value: "us",
+            children: [
+              { label: "New York", value: "ny" },
+              { label: "California", value: "ca" },
+            ],
+          },
+          { label: "Canada", value: "canada" },
+        ],
+      },
+      {
+        label: "Africa",
+        value: "africa",
+        children: [
+          { label: "Nigeria", value: "ng" },
+          { label: "Kenya", value: "ke" },
+        ],
+      },
+    ],
+  },
+})
+```
+
+### Create the cascade select
+
+> Pass a unique `id` to `useMachine` so generated element ids stay predictable.
+
+Then use the framework integration helpers:
+
+<CodeSnippet id="cascade-select/usage.mdx" />
+
+### Setting the initial value
+
+Use the `defaultValue` property to set the initial value of the cascade select.
+
+> The `value` property must be an array of string paths. Each path is an array
+> of values from the root to the selected leaf item.
+
+```jsx {4}
+const service = useMachine(cascadeSelect.machine, {
+  id: useId(),
+  collection,
+  defaultValue: [["north-america", "us", "ny"]],
+})
+```
+
+### Controlled selection
+
+Use `value` and `onValueChange` for controlled selection state.
+
+```jsx
+const service = useMachine(cascadeSelect.machine, {
+  id: useId(),
+  collection,
+  value,
+  onValueChange(details) {
+    setValue(details.value)
+  },
+})
+```
+
+### Selecting multiple values
+
+To allow selecting multiple values, set the `multiple` property to `true`.
+
+```jsx {4}
+const service = useMachine(cascadeSelect.machine, {
+  id: useId(),
+  collection,
+  multiple: true,
+})
+```
+
+### Hover triggering
+
+By default, items are highlighted when clicked. To highlight items on hover
+instead (like a traditional cascading menu), set the `highlightTrigger` property
+to `"hover"`.
+
+```jsx {4}
+const service = useMachine(cascadeSelect.machine, {
+  id: useId(),
+  collection,
+  highlightTrigger: "hover",
+})
+```
+
+### Allowing parent selection
+
+By default, only leaf nodes (items without children) can be selected. To allow
+parent (branch) nodes to also be selectable, set `allowParentSelection` to
+`true`.
+
+```jsx {4}
+const service = useMachine(cascadeSelect.machine, {
+  id: useId(),
+  collection,
+  allowParentSelection: true,
+})
+```
+
+### Close on select
+
+By default, the menu closes when you select an item. Set `closeOnSelect` to
+`false` to keep it open.
+
+```jsx {4}
+const service = useMachine(cascadeSelect.machine, {
+  id: useId(),
+  collection,
+  closeOnSelect: false,
+})
+```
+
+### Looping the keyboard navigation
+
+By default, arrow-key navigation stops at the first and last items. Set
+`loopFocus: true` to loop back around.
+
+```jsx {4}
+const service = useMachine(cascadeSelect.machine, {
+  id: useId(),
+  collection,
+  loopFocus: true,
+})
+```
+
+### Listening for highlight changes
+
+When an item is highlighted with the pointer or keyboard, use the
+`onHighlightChange` to listen for the change and do something with it.
+
+```jsx {3-6}
+const service = useMachine(cascadeSelect.machine, {
+  id: useId(),
+  onHighlightChange(details) {
+    // details => { highlightedValue: string[], highlightedItems: Item[] }
+    console.log(details)
+  },
+})
+```
+
+### Setting the initial highlighted path
+
+Use `defaultHighlightedValue` to set the initially highlighted path.
+
+```jsx
+const service = useMachine(cascadeSelect.machine, {
+  id: useId(),
+  collection,
+  defaultHighlightedValue: ["north-america", "us"],
+})
+```
+
+### Controlled highlighted path
+
+Use `highlightedValue` and `onHighlightChange` to control highlighting
+externally.
+
+```jsx
+const service = useMachine(cascadeSelect.machine, {
+  id: useId(),
+  collection,
+  highlightedValue,
+  onHighlightChange(details) {
+    setHighlightedValue(details.highlightedValue)
+  },
+})
+```
+
+### Listening for selection changes
+
+When an item is selected, use the `onValueChange` property to listen for the
+change and do something with it.
+
+```jsx {4-7}
+const service = useMachine(cascadeSelect.machine, {
+  id: useId(),
+  collection,
+  onValueChange(details) {
+    // details => { value: string[][], items: Item[][] }
+    console.log(details)
+  },
+})
+```
+
+### Listening for open and close events
+
+Use `onOpenChange` to listen for open and close events.
+
+```jsx {4-7}
+const service = useMachine(cascadeSelect.machine, {
+  id: useId(),
+  collection,
+  onOpenChange(details) {
+    // details => { open: boolean, value: string[][] }
+    console.log(details)
+  },
+})
+```
+
+### Controlling open state
+
+Use `open` and `onOpenChange` for controlled open state, or `defaultOpen` for an
+uncontrolled initial state.
+
+```jsx
+const service = useMachine(cascadeSelect.machine, {
+  id: useId(),
+  collection,
+  open,
+  onOpenChange({ open }) {
+    setOpen(open)
+  },
+})
+```
+
+```jsx
+const service = useMachine(cascadeSelect.machine, {
+  id: useId(),
+  collection,
+  defaultOpen: true,
+})
+```
+
+### Positioning submenu panels
+
+Use `positioning` to configure placement and collision behavior.
+
+```jsx
+const service = useMachine(cascadeSelect.machine, {
+  id: useId(),
+  collection,
+  positioning: {
+    placement: "right-start",
+    gutter: 4,
+  },
+})
+```
+
+### Custom scroll behavior
+
+Use `scrollToIndexFn` to customize how each level scrolls highlighted items into
+view.
+
+```jsx
+const service = useMachine(cascadeSelect.machine, {
+  id: useId(),
+  collection,
+  scrollToIndexFn(details) {
+    // details => { index, depth, immediate? }
+    customScroll(details)
+  },
+})
+```
+
+### Customizing the trigger label
+
+Use `formatValue` to control how selected paths are rendered in the trigger.
+
+```jsx
+const service = useMachine(cascadeSelect.machine, {
+  id: useId(),
+  collection,
+  formatValue(selectedItems) {
+    return selectedItems
+      .map((path) => path.map((item) => item.label).join(" / "))
+      .join(", ")
+  },
+})
+```
+
+### Usage within a form
+
+To use cascade select in a form, pass `name`. A hidden input is rendered with
+`getHiddenInputProps()`.
+
+```jsx {4}
+const service = useMachine(cascadeSelect.machine, {
+  id: useId(),
+  collection,
+  name: "location",
+})
+
+// In your JSX
+<input {...api.getHiddenInputProps()} />
+```
+
+If the hidden input belongs to a different form element, also set `form`.
+
+```jsx
+const service = useMachine(cascadeSelect.machine, {
+  id: useId(),
+  collection,
+  name: "location",
+  form: "checkout-form",
+})
+```
+
+### Validation and read-only state
+
+Use `readOnly`, `required`, and `invalid` to control interaction and form state.
+
+```jsx
+const service = useMachine(cascadeSelect.machine, {
+  id: useId(),
+  collection,
+  readOnly: true,
+  required: true,
+  invalid: false,
+})
+```
+
+## Styling guide
+
+Each cascade select part includes a `data-part` attribute you can target in CSS.
+
+### Open and closed state
+
+When the cascade select is open, the trigger and content is given a `data-state`
+attribute.
+
+```css
+[data-part="trigger"][data-state="open|closed"] {
+  /* styles for open or closed state */
+}
+
+[data-part="content"][data-state="open|closed"] {
+  /* styles for open or closed state */
+}
+```
+
+### Selected state
+
+Items are given a `data-state` attribute, indicating whether they are selected.
+
+```css
+[data-part="item"][data-state="checked|unchecked"] {
+  /* styles for selected or unselected state */
+}
+```
+
+### Highlighted state
+
+When an item is highlighted, via keyboard navigation or pointer, it is given a
+`data-highlighted` attribute.
+
+```css
+[data-part="item"][data-highlighted] {
+  /* styles for highlighted state */
+}
+```
+
+### Branch items
+
+When an item has children (is a branch node), it is given a `data-has-children`
+attribute.
+
+```css
+[data-part="item"][data-has-children] {
+  /* styles for items with children (branch nodes) */
+}
+```
+
+### Invalid state
+
+When the cascade select is invalid, the label and trigger is given a
+`data-invalid` attribute.
+
+```css
+[data-part="label"][data-invalid] {
+  /* styles for invalid state */
+}
+
+[data-part="trigger"][data-invalid] {
+  /* styles for invalid state */
+}
+```
+
+### Disabled state
+
+When the cascade select is disabled, the trigger and label is given a
+`data-disabled` attribute.
+
+```css
+[data-part="trigger"][data-disabled] {
+  /* styles for disabled state */
+}
+
+[data-part="label"][data-disabled] {
+  /* styles for disabled label state */
+}
+
+[data-part="item"][data-disabled] {
+  /* styles for disabled item state */
+}
+```
+
+### Empty state
+
+When no option is selected, the trigger is given a `data-placeholder-shown`
+attribute.
+
+```css
+[data-part="trigger"][data-placeholder-shown] {
+  /* styles for empty state */
+}
+```
+
+## Methods and Properties
+
+### Machine Context
+
+The cascade select machine exposes the following context properties:
+
+<ContextTable name="cascade-select" />
+
+### Machine API
+
+The cascade select `api` exposes the following methods:
+
+<ApiTable name="cascade-select" />
+
+### Data Attributes
+
+<DataAttrTable name="cascade-select" />
+
+### CSS Variables
+
+<CssVarTable name="cascade-select" />
+
+## Accessibility
+
+Adheres to the
+[ListBox WAI-ARIA design pattern](https://www.w3.org/WAI/ARIA/apg/patterns/listbox).
+
+### Keyboard Interactions
+
+<KeyboardTable name="cascade-select" />

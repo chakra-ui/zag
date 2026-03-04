@@ -1,0 +1,53 @@
+@layer recipes {
+  .Root {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    user-select: none;
+    font-size: 18px;
+
+    &[data-disabled] {
+      opacity: 0.5;
+      filter: grayscale(100%);
+    }
+  }
+
+  .Control {
+    width: 24px;
+    height: 24px;
+    border-radius: 0.275rem;
+    border: solid 1px;
+    border-color: var(--colors-border-bold);
+    color: #ffffff;
+
+    &[data-hover] {
+      background: var(--colors-bg-bold);
+    }
+
+    &[data-focus] {
+      outline: 2px solid var(--colors-bg-primary-bold);
+      outline-offset: 2px;
+    }
+
+    &[data-disabled] {
+      background: var(--colors-bg-bold) !important;
+      border-color: var(--colors-border-bold) !important;
+      filter: grayscale(100%);
+    }
+
+    &[data-invalid] {
+      border-color: #e53e3e;
+    }
+
+    &[data-state="indeterminate"] {
+      background: #ffffff;
+      border-color: grey;
+      color: grey;
+    }
+
+    &[data-state="checked"] {
+      background: var(--colors-bg-primary-subtle);
+      border-color: var(--colors-bg-primary-subtle);
+    }
+  }
+}

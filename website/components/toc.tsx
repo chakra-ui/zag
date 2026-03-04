@@ -1,7 +1,6 @@
-import { Stack } from "@chakra-ui/layout"
-import { chakra } from "@chakra-ui/system"
-import NextLink from "next/link"
-import { useScrollSpy } from "./use-scrollspy"
+import { useScrollSpy } from "lib/use-scrollspy"
+import Link from "next/link"
+import { Stack, styled } from "styled-system/jsx"
 
 type TOC = Array<{
   content: string
@@ -22,13 +21,13 @@ export function TableOfContents({
 
   return (
     <div className="toc">
-      <chakra.h5 fontSize="sm" fontWeight="bold" className="toc__heading">
+      <styled.h5 fontSize="sm" fontWeight="bold" className="toc__heading">
         {title}
-      </chakra.h5>
+      </styled.h5>
 
-      <Stack as="ul" fontSize="0.8rem" listStyleType="none" mt="3">
+      <Stack as="ul" fontSize="0.8rem" listStyleType="none" mt="3" gap="2">
         {data.map((item, index) => (
-          <chakra.li
+          <styled.li
             data-selected={activeId === item.slug || undefined}
             key={item.slug + index}
             paddingLeft={item.lvl > 2 ? "4" : undefined}
@@ -37,11 +36,11 @@ export function TableOfContents({
               textUnderlineOffset: "2px",
             }}
           >
-            <NextLink href={getSlug(item.slug)}>
-              <chakra.span mr="1">{item.lvl > 2 ? "—" : null}</chakra.span>{" "}
+            <Link href={getSlug(item.slug)}>
+              <styled.span mr="1">{item.lvl > 2 ? "—" : null}</styled.span>{" "}
               {item.content}
-            </NextLink>
-          </chakra.li>
+            </Link>
+          </styled.li>
         ))}
       </Stack>
     </div>

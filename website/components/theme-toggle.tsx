@@ -1,18 +1,40 @@
-import { Icon } from "@chakra-ui/icon"
-import { Box, Center } from "@chakra-ui/layout"
-import { useColorMode, useColorModeValue } from "@chakra-ui/system"
+import { Square, styled } from "styled-system/jsx"
+import { useTheme } from "next-themes"
 import { FaMoon, FaSun } from "react-icons/fa"
+import { useEffect, useState } from "react"
 
 export function ThemeToggle() {
-  const { toggleColorMode: toggleMode } = useColorMode()
+  const { theme, setTheme } = useTheme()
+  const [mounted, setMounted] = useState(false)
 
-  const text = useColorModeValue("dark", "light")
-  const SwitchIcon = useColorModeValue(FaMoon, FaSun)
+  useEffect(() => {
+    setMounted(true)
+  }, [])
+
+  if (!mounted) return <Square size="8" bg="text.muted/20" animation="pulse" />
+
+  const isDark = theme === "dark"
+  const text = isDark ? "light" : "dark"
+  const SwitchIcon = isDark ? FaSun : FaMoon
+  const toggleMode = () => setTheme(isDark ? "light" : "dark")
 
   return (
-    <Center width="6" height="6" as="button" onClick={toggleMode}>
-      <Box srOnly>{`Switch to ${text} mode`}</Box>
-      <Icon as={SwitchIcon} fontSize="lg" color="gray.500" />
-    </Center>
+    <styled.button
+      width="8"
+      height="8"
+      display="flex"
+      alignItems="center"
+      justifyContent="center"
+      bg="transparent"
+      border="none"
+      cursor="pointer"
+      color="gray.500"
+      _hover={{ color: "gray.600" }}
+      onClick={toggleMode}
+      _icon={{ fill: "currentcolor" }}
+    >
+      <styled.span srOnly>{`Switch to ${text} mode`}</styled.span>
+      <SwitchIcon size={16} />
+    </styled.button>
   )
 }

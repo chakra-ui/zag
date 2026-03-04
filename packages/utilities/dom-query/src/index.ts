@@ -1,5 +1,6 @@
 export * from "./caret"
 export * from "./computed-style"
+export * from "./controller"
 export * from "./data-url"
 export * from "./event"
 export * from "./form"

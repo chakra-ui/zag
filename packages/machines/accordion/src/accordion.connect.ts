@@ -98,6 +98,7 @@ export function connect<T extends PropTypes>(
         dir: prop("dir"),
         id: dom.getItemTriggerId(scope, value),
         "aria-controls": dom.getItemContentId(scope, value),
+        "data-controls": dom.getItemContentId(scope, value),
         "aria-expanded": itemState.expanded,
         disabled: itemState.disabled,
         "data-orientation": prop("orientation"),

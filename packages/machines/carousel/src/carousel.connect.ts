@@ -1,6 +1,6 @@
-import { ariaAttr, dataAttr, getEventKey, getEventTarget, isFocusable } from "@zag-js/dom-query"
+import { ariaAttr, contains, dataAttr, getEventKey, getEventTarget, isFocusable, isLeftClick } from "@zag-js/dom-query"
 import type { EventKeyMap, NormalizeProps, PropTypes } from "@zag-js/types"
-import { throttle } from "@zag-js/utils"
+import { clampValue, throttle } from "@zag-js/utils"
 import { parts } from "./carousel.anatomy"
 import * as dom from "./carousel.dom"
 import type { CarouselApi, CarouselService } from "./carousel.types"
@@ -14,9 +14,11 @@ export function connect<T extends PropTypes>(service: CarouselService, normalize
   const canScrollNext = computed("canScrollNext")
   const canScrollPrev = computed("canScrollPrev")
   const horizontal = computed("isHorizontal")
+  const autoSize = prop("autoSize")
 
   const pageSnapPoints = Array.from(context.get("pageSnapPoints"))
   const page = context.get("page")
+  const activePage = pageSnapPoints.length ? clampValue(page, 0, pageSnapPoints.length - 1) : 0
   const slidesPerPage = prop("slidesPerPage")
 
   const padding = prop("padding")
@@ -25,12 +27,16 @@ export function connect<T extends PropTypes>(service: CarouselService, normalize
   return {
     isPlaying,
     isDragging,
-    page,
+    page: activePage,
     pageSnapPoints,
     canScrollNext,
     canScrollPrev,
     getProgress() {
-      return page / pageSnapPoints.length
+      return activePage / pageSnapPoints.length
+    },
+    getProgressText() {
+      const details = { page: activePage + 1, totalPages: pageSnapPoints.length }
+      return translations.progressText?.(details) ?? ""
     },
     scrollToIndex(index, instant) {
       send({ type: "INDEX.SET", index, instant })
@@ -68,8 +74,9 @@ export function connect<T extends PropTypes>(service: CarouselService, normalize
         style: {
           "--slides-per-page": slidesPerPage,
           "--slide-spacing": prop("spacing"),
-          "--slide-item-size":
-            "calc(100% / var(--slides-per-page) - var(--slide-spacing) * (var(--slides-per-page) - 1) / var(--slides-per-page))",
+          "--slide-item-size": autoSize
+            ? "auto"
+            : "calc(100% / var(--slides-per-page) - var(--slide-spacing) * (var(--slides-per-page) - 1) / var(--slides-per-page))",
         },
       })
     },
@@ -82,10 +89,18 @@ export function connect<T extends PropTypes>(service: CarouselService, normalize
         "data-dragging": dataAttr(isDragging),
         dir: prop("dir"),
         "aria-live": isPlaying ? "off" : "polite",
+        onFocus(event) {
+          if (!contains(event.currentTarget, getEventTarget(event))) return
+          send({ type: "VIEWPORT.FOCUS" })
+        },
+        onBlur(event) {
+          if (contains(event.currentTarget, event.relatedTarget)) return
+          send({ type: "VIEWPORT.BLUR" })
+        },
         onMouseDown(event) {
-          if (!prop("allowMouseDrag")) return
-          if (event.button !== 0) return
           if (event.defaultPrevented) return
+          if (!prop("allowMouseDrag")) return
+          if (!isLeftClick(event)) return
 
           const target = getEventTarget<HTMLElement>(event)
           if (isFocusable(target) && target !== event.currentTarget) return
@@ -93,20 +108,28 @@ export function connect<T extends PropTypes>(service: CarouselService, normalize
           event.preventDefault()
           send({ type: "DRAGGING.START" })
         },
-        onWheel: throttle(() => {
+        onWheel: throttle<any>((event: WheelEvent) => {
+          const axis = prop("orientation") === "horizontal" ? "deltaX" : "deltaY"
+
+          const isScrollingLeft = event[axis] < 0
+          if (isScrollingLeft && !computed("canScrollPrev")) return
+
+          const isScrollingRight = event[axis] > 0
+          if (isScrollingRight && !computed("canScrollNext")) return
+
           send({ type: "USER.SCROLL" })
         }, 150),
         onTouchStart() {
           send({ type: "USER.SCROLL" })
         },
         style: {
-          display: "grid",
+          display: autoSize ? "flex" : "grid",
           gap: "var(--slide-spacing)",
           scrollSnapType: [horizontal ? "x" : "y", prop("snapType")].join(" "),
           gridAutoFlow: horizontal ? "column" : "row",
           scrollbarWidth: "none",
-          overscrollBehavior: "contain",
-          [horizontal ? "gridAutoColumns" : "gridAutoRows"]: "var(--slide-item-size)",
+          overscrollBehaviorX: "contain",
+          [horizontal ? "gridAutoColumns" : "gridAutoRows"]: autoSize ? undefined : "var(--slide-item-size)",
           [horizontal ? "scrollPaddingInline" : "scrollPaddingBlock"]: padding,
           [horizontal ? "paddingInline" : "paddingBlock"]: padding,
           [horizontal ? "overflowX" : "overflowY"]: "auto",
@@ -128,6 +151,8 @@ export function connect<T extends PropTypes>(service: CarouselService, normalize
         "aria-label": translations.item(props.index, prop("slideCount")),
         "aria-hidden": ariaAttr(!isInView),
         style: {
+          flex: "0 0 auto",
+          [horizontal ? "maxWidth" : "maxHeight"]: "100%",
           scrollSnapAlign: (() => {
             const snapAlign = props.snapAlign ?? "start"
             const slidesPerMove = prop("slidesPerMove")
@@ -240,7 +265,7 @@ export function connect<T extends PropTypes>(service: CarouselService, normalize
         "data-orientation": prop("orientation"),
         "data-index": props.index,
         "data-readonly": dataAttr(props.readOnly),
-        "data-current": dataAttr(props.index === page),
+        "data-current": dataAttr(props.index === activePage),
         "aria-label": translations.indicator(props.index),
         onClick(event) {
           if (event.defaultPrevented) return
@@ -261,6 +286,12 @@ export function connect<T extends PropTypes>(service: CarouselService, normalize
           if (event.defaultPrevented) return
           send({ type: isPlaying ? "AUTOPLAY.PAUSE" : "AUTOPLAY.START" })
         },
+      })
+    },
+
+    getProgressTextProps() {
+      return normalize.element({
+        ...parts.progressText.attrs,
       })
     },
   }

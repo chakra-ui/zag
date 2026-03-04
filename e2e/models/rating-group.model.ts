@@ -8,7 +8,7 @@ export class RatingGroupModel extends Model {
   }
 
   goto() {
-    return this.page.goto("/rating-group")
+    return this.page.goto("/rating-group/basic")
   }
 
   checkAccessibility(selector?: string): Promise<void> {
@@ -59,6 +59,10 @@ export class RatingGroupModel extends Model {
 
   async seeRatingIsDisabled(value: number) {
     await expect(this.getRating(value)).toHaveAttribute("data-disabled", "")
+  }
+
+  async seeRatingIsFocusable(value: number) {
+    await expect(this.getRating(value)).toHaveAttribute("tabindex", "0")
   }
 
   async seeControlIsDisabled() {

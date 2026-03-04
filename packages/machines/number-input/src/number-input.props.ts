@@ -22,6 +22,7 @@ export const props = createProps<NumberInputProps>()([
   "name",
   "onFocusChange",
   "onValueChange",
+  "onValueCommit",
   "onValueInvalid",
   "pattern",
   "required",

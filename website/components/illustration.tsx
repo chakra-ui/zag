@@ -1,4 +1,5 @@
 import { type SVGAttributes } from "react"
+import { css } from "styled-system/css"
 
 type Props = SVGAttributes<SVGSVGElement>
 
@@ -9,7 +10,16 @@ export function Illustration(props: Props) {
       height="481"
       viewBox="0 0 731 481"
       fill="none"
-      id="home-illustration"
+      className={css({
+        color: { _light: "#D1E1DA", _dark: "#283E35" },
+        position: "absolute",
+        bottom: 0,
+        right: 0,
+        width: "min(50%,48vw)",
+        height: "auto",
+        maxW: "100%",
+        hideBelow: "md",
+      })}
       {...props}
     >
       <path

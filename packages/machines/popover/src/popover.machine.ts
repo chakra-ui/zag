@@ -87,8 +87,8 @@ export const machine = createMachine<PopoverSchema>({
         "trapFocus",
         "preventScroll",
         "hideContentBelow",
-        "trackPositioning",
         "trackDismissableElement",
+        "trackPositioning",
         "proxyTabFocus",
       ],
       on: {
@@ -145,6 +145,7 @@ export const machine = createMachine<PopoverSchema>({
         const getContentEl = () => dom.getContentEl(scope)
         let restoreFocus = true
         return trackDismissableElement(getContentEl, {
+          type: "popover",
           pointerBlocking: prop("modal"),
           exclude: dom.getTriggerEl(scope),
           defer: true,
@@ -164,6 +165,7 @@ export const machine = createMachine<PopoverSchema>({
           onPointerDownOutside: prop("onPointerDownOutside"),
           onFocusOutside: prop("onFocusOutside"),
           persistentElements: prop("persistentElements"),
+          onRequestDismiss: prop("onRequestDismiss"),
           onDismiss() {
             send({ type: "CLOSE", src: "interact-outside", restoreFocus })
           },
@@ -176,6 +178,7 @@ export const machine = createMachine<PopoverSchema>({
         return proxyTabFocus(getContentEl, {
           triggerElement: dom.getTriggerEl(scope),
           defer: true,
+          getShadowRoot: true,
           onFocus(el) {
             el.focus({ preventScroll: true })
           },
@@ -203,6 +206,7 @@ export const machine = createMachine<PopoverSchema>({
               getInitialEl: prop("initialFocusEl"),
               enabled: prop("autoFocus"),
             }),
+          getShadowRoot: true,
         })
       },
     },
@@ -252,11 +256,15 @@ export const machine = createMachine<PopoverSchema>({
           element?.focus({ preventScroll: true })
         })
       },
-      invokeOnOpen({ prop }) {
-        prop("onOpenChange")?.({ open: true })
+      invokeOnOpen({ prop, flush }) {
+        flush(() => {
+          prop("onOpenChange")?.({ open: true })
+        })
       },
-      invokeOnClose({ prop }) {
-        prop("onOpenChange")?.({ open: false })
+      invokeOnClose({ prop, flush }) {
+        flush(() => {
+          prop("onOpenChange")?.({ open: false })
+        })
       },
       toggleVisibility({ event, send, prop }) {
         send({ type: prop("open") ? "CONTROLLED.OPEN" : "CONTROLLED.CLOSE", previousEvent: event })

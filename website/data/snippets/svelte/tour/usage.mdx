@@ -1,11 +1,11 @@
 ```svelte
 <script lang="ts">
-  import * as qrCode from "@zag-js/qr-code"
+  import * as tour from "@zag-js/tour"
   import { portal, useMachine, normalizeProps } from "@zag-js/svelte"
 
   const id = $props.id()
-  const service = useMachine(qrCode.machine, { id, steps })
-  const api = $derived(qrCode.connect(service, normalizeProps))
+  const service = useMachine(tour.machine, { id, steps })
+  const api = $derived(tour.connect(service, normalizeProps))
 </script>
 
 <div>

@@ -25,10 +25,7 @@ export type ElementIds = Partial<{
 }>
 
 export interface DialogProps
-  extends DirectionProperty,
-    CommonProperties,
-    DismissableElementHandlers,
-    PersistentElementOptions {
+  extends DirectionProperty, CommonProperties, DismissableElementHandlers, PersistentElementOptions {
   /**
    * The ids of the elements in the dialog. Useful for composition.
    */
@@ -135,13 +132,13 @@ export interface DialogApi<T extends PropTypes = PropTypes> {
   /**
    * Function to open or close the dialog
    */
-  setOpen(open: boolean): void
+  setOpen: (open: boolean) => void
 
-  getTriggerProps(): T["button"]
-  getBackdropProps(): T["element"]
-  getPositionerProps(): T["element"]
-  getContentProps(): T["element"]
-  getTitleProps(): T["element"]
-  getDescriptionProps(): T["element"]
-  getCloseTriggerProps(): T["button"]
+  getTriggerProps: () => T["button"]
+  getBackdropProps: () => T["element"]
+  getPositionerProps: () => T["element"]
+  getContentProps: () => T["element"]
+  getTitleProps: () => T["element"]
+  getDescriptionProps: () => T["element"]
+  getCloseTriggerProps: () => T["button"]
 }

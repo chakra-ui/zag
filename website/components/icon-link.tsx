@@ -1,18 +1,50 @@
-import { Icon } from "@chakra-ui/icon"
-import { Box, Center } from "@chakra-ui/layout"
-import { type ElementType } from "react"
+import { Icon } from "components/ui/icon"
+import type { IconType } from "react-icons"
+import { Box, styled } from "styled-system/jsx"
 
-type IconLinkProps = {
+interface IconLinkProps extends React.ComponentProps<typeof StyledLink> {
   label: string
-  href: string
-  icon: ElementType
+  icon: IconType
 }
 
-export function IconLink({ label, href, icon }: IconLinkProps) {
+const StyledLink = styled("a", {
+  base: {
+    width: "8",
+    height: "8",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    rounded: "xs",
+    _icon: {
+      fill: "currentcolor",
+    },
+  },
+  variants: {
+    variant: {
+      plain: {
+        color: "gray.500",
+        _hover: { color: "gray.600" },
+      },
+      solid: {
+        bg: "bg.primary.subtle",
+        color: "white",
+        _hover: {
+          filter: "brightness(0.9)",
+        },
+      },
+    },
+  },
+  defaultVariants: {
+    variant: "plain",
+  },
+})
+
+export function IconLink(props: IconLinkProps) {
+  const { label, href, icon, ...rest } = props
   return (
-    <Center width="6" height="6" as="a" href={href} target="_blank">
+    <StyledLink href={href} target="_blank" {...rest}>
       <Box srOnly>{label}</Box>
-      <Icon as={icon} fontSize="lg" color="gray.500" />
-    </Center>
+      <Icon as={icon} fontSize="lg" />
+    </StyledLink>
   )
 }

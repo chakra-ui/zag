@@ -1,10 +1,12 @@
+import { esbuildPluginFilePathExtensions } from "esbuild-plugin-file-path-extensions"
 import { defineConfig } from "tsup"
 
 export default defineConfig({
   clean: true,
   dts: true,
-  entry: ["src/index.ts"],
+  entry: ["src/**/*.ts", "src/**/*.tsx"],
   target: "es2020",
-  treeshake: "smallest",
   format: ["esm", "cjs"],
+  bundle: true,
+  esbuildPlugins: [esbuildPluginFilePathExtensions({ cjsExtension: "js" })],
 })

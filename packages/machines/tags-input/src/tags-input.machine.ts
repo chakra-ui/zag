@@ -377,7 +377,8 @@ export const machine = createMachine<TagsInputSchema>({
       trackInteractOutside({ scope, prop, send }) {
         return trackInteractOutside(dom.getInputEl(scope), {
           exclude(target) {
-            return contains(dom.getRootEl(scope), target)
+            const itemEls = dom.getItemEls(scope)
+            return itemEls.some((el) => contains(el, target))
           },
           onFocusOutside: prop("onFocusOutside"),
           onPointerDownOutside: prop("onPointerDownOutside"),
@@ -402,7 +403,7 @@ export const machine = createMachine<TagsInputSchema>({
       autoResize({ context, prop, scope }) {
         let fn_cleanup: VoidFunction | undefined
 
-        const raf_cleanup = raf(() => {
+        queueMicrotask(() => {
           const editedTagValue = context.get("editedTagValue")
           const editedTagIndex = context.get("editedTagIndex")
           if (!editedTagValue || editedTagIndex == null || !prop("editable")) return
@@ -414,7 +415,6 @@ export const machine = createMachine<TagsInputSchema>({
         })
 
         return () => {
-          raf_cleanup()
           fn_cleanup?.()
         }
       },

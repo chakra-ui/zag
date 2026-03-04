@@ -1,16 +1,27 @@
 [data-scope="collapsible"][data-part="content"] {
   overflow: hidden;
   max-width: 400px;
-}
 
-[data-scope="collapsible"][data-part="content"][data-state="open"] {
-  animation: slideDown 200ms ease;
-}
+  &[data-state="open"] {
+    animation-name: fadeIn, expandHeight;
+    animation-duration: 200ms;
+    animation-timing-function: ease;
 
-[data-scope="collapsible"][data-part="content"][data-state="closed"] {
-  animation: slideUp 200ms ease;
-}
+    &[data-has-collapsed-size] {
+      animation-name: expandHeight;
+    }
+  }
 
+  &[data-state="closed"] {
+    animation-name: fadeOut, collapseHeight;
+    animation-duration: 200ms;
+    animation-timing-function: ease;
+
+    &[data-has-collapsed-size] {
+      animation-name: collapseHeight;
+    }
+  }
+}
 
 [data-scope="collapsible"][data-part="trigger"] {
   display: inline-flex;
@@ -18,28 +29,8 @@
   gap: 8px;
 }
 
-[data-scope="collapsible"][data-part="indicator"][data-state="open"] {
-  transform: rotate(180deg);
-}
-
-@keyframes slideDown {
-  from {
-    opacity: 0.01;
-    height: 0;
-  }
-  to {
-    opacity: 1;
-    height: var(--height);
-  }
-}
-
-@keyframes slideUp {
-  from {
-    opacity: 1;
-    height: var(--height);
-  }
-  to {
-    opacity: 0.01;
-    height: 0;
+[data-scope="collapsible"][data-part="indicator"] {
+  &[data-state="open"] {
+    transform: rotate(180deg);
   }
 }

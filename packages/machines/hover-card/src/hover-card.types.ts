@@ -33,7 +33,7 @@ export interface HoverCardProps extends DirectionProperty, CommonProperties, Int
   onOpenChange?: ((details: OpenChangeDetails) => void) | undefined
   /**
    * The duration from when the mouse enters the trigger until the hover card opens.
-   * @default 700
+   * @default 600
    */
   openDelay?: number | undefined
   /**
@@ -41,6 +41,10 @@ export interface HoverCardProps extends DirectionProperty, CommonProperties, Int
    * @default 300
    */
   closeDelay?: number | undefined
+  /**
+   * Whether the hover card is disabled
+   */
+  disabled?: boolean | undefined
   /**
    * The controlled open state of the hover card
    */
@@ -100,17 +104,17 @@ export interface HoverCardApi<T extends PropTypes = PropTypes> {
   /**
    * Function to open the hover card
    */
-  setOpen(open: boolean): void
+  setOpen: (open: boolean) => void
   /**
    * Function to reposition the popover
    */
-  reposition(options?: Partial<PositioningOptions>): void
+  reposition: (options?: Partial<PositioningOptions>) => void
 
-  getArrowProps(): T["element"]
-  getArrowTipProps(): T["element"]
-  getTriggerProps(): T["element"]
-  getPositionerProps(): T["element"]
-  getContentProps(): T["element"]
+  getArrowProps: () => T["element"]
+  getArrowTipProps: () => T["element"]
+  getTriggerProps: () => T["element"]
+  getPositionerProps: () => T["element"]
+  getContentProps: () => T["element"]
 }
 
 /* -----------------------------------------------------------------------------

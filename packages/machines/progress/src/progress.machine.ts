@@ -7,17 +7,27 @@ export const machine = createMachine<ProgressSchema>({
     const min = props.min ?? 0
     const max = props.max ?? 100
     return {
+      orientation: "horizontal",
       ...props,
       max,
       min,
-      defaultValue: props.defaultValue ?? midValue(min, max),
-      orientation: "horizontal",
+      defaultValue: props.defaultValue !== undefined ? props.defaultValue : midValue(min, max),
       formatOptions: {
         style: "percent",
         ...props.formatOptions,
       },
       translations: {
-        value: ({ percent }) => (percent === -1 ? "loading..." : `${percent} percent`),
+        value: ({ value, percent, formatter }) => {
+          if (value === null) return "loading..."
+
+          if (formatter) {
+            const formatOptions = formatter.resolvedOptions()
+            const num = formatOptions.style === "percent" ? percent / 100 : value
+            return formatter.format(num)
+          }
+
+          return value.toString()
+        },
         ...props.translations,
       },
     }
@@ -50,7 +60,7 @@ export const machine = createMachine<ProgressSchema>({
     },
     formatter: memo(
       ({ prop }) => [prop("locale"), prop("formatOptions")],
-      (locale, formatOptions) => new Intl.NumberFormat(locale, formatOptions),
+      ([locale, formatOptions]) => new Intl.NumberFormat(locale, formatOptions),
     ),
     isHorizontal: ({ prop }) => prop("orientation") === "horizontal",
   },

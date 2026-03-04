@@ -8,18 +8,20 @@ import type { Point, Rect, Size } from "./utils/rect"
  * Callback details
  * -----------------------------------------------------------------------------*/
 
+export type StepEffectCleanup = VoidFunction | void
+
 export interface StepEffectArgs {
-  next(): void
-  goto(id: string): void
-  dismiss(): void
-  show(): void
-  update(data: Partial<StepBaseDetails>): void
+  next: VoidFunction
+  goto: (id: string) => void
+  dismiss: VoidFunction
+  show: VoidFunction
+  update: (data: Partial<StepBaseDetails>) => void
   target?: (() => HTMLElement | null) | undefined
 }
 
 export type StepType = "tooltip" | "dialog" | "wait" | "floating"
 
-export type StepActionType = "next" | "prev" | "dismiss"
+export type StepActionType = "next" | "prev" | "dismiss" | "skip"
 
 export type StepActionFn = (actionMap: StepActionMap) => void
 
@@ -49,7 +51,7 @@ export interface StepBaseDetails {
   /**
    * Function to return the target element to highlight
    */
-  target?(): HTMLElement | null
+  target?: (() => HTMLElement | null) | undefined
   /**
    * The title of the step
    */
@@ -65,7 +67,7 @@ export interface StepBaseDetails {
   /**
    * The offset between the content and the target
    */
-  offset?: { mainAxis?: number; crossAxis?: number } | undefined
+  offset?: { mainAxis?: number | undefined; crossAxis?: number | undefined } | undefined
   /**
    * Additional metadata of the step
    */
@@ -92,7 +94,7 @@ export interface StepDetails extends StepBaseDetails {
   /**
    * The effect to run before the step is shown
    */
-  effect?(args: StepEffectArgs): VoidFunction
+  effect?: ((args: StepEffectArgs) => StepEffectCleanup) | undefined
 }
 
 export interface StepChangeDetails {
@@ -110,10 +112,11 @@ export interface StepsChangeDetails {
 export type StepStatus = "idle" | "started" | "skipped" | "completed" | "dismissed" | "not-found"
 
 export interface StepActionMap {
-  next(): void
-  prev(): void
-  dismiss(): void
-  goto(id: string): void
+  next: VoidFunction
+  prev: VoidFunction
+  dismiss: VoidFunction
+  skip: VoidFunction
+  goto: (id: string) => void
 }
 
 export interface StatusChangeDetails {
@@ -128,7 +131,7 @@ export interface ProgressTextDetails {
 }
 
 export interface IntlTranslations {
-  progressText?(details: ProgressTextDetails): string
+  progressText?: ((details: ProgressTextDetails) => string) | undefined
   nextStep?: string | undefined
   prevStep?: string | undefined
   close?: string | undefined
@@ -253,7 +256,15 @@ interface Refs {
   /**
    * The function to cleanup the step effects
    */
-  _effectCleanup?: VoidFunction | undefined
+  _effectCleanup?: StepEffectCleanup | undefined
+  /**
+   * Flag to indicate that an effect is currently running
+   */
+  _runningEffect?: boolean | undefined
+  /**
+   * The previous target element to detect changes
+   */
+  _prevTarget?: HTMLElement | null | undefined
 }
 
 type ComputedContext = Readonly<{
@@ -289,7 +300,7 @@ type ComputedContext = Readonly<{
 
 export interface TourSchema {
   tag: "open" | "closed"
-  state: "tour.inactive" | "tour.active" | "step.waiting" | "target.resolving" | "target.scrolling"
+  state: "tourInactive" | "running.resolving" | "running.scrolling" | "running.waiting" | "running.active"
   props: RequiredBy<TourProps, PropsWithDefault>
   context: PrivateContext
   refs: Refs
@@ -348,65 +359,65 @@ export interface TourApi<T extends PropTypes = PropTypes> {
   /**
    * Add a new step to the tour
    */
-  addStep(step: StepDetails): void
+  addStep: (step: StepDetails) => void
   /**
    * Remove a step from the tour
    */
-  removeStep(id: string): void
+  removeStep: (id: string) => void
   /**
    * Update a step in the tour with partial details
    */
-  updateStep(id: string, stepOverrides: Partial<StepDetails>): void
+  updateStep: (id: string, stepOverrides: Partial<StepDetails>) => void
   /**
    * Set the steps of the tour
    */
-  setSteps(steps: StepDetails[]): void
+  setSteps: (steps: StepDetails[]) => void
   /**
    * Set the current step of the tour
    */
-  setStep(id: string): void
+  setStep: (id: string) => void
   /**
    * Start the tour at a specific step (or the first step if not provided)
    */
-  start(id?: string): void
+  start: (id?: string) => void
   /**
    * Check if a step is valid
    */
-  isValidStep(id: string): boolean
+  isValidStep: (id: string) => boolean
   /**
    * Check if a step is visible
    */
-  isCurrentStep(id: string): boolean
+  isCurrentStep: (id: string) => boolean
   /**
    * Move to the next step
    */
-  next(): void
+  next: VoidFunction
   /**
    * Move to the previous step
    */
-  prev(): void
+  prev: VoidFunction
   /**
    * Returns the progress text
    */
-  getProgressText(): string
+  getProgressText: () => string
   /**
    * Returns the progress percent
    */
-  getProgressPercent(): number
+  getProgressPercent: () => number
 
-  getBackdropProps(): T["element"]
-  getSpotlightProps(): T["element"]
-  getProgressTextProps(): T["element"]
+  getBackdropProps: () => T["element"]
+  getSpotlightProps: () => T["element"]
+  getProgressTextProps: () => T["element"]
 
-  getPositionerProps(): T["element"]
-  getArrowProps(): T["element"]
-  getArrowTipProps(): T["element"]
-  getContentProps(): T["element"]
+  getPositionerProps: () => T["element"]
+  getArrowProps: () => T["element"]
+  getArrowTipProps: () => T["element"]
+  getContentProps: () => T["element"]
 
-  getTitleProps(): T["element"]
-  getDescriptionProps(): T["element"]
-  getCloseTriggerProps(): T["button"]
-  getActionTriggerProps(props: StepActionTriggerProps): T["button"]
+  getTitleProps: () => T["element"]
+  getDescriptionProps: () => T["element"]
+  getCloseTriggerProps: () => T["button"]
+  getActionTriggerProps: (props: StepActionTriggerProps) => T["button"]
 }
 
 /* -----------------------------------------------------------------------------

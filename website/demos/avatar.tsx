@@ -1,13 +1,20 @@
 import * as avatar from "@zag-js/avatar"
 import { normalizeProps, useMachine } from "@zag-js/react"
 import { useId } from "react"
+import styles from "../styles/machines/avatar.module.css"
 
-export function Avatar(props: { controls: { src: string; name: string } }) {
-  const { src, name } = props.controls
+interface AvatarProps extends Omit<avatar.Props, "id"> {
+  src: string
+  name: string
+}
+
+export function Avatar(props: AvatarProps) {
+  const [avatarProps, restProps] = avatar.splitProps(props)
+  const { src, name } = restProps
 
   const service = useMachine(avatar.machine, {
     id: useId(),
-    ...props.controls,
+    ...avatarProps,
   })
 
   const api = avatar.connect(service, normalizeProps)
@@ -18,20 +25,17 @@ export function Avatar(props: { controls: { src: string; name: string } }) {
     .join("")
 
   return (
-    <>
-      <main className="avatar">
-        <div {...api.getRootProps()}>
-          <div {...api.getFallbackProps()}>
-            <div>{initial}</div>
-          </div>
-          <img
-            alt={name}
-            referrerPolicy="no-referrer"
-            src={src}
-            {...api.getImageProps()}
-          />
-        </div>
-      </main>
-    </>
+    <div className={styles.Root} {...api.getRootProps()}>
+      <div className={styles.Fallback} {...api.getFallbackProps()}>
+        <div>{initial}</div>
+      </div>
+      <img
+        alt={name}
+        className={styles.Image}
+        referrerPolicy="no-referrer"
+        src={src}
+        {...api.getImageProps()}
+      />
+    </div>
   )
 }

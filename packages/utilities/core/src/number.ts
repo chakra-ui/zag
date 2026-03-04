@@ -11,7 +11,12 @@ export const getMaxValueAtIndex = (i: number, v: number[], vmax: number) => (i =
 
 export const isValueAtMax = (v: number, vmax: number) => nan(v) >= vmax
 export const isValueAtMin = (v: number, vmin: number) => nan(v) <= vmin
-export const isValueWithinRange = (v: number, vmin: number, vmax: number) => nan(v) >= vmin && nan(v) <= vmax
+export const isValueWithinRange = (v: number, vmin: number | null | undefined, vmax: number | null | undefined) => {
+  const value = nan(v)
+  const minCheck = vmin == null || value >= vmin
+  const maxCheck = vmax == null || value <= vmax
+  return minCheck && maxCheck
+}
 
 export const roundValue = (v: number, vmin: number, step: number) => round((nan(v) - vmin) / step) * step + vmin
 export const clampValue = (v: number, vmin: number, vmax: number) => min(max(nan(v), vmin), vmax)
@@ -37,23 +42,25 @@ export const roundToStepPrecision = (v: number, step: number) => {
 export const roundToDpr = (v: number, dpr: unknown) => (typeof dpr === "number" ? floor(v * dpr + 0.5) / dpr : round(v))
 
 export const snapValueToStep = (v: number, vmin: number | undefined, vmax: number | undefined, step: number) => {
-  vmin = Number(vmin)
-  vmax = Number(vmax)
-  let remainder = (v - (isNaN(vmin) ? 0 : vmin)) % step
-  let sv = roundToStepPrecision(
-    abs(remainder) * 2 >= step ? v + sign(remainder) * (step - abs(remainder)) : v - remainder,
-    step,
-  )
-  if (!isNaN(vmin)) {
-    if (sv < vmin) {
-      sv = vmin
-    } else if (!isNaN(vmax) && sv > vmax) {
-      sv = vmin + floor(roundToStepPrecision((vmax - vmin) / step, step)) * step
-    }
-  } else if (!isNaN(vmax) && sv > vmax) {
-    sv = vmin + floor(roundToStepPrecision((vmax - vmin) / step, step)) * step
+  const min = vmin != null ? Number(vmin) : 0
+  const max = Number(vmax)
+
+  // Snap to nearest step
+  const remainder = (v - min) % step
+  let snapped = abs(remainder) * 2 >= step ? v + sign(remainder) * (step - abs(remainder)) : v - remainder
+
+  snapped = roundToStepPrecision(snapped, step)
+
+  // Clamp to bounds
+  if (!isNaN(min) && snapped < min) {
+    snapped = min
+  } else if (!isNaN(max) && snapped > max) {
+    const stepsInRange = floor((max - min) / step)
+    const largestValidStep = min + stepsInRange * step
+    snapped = stepsInRange <= 0 || largestValidStep < min ? max : largestValidStep
   }
-  return roundToStepPrecision(sv, step)
+
+  return roundToStepPrecision(snapped, step)
 }
 
 export const setValueAtIndex = <T>(vs: T[], i: number, v: T) => {
@@ -148,4 +155,4 @@ export const incrementValue = (v: number, s: number) => decimalOp(nan(v), "+", s
 
 export const decrementValue = (v: number, s: number) => decimalOp(nan(v), "-", s)
 
-export const toPx = (v: number | undefined) => (v != null ? `${v}px` : undefined)
+export const toPx = (v: number | string | undefined) => (typeof v === "number" ? `${v}px` : v)

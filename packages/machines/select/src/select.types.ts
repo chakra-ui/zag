@@ -22,11 +22,17 @@ export interface HighlightChangeDetails<T extends CollectionItem = CollectionIte
 
 export interface OpenChangeDetails {
   open: boolean
+  value: string[]
 }
 
 export interface ScrollToIndexDetails {
   index: number
   immediate?: boolean | undefined
+  getElement: () => HTMLElement | null
+}
+
+export interface SelectionDetails {
+  value: string
 }
 
 /* -----------------------------------------------------------------------------
@@ -42,15 +48,13 @@ export type ElementIds = Partial<{
   label: string
   hiddenSelect: string
   positioner: string
-  item(id: string | number): string
-  itemGroup(id: string | number): string
-  itemGroupLabel(id: string | number): string
+  item: (id: string | number) => string
+  itemGroup: (id: string | number) => string
+  itemGroupLabel: (id: string | number) => string
 }>
 
 export interface SelectProps<T extends CollectionItem = CollectionItem>
-  extends DirectionProperty,
-    CommonProperties,
-    InteractOutsideHandlers {
+  extends DirectionProperty, CommonProperties, InteractOutsideHandlers {
   /**
    * The item collection
    */
@@ -67,6 +71,10 @@ export interface SelectProps<T extends CollectionItem = CollectionItem>
    * The associate form of the underlying select.
    */
   form?: string | undefined
+  /**
+   * The autocomplete attribute for the hidden select. Enables browser autofill (e.g. "address-level1" for state).
+   */
+  autoComplete?: string | undefined
   /**
    * Whether the select is disabled
    */
@@ -88,6 +96,10 @@ export interface SelectProps<T extends CollectionItem = CollectionItem>
    * @default true
    */
   closeOnSelect?: boolean | undefined
+  /**
+   * Function called when an item is selected
+   */
+  onSelect?: ((details: SelectionDetails) => void) | undefined
   /**
    * The callback fired when the highlighted item changes.
    */
@@ -116,7 +128,7 @@ export interface SelectProps<T extends CollectionItem = CollectionItem>
   /**
    * The controlled key of the highlighted item
    */
-  highlightedValue?: string | null
+  highlightedValue?: string | null | undefined
   /**
    * The initial value of the highlighted item when opened.
    * Use when you don't need to control the highlighted value of the select.
@@ -167,14 +179,15 @@ export interface SelectSchema<T extends CollectionItem = CollectionItem> {
     highlightedValue: string | null
     fieldsetDisabled: boolean
     highlightedItem: T | null
-    selectedItems: T[]
-    valueAsString: string
+    selectedItemMap: Map<string, T>
   }
   computed: {
     hasSelectedItems: boolean
     isTypingAhead: boolean
     isInteractive: boolean
     isDisabled: boolean
+    selectedItems: T[]
+    valueAsString: string
   }
   refs: {
     typeahead: TypeaheadState
@@ -255,7 +268,11 @@ export interface SelectApi<T extends PropTypes = PropTypes, V extends Collection
   /**
    * Function to highlight a value
    */
-  highlightValue(value: string): void
+  setHighlightValue: (value: string) => void
+  /**
+   * Function to clear the highlighted value
+   */
+  clearHighlightValue: VoidFunction
   /**
    * The selected items
    */
@@ -275,32 +292,32 @@ export interface SelectApi<T extends PropTypes = PropTypes, V extends Collection
   /**
    * Function to select a value
    */
-  selectValue(value: string): void
+  selectValue: (value: string) => void
   /**
    * Function to select all values
    */
-  selectAll(): void
+  selectAll: VoidFunction
   /**
    * Function to set the value of the select
    */
-  setValue(value: string[]): void
+  setValue: (value: string[]) => void
   /**
    * Function to clear the value of the select.
    * If a value is provided, it will only clear that value, otherwise, it will clear all values.
    */
-  clearValue(value?: string): void
+  clearValue: (value?: string) => void
   /**
    * Function to focus on the select input
    */
-  focus(): void
+  focus: VoidFunction
   /**
    * Returns the state of a select item
    */
-  getItemState(props: ItemProps): ItemState
+  getItemState: (props: ItemProps) => ItemState
   /**
    * Function to open or close the select
    */
-  setOpen(open: boolean): void
+  setOpen: (open: boolean) => void
   /**
    * Function to toggle the select
    */
@@ -308,7 +325,7 @@ export interface SelectApi<T extends PropTypes = PropTypes, V extends Collection
   /**
    * Function to set the positioning options of the select
    */
-  reposition(options?: Partial<PositioningOptions>): void
+  reposition: (options?: Partial<PositioningOptions>) => void
   /**
    * Whether the select allows multiple selections
    */
@@ -318,22 +335,22 @@ export interface SelectApi<T extends PropTypes = PropTypes, V extends Collection
    */
   disabled: boolean
 
-  getRootProps(): T["element"]
-  getLabelProps(): T["label"]
-  getControlProps(): T["element"]
-  getTriggerProps(): T["button"]
-  getIndicatorProps(): T["element"]
-  getClearTriggerProps(): T["button"]
-  getValueTextProps(): T["element"]
-  getPositionerProps(): T["element"]
-  getContentProps(): T["element"]
-  getListProps(): T["element"]
-  getItemProps(props: ItemProps): T["element"]
-  getItemTextProps(props: ItemProps): T["element"]
-  getItemIndicatorProps(props: ItemProps): T["element"]
-  getItemGroupProps(props: ItemGroupProps): T["element"]
-  getItemGroupLabelProps(props: ItemGroupLabelProps): T["element"]
-  getHiddenSelectProps(): T["select"]
+  getRootProps: () => T["element"]
+  getLabelProps: () => T["label"]
+  getControlProps: () => T["element"]
+  getTriggerProps: () => T["button"]
+  getIndicatorProps: () => T["element"]
+  getClearTriggerProps: () => T["button"]
+  getValueTextProps: () => T["element"]
+  getPositionerProps: () => T["element"]
+  getContentProps: () => T["element"]
+  getListProps: () => T["element"]
+  getItemProps: (props: ItemProps) => T["element"]
+  getItemTextProps: (props: ItemProps) => T["element"]
+  getItemIndicatorProps: (props: ItemProps) => T["element"]
+  getItemGroupProps: (props: ItemGroupProps) => T["element"]
+  getItemGroupLabelProps: (props: ItemGroupLabelProps) => T["element"]
+  getHiddenSelectProps: () => T["select"]
 }
 
 /* -----------------------------------------------------------------------------

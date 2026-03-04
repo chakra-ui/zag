@@ -1,4 +1,4 @@
-import { createMachine } from "@zag-js/core"
+import { createMachine, memo } from "@zag-js/core"
 import type { PaginationSchema } from "./pagination.types"
 
 export const machine = createMachine<PaginationSchema>({
@@ -6,14 +6,17 @@ export const machine = createMachine<PaginationSchema>({
     return {
       defaultPageSize: 10,
       siblingCount: 1,
+      boundaryCount: 1,
       defaultPage: 1,
       type: "button",
       count: 1,
       ...props,
       translations: {
         rootLabel: "pagination",
+        firstTriggerLabel: "first page",
         prevTriggerLabel: "previous page",
         nextTriggerLabel: "next page",
+        lastTriggerLabel: "last page",
         itemLabel({ page, totalPages }) {
           const isLastPage = totalPages > 1 && page === totalPages
           return `${isLastPage ? "last page, " : ""}page ${page}`
@@ -54,15 +57,20 @@ export const machine = createMachine<PaginationSchema>({
   },
 
   computed: {
-    totalPages: ({ context, prop }) => Math.ceil(prop("count") / context.get("pageSize")),
+    totalPages: memo(
+      ({ prop, context }) => [context.get("pageSize"), prop("count")],
+      ([pageSize, count]) => Math.ceil(count / pageSize),
+    ),
+    pageRange: memo(
+      ({ context, prop }) => [context.get("page"), context.get("pageSize"), prop("count")],
+      ([page, pageSize, count]) => {
+        const start = (page - 1) * pageSize
+        return { start, end: Math.min(start + pageSize, count) }
+      },
+    ),
     previousPage: ({ context }) => (context.get("page") === 1 ? null : context.get("page") - 1),
     nextPage: ({ context, computed }) =>
       context.get("page") === computed("totalPages") ? null : context.get("page") + 1,
-    pageRange: ({ context, prop }) => {
-      const start = (context.get("page") - 1) * context.get("pageSize")
-      const end = Math.min(start + context.get("pageSize"), prop("count"))
-      return { start, end }
-    },
     isValidPage: ({ context, computed }) => context.get("page") >= 1 && context.get("page") <= computed("totalPages"),
   },
 

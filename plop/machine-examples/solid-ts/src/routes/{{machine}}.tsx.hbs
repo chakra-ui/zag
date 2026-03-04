@@ -1,7 +1,7 @@
 import * as {{camelCase machine}} from "@zag-js/{{machine}}"
-import { normalizeProps, useMachine, mergeProps } from "@zag-js/solid"
+import { normalizeProps, useMachine } from "@zag-js/solid"
 import { createMemo, createUniqueId } from "solid-js"
-import { {{camelCase machine}}Controls, {{camelCase machine}}Data } from "@zag-js/shared"
+import { {{camelCase machine}}Controls } from "@zag-js/shared"
 import { StateVisualizer } from "../components/state-visualizer"
 import { Toolbar } from "../components/toolbar"
 import { useControls } from "../hooks/use-controls"
@@ -23,7 +23,7 @@ export default function Page() {
         </div>
       </main>
 
-      <Toolbar controls={controls.ui}>
+      <Toolbar controls={controls}>
         <StateVisualizer state={service} />
       </Toolbar>
     </>

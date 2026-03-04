@@ -1,11 +1,9 @@
 ---
 title: Context Menu
-description: Using the menu machine for nested menus in your project.
+description: Using the menu machine for context menus in your project.
 package: "@zag-js/menu"
 slugAlias: "menu"
 ---
-
-# Context Menu
 
 An accessible dropdown and context menu that is used to display a list of
 actions or options that a user can choose when a trigger element is
@@ -17,22 +15,20 @@ right-clicked or long pressed.
 
 **Features**
 
-- Support for items, labels, groups of items
+- Supports items, labels, groups of items
 - Focus is fully managed using `aria-activedescendant` pattern
 - Typeahead to allow focusing items by typing text
 - Keyboard navigation support including arrow keys, home/end, page up/down
 
 ## Installation
 
-To use the menu machine in your project, run the following command in your
-command line:
+Install the menu package:
 
 <CodeSnippet id="menu/installation.mdx" />
 
 ## Anatomy
 
-To set up the menu correctly, you'll need to understand its anatomy and how we
-name its parts.
+Check the menu anatomy and part names.
 
 > Each part includes a `data-part` attribute to help identify them in the DOM.
 
@@ -40,7 +36,7 @@ name its parts.
 
 ## Usage
 
-First, import the menu package into your project
+Import the menu package:
 
 ```jsx
 import * as menu from "@zag-js/menu"
@@ -48,41 +44,107 @@ import * as menu from "@zag-js/menu"
 
 The menu package exports two key functions:
 
-- `machine` — The state machine logic for the menu widget.
-- `connect` — The function that translates the machine's state to JSX attributes
-  and event handlers.
+- `machine` - Behavior logic for the menu.
+- `connect` - Maps behavior to JSX props and event handlers.
 
-> You'll need to provide a unique `id` to the `useMachine` hook. This is used to
-> ensure that every part has a unique identifier.
+> Pass a unique `id` to `useMachine` so generated element ids stay predictable.
 
-Next, import the required hooks and functions for your framework and use the
-menu machine in your project 🔥
+Then use the framework integration helpers:
 
-To show the menu when a trigger element is right-clicked, use the
-`contextTriggerProps` provided by the menu's connect function.
+To show the menu when a trigger element is right-clicked, use
+`api.getContextTriggerProps()`.
 
-Context menu's are also opened during a long-press of roughly `700ms` when the
-pointer is pen or touch.
+Context menus also open during a long-press of roughly `700ms` when the pointer
+is pen or touch.
 
 <CodeSnippet id="menu/context-menu.mdx" />
 
+### Default open state
+
+Use `defaultOpen` for an uncontrolled initial state.
+
+```jsx
+const service = useMachine(menu.machine, {
+  defaultOpen: true,
+})
+```
+
+### Controlling open state
+
+Use `open` and `onOpenChange` to control the open state.
+
+```jsx
+const service = useMachine(menu.machine, {
+  open,
+  onOpenChange(details) {
+    // details => { open: boolean }
+    setOpen(details.open)
+  },
+})
+```
+
+### Listening for highlighted items
+
+Use `onHighlightChange` to react when keyboard or pointer highlight changes.
+
+```jsx
+const service = useMachine(menu.machine, {
+  onHighlightChange(details) {
+    // details => { highlightedValue: string | null }
+    console.log(details.highlightedValue)
+  },
+})
+```
+
+### Listening for item selection
+
+Use `onSelect` to react when an item is selected.
+
+```jsx
+const service = useMachine(menu.machine, {
+  onSelect(details) {
+    // details => { value: string }
+    console.log(details.value)
+  },
+})
+```
+
+### Positioning the menu
+
+Use `positioning` to configure menu placement.
+
+```jsx
+const service = useMachine(menu.machine, {
+  positioning: { placement: "right-start" },
+})
+```
+
+### Keeping the menu open after selection
+
+Set `closeOnSelect` to `false` to keep the menu open after selecting an item.
+
+```jsx
+const service = useMachine(menu.machine, {
+  closeOnSelect: false,
+})
+```
+
 ## Styling guide
 
-Earlier, we mentioned that each menu part has a `data-part` attribute added to
-them to select and style them in the DOM.
+Each menu part includes a `data-part` attribute you can target in CSS.
 
-### Focused item state
+### Highlighted item state
 
-When an item is focused, via keyboard navigation or pointer, it is given a
-`data-focus` attribute.
+When an item is highlighted, via keyboard navigation or pointer, it is given a
+`data-highlighted` attribute.
 
 ```css
-[data-part="item"][data-focus] {
-  /* styles for focused state */
+[data-part="item"][data-highlighted] {
+  /* styles for highlighted state */
 }
 
-[data-part="item"][data-type="radio|checkbox"][data-focus] {
-  /* styles for focused state */
+[data-part="item"][data-type="radio|checkbox"][data-highlighted] {
+  /* styles for highlighted state */
 }
 ```
 
@@ -103,7 +165,7 @@ attribute.
 
 ### Using arrows
 
-When using arrows within the menu, you can style it using css variables.
+When using arrows within the menu, you can style it using CSS variables.
 
 ```css
 [data-part="arrow"] {
@@ -114,10 +176,10 @@ When using arrows within the menu, you can style it using css variables.
 
 ### Checked option item state
 
-When an option item is checked, it is given a `data-checked` attribute.
+When an option item is checked, it is given a `data-state` attribute.
 
 ```css
-[data-part="item"][data-type="radio|checkbox"][data-checked] {
+[data-part="item"][data-type="radio|checkbox"][data-state="checked"] {
   /* styles for checked state */
 }
 ```
@@ -139,6 +201,10 @@ The menu `api` exposes the following methods:
 ### Data Attributes
 
 <DataAttrTable name="menu" />
+
+### CSS Variables
+
+<CssVarTable name="menu" />
 
 ## Accessibility
 

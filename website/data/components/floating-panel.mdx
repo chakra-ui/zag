@@ -3,14 +3,12 @@ title: Floating Panel
 description: A floating window that contains one or more panes.
 ---
 
-# Floating Panel
-
 A floating panel is a detachable window that floats above the main interface,
 typically used for displaying and editing properties. The panel can be dragged,
 resized, and positioned anywhere on the screen for optimal workflow.
 
-> Think of the panel that pops up in Figma when you click `variables` or try set
-> a color.
+> Think of the panel that pops up in Figma when you click `variables` or try to
+> set a color.
 
 <Resources pkg="@zag-js/floating-panel" />
 
@@ -20,24 +18,22 @@ resized, and positioned anywhere on the screen for optimal workflow.
 
 - Allows interaction with the main content
 - Supports dragging and resizing
-- Support for minimizing and maximizing the panel
+- Supports minimizing and maximizing the panel
 - Controlled and uncontrolled size and position
-- Support for snapping to a grid
-- Support for locking the aspect ratio
-- Support for closing on escape key
-  - Support for persisting the size and position when closed
+- Supports snapping to a grid
+- Supports locking the aspect ratio
+- Supports closing on escape key
+- Supports persisting size and position when closed
 
 ## Installation
 
-To use the hover card machine in your project, run the following command in your
-command line:
+Install the floating panel package:
 
 <CodeSnippet id="floating-panel/installation.mdx" />
 
 ## Anatomy
 
-To set up the editable correctly, you'll need to understand its anatomy and how
-we name its parts.
+Check the floating panel anatomy and part names.
 
 > Each part includes a `data-part` attribute to help identify them in the DOM.
 
@@ -45,20 +41,18 @@ we name its parts.
 
 ## Usage
 
-First, import the floating panel package into your project
+Import the floating panel package:
 
 ```jsx
 import * as floatingPanel from "@zag-js/floating-panel"
 ```
 
-The floating panel package exports two key functions:
+These are the key exports:
 
-- `machine` — The state machine logic for the floating panel widget.
-- `connect` — The function that translates the machine's state to JSX attributes
-  and event handlers.
+- `machine` - State machine logic.
+- `connect` - Maps behavior to JSX props and event handlers.
 
-Next, import the required hooks and functions for your framework and use the
-floating panel machine in your project 🔥
+Then use the framework integration helpers:
 
 <CodeSnippet id="floating-panel/usage.mdx" />
 
@@ -77,15 +71,14 @@ const service = useMachine(floatingPanel.machine, {
 
 #### Controlling the size
 
-To control the size of the floating panel programmatically, you can pass the
-`size` `onResize` prop to the machine.
+Use `size` and `onSizeChange` to control size externally.
 
 ```tsx {2}
 const service = useMachine(floatingPanel.machine, {
   size: { width: 300, height: 300 },
   onSizeChange(details) {
-    // details => { width: number, height: number }
-    console.log("floating panel is:", details.width, details.height)
+    // details => { size: { width: number, height: number } }
+    console.log("floating panel is:", details.size.width, details.size.height)
   },
 })
 ```
@@ -165,8 +158,8 @@ To control the position of the floating panel programmatically, you can pass the
 const service = useMachine(floatingPanel.machine, {
   position: { x: 500, y: 200 },
   onPositionChange(details) {
-    // details => { x: number, y: number }
-    console.log("floating panel is:", details.x, details.y)
+    // details => { position: { x: number, y: number } }
+    console.log("floating panel is:", details.position.x, details.position.y)
   },
 })
 ```
@@ -175,6 +168,42 @@ const service = useMachine(floatingPanel.machine, {
 
 The floating panel enables you to set its position and move it by dragging. To
 disable this behavior, set the `draggable` prop to `false`.
+
+```tsx
+const service = useMachine(floatingPanel.machine, {
+  draggable: false,
+})
+```
+
+#### Controlling positioning strategy
+
+Use `strategy` to control positioning behavior (`fixed` or `absolute`).
+
+```tsx
+const service = useMachine(floatingPanel.machine, {
+  strategy: "absolute",
+})
+```
+
+#### Snapping to a grid
+
+Use `gridSize` to snap drag and resize interactions to a grid.
+
+```tsx
+const service = useMachine(floatingPanel.machine, {
+  gridSize: 8,
+})
+```
+
+#### Allowing overflow outside boundaries
+
+Set `allowOverflow` to `true` to let the panel move outside boundary limits.
+
+```tsx
+const service = useMachine(floatingPanel.machine, {
+  allowOverflow: true,
+})
+```
 
 ### Events
 
@@ -218,8 +247,8 @@ const service = useMachine(floatingPanel.machine, {
 
 When the size of the floating panel changes, these callbacks are invoked:
 
-- `onResize` — When the size of the floating panel changes.
-- `onResizeEnd` — When the size of the floating panel changes ends.
+- `onSizeChange` — When the panel size changes.
+- `onSizeChangeEnd` — When panel resizing ends.
 
 ```tsx {2-5}
 const service = useMachine(floatingPanel.machine, {
@@ -255,6 +284,31 @@ const service = useMachine(floatingPanel.machine, {
   onStageChange(details) {
     // details => { stage: "minimized" | "maximized" | "default" }
     console.log("floating panel is:", details.stage)
+  },
+})
+```
+
+### Persisting size and position when closed
+
+Set `persistRect` to `true` to preserve size and position across close and
+reopen.
+
+```tsx
+const service = useMachine(floatingPanel.machine, {
+  persistRect: true,
+})
+```
+
+### Customizing accessibility labels
+
+Use `translations` to customize stage control labels.
+
+```tsx
+const service = useMachine(floatingPanel.machine, {
+  translations: {
+    minimize: "Minimize panel",
+    maximize: "Maximize panel",
+    restore: "Restore panel",
   },
 })
 ```
@@ -352,3 +406,7 @@ The floating panel `api` exposes the following methods:
 ### Data Attributes
 
 <DataAttrTable name="floating-panel" />
+
+### CSS Variables
+
+<CssVarTable name="floating-panel" />

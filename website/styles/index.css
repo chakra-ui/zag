@@ -1,0 +1,7 @@
+@layer reset, base, tokens, recipes, utilities;
+
+@font-face {
+  font-family: "Spline Sans";
+  src: url("/fonts/spline-sans.woff2") format("woff2");
+  font-weight: 100 1000;
+}

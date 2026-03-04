@@ -4,6 +4,1301 @@ All notable changes to this project will be documented in this file.
 
 > For v0.x changelog, see the [v0 branch](https://github.com/chakra-ui/zag/blob/v0/CHANGELOG.md)
 
+## [1.35.3](./#1.35.3) - 2026-03-02
+
+### Added
+
+- **Date Input**: Initial release of date input machine
+
+### Fixed
+
+- **Carousel**
+  - Fix issue where carousel inside a Portal (e.g., Dialog) computes incorrect page count due to incomplete DOM layout
+    at mount time. The item-group container is now observed with a `ResizeObserver`, so snap points are recalculated
+    when the container resizes
+  - Keep page and indicators in sync after drag release and scroll settling
+  - Handle rapid mixed interactions (drag, wheel, buttons, indicators) more consistently
+  - Keep page state valid when `slidesPerPage`, `slidesPerMove`, direction, or orientation change
+  - Make `slidesPerMove` (`auto`, `1`, `2`) progression more predictable
+
+- **Combobox**: Improve controlled-mode synchronization and keep callback/item resolution behavior consistent across
+  filtered collections
+
+- **Listbox**: Improve controlled-mode synchronization and keep callback/item resolution behavior consistent across
+  filtered collections
+
+- **Select**: Improve controlled-mode synchronization and keep callback/item resolution behavior consistent across
+  filtered collections
+
+### Changed
+
+- **I18n Utils**: `formatTime` now accepts `amLabel` and `pmLabel` as separate options instead of the previous
+  `amPmLabels` object
+
+## [1.35.2](./#1.35.2) - 2026-02-26
+
+### Fixed
+
+- Fix CJS build issues across all packages
+
+## [1.35.1](./#1.35.1) - 2026-02-26
+
+### Added
+
+- **Core**: Add support for XState-style `#id` transition targets. `#...` targets now resolve by state node `id`, making
+  cross-level transitions explicit.
+
+### Fixed
+
+- **Color Picker**: Fix a regression where clicking the color picker trigger while open did not close the popover
+
+- **Docs**: Fix ESM JSON imports for Node loader compatibility. Add `with { type: "json" }` import attributes and set
+  build target to `node20.10` so the ESM output works when loaded in `next.config.mjs`, velite, or other Node ESM
+  contexts without `ERR_IMPORT_ATTRIBUTE_MISSING`
+
+## [1.35.0](./#1.35.0) - 2026-02-26
+
+### Added
+
+- **Date Picker**
+  - Add non-Gregorian calendar support via `createCalendar` prop
+    - Support Persian, Buddhist, Islamic, Hebrew, and other calendar systems
+    - Month names, year ranges, formatters, and navigation now respect the active calendar
+  - Add `data-type` attribute to weekend table header and cell
+
+### Fixed
+
+- **Combobox**: Fix `onValueChange` returning empty `items` array when using controlled value
+
+- **Popover**: Fix nested popover z-index layering by running `trackDismissableElement` before `trackPositioning`
+
+- **Toast**: Fix types to ensure `parent`/`index` are exposed as props and `expand`/`collapse` are exposed on the store
+
+- **Vanilla**: Fix `mergeProps` to ensure the `style` prop is always a string
+
+## [1.34.0](./#1.34.0) - 2026-02-19
+
+### Added
+
+- **Cascade Select [New]**: Initial release of cascade select state machine
+
+- **Date Picker**
+  - Add `focus` option to `api.clearValue({ focus?: boolean })`
+  - Add `api.setTime(time, index?)` for date-time picker support
+  - Add `maxSelectedDates` prop to limit the number of selected dates in `multiple` selection mode
+  - Add `api.isMaxSelected` to check if the maximum number of dates has been selected
+  - Add `openOnClick` prop to open the calendar when clicking the input field (defaults to `false`)
+  - Add `showWeekNumbers` support to display an ISO 8601 week number column in the day view
+
+- **Date Utils**: Add `getWeekOfYear` utility for week number calculation
+
+- **Drawer [New]**: Initial release of the drawer state machine. Replaces the previous `bottom-sheet` implementation and
+  API naming
+
+- **I18n Utils**: Add `formatTime` utility for locale-aware 12h/24h time formatting with optional seconds
+
+- **Popover**: Add `sizeMiddleware` positioning option to optionally disable the size middleware for better scroll
+  performance
+
+- **Select**: Add `autoComplete` prop for browser autofill hints (e.g., `"address-level1"` for state fields)
+
+### Fixed
+
+- **Combobox**
+  - Fix `aria-selected` being set on highlighted items instead of selected items, improving screen reader announcements
+  - Fix `selectedItems` getting out of sync with `value` when controller ignores selection in controlled mode
+  - Fix item disabled state not accounting for root-level `disabled` prop
+
+- **Date Picker**
+  - Fix `api.selectToday()` sending incorrect value format to state machine
+  - Preserve time/timezone when selecting new dates (`CalendarDateTime` and `ZonedDateTime`)
+  - Export `DateValue` type locally instead of re-exporting from `@internationalized/date` (v3.10.0+ compatibility)
+  - Improve focus management in trigger-only mode: focus now correctly returns to the trigger element after selecting a
+    date or clearing the value
+
+- **Date Utils**: Fix `constrainValue` stripping time from `CalendarDateTime`/`ZonedDateTime` values
+
+- **Dialog**: Fix issue where non-modal dialog closes on outside click even when `modal` is set to `false`
+
+- **Listbox**: Fix DOM IDs
+
+- **Number Input**: Fix issue where explicit `invalid` prop was ignored when value is out of range. The `invalid` prop
+  now takes precedence over the internal `isOutOfRange` computation
+
+- **Popover**: Improve performance by reducing style recalculations when scrolling with heavy content
+
+- **Select**: Fix issue where autofill does not update value when the hidden select value changes
+
+- **Svelte**: Fix `state_unsafe_mutation` warning that occurs due to state transition during component teardown
+
+- **Toast**: Fix TypeScript compilation errors when building projects that use `@zag-js/toast`
+
+## [1.33.1](./#1.33.1) - 2026-01-28
+
+### Fixed
+
+- **Date Picker**: Fix `visibleRangeText` to show correct format based on current view (year/month/day)
+
+- **Dismissable**: Fix issue where closing a nested dialog/popover would incorrectly close its parent layers
+
+- **File Upload**: Fix accessibility violations in file upload component
+  - Remove invalid `aria-readonly` from dropzone (not valid for `role="button"`)
+  - Add `aria-hidden` to hidden input to exclude from accessibility tree
+
+- **Menu**: Fix glitchy submenu behavior when hovering between trigger items quickly
+
+## [1.33.0](./#1.33.0) - 2026-01-24
+
+### Added
+
+- **Scroll Area**: Add overflow CSS variables to the viewport element for creating scroll fade effects:
+  - `--scroll-area-overflow-x-start`: Distance from horizontal start edge in pixels
+  - `--scroll-area-overflow-x-end`: Distance from horizontal end edge in pixels
+  - `--scroll-area-overflow-y-start`: Distance from vertical start edge in pixels
+  - `--scroll-area-overflow-y-end`: Distance from vertical end edge in pixels
+
+- **Slider**: Add `thumbCollisionBehavior` prop to control how thumbs behave when they collide during pointer
+  interactions:
+  - `none` (default): Thumbs cannot move past each other; excess movement is ignored.
+  - `push`: Thumbs push each other without restoring their previous positions when dragged back.
+  - `swap`: Thumbs swap places when dragged past each other.
+
+- **Steps**: Add validation and skippable step support:
+  - `isStepValid(index)`: Block forward navigation when step is invalid (linear mode)
+  - `isStepSkippable(index)`: Mark steps as optional, bypassing validation
+  - `onStepInvalid({ step, action, targetStep })`: Callback when navigation is blocked
+  - `api.isStepValid(index)` / `api.isStepSkippable(index)`: Check step state
+  - `itemState.isValid()`: Lazy validation check per step
+
+- **Tags Input**: Add `placeholder` prop that is applied to the input only when there are no tags
+
+- **Tooltip**: Add `data-instant` attribute to tooltip content to indicate when animations should be instant (e.g., when
+  switching between tooltips quickly)
+
+### Fixed
+
+- **Auto Resize**: Fix issue where change event is not emitted after clearing a controlled textarea programmatically
+
+- **Collection, Tree View**: Fix initial focus issue when the first node or branch is disabled. Added `skip` option to
+  `getFirstNode()` (matching `getLastNode()`) to respect collapsed branches. The initial focus now correctly targets the
+  first visible non-disabled node.
+
+- **Color Picker, Color Utils**: Fix color not updating in controlled mode when selecting black shades.
+  - Fixed equality check to compare actual channel values instead of CSS string output
+  - Auto-detect `defaultFormat` from initial color value instead of hardcoding `"rgba"`
+
+- **Floating Panel**: Fix issue where double-clicking title bar while minimized would incorrectly maximize instead of
+  restore
+
+- **Image Cropper**
+  - Fix issue where `reset()` destroys the cropper area
+  - Fix issue where changing `aspectRatio` or `cropShape` props doesn't update the crop instantly
+  - Add symmetric resize support when holding `Alt` key during pointer drag
+  - Fix panning bounds in fixed crop mode at various zoom levels
+  - Fix race condition where initial crop may not compute on page reload
+
+- **Number Input**: Fix cursor positioning when clicking label or after scrubbing. The cursor now moves to the end of
+  the input value instead of the start.
+
+- **Pagination**: Fix issue where next trigger was not disabled when `count` is `0`
+
+- **Slider**: Fix pointer movement when dragging slider thumb from its edge in `thumbAlignment="contain"` mode. The
+  value calculation now correctly accounts for thumb inset, ensuring consistent behavior when clicking on the track to
+  set a value or dragging the thumb from any position.
+
+- **Switch**: Fix issue where `api.toggleChecked()` doesn't work as expected
+
+- **Toast**: Fix issue where toasts created before the state machine connects are not shown
+
+- **Tour**: Fix janky scroll behavior when navigating between tour steps. Changed `scrollIntoView` to use
+  `block: "nearest"` instead of `block: "center"` so the page only scrolls when the target element is not already
+  visible.
+
+- **Vanilla**
+  - Fix issue where vanilla machines do not have the option to change their props during runtime
+  - Fix issue where some `aria-` attributes were toggled as boolean attributes and not as attributes with value strings
+
+## [1.32.0](./#1.32.0) - 2026-01-02
+
+### Added
+
+- **Date Picker**: Add `onVisibleRangeChange` callback to notify when the visible date range changes. This callback
+  fires when:
+  - Clicking next/prev triggers
+  - Selecting a month from the month dropdown
+  - Selecting a year from the year dropdown
+  - Focusing a date outside the current visible range
+  - Any other action that changes the visible range
+
+- **File Upload**
+  - Add `readOnly` prop to prevent file modifications while keeping component visually active
+  - Add `maxFilesReached` and `remainingFiles` to exposed API
+
+- **Vanilla**: Initial release of the vanilla JavaScript adapter for Zag.js
+  - `VanillaMachine` - Class-based wrapper for zag machines with start/stop lifecycle
+  - `normalizeProps` - Converts React-style props to vanilla DOM attributes
+  - `spreadProps` - Spreads props onto DOM elements with event listener management
+
+  ```typescript
+  import { VanillaMachine, normalizeProps, spreadProps } from "@zag-js/vanilla"
+  import * as toggle from "@zag-js/toggle"
+
+  const machine = new VanillaMachine(toggle.machine, { id: "toggle" })
+  machine.start()
+
+  const api = toggle.connect(machine.service, normalizeProps)
+  spreadProps(buttonEl, api.buttonProps)
+
+  machine.stop()
+  ```
+
+### Fixed
+
+- **Carousel**: Fix issue where next/prev carousel buttons and indicators don't work when `dir="rtl"` is set
+
+- **File Upload**
+  - Fix issue where using `api.setClipboardFiles` doesn't run `transformFiles` and validation functions
+  - Fix item element IDs to use `name-size` combination for uniqueness (prevents ID collisions with same-named files)
+
+- **Focus Trap**: Fix focus trap crash when clicking labels in dialogs
+
+- **Pin Input**: Fix issue in Vanilla.js where paste does not work due to `maxlength="1"` truncating clipboard data
+  before the input event
+
+- **Tour**: Fix issue where input elements inside the spotlight target were not interactive. The focus trap now includes
+  both the tour content and the spotlight target as containers, allowing users to interact with elements inside the
+  highlighted area
+
+## [1.31.1](./#1.31.1) - 2025-12-10
+
+### Fixed
+
+- **Accordion, Menu**: Fix issue where querying elements by `aria-controls` attribute could fail when lazy mounting the
+  content
+- **Rating Group**: Fix issue where rating group becomes unfocusable via keyboard when value is 0
+
+## [1.31.0](./#1.31.0) - 2025-12-05
+
+### Added
+
+- **Number Input**: Add `onValueCommit` callback that fires when the input loses focus or Enter is pressed
+
+- **Pagination**
+  - Add `getFirstTriggerProps()` and `getLastTriggerProps()` methods for navigating to first/last page
+  - Add `boundaryCount` parameter for controlling boundary pages (start/end)
+  - Implement balanced pagination algorithm for consistent UI elements
+  - Maintain visual consistency with max 7 elements regardless of total pages
+
+- **Tree View**: Added `scrollToIndexFn` prop to enable keyboard navigation in virtualized trees
+
+### Fixed
+
+- **Color Picker**
+  - Add `role="dialog"` to color picker content when not inline to ensure proper `aria-controls` detection
+  - Add `aria-haspopup="dialog"` to color picker trigger when not inline for better accessibility
+
+- **Date Picker**: Fix issue where date picker input does not update format when locale changes
+
+- **Listbox**
+  - Fix issue in React where filtering items with an input would throw a
+    `flushSync was called from inside a lifecycle method` warning
+  - Fix issue where `data-highlighted` wasn't applied to the first item when using `autoHighlight` with input filtering
+
+- **Number Input**
+  - Fixed issue where input element doesn't sync when `formatOptions` changes dynamically
+  - Ensure cursor position is preserved when `Enter` key is pressed and formatting is triggered
+  - Fix cursor jumping to start when value is changed externally via props while user is typing
+
+- **Pagination**: Fix ellipsis showing when only 1 page gap
+
+- **Radio Group**
+  - Fix issue where `radio-group` machine no longer shows the `indicator` prematurely
+  - Improve accessibility of radio group by adding `invalid` and `required` props with corresponding `data-*` and
+    `aria-*` attributes
+
+- **Tabs**: Fix issue where `tabs` machine no longer shows the `indicator` prematurely
+
+- **Tooltip**: Fix tooltip not showing when scrolling with pointer over trigger
+
+- **Collapsible, Presence, Tour**: Fix machines setting reactive state in exit actions
+
+### Changed
+
+- **Tree View**: `getVisibleNodes()` now returns `{ node, indexPath }[]` instead of `node[]`. Returning the index path
+  perhaps the most useful use of this function, hence the change.
+
+  ```tsx
+  // Before
+  const nodes = api.getVisibleNodes()
+  nodes.forEach((node) => console.log(node.id))
+
+  // After
+  const visibleNodes = api.getVisibleNodes()
+  visibleNodes.forEach(({ node }) => console.log(node.id))
+  ```
+
+## [1.30.0](./#1.30.0) - 2025-11-26
+
+### Added
+
+- **Date Picker**
+  - Add support for `required` and `invalid` props
+  - Exposed `disabled` and `invalid` in the date picker API for better state access
+
+- **Navigation Menu**
+  - Add `getItemIndicatorProps` part for indicator styling
+  - Add `closeOnClick` prop to `getLinkProps` to control whether the navigation menu closes when a link is clicked
+    (defaults to `true`)
+
+### Fixed
+
+- **Floating Panel**
+  - Fix issue where `dir` prop is ignored. The `dir` attribute is now properly delegated to all floating panel parts
+  - Ensure double-click behavior doesn't trigger when `resizable={false}` is set
+  - Double-click behavior now checks `event.defaultPrevented` to allow users to prevent the default behavior by calling
+    `event.preventDefault()`
+
+- **Navigation Menu**
+  - Avoid focusing the trigger when hovering over it
+  - Separate `ContentProps` from `LinkProps` for `getContentProps` - previously it incorrectly used `LinkProps`
+
+- **Number Input**: Improve controlled usage by ensuring input element stays synced with controlled value
+
+### Changed
+
+- **Navigation Menu**: Removed `getIndicatorTrackProps` - use `getListProps` instead (list now includes
+  `position: relative`)
+
+  ```tsx
+  // Before
+  <div {...api.getIndicatorTrackProps()}>
+    <div {...api.getListProps()}>
+      {/* items */}
+    </div>
+  </div>
+
+  // After
+  <div {...api.getListProps()}> {/* now acts as indicator track */}
+    {/* items */}
+  </div>
+  ```
+
+## [1.29.1](./#1.29.1) - 2025-11-22
+
+### Fixed
+
+- **Floating Panel**
+  - Fix issue where resize trigger with `n` axis was not explicitly set to `top: 0`
+  - Fix issue where `draggable` and `resizable` options were not respected when set to `false`
+
+- **Presence**: Fix regression where UNMOUNT transition might not be called consistently
+
+## [1.29.0](./#1.29.0) - 2025-11-19
+
+### Added
+
+- **Carousel, Color Picker, Combobox, Date Picker, Select**: Add `value` to `OpenChangeDetails` for better context in
+  change handlers
+
+- **Splitter**: Add `getResizeTriggerIndicator` to render an indicator when resizing
+
+- **Toast**: Expose viewport offset as CSS variables (`--viewport-offset-left`, `--viewport-offset-right`,
+  `--viewport-offset-top`, `--viewport-offset-bottom`) on the toast group element
+
+### Fixed
+
+- **Carousel**: Fix dragging not working after scrolling with mouse wheel when `allowMouseDrag` is enabled
+
+- **Combobox**: Fix `onHighlightChange` not being invoked when collection is filtered to empty results. The callback now
+  correctly receives `{ highlightedValue: null, highlightedItem: null }` when the collection becomes empty
+
+- **File Upload**: Fix issue where clicking on non-interactive children (icons, text) inside the dropzone doesn't open
+  the file picker
+
+- **Radio Group**: Fix inconsistent application of `data-focus-visible` and `data-focus` attributes
+
+- **Splitter**: Fix disabled splitter showing resize cursor and allowing dragging
+
+## [1.28.0](./#1.28.0) - 2025-11-12
+
+### Added
+
+- **Carousel**: Add support for `autoSize` prop to allow variable width/height slide items.
+
+### Fixed
+
+- **Carousel**: Fix dragging behavior that stops working after switching browser tabs or scrolling the page. The issue
+  was caused by incorrectly checking `event.button` instead of `event.buttons` to detect interrupted drag operations.
+
+- **Date Picker**: Fix issue where the range date picker crashes when typing the end date first and blurring the input
+  field multiple times.
+
+- **Image Cropper**
+  - Fix issues with the controlled `zoom` prop not functioning as expected
+  - Clamping offset for non-fixed crop area should be based on viewport rectangle
+
+- **Presence**: Fix a bug where elements get stuck in unmountSuspended state during rapid hovering
+
+- **Radio Group, Tabs**: Fix indicator prematurely showing when rect has not been resolved yet
+
+- **Store**: Fix "Illegal invocation" errors by excluding native objects with special `this` bindings from being
+  proxied.
+
+- **Tabs**: Fix tabs indicator position not updating when inactive tabs change size.
+
+- **Tags Input**: Fix issue where item delete trigger doesn't have `data-*` attached
+
+## [1.27.1](./#1.27.1) - 2025-11-04
+
+### Fixed
+
+- **Combobox**
+  - Fix focus stealing in controlled open mode
+  - Remove problematic `aria-hidden` behavior to allow interaction with other page elements
+
+- **All Components**: Export missing types across all machine packages
+
+## [1.27.0](./#1.27.0) - 2025-11-01
+
+### Added
+
+- **Dialog, Popover**: Improve support for shadow DOM in interact outside and focus trap detection.
+
+### Fixed
+
+- **Marquee**: Fix Firefox flicker, use margin spacing, add GPU acceleration, and add `item` part.
+
+- **Popover**: Improve support for shadow DOM in interact outside and focus trap detection.
+
+- **Dialog**: Fix issue where setting `scrollbar-gutter: stable` in CSS caused an unwanted gap and layout shift when
+  opening dialogs.
+
+- **Slider**: Fix issue where programmatic value changes do not trigger the `onValueChangeEnd` callback. This affects
+  the`setThumbValue`, `setValue`, `increment`, and `decrement` API methods.
+
+## [1.26.5](./#1.26.5) - 2025-10-29
+
+### Fixed
+
+- **Date Picker**: Fix crash in range date picker when typing end date first by adding `null`/`undefined` checks when
+  accessing date properties.
+
+- **Image Cropper**
+  - Fix not working resize API
+  - Export missing types
+  - Make the image cropper responsive
+
+- **Radio Group**: Revert to using `offsetLeft`/`offsetTop` to fix indicator positioning in scrollable containers.
+
+- **Tabs**: Revert to using `offsetLeft`/`offsetTop` to fix indicator positioning in scrollable containers.
+
+- **Tour**
+  - Fix issue where effects were not cleanup correct.
+  - Fix issue where wait step doesn't work correctly.
+  - Validate the configured steps on mount to ensure they are valid.
+
+## [1.26.4](./#1.26.4) - 2025-10-23
+
+### Added
+
+- **Image Cropper [New]**: Initial release of image cropper state machine
+
+- **Marquee [New]**: Initial release of marquee component for continuously scrolling content
+
+### Fixed
+
+- **Angle Slider**: Fix issue where clicking and dragging the angle-slider thumb from a non-center position causes
+  unexpected value jumps. The thumb now maintains its relative position from the initial click point throughout the drag
+  operation, providing more intuitive dragging behavior.
+
+- **Slider**: Fix issue where slider thumb offset changes dynamically during drag, causing unexpected value jumps. The
+  thumb now maintains a constant offset from the pointer throughout the drag operation, matching the initial grab
+  position.
+
+- **Svelte**: Refactor `mergeProps` to return the class values as an array, this delegates the resolution to Svelte's
+  native class handling, which uses `clsx` internally. This ensures proper support for conditional classes, arrays, and
+  objects.
+
+- **Toast**: Fix issue in Solid.js where toasts collapse immediately when dismissing while hovering, by tracking pointer
+  state and temporarily ignoring spurious mouse events during DOM mutations using requestAnimationFrame.
+
+## [1.26.3](./#1.26.3) - 2025-10-18
+
+### Fixed
+
+- **Angle Slider**: Fix accessibility violation where the slider thumb element lacked an accessible name. The thumb now
+  supports `aria-label` and `aria-labelledby` props, and automatically falls back to the label element's ID for proper
+  ARIA labeling.
+
+- **Select**: Fix accessibility violation where the required state was not set correctly to on the trigger.
+
+- **Tags Input**: Fix issue where entering a custom tag with combobox integration required pressing `Enter` twice. The
+  tags-input now correctly handles custom values when the combobox has no highlighted item (`aria-activedescendant` is
+  empty), allowing the tag to be added on the first `Enter` press.
+
+## [1.26.2](./#1.26.2) - 2025-10-14
+
+### Fixed
+
+- **Checkbox**
+  - Fix issue where setting initial checked state to `indeterminate` doesn't work
+  - Ensure `api.checkedState` returns the correct checked state (`boolean | "indeterminate"`)
+
+- **Collapsible**: Fix issue where `dir` prop value was hardcoded to `ltr` instead of using the provided value
+
+- **Combobox**: Fix issue where controlled single-select combobox does not propagate its initial value to `inputValue`
+
+- **Listbox**: Fix issue where pressing Enter key when no highlighted item still calls `event.preventDefault()`
+
+- **Radio Group**: Refactor to use `getBoundingClientRect()` for precise indicator positioning
+
+- **Slider**
+  - Fix issue where slider could stop abruptly when scrubbing thumb
+  - Fix issue where range slider thumbs become stuck when dragged to the same position without `minStepsBetweenThumbs`
+
+- **Tabs**: Refactor to use `getBoundingClientRect()` for precise indicator positioning
+
+- **Tags Input**: Fix issue where `maxLength` doesn't apply to the edit input as well
+
+## [1.26.1](./#1.26.1) - 2025-10-08
+
+### Fixed
+
+- **Tree View**
+  - Fixed issue where pressing `F2` on any tree node would lock navigation and prevent selecting other nodes.
+  - The rename feature now requires the `canRename` callback to be explicitly provided, making it opt-in rather than
+    opt-out.
+
+## [1.26.0](./#1.26.0) - 2025-10-06
+
+### Added
+
+- **Tree View**: [Experimental] Add support for renaming tree node labels with validation and control features.
+
+  This feature enables users to edit tree node labels inline, unlocking use cases like file explorers, folder management
+  systems, content hierarchies, and any tree-based interface where users need to rename items.
+
+  **Key Features:**
+  - Press `F2` on any node to enter rename mode
+  - Input is automatically focused and synced with current label
+  - Press `Enter` to submit or `Escape` to cancel
+  - Blur event automatically submits changes
+  - IME composition events are properly handled for international input
+
+  **Validation & Control:**
+  - `canRename` - Control which nodes are renameable based on node type or custom logic
+  - `onRenameStart` - Called when rename mode starts (useful for analytics, showing hints)
+  - `onBeforeRename` - Validate rename before accepting (e.g., prevent duplicates, empty names)
+  - Empty name prevention - Automatically stays in rename mode if submitted name is empty/whitespace
+  - Label trimming - Labels are automatically trimmed before being passed to callbacks
+  - `onRenameComplete` - Handle the rename and update your collection
+
+  **Styling & Visual State:**
+  - `data-renaming` attribute - Added to both item and branch elements when in rename mode for easy styling
+  - `nodeState.renaming` - Boolean property to check if a node is currently being renamed
+
+### Fixed
+
+- **Editable**: Fix issue where input value fails to revert after repeated full deletion
+
+- **Focus Visible**: Fix `"Cannot assign to read only property 'focus'"` console error by gracefully handling
+  environments where `HTMLElement.prototype.focus` is non-configurable.
+
+- **Listbox**: Fix `splitProps` to avoid partial
+
+- **Presence**: Fix race condition where dialog remains closed when `open` prop rapidly changes from `true` to `false`
+  to `true`
+
+- **Solid**: Fix issue where transition actions received stale event data
+
+## [1.25.0](./#1.25.0) - 2025-09-28
+
+### Added
+
+- **Collapsible**: Add support for `collapsedHeight` and `collapsedWidth` props to control the dimensions of the
+  collapsible content when in its collapsed state.
+
+- **Focus Trap**: Allow elements referenced by `aria-controls` to be included in the trap scope. This makes it possible
+  for menus, popovers, etc. to be portalled and work correctly.
+
+- **Pagination**: Add `getPageUrl` prop for generating `href` attributes when using pagination as links.
+
+```ts
+const service = useMachine(pagination.machine, {
+  type: "link",
+  getPageUrl: ({ page, pageSize }) => `/products?page=${page}&size=${pageSize}`,
+})
+```
+
+- **Slider**: Export `splitMarkerProps` helper.
+
+### Fixed
+
+- **Scroll Area**: Fix RTL horizontal scrollbar positioning on Safari
+
+- **Slider**: Fix issue where slider continues dragging when disabled during drag operation.
+
+- **Switch**: Fix issue where `data-active` is inconsistently applied when `disabled` state changes at runtime
+
+## [1.24.2](./#1.24.2) - 2025-09-18
+
+### Fixed
+
+- **Date Picker**: Fix issue where year range picker doesn't show the hovered range
+
+- **Date Utils**:
+  - Fix issue where quarter presets returns incorrect date
+  - Fix issue where year range picker doesn't show the hovered range
+
+- **I18n Utils**:
+  - **formatBytes**: Support `unitSystem` property to allow changing between decimal (1000 bytes) and binary (1024
+    bytes) systems.
+
+- **Number Input**: When `formatOptions` is used (like `style: "currency"`), the cursor would jump to the end of the
+  input when typing in the middle. The cursor now maintains its relative position during formatting changes.
+
+- **Pin Input**: Fix issue where using the keyboard shortcuts `Cmd+Backspace` and `Cmd+Delete` to delete text in pin
+  inputs would insert "undefined" instead of clearing the field.
+
+- **Scroll Area**: Fix issue where resize tracking was not observing the root element, which caused the scrollbar to not
+  update when the root element's size changed.
+
+## [1.24.1](./#1.24.1) - 2025-09-14
+
+### Fixed
+
+- **Core**: Fix issue where `mergeProps` throws when `props` is undefined or null
+
+## [1.24.0](./#1.24.0) - 2025-09-13
+
+### Added
+
+- **Combobox**: Add `alwaysSubmitOnEnter` prop to allow bypassing the default two-step behavior (Enter to close
+  combobox, then Enter to submit form) and instead submit the form immediately on Enter press. This is useful for
+  single-field autocomplete forms where Enter should submit the form directly.
+
+### Fixed
+
+- **Editable**: Allow text selection in editable preview when `autoResize` is enabled
+
+  Previously, when `autoResize` was set to `true`, the preview element had `userSelect: "none"` applied, preventing
+  users from selecting text. This has been fixed by removing the `userSelect` style property.
+
+- **File Upload**: Fix regression where clicking the trigger doesn't open the file picker when used within the dropzone
+
+- **Hover Card**: Change default delay values for hover card to improve accessibility.
+  - `openDelay`: from `700ms` to `600ms`
+
+- **Menu**: Fix issue where keyboard activation of menu items with `target="_blank"` would open two tabs
+
+- **Svelte**: Fix Svelte warning about state reference capturing initial value instead of current reactive state
+
+- **Tooltip**: Change default delay values for tooltip to improve accessibility.
+  [Learn more](https://www.nngroup.com/articles/timing-exposing-content)
+  - `openDelay`: from `1000ms` to `400ms`
+  - `closeDelay`: from `500ms` to `150ms`
+
+## [1.23.0](./#1.23.0) - 2025-09-11
+
+### Added
+
+- **Dismissable**: Add support for layer types in dismissable layer stack. Layers can now be categorized as `dialog`,
+  `popover`, `menu`, or `listbox`. This enables:
+  - `data-nested` attribute on nested layers of the same type
+  - `data-has-nested` attribute on parent layers with nested children of the same type
+  - `--nested-layer-count` CSS variable indicating the number of nested layers of the same type
+
+### Fixed
+
+- **Core**: Fix issue where `mergeProps` strips symbols after merging
+
+- **Dom Query**:
+  - Fix issue where `isActiveElement` checks don't consider the Shadow DOM
+  - Fix issue where `getActiveElement` returns `activeElement` rather than `null` for focusable web components with no
+    focusable children
+
+- **Menu**: Fix issue where hovering a partially visible item with pointer causes it to scroll into view
+
+- **Tabs**: Fix issue where `ids` for `item` and `content` could not be customized
+
+- **Toast**: Allow creating a toast store without any arguments
+
+  ```tsx
+  // before
+  const store = toast.createStore({})
+
+  // after
+  const store = toast.createStore()
+  ```
+
+## [1.22.1](./#1.22.1) - 2025-08-27
+
+### Fixed
+
+- **Collection**: Fix issue where disabled items could be reached via typeahead
+
+- **Date Picker**: Fix issue where datepicker doesn't revert to a valid value when the input value exceeds the min/max
+  and blurred
+
+- **Tags Input**: Fix issue where highlighted item doesn't clear when tabbing out of the input to an external button
+  within the `control` part.
+
+## [1.22.0](./#1.22.0) - 2025-08-26
+
+### Added
+
+- **Hover Card**: Add support for `disabled` prop
+
+### Fixed
+
+- **Color Picker**: Fix issue where color picker was not working correctly in RTL mode
+
+- **Dismissable**: Expose `onRequestDismiss` custom event handler for event a parent layer requests the child layer to
+  dismiss. If prevented via `event.preventDefault()`, the child layer will not dismiss when the parent layer is
+  dismissed.
+
+- **Number Input**
+  - Omit the input `pattern` when `formatOptions` is provided. This prevents native pattern validation from conflicting
+    with formatted values (e.g., currency or percent).
+  - Handle empty values consistently across all format options.
+  - Add `data-scrubbing` attribute to the number input parts.
+
+- **Tooltip**
+  - Set `closeOnPointerdown` to `false` when `closeOnClick` is set to `false`
+  - Reduce bundle size by replacing `@zag-js/store` dependency with a lightweight store implementation.
+
+## [1.21.9](./#1.21.9) - 2025-08-23
+
+## Fixed
+
+- **Async List**:
+  - Fixed critical race conditions and dual operations in sort functionality that could cause stale data overwrites and
+    unexpected behavior
+  - Fixed event handling during async operations - users can now properly interrupt sorting with RELOAD, FILTER, or new
+    SORT events
+  - Enhanced `SortDetails` interface with `filterText` parameter for consistent filtering context across local and
+    server-side operations
+
+## [1.21.8](./#1.21.8) - 2025-08-22
+
+### Fixed
+
+- **Date Picker**:
+  - Clear hovered range state after completing range selection instead of waiting for pointer to leave the calendar
+    area.
+  - Fix issue where month and year select labels don't update correctly when using `min`/`max` constraints.
+  - Expose `disabled` on `api.getMonths()` and `api.getYears()` results to indicate options out of range for current
+    constraints.
+
+- **Listbox**:
+  - Fix issue where first enabled item should be highlighted by default when listbox receives focus and no item is
+    currently highlighted.
+  - Add `getElement` to `scrollToIndexFn` details
+  - Track collection changes and clear `highlightedValue` if the item is no longer in the collection.
+
+- **Scroll Area**:
+  - Avoid detecting hover state from portalled descendants.
+  - Add `data-dragging` attribute to scroll area parts.
+
+- **Select**: Add `getElement` to `scrollToIndexFn` details
+
+- **Combobox**: Add `getElement` to `scrollToIndexFn` details
+
+## [1.21.7](./#1.21.7) - 2025-08-19
+
+### Added
+
+- **Highlight Word**: Add `exactMatch` option that enables whole-word matching using regex word boundaries.
+
+### Fixed
+
+- **Menu**: Fix context menu repositioning logic
+
+- **Scroll Area**: Add `data-hover` to scroll area
+
+## [1.21.6](./#1.21.6) - 2025-08-17
+
+### Fixed
+
+- **Menu**: Fix context menu positioning bug where reopening at the same coordinates fails to reposition
+
+- **Scroll Area**: Rename `data-hovering` to `data-hover` for consistency
+
+## [1.21.5](./#1.21.5) - 2025-08-16
+
+### Fixed
+
+- **Scroll Area**:
+  - Fix issue where scroll area thumb applies width/height incorrectly
+  - Add `data-overflow-*` to content and corner
+  - Add custom easing function support for smooth scrolling
+
+## [1.21.4](./#1.21.4) - 2025-08-16
+
+### Fixed
+
+- **Scroll Area**: Ensure types are exported and fix incorrect `@zag-js/dom-query/src/query` import
+
+- **ListCollection**
+  - Avoid recomputing groups on every call to `at()` and `indexOf()`
+  - Fixed bug in `find()` method (was checking `!= null` instead of `!== -1`)
+
+- **GridCollection**: Avoid recomputing rows on every call to `getRows()`
+
+- **Menu**: Add `data-state` attribute for context menu trigger
+
+## [1.21.3](./#1.21.3) - 2025-08-14
+
+### Fixed
+
+- **Listbox**: Add support for navigating grid collections
+
+### Changed
+
+- **Async List**: Improve type inference for descriptors
+
+- **Framework Components**: Improve runtime performance of components by removing refs/events from stateful to
+  non-stateful objects (affects Svelte, Solid, and Vue components)
+
+## [1.21.2](./#1.21.2) - 2025-08-13
+
+### Added
+
+- **Scroll Area**: Initial release of scroll area state machine
+
+### Fixed
+
+- **Carousel**:
+  - Fix an issue where the carousel would not update when `slideCount` or `autoplay` props change.
+  - Fix an issue where `loop: false` was ignored when using autoplay. Now, the carousel will stop when it gets to the
+    last slide.
+
+- **Date Picker**: Expose `data-inline` attribute on Content part to enable distinct styling for inline date pickers
+  versus popover date pickers.
+
+- **Menu**: Fix issue where `onCheckedChange` could be called twice on checkbox or radio item
+
+- **Radio Group**: Fixed issue where arrow key navigation doesn't apply `data-focus-visible` on the newly focused item.
+
+## [1.21.1](./#1.21.1) - 2025-07-31
+
+### Fixed
+
+- **Carousel**: Fix issue where controlled carousel ignores last slide
+
+- **Tour**: Re-expose `WaitOptions`
+
+- **Floating Panel**: Add data attributes for floating panel stage status
+
+## [1.21.0](./#1.21.0) - 2025-07-26
+
+### Added
+
+- **File Upload**: Add `api.transforming` to track file transformation state when using `transformFiles`. This enables
+  developers to show loading states during file processing.
+
+### Fixed
+
+- **Dialog**
+  - Sync content `--layer-index` with positioner and backdrop
+  - Decouple `trapFocus` from `modal` so it's possible to set `modal=false` and `trapFocus=true`
+
+## [1.20.1](./#1.20.1) - 2025-07-23
+
+### Fixed
+
+- **Date Picker**: Fixed issue where hovered range was connect to selected values, when it shouldn't
+
+- **Tree View**: Fixed issue where tree view doesn't scroll into view when content overflows.
+
+## [1.20.0](./#1.20.0) - 2025-07-22
+
+### Fixed
+
+- **Date Picker**: Fix date comparison issues when time components are involved. This resolves critical issues with date
+  comparison operations when different date types (`CalendarDate`, `CalendarDateTime`, `ZonedDateTime`) are mixed,
+  particularly in scenarios involving time components.
+
+### Added
+
+- **Date Picker**: Added hover range preview support for date picker range selection. Added `inHoveredRange`,
+  `firstInHoveredRange`, and `lastInHoveredRange` properties to `DayTableCellState` with corresponding data attributes
+  `data-in-hover-range`, `data-hover-range-start`, and `data-hover-range-end`.
+
+  Hover range states are only active when not overlapping with actual selected range, enabling distinct styling for
+  hover preview vs actual selection in range mode.
+
+## [1.19.0](./#1.19.0) - 2025-07-20
+
+### Added
+
+- **File Upload**: Add support for programmatically controlling the accepted files via `acceptedFiles` and
+  `defaultAcceptedFiles`
+
+- **Signature Pad**: Add support for programmatically controlling the paths via `paths` and `defaultPaths` props.
+
+## [1.18.5](./#1.18.5) - 2025-07-19
+
+### Added
+
+- **JSON Tree Utils**: Add support for `groupArraysAfterLength` to truncate large arrays into chunks (reducing the
+  number of DOM nodes rendered).
+
+### Fixed
+
+- **General**: Fix issue destructuring returned api could throw an ESLint `unbound-method` warning
+
+- **Tree View**: Fix issue where `onExpandedChange`, `onSelectionChange` and `onFocusChange` doesn't infer the tree node
+  types
+
+- **Popper**: Expose floatingElement to the `updatePosition` function
+
+## [1.18.4](./#1.18.4) - 2025-07-18
+
+### Fixed
+
+- **Collection**: Fix issue where the `filter` method completely deletes the children key from the node when there are
+  no matching children
+
+- **Number Input**: Fix issue where default pattern does not allow negative numbers with decimal point
+
+## [1.18.3](./#1.18.3) - 2025-07-05
+
+### Fixed
+
+- **Carousel**: Fix issue where full page carousel could trap scrolling
+
+- **File Upload**:
+  - Fix issue where calling `api.setFiles` invokes validation with incorrect `acceptedFiles`
+  - Fix issue where the browser might not be able to infer the mime type of a file due to limitations, drag source or
+    security restrictions. As a fallback in the file validation logic, we now infer the mime type from the file
+    extension.
+
+## [1.18.2](./#1.18.2) - 2025-07-04
+
+### Added
+
+- **Collection**: Add `upsert` to list collection. Useful for making creatable items in select or combobox
+
+### Fixed
+
+- **Date Picker**: Fix issue where `focusedValue` could not be fully controlled
+- **Toast**: Fix issue where toast `title` or `description` could not accept React or Vue elements
+
+## [1.18.1](./#1.18.1) - 2025-07-02
+
+### Fixed
+
+- **Combobox**:
+  - Expose `reason` to `onOpenChange` and `onInputValueChange` callbacks
+  - Select highlighted item only if it exists in the collection
+  - Expose `api.clearHighlightedValue` function to clear highlighted value
+
+- **Date Picker**: Fix issue where datepicker errors when setting `selectionMode=range` and `minView=year`
+
+- **Listbox**: Select highlighted item only if it exists in the collection
+
+- **Progress**: Improve `valueAsString` formatting
+
+- **Select**:
+  - Select highlighted item only if it exists in the collection
+  - Expose `api.clearHighlightedValue` function to clear highlighted value
+
+- **Tour**: Fix an issue where the `goto` function in `StepActionMap` doesn't work when passing step IDs (string)
+
+- **Tree View**: Expose `id` in the tree node state
+
+## [1.18.0](./#1.18.0) - 2025-06-30
+
+### Added
+
+- **Color Picker**: Add support for `inline` prop to render color picker inline
+- **Date Picker**: Add support for `inline` prop to render the date calendar inline
+
+### Fixed
+
+- **Aria Hidden**: Exclude elements with `role="status"` and `output` elements when applying aria-hidden
+- **Color Picker**: Auto-prefix Hex values with `#` if missing when using the `hex` channel input
+- **Menu**: Fix interaction outside detection for focusable context trigger
+- **Tree View**: Improve support for rendering tree items as links
+
+## [1.17.4](./#1.17.4) - 2025-06-27
+
+### Fixed
+
+- **Combobox, Select, Listbox**: Fix issue where rehydrating `defaultValue` or `value` after fetching items doesn't
+  update the `valueAsString`
+
+## [1.17.3](./#1.17.3) - 2025-06-27
+
+### Fixed
+
+- **Tree View**: Fix tree traversal for querying last node
+
+## [1.17.2](./#1.17.2) - 2025-06-26
+
+### Fixed
+
+- **Angle Slider**: Fix issue where scrubbing doesn't feel smooth on touch devices
+
+- **Timer**:
+  - Fix issue where timer could continue beyond `targetMs` when window is not visible
+  - Add validation to ensure `startMs` and `targetMs` are configured correctly
+  - Fix `progressPercent` calculation for countdown timers
+
+- **Tree View**: Expose node details in `onExpandChange`, `onSelectionChange` and `onFocusChange`
+
+### Changed
+
+- **Collection**:
+  - Add support for `findNodes` to find multiple nodes by value in a single pass
+  - Fix issue with `getLastNode` not returning the last node in the tree with only one branch
+
+- **I18n Utils**: Add new `createCollator` function for locale sensitive string comparison
+
+## [1.17.1](./#1.17.1) - 2025-06-24
+
+### Fixed
+
+- **Date Picker**: Fix issue with keyboard selection where setting unavailable date causes month view to behave
+  differently from clicking with mouse
+
+- **Toast**: Fix issue where app crashes when `toaster.promise` is called without loading option. The `loading` option
+  is now required. A warning will be logged if it is not provided
+
+- **Tree View**:
+  - Fix issue where clicking a branch with indeterminate state doesn't check its child nodes
+  - Remove `aria-busy` attribute from branch trigger when not loading children
+
+## [1.17.0](./#1.17.0) - 2025-06-23
+
+### Fixed
+
+- **Progress**: Fix issue where setting orientation to `vertical` don't work
+- **Progress**: Fix issue where setting `defaultValue` to `null` doesn't show indeterminate state
+
+### Changed
+
+- **Tree View**: Rename `getItemCheckboxProps` to `getNodeCheckboxProps` since it can be used in both items and branches
+
+## [1.16.0](./#1.16.0) - 2025-06-21
+
+### Added
+
+- **Tree View**
+  - Add support for checkbox state for checkbox trees via `defaultCheckedValue`, `checkedValue`, `onCheckedChange` props
+  - Add callback for when `loadChildren` fails via `onLoadChildrenError` prop
+  - Add `api.getCheckedMap` method to get the checked state of all nodes
+
+- **Tree Collection**: Add support for `getDescendantNodes` and `getDescendantValues`
+
+### Fixed
+
+- **Tree View**: Fix issue where `api.collapse` and `api.deselect` throws error when called without arguments
+- **General**: Add better support for TypeScript's `exactOptionalPropertyTypes` compiler option
+
+## [1.15.7](./#1.15.7) - 2025-06-19
+
+### Fixed
+
+- **Collection**: Fix issue where tree collection filter method returns empty children for leaf item.
+
+## [1.15.6](./#1.15.6) - 2025-06-18
+
+### Fixed
+
+- **General**: Ensure pointerdown or click event handlers only execute when the main button is clicked
+
+### Changed
+
+- **Collection**: Improve the APIs around `tree.flatten(...)` and `flattenedToTree` to ensure the original node
+  properties are preserved.
+
+  > Previously, `tree.flatten()` would return an array of objects with `value` and `label` stripping out the original
+  > node properties.
+
+  ```ts
+  const tree = new TreeCollection({
+    rootNode: {
+      value: "ROOT",
+      children: [{ value: "child1" }, { value: "child2" }],
+    },
+  })
+
+  const flattened = tree.flatten()
+  const reconstructed = flattenedToTree(flattened)
+
+  console.log(reconstructed.rootNode)
+
+  // {
+  //   value: "ROOT",
+  //   children: [{ value: "child1" }, { value: "child2" }],
+  // }
+  ```
+
+## [1.15.5](./#1.15.5) - 2025-06-17
+
+### Fixed
+
+- **Combobox**: Fix issue where combobox with `allowCustomValue: true` used within in a form requires two enter keypress
+  to submit
+
+## [1.15.4](./#1.15.4) - 2025-06-16
+
+### Fixed
+
+- **Menu, Combobox**: Fix issue in Svelte where menu and combobox items rendered as links don't work
+- **Toggle Group**: Fix issue in Svelte where toggle group doesn't work due to blur timing
+
+## [1.15.3](./#1.15.3) - 2025-06-13
+
+### Fixed
+
+- **Popover**: Fix issue where `onOpenChange` could be called twice when controlled
+- **File Utils**: Improve `downloadFile` function to handle webview scenarios
+- **Combobox**: Fix issue where `onInputValueChange` could be called twice when selecting an item
+
+## [1.15.2](./#1.15.2) - 2025-06-10
+
+### Fixed
+
+- **Menu**: Refactor `getItemTextProps` and `getItemIndicatorProps` to accept a partial interface of option item.
+
+## [1.15.1](./#1.15.1) - 2025-06-10
+
+### Added
+
+- **[NEW]Async List**: Initial release of async list controller
+- **Editable**: Add support for `activationMode=none`
+- **Collection**:
+  - Expose `copy` method
+  - Allow `getParentNodes` to accept a value or index path
+
+### Fixed
+
+- **Carousel**: Fix issue where carousel crashes when `slidesPerPage` is 0
+- **File Upload**: Prevent `undefined` in `acceptedFiles` when no files accepted
+- **Select**: Fix issue where highlighted item could be cleared when navigating up/down the list with keyboard
+- **Tabs**: Fix issue where tabs with links should not trigger tab change upon cmd/middle click
+
+## [1.15.0](./#1.15.0) - 2025-06-05
+
+### Added
+
+- **Tree View**: Add support for lazy loading node children. To use this, you need to provide:
+  - `loadChildren` is a function that is used to load the children of a node.
+  - `onLoadChildrenComplete` is a callback that is called when the children of a node are loaded. Used to update the
+    tree collection.
+  - Add `childrenCount` to the node object to indicate the number of children.
+
+```tsx
+function TreeAsync() {
+  const [collection, setCollection] = useState(initCollection)
+
+  const service = useMachine(tree.machine, {
+    id: useId(),
+    collection,
+    async loadChildren({ valuePath, signal }) {
+      const url = `/api/file-system/${valuePath.join("/")}`
+      const response = await fetch(url, { signal })
+      const data = await response.json()
+      return data.children
+    },
+    onLoadChildrenComplete({ collection }) {
+      setCollection(collection)
+    },
+  })
+
+  // ...
+}
+```
+
+### Fixed
+
+- **Collapsible**: Fix rect measurement timing issue in Svelte
+- **Remove Scroll**: Fix scrollbar width calculation before DOM change for scroll-lock workaround compatibility
+- **Slider**:
+  - Fix issue where `Shift` + `ArrowRight` set value to `0` instead of `max` when step is too large (e.g. `20`)
+  - Fix issue where `onValueChangeEnd` doesn't return the latest value when dragging very fast
+
+## [1.14.0](./#1.14.0) - 2025-05-29
+
+### Added
+
+- **File Upload**: Add support for transforming uploaded files via `transformFiles` context property.
+
+```tsx
+const service = useMachine(fileUpload.machine, {
+  id: useId(),
+  accept: ["image/jpeg", "image/png"],
+  transformFiles: async (files) => {
+    return Promise.all(files.map((file) => compress(file, { size: 200 })))
+  },
+})
+```
+
+### Fixed
+
+- **Slider**: Fix issue where `minStepsBetweenThumbs` isn't computed correctly when interacting with pointer or
+  keyboard.
+
+## [1.13.1](./#1.13.1) - 2025-05-27
+
+### Fixed
+
+- **Password Input**
+  - Export missing types for `Api` and `Service`
+  - Add `api.toggleVisible` function to toggle the visibility of the password input
+  - Implement `translations` prop to customize the visibility trigger accessibility label
+
+## [1.13.0](./#1.13.0) - 2025-05-26
+
+### Added
+
+- **[New] Password Input**: Add password input machine for displaying a password input field.
+- **Select**: Add `onSelect` callback that gets fired when an item is selected via keyboard/mouse.
+
+### Fixed
+
+- **Color Picker**: Fix issue where value change end event is invoked when committing via an input.
+
+- **Svelte**: Fix issue with microtask timing in svelte `5.28.3+`.
+
+- **Toast**: Fix issue where calling `toast.remove()` without an id shows a TypeScript error.
+
+## [1.12.4](./#1.12.4) - 2025-05-20
+
+### Fixed
+
+- **Svelte**: Improve reactivity of synchronous state updates.
+
+## [1.12.3](./#1.12.3) - 2025-05-16
+
+### Fixed
+
+- **Carousel**:
+  - Fix issue where focusing on carousel region and navigating with keyboard doesn't work as expected
+  - Fix issue when `allowMouseDrag` is set where carousel no longer snaps after mouse interaction
+
+- **Combobox**: Fix issue where `onInputValueChange` doesn't get called when `autoFocus` is set to `true`
+
+- **Focus Visible**: Fix an issue where an assignment to the browser's `HTMLElement` prototype is not supported (e.g.
+  happy-dom)
+
+- **Preact**: Remove `react` and `react-dom` from peerDependencies
+
+- **Slider**: Fix issue where slider could throw a error when rendered in an popover or dialog
+
+- **Svelte**: Improve reactivity when events don't trigger a state transition
+
+- **Tour**: Fix issue where calling `api.start(<id>)` with a step id doesn't work as expected
+
+## [1.12.2](./#1.12.2) - 2025-05-12
+
+### Fixed
+
+- **Select, Menu, Tabs**: Fix type issue with the `navigate` prop
+
 ## [1.12.1](./#1.12.1) - 2025-05-12
 
 ### Fixed
@@ -11,7 +1306,6 @@ All notable changes to this project will be documented in this file.
 - **Collection**: Fix issue where `getNextValue` and `getPreviousValue` doesn't work as expected when `groupBy` is used.
 
 - **Combobox**:
-
   - Fix issue in Vue.js where combobox doesn't work for items rendered as link
   - Add `href` to params in `navigate` context property
 
@@ -45,7 +1339,6 @@ All notable changes to this project will be documented in this file.
 - **Toggle Group**: Add support for `deselectable` prop to ensure one or more toggle is selected at any time.
 
 - **Splitter**:
-
   - Expose `api.resetSizes()` to reset the size to the initial specified size
   - Fix issue in vertical orientation where arrow up doesn't work as expected.
 
@@ -61,7 +1354,6 @@ All notable changes to this project will be documented in this file.
 ### Fixed
 
 - **Floating Panel**
-
   - Change default strategy from `absolute` to `fixed` to improve positioning consistency
   - Implement controlled open/close state
   - Constraint the mouse movement to the boundary rect to prevent content from being moved outside completely
@@ -77,7 +1369,6 @@ All notable changes to this project will be documented in this file.
 ### Changed
 
 - **Floating Panel**
-
   - Update props and APIs to be consistent with other components
   - Fix issue where position and size were not synchronized correctly
 
@@ -86,13 +1377,11 @@ All notable changes to this project will be documented in this file.
 ### Added
 
 - **Toast**: Add support for queuing toasts that exceed the maximum limit. When the maximum number of toasts is reached:
-
   - New toasts are added to a queue instead of being dropped
   - Queued toasts are automatically displayed when space becomes available
   - Queue is cleared when all toasts are removed
 
 - **Listbox**
-
   - Add support for clearing selection on Escape press
   - Add `api.clearHighlightedValue` function to clear the highlighted value
   - Add `data-empty` attribute to indicate when the listbox is empty
@@ -120,7 +1409,6 @@ All notable changes to this project will be documented in this file.
 ### Fixed
 
 - **Listbox**
-
   - Fix issue where keyboard focus loops when `loopFocus` was not set.
   - Fix issue where `extended` selection mode was not working as expected.
 
@@ -143,12 +1431,10 @@ All notable changes to this project will be documented in this file.
 - **Tabs**: Fix issue where tabs indicator animation behaves inconsistently.
 
 - **Date Picker**
-
   - Fix issue where datepicker throws error when navigating month view.
   - Fix issue where range selection doesn't reset correctly when clicking the same start date.
 
 - **Interact Outside**
-
   - Fix issue where pointerdown outside doesn't work consistently on mobile devices.
   - Improve pointerdown outside click detection in shadow DOM environments.
 
@@ -157,7 +1443,6 @@ All notable changes to this project will be documented in this file.
 ### Added
 
 - **Slider**
-
   - Add support for `origin: end` to align the thumb to the end of the track.
   - Expose `thumbSize` as CSS variables in the root element. Can be useful for styling the slider.
 
@@ -234,7 +1519,6 @@ All notable changes to this project will be documented in this file.
   ```
 
   The also comes with new features such as:
-
   - Support for collapsible panels
   - Support for collapse and expand events
   - Methods for resizing the panels programmatically
@@ -276,7 +1560,6 @@ All notable changes to this project will be documented in this file.
 - **Tags Input**: Improve caret detection logic to prevent unwanted tag removal
 
 - **Timer**
-
   - Fix issue where timer slows down when switching tabs/windows
   - Change default `interval` value from `250` to `1000`
 
@@ -317,7 +1600,6 @@ All notable changes to this project will be documented in this file.
 ### Added
 
 - **Date Picker**:
-
   - Add support for `api.getViewProps`.
   - Add `visibleRangeText` property to `api.offset()` return value.
 
@@ -342,7 +1624,6 @@ All notable changes to this project will be documented in this file.
 ### Fixed
 
 - **Signature Pad**
-
   - Fix issue where hidden input throws a controlled warning in React due to the absence of `readOnly` or `onChange`.
   - Fix issue where calling `getDataUrl` in the `onDrawEnd` callback after clearing the signature pad does not return an
     empty string.
@@ -420,7 +1701,6 @@ All notable changes to this project will be documented in this file.
   performance improvements across components.
 
 - **[Breaking] Toast**
-
   - Require the creation of a toast store using `createStore`
   - **Solid.js**: Require the usage of `<Key>` component to render toasts
 
@@ -433,7 +1713,6 @@ All notable changes to this project will be documented in this file.
 - **File Upload**: Fix issue where drag-and-drop doesn't work when `directory` is `true`.
 
 - **Carousel**
-
   - Fix issue where initial page is not working.
   - Fix issue where pagination sync broken after using dots indicators.
 

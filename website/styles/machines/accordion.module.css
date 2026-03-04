@@ -1,0 +1,38 @@
+@layer recipes {
+  .Root {
+    width: 400px;
+    background: var(--colors-bg-bold);
+  }
+
+  .Item {
+    border-bottom-width: 1px;
+    border-color: var(--colors-border-bold);
+    font-size: 0.875rem;
+  }
+
+  .ItemTrigger {
+    width: 100%;
+    padding: 0.5rem 0.75rem;
+    text-align: start;
+    cursor: pointer;
+
+    & div:nth-child(1) {
+      font-weight: 600;
+    }
+
+    & div:nth-child(2) {
+      font-size: 0.75rem;
+      color: var(--colors-text-subtle);
+    }
+
+    &:focus-visible {
+      outline: 2px solid var(--colors-bg-primary-bold);
+      outline-offset: 2px;
+    }
+  }
+
+  .ItemContent {
+    width: 100%;
+    padding: 0.5rem 0.75rem;
+  }
+}

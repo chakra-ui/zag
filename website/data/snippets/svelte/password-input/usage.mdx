@@ -1,0 +1,28 @@
+```svelte
+<script lang="ts">
+  import * as passwordInput from "@zag-js/password-input"
+  import { normalizeProps, useMachine } from "@zag-js/svelte"
+  import { EyeIcon, EyeOffIcon } from "lucide-svelte"
+
+  const id = $props.id()
+  const service = useMachine(passwordInput.machine, { id })
+
+  const api = $derived(passwordInput.connect(service, normalizeProps))
+</script>
+
+<div {...api.getRootProps()}>
+  <label {...api.getLabelProps()}>Password</label>
+  <div {...api.getControlProps()}>
+    <input {...api.getInputProps()} />
+    <button {...api.getVisibilityTriggerProps()}>
+      <span {...api.getIndicatorProps()}>
+        {#if api.visible}
+          <EyeIcon />
+        {:else}
+          <EyeOffIcon />
+        {/if}
+      </span>
+    </button>
+  </div>
+</div>
+```

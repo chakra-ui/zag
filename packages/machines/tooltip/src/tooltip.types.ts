@@ -28,12 +28,12 @@ export interface TooltipProps extends DirectionProperty, CommonProperties {
   ids?: ElementIds | undefined
   /**
    * The open delay of the tooltip.
-   * @default 1000
+   * @default 400
    */
   openDelay?: number | undefined
   /**
    * The close delay of the tooltip.
-   * @default 500
+   * @default 150
    */
   closeDelay?: number | undefined
   /**
@@ -131,17 +131,17 @@ export interface TooltipApi<T extends PropTypes = PropTypes> {
   /**
    * Function to open the tooltip.
    */
-  setOpen(open: boolean): void
+  setOpen: (open: boolean) => void
   /**
    * Function to reposition the popover
    */
-  reposition(options?: Partial<PositioningOptions>): void
+  reposition: (options?: Partial<PositioningOptions>) => void
 
-  getTriggerProps(): T["button"]
-  getArrowProps(): T["element"]
-  getArrowTipProps(): T["element"]
-  getPositionerProps(): T["element"]
-  getContentProps(): T["element"]
+  getTriggerProps: () => T["button"]
+  getArrowProps: () => T["element"]
+  getArrowTipProps: () => T["element"]
+  getPositionerProps: () => T["element"]
+  getContentProps: () => T["element"]
 }
 
 /* -----------------------------------------------------------------------------

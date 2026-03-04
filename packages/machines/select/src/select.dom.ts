@@ -20,4 +20,7 @@ export const getControlEl = (ctx: Scope) => ctx.getById(getControlId(ctx))
 export const getTriggerEl = (ctx: Scope) => ctx.getById(getTriggerId(ctx))
 export const getClearTriggerEl = (ctx: Scope) => ctx.getById(getClearTriggerId(ctx))
 export const getPositionerEl = (ctx: Scope) => ctx.getById(getPositionerId(ctx))
-export const getItemEl = (ctx: Scope, id: string | number) => ctx.getById(getItemId(ctx, id))
+export const getItemEl = (ctx: Scope, id: string | number | null) => {
+  if (id == null) return null
+  return ctx.getById(getItemId(ctx, id))
+}

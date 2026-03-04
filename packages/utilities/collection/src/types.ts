@@ -38,22 +38,27 @@ export interface CollectionOptions<T extends CollectionItem = CollectionItem> ex
   /**
    * Function to group items
    */
-  groupBy?: (item: T, index: number) => string
+  groupBy?: ((item: T, index: number) => string) | undefined
   /**
    * Function to sort items
    */
-  groupSort?: ((a: string, b: string) => number) | string[] | "asc" | "desc"
+  groupSort?: ((a: string, b: string) => number) | string[] | "asc" | "desc" | undefined
 }
 
 // ==============================
 // Tree Collections
 // ==============================
 
+export type IndexPath = number[]
+
+export type ValuePath = string[]
+
 export interface TreeCollectionMethods<T> {
   isNodeDisabled: (node: T) => boolean
   nodeToValue: (node: T) => string
   nodeToString: (node: T) => string
   nodeToChildren: (node: T) => any[]
+  nodeToChildrenCount: (node: T) => number | undefined
 }
 
 export interface TreeCollectionOptions<T> extends Partial<TreeCollectionMethods<T>> {
@@ -62,18 +67,17 @@ export interface TreeCollectionOptions<T> extends Partial<TreeCollectionMethods<
 
 export type TreeNode = any
 
-export interface FilePathTreeNode {
-  label: string
-  value: string
-  children?: FilePathTreeNode[]
+export type FilePathTreeNode<T = TreeNode> = T & {
+  children?: FilePathTreeNode<T>[] | undefined
 }
 
-export interface FlatTreeNode {
-  label?: string | undefined
-  value: string
-  indexPath: number[]
-  children?: string[] | undefined
+export interface FlatTreeNodeMeta {
+  _children: number[] | undefined
+  _parent: number | undefined
+  _index: number
 }
+
+export type FlatTreeNode<T = TreeNode> = T & FlatTreeNodeMeta
 
 export interface TreeSkipFnArgs<T> {
   value: string
@@ -84,5 +88,9 @@ export interface TreeSkipFnArgs<T> {
 export type TreeSkipFn<T> = (args: TreeSkipFnArgs<T>) => boolean | void
 
 export interface TreeSkipOptions<T> {
-  skip?: TreeSkipFn<T>
+  skip?: TreeSkipFn<T> | undefined
+}
+
+export interface DescendantOptions {
+  withBranch?: boolean
 }

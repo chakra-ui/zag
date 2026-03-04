@@ -7,8 +7,9 @@ import type { CommonProperties, DirectionProperty, Orientation, PropTypes, Requi
 export type ExtendedColorChannel = ColorChannel | "hex" | "css"
 
 interface EyeDropper {
+  // eslint-disable-next-line @typescript-eslint/no-misused-new
   new (): EyeDropper
-  open: (options?: { signal?: AbortSignal }) => Promise<{ sRGBHex: string }>
+  open: (options?: { signal?: AbortSignal | undefined }) => Promise<{ sRGBHex: string }>
   [Symbol.toStringTag]: "EyeDropper"
 }
 
@@ -29,6 +30,7 @@ export interface ValueChangeDetails {
 
 export interface OpenChangeDetails {
   open: boolean
+  value: Color
 }
 
 export interface FormatChangeDetails {
@@ -52,9 +54,9 @@ export type ElementIds = Partial<{
   positioner: string
   formatSelect: string
   areaThumb: string
-  channelInput(id: string): string
-  channelSliderTrack(id: ColorChannel): string
-  channelSliderThumb(id: ColorChannel): string
+  channelInput: (id: string) => string
+  channelSliderTrack: (id: ColorChannel) => string
+  channelSliderThumb: (id: ColorChannel) => string
 }>
 
 export interface ColorPickerProps extends CommonProperties, DirectionProperty, InteractOutsideHandlers {
@@ -145,13 +147,17 @@ export interface ColorPickerProps extends CommonProperties, DirectionProperty, I
    * @default true
    */
   openAutoFocus?: boolean | undefined
+  /**
+   * Whether to render the color picker inline
+   */
+  inline?: boolean | undefined
 }
 
 type PropsWithDefault = "defaultFormat" | "defaultValue" | "openAutoFocus" | "dir" | "positioning"
 
 export type ColorPickerSchema = {
   tag: "open" | "closed" | "dragging" | "focused"
-  state: "idle" | "focused" | "open" | "open:dragging"
+  state: "idle" | "focused" | "open" | "open.idle" | "open.dragging"
   props: RequiredBy<ColorPickerProps, PropsWithDefault>
   computed: {
     disabled: boolean
@@ -246,6 +252,10 @@ export interface ColorPickerApi<T extends PropTypes = PropTypes> {
    */
   open: boolean
   /**
+   * Whether the color picker is rendered inline
+   */
+  inline: boolean
+  /**
    * The current color value (as a string)
    */
   value: Color
@@ -256,19 +266,19 @@ export interface ColorPickerApi<T extends PropTypes = PropTypes> {
   /**
    * Function to set the color value
    */
-  setValue(value: string | Color): void
+  setValue: (value: string | Color) => void
   /**
    * Function to set the color value
    */
-  getChannelValue(channel: ColorChannel): string
+  getChannelValue: (channel: ColorChannel) => string
   /**
    * Function to get the formatted and localized value of a specific channel
    */
-  getChannelValueText(channel: ColorChannel, locale: string): string
+  getChannelValueText: (channel: ColorChannel, locale: string) => string
   /**
    * Function to set the color value of a specific channel
    */
-  setChannelValue(channel: ColorChannel, value: number): void
+  setChannelValue: (channel: ColorChannel, value: number) => void
   /**
    * The current color format
    */
@@ -276,7 +286,7 @@ export interface ColorPickerApi<T extends PropTypes = PropTypes> {
   /**
    * Function to set the color format
    */
-  setFormat(format: ColorFormat): void
+  setFormat: (format: ColorFormat) => void
   /**
    * The alpha value of the color
    */
@@ -284,45 +294,45 @@ export interface ColorPickerApi<T extends PropTypes = PropTypes> {
   /**
    * Function to set the color alpha
    */
-  setAlpha(value: number): void
+  setAlpha: (value: number) => void
   /**
    * Function to open or close the color picker
    */
-  setOpen(open: boolean): void
+  setOpen: (open: boolean) => void
 
-  getRootProps(): T["element"]
-  getLabelProps(): T["element"]
-  getControlProps(): T["element"]
-  getTriggerProps(): T["button"]
-  getPositionerProps(): T["element"]
-  getContentProps(): T["element"]
-  getHiddenInputProps(): T["input"]
-  getValueTextProps(): T["element"]
+  getRootProps: () => T["element"]
+  getLabelProps: () => T["element"]
+  getControlProps: () => T["element"]
+  getTriggerProps: () => T["button"]
+  getPositionerProps: () => T["element"]
+  getContentProps: () => T["element"]
+  getHiddenInputProps: () => T["input"]
+  getValueTextProps: () => T["element"]
 
-  getAreaProps(props?: AreaProps): T["element"]
-  getAreaBackgroundProps(props?: AreaProps): T["element"]
-  getAreaThumbProps(props?: AreaProps): T["element"]
+  getAreaProps: (props?: AreaProps) => T["element"]
+  getAreaBackgroundProps: (props?: AreaProps) => T["element"]
+  getAreaThumbProps: (props?: AreaProps) => T["element"]
 
-  getChannelInputProps(props: ChannelInputProps): T["input"]
+  getChannelInputProps: (props: ChannelInputProps) => T["input"]
 
-  getChannelSliderProps(props: ChannelSliderProps): T["element"]
-  getChannelSliderTrackProps(props: ChannelSliderProps): T["element"]
-  getChannelSliderThumbProps(props: ChannelSliderProps): T["element"]
-  getChannelSliderLabelProps(props: ChannelProps): T["element"]
-  getChannelSliderValueTextProps(props: ChannelProps): T["element"]
+  getChannelSliderProps: (props: ChannelSliderProps) => T["element"]
+  getChannelSliderTrackProps: (props: ChannelSliderProps) => T["element"]
+  getChannelSliderThumbProps: (props: ChannelSliderProps) => T["element"]
+  getChannelSliderLabelProps: (props: ChannelProps) => T["element"]
+  getChannelSliderValueTextProps: (props: ChannelProps) => T["element"]
 
-  getTransparencyGridProps(props?: TransparencyGridProps): T["element"]
+  getTransparencyGridProps: (props?: TransparencyGridProps) => T["element"]
 
-  getEyeDropperTriggerProps(): T["button"]
+  getEyeDropperTriggerProps: () => T["button"]
 
-  getSwatchGroupProps(): T["element"]
-  getSwatchTriggerProps(props: SwatchTriggerProps): T["button"]
-  getSwatchTriggerState(props: SwatchTriggerProps): SwatchTriggerState
-  getSwatchProps(props: SwatchProps): T["element"]
-  getSwatchIndicatorProps(props: SwatchProps): T["element"]
+  getSwatchGroupProps: () => T["element"]
+  getSwatchTriggerProps: (props: SwatchTriggerProps) => T["button"]
+  getSwatchTriggerState: (props: SwatchTriggerProps) => SwatchTriggerState
+  getSwatchProps: (props: SwatchProps) => T["element"]
+  getSwatchIndicatorProps: (props: SwatchProps) => T["element"]
 
-  getFormatSelectProps(): T["select"]
-  getFormatTriggerProps(): T["button"]
+  getFormatSelectProps: () => T["select"]
+  getFormatTriggerProps: () => T["button"]
 }
 
 /* -----------------------------------------------------------------------------

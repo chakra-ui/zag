@@ -128,14 +128,15 @@ export interface CheckboxApi<T extends PropTypes = PropTypes> {
   /**
    * Function to set the checked state of the checkbox
    */
-  setChecked(checked: CheckedState): void
+  setChecked: (checked: CheckedState) => void
   /**
    * Function to toggle the checked state of the checkbox
    */
-  toggleChecked(): void
-  getRootProps(): T["label"]
-  getLabelProps(): T["element"]
-  getControlProps(): T["element"]
-  getHiddenInputProps(): T["input"]
-  getIndicatorProps(): T["element"]
+  toggleChecked: VoidFunction
+
+  getRootProps: () => T["label"]
+  getLabelProps: () => T["element"]
+  getControlProps: () => T["element"]
+  getHiddenInputProps: () => T["input"]
+  getIndicatorProps: () => T["element"]
 }

@@ -2,6 +2,82 @@ import { normalizeProps, Portal, useMachine } from "@zag-js/react"
 import * as tour from "@zag-js/tour"
 import { useId } from "react"
 import { HiX } from "react-icons/hi"
+import styles from "../styles/machines/tour.module.css"
+
+interface TourProps extends Omit<tour.Props, "id" | "steps"> {}
+
+export function Tour(props: TourProps) {
+  const service = useMachine(tour.machine, {
+    id: useId(),
+    steps,
+    ...props,
+  })
+
+  const api = tour.connect(service, normalizeProps)
+
+  return (
+    <>
+      <button className={styles.Trigger} onClick={() => api.start()}>
+        Start Tour
+      </button>
+      {api.step && api.open && (
+        <Portal>
+          {api.step.backdrop && (
+            <div className={styles.Backdrop} {...api.getBackdropProps()} />
+          )}
+          <div className={styles.Spotlight} {...api.getSpotlightProps()} />
+          <div className={styles.Positioner} {...api.getPositionerProps()}>
+            <div className={styles.Content} {...api.getContentProps()}>
+              {api.step.arrow && (
+                <div className={styles.Arrow} {...api.getArrowProps()}>
+                  <div {...api.getArrowTipProps()} />
+                </div>
+              )}
+
+              <div
+                className={styles.ProgressText}
+                {...api.getProgressTextProps()}
+              >
+                {api.getProgressText()}
+              </div>
+
+              <p className={styles.Title} {...api.getTitleProps()}>
+                {api.step.title}
+              </p>
+              <div
+                className={styles.Description}
+                {...api.getDescriptionProps()}
+              >
+                {api.step.description}
+              </div>
+
+              {api.step.actions && (
+                <div style={{ display: "flex", gap: "5px" }}>
+                  {api.step.actions.map((action) => (
+                    <button
+                      className={styles.ActionTrigger}
+                      key={action.label}
+                      {...api.getActionTriggerProps({ action })}
+                    >
+                      {action.label}
+                    </button>
+                  ))}
+                </div>
+              )}
+
+              <button
+                className={styles.CloseTrigger}
+                {...api.getCloseTriggerProps()}
+              >
+                <HiX />
+              </button>
+            </div>
+          </div>
+        </Portal>
+      )}
+    </>
+  )
+}
 
 const steps: tour.StepDetails[] = [
   {
@@ -42,58 +118,3 @@ const steps: tour.StepDetails[] = [
     actions: [{ label: "Finish", action: "dismiss" }],
   },
 ]
-
-export function Tour(props: any) {
-  const service = useMachine(tour.machine, {
-    id: useId(),
-    steps,
-    ...props.controls,
-  })
-
-  const api = tour.connect(service, normalizeProps)
-
-  return (
-    <>
-      <button className="tour-trigger" onClick={() => api.start()}>
-        Start Tour
-      </button>
-      {api.step && api.open && (
-        <Portal>
-          {api.step.backdrop && <div {...api.getBackdropProps()} />}
-          <div {...api.getSpotlightProps()} />
-          <div {...api.getPositionerProps()}>
-            <div {...api.getContentProps()}>
-              {api.step.arrow && (
-                <div {...api.getArrowProps()}>
-                  <div {...api.getArrowTipProps()} />
-                </div>
-              )}
-
-              <div {...api.getProgressTextProps()}>{api.getProgressText()}</div>
-
-              <p {...api.getTitleProps()}>{api.step.title}</p>
-              <div {...api.getDescriptionProps()}>{api.step.description}</div>
-
-              {api.step.actions && (
-                <div style={{ display: "flex", gap: "5px" }}>
-                  {api.step.actions.map((action) => (
-                    <button
-                      key={action.label}
-                      {...api.getActionTriggerProps({ action })}
-                    >
-                      {action.label}
-                    </button>
-                  ))}
-                </div>
-              )}
-
-              <button {...api.getCloseTriggerProps()}>
-                <HiX />
-              </button>
-            </div>
-          </div>
-        </Portal>
-      )}
-    </>
-  )
-}

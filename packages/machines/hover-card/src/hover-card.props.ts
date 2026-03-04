@@ -8,6 +8,7 @@ export const props = createProps<HoverCardProps>()([
   "getRootNode",
   "id",
   "ids",
+  "disabled",
   "onOpenChange",
   "defaultOpen",
   "open",

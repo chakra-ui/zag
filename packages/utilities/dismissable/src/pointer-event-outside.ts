@@ -1,4 +1,4 @@
-import { getDocument, setStyle, waitForElements } from "@zag-js/dom-query"
+import { getDocument, isHTMLElement, setStyle, waitForElement } from "@zag-js/dom-query"
 import { layerStack } from "./layer-stack"
 
 let originalBodyPointerEvents: string
@@ -26,12 +26,17 @@ export function disablePointerEventsOutside(node: HTMLElement, persistentElement
     })
   }
 
-  if (persistentElements) {
-    const persistedCleanup = waitForElements(persistentElements, (el) => {
-      cleanups.push(setStyle(el, { pointerEvents: "auto" }))
-    })
-    cleanups.push(persistedCleanup)
-  }
+  persistentElements?.forEach((el) => {
+    const [promise, abort] = waitForElement(
+      () => {
+        const node = el()
+        return isHTMLElement(node) ? node : null
+      },
+      { timeout: 1000 },
+    )
+    promise.then((el) => cleanups.push(setStyle(el, { pointerEvents: "auto" })))
+    cleanups.push(abort)
+  })
 
   return () => {
     if (layerStack.hasPointerBlockingLayer()) return

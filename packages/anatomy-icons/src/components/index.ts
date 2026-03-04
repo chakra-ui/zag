@@ -12,11 +12,13 @@ import { EditableAnatomy } from "./editable"
 import { FieldAnatomy } from "./field"
 import { FieldsetAnatomy } from "./fieldset"
 import { FileUploadAnatomy } from "./file-upload"
+import { FloatingPanelAnatomy } from "./floating-panel"
 import { HoverCardAnatomy } from "./hover-card"
 import { LinearProgressAnatomy } from "./linear-progress"
 import { MenuAnatomy } from "./menu"
 import { NumberInputAnatomy } from "./number-input"
 import { PaginationAnatomy } from "./pagination"
+import { PasswordInputAnatomy } from "./password-input"
 import { PinInputAnatomy } from "./pin-input"
 import { PopoverAnatomy } from "./popover"
 import { QRCodeAnatomy } from "./qr-code"
@@ -31,15 +33,17 @@ import { StepsAnatomy } from "./steps"
 import { SwitchAnatomy } from "./switch"
 import { TabsAnatomy } from "./tabs"
 import { TagsInputAnatomy } from "./tags-input"
-import { TimePickerAnatomy } from "./time-picker"
+
 import { ToastAnatomy } from "./toast"
 import { ToggleGroupAnatomy } from "./toggle-group"
 import { TooltipAnatomy } from "./tooltip"
-import { TreeViewAnatomy } from "./tree-view"
 import { TourAnatomy } from "./tour"
-import { FloatingPanelAnatomy } from "./floating-panel"
+import { TreeViewAnatomy } from "./tree-view"
+import { ScrollAreaAnatomy } from "./scroll-area"
 
 export const allComponents = {
+  "scroll-area": ScrollAreaAnatomy,
+  "password-input": PasswordInputAnatomy,
   "floating-panel": FloatingPanelAnatomy,
   tour: TourAnatomy,
   fieldset: FieldsetAnatomy,
@@ -77,7 +81,7 @@ export const allComponents = {
   splitter: SplitterAnatomy,
   switch: SwitchAnatomy,
   tabs: TabsAnatomy,
-  "time-picker": TimePickerAnatomy,
+
   toast: ToastAnatomy,
   tooltip: TooltipAnatomy,
 }

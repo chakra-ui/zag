@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Image Cropper</title>
+    <style>
+      [data-scope="image-cropper"][data-part="viewport"] {
+        display: inline-block;
+        position: relative;
+        overflow: hidden;
+      }
+      .image-cropper-controls {
+        margin-bottom: 1rem;
+        display: flex;
+        gap: 0.5rem;
+        flex-wrap: wrap;
+      }
+      .image-cropper-preview {
+        margin-top: 2rem;
+      }
+      .image-cropper-preview-canvas {
+        border: 1px solid #ccc;
+        max-width: 100%;
+      }
+    </style>
+  </head>
+  <body style="padding: 40px">
+    <a href="/">← Back to examples</a>
+    <h1>Image Cropper</h1>
+
+    <main class="image-cropper">
+      <div class="image-cropper-controls">
+        <button class="image-cropper-zoom-in-btn">Zoom In</button>
+        <button class="image-cropper-zoom-out-btn">Zoom Out</button>
+        <button class="image-cropper-rotate-left-btn">Rotate Left</button>
+        <button class="image-cropper-rotate-right-btn">Rotate Right</button>
+        <button class="image-cropper-flip-h-btn">Flip Horizontal</button>
+        <button class="image-cropper-flip-v-btn">Flip Vertical</button>
+        <button class="image-cropper-reset-btn">Reset</button>
+        <button class="image-cropper-get-image-btn">Get Cropped Image</button>
+      </div>
+
+      <div class="image-cropper-root">
+        <div class="image-cropper-viewport">
+          <img
+            class="image-cropper-image"
+            src="https://picsum.photos/seed/a/500/300"
+            crossorigin="anonymous"
+            alt="Cropper preview"
+          />
+          <div class="image-cropper-selection"></div>
+        </div>
+      </div>
+
+      <div class="image-cropper-preview">
+        <h3>Preview</h3>
+        <canvas class="image-cropper-preview-canvas"></canvas>
+      </div>
+    </main>
+
+    <script type="module" src="./image-cropper.ts"></script>
+  </body>
+</html>

@@ -1,16 +1,17 @@
 ```html
 <script setup lang="ts">
-  import { ref } from "vue"
+  import { ref, computed } from "vue"
 
   const checkedRef = ref(false)
 
-  const service = useMachine(checkbox.machine, {
-    get checked() {
-      return checkedRef.value
-    },
-    onCheckedChange(details) {
-      checkedRef.value = details.checked
-    },
-  })
+  const service = useMachine(
+    checkbox.machine,
+    computed(() => ({
+      checked: checkedRef.value,
+      onCheckedChange(details) {
+        checkedRef.value = details.checked
+      },
+    })),
+  )
 </script>
 ```

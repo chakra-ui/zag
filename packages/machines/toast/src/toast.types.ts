@@ -1,5 +1,6 @@
 import type { CommonProperties, Direction, DirectionProperty, PropTypes, Required, RequiredBy } from "@zag-js/types"
 import type { EventObject, Machine, Service } from "@zag-js/core"
+import type { AnimationFrame } from "@zag-js/dom-query"
 
 /* -----------------------------------------------------------------------------
  * Base types
@@ -41,7 +42,7 @@ export interface ActionOptions {
   /**
    * The function to call when the action is clicked
    */
-  onClick: () => void
+  onClick: VoidFunction
 }
 
 /* -----------------------------------------------------------------------------
@@ -107,40 +108,38 @@ export interface ToastProps<T = any> extends Omit<CommonProperties, "id">, Optio
    */
   dir?: Direction | undefined
   /**
-   * @internal
-   * The index of the toast
+   * The index of the toast in the group
    */
-  index?: number
+  index?: number | undefined
   /**
    * @internal
    * Whether the toast is stacked
    */
-  stacked?: boolean
+  stacked?: boolean | undefined
   /**
    * @internal
    * The event to be dispatched
    */
-  message?: any
+  message?: any | undefined
   /**
    * The gap of the toast
    */
-  gap?: number
+  gap?: number | undefined
   /**
-   * @internal
-   * The parent of the toast
+   * The parent toast group service. Required when using toast as a child of a group.
    */
   parent: Service<ToastGroupSchema>
   /**
    * @internal
    * Whether to dismiss the toast
    */
-  dismiss?: boolean
+  dismiss?: boolean | undefined
 }
 
 type ToastPropsWithDefault = "type" | "parent" | "duration" | "id" | "removeDelay"
 
 export type ToastSchema<O = any> = {
-  props: RequiredBy<ToastProps<O>, ToastPropsWithDefault>
+  props: RequiredBy<ToastProps<O>, Extract<ToastPropsWithDefault, keyof ToastProps<O>>>
   context: {
     mounted: boolean
     initialHeight: number
@@ -234,7 +233,7 @@ export type ToastGroupSchema = {
   state: "stack" | "overlap"
   props: ToastGroupProps
   context: {
-    toasts: RequiredBy<ToastProps, ToastPropsWithDefault>[]
+    toasts: RequiredBy<ToastProps, Extract<ToastPropsWithDefault, keyof ToastProps>>[]
     heights: ToastHeight[]
   }
   computed: {
@@ -246,6 +245,8 @@ export type ToastGroupSchema = {
     dismissableCleanup?: VoidFunction | undefined
     lastFocusedEl: HTMLElement | null
     isFocusWithin: boolean
+    isPointerWithin: boolean
+    ignoreMouseTimer: AnimationFrame
   }
   guard: string
   effect: string
@@ -281,7 +282,7 @@ export interface ToastStore<V = any> {
   /**
    * Remove a toast by its ID
    */
-  remove: (id: string) => void
+  remove: (id?: string) => void
   /**
    * Dismiss a toast by its ID. If no ID is provided, dismisses all toasts
    */
@@ -339,15 +340,13 @@ export interface ToastStore<V = any> {
    */
   isDismissed: (id: string) => boolean
   /**
-   * @internal
-   * Expand all toasts to show their full content
+   * Expand all toasts to show their full content (overlap mode)
    */
-  expand: () => void
+  expand: VoidFunction
   /**
-   * @internal
-   * Collapse all toasts to their compact state
+   * Collapse all toasts to their compact state (overlap mode)
    */
-  collapse: () => void
+  collapse: VoidFunction
 }
 
 /* -----------------------------------------------------------------------------
@@ -357,12 +356,13 @@ export interface ToastStore<V = any> {
 type MaybeFunction<Value, Args> = Value | ((arg: Args) => Value)
 
 export interface PromiseOptions<V, O = any> {
-  loading?: Omit<Options<O>, "type">
-  success?: MaybeFunction<Omit<Options<O>, "type">, V>
-  error?: MaybeFunction<Omit<Options<O>, "type">, unknown>
+  loading: Omit<Options<O>, "type">
+  success?: MaybeFunction<Omit<Options<O>, "type">, V> | undefined
+  error?: MaybeFunction<Omit<Options<O>, "type">, unknown> | undefined
   finally?: (() => void | Promise<void>) | undefined
 }
 
+// zag-ignore-export
 export interface GroupProps {
   /**
    * The human-readable label for the toast region
@@ -374,17 +374,17 @@ export interface ToastGroupApi<T extends PropTypes = PropTypes, O = any> {
   /**
    * The total number of toasts
    */
-  getCount(): number
+  getCount: () => number
   /**
    * The toasts
    */
-  getToasts(): ToastProps[]
+  getToasts: () => ToastProps[]
   /**
    * Subscribe to the toast group
    */
-  subscribe(callback: (toasts: Options<O>[]) => void): VoidFunction
+  subscribe: (callback: (toasts: Options<O>[]) => void) => VoidFunction
 
-  getGroupProps(options?: GroupProps): T["element"]
+  getGroupProps: (options?: GroupProps) => T["element"]
 }
 
 export interface ToastApi<T extends PropTypes = PropTypes, O = any> {
@@ -419,21 +419,21 @@ export interface ToastApi<T extends PropTypes = PropTypes, O = any> {
   /**
    * Function to pause the toast (keeping it visible).
    */
-  pause(): void
+  pause: VoidFunction
   /**
    * Function to resume the toast dismissing.
    */
-  resume(): void
+  resume: VoidFunction
   /**
    * Function to instantly dismiss the toast.
    */
-  dismiss(): void
+  dismiss: VoidFunction
 
-  getRootProps(): T["element"]
-  getTitleProps(): T["element"]
-  getGhostBeforeProps(): T["element"]
-  getGhostAfterProps(): T["element"]
-  getDescriptionProps(): T["element"]
-  getCloseTriggerProps(): T["button"]
-  getActionTriggerProps(): T["button"]
+  getRootProps: () => T["element"]
+  getTitleProps: () => T["element"]
+  getGhostBeforeProps: () => T["element"]
+  getGhostAfterProps: () => T["element"]
+  getDescriptionProps: () => T["element"]
+  getCloseTriggerProps: () => T["button"]
+  getActionTriggerProps: () => T["button"]
 }

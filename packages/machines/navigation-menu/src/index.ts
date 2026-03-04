@@ -4,12 +4,15 @@ export { machine } from "./navigation-menu.machine"
 export * from "./navigation-menu.props"
 export type {
   NavigationMenuApi as Api,
-  ArrowProps,
-  ElementIds,
-  ItemProps,
-  LinkProps,
   NavigationMenuMachine as Machine,
   NavigationMenuProps as Props,
   NavigationMenuService as Service,
+  ArrowProps,
+  ContentProps,
+  ElementIds,
+  ViewportProps,
+  ItemProps,
+  ItemState,
+  LinkProps,
   ValueChangeDetails,
 } from "./navigation-menu.types"

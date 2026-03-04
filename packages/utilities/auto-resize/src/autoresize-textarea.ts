@@ -37,14 +37,24 @@ export const autoresizeTextarea = (el: HTMLTextAreaElement | null) => {
 
   const elementPrototype = Object.getPrototypeOf(el)
   const descriptor = Object.getOwnPropertyDescriptor(elementPrototype, "value")
-  Object.defineProperty(el, "value", {
-    ...descriptor,
-    set() {
-      // @ts-ignore
-      descriptor?.set?.apply(this, arguments as unknown as [unknown])
-      resize()
-    },
-  })
+
+  if (descriptor) {
+    Object.defineProperty(el, "value", {
+      ...descriptor,
+      set(newValue: string) {
+        const prevValue = descriptor.get?.call(this)
+        descriptor.set?.call(this, newValue)
+        resize()
+
+        // Dispatch input event asynchronously to sync framework state trackers
+        if (prevValue !== newValue) {
+          queueMicrotask(() => {
+            el.dispatchEvent(new win.InputEvent("input", { bubbles: true }))
+          })
+        }
+      },
+    })
+  }
 
   const resizeObserver = new win.ResizeObserver(() => {
     requestAnimationFrame(() => resize())

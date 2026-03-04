@@ -1,0 +1,40 @@
+```tsx
+import * as drawer from "@zag-js/drawer"
+import { useMachine, normalizeProps } from "@zag-js/solid"
+import { createUniqueId } from "solid-js"
+
+export function Drawer() {
+  const service = useMachine(drawer.machine, { id: createUniqueId() })
+
+  const api = drawer.connect(service, normalizeProps)
+
+  return (
+    <>
+      <button {...api().getTriggerProps()}>Open Drawer</button>
+      <div {...api().getBackdropProps()} />
+      <div {...api().getPositionerProps()}>
+        <div {...api().getContentProps()}>
+          <div {...api().getGrabberProps()}>
+            <div {...api().getGrabberIndicatorProps()} />
+          </div>
+          <div>
+            <div {...api().getTitleProps()}>Add New Contact</div>
+            <label>
+              <span>Name</span>
+              <input type="text" />
+            </label>
+            <label>
+              <span>Email</span>
+              <input type="email" />
+            </label>
+            <div>
+              <button>Add Contact</button>
+              <button onClick={() => api().setOpen(false)}>Cancel</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </>
+  )
+}
+```

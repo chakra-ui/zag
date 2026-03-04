@@ -11,11 +11,15 @@ export class TreeViewModel extends Model {
   }
 
   goto() {
-    return this.page.goto("/tree-view")
+    return this.page.goto("/tree-view/basic")
   }
 
   private item(name: string) {
     return this.page.getByRole("treeitem", { name })
+  }
+
+  private get tree() {
+    return this.page.locator('[role="tree"]')
   }
 
   private branch(value: string) {
@@ -80,6 +84,14 @@ export class TreeViewModel extends Model {
 
   seeBranchIsCollapsed(name: string) {
     return expect(this.branch(name)).toHaveAttribute("aria-expanded", "false")
+  }
+
+  seeAllBranchesAreCollapsed() {
+    return expect(this.tree.locator('[role="treeitem"][aria-expanded="true"]')).toHaveCount(0)
+  }
+
+  seeAllBranchesAreExpanded() {
+    return expect(this.tree.locator('[role="treeitem"][aria-expanded="false"]')).toHaveCount(0)
   }
 
   seeBranchIsTabbable(name: string) {

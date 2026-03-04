@@ -40,6 +40,10 @@ export function getGroupPlacementStyle(service: ToastGroupService, placement: Pl
     flexDirection: "column",
     "--gap": `${gap}px`,
     "--first-height": `${heights[0]?.height || 0}px`,
+    "--viewport-offset-left": computedOffset.left,
+    "--viewport-offset-right": computedOffset.right,
+    "--viewport-offset-top": computedOffset.top,
+    "--viewport-offset-bottom": computedOffset.bottom,
     zIndex: MAX_Z_INDEX,
   }
 

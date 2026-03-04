@@ -8,6 +8,8 @@ export const props = createProps<CollapsibleProps>()([
   "getRootNode",
   "id",
   "ids",
+  "collapsedHeight",
+  "collapsedWidth",
   "onExitComplete",
   "onOpenChange",
   "defaultOpen",

@@ -1,0 +1,24 @@
+```jsx {1,4-8}
+import { useState } from "react"
+
+export function NavigationMenu() {
+  const [value, setValue] = useState("")
+
+  const service = useMachine(navigationMenu.machine, {
+    id: useId(),
+    value,
+    onValueChange: (details) => setValue(details.value),
+  })
+
+  const api = navigationMenu.connect(service, normalizeProps)
+
+  return (
+    <div>
+      <button onClick={() => setValue("products")}>Open Products</button>
+      <button onClick={() => setValue("")}>Close All</button>
+
+      <nav {...api.getRootProps()}>{/* ... navigation items ... */}</nav>
+    </div>
+  )
+}
+```

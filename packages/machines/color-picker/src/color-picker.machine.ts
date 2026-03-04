@@ -17,15 +17,25 @@ import * as dom from "./color-picker.dom"
 import { parse } from "./color-picker.parse"
 import type { ColorFormat, ColorPickerSchema, ExtendedColorChannel } from "./color-picker.types"
 import { getChannelValue } from "./utils/get-channel-input-value"
+import { prefixHex } from "./utils/is-valid-hex"
 
 const { and } = createGuards<ColorPickerSchema>()
 
+const hashObject = (obj: Record<string, number>): string => {
+  let hash = ""
+  for (const key in obj) hash += `${key}:${obj[key] ?? ""};`
+  return hash
+}
+
+const DEFAULT_COLOR = parse("#000000")
+
 export const machine = createMachine<ColorPickerSchema>({
   props({ props }) {
+    const color = props.value ?? props.defaultValue ?? DEFAULT_COLOR
     return {
       dir: "ltr",
-      defaultValue: parse("#000000"),
-      defaultFormat: "rgba",
+      defaultValue: DEFAULT_COLOR,
+      defaultFormat: color.getFormat(),
       openAutoFocus: true,
       ...props,
       positioning: {
@@ -36,7 +46,7 @@ export const machine = createMachine<ColorPickerSchema>({
   },
 
   initialState({ prop }) {
-    const open = prop("open") || prop("defaultOpen")
+    const open = prop("open") || prop("defaultOpen") || prop("inline")
     return open ? "open" : "idle"
   },
 
@@ -48,15 +58,16 @@ export const machine = createMachine<ColorPickerSchema>({
           defaultValue: prop("defaultValue").toFormat(fmt),
           value: prop("value")?.toFormat(fmt),
           isEqual(a, b) {
-            return a.toString("css") === b?.toString("css")
+            return !!b && a.isEqual(b)
           },
           hash(a) {
-            return a.toString("css")
+            return hashObject(a.toJSON())
           },
           onChange(value) {
             const ctx = getContext()
-            const v = value.toFormat(ctx.get("format"))
-            prop("onValueChange")?.({ value: v, valueAsString: v.toString() })
+            // Pass value as-is to preserve channel info (e.g., HSB saturation at black)
+            // valueAsString is converted to the desired format for display
+            prop("onValueChange")?.({ value, valueAsString: value.toString(ctx.get("format")) })
           },
         }
       }),
@@ -101,7 +112,7 @@ export const machine = createMachine<ColorPickerSchema>({
     })
 
     track([() => context.get("format")], () => {
-      action(["syncFormatSelectElement"])
+      action(["syncFormatSelectElement", "syncValueWithFormat"])
     })
 
     track([() => prop("open")], () => {
@@ -163,6 +174,7 @@ export const machine = createMachine<ColorPickerSchema>({
     },
 
     focused: {
+      id: "color-picker-focused",
       tags: ["closed", "focused"],
       on: {
         "CONTROLLED.OPEN": {
@@ -205,6 +217,7 @@ export const machine = createMachine<ColorPickerSchema>({
     open: {
       tags: ["open"],
       effects: ["trackPositioning", "trackDismissableElement"],
+      initial: "idle",
       on: {
         "CONTROLLED.CLOSE": [
           {
@@ -216,75 +229,6 @@ export const machine = createMachine<ColorPickerSchema>({
             target: "idle",
           },
         ],
-        "TRIGGER.CLICK": [
-          {
-            guard: "isOpenControlled",
-            actions: ["invokeOnClose"],
-          },
-          {
-            target: "idle",
-            actions: ["invokeOnClose"],
-          },
-        ],
-        "AREA.POINTER_DOWN": {
-          target: "open:dragging",
-          actions: ["setActiveChannel", "setAreaColorFromPoint", "focusAreaThumb"],
-        },
-        "AREA.FOCUS": {
-          actions: ["setActiveChannel"],
-        },
-        "CHANNEL_SLIDER.POINTER_DOWN": {
-          target: "open:dragging",
-          actions: ["setActiveChannel", "setChannelColorFromPoint", "focusChannelThumb"],
-        },
-        "CHANNEL_SLIDER.FOCUS": {
-          actions: ["setActiveChannel"],
-        },
-        "AREA.ARROW_LEFT": {
-          actions: ["decrementAreaXChannel"],
-        },
-        "AREA.ARROW_RIGHT": {
-          actions: ["incrementAreaXChannel"],
-        },
-        "AREA.ARROW_UP": {
-          actions: ["incrementAreaYChannel"],
-        },
-        "AREA.ARROW_DOWN": {
-          actions: ["decrementAreaYChannel"],
-        },
-        "AREA.PAGE_UP": {
-          actions: ["incrementAreaXChannel"],
-        },
-        "AREA.PAGE_DOWN": {
-          actions: ["decrementAreaXChannel"],
-        },
-        "CHANNEL_SLIDER.ARROW_LEFT": {
-          actions: ["decrementChannel"],
-        },
-        "CHANNEL_SLIDER.ARROW_RIGHT": {
-          actions: ["incrementChannel"],
-        },
-        "CHANNEL_SLIDER.ARROW_UP": {
-          actions: ["incrementChannel"],
-        },
-        "CHANNEL_SLIDER.ARROW_DOWN": {
-          actions: ["decrementChannel"],
-        },
-        "CHANNEL_SLIDER.PAGE_UP": {
-          actions: ["incrementChannel"],
-        },
-        "CHANNEL_SLIDER.PAGE_DOWN": {
-          actions: ["decrementChannel"],
-        },
-        "CHANNEL_SLIDER.HOME": {
-          actions: ["setChannelToMin"],
-        },
-        "CHANNEL_SLIDER.END": {
-          actions: ["setChannelToMax"],
-        },
-        "CHANNEL_INPUT.BLUR": {
-          actions: ["setChannelColorFromInput"],
-        },
         INTERACT_OUTSIDE: [
           {
             guard: "isOpenControlled",
@@ -308,79 +252,118 @@ export const machine = createMachine<ColorPickerSchema>({
           {
             target: "idle",
             actions: ["invokeOnClose"],
-          },
-        ],
-        "SWATCH_TRIGGER.CLICK": [
-          {
-            guard: and("isOpenControlled", "closeOnSelect"),
-            actions: ["setValue", "invokeOnClose"],
-          },
-          {
-            guard: "closeOnSelect",
-            target: "focused",
-            actions: ["setValue", "invokeOnClose", "setReturnFocus"],
-          },
-          {
-            actions: ["setValue"],
           },
         ],
       },
-    },
-
-    "open:dragging": {
-      tags: ["open"],
-      exit: ["clearActiveChannel"],
-      effects: ["trackPointerMove", "disableTextSelection", "trackPositioning", "trackDismissableElement"],
-      on: {
-        "CONTROLLED.CLOSE": [
-          {
-            guard: "shouldRestoreFocus",
-            target: "focused",
-            actions: ["setReturnFocus"],
+      states: {
+        idle: {
+          on: {
+            "TRIGGER.CLICK": [
+              {
+                guard: "isOpenControlled",
+                actions: ["invokeOnClose"],
+              },
+              {
+                target: "#color-picker-focused",
+                actions: ["invokeOnClose"],
+              },
+            ],
+            "AREA.POINTER_DOWN": {
+              target: "dragging",
+              actions: ["setActiveChannel", "setAreaColorFromPoint", "focusAreaThumb"],
+            },
+            "AREA.FOCUS": {
+              actions: ["setActiveChannel"],
+            },
+            "CHANNEL_SLIDER.POINTER_DOWN": {
+              target: "dragging",
+              actions: ["setActiveChannel", "setChannelColorFromPoint", "focusChannelThumb"],
+            },
+            "CHANNEL_SLIDER.FOCUS": {
+              actions: ["setActiveChannel"],
+            },
+            "AREA.ARROW_LEFT": {
+              actions: ["decrementAreaXChannel"],
+            },
+            "AREA.ARROW_RIGHT": {
+              actions: ["incrementAreaXChannel"],
+            },
+            "AREA.ARROW_UP": {
+              actions: ["incrementAreaYChannel"],
+            },
+            "AREA.ARROW_DOWN": {
+              actions: ["decrementAreaYChannel"],
+            },
+            "AREA.PAGE_UP": {
+              actions: ["incrementAreaXChannel"],
+            },
+            "AREA.PAGE_DOWN": {
+              actions: ["decrementAreaXChannel"],
+            },
+            "CHANNEL_SLIDER.ARROW_LEFT": {
+              actions: ["decrementChannel"],
+            },
+            "CHANNEL_SLIDER.ARROW_RIGHT": {
+              actions: ["incrementChannel"],
+            },
+            "CHANNEL_SLIDER.ARROW_UP": {
+              actions: ["incrementChannel"],
+            },
+            "CHANNEL_SLIDER.ARROW_DOWN": {
+              actions: ["decrementChannel"],
+            },
+            "CHANNEL_SLIDER.PAGE_UP": {
+              actions: ["incrementChannel"],
+            },
+            "CHANNEL_SLIDER.PAGE_DOWN": {
+              actions: ["decrementChannel"],
+            },
+            "CHANNEL_SLIDER.HOME": {
+              actions: ["setChannelToMin"],
+            },
+            "CHANNEL_SLIDER.END": {
+              actions: ["setChannelToMax"],
+            },
+            "CHANNEL_INPUT.BLUR": {
+              actions: ["setChannelColorFromInput"],
+            },
+            "SWATCH_TRIGGER.CLICK": [
+              {
+                guard: and("isOpenControlled", "closeOnSelect"),
+                actions: ["setValue", "invokeOnClose"],
+              },
+              {
+                guard: "closeOnSelect",
+                target: "focused",
+                actions: ["setValue", "invokeOnClose", "setReturnFocus"],
+              },
+              {
+                actions: ["setValue"],
+              },
+            ],
           },
-          {
-            target: "idle",
-          },
-        ],
-        "AREA.POINTER_MOVE": {
-          actions: ["setAreaColorFromPoint", "focusAreaThumb"],
         },
-        "AREA.POINTER_UP": {
-          target: "open",
-          actions: ["invokeOnChangeEnd"],
+        dragging: {
+          tags: ["dragging"],
+          exit: ["clearActiveChannel"],
+          effects: ["trackPointerMove", "disableTextSelection"],
+          on: {
+            "AREA.POINTER_MOVE": {
+              actions: ["setAreaColorFromPoint", "focusAreaThumb"],
+            },
+            "AREA.POINTER_UP": {
+              target: "idle",
+              actions: ["invokeOnChangeEnd"],
+            },
+            "CHANNEL_SLIDER.POINTER_MOVE": {
+              actions: ["setChannelColorFromPoint", "focusChannelThumb"],
+            },
+            "CHANNEL_SLIDER.POINTER_UP": {
+              target: "idle",
+              actions: ["invokeOnChangeEnd"],
+            },
+          },
         },
-        "CHANNEL_SLIDER.POINTER_MOVE": {
-          actions: ["setChannelColorFromPoint", "focusChannelThumb"],
-        },
-        "CHANNEL_SLIDER.POINTER_UP": {
-          target: "open",
-          actions: ["invokeOnChangeEnd"],
-        },
-        INTERACT_OUTSIDE: [
-          {
-            guard: "isOpenControlled",
-            actions: ["invokeOnClose"],
-          },
-          {
-            guard: "shouldRestoreFocus",
-            target: "focused",
-            actions: ["invokeOnClose", "setReturnFocus"],
-          },
-          {
-            target: "idle",
-            actions: ["invokeOnClose"],
-          },
-        ],
-        CLOSE: [
-          {
-            guard: "isOpenControlled",
-            actions: ["invokeOnClose"],
-          },
-          {
-            target: "idle",
-            actions: ["invokeOnClose"],
-          },
-        ],
       },
     },
   },
@@ -388,11 +371,13 @@ export const machine = createMachine<ColorPickerSchema>({
   implementations: {
     guards: {
       closeOnSelect: ({ prop }) => !!prop("closeOnSelect"),
-      isOpenControlled: ({ prop }) => prop("open") != null,
+      isOpenControlled: ({ prop }) => prop("open") != null || !!prop("inline"),
       shouldRestoreFocus: ({ context }) => !!context.get("restoreFocus"),
     },
     effects: {
       trackPositioning({ context, prop, scope }) {
+        if (prop("inline")) return
+
         if (!context.get("currentPlacement")) {
           context.set("currentPlacement", prop("positioning")?.placement)
         }
@@ -408,8 +393,11 @@ export const machine = createMachine<ColorPickerSchema>({
         })
       },
       trackDismissableElement({ context, scope, prop, send }) {
+        if (prop("inline")) return
+
         const getContentEl = () => dom.getContentEl(scope)
         return trackDismissableElement(getContentEl, {
+          type: "popover",
           exclude: dom.getTriggerEl(scope),
           defer: true,
           onInteractOutside(event) {
@@ -483,7 +471,7 @@ export const machine = createMachine<ColorPickerSchema>({
         const v = event.format ? context.get("value").toFormat(event.format) : computed("areaValue")
         const { xChannel, yChannel } = event.channel || context.get("activeChannel")
 
-        const percent = dom.getAreaValueFromPoint(scope, event.point)
+        const percent = dom.getAreaValueFromPoint(scope, event.point, prop("dir"))
         if (!percent) return
         if (prop("dir") === "rtl") {
           percent.x = 1 - percent.x
@@ -500,7 +488,7 @@ export const machine = createMachine<ColorPickerSchema>({
           ? context.get("value").toFormat(event.format)
           : context.get("value").toFormat(context.get("format"))
 
-        const percent = dom.getChannelSliderValueFromPoint(scope, event.point, channel)
+        const percent = dom.getChannelSliderValueFromPoint(scope, event.point, channel, prop("dir"))
         if (!percent) return
 
         const orientation = context.get("activeOrientation") || "horizontal"
@@ -531,7 +519,7 @@ export const machine = createMachine<ColorPickerSchema>({
           valueAsString: computed("valueAsString"),
         })
       },
-      setChannelColorFromInput({ context, event, scope }) {
+      setChannelColorFromInput({ context, event, scope, prop }) {
         const { channel, isTextField, value } = event
         const currentAlpha = context.get("value").getChannelValue("alpha")
 
@@ -548,7 +536,10 @@ export const machine = createMachine<ColorPickerSchema>({
         } else if (isTextField) {
           //
           color = tryCatch(
-            () => parse(value).withChannelValue("alpha", currentAlpha).toFormat(context.get("format")),
+            () => {
+              const parseValue = channel === "hex" ? prefixHex(value) : value
+              return parse(parseValue).withChannelValue("alpha", currentAlpha).toFormat(context.get("format"))
+            },
             () => context.get("value"),
           )
           //
@@ -565,6 +556,12 @@ export const machine = createMachine<ColorPickerSchema>({
 
         // set new color
         context.set("value", color)
+
+        // invoke change end
+        prop("onValueChangeEnd")?.({
+          value: color,
+          valueAsString: color.toString(context.get("format")),
+        })
       },
       incrementChannel({ context, event }) {
         const color = context.get("value").incrementChannel(event.channel, event.step)
@@ -634,11 +631,19 @@ export const machine = createMachine<ColorPickerSchema>({
       syncFormatSelectElement({ context, scope }) {
         syncFormatSelect(scope, context.get("format"))
       },
-      invokeOnOpen({ prop }) {
-        prop("onOpenChange")?.({ open: true })
+      syncValueWithFormat({ context }) {
+        const value = context.get("value")
+        const newValue = value.toFormat(context.get("format"))
+        if (newValue.isEqual(value)) return
+        context.set("value", newValue)
       },
-      invokeOnClose({ prop }) {
-        prop("onOpenChange")?.({ open: false })
+      invokeOnOpen({ prop, context }) {
+        if (prop("inline")) return
+        prop("onOpenChange")?.({ open: true, value: context.get("value") })
+      },
+      invokeOnClose({ prop, context }) {
+        if (prop("inline")) return
+        prop("onOpenChange")?.({ open: false, value: context.get("value") })
       },
       toggleVisibility({ prop, event, send }) {
         send({ type: prop("open") ? "CONTROLLED.OPEN" : "CONTROLLED.CLOSE", previousEvent: event })

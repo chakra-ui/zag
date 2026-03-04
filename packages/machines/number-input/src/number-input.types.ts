@@ -84,7 +84,7 @@ export interface NumberInputProps extends LocaleProperties, CommonProperties {
   /**
    * The pattern used to check the <input> element's value against
    *
-   * @default "[0-9]*(.[0-9]+)?"
+   * @default "-?[0-9]*(.[0-9]+)?"
    */
   pattern?: string | undefined
   /**
@@ -156,6 +156,10 @@ export interface NumberInputProps extends LocaleProperties, CommonProperties {
    * Function invoked when the number input is focused
    */
   onFocusChange?: ((details: FocusChangeDetails) => void) | undefined
+  /**
+   * Function invoked when the value is committed (when the input is blurred or the Enter key is pressed)
+   */
+  onValueCommit?: ((details: ValueChangeDetails) => void) | undefined
   /**
    * Whether to spin the value when the increment/decrement button is pressed
    * @default true
@@ -299,38 +303,38 @@ export interface NumberInputApi<T extends PropTypes = PropTypes> {
   /**
    * Function to set the value of the input.
    */
-  setValue(value: number): void
+  setValue: (value: number) => void
   /**
    * Function to clear the value of the input.
    */
-  clearValue(): void
+  clearValue: VoidFunction
   /**
    * Function to increment the value of the input by the step.
    */
-  increment(): void
+  increment: VoidFunction
   /**
    * Function to decrement the value of the input by the step.
    */
-  decrement(): void
+  decrement: VoidFunction
   /**
    * Function to set the value of the input to the max.
    */
-  setToMax(): void
+  setToMax: VoidFunction
   /**
    * Function to set the value of the input to the min.
    */
-  setToMin(): void
+  setToMin: VoidFunction
   /**
    * Function to focus the input.
    */
-  focus(): void
+  focus: VoidFunction
 
-  getRootProps(): T["element"]
-  getLabelProps(): T["label"]
-  getControlProps(): T["element"]
-  getValueTextProps(): T["element"]
-  getInputProps(): T["input"]
-  getDecrementTriggerProps(): T["button"]
-  getIncrementTriggerProps(): T["button"]
-  getScrubberProps(): T["element"]
+  getRootProps: () => T["element"]
+  getLabelProps: () => T["label"]
+  getControlProps: () => T["element"]
+  getValueTextProps: () => T["element"]
+  getInputProps: () => T["input"]
+  getDecrementTriggerProps: () => T["button"]
+  getIncrementTriggerProps: () => T["button"]
+  getScrubberProps: () => T["element"]
 }

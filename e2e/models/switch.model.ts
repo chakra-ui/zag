@@ -11,7 +11,7 @@ export class SwitchModel extends Model {
     return a11y(this.page)
   }
 
-  goto(url = "/switch") {
+  goto(url = "/switch/basic") {
     return this.page.goto(url)
   }
 

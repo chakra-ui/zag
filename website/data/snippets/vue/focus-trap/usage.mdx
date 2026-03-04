@@ -1,0 +1,26 @@
+```html
+<script setup>
+  import { ref, onMounted, onBeforeUnmount } from "vue"
+  import { trapFocus } from "@zag-js/focus-trap"
+
+  const dialogRef = ref(null)
+
+  onMounted(() => {
+    const restore = trapFocus(dialogRef.value, {
+      initialFocus: "[data-autofocus]",
+    })
+
+    onBeforeUnmount(() => {
+      restore()
+    })
+  })
+</script>
+
+<template>
+  <div ref="dialogRef">
+    <button data-autofocus>Close</button>
+    <input type="text" placeholder="Enter text..." />
+    <button>Submit</button>
+  </div>
+</template>
+```

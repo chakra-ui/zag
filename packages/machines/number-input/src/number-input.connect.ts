@@ -7,9 +7,12 @@ import {
   isComposingEvent,
   isLeftClick,
   isModifierKey,
+  raf,
+  setCaretToEnd,
 } from "@zag-js/dom-query"
 import type { EventKeyMap, NormalizeProps, PropTypes } from "@zag-js/types"
 import { roundToDpr } from "@zag-js/utils"
+import { recordCursor } from "./cursor"
 import { parts } from "./number-input.anatomy"
 import * as dom from "./number-input.dom"
 import type { NumberInputApi, NumberInputService } from "./number-input.types"
@@ -22,10 +25,12 @@ export function connect<T extends PropTypes>(
 
   const focused = state.hasTag("focus")
   const disabled = computed("isDisabled")
-  const readOnly = prop("readOnly")
+  const readOnly = !!prop("readOnly")
+  const required = !!prop("required")
+  const scrubbing = state.matches("scrubbing")
 
   const empty = computed("isValueEmpty")
-  const invalid = computed("isOutOfRange") || !!prop("invalid")
+  const invalid = prop("invalid") !== undefined ? !!prop("invalid") : computed("isOutOfRange")
 
   const isIncrementDisabled = disabled || !computed("canIncrement") || readOnly
   const isDecrementDisabled = disabled || !computed("canDecrement") || readOnly
@@ -68,6 +73,7 @@ export function connect<T extends PropTypes>(
         "data-disabled": dataAttr(disabled),
         "data-focus": dataAttr(focused),
         "data-invalid": dataAttr(invalid),
+        "data-scrubbing": dataAttr(scrubbing),
       })
     },
 
@@ -78,8 +84,15 @@ export function connect<T extends PropTypes>(
         "data-disabled": dataAttr(disabled),
         "data-focus": dataAttr(focused),
         "data-invalid": dataAttr(invalid),
+        "data-required": dataAttr(required),
+        "data-scrubbing": dataAttr(scrubbing),
         id: dom.getLabelId(scope),
         htmlFor: dom.getInputId(scope),
+        onClick() {
+          raf(() => {
+            setCaretToEnd(dom.getInputEl(scope))
+          })
+        },
       })
     },
 
@@ -92,6 +105,7 @@ export function connect<T extends PropTypes>(
         "data-focus": dataAttr(focused),
         "data-disabled": dataAttr(disabled),
         "data-invalid": dataAttr(invalid),
+        "data-scrubbing": dataAttr(scrubbing),
         "aria-invalid": ariaAttr(invalid),
       })
     },
@@ -103,6 +117,7 @@ export function connect<T extends PropTypes>(
         "data-disabled": dataAttr(disabled),
         "data-invalid": dataAttr(invalid),
         "data-focus": dataAttr(focused),
+        "data-scrubbing": dataAttr(scrubbing),
       })
     },
 
@@ -115,7 +130,7 @@ export function connect<T extends PropTypes>(
         id: dom.getInputId(scope),
         role: "spinbutton",
         defaultValue: computed("formattedValue"),
-        pattern: prop("pattern"),
+        pattern: prop("formatOptions") ? undefined : prop("pattern"),
         inputMode: prop("inputMode"),
         "aria-invalid": ariaAttr(invalid),
         "data-invalid": dataAttr(invalid),
@@ -132,6 +147,7 @@ export function connect<T extends PropTypes>(
         "aria-valuemax": prop("max"),
         "aria-valuenow": Number.isNaN(computed("valueAsNumber")) ? undefined : computed("valueAsNumber"),
         "aria-valuetext": computed("valueText"),
+        "data-scrubbing": dataAttr(scrubbing),
         onFocus() {
           send({ type: "INPUT.FOCUS" })
         },
@@ -139,7 +155,8 @@ export function connect<T extends PropTypes>(
           send({ type: "INPUT.BLUR" })
         },
         onInput(event) {
-          send({ type: "INPUT.CHANGE", target: event.currentTarget, hint: "set" })
+          const selection = recordCursor(event.currentTarget, scope)
+          send({ type: "INPUT.CHANGE", target: event.currentTarget, hint: "set", selection })
         },
         onBeforeInput(event) {
           try {
@@ -162,7 +179,7 @@ export function connect<T extends PropTypes>(
 
           const step = getEventStep(event) * prop("step")
 
-          const keyMap: EventKeyMap = {
+          const keyMap: EventKeyMap<HTMLInputElement> = {
             ArrowUp() {
               send({ type: "INPUT.ARROW_UP", step })
               event.preventDefault()
@@ -181,8 +198,9 @@ export function connect<T extends PropTypes>(
               send({ type: "INPUT.END" })
               event.preventDefault()
             },
-            Enter() {
-              send({ type: "INPUT.ENTER" })
+            Enter(event) {
+              const selection = recordCursor(event.currentTarget, scope)
+              send({ type: "INPUT.ENTER", selection })
             },
           }
 
@@ -203,8 +221,10 @@ export function connect<T extends PropTypes>(
         type: "button",
         tabIndex: -1,
         "aria-controls": dom.getInputId(scope),
+        "data-scrubbing": dataAttr(scrubbing),
         onPointerDown(event) {
-          if (isDecrementDisabled || !isLeftClick(event)) return
+          if (isDecrementDisabled) return
+          if (!isLeftClick(event)) return
           send({ type: "TRIGGER.PRESS_DOWN", hint: "decrement", pointerType: event.pointerType })
           if (event.pointerType === "mouse") {
             event.preventDefault()
@@ -234,6 +254,7 @@ export function connect<T extends PropTypes>(
         type: "button",
         tabIndex: -1,
         "aria-controls": dom.getInputId(scope),
+        "data-scrubbing": dataAttr(scrubbing),
         onPointerDown(event) {
           if (isIncrementDisabled || !isLeftClick(event)) return
           send({ type: "TRIGGER.PRESS_DOWN", hint: "increment", pointerType: event.pointerType })
@@ -260,8 +281,10 @@ export function connect<T extends PropTypes>(
         "data-disabled": dataAttr(disabled),
         id: dom.getScrubberId(scope),
         role: "presentation",
+        "data-scrubbing": dataAttr(scrubbing),
         onMouseDown(event) {
           if (disabled) return
+          if (!isLeftClick(event)) return
 
           const point = getEventPoint(event)
           const win = getWindow(event.currentTarget)
@@ -272,6 +295,9 @@ export function connect<T extends PropTypes>(
 
           send({ type: "SCRUBBER.PRESS_DOWN", point })
           event.preventDefault()
+          raf(() => {
+            setCaretToEnd(dom.getInputEl(scope))
+          })
         },
         style: {
           cursor: disabled ? undefined : "ew-resize",

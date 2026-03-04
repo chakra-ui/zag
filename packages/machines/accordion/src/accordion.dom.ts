@@ -12,7 +12,7 @@ export const getItemTriggerId = (ctx: Scope, value: string) =>
 export const getRootEl = (ctx: Scope) => ctx.getById(getRootId(ctx))
 export const getTriggerEls = (ctx: Scope) => {
   const ownerId = CSS.escape(getRootId(ctx))
-  const selector = `[aria-controls][data-ownedby='${ownerId}']:not([disabled])`
+  const selector = `[data-controls][data-ownedby='${ownerId}']:not([disabled])`
   return queryAll(getRootEl(ctx), selector)
 }
 

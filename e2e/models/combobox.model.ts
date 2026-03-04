@@ -11,8 +11,8 @@ export class ComboboxModel extends Model {
     return a11y(this.page)
   }
 
-  goto() {
-    return this.page.goto("/combobox")
+  goto(url = "/combobox/basic") {
+    return this.page.goto(url)
   }
 
   private get input() {
@@ -102,7 +102,7 @@ export class ComboboxModel extends Model {
 
   seeItemInViewport = async (text: string) => {
     const item = this.getItem(text)
-    expect(await isInViewport(this.content, item)).toBe(true)
+    await expect.poll(() => isInViewport(this.content, item)).toBe(true)
   }
 
   seeInputHasValue = async (value: string) => {
@@ -115,5 +115,29 @@ export class ComboboxModel extends Model {
 
   dontSeeHighlightedItem = async () => {
     expect(await this.highlightedItem.count()).toBe(0)
+  }
+
+  get valueText() {
+    return this.page.locator("[data-testid=value-text]")
+  }
+
+  seeValueText = async (text: string) => {
+    await expect(this.valueText).toContainText(text)
+  }
+
+  dontSeeValueText = async () => {
+    await expect(this.valueText).toHaveText("")
+  }
+
+  get valueChangeText() {
+    return this.page.locator("[data-testid=on-value-change-items]")
+  }
+
+  seeOnValueChangeItems = async (text: string) => {
+    await expect(this.valueChangeText).toContainText(text)
+  }
+
+  seeOnValueChangeItemsIsEmpty = async () => {
+    await expect(this.valueChangeText).toContainText("N/A")
   }
 }

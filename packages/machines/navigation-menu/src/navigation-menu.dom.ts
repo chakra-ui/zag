@@ -1,95 +1,72 @@
 import type { Scope } from "@zag-js/core"
 import { getTabbables, getWindow, queryAll } from "@zag-js/dom-query"
-import { first, last, next, nextIndex, prev, prevIndex } from "@zag-js/utils"
-import type { NavigationMenuService } from "./navigation-menu.types"
 
 export const getRootId = (ctx: Scope) => ctx.ids?.root ?? `nav-menu:${ctx.id}`
-
 export const getTriggerId = (ctx: Scope, value: string) =>
   ctx.ids?.trigger?.(value) ?? `nav-menu:${ctx.id}:trigger:${value}`
-
+export const getTriggerProxyId = (ctx: Scope, value: string) =>
+  ctx.ids?.triggerProxy?.(value) ?? `nav-menu:${ctx.id}:trigger-proxy:${value}`
 export const getContentId = (ctx: Scope, value: string) =>
   ctx.ids?.content?.(value) ?? `nav-menu:${ctx.id}:content:${value}`
-
 export const getViewportId = (ctx: Scope) => ctx.ids?.viewport ?? `nav-menu:${ctx.id}:viewport`
-
 export const getListId = (ctx: Scope) => ctx.ids?.list ?? `nav-menu:${ctx.id}:list`
-
-export const getIndicatorTrackId = (ctx: Scope) => ctx.ids?.indicatorTrack ?? `nav-menu:${ctx.id}:indicator-track`
-
-export const getRootMenuEl = (ctx: Scope, parent?: NavigationMenuService) => {
-  let id = ctx.id
-  while (parent != null) id = parent.prop("id")
-  return ctx.getById(`nav-menu:${id}`)
-}
-
-export const getTabbableEls = (ctx: Scope, value: string) => getTabbables(getContentEl(ctx, value))
-export const getIndicatorTrackEl = (ctx: Scope) => ctx.getById(getIndicatorTrackId(ctx))
+export const getItemId = (ctx: Scope, value: string) => ctx.ids?.item?.(value) ?? `nav-menu:${ctx.id}:item:${value}`
 export const getRootEl = (ctx: Scope) => ctx.getById(getRootId(ctx))
 export const getViewportEl = (ctx: Scope) => ctx.getById(getViewportId(ctx))
-export const getTriggerEl = (ctx: Scope, value: string) => ctx.getById(getTriggerId(ctx, value))
+
+export const getTriggerEl = (ctx: Scope, value: string | null) => {
+  if (!value) return null
+  return ctx.getById(getTriggerId(ctx, value))
+}
+export const getTriggerProxyEl = (ctx: Scope, value: string | null) => {
+  if (!value) return null
+  return ctx.getById(getTriggerProxyId(ctx, value))
+}
+
 export const getListEl = (ctx: Scope) => ctx.getById(getListId(ctx))
 
-export const getContentEl = (ctx: Scope, value: string) => ctx.getById(getContentId(ctx, value))
+export const getContentEl = (ctx: Scope, value: string | null) => {
+  if (!value) return null
+  return ctx.getById(getContentId(ctx, value))
+}
+
 export const getContentEls = (ctx: Scope) =>
   queryAll(ctx.getDoc(), `[data-scope=navigation-menu][data-part=content][data-uid='${ctx.id}']`)
 
+export const getTabbableEls = (ctx: Scope, value: string) => {
+  return getTabbables(getContentEl(ctx, value))
+}
+
 export const getTriggerEls = (ctx: Scope) => queryAll(getListEl(ctx), `[data-part=trigger][data-uid='${ctx.id}']`)
-export const getTopLevelEls = (ctx: Scope) => {
-  const topLevelTriggerSelector = `[data-part=trigger][data-uid='${ctx.id}']:not([data-disabled])`
-  const topLevelLinkSelector = `[data-part=item] > [data-part=link]`
-  return queryAll(getListEl(ctx), `${topLevelTriggerSelector}, ${topLevelLinkSelector}`)
-}
-
-export const getFirstTopLevelEl = (ctx: Scope) => first(getTopLevelEls(ctx))
-export const getLastTopLevelEl = (ctx: Scope) => last(getTopLevelEls(ctx))
-export const getNextTopLevelEl = (ctx: Scope, value: string) => {
-  const elements = getTopLevelEls(ctx)
-  const values = toValues(elements)
-  const idx = nextIndex(values, values.indexOf(value), { loop: false })
-  return elements[idx]
-}
-
-export const getPrevTopLevelEl = (ctx: Scope, value: string) => {
-  const elements = getTopLevelEls(ctx)
-  const values = toValues(elements)
-  const idx = prevIndex(values, values.indexOf(value), { loop: false })
-  return elements[idx]
-}
-
 export const getLinkEls = (ctx: Scope, value: string) => {
   const contentEl = getContentEl(ctx, value)
   return queryAll(contentEl, `[data-part=link][data-ownedby="${getContentId(ctx, value)}"]`)
 }
 
-export const getFirstLinkEl = (ctx: Scope, value: string) => first(getLinkEls(ctx, value))
-export const getLastLinkEl = (ctx: Scope, value: string) => last(getLinkEls(ctx, value))
-export const getNextLinkEl = (ctx: Scope, value: string, node: HTMLElement) => {
-  const elements = getLinkEls(ctx, value)
-  return next(elements, elements.indexOf(node), { loop: false })
+export const getElements = (ctx: Scope) => {
+  const topLevelTriggerSelector = `[data-part=trigger][data-uid='${ctx.id}']:not([data-disabled])`
+  const topLevelLinkSelector = `[data-part=item] > [data-part=link]`
+  return queryAll(getListEl(ctx), `${topLevelTriggerSelector}, ${topLevelLinkSelector}`)
 }
 
-export const getPrevLinkEl = (ctx: Scope, value: string, node: HTMLElement) => {
-  const elements = getLinkEls(ctx, value)
-  return prev(elements, elements.indexOf(node), { loop: false })
-}
-
-const toValues = (els: HTMLElement[]) => els.map((el) => el.getAttribute("data-value"))
-
-export function trackResizeObserver(element: HTMLElement | null, onResize: () => void) {
-  if (!element) return null
+export function trackResizeObserver(element: Array<HTMLElement | null>, onResize: () => void) {
+  if (!element.length) return
   let frame = 0
-  const win = getWindow(element)
+  const win = getWindow(element[0])
   const obs = new win.ResizeObserver(() => {
     cancelAnimationFrame(frame)
     frame = requestAnimationFrame(onResize)
   })
 
-  obs.observe(element)
+  element.forEach((el) => {
+    if (el) obs.observe(el)
+  })
 
   return () => {
     cancelAnimationFrame(frame)
-    obs.unobserve(element)
+    element.forEach((el) => {
+      if (el) obs.unobserve(el)
+    })
   }
 }
 
@@ -133,4 +110,26 @@ export function setMotionAttr(scope: Scope, value: string | null, previousValue:
       delete contentEl.dataset.motion
     }
   })
+}
+
+export function focusFirst(scope: Scope, candidates: HTMLElement[]) {
+  const previouslyFocusedElement = scope.getActiveElement()
+  return candidates.some((candidate) => {
+    if (candidate === previouslyFocusedElement) return true
+    candidate.focus()
+    return scope.getActiveElement() !== previouslyFocusedElement
+  })
+}
+
+export function removeFromTabOrder(candidates: HTMLElement[]) {
+  candidates.forEach((candidate) => {
+    candidate.dataset.tabindex = candidate.getAttribute("tabindex") || ""
+    candidate.setAttribute("tabindex", "-1")
+  })
+  return () => {
+    candidates.forEach((candidate) => {
+      const prevTabIndex = candidate.dataset.tabindex as string
+      candidate.setAttribute("tabindex", prevTabIndex)
+    })
+  }
 }

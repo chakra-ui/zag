@@ -28,7 +28,7 @@ export type ElementIds = Partial<{
   hiddenInput: string
   label: string
   control: string
-  input(id: string): string
+  input: (id: string) => string
 }>
 
 export interface PinInputProps extends DirectionProperty, CommonProperties {
@@ -189,22 +189,22 @@ export interface PinInputApi<T extends PropTypes = PropTypes> {
   /**
    * Function to set the value of the inputs.
    */
-  setValue(value: string[]): void
+  setValue: (value: string[]) => void
   /**
    * Function to clear the value of the inputs.
    */
-  clearValue(): void
+  clearValue: VoidFunction
   /**
    * Function to set the value of the input at a specific index.
    */
-  setValueAtIndex(index: number, value: string): void
+  setValueAtIndex: (index: number, value: string) => void
   /**
    * Function to focus the pin-input. This will focus the first input.
    */
-  focus: () => void
-  getRootProps(): T["element"]
-  getLabelProps(): T["label"]
-  getHiddenInputProps(): T["input"]
-  getControlProps(): T["element"]
-  getInputProps(props: InputProps): T["input"]
+  focus: VoidFunction
+  getRootProps: () => T["element"]
+  getLabelProps: () => T["label"]
+  getHiddenInputProps: () => T["input"]
+  getControlProps: () => T["element"]
+  getInputProps: (props: InputProps) => T["input"]
 }

@@ -1,21 +1,29 @@
-import { DateFormatter, type DateValue } from "@internationalized/date"
+import { DateFormatter } from "@internationalized/date"
+import { memo } from "@zag-js/core"
+import type { DateValue } from "@zag-js/date-utils"
+import { getDecadeRange } from "@zag-js/date-utils"
 import { clampValue, match } from "@zag-js/utils"
-import type { DateView, IntlTranslations } from "./date-picker.types"
+import type { DateView, IntlTranslations, SelectionMode, VisibleRangeText } from "./date-picker.types"
 
-export function adjustStartAndEndDate(value: DateValue[]) {
+export function adjustStartAndEndDate(value: Array<DateValue | null | undefined>): DateValue[] {
   const [startDate, endDate] = value
-  if (!startDate || !endDate) return value
-  return startDate.compare(endDate) <= 0 ? value : [endDate, startDate]
+  let result: Array<DateValue | null | undefined>
+  if (!startDate || !endDate) result = value
+  else result = startDate.compare(endDate) <= 0 ? value : [endDate, startDate]
+  return result as DateValue[]
 }
 
-export function isDateWithinRange(date: DateValue, value: (DateValue | null)[]) {
+export function isDateWithinRange(date: DateValue, value: Array<DateValue | null | undefined>) {
   const [startDate, endDate] = value
   if (!startDate || !endDate) return false
   return startDate.compare(date) <= 0 && endDate.compare(date) >= 0
 }
 
-export function sortDates(values: DateValue[]) {
-  return values.slice().sort((a, b) => a.compare(b))
+export function sortDates(values: Array<DateValue | null | undefined>) {
+  return values
+    .slice()
+    .filter((date): date is DateValue => date != null)
+    .sort((a, b) => a.compare(b))
 }
 
 export function getRoleDescription(view: DateView) {
@@ -79,7 +87,8 @@ export const defaultTranslations: IntlTranslations = {
     })
   },
   presetTrigger(value) {
-    return Array.isArray(value) ? `select ${value[0].toString()} to ${value[1].toString()}` : `select ${value}`
+    const [start = "", end = ""] = value
+    return `select ${start} to ${end}`
   },
   prevTrigger(view) {
     return match(view, {
@@ -103,6 +112,10 @@ export const defaultTranslations: IntlTranslations = {
   monthSelect: "Select month",
   yearSelect: "Select year",
   clearTrigger: "Clear selected dates",
+  weekColumnHeader: "Wk",
+  weekNumberCell(weekNumber) {
+    return `Week ${weekNumber}`
+  },
 }
 
 // 0 – day, 1 – month, 2 – year;
@@ -149,3 +162,49 @@ const views: DateView[] = ["day", "month", "year"]
 export function eachView(cb: (view: DateView) => void) {
   views.forEach((view) => cb(view))
 }
+
+interface VisibleRangeTextOptions {
+  view: DateView
+  startValue: DateValue
+  endValue: DateValue
+  locale: string
+  timeZone: string
+  selectionMode: SelectionMode
+}
+
+export const getVisibleRangeText = memo(
+  (opts: VisibleRangeTextOptions) => [opts.view, opts.startValue.toString(), opts.endValue.toString(), opts.locale],
+  ([view], opts): VisibleRangeText => {
+    const { startValue, endValue, locale, timeZone, selectionMode } = opts
+
+    if (view === "year") {
+      const years = getDecadeRange(startValue.year, { strict: true })
+      const start = years.at(0)!.toString()
+      const end = years.at(-1)!.toString()
+      return { start, end, formatted: `${start} - ${end}` }
+    }
+
+    if (view === "month") {
+      const formatter = new DateFormatter(locale, {
+        year: "numeric",
+        timeZone,
+        calendar: startValue.calendar.identifier,
+      })
+      const start = formatter.format(startValue.toDate(timeZone))
+      const end = formatter.format(endValue.toDate(timeZone))
+      const formatted = selectionMode === "range" ? `${start} - ${end}` : start
+      return { start, end, formatted }
+    }
+
+    const formatter = new DateFormatter(locale, {
+      month: "long",
+      year: "numeric",
+      timeZone,
+      calendar: startValue.calendar.identifier,
+    })
+    const start = formatter.format(startValue.toDate(timeZone))
+    const end = formatter.format(endValue.toDate(timeZone))
+    const formatted = selectionMode === "range" ? `${start} - ${end}` : start
+    return { start, end, formatted }
+  },
+)

@@ -184,7 +184,21 @@ export function connect<T extends PropTypes>(service: SliderService, normalize: 
         style: getThumbStyle(service, index),
         onPointerDown(event) {
           if (!interactive) return
-          send({ type: "THUMB_POINTER_DOWN", index })
+          if (!isLeftClick(event)) return
+
+          // Calculate offset from thumb center to maintain constant offset during drag
+          const thumbEl = event.currentTarget as HTMLElement
+          const rect = thumbEl.getBoundingClientRect()
+          const midpoint = {
+            x: rect.left + rect.width / 2,
+            y: rect.top + rect.height / 2,
+          }
+          const offset = {
+            x: event.clientX - midpoint.x,
+            y: event.clientY - midpoint.y,
+          }
+
+          send({ type: "THUMB_POINTER_DOWN", index, offset })
           event.stopPropagation()
         },
         onBlur() {

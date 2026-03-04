@@ -1,0 +1,132 @@
+@layer recipes {
+  .Trigger {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    text-align: start;
+    cursor: pointer;
+    font-weight: 500;
+    padding-inline: 1rem;
+    padding-block: 0.25rem;
+    border-width: 1px;
+    background: var(--colors-bg-subtle);
+
+    &:focus-visible {
+      outline: 2px solid var(--colors-bg-primary-bold);
+      outline-offset: 2px;
+    }
+  }
+
+  .Positioner {
+    z-index: 999999;
+  }
+
+  .Content {
+    filter: drop-shadow(0 1px 2px var(--colors-shadow));
+    border: 1px solid var(--colors-border);
+    outline: 0 !important;
+    background-color: var(--colors-bg-popover);
+    display: flex;
+    flex-direction: column;
+
+    &[data-topmost] {
+      z-index: 999999;
+    }
+
+    &[data-behind] {
+      opacity: 0.4;
+    }
+  }
+
+  .Body {
+    position: relative;
+    overflow: auto;
+    flex: 1 1 auto;
+    padding-block: 16px;
+    padding-inline: 16px;
+    background-color: var(--colors-bg-popover);
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+
+    & :where(input, select) {
+      width: 100%;
+      border: 1px solid var(--colors-border);
+      min-height: 32px;
+      padding-inline: 8px;
+      border-radius: 4px;
+      background-color: var(--colors-bg-subtle);
+      color: var(--colors-fg);
+    }
+
+    & label {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      font-size: 14px;
+      font-weight: 500;
+    }
+  }
+
+  .Header {
+    padding-block: 8px;
+    padding-inline-start: 16px;
+    padding-inline-end: 8px;
+    background-color: var(--colors-bg-popover);
+    border-bottom: 1px solid var(--colors-border);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    & button {
+      width: 24px;
+      height: 24px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      padding: 0;
+      border-radius: 4px;
+
+      & svg {
+        width: 1em;
+        height: 1em;
+      }
+
+      &:hover {
+        background-color: var(--colors-bg-muted);
+      }
+    }
+  }
+
+  .Title {
+    font-weight: 500;
+  }
+
+  .Control {
+    display: flex;
+    align-items: center;
+  }
+
+  .ResizeTrigger {
+    &[data-axis="n"],
+    &[data-axis="s"] {
+      height: 6px;
+      max-width: 90%;
+    }
+
+    &[data-axis="e"],
+    &[data-axis="w"] {
+      width: 6px;
+      max-height: 90%;
+    }
+
+    &[data-axis="ne"],
+    &[data-axis="nw"],
+    &[data-axis="se"],
+    &[data-axis="sw"] {
+      width: 10px;
+      height: 10px;
+    }
+  }
+}

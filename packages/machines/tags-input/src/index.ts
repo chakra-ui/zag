@@ -17,4 +17,5 @@ export type {
   ValidateArgs,
   ValidityChangeDetails,
   ValueChangeDetails,
+  ValidityState,
 } from "./tags-input.types"

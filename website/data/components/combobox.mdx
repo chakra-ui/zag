@@ -4,10 +4,8 @@ description: Using the combobox machine in your project.
 package: "@zag-js/combobox"
 ---
 
-# Combobox
-
-A combobox is an input widget with an associated popup that enables users to
-select a value from a collection of possible values.
+A combobox is an input with a popup that lets you select a value from a
+collection.
 
 <Resources pkg="@zag-js/combobox" />
 
@@ -15,24 +13,22 @@ select a value from a collection of possible values.
 
 **Features**
 
-- Support for selecting multiple values
-- Support for disabled options
-- Support for custom user input values
-- Support for mouse, touch, and keyboard interactions
-- Keyboard support for opening the combo box list box using the arrow keys,
-  including automatically focusing the first or last item accordingly
+- Supports selecting multiple values
+- Supports disabled options
+- Supports custom user input values
+- Supports mouse, touch, and keyboard interactions
+- Supports opening the combobox listbox with arrow keys, including automatically
+  focusing the first or last item accordingly
 
 ## Installation
 
-To use the combobox machine in your project, run the following command in your
-command line:
+Install the combobox package:
 
 <CodeSnippet id="combobox/installation.mdx" />
 
 ## Anatomy
 
-To set up the combobox correctly, you'll need to understand its anatomy and how
-we name its parts.
+Check the combobox anatomy and part names.
 
 > Each part includes a `data-part` attribute to help identify them in the DOM.
 
@@ -40,29 +36,26 @@ we name its parts.
 
 ## Usage
 
-First, import the combobox package into your project
+Import the combobox package:
 
 ```jsx
 import * as combobox from "@zag-js/combobox"
 ```
 
-The combobox package exports these functions:
+These are the key exports:
 
-- `machine` — The state machine logic for the combobox widget.
-- `connect` — The function that translates the machine's state to JSX attributes
-  and event handlers.
-- `collection` - The function that creates a
-  [collection interface](/overview/collection) from an array of items.
+- `machine` - Behavior logic.
+- `connect` - Maps behavior to JSX props and event handlers.
+- `collection` - Creates a [collection interface](/overview/collection) from an
+  array of items.
 
-Next, import the required hooks and functions for your framework and use the
-combobox machine in your project 🔥
+Then use the framework integration helpers:
 
 <CodeSnippet id="combobox/usage.mdx" />
 
 ### Setting the initial value
 
-To set the initial value of the combobox, pass the `defaultValue` property to
-the machine's context.
+Set `defaultValue` to define the initial combobox value.
 
 ```jsx {13}
 const collection = combobox.collection({
@@ -83,15 +76,42 @@ const service = useMachine(combobox.machine, {
 
 ### Controlled combobox
 
-To control the value programmatically, pass the `value` and `onValueChange`
-properties to the machine function.
+Use `value` and `onValueChange` to control the value programmatically.
 
 <CodeSnippet id="combobox/controlled.mdx" />
 
+### Setting the initial input value
+
+Use `defaultInputValue` to prefill the input on first render.
+
+```jsx
+const service = useMachine(combobox.machine, {
+  id: useId(),
+  collection,
+  defaultInputValue: "Nig",
+})
+```
+
+### Controlling the input value
+
+Use `inputValue` and `onInputValueChange` when you want to filter options as you
+type.
+
+```jsx
+const service = useMachine(combobox.machine, {
+  id: useId(),
+  collection,
+  inputValue,
+  onInputValueChange({ inputValue }) {
+    setInputValue(inputValue)
+    setOptions(filterItems(inputValue))
+  },
+})
+```
+
 ### Selecting multiple values
 
-To allow selecting multiple values, set the `multiple` property in the machine's
-context to `true`.
+Set `multiple` to `true` to allow selecting multiple values.
 
 ```jsx {4}
 const service = useMachine(combobox.machine, {
@@ -144,11 +164,10 @@ const service = useMachine(combobox.machine, {
 
 ### Rendering the selected values outside the combobox
 
-By default, the selected values of a combobox are displayed in the input
-element, when selecting multiple items, it is a better UX to render the selected
-value outside the combobox.
+By default, selected values are shown in the input. For multiple selection, it
+is often better to render selected values outside the combobox.
 
-To achieve this you need to:
+To do that:
 
 - Set the `selectionBehavior` to `clear`, which clears the input value when an
   item is selected.
@@ -166,7 +185,7 @@ const service = useMachine(combobox.machine, {
 
 ### Disabling the combobox
 
-To make a combobox disabled, set the context's `disabled` property to `true`
+Set `disabled` to `true` to disable the combobox.
 
 ```jsx {2}
 const service = useMachine(combobox.machine, {
@@ -176,8 +195,7 @@ const service = useMachine(combobox.machine, {
 
 ### Disabling an option
 
-To make a combobox option disabled, pass the `isItemDisabled` property to the
-collection function.
+Pass `isItemDisabled` to disable specific options.
 
 ```jsx {6-8}
 const service = useMachine(combobox.machine, {
@@ -193,10 +211,8 @@ const service = useMachine(combobox.machine, {
 
 ### Close on select
 
-This behaviour ensures that the menu is closed when an option is selected and is
-`true` by default. It's only concerned with when an option is selected with
-pointer or enter key. To disable the behaviour, set the `closeOnSelect` property
-in the machine's context to `false`.
+By default, the menu closes when an option is selected with pointer or enter
+key. Set `closeOnSelect` to `false` to keep it open.
 
 ```jsx {2}
 const service = useMachine(combobox.machine, {
@@ -204,9 +220,80 @@ const service = useMachine(combobox.machine, {
 })
 ```
 
+### Controlling open state
+
+Use `open` and `onOpenChange` for controlled popup state, or `defaultOpen` for
+an uncontrolled initial state.
+
+```jsx
+const service = useMachine(combobox.machine, {
+  id: useId(),
+  collection,
+  open,
+  onOpenChange(details) {
+    // details => { open: boolean; reason?: string; value: string[] }
+    setOpen(details.open)
+  },
+})
+```
+
+```jsx
+const service = useMachine(combobox.machine, {
+  id: useId(),
+  collection,
+  defaultOpen: true,
+})
+```
+
+### Configuring popup trigger behavior
+
+Use these props to fine-tune when the popup opens:
+
+- `openOnClick` to open when the input is clicked
+- `openOnChange` to control opening on input changes
+- `openOnKeyPress` to control opening on arrow key press
+- `inputBehavior` to set how typing and keyboard navigation affect
+  highlight/input
+
+```jsx
+const service = useMachine(combobox.machine, {
+  id: useId(),
+  collection,
+  openOnClick: true,
+  openOnChange: false,
+  openOnKeyPress: false,
+  inputBehavior: "autohighlight",
+})
+```
+
+### Positioning the popup
+
+Use `positioning` to control how the popup is placed.
+
+```jsx
+const service = useMachine(combobox.machine, {
+  id: useId(),
+  collection,
+  positioning: { placement: "bottom-start" },
+})
+```
+
+### Submitting forms on Enter
+
+Set `alwaysSubmitOnEnter` to `true` if you want Enter to submit the form even
+while the popup is open.
+
+```jsx
+const service = useMachine(combobox.machine, {
+  id: useId(),
+  collection,
+  alwaysSubmitOnEnter: true,
+})
+```
+
 ### Making the combobox readonly
 
-To make a combobox readonly, set the context's `readOnly` property to `true`
+Set `readOnly` to `true` to make the combobox read-only.
 
 ```jsx {2}
 const service = useMachine(combobox.machine, {
@@ -214,25 +301,64 @@ const service = useMachine(combobox.machine, {
 })
 ```
 
+### Required and invalid state
+
+Set `required` and `invalid` for form validation and UI state.
+
+```jsx
+const service = useMachine(combobox.machine, {
+  id: useId(),
+  collection,
+  required: true,
+  invalid: false,
+})
+```
+
 ### Listening for highlight changes
 
-When an option is highlighted with the pointer or keyboard, use the
-`onHighlightChange` property to listen for this change and do something with it.
+Use `onHighlightChange` to listen for highlighted option changes.
 
 ```jsx {3-6}
 const service = useMachine(combobox.machine, {
   id: useId(),
   onHighlightChange(details) {
-    // details => { value: string | null; item: CollectionItem | null }
+    // details => { highlightedValue: string | null; highlightedItem: CollectionItem | null }
     console.log(details)
+  },
+})
+```
+
+### Setting the initial highlighted option
+
+Use `defaultHighlightedValue` to set which option is highlighted when the popup
+opens.
+
+```jsx
+const service = useMachine(combobox.machine, {
+  id: useId(),
+  collection,
+  defaultHighlightedValue: "ng",
+})
+```
+
+### Listening for item selection
+
+Use `onSelect` to react to each selected item.
+
+```jsx
+const service = useMachine(combobox.machine, {
+  id: useId(),
+  collection,
+  onSelect(details) {
+    // details => { value: string[]; itemValue: string }
+    console.log(details.itemValue)
   },
 })
 ```
 
 ### Listening for value changes
 
-When an item is selected, use `onValueChange` property to listen for this change
-and do something with it.
+Use `onValueChange` to listen for selected value changes.
 
 ```jsx {3-6}
 const service = useMachine(combobox.machine, {
@@ -245,14 +371,11 @@ const service = useMachine(combobox.machine, {
 
 ### Usage within forms
 
-The combobox works when placed within a form and the form is submitted. We
-achieve this by:
+The combobox works in forms when you:
 
-- ensuring we emit the input event as the value changes.
-- adding a `name` attribute to the input so the value can be accessed in the
-  `FormData`.
+- add a `name` so the selected value is included in `FormData`.
 
-To get this feature working you need to pass a `name` option to the context.
+Set `name` to enable form submission support.
 
 ```jsx {2}
 const service = useMachine(combobox.machine, {
@@ -260,11 +383,21 @@ const service = useMachine(combobox.machine, {
 })
 ```
 
+If the input belongs to a different form element, also set `form`.
+
+```jsx
+const service = useMachine(combobox.machine, {
+  id: useId(),
+  collection,
+  name: "countries",
+  form: "checkout-form",
+})
+```
+
 ### Allowing custom values
 
-By default, the combobox only allows selecting values from the collection. To
-allow custom values, set the `allowCustomValue` property in the machine's
-context to `true`.
+By default, the combobox only allows values from the collection. Set
+`allowCustomValue` to `true` to allow custom values.
 
 ```jsx {2}
 const service = useMachine(combobox.machine, {
@@ -272,31 +405,45 @@ const service = useMachine(combobox.machine, {
 })
 ```
 
+### Customizing accessibility labels
+
+Use `translations` to customize the trigger and clear button labels.
+
+```jsx
+const service = useMachine(combobox.machine, {
+  id: useId(),
+  collection,
+  translations: {
+    triggerLabel: "Open countries",
+    clearTriggerLabel: "Clear selection",
+  },
+})
+```
+
 ## Styling guide
 
-Earlier, we mentioned that each combobox part has a `data-part` attribute added
-to them to select and style them in the DOM.
+Each combobox part includes a `data-part` attribute you can target in CSS.
 
 ### Open and closed state
 
-When the combobox is open or closed, the `data-state` attribute is added to the
-content,control, input and control parts.
+When the combobox opens or closes, `data-state` is added to content, control,
+input, and trigger parts.
 
 ```css
 [data-part="control"][data-state="open|closed"] {
-  /* styles for control open or state */
+  /* styles for open or closed control state */
 }
 
 [data-part="input"][data-state="open|closed"] {
-  /* styles for control open or state */
+  /* styles for open or closed input state */
 }
 
 [data-part="trigger"][data-state="open|closed"] {
-  /* styles for control open or state */
+  /* styles for open or closed trigger state */
 }
 
 [data-part="content"][data-state="open|closed"] {
-  /* styles for control open or state */
+  /* styles for open or closed content state */
 }
 ```
 
@@ -363,7 +510,7 @@ label, control and input parts.
 
 ### Selected State
 
-When a combobox item is selected, the `data-selected` attribute is added to the
+When a combobox item is selected, the `data-state` attribute is added to the
 item part.
 
 ```css
@@ -400,6 +547,10 @@ The combobox `api` exposes the following methods:
 ### Data Attributes
 
 <DataAttrTable name="combobox" />
+
+### CSS Variables
+
+<CssVarTable name="combobox" />
 
 ## Accessibility
 

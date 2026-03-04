@@ -4,10 +4,8 @@ description: Using the editable machine in your project.
 package: "@zag-js/editable"
 ---
 
-# Editable
-
 Editable is an input field used for editing a single line of text. It renders as
-static text and transforms into a text input field when then edit interaction is
+static text and transforms into a text input field when the edit interaction is
 triggered (click, focus, or double-click).
 
 <Resources pkg="@zag-js/editable" />
@@ -24,15 +22,13 @@ triggered (click, focus, or double-click).
 
 ## Installation
 
-To use the editable machine in your project, run the following command in your
-command line:
+Install the editable package:
 
 <CodeSnippet id="editable/installation.mdx" />
 
 ## Anatomy
 
-To set up the editable correctly, you'll need to understand its anatomy and how
-we name its parts.
+Check the editable anatomy and part names.
 
 > Each part includes a `data-part` attribute to help identify them in the DOM.
 
@@ -40,7 +36,7 @@ we name its parts.
 
 ## Usage
 
-First, import the editable package into your project
+Import the editable package:
 
 ```jsx
 import * as editable from "@zag-js/editable"
@@ -48,22 +44,18 @@ import * as editable from "@zag-js/editable"
 
 The editable package exports two key functions:
 
-- `machine` — The state machine logic for the editable widget.
-- `connect` — The function that translates the machine's state to JSX attributes
-  and event handlers.
+- `machine` - Behavior logic for the editable.
+- `connect` - Maps behavior to JSX props and event handlers.
 
-> You'll need to provide a unique `id` to the `useMachine` hook. This is used to
-> ensure that every part has a unique identifier.
+> Pass a unique `id` to `useMachine` so generated element ids stay predictable.
 
-Next, import the required hooks and functions for your framework and use the
-editable machine in your project 🔥
+Then use the framework integration helpers:
 
 <CodeSnippet id="editable/usage.mdx" />
 
 ### Setting the initial value
 
-To set the initial value of the editable, pass the `defaultValue` property to
-the machine's context.
+Set `defaultValue` to define the initial value.
 
 ```jsx {2}
 const service = useMachine(editable.machine, {
@@ -71,9 +63,35 @@ const service = useMachine(editable.machine, {
 })
 ```
 
+### Controlled value
+
+Use `value` and `onValueChange` to control the value externally.
+
+```jsx
+const service = useMachine(editable.machine, {
+  value,
+  onValueChange(details) {
+    setValue(details.value)
+  },
+})
+```
+
+### Controlled edit state
+
+Use `edit` and `onEditChange` to control whether the field is in edit mode.
+
+```jsx
+const service = useMachine(editable.machine, {
+  edit,
+  onEditChange(details) {
+    setEdit(details.edit)
+  },
+})
+```
+
 ### Listening for value changes
 
-The editable machine supports two ways of listening for value changes:
+Editable supports two ways of listening for value changes:
 
 - `onValueChange`: called when value changes.
 - `onValueCommit`: called when the value is committed.
@@ -89,6 +107,18 @@ const service = useMachine(editable.machine, {
 })
 ```
 
+### Listening for revert events
+
+Use `onValueRevert` to react when a user cancels editing.
+
+```jsx
+const service = useMachine(editable.machine, {
+  onValueRevert(details) {
+    console.log("Value reverted", details.value)
+  },
+})
+```
+
 ### Using custom controls
 
 In some cases, you might need to use custom controls to toggle the edit and read
@@ -99,8 +129,7 @@ the component.
 
 ### Auto-resizing
 
-To auto-grow the editable as the content changes, pass the `autoResize: true`
-property to the machine's context.
+Set `autoResize` to `true` to auto-grow the editable as content changes.
 
 ```jsx {2}
 const service = useMachine(editable.machine, {
@@ -110,13 +139,11 @@ const service = useMachine(editable.machine, {
 
 When using autoresize, the input and preview elements should not have any
 styles. Use `all: unset` if needed and pass any styles to the "area" element
-since its shared by the input and preview elements.
+since it's shared by the input and preview elements.
 
 ### Setting a maxWidth
 
-It is a common pattern to set a maximum of the editable as it auto-grows. To
-achieve this, set the `maxWidth` property of the machine's context to the
-desired value.
+It is common to set a max width when auto-resizing.
 
 ```jsx {2-3}
 const service = useMachine(editable.machine, {
@@ -135,8 +162,7 @@ The editable supports two modes of activating the "edit" state:
 - when the preview part is focused (with pointer or keyboard).
 - when the preview part is double-clicked.
 
-To change the mode to "double-click", set the `activationMode: 'dblclick'`
-property in the machine's context.
+Set `activationMode` to `"dblclick"` to only enter edit mode on double click.
 
 ```jsx {2}
 const service = useMachine(editable.machine, {
@@ -144,23 +170,74 @@ const service = useMachine(editable.machine, {
 })
 ```
 
+### Customizing submit behavior
+
+Use `submitMode` to control when edits are committed.
+
+```jsx
+const service = useMachine(editable.machine, {
+  submitMode: "enter", // "enter" | "blur" | "both" | "none"
+})
+```
+
 ### Usage with Textarea
 
-The editable machine supports using a `textarea` instead of an `input` field.
-When a textarea is used, the editable will commit the value on `Cmd + Enter` or
+Editable supports using a `textarea` instead of an `input` field. When a
+textarea is used, the editable will commit the value on `Cmd + Enter` or
 `Ctrl + Enter`.
 
-> Use the `api.inputProps` to spread the input props to the textarea element.
-> You might need to cast the input props to the correct type.
+> Use `api.getInputProps()` to spread input props to the textarea. You might
+> need to cast the input props to the correct type.
 
 ```tsx {2}
-<textarea {...(api.inputProps as HTMLTextareaProps<HTMLTextareaElement>)} />
+<textarea
+  {...(api.getInputProps() as HTMLTextareaProps<HTMLTextareaElement>)}
+/>
+```
+
+### Customizing placeholder text
+
+Set `placeholder` as a string or per-mode object.
+
+```jsx
+const service = useMachine(editable.machine, {
+  placeholder: {
+    preview: "Click to edit",
+    edit: "Type a value",
+  },
+})
+```
+
+### Customizing accessibility labels
+
+Use `translations` to customize control labels.
+
+```jsx
+const service = useMachine(editable.machine, {
+  translations: {
+    edit: "Edit value",
+    submit: "Save",
+    cancel: "Cancel",
+    input: "Editable input",
+  },
+})
+```
+
+### Submitting with an external form
+
+Set `form` if the hidden input should submit with a form outside the current DOM
+subtree.
+
+```jsx
+const service = useMachine(editable.machine, {
+  name: "value",
+  form: "checkout-form",
+})
 ```
 
 ## Styling guide
 
-Earlier, we mentioned that each editable part has a `data-part` attribute added
-to them to select and style them in the DOM.
+Each part includes a `data-part` attribute you can target in CSS.
 
 ### Focused state
 

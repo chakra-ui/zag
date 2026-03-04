@@ -15,6 +15,7 @@ test.describe("menu", () => {
 
   test("on arrow up and down, change highlighted item", async () => {
     await I.clickTrigger()
+    await I.seeDropdownIsFocused()
     await I.pressKey("ArrowDown", 2)
     await I.seeItemIsHighlighted("Duplicate")
     await I.pressKey("ArrowUp")
@@ -23,6 +24,7 @@ test.describe("menu", () => {
 
   test("on typeahead, highlight matching item", async () => {
     await I.clickTrigger()
+    await I.seeDropdownIsFocused()
     await I.type("E")
     await I.seeItemIsHighlighted("Edit")
     await I.type("E")
@@ -54,9 +56,9 @@ test.describe("menu", () => {
     await I.dontSeeDropdown()
   })
 
-  // flaky
-  test.skip("on click outside, close menu", async () => {
+  test("on click outside, close menu", async () => {
     await I.clickTrigger()
+    await I.seeDropdownIsFocused()
     await I.clickOutside()
     await I.dontSeeDropdown()
   })

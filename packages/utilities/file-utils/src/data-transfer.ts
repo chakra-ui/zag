@@ -25,6 +25,12 @@ export const getFileEntries = (items: DataTransferItemList, traverseDirectories:
         if (isDirectoryEntry(entry) && traverseDirectories) {
           return getDirectoryFiles(entry.createReader(), `${entry.name}`)
         }
+
+        if (isFileEntry(entry) && typeof item.getAsFile === "function") {
+          const file = item.getAsFile()
+          return Promise.resolve(file ? addRelativePath(file, "") : null)
+        }
+
         if (isFileEntry(entry)) {
           return new Promise<File | null>((resolve) => {
             entry.file((file) => {

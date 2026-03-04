@@ -1,6 +1,6 @@
 {
   "name": "@zag-js/number-input",
-  "version": "1.12.2",
+  "version": "1.35.3",
   "description": "Core logic for the number-input widget implemented as a state machine",
   "keywords": [
     "js",
@@ -26,7 +26,7 @@
     "url": "https://github.com/chakra-ui/zag/issues"
   },
   "dependencies": {
-    "@internationalized/number": "3.6.1",
+    "@internationalized/number": "3.6.5",
     "@zag-js/anatomy": "workspace:*",
     "@zag-js/core": "workspace:*",
     "@zag-js/dom-query": "workspace:*",
@@ -43,6 +43,6 @@
     "prepack": "clean-package",
     "postpack": "clean-package restore"
   },
-  "clean-package": "../../../clean-package.config.json",
+  "clean-package": "./clean-package.config.json",
   "main": "src/index.ts"
 }

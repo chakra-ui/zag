@@ -65,9 +65,9 @@ export interface ExpandCollapseDetails {
 
 export type ElementIds = Partial<{
   root: string
-  resizeTrigger(id: string): string
-  label(id: string): string
-  panel(id: string | number): string
+  resizeTrigger: (id: string) => string
+  label: (id: string) => string
+  panel: (id: string | number) => string
 }>
 
 export interface SplitterProps extends DirectionProperty, CommonProperties {
@@ -108,7 +108,7 @@ export interface SplitterProps extends DirectionProperty, CommonProperties {
   /**
    * The number of pixels to resize the panel by when the keyboard is used.
    */
-  keyboardResizeBy?: number | null
+  keyboardResizeBy?: number | null | undefined
   /**
    * The nonce for the injected splitter cursor stylesheet.
    */
@@ -123,7 +123,7 @@ export interface SplitterProps extends DirectionProperty, CommonProperties {
   onExpand?: ((details: ExpandCollapseDetails) => void) | undefined
 }
 
-export type PropWithDefault = "orientation" | "panels"
+type PropsWithDefault = "orientation" | "panels"
 
 export interface DragState {
   resizeTriggerId: string
@@ -151,7 +151,7 @@ interface Refs {
 export interface SplitterSchema {
   state: "idle" | "hover:temp" | "hover" | "dragging" | "focused"
   tag: "focus"
-  props: RequiredBy<SplitterProps, PropWithDefault>
+  props: RequiredBy<SplitterProps, PropsWithDefault>
   context: Context
   computed: {
     horizontal: boolean
@@ -180,6 +180,12 @@ export interface ResizeTriggerProps {
   disabled?: boolean | undefined
 }
 
+export interface ResizeTriggerState {
+  dragging: boolean
+  focused: boolean
+  disabled: boolean
+}
+
 export interface PanelItem {
   type: "panel"
   id: PanelId
@@ -198,51 +204,68 @@ export interface SplitterApi<T extends PropTypes = PropTypes> {
    */
   dragging: boolean
   /**
-   * The current sizes of the panels.
+   * The orientation of the splitter.
    */
-  getSizes(): number[]
+  orientation: "horizontal" | "vertical"
   /**
-   * Set the sizes of the panels.
+   * Returns the current sizes of the panels.
    */
-  setSizes(size: number[]): void
+  getSizes: () => number[]
   /**
-   * Get the items of the splitter.
+   * Sets the sizes of the panels.
    */
-  getItems(): SplitterItem[]
+  setSizes: (size: number[]) => void
   /**
-   * Get the size of a panel.
+   * Returns the items of the splitter.
    */
-  getPanelSize(id: PanelId): number
+  getItems: () => SplitterItem[]
   /**
-   * Whether a panel is collapsed.
+   * Returns the panels of the splitter.
    */
-  isPanelCollapsed(id: PanelId): boolean
+  getPanels: () => PanelData[]
   /**
-   * Whether a panel is expanded.
+   * Returns the panel with the specified id.
    */
-  isPanelExpanded(id: PanelId): boolean
+  getPanelById: (id: PanelId) => PanelData
   /**
-   * Collapse a panel.
+   * Returns the size of the specified panel.
    */
-  collapsePanel(id: PanelId): void
+  getPanelSize: (id: PanelId) => number
   /**
-   * Expand a panel.
+   * Returns whether the specified panel is collapsed.
    */
-  expandPanel(id: PanelId, minSize?: number): void
+  isPanelCollapsed: (id: PanelId) => boolean
   /**
-   * Resize a panel.
+   * Returns whether the specified panel is expanded.
    */
-  resizePanel(id: PanelId, unsafePanelSize: number): void
+  isPanelExpanded: (id: PanelId) => boolean
   /**
-   * Get the layout of the splitter.
+   * Collapses the specified panel.
    */
-  getLayout(): string
+  collapsePanel: (id: PanelId) => void
   /**
-   * Reset the splitter to its initial state.
+   * Expands the specified panel.
    */
-  resetSizes(): void
+  expandPanel: (id: PanelId, minSize?: number) => void
+  /**
+   * Resizes the specified panel.
+   */
+  resizePanel: (id: PanelId, unsafePanelSize: number) => void
+  /**
+   * Returns the layout of the splitter.
+   */
+  getLayout: () => string
+  /**
+   * Resets the splitter to its initial state.
+   */
+  resetSizes: VoidFunction
+  /**
+   * Returns the state of the resize trigger.
+   */
+  getResizeTriggerState: (props: ResizeTriggerProps) => ResizeTriggerState
 
-  getRootProps(): T["element"]
-  getPanelProps(props: PanelProps): T["element"]
-  getResizeTriggerProps(props: ResizeTriggerProps): T["element"]
+  getRootProps: () => T["element"]
+  getPanelProps: (props: PanelProps) => T["element"]
+  getResizeTriggerProps: (props: ResizeTriggerProps) => T["element"]
+  getResizeTriggerIndicator: (props: ResizeTriggerProps) => T["element"]
 }

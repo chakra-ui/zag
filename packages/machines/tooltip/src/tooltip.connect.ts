@@ -1,5 +1,5 @@
 import type { Service } from "@zag-js/core"
-import { dataAttr } from "@zag-js/dom-query"
+import { dataAttr, isLeftClick } from "@zag-js/dom-query"
 import { isFocusVisible } from "@zag-js/focus-visible"
 import { getPlacementStyles } from "@zag-js/popper"
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
@@ -65,19 +65,26 @@ export function connect<P extends PropTypes>(
         onBlur(event) {
           if (event.defaultPrevented) return
           if (disabled) return
-          if (id === store.id) {
+          if (id === store.get("id")) {
             send({ type: "close", src: "trigger.blur" })
           }
         },
         onPointerDown(event) {
           if (event.defaultPrevented) return
           if (disabled) return
+          if (!isLeftClick(event)) return
           if (!prop("closeOnPointerDown")) return
-          if (id === store.id) {
+          if (id === store.get("id")) {
             send({ type: "close", src: "trigger.pointerdown" })
           }
         },
         onPointerMove(event) {
+          if (event.defaultPrevented) return
+          if (disabled) return
+          if (event.pointerType === "touch") return
+          send({ type: "pointer.move" })
+        },
+        onPointerOver(event) {
           if (event.defaultPrevented) return
           if (disabled) return
           if (event.pointerType === "touch") return
@@ -121,11 +128,16 @@ export function connect<P extends PropTypes>(
     },
 
     getContentProps() {
+      const isCurrentTooltip = store.get("id") === id
+      const isPrevTooltip = store.get("prevId") === id
+      const instant = store.get("instant") && ((open && isCurrentTooltip) || isPrevTooltip)
+
       return normalize.element({
         ...parts.content.attrs,
         dir: prop("dir"),
         hidden: !open,
         "data-state": open ? "open" : "closed",
+        "data-instant": dataAttr(instant),
         role: hasAriaLabel ? undefined : "tooltip",
         id: hasAriaLabel ? undefined : contentId,
         "data-placement": context.get("currentPlacement"),

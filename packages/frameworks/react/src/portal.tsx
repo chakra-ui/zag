@@ -1,11 +1,13 @@
+"use client"
+
 import type { JSX, PropsWithChildren, RefObject } from "react"
 import * as React from "react"
 import { createPortal } from "react-dom"
 
 export interface PortalProps {
-  disabled?: boolean
-  container?: RefObject<HTMLElement>
-  getRootNode?: () => ShadowRoot | Document | Node
+  disabled?: boolean | undefined
+  container?: RefObject<HTMLElement> | undefined
+  getRootNode?: (() => ShadowRoot | Document | Node) | undefined
 }
 
 export const Portal = (props: PropsWithChildren<PortalProps>): JSX.Element => {

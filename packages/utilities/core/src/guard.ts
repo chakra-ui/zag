@@ -18,9 +18,13 @@ const fnToString = Function.prototype.toString
 const objectCtorString = fnToString.call(Object)
 
 export const isPlainObject = (v: any) => {
-  if (!isObjectLike(v) || baseGetTag(v) != "[object Object]") return false
+  if (!isObjectLike(v) || baseGetTag(v) != "[object Object]" || isFrameworkElement(v)) return false
   const proto = Object.getPrototypeOf(v)
   if (proto === null) return true
   const Ctor = hasProp(proto, "constructor") && proto.constructor
   return typeof Ctor == "function" && Ctor instanceof Ctor && fnToString.call(Ctor) == objectCtorString
 }
+
+const isReactElement = (x: any) => typeof x === "object" && x !== null && "$$typeof" in x && "props" in x
+const isVueElement = (x: any) => typeof x === "object" && x !== null && "__v_isVNode" in x
+const isFrameworkElement = (x: any) => isReactElement(x) || isVueElement(x)

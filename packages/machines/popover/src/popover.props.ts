@@ -17,6 +17,7 @@ export const props = createProps<PopoverProps>()([
   "onInteractOutside",
   "onOpenChange",
   "onPointerDownOutside",
+  "onRequestDismiss",
   "defaultOpen",
   "open",
   "persistentElements",

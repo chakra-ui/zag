@@ -1,0 +1,22 @@
+```svelte
+<script lang="ts">
+  import * as scrollArea from "@zag-js/scroll-area"
+  import { useMachine, normalizeProps } from "@zag-js/svelte"
+
+  const id = $props.id()
+  const service = useMachine(scrollArea.machine, { id })
+
+  const api = $derived(scrollArea.connect(service, normalizeProps))
+</script>
+
+<div {...api.getRootProps()}>
+  <div {...api.getViewportProps()}>
+    <div {...api.getContentProps()}>
+      <!-- Your scrollable content here -->
+    </div>
+  </div>
+  <div {...api.getScrollbarProps()}>
+    <div {...api.getThumbProps()} />
+  </div>
+</div>
+```

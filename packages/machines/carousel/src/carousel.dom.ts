@@ -20,9 +20,5 @@ export const syncTabIndex = (ctx: Scope) => {
   const el = getItemGroupEl(ctx)
   if (!el) return
   const tabbables = getTabbables(el)
-  if (tabbables.length > 0) {
-    el.removeAttribute("tabindex")
-  } else {
-    el.setAttribute("tabindex", "0")
-  }
+  el.setAttribute("tabindex", tabbables.length > 0 ? "-1" : "0")
 }

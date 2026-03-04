@@ -24,6 +24,7 @@ const expectToBeFocused = async (page: Page, id: string) => {
 
 const navigateToSubmenuTrigger = async (page: Page) => {
   await page.click(menu_1.trigger)
+  await expect(page.locator(menu_1.menu)).toBeFocused()
   await page.keyboard.press("ArrowDown")
   await page.keyboard.press("ArrowDown")
   await page.keyboard.press("ArrowDown")
@@ -48,13 +49,13 @@ async function expectAllMenusToBeClosed(page: Page) {
 
 test.describe("nested menu / pointer", async () => {
   test.beforeEach(async ({ page }) => {
-    await page.goto("/menu-nested")
+    await page.goto("/menu/nested")
   })
 })
 
 test.describe("nested menu / keyboard navigation", async () => {
   test.beforeEach(async ({ page }) => {
-    await page.goto("/menu-nested")
+    await page.goto("/menu/nested")
   })
 
   test("open submenu when moving focus to trigger", async ({ page }) => {
@@ -91,11 +92,12 @@ test.describe("nested menu / keyboard navigation", async () => {
 
 test.describe("nested menu / keyboard typeahead", async () => {
   test.beforeEach(async ({ page }) => {
-    await page.goto("/menu-nested")
+    await page.goto("/menu/nested")
   })
 
   test("parent menu", async ({ page }) => {
     await page.click(menu_1.trigger)
+    await expect(page.locator(menu_1.menu)).toBeFocused()
 
     await page.keyboard.type("n")
     await expectToBeFocused(page, testid("new-file"))
@@ -107,15 +109,16 @@ test.describe("nested menu / keyboard typeahead", async () => {
     await expectToBeFocused(page, testid("new-win"))
   })
 
-  test.skip("nested menu", async ({ page }) => {
+  test("nested menu", async ({ page }) => {
     await page.click(menu_1.trigger)
+    await expect(page.locator(menu_1.menu)).toBeFocused()
 
     await page.keyboard.type("m")
     await expectToBeFocused(page, testid("more-tools"))
 
     // open submenu
     await page.keyboard.press("Enter")
-    await expect(page.locator(menu_2.menu)).toBeVisible()
+    await expect(page.locator(menu_2.menu)).toBeFocused()
 
     await page.keyboard.type("s")
     await expectToBeFocused(page, testid("switch-win"))
@@ -124,18 +127,20 @@ test.describe("nested menu / keyboard typeahead", async () => {
 
 test.describe("nested menu / select item", async () => {
   test.beforeEach(async ({ page }) => {
-    await page.goto("/menu-nested")
+    await page.goto("/menu/nested")
   })
 
   test("using keyboard", async ({ page }) => {
     await navigateToSubmenuTrigger(page)
     await page.keyboard.press("Enter", { delay: 10 })
+    await expect(page.locator(menu_2.menu)).toBeFocused()
 
     // open menu 3
     await page.keyboard.press("ArrowDown")
     await page.keyboard.press("ArrowDown")
     await page.keyboard.press("ArrowDown")
     await page.keyboard.press("Enter", { delay: 10 })
+    await expect(page.locator(menu_3.menu)).toBeFocused()
 
     // select first item in menu 3
     await page.keyboard.press("Enter", { delay: 10 })
@@ -163,7 +168,7 @@ test.describe("nested menu / select item", async () => {
 
 test.describe("nested menu / pointer movement", async () => {
   test.beforeEach(async ({ page }) => {
-    await page.goto("/menu-nested")
+    await page.goto("/menu/nested")
   })
 
   test("should open submenu and not focus first item", async ({ page }) => {
@@ -203,7 +208,9 @@ test.describe("nested menu / pointer movement", async () => {
 
   test("should close open submenu when moving pointer to parent menu item", async ({ page }) => {
     await page.click(menu_1.trigger)
+    await expect(page.locator(menu_1.menu)).toBeVisible()
     await page.hover(menu_2.trigger)
+    await expect(page.locator(menu_2.menu)).toBeVisible()
 
     const menuitem = testid("new-tab")
 

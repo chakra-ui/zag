@@ -24,7 +24,7 @@ const match = (valueText: string, query: string) => {
 export interface SearchableItem {
   id: string
   textContent: string | null
-  dataset?: any
+  dataset?: any | undefined
 }
 
 export function getByText<T extends SearchableItem>(

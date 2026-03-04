@@ -2,8 +2,8 @@ import { createNormalizer } from "@zag-js/types"
 import type * as Vue from "vue"
 
 type ReservedProps = {
-  key?: string | number | symbol
-  ref?: Vue.VNodeRef
+  key?: string | number | symbol | undefined
+  ref?: Vue.VNodeRef | undefined
 }
 
 type Attrs<T> = T & ReservedProps

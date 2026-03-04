@@ -96,22 +96,52 @@ export function constrainStart(
   max?: DateValue,
 ): DateValue {
   if (min && date.compare(min) >= 0) {
+    // Ensure consistent date types by converting min to CalendarDate for alignment operations
+    // This prevents time-component comparison issues in alignment calculations
     aligned = maxDate(aligned, alignStart(toCalendarDate(min), duration, locale))!
   }
 
   if (max && date.compare(max) <= 0) {
+    // Ensure consistent date types by converting max to CalendarDate for alignment operations
+    // This prevents time-component comparison issues in alignment calculations
     aligned = minDate(aligned, alignEnd(toCalendarDate(max), duration, locale))!
   }
 
   return aligned
 }
 
-export function constrainValue(date: DateValue, minValue?: DateValue, maxValue?: DateValue): DateValue {
-  if (minValue) {
-    date = maxDate(date, toCalendarDate(minValue))!
+export function constrainValue<T extends DateValue>(date: T, minValue?: DateValue, maxValue?: DateValue): T {
+  // Convert to CalendarDate for consistent date-only comparison
+  const dateOnly = toCalendarDate(date)
+  const minOnly = minValue ? toCalendarDate(minValue) : undefined
+  const maxOnly = maxValue ? toCalendarDate(maxValue) : undefined
+
+  // Determine if date needs adjustment
+  let constrainedDateOnly = dateOnly
+
+  if (minOnly) {
+    constrainedDateOnly = maxDate(constrainedDateOnly, minOnly)!
   }
-  if (maxValue) {
-    date = minDate(date, toCalendarDate(maxValue))!
+
+  if (maxOnly) {
+    constrainedDateOnly = minDate(constrainedDateOnly, maxOnly)!
   }
-  return date
+
+  // If date didn't change, return original to preserve time components
+  if (constrainedDateOnly.compare(dateOnly) === 0) {
+    return date
+  }
+
+  // Date changed - apply the date portion while preserving time if present
+  // Check if original date has time components (CalendarDateTime or ZonedDateTime)
+  if ("hour" in date) {
+    return date.set({
+      year: constrainedDateOnly.year,
+      month: constrainedDateOnly.month,
+      day: constrainedDateOnly.day,
+    }) as T
+  }
+
+  // Original was CalendarDate, return the constrained CalendarDate
+  return constrainedDateOnly as T
 }

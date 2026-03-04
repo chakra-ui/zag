@@ -3,6 +3,7 @@ import { noop } from "./shared"
 export function setAttribute(el: Element, attr: string, v: string) {
   const prev = el.getAttribute(attr)
   const exists = prev != null
+  if (prev === v) return noop
   el.setAttribute(attr, v)
   return () => {
     if (!exists) {
@@ -16,6 +17,7 @@ export function setAttribute(el: Element, attr: string, v: string) {
 export function setProperty<T extends Element, K extends keyof T & string>(el: T, prop: K, v: T[K]) {
   const exists = prop in el
   const prev = el[prop]
+  if (prev === v) return noop
   el[prop] = v
   return () => {
     if (!exists) {
@@ -32,6 +34,7 @@ export function setStyle(el: HTMLElement | null | undefined, style: Partial<CSSS
     acc[key] = el.style.getPropertyValue(key)
     return acc
   }, {})
+  if (isEqual(prev, style)) return noop
   Object.assign(el.style, style)
   return () => {
     Object.assign(el.style, prev)
@@ -44,6 +47,7 @@ export function setStyle(el: HTMLElement | null | undefined, style: Partial<CSSS
 export function setStyleProperty(el: HTMLElement | null | undefined, prop: string, value: string) {
   if (!el) return noop
   const prev = el.style.getPropertyValue(prop)
+  if (prev === value) return noop
   el.style.setProperty(prop, value)
   return () => {
     el.style.setProperty(prop, prev)
@@ -51,4 +55,8 @@ export function setStyleProperty(el: HTMLElement | null | undefined, prop: strin
       el.removeAttribute("style")
     }
   }
+}
+
+function isEqual(a: Record<string, any>, b: Record<string, any>): boolean {
+  return Object.keys(a).every((key) => a[key] === b[key])
 }

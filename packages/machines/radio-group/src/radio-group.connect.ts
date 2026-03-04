@@ -1,6 +1,7 @@
-import { dataAttr, isSafari, visuallyHiddenStyle } from "@zag-js/dom-query"
+import { dataAttr, isLeftClick, isSafari, visuallyHiddenStyle } from "@zag-js/dom-query"
 import { isFocusVisible } from "@zag-js/focus-visible"
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
+import { toPx } from "@zag-js/utils"
 import { parts } from "./radio-group.anatomy"
 import * as dom from "./radio-group.dom"
 import type { ItemProps, ItemState, RadioGroupApi, RadioGroupService } from "./radio-group.types"
@@ -12,18 +13,17 @@ export function connect<T extends PropTypes>(
   const { context, send, computed, prop, scope } = service
 
   const groupDisabled = computed("isDisabled")
+  const groupInvalid = prop("invalid")
   const readOnly = prop("readOnly")
 
   function getItemState(props: ItemProps): ItemState {
-    const focused = context.get("focusedValue") === props.value
-    const focusVisible = focused && isFocusVisible()
     return {
       value: props.value,
-      invalid: !!props.invalid,
+      invalid: !!props.invalid || !!groupInvalid,
       disabled: !!props.disabled || groupDisabled,
       checked: context.get("value") === props.value,
-      focused,
-      focusVisible,
+      focused: context.get("focusedValue") === props.value,
+      focusVisible: context.get("focusVisibleValue") === props.value,
       hovered: context.get("hoveredValue") === props.value,
       active: context.get("activeValue") === props.value,
     }
@@ -65,8 +65,13 @@ export function connect<T extends PropTypes>(
         role: "radiogroup",
         id: dom.getRootId(scope),
         "aria-labelledby": dom.getLabelId(scope),
+        "aria-required": prop("required") || undefined,
+        "aria-disabled": groupDisabled || undefined,
+        "aria-readonly": readOnly || undefined,
         "data-orientation": prop("orientation"),
         "data-disabled": dataAttr(groupDisabled),
+        "data-invalid": dataAttr(groupInvalid),
+        "data-required": dataAttr(prop("required")),
         "aria-orientation": prop("orientation"),
         dir: prop("dir"),
         style: {
@@ -81,6 +86,8 @@ export function connect<T extends PropTypes>(
         dir: prop("dir"),
         "data-orientation": prop("orientation"),
         "data-disabled": dataAttr(groupDisabled),
+        "data-invalid": dataAttr(groupInvalid),
+        "data-required": dataAttr(prop("required")),
         id: dom.getLabelId(scope),
         onClick: focus,
       })
@@ -108,6 +115,7 @@ export function connect<T extends PropTypes>(
         },
         onPointerDown(event) {
           if (itemState.disabled) return
+          if (!isLeftClick(event)) return
           // On pointerdown, the input blurs and returns focus to the `body`,
           // we need to prevent this.
           if (itemState.focused && event.pointerType === "mouse") {
@@ -159,6 +167,8 @@ export function connect<T extends PropTypes>(
         name: prop("name") || prop("id"),
         form: prop("form"),
         value: props.value,
+        required: prop("required"),
+        "aria-invalid": itemState.invalid || undefined,
         onClick(event) {
           if (readOnly) {
             event.preventDefault()
@@ -170,10 +180,11 @@ export function connect<T extends PropTypes>(
           }
         },
         onBlur() {
-          send({ type: "SET_FOCUSED", value: null, focused: false })
+          send({ type: "SET_FOCUSED", value: null, focused: false, focusVisible: false })
         },
         onFocus() {
-          send({ type: "SET_FOCUSED", value: props.value, focused: true })
+          const focusVisible = isFocusVisible()
+          send({ type: "SET_FOCUSED", value: props.value, focused: true, focusVisible })
         },
         onKeyDown(event) {
           if (event.defaultPrevented) return
@@ -187,7 +198,7 @@ export function connect<T extends PropTypes>(
             send({ type: "SET_ACTIVE", value: null })
           }
         },
-        disabled: itemState.disabled,
+        disabled: itemState.disabled || readOnly,
         defaultChecked: itemState.checked,
         style: visuallyHiddenStyle,
       })
@@ -195,23 +206,24 @@ export function connect<T extends PropTypes>(
 
     getIndicatorProps() {
       const rect = context.get("indicatorRect")
+      const rectIsEmpty = rect == null || (rect.width === 0 && rect.height === 0 && rect.x === 0 && rect.y === 0)
       return normalize.element({
         id: dom.getIndicatorId(scope),
         ...parts.indicator.attrs,
         dir: prop("dir"),
-        hidden: context.get("value") == null,
+        hidden: context.get("value") == null || rectIsEmpty,
         "data-disabled": dataAttr(groupDisabled),
         "data-orientation": prop("orientation"),
         style: {
           "--transition-property": "left, top, width, height",
-          "--left": rect?.left,
-          "--top": rect?.top,
-          "--width": rect?.width,
-          "--height": rect?.height,
+          "--left": toPx(rect?.x),
+          "--top": toPx(rect?.y),
+          "--width": toPx(rect?.width),
+          "--height": toPx(rect?.height),
           position: "absolute",
           willChange: "var(--transition-property)",
           transitionProperty: "var(--transition-property)",
-          transitionDuration: context.get("canIndicatorTransition") ? "var(--transition-duration, 150ms)" : "0ms",
+          transitionDuration: "var(--transition-duration, 150ms)",
           transitionTimingFunction: "var(--transition-timing-function)",
           [prop("orientation") === "horizontal" ? "left" : "top"]:
             prop("orientation") === "horizontal" ? "var(--left)" : "var(--top)",

@@ -19,6 +19,7 @@ export const props = createProps<ColorPickerProps>()([
   "id",
   "ids",
   "initialFocusEl",
+  "inline",
   "name",
   "positioning",
   "onFocusOutside",

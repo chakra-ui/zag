@@ -1,0 +1,41 @@
+```tsx
+import * as asyncList from "@zag-js/async-list"
+import { useMachine, normalizeProps } from "@zag-js/react"
+
+function AsyncList() {
+  const service = useMachine(asyncList.machine, {
+    async load({ signal }) {
+      const res = await fetch(`/api/items`, { signal })
+      const json = await res.json()
+      return {
+        items: json.results,
+        cursor: json.next,
+      }
+    },
+  })
+
+  const api = asyncList.connect(service, normalizeProps)
+
+  return (
+    <div>
+      <div>
+        <pre>{JSON.stringify(api.items, null, 2)}</pre>
+        <input
+          type="text"
+          onChange={(e) => api.setFilterText(e.target.value)}
+        />
+      </div>
+      <div>
+        {api.loading && <p>Loading...</p>}
+        <button onClick={() => api.reload()}>Reload</button>
+        <button onClick={() => api.loadMore()}>Load More</button>
+        <button
+          onClick={() => api.sort({ column: "name", direction: "ascending" })}
+        >
+          Sort by name
+        </button>
+      </div>
+    </div>
+  )
+}
+```

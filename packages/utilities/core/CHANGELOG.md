@@ -1,5 +1,159 @@
 # @zag-js/utils
 
+## 1.35.3
+
+## 1.35.2
+
+### Patch Changes
+
+- [`01840ee`](https://github.com/chakra-ui/zag/commit/01840ee6f9672bedc784a2c434b84e8741e2dc25) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix CJS build by configuring `esbuild-plugin-file-path-extensions`
+  to use `.js` extension for CJS output instead of `.cjs`, matching the actual output filenames from tsup.
+
+## 1.35.1
+
+## 1.35.0
+
+## 1.34.1
+
+## 1.34.0
+
+## 1.33.1
+
+## 1.33.0
+
+## 1.32.0
+
+## 1.31.1
+
+## 1.31.0
+
+## 1.30.0
+
+## 1.29.1
+
+## 1.29.0
+
+## 1.28.0
+
+## 1.27.1
+
+## 1.27.0
+
+### Patch Changes
+
+- [#2814](https://github.com/chakra-ui/zag/pull/2814)
+  [`920e727`](https://github.com/chakra-ui/zag/commit/920e727f73940aed3c6d2b886c64200a4a5702d0) Thanks
+  [@Hugos68](https://github.com/Hugos68)! - fix: support `Symbol` keys in `splitProps`
+
+## 1.26.5
+
+## 1.26.4
+
+## 1.26.3
+
+## 1.26.2
+
+## 1.26.1
+
+## 1.26.0
+
+## 1.25.0
+
+## 1.24.2
+
+## 1.24.1
+
+## 1.24.0
+
+## 1.23.0
+
+## 1.22.1
+
+## 1.22.0
+
+## 1.21.9
+
+## 1.21.8
+
+## 1.21.7
+
+## 1.21.6
+
+## 1.21.5
+
+## 1.21.4
+
+## 1.21.3
+
+## 1.21.2
+
+## 1.21.1
+
+## 1.21.0
+
+## 1.20.1
+
+## 1.20.0
+
+## 1.19.0
+
+## 1.18.5
+
+## 1.18.4
+
+## 1.18.3
+
+## 1.18.2
+
+### Patch Changes
+
+- [`11843e6`](https://github.com/chakra-ui/zag/commit/11843e6adf62b906006890c8003b38da2850c8ee) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix issue where toast title or description could not accept React
+  or Vue elements.
+
+## 1.18.1
+
+## 1.18.0
+
+## 1.17.4
+
+## 1.17.3
+
+## 1.17.2
+
+## 1.17.1
+
+## 1.17.0
+
+## 1.16.0
+
+## 1.15.7
+
+## 1.15.6
+
+## 1.15.5
+
+## 1.15.4
+
+## 1.15.3
+
+## 1.15.2
+
+## 1.15.1
+
+## 1.15.0
+
+## 1.14.0
+
+## 1.13.1
+
+## 1.13.0
+
+## 1.12.4
+
+## 1.12.3
+
 ## 1.12.2
 
 ## 1.12.1

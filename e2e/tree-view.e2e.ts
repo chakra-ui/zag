@@ -192,3 +192,18 @@ test.describe("tree view / multiple selection", () => {
     await I.seeBranchIsExpanded(["node_modules", "src"])
   })
 })
+
+test.describe("tree view / expand all + collapse all", () => {
+  test.beforeEach(async ({ page }) => {
+    I = new TreeViewModel(page)
+    await I.goto()
+  })
+
+  test("expand all button", async () => {
+    await I.clickButton("Expand all")
+    await I.seeAllBranchesAreExpanded()
+
+    await I.clickButton("Collapse all")
+    await I.seeAllBranchesAreCollapsed()
+  })
+})

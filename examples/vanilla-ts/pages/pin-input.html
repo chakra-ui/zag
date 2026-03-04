@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Vite + TS</title>
+  </head>
+  <body style="padding: 40px">
+    <h1>Pin Input</h1>
+
+    <div class="pin-input">
+      <label class="pin-input-label">Enter verification code</label>
+      <div class="pin-input-control">
+        <input class="pin-input-field" type="text" maxlength="1" />
+        <input class="pin-input-field" type="text" maxlength="1" />
+        <input class="pin-input-field" type="text" maxlength="1" />
+        <input class="pin-input-field" type="text" maxlength="1" />
+        <input class="pin-input-field" type="text" maxlength="1" />
+        <input class="pin-input-field" type="text" maxlength="1" />
+      </div>
+      <input class="pin-input-hidden" type="hidden" name="pin" />
+    </div>
+
+    <script type="module" src="./pin-input.ts"></script>
+  </body>
+</html>

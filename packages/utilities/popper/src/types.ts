@@ -32,7 +32,7 @@ export interface PositioningOptions {
   /**
    * The offset of the floating element
    */
-  offset?: { mainAxis?: number; crossAxis?: number } | undefined
+  offset?: { mainAxis?: number | undefined; crossAxis?: number | undefined } | undefined
   /**
    * The main axis offset or gap between the reference and floating elements
    */
@@ -72,9 +72,20 @@ export interface PositioningOptions {
    */
   fitViewport?: boolean | undefined
   /**
-   * The overflow boundary of the reference element
+   * Whether to use the size middleware from Floating UI.
+   * It computes and sets CSS variables (`--reference-width`, `--reference-height`, `--available-width`, `--available-height`) used by `sameWidth` and `fitViewport`.
+   *
+   * Disabling it improves scroll performance with heavy content by avoiding layout thrashing on each update.
+   * Only applies when both `sameWidth` and `fitViewport` are false — the middleware is always used when either is enabled.
+   * @default true
    */
-  boundary?: (() => Boundary) | undefined
+  sizeMiddleware?: boolean | undefined
+  /**
+   * The overflow boundary of the reference element
+   * Accepts a function returning a Boundary, a Boundary directly,
+   * or the shorthand string 'clipping-ancestors' which maps to Floating UI's 'clippingAncestors'.
+   */
+  boundary?: (() => Boundary) | Boundary | "clipping-ancestors" | undefined
   /**
    * Options to activate auto-update listeners
    */
@@ -88,14 +99,22 @@ export interface PositioningOptions {
    */
   onPositioned?: ((data: { placed: boolean }) => void) | undefined
   /**
+   * Function that returns the anchor element.
+   * Useful when you want to use a different element as the anchor.
+   */
+  getAnchorElement?: (() => HTMLElement | VirtualElement | null) | undefined
+  /**
    *  Function that returns the anchor rect
+   * @deprecated Use `getAnchorElement` instead
    */
   getAnchorRect?: ((element: HTMLElement | VirtualElement | null) => AnchorRect | null) | undefined
   /**
    * A callback that will be called when the popover needs to calculate its
    * position.
    */
-  updatePosition?: ((data: { updatePosition: () => Promise<void> }) => void | Promise<void>) | undefined
+  updatePosition?:
+    | ((data: { updatePosition: () => Promise<void>; floatingElement: HTMLElement | null }) => void | Promise<void>)
+    | undefined
 }
 
 export type { AutoUpdateOptions, Boundary, ComputePositionReturn, Placement }

@@ -1,0 +1,24 @@
+```jsx {1,4-8}
+import { createSignal } from "solid-js"
+
+export function NavigationMenu() {
+  const [value, setValue] = createSignal("")
+
+  const service = useMachine(navigationMenu.machine, {
+    id: createUniqueId(),
+    value: value(),
+    onValueChange: (details) => setValue(details.value),
+  })
+
+  const api = createMemo(() => navigationMenu.connect(service, normalizeProps))
+
+  return (
+    <div>
+      <button onClick={() => setValue("products")}>Open Products</button>
+      <button onClick={() => setValue("")}>Close All</button>
+
+      <nav {...api().getRootProps()}>{/* ... navigation items ... */}</nav>
+    </div>
+  )
+}
+```

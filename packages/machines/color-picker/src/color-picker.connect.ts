@@ -30,6 +30,9 @@ export function connect<T extends PropTypes>(
   const valueAsString = computed("valueAsString")
 
   const disabled = computed("disabled")
+  const readOnly = !!prop("readOnly")
+  const invalid = !!prop("invalid")
+  const required = !!prop("required")
   const interactive = computed("interactive")
 
   const dragging = state.hasTag("dragging")
@@ -65,7 +68,9 @@ export function connect<T extends PropTypes>(
     open,
     valueAsString,
     value,
+    inline: !!prop("inline"),
     setOpen(nextOpen) {
+      if (prop("inline")) return
       const open = state.hasTag("open")
       if (open === nextOpen) return
       send({ type: nextOpen ? "OPEN" : "CLOSE" })
@@ -100,8 +105,8 @@ export function connect<T extends PropTypes>(
         dir: prop("dir"),
         id: dom.getRootId(scope),
         "data-disabled": dataAttr(disabled),
-        "data-readonly": dataAttr(prop("readOnly")),
-        "data-invalid": dataAttr(prop("invalid")),
+        "data-readonly": dataAttr(readOnly),
+        "data-invalid": dataAttr(invalid),
         style: {
           "--value": value.toString("css"),
         },
@@ -115,8 +120,9 @@ export function connect<T extends PropTypes>(
         id: dom.getLabelId(scope),
         htmlFor: dom.getHiddenInputId(scope),
         "data-disabled": dataAttr(disabled),
-        "data-readonly": dataAttr(prop("readOnly")),
-        "data-invalid": dataAttr(prop("invalid")),
+        "data-readonly": dataAttr(readOnly),
+        "data-invalid": dataAttr(invalid),
+        "data-required": dataAttr(required),
         "data-focus": dataAttr(focused),
         onClick(event) {
           event.preventDefault()
@@ -132,8 +138,8 @@ export function connect<T extends PropTypes>(
         id: dom.getControlId(scope),
         dir: prop("dir"),
         "data-disabled": dataAttr(disabled),
-        "data-readonly": dataAttr(prop("readOnly")),
-        "data-invalid": dataAttr(prop("invalid")),
+        "data-readonly": dataAttr(readOnly),
+        "data-invalid": dataAttr(invalid),
         "data-state": open ? "open" : "closed",
         "data-focus": dataAttr(focused),
       })
@@ -148,11 +154,12 @@ export function connect<T extends PropTypes>(
         "aria-label": `select color. current color is ${valueAsString}`,
         "aria-controls": dom.getContentId(scope),
         "aria-labelledby": dom.getLabelId(scope),
+        "aria-haspopup": prop("inline") ? undefined : "dialog",
         "data-disabled": dataAttr(disabled),
-        "data-readonly": dataAttr(prop("readOnly")),
-        "data-invalid": dataAttr(prop("invalid")),
+        "data-readonly": dataAttr(readOnly),
+        "data-invalid": dataAttr(invalid),
         "data-placement": currentPlacement,
-        "aria-expanded": dataAttr(open),
+        "aria-expanded": open,
         "data-state": open ? "open" : "closed",
         "data-focus": dataAttr(focused),
         type: "button",
@@ -184,6 +191,7 @@ export function connect<T extends PropTypes>(
         ...parts.content.attrs,
         id: dom.getContentId(scope),
         dir: prop("dir"),
+        role: prop("inline") ? undefined : "dialog",
         tabIndex: -1,
         "data-placement": currentPlacement,
         "data-state": open ? "open" : "closed",
@@ -212,9 +220,9 @@ export function connect<T extends PropTypes>(
         ...parts.area.attrs,
         id: dom.getAreaId(scope),
         role: "group",
-        "data-invalid": dataAttr(prop("invalid")),
+        "data-invalid": dataAttr(invalid),
         "data-disabled": dataAttr(disabled),
-        "data-readonly": dataAttr(prop("readOnly")),
+        "data-readonly": dataAttr(readOnly),
         onPointerDown(event) {
           if (!interactive) return
           if (!isLeftClick(event)) return
@@ -246,9 +254,9 @@ export function connect<T extends PropTypes>(
       return normalize.element({
         ...parts.areaBackground.attrs,
         id: dom.getAreaGradientId(scope),
-        "data-invalid": dataAttr(prop("invalid")),
+        "data-invalid": dataAttr(invalid),
         "data-disabled": dataAttr(disabled),
-        "data-readonly": dataAttr(prop("readOnly")),
+        "data-readonly": dataAttr(readOnly),
         style: {
           position: "relative",
           touchAction: "none",
@@ -262,9 +270,10 @@ export function connect<T extends PropTypes>(
       const { xChannel, yChannel } = getAreaChannels(props)
       const channel = { xChannel, yChannel }
 
-      const dir = prop("dir") === "rtl" ? "right" : "left"
       const xPercent = areaValue.getChannelValuePercent(xChannel)
       const yPercent = 1 - areaValue.getChannelValuePercent(yChannel)
+      const isRtl = prop("dir") === "rtl"
+      const finalXPercent = isRtl ? 1 - xPercent : xPercent
 
       const xValue = areaValue.getChannelValue(xChannel)
       const yValue = areaValue.getChannelValue(yChannel)
@@ -277,8 +286,8 @@ export function connect<T extends PropTypes>(
         dir: prop("dir"),
         tabIndex: disabled ? undefined : 0,
         "data-disabled": dataAttr(disabled),
-        "data-invalid": dataAttr(prop("invalid")),
-        "data-readonly": dataAttr(prop("readOnly")),
+        "data-invalid": dataAttr(invalid),
+        "data-readonly": dataAttr(readOnly),
         role: "slider",
         "aria-valuemin": 0,
         "aria-valuemax": 100,
@@ -288,7 +297,7 @@ export function connect<T extends PropTypes>(
         "aria-valuetext": `${xChannel} ${xValue}, ${yChannel} ${yValue}`,
         style: {
           position: "absolute",
-          [dir]: `${xPercent * 100}%`,
+          left: `${finalXPercent * 100}%`,
           top: `${yPercent * 100}%`,
           touchAction: "none",
           forcedColorAdjust: "none",
@@ -443,11 +452,13 @@ export function connect<T extends PropTypes>(
       const channelValue = normalizedValue.getChannelValue(channel)
 
       const offset = (channelValue - channelRange.minValue) / (channelRange.maxValue - channelRange.minValue)
-      const dir = prop("dir") === "rtl" ? "right" : "left"
+      const isRtl = prop("dir") === "rtl"
+      const finalOffset = orientation === "horizontal" && isRtl ? 1 - offset : offset
+
       const placementStyles =
         orientation === "horizontal"
-          ? { [dir]: `${offset * 100}%`, top: "50%" }
-          : { top: `${offset * 100}%`, [dir]: "50%" }
+          ? { left: `${finalOffset * 100}%`, top: "50%" }
+          : { top: `${offset * 100}%`, left: "50%" }
 
       return normalize.element({
         ...parts.channelSliderThumb.attrs,
@@ -541,9 +552,9 @@ export function connect<T extends PropTypes>(
         autoComplete: "off",
         disabled: disabled,
         "data-disabled": dataAttr(disabled),
-        "data-invalid": dataAttr(prop("invalid")),
-        "data-readonly": dataAttr(prop("readOnly")),
-        readOnly: prop("readOnly"),
+        "data-invalid": dataAttr(invalid),
+        "data-readonly": dataAttr(readOnly),
+        readOnly: readOnly,
         defaultValue: getChannelValue(value, channel),
         min: channelRange?.minValue,
         max: channelRange?.maxValue,
@@ -588,8 +599,8 @@ export function connect<T extends PropTypes>(
         disabled,
         name: prop("name"),
         tabIndex: -1,
-        readOnly: prop("readOnly"),
-        required: prop("required"),
+        readOnly,
+        required,
         id: dom.getHiddenInputId(scope),
         style: visuallyHiddenStyle,
         defaultValue: valueAsString,
@@ -603,8 +614,8 @@ export function connect<T extends PropTypes>(
         dir: prop("dir"),
         disabled: disabled,
         "data-disabled": dataAttr(disabled),
-        "data-invalid": dataAttr(prop("invalid")),
-        "data-readonly": dataAttr(prop("readOnly")),
+        "data-invalid": dataAttr(invalid),
+        "data-readonly": dataAttr(readOnly),
         "aria-label": "Pick a color from the screen",
         onClick() {
           if (!interactive) return

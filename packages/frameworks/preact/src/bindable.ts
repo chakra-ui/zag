@@ -1,7 +1,7 @@
 import type { Bindable, BindableParams } from "@zag-js/core"
 import { isEqual, isFunction } from "@zag-js/utils"
+import { flushSync } from "preact/compat"
 import { useLayoutEffect, useRef, useState } from "preact/hooks"
-import { flushSync } from "react-dom"
 
 const identity = (v: VoidFunction) => v()
 

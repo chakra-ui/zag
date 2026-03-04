@@ -1,5 +1,1112 @@
 # @zag-js/tree-view
 
+## 1.35.3
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.35.3
+  - @zag-js/core@1.35.3
+  - @zag-js/types@1.35.3
+  - @zag-js/collection@1.35.3
+  - @zag-js/utils@1.35.3
+  - @zag-js/dom-query@1.35.3
+
+## 1.35.2
+
+### Patch Changes
+
+- Updated dependencies [[`01840ee`](https://github.com/chakra-ui/zag/commit/01840ee6f9672bedc784a2c434b84e8741e2dc25)]:
+  - @zag-js/utils@1.35.2
+  - @zag-js/core@1.35.2
+  - @zag-js/collection@1.35.2
+  - @zag-js/anatomy@1.35.2
+  - @zag-js/types@1.35.2
+  - @zag-js/dom-query@1.35.2
+
+## 1.35.1
+
+### Patch Changes
+
+- Updated dependencies [[`2ab725f`](https://github.com/chakra-ui/zag/commit/2ab725f6cb4631dc8d790a3da53f8fb7713e7ec1)]:
+  - @zag-js/core@1.35.1
+  - @zag-js/anatomy@1.35.1
+  - @zag-js/types@1.35.1
+  - @zag-js/collection@1.35.1
+  - @zag-js/utils@1.35.1
+  - @zag-js/dom-query@1.35.1
+
+## 1.35.0
+
+### Patch Changes
+
+- Updated dependencies [[`b0149ce`](https://github.com/chakra-ui/zag/commit/b0149cea73d2d975d0920d1a69561b6a85c9baa0)]:
+  - @zag-js/core@1.35.0
+  - @zag-js/anatomy@1.35.0
+  - @zag-js/types@1.35.0
+  - @zag-js/collection@1.35.0
+  - @zag-js/utils@1.35.0
+  - @zag-js/dom-query@1.35.0
+
+## 1.34.1
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.34.1
+  - @zag-js/core@1.34.1
+  - @zag-js/types@1.34.1
+  - @zag-js/collection@1.34.1
+  - @zag-js/utils@1.34.1
+  - @zag-js/dom-query@1.34.1
+
+## 1.34.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.34.0
+  - @zag-js/core@1.34.0
+  - @zag-js/types@1.34.0
+  - @zag-js/collection@1.34.0
+  - @zag-js/utils@1.34.0
+  - @zag-js/dom-query@1.34.0
+
+## 1.33.1
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.33.1
+  - @zag-js/core@1.33.1
+  - @zag-js/types@1.33.1
+  - @zag-js/collection@1.33.1
+  - @zag-js/utils@1.33.1
+  - @zag-js/dom-query@1.33.1
+
+## 1.33.0
+
+### Patch Changes
+
+- [`a908644`](https://github.com/chakra-ui/zag/commit/a9086445116a272c7ac7b761fec3873c43c41a96) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix initial focus issue when the first node or branch is disabled.
+  Added `skip` option to `getFirstNode()` (matching `getLastNode()`) to respect collapsed branches. The initial focus
+  now correctly targets the first visible non-disabled node.
+- Updated dependencies [[`a908644`](https://github.com/chakra-ui/zag/commit/a9086445116a272c7ac7b761fec3873c43c41a96)]:
+  - @zag-js/collection@1.33.0
+  - @zag-js/anatomy@1.33.0
+  - @zag-js/core@1.33.0
+  - @zag-js/types@1.33.0
+  - @zag-js/utils@1.33.0
+  - @zag-js/dom-query@1.33.0
+
+## 1.32.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.32.0
+  - @zag-js/core@1.32.0
+  - @zag-js/types@1.32.0
+  - @zag-js/collection@1.32.0
+  - @zag-js/utils@1.32.0
+  - @zag-js/dom-query@1.32.0
+
+## 1.31.1
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.31.1
+  - @zag-js/core@1.31.1
+  - @zag-js/types@1.31.1
+  - @zag-js/collection@1.31.1
+  - @zag-js/utils@1.31.1
+  - @zag-js/dom-query@1.31.1
+
+## 1.31.0
+
+### Minor Changes
+
+- [`57478b8`](https://github.com/chakra-ui/zag/commit/57478b87d44e82b3553e131a090d3bc80faacd7c) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - - Added `scrollToIndexFn` prop to enable keyboard navigation in
+  virtualized trees
+  - **[Breaking]:** `getVisibleNodes()` now returns `{ node, indexPath }[]` instead of `node[]`. Returning the index
+    path perhaps the most useful use of this function, hence the change.
+
+  **Migration:**
+
+  ```tsx
+  // Before
+  const nodes = api.getVisibleNodes()
+  nodes.forEach((node) => console.log(node.id))
+
+  // After
+  const visibleNodes = api.getVisibleNodes()
+  visibleNodes.forEach(({ node }) => console.log(node.id))
+  ```
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.31.0
+  - @zag-js/core@1.31.0
+  - @zag-js/types@1.31.0
+  - @zag-js/collection@1.31.0
+  - @zag-js/utils@1.31.0
+  - @zag-js/dom-query@1.31.0
+
+## 1.30.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.30.0
+  - @zag-js/core@1.30.0
+  - @zag-js/types@1.30.0
+  - @zag-js/collection@1.30.0
+  - @zag-js/utils@1.30.0
+  - @zag-js/dom-query@1.30.0
+
+## 1.29.1
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.29.1
+  - @zag-js/core@1.29.1
+  - @zag-js/types@1.29.1
+  - @zag-js/collection@1.29.1
+  - @zag-js/utils@1.29.1
+  - @zag-js/dom-query@1.29.1
+
+## 1.29.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.29.0
+  - @zag-js/core@1.29.0
+  - @zag-js/types@1.29.0
+  - @zag-js/collection@1.29.0
+  - @zag-js/utils@1.29.0
+  - @zag-js/dom-query@1.29.0
+
+## 1.28.0
+
+### Patch Changes
+
+- Updated dependencies [[`c59e4f5`](https://github.com/chakra-ui/zag/commit/c59e4f5b9bc43de85649d4de95e8bf270c16acab),
+  [`c656df8`](https://github.com/chakra-ui/zag/commit/c656df8846733f7b6241d152d76b515a95d6841a)]:
+  - @zag-js/dom-query@1.28.0
+  - @zag-js/core@1.28.0
+  - @zag-js/anatomy@1.28.0
+  - @zag-js/types@1.28.0
+  - @zag-js/collection@1.28.0
+  - @zag-js/utils@1.28.0
+
+## 1.27.1
+
+### Patch Changes
+
+- [#2822](https://github.com/chakra-ui/zag/pull/2822)
+  [`a372b95`](https://github.com/chakra-ui/zag/commit/a372b955911f78632665c7df86365414f64ac1f0) Thanks
+  [@nelsonlaidev](https://github.com/nelsonlaidev)! - Export missing types
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.27.1
+  - @zag-js/core@1.27.1
+  - @zag-js/types@1.27.1
+  - @zag-js/collection@1.27.1
+  - @zag-js/utils@1.27.1
+  - @zag-js/dom-query@1.27.1
+
+## 1.27.0
+
+### Patch Changes
+
+- Updated dependencies [[`cf6fb09`](https://github.com/chakra-ui/zag/commit/cf6fb0956aeacc236531ee90de9169a39cdde3a5),
+  [`920e727`](https://github.com/chakra-ui/zag/commit/920e727f73940aed3c6d2b886c64200a4a5702d0)]:
+  - @zag-js/dom-query@1.27.0
+  - @zag-js/utils@1.27.0
+  - @zag-js/core@1.27.0
+  - @zag-js/collection@1.27.0
+  - @zag-js/anatomy@1.27.0
+  - @zag-js/types@1.27.0
+
+## 1.26.5
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.26.5
+  - @zag-js/core@1.26.5
+  - @zag-js/types@1.26.5
+  - @zag-js/collection@1.26.5
+  - @zag-js/utils@1.26.5
+  - @zag-js/dom-query@1.26.5
+
+## 1.26.4
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.26.4
+  - @zag-js/core@1.26.4
+  - @zag-js/types@1.26.4
+  - @zag-js/collection@1.26.4
+  - @zag-js/utils@1.26.4
+  - @zag-js/dom-query@1.26.4
+
+## 1.26.3
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.26.3
+  - @zag-js/core@1.26.3
+  - @zag-js/types@1.26.3
+  - @zag-js/collection@1.26.3
+  - @zag-js/utils@1.26.3
+  - @zag-js/dom-query@1.26.3
+
+## 1.26.2
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.26.2
+  - @zag-js/core@1.26.2
+  - @zag-js/types@1.26.2
+  - @zag-js/collection@1.26.2
+  - @zag-js/utils@1.26.2
+  - @zag-js/dom-query@1.26.2
+
+## 1.26.1
+
+### Patch Changes
+
+- [`2189d00`](https://github.com/chakra-ui/zag/commit/2189d009d758228318fdbea3da2e951d7792f141) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - - Fixed issue where pressing `F2` on any tree node would lock
+  navigation and prevent selecting other nodes.
+  - The rename feature now requires the `canRename` callback to be explicitly provided, making it opt-in rather than
+    opt-out.
+- Updated dependencies []:
+  - @zag-js/anatomy@1.26.1
+  - @zag-js/core@1.26.1
+  - @zag-js/types@1.26.1
+  - @zag-js/collection@1.26.1
+  - @zag-js/utils@1.26.1
+  - @zag-js/dom-query@1.26.1
+
+## 1.26.0
+
+### Minor Changes
+
+- [`3a2c24f`](https://github.com/chakra-ui/zag/commit/3a2c24f5faa53d9cf19a3e549d87daa5ef5462cd) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Add support for renaming tree node labels with validation and
+  control features.
+
+  This feature enables users to edit tree node labels inline, unlocking use cases like file explorers, folder management
+  systems, content hierarchies, and any tree-based interface where users need to rename items.
+
+  ## Key Features
+
+  ### Basic Renaming
+  - Press `F2` on any node to enter rename mode
+  - Input is automatically focused and synced with current label
+  - Press `Enter` to submit or `Escape` to cancel
+  - Blur event automatically submits changes
+  - IME composition events are properly handled for international input
+
+  ### Validation & Control
+  - **`canRename`** - Control which nodes are renameable based on node type or custom logic
+  - **`onRenameStart`** - Called when rename mode starts (useful for analytics, showing hints)
+  - **`onBeforeRename`** - Validate rename before accepting (e.g., prevent duplicates, empty names)
+  - **Empty name prevention** - Automatically stays in rename mode if submitted name is empty/whitespace
+  - **Label trimming** - Labels are automatically trimmed before being passed to callbacks
+  - **`onRenameComplete`** - Handle the rename and update your collection
+
+  ### Styling & Visual State
+  - **`data-renaming`** attribute - Added to both item and branch elements when in rename mode for easy styling
+  - **`nodeState.renaming`** - Boolean property to check if a node is currently being renamed
+
+  ## API
+
+  ```tsx
+  const [collection, setCollection] = useState(initialCollection)
+
+  useMachine(tree.machine, {
+    collection,
+
+    // Control which nodes can be renamed
+    canRename: (node, indexPath) => {
+      // Only allow renaming leaf nodes (files), not branches (folders)
+      return !node.children
+    },
+
+    // Called when rename mode starts
+    onRenameStart: (details) => {
+      // details contains: { value, node, indexPath }
+      console.log("Started renaming:", details.node.name)
+      // Track analytics, show hints, etc.
+    },
+
+    // Validate before accepting rename
+    onBeforeRename: (details) => {
+      // Note: details.label is already trimmed by the machine
+
+      // Prevent empty names
+      if (!details.label) return false
+
+      // Prevent duplicate names at the same level
+      const parentPath = details.indexPath.slice(0, -1)
+      const parent = parentPath.length > 0 ? collection.at(parentPath) : collection.rootNode
+      const siblings = parent?.children || []
+
+      const hasDuplicate = siblings.some((sibling) => sibling.name === details.label && sibling.id !== details.value)
+
+      return !hasDuplicate
+    },
+
+    // Handle successful rename
+    onRenameComplete: (details) => {
+      // details contains: { value, label (trimmed), indexPath }
+      const node = collection.at(details.indexPath)
+      const updatedCollection = collection.replace(details.indexPath, {
+        ...node,
+        name: details.label,
+      })
+      setCollection(updatedCollection)
+    },
+  })
+  ```
+
+  ## Component Integration
+
+  ```tsx
+  const TreeNode = ({ node, indexPath, api }) => {
+    const nodeState = api.getNodeState({ node, indexPath })
+
+    return (
+      <div {...api.getItemProps({ node, indexPath })}>
+        <FileIcon />
+
+        {/* Show text when not renaming */}
+        <span
+          {...api.getItemTextProps({ node, indexPath })}
+          style={{ display: nodeState.renaming ? "none" : "inline" }}
+        >
+          {node.name}
+        </span>
+
+        {/* Show input when renaming */}
+        <input {...api.getNodeRenameInputProps({ node, indexPath })} />
+      </div>
+    )
+  }
+  ```
+
+  ## Programmatic API
+
+  ```tsx
+  // Start renaming a node
+  api.startRenaming(nodeValue)
+
+  // Submit rename with new label
+  api.submitRenaming(nodeValue, newLabel)
+
+  // Cancel renaming
+  api.cancelRenaming()
+  ```
+
+  ## Node State & Styling
+
+  The `nodeState` now includes a `renaming` property to track rename mode:
+
+  ```tsx
+  const nodeState = api.getNodeState({ node, indexPath })
+  // nodeState.renaming -> boolean
+  ```
+
+  Both `getItemProps` and `getBranchControlProps` now include a `data-renaming` attribute for styling:
+
+  ```css
+  /* Style items being renamed */
+  [data-part="item"][data-renaming] {
+    outline: 2px solid blue;
+  }
+
+  /* Style branch controls being renamed */
+  [data-part="branch-control"][data-renaming] {
+    background: rgba(0, 0, 255, 0.1);
+  }
+  ```
+
+  ## Use Cases Unlocked
+  1. **File Explorers** - Allow users to rename files and folders with validation
+  2. **Content Management** - Edit page titles, categories, or navigation items in-place
+  3. **Folder Organization** - Rename folders with duplicate prevention
+  4. **Project Management** - Edit task names, project hierarchies
+  5. **Knowledge Bases** - Rename articles, sections, or categories inline
+
+  ## Example: File Explorer with Smart Validation
+
+  ```tsx
+  useMachine(tree.machine, {
+    collection,
+
+    canRename: (node, indexPath) => {
+      // Prevent renaming system files
+      if (node.system) return false
+      // Prevent renaming locked files
+      if (node.locked) return false
+      // Only allow renaming files, not folders
+      return !node.children
+    },
+
+    onBeforeRename: (details) => {
+      // Note: details.label is already trimmed
+
+      // Check file extension rules
+      if (!details.label.includes(".")) {
+        console.error("File must have an extension")
+        return false
+      }
+
+      // Validate file name characters
+      if (/[<>:"/\\|?*]/.test(details.label)) {
+        console.error("Invalid characters in filename")
+        return false
+      }
+
+      return true
+    },
+
+    onRenameComplete: (details) => {
+      // Update collection and sync to backend
+      const node = collection.at(details.indexPath)
+      const updatedCollection = collection.replace(details.indexPath, {
+        ...node,
+        name: details.label,
+        lastModified: new Date(),
+      })
+      setCollection(updatedCollection)
+
+      // Sync to server
+      api.renameFile(details.value, details.label)
+    },
+  })
+  ```
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.26.0
+  - @zag-js/core@1.26.0
+  - @zag-js/types@1.26.0
+  - @zag-js/collection@1.26.0
+  - @zag-js/utils@1.26.0
+  - @zag-js/dom-query@1.26.0
+
+## 1.25.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.25.0
+  - @zag-js/core@1.25.0
+  - @zag-js/types@1.25.0
+  - @zag-js/collection@1.25.0
+  - @zag-js/utils@1.25.0
+  - @zag-js/dom-query@1.25.0
+
+## 1.24.2
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.24.2
+  - @zag-js/core@1.24.2
+  - @zag-js/types@1.24.2
+  - @zag-js/collection@1.24.2
+  - @zag-js/utils@1.24.2
+  - @zag-js/dom-query@1.24.2
+
+## 1.24.1
+
+### Patch Changes
+
+- Updated dependencies [[`ab0d4f7`](https://github.com/chakra-ui/zag/commit/ab0d4f73d6ca0571cb09ebad5bf724fe81e94ef8)]:
+  - @zag-js/core@1.24.1
+  - @zag-js/anatomy@1.24.1
+  - @zag-js/types@1.24.1
+  - @zag-js/collection@1.24.1
+  - @zag-js/utils@1.24.1
+  - @zag-js/dom-query@1.24.1
+
+## 1.24.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.24.0
+  - @zag-js/core@1.24.0
+  - @zag-js/types@1.24.0
+  - @zag-js/collection@1.24.0
+  - @zag-js/utils@1.24.0
+  - @zag-js/dom-query@1.24.0
+
+## 1.23.0
+
+### Patch Changes
+
+- Updated dependencies [[`92c0bf5`](https://github.com/chakra-ui/zag/commit/92c0bf5f5e283451c6be989e63ff02188054be9a),
+  [`47011ad`](https://github.com/chakra-ui/zag/commit/47011add7c99572aaa162846cf01781ea42d35ac),
+  [`92c0bf5`](https://github.com/chakra-ui/zag/commit/92c0bf5f5e283451c6be989e63ff02188054be9a),
+  [`50391e1`](https://github.com/chakra-ui/zag/commit/50391e11eb7f9af1f23f44661a8bc522c591175c)]:
+  - @zag-js/dom-query@1.23.0
+  - @zag-js/core@1.23.0
+  - @zag-js/anatomy@1.23.0
+  - @zag-js/types@1.23.0
+  - @zag-js/collection@1.23.0
+  - @zag-js/utils@1.23.0
+
+## 1.22.1
+
+### Patch Changes
+
+- Updated dependencies [[`4790d22`](https://github.com/chakra-ui/zag/commit/4790d22ee49c02daafad02aa4f5beb5fcdd507f7)]:
+  - @zag-js/collection@1.22.1
+  - @zag-js/anatomy@1.22.1
+  - @zag-js/core@1.22.1
+  - @zag-js/types@1.22.1
+  - @zag-js/utils@1.22.1
+  - @zag-js/dom-query@1.22.1
+
+## 1.22.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.22.0
+  - @zag-js/core@1.22.0
+  - @zag-js/types@1.22.0
+  - @zag-js/collection@1.22.0
+  - @zag-js/utils@1.22.0
+  - @zag-js/dom-query@1.22.0
+
+## 1.21.9
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.21.9
+  - @zag-js/core@1.21.9
+  - @zag-js/types@1.21.9
+  - @zag-js/collection@1.21.9
+  - @zag-js/utils@1.21.9
+  - @zag-js/dom-query@1.21.9
+
+## 1.21.8
+
+### Patch Changes
+
+- Updated dependencies [[`dd1519a`](https://github.com/chakra-ui/zag/commit/dd1519a668f315e2feab7aed51007f3380880229)]:
+  - @zag-js/dom-query@1.21.8
+  - @zag-js/core@1.21.8
+  - @zag-js/anatomy@1.21.8
+  - @zag-js/types@1.21.8
+  - @zag-js/collection@1.21.8
+  - @zag-js/utils@1.21.8
+
+## 1.21.7
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.21.7
+  - @zag-js/core@1.21.7
+  - @zag-js/types@1.21.7
+  - @zag-js/collection@1.21.7
+  - @zag-js/utils@1.21.7
+  - @zag-js/dom-query@1.21.7
+
+## 1.21.6
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.21.6
+  - @zag-js/core@1.21.6
+  - @zag-js/types@1.21.6
+  - @zag-js/collection@1.21.6
+  - @zag-js/utils@1.21.6
+  - @zag-js/dom-query@1.21.6
+
+## 1.21.5
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.21.5
+  - @zag-js/core@1.21.5
+  - @zag-js/types@1.21.5
+  - @zag-js/collection@1.21.5
+  - @zag-js/utils@1.21.5
+  - @zag-js/dom-query@1.21.5
+
+## 1.21.4
+
+### Patch Changes
+
+- Updated dependencies [[`d07647c`](https://github.com/chakra-ui/zag/commit/d07647cc53cec91d126653dec056c7dd7f9805a7)]:
+  - @zag-js/collection@1.21.4
+  - @zag-js/anatomy@1.21.4
+  - @zag-js/core@1.21.4
+  - @zag-js/types@1.21.4
+  - @zag-js/utils@1.21.4
+  - @zag-js/dom-query@1.21.4
+
+## 1.21.3
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.21.3
+  - @zag-js/core@1.21.3
+  - @zag-js/types@1.21.3
+  - @zag-js/collection@1.21.3
+  - @zag-js/utils@1.21.3
+  - @zag-js/dom-query@1.21.3
+
+## 1.21.2
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.21.2
+  - @zag-js/core@1.21.2
+  - @zag-js/types@1.21.2
+  - @zag-js/collection@1.21.2
+  - @zag-js/utils@1.21.2
+  - @zag-js/dom-query@1.21.2
+
+## 1.21.1
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.21.1
+  - @zag-js/core@1.21.1
+  - @zag-js/types@1.21.1
+  - @zag-js/collection@1.21.1
+  - @zag-js/utils@1.21.1
+  - @zag-js/dom-query@1.21.1
+
+## 1.21.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.21.0
+  - @zag-js/core@1.21.0
+  - @zag-js/types@1.21.0
+  - @zag-js/collection@1.21.0
+  - @zag-js/utils@1.21.0
+  - @zag-js/dom-query@1.21.0
+
+## 1.20.1
+
+### Patch Changes
+
+- [`c4061c8`](https://github.com/chakra-ui/zag/commit/c4061c8b4f0eaec9d51ff0a4846b2efad01fe4dd) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fixed issue where tree view doesn't scroll into view when content
+  overflows.
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.20.1
+  - @zag-js/core@1.20.1
+  - @zag-js/types@1.20.1
+  - @zag-js/collection@1.20.1
+  - @zag-js/utils@1.20.1
+  - @zag-js/dom-query@1.20.1
+
+## 1.20.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.20.0
+  - @zag-js/core@1.20.0
+  - @zag-js/types@1.20.0
+  - @zag-js/collection@1.20.0
+  - @zag-js/utils@1.20.0
+  - @zag-js/dom-query@1.20.0
+
+## 1.19.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.19.0
+  - @zag-js/core@1.19.0
+  - @zag-js/types@1.19.0
+  - @zag-js/collection@1.19.0
+  - @zag-js/utils@1.19.0
+  - @zag-js/dom-query@1.19.0
+
+## 1.18.5
+
+### Patch Changes
+
+- [`1b13205`](https://github.com/chakra-ui/zag/commit/1b1320589e8956afe7823aca3075f64574d7f8ad) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix issue where `onExpandedChange`, `onSelectionChange` and
+  `onFocusChange` doesn't infer the tree node types
+
+- [`59a7bfb`](https://github.com/chakra-ui/zag/commit/59a7bfb7215b4c9d13d11487f50ad852cd8347a9) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix issue destructuring returned api could throw an ESLint
+  `unbound-method` warning
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.18.5
+  - @zag-js/core@1.18.5
+  - @zag-js/types@1.18.5
+  - @zag-js/collection@1.18.5
+  - @zag-js/utils@1.18.5
+  - @zag-js/dom-query@1.18.5
+
+## 1.18.4
+
+### Patch Changes
+
+- Updated dependencies [[`8d0179b`](https://github.com/chakra-ui/zag/commit/8d0179b282dc6bedbd7d782192c82df872bf5697)]:
+  - @zag-js/collection@1.18.4
+  - @zag-js/anatomy@1.18.4
+  - @zag-js/core@1.18.4
+  - @zag-js/types@1.18.4
+  - @zag-js/utils@1.18.4
+  - @zag-js/dom-query@1.18.4
+
+## 1.18.3
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.18.3
+  - @zag-js/core@1.18.3
+  - @zag-js/types@1.18.3
+  - @zag-js/collection@1.18.3
+  - @zag-js/utils@1.18.3
+  - @zag-js/dom-query@1.18.3
+
+## 1.18.2
+
+### Patch Changes
+
+- Updated dependencies [[`3b583f8`](https://github.com/chakra-ui/zag/commit/3b583f8e71dcf625d09d895f90e26e454b725cc5),
+  [`11843e6`](https://github.com/chakra-ui/zag/commit/11843e6adf62b906006890c8003b38da2850c8ee)]:
+  - @zag-js/collection@1.18.2
+  - @zag-js/utils@1.18.2
+  - @zag-js/core@1.18.2
+  - @zag-js/anatomy@1.18.2
+  - @zag-js/types@1.18.2
+  - @zag-js/dom-query@1.18.2
+
+## 1.18.1
+
+### Patch Changes
+
+- [`1da9046`](https://github.com/chakra-ui/zag/commit/1da90469c28d201f388cbdc1291034a5c1867060) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Expose `id` in the tree node state
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.18.1
+  - @zag-js/core@1.18.1
+  - @zag-js/types@1.18.1
+  - @zag-js/collection@1.18.1
+  - @zag-js/utils@1.18.1
+  - @zag-js/dom-query@1.18.1
+
+## 1.18.0
+
+### Patch Changes
+
+- [`6092c58`](https://github.com/chakra-ui/zag/commit/6092c58dd37289debb54360038d7b77a58bcdc0f) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Improve support for rendering tree items as links
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.18.0
+  - @zag-js/core@1.18.0
+  - @zag-js/types@1.18.0
+  - @zag-js/collection@1.18.0
+  - @zag-js/utils@1.18.0
+  - @zag-js/dom-query@1.18.0
+
+## 1.17.4
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.17.4
+  - @zag-js/core@1.17.4
+  - @zag-js/types@1.17.4
+  - @zag-js/collection@1.17.4
+  - @zag-js/utils@1.17.4
+  - @zag-js/dom-query@1.17.4
+
+## 1.17.3
+
+### Patch Changes
+
+- [`bc70411`](https://github.com/chakra-ui/zag/commit/bc7041187e5b8dc950c7e6b57aadc1e50b8a3850) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix tree traversal for querying last node.
+
+- Updated dependencies [[`bc70411`](https://github.com/chakra-ui/zag/commit/bc7041187e5b8dc950c7e6b57aadc1e50b8a3850)]:
+  - @zag-js/collection@1.17.3
+  - @zag-js/anatomy@1.17.3
+  - @zag-js/core@1.17.3
+  - @zag-js/types@1.17.3
+  - @zag-js/utils@1.17.3
+  - @zag-js/dom-query@1.17.3
+
+## 1.17.2
+
+### Patch Changes
+
+- [`2ce6e5c`](https://github.com/chakra-ui/zag/commit/2ce6e5c2296d07c16220eb85fbd720a5b33e1f48) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Expose node details in `onExpandChange`, `onSelectionChange` and
+  `onFocusChange`
+
+- Updated dependencies [[`2ce6e5c`](https://github.com/chakra-ui/zag/commit/2ce6e5c2296d07c16220eb85fbd720a5b33e1f48)]:
+  - @zag-js/collection@1.17.2
+  - @zag-js/anatomy@1.17.2
+  - @zag-js/core@1.17.2
+  - @zag-js/types@1.17.2
+  - @zag-js/utils@1.17.2
+  - @zag-js/dom-query@1.17.2
+
+## 1.17.1
+
+### Patch Changes
+
+- [`05084b6`](https://github.com/chakra-ui/zag/commit/05084b68ac69a0cee4d4b532beba454ed9336d5f) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - - Fix issue where clicking a branch with indeterminate state
+  doesn't check its child nodes.
+  - Remove `aria-busy` attribute from branch trigger when not loading children.
+- Updated dependencies [[`4b6302f`](https://github.com/chakra-ui/zag/commit/4b6302fc9104f1ae8cd89a0f0157884fb775a65a)]:
+  - @zag-js/anatomy@1.17.1
+  - @zag-js/core@1.17.1
+  - @zag-js/types@1.17.1
+  - @zag-js/collection@1.17.1
+  - @zag-js/utils@1.17.1
+  - @zag-js/dom-query@1.17.1
+
+## 1.17.0
+
+### Minor Changes
+
+- [`f4015be`](https://github.com/chakra-ui/zag/commit/f4015becaf1eab89db527df2cd3c16332ef0bdfb) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Rename `getItemCheckboxProps` to `getNodeCheckboxProps` since it
+  can be used in both items and branches
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.17.0
+  - @zag-js/core@1.17.0
+  - @zag-js/types@1.17.0
+  - @zag-js/collection@1.17.0
+  - @zag-js/utils@1.17.0
+  - @zag-js/dom-query@1.17.0
+
+## 1.16.0
+
+### Minor Changes
+
+- [`f0545c6`](https://github.com/chakra-ui/zag/commit/f0545c61ef151e5e4480b0cc1d7401dda4653094) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - - Add support for checkbox state for checkbox trees via
+  `defaultCheckedValue`, `checkedValue`, `onCheckedChange` props
+  - Add callback for when `loadChildren` fails via `onLoadChildrenError` prop
+  - Add `api.getCheckedMap` method to get the checked state of all nodes
+
+- [`075404e`](https://github.com/chakra-ui/zag/commit/075404e6f3722522fc50f790f9498601b94e2e15) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix issue where `api.collapse` and `api.deselect` throws error
+  when called without arguments
+
+### Patch Changes
+
+- Updated dependencies [[`f0545c6`](https://github.com/chakra-ui/zag/commit/f0545c61ef151e5e4480b0cc1d7401dda4653094),
+  [`6f6c8f3`](https://github.com/chakra-ui/zag/commit/6f6c8f329d9eb9d9889eff4317c84a4f41d4bfb2)]:
+  - @zag-js/collection@1.16.0
+  - @zag-js/types@1.16.0
+  - @zag-js/dom-query@1.16.0
+  - @zag-js/core@1.16.0
+  - @zag-js/anatomy@1.16.0
+  - @zag-js/utils@1.16.0
+
+## 1.15.7
+
+### Patch Changes
+
+- Updated dependencies [[`3de5dd0`](https://github.com/chakra-ui/zag/commit/3de5dd059f847bd68cafaae230e706783ff43dc6)]:
+  - @zag-js/collection@1.15.7
+  - @zag-js/anatomy@1.15.7
+  - @zag-js/core@1.15.7
+  - @zag-js/types@1.15.7
+  - @zag-js/utils@1.15.7
+  - @zag-js/dom-query@1.15.7
+
+## 1.15.6
+
+### Patch Changes
+
+- Updated dependencies [[`bb9b1e1`](https://github.com/chakra-ui/zag/commit/bb9b1e128ee9ff6318bbbbb2505c192435f05d1e)]:
+  - @zag-js/collection@1.15.6
+  - @zag-js/anatomy@1.15.6
+  - @zag-js/core@1.15.6
+  - @zag-js/types@1.15.6
+  - @zag-js/utils@1.15.6
+  - @zag-js/dom-query@1.15.6
+
+## 1.15.5
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.15.5
+  - @zag-js/core@1.15.5
+  - @zag-js/types@1.15.5
+  - @zag-js/collection@1.15.5
+  - @zag-js/utils@1.15.5
+  - @zag-js/dom-query@1.15.5
+
+## 1.15.4
+
+### Patch Changes
+
+- Updated dependencies [[`e5f698d`](https://github.com/chakra-ui/zag/commit/e5f698d082ea8ae7f9f45958c4e319de7c7b6107)]:
+  - @zag-js/dom-query@1.15.4
+  - @zag-js/core@1.15.4
+  - @zag-js/anatomy@1.15.4
+  - @zag-js/types@1.15.4
+  - @zag-js/collection@1.15.4
+  - @zag-js/utils@1.15.4
+
+## 1.15.3
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.15.3
+  - @zag-js/core@1.15.3
+  - @zag-js/types@1.15.3
+  - @zag-js/collection@1.15.3
+  - @zag-js/utils@1.15.3
+  - @zag-js/dom-query@1.15.3
+
+## 1.15.2
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.15.2
+  - @zag-js/core@1.15.2
+  - @zag-js/types@1.15.2
+  - @zag-js/collection@1.15.2
+  - @zag-js/utils@1.15.2
+  - @zag-js/dom-query@1.15.2
+
+## 1.15.1
+
+### Patch Changes
+
+- Updated dependencies [[`af01eeb`](https://github.com/chakra-ui/zag/commit/af01eebf013dd9c16821474a26d846f502530feb)]:
+  - @zag-js/collection@1.15.1
+  - @zag-js/anatomy@1.15.1
+  - @zag-js/core@1.15.1
+  - @zag-js/types@1.15.1
+  - @zag-js/utils@1.15.1
+  - @zag-js/dom-query@1.15.1
+
+## 1.15.0
+
+### Minor Changes
+
+- [#2498](https://github.com/chakra-ui/zag/pull/2498)
+  [`ce98b54`](https://github.com/chakra-ui/zag/commit/ce98b54a9cf6c241bc15ce5bbb017797438ecdc6) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Add support lazy loading node children
+
+### Patch Changes
+
+- Updated dependencies [[`ce98b54`](https://github.com/chakra-ui/zag/commit/ce98b54a9cf6c241bc15ce5bbb017797438ecdc6)]:
+  - @zag-js/collection@1.15.0
+  - @zag-js/anatomy@1.15.0
+  - @zag-js/core@1.15.0
+  - @zag-js/types@1.15.0
+  - @zag-js/utils@1.15.0
+  - @zag-js/dom-query@1.15.0
+
+## 1.14.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.14.0
+  - @zag-js/core@1.14.0
+  - @zag-js/types@1.14.0
+  - @zag-js/collection@1.14.0
+  - @zag-js/utils@1.14.0
+  - @zag-js/dom-query@1.14.0
+
+## 1.13.1
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.13.1
+  - @zag-js/core@1.13.1
+  - @zag-js/types@1.13.1
+  - @zag-js/collection@1.13.1
+  - @zag-js/utils@1.13.1
+  - @zag-js/dom-query@1.13.1
+
+## 1.13.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.13.0
+  - @zag-js/core@1.13.0
+  - @zag-js/types@1.13.0
+  - @zag-js/collection@1.13.0
+  - @zag-js/utils@1.13.0
+  - @zag-js/dom-query@1.13.0
+
+## 1.12.4
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.12.4
+  - @zag-js/core@1.12.4
+  - @zag-js/types@1.12.4
+  - @zag-js/collection@1.12.4
+  - @zag-js/utils@1.12.4
+  - @zag-js/dom-query@1.12.4
+
+## 1.12.3
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.12.3
+  - @zag-js/core@1.12.3
+  - @zag-js/types@1.12.3
+  - @zag-js/collection@1.12.3
+  - @zag-js/utils@1.12.3
+  - @zag-js/dom-query@1.12.3
+
 ## 1.12.2
 
 ### Patch Changes
@@ -1154,7 +2261,6 @@
 
 - [`c7b781c`](https://github.com/chakra-ui/zag/commit/c7b781c937378dcf45f07e8333360d913fc9f8f1) Thanks
   [@segunadebayo](https://github.com/segunadebayo)! - - Rename some properties for better consistency:
-
   - `id` -> `value`
   - `expandedIds` -> `expandedValue`
   - `selectedIds` -> `selectedValue`
@@ -1162,12 +2268,10 @@
 - [#1435](https://github.com/chakra-ui/zag/pull/1435)
   [`23ed828`](https://github.com/chakra-ui/zag/commit/23ed8283e8190fc9fb6496f4ba8c5eff78bda2d7) Thanks
   [@segunadebayo](https://github.com/segunadebayo)! - - Rename `api.getItemState` properties
-
   - `isDisabled` -> `disabled`
   - `isFocused` -> `focused`
   - `isSelected` -> `selected`
   - Rename `api.getBranchState` properties
-
     - `isExpanded` -> `expanded`
 
 ### Patch Changes

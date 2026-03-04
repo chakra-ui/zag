@@ -12,12 +12,10 @@
   </a>
 </p>
 
-
-
 Finite state machines for accessible JavaScript components
 
 - **Write once, use everywhere 🦄**: The component interactions are modelled in a framework agnostic way. We provide
-  adapters for JS frameworks like React, Solid, or Vue.
+  adapters for JS frameworks like React, Solid, Svelte, or Vue.
 - **Focus on accessibility ♿️**: Zag is built with accessibility in mind. We handle many details related to keyboard
   interactions, focus management, aria roles and attributes.
 - **Headless ✨**: The machine APIs are completely unstyled and gives you the control to use any styling solution you
@@ -67,6 +65,7 @@ For framework specific solutions, we provide simple wrappers to help you consume
 - ⚛️ `@zag-js/react` - React hooks for consuming machines in React applications
 - 💚 `@zag-js/vue` - Vue composition for consuming machines in Vue applications
 - 🎷 `@zag-js/solid` - Solid.js utilities for consuming machines in Solid.js applications
+- 🎷 `@zag-js/svelte` - Svelte utilities for consuming machines in Svelte applications
 
 ## Usage
 
@@ -76,8 +75,8 @@ import * as toggle from "@zag-js/toggle-group"
 import { useId } from "react"
 
 export function ToggleGroup() {
-  const [state, send] = useMachine(toggle.machine({ id: useId() }))
-  const api = toggle.connect(state, send, normalizeProps)
+  const service = useMachine(toggle.machine({ id: useId() }))
+  const api = toggle.connect(service, normalizeProps)
 
   return (
     <div {...api.getRootProps()}>
@@ -109,8 +108,8 @@ power the logic behind UI components.
 
 ### Teasers
 
-- When you see someone using classic react, vue or solid to build an interactive UI component that exists in Zag, tell
-  them to **"zag it!"** ⚡️
+- When you see someone using classic react, vue, solid or svelte to build an interactive UI component that exists in
+  Zag, tell them to **"zag it!"** ⚡️
 
 - Anyone using Zag will be called a **"zagger"** 💥
 
@@ -136,6 +135,7 @@ projects for the frameworks we support.
 - `start-react` : Starts the Next.js TypeScript project
 - `start-vue` : Starts the Vue 3 TypeScript project
 - `start-solid` : Starts the Solid TypeScript project
+- `start-svelte` : Starts the Svelte TypeScript project
 
 ### E2E Tests
 
@@ -195,4 +195,4 @@ what to work on.
 
 ## License
 
-MIT © [Segun Adebayo](https://github.com/segunadebayo)
+MIT © [Chakra Systems Inc.](https://github.com/chakra-ui)

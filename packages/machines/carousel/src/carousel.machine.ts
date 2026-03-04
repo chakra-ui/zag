@@ -1,7 +1,7 @@
 import { createMachine } from "@zag-js/core"
-import { addDomEvent, raf, trackPointerMove } from "@zag-js/dom-query"
+import { addDomEvent, raf, resizeObserverBorderBox, trackPointerMove } from "@zag-js/dom-query"
 import { findSnapPoint, getScrollSnapPositions } from "@zag-js/scroll-snap"
-import { add, clampValue, ensureProps, isObject, nextIndex, prevIndex, remove, uniq } from "@zag-js/utils"
+import { add, callAll, clampValue, ensureProps, isObject, nextIndex, prevIndex, remove, uniq } from "@zag-js/utils"
 import * as dom from "./carousel.dom"
 import type { CarouselSchema } from "./carousel.types"
 
@@ -20,6 +20,7 @@ export const machine = createMachine<CarouselSchema>({
       autoplay: false,
       allowMouseDrag: false,
       inViewThreshold: 0.6,
+      autoSize: false,
       ...props,
       translations: {
         nextTrigger: "Next slide",
@@ -28,6 +29,7 @@ export const machine = createMachine<CarouselSchema>({
         item: (index, count) => `${index + 1} of ${count}`,
         autoplayStart: "Start slide rotation",
         autoplayStop: "Stop slide rotation",
+        progressText: ({ page, totalPages }) => `${page} / ${totalPages}`,
         ...props.translations,
       },
     }
@@ -56,7 +58,9 @@ export const machine = createMachine<CarouselSchema>({
       })),
       pageSnapPoints: bindable(() => {
         return {
-          defaultValue: getPageSnapPoints(prop("slideCount"), prop("slidesPerMove"), prop("slidesPerPage")),
+          defaultValue: prop("autoSize")
+            ? Array.from({ length: prop("slideCount") }, (_, i) => i) // Initialize with slide indices for variable width
+            : getPageSnapPoints(prop("slideCount"), prop("slidesPerMove"), prop("slidesPerPage")),
         }
       }),
       slidesInView: bindable<number[]>(() => ({
@@ -77,15 +81,21 @@ export const machine = createMachine<CarouselSchema>({
     },
   },
 
-  watch({ track, action, context, prop }) {
+  watch({ track, action, context, prop, send }) {
     track([() => prop("slidesPerPage"), () => prop("slidesPerMove")], () => {
       action(["setSnapPoints"])
     })
     track([() => context.get("page")], () => {
       action(["scrollToPage", "focusIndicatorEl"])
     })
-    track([() => prop("orientation")], () => {
+    track([() => prop("orientation"), () => prop("autoSize"), () => prop("dir")], () => {
       action(["setSnapPoints", "scrollToPage"])
+    })
+    track([() => prop("slideCount")], () => {
+      send({ type: "SNAP.REFRESH", src: "slide.count" })
+    })
+    track([() => !!prop("autoplay")], () => {
+      send({ type: prop("autoplay") ? "AUTOPLAY.START" : "AUTOPLAY.PAUSE", src: "autoplay.prop.change" })
     })
   },
 
@@ -107,7 +117,7 @@ export const machine = createMachine<CarouselSchema>({
       actions: ["clearScrollEndTimer", "setMatchingPage"],
     },
     "SNAP.REFRESH": {
-      actions: ["setSnapPoints", "clampPage"],
+      actions: ["setSnapPoints"],
     },
     "PAGE.SCROLL": {
       actions: ["scrollToPage"],
@@ -134,6 +144,33 @@ export const machine = createMachine<CarouselSchema>({
         "USER.SCROLL": {
           target: "userScroll",
         },
+        "VIEWPORT.FOCUS": {
+          target: "focus",
+        },
+      },
+    },
+
+    focus: {
+      effects: ["trackKeyboardScroll"],
+      on: {
+        "VIEWPORT.BLUR": {
+          target: "idle",
+        },
+        "PAGE.NEXT": {
+          actions: ["clearScrollEndTimer", "setNextPage"],
+        },
+        "PAGE.PREV": {
+          actions: ["clearScrollEndTimer", "setPrevPage"],
+        },
+        "PAGE.SET": {
+          actions: ["clearScrollEndTimer", "setPage"],
+        },
+        "INDEX.SET": {
+          actions: ["clearScrollEndTimer", "setMatchingPage"],
+        },
+        "USER.SCROLL": {
+          target: "userScroll",
+        },
       },
     },
 
@@ -145,19 +182,51 @@ export const machine = createMachine<CarouselSchema>({
           actions: ["scrollSlides", "invokeDragging"],
         },
         "DRAGGING.END": {
-          target: "idle",
-          actions: ["endDragging", "invokeDraggingEnd"],
+          target: "settling",
+          actions: ["endDragging"],
         },
+      },
+    },
+
+    settling: {
+      effects: ["trackSettlingScroll"],
+      on: {
+        "DRAGGING.START": {
+          target: "dragging",
+          actions: ["clearScrollEndTimer", "invokeDragStart"],
+        },
+        "SCROLL.END": [
+          {
+            guard: "isFocused",
+            target: "focus",
+            actions: ["clearScrollEndTimer", "setClosestPage", "invokeDraggingEnd"],
+          },
+          {
+            target: "idle",
+            actions: ["clearScrollEndTimer", "setClosestPage", "invokeDraggingEnd"],
+          },
+        ],
       },
     },
 
     userScroll: {
       effects: ["trackScroll"],
       on: {
-        "SCROLL.END": {
-          target: "idle",
-          actions: ["setClosestPage"],
+        "DRAGGING.START": {
+          target: "dragging",
+          actions: ["invokeDragStart"],
         },
+        "SCROLL.END": [
+          {
+            guard: "isFocused",
+            target: "focus",
+            actions: ["setClosestPage"],
+          },
+          {
+            target: "idle",
+            actions: ["setClosestPage"],
+          },
+        ],
       },
     },
 
@@ -180,10 +249,17 @@ export const machine = createMachine<CarouselSchema>({
   },
 
   implementations: {
+    guards: {
+      isFocused: ({ scope }) => scope.isActiveElement(dom.getItemGroupEl(scope)),
+    },
+
     effects: {
       autoUpdateSlide({ computed, send }) {
         const id = setInterval(() => {
-          send({ type: "AUTOPLAY.TICK", src: "autoplay.interval" })
+          send({
+            type: computed("canScrollNext") ? "AUTOPLAY.TICK" : "AUTOPLAY.PAUSE",
+            src: "autoplay.interval",
+          })
         }, computed("autoplayInterval"))
         return () => clearInterval(id)
       },
@@ -203,7 +279,6 @@ export const machine = createMachine<CarouselSchema>({
       trackSlideResize({ scope, send }) {
         const el = dom.getItemGroupEl(scope)
         if (!el) return
-        const win = scope.getWin()
         const exec = () => {
           send({ type: "SNAP.REFRESH", src: "slide.resize" })
         }
@@ -214,9 +289,14 @@ export const machine = createMachine<CarouselSchema>({
             send({ type: "PAGE.SCROLL", instant: true })
           })
         })
-        const observer = new win.ResizeObserver(exec)
-        dom.getItemEls(scope).forEach((slide) => observer.observe(slide))
-        return () => observer.disconnect()
+
+        const itemEls = dom.getItemEls(scope)
+        itemEls.forEach(exec)
+        const cleanups = [
+          resizeObserverBorderBox.observe(el, exec),
+          ...itemEls.map((el) => resizeObserverBorderBox.observe(el, exec)),
+        ]
+        return callAll(...cleanups)
       },
 
       trackSlideIntersections({ scope, prop, context }) {
@@ -263,6 +343,35 @@ export const machine = createMachine<CarouselSchema>({
         return addDomEvent(el, "scroll", onScroll, { passive: true })
       },
 
+      trackSettlingScroll({ send, refs, scope }) {
+        const el = dom.getItemGroupEl(scope)
+        if (!el) return
+
+        const startTimer = () => {
+          clearTimeout(refs.get("timeoutRef"))
+          refs.set("timeoutRef", undefined)
+          refs.set(
+            "timeoutRef",
+            setTimeout(() => {
+              send({ type: "SCROLL.END" })
+            }, 200),
+          )
+        }
+
+        startTimer()
+
+        const onScroll = () => {
+          startTimer()
+        }
+
+        const cleanup = addDomEvent(el, "scroll", onScroll, { passive: true })
+        return () => {
+          cleanup()
+          clearTimeout(refs.get("timeoutRef"))
+          refs.set("timeoutRef", undefined)
+        }
+      },
+
       trackDocumentVisibility({ scope, send }) {
         const doc = scope.getDoc()
         const onVisibilityChange = () => {
@@ -283,6 +392,30 @@ export const machine = createMachine<CarouselSchema>({
           },
         })
       },
+
+      trackKeyboardScroll({ scope, send, context }) {
+        const win = scope.getWin()
+        const onKeyDown = (event: KeyboardEvent) => {
+          switch (event.key) {
+            case "ArrowRight":
+              event.preventDefault()
+              send({ type: "PAGE.NEXT" })
+              break
+            case "ArrowLeft":
+              event.preventDefault()
+              send({ type: "PAGE.PREV" })
+              break
+            case "Home":
+              event.preventDefault()
+              send({ type: "PAGE.SET", index: 0 })
+              break
+            case "End":
+              event.preventDefault()
+              send({ type: "PAGE.SET", index: context.get("pageSnapPoints").length - 1 })
+          }
+        }
+        return addDomEvent(win, "keydown", onKeyDown, { capture: true })
+      },
     },
 
     actions: {
@@ -291,20 +424,29 @@ export const machine = createMachine<CarouselSchema>({
         clearTimeout(refs.get("timeoutRef"))
         refs.set("timeoutRef", undefined)
       },
-      scrollToPage({ context, event, scope, computed }) {
+      scrollToPage({ context, event, scope, computed, flush }) {
         const behavior = event.instant ? "instant" : "smooth"
         const index = clampValue(event.index ?? context.get("page"), 0, context.get("pageSnapPoints").length - 1)
         const el = dom.getItemGroupEl(scope)
         if (!el) return
         const axis = computed("isHorizontal") ? "left" : "top"
-        el.scrollTo({ [axis]: context.get("pageSnapPoints")[index], behavior })
+        flush(() => {
+          el.scrollTo({ [axis]: context.get("pageSnapPoints")[index], behavior })
+        })
       },
       setClosestPage({ context, scope, computed }) {
         const el = dom.getItemGroupEl(scope)
         if (!el) return
         const scrollPosition = computed("isHorizontal") ? el.scrollLeft : el.scrollTop
-        const page = context.get("pageSnapPoints").findIndex((point) => Math.abs(point - scrollPosition) < 1)
-        if (page === -1) return
+        const snapPoints = context.get("pageSnapPoints")
+        if (!snapPoints.length) return
+
+        const page = snapPoints.reduce((closestIndex, snapPoint, index) => {
+          const currentDistance = Math.abs(snapPoint - scrollPosition)
+          const closestDistance = Math.abs(snapPoints[closestIndex] - scrollPosition)
+          return currentDistance < closestDistance ? index : closestIndex
+        }, 0)
+
         context.set("page", page)
       },
       setNextPage({ context, prop, state }) {
@@ -334,15 +476,16 @@ export const machine = createMachine<CarouselSchema>({
         const page = event.index ?? context.get("page")
         context.set("page", page)
       },
-      clampPage({ context }) {
-        const index = clampValue(context.get("page"), 0, context.get("pageSnapPoints").length - 1)
-        context.set("page", index)
-      },
       setSnapPoints({ context, computed, scope }) {
         const el = dom.getItemGroupEl(scope)
         if (!el) return
         const scrollSnapPoints = getScrollSnapPositions(el)
-        context.set("pageSnapPoints", computed("isHorizontal") ? scrollSnapPoints.x : scrollSnapPoints.y)
+        const pageSnapPoints = computed("isHorizontal") ? scrollSnapPoints.x : scrollSnapPoints.y
+        context.set("pageSnapPoints", pageSnapPoints)
+
+        if (!pageSnapPoints.length) return
+        const index = clampValue(context.get("page"), 0, pageSnapPoints.length - 1)
+        context.set("page", index)
       },
       disableScrollSnap({ scope }) {
         const el = dom.getItemGroupEl(scope)
@@ -359,31 +502,29 @@ export const machine = createMachine<CarouselSchema>({
         const el = dom.getItemGroupEl(scope)
         if (!el) return
 
-        const startX = el.scrollLeft
-        const startY = el.scrollTop
+        const isHorizontal = computed("isHorizontal")
+        const scrollPos = isHorizontal ? el.scrollLeft : el.scrollTop
 
-        const snapPositions = getScrollSnapPositions(el)
+        // Use already-calculated snap points (no DOM recalculation!)
+        const snapPoints = context.get("pageSnapPoints")
+        if (!snapPoints.length) return
 
-        // Find closest x snap point
-        const closestX = snapPositions.x.reduce((closest, curr) => {
-          return Math.abs(curr - startX) < Math.abs(closest - startX) ? curr : closest
-        }, snapPositions.x[0])
-
-        // Find closest y snap point
-        const closestY = snapPositions.y.reduce((closest, curr) => {
-          return Math.abs(curr - startY) < Math.abs(closest - startY) ? curr : closest
-        }, snapPositions.y[0])
+        // Find closest snap point
+        const closest = snapPoints.reduce((closest, curr) => {
+          return Math.abs(curr - scrollPos) < Math.abs(closest - scrollPos) ? curr : closest
+        }, snapPoints[0])
 
         raf(() => {
-          // Scroll to closest snap points
-          el.scrollTo({ left: closestX, top: closestY, behavior: "smooth" })
-
-          const closest = computed("isHorizontal") ? closestX : closestY
-          context.set("page", context.get("pageSnapPoints").indexOf(closest))
+          // Scroll to closest snap point
+          el.scrollTo({
+            left: isHorizontal ? closest : el.scrollLeft,
+            top: isHorizontal ? el.scrollTop : closest,
+            behavior: "smooth",
+          })
 
           const scrollSnapType = el.dataset.scrollSnapType
           if (scrollSnapType) {
-            el.style.removeProperty("scroll-snap-type")
+            el.style.setProperty("scroll-snap-type", scrollSnapType)
             delete el.dataset.scrollSnapType
           }
         })
@@ -417,9 +558,23 @@ export const machine = createMachine<CarouselSchema>({
 })
 
 function getPageSnapPoints(totalSlides: number | undefined, slidesPerMove: number | "auto", slidesPerPage: number) {
-  if (totalSlides == null) return []
+  // If there are no total slides or if slidesPerPage is 0, do nothing.
+  if (totalSlides == null || slidesPerPage <= 0) {
+    return []
+  }
+
   const snapPoints: number[] = []
   const perMove = slidesPerMove === "auto" ? Math.floor(slidesPerPage) : slidesPerMove
-  for (let i = 0; i < totalSlides - 1; i += perMove) snapPoints.push(i)
+
+  // An additional safety check in case perMove becomes 0 through other means
+  if (perMove <= 0) {
+    return []
+  }
+
+  for (let i = 0; i < totalSlides; i += perMove) {
+    // Ensure we don't create a snap point that would go beyond the available slides
+    if (i + slidesPerPage > totalSlides) break
+    snapPoints.push(i)
+  }
   return snapPoints
 }

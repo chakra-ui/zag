@@ -11,16 +11,19 @@
 
   let options = $state.raw(comboboxData)
 
-  const collection = combobox.collection({
-    items: comboboxData,
+  const collection = $derived(combobox.collection({
+    items: options,
     itemToValue: (item) => item.code,
     itemToString: (item) => item.label,
-  })
+  }))
 
   const id = $props.id()
+
   const service = useMachine(combobox.machine, {
     id,
-    collection,
+    get collection() {
+      return collection
+    },
     onOpenChange() {
       options = comboboxData
     },
@@ -29,11 +32,10 @@
         item.label.toLowerCase().includes(inputValue.toLowerCase()),
       )
       const newOptions = filtered.length > 0 ? filtered : comboboxData
-
-      collection.setItems(newOptions)
       options = newOptions
     },
   })
+
   const api = $derived(combobox.connect(service, normalizeProps))
 </script>
 

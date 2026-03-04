@@ -1,6 +1,6 @@
 {
   "name": "@zag-js/listbox",
-  "version": "1.12.2",
+  "version": "1.35.3",
   "description": "Core logic for the listbox widget implemented as a state machine",
   "keywords": [
     "js",
@@ -44,6 +44,6 @@
   "devDependencies": {
     "clean-package": "2.2.0"
   },
-  "clean-package": "../../../clean-package.config.json",
+  "clean-package": "./clean-package.config.json",
   "main": "src/index.ts"
 }

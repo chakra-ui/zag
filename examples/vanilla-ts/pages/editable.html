@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Editable</title>
+  </head>
+  <body style="padding: 40px">
+    <a href="/">← Back to examples</a>
+    <h1>Editable</h1>
+
+    <main class="editable">
+      <div class="editable-root">
+        <div class="editable-area">
+          <input class="editable-input" />
+          <span class="editable-preview"></span>
+        </div>
+        <div class="editable-control">
+          <button class="editable-edit">Edit</button>
+          <button class="editable-save" style="display: none">Save</button>
+          <button class="editable-cancel" style="display: none">Cancel</button>
+        </div>
+      </div>
+    </main>
+
+    <script type="module" src="./editable.ts"></script>
+  </body>
+</html>

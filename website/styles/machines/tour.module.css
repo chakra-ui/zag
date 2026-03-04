@@ -1,0 +1,141 @@
+@layer recipes {
+  :root {
+    --tour-z-index: 100;
+  }
+
+  .Trigger {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    text-align: start;
+    cursor: pointer;
+    font-weight: 500;
+    padding-inline: 1rem;
+    padding-block: 0.25rem;
+    background: var(--colors-bg-primary-subtle);
+    color: #ffffff;
+  }
+
+  .Content {
+    --arrow-background: var(--colors-bg-popover);
+    --arrow-size: 10px;
+    background: var(--colors-bg-popover);
+    padding: 24px;
+    border-radius: 4px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    width: 300px;
+    position: relative;
+    z-index: calc(var(--tour-layer) + var(--tour-z-index));
+
+    &[data-type="dialog"] {
+      width: 500px;
+      background: var(--colors-bg-subtle);
+    }
+
+    &[data-type="floating"] {
+      width: 500px;
+      background: rgb(15, 39, 136);
+      color: white;
+    }
+  }
+
+  .Positioner {
+    z-index: calc(var(--tour-layer) + var(--tour-z-index));
+
+    &[data-type="floating"] {
+      position: absolute;
+
+      &[data-placement*="bottom"] {
+        bottom: 24px;
+      }
+
+      &[data-placement*="top"] {
+        top: 24px;
+      }
+
+      &[data-placement*="end"] {
+        inset-inline-end: 24px;
+      }
+
+      &[data-placement*="start"] {
+        inset-inline-start: 24px;
+      }
+    }
+
+    &[data-type="dialog"] {
+      width: 100%;
+      position: fixed;
+      inset: 0;
+      margin: auto;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+  }
+
+  .Arrow {
+    box-shadow: var(--box-shadow);
+  }
+
+  .Title {
+    font-weight: 600;
+  }
+
+  .Description {
+    margin-bottom: 20px;
+    margin-top: 12px;
+  }
+
+  .ProgressText {
+    margin-bottom: 20px;
+    opacity: 0.72;
+  }
+
+  .ActionTrigger {
+    padding-inline: 0.75rem;
+    height: 2rem;
+    text-align: center;
+    color: var(--colors-text-bold);
+    border: solid 1px;
+    border-color: var(--colors-border-bold);
+    background: var(--colors-bg-subtle);
+    display: flex;
+    box-sizing: border-box;
+    align-items: center;
+    font-weight: 500;
+    font-size: 14px;
+    border-radius: 4px;
+
+    &:focus-visible {
+      outline: 2px solid var(--colors-bg-primary-bold);
+      outline-offset: 2px;
+    }
+  }
+
+  .Backdrop {
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: calc(var(--tour-layer) + var(--tour-z-index));
+  }
+
+  .Spotlight {
+    border: 3px solid var(--colors-bg-primary-subtle);
+    z-index: calc(var(--tour-layer) + var(--tour-z-index));
+  }
+
+  .CloseTrigger {
+    font-family: inherit;
+    height: 25px;
+    width: 25px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    position: absolute;
+    top: 10px;
+    right: 10px;
+
+    &:focus-visible {
+      outline: 2px solid var(--colors-bg-primary-bold);
+      outline-offset: 2px;
+    }
+  }
+}

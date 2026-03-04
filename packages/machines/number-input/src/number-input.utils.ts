@@ -15,7 +15,8 @@ type Ctx = Pick<Params<NumberInputSchema>, "prop" | "computed">
 export const parseValue = (value: string, params: Ctx) => {
   const { prop, computed } = params
   if (!prop("formatOptions")) return parseFloat(value)
-  return computed("parser").parse(String(value))
+  if (value === "") return Number.NaN
+  return computed("parser").parse(value)
 }
 
 export const formatValue = (value: number, params: Ctx): string => {

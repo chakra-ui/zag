@@ -2,48 +2,15 @@ import { Portal, normalizeProps, useMachine } from "@zag-js/react"
 import * as toast from "@zag-js/toast"
 import { useId, useRef } from "react"
 import { HiX } from "react-icons/hi"
+import styles from "../styles/machines/toast.module.css"
 
-interface ToastProps {
-  actor: toast.Options<React.ReactNode>
-  index: number
-  parent: toast.GroupService
-}
+interface ToastGroupProps extends Omit<toast.GroupProps, "id" | "store"> {}
 
-function Toast(props: ToastProps) {
-  const { actor, index, parent } = props
-  const composedProps = { ...actor, index, parent }
-
-  const service = useMachine(toast.machine, composedProps)
-  const api = toast.connect(service, normalizeProps)
-
-  return (
-    <div {...api.getRootProps()}>
-      <span {...api.getGhostBeforeProps()} />
-      <div data-scope="toast" data-part="progressbar" />
-      <div {...api.getTitleProps()}>
-        {api.type === "loading" && "<...>"}[{api.type}] {api.title}
-      </div>
-      <div {...api.getDescriptionProps()}>{api.description}</div>
-      <button {...api.getCloseTriggerProps()}>
-        <HiX />
-      </button>
-      <span {...api.getGhostAfterProps()} />
-    </div>
-  )
-}
-
-const toaster = toast.createStore({
-  overlap: true,
-  placement: "bottom-end",
-})
-
-export function ToastGroup(props: { controls: any }) {
+export function ToastGroup(props: ToastGroupProps) {
   const service = useMachine(toast.group.machine, {
     id: useId(),
     store: toaster,
-    gap: 24,
-    offsets: "24px",
-    ...props.controls,
+    ...props,
   })
 
   const api = toast.group.connect(service, normalizeProps)
@@ -51,9 +18,9 @@ export function ToastGroup(props: { controls: any }) {
 
   return (
     <>
-      <div className="toast__trigger-group">
+      <div className={styles.TriggerGroup}>
         <button
-          className="toast__trigger"
+          className={styles.Trigger}
           onClick={() => {
             id.current = toaster.create({
               title: "The Evil Rabbit jumped over the fence.",
@@ -65,7 +32,7 @@ export function ToastGroup(props: { controls: any }) {
         </button>
 
         <button
-          className="toast__trigger"
+          className={styles.Trigger}
           onClick={() => {
             if (!id.current) return
             toaster.update(id.current, {
@@ -93,3 +60,39 @@ export function ToastGroup(props: { controls: any }) {
     </>
   )
 }
+
+interface ToastProps {
+  actor: toast.Options<React.ReactNode>
+  index: number
+  parent: toast.GroupService
+}
+
+function Toast(props: ToastProps) {
+  const { actor, index, parent } = props
+  const composedProps = { ...actor, index, parent }
+
+  const service = useMachine(toast.machine, composedProps)
+  const api = toast.connect(service, normalizeProps)
+
+  return (
+    <div className={styles.Root} {...api.getRootProps()}>
+      <span {...api.getGhostBeforeProps()} />
+      <div data-scope="toast" data-part="progressbar" />
+      <div {...api.getTitleProps()}>
+        {api.type === "loading" && "<...>"}[{api.type}] {api.title}
+      </div>
+      <div {...api.getDescriptionProps()}>{api.description}</div>
+      <button className={styles.CloseTrigger} {...api.getCloseTriggerProps()}>
+        <HiX />
+      </button>
+      <span {...api.getGhostAfterProps()} />
+    </div>
+  )
+}
+
+const toaster = toast.createStore({
+  overlap: true,
+  placement: "bottom-end",
+  offsets: "24px",
+  gap: 24,
+})

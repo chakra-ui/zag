@@ -1,3 +1,5 @@
+import { CalendarDate, toCalendar, type DateValue } from "@internationalized/date"
+
 export interface YearsRange {
   from: number
   to: number
@@ -6,6 +8,16 @@ export function getYearsRange(range: YearsRange) {
   const years: number[] = []
   for (let year = range.from; year <= range.to; year += 1) years.push(year)
   return years
+}
+
+const DEFAULT_MIN_YEAR = 1900
+const DEFAULT_MAX_YEAR = 2099
+
+export function getDefaultYearRange(referenceDate: DateValue, min?: DateValue, max?: DateValue): YearsRange {
+  const calendar = referenceDate.calendar
+  const fromYear = min?.year ?? toCalendar(new CalendarDate(DEFAULT_MIN_YEAR, 1, 1), calendar).year
+  const toYear = max?.year ?? toCalendar(new CalendarDate(DEFAULT_MAX_YEAR, 12, 31), calendar).year
+  return { from: fromYear, to: toYear }
 }
 
 const FUTURE_YEAR_COERCION = 10
@@ -23,10 +35,11 @@ export function normalizeYear(year: string | null | undefined) {
   return year
 }
 
-export function getDecadeRange(year: number) {
-  const computedYear = year - (year % 10) - 1
+export function getDecadeRange(year: number, opts?: { strict?: boolean }) {
+  const chunkSize = opts?.strict ? 10 : 12
+  const computedYear = year - (year % 10)
   const years: number[] = []
-  for (let i = 0; i < 12; i += 1) {
+  for (let i = 0; i < chunkSize; i += 1) {
     const value = computedYear + i
     years.push(value)
   }

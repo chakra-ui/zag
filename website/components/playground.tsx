@@ -1,7 +1,6 @@
-import { Box, Flex, HStack, Stack } from "@chakra-ui/layout"
-import { chakra } from "@chakra-ui/system"
+import { styled, Box, Flex, HStack, Stack } from "styled-system/jsx"
 import { openInStackblitz } from "lib/open-in-stackblitz"
-import { JSX, useState } from "react"
+import { useState } from "react"
 import { SiStackblitz } from "react-icons/si"
 
 const Header = (props: any) => (
@@ -17,17 +16,14 @@ const Header = (props: any) => (
   />
 )
 
-type PlaygroundProps = {
+type PlaygroundProps<T> = {
   name: string
-  component: React.ComponentType<any>
-  defaultContext?: Record<string, any>
-  defaultProps?: Record<
-    string,
-    | string
-    | number
-    | boolean
-    | { options: string[]; default: string; required?: boolean }
-  >
+  component: React.ComponentType<T>
+  defaultProps?: Partial<{
+    [K in keyof T]:
+      | T[K]
+      | { default: T[K]; options: Array<T[K]>; required?: boolean }
+  }>
   hideControls?: boolean
   debug?: boolean
 }
@@ -46,14 +42,14 @@ const OpenInStackblitz = (props: { name: string; defaultProps: any }) => {
 
   return (
     <HStack
-      spacing="1"
+      gap="1"
       as="button"
       bg="#1574ef"
       color="white"
       fontSize="sm"
       px="2"
       py="1"
-      shadow="rgba(255, 255, 255, 0.14) 0px 0px 0px 1px inset"
+      shadow="inset 0 0 0 1px var(--colors-white-alpha-300)"
       onClick={() => {
         openInStackblitz(name, defaultProps)
       }}
@@ -64,21 +60,20 @@ const OpenInStackblitz = (props: { name: string; defaultProps: any }) => {
   )
 }
 
-export function Playground(props: PlaygroundProps) {
+export function Playground<T extends object>(props: PlaygroundProps<T>) {
   const {
     name: componentName,
-    component: Comp,
+    component: Component,
     defaultProps = {},
     debug,
     hideControls,
-    defaultContext,
   } = props
 
   const [state, setState] = useState(
     Object.fromEntries(
       Object.entries(defaultProps).map(([key, value]) => [
         key,
-        typeof value === "object" ? value.default : value,
+        isObject(value) && "default" in value ? value.default : value,
       ]),
     ),
   )
@@ -93,61 +88,50 @@ export function Playground(props: PlaygroundProps) {
       pos="relative"
       minHeight="24em"
       my="16"
-      bg="bg-code-block"
       borderColor="border-subtle"
     >
       <Box pos="absolute" bottom="2" right="2">
         <OpenInStackblitz name={componentName} defaultProps={defaultProps} />
       </Box>
 
-      <Flex
-        align="flex-start"
-        justify="center"
-        py="20"
-        flex="1"
-        bgImage="radial-gradient(circle,var(--colors-gray-200) 1px, transparent 1px);"
-        bgSize="16px 16px"
-        _dark={{
-          bgImage:
-            "radial-gradient(circle,var(--colors-gray-700) 1px, transparent 1px);",
-        }}
-      >
-        <Comp controls={state} defaultContext={defaultContext} />
+      <Flex align="center" justify="center" py="20" flex="1">
+        <Component {...(state as T)} />
       </Flex>
 
-      <Box flexBasis="1px" alignSelf="stretch" bg="bg-bold" />
+      <Box flexBasis="1px" alignSelf="stretch" bg="bg.bold" />
 
       <Box
-        bg="bg-subtle"
+        bg="bg.subtle"
         width={{ md: "240px" }}
         fontSize="sm"
         hidden={isEmpty}
       >
         <Header>Properties</Header>
-        <Stack pos="relative" direction="column" spacing="4" px="5" py="4">
+        <Stack pos="relative" direction="column" gap="4" px="5" py="4">
           {Object.keys(state).map((key) => {
             const value = state[key]
-            const type = defaultProps[key]
+            const type = (defaultProps as Partial<T>)[key as keyof T]
 
             if (typeof type === "boolean") {
               return (
-                <Flex
+                <styled.label
                   as="label"
                   htmlFor={key}
-                  justify="space-between"
-                  align="center"
+                  display="flex"
+                  justifyContent="space-between"
+                  alignItems="center"
                   gap="2"
                   key={key}
                 >
                   <div>{key}</div>
-                  <chakra.input
+                  <styled.input
                     id={key}
                     type="checkbox"
                     defaultChecked={value as any}
-                    bg="bg-subtle"
+                    bg="bg.subtle"
                     onChange={() => setState({ ...state, [key]: !value })}
                   />
-                </Flex>
+                </styled.label>
               )
             }
 
@@ -155,7 +139,7 @@ export function Playground(props: PlaygroundProps) {
               return (
                 <div key={key}>
                   <label htmlFor={key}>{key}</label>
-                  <chakra.input
+                  <styled.input
                     mt="1"
                     width="full"
                     borderWidth="1px"
@@ -163,7 +147,7 @@ export function Playground(props: PlaygroundProps) {
                     id={key}
                     type="text"
                     defaultValue={value as any}
-                    bg="bg-subtle"
+                    bg="bg.subtle"
                     onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                       setState({ ...state, [key]: e.target.value })
                     }}
@@ -176,14 +160,14 @@ export function Playground(props: PlaygroundProps) {
               return (
                 <Flex justify="space-between" key={key}>
                   <label htmlFor={key}>{key}</label>
-                  <chakra.input
+                  <styled.input
                     id={key}
                     type="number"
                     maxWidth="6ch"
                     borderWidth="1px"
-                    px="2"
-                    bg="bg-subtle"
-                    defaultValue={state[key] as number}
+                    ps="2"
+                    bg="bg.subtle"
+                    defaultValue={value as number}
                     onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                       const val = e.currentTarget.valueAsNumber
                       setState((s) => ({ ...s, [key]: isNaN(val) ? 0 : val }))
@@ -193,31 +177,33 @@ export function Playground(props: PlaygroundProps) {
               )
             }
 
-            if (!value) return null
+            if (isObject(type) && "options" in type) {
+              return (
+                <Flex justify="space-between" key={key}>
+                  <label htmlFor={key}>{key}</label>
+                  <styled.select
+                    id={key}
+                    borderWidth="1px"
+                    fontSize="xs"
+                    px="1"
+                    bg="bg.subtle"
+                    defaultValue={value as string}
+                    onChange={(e: React.ChangeEvent<HTMLSelectElement>) => {
+                      setState((s) => ({ ...s, [key]: e.target.value }))
+                    }}
+                  >
+                    {!type.required && <option>-----</option>}
+                    {type.options.map((option: string) => (
+                      <option key={option} value={option}>
+                        {option}
+                      </option>
+                    ))}
+                  </styled.select>
+                </Flex>
+              )
+            }
 
-            return (
-              <Flex justify="space-between" key={key}>
-                <label htmlFor={key}>{key}</label>
-                <chakra.select
-                  id={key}
-                  borderWidth="1px"
-                  fontSize="xs"
-                  px="1"
-                  bg="bg-subtle"
-                  defaultValue={state[key] as any}
-                  onChange={(e: React.ChangeEvent<HTMLSelectElement>) => {
-                    setState((s) => ({ ...s, [key]: e.target.value }))
-                  }}
-                >
-                  {!type.required && <option>-----</option>}
-                  {type.options.map((option) => (
-                    <option key={option} value={option}>
-                      {option}
-                    </option>
-                  ))}
-                </chakra.select>
-              </Flex>
-            )
+            return null
           })}
 
           {debug && (

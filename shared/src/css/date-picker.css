@@ -1,3 +1,15 @@
+[data-scope="date-picker"][data-part="trigger"] {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+
+  svg {
+    width: 12px;
+    height: 12px;
+  }
+}
+
 [data-scope="date-picker"][data-part="table-cell-trigger"] {
   padding: 4px;
   min-width: 30px;
@@ -56,6 +68,12 @@
   min-width: 320px;
   background: white;
   border-radius: 8px;
+}
+
+[data-scope="date-picker"][data-part="content"][data-inline] {
+  border: 0;
+  padding: 0;
+  border-radius: 0;
 }
 
 [data-scope="date-picker"][data-part="table"] {

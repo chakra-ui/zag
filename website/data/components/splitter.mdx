@@ -4,11 +4,7 @@ description: Using the splitter machine in your project.
 package: "@zag-js/splitter"
 ---
 
-# Splitter
-
-A splitter allow create dynamic layouts split into vertically or horizontally
-arranged panes. Panes are separated by the splitter bars that allow dragging to
-resize or expand/collapse them.
+A splitter creates resizable layouts with horizontal or vertical panels.
 
 <Resources pkg="@zag-js/splitter" />
 
@@ -17,10 +13,10 @@ resize or expand/collapse them.
 **Features**
 
 - Built with flexbox for flexible layout and SSR
-- Support both dynamic horizontal and vertical panels
-- Support multiple panels and splitters
-- Support for collapsible panels
-- Support for panel constraints like min and max sizes
+- Supports horizontal and vertical panels
+- Supports multiple panels and resize handles
+- Supports collapsible panels
+- Supports panel constraints like min and max sizes
 - Programmatic control of panel sizes
 - Implements the
   [Window Splitter pattern](https://www.w3.org/WAI/ARIA/apg/patterns/windowsplitter/)
@@ -28,15 +24,13 @@ resize or expand/collapse them.
 
 ## Installation
 
-To use the splitter machine in your project, run the following command in your
-command line:
+Install the splitter package:
 
 <CodeSnippet id="splitter/installation.mdx" />
 
 ## Anatomy
 
-To set up the slider correctly, you'll need to understand its anatomy and how we
-name its parts.
+Check the splitter anatomy and part names.
 
 > Each part includes a `data-part` attribute to help identify them in the DOM.
 
@@ -44,7 +38,7 @@ name its parts.
 
 ## Usage
 
-First, import the splitter package into your project
+Import the splitter package:
 
 ```jsx
 import * as splitter from "@zag-js/splitter"
@@ -52,15 +46,10 @@ import * as splitter from "@zag-js/splitter"
 
 The splitter package exports two key functions:
 
-- `machine` — The state machine logic for the splitter widget.
-- `connect` — The function that translates the machine's state to JSX attributes
-  and event handlers.
+- `machine` - State machine logic.
+- `connect` - Maps machine state to JSX props and event handlers.
 
-> You'll also need to provide a unique `id` to the `useMachine` hook. This is
-> used to ensure that every part has a unique identifier.
-
-Next, import the required hooks and functions for your framework and use the
-splitter machine in your project 🔥
+Then use the framework integration helpers:
 
 <CodeSnippet id="splitter/usage.mdx" />
 
@@ -78,10 +67,24 @@ const service = useMachine(splitter.machine, {
 })
 ```
 
+### Controlled panel sizes
+
+Use `size` and `onResize` for controlled layouts.
+
+```jsx
+const service = useMachine(splitter.machine, {
+  panels,
+  size,
+  onResize(details) {
+    setSize(details.size)
+  },
+})
+```
+
 ### Listening for resize events
 
 When the resize trigger is dragged, the `onResize`, `onResizeStart` and
-`onResizeEnd` callback is invoked.
+`onResizeEnd` callbacks are invoked.
 
 ```jsx {3-10}
 const service = useMachine(splitter.machine, {
@@ -89,8 +92,8 @@ const service = useMachine(splitter.machine, {
   onResize(detail) {
     console.log("resize", detail)
   },
-  onResizeStart(detail) {
-    console.log("change start", detail)
+  onResizeStart() {
+    console.log("resize start")
   },
   onResizeEnd(detail) {
     console.log("change end", detail)
@@ -120,9 +123,20 @@ for the splitter panels.
 const service = useMachine(splitter.machine, {
   // ...
   panels: [
-    { id: "a", minSize: 100, maxSize: 300 },
-    { id: "b", minSize: 100, maxSize: 300 },
+    { id: "a", minSize: 20, maxSize: 80 },
+    { id: "b", minSize: 20, maxSize: 80 },
   ],
+})
+```
+
+### Configuring keyboard resize step
+
+Use `keyboardResizeBy` to control how many pixels arrow keys resize by.
+
+```jsx
+const service = useMachine(splitter.machine, {
+  panels,
+  keyboardResizeBy: 16,
 })
 ```
 
@@ -163,15 +177,26 @@ const service = useMachine(splitter.machine, {
 })
 ```
 
+### Programmatic panel control
+
+Use the connected API to resize, collapse, or expand panels from code.
+
+```jsx
+api.setSizes([30, 70])
+api.resizePanel("a", 40)
+api.collapsePanel("a")
+api.expandPanel("a")
+api.resetSizes()
+```
+
 ## Styling guide
 
-Earlier, we mentioned that each accordion part has a `data-part` attribute added
-to them to select and style them in the DOM.
+Each part includes a `data-part` attribute you can target in CSS.
 
 ### Resize trigger
 
-When an splitter item is horizontal or vertical, a `data-state` attribute is set
-on the item and content elements.
+When a resize trigger is horizontal or vertical, a `data-orientation` attribute
+is set on the trigger element.
 
 ```css
 [data-scope="splitter"][data-part="resize-trigger"] {

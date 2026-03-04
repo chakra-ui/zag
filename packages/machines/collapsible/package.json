@@ -1,6 +1,6 @@
 {
   "name": "@zag-js/collapsible",
-  "version": "1.12.2",
+  "version": "1.35.3",
   "description": "Core logic for the collapsible widget implemented as a state machine",
   "keywords": [
     "js",
@@ -43,5 +43,5 @@
   "devDependencies": {
     "clean-package": "2.2.0"
   },
-  "clean-package": "../../../clean-package.config.json"
+  "clean-package": "./clean-package.config.json"
 }

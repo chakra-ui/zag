@@ -28,6 +28,10 @@ might have asked the same thing before 😉!
 
 > What alternative solutions have you considered before making this request?
 
+## 🧢 Your Company/Team
+
+<!-- Optional: Which company or team would benefit from this feature? (e.g., Acme/Dashboard) -->
+
 ## 📝 Additional Information
 
 > What resources (links, screenshots, etc.) do you have to assist this effort?

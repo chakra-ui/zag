@@ -1,5 +1,549 @@
 # @zag-js/collection
 
+## 1.35.3
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/utils@1.35.3
+
+## 1.35.2
+
+### Patch Changes
+
+- Updated dependencies [[`01840ee`](https://github.com/chakra-ui/zag/commit/01840ee6f9672bedc784a2c434b84e8741e2dc25)]:
+  - @zag-js/utils@1.35.2
+
+## 1.35.1
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/utils@1.35.1
+
+## 1.35.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/utils@1.35.0
+
+## 1.34.1
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/utils@1.34.1
+
+## 1.34.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/utils@1.34.0
+
+## 1.33.1
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/utils@1.33.1
+
+## 1.33.0
+
+### Patch Changes
+
+- [`a908644`](https://github.com/chakra-ui/zag/commit/a9086445116a272c7ac7b761fec3873c43c41a96) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix initial focus issue when the first node or branch is disabled.
+  Added `skip` option to `getFirstNode()` (matching `getLastNode()`) to respect collapsed branches. The initial focus
+  now correctly targets the first visible non-disabled node.
+- Updated dependencies []:
+  - @zag-js/utils@1.33.0
+
+## 1.32.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/utils@1.32.0
+
+## 1.31.1
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/utils@1.31.1
+
+## 1.31.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/utils@1.31.0
+
+## 1.30.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/utils@1.30.0
+
+## 1.29.1
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/utils@1.29.1
+
+## 1.29.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/utils@1.29.0
+
+## 1.28.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/utils@1.28.0
+
+## 1.27.1
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/utils@1.27.1
+
+## 1.27.0
+
+### Patch Changes
+
+- Updated dependencies [[`920e727`](https://github.com/chakra-ui/zag/commit/920e727f73940aed3c6d2b886c64200a4a5702d0)]:
+  - @zag-js/utils@1.27.0
+
+## 1.26.5
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/utils@1.26.5
+
+## 1.26.4
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/utils@1.26.4
+
+## 1.26.3
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/utils@1.26.3
+
+## 1.26.2
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/utils@1.26.2
+
+## 1.26.1
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/utils@1.26.1
+
+## 1.26.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/utils@1.26.0
+
+## 1.25.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/utils@1.25.0
+
+## 1.24.2
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/utils@1.24.2
+
+## 1.24.1
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/utils@1.24.1
+
+## 1.24.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/utils@1.24.0
+
+## 1.23.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/utils@1.23.0
+
+## 1.22.1
+
+### Patch Changes
+
+- [`4790d22`](https://github.com/chakra-ui/zag/commit/4790d22ee49c02daafad02aa4f5beb5fcdd507f7) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix issue where disabled items could be reached via typeahead
+
+- Updated dependencies []:
+  - @zag-js/utils@1.22.1
+
+## 1.22.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/utils@1.22.0
+
+## 1.21.9
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/utils@1.21.9
+
+## 1.21.8
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/utils@1.21.8
+
+## 1.21.7
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/utils@1.21.7
+
+## 1.21.6
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/utils@1.21.6
+
+## 1.21.5
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/utils@1.21.5
+
+## 1.21.4
+
+### Patch Changes
+
+- [`d07647c`](https://github.com/chakra-ui/zag/commit/d07647cc53cec91d126653dec056c7dd7f9805a7) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - - **ListCollection**
+  - Avoid recomputing groups on every call to `at()` and `indexOf()`
+  - Fixed bug in `find()` method (was checking `!= null` instead of `!== -1`)
+  - **GridCollection**
+    - Avoid recomputing rows on every call to `getRows()`
+
+- Updated dependencies []:
+  - @zag-js/utils@1.21.4
+
+## 1.21.3
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/utils@1.21.3
+
+## 1.21.2
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/utils@1.21.2
+
+## 1.21.1
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/utils@1.21.1
+
+## 1.21.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/utils@1.21.0
+
+## 1.20.1
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/utils@1.20.1
+
+## 1.20.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/utils@1.20.0
+
+## 1.19.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/utils@1.19.0
+
+## 1.18.5
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/utils@1.18.5
+
+## 1.18.4
+
+### Patch Changes
+
+- [`8d0179b`](https://github.com/chakra-ui/zag/commit/8d0179b282dc6bedbd7d782192c82df872bf5697) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - **TreeCollection**: Fix issue where the `filter` method completely
+  deletes the children key from the node when there are no matching children
+- Updated dependencies []:
+  - @zag-js/utils@1.18.4
+
+## 1.18.3
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/utils@1.18.3
+
+## 1.18.2
+
+### Patch Changes
+
+- [`3b583f8`](https://github.com/chakra-ui/zag/commit/3b583f8e71dcf625d09d895f90e26e454b725cc5) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Add `upsert` to list collection. Useful for making creatable items
+  in select or combobox
+
+- Updated dependencies [[`11843e6`](https://github.com/chakra-ui/zag/commit/11843e6adf62b906006890c8003b38da2850c8ee)]:
+  - @zag-js/utils@1.18.2
+
+## 1.18.1
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/utils@1.18.1
+
+## 1.18.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/utils@1.18.0
+
+## 1.17.4
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/utils@1.17.4
+
+## 1.17.3
+
+### Patch Changes
+
+- [`bc70411`](https://github.com/chakra-ui/zag/commit/bc7041187e5b8dc950c7e6b57aadc1e50b8a3850) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix tree traversal for querying last node.
+
+- Updated dependencies []:
+  - @zag-js/utils@1.17.3
+
+## 1.17.2
+
+### Patch Changes
+
+- [`2ce6e5c`](https://github.com/chakra-ui/zag/commit/2ce6e5c2296d07c16220eb85fbd720a5b33e1f48) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - - Add support for `findNodes` to find multiple nodes by value in a
+  single pass
+  - Fix issue with `getLastNode` not returning the last node in the tree with only one branch
+- Updated dependencies []:
+  - @zag-js/utils@1.17.2
+
+## 1.17.1
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/utils@1.17.1
+
+## 1.17.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/utils@1.17.0
+
+## 1.16.0
+
+### Patch Changes
+
+- [`f0545c6`](https://github.com/chakra-ui/zag/commit/f0545c61ef151e5e4480b0cc1d7401dda4653094) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Add support for `getDescendantNodes` and `getDescendantValues`
+
+- Updated dependencies []:
+  - @zag-js/utils@1.16.0
+
+## 1.15.7
+
+### Patch Changes
+
+- [`3de5dd0`](https://github.com/chakra-ui/zag/commit/3de5dd059f847bd68cafaae230e706783ff43dc6) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix issue where tree collection filter method returns empty
+  children for leaf item.
+
+- Updated dependencies []:
+  - @zag-js/utils@1.15.7
+
+## 1.15.6
+
+### Patch Changes
+
+- [`bb9b1e1`](https://github.com/chakra-ui/zag/commit/bb9b1e128ee9ff6318bbbbb2505c192435f05d1e) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Improve the APIs around `tree.flatten(...)` and `flattenedToTree`
+  to ensure the original node properties are preserved.
+
+  ```ts
+  const tree = new TreeCollection({
+    nodeToChildren: (node) => node.children ?? [],
+    rootNode: {
+      value: "ROOT",
+      children: [{ value: "child1" }, { value: "child2" }],
+    },
+  })
+
+  const flattened = tree.flatten()
+  const reconstructed = flattenedToTree(flattened)
+
+  console.log(reconstructed.rootNode)
+
+  // {
+  //   value: "ROOT",
+  //   children: [{ value: "child1" }, { value: "child2" }],
+  // }
+  ```
+
+- Updated dependencies []:
+  - @zag-js/utils@1.15.6
+
+## 1.15.5
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/utils@1.15.5
+
+## 1.15.4
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/utils@1.15.4
+
+## 1.15.3
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/utils@1.15.3
+
+## 1.15.2
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/utils@1.15.2
+
+## 1.15.1
+
+### Patch Changes
+
+- [`af01eeb`](https://github.com/chakra-ui/zag/commit/af01eebf013dd9c16821474a26d846f502530feb) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - - Expose `copy` method
+  - Allow `getParentNodes` to accept a value or index path
+- Updated dependencies []:
+  - @zag-js/utils@1.15.1
+
+## 1.15.0
+
+### Minor Changes
+
+- [#2498](https://github.com/chakra-ui/zag/pull/2498)
+  [`ce98b54`](https://github.com/chakra-ui/zag/commit/ce98b54a9cf6c241bc15ce5bbb017797438ecdc6) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Add support lazy loading node children
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/utils@1.15.0
+
+## 1.14.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/utils@1.14.0
+
+## 1.13.1
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/utils@1.13.1
+
+## 1.13.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/utils@1.13.0
+
+## 1.12.4
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/utils@1.12.4
+
+## 1.12.3
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/utils@1.12.3
+
 ## 1.12.2
 
 ### Patch Changes
@@ -96,13 +640,10 @@
 - [#2396](https://github.com/chakra-ui/zag/pull/2396)
   [`0cb6c0e`](https://github.com/chakra-ui/zag/commit/0cb6c0e70193b8a30c17c96f2b739be215f266ed) Thanks
   [@segunadebayo](https://github.com/segunadebayo)! - - **ListCollection**
-
   - Fix stale issues in mutation methods by returning a new `ListCollection` instead of mutating the internal `items`
-
     - Add new methods to the list collection: `update`, `upsert`, `remove`, `append`, `prepend`, `move`
 
   - **GridCollection**
-
     - Add new methods to the grid collection: `getCell`, `getValueCell`, `getFirstEnabledColumnIndex`,
       `getLastEnabledColumnIndex`, `getNextRowValue`, `getPreviousRowValue`
 
@@ -285,7 +826,6 @@
 
 - [`2e4ae72`](https://github.com/chakra-ui/zag/commit/2e4ae729818cd334d9cfe4ddb15c14dc2aabb6bb) Thanks
   [@segunadebayo](https://github.com/segunadebayo)! - **TreeCollection**: Add support for new methods:
-
   - `getPreviousSibling`: Get the previous sibling node of the given node.
   - `getNextSibling`: Get the next sibling node of the given node.
   - `remove`: Remove the given node from the collection.

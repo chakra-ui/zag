@@ -27,6 +27,11 @@ export interface AutoplayStatusDetails {
  * Machine context
  * -----------------------------------------------------------------------------*/
 
+export interface ProgressTextDetails {
+  page: number
+  totalPages: number
+}
+
 export interface IntlTranslations {
   nextTrigger: string
   prevTrigger: string
@@ -34,16 +39,17 @@ export interface IntlTranslations {
   item: (index: number, count: number) => string
   autoplayStart: string
   autoplayStop: string
+  progressText?: ((details: ProgressTextDetails) => string) | undefined
 }
 
 export type ElementIds = Partial<{
   root: string
-  item(index: number): string
+  item: (index: number) => string
   itemGroup: string
   nextTrigger: string
   prevTrigger: string
   indicatorGroup: string
-  indicator(index: number): string
+  indicator: (index: number) => string
 }>
 
 export interface CarouselProps extends DirectionProperty, CommonProperties, OrientationProperty {
@@ -60,6 +66,11 @@ export interface CarouselProps extends DirectionProperty, CommonProperties, Orie
    * @default 1
    */
   slidesPerPage?: number | undefined
+  /**
+   * Whether to enable variable width slides.
+   * @default false
+   */
+  autoSize?: boolean | undefined
   /**
    * The number of slides to scroll at a time.
    *
@@ -147,6 +158,7 @@ type PropsWithDefault =
   | "inViewThreshold"
   | "translations"
   | "slideCount"
+  | "autoSize"
 
 interface PrivateContext {
   pageSnapPoints: number[]
@@ -173,7 +185,7 @@ export interface CarouselSchema {
   refs: {
     timeoutRef: any
   }
-  state: "idle" | "dragging" | "autoplay" | "userScroll"
+  state: "idle" | "dragging" | "settling" | "autoplay" | "userScroll" | "focus"
   effect: string
   action: string
   guard: string
@@ -236,50 +248,55 @@ export interface CarouselApi<T extends PropTypes = PropTypes> {
   /**
    * Function to scroll to a specific item index
    */
-  scrollToIndex(index: number, instant?: boolean): void
+  scrollToIndex: (index: number, instant?: boolean) => void
   /**
    * Function to scroll to a specific page
    */
-  scrollTo(page: number, instant?: boolean): void
+  scrollTo: (page: number, instant?: boolean) => void
   /**
    * Function to scroll to the next page
    */
-  scrollNext(instant?: boolean): void
+  scrollNext: (instant?: boolean) => void
   /**
    * Function to scroll to the previous page
    */
-  scrollPrev(instant?: boolean): void
+  scrollPrev: (instant?: boolean) => void
   /**
    * Returns the current scroll progress as a percentage
    */
-  getProgress(): number
+  getProgress: () => number
+  /**
+   * Returns the progress text
+   */
+  getProgressText: () => string
   /**
    * Function to start/resume autoplay
    */
-  play(): void
+  play: VoidFunction
   /**
    * Function to pause autoplay
    */
-  pause(): void
+  pause: VoidFunction
   /**
    * Whether the item is in view
    */
-  isInView(index: number): boolean
+  isInView: (index: number) => boolean
   /**
    * Function to re-compute the snap points
    * and clamp the page
    */
-  refresh(): void
+  refresh: VoidFunction
 
-  getRootProps(): T["element"]
-  getControlProps(): T["element"]
-  getItemGroupProps(): T["element"]
-  getItemProps(props: ItemProps): T["element"]
-  getPrevTriggerProps(): T["button"]
-  getNextTriggerProps(): T["button"]
-  getAutoplayTriggerProps(): T["button"]
-  getIndicatorGroupProps(): T["element"]
-  getIndicatorProps(props: IndicatorProps): T["button"]
+  getRootProps: () => T["element"]
+  getControlProps: () => T["element"]
+  getItemGroupProps: () => T["element"]
+  getItemProps: (props: ItemProps) => T["element"]
+  getPrevTriggerProps: () => T["button"]
+  getNextTriggerProps: () => T["button"]
+  getAutoplayTriggerProps: () => T["button"]
+  getIndicatorGroupProps: () => T["element"]
+  getIndicatorProps: (props: IndicatorProps) => T["button"]
+  getProgressTextProps: () => T["element"]
 }
 
 /* -----------------------------------------------------------------------------

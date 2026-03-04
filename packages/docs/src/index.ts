@@ -1,6 +1,7 @@
-import apiJson from "../data/api.json"
-import accessibilityJson from "../data/accessibility.json"
-import dataAttrJson from "../data/data-attr.json"
+import apiJson from "../data/api.json" with { type: "json" }
+import accessibilityJson from "../data/accessibility.json" with { type: "json" }
+import dataAttrJson from "../data/data-attr.json" with { type: "json" }
+import cssVarsJson from "../data/css-vars.json" with { type: "json" }
 
 /* -----------------------------------------------------------------------------
  * The data attribute documentation
@@ -16,6 +17,24 @@ export function getDataAttrDoc(key: DataAttrDocKey): DataAttrEntry {
   const data = dataAttrJson[key]
   if (!data) {
     throw new Error(`No data attribute data found for ${key}`)
+  }
+  return data
+}
+
+/* -----------------------------------------------------------------------------
+ * The CSS variables documentation
+ * -----------------------------------------------------------------------------*/
+
+export interface CssVarEntry {
+  [part: string]: Record<string, string>
+}
+
+export type CssVarDocKey = keyof typeof cssVarsJson
+
+export function getCssVarDoc(key: CssVarDocKey): CssVarEntry {
+  const data = cssVarsJson[key]
+  if (!data) {
+    throw new Error(`No CSS variable data found for ${key}`)
   }
   return data
 }
@@ -50,7 +69,7 @@ export function getAccessibilityDoc(key: AccessibilityDocKey): AccessibilityDoc 
 interface Prop {
   type: string
   description: string
-  defaultValue?: string
+  defaultValue?: string | undefined
 }
 
 export interface ApiDoc {
@@ -74,6 +93,6 @@ export function getApiDoc(key: ApiDocKey): ApiDoc {
   return data as ApiDoc
 }
 
-export { accessibilityJson, apiJson }
+export { accessibilityJson, apiJson, cssVarsJson }
 
 export default apiJson

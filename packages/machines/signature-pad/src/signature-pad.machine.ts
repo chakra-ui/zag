@@ -8,6 +8,7 @@ import type { Point, SignaturePadSchema } from "./signature-pad.types"
 export const machine = createMachine<SignaturePadSchema>({
   props({ props }) {
     return {
+      defaultPaths: [],
       ...props,
       drawing: {
         size: 2,
@@ -32,7 +33,8 @@ export const machine = createMachine<SignaturePadSchema>({
   context({ prop, bindable }) {
     return {
       paths: bindable<string[]>(() => ({
-        defaultValue: [],
+        defaultValue: prop("defaultPaths"),
+        value: prop("paths"),
         sync: true,
         onChange(value) {
           prop("onDraw")?.({ paths: value })
@@ -106,13 +108,15 @@ export const machine = createMachine<SignaturePadSchema>({
         context.set("currentPath", getSvgPathFromStroke(stroke))
       },
       endStroke({ context }) {
-        context.set("paths", [...context.get("paths"), context.get("currentPath")!])
+        const nextPaths = [...context.get("paths"), context.get("currentPath")!]
+        context.set("paths", nextPaths)
         context.set("currentPoints", [])
         context.set("currentPath", null)
       },
       clearPoints({ context }) {
         context.set("currentPoints", [])
         context.set("paths", [])
+        context.set("currentPath", null)
       },
       focusCanvasEl({ scope }) {
         queueMicrotask(() => {

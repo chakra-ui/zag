@@ -1,0 +1,41 @@
+@layer recipes {
+  .Root {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    margin-top: -24px;
+
+    &[dir="rtl"] [data-half] .Star {
+      transform: scale(-1, 1);
+    }
+  }
+
+  .Control {
+    display: inline-flex;
+  }
+
+  .Item {
+    width: 2rem;
+    height: 2rem;
+    padding: 0.25rem;
+    border-radius: 4px;
+
+    &:focus-visible {
+      outline: 2px solid var(--colors-bg-primary-bold);
+      outline-offset: 2px;
+    }
+
+    & .Star {
+      color: var(--colors-border-bold);
+    }
+
+    &[data-highlighted] .Star {
+      color: var(--colors-bg-primary-bold);
+    }
+
+    &[data-highlighted][data-disabled] .Star {
+      color: var(--colors-fg-subtle);
+      filter: grayscale(100%);
+    }
+  }
+}

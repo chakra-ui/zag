@@ -1,9 +1,9 @@
 import type { AutoUpdateOptions, Middleware, Placement } from "@floating-ui/dom"
 import { arrow, autoUpdate, computePosition, flip, hide, limitShift, offset, shift, size } from "@floating-ui/dom"
 import { getComputedStyle, getWindow, raf } from "@zag-js/dom-query"
-import { compact, isNull, noop, runIfFn } from "@zag-js/utils"
+import { compact, isNull, noop } from "@zag-js/utils"
 import { getAnchorElement } from "./get-anchor"
-import { rectMiddleware, shiftArrowMiddleware, transformOriginMiddleware } from "./middleware"
+import { createTransformOriginMiddleware, rectMiddleware, shiftArrowMiddleware } from "./middleware"
 import { getPlacementDetails } from "./placement"
 import type { MaybeElement, MaybeFn, MaybeRectElement, PositioningOptions } from "./types"
 
@@ -24,37 +24,39 @@ const defaultOptions: PositioningOptions = {
 type NonNullable<T> = T extends null | undefined ? never : T
 type RequiredBy<T, K extends keyof T> = Omit<T, K> & { [P in K]-?: NonNullable<T[P]> }
 
-interface Options
-  extends RequiredBy<
-    PositioningOptions,
-    | "strategy"
-    | "placement"
-    | "listeners"
-    | "gutter"
-    | "flip"
-    | "slide"
-    | "overlap"
-    | "sameWidth"
-    | "fitViewport"
-    | "overflowPadding"
-    | "arrowPadding"
-  > {}
+interface Options extends RequiredBy<
+  PositioningOptions,
+  | "strategy"
+  | "placement"
+  | "listeners"
+  | "gutter"
+  | "flip"
+  | "slide"
+  | "overlap"
+  | "sameWidth"
+  | "fitViewport"
+  | "overflowPadding"
+  | "arrowPadding"
+> {}
 
 function roundByDpr(win: Window, value: number) {
   const dpr = win.devicePixelRatio || 1
   return Math.round(value * dpr) / dpr
 }
 
-function getBoundaryMiddleware(opts: Options) {
-  return runIfFn(opts.boundary)
+function isApproximatelyEqual(a: number | undefined, b: number): boolean {
+  return a != null && Math.abs(a - b) < 0.5
 }
 
-function getArrowMiddleware(arrowElement: HTMLElement | null, opts: Options) {
-  if (!arrowElement) return
-  return arrow({
-    element: arrowElement,
-    padding: opts.arrowPadding,
-  })
+function resolveBoundaryOption(boundary: Options["boundary"]) {
+  if (typeof boundary === "function") return boundary()
+  if (boundary === "clipping-ancestors") return "clippingAncestors"
+  return boundary
+}
+
+function getArrowMiddleware(arrowElement: HTMLElement | null, doc: Document, opts: Options) {
+  const element = arrowElement || doc.createElement("div")
+  return arrow({ element, padding: opts.arrowPadding })
 }
 
 function getOffsetMiddleware(arrowElement: HTMLElement | null, opts: Options) {
@@ -79,8 +81,9 @@ function getOffsetMiddleware(arrowElement: HTMLElement | null, opts: Options) {
 
 function getFlipMiddleware(opts: Options) {
   if (!opts.flip) return
+  const boundary = resolveBoundaryOption(opts.boundary)
   return flip({
-    boundary: getBoundaryMiddleware(opts),
+    ...(boundary ? { boundary } : undefined),
     padding: opts.overflowPadding,
     fallbackPlacements: (opts.flip === true ? undefined : opts.flip) as Placement[],
   })
@@ -88,8 +91,9 @@ function getFlipMiddleware(opts: Options) {
 
 function getShiftMiddleware(opts: Options) {
   if (!opts.slide && !opts.overlap) return
+  const boundary = resolveBoundaryOption(opts.boundary)
   return shift({
-    boundary: getBoundaryMiddleware(opts),
+    ...(boundary ? { boundary } : undefined),
     mainAxis: opts.slide,
     crossAxis: opts.overlap,
     padding: opts.overflowPadding,
@@ -98,25 +102,47 @@ function getShiftMiddleware(opts: Options) {
 }
 
 function getSizeMiddleware(opts: Options) {
+  // Skip when explicitly disabled, unless sameWidth or fitViewport require it
+  if (opts.sizeMiddleware === false && !opts.sameWidth && !opts.fitViewport) return
+
+  let lastReferenceWidth: number | undefined
+  let lastReferenceHeight: number | undefined
+  let lastAvailableWidth: number | undefined
+  let lastAvailableHeight: number | undefined
+
   return size({
     padding: opts.overflowPadding,
     apply({ elements, rects, availableHeight, availableWidth }) {
       const floating = elements.floating
 
       const referenceWidth = Math.round(rects.reference.width)
+      const referenceHeight = Math.round(rects.reference.height)
       availableWidth = Math.floor(availableWidth)
       availableHeight = Math.floor(availableHeight)
 
-      floating.style.setProperty("--reference-width", `${referenceWidth}px`)
-      floating.style.setProperty("--available-width", `${availableWidth}px`)
-      floating.style.setProperty("--available-height", `${availableHeight}px`)
+      if (!isApproximatelyEqual(lastReferenceWidth, referenceWidth)) {
+        floating.style.setProperty("--reference-width", `${referenceWidth}px`)
+        lastReferenceWidth = referenceWidth
+      }
+      if (!isApproximatelyEqual(lastReferenceHeight, referenceHeight)) {
+        floating.style.setProperty("--reference-height", `${referenceHeight}px`)
+        lastReferenceHeight = referenceHeight
+      }
+      if (!isApproximatelyEqual(lastAvailableWidth, availableWidth)) {
+        floating.style.setProperty("--available-width", `${availableWidth}px`)
+        lastAvailableWidth = availableWidth
+      }
+      if (!isApproximatelyEqual(lastAvailableHeight, availableHeight)) {
+        floating.style.setProperty("--available-height", `${availableHeight}px`)
+        lastAvailableHeight = availableHeight
+      }
     },
   })
 }
 
 function hideWhenDetachedMiddleware(opts: Options) {
   if (!opts.hideWhenDetached) return
-  return hide({ strategy: "referenceHidden", boundary: opts.boundary?.() ?? "clippingAncestors" })
+  return hide({ strategy: "referenceHidden", boundary: resolveBoundaryOption(opts.boundary) ?? "clippingAncestors" })
 }
 
 function getAutoUpdateOptions(opts?: boolean | AutoUpdateOptions): AutoUpdateOptions {
@@ -128,7 +154,8 @@ function getAutoUpdateOptions(opts?: boolean | AutoUpdateOptions): AutoUpdateOpt
 }
 
 function getPlacementImpl(referenceOrVirtual: MaybeRectElement, floating: MaybeElement, opts: PositioningOptions = {}) {
-  const reference = getAnchorElement(referenceOrVirtual, opts.getAnchorRect)
+  const anchor = opts.getAnchorElement?.() ?? referenceOrVirtual
+  const reference = getAnchorElement(anchor, opts.getAnchorRect)
   if (!floating || !reference) return
   const options = Object.assign({}, defaultOptions, opts) as Options
 
@@ -142,9 +169,12 @@ function getPlacementImpl(referenceOrVirtual: MaybeRectElement, floating: MaybeE
     getOffsetMiddleware(arrowEl, options),
     getFlipMiddleware(options),
     getShiftMiddleware(options),
-    getArrowMiddleware(arrowEl, options),
+    getArrowMiddleware(arrowEl, floating.ownerDocument, options),
     shiftArrowMiddleware(arrowEl),
-    transformOriginMiddleware,
+    createTransformOriginMiddleware(
+      { gutter: options.gutter, offset: options.offset, overlap: options.overlap },
+      arrowEl,
+    ),
     getSizeMiddleware(options),
     hideWhenDetachedMiddleware(options),
     rectMiddleware,
@@ -156,6 +186,10 @@ function getPlacementImpl(referenceOrVirtual: MaybeRectElement, floating: MaybeE
 
   const { placement, strategy, onComplete, onPositioned } = options
 
+  let lastX: number | undefined
+  let lastY: number | undefined
+  let zIndexComputed = false
+
   const updatePosition = async () => {
     if (!reference || !floating) return
 
@@ -166,14 +200,23 @@ function getPlacementImpl(referenceOrVirtual: MaybeRectElement, floating: MaybeE
     })
 
     onComplete?.(pos)
-    onPositioned?.({ placed: true })
 
     const win = getWindow(floating)
     const x = roundByDpr(win, pos.x)
     const y = roundByDpr(win, pos.y)
 
-    floating.style.setProperty("--x", `${x}px`)
-    floating.style.setProperty("--y", `${y}px`)
+    // apply transform directly to avoid expensive CSS variable cascade
+    floating.style.transform = `translate3d(${x}px, ${y}px, 0)`
+
+    // still set --x/--y for backward compat, but only when changed
+    if (!isApproximatelyEqual(lastX, x)) {
+      floating.style.setProperty("--x", `${x}px`)
+      lastX = x
+    }
+    if (!isApproximatelyEqual(lastY, y)) {
+      floating.style.setProperty("--y", `${y}px`)
+      lastY = y
+    }
 
     if (options.hideWhenDetached) {
       const isHidden = pos.middlewareData.hide?.referenceHidden
@@ -186,17 +229,19 @@ function getPlacementImpl(referenceOrVirtual: MaybeRectElement, floating: MaybeE
       }
     }
 
-    const contentEl = floating.firstElementChild
-
-    if (contentEl) {
-      const styles = getComputedStyle(contentEl)
-      floating.style.setProperty("--z-index", styles.zIndex)
+    // compute z-index only once to avoid forced reflow on every update
+    if (!zIndexComputed) {
+      const contentEl = floating.firstElementChild
+      if (contentEl) {
+        floating.style.setProperty("--z-index", getComputedStyle(contentEl).zIndex)
+        zIndexComputed = true
+      }
     }
   }
 
   const update = async () => {
     if (opts.updatePosition) {
-      await opts.updatePosition({ updatePosition })
+      await opts.updatePosition({ updatePosition, floatingElement: floating })
       onPositioned?.({ placed: true })
     } else {
       await updatePosition()
@@ -217,7 +262,7 @@ function getPlacementImpl(referenceOrVirtual: MaybeRectElement, floating: MaybeE
 export function getPlacement(
   referenceOrFn: MaybeFn<MaybeRectElement>,
   floatingOrFn: MaybeFn<MaybeElement>,
-  opts: PositioningOptions & { defer?: boolean } = {},
+  opts: PositioningOptions & { defer?: boolean | undefined } = {},
 ) {
   const { defer, ...options } = opts
   const func = defer ? raf : (v: any) => v()

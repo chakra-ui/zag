@@ -1,0 +1,104 @@
+# @zag-js/json-tree-utils
+
+## 1.35.3
+
+## 1.35.2
+
+## 1.35.1
+
+## 1.35.0
+
+## 1.34.1
+
+## 1.34.0
+
+## 1.33.1
+
+## 1.33.0
+
+## 1.32.0
+
+## 1.31.1
+
+## 1.31.0
+
+## 1.30.0
+
+## 1.29.1
+
+## 1.29.0
+
+## 1.28.0
+
+## 1.27.1
+
+## 1.27.0
+
+## 1.26.5
+
+## 1.26.4
+
+## 1.26.3
+
+## 1.26.2
+
+## 1.26.1
+
+## 1.26.0
+
+## 1.25.0
+
+## 1.24.2
+
+## 1.24.1
+
+## 1.24.0
+
+## 1.23.0
+
+## 1.22.1
+
+## 1.22.0
+
+## 1.21.9
+
+## 1.21.8
+
+## 1.21.7
+
+## 1.21.6
+
+## 1.21.5
+
+## 1.21.4
+
+## 1.21.3
+
+## 1.21.2
+
+## 1.21.1
+
+## 1.21.0
+
+## 1.20.1
+
+## 1.20.0
+
+## 1.19.0
+
+## 1.18.5
+
+### Patch Changes
+
+- [`5881963`](https://github.com/chakra-ui/zag/commit/5881963e9d3fb9303b9a471ddf22d28f552fb2df) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Add support for `groupArraysAfterLength` to truncate large arrays
+  into chunks (reducing the number of DOM nodes rendered).
+
+## 1.18.4
+
+## 1.18.3
+
+### Patch Changes
+
+- [`fc70e38`](https://github.com/chakra-ui/zag/commit/fc70e385cb31746fd5c03d80b7fc3bff6f12c246) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Initial release

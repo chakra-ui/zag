@@ -6,18 +6,18 @@ import {
   getEventKey,
   getEventPoint,
   getEventTarget,
-  isAnchorElement,
   isContextMenuEvent,
   isDownloadingEvent,
   isEditableElement,
   isModifierKey,
   isOpeningInNewTab,
   isPrintableKey,
-  isSelfTarget,
+  contains,
   isValidTabEvent,
 } from "@zag-js/dom-query"
 import { getPlacementStyles } from "@zag-js/popper"
 import type { EventKeyMap, NormalizeProps, PropTypes } from "@zag-js/types"
+import { cast, hasProp } from "@zag-js/utils"
 import { parts } from "./menu.anatomy"
 import * as dom from "./menu.dom"
 import type { ItemProps, ItemState, MenuApi, MenuSchema, OptionItemProps, OptionItemState } from "./menu.types"
@@ -27,7 +27,7 @@ export function connect<T extends PropTypes>(service: Service<MenuSchema>, norma
 
   const open = state.hasTag("open")
 
-  const isSubmenu = computed("isSubmenu")
+  const isSubmenu = context.get("isSubmenu")
   const isTypingAhead = computed("isTypingAhead")
   const composite = prop("composite")
 
@@ -84,7 +84,8 @@ export function connect<T extends PropTypes>(service: Service<MenuSchema>, norma
         if (event.pointerType !== "mouse") return
         const target = event.currentTarget
         if (itemState.highlighted) return
-        send({ type: "ITEM_POINTERMOVE", id, target, closeOnSelect })
+        const point = getEventPoint(event)
+        send({ type: "ITEM_POINTERMOVE", id, target, closeOnSelect, point })
       },
       onPointerLeave(event) {
         if (itemState.disabled) return
@@ -145,6 +146,7 @@ export function connect<T extends PropTypes>(service: Service<MenuSchema>, norma
         ...parts.contextTrigger.attrs,
         dir: prop("dir"),
         id: dom.getContextTriggerId(scope),
+        "data-state": open ? "open" : "closed",
         onPointerDown(event) {
           if (event.pointerType === "mouse") return
           const point = getEventPoint(event)
@@ -190,7 +192,8 @@ export function connect<T extends PropTypes>(service: Service<MenuSchema>, norma
         "data-uid": prop("id"),
         "aria-haspopup": composite ? "menu" : "dialog",
         "aria-controls": dom.getContentId(scope),
-        "aria-expanded": open || undefined,
+        "data-controls": dom.getContentId(scope),
+        "aria-expanded": open,
         "data-state": open ? "open" : "closed",
         onPointerMove(event) {
           if (event.pointerType !== "mouse") return
@@ -310,7 +313,7 @@ export function connect<T extends PropTypes>(service: Service<MenuSchema>, norma
         },
         onKeyDown(event) {
           if (event.defaultPrevented) return
-          if (!isSelfTarget(event)) return
+          if (!contains(event.currentTarget, getEventTarget(event))) return
 
           const target = getEventTarget<Element>(event)
 
@@ -325,7 +328,6 @@ export function connect<T extends PropTypes>(service: Service<MenuSchema>, norma
             }
           }
 
-          const item = dom.getItemEl(scope, highlightedValue)
           const keyMap: EventKeyMap = {
             ArrowDown() {
               send({ type: "ARROW_DOWN" })
@@ -341,12 +343,6 @@ export function connect<T extends PropTypes>(service: Service<MenuSchema>, norma
             },
             Enter() {
               send({ type: "ENTER" })
-
-              if (highlightedValue == null) return
-
-              if (isAnchorElement(item)) {
-                prop("navigate")?.({ value: highlightedValue, node: item, href: item.href })
-              }
             },
             Space(event) {
               if (isTypingAhead) {
@@ -401,7 +397,7 @@ export function connect<T extends PropTypes>(service: Service<MenuSchema>, norma
     getOptionItemState,
 
     getOptionItemProps(props) {
-      const { type, disabled, onCheckedChange, closeOnSelect } = props
+      const { type, disabled, closeOnSelect } = props
 
       const option = getOptionItemProps(props)
       const itemState = getOptionItemState(props)
@@ -422,32 +418,33 @@ export function connect<T extends PropTypes>(service: Service<MenuSchema>, norma
             if (isOpeningInNewTab(event)) return
             const target = event.currentTarget
             send({ type: "ITEM_CLICK", target, option, closeOnSelect })
-            onCheckedChange?.(!itemState.checked)
           },
         }),
       }
     },
 
     getItemIndicatorProps(props) {
-      const itemState = getOptionItemState(props)
+      const itemState = getOptionItemState(cast(props))
+      const dataState = itemState.checked ? "checked" : "unchecked"
       return normalize.element({
         ...parts.itemIndicator.attrs,
         dir: prop("dir"),
         "data-disabled": dataAttr(itemState.disabled),
         "data-highlighted": dataAttr(itemState.highlighted),
-        "data-state": itemState.checked ? "checked" : "unchecked",
-        hidden: !itemState.checked,
+        "data-state": hasProp(props, "checked") ? dataState : undefined,
+        hidden: hasProp(props, "checked") ? !itemState.checked : undefined,
       })
     },
 
     getItemTextProps(props) {
-      const itemState = getOptionItemState(props)
+      const itemState = getOptionItemState(cast(props))
+      const dataState = itemState.checked ? "checked" : "unchecked"
       return normalize.element({
         ...parts.itemText.attrs,
         dir: prop("dir"),
         "data-disabled": dataAttr(itemState.disabled),
         "data-highlighted": dataAttr(itemState.highlighted),
-        "data-state": itemState.checked ? "checked" : "unchecked",
+        "data-state": hasProp(props, "checked") ? dataState : undefined,
       })
     },
 

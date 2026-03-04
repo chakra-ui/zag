@@ -4,8 +4,6 @@ description: Using the menu machine in your project.
 package: "@zag-js/menu"
 ---
 
-# Menu
-
 An accessible dropdown and context menu that is used to display a list of
 actions or options that a user can choose.
 
@@ -15,22 +13,20 @@ actions or options that a user can choose.
 
 **Features**
 
-- Support for items, labels, groups of items
+- Supports items, labels, groups of items
 - Focus is fully managed using `aria-activedescendant` pattern
 - Typeahead to allow focusing items by typing text
 - Keyboard navigation support including arrow keys, home/end, page up/down
 
 ## Installation
 
-To use the menu machine in your project, run the following command in your
-command line:
+Install the menu package:
 
 <CodeSnippet id="menu/installation.mdx" />
 
 ## Anatomy
 
-To set up the menu correctly, you'll need to understand its anatomy and how we
-name its parts.
+Check the menu anatomy and part names.
 
 > Each part includes a `data-part` attribute to help identify them in the DOM.
 
@@ -38,7 +34,7 @@ name its parts.
 
 ## Usage
 
-First, import the menu package into your project
+Import the menu package:
 
 ```jsx
 import * as menu from "@zag-js/menu"
@@ -46,15 +42,12 @@ import * as menu from "@zag-js/menu"
 
 The menu package exports two key functions:
 
-- `machine` — The state machine logic for the menu widget.
-- `connect` — The function that translates the machine's state to JSX attributes
-  and event handlers.
+- `machine` - State machine logic.
+- `connect` - Maps machine state to JSX props and event handlers.
 
-> You'll need to provide a unique `id` to the `useMachine` hook. This is used to
-> ensure that every part has a unique identifier.
+> Pass a unique `id` to `useMachine` so generated element ids stay predictable.
 
-Next, import the required hooks and functions for your framework and use the
-menu machine in your project 🔥
+Then use the framework integration helpers:
 
 <CodeSnippet id="menu/usage.mdx" />
 
@@ -84,14 +77,48 @@ const service = useMachine(menu.machine, {
 })
 ```
 
+### Controlled open state
+
+Use `open` and `onOpenChange` to control visibility externally.
+
+```jsx
+const service = useMachine(menu.machine, {
+  open,
+  onOpenChange(details) {
+    setOpen(details.open)
+  },
+})
+```
+
+### Listening for highlighted items
+
+Use `onHighlightChange` to react when highlighted item changes.
+
+```jsx
+const service = useMachine(menu.machine, {
+  onHighlightChange(details) {
+    // details => { highlightedValue: string | null }
+    console.log(details.highlightedValue)
+  },
+})
+```
+
+### Setting initial highlighted item
+
+Use `defaultHighlightedValue` to set the initially highlighted item.
+
+```jsx
+const service = useMachine(menu.machine, {
+  defaultHighlightedValue: "settings",
+})
+```
+
 ### Grouping menu items
 
-When the number of menu items gets much, it might be useful to group related
-menu items. To achieve this:
+When you have many menu items, it can help to group related options:
 
 - Wrap the menu items within an element.
-- Spread the `api.getGroupProps(...)` JSX properties unto the element, providing
-  an `id`.
+- Spread `api.getGroupProps(...)` props on the group element, providing an `id`.
 - Render a label for the menu group, providing the `id` of the group element.
 
 ```jsx
@@ -99,10 +126,10 @@ menu items. To achieve this:
 <div {...api.getContentProps()}>
   {/* ... */}
   <hr {...api.getSeparatorProps()} />
-  <p {...api.getLabelProps({ htmlFor: "account" })}>Accounts</p>
-  <div {...api.getGroupProps({ id: "account" })}>
-    <button {...api.getItemProps({ id: "account-1" })}>Account 1</button>
-    <button {...api.getItemProps({ id: "account-2" })}>Account 2</button>
+  <p {...api.getItemGroupLabelProps({ htmlFor: "account" })}>Accounts</p>
+  <div {...api.getItemGroupProps({ id: "account" })}>
+    <button {...api.getItemProps({ value: "account-1" })}>Account 1</button>
+    <button {...api.getItemProps({ value: "account-2" })}>Account 2</button>
   </div>
 </div>
 //...
@@ -127,10 +154,49 @@ A common requirement for the option item that you pass the `name`, `value` and
 
 <CodeSnippet id="menu/option-items.mdx" />
 
+### Default open state
+
+Use `defaultOpen` to start with the menu opened in uncontrolled mode.
+
+```jsx
+const service = useMachine(menu.machine, {
+  defaultOpen: true,
+})
+```
+
+### Keeping menu open after selection
+
+Set `closeOnSelect` to `false` to keep the menu open after selecting an item.
+
+```jsx
+const service = useMachine(menu.machine, {
+  closeOnSelect: false,
+})
+```
+
+### Positioning the menu
+
+Use `positioning` to configure menu placement.
+
+```jsx
+const service = useMachine(menu.machine, {
+  positioning: { placement: "bottom-start" },
+})
+```
+
+### Labeling the menu without visible text
+
+If you do not render a visible label, provide `aria-label`.
+
+```jsx
+const service = useMachine(menu.machine, {
+  "aria-label": "Actions",
+})
+```
+
 ## Styling guide
 
-Earlier, we mentioned that each menu part has a `data-part` attribute added to
-them to select and style them in the DOM.
+Each menu part includes a `data-part` attribute you can target in CSS.
 
 ### Open and closed state
 
@@ -179,7 +245,7 @@ attribute.
 
 ### Using arrows
 
-When using arrows within the menu, you can style it using css variables.
+When using arrows within the menu, you can style it using CSS variables.
 
 ```css
 [data-part="arrow"] {
@@ -215,6 +281,10 @@ The menu `api` exposes the following methods:
 ### Data Attributes
 
 <DataAttrTable name="menu" />
+
+### CSS Variables
+
+<CssVarTable name="menu" />
 
 ## Accessibility
 

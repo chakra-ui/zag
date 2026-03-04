@@ -3,11 +3,16 @@ import { createSplitProps } from "@zag-js/utils"
 import type { ItemGroupLabelProps, ItemGroupProps, ItemProps, SelectProps } from "./select.types"
 
 export const props = createProps<SelectProps>()([
+  "autoComplete",
   "closeOnSelect",
   "collection",
+  "composite",
+  "defaultHighlightedValue",
+  "defaultOpen",
+  "defaultValue",
+  "deselectable",
   "dir",
   "disabled",
-  "deselectable",
   "form",
   "getRootNode",
   "highlightedValue",
@@ -22,17 +27,14 @@ export const props = createProps<SelectProps>()([
   "onInteractOutside",
   "onOpenChange",
   "onPointerDownOutside",
+  "onSelect",
   "onValueChange",
-  "defaultOpen",
   "open",
-  "composite",
   "positioning",
-  "required",
   "readOnly",
+  "required",
   "scrollToIndexFn",
   "value",
-  "defaultValue",
-  "defaultHighlightedValue",
 ])
 export const splitProps = createSplitProps<Partial<SelectProps>>(props)
 

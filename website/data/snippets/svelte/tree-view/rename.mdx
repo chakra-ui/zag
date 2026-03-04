@@ -1,0 +1,109 @@
+```svelte
+<script lang="ts">
+  import { normalizeProps, useMachine } from "@zag-js/svelte"
+  import * as tree from "@zag-js/tree-view"
+  import { FileIcon, FolderIcon, ChevronRightIcon } from "lucide-svelte"
+
+  // 1. Create the tree collection with state
+
+  interface Node {
+    id: string
+    name: string
+    children?: Node[]
+  }
+
+  const initialCollection = tree.collection<Node>({
+    nodeToValue: (node) => node.id,
+    nodeToString: (node) => node.name,
+    rootNode: {
+      id: "ROOT",
+      name: "",
+      children: [
+        { id: "README.md", name: "README.md" },
+        { id: "package.json", name: "package.json" },
+      ],
+    },
+  })
+
+  let collection = $state(initialCollection)
+
+  // 2. Setup rename handlers
+
+  const id = $props.id()
+  const service = useMachine(tree.machine, {
+    id,
+    collection: () => collection,
+    onRenameComplete: (details) => {
+      // Update the collection with the new label
+      const node = collection.at(details.indexPath)
+      const updatedCollection = collection.replace(details.indexPath, {
+        ...node,
+        name: details.label,
+      })
+      collection = updatedCollection
+    },
+  })
+
+  const api = $derived(tree.connect(service, normalizeProps))
+
+  // 3. Create the tree node with rename input
+
+  interface TreeNodeProps {
+    node: Node
+    indexPath: number[]
+    api: tree.Api
+  }
+</script>
+
+{#snippet treeNode(nodeProps: TreeNodeProps)}
+  {@const { node, indexPath, api } = nodeProps}
+  {@const nodeState = api.getNodeState({ indexPath, node })}
+
+  {#if nodeState.isBranch}
+    <div {...api.getBranchProps({ indexPath, node })}>
+      <div {...api.getBranchControlProps({ indexPath, node })}>
+        <FolderIcon />
+        <span
+          {...api.getBranchTextProps({ indexPath, node })}
+          style:display={nodeState.renaming ? "none" : "inline"}
+        >
+          {node.name}
+        </span>
+        <input {...api.getNodeRenameInputProps({ indexPath, node })} />
+        <span {...api.getBranchIndicatorProps({ indexPath, node })}>
+          <ChevronRightIcon />
+        </span>
+      </div>
+      <div {...api.getBranchContentProps({ indexPath, node })}>
+        <div {...api.getBranchIndentGuideProps({ indexPath, node })}></div>
+        {#each node.children || [] as childNode, index}
+          {@render treeNode({ node: childNode, indexPath: [...indexPath, index], api })}
+        {/each}
+      </div>
+    </div>
+  {:else}
+    <div {...api.getItemProps({ indexPath, node })}>
+      <FileIcon />
+      <span
+        {...api.getItemTextProps({ indexPath, node })}
+        style:display={nodeState.renaming ? "none" : "inline"}
+      >
+        {node.name}
+      </span>
+      <input {...api.getNodeRenameInputProps({ indexPath, node })} />
+    </div>
+  {/if}
+{/snippet}
+
+<!-- 4. Create the tree view -->
+
+<div {...api.getRootProps()}>
+  <h3 {...api.getLabelProps()}>My Documents</h3>
+  <p>Press F2 to rename any file or folder</p>
+  <div {...api.getTreeProps()}>
+    {#each collection.rootNode.children || [] as node, index}
+      {@render treeNode({ node, indexPath: [index], api })}
+    {/each}
+  </div>
+</div>
+```

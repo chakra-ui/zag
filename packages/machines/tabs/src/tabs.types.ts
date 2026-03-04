@@ -1,5 +1,5 @@
 import type { EventObject, Machine, Service } from "@zag-js/core"
-import type { CommonProperties, DirectionProperty, PropTypes, RequiredBy } from "@zag-js/types"
+import type { CommonProperties, DirectionProperty, PropTypes, Rect, RequiredBy } from "@zag-js/types"
 
 /* -----------------------------------------------------------------------------
  * Callback details
@@ -29,9 +29,9 @@ export interface IntlTranslations {
 
 export type ElementIds = Partial<{
   root: string
-  trigger: string
+  trigger: (value: string) => string
   list: string
-  content: string
+  content: (value: string) => string
   indicator: string
 }>
 
@@ -106,8 +106,7 @@ export type TabsSchema = {
     ssr: boolean
     value: string | null
     focusedValue: string | null
-    indicatorTransition: boolean
-    indicatorRect: { left: string; top: string; width: string; height: string }
+    indicatorRect: Rect | null
   }
   refs: {
     indicatorCleanup: VoidFunction | null | undefined
@@ -174,40 +173,40 @@ export interface TabsApi<T extends PropTypes = PropTypes> {
   /**
    * Sets the value of the tabs.
    */
-  setValue(value: string): void
+  setValue: (value: string) => void
   /**
    * Clears the value of the tabs.
    */
-  clearValue(): void
+  clearValue: VoidFunction
   /**
    * Sets the indicator rect to the tab with the given value
    */
-  setIndicatorRect(value: string): void
+  setIndicatorRect: (value: string) => void
   /**
    * Synchronizes the tab index of the content element.
    * Useful when rendering tabs within a select or combobox
    */
-  syncTabIndex(): void
+  syncTabIndex: VoidFunction
   /**
    * Set focus on the selected tab trigger
    */
-  focus(): void
+  focus: VoidFunction
   /**
    * Selects the next tab
    */
-  selectNext(fromValue?: string): void
+  selectNext: (fromValue?: string) => void
   /**
    * Selects the previous tab
    */
-  selectPrev(fromValue?: string): void
+  selectPrev: (fromValue?: string) => void
   /**
    * Returns the state of the trigger with the given props
    */
-  getTriggerState(props: TriggerProps): TriggerState
+  getTriggerState: (props: TriggerProps) => TriggerState
 
-  getRootProps(): T["element"]
-  getListProps(): T["element"]
-  getTriggerProps(props: TriggerProps): T["button"]
-  getContentProps(props: ContentProps): T["element"]
-  getIndicatorProps(): T["element"]
+  getRootProps: () => T["element"]
+  getListProps: () => T["element"]
+  getTriggerProps: (props: TriggerProps) => T["button"]
+  getContentProps: (props: ContentProps) => T["element"]
+  getIndicatorProps: () => T["element"]
 }

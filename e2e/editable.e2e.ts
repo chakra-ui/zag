@@ -1,5 +1,6 @@
 import { test } from "@playwright/test"
 import { EditableModel } from "./models/editable.model"
+import { repeat } from "./_utils"
 
 let I: EditableModel
 
@@ -88,5 +89,15 @@ test.describe("editable", () => {
     await I.clickEdit()
     await I.seeInput()
     await I.seeInputIsFocused()
+  })
+
+  test("revert value after repeated full deletion", async () => {
+    await repeat(3, async () => {
+      await I.focusPreview()
+      await I.seeInputHasValue("Hello World")
+      await I.pressKey("Backspace")
+      await I.clickCancel()
+      await I.seePreviewHasText("Hello World")
+    })
   })
 })

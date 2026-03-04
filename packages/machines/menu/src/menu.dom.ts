@@ -36,13 +36,19 @@ const isMatch = (el: HTMLElement, value: string | null) => {
   return el.id === value || el.dataset.value === value
 }
 
-export const getNextEl = (ctx: Scope, opts: { loop?: boolean; value: string | null; loopFocus: boolean }) => {
+export const getNextEl = (
+  ctx: Scope,
+  opts: { loop?: boolean | undefined; value: string | null; loopFocus: boolean },
+) => {
   const items = getElements(ctx)
   const index = items.findIndex((el) => isMatch(el, opts.value))
   return next(items, index, { loop: opts.loop ?? opts.loopFocus })
 }
 
-export const getPrevEl = (ctx: Scope, opts: { loop?: boolean; value: string | null; loopFocus: boolean }) => {
+export const getPrevEl = (
+  ctx: Scope,
+  opts: { loop?: boolean | undefined; value: string | null; loopFocus: boolean },
+) => {
   const items = getElements(ctx)
   const index = items.findIndex((el) => isMatch(el, opts.value))
   return prev(items, index, { loop: opts.loop ?? opts.loopFocus })
@@ -62,7 +68,7 @@ export const isTargetDisabled = (v: EventTarget | null) => {
 }
 
 export const isTriggerItem = (el: HTMLElement | null) => {
-  return !!el?.getAttribute("role")?.startsWith("menuitem") && !!el?.hasAttribute("aria-controls")
+  return !!el?.getAttribute("role")?.startsWith("menuitem") && !!el?.hasAttribute("data-controls")
 }
 
 export const getOptionFromItemEl = (el: HTMLElement) => {

@@ -1,0 +1,16 @@
+```svelte
+<script lang="ts">
+  import * as {{component}} from "@zag-js/{{component}}"
+  import { useMachine, normalizeProps } from "@zag-js/svelte"
+
+  const id = $props.id()
+  const service = useMachine({{component}}.machine({ id }))
+
+  const api = $derived({{component}}.connect(service, normalizeProps))
+</script>
+
+<template>
+  <div {...api.getRootProps()}>
+  </div>
+</template>
+```

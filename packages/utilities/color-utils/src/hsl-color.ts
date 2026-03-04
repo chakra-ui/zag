@@ -25,7 +25,7 @@ export class HSLColor extends Color {
     }
   }
 
-  toString(format: ColorStringFormat = "hsla") {
+  toString(format: ColorStringFormat = "css") {
     switch (format) {
       case "hsl":
         return `hsl(${this.hue}, ${toFixedNumber(this.saturation, 2)}%, ${toFixedNumber(this.lightness, 2)}%)`

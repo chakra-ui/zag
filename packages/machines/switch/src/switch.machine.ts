@@ -146,8 +146,10 @@ export const machine = createMachine<SwitchSchema>({
         context.set("checked", !context.get("checked"))
       },
       dispatchChangeEvent({ context, scope }) {
-        const inputEl = dom.getHiddenInputEl(scope)
-        dispatchInputCheckedEvent(inputEl, { checked: context.get("checked") })
+        queueMicrotask(() => {
+          const inputEl = dom.getHiddenInputEl(scope)
+          dispatchInputCheckedEvent(inputEl, { checked: context.get("checked") })
+        })
       },
     },
   },

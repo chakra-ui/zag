@@ -1,0 +1,35 @@
+```html
+<script setup>
+  import * as imageCropper from "@zag-js/image-cropper"
+  import { normalizeProps, useMachine } from "@zag-js/vue"
+  import { computed } from "vue"
+
+  const service = useMachine(imageCropper.machine, {
+    id: "image-cropper",
+  })
+
+  const api = computed(() => imageCropper.connect(service, normalizeProps))
+</script>
+
+<template>
+  <div v-bind="api.getRootProps()">
+    <div v-bind="api.getViewportProps()">
+      <img
+        src="https://picsum.photos/seed/crop/640/400"
+        crossorigin="anonymous"
+        v-bind="api.getImageProps()"
+      />
+
+      <div v-bind="api.getSelectionProps()">
+        <div
+          v-for="position in imageCropper.handles"
+          :key="position"
+          v-bind="api.getHandleProps({ position })"
+        >
+          <span />
+        </div>
+      </div>
+    </div>
+  </div>
+</template>
+```
