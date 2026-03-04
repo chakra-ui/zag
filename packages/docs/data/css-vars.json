@@ -197,6 +197,11 @@
       "--percent": "The percent value for the Root"
     }
   },
+  "timer": {
+    "Item": {
+      "--value": "The current value"
+    }
+  },
   "tabs": {
     "Indicator": {
       "--transition-property": "The transition property value for the Indicator",
@@ -206,9 +211,12 @@
       "--height": "The height of the element"
     }
   },
-  "timer": {
+  "tree-view": {
     "Item": {
-      "--value": "The current value"
+      "--depth": "The depth value for the Item"
+    },
+    "Branch": {
+      "--depth": "The depth value for the Branch"
     }
   },
   "tour": {
@@ -239,14 +247,6 @@
     "Content": {
       "--layer-index": "The index of the dismissable in the layer stack",
       "--nested-layer-count": "The number of nested tours"
-    }
-  },
-  "tree-view": {
-    "Item": {
-      "--depth": "The depth value for the Item"
-    },
-    "Branch": {
-      "--depth": "The depth value for the Branch"
     }
   },
   "slider": {
