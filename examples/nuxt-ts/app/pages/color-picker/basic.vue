@@ -11,6 +11,7 @@ const service = useMachine(
   controls.mergeProps<colorPicker.Props>({
     id: useId(),
     name: "color",
+    defaultFormat: "hsla",
     defaultValue: colorPicker.parse("hsl(0, 100%, 50%)"),
   }),
 )
@@ -21,7 +22,7 @@ const presets = ["#f47373", "#697689"]
 </script>
 
 <template>
-  <main class="color-picker">
+  <main class="color-picker" :style="{ direction: service.computed(' rtl') ? 'rtl' : 'ltr' }">
     <form @change="
       (e) => {
         const result = serialize(e.currentTarget as HTMLFormElement, { hash: true })

@@ -300,6 +300,7 @@ export function connect<T extends PropTypes>(
           left: `${finalXPercent * 100}%`,
           top: `${yPercent * 100}%`,
           touchAction: "none",
+          transform: "translate(-50%, -50%)",
           forcedColorAdjust: "none",
           "--color": color,
           background: color,

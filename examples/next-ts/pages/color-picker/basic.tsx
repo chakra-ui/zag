@@ -29,13 +29,14 @@ export default function Page() {
   const service = useMachine(colorPicker.machine, {
     id: useId(),
     name: "color",
+    defaultFormat: "hsla",
     defaultValue: colorPicker.parse("hsl(0, 100%, 50%)"),
     ...controls.context,
   })
   const api = colorPicker.connect(service, normalizeProps)
   return (
     <>
-      <main className="color-picker">
+      <main className="color-picker" style={{ direction: service.computed("rtl") ? "rtl" : "ltr" }}>
         <form
           onChange={(e) => {
             console.log("change:", serialize(e.currentTarget, { hash: true }))

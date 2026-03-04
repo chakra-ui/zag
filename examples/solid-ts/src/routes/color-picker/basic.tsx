@@ -31,6 +31,7 @@ export default function Page() {
     controls.mergeProps<colorPicker.Props>({
       id: createUniqueId(),
       name: "color",
+      defaultFormat: "hsla",
       defaultValue: colorPicker.parse("hsl(0, 100%, 50%)"),
     }),
   )
@@ -39,7 +40,7 @@ export default function Page() {
   const format = createMemo(() => api().format)
   return (
     <>
-      <main class="color-picker">
+      <main class="color-picker" style={{ direction: service.computed("rtl") ? "rtl" : "ltr" }}>
         <form
           onChange={(e) => {
             console.log("change:", serialize(e.currentTarget, { hash: true }))

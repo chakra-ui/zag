@@ -266,13 +266,11 @@ export const carouselControls = defineControls({
 export const colorPickerControls = defineControls({
   disabled: { type: "boolean", defaultValue: false },
   readOnly: { type: "boolean", defaultValue: false },
-  format: { type: "select", options: ["hsba", "hsla", "rgba"] as const, defaultValue: "hsla" },
   dir: { type: "select", options: ["ltr", "rtl"] as const, defaultValue: "ltr" },
   format: {
     type: "select",
     options: ["hsla", "hsba", "rgba", "oklab", "oklch"] as const,
     defaultValue: "oklab",
-    forceValue: true,
   },
 })
 

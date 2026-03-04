@@ -17,7 +17,7 @@
     controls.mergeProps<colorPicker.Props>({
       id,
       name: "color",
-      format: "hsla",
+      defaultFormat: "hsla",
       defaultValue: colorPicker.parse("hsl(0, 100%, 50%)"),
     }),
   )
@@ -25,7 +25,7 @@
   const api = $derived(colorPicker.connect(service, normalizeProps))
 </script>
 
-<main class="color-picker">
+<main class="color-picker" style:direction={service.computed("rtl") ? "rtl" : "ltr"}>
   <form
     oninput={(e) => {
       console.log("change:", serialize(e.currentTarget, { hash: true }))

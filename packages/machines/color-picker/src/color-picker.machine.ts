@@ -100,7 +100,7 @@ export const machine = createMachine<ColorPickerSchema>({
     valueAsString: ({ context }) => context.get("value").toString(context.get("format")),
     areaValue: ({ context }) => {
       const fmt = context.get("format")
-      return context.get("value").toFormat(fmt.startsWith("r") ? "hsba" : fmt)
+      return context.get("value").toFormat(fmt.startsWith("hsl") ? "hsla" : fmt)
     },
   },
 
@@ -473,9 +473,6 @@ export const machine = createMachine<ColorPickerSchema>({
 
         const percent = dom.getAreaValueFromPoint(scope, event.point, prop("dir"))
         if (!percent) return
-        if (prop("dir") === "rtl") {
-          percent.x = 1 - percent.x
-        }
         const xValue = v.getChannelPercentValue(xChannel, percent.x)
         const yValue = v.getChannelPercentValue(yChannel, 1 - percent.y)
 
@@ -492,11 +489,8 @@ export const machine = createMachine<ColorPickerSchema>({
         if (!percent) return
 
         const orientation = context.get("activeOrientation") || "horizontal"
-        let channelPercent = orientation === "horizontal" ? percent.x : percent.y
+        const channelPercent = orientation === "horizontal" ? percent.x : percent.y
 
-        if (prop("dir") === "rtl") {
-          channelPercent = 1 - channelPercent
-        }
         const value = normalizedValue.getChannelPercentValue(channel, channelPercent)
         const color = normalizedValue.withChannelValue(channel, value)
         context.set("value", color)
