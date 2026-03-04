@@ -118,6 +118,6 @@ export function getValue(v: string): { type: "number" | "percentage"; value: num
   if (/^-?\d+(\.\d+)?$/.test(v)) {
     return { type: "number", value: +v }
   }
-  if (!/^-?\d+(\.\d+)?\%$/.test(v)) return // not none, number or percentage - invalid value
+  if (!/^-?\d+(\.\d+)?%$/.test(v)) return // not none, number or percentage - invalid value
   return { type: "percentage", value: +v.slice(0, -1) }
 }

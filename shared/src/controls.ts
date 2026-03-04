@@ -270,7 +270,7 @@ export const colorPickerControls = defineControls({
   format: {
     type: "select",
     options: ["hsla", "hsba", "rgba", "oklab", "oklch"] as const,
-    defaultValue: "oklab",
+    defaultValue: "hsla",
   },
 })
 
