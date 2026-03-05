@@ -59,7 +59,6 @@ export const machine = createMachine<FloatingPanelSchema>({
         defaultValue: prop("defaultSize"),
         value: prop("size"),
         isEqual: isSizeEqual,
-        sync: true,
         hash(v) {
           return `W:${v.width} H:${v.height}`
         },
@@ -71,7 +70,6 @@ export const machine = createMachine<FloatingPanelSchema>({
         defaultValue: prop("defaultPosition"),
         value: prop("position"),
         isEqual: isPointEqual,
-        sync: true,
         hash(v) {
           return `X:${v.x} Y:${v.y}`
         },
