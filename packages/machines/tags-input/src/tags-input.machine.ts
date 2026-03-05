@@ -16,6 +16,7 @@ export const machine = createMachine<TagsInputSchema>({
       addOnPaste: false,
       editable: true,
       validate: () => true,
+      allowDuplicates: false,
       delimiter: ",",
       defaultValue: [],
       defaultInputValue: "",
@@ -527,31 +528,40 @@ export const machine = createMachine<TagsInputSchema>({
       setEditedTagValue({ context, event }) {
         context.set("editedTagValue", event.value)
       },
-      submitEditedTagValue({ context, scope, refs }) {
+      submitEditedTagValue({ context, scope, refs, prop }) {
         const editedTagId = context.get("editedTagId")
         if (!editedTagId) return
 
         const index = dom.getIndexOfId(scope, editedTagId)
+        const editedTagValue = context.get("editedTagValue")
+        const value = context.get("value")
+        const hasDuplicate = value.some((item, idx) => idx !== index && item === editedTagValue)
+        if (!prop("allowDuplicates") && hasDuplicate) return
+        if (value[index] === editedTagValue) return
         context.set("value", (prev) => {
-          const value = prev.slice()
-          value[index] = context.get("editedTagValue")
-          return value
+          const nextValue = prev.slice()
+          nextValue[index] = editedTagValue
+          return nextValue
         })
 
         // log
         const prevLog = refs.get("log")
         refs.set("log", {
           prev: prevLog.current,
-          current: { type: "update", value: context.get("editedTagValue") },
+          current: { type: "update", value: editedTagValue },
         })
       },
 
-      setValueAtIndex({ context, event, refs }) {
+      setValueAtIndex({ context, event, refs, prop }) {
         if (event.value) {
+          const value = context.get("value")
+          const hasDuplicate = value.some((item, idx) => idx !== event.index && item === event.value)
+          if (!prop("allowDuplicates") && hasDuplicate) return
+          if (value[event.index] === event.value) return
           context.set("value", (prev) => {
-            const value = prev.slice()
-            value[event.index] = event.value
-            return value
+            const nextValue = prev.slice()
+            nextValue[event.index] = event.value
+            return nextValue
           })
           // log
           const prevLog = refs.get("log")
@@ -612,7 +622,7 @@ export const machine = createMachine<TagsInputSchema>({
         const value = context.get("value")
         const guard = prop("validate")?.({ inputValue: inputValue, value: Array.from(value) })
         if (guard) {
-          const nextValue = uniq(value.concat(inputValue))
+          const nextValue = prop("allowDuplicates") ? value.concat(inputValue) : uniq(value.concat(inputValue))
           context.set("value", nextValue)
           // log
           const prevLog = refs.get("log")
@@ -639,7 +649,9 @@ export const machine = createMachine<TagsInputSchema>({
             const delimiter = prop("delimiter")
             const trimmedValue = delimiter ? inputValue.split(delimiter).map((v) => v.trim()) : [inputValue]
 
-            const nextValue = uniq(value.concat(...trimmedValue))
+            const nextValue = prop("allowDuplicates")
+              ? value.concat(...trimmedValue)
+              : uniq(value.concat(...trimmedValue))
             context.set("value", nextValue)
             // log
             const prevLog = refs.get("log")

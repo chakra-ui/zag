@@ -398,7 +398,12 @@ export const componentRoutes: ComponentRoute[] = [
   {
     slug: "tags-input",
     label: "Tags Input",
-    examples: [{ slug: "basic", title: "Tags Input" }],
+    examples: [
+      { slug: "basic", title: "Basic" },
+      { slug: "validate", title: "Custom Validate" },
+      { slug: "allow-duplicates", title: "Allow Duplicates" },
+      { slug: "sentence-builder", title: "Sentence Builder" },
+    ],
   },
   {
     slug: "timer",

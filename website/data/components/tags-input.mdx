@@ -153,8 +153,9 @@ const service = useMachine(tagsInput.machine, {
 Before a tag is added, the machine provides a `validate` function you can use to
 determine whether to accept or reject a tag.
 
-> **Note:** Duplicate tags are automatically prevented by design. You don't need
-> to handle this in your `validate` function.
+> **Note:** Duplicate tags are prevented by default. Set `allowDuplicates: true`
+> to allow repeatable tags (e.g. sentence builders). Use `validate` for custom
+> rules like format or length.
 
 Common use-cases for validating tags include enforcing format, length, or
 content rules.
@@ -165,6 +166,17 @@ const service = useMachine(tagsInput.machine, {
     // Example: only allow lowercase alphabetic tags
     return /^[a-z]+$/.test(details.inputValue)
   },
+})
+```
+
+### Allow Duplicates
+
+By default, duplicate tags are prevented. For use cases like sentence builders
+or repeatable tokens, set `allowDuplicates: true`:
+
+```jsx {2}
+const service = useMachine(tagsInput.machine, {
+  allowDuplicates: true,
 })
 ```
 
