@@ -421,7 +421,7 @@ export const machine = createMachine<ColorPickerSchema>({
         return trackPointerMove(scope.getDoc(), {
           onPointerMove({ point }) {
             const type = context.get("activeId") === "area" ? "AREA.POINTER_MOVE" : "CHANNEL_SLIDER.POINTER_MOVE"
-            send({ type, point, format: event.format })
+            send({ type, point, format: event.format, orientation: context.get("activeOrientation") ?? undefined })
           },
           onPointerUp() {
             const type = context.get("activeId") === "area" ? "AREA.POINTER_UP" : "CHANNEL_SLIDER.POINTER_UP"
@@ -481,7 +481,7 @@ export const machine = createMachine<ColorPickerSchema>({
         const percent = dom.getChannelSliderValueFromPoint(scope, event.point, channel, prop("dir"))
         if (!percent) return
 
-        const orientation = context.get("activeOrientation") || "horizontal"
+        const orientation = event.orientation || context.get("activeOrientation") || "horizontal"
         const channelPercent = orientation === "horizontal" ? percent.x : percent.y
 
         const value = normalizedValue.getChannelPercentValue(channel, channelPercent)
