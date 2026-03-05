@@ -94,9 +94,7 @@ export type ElementIds = Partial<{
 }>
 
 export interface ComboboxProps<T extends CollectionItem = CollectionItem>
-  extends DirectionProperty,
-    CommonProperties,
-    InteractOutsideHandlers {
+  extends DirectionProperty, CommonProperties, InteractOutsideHandlers {
   /**
    * The controlled open state of the combobox
    */
@@ -304,7 +302,7 @@ type PropsWithDefault =
 
 export interface ComboboxSchema<T extends CollectionItem = CollectionItem> {
   props: RequiredBy<ComboboxProps<T>, PropsWithDefault>
-  state: "idle" | "focused" | "suggesting" | "interacting"
+  state: "closed.idle" | "closed.focused" | "open.suggesting" | "open.interacting"
   tag: "open" | "focused" | "idle" | "closed"
   context: {
     value: string[]
@@ -312,7 +310,7 @@ export interface ComboboxSchema<T extends CollectionItem = CollectionItem> {
     highlightedValue: string | null
     currentPlacement?: Placement | undefined
     highlightedItem: T | null
-    selectedItems: T[]
+    selectedItemMap: Map<string, T>
   }
   computed: {
     isCustomValue: boolean
@@ -321,6 +319,7 @@ export interface ComboboxSchema<T extends CollectionItem = CollectionItem> {
     autoComplete: boolean
     autoHighlight: boolean
     hasSelectedItems: boolean
+    selectedItems: T[]
     valueAsString: string
   }
   event: EventObject

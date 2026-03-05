@@ -8,7 +8,7 @@ export class NavigationMenuModel extends Model {
   }
 
   goto(id?: "viewport") {
-    return this.page.goto(`/navigation-menu${id ? `-${id}` : ""}`)
+    return this.page.goto(`/navigation-menu/${id ?? "basic"}`)
   }
 
   checkAccessibility(selector?: string): Promise<void> {

@@ -1,4 +1,4 @@
-import { test } from "@playwright/test"
+import { expect, test } from "@playwright/test"
 import { TagsInputModel } from "./models/tags-input.model"
 
 let I: TagsInputModel
@@ -146,6 +146,32 @@ test.describe("tags-input", () => {
     await I.dontSeeTagInput("Jenkins")
   })
 
+  test("[allowDuplicates: false] editing should not create duplicates", async () => {
+    await I.focusInput()
+    await I.pressKey("ArrowLeft")
+    await I.seeTagIsHighlighted("Vue")
+    await I.pressKey("Enter")
+    await I.seeTagInputIsFocused("Vue")
+    await I.editTag("React")
+
+    await expect(I.getTag("React")).toHaveCount(1)
+    await expect(I.getTag("Vue")).toHaveCount(1)
+  })
+
+  test("[allowDuplicates: true] editing can create duplicates", async () => {
+    await I.controls.bool("allowDuplicates", true)
+
+    await I.focusInput()
+    await I.pressKey("ArrowLeft")
+    await I.seeTagIsHighlighted("Vue")
+    await I.pressKey("Enter")
+    await I.seeTagInputIsFocused("Vue")
+    await I.editTag("React")
+
+    await expect(I.getTag("React")).toHaveCount(2)
+    await expect(I.getTag("Vue")).toHaveCount(0)
+  })
+
   test("clears highlighted tag on escape press", async () => {
     await I.addTag("Svelte")
     await I.pressKey("ArrowLeft")
@@ -202,6 +228,21 @@ test.describe("tags-input", () => {
     await I.seeTag("Svelte")
   })
 
+  test("[allowDuplicates: false] adding duplicate tags should keep one value", async () => {
+    await I.addTag("React")
+    await I.addTag("React")
+
+    await expect(I.getTag("React")).toHaveCount(1)
+  })
+
+  test("[allowDuplicates: true] adding duplicate tags should keep all values", async () => {
+    await I.controls.bool("allowDuplicates", true)
+    await I.addTag("React")
+    await I.addTag("React")
+
+    await expect(I.getTag("React")).toHaveCount(3)
+  })
+
   test("[addOnPaste: true] pasting should add tags", async () => {
     await I.controls.bool("addOnPaste", true)
 
@@ -220,6 +261,21 @@ test.describe("tags-input", () => {
     // paste
     await I.paste("Github")
     await I.seeTag("Github")
+  })
+
+  test("[allowDuplicates: false][addOnPaste: true] paste should dedupe values", async () => {
+    await I.controls.bool("addOnPaste", true)
+
+    await I.paste("React, React")
+    await expect(I.getTag("React")).toHaveCount(1)
+  })
+
+  test("[allowDuplicates: true][addOnPaste: true] paste should keep duplicates", async () => {
+    await I.controls.bool("allowDuplicates", true)
+    await I.controls.bool("addOnPaste", true)
+
+    await I.paste("React, React")
+    await expect(I.getTag("React")).toHaveCount(3)
   })
 
   test("should unselect highlighted tag when clicking in the input", async () => {

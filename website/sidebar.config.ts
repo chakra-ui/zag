@@ -40,7 +40,6 @@ const sidebar: Record<"docs", SidebarItem[]> = {
       items: [
         { type: "doc", label: "Introduction", id: "introduction" },
         { type: "doc", label: "Installation", id: "installation" },
-        { type: "doc", label: "State machine", id: "whats-a-machine" },
         { type: "doc", label: "FAQ", id: "faq" },
         {
           type: "doc",
@@ -80,11 +79,18 @@ const sidebar: Record<"docs", SidebarItem[]> = {
         { type: "doc", label: "Avatar", id: "avatar" },
         // { type: "doc", label: "Drawer", id: "drawer", beta: true },
         { type: "doc", label: "Carousel", id: "carousel" },
+        {
+          type: "doc",
+          label: "Cascade Select",
+          id: "cascade-select",
+          beta: true,
+        },
         { type: "doc", label: "Checkbox", id: "checkbox" },
         { type: "doc", label: "Clipboard", id: "clipboard" },
         { type: "doc", label: "Collapsible", id: "collapsible" },
         { type: "doc", label: "ColorPicker", id: "color-picker" },
         { type: "doc", label: "Combobox", id: "combobox" },
+        // { type: "doc", label: "Date Input", id: "date-input", beta: true },
         { type: "doc", label: "Date Picker", id: "date-picker" },
         { type: "doc", label: "Dialog", id: "dialog" },
         { type: "doc", label: "Editable", id: "editable" },

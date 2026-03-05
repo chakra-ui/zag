@@ -1,5 +1,5 @@
 import { Footer } from "components/footer"
-import { TopNavigation } from "components/top-navigation"
+import { TopNav } from "components/nav/top-nav"
 import { Section } from "components/ui/section"
 import { showcaseItems, type ShowcaseItem } from "lib/showcase"
 import type { Metadata } from "next"
@@ -66,7 +66,7 @@ function ShowcaseCard({ item }: { item: ShowcaseItem }) {
 export default function ShowcasePage() {
   return (
     <Box>
-      <TopNavigation />
+      <TopNav />
 
       <Section pt={{ base: "12", md: "20" }} pb={{ base: "16", md: "24" }}>
         <Box maxW="3xl" mb={{ base: "10", md: "14" }}>

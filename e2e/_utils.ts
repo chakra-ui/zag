@@ -32,6 +32,10 @@ export const controls = (page: Page) => {
       const el = page.locator(testid(id))
       await el.selectOption(value)
     },
+    date: async (id: string, value: string) => {
+      const el = page.locator(testid(id))
+      await el.fill(value)
+    },
   }
 }
 
@@ -41,7 +45,8 @@ const esc = (str: string) => str.replace(/[-[\]{}()*+?:.,\\^$|#\s]/g, "\\$&")
 
 export const clickViz = (page: Page) => page.locator("text=Visualizer").first().click()
 
-export const clickControls = (page: Page) => page.locator("text=Controls").first().click()
+export const clickControls = (page: Page) =>
+  page.locator(".toolbar nav > button", { hasText: "Controls" }).first().click()
 
 export const paste = (node: HTMLElement, value: string) => {
   const clipboardData = new DataTransfer()

@@ -33,7 +33,7 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
   const inputState = refs.get("inputState")
 
   const value = context.get("value")
-  const selectedItems = context.get("selectedItems")
+  const selectedItems = computed("selectedItems")
 
   const highlightedValue = context.get("highlightedValue")
   const highlightedItem = context.get("highlightedItem")
@@ -154,12 +154,14 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
               if (!isGridCollection(collection)) return
               if (event.ctrlKey) return
               forwardEvent()
+              break
             }
 
             case "Home":
             case "End": {
               if (highlightedValue == null && event.shiftKey) return
               forwardEvent()
+              break
             }
 
             case "ArrowDown":

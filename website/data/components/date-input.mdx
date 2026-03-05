@@ -1,0 +1,512 @@
+---
+title: Date Input
+description: Using the date-input machine in your project.
+package: "@zag-js/date-input"
+status: beta
+---
+
+A date input lets you enter a date by typing into segmented input fields (month, day,
+year, etc.) with validation and keyboard navigation.
+
+> **Good to know**: The date input is built on top of the
+> [`@internationalized/date`](https://react-spectrum.adobe.com/internationalized/date/CalendarDate.html)
+> library.
+
+<Resources pkg="@zag-js/date-input" />
+
+<Showcase id="DateInput" />
+
+**Features**
+
+- Segmented input fields for each date part (month, day, year, hour, minute, second)
+- Supports `single` and `range` selection modes
+- Keyboard navigation and auto-advance between segments
+- Placeholder management with visual distinction
+- Customizable granularity (day, month, hour, minute, second)
+- Optional leading zeros in numeric fields
+- Works with localization and timezone
+- Full accessibility with keyboard and screen reader support
+- Form integration with hidden input element
+
+## Installation
+
+Install the date-input package:
+
+<CodeSnippet id="date-input/installation.mdx" />
+
+## Anatomy
+
+Check the date-input anatomy and part names.
+
+> Each part includes a `data-part` attribute to help identify them in the DOM.
+
+<Anatomy id="date-input" />
+
+## Usage
+
+Import the package:
+
+```tsx
+import * as dateInput from "@zag-js/date-input"
+```
+
+These are the key exports:
+
+- `machine` - State machine logic.
+- `connect` - Maps machine state to JSX props and event handlers.
+- `parse` - Parses an ISO 8601 date string.
+
+> You'll also need to provide a unique `id` to the `useMachine` hook. This is
+> used to ensure that every part has a unique identifier.
+
+Then use the framework integration helpers:
+
+<CodeSnippet id="date-input/usage.mdx" />
+
+### Setting the initial date
+
+To set the initial value rendered by the date input, set `defaultValue`.
+
+```tsx
+const service = useMachine(dateInput.machine, {
+  defaultValue: [dateInput.parse("2024-01-15")],
+})
+```
+
+### Controlling the selected date
+
+Use `value` and `onValueChange` to programmatically control the selected date.
+
+```tsx
+const service = useMachine(dateInput.machine, {
+  value: [dateInput.parse("2024-01-15")],
+  onValueChange(details) {
+    // details => { value: DateValue[], valueAsString: string[] }
+    console.log("selected date:", details.valueAsString)
+  },
+})
+```
+
+You can also set it with `api.setValue`.
+
+```tsx
+const nextValue = dateInput.parse("2024-01-15")
+api.setValue([nextValue])
+```
+
+### Setting the min and max dates
+
+To constrain the dates that can be entered, set the `min` and `max` properties.
+
+```tsx
+const service = useMachine(dateInput.machine, {
+  min: dateInput.parse("2024-01-01"),
+  max: dateInput.parse("2024-12-31"),
+})
+```
+
+When typing values outside the range, invalid segments will be marked as invalid.
+
+### Disabling the date input
+
+Set `disabled` to `true` to make the input non-interactive.
+
+```tsx
+const service = useMachine(dateInput.machine, {
+  disabled: true,
+})
+```
+
+### Setting read-only mode
+
+Set `readOnly` to `true` to prevent value changes while allowing focus.
+
+```tsx
+const service = useMachine(dateInput.machine, {
+  readOnly: true,
+})
+```
+
+### Required and invalid state
+
+Use `required` and `invalid` for form validation and UI state.
+
+```tsx
+const service = useMachine(dateInput.machine, {
+  required: true,
+  invalid: false,
+})
+```
+
+### Controlling date granularity
+
+Set `granularity` to control the smallest unit displayed in the input.
+
+```tsx
+const service = useMachine(dateInput.machine, {
+  granularity: "day", // "month" | "day" | "year" | "hour" | "minute" | "second"
+})
+```
+
+The available granularities are: `"month"`, `"day"`, `"year"`, `"hour"`, `"minute"`, and
+`"second"`.
+
+### Forcing leading zeros
+
+Set `shouldForceLeadingZeros` to always display leading zeros in numeric fields
+(e.g., "01" instead of "1").
+
+```tsx
+const service = useMachine(dateInput.machine, {
+  shouldForceLeadingZeros: true,
+})
+```
+
+By default, leading zeros follow the locale's conventions.
+
+### Controlling the placeholder date
+
+Use `placeholderValue` to set the initial placeholder date, which is shown in
+unfilled segments.
+
+```tsx
+const service = useMachine(dateInput.machine, {
+  placeholderValue: dateInput.parse("2024-01-01"),
+  defaultPlaceholderValue: dateInput.parse("2024-01-01"),
+})
+```
+
+Listen for placeholder changes with `onPlaceholderChange`:
+
+```tsx
+const service = useMachine(dateInput.machine, {
+  onPlaceholderChange(details) {
+    // details => { placeholderValue: DateValue, value: DateValue[], valueAsString: string[] }
+    console.log("placeholder changed:", details.placeholderValue)
+  },
+})
+```
+
+### Listening to focus changes
+
+Use `onFocusChange` to listen for when the input gains or loses focus.
+
+```tsx
+const service = useMachine(dateInput.machine, {
+  onFocusChange(details) {
+    // details => { focused: boolean }
+    console.log("focused:", details.focused)
+  },
+})
+```
+
+### Choosing a selection mode
+
+Use `selectionMode` to allow entering a single date or a date range.
+
+```tsx
+const service = useMachine(dateInput.machine, {
+  selectionMode: "range", // "single" | "range"
+})
+```
+
+In range mode, the input will have segments for both start and end dates.
+
+### Working with display values
+
+The `displayValues` property tracks partially entered dates while the user is
+typing. This is useful for showing the editing state before a complete date is
+entered.
+
+```tsx
+const displayValues = api.displayValues
+// Each incomplete date shows which segments have been filled in
+```
+
+### Clearing the date
+
+Use `api.clearValue()` to clear the selected date.
+
+```tsx
+api.clearValue()
+```
+
+### Accessing segments
+
+Use `api.getSegments()` to access the individual date segments.
+
+```tsx
+const segments = api.getSegments()
+
+segments.forEach((segment) => {
+  console.log(segment.type)      // "month", "day", "year", etc.
+  console.log(segment.text)      // displayed text
+  console.log(segment.value)     // numeric value
+  console.log(segment.isEditable) // whether user can edit
+})
+```
+
+Then render each segment:
+
+```tsx
+<div {...api.getSegmentGroupProps()}>
+  {api.getSegments().map((segment, i) => (
+    <span key={i} {...api.getSegmentProps({ segment })}>
+      {segment.text}
+    </span>
+  ))}
+</div>
+```
+
+### Checking segment editability
+
+Use `api.getSegmentState()` to determine if a segment can be edited.
+
+```tsx
+const state = api.getSegmentState({ segment })
+console.log(state.editable) // true if the segment is editable
+```
+
+### Using the hidden input for forms
+
+The date input includes a hidden input element for form submission.
+
+```tsx
+<input {...api.getHiddenInputProps()} />
+```
+
+Set the `name` attribute to include it in form data:
+
+```tsx
+const service = useMachine(dateInput.machine, {
+  name: "birthDate",
+})
+```
+
+Multiple date inputs (range mode) can use a `name` prop on `getHiddenInputProps`:
+
+```tsx
+<input {...api.getHiddenInputProps({ index: 0, name: "startDate" })} />
+<input {...api.getHiddenInputProps({ index: 1, name: "endDate" })} />
+```
+
+### Labeling the input
+
+Use `getLabelProps()` to properly label the input for accessibility.
+
+```tsx
+<label {...api.getLabelProps()}>Select a date</label>
+<div {...api.getControlProps()}>
+  {/* segments */}
+</div>
+```
+
+For range mode with multiple inputs:
+
+```tsx
+<label {...api.getLabelProps({ index: 0 })}>Start date</label>
+<label {...api.getLabelProps({ index: 1 })}>End date</label>
+```
+
+### Setting locale and timezone
+
+Set `locale` and `timeZone` to control date parsing and formatting.
+
+```tsx
+const service = useMachine(dateInput.machine, {
+  locale: "en-GB",
+  timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+})
+```
+
+### Hour cycle (12-hour vs 24-hour time)
+
+Set `hourCycle` to control time format display.
+
+```tsx
+const service = useMachine(dateInput.machine, {
+  granularity: "hour",
+  hourCycle: 24, // 12 | 24
+})
+```
+
+By default, this is determined by the locale.
+
+### Custom formatter
+
+Provide a `formatter` to customize how dates are parsed and formatted.
+
+```tsx
+import { DateFormatter } from "@internationalized/date"
+
+const service = useMachine(dateInput.machine, {
+  formatter: new DateFormatter("en-US", {
+    dateStyle: "short",
+    timeStyle: "short",
+  }),
+})
+```
+
+### Form integration
+
+Use the date input within a form with standard HTML form handling:
+
+```tsx
+<form
+  onSubmit={(e) => {
+    e.preventDefault()
+    const formData = new FormData(e.currentTarget)
+    const date = formData.get("birthDate")
+    console.log("selected date:", date)
+  }}
+>
+  <label {...api.getLabelProps()}>Birth Date</label>
+  <div {...api.getControlProps()}>
+    <div {...api.getSegmentGroupProps()}>
+      {api.getSegments().map((segment, i) => (
+        <span key={i} {...api.getSegmentProps({ segment })}>
+          {segment.text}
+        </span>
+      ))}
+    </div>
+  </div>
+  <input {...api.getHiddenInputProps({ name: "birthDate" })} />
+  <button type="submit">Submit</button>
+</form>
+```
+
+### Listening to date changes
+
+Use `onValueChange` to listen for date changes.
+
+```tsx
+const service = useMachine(dateInput.machine, {
+  onValueChange(details) {
+    // details => { value: DateValue[], valueAsString: string[] }
+    console.log("selected date:", details.valueAsString)
+  },
+})
+```
+
+### Localization
+
+Use `translations` to customize accessibility labels and messages.
+
+```tsx
+const service = useMachine(dateInput.machine, {
+  translations: {
+    placeholder: (locale) => ({
+      year: "YYYY",
+      month: "MM",
+      day: "DD",
+      hour: "HH",
+      minute: "MM",
+      second: "SS",
+    }),
+  },
+})
+```
+
+## Styling guide
+
+Each date-input part includes a `data-part` attribute you can target in CSS.
+
+```css
+[data-scope="date-input"][data-part="root"] {
+  /* styles for the root container */
+}
+
+[data-scope="date-input"][data-part="label"] {
+  /* styles for the label */
+}
+
+[data-scope="date-input"][data-part="control"] {
+  /* styles for the control container */
+}
+
+[data-scope="date-input"][data-part="segment-group"] {
+  /* styles for the segment group */
+}
+
+[data-scope="date-input"][data-part="segment"] {
+  /* styles for each segment */
+}
+
+[data-scope="date-input"][data-part="hidden-input"] {
+  /* styles for the hidden input */
+}
+```
+
+### State attributes
+
+```css
+[data-scope="date-input"][data-part="root"] {
+  &[data-disabled] {
+    /* styles for disabled state */
+  }
+
+  &[data-readonly] {
+    /* styles for read-only state */
+  }
+
+  &[data-invalid] {
+    /* styles for invalid state */
+  }
+}
+```
+
+### Segment states
+
+```css
+[data-scope="date-input"][data-part="segment"] {
+  &[data-placeholder] {
+    /* styles for placeholder segments */
+  }
+
+  &[data-type="month"] {
+    /* styles for month segments */
+  }
+
+  &[data-type="day"] {
+    /* styles for day segments */
+  }
+
+  &[data-type="year"] {
+    /* styles for year segments */
+  }
+
+  &[data-type="hour"] {
+    /* styles for hour segments */
+  }
+
+  &[data-type="minute"] {
+    /* styles for minute segments */
+  }
+
+  &[data-type="second"] {
+    /* styles for second segments */
+  }
+}
+```
+
+## Methods and Properties
+
+### Machine Context
+
+The date input machine exposes the following context properties:
+
+<ContextTable name="date-input" />
+
+### Machine API
+
+The date input `api` exposes the following methods:
+
+<ApiTable name="date-input" />
+
+### Data Attributes
+
+<DataAttrTable name="date-input" />
+
+### CSS Variables
+
+<CssVarTable name="date-input" />

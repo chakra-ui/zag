@@ -371,7 +371,7 @@ test.describe("image-cropper / resizable", () => {
 test.describe("image-cropper / fixedCropArea", () => {
   test.beforeEach(async ({ page }) => {
     I = new ImageCropperModel(page)
-    await I.goto("/image-cropper-fixed")
+    await I.goto("/image-cropper/fixed")
     await I.waitForImageLoad()
   })
 
@@ -688,7 +688,7 @@ test.describe("image-cropper / resize API", () => {
 test.describe("image-cropper / circle", () => {
   test.beforeEach(async ({ page }) => {
     I = new ImageCropperModel(page)
-    await I.goto("/image-cropper-circle")
+    await I.goto("/image-cropper/circle")
     await I.waitForImageLoad()
   })
 

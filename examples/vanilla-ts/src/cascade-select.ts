@@ -143,6 +143,7 @@ export class CascadeSelect extends Component<cascadeSelect.Props, cascadeSelect.
 
     const valueText = this.rootEl.querySelector<HTMLElement>(".cascade-select-value-text")
     if (valueText) {
+      this.spreadProps(valueText, this.api.getValueTextProps())
       valueText.textContent = this.api.valueAsString || "Select a location"
     }
 

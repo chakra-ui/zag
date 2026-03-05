@@ -1,6 +1,5 @@
 import type {
   ActionsOrFn,
-  Bindable,
   BindableContext,
   BindableRefs,
   ChooseFn,
@@ -12,7 +11,16 @@ import type {
   Params,
   Service,
 } from "@zag-js/core"
-import { createScope, INIT_STATE, MachineStatus } from "@zag-js/core"
+import {
+  createScope,
+  findTransition,
+  getExitEnterStates,
+  hasTag,
+  INIT_STATE,
+  MachineStatus,
+  matchesState,
+  resolveStateValue,
+} from "@zag-js/core"
 import { ensure, isFunction, isString, toArray, warn } from "@zag-js/utils"
 import { flushSync } from "preact/compat"
 import { useLayoutEffect, useMemo, useRef } from "preact/hooks"
@@ -94,11 +102,11 @@ export function useMachine<T extends MachineSchema>(
     ...state,
     hasTag(tag: T["tag"]) {
       const currentState = state.get()
-      return !!machine.states[currentState as T["state"]]?.tags?.includes(tag)
+      return hasTag(machine, currentState, tag)
     },
     matches(...values: T["state"][]) {
       const currentState = state.get()
-      return values.includes(currentState)
+      return values.some((value) => matchesState(currentState as string, value as string))
     },
   })
 
@@ -175,43 +183,40 @@ export function useMachine<T extends MachineSchema>(
   }
 
   const state = useBindable(() => ({
-    defaultValue: machine.initialState({ prop }),
+    defaultValue: resolveStateValue(machine, machine.initialState({ prop })),
     onChange(nextState, prevState) {
-      // compute effects: exit -> transition -> enter
+      currentStateRef.current = nextState as string
+      const { exiting, entering } = getExitEnterStates(machine, prevState, nextState, transitionRef.current?.reenter)
 
-      // exit effects
-      if (prevState) {
-        const exitEffects = effects.current.get(prevState)
+      exiting.forEach((item) => {
+        const exitEffects = effects.current.get(item.path)
         exitEffects?.()
-        effects.current.delete(prevState)
-      }
+        effects.current.delete(item.path)
+      })
 
-      // exit actions
-      if (prevState) {
-        // @ts-ignore
-        action(machine.states[prevState]?.exit)
-      }
+      exiting.forEach((item) => {
+        action(item.state?.exit)
+      })
 
-      // transition actions
       action(transitionRef.current?.actions)
 
-      // enter effect
-      // @ts-ignore
-      const cleanup = effect(machine.states[nextState]?.effects)
-      if (cleanup) effects.current.set(nextState as string, cleanup)
+      entering.forEach((item) => {
+        const cleanup = effect(item.state?.effects)
+        if (cleanup) effects.current.set(item.path, cleanup)
+      })
 
-      // root entry actions
       if (prevState === INIT_STATE) {
         action(machine.entry)
         const cleanup = effect(machine.effects)
         if (cleanup) effects.current.set(INIT_STATE, cleanup)
       }
 
-      // enter actions
-      // @ts-ignore
-      action(machine.states[nextState]?.entry)
+      entering.forEach((item) => {
+        action(item.state?.entry)
+      })
     },
   }))
+  const currentStateRef = useRef<string>(state.initial as string)
 
   // improve HMR (to restart effects)
   const hydratedStateRef = useRef<string | undefined>(undefined)
@@ -242,8 +247,7 @@ export function useMachine<T extends MachineSchema>(
   }, [])
 
   const getCurrentState = () => {
-    if ("ref" in state) return state.ref.current
-    return (state as Bindable<string>).get()
+    return currentStateRef.current
   }
 
   const send = (event: any) => {
@@ -255,23 +259,21 @@ export function useMachine<T extends MachineSchema>(
 
       let currentState = getCurrentState()
 
-      const transitions =
-        // @ts-ignore
-        machine.states[currentState].on?.[event.type] ??
-        // @ts-ignore
-        machine.on?.[event.type]
-
+      const { transitions, source } = findTransition(machine, currentState, event.type as string)
       const transition = choose(transitions)
       if (!transition) return
 
       // save current transition
       transitionRef.current = transition
-      const target = transition.target ?? currentState
+      const target = resolveStateValue(machine, transition.target ?? currentState, source)
 
       const changed = target !== currentState
       if (changed) {
+        currentStateRef.current = target as string
         // state change is high priority
         flushSync(() => state.set(target))
+      } else if (transition.reenter) {
+        state.invoke(currentState, currentState)
       } else {
         // call transition actions
         action(transition.actions ?? [])

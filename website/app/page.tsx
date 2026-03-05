@@ -16,7 +16,7 @@ import {
 } from "components/icons"
 import { Illustration } from "components/illustration"
 import { MultiframeworkTabs } from "components/multi-framework"
-import { TopNavigation } from "components/top-navigation"
+import { TopNav } from "components/nav/top-nav"
 import { Blockquote } from "components/ui/blockquote"
 import { Button, ButtonLink } from "components/ui/button"
 import { Icon } from "components/ui/icon"
@@ -57,7 +57,7 @@ function FeatureItem(props: FeatureItemProps) {
 export default function Home() {
   return (
     <Box>
-      <TopNavigation />
+      <TopNav />
 
       <Box as="header" position="relative">
         <Section>

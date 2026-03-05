@@ -8,7 +8,7 @@ import { Search } from "components/search-dialog"
 import { Sidebar } from "components/sidebar"
 import { SkipNavContent, SkipNavLink } from "components/skip-nav"
 import { TableOfContents } from "components/toc"
-import { TopNavigation } from "components/top-navigation"
+import { TopNav } from "components/nav/top-nav"
 import { usePathname } from "next/navigation"
 import { Box, Flex, Spacer, styled } from "styled-system/jsx"
 
@@ -31,7 +31,7 @@ export default function DocsLayout(props: DocsLayoutProps) {
   return (
     <Box>
       <SkipNavLink>Skip to main content</SkipNavLink>
-      <TopNavigation />
+      <TopNav />
       <styled.div pt="10">
         <SkipNavContent />
         <Box maxW="8xl" mx="auto" px={{ sm: "6", base: "4", md: "8" }}>

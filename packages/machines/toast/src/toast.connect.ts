@@ -11,6 +11,7 @@ export function connect<T extends PropTypes, O>(
   normalize: NormalizeProps<T>,
 ): ToastApi<T, O> {
   const { state, send, prop, scope, context, computed } = service
+  const translations = prop("translations")
 
   const visible = state.hasTag("visible")
   const paused = state.hasTag("paused")
@@ -128,7 +129,7 @@ export function connect<T extends PropTypes, O>(
         id: dom.getCloseTriggerId(scope),
         ...parts.closeTrigger.attrs,
         type: "button",
-        "aria-label": "Dismiss notification",
+        "aria-label": translations?.closeTriggerLabel,
         onClick(event) {
           if (event.defaultPrevented) return
           send({ type: "DISMISS", src: "user" })

@@ -1,13 +1,13 @@
 <script lang="ts">
-  import { routesData } from "@zag-js/shared"
+  import { componentRoutesData } from "@zag-js/shared"
 </script>
 
 <div class="index-nav">
   <h2>Svelte UI Machines</h2>
   <ul>
-    {#each routesData as route}
+    {#each componentRoutesData as component}
       <li>
-        <a href={route.path}>{route.label}</a>
+        <a href={`/${component.slug}`}>{component.label}</a>
       </li>
     {/each}
   </ul>

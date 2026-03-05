@@ -271,8 +271,10 @@ export interface FocusTrapState {
   recentNavEvent: KeyboardEvent | undefined
 }
 
-export interface DeactivateOptions
-  extends Pick<FocusTrapOptions, "onDeactivate" | "onPostDeactivate" | "checkCanReturnFocus"> {
+export interface DeactivateOptions extends Pick<
+  FocusTrapOptions,
+  "onDeactivate" | "onPostDeactivate" | "checkCanReturnFocus"
+> {
   returnFocus?: boolean | undefined
 }
 

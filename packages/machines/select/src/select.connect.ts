@@ -24,6 +24,7 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
   normalize: NormalizeProps<T>,
 ): SelectApi<T, V> {
   const { context, prop, scope, state, computed, send } = service
+  const translations = prop("translations")
 
   const disabled = prop("disabled") || context.get("fieldsetDisabled")
   const invalid = !!prop("invalid")
@@ -37,7 +38,7 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
 
   const highlightedValue = context.get("highlightedValue")
   const highlightedItem = context.get("highlightedItem")
-  const selectedItems = context.get("selectedItems")
+  const selectedItems = computed("selectedItems")
   const currentPlacement = context.get("currentPlacement")
 
   const isTypingAhead = computed("isTypingAhead")
@@ -345,7 +346,7 @@ export function connect<T extends PropTypes, V extends CollectionItem = Collecti
         ...parts.clearTrigger.attrs,
         id: dom.getClearTriggerId(scope),
         type: "button",
-        "aria-label": "Clear value",
+        "aria-label": translations.clearTriggerLabel,
         "data-invalid": dataAttr(invalid),
         disabled: disabled,
         hidden: !computed("hasSelectedItems"),

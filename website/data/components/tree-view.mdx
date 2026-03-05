@@ -17,27 +17,26 @@ navigation.
 
 - Display hierarchical data in a tree structure
 - Expand or collapse nodes
-- Support for keyboard navigation
+- Supports keyboard navigation
 - Select single or multiple nodes (depending on the selection mode)
 - Perform actions on the nodes, such as deleting them or performing some other
   operation
 
 ## Installation
 
-To use the tree view machine in your project, run the following command in your
-command line:
+Install the tree view package:
 
 <CodeSnippet id="tree-view/installation.mdx" />
 
 ## Anatomy
 
-To set up the tree view correctly, you'll need to understand its anatomy.
+Check the tree view anatomy and part names.
 
 <Anatomy id="tree-view" />
 
 ## Usage
 
-First, import the tree view package into your project
+Import the tree view package:
 
 ```jsx
 import * as tree from "@zag-js/tree-view"
@@ -45,16 +44,14 @@ import * as tree from "@zag-js/tree-view"
 
 The tree view package exports two key functions:
 
-- `machine` — The state machine logic for the tree view widget.
-- `connect` — The function that translates the machine's state to JSX attributes
-  and event handlers.
+- `machine` - State machine logic.
+- `connect` - Maps machine state to JSX props and event handlers.
 
-Next, import the required hooks and functions for your framework and use the
-tree view machine in your project 🔥
+Then use the framework integration helpers:
 
 ### Create the tree collection
 
-Use the `collection` function to create a tree collection. This create a tree
+Use the `collection` function to create a tree collection. This creates a tree
 factory that the component uses for traversal.
 
 ```ts
@@ -132,7 +129,7 @@ const service = useMachine(tree.machine, {
 
 ### Setting the default expanded nodes
 
-To set the default expanded nodes, use the `expandedValue` context property.
+To set the default expanded nodes, use `defaultExpandedValue`.
 
 ```tsx {2}
 const service = useMachine(tree.machine, {
@@ -142,11 +139,29 @@ const service = useMachine(tree.machine, {
 
 ### Setting the default selected nodes
 
-To set the default selected nodes, use the `selectedValue` context property.
+To set the default selected nodes, use `defaultSelectedValue`.
 
 ```tsx {2}
 const service = useMachine(tree.machine, {
   defaultSelectedValue: ["node_modules/pandacss"],
+})
+```
+
+### Controlled expanded and selected values
+
+Use controlled props when expansion or selection is managed externally.
+
+```tsx
+const service = useMachine(tree.machine, {
+  collection,
+  expandedValue,
+  selectedValue,
+  onExpandedChange(details) {
+    setExpandedValue(details.expandedValue)
+  },
+  onSelectionChange(details) {
+    setSelectedValue(details.selectedValue)
+  },
 })
 ```
 
@@ -186,7 +201,8 @@ selected nodes.
 ```jsx {2-5}
 const service = useMachine(tree.machine, {
   onSelectionChange(details) {
-    console.log("selected nodes:", details)
+    // details => { focusedValue, selectedValue, selectedNodes }
+    console.log("selected nodes:", details.selectedNodes)
   },
 })
 ```
@@ -199,8 +215,61 @@ with the expanded nodes.
 ```jsx {2-5}
 const service = useMachine(tree.machine, {
   onExpandedChange(details) {
-    console.log("expanded nodes:", details)
+    // details => { focusedValue, expandedValue, expandedNodes }
+    console.log("expanded nodes:", details.expandedNodes)
   },
+})
+```
+
+### Listening for focus and checked changes
+
+Use `onFocusChange` and `onCheckedChange` when you need focus/checkbox state.
+
+```tsx
+const service = useMachine(tree.machine, {
+  onFocusChange(details) {
+    // details => { focusedValue, focusedNode }
+    console.log(details.focusedValue)
+  },
+  onCheckedChange(details) {
+    // details => { checkedValue: string[] }
+    console.log(details.checkedValue)
+  },
+})
+```
+
+### Programmatic tree control
+
+Use the connected API for imperative interactions.
+
+```tsx
+api.expand(["node_modules"])
+api.collapse(["node_modules/@types"])
+api.select(["node_modules/pandacss"])
+api.deselect(["node_modules/pandacss"])
+api.focus("node_modules")
+api.toggleChecked("node_modules", true)
+```
+
+### Controlling branch click behavior
+
+Set `expandOnClick` to control whether clicking a branch toggles expansion.
+
+```tsx
+const service = useMachine(tree.machine, {
+  collection,
+  expandOnClick: false,
+})
+```
+
+### Controlling typeahead
+
+Set `typeahead` to disable keyboard typeahead matching.
+
+```tsx
+const service = useMachine(tree.machine, {
+  collection,
+  typeahead: false,
 })
 ```
 
@@ -216,6 +285,7 @@ To use this, you need to provide the following:
 - `loadChildren` — A function that is used to load the children of a node.
 - `onLoadChildrenComplete` — A callback that is called when the children of a
   node are loaded. Used to update the tree collection.
+- `onLoadChildrenError` — A callback that is called when loading fails.
 - `childrenCount` — A number that indicates the number of children of a branch
   node.
 
@@ -248,6 +318,9 @@ function TreeAsync() {
     onLoadChildrenComplete({ collection }) {
       setCollection(collection)
     },
+    onLoadChildrenError({ nodes }) {
+      console.error("Failed to load:", nodes)
+    },
   })
 
   // ...
@@ -255,8 +328,6 @@ function TreeAsync() {
 ```
 
 ### Renaming Nodes
-
-> **Unreleased** — Coming in the next version
 
 The tree view supports renaming node labels inline, perfect for file explorers,
 content management systems, and other applications where users need to edit item
@@ -269,7 +340,7 @@ To enable renaming:
 
 <CodeSnippet id="tree-view/rename.mdx" />
 
-#### Controlling which nodes can be renamed
+### Controlling which nodes can be renamed
 
 Use the `canRename` callback to control which nodes are renameable based on node
 type or custom logic.
@@ -284,7 +355,7 @@ const service = useMachine(tree.machine, {
 })
 ```
 
-#### Validating rename input
+### Validating rename input
 
 Use the `onBeforeRename` callback to validate the new name before accepting the
 change. Return `false` to reject the rename.
@@ -299,14 +370,14 @@ const service = useMachine(tree.machine, {
     // Prevent duplicate names
     const parent = getParentNode(details.indexPath)
     const hasDuplicate = parent.children.some(
-      (child) => child.name === details.label && child.id !== details.value
+      (child) => child.name === details.label && child.id !== details.value,
     )
     return !hasDuplicate
   },
 })
 ```
 
-#### Tracking rename events
+### Tracking rename events
 
 Use the `onRenameStart` callback to track when users start renaming, useful for
 analytics or showing contextual hints.

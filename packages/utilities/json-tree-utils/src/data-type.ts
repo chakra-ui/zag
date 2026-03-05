@@ -131,7 +131,7 @@ export const SymbolType = dataType<symbol>({
 
 ///////////////////////////////////////////////////////////////////////////////////////////
 
-export const BigIntType = dataType<BigInt>({
+export const BigIntType = dataType<bigint>({
   type: "bigint",
   description(node) {
     return `${node.value}n`
@@ -1150,14 +1150,14 @@ export const IterableType = dataType<any>({
   check(value) {
     return Boolean(
       value &&
-        typeof value === "object" &&
-        typeof (value as any)[Symbol.iterator] === "function" &&
-        !(value instanceof Set) &&
-        !(value instanceof Map) &&
-        !Array.isArray(value) &&
-        !(value instanceof Date) &&
-        !(value instanceof RegExp) &&
-        !(value instanceof ArrayBuffer),
+      typeof value === "object" &&
+      typeof (value as any)[Symbol.iterator] === "function" &&
+      !(value instanceof Set) &&
+      !(value instanceof Map) &&
+      !Array.isArray(value) &&
+      !(value instanceof Date) &&
+      !(value instanceof RegExp) &&
+      !(value instanceof ArrayBuffer),
     )
   },
   previewElement(node, opts) {

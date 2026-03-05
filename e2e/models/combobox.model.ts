@@ -11,7 +11,7 @@ export class ComboboxModel extends Model {
     return a11y(this.page)
   }
 
-  goto(url = "/combobox") {
+  goto(url = "/combobox/basic") {
     return this.page.goto(url)
   }
 
@@ -127,5 +127,17 @@ export class ComboboxModel extends Model {
 
   dontSeeValueText = async () => {
     await expect(this.valueText).toHaveText("")
+  }
+
+  get valueChangeText() {
+    return this.page.locator("[data-testid=on-value-change-items]")
+  }
+
+  seeOnValueChangeItems = async (text: string) => {
+    await expect(this.valueChangeText).toContainText(text)
+  }
+
+  seeOnValueChangeItemsIsEmpty = async () => {
+    await expect(this.valueChangeText).toContainText("N/A")
   }
 }

@@ -16,6 +16,7 @@ export const props = createProps<NavigationMenuProps>()([
   "disableClickTrigger",
   "disableHoverTrigger",
   "disablePointerLeaveClose",
+  "translations",
 ])
 
 export const splitProps = createSplitProps<Partial<NavigationMenuProps>>(props)

@@ -1,9 +1,10 @@
 ```jsx
 import * as numberInput from "@zag-js/number-input"
 import { useMachine, normalizeProps } from "@zag-js/react"
+import { useId } from "react"
 
 export function NumberInput() {
-  const service = useMachine(numberInput.machine, { id: "1" })
+  const service = useMachine(numberInput.machine, { id: useId() })
 
   const api = numberInput.connect(service, normalizeProps)
 

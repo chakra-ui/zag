@@ -6,6 +6,139 @@ description: Deep dive into the key concepts that power Zag machines
 This guide provides a deep dive into the key pieces that make Zag machines
 framework-agnostic and reactive.
 
+## Machine Fundamentals
+
+A state machine is a way to model stateful, reactive behavior using:
+
+- A finite number of states
+- A finite number of transitions between those states
+
+Before diving into context, computed values, refs, and effects, start with this
+minimal toggle machine.
+
+### Create a Machine
+
+```tsx
+import { createMachine } from "@zag-js/core"
+
+interface ToggleSchema {
+  state: "active" | "inactive"
+  event: { type: "CLICK" }
+}
+
+export const machine = createMachine<ToggleSchema>({
+  initialState() {
+    return "active"
+  },
+  states: {
+    active: {
+      on: {
+        CLICK: { target: "inactive" },
+      },
+    },
+    inactive: {
+      on: {
+        CLICK: { target: "active" },
+      },
+    },
+  },
+})
+```
+
+### Connect Machine State to DOM
+
+```tsx
+import { type Service } from "@zag-js/core"
+import type { NormalizeProps, PropTypes } from "@zag-js/types"
+
+interface ToggleSchema {
+  state: "active" | "inactive"
+  event: { type: "CLICK" }
+}
+
+export function connect<T extends PropTypes>(
+  service: Service<ToggleSchema>,
+  normalize: NormalizeProps<T>,
+) {
+  const { state, send } = service
+  const active = state.matches("active")
+
+  return {
+    active,
+    getButtonProps() {
+      return normalize.button({
+        type: "button",
+        role: "switch",
+        "aria-checked": active,
+        onClick() {
+          send({ type: "CLICK" })
+        },
+      })
+    },
+  }
+}
+```
+
+### Consume It in a Framework
+
+```tsx
+import { useMachine, normalizeProps } from "@zag-js/react"
+import { machine, connect } from "./toggle"
+
+function Toggle() {
+  const service = useMachine(machine)
+  const api = connect(service, normalizeProps)
+
+  return <button {...api.getButtonProps()}>{api.active ? "ON" : "OFF"}</button>
+}
+```
+
+The rest of this guide explains the advanced building blocks used in production
+machines.
+
+## Nested States
+
+Machines can now model hierarchical state by nesting `states` inside a parent
+state and defining the child's `initial` state.
+
+```tsx
+import { createMachine } from "@zag-js/core"
+
+const machine = createMachine({
+  initialState() {
+    return "closed"
+  },
+  states: {
+    closed: {
+      on: {
+        OPEN: { target: "open.idle" },
+      },
+    },
+    open: {
+      initial: "idle",
+      states: {
+        idle: { on: { SUBMIT: { target: "open.submitting" } } },
+        submitting: {
+          on: {
+            SUCCESS: { target: "closed" },
+            ERROR: { target: "open.idle" },
+          },
+        },
+      },
+      on: {
+        CLOSE: { target: "closed" },
+      },
+    },
+  },
+})
+```
+
+Key points:
+
+- Use dot notation for nested targets, like `open.submitting`
+- Parent states can still define transitions (`open -> CLOSE`)
+- Check nested activity with `service.state.matches("open.idle")`
+
 ## Context
 
 Context holds the reactive state of your machine. Unlike props (which are

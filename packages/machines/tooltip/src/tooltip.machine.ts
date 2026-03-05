@@ -1,10 +1,11 @@
 import { createGuards, createMachine } from "@zag-js/core"
 import { addDomEvent, getOverflowAncestors, isComposingEvent } from "@zag-js/dom-query"
-import { trackFocusVisible as trackFocusVisibleFn } from "@zag-js/focus-visible"
+import { trackFocusVisible } from "@zag-js/focus-visible"
 import { getPlacement } from "@zag-js/popper"
 import * as dom from "./tooltip.dom"
 import { store } from "./tooltip.store"
 import type { Placement, TooltipSchema } from "./tooltip.types"
+import { ensureProps } from "@zag-js/utils"
 
 const { and, not } = createGuards<TooltipSchema>()
 
@@ -15,12 +16,13 @@ export const machine = createMachine<TooltipSchema>({
   },
 
   props({ props }) {
+    ensureProps(props, ["id"])
+
     // If consumer disables click-to-close, default pointerdown-to-close to follow it
     const closeOnClick = props.closeOnClick ?? true
     const closeOnPointerDown = props.closeOnPointerDown ?? closeOnClick
 
     return {
-      id: "x",
       openDelay: 400,
       closeDelay: 150,
       closeOnEscape: true,
@@ -304,7 +306,7 @@ export const machine = createMachine<TooltipSchema>({
     },
     effects: {
       trackFocusVisible: ({ scope }) => {
-        return trackFocusVisibleFn({ root: scope.getRootNode?.() })
+        return trackFocusVisible({ root: scope.getRootNode?.() })
       },
 
       trackPositioning: ({ context, prop, scope }) => {

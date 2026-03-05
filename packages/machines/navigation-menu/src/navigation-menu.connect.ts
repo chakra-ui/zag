@@ -18,6 +18,7 @@ export function connect<T extends PropTypes>(
   normalize: NormalizeProps<T>,
 ): NavigationMenuApi<T> {
   const { context, send, prop, scope } = service
+  const translations = prop("translations")
 
   const triggerRect = context.get("triggerRect")
 
@@ -65,7 +66,7 @@ export function connect<T extends PropTypes>(
       return normalize.element({
         ...parts.root.attrs,
         id: dom.getRootId(scope),
-        "aria-label": "Main Navigation",
+        "aria-label": translations.rootLabel,
         "data-orientation": prop("orientation"),
         dir: prop("dir"),
         style: {

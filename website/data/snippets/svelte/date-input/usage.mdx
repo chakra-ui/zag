@@ -1,0 +1,25 @@
+```svelte
+<script>
+  import * as dateInput from "@zag-js/date-input"
+  import { useMachine } from "@zag-js/svelte"
+
+  const service = useMachine(dateInput.machine())
+  const api = dateInput.connect(service, $service)
+</script>
+
+<div use:api.getRootProps>
+  <label use:api.getLabelProps>Enter a date</label>
+
+  <div use:api.getControlProps>
+    <div use:api.getSegmentGroupProps>
+      {#each api.getSegments() as segment, i (i)}
+        <span use:api.getSegmentProps={{ segment }}>
+          {segment.text}
+        </span>
+      {/each}
+    </div>
+  </div>
+
+  <input use:api.getHiddenInputProps />
+</div>
+```

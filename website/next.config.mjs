@@ -3,10 +3,24 @@ const nextConfig = {
   typescript: {
     ignoreBuildErrors: true,
   },
+  images: {
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "i.ytimg.com",
+        pathname: "/**",
+      },
+    ],
+  },
   experimental: {
     externalDir: true,
   },
   redirects: async () => [
+    {
+      source: "/overview/whats-a-machine",
+      destination: "/guides/building-machines",
+      permanent: true,
+    },
     {
       source: "/discord",
       destination: "https://discord.gg/ww6HE5xaZ2",

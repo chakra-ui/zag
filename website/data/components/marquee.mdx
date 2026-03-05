@@ -4,8 +4,7 @@ description: Using the marquee machine in your project.
 package: "@zag-js/marquee"
 ---
 
-An accessible auto-scrolling marquee component for displaying scrolling content
-like logos, announcements, or featured items.
+A marquee auto-scrolls content like logos, announcements, or featured items.
 
 <Resources pkg="@zag-js/marquee" />
 
@@ -13,23 +12,21 @@ like logos, announcements, or featured items.
 
 **Features**
 
-- Smooth GPU-accelerated animations with seamless looping
 - Horizontal and vertical scrolling with RTL support
 - Pause on hover and keyboard focus
-- Customizable speed and spacing
-- Accessible and respects `prefers-reduced-motion`
+- Customizable speed, spacing, delay, and loop count
+- Auto-fill mode to prevent visible gaps
+- Respects `prefers-reduced-motion`
 
 ## Installation
 
-To use the marquee machine in your project, run the following command in your
-command line:
+Install the marquee package:
 
 <CodeSnippet id="marquee/installation.mdx" />
 
 ## Anatomy
 
-To set up the marquee correctly, you'll need to understand its anatomy and how
-we name its parts.
+Check the marquee anatomy and part names.
 
 > Each part includes a `data-part` attribute to help identify them in the DOM.
 
@@ -37,7 +34,7 @@ we name its parts.
 
 ## Usage
 
-First, import the marquee package into your project
+Import the marquee package:
 
 ```jsx
 import * as marquee from "@zag-js/marquee"
@@ -45,15 +42,13 @@ import * as marquee from "@zag-js/marquee"
 
 The marquee package exports two key functions:
 
-- `machine` — The state machine logic for the marquee widget.
-- `connect` — The function that translates the machine's state to JSX attributes
-  and event handlers.
+- `machine` - State machine logic.
+- `connect` - Maps machine state to JSX props and event handlers.
 
 > You'll also need to provide a unique `id` to the `useMachine` hook. This is
 > used to ensure that every part has a unique identifier.
 
-Next, import the required hooks and functions for your framework and use the
-marquee machine in your project 🔥
+Then use the framework integration helpers:
 
 <CodeSnippet id="marquee/usage.mdx" />
 
@@ -163,6 +158,19 @@ machine's context to `true`.
 ```jsx {2}
 const service = useMachine(marquee.machine, {
   defaultPaused: true,
+})
+```
+
+### Controlled paused state
+
+Use `paused` and `onPauseChange` to control playback externally.
+
+```jsx
+const service = useMachine(marquee.machine, {
+  paused,
+  onPauseChange(details) {
+    setPaused(details.paused)
+  },
 })
 ```
 
@@ -360,8 +368,7 @@ The machine automatically sets these CSS variables:
 
 ### Styling parts
 
-Earlier, we mentioned that each marquee part has a `data-part` attribute added
-to them to select and style them in the DOM.
+Each part includes a `data-part` attribute you can target in CSS.
 
 ```css
 [data-scope="marquee"][data-part="root"] {

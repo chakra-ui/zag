@@ -11,7 +11,7 @@ export class ImageCropperModel extends Model {
     return a11y(this.page)
   }
 
-  goto(url = "/image-cropper") {
+  goto(url = "/image-cropper/basic") {
     return this.page.goto(url)
   }
 

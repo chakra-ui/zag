@@ -1,7 +1,28 @@
-import { test } from "@playwright/test"
+import { expect, test, type Page } from "@playwright/test"
 import { ComboboxModel } from "./models/combobox.model"
 
 let I: ComboboxModel
+const swapiPeople = ["Luke Skywalker", "Leia Organa", "Lando Calrissian", "Han Solo"]
+
+const mockSwapiPeople = async (page: Page) => {
+  await page.route("https://swapi.py4e.com/api/people/*", async (route) => {
+    const search = new URL(route.request().url()).searchParams.get("search")?.toLowerCase() ?? ""
+    const people = swapiPeople
+      .filter((name) => name.toLowerCase().includes(search))
+      .map((name, index) => ({ name, url: `https://swapi.py4e.com/api/people/${index + 1}/` }))
+
+    await route.fulfill({
+      status: 200,
+      contentType: "application/json",
+      body: JSON.stringify({
+        count: people.length,
+        next: null,
+        previous: null,
+        results: people,
+      }),
+    })
+  })
+}
 
 test.describe("combobox", () => {
   test.beforeEach(async ({ page }) => {
@@ -28,9 +49,13 @@ test.describe("combobox", () => {
   })
 
   test("[keyboard] should open combobox menu when typing", async () => {
-    await I.type("can")
+    await I.focusInput()
+    await I.type("c")
     await I.seeDropdown()
+    await I.seeInputIsFocused()
+    await I.type("an")
     await I.seeItemIsHighlighted("Canada")
+    await I.seeInputIsFocused()
 
     await I.pressKey("Enter")
     await I.seeInputHasValue("Canada")
@@ -198,6 +223,32 @@ test.describe("combobox", () => {
     await I.seeInputHasValue("")
   })
 
+  test("[callback] onValueChange should include selected item in items", async () => {
+    await I.clickTrigger()
+    await I.clickItem("Zambia")
+    await I.seeOnValueChangeItems("Zambia")
+  })
+
+  test("[callback] onValueChange items should be empty after clearing", async () => {
+    await I.clickTrigger()
+    await I.clickItem("Zambia")
+    await I.seeOnValueChangeItems("Zambia")
+    await I.clickTrigger()
+    await I.clickClearTrigger()
+    await I.seeOnValueChangeItemsIsEmpty()
+  })
+
+  test("[callback] onValueChange items should track latest selected item", async () => {
+    await I.clickTrigger()
+    await I.clickItem("Zambia")
+    await I.seeOnValueChangeItems("Zambia")
+
+    await I.clickTrigger()
+    await I.clickItem("Canada")
+    await I.seeOnValueChangeItems("Canada")
+    await expect(I.valueChangeText).not.toContainText("Zambia")
+  })
+
   test("[no value] enter behavior for custom values", async () => {
     await I.controls.select("inputBehavior", "none")
     await I.type("foo")
@@ -215,6 +266,55 @@ test.describe("combobox", () => {
     await I.pressKey("Enter")
 
     await I.seeInputHasValue("Malawi")
+  })
+
+  test("[composition] controlled-ignore should keep selectedItems aligned with controlled value", async ({ page }) => {
+    await I.goto("/combobox/controlled-ignore")
+    await I.clickTrigger()
+    await I.clickItem("Vue")
+
+    const selectedItems = page.getByTestId("selected-items")
+    await expect(selectedItems).toContainText("React")
+    await expect(selectedItems).not.toContainText("Vue")
+  })
+
+  test("[composition] external value change should keep item selection in sync", async ({ page }) => {
+    await I.goto("/combobox/external-value-change")
+    await I.clickInput()
+    await I.type("vu")
+    await I.seeDropdown()
+
+    await I.pressKey("Escape")
+    await page.getByTestId("set-solid-button").click()
+    await expect(page.getByTestId("input")).toHaveValue("Solid")
+    await I.clickTrigger()
+    await expect(page.locator("[data-part=item]", { hasText: "Solid" })).toHaveAttribute("data-state", "checked")
+  })
+
+  test("[composition] async list should filter server results as user types", async ({ page }) => {
+    await mockSwapiPeople(page)
+
+    await I.goto("/combobox/async")
+    await I.clickInput()
+    await I.type("lan")
+    await I.seeDropdown()
+
+    await expect(page.locator("[data-part=item]", { hasText: "Lando Calrissian" })).toBeVisible()
+    await expect(page.locator("[data-part=item]", { hasText: "Leia Organa" })).not.toBeVisible()
+    await expect(page.locator("[data-part=item]", { hasText: "Luke Skywalker" })).not.toBeVisible()
+  })
+
+  test("[composition] async list should select fetched item", async ({ page }) => {
+    await mockSwapiPeople(page)
+
+    await I.goto("/combobox/async")
+    await I.clickInput()
+    await I.type("luk")
+    await I.seeDropdown()
+    await I.clickItem("Luke Skywalker")
+
+    await I.seeInputHasValue("Luke Skywalker")
+    await expect(page.getByTestId("selected-value")).toContainText("Luke Skywalker")
   })
 })
 
@@ -260,7 +360,7 @@ test.describe("combobox / autocomplete", () => {
 test.describe("combobox / multiple", () => {
   test.beforeEach(async ({ page }) => {
     I = new ComboboxModel(page)
-    await I.goto("/combobox-multiple")
+    await I.goto("/combobox/multiple")
   })
 
   test("should toggle the same item", async () => {

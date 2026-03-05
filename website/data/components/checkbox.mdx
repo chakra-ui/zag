@@ -13,22 +13,20 @@ two possible mutually exclusive options.
 
 **Features**
 
-- Tri-state checkbox. i.e. `indeterminate` state
+- Tri-state checkbox (`indeterminate` state)
 - Syncs with `disabled` state of fieldset
 - Syncs with form `reset` events
 - Can be toggled programmatically
 
 ## Installation
 
-To use the checkbox machine in your project, run the following command in your
-command line:
+Install the checkbox package:
 
 <CodeSnippet id="checkbox/installation.mdx" />
 
 ## Anatomy
 
-To set up the checkbox correctly, you'll need to understand its anatomy and how
-we name its parts.
+Check the checkbox anatomy and part names.
 
 > Each part includes a `data-part` attribute to help identify them in the DOM.
 
@@ -36,7 +34,7 @@ we name its parts.
 
 ## Usage
 
-First, import the checkbox package into your project
+Import the checkbox package:
 
 ```jsx
 import * as checkbox from "@zag-js/checkbox"
@@ -44,19 +42,16 @@ import * as checkbox from "@zag-js/checkbox"
 
 The checkbox package exports two key functions:
 
-- `machine` — The state machine logic for the checkbox widget.
-- `connect` — The function that translates the machine's state to JSX attributes
-  and event handlers.
+- `machine` - State machine logic.
+- `connect` - Maps machine state to JSX props and event handlers.
 
-Next, import the required hooks and functions for your framework and use the
-checkbox machine in your project 🔥
+Then use the framework integration helpers:
 
 <CodeSnippet id="checkbox/usage.mdx" />
 
 ### Setting the initial checked state
 
-To make a checkbox checked by default, set the context's `defaultChecked`
-property to `true`
+Set `defaultChecked` to `true` to start checked.
 
 ```jsx {2}
 const service = useMachine(checkbox.machine, {
@@ -66,8 +61,7 @@ const service = useMachine(checkbox.machine, {
 
 ### Indeterminate checkboxes
 
-To make a checkbox indeterminate, set the `defaultChecked` or `checked` property
-to `"indeterminate"`
+Set `defaultChecked` or `checked` to `"indeterminate"` for a tri-state checkbox.
 
 ```jsx {2}
 const service = useMachine(checkbox.machine, {
@@ -77,14 +71,13 @@ const service = useMachine(checkbox.machine, {
 
 ### Controlled checkbox
 
-To control the checked state programmatically, pass the `checked` and
-`onCheckedChange` properties to the machine function.
+Use `checked` and `onCheckedChange` to control state externally.
 
 <CodeSnippet id="checkbox/controlled.mdx" />
 
 ### Disabling the checkbox
 
-To make a checkbox disabled, set the context's `disabled` property to true
+Set `disabled` to `true` to prevent interaction.
 
 ```jsx {2}
 const service = useMachine(checkbox.machine, {
@@ -94,22 +87,30 @@ const service = useMachine(checkbox.machine, {
 
 ### Listening for changes
 
-When the checkbox value changes, the `onCheckChange` callback is invoked.
+When the checked state changes, `onCheckedChange` is invoked.
 
 ```jsx {2-5}
 const service = useMachine(checkbox.machine, {
-  onCheckChange(details) {
-    // details => { checked: boolean }
+  onCheckedChange(details) {
+    // details => { checked: boolean | "indeterminate" }
     console.log("checkbox is:", details.checked)
   },
 })
 ```
 
+### Read-only checkbox
+
+Set `readOnly` to keep the checkbox focusable but prevent toggling.
+
+```jsx {2}
+const service = useMachine(checkbox.machine, {
+  readOnly: true,
+})
+```
+
 ### Usage within forms
 
-To use checkbox within forms, use the exposed `api.getHiddenInputProps()` from
-the `connect` function and ensure you pass `name` value to the machine's
-context.
+To use checkbox within forms, set `name` and render `api.getHiddenInputProps()`.
 
 ```jsx {2}
 const service = useMachine(checkbox.machine, {
@@ -124,10 +125,31 @@ form correctly.
 <input {...api.getHiddenInputProps()} />
 ```
 
+### Customizing submitted value
+
+Set `value` to customize the submitted form value when checked.
+
+```jsx
+const service = useMachine(checkbox.machine, {
+  name: "newsletter",
+  value: "subscribed",
+})
+```
+
+### Associating with an external form
+
+If the input belongs to a different form element, set `form`.
+
+```jsx
+const service = useMachine(checkbox.machine, {
+  name: "newsletter",
+  form: "settings-form",
+})
+```
+
 ## Styling guide
 
-Earlier, we mentioned that each checkbox part has a `data-part` attribute added
-to them to select and style them in the DOM.
+Each part includes a `data-part` attribute you can target in CSS.
 
 ### Checked state
 

@@ -10,7 +10,7 @@ export class FileUploadModel extends Model {
   }
 
   goto() {
-    return this.page.goto("/file-upload")
+    return this.page.goto("/file-upload/basic")
   }
 
   getDropzone() {

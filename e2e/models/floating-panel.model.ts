@@ -9,7 +9,7 @@ export class FloatingPanelModel extends Model {
     super(page)
   }
 
-  goto(url = "/floating-panel") {
+  goto(url = "/floating-panel/basic") {
     return this.page.goto(url)
   }
 

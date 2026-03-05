@@ -1,4 +1,4 @@
-import { routesData } from "@zag-js/shared"
+import { componentRoutesData } from "@zag-js/shared"
 import { A } from "@solidjs/router"
 import { For } from "solid-js/web"
 
@@ -7,10 +7,10 @@ export default function Home() {
     <div class="index-nav">
       <h2>Zag.js + Solid</h2>
       <ul>
-        <For each={routesData.sort((a, b) => a.label.localeCompare(b.label))}>
-          {(route) => (
+        <For each={componentRoutesData}>
+          {(component) => (
             <li>
-              <A href={route.path}>{route.label}</A>
+              <A href={`/${component.slug}`}>{component.label}</A>
             </li>
           )}
         </For>

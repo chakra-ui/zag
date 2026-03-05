@@ -31,6 +31,7 @@ export const props = createProps<TreeViewProps>()([
   "onBeforeRename",
   "onRenameComplete",
   "scrollToIndexFn",
+  "translations",
 ])
 
 export const splitProps = createSplitProps<Partial<TreeViewProps>>(props)

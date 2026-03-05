@@ -151,6 +151,11 @@ export interface TagsInputProps extends DirectionProperty, CommonProperties, Int
    */
   validate?: ((details: ValidateArgs) => boolean) | undefined
   /**
+   * Whether to allow duplicate tags.
+   * @default false
+   */
+  allowDuplicates?: boolean | undefined
+  /**
    * The behavior of the tags input when the input is blurred
    * - `"add"`: add the input value as a new tag
    * - `"clear"`: clear the input value
@@ -188,6 +193,7 @@ export interface TagsInputProps extends DirectionProperty, CommonProperties, Int
 type PropsWithDefault =
   | "dir"
   | "addOnPaste"
+  | "allowDuplicates"
   | "editable"
   | "validate"
   | "delimiter"

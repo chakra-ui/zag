@@ -87,18 +87,6 @@
       "data-state": "\"hidden\" | \"visible\""
     }
   },
-  "drawer": {
-    "Content": {
-      "data-scope": "drawer",
-      "data-part": "content",
-      "data-state": "\"open\" | \"closed\""
-    },
-    "Backdrop": {
-      "data-scope": "drawer",
-      "data-part": "backdrop",
-      "data-state": "\"open\" | \"closed\""
-    }
-  },
   "carousel": {
     "Root": {
       "data-scope": "carousel",
@@ -173,7 +161,7 @@
       "data-scope": "cascade-select",
       "data-part": "control",
       "data-disabled": "Present when disabled",
-      "data-focused": "",
+      "data-focus": "Present when focused",
       "data-readonly": "Present when read-only",
       "data-invalid": "Present when invalid",
       "data-state": "\"open\" | \"closed\""
@@ -185,8 +173,9 @@
       "data-disabled": "Present when disabled",
       "data-readonly": "Present when read-only",
       "data-invalid": "Present when invalid",
-      "data-focused": "",
-      "data-placement": "The placement of the trigger"
+      "data-focus": "Present when focused",
+      "data-placement": "The placement of the trigger",
+      "data-placeholder-shown": "Present when placeholder is shown"
     },
     "ClearTrigger": {
       "data-scope": "cascade-select",
@@ -241,6 +230,13 @@
       "data-highlighted": "Present when highlighted",
       "data-type": "The type of the item",
       "data-state": "\"checked\" | \"unchecked\""
+    },
+    "ValueText": {
+      "data-scope": "cascade-select",
+      "data-part": "value-text",
+      "data-disabled": "Present when disabled",
+      "data-invalid": "Present when invalid",
+      "data-focus": "Present when focused"
     }
   },
   "checkbox": {
@@ -558,6 +554,48 @@
       "data-empty": "Present when the content is empty"
     }
   },
+  "date-input": {
+    "Root": {
+      "data-scope": "date-input",
+      "data-part": "root",
+      "data-disabled": "Present when disabled",
+      "data-readonly": "Present when read-only",
+      "data-invalid": "Present when invalid"
+    },
+    "Label": {
+      "data-scope": "date-input",
+      "data-part": "label",
+      "data-disabled": "Present when disabled",
+      "data-readonly": "Present when read-only",
+      "data-invalid": "Present when invalid"
+    },
+    "Control": {
+      "data-scope": "date-input",
+      "data-part": "control",
+      "data-disabled": "Present when disabled",
+      "data-readonly": "Present when read-only",
+      "data-invalid": "Present when invalid",
+      "data-focus": "Present when focused"
+    },
+    "SegmentGroup": {
+      "data-scope": "date-input",
+      "data-part": "segment-group",
+      "data-disabled": "Present when disabled",
+      "data-readonly": "Present when read-only",
+      "data-invalid": "Present when invalid",
+      "data-focus": "Present when focused"
+    },
+    "Segment": {
+      "data-scope": "date-input",
+      "data-part": "segment",
+      "data-type": "The type of the item",
+      "data-readonly": "Present when read-only",
+      "data-disabled": "Present when disabled",
+      "data-value": "The value of the item",
+      "data-editable": "",
+      "data-placeholder": ""
+    }
+  },
   "date-picker": {
     "Root": {
       "data-scope": "date-picker",
@@ -619,6 +657,21 @@
       "data-part": "table-row",
       "data-disabled": "Present when disabled",
       "data-view": "The view of the tablerow"
+    },
+    "WeekNumberHeaderCell": {
+      "data-scope": "date-picker",
+      "data-part": "week-number-header-cell",
+      "data-view": "The view of the weeknumberheadercell",
+      "data-type": "The type of the item",
+      "data-disabled": "Present when disabled"
+    },
+    "WeekNumberCell": {
+      "data-scope": "date-picker",
+      "data-part": "week-number-cell",
+      "data-view": "The view of the weeknumbercell",
+      "data-week-index": "",
+      "data-type": "The type of the item",
+      "data-disabled": "Present when disabled"
     },
     "DayTableCell": {
       "data-scope": "date-picker",
@@ -736,6 +789,29 @@
       "data-state": "\"open\" | \"closed\"",
       "data-nested": "dialog",
       "data-has-nested": "dialog"
+    }
+  },
+  "drawer": {
+    "Positioner": {
+      "data-scope": "drawer",
+      "data-part": "positioner",
+      "data-state": "\"open\" | \"closed\"",
+      "data-swipe-direction": ""
+    },
+    "Content": {
+      "data-scope": "drawer",
+      "data-part": "content",
+      "data-state": "\"open\" | \"closed\"",
+      "data-expanded": "Present when expanded",
+      "data-swipe-direction": "",
+      "data-swiping": "",
+      "data-dragging": "Present when in the dragging state"
+    },
+    "Backdrop": {
+      "data-scope": "drawer",
+      "data-part": "backdrop",
+      "data-state": "\"open\" | \"closed\"",
+      "data-swiping": ""
     }
   },
   "editable": {

@@ -1,5 +1,101 @@
 # @zag-js/drawer
 
+## 1.35.3
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.35.3
+  - @zag-js/core@1.35.3
+  - @zag-js/types@1.35.3
+  - @zag-js/aria-hidden@1.35.3
+  - @zag-js/utils@1.35.3
+  - @zag-js/dismissable@1.35.3
+  - @zag-js/dom-query@1.35.3
+  - @zag-js/focus-trap@1.35.3
+  - @zag-js/remove-scroll@1.35.3
+
+## 1.35.2
+
+### Patch Changes
+
+- Updated dependencies [[`01840ee`](https://github.com/chakra-ui/zag/commit/01840ee6f9672bedc784a2c434b84e8741e2dc25)]:
+  - @zag-js/utils@1.35.2
+  - @zag-js/core@1.35.2
+  - @zag-js/dismissable@1.35.2
+  - @zag-js/anatomy@1.35.2
+  - @zag-js/types@1.35.2
+  - @zag-js/aria-hidden@1.35.2
+  - @zag-js/dom-query@1.35.2
+  - @zag-js/focus-trap@1.35.2
+  - @zag-js/remove-scroll@1.35.2
+
+## 1.35.1
+
+### Patch Changes
+
+- Updated dependencies [[`2ab725f`](https://github.com/chakra-ui/zag/commit/2ab725f6cb4631dc8d790a3da53f8fb7713e7ec1)]:
+  - @zag-js/core@1.35.1
+  - @zag-js/anatomy@1.35.1
+  - @zag-js/types@1.35.1
+  - @zag-js/aria-hidden@1.35.1
+  - @zag-js/utils@1.35.1
+  - @zag-js/dismissable@1.35.1
+  - @zag-js/dom-query@1.35.1
+  - @zag-js/focus-trap@1.35.1
+  - @zag-js/remove-scroll@1.35.1
+
+## 1.35.0
+
+### Patch Changes
+
+- Updated dependencies [[`b0149ce`](https://github.com/chakra-ui/zag/commit/b0149cea73d2d975d0920d1a69561b6a85c9baa0)]:
+  - @zag-js/core@1.35.0
+  - @zag-js/anatomy@1.35.0
+  - @zag-js/types@1.35.0
+  - @zag-js/aria-hidden@1.35.0
+  - @zag-js/utils@1.35.0
+  - @zag-js/dismissable@1.35.0
+  - @zag-js/dom-query@1.35.0
+  - @zag-js/focus-trap@1.35.0
+  - @zag-js/remove-scroll@1.35.0
+
+## 1.34.1
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.34.1
+  - @zag-js/core@1.34.1
+  - @zag-js/types@1.34.1
+  - @zag-js/aria-hidden@1.34.1
+  - @zag-js/utils@1.34.1
+  - @zag-js/dismissable@1.34.1
+  - @zag-js/dom-query@1.34.1
+  - @zag-js/focus-trap@1.34.1
+  - @zag-js/remove-scroll@1.34.1
+
+## 1.34.0
+
+### Minor Changes
+
+- [`76c9a83`](https://github.com/chakra-ui/zag/commit/76c9a832e249929d685659225eeab062f383a4aa) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - **Drawer [New]**: Initial release of the drawer state machine.
+  This replaces the previous `bottom-sheet` implementation and API naming.
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.34.0
+  - @zag-js/core@1.34.0
+  - @zag-js/types@1.34.0
+  - @zag-js/aria-hidden@1.34.0
+  - @zag-js/utils@1.34.0
+  - @zag-js/dismissable@1.34.0
+  - @zag-js/dom-query@1.34.0
+  - @zag-js/focus-trap@1.34.0
+  - @zag-js/remove-scroll@1.34.0
+
 ## 1.33.1
 
 ### Patch Changes
@@ -342,8 +438,8 @@
 
 - [#2548](https://github.com/chakra-ui/zag/pull/2548)
   [`47011ad`](https://github.com/chakra-ui/zag/commit/47011add7c99572aaa162846cf01781ea42d35ac) Thanks
-  [@segunadebayo](https://github.com/segunadebayo)! - **[New]** Introduce drawer state machine to show secondary
-  content anchored to the bottom of the screen
+  [@segunadebayo](https://github.com/segunadebayo)! - **[New]** Introduce drawer state machine to show secondary content
+  anchored to the bottom of the screen
 
 - Updated dependencies [[`92c0bf5`](https://github.com/chakra-ui/zag/commit/92c0bf5f5e283451c6be989e63ff02188054be9a),
   [`352c638`](https://github.com/chakra-ui/zag/commit/352c638b9d2bc9f603f3323a4bb18a87ae3fd9ab),

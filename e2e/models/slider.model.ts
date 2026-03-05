@@ -11,7 +11,7 @@ export class SliderModel extends Model {
     return a11y(this.page)
   }
 
-  goto(url = "/slider") {
+  goto(url = "/slider/basic") {
     return this.page.goto(url)
   }
 

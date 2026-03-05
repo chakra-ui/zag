@@ -1,3 +1,4 @@
+/* eslint-disable no-irregular-whitespace */
 import { formatBytes, type FormatBytesOptions } from "../src"
 
 describe("formatBytes", () => {

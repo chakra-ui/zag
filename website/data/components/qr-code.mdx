@@ -4,8 +4,7 @@ description: Using the QR code machine in your project.
 package: "@zag-js/qr-code"
 ---
 
-QR (Quick Response) Code is used to provide information or link which can be
-accessed by scanning the code with an app or a smartphone.
+A QR code encodes information or links that can be scanned with a phone or app.
 
 > **Good to know**: The QR code encoding logic is built on top of the
 > [`uqr`](https://github.com/unjs/uqr) library.
@@ -23,15 +22,13 @@ accessed by scanning the code with an app or a smartphone.
 
 ## Installation
 
-To use the QR code machine in your project, run the following command in your
-command line:
+Install the QR code package:
 
 <CodeSnippet id="qr-code/installation.mdx" />
 
 ## Anatomy
 
-To set up the QR code correctly, you'll need to understand its anatomy and how
-we name its parts.
+Check the QR code anatomy and part names.
 
 > Each part includes a `data-part` attribute to help identify them in the DOM.
 
@@ -39,31 +36,63 @@ we name its parts.
 
 ## Usage
 
-First, import the QR code package into your project
+Import the QR code package:
 
 ```jsx
 import * as qrCode from "@zag-js/qr-code"
 ```
 
-The QR code package exports two key functions:
+These are the key exports:
 
-- `machine` — The state machine logic for the QR code widget.
-- `connect` — The function that translates the machine's state to JSX attributes
-  and event handlers.
+- `machine` - State machine logic.
+- `connect` - Maps machine state to JSX props and event handlers.
 
-Next, import the required hooks and functions for your framework and use the QR
-code machine in your project 🔥
+Then use the framework integration helpers:
 
 <CodeSnippet id="qr-code/usage.mdx" />
 
-## Setting the QR Code value
+### Setting the QR code value
 
-To set the value of the QR code, pass the `value` property to the machine.
+Set `value` to control the encoded content.
 
 ```jsx {3}
 const service = useMachine(qrCode.machine, {
   // ...
   value: "https://example.com",
+})
+```
+
+### Setting an initial value
+
+Use `defaultValue` for an uncontrolled initial value.
+
+```jsx
+const service = useMachine(qrCode.machine, {
+  defaultValue: "https://example.com",
+})
+```
+
+### Listening for value changes
+
+Use `onValueChange` to react when the encoded value changes.
+
+```jsx
+const service = useMachine(qrCode.machine, {
+  onValueChange(details) {
+    // details => { value: string }
+    console.log(details.value)
+  },
+})
+```
+
+### Setting pixel size
+
+Use `pixelSize` to control QR code density.
+
+```jsx
+const service = useMachine(qrCode.machine, {
+  value: "https://example.com",
+  pixelSize: 8,
 })
 ```
 
@@ -127,18 +156,30 @@ To change the background color of the QR code, set the `background-color`
 
 ### Exporting the QR code
 
-To export the QR code as an image, you can use the `api.getDataURL` method.
+To export the QR code as an image, use `api.getDataUrl`.
 
 ```ts
-api.getDataURL({ type: "image/png" }).then((url) => {
+api.getDataUrl("image/png").then((url) => {
   // do something with the URL (like download it)
 })
 ```
 
+You can also use `api.getDownloadTriggerProps` to create a download button.
+
+```jsx
+<button
+  {...api.getDownloadTriggerProps({
+    mimeType: "image/png",
+    fileName: "qr-code",
+  })}
+>
+  Download QR
+</button>
+```
+
 ## Styling guide
 
-Earlier, we mentioned that each QR code part has a `data-part` attribute added
-to them to select and style them in the DOM.
+Each part includes a `data-part` attribute you can target in CSS.
 
 ```css
 [data-scope="qr-code"][data-part="root"] {

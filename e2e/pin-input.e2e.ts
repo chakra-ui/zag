@@ -8,7 +8,7 @@ const clear = testid("clear-button")
 
 test.describe("pin input", () => {
   test.beforeEach(async ({ page }) => {
-    await page.goto("/pin-input")
+    await page.goto("/pin-input/basic")
   })
 
   test("on type: should move focus to the next input", async ({ page }) => {
