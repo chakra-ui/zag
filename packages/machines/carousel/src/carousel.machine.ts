@@ -292,7 +292,16 @@ export const machine = createMachine<CarouselSchema>({
 
         const itemEls = dom.getItemEls(scope)
         itemEls.forEach(exec)
-        const cleanups = [resizeObserverBorderBox.observe(el, exec), ...itemEls.map((el) => resizeObserverBorderBox.observe(el, exec))]
+        // After a resize, also sync the scroll position so the carousel stays on
+        // the correct page when snap points change (e.g., preventBodyScroll layout shift)
+        const execWithScroll = () => {
+          exec()
+          send({ type: "PAGE.SCROLL", instant: true })
+        }
+        const cleanups = [
+          resizeObserverBorderBox.observe(el, execWithScroll),
+          ...itemEls.map((el) => resizeObserverBorderBox.observe(el, execWithScroll)),
+        ]
         return callAll(...cleanups)
       },
 
