@@ -7,7 +7,7 @@ import { Toolbar } from "~/components/toolbar"
 
 export default function Page() {
   const id = createUniqueId()
-  const [open, setOpen] = createSignal(true)
+  const [open, setOpen] = createSignal(false)
   const [size, setSize] = createSignal({ width: 360, height: 260 })
   const [position, setPosition] = createSignal({ x: 120, y: 120 })
   const [observedSize, setObservedSize] = createSignal({ width: 0, height: 0 })
@@ -33,6 +33,7 @@ export default function Page() {
   const service = useMachine(floatingPanel.machine, () => ({
     id,
     open: open(),
+    defaultOpen: true,
     size: size(),
     position: position(),
     onOpenChange(details) {
@@ -55,6 +56,8 @@ export default function Page() {
           <button onClick={() => setOpen((prev) => !prev)}>{open() ? "Close" : "Open"} panel</button>
           <button onClick={() => setSize({ width: 420, height: 320 })}>Set size: 420x320</button>
           <button onClick={() => setPosition({ x: 32, y: 32 })}>Set position: (32, 32)</button>
+          <button onClick={() => api().setSize({ width: 440, height: 300 })}>API set size: 440x300</button>
+          <button onClick={() => api().setPosition({ x: 48, y: 48 })}>API set position: (48, 48)</button>
           <button
             onClick={() => {
               setSize({ width: 360, height: 260 })
@@ -95,7 +98,7 @@ export default function Page() {
               </div>
               <div {...api().getBodyProps()}>
                 <p>Drag and resize to update external state.</p>
-                <p>Use buttons above for controlled size and position.</p>
+                <p>Use the buttons above for externally controlled size and position.</p>
                 <div
                   ref={setObservedEl}
                   style={{

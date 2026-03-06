@@ -7,7 +7,7 @@
   import { onDestroy, onMount } from "svelte"
 
   const id = $props.id()
-  let open = $state(true)
+  let open = $state(false)
   let size = $state({ width: 360, height: 260 })
   let position = $state({ x: 120, y: 120 })
   let observedSize = $state({ width: 0, height: 0 })
@@ -30,6 +30,7 @@
 
   const service = useMachine(floatingPanel.machine, {
     id,
+    defaultOpen: true,
     get open() {
       return open
     },
@@ -58,6 +59,8 @@
     <button onclick={() => (open = !open)}>{open ? "Close" : "Open"} panel</button>
     <button onclick={() => (size = { width: 420, height: 320 })}>Set size: 420x320</button>
     <button onclick={() => (position = { x: 32, y: 32 })}>Set position: (32, 32)</button>
+    <button onclick={() => api.setSize({ width: 440, height: 300 })}>API set size: 440x300</button>
+    <button onclick={() => api.setPosition({ x: 48, y: 48 })}>API set position: (48, 48)</button>
     <button
       onclick={() => {
         size = { width: 360, height: 260 }
@@ -99,7 +102,7 @@
         </div>
         <div {...api.getBodyProps()}>
           <p>Drag and resize to update external state.</p>
-          <p>Use buttons above for controlled size and position.</p>
+          <p>Use the buttons above for externally controlled size and position.</p>
           <div
             bind:this={observedEl}
             style="
