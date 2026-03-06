@@ -304,6 +304,10 @@ export const machine = createMachine<DateInputSchema>({
     track([() => prop("placeholderValue")?.toString()], () => {
       action(["syncPlaceholderProp"])
     })
+
+    track([() => prop("defaultPlaceholderValue")?.toString()], () => {
+      action(["syncDefaultPlaceholderValue"])
+    })
   },
 
   on: {
@@ -580,6 +584,17 @@ export const machine = createMachine<DateInputSchema>({
         // Re-initialise displayValues from the committed value so that each
         // IncompleteDate reflects all the user's typed fields.
         context.set("displayValues", initDisplayValues(value?.length ? value : undefined, placeholderValue, hc, count))
+      },
+
+      syncDefaultPlaceholderValue({ prop, context }) {
+        // Don't override an explicitly-provided placeholderValue prop
+        if (prop("placeholderValue") != null) return
+        const defaultPlaceholder = prop("defaultPlaceholderValue")
+        if (!defaultPlaceholder) return
+        // When granularity changes to a time-requiring value (e.g. "day" → "hour"),
+        // defaultPlaceholderValue becomes a CalendarDateTime. Update the context
+        // placeholder so that arrow-cycling on time segments initialises correctly.
+        context.set("placeholderValue", defaultPlaceholder)
       },
 
       syncPlaceholderProp({ prop, context }) {

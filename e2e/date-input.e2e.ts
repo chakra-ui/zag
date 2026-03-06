@@ -801,4 +801,68 @@ test.describe("date-input [range]", () => {
     await I.seeSegmentInGroupIsPlaceholder("day", 1)
     await I.seeSegmentInGroupIsPlaceholder("year", 1)
   })
+
+  test("[focus] focusing start date group marks only group 0 with data-focus", async () => {
+    await I.focusFirstSegment()
+    await I.seeSegmentGroupFocused(0)
+    await I.seeSegmentGroupNotFocused(1)
+  })
+
+  test("[focus] focusing end date group marks only group 1 with data-focus", async () => {
+    // Fill start date to auto-advance into end date group
+    await I.focusFirstSegment()
+    await I.type("01")
+    await I.type("15")
+    await I.type("2025")
+    // Now focused on group 1
+    await I.seeSegmentInGroupFocused("month", 1)
+    await I.seeSegmentGroupFocused(1)
+    await I.seeSegmentGroupNotFocused(0)
+  })
+
+  test("[focus] blurring range input removes data-focus from all groups", async () => {
+    await I.focusFirstSegment()
+    await I.seeSegmentGroupFocused(0)
+    await I.clickOutsideToBlur()
+    await I.seeSegmentGroupNotFocused(0)
+    await I.seeSegmentGroupNotFocused(1)
+  })
+})
+
+test.describe("date-input [granularity cycle]", () => {
+  test.beforeEach(async ({ page }) => {
+    I = new DateInputModel(page)
+    await I.goto()
+  })
+
+  test("[granularity] switching to hour granularity allows ArrowUp to initialise hour segment", async () => {
+    await I.clickControls()
+    await I.controls.select("granularity", "hour")
+
+    // First ArrowUp on an empty hour segment must initialise it from the placeholder
+    await I.focusSegment("hour")
+    await I.seeSegmentIsPlaceholder("hour")
+    await I.pressKey("ArrowUp")
+    await I.seeSegmentIsNotPlaceholder("hour")
+  })
+
+  test("[granularity] switching to minute granularity allows ArrowUp to initialise minute segment", async () => {
+    await I.clickControls()
+    await I.controls.select("granularity", "minute")
+
+    await I.focusSegment("minute")
+    await I.seeSegmentIsPlaceholder("minute")
+    await I.pressKey("ArrowUp")
+    await I.seeSegmentIsNotPlaceholder("minute")
+  })
+
+  test("[granularity] switching to hour granularity allows ArrowDown to initialise hour segment", async () => {
+    await I.clickControls()
+    await I.controls.select("granularity", "hour")
+
+    await I.focusSegment("hour")
+    await I.seeSegmentIsPlaceholder("hour")
+    await I.pressKey("ArrowDown")
+    await I.seeSegmentIsNotPlaceholder("hour")
+  })
 })

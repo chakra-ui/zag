@@ -109,6 +109,7 @@ export function connect<T extends PropTypes>(service: DateInputService, normaliz
 
     getSegmentGroupProps(props = {}) {
       const { index = 0 } = props
+      const activeIndex = context.get("activeIndex")
 
       return normalize.element({
         ...parts.segmentGroup.attrs,
@@ -119,7 +120,7 @@ export function connect<T extends PropTypes>(service: DateInputService, normaliz
         "data-disabled": dataAttr(disabled),
         "data-readonly": dataAttr(readOnly),
         "data-invalid": dataAttr(invalid),
-        "data-focus": dataAttr(focused),
+        "data-focus": dataAttr(focused && activeIndex === index),
         style: {
           unicodeBidi: "isolate",
         },
