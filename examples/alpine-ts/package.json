@@ -31,6 +31,7 @@
     "@zag-js/file-upload": "workspace:*",
     "@zag-js/floating-panel": "workspace:*",
     "@zag-js/hover-card": "workspace:*",
+    "@zag-js/i18n-utils": "workspace:*",
     "@zag-js/listbox": "workspace:*",
     "@zag-js/marquee": "workspace:*",
     "@zag-js/menu": "workspace:*",
@@ -62,7 +63,6 @@
     "alpinejs": "^3.15.2",
     "form-serialize": "0.7.2",
     "lucide-static": "^0.577.0",
-    "match-sorter": "8.1.0",
     "mono-jsx": "0.9.2"
   }
 }
