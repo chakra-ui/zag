@@ -17,14 +17,20 @@
   }
 
   .Indicator {
-    background: var(--colors-bg-subtle);
     z-index: 1;
     border-radius: 0.375rem;
-    box-shadow:
-      0 1px 3px 0 rgba(0, 0, 0, 0.1),
-      0 1px 2px 0 rgba(0, 0, 0, 0.06);
     height: var(--height);
     width: var(--width);
+
+    visibility: hidden;
+
+    &[data-transitioning] {
+      visibility: visible;
+      background: var(--colors-bg-subtle);
+      box-shadow:
+        0 1px 3px 0 rgba(0, 0, 0, 0.1),
+        0 1px 2px 0 rgba(0, 0, 0, 0.06);
+    }
   }
 
   .Item {
@@ -37,9 +43,25 @@
     padding-block: 0.25rem;
     z-index: 2;
     font-weight: 500;
+    border-radius: 0.375rem;
+    justify-content: center;
 
-    &[data-state="checked"] {
+    &[data-state="checked"]:not([data-transition-to]) {
       color: var(--colors-text-primary-bold);
+      background: var(--colors-bg-subtle);
+      box-shadow:
+        0 1px 3px 0 rgba(0, 0, 0, 0.1),
+        0 1px 2px 0 rgba(0, 0, 0, 0.06);
+    }
+
+    &[data-transition-to] {
+      color: var(--colors-text-primary-bold);
+    }
+
+    &[data-transition-from],
+    &[data-transition-to] {
+      background: transparent;
+      box-shadow: none;
     }
 
     &[data-disabled] {

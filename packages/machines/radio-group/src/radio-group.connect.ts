@@ -31,6 +31,9 @@ export function connect<T extends PropTypes>(
 
   function getItemDataAttrs<T extends ItemProps>(props: T) {
     const itemState = getItemState(props)
+    const transitioning = context.get("indicatorTransitioning")
+    const isTransitionSource = transitioning && context.get("previousValue") === props.value
+    const isTransitionTarget = transitioning && itemState.checked
     return {
       "data-focus": dataAttr(itemState.focused),
       "data-focus-visible": dataAttr(itemState.focusVisible),
@@ -41,6 +44,8 @@ export function connect<T extends PropTypes>(
       "data-invalid": dataAttr(itemState.invalid),
       "data-orientation": prop("orientation"),
       "data-ssr": dataAttr(context.get("ssr")),
+      "data-transition-from": dataAttr(isTransitionSource),
+      "data-transition-to": dataAttr(isTransitionTarget),
     }
   }
 
@@ -214,6 +219,7 @@ export function connect<T extends PropTypes>(
         hidden: context.get("value") == null || rectIsEmpty,
         "data-disabled": dataAttr(groupDisabled),
         "data-orientation": prop("orientation"),
+        "data-transitioning": dataAttr(context.get("indicatorTransitioning")),
         style: {
           "--transition-property": "left, top, width, height",
           "--left": toPx(rect?.x),
