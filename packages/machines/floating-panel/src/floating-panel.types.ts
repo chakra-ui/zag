@@ -168,16 +168,7 @@ export interface FloatingPanelProps extends DirectionProperty, CommonProperties 
   onStageChange?: ((details: StageChangeDetails) => void) | undefined
 }
 
-type PropsWithDefault =
-  | "strategy"
-  | "gridSize"
-  | "defaultSize"
-  | "defaultPosition"
-  | "allowOverflow"
-  | "draggable"
-  | "resizable"
-  | "id"
-  | "translations"
+type PropsWithDefault = "strategy" | "gridSize" | "allowOverflow" | "draggable" | "resizable" | "id" | "translations"
 
 interface PrivateContext {
   /**
@@ -214,14 +205,13 @@ type ComputedContext = Readonly<{
   isMaximized: boolean
   isMinimized: boolean
   isStaged: boolean
+  hasSpecifiedPosition: boolean
   canResize: boolean
   canDrag: boolean
 }>
 
 export interface FloatingPanelSchema {
-  props: RequiredBy<FloatingPanelProps, PropsWithDefault> & {
-    hasSpecifiedPosition: boolean
-  }
+  props: RequiredBy<FloatingPanelProps, PropsWithDefault>
   context: PrivateContext
   computed: ComputedContext
   tag: "open" | "closed"
