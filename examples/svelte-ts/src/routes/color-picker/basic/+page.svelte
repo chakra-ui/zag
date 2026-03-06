@@ -17,7 +17,7 @@
     controls.mergeProps<colorPicker.Props>({
       id,
       name: "color",
-      format: "hsla",
+      defaultFormat: "hsla",
       defaultValue: colorPicker.parse("hsl(0, 100%, 50%)"),
     }),
   )
@@ -25,7 +25,7 @@
   const api = $derived(colorPicker.connect(service, normalizeProps))
 </script>
 
-<main class="color-picker">
+<main class="color-picker" style:direction={service.computed("rtl") ? "rtl" : "ltr"}>
   <form
     oninput={(e) => {
       console.log("change:", serialize(e.currentTarget, { hash: true }))
@@ -55,11 +55,67 @@
               <div {...api.getAreaBackgroundProps()}></div>
               <div {...api.getAreaThumbProps()}></div>
             </div>
+            {#if api.format.startsWith("rgb")}
+              <div {...api.getChannelSliderProps({ channel: "red" })}>
+                <div {...api.getChannelSliderTrackProps({ channel: "red" })}></div>
+                <div {...api.getChannelSliderThumbProps({ channel: "red" })}></div>
+              </div>
+              <div {...api.getChannelSliderProps({ channel: "green" })}>
+                <div {...api.getChannelSliderTrackProps({ channel: "green" })}></div>
+                <div {...api.getChannelSliderThumbProps({ channel: "green" })}></div>
+              </div>
+              <div {...api.getChannelSliderProps({ channel: "blue" })}>
+                <div {...api.getChannelSliderTrackProps({ channel: "blue" })}></div>
+                <div {...api.getChannelSliderThumbProps({ channel: "blue" })}></div>
+              </div>
+            {/if}
 
-            <div {...api.getChannelSliderProps({ channel: "hue" })}>
-              <div {...api.getChannelSliderTrackProps({ channel: "hue" })}></div>
-              <div {...api.getChannelSliderThumbProps({ channel: "hue" })}></div>
-            </div>
+            {#if api.format.startsWith("okl")}
+              <div {...api.getChannelSliderProps({ channel: "lightness" })}>
+                <div {...api.getChannelSliderTrackProps({ channel: "lightness" })}></div>
+                <div {...api.getChannelSliderThumbProps({ channel: "lightness" })}></div>
+              </div>
+            {/if}
+            {#if api.format === "oklab"}
+              <div {...api.getChannelSliderProps({ channel: "a" })}>
+                <div {...api.getChannelSliderTrackProps({ channel: "a" })}></div>
+                <div {...api.getChannelSliderThumbProps({ channel: "a" })}></div>
+              </div>
+              <div {...api.getChannelSliderProps({ channel: "b" })}>
+                <div {...api.getChannelSliderTrackProps({ channel: "b" })}></div>
+                <div {...api.getChannelSliderThumbProps({ channel: "b" })}></div>
+              </div>
+            {/if}
+            {#if api.format === "oklch"}
+              <div {...api.getChannelSliderProps({ channel: "chroma" })}>
+                <div {...api.getChannelSliderTrackProps({ channel: "chroma" })}></div>
+                <div {...api.getChannelSliderThumbProps({ channel: "chroma" })}></div>
+              </div>
+            {/if}
+            {#if api.format !== "rgba" && api.format !== "oklab"}
+              <div {...api.getChannelSliderProps({ channel: "hue" })}>
+                <div {...api.getChannelSliderTrackProps({ channel: "hue" })}></div>
+                <div {...api.getChannelSliderThumbProps({ channel: "hue" })}></div>
+              </div>
+            {/if}
+            {#if api.format.includes("s")}
+              <div {...api.getChannelSliderProps({ channel: "saturation" })}>
+                <div {...api.getChannelSliderTrackProps({ channel: "saturation" })}></div>
+                <div {...api.getChannelSliderThumbProps({ channel: "saturation" })}></div>
+              </div>
+            {/if}
+            {#if api.format.startsWith("hsl")}
+              <div {...api.getChannelSliderProps({ channel: "lightness" })}>
+                <div {...api.getChannelSliderTrackProps({ channel: "lightness" })}></div>
+                <div {...api.getChannelSliderThumbProps({ channel: "lightness" })}></div>
+              </div>
+            {/if}
+            {#if api.format.startsWith("hsb")}
+              <div {...api.getChannelSliderProps({ channel: "brightness" })}>
+                <div {...api.getChannelSliderTrackProps({ channel: "brightness" })}></div>
+                <div {...api.getChannelSliderThumbProps({ channel: "brightness" })}></div>
+              </div>
+            {/if}
 
             <div {...api.getChannelSliderProps({ channel: "alpha" })}>
               <div {...api.getTransparencyGridProps({ size: "12px" })}></div>

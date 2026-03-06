@@ -17,7 +17,7 @@ provides a more customizable and consistent user experience.
 **Features**
 
 - Supports custom color area
-- Supports RGBA, HSLA, HEX, and HSBA formats
+- Supports RGBA, HSLA, HEX, HSBA, OKLAB and OKLCH formats
 - Supports channel inputs and sliders
 - Supports mouse, touch, and keyboard interactions
 - Supports form submission and reset events
@@ -98,7 +98,7 @@ const [current, send] = useMachine(colorPicker.machine, {
 ### Using a custom color format
 
 By default, the color picker's output format is `rgba`. You can change this
-format to either `hsla` or `hsba` with `format`.
+format to `hsla`, `oklab`, `oklch` or `hsba` with `format`.
 
 When this is set, the `value` and `valueAsString` properties of the
 `onValueChange` event will be updated to reflect the new format.

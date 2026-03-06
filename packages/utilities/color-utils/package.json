@@ -31,9 +31,11 @@
   },
   "clean-package": "../../../clean-package.config.json",
   "dependencies": {
-    "@zag-js/utils": "workspace:*"
+    "@zag-js/utils": "workspace:*",
+    "culori": "^4.0.1"
   },
   "devDependencies": {
+    "@types/culori": "^4.0.0",
     "clean-package": "2.2.0"
   }
 }

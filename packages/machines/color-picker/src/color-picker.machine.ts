@@ -52,28 +52,34 @@ export const machine = createMachine<ColorPickerSchema>({
 
   context({ prop, bindable, getContext }) {
     return {
-      value: bindable<Color>(() => ({
-        defaultValue: prop("defaultValue"),
-        value: prop("value"),
-        isEqual(a, b) {
-          return b != null && a.isEqual(b)
-        },
-        hash(a) {
-          return hashObject(a.toJSON())
-        },
-        onChange(value) {
-          const ctx = getContext()
-          const format = ctx.get("format")
-          // Pass value as-is to preserve channel info (e.g., HSB saturation at black)
-          // valueAsString is converted to the desired format for display
-          prop("onValueChange")?.({ value, valueAsString: value.toString(format) })
-        },
-      })),
+      value: bindable<Color>(() => {
+        const fmt = prop("format") ?? prop("defaultFormat")
+        return {
+          defaultValue: prop("defaultValue").toFormat(fmt),
+          value: prop("value")?.toFormat(fmt),
+          isEqual(a, b) {
+            return !!b && a.isEqual(b)
+          },
+          hash(a) {
+            return hashObject(a.toJSON())
+          },
+          onChange(value) {
+            const ctx = getContext()
+            // Pass value as-is to preserve channel info (e.g., HSB saturation at black)
+            // valueAsString is converted to the desired format for display
+            prop("onValueChange")?.({ value, valueAsString: value.toString(ctx.get("format")) })
+          },
+        }
+      }),
       format: bindable<ColorFormat>(() => ({
         defaultValue: prop("defaultFormat"),
         value: prop("format"),
         onChange(format) {
           prop("onFormatChange")?.({ format })
+          const ctx = getContext()
+          const newValue = ctx.get("value").toFormat(ctx.get("format"))
+          if (newValue.isEqual(ctx.get("value"))) return
+          ctx.set("value", newValue)
         },
       })),
       activeId: bindable<string | null>(() => ({ defaultValue: null })),
@@ -93,8 +99,8 @@ export const machine = createMachine<ColorPickerSchema>({
     interactive: ({ prop }) => !(prop("disabled") || prop("readOnly")),
     valueAsString: ({ context }) => context.get("value").toString(context.get("format")),
     areaValue: ({ context }) => {
-      const format = context.get("format").startsWith("hsl") ? "hsla" : "hsba"
-      return context.get("value").toFormat(format)
+      const fmt = context.get("format")
+      return context.get("value").toFormat(fmt.startsWith("hsl") ? "hsla" : fmt)
     },
   },
 
@@ -467,16 +473,17 @@ export const machine = createMachine<ColorPickerSchema>({
 
         const percent = dom.getAreaValueFromPoint(scope, event.point, prop("dir"))
         if (!percent) return
-
         const xValue = v.getChannelPercentValue(xChannel, percent.x)
         const yValue = v.getChannelPercentValue(yChannel, 1 - percent.y)
 
         const color = v.withChannelValue(xChannel, xValue).withChannelValue(yChannel, yValue)
         context.set("value", color)
       },
-      setChannelColorFromPoint({ context, event, computed, scope, prop }) {
+      setChannelColorFromPoint({ context, event, scope, prop }) {
         const channel = event.channel || context.get("activeId")
-        const normalizedValue = event.format ? context.get("value").toFormat(event.format) : computed("areaValue")
+        const normalizedValue = event.format
+          ? context.get("value").toFormat(event.format)
+          : context.get("value").toFormat(context.get("format"))
 
         const percent = dom.getChannelSliderValueFromPoint(scope, event.point, channel, prop("dir"))
         if (!percent) return
@@ -525,7 +532,7 @@ export const machine = createMachine<ColorPickerSchema>({
           color = tryCatch(
             () => {
               const parseValue = channel === "hex" ? prefixHex(value) : value
-              return parse(parseValue).withChannelValue("alpha", currentAlpha)
+              return parse(parseValue).withChannelValue("alpha", currentAlpha).toFormat(context.get("format"))
             },
             () => context.get("value"),
           )
