@@ -74,6 +74,7 @@ export function connect<T extends PropTypes>(service: TourService, normalize: No
       send({ type: "STEPS.SET", value: next, src: "removeStep" })
     },
     updateStep(id, stepOverrides) {
+      // Should mergeProps here merge the effect functions? It does not, it takes the last it finds.
       const next = steps.map((step) => (step.id === id ? mergeProps(step, stepOverrides) : step))
       send({ type: "STEPS.SET", value: next, src: "updateStep" })
     },
