@@ -43,14 +43,9 @@
           <p>Some content</p>
         </div>
 
-        <div {...api.getResizeTriggerProps({ axis: "n" })}></div>
-        <div {...api.getResizeTriggerProps({ axis: "e" })}></div>
-        <div {...api.getResizeTriggerProps({ axis: "w" })}></div>
-        <div {...api.getResizeTriggerProps({ axis: "s" })}></div>
-        <div {...api.getResizeTriggerProps({ axis: "ne" })}></div>
-        <div {...api.getResizeTriggerProps({ axis: "se" })}></div>
-        <div {...api.getResizeTriggerProps({ axis: "sw" })}></div>
-        <div {...api.getResizeTriggerProps({ axis: "nw" })}></div>
+        {#each floatingPanel.resizeTriggerAxes as axis}
+          <div {...api.getResizeTriggerProps({ axis })}></div>
+        {/each}
       </div>
     </div>
   </div>

@@ -45,14 +45,7 @@ const api = computed(() => floatingPanel.connect(service, normalizeProps))
             <p>Some content</p>
           </div>
 
-          <div v-bind="api.getResizeTriggerProps({ axis: 'n' })" />
-          <div v-bind="api.getResizeTriggerProps({ axis: 'e' })" />
-          <div v-bind="api.getResizeTriggerProps({ axis: 'w' })" />
-          <div v-bind="api.getResizeTriggerProps({ axis: 's' })" />
-          <div v-bind="api.getResizeTriggerProps({ axis: 'ne' })" />
-          <div v-bind="api.getResizeTriggerProps({ axis: 'se' })" />
-          <div v-bind="api.getResizeTriggerProps({ axis: 'sw' })" />
-          <div v-bind="api.getResizeTriggerProps({ axis: 'nw' })" />
+          <div v-for="axis in floatingPanel.resizeTriggerAxes" :key="axis" v-bind="api.getResizeTriggerProps({ axis })" />
         </div>
       </div>
     </div>

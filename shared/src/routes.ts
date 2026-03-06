@@ -116,7 +116,10 @@ export const componentRoutes: ComponentRoute[] = [
   {
     slug: "floating-panel",
     label: "Floating Panel",
-    examples: [{ slug: "basic", title: "Floating Panel" }],
+    examples: [
+      { slug: "basic", title: "Basic" },
+      { slug: "controlled", title: "Controlled Size + Position" },
+    ],
   },
   {
     slug: "tour",

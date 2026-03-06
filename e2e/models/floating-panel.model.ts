@@ -2,7 +2,9 @@ import { expect, type Page } from "@playwright/test"
 import { a11y, rect } from "../_utils"
 import { Model } from "./model"
 
-const floatingPanel = (p: string) => `[data-scope=floating-panel][data-part=${p}]`
+const part = (p: string) => `[data-scope=floating-panel][data-part=${p}]`
+
+type Axis = "s" | "w" | "e" | "n" | "sw" | "nw" | "se" | "ne"
 
 export class FloatingPanelModel extends Model {
   constructor(public page: Page) {
@@ -18,35 +20,39 @@ export class FloatingPanelModel extends Model {
   }
 
   get trigger() {
-    return this.page.locator(floatingPanel("trigger"))
+    return this.page.locator(part("trigger"))
   }
 
   get content() {
-    return this.page.locator(floatingPanel("content"))
+    return this.page.locator(part("content"))
   }
 
   get dragTrigger() {
-    return this.page.locator(floatingPanel("drag-trigger"))
+    return this.page.locator(part("drag-trigger"))
   }
 
   get minimizeTrigger() {
-    return this.page.locator(`${floatingPanel("stage-trigger")}[data-stage=minimized]`)
+    return this.page.locator(`${part("stage-trigger")}[data-stage=minimized]`)
   }
 
   get maximizeTrigger() {
-    return this.page.locator(`${floatingPanel("stage-trigger")}[data-stage=maximized]`)
+    return this.page.locator(`${part("stage-trigger")}[data-stage=maximized]`)
   }
 
   get restoreTrigger() {
-    return this.page.locator(`${floatingPanel("stage-trigger")}[data-stage=default]`)
+    return this.page.locator(`${part("stage-trigger")}[data-stage=default]`)
   }
 
   get closeTrigger() {
-    return this.page.locator(floatingPanel("close-trigger"))
+    return this.page.locator(part("close-trigger"))
   }
 
   get body() {
-    return this.page.locator(floatingPanel("body"))
+    return this.page.locator(part("body"))
+  }
+
+  getResizeTrigger(axis: Axis) {
+    return this.page.locator(`${part("resize-trigger")}[data-axis=${axis}]`)
   }
 
   clickTrigger() {
@@ -121,6 +127,29 @@ export class FloatingPanelModel extends Model {
     const size = await this.getContentSize()
     expect(size.width).toBeCloseTo(width, -Math.log10(tolerance))
     expect(size.height).toBeCloseTo(height, -Math.log10(tolerance))
+  }
+
+  async seeContentHasPosition(x: number, y: number, tolerance = 5) {
+    const content = await this.getContentSize()
+    expect(content.x).toBeCloseTo(x, -Math.log10(tolerance))
+    expect(content.y).toBeCloseTo(y, -Math.log10(tolerance))
+  }
+
+  async dragBy(offset: { x: number; y: number }) {
+    const box = await rect(this.dragTrigger)
+    await this.page.mouse.move(box.midX, box.midY)
+    await this.page.mouse.down()
+    await this.page.mouse.move(box.midX + offset.x, box.midY + offset.y, { steps: 10 })
+    await this.page.mouse.up()
+  }
+
+  async resizeBy(axis: Axis, offset: { x: number; y: number }) {
+    const trigger = this.getResizeTrigger(axis)
+    const box = await rect(trigger)
+    await this.page.mouse.move(box.midX, box.midY)
+    await this.page.mouse.down()
+    await this.page.mouse.move(box.midX + offset.x, box.midY + offset.y, { steps: 10 })
+    await this.page.mouse.up()
   }
 
   seeTriggerIsFocused() {
