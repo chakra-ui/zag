@@ -2,7 +2,7 @@ import * as floatingPanel from "@zag-js/floating-panel"
 import { floatingPanelControls } from "@zag-js/shared"
 import { normalizeProps, useMachine } from "@zag-js/solid"
 import { ArrowDownLeft, Maximize2, Minus, XIcon } from "lucide-solid"
-import { createMemo, createUniqueId } from "solid-js"
+import { For, createMemo, createUniqueId } from "solid-js"
 import { StateVisualizer } from "~/components/state-visualizer"
 import { Toolbar } from "~/components/toolbar"
 import { useControls } from "~/hooks/use-controls"
@@ -44,14 +44,9 @@ export default function Page() {
                 <p>Some content</p>
               </div>
 
-              <div {...api().getResizeTriggerProps({ axis: "n" })} />
-              <div {...api().getResizeTriggerProps({ axis: "e" })} />
-              <div {...api().getResizeTriggerProps({ axis: "w" })} />
-              <div {...api().getResizeTriggerProps({ axis: "s" })} />
-              <div {...api().getResizeTriggerProps({ axis: "ne" })} />
-              <div {...api().getResizeTriggerProps({ axis: "se" })} />
-              <div {...api().getResizeTriggerProps({ axis: "sw" })} />
-              <div {...api().getResizeTriggerProps({ axis: "nw" })} />
+              <For each={floatingPanel.resizeTriggerAxes}>
+                {(axis) => <div {...api().getResizeTriggerProps({ axis })} />}
+              </For>
             </div>
           </div>
         </div>

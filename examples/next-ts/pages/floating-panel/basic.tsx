@@ -47,14 +47,9 @@ export default function Page() {
                 <p>Some content</p>
               </div>
 
-              <div {...api.getResizeTriggerProps({ axis: "n" })} />
-              <div {...api.getResizeTriggerProps({ axis: "e" })} />
-              <div {...api.getResizeTriggerProps({ axis: "w" })} />
-              <div {...api.getResizeTriggerProps({ axis: "s" })} />
-              <div {...api.getResizeTriggerProps({ axis: "ne" })} />
-              <div {...api.getResizeTriggerProps({ axis: "se" })} />
-              <div {...api.getResizeTriggerProps({ axis: "sw" })} />
-              <div {...api.getResizeTriggerProps({ axis: "nw" })} />
+              {floating.resizeTriggerAxes.map((axis) => (
+                <div key={axis} {...api.getResizeTriggerProps({ axis })} />
+              ))}
             </div>
           </div>
         </div>
