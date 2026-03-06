@@ -1,8 +1,16 @@
 import type { Machine, MachineSchema, Service } from "@zag-js/core"
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import type { Alpine } from "alpinejs"
-import { useMachine } from "./machine"
+import { AlpineMachine } from "./machine"
 import { normalizeProps } from "./normalize-props"
+
+function useEvaluator<T, R>(evaluateLater: (callback: (value: T) => void) => void) {
+  return (fn: (value: T) => R) => {
+    let result
+    evaluateLater((value) => (result = fn(value)))
+    return result as R
+  }
+}
 
 export function usePlugin<T extends MachineSchema>(
   name: string,
@@ -19,49 +27,45 @@ export function usePlugin<T extends MachineSchema>(
     Alpine.directive(name, (el, { expression, value, modifiers }, { effect, evaluateLater }) => {
       const _modifier = modifiers.at(0) ? "_" + modifiers.at(0) : ""
       if (!value) {
-        const evaluateProps = evaluateLater(expression) as any
-        const service = useMachine(component.machine, evaluateProps)
+        const evaluateProps = evaluateLater<Partial<T["props"]> | (() => Partial<T["props"]>)>(expression)
+        const machine = new AlpineMachine(component.machine, useEvaluator(evaluateProps))
         Alpine.bind(el, {
           "x-data"() {
             return {
-              [_x_snake_case + _modifier + "_service"]: service, // dev only, for state visualization
-              [_x_snake_case + _modifier]: component.connect(service, normalizeProps),
+              [_x_snake_case + _modifier + "_service"]: machine.service, // dev only, for state visualization
+              [_x_snake_case + _modifier]: component.connect(machine.service, normalizeProps),
               init() {
                 queueMicrotask(() => {
                   effect(() => {
-                    this[_x_snake_case + _modifier] = component.connect(service, normalizeProps)
+                    this[_x_snake_case + _modifier] = component.connect(machine.service, normalizeProps)
                   })
                 })
-                service.init()
+                machine.init()
               },
               destroy() {
-                service.destroy()
+                machine.destroy()
               },
             }
           },
         })
       } else if (value === "collection") {
-        const evaluateCollection = evaluateLater(expression)
+        const useCollection = useEvaluator(evaluateLater(expression))
         Alpine.bind(el, {
           "x-data"() {
             return {
               get collection() {
-                let options: any = {}
-                evaluateCollection((value) => (options = value))
-                return component.collection?.(options)
+                return useCollection((options) => component.collection?.(options))
               },
             }
           },
         })
       } else if (value === "grid-collection") {
-        const evaluateCollection = evaluateLater(expression)
+        const useCollection = useEvaluator(evaluateLater(expression))
         Alpine.bind(el, {
           "x-data"() {
             return {
               get collection() {
-                let options: any = {}
-                evaluateCollection((value) => (options = value))
-                return component.gridCollection?.(options)
+                return useCollection((options) => component.gridCollection?.(options))
               },
             }
           },
