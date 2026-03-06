@@ -4,7 +4,7 @@ import { normalizeProps, useMachine } from "@zag-js/vue"
 import { ArrowDownLeft, Maximize2, Minus, XIcon } from "lucide-vue-next"
 import { computed, onBeforeUnmount, onMounted, ref } from "vue"
 
-const open = ref(true)
+const open = ref(false)
 const size = ref({ width: 360, height: 260 })
 const position = ref({ x: 120, y: 120 })
 const observedSize = ref({ width: 0, height: 0 })
@@ -31,6 +31,7 @@ const service = useMachine(
   computed(() => ({
     id,
     open: open.value,
+    defaultOpen: true,
     size: size.value,
     position: position.value,
     onOpenChange(details) {
@@ -54,6 +55,8 @@ const api = computed(() => floatingPanel.connect(service, normalizeProps))
       <button @click="() => (open = !open)">{{ open ? "Close" : "Open" }} panel</button>
       <button @click="() => (size = { width: 420, height: 320 })">Set size: 420x320</button>
       <button @click="() => (position = { x: 32, y: 32 })">Set position: (32, 32)</button>
+      <button @click="() => api.setSize({ width: 440, height: 300 })">API set size: 440x300</button>
+      <button @click="() => api.setPosition({ x: 48, y: 48 })">API set position: (48, 48)</button>
       <button
         @click="
           () => {
@@ -98,7 +101,7 @@ const api = computed(() => floatingPanel.connect(service, normalizeProps))
 
           <div v-bind="api.getBodyProps()">
             <p>Drag and resize to update external state.</p>
-            <p>Use buttons above for controlled size and position.</p>
+            <p>Use the buttons above for externally controlled size and position.</p>
             <div
               ref="observedEl"
               style="
