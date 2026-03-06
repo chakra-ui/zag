@@ -1,4 +1,4 @@
-export function useRefs<T>(refs: T) {
+export function createRefs<T>(refs: T) {
   const ref = { current: refs }
   return {
     get<K extends keyof T>(key: K): T[K] {

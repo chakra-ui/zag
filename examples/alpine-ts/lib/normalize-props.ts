@@ -1,29 +1,34 @@
 import { createNormalizer } from "@zag-js/types"
 
-const propMap: Record<string, string> = {
-  htmlFor: "for",
-  className: "class",
-  onDoubleClick: "onDblclick",
-  onChange: "onInput",
+export interface AttrMap {
+  [key: string]: string
+}
+
+export const propMap: AttrMap = {
   onFocus: "onFocusin",
   onBlur: "onFocusout",
+  onChange: "onInput",
+  onDoubleClick: "onDblclick",
+  htmlFor: "for",
+  className: "class",
   defaultValue: "value",
   defaultChecked: "checked",
 }
 
 export const normalizeProps = createNormalizer((props) => {
-  const normalized: Record<string, () => any> = {}
-  for (const key in props) {
-    const prop = key in propMap ? propMap[key] : key
-    const value = props[key]
+  return Object.entries(props).reduce<any>((acc, [key, value]) => {
+    // if (value === undefined) return acc
 
-    if (prop === "children") {
-      normalized["x-html"] = () => value
-    } else if (prop.startsWith("on")) {
-      normalized["@" + prop.substring(2).toLowerCase()] = value
+    key = propMap[key] ?? key
+
+    if (key === "children") {
+      acc["x-html"] = () => value
+    } else if (key.startsWith("on")) {
+      acc["@" + key.substring(2).toLowerCase()] = value
     } else {
-      normalized[":" + prop.toLowerCase()] = () => value
+      acc[":" + key.toLowerCase()] = () => value
     }
-  }
-  return normalized
+
+    return acc
+  }, {})
 })
