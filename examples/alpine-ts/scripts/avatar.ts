@@ -1,7 +1,7 @@
 import * as avatar from "@zag-js/avatar"
 import { avatarData } from "@zag-js/shared"
 import Alpine from "alpinejs"
-import { usePlugin } from "~/lib"
+import { usePlugin } from "../lib"
 
 const images = avatarData.full
 

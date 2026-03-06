@@ -1,7 +1,7 @@
 import * as menu from "@zag-js/menu"
 import { menuData, menuOptionData } from "@zag-js/shared"
 import Alpine from "alpinejs"
-import { usePlugin } from "~/lib"
+import { usePlugin } from "../lib"
 
 const [level1, level2, level3] = menuData
 Alpine.magic("level1", () => level1)
