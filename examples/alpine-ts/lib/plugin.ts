@@ -4,10 +4,10 @@ import type { Alpine } from "alpinejs"
 import { AlpineMachine } from "./machine"
 import { normalizeProps } from "./normalize-props"
 
-function useEvaluator<T, R>(evaluateLater: (callback: (value: T) => void) => void) {
+function useEvaluator<T, R>(evaluator: (callback: (value: T) => void) => void) {
   return (fn: (value: T) => R) => {
     let result
-    evaluateLater((value) => (result = fn(value)))
+    evaluator((value) => (result = fn(value)))
     return result as R
   }
 }
@@ -71,15 +71,15 @@ export function usePlugin<T extends MachineSchema>(
           },
         })
       } else {
-        const getProps = `get${value
+        const getPartProps = `get${value
           .split("-")
           .map((v) => v.at(0)?.toUpperCase() + v.substring(1).toLowerCase())
           .join("")}Props`
-        const evaluateProps = expression ? evaluateLater(expression) : null
 
-        let props = {}
-        evaluateProps && evaluateProps((value: any) => (props = value))
-        const ref = Alpine.reactive({ ...(Alpine.$data(el) as any)[_x_snake_case + _modifier][getProps](props) })
+        const usePartProps = useEvaluator(evaluateLater(expression || "{}"))
+        const ref = Alpine.reactive(
+          usePartProps((props) => (Alpine.$data(el) as any)[_x_snake_case + _modifier][getPartProps](props)) as any,
+        )
 
         const binding: Record<string, () => any> = {}
         for (const prop in ref) {
@@ -88,9 +88,9 @@ export function usePlugin<T extends MachineSchema>(
         Alpine.bind(el, binding)
 
         effect(() => {
-          let props = {}
-          evaluateProps && evaluateProps((value: any) => (props = value))
-          const next = (Alpine.$data(el) as any)[_x_snake_case + _modifier][getProps](props)
+          const next = usePartProps((props) =>
+            (Alpine.$data(el) as any)[_x_snake_case + _modifier][getPartProps](props),
+          ) as any
           for (const prop in next) {
             if (prop.startsWith("@") || next[prop]() !== ref[prop]()) {
               ref[prop] = next[prop]
