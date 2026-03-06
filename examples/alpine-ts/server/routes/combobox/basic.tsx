@@ -19,7 +19,7 @@ export default defineHandler((event) => {
       <body>
         <div
           class="page"
-          x-data={JSON.stringify(state).slice(0, -1) + ", options: $comboboxData}"}
+          x-data={JSON.stringify(state).slice(0, -1) + ", options: $comboboxData, selectedItems: []}"}
           x-combobox:collection="{
             items: options,
             itemToValue: (item) => item.code,
@@ -32,8 +32,11 @@ export default defineHandler((event) => {
               options = $comboboxData
             },
             onInputValueChange({ inputValue }) {
-              const filtered = $matchSorter($comboboxData, inputValue, {keys: ['label']})
-              options = filtered.length > 0 ? filtered : $comboboxData
+              const filtered = $comboboxData.filter((item) => $contains(item.label, inputValue));
+              options = filtered.length > 0 ? filtered : $comboboxData;
+            },
+            onValueChange({ items }) {
+              selectedItems = items
             },
             ${Object.keys(state)},
           }`}
@@ -42,10 +45,14 @@ export default defineHandler((event) => {
 
           <main class="combobox">
             <div>
-              <button x-on:click="$comboboxData.setValue(['TG'])">Set to Togo</button>
-              <button data-testid="clear-value-button" x-on:click="$comboboxData.clearValue()">
+              <button x-on:click="$combobox().setValue(['TG'])">Set to Togo</button>
+              <button data-testid="clear-value-button" x-on:click="$combobox().clearValue()">
                 Clear Value
               </button>
+              <pre
+                data-testid="on-value-change-items"
+                x-text="'selectedItems: ' + selectedItems.map((item) => item.label).join(', ') || 'N/A'"
+              />
               <br />
               <div x-combobox:root>
                 <label x-combobox:label>Select country</label>
