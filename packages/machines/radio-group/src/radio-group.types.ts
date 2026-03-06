@@ -101,6 +101,14 @@ interface PrivateContext {
    * Whether the radio group is in server-side rendering
    */
   ssr: boolean
+  /**
+   * Whether the indicator is currently transitioning
+   */
+  indicatorTransitioning: boolean
+  /**
+   * The previous value before the current transition
+   */
+  previousValue: string | null
 }
 
 type PropsWithDefault = "orientation"
@@ -117,6 +125,10 @@ interface Refs {
    * Function to clean up the observer for the active tab's rect
    */
   indicatorCleanup: VoidFunction | null
+  /**
+   * Function to clean up the transition event listeners on the indicator
+   */
+  indicatorTransitionCleanup: VoidFunction | null
 }
 
 export interface RadioGroupSchema {

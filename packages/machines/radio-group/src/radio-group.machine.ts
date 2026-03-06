@@ -49,12 +49,19 @@ export const machine = createMachine<RadioGroupSchema>({
       ssr: bindable<boolean>(() => ({
         defaultValue: true,
       })),
+      indicatorTransitioning: bindable<boolean>(() => ({
+        defaultValue: false,
+      })),
+      previousValue: bindable<string | null>(() => ({
+        defaultValue: null,
+      })),
     }
   },
 
   refs() {
     return {
       indicatorCleanup: null,
+      indicatorTransitionCleanup: null,
       focusVisibleValue: null,
     }
   },
@@ -67,7 +74,7 @@ export const machine = createMachine<RadioGroupSchema>({
 
   exit: ["cleanupObserver"],
 
-  effects: ["trackFormControlState", "trackFocusVisible"],
+  effects: ["trackFormControlState", "trackFocusVisible", "trackIndicatorTransition"],
 
   watch({ track, action, context }) {
     track([() => context.get("value")], () => {
@@ -119,10 +126,36 @@ export const machine = createMachine<RadioGroupSchema>({
       trackFocusVisible({ scope }) {
         return trackFocusVisible({ root: scope.getRootNode?.() })
       },
+      trackIndicatorTransition({ context, scope, refs }) {
+        const indicatorEl = dom.getIndicatorEl(scope)
+        if (!indicatorEl) return
+
+        refs.get("indicatorTransitionCleanup")?.()
+
+        const onEnd = (event: TransitionEvent) => {
+          if (event.target !== indicatorEl) return
+          context.set("indicatorTransitioning", false)
+          context.set("previousValue", null)
+        }
+
+        indicatorEl.addEventListener("transitionend", onEnd)
+
+        const cleanup = () => {
+          indicatorEl.removeEventListener("transitionend", onEnd)
+        }
+
+        refs.set("indicatorTransitionCleanup", cleanup)
+        return cleanup
+      },
     },
 
     actions: {
       setValue({ context, event }) {
+        const prevValue = context.get("value")
+        context.set("previousValue", prevValue)
+        if (prevValue != null && event.value != null && prevValue !== event.value) {
+          context.set("indicatorTransitioning", true)
+        }
         context.set("value", event.value)
       },
       setHovered({ context, event }) {
@@ -158,6 +191,8 @@ export const machine = createMachine<RadioGroupSchema>({
 
         if (value == null || !radioEl) {
           context.set("indicatorRect", null)
+          context.set("indicatorTransitioning", false)
+          context.set("previousValue", null)
           return
         }
 
@@ -166,6 +201,7 @@ export const machine = createMachine<RadioGroupSchema>({
         }
 
         exec()
+
         const indicatorCleanup = resizeObserverBorderBox.observe(radioEl, exec)
 
         refs.set("indicatorCleanup", indicatorCleanup)
