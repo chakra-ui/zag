@@ -5,6 +5,8 @@ import { add, callAll, clampValue, ensureProps, isObject, nextIndex, prevIndex, 
 import * as dom from "./carousel.dom"
 import type { CarouselSchema } from "./carousel.types"
 
+const DRIFT_THRESHOLD = 1
+
 export const machine = createMachine<CarouselSchema>({
   props({ props }) {
     ensureProps(props, ["slideCount"], "carousel")
@@ -117,7 +119,7 @@ export const machine = createMachine<CarouselSchema>({
       actions: ["clearScrollEndTimer", "setMatchingPage"],
     },
     "SNAP.REFRESH": {
-      actions: ["setSnapPoints"],
+      actions: ["setSnapPoints", "scrollToPageIfDrifted"],
     },
     "PAGE.SCROLL": {
       actions: ["scrollToPage"],
@@ -292,7 +294,10 @@ export const machine = createMachine<CarouselSchema>({
 
         const itemEls = dom.getItemEls(scope)
         itemEls.forEach(exec)
-        const cleanups = [resizeObserverBorderBox.observe(el, exec), ...itemEls.map((el) => resizeObserverBorderBox.observe(el, exec))]
+        const cleanups = [
+          resizeObserverBorderBox.observe(el, exec),
+          ...itemEls.map((el) => resizeObserverBorderBox.observe(el, exec)),
+        ]
         return callAll(...cleanups)
       },
 
@@ -430,6 +435,16 @@ export const machine = createMachine<CarouselSchema>({
         flush(() => {
           el.scrollTo({ [axis]: context.get("pageSnapPoints")[index], behavior })
         })
+      },
+      scrollToPageIfDrifted({ context, scope, computed }) {
+        const el = dom.getItemGroupEl(scope)
+        if (!el) return
+        const snapPoint = context.get("pageSnapPoints")[context.get("page")]
+        if (snapPoint == null) return
+        const scrollPos = computed("isHorizontal") ? el.scrollLeft : el.scrollTop
+        if (Math.abs(scrollPos - snapPoint) <= DRIFT_THRESHOLD) return
+        const axis = computed("isHorizontal") ? "left" : "top"
+        el.scrollTo({ [axis]: snapPoint, behavior: "instant" })
       },
       setClosestPage({ context, scope, computed }) {
         const el = dom.getItemGroupEl(scope)
