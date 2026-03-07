@@ -1,6 +1,7 @@
 import * as carousel from "@zag-js/carousel"
 import Alpine from "alpinejs"
 import { usePlugin } from "../lib"
+import { carouselControls, getControlDefaults, getTransformedControlValues } from "@zag-js/shared"
 
 // Sample data with variable width content (content-driven sizing)
 const variableWidthData = [
@@ -20,5 +21,11 @@ const variableWidthData = [
 ]
 
 Alpine.magic("variableWidthData", () => variableWidthData)
+Alpine.data("carousel", () => ({
+  state: getControlDefaults(carouselControls),
+  get context() {
+    return getTransformedControlValues(carouselControls, this.state)
+  },
+}))
 Alpine.plugin(usePlugin("carousel", carousel))
 Alpine.start()

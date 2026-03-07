@@ -1,11 +1,8 @@
-import { deepGet, type ControlRecord, type ControlValue } from "@zag-js/shared"
+import { deepGet, getControlDefaults, type ControlRecord } from "@zag-js/shared"
 
-interface ControlsProps<T extends ControlRecord> {
-  config: T
-  state: ControlValue<T>
-}
+export function Controls<T extends ControlRecord>({ config }: { config: T }) {
+  const state = getControlDefaults(config)
 
-export function Controls<T extends ControlRecord>({ config, state }: ControlsProps<T>) {
   return (
     <div class="controls-container">
       {Object.keys(config).map((key) => {
@@ -15,7 +12,7 @@ export function Controls<T extends ControlRecord>({ config, state }: ControlsPro
           case "boolean":
             return (
               <div class="checkbox">
-                <input data-testid={key} id={label} type="checkbox" checked={value} x-model={key} />
+                <input data-testid={key} id={label} type="checkbox" checked={value} x-model={`state.${key}`} />
                 <label for={label}>{label}</label>
               </div>
             )
@@ -23,7 +20,7 @@ export function Controls<T extends ControlRecord>({ config, state }: ControlsPro
             return (
               <div class="text">
                 <label style={{ marginRight: "10px" }}>{label}</label>
-                <input data-testid={key} type="text" placeholder={placeholder} value={value} x-model={key} />
+                <input data-testid={key} type="text" placeholder={placeholder} value={value} x-model={`state.${key}`} />
               </div>
             )
           case "select":
@@ -32,7 +29,7 @@ export function Controls<T extends ControlRecord>({ config, state }: ControlsPro
                 <label for={label} style={{ marginRight: "10px" }}>
                   {label}
                 </label>
-                <select data-testid={key} id={label} value={value} x-model={key}>
+                <select data-testid={key} id={label} value={value} x-model={`state.${key}`}>
                   <option>-----</option>
                   {options.map((option: string) => (
                     <option value={option}>{option}</option>
@@ -46,7 +43,15 @@ export function Controls<T extends ControlRecord>({ config, state }: ControlsPro
                 <label for={label} style={{ marginRight: "10px" }}>
                   {label}
                 </label>
-                <input data-testid={key} id={label} type="number" min={min} max={max} value={value} x-model={key} />
+                <input
+                  data-testid={key}
+                  id={label}
+                  type="number"
+                  min={min}
+                  max={max}
+                  value={value}
+                  x-model={`state.${key}`}
+                />
               </div>
             )
           default:

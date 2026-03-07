@@ -1,5 +1,5 @@
 import { defineHandler } from "nitro/h3"
-import { carouselControls, carouselData, getControlDefaults } from "@zag-js/shared"
+import { carouselControls, carouselData } from "@zag-js/shared"
 import { Controls } from "../../components/controls"
 import { Head } from "../../components/head"
 import { Nav } from "../../components/nav"
@@ -7,8 +7,6 @@ import { StateVisualizer } from "../../components/state-visualizer"
 import { Toolbar } from "../../components/toolbar"
 
 export default defineHandler((event) => {
-  const state = getControlDefaults(carouselControls)
-
   return (
     <html>
       <Head>
@@ -18,14 +16,14 @@ export default defineHandler((event) => {
       <body>
         <div
           class="page"
-          x-data={JSON.stringify(state)}
+          x-data="carousel"
           x-carousel={`{
             id: $id('carousel'),
             spacing: '20px',
             slidesPerPage: 2,
             slideCount: ${carouselData.length},
             allowMouseDrag: true,
-            ${Object.keys(state)},
+            ...context,
           }`}
         >
           <Nav currentComponent={event.context.currentComponent as string} />
@@ -56,7 +54,7 @@ export default defineHandler((event) => {
           </main>
 
           <Toolbar>
-            <Controls config={carouselControls} state={state} slot="controls" />
+            <Controls config={carouselControls} slot="controls" />
             <StateVisualizer label="carousel" omit={["translations"]} />
           </Toolbar>
         </div>
