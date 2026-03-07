@@ -1,5 +1,27 @@
 # @zag-js/floating-panel
 
+## 1.36.0
+
+### Patch Changes
+
+- [`3990e97`](https://github.com/chakra-ui/zag/commit/3990e97dcb5d1708d492b7f3944e71bd4595e039) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix controlled floating panel behavior.
+  - Fix `open` taking precedence over `defaultOpen` during initialization
+  - Fix `api.setPosition` and `api.setSize` to work independently of drag/resize state
+  - Fix React `Maximum update depth exceeded` when content uses `ResizeObserver`
+  - Fix maximize/minimize restore reverting to `(0, 0)` in controlled mode
+  - Fix Escape during drag/resize to cancel and revert to original position/size
+
+- Updated dependencies [[`7edfd5e`](https://github.com/chakra-ui/zag/commit/7edfd5e6ffa0bddde524c9bd43aa157f3fb76b72)]:
+  - @zag-js/dom-query@1.36.0
+  - @zag-js/core@1.36.0
+  - @zag-js/popper@1.36.0
+  - @zag-js/anatomy@1.36.0
+  - @zag-js/store@1.36.0
+  - @zag-js/types@1.36.0
+  - @zag-js/utils@1.36.0
+  - @zag-js/rect-utils@1.36.0
+
 ## 1.35.3
 
 ### Patch Changes

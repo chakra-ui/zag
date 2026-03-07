@@ -1,5 +1,23 @@
 # @zag-js/menu
 
+## 1.36.0
+
+### Patch Changes
+
+- [`7133dc6`](https://github.com/chakra-ui/zag/commit/7133dc6c3eadc3759d839f194a4b9281cadc034a) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix menu trigger to keep `aria-expanded="false"` when closed
+
+- Updated dependencies [[`7edfd5e`](https://github.com/chakra-ui/zag/commit/7edfd5e6ffa0bddde524c9bd43aa157f3fb76b72)]:
+  - @zag-js/dom-query@1.36.0
+  - @zag-js/core@1.36.0
+  - @zag-js/dismissable@1.36.0
+  - @zag-js/focus-visible@1.36.0
+  - @zag-js/popper@1.36.0
+  - @zag-js/anatomy@1.36.0
+  - @zag-js/types@1.36.0
+  - @zag-js/utils@1.36.0
+  - @zag-js/rect-utils@1.36.0
+
 ## 1.35.3
 
 ### Patch Changes

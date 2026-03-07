@@ -1,5 +1,23 @@
 # @zag-js/color-picker
 
+## 1.36.0
+
+### Patch Changes
+
+- [#3011](https://github.com/chakra-ui/zag/pull/3011)
+  [`d716995`](https://github.com/chakra-ui/zag/commit/d716995f8e850e1b4dd0360e6ca905947ca93b01) Thanks
+  [@myo-shi](https://github.com/myo-shi)! - Preserve vertical slider orientation on pointer updates
+
+- Updated dependencies [[`7edfd5e`](https://github.com/chakra-ui/zag/commit/7edfd5e6ffa0bddde524c9bd43aa157f3fb76b72)]:
+  - @zag-js/dom-query@1.36.0
+  - @zag-js/core@1.36.0
+  - @zag-js/dismissable@1.36.0
+  - @zag-js/popper@1.36.0
+  - @zag-js/anatomy@1.36.0
+  - @zag-js/types@1.36.0
+  - @zag-js/color-utils@1.36.0
+  - @zag-js/utils@1.36.0
+
 ## 1.35.3
 
 ### Patch Changes
