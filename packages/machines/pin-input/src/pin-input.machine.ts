@@ -189,8 +189,19 @@ export const machine = createMachine({
       clearFocusedIndex({ context }) {
         context.set("focusedIndex", -1)
       },
-      setFocusedIndex({ context, event }) {
-        context.set("focusedIndex", event.index)
+      setFocusedIndex({ context, event, computed }) {
+        const value = computed("_value")
+        const clickedIndex = event.index
+
+        // If user taps an empty slot, move focus to the first empty slot.
+        // This keeps keyboard entry starting from the earliest missing value.
+        if (value[clickedIndex] === "") {
+          const firstEmptyIndex = value.findIndex((item) => item === "")
+          context.set("focusedIndex", firstEmptyIndex === -1 ? clickedIndex : firstEmptyIndex)
+          return
+        }
+
+        context.set("focusedIndex", clickedIndex)
       },
       setValue({ context, event }) {
         const value = fill(event.value, context.get("count"))
