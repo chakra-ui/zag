@@ -81,11 +81,13 @@ export function usePlugin<T extends MachineSchema>(
           usePartProps((props) => (Alpine.$data(el) as any)[_x_snake_case + _modifier][getPartProps](props)) as any,
         )
 
-        const binding: Record<string, () => any> = {}
-        for (const prop in ref) {
-          binding[prop] = (...args: any[]) => ref[prop]?.(...args)
-        }
-        Alpine.bind(el, binding)
+        Alpine.bind(
+          el,
+          Object.keys(ref).reduce((acc: Record<string, () => any>, key) => {
+            acc[key] = (...args: any[]) => ref[key](...args)
+            return acc
+          }, {}),
+        )
 
         effect(() => {
           const next = usePartProps((props) =>
