@@ -28,7 +28,7 @@ export function usePlugin<T extends MachineSchema>(
       const _modifier = modifiers.at(0) ? "_" + modifiers.at(0) : ""
       if (!value) {
         const evaluateProps = evaluateLater<Partial<T["props"]> | (() => Partial<T["props"]>)>(expression)
-        const machine = new AlpineMachine(component.machine, useEvaluator(evaluateProps))
+        const machine = new AlpineMachine(component.machine, useEvaluator(evaluateProps), Alpine)
         Alpine.bind(el, {
           "x-data"() {
             return {
