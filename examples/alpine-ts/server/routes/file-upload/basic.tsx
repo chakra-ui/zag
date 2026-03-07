@@ -1,5 +1,5 @@
 import { defineHandler } from "nitro/h3"
-import { fileUploadControls, getControlDefaults } from "@zag-js/shared"
+import { fileUploadControls } from "@zag-js/shared"
 import { Controls } from "../../components/controls"
 import { Head } from "../../components/head"
 import { Nav } from "../../components/nav"
@@ -7,8 +7,6 @@ import { StateVisualizer } from "../../components/state-visualizer"
 import { Toolbar } from "../../components/toolbar"
 
 export default defineHandler((event) => {
-  const state = getControlDefaults(fileUploadControls)
-
   return (
     <html>
       <Head>
@@ -16,19 +14,13 @@ export default defineHandler((event) => {
       </Head>
 
       <body>
-        <div
-          class="page"
-          x-data={JSON.stringify(state)}
-          x-file-upload={`{id: $id('file-upload'), ${Object.keys(state)}}`}
-        >
+        <div class="page" x-data="fileUpload" x-file-upload="{id: $id('file-upload'), ...context}">
           <Nav currentComponent={event.context.currentComponent as string} />
 
           <main class="file-upload">
             <div x-file-upload:root>
-              <div x-file-upload:dropzone>
-                <input data-testid="input" x-file-upload:hidden-input />
-                Drag your files here
-              </div>
+              <input data-testid="input" x-file-upload:hidden-input />
+              <div x-file-upload:dropzone>Drag your files here</div>
 
               <button x-file-upload:trigger>Choose Files...</button>
 
@@ -48,7 +40,7 @@ export default defineHandler((event) => {
           </main>
 
           <Toolbar>
-            <Controls config={fileUploadControls} state={state} slot="controls" />
+            <Controls config={fileUploadControls} slot="controls" />
             <StateVisualizer label="file-upload" />
           </Toolbar>
         </div>
