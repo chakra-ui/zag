@@ -23,7 +23,7 @@ export default defineHandler((event) => {
             },
           }"
         >
-          <Nav pathname={event.url.pathname} />
+          <Nav currentComponent={event.context.currentComponent as string} />
 
           <main class="checkbox">
             <label x-checkbox:root>

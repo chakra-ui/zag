@@ -18,7 +18,7 @@ export default defineHandler((event) => {
           x-id="['avatar']"
           x-avatar="{id: $id('avatar')}"
         >
-          <Nav pathname={event.url.pathname} />
+          <Nav currentComponent={event.context.currentComponent as string} />
 
           <main class="avatar">
             <div x-avatar:root>

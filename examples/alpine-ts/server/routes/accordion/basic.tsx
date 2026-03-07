@@ -23,7 +23,7 @@ export default defineHandler((event) => {
           x-id="['accordion']"
           x-accordion={`{id: $id('accordion'), ${Object.keys(state)}}`}
         >
-          <Nav pathname={event.url.pathname} />
+          <Nav currentComponent={event.context.currentComponent as string} />
 
           <main class="accordion">
             <div x-accordion:root>

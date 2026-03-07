@@ -22,7 +22,7 @@ export default defineHandler((event) => {
           x-id="['radio']"
           x-radio={`{id: $id('radio'), name: 'fruit', ${Object.keys(state)}}`}
         >
-          <Nav pathname={event.url.pathname} />
+          <Nav currentComponent={event.context.currentComponent as string} />
 
           <main class="radio">
             <form

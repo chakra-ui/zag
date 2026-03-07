@@ -22,7 +22,7 @@ export default defineHandler((event) => {
           x-listbox:collection="{items: $selectData}"
           x-listbox={`{collection, id: $id('listbox'), ${Object.keys(state)}}`}
         >
-          <Nav pathname={event.url.pathname} />
+          <Nav currentComponent={event.context.currentComponent as string} />
 
           <main class="listbox">
             <div x-listbox:root>

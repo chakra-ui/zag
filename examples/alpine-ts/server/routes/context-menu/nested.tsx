@@ -17,7 +17,7 @@ export default defineHandler((event) => {
           x-init="$menu('root').setChild($data._x_menu_sub_service)
             $menu('sub').setParent($data._x_menu_root_service)"
         >
-          <Nav pathname={event.url.pathname} />
+          <Nav currentComponent={event.context.currentComponent as string} />
 
           <main>
             <div {...{ "x-menu:context-trigger.root": "" }}>

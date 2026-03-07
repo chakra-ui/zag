@@ -17,7 +17,7 @@ export default defineHandler((event) => {
           x-data
           {...{ "x-dialog.parent": "{id: $id('dialog-parent')}", "x-dialog.child": "{id: $id('dialog-child')}" }}
         >
-          <Nav pathname={event.url.pathname} />
+          <Nav currentComponent={event.context.currentComponent as string} />
 
           <main>
             <div>

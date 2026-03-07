@@ -23,7 +23,7 @@ export default defineHandler((event) => {
           x-id="['drawer']"
           x-drawer={`{id: $id('drawer'), ${Object.keys(state)}}`}
         >
-          <Nav pathname={event.url.pathname} />
+          <Nav currentComponent={event.context.currentComponent as string} />
 
           <main class="drawer" x-data="{hidden: !$drawer.open}">
             <button x-drawer:trigger>Open</button>

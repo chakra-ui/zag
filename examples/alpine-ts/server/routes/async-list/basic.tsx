@@ -49,7 +49,7 @@ export default defineHandler((event) => {
             }
           }"
         >
-          <Nav pathname={event.url.pathname} />
+          <Nav currentComponent={event.context.currentComponent as string} />
 
           <main class="async-list">
             <span x-text="$asyncList().items.length"></span>

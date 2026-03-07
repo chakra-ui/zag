@@ -52,7 +52,7 @@ export default defineHandler((event) => {
           x-id="['rating']"
           x-rating={`{id: $id('rating'), defaultValue: 2.5, ${Object.keys(state)}}`}
         >
-          <Nav pathname={event.url.pathname} />
+          <Nav currentComponent={event.context.currentComponent as string} />
 
           <main class="rating">
             <form action="">

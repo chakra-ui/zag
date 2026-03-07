@@ -24,7 +24,7 @@ export default defineHandler((event) => {
             page: index,
           }"
         >
-          <Nav pathname={event.url.pathname} />
+          <Nav currentComponent={event.context.currentComponent as string} />
 
           <main class="carousel">
             <div x-carousel:root>

@@ -22,7 +22,7 @@ export default defineHandler((event) => {
           x-id="['editable']"
           x-editable={`{id: $id('editable'), defaultValue: 'Hello World', ${Object.keys(state)}}`}
         >
-          <Nav pathname={event.url.pathname} />
+          <Nav currentComponent={event.context.currentComponent as string} />
 
           <main class="editable">
             <div x-editable:root>

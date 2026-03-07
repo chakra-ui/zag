@@ -14,7 +14,7 @@ export default defineHandler((event) => {
 
       <body>
         <div class="page" x-data x-toggle="{}">
-          <Nav pathname={event.url.pathname} />
+          <Nav currentComponent={event.context.currentComponent as string} />
 
           <main class="toggle">
             <button x-toggle:root>

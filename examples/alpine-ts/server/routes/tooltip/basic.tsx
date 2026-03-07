@@ -16,7 +16,7 @@ export default defineHandler((event) => {
 
       <body>
         <div class="page" x-data {...{ "x-tooltip.1": `{id: '${id}'}`, "x-tooltip.2": `{id: '${id2}'}` }}>
-          <Nav pathname={event.url.pathname} />
+          <Nav currentComponent={event.context.currentComponent as string} />
 
           <main class="tooltip">
             <div class="root">

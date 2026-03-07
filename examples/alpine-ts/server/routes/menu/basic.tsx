@@ -21,7 +21,7 @@ export default defineHandler((event) => {
           x-data={JSON.stringify(state)}
           x-menu={`{id: $id('menu'), onSelect: console.log, ${Object.keys(state)}}`}
         >
-          <Nav pathname={event.url.pathname} />
+          <Nav currentComponent={event.context.currentComponent as string} />
 
           <main>
             <div>

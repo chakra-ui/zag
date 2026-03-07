@@ -22,7 +22,7 @@ export default defineHandler((event) => {
           x-id="['checkbox']"
           x-checkbox={`{id: $id('checkbox'), name: 'checkbox', ${Object.keys(state)}}`}
         >
-          <Nav pathname={event.url.pathname} />
+          <Nav currentComponent={event.context.currentComponent as string} />
 
           <main class="checkbox">
             <form

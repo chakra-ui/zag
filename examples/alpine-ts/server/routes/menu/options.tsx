@@ -17,7 +17,7 @@ export default defineHandler((event) => {
 
       <body>
         <div class="page" x-data="{order: '', type: []}" x-menu="{id: $id('menu')}">
-          <Nav pathname={event.url.pathname} />
+          <Nav currentComponent={event.context.currentComponent as string} />
 
           <main>
             <div>

@@ -22,7 +22,7 @@ export default defineHandler((event) => {
           x-id="['scroll-area']"
           x-scroll-area={`{id: $id('scroll-area'), ${Object.keys(state)}}`}
         >
-          <Nav pathname={event.url.pathname} />
+          <Nav currentComponent={event.context.currentComponent as string} />
 
           <main class="scroll-area">
             <button x-on:click="$scrollArea().scrollToEdge({edge: 'bottom'})">Scroll to bottom</button>

@@ -22,7 +22,7 @@ export default defineHandler((event) => {
           x-id="['password-input']"
           x-password-input={`{id: $id('password-input'), ${Object.keys(state)}}`}
         >
-          <Nav pathname={event.url.pathname} />
+          <Nav currentComponent={event.context.currentComponent as string} />
 
           <main class="password-input">
             <div x-password-input:root>

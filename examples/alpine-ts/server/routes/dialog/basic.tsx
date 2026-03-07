@@ -11,7 +11,7 @@ export default defineHandler((event) => {
 
       <body>
         <div class="page" x-data x-id="['dialog']" x-dialog={`{id: $id('dialog')}`}>
-          <Nav pathname={event.url.pathname} />
+          <Nav currentComponent={event.context.currentComponent as string} />
 
           <main>
             <button x-dialog:trigger> Click me</button>

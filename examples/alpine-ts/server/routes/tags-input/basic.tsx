@@ -22,7 +22,7 @@ export default defineHandler((event) => {
           x-id="['tags-input']"
           x-tags-input={`{id: $id('tags-input'), defaultValue: ['React', 'Vue'], ${Object.keys(state)}}`}
         >
-          <Nav pathname={event.url.pathname} />
+          <Nav currentComponent={event.context.currentComponent as string} />
 
           <main class="tags-input">
             <div x-tags-input:root>

@@ -41,7 +41,7 @@ export default defineHandler((event) => {
             ${Object.keys(state)},
           }`}
         >
-          <Nav pathname={event.url.pathname} />
+          <Nav currentComponent={event.context.currentComponent as string} />
 
           <main class="combobox">
             <div>

@@ -11,7 +11,7 @@ export default defineHandler((event) => {
 
       <body>
         <div class="page">
-          <Nav pathname={event.url.pathname} />
+          <Nav currentComponent={event.context.currentComponent as string} />
 
           <main>
             <textarea

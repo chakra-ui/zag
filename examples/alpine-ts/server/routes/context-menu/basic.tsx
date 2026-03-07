@@ -13,7 +13,7 @@ export default defineHandler((event) => {
 
       <body>
         <div class="page" x-data x-menu="{id: $id('menu'), onSelect: console.log}">
-          <Nav pathname={event.url.pathname} />
+          <Nav currentComponent={event.context.currentComponent as string} />
 
           <main class="context-menu">
             <div x-menu:context-trigger>Right Click here</div>

@@ -21,7 +21,7 @@ export default defineHandler((event) => {
           x-data={JSON.stringify(state)}
           x-marquee={`{id: $id('marquee'), spacing: '2rem', ${Object.keys(state)}}`}
         >
-          <Nav pathname={event.url.pathname} />
+          <Nav currentComponent={event.context.currentComponent as string} />
 
           <main class="marquee">
             <div x-marquee:root>

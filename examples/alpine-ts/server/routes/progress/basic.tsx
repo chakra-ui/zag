@@ -22,7 +22,7 @@ export default defineHandler((event) => {
           x-id="['progress']"
           x-progress={`{id: $id('progress'), ${Object.keys(state)}}`}
         >
-          <Nav pathname={event.url.pathname} />
+          <Nav currentComponent={event.context.currentComponent as string} />
 
           <main class="progress">
             <div x-progress:root>

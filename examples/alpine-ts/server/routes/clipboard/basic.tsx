@@ -22,7 +22,7 @@ export default defineHandler((event) => {
           x-id="['clipboard']"
           x-clipboard={`{id: $id('clipboard'), value: 'https://github.com/chakra-ui/zag', ${Object.keys(state)}}`}
         >
-          <Nav pathname={event.url.pathname} />
+          <Nav currentComponent={event.context.currentComponent as string} />
 
           <main class="clipboard">
             <div x-clipboard:root>

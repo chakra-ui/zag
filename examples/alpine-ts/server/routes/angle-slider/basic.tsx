@@ -22,7 +22,7 @@ export default defineHandler((event) => {
           x-id="['angle-slider']"
           x-angle-slider={`{id: $id('angle-slider'), ${Object.keys(state)}}`}
         >
-          <Nav pathname={event.url.pathname} />
+          <Nav currentComponent={event.context.currentComponent as string} />
 
           <main class="angle-slider">
             <div x-angle-slider:root>

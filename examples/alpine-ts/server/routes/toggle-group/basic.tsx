@@ -22,7 +22,7 @@ export default defineHandler((event) => {
           x-id="['toggle']"
           x-toggle={`{id: $id('toggle'), ${Object.keys(state)}}`}
         >
-          <Nav pathname={event.url.pathname} />
+          <Nav currentComponent={event.context.currentComponent as string} />
 
           <main class="toggle-group">
             <button>Outside</button>

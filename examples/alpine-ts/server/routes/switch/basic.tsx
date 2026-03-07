@@ -22,7 +22,7 @@ export default defineHandler((event) => {
           x-id="['switch']"
           x-switch={`{id: $id('switch'), name: 'switch', ${Object.keys(state)}}`}
         >
-          <Nav pathname={event.url.pathname} />
+          <Nav currentComponent={event.context.currentComponent as string} />
 
           <main class="switch">
             <label x-switch:root>

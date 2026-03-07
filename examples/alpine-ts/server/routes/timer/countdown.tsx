@@ -26,7 +26,7 @@ export default defineHandler((event) => {
             },
           }"
         >
-          <Nav pathname={event.url.pathname} />
+          <Nav currentComponent={event.context.currentComponent as string} />
 
           <main class="timer">
             <div x-timer:root>

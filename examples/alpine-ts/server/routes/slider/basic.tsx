@@ -28,7 +28,7 @@ export default defineHandler((event) => {
             thumbSize: { width: 20, height: 20 },
           }`}
         >
-          <Nav pathname={event.url.pathname} />
+          <Nav currentComponent={event.context.currentComponent as string} />
 
           <main class="slider">
             <form

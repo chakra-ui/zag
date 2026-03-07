@@ -11,7 +11,7 @@ export default defineHandler((event) => {
 
       <body>
         <div class="page" x-data="{present: false}" x-presence="{present}">
-          <Nav pathname={event.url.pathname} />
+          <Nav currentComponent={event.context.currentComponent as string} />
 
           <main class="presence">
             <button x-on:click="present = ! present">Toggle</button>

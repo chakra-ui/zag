@@ -22,7 +22,7 @@ export default defineHandler((event) => {
           x-id="['hover-card']"
           x-hover-card={`{id: $id('hover-card'), ${Object.keys(state)}}`}
         >
-          <Nav pathname={event.url.pathname} />
+          <Nav currentComponent={event.context.currentComponent as string} />
 
           <main class="hover-card">
             <div style={{ display: "flex", gap: "50px" }}>

@@ -22,7 +22,7 @@ export default defineHandler((event) => {
           x-id="['pin-input']"
           x-pin-input={`{name: 'test', id: $id('pin-input'), count: 3, ${Object.keys(state)}}`}
         >
-          <Nav pathname={event.url.pathname} />
+          <Nav currentComponent={event.context.currentComponent as string} />
 
           <main class="pin-input">
             <form

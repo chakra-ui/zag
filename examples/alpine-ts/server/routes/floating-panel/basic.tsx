@@ -23,7 +23,7 @@ export default defineHandler((event) => {
           x-id="['floating']"
           x-floating={`{id: $id('floating'), ${Object.keys(state)}}`}
         >
-          <Nav pathname={event.url.pathname} />
+          <Nav currentComponent={event.context.currentComponent as string} />
 
           <main class="floating-panel">
             <div>

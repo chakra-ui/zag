@@ -22,7 +22,7 @@ export default defineHandler((event) => {
           x-id="['number-input']"
           x-number-input={`{id: $id('number-input'), ${Object.keys(state)}}`}
         >
-          <Nav pathname={event.url.pathname} />
+          <Nav currentComponent={event.context.currentComponent as string} />
 
           <main>
             <div x-number-input:root>

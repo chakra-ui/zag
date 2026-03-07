@@ -21,7 +21,7 @@ export default defineHandler((event) => {
           x-data={JSON.stringify(state)}
           x-file-upload={`{id: $id('file-upload'), ${Object.keys(state)}}`}
         >
-          <Nav pathname={event.url.pathname} />
+          <Nav currentComponent={event.context.currentComponent as string} />
 
           <main class="file-upload">
             <div x-file-upload:root>

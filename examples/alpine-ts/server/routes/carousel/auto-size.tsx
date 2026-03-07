@@ -24,7 +24,7 @@ export default defineHandler((event) => {
             snapType: 'mandatory',
           }`}
         >
-          <Nav pathname={event.url.pathname} />
+          <Nav currentComponent={event.context.currentComponent as string} />
 
           <main class="carousel-auto-size">
             <div x-carousel:root>

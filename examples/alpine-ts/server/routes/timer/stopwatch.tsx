@@ -13,7 +13,7 @@ export default defineHandler((event) => {
 
       <body>
         <div class="page" x-data x-id="['timer']" x-timer="{id: $id('timer'), autoStart: true}">
-          <Nav pathname={event.url.pathname} />
+          <Nav currentComponent={event.context.currentComponent as string} />
 
           <main class="timer">
             <div x-timer:root>

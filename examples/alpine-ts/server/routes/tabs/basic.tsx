@@ -22,7 +22,7 @@ export default defineHandler((event) => {
           x-id="['tabs']"
           x-tabs={`{id: $id('tabs'), defaultValue: 'nils', ${Object.keys(state)}}`}
         >
-          <Nav pathname={event.url.pathname} />
+          <Nav currentComponent={event.context.currentComponent as string} />
 
           <main class="tabs">
             <div x-tabs:root>

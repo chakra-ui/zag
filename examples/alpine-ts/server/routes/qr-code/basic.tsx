@@ -22,7 +22,7 @@ export default defineHandler((event) => {
           x-id="['qr-code']"
           x-qr-code={`{id: $id('qr-code'), encoding: {ecc: 'H'}, ${Object.keys(state)}}`}
         >
-          <Nav pathname={event.url.pathname} />
+          <Nav currentComponent={event.context.currentComponent as string} />
           <main class="qr-code">
             <div x-qr-code:root>
               <svg x-qr-code:frame>

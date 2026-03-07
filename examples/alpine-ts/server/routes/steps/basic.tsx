@@ -22,7 +22,7 @@ export default defineHandler((event) => {
           x-id="['steps']"
           x-steps={`{id: $id('steps'), count: ${stepsData.length}, ${Object.keys(state)}}`}
         >
-          <Nav pathname={event.url.pathname} />
+          <Nav currentComponent={event.context.currentComponent as string} />
 
           <main class="steps">
             <div x-steps:root>
