@@ -1,5 +1,5 @@
 import { defineHandler } from "nitro/h3"
-import { routesData } from "@zag-js/shared"
+import { componentRoutesData } from "@zag-js/shared"
 import { Head } from "../components/head"
 import { Nav } from "../components/nav"
 
@@ -10,14 +10,14 @@ export default defineHandler((event) => {
 
       <body>
         <div class="page">
-          <Nav pathname={event.url.pathname} />
+          <Nav currentComponent={event.context.currentComponent as string} />
 
           <div class="index-nav">
             <h2>Zag.js + Alpine.js</h2>
             <ul>
-              {routesData.map((route) => (
+              {componentRoutesData.map((component) => (
                 <li>
-                  <a href={route.path}>{route.label}</a>
+                  <a href={`/${component.slug}`}>{component.label}</a>
                 </li>
               ))}
             </ul>

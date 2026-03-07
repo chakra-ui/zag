@@ -1,20 +1,18 @@
 import { dataAttr } from "@zag-js/dom-query"
-import { routesData } from "@zag-js/shared"
+import { componentRoutesData } from "@zag-js/shared"
 
-export function Nav({ pathname }: { pathname: string }) {
+export function Nav({ currentComponent }: { currentComponent: string }) {
   return (
     <aside class="nav">
       <header>Zagjs</header>
-      {routesData
-        .sort((a, b) => a.label.localeCompare(b.label))
-        .map((route) => {
-          const active = pathname === route.path
-          return (
-            <a data-active={dataAttr(active)} href={route.path}>
-              {route.label}
-            </a>
-          )
-        })}
+      {componentRoutesData.map((component) => {
+        const active = currentComponent === component.slug
+        return (
+          <a data-active={dataAttr(active)} href={`/${component.slug}`}>
+            {component.label}
+          </a>
+        )
+      })}
     </aside>
   )
 }
