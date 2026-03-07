@@ -1,4 +1,5 @@
 import { AccordionAnatomy } from "./accordion"
+import { DateInputAnatomy } from "./date-input"
 import { AvatarAnatomy } from "./avatar"
 import { CarouselAnatomy } from "./carousel"
 import { CheckboxAnatomy } from "./checkbox"
@@ -55,6 +56,7 @@ export const allComponents = {
   "tree-view": TreeViewAnatomy,
   "circular-progress": CircularProgressAnatomy,
   "color-picker": ColorPickerAnatomy,
+  "date-input": DateInputAnatomy,
   "date-picker": DatePickerAnatomy,
   "file-upload": FileUploadAnatomy,
   "hover-card": HoverCardAnatomy,

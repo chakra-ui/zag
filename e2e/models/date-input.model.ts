@@ -112,6 +112,14 @@ export class DateInputModel extends Model {
     return expect(this.control).not.toHaveAttribute("data-focus")
   }
 
+  seeSegmentGroupFocused(groupIndex: number) {
+    return expect(this.getSegmentGroupAt(groupIndex)).toHaveAttribute("data-focus", "")
+  }
+
+  seeSegmentGroupNotFocused(groupIndex: number) {
+    return expect(this.getSegmentGroupAt(groupIndex)).not.toHaveAttribute("data-focus")
+  }
+
   seeEditingValue(value: string) {
     return expect(this.output).toContainText(`Editing: ${value}`)
   }
