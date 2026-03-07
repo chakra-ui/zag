@@ -186,6 +186,7 @@ export function connect<T extends PropTypes>(
             send({ type: "INPUT.BACKSPACE" })
             return
           }
+          if (value === computed("focusedValue")) return
 
           send({ type: "INPUT.CHANGE", value, index })
         },

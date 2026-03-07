@@ -1,7 +1,7 @@
 // Modified from https://github.com/LachlanArthur/scroll-snap-api
 // MIT License
 
-import { getComputedStyle } from "@zag-js/dom-query"
+import { getComputedStyle, getScale } from "@zag-js/dom-query"
 
 export type ScrollAxis = "x" | "y"
 
@@ -13,28 +13,32 @@ type Direction = "ltr" | "rtl"
 
 const getDirection = (element: HTMLElement) => getComputedStyle(element).direction as Direction
 
+const convert = (raw: string, size: number): number => {
+  let n = parseFloat(raw)
+  if (/%/.test(raw)) {
+    n /= 100
+    n *= size
+  }
+  return Number.isNaN(n) ? 0 : n
+}
+
 function getScrollPadding(element: HTMLElement): Record<ScrollAxis, { before: number; after: number }> {
   const style = getComputedStyle(element)
-  const rect = element.getBoundingClientRect()
+
+  // Use layout dimensions (offsetWidth/offsetHeight) instead of getBoundingClientRect()
+  // to avoid issues with CSS transforms (e.g., dialog open animations with scale())
+  const layoutWidth = element.offsetWidth
+  const layoutHeight = element.offsetHeight
 
   let xBeforeRaw = style.getPropertyValue("scroll-padding-left").replace("auto", "0px")
   let yBeforeRaw = style.getPropertyValue("scroll-padding-top").replace("auto", "0px")
   let xAfterRaw = style.getPropertyValue("scroll-padding-right").replace("auto", "0px")
   let yAfterRaw = style.getPropertyValue("scroll-padding-bottom").replace("auto", "0px")
 
-  function convert(raw: string, size: number): number {
-    let n = parseFloat(raw)
-    if (/%/.test(raw)) {
-      n /= 100
-      n *= size
-    }
-    return Number.isNaN(n) ? 0 : n
-  }
-
-  let xBefore = convert(xBeforeRaw, rect.width)
-  let yBefore = convert(yBeforeRaw, rect.height)
-  let xAfter = convert(xAfterRaw, rect.width)
-  let yAfter = convert(yAfterRaw, rect.height)
+  let xBefore = convert(xBeforeRaw, layoutWidth)
+  let yBefore = convert(yBeforeRaw, layoutHeight)
+  let xAfter = convert(xAfterRaw, layoutWidth)
+  let yAfter = convert(yAfterRaw, layoutHeight)
 
   return {
     x: { before: xBefore, after: xAfter },
@@ -65,6 +69,11 @@ export function getSnapPositions(parent: HTMLElement, subtree = false): Record<S
   const dir = getDirection(parent)
   const isRtl = dir === "rtl"
 
+  // Compute scale factors to normalize getBoundingClientRect() (visual/transformed)
+  // positions into layout coordinates. Handles CSS transform: scale() on ancestors
+  // (e.g., dialog open animations) which would otherwise cause wrong snap positions.
+  const scale = getScale(parent)
+
   const positions: Record<ScrollAxis, SnapPositionList> = {
     x: { start: [], center: [], end: [] },
     y: { start: [], center: [], end: [] },
@@ -78,6 +87,7 @@ export function getSnapPositions(parent: HTMLElement, subtree = false): Record<S
     const axisEnd = axis === "x" ? "right" : "bottom"
     const axisSize = axis === "x" ? "width" : "height"
     const axisScroll = axis === "x" ? "scrollLeft" : "scrollTop"
+    const axisScale = axis === "x" ? scale.x : scale.y
 
     // In RTL mode (for x-axis), we use right edge as the reference
     const useRtlCalc = isRtl && axis === "x"
@@ -110,18 +120,17 @@ export function getSnapPositions(parent: HTMLElement, subtree = false): Record<S
 
       if (useRtlCalc) {
         // RTL: Calculate offset from the right edge (inline-start in RTL)
-        // parentRect.right - childRect.right gives visual offset from container's right edge
-        // We add Math.abs(scrollLeft) because in RTL Chrome, scrollLeft is negative
+        // Normalize by scale to convert visual coordinates to layout coordinates
         const scrollOffset = Math.abs(parent[axisScroll])
-        const rightOffset = parentRect[axisEnd] - childRect[axisEnd] + scrollOffset
-        childOffsetStart = rightOffset // "start" in RTL = right edge
-        childOffsetEnd = rightOffset + childRect[axisSize] // "end" in RTL = left edge
-        childOffsetCenter = rightOffset + childRect[axisSize] / 2
+        const rightOffset = (parentRect[axisEnd] - childRect[axisEnd]) / axisScale + scrollOffset
+        childOffsetStart = rightOffset
+        childOffsetEnd = rightOffset + childRect[axisSize] / axisScale
+        childOffsetCenter = rightOffset + childRect[axisSize] / (2 * axisScale)
       } else {
-        // LTR: Standard calculation from left/top edge
-        childOffsetStart = childRect[axisStart] - parentRect[axisStart] + parent[axisScroll]
-        childOffsetEnd = childOffsetStart + childRect[axisSize]
-        childOffsetCenter = childOffsetStart + childRect[axisSize] / 2
+        // LTR: Standard calculation from left/top edge, normalized by scale
+        childOffsetStart = (childRect[axisStart] - parentRect[axisStart]) / axisScale + parent[axisScroll]
+        childOffsetEnd = childOffsetStart + childRect[axisSize] / axisScale
+        childOffsetCenter = childOffsetStart + childRect[axisSize] / (2 * axisScale)
       }
 
       switch (childAlign) {
@@ -148,9 +157,13 @@ export function getSnapPositions(parent: HTMLElement, subtree = false): Record<S
 
 export function getScrollSnapPositions(element: HTMLElement): Record<ScrollAxis, number[]> {
   const dir = getDirection(element)
-  const rect = element.getBoundingClientRect()
   const scrollPadding = getScrollPadding(element)
   const snapPositions = getSnapPositions(element)
+
+  // Use layout dimensions (offsetWidth/offsetHeight) for center/end offset calculations.
+  // Snap positions from getSnapPositions() are already normalized to layout coordinates.
+  const layoutWidth = element.offsetWidth
+  const layoutHeight = element.offsetHeight
 
   const maxScroll = {
     x: element.scrollWidth - element.offsetWidth,
@@ -173,8 +186,8 @@ export function getScrollSnapPositions(element: HTMLElement): Record<ScrollAxis,
     xPositions = uniq(
       [
         ...snapPositions.x.start.map((v) => v.position - scrollPadding.x.after),
-        ...snapPositions.x.center.map((v) => v.position - rect.width / 2),
-        ...snapPositions.x.end.map((v) => v.position - rect.width + scrollPadding.x.before),
+        ...snapPositions.x.center.map((v) => v.position - layoutWidth / 2),
+        ...snapPositions.x.end.map((v) => v.position - layoutWidth + scrollPadding.x.before),
       ].map(clamp(0, maxScroll.x)),
     )
 
@@ -187,8 +200,8 @@ export function getScrollSnapPositions(element: HTMLElement): Record<ScrollAxis,
     xPositions = uniq(
       [
         ...snapPositions.x.start.map((v) => v.position - scrollPadding.x.before),
-        ...snapPositions.x.center.map((v) => v.position - rect.width / 2),
-        ...snapPositions.x.end.map((v) => v.position - rect.width + scrollPadding.x.after),
+        ...snapPositions.x.center.map((v) => v.position - layoutWidth / 2),
+        ...snapPositions.x.end.map((v) => v.position - layoutWidth + scrollPadding.x.after),
       ].map(clamp(0, maxScroll.x)),
     )
   }
@@ -199,8 +212,8 @@ export function getScrollSnapPositions(element: HTMLElement): Record<ScrollAxis,
     y: uniq(
       [
         ...snapPositions.y.start.map((v) => v.position - scrollPadding.y.before),
-        ...snapPositions.y.center.map((v) => v.position - rect.height / 2),
-        ...snapPositions.y.end.map((v) => v.position - rect.height + scrollPadding.y.after),
+        ...snapPositions.y.center.map((v) => v.position - layoutHeight / 2),
+        ...snapPositions.y.end.map((v) => v.position - layoutHeight + scrollPadding.y.after),
       ].map(clamp(0, maxScroll.y)),
     ),
   }
@@ -242,27 +255,33 @@ export function findSnapPoint(
 
 export function getSnapPointTarget(parent: HTMLElement, snapPoint: number): HTMLElement {
   const rect = parent.getBoundingClientRect()
+  const scale = getScale(parent)
   const scrollPadding = getScrollPadding(parent)
   const children = Array.from(parent.children) as HTMLElement[]
+
+  const layoutWidth = parent.offsetWidth
+  const layoutHeight = parent.offsetHeight
 
   for (const child of children) {
     const childRect = child.getBoundingClientRect()
     const childOffsetStart = {
-      x: childRect.left - rect.left + parent.scrollLeft,
-      y: childRect.top - rect.top + parent.scrollTop,
+      x: (childRect.left - rect.left) / scale.x + parent.scrollLeft,
+      y: (childRect.top - rect.top) / scale.y + parent.scrollTop,
     }
+    const childLayoutWidth = childRect.width / scale.x
+    const childLayoutHeight = childRect.height / scale.y
 
     // Check if any of the child's snap positions match the target snapPoint
     const matchesX = [
       childOffsetStart.x - scrollPadding.x.before, // start
-      childOffsetStart.x + childRect.width / 2 - rect.width / 2, // center
-      childOffsetStart.x + childRect.width - rect.width + scrollPadding.x.after, // end
+      childOffsetStart.x + childLayoutWidth / 2 - layoutWidth / 2, // center
+      childOffsetStart.x + childLayoutWidth - layoutWidth + scrollPadding.x.after, // end
     ].some((pos) => Math.abs(pos - snapPoint) < 1)
 
     const matchesY = [
       childOffsetStart.y - scrollPadding.y.before,
-      childOffsetStart.y + childRect.height / 2 - rect.height / 2,
-      childOffsetStart.y + childRect.height - rect.height + scrollPadding.y.after,
+      childOffsetStart.y + childLayoutHeight / 2 - layoutHeight / 2,
+      childOffsetStart.y + childLayoutHeight - layoutHeight + scrollPadding.y.after,
     ].some((pos) => Math.abs(pos - snapPoint) < 1)
 
     if (matchesX || matchesY) {
