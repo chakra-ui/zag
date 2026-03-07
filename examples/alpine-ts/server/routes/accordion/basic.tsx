@@ -1,5 +1,5 @@
 import { defineHandler } from "nitro/h3"
-import { accordionControls, accordionData, getControlDefaults } from "@zag-js/shared"
+import { accordionControls, accordionData } from "@zag-js/shared"
 import { ArrowRight } from "lucide-static"
 import { Controls } from "../../components/controls"
 import { Head } from "../../components/head"
@@ -8,8 +8,6 @@ import { StateVisualizer } from "../../components/state-visualizer"
 import { Toolbar } from "../../components/toolbar"
 
 export default defineHandler((event) => {
-  const state = getControlDefaults(accordionControls)
-
   return (
     <html>
       <Head>
@@ -17,12 +15,7 @@ export default defineHandler((event) => {
       </Head>
 
       <body>
-        <div
-          class="page"
-          x-data={JSON.stringify(state)}
-          x-id="['accordion']"
-          x-accordion={`{id: $id('accordion'), ${Object.keys(state)}}`}
-        >
+        <div class="page" x-data="accordion" x-id="['accordion']" x-accordion={`{id: $id('accordion'), ...context}`}>
           <Nav currentComponent={event.context.currentComponent as string} />
 
           <main class="accordion">
@@ -45,7 +38,7 @@ export default defineHandler((event) => {
           </main>
 
           <Toolbar>
-            <Controls config={accordionControls} state={state} slot="controls" />
+            <Controls config={accordionControls} slot="controls" />
             <StateVisualizer label="accordion" />
           </Toolbar>
         </div>
