@@ -1,4 +1,4 @@
-import { defineHandler } from "nitro/deps/h3"
+import { defineHandler } from "nitro/h3"
 import { Head } from "../../components/head"
 import { Nav } from "../../components/nav"
 import { StateVisualizer } from "../../components/state-visualizer"
