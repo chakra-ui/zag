@@ -7,7 +7,7 @@ export function Head() {
       <script type="module" src="/scripts/toolbar.ts"></script>
       <script type="module" src="/scripts/state-visualizer.ts"></script>
       <script type="module" src="/scripts/style.ts"></script>
-      <title>Nitro + Vite</title>
+      <title>Alpine Machines</title>
       <slot />
     </head>
   )
