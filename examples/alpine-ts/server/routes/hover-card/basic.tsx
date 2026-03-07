@@ -1,5 +1,5 @@
 import { defineHandler } from "nitro/h3"
-import { getControlDefaults, hoverCardControls } from "@zag-js/shared"
+import { hoverCardControls } from "@zag-js/shared"
 import { Controls } from "../../components/controls"
 import { Nav } from "../../components/nav"
 import { Head } from "../../components/head"
@@ -7,8 +7,6 @@ import { StateVisualizer } from "../../components/state-visualizer"
 import { Toolbar } from "../../components/toolbar"
 
 export default defineHandler((event) => {
-  const state = getControlDefaults(hoverCardControls)
-
   return (
     <html>
       <Head>
@@ -16,12 +14,7 @@ export default defineHandler((event) => {
       </Head>
 
       <body>
-        <div
-          class="page"
-          x-data={JSON.stringify(state)}
-          x-id="['hover-card']"
-          x-hover-card={`{id: $id('hover-card'), ${Object.keys(state)}}`}
-        >
+        <div class="page" x-data="hoverCard" x-id="['hover-card']" x-hover-card="{id: $id('hover-card'), ...context}">
           <Nav currentComponent={event.context.currentComponent as string} />
 
           <main class="hover-card">
@@ -51,7 +44,7 @@ export default defineHandler((event) => {
           </main>
 
           <Toolbar>
-            <Controls config={hoverCardControls} state={state} slot="controls" />
+            <Controls config={hoverCardControls} slot="controls" />
             <StateVisualizer label="hover-card" />
           </Toolbar>
         </div>

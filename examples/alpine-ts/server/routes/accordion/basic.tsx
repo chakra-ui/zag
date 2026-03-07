@@ -15,7 +15,7 @@ export default defineHandler((event) => {
       </Head>
 
       <body>
-        <div class="page" x-data="accordion" x-id="['accordion']" x-accordion={`{id: $id('accordion'), ...context}`}>
+        <div class="page" x-data="accordion" x-id="['accordion']" x-accordion="{id: $id('accordion'), ...context}">
           <Nav currentComponent={event.context.currentComponent as string} />
 
           <main class="accordion">

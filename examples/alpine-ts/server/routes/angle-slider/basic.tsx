@@ -1,5 +1,5 @@
 import { defineHandler } from "nitro/h3"
-import { angleSliderControls, getControlDefaults } from "@zag-js/shared"
+import { angleSliderControls } from "@zag-js/shared"
 import { StateVisualizer } from "../../components/state-visualizer"
 import { Head } from "../../components/head"
 import { Nav } from "../../components/nav"
@@ -7,8 +7,6 @@ import { Toolbar } from "../../components/toolbar"
 import { Controls } from "../../components/controls"
 
 export default defineHandler((event) => {
-  const state = getControlDefaults(angleSliderControls)
-
   return (
     <html>
       <Head>
@@ -18,9 +16,9 @@ export default defineHandler((event) => {
       <body>
         <div
           class="page"
-          x-data={JSON.stringify(state)}
+          x-data="angleSlider"
           x-id="['angle-slider']"
-          x-angle-slider={`{id: $id('angle-slider'), ${Object.keys(state)}}`}
+          x-angle-slider="{id: $id('angle-slider'), ...context}"
         >
           <Nav currentComponent={event.context.currentComponent as string} />
 
@@ -42,7 +40,7 @@ export default defineHandler((event) => {
           </main>
 
           <Toolbar>
-            <Controls config={angleSliderControls} state={state} slot="controls" />
+            <Controls config={angleSliderControls} slot="controls" />
             <StateVisualizer label="angle-slider" />
           </Toolbar>
         </div>

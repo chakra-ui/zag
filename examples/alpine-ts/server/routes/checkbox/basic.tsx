@@ -1,5 +1,5 @@
 import { defineHandler } from "nitro/h3"
-import { checkboxControls, getControlDefaults } from "@zag-js/shared"
+import { checkboxControls } from "@zag-js/shared"
 import { Controls } from "../../components/controls"
 import { Head } from "../../components/head"
 import { Nav } from "../../components/nav"
@@ -7,8 +7,6 @@ import { StateVisualizer } from "../../components/state-visualizer"
 import { Toolbar } from "../../components/toolbar"
 
 export default defineHandler((event) => {
-  const state = getControlDefaults(checkboxControls)
-
   return (
     <html>
       <Head>
@@ -18,9 +16,9 @@ export default defineHandler((event) => {
       <body>
         <div
           class="page"
-          x-data={JSON.stringify(state)}
+          x-data="checkbox"
           x-id="['checkbox']"
-          x-checkbox={`{id: $id('checkbox'), name: 'checkbox', ${Object.keys(state)}}`}
+          x-checkbox="{id: $id('checkbox'), name: 'checkbox', ...context}"
         >
           <Nav currentComponent={event.context.currentComponent as string} />
 
@@ -55,7 +53,7 @@ export default defineHandler((event) => {
           </main>
 
           <Toolbar>
-            <Controls config={checkboxControls} state={state} slot="controls" />
+            <Controls config={checkboxControls} slot="controls" />
             <StateVisualizer label="checkbox" />
           </Toolbar>
         </div>

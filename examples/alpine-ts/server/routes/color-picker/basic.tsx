@@ -1,5 +1,5 @@
 import { defineHandler } from "nitro/h3"
-import { colorPickerControls, getControlDefaults } from "@zag-js/shared"
+import { colorPickerControls } from "@zag-js/shared"
 import { Controls } from "../../components/controls"
 import { Head } from "../../components/head"
 import { Nav } from "../../components/nav"
@@ -23,8 +23,6 @@ const EyeDropIcon = () => (
 )
 
 export default defineHandler((event) => {
-  const state = getControlDefaults(colorPickerControls)
-
   return (
     <html>
       <Head>
@@ -34,15 +32,15 @@ export default defineHandler((event) => {
       <body>
         <div
           class="page"
-          x-data={JSON.stringify(state)}
+          x-data="colorPicker"
           x-id="['color-picker']"
-          x-color-picker={`{
+          x-color-picker="{
             id: $id('color-picker'),
             name: 'color',
             format: 'hsla',
             defaultValue: $parse('hsl(0, 100%, 50%)'),
-            ${Object.keys(state)},
-          }`}
+            ...context,
+          }"
         >
           <Nav currentComponent={event.context.currentComponent as string} />
 
@@ -159,7 +157,7 @@ export default defineHandler((event) => {
           </main>
 
           <Toolbar viz>
-            <Controls config={colorPickerControls} state={state} slot="controls" />
+            <Controls config={colorPickerControls} slot="controls" />
             <StateVisualizer label="color-picker" />
           </Toolbar>
         </div>
