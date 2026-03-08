@@ -1,5 +1,5 @@
 import { defineHandler } from "nitro/h3"
-import { menuControls, getControlDefaults } from "@zag-js/shared"
+import { menuControls } from "@zag-js/shared"
 import { Controls } from "../../components/controls"
 import { Head } from "../../components/head"
 import { Nav } from "../../components/nav"
@@ -7,8 +7,6 @@ import { StateVisualizer } from "../../components/state-visualizer"
 import { Toolbar } from "../../components/toolbar"
 
 export default defineHandler((event) => {
-  const state = getControlDefaults(menuControls)
-
   return (
     <html>
       <Head>
@@ -16,7 +14,7 @@ export default defineHandler((event) => {
       </Head>
 
       <body>
-        <div class="page" x-data="{order: '', type: []}" x-menu="{id: $id('menu')}">
+        <div class="page" x-data="menu" x-menu="{id: $id('menu')}">
           <Nav currentComponent={event.context.currentComponent as string} />
 
           <main>
@@ -48,7 +46,7 @@ export default defineHandler((event) => {
           </main>
 
           <Toolbar>
-            <Controls config={menuControls} state={state} slot="controls" />
+            <Controls config={menuControls} slot="controls" />
             <StateVisualizer label="menu" />
           </Toolbar>
         </div>
