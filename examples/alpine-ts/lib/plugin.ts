@@ -77,27 +77,30 @@ export function usePlugin<T extends MachineSchema>(
           .join("")}Props`
 
         const usePartProps = useEvaluator(evaluateLater(expression || "{}"))
-        const ref = Alpine.reactive(
-          usePartProps((props) => (Alpine.$data(el) as any)[_x_snake_case + _modifier][getPartProps](props)) as any,
-        )
+        const propsRef = Alpine.reactive(
+          usePartProps((props) => (Alpine.$data(el) as any)[_x_snake_case + _modifier][getPartProps](props)),
+        ) as Record<string, any>
 
         Alpine.bind(
           el,
-          Object.keys(ref).reduce((acc: Record<string, () => any>, key) => {
-            acc[key] = (...args: any[]) => ref[key](...args)
+          Object.keys(propsRef).reduce((acc: Record<string, any>, prop) => {
+            const { key, value } =
+              prop === "x-html"
+                ? { key: "x-html", value: () => propsRef[prop] }
+                : prop.startsWith("on")
+                  ? { key: "@" + prop.substring(2), value: (...args: any[]) => propsRef[prop](...args) }
+                  : { key: ":" + prop, value: () => propsRef[prop] }
+            acc[key] = value
             return acc
           }, {}),
         )
-
         effect(() => {
-          const next = usePartProps((props) =>
-            (Alpine.$data(el) as any)[_x_snake_case + _modifier][getPartProps](props),
-          ) as any
-          for (const prop in next) {
-            if (prop.startsWith("@") || next[prop]() !== ref[prop]()) {
-              ref[prop] = next[prop]
-            }
-          }
+          Object.assign(
+            propsRef,
+            usePartProps((props) =>
+              (Alpine.$data(el) as any)[_x_snake_case + _modifier][getPartProps](props),
+            ) as Record<string, any>,
+          )
         })
       }
     }).before("bind")

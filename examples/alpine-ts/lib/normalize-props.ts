@@ -15,20 +15,14 @@ export const propMap: AttrMap = {
   defaultChecked: "checked",
 }
 
+function toAlpineProp(prop: string) {
+  if (prop === "children") return "x-html"
+  return (propMap[prop] ?? prop).toLowerCase()
+}
+
 export const normalizeProps = createNormalizer((props) => {
   return Object.entries(props).reduce<any>((acc, [key, value]) => {
-    // if (value === undefined) return acc
-
-    key = propMap[key] ?? key
-
-    if (key === "children") {
-      acc["x-html"] = () => value
-    } else if (key.startsWith("on")) {
-      acc["@" + key.substring(2).toLowerCase()] = value
-    } else {
-      acc[":" + key.toLowerCase()] = () => value
-    }
-
+    acc[toAlpineProp(key)] = value
     return acc
   }, {})
 })
