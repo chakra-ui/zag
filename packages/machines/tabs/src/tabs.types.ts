@@ -107,9 +107,11 @@ export type TabsSchema = {
     value: string | null
     focusedValue: string | null
     indicatorRect: Rect | null
+    animateIndicator: boolean
   }
   refs: {
     indicatorCleanup: VoidFunction | null | undefined
+    prevValue: string | null
   }
   computed: {
     focused: boolean

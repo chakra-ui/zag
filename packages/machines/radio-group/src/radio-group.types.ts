@@ -94,6 +94,10 @@ interface PrivateContext {
    */
   indicatorRect: Rect | null
   /**
+   * Whether indicator transitions should be animated
+   */
+  animateIndicator: boolean
+  /**
    * Whether the radio group's fieldset is disabled
    */
   fieldsetDisabled: boolean
@@ -117,6 +121,10 @@ interface Refs {
    * Function to clean up the observer for the active tab's rect
    */
   indicatorCleanup: VoidFunction | null
+  /**
+   * Previous selected value, used to detect real value transitions
+   */
+  prevValue: string | null
 }
 
 export interface RadioGroupSchema {

@@ -43,6 +43,9 @@ export const machine = createMachine<RadioGroupSchema>({
       indicatorRect: bindable<Rect | null>(() => ({
         defaultValue: null,
       })),
+      animateIndicator: bindable<boolean>(() => ({
+        defaultValue: false,
+      })),
       fieldsetDisabled: bindable<boolean>(() => ({
         defaultValue: false,
       })),
@@ -56,6 +59,7 @@ export const machine = createMachine<RadioGroupSchema>({
     return {
       indicatorCleanup: null,
       focusVisibleValue: null,
+      prevValue: null,
     }
   },
 
@@ -63,7 +67,7 @@ export const machine = createMachine<RadioGroupSchema>({
     isDisabled: ({ prop, context }) => !!prop("disabled") || context.get("fieldsetDisabled"),
   },
 
-  entry: ["syncIndicatorRect", "syncSsr"],
+  entry: ["syncPrevValue", "syncIndicatorRect", "syncSsr"],
 
   exit: ["cleanupObserver"],
 
@@ -71,7 +75,7 @@ export const machine = createMachine<RadioGroupSchema>({
 
   watch({ track, action, context }) {
     track([() => context.get("value")], () => {
-      action(["syncIndicatorRect", "syncInputElements"])
+      action(["syncIndicatorAnimation", "syncIndicatorRect", "syncInputElements"])
     })
   },
 
@@ -93,6 +97,9 @@ export const machine = createMachine<RadioGroupSchema>({
     },
     SET_FOCUSED: {
       actions: ["setFocused"],
+    },
+    INDICATOR_TRANSITION_END: {
+      actions: ["clearIndicatorAnimation"],
     },
   },
 
@@ -135,6 +142,19 @@ export const machine = createMachine<RadioGroupSchema>({
         context.set("focusedValue", event.value)
         const focusVisibleValue = event.value != null && event.focusVisible ? event.value : null
         context.set("focusVisibleValue", focusVisibleValue)
+      },
+      syncPrevValue({ context, refs }) {
+        refs.set("prevValue", context.get("value"))
+      },
+      syncIndicatorAnimation({ context, refs }) {
+        const prevValue = refs.get("prevValue")
+        const nextValue = context.get("value")
+        const animate = prevValue != null && nextValue != null && prevValue !== nextValue
+        context.set("animateIndicator", animate)
+        refs.set("prevValue", nextValue)
+      },
+      clearIndicatorAnimation({ context }) {
+        context.set("animateIndicator", false)
       },
       syncInputElements({ context, scope }) {
         const inputs = dom.getInputEls(scope)

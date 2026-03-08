@@ -82,7 +82,8 @@ export const tabsData = [
     id: "joke",
     label: "Joke",
     content: `
-    Fear of complicated buildings: A complex complex complex.
+    Fear of complicated buildings: A complex complex complex. When will this end? This is the end of the story.
+    Some extra text to make the content longer. Come and see the world. The world is a great place.
     `,
   },
 ]
