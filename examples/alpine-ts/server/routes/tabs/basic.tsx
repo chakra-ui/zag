@@ -1,5 +1,5 @@
 import { defineHandler } from "nitro/h3"
-import { getControlDefaults, tabsControls, tabsData } from "@zag-js/shared"
+import { tabsControls, tabsData } from "@zag-js/shared"
 import { Controls } from "../../components/controls"
 import { Head } from "../../components/head"
 import { Nav } from "../../components/nav"
@@ -7,8 +7,6 @@ import { StateVisualizer } from "../../components/state-visualizer"
 import { Toolbar } from "../../components/toolbar"
 
 export default defineHandler((event) => {
-  const state = getControlDefaults(tabsControls)
-
   return (
     <html>
       <Head>
@@ -16,12 +14,7 @@ export default defineHandler((event) => {
       </Head>
 
       <body>
-        <div
-          class="page"
-          x-data={JSON.stringify(state)}
-          x-id="['tabs']"
-          x-tabs={`{id: $id('tabs'), defaultValue: 'nils', ${Object.keys(state)}}`}
-        >
+        <div class="page" x-data="tabs" x-id="['tabs']" x-tabs={`{id: $id('tabs'), defaultValue: 'nils', ...context}`}>
           <Nav currentComponent={event.context.currentComponent as string} />
 
           <main class="tabs">
@@ -44,7 +37,7 @@ export default defineHandler((event) => {
           </main>
 
           <Toolbar>
-            <Controls config={tabsControls} state={state} slot="controls" />
+            <Controls config={tabsControls} slot="controls" />
             <StateVisualizer label="tabs" />
           </Toolbar>
         </div>
