@@ -1,5 +1,5 @@
 import { defineHandler } from "nitro/h3"
-import { getControlDefaults, ratingControls } from "@zag-js/shared"
+import { ratingControls } from "@zag-js/shared"
 import { Controls } from "../../components/controls"
 import { Head } from "../../components/head"
 import { Nav } from "../../components/nav"
@@ -37,8 +37,6 @@ function Star() {
 }
 
 export default defineHandler((event) => {
-  const state = getControlDefaults(ratingControls)
-
   return (
     <html>
       <Head>
@@ -48,9 +46,9 @@ export default defineHandler((event) => {
       <body>
         <div
           class="page"
-          x-data={JSON.stringify(state)}
+          x-data="rating"
           x-id="['rating']"
-          x-rating={`{id: $id('rating'), defaultValue: 2.5, ${Object.keys(state)}}`}
+          x-rating={`{id: $id('rating'), defaultValue: 2.5, ...context}`}
         >
           <Nav currentComponent={event.context.currentComponent as string} />
 
@@ -77,7 +75,7 @@ export default defineHandler((event) => {
           </main>
 
           <Toolbar>
-            <Controls config={ratingControls} state={state} slot="controls" />
+            <Controls config={ratingControls} slot="controls" />
             <StateVisualizer label="rating" />
           </Toolbar>
         </div>
