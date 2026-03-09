@@ -1,5 +1,5 @@
 import { defineHandler } from "nitro/h3"
-import { getControlDefaults, sliderControls } from "@zag-js/shared"
+import { sliderControls } from "@zag-js/shared"
 import { Controls } from "../../components/controls"
 import { Head } from "../../components/head"
 import { Nav } from "../../components/nav"
@@ -7,8 +7,6 @@ import { StateVisualizer } from "../../components/state-visualizer"
 import { Toolbar } from "../../components/toolbar"
 
 export default defineHandler((event) => {
-  const state = getControlDefaults(sliderControls)
-
   return (
     <html>
       <Head>
@@ -18,13 +16,13 @@ export default defineHandler((event) => {
       <body>
         <div
           class="page"
-          x-data={JSON.stringify(state)}
+          x-data="slider"
           x-id="['slider']"
           x-slider={`{
             id: $id('slider'),
             name: 'quantity',
             defaultValue: [0],
-            ${Object.keys(state)},
+            ...context,
             thumbSize: { width: 20, height: 20 },
           }`}
         >
@@ -68,7 +66,7 @@ export default defineHandler((event) => {
           </main>
 
           <Toolbar>
-            <Controls config={sliderControls} state={state} slot="controls" />
+            <Controls config={sliderControls} slot="controls" />
             <StateVisualizer label="slider" />
           </Toolbar>
         </div>
