@@ -1,5 +1,5 @@
 import { defineHandler } from "nitro/h3"
-import { getControlDefaults, tagsInputControls } from "@zag-js/shared"
+import { tagsInputControls } from "@zag-js/shared"
 import { Controls } from "../../components/controls"
 import { Head } from "../../components/head"
 import { Nav } from "../../components/nav"
@@ -7,8 +7,6 @@ import { StateVisualizer } from "../../components/state-visualizer"
 import { Toolbar } from "../../components/toolbar"
 
 export default defineHandler((event) => {
-  const state = getControlDefaults(tagsInputControls)
-
   return (
     <html>
       <Head>
@@ -18,9 +16,9 @@ export default defineHandler((event) => {
       <body>
         <div
           class="page"
-          x-data={JSON.stringify(state)}
+          x-data="tagsInput"
           x-id="['tags-input']"
-          x-tags-input={`{id: $id('tags-input'), defaultValue: ['React', 'Vue'], ${Object.keys(state)}}`}
+          x-tags-input={`{id: $id('tags-input'), defaultValue: ['React', 'Vue'], ...context}`}
         >
           <Nav currentComponent={event.context.currentComponent as string} />
 
@@ -60,7 +58,7 @@ export default defineHandler((event) => {
           </main>
 
           <Toolbar>
-            <Controls config={tagsInputControls} state={state} slot="controls" />
+            <Controls config={tagsInputControls} slot="controls" />
             <StateVisualizer label="tags-input" />
           </Toolbar>
         </div>
