@@ -1,5 +1,5 @@
 import { defineHandler } from "nitro/h3"
-import { getControlDefaults, switchControls } from "@zag-js/shared"
+import { switchControls } from "@zag-js/shared"
 import { Controls } from "../../components/controls"
 import { Head } from "../../components/head"
 import { Nav } from "../../components/nav"
@@ -7,8 +7,6 @@ import { StateVisualizer } from "../../components/state-visualizer"
 import { Toolbar } from "../../components/toolbar"
 
 export default defineHandler((event) => {
-  const state = getControlDefaults(switchControls)
-
   return (
     <html>
       <Head>
@@ -18,9 +16,9 @@ export default defineHandler((event) => {
       <body>
         <div
           class="page"
-          x-data={JSON.stringify(state)}
+          x-data="zagSwitch"
           x-id="['switch']"
-          x-switch={`{id: $id('switch'), name: 'switch', ${Object.keys(state)}}`}
+          x-switch={`{id: $id('switch'), name: 'switch', ...context}`}
         >
           <Nav currentComponent={event.context.currentComponent as string} />
 
@@ -35,7 +33,7 @@ export default defineHandler((event) => {
           </main>
 
           <Toolbar>
-            <Controls config={switchControls} state={state} slot="controls" />
+            <Controls config={switchControls} slot="controls" />
             <StateVisualizer label="switch" />
           </Toolbar>
         </div>
