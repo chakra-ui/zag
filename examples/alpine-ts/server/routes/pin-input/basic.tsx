@@ -1,5 +1,5 @@
 import { defineHandler } from "nitro/h3"
-import { getControlDefaults, pinInputControls } from "@zag-js/shared"
+import { pinInputControls } from "@zag-js/shared"
 import { Controls } from "../../components/controls"
 import { Head } from "../../components/head"
 import { Nav } from "../../components/nav"
@@ -7,8 +7,6 @@ import { StateVisualizer } from "../../components/state-visualizer"
 import { Toolbar } from "../../components/toolbar"
 
 export default defineHandler((event) => {
-  const state = getControlDefaults(pinInputControls)
-
   return (
     <html>
       <Head>
@@ -18,9 +16,9 @@ export default defineHandler((event) => {
       <body>
         <div
           class="page"
-          x-data={JSON.stringify(state)}
+          x-data="pinInput"
           x-id="['pin-input']"
-          x-pin-input={`{name: 'test', id: $id('pin-input'), count: 3, ${Object.keys(state)}}`}
+          x-pin-input={`{name: 'test', id: $id('pin-input'), count: 3, ...context}`}
         >
           <Nav currentComponent={event.context.currentComponent as string} />
 
@@ -49,7 +47,7 @@ export default defineHandler((event) => {
           </main>
 
           <Toolbar>
-            <Controls config={pinInputControls} state={state} slot="controls" />
+            <Controls config={pinInputControls} slot="controls" />
             <StateVisualizer label="pin-input" context={["value", "focusedIndex"]} />
           </Toolbar>
         </div>
