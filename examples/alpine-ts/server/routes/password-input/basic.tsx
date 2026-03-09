@@ -1,5 +1,5 @@
 import { defineHandler } from "nitro/h3"
-import { getControlDefaults, passwordInputControls } from "@zag-js/shared"
+import { passwordInputControls } from "@zag-js/shared"
 import { Controls } from "../../components/controls"
 import { Head } from "../../components/head"
 import { Nav } from "../../components/nav"
@@ -7,8 +7,6 @@ import { StateVisualizer } from "../../components/state-visualizer"
 import { Toolbar } from "../../components/toolbar"
 
 export default defineHandler((event) => {
-  const state = getControlDefaults(passwordInputControls)
-
   return (
     <html>
       <Head>
@@ -18,9 +16,9 @@ export default defineHandler((event) => {
       <body>
         <div
           class="page"
-          x-data={JSON.stringify(state)}
+          x-data="passwordInput"
           x-id="['password-input']"
-          x-password-input={`{id: $id('password-input'), ${Object.keys(state)}}`}
+          x-password-input={`{id: $id('password-input'), ...context}`}
         >
           <Nav currentComponent={event.context.currentComponent as string} />
 
@@ -37,7 +35,7 @@ export default defineHandler((event) => {
           </main>
 
           <Toolbar>
-            <Controls config={passwordInputControls} state={state} slot="controls" />
+            <Controls config={passwordInputControls} slot="controls" />
             <StateVisualizer label="password-input" />
           </Toolbar>
         </div>
