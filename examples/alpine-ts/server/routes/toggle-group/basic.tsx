@@ -1,5 +1,5 @@
 import { defineHandler } from "nitro/h3"
-import { getControlDefaults, toggleGroupControls, toggleGroupData } from "@zag-js/shared"
+import { toggleGroupControls, toggleGroupData } from "@zag-js/shared"
 import { Controls } from "../../components/controls"
 import { Head } from "../../components/head"
 import { Nav } from "../../components/nav"
@@ -7,8 +7,6 @@ import { StateVisualizer } from "../../components/state-visualizer"
 import { Toolbar } from "../../components/toolbar"
 
 export default defineHandler((event) => {
-  const state = getControlDefaults(toggleGroupControls)
-
   return (
     <html>
       <Head>
@@ -16,12 +14,7 @@ export default defineHandler((event) => {
       </Head>
 
       <body>
-        <div
-          class="page"
-          x-data={JSON.stringify(state)}
-          x-id="['toggle']"
-          x-toggle={`{id: $id('toggle'), ${Object.keys(state)}}`}
-        >
+        <div class="page" x-data="toggle" x-id="['toggle']" x-toggle={`{id: $id('toggle'), ...context}`}>
           <Nav currentComponent={event.context.currentComponent as string} />
 
           <main class="toggle-group">
@@ -34,7 +27,7 @@ export default defineHandler((event) => {
           </main>
 
           <Toolbar>
-            <Controls config={toggleGroupControls} state={state} slot="controls" />
+            <Controls config={toggleGroupControls} slot="controls" />
             <StateVisualizer label="toggle" context={["focusedId"]} />
           </Toolbar>
         </div>
