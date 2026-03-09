@@ -60,6 +60,37 @@ describe("bindable", () => {
       expect(state.get()).toBe("controlled")
     })
 
+    test("fires onChange when toggling back to initial value", () => {
+      const onChange = vi.fn()
+      let externalValue: boolean = false
+
+      const state = bindable(() => ({
+        defaultValue: false,
+        value: externalValue,
+        onChange,
+      }))
+
+      // First toggle: false -> true
+      state.set(true)
+      expect(onChange).toHaveBeenCalledWith(true, false)
+
+      // Simulate external update not happening (value stays false)
+      onChange.mockClear()
+
+      // Second toggle: should compare against controlled value (false), not stale store value
+      state.set(false)
+      // onChange should NOT fire because next (false) === controlled value (false)
+      expect(onChange).not.toHaveBeenCalled()
+
+      // Now simulate the external update actually happening
+      externalValue = true
+      onChange.mockClear()
+
+      // Toggle back: true -> false
+      state.set(false)
+      expect(onChange).toHaveBeenCalledWith(false, true)
+    })
+
     test("switches between controlled and uncontrolled", () => {
       let controlledValue: string | undefined = undefined
 
