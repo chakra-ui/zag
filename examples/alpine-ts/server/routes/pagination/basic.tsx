@@ -1,5 +1,5 @@
 import { defineHandler } from "nitro/h3"
-import { getControlDefaults, paginationControls } from "@zag-js/shared"
+import { paginationControls } from "@zag-js/shared"
 import { Controls } from "../../components/controls"
 import { Head } from "../../components/head"
 import { Nav } from "../../components/nav"
@@ -7,8 +7,6 @@ import { StateVisualizer } from "../../components/state-visualizer"
 import { Toolbar } from "../../components/toolbar"
 
 export default defineHandler((event) => {
-  const state = getControlDefaults(paginationControls)
-
   return (
     <html>
       <Head>
@@ -18,7 +16,7 @@ export default defineHandler((event) => {
       <body>
         <div
           class="page"
-          x-data={JSON.stringify({ ...state, details: {} })}
+          x-data="{...pagination(), details: {}}"
           x-id="['pagination']"
           x-pagination={`{
             id: $id('pagination'),
@@ -26,7 +24,7 @@ export default defineHandler((event) => {
             onPageChange(d) {
               details = d
             },
-            ${Object.keys(state)}
+            ...context,
           }`}
         >
           <Nav currentComponent={event.context.currentComponent as string} />
@@ -91,7 +89,7 @@ export default defineHandler((event) => {
           </main>
 
           <Toolbar>
-            <Controls config={paginationControls} state={state} slot="controls" />
+            <Controls config={paginationControls} slot="controls" />
             <StateVisualizer label="pagination" />
           </Toolbar>
         </div>

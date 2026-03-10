@@ -1,8 +1,9 @@
 import * as pagination from "@zag-js/pagination"
-import { paginationData } from "@zag-js/shared"
+import { paginationControls, paginationData } from "@zag-js/shared"
 import Alpine from "alpinejs"
-import { usePlugin } from "../lib"
+import { useData, usePlugin } from "../lib"
 
 Alpine.magic("paginationData", () => paginationData)
+Alpine.data("pagination", useData(paginationControls))
 Alpine.plugin(usePlugin("pagination", pagination))
 Alpine.start()
