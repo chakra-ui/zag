@@ -1,5 +1,5 @@
 import { defineHandler } from "nitro/h3"
-import { floatingPanelControls, getControlDefaults } from "@zag-js/shared"
+import { floatingPanelControls } from "@zag-js/shared"
 import { ArrowDownLeft, Maximize2, Minus, X } from "lucide-static"
 import { Controls } from "../../components/controls"
 import { Head } from "../../components/head"
@@ -8,8 +8,6 @@ import { StateVisualizer } from "../../components/state-visualizer"
 import { Toolbar } from "../../components/toolbar"
 
 export default defineHandler((event) => {
-  const state = getControlDefaults(floatingPanelControls)
-
   return (
     <html>
       <Head>
@@ -17,12 +15,7 @@ export default defineHandler((event) => {
       </Head>
 
       <body>
-        <div
-          class="page"
-          x-data={JSON.stringify(state)}
-          x-id="['floating']"
-          x-floating={`{id: $id('floating'), ${Object.keys(state)}}`}
-        >
+        <div class="page" x-data="floating" x-floating="{id: $id('floating'), ...context}">
           <Nav currentComponent={event.context.currentComponent as string} />
 
           <main class="floating-panel">
@@ -59,7 +52,7 @@ export default defineHandler((event) => {
           </main>
 
           <Toolbar>
-            <Controls config={floatingPanelControls} state={state} slot="controls" />
+            <Controls config={floatingPanelControls} slot="controls" />
             <StateVisualizer label="floating" />
           </Toolbar>
         </div>

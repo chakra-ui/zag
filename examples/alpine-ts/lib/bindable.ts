@@ -29,10 +29,12 @@ export function bindable<T>(props: () => BindableParams<T>): Bindable<T> {
         console.log(`[bindable > ${props().debug}] setValue`, { next, prev })
       }
 
-      if (!controlled()) store.value = next
-      if (!eq(next, prev)) {
-        props().onChange?.(next, prev)
-      }
+      queueMicrotask(() => {
+        if (!controlled()) store.value = next
+        if (!eq(next, prev)) {
+          props().onChange?.(next, prev)
+        }
+      })
     },
     invoke(nextValue: T, prevValue: T) {
       props().onChange?.(nextValue, prevValue)
