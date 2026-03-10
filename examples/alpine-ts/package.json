@@ -25,6 +25,7 @@
     "@zag-js/color-picker": "workspace:*",
     "@zag-js/combobox": "workspace:*",
     "@zag-js/core": "workspace:*",
+    "@zag-js/date-input": "workspace:*",
     "@zag-js/dialog": "workspace:*",
     "@zag-js/dom-query": "workspace:*",
     "@zag-js/drawer": "workspace:*",
