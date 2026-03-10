@@ -1,7 +1,7 @@
 import * as menu from "@zag-js/menu"
 import { menuControls, menuData, menuOptionData } from "@zag-js/shared"
 import Alpine from "alpinejs"
-import { useData, usePlugin } from "../lib"
+import { useControls, usePlugin } from "../lib"
 
 const [level1, level2, level3] = menuData
 Alpine.magic("level1", () => level1)
@@ -39,6 +39,6 @@ Alpine.data("checkboxes", () => ({
   },
 }))
 
-Alpine.data("menu", useData(menuControls))
+Alpine.data("menu", useControls(menuControls))
 Alpine.plugin(usePlugin("menu", menu))
 Alpine.start()

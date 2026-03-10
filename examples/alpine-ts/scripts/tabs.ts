@@ -1,8 +1,8 @@
 import * as tabs from "@zag-js/tabs"
 import { tabsControls } from "@zag-js/shared"
 import Alpine from "alpinejs"
-import { useData, usePlugin } from "../lib"
+import { useControls, usePlugin } from "../lib"
 
-Alpine.data("tabs", useData(tabsControls))
+Alpine.data("tabs", useControls(tabsControls))
 Alpine.plugin(usePlugin("tabs", tabs))
 Alpine.start()
