@@ -1,5 +1,25 @@
 # @zag-js/listbox
 
+## 1.36.0
+
+### Patch Changes
+
+- [`cedbb7a`](https://github.com/chakra-ui/zag/commit/cedbb7a7331b659e0fed33dbfa2f4fd2758e8018) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Add `keyboardPriority` to `getInputProps` to control whether input
+  key handling prioritizes text editing or list navigation for `Home`/`End` and horizontal arrows in grid collections.
+
+  Add `highlightFirst`, `highlightLast`, `highlightNext`, and `highlightPrevious` to the listbox API for programmatic
+  highlight navigation.
+
+- Updated dependencies [[`7edfd5e`](https://github.com/chakra-ui/zag/commit/7edfd5e6ffa0bddde524c9bd43aa157f3fb76b72)]:
+  - @zag-js/dom-query@1.36.0
+  - @zag-js/core@1.36.0
+  - @zag-js/focus-visible@1.36.0
+  - @zag-js/anatomy@1.36.0
+  - @zag-js/types@1.36.0
+  - @zag-js/collection@1.36.0
+  - @zag-js/utils@1.36.0
+
 ## 1.35.3
 
 ### Patch Changes

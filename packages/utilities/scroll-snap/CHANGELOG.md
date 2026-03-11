@@ -1,5 +1,17 @@
 # @zag-js/scroll-snap
 
+## 1.36.0
+
+### Patch Changes
+
+- [`7edfd5e`](https://github.com/chakra-ui/zag/commit/7edfd5e6ffa0bddde524c9bd43aa157f3fb76b72) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix controlled carousel inside dialog jumping or skipping pages.
+  - Fix carousel navigation inside CSS-transformed containers (e.g., dialogs with open/close animations)
+  - Fix scroll position drifting when container layout shifts (e.g., scrollbar removal)
+
+- Updated dependencies [[`7edfd5e`](https://github.com/chakra-ui/zag/commit/7edfd5e6ffa0bddde524c9bd43aa157f3fb76b72)]:
+  - @zag-js/dom-query@1.36.0
+
 ## 1.35.3
 
 ### Patch Changes

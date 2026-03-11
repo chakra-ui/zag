@@ -1,5 +1,21 @@
 # @zag-js/toast
 
+## 1.36.0
+
+### Patch Changes
+
+- [`e167d02`](https://github.com/chakra-ui/zag/commit/e167d026029d4b5ab9524bf889c9fd94d7f47d27) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Add `translations` prop for localization of hardcoded
+  accessibility labels in clipboard, navigation-menu, popover, select, timer, toast, and tree-view machines (fixes
+  #3004)
+- Updated dependencies [[`7edfd5e`](https://github.com/chakra-ui/zag/commit/7edfd5e6ffa0bddde524c9bd43aa157f3fb76b72)]:
+  - @zag-js/dom-query@1.36.0
+  - @zag-js/core@1.36.0
+  - @zag-js/dismissable@1.36.0
+  - @zag-js/anatomy@1.36.0
+  - @zag-js/types@1.36.0
+  - @zag-js/utils@1.36.0
+
 ## 1.35.3
 
 ### Patch Changes

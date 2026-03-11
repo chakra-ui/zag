@@ -1,5 +1,21 @@
 # @zag-js/pin-input
 
+## 1.36.0
+
+### Patch Changes
+
+- [#3007](https://github.com/chakra-ui/zag/pull/3007)
+  [`d15ac3c`](https://github.com/chakra-ui/zag/commit/d15ac3ce8d5d4b71a837e3e80097a6b30323000a) Thanks
+  [@anubra266](https://github.com/anubra266)! - Fix crash when typing the same character in a completed pin input on
+  frameworks that use native `input` event (Svelte, Vue, etc.)
+
+- Updated dependencies [[`7edfd5e`](https://github.com/chakra-ui/zag/commit/7edfd5e6ffa0bddde524c9bd43aa157f3fb76b72)]:
+  - @zag-js/dom-query@1.36.0
+  - @zag-js/core@1.36.0
+  - @zag-js/anatomy@1.36.0
+  - @zag-js/types@1.36.0
+  - @zag-js/utils@1.36.0
+
 ## 1.35.3
 
 ### Patch Changes

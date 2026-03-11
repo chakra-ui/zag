@@ -1,5 +1,41 @@
 # @zag-js/tags-input
 
+## 1.36.0
+
+### Minor Changes
+
+- [`29559da`](https://github.com/chakra-ui/zag/commit/29559da6920a7132c18e24f522c2045ddf2b41ab) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Add `allowDuplicates` prop to allow duplicate tags (fixes #78,
+  #2928).
+
+  When `allowDuplicates: true`, the same tag can be added multiple times. Previously, duplicates were always prevented
+  internally, so `validate` returning `true` did not allow duplicate tags to be added.
+
+  **Supported use cases:**
+  - **Sentence builders** — Build phrases from repeatable tokens (e.g. `"Hello"`, `","`, `" "`, `"world"`). Tokens can
+    appear multiple times with different separators per item.
+  - **Repeatable tokens** — Predefined values that users may select multiple times (e.g. `"a"`, `"a"`, `"b"`).
+  - **Validate-controlled behavior** — Use `validate` to control what gets added without implicit deduplication. When
+    `validate` returns `true`, the tag is added as-is.
+
+  ```js
+  useMachine(tagsInput.machine, {
+    allowDuplicates: true,
+  })
+  ```
+
+### Patch Changes
+
+- Updated dependencies [[`7edfd5e`](https://github.com/chakra-ui/zag/commit/7edfd5e6ffa0bddde524c9bd43aa157f3fb76b72)]:
+  - @zag-js/dom-query@1.36.0
+  - @zag-js/core@1.36.0
+  - @zag-js/auto-resize@1.36.0
+  - @zag-js/interact-outside@1.36.0
+  - @zag-js/anatomy@1.36.0
+  - @zag-js/types@1.36.0
+  - @zag-js/utils@1.36.0
+  - @zag-js/live-region@1.36.0
+
 ## 1.35.3
 
 ### Patch Changes
