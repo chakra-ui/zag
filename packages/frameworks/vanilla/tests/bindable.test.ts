@@ -91,6 +91,27 @@ describe("bindable", () => {
       expect(onChange).toHaveBeenCalledWith(false, true)
     })
 
+    test("uses controlled value as prev when set is a function", () => {
+      const onChange = vi.fn()
+      let externalValue = 1
+
+      const state = bindable(() => ({
+        defaultValue: 0,
+        value: externalValue,
+        onChange,
+      }))
+
+      state.set((prev) => prev + 1)
+      expect(onChange).toHaveBeenCalledWith(2, 1)
+
+      // Simulate controlled prop update from consumer
+      externalValue = 2
+      onChange.mockClear()
+
+      state.set((prev) => prev + 1)
+      expect(onChange).toHaveBeenCalledWith(3, 2)
+    })
+
     test("switches between controlled and uncontrolled", () => {
       let controlledValue: string | undefined = undefined
 
