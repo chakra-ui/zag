@@ -246,6 +246,7 @@ export function useMachine<T extends MachineSchema>(
 
       queueMicrotask(() => {
         action(machine.exit)
+        statusRef.current = MachineStatus.Stopped
       })
     }
   }, [])
