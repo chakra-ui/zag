@@ -353,6 +353,9 @@ importers:
       '@zag-js/toast':
         specifier: workspace:*
         version: link:../../packages/machines/toast
+      '@zag-js/toc':
+        specifier: workspace:*
+        version: link:../../packages/machines/toc
       '@zag-js/toggle':
         specifier: workspace:*
         version: link:../../packages/machines/toggle
@@ -651,6 +654,9 @@ importers:
       '@zag-js/toast':
         specifier: workspace:*
         version: link:../../packages/machines/toast
+      '@zag-js/toc':
+        specifier: workspace:*
+        version: link:../../packages/machines/toc
       '@zag-js/toggle':
         specifier: workspace:*
         version: link:../../packages/machines/toggle
@@ -925,6 +931,9 @@ importers:
       '@zag-js/toast':
         specifier: workspace:*
         version: link:../../packages/machines/toast
+      '@zag-js/toc':
+        specifier: workspace:*
+        version: link:../../packages/machines/toc
       '@zag-js/toggle':
         specifier: workspace:*
         version: link:../../packages/machines/toggle
@@ -1205,6 +1214,9 @@ importers:
       '@zag-js/toast':
         specifier: workspace:*
         version: link:../../packages/machines/toast
+      '@zag-js/toc':
+        specifier: workspace:*
+        version: link:../../packages/machines/toc
       '@zag-js/toggle':
         specifier: workspace:*
         version: link:../../packages/machines/toggle
@@ -1460,6 +1472,9 @@ importers:
       '@zag-js/toast':
         specifier: workspace:*
         version: link:../../packages/machines/toast
+      '@zag-js/toc':
+        specifier: workspace:*
+        version: link:../../packages/machines/toc
       '@zag-js/toggle':
         specifier: workspace:*
         version: link:../../packages/machines/toggle
@@ -1740,6 +1755,9 @@ importers:
       '@zag-js/toast':
         specifier: workspace:*
         version: link:../../packages/machines/toast
+      '@zag-js/toc':
+        specifier: workspace:*
+        version: link:../../packages/machines/toc
       '@zag-js/toggle':
         specifier: workspace:*
         version: link:../../packages/machines/toggle
@@ -3179,6 +3197,28 @@ importers:
       '@zag-js/dismissable':
         specifier: workspace:*
         version: link:../../utilities/dismissable
+      '@zag-js/dom-query':
+        specifier: workspace:*
+        version: link:../../utilities/dom-query
+      '@zag-js/types':
+        specifier: workspace:*
+        version: link:../../types
+      '@zag-js/utils':
+        specifier: workspace:*
+        version: link:../../utilities/core
+    devDependencies:
+      clean-package:
+        specifier: 2.2.0
+        version: 2.2.0
+
+  packages/machines/toc:
+    dependencies:
+      '@zag-js/anatomy':
+        specifier: workspace:*
+        version: link:../../anatomy
+      '@zag-js/core':
+        specifier: workspace:*
+        version: link:../../core
       '@zag-js/dom-query':
         specifier: workspace:*
         version: link:../../utilities/dom-query
