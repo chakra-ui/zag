@@ -129,7 +129,7 @@ export class AlpineMachine<T extends MachineSchema> {
     }
     this.computed = computed
 
-    const refs: BindableRefs<T> = createRefs(machine.refs?.({ prop, context: ctx }))
+    const refs: BindableRefs<T> = createRefs(machine.refs?.({ prop, context: ctx }) ?? {})
     this.refs = refs
 
     // state
