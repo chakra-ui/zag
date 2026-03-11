@@ -34,6 +34,7 @@
     "@zag-js/floating-panel": "workspace:*",
     "@zag-js/hover-card": "workspace:*",
     "@zag-js/i18n-utils": "workspace:*",
+    "@zag-js/image-cropper": "workspace:*",
     "@zag-js/listbox": "workspace:*",
     "@zag-js/marquee": "workspace:*",
     "@zag-js/menu": "workspace:*",
