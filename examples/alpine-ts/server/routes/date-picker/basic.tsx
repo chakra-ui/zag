@@ -47,13 +47,13 @@ export default defineHandler((event) => {
               <div x-date-picker:content>
                 <div style={{ marginBottom: "20px" }}>
                   <select x-date-picker:month-select>
-                    <template x-for="(month, i) in $datePicker().getMonths()" x-bind:key="i">
+                    <template x-for="month in $datePicker().getMonths()" x-bind:key="month.value">
                       <option x-bind:value="month.value" x-bind:disabled="month.disabled" x-text="month.label"></option>
                     </template>
                   </select>
 
                   <select x-date-picker:year-select>
-                    <template x-for="(year, i) in $datePicker().getYears()" x-bind:key="i">
+                    <template x-for="(year, i) in $datePicker().getYears()" x-bind:key="year.value">
                       <option x-bind:value="year.value" x-bind:disabled="year.disabled" x-text="year.label"></option>
                     </template>
                   </select>
@@ -69,15 +69,15 @@ export default defineHandler((event) => {
                   <table x-date-picker:table="{view: 'day'}">
                     <thead x-date-picker:table-header="{view: 'day'}">
                       <tr x-date-picker:table-row="{view: 'day'}">
-                        <template x-for="(day, i) in $datePicker().weekDays" x-bind:key="i">
+                        <template x-for="day in $datePicker().weekDays" x-bind:key="day.long">
                           <th scope="col" x-bind:aria-label="day.long" x-text="day.narrow"></th>
                         </template>
                       </tr>
                     </thead>
                     <tbody x-date-picker:table-body="{view: 'day'}">
-                      <template x-for="(week, i) in $datePicker().weeks" x-bind:key="i">
+                      <template x-for="week in $datePicker().weeks" x-bind:key="week.at(0).toString()">
                         <tr x-date-picker:table-row="{view: 'day'}">
-                          <template x-for="(value, i) in week" x-bind:key="i">
+                          <template x-for="value in week" x-bind:key="value.day">
                             <td x-date-picker:day-table-cell="{ value }">
                               <div x-date-picker:day-table-cell-trigger="{ value }" x-text="value.day"></div>
                             </td>
@@ -102,11 +102,11 @@ export default defineHandler((event) => {
                     <table x-date-picker:table="{view: 'month', columns: 4}">
                       <tbody x-date-picker:table-body="{view: 'month'}">
                         <template
-                          x-for="(months, row) in $datePicker().getMonthsGrid({columns: 4, format: 'short'})"
-                          x-bind:key="row"
+                          x-for="months in $datePicker().getMonthsGrid({columns: 4, format: 'short'})"
+                          x-bind:key="months.at(0).value"
                         >
                           <tr x-date-picker:table-row>
-                            <template x-for="(month, index) in months" x-bind:key="index">
+                            <template x-for="month in months" x-bind:key="month.value">
                               <td x-date-picker:month-table-cell="{...month, columns: 4}">
                                 <div
                                   x-date-picker:month-table-cell-trigger="{...month, columns: 4}"
@@ -129,9 +129,12 @@ export default defineHandler((event) => {
 
                     <table x-date-picker:table="{view: 'year', columns: 4}">
                       <tbody x-date-picker:table-body>
-                        <template x-for="(years, row) in $datePicker().getYearsGrid({columns: 4})" x-bind:key="row">
+                        <template
+                          x-for="(years, row) in $datePicker().getYearsGrid({columns: 4})"
+                          x-bind:key="years.at(0).value"
+                        >
                           <tr x-date-picker:table-row="{view: 'year'}">
-                            <template x-for="(year, index) in years" x-bind:key="index">
+                            <template x-for="(year, index) in years" x-bind:key="year.value">
                               <td x-date-picker:year-table-cell="{...year, columns: 4}">
                                 <div
                                   x-date-picker:year-table-cell-trigger="{...year, columns: 4}"
