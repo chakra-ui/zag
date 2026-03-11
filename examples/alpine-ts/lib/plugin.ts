@@ -88,7 +88,7 @@ export function usePlugin<T extends MachineSchema>(
               prop === "x-html"
                 ? { key: "x-html", value: () => propsRef[prop] }
                 : prop.startsWith("on")
-                  ? { key: "@" + prop.substring(2), value: (...args: any[]) => propsRef[prop](...args) }
+                  ? { key: "@" + prop.substring(2), value: (...args: any[]) => propsRef[prop]?.(...args) }
                   : { key: ":" + prop, value: () => propsRef[prop] }
             acc[key] = value
             return acc
