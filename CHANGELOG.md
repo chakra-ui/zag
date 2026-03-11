@@ -4,6 +4,54 @@ All notable changes to this project will be documented in this file.
 
 > For v0.x changelog, see the [v0 branch](https://github.com/chakra-ui/zag/blob/v0/CHANGELOG.md)
 
+## [1.36.0](./#1.36.0) - 2026-03-11
+
+### Added
+
+- **Clipboard, Navigation Menu, Popover, Select, Timer, Toast, Tree View**: Add `translations` prop for localization of
+  hardcoded accessibility labels
+
+- **Listbox**
+  - Add `keyboardPriority` to `getInputProps` to control whether input key handling prioritizes text editing or list
+    navigation for `Home`/`End` and horizontal arrows in grid collections
+  - Add `highlightFirst`, `highlightLast`, `highlightNext`, and `highlightPrevious` to the API for programmatic
+    highlight navigation
+
+- **Tags Input**: Add `allowDuplicates` prop to allow duplicate tags
+
+  ```js
+  useMachine(tagsInput.machine, {
+    allowDuplicates: true,
+  })
+  ```
+
+### Fixed
+
+- **Carousel**
+  - Fix controlled carousel inside dialog jumping or skipping pages
+  - Fix carousel navigation inside CSS-transformed containers (e.g., dialogs with open/close animations)
+  - Fix scroll position drifting when container layout shifts (e.g., scrollbar removal)
+
+- **Color Picker**: Preserve vertical slider orientation on pointer updates
+
+- **Date Input**: Improve focus management
+
+- **Floating Panel**
+  - Fix `open` taking precedence over `defaultOpen` during initialization
+  - Fix `api.setPosition` and `api.setSize` to work independently of drag/resize state
+  - Fix React `Maximum update depth exceeded` when content uses `ResizeObserver`
+  - Fix maximize/minimize restore reverting to `(0, 0)` in controlled mode
+  - Fix Escape during drag/resize to cancel and revert to original position/size
+
+- **Menu**: Fix trigger to keep `aria-expanded="false"` when closed
+
+- **Pin Input**: Fix crash when typing the same character in a completed pin input on frameworks that use native `input`
+  event (Svelte, Vue, etc.)
+
+- **Radio Group, Tabs**: Fix indicator only animating when value changes, not on initial render or resize
+
+- **Vanilla**: Fix handling of controlled mode
+
 ## [1.35.3](./#1.35.3) - 2026-03-02
 
 ### Added
