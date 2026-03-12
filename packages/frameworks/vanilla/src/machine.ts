@@ -36,7 +36,7 @@ import { mergeMachineProps } from "./merge-machine-props"
 type EffectConfig<T extends MachineSchema> = Effect<T> extends infer U ? (U extends string ? { key: U } : U) : never
 
 type TrackedEffect = {
-  deps?: Array<() => any>
+  deps?: () => any[]
   values?: any[]
   cleanup?: VoidFunction
   run: () => void | VoidFunction
@@ -282,15 +282,13 @@ export class VanillaMachine<T extends MachineSchema> {
   private resolveEffectDeps = (deps: EffectDeps<T> | undefined) => {
     if (!deps) return
     const getList = () => (isFunction(deps) ? deps(this.getParams()) : deps) ?? []
-    const list = getList()
-    return list.map((_, index) => {
-      return () => {
-        const values = getList()
-        const value = values?.[index]
+    return () => {
+      const list = getList()
+      return list.map((value) => {
         if (isFunction(value)) return (value as any)(this.getParams())
         return value
-      }
-    })
+      })
+    }
   }
 
   private effect = (keys: EffectsOrFn<T> | undefined, path?: string) => {
@@ -310,8 +308,8 @@ export class VanillaMachine<T extends MachineSchema> {
       const deps = this.resolveEffectDeps(item.deps)
       const run = () => fn?.(this.getParams())
 
-      if (deps?.length) {
-        const values = deps.map((dep) => dep())
+      if (deps) {
+        const values = deps()
         const cleanup = run()
         tracked.push({
           deps,
@@ -416,8 +414,8 @@ export class VanillaMachine<T extends MachineSchema> {
     })
     this.effectTrackers.forEach((records) => {
       records.forEach((record) => {
-        if (!record.deps?.length) return
-        const next = record.deps.map((dep) => dep())
+        if (!record.deps) return
+        const next = record.deps()
         // isEqual performs a deep comparison to avoid rerunning effects for unchanged dependency snapshots
         if (!isEqual(record.values ?? [], next)) {
           record.cleanup?.()

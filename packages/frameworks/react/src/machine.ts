@@ -37,7 +37,7 @@ import { useSafeLayoutEffect } from "./use-layout-effect"
 type EffectConfig<T extends MachineSchema> = Effect<T> extends infer U ? (U extends string ? { key: U } : U) : never
 
 type TrackedEffect = {
-  deps?: Array<() => any>
+  deps?: () => any[]
   values?: any[]
   cleanup?: VoidFunction
   run: () => void | VoidFunction
@@ -183,15 +183,13 @@ export function useMachine<T extends MachineSchema>(
   const resolveEffectDeps = (deps: EffectDeps<T> | undefined) => {
     if (!deps) return
     const getList = () => (isFunction(deps) ? deps(getParams()) : deps) ?? []
-    const list = getList()
-    return list.map((_, index) => {
-      return () => {
-        const values = getList()
-        const value = values?.[index]
+    return () => {
+      const list = getList()
+      return list.map((value) => {
         if (isFunction(value)) return (value as any)(getParams())
         return value
-      }
-    })
+      })
+    }
   }
 
   const normalizeEffects = (keys: EffectsOrFn<T> | undefined) => {
@@ -231,8 +229,8 @@ export function useMachine<T extends MachineSchema>(
         run: () => fn?.(getParams()),
       }
 
-      if (deps?.length) {
-        record.values = deps.map((dep) => dep())
+      if (deps) {
+        record.values = deps()
         record.cleanup = record.run() ?? undefined
         tracked.push(record)
       } else {
@@ -257,8 +255,8 @@ export function useMachine<T extends MachineSchema>(
   const refreshTrackedEffects = () => {
     trackedEffects.current.forEach((records) => {
       records.forEach((record) => {
-        if (!record.deps?.length) return
-        const next = record.deps.map((dep) => dep())
+        if (!record.deps) return
+        const next = record.deps()
         if (!hasDepsChanged(record.values, next)) return
         record.cleanup?.()
         record.cleanup = record.run() ?? undefined
