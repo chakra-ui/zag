@@ -37,7 +37,7 @@ type EffectConfig<T extends MachineSchema> = Effect<T> extends infer U ? (U exte
 
 type TrackedEffect = {
   deps?: Array<() => any>
-  prevValues: any[]
+  values: any[]
   cleanup?: VoidFunction
   run: () => void | VoidFunction
 }
@@ -315,7 +315,7 @@ export class VanillaMachine<T extends MachineSchema> {
         const cleanup = run()
         tracked.push({
           deps,
-          prevValues: values,
+          values,
           cleanup: cleanup ?? undefined,
           run,
         })
@@ -418,10 +418,10 @@ export class VanillaMachine<T extends MachineSchema> {
       records.forEach((record) => {
         if (!record.deps?.length) return
         const next = record.deps.map((dep) => dep())
-        if (!isEqual(record.prevValues, next)) {
+        if (!isEqual(record.values, next)) {
           record.cleanup?.()
           record.cleanup = record.run() ?? undefined
-          record.prevValues = next
+          record.values = next
         }
       })
     })
