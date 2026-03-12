@@ -282,9 +282,8 @@ export class VanillaMachine<T extends MachineSchema> {
   private resolveEffectDeps = (fn: EffectImpl<T> | undefined) => {
     const deps = fn?.deps
     if (!deps) return
-    const getList = () => (isFunction(deps) ? deps(this.getParams()) : deps) ?? []
     return () => {
-      const list = getList()
+      const list = deps(this.getParams())
       return list.map((value) => {
         if (isFunction(value)) return (value as any)(this.getParams())
         return value

@@ -181,9 +181,8 @@ export function useMachine<T extends MachineSchema>(
   const resolveEffectDeps = (fn: EffectImpl<T> | undefined) => {
     const deps = fn?.deps
     if (!deps) return
-    const getList = () => (isFunction(deps) ? deps(getParams()) : deps) ?? []
     return () => {
-      const list = getList()
+      const list = deps(getParams())
       return list.map((value) => {
         if (isFunction(value)) return (value as any)(getParams())
         return value

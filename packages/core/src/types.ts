@@ -166,9 +166,7 @@ export type ActionsOrFn<T extends Dict> = T["action"][] | ((params: Params<T>) =
 type EffectDepsGetter<T extends Dict> = (params: Params<T>) => any
 type EffectDepsValue<T extends Dict> = EffectDepsGetter<T> | AnyFunction | any
 
-export type EffectDeps<T extends Dict> =
-  | Array<EffectDepsValue<T>>
-  | ((params: Params<T>) => Array<EffectDepsValue<T>> | undefined)
+export type EffectDeps<T extends Dict> = (params: Params<T>) => Array<EffectDepsValue<T>>
 
 export type Effect<T extends Dict> = T["effect"] | { type: T["effect"] }
 
