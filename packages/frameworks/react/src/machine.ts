@@ -374,7 +374,9 @@ export function useMachine<T extends MachineSchema>(
         action(transition.actions ?? [])
       }
 
-      refreshTrackedEffects()
+      if (trackedEffects.current.size > 0) {
+        refreshTrackedEffects()
+      }
     })
   }
 
