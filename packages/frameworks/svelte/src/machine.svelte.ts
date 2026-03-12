@@ -269,6 +269,8 @@ export function useMachine<T extends MachineSchema>(
     })
   }
 
+  // Dependency getters inside refreshTrackedEffects read reactive values, so this effect
+  // reruns only when those change.
   $effect(() => {
     refreshTrackedEffects()
   })
