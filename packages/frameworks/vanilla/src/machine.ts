@@ -36,7 +36,7 @@ import { mergeMachineProps } from "./merge-machine-props"
 type EffectConfig<T extends MachineSchema> = Effect<T> extends infer U ? (U extends string ? { key: U } : U) : never
 
 type TrackedEffect = {
-  deps: Array<() => any>
+  deps?: Array<() => any>
   prev: any[]
   cleanup?: VoidFunction
   run: () => void | VoidFunction
@@ -416,6 +416,7 @@ export class VanillaMachine<T extends MachineSchema> {
     })
     this.effectTrackers.forEach((records) => {
       records.forEach((record) => {
+        if (!record.deps?.length) return
         const next = record.deps.map((dep) => dep())
         if (!isEqual(record.prev, next)) {
           record.cleanup?.()

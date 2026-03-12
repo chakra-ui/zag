@@ -92,6 +92,7 @@ export function useMachine<T extends MachineSchema>(
   }
 
   const effects = useRef(new Map<string, VoidFunction>())
+  const trackedEffects = useRef(new Map<string, TrackedEffect[]>())
   const transitionRef = useRef<any>(null)
 
   const previousEventRef = useRef<any>(null)
