@@ -23,7 +23,7 @@ import {
   resolveStateValue,
 } from "@zag-js/core"
 import { compact, ensure, isEqual, isFunction, isString, toArray, warn } from "@zag-js/utils"
-import { flushSync, onDestroy, onMount } from "svelte"
+import { flushSync, onDestroy, onMount, untrack } from "svelte"
 import { bindable } from "./bindable.svelte"
 import { useRefs } from "./refs.svelte"
 import { track } from "./track.svelte"
@@ -262,9 +262,11 @@ export function useMachine<T extends MachineSchema>(
         if (!record.deps?.length) return
         const next = record.deps.map((dep) => dep())
         if (!hasDepsChanged(record.values, next)) return
-        record.cleanup?.()
-        record.cleanup = record.run() ?? undefined
-        record.values = next
+        untrack(() => {
+          record.cleanup?.()
+          record.cleanup = record.run() ?? undefined
+          record.values = next
+        })
       })
     })
   }

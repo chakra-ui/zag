@@ -279,9 +279,11 @@ export function useMachine<T extends MachineSchema>(
         if (!record.deps?.length) return
         const next = record.deps.map((dep) => dep())
         if (!hasDepsChanged(record.values, next)) return
-        record.cleanup?.()
-        record.cleanup = record.run() ?? undefined
-        record.values = next
+        queueMicrotask(() => {
+          record.cleanup?.()
+          record.cleanup = record.run() ?? undefined
+          record.values = next
+        })
       })
     })
   }

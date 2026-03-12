@@ -418,6 +418,7 @@ export class VanillaMachine<T extends MachineSchema> {
       records.forEach((record) => {
         if (!record.deps?.length) return
         const next = record.deps.map((dep) => dep())
+        // isEqual performs a deep comparison to avoid rerunning effects for unchanged dependency snapshots
         if (!isEqual(record.values, next)) {
           record.cleanup?.()
           record.cleanup = record.run() ?? undefined
