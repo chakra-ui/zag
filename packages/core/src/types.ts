@@ -28,7 +28,7 @@ export interface ComputedFn<T extends Dict> {
   <K extends keyof T["computed"]>(key: K): T["computed"][K]
 }
 
-type AnyFunction = () => string | number | boolean | null | undefined
+type AnyFunction = () => any
 type TrackFn = (deps: AnyFunction[], fn: VoidFunction) => void
 
 export interface BindableParams<T> {
@@ -163,7 +163,16 @@ interface RefsParams<T extends Dict> {
 
 export type ActionsOrFn<T extends Dict> = T["action"][] | ((params: Params<T>) => T["action"][] | undefined)
 
-export type EffectsOrFn<T extends Dict> = T["effect"][] | ((params: Params<T>) => T["effect"][] | undefined)
+type EffectDepsGetter<T extends Dict> = (params: Params<T>) => any
+type EffectDepsValue<T extends Dict> = EffectDepsGetter<T> | AnyFunction | any
+
+export type EffectDeps<T extends Dict> =
+  | Array<EffectDepsValue<T>>
+  | ((params: Params<T>) => Array<EffectDepsValue<T>> | undefined)
+
+export type Effect<T extends Dict> = T["effect"] | { key: T["effect"]; deps?: EffectDeps<T> | undefined }
+
+export type EffectsOrFn<T extends Dict> = Effect<T>[] | ((params: Params<T>) => Effect<T>[] | undefined)
 
 export interface MachineState<T extends Dict, Parent extends string = string> {
   id?: string | undefined

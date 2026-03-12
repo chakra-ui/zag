@@ -5,6 +5,8 @@ import type {
   BindableRefs,
   ChooseFn,
   ComputedFn,
+  Effect,
+  EffectDeps,
   EffectsOrFn,
   GuardFn,
   Machine,
@@ -31,6 +33,15 @@ import { bindable } from "./bindable"
 import { createRefs } from "./refs"
 import { mergeMachineProps } from "./merge-machine-props"
 
+type EffectConfig<T extends MachineSchema> = Effect<T> extends infer U ? (U extends string ? { key: U } : U) : never
+
+type TrackedEffect = {
+  deps: Array<() => any>
+  prev: any[]
+  cleanup?: VoidFunction
+  run: () => void | VoidFunction
+}
+
 export class VanillaMachine<T extends MachineSchema> {
   scope: Scope
   context: BindableContext<T>
@@ -43,6 +54,7 @@ export class VanillaMachine<T extends MachineSchema> {
   private previousEvent: T["event"] = { type: "" } as T["event"]
 
   private effects = new Map<string, VoidFunction>()
+  private effectTrackers = new Map<string, TrackedEffect[]>()
   private transition: Transition<T> | null = null
 
   private cleanups: VoidFunction[] = []
@@ -171,13 +183,13 @@ export class VanillaMachine<T extends MachineSchema> {
         this.action(this.transition?.actions)
 
         entering.forEach((item) => {
-          const cleanup = this.effect(item.state?.effects)
+          const cleanup = this.effect(item.state?.effects, item.path)
           if (cleanup) this.effects.set(item.path, cleanup)
         })
 
         if (prevState === INIT_STATE) {
           this.action(machine.entry)
-          const cleanup = this.effect(machine.effects)
+          const cleanup = this.effect(machine.effects, INIT_STATE)
           if (cleanup) this.effects.set(INIT_STATE, cleanup)
         }
 
@@ -258,20 +270,73 @@ export class VanillaMachine<T extends MachineSchema> {
     return this.machine.implementations?.guards?.[str](this.getParams())
   }
 
-  private effect = (keys: EffectsOrFn<T> | undefined) => {
-    const strs = isFunction(keys) ? keys(this.getParams()) : keys
-    if (!strs) return
-    const fns = strs.map((s) => {
-      const fn = this.machine.implementations?.effects?.[s]
-      if (!fn) warn(`[zag-js] No implementation found for effect "${JSON.stringify(s)}"`)
-      return fn
+  private normalizeEffects = (keys: EffectsOrFn<T> | undefined) => {
+    const items = isFunction(keys) ? keys(this.getParams()) : keys
+    if (!items) return
+    return items.map((item) => {
+      if (isString(item)) return { key: item } as EffectConfig<T>
+      return item as EffectConfig<T>
     })
+  }
+
+  private resolveEffectDeps = (deps: EffectDeps<T> | undefined) => {
+    if (!deps) return
+    const getList = () => (isFunction(deps) ? deps(this.getParams()) : deps) ?? []
+    const list = getList()
+    if (!list) return
+    return list.map((_, index) => {
+      return () => {
+        const values = getList()
+        const value = values?.[index]
+        if (isFunction(value)) return (value as any)(this.getParams())
+        return value
+      }
+    })
+  }
+
+  private effect = (keys: EffectsOrFn<T> | undefined, path?: string) => {
+    const items = this.normalizeEffects(keys)
+    if (!items) return
+
+    const tracked: TrackedEffect[] = []
     const cleanups: VoidFunction[] = []
-    for (const fn of fns) {
-      const cleanup = fn?.(this.getParams())
-      if (cleanup) cleanups.push(cleanup)
+
+    for (const item of items) {
+      const fn = this.machine.implementations?.effects?.[item.key]
+      if (!fn) {
+        warn(`[zag-js] No implementation found for effect "${JSON.stringify(item.key)}"`)
+        continue
+      }
+
+      const deps = this.resolveEffectDeps(item.deps)
+      const run = () => fn?.(this.getParams())
+
+      if (deps?.length) {
+        const values = deps.map((dep) => dep())
+        const cleanup = run()
+        tracked.push({
+          deps,
+          prev: values,
+          cleanup: cleanup ?? undefined,
+          run,
+        })
+      } else {
+        const cleanup = run()
+        if (cleanup) cleanups.push(cleanup)
+      }
     }
-    return () => cleanups.forEach((fn) => fn?.())
+
+    if (tracked.length && path) {
+      this.effectTrackers.set(path, tracked)
+    }
+
+    if (!tracked.length && !cleanups.length && !path) return
+
+    return () => {
+      tracked.forEach((record) => record.cleanup?.())
+      cleanups.forEach((fn) => fn?.())
+      if (path) this.effectTrackers.delete(path)
+    }
   }
 
   private choose: ChooseFn<T> = (transitions) => {
@@ -294,6 +359,7 @@ export class VanillaMachine<T extends MachineSchema> {
     // run exit effects
     this.effects.forEach((fn) => fn?.())
     this.effects.clear()
+    this.effectTrackers.clear()
     this.transition = null
     this.action(this.machine.exit)
 
@@ -348,6 +414,16 @@ export class VanillaMachine<T extends MachineSchema> {
         fn()
         fn.prev = next
       }
+    })
+    this.effectTrackers.forEach((records) => {
+      records.forEach((record) => {
+        const next = record.deps.map((dep) => dep())
+        if (!isEqual(record.prev, next)) {
+          record.cleanup?.()
+          record.cleanup = record.run() ?? undefined
+          record.prev = next
+        }
+      })
     })
   }
 

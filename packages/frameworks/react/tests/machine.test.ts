@@ -475,6 +475,54 @@ describe("basic", () => {
 
     vi.useRealTimers()
   })
+
+  test("effect dependencies", async () => {
+    const effectSpy = vi.fn()
+    const cleanupSpy = vi.fn()
+
+    const machine = createMachine<any>({
+      initialState() {
+        return "active"
+      },
+      context({ bindable }) {
+        return {
+          count: bindable(() => ({ defaultValue: 0 })),
+        }
+      },
+      states: {
+        active: {
+          effects: [{ key: "syncCount", deps: ({ context }) => [context.get("count")] }],
+          on: {
+            INC: { actions: ["inc"] },
+          },
+        },
+      },
+      implementations: {
+        actions: {
+          inc: ({ context }) => context.set("count", (value) => value + 1),
+        },
+        effects: {
+          syncCount: ({ context }) => {
+            effectSpy(context.get("count"))
+            return () => cleanupSpy(context.get("count"))
+          },
+        },
+      },
+    })
+
+    const { send } = renderMachine(machine)
+    await Promise.resolve()
+
+    expect(effectSpy).toHaveBeenCalledTimes(1)
+    expect(effectSpy).toHaveBeenLastCalledWith(0)
+
+    await send({ type: "INC" })
+    await Promise.resolve()
+
+    expect(cleanupSpy).toHaveBeenCalledTimes(1)
+    expect(effectSpy).toHaveBeenCalledTimes(2)
+    expect(effectSpy).toHaveBeenLastCalledWith(1)
+  })
 })
 
 describe("edge cases", () => {

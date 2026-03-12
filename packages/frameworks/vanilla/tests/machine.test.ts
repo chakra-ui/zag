@@ -593,6 +593,59 @@ describe("effects", () => {
 
     expect(rootEffectCleanup).toHaveBeenCalledOnce()
   })
+
+  test("effect dependencies", async () => {
+    const effectSpy = vi.fn()
+    const cleanupSpy = vi.fn()
+
+    const machine = createMachine<any>({
+      initialState() {
+        return "active"
+      },
+      context({ bindable }) {
+        return {
+          count: bindable(() => ({ defaultValue: 0 })),
+        }
+      },
+      states: {
+        active: {
+          effects: [{ key: "syncCount", deps: ({ context }) => [context.get("count")] }],
+          on: {
+            INC: {
+              actions: ["inc"],
+            },
+          },
+        },
+      },
+      implementations: {
+        actions: {
+          inc: ({ context }) => context.set("count", (value: number) => value + 1),
+        },
+        effects: {
+          syncCount: ({ context }) => {
+            effectSpy(context.get("count"))
+            return () => cleanupSpy(context.get("count"))
+          },
+        },
+      },
+    })
+
+    const service = new VanillaMachine(machine)
+    service.start()
+    await tick()
+
+    expect(effectSpy).toHaveBeenCalledTimes(1)
+    expect(effectSpy).toHaveBeenLastCalledWith(0)
+
+    service.send({ type: "INC" })
+    await tick()
+
+    expect(cleanupSpy).toHaveBeenCalledTimes(1)
+    expect(effectSpy).toHaveBeenCalledTimes(2)
+    expect(effectSpy).toHaveBeenLastCalledWith(1)
+
+    service.stop()
+  })
 })
 
 describe("edge cases", () => {
