@@ -283,7 +283,6 @@ export class VanillaMachine<T extends MachineSchema> {
     if (!deps) return
     const getList = () => (isFunction(deps) ? deps(this.getParams()) : deps) ?? []
     const list = getList()
-    if (!list) return
     return list.map((_, index) => {
       return () => {
         const values = getList()

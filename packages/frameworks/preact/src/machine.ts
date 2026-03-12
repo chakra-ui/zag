@@ -181,7 +181,6 @@ export function useMachine<T extends MachineSchema>(
     if (!deps) return
     const getList = () => (isFunction(deps) ? deps(getParams()) : deps) ?? []
     const list = getList()
-    if (!list) return
     return list.map((_, index) => {
       return () => {
         const values = getList()
