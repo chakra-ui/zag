@@ -33,7 +33,7 @@ import { bindable } from "./bindable"
 import { createRefs } from "./refs"
 import { mergeMachineProps } from "./merge-machine-props"
 
-type EffectConfig<T extends MachineSchema> = Effect<T> extends infer U ? (U extends string ? { key: U } : U) : never
+type EffectConfig<T extends MachineSchema> = Effect<T> extends infer U ? (U extends string ? { type: U } : U) : never
 
 type TrackedEffect = {
   deps?: () => any[]
@@ -274,7 +274,7 @@ export class VanillaMachine<T extends MachineSchema> {
     const items = isFunction(keys) ? keys(this.getParams()) : keys
     if (!items) return
     return items.map((item) => {
-      if (isString(item)) return { key: item } as EffectConfig<T>
+      if (isString(item)) return { type: item } as EffectConfig<T>
       return item as EffectConfig<T>
     })
   }
@@ -299,9 +299,9 @@ export class VanillaMachine<T extends MachineSchema> {
     const cleanups: VoidFunction[] = []
 
     for (const item of items) {
-      const fn = this.machine.implementations?.effects?.[item.key]
+      const fn = this.machine.implementations?.effects?.[item.type]
       if (!fn) {
-        warn(`[zag-js] No implementation found for effect "${JSON.stringify(item.key)}"`)
+        warn(`[zag-js] No implementation found for effect "${JSON.stringify(item.type)}"`)
         continue
       }
 
@@ -417,7 +417,10 @@ export class VanillaMachine<T extends MachineSchema> {
         if (!record.deps) return
         const next = record.deps()
         // isEqual performs a deep comparison to avoid rerunning effects for unchanged dependency snapshots
-        if (!isEqual(record.values ?? [], next)) {
+        if (record.values === next) return
+        if (record.values?.length === next.length && record.values.every((value, index) => value === next[index]))
+          return
+        if (!isEqual(record.values, next)) {
           record.cleanup?.()
           record.cleanup = record.run() ?? undefined
           record.values = next

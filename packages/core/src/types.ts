@@ -170,7 +170,7 @@ export type EffectDeps<T extends Dict> =
   | Array<EffectDepsValue<T>>
   | ((params: Params<T>) => Array<EffectDepsValue<T>> | undefined)
 
-export type Effect<T extends Dict> = T["effect"] | { key: T["effect"]; deps?: EffectDeps<T> | undefined }
+export type Effect<T extends Dict> = T["effect"] | { type: T["effect"]; deps?: EffectDeps<T> | undefined }
 
 export type EffectsOrFn<T extends Dict> = Effect<T>[] | ((params: Params<T>) => Effect<T>[] | undefined)
 

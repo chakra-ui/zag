@@ -34,7 +34,7 @@ import { useRefs } from "./refs"
 import { useTrack } from "./track"
 import { useSafeLayoutEffect } from "./use-layout-effect"
 
-type EffectConfig<T extends MachineSchema> = Effect<T> extends infer U ? (U extends string ? { key: U } : U) : never
+type EffectConfig<T extends MachineSchema> = Effect<T> extends infer U ? (U extends string ? { type: U } : U) : never
 
 type TrackedEffect = {
   deps?: () => any[]
@@ -196,7 +196,7 @@ export function useMachine<T extends MachineSchema>(
     const items = isFunction(keys) ? keys(getParams()) : keys
     if (!items) return
     return items.map((item) => {
-      if (isString(item)) return { key: item } as EffectConfig<T>
+      if (isString(item)) return { type: item } as EffectConfig<T>
       return item as EffectConfig<T>
     })
   }
@@ -204,6 +204,7 @@ export function useMachine<T extends MachineSchema>(
   const hasDepsChanged = (prev: any[] | undefined, next: any[]) => {
     if (!prev || prev.length !== next.length) return true
     for (let index = 0; index < next.length; index++) {
+      if (prev[index] === next[index]) continue
       if (!isEqual(prev[index], next[index])) return true
     }
     return false
@@ -217,9 +218,9 @@ export function useMachine<T extends MachineSchema>(
     const cleanups: VoidFunction[] = []
 
     for (const item of items) {
-      const fn = machine.implementations?.effects?.[item.key]
+      const fn = machine.implementations?.effects?.[item.type]
       if (!fn) {
-        warn(`[zag-js] No implementation found for effect "${JSON.stringify(item.key)}"`)
+        warn(`[zag-js] No implementation found for effect "${JSON.stringify(item.type)}"`)
         continue
       }
 
@@ -370,10 +371,6 @@ export function useMachine<T extends MachineSchema>(
       } else {
         // call transition actions
         action(transition.actions ?? [])
-      }
-
-      if (trackedEffects.current.size > 0) {
-        refreshTrackedEffects()
       }
     })
   }

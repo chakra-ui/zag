@@ -609,7 +609,7 @@ describe("effects", () => {
       },
       states: {
         active: {
-          effects: [{ key: "syncCount", deps: ({ context }) => [context.get("count")] }],
+          effects: [{ type: "syncCount", deps: ({ context }) => [context.get("count")] }],
           on: {
             INC: {
               actions: ["inc"],
