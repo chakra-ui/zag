@@ -1,5 +1,16 @@
 # @zag-js/toggle-group
 
+## 1.36.0
+
+### Patch Changes
+
+- Updated dependencies [[`7edfd5e`](https://github.com/chakra-ui/zag/commit/7edfd5e6ffa0bddde524c9bd43aa157f3fb76b72)]:
+  - @zag-js/dom-query@1.36.0
+  - @zag-js/core@1.36.0
+  - @zag-js/anatomy@1.36.0
+  - @zag-js/types@1.36.0
+  - @zag-js/utils@1.36.0
+
 ## 1.35.3
 
 ### Patch Changes

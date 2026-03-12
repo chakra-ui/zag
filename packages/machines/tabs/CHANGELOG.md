@@ -1,5 +1,20 @@
 # @zag-js/tabs
 
+## 1.36.0
+
+### Patch Changes
+
+- [`8bf685c`](https://github.com/chakra-ui/zag/commit/8bf685c26b30d7158c7a492f3e05b1698c30108b) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix indicator only animating when value changes, not on initial
+  render or resize.
+
+- Updated dependencies [[`7edfd5e`](https://github.com/chakra-ui/zag/commit/7edfd5e6ffa0bddde524c9bd43aa157f3fb76b72)]:
+  - @zag-js/dom-query@1.36.0
+  - @zag-js/core@1.36.0
+  - @zag-js/anatomy@1.36.0
+  - @zag-js/types@1.36.0
+  - @zag-js/utils@1.36.0
+
 ## 1.35.3
 
 ### Patch Changes
