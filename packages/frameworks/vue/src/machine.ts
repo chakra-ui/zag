@@ -274,18 +274,24 @@ export function useMachine<T extends MachineSchema>(
   }
 
   const refreshTrackedEffects = () => {
+    const tasks: Array<() => void> = []
     trackedEffects.forEach((records) => {
       records.forEach((record) => {
         if (!record.deps?.length) return
         const next = record.deps.map((dep) => dep())
         if (!hasDepsChanged(record.values, next)) return
-        queueMicrotask(() => {
+        tasks.push(() => {
           record.cleanup?.()
           record.cleanup = record.run() ?? undefined
           record.values = next
         })
       })
     })
+    if (tasks.length) {
+      queueMicrotask(() => {
+        tasks.forEach((task) => task())
+      })
+    }
   }
 
   // Dependency getters inside refreshTrackedEffects read reactive values, so this effect

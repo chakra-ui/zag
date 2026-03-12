@@ -37,7 +37,7 @@ type EffectConfig<T extends MachineSchema> = Effect<T> extends infer U ? (U exte
 
 type TrackedEffect = {
   deps?: Array<() => any>
-  values: any[]
+  values?: any[]
   cleanup?: VoidFunction
   run: () => void | VoidFunction
 }
@@ -419,7 +419,7 @@ export class VanillaMachine<T extends MachineSchema> {
         if (!record.deps?.length) return
         const next = record.deps.map((dep) => dep())
         // isEqual performs a deep comparison to avoid rerunning effects for unchanged dependency snapshots
-        if (!isEqual(record.values, next)) {
+        if (!isEqual(record.values ?? [], next)) {
           record.cleanup?.()
           record.cleanup = record.run() ?? undefined
           record.values = next
