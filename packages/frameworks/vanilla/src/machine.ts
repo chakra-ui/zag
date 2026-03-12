@@ -6,8 +6,8 @@ import type {
   ChooseFn,
   ComputedFn,
   Effect,
-  EffectDeps,
   EffectsOrFn,
+  EffectImpl,
   GuardFn,
   Machine,
   MachineSchema,
@@ -279,7 +279,8 @@ export class VanillaMachine<T extends MachineSchema> {
     })
   }
 
-  private resolveEffectDeps = (deps: EffectDeps<T> | undefined) => {
+  private resolveEffectDeps = (fn: EffectImpl<T> | undefined) => {
+    const deps = fn?.deps
     if (!deps) return
     const getList = () => (isFunction(deps) ? deps(this.getParams()) : deps) ?? []
     return () => {
@@ -305,7 +306,7 @@ export class VanillaMachine<T extends MachineSchema> {
         continue
       }
 
-      const deps = this.resolveEffectDeps(item.deps)
+      const deps = this.resolveEffectDeps(fn)
       const run = () => fn?.(this.getParams())
 
       if (deps) {
@@ -417,9 +418,6 @@ export class VanillaMachine<T extends MachineSchema> {
         if (!record.deps) return
         const next = record.deps()
         // isEqual performs a deep comparison to avoid rerunning effects for unchanged dependency snapshots
-        if (record.values === next) return
-        if (record.values?.length === next.length && record.values.every((value, index) => value === next[index]))
-          return
         if (!isEqual(record.values, next)) {
           record.cleanup?.()
           record.cleanup = record.run() ?? undefined

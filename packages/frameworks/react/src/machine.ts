@@ -8,8 +8,8 @@ import type {
   ChooseFn,
   ComputedFn,
   Effect,
-  EffectDeps,
   EffectsOrFn,
+  EffectImpl,
   GuardFn,
   Machine,
   MachineSchema,
@@ -180,7 +180,8 @@ export function useMachine<T extends MachineSchema>(
     })
   }
 
-  const resolveEffectDeps = (deps: EffectDeps<T> | undefined) => {
+  const resolveEffectDeps = (fn: EffectImpl<T> | undefined) => {
+    const deps = fn?.deps
     if (!deps) return
     const getList = () => (isFunction(deps) ? deps(getParams()) : deps) ?? []
     return () => {
@@ -224,7 +225,7 @@ export function useMachine<T extends MachineSchema>(
         continue
       }
 
-      const deps = resolveEffectDeps(item.deps)
+      const deps = resolveEffectDeps(fn)
       const record: TrackedEffect = {
         deps,
         run: () => fn?.(getParams()),

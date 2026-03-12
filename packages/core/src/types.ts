@@ -170,7 +170,11 @@ export type EffectDeps<T extends Dict> =
   | Array<EffectDepsValue<T>>
   | ((params: Params<T>) => Array<EffectDepsValue<T>> | undefined)
 
-export type Effect<T extends Dict> = T["effect"] | { type: T["effect"]; deps?: EffectDeps<T> | undefined }
+export type Effect<T extends Dict> = T["effect"] | { type: T["effect"] }
+
+export type EffectImpl<T extends Dict> = ((params: Params<T>) => void | VoidFunction) & {
+  deps?: EffectDeps<T> | undefined
+}
 
 export type EffectsOrFn<T extends Dict> = Effect<T>[] | ((params: Params<T>) => Effect<T>[] | undefined)
 
@@ -234,7 +238,7 @@ export interface Machine<T extends Dict> {
           | undefined
         effects?:
           | {
-              [K in T["effect"]]: (params: Params<T>) => void | VoidFunction
+              [K in T["effect"]]: EffectImpl<T>
             }
           | undefined
       }

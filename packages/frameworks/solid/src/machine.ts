@@ -1,7 +1,6 @@
 import type {
   ActionsOrFn,
   Effect,
-  EffectDeps,
   GuardFn,
   Machine,
   MachineSchema,
@@ -9,6 +8,7 @@ import type {
   ChooseFn,
   ComputedFn,
   EffectsOrFn,
+  EffectImpl,
   BindableContext,
   Params,
 } from "@zag-js/core"
@@ -186,7 +186,8 @@ export function useMachine<T extends MachineSchema>(
     })
   }
 
-  const resolveEffectDeps = (deps: EffectDeps<T> | undefined) => {
+  const resolveEffectDeps = (fn: EffectImpl<T> | undefined) => {
+    const deps = fn?.deps
     if (!deps) return
     const getList = () => (isFunction(deps) ? deps(getParams()) : deps) ?? []
     return () => {
@@ -230,7 +231,7 @@ export function useMachine<T extends MachineSchema>(
         continue
       }
 
-      const deps = resolveEffectDeps(item.deps)
+      const deps = resolveEffectDeps(fn)
       const record: TrackedEffect = {
         deps,
         run: () => fn?.(getParams()),
@@ -274,7 +275,7 @@ export function useMachine<T extends MachineSchema>(
     })
   }
 
-  // Dependency getters used in refreshTrackedEffects read reactive values, so this effect
+  // Dependency getters inside refreshTrackedEffects read reactive values, so this effect
   // only reruns when those underlying signals change.
   createEffect(() => {
     refreshTrackedEffects()

@@ -480,6 +480,12 @@ describe("basic", () => {
     const effectSpy = vi.fn()
     const cleanupSpy = vi.fn()
 
+    const syncCount = ({ context }: any) => {
+      effectSpy(context.get("count"))
+      return () => cleanupSpy(context.get("count"))
+    }
+    syncCount.deps = ({ context }: any) => [context.get("count")]
+
     const machine = createMachine<any>({
       initialState() {
         return "active"
@@ -491,7 +497,7 @@ describe("basic", () => {
       },
       states: {
         active: {
-          effects: [{ type: "syncCount", deps: ({ context }) => [context.get("count")] }],
+          effects: ["syncCount"],
           on: {
             INC: { actions: ["inc"] },
           },
@@ -502,10 +508,7 @@ describe("basic", () => {
           inc: ({ context }) => context.set("count", (value) => value + 1),
         },
         effects: {
-          syncCount: ({ context }) => {
-            effectSpy(context.get("count"))
-            return () => cleanupSpy(context.get("count"))
-          },
+          syncCount,
         },
       },
     })
