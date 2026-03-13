@@ -1,5 +1,19 @@
 # @zag-js/vanilla
 
+## 1.36.0
+
+### Patch Changes
+
+- [#3019](https://github.com/chakra-ui/zag/pull/3019)
+  [`4c851ea`](https://github.com/chakra-ui/zag/commit/4c851ead1ee6d35349a9e257be15e31fd79a1292) Thanks
+  [@copilot-swe-agent](https://github.com/apps/copilot-swe-agent)! - **Machine**: Fix handling of controlled mode
+
+- Updated dependencies []:
+  - @zag-js/core@1.36.0
+  - @zag-js/store@1.36.0
+  - @zag-js/types@1.36.0
+  - @zag-js/utils@1.36.0
+
 ## 1.35.3
 
 ### Patch Changes

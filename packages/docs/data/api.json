@@ -804,6 +804,10 @@
       }
     },
     "context": {
+      "translations": {
+        "type": "IntlTranslations",
+        "description": "Specifies the localized strings that identifies the accessibility elements and their states"
+      },
       "ids": {
         "type": "Partial<{ root: string; input: string; label: string; }>",
         "description": "The ids of the elements in the clipboard. Useful for composition."
@@ -1389,6 +1393,10 @@
         "type": "boolean",
         "description": "Whether the date input is invalid"
       },
+      "groupCount": {
+        "type": "number",
+        "description": "The number of segment groups rendered by the date input."
+      },
       "value": {
         "type": "DateValue[]",
         "description": "The selected date(s)."
@@ -1518,6 +1526,11 @@
         "type": "DateGranularity",
         "description": "Determines the smallest unit that is displayed in the date input.",
         "defaultValue": "\"day\""
+      },
+      "shouldForceLeadingZeros": {
+        "type": "boolean",
+        "description": "Whether to always show leading zeros in month, day, and hour fields.\nWhen false, formatting follows the locale default (e.g. \"1\" instead of \"01\").",
+        "defaultValue": "false"
       },
       "formatter": {
         "type": "DateFormatter",
@@ -3083,6 +3096,22 @@
         "type": "(value: string) => void",
         "description": "Function to highlight a value"
       },
+      "highlightFirst": {
+        "type": "VoidFunction",
+        "description": "Function to highlight the first value"
+      },
+      "highlightLast": {
+        "type": "VoidFunction",
+        "description": "Function to highlight the last value"
+      },
+      "highlightNext": {
+        "type": "VoidFunction",
+        "description": "Function to highlight the next value"
+      },
+      "highlightPrevious": {
+        "type": "VoidFunction",
+        "description": "Function to highlight the previous value"
+      },
       "clearHighlightedValue": {
         "type": "VoidFunction",
         "description": "Function to clear the highlighted value"
@@ -3527,6 +3556,10 @@
       }
     },
     "context": {
+      "translations": {
+        "type": "IntlTranslations",
+        "description": "Specifies the localized strings that identifies the accessibility elements and their states"
+      },
       "ids": {
         "type": "Partial<{ root: string; list: string; item: string; trigger: (value: string) => string; content: (value: string) => string; viewport: string; }>",
         "description": "The ids of the elements in the machine."
@@ -4159,6 +4192,10 @@
       }
     },
     "context": {
+      "translations": {
+        "type": "IntlTranslations",
+        "description": "Specifies the localized strings that identifies the accessibility elements and their states"
+      },
       "ids": {
         "type": "Partial<{ anchor: string; trigger: string; content: string; title: string; description: string; closeTrigger: string; positioner: string; arrow: string; }>",
         "description": "The ids of the elements in the popover. Useful for composition."
@@ -4787,6 +4824,10 @@
       }
     },
     "context": {
+      "translations": {
+        "type": "IntlTranslations",
+        "description": "Specifies the localized strings that identifies the accessibility elements and their states"
+      },
       "collection": {
         "type": "ListCollection<T>",
         "description": "The item collection"
@@ -5774,6 +5815,11 @@
         "type": "(details: ValidateArgs) => boolean",
         "description": "Returns a boolean that determines whether a tag can be added.\nUseful for preventing duplicates or invalid tag values."
       },
+      "allowDuplicates": {
+        "type": "boolean",
+        "description": "Whether to allow duplicate tags.",
+        "defaultValue": "false"
+      },
       "blurBehavior": {
         "type": "\"clear\" | \"add\"",
         "description": "The behavior of the tags input when the input is blurred\n- `\"add\"`: add the input value as a new tag\n- `\"clear\"`: clear the input value"
@@ -5875,6 +5921,10 @@
       }
     },
     "context": {
+      "translations": {
+        "type": "IntlTranslations",
+        "description": "Specifies the localized strings that identifies the accessibility elements and their states"
+      },
       "ids": {
         "type": "Partial<{ root: string; area: string; }>",
         "description": "The ids of the timer parts"
@@ -6476,6 +6526,10 @@
       }
     },
     "context": {
+      "translations": {
+        "type": "IntlTranslations",
+        "description": "Specifies the localized strings that identifies the accessibility elements and their states"
+      },
       "collection": {
         "type": "TreeCollection<T>",
         "description": "The tree collection data"

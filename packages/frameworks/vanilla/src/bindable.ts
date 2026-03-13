@@ -22,7 +22,7 @@ export function bindable<T>(props: () => BindableParams<T>): Bindable<T> {
       return controlled() ? (props().value as T) : store.value
     },
     set(nextValue: T | ((prev: T) => T)) {
-      const prev = store.value
+      const prev = controlled() ? (props().value as T) : store.value
       const next = isFunction(nextValue) ? nextValue(prev as T) : nextValue
 
       if (props().debug) {

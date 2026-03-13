@@ -2,6 +2,7 @@ import {
   Selection,
   createSelectedItemMap,
   deriveSelectionState,
+  isGridCollection,
   resolveSelectedItems,
   type CollectionItem,
 } from "@zag-js/collection"
@@ -163,6 +164,18 @@ export const machine = createMachine({
     "VALUE.CLEAR": {
       actions: ["clearSelectedItems"],
     },
+    "HIGHLIGHT.FIRST": {
+      actions: ["highlightFirstValue"],
+    },
+    "HIGHLIGHT.LAST": {
+      actions: ["highlightLastValue"],
+    },
+    "HIGHLIGHT.NEXT": {
+      actions: ["highlightNextValue"],
+    },
+    "HIGHLIGHT.PREV": {
+      actions: ["highlightPreviousValue"],
+    },
   },
 
   states: {
@@ -318,6 +331,52 @@ export const machine = createMachine({
 
       setHighlightedItem({ context, event }) {
         context.set("highlightedValue", event.value)
+      },
+
+      highlightFirstValue({ context, prop }) {
+        context.set("highlightedValue", prop("collection").firstValue ?? null)
+      },
+
+      highlightLastValue({ context, prop }) {
+        context.set("highlightedValue", prop("collection").lastValue ?? null)
+      },
+
+      highlightNextValue({ context, prop }) {
+        const collection = prop("collection")
+        const highlightedValue = context.get("highlightedValue")
+        let nextValue: string | null = null
+
+        if (isGridCollection(collection) && highlightedValue) {
+          nextValue = collection.getNextRowValue(highlightedValue)
+        } else if (highlightedValue) {
+          nextValue = collection.getNextValue(highlightedValue)
+        }
+
+        if (!nextValue && (prop("loopFocus") || !highlightedValue)) {
+          nextValue = collection.firstValue
+        }
+
+        if (!nextValue) return
+        context.set("highlightedValue", nextValue)
+      },
+
+      highlightPreviousValue({ context, prop }) {
+        const collection = prop("collection")
+        const highlightedValue = context.get("highlightedValue")
+        let nextValue: string | null = null
+
+        if (isGridCollection(collection) && highlightedValue) {
+          nextValue = collection.getPreviousRowValue(highlightedValue)
+        } else if (highlightedValue) {
+          nextValue = collection.getPreviousValue(highlightedValue)
+        }
+
+        if (!nextValue && (prop("loopFocus") || !highlightedValue)) {
+          nextValue = collection.lastValue
+        }
+
+        if (!nextValue) return
+        context.set("highlightedValue", nextValue)
       },
 
       clearHighlightedItem({ context }) {

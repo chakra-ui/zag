@@ -234,8 +234,8 @@ export function useMachine<T extends MachineSchema>(
     })
 
     const fns = effects.current
-    const currentState = state.ref.current
     return () => {
+      const currentState = getCurrentState()
       debug("unmounting...")
       hydratedStateRef.current = currentState
       statusRef.current = MachineStatus.Stopped
