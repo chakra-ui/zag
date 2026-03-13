@@ -88,7 +88,7 @@ export function connect<T extends PropTypes>(service: Service<TocSchema>, normal
       })
     },
 
-    getItemLinkProps(props) {
+    getLinkProps(props) {
       const { item } = props
       const itemState = getItemState(props)
 

@@ -179,6 +179,6 @@ export interface TocApi<T extends PropTypes = PropTypes> {
   getTitleProps(): T["element"]
   getListProps(): T["element"]
   getItemProps(props: ItemProps): T["element"]
-  getItemLinkProps(props: ItemProps): T["element"]
+  getLinkProps(props: ItemProps): T["element"]
   getIndicatorProps(): T["element"]
 }

@@ -41,8 +41,10 @@ import { TooltipAnatomy } from "./tooltip"
 import { TourAnatomy } from "./tour"
 import { TreeViewAnatomy } from "./tree-view"
 import { ScrollAreaAnatomy } from "./scroll-area"
+import { TocAnatomy } from "./toc"
 
 export const allComponents = {
+  toc: TocAnatomy,
   "scroll-area": ScrollAreaAnatomy,
   "password-input": PasswordInputAnatomy,
   "floating-panel": FloatingPanelAnatomy,

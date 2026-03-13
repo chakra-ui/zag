@@ -30,7 +30,7 @@ const api = computed(() => toc.connect(service, normalizeProps))
           >
             <a
               :href="`#${item.value}`"
-              v-bind="api.getItemLinkProps({ item })"
+              v-bind="api.getLinkProps({ item })"
             >
               {{ item.label }}
             </a>

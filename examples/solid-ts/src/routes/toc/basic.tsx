@@ -29,7 +29,7 @@ export default function Page() {
               <For each={tocData}>
                 {(item) => (
                   <li {...api().getItemProps({ item })}>
-                    <a href={`#${item.value}`} {...api().getItemLinkProps({ item })}>
+                    <a href={`#${item.value}`} {...api().getLinkProps({ item })}>
                       {item.label}
                     </a>
                   </li>

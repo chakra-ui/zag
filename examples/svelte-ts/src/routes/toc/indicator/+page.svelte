@@ -28,7 +28,7 @@
         <div {...api.getIndicatorProps()}></div>
         {#each tocData as item}
           <li {...api.getItemProps({ item })}>
-            <a href={`#${item.value}`} {...api.getItemLinkProps({ item })}>
+            <a href={`#${item.value}`} {...api.getLinkProps({ item })}>
               {item.label}
             </a>
           </li>
