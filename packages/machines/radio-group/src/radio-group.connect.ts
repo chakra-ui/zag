@@ -168,6 +168,7 @@ export function connect<T extends PropTypes>(
         form: prop("form"),
         value: props.value,
         required: prop("required"),
+        "aria-labelledby": dom.getItemLabelId(scope, props.value),
         "aria-invalid": itemState.invalid || undefined,
         onClick(event) {
           if (readOnly) {
