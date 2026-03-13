@@ -46,10 +46,9 @@ export interface TocProps extends DirectionProperty, CommonProperties {
    */
   ids?: ElementIds | undefined
   /**
-   * The TOC items. Accepts either an iterable of slug strings
-   * or an array of objects with `value` and `depth`.
+   * The TOC items with `value` (slug/id) and `depth` (heading level).
    */
-  items: Iterable<string> | TocItem[]
+  items: TocItem[]
   /**
    * The root margin for the IntersectionObserver.
    * Controls the effective viewport area for determining active headings.
@@ -92,15 +91,9 @@ export interface TocProps extends DirectionProperty, CommonProperties {
    * Use when you don't need to control the active headings.
    */
   defaultActiveIds?: string[] | undefined
-  /**
-   * Offset in pixels from the top when scrolling to a heading.
-   * Useful for accounting for fixed headers or nav bars.
-   * @default 0
-   */
-  scrollOffset?: number | undefined
 }
 
-type PropsWithDefault = "rootMargin" | "threshold" | "autoScroll" | "scrollBehavior" | "scrollOffset"
+type PropsWithDefault = "rootMargin" | "threshold" | "autoScroll" | "scrollBehavior" | "items"
 
 export interface TocSchema {
   state: "idle"
@@ -114,8 +107,7 @@ export interface TocSchema {
     indicatorCleanup: VoidFunction | null
   }
   computed: {
-    resolvedItems: TocItem[]
-    activeId: string | null
+    activeItems: TocItem[]
   }
   action: string
   guard: string
@@ -133,16 +125,9 @@ export type TocMachine = Machine<TocSchema>
 
 export interface ItemProps {
   /**
-   * The value (slug) of the heading this item links to
+   * The TOC item
    */
-  value: string
-}
-
-export interface LinkProps {
-  /**
-   * The value (slug) of the heading this link points to
-   */
-  value: string
+  item: TocItem
 }
 
 export interface ItemState {
@@ -166,21 +151,17 @@ export interface ItemState {
 
 export interface TocApi<T extends PropTypes = PropTypes> {
   /**
-   * The id of the first active (visible) heading
-   */
-  activeId: string | null
-  /**
    * All currently active (visible) heading ids
    */
   activeIds: string[]
   /**
+   * The active (visible) TOC items
+   */
+  activeItems: TocItem[]
+  /**
    * The resolved items list
    */
   items: TocItem[]
-  /**
-   * Programmatically scroll a heading into view in the document
-   */
-  scrollToHeading(value: string): void
   /**
    * Manually set the active heading ids
    */
@@ -194,6 +175,6 @@ export interface TocApi<T extends PropTypes = PropTypes> {
   getTitleProps(): T["element"]
   getListProps(): T["element"]
   getItemProps(props: ItemProps): T["element"]
-  getItemLinkProps(props: LinkProps): T["element"]
+  getItemLinkProps(props: ItemProps): T["element"]
   getIndicatorProps(): T["element"]
 }

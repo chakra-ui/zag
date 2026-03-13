@@ -11,6 +11,5 @@ export type {
   ElementIds,
   ItemProps,
   ItemState,
-  LinkProps,
   TocItem,
 } from "./toc.types"

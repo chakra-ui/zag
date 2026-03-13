@@ -1,9 +1,9 @@
 import { setup, type Params } from "@zag-js/core"
 import { resizeObserverBorderBox } from "@zag-js/dom-query"
 import type { Rect } from "@zag-js/types"
-import { callAll, isEqual } from "@zag-js/utils"
+import { callAll, first, isEqual, last } from "@zag-js/utils"
 import * as dom from "./toc.dom"
-import type { TocItem, TocSchema } from "./toc.types"
+import type { TocSchema } from "./toc.types"
 
 const { createMachine } = setup<TocSchema>()
 
@@ -15,7 +15,7 @@ export const machine = createMachine({
       threshold: 0,
       autoScroll: true,
       scrollBehavior: "smooth",
-      scrollOffset: 0,
+      items: [],
       ...props,
     }
   },
@@ -44,12 +44,9 @@ export const machine = createMachine({
   },
 
   computed: {
-    resolvedItems({ prop }) {
-      return resolveItems(prop("items") ?? [])
-    },
-    activeId({ context }) {
+    activeItems({ context, prop }) {
       const ids = context.get("activeIds")
-      return ids.length > 0 ? ids[0] : null
+      return prop("items").filter((item) => ids.includes(item.value))
     },
   },
 
@@ -65,9 +62,6 @@ export const machine = createMachine({
   on: {
     "ACTIVE_IDS.SET": {
       actions: ["setActiveIds"],
-    },
-    "HEADING.SCROLL_TO": {
-      actions: ["scrollToHeading"],
     },
   },
 
@@ -85,30 +79,9 @@ export const machine = createMachine({
         invokeOnActiveChange(params)
       },
 
-      scrollToHeading({ scope, event, prop }) {
-        const headingEl = dom.getHeadingEl(scope, event.value)
-        if (!headingEl) return
-
-        const offset = prop("scrollOffset")
-        const scrollEl = prop("getScrollEl")?.()
-
-        if (offset || scrollEl) {
-          const containerRect = scrollEl ? scrollEl.getBoundingClientRect() : { top: 0 }
-          const headingRect = headingEl.getBoundingClientRect()
-          const scrollTop = scrollEl ? scrollEl.scrollTop : scope.getWin().scrollY
-          const top = headingRect.top - containerRect.top + scrollTop - offset
-
-          const scrollTarget = scrollEl ?? scope.getWin()
-          scrollTarget.scrollTo({ top, behavior: prop("scrollBehavior") })
-        } else {
-          headingEl.scrollIntoView({ behavior: prop("scrollBehavior"), block: "start" })
-        }
-      },
-
-      autoScrollToc({ computed, scope, prop }) {
+      autoScrollToc({ context, scope, prop }) {
         if (!prop("autoScroll")) return
-        const activeId = computed("activeId")
-        const tocItemEl = dom.getItemEl(scope, activeId)
+        const tocItemEl = dom.getItemEl(scope, first(context.get("activeIds")))
         tocItemEl?.scrollIntoView({
           behavior: prop("scrollBehavior"),
           block: "nearest",
@@ -138,8 +111,8 @@ export const machine = createMachine({
             return
           }
 
-          const firstEl = dom.getItemEl(scope, ids[0])
-          const lastEl = dom.getItemEl(scope, ids[ids.length - 1])
+          const firstEl = dom.getItemEl(scope, first(ids))
+          const lastEl = dom.getItemEl(scope, last(ids))
           if (!firstEl) return
 
           const listEl = dom.getListEl(scope)
@@ -183,9 +156,9 @@ export const machine = createMachine({
 
     effects: {
       trackHeadingVisibility(params) {
-        const { scope, prop, context, refs, computed } = params
+        const { scope, prop, context, refs } = params
 
-        const items = computed("resolvedItems")
+        const items = prop("items")
         if (items.length === 0) return
 
         const visibilityMap = refs.get("visibilityMap")
@@ -244,19 +217,5 @@ export const machine = createMachine({
 
 function invokeOnActiveChange(params: Params<TocSchema>) {
   const { context, prop } = params
-  const onActiveChange = prop("onActiveChange")
-  if (!onActiveChange) return
-  onActiveChange({ activeIds: context.get("activeIds") })
-}
-
-function resolveItems(items: Iterable<string> | TocItem[]): TocItem[] {
-  const result: TocItem[] = []
-  for (const item of items) {
-    if (typeof item === "string") {
-      result.push({ value: item, depth: 2 })
-    } else {
-      result.push(item)
-    }
-  }
-  return result
+  prop("onActiveChange")?.({ activeIds: context.get("activeIds") })
 }

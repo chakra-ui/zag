@@ -1,7 +1,7 @@
 import type { Service } from "@zag-js/core"
 import { dataAttr } from "@zag-js/dom-query"
 import type { NormalizeProps, PropTypes, Rect } from "@zag-js/types"
-import { toPx } from "@zag-js/utils"
+import { first, last, toPx } from "@zag-js/utils"
 import { parts } from "./toc.anatomy"
 import * as dom from "./toc.dom"
 import type { ItemProps, ItemState, TocApi, TocSchema } from "./toc.types"
@@ -9,31 +9,27 @@ import type { ItemProps, ItemState, TocApi, TocSchema } from "./toc.types"
 export function connect<T extends PropTypes>(service: Service<TocSchema>, normalize: NormalizeProps<T>): TocApi<T> {
   const { send, context, scope, computed, prop } = service
 
-  const activeId = computed("activeId")
-  const items = computed("resolvedItems")
+  const items = prop("items")
+  const activeItems = computed("activeItems")
   const activeIds = context.get("activeIds")
-  const activeSet = new Set(activeIds)
-  const firstActiveId = activeIds[0] ?? null
-  const lastActiveId = activeIds[activeIds.length - 1] ?? null
+
+  const firstActiveId = first(activeIds)
+  const lastActiveId = last(activeIds)
 
   function getItemState(props: ItemProps): ItemState {
-    const item = items.find((i) => i.value === props.value)
+    const { item } = props
     return {
-      active: activeSet.has(props.value),
-      first: props.value === firstActiveId,
-      last: props.value === lastActiveId,
-      depth: item?.depth ?? 2,
+      active: activeIds.includes(item.value),
+      first: item.value === firstActiveId,
+      last: item.value === lastActiveId,
+      depth: item.depth,
     }
   }
 
   return {
-    activeId,
     activeIds,
+    activeItems,
     items,
-
-    scrollToHeading(value) {
-      send({ type: "HEADING.SCROLL_TO", value })
-    },
 
     setActiveIds(value) {
       send({ type: "ACTIVE_IDS.SET", value })
@@ -74,14 +70,14 @@ export function connect<T extends PropTypes>(service: Service<TocSchema>, normal
     },
 
     getItemProps(props) {
-      const { value } = props
+      const { item } = props
       const itemState = getItemState(props)
 
       return normalize.element({
         ...parts.item.attrs,
-        id: dom.getItemId(scope, value),
+        id: dom.getItemId(scope, item.value),
         dir: prop("dir"),
-        "data-value": value,
+        "data-value": item.value,
         "data-depth": String(itemState.depth),
         "data-active": dataAttr(itemState.active),
         "data-first": dataAttr(itemState.first),
@@ -93,14 +89,14 @@ export function connect<T extends PropTypes>(service: Service<TocSchema>, normal
     },
 
     getItemLinkProps(props) {
-      const { value } = props
-      const itemState = getItemState({ value })
+      const { item } = props
+      const itemState = getItemState(props)
 
       return normalize.element({
         ...parts.link.attrs,
-        id: dom.getLinkId(scope, value),
+        id: dom.getLinkId(scope, item.value),
         dir: prop("dir"),
-        "data-value": value,
+        "data-value": item.value,
         "data-active": dataAttr(itemState.active),
         "aria-current": itemState.active ? "location" : undefined,
       })
