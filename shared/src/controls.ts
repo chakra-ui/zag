@@ -333,6 +333,11 @@ export const stepsControls = defineControls({
   orientation: { type: "select", options: ["horizontal", "vertical"] as const, defaultValue: "horizontal" },
 })
 
+export const tocControls = defineControls({
+  autoScroll: { type: "boolean", defaultValue: true },
+  dir: { type: "select", options: ["ltr", "rtl"] as const, defaultValue: "ltr" },
+})
+
 export const angleSliderControls = defineControls({
   disabled: { type: "boolean", defaultValue: false },
   readOnly: { type: "boolean", defaultValue: false },

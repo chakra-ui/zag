@@ -1,0 +1,224 @@
+---
+title: Table of Contents
+description: Using the table of contents machine in your project.
+package: "@zag-js/toc"
+---
+
+A table of contents tracks which headings are visible on the page using
+`IntersectionObserver` and highlights the corresponding TOC items. Commonly used
+in documentation sidebars.
+
+<Resources pkg="@zag-js/toc" />
+
+**Features**
+
+- Tracks visible headings with `IntersectionObserver`
+- Supports multiple active headings simultaneously
+- Auto-scrolls the TOC sidebar to keep the active item visible
+- Animated indicator for the active item
+- Custom scroll container support
+- Controlled and uncontrolled active state
+
+## Installation
+
+Install the table of contents package:
+
+<CodeSnippet id="toc/installation.mdx" />
+
+## Anatomy
+
+Check the table of contents anatomy and part names.
+
+> Each part includes a `data-part` attribute to help identify them in the DOM.
+
+<Anatomy id="toc" />
+
+## Usage
+
+Import the table of contents package:
+
+```jsx
+import * as toc from "@zag-js/toc"
+```
+
+The table of contents package exports two key functions:
+
+- `machine` - State machine logic.
+- `connect` - Maps machine state to JSX props and event handlers.
+
+You'll need to provide `items` — an array of `{ value, depth }` objects
+representing the headings on the page.
+
+<CodeSnippet id="toc/usage.mdx" />
+
+### Adding an indicator
+
+Use `getIndicatorProps()` to render an animated bar that follows the active
+item. The indicator position is exposed as CSS variables on the root element.
+
+```jsx {5}
+<nav {...api.getRootProps()}>
+  <h5 {...api.getTitleProps()}>On this page</h5>
+  <ul {...api.getListProps()}>
+    <div {...api.getIndicatorProps()} />
+    {api.items.map((item) => (
+      <li key={item.value} {...api.getItemProps({ item })}>
+        <a href={`#${item.value}`} {...api.getLinkProps({ item })}>
+          {item.value}
+        </a>
+      </li>
+    ))}
+  </ul>
+</nav>
+```
+
+### Configuring the observer
+
+Control how headings are detected with `rootMargin` and `threshold`.
+
+```jsx {2-3}
+const service = useMachine(toc.machine, {
+  rootMargin: "-20px 0% -40% 0%",
+  threshold: 0,
+})
+```
+
+### Custom scroll container
+
+By default, the machine observes the document viewport. Pass `getScrollEl` to
+observe headings within a specific scrollable container.
+
+```jsx {2}
+const service = useMachine(toc.machine, {
+  getScrollEl: () => document.getElementById("content"),
+})
+```
+
+### Auto-scrolling the TOC
+
+When the TOC sidebar is scrollable, the machine auto-scrolls to keep the first
+active item visible. Disable this with `autoScroll`.
+
+```jsx {2}
+const service = useMachine(toc.machine, {
+  autoScroll: false,
+})
+```
+
+### Listening for active changes
+
+Use `onActiveChange` to respond when visible headings change. The callback
+receives both `activeIds` and `activeItems`.
+
+```jsx {2-5}
+const service = useMachine(toc.machine, {
+  onActiveChange(details) {
+    // details => { activeIds: string[], activeItems: TocItem[] }
+    console.log(details.activeIds)
+  },
+})
+```
+
+### Controlled active state
+
+Use `activeIds` and `onActiveChange` for controlled usage.
+
+```jsx
+const service = useMachine(toc.machine, {
+  activeIds,
+  onActiveChange(details) {
+    setActiveIds(details.activeIds)
+  },
+})
+```
+
+### Getting item state
+
+Use `getItemState` to check if an item is active, first, or last.
+
+```jsx
+const itemState = api.getItemState({ item })
+// itemState => { active: boolean, first: boolean, last: boolean, depth: number }
+```
+
+## Styling guide
+
+Each part includes a `data-part` attribute you can target in CSS.
+
+```css
+[data-scope="toc"][data-part="root"] {
+  /* styles for the root container */
+}
+
+[data-scope="toc"][data-part="link"] {
+  /* styles for each link */
+}
+
+[data-scope="toc"][data-part="link"][data-active] {
+  /* styles for the active link */
+}
+```
+
+### Active state
+
+When a heading is visible, `data-active` is set on the corresponding item and
+link.
+
+```css
+[data-scope="toc"][data-part="item"][data-active] {
+  /* active item */
+}
+
+[data-scope="toc"][data-part="link"][data-active] {
+  /* active link */
+}
+```
+
+### Depth-based indentation
+
+Use the `--depth` CSS variable to indent items based on heading level.
+
+```css
+[data-scope="toc"][data-part="item"] {
+  padding-inline-start: calc(var(--depth) * 0.75rem - 1rem);
+}
+```
+
+### Indicator styling
+
+The indicator position is exposed as CSS variables on the root element:
+`--top`, `--left`, `--width`, `--height`.
+
+```css
+[data-scope="toc"][data-part="indicator"] {
+  width: 2px;
+  background-color: blue;
+  position: absolute;
+  inset-inline-start: 0;
+  top: var(--top);
+  height: var(--height);
+  transition: top 0.15s, height 0.15s;
+}
+```
+
+## Methods and Properties
+
+### Machine Context
+
+The table of contents machine exposes the following context properties:
+
+<ContextTable name="toc" />
+
+### Machine API
+
+The table of contents `api` exposes the following methods:
+
+<ApiTable name="toc" />
+
+### Data Attributes
+
+<DataAttrTable name="toc" />
+
+### CSS Variables
+
+<CssVarTable name="toc" />
