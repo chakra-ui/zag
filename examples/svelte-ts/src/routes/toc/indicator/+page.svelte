@@ -25,6 +25,7 @@
     <nav {...api.getRootProps()}>
       <h5 {...api.getTitleProps()}>On this page</h5>
       <ul {...api.getListProps()}>
+        <div {...api.getIndicatorProps()}></div>
         {#each tocData as item}
           <li {...api.getItemProps({ item })}>
             <a href={`#${item.value}`} {...api.getItemLinkProps({ item })}>

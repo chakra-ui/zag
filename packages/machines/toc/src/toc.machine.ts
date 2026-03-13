@@ -216,6 +216,9 @@ export const machine = createMachine({
 })
 
 function invokeOnActiveChange(params: Params<TocSchema>) {
-  const { context, prop } = params
-  prop("onActiveChange")?.({ activeIds: context.get("activeIds") })
+  const { context, computed, prop } = params
+  prop("onActiveChange")?.({
+    activeIds: context.get("activeIds"),
+    activeItems: computed("activeItems"),
+  })
 }

@@ -22,6 +22,7 @@ const api = computed(() => toc.connect(service, normalizeProps))
       <nav v-bind="api.getRootProps()">
         <h5 v-bind="api.getTitleProps()">On this page</h5>
         <ul v-bind="api.getListProps()">
+          <div v-bind="api.getIndicatorProps()" />
           <li
             v-for="item in tocData"
             :key="item.value"

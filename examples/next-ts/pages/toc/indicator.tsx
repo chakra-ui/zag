@@ -24,6 +24,7 @@ export default function Page() {
           <nav {...api.getRootProps()}>
             <h5 {...api.getTitleProps()}>On this page</h5>
             <ul {...api.getListProps()}>
+              <div {...api.getIndicatorProps()} />
               {tocData.map((item) => (
                 <li key={item.value} {...api.getItemProps({ item })}>
                   <a href={`#${item.value}`} {...api.getItemLinkProps({ item })}>

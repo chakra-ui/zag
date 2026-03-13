@@ -25,6 +25,10 @@ export interface ActiveChangeDetails {
    * All currently active (visible) heading ids
    */
   activeIds: string[]
+  /**
+   * The active (visible) TOC items
+   */
+  activeItems: TocItem[]
 }
 
 /* -----------------------------------------------------------------------------

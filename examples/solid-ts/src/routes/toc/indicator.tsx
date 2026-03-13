@@ -26,6 +26,7 @@ export default function Page() {
           <nav {...api().getRootProps()}>
             <h5 {...api().getTitleProps()}>On this page</h5>
             <ul {...api().getListProps()}>
+              <div {...api().getIndicatorProps()} />
               <For each={tocData}>
                 {(item) => (
                   <li {...api().getItemProps({ item })}>
