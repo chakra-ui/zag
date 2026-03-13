@@ -151,7 +151,7 @@ export const machine = createMachine<DialogSchema>({
           preventScroll: true,
           returnFocusOnDeactivate: !!prop("restoreFocus"),
           initialFocus: prop("initialFocusEl"),
-          setReturnFocus: (el) => prop("finalFocusEl")?.() ?? el,
+          setReturnFocus: (el) => prop("finalFocusEl")?.() ?? dom.getTriggerEl(scope) ?? el,
           getShadowRoot: true,
         })
       },
