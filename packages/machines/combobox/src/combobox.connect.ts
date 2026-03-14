@@ -110,6 +110,7 @@ export function connect<T extends PropTypes, V extends CollectionItem>(
         id: dom.getRootId(scope),
         "data-invalid": dataAttr(invalid),
         "data-readonly": dataAttr(readOnly),
+        "aria-owns": open ? dom.getContentId(scope) : undefined,
       })
     },
 
