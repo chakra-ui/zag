@@ -35,17 +35,15 @@ export function usePlugin<T extends MachineSchema>(
               [_x_snake_case + _modifier + "_service"]: machine.service, // dev only, for state visualization
               [_x_snake_case + _modifier]: component.connect(machine.service, normalizeProps),
               init() {
-                queueMicrotask(() => {
-                  effect(() => {
-                    this[_x_snake_case + _modifier] = component.connect(machine.service, normalizeProps)
-                  })
-                })
                 machine.init()
               },
               destroy() {
                 machine.destroy()
               },
             }
+          },
+          "x-effect"() {
+            ;(this as any)[_x_snake_case + _modifier] = component.connect(machine.service, normalizeProps)
           },
         })
       } else if (value === "collection") {
