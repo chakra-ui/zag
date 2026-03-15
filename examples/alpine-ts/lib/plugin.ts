@@ -4,8 +4,8 @@ import type { Alpine } from "alpinejs"
 import { AlpineMachine } from "./machine"
 import { normalizeProps } from "./normalize-props"
 
-function useEvaluator<T, R>(evaluator: (callback: (value: T) => void) => void) {
-  return (fn: (value: T) => R) => {
+function useEvaluator<T>(evaluator: (callback: (value: T) => void) => void) {
+  return <R>(fn: (value: T) => R) => {
     let result
     evaluator((value) => (result = fn(value)))
     return result as R
