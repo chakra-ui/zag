@@ -1,14 +1,24 @@
 import { createProps } from "@zag-js/types"
 import { createSplitProps } from "@zag-js/utils"
-import type { DateInputProps, HiddenInputProps, SegmentProps, SegmentsProps } from "./date-input.types"
+import type {
+  DateInputProps,
+  HiddenInputProps,
+  LabelProps,
+  SegmentGroupProps,
+  SegmentProps,
+  SegmentsProps,
+} from "./date-input.types"
 
 export const props = createProps<DateInputProps>()([
+  "createCalendar",
   "dir",
   "disabled",
+  "format",
   "getRootNode",
   "id",
   "ids",
   "invalid",
+  "isDateUnavailable",
   "locale",
   "max",
   "min",
@@ -31,7 +41,6 @@ export const props = createProps<DateInputProps>()([
   "formatter",
   "placeholderValue",
   "defaultPlaceholderValue",
-  "format",
 ])
 
 export const splitProps = createSplitProps<Partial<DateInputProps>>(props)
@@ -39,8 +48,14 @@ export const splitProps = createSplitProps<Partial<DateInputProps>>(props)
 export const segmentProps = createProps<SegmentProps>()(["segment", "index"])
 export const splitSegmentProps = createSplitProps<SegmentProps>(segmentProps)
 
+export const segmentGroupProps = createProps<SegmentGroupProps>()(["index"])
+export const splitSegmentGroupProps = createSplitProps<SegmentGroupProps>(segmentGroupProps)
+
 export const segmentsProps = createProps<SegmentsProps>()(["index"])
 export const splitSegmentsProps = createSplitProps<SegmentsProps>(segmentsProps)
+
+export const labelProps = createProps<LabelProps>()(["index"])
+export const splitLabelProps = createSplitProps<LabelProps>(labelProps)
 
 export const hiddenInputProps = createProps<HiddenInputProps>()(["index", "name"])
 export const splitHiddenInputProps = createSplitProps<HiddenInputProps>(hiddenInputProps)

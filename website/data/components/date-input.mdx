@@ -71,11 +71,13 @@ for display.
 
 ```tsx
 <div {...api.getControlProps()}>
-  {api.getSegments().map((segment, i) => (
-    <span key={i} {...api.getSegmentProps({ segment })}>
-      {segment.text}
-    </span>
-  ))}
+  <div {...api.getSegmentGroupProps()}>
+    {api.getSegments().map((segment, i) => (
+      <span key={i} {...api.getSegmentProps({ segment })}>
+        {segment.text}
+      </span>
+    ))}
+  </div>
 </div>
 ```
 
@@ -83,19 +85,23 @@ For range mode, pass the `index` to distinguish start and end date segments:
 
 ```tsx
 <div {...api.getControlProps()}>
-  {api.getSegments({ index: 0 }).map((segment, i) => (
-    <span key={i} {...api.getSegmentProps({ segment, index: 0 })}>
-      {segment.text}
-    </span>
-  ))}
+  <div {...api.getSegmentGroupProps({ index: 0 })}>
+    {api.getSegments({ index: 0 }).map((segment, i) => (
+      <span key={i} {...api.getSegmentProps({ segment, index: 0 })}>
+        {segment.text}
+      </span>
+    ))}
+  </div>
 
   <span> – </span>
 
-  {api.getSegments({ index: 1 }).map((segment, i) => (
-    <span key={i} {...api.getSegmentProps({ segment, index: 1 })}>
-      {segment.text}
-    </span>
-  ))}
+  <div {...api.getSegmentGroupProps({ index: 1 })}>
+    {api.getSegments({ index: 1 }).map((segment, i) => (
+      <span key={i} {...api.getSegmentProps({ segment, index: 1 })}>
+        {segment.text}
+      </span>
+    ))}
+  </div>
 </div>
 ```
 
@@ -286,11 +292,13 @@ Then render each segment:
 
 ```tsx
 <div {...api.getControlProps()}>
-  {api.getSegments().map((segment, i) => (
-    <span key={i} {...api.getSegmentProps({ segment })}>
-      {segment.text}
-    </span>
-  ))}
+  <div {...api.getSegmentGroupProps()}>
+    {api.getSegments().map((segment, i) => (
+      <span key={i} {...api.getSegmentProps({ segment })}>
+        {segment.text}
+      </span>
+    ))}
+  </div>
 </div>
 ```
 
@@ -391,11 +399,13 @@ Use the date input within a form with standard HTML form handling:
 >
   <label {...api.getLabelProps()}>Birth Date</label>
   <div {...api.getControlProps()}>
-    {api.getSegments().map((segment, i) => (
-      <span key={i} {...api.getSegmentProps({ segment })}>
-        {segment.text}
-      </span>
-    ))}
+    <div {...api.getSegmentGroupProps()}>
+      {api.getSegments().map((segment, i) => (
+        <span key={i} {...api.getSegmentProps({ segment })}>
+          {segment.text}
+        </span>
+      ))}
+    </div>
   </div>
   <input {...api.getHiddenInputProps({ name: "birthDate" })} />
   <button type="submit">Submit</button>
@@ -449,6 +459,10 @@ Each date-input part includes a `data-part` attribute you can target in CSS.
 
 [data-scope="date-input"][data-part="control"] {
   /* styles for the control container */
+}
+
+[data-scope="date-input"][data-part="segment-group"] {
+  /* styles for the segment group */
 }
 
 [data-scope="date-input"][data-part="segment"] {

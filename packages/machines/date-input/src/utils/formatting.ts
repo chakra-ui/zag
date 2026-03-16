@@ -1,4 +1,4 @@
-import { DateFormatter, toCalendarDateTime } from "@internationalized/date"
+import { DateFormatter, toCalendarDateTime, type Calendar } from "@internationalized/date"
 import type { PropFn } from "@zag-js/core"
 import { constrainValue, getTodayDate } from "@zag-js/date-utils"
 import type { DateGranularity } from "@zag-js/date-utils"
@@ -23,7 +23,6 @@ export function constrainValues(values: DateValue[] | undefined, min?: DateValue
 export function resolveHourCycleProp(hourCycle?: 12 | 24): "h12" | "h23" | undefined {
   if (hourCycle === 12) return "h12"
   if (hourCycle === 24) return "h23"
-  return undefined
 }
 
 export interface PlaceholderOptions {
@@ -39,13 +38,14 @@ export function resolvePlaceholderValue(
   granularity: DateGranularity,
   value?: DateValue[],
   defaultValue?: DateValue[],
+  calendar?: Calendar,
 ): DateValue {
   let placeholder =
     options.placeholderValue ||
     options.defaultPlaceholderValue ||
     value?.[0] ||
     defaultValue?.[0] ||
-    getTodayDate(timeZone)
+    getTodayDate(timeZone, calendar)
   placeholder = constrainValue(placeholder, options.min, options.max)
   if (needsTimeGranularity(granularity) && !("hour" in placeholder)) {
     placeholder = toCalendarDateTime(placeholder)

@@ -12,31 +12,45 @@ export function connect<T extends PropTypes>(service: DateInputService, normaliz
 
   const disabled = Boolean(prop("disabled"))
   const readOnly = Boolean(prop("readOnly"))
-  const invalid = Boolean(prop("invalid"))
+  const isDateUnavailableFn = prop("isDateUnavailable")
+
+  const value = context.get("value")
+  const valueAsDate = value.filter((date) => date != null).map((date) => date.toDate(prop("timeZone")))
+
+  const isDateUnavailable = isDateUnavailableFn
+    ? value.some((date) => date != null && isDateUnavailableFn(date, prop("locale")))
+    : false
+  const invalid = prop("invalid") ?? isDateUnavailable
 
   const focused = state.matches("focused")
   const locale = prop("locale")
   const separator = getLocaleSeparator(locale)
 
   function getSegmentState(props: SegmentProps): SegmentState {
-    const { segment } = props
+    const { segment, index = 0 } = props
     const isEditable = !disabled && !readOnly && segment.isEditable
-    return { editable: isEditable }
+    const activeIndex = context.get("activeIndex")
+    const isFocused = focused && activeIndex === index
+    return {
+      editable: isEditable,
+      focused: isFocused,
+      readonly: !segment.isEditable || readOnly,
+    }
   }
 
   return {
     focused,
     disabled,
     invalid,
-    value: context.get("value"),
-    valueAsDate: context
-      .get("value")
-      .filter((date) => date != null)
-      .map((date) => date.toDate(prop("timeZone"))),
+    value,
+    valueAsDate,
     valueAsString: computed("valueAsString"),
     placeholderValue: context.get("placeholderValue"),
     displayValues: context.get("displayValues"),
 
+    focus() {
+      dom.getSegmentEls(scope)[0]?.focus()
+    },
     setValue(values) {
       send({ type: "VALUE.SET", value: values })
     },
@@ -49,6 +63,7 @@ export function connect<T extends PropTypes>(service: DateInputService, normaliz
       const allSegments = computed("segments")
       const segments = allSegments[index] ?? []
       const enteredKeys = context.get("enteredKeys")
+
       const activeIndex = context.get("activeIndex")
       const activeSegmentIndex = context.get("activeSegmentIndex")
 
@@ -77,11 +92,13 @@ export function connect<T extends PropTypes>(service: DateInputService, normaliz
       })
     },
 
-    getLabelProps() {
+    getLabelProps(props = {}) {
+      const { index = 0 } = props
       return normalize.label({
         ...parts.label.attrs,
-        id: dom.getLabelId(scope),
+        id: dom.getLabelId(scope, index),
         dir: prop("dir"),
+        htmlFor: dom.getHiddenInputId(scope, index),
         "data-disabled": dataAttr(disabled),
         "data-readonly": dataAttr(readOnly),
         "data-invalid": dataAttr(invalid),
@@ -97,12 +114,27 @@ export function connect<T extends PropTypes>(service: DateInputService, normaliz
         ...parts.control.attrs,
         dir: prop("dir"),
         id: dom.getControlId(scope),
-        role: "group",
-        "aria-labelledby": dom.getLabelId(scope),
         "data-disabled": dataAttr(disabled),
         "data-readonly": dataAttr(readOnly),
         "data-invalid": dataAttr(invalid),
         "data-focus": dataAttr(focused),
+      })
+    },
+
+    getSegmentGroupProps(props = {}) {
+      const { index = 0 } = props
+      const activeIndex = context.get("activeIndex")
+
+      return normalize.element({
+        ...parts.segmentGroup.attrs,
+        id: dom.getSegmentGroupId(scope, index),
+        dir: prop("dir"),
+        role: "group",
+        "aria-labelledby": dom.getLabelId(scope, index),
+        "data-disabled": dataAttr(disabled),
+        "data-readonly": dataAttr(readOnly),
+        "data-invalid": dataAttr(invalid),
+        "data-focus": dataAttr(focused && activeIndex === index),
         style: {
           unicodeBidi: "isolate",
         },
@@ -119,8 +151,8 @@ export function connect<T extends PropTypes>(service: DateInputService, normaliz
           dir: prop("dir"),
           "aria-hidden": true,
           "data-type": segment.type,
-          "data-readonly": dataAttr(true),
-          "data-disabled": dataAttr(true),
+          "data-readonly": "",
+          "data-disabled": "",
         })
       }
 
@@ -145,11 +177,11 @@ export function connect<T extends PropTypes>(service: DateInputService, normaliz
         "aria-valuemin": segment.minValue,
         "aria-valuemax": segment.maxValue,
         "aria-invalid": ariaAttr(invalid),
-        "aria-readonly": ariaAttr(!segment.isEditable || readOnly),
+        "aria-readonly": ariaAttr(segmentState.readonly),
         "aria-disabled": ariaAttr(disabled),
         "data-value": segment.value,
         "data-type": segment.type,
-        "data-readonly": dataAttr(!segment.isEditable || readOnly),
+        "data-readonly": dataAttr(segmentState.readonly),
         "data-disabled": dataAttr(disabled),
         "data-editable": dataAttr(segment.isEditable && !readOnly && !disabled),
         "data-placeholder-shown": dataAttr(segment.isPlaceholder),
@@ -158,12 +190,15 @@ export function connect<T extends PropTypes>(service: DateInputService, normaliz
         },
         onFocus(event) {
           const segmentEls = dom.getSegmentEls(scope)
-          const segmentIndex = segmentEls.indexOf(event.currentTarget as HTMLInputElement)
+          const target = event.currentTarget as HTMLInputElement
+          const segmentIndex = segmentEls.indexOf(target)
+
           send({ type: "SEGMENT.FOCUS", dateIndex: index, segmentIndex })
+
           // Collapse selection to start or Chrome won't fire input events
-          const selection = event.currentTarget?.ownerDocument?.getSelection?.()
-          if (selection && event.currentTarget) {
-            selection.collapse(event.currentTarget)
+          const selection = target.ownerDocument?.getSelection?.()
+          if (selection && target) {
+            selection.collapse(target)
           }
         },
         onBlur() {
@@ -223,12 +258,7 @@ export function connect<T extends PropTypes>(service: DateInputService, normaliz
             },
           }
 
-          const exec =
-            keyMap[
-              getEventKey(event, {
-                dir: prop("dir"),
-              })
-            ]
+          const exec = keyMap[getEventKey(event, { dir: prop("dir") })]
 
           if (exec) {
             exec(event)
@@ -244,9 +274,8 @@ export function connect<T extends PropTypes>(service: DateInputService, normaliz
         },
         onBeforeInput(event) {
           const { data, inputType } = getNativeEvent(event)
-          const allowedInputTypes = ["deleteContentBackward", "deleteContentForward", "deleteByCut", "deleteByDrag"]
 
-          if (allowedInputTypes.includes(inputType)) {
+          if (ALLOWED_INPUT_TYPES.includes(inputType)) {
             event.preventDefault()
             return
           }
@@ -282,6 +311,10 @@ export function connect<T extends PropTypes>(service: DateInputService, normaliz
         },
         onPaste(event) {
           event.preventDefault()
+          const text = event.clipboardData?.getData("text/plain")?.trim()
+          if (text) {
+            send({ type: "SEGMENT.PASTE", value: text })
+          }
         },
       })
     },
@@ -306,3 +339,5 @@ export function connect<T extends PropTypes>(service: DateInputService, normaliz
     },
   }
 }
+
+const ALLOWED_INPUT_TYPES = ["deleteContentBackward", "deleteContentForward", "deleteByCut", "deleteByDrag"]

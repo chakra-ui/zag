@@ -1,17 +1,11 @@
-import { DateFormatter } from "@internationalized/date"
+import { DateFormatter, toCalendar, type Calendar, type CalendarIdentifier } from "@internationalized/date"
 import { createMachine, memo, type Params } from "@zag-js/core"
 import { constrainValue, getTodayDate, isDateEqual } from "@zag-js/date-utils"
 import { raf } from "@zag-js/dom-query"
 import { createLiveRegion } from "@zag-js/live-region"
 import * as dom from "./date-input.dom"
 import type { DateInputSchema, DateSegment, DateValue, SegmentType } from "./date-input.types"
-import {
-  constrainValues,
-  createFormatFn,
-  getValueAsString,
-  resolveHourCycleProp,
-  resolvePlaceholderValue,
-} from "./utils/formatting"
+import { createFormatFn, getValueAsString, resolveHourCycleProp, resolvePlaceholderValue } from "./utils/formatting"
 import {
   IncompleteDate,
   incompleteDateEqual,
@@ -21,6 +15,7 @@ import {
 } from "./utils/incomplete-date"
 import { updateSegmentValue } from "./utils/input"
 import { defaultTranslations } from "./utils/placeholders"
+import { parse } from "./date-input.parse"
 import { getFormatterOptions, getSegmentLabel, processSegments, resolveAllSegments } from "./utils/segments"
 import {
   getActiveDisplayValue,
@@ -39,10 +34,29 @@ export const machine = createMachine<DateInputSchema>({
     const granularity = props.granularity || "day"
     const translations = { ...defaultTranslations, ...props.translations }
 
-    const defaultValue = constrainValues(props.defaultValue, props.min, props.max)
-    const value = constrainValues(props.value, props.min, props.max)
+    let calendar: Calendar | undefined
+    if (props.createCalendar) {
+      const resolved = new Intl.DateTimeFormat(locale).resolvedOptions()
+      const calendarId = resolved.calendar as CalendarIdentifier
+      if (calendarId !== "gregory" && calendarId !== "iso8601") {
+        calendar = props.createCalendar(calendarId)
+      }
+    }
 
-    const placeholderValue = resolvePlaceholderValue(props, timeZone, granularity, value, defaultValue)
+    const toTargetCalendar = (date: DateValue) => {
+      if (!calendar) return date
+      if (date.calendar.identifier === calendar.identifier) return date
+      return toCalendar(date, calendar)
+    }
+
+    const defaultValue = props.defaultValue
+      ? props.defaultValue.map((date) => constrainValue(toTargetCalendar(date), props.min, props.max))
+      : undefined
+    const value = props.value
+      ? props.value.map((date) => constrainValue(toTargetCalendar(date), props.min, props.max))
+      : undefined
+
+    const placeholderValue = resolvePlaceholderValue(props, timeZone, granularity, value, defaultValue, calendar)
 
     const hourCycle = resolveHourCycleProp(props.hourCycle)
     const shouldForceLeadingZeros = props.shouldForceLeadingZeros ?? false
@@ -274,6 +288,9 @@ export const machine = createMachine<DateInputSchema>({
         "SEGMENT.END": {
           actions: ["setSegmentToHighestValue", "clearEnteredKeys", "announceSegmentValue"],
         },
+        "SEGMENT.PASTE": {
+          actions: ["setPastedValue", "clearEnteredKeys"],
+        },
       },
     },
   },
@@ -486,6 +503,19 @@ export const machine = createMachine<DateInputSchema>({
 
       clearDateValue({ context }) {
         context.set("value", [])
+      },
+
+      setPastedValue({ context, event, prop }) {
+        try {
+          const parsed = parse(event.value)
+          const constrained = constrainValue(parsed, prop("min"), prop("max"))
+          const index = context.get("activeIndex")
+          const values = Array.from(context.get("value"))
+          values[index] = constrained
+          context.set("value", values)
+        } catch {
+          // Invalid paste text — ignore
+        }
       },
 
       syncDisplayValues({ context, prop, computed }) {

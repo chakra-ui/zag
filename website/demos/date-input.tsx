@@ -21,15 +21,17 @@ export function DateInput(props: DateInputProps) {
         Select a date
       </label>
       <div className={styles.Control} {...api.getControlProps()}>
-        {api.getSegments().map((segment, i) => (
-          <span
-            key={i}
-            className={styles.Segment}
-            {...api.getSegmentProps({ segment })}
-          >
-            {segment.text}
-          </span>
-        ))}
+        <div className={styles.SegmentGroup} {...api.getSegmentGroupProps()}>
+          {api.getSegments().map((segment, i) => (
+            <span
+              key={i}
+              className={styles.Segment}
+              {...api.getSegmentProps({ segment })}
+            >
+              {segment.text}
+            </span>
+          ))}
+        </div>
       </div>
       <input {...api.getHiddenInputProps()} />
       <button className={styles.ClearButton} onClick={api.clearValue}>

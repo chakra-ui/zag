@@ -27,6 +27,11 @@ export class DateInputModel extends Model {
     return this.page.locator(`[data-scope=date-input][data-part=control]`)
   }
 
+  getSegmentGroup(index?: number) {
+    const locator = this.page.locator(`[data-scope=date-input][data-part=segment-group]`)
+    return index != null ? locator.nth(index) : locator
+  }
+
   getEditableSegments() {
     return this.page.locator(`[data-scope=date-input][data-part=segment][data-editable]`)
   }
@@ -37,6 +42,10 @@ export class DateInputModel extends Model {
 
   get output() {
     return this.page.locator(".date-output")
+  }
+
+  getSegmentInGroup(type: string, groupIndex: number) {
+    return this.getSegmentGroup(groupIndex).locator(`[data-scope=date-input][data-part=segment][data-type=${type}]`)
   }
 
   getSegmentNth(type: string, index = 0) {
@@ -56,6 +65,15 @@ export class DateInputModel extends Model {
 
   async clickOutsideToBlur() {
     await this.page.locator("main").click({ position: { x: 10, y: 10 } })
+  }
+
+  async paste(text: string) {
+    await this.page.evaluate(async (text) => {
+      const dt = new DataTransfer()
+      dt.setData("text/plain", text)
+      const event = new ClipboardEvent("paste", { clipboardData: dt, bubbles: true, cancelable: true })
+      document.activeElement?.dispatchEvent(event)
+    }, text)
   }
 
   // --- Assertions ---
@@ -98,6 +116,14 @@ export class DateInputModel extends Model {
 
   seeControlNotFocused() {
     return expect(this.control).not.toHaveAttribute("data-focus")
+  }
+
+  seeSegmentGroupFocused(groupIndex: number) {
+    return expect(this.getSegmentGroup(groupIndex)).toHaveAttribute("data-focus", "")
+  }
+
+  seeSegmentGroupNotFocused(groupIndex: number) {
+    return expect(this.getSegmentGroup(groupIndex)).not.toHaveAttribute("data-focus")
   }
 
   seeEditingValue(value: string) {

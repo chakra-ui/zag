@@ -742,6 +742,21 @@ test.describe("date-input [single]", () => {
     await I.type("01")
     await I.seeSegmentText("month", "1")
   })
+
+  test("[paste] pasting a valid ISO date string sets the value", async () => {
+    await I.focusSegment("month")
+    await I.paste("2024-06-15")
+    await I.seeSelectedValue("6/15/2024")
+  })
+
+  test("[paste] pasting an invalid string is a no-op", async () => {
+    await I.focusSegment("month")
+    await I.paste("not-a-date")
+    await I.seeSelectedValue("")
+    await I.seeSegmentIsPlaceholder("month")
+    await I.seeSegmentIsPlaceholder("day")
+    await I.seeSegmentIsPlaceholder("year")
+  })
 })
 
 test.describe("date-input [range]", () => {
@@ -802,25 +817,28 @@ test.describe("date-input [range]", () => {
     await I.seeSegmentInGroupIsPlaceholder("year", 1)
   })
 
-  test("[focus] focusing start date marks control with data-focus", async () => {
+  test("[focus] focusing start date group marks only group 0 with data-focus", async () => {
     await I.focusFirstSegment()
-    await I.seeControlFocused()
+    await I.seeSegmentGroupFocused(0)
+    await I.seeSegmentGroupNotFocused(1)
   })
 
-  test("[focus] focusing end date keeps control focused", async () => {
+  test("[focus] focusing end date group marks only group 1 with data-focus", async () => {
     await I.focusFirstSegment()
     await I.type("01")
     await I.type("15")
     await I.type("2025")
     await I.seeSegmentInGroupFocused("month", 1)
-    await I.seeControlFocused()
+    await I.seeSegmentGroupFocused(1)
+    await I.seeSegmentGroupNotFocused(0)
   })
 
-  test("[focus] blurring range input removes data-focus from control", async () => {
+  test("[focus] blurring range input removes data-focus from all groups", async () => {
     await I.focusFirstSegment()
-    await I.seeControlFocused()
+    await I.seeSegmentGroupFocused(0)
     await I.clickOutsideToBlur()
-    await I.seeControlNotFocused()
+    await I.seeSegmentGroupNotFocused(0)
+    await I.seeSegmentGroupNotFocused(1)
   })
 })
 

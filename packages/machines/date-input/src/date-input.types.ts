@@ -2,6 +2,7 @@ import type {
   Calendar,
   CalendarDate,
   CalendarDateTime,
+  CalendarIdentifier,
   DateFormatter,
   DateValue,
   ZonedDateTime,
@@ -49,8 +50,9 @@ export interface IntlTranslations {
 
 export type ElementIds = Partial<{
   root: string
-  label: string
+  label: (index: number) => string
   control: string
+  segmentGroup: (index: number) => string
   hiddenInput: (index: number) => string
 }>
 
@@ -60,6 +62,15 @@ export interface DateInputProps extends DirectionProperty, CommonProperties {
    * @default "en-US"
    */
   locale?: string | undefined
+  /**
+   * A function that creates a calendar object for a given calendar identifier.
+   * Use this to support non-Gregorian calendars (e.g., Persian, Islamic, Buddhist).
+   *
+   * @example
+   * import { createCalendar } from "@internationalized/date"
+   * { locale: "fa-IR", createCalendar }
+   */
+  createCalendar?: ((identifier: CalendarIdentifier) => Calendar) | undefined
   /**
    * The localized messages to use.
    */
@@ -97,6 +108,11 @@ export interface DateInputProps extends DirectionProperty, CommonProperties {
    * Whether the date input is invalid
    */
   invalid?: boolean | undefined
+  /**
+   * Returns whether a date is unavailable.
+   * When a committed date matches, the input is marked as invalid.
+   */
+  isDateUnavailable?: ((date: DateValue, locale: string) => boolean) | undefined
   /**
    * The minimum date that can be selected.
    */
@@ -311,6 +327,10 @@ export interface DateSegment {
   isEditable: boolean
 }
 
+export interface SegmentGroupProps {
+  index?: number | undefined
+}
+
 export interface SegmentsProps {
   index?: number | undefined
 }
@@ -322,6 +342,12 @@ export interface SegmentProps {
 
 export interface SegmentState {
   editable: boolean
+  focused: boolean
+  readonly: boolean
+}
+
+export interface LabelProps {
+  index?: number | undefined
 }
 
 export interface HiddenInputProps {
@@ -364,6 +390,10 @@ export interface DateInputApi<T extends PropTypes = PropTypes> {
    */
   displayValues: IncompleteDate[]
   /**
+   * Focuses the first segment.
+   */
+  focus: VoidFunction
+  /**
    * Sets the selected date(s) to the given values.
    */
   setValue: (values: DateValue[]) => void
@@ -381,8 +411,9 @@ export interface DateInputApi<T extends PropTypes = PropTypes> {
   getSegmentState: (props: SegmentProps) => SegmentState
 
   getRootProps: () => T["element"]
-  getLabelProps: () => T["label"]
+  getLabelProps: (props?: LabelProps) => T["label"]
   getControlProps: () => T["element"]
+  getSegmentGroupProps: (props?: SegmentGroupProps | undefined) => T["element"]
   getSegmentProps: (props: SegmentProps) => T["element"]
   getHiddenInputProps: (props?: HiddenInputProps | undefined) => T["input"]
 }
@@ -391,4 +422,4 @@ export interface DateInputApi<T extends PropTypes = PropTypes> {
  * Re-exported types
  * -----------------------------------------------------------------------------*/
 
-export type { Calendar, CalendarDate, CalendarDateTime, DateFormatter, DateValue, ZonedDateTime }
+export type { Calendar, CalendarDate, CalendarDateTime, CalendarIdentifier, DateFormatter, DateValue, ZonedDateTime }

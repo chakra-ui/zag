@@ -43,11 +43,13 @@ export default function Page() {
           <div {...dateInputApi.getRootProps()}>
             <label {...dateInputApi.getLabelProps()}>Date</label>
             <div {...dateInputApi.getControlProps()}>
-              {dateInputApi.getSegments().map((segment, i) => (
-                <span key={i} {...dateInputApi.getSegmentProps({ segment })}>
-                  {segment.text}
-                </span>
-              ))}
+              <div {...dateInputApi.getSegmentGroupProps()}>
+                {dateInputApi.getSegments().map((segment, i) => (
+                  <span key={i} {...dateInputApi.getSegmentProps({ segment })}>
+                    {segment.text}
+                  </span>
+                ))}
+              </div>
             </div>
           </div>
 
