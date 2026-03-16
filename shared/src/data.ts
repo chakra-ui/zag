@@ -324,6 +324,18 @@ export const stepsData = [
   { value: "third", title: "Third", description: "Select Rooms" },
 ]
 
+export const tocData = [
+  { value: "introduction", depth: 2, label: "Introduction" },
+  { value: "getting-started", depth: 2, label: "Getting Started" },
+  { value: "installation", depth: 3, label: "Installation" },
+  { value: "configuration", depth: 3, label: "Configuration" },
+  { value: "usage", depth: 2, label: "Usage" },
+  { value: "basic-example", depth: 3, label: "Basic Example" },
+  { value: "advanced-patterns", depth: 3, label: "Advanced Patterns" },
+  { value: "api-reference", depth: 2, label: "API Reference" },
+  { value: "troubleshooting", depth: 2, label: "Troubleshooting" },
+]
+
 export * as commandData from "./command"
 
 // JSON Tree test data

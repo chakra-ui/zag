@@ -31,13 +31,14 @@ export function groupConnect<T extends PropTypes, O = any>(
         ...parts.group.attrs,
         dir: prop("dir"),
         tabIndex: -1,
-        "aria-label": `${placement} ${label} ${hotkeyLabel}`,
+        "aria-label": `${label}, ${placement} (${hotkeyLabel})`,
         id: dom.getRegionId(placement),
         "data-placement": placement,
         "data-side": side,
         "data-align": align,
         "aria-live": "polite",
-        role: "region",
+        "aria-relevant": "additions text",
+        "aria-atomic": "false",
         style: getGroupPlacementStyle(service, placement),
         onMouseEnter() {
           if (refs.get("ignoreMouseTimer").isActive()) return

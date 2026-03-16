@@ -1,0 +1,35 @@
+```jsx
+import * as toc from "@zag-js/toc"
+import { normalizeProps, useMachine } from "@zag-js/solid"
+import { createMemo, createUniqueId, For } from "solid-js"
+
+const items = [
+  { value: "introduction", depth: 2 },
+  { value: "getting-started", depth: 2 },
+  { value: "installation", depth: 3 },
+  { value: "usage", depth: 2 },
+]
+
+export function TableOfContents() {
+  const service = useMachine(toc.machine, { id: createUniqueId(), items })
+
+  const api = createMemo(() => toc.connect(service, normalizeProps))
+
+  return (
+    <nav {...api().getRootProps()}>
+      <h5 {...api().getTitleProps()}>On this page</h5>
+      <ul {...api().getListProps()}>
+        <For each={api().items}>
+          {(item) => (
+            <li {...api().getItemProps({ item })}>
+              <a href={`#${item.value}`} {...api().getLinkProps({ item })}>
+                {item.value}
+              </a>
+            </li>
+          )}
+        </For>
+      </ul>
+    </nav>
+  )
+}
+```
