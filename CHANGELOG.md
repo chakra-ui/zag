@@ -4,6 +4,40 @@ All notable changes to this project will be documented in this file.
 
 > For v0.x changelog, see the [v0 branch](https://github.com/chakra-ui/zag/blob/v0/CHANGELOG.md)
 
+## [1.37.0](./#1.37.0) - 2026-03-16
+
+### Added
+
+- **Date Input**
+  - Add paste support for ISO 8601 date strings
+  - Add `api.focus()` method for programmatic focus
+  - Add `createCalendar` prop for non-Gregorian calendar systems (e.g., Buddhist, Persian)
+  - Add `isDateUnavailable` prop to mark specific dates as invalid
+
+- **Table of Contents**: Initial release of table of contents machine that highlights active headings as you scroll
+
+### Fixed
+
+- **Dialog, Drawer**: Improve focus restoration by preferring the trigger element as a stable fallback return target
+  after remount cycles
+
+- **Floating Panel**: Fix `Escape` during drag or resize so floating panels restore their previous position or size
+  correctly in non-React frameworks
+
+- **Preact**: Fix Fast Refresh lifecycle edge cases where machine cleanup could hydrate from stale state and skip
+  expected effect re-application
+
+- **React**
+  - Re-run entry actions after StrictMode remount
+  - Fix Fast Refresh lifecycle edge cases where machine cleanup could hydrate from stale state and skip expected effect
+    re-application
+
+- **Radio Group**: Fix missing `aria-labelledby` on radio hidden input, ensuring `getByRole('radio', { name: '...' })`
+  works in testing tools like Playwright
+
+- **Toast**: Improve toast group accessibility by removing `role="region"` landmark to reduce screen reader noise and
+  restructuring `aria-label` for more natural output (e.g., "Notifications, bottom (Alt+T)")
+
 ## [1.36.0](./#1.36.0) - 2026-03-11
 
 ### Added
