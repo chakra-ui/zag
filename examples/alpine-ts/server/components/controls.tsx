@@ -54,6 +54,22 @@ export function Controls<T extends ControlRecord>({ config }: { config: T }) {
                 />
               </div>
             )
+          case "date":
+            return (
+              <div class="text">
+                <label for={label} style={{ marginRight: "10px" }}>
+                  {label}
+                </label>
+                <input
+                  data-testid={key}
+                  id={label}
+                  type="date"
+                  placeholder={placeholder}
+                  value={value}
+                  x-model={`state.${key}`}
+                />
+              </div>
+            )
           default:
             return null
         }
