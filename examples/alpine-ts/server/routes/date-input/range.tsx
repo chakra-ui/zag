@@ -23,7 +23,10 @@ export default defineHandler((event) => {
 
               <div x-date-input:control>
                 <div x-date-input:segment-group="{ index: 0 }">
-                  <template x-for="(segment, i) in $dateInput().getSegments({ index: 0 })" x-bind:key="i">
+                  <template
+                    x-for="(segment, i) in $dateInput().getSegments({ index: 0 })"
+                    x-bind:key="segment.type + i"
+                  >
                     <span x-date-input:segment="{ segment }" x-text="segment.text" />
                   </template>
                 </div>
@@ -31,7 +34,10 @@ export default defineHandler((event) => {
                 <span> &ndash; </span>
 
                 <div x-date-input:segment-group="{ index: 1 }">
-                  <template x-for="(segment, i) in $dateInput().getSegments({ index: 1 })" x-bind:key="i">
+                  <template
+                    x-for="(segment, i) in $dateInput().getSegments({ index: 1 })"
+                    x-bind:key="segment.type + i"
+                  >
                     <span x-date-input:segment="{ segment }" x-text="segment.text" />
                   </template>
                 </div>

@@ -23,7 +23,7 @@ export default defineHandler((event) => {
 
               <div x-date-input:control>
                 <div x-date-input:segment-group>
-                  <template x-for="(segment, i) in $dateInput().getSegments()" x-bind:key="i">
+                  <template x-for="(segment, i) in $dateInput().getSegments()" x-bind:key="segment.type + i">
                     <span x-date-input:segment="{ segment }" x-text="segment.text" />
                   </template>
                 </div>
