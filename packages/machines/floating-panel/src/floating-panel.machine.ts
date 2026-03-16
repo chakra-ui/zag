@@ -218,35 +218,33 @@ export const machine = createMachine<FloatingPanelSchema>({
         },
         dragging: {
           effects: ["trackPointerMove"],
-          exit: ["clearPrevPosition"],
           on: {
             DRAG: {
               actions: ["setPositionFromDrag"],
             },
             DRAG_END: {
               target: "idle",
-              actions: ["invokeOnDragEnd"],
+              actions: ["invokeOnDragEnd", "clearPrevPosition"],
             },
             ESCAPE: {
               target: "idle",
-              actions: ["restorePosition"],
+              actions: ["restorePosition", "clearPrevPosition"],
             },
           },
         },
         resizing: {
           effects: ["trackPointerMove"],
-          exit: ["clearPrevSize"],
           on: {
             DRAG: {
               actions: ["setSizeFromDrag"],
             },
             DRAG_END: {
               target: "idle",
-              actions: ["invokeOnResizeEnd"],
+              actions: ["invokeOnResizeEnd", "clearPrevSize"],
             },
             ESCAPE: {
               target: "idle",
-              actions: ["restoreSize"],
+              actions: ["restoreSize", "clearPrevSize"],
             },
           },
         },
