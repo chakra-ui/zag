@@ -1,7 +1,43 @@
 import { DateFormatter } from "@internationalized/date"
 import type { DateGranularity } from "@zag-js/date-utils"
-import type { DateSegment, EditableSegmentType, IntlTranslations } from "../date-input.types"
+import type { DateSegment, EditableSegmentType, IntlTranslations, Segments } from "../date-input.types"
 import type { IncompleteDate } from "./incomplete-date"
+
+export function needsTimeGranularity(granularity: DateGranularity): boolean {
+  return granularity === "hour" || granularity === "minute" || granularity === "second"
+}
+
+export function getFormatterOptions(
+  granularity: DateGranularity,
+  digitStyle: "2-digit" | "numeric",
+  hourCycle: "h12" | "h23" | undefined,
+  timeZone: string,
+): Intl.DateTimeFormatOptions {
+  const options: Intl.DateTimeFormatOptions = {
+    timeZone,
+    day: digitStyle,
+    month: digitStyle,
+    year: "numeric",
+    hourCycle,
+  }
+  if (needsTimeGranularity(granularity)) options.hour = digitStyle
+  if (granularity === "minute" || granularity === "second") options.minute = "2-digit"
+  if (granularity === "second") options.second = "2-digit"
+  return options
+}
+
+export function resolveAllSegments(formatter: DateFormatter): Segments {
+  const segs = formatter
+    .formatToParts(new Date())
+    .filter((seg) => EDITABLE_SEGMENTS[seg.type])
+    .reduce<Segments>((p, seg) => {
+      const key = TYPE_MAPPING[seg.type as keyof typeof TYPE_MAPPING] || seg.type
+      p[key] = true
+      return p
+    }, {})
+  segs.era = true
+  return segs
+}
 
 export const EDITABLE_SEGMENTS = {
   year: true,

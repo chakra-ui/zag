@@ -218,6 +218,10 @@ type ComputedContext = Readonly<{
    */
   isInteractive: boolean
   /**
+   * The number of date groups (1 for single, 2 for range).
+   */
+  groupCount: number
+  /**
    * The value text to display.
    */
   valueAsString: string[]
