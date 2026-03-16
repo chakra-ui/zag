@@ -63,21 +63,17 @@ export class AlpineMachine<T extends MachineSchema> {
 
   constructor(
     private machine: Machine<T>,
-    useProps: <R>(callback: (userProps: Partial<T["props"]> | (() => Partial<T["props"]>)) => R) => R,
+    userPropsRef: { value: Partial<T["props"]> | (() => Partial<T["props"]>) },
   ) {
     // create scope
-    this.scope = useProps((userProps) => {
-      const { id, ids, getRootNode } = runIfFn(userProps) as any
-      return createScope({ id, ids, getRootNode })
-    })
+    const { id, ids, getRootNode } = runIfFn(userPropsRef.value) as any
+    this.scope = createScope({ id, ids, getRootNode })
 
     // create prop
     const prop: PropFn<T> = (key) => {
-      return useProps((userProps) => {
-        const __props = runIfFn(userProps)
-        const props = machine.props?.({ props: compact(__props), scope: this.scope }) ?? __props
-        return props[key]
-      })
+      const __props = runIfFn(userPropsRef.value)
+      const props = machine.props?.({ props: compact(__props), scope: this.scope }) ?? __props
+      return props[key]
     }
     this.prop = prop
 
