@@ -1,5 +1,22 @@
 # @zag-js/floating-panel
 
+## 1.37.0
+
+### Patch Changes
+
+- [`fc64b64`](https://github.com/chakra-ui/zag/commit/fc64b64b9f1c01cfc0cef9d529c1b099e15b549e) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix `Escape` during drag or resize so floating panels restore
+  their previous position or size correctly in non-React frameworks.
+- Updated dependencies []:
+  - @zag-js/anatomy@1.37.0
+  - @zag-js/core@1.37.0
+  - @zag-js/store@1.37.0
+  - @zag-js/types@1.37.0
+  - @zag-js/utils@1.37.0
+  - @zag-js/dom-query@1.37.0
+  - @zag-js/popper@1.37.0
+  - @zag-js/rect-utils@1.37.0
+
 ## 1.36.0
 
 ### Patch Changes

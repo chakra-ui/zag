@@ -1,5 +1,26 @@
 # @zag-js/date-input
 
+## 1.37.0
+
+### Minor Changes
+
+- [`1d1dab1`](https://github.com/chakra-ui/zag/commit/1d1dab17ce8ff23ac0740104c0383014e0f3e29f) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - - Add paste support for ISO 8601 date strings
+  - Add `api.focus()` method for programmatic focus
+  - Add `createCalendar` prop for non-Gregorian calendar systems (e.g., Buddhist, Persian)
+  - Add `isDateUnavailable` prop to mark specific dates as invalid
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.37.0
+  - @zag-js/core@1.37.0
+  - @zag-js/types@1.37.0
+  - @zag-js/utils@1.37.0
+  - @zag-js/date-utils@1.37.0
+  - @zag-js/dom-query@1.37.0
+  - @zag-js/live-region@1.37.0
+
 ## 1.36.0
 
 ### Patch Changes
