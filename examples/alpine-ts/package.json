@@ -9,7 +9,7 @@
     "@types/alpinejs": "^3.13.11",
     "@types/form-serialize": "0.7.4",
     "nitro": "latest",
-    "vite": "beta"
+    "vite": "^8.0.0"
   },
   "dependencies": {
     "@zag-js/accordion": "workspace:*",
