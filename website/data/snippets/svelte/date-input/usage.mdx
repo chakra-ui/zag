@@ -11,13 +11,11 @@
   <label use:api.getLabelProps>Enter a date</label>
 
   <div use:api.getControlProps>
-    <div use:api.getSegmentGroupProps>
-      {#each api.getSegments() as segment, i (i)}
-        <span use:api.getSegmentProps={{ segment }}>
-          {segment.text}
-        </span>
-      {/each}
-    </div>
+    {#each api.getSegments() as segment, i (i)}
+      <span use:api.getSegmentProps={{ segment }}>
+        {segment.text}
+      </span>
+    {/each}
   </div>
 
   <input use:api.getHiddenInputProps />

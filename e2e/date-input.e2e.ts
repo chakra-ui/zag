@@ -802,30 +802,25 @@ test.describe("date-input [range]", () => {
     await I.seeSegmentInGroupIsPlaceholder("year", 1)
   })
 
-  test("[focus] focusing start date group marks only group 0 with data-focus", async () => {
+  test("[focus] focusing start date marks control with data-focus", async () => {
     await I.focusFirstSegment()
-    await I.seeSegmentGroupFocused(0)
-    await I.seeSegmentGroupNotFocused(1)
+    await I.seeControlFocused()
   })
 
-  test("[focus] focusing end date group marks only group 1 with data-focus", async () => {
-    // Fill start date to auto-advance into end date group
+  test("[focus] focusing end date keeps control focused", async () => {
     await I.focusFirstSegment()
     await I.type("01")
     await I.type("15")
     await I.type("2025")
-    // Now focused on group 1
     await I.seeSegmentInGroupFocused("month", 1)
-    await I.seeSegmentGroupFocused(1)
-    await I.seeSegmentGroupNotFocused(0)
+    await I.seeControlFocused()
   })
 
-  test("[focus] blurring range input removes data-focus from all groups", async () => {
+  test("[focus] blurring range input removes data-focus from control", async () => {
     await I.focusFirstSegment()
-    await I.seeSegmentGroupFocused(0)
+    await I.seeControlFocused()
     await I.clickOutsideToBlur()
-    await I.seeSegmentGroupNotFocused(0)
-    await I.seeSegmentGroupNotFocused(1)
+    await I.seeControlNotFocused()
   })
 })
 

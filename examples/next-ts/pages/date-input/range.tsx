@@ -23,23 +23,19 @@ export default function Page() {
           <label {...api.getLabelProps()}>Date Range</label>
 
           <div {...api.getControlProps()}>
-            <div {...api.getSegmentGroupProps({ index: 0 })}>
-              {api.getSegments({ index: 0 }).map((segment, i) => (
-                <span key={i} {...api.getSegmentProps({ segment, index: 0 })}>
-                  {segment.text}
-                </span>
-              ))}
-            </div>
+            {api.getSegments({ index: 0 }).map((segment, i) => (
+              <span key={i} {...api.getSegmentProps({ segment, index: 0 })}>
+                {segment.text}
+              </span>
+            ))}
 
             <span> &ndash; </span>
 
-            <div {...api.getSegmentGroupProps({ index: 1 })}>
-              {api.getSegments({ index: 1 }).map((segment, i) => (
-                <span key={i} {...api.getSegmentProps({ segment, index: 1 })}>
-                  {segment.text}
-                </span>
-              ))}
-            </div>
+            {api.getSegments({ index: 1 }).map((segment, i) => (
+              <span key={i} {...api.getSegmentProps({ segment, index: 1 })}>
+                {segment.text}
+              </span>
+            ))}
           </div>
 
           <input {...api.getHiddenInputProps({ index: 0 })} />

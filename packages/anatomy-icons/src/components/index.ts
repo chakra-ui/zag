@@ -1,5 +1,4 @@
 import { AccordionAnatomy } from "./accordion"
-import { DateInputAnatomy } from "./date-input"
 import { AvatarAnatomy } from "./avatar"
 import { CarouselAnatomy } from "./carousel"
 import { CheckboxAnatomy } from "./checkbox"
@@ -7,6 +6,7 @@ import { CircularProgressAnatomy } from "./circular-progress"
 import { ClipboardAnatomy } from "./clipboard"
 import { ColorPickerAnatomy } from "./color-picker"
 import { ComboboxAnatomy } from "./combobox"
+import { DateInputAnatomy } from "./date-input"
 import { DatePickerAnatomy } from "./date-picker"
 import { DialogAnatomy } from "./dialog"
 import { EditableAnatomy } from "./editable"
@@ -25,6 +25,7 @@ import { PopoverAnatomy } from "./popover"
 import { QRCodeAnatomy } from "./qr-code"
 import { RadioGroupAnatomy } from "./radio-group"
 import { RatingGroupAnatomy } from "./rating-group"
+import { ScrollAreaAnatomy } from "./scroll-area"
 import { SegmentedControlAnatomy } from "./segmented-control"
 import { SelectAnatomy } from "./select"
 import { SignaturePadAnatomy } from "./signature-pad"
@@ -34,16 +35,15 @@ import { StepsAnatomy } from "./steps"
 import { SwitchAnatomy } from "./switch"
 import { TabsAnatomy } from "./tabs"
 import { TagsInputAnatomy } from "./tags-input"
-
 import { ToastAnatomy } from "./toast"
+import { TocAnatomy } from "./toc"
 import { ToggleGroupAnatomy } from "./toggle-group"
 import { TooltipAnatomy } from "./tooltip"
 import { TourAnatomy } from "./tour"
 import { TreeViewAnatomy } from "./tree-view"
-import { ScrollAreaAnatomy } from "./scroll-area"
-import { TocAnatomy } from "./toc"
 
 export const allComponents = {
+  "date-input": DateInputAnatomy,
   toc: TocAnatomy,
   "scroll-area": ScrollAreaAnatomy,
   "password-input": PasswordInputAnatomy,
@@ -58,7 +58,6 @@ export const allComponents = {
   "tree-view": TreeViewAnatomy,
   "circular-progress": CircularProgressAnatomy,
   "color-picker": ColorPickerAnatomy,
-  "date-input": DateInputAnatomy,
   "date-picker": DatePickerAnatomy,
   "file-upload": FileUploadAnatomy,
   "hover-card": HoverCardAnatomy,

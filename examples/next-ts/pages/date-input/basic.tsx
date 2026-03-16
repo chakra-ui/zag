@@ -22,13 +22,11 @@ export default function Page() {
           <label {...api.getLabelProps()}>Date</label>
 
           <div {...api.getControlProps()}>
-            <div {...api.getSegmentGroupProps()}>
-              {api.getSegments().map((segment, i) => (
-                <span key={i} {...api.getSegmentProps({ segment })}>
-                  {segment.text}
-                </span>
-              ))}
-            </div>
+            {api.getSegments().map((segment, i) => (
+              <span key={i} {...api.getSegmentProps({ segment })}>
+                {segment.text}
+              </span>
+            ))}
           </div>
 
           <input {...api.getHiddenInputProps()} />

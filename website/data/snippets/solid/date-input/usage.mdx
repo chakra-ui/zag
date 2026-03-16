@@ -13,15 +13,13 @@ function DateInput() {
       <label {...api().getLabelProps()}>Enter a date</label>
 
       <div {...api().getControlProps()}>
-        <div {...api().getSegmentGroupProps()}>
-          {api()
-            .getSegments()
-            .map((segment, i) => (
-              <span {...api().getSegmentProps({ segment })}>
-                {segment.text}
-              </span>
-            ))}
-        </div>
+        {api()
+          .getSegments()
+          .map((segment, i) => (
+            <span {...api().getSegmentProps({ segment })}>
+              {segment.text}
+            </span>
+          ))}
       </div>
 
       <input {...api().getHiddenInputProps()} />

@@ -21,18 +21,13 @@ export function connect<T extends PropTypes>(service: DateInputService, normaliz
   function getSegmentState(props: SegmentProps): SegmentState {
     const { segment } = props
     const isEditable = !disabled && !readOnly && segment.isEditable
-    return {
-      editable: isEditable,
-    }
+    return { editable: isEditable }
   }
-
-  const groupCount = computed("segments").length
 
   return {
     focused,
     disabled,
     invalid,
-    groupCount,
     value: context.get("value"),
     valueAsDate: context
       .get("value")
@@ -60,9 +55,9 @@ export function connect<T extends PropTypes>(service: DateInputService, normaliz
       // Show entered keys as segment text while user is typing
       if (focused && enteredKeys && index === activeIndex && activeSegmentIndex >= 0) {
         const localActiveSegmentIndex = activeSegmentIndex - getGroupOffset(allSegments, index)
-        return segments.map((seg, i) => {
-          if (i !== localActiveSegmentIndex) return seg
-          return { ...seg, text: enteredKeys, isPlaceholder: false }
+        return segments.map((segment, index) => {
+          if (index !== localActiveSegmentIndex) return segment
+          return { ...segment, text: enteredKeys, isPlaceholder: false }
         })
       }
 
@@ -82,16 +77,18 @@ export function connect<T extends PropTypes>(service: DateInputService, normaliz
       })
     },
 
-    getLabelProps(props = {}) {
-      const { index = 0 } = props
+    getLabelProps() {
       return normalize.label({
         ...parts.label.attrs,
-        id: dom.getLabelId(scope, index),
+        id: dom.getLabelId(scope),
         dir: prop("dir"),
-        htmlFor: dom.getSegmentGroupId(scope, index),
         "data-disabled": dataAttr(disabled),
         "data-readonly": dataAttr(readOnly),
         "data-invalid": dataAttr(invalid),
+        onClick() {
+          if (disabled) return
+          dom.getSegmentEls(scope)[0]?.focus()
+        },
       })
     },
 
@@ -100,27 +97,12 @@ export function connect<T extends PropTypes>(service: DateInputService, normaliz
         ...parts.control.attrs,
         dir: prop("dir"),
         id: dom.getControlId(scope),
+        role: "group",
+        "aria-labelledby": dom.getLabelId(scope),
         "data-disabled": dataAttr(disabled),
         "data-readonly": dataAttr(readOnly),
         "data-invalid": dataAttr(invalid),
         "data-focus": dataAttr(focused),
-      })
-    },
-
-    getSegmentGroupProps(props = {}) {
-      const { index = 0 } = props
-      const activeIndex = context.get("activeIndex")
-
-      return normalize.element({
-        ...parts.segmentGroup.attrs,
-        id: dom.getSegmentGroupId(scope, index),
-        dir: prop("dir"),
-        role: "group",
-        "aria-labelledby": dom.getLabelId(scope, index),
-        "data-disabled": dataAttr(disabled),
-        "data-readonly": dataAttr(readOnly),
-        "data-invalid": dataAttr(invalid),
-        "data-focus": dataAttr(focused && activeIndex === index),
         style: {
           unicodeBidi: "isolate",
         },
@@ -170,7 +152,7 @@ export function connect<T extends PropTypes>(service: DateInputService, normaliz
         "data-readonly": dataAttr(!segment.isEditable || readOnly),
         "data-disabled": dataAttr(disabled),
         "data-editable": dataAttr(segment.isEditable && !readOnly && !disabled),
-        "data-placeholder": dataAttr(segment.isPlaceholder),
+        "data-placeholder-shown": dataAttr(segment.isPlaceholder),
         style: {
           caretColor: "transparent",
         },

@@ -49,9 +49,8 @@ export interface IntlTranslations {
 
 export type ElementIds = Partial<{
   root: string
-  label: (index: number) => string
+  label: string
   control: string
-  segmentGroup: (index: number) => string
   hiddenInput: (index: number) => string
 }>
 
@@ -308,10 +307,6 @@ export interface DateSegment {
   isEditable: boolean
 }
 
-export interface SegmentGroupProps {
-  index?: number | undefined
-}
-
 export interface SegmentsProps {
   index?: number | undefined
 }
@@ -323,10 +318,6 @@ export interface SegmentProps {
 
 export interface SegmentState {
   editable: boolean
-}
-
-export interface LabelProps {
-  index?: number | undefined
 }
 
 export interface HiddenInputProps {
@@ -347,10 +338,6 @@ export interface DateInputApi<T extends PropTypes = PropTypes> {
    * Whether the date input is invalid
    */
   invalid: boolean
-  /**
-   * The number of segment groups rendered by the date input.
-   */
-  groupCount: number
   /**
    * The selected date(s).
    */
@@ -390,9 +377,8 @@ export interface DateInputApi<T extends PropTypes = PropTypes> {
   getSegmentState: (props: SegmentProps) => SegmentState
 
   getRootProps: () => T["element"]
-  getLabelProps: (props?: LabelProps) => T["label"]
+  getLabelProps: () => T["label"]
   getControlProps: () => T["element"]
-  getSegmentGroupProps: (props?: SegmentGroupProps | undefined) => T["element"]
   getSegmentProps: (props: SegmentProps) => T["element"]
   getHiddenInputProps: (props?: HiddenInputProps | undefined) => T["input"]
 }

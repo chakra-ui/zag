@@ -14,15 +14,13 @@ const api = computed(() => dateInput.connect(service, normalizeProps))
     <label v-bind="api.getLabelProps()">Enter a date</label>
 
     <div v-bind="api.getControlProps()">
-      <div v-bind="api.getSegmentGroupProps()">
-        <span
-          v-for="(segment, i) in api.getSegments()"
-          :key="i"
-          v-bind="api.getSegmentProps({ segment })"
-        >
-          {{ segment.text }}
-        </span>
-      </div>
+      <span
+        v-for="(segment, i) in api.getSegments()"
+        :key="i"
+        v-bind="api.getSegmentProps({ segment })"
+      >
+        {{ segment.text }}
+      </span>
     </div>
 
     <input v-bind="api.getHiddenInputProps()" />

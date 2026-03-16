@@ -1,5 +1,5 @@
 import { type Page, expect } from "@playwright/test"
-import { a11y, part } from "../_utils"
+import { a11y } from "../_utils"
 import { Model } from "./model"
 
 export class DateInputModel extends Model {
@@ -15,44 +15,32 @@ export class DateInputModel extends Model {
     return a11y(this.page, selector, disableRules)
   }
 
-  private scope(p: string) {
-    return `[data-scope=date-input]${part(p)}`
-  }
-
   get root() {
-    return this.page.locator(this.scope("root"))
+    return this.page.locator(`[data-scope=date-input][data-part=root]`)
   }
 
   get label() {
-    return this.page.locator(this.scope("label"))
+    return this.page.locator(`[data-scope=date-input][data-part=label]`)
   }
 
   get control() {
-    return this.page.locator(this.scope("control"))
-  }
-
-  getSegmentGroup() {
-    return this.page.locator(`${this.scope("segment-group")}`)
+    return this.page.locator(`[data-scope=date-input][data-part=control]`)
   }
 
   getEditableSegments() {
-    return this.page.locator(`${this.scope("segment")}[data-editable]`)
+    return this.page.locator(`[data-scope=date-input][data-part=segment][data-editable]`)
   }
 
-  getSegmentByType(type: string) {
-    return this.page.locator(`${this.scope("segment")}[data-type=${type}]`)
+  getSegment(type: string) {
+    return this.page.locator(`[data-scope=date-input][data-part=segment][data-type=${type}]`)
   }
 
   get output() {
     return this.page.locator(".date-output")
   }
 
-  getSegmentGroupAt(groupIndex: number) {
-    return this.page.locator(this.scope("segment-group")).nth(groupIndex)
-  }
-
-  getSegmentInGroup(type: string, groupIndex: number) {
-    return this.getSegmentGroupAt(groupIndex).locator(`${this.scope("segment")}[data-type=${type}]`)
+  getSegmentNth(type: string, index = 0) {
+    return this.getSegment(type).nth(index)
   }
 
   // --- Actions ---
@@ -63,7 +51,7 @@ export class DateInputModel extends Model {
   }
 
   async focusSegment(type: string) {
-    await this.getSegmentByType(type).click()
+    await this.getSegment(type).click()
   }
 
   async clickOutsideToBlur() {
@@ -73,27 +61,27 @@ export class DateInputModel extends Model {
   // --- Assertions ---
 
   seeSegmentFocused(type: string) {
-    return expect(this.getSegmentByType(type)).toBeFocused()
+    return expect(this.getSegment(type)).toBeFocused()
   }
 
-  seeSegmentInGroupFocused(type: string, groupIndex: number) {
-    return expect(this.getSegmentInGroup(type, groupIndex)).toBeFocused()
+  seeSegmentInGroupFocused(type: string, groupIndex?: number) {
+    return expect(this.getSegmentNth(type, groupIndex)).toBeFocused()
   }
 
   seeSegmentText(type: string, text: string) {
-    return expect(this.getSegmentByType(type)).toHaveText(text)
+    return expect(this.getSegment(type)).toHaveText(text)
   }
 
   seeSegmentIsPlaceholder(type: string) {
-    return expect(this.getSegmentByType(type)).toHaveAttribute("data-placeholder", "")
+    return expect(this.getSegment(type)).toHaveAttribute("data-placeholder-shown", "")
   }
 
   seeSegmentIsNotPlaceholder(type: string) {
-    return expect(this.getSegmentByType(type)).not.toHaveAttribute("data-placeholder")
+    return expect(this.getSegment(type)).not.toHaveAttribute("data-placeholder-shown")
   }
 
-  seeSegmentInGroupIsPlaceholder(type: string, groupIndex: number) {
-    return expect(this.getSegmentInGroup(type, groupIndex)).toHaveAttribute("data-placeholder", "")
+  seeSegmentInGroupIsPlaceholder(type: string, index?: number) {
+    return expect(this.getSegmentNth(type, index)).toHaveAttribute("data-placeholder-shown", "")
   }
 
   seeSelectedValue(value: string) {
@@ -110,14 +98,6 @@ export class DateInputModel extends Model {
 
   seeControlNotFocused() {
     return expect(this.control).not.toHaveAttribute("data-focus")
-  }
-
-  seeSegmentGroupFocused(groupIndex: number) {
-    return expect(this.getSegmentGroupAt(groupIndex)).toHaveAttribute("data-focus", "")
-  }
-
-  seeSegmentGroupNotFocused(groupIndex: number) {
-    return expect(this.getSegmentGroupAt(groupIndex)).not.toHaveAttribute("data-focus")
   }
 
   seeEditingValue(value: string) {

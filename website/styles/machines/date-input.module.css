@@ -15,22 +15,16 @@
   .Control {
     display: inline-flex;
     align-items: center;
-    gap: 0.5rem;
-
-    &[data-disabled] {
-      opacity: 0.5;
-      cursor: not-allowed;
-    }
-  }
-
-  .SegmentGroup {
-    display: inline-flex;
-    align-items: center;
     height: 2.5rem;
     padding-inline: 0.75rem;
     background: var(--colors-bg-subtle);
     border-width: 1px;
     border-color: var(--colors-border-bold);
+
+    &[data-disabled] {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
 
     &[data-focus] {
       outline: 2px solid var(--colors-bg-primary-bold);
@@ -55,17 +49,17 @@
       border-radius: 2px;
     }
 
-    &[data-placeholder] {
+    &[data-placeholder-shown] {
       color: var(--colors-text-muted);
        &:focus {
          color: var(--colors-text-bold);
        }
     }
-  }
 
-  .Separator {
-    color: var(--colors-text-muted);
-    user-select: none;
+    &[data-type="literal"] {
+      color: var(--colors-text-muted);
+      user-select: none;
+    }
   }
 
   .ClearButton {
