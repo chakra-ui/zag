@@ -39,7 +39,7 @@
     "clean-package": "2.2.0",
     "@testing-library/react": "^16.3.2",
     "@testing-library/jest-dom": "^6.9.1",
-    "@vitejs/plugin-react": "^5.1.4",
+    "@vitejs/plugin-react": "^6.0.0",
     "jsdom": "^28.1.0"
   },
   "peerDependencies": {
