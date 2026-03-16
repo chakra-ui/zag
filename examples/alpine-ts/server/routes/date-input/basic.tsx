@@ -40,7 +40,7 @@ export default defineHandler((event) => {
           </main>
 
           <Toolbar viz>
-            <Controls config={dateInputControls} />
+            <Controls config={dateInputControls} slot="controls" />
             <StateVisualizer label="date-input" />
           </Toolbar>
         </div>
