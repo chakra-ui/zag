@@ -2,6 +2,7 @@ import type {
   Calendar,
   CalendarDate,
   CalendarDateTime,
+  CalendarIdentifier,
   DateFormatter,
   DateValue,
   ZonedDateTime,
@@ -62,6 +63,15 @@ export interface DateInputProps extends DirectionProperty, CommonProperties {
    */
   locale?: string | undefined
   /**
+   * A function that creates a calendar object for a given calendar identifier.
+   * Use this to support non-Gregorian calendars (e.g., Persian, Islamic, Buddhist).
+   *
+   * @example
+   * import { createCalendar } from "@internationalized/date"
+   * { locale: "fa-IR", createCalendar }
+   */
+  createCalendar?: ((identifier: CalendarIdentifier) => Calendar) | undefined
+  /**
    * The localized messages to use.
    */
   translations?: IntlTranslations | undefined
@@ -98,6 +108,11 @@ export interface DateInputProps extends DirectionProperty, CommonProperties {
    * Whether the date input is invalid
    */
   invalid?: boolean | undefined
+  /**
+   * Returns whether a date is unavailable.
+   * When a committed date matches, the input is marked as invalid.
+   */
+  isDateUnavailable?: ((date: DateValue, locale: string) => boolean) | undefined
   /**
    * The minimum date that can be selected.
    */
@@ -219,6 +234,10 @@ type ComputedContext = Readonly<{
    */
   isInteractive: boolean
   /**
+   * The number of date groups (1 for single, 2 for range).
+   */
+  groupCount: number
+  /**
    * The value text to display.
    */
   valueAsString: string[]
@@ -323,6 +342,8 @@ export interface SegmentProps {
 
 export interface SegmentState {
   editable: boolean
+  focused: boolean
+  readonly: boolean
 }
 
 export interface LabelProps {
@@ -348,10 +369,6 @@ export interface DateInputApi<T extends PropTypes = PropTypes> {
    */
   invalid: boolean
   /**
-   * The number of segment groups rendered by the date input.
-   */
-  groupCount: number
-  /**
    * The selected date(s).
    */
   value: DateValue[]
@@ -372,6 +389,10 @@ export interface DateInputApi<T extends PropTypes = PropTypes> {
    * filled in by the user (non-null = entered, null = placeholder).
    */
   displayValues: IncompleteDate[]
+  /**
+   * Focuses the first segment.
+   */
+  focus: VoidFunction
   /**
    * Sets the selected date(s) to the given values.
    */
@@ -401,4 +422,4 @@ export interface DateInputApi<T extends PropTypes = PropTypes> {
  * Re-exported types
  * -----------------------------------------------------------------------------*/
 
-export type { Calendar, CalendarDate, CalendarDateTime, DateFormatter, DateValue, ZonedDateTime }
+export type { Calendar, CalendarDate, CalendarDateTime, CalendarIdentifier, DateFormatter, DateValue, ZonedDateTime }

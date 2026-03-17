@@ -1,5 +1,20 @@
 # @zag-js/radio-group
 
+## 1.37.0
+
+### Patch Changes
+
+- [`7ed590b`](https://github.com/chakra-ui/zag/commit/7ed590b8e26cf6751cd64838f1e0ed520b220b34) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix missing `aria-labelledby` on radio hidden input, ensuring
+  `getByRole('radio', { name: '...' })` works in testing tools like Playwright.
+- Updated dependencies []:
+  - @zag-js/anatomy@1.37.0
+  - @zag-js/core@1.37.0
+  - @zag-js/types@1.37.0
+  - @zag-js/utils@1.37.0
+  - @zag-js/dom-query@1.37.0
+  - @zag-js/focus-visible@1.37.0
+
 ## 1.36.0
 
 ### Patch Changes

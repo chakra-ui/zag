@@ -1,5 +1,23 @@
 # @zag-js/dialog
 
+## 1.37.0
+
+### Patch Changes
+
+- [`67aa14b`](https://github.com/chakra-ui/zag/commit/67aa14b89dc88997fee520cfeaf6934ca45f9fb8) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Improve dialog and drawer focus restoration by preferring the
+  trigger element as a stable fallback return target after remount cycles.
+- Updated dependencies []:
+  - @zag-js/anatomy@1.37.0
+  - @zag-js/core@1.37.0
+  - @zag-js/types@1.37.0
+  - @zag-js/aria-hidden@1.37.0
+  - @zag-js/utils@1.37.0
+  - @zag-js/dismissable@1.37.0
+  - @zag-js/dom-query@1.37.0
+  - @zag-js/focus-trap@1.37.0
+  - @zag-js/remove-scroll@1.37.0
+
 ## 1.36.0
 
 ### Patch Changes

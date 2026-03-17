@@ -11,6 +11,7 @@ export type {
   Calendar,
   CalendarDate,
   CalendarDateTime,
+  CalendarIdentifier,
   DateFormatter,
   DateValue,
   DateSegment,

@@ -742,6 +742,21 @@ test.describe("date-input [single]", () => {
     await I.type("01")
     await I.seeSegmentText("month", "1")
   })
+
+  test("[paste] pasting a valid ISO date string sets the value", async () => {
+    await I.focusSegment("month")
+    await I.paste("2024-06-15")
+    await I.seeSelectedValue("6/15/2024")
+  })
+
+  test("[paste] pasting an invalid string is a no-op", async () => {
+    await I.focusSegment("month")
+    await I.paste("not-a-date")
+    await I.seeSelectedValue("")
+    await I.seeSegmentIsPlaceholder("month")
+    await I.seeSegmentIsPlaceholder("day")
+    await I.seeSegmentIsPlaceholder("year")
+  })
 })
 
 test.describe("date-input [range]", () => {
@@ -809,12 +824,10 @@ test.describe("date-input [range]", () => {
   })
 
   test("[focus] focusing end date group marks only group 1 with data-focus", async () => {
-    // Fill start date to auto-advance into end date group
     await I.focusFirstSegment()
     await I.type("01")
     await I.type("15")
     await I.type("2025")
-    // Now focused on group 1
     await I.seeSegmentInGroupFocused("month", 1)
     await I.seeSegmentGroupFocused(1)
     await I.seeSegmentGroupNotFocused(0)

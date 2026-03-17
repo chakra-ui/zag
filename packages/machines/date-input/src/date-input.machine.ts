@@ -1,61 +1,30 @@
-import { DateFormatter, toCalendarDateTime } from "@internationalized/date"
+import { DateFormatter, toCalendar, type Calendar, type CalendarIdentifier } from "@internationalized/date"
 import { createMachine, memo, type Params } from "@zag-js/core"
 import { constrainValue, getTodayDate, isDateEqual } from "@zag-js/date-utils"
 import { raf } from "@zag-js/dom-query"
 import { createLiveRegion } from "@zag-js/live-region"
 import * as dom from "./date-input.dom"
 import type { DateInputSchema, DateSegment, DateValue, SegmentType } from "./date-input.types"
-import { IncompleteDate, type HourCycle } from "./utils/incomplete-date"
+import { createFormatFn, getValueAsString, resolveHourCycleProp, resolvePlaceholderValue } from "./utils/formatting"
+import {
+  IncompleteDate,
+  incompleteDateEqual,
+  incompleteDateHash,
+  initDisplayValues,
+  resolvedHourCycle,
+} from "./utils/incomplete-date"
 import { updateSegmentValue } from "./utils/input"
 import { defaultTranslations } from "./utils/placeholders"
-import { EDITABLE_SEGMENTS, getSegmentLabel, processSegments, TYPE_MAPPING } from "./utils/segments"
-import type { Segments } from "./date-input.types"
+import { parse } from "./date-input.parse"
+import { getFormatterOptions, getSegmentLabel, processSegments, resolveAllSegments } from "./utils/segments"
 import {
   getActiveDisplayValue,
   getActiveSegment,
+  getGroupCount,
   getGroupOffset,
   resolveActiveSegment,
   setDisplayValue,
 } from "./utils/validity"
-import { getValueAsString } from "./utils/formatting"
-
-// ---------------------------------------------------------------------------
-// Helpers
-// ---------------------------------------------------------------------------
-
-function resolvedHourCycle(formatter: DateFormatter): HourCycle {
-  const hc = formatter.resolvedOptions().hourCycle
-  if (hc === "h11" || hc === "h12" || hc === "h23" || hc === "h24") return hc
-  return "h23"
-}
-
-/**
- * Build the initial displayValues array.
- * If a value is committed, initialise each IncompleteDate from it (all fields non-null).
- * Otherwise create an empty IncompleteDate (all fields null = all segments are placeholders).
- */
-function initDisplayValues(
-  value: DateValue[] | undefined,
-  placeholderValue: DateValue,
-  hourCycle: HourCycle,
-  count: number,
-): IncompleteDate[] {
-  const calendar = placeholderValue.calendar
-  if (value?.length) {
-    return Array.from({ length: count }, (_, i) =>
-      value[i] ? new IncompleteDate(calendar, hourCycle, value[i]) : new IncompleteDate(calendar, hourCycle),
-    )
-  }
-  return Array.from({ length: count }, () => new IncompleteDate(calendar, hourCycle))
-}
-
-function incompleteDateHash(dv: IncompleteDate): string {
-  return `${dv.year}|${dv.month}|${dv.day}|${dv.hour}|${dv.dayPeriod}|${dv.minute}|${dv.second}|${dv.era}`
-}
-
-function incompleteDateEqual(a: IncompleteDate, b: IncompleteDate): boolean {
-  return incompleteDateHash(a) === incompleteDateHash(b)
-}
 
 export const machine = createMachine<DateInputSchema>({
   props({ props }) {
@@ -65,86 +34,43 @@ export const machine = createMachine<DateInputSchema>({
     const granularity = props.granularity || "day"
     const translations = { ...defaultTranslations, ...props.translations }
 
-    // sort and constrain dates
-    const defaultValue = props.defaultValue
-      ? props.defaultValue.map((date) => constrainValue(date, props.min, props.max))
-      : undefined
-    const value = props.value ? props.value.map((date) => constrainValue(date, props.min, props.max)) : undefined
-
-    // get initial placeholder value
-    let placeholderValue =
-      props.placeholderValue ||
-      props.defaultPlaceholderValue ||
-      value?.[0] ||
-      defaultValue?.[0] ||
-      getTodayDate(timeZone)
-    placeholderValue = constrainValue(placeholderValue, props.min, props.max)
-
-    // When granularity requires time fields, ensure the placeholder is a CalendarDateTime
-    // so that IncompleteDate.cycle() and toValue() can properly handle hour/minute/second.
-    const needsTime = granularity === "hour" || granularity === "minute" || granularity === "second"
-    if (needsTime && !("hour" in placeholderValue)) {
-      placeholderValue = toCalendarDateTime(placeholderValue)
+    let calendar: Calendar | undefined
+    if (props.createCalendar) {
+      const resolved = new Intl.DateTimeFormat(locale).resolvedOptions()
+      const calendarId = resolved.calendar as CalendarIdentifier
+      if (calendarId !== "gregory" && calendarId !== "iso8601") {
+        calendar = props.createCalendar(calendarId)
+      }
     }
 
-    const hourCycle = props.hourCycle === 12 ? "h12" : props.hourCycle === 24 ? "h23" : undefined
+    const toTargetCalendar = (date: DateValue) => {
+      if (!calendar) return date
+      if (date.calendar.identifier === calendar.identifier) return date
+      return toCalendar(date, calendar)
+    }
+
+    const defaultValue = props.defaultValue
+      ? props.defaultValue.map((date) => constrainValue(toTargetCalendar(date), props.min, props.max))
+      : undefined
+    const value = props.value
+      ? props.value.map((date) => constrainValue(toTargetCalendar(date), props.min, props.max))
+      : undefined
+
+    const placeholderValue = resolvePlaceholderValue(props, timeZone, granularity, value, defaultValue, calendar)
+
+    const hourCycle = resolveHourCycleProp(props.hourCycle)
     const shouldForceLeadingZeros = props.shouldForceLeadingZeros ?? false
     const digitStyle = shouldForceLeadingZeros ? "2-digit" : "numeric"
 
-    const formatterOptions: Intl.DateTimeFormatOptions = {
-      timeZone: timeZone,
-      day: digitStyle,
-      month: digitStyle,
-      year: "numeric",
-      hourCycle,
-    }
-    if (granularity === "hour" || granularity === "minute" || granularity === "second") {
-      formatterOptions.hour = digitStyle
-    }
-    if (granularity === "minute" || granularity === "second") {
-      formatterOptions.minute = "2-digit"
-    }
-    if (granularity === "second") {
-      formatterOptions.second = "2-digit"
-    }
-
-    const formatter = props.formatter ?? new DateFormatter(locale, formatterOptions)
-
-    // Always include 'era' for BC date support. Era is auto-set alongside year,
-    // and the era segment is only rendered when the display value is in BC era.
-    const allSegments =
-      props.allSegments ??
-      (() => {
-        const segs = formatter
-          .formatToParts(new Date())
-          .filter((seg) => EDITABLE_SEGMENTS[seg.type])
-          .reduce<Segments>((p, seg) => {
-            const key = TYPE_MAPPING[seg.type as keyof typeof TYPE_MAPPING] || seg.type
-            p[key] = true
-            return p
-          }, {})
-        segs.era = true
-        return segs
-      })()
+    const formatter =
+      props.formatter ?? new DateFormatter(locale, getFormatterOptions(granularity, digitStyle, hourCycle, timeZone))
+    const allSegments = props.allSegments ?? resolveAllSegments(formatter)
 
     return {
       locale,
       timeZone,
       selectionMode,
-      format(date, { timeZone }) {
-        const jsd = date.toDate(timeZone)
-        const isBC = date.calendar?.identifier === "gregory" && date.era === "BC"
-        if (isBC) {
-          // Use proleptic Gregorian year: 0 for 1 BC, -1 for 2 BC, etc.
-          const prolYear = jsd.getUTCFullYear()
-          const safeDate = new Date(Date.UTC(2000, jsd.getUTCMonth(), jsd.getUTCDate()))
-          return formatter
-            .formatToParts(safeDate)
-            .map((p) => (p.type === "year" ? String(prolYear) : p.value))
-            .join("")
-        }
-        return formatter.format(jsd)
-      },
+      format: createFormatFn(formatter),
       ...props,
       translations,
       value,
@@ -175,9 +101,8 @@ export const machine = createMachine<DateInputSchema>({
     const formatter = prop("formatter")
     const hc = resolvedHourCycle(formatter)
     const placeholderValue = prop("defaultPlaceholderValue")
-    const selectionMode = prop("selectionMode")
-    const groupCount = selectionMode === "range" ? 2 : 1
     const initialValue = prop("value") || prop("defaultValue")
+    const groupCount = getGroupCount(prop("selectionMode"))
 
     return {
       value: bindable(() => ({
@@ -232,6 +157,7 @@ export const machine = createMachine<DateInputSchema>({
 
   computed: {
     isInteractive: ({ prop }) => !prop("disabled") && !prop("readOnly"),
+    groupCount: ({ prop }) => getGroupCount(prop("selectionMode")),
     valueAsString: ({ context, prop }) => getValueAsString(context.get("value"), prop),
     segments: memo(
       ({ context, prop }) => [
@@ -246,9 +172,8 @@ export const machine = createMachine<DateInputSchema>({
         prop("formatter"),
         prop("locale"),
       ],
-      (_deps, { context, prop }) => {
+      (_deps, { context, prop, computed }) => {
         const value = context.get("value")
-        const selectionMode = prop("selectionMode")
         const placeholderValue = context.get("placeholderValue")
         const displayValues = context.get("displayValues")
         const allSegments = prop("allSegments")
@@ -259,9 +184,7 @@ export const machine = createMachine<DateInputSchema>({
         const locale = prop("locale")
         const allSegmentTypes = Object.keys(allSegments) as SegmentType[]
 
-        const groupCount = selectionMode === "range" ? 2 : 1
-
-        return Array.from({ length: groupCount }, (_, i) => {
+        return Array.from({ length: computed("groupCount") }, (_, i) => {
           const dv = displayValues[i] ?? new IncompleteDate(placeholderValue.calendar, resolvedHourCycle(formatter))
           // When all segments are filled, use the committed value for display; otherwise
           // fall back through the IncompleteDate's toValue() which fills missing fields from placeholderValue.
@@ -270,7 +193,7 @@ export const machine = createMachine<DateInputSchema>({
           const displayDate = isFullyCommitted ? committedValue : dv.toValue(placeholderValue)
 
           // Show the era segment when the display value is in BC era (Gregorian calendar).
-          // Create the era formatter inline (React Aria pattern) — no dedicated prop needed.
+          // Create the era formatter inline — no dedicated prop needed.
           const showEra = dv.era === "BC" && dv.calendar.identifier === "gregory"
           const segmentFormatter = showEra
             ? new DateFormatter(locale, {
@@ -365,6 +288,9 @@ export const machine = createMachine<DateInputSchema>({
         "SEGMENT.END": {
           actions: ["setSegmentToHighestValue", "clearEnteredKeys", "announceSegmentValue"],
         },
+        "SEGMENT.PASTE": {
+          actions: ["setPastedValue", "clearEnteredKeys"],
+        },
       },
     },
   },
@@ -405,15 +331,12 @@ export const machine = createMachine<DateInputSchema>({
         context.set("activeSegmentIndex", event.segmentIndex)
       },
 
-      clearDisplayValues({ context, prop }) {
-        const formatter = prop("formatter")
-        const hc = resolvedHourCycle(formatter)
+      clearDisplayValues({ context, prop, computed }) {
+        const hc = resolvedHourCycle(prop("formatter"))
         const placeholderValue = context.get("placeholderValue")
-        const selectionMode = prop("selectionMode")
-        const count = selectionMode === "range" ? 2 : 1
         context.set(
           "displayValues",
-          Array.from({ length: count }, () => new IncompleteDate(placeholderValue.calendar, hc)),
+          Array.from({ length: computed("groupCount") }, () => new IncompleteDate(placeholderValue.calendar, hc)),
         )
       },
 
@@ -534,9 +457,9 @@ export const machine = createMachine<DateInputSchema>({
         updateSegmentValue(params, segment, input)
         // After the set, check if we should commit (using the original group, not the one we may have advanced to)
         const allSegmentTypes = Object.keys(params.prop("allSegments")) as SegmentType[]
-        const dv = context.get("displayValues")[index]
-        if (dv && dv.isComplete(allSegmentTypes)) {
-          commitValue(params, index, dv)
+        const displayValue = context.get("displayValues")[index]
+        if (displayValue && displayValue.isComplete(allSegmentTypes)) {
+          commitValue(params, index, displayValue)
         }
       },
 
@@ -547,9 +470,13 @@ export const machine = createMachine<DateInputSchema>({
         const allSegmentTypes = Object.keys(prop("allSegments")) as SegmentType[]
         const placeholderValue = context.get("placeholderValue")
         if (segment.minValue == null) return
-        const dv = getActiveDisplayValue(params).set(segment.type as SegmentType, segment.minValue, placeholderValue)
-        setDisplayValue(params, index, dv)
-        if (dv.isComplete(allSegmentTypes)) commitValue(params, index, dv)
+        const displayValue = getActiveDisplayValue(params).set(
+          segment.type as SegmentType,
+          segment.minValue,
+          placeholderValue,
+        )
+        setDisplayValue(params, index, displayValue)
+        if (displayValue.isComplete(allSegmentTypes)) commitValue(params, index, displayValue)
       },
 
       setSegmentToHighestValue(params) {
@@ -559,9 +486,13 @@ export const machine = createMachine<DateInputSchema>({
         const allSegmentTypes = Object.keys(prop("allSegments")) as SegmentType[]
         const placeholderValue = context.get("placeholderValue")
         if (segment.maxValue == null) return
-        const dv = getActiveDisplayValue(params).set(segment.type as SegmentType, segment.maxValue, placeholderValue)
-        setDisplayValue(params, index, dv)
-        if (dv.isComplete(allSegmentTypes)) commitValue(params, index, dv)
+        const displayValue = getActiveDisplayValue(params).set(
+          segment.type as SegmentType,
+          segment.maxValue,
+          placeholderValue,
+        )
+        setDisplayValue(params, index, displayValue)
+        if (displayValue.isComplete(allSegmentTypes)) commitValue(params, index, displayValue)
       },
 
       setDateValue({ context, event, prop }) {
@@ -574,16 +505,27 @@ export const machine = createMachine<DateInputSchema>({
         context.set("value", [])
       },
 
-      syncDisplayValues({ context, prop }) {
+      setPastedValue({ context, event, prop }) {
+        try {
+          const parsed = parse(event.value)
+          const constrained = constrainValue(parsed, prop("min"), prop("max"))
+          const index = context.get("activeIndex")
+          const values = Array.from(context.get("value"))
+          values[index] = constrained
+          context.set("value", values)
+        } catch {
+          // Invalid paste text — ignore
+        }
+      },
+
+      syncDisplayValues({ context, prop, computed }) {
         const value = context.get("value")
-        const formatter = prop("formatter")
-        const hc = resolvedHourCycle(formatter)
+        const hc = resolvedHourCycle(prop("formatter"))
         const placeholderValue = context.get("placeholderValue")
-        const selectionMode = prop("selectionMode")
-        const count = selectionMode === "range" ? 2 : 1
-        // Re-initialise displayValues from the committed value so that each
-        // IncompleteDate reflects all the user's typed fields.
-        context.set("displayValues", initDisplayValues(value?.length ? value : undefined, placeholderValue, hc, count))
+        context.set(
+          "displayValues",
+          initDisplayValues(value?.length ? value : undefined, placeholderValue, hc, computed("groupCount")),
+        )
       },
 
       syncDefaultPlaceholderValue({ prop, context }) {
@@ -597,21 +539,14 @@ export const machine = createMachine<DateInputSchema>({
         context.set("placeholderValue", defaultPlaceholder)
       },
 
-      syncPlaceholderProp({ prop, context }) {
+      syncPlaceholderProp({ prop, context, computed }) {
         const propValue = prop("placeholderValue")
         if (propValue) {
           context.set("placeholderValue", propValue)
-          // Preserve entered segments: reinitialize from the committed value when available
-          // so that granularity/placeholder changes don't wipe user-typed fields.
-          // For partial entries (nothing committed yet), keep existing displayValues as-is —
-          // their null fields will naturally use the updated placeholderValue.
           const value = context.get("value")
           if (value?.length) {
-            const formatter = prop("formatter")
-            const hc = resolvedHourCycle(formatter)
-            const selectionMode = prop("selectionMode")
-            const count = selectionMode === "range" ? 2 : 1
-            context.set("displayValues", initDisplayValues(value, propValue, hc, count))
+            const hc = resolvedHourCycle(prop("formatter"))
+            context.set("displayValues", initDisplayValues(value, propValue, hc, computed("groupCount")))
           }
         }
       },
@@ -636,21 +571,20 @@ export const machine = createMachine<DateInputSchema>({
 
       // On blur, if only dayPeriod is unfilled, auto-fill it and commit the value
       confirmPlaceholder(params) {
-        const { context, prop } = params
+        const { context, prop, computed } = params
         const allSegments = prop("allSegments")
         const allSegmentTypes = Object.keys(allSegments) as SegmentType[]
-        const selectionMode = prop("selectionMode")
-        const dateCount = selectionMode === "range" ? 2 : 1
+        const dateCount = computed("groupCount")
         const placeholderValue = context.get("placeholderValue")
 
         for (let i = 0; i < dateCount; i++) {
-          const dv = context.get("displayValues")[i]
-          if (!dv) continue
+          const displayValue = context.get("displayValues")[i]
+          if (!displayValue) continue
 
           // If only dayPeriod is missing and all other segments are filled, auto-commit
           const allExceptDayPeriod = allSegmentTypes.filter((s) => s !== "dayPeriod")
-          if (allSegments.dayPeriod && dv.isComplete(allExceptDayPeriod) && dv.dayPeriod == null) {
-            const filled = dv.set(
+          if (allSegments.dayPeriod && displayValue.isComplete(allExceptDayPeriod) && displayValue.dayPeriod == null) {
+            const filled = displayValue.set(
               "dayPeriod",
               placeholderValue && "hour" in placeholderValue ? (placeholderValue.hour >= 12 ? 1 : 0) : 0,
               placeholderValue,
@@ -663,10 +597,6 @@ export const machine = createMachine<DateInputSchema>({
     },
   },
 })
-
-// ---------------------------------------------------------------------------
-// Internal commit helpers (not exported — only used by actions above)
-// ---------------------------------------------------------------------------
 
 type ActionParams = Params<DateInputSchema>
 

@@ -1,6 +1,10 @@
 import type { Params } from "@zag-js/core"
-import type { DateInputSchema } from "../date-input.types"
+import type { DateInputSchema, SelectionMode } from "../date-input.types"
 import type { IncompleteDate } from "./incomplete-date"
+
+export function getGroupCount(selectionMode: SelectionMode): number {
+  return selectionMode === "range" ? 2 : 1
+}
 
 // ---------------------------------------------------------------------------
 // Active segment helpers

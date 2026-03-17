@@ -1,5 +1,23 @@
 # @zag-js/toast
 
+## 1.37.0
+
+### Patch Changes
+
+- [`daff476`](https://github.com/chakra-ui/zag/commit/daff4767985c02d8b4e808201935eeacdfa426b9) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Improve toast group accessibility:
+  - Remove `role="region"` landmark to reduce screen reader noise; keep `aria-live="polite"` with `aria-relevant` and
+    `aria-atomic` for reliable, scoped announcements
+  - Restructure `aria-label` for more natural output (e.g. "Notifications, bottom (Alt+T)")
+
+- Updated dependencies []:
+  - @zag-js/anatomy@1.37.0
+  - @zag-js/core@1.37.0
+  - @zag-js/types@1.37.0
+  - @zag-js/utils@1.37.0
+  - @zag-js/dismissable@1.37.0
+  - @zag-js/dom-query@1.37.0
+
 ## 1.36.0
 
 ### Patch Changes

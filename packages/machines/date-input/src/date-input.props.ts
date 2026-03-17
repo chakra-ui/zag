@@ -10,12 +10,15 @@ import type {
 } from "./date-input.types"
 
 export const props = createProps<DateInputProps>()([
+  "createCalendar",
   "dir",
   "disabled",
+  "format",
   "getRootNode",
   "id",
   "ids",
   "invalid",
+  "isDateUnavailable",
   "locale",
   "max",
   "min",
@@ -38,7 +41,6 @@ export const props = createProps<DateInputProps>()([
   "formatter",
   "placeholderValue",
   "defaultPlaceholderValue",
-  "format",
 ])
 
 export const splitProps = createSplitProps<Partial<DateInputProps>>(props)

@@ -1,5 +1,17 @@
 # @zag-js/preact
 
+## 1.37.0
+
+### Patch Changes
+
+- [`67aa14b`](https://github.com/chakra-ui/zag/commit/67aa14b89dc88997fee520cfeaf6934ca45f9fb8) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix Fast Refresh lifecycle edge cases where machine cleanup could
+  hydrate from stale state and skip expected effect re-application.
+- Updated dependencies []:
+  - @zag-js/core@1.37.0
+  - @zag-js/store@1.37.0
+  - @zag-js/types@1.37.0
+
 ## 1.36.0
 
 ### Patch Changes

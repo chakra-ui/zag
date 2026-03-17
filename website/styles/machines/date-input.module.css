@@ -55,17 +55,17 @@
       border-radius: 2px;
     }
 
-    &[data-placeholder] {
+    &[data-placeholder-shown] {
       color: var(--colors-text-muted);
        &:focus {
          color: var(--colors-text-bold);
        }
     }
-  }
 
-  .Separator {
-    color: var(--colors-text-muted);
-    user-select: none;
+    &[data-type="literal"] {
+      color: var(--colors-text-muted);
+      user-select: none;
+    }
   }
 
   .ClearButton {

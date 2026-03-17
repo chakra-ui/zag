@@ -1,5 +1,13 @@
 # svelte-kit-starter
 
+## 0.0.9
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @zag-js/svelte@1.37.0
+  - @zag-js/switch@1.37.0
+
 ## 0.0.8
 
 ### Patch Changes

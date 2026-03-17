@@ -1,8 +1,37 @@
-import { type AnyDateTime, type Calendar, CalendarDate, ZonedDateTime } from "@internationalized/date"
+import { DateFormatter, type AnyDateTime, type Calendar, CalendarDate, ZonedDateTime } from "@internationalized/date"
 import type { DateValue } from "@internationalized/date"
 import type { SegmentType } from "../date-input.types"
 
 export type HourCycle = "h12" | "h11" | "h23" | "h24"
+
+export function resolvedHourCycle(formatter: DateFormatter): HourCycle {
+  const hc = formatter.resolvedOptions().hourCycle
+  if (hc === "h11" || hc === "h12" || hc === "h23" || hc === "h24") return hc
+  return "h23"
+}
+
+export function incompleteDateHash(dv: IncompleteDate): string {
+  return `${dv.year}|${dv.month}|${dv.day}|${dv.hour}|${dv.dayPeriod}|${dv.minute}|${dv.second}|${dv.era}`
+}
+
+export function incompleteDateEqual(a: IncompleteDate, b: IncompleteDate): boolean {
+  return incompleteDateHash(a) === incompleteDateHash(b)
+}
+
+export function initDisplayValues(
+  value: DateValue[] | undefined,
+  placeholderValue: DateValue,
+  hourCycle: HourCycle,
+  count: number,
+): IncompleteDate[] {
+  const calendar = placeholderValue.calendar
+  if (value?.length) {
+    return Array.from({ length: count }, (_, i) =>
+      value[i] ? new IncompleteDate(calendar, hourCycle, value[i]) : new IncompleteDate(calendar, hourCycle),
+    )
+  }
+  return Array.from({ length: count }, () => new IncompleteDate(calendar, hourCycle))
+}
 
 /**
  * Represents a date that is incomplete or otherwise invalid as a result of user editing.
