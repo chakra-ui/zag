@@ -1,6 +1,5 @@
-import { defineHandler } from "nitro/h3"
-import { getControlDefaults } from "@zag-js/shared"
 import { X } from "lucide-static"
+import { defineHandler } from "nitro"
 import { Controls } from "../../components/controls"
 import { Head } from "../../components/head"
 import { Nav } from "../../components/nav"
@@ -14,7 +13,6 @@ export default defineHandler((event) => {
       defaultValue: false,
     },
   }
-  const state = getControlDefaults(config)
 
   return (
     <html>
@@ -29,11 +27,13 @@ export default defineHandler((event) => {
             options: $comboboxData,
             selectedValue: [],
             get items() {
-              return this.removeSelected
+              return this.state.removeSelected
                 ? this.options.filter((item) => !this.selectedValue.includes(item.code))
                 : this.options
             },
-            removeSelected: false,
+            state: {
+              removeSelected: false,
+            },
           }"
           x-combobox:collection="{
             items,
@@ -44,8 +44,8 @@ export default defineHandler((event) => {
             id: $id('combobox'),
             collection,
             onInputValueChange({ inputValue }) {
-              const filtered = $matchSorter($comboboxData, inputValue, {keys: ['label']})
-              options = filtered.length > 0 ? filtered : $comboboxData
+              const filtered = $comboboxData.filter((item) => $contains(item.label, inputValue));
+              options = filtered.length > 0 ? filtered : $comboboxData;
             },
             multiple: true,
             onValueChange({ value }) {
@@ -87,7 +87,7 @@ export default defineHandler((event) => {
           </main>
 
           <Toolbar>
-            <Controls config={config} state={state} slot="controls" />
+            <Controls config={config} slot="controls" />
             <StateVisualizer label="combobox" />
           </Toolbar>
         </div>

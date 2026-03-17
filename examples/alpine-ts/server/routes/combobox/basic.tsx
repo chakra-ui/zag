@@ -1,6 +1,6 @@
-import { defineHandler } from "nitro/h3"
-import { comboboxControls, getControlDefaults } from "@zag-js/shared"
+import { comboboxControls } from "@zag-js/shared"
 import { X } from "lucide-static"
+import { defineHandler } from "nitro"
 import { Controls } from "../../components/controls"
 import { Head } from "../../components/head"
 import { Nav } from "../../components/nav"
@@ -8,8 +8,6 @@ import { StateVisualizer } from "../../components/state-visualizer"
 import { Toolbar } from "../../components/toolbar"
 
 export default defineHandler((event) => {
-  const state = getControlDefaults(comboboxControls)
-
   return (
     <html>
       <Head>
@@ -19,17 +17,18 @@ export default defineHandler((event) => {
       <body>
         <div
           class="page"
-          x-data={JSON.stringify(state).slice(0, -1) + ", options: $comboboxData, selectedItems: []}"}
+          x-data:controls="combobox"
+          x-data="{options: $comboboxData, selectedItems: []}"
           x-combobox:collection="{
             items: options,
             itemToValue: (item) => item.code,
             itemToString: (item) => item.label,
           }"
-          x-combobox={`{
+          x-combobox="{
             id: $id('combobox'),
             collection,
             onOpenChange() {
-              options = $comboboxData
+              options = $comboboxData;
             },
             onInputValueChange({ inputValue }) {
               const filtered = $comboboxData.filter((item) => $contains(item.label, inputValue));
@@ -38,8 +37,8 @@ export default defineHandler((event) => {
             onValueChange({ items }) {
               selectedItems = items
             },
-            ${Object.keys(state)},
-          }`}
+            ...context,
+          }"
         >
           <Nav currentComponent={event.context.currentComponent as string} />
 
@@ -51,8 +50,8 @@ export default defineHandler((event) => {
               </button>
               <pre
                 data-testid="on-value-change-items"
-                x-text="'selectedItems: ' + selectedItems.map((item) => item.label).join(', ') || 'N/A'"
-              />
+                x-text="'selectedItems: ' + (selectedItems.map((item) => item.label).join(', ') || 'N/A')"
+              ></pre>
               <br />
               <div x-combobox:root>
                 <label x-combobox:label>Select country</label>
@@ -80,7 +79,7 @@ export default defineHandler((event) => {
           </main>
 
           <Toolbar>
-            <Controls config={comboboxControls} state={state} slot="controls" />
+            <Controls config={comboboxControls} slot="controls" />
             <StateVisualizer label="combobox" />
           </Toolbar>
         </div>
