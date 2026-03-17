@@ -36,8 +36,11 @@ export default defineHandler((event) => {
                     Products
                     {html(ChevronDown)}
                   </button>
-                  <Presence x-navigation-menu:content="{value: 'products'}">
-                    <Presence x-navigation-menu:indicator>
+                  <Presence
+                    x-navigation-menu:content="{value: 'products'}"
+                    x-data="{get present() {return $navigationMenu().open}}"
+                  >
+                    <Presence x-navigation-menu:indicator x-data="{get present() {return $navigationMenu().open}}">
                       <div x-navigation-menu:arrow />
                     </Presence>
                     {renderLinks({
@@ -59,8 +62,11 @@ export default defineHandler((event) => {
                     Company
                     {html(ChevronDown)}
                   </button>
-                  <Presence x-navigation-menu:content="{value: 'company'}">
-                    <Presence x-navigation-menu:indicator>
+                  <Presence
+                    x-navigation-menu:content="{value: 'company'}"
+                    x-data="{get present() {return $navigationMenu().open}}"
+                  >
+                    <Presence x-navigation-menu:indicator x-data="{get present() {return $navigationMenu().open}}">
                       <div x-navigation-menu:arrow />
                     </Presence>
                     {renderLinks({
@@ -75,8 +81,11 @@ export default defineHandler((event) => {
                     Developers
                     {html(ChevronDown)}
                   </button>
-                  <Presence x-navigation-menu:content="{value: 'developers'}">
-                    <Presence x-navigation-menu:indicator>
+                  <Presence
+                    x-navigation-menu:content="{value: 'developers'}"
+                    x-data="{get present() {return $navigationMenu().open}}"
+                  >
+                    <Presence x-navigation-menu:indicator x-data="{get present() {return $navigationMenu().open}}">
                       <div x-navigation-menu:arrow />
                     </Presence>
                     {renderLinks({
@@ -96,7 +105,7 @@ export default defineHandler((event) => {
           </main>
 
           <Toolbar viz>
-            <Controls config={navigationMenuControls} />
+            <Controls config={navigationMenuControls} slot="controls" />
             <StateVisualizer label="navigation-menu" context={["value", "previousValue"]} />
           </Toolbar>
         </div>

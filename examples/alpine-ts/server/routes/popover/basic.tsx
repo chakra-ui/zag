@@ -31,7 +31,12 @@ export default defineHandler((event) => {
 
               <template x-teleport="body">
                 <div x-popover:positioner>
-                  <Presence data-testid="popover-content" className="popover-content" x-popover:content>
+                  <Presence
+                    data-testid="popover-content"
+                    class="popover-content"
+                    x-popover:content
+                    x-data="{get present() {return $popover().open}}"
+                  >
                     <div x-popover:arrow>
                       <div x-popover:arrow-tip />
                     </div>
