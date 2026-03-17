@@ -51,25 +51,31 @@ export function usePlugin<T extends MachineSchema>(
           },
         })
       } else if (value === "collection") {
-        const useCollection = useEvaluator(evaluateLater(expression))
+        const evaluateCollection = evaluateLater(expression)
         Alpine.bind(el, {
           "x-data"() {
             return {
-              get collection() {
-                return useCollection((options) => component.collection?.(options))
-              },
+              collection: null,
             }
+          },
+          "x-effect"() {
+            evaluateCollection((options) => {
+              ;(this as any).collection = component.collection?.(options)
+            })
           },
         })
       } else if (value === "grid-collection") {
-        const useCollection = useEvaluator(evaluateLater(expression))
+        const evaluateCollection = evaluateLater(expression)
         Alpine.bind(el, {
           "x-data"() {
             return {
-              get collection() {
-                return useCollection((options) => component.gridCollection?.(options))
-              },
+              collection: null,
             }
+          },
+          "x-effect"() {
+            evaluateCollection((options) => {
+              ;(this as any).collection = component.gridCollection?.(options)
+            })
           },
         })
       } else {
