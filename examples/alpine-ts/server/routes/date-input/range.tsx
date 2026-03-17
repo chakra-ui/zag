@@ -27,7 +27,7 @@ export default defineHandler((event) => {
                     x-for="(segment, i) in $dateInput().getSegments({ index: 0 })"
                     x-bind:key="segment.type + i"
                   >
-                    <span x-date-input:segment="{ segment }" x-text="segment.text" />
+                    <span x-date-input:segment="{ segment, index: 0 }" x-text="segment.text" />
                   </template>
                 </div>
 
@@ -38,7 +38,7 @@ export default defineHandler((event) => {
                     x-for="(segment, i) in $dateInput().getSegments({ index: 1 })"
                     x-bind:key="segment.type + i"
                   >
-                    <span x-date-input:segment="{ segment }" x-text="segment.text" />
+                    <span x-date-input:segment="{ segment, index: 1 }" x-text="segment.text" />
                   </template>
                 </div>
               </div>
