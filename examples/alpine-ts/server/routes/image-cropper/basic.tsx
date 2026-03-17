@@ -16,8 +16,8 @@ export default defineHandler((event) => {
       <body>
         <div
           class="page"
+          x-data:controls="imageCropper"
           x-data="{
-            ...imageCropper(),
             zoom: 1,
             rotation: 0,
             flip: { horizontal: false, vertical: false },
