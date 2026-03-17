@@ -50,7 +50,7 @@ export function Controls<T extends ControlRecord>({ config }: { config: T }) {
                   min={min}
                   max={max}
                   value={value}
-                  x-model={`state.${key}`}
+                  {...{ "x-model.number": `state.${key}` }}
                 />
               </div>
             )
