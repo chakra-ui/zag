@@ -1,25 +1,26 @@
 ```svelte
-<script>
+<script lang="ts">
   import * as dateInput from "@zag-js/date-input"
-  import { useMachine } from "@zag-js/svelte"
+  import { normalizeProps, useMachine } from "@zag-js/svelte"
 
-  const service = useMachine(dateInput.machine())
-  const api = dateInput.connect(service, $service)
+  const id = $props.id()
+  const service = useMachine(dateInput.machine, ({ id }))
+  const api = $derived(dateInput.connect(service, normalizeProps))
 </script>
 
-<div use:api.getRootProps>
-  <label use:api.getLabelProps>Enter a date</label>
+<div {...api.getRootProps()}>
+  <label {...api.getLabelProps()}>Enter a date</label>
 
-  <div use:api.getControlProps>
-    <div use:api.getSegmentGroupProps>
-      {#each api.getSegments() as segment, i (i)}
-        <span use:api.getSegmentProps={{ segment }}>
+  <div {...api.getControlProps()}>
+    <div {...api.getSegmentGroupProps()}>
+      {#each api.getSegments() as segment, i}
+        <span {...api.getSegmentProps({ segment })}>
           {segment.text}
         </span>
       {/each}
     </div>
   </div>
 
-  <input use:api.getHiddenInputProps />
+  <input {...api.getHiddenInputProps()} />
 </div>
 ```

@@ -1,12 +1,12 @@
-```vue
+```html
 <script setup>
-import * as dateInput from "@zag-js/date-input"
-import { useMachine, normalizeProps } from "@zag-js/vue"
-import { computed } from "vue"
+  import * as dateInput from "@zag-js/date-input"
+  import { normalizeProps, useMachine } from "@zag-js/vue"
+  import { computed } from "vue"
 
-const service = useMachine(dateInput.machine)
+  const service = useMachine(dateInput.machine, { id: "1" })
 
-const api = computed(() => dateInput.connect(service, normalizeProps))
+  const api = computed(() => dateInput.connect(service, normalizeProps))
 </script>
 
 <template>

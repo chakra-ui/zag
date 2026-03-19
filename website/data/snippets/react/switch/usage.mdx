@@ -1,9 +1,10 @@
-```jsx
+```tsx
 import * as zagSwitch from "@zag-js/switch"
 import { useMachine, normalizeProps } from "@zag-js/react"
+import { useId } from "react"
 
-function Checkbox() {
-  const service = useMachine(zagSwitch.machine, { id: "1" })
+function Switch() {
+  const service = useMachine(zagSwitch.machine, { id: useId() })
 
   const api = zagSwitch.connect(service, normalizeProps)
 

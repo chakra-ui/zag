@@ -1,9 +1,10 @@
-```jsx
+```tsx
 import * as menu from "@zag-js/menu"
 import { useMachine, normalizeProps } from "@zag-js/react"
+import { useId } from "react"
 
 export function ContextMenu() {
-  const service = useMachine(menu.machine, { id: "1" })
+  const service = useMachine(menu.machine, { id: useId() })
   const api = menu.connect(service, normalizeProps)
 
   return (

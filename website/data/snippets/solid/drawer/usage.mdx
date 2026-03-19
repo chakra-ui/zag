@@ -1,12 +1,12 @@
 ```tsx
 import * as drawer from "@zag-js/drawer"
 import { useMachine, normalizeProps } from "@zag-js/solid"
-import { createUniqueId } from "solid-js"
+import { createMemo, createUniqueId } from "solid-js"
 
 export function Drawer() {
   const service = useMachine(drawer.machine, { id: createUniqueId() })
 
-  const api = drawer.connect(service, normalizeProps)
+  const api = createMemo(() => drawer.connect(service, normalizeProps))
 
   return (
     <>

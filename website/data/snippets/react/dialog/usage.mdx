@@ -1,9 +1,10 @@
 ```tsx
 import * as dialog from "@zag-js/dialog"
 import { useMachine, normalizeProps, Portal } from "@zag-js/react"
+import { useId } from "react"
 
 export function Dialog() {
-  const service = useMachine(dialog.machine, { id: "1" })
+  const service = useMachine(dialog.machine, { id: useId() })
 
   const api = dialog.connect(service, normalizeProps)
 

@@ -1,12 +1,12 @@
 ```jsx
 import * as dateInput from "@zag-js/date-input"
 import { normalizeProps, useMachine } from "@zag-js/solid"
-import { createUniqueId } from "solid-js"
+import { createMemo, createUniqueId } from "solid-js"
 
 function DateInput() {
   const service = useMachine(dateInput.machine, { id: createUniqueId() })
 
-  const api = () => dateInput.connect(service(), normalizeProps)
+  const api = createMemo(() => dateInput.connect(service, normalizeProps))
 
   return (
     <div {...api().getRootProps()}>
