@@ -11,8 +11,6 @@ const service = useMachine(
   drawer.machine,
   controls.mergeProps<drawer.Props>({
     id: useId(),
-    snapPoints: ["20rem", 1],
-    defaultSnapPoint: "20rem",
   }),
 )
 
@@ -22,11 +20,11 @@ const api = computed(() => drawer.connect(service, normalizeProps))
 <template>
   <main>
     <button :class="styles.trigger" v-bind="api.getTriggerProps()">Open</button>
-    <Presence :class="styles.backdrop" v-bind="api.getBackdropProps()"></Presence>
+    <Presence :class="styles.backdrop" v-bind="api.getBackdropProps()" />
     <div :class="styles.positioner" v-bind="api.getPositionerProps()">
-      <Presence :class="styles.content" v-bind="api.getContentProps()">
+      <Presence :class="styles.content" v-bind="api.getContentProps({ draggable: false })">
         <div :class="styles.grabber" v-bind="api.getGrabberProps()">
-          <div :class="styles.grabberIndicator" v-bind="api.getGrabberIndicatorProps()"></div>
+          <div :class="styles.grabberIndicator" v-bind="api.getGrabberIndicatorProps()" />
         </div>
         <div v-bind="api.getTitleProps()">Drawer</div>
         <div data-no-drag="true" :class="styles.noDrag">No drag area</div>

@@ -13,8 +13,8 @@ export default function Page() {
 
   const service = useMachine(drawer.machine, {
     id: useId(),
-    snapPoints: [0.25, "250px", 1],
-    defaultSnapPoint: 0.25,
+    snapPoints: ["20rem", 1],
+    defaultSnapPoint: "20rem",
     ...controls.context,
   })
 

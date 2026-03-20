@@ -15,7 +15,6 @@ export default function Page() {
     drawer.machine,
     controls.mergeProps({
       id: createUniqueId(),
-      snapPoints: ["20rem", 1],
     }),
   )
 
@@ -29,7 +28,7 @@ export default function Page() {
         </button>
         <Presence class={styles.backdrop} {...api().getBackdropProps()} />
         <div class={styles.positioner} {...api().getPositionerProps()}>
-          <Presence class={styles.content} {...api().getContentProps()}>
+          <Presence class={styles.content} {...api().getContentProps({ draggable: false })}>
             <div class={styles.grabber} {...api().getGrabberProps()}>
               <div class={styles.grabberIndicator} {...api().getGrabberIndicatorProps()} />
             </div>

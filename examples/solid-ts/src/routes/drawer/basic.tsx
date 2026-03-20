@@ -2,6 +2,7 @@ import * as drawer from "@zag-js/drawer"
 import { normalizeProps, useMachine } from "@zag-js/solid"
 import { createMemo, createUniqueId, For } from "solid-js"
 import { drawerControls } from "@zag-js/shared"
+import { Presence } from "../../components/presence"
 import { StateVisualizer } from "../../components/state-visualizer"
 import { Toolbar } from "../../components/toolbar"
 import { useControls } from "../../hooks/use-controls"
@@ -25,9 +26,9 @@ export default function Page() {
         <button class={styles.trigger} {...api().getTriggerProps()}>
           Open
         </button>
-        <div class={styles.backdrop} {...api().getBackdropProps()} />
+        <Presence class={styles.backdrop} {...api().getBackdropProps()} />
         <div class={styles.positioner} {...api().getPositionerProps()}>
-          <div class={styles.content} {...api().getContentProps()}>
+          <Presence class={styles.content} {...api().getContentProps()}>
             <div class={styles.grabber} {...api().getGrabberProps()}>
               <div class={styles.grabberIndicator} {...api().getGrabberIndicatorProps()} />
             </div>
@@ -38,12 +39,12 @@ export default function Page() {
             <div class={styles.scrollable}>
               <For each={Array.from({ length: 100 })}>{(_element, index) => <div>Item {index()}</div>}</For>
             </div>
-          </div>
+          </Presence>
         </div>
       </main>
 
       <Toolbar controls={controls}>
-        <StateVisualizer state={service} />
+        <StateVisualizer state={service} context={["dragOffset", "snapPoint", "resolvedActiveSnapPoint"]} />
       </Toolbar>
     </>
   )

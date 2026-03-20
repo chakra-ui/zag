@@ -3,28 +3,18 @@
   import { normalizeProps, useMachine } from "@zag-js/svelte"
   import Toolbar from "$lib/components/toolbar.svelte"
   import StateVisualizer from "$lib/components/state-visualizer.svelte"
-  import { useControls } from "$lib/use-controls.svelte"
-  import { drawerControls } from "@zag-js/shared"
   import Presence from "$lib/components/presence.svelte"
   import styles from "../../../../../shared/styles/drawer.module.css"
 
-  const controls = useControls(drawerControls)
-
   const id = $props.id()
-  const service = useMachine(
-    drawer.machine,
-    controls.mergeProps<drawer.Props>({
-      id,
-      snapPoints: ["20rem", 1],
-      defaultSnapPoint: "20rem",
-    }),
-  )
+
+  const service = useMachine(drawer.machine, { id })
 
   const api = $derived(drawer.connect(service, normalizeProps))
 </script>
 
 <main>
-  <button class={styles.trigger} {...api.getTriggerProps()}>Open</button>
+  <div class={styles.swipeArea} {...api.getSwipeAreaProps()}></div>
   <Presence class={styles.backdrop} {...api.getBackdropProps()}></Presence>
   <div class={styles.positioner} {...api.getPositionerProps()}>
     <Presence class={styles.content} {...api.getContentProps()}>
@@ -32,8 +22,9 @@
         <div class={styles.grabberIndicator} {...api.getGrabberIndicatorProps()}></div>
       </div>
       <div {...api.getTitleProps()}>Drawer</div>
-      <div data-no-drag="true" class={styles.noDrag}>No drag area</div>
-      <div class={styles.scrollable}>
+      <p {...api.getDescriptionProps()}>Swipe up from the bottom edge to open this drawer.</p>
+      <button {...api.getCloseTriggerProps()}>Close</button>
+      <div class={styles.scrollable} data-testid="scrollable">
         {#each Array.from({ length: 100 }) as _, index}
           <div>Item {index}</div>
         {/each}
@@ -42,6 +33,6 @@
   </div>
 </main>
 
-<Toolbar {controls}>
-  <StateVisualizer state={service} context={["dragOffset", "snapPoint", "resolvedActiveSnapPoint"]} />
+<Toolbar>
+  <StateVisualizer state={service} context={["dragOffset", "snapPoint", "contentSize"]} />
 </Toolbar>
