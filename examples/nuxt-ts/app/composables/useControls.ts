@@ -14,7 +14,7 @@ export interface UseControlsReturn<T extends ControlRecord> {
   setState: (key: string, value: any) => void
   getState: (key: string) => any
   keys: (keyof T)[]
-  mergeProps: <P>(props: P) => ComputedRef<ControlValue<T> & P>
+  mergeProps: <P>(props: Partial<P>) => ComputedRef<ControlValue<T> & Partial<P>>
 }
 
 export const useControls = <T extends ControlRecord>(config: T): UseControlsReturn<T> => {
@@ -36,7 +36,7 @@ export const useControls = <T extends ControlRecord>(config: T): UseControlsRetu
     setState,
     getState,
     keys: Object.keys(config) as (keyof ControlValue<T>)[],
-    mergeProps: <P>(props: P): ComputedRef<ControlValue<T> & P> => {
+    mergeProps: <P>(props: Partial<P>): ComputedRef<ControlValue<T> & P> => {
       return computed(() => ({
         ...getTransformedControlValues(config, toRaw(toValue(state))),
         ...props,

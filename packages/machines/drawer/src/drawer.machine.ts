@@ -6,6 +6,7 @@ import {
   getEventPoint,
   getEventTarget,
   getInitialFocus,
+  isHTMLElement,
   raf,
   resizeObserverBorderBox,
 } from "@zag-js/dom-query"
@@ -74,8 +75,8 @@ export const machine = createMachine<DrawerSchema>({
       defaultSnapPoint: props.defaultSnapPoint ?? snapPoints[0] ?? null,
       swipeDirection: "down",
       snapToSequentialPoints: false,
-      swipeVelocityThreshold: 700,
-      closeThreshold: 0.25,
+      swipeVelocityThreshold: 500,
+      closeThreshold: 0.5,
       preventDragOnScroll: true,
       ...props,
     }
@@ -270,14 +271,16 @@ export const machine = createMachine<DrawerSchema>({
             guard: "isDragging",
             actions: [
               "clearRegistrySwiping",
+              "suppressBackdropAnimation",
               "setSnapSwipeStrength",
               "setClosestSnapPoint",
               "clearPointerStart",
               "clearDragOffset",
+              "clearVelocityTracking",
             ],
           },
           {
-            actions: ["clearRegistrySwiping", "clearPointerStart", "clearDragOffset"],
+            actions: ["clearRegistrySwiping", "clearPointerStart", "clearDragOffset", "clearVelocityTracking"],
           },
         ],
         CLOSE: [
@@ -391,7 +394,7 @@ export const machine = createMachine<DrawerSchema>({
       },
 
       shouldStartDragging({ prop, refs, event, scope }) {
-        if (!(event.target instanceof HTMLElement)) return false
+        if (!isHTMLElement(event.target)) return false
 
         const dragManager = refs.get("dragManager")
         return dragManager.shouldStartDragging(
@@ -404,13 +407,10 @@ export const machine = createMachine<DrawerSchema>({
       },
 
       shouldCloseOnSwipe({ prop, context, computed, refs }) {
+        // In sequential mode, let findClosestSnapPoint handle dismiss decisions
+        if (prop("snapToSequentialPoints")) return false
         const dragManager = refs.get("dragManager")
-        return dragManager.shouldDismiss(
-          context.get("contentSize"),
-          computed("resolvedSnapPoints"),
-          prop("swipeVelocityThreshold"),
-          prop("closeThreshold"),
-        )
+        return dragManager.shouldDismiss(context.get("contentSize"), computed("resolvedSnapPoints"))
       },
 
       hasSwipeIntent({ refs, prop, event }) {
@@ -476,6 +476,13 @@ export const machine = createMachine<DrawerSchema>({
         })
       },
 
+      suppressBackdropAnimation({ scope }) {
+        const backdropEl = dom.getBackdropEl(scope)
+        if (!backdropEl) return
+        // Keep override until drawer closes (clearSwipeOpenAnimation handles cleanup)
+        backdropEl.style.setProperty("animation", "none", "important")
+      },
+
       clearSwipeOpenAnimation({ scope }) {
         const contentEl = dom.getContentEl(scope)
         const backdropEl = dom.getBackdropEl(scope)
@@ -517,7 +524,7 @@ export const machine = createMachine<DrawerSchema>({
         context.set("dragOffset", dragManager.getDragOffset())
       },
 
-      setClosestSnapPoint({ computed, context, refs, prop }) {
+      setClosestSnapPoint({ computed, context, refs, prop, send }) {
         const snapPoints = computed("resolvedSnapPoints")
         const contentSize = context.get("contentSize")
         const viewportSize = context.get("viewportSize")
@@ -530,7 +537,14 @@ export const machine = createMachine<DrawerSchema>({
           snapPoints,
           context.get("resolvedActiveSnapPoint"),
           prop("snapToSequentialPoints"),
+          contentSize,
         )
+
+        // null means dismiss (sequential mode determined closing is closer)
+        if (closestSnapPoint === null) {
+          send({ type: "CLOSE" })
+          return
+        }
 
         context.set("snapPoint", closestSnapPoint)
 
@@ -572,12 +586,14 @@ export const machine = createMachine<DrawerSchema>({
       setSnapSwipeStrength({ context, refs, computed, prop }) {
         const dragManager = refs.get("dragManager")
         const snapPoints = computed("resolvedSnapPoints")
+        const contentSize = context.get("contentSize")
         const closestSnapPoint = dragManager.findClosestSnapPoint(
           snapPoints,
           context.get("resolvedActiveSnapPoint"),
           prop("snapToSequentialPoints"),
+          contentSize ?? 0,
         )
-        const contentSize = context.get("contentSize")
+        if (closestSnapPoint === null) return
         const viewportSize = context.get("viewportSize")
         const rootFontSize = context.get("rootFontSize")
         const resolved = resolveSnapPoint(closestSnapPoint, {
@@ -711,12 +727,21 @@ export const machine = createMachine<DrawerSchema>({
         const isVertical = isVerticalDirection(swipeDirection)
 
         function onPointerMove(event: PointerEvent) {
+          // Touch is handled by touchmove/touchend only. Feeding both pointer and touch
+          // events duplicates POINTER_MOVE on many browsers and skews velocity / snap.
+          if (event.pointerType === "touch") return
           const point = getEventPoint(event)
           const target = getEventTarget<Element>(event)
           send({ type: "POINTER_MOVE", point, target, swipeDirection })
         }
 
         function onPointerUp(event: PointerEvent) {
+          if (event.pointerType === "touch") return
+          const point = getEventPoint(event)
+          send({ type: "POINTER_UP", point })
+        }
+
+        function onPointerCancel(event: PointerEvent) {
           if (event.pointerType === "touch") return
           const point = getEventPoint(event)
           send({ type: "POINTER_UP", point })
@@ -730,7 +755,8 @@ export const machine = createMachine<DrawerSchema>({
         function onTouchMove(event: TouchEvent) {
           if (!event.touches[0]) return
           const point = getEventPoint(event)
-          const target = event.target as HTMLElement
+          // Match pointer path: composedPath[0] behaves correctly with shadow DOM / retargeting.
+          const target = getEventTarget<HTMLElement>(event) ?? (event.target as HTMLElement)
 
           if (!prop("preventDragOnScroll")) {
             send({ type: "POINTER_MOVE", point, target, swipeDirection })
@@ -738,28 +764,30 @@ export const machine = createMachine<DrawerSchema>({
           }
 
           const contentEl = dom.getContentEl(scope)
-          if (!contentEl) return
-
-          let el: HTMLElement | null = target
-          while (
-            el &&
-            el !== contentEl &&
-            (isVertical ? el.scrollHeight <= el.clientHeight : el.scrollWidth <= el.clientWidth)
-          ) {
-            el = el.parentElement
-          }
-
-          if (el && el !== contentEl) {
-            const scrollPos = isVertical ? el.scrollTop : el.scrollLeft
-            const axis = isVertical ? event.touches[0].clientY : event.touches[0].clientX
-
-            const atStart = scrollPos <= 0
-            const movingTowardStart = axis > lastAxis
-            if (atStart && movingTowardStart) {
-              event.preventDefault()
+          // Never drop touch moves when content isn't resolved yet — pointermove has no such gate,
+          // and missing moves on mobile breaks drag + sequential snap release.
+          if (contentEl) {
+            let el: HTMLElement | null = target
+            while (
+              el &&
+              el !== contentEl &&
+              (isVertical ? el.scrollHeight <= el.clientHeight : el.scrollWidth <= el.clientWidth)
+            ) {
+              el = el.parentElement
             }
 
-            lastAxis = axis
+            if (el && el !== contentEl) {
+              const scrollPos = isVertical ? el.scrollTop : el.scrollLeft
+              const axis = isVertical ? event.touches[0].clientY : event.touches[0].clientX
+
+              const atStart = scrollPos <= 0
+              const movingTowardStart = axis > lastAxis
+              if (atStart && movingTowardStart) {
+                event.preventDefault()
+              }
+
+              lastAxis = axis
+            }
           }
 
           send({ type: "POINTER_MOVE", point, target, swipeDirection })
@@ -771,14 +799,24 @@ export const machine = createMachine<DrawerSchema>({
           send({ type: "POINTER_UP", point })
         }
 
+        function onTouchCancel(event: TouchEvent) {
+          const point = getEventPoint(event)
+          send({ type: "POINTER_UP", point })
+        }
+
         const doc = scope.getDoc()
 
+        // Capture phase + non-passive touchmove so we run before nested scrollables / iOS
+        // default behaviors, consistent with robust drawer touch handling elsewhere.
+        const touchOpts = { capture: true, passive: false } as const
         const cleanups = [
           addDomEvent(doc, "pointermove", onPointerMove),
           addDomEvent(doc, "pointerup", onPointerUp),
-          addDomEvent(doc, "touchstart", onTouchStart, { passive: false }),
-          addDomEvent(doc, "touchmove", onTouchMove, { passive: false }),
-          addDomEvent(doc, "touchend", onTouchEnd),
+          addDomEvent(doc, "pointercancel", onPointerCancel),
+          addDomEvent(doc, "touchstart", onTouchStart, touchOpts),
+          addDomEvent(doc, "touchmove", onTouchMove, touchOpts),
+          addDomEvent(doc, "touchend", onTouchEnd, { capture: true }),
+          addDomEvent(doc, "touchcancel", onTouchCancel, { capture: true }),
         ]
 
         return () => {

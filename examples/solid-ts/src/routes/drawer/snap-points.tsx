@@ -14,7 +14,7 @@ export default function Page() {
     drawer.machine,
     controls.mergeProps({
       id: createUniqueId(),
-      snapPoints: [0.25, "250px", 1],
+      snapPoints: ["20rem", 1],
     }),
   )
 

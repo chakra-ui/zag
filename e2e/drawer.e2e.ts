@@ -1,4 +1,5 @@
 import { expect, test } from "@playwright/test"
+import { controls } from "./_utils"
 import { DrawerModel } from "./models/drawer.model"
 
 let I: DrawerModel
@@ -54,7 +55,7 @@ test.describe("drawer", () => {
     await I.waitForOpenState()
 
     const initialHeight = await I.getContentVisibleHeight()
-    const dragDistance = Math.floor(initialHeight * 0.3)
+    const dragDistance = Math.floor(initialHeight * 0.55)
 
     await I.dragGrabber("down", dragDistance)
     await I.dontSeeContent()
@@ -153,27 +154,65 @@ test.describe("drawer [snapPoints]", () => {
     await I.seeContent()
     await I.waitForOpenState()
 
-    const initialHeight = await I.getContentVisibleHeight()
-    const viewportHeight = await I.page.evaluate(() => window.innerHeight)
-    const lowerHeight = Math.min(initialHeight, viewportHeight * 0.25)
-    const dragTo250 = Math.max(0, initialHeight - 250) + 20
+    const rem20Px = await I.page.evaluate(() => {
+      const rootPx = Number.parseFloat(getComputedStyle(document.documentElement).fontSize)
+      return 20 * rootPx
+    })
 
-    // Drag down enough to target the 250px snap point without crossing below the lowest snap point.
-    await I.dragGrabber("down", dragTo250)
+    const initialHeight = await I.getContentVisibleHeight()
+    expect(Math.abs(initialHeight - rem20Px)).toBeLessThanOrEqual(4)
+
+    await I.dragGrabber("up", 250)
     await I.waitForSnapComplete()
 
     let currentHeight = await I.getContentVisibleHeight()
+    expect(currentHeight).toBeGreaterThan(initialHeight + 80)
 
-    const firstSnapIs250 = Math.abs(currentHeight - 250) <= 1
-    const firstSnapIsLower = Math.abs(currentHeight - lowerHeight) <= 1
-    expect(firstSnapIs250 || firstSnapIsLower).toBe(true)
-
-    // Drag up to target the 250px snap point.
-    await I.dragGrabber("up", 120)
+    await I.dragGrabber("down", 250)
     await I.waitForSnapComplete()
 
     currentHeight = await I.getContentVisibleHeight()
+    expect(Math.abs(currentHeight - rem20Px)).toBeLessThanOrEqual(4)
+  })
+})
 
-    expect(currentHeight).toBeCloseTo(250, 0)
+test.describe("drawer [snapToSequentialPoints]", () => {
+  test.beforeEach(async ({ page }) => {
+    I = new DrawerModel(page)
+    await I.goto("/drawer/snap-points")
+    await controls(page).bool("snapToSequentialPoints", true)
+  })
+
+  test("should advance one step on swipe up", async () => {
+    await I.clickTrigger()
+    await I.seeContent()
+    await I.waitForOpenState()
+
+    const initialHeight = await I.getContentVisibleHeight()
+
+    // Swipe up to expand to next snap point
+    await I.dragGrabber("up", 100)
+    await I.waitForSnapComplete()
+
+    const newHeight = await I.getContentVisibleHeight()
+    expect(newHeight).toBeGreaterThan(initialHeight + 50)
+  })
+
+  test("should not dismiss on fast swipe down from full height, should snap instead", async () => {
+    await I.clickTrigger()
+    await I.seeContent()
+    await I.waitForOpenState()
+
+    // Sequential mode: 20rem → 1 (full) in one step
+    await I.dragGrabber("up", 200)
+    await I.waitForSnapComplete()
+    await I.waitForOpenState()
+
+    // Swipe down — should snap to lower point, NOT dismiss
+    await I.dragGrabber("down", 150)
+    await I.waitForSnapComplete()
+
+    // Drawer should still be visible (snapped, not dismissed)
+    await I.seeContent()
   })
 })

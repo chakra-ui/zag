@@ -4,17 +4,34 @@ import { findClosestSnapPoint } from "./find-closest-snap-point"
 import { getScrollInfo } from "./get-scroll-info"
 
 const DRAG_START_THRESHOLD = 0.3
-const SEQUENTIAL_THRESHOLD = 14
-const SNAP_VELOCITY_THRESHOLD = 500 // px/s
-const SNAP_VELOCITY_MULTIPLIER = 0.3 // seconds
+const SEQUENTIAL_THRESHOLD = 24
+const SNAP_VELOCITY_THRESHOLD = 400 // px/s
+const SNAP_VELOCITY_MULTIPLIER = 0.4 // seconds
 const MAX_SNAP_VELOCITY = 4000 // px/s
+
+// Velocity tracking: sliding window for smooth, reliable velocity
+const VELOCITY_WINDOW_MS = 100 // consider samples from the last 100ms
+const MAX_RELEASE_VELOCITY_AGE_MS = 80 // max age for recent velocity to be valid
+const MIN_GESTURE_DURATION_MS = 50 // min duration for overall gesture velocity
+const MIN_VELOCITY_SAMPLES = 2
+
+interface VelocitySample {
+  axis: number
+  time: number
+}
 
 export class DragManager {
   private pointerStart: Point | null = null
   private dragOffset: number | null = null
-  private lastPoint: Point | null = null
-  private lastTimestamp: number | null = null
   private velocity: number | null = null
+
+  // Sliding window for velocity calculation
+  private samples: VelocitySample[] = []
+
+  // Gesture-level tracking for fallback velocity
+  private gestureStartAxis: number | null = null
+  private gestureStartTime: number | null = null
+  private gestureSign: number = 1
 
   setPointerStart(point: Point) {
     this.pointerStart = point
@@ -36,29 +53,82 @@ export class DragManager {
     return direction === "up" || direction === "left" ? -1 : 1
   }
 
-  setDragOffsetForDirection(point: Point, resolvedActiveSnapPointOffset: number, direction: SwipeDirection) {
-    if (!this.pointerStart) return
+  private trackVelocity(axisValue: number, sign: number) {
+    const now = performance.now()
 
-    const currentTimestamp = new Date().getTime()
-    const sign = this.getDirectionSign(direction)
-    const axisValue = this.getAxisValue(point, direction)
+    // Track gesture start for fallback velocity
+    if (this.gestureStartAxis === null) {
+      this.gestureStartAxis = axisValue
+      this.gestureStartTime = now
+      this.gestureSign = sign
+    }
 
-    if (this.lastPoint) {
-      const lastAxisValue = this.getAxisValue(this.lastPoint, direction)
-      const delta = (axisValue - lastAxisValue) * sign
+    this.samples.push({ axis: axisValue, time: now })
 
-      if (this.lastTimestamp) {
-        const dt = currentTimestamp - this.lastTimestamp
-        if (dt > 0) {
-          const calculatedVelocity = (delta / dt) * 1000
-          // Handle edge cases: NaN or Infinity should be treated as 0
-          this.velocity = Number.isFinite(calculatedVelocity) ? calculatedVelocity : 0
-        }
+    // Prune samples older than the window
+    const cutoff = now - VELOCITY_WINDOW_MS
+    while (this.samples.length > 0 && this.samples[0].time < cutoff) {
+      this.samples.shift()
+    }
+
+    if (this.samples.length < MIN_VELOCITY_SAMPLES) {
+      this.velocity = 0
+      return
+    }
+
+    // Compute velocity from oldest to newest sample in the window
+    const oldest = this.samples[0]
+    const newest = this.samples[this.samples.length - 1]
+    const dt = newest.time - oldest.time
+
+    if (dt <= 0) {
+      this.velocity = 0
+      return
+    }
+
+    const delta = (newest.axis - oldest.axis) * sign
+    const v = (delta / dt) * 1000 // px/s
+    this.velocity = Number.isFinite(v) ? v : 0
+  }
+
+  /**
+   * Get the best available velocity for release decisions.
+   * Prefers the sliding window velocity if the last sample is fresh.
+   * Falls back to the overall gesture velocity if samples are stale
+   * (e.g., user paused briefly before releasing).
+   */
+  getReleaseVelocity(): number {
+    const now = performance.now()
+
+    // Check if the sliding window velocity is fresh
+    if (this.samples.length >= MIN_VELOCITY_SAMPLES) {
+      const newest = this.samples[this.samples.length - 1]
+      if (now - newest.time <= MAX_RELEASE_VELOCITY_AGE_MS) {
+        return this.velocity ?? 0
       }
     }
 
-    this.lastPoint = point
-    this.lastTimestamp = currentTimestamp
+    // Fallback: overall gesture velocity
+    if (this.gestureStartAxis !== null && this.gestureStartTime !== null) {
+      const lastSample = this.samples[this.samples.length - 1]
+      if (lastSample) {
+        const dt = Math.max(lastSample.time - this.gestureStartTime, MIN_GESTURE_DURATION_MS)
+        const delta = (lastSample.axis - this.gestureStartAxis) * this.gestureSign
+        const v = (delta / dt) * 1000
+        return Number.isFinite(v) ? v : 0
+      }
+    }
+
+    return this.velocity ?? 0
+  }
+
+  setDragOffsetForDirection(point: Point, resolvedActiveSnapPointOffset: number, direction: SwipeDirection) {
+    if (!this.pointerStart) return
+
+    const sign = this.getDirectionSign(direction)
+    const axisValue = this.getAxisValue(point, direction)
+
+    this.trackVelocity(axisValue, sign)
 
     const pointerStartAxis = this.getAxisValue(this.pointerStart, direction)
     let delta = (pointerStartAxis - axisValue) * sign - resolvedActiveSnapPointOffset
@@ -79,14 +149,11 @@ export class DragManager {
     this.dragOffset = null
   }
 
-  getVelocity(): number | null {
-    return this.velocity
-  }
-
   clearVelocityTracking() {
-    this.lastPoint = null
-    this.lastTimestamp = null
+    this.samples = []
     this.velocity = null
+    this.gestureStartAxis = null
+    this.gestureStartTime = null
   }
 
   clear() {
@@ -138,45 +205,102 @@ export class DragManager {
     snapPoints: ResolvedSnapPoint[],
     snapPoint: ResolvedSnapPoint | null,
     snapToSequentialPoints: boolean,
-  ): number | string {
+    contentSize: number,
+  ): number | string | null {
     if (this.dragOffset === null) {
       return snapPoints[0]?.value ?? 1
     }
 
-    if (snapToSequentialPoints && snapPoint) {
-      const currentIndex = snapPoints.findIndex((item) => Object.is(item.value, snapPoint.value))
-      if (currentIndex >= 0) {
-        const delta = this.dragOffset - snapPoint.offset
-        const dragDirection = Math.sign(delta)
-        const velocityDirection = this.velocity !== null ? Math.sign(this.velocity) : 0
+    const velocity = this.getReleaseVelocity()
 
-        // Velocity-based skip: fast swipe in drag direction jumps to adjacent point
+    if (snapToSequentialPoints && snapPoint) {
+      // Sort by offset so index navigation matches drag direction
+      // (offset 0 = fully open at index 0, highest offset = most closed at end)
+      const ordered = [...snapPoints].sort((a, b) => a.offset - b.offset)
+
+      // Find current index by closest offset (not value) since deduplication
+      // may have replaced the original snap point value
+      let currentIndex = 0
+      let closestDist = Math.abs(snapPoint.offset - ordered[0].offset)
+      for (let i = 1; i < ordered.length; i++) {
+        const dist = Math.abs(snapPoint.offset - ordered[i].offset)
+        if (dist < closestDist) {
+          closestDist = dist
+          currentIndex = i
+        }
+      }
+
+      {
+        const currentPoint = ordered[currentIndex]
+        const delta = this.dragOffset - currentPoint.offset
+        const dragDirection = Math.sign(delta)
+        let velocityDirection = Math.sign(velocity)
+
+        // Touch releases often end with a short opposing velocity tick (rubber-band / OS),
+        // which would block velocity-based advance. If the drag offset clearly moved in one
+        // direction, ignore that reversal for advance only (Base UI aligns similarly).
+        let velocityForAdvance = velocity
+        if (
+          dragDirection !== 0 &&
+          Math.abs(delta) >= SEQUENTIAL_THRESHOLD &&
+          velocityDirection !== 0 &&
+          velocityDirection !== dragDirection
+        ) {
+          velocityForAdvance = 0
+          velocityDirection = 0
+        }
+
+        let targetSnapPoint = currentPoint
+        let effectiveTargetOffset = this.dragOffset
+
+        // Velocity-based advancement to adjacent snap point
         const shouldAdvance =
           dragDirection !== 0 &&
           velocityDirection === dragDirection &&
-          Math.abs(this.velocity ?? 0) >= SNAP_VELOCITY_THRESHOLD
+          Math.abs(velocityForAdvance) >= SNAP_VELOCITY_THRESHOLD
 
         if (shouldAdvance) {
-          const nextIndex = Math.min(Math.max(currentIndex + dragDirection, 0), snapPoints.length - 1)
-          if (nextIndex !== currentIndex) {
-            return snapPoints[nextIndex].value
+          const adjacentIndex = Math.min(Math.max(currentIndex + dragDirection, 0), ordered.length - 1)
+          if (adjacentIndex !== currentIndex) {
+            const adjacentPoint = ordered[adjacentIndex]
+            // Always step to the adjacent snap when velocity commits to that direction.
+            // The old "only if not yet passed" check stranded flicks that overshot the
+            // intermediate offset (common on touch), snapping back to the previous stop.
+            targetSnapPoint = adjacentPoint
+            effectiveTargetOffset = adjacentPoint.offset
+          } else if (dragDirection > 0) {
+            // Past the last snap point with velocity → dismiss
+            return null
+          }
+        } else if (delta > SEQUENTIAL_THRESHOLD) {
+          const nextPoint = ordered[Math.min(currentIndex + 1, ordered.length - 1)]
+          if (nextPoint) {
+            targetSnapPoint = nextPoint
+            effectiveTargetOffset = nextPoint.offset
+          }
+        } else if (delta < -SEQUENTIAL_THRESHOLD) {
+          const prevPoint = ordered[Math.max(currentIndex - 1, 0)]
+          if (prevPoint) {
+            targetSnapPoint = prevPoint
+            effectiveTargetOffset = prevPoint.offset
           }
         }
 
-        if (delta > SEQUENTIAL_THRESHOLD) {
-          return snapPoints[Math.min(currentIndex + 1, snapPoints.length - 1)]?.value ?? snapPoint.value
+        // Compare close distance vs snap distance
+        const closeDistance = Math.abs(effectiveTargetOffset - contentSize)
+        const snapDistance = Math.abs(effectiveTargetOffset - targetSnapPoint.offset)
+        if (closeDistance < snapDistance) {
+          return null // dismiss
         }
-        if (delta < -SEQUENTIAL_THRESHOLD) {
-          return snapPoints[Math.max(currentIndex - 1, 0)]?.value ?? snapPoint.value
-        }
-        return snapPoint.value
+
+        return targetSnapPoint.value
       }
     }
 
     // Non-sequential: apply velocity offset for momentum-based skipping
     let targetOffset = this.dragOffset
-    if (this.velocity !== null && Math.abs(this.velocity) >= SNAP_VELOCITY_THRESHOLD) {
-      const clamped = Math.min(MAX_SNAP_VELOCITY, Math.max(-MAX_SNAP_VELOCITY, this.velocity))
+    if (Math.abs(velocity) >= SNAP_VELOCITY_THRESHOLD) {
+      const clamped = Math.min(MAX_SNAP_VELOCITY, Math.max(-MAX_SNAP_VELOCITY, velocity))
       targetOffset += clamped * SNAP_VELOCITY_MULTIPLIER
       targetOffset = Math.max(0, targetOffset)
     }
@@ -188,25 +312,10 @@ export class DragManager {
   setSwipeOpenOffset(point: Point, contentSize: number, direction: SwipeDirection) {
     if (!this.pointerStart) return
 
-    const currentTimestamp = Date.now()
     const sign = this.getDirectionSign(direction)
     const axisValue = this.getAxisValue(point, direction)
 
-    if (this.lastPoint) {
-      const lastAxisValue = this.getAxisValue(this.lastPoint, direction)
-      const delta = (axisValue - lastAxisValue) * sign
-
-      if (this.lastTimestamp) {
-        const dt = currentTimestamp - this.lastTimestamp
-        if (dt > 0) {
-          const calculatedVelocity = (delta / dt) * 1000
-          this.velocity = Number.isFinite(calculatedVelocity) ? calculatedVelocity : 0
-        }
-      }
-    }
-
-    this.lastPoint = point
-    this.lastTimestamp = currentTimestamp
+    this.trackVelocity(axisValue, sign)
 
     // Opening displacement: how far user has swiped in the opening direction
     const pointerStartAxis = this.getAxisValue(this.pointerStart, direction)
@@ -223,12 +332,13 @@ export class DragManager {
   }
 
   shouldOpen(contentSize: number | null, swipeVelocityThreshold: number, openThreshold: number): boolean {
-    if (this.dragOffset === null || this.velocity === null || contentSize === null) return false
+    if (this.dragOffset === null || contentSize === null) return false
 
+    const velocity = this.getReleaseVelocity()
     const visibleSize = contentSize - this.dragOffset
 
     // Fast swipe in opening direction (negative velocity = opening)
-    const isFastSwipe = this.velocity < 0 && Math.abs(this.velocity) >= swipeVelocityThreshold
+    const isFastSwipe = velocity < 0 && Math.abs(velocity) >= swipeVelocityThreshold
 
     // Dragged past threshold
     const hasEnoughDisplacement = visibleSize >= contentSize * openThreshold
@@ -241,10 +351,11 @@ export class DragManager {
     const MIN_SCALAR = 0.1
     const MAX_SCALAR = 1
 
-    if (this.dragOffset === null || this.velocity === null) return MAX_SCALAR
+    if (this.dragOffset === null) return MAX_SCALAR
 
+    const velocity = this.getReleaseVelocity()
     const distance = Math.abs(this.dragOffset - targetOffset)
-    const absVelocity = Math.abs(this.velocity)
+    const absVelocity = Math.abs(velocity)
 
     if (absVelocity <= 0 || distance <= 0) return MAX_SCALAR
 
@@ -253,32 +364,28 @@ export class DragManager {
     return MIN_SCALAR + normalized * (MAX_SCALAR - MIN_SCALAR)
   }
 
-  shouldDismiss(
-    contentSize: number | null,
-    snapPoints: ResolvedSnapPoint[],
-    swipeVelocityThreshold: number,
-    closeThreshold: number,
-  ): boolean {
-    if (this.dragOffset === null || this.velocity === null || contentSize === null) return false
+  shouldDismiss(contentSize: number | null, snapPoints: ResolvedSnapPoint[]): boolean {
+    if (this.dragOffset === null || contentSize === null) return false
 
+    const velocity = this.getReleaseVelocity()
     const visibleSize = contentSize - this.dragOffset
-    const smallestSnapPoint = snapPoints.reduce((acc, curr) => (curr.offset > acc.offset ? curr : acc))
 
-    const isFastSwipe = this.velocity > 0 && this.velocity >= swipeVelocityThreshold
+    if (visibleSize <= 0) return true
 
-    const closeThresholdInPixels = contentSize * (1 - closeThreshold)
-    const smallestSnapPointVisibleSize = contentSize - smallestSnapPoint.offset
-    const isBelowSmallestSnapPoint = visibleSize < smallestSnapPointVisibleSize
-    const isBelowCloseThreshold = visibleSize < closeThresholdInPixels
-
-    // With multiple snap points, prefer snapping during regular drags,
-    // but still allow a fast swipe down to dismiss from below the lowest snap point.
-    if (snapPoints.length > 1) {
-      return visibleSize <= 0 || (isFastSwipe && isBelowSmallestSnapPoint)
+    // Apply velocity to target offset (same as findClosestSnapPoint)
+    let targetOffset = this.dragOffset
+    if (Math.abs(velocity) >= SNAP_VELOCITY_THRESHOLD) {
+      const clamped = Math.min(MAX_SNAP_VELOCITY, Math.max(-MAX_SNAP_VELOCITY, velocity))
+      targetOffset += clamped * SNAP_VELOCITY_MULTIPLIER
+      targetOffset = Math.max(0, targetOffset)
     }
 
-    const hasEnoughDragToDismiss = (isBelowCloseThreshold && isBelowSmallestSnapPoint) || visibleSize === 0
+    // Compare: is the velocity-adjusted target closer to "fully closed"
+    // than to any snap point? If so, dismiss.
+    const closeDistance = Math.abs(targetOffset - contentSize)
+    const closest = findClosestSnapPoint(targetOffset, snapPoints)
+    const snapDistance = Math.abs(targetOffset - closest.offset)
 
-    return (isFastSwipe && isBelowSmallestSnapPoint) || hasEnoughDragToDismiss
+    return closeDistance < snapDistance
   }
 }

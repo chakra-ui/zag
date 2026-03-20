@@ -358,8 +358,8 @@ export const passwordInputControls = defineControls({
 })
 
 export const drawerControls = defineControls({
-  swipeVelocityThreshold: { type: "number", defaultValue: 700 },
-  closeThreshold: { type: "number", defaultValue: 0.25 },
+  swipeVelocityThreshold: { type: "number", defaultValue: 500 },
+  closeThreshold: { type: "number", defaultValue: 0.5 },
   preventDragOnScroll: { type: "boolean", defaultValue: true },
   swipeDirection: { type: "select", options: ["down", "up", "left", "right"] as const, defaultValue: "down" },
   snapToSequentialPoints: { type: "boolean", defaultValue: false },
