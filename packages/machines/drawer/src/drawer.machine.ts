@@ -1,7 +1,14 @@
 import { ariaHidden } from "@zag-js/aria-hidden"
 import { createGuards, createMachine } from "@zag-js/core"
 import { trackDismissableElement } from "@zag-js/dismissable"
-import { addDomEvent, getEventPoint, getEventTarget, raf, resizeObserverBorderBox } from "@zag-js/dom-query"
+import {
+  addDomEvent,
+  getEventPoint,
+  getEventTarget,
+  getInitialFocus,
+  raf,
+  resizeObserverBorderBox,
+} from "@zag-js/dom-query"
 import { trapFocus } from "@zag-js/focus-trap"
 import { preventBodyScroll } from "@zag-js/remove-scroll"
 import * as dom from "./drawer.dom"
@@ -214,7 +221,7 @@ export const machine = createMachine<DrawerSchema>({
   states: {
     open: {
       tags: ["open"],
-      entry: ["checkRenderedElements", "deferClearDragOffset"],
+      entry: ["checkRenderedElements", "setInitialFocus", "deferClearDragOffset"],
       effects: [
         "trackDismissableElement",
         "preventScroll",
@@ -430,6 +437,18 @@ export const machine = createMachine<DrawerSchema>({
     },
 
     actions: {
+      setInitialFocus({ prop, scope }) {
+        // In modal mode, trapFocus handles initial focus
+        if (prop("trapFocus")) return
+        raf(() => {
+          const element = getInitialFocus({
+            root: dom.getContentEl(scope),
+            getInitialEl: prop("initialFocusEl"),
+          })
+          element?.focus({ preventScroll: true })
+        })
+      },
+
       checkRenderedElements({ context, scope }) {
         raf(() => {
           context.set("rendered", {

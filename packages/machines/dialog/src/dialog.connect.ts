@@ -53,7 +53,7 @@ export function connect<T extends PropTypes>(
         dir: prop("dir"),
         id: dom.getPositionerId(scope),
         style: {
-          pointerEvents: open ? undefined : "none",
+          pointerEvents: !open || !prop("modal") ? "none" : undefined,
         },
       })
     },
@@ -68,10 +68,13 @@ export function connect<T extends PropTypes>(
         id: dom.getContentId(scope),
         tabIndex: -1,
         "data-state": open ? "open" : "closed",
-        "aria-modal": true,
+        "aria-modal": prop("modal"),
         "aria-label": ariaLabel || undefined,
         "aria-labelledby": ariaLabel || !rendered.title ? undefined : dom.getTitleId(scope),
         "aria-describedby": rendered.description ? dom.getDescriptionId(scope) : undefined,
+        style: {
+          pointerEvents: prop("modal") ? undefined : "auto",
+        },
       })
     },
 

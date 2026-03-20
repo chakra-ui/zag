@@ -99,6 +99,9 @@ export function connect<T extends PropTypes>(service: DrawerService, normalize: 
         hidden: closed,
         "data-state": open ? "open" : "closed",
         "data-swipe-direction": swipeDirection,
+        style: {
+          pointerEvents: prop("modal") ? undefined : "none",
+        },
       })
     },
 
@@ -123,6 +126,7 @@ export function connect<T extends PropTypes>(service: DrawerService, normalize: 
         "data-swiping": dragging || swipingOpen ? "" : undefined,
         "data-dragging": dragging ? "" : undefined,
         style: {
+          pointerEvents: prop("modal") ? undefined : "auto",
           visibility: swipingOpen && dragOffset === null ? "hidden" : undefined,
           transform: "translate3d(var(--drawer-translate-x, 0px), var(--drawer-translate-y, 0px), 0)",
           transitionDuration: dragging || swipingOpen ? "0s" : undefined,

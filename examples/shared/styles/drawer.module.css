@@ -63,6 +63,7 @@
   right: auto;
   top: auto;
   bottom: auto;
+  box-shadow: 0 -4px 32px rgb(0 0 0 / 10%);
 
   &[data-state="open"] {
     animation-name: slideInDown;
@@ -77,6 +78,7 @@
     border-top-right-radius: 0;
     border-bottom-left-radius: 16px;
     border-bottom-right-radius: 16px;
+    box-shadow: 0 4px 32px rgb(0 0 0 / 10%);
 
     &[data-state="open"] {
       animation-name: slideInUp;
@@ -97,7 +99,9 @@
   }
 
   &[data-swipe-direction="left"] {
+    border-top-right-radius: 16px;
     border-bottom-right-radius: 16px;
+    box-shadow: 4px 0 32px rgb(0 0 0 / 10%);
 
     &[data-state="open"] {
       animation-name: slideInLeft;
@@ -109,7 +113,9 @@
   }
 
   &[data-swipe-direction="right"] {
+    border-top-left-radius: 16px;
     border-bottom-left-radius: 16px;
+    box-shadow: -4px 0 32px rgb(0 0 0 / 10%);
 
     &[data-state="open"] {
       animation-name: slideInRight;

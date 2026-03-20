@@ -49,6 +49,7 @@ export const componentRoutes: ComponentRoute[] = [
       { slug: "action-sheet", title: "Action Sheet" },
       { slug: "controlled", title: "Controlled" },
       { slug: "mobile-nav", title: "Mobile Nav" },
+      { slug: "non-modal", title: "Non-Modal" },
     ],
   },
   {

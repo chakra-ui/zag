@@ -110,7 +110,13 @@ export interface DialogSchema {
   }
   guard: "isOpenControlled"
   effect: "trackDismissableElement" | "preventScroll" | "trapFocus" | "hideContentBelow"
-  action: "checkRenderedElements" | "syncZIndex" | "invokeOnClose" | "invokeOnOpen" | "toggleVisibility"
+  action:
+    | "checkRenderedElements"
+    | "syncZIndex"
+    | "setInitialFocus"
+    | "invokeOnClose"
+    | "invokeOnOpen"
+    | "toggleVisibility"
   event: {
     type: "CONTROLLED.OPEN" | "CONTROLLED.CLOSE" | "OPEN" | "CLOSE" | "TOGGLE"
   }
