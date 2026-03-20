@@ -120,6 +120,11 @@
   top: auto;
   bottom: auto;
 
+  &[data-swiping] {
+    user-select: none;
+    -webkit-user-select: none;
+  }
+
   &[data-state="open"] {
     animation-name: slideInDown;
   }
