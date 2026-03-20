@@ -1,20 +1,12 @@
-import { getEventPoint, getEventTarget, isLeftClick } from "@zag-js/dom-query"
+import { getEventPoint, isLeftClick } from "@zag-js/dom-query"
 import type { JSX, NormalizeProps, PropTypes } from "@zag-js/types"
 import { toPx } from "@zag-js/utils"
 import { parts } from "./drawer.anatomy"
 import * as dom from "./drawer.dom"
 import type { DrawerApi, DrawerService } from "./drawer.types"
-
-const isVerticalDirection = (direction: DrawerApi["swipeDirection"]) => direction === "down" || direction === "up"
-
-const isNegativeDirection = (direction: DrawerApi["swipeDirection"]) => direction === "up" || direction === "left"
-
-const oppositeDirection: Record<DrawerApi["swipeDirection"], DrawerApi["swipeDirection"]> = {
-  up: "down",
-  down: "up",
-  left: "right",
-  right: "left",
-}
+import { cancelDeferPointerDown, deferPointerDown } from "./utils/deferred-pointer"
+import { isTextSelectionInDrawer, shouldIgnorePointerDownForDrag } from "./utils/is-drag-exempt-target"
+import { isNegativeSwipeDirection, isVerticalSwipeDirection, oppositeSwipeDirection } from "./utils/swipe"
 
 export function connect<T extends PropTypes>(service: DrawerService, normalize: NormalizeProps<T>): DrawerApi<T> {
   const { state, send, context, scope, prop } = service
@@ -22,35 +14,71 @@ export function connect<T extends PropTypes>(service: DrawerService, normalize: 
   const open = state.hasTag("open")
   const closed = state.matches("closed")
   const swipingOpen = state.matches("swiping-open")
+
   const dragOffset = context.get("dragOffset")
   const dragging = dragOffset !== null
 
   const snapPoint = context.get("snapPoint")
-  const resolvedActiveSnapPoint = context.get("resolvedActiveSnapPoint")
   const swipeDirection = prop("swipeDirection")
   const contentSize = context.get("contentSize")
   const swipeStrength = context.get("swipeStrength")
+
+  const resolvedActiveSnapPoint = context.get("resolvedActiveSnapPoint")
   const snapPointOffset = resolvedActiveSnapPoint?.offset ?? 0
+
   const swipeOpenFallbackOffset = swipingOpen && dragOffset === null ? (contentSize ?? 9999) : 0
   const currentOffset = dragOffset ?? (snapPointOffset || swipeOpenFallbackOffset)
-  const swipeMovement = dragging || swipingOpen ? currentOffset - snapPointOffset : 0
-  const signedCurrentOffset = isNegativeDirection(swipeDirection) ? -currentOffset : currentOffset
-  const signedSnapPointOffset = isNegativeDirection(swipeDirection) ? -snapPointOffset : snapPointOffset
-  const signedMovement = isNegativeDirection(swipeDirection) ? -swipeMovement : swipeMovement
+  const signedSnapPointOffset = isNegativeSwipeDirection(swipeDirection) ? -snapPointOffset : snapPointOffset
+
   const isActivelySwiping = dragging || swipingOpen
+  const swipeMovement = dragging || swipingOpen ? currentOffset - snapPointOffset : 0
+  const signedMovement = isNegativeSwipeDirection(swipeDirection) ? -swipeMovement : swipeMovement
   const swipeProgress =
     isActivelySwiping && contentSize && contentSize > 0
       ? Math.max(0, Math.min(1, Math.abs(signedMovement) / contentSize))
       : swipingOpen
         ? 1 // fully closed (transparent backdrop) until contentSize is measured
         : 0
-  const translateX = isVerticalDirection(swipeDirection) ? 0 : signedCurrentOffset
-  const translateY = isVerticalDirection(swipeDirection) ? signedCurrentOffset : 0
 
-  function onPointerDown(event: JSX.PointerEvent<HTMLElement>) {
-    if (!isLeftClick(event)) return
-    const target = getEventTarget<HTMLElement>(event)
-    if (target?.hasAttribute("data-no-drag") || target?.closest("[data-no-drag]")) return
+  const signedCurrentOffset = isNegativeSwipeDirection(swipeDirection) ? -currentOffset : currentOffset
+  const translateX = isVerticalSwipeDirection(swipeDirection) ? 0 : signedCurrentOffset
+  const translateY = isVerticalSwipeDirection(swipeDirection) ? signedCurrentOffset : 0
+
+  /**
+   * Sheet body: mouse/pen defer POINTER_DOWN until movement reads as a sheet-axis drag so
+   * click–drag to select text does not arm the drawer on the first pixel of movement.
+   */
+  function onContentPointerDown(event: JSX.PointerEvent<HTMLElement>) {
+    if (shouldIgnorePointerDownForDrag(event)) return
+    const content = dom.getContentEl(scope)
+    if (isTextSelectionInDrawer(scope.getDoc(), content)) return
+    if (state.matches("closing")) return
+
+    const point = getEventPoint(event)
+    const defer = event.pointerType === "mouse" || event.pointerType === "pen"
+    if (defer) {
+      deferPointerDown({
+        scope,
+        onCommit(point) {
+          send({ type: "POINTER_DOWN", point })
+        },
+        canCommitPointerDown() {
+          return state.hasTag("open") && !state.matches("closing")
+        },
+        swipeDirection,
+        pointerId: event.pointerId,
+        startPoint: point,
+      })
+      return
+    }
+
+    send({ type: "POINTER_DOWN", point })
+  }
+
+  /** Grabber: immediate POINTER_DOWN; cancel any deferred content gesture; ignore text-selection gate. */
+  function onGrabberPointerDown(event: JSX.PointerEvent<HTMLElement>) {
+    if (shouldIgnorePointerDownForDrag(event)) return
+    cancelDeferPointerDown(scope)
     if (state.matches("closing")) return
     send({ type: "POINTER_DOWN", point: getEventPoint(event) })
   }
@@ -74,17 +102,13 @@ export function connect<T extends PropTypes>(service: DrawerService, normalize: 
     },
 
     getOpenPercentage() {
-      if (!open) return 0
-
-      if (!contentSize) return 0
-
+      if (!open || !contentSize) return 0
       return Math.max(0, Math.min(1, 1 - currentOffset / contentSize))
     },
 
     getSnapPointIndex() {
-      const snapPoints = prop("snapPoints")
       if (snapPoint === null) return -1
-      return snapPoints.indexOf(snapPoint)
+      return prop("snapPoints").indexOf(snapPoint)
     },
 
     getContentSize() {
@@ -106,8 +130,8 @@ export function connect<T extends PropTypes>(service: DrawerService, normalize: 
     },
 
     getContentProps(props = { draggable: true }) {
-      const movementX = isVerticalDirection(swipeDirection) ? 0 : signedMovement
-      const movementY = isVerticalDirection(swipeDirection) ? signedMovement : 0
+      const movementX = isVerticalSwipeDirection(swipeDirection) ? 0 : signedMovement
+      const movementY = isVerticalSwipeDirection(swipeDirection) ? signedMovement : 0
       const rendered = context.get("rendered")
 
       return normalize.element({
@@ -133,8 +157,12 @@ export function connect<T extends PropTypes>(service: DrawerService, normalize: 
           "--drawer-translate": toPx(translateY),
           "--drawer-translate-x": toPx(translateX),
           "--drawer-translate-y": toPx(translateY),
-          "--drawer-snap-point-offset-x": isVerticalDirection(swipeDirection) ? "0px" : toPx(signedSnapPointOffset),
-          "--drawer-snap-point-offset-y": isVerticalDirection(swipeDirection) ? toPx(signedSnapPointOffset) : "0px",
+          "--drawer-snap-point-offset-x": isVerticalSwipeDirection(swipeDirection)
+            ? "0px"
+            : toPx(signedSnapPointOffset),
+          "--drawer-snap-point-offset-y": isVerticalSwipeDirection(swipeDirection)
+            ? toPx(signedSnapPointOffset)
+            : "0px",
           "--drawer-swipe-movement-x": toPx(movementX),
           "--drawer-swipe-movement-y": toPx(movementY),
           "--drawer-swipe-strength": `${swipeStrength}`,
@@ -142,7 +170,7 @@ export function connect<T extends PropTypes>(service: DrawerService, normalize: 
         },
         onPointerDown(event) {
           if (!props.draggable) return
-          onPointerDown(event)
+          onContentPointerDown(event)
         },
       })
     },
@@ -194,7 +222,7 @@ export function connect<T extends PropTypes>(service: DrawerService, normalize: 
         ...parts.grabber.attrs,
         id: dom.getGrabberId(scope),
         onPointerDown(event) {
-          onPointerDown(event)
+          onGrabberPointerDown(event)
         },
         style: {
           touchAction: "none",
@@ -221,7 +249,7 @@ export function connect<T extends PropTypes>(service: DrawerService, normalize: 
 
     getSwipeAreaProps(props = {}) {
       const disabled = props.disabled ?? false
-      const openDirection = props.swipeDirection ?? oppositeDirection[swipeDirection]
+      const openDirection = props.swipeDirection ?? oppositeSwipeDirection[swipeDirection]
 
       return normalize.element({
         ...parts.swipeArea.attrs,
@@ -233,7 +261,7 @@ export function connect<T extends PropTypes>(service: DrawerService, normalize: 
         "data-swipe-direction": openDirection,
         "data-disabled": disabled ? "" : undefined,
         style: {
-          touchAction: isVerticalDirection(openDirection) ? "pan-x" : "pan-y",
+          touchAction: isVerticalSwipeDirection(openDirection) ? "pan-x" : "pan-y",
           pointerEvents: disabled || (open && !swipingOpen) ? "none" : undefined,
         },
         onPointerDown(event) {

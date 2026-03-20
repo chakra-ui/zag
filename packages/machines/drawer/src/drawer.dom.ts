@@ -1,5 +1,5 @@
 import type { Scope } from "@zag-js/core"
-import { queryAll } from "@zag-js/dom-query"
+import { isHTMLElement, queryAll } from "@zag-js/dom-query"
 
 export const getContentId = (ctx: Scope) => ctx.ids?.content ?? `drawer:${ctx.id}:content`
 export const getPositionerId = (ctx: Scope) => ctx.ids?.positioner ?? `drawer:${ctx.id}:positioner`
@@ -23,6 +23,17 @@ export const getHeaderEl = (ctx: Scope) => ctx.getById(getHeaderId(ctx))
 export const getGrabberEl = (ctx: Scope) => ctx.getById(getGrabberId(ctx))
 export const getGrabberIndicatorEl = (ctx: Scope) => ctx.getById(getGrabberIndicatorId(ctx))
 export const getCloseTriggerEl = (ctx: Scope) => ctx.getById(getCloseTriggerId(ctx))
+export const getSwipeAreaEl = (ctx: Scope) => ctx.getById(getSwipeAreaId(ctx))
+
+/** Whether the event target lies inside the drawer content or swipe-area subtree. */
+export function isPointerWithinContentOrSwipeArea(
+  target: EventTarget | null,
+  content: HTMLElement | null,
+  swipeArea: HTMLElement | null,
+): boolean {
+  if (!isHTMLElement(target)) return false
+  return Boolean((content && content.contains(target)) || (swipeArea && swipeArea.contains(target)))
+}
 
 export const getScrollEls = (scope: Scope) => {
   const els: Record<"x" | "y", HTMLElement[]> = { x: [], y: [] }

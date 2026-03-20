@@ -1,19 +1,27 @@
 import type { Point } from "@zag-js/types"
 import type { ResolvedSnapPoint, SwipeDirection } from "../drawer.types"
-import { findClosestSnapPoint } from "./find-closest-snap-point"
 import { getScrollInfo } from "./get-scroll-info"
+import { adjustReleaseVelocityAgainstDisplacement, adjustReleaseVelocityForOpenSwipe } from "./release-velocity"
+import { findClosestSnapPoint } from "./snap-point"
+import { isVerticalSwipeDirection } from "./swipe"
 
 const DRAG_START_THRESHOLD = 0.3
+/** Treat slightly diagonal moves as cross-axis–biased so nested horizontal scroll wins more often. */
+const CROSS_AXIS_BIAS = 0.58
+const SCROLL_SLACK_GATE = 0.5
 const SEQUENTIAL_THRESHOLD = 24
 const SNAP_VELOCITY_THRESHOLD = 400 // px/s
 const SNAP_VELOCITY_MULTIPLIER = 0.4 // seconds
 const MAX_SNAP_VELOCITY = 4000 // px/s
 
-// Velocity tracking: sliding window for smooth, reliable velocity
-const VELOCITY_WINDOW_MS = 100 // consider samples from the last 100ms
-const MAX_RELEASE_VELOCITY_AGE_MS = 80 // max age for recent velocity to be valid
-const MIN_GESTURE_DURATION_MS = 50 // min duration for overall gesture velocity
+const VELOCITY_WINDOW_MS = 100
+const MAX_RELEASE_VELOCITY_AGE_MS = 80
+const MIN_GESTURE_DURATION_MS = 50
 const MIN_VELOCITY_SAMPLES = 2
+
+const SWIPE_STRENGTH_MAX_DURATION_MS = 360
+const SWIPE_STRENGTH_MIN_SCALAR = 0.1
+const SWIPE_STRENGTH_MAX_SCALAR = 1
 
 interface VelocitySample {
   axis: number
@@ -179,21 +187,27 @@ export class DragManager {
 
       if (Math.abs(delta) < DRAG_START_THRESHOLD) return false
 
-      // If movement is primarily cross-axis, preserve native scrolling
-      const isVertical = direction === "down" || direction === "up"
+      // If movement leans cross-axis, preserve native scrolling on that axis
+      const isVertical = isVerticalSwipeDirection(direction)
       const crossDelta = isVertical ? Math.abs(point.x - this.pointerStart.x) : Math.abs(point.y - this.pointerStart.y)
 
-      if (crossDelta > Math.abs(delta)) {
+      if (crossDelta > Math.abs(delta) * CROSS_AXIS_BIAS) {
         const crossDirection: SwipeDirection = isVertical ? "right" : "down"
         const crossScroll = getScrollInfo(target, container, crossDirection)
-        if (crossScroll.availableForwardScroll > 1 || crossScroll.availableBackwardScroll > 0) {
+        if (
+          crossScroll.availableForwardScroll > SCROLL_SLACK_GATE ||
+          crossScroll.availableBackwardScroll > SCROLL_SLACK_GATE
+        ) {
           return false
         }
       }
 
       const { availableForwardScroll, availableBackwardScroll } = getScrollInfo(target, container, direction)
 
-      if ((delta > 0 && Math.abs(availableForwardScroll) > 1) || (delta < 0 && Math.abs(availableBackwardScroll) > 0)) {
+      if (
+        (delta > 0 && availableForwardScroll > SCROLL_SLACK_GATE) ||
+        (delta < 0 && availableBackwardScroll > SCROLL_SLACK_GATE)
+      ) {
         return false
       }
     }
@@ -210,8 +224,6 @@ export class DragManager {
     if (this.dragOffset === null) {
       return snapPoints[0]?.value ?? 1
     }
-
-    const velocity = this.getReleaseVelocity()
 
     if (snapToSequentialPoints && snapPoint) {
       // Sort by offset so index navigation matches drag direction
@@ -234,21 +246,8 @@ export class DragManager {
         const currentPoint = ordered[currentIndex]
         const delta = this.dragOffset - currentPoint.offset
         const dragDirection = Math.sign(delta)
-        let velocityDirection = Math.sign(velocity)
-
-        // Touch releases often end with a short opposing velocity tick (rubber-band / OS),
-        // which would block velocity-based advance. If the drag offset clearly moved in one
-        // direction, ignore that reversal for advance only (Base UI aligns similarly).
-        let velocityForAdvance = velocity
-        if (
-          dragDirection !== 0 &&
-          Math.abs(delta) >= SEQUENTIAL_THRESHOLD &&
-          velocityDirection !== 0 &&
-          velocityDirection !== dragDirection
-        ) {
-          velocityForAdvance = 0
-          velocityDirection = 0
-        }
+        const velocityAdjusted = adjustReleaseVelocityAgainstDisplacement(this.getReleaseVelocity(), delta)
+        const velocityDirection = Math.sign(velocityAdjusted)
 
         let targetSnapPoint = currentPoint
         let effectiveTargetOffset = this.dragOffset
@@ -257,7 +256,7 @@ export class DragManager {
         const shouldAdvance =
           dragDirection !== 0 &&
           velocityDirection === dragDirection &&
-          Math.abs(velocityForAdvance) >= SNAP_VELOCITY_THRESHOLD
+          Math.abs(velocityAdjusted) >= SNAP_VELOCITY_THRESHOLD
 
         if (shouldAdvance) {
           const adjacentIndex = Math.min(Math.max(currentIndex + dragDirection, 0), ordered.length - 1)
@@ -298,6 +297,11 @@ export class DragManager {
     }
 
     // Non-sequential: apply velocity offset for momentum-based skipping
+    const snapRestOffset = snapPoint?.offset ?? 0
+    const velocity = adjustReleaseVelocityAgainstDisplacement(
+      this.getReleaseVelocity(),
+      this.dragOffset - snapRestOffset,
+    )
     let targetOffset = this.dragOffset
     if (Math.abs(velocity) >= SNAP_VELOCITY_THRESHOLD) {
       const clamped = Math.min(MAX_SNAP_VELOCITY, Math.max(-MAX_SNAP_VELOCITY, velocity))
@@ -334,8 +338,9 @@ export class DragManager {
   shouldOpen(contentSize: number | null, swipeVelocityThreshold: number, openThreshold: number): boolean {
     if (this.dragOffset === null || contentSize === null) return false
 
-    const velocity = this.getReleaseVelocity()
     const visibleSize = contentSize - this.dragOffset
+    const visibleRatio = visibleSize / contentSize
+    const velocity = adjustReleaseVelocityForOpenSwipe(this.getReleaseVelocity(), visibleRatio, swipeVelocityThreshold)
 
     // Fast swipe in opening direction (negative velocity = opening)
     const isFastSwipe = velocity < 0 && Math.abs(velocity) >= swipeVelocityThreshold
@@ -346,28 +351,30 @@ export class DragManager {
     return isFastSwipe || hasEnoughDisplacement
   }
 
-  computeSwipeStrength(targetOffset: number): number {
-    const MAX_DURATION_MS = 360
-    const MIN_SCALAR = 0.1
-    const MAX_SCALAR = 1
+  computeSwipeStrength(targetOffset: number, resolvedSnapOffset: number | null = null): number {
+    if (this.dragOffset === null) return SWIPE_STRENGTH_MAX_SCALAR
 
-    if (this.dragOffset === null) return MAX_SCALAR
-
-    const velocity = this.getReleaseVelocity()
+    let velocity = this.getReleaseVelocity()
+    if (resolvedSnapOffset != null) {
+      velocity = adjustReleaseVelocityAgainstDisplacement(velocity, this.dragOffset - resolvedSnapOffset)
+    }
     const distance = Math.abs(this.dragOffset - targetOffset)
     const absVelocity = Math.abs(velocity)
 
-    if (absVelocity <= 0 || distance <= 0) return MAX_SCALAR
+    if (absVelocity <= 0 || distance <= 0) return SWIPE_STRENGTH_MAX_SCALAR
 
     const estimatedTimeMs = (distance / absVelocity) * 1000
-    const normalized = Math.min(1, Math.max(0, estimatedTimeMs / MAX_DURATION_MS))
-    return MIN_SCALAR + normalized * (MAX_SCALAR - MIN_SCALAR)
+    const normalized = Math.min(1, Math.max(0, estimatedTimeMs / SWIPE_STRENGTH_MAX_DURATION_MS))
+    return SWIPE_STRENGTH_MIN_SCALAR + normalized * (SWIPE_STRENGTH_MAX_SCALAR - SWIPE_STRENGTH_MIN_SCALAR)
   }
 
-  shouldDismiss(contentSize: number | null, snapPoints: ResolvedSnapPoint[]): boolean {
+  shouldDismiss(contentSize: number | null, snapPoints: ResolvedSnapPoint[], resolvedSnapOffset: number): boolean {
     if (this.dragOffset === null || contentSize === null) return false
 
-    const velocity = this.getReleaseVelocity()
+    const velocity = adjustReleaseVelocityAgainstDisplacement(
+      this.getReleaseVelocity(),
+      this.dragOffset - resolvedSnapOffset,
+    )
     const visibleSize = contentSize - this.dragOffset
 
     if (visibleSize <= 0) return true

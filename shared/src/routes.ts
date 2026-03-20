@@ -46,6 +46,7 @@ export const componentRoutes: ComponentRoute[] = [
       { slug: "indent-background", title: "Indent Background" },
       { slug: "swipe-area", title: "Swipe Area" },
       { slug: "cross-axis-scroll", title: "Cross-Axis Scroll" },
+      { slug: "range-input", title: "Range Input" },
       { slug: "action-sheet", title: "Action Sheet" },
       { slug: "controlled", title: "Controlled" },
       { slug: "mobile-nav", title: "Mobile Nav" },
