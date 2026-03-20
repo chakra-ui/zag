@@ -117,6 +117,15 @@ export interface PinInputProps extends DirectionProperty, CommonProperties {
    */
   selectOnFocus?: boolean | undefined
   /**
+   * Whether the pin input is a composite widget (like Ionic pin input).
+   * When `true`, the pin input acts as a single tab stop:
+   * - Only the focused input has tabIndex 0, all others have tabIndex -1
+   * - Arrow keys navigate between inputs
+   * - Tab key moves focus out of the entire pin input group
+   * @default true
+   */
+  composite?: boolean | undefined
+  /**
    * Specifies the localized strings that identifies the accessibility elements and their states
    */
   translations?: IntlTranslations | undefined
@@ -127,7 +136,7 @@ export interface PinInputProps extends DirectionProperty, CommonProperties {
   count?: number | undefined
 }
 
-type PropsWithDefault = "placeholder" | "otp" | "type" | "defaultValue"
+type PropsWithDefault = "placeholder" | "otp" | "type" | "composite" | "defaultValue"
 
 export interface PinInputSchema {
   state: "idle" | "focused"

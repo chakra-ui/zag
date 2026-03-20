@@ -28,6 +28,7 @@ export function connect<T extends PropTypes>(
   const readOnly = !!prop("readOnly")
   const invalid = !!prop("invalid")
   const required = !!prop("required")
+  const composite = !!prop("composite")
   const translations = prop("translations")
   const focusedIndex = context.get("focusedIndex")
 
@@ -113,6 +114,7 @@ export function connect<T extends PropTypes>(
     getInputProps(props) {
       const { index } = props
       const inputType = prop("type") === "numeric" ? "tel" : "text"
+      const focused = focusedIndex === index
       return normalize.input({
         ...parts.input.attrs,
         dir: prop("dir"),
@@ -131,7 +133,8 @@ export function connect<T extends PropTypes>(
         readOnly,
         autoCapitalize: "none",
         autoComplete: prop("otp") ? "one-time-code" : "off",
-        placeholder: focusedIndex === index ? "" : prop("placeholder"),
+        placeholder: focused ? "" : prop("placeholder"),
+        tabIndex: composite ? (focused || (focusedIndex === -1 && index === 0) ? 0 : -1) : undefined,
         onPaste(event) {
           const pastedValue = event.clipboardData?.getData("text/plain")
           if (!pastedValue) return

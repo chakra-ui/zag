@@ -12,6 +12,7 @@ export const machine = createMachine({
       placeholder: "○",
       otp: false,
       type: "numeric",
+      composite: true,
       defaultValue: props.count ? fill([], props.count) : [],
       ...props,
       translations: {

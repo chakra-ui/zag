@@ -5,6 +5,7 @@ import type { PinInputProps } from "./pin-input.types"
 export const props = createProps<PinInputProps>()([
   "autoFocus",
   "blurOnComplete",
+  "composite",
   "count",
   "defaultValue",
   "dir",
