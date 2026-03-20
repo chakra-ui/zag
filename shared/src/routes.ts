@@ -44,6 +44,11 @@ export const componentRoutes: ComponentRoute[] = [
       { slug: "snap-points", title: "Snap Points" },
       { slug: "default-active-snap-point", title: "Active Snap Point" },
       { slug: "indent-background", title: "Indent Background" },
+      { slug: "swipe-area", title: "Swipe Area" },
+      { slug: "cross-axis-scroll", title: "Cross-Axis Scroll" },
+      { slug: "action-sheet", title: "Action Sheet" },
+      { slug: "controlled", title: "Controlled" },
+      { slug: "mobile-nav", title: "Mobile Nav" },
     ],
   },
   {

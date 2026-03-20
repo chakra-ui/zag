@@ -1,7 +1,7 @@
 import { ariaHidden } from "@zag-js/aria-hidden"
-import { createMachine } from "@zag-js/core"
+import { createGuards, createMachine } from "@zag-js/core"
 import { trackDismissableElement } from "@zag-js/dismissable"
-import { addDomEvent, getEventPoint, getEventTarget, resizeObserverBorderBox } from "@zag-js/dom-query"
+import { addDomEvent, getEventPoint, getEventTarget, raf, resizeObserverBorderBox } from "@zag-js/dom-query"
 import { trapFocus } from "@zag-js/focus-trap"
 import { preventBodyScroll } from "@zag-js/remove-scroll"
 import * as dom from "./drawer.dom"
@@ -9,6 +9,8 @@ import { drawerRegistry } from "./drawer.registry"
 import type { DrawerSchema, ResolvedSnapPoint, SwipeDirection } from "./drawer.types"
 import { DragManager } from "./utils/drag-manager"
 import { resolveSnapPoint } from "./utils/resolve-snap-point"
+
+const { and } = createGuards<DrawerSchema>()
 
 const isVerticalDirection = (direction: SwipeDirection) => direction === "down" || direction === "up"
 
@@ -98,6 +100,9 @@ export const machine = createMachine<DrawerSchema>({
       })),
       swipeStrength: bindable<number>(() => ({
         defaultValue: 1,
+      })),
+      rendered: bindable<{ title: boolean; description: boolean }>(() => ({
+        defaultValue: { title: true, description: true },
       })),
     }
   },
@@ -209,6 +214,7 @@ export const machine = createMachine<DrawerSchema>({
   states: {
     open: {
       tags: ["open"],
+      entry: ["checkRenderedElements", "deferClearDragOffset"],
       effects: [
         "trackDismissableElement",
         "preventScroll",
@@ -222,7 +228,7 @@ export const machine = createMachine<DrawerSchema>({
       on: {
         "CONTROLLED.CLOSE": {
           target: "closing",
-          actions: ["resetSwipeStrength"],
+          actions: ["clearSwipeOpenAnimation", "resetSwipeStrength"],
         },
         POINTER_DOWN: {
           actions: ["setPointerStart"],
@@ -239,9 +245,19 @@ export const machine = createMachine<DrawerSchema>({
         ],
         POINTER_UP: [
           {
+            guard: and("shouldCloseOnSwipe", "isOpenControlled"),
+            actions: [
+              "clearSwipeOpenAnimation",
+              "clearRegistrySwiping",
+              "clearPointerStart",
+              "clearDragOffset",
+              "invokeOnClose",
+            ],
+          },
+          {
             guard: "shouldCloseOnSwipe",
             target: "closing",
-            actions: ["clearRegistrySwiping", "setDismissSwipeStrength"],
+            actions: ["clearSwipeOpenAnimation", "clearRegistrySwiping", "setDismissSwipeStrength"],
           },
           {
             guard: "isDragging",
@@ -260,11 +276,11 @@ export const machine = createMachine<DrawerSchema>({
         CLOSE: [
           {
             guard: "isOpenControlled",
-            actions: ["invokeOnClose"],
+            actions: ["clearSwipeOpenAnimation", "invokeOnClose"],
           },
           {
             target: "closing",
-            actions: ["resetSwipeStrength", "invokeOnClose"],
+            actions: ["clearSwipeOpenAnimation", "resetSwipeStrength", "invokeOnClose"],
           },
         ],
       },
@@ -288,6 +304,53 @@ export const machine = createMachine<DrawerSchema>({
       },
     },
 
+    "swipe-area-dragging": {
+      tags: ["closed"],
+      effects: ["trackSwipeOpenPointerMove"],
+      on: {
+        POINTER_MOVE: {
+          guard: "hasSwipeIntent",
+          target: "swiping-open",
+        },
+        POINTER_UP: {
+          target: "closed",
+          actions: ["clearPointerStart", "clearVelocityTracking"],
+        },
+      },
+    },
+
+    "swiping-open": {
+      tags: ["open"],
+      effects: ["trackSwipeOpenPointerMove", "trackSizeMeasurements"],
+      on: {
+        POINTER_MOVE: {
+          actions: ["setSwipeOpenOffset"],
+        },
+        POINTER_UP: [
+          {
+            guard: and("shouldOpenOnSwipe", "isOpenControlled"),
+            actions: ["clearPointerStart", "invokeOnOpen"],
+          },
+          {
+            guard: "shouldOpenOnSwipe",
+            target: "open",
+            actions: ["clearPointerStart", "invokeOnOpen"],
+          },
+          {
+            target: "closed",
+            actions: ["clearPointerStart", "clearDragOffset", "clearSizeMeasurements"],
+          },
+        ],
+        "CONTROLLED.OPEN": {
+          target: "open",
+        },
+        CLOSE: {
+          target: "closed",
+          actions: ["clearPointerStart", "clearDragOffset", "clearSizeMeasurements"],
+        },
+      },
+    },
+
     closed: {
       tags: ["closed"],
       on: {
@@ -304,6 +367,10 @@ export const machine = createMachine<DrawerSchema>({
             actions: ["invokeOnOpen"],
           },
         ],
+        "SWIPE_AREA.START": {
+          target: "swipe-area-dragging",
+          actions: ["setPointerStart"],
+        },
       },
     },
   },
@@ -338,9 +405,65 @@ export const machine = createMachine<DrawerSchema>({
           prop("closeThreshold"),
         )
       },
+
+      hasSwipeIntent({ refs, prop, event }) {
+        const dragManager = refs.get("dragManager")
+        const start = dragManager.getPointerStart()
+        if (!start || !event.point) return false
+        const direction = prop("swipeDirection")
+        const isVertical = isVerticalDirection(direction)
+        const sign = direction === "up" || direction === "left" ? -1 : 1
+        const axis = isVertical ? "y" : "x"
+        // Opening direction is opposite to dismiss direction
+        const displacement = (start[axis] - event.point[axis]) * sign
+        return displacement > 5
+      },
+
+      shouldOpenOnSwipe({ context, refs, prop }) {
+        const dragManager = refs.get("dragManager")
+        return dragManager.shouldOpen(
+          context.get("contentSize"),
+          prop("swipeVelocityThreshold"),
+          prop("closeThreshold"),
+        )
+      },
     },
 
     actions: {
+      checkRenderedElements({ context, scope }) {
+        raf(() => {
+          context.set("rendered", {
+            title: !!dom.getTitleEl(scope),
+            description: !!dom.getDescriptionEl(scope),
+          })
+        })
+      },
+
+      deferClearDragOffset({ context, refs, scope }) {
+        const dragOffset = context.get("dragOffset")
+        if (dragOffset === null) return
+
+        const contentEl = dom.getContentEl(scope)
+        const backdropEl = dom.getBackdropEl(scope)
+
+        // Suppress CSS entry animations so they don't replay from initial state.
+        // The CSS transition will smoothly animate from release position to fully open.
+        if (contentEl) contentEl.style.setProperty("animation", "none", "important")
+        if (backdropEl) backdropEl.style.setProperty("animation", "none", "important")
+
+        raf(() => {
+          refs.get("dragManager").clearDragOffset()
+          context.set("dragOffset", null)
+        })
+      },
+
+      clearSwipeOpenAnimation({ scope }) {
+        const contentEl = dom.getContentEl(scope)
+        const backdropEl = dom.getBackdropEl(scope)
+        if (contentEl) contentEl.style.removeProperty("animation")
+        if (backdropEl) backdropEl.style.removeProperty("animation")
+      },
+
       invokeOnOpen({ prop }) {
         prop("onOpenChange")?.({ open: true })
       },
@@ -364,6 +487,14 @@ export const machine = createMachine<DrawerSchema>({
           context.get("resolvedActiveSnapPoint")?.offset || 0,
           event.swipeDirection ?? prop("swipeDirection"),
         )
+        context.set("dragOffset", dragManager.getDragOffset())
+      },
+
+      setSwipeOpenOffset({ context, event, refs, prop }) {
+        const dragManager = refs.get("dragManager")
+        const contentSize = context.get("contentSize")
+        if (!contentSize) return
+        dragManager.setSwipeOpenOffset(event.point, contentSize, prop("swipeDirection"))
         context.set("dragOffset", dragManager.getDragOffset())
       },
 
@@ -712,6 +843,41 @@ export const machine = createMachine<DrawerSchema>({
           contentEl.style.setProperty("--nested-drawers", "0")
           contentEl.style.removeProperty("--drawer-frontmost-height")
           drawerRegistry.unregister(id)
+        }
+      },
+
+      trackSwipeOpenPointerMove({ scope, send }) {
+        const doc = scope.getDoc()
+
+        function onPointerMove(event: PointerEvent) {
+          if (event.pointerType === "touch") return
+          send({ type: "POINTER_MOVE", point: getEventPoint(event) })
+        }
+
+        function onPointerUp(event: PointerEvent) {
+          if (event.pointerType === "touch") return
+          send({ type: "POINTER_UP", point: getEventPoint(event) })
+        }
+
+        function onTouchMove(event: TouchEvent) {
+          if (!event.touches[0]) return
+          send({ type: "POINTER_MOVE", point: getEventPoint(event) })
+        }
+
+        function onTouchEnd(event: TouchEvent) {
+          if (event.touches.length !== 0) return
+          send({ type: "POINTER_UP", point: getEventPoint(event) })
+        }
+
+        const cleanups = [
+          addDomEvent(doc, "pointermove", onPointerMove),
+          addDomEvent(doc, "pointerup", onPointerUp),
+          addDomEvent(doc, "touchmove", onTouchMove, { passive: false }),
+          addDomEvent(doc, "touchend", onTouchEnd),
+        ]
+
+        return () => {
+          cleanups.forEach((cleanup) => cleanup())
         }
       },
 

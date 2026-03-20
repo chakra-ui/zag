@@ -18,5 +18,6 @@ export type {
   DrawerService as Service,
   SnapPoint,
   SnapPointChangeDetails,
+  SwipeAreaProps,
   SwipeDirection,
 } from "./drawer.types"

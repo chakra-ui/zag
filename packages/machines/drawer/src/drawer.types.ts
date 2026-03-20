@@ -47,11 +47,13 @@ export type ElementIds = Partial<{
   positioner: string
   content: string
   title: string
+  description: string
   header: string
   trigger: string
   grabber: string
   grabberIndicator: string
   closeTrigger: string
+  swipeArea: string
 }>
 
 export interface DrawerProps extends DirectionProperty, CommonProperties, DismissableElementHandlers {
@@ -184,7 +186,7 @@ type PropsWithDefault =
 
 export interface DrawerSchema {
   props: RequiredBy<DrawerProps, PropsWithDefault>
-  state: "open" | "closed" | "closing"
+  state: "open" | "closed" | "closing" | "swipe-area-dragging" | "swiping-open"
   tag: "open" | "closed"
   context: {
     dragOffset: number | null
@@ -194,6 +196,7 @@ export interface DrawerSchema {
     viewportSize: number
     rootFontSize: number
     swipeStrength: number
+    rendered: { title: boolean; description: boolean }
   }
   refs: {
     dragManager: DragManager
@@ -218,6 +221,19 @@ export interface ContentProps {
    * @default true
    */
   draggable?: boolean | undefined
+}
+
+export interface SwipeAreaProps {
+  /**
+   * Whether the swipe area is disabled.
+   * @default false
+   */
+  disabled?: boolean | undefined
+  /**
+   * The swipe direction that opens the drawer.
+   * Defaults to the opposite of the drawer's `swipeDirection`.
+   */
+  swipeDirection?: SwipeDirection | undefined
 }
 
 export interface DrawerApi<T extends PropTypes = PropTypes> {
@@ -270,9 +286,11 @@ export interface DrawerApi<T extends PropTypes = PropTypes> {
   getPositionerProps: () => T["element"]
   getContentProps: (props?: ContentProps) => T["element"]
   getTitleProps: () => T["element"]
+  getDescriptionProps: () => T["element"]
   getTriggerProps: () => T["element"]
   getBackdropProps: () => T["element"]
   getGrabberProps: () => T["element"]
   getGrabberIndicatorProps: () => T["element"]
   getCloseTriggerProps: () => T["element"]
+  getSwipeAreaProps: (props?: SwipeAreaProps) => T["element"]
 }

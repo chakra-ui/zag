@@ -36,6 +36,10 @@ export class DrawerModel extends Model {
     return this.page.locator(grabber)
   }
 
+  private get swipeAreaEl() {
+    return this.page.locator(part("swipe-area"))
+  }
+
   private get noDragArea() {
     return this.page.locator("[data-no-drag]")
   }
@@ -62,6 +66,10 @@ export class DrawerModel extends Model {
 
   dragNoDragArea(direction: "up" | "down", distance: number = 100, duration = 500, release = true) {
     return swipe(this.page, this.noDragArea, direction, distance, duration, release)
+  }
+
+  swipeArea(direction: "up" | "down", distance: number = 100, duration = 500, release = true) {
+    return swipe(this.page, this.swipeAreaEl, direction, distance, duration, release)
   }
 
   seeContent() {

@@ -112,6 +112,18 @@ export class DragManager {
 
       if (Math.abs(delta) < DRAG_START_THRESHOLD) return false
 
+      // If movement is primarily cross-axis, preserve native scrolling
+      const isVertical = direction === "down" || direction === "up"
+      const crossDelta = isVertical ? Math.abs(point.x - this.pointerStart.x) : Math.abs(point.y - this.pointerStart.y)
+
+      if (crossDelta > Math.abs(delta)) {
+        const crossDirection: SwipeDirection = isVertical ? "right" : "down"
+        const crossScroll = getScrollInfo(target, container, crossDirection)
+        if (crossScroll.availableForwardScroll > 1 || crossScroll.availableBackwardScroll > 0) {
+          return false
+        }
+      }
+
       const { availableForwardScroll, availableBackwardScroll } = getScrollInfo(target, container, direction)
 
       if ((delta > 0 && Math.abs(availableForwardScroll) > 1) || (delta < 0 && Math.abs(availableBackwardScroll) > 0)) {
@@ -171,6 +183,57 @@ export class DragManager {
 
     const closest = findClosestSnapPoint(targetOffset, snapPoints)
     return closest.value
+  }
+
+  setSwipeOpenOffset(point: Point, contentSize: number, direction: SwipeDirection) {
+    if (!this.pointerStart) return
+
+    const currentTimestamp = Date.now()
+    const sign = this.getDirectionSign(direction)
+    const axisValue = this.getAxisValue(point, direction)
+
+    if (this.lastPoint) {
+      const lastAxisValue = this.getAxisValue(this.lastPoint, direction)
+      const delta = (axisValue - lastAxisValue) * sign
+
+      if (this.lastTimestamp) {
+        const dt = currentTimestamp - this.lastTimestamp
+        if (dt > 0) {
+          const calculatedVelocity = (delta / dt) * 1000
+          this.velocity = Number.isFinite(calculatedVelocity) ? calculatedVelocity : 0
+        }
+      }
+    }
+
+    this.lastPoint = point
+    this.lastTimestamp = currentTimestamp
+
+    // Opening displacement: how far user has swiped in the opening direction
+    const pointerStartAxis = this.getAxisValue(this.pointerStart, direction)
+    const openDisplacement = (pointerStartAxis - axisValue) * sign
+
+    let dragOffset = contentSize - Math.max(0, openDisplacement)
+
+    // Rubber-band: sqrt damping when dragged past fully open
+    if (dragOffset < 0) {
+      dragOffset = -Math.sqrt(Math.abs(dragOffset))
+    }
+
+    this.dragOffset = dragOffset
+  }
+
+  shouldOpen(contentSize: number | null, swipeVelocityThreshold: number, openThreshold: number): boolean {
+    if (this.dragOffset === null || this.velocity === null || contentSize === null) return false
+
+    const visibleSize = contentSize - this.dragOffset
+
+    // Fast swipe in opening direction (negative velocity = opening)
+    const isFastSwipe = this.velocity < 0 && Math.abs(this.velocity) >= swipeVelocityThreshold
+
+    // Dragged past threshold
+    const hasEnoughDisplacement = visibleSize >= contentSize * openThreshold
+
+    return isFastSwipe || hasEnoughDisplacement
   }
 
   computeSwipeStrength(targetOffset: number): number {

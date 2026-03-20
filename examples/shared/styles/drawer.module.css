@@ -147,6 +147,17 @@
   cursor: pointer;
 }
 
+.swipeArea {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 48px;
+  z-index: 10;
+  background: rgba(0, 120, 255, 0.3);
+  border-top: 2px solid rgba(0, 120, 255, 0.6);
+}
+
 .scrollable {
   overflow-y: auto;
 }
