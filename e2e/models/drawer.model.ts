@@ -1,5 +1,5 @@
 import { expect, type Page } from "@playwright/test"
-import { a11y, part, swipe, touchPointerSwipe, touchSwipe } from "../_utils"
+import { a11y, mouseSwipe, part, touchPointerSwipe, touchSwipe } from "../_utils"
 import { Model } from "./model"
 
 const content = part("content")
@@ -57,7 +57,7 @@ export class DrawerModel extends Model {
   }
 
   mouseDragGrabber(direction: "up" | "down", distance: number = 100, duration = 500, release = true) {
-    return swipe(this.page, this.grabber, direction, distance, duration, release)
+    return mouseSwipe(this.page, this.grabber, direction, distance, duration, release)
   }
 
   touchDragGrabber(direction: "up" | "down", distance: number = 100, duration = 500) {
@@ -69,15 +69,18 @@ export class DrawerModel extends Model {
   }
 
   dragContent(direction: "up" | "down", distance: number = 100, duration = 500, release = true) {
-    return swipe(this.page, this.content, direction, distance, duration, release)
+    return mouseSwipe(this.page, this.content, direction, distance, duration, release)
   }
 
   dragNoDragArea(direction: "up" | "down", distance: number = 100, duration = 500, release = true) {
-    return swipe(this.page, this.noDragArea, direction, distance, duration, release)
+    return mouseSwipe(this.page, this.noDragArea, direction, distance, duration, release)
   }
 
   swipeArea(direction: "up" | "down", distance: number = 100, duration = 500, release = true) {
-    return swipe(this.page, this.swipeAreaEl, direction, distance, duration, release)
+    if (!release) {
+      return mouseSwipe(this.page, this.swipeAreaEl, direction, distance, duration, release)
+    }
+    return touchSwipe(this.page, this.swipeAreaEl, direction, distance, duration)
   }
 
   seeContent() {

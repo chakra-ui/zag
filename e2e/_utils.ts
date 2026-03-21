@@ -130,7 +130,7 @@ export type SwipeDirection = "left" | "right" | "up" | "down"
 
 const swipeDirections = new Set<SwipeDirection>(["left", "right", "up", "down"])
 
-export async function swipe(
+export async function mouseSwipe(
   page: Page,
   locator: Locator,
   direction: SwipeDirection,
