@@ -603,21 +603,24 @@ export const machine = createMachine<DrawerSchema>({
       },
 
       syncDrawerStack({ context, prop, computed }) {
-        const stack = prop("stack")
-        if (!stack) return
-
         const contentSize = context.get("contentSize")
         if (contentSize === null) return
 
         const dragOffset = context.get("dragOffset")
         const snapPointOffset = getActiveSnapOffset(context)
+        const progress = resolveSwipeProgress(contentSize, dragOffset, snapPointOffset)
+        const id = computed("drawerId")
 
-        stack.setHeight(computed("drawerId"), contentSize)
-        stack.setSwipe(
-          computed("drawerId"),
-          dragOffset !== null,
-          resolveSwipeProgress(contentSize, dragOffset, snapPointOffset),
-        )
+        // Sync to registry for nested drawer metrics
+        if (dragOffset !== null) {
+          drawerRegistry.setSwipeProgress(id, progress)
+        }
+
+        const stack = prop("stack")
+        if (!stack) return
+
+        stack.setHeight(id, contentSize)
+        stack.setSwipe(id, dragOffset !== null, progress)
       },
     },
 
@@ -773,8 +776,8 @@ export const machine = createMachine<DrawerSchema>({
           contentEl.style.setProperty("--drawer-height", `${myHeight}px`)
           contentEl.style.setProperty("--drawer-frontmost-height", `${frontmostHeight}px`)
 
-          if (nestedCount > 0) contentEl.setAttribute("data-nested-drawer-open", "")
-          else contentEl.removeAttribute("data-nested-drawer-open")
+          if (nestedCount > 0 && frontmostHeight > 0) contentEl.setAttribute("data-nested-drawer-open", "")
+          else if (nestedCount === 0) contentEl.removeAttribute("data-nested-drawer-open")
 
           if (drawerRegistry.hasSwipingAfter(id)) contentEl.setAttribute("data-nested-drawer-swiping", "")
           else contentEl.removeAttribute("data-nested-drawer-swiping")

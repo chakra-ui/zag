@@ -1,42 +1,75 @@
-const elements = new Map<string, HTMLElement>()
-const swipingIds = new Set<string>()
-const listeners = new Set<() => void>()
+class DrawerRegistry {
+  private readonly elements = new Map<string, HTMLElement>()
+  private readonly swipingIds = new Set<string>()
+  private readonly swipeProgress = new Map<string, number>()
+  private readonly listeners = new Set<() => void>()
 
-function notify() {
-  listeners.forEach((fn) => fn())
-}
+  notify() {
+    this.listeners.forEach((fn) => fn())
+  }
 
-export const drawerRegistry = {
   register(id: string, el: HTMLElement) {
-    elements.set(id, el)
-    notify()
-  },
+    this.elements.set(id, el)
+    this.notify()
+  }
+
   unregister(id: string) {
-    swipingIds.delete(id)
-    if (!elements.delete(id)) return
-    notify()
-  },
+    this.swipingIds.delete(id)
+    this.swipeProgress.delete(id)
+    if (!this.elements.delete(id)) return
+    this.notify()
+  }
+
   setSwiping(id: string, swiping: boolean) {
-    const changed = swiping ? !swipingIds.has(id) : swipingIds.has(id)
-    if (!changed) return
-    if (swiping) swipingIds.add(id)
-    else swipingIds.delete(id)
-    notify()
-  },
+    const changed = swiping ? !this.swipingIds.has(id) : this.swipingIds.has(id)
+    if (!changed && swiping) return
+
+    if (swiping) {
+      this.swipingIds.add(id)
+    } else {
+      this.swipingIds.delete(id)
+      this.swipeProgress.delete(id)
+    }
+
+    this.notify()
+  }
+
+  setSwipeProgress(id: string, progress: number) {
+    this.swipeProgress.set(id, progress)
+    this.notify()
+  }
+
+  getSwipeProgressAfter(id: string): number {
+    const keys = [...this.elements.keys()]
+    const myIndex = keys.indexOf(id)
+    if (myIndex === -1) return 0
+
+    for (let i = keys.length - 1; i > myIndex; i -= 1) {
+      if (this.swipingIds.has(keys[i])) {
+        return this.swipeProgress.get(keys[i]) ?? 0
+      }
+    }
+
+    return 0
+  }
+
   hasSwipingAfter(id: string) {
-    const keys = [...elements.keys()]
+    const keys = [...this.elements.keys()]
     const myIndex = keys.indexOf(id)
     if (myIndex === -1) return false
-    return keys.slice(myIndex + 1).some((key) => swipingIds.has(key))
-  },
-  notify,
+    return keys.slice(myIndex + 1).some((key) => this.swipingIds.has(key))
+  }
+
   getEntries() {
-    return elements
-  },
+    return this.elements
+  }
+
   subscribe(fn: () => void) {
-    listeners.add(fn)
+    this.listeners.add(fn)
     return () => {
-      listeners.delete(fn)
+      this.listeners.delete(fn)
     }
-  },
+  }
 }
+
+export const drawerRegistry = new DrawerRegistry()
