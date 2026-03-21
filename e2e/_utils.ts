@@ -142,6 +142,7 @@ export async function mouseSwipe(
     throw new Error("Invalid direction. Use 'left', 'right', 'up', or 'down'.")
   }
 
+  await locator.waitFor({ state: "visible" })
   const box = await rect(locator)
   if (!box) {
     throw new Error("Could not determine the element bounding box.")
@@ -189,6 +190,7 @@ export async function touchSwipe(
     throw new Error("Invalid direction. Use 'left', 'right', 'up', or 'down'.")
   }
 
+  await locator.waitFor({ state: "visible" })
   const box = await rect(locator)
 
   const startX = box.midX
@@ -272,6 +274,7 @@ export async function touchPointerSwipe(
     throw new Error("Invalid direction. Use 'left', 'right', 'up', or 'down'.")
   }
 
+  await locator.waitFor({ state: "visible" })
   const box = await rect(locator)
 
   const startX = box.midX

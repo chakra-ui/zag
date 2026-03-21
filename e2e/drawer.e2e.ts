@@ -143,6 +143,28 @@ test.describe("drawer", () => {
     const finalHeight = await I.getContentVisibleHeight()
     expect(finalHeight).toBe(initialHeight)
   })
+
+  test("should not start dragging when text is selected in content", async () => {
+    await I.clickTrigger()
+    await I.seeContent()
+    await I.waitForOpenState()
+
+    const initialHeight = await I.getContentVisibleHeight()
+
+    await I.selectTitleText()
+
+    const hasSelectionInContent = await I.hasSelectionInContent()
+    expect(hasSelectionInContent).toBe(true)
+
+    const selectedText = await I.getSelectedText()
+    expect(selectedText.length).toBeGreaterThan(0)
+
+    await I.dragContent("down", 100)
+    await I.waitForSnapComplete()
+
+    const finalHeight = await I.getContentVisibleHeight()
+    expect(finalHeight).toBe(initialHeight)
+  })
 })
 
 test.describe("drawer [draggable=false]", () => {

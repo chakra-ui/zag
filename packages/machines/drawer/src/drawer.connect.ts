@@ -1,20 +1,21 @@
 import { getEventPoint, isLeftClick } from "@zag-js/dom-query"
 import type { JSX, NormalizeProps, PropTypes } from "@zag-js/types"
-import { toPx } from "@zag-js/utils"
+import { clampValue, toPx } from "@zag-js/utils"
 import { parts } from "./drawer.anatomy"
 import * as dom from "./drawer.dom"
+import { oppositeSwipeDirection, resolveSwipeDirection } from "./utils/drawer-session"
+import { isNegativeSwipeDirection, isVerticalSwipeDirection } from "./utils/session"
 import type { DrawerApi, DrawerService } from "./drawer.types"
-import { cancelDeferPointerDown, deferPointerDown } from "./utils/deferred-pointer"
-import { isTextSelectionInDrawer, shouldIgnorePointerDownForDrag } from "./utils/is-drag-exempt-target"
-import {
-  isNegativeSwipeDirection,
-  isVerticalSwipeDirection,
-  oppositeSwipeDirection,
-  resolveSwipeDirection,
-} from "./utils/swipe"
+
+const SWIPE_OPEN_HIDDEN_OFFSET = 9999
+
+function getSwipeOpenOffset(swipingOpen: boolean, dragOffset: number | null, contentSize: number | null) {
+  if (!swipingOpen || dragOffset !== null) return null
+  return contentSize ?? SWIPE_OPEN_HIDDEN_OFFSET
+}
 
 export function connect<T extends PropTypes>(service: DrawerService, normalize: NormalizeProps<T>): DrawerApi<T> {
-  const { state, send, context, scope, prop } = service
+  const { state, send, context, scope, prop, refs } = service
 
   const open = state.hasTag("open")
   const closed = state.matches("closed")
@@ -32,8 +33,8 @@ export function connect<T extends PropTypes>(service: DrawerService, normalize: 
   const resolvedActiveSnapPoint = context.get("resolvedActiveSnapPoint")
   const snapPointOffset = resolvedActiveSnapPoint?.offset ?? 0
 
-  const swipeOpenFallbackOffset = swipingOpen && dragOffset === null ? (contentSize ?? 9999) : 0
-  const currentOffset = dragOffset ?? (snapPointOffset || swipeOpenFallbackOffset)
+  const swipeOpenOffset = getSwipeOpenOffset(swipingOpen, dragOffset, contentSize)
+  const currentOffset = swipeOpenOffset ?? dragOffset ?? snapPointOffset
   const signedSnapPointOffset = isNegativeSwipeDirection(physicalDirection) ? -snapPointOffset : snapPointOffset
 
   const isActivelySwiping = dragging || swipingOpen
@@ -41,7 +42,7 @@ export function connect<T extends PropTypes>(service: DrawerService, normalize: 
   const signedMovement = isNegativeSwipeDirection(physicalDirection) ? -swipeMovement : swipeMovement
   const swipeProgress =
     isActivelySwiping && contentSize && contentSize > 0
-      ? Math.max(0, Math.min(1, Math.abs(signedMovement) / contentSize))
+      ? clampValue(Math.abs(signedMovement) / contentSize, 0, 1)
       : swipingOpen
         ? 1 // fully closed (transparent backdrop) until contentSize is measured
         : 0
@@ -50,43 +51,29 @@ export function connect<T extends PropTypes>(service: DrawerService, normalize: 
   const translateX = isVerticalSwipeDirection(physicalDirection) ? 0 : signedCurrentOffset
   const translateY = isVerticalSwipeDirection(physicalDirection) ? signedCurrentOffset : 0
 
-  /**
-   * Sheet body: mouse/pen defer POINTER_DOWN until movement reads as a sheet-axis drag so
-   * click–drag to select text does not arm the drawer on the first pixel of movement.
-   */
   function onContentPointerDown(event: JSX.PointerEvent<HTMLElement>) {
-    if (shouldIgnorePointerDownForDrag(event)) return
-    const content = dom.getContentEl(scope)
-    if (isTextSelectionInDrawer(scope.getDoc(), content)) return
-    if (state.matches("closing")) return
-
-    const point = getEventPoint(event)
-    const defer = event.pointerType === "mouse" || event.pointerType === "pen"
-    if (defer) {
-      deferPointerDown({
-        scope,
-        onCommit(point) {
-          send({ type: "POINTER_DOWN", point })
-        },
-        canCommitPointerDown() {
-          return state.hasTag("open") && !state.matches("closing")
-        },
-        swipeDirection: physicalDirection,
-        pointerId: event.pointerId,
-        startPoint: point,
-      })
-      return
-    }
-
-    send({ type: "POINTER_DOWN", point })
+    refs.get("swipeSession").contentPointerDown({
+      event,
+      getDoc: () => scope.getDoc(),
+      getContentEl: () => dom.getContentEl(scope),
+      getWin: () => scope.getWin(),
+      swipeDirection: physicalDirection,
+      canCommit: () => state.hasTag("open") && !state.matches("closing"),
+      onCommit(point) {
+        send({ type: "POINTER_DOWN", point })
+      },
+    })
   }
 
-  /** Grabber: immediate POINTER_DOWN; cancel any deferred content gesture; ignore text-selection gate. */
   function onGrabberPointerDown(event: JSX.PointerEvent<HTMLElement>) {
-    if (shouldIgnorePointerDownForDrag(event)) return
-    cancelDeferPointerDown(scope)
-    if (state.matches("closing")) return
-    send({ type: "POINTER_DOWN", point: getEventPoint(event) })
+    refs.get("swipeSession").grabberPointerDown({
+      event,
+      point: getEventPoint(event),
+      canCommit: () => state.hasTag("open") && !state.matches("closing"),
+      onCommit(point) {
+        send({ type: "POINTER_DOWN", point })
+      },
+    })
   }
 
   return {
@@ -109,7 +96,7 @@ export function connect<T extends PropTypes>(service: DrawerService, normalize: 
 
     getOpenPercentage() {
       if (!open || !contentSize) return 0
-      return Math.max(0, Math.min(1, 1 - currentOffset / contentSize))
+      return clampValue(1 - currentOffset / contentSize, 0, 1)
     },
 
     getSnapPointIndex() {

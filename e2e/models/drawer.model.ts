@@ -72,6 +72,39 @@ export class DrawerModel extends Model {
     return mouseSwipe(this.page, this.content, direction, distance, duration, release)
   }
 
+  async selectTitleText() {
+    await this.content.evaluate((el) => {
+      const walker = document.createTreeWalker(el, NodeFilter.SHOW_TEXT, {
+        acceptNode(node) {
+          return node.textContent?.trim() ? NodeFilter.FILTER_ACCEPT : NodeFilter.FILTER_SKIP
+        },
+      })
+      const textNode = walker.nextNode()
+      if (!textNode) throw new Error("Selectable text node not found in drawer content")
+
+      const selection = window.getSelection()
+      if (!selection) throw new Error("Window selection unavailable")
+
+      const range = document.createRange()
+      range.selectNodeContents(textNode)
+      selection.removeAllRanges()
+      selection.addRange(range)
+    })
+  }
+
+  getSelectedText() {
+    return this.page.evaluate(() => window.getSelection()?.toString() ?? "")
+  }
+
+  hasSelectionInContent() {
+    return this.content.evaluate((el) => {
+      const selection = window.getSelection()
+      if (!selection || selection.rangeCount === 0 || selection.isCollapsed) return false
+      const range = selection.getRangeAt(0)
+      return el.contains(range.commonAncestorContainer)
+    })
+  }
+
   dragNoDragArea(direction: "up" | "down", distance: number = 100, duration = 500, release = true) {
     return mouseSwipe(this.page, this.noDragArea, direction, distance, duration, release)
   }

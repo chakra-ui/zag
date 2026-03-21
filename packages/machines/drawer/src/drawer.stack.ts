@@ -1,4 +1,5 @@
 import type { NormalizeProps, PropTypes } from "@zag-js/types"
+import { clampValue } from "@zag-js/utils"
 import type { DrawerStack, DrawerStackApi, DrawerStackSnapshot } from "./drawer.types"
 
 type DrawerEntry = {
@@ -7,10 +8,6 @@ type DrawerEntry = {
   height: number
   swiping: boolean
   swipeProgress: number
-}
-
-function clamp(value: number, min: number, max: number) {
-  return Math.min(max, Math.max(min, value))
 }
 
 function resolveSnapshot(entries: Map<string, DrawerEntry>): DrawerStackSnapshot {
@@ -26,7 +23,7 @@ function resolveSnapshot(entries: Map<string, DrawerEntry>): DrawerStackSnapshot
 
     frontmostOrder = entry.order
     frontmostHeight = entry.height > 0 ? entry.height : 0
-    swipeProgress = entry.swiping ? clamp(entry.swipeProgress, 0, 1) : 0
+    swipeProgress = entry.swiping ? clampValue(entry.swipeProgress, 0, 1) : 0
   })
 
   return {
@@ -119,7 +116,7 @@ export function createStack(): DrawerStack {
     },
     setSwipe(id, swiping, progress) {
       const entry = ensureEntry(id)
-      const nextProgress = swiping ? clamp(Number.isFinite(progress) ? progress : 0, 0, 1) : 0
+      const nextProgress = swiping ? clampValue(Number.isFinite(progress) ? progress : 0, 0, 1) : 0
       if (entry.swiping === swiping && entry.swipeProgress === nextProgress) return
       entry.swiping = swiping
       entry.swipeProgress = nextProgress
@@ -137,7 +134,7 @@ export function connectStack<T extends PropTypes>(
       "data-active": snapshot.active ? "" : undefined,
       "data-inactive": snapshot.active ? undefined : "",
       style: {
-        "--drawer-swipe-progress": `${clamp(snapshot.swipeProgress, 0, 1)}`,
+        "--drawer-swipe-progress": `${clampValue(snapshot.swipeProgress, 0, 1)}`,
         "--drawer-frontmost-height": snapshot.frontmostHeight > 0 ? `${snapshot.frontmostHeight}px` : undefined,
       },
     })

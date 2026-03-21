@@ -1,44 +1,38 @@
 import { ariaHidden } from "@zag-js/aria-hidden"
-import { createGuards, createMachine } from "@zag-js/core"
+import { createGuards, createMachine, type Params } from "@zag-js/core"
 import { trackDismissableElement } from "@zag-js/dismissable"
-import {
-  addDomEvent,
-  getComputedStyle,
-  getEventPoint,
-  getEventTarget,
-  getInitialFocus,
-  isHTMLElement,
-  raf,
-  resizeObserverBorderBox,
-} from "@zag-js/dom-query"
+import { addDomEvent, getComputedStyle, getInitialFocus, raf, resizeObserverBorderBox } from "@zag-js/dom-query"
 import { trapFocus } from "@zag-js/focus-trap"
 import { preventBodyScroll } from "@zag-js/remove-scroll"
 import * as dom from "./drawer.dom"
 import { drawerRegistry } from "./drawer.registry"
 import type { DrawerSchema, ResolvedSnapPoint } from "./drawer.types"
-import { DragManager } from "./utils/drag-manager"
 import {
-  findClosestScrollableAncestorOnSwipeAxis,
-  shouldPreventTouchDefaultForDrawerPull,
-} from "./utils/get-scroll-info"
-import { isDragExemptElement } from "./utils/is-drag-exempt-target"
-import { dedupeSnapPoints, resolveSnapPoint } from "./utils/snap-point"
-import {
+  DrawerSwipeSession,
   getSwipeDirectionSize,
   hasOpeningSwipeIntent,
-  isVerticalSwipeDirection,
   resolveSwipeDirection,
   resolveSwipeProgress,
-} from "./utils/swipe"
+} from "./utils/drawer-session"
+import { isVerticalSwipeDirection } from "./utils/session"
+import { dedupeSnapPoints, resolveSnapPoint } from "./utils/snap-point"
 
 const { and } = createGuards<DrawerSchema>()
+
+const getActiveSnapOffset = (context: Params<DrawerSchema>["context"]) =>
+  context.get("resolvedActiveSnapPoint")?.offset ?? 0
+
+const hasRemSnapPoints = (snapPoints: Array<number | string>) =>
+  snapPoints.some((snapPoint) => typeof snapPoint === "string" && snapPoint.trim().endsWith("rem"))
+
+const DEFAULT_SNAP_POINTS = [1]
 
 export const machine = createMachine<DrawerSchema>({
   props({ props, scope }) {
     const alertDialog = props.role === "alertdialog"
     const initialFocusEl: any = alertDialog ? () => dom.getCloseTriggerEl(scope) : undefined
     const modal = typeof props.modal === "boolean" ? props.modal : true
-    const snapPoints = props.snapPoints ?? [1]
+    const snapPoints = props.snapPoints ?? DEFAULT_SNAP_POINTS
 
     return {
       modal,
@@ -68,8 +62,8 @@ export const machine = createMachine<DrawerSchema>({
       snapPoint: bindable<number | string | null>(() => ({
         defaultValue: prop("defaultSnapPoint"),
         value: prop("snapPoint"),
-        onChange(value) {
-          return prop("onSnapPointChange")?.({ snapPoint: value })
+        onChange(snapPoint) {
+          return prop("onSnapPointChange")?.({ snapPoint })
         },
       })),
       resolvedActiveSnapPoint: bindable<ResolvedSnapPoint | null>(() => ({
@@ -93,13 +87,23 @@ export const machine = createMachine<DrawerSchema>({
     }
   },
 
-  refs() {
+  refs({ prop }) {
     return {
-      dragManager: new DragManager(),
+      swipeSession: new DrawerSwipeSession({
+        preventDragOnScroll: () => prop("preventDragOnScroll"),
+      }),
     }
   },
 
   computed: {
+    drawerId({ prop, scope }) {
+      return String(prop("id") ?? scope.id)
+    },
+
+    physicalSwipeDirection({ prop }) {
+      return resolveSwipeDirection(prop("swipeDirection"), prop("dir"))
+    },
+
     resolvedSnapPoints({ context, prop }) {
       const contentSize = context.get("contentSize")
       const viewportSize = context.get("viewportSize")
@@ -165,11 +169,7 @@ export const machine = createMachine<DrawerSchema>({
     })
 
     track(
-      [
-        () => context.get("dragOffset"),
-        () => context.get("contentSize"),
-        () => context.get("resolvedActiveSnapPoint")?.offset ?? 0,
-      ],
+      [() => context.get("dragOffset"), () => context.get("contentSize"), () => getActiveSnapOffset(context)],
       () => {
         action(["syncDrawerStack"])
       },
@@ -197,7 +197,6 @@ export const machine = createMachine<DrawerSchema>({
         "trapFocus",
         "hideContentBelow",
         "trackPointerMove",
-        "trackGestureInterruption",
         "trackSizeMeasurements",
         "trackNestedDrawerMetrics",
         "trackDrawerStack",
@@ -294,7 +293,7 @@ export const machine = createMachine<DrawerSchema>({
 
     "swipe-area-dragging": {
       tags: ["closed"],
-      effects: ["trackSwipeOpenPointerMove", "trackGestureInterruption"],
+      effects: ["trackSwipeOpenPointerMove"],
       on: {
         POINTER_MOVE: {
           guard: "hasSwipeIntent",
@@ -313,10 +312,10 @@ export const machine = createMachine<DrawerSchema>({
 
     "swiping-open": {
       tags: ["open"],
-      effects: ["trackSwipeOpenPointerMove", "trackSizeMeasurements", "trackGestureInterruption"],
+      effects: ["trackSwipeOpenPointerMove", "trackSizeMeasurements"],
       on: {
         POINTER_MOVE: {
-          actions: ["setSwipeOpenOffset"],
+          actions: ["setSwipeOpenDragOffset"],
         },
         POINTER_UP: [
           {
@@ -379,41 +378,38 @@ export const machine = createMachine<DrawerSchema>({
         return context.get("dragOffset") !== null
       },
 
-      shouldStartDragging({ prop, refs, event, scope }) {
-        if (!isHTMLElement(event.target)) return false
-        if (isDragExemptElement(event.target)) return false
-
-        const dragManager = refs.get("dragManager")
-        return dragManager.shouldStartDragging(
+      shouldStartDragging({ computed, prop, refs, event, scope }) {
+        const swipeSession = refs.get("swipeSession")
+        return swipeSession.canStartDrag(
           event.point,
           event.target,
           dom.getContentEl(scope),
           prop("preventDragOnScroll"),
-          resolveSwipeDirection(prop("swipeDirection"), prop("dir")),
+          computed("physicalSwipeDirection"),
         )
       },
 
       shouldCloseOnSwipe({ prop, context, computed, refs }) {
         // In sequential mode, let findClosestSnapPoint handle dismiss decisions
         if (prop("snapToSequentialPoints")) return false
-        const dragManager = refs.get("dragManager")
-        return dragManager.shouldDismiss(
+        const swipeSession = refs.get("swipeSession")
+        return swipeSession.shouldDismissOnRelease(
           context.get("contentSize"),
           computed("resolvedSnapPoints"),
-          context.get("resolvedActiveSnapPoint")?.offset ?? 0,
+          getActiveSnapOffset(context),
         )
       },
 
-      hasSwipeIntent({ refs, prop, event }) {
-        const dragManager = refs.get("dragManager")
-        const start = dragManager.getPointerStart()
+      hasSwipeIntent({ refs, computed, event }) {
+        const swipeSession = refs.get("swipeSession")
+        const start = swipeSession.getSwipeStart()
         if (!start || !event.point) return false
-        return hasOpeningSwipeIntent(start, event.point, resolveSwipeDirection(prop("swipeDirection"), prop("dir")))
+        return hasOpeningSwipeIntent(start, event.point, computed("physicalSwipeDirection"))
       },
 
       shouldOpenOnSwipe({ context, refs, prop }) {
-        const dragManager = refs.get("dragManager")
-        return dragManager.shouldOpen(
+        const swipeSession = refs.get("swipeSession")
+        return swipeSession.shouldOpenOnRelease(
           context.get("contentSize"),
           prop("swipeVelocityThreshold"),
           prop("closeThreshold"),
@@ -456,7 +452,7 @@ export const machine = createMachine<DrawerSchema>({
         if (backdropEl) backdropEl.style.setProperty("animation", "none", "important")
 
         raf(() => {
-          refs.get("dragManager").clearDragOffset()
+          refs.get("swipeSession").resetDragOffset()
           context.set("dragOffset", null)
         })
       },
@@ -488,30 +484,22 @@ export const machine = createMachine<DrawerSchema>({
       },
 
       setPointerStart({ event, refs }) {
-        refs.get("dragManager").setPointerStart(event.point)
+        refs.get("swipeSession").beginSwipe(event.point)
       },
 
-      setDragOffset({ context, event, refs, prop }) {
-        const dragManager = refs.get("dragManager")
-        const physicalDir = event.swipeDirection ?? resolveSwipeDirection(prop("swipeDirection"), prop("dir"))
-        dragManager.setDragOffsetForDirection(
-          event.point,
-          context.get("resolvedActiveSnapPoint")?.offset || 0,
-          physicalDir,
-        )
-        context.set("dragOffset", dragManager.getDragOffset())
+      setDragOffset({ context, event, refs, computed }) {
+        const swipeSession = refs.get("swipeSession")
+        const physicalSwipeDirection = event.swipeDirection ?? computed("physicalSwipeDirection")
+        swipeSession.setDragOffset(event.point, getActiveSnapOffset(context), physicalSwipeDirection)
+        context.set("dragOffset", swipeSession.getDragOffset())
       },
 
-      setSwipeOpenOffset({ context, event, refs, prop }) {
-        const dragManager = refs.get("dragManager")
+      setSwipeOpenDragOffset({ context, event, refs, computed }) {
+        const swipeSession = refs.get("swipeSession")
         const contentSize = context.get("contentSize")
         if (!contentSize) return
-        dragManager.setSwipeOpenOffset(
-          event.point,
-          contentSize,
-          resolveSwipeDirection(prop("swipeDirection"), prop("dir")),
-        )
-        context.set("dragOffset", dragManager.getDragOffset())
+        swipeSession.setSwipeOpenOffset(event.point, contentSize, computed("physicalSwipeDirection"))
+        context.set("dragOffset", swipeSession.getDragOffset())
       },
 
       setClosestSnapPoint({ computed, context, refs, prop, send }) {
@@ -522,8 +510,8 @@ export const machine = createMachine<DrawerSchema>({
 
         if (!snapPoints.length || contentSize === null) return
 
-        const dragManager = refs.get("dragManager")
-        const closestSnapPoint = dragManager.findClosestSnapPoint(
+        const swipeSession = refs.get("swipeSession")
+        const closestSnapPoint = swipeSession.resolveSnapPointOnRelease(
           snapPoints,
           context.get("resolvedActiveSnapPoint"),
           prop("snapToSequentialPoints"),
@@ -543,12 +531,12 @@ export const machine = createMachine<DrawerSchema>({
       },
 
       clearDragOffset({ context, refs }) {
-        refs.get("dragManager").clearDragOffset()
+        refs.get("swipeSession").resetDragOffset()
         context.set("dragOffset", null)
       },
 
-      clearActiveSnapPoint({ context, prop }) {
-        context.set("snapPoint", prop("defaultSnapPoint") ?? null)
+      clearActiveSnapPoint({ context }) {
+        context.set("snapPoint", context.initial("snapPoint"))
       },
 
       clearSizeMeasurements({ context }) {
@@ -562,18 +550,18 @@ export const machine = createMachine<DrawerSchema>({
       },
 
       clearPointerStart({ refs }) {
-        refs.get("dragManager").clearPointerStart()
+        refs.get("swipeSession").clearSwipeStart()
       },
 
       clearVelocityTracking({ refs }) {
-        refs.get("dragManager").clearVelocityTracking()
+        refs.get("swipeSession").resetVelocity()
       },
 
       setSnapSwipeStrength({ context, refs, computed, prop }) {
-        const dragManager = refs.get("dragManager")
+        const swipeSession = refs.get("swipeSession")
         const snapPoints = computed("resolvedSnapPoints")
         const contentSize = context.get("contentSize")
-        const closestSnapPoint = dragManager.findClosestSnapPoint(
+        const closestSnapPoint = swipeSession.resolveSnapPointOnRelease(
           snapPoints,
           context.get("resolvedActiveSnapPoint"),
           prop("snapToSequentialPoints"),
@@ -587,64 +575,65 @@ export const machine = createMachine<DrawerSchema>({
           viewportSize,
           rootFontSize,
         })
-        const restOffset = context.get("resolvedActiveSnapPoint")?.offset ?? 0
-        context.set("swipeStrength", dragManager.computeSwipeStrength(resolved?.offset ?? 0, restOffset))
+        const restOffset = getActiveSnapOffset(context)
+        context.set("swipeStrength", swipeSession.getSwipeStrength(resolved?.offset ?? 0, restOffset))
       },
 
       setDismissSwipeStrength({ context, refs }) {
-        const dragManager = refs.get("dragManager")
+        const swipeSession = refs.get("swipeSession")
         const contentSize = context.get("contentSize")
-        const restOffset = context.get("resolvedActiveSnapPoint")?.offset ?? 0
-        context.set("swipeStrength", dragManager.computeSwipeStrength(contentSize ?? 0, restOffset))
+        const restOffset = getActiveSnapOffset(context)
+        context.set("swipeStrength", swipeSession.getSwipeStrength(contentSize ?? 0, restOffset))
       },
 
       resetSwipeStrength({ context }) {
         context.set("swipeStrength", 1)
       },
 
-      setRegistrySwiping({ scope, prop }) {
-        const id = String(prop("id") ?? scope.id)
-        drawerRegistry.setSwiping(id, true)
+      setRegistrySwiping({ computed }) {
+        drawerRegistry.setSwiping(computed("drawerId"), true)
       },
 
-      clearRegistrySwiping({ scope, prop }) {
-        const id = String(prop("id") ?? scope.id)
-        drawerRegistry.setSwiping(id, false)
+      clearRegistrySwiping({ computed }) {
+        drawerRegistry.setSwiping(computed("drawerId"), false)
       },
 
       toggleVisibility({ event, send, prop }) {
         send({ type: prop("open") ? "CONTROLLED.OPEN" : "CONTROLLED.CLOSE", previousEvent: event })
       },
 
-      syncDrawerStack({ context, prop, scope }) {
+      syncDrawerStack({ context, prop, computed }) {
         const stack = prop("stack")
         if (!stack) return
 
         const contentSize = context.get("contentSize")
         if (contentSize === null) return
 
-        const id = String(prop("id") ?? scope.id)
         const dragOffset = context.get("dragOffset")
-        const snapPointOffset = context.get("resolvedActiveSnapPoint")?.offset ?? 0
+        const snapPointOffset = getActiveSnapOffset(context)
 
-        stack.setHeight(id, contentSize)
-        stack.setSwipe(id, dragOffset !== null, resolveSwipeProgress(contentSize, dragOffset, snapPointOffset))
+        stack.setHeight(computed("drawerId"), contentSize)
+        stack.setSwipe(
+          computed("drawerId"),
+          dragOffset !== null,
+          resolveSwipeProgress(contentSize, dragOffset, snapPointOffset),
+        )
       },
     },
 
     effects: {
-      trackDrawerStack({ context, scope, prop }) {
+      trackDrawerStack({ context, prop, computed }) {
         const stack = prop("stack")
         if (!stack) return
 
-        const id = String(prop("id") ?? scope.id)
+        const id = computed("drawerId")
         stack.register(id)
         stack.setOpen(id, true)
 
         const sync = () => {
           const contentSize = context.get("contentSize")
           const dragOffset = context.get("dragOffset")
-          const snapPointOffset = context.get("resolvedActiveSnapPoint")?.offset ?? 0
+          const snapPointOffset = getActiveSnapOffset(context)
           stack.setHeight(id, contentSize ?? 0)
           stack.setSwipe(id, dragOffset !== null, resolveSwipeProgress(contentSize, dragOffset, snapPointOffset))
         }
@@ -709,156 +698,44 @@ export const machine = createMachine<DrawerSchema>({
         return ariaHidden(getElements, { defer: true })
       },
 
-      trackGestureInterruption({ scope, send }) {
-        const doc = scope.getDoc()
-
-        function onVisibilityChange() {
-          if (doc.visibilityState === "hidden") {
+      trackPointerMove({ scope, send, refs, computed }) {
+        return refs.get("swipeSession").bindDragTracking({
+          getDoc: () => scope.getDoc(),
+          getContentEl: () => dom.getContentEl(scope),
+          getSwipeAreaEl: () => dom.getSwipeAreaEl(scope),
+          swipeDirection: computed("physicalSwipeDirection"),
+          onMove(details) {
+            send({ type: "POINTER_MOVE", ...details })
+          },
+          onEnd(details) {
+            send({ type: "POINTER_UP", ...details })
+          },
+          onCancel() {
             send({ type: "POINTER_CANCEL" })
-          }
-        }
-
-        function onLostPointerCapture(event: PointerEvent) {
-          // Touch pointers use implicit capture on many browsers, so losing capture is
-          // part of the normal gesture lifecycle rather than an interruption.
-          if (event.pointerType === "touch") return
-          const target = getEventTarget<Element>(event)
-          if (!dom.isPointerWithinContentOrSwipeArea(target, dom.getContentEl(scope), dom.getSwipeAreaEl(scope))) return
-          send({ type: "POINTER_CANCEL" })
-        }
-
-        const cleanups = [
-          addDomEvent(doc, "visibilitychange", onVisibilityChange),
-          addDomEvent(doc, "lostpointercapture", onLostPointerCapture, true),
-        ]
-
-        return () => {
-          cleanups.forEach((cleanup) => cleanup())
-        }
+          },
+        })
       },
 
-      trackPointerMove({ scope, send, prop }) {
-        let lastAxis = 0
-        let usingTouchEvents = false
-        const swipeDirection = resolveSwipeDirection(prop("swipeDirection"), prop("dir"))
-        const isVertical = isVerticalSwipeDirection(swipeDirection)
-
-        function onPointerMove(event: PointerEvent) {
-          // Touch is handled by touchmove/touchend only. Feeding both pointer and touch
-          // events duplicates POINTER_MOVE on many browsers and skews velocity / snap.
-          // Some touchscreens only deliver pointer events though, so only suppress them
-          // for gestures that have already entered the TouchEvent path.
-          if (event.pointerType === "touch" && usingTouchEvents) return
-          const point = getEventPoint(event)
-          const target = getEventTarget<Element>(event)
-          send({ type: "POINTER_MOVE", point, target, swipeDirection })
-        }
-
-        function onPointerUp(event: PointerEvent) {
-          if (event.pointerType === "touch" && usingTouchEvents) {
-            usingTouchEvents = false
-            return
-          }
-          const point = getEventPoint(event)
-          send({ type: "POINTER_UP", point })
-        }
-
-        function onPointerCancel(event: PointerEvent) {
-          if (event.pointerType === "touch" && usingTouchEvents) {
-            usingTouchEvents = false
-            return
-          }
-          send({ type: "POINTER_CANCEL" })
-        }
-
-        function onTouchStart(event: TouchEvent) {
-          if (!event.touches[0]) return
-          usingTouchEvents = true
-          lastAxis = isVertical ? event.touches[0].clientY : event.touches[0].clientX
-        }
-
-        function onTouchMove(event: TouchEvent) {
-          if (!event.touches[0]) return
-          const point = getEventPoint(event)
-          // Match pointer path: composedPath[0] behaves correctly with shadow DOM / retargeting.
-          const target = getEventTarget<HTMLElement>(event) ?? (event.target as HTMLElement)
-
-          if (!prop("preventDragOnScroll")) {
-            send({ type: "POINTER_MOVE", point, target, swipeDirection })
-            return
-          }
-
-          const contentEl = dom.getContentEl(scope)
-          // Never drop touch moves when content isn't resolved yet — pointermove has no such gate,
-          // and missing moves on mobile breaks drag + sequential snap release.
-          if (contentEl && !isDragExemptElement(target)) {
-            const scrollParent = findClosestScrollableAncestorOnSwipeAxis(target, contentEl, swipeDirection)
-            if (scrollParent) {
-              const axis = isVertical ? event.touches[0].clientY : event.touches[0].clientX
-              if (
-                shouldPreventTouchDefaultForDrawerPull({
-                  scrollParent,
-                  swipeDirection,
-                  lastMainAxis: lastAxis,
-                  currentMainAxis: axis,
-                }) &&
-                event.cancelable
-              ) {
-                event.preventDefault()
-              }
-              lastAxis = axis
-            } else {
-              lastAxis = isVertical ? event.touches[0].clientY : event.touches[0].clientX
-            }
-          }
-
-          send({ type: "POINTER_MOVE", point, target, swipeDirection })
-        }
-
-        function onTouchEnd(event: TouchEvent) {
-          if (event.touches.length !== 0) return
-          const point = getEventPoint(event)
-          send({ type: "POINTER_UP", point })
-        }
-
-        function onTouchCancel() {
-          send({ type: "POINTER_CANCEL" })
-        }
-
-        const doc = scope.getDoc()
-
-        const cleanups = [
-          addDomEvent(doc, "pointermove", onPointerMove),
-          addDomEvent(doc, "pointerup", onPointerUp),
-          addDomEvent(doc, "pointercancel", onPointerCancel),
-          addDomEvent(doc, "touchstart", onTouchStart, { capture: true, passive: false }),
-          addDomEvent(doc, "touchmove", onTouchMove, { capture: true, passive: false }),
-          addDomEvent(doc, "touchend", onTouchEnd, { capture: true }),
-          addDomEvent(doc, "touchcancel", onTouchCancel, { capture: true }),
-        ]
-
-        return () => {
-          cleanups.forEach((cleanup) => cleanup())
-        }
-      },
-
-      trackSizeMeasurements({ context, scope, prop }) {
+      trackSizeMeasurements({ context, scope, computed, prop }) {
         const contentEl = dom.getContentEl(scope)
         if (!contentEl) return
 
         const doc = scope.getDoc()
         const html = doc.documentElement
+        const shouldMeasureRootFontSize = hasRemSnapPoints(prop("snapPoints"))
 
         const updateSize = () => {
-          const direction = resolveSwipeDirection(prop("swipeDirection"), prop("dir"))
+          const direction = computed("physicalSwipeDirection")
           const rect = contentEl.getBoundingClientRect()
           const viewportSize = isVerticalSwipeDirection(direction) ? html.clientHeight : html.clientWidth
-          const rootFontSize = Number.parseFloat(getComputedStyle(html).fontSize)
 
           context.set("contentSize", getSwipeDirectionSize(rect, direction))
           context.set("viewportSize", viewportSize)
-          if (Number.isFinite(rootFontSize)) {
-            context.set("rootFontSize", rootFontSize)
+          if (shouldMeasureRootFontSize) {
+            const rootFontSize = Number.parseFloat(getComputedStyle(html).fontSize)
+            if (Number.isFinite(rootFontSize)) {
+              context.set("rootFontSize", rootFontSize)
+            }
           }
         }
 
@@ -874,11 +751,11 @@ export const machine = createMachine<DrawerSchema>({
         }
       },
 
-      trackNestedDrawerMetrics({ scope, prop }) {
+      trackNestedDrawerMetrics({ scope, computed }) {
         const contentEl = dom.getContentEl(scope)
         if (!contentEl) return
 
-        const id = String(prop("id") ?? scope.id)
+        const id = computed("drawerId")
 
         drawerRegistry.register(id, contentEl)
 
@@ -921,58 +798,22 @@ export const machine = createMachine<DrawerSchema>({
         }
       },
 
-      trackSwipeOpenPointerMove({ scope, send }) {
-        const doc = scope.getDoc()
-        let usingTouchEvents = false
-
-        function onPointerMove(event: PointerEvent) {
-          if (event.pointerType === "touch" && usingTouchEvents) return
-          send({ type: "POINTER_MOVE", point: getEventPoint(event) })
-        }
-
-        function onPointerUp(event: PointerEvent) {
-          if (event.pointerType === "touch" && usingTouchEvents) {
-            usingTouchEvents = false
-            return
-          }
-          send({ type: "POINTER_UP", point: getEventPoint(event) })
-        }
-
-        function onPointerCancelSwipeOpen(event: PointerEvent) {
-          if (event.pointerType === "touch" && usingTouchEvents) {
-            usingTouchEvents = false
-            return
-          }
-          send({ type: "POINTER_CANCEL" })
-        }
-
-        function onTouchMove(event: TouchEvent) {
-          if (!event.touches[0]) return
-          usingTouchEvents = true
-          send({ type: "POINTER_MOVE", point: getEventPoint(event) })
-        }
-
-        function onTouchEnd(event: TouchEvent) {
-          if (event.touches.length !== 0) return
-          send({ type: "POINTER_UP", point: getEventPoint(event) })
-        }
-
-        function onTouchCancelSwipeOpen() {
-          send({ type: "POINTER_CANCEL" })
-        }
-
-        const cleanups = [
-          addDomEvent(doc, "pointermove", onPointerMove),
-          addDomEvent(doc, "pointerup", onPointerUp),
-          addDomEvent(doc, "pointercancel", onPointerCancelSwipeOpen),
-          addDomEvent(doc, "touchmove", onTouchMove, { passive: false }),
-          addDomEvent(doc, "touchend", onTouchEnd),
-          addDomEvent(doc, "touchcancel", onTouchCancelSwipeOpen, { capture: true }),
-        ]
-
-        return () => {
-          cleanups.forEach((cleanup) => cleanup())
-        }
+      trackSwipeOpenPointerMove({ scope, send, refs, computed }) {
+        return refs.get("swipeSession").bindSwipeOpenTracking({
+          getDoc: () => scope.getDoc(),
+          getContentEl: () => dom.getContentEl(scope),
+          getSwipeAreaEl: () => dom.getSwipeAreaEl(scope),
+          swipeDirection: computed("physicalSwipeDirection"),
+          onMove(details) {
+            send({ type: "POINTER_MOVE", ...details })
+          },
+          onEnd(details) {
+            send({ type: "POINTER_UP", ...details })
+          },
+          onCancel() {
+            send({ type: "POINTER_CANCEL" })
+          },
+        })
       },
 
       trackExitAnimation({ send, scope }) {

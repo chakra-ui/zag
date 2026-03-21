@@ -1,7 +1,8 @@
 import type { EventObject, Machine, Service } from "@zag-js/core"
 import type { DismissableElementHandlers } from "@zag-js/dismissable"
 import type { CommonProperties, DirectionProperty, MaybeElement, PropTypes, RequiredBy } from "@zag-js/types"
-import type { DragManager } from "./utils/drag-manager"
+import type { DrawerSwipeSession } from "./utils/drawer-session"
+import type { PhysicalSwipeDirection } from "./utils/session"
 
 export type SwipeDirection = "up" | "down" | "start" | "end"
 export type SnapPoint = number | string
@@ -199,9 +200,11 @@ export interface DrawerSchema {
     rendered: { title: boolean; description: boolean }
   }
   refs: {
-    dragManager: DragManager
+    swipeSession: DrawerSwipeSession
   }
   computed: {
+    drawerId: string
+    physicalSwipeDirection: PhysicalSwipeDirection
     resolvedSnapPoints: ResolvedSnapPoint[]
   }
   event: EventObject

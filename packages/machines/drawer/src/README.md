@@ -10,14 +10,15 @@
 
 ## Gesture & input (where bugs often land)
 
-| Concern                                            | Where to look                                                                                                                           |
-| -------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------- |
-| Pointer → machine events (`POINTER_MOVE`, etc.)    | `drawer.machine.ts` → effect **`trackPointerMove`** (document-level pointer + **touch**; touch `preventDefault` vs nested scroll).      |
-| Swipe-open from closed (swipe area)                | Same file → **`trackSwipeOpenPointerMove`**; guard **`hasOpeningSwipeIntent`** uses **`utils/swipe.ts`**.                               |
-| Drag thresholds, velocity, snap resolution         | **`utils/drag-manager.ts`**.                                                                                                            |
-| Deferred mouse/pen “don’t arm drag on first pixel” | **`utils/deferred-pointer.ts`**; wired from **`drawer.connect.ts`** (`deferPointerDown` / `cancelDeferPointerDown`).                    |
-| Scroll competition / nested scroller               | **`utils/get-scroll-info.ts`** (`findClosestScrollableAncestorOnSwipeAxis`, `shouldPreventTouchDefaultForDrawerPull`, `getScrollInfo`). |
-| Ignore drag on inputs, selection, `data-no-drag`   | **`utils/is-drag-exempt-target.ts`** (`isDragExemptElement`, `shouldIgnorePointerDownForDrag`, `isTextSelectionInDrawer`).              |
+| Concern                                           | Where to look                                                                                           |
+| ------------------------------------------------- | ------------------------------------------------------------------------------------------------------- |
+| Generic swipe state and velocity tracking         | **`utils/session.ts`** (`SwipeSession`).                                                                |
+| Drawer-specific swipe behavior and DOM bindings   | **`utils/drawer-session.ts`** (`DrawerSwipeSession`).                                                   |
+| Swipe-open from closed (swipe area)               | `drawer.machine.ts` → **`trackSwipeOpenPointerMove`**; intent guard uses **`utils/drawer-session.ts`**. |
+| Drag thresholds, offset math, snap/dismiss settle | **`utils/drawer-session.ts`**.                                                                          |
+| Deferred mouse/pen content drag arming            | **`utils/session.ts`** pending-arm primitive, configured by **`utils/drawer-session.ts`**.              |
+| Scroll competition / nested scroller              | **`utils/drawer-session.ts`**.                                                                          |
+| Ignore drag on inputs, selection, `data-no-drag`  | **`utils/drawer-session.ts`**.                                                                          |
 
 ## DOM & layout
 
@@ -32,5 +33,5 @@
 
 - **`index.ts`** re-exports machine, connect, props, types, stack helpers.
 
-When fixing a regression, confirm whether it’s **event routing** (machine effects), **headless props** (connect), or
-**pure gesture math** (utils) before editing.
+When fixing a regression, confirm whether it’s **generic swipe state** (`utils/session.ts`), **drawer swipe behavior**
+(`utils/drawer-session.ts`), or **headless props** (`drawer.connect.ts`) before editing.
