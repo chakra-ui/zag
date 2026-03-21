@@ -719,6 +719,9 @@ export const machine = createMachine<DrawerSchema>({
         }
 
         function onLostPointerCapture(event: PointerEvent) {
+          // Touch pointers use implicit capture on many browsers, so losing capture is
+          // part of the normal gesture lifecycle rather than an interruption.
+          if (event.pointerType === "touch") return
           const target = getEventTarget<Element>(event)
           if (!dom.isPointerWithinContentOrSwipeArea(target, dom.getContentEl(scope), dom.getSwipeAreaEl(scope))) return
           send({ type: "POINTER_CANCEL" })
@@ -736,31 +739,41 @@ export const machine = createMachine<DrawerSchema>({
 
       trackPointerMove({ scope, send, prop }) {
         let lastAxis = 0
+        let usingTouchEvents = false
         const swipeDirection = resolveSwipeDirection(prop("swipeDirection"), prop("dir"))
         const isVertical = isVerticalSwipeDirection(swipeDirection)
 
         function onPointerMove(event: PointerEvent) {
           // Touch is handled by touchmove/touchend only. Feeding both pointer and touch
           // events duplicates POINTER_MOVE on many browsers and skews velocity / snap.
-          if (event.pointerType === "touch") return
+          // Some touchscreens only deliver pointer events though, so only suppress them
+          // for gestures that have already entered the TouchEvent path.
+          if (event.pointerType === "touch" && usingTouchEvents) return
           const point = getEventPoint(event)
           const target = getEventTarget<Element>(event)
           send({ type: "POINTER_MOVE", point, target, swipeDirection })
         }
 
         function onPointerUp(event: PointerEvent) {
-          if (event.pointerType === "touch") return
+          if (event.pointerType === "touch" && usingTouchEvents) {
+            usingTouchEvents = false
+            return
+          }
           const point = getEventPoint(event)
           send({ type: "POINTER_UP", point })
         }
 
         function onPointerCancel(event: PointerEvent) {
-          if (event.pointerType === "touch") return
+          if (event.pointerType === "touch" && usingTouchEvents) {
+            usingTouchEvents = false
+            return
+          }
           send({ type: "POINTER_CANCEL" })
         }
 
         function onTouchStart(event: TouchEvent) {
           if (!event.touches[0]) return
+          usingTouchEvents = true
           lastAxis = isVertical ? event.touches[0].clientY : event.touches[0].clientX
         }
 
@@ -910,24 +923,32 @@ export const machine = createMachine<DrawerSchema>({
 
       trackSwipeOpenPointerMove({ scope, send }) {
         const doc = scope.getDoc()
+        let usingTouchEvents = false
 
         function onPointerMove(event: PointerEvent) {
-          if (event.pointerType === "touch") return
+          if (event.pointerType === "touch" && usingTouchEvents) return
           send({ type: "POINTER_MOVE", point: getEventPoint(event) })
         }
 
         function onPointerUp(event: PointerEvent) {
-          if (event.pointerType === "touch") return
+          if (event.pointerType === "touch" && usingTouchEvents) {
+            usingTouchEvents = false
+            return
+          }
           send({ type: "POINTER_UP", point: getEventPoint(event) })
         }
 
         function onPointerCancelSwipeOpen(event: PointerEvent) {
-          if (event.pointerType === "touch") return
+          if (event.pointerType === "touch" && usingTouchEvents) {
+            usingTouchEvents = false
+            return
+          }
           send({ type: "POINTER_CANCEL" })
         }
 
         function onTouchMove(event: TouchEvent) {
           if (!event.touches[0]) return
+          usingTouchEvents = true
           send({ type: "POINTER_MOVE", point: getEventPoint(event) })
         }
 

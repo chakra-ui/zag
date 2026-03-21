@@ -39,7 +39,7 @@ test.describe("drawer [indent-background]", () => {
     expect(frontmostHeight.endsWith("px")).toBe(true)
     expect(Number.parseFloat(frontmostHeight)).toBeGreaterThan(0)
 
-    await I.dragGrabber("down", 120, 300, false)
+    await I.mouseDragGrabber("down", 120, 300, false)
 
     const swipingProgress = Number.parseFloat(await getVar("--drawer-swipe-progress"))
     const swipingTransform = await getIndentTransform()

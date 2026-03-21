@@ -56,7 +56,7 @@ test.describe("drawer [swipe-area]", () => {
     await I.swipeArea("up", 300)
     await I.waitForOpenState()
 
-    await I.dragGrabber("down", 200, 100)
+    await I.mouseDragGrabber("down", 200, 100)
 
     await I.dontSeeContent()
     await I.dontSeeBackdrop()

@@ -45,7 +45,7 @@ test.describe("drawer", () => {
     await I.seeContent()
     await I.waitForOpenState()
 
-    await I.dragGrabber("down", 200, 100)
+    await I.mouseDragGrabber("down", 200, 100)
     await I.dontSeeContent()
   })
 
@@ -57,7 +57,7 @@ test.describe("drawer", () => {
     const initialHeight = await I.getContentVisibleHeight()
     const dragDistance = Math.floor(initialHeight * 0.55)
 
-    await I.dragGrabber("down", dragDistance)
+    await I.mouseDragGrabber("down", dragDistance)
     await I.dontSeeContent()
   })
 
@@ -66,8 +66,36 @@ test.describe("drawer", () => {
     await I.seeContent()
     await I.waitForOpenState()
 
-    await I.dragGrabber("down", 100)
+    await I.mouseDragGrabber("down", 100)
     await I.seeContent()
+  })
+
+  test("should stay interactive on touch drag", async () => {
+    await I.clickTrigger()
+    await I.seeContent()
+    await I.waitForOpenState()
+
+    const initialHeight = await I.getContentVisibleHeight()
+
+    await I.touchDragGrabber("down", 100)
+    await I.waitForSnapComplete()
+
+    const finalHeight = await I.getContentVisibleHeight()
+    expect(finalHeight).toBeGreaterThanOrEqual(initialHeight - 4)
+  })
+
+  test("should stay interactive on touch pointer drag", async () => {
+    await I.clickTrigger()
+    await I.seeContent()
+    await I.waitForOpenState()
+
+    const initialHeight = await I.getContentVisibleHeight()
+
+    await I.touchPointerDragGrabber("down", 100)
+    await I.waitForSnapComplete()
+
+    const finalHeight = await I.getContentVisibleHeight()
+    expect(finalHeight).toBeGreaterThanOrEqual(initialHeight - 4)
   })
 
   test("should no effect when dragged up", async () => {
@@ -76,7 +104,7 @@ test.describe("drawer", () => {
     await I.waitForOpenState()
 
     const initialHeight = await I.getContentVisibleHeight()
-    await I.dragGrabber("up", 150)
+    await I.mouseDragGrabber("up", 150)
 
     const newHeight = await I.getContentVisibleHeight()
 
@@ -137,7 +165,7 @@ test.describe("drawer [draggable=false]", () => {
     // Release mouse before starting a new drag gesture
     await page.mouse.up()
 
-    await I.dragGrabber("down", 100, 500, false)
+    await I.mouseDragGrabber("down", 100, 500, false)
     const heightAfterGrabberDrag = await I.getContentVisibleHeight()
     expect(initialHeight - heightAfterGrabberDrag).toBe(100)
   })
@@ -162,13 +190,13 @@ test.describe("drawer [snapPoints]", () => {
     const initialHeight = await I.getContentVisibleHeight()
     expect(Math.abs(initialHeight - rem20Px)).toBeLessThanOrEqual(4)
 
-    await I.dragGrabber("up", 250)
+    await I.mouseDragGrabber("up", 250)
     await I.waitForSnapComplete()
 
     let currentHeight = await I.getContentVisibleHeight()
     expect(currentHeight).toBeGreaterThan(initialHeight + 80)
 
-    await I.dragGrabber("down", 250)
+    await I.mouseDragGrabber("down", 250)
     await I.waitForSnapComplete()
 
     currentHeight = await I.getContentVisibleHeight()
@@ -191,7 +219,7 @@ test.describe("drawer [snapToSequentialPoints]", () => {
     const initialHeight = await I.getContentVisibleHeight()
 
     // Swipe up to expand to next snap point
-    await I.dragGrabber("up", 100)
+    await I.mouseDragGrabber("up", 100)
     await I.waitForSnapComplete()
 
     const newHeight = await I.getContentVisibleHeight()
@@ -204,12 +232,12 @@ test.describe("drawer [snapToSequentialPoints]", () => {
     await I.waitForOpenState()
 
     // Sequential mode: 20rem → 1 (full) in one step
-    await I.dragGrabber("up", 200)
+    await I.mouseDragGrabber("up", 200)
     await I.waitForSnapComplete()
     await I.waitForOpenState()
 
     // Swipe down — should snap to lower point, NOT dismiss
-    await I.dragGrabber("down", 150)
+    await I.mouseDragGrabber("down", 150)
     await I.waitForSnapComplete()
 
     // Drawer should still be visible (snapped, not dismissed)

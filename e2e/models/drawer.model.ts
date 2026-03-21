@@ -1,5 +1,5 @@
 import { expect, type Page } from "@playwright/test"
-import { a11y, part, swipe } from "../_utils"
+import { a11y, part, swipe, touchPointerSwipe, touchSwipe } from "../_utils"
 import { Model } from "./model"
 
 const content = part("content")
@@ -56,8 +56,16 @@ export class DrawerModel extends Model {
     return this.backdrop.click()
   }
 
-  dragGrabber(direction: "up" | "down", distance: number = 100, duration = 500, release = true) {
+  mouseDragGrabber(direction: "up" | "down", distance: number = 100, duration = 500, release = true) {
     return swipe(this.page, this.grabber, direction, distance, duration, release)
+  }
+
+  touchDragGrabber(direction: "up" | "down", distance: number = 100, duration = 500) {
+    return touchSwipe(this.page, this.grabber, direction, distance, duration)
+  }
+
+  touchPointerDragGrabber(direction: "up" | "down", distance: number = 100, duration = 500) {
+    return touchPointerSwipe(this.page, this.grabber, direction, distance, duration)
   }
 
   dragContent(direction: "up" | "down", distance: number = 100, duration = 500, release = true) {
