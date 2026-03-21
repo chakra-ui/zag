@@ -237,7 +237,7 @@ export function connect<T extends PropTypes>(
         },
         onFocus() {
           if (isNonFirstEmpty) {
-            send({ type: "INPUT.FOCUS", index: firstEmptyIndex })
+            dom.getInputElAtIndex(scope, firstEmptyIndex)?.focus({ preventScroll: true })
             return
           }
           send({ type: "INPUT.FOCUS", index })
