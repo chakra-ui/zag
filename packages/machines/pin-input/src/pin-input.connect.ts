@@ -31,6 +31,8 @@ export function connect<T extends PropTypes>(
   const composite = !!prop("composite")
   const translations = prop("translations")
   const focusedIndex = context.get("focusedIndex")
+  const value = context.get("value")
+  const firstEmptyIndex = composite ? value.findIndex((v) => isEmptyValue(v)) : -1
 
   function focus() {
     dom.getFirstInputEl(scope)?.focus()
@@ -115,6 +117,8 @@ export function connect<T extends PropTypes>(
       const { index } = props
       const inputType = prop("type") === "numeric" ? "tel" : "text"
       const focused = focusedIndex === index
+      const isEmpty = isEmptyValue(value[index])
+      const isNonFirstEmpty = composite && isEmpty && firstEmptyIndex !== -1 && index > firstEmptyIndex
       return normalize.input({
         ...parts.input.attrs,
         dir: prop("dir"),
@@ -128,8 +132,9 @@ export function connect<T extends PropTypes>(
         inputMode: prop("otp") || prop("type") === "numeric" ? "numeric" : "text",
         "aria-invalid": ariaAttr(invalid),
         "data-invalid": dataAttr(invalid),
+        "aria-hidden": ariaAttr(isNonFirstEmpty),
         type: prop("mask") ? "password" : inputType,
-        defaultValue: context.get("value")[index] || "",
+        defaultValue: value[index] || "",
         readOnly,
         autoCapitalize: "none",
         autoComplete: prop("otp") ? "one-time-code" : "off",
@@ -231,6 +236,10 @@ export function connect<T extends PropTypes>(
           }
         },
         onFocus() {
+          if (isNonFirstEmpty) {
+            send({ type: "INPUT.FOCUS", index: firstEmptyIndex })
+            return
+          }
           send({ type: "INPUT.FOCUS", index })
         },
         onBlur(event) {
@@ -241,4 +250,8 @@ export function connect<T extends PropTypes>(
       })
     },
   }
+}
+
+function isEmptyValue(value: string | undefined): boolean {
+  return !value || value.trim() === ""
 }
