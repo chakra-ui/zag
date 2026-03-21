@@ -115,7 +115,7 @@ export function connect<T extends PropTypes>(service: DrawerService, normalize: 
         dir: prop("dir"),
         hidden: closed,
         "data-state": open ? "open" : "closed",
-        "data-swipe-direction": swipeDirection,
+        "data-swipe-direction": physicalDirection,
         style: {
           pointerEvents: prop("modal") ? undefined : "none",
         },
@@ -139,7 +139,7 @@ export function connect<T extends PropTypes>(service: DrawerService, normalize: 
         hidden: !open,
         "data-state": open ? "open" : "closed",
         "data-expanded": resolvedActiveSnapPoint?.offset === 0 ? "" : undefined,
-        "data-swipe-direction": swipeDirection,
+        "data-swipe-direction": physicalDirection,
         "data-swiping": dragging || swipingOpen ? "" : undefined,
         "data-dragging": dragging ? "" : undefined,
         style: {
@@ -252,7 +252,7 @@ export function connect<T extends PropTypes>(service: DrawerService, normalize: 
         "aria-hidden": true,
         "data-state": open ? "open" : "closed",
         "data-swiping": swipingOpen ? "" : undefined,
-        "data-swipe-direction": openDirection,
+        "data-swipe-direction": physicalOpenDirection,
         "data-disabled": disabled ? "" : undefined,
         style: {
           touchAction: isVerticalSwipeDirection(physicalOpenDirection) ? "pan-x" : "pan-y",

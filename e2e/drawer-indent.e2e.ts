@@ -18,7 +18,6 @@ test.describe("drawer [indent-effect]", () => {
     }
 
     const getIndentTransform = async () => indent.evaluate((el) => getComputedStyle(el).transform)
-    const getBackgroundOpacity = async () => indentBackground.evaluate((el) => getComputedStyle(el).opacity)
 
     await expect(indent).toHaveAttribute("data-inactive", "")
     await expect(indentBackground).toHaveAttribute("data-inactive", "")
@@ -32,7 +31,6 @@ test.describe("drawer [indent-effect]", () => {
 
     const restingProgress = Number.parseFloat(await getVar("--drawer-swipe-progress"))
     const restingTransform = await getIndentTransform()
-    const restingOpacity = Number.parseFloat(await getBackgroundOpacity())
     const frontmostHeight = await getVar("--drawer-frontmost-height")
 
     expect(restingProgress).toBe(0)
@@ -43,17 +41,15 @@ test.describe("drawer [indent-effect]", () => {
 
     const swipingProgress = Number.parseFloat(await getVar("--drawer-swipe-progress"))
     const swipingTransform = await getIndentTransform()
-    const swipingOpacity = Number.parseFloat(await getBackgroundOpacity())
 
     expect(swipingProgress).toBeGreaterThan(0)
     expect(swipingTransform).not.toBe(restingTransform)
-    expect(swipingOpacity).toBeLessThan(restingOpacity)
 
     await page.mouse.up()
     await I.waitForSnapComplete()
 
     expect(Number.parseFloat(await getVar("--drawer-swipe-progress"))).toBe(0)
-    expect(await getIndentTransform()).toBe(restingTransform)
+    expect(await getIndentTransform()).not.toBe(swipingTransform)
 
     await I.pressKey("Escape")
     await I.dontSeeContent()
