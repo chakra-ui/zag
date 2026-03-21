@@ -42,8 +42,8 @@ export const componentRoutes: ComponentRoute[] = [
     examples: [
       { slug: "basic", title: "Basic" },
       { slug: "snap-points", title: "Snap Points" },
-      { slug: "default-active-snap-point", title: "Active Snap Point" },
-      { slug: "indent-background", title: "Indent Background" },
+      { slug: "active-snap-point", title: "Active Snap Point" },
+      { slug: "indent-effect", title: "Indent Effect" },
       { slug: "swipe-area", title: "Swipe Area" },
       { slug: "cross-axis-scroll", title: "Cross-Axis Scroll" },
       { slug: "range-input", title: "Range Input" },

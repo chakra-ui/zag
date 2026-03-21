@@ -22,9 +22,9 @@ export default function Page() {
       />
 
       <div {...stackApi.getIndentProps()} className={styles.indent} data-testid="drawer-indent">
-        <h2 className={styles.heading}>Drawer Indent Background</h2>
+        <h2 className={styles.heading}>Drawer Indent Effect</h2>
         <p className={styles.description}>
-          Open and drag the drawer. The background and app shell use stack snapshot props so styles stay coordinated.
+          Open and drag the drawer. The effect layer and app shell use stack snapshot props so styles stay coordinated.
         </p>
         <button {...api.getTriggerProps()} className={styles.button}>
           Open Drawer

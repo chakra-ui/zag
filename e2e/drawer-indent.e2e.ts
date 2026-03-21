@@ -3,13 +3,13 @@ import { DrawerModel } from "./models/drawer.model"
 
 let I: DrawerModel
 
-test.describe("drawer [indent-background]", () => {
+test.describe("drawer [indent-effect]", () => {
   test.beforeEach(async ({ page }) => {
     I = new DrawerModel(page)
-    await I.goto("/drawer/indent-background")
+    await I.goto("/drawer/indent-effect")
   })
 
-  test("should orchestrate indent/background visual state during swipe", async ({ page }) => {
+  test("should orchestrate indent/effect visual state during swipe", async ({ page }) => {
     const indent = page.getByTestId("drawer-indent")
     const indentBackground = page.getByTestId("drawer-indent-background")
 

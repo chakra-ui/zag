@@ -33,9 +33,9 @@ const stackApi = computed(() => drawer.connectStack(snapshot.value, normalizePro
     />
 
     <div v-bind="stackApi.getIndentProps()" :class="styles.indent" data-testid="drawer-indent">
-      <h2 :class="styles.heading">Drawer Indent Background</h2>
+      <h2 :class="styles.heading">Drawer Indent Effect</h2>
       <p :class="styles.description">
-        Open and drag the drawer. The background and app shell use stack snapshot props so styles stay coordinated.
+        Open and drag the drawer. The effect layer and app shell use stack snapshot props so styles stay coordinated.
       </p>
       <button v-bind="api.getTriggerProps()" :class="styles.button">Open Drawer</button>
     </div>
