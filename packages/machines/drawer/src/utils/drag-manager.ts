@@ -1,8 +1,9 @@
 import type { Point } from "@zag-js/types"
-import type { ResolvedSnapPoint, SwipeDirection } from "../drawer.types"
+import type { ResolvedSnapPoint } from "../drawer.types"
 import { getScrollInfo } from "./get-scroll-info"
 import { adjustReleaseVelocityAgainstDisplacement, adjustReleaseVelocityForOpenSwipe } from "./release-velocity"
 import { findClosestSnapPoint } from "./snap-point"
+import type { PhysicalSwipeDirection } from "./swipe"
 import { isVerticalSwipeDirection } from "./swipe"
 
 const DRAG_START_THRESHOLD = 0.3
@@ -53,11 +54,11 @@ export class DragManager {
     return this.pointerStart
   }
 
-  private getAxisValue(point: Point, direction: SwipeDirection): number {
+  private getAxisValue(point: Point, direction: PhysicalSwipeDirection): number {
     return direction === "left" || direction === "right" ? point.x : point.y
   }
 
-  private getDirectionSign(direction: SwipeDirection): number {
+  private getDirectionSign(direction: PhysicalSwipeDirection): number {
     return direction === "up" || direction === "left" ? -1 : 1
   }
 
@@ -130,7 +131,7 @@ export class DragManager {
     return this.velocity ?? 0
   }
 
-  setDragOffsetForDirection(point: Point, resolvedActiveSnapPointOffset: number, direction: SwipeDirection) {
+  setDragOffsetForDirection(point: Point, resolvedActiveSnapPointOffset: number, direction: PhysicalSwipeDirection) {
     if (!this.pointerStart) return
 
     const sign = this.getDirectionSign(direction)
@@ -175,7 +176,7 @@ export class DragManager {
     target: HTMLElement,
     container: HTMLElement | null,
     preventDragOnScroll: boolean,
-    direction: SwipeDirection,
+    direction: PhysicalSwipeDirection,
   ): boolean {
     if (!this.pointerStart || !container) return false
 
@@ -192,7 +193,7 @@ export class DragManager {
       const crossDelta = isVertical ? Math.abs(point.x - this.pointerStart.x) : Math.abs(point.y - this.pointerStart.y)
 
       if (crossDelta > Math.abs(delta) * CROSS_AXIS_BIAS) {
-        const crossDirection: SwipeDirection = isVertical ? "right" : "down"
+        const crossDirection: PhysicalSwipeDirection = isVertical ? "right" : "down"
         const crossScroll = getScrollInfo(target, container, crossDirection)
         if (
           crossScroll.availableForwardScroll > SCROLL_SLACK_GATE ||
@@ -313,7 +314,7 @@ export class DragManager {
     return closest.value
   }
 
-  setSwipeOpenOffset(point: Point, contentSize: number, direction: SwipeDirection) {
+  setSwipeOpenOffset(point: Point, contentSize: number, direction: PhysicalSwipeDirection) {
     if (!this.pointerStart) return
 
     const sign = this.getDirectionSign(direction)

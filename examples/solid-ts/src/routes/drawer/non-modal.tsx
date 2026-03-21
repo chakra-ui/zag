@@ -9,7 +9,7 @@ export default function Page() {
     id: createUniqueId(),
     modal: false,
     closeOnInteractOutside: false,
-    swipeDirection: "right" as const,
+    swipeDirection: "end" as const,
   }))
 
   const api = createMemo(() => drawer.connect(service, normalizeProps))

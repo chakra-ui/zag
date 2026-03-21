@@ -9,7 +9,7 @@ export default function Page() {
     id: useId(),
     modal: false,
     closeOnInteractOutside: false,
-    swipeDirection: "right",
+    swipeDirection: "end",
   })
 
   const api = drawer.connect(service, normalizeProps)

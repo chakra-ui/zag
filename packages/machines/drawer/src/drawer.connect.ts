@@ -6,7 +6,12 @@ import * as dom from "./drawer.dom"
 import type { DrawerApi, DrawerService } from "./drawer.types"
 import { cancelDeferPointerDown, deferPointerDown } from "./utils/deferred-pointer"
 import { isTextSelectionInDrawer, shouldIgnorePointerDownForDrag } from "./utils/is-drag-exempt-target"
-import { isNegativeSwipeDirection, isVerticalSwipeDirection, oppositeSwipeDirection } from "./utils/swipe"
+import {
+  isNegativeSwipeDirection,
+  isVerticalSwipeDirection,
+  oppositeSwipeDirection,
+  resolveSwipeDirection,
+} from "./utils/swipe"
 
 export function connect<T extends PropTypes>(service: DrawerService, normalize: NormalizeProps<T>): DrawerApi<T> {
   const { state, send, context, scope, prop } = service
@@ -20,6 +25,7 @@ export function connect<T extends PropTypes>(service: DrawerService, normalize: 
 
   const snapPoint = context.get("snapPoint")
   const swipeDirection = prop("swipeDirection")
+  const physicalDirection = resolveSwipeDirection(swipeDirection, prop("dir"))
   const contentSize = context.get("contentSize")
   const swipeStrength = context.get("swipeStrength")
 
@@ -28,11 +34,11 @@ export function connect<T extends PropTypes>(service: DrawerService, normalize: 
 
   const swipeOpenFallbackOffset = swipingOpen && dragOffset === null ? (contentSize ?? 9999) : 0
   const currentOffset = dragOffset ?? (snapPointOffset || swipeOpenFallbackOffset)
-  const signedSnapPointOffset = isNegativeSwipeDirection(swipeDirection) ? -snapPointOffset : snapPointOffset
+  const signedSnapPointOffset = isNegativeSwipeDirection(physicalDirection) ? -snapPointOffset : snapPointOffset
 
   const isActivelySwiping = dragging || swipingOpen
   const swipeMovement = dragging || swipingOpen ? currentOffset - snapPointOffset : 0
-  const signedMovement = isNegativeSwipeDirection(swipeDirection) ? -swipeMovement : swipeMovement
+  const signedMovement = isNegativeSwipeDirection(physicalDirection) ? -swipeMovement : swipeMovement
   const swipeProgress =
     isActivelySwiping && contentSize && contentSize > 0
       ? Math.max(0, Math.min(1, Math.abs(signedMovement) / contentSize))
@@ -40,9 +46,9 @@ export function connect<T extends PropTypes>(service: DrawerService, normalize: 
         ? 1 // fully closed (transparent backdrop) until contentSize is measured
         : 0
 
-  const signedCurrentOffset = isNegativeSwipeDirection(swipeDirection) ? -currentOffset : currentOffset
-  const translateX = isVerticalSwipeDirection(swipeDirection) ? 0 : signedCurrentOffset
-  const translateY = isVerticalSwipeDirection(swipeDirection) ? signedCurrentOffset : 0
+  const signedCurrentOffset = isNegativeSwipeDirection(physicalDirection) ? -currentOffset : currentOffset
+  const translateX = isVerticalSwipeDirection(physicalDirection) ? 0 : signedCurrentOffset
+  const translateY = isVerticalSwipeDirection(physicalDirection) ? signedCurrentOffset : 0
 
   /**
    * Sheet body: mouse/pen defer POINTER_DOWN until movement reads as a sheet-axis drag so
@@ -65,7 +71,7 @@ export function connect<T extends PropTypes>(service: DrawerService, normalize: 
         canCommitPointerDown() {
           return state.hasTag("open") && !state.matches("closing")
         },
-        swipeDirection,
+        swipeDirection: physicalDirection,
         pointerId: event.pointerId,
         startPoint: point,
       })
@@ -130,8 +136,8 @@ export function connect<T extends PropTypes>(service: DrawerService, normalize: 
     },
 
     getContentProps(props = { draggable: true }) {
-      const movementX = isVerticalSwipeDirection(swipeDirection) ? 0 : signedMovement
-      const movementY = isVerticalSwipeDirection(swipeDirection) ? signedMovement : 0
+      const movementX = isVerticalSwipeDirection(physicalDirection) ? 0 : signedMovement
+      const movementY = isVerticalSwipeDirection(physicalDirection) ? signedMovement : 0
       const rendered = context.get("rendered")
 
       return normalize.element({
@@ -157,10 +163,10 @@ export function connect<T extends PropTypes>(service: DrawerService, normalize: 
           "--drawer-translate": toPx(translateY),
           "--drawer-translate-x": toPx(translateX),
           "--drawer-translate-y": toPx(translateY),
-          "--drawer-snap-point-offset-x": isVerticalSwipeDirection(swipeDirection)
+          "--drawer-snap-point-offset-x": isVerticalSwipeDirection(physicalDirection)
             ? "0px"
             : toPx(signedSnapPointOffset),
-          "--drawer-snap-point-offset-y": isVerticalSwipeDirection(swipeDirection)
+          "--drawer-snap-point-offset-y": isVerticalSwipeDirection(physicalDirection)
             ? toPx(signedSnapPointOffset)
             : "0px",
           "--drawer-swipe-movement-x": toPx(movementX),
@@ -250,6 +256,7 @@ export function connect<T extends PropTypes>(service: DrawerService, normalize: 
     getSwipeAreaProps(props = {}) {
       const disabled = props.disabled ?? false
       const openDirection = props.swipeDirection ?? oppositeSwipeDirection[swipeDirection]
+      const physicalOpenDirection = resolveSwipeDirection(openDirection, prop("dir"))
 
       return normalize.element({
         ...parts.swipeArea.attrs,
@@ -261,7 +268,7 @@ export function connect<T extends PropTypes>(service: DrawerService, normalize: 
         "data-swipe-direction": openDirection,
         "data-disabled": disabled ? "" : undefined,
         style: {
-          touchAction: isVerticalSwipeDirection(openDirection) ? "pan-x" : "pan-y",
+          touchAction: isVerticalSwipeDirection(physicalOpenDirection) ? "pan-x" : "pan-y",
           pointerEvents: disabled || (open && !swipingOpen) ? "none" : undefined,
         },
         onPointerDown(event) {

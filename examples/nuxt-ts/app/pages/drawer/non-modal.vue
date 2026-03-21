@@ -8,7 +8,7 @@ const service = useMachine(drawer.machine, {
   id: useId(),
   modal: false,
   closeOnInteractOutside: false,
-  swipeDirection: "right",
+  swipeDirection: "end",
 })
 
 const api = computed(() => drawer.connect(service, normalizeProps))

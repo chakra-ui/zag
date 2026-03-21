@@ -3,7 +3,7 @@ import type { DismissableElementHandlers } from "@zag-js/dismissable"
 import type { CommonProperties, DirectionProperty, MaybeElement, PropTypes, RequiredBy } from "@zag-js/types"
 import type { DragManager } from "./utils/drag-manager"
 
-export type SwipeDirection = "up" | "down" | "left" | "right"
+export type SwipeDirection = "up" | "down" | "start" | "end"
 export type SnapPoint = number | string
 
 export interface OpenChangeDetails {

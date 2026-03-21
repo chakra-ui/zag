@@ -1,5 +1,5 @@
 import { getComputedStyle } from "@zag-js/dom-query"
-import type { SwipeDirection } from "../drawer.types"
+import type { PhysicalSwipeDirection } from "./swipe"
 import { isVerticalSwipeDirection } from "./swipe"
 
 const SCROLL_SLACK_EPSILON = 1
@@ -26,7 +26,7 @@ export function canScrollAlongX(el: HTMLElement): boolean {
   return el.scrollWidth > el.clientWidth + SCROLL_SLACK_EPSILON
 }
 
-export function canScrollOnSwipeAxis(el: HTMLElement, direction: SwipeDirection): boolean {
+export function canScrollOnSwipeAxis(el: HTMLElement, direction: PhysicalSwipeDirection): boolean {
   return isVerticalSwipeDirection(direction) ? canScrollAlongY(el) : canScrollAlongX(el)
 }
 
@@ -37,7 +37,7 @@ export function canScrollOnSwipeAxis(el: HTMLElement, direction: SwipeDirection)
 export function findClosestScrollableAncestorOnSwipeAxis(
   target: HTMLElement,
   container: HTMLElement | null,
-  direction: SwipeDirection,
+  direction: PhysicalSwipeDirection,
 ): HTMLElement | null {
   if (!container) return null
   let el: HTMLElement | null = target
@@ -51,7 +51,7 @@ export function findClosestScrollableAncestorOnSwipeAxis(
 /**
  * Accumulated forward/backward scroll slack from `target` up to `container` on the given axis.
  */
-export function getScrollInfo(target: HTMLElement, container: HTMLElement | null, direction: SwipeDirection) {
+export function getScrollInfo(target: HTMLElement, container: HTMLElement | null, direction: PhysicalSwipeDirection) {
   let availableForwardScroll = 0
   let availableBackwardScroll = 0
   if (!container) {
@@ -87,7 +87,7 @@ export function getScrollInfo(target: HTMLElement, container: HTMLElement | null
  */
 export function shouldPreventTouchDefaultForDrawerPull(options: {
   scrollParent: HTMLElement
-  swipeDirection: SwipeDirection
+  swipeDirection: PhysicalSwipeDirection
   lastMainAxis: number
   currentMainAxis: number
 }): boolean {

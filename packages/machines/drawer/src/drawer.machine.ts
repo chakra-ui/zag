@@ -27,6 +27,7 @@ import {
   getSwipeDirectionSize,
   hasOpeningSwipeIntent,
   isVerticalSwipeDirection,
+  resolveSwipeDirection,
   resolveSwipeProgress,
 } from "./utils/swipe"
 
@@ -388,7 +389,7 @@ export const machine = createMachine<DrawerSchema>({
           event.target,
           dom.getContentEl(scope),
           prop("preventDragOnScroll"),
-          prop("swipeDirection"),
+          resolveSwipeDirection(prop("swipeDirection"), prop("dir")),
         )
       },
 
@@ -407,7 +408,7 @@ export const machine = createMachine<DrawerSchema>({
         const dragManager = refs.get("dragManager")
         const start = dragManager.getPointerStart()
         if (!start || !event.point) return false
-        return hasOpeningSwipeIntent(start, event.point, prop("swipeDirection"))
+        return hasOpeningSwipeIntent(start, event.point, resolveSwipeDirection(prop("swipeDirection"), prop("dir")))
       },
 
       shouldOpenOnSwipe({ context, refs, prop }) {
@@ -492,10 +493,11 @@ export const machine = createMachine<DrawerSchema>({
 
       setDragOffset({ context, event, refs, prop }) {
         const dragManager = refs.get("dragManager")
+        const physicalDir = event.swipeDirection ?? resolveSwipeDirection(prop("swipeDirection"), prop("dir"))
         dragManager.setDragOffsetForDirection(
           event.point,
           context.get("resolvedActiveSnapPoint")?.offset || 0,
-          event.swipeDirection ?? prop("swipeDirection"),
+          physicalDir,
         )
         context.set("dragOffset", dragManager.getDragOffset())
       },
@@ -504,7 +506,11 @@ export const machine = createMachine<DrawerSchema>({
         const dragManager = refs.get("dragManager")
         const contentSize = context.get("contentSize")
         if (!contentSize) return
-        dragManager.setSwipeOpenOffset(event.point, contentSize, prop("swipeDirection"))
+        dragManager.setSwipeOpenOffset(
+          event.point,
+          contentSize,
+          resolveSwipeDirection(prop("swipeDirection"), prop("dir")),
+        )
         context.set("dragOffset", dragManager.getDragOffset())
       },
 
@@ -730,7 +736,7 @@ export const machine = createMachine<DrawerSchema>({
 
       trackPointerMove({ scope, send, prop }) {
         let lastAxis = 0
-        const swipeDirection = prop("swipeDirection")
+        const swipeDirection = resolveSwipeDirection(prop("swipeDirection"), prop("dir"))
         const isVertical = isVerticalSwipeDirection(swipeDirection)
 
         function onPointerMove(event: PointerEvent) {
@@ -831,7 +837,7 @@ export const machine = createMachine<DrawerSchema>({
         const html = doc.documentElement
 
         const updateSize = () => {
-          const direction = prop("swipeDirection")
+          const direction = resolveSwipeDirection(prop("swipeDirection"), prop("dir"))
           const rect = contentEl.getBoundingClientRect()
           const viewportSize = isVerticalSwipeDirection(direction) ? html.clientHeight : html.clientWidth
           const rootFontSize = Number.parseFloat(getComputedStyle(html).fontSize)

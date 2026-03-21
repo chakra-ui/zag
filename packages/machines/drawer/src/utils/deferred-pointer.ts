@@ -1,7 +1,7 @@
 import type { Scope } from "@zag-js/core"
 import { addDomEvent } from "@zag-js/dom-query"
 import type { Point } from "@zag-js/types"
-import type { SwipeDirection } from "../drawer.types"
+import type { PhysicalSwipeDirection } from "./swipe"
 import { isVerticalSwipeDirection } from "./swipe"
 
 const DEFERRED_DRAG_MIN_MAIN_AXIS_PX = 6
@@ -36,7 +36,7 @@ export interface DeferPointerDownOptions {
   onCommit: (point: Point) => void
   /** Drawer must still be open and not in closing animation before arming drag. */
   canCommitPointerDown: () => boolean
-  swipeDirection: SwipeDirection
+  swipeDirection: PhysicalSwipeDirection
   pointerId: number
   startPoint: Point
 }

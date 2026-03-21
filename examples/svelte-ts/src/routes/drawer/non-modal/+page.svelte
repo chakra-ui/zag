@@ -10,7 +10,7 @@
     id,
     modal: false,
     closeOnInteractOutside: false,
-    swipeDirection: "right",
+    swipeDirection: "end",
   })
 
   const api = $derived(drawer.connect(service, normalizeProps))
