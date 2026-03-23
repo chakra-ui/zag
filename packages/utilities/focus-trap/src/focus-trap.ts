@@ -537,6 +537,10 @@ export class FocusTrap {
       node = this.getNodeForOption("fallbackFocus")
     }
 
+    if (!node || !node.isConnected) {
+      throw new Error("Your focus-trap needs to have at least one focusable element")
+    }
+
     return node
   }
 

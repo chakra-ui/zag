@@ -1,4 +1,4 @@
-import { test } from "@playwright/test"
+import { expect, test } from "@playwright/test"
 import { PopoverModel } from "./models/popover.model"
 
 let I: PopoverModel
@@ -53,6 +53,25 @@ test.describe("popover", () => {
     await I.seeLinkIsFocused()
     await I.pressKey("Tab", 3)
     await I.seeLinkIsFocused()
+  })
+
+  test("[keyboard / modal] should trap focus when content has a single effective tab stop", async ({ page }) => {
+    await page.goto("/popover/single-tab-stop")
+
+    const trigger = page.getByTestId("popover-trigger")
+    const checkedRadio = page.getByTestId("radio-name-asc")
+
+    await trigger.focus()
+    await expect(trigger).toBeFocused()
+
+    await page.keyboard.press("Enter")
+    await expect(checkedRadio).toBeFocused()
+
+    await page.keyboard.press("Tab")
+    await expect(checkedRadio).toBeFocused()
+
+    await page.keyboard.press("Shift+Tab")
+    await expect(checkedRadio).toBeFocused()
   })
 
   test("[keyboard / non-modal] on tab outside: should move focus to next tabbable element after button", async () => {
