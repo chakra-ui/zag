@@ -127,14 +127,22 @@ type ChildStateKey<S extends string, Parent extends string> = S extends `${Paren
 
 type ParentPath<S extends string> = S extends `${infer Parent}.${string}` ? Parent : never
 type AncestorPaths<S extends string> = S | (ParentPath<S> extends never ? never : AncestorPaths<ParentPath<S>>)
-type RelativeStateTarget<S extends string, Source extends string> = ChildStateKey<S, AncestorPaths<Source>>
 type StateIdTarget = `#${string}`
+
+// Bare name targets resolve to siblings (children of the source's parent, or root-level states)
+type SiblingStateTarget<S extends string, Source extends string> =
+  | TopLevelState<S>
+  | ChildStateKey<S, Exclude<AncestorPaths<Source>, Source>>
+
+// Dot-prefixed targets resolve to children of the source (e.g. ".idle" from "open" → "open.idle")
+type ChildStateTarget<S extends string, Source extends string> = `.${ChildStateKey<S, Source>}`
 
 export interface Transition<T extends Dict, Source extends string | undefined = string | undefined> {
   target?:
     | T["state"]
     | StateIdTarget
-    | (Source extends string ? RelativeStateTarget<T["state"], Source> : never)
+    | (Source extends string ? SiblingStateTarget<T["state"], Source> : never)
+    | (Source extends string ? ChildStateTarget<T["state"], Source> : never)
     | undefined
   actions?: T["action"][] | undefined
   guard?: T["guard"] | GuardFn<T> | undefined

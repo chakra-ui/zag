@@ -17,6 +17,10 @@ function isExplicitAbsoluteStatePath(value: string) {
   return value.startsWith(ABSOLUTE_PREFIX)
 }
 
+function isChildTarget(value: string) {
+  return value.startsWith(STATE_DELIMITER)
+}
+
 function stripAbsolutePrefix(value: string) {
   return isExplicitAbsoluteStatePath(value) ? value.slice(ABSOLUTE_PREFIX.length) : value
 }
@@ -148,15 +152,26 @@ export function resolveStateValue<T extends MachineSchema>(
     return resolveAbsoluteStateValue(machine, statePath)
   }
 
-  // Relative sibling target (e.g. "editing") is resolved from the state node
-  // where the transition is declared, not from the current leaf state.
+  // Dot-prefixed child target (e.g. ".idle" from source "open" → "open.idle")
+  if (isChildTarget(stateValue) && source) {
+    const childPath = appendStatePath(source, stateValue.slice(1))
+    return resolveAbsoluteStateValue(machine, childPath)
+  }
+
+  // Bare name = sibling resolution (aligned with XState/SCXML semantics).
+  // Siblings are checked from parent scope upward, never children of the source.
   if (!isAbsoluteStatePath(stateValue) && source) {
     const sourceSegments = toSegments(source)
-    for (let index = sourceSegments.length; index >= 1; index--) {
+
+    // Check siblings (parent scope upward)
+    for (let index = sourceSegments.length - 1; index >= 1; index--) {
       const base = sourceSegments.slice(0, index).join(STATE_DELIMITER)
       const candidate = appendStatePath(base, stateValue)
       if (hasStatePath(machine, candidate)) return resolveAbsoluteStateValue(machine, candidate)
     }
+
+    // Check root-level siblings
+    if (hasStatePath(machine, stateValue)) return resolveAbsoluteStateValue(machine, stateValue)
   }
 
   return resolveAbsoluteStateValue(machine, stateValue)

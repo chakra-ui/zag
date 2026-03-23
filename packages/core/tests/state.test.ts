@@ -37,6 +37,243 @@ describe("state resolution", () => {
     expect(resolveStateValue(machine, "focused", "dialog.open.idle")).toBe("dialog.open.focused")
   })
 
+  test("prefers sibling over child when both exist with same name", () => {
+    // Reproduces: color picker `open` state has child `idle` AND sibling `idle` at root.
+    // Transition `target: "idle"` on `open` must resolve to the sibling, not the child.
+    const machine = createMachine<any>({
+      initialState() {
+        return "open.idle"
+      },
+      states: {
+        idle: {},
+        focused: {},
+        open: {
+          initial: "idle",
+          on: {
+            CLOSE_TO_IDLE: { target: "idle" },
+            CLOSE_TO_FOCUSED: { target: "focused" },
+          },
+          states: {
+            idle: {},
+            dragging: {},
+          },
+        },
+      },
+    })
+
+    // "idle" from source "open" should resolve to root "idle", not "open.idle"
+    expect(resolveStateValue(machine, "idle", "open")).toBe("idle")
+    // "focused" from source "open" should resolve to root "focused"
+    expect(resolveStateValue(machine, "focused", "open")).toBe("focused")
+  })
+
+  test("dot-prefixed target resolves to child state", () => {
+    const machine = createMachine<any>({
+      initialState() {
+        return "dialog.open.viewing"
+      },
+      states: {
+        dialog: {
+          initial: "open",
+          states: {
+            open: {
+              initial: "viewing",
+              states: {
+                viewing: {},
+                editing: {},
+              },
+            },
+            closed: {},
+          },
+        },
+      },
+    })
+
+    // ".viewing" explicitly targets child of "dialog.open"
+    expect(resolveStateValue(machine, ".viewing", "dialog.open")).toBe("dialog.open.viewing")
+    // ".editing" explicitly targets child of "dialog.open"
+    expect(resolveStateValue(machine, ".editing", "dialog.open")).toBe("dialog.open.editing")
+    // "closed" (bare) targets sibling of "open" within "dialog"
+    expect(resolveStateValue(machine, "closed", "dialog.open")).toBe("dialog.closed")
+  })
+
+  test("dot-prefixed target drills down to initial child", () => {
+    const machine = createMachine<any>({
+      initialState() {
+        return "dialog.closed"
+      },
+      states: {
+        dialog: {
+          initial: "closed",
+          states: {
+            closed: {},
+            open: {
+              initial: "viewing",
+              states: {
+                viewing: {},
+                editing: {},
+              },
+            },
+          },
+        },
+      },
+    })
+
+    // ".open" from "dialog" targets child "dialog.open", drills to "dialog.open.viewing"
+    expect(resolveStateValue(machine, ".open", "dialog")).toBe("dialog.open.viewing")
+  })
+
+  test("bare name never resolves to child of source", () => {
+    const machine = createMachine<any>({
+      initialState() {
+        return "a.b.c"
+      },
+      states: {
+        a: {
+          initial: "b",
+          states: {
+            b: {
+              initial: "c",
+              states: {
+                c: {},
+                d: {},
+              },
+            },
+            x: {},
+          },
+        },
+      },
+    })
+
+    // From source "a.b", bare "x" finds sibling "a.x"
+    expect(resolveStateValue(machine, "x", "a.b")).toBe("a.x")
+    // From source "a.b", bare "d" does NOT find child "a.b.d" — bare names are siblings only
+    // "d" doesn't exist as a sibling at any ancestor level, falls through
+    expect(resolveStateValue(machine, "d", "a.b")).toBe("d")
+    // Use dot-prefix to explicitly target child
+    expect(resolveStateValue(machine, ".d", "a.b")).toBe("a.b.d")
+  })
+
+  test("resolves absolute path targets without relative resolution", () => {
+    const machine = createMachine<any>({
+      initialState() {
+        return "dialog.open.idle"
+      },
+      states: {
+        dialog: {
+          initial: "open",
+          states: {
+            open: {
+              initial: "idle",
+              states: {
+                idle: {},
+              },
+            },
+            closed: {},
+          },
+        },
+      },
+    })
+
+    // Absolute path (contains ".") bypasses relative resolution regardless of source
+    expect(resolveStateValue(machine, "dialog.closed", "dialog.open.idle")).toBe("dialog.closed")
+    expect(resolveStateValue(machine, "dialog.open", "dialog.closed")).toBe("dialog.open.idle")
+  })
+
+  test("resolves with undefined source (root-level handler)", () => {
+    const machine = createMachine<any>({
+      initialState() {
+        return "dialog.open.idle"
+      },
+      states: {
+        idle: {},
+        dialog: {
+          initial: "open",
+          states: {
+            open: {
+              initial: "idle",
+              states: {
+                idle: {},
+              },
+            },
+            closed: {},
+          },
+        },
+      },
+    })
+
+    // No source (root `on` handler) — absolute paths work
+    expect(resolveStateValue(machine, "dialog.closed")).toBe("dialog.closed")
+    // No source — simple name resolves at root level
+    expect(resolveStateValue(machine, "idle")).toBe("idle")
+  })
+
+  test("drills down to initial child on relative resolution", () => {
+    const machine = createMachine<any>({
+      initialState() {
+        return "dialog.closed"
+      },
+      states: {
+        dialog: {
+          initial: "closed",
+          states: {
+            closed: {},
+            open: {
+              initial: "idle",
+              states: {
+                idle: {},
+                editing: {},
+              },
+            },
+          },
+        },
+      },
+    })
+
+    // Relative target "open" from source "dialog.closed" should resolve to "dialog.open"
+    // then drill down via `initial` to "dialog.open.idle"
+    expect(resolveStateValue(machine, "open", "dialog.closed")).toBe("dialog.open.idle")
+  })
+
+  test("returns raw value for unknown target", () => {
+    const machine = createMachine<any>({
+      initialState() {
+        return "idle"
+      },
+      states: {
+        idle: {},
+        open: {},
+      },
+    })
+
+    // Typo/unknown state — resolveAbsoluteStateValue returns the raw string
+    expect(resolveStateValue(machine, "nonexistent")).toBe("nonexistent")
+    expect(resolveStateValue(machine, "nonexistent", "idle")).toBe("nonexistent")
+  })
+
+  test("self-targeting resolves to the same state", () => {
+    const machine = createMachine<any>({
+      initialState() {
+        return "open.idle"
+      },
+      states: {
+        open: {
+          initial: "idle",
+          on: {
+            REFRESH: { target: "open" },
+          },
+          states: {
+            idle: {},
+          },
+        },
+        closed: {},
+      },
+    })
+
+    // "open" from source "open" — root-level sibling "open" exists, resolves + drills to initial
+    expect(resolveStateValue(machine, "open", "open")).toBe("open.idle")
+  })
+
   test("resolves # prefixed target by state id", () => {
     const machine = createMachine<any>({
       initialState() {
