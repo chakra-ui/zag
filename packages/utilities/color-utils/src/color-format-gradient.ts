@@ -1,6 +1,6 @@
 export const generateRGB_R = (orientation: [string, string], dir: boolean, zValue: number) => {
   const maskImage = `linear-gradient(to ${orientation[Number(!dir)]}, transparent, #000)`
-  const result = {
+  return {
     areaStyles: {
       backgroundImage: `linear-gradient(to ${orientation[Number(dir)]},rgb(${zValue},0,0),rgb(${zValue},255,0))`,
     },
@@ -10,12 +10,11 @@ export const generateRGB_R = (orientation: [string, string], dir: boolean, zValu
       maskImage,
     },
   }
-  return result
 }
 
 export const generateRGB_G = (orientation: [string, string], dir: boolean, zValue: number) => {
   const maskImage = `linear-gradient(to ${orientation[Number(!dir)]}, transparent, #000)`
-  const result = {
+  return {
     areaStyles: {
       backgroundImage: `linear-gradient(to ${orientation[Number(dir)]},rgb(0,${zValue},0),rgb(255,${zValue},0))`,
     },
@@ -25,12 +24,11 @@ export const generateRGB_G = (orientation: [string, string], dir: boolean, zValu
       maskImage,
     },
   }
-  return result
 }
 
 export const generateRGB_B = (orientation: [string, string], dir: boolean, zValue: number) => {
   const maskImage = `linear-gradient(to ${orientation[Number(!dir)]}, transparent, #000)`
-  const result = {
+  return {
     areaStyles: {
       backgroundImage: `linear-gradient(to ${orientation[Number(dir)]},rgb(0,0,${zValue}),rgb(255,0,${zValue}))`,
     },
@@ -40,11 +38,10 @@ export const generateRGB_B = (orientation: [string, string], dir: boolean, zValu
       maskImage,
     },
   }
-  return result
 }
 
 export const generateHSL_H = (orientation: [string, string], dir: boolean, zValue: number) => {
-  const result = {
+  return {
     areaStyles: {},
     areaGradientStyles: {
       background: [
@@ -56,11 +53,93 @@ export const generateHSL_H = (orientation: [string, string], dir: boolean, zValu
       ].join(","),
     },
   }
-  return result
+}
+
+export const generateOKLAB_L = (orientation: [string, string], isAX: boolean, zValue: number) => {
+  const maskImage = `linear-gradient(to ${orientation[Number(!isAX)]}, black, transparent)`
+  const l = zValue === 0 ? "none" : `${(zValue * 100).toFixed(2)}%`
+  return {
+    areaStyles: {
+      background: `linear-gradient(to ${orientation[Number(isAX)]} in oklab, oklab(${l} -100% 100%), oklab(${l} 100% 100%))`,
+    },
+    areaGradientStyles: {
+      background: `linear-gradient(to ${orientation[Number(isAX)]} in oklab, oklab(${l} -100% -100%), oklab(${l} 100% -100%))`,
+      maskImage,
+      WebkitMaskImage: maskImage,
+    },
+  }
+}
+export const generateOKLAB_A = (orientation: [string, string], isLightnessX: boolean, zValue: number) => {
+  const maskImage = `linear-gradient(to ${orientation[Number(isLightnessX)]}, black, transparent)`
+  return {
+    areaStyles: {
+      background: `linear-gradient(to ${orientation[Number(!isLightnessX)]} in oklab, oklab(1 ${zValue} -100%), oklab(1 ${zValue} 100%))`,
+    },
+    areaGradientStyles: {
+      background: `linear-gradient(to ${orientation[Number(!isLightnessX)]} in oklab, oklab(0 ${zValue} -100%), oklab(0 ${zValue} 100%))`,
+      maskImage,
+      WebkitMaskImage: maskImage,
+    },
+  }
+}
+export const generateOKLAB_B = (orientation: [string, string], isLightnessX: boolean, zValue: number) => {
+  const maskImage = `linear-gradient(to ${orientation[Number(isLightnessX)]}, black, transparent)`
+  return {
+    areaStyles: {
+      background: `linear-gradient(to ${orientation[Number(!isLightnessX)]} in oklab, oklab(1 -100% ${zValue}), oklab(1 100% ${zValue}))`,
+    },
+    areaGradientStyles: {
+      background: `linear-gradient(to ${orientation[Number(!isLightnessX)]} in oklab, oklab(0 -100% ${zValue}), oklab(0 100% ${zValue}))`,
+      maskImage,
+      WebkitMaskImage: maskImage,
+    },
+  }
+}
+
+export const generateOKLCH_H = (orientation: [string, string], isChromaX: boolean, zValue: number) => {
+  const maskImage = `linear-gradient(to ${orientation[Number(!isChromaX)]}, black, transparent)`
+  return {
+    areaStyles: {
+      background: `linear-gradient(to ${orientation[Number(isChromaX)]} in oklch, oklch(1 0.001 ${zValue}), oklch(1 0.5 ${zValue}))`,
+    },
+    areaGradientStyles: {
+      background: `linear-gradient(to ${orientation[Number(isChromaX)]} in oklch, oklch(0 0.001 ${zValue}), oklch(0 0.5 ${zValue}))`,
+      maskImage,
+      WebkitMaskImage: maskImage,
+    },
+  }
+}
+
+export const generateOKLCH_L = (orientation: [string, string], isChromaX: boolean, zValue: number) => {
+  const maskImage = `linear-gradient(to ${orientation[Number(isChromaX)]}, transparent, black)`
+  return {
+    areaStyles: {
+      background: `linear-gradient(to ${orientation[Number(!isChromaX)]} in oklch increasing hue, oklch(${zValue} 0% 0deg), oklch(${zValue} 0% 359.9eg))`,
+    },
+    areaGradientStyles: {
+      background: `linear-gradient(to ${orientation[Number(!isChromaX)]} in oklch increasing hue, oklch(${zValue} 100% 0deg), oklch(${zValue} 100% 359.9deg))`,
+      maskImage,
+      WebkitMaskImage: maskImage,
+    },
+  }
+}
+
+export const generateOKLCH_C = (orientation: [string, string], isLightnessX: boolean, zValue: number) => {
+  const maskImage = `linear-gradient(to ${orientation[Number(isLightnessX)]}, transparent, black)`
+  return {
+    areaStyles: {
+      background: `linear-gradient(to ${orientation[Number(!isLightnessX)]} in oklch increasing hue, oklch(0 ${zValue} 0deg), oklch(0 ${zValue} 359.9deg))`,
+    },
+    areaGradientStyles: {
+      background: `linear-gradient(to ${orientation[Number(!isLightnessX)]} in oklch increasing hue, oklch(1 ${zValue} 0deg), oklch(1 ${zValue} 359.9deg))`,
+      maskImage,
+      WebkitMaskImage: maskImage,
+    },
+  }
 }
 
 export const generateHSL_S = (orientation: [string, string], dir: boolean, alphaValue: number) => {
-  const result = {
+  return {
     areaStyles: {},
     areaGradientStyles: {
       background: [
@@ -74,11 +153,10 @@ export const generateHSL_S = (orientation: [string, string], dir: boolean, alpha
       ].join(","),
     },
   }
-  return result
 }
 
 export const generateHSL_L = (orientation: [string, string], dir: boolean, zValue: number) => {
-  const result = {
+  return {
     areaStyles: {},
     areaGradientStyles: {
       backgroundImage: [
@@ -89,11 +167,10 @@ export const generateHSL_L = (orientation: [string, string], dir: boolean, zValu
       ].join(","),
     },
   }
-  return result
 }
 
 export const generateHSB_H = (orientation: [string, string], dir: boolean, zValue: number) => {
-  const result = {
+  return {
     areaStyles: {},
     areaGradientStyles: {
       background: [
@@ -103,11 +180,10 @@ export const generateHSB_H = (orientation: [string, string], dir: boolean, zValu
       ].join(","),
     },
   }
-  return result
 }
 
 export const generateHSB_S = (orientation: [string, string], dir: boolean, alphaValue: number) => {
-  const result = {
+  return {
     areaStyles: {},
     areaGradientStyles: {
       background: [
@@ -119,11 +195,10 @@ export const generateHSB_S = (orientation: [string, string], dir: boolean, alpha
       ].join(","),
     },
   }
-  return result
 }
 
 export const generateHSB_B = (orientation: [string, string], dir: boolean, alphaValue: number) => {
-  const result = {
+  return {
     areaStyles: {},
     areaGradientStyles: {
       background: [
@@ -135,5 +210,4 @@ export const generateHSB_B = (orientation: [string, string], dir: boolean, alpha
       ].join(","),
     },
   }
-  return result
 }

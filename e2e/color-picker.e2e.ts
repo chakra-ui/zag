@@ -79,12 +79,10 @@ test.describe("color-picker", () => {
     await I.clickTrigger()
     await I.seeColorPicker()
     await I.seeAreaThumbIsFocused()
-
-    await I.pressKey("Tab")
-    await I.seeChannelThumbIsFocused("hue")
-
-    await I.pressKey("Tab")
-    await I.seeChannelThumbIsFocused("alpha")
+    for (const channel of ["hue", "saturation", "lightness", "alpha"] as const) {
+      await I.pressKey("Tab")
+      await I.seeChannelThumbIsFocused(channel)
+    }
   })
 
   test("[swatch] should set value on click swatch", async () => {

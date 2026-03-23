@@ -18,7 +18,7 @@ export function useControls<T extends ControlRecord>(config: T) {
     ui: () => (
       <div className="controls-container">
         {Object.keys(config).map((key) => {
-          const { type, label = key, options, placeholder, min, max } = (config[key] ?? {}) as any
+          const { type, label = key, options, placeholder, min, max, forceValue } = (config[key] ?? {}) as any
           const value = deepGet(state, key)
           switch (type) {
             case "boolean":
@@ -67,7 +67,7 @@ export function useControls<T extends ControlRecord>(config: T) {
                       setState(key, e.target.value)
                     }}
                   >
-                    <option>-----</option>
+                    {!forceValue && <option>-----</option>}
                     {options.map((option) => (
                       <option key={option} value={option}>
                         {option}

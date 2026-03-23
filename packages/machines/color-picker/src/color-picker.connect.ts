@@ -23,8 +23,8 @@ export function connect<T extends PropTypes>(
 ): ColorPickerApi<T> {
   const { context, send, prop, computed, state, scope } = service
 
-  const value = context.get("value")
   const format = context.get("format")
+  const value = context.get("value").toFormat(format)
 
   const areaValue = computed("areaValue")
   const valueAsString = computed("valueAsString")
@@ -299,8 +299,8 @@ export function connect<T extends PropTypes>(
           position: "absolute",
           left: `${finalXPercent * 100}%`,
           top: `${yPercent * 100}%`,
-          transform: "translate(-50%, -50%)",
           touchAction: "none",
+          transform: "translate(-50%, -50%)",
           forcedColorAdjust: "none",
           "--color": color,
           background: color,
@@ -399,7 +399,7 @@ export function connect<T extends PropTypes>(
 
     getChannelSliderTrackProps(props) {
       const { orientation = "horizontal", channel, format } = props
-      const normalizedValue = format ? value.toFormat(format) : areaValue
+      const normalizedValue = format ? value.toFormat(format) : value
 
       return normalize.element({
         ...parts.channelSliderTrack.attrs,
@@ -448,7 +448,7 @@ export function connect<T extends PropTypes>(
     getChannelSliderThumbProps(props) {
       const { orientation = "horizontal", channel, format } = props
 
-      const normalizedValue = format ? value.toFormat(format) : areaValue
+      const normalizedValue = format ? value.toFormat(format) : value
       const channelRange = normalizedValue.getChannelRange(channel)
       const channelValue = normalizedValue.getChannelValue(channel)
 
@@ -479,12 +479,12 @@ export function connect<T extends PropTypes>(
         style: {
           forcedColorAdjust: "none",
           position: "absolute",
-          background: getChannelDisplayColor(areaValue, channel).toString("css"),
+          background: getChannelDisplayColor(value, channel).toString("css"),
           ...placementStyles,
         },
         onFocus() {
           if (!interactive) return
-          send({ type: "CHANNEL_SLIDER.FOCUS", channel })
+          send({ type: "CHANNEL_SLIDER.FOCUS", channel, format })
         },
         onKeyDown(event) {
           if (event.defaultPrevented) return
@@ -712,7 +712,7 @@ export function connect<T extends PropTypes>(
   }
 }
 
-const formats: ColorFormat[] = ["hsba", "hsla", "rgba"]
+const formats: ColorFormat[] = ["hsba", "hsla", "rgba", "oklab", "oklch"]
 const formatRegex = new RegExp(`^(${formats.join("|")})$`)
 
 function getNextFormat(format: ColorFormat) {
