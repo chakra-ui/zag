@@ -229,14 +229,14 @@ describe("nested states", () => {
         dialog: {
           initial: "open",
           on: {
-            RESET: { target: "closed" },
+            RESET: { target: ".closed" },
           },
           states: {
             open: {
               initial: "viewing",
               on: {
                 CLOSE: { target: "closed" },
-                VIEW: { target: "viewing" },
+                VIEW: { target: ".viewing" },
               },
               states: {
                 viewing: {
