@@ -593,7 +593,7 @@
       "data-disabled": "Present when disabled",
       "data-value": "The value of the item",
       "data-editable": "",
-      "data-placeholder": ""
+      "data-placeholder-shown": "Present when placeholder is shown"
     }
   },
   "date-picker": {
@@ -706,13 +706,18 @@
     "MonthTableCellTrigger": {
       "data-scope": "date-picker",
       "data-part": "month-table-cell-trigger",
-      "data-selected": "Present when selected",
       "data-disabled": "Present when disabled",
-      "data-focus": "Present when focused",
-      "data-in-range": "Present when is within the range",
-      "data-outside-range": "Present when is outside the range",
+      "data-selected": "Present when selected",
+      "data-value": "The value of the item",
       "data-view": "The view of the monthtablecelltrigger",
-      "data-value": "The value of the item"
+      "data-focus": "Present when focused",
+      "data-outside-range": "Present when is outside the range",
+      "data-range-start": "Present when is the start of a range",
+      "data-range-end": "Present when is the end of a range",
+      "data-in-range": "Present when is within the range",
+      "data-in-hover-range": "Present when in hovered range",
+      "data-hover-range-start": "Present when is the start of the hovered range",
+      "data-hover-range-end": "Present when is the end of the hovered range"
     },
     "YearTableCell": {
       "data-scope": "date-picker",
@@ -723,13 +728,18 @@
     "YearTableCellTrigger": {
       "data-scope": "date-picker",
       "data-part": "year-table-cell-trigger",
-      "data-selected": "Present when selected",
-      "data-focus": "Present when focused",
-      "data-in-range": "Present when is within the range",
       "data-disabled": "Present when disabled",
-      "data-outside-range": "Present when is outside the range",
+      "data-selected": "Present when selected",
       "data-value": "The value of the item",
-      "data-view": "The view of the yeartablecelltrigger"
+      "data-view": "The view of the yeartablecelltrigger",
+      "data-focus": "Present when focused",
+      "data-outside-range": "Present when is outside the range",
+      "data-range-start": "Present when is the start of a range",
+      "data-range-end": "Present when is the end of a range",
+      "data-in-range": "Present when is within the range",
+      "data-in-hover-range": "Present when in hovered range",
+      "data-hover-range-start": "Present when is the start of the hovered range",
+      "data-hover-range-end": "Present when is the end of the hovered range"
     },
     "NextTrigger": {
       "data-scope": "date-picker",
@@ -812,6 +822,14 @@
       "data-part": "backdrop",
       "data-state": "\"open\" | \"closed\"",
       "data-swiping": ""
+    },
+    "SwipeArea": {
+      "data-scope": "drawer",
+      "data-part": "swipe-area",
+      "data-state": "\"open\" | \"closed\"",
+      "data-swiping": "",
+      "data-swipe-direction": "",
+      "data-disabled": "Present when disabled"
     }
   },
   "editable": {
@@ -1435,6 +1453,7 @@
       "data-part": "input",
       "data-disabled": "Present when disabled",
       "data-complete": "Present when the input value is complete",
+      "data-filled": "",
       "data-index": "The index of the item",
       "data-invalid": "Present when invalid"
     }
@@ -2060,6 +2079,23 @@
       "data-scope": "toast",
       "data-part": "ghost-after",
       "data-ghost": ""
+    }
+  },
+  "toc": {
+    "Item": {
+      "data-scope": "toc",
+      "data-part": "item",
+      "data-value": "The value of the item",
+      "data-depth": "The depth of the item",
+      "data-active": "Present when active or pressed",
+      "data-first": "",
+      "data-last": ""
+    },
+    "Link": {
+      "data-scope": "toc",
+      "data-part": "link",
+      "data-value": "The value of the item",
+      "data-active": "Present when active or pressed"
     }
   },
   "toggle": {
