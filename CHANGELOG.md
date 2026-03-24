@@ -4,6 +4,70 @@ All notable changes to this project will be documented in this file.
 
 > For v0.x changelog, see the [v0 branch](https://github.com/chakra-ui/zag/blob/v0/CHANGELOG.md)
 
+## [1.38.0](./#1.38.0) - 2026-03-24
+
+### Added
+
+- **Date Picker**
+  - Add missing range data attributes (`data-range-start`, `data-range-end`, `data-in-hover-range`,
+    `data-hover-range-start`, `data-hover-range-end`) to month and year cell triggers for range picker mode
+  - `TableCellState` now includes `firstInRange`, `lastInRange`, `inHoveredRange`, `firstInHoveredRange`,
+    `lastInHoveredRange`, and `outsideRange`
+  - Range boundary dates now announce "Starting range from {date}" and "Range ending at {date}" for better screen reader
+    context
+
+- **Drawer**
+  - Add `description` anatomy part with `aria-describedby` support on the content element
+  - Add `SwipeArea` part for swipe-to-open gestures from screen edges
+
+    ```tsx
+    <div {...api.getSwipeAreaProps()} />
+    ```
+
+  - Add `getDescriptionProps()` and `getSwipeAreaProps()` to the connect API
+  - Require intentional swipe movement before showing the drawer (no flash on pointer down)
+  - Smooth settle animation from release point to fully open position
+  - Add cross-axis scroll preservation to prevent drawer drag when scrolling horizontally
+  - Add initial focus management for non-modal mode
+
+- **Pin Input**
+  - **No more holes**: Delete and Backspace now splice values left instead of leaving empty gaps. Deleting "2" from
+    `[1, 2, 3]` yields `[1, 3, ""]` — not `[1, "", 3]`. Cut (`Ctrl+X`) behaves the same way.
+  - **Smarter focus management**: Backspace always moves back, click and ArrowRight are clamped to the insertion point,
+    same-key skip advances focus, and roving tabIndex treats the entire pin input as a single tab stop
+  - **New keyboard shortcuts**: Home/End to jump to first slot or last filled slot, `enterKeyHint` shows "next" on
+    intermediate slots and "done" on the last
+  - Add `autoSubmit` prop to automatically submit the owning form when all inputs are filled
+  - Add `sanitizeValue` prop to sanitize pasted values before validation (e.g. strip dashes from "1-2-3")
+
+### Fixed
+
+- **Date Picker**: Fix inverted year cell `selectable` state that caused years outside the visible decade or min/max
+  range to appear selectable
+
+- **Dialog**
+  - Set `pointer-events: none` on positioner in non-modal mode so the page stays interactive
+  - Add initial focus management for non-modal mode (mirrors popover behavior)
+  - Fix `aria-modal` to reflect actual `modal` prop value instead of hardcoded `true`
+
+- **Drawer**: Fix swipe-to-dismiss in controlled mode (`open: true` without `onOpenChange` now blocks dismiss)
+
+- **Floating Panel**: Fix `closeOnEscape` not working when focus is on a child element (e.g., input) inside the panel
+
+- **Focus Trap**: Fix focus trapping when the content has a single effective tab stop, such as a native radio group.
+  Handle disconnected `initialFocus` nodes more safely.
+
+- **Interact Outside**: Fix issue where nested popovers and select within popovers didn't toggle correctly in Safari due
+  to `focusin` events racing with pointer interactions
+
+- **Splitter**: Fix global cursor styles when splitter is used in a shadow root
+
+### Changed
+
+- **Date Picker**: `DayTableCellState.formattedDate` removed — use `valueText` instead (inherited from `TableCellState`)
+
+- **Drawer**: Set `pointer-events: none` on positioner in non-modal mode so the page stays interactive
+
 ## [1.37.0](./#1.37.0) - 2026-03-16
 
 ### Added
