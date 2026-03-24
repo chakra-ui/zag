@@ -127,6 +127,8 @@ export const componentRoutes: ComponentRoute[] = [
     examples: [
       { slug: "basic", title: "Basic" },
       { slug: "controlled", title: "Controlled" },
+      { slug: "focus-trap", title: "Focus Trap" },
+      { slug: "popover-inside", title: "Popover Inside" },
     ],
   },
   {
