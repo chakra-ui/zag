@@ -2,7 +2,6 @@
   "compilerOptions": {
     "allowSyntheticDefaultImports": true,
     "declaration": true,
-    "downlevelIteration": true,
     "esModuleInterop": true,
     "isolatedModules": true,
     "incremental": true,
@@ -20,7 +19,6 @@
     "strict": true,
     "strictNullChecks": true,
     "stripInternal": true,
-    "ignoreDeprecations": "5.0",
     "types": ["vitest/globals", "node"],
     "verbatimModuleSyntax": true
   }
