@@ -355,7 +355,11 @@ export const componentRoutes: ComponentRoute[] = [
   {
     slug: "pin-input",
     label: "Pin Input",
-    examples: [{ slug: "basic", title: "Basic" }],
+    examples: [
+      { slug: "basic", title: "Basic" },
+      { slug: "controlled", title: "Controlled" },
+      { slug: "transform-paste", title: "Transform Paste" },
+    ],
   },
   {
     slug: "popper",

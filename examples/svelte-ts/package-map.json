@@ -70,6 +70,7 @@
   "@zag-js/tabs": "../../packages/machines/tabs/src",
   "@zag-js/tags-input": "../../packages/machines/tags-input/src",
   "@zag-js/timer": "../../packages/machines/timer/src",
+  "@zag-js/toc": "../../packages/machines/toc/src",
   "@zag-js/toast": "../../packages/machines/toast/src",
   "@zag-js/toggle": "../../packages/machines/toggle/src",
   "@zag-js/toggle-group": "../../packages/machines/toggle-group/src",
