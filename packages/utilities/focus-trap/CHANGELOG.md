@@ -1,5 +1,16 @@
 # @zag-js/focus-trap
 
+## 1.38.0
+
+### Patch Changes
+
+- [`4a395ad`](https://github.com/chakra-ui/zag/commit/4a395adb51b4ef1516acc7d5b03f78fa5130267c) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - - Fix focus trapping when the content has a single effective tab
+  stop, such as a native radio group.
+  - Handle disconnected `initialFocus` nodes more safely.
+- Updated dependencies [[`4a395ad`](https://github.com/chakra-ui/zag/commit/4a395adb51b4ef1516acc7d5b03f78fa5130267c)]:
+  - @zag-js/dom-query@1.38.0
+
 ## 1.37.0
 
 ### Patch Changes

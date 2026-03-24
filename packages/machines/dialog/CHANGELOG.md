@@ -1,5 +1,25 @@
 # @zag-js/dialog
 
+## 1.38.0
+
+### Patch Changes
+
+- [`0756817`](https://github.com/chakra-ui/zag/commit/0756817a6f0ca52a0619f640c8d984b614763b21) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - - Set `pointer-events: none` on positioner in non-modal mode so
+  the page stays interactive
+  - Add initial focus management for non-modal mode (mirrors popover behavior)
+  - Fix `aria-modal` to reflect actual `modal` prop value instead of hardcoded `true`
+- Updated dependencies [[`4a395ad`](https://github.com/chakra-ui/zag/commit/4a395adb51b4ef1516acc7d5b03f78fa5130267c)]:
+  - @zag-js/dom-query@1.38.0
+  - @zag-js/focus-trap@1.38.0
+  - @zag-js/core@1.38.0
+  - @zag-js/aria-hidden@1.38.0
+  - @zag-js/dismissable@1.38.0
+  - @zag-js/remove-scroll@1.38.0
+  - @zag-js/anatomy@1.38.0
+  - @zag-js/types@1.38.0
+  - @zag-js/utils@1.38.0
+
 ## 1.37.0
 
 ### Patch Changes
