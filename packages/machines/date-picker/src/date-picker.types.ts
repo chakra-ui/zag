@@ -448,8 +448,13 @@ export interface TableCellState {
   selected: boolean
   valueText: string
   inRange: boolean
+  firstInRange: boolean
+  lastInRange: boolean
+  inHoveredRange: boolean
+  firstInHoveredRange: boolean
+  lastInHoveredRange: boolean
   value: DateValue
-  outsideRange?: boolean | undefined
+  outsideRange: boolean
   readonly disabled: boolean
 }
 
@@ -464,24 +469,11 @@ export interface WeekNumberCellProps {
   week: DateValue[]
 }
 
-export interface DayTableCellState {
+export interface DayTableCellState extends TableCellState {
   invalid: boolean
-  disabled: boolean
-  selected: boolean
   unavailable: boolean
-  outsideRange: boolean
-  inRange: boolean
-  firstInRange: boolean
-  lastInRange: boolean
   today: boolean
   weekend: boolean
-  formattedDate: string
-  readonly focused: boolean
-  readonly ariaLabel: string
-  readonly selectable: boolean
-  inHoveredRange: boolean
-  firstInHoveredRange: boolean
-  lastInHoveredRange: boolean
 }
 
 export interface TableProps {

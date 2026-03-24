@@ -72,9 +72,11 @@ export function getLocaleSeparator(locale: string) {
 
 export const defaultTranslations: IntlTranslations = {
   dayCell(state) {
-    if (state.unavailable) return `Not available. ${state.formattedDate}`
-    if (state.selected) return `Selected date. ${state.formattedDate}`
-    return `Choose ${state.formattedDate}`
+    if (state.unavailable) return `Not available. ${state.valueText}`
+    if (state.firstInRange) return `Starting range from ${state.valueText}`
+    if (state.lastInRange) return `Range ending at ${state.valueText}`
+    if (state.selected) return `Selected date. ${state.valueText}`
+    return `Choose ${state.valueText}`
   },
   trigger(open) {
     return open ? "Close calendar" : "Open calendar"
