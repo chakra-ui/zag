@@ -26,8 +26,12 @@ export const getResizeTriggerEls = (ctx: Scope) => {
   return queryAll(getRootEl(ctx), `[role=separator][data-ownedby='${CSS.escape(getRootId(ctx))}']`)
 }
 
+export const getGlobalCursorEl = (ctx: Scope) => {
+  return ctx.getDoc().getElementById(getGlobalCursorId(ctx))
+}
+
 export const setupGlobalCursor = (ctx: Scope, state: CursorState, x: boolean, nonce?: string) => {
-  const styleEl = ctx.getById(getGlobalCursorId(ctx))
+  const styleEl = getGlobalCursorEl(ctx)
   const textContent = `* { cursor: ${getCursor(state, x)} !important; }`
   if (styleEl) {
     styleEl.textContent = textContent
@@ -41,6 +45,6 @@ export const setupGlobalCursor = (ctx: Scope, state: CursorState, x: boolean, no
 }
 
 export const removeGlobalCursor = (ctx: Scope) => {
-  const styleEl = ctx.getById(getGlobalCursorId(ctx))
+  const styleEl = getGlobalCursorEl(ctx)
   styleEl?.remove()
 }
