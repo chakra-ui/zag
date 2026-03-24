@@ -294,8 +294,8 @@ export const machine = createMachine({
           context.set("focusedIndex", Math.min(computed("filledValueLength"), computed("valueLength") - 1))
         })
       },
-      blurFocusedInputIfNeeded({ context, prop, scope }) {
-        if (!prop("blurOnComplete")) return
+      blurFocusedInputIfNeeded({ context, computed, prop, scope }) {
+        if (!prop("blurOnComplete") || !computed("isValueComplete")) return
         raf(() => {
           dom.getInputElAtIndex(scope, context.get("focusedIndex"))?.blur()
         })

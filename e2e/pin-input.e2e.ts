@@ -356,6 +356,31 @@ test.describe("pin input", () => {
     await I.seeInputIsFocused(2)
   })
 
+  // --- Blur on complete ---
+
+  test("blurOnComplete: should blur after entering last value", async () => {
+    await I.controls.bool("blurOnComplete")
+    await I.fillInput(1, "1")
+    await I.fillInput(2, "2")
+    await I.fillInput(3, "3")
+    await I.seeInputIsNotFocused(3)
+  })
+
+  test("blurOnComplete: backspace on last input should not blur", async () => {
+    await I.controls.bool("blurOnComplete")
+    await I.fillInput(1, "1")
+    await I.fillInput(2, "2")
+    await I.fillInput(3, "3")
+    // blurred after complete
+    await I.seeInputIsNotFocused(3)
+
+    // click back into the last input and backspace
+    await I.clickInput(3)
+    await I.pressKey("Backspace")
+    // should stay focused on input 2, not blur
+    await I.seeInputIsFocused(2)
+  })
+
   // --- RTL ---
 
   test("rtl: arrow keys should be reversed", async () => {

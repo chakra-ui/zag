@@ -58,6 +58,10 @@ export class PinInputModel extends Model {
     await expect(this.getInput(index)).toBeFocused()
   }
 
+  async seeInputIsNotFocused(index: number) {
+    await expect(this.getInput(index)).not.toBeFocused()
+  }
+
   async seeInputHasValue(index: number, value: string) {
     await expect(this.getInput(index)).toHaveValue(value)
   }
