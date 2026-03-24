@@ -1,5 +1,15 @@
 # @zag-js/dismissable
 
+## 1.38.0
+
+### Patch Changes
+
+- Updated dependencies [[`4a395ad`](https://github.com/chakra-ui/zag/commit/4a395adb51b4ef1516acc7d5b03f78fa5130267c),
+  [`3007b2a`](https://github.com/chakra-ui/zag/commit/3007b2a7b37f56359a664f37724507dc240d80e0)]:
+  - @zag-js/dom-query@1.38.0
+  - @zag-js/interact-outside@1.38.0
+  - @zag-js/utils@1.38.0
+
 ## 1.37.0
 
 ### Patch Changes

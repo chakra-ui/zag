@@ -1,5 +1,20 @@
 # @zag-js/splitter
 
+## 1.38.0
+
+### Patch Changes
+
+- [#3045](https://github.com/chakra-ui/zag/pull/3045)
+  [`c8bfb8f`](https://github.com/chakra-ui/zag/commit/c8bfb8ff46185c30013296e3c5621f5543fddbd8) Thanks
+  [@mbeckem](https://github.com/mbeckem)! - Fix global cursor styles when splitter is used in a shadow root
+
+- Updated dependencies [[`4a395ad`](https://github.com/chakra-ui/zag/commit/4a395adb51b4ef1516acc7d5b03f78fa5130267c)]:
+  - @zag-js/dom-query@1.38.0
+  - @zag-js/core@1.38.0
+  - @zag-js/anatomy@1.38.0
+  - @zag-js/types@1.38.0
+  - @zag-js/utils@1.38.0
+
 ## 1.37.0
 
 ### Patch Changes

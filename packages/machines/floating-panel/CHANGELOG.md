@@ -1,5 +1,23 @@
 # @zag-js/floating-panel
 
+## 1.38.0
+
+### Patch Changes
+
+- [`696541d`](https://github.com/chakra-ui/zag/commit/696541d1369d896574ffe77fd6e07b1f6194f74e) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Fix `closeOnEscape` not working when focus is on a child element
+  (e.g., input) inside the panel.
+
+- Updated dependencies [[`4a395ad`](https://github.com/chakra-ui/zag/commit/4a395adb51b4ef1516acc7d5b03f78fa5130267c)]:
+  - @zag-js/dom-query@1.38.0
+  - @zag-js/core@1.38.0
+  - @zag-js/popper@1.38.0
+  - @zag-js/anatomy@1.38.0
+  - @zag-js/store@1.38.0
+  - @zag-js/types@1.38.0
+  - @zag-js/utils@1.38.0
+  - @zag-js/rect-utils@1.38.0
+
 ## 1.37.0
 
 ### Patch Changes

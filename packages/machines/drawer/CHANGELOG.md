@@ -1,5 +1,39 @@
 # @zag-js/drawer
 
+## 1.38.0
+
+### Minor Changes
+
+- [`c906c09`](https://github.com/chakra-ui/zag/commit/c906c099997be95d15396fcc5bb5583e9431c2bf) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - - Add `description` anatomy part with `aria-describedby` support
+  on the content element
+  - Add `SwipeArea` part for swipe-to-open gestures from screen edges
+
+    ```tsx
+    <div {...api.getSwipeAreaProps()} />
+    ```
+
+  - Add `getDescriptionProps()` and `getSwipeAreaProps()` to the connect API
+  - Require intentional swipe movement before showing the drawer (no flash on pointer down)
+  - Smooth settle animation from release point to fully open position
+  - Add cross-axis scroll preservation to prevent drawer drag when scrolling horizontally
+  - Fix swipe-to-dismiss in controlled mode (`open: true` without `onOpenChange` now blocks dismiss)
+  - Set `pointer-events: none` on positioner in non-modal mode so the page stays interactive
+  - Add initial focus management for non-modal mode
+
+### Patch Changes
+
+- Updated dependencies [[`4a395ad`](https://github.com/chakra-ui/zag/commit/4a395adb51b4ef1516acc7d5b03f78fa5130267c)]:
+  - @zag-js/dom-query@1.38.0
+  - @zag-js/focus-trap@1.38.0
+  - @zag-js/core@1.38.0
+  - @zag-js/aria-hidden@1.38.0
+  - @zag-js/dismissable@1.38.0
+  - @zag-js/remove-scroll@1.38.0
+  - @zag-js/anatomy@1.38.0
+  - @zag-js/types@1.38.0
+  - @zag-js/utils@1.38.0
+
 ## 1.37.0
 
 ### Patch Changes

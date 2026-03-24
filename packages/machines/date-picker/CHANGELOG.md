@@ -1,5 +1,35 @@
 # @zag-js/date-picker
 
+## 1.38.0
+
+### Minor Changes
+
+- [`0b9b980`](https://github.com/chakra-ui/zag/commit/0b9b9801d02dff726f67ebd1a935622958257a28) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Add missing range data attributes to month and year cell triggers
+  for range picker mode.
+  - `data-range-start`, `data-range-end`, `data-in-hover-range`, `data-hover-range-start`, `data-hover-range-end` now
+    render on month and year cell triggers (previously only on day cells).
+  - `TableCellState` now includes `firstInRange`, `lastInRange`, `inHoveredRange`, `firstInHoveredRange`,
+    `lastInHoveredRange`, and `outsideRange`.
+  - **Fixed:** Year cell `selectable` state was inverted, causing years outside the visible decade or min/max range to
+    appear selectable.
+  - **Improved:** Range boundary dates now announce "Starting range from {date}" and "Range ending at {date}" for better
+    screen reader context.
+  - **Changed:** `DayTableCellState.formattedDate` removed — use `valueText` instead (inherited from `TableCellState`).
+
+### Patch Changes
+
+- Updated dependencies [[`4a395ad`](https://github.com/chakra-ui/zag/commit/4a395adb51b4ef1516acc7d5b03f78fa5130267c)]:
+  - @zag-js/dom-query@1.38.0
+  - @zag-js/core@1.38.0
+  - @zag-js/dismissable@1.38.0
+  - @zag-js/popper@1.38.0
+  - @zag-js/anatomy@1.38.0
+  - @zag-js/types@1.38.0
+  - @zag-js/utils@1.38.0
+  - @zag-js/date-utils@1.38.0
+  - @zag-js/live-region@1.38.0
+
 ## 1.37.0
 
 ### Patch Changes

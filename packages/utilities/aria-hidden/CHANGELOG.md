@@ -1,5 +1,12 @@
 # @zag-js/aria-hidden
 
+## 1.38.0
+
+### Patch Changes
+
+- Updated dependencies [[`4a395ad`](https://github.com/chakra-ui/zag/commit/4a395adb51b4ef1516acc7d5b03f78fa5130267c)]:
+  - @zag-js/dom-query@1.38.0
+
 ## 1.37.0
 
 ### Patch Changes
