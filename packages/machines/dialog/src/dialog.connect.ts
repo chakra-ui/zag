@@ -1,8 +1,9 @@
-import type { NormalizeProps, PropTypes } from "@zag-js/types"
 import type { Service } from "@zag-js/core"
+import type { JSX, NormalizeProps, PropTypes } from "@zag-js/types"
+import { compact } from "@zag-js/utils"
 import { parts } from "./dialog.anatomy"
 import * as dom from "./dialog.dom"
-import type { DialogSchema, DialogApi } from "./dialog.types"
+import type { DialogApi, DialogSchema } from "./dialog.types"
 
 export function connect<T extends PropTypes>(
   service: Service<DialogSchema>,
@@ -52,9 +53,9 @@ export function connect<T extends PropTypes>(
         ...parts.positioner.attrs,
         dir: prop("dir"),
         id: dom.getPositionerId(scope),
-        style: {
+        style: compact<JSX.CSSProperties>({
           pointerEvents: !open || !prop("modal") ? "none" : undefined,
-        },
+        }),
       })
     },
 
@@ -72,9 +73,9 @@ export function connect<T extends PropTypes>(
         "aria-label": ariaLabel || undefined,
         "aria-labelledby": ariaLabel || !rendered.title ? undefined : dom.getTitleId(scope),
         "aria-describedby": rendered.description ? dom.getDescriptionId(scope) : undefined,
-        style: {
+        style: compact<JSX.CSSProperties>({
           pointerEvents: prop("modal") ? undefined : "auto",
-        },
+        }),
       })
     },
 

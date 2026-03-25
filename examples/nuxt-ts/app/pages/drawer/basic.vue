@@ -9,7 +9,7 @@ const controls = useControls(drawerControls)
 
 const service = useMachine(
   drawer.machine,
-  controls.mergeProps<drawer.Props>({
+  controls.mergeProps({
     id: useId(),
   }),
 )

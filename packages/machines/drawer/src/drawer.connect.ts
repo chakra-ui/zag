@@ -1,6 +1,6 @@
 import { getEventPoint, isLeftClick } from "@zag-js/dom-query"
 import type { JSX, NormalizeProps, PropTypes } from "@zag-js/types"
-import { clampValue, toPx } from "@zag-js/utils"
+import { clampValue, compact, toPx } from "@zag-js/utils"
 import { parts } from "./drawer.anatomy"
 import * as dom from "./drawer.dom"
 import { oppositeSwipeDirection, resolveSwipeDirection } from "./utils/drawer-session"
@@ -116,9 +116,9 @@ export function connect<T extends PropTypes>(service: DrawerService, normalize: 
         hidden: closed,
         "data-state": open ? "open" : "closed",
         "data-swipe-direction": physicalDirection,
-        style: {
+        style: compact<JSX.CSSProperties>({
           pointerEvents: prop("modal") ? undefined : "none",
-        },
+        }),
       })
     },
 
@@ -142,7 +142,7 @@ export function connect<T extends PropTypes>(service: DrawerService, normalize: 
         "data-swipe-direction": physicalDirection,
         "data-swiping": dragging || swipingOpen ? "" : undefined,
         "data-dragging": dragging ? "" : undefined,
-        style: {
+        style: compact<JSX.CSSProperties>({
           pointerEvents: prop("modal") ? undefined : "auto",
           visibility: swipingOpen && dragOffset === null ? "hidden" : undefined,
           transform: "translate3d(var(--drawer-translate-x, 0px), var(--drawer-translate-y, 0px), 0)",
@@ -160,7 +160,7 @@ export function connect<T extends PropTypes>(service: DrawerService, normalize: 
           "--drawer-swipe-movement-y": toPx(movementY),
           "--drawer-swipe-strength": `${swipeStrength}`,
           willChange: "transform",
-        },
+        }),
         onPointerDown(event) {
           if (!props.draggable) return
           onContentPointerDown(event)
