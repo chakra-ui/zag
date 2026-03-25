@@ -12,9 +12,6 @@ export default function Page() {
   const service = useMachine(fileUpload.machine, {
     id: useId(),
     maxFiles: 2,
-    onFileReject() {
-      alert("rejected")
-    },
   })
 
   const api = fileUpload.connect(service, normalizeProps)
