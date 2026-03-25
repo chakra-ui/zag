@@ -3,11 +3,11 @@ import type { FormTagName, Platform, RootNode } from "./types"
 const typeOf = (value: unknown) => Object.prototype.toString.call(value).slice(8, -1)
 const isDocument = (value: unknown): value is Document => typeOf(value) === "Document"
 
-export function getDoc(root: RootNode): Document {
+export function getDoc(root: RootNode | Element): Document {
   return isDocument(root) ? root : root.ownerDocument || document
 }
 
-export function getWin(root: RootNode): Window {
+export function getWin(root: RootNode | Element): Window & typeof globalThis {
   return getDoc(root).defaultView || window
 }
 
@@ -33,6 +33,11 @@ export const getEventTarget = (event: KeyboardEvent): Element | null => {
   return isHTMLElement(target) ? target : null
 }
 
+export const isContentEditableElement = (target: Element | null): boolean => {
+  if (!target) return false
+  return isHTMLElement(target) && target.isContentEditable
+}
+
 const NA_REGEX = /Mac|iPod|iPhone|iPad/
 const isMac = () => typeof navigator !== "undefined" && NA_REGEX.test(navigator.userAgent)
 
@@ -43,4 +48,17 @@ export const toArray = <T>(value: T | T[]): T[] => {
     return value.filter((item) => item !== undefined)
   }
   return value !== undefined ? [value] : []
+}
+
+// Symbol/punctuation keys are layout-dependent: different keyboard layouts
+// place them on different physical keys, often requiring Shift or AltGr.
+// Any single Unicode letter or digit uses code-based matching like ASCII.
+// Named keys (Enter, F1, ArrowLeft, …) are length !== 1 and are not symbols here.
+const UNICODE_LETTER = /^\p{L}$/u
+const UNICODE_NUMBER = /^\p{N}$/u
+
+export const isSymbolKey = (key: string): boolean => {
+  if (key.length !== 1) return false
+  if (UNICODE_LETTER.test(key) || UNICODE_NUMBER.test(key)) return false
+  return true
 }

@@ -1,6 +1,6 @@
 import { isModKey } from "./modifier"
 import { normalizeKey } from "./normalize"
-import { getHotkeyPriority, matchesHotkey, parseHotkey, shouldTrigger } from "./parser"
+import { getHotkeyPriority, matchesHotkey, matchesHotkeyStep, parseHotkey, shouldTrigger } from "./parser"
 import type {
   CommandDefinition,
   HotkeyCommand,
@@ -11,7 +11,7 @@ import type {
   Platform,
   RootNode,
 } from "./types"
-import { getPlatform, getWin, MODIFIER_SEPARATOR, toArray } from "./utils"
+import { getPlatform, getWin, isSymbolKey, MODIFIER_SEPARATOR, toArray } from "./utils"
 
 const defaultOptions: HotkeyOptions = {
   preventDefault: true,
@@ -43,6 +43,8 @@ export class HotkeyStore<TContext = any> {
   private state: HotkeyStoreState<TContext>
   private context = {} as TContext
   private rootNode?: RootNode | undefined
+  private defaultCommandOptions: HotkeyOptions = { ...defaultOptions }
+  private commandOptionOverrides = new Map<string, Partial<HotkeyOptions> | undefined>()
   private sequenceTimeoutMs = 1000
   private sequenceStates = new Map<string, SequenceState>()
   private registrationOrder = 0 // For deterministic execution order
@@ -60,6 +62,7 @@ export class HotkeyStore<TContext = any> {
 
     this.state = {
       pressedKeys: new Set<string>(),
+      pressedCodes: new Set<string>(),
       commands: new Map(),
       listening: false,
       activeScopes: new Set(defaultScopes),
@@ -68,6 +71,8 @@ export class HotkeyStore<TContext = any> {
     if (options?.sequenceTimeoutMs !== undefined) {
       this.sequenceTimeoutMs = options.sequenceTimeoutMs
     }
+
+    this.applyDefaultOptions(options?.defaultOptions)
   }
 
   // Lifecycle methods
@@ -76,6 +81,7 @@ export class HotkeyStore<TContext = any> {
       throw new Error("rootNode is required for initialization")
     }
 
+    this.applyDefaultOptions(options.defaultOptions)
     this.rootNode = options.rootNode
     this.context = options.context ?? ({} as TContext)
 
@@ -185,7 +191,7 @@ export class HotkeyStore<TContext = any> {
         id: command.id,
         hotkey: command.hotkey,
         action: command.action,
-        options: { ...defaultOptions, ...command.options },
+        options: { ...this.defaultCommandOptions, ...command.options },
         enabled: command.enabled ?? true, // default to true
         scopes,
         keywords: command.keywords ?? [],
@@ -196,6 +202,7 @@ export class HotkeyStore<TContext = any> {
         ...(command.description !== undefined && { description: command.description }),
         ...(command.category !== undefined && { category: command.category }),
       })
+      this.commandOptionOverrides.set(command.id, command.options)
     }
 
     this.updateListeners()
@@ -209,6 +216,7 @@ export class HotkeyStore<TContext = any> {
     const command = this.state.commands.get(id)
     if (command) {
       this.state.commands.delete(id)
+      this.commandOptionOverrides.delete(id)
       this.resetSequence(command.hotkey)
       this.updateListeners()
       this.notifySubscribers()
@@ -252,6 +260,9 @@ export class HotkeyStore<TContext = any> {
       this.resetSequence(hotkey)
     }
     this.state.commands.clear()
+    this.commandOptionOverrides.clear()
+    this.state.pressedKeys.clear()
+    this.state.pressedCodes.clear()
     this.updateListeners()
     this.notifySubscribers()
     return this
@@ -269,19 +280,65 @@ export class HotkeyStore<TContext = any> {
     }
     const parsed = cachedCommand?._parsed ?? parseHotkey(hotkey, this.platform)
 
-    const keysMatch = parsed.keys.every((k) => this.state.pressedKeys.has(k))
+    // Sequences are progressive; "all keys held at once" does not apply.
+    if (parsed.isSequence) return false
 
-    const modifiersMatch =
-      (!parsed.alt || this.state.pressedKeys.has("Alt")) &&
-      (!parsed.ctrl || this.state.pressedKeys.has("Control")) &&
-      (!parsed.meta || this.state.pressedKeys.has("Meta")) &&
-      (!parsed.shift || this.state.pressedKeys.has("Shift"))
+    const logicalKeysMatch = parsed.keys.every((k) => this.state.pressedKeys.has(k))
+    const codes = parsed.codes
+    const codesAligned =
+      codes &&
+      codes.length > 0 &&
+      codes.length === parsed.keys.length &&
+      codes.every((c) => this.state.pressedCodes.has(c))
+    const keysMatch = logicalKeysMatch || !!codesAligned
 
-    return keysMatch && modifiersMatch
+    return keysMatch && this.modifiersMatchPressed(parsed)
   }
 
   getCurrentlyPressed(): readonly string[] {
     return [...this.state.pressedKeys]
+  }
+
+  /** Physical key codes currently held (from `KeyboardEvent.code`). */
+  getPressedCodes(): readonly string[] {
+    return [...this.state.pressedCodes]
+  }
+
+  /** Align modifier checks with `matchesHotkey` (strict for non-symbols; symbol = lenient Shift/Alt when omitted). */
+  private modifiersMatchPressed(parsed: ParsedHotkey): boolean {
+    const pk = this.state.pressedKeys
+    const has = (name: string) => pk.has(name)
+    const anySymbol = parsed.keys.some(isSymbolKey)
+
+    if (anySymbol) {
+      if (parsed.ctrl !== has("Control")) return false
+      if (parsed.meta !== has("Meta")) return false
+      if (parsed.shift && !has("Shift")) return false
+      if (parsed.alt && !has("Alt")) return false
+      return true
+    }
+
+    if (parsed.alt !== has("Alt")) return false
+    if (parsed.ctrl !== has("Control")) return false
+    if (parsed.meta !== has("Meta")) return false
+    if (parsed.shift !== has("Shift")) return false
+    return true
+  }
+
+  private applyDefaultOptions(options?: Partial<HotkeyOptions>): void {
+    if (!options) return
+
+    this.defaultCommandOptions = {
+      ...defaultOptions,
+      ...options,
+    }
+
+    for (const [id, command] of this.state.commands) {
+      command.options = {
+        ...this.defaultCommandOptions,
+        ...this.commandOptionOverrides.get(id),
+      }
+    }
   }
 
   // Update parsed hotkeys with mod-like keys with correct platform
@@ -418,6 +475,9 @@ export class HotkeyStore<TContext = any> {
       const keyEvent = event as KeyboardEvent
       const eventKey = normalizeKey(keyEvent.key)
       this.state.pressedKeys.delete(eventKey)
+      if (keyEvent.code) {
+        this.state.pressedCodes.delete(keyEvent.code)
+      }
       this.notifySubscribers()
     }) as EventListener
   }
@@ -425,6 +485,7 @@ export class HotkeyStore<TContext = any> {
   private createBlurHandler() {
     return (() => {
       this.state.pressedKeys.clear()
+      this.state.pressedCodes.clear()
       // Clear all active sequences on blur
       for (const hotkey of this.sequenceStates.keys()) {
         this.resetSequence(hotkey)
@@ -434,8 +495,15 @@ export class HotkeyStore<TContext = any> {
   }
 
   private async executeMatchingCommands(event: KeyboardEvent, capture: boolean): Promise<void> {
+    // Dead keys (accent/compose keys on international layouts) produce key="Dead"
+    // and cannot be matched to any shortcut. Skip them entirely.
+    if (event.key === "Dead") return
+
     const eventKey = normalizeKey(event.key)
     this.state.pressedKeys.add(eventKey)
+    if (event.code) {
+      this.state.pressedCodes.add(event.code)
+    }
     this.notifySubscribers()
 
     const matches: Array<{
@@ -522,16 +590,19 @@ export class HotkeyStore<TContext = any> {
     const expectedStep = parsed.sequenceSteps?.[currentStepIndex]
 
     if (expectedStep) {
-      // Check both logical key and physical code for layout independence
-      const keyMatches = eventKey === expectedStep.key
-      const codeMatches = parsed.codes && parsed.codes[currentStepIndex] === event.code
-      const modifiersMatch =
-        (expectedStep.alt || false) === event.altKey &&
-        (expectedStep.ctrl || false) === event.ctrlKey &&
-        (expectedStep.meta || false) === event.metaKey &&
-        (expectedStep.shift || false) === event.shiftKey
+      const matched = matchesHotkeyStep(
+        {
+          key: expectedStep.key,
+          code: parsed.codes?.[currentStepIndex],
+          alt: expectedStep.alt,
+          ctrl: expectedStep.ctrl,
+          meta: expectedStep.meta,
+          shift: expectedStep.shift,
+        },
+        event,
+      )
 
-      if ((keyMatches || codeMatches) && modifiersMatch) {
+      if (matched) {
         state.recordedKeys.push(eventKey)
 
         // Check if sequence is complete
