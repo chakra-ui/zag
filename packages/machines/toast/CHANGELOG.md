@@ -1,5 +1,23 @@
 # @zag-js/toast
 
+## 1.38.1
+
+### Patch Changes
+
+- [`2981232`](https://github.com/chakra-ui/zag/commit/29812320badb8066208b2ef5337eec80f71e96b7) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Restore `role="region"` on the toast group element.
+  - The role was previously removed to reduce screen reader landmark noise, but this caused an axe
+    `aria-prohibited-attr` violation since `aria-label` is not permitted on a `div` without a valid role.
+  - The region landmark also enables keyboard navigation to the toast area (e.g. via F6).
+
+- Updated dependencies [[`2b4818c`](https://github.com/chakra-ui/zag/commit/2b4818c3b82ed1ca8ffd2cb44110a4a195ac68d6)]:
+  - @zag-js/core@1.38.1
+  - @zag-js/anatomy@1.38.1
+  - @zag-js/types@1.38.1
+  - @zag-js/utils@1.38.1
+  - @zag-js/dismissable@1.38.1
+  - @zag-js/dom-query@1.38.1
+
 ## 1.38.0
 
 ### Patch Changes

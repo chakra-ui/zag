@@ -1,5 +1,21 @@
 # @zag-js/file-upload
 
+## 1.38.1
+
+### Patch Changes
+
+- [`a9745d2`](https://github.com/chakra-ui/zag/commit/a9745d2f9ee90947ed209741a9652d7fe3672dc7) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Automatically reject duplicate files with `FILE_EXISTS`
+  error.Previously, uploading the same file twice was silently accepted and deleting one duplicate removed all of them.
+- Updated dependencies [[`2b4818c`](https://github.com/chakra-ui/zag/commit/2b4818c3b82ed1ca8ffd2cb44110a4a195ac68d6)]:
+  - @zag-js/core@1.38.1
+  - @zag-js/anatomy@1.38.1
+  - @zag-js/types@1.38.1
+  - @zag-js/utils@1.38.1
+  - @zag-js/dom-query@1.38.1
+  - @zag-js/file-utils@1.38.1
+  - @zag-js/i18n-utils@1.38.1
+
 ## 1.38.0
 
 ### Patch Changes

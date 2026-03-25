@@ -1,5 +1,26 @@
 # @zag-js/tour
 
+## 1.38.1
+
+### Patch Changes
+
+- [`2b4818c`](https://github.com/chakra-ui/zag/commit/2b4818c3b82ed1ca8ffd2cb44110a4a195ac68d6) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - - Fix step navigation events (`next`, `prev`, `setStep`) firing
+  when the tour is inactive, bypassing the `start` flow
+  - Fix popper styles not being cleaned up when transitioning from a tooltip step to a dialog/non-tooltip step
+  - Rename `cleanupStyles` option to `restoreStyles` in the popper package
+- Updated dependencies [[`2b4818c`](https://github.com/chakra-ui/zag/commit/2b4818c3b82ed1ca8ffd2cb44110a4a195ac68d6),
+  [`2b4818c`](https://github.com/chakra-ui/zag/commit/2b4818c3b82ed1ca8ffd2cb44110a4a195ac68d6)]:
+  - @zag-js/core@1.38.1
+  - @zag-js/popper@1.38.1
+  - @zag-js/anatomy@1.38.1
+  - @zag-js/types@1.38.1
+  - @zag-js/utils@1.38.1
+  - @zag-js/dismissable@1.38.1
+  - @zag-js/dom-query@1.38.1
+  - @zag-js/focus-trap@1.38.1
+  - @zag-js/interact-outside@1.38.1
+
 ## 1.38.0
 
 ### Patch Changes
