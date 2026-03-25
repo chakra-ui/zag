@@ -29,7 +29,7 @@ how we name its parts.
 
 Import the pagination package:
 
-```jsx
+```tsx
 import * as pagination from "@zag-js/pagination"
 ```
 
@@ -42,7 +42,7 @@ The pagination package exports two key functions:
 
 <CodeSnippet id="pagination/usage.mdx" />
 
-```jsx
+```tsx
 const api = pagination.connect(service)
 
 // You can slice the data, to get data for current page
@@ -93,7 +93,7 @@ api.pageRange
 
 Use `page` and `onPageChange` to control the current page externally.
 
-```jsx
+```tsx
 const service = useMachine(pagination.machine, {
   count: 500,
   pageSize: 20,
@@ -108,7 +108,7 @@ const service = useMachine(pagination.machine, {
 
 Use `pageSize` and `onPageSizeChange` to control page size.
 
-```jsx
+```tsx
 const service = useMachine(pagination.machine, {
   count: 500,
   pageSize,
@@ -122,7 +122,7 @@ const service = useMachine(pagination.machine, {
 
 Use `defaultPage` and `defaultPageSize` for uncontrolled initial values.
 
-```jsx
+```tsx
 const service = useMachine(pagination.machine, {
   count: 500,
   defaultPage: 3,
@@ -134,7 +134,7 @@ const service = useMachine(pagination.machine, {
 
 Set `type: "link"` and provide `getPageUrl` to render real navigation links.
 
-```jsx
+```tsx
 const service = useMachine(pagination.machine, {
   count: 500,
   type: "link",
@@ -148,7 +148,7 @@ const service = useMachine(pagination.machine, {
 
 Use `siblingCount` and `boundaryCount` to control how many page items are shown.
 
-```jsx
+```tsx
 const service = useMachine(pagination.machine, {
   count: 500,
   siblingCount: 2,
@@ -160,7 +160,7 @@ const service = useMachine(pagination.machine, {
 
 Use `translations` to customize trigger and page labels.
 
-```jsx
+```tsx
 const service = useMachine(pagination.machine, {
   count: 500,
   translations: {

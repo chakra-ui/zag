@@ -37,7 +37,7 @@ how we name its parts.
 
 Import the hover card package:
 
-```jsx
+```tsx
 import * as hoverCard from "@zag-js/hover-card"
 ```
 
@@ -54,7 +54,7 @@ Then use the framework integration helpers:
 
 Set `defaultOpen` to `true` to start with the hover card open.
 
-```jsx {2}
+```tsx {2}
 const service = useMachine(hoverCard.machine, {
   defaultOpen: true,
 })
@@ -64,7 +64,7 @@ const service = useMachine(hoverCard.machine, {
 
 Use `open` and `onOpenChange` to control visibility externally.
 
-```jsx
+```tsx
 const service = useMachine(hoverCard.machine, {
   open,
   onOpenChange(details) {
@@ -77,7 +77,7 @@ const service = useMachine(hoverCard.machine, {
 
 Use `openDelay` and `closeDelay` to control hover timing.
 
-```jsx
+```tsx
 const service = useMachine(hoverCard.machine, {
   openDelay: 300,
   closeDelay: 150,
@@ -88,7 +88,7 @@ const service = useMachine(hoverCard.machine, {
 
 Use `positioning` to control placement and offsets.
 
-```jsx
+```tsx
 const service = useMachine(hoverCard.machine, {
   positioning: {
     placement: "bottom-start",
@@ -101,7 +101,7 @@ const service = useMachine(hoverCard.machine, {
 
 Set `disabled` to `true` to prevent it from opening.
 
-```jsx
+```tsx
 const service = useMachine(hoverCard.machine, {
   disabled: true,
 })
@@ -112,7 +112,7 @@ const service = useMachine(hoverCard.machine, {
 When the hover card is `opened` or `closed`, the `onOpenChange` callback is
 invoked.
 
-```jsx {2-5}
+```tsx {2-5}
 const service = useMachine(hoverCard.machine, {
   onOpenChange(details) {
     // details => { open: boolean }

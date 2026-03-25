@@ -42,7 +42,7 @@ how we name its parts.
 
 Import the color picker package:
 
-```jsx
+```tsx
 import * as colorPicker from "@zag-js/color-picker"
 ```
 
@@ -60,7 +60,7 @@ Then use the framework integration helpers:
 
 Set `defaultValue` to define the initial color.
 
-```jsx
+```tsx
 const [current, send] = useMachine(colorPicker.machine, {
   defaultValue: colorPicker.parse("#ff0000"),
 })
@@ -84,7 +84,7 @@ When the user selects a color using the color picker, the `onValueChange` and
 - `onValueChangeEnd` — Fires when the user stops selecting a color (useful for
   debounced updates)
 
-```jsx
+```tsx
 const [current, send] = useMachine(colorPicker.machine, {
   onValueChange: (details) => {
     // details => { value: Color, valueAsString: string }
@@ -103,7 +103,7 @@ format to either `hsla` or `hsba` with `format`.
 When this is set, the `value` and `valueAsString` properties of the
 `onValueChange` event will be updated to reflect the new format.
 
-```jsx
+```tsx
 const [current, send] = useMachine(colorPicker.machine, {
   format: "hsla",
   onValueChange: (details) => {
@@ -116,7 +116,7 @@ const [current, send] = useMachine(colorPicker.machine, {
 
 Use `defaultFormat` to set the initial output format.
 
-```jsx
+```tsx
 const [current, send] = useMachine(colorPicker.machine, {
   defaultFormat: "hsla",
 })
@@ -126,7 +126,7 @@ const [current, send] = useMachine(colorPicker.machine, {
 
 Use `format` and `onFormatChange` to control the active format.
 
-```jsx
+```tsx
 const [current, send] = useMachine(colorPicker.machine, {
   format,
   onFormatChange(details) {
@@ -147,7 +147,7 @@ props needed to render swatch buttons.
 
 Set `closeOnSelect` to close the popup when a swatch is selected.
 
-```jsx
+```tsx
 const [current, send] = useMachine(colorPicker.machine, {
   closeOnSelect: true,
 })
@@ -157,7 +157,7 @@ const [current, send] = useMachine(colorPicker.machine, {
 
 Set `disabled` to `true` to disable user interaction.
 
-```jsx
+```tsx
 const [current, send] = useMachine(colorPicker.machine, {
   disabled: true,
 })
@@ -167,7 +167,7 @@ const [current, send] = useMachine(colorPicker.machine, {
 
 Use `open` and `onOpenChange` to control whether the picker is visible.
 
-```jsx
+```tsx
 const [current, send] = useMachine(colorPicker.machine, {
   open: true,
   onOpenChange: (details) => {
@@ -183,7 +183,7 @@ closed state of the color picker.
 
 Use `positioning` to control popup placement and collision behavior.
 
-```jsx
+```tsx
 const [current, send] = useMachine(colorPicker.machine, {
   positioning: { placement: "bottom-start", gutter: 8 },
 })
@@ -194,7 +194,7 @@ const [current, send] = useMachine(colorPicker.machine, {
 Use `initialFocusEl` to choose which element receives focus when the popup
 opens.
 
-```jsx
+```tsx
 const [current, send] = useMachine(colorPicker.machine, {
   initialFocusEl: () => document.getElementById("alpha-input"),
 })
@@ -204,7 +204,7 @@ const [current, send] = useMachine(colorPicker.machine, {
 
 Set `inline` to render the picker without a trigger and popup.
 
-```jsx
+```tsx
 const [current, send] = useMachine(colorPicker.machine, {
   inline: true,
 })
@@ -247,7 +247,7 @@ from a current page's canvas. To support this, use the
 
 To use the color picker in a form, set `name` and render the hidden input.
 
-```jsx {2}
+```tsx {2}
 const service = useMachine(colorPicker.machine, {
   name: "color-preference",
 })

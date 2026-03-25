@@ -36,7 +36,7 @@ Check the toast anatomy and part names.
 
 Import the toast package:
 
-```jsx
+```tsx
 import * as toast from "@zag-js/toast"
 ```
 
@@ -69,7 +69,7 @@ Helper methods are also available: `toaster.info(...)`, `toaster.success(...)`,
 
 To create a toast, use the `toaster.create(...)` method.
 
-```jsx
+```tsx
 toaster.create({
   title: "Hello World",
   description: "This is a toast",
@@ -96,7 +96,7 @@ The options you can pass in are:
 
 Placement is configured on the toast store and applies to the whole toast group.
 
-```jsx
+```tsx
 const toaster = toast.createStore({
   placement: "top-start",
 })
@@ -107,7 +107,7 @@ const toaster = toast.createStore({
 When multiple toasts are created, they are rendered in a stack. To make the
 toasts overlap, set the `overlap` property to `true`.
 
-```jsx
+```tsx
 const toaster = toast.createStore({
   overlap: true,
 })
@@ -136,7 +136,7 @@ the following toast types and matching default durations:
 You can override the duration of the toast by passing the `duration` property to
 the `toaster.create(...)` function.
 
-```jsx {5}
+```tsx {5}
 toaster.create({
   title: "Hello World",
   description: "This is a toast",
@@ -176,7 +176,7 @@ You can use any of the following methods to control a toast:
 - `toaster.isVisible(...)` — Checks if a toast is currently visible.
 - `toaster.isDismissed(...)` — Checks if a toast has been dismissed.
 
-```jsx {2,11-15}
+```tsx {2,11-15}
 // grab the id from the created toast
 const id = toaster.create({
   title: "Hello World",
@@ -203,7 +203,7 @@ toaster.dismiss(id)
 
 Call `pause()`/`resume()` without an `id` to affect all active toasts.
 
-```jsx
+```tsx
 toaster.pause()
 toaster.resume()
 ```
@@ -216,7 +216,7 @@ the toast when it resolves or rejects.
 > With the promise API, you can pass the toast options for each promise
 > lifecycle. **The `loading` option is required**
 
-```jsx
+```tsx
 toaster.promise(promise, {
   loading: {
     title: "Loading",
@@ -236,7 +236,7 @@ toaster.promise(promise, {
 `toaster.promise(...)` returns `{ id, unwrap }`, so you can await the original
 result:
 
-```jsx
+```tsx
 const result = toaster.promise(fetchData(), {
   loading: { title: "Loading..." },
 })
@@ -252,7 +252,7 @@ There are three scenarios that pause toast timeout:
   browser tab), controlled via the `pauseOnPageIdle` store option.
 - When the `toaster.pause(id)` is called.
 
-```jsx
+```tsx
 // Global pause options
 const toaster = toast.createStore({
   pauseOnPageIdle: true,
@@ -268,7 +268,7 @@ toaster.pause(id)
 Toasts are great but displaying too many of them can sometimes hamper the user
 experience. To limit visible toasts, set `max` on the store.
 
-```jsx {3}
+```tsx {3}
 const toaster = toast.createStore({
   max: 10,
 })
@@ -281,7 +281,7 @@ When a toast is created, you can focus the toast region by pressing the
 
 Set the `hotkey` store option to change the underlying hotkey.
 
-```jsx
+```tsx
 const service = useMachine(toast.group.machine, {
   store: toast.createStore({ hotkey: ["F6"] }),
 })
@@ -299,7 +299,7 @@ The status values are:
 - `dismissing` - The toast is closing but still mounted
 - `unmounted` - The toast has been completely unmounted and no longer exists
 
-```jsx {3-7}
+```tsx {3-7}
 toaster.info({
   title: "Hello World",
   description: "This is a toast",
@@ -316,7 +316,7 @@ toaster.info({
 When multiple toasts are rendered, a gap of `16px` is applied between each
 toast. To change this value, set `gap` on the store.
 
-```jsx
+```tsx
 const toaster = toast.createStore({
   gap: 24,
 })
@@ -327,7 +327,7 @@ const toaster = toast.createStore({
 The toast region has a default `1rem` offset from the viewport. Use the
 `offsets` store option to change this offset.
 
-```jsx
+```tsx
 const toaster = toast.createStore({
   offsets: "24px",
 })

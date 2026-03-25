@@ -37,7 +37,7 @@ how we name its parts.
 
 Import the angle-slider package:
 
-```jsx
+```tsx
 import * as angleSlider from "@zag-js/angle-slider"
 ```
 
@@ -56,7 +56,7 @@ Then use the framework integration helpers:
 
 Set `defaultValue` to define the initial slider value.
 
-```jsx {2}
+```tsx {2}
 const service = useMachine(angleSlider.machine, {
   defaultValue: 45,
 })
@@ -75,7 +75,7 @@ to control granularity.
 
 For example, set `step` to `0.01` for two-decimal precision:
 
-```jsx {2}
+```tsx {2}
 const service = useMachine(angleSlider.machine, {
   step: 0.01,
 })
@@ -86,7 +86,7 @@ const service = useMachine(angleSlider.machine, {
 When the angle slider value changes, the `onValueChange` and `onValueChangeEnd`
 callbacks are invoked.
 
-```jsx {2-7}
+```tsx {2-7}
 const service = useMachine(angleSlider.machine, {
   onValueChange(details) {
     console.log("value:", details.value)
@@ -102,7 +102,7 @@ const service = useMachine(angleSlider.machine, {
 
 Set `readOnly` to prevent updates while preserving focus and form semantics.
 
-```jsx {2}
+```tsx {2}
 const service = useMachine(angleSlider.machine, {
   readOnly: true,
 })
@@ -115,7 +115,7 @@ To submit the value with a form:
 - Set `name` on the machine.
 - Render the hidden input from `api.getHiddenInputProps()`.
 
-```jsx {2}
+```tsx {2}
 const service = useMachine(angleSlider.machine, {
   name: "wind-direction",
 })
@@ -125,7 +125,7 @@ const service = useMachine(angleSlider.machine, {
 
 Use `aria-label` or `aria-labelledby` when you need custom labeling.
 
-```jsx {2}
+```tsx {2}
 const service = useMachine(angleSlider.machine, {
   "aria-label": "Wind direction",
 })

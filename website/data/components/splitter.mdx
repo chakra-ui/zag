@@ -40,7 +40,7 @@ Check the splitter anatomy and part names.
 
 Import the splitter package:
 
-```jsx
+```tsx
 import * as splitter from "@zag-js/splitter"
 ```
 
@@ -60,7 +60,7 @@ Ensure the `defaultSize` totals to `100`.
 
 > Note: The splitter only supports setting percentage values.
 
-```jsx {3}
+```tsx {3}
 const service = useMachine(splitter.machine, {
   // ...
   defaultSize: [40, 60],
@@ -71,7 +71,7 @@ const service = useMachine(splitter.machine, {
 
 Use `size` and `onResize` for controlled layouts.
 
-```jsx
+```tsx
 const service = useMachine(splitter.machine, {
   panels,
   size,
@@ -86,7 +86,7 @@ const service = useMachine(splitter.machine, {
 When the resize trigger is dragged, the `onResize`, `onResizeStart` and
 `onResizeEnd` callbacks are invoked.
 
-```jsx {3-10}
+```tsx {3-10}
 const service = useMachine(splitter.machine, {
   // ...
   onResize(detail) {
@@ -107,7 +107,7 @@ By default, the splitter is assumed to be horizontal. To change the orientation
 to vertical, set the `orientation` property in the machine's context to
 `vertical`.
 
-```jsx {3}
+```tsx {3}
 const service = useMachine(splitter.machine, {
   // ...
   orientation: "vertical",
@@ -119,7 +119,7 @@ const service = useMachine(splitter.machine, {
 Use the `panels` property to specify constraints like `minSize` and `maxSize`
 for the splitter panels.
 
-```jsx {3-6}
+```tsx {3-6}
 const service = useMachine(splitter.machine, {
   // ...
   panels: [
@@ -133,7 +133,7 @@ const service = useMachine(splitter.machine, {
 
 Use `keyboardResizeBy` to control how many pixels arrow keys resize by.
 
-```jsx
+```tsx
 const service = useMachine(splitter.machine, {
   panels,
   keyboardResizeBy: 16,
@@ -147,7 +147,7 @@ size of the panel.
 
 > For best results, ensure you also set the `minSize` of the panel
 
-```jsx {4}
+```tsx {4}
 const service = useMachine(splitter.machine, {
   // ...
   panels: [
@@ -165,7 +165,7 @@ This allows the user to drag the splitter to collapse the panel to the
 When the splitter panel is collapsed, the `onCollapse` callback is invoked.
 Alternatively, the `onExpand` callback is invoked when the panel is expanded.
 
-```jsx {3-8}
+```tsx {3-8}
 const service = useMachine(splitter.machine, {
   // ...
   onCollapse(detail) {
@@ -181,7 +181,7 @@ const service = useMachine(splitter.machine, {
 
 Use the connected API to resize, collapse, or expand panels from code.
 
-```jsx
+```tsx
 api.setSizes([30, 70])
 api.resizePanel("a", 40)
 api.collapsePanel("a")

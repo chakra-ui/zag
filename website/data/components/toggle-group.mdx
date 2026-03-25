@@ -35,7 +35,7 @@ how we name its parts.
 
 Import the toggle group package:
 
-```jsx
+```tsx
 import * as toggle from "@zag-js/toggle-group"
 ```
 
@@ -54,7 +54,7 @@ By default, the toggle group is assumed to be horizontal. To change the
 orientation to vertical, set the `orientation` property in the machine's context
 to `vertical`.
 
-```jsx {2}
+```tsx {2}
 const service = useMachine(toggle.machine, {
   orientation: "vertical",
 })
@@ -65,7 +65,7 @@ const service = useMachine(toggle.machine, {
 When the pressed toggle in the group changes, `onValueChange` callback is
 invoked.
 
-```jsx {2-4}
+```tsx {2-4}
 const service = useMachine(toggle.machine, {
   onValueChange(details) {
     // details => { value: string[] }
@@ -78,7 +78,7 @@ const service = useMachine(toggle.machine, {
 
 Use `value` and `onValueChange` for controlled usage.
 
-```jsx
+```tsx
 const service = useMachine(toggle.machine, {
   value,
   onValueChange(details) {
@@ -92,7 +92,7 @@ const service = useMachine(toggle.machine, {
 Set the `multiple` property in the machine's context to `true` to allow multiple
 options to be toggled.
 
-```jsx {2}
+```tsx {2}
 const service = useMachine(toggle.machine, {
   multiple: true,
 })
@@ -103,7 +103,7 @@ const service = useMachine(toggle.machine, {
 Set the `disabled` property in the machine's context to `true` to disable the
 toggle group.
 
-```jsx {2}
+```tsx {2}
 const service = useMachine(toggle.machine, {
   disabled: true,
 })
@@ -113,7 +113,7 @@ const service = useMachine(toggle.machine, {
 
 Set the `disabled` property in `getItemProps` to `true` to disable a toggle.
 
-```jsx
+```tsx
 //...
 <div {...api.getRootProps()}>
   <button {...api.getItemProps({ value: "bold", disabled: true })}>B</button>
@@ -126,7 +126,7 @@ Set the `disabled` property in `getItemProps` to `true` to disable a toggle.
 The toggle group loops keyboard navigation by default. To disable this, set the
 `loopFocus` property in the machine's context to `false`.
 
-```jsx {2}
+```tsx {2}
 const service = useMachine(toggle.machine, {
   loopFocus: false,
 })
@@ -137,7 +137,7 @@ const service = useMachine(toggle.machine, {
 The toggle group uses roving focus management by default. To disable this, set
 the `rovingFocus` property in the machine's context to `false`.
 
-```jsx {2}
+```tsx {2}
 const service = useMachine(toggle.machine, {
   rovingFocus: false,
 })
@@ -148,7 +148,7 @@ const service = useMachine(toggle.machine, {
 Use `deselectable` to control whether the active item can be toggled off in
 single-select mode.
 
-```jsx
+```tsx
 const service = useMachine(toggle.machine, {
   deselectable: false,
 })
@@ -158,7 +158,7 @@ const service = useMachine(toggle.machine, {
 
 Use the API for imperative updates.
 
-```jsx
+```tsx
 api.setValue(["bold", "italic"])
 ```
 

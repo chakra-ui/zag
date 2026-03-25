@@ -38,7 +38,7 @@ how we name its parts.
 
 Import the dialog package:
 
-```jsx
+```tsx
 import * as dialog from "@zag-js/dialog"
 ```
 
@@ -68,7 +68,7 @@ To control what receives focus when the dialog closes, pass `finalFocusEl`.
 
 Set `modal` to `false` to allow interaction with content behind the dialog.
 
-```jsx
+```tsx
 const service = useMachine(dialog.machine, {
   modal: false,
 })
@@ -79,7 +79,7 @@ const service = useMachine(dialog.machine, {
 By default, the dialog closes when you click its overlay. You can set
 `closeOnInteractOutside` to `false` if you want the modal to stay visible.
 
-```jsx {2}
+```tsx {2}
 const service = useMachine(dialog.machine, {
   closeOnInteractOutside: false,
 })
@@ -88,7 +88,7 @@ const service = useMachine(dialog.machine, {
 You can also customize the behavior by passing a function to the
 `onInteractOutside` callback and calling `event.preventDefault()`.
 
-```jsx {2-7}
+```tsx {2-7}
 const service = useMachine(dialog.machine, {
   onInteractOutside(event) {
     const target = event.target
@@ -103,7 +103,7 @@ const service = useMachine(dialog.machine, {
 
 When the dialog is opened or closed, the `onOpenChange` callback is invoked.
 
-```jsx {2-7}
+```tsx {2-7}
 const service = useMachine(dialog.machine, {
   onOpenChange(details) {
     // details => { open: boolean }
@@ -116,7 +116,7 @@ const service = useMachine(dialog.machine, {
 
 Set `closeOnEscape` to `false` if the dialog should not close on `Esc`.
 
-```jsx
+```tsx
 const service = useMachine(dialog.machine, {
   closeOnEscape: false,
 })
@@ -134,7 +134,7 @@ properties.
 When the dialog is open, it prevents scrolling on the `body` element. To disable
 this behavior, set `preventScroll` to `false`.
 
-```jsx {2}
+```tsx {2}
 const service = useMachine(dialog.machine, {
   preventScroll: false,
 })
@@ -147,7 +147,7 @@ default. Set `role` to `alertdialog` for urgent actions.
 
 That's it! Now you have an alert dialog.
 
-```jsx {2}
+```tsx {2}
 const service = useMachine(dialog.machine, {
   role: "alertdialog",
 })
@@ -160,7 +160,7 @@ const service = useMachine(dialog.machine, {
 
 If you do not render a title element, provide `aria-label`.
 
-```jsx
+```tsx
 const service = useMachine(dialog.machine, {
   "aria-label": "Delete project",
 })

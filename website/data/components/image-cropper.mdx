@@ -39,7 +39,7 @@ how we name its parts.
 
 Import the image cropper package:
 
-```jsx
+```tsx
 import * as imageCropper from "@zag-js/image-cropper"
 ```
 
@@ -58,7 +58,7 @@ Pass an `initialCrop` to start from a specific rectangle. The size is
 constrained to your min/max and viewport, and the position is clamped within the
 viewport.
 
-```jsx {2-6}
+```tsx {2-6}
 const service = useMachine(imageCropper.machine, {
   initialCrop: { x: 40, y: 40, width: 240, height: 240 },
   aspectRatio: 1, // optional, lock to square
@@ -71,7 +71,7 @@ const api = imageCropper.connect(service, normalizeProps)
 Lock the crop window and allow only panning/zooming of the image beneath it by
 setting `fixedCropArea: true`.
 
-```jsx {2}
+```tsx {2}
 const service = useMachine(imageCropper.machine, {
   fixedCropArea: true,
 })
@@ -84,7 +84,7 @@ const service = useMachine(imageCropper.machine, {
   not set and `cropShape` is `"rectangle"`, holding Shift while resizing locks
   to the current ratio.
 
-```jsx {2-3}
+```tsx {2-3}
 const service = useMachine(imageCropper.machine, {
   cropShape: "circle",
   aspectRatio: 1, // ignored for circle
@@ -96,7 +96,7 @@ const service = useMachine(imageCropper.machine, {
 You can configure defaults and limits, and also control them programmatically
 using the API.
 
-```jsx {2-6}
+```tsx {2-6}
 const service = useMachine(imageCropper.machine, {
   defaultZoom: 1.25,
   minZoom: 1,
@@ -118,7 +118,7 @@ api.setFlip({ vertical: true }) // set vertical flip on
 Use controlled props and callbacks when transform values are managed by your
 state.
 
-```jsx
+```tsx
 const service = useMachine(imageCropper.machine, {
   zoom,
   rotation,
@@ -139,7 +139,7 @@ const service = useMachine(imageCropper.machine, {
 
 Use `onCropChange` to react when the crop rectangle changes.
 
-```jsx
+```tsx
 const service = useMachine(imageCropper.machine, {
   onCropChange(details) {
     // details => { crop: Rect }
@@ -153,7 +153,7 @@ const service = useMachine(imageCropper.machine, {
 Use `api.resize(handle, delta)` to resize from any handle programmatically.
 Positive `delta` grows outward, negative shrinks inward.
 
-```jsx
+```tsx
 // Grow the selection by 8px from the right edge
 api.resize("right", 8)
 // Shrink from top-left corner by 4px in both axes
@@ -165,7 +165,7 @@ api.resize("top-left", -4)
 Use `api.getCroppedImage` to export the current crop, taking
 zoom/rotation/flip/pan into account.
 
-```jsx
+```tsx
 // Blob (default)
 const blob = await api.getCroppedImage({ type: "image/png", quality: 0.92 })
 
@@ -191,7 +191,7 @@ The image cropper uses two different coordinate systems:
 
 These are the coordinates you see in the UI, relative to the visible viewport:
 
-```jsx
+```tsx
 console.log(api.crop)
 // { x: 50, y: 30, width: 200, height: 150 }
 ```
@@ -207,7 +207,7 @@ console.log(api.crop)
 
 These are the absolute pixel coordinates in the original image:
 
-```jsx
+```tsx
 const cropData = api.getCropData()
 console.log(cropData)
 // {
@@ -245,7 +245,7 @@ console.log(cropData)
 
 #### Example: Server-side cropping
 
-```jsx
+```tsx
 // Frontend: Get natural coordinates
 const cropData = api.getCropData()
 
@@ -267,7 +267,7 @@ await fetch("/api/crop-image", {
 
 Here's how the coordinates relate with a zoom of 2x:
 
-```jsx
+```tsx
 // Original image: 3000 × 2000 pixels
 // Viewport: 600 × 400 pixels
 // Zoom: 2x
@@ -295,7 +295,7 @@ api.getCropData()
 
 Configure keyboard nudge steps for move/resize:
 
-```jsx {2-4}
+```tsx {2-4}
 const service = useMachine(imageCropper.machine, {
   nudgeStep: 1,
   nudgeStepShift: 10,
@@ -311,7 +311,7 @@ const service = useMachine(imageCropper.machine, {
   keyboard movement, resizing (Alt+Arrows), and zooming (+/-).
 - Customize accessible labels and descriptions via `translations`:
 
-```jsx {2-7}
+```tsx {2-7}
 const service = useMachine(imageCropper.machine, {
   translations: {
     rootLabel: "Product image cropper",

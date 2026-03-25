@@ -36,7 +36,7 @@ Check the checkbox anatomy and part names.
 
 Import the checkbox package:
 
-```jsx
+```tsx
 import * as checkbox from "@zag-js/checkbox"
 ```
 
@@ -53,7 +53,7 @@ Then use the framework integration helpers:
 
 Set `defaultChecked` to `true` to start checked.
 
-```jsx {2}
+```tsx {2}
 const service = useMachine(checkbox.machine, {
   defaultChecked: true,
 })
@@ -63,7 +63,7 @@ const service = useMachine(checkbox.machine, {
 
 Set `defaultChecked` or `checked` to `"indeterminate"` for a tri-state checkbox.
 
-```jsx {2}
+```tsx {2}
 const service = useMachine(checkbox.machine, {
   defaultChecked: "indeterminate",
 })
@@ -79,7 +79,7 @@ Use `checked` and `onCheckedChange` to control state externally.
 
 Set `disabled` to `true` to prevent interaction.
 
-```jsx {2}
+```tsx {2}
 const service = useMachine(checkbox.machine, {
   disabled: true,
 })
@@ -89,7 +89,7 @@ const service = useMachine(checkbox.machine, {
 
 When the checked state changes, `onCheckedChange` is invoked.
 
-```jsx {2-5}
+```tsx {2-5}
 const service = useMachine(checkbox.machine, {
   onCheckedChange(details) {
     // details => { checked: boolean | "indeterminate" }
@@ -102,7 +102,7 @@ const service = useMachine(checkbox.machine, {
 
 Set `readOnly` to keep the checkbox focusable but prevent toggling.
 
-```jsx {2}
+```tsx {2}
 const service = useMachine(checkbox.machine, {
   readOnly: true,
 })
@@ -112,7 +112,7 @@ const service = useMachine(checkbox.machine, {
 
 To use checkbox within forms, set `name` and render `api.getHiddenInputProps()`.
 
-```jsx {2}
+```tsx {2}
 const service = useMachine(checkbox.machine, {
   name: "fruits",
 })
@@ -121,7 +121,7 @@ const service = useMachine(checkbox.machine, {
 Next, render the hidden input and ensure the value changes get propagated to the
 form correctly.
 
-```jsx
+```tsx
 <input {...api.getHiddenInputProps()} />
 ```
 
@@ -129,7 +129,7 @@ form correctly.
 
 Set `value` to customize the submitted form value when checked.
 
-```jsx
+```tsx
 const service = useMachine(checkbox.machine, {
   name: "newsletter",
   value: "subscribed",
@@ -140,7 +140,7 @@ const service = useMachine(checkbox.machine, {
 
 If the input belongs to a different form element, set `form`.
 
-```jsx
+```tsx
 const service = useMachine(checkbox.machine, {
   name: "newsletter",
   form: "settings-form",

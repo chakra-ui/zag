@@ -41,7 +41,7 @@ how we name its parts.
 
 Import the number input package:
 
-```jsx
+```tsx
 import * as numberInput from "@zag-js/number-input"
 ```
 
@@ -60,7 +60,7 @@ Then use the framework integration helpers:
 
 Set `defaultValue` to define the initial value. The value must be a `string`.
 
-```jsx {2}
+```tsx {2}
 const service = useMachine(numberInput.machine, {
   defaultValue: "13",
 })
@@ -81,7 +81,7 @@ Pass the `min` prop or `max` prop to set an upper and lower limit for the input.
 By default, the input will restrict the value to stay within the specified
 range.
 
-```jsx {2,3}
+```tsx {2,3}
 const service = useMachine(numberInput.machine, {
   min: 10,
   max: 200,
@@ -95,7 +95,7 @@ const service = useMachine(numberInput.machine, {
 
 Use `onValueInvalid` to react when the value goes below `min` or above `max`.
 
-```jsx
+```tsx
 const service = useMachine(numberInput.machine, {
   min: 0,
   max: 10,
@@ -123,7 +123,7 @@ The number input machine exposes a way to increment/decrement the value using
 the mouse wheel event. To activate this, pass the `allowMouseWheel` property to
 the machine's context.
 
-```jsx {2}
+```tsx {2}
 const service = useMachine(numberInput.machine, {
   allowMouseWheel: true,
 })
@@ -137,7 +137,7 @@ input.
 
 To disable this behavior, pass `clampValueOnBlur` and set to `false`.
 
-```jsx {2}
+```tsx {2}
 const service = useMachine(numberInput.machine, {
   clampValueOnBlur: false,
 })
@@ -147,7 +147,7 @@ const service = useMachine(numberInput.machine, {
 
 When the value changes, the `onValueChange` callback is invoked.
 
-```jsx {2-7}
+```tsx {2-7}
 const service = useMachine(numberInput.machine, {
   onValueChange(details) {
     // details => { value: string, valueAsNumber: number }
@@ -160,7 +160,7 @@ const service = useMachine(numberInput.machine, {
 
 Use `onValueCommit` to react when the value is committed (blur or Enter).
 
-```jsx
+```tsx
 const service = useMachine(numberInput.machine, {
   onValueCommit(details) {
     // details => { value: string, valueAsNumber: number }
@@ -173,7 +173,7 @@ const service = useMachine(numberInput.machine, {
 
 Use `onFocusChange` to react to focus and blur transitions.
 
-```jsx
+```tsx
 const service = useMachine(numberInput.machine, {
   onFocusChange(details) {
     // details => { focused: boolean, value: string, valueAsNumber: number }
@@ -187,7 +187,7 @@ const service = useMachine(numberInput.machine, {
 To use the number input within forms, set the `name` property in the machine's
 context.
 
-```jsx {2}
+```tsx {2}
 const service = useMachine(numberInput.machine, {
   name: "quantity",
 })
@@ -199,7 +199,7 @@ To format the input value to be rounded to specific decimal points, set the
 `formatOptions` and provide `Intl.NumberFormatOptions` such as
 `maximumFractionDigits` or `minimumFractionDigits`
 
-```jsx {2-5}
+```tsx {2-5}
 const service = useMachine(numberInput.machine, {
   formatOptions: {
     maximumFractionDigits: 4,
@@ -212,7 +212,7 @@ const service = useMachine(numberInput.machine, {
 
 To disable the long press spin, set the `spinOnPress` to `false`.
 
-```jsx {2}
+```tsx {2}
 const service = useMachine(numberInput.machine, {
   spinOnPress: false,
 })
@@ -222,7 +222,7 @@ const service = useMachine(numberInput.machine, {
 
 Set `inputMode` to hint the keyboard type on mobile.
 
-```jsx
+```tsx
 const service = useMachine(numberInput.machine, {
   inputMode: "numeric", // "text" | "tel" | "numeric" | "decimal"
 })
@@ -233,7 +233,7 @@ const service = useMachine(numberInput.machine, {
 To apply custom formatting to the input's value, set the `formatOptions` and
 provide `Intl.NumberFormatOptions` such as `style` and `currency`
 
-```jsx {2-5}
+```tsx {2-5}
 const service = useMachine(numberInput.machine, {
   formatOptions: {
     style: "currency",
@@ -246,7 +246,7 @@ const service = useMachine(numberInput.machine, {
 
 Use `translations` to customize increment/decrement labels and value text.
 
-```jsx
+```tsx
 const service = useMachine(numberInput.machine, {
   translations: {
     incrementLabel: "Increase quantity",
@@ -261,7 +261,7 @@ const service = useMachine(numberInput.machine, {
 Set `form` if the hidden input should submit with a form outside the current DOM
 subtree.
 
-```jsx
+```tsx
 const service = useMachine(numberInput.machine, {
   name: "value",
   form: "checkout-form",

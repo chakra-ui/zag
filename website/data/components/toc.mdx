@@ -37,7 +37,7 @@ Check the table of contents anatomy and part names.
 
 Import the table of contents package:
 
-```jsx
+```tsx
 import * as toc from "@zag-js/toc"
 ```
 
@@ -56,7 +56,7 @@ representing the headings on the page.
 Use `getIndicatorProps()` to render an animated bar that follows the active
 item. The indicator position is exposed as CSS variables on the root element.
 
-```jsx {5}
+```tsx {5}
 <nav {...api.getRootProps()}>
   <h5 {...api.getTitleProps()}>On this page</h5>
   <ul {...api.getListProps()}>
@@ -76,7 +76,7 @@ item. The indicator position is exposed as CSS variables on the root element.
 
 Control how headings are detected with `rootMargin` and `threshold`.
 
-```jsx {2-3}
+```tsx {2-3}
 const service = useMachine(toc.machine, {
   rootMargin: "-20px 0% -40% 0%",
   threshold: 0,
@@ -88,7 +88,7 @@ const service = useMachine(toc.machine, {
 By default, the machine observes the document viewport. Pass `getScrollEl` to
 observe headings within a specific scrollable container.
 
-```jsx {2}
+```tsx {2}
 const service = useMachine(toc.machine, {
   getScrollEl: () => document.getElementById("content"),
 })
@@ -99,7 +99,7 @@ const service = useMachine(toc.machine, {
 When the TOC sidebar is scrollable, the machine auto-scrolls to keep the first
 active item visible. Disable this with `autoScroll`.
 
-```jsx {2}
+```tsx {2}
 const service = useMachine(toc.machine, {
   autoScroll: false,
 })
@@ -110,7 +110,7 @@ const service = useMachine(toc.machine, {
 Use `onActiveChange` to respond when visible headings change. The callback
 receives both `activeIds` and `activeItems`.
 
-```jsx {2-5}
+```tsx {2-5}
 const service = useMachine(toc.machine, {
   onActiveChange(details) {
     // details => { activeIds: string[], activeItems: TocItem[] }
@@ -123,7 +123,7 @@ const service = useMachine(toc.machine, {
 
 Use `activeIds` and `onActiveChange` for controlled usage.
 
-```jsx
+```tsx
 const service = useMachine(toc.machine, {
   activeIds,
   onActiveChange(details) {
@@ -136,7 +136,7 @@ const service = useMachine(toc.machine, {
 
 Use `getItemState` to check if an item is active, first, or last.
 
-```jsx
+```tsx
 const itemState = api.getItemState({ item })
 // itemState => { active: boolean, first: boolean, last: boolean, depth: number }
 ```

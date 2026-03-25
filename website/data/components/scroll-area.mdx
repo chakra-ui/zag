@@ -51,7 +51,7 @@ applied to the viewport element to hide the scrollbar:
 
 Import the scroll area package:
 
-```jsx
+```tsx
 import * as scrollArea from "@zag-js/scroll-area"
 ```
 
@@ -69,7 +69,7 @@ Then use the framework integration helpers:
 You can programmatically scroll to any edge of the scroll area using the
 `scrollToEdge` method:
 
-```jsx
+```tsx
 // Scroll to bottom
 api.scrollToEdge({ edge: "bottom" })
 
@@ -85,7 +85,7 @@ api.scrollToEdge({
 
 Use the `scrollTo` method to scroll to specific coordinates:
 
-```jsx
+```tsx
 // Scroll to specific position
 api.scrollTo({
   top: 100,
@@ -104,7 +104,7 @@ api.scrollTo({
 
 The API provides several properties to check the current scroll state:
 
-```jsx
+```tsx
 // Check if at edges
 console.log(api.isAtTop) // boolean
 console.log(api.isAtBottom) // boolean
@@ -123,7 +123,7 @@ const progress = api.getScrollProgress() // { x: number, y: number }
 
 Only render scrollbars when there's overflow content:
 
-```jsx
+```tsx
 {
   api.hasOverflowY && (
     <div {...api.getScrollbarProps({ orientation: "vertical" })}>
@@ -145,7 +145,7 @@ Only render scrollbars when there's overflow content:
 
 Get the current state of a scrollbar for styling purposes:
 
-```jsx
+```tsx
 const verticalState = api.getScrollbarState({ orientation: "vertical" })
 // Returns: { hovering: boolean, scrolling: boolean, hidden: boolean }
 ```

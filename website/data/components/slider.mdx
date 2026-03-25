@@ -40,7 +40,7 @@ Check the slider anatomy and part names.
 
 Import the slider package:
 
-```jsx
+```tsx
 import * as slider from "@zag-js/slider"
 ```
 
@@ -66,7 +66,7 @@ increment/decrement its value.
 > Don't forget to change the styles of the vertical slider by specifying its
 > height
 
-```jsx {2}
+```tsx {2}
 const service = useMachine(slider.machine, {
   orientation: "vertical",
 })
@@ -77,7 +77,7 @@ const service = useMachine(slider.machine, {
 Pass the `defaultValue` property to the machine's context to set the initial
 value.
 
-```jsx {2}
+```tsx {2}
 const service = useMachine(slider.machine, {
   defaultValue: [30],
 })
@@ -98,7 +98,7 @@ and/or max attributes.
 
 For example, to ask the user for a value between `-10` and `10`, you can use:
 
-```jsx {2-3}
+```tsx {2-3}
 const service = useMachine(slider.machine, {
   min: -10,
   max: 10,
@@ -113,7 +113,7 @@ integer. You can change the step attribute to control the granularity.
 For example, If you need a value between `5` and `10`, accurate to two decimal
 places, you should set the value of step to `0.01`:
 
-```jsx {4}
+```tsx {4}
 const service = useMachine(slider.machine, {
   min: 5,
   max: 10,
@@ -126,7 +126,7 @@ const service = useMachine(slider.machine, {
 When the slider value changes, the `onValueChange` and `onValueChangeEnd`
 callbacks are invoked. You can use this to setup custom behaviors in your app.
 
-```jsx {2-7}
+```tsx {2-7}
 const service = useMachine(slider.machine, {
   onValueChange(details) {
     // details => { value: number[] }
@@ -143,7 +143,7 @@ const service = useMachine(slider.machine, {
 
 Use `onFocusChange` to track which thumb is focused.
 
-```jsx
+```tsx
 const service = useMachine(slider.machine, {
   onFocusChange(details) {
     // details => { focusedIndex: number, value: number[] }
@@ -167,7 +167,7 @@ In scenarios where the value represents an offset (or relative value) on a
 diverging scale, it might be useful to change the origin to center. To do this,
 set the `origin` context property to `center`.
 
-```jsx {2}
+```tsx {2}
 const service = useMachine(slider.machine, {
   origin: "center",
 })
@@ -185,7 +185,7 @@ By default, the thumb is aligned to the start of the track. Set the
 - `center`: the thumb will extend beyond the bounds of the slider track.
 - `contain`: the thumb will be contained within the bounds of the track.
 
-```jsx {2}
+```tsx {2}
 const service = useMachine(slider.machine, {
   thumbAlignment: "center",
 })
@@ -194,7 +194,7 @@ const service = useMachine(slider.machine, {
 If you use `contain` alignment, you might need to set the thumb size to prevent
 any flickering.
 
-```jsx {3}
+```tsx {3}
 const service = useMachine(slider.machine, {
   thumbAlignment: "contain",
   thumbSize: { width: 20, height: 20 },
@@ -206,7 +206,7 @@ const service = useMachine(slider.machine, {
 For multi-thumb sliders, use `thumbCollisionBehavior` to control what happens
 when thumbs collide.
 
-```jsx
+```tsx
 const service = useMachine(slider.machine, {
   defaultValue: [20, 80],
   thumbCollisionBehavior: "swap", // "none" | "push" | "swap"
@@ -217,7 +217,7 @@ const service = useMachine(slider.machine, {
 
 To use slider in forms, set `name` and render `api.getHiddenInputProps()`.
 
-```jsx {2}
+```tsx {2}
 const service = useMachine(slider.machine, {
   name: "quantity",
 })
@@ -227,7 +227,7 @@ const service = useMachine(slider.machine, {
 
 Use `getAriaValueText` to customize `aria-valuetext` per thumb.
 
-```jsx
+```tsx
 const service = useMachine(slider.machine, {
   getAriaValueText(details) {
     return `Value ${details.index + 1}: ${details.value}`
@@ -243,7 +243,7 @@ will increment and the right arrow key will decrement.
 
 To enable RTL support, pass the `dir: rtl` context property
 
-```jsx {2}
+```tsx {2}
 const service = useMachine(slider.machine, {
   dir: "rtl",
 })

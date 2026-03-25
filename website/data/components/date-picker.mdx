@@ -693,6 +693,40 @@ Each date-picker part includes a `data-part` attribute you can target in CSS.
 }
 ```
 
+### Range Selection States
+
+When using `selectionMode: "range"`, additional data attributes are available on
+day, month, and year table cell triggers for styling the selected and hovered
+ranges.
+
+```css
+[data-scope="date-picker"][data-part="table-cell-trigger"] {
+  &[data-range-start] {
+    /* styles for the start of the selected range */
+  }
+
+  &[data-range-end] {
+    /* styles for the end of the selected range */
+  }
+
+  &[data-in-range] {
+    /* styles for dates within the selected range */
+  }
+
+  &[data-in-hover-range] {
+    /* styles for dates within the hovered range preview */
+  }
+
+  &[data-hover-range-start] {
+    /* styles for the start of the hovered range */
+  }
+
+  &[data-hover-range-end] {
+    /* styles for the end of the hovered range */
+  }
+}
+```
+
 ## Methods and Properties
 
 ### Machine Context

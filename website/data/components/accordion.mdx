@@ -36,7 +36,7 @@ Check the accordion anatomy and part names.
 
 Import the accordion package:
 
-```jsx
+```tsx
 import * as accordion from "@zag-js/accordion"
 ```
 
@@ -61,7 +61,7 @@ page.
 
 Set `multiple` to `true` to allow more than one expanded item at a time.
 
-```jsx {2}
+```tsx {2}
 const service = useMachine(accordion.machine, {
   multiple: true,
 })
@@ -71,7 +71,7 @@ const service = useMachine(accordion.machine, {
 
 Set `defaultValue` to define expanded items on first render.
 
-```jsx
+```tsx
 // multiple mode
 const service = useMachine(accordion.machine, {
   multiple: true,
@@ -97,7 +97,7 @@ again.
 
 > Note: If `multiple` is `true`, we internally set `collapsible` to be `true`.
 
-```jsx {2}
+```tsx {2}
 const service = useMachine(accordion.machine, {
   collapsible: true,
 })
@@ -107,7 +107,7 @@ const service = useMachine(accordion.machine, {
 
 When the accordion value changes, the `onValueChange` callback is invoked.
 
-```jsx {2-5}
+```tsx {2-5}
 const service = useMachine(accordion.machine, {
   onValueChange(details) {
     // details => { value: string[] }
@@ -120,7 +120,7 @@ const service = useMachine(accordion.machine, {
 
 Use `onFocusChange` to react when keyboard focus moves between item triggers.
 
-```jsx
+```tsx
 const service = useMachine(accordion.machine, {
   onFocusChange(details) {
     // details => { value: string | null }
@@ -133,7 +133,7 @@ const service = useMachine(accordion.machine, {
 
 Set `orientation` to `horizontal` when rendering items side by side.
 
-```jsx {2}
+```tsx {2}
 const service = useMachine(accordion.machine, {
   orientation: "horizontal",
 })
@@ -147,7 +147,7 @@ To disable a specific accordion item, pass the `disabled: true` property to the
 When an accordion item is disabled, it is skipped from keyboard navigation and
 can't be interacted with.
 
-```jsx
+```tsx
 //...
 <div {...api.getItemProps({ value: "item", disabled: true })}>
   <h3>
@@ -164,7 +164,7 @@ can't be interacted with.
 
 You can also disable the entire accordion by setting `disabled` on the machine.
 
-```jsx {2}
+```tsx {2}
 const service = useMachine(accordion.machine, {
   disabled: true,
 })

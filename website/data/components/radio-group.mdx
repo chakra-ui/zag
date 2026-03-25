@@ -36,7 +36,7 @@ how we name its parts.
 
 Import the radio group package:
 
-```jsx
+```tsx
 import * as radio from "@zag-js/radio-group"
 ```
 
@@ -55,7 +55,7 @@ Then use the framework integration helpers:
 
 Set `disabled` to `true` to disable all radio items.
 
-```jsx {2}
+```tsx {2}
 const service = useMachine(radio.machine, {
   disabled: true,
 })
@@ -65,7 +65,7 @@ const service = useMachine(radio.machine, {
 
 Use the `defaultValue` property to set the radio group's initial value.
 
-```jsx {2}
+```tsx {2}
 const service = useMachine(radio.machine, {
   defaultValue: "apple",
 })
@@ -75,7 +75,7 @@ const service = useMachine(radio.machine, {
 
 Use `value` and `onValueChange` to control selection externally.
 
-```jsx
+```tsx
 const service = useMachine(radio.machine, {
   value,
   onValueChange(details) {
@@ -88,7 +88,7 @@ const service = useMachine(radio.machine, {
 
 When the radio group value changes, the `onValueChange` callback is invoked.
 
-```jsx {2-7}
+```tsx {2-7}
 const service = useMachine(radio.machine, {
   onValueChange(details) {
     // details => { value: string | null }
@@ -101,7 +101,7 @@ const service = useMachine(radio.machine, {
 
 To use radio group in forms, set `name`.
 
-```jsx {2}
+```tsx {2}
 const service = useMachine(radio.machine, {
   name: "fruits",
 })
@@ -110,7 +110,7 @@ const service = useMachine(radio.machine, {
 Set `form` if the radio inputs should submit with a form outside the current DOM
 subtree.
 
-```jsx
+```tsx
 const service = useMachine(radio.machine, {
   name: "fruits",
   form: "checkout-form",
@@ -121,7 +121,7 @@ const service = useMachine(radio.machine, {
 
 Set `orientation` when you need a vertical layout.
 
-```jsx
+```tsx
 const service = useMachine(radio.machine, {
   orientation: "vertical",
 })
@@ -131,7 +131,7 @@ const service = useMachine(radio.machine, {
 
 Use `readOnly` and `required` to control form behavior.
 
-```jsx
+```tsx
 const service = useMachine(radio.machine, {
   readOnly: true,
   required: true,
@@ -142,7 +142,7 @@ const service = useMachine(radio.machine, {
 
 Set `invalid` to style and expose invalid form state.
 
-```jsx
+```tsx
 const service = useMachine(radio.machine, {
   invalid: true,
 })

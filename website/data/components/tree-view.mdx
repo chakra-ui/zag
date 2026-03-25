@@ -38,7 +38,7 @@ Check the tree view anatomy and part names.
 
 Import the tree view package:
 
-```jsx
+```tsx
 import * as tree from "@zag-js/tree-view"
 ```
 
@@ -198,7 +198,7 @@ element by using the `api.getBranchIndentGuideProps()` function.
 When a node is selected, the `onSelectionChange` callback is invoked with the
 selected nodes.
 
-```jsx {2-5}
+```tsx {2-5}
 const service = useMachine(tree.machine, {
   onSelectionChange(details) {
     // details => { focusedValue, selectedValue, selectedNodes }
@@ -212,7 +212,7 @@ const service = useMachine(tree.machine, {
 When a node is expanded or collapsed, the `onExpandedChange` callback is invoked
 with the expanded nodes.
 
-```jsx {2-5}
+```tsx {2-5}
 const service = useMachine(tree.machine, {
   onExpandedChange(details) {
     // details => { focusedValue, expandedValue, expandedNodes }

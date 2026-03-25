@@ -33,7 +33,7 @@ Check the rating anatomy and part names.
 
 Import the rating package:
 
-```jsx
+```tsx
 import * as rating from "@zag-js/rating-group"
 ```
 
@@ -50,7 +50,7 @@ Then use the framework integration helpers:
 
 Use the `defaultValue` property to set the rating's initial value.
 
-```jsx {2}
+```tsx {2}
 const service = useMachine(rating.machine, {
   defaultValue: 2.5,
 })
@@ -60,7 +60,7 @@ const service = useMachine(rating.machine, {
 
 Use `value` and `onValueChange` to control the rating externally.
 
-```jsx
+```tsx
 const service = useMachine(rating.machine, {
   value,
   onValueChange(details) {
@@ -73,7 +73,7 @@ const service = useMachine(rating.machine, {
 
 Use `api.setValue` or `api.clearValue` when you need imperative control.
 
-```jsx
+```tsx
 api.setValue(4)
 api.clearValue()
 ```
@@ -82,7 +82,7 @@ api.clearValue()
 
 Enable `allowHalf` when your UX needs fractional ratings.
 
-```jsx
+```tsx
 const service = useMachine(rating.machine, {
   allowHalf: true,
 })
@@ -92,7 +92,7 @@ const service = useMachine(rating.machine, {
 
 When the rating value changes, the `onValueChange` callback is invoked.
 
-```jsx {2-7}
+```tsx {2-7}
 const service = useMachine(rating.machine, {
   onValueChange({ value }) {
     console.log("rating value is:", value)
@@ -105,7 +105,7 @@ const service = useMachine(rating.machine, {
 
 Use `onHoverChange` to react to hover previews before selection.
 
-```jsx
+```tsx
 const service = useMachine(rating.machine, {
   onHoverChange(details) {
     console.log("hovered rating:", details.hoveredValue)
@@ -118,7 +118,7 @@ const service = useMachine(rating.machine, {
 Use `translations.ratingValueText` to customize how each rating item is
 announced.
 
-```jsx
+```tsx
 const service = useMachine(rating.machine, {
   translations: {
     ratingValueText: (index) => `${index} out of 5`,
@@ -130,7 +130,7 @@ const service = useMachine(rating.machine, {
 
 To use rating in forms, set `name` and render `api.getHiddenInputProps()`.
 
-```jsx {2}
+```tsx {2}
 const service = useMachine(rating.machine, {
   name: "rating",
 })

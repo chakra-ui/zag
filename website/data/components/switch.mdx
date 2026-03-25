@@ -34,7 +34,7 @@ Check the switch anatomy and part names.
 
 Import the switch package:
 
-```jsx
+```tsx
 import * as zagSwitch from "@zag-js/switch"
 ```
 
@@ -51,7 +51,7 @@ Then use the framework integration helpers:
 
 Use the `defaultChecked` property to make a switch checked by default.
 
-```jsx {3}
+```tsx {3}
 const service = useMachine(zagSwitch.machine, {
   defaultChecked: true,
 })
@@ -61,7 +61,7 @@ const service = useMachine(zagSwitch.machine, {
 
 Use `checked` and `onCheckedChange` for controlled usage.
 
-```jsx
+```tsx
 const service = useMachine(zagSwitch.machine, {
   checked,
   onCheckedChange(details) {
@@ -74,7 +74,7 @@ const service = useMachine(zagSwitch.machine, {
 
 When the switch value changes, the `onCheckedChange` callback is invoked.
 
-```jsx {3-5}
+```tsx {3-5}
 const service = useMachine(zagSwitch.machine, {
   onCheckedChange(details) {
     // details => { checked: boolean }
@@ -87,7 +87,7 @@ const service = useMachine(zagSwitch.machine, {
 
 Use the connected API when you need imperative control.
 
-```jsx
+```tsx
 api.setChecked(true)
 api.toggleChecked()
 ```
@@ -96,7 +96,7 @@ api.toggleChecked()
 
 To use switch in forms, set `name` and render `api.getHiddenInputProps()`.
 
-```jsx {3}
+```tsx {3}
 const service = useMachine(zagSwitch.machine, {
   name: "feature",
 })
@@ -106,7 +106,7 @@ const service = useMachine(zagSwitch.machine, {
 
 Set `value` to customize the submitted form value when checked.
 
-```jsx
+```tsx
 const service = useMachine(zagSwitch.machine, {
   name: "notifications",
   value: "enabled",

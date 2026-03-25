@@ -38,7 +38,7 @@ Check the menu anatomy and part names.
 
 Import the menu package:
 
-```jsx
+```tsx
 import * as menu from "@zag-js/menu"
 ```
 
@@ -63,7 +63,7 @@ is pen or touch.
 
 Use `defaultOpen` for an uncontrolled initial state.
 
-```jsx
+```tsx
 const service = useMachine(menu.machine, {
   defaultOpen: true,
 })
@@ -73,7 +73,7 @@ const service = useMachine(menu.machine, {
 
 Use `open` and `onOpenChange` to control the open state.
 
-```jsx
+```tsx
 const service = useMachine(menu.machine, {
   open,
   onOpenChange(details) {
@@ -87,7 +87,7 @@ const service = useMachine(menu.machine, {
 
 Use `onHighlightChange` to react when keyboard or pointer highlight changes.
 
-```jsx
+```tsx
 const service = useMachine(menu.machine, {
   onHighlightChange(details) {
     // details => { highlightedValue: string | null }
@@ -100,7 +100,7 @@ const service = useMachine(menu.machine, {
 
 Use `onSelect` to react when an item is selected.
 
-```jsx
+```tsx
 const service = useMachine(menu.machine, {
   onSelect(details) {
     // details => { value: string }
@@ -113,7 +113,7 @@ const service = useMachine(menu.machine, {
 
 Use `positioning` to configure menu placement.
 
-```jsx
+```tsx
 const service = useMachine(menu.machine, {
   positioning: { placement: "right-start" },
 })
@@ -123,7 +123,7 @@ const service = useMachine(menu.machine, {
 
 Set `closeOnSelect` to `false` to keep the menu open after selecting an item.
 
-```jsx
+```tsx
 const service = useMachine(menu.machine, {
   closeOnSelect: false,
 })

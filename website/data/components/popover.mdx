@@ -37,7 +37,7 @@ Check the popover anatomy and part names.
 
 Import the popover package:
 
-```jsx
+```tsx
 import * as popover from "@zag-js/popover"
 ```
 
@@ -72,7 +72,7 @@ this, set `initialFocusEl`.
 
 To disable automatic focus on open, set `autoFocus` to `false`.
 
-```jsx
+```tsx
 const service = useMachine(popover.machine, {
   autoFocus: false,
 })
@@ -93,7 +93,7 @@ context. When `modal: true`, we set the `portalled` attribute to `true` as well.
 
 > **Note**: This requires that you render the component within a `Portal`.
 
-```jsx {2}
+```tsx {2}
 const service = useMachine(popover.machine, {
   modal: true,
 })
@@ -106,7 +106,7 @@ The popover is designed to close on blur and when the `esc` key is pressed.
 To prevent it from closing on blur (clicking or focusing outside), pass the
 `closeOnInteractOutside` property and set it to `false`.
 
-```jsx {2}
+```tsx {2}
 const service = useMachine(popover.machine, {
   closeOnInteractOutside: false,
 })
@@ -115,7 +115,7 @@ const service = useMachine(popover.machine, {
 To prevent it from closing when the `esc` key is pressed, pass the
 `closeOnEscape` property and set it to `false`.
 
-```jsx {2}
+```tsx {2}
 const service = useMachine(popover.machine, {
   closeOnEscape: false,
 })
@@ -125,7 +125,7 @@ const service = useMachine(popover.machine, {
 
 Use `open` and `onOpenChange` to control visibility externally.
 
-```jsx
+```tsx
 const service = useMachine(popover.machine, {
   open,
   onOpenChange(details) {
@@ -139,7 +139,7 @@ const service = useMachine(popover.machine, {
 To render an arrow within the popover, use the `api.getArrowProps()` and
 `api.getArrowTipProps()`.
 
-```jsx {6-8}
+```tsx {6-8}
 //...
 const api = popover.connect(service, normalizeProps)
 //...
@@ -161,7 +161,7 @@ return (
 To change the placement of the popover, set the `positioning.placement` property
 in the machine's context.
 
-```jsx {2-4}
+```tsx {2-4}
 const service = useMachine(popover.machine, {
   positioning: {
     placement: "top-start",
@@ -173,7 +173,7 @@ const service = useMachine(popover.machine, {
 
 When the popover is opened or closed, the `onOpenChange` callback is invoked.
 
-```jsx {2-7}
+```tsx {2-7}
 const service = useMachine(popover.machine, {
   onOpenChange(details) {
     // details => { open: boolean }

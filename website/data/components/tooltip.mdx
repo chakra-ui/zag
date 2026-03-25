@@ -40,7 +40,7 @@ Check the tooltip anatomy and part names.
 
 Import the tooltip package:
 
-```jsx
+```tsx
 import * as tooltip from "@zag-js/tooltip"
 ```
 
@@ -63,7 +63,7 @@ Then use the framework integration helpers:
 By default, the tooltip opens after `400ms` and closes after `150ms`. You can
 customize this by passing the `openDelay` and `closeDelay` context properties.
 
-```jsx {2-3}
+```tsx {2-3}
 const service = useMachine(tooltip.machine, {
   openDelay: 500,
   closeDelay: 200,
@@ -76,7 +76,7 @@ The tooltip uses [floating-ui](https://floating-ui.com/) for dynamic
 positioning. You can change the placement of the tooltip by passing the
 `positioning.placement` context property to the machine.
 
-```jsx {2-4}
+```tsx {2-4}
 const service = useMachine(tooltip.machine, {
   positioning: {
     placement: "bottom-start",
@@ -89,7 +89,7 @@ const service = useMachine(tooltip.machine, {
 To render an arrow within the tooltip, use the `api.getArrowProps()` and
 `api.getArrowTipProps()`.
 
-```jsx {6-8}
+```tsx {6-8}
 //...
 const api = tooltip.connect(service, normalizeProps)
 //...
@@ -110,7 +110,7 @@ Tooltips close on Escape, click, pointer down, and scroll by default. Configure
 these with `closeOnEscape`, `closeOnClick`, `closeOnPointerDown`, and
 `closeOnScroll`.
 
-```jsx {2-5}
+```tsx {2-5}
 const service = useMachine(tooltip.machine, {
   closeOnEscape: false,
   closeOnClick: false,
@@ -127,7 +127,7 @@ interactive.
 When a tooltip is interactive, it remains open as the pointer moves from the
 trigger into the content.
 
-```jsx {2}
+```tsx {2}
 const service = useMachine(tooltip.machine, {
   interactive: true,
 })
@@ -137,7 +137,7 @@ const service = useMachine(tooltip.machine, {
 
 When the tooltip is opened or closed, the `onOpenChange` callback is invoked.
 
-```jsx {2-7}
+```tsx {2-7}
 const service = useMachine(tooltip.machine, {
   onOpenChange(details) {
     // details => { open: boolean }
@@ -150,7 +150,7 @@ const service = useMachine(tooltip.machine, {
 
 Use `open` and `onOpenChange` for controlled usage.
 
-```jsx
+```tsx
 const service = useMachine(tooltip.machine, {
   open,
   onOpenChange(details) {
@@ -163,7 +163,7 @@ const service = useMachine(tooltip.machine, {
 
 Use the connected API for imperative control.
 
-```jsx
+```tsx
 api.setOpen(true)
 ```
 

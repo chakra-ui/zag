@@ -32,7 +32,7 @@ Check the avatar anatomy and part names.
 
 Import the avatar package:
 
-```jsx
+```tsx
 import * as avatar from "@zag-js/avatar"
 ```
 
@@ -51,7 +51,7 @@ Then use the framework integration helpers:
 
 When the image loads or fails, `onStatusChange` is invoked.
 
-```jsx {2}
+```tsx {2}
 const service = useMachine(avatar.machine, {
   onStatusChange(details) {
     // details => { status: "error" | "loaded" }
@@ -63,7 +63,7 @@ const service = useMachine(avatar.machine, {
 
 Use `api.setSrc` when the image source changes after mount.
 
-```jsx
+```tsx
 api.setSrc(nextSrc)
 ```
 
