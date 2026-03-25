@@ -1,5 +1,16 @@
 # @zag-js/core
 
+## 1.38.1
+
+### Patch Changes
+
+- [`2b4818c`](https://github.com/chakra-ui/zag/commit/2b4818c3b82ed1ca8ffd2cb44110a4a195ac68d6) Thanks
+  [@segunadebayo](https://github.com/segunadebayo)! - Validate compound states at machine creation: throw if a state has
+  child states but no `initial`, or if `initial` references a nonexistent child.
+- Updated dependencies []:
+  - @zag-js/utils@1.38.1
+  - @zag-js/dom-query@1.38.1
+
 ## 1.38.0
 
 ### Patch Changes
